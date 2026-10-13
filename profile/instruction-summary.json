@@ -1,0 +1,34 @@
+{
+  "control": {
+    "simulation_instructions": 2494553785,
+    "self_instructions": {
+      "seed": 292451712,
+      "material_cache": 96215143,
+      "periodic_solve": 1785571564
+    }
+  },
+  "after": {
+    "simulation_instructions": 2732385706,
+    "self_instructions": {
+      "seed": 485290304,
+      "material_cache": 96215143,
+      "periodic_solve": 1815066127
+    }
+  },
+  "clear-once": {
+    "simulation_instructions": 2579162248,
+    "self_instructions": {
+      "seed": 338051134,
+      "material_cache": 96215143,
+      "periodic_solve": 1815066127
+    }
+  },
+  "compact-lookup": {
+    "simulation_instructions": 2514277279,
+    "self_instructions": {
+      "seed": 279678144,
+      "material_cache": 96215143,
+      "periodic_solve": 1815066127
+    }
+  }
+}

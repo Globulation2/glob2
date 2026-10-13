@@ -1,0 +1,6 @@
+Settings::load("preferences.txt") : error, can't open file.
+nox::game started
+nox::gui.game.checkSum() = ae4a99bb
+automaticEndingGame ended: 2304 ticks, 1 minutes, 16 seconds
+GLOB2_GAME_END ticks=2304 winner_team=-1 seed=713 map="study-15-713-r0" orders=38 players=team0:Castor,team1:Cortex
+final: wrote /home/bradley/.codex/worktrees/cc21/glob2/artifacts/gradient-cpu-profile/final/validate-512-early-1-fixed/final.game.gz

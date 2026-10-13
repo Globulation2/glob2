@@ -1,0 +1,50 @@
+{
+  "base": "3e2ba6c07",
+  "source_hashes": {
+    "src/map/CellRules.cpp": "a910b9ddbccef173b8a5459d0ac2b8d47eebc622972e2b1d9bb6266d1a15b65a",
+    "src/map/CellRules.h": "a3e5bc240b04bd6962b6ab54f315fc0c8a576077b54520ebf16e692d7c6a43a5",
+    "src/map/gradient/SeedCells.h": "f8270f90a5a5a6bcf96dd83b18ac70b079939694ee1c7a5bdb92d78981378414",
+    "src/map/gradient/SeedTerrain.h": "945756e98746c15668feefe118db13cabbc484f5ce736c01e596e0b3b6a47bec"
+  },
+  "pairs": 8,
+  "counts": [
+    1,
+    2,
+    4,
+    8
+  ],
+  "fixtures": [
+    {
+      "name": "128-early",
+      "save": "/home/bradley/.codex/worktrees/cc21/glob2/artifacts/gradient-cpu-ab/fixtures/128/initial.game.gz",
+      "start": 0
+    },
+    {
+      "name": "128-established",
+      "save": "/home/bradley/.codex/worktrees/cc21/glob2/artifacts/gradient-cpu-ab/fixtures/128/final.game.gz",
+      "start": 4096
+    },
+    {
+      "name": "256-early",
+      "save": "/home/bradley/.codex/worktrees/cc21/glob2/artifacts/gradient-cpu-ab/fixtures/256/initial.game.gz",
+      "start": 0
+    },
+    {
+      "name": "512-early",
+      "save": "/home/bradley/.codex/worktrees/cc21/glob2/artifacts/gradient-cpu-ab/fixtures/512/initial.game.gz",
+      "start": 0
+    }
+  ],
+  "warmup": 256,
+  "measured_ticks": 2048,
+  "weights": "equal fixture/count weights; pair-level cohort averages",
+  "ci": "Student t paired 95%, eight run pairs",
+  "order": "master/fixed on even pairs, fixed/master on odd pairs",
+  "cpu_affinity": "0,2,4,6,8,10,12,14",
+  "cpu_window": "all-thread process CPU, excluding setup/warmup, including final drain",
+  "phase_counters": "full simulation including warmup, normalized by completed periodic fields",
+  "binary_sha256": {
+    "master": "45783fc697d3bd2d3217ad7a94de8cee9ce2a5745b5e58b8401bfffc6db8f90b",
+    "fixed": "13ffe0e7c92de9c11a39013bb99a6b79f89b34fffd93337bfb9e05be19443ea8"
+  }
+}

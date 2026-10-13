@@ -1,0 +1,22 @@
+[
+  {
+    "name": "128-early",
+    "save": "/home/bradley/.codex/worktrees/cc21/glob2/artifacts/gradient-cpu-ab/fixtures/128/initial.game.gz",
+    "start": 0
+  },
+  {
+    "name": "128-established",
+    "save": "/home/bradley/.codex/worktrees/cc21/glob2/artifacts/gradient-cpu-ab/fixtures/128/final.game.gz",
+    "start": 4096
+  },
+  {
+    "name": "256-early",
+    "save": "/home/bradley/.codex/worktrees/cc21/glob2/artifacts/gradient-cpu-ab/fixtures/256/initial.game.gz",
+    "start": 0
+  },
+  {
+    "name": "512-early",
+    "save": "/home/bradley/.codex/worktrees/cc21/glob2/artifacts/gradient-cpu-ab/fixtures/512/initial.game.gz",
+    "start": 0
+  }
+]

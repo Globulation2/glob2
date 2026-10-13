@@ -1,0 +1,5697 @@
+# callgrind format
+version: 1
+creator: callgrind-3.22.0
+pid: 1038140
+cmd:  artifacts/gradient-cpu-profile/clear-once-symbols game run --load-game artifacts/gradient-cpu-ab/fixtures/512/initial.game.gz --ticks 128 --compute-threads 1 --gpu off --data-dir data --output-dir artifacts/gradient-cpu-profile/clear-once-run --profile cpu-profile
+part: 1
+
+
+desc: I1 cache: 32768 B, 64 B, 8-way associative
+desc: D1 cache: 32768 B, 64 B, 8-way associative
+desc: LL cache: 16777216 B, 64 B, direct-mapped
+
+desc: Timerange: Basic block 0 - 1147028385
+desc: Trigger: Program termination
+
+positions: line
+events: Ir Dr Dw I1mr D1mr D1mw ILmr DLmr DLmw Bc Bcm Bi Bim
+summary: 2579162248 479227323 298122079 115857 42318368 2682073 35183 8069589 1434334 291957128 6555683 64798 1898
+
+
+ob=(1) /usr/lib/x86_64-linux-gnu/ld-linux-x86-64.so.2
+fl=(32) ./string/../sysdeps/x86_64/multiarch/../multiarch/strcmp-sse2.S
+fn=(94) strcmp
+98 7 0 0 1 0 0 1
++33 7
++1 7
++2 7
++1 7
++21 7
++1 7 0 0 0 0 0 0 0 0 7 5
++1 6
++1 6 0 0 0 0 0 0 0 0 6
++1 6 6 0 0 4 0 0 4
++1 6 6 0 1 1 0 1 1
++1 6 6
++1 6 6
++17 6
++1 6
++1 6
++1 6
++1 6
++1 6
++1 6 0 0 0 0 0 0 0 0 6 2
++5 1
++1 3
++9 1
++1 1
++1 1
++1 1
++1 1
++1 1
++1 1
++1 1 0 0 0 0 0 0 0 0 1
+-7 1 0 0 1 0 0 1
++1 1
++1 1
++1 1
++1 1
++1 1
++1 1
++1 1 0 0 0 0 0 0 0 0 1 1
++1 2 0 0 0 0 0 0 0 0 2 1
++1 1
++1 1
++1 1
++2 1
++1 1
++1 1
++1 1 1 0 0 1 0 0 1
++1 1
++1 1 0 0 0 0 0 0 0 0 0 0 1 1
+-5 1
++1 1
++1 1
++1 1 1
++1 1
++1 1 0 0 0 0 0 0 0 0 0 0 1
+1851 2 0 0 1 0 0 1
++1 2 2
++1 2 2 0 0 1 0 0 1
++1 2
++1 2
++2 2
++1 2
++1 2 0 0 1 0 0 1
++1 2
++1 2
++1 2
++1 2 0 0 0 0 0 0 0 0 2
+
+ob=(38) /home/bradley/.codex/worktrees/cc21/glob2/artifacts/gradient-cpu-profile/clear-once-symbols
+fl=(250) ???
+fn=(8474) Map::buildingGradientValue(Building*, int, unsigned long, BuildingRoute) const
+0 1134 126 210 12 29 0 12 18 0 168 7
+cfn=(8476) BuildingGradientSearch::resolve(unsigned long)
+calls=42 0 
+0 282684 35253 41066 314 615 1242 253 324 1134 33555 1250 180
+0 336 294 0 0 3
+
+fn=(5040) Map::preparePendingGradient()
+0 3456 384 1536 445 0 0 85
+cfn=(5042) Map::pendingGradientRequirements() const
+calls=391 0 
+0 10752 4608 1536 436 768 0 79 111 0 1152 151
+0 3456 1920 0 0 0 0 0 0 0 768 33
+
+fn=(5880) ConstCode::~ConstCode()
+0 3 0 0 1 0 0 1
+cob=(12) /usr/lib/x86_64-linux-gnu/libstdc++.so.6.0.33
+cfi=(199) ???
+cfn=(2316) operator delete(void*, unsigned long)
+calls=195 0 
+0 93 27 14 0 0 0 0 0 0 12 0 2
+0 1 1 0 0 0 0 0 0 0 0 0 1
+
+fn=(7398) Building::availableMaterial(int) const
+0 17598 7542 0 283 203 0 87 97 0 1257 3
+
+ob=(1)
+fl=(32)
+fn=(94)
+1864 1 1
++4 1
++1 1
++1 1
++6 1
++1 1
++1 2
++4 1 0 0 1 0 0 1
++1 1 0 0 0 0 0 0 0 0 1
++3 1 1
++1 1 1
++1 1
++2 1
++1 1
++1 1
++4 1
++1 1
++1 1
++1 1
++1 1
++1 1 0 0 1 0 0 1 0 0 1
+2093 1 0 0 1 0 0 1
++2 1
++1 1
++1 1
++1 1 0 0 0 0 0 0 0 0 1
+-3 1
++1 1
++1 1
++1 1 0 0 0 0 0 0 0 0 1
++1 2
++5 1
++6 1 1
++1 1 1
++8 1
++1 1 1
+-16 6 0 0 1 0 0 1
++6 6 6
++1 6 6
++8 6
++1 6 6
+
+fl=(201) ./elf/./elf/dl-runtime.c
+fn=(728) _dl_fixup
+46 55 0 30 2 0 0 2
++2 25 20 0 0 4 0 0 4 0 5 3
++1 5 5
++6 5
+fi=(385) ./elf/../sysdeps/x86_64/dl-runtime.h
+-27 5
+fe=(201)
++21 5 5
++5 5 5 0 0 1 0 0 1
++1 5 5 0 0 1 0 0 1
+-6 5 0 0 1 0 0 1
++6 10
++1 5 5 0 0 5 0 0 5
++2 5 5 0 0 3 0 0 3
+-2 5
++2 5
+-2 25 0 5 0 0 1
++7 10 0 0 0 0 0 0 0 0 5 2
++4 10 5 0 0 5 0 0 5 0 5 3
+
+ob=(38)
+fl=(250)
+fn=(7536) Map::initializeResourceStock(unsigned long, std::array<unsigned short, 12ul> const*)
+0 4628 1068 979 260 0 0 125 0 0 178 1
+cob=(11) /usr/lib/x86_64-linux-gnu/libgcc_s.so.1
+cfi=(198) ???
+cfn=(7520) __popcountdi2
+calls=23857 0 
+0 1869 89 0 2
+0 89 89 0 1 1 0 0 0 0 0 0 89
+
+ob=(1)
+fl=(201)
+fn=(728)
+71 5 5 0 1 1 0 1 1
+-2 5
++2 10 0 0 0 0 0 0 0 0 5 1
++4 15 10 0 0 6 0 0 5
++1 20 5 0 0 1 0 0 1
++1 15 5 0 0 3 0 0 3 0 5 3
++8 5 5
+-1 5 0 0 1 0 0 1
++1 10 0 0 0 0 0 0 0 0 5
++10 50 10 15 0 1 0 0 1
+cfi=(80) ./elf/./elf/dl-lookup.c
+cfn=(286) _dl_lookup_symbol_x
+calls=245 772 
+* 6106 2080 485 38 310 14 38 184 8 1066 80 2 1
+* 5
++4 25 15 0 1 0 0 1 0 0 5 2
++10 50 20 5 0 1 0 0 1 0 15
++15 20 5 0 1 0 0 1 0 0 5
++9 15 5 0 0 0 0 0 0 0 5 2
++26 15 5 0 0 1 0 0 1 0 5
+fi=(6) ./elf/../sysdeps/x86_64/dl-machine.h
++75 5 0 5
+fe=(201)
+-71 40 35 0 1 0 0 1
+
+fl=(200) ./elf/../sysdeps/x86_64/dl-trampoline.h
+fn=(726) _dl_runtime_resolve_xsave
+71 5 0 0 1 0 0 1
++5 5 0 5
++3 5
++2 5
++10 5 5 0 0 1 0 0 1
++6 5 0 5 0 0 1
++1 5 0 5
++1 5 0 5 1 0 0 1
++1 5 0 5
++1 5 0 5
++1 5 0 5
++1 5 0 5
++4 5
++1 5
++3 5 0 5
++1 5 0 5
++2 5 0 5
++1 5 0 5
++1 5 0 5 1 0 0 1
++1 5 0 5
++1 5 0 5
++1 5 0 5
++2 5 0 170 0 0 7
++7 5 5
++1 5 5
++1 5 0 5 0 0 1
+cfi=(201)
+cfn=(728)
+calls=245 -84 
+* 6611 2260 545 46 343 15 46 216 8 1131 96 2 1
++1 5
++5 5
++1 5
++1 5 180 0 0 2
++2 5 5 0 1 0 0 1
++1 5 5
++1 5 5
++1 5 5
++1 5 5
++1 5 5
++1 5 5
++2 5
++2 5 5
++4 5
++2 5 0 0 0 0 0 0 0 0 0 0 5 5
+
+fl=(80)
+fn=(292) check_match
+70 75 10 30 1 2 2 1 2 2
++3 30 10 0 1 1 0 1 1 0 5
++13 5
+-13 5
++13 5
+-13 5
++13 15 0 0 0 0 0 0 0 0 5
++3 18 4 2 0 0 0 0 0 0 5 2
+cfi=(32)
+cfn=(94)
+calls=2602 +9 
+* 131 19 0 6 3 0 6 3 0 14 3 2 1
+* 4 0 0 0 0 0 0 0 0 2 2
++4 5 5 0 1 0 0 1
++1 10 0 0 0 0 0 0 0 0 5
++2 10 0 0 0 0 0 0 0 0 5 1
++19 10 10 0 0 3 0 0 2
++1 40 15 0 1 1 0 1 1 0 5 4
++45 5
++1 40 35
+-45 15 10 5 2 0 0 2
+cfi=(32)
+cfn=(94)
+calls=4236 -19 
+* 125 35 0 3 4 0 3 4 0 15 6
+* 10 0 0 0 0 0 0 0 0 5
+
+fn=(290) do_lookup_x
+347 45 0 35 2 0 1 2 0 1
++1 5 5 0 0 3 0 0 1
+-1 20 10 10 0 0 1 0 0 1
++6 5
+-6 5 0 5
++65 5
+-58 5 5
++11 5 5
++50 5 0 5
+-3 10 0 5
++3 10
+-50 5
++50 20 5 5 1 0 0 1
+-19 258 86 0 0 31 0 0 15 0 86
++8 86 86 0 0 29 0 0 18
+-4 86 0 86
++1 86 0 86
++3 344 172 0 0 36 0 0 18 0 86 2
++1 172 172 0 1 20 0 1 8
++3 86 86
+-3 86
++4 172 0 0 0 0 0 0 0 0 86
++4 172 172
+-2 86 86 0 0 83 0 0 46
++5 344 172
++3 602 86 0 0 0 0 0 0 0 86 11
++99 243 0 0 0 0 0 0 0 0 81 3
+358 172 172 0 1 29 0 1 21
++3 172 0 0 0 0 0 0 0 0 86 1
++4 172 0 0 0 0 0 0 0 0 86 6
+
+ob=(38)
+fl=(250)
+fn=(7536)
+0 2047 979 89 130 0 0 55 0 0 267 82
+
+fn=(7538) Map::resourceMaterialMaskAt(unsigned long) const
+0 3649 623 1068 130 0 0 63 0 0 267 4
+
+ob=(1)
+fl=(80)
+fn=(290)
+386 172 86 0 1 31 0 1 17 0 86 3
++4 172 86 0 0 0 0 0 0 0 86 6
++71 40 30 0 1 0 0 1
+fi=(4) ./elf/../sysdeps/generic/ldsodefs.h
+139 10 5
++1 15
+fe=(80)
+476 10 0 0 1 0 0 1 0 0 5
+fi=(82) ./elf/../sysdeps/generic/dl-protected.h
+29 20 0 0 0 0 0 0 0 0 10 1
+fe=(80)
+483 40 5 0 0 0 0 0 0 0 15
++16 10 5 5 0 0 3
++1 5 0 5
++22 5
+-21 5
++21 35 35
+-99 30 10 0 1 0 0 1
+-1 20 20 0 0 10 0 0 10
++2 20 0 0 0 0 0 0 0 0 10 2
++2 8 8
++6 32 8 16 1 0 0 1
+-6 8
++6 56 0 40 0 0 1 0 0 1
++7 30 0 0 0 0 0 0 0 0 10 3
+-10 75 15 0 1 9 0 1 9 0 15 8
++2 5
++1 15 5
+-1 5 5
++1 10 10 5
+-1 5
++1 5 0 5
++1 5
+-1 5 0 5
++1 5
+-1 35 15 15 1 0 1 1 0 1
+cfn=(292)
+calls=8264 70 
+* 563 153 37 15 14 2 15 13 2 66 18 2 1
++4 15 0 0 0 0 0 0 0 0 5
++34 24 21 0 2 0 0 2 0 0 3
+
+fn=(286)
+772 30 0 20 1 0 1 1
++3 5
+-3 15 0 10
++3 5
+-3 20 0 15 1 0 2 1 0 1
+fi=(81) ./elf/../sysdeps/generic/dl-new-hash.h
+74 5 5 0 0 3 0 0 3
++3 10 0 0 0 0 0 0 0 0 5
+-8 5
++1 10
++10 5 5
++1 10 0 0 0 0 0 0 0 0 5
+-1 45 45 0 0 2 0 0 2
++1 90 0 0 0 0 0 0 0 0 45 3
++20 48
+-2 48
++6 48
+-3 96
++2 48 0 0 1 0 0 1
+-30 48 48 0 0 1 0 0 1
++3 96 0 0 0 0 0 0 0 0 48 5
+fe=(80)
+774 5
++1 5
++3 5 0 5 0 0 1 0 0 1
+-4 5 0 5
++1 5 0 5
++7 20 5 0 0 0 0 0 0 0 10 5
++5 5 5
+-2 5 5
++2 5 5
+-2 5 0 0 1 0 0 1 0 0 5
++6 70 0 15 0 0 0 0 0 0 5
++1 70 35 35 1 0 1 1
+cfn=(290)
+calls=8229 347 
+* 4999 1842 370 29 295 9 29 176 6 908 64 2 1
+* 15 0 0 1 0 0 1 0 0 5
++28 5 5 0 0 2
+-23 15 10
++23 5
+-23 10 0 0 0 0 0 0 0 0 5 1
++24 30 5 0 0 1 0 0 0 0 10
++7 5 5
+-7 5
++35 20 5 0 1 0 0 1 0 0 5 2
++34 20 5
+-20 15 5 0 0 2 0 0 2 0 5
++3 10 5 0 0 0 0 0 0 0 5
+-57 5 0 5
++76 45 35 0 1 4 0 1
+fi=(81)
+87 2 0 0 1 0 0 1
++1 2
++1 4
++1 2
+fe=(80)
+
+fl=(1) ???
+fn=(0) 0x000000000001f540
+cob=(38)
+cfi=(250)
+cfn=(1700) (below main)
+calls=1 0 
+0 2579162248 479227323 298122079 115857 42318368 2682073 35183 8069589 1434334 291957128 6555683 64798 1898
+
+fl=(341) ./elf/./elf/dl-open.c
+fn=(5086) _dl_find_dso_for_object
+214 2 0 1 1 0 0 1
++4 1 1
+-4 8 0 4 1 0 0 1
++4 2 0 0 0 0 0 0 0 0 1 1
++1 3 1 0 0 1 0 0 1 0 1
++1 4 2 0 0 1 0 0 1 0 2
++1 2 1 0 0 1 0 0 1 0 1 1
++3 2 1 0 1 1 0 1 1 0 1
++4 7 6 0 1 0 0 1
+
+ob=(12)
+fl=(199)
+fn=(3580) std::_Rb_tree_increment(std::_Rb_tree_node_base*)
+0 15286 6044 0 278 1102 0 61 945 0 3016 953
+
+fn=(5168) operator new[](unsigned long)
+0 34 0 0 13 0 0 6
+cob=(4) ???
+cfi=(184) ???
+cfn=(2778) 0x00000000055adcc0
+calls=86 0 
+0 10519 2344 1527 663 191 88 133 33 58 1767 260 34
+
+fn=(8698) std::_Sp_locker::_Sp_locker(void const*)
+0 3224 248 1240 496 0 0 55
+cob=(4)
+cfi=(184)
+cfn=(8700) 0x00000000055b1440
+calls=313 0 
+0 11006 1229 162 1285 374 20 277 163 7 965 347 250 3
+0 1488 0 496
+cfn=(8704) 0x00000000000ec380
+calls=313 0 
+0 6631 2437 1109 257 336 18 37 76 17 685 44 6 4
+0 496 0 248
+cob=(4)
+cfi=(184)
+cfn=(8728) 0x00000000055b0d50
+calls=313 0 
+0 11136 3256 1402 255 573 1 49 190 0 1980 268 251 4
+0 1984 1240 0 0 0 0 0 0 0 496 71
+
+fn=(8734) std::_Sp_locker::~_Sp_locker()
+0 3224 992 744 248 0 0 36 0 0 248 69
+cfn=(8704)
+calls=313 0 
+0 3968 1488 744 0 0 0 0 0 0 248 4
+0 496 0 248
+cob=(4)
+cfi=(184)
+cfn=(8736) 0x00000000055b11f0
+calls=313 0 
+0 7721 2043 1168 240 306 1 29 48 0 1242 257 251 3
+0 1240 496 0 0 0 0 0 0 0 496 195
+
+fn=(2316)
+0 862 0 0 65 0 0 17
+cob=(4)
+cfi=(184)
+cfn=(2318) 0x00000000055ae430
+calls=1450678 0 
+0 61320 18432 10158 1164 2028 38 274 119 1 9239 367 862 115
+
+fn=(3534) std::_Hash_bytes(void const*, unsigned long, unsigned long)
+0 9176 496 0 992 0 0 206 0 0 744 317
+
+fn=(2254) __cxa_guard_release
+0 6 3 1 1 0 0 1 0 0 1
+
+fn=(4516) std::__detail::_List_node_base::_M_hook(std::__detail::_List_node_base*)
+0 72 16 24 6 0 0 6
+
+fn=(3358) std::chrono::_V2::steady_clock::now()
+0 41040 4560 13680 1 10 196 0 0 18
+cob=(4)
+cfi=(184)
+cfn=(3360) 0x00000000055adc30
+calls=7578 0 
+0 59280 18240 0 3 1296 0 0 99 0 9120 320 4560 243
+0 31920 27360 0 0 0 0 0 0 0 4560 35
+
+fn=(8704)
+0 7939 2976 1489 248 248 0 28 39 0 496 11
+cob=(4)
+cfi=(184)
+cfn=(8708) 0x00000000055afbd0
+calls=1 0 
+0 1288 477 158 5 44 2 5 22 1 212 22 3 2
+0 106 0 50 1 0 16 1 0 16 17 3
+cob=(4)
+cfi=(184)
+cfn=(8720) 0x00000000055ae350
+calls=1 0 
+0 1265 472 156 3 44 0 3 15 0 208 12 3 2
+0 1
+
+fn=(1798) operator new(unsigned long)
+0 7381 0 2013 120 0 229 23 0 9
+cob=(4)
+cfi=(184)
+cfn=(1220) 0x00000000055ae210
+calls=1451032 0 
+0 182341 35756 22786 1671 7256 1884 394 727 462 37283 3574 671
+0 3355 2013 0 0 0 0 0 0 0 671 4
+
+fn=(2250) __cxa_guard_acquire
+0 21 7 3 2 1 0 2 1 0 3 1
+
+fn=(7422) std::condition_variable::notify_all()
+0 478 0 0 120 0 0 5
+cob=(4)
+cfi=(184)
+cfn=(7424) 0x00000000055b10f0
+calls=648 0 
+0 5975 2151 1434 256 478 0 8 41 0 239 155 239
+
+fn=(2322) operator delete(void*)
+0 862
+cob=(4)
+cfi=(184)
+cfn=(2324) 0x00000000055aec60
+calls=1451038 0 
+0 59596 18001 10158 1056 1703 38 259 99 1 9239 367 431
+
+fn=(5076) __cxa_thread_atexit
+0 4 0 2 1 0 1 1
+cob=(4)
+cfi=(184)
+cfn=(5078) 0x00000000055aede0
+calls=2 0 
+0 458 101 67 26 15 1 26 10 1 78 29 3 3
+0 2 2
+
+ob=(38)
+fl=(250)
+fn=(7538)
+0 890 89 356 65 0 2 34
+cob=(11)
+cfi=(198)
+cfn=(7520)
+calls=23857 0 
+0 1869 89
+0 89 89 0 0 0 0 0 0 0 0 0 89
+0 2581 1602 0 130 0 0 63 0 0 178
+
+fn=(7838) Building::resolveRoute(BuildingRoute) const
+0 190 38 0 15 0 0 10 0 0 38 1
+
+fn=(7844) Map::ensureBuildingGradientPipeline()
+0 4224 1792 1024 512 128 0 116 12 0 384 116
+
+fn=(8030) Map::privateRandom(RandomDomain)
+0 3200 896 256 256 256 0 48 77 0 512 3
+
+fn=(8044) Engine::runOneGameSession(bool&)
+cfn=(8056) Engine::stepSession(unsigned long)
+calls=128 0 
+0 2579162248 479227323 298122079 115857 42318368 2682073 35183 8069589 1434334 291957128 6555683 64798 1898
+
+fn=(8398) Game::syncStep(int, Game::PreparationCompletion)
+0 2176 128 1280 256 0 0 35
+cfn=(8400) Map::applyGradientBackendRequest()
+calls=128 0 
+0 5120 1280 896 256 128 0 59 106 0 384 12
+0 256 0 128
+cfn=(5048) Map::preparePendingWorld()
+calls=128 0 
+0 7808 2944 1408 4 0 0 0 0 0 768 125
+0 256 0 128
+cfn=(8402) Game::applyClientRequests()
+calls=128 0 
+0 12160 3456 1920 512 0 0 64 0 0 1920 132 256
+0 2304 1280 256 372 128 0 19 34 0 256 21
+cfn=(8074) PerformanceTelemetry::Scope::Scope(PerformanceTelemetry::Id, int)
+calls=128 0 
+0 12544 4096 2816 25 384 128 0 137 32 896 39 384 128
+0 768 256 128 128 0 0 18 0 0 128 2
+cob=(26) /home/bradley/glob2/build/sdl3/prefix/lib/libSDL3.so.0.4.16
+cfi=(238) ???
+cfn=(5798) SDL_GetTicks
+calls=128 0 
+0 7936 2688 768 1024 512 0 291 80 0 768 36 256
+0 128 128 0 128 128 0 13 9 0 0 0 128
+0 384 0 256
+cfn=(8404) Map::gradientPipelineEnabled() const
+calls=128 0 
+0 768 384 0 128 128 0 34 7
+0 512 0 128 0 0 0 0 0 0 128
+cfn=(8406) Map::advanceGradientPipeline()
+calls=128 0 
+0 2385819085 435084608 274376504 36946 39477042 2376627 10423 7392630 1206875 257010758 6184110 8490 562
+0 512 0 128 128 0 0 17
+cfn=(7888) BuildingAreaEffects::Runtime::beginTick(Game&, bool)
+calls=128 0 
+0 3456 1408 1152 512 128 0 214 71 0 256 129
+0 896 256 256 0 134 0 0 31
+cfn=(8410) Team::syncStep()
+calls=256 0 
+0 172059450 39139039 17971303 46756 2667277 230145 14708 615006 158202 27564083 351365 36421 391
+0 768 0 256 119 0 0 1
+cfn=(5056) MapHeader::getNumberOfTeams() const
+calls=256 0 
+0 768 512 0 36 23 0 3 3
+0 256 0 128
+cfn=(5056)
+calls=128 0 
+0 384 256 0 120 128 0 54 23
+0 1280 128 128 128 0 0 17 0 0 384 133
+cfn=(8604) Map::syncStep(unsigned int, bool)
+calls=128 0 
+0 16054930 4709745 1445305 15325 147117 4655 5115 49828 2360 3010862 5921 13619 2
+0 932 392 8 0 264 0 0 70 0 256 4
+cfn=(8598) AITelemetry::capture(Team*, bool, bool, bool)
+calls=8 0 
+0 828 296 112 37 80 8 37 34 5 168 34
+0 24 0 8
+cfn=(5056)
+calls=8 0 
+0 24 16
+0 8 0 4 4 0 0 1
+cfn=(5056)
+calls=4 0 
+0 12 8
+0 296 8 128 124 4 0 16 3 0 16 10
+cfn=(8612) Game::observeUnpolledAI()
+calls=128 0 
+0 7808 2176 896 896 744 0 277 228 0 1536 319
+0 1536 128 128 128 0 0 17 0 0 384 33
+cob=(26)
+cfi=(238)
+cfn=(5798)
+calls=128 0 
+0 7936 2688 768 975 512 0 504 131 0 768 84 256 1
+0 128 128 0 128 128 0 60 15 0 0 0 128
+0 1408 384 256 128 244 0 17 105
+cfn=(8684) Game::publishTickEvents()
+calls=128 0 
+0 44672 11264 11648 1892 1652 760 232 84 91 6784 560 256 4
+0 384 0 256
+cfn=(8690) Map::stagePeriodicGradientPreparation()
+calls=128 0 
+0 493422 116504 55890 6848 5819 1093 2183 1868 388 96476 7507 711 23
+0 256 0 128
+cfn=(8740) Map::stageResourceGrowth()
+calls=128 0 
+0 10107 3325 1408 890 1152 0 212 127 0 1150 257
+0 640 256 128 124 1 0 16 0 0 128 112
+cfn=(8340) PerformanceTelemetry::Scope::~Scope()
+calls=128 0 
+0 17024 4992 2816 4 266 128 3 60 32 1408 4 384
+0 136 0 4 4 0 0 4
+cfn=(8614) Game::prestigeSyncStep()
+calls=4 0 
+0 372 136 64 28 44 4 24 37 3 44 16 12 12
+0 8 0 4
+cfn=(8618) Game::scriptSyncStep()
+calls=4 0 
+0 238274 85564 38764 498 10588 1044 286 8489 300 36799 4022 3239 611
+0 8 0 4
+cfn=(8656) Game::wonSyncStep()
+calls=4 0 
+0 5100 2120 680 88 124 4 85 34 0 576 135 160 160
+0 8 0 4
+cfn=(8682) Game::winProbabilitySyncStep()
+calls=4 0 
+0 1388 369 56 10 75 0 8 0 0 306 27 22
+0 12 0 4 4 0 0 4
+cfn=(9000) Map::switchFogOfWar()
+calls=4 0 
+0 4200644 350 4196560 36 76 66072 23 10 66007 4195440 29 28 4
+0 20 0 4 4 0 0 4
+cfn=(5056)
+calls=4 0 
+0 12 8 0 0 4
+0 16 0 8
+cfn=(5056)
+calls=8 0 
+0 24 16 0 0 4
+0 65670 24616 8 8 1072 0 8 0 0 16428 29
+cfn=(9002) Building::setMapDiscovered()
+calls=8 0 
+0 65886 18303 5573 44 2214 1389 29 326 33 6702 439
+0 72 8 8 8 8 0 4 3 0 8 4
+cfn=(8786) Game::buildProjectSyncStep(int)
+calls=8 0 
+0 2224 664 480 40 32 16 40 0 6 160 33 48
+0 24 12 0 4 4 0 4
+
+fn=(8416) Team::updateAllBuildingTasks()
+0 4608 256 2304 272 0 1 36
+cfn=(8074)
+calls=256 0 
+0 25088 8192 5632 0 0 131 0 0 70 1792 9 768
+0 8590 1918 2806 582 512 25 81 247 0 1014 153
+cob=(12)
+cfi=(199)
+cfn=(1798)
+calls=102 0 
+0 6200 1653 1028 420 805 0 94 169 0 833 116 102
+0 102 102 0 90 98 0 46 18 0 0 0 102
+0 2954 416 636 199 0 0 29 0 0 634 49
+cfn=(8418) Building::subscribeWorkStep()
+calls=110 0 
+0 138606212 30358670 11927297 9057 2241126 122221 3776 490636 55021 16596577 314573 28883 21
+0 2240 478 928 321 7 4 63 5 3 260 37
+cob=(12)
+cfi=(199)
+cfn=(1798)
+calls=6 0 
+0 802 181 107 16 24 4 5 8 3 141 27 6
+0 6 6 0 0 0 0 0 0 0 0 0 6
+0 724 356 350 133 0 0 17
+cob=(12)
+cfi=(199)
+cfn=(3580)
+calls=350 0 
+0 4942 2168 0 277 222 0 61 69 0 956 106
+0 350 350 0 130 256 0 79 42 0 0 0 350 114
+0 2474 708 452 134 0 0 17 0 0 606 137
+cob=(12)
+cfi=(199)
+cfn=(2316)
+calls=102 0 
+0 9486 2754 1428 1101 549 2 248 59 1 1224 27 204 102
+0 102 102 0 98 100 0 48 11 0 0 0 102
+0 786 262 6 0 0 0 0 0 0 256 20
+cob=(12)
+cfi=(199)
+cfn=(2316)
+calls=6 0 
+0 558 162 84 0 3 0 0 1 0 72 5 12
+0 6 6 0 0 0 0 0 0 0 0 0 6
+0 512 256 256 225 0 0 17
+cfn=(8340)
+calls=256 0 
+0 34048 9984 5632 113 260 3 108 79 3 2816 90 768 102
+0 7454 3748 846 456 105 0 65 57 0 854 96
+
+fn=(8458) Map::noteBuildingSyncReason(Map::BuildingSyncReason)
+0 21 0 9 3 0 0 3
+cfn=(7918) Map::buildingGradientPipelineActive() const
+calls=3 0 
+0 18 9 0 6 3 0 6 2
+0 27 12 3 3 0 3 3 0 2
+
+fn=(8476)
+0 108 0 54 6 0 0 6
+cfn=(8472) GradientBucket::grow(unsigned long)
+calls=54 0 
+0 108316 4230 16747 80 132 887 19 79 814 18976 491 108
+0 192 108 15 5 0 0 5
+cfn=(8472)
+calls=15 0 
+0 29098 1044 4563 1 55 249 1 17 248 5027 123 30
+0 1011 156 462 12 14 32 12 9 24 126 3
+cfn=(8478) BuildingGradientSearch::resolved(unsigned long) const
+calls=42 0 
+0 770 245 0 13 25 0 13 15 0 168 9
+0 140 7 21 5 0 2 5 0 1 42 11
+cfn=(8074)
+calls=7 0 
+0 686 224 154 0 16 16 0 11 12 49 10 21
+0 119 49 21 10 5 0 10 3 0 21 5
+cfn=(8340)
+calls=7 0 
+0 931 273 154 0 11 2 0 6 0 77 8 21
+0 2333 1163 284 34 1 0 34 0 0 417 25
+cfn=(8478)
+calls=242 0 
+0 3986 1299 0 0 0 0 0 0 0 968 50
+0 134994 26455 18591 148 356 54 148 184 35 7684 515
+
+fn=(8488) Map::materialSupplyModesSlot(Building const*, int) const
+0 2560 1024 0 66 61 0 48 30 0 384 215
+
+fn=(8574) Map::isFreeForGroundUnit(int, int, bool, unsigned int) const
+0 3227 461 922 27 32 2 20 19 2
+cfn=(8572) Map::checkTile(int, int, Map::TileChecks, bool, unsigned int, unsigned short) const
+calls=461 0 
+0 27104 7959 922 183 535 0 115 407 0 4348 357
+0 922 461
+
+fn=(8606) ResourceGrowth::Pipeline::publish(Map&, unsigned int)
+0 5395 1461 1481 629 606 119 224 253 61 730 9
+cfn=(8980) ResourceGrowth::Pipeline::join(ResourceGrowth::Pipeline::Job&)
+calls=119 0 
+0 136655 31669 8211 1866 12337 132 395 771 7 31303 1694 714
+0 1309 595 119 119 357 0 38 64 0 238 2
+cfn=(8982) ResourceGrowth::apply(Map&, ResourceGrowth::Batch const&, ResourceGrowth::Metrics&)
+calls=119 0 
+0 2101698 597401 247149 10456 16603 3883 3807 10666 2289 222142 3368 12134
+0 122 1 1 2 0 0 2
+cob=(12)
+cfi=(199)
+cfn=(2316)
+calls=1 0 
+0 93 27 14 3 10 0 0 1 0 12 0 2 1
+0 1 1 0 1 1 0 0 0 0 0 0 1
+0 1036 899 3 128 34 0 44 0 0 1
+
+fn=(8614)
+0 88 16 36 8 8 4 8 1 3
+cfn=(5056)
+calls=8 0 
+0 24 16
+0 8 0 4
+cfn=(5056)
+calls=4 0 
+0 12 8
+0 32 0 4 0 0 0 0 0 0 12 6
+cfn=(8616) Game::isPrestigeWinCondition()
+calls=4 0 
+0 172 72 20 16 36 0 16 36 0 24 7 12 12
+0 36 24 0 4 0 0 0 0 0 8 3
+
+fn=(8626) Usl::run(unsigned long)
+0 220 36 44 8 24 0 8 24 0 32 7
+cfn=(8628) Thread::run(unsigned long)
+calls=28 0 
+0 1793 560 381 40 31 11 29 7 0 192 24 6 1
+0 92 28 4 4 0 0 4 0 0 28 9
+cfn=(8630) Usl::collectGarbage()
+calls=4 0 
+0 234517 84412 38011 393 10437 1011 197 8434 296 36391 3950 3201 605
+0 28 20
+
+fn=(8646) CreateCode<Function>::markForGC()
+0 1220 244 0 4 0 0 4 0 0 244 8
+cfn=(8635) Value::markForGC()'2
+calls=244 0 
+0 8296 3660 2196 0 236 0 0 236 0 976 78
+
+fn=(8654) Heap::collectGarbage()
+0 76 12 32 4 8 0 4 7 0 4
+cfn=(8634) Value::markForGC()
+calls=4 0 
+0 88 40 24 0 4 0 0 0 0 8
+0 32 16 16
+cfn=(8634)
+calls=16 0 
+0 352 160 96 0 12 0 0 0 0 32 14
+0 40 0 20
+cob=(12)
+cfi=(199)
+cfn=(3580)
+calls=20 0 
+0 240 92 0 0 20 0 0 20 0 48 21
+0 20 20 0 0 4 0 0 0 0 0 0 20
+0 112 12 10 4 2 0 4 0 0 24 13 2 2
+cfn=(5872) Scope::~Scope()
+calls=1 0 
+0 107 30 16 2 0 0 2 0 0 13 1 3
+cfn=(5866) ScopePrototype::~ScopePrototype()
+calls=1 0 
+0 346 101 53 8 4 0 8 3 0 43 7 10 1
+0 26496 3836 3724 8 1305 650 8 163 98 5072 116
+cob=(12)
+cfi=(199)
+cfn=(2316)
+calls=4 0 
+0 750 221 129 0 25 1 0 12 0 117 16 8
+0 4 4 0 0 0 0 0 0 0 0 0 4
+0 1148 120 240 16 0 26 16 0 16 196 45
+cob=(12)
+cfi=(199)
+cfn=(1798)
+calls=40 0 
+0 6164 1260 815 125 158 28 10 43 12 1140 141 40
+0 40 40 0 1 4 0 0 0 0 0 0 40
+0 268 40 36 4 0 0 4
+cob=(2) /usr/lib/x86_64-linux-gnu/libc.so.6
+cfi=(252) ./string/../sysdeps/x86_64/multiarch/memmove-vec-unaligned-erms.S
+cfn=(1802) __memcpy_avx_unaligned_erms
+calls=36 255 
+0 2090 608 540 26 8 224 10 0 112 260 60
+0 36 36 0 3 4 0 2 0 0 0 0 36 1
+0 216 0 72
+cob=(12)
+cfi=(199)
+cfn=(2316)
+calls=36 0 
+0 3756 1097 581 50 31 0 3 4 0 508 19 72 3
+0 36 36 0 3 4 0 0 0 0 0 0 36
+0 280 36 0 8 0 0 8 0 0 4 1
+
+fn=(8662) WinningConditionDeath::hasTeamLost(int, Game const*) const
+0 96 48 0 0 4
+
+fn=(8682)
+0 99 44 29 8 4 0 8 0 0 8 1
+cob=(2)
+cfi=(216) ./stdlib/./stdlib/getenv.c
+cfn=(1208) getenv
+calls=1 24 
+0 1286 324 27 2 70 0 0 0 0 297 26 21
+0 1 1 0 0 1 0 0 0 0 0 0 1
+0 2 0 0 0 0 0 0 0 0 1
+
+fn=(8742) ResourceGrowth::Pipeline::stage(unsigned int, unsigned int)
+0 3067 1277 640 256 638 0 64 23 0 510 252
+
+fn=(8790) Unit::handleMedical()
+0 1736 504 392 100 57 13 68 32 0 392 25
+cfn=(8414) Unit::isUnitHungry()
+calls=56 0 
+0 840 504 0 14 76 0 0 21 0 112 36
+0 504 224 0 0 0 0 0 0 0 56 2
+cfn=(8792) Unit::resolveDeath()
+calls=56 0 
+0 672 336 56 50 0 0 34 0 0 112 4
+0 336 112 56 50 0 0 34 0 0 112 38
+
+fn=(8794) Unit::handleActivity()
+0 2443 952 483 174 0 0 102 0 0 392 37
+cfn=(8796) Unit::handleMagic()
+calls=56 0 
+0 2632 896 448 110 33 0 68 10 0 336 60
+0 237 86 9 0 0 0 0 0 0 77 23
+cfn=(9230) Team::findBestUpgrade(Unit*)
+calls=9 0 
+0 2439 981 450 80 36 13 80 22 0 405 91
+0 81 27 9 8 0 0 8 0 0 18 5
+cfn=(7194) Unit::runtimeTraits() const
+calls=9 0 
+0 144 63 0 16 16 0 16 15 0 9 1
+0 27 9 9 0 8 0 0 8
+cfn=(7194)
+calls=9 0 
+0 144 63 0 0 0 0 0 0 0 9
+0 81 18 0 8 0 0 8 0 0 9 1
+
+fn=(8814) Unit::handleAction()
+0 448 224 112 25 0 0 17
+cfn=(8816) Map::clearImmobileUnit(int, int)
+calls=56 0 
+0 672 336 0 89 17 0 58 12 0 56 31
+0 455 189 0 25 38 0 17 27 0 56 2 56 24
+cfn=(8818) Unit::handleActionRandomGround()
+calls=21 0 
+0 24914 7810 1902 421 245 9 345 155 9 2782 210
+0 105 35 0 25 0 0 17
+cfn=(8854) Unit::handleActionGoingDxDy()
+calls=35 0 
+0 7420 3010 735 409 73 28 262 12 24 700 81
+
+fn=(8860) ComputeExecutor::join(ComputeExecutor::Batch&)
+0 5497 956 2390 460 239 0 15 0 0 478 121
+cob=(2)
+cfi=(282) ./nptl/./nptl/pthread_mutex_lock.c
+cfn=(3058) pthread_mutex_lock@@GLIBC_2.2.5
+calls=385 77 
+0 8843 2390 1195 23 471 0 7 1 0 1673 59
+0 239 239 0 0 104 0 0 0 0 0 0 239
+0 360381 69330 3585 466 38048 0 20 2051 0 100161 3789
+cob=(2)
+cfi=(283) ./nptl/./nptl/pthread_mutex_unlock.c
+cfn=(3066) pthread_mutex_unlock@@GLIBC_2.2.5
+calls=513 367 
+0 5497 1195 956 0 0 0 0 0 0 956 2
+0 239 239 0 0 0 0 0 0 0 0 0 239
+0 1195 0 478 7
+cfn=(8862) ComputeExecutor::execute(ComputeExecutor::Claim const&, unsigned long)
+calls=513 0 
+0 2385418091 434993127 274350536 29231 39443118 2375950 8789 7388808 1206642 256917552 6179217 6327 560
+0 1434 478 239 1 0 0 1 0 0 478 70
+cob=(2)
+cfi=(282)
+cfn=(3058)
+calls=513 77 
+0 8843 2390 1195 0 0 0 0 0 0 1673
+0 239 239 0 0 0 0 0 0 0 0 0 239
+0 19359 6214 4302 948 536 239 82 106 24 3346 462
+cob=(2)
+cfi=(283)
+cfn=(3066)
+calls=385 367 
+0 5497 1195 956 0 0 0 0 0 0 956
+0 239 239 0 0 104 0 0 0 0 0 0 239
+0 9035 3674 239 401 865 0 18 484 0 1359 320
+
+fn=(8972) ResourceGrowth::Pipeline::run(void*, unsigned long)
+0 1785 119 952 238 0 238 70
+cob=(4)
+cfi=(184)
+cfn=(3356) 0x000000000021bc28
+calls=128 0 
+0 3570 1428 357 0 0 119 0 0 2 357 0 238
+0 708407 595 111741 357 159 8098 122 39 277 111384 433
+cfn=(8306) SimulationSnapshot::Handle::view() const
+calls=128 0 
+0 13328 2618 4879 833 1198 238 7 496 0 3332 249
+0 476 0 119
+cfn=(8974) ResourceGrowth::calculate(MapState::View const&, MersenneTwister&, ResourceGrowth::Batch&)
+calls=128 0 
+0 44150742 8654718 2817783 8051 561124 22802 2662 292423 839 3322415 115252
+0 357 119 119 0 119 0 0 24 0 119 1
+cob=(4)
+cfi=(184)
+cfn=(3356)
+calls=128 0 
+0 3570 1428 357 0 476 0 0 5 0 357 20 238
+0 1785 952 357 119 119 80 45 1 1 119 1
+cfn=(5794) SimulationSnapshot::Handle::~Handle()
+calls=128 0 
+0 18088 6069 1547 391 1480 0 6 180 0 4403 368
+0 119
+
+fn=(8974)
+0 37253727 6241660 2180130 2142 505433 476 638 257067 8 2282019 87362
+cfn=(8976) Fertility::GrowthCache::rate(unsigned long, ResourceEcology, unsigned int) const
+calls=49717 0 
+0 1153288 272824 0 357 42036 0 137 34259 0 216632 17108
+0 1917356 333430 128835 1071 741 0 346 153 0 235140 5620
+cfn=(8978) ResourceGrowth::calculate(MapState::View const&, MersenneTwister&, ResourceGrowth::Batch&)::{lambda(unsigned long, Resource const&)#1}::operator()(unsigned long, Resource const&) const
+calls=889 0 
+0 85942 28564 10430 667 1905 467 259 582 145 10212 467
+0 2508586 1233501 373377 1190 8444 20108 405 36 33 370760 2864
+cfn=(8978)
+calls=3455 0 
+0 377580 120435 45570 972 1738 1321 309 218 641 45570 321
+0 854263 424304 79441 1652 827 430 568 108 12 162082 1510
+
+fn=(8984) Map::terrainSupportsResourceAt(unsigned long, ResourceId) const
+0 132124 58290 0 357 715 0 136 193 0 11658 276
+
+fn=(8990) Map::replaceResource(unsigned long, Resource const&, std::array<unsigned short, 12ul> const*)
+0 2136 178 801 130 0 0 65 0 0 89
+cfn=(7538)
+calls=89 0 
+0 2314 801 534 260 0 0 126 0 0 89 2
+0 356 0 89
+cfn=(8992) Map::releaseResourceStock(unsigned long)
+calls=89 0 
+0 445 267 0 130 65 0 52 16 0 89 88
+0 1958 712 356 130 1 79 70 0 40
+cfn=(7536)
+calls=89 0 
+0 8633 2225 1068 393 1 0 180 0 0 445 83 89
+0 356 0 89
+cfn=(8994) Map::materialStockChanged(unsigned long, unsigned short)
+calls=89 0 
+0 14151 3738 2403 650 144 2 331 55 0 1068 151 89
+0 3026 1424 89 260 0 65 109 0 45 445 67
+
+fn=(9416) void std::deque<std::unique_ptr<GradientPipeline::Job, std::default_delete<GradientPipeline::Job> >, std::allocator<std::unique_ptr<GradientPipeline::Job, std::default_delete<GradientPipeline::Job> > > >::_M_push_back_aux<std::unique_ptr<GradientPipeline::Job, std::default_delete<GradientPipeline::Job> > >(std::unique_ptr<GradientPipeline::Job, std::default_delete<GradientPipeline::Job> >&&)
+0 84 16 14 8 0 0 8 0 0 4 2
+cob=(12)
+cfi=(199)
+cfn=(1798)
+calls=2 0 
+0 126 32 20 2 16 0 0 2 0 16 4 2
+0 2 2 0 0 2 0 0 0 0 0 0 2
+0 48 22 10 2 0 4 2 0 2
+
+fn=(2592) main
+cfn=(2968) Glob2::run(Cli::Request const&)
+calls=1 0 
+0 2579162248 479227323 298122079 115857 42318368 2682073 35183 8069589 1434334 291957128 6555683 64798 1898
+
+fn=(8446) Building::canUnitWorkHere(Unit*, bool, int)
+0 604 224 0 12 31 0 10 23 0 120 18
+
+fn=(8464) BuildingGradientSearch::begin(Map const&, unsigned short*, int)
+0 60 9 24 6 0 0 6
+cfn=(8466) BuildingGradientSearch::Inputs::of(Map const&, int)
+calls=3 0 
+0 138 42 42 15 9 3 15 9 3 15 6
+0 21 0 3
+cfn=(8468) BuildingGradientSearch::begin(BuildingGradientSearch::Inputs const&, unsigned short*, int, int, int)
+calls=3 0 
+0 4725000 786687 1302 66 24618 56 66 7697 50 1573983 106 6
+0 99 48 3 12 18 0 12 1 0 21 12
+
+fn=(8514) Building::selectFetcher(Building::BringMaterialsCandidate const*, int, int, Building::BringMaterialsSelection&)
+0 990 237 52 195 25 0 67 17 0 189 41
+
+fn=(8520) Unit::hasCarriedMaterial(int) const
+0 72 24 0 18 0 0 15 0 0 16 10
+
+fn=(5048)
+0 1152 128 512 2
+cfn=(5050) Map::pendingWorldRequirements() const
+calls=392 0 
+0 5504 2176 896 2 0 0 0 0 0 512 37
+0 1152 640 0 0 0 0 0 0 0 256 88
+
+fn=(5794)
+0 2270 478 358 72 323 0 63 75 0 478 4
+cfn=(3638) std::_Sp_counted_base<(__gnu_cxx::_Lock_policy)2>::_M_release()
+calls=513 0 
+0 1666 595 119 0 238 0 0 12 0 357
+0 1553 478 119 9 98 0 1 6 0 478 119
+cfn=(3638)
+calls=513 0 
+0 1666 595 119 0 119 0 0 1 0 357
+0 2221 717 70 0 169 0 0 21 0 717 195
+cfn=(3638)
+calls=404 0 
+0 980 350 70 0 210 0 0 8 0 210 69
+0 837 239 120 18 70 0 1 1 0 239 53
+cfn=(3638)
+calls=514 0 
+0 1680 600 120 0 220 0 0 81 0 360 49
+0 956 239 239 0 57 0 0 1 0 239
+cfn=(3638)
+calls=642 0 
+0 3346 1195 239 0 239 0 0 26 0 717
+0 956 239 239 0 84 0 0 0 0 239
+cfn=(3638)
+calls=642 0 
+0 3346 1195 239 0 239 0 0 45 0 717 119
+0 956 239 239 120 28 0 3 0 0 239 1
+cfn=(3638)
+calls=642 0 
+0 3346 1195 239 0 239 0 0 1 0 717 117
+0 956 239 239 0 70 0 0 0 0 239
+cfn=(3638)
+calls=642 0 
+0 3346 1195 239 0 239 0 0 55 0 717
+0 5497 2151 0 240 408 0 6 232 0 1673
+
+fn=(5866)
+0 16 2 5 3 1 0 3 1 0 2 1
+cfn=(5868) ThunkPrototype::~ThunkPrototype()
+calls=214 0 
+0 230 68 34 5 3 0 5 2 0 29 3 7 1
+0 6 3
+cob=(12)
+cfi=(199)
+cfn=(2316)
+calls=214 0 
+0 93 27 14 0 0 0 0 0 0 12 3 2
+0 1 1 0 0 0 0 0 0 0 0 0 1
+
+fn=(6246) ConstCode::execute(Thread*)
+0 50 12 11 6 0 1 6 0 0 6
+cob=(12)
+cfi=(199)
+cfn=(1798)
+calls=15 0 
+0 265 61 35 2 16 5 2 0 0 49 6 1
+0 1 1 0 0 1 0 0 0 0 0 0 1
+0 3
+
+fn=(7194)
+0 672 294 0 20 18 0 18 17 0 42 3
+
+fn=(8064) Engine::advanceSession(unsigned long, std::function<void ()> const&, bool)
+cfn=(8354) Engine::executeOrdersAndStep(bool)
+calls=128 0 
+0 2579162248 479227323 298122079 115857 42318368 2682073 35183 8069589 1434334 291957128 6555683 64798 1898
+
+fn=(8214) Map::cellView() const
+0 3927 1547 1666 476 352 0 125 88 0 119
+cfn=(8216) Map::resourceScarcityLevel() const
+calls=239 0 
+0 833 357 0 119 0 0 31 0 0 119 2
+0 476 238 119
+
+fn=(8466)
+0 138 42 42 15 9 3 15 9 3 15 6
+
+fn=(8584) void std::__insertion_sort<__gnu_cxx::__normal_iterator<TeamStats::CoverageBuilding*, std::vector<TeamStats::CoverageBuilding, std::allocator<TeamStats::CoverageBuilding> > >, __gnu_cxx::__ops::_Iter_comp_iter<TeamStats::sampleTraps(Team*)::{lambda(TeamStats::CoverageBuilding const&, TeamStats::CoverageBuilding const&)#1}> >(__gnu_cxx::__normal_iterator<TeamStats::CoverageBuilding*, std::vector<TeamStats::CoverageBuilding, std::allocator<TeamStats::CoverageBuilding> > >, __gnu_cxx::__normal_iterator<TeamStats::CoverageBuilding*, std::vector<TeamStats::CoverageBuilding, std::allocator<TeamStats::CoverageBuilding> > >, __gnu_cxx::__ops::_Iter_comp_iter<TeamStats::sampleTraps(Team*)::{lambda(TeamStats::CoverageBuilding const&, TeamStats::CoverageBuilding const&)#1}>)
+0 36 10 8 6 0 0 3 0 0 4 2
+
+fn=(8592) GameplayMeasurements::GameplayMeasurements(GameplayMeasurements const&)
+0 38 4 16 4 1 0 2 0 0 4 1
+cob=(12)
+cfi=(199)
+cfn=(1798)
+calls=2 0 
+0 631 132 85 0 8 3 0 0 3 117 17 2
+0 2 2 0 0 0 0 0 0 0 0 0 2
+0 1828 670 674 6 142 150 3 77 150 112 7
+cfn=(8594) std::vector<unsigned long, std::allocator<unsigned long> >::vector(std::vector<unsigned long, std::allocator<unsigned long> > const&)
+calls=2 0 
+0 64 16 16 6 0 0 3 0 0 6 1
+0 82 28 32 10 6 6 5 6 6 4
+cfn=(8594)
+calls=2 0 
+0 64 16 16 0 0 0 0 0 0 6 2
+0 14 4 6 2 1 2 1 1 2
+cfn=(8594)
+calls=2 0 
+0 64 16 16 0 1 0 0 1 0 6 1
+0 1334 1162 1164 36 160 160 18 160 160 1022 9
+cfn=(8594)
+calls=2 0 
+0 64 16 16 0 1 2 0 1 2 6
+0 396 306 310 16 43 42 8 12 42 262 8
+cfn=(8594)
+calls=2 0 
+0 64 16 16 0 0 0 0 0 0 6
+0 14 4 6 0 1 2 0 0 2
+cfn=(8594)
+calls=2 0 
+0 64 16 16 0 1 0 0 0 0 6
+0 120 104 106 2 12 12 1 0 12 104 2
+cfn=(8596) std::array<UnitStatistics<unsigned long>, 3ul>::array(std::array<UnitStatistics<unsigned long>, 3ul> const&)
+calls=2 0 
+0 228 50 54 10 5 6 5 0 6 24 6
+0 8 0 2
+cfn=(8596)
+calls=2 0 
+0 228 50 54 0 5 4 0 0 4 24 5
+0 672 470 462 38 63 64 19 56 64 376 25
+
+fn=(8610) GameAnimations::step()
+0 512 256 0 256 128 0 52 64 0 128 9
+
+fn=(8638) ThunkPrototype::propagateMarkForGC()
+0 9644 1072 4284 4 1028 0 4 1016 0 1072 11
+cfn=(8635)
+calls=1068 0 
+0 23544 10700 6420 0 4 0 0 4 0 2144 92
+0 6684 1644 572 4 425 0 4 347 0 1644 115
+cfn=(8635)
+calls=572 0 
+0 19424 8498 5100 2 486 42 0 468 26 2268 179 12
+0 1144 0 572
+cob=(12)
+cfi=(199)
+cfn=(3580)
+calls=572 0 
+0 7944 2980 0 1 668 0 0 664 0 1580 644
+0 572 572 0 1 8 0 0 0 0 0 0 572
+0 45052 16640 872 4 4796 0 4 4488 0 10436 1513 872 240
+cfn=(8650) CreateCode<Scope>::markForGC()
+calls=28 0 
+0 1044 428 240 0 16 0 0 16 0 132 9
+cfn=(8648) CreateCode<Thunk>::markForGC()
+calls=216 0 
+0 6744 2756 1524 4 68 0 4 68 0 800 94
+cfn=(8646)
+calls=244 0 
+0 9516 3904 2196 4 236 0 4 236 0 1220 86
+cfn=(8640) ConstCode::markForGC()
+calls=384 0 
+0 11916 4869 2691 4 124 0 4 123 0 1410 61
+0 6904 4288 0 0 0 0 0 0 0 872 139
+
+fn=(8692) Map::stageBuildingGradientPreparation()
+0 1792 128 1152 256 0 0 52
+cfn=(7918)
+calls=128 0 
+0 768 384 0 255 128 0 55 3
+0 2486 1552 134 133 131 2 31 65 0 390 14
+cfn=(9430) Map::buildingGradientDestination(int, int, unsigned int) const
+calls=1 0 
+0 40 13 5 2 3 0 2 0 0 7 2
+0 16 6 3 2 2 0 2 0 0 4
+cfn=(9432) BuildingGradientPipeline<building_gradient::Job>::reserve()
+calls=1 0 
+0 265 50 114 20 9 13 16 3 12 98 11 2
+0 113 20 59 12 2 0 12 1 0 29 7
+cfn=(8456) Map::acquireBuildingGradientBuffer()
+calls=1 0 
+0 803 180 117 71 17 9 40 10 3 133 40 5 1
+0 6 1 2 0 0 0 0 0 0 1 1
+cfn=(8462) acquireBuildingGradientSearch()
+calls=1 0 
+0 820 104 366 17 12 38 9 9 38 410 22 4
+0 11 4 3 2 0 0 2 0 0 1 1
+cfn=(9434) Map::predictBuildingDepth(Building const*, int) const
+calls=1 0 
+0 46 9 0 4 5 0 4 2 0 7 3
+0 41 7 7 7 1 1 7 0 0 8 3
+cob=(12)
+cfi=(199)
+cfn=(1798)
+calls=1 0 
+0 60 16 10 0 3 0 0 1 0 8 2 1
+0 1 1 0 0 0 0 0 0 0 0 0 1
+0 3
+
+fn=(8802) Unit::tryClaimClearingAreaForHarvesting()
+0 2352 840 448 75 0 0 51 0 0 392 21
+cfn=(8198) Map::farmAreasEnabled() const
+calls=56 0 
+0 504 168 0 50 33 0 35 6 0 56
+0 1008 392 56 25 21 0 17 3
+cfn=(8804) Map::isClearingTarget(unsigned long, unsigned int, bool) const
+calls=56 0 
+0 504 168 0 50 48 0 41 25 0 56 40
+0 1904 784 112
+cfn=(8804)
+calls=112 0 
+0 1008 336 0 0 4 0 0 3 0 112
+0 5376 2352 336
+cfn=(8804)
+calls=336 0 
+0 3024 1008 0 0 36 0 0 27 0 336 2
+0 3080 0 0 25 0 0 17 0 0 1176 202
+
+fn=(8952) gradient_preparation::MaterialSeedCache::operator=(gradient_preparation::MaterialSeedCache&&) [clone .isra.0]
+0 586 166 165 16 14 1 16 14 1 74 9
+
+fn=(8960) __gnu_cxx::__normal_iterator<gradient_kernel::BackendRequest const*, std::span<gradient_kernel::BackendRequest const, 18446744073709551615ul> > std::__find_if<__gnu_cxx::__normal_iterator<gradient_kernel::BackendRequest const*, std::span<gradient_kernel::BackendRequest const, 18446744073709551615ul> >, __gnu_cxx::__ops::_Iter_negate<gradient_kernel::executeGradientGroup(std::span<gradient_kernel::BackendRequest const, 18446744073709551615ul>, gradient_kernel::Backend)::{lambda(auto:1 const&)#3}> >(__gnu_cxx::__normal_iterator<gradient_kernel::BackendRequest const*, std::span<gradient_kernel::BackendRequest const, 18446744073709551615ul> >, __gnu_cxx::__normal_iterator<gradient_kernel::BackendRequest const*, std::span<gradient_kernel::BackendRequest const, 18446744073709551615ul> >, __gnu_cxx::__ops::_Iter_negate<gradient_kernel::executeGradientGroup(std::span<gradient_kernel::BackendRequest const, 18446744073709551615ul>, gradient_kernel::Backend)::{lambda(auto:1 const&)#3}>, std::random_access_iterator_tag) [clone .isra.0]
+0 49170361 13110956 240 1163 409840 0 350 81604 0 16388626 564
+
+fn=(8962) _ZZN15gradient_kernel22tryAcceleratedGradientIZNS_14propagateFieldIZNS_21propagateTerrainFieldIZN20gradient_preparation9propagateERKNS3_7RequestERKN18SimulationSnapshot6HandleEPtR17GradientWorkspaceEUlmE_EEvSB_iiN5field4GridESD_T_bRK13CellRuleTablejNS_12CostIdentityEEUlmE_EEvSB_iiSG_SD_SH_SL_EUlmE_ZNS1_ISM_EEvSB_iiSG_SD_SH_SL_EUlSB_E_EEbSB_iSG_RNS_14BackendSessionESH_T0_SL_NS_6FamilyEENUlPvSB_E_4_FUNEST_SB_
+0 1120 770 210 70 0 0 26
+cfn=(8964) void gradient_kernel::propagateFieldCPU<gradient_kernel::propagateTerrainField<gradient_preparation::propagate(gradient_preparation::Request const&, SimulationSnapshot::Handle const&, unsigned short*, GradientWorkspace&)::{lambda(unsigned long)#1}>(unsigned short*, int, int, field::Grid, GradientWorkspace&, gradient_preparation::propagate(gradient_preparation::Request const&, SimulationSnapshot::Handle const&, unsigned short*, GradientWorkspace&)::{lambda(unsigned long)#1}, bool, CellRuleTable const&, unsigned int, gradient_kernel::CostIdentity)::{lambda(unsigned long)#1}>(unsigned short*, int, int, field::Grid, GradientWorkspace&, gradient_kernel::propagateTerrainField<gradient_preparation::propagate(gradient_preparation::Request const&, SimulationSnapshot::Handle const&, unsigned short*, GradientWorkspace&)::{lambda(unsigned long)#1}>(unsigned short*, int, int, field::Grid, GradientWorkspace&, gradient_preparation::propagate(gradient_preparation::Request const&, SimulationSnapshot::Handle const&, unsigned short*, GradientWorkspace&)::{lambda(unsigned long)#1}, bool, CellRuleTable const&, unsigned int, gradient_kernel::CostIdentity)::{lambda(unsigned long)#1})
+calls=74 0 
+0 1816336468 250739492 214131702 3060 28946198 1055506 1291 51156 226479 114640760 5111572 868 3
+0 140 70
+
+fn=(8976)
+0 1153288 272824 0 357 42036 0 137 34259 0 216632 17108
+
+fn=(9000)
+0 5268 16 2068 12 4 512 12 2 512 1040 9
+cfn=(8074)
+calls=4 0 
+0 392 128 88 0 12 0 0 0 0 28 5 12
+0 20 8 4 4 4 0 4 2
+cob=(2)
+cfi=(253) ./string/../sysdeps/x86_64/multiarch/memset-vec-unaligned-erms.S
+cfn=(2148) __memset_avx2_unaligned_erms
+calls=4 158 
+0 4194372 8 4194304 12 8 65540 2 0 65495 4194320 10
+0 4 4 0 4 4 0 4 2 0 0 0 4 4
+0 24 8 8 0 8 0 0 0 0 4 2
+cfn=(8340)
+calls=4 0 
+0 532 156 88 0 36 20 0 4 0 44 3 12
+0 32 22 0 4 0 0 1 0 0 4
+
+fn=(9004) Map::setMapExploredByBuilding(int, int, int, int, int)
+0 17131 5776 419 8 100 0 8 85 0 2416 250
+
+fn=(8400)
+0 5120 1280 896 256 128 0 59 106 0 384 12
+
+fn=(8408) BuildingGradientPipeline<building_gradient::Job>::advance()
+0 3844 1668 1152 514 260 0 152 128 0 258 12
+
+fn=(8426) Building::materialDeliveryNeed(int) const
+0 256864 117875 41896 415 1079 302 155 432 52 31635 735
+cfn=(7398)
+calls=241 0 
+0 3262 1398 0 137 75 0 44 31 0 233 3
+0 932 466 233 69 0 0 28
+cfn=(9398) Building::constructionMaterialNeed(int) const
+calls=241 0 
+0 2563 1165 0 68 70 0 35 39 0 233 1
+0 932
+
+fn=(8484) Map::materialAvailableSlot(int, int, int, int, int, int*, bool, Building const*)
+0 462 84 168 12 0 0 12
+cfn=(8486) Map::getMaterialGradientSlot(int, int, int, bool, Building const*)
+calls=42 0 
+0 108739049 21423149 10982704 620 1745350 94539 575 89411 42926 10072456 255204 28591 11
+0 1008 378 42 6 38 3 6 11 3 42 2
+
+fn=(8494) ResourceSeedCache::trySeed(Map const&, int, int, int, unsigned short*, unsigned short const*)
+0 102 24 33 9 0 0 9 0 0 6 2
+cob=(2)
+cfi=(282)
+cfn=(3058)
+calls=3 77 
+0 111 30 15 0 3 0 0 3 0 21 3
+0 3 3 0 0 0 0 0 0 0 0 0 3
+0 48 12 6 4 3 0 4 3 0 9 3
+cob=(2)
+cfi=(283)
+cfn=(3066)
+calls=3 367 
+0 69 15 12 0 0 0 0 0 0 12 6
+0 3 3 0 0 3 0 0 0 0 0 0 3
+0 46 9 6 11 0 0 11 0 0 11 5
+
+fn=(8522) Unit::findMaterialDestination(int, int*, int*, int*, bool, Building const*)
+0 256 56 120 24 0 8 20 0 6 24 8
+cfn=(8448) Unit::swimClass() const
+calls=8 0 
+0 72 24 0 0 0 0 0 0 0 8 5
+0 112 56 48 6 0 0 5
+cfn=(8524) Map::materialAvailableUpdateSlot(int, int, int, int, int, int*, int*, int*, bool, Building const*)
+calls=8 0 
+0 13944 3174 576 84 68 2 84 6 2 1319 212 32
+0 112 72 0 0 0 0 0 0 0 8 5
+
+fn=(8550) Building::canAffordProduction(int) const
+0 45056 11264 5120 638 1304 0 256 410 0 8192 286
+cfn=(7398)
+calls=1024 0 
+0 14336 6144 0 146 128 0 43 66 0 1024
+0 10240 6144 0 227 256 0 74 100 0 1024
+
+fn=(5050)
+0 768 0 384
+cfn=(5042)
+calls=648 0 
+0 3584 1536 512 2 0 0 0 0 0 384 7
+0 1152 640 0 0 0 0 0 0 0 128 30
+
+fn=(7208) UnitUtils::GIDtoID(unsigned short)
+0 3852 642 0 139 0 0 25 0 0 642 8
+
+fn=(7270) std::vector<BuildingMeasurement, std::allocator<BuildingMeasurement> >::resize(unsigned long)
+0 7776 2324 1554 288 0 0 37 0 0 520 13
+cob=(12)
+cfi=(199)
+cfn=(1798)
+calls=2 0 
+0 626 135 87 8 13 5 2 4 5 117 15 2
+0 2 2 0 0 0 0 0 0 0 0 0 2
+0 16 2 2 2 0 0 1
+cob=(2)
+cfi=(253)
+cfn=(2148)
+calls=2 158 
+0 9714 4 9680 6 2 148 0 0 84 9688 3
+0 2 2 0 2 2 0 2 0 0 0 0 2 2
+0 38 2 6 4 0 0 2 0 0 4 1
+
+fn=(8056)
+cfn=(8058) Engine::stepSession(unsigned long, std::vector<SDL_Event, std::allocator<SDL_Event> > const&)
+calls=128 0 
+0 2579162248 479227323 298122079 115857 42318368 2682073 35183 8069589 1434334 291957128 6555683 64798 1898
+
+fn=(8198)
+0 522 174 0 50 33 0 35 6 0 58
+
+fn=(8412) Unit::syncStep()
+0 68176 23552 6582 1064 1845 62 158 567 25 16526 1587
+cfn=(8788) Unit::endOfAction()
+calls=56 0 
+0 17106391 5621560 539813 4203 328723 16771 2985 81376 16561 3334008 20076 310 49
+0 672 336 56 25 0 0 14 0 0 56 15
+cfn=(8830) Map::setMapDiscovered(int, int, int, int, unsigned int)
+calls=56 0 
+0 23114 5858 2580 172 334 210 108 242 184 2124 359
+0 784 336 112 26 0 0 14
+cfn=(8834) Map::setMapBuildingsDiscovered(int, int, int, int, unsigned int, Team**)
+calls=56 0 
+0 20552 6104 3136 168 57 18 123 48 9 1624 321
+0 672 280 56 0 2 0 0 1
+cfn=(8838) Map::setMapExploredByUnit(int, int, int, int, int)
+calls=56 0 
+0 8176 2128 560 26 32 142 19 25 118 784 199
+0 2008 56 0 126 0 0 18
+
+fn=(8454) Map::prepareBuildingGradient(Building*, int, BuildingRoute)
+0 1270 207 298 13 33 20 13 24 17 165 15
+cfn=(9428) Map::requestBuildingRefresh(Building*, int)
+calls=4 0 
+0 245 79 42 10 8 1 7 5 1 23 4
+0 32 3 3 6 0 0 6 0 0 7 2
+cfn=(8460) Map::updateGlobalGradient(Building*, int, BuildingRoute)
+calls=3 0 
+0 29196000 8780649 860499 228 492114 24804 225 399591 10346 6423288 54843 36
+0 363 78 140 6 9 0 6 9 0 52 20
+cfn=(7838)
+calls=35 0 
+0 175 35 0 9 0 0 6 0 0 35 1
+0 1102 441 6 12 7 0 12 3 0 116 4
+cfn=(8456)
+calls=3 0 
+0 1149 259 159 62 38 17 52 12 10 193 33 15 3
+0 50 12 6 4 5 0 4 4 0 3 1 3 1
+cfn=(8458)
+calls=3 0 
+0 66 21 12 12 3 3 12 2 2
+0 3
+
+fn=(8504) gradient_kernel::tryAcceleratedGradient<gradient_kernel::propagateField<Map::propagateGradient(unsigned short*, int, int, gradient_kernel::Family)::{lambda(unsigned long)#1}>(unsigned short*, int, int, field::Grid, GradientWorkspace&, Map::propagateGradient(unsigned short*, int, int, gradient_kernel::Family)::{lambda(unsigned long)#1}, gradient_kernel::CostIdentity)::{lambda(unsigned long)#1}, gradient_kernel::propagateField<Map::propagateGradient(unsigned short*, int, int, gradient_kernel::Family)::{lambda(unsigned long)#1}>(unsigned short*, int, int, field::Grid, GradientWorkspace&, Map::propagateGradient(unsigned short*, int, int, gradient_kernel::Family)::{lambda(unsigned long)#1}, gradient_kernel::CostIdentity)::{lambda(unsigned short*)#1}>(unsigned short*, int, field::Grid, gradient_kernel::BackendSession&, gradient_kernel::propagateField<Map::propagateGradient(unsigned short*, int, int, gradient_kernel::Family)::{lambda(unsigned long)#1}>(unsigned short*, int, int, field::Grid, GradientWorkspace&, Map::propagateGradient(unsigned short*, int, int, gradient_kernel::Family)::{lambda(unsigned long)#1}, gradient_kernel::CostIdentity)::{lambda(unsigned long)#1}, gradient_kernel::propagateField<Map::propagateGradient(unsigned short*, int, int, gradient_kernel::Family)::{lambda(unsigned long)#1}>(unsigned short*, int, int, field::Grid, GradientWorkspace&, Map::propagateGradient(unsigned short*, int, int, gradient_kernel::Family)::{lambda(unsigned long)#1}, gradient_kernel::CostIdentity)::{lambda(unsigned short*)#1}, gradient_kernel::CostIdentity, gradient_kernel::Family)::{lambda(void*, unsigned short*)#1}::_FUN(void*, unsigned short*)
+0 45 30 6 3 0 3 3 0 3
+cfn=(8506) void gradient_kernel::propagateFieldCPU<Map::propagateGradient(unsigned short*, int, int, gradient_kernel::Family)::{lambda(unsigned long)#1}>(unsigned short*, int, int, field::Grid, GradientWorkspace&, Map::propagateGradient(unsigned short*, int, int, gradient_kernel::Family)::{lambda(unsigned long)#1})
+calls=3 0 
+0 78699959 10843445 9449320 182 1268961 61619 176 13562 22341 5185711 215643 862 2
+0 6 3 0 0 3
+
+fn=(8516) Unit::subscriptionSuccess(Building*, bool, bool, UnitJobPurpose)
+0 176 32 32 24 0 1 20 0 1 32 8
+cfn=(8438) Building::neededMaterial(int)
+calls=8 0 
+0 280 106 30 12 9 0 0 9 0 30 14
+0 56 0 24 0 0 2 0 0 2 8 3
+cfn=(8518) Unit::setTargetBuilding(Building*)
+calls=8 0 
+0 128 32 24 12 3 0 10 1 0 16 3
+0 120 40 8 6 4 0 5 3 0 48 11
+cfn=(8520)
+calls=8 0 
+0 72 24 0 18 0 0 15 0 0 16 10
+0 56 8 24 6 0 0 5 0 0 8 1
+cfn=(8482) Building::fetchesFromMarkets() const
+calls=8 0 
+0 32 24
+0 72 8 16 6 0 0 5
+cfn=(8522)
+calls=8 0 
+0 14496 3382 744 114 68 10 109 6 8 1359 230 32
+0 32 16 8
+
+fn=(8558) EndOfGameStat::EndOfGameStat(int, int, int, int, int, int)
+0 26 4 6 2 0 0 1
+
+fn=(8582) void std::__introsort_loop<__gnu_cxx::__normal_iterator<TeamStats::CoverageBuilding*, std::vector<TeamStats::CoverageBuilding, std::allocator<TeamStats::CoverageBuilding> > >, long, __gnu_cxx::__ops::_Iter_comp_iter<TeamStats::sampleTraps(Team*)::{lambda(TeamStats::CoverageBuilding const&, TeamStats::CoverageBuilding const&)#1}> >(__gnu_cxx::__normal_iterator<TeamStats::CoverageBuilding*, std::vector<TeamStats::CoverageBuilding, std::allocator<TeamStats::CoverageBuilding> > >, __gnu_cxx::__normal_iterator<TeamStats::CoverageBuilding*, std::vector<TeamStats::CoverageBuilding, std::allocator<TeamStats::CoverageBuilding> > >, long, __gnu_cxx::__ops::_Iter_comp_iter<TeamStats::sampleTraps(Team*)::{lambda(TeamStats::CoverageBuilding const&, TeamStats::CoverageBuilding const&)#1}>)
+0 48 20 14 6 0 0 3 0 0 4
+
+fn=(8604)
+0 2048 128 1024 256 0 128 88 0 3
+cfn=(5040)
+calls=128 0 
+0 5888 2304 1024 617 384 0 112 111 0 640 13
+0 512 0 128
+cfn=(8074)
+calls=128 0 
+0 12544 4096 2816 0 7 1 0 0 0 896 10 384
+0 640 128 128
+cfn=(8606)
+calls=128 0 
+0 2246309 632054 256978 13204 29948 4134 4510 11755 2357 254426 5073 12851 1
+0 1152 256 128 128 128 0 49 23 0 128
+cfn=(8608) Sector::step()
+calls=128 0 
+0 4352 1664 1024 384 256 0 115 53 0 512 11
+0 523776 130944 130944
+cfn=(8608)
+calls=130944 0 
+0 4452096 1702272 1047552 0 98176 0 0 21330 0 523776 2
+0 393600 131328 128 0 256 0 0 1 0 131072 375
+cfn=(8610)
+calls=128 0 
+0 512 256 0 256 128 0 52 64 0 128 9
+0 896 256 128 128 128 0 40 26 0 128 64
+cfn=(5056)
+calls=128 0 
+0 384 256 0 0 68
+0 1488 16 128 144 16 0 66 15 0 400 193
+cfn=(8340)
+calls=128 0 
+0 17024 4992 2816 0 1028 392 0 59 0 1408 101 384 1
+0 1728 1152 64 128 128 0 42 1 0 128
+cfn=(5056)
+calls=64 0 
+0 192 128 0 0 64
+0 268 64 4 72 4 0 37 0 0 64 7
+cfn=(8784) Map::updateExploredArea(int)
+calls=4 0 
+0 8389517 2097451 291 8 16398 0 4 16390 0 2097156 63
+0 4
+
+fn=(8624) MapScriptUSL::syncStep()
+0 60 8 32 8 0 0 8
+cfn=(8626)
+calls=4 0 
+0 236650 85056 38440 445 10492 1022 238 8465 296 36643 3990 3207 606
+0 44 36 0 4 8 0 4 0 0 4 1
+
+fn=(8642) Value::propagateMarkForGC()
+0 290 145 0 4 0 0 4
+
+fn=(8674) MapScriptSGSL::testMainTimer() const
+0 80 32 0 4 4 0 4
+
+fn=(8788)
+0 224 0 112 25 0 5 17
+cfn=(8790)
+calls=56 0 
+0 4088 1680 504 214 133 13 136 53 0 784 105
+0 280 56 56 25 0 0 17 0 0 56 2
+cfn=(8794)
+calls=56 0 
+0 8228 3095 1408 396 93 13 282 55 0 1255 218
+0 112 0 56
+cfn=(8798) Unit::handleDisplacement()
+calls=56 0 
+0 9002 2765 1295 487 286 28 343 187 3 1015 234
+0 112 0 56
+cfn=(8800) Unit::handleMovement()
+calls=56 0 
+0 17050163 5602304 533577 2062 327836 16675 1474 80873 16525 3327304 19193 254 25
+0 168 56 0 0 2 0 0 2
+cfn=(8814)
+calls=56 0 
+0 34014 11604 2749 994 373 37 716 206 33 3594 324 56 24
+
+fn=(8804)
+0 4536 1512 0 50 88 0 41 55 0 504 42
+
+fn=(8826) Unit::selectPreferredGroundMovement()
+0 693 315 21 39 0 0 34 0 0 63 13
+
+fn=(8830)
+0 1664 64 512 69 0 0 36 0 0 128 2
+cfn=(8832) Map::setMapDiscovered(int, int, unsigned int)
+calls=64 0 
+0 2132 676 216 123 149 79 77 100 59 168 37
+0 1400 200 200
+cfn=(8832)
+calls=200 0 
+0 6708 2132 688 0 162 120 0 14 9 512 20
+0 6960 0 1392
+cfn=(8832)
+calls=1392 0 
+0 46357 14697 4694 0 2105 1400 0 363 149 3658 114
+0 6272 448 0 0 0 0 0 0 0 1920 367
+
+fn=(8840) Map::doesUnitTouchMaterialSource(Unit*, MaterialId) const
+0 6125 1645 700 282 245 0 194 168 0 455 138
+
+fn=(8936) GradientPipeline::wait(GradientPipeline::Job&, bool)
+0 1800 120 960 120 0 0 19
+cob=(4)
+cfi=(184)
+cfn=(3356)
+calls=128 0 
+0 3600 1440 360 0 0 0 0 0 0 360 4 240
+0 1800 360 480 240 360 0 58 123 0 360
+cfn=(8938) std::mutex::lock()
+calls=128 0 
+0 5400 1440 720 120 120 0 43 0 0 960 1 120
+0 1560 480 120 120 120 0 41 0 0 240 133
+cfn=(8860)
+calls=128 0 
+0 2385735132 435058575 274360716 30623 39472750 2376070 8876 7391265 1206665 257000899 6182682 7045 560
+0 1320 360 360 120 75 120 31 66 62 240 121
+cob=(4)
+cfi=(184)
+cfn=(3356)
+calls=128 0 
+0 3600 1440 360 0 0 0 0 0 0 360 1 240
+0 3120 1680 480 360 394 120 99 55 67 600 147
+cob=(2)
+cfi=(283)
+cfn=(3066)
+calls=121 367 
+0 2760 600 480 0 0 0 0 0 0 480 2
+0 120 120 0 0 0 0 0 0 0 0 0 120
+0 600 0 240
+cob=(12)
+cfi=(199)
+cfn=(8698)
+calls=121 0 
+0 14760 3120 1920 1080 480 0 194 144 0 1560 246 240
+0 120 120 0 120 120 0 26 9 0 0 0 120
+0 600 120 240 120 45 0 33 42
+cfn=(4728) std::__shared_count<(__gnu_cxx::_Lock_policy)2>::__shared_count(std::__shared_count<(__gnu_cxx::_Lock_policy)2> const&)
+calls=121 0 
+0 720 240 120 121 0 0 30 0 0 120 7
+0 240 0 120
+cob=(12)
+cfi=(199)
+cfn=(8734)
+calls=121 0 
+0 7320 2160 1320 240 120 0 37 10 0 960 192 120
+0 120 120 0 120 120 0 12 8 0 0 0 120
+0 720 240 0 0 0 0 0 0 0 240 3
+
+fn=(8946) std::_Function_handler<void (GradientPipeline::Job&), Map::preparePendingGradient(SimulationSnapshot::Handle const&)::{lambda(GradientPipeline::Job&)#1}>::_M_invoke(std::_Any_data const&, GradientPipeline::Job&)
+0 600 240 0 120 120 0 31 115
+cfn=(8948) gradient_preparation::seed(gradient_preparation::Request const&, SimulationSnapshot::Handle const&, unsigned short*, gradient_preparation::CrowdingScratch&)
+calls=128 0 
+0 474797367 162412333 57242915 5119 9509867 1286439 1701 6960259 978710 122417151 948261 484 68
+
+fn=(8980)
+0 18829 5364 1666 952 1483 13 339 533 6 2856 333
+cob=(4)
+cfi=(184)
+cfn=(3356)
+calls=128 0 
+0 3570 1428 357 0 0 0 0 0 0 357 0 238
+0 476 119 119 0 119 0 0 53
+cfn=(8860)
+calls=128 0 
+0 109496 23330 5355 914 10735 119 56 185 1 27733 1358 238
+0 357 0 238
+cob=(4)
+cfi=(184)
+cfn=(3356)
+calls=128 0 
+0 3570 1428 357 0 0 0 0 0 0 357 3 238
+0 357 0 119
+
+fn=(8986) Map::setMaterialAmount(unsigned long, MaterialId, unsigned short)
+0 288572 91128 56955 714 0 23 224 0 1 26579 73
+cob=(11)
+cfi=(198)
+cfn=(7520)
+calls=3797 0 
+0 79737 3797
+0 3797 3797 0 0 0 0 0 0 0 0 0 3797
+0 170865 41767 18985 476 117 2667 134 22 1652 11391 2
+cob=(11)
+cfi=(198)
+cfn=(7520)
+calls=3797 0 
+0 79737 3797
+0 3797 3797 0 0 0 0 0 0 0 0 0 3797
+0 45564 11391 3797 238 0 0 78 0 0 11391 138
+
+fn=(8994)
+0 712 0 356 65 0 0 43
+cfn=(7538)
+calls=89 0 
+0 6764 1691 890 65 0 2 34 0 0 356 2 89
+0 2314 623 178 65 67 0 41 12 0 267 64
+cfn=(8996) Map::resourceSeedChanged(unsigned long, unsigned int)
+calls=89 0 
+0 4183 1424 979 390 77 0 170 43 0 356 84
+0 178 0 0 65 0 0 43 0 0 89 1
+
+fn=(8996)
+0 801 89 356 65 12 0 29
+cfn=(8998) ResourceSeedCache::changed(unsigned long, unsigned int)
+calls=93 0 
+0 2403 890 623 260 65 0 110 43 0 178 83
+0 979 445 0 65 0 0 31 0 0 178 1
+
+fn=(9414) Building::noteUnitFailing(Unit*, Building::UnitCantWorkReason)
+0 200 80 70 10 1 5 8 1 3 10 4
+
+fn=(9432)
+0 103 31 17 14 0 2 14 0 2 10 5
+cob=(12)
+cfi=(199)
+cfn=(1798)
+calls=1 0 
+0 63 16 10 3 8 1 0 3 0 8 1 1
+0 1 1 0 1 1 0 0 0 0 0 0 1
+0 98 2 87 2 0 10 2 0 10 80 5
+
+fn=(8438)
+0 452 0 0 9 0 0 2 0 0 113 4
+cfn=(8426)
+calls=113 0 
+0 2823 1306 360 9 9 98 0 9 47 247 29
+
+fn=(8450) Map::swimClass(int, int)
+0 630 126 0 67 0 0 61 0 0 126 41
+
+fn=(8468)
+0 978156 325800 360 36 10186 0 36 2098 0 325998 48
+cfn=(8470) BuildingGradientSearch::begin(BuildingGradientSearch::Inputs const&, unsigned short*, int, int, int) [clone .cold]
+calls=4 0 
+0 2769573 460887 942 27 14432 56 27 5599 50 922227 52 6
+0 977271 0 0 3 0 0 3 0 0 325758 6
+
+fn=(8492) Map::seedMaterialGradient(int, unsigned char, int, unsigned short*, bool, Building const*, unsigned int)
+0 99 9 27 9 0 0 9 0 0 9 3
+cfn=(8494)
+calls=3 0 
+0 382 96 72 24 9 0 24 6 0 59 19 6
+0 54 24 0 3 0 0 3 0 0 3
+cfn=(8496) Map::seedMaterialGradientDirect(int, unsigned char, int, unsigned short*, unsigned short const*)
+calls=3 0 
+0 26878577 9003112 1006868 57 467769 24619 53 70384 16403 4360212 39249 27550
+
+fn=(8540) Team::removeBuildingNeedingWork(Building*, int)
+0 24510 7348 1818 1066 107 0 154 26 0 4966 111
+
+fn=(5044) Map::pendingBuildingRequirements() const
+0 3584 2048 0 112 256 0 18 57 0 512 15
+
+fn=(7170) TeamSmoothedStat::reset()
+0 3960 1056 1584 258 132 388 34 129 302 264 12
+
+fn=(7174) TeamStat::reset()
+0 2256 80 1712 146 29 195 84 28 192 80 18
+
+fn=(7748) Team::integrity()
+0 5920 1484 1348 264 1016 0 36 414 0 904 96
+cfn=(7750) Building::integrity()
+calls=326 0 
+0 24819 9018 1938 1249 3151 0 421 1336 0 4830 870
+0 2113500 792132 1024 850 34048 0 108 14530 0 527752 882
+cfn=(7752) Unit::integrity()
+calls=1032 0 
+0 16384 6144 2048 287 1022 0 76 200 0 3072 14
+0 2105856 787712 0 271 32642 0 36 18373 0 526592 808
+
+fn=(8428) Building::fetchApportionment(int*, int*) const
+0 1995 210 735 99 102 0 59 3
+cfn=(8430) Building::materialDeliveryTarget(int) const
+calls=105 0 
+0 1150 620 100 135 0 0 62 0 0 210 8
+0 8820 2940 1470 0 8 0 0 3
+cfn=(8430)
+calls=1470 0 
+0 16860 9060 1470 0 5 0 0 1 0 3080 106
+0 11025 0 3150 98 0 0 42
+cfn=(8426)
+calls=1575 0 
+0 28055 13100 4740 0 0 0 0 0 0 3305 110
+0 18657 3585 1965 100 15 1 35 0 0 2460 263
+
+fn=(8572)
+0 29211 8564 996 196 598 0 128 416 0 4661 388
+
+fn=(8580) Map::doesPosTouchBuilding(int, int, unsigned short) const
+0 76 4 28 4 2 0 4 0 0 8 2
+cfn=(7218) BuildingUtils::GIDtoTeam(unsigned short)
+calls=4 0 
+0 24 4 0 2 0 0 1 0 0 4
+0 196 70 8 7 2 0 7 0 0 22 8
+cfn=(7218)
+calls=4 0 
+0 24 4 0 0 0 0 0 0 0 4
+0 24 8 4 2 2 0 2 2 0 4
+cfn=(7218)
+calls=4 0 
+0 24 4 0 0 0 0 0 0 0 4
+0 20 8 4
+cfn=(7240) BuildingUtils::GIDtoID(unsigned short)
+calls=4 0 
+0 24 4 0 2 0 0 1 0 0 4 1
+0 60 16 8 6 2 0 6 2 0 8
+
+fn=(8596)
+0 456 100 108 10 10 10 5 0 10 48 11
+
+fn=(8616)
+0 92 48 20 8 36 0 8 36 0 12 3 12 12
+cfn=(8190) WinningConditionPrestige::getType() const
+calls=4 0 
+0 12 4 0 4 0 0 4
+cfn=(8188) WinningConditionAllies::getType() const
+calls=4 0 
+0 12 4
+cfn=(8186) WinningConditionDeath::getType() const
+calls=4 0 
+0 12 4 0 4 0 0 4
+0 44 12 0 0 0 0 0 0 0 12 4
+
+fn=(8618)
+0 52 4 16 4 0 0 4
+cfn=(8074)
+calls=4 0 
+0 392 128 88 0 12 4 0 0 4 28 11 12
+0 40 12 4 4 8 0 4 6 0 8 4
+cfn=(8620) MapScriptSGSL::syncStep(Game&, ClientCommandSink&, ClientRequests&)
+calls=4 0 
+0 436 136 88 25 36 4 24 14 0 64 12 8 1
+0 12 4 4
+cfn=(8622) MapScript::syncStep(ClientCommandSink*)
+calls=4 0 
+0 236774 85104 38472 461 10500 1022 254 8465 296 36651 3991 3207 606
+0 8 0 4
+cfn=(8340)
+calls=4 0 
+0 532 156 88 0 32 14 0 4 0 44 4 12 4
+0 28 20 0 4 0 0 0 0 0 4
+
+fn=(8622)
+0 20 4 0 4 0 0 4 0 0 4
+cfn=(8624)
+calls=4 0 
+0 236754 85100 38472 457 10500 1022 250 8465 296 36647 3991 3207 606
+
+fn=(8632) Usl::markGarbage() const
+0 28 4 12 8 0 0 8
+cfn=(8634)
+calls=4 0 
+0 191236 76419 31495 115 8816 74 102 8182 50 28862 3483 2930 598
+0 32 8 4 0 4 0 0 0 0 4
+cfn=(8652) Thread::markForGC() const
+calls=4 0 
+0 48 20 8 4 4 0 4 0 0 4 2
+0 72 0 24
+cfn=(8652)
+calls=24 0 
+0 288 120 48 0 16 0 0 0 0 24 4
+0 72 12 0 0 0 0 0 0 0 28 7
+
+fn=(8820) Unit::clearOccupiedMapSlot()
+0 2072 896 168 121 97 33 68 20 29 112 37
+
+fn=(8824) Unit::wrapPosition()
+0 1120 616 112 58 0 0 34 0 0 112 7
+
+fn=(8842) Unit::handleMovementGoingToResource()
+0 945 455 245 126 24 0 85 10 0 70 33
+cfn=(8448)
+calls=35 0 
+0 315 105 0 64 0 0 51 0 0 35 2
+0 175 35 35 0 0 0 0 0 0 35
+cfn=(8482)
+calls=35 0 
+0 140 105 0 27 45 0 15 19
+0 665 140 245 24 0 0 17
+cfn=(8844) Map::pathfindMaterial(EntityRandom&, int, unsigned char, int, int, int, int*, int*, bool*, Building*, bool)
+calls=35 0 
+0 45239 13562 5653 977 934 230 755 528 96 5521 898 82
+0 175 0 35 24 0 0 17 0 0 35 2
+cfn=(8850) Unit::directionFromDxDy()
+calls=35 0 
+0 1155 315 175 48 27 0 34 19 0 175 9
+0 280 70 70
+cfn=(8486)
+calls=35 0 
+0 5460 1400 700 0 0 0 0 0 0 875 99 70
+0 210 70 35 24 0 0 17
+cfn=(8852) bool Map::isGradientPeak<unsigned short>(unsigned short const*, int, int) const
+calls=35 0 
+0 3675 1050 35 130 98 0 85 45 0 245 52
+0 70 0 0 0 0 0 0 0 0 35 33
+
+fn=(8846) Map::directionByGradient(EntityRandom&, unsigned int, int, int, int, unsigned short const*, int*, int*, bool, unsigned int) const
+0 1120 175 630 75 0 44 72
+cfn=(8074)
+calls=35 0 
+0 2595 680 602 0 54 55 0 43 50 213 34 3
+0 6544 2397 691 75 110 0 72 41 0 420 55
+cfn=(8574)
+calls=236 0 
+0 16286 4642 944 155 426 0 88 337 0 2308 252
+0 3490 1063 293 74 0 0 73 0 0 901 208
+cfn=(8340)
+calls=35 0 
+0 473 141 56 10 0 0 10 0 0 45 11 3
+0 1196 617 141 53 0 0 53 0 0 35 4
+cfn=(8848) Map::stepCost(int, int, unsigned long, int) const
+calls=96 0 
+0 1221 480 0 24 0 0 24 0 0 160 75
+0 531 96 98 24 0 0 24 0 0 96 39
+
+fn=(8848)
+0 1221 480 0 24 0 0 24 0 0 160 75
+
+fn=(8850)
+0 2310 630 350 48 27 0 34 19 0 350 23
+
+fn=(8854)
+0 140 0 70 25 0 0 17
+cfn=(8820)
+calls=35 0 
+0 1295 560 105 92 73 24 52 12 20 70 19
+0 70 0 35
+cfn=(8850)
+calls=35 0 
+0 1155 315 175 0 0 0 0 0 0 175 14
+0 70 0 35
+cfn=(8824)
+calls=35 0 
+0 700 385 70 44 0 0 26 0 0 70
+0 140 35 35 24 0 0 17 0 0 35 32
+cfn=(8856) Unit::selectPreferredMovement()
+calls=35 0 
+0 1190 525 35 68 0 0 47 0 0 105 1
+0 1120 490 70 75 0 0 51 0 0 105 9
+cfn=(8828) Unit::claimOccupiedMapSlot()
+calls=35 0 
+0 1400 595 105 81 0 4 52 0 4 105 6
+0 140 105 0 0 0 0 0 0 0 35
+
+fn=(8856)
+0 1190 525 35 68 0 0 47 0 0 105 1
+
+fn=(8940) GradientPipeline::run(void*, unsigned long)
+0 2280 840 240 120 357 0 31 37 0 120 62
+cfn=(8942) GradientPipeline::execute(GradientPipeline::Job&, GradientPipeline::Workspace&)
+calls=128 0 
+0 2340402686 426290541 271394877 15940 38872674 2344017 5771 7094393 1205504 253462757 6062014 3222 320
+0 480 240 0 120 0 0 19
+
+fn=(8950) gradient_preparation::MaterialSeedCache::trySeed(SimulationSnapshot::Handle const&, int, int, int, unsigned short*, unsigned short const*)
+0 1610 140 910 140 0 280 50 0 186 70
+cfn=(8306)
+calls=74 0 
+0 7700 1470 2870 0 0 280 0 0 122 1890 349
+0 3917 1192 826 351 301 84 130 169 54 333 15
+cfn=(8952)
+calls=1 0 
+0 586 166 165 16 14 1 16 14 1 74 9
+0 406 101 31 11 8 0 11 8 0 66 4
+cob=(11)
+cfi=(198)
+cfn=(7520)
+calls=24 0 
+0 504 24 0 2
+0 24 24 0 1 1 0 0 0 0 0 0 24
+0 78894461 21961059 2936783 2019 808948 50595 772 520941 7847 12319262 241636
+cob=(12)
+cfi=(199)
+cfn=(1798)
+calls=12 0 
+0 4268 814 537 4 190 83 0 14 20 807 66 12
+0 12 12 0 0 12 0 0 0 0 0 0 12
+0 60 0 12
+cob=(2)
+cfi=(253)
+cfn=(2148)
+calls=12 158 
+0 393420 24 393216 0 24 6136 0 0 6127 393264 14
+0 12 12 0 0 12 0 0 0 0 0 0 12
+0 854 304 106 140 224 0 57 7 0 12
+cob=(4)
+cfi=(184)
+cfn=(1800) 0x000000000021bb98
+calls=74 0 
+0 36699110 36697290 36696940 210 573650 573580 59 207757 547562 36697360 104 70
+0 17303543 2388688 838385 559 342547 160497 180 242144 2055 3249083 262235
+cob=(2)
+cfi=(252)
+cfn=(1802)
+calls=292 255 
+0 219972 71760 70932 414 34000 33689 23 397 139 19320 535
+0 276 276 0 66 69 0 6 1 0 0 0 276 66
+0 572 276 4 1 0 0 1 0 0 4 2
+cob=(12)
+cfi=(199)
+cfn=(1798)
+calls=4 0 
+0 1400 267 178 1 27 8 1 10 7 269 24 4
+0 4 4 0 0 1 0 0 0 0 0 0 4
+0 28 0 4 1 0 0 1 0 0 4
+cob=(2)
+cfi=(252)
+cfn=(1802)
+calls=4 255 
+0 3188 1040 1028 5 514 508 5 512 508 280 10
+0 4 4 0 1 1 0 1 0 0 0 0 4 1
+0 229 54 25 4 7 0 4 0 0 36 5
+cob=(12)
+cfi=(199)
+cfn=(1798)
+calls=16 0 
+0 5546 1072 712 3 235 109 0 7 24 1050 54 16
+0 16 16 0 0 16 0 0 0 0 0 0 16
+0 80 0 16
+cob=(2)
+cfi=(253)
+cfn=(2148)
+calls=16 158 
+0 524560 32 524288 0 32 8184 0 0 8172 524352 17
+0 16 16 0 0 16 0 0 0 0 0 0 16
+0 183 66 60 9 31 4 9 2 1 29 8
+cob=(12)
+cfi=(199)
+cfn=(1798)
+calls=1 0 
+0 347 66 44 0 14 6 0 0 1 66 1 1
+0 1 1 0 0 1 0 0 0 0 0 0 1
+0 5 0 1
+cob=(2)
+cfi=(253)
+cfn=(2148)
+calls=1 158 
+0 32785 2 32768 0 2 511 0 0 511 32772 1
+0 1 1 0 0 1 0 0 0 0 0 0 1
+0 15 4 4 2 4 0 2 0 0 2 1
+cob=(12)
+cfi=(199)
+cfn=(1798)
+calls=1 0 
+0 737 163 103 0 24 11 0 0 3 127 4 1
+0 1 1 0 0 1 0 0 0 0 0 0 1
+0 5 0 1
+cob=(2)
+cfi=(253)
+cfn=(2148)
+calls=1 158 
+0 1048593 2 1048576 0 2 16384 0 0 16383 1048580 2
+0 1 1 0 0 1 0 0 0 0 0 0 1
+0 15 3 4 2 3 0 2 0 0 2 1
+cob=(12)
+cfi=(199)
+cfn=(1798)
+calls=1 0 
+0 739 163 103 1 24 11 0 3 3 127 3 1
+0 1 1 0 0 1 0 0 0 0 0 0 1
+0 5 0 1
+cob=(2)
+cfi=(253)
+cfn=(2148)
+calls=1 158 
+0 524305 2 524288 0 2 8192 0 0 8191 524292 2
+0 1 1 0 0 1 0 0 0 0 0 0 1
+0 44 8 7 5 3 0 5 0 0 4 1
+cob=(12)
+cfi=(199)
+cfn=(1798)
+calls=1 0 
+0 696 157 103 45 7 8 0 0 8 116 17 1
+0 1 1 0 0 0 0 0 0 0 0 0 1
+0 13 1 2 1 0 0 1 0 0 1 1
+cob=(2)
+cfi=(253)
+cfn=(2148)
+calls=1 158 
+0 524303 2 524286 1 1 8192 0 0 8191 524290 2
+0 1 1 0 0 0 0 0 0 0 0 0 1
+0 8658 5 5759 66 2 1 29 0 0 3 1
+cob=(12)
+cfi=(199)
+cfn=(1798)
+calls=1 0 
+0 746 167 103 2 27 11 0 0 3 131 11 1
+0 1 1 0 0 1 0 0 0 0 0 0 1
+0 10 0 3 1 0 0 1 0 0 1
+cob=(2)
+cfi=(253)
+cfn=(2148)
+calls=1 158 
+0 524303 2 524286 0 2 8192 0 0 8191 524290 1
+0 1 1 0 0 1 0 0 0 0 0 0 1
+0 26 4 5 3 2 2 3 0 0 3 2
+cob=(12)
+cfi=(199)
+cfn=(1798)
+calls=1 0 
+0 63 16 10 0 1 0 0 0 0 8 2 1
+0 1 1 0 0 0 0 0 0 0 0 0 1
+0 12 1 3 1 0 0 1 0 0 1
+cob=(2)
+cfi=(253)
+cfn=(2148)
+calls=1 158 
+0 19 2 4 2 1 1 0 0 0 4 2
+0 1 1 0 1 1 0 0 0 0 0 0 1 1
+0 16 4 3 1 0 0 1 0 0 2
+
+fn=(8988) ResourceGrowth::(anonymous namespace)::recordDelta(Map&, ResourceGrowth::Proposal const&, bool, int)
+0 276052 89600 67824 595 3788 839 181 3755 426 33199 348
+cfn=(5056)
+calls=52 0 
+0 156 104
+0 21786 0 7262
+cfn=(5056)
+calls=7262 0 
+0 21786 14524
+0 7314 0 3657 118 0 0 31
+cfn=(5056)
+calls=3657 0 
+0 10971 7314
+0 60368 29263 2296 70 0 200 25 0 125 12803 363
+cfn=(5056)
+calls=2 0 
+0 6 4
+0 1368 0 456
+cfn=(5056)
+calls=456 0 
+0 1368 912
+0 458 0 229 69 0 0 30
+cfn=(5056)
+calls=229 0 
+0 687 458
+0 3206 1603 0 0 0 0 0 0 0 687 167
+
+fn=(9230)
+0 243 63 108 16 0 4 16 0 0 9 2
+cfn=(9232) (anonymous namespace)::airDistancesFor(Map const&, Unit const&) [clone .isra.0]
+calls=9 0 
+0 342 72 144 24 3 9 24 0 0 18 5
+0 1854 846 198 40 33 0 40 22 0 378 84
+
+fn=(9430)
+0 17 1 5 1 0 0 1 0 0 2 1
+cfn=(5056)
+calls=2 0 
+0 3 2
+0 20 10 0 1 3 0 1 0 0 5 1
+
+fn=(3802) UnitCatalog::definition(unsigned int) const
+0 90 18 0 1 0 0 1 0 0 6 1
+
+fn=(8340)
+0 4299 0 1433 129 0 0 124
+cfn=(8342) PerformanceTelemetry::Scope::stop()
+calls=1984 0 
+0 107041 32098 17052 13 1919 616 12 322 62 9553 293 2436 111
+0 2866 1433
+
+fn=(8460)
+0 69 3 33 6 0 0 6
+cfn=(8074)
+calls=3 0 
+0 294 96 66 0 6 9 0 4 9 21 3 9
+0 9 0 3 3 0 0 3
+cfn=(7838)
+calls=3 0 
+0 15 3 0 6 0 0 4 0 0 3
+0 243 84 57 24 8 12 24 5 12 27 10
+cfn=(8464)
+calls=3 0 
+0 4725318 786786 1374 99 24645 59 99 7707 53 1574019 124 6
+0 6 3 3
+cfn=(8340)
+calls=3 0 
+0 399 117 66 2 27 10 2 22 10 33 7 9
+0 24467044 7993224 857778 33 467328 24582 33 391795 10132 4847951 54630
+cfn=(8462)
+calls=3 0 
+0 2489 306 1104 43 88 132 42 48 130 1219 64 12
+0 114 27 15 12 12 0 12 10 0 15 5
+
+fn=(8470)
+0 6 0 3 3 0 3 3
+cfn=(8472)
+calls=4 0 
+0 5004 84 831 21 27 53 21 12 50 810 16 6
+0 2764563 460803 108 3 14405 0 3 5587 0 921417 36
+
+fn=(8482)
+0 340 255 0 32 56 0 17 27
+
+fn=(8528) Team::swapTask(Unit*)
+0 25046 10386 7254 607 1 0 56 0 0 2130 41
+cfn=(8530) (anonymous namespace)::jobCost(Unit*, Building*, int, int*)
+calls=10 0 
+0 6113 1770 1040 30 2 4 25 0 4 681 37 20
+0 70 10 10 0 0 0 0 0 0 10
+cfn=(8532) Unit::foodStepsLeft(int) const
+calls=10 0 
+0 140 30 0 12 0 0 10 0 0 20 7
+0 92502 20578 46 13 544 0 12 262 0 30820 100
+cfn=(8446)
+calls=4 0 
+0 86 32 0 0 8 0 0 4 0 17 3
+0 28 0 4 0 0 0 0 0 0 4
+cfn=(8446)
+calls=4 0 
+0 90 32 0 0 1 0 0 0 0 19 4
+0 28 8 4 0 0 0 0 0 0 4 1
+cfn=(8530)
+calls=4 0 
+0 101476 12574 14798 92 210 433 58 159 362 12070 478 70
+0 28 4 4 3 0 0 3 0 0 4
+cfn=(8530)
+calls=4 0 
+0 2533 732 426 0 10 1 0 3 0 283 8 8
+0 28 4 4 0 0 0 0 0 0 4
+cfn=(8530)
+calls=4 0 
+0 2447 708 416 0 11 0 0 4 0 273 4 8
+0 32 12 4 3 0 0 3 0 0 8
+cfn=(8532)
+calls=4 0 
+0 56 12 0 0 0 0 0 0 0 8 3
+0 70 30 0 6 0 0 5 0 0 18 7
+
+fn=(8534) Building::updateCallLists()
+0 10850 4340 3038 265 161 0 140 80 0 868 9
+cfn=(8536) Building::desiredNumberOfWorkers()
+calls=444 0 
+0 183836 59148 22356 502 166 186 180 44 25 17908 1165
+0 1302 0 868 0 0 2 0 0 2
+cfn=(8538) Building::isMaterialFull()
+calls=444 0 
+0 28728 9622 4266 258 0 0 102 0 0 2964 132
+0 4794 2614 5 502 234 0 129 110 0 1736 121
+cfn=(8540)
+calls=5 0 
+0 495 140 45 44 9 0 33 6 0 95 16
+0 40696 16220 207 2722 969 0 832 253 0 15821 787
+cfn=(8540)
+calls=200 0 
+0 24015 7208 1773 1022 98 0 121 20 0 4871 95
+0 788 394 197
+cfn=(9194) Team::addBuildingNeedingWork(Building*, int)
+calls=200 0 
+0 16798 5856 1970 667 0 0 77 0 0 3116 136
+0 591 197 197 95 0 0 47
+
+fn=(8536)
+0 6076 868 1736 356 0 86 135 0 22 434 325
+cfn=(8426)
+calls=453 0 
+0 10190 4360 1524 0 4 96 0 0 2 1090 148
+0 14322 0 4774
+cfn=(8426)
+calls=4983 0 
+0 89016 40900 14322 0 1 4 0 1 1 11176 158
+0 64232 13020 0 146 161 0 45 43 0 5208 534
+
+fn=(8546) Building::freeIdleGradients()
+0 302 76 14 10 4 0 5 4 0 100 9
+
+fn=(8556) TeamStats::beginMeasurementSnapshot(Team*)
+0 3072 512 768 454 0 0 34
+cfn=(7184) TeamStats::configureUnits(unsigned long)
+calls=256 0 
+0 8448 3072 1536 0 0 0 0 0 0 768 44
+0 2816 1280 512 146 387 256 17 112 106
+cfn=(7270)
+calls=256 0 
+0 18114 2453 11317 310 17 153 44 4 89 10325 32 6 2
+0 1796 768 2 0 128 0 0 78 0 256 8
+cfn=(7376) TeamStats::rebuildMeasurementCountReset()
+calls=2 0 
+0 1228 328 68 18 9 0 8 7 0 291 30 4
+0 39873 4159 21567 1584 748 4033 187 241 1717 8257 678
+
+fn=(7376)
+0 854 244 16 10 1 0 5 1 0 228 16
+cob=(12)
+cfi=(199)
+cfn=(1798)
+calls=2 0 
+0 344 76 46 4 8 0 1 6 0 59 13 2
+0 2 2 0 0 0 0 0 0 0 0 0 2
+0 28 6 6 4 0 0 2 0 0 4 1
+
+fn=(8306)
+0 34228 6608 12669 840 2304 998 7 1091 584 8462 1082
+
+fn=(8420) Building::subscribeToBringMaterialsStep(bool)
+0 1320 110 550 100 0 81 60
+cfn=(8422) Building::resetFailureTallies()
+calls=110 0 
+0 3190 1870 220 391 418 97 146 267 52 880 25
+0 4854 1747 5 197 235 0 67 98 0 839 106
+cfn=(8534)
+calls=5 0 
+0 3116 1057 352 0 0 0 0 0 0 454 32
+0 210 0 105 3
+cfn=(8534)
+calls=105 0 
+0 86075 29050 9620 2660 544 188 426 160 27 13385 759
+0 2160 770 105 99 7 0 38 6 0 325 4
+cfn=(8428)
+calls=105 0 
+0 86562 29515 13630 432 130 1 198 7 0 9055 487
+0 630 210 105 195 89 0 74 18 0 105 5
+cfn=(8424) Building::workRoleTarget(int) const
+calls=105 0 
+0 41390 11810 7365 449 132 186 131 66 19 4325 334
+0 735 0 105 0 0 0 0 0 0 105 2
+cfn=(8432) Building::hireMaterialUnit(int const*, int const*, int const*)
+calls=105 0 
+0 138374330 30281981 11894805 4430 2239472 121668 2590 489964 54923 16566994 312818 28883 21
+0 210
+
+fn=(8456)
+0 32 0 12 4 0 3 3 0 2
+cob=(2)
+cfi=(282)
+cfn=(3058)
+calls=4 77 
+0 148 40 20 3 10 0 0 5 0 28 3
+0 4 4 0 1 2 0 1 0 0 0 0 4 1
+0 28 4 4 4 0 0 3 0 0 8 2
+cob=(2)
+cfi=(283)
+cfn=(3066)
+calls=4 367 
+0 92 20 16 0 0 0 0 0 0 16
+0 4 4 0 0 1 0 0 0 0 0 0 4
+0 36 12 0 0 3 0 0 1 0 4 1
+cob=(12)
+cfi=(199)
+cfn=(5168)
+calls=4 0 
+0 1604 351 224 117 35 23 81 13 11 270 67 8
+0 4 4 0 4 4 0 4 3 0 0 0 4 3
+
+fn=(8472)
+0 18135 1209 3224 41 0 191 41 0 3 1209 53
+cob=(12)
+cfi=(199)
+cfn=(1798)
+calls=435 0 
+0 139424 26328 17459 127 4973 1618 38 304 264 28472 2413 403
+0 403 403 0 0 215 0 0 1 0 0 0 403
+0 4695 403 670 0 0 269 0 0 97 806 106
+cob=(2)
+cfi=(252)
+cfn=(1802)
+calls=267 255 
+0 374954 308906 308090 20 15896 18888 19 344 11544 287168 342
+0 267 267 0 2 227 0 2 1 0 0 0 267
+0 2052897 267 341880 8 22 21010 8 0 12660 342152 436
+cob=(12)
+cfi=(199)
+cfn=(2316)
+calls=267 0 
+0 46144 13766 7712 47 1381 35 33 38 0 7126 285 534 5
+0 267 267 0 2 223 0 2 0 0 0 0 267
+0 5642 2821 1209 9 16 15 9
+
+fn=(8500) Map::frozenWaterSnapshot() const
+0 65 0 35 4 0 0 2
+cob=(2)
+cfi=(282)
+cfn=(3058)
+calls=5 77 
+0 185 50 25 3 20 0 0 10 0 35 2
+0 5 5 0 0 5 0 0 0 0 0 0 5
+0 75 19 18 5 11 6 2 10 2 19 4
+cob=(2)
+cfi=(283)
+cfn=(3066)
+calls=5 367 
+0 115 25 20 0 1 0 0 0 0 20 6
+0 5 5 0 0 5 0 0 0 0 0 0 5
+0 47 35 1 4 1 0 2
+cob=(12)
+cfi=(199)
+cfn=(1798)
+calls=1 0 
+0 412 69 41 4 18 6 3 6 5 92 13 1
+0 1 1 0 0 1 0 0 0 0 0 0 1
+0 16 2 5 1 2 0 1 1 0 2
+cob=(12)
+cfi=(199)
+cfn=(1798)
+calls=1 0 
+0 283 64 36 1 3 0 1 3 0 52 6 1
+0 1 1 0 0 0 0 0 0 0 0 0 1
+0 2883605 1572862 262155 5 8212 4099 5 5260 0 262147 6
+cob=(2)
+cfi=(253)
+cfn=(2148)
+calls=1 158 
+0 262160 2 262143 3 2 4096 2 0 4095 262147 6
+0 1 1 0 1 1 0 1 0 0 0 0 1 1
+0 4 3 0 0 1
+
+fn=(8502) gradient_kernel::executeGradientGroup(std::span<gradient_kernel::BackendRequest const, 18446744073709551615ul>, gradient_kernel::Backend) [clone .constprop.0]
+0 200 64 43 15 1 5 15 0 5 43 13 3 1
+cfn=(8504)
+calls=3 0 
+0 78700010 10843478 9449326 185 1268964 61622 179 13562 22344 5185711 215643 862 2
+0 1966994 524519 45 51 16414 6 51 10251 6 655576 56
+
+fn=(8586) TeamStats::sampleDefence(Team*)
+0 32 6 16 4 1 2 2 0 1
+cfn=(8588) Map::rebuildGrowthCoverage()
+calls=2 0 
+0 5563434 43195 5268942 127 795 83201 111 355 82554 5290012 515 16
+0 14410 4114 16 6 176 3 3 130 2 4112 15
+cfn=(5056)
+calls=4 0 
+0 12 8
+0 4 0 2
+cfn=(5056)
+calls=2 0 
+0 6 4 0 0 1 0 0 1
+0 14444 4144 0 4 278 0 2 271 0 4126 26
+
+fn=(8594)
+0 384 96 96 6 3 2 3 2 2 36 4
+
+fn=(8602) Team::updateEvents()
+0 5888 2304 256 520 385 0 68 133 0 1536 4
+
+fn=(8634)
+0 13482 5336 1613 16 327 3 16 156 3 2608 128
+cfn=(8635)
+calls=181 0 
+0 4570 2055 1233 0 45 3 0 45 0 460 41
+0 3822 2548 1274 0 50 0 0 46 0 0 0 1274 354
+cfn=(8644) Prototype::propagateMarkForGC()
+calls=21 0 
+0 10193 3799 1926 11 435 16 8 416 16 1527 257 170
+cfn=(8642)
+calls=145 0 
+0 290 145 0 4 0 0 4
+cfn=(8638)
+calls=1072 0 
+0 150132 58351 24471 28 7859 42 24 7430 26 23578 2943 1456 240
+cfn=(8636) Scope::propagateMarkForGC()
+calls=36 0 
+0 4626 1656 992 12 96 8 9 78 4 612 93 24
+0 3827 2548 2 4 0 0 4
+cob=(12)
+cfi=(199)
+cfn=(5076)
+calls=1 0 
+0 464 103 69 27 15 2 27 10 1 78 29 3 3
+0 1 1 0 1 1 0 1 1 0 0 0 1 1
+0 61 30 10 6 4 0 6 0 0 4 1
+cob=(12)
+cfi=(199)
+cfn=(1798)
+calls=1 0 
+0 193 43 25 4 0 0 1 0 0 34 5 1
+0 1 1 0 0 0 0 0 0 0 0 0 1
+0 14 3 0 2 0 0 2 0 0 1
+
+fn=(8635)
+0 80198 35814 21508 0 1177 57 0 1148 34 8465 620
+cob=(12)
+cfi=(199)
+cfn=(1798)
+calls=7 0 
+0 957 212 135 0 16 1 0 9 1 158 18 7
+0 7 7 0 0 0 0 0 0 0 0 0 7
+0 63 21 7
+cob=(2)
+cfi=(252)
+cfn=(1802)
+calls=7 255 
+0 177 48 37 8 2 11 0 0 11 29 14
+0 7 7 0 1 1 0 1 0 0 0 0 7
+0 28 0 7
+cob=(12)
+cfi=(199)
+cfn=(2316)
+calls=7 0 
+0 651 189 98 0 2 0 0 1 0 84 3 14
+0 7 7 0 0 0 0 0 0 0 0 0 7
+0 42
+
+fn=(8636)
+0 320 36 104 4 4 0 4 0 0 36 4
+cfn=(8635)
+calls=32 0 
+0 704 320 192 0 12 0 0 0 0 64 12
+0 376 128 56 0 28 0 0 28 0 92 16
+cfn=(8635)
+calls=56 0 
+0 2914 1064 640 4 52 8 1 50 4 364 46 24
+0 312 108 0 4 0 0 4 0 0 56 15
+
+fn=(8656)
+0 64 8 28 4 4 0 4
+cfn=(8658) Team::checkWinConditions()
+calls=8 0 
+0 2384 1008 308 76 116 4 73 34 0 276 79 80 80
+0 24 0 12 4 0 0 4
+cfn=(5056)
+calls=12 0 
+0 36 24 0 0 4
+0 56 8 8 0 0 0 0 0 0 12 9
+cfn=(8658)
+calls=8 0 
+0 2384 1008 308 0 0 0 0 0 0 276 46 80 80
+0 56 16 8
+cfn=(5056)
+calls=8 0 
+0 24 16
+0 8 0 4 4 0 0 4
+cfn=(5056)
+calls=4 0 
+0 12 8
+0 52 24 4 0 0 0 0 0 0 12 1
+
+fn=(8666) WinningConditionPrestige::hasTeamWon(int, Game const*) const
+0 96 48 0 4 4 0 4 0 0 16 8
+
+fn=(8676) WinningConditionScript::hasTeamLost(int, Game const*) const
+0 80 16 0 0 0 0 0 0 0 16 2
+cfn=(8678) MapScriptSGSL::hasTeamLost(unsigned int) const
+calls=16 0 
+0 272 80 0 4 8 0 4 4 0 16 2
+
+fn=(8680) WinningConditionOpponentsDefeated::hasTeamWon(int, Game const*) const
+0 200 0 72
+cfn=(5056)
+calls=8 0 
+0 24 16
+0 32 0 16 4 0 0 4
+cfn=(5056)
+calls=16 0 
+0 48 32
+0 336 208 0 0 4 0 0 0 0 72 18
+
+fn=(8686) Team::getEvent()
+0 1792 768 256 256 384 124 34 2 0 256 2
+
+fn=(8690)
+0 1408 0 896 128 0 0 45
+cfn=(5040)
+calls=128 0 
+0 5888 2304 1024 8 384 0 1 0 0 640 167
+0 256 0 128 128 0 0 47
+cfn=(8692)
+calls=128 0 
+0 7271 2475 1972 781 313 63 232 94 53 1096 106 13 1
+0 471 157 157 0 8
+cfn=(5056)
+calls=157 0 
+0 471 314
+0 47638 14833 332 622 2350 0 220 1000 0 17275 1796
+cfn=(7836) Map::marketsV2Enabled() const
+calls=83 0 
+0 581 249 0 83 83 0 37 40 0 83 2
+0 747 166 166
+cfn=(7836)
+calls=83 0 
+0 581 249 0 0 0 0 0 0 0 83
+0 9130 1826 1826
+cfn=(7836)
+calls=1826 0 
+0 12782 5478 0 0 0 0 0 0 0 1826
+0 27888 0 13944
+cfn=(7836)
+calls=13944 0 
+0 97608 41832 0 0 0 0 0 0 0 13944 6
+0 106270 692 2315 422 74 0 169 3 0 34104 2566
+cfn=(8694) GradientPipeline::reserve(unsigned short**, int)
+calls=74 0 
+0 38696 10370 6880 2451 1415 536 576 319 169 5613 918 426 22
+0 1873 592 560 103 0 75 50 0 34
+cfn=(7836)
+calls=29 0 
+0 203 87 0 0 0 0 0 0 0 29 29
+0 203 0 116
+cfn=(7836)
+calls=29 0 
+0 203 87 0 0 0 0 0 0 0 29
+0 3828 0 2552 0 0 58 0 0 46
+cfn=(7836)
+calls=638 0 
+0 4466 1914 0 0 0 0 0 0 0 638
+0 24360 0 19488
+cfn=(7836)
+calls=4872 0 
+0 34104 14616 0 0 0 0 0 0 0 4872 2
+0 48923 13690 112 666 551 32 318 342 27 14506 1431
+cfn=(8694)
+calls=54 0 
+0 16871 4519 3098 1348 641 275 426 70 34 1738 484 272
+0 702 54 324 108 0 54 62 0 25
+
+fn=(8796)
+0 2632 896 448 110 33 0 68 10 0 336 60
+
+fn=(8800)
+0 392 56 112 25 0 0 17 0 0 56 7
+cfn=(8802)
+calls=56 0 
+0 18760 6048 952 225 142 0 161 64 0 2128 265
+0 567 189 0 36 37 0 27 25 0 112 2 56 24
+cfn=(8806) Unit::handleMovementRandom()
+calls=21 0 
+0 16971835 5578669 525285 305 326529 16445 176 80163 16429 3317982 17791 46 1
+0 105 35 0 27 0 0 17
+cfn=(8842)
+calls=35 0 
+0 58504 17307 7228 1444 1128 230 1076 621 96 7026 1128 152
+
+fn=(8818)
+0 231 42 42 14 3 0 10 3 0 42 1
+cfn=(8820)
+calls=21 0 
+0 777 336 63 29 24 9 16 8 9 42 18
+0 84 42 21 11 0 0 10
+cfn=(8822) Map::pathfindRandom(Unit*)
+calls=21 0 
+0 21092 6172 1587 246 218 0 221 144 0 2467 163
+0 42 0 21
+cfn=(8824)
+calls=21 0 
+0 420 231 42 14 0 0 8 0 0 42 7
+0 42 0 21
+cfn=(8826)
+calls=21 0 
+0 693 315 21 39 0 0 34 0 0 63 13
+0 693 315 21 41 0 0 30 0 0 63 2
+cfn=(8828)
+calls=21 0 
+0 840 357 63 27 0 0 16 0 0 63 6
+
+fn=(8834)
+0 1680 112 504 50 0 0 35 0 0 112 28
+cfn=(8836) Map::setMapBuildingsDiscovered(int, int, unsigned int, Team**)
+calls=56 0 
+0 1672 620 260 56 19 8 43 17 4 128 68
+0 1008 112 112
+cfn=(8836)
+calls=112 0 
+0 3440 1255 529 36 5 10 28 4 5 274 38
+0 2352 0 336
+cfn=(8836)
+calls=336 0 
+0 8272 3445 1395 0 33 0 0 27 0 438 57
+0 2128 560 0 26 0 0 17 0 0 672 130
+
+fn=(8852)
+0 3675 1050 35 130 98 0 85 45 0 245 52
+
+fn=(8958) gradient_preparation::(anonymous namespace)::snapshotCostIdentity(gradient_preparation::Request const&, SimulationSnapshot::Handle const&) [clone .isra.0]
+0 3000 720 960 360 240 240 91 81 38 240 15
+
+fn=(8964)
+0 928 0 696 2 0 0 2
+cfn=(8472)
+calls=116 0 
+0 680515 71838 157096 1 6251 11365 1 7 4617 152333 940 596
+0 1461 928 258 3 84 0 3
+cfn=(8472)
+calls=43 0 
+0 436778 60296 115636 100 3996 7261 63 64 5059 112569 445 234 2
+0 408 301 14 4 45 4 4 0 1
+cfn=(8472)
+calls=7 0 
+0 153048 50481 66533 10 1076 2073 10 16 2040 66296 93 38 1
+0 1815063330 250555648 213791469 2940 28934746 1034803 1208 51069 214762 114309562 5110094
+
+fn=(8968) std::_Function_handler<void (GradientPipeline::Job&), Map::preparePendingGradient(SimulationSnapshot::Handle const&)::{lambda(GradientPipeline::Job&)#1}>::_M_manager(std::_Any_data&, std::_Any_data const&, std::_Manager_operation)
+0 840 120 0 120 0 0 20 0 0 240
+
+fn=(8998)
+0 2403 890 623 260 65 0 110 43 0 178 83
+
+fn=(2968)
+cfn=(2978) runHeadlessCommand(Cli::Request const&)
+calls=1 0 
+0 2579162248 479227323 298122079 115857 42318368 2682073 35183 8069589 1434334 291957128 6555683 64798 1898
+
+fn=(3638)
+0 19376 6920 1384 0 1743 0 0 229 0 4152 354
+
+fn=(4728)
+0 720 240 120 121 0 0 30 0 0 120 7
+
+fn=(8344) PerformanceTelemetry::Moments::add(unsigned long)
+0 45016 6620 3972 265 1129 0 130 369 0 2648 142
+
+fn=(8430)
+0 18010 9680 1570 135 5 0 62 1 0 3290 114
+
+fn=(8434) Building::selectUnitCarryingWantedMaterial(int const*, int const*, Building::BringMaterialsSelection&, int const*)
+0 9330 3465 1155 399 233 204 127 75 53 2340 185
+
+fn=(8524)
+0 184 24 56 12 0 0 12 0 0 8 2
+cfn=(8486)
+calls=8 0 
+0 1248 320 160 0 0 0 0 0 0 200 19 16
+0 11040 2406 160 66 67 0 66 6 0 911 169
+cfn=(8526) Map::materialAvailableSlot(int, int, int, int, int, bool, Building const*)
+calls=8 0 
+0 1432 400 192 6 1 2 6 0 2 200 22 16
+0 40 24 8
+
+fn=(8530)
+0 352 66 176 12 0 0 10
+cfn=(8448)
+calls=22 0 
+0 198 66 0 0 2 0 0 0 0 22 4
+0 594 286 44 12 2 0 10 1 0 66 15
+cfn=(8452) Map::buildingAvailable(Building*, int, int, int, int*, BuildingRoute)
+calls=22 0 
+0 106541 14002 15778 92 205 438 58 157 366 12603 486 62
+0 132 44 22 0 0 0 0 0 0 22
+cfn=(8482)
+calls=22 0 
+0 88 66 0 0 3 0 0 2
+0 308 88 88 6 0 0 5
+cfn=(8484)
+calls=22 0 
+0 4202 1122 550 0 21 0 0 6 0 572 22 44
+0 154 44 22 0 0 0 0 0 0 22
+
+fn=(8538)
+0 4340 0 1302 129 0 0 51
+cfn=(8426)
+calls=444 0 
+0 10190 4360 1524 0 0 0 0 0 0 1090 13
+0 1080 0 360
+cfn=(8426)
+calls=368 0 
+0 8280 3960 1080 0 0 0 0 0 0 720 112
+0 4838 1302 0 129 0 0 51 0 0 1154 7
+
+fn=(5056)
+0 40194 26796 0 158 298 0 59 29
+
+fn=(5872)
+0 13 2 2 2 0 0 2 0 0 1
+cob=(12)
+cfi=(199)
+cfn=(2316)
+calls=21 0 
+0 93 27 14 0 0 0 0 0 0 12 1 2
+0 1 1 0 0 0 0 0 0 0 0 0 1
+
+fn=(6244) Thread::step()
+0 439 73 205 6 7 5 6 7 0 34 4 1
+cfn=(6246)
+calls=111 0 
+0 319 74 46 8 17 6 8 0 0 55 6 2
+0 21 10 2 2 0 0 2 0 0 3 1
+cob=(12)
+cfi=(199)
+cfn=(2316)
+calls=17 0 
+0 93 27 14 10 6 0 0 0 0 12 2 2 1
+0 1 1 0 1 1 0 0 0 0 0 0 1
+0 353 263 1 5 0 0 5 0 0 30 6
+
+fn=(7240)
+0 366 61 0 19 0 0 14 0 0 61 11
+
+fn=(8058)
+cfn=(8060) Engine::stepSessionImpl(unsigned long, std::vector<SDL_Event, std::allocator<SDL_Event> > const&)
+calls=128 0 
+0 2579162248 479227323 298122079 115857 42318368 2682073 35183 8069589 1434334 291957128 6555683 64798 1898
+
+fn=(8074)
+0 18629 0 12897 2 0 40 1 0 24
+cfn=(5072) PerformanceTelemetry::collector()
+calls=1984 0 
+0 20062 8598 1433 135 412 0 67 65 0 1433 39
+0 43455 13339 8713 102 1648 795 93 627 386 4523 189 1324
+cfn=(5090) PerformanceTelemetry::now()
+calls=1875 0 
+0 46340 17212 5296 124 20 16 60 11 16 3972 150 2648 129
+0 9268 5296 2648 2 0 0 1
+
+fn=(8402)
+0 1536 128 640 256 0 0 32 0 0 128
+cob=(2)
+cfi=(282)
+cfn=(3058)
+calls=128 77 
+0 4736 1280 640 0 0 0 0 0 0 896
+0 128 128 0 0 0 0 0 0 0 0 0 128
+0 768 256 128 0 0 0 0 0 0 128
+cob=(2)
+cfi=(283)
+cfn=(3066)
+calls=128 367 
+0 2944 640 512 0 0 0 0 0 0 512
+0 128 128 0 0 0 0 0 0 0 0 0 128
+0 1920 896 0 256 0 0 32 0 0 256 132
+
+fn=(8440) Building::gatherBringMaterialsCandidates(Building::BringMaterialsCandidate*, int, int const*)
+0 1680 105 1050 197 0 0 61
+cfn=(8422)
+calls=105 0 
+0 3045 1785 210 0 0 0 0 0 0 840 7
+0 7215 3390 30 306 40 0 190 24 0 1995 222
+cfn=(8442) Building::considerUnitForMaterial(Unit*, int, int*, int)
+calls=30 0 
+0 138126366 30229569 11871585 1427 2238164 120295 1298 489346 54148 16517947 310983 28725 15
+0 2775 430 40 100 1 5 30 0 5 840 116
+
+fn=(8462)
+0 60 8 20 8 7 3 8 7 3 4 2
+cob=(2)
+cfi=(282)
+cfn=(3058)
+calls=4 77 
+0 148 40 20 0 13 0 0 9 0 28 5
+0 4 4 0 0 3 0 0 0 0 0 0 4
+0 28 4 4 0 4 0 0 4 0 8 2
+cob=(2)
+cfi=(283)
+cfn=(3066)
+calls=4 367 
+0 92 20 16 0 0 0 0 0 0 16
+0 4 4 0 0 3 0 0 0 0 0 0 4
+0 8 0 4
+cob=(12)
+cfi=(199)
+cfn=(1798)
+calls=4 0 
+0 1677 302 178 48 67 20 39 37 18 349 72 4
+0 4 4 0 0 3 0 0 0 0 0 0 4
+0 1284 24 1228 4 0 147 4 0 147 1224 5
+
+fn=(8496)
+0 25525147 8727612 1006868 39 466003 24619 39 70342 16403 4288872 39243
+cob=(11)
+cfi=(198)
+cfn=(7520)
+calls=27550 0 
+0 578550 27550 0 6 0 0 2
+0 27550 27550 0 3 13 0 3 0 0 0 0 27550
+0 747330 220400 0 9 1753 0 9 42 0 71340 6
+
+fn=(8568) TeamStats::sampleTraps(Team*)
+0 48 12 20 4 0 2 2 0 2
+cfn=(7270)
+calls=2 0 
+0 60 18 12 0 0 0 0 0 0 4
+0 15980 4228 358 22 181 12 11 12 12 4370 73
+cfn=(7194)
+calls=24 0 
+0 384 168 0 4 2 0 2 2 0 24 2
+0 548 157 42 8 7 0 4 3 0 82 22
+cfn=(8574)
+calls=13 0 
+0 808 226 52 2 0 0 2 0 0 102 12
+0 14832 4195 36 12 166 0 6 0 0 4189 42
+cfn=(8570) Map::isHardSpaceForGroundUnit(int, int, bool, unsigned int) const
+calls=24 0 
+0 1632 456 96 0 10 0 0 0 0 216 15
+0 272 96 8 4 0 0 2 0 0 32 8
+cfn=(8576) Building::findGroundExit(int*, int*, int*, int*, bool, bool)
+calls=4 0 
+0 6076 1938 804 53 15 8 36 4 4 630 65
+0 160 36 39 4 0 0 2 0 0 8 4
+cfn=(8570)
+calls=13 0 
+0 808 223 52 17 55 0 17 9 0 97 16
+0 14551 4188 16 16 1 0 8 0 0 4125 23
+cfn=(8582)
+calls=2 0 
+0 48 20 14 6 0 0 3 0 0 4
+0 138 46 26 12 1 0 6 0 0 20 7
+cob=(12)
+cfi=(199)
+cfn=(1798)
+calls=2 0 
+0 126 32 20 0 10 0 0 0 0 16 1 2
+0 2 2 0 0 2 0 0 0 0 0 0 2
+0 28 0 2 6 0 0 3 0 0 2
+cfn=(8584)
+calls=2 0 
+0 36 10 8 6 0 0 3 0 0 4 2
+0 2
+
+fn=(8588)
+0 2178 121 1331 242 0 0 91
+cfn=(5056)
+calls=242 0 
+0 726 484
+0 242 0 121
+cfn=(5056)
+calls=121 0 
+0 363 242 0 2 2 0 2 2
+0 3273 1696 121 242 172 0 83 3 0 849 253
+cfn=(5056)
+calls=121 0 
+0 363 242
+0 325146 45405 25753 887 1076 1230 291 530 616 47655 447
+cob=(12)
+cfi=(199)
+cfn=(1798)
+calls=3 0 
+0 2253 508 312 4 86 34 1 11 16 399 24 3
+0 3 3 0 0 3 0 0 0 0 0 0 3
+0 18 0 6 1 0 0 1
+cob=(2)
+cfi=(253)
+cfn=(2148)
+calls=3 158 
+0 3145779 6 3145728 0 6 49152 0 0 49149 3145740 3
+0 3 3 0 0 3 0 0 0 0 0 0 3
+0 38 9 13 2 4 0 2 0 0 6 1
+cob=(12)
+cfi=(199)
+cfn=(1798)
+calls=2 0 
+0 584 123 71 7 31 7 0 2 0 106 21 2
+0 2 2 0 0 2 0 0 0 0 0 0 2
+0 35 11 7 5 2 0 5 0 0 5 2
+cob=(12)
+cfi=(199)
+cfn=(1798)
+calls=1 0 
+0 696 158 103 40 14 9 34 2 5 117 15 1
+0 1 1 0 0 0 0 0 0 0 0 0 1
+0 5 0 1
+cob=(2)
+cfi=(253)
+cfn=(2148)
+calls=1 158 
+0 2097169 2 2097152 0 2 32768 0 1 32767 2097156 2
+0 1 1 0 0 1 0 0 0 0 0 0 1
+0 26 9 8 4 2 1 4 2 1 2
+
+fn=(8590) void std::vector<GameplayMeasurements, std::allocator<GameplayMeasurements> >::_M_realloc_insert<GameplayMeasurements const&>(__gnu_cxx::__normal_iterator<GameplayMeasurements*, std::vector<GameplayMeasurements, std::allocator<GameplayMeasurements> > >, GameplayMeasurements const&)
+0 64 6 16 6 0 0 3 0 0 4 4
+cfn=(8592)
+calls=2 0 
+0 5979 3082 3067 130 450 453 65 314 453 2085 84 4
+0 46 20 8 6 0 1 3 0 0 6
+cob=(12)
+cfi=(199)
+cfn=(1798)
+calls=2 0 
+0 643 133 86 0 12 2 0 6 2 121 18 2
+0 2 2 0 0 0 0 0 0 0 0 0 2
+0 26 2 4 2 0 0 1 0 0 2 1
+
+fn=(8598)
+0 460 90 100 15 38 0 12 19 0 90 24
+cfn=(8600) AI::captureTelemetry()
+calls=10 0 
+0 120 70 20 10 32 10 10 16 7 10 2
+0 463 212 20 36 38 0 29 21 0 112 28
+
+fn=(8608)
+0 4456448 1703936 1048576 384 98432 0 115 21383 0 524288 13
+
+fn=(8640)
+0 1920 384 0 4 0 0 4 0 0 384 9
+cfn=(8635)
+calls=384 0 
+0 9996 4485 2691 0 124 0 0 123 0 1026 52
+
+fn=(8648)
+0 1080 216 0 4 0 0 4 0 0 216
+cfn=(8635)
+calls=216 0 
+0 5664 2540 1524 0 68 0 0 68 0 584 94
+
+fn=(8652)
+0 336 140 56 4 20 0 4 0 0 28 6
+
+fn=(8660) WinningConditionDeath::hasTeamWon(int, Game const*) const
+0 144 48 0 4 0 0 4
+
+fn=(8670) WinningConditionScript::hasTeamWon(int, Game const*) const
+0 80 16 0 8 4 0 8 0 0 16 7
+cfn=(8672) MapScriptSGSL::hasTeamWon(unsigned int) const
+calls=16 0 
+0 528 144 48 16 8 0 13 4 0 32 4
+
+fn=(8672)
+0 112 0 48 4 0 0 1
+cfn=(8674)
+calls=16 0 
+0 80 32 0 4 4 0 4
+0 336 112 0 8 4 0 8 4 0 32 4
+
+fn=(8678)
+0 272 80 0 4 8 0 4 4 0 16 2
+
+fn=(8684)
+0 6528 512 4608 482 128 252 48 21 0 2688 131
+cfn=(5056)
+calls=128 0 
+0 384 256
+0 512 256 256
+cfn=(5056)
+calls=256 0 
+0 768 512
+0 4224 1152 768 128 120 0 16 0 0 640 130
+cfn=(8686)
+calls=256 0 
+0 1792 768 256 256 384 124 34 2 0 256 2
+0 2048 512 256 128 0 0 16 0 0 256
+cfn=(8688) Team::wasRecentEvent(GameEventType)
+calls=256 0 
+0 1280 512 0 128 128 0 17 2
+0 3072 0 1024
+cfn=(8688)
+calls=1024 0 
+0 5120 2048
+0 6400 128 1920 256 0 0 33 0 0 1280 41
+cob=(2)
+cfi=(282)
+cfn=(3058)
+calls=128 77 
+0 4736 1280 640 2 636 0 0 55 0 896 153
+0 128 128 0 0 128 0 0 2 0 0 0 128 4
+0 4608 2432 1408 512 0 384 68 0 91 256 1
+cob=(2)
+cfi=(283)
+cfn=(3066)
+calls=128 367 
+0 2944 640 512 0 0 0 0 0 0 512 102
+0 128 128 0 0 128 0 0 2 0 0 0 128
+
+fn=(8688)
+0 6400 2560 0 128 128 0 17 2
+
+fn=(8792)
+0 672 336 56 50 0 0 34 0 0 112 4
+
+fn=(8798)
+0 2457 910 490 181 0 4 132 0 0 490 96
+cfn=(8840)
+calls=35 0 
+0 6125 1645 700 282 245 0 194 168 0 455 138
+0 420 210 105 24 41 24 17 19 3 70
+
+fn=(8810) Map::updateClearAreasGradient(int, int)
+0 36 2 14 1 0 0 1
+cfn=(8074)
+calls=2 0 
+0 196 64 44 0 4 4 0 1 0 14 2 6
+0 152 40 2 4 19 0 4 7 0 44 10
+cfn=(8812) Map::seedClearAreasGradient(int, int, unsigned short*)
+calls=2 0 
+0 14999564 5052442 524300 8 309910 16384 8 69823 16384 2661872 17635
+0 10 0 2
+cfn=(8074)
+calls=2 0 
+0 196 64 44 0 22 8 0 16 8 14 2 6
+0 12 0 2
+cfn=(8498) Map::propagateGradient(unsigned short*, int, int, gradient_kernel::Family)
+calls=2 0 
+0 1967310 524612 278 49 16454 32 42 10262 25 655534 33 16
+0 4 0 2 2 0 0 2
+cfn=(8340)
+calls=2 0 
+0 266 78 44 0 2 4 0 2 2 22 0 6
+0 4 0 2
+cfn=(8340)
+calls=2 0 
+0 266 78 44 0 2 2 0 2 2 22 0 6
+0 20 16 0 0 2 0 0 2 0 2
+
+fn=(8812)
+0 24 0 12 1 0 0 1
+cfn=(8198)
+calls=2 0 
+0 18 6 0 0 0 0 0 0 0 2
+0 14999522 5052436 524288 7 309910 16384 7 69823 16384 2661870 17635
+
+fn=(8836)
+0 11480 4760 2072 44 55 0 32 47 0 504 125
+cfn=(7240)
+calls=56 0 
+0 336 56 0 16 0 0 13 0 0 56 10
+0 168 0 56
+cfn=(7218)
+calls=56 0 
+0 336 56 0 16 0 0 12 0 0 56 6
+0 1064 448 56 16 2 18 14 1 9 224 22
+
+fn=(8844)
+0 1085 210 525 73 0 0 52
+cfn=(8074)
+calls=35 0 
+0 2595 680 602 25 57 81 24 38 45 213 29 3
+0 350 105 35 24 0 0 17 0 0 35
+cfn=(8486)
+calls=35 0 
+0 5460 1400 700 291 253 50 192 56 1 875 110 70
+0 1190 420 245 49 34 0 36 13 0 105 67
+cfn=(8846)
+calls=35 0 
+0 33456 10291 3455 490 590 99 416 421 50 4178 678 6
+0 210 0 35 0 0 0 0 0 0 35 1
+cfn=(8340)
+calls=35 0 
+0 473 141 56 0 0 0 0 0 0 45 13 3
+0 420 315 0 25 0 0 18 0 0 35
+
+fn=(8956) gradient_preparation::propagate(gradient_preparation::Request const&, SimulationSnapshot::Handle const&, unsigned short*, GradientWorkspace&)
+0 3240 360 1320 360 65 360 250 12 104 120
+cfn=(8958)
+calls=128 0 
+0 3000 720 960 360 240 240 91 81 38 240 15
+0 17880 3480 6840 1560 785 600 656 105 104 3840 177
+cfn=(8960)
+calls=128 0 
+0 49170361 13110956 240 1163 409840 0 350 81604 0 16388626 564
+0 3390 1120 770 350 210 0 160 20 0 400 70 70 4
+cfn=(8962)
+calls=74 0 
+0 1816337728 250740332 214131912 3130 28946198 1055506 1317 51156 226479 114640760 5111572 868 3
+0 2790 610 420 470 330 70 165 0 10 610 85
+
+fn=(9008) std::vector<int, std::allocator<int> >::_M_fill_insert(__gnu_cxx::__normal_iterator<int*, std::vector<int, std::allocator<int> > >, unsigned long, int const&)
+0 288 32 72 21 0 0 16 0 0 32 3
+cob=(12)
+cfi=(199)
+cfn=(1798)
+calls=8 0 
+0 2216 377 258 157 88 13 49 25 3 456 109 8
+0 8 8 0 3 4 0 1 0 0 0 0 8
+0 800 88 160 30 0 24 24 0 11 136 42
+
+fn=(9194)
+0 16798 5856 1970 667 0 0 77 0 0 3116 136
+
+fn=(9428)
+0 64 8 32 2 2 0 2
+cfn=(7918)
+calls=4 0 
+0 24 12 0 2 1
+0 111 47 3 2 2 0 2 2 0 20 3
+cfn=(7240)
+calls=1 0 
+0 6 1 0 1 0 0 0 0 0 1
+0 40 11 7 3 3 1 3 3 1 2 1
+
+fn=(1700)
+cob=(2)
+cfi=(251) ./csu/../csu/libc-start.c
+cfn=(1702) __libc_start_main@@GLIBC_2.34
+calls=1 242 
+0 2579162248 479227323 298122079 115857 42318368 2682073 35183 8069589 1434334 291957128 6555683 64798 1898
+
+fn=(2978)
+cfn=(3354) HeadlessRunner::game(std::map<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >, std::vector<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >, std::allocator<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > > >, std::less<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > >, std::allocator<std::pair<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > const, std::vector<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> >, std::allocator<std::__cxx11::basic_string<char, std::char_traits<char>, std::allocator<char> > > > > > > const&, std::filesystem::__cxx11::path const&)
+calls=1 0 
+0 2579162248 479227323 298122079 115857 42318368 2682073 35183 8069589 1434334 291957128 6555683 64798 1898
+
+fn=(8354)
+cfn=(8398)
+calls=128 0 
+0 2579162248 479227323 298122079 115857 42318368 2682073 35183 8069589 1434334 291957128 6555683 64798 1898
+
+fn=(8518)
+0 128 32 24 12 3 0 10 1 0 16 3
+
+fn=(8544) Building::computeWishedMaterials(int*)
+0 3240 0 1296 275 0 0 76
+cfn=(8426)
+calls=333 0 
+0 8092 3408 1176 501 545 0 195 241 0 852 14
+0 13608 0 4536
+cfn=(8426)
+calls=4662 0 
+0 85312 38960 13608 122 533 0 53 185 0 10976 43
+0 87176 13290 5510 267 419 578 101 76 290 7134 681
+
+fn=(8548) Building::regenerationStep()
+0 3240 648 972 276 0 0 76 0 0 324 3
+cfn=(7238) Building::getEffectiveMaxHp() const
+calls=324 0 
+0 3564 2592 0 454 260 0 135 40 0 324
+0 784 0 68 0 0 0 0 0 0 324 70
+cfn=(7238)
+calls=68 0 
+0 748 544 0 0 0 0 0 0 0 68
+0 1840 1176 68 227 0 0 41
+
+fn=(8554) TeamStats::step(Team*, bool)
+0 5888 768 2816 600 143 0 51 71
+cfn=(7184)
+calls=256 0 
+0 8448 3072 1536 781 782 0 85 273 0 768 2
+0 1536 0 512
+cfn=(8074)
+calls=256 0 
+0 25088 8192 5632 0 140 130 0 27 62 1792 29 768
+0 2048 512 256 134 256 0 17 114 0 512
+cfn=(8556)
+calls=256 0 
+0 75347 12572 35770 2512 1289 4442 290 442 1912 19897 792 10 2
+0 810 532 6 4 8 0 2 8 0 260 241
+cfn=(8558)
+calls=2 0 
+0 26 4 6 2 0 0 1
+0 16 6 2 2 2 0 1 2 0 2 2
+cob=(2)
+cfi=(216)
+cfn=(1208)
+calls=2 24 
+0 2572 648 54 19 140 0 10 133 0 594 56 42
+0 2 2 0 2 2 0 2 1 0 0 0 2
+0 1284 256 256 273 256 0 34 158 0 2
+cfn=(7170)
+calls=256 0 
+0 3840 1024 1536 258 128 376 34 125 290 256 9
+0 20794 6636 3308 258 20 0 34 3 0 4726 492
+cfn=(8560) TeamStats::observeMeasurementUnit(Unit*)
+calls=1024 0 
+0 47104 17408 3072 858 579 0 87 5 0 9216 237
+0 5120 1024 1024 129 0 0 17 0 0 1024
+cfn=(8562) TeamStats::observeLabour(Unit*)
+calls=1024 0 
+0 55109 16420 8192 950 0 730 110 0 276 11745 1026
+0 5340 1092 648 129 133 0 17 2 0 580 61
+cfn=(8564) TeamStats::observeMeasurementBuilding(Building*)
+calls=324 0 
+0 50220 13608 6804 1929 69 0 262 11 0 2592 179
+0 9192 3112 912 262 206 0 38 51 0 1484 90
+cfn=(9006) TeamStats::configureSamplingCatalog(std::shared_ptr<UnitCatalog const> const&)
+calls=8 0 
+0 1030 236 86 44 39 2 29 22 1 200 91
+0 16 0 8
+cfn=(7170)
+calls=8 0 
+0 120 32 48 0 4 12 0 4 12 8 3
+0 13523 4632 62 29 272 0 20 268 0 4360 70
+cfn=(7174)
+calls=8 0 
+0 2256 80 1712 146 29 195 84 28 192 80 18
+0 3536 848 616 87 24 0 52 7 0 440 32
+cfn=(8414)
+calls=32 0 
+0 480 288 0 0 0 0 0 0 0 64 11
+0 6839 1266 458 31 23 0 16 6 0 1385 282
+cfn=(8340)
+calls=8 0 
+0 1064 312 176 0 8 0 0 1 0 88 0 24
+0 496 248 248
+cfn=(8340)
+calls=248 0 
+0 32984 9672 5456 9 163 6 9 62 3 2728 14 744
+0 4110 2822 2 229 3 0 18 1 0 770 139
+cfn=(8568)
+calls=2 0 
+0 56539 16051 1605 176 450 22 107 30 18 13925 292 4
+0 6 0 2
+cfn=(8586)
+calls=2 0 
+0 5592342 51471 5268976 141 1251 83206 118 757 82557 5298250 556 16
+0 24 6 4 2 2 1 1 0 0 4 4
+cob=(2)
+cfi=(216)
+cfn=(1208)
+calls=2 24 
+0 2572 648 54 0 140 0 0 64 0 594 51 42
+0 2 2 0 0 2 0 0 0 0 0 0 2
+0 16 2 2 2 2 0 1 1
+cfn=(8598)
+calls=2 0 
+0 215 76 28 24 28 2 14 22 2 44 20
+0 4 0 2
+cob=(2)
+cfi=(216)
+cfn=(1208)
+calls=2 24 
+0 2572 648 54 0 0 0 0 0 0 594 52 42
+0 2 2 0 0 0 0 0 0 0 0 0 2
+0 509 194 102 29 0 0 16 0 0 85 17
+cfn=(8566) Building::getLongLevel()
+calls=11 0 
+0 66 44
+0 2163 485 244 101 0 0 68 0 0 311 84
+cfn=(9008)
+calls=8 0 
+0 3312 505 490 211 92 37 90 25 14 624 154 16
+0 64 2 8 10 1 0 5 1 0 8 4
+cob=(12)
+cfi=(199)
+cfn=(1798)
+calls=2 0 
+0 126 32 20 0 2 0 0 0 0 16 2 2
+0 2 2 0 0 0 0 0 0 0 0 0 2
+0 30 6 6 4 0 0 2 0 0 2
+cfn=(8590)
+calls=2 0 
+0 6760 3245 3181 144 462 456 72 320 455 2218 107 8
+0 2
+
+fn=(5042)
+0 6656 1536 2048 326 512 0 61 54 0 512 140
+cfn=(5044)
+calls=784 0 
+0 3584 2048 0 112 256 0 18 57 0 512 15
+0 4096 2560 0 0 0 0 0 0 0 512 3
+
+fn=(5072)
+0 20062 8598 1433 135 412 0 67 65 0 1433 39
+
+fn=(5090)
+0 7944 0 2648 120 0 6 60 0 6
+cob=(4)
+cfi=(184)
+cfn=(3356)
+calls=3889 0 
+0 79440 31776 7944 6 621 40 1 22 16 7944 300 5296 240
+0 5296 2648
+
+fn=(7238)
+0 4312 3136 0 454 260 0 135 40 0 392
+
+fn=(7836)
+0 150528 64512 0 83 83 0 37 40 0 21504 39
+
+fn=(7918)
+0 810 405 0 263 132 0 61 5
+
+fn=(8186)
+0 12 4 0 4 0 0 4
+
+fn=(8414)
+0 32040 19224 0 262 1174 0 52 153 0 4272 63
+
+fn=(8452)
+0 1092 84 504 13 0 18 13 0 15 42
+cfn=(8074)
+calls=42 0 
+0 3106 813 721 5 22 30 5 9 21 255 9 3
+0 210 84 42 6 0 0 6
+cfn=(8454)
+calls=42 0 
+0 29200455 8781784 861165 362 492217 24845 343 399650 10376 6423882 54923 54 4
+0 210 42 84 0 0 0 0 0 0 42 3
+cfn=(8340)
+calls=42 0 
+0 543 162 63 1 3 1 1 2 1 52 5 3
+0 1050 588 42 12 16 0 12 7 0 42 10
+cfn=(8474)
+calls=42 0 
+0 284154 35673 41276 326 647 1242 265 342 1134 33723 1257 180
+0 462 42 42 12 3 4 12 2 3 42 13
+
+fn=(8486)
+0 2176 0 896 62 0 4 49 0 4 128 8
+cfn=(8488)
+calls=128 0 
+0 2560 1024 0 66 61 0 48 30 0 384 215
+0 1920 256 128 29 0 0 26 0 0 384 32
+cob=(2)
+cfi=(282)
+cfn=(3058)
+calls=128 77 
+0 4736 1280 640 16 115 25 0 21 1 896 1
+0 128 128 0 0 35 0 0 0 0 0 0 128 1
+0 3218 515 131 58 107 0 42 46 0 643 13
+cob=(12)
+cfi=(199)
+cfn=(5168)
+calls=3 0 
+0 1726 383 249 68 24 15 45 11 14 288 36 6
+0 3 3 0 0 3 0 0 0 0 0 0 3
+0 21 3 6 3 0 0 3
+cfn=(8490) Map::updateMaterialGradient(int, unsigned char, int, bool)
+calls=3 0 
+0 108730732 21421077 10981606 487 1745228 94520 467 89350 42908 10071115 255097 28498 10
+0 9 3 3 0 3 0 0 3
+cob=(2)
+cfi=(283)
+cfn=(3066)
+calls=3 367 
+0 69 15 12 0 3 0 0 3 0 12 3
+0 3 3 0 0 3 0 0 0 0 0 0 3
+0 250 0 125 27 0 0 18
+cob=(2)
+cfi=(283)
+cfn=(3066)
+calls=125 367 
+0 2875 625 500 0 0 0 0 0 0 500 48
+0 125 125 0 0 18 0 0 0 0 0 0 125
+0 1914 1149 128 95 3 27 69 3 2 256 1
+
+fn=(8490)
+0 105 3 36 9 0 0 9 0 0 3
+cfn=(8074)
+calls=3 0 
+0 294 96 66 0 3 3 0 0 3 21 5 9
+0 131 41 18 6 14 0 6 14 0 24 8
+cfn=(8492)
+calls=3 0 
+0 26879112 9003241 1006967 93 467778 24619 89 70390 16403 4360283 39271 27556
+0 21 3 3 3 0 0 3
+cfn=(8074)
+calls=3 0 
+0 294 96 66 0 33 12 0 27 12 21 2 9
+0 21 6 3 0 3 0 0 3
+cfn=(8498)
+calls=3 0 
+0 81849089 12417153 9974170 321 1277323 69877 310 18880 26483 5710605 215779 894 6
+0 6 0 3
+cfn=(8340)
+calls=3 0 
+0 399 117 66 0 9 3 0 3 2 33 7 9
+0 9 0 3
+cfn=(8510) Map::publishPlane(unsigned short* const*)
+calls=3 0 
+0 807 171 136 49 53 3 44 24 2 86 18 12 2
+0 12 6 3 3 3 0 3 0 0 3 2
+cfn=(8340)
+calls=3 0 
+0 399 117 66 0 6 3 0 6 3 33 3 9 2
+0 33 27 0 3 3 0 3 3 0 3 2
+
+fn=(8566)
+0 3954 2636 0 145 0 0 75
+
+fn=(8578) Building::checkGroundExitQuality(int, int, int, int, int&, int&, int&, int&, bool, bool)
+0 600 120 216 6 0 2 3 0 0 24 2
+cfn=(8574)
+calls=24 0 
+0 1608 456 96 0 0 2 0 0 2 224 29
+0 388 256 20 2 0 0 1 0 0 24 1
+cfn=(8574)
+calls=20 0 
+0 1400 400 80 0 7 0 0 0 0 200 2
+0 708 276 84 6 0 0 3 0 0 60 15
+
+fn=(8600)
+0 120 70 20 10 32 10 10 16 7 10 2
+
+fn=(8628)
+0 341 0 113 8 0 0 8 0 0 29
+cfn=(6244)
+calls=29 0 
+0 1226 448 268 32 31 11 21 7 0 134 19 6 1
+0 226 112 0 0 0 0 0 0 0 29 5
+
+fn=(8644)
+0 844 185 206 4 88 0 4 76 0 185 10
+cfn=(8635)
+calls=164 0 
+0 6121 2583 1556 3 155 16 0 148 16 746 53 6
+0 328 0 164 3 0 0 3
+cob=(12)
+cfi=(199)
+cfn=(3580)
+calls=164 0 
+0 2160 804 0 0 192 0 0 192 0 432 182
+0 164 164 0 0 0 0 0 0 0 0 0 164
+0 576 63 0 1 0 0 1 0 0 164 12
+
+fn=(8650)
+0 140 28 0 0 0 0 0 0 0 28 1
+cfn=(8635)
+calls=28 0 
+0 904 400 240 0 16 0 0 16 0 104 8
+
+fn=(8658)
+0 576 432 128 4 12 0 4 0 0 16 6 80 80
+cfn=(8676)
+calls=16 0 
+0 352 96 0 4 8 0 4 4 0 32 4
+cfn=(8668) WinningConditionPrestige::hasTeamLost(int, Game const*) const
+calls=16 0 
+0 96 48 0 12 0 0 12 0 0 16 2
+cfn=(8660)
+calls=32 0 
+0 96 32
+cfn=(8662)
+calls=16 0 
+0 96 48 0 0 4
+0 960 400 224 0 44 4 0 24 0 160 29 64 64
+cfn=(8680)
+calls=16 0 
+0 640 256 88 4 4 0 4 0 0 72 18
+cfn=(8670)
+calls=16 0 
+0 608 160 48 24 12 0 21 4 0 48 11
+cfn=(8666)
+calls=16 0 
+0 96 48 0 4 4 0 4 0 0 16 8
+cfn=(8664) WinningConditionAllies::hasTeamWon(int, Game const*) const
+calls=16 0 
+0 912 352 112 12 8 0 12 0 0 112 34
+0 64 64 16 4 20 0 4 2 0 0 0 16 16
+cfn=(8660)
+calls=16 0 
+0 48 16 0 4 0 0 4
+0 224 64 0 4 0 0 4 0 0 80 13
+
+fn=(8668)
+0 96 48 0 12 0 0 12 0 0 16 2
+
+fn=(8816)
+0 672 336 0 89 17 0 58 12 0 56 31
+
+fn=(8822)
+0 7884 2415 693 91 84 0 83 55 0 567 38
+cfn=(8574)
+calls=168 0 
+0 11151 3157 672 53 134 0 45 89 0 1514 62
+0 2057 600 222 102 0 0 93 0 0 386 63
+
+fn=(8832)
+0 55197 17505 5598 123 2416 1599 77 477 217 4338 171
+
+fn=(8942)
+0 1920 120 1080 120 0 80 31
+cob=(4)
+cfi=(184)
+cfn=(3356)
+calls=128 0 
+0 3600 1440 360 0 0 37 0 0 0 360 1 240
+0 5760 1440 1320 840 284 74 235 66 1 720 123
+cob=(4)
+cfi=(184)
+cfn=(3356)
+calls=128 0 
+0 3600 1440 360 0 0 0 0 0 0 360 1 240
+0 720 0 360
+cob=(2)
+cfi=(300) ./time/../sysdeps/unix/sysv/linux/clock_gettime.c
+cfn=(3364) clock_gettime@@GLIBC_2.17
+calls=128 30 
+0 1320 360 0 0 0 0 0 0 0 240 8
+0 120 120 0 120 120 0 67 18 0 0 0 120 120
+0 1080 480 120 120 45 0 26 44 0 240 0 120 1
+cfn=(8946)
+calls=128 0 
+0 474797967 162412573 57242915 5239 9509987 1286439 1732 6960374 978710 122417151 948261 484 68
+0 120 0 120
+cob=(4)
+cfi=(184)
+cfn=(3356)
+calls=128 0 
+0 3600 1440 360 0 480 0 0 84 0 360 2 240
+0 960 120 360 120 0 240 40 0 40
+cob=(2)
+cfi=(300)
+cfn=(3364)
+calls=128 30 
+0 1320 360 0 0 0 0 0 0 0 240 17
+0 120 120 0 0 120 0 0 12 0 0 0 120
+0 3480 600 600 240 240 0 81 119 0 600 245
+cob=(2)
+cfi=(300)
+cfn=(3364)
+calls=128 30 
+0 1320 360 0 0 0 0 0 0 0 240 2
+0 120 120 0 0 0 0 0 0 0 0 0 120
+0 1680 720 120 240 240 0 75 80 0 480 6 120 1
+cfn=(8954) std::_Function_handler<void (GradientPipeline::Job&, GradientWorkspace&), Map::configureGradientPipeline(unsigned int, unsigned int)::{lambda(GradientPipeline::Job&, GradientWorkspace&)#1}>::_M_invoke(std::_Any_data const&, GradientPipeline::Job&, GradientWorkspace&)
+calls=128 0 
+0 1865539229 263857818 214142462 7513 29357878 1056776 3026 133021 226735 131034716 5112603 938 7
+0 600 0 240 120 0 120 35
+cob=(2)
+cfi=(300)
+cfn=(3364)
+calls=128 30 
+0 1320 360 0 0 240 0 0 13 0 240 2
+0 120 120 0 0 120 0 0 0 0 0 0 120
+0 6000 1560 960 480 750 50 134 63 18 1200 257 120 120
+cfn=(8968)
+calls=128 0 
+0 840 120 0 120 0 0 20 0 0 240
+0 480 0 360 0 0 120
+cob=(4)
+cfi=(184)
+cfn=(3356)
+calls=128 0 
+0 3600 1440 360 0 240 0 0 9 0 360 1 240 3
+0 2880 1440 480 480 360 45 159 105 0 480 123
+cfn=(5794)
+calls=128 0 
+0 17490 5870 1460 68 1570 0 68 385 0 4290 358
+0 1320 0 480 120 0 36 42 0 0 240 4
+
+fn=(8948)
+0 4200 120 1920 240 0 749 65 0 560 480 4
+cfn=(8306)
+calls=128 0 
+0 13200 2520 4920 7 1106 480 0 595 462 3240 484
+0 3000 900 380 190 0 0 51 0 0 430 66
+cfn=(8950)
+calls=74 0 
+0 136733033 61126989 44128495 4092 1761010 875560 1371 971986 614310 55862387 505142 484 68
+0 338043934 101281804 13107200 590 7747751 409650 214 5987678 363378 66550614 442565
+
+fn=(8982)
+0 1785 119 952 238 0 0 90
+cob=(4)
+cfi=(184)
+cfn=(3356)
+calls=119 0 
+0 3570 1428 357 0 0 0 0 0 0 357 1 238
+0 1904 476 238 119 119 0 51 23 0 238 1
+cfn=(8588)
+calls=119 0 
+0 15470 5831 1785 1309 611 0 403 198 0 2023 253
+0 357 0 119
+cfn=(8214)
+calls=119 0 
+0 5236 2142 1785 595 352 0 156 88 0 238 2
+0 216136 74369 772 844 9505 0 294 5926 0 35271 759
+cfn=(8990)
+calls=89 0 
+0 33375 9345 5429 1953 211 146 933 71 85 2225 391 178
+0 3916 1068 445 195 0 0 91 0 0 534 85
+cob=(11)
+cfi=(198)
+cfn=(7520)
+calls=89 0 
+0 1869 89
+0 89 89 0 0 0 0 0 0 0 0 0 89
+0 1335 356 356 65 0 0 32 0 0 178 10
+cfn=(8988)
+calls=89 0 
+0 9260 3293 1871 6 89 6 0 89 4 1069 47
+0 2196 386 475 184 5 0 83 1 0 267 2
+cob=(4)
+cfi=(184)
+cfn=(3356)
+calls=119 0 
+0 3570 1428 357 0 1 0 0 0 0 357 8 238
+0 17091 1071 7891 119 3 8 53 0 0 119 6
+cfn=(8984)
+calls=3886 0 
+0 132124 58290 0 357 715 0 136 193 0 11658 276
+0 220674 57045 30376 595 409 0 208 152 0 30555 111
+cob=(11)
+cfi=(198)
+cfn=(7520)
+calls=3797 0 
+0 79737 3797 0 236 0 0 67
+0 3797 3797 0 118 118 0 63 14 0 0 0 3797
+0 169262 52700 15188 357 550 0 121 134 0 33944 352
+cfn=(8988)
+calls=3797 0 
+0 396266 140489 79853 846 3699 1033 267 3666 547 45620 831
+0 64549 3797 15188 238 0 0 83 0 0 7594 9
+cfn=(8986)
+calls=3797 0 
+0 672069 159474 79737 1428 117 2690 436 22 1653 49361 213 7594
+0 46061 16522 3975 654 99 0 240 89 0 534 11
+
+fn=(9002)
+0 240 80 32 12 24 0 12 5 0 24 8
+cfn=(8830)
+calls=8 0 
+0 48379 12359 5122 20 2082 1389 5 235 33 4262 181
+0 136 88 0 4 8 0 4 1
+cfn=(9004)
+calls=8 0 
+0 17131 5776 419 8 100 0 8 85 0 2416 250
+
+fn=(3354)
+cfn=(8034) Engine::run()
+calls=1 0 
+0 2579162248 479227323 298122079 115857 42318368 2682073 35183 8069589 1434334 291957128 6555683 64798 1898
+
+fn=(8404)
+0 768 384 0 128 128 0 34 7
+
+fn=(8498)
+0 120 5 55 12 0 10 12 0 10
+cfn=(8074)
+calls=5 0 
+0 490 160 110 0 0 20 0 0 20 35 0 15
+0 140 55 20 13 20 5 13 20 5 25 3
+cfn=(8340)
+calls=5 0 
+0 665 195 110 3 45 20 3 6 4 55 14 15 2
+0 70 45 5 9 5 0 9 0 0 5 4
+cfn=(8500)
+calls=5 0 
+0 3146980 1573144 524479 31 8283 8207 19 5290 4102 524514 43 15 1
+0 620 65 250 41 15 14 41 11 12 145 24
+cfn=(8502)
+calls=5 0 
+0 80667204 11368061 9449414 251 1285379 61633 245 23813 22355 5841330 215712 865 3
+0 110 35 5 10 30 0 10 2 0 30 12
+
+fn=(8532)
+0 196 42 0 12 0 0 10 0 0 28 10
+
+fn=(7218)
+0 408 68 0 18 0 0 13 0 0 68 6
+
+fn=(7750)
+0 6783 2574 1938 270 1162 0 131 459 0 648 69
+cfn=(7208)
+calls=642 0 
+0 3852 642 0 139 0 0 25 0 0 642 8
+0 14184 5802 0 840 1989 0 265 877 0 3540 793
+
+fn=(7888)
+0 3456 1408 1152 512 128 0 214 71 0 256 129
+
+fn=(8060)
+cfn=(8064)
+calls=128 0 
+0 2579162248 479227323 298122079 115857 42318368 2682073 35183 8069589 1434334 291957128 6555683 64798 1898
+
+fn=(8188)
+0 12 4
+
+fn=(8190)
+0 12 4 0 4 0 0 4
+
+fn=(8216)
+0 833 357 0 119 0 0 31 0 0 119 2
+
+fn=(8418)
+0 1430 550 330 101 99 0 46 50 0 110 1
+cfn=(8420)
+calls=110 0 
+0 138604782 30358120 11926967 8956 2241027 122221 3730 490586 55021 16596467 314572 28883 21
+
+fn=(8424)
+0 1785 105 630 197 0 82 70 0 17
+cfn=(8426)
+calls=105 0 
+0 1975 900 330 51 23 102 13 12 2 225 18
+0 3465 0 1155
+cfn=(8426)
+calls=1155 0 
+0 20620 9650 3465 6 109 2 1 54 0 2420 94
+0 13545 1155 1785 195 0 0 47 0 0 1680 222
+
+fn=(8436) Building::wantsAnotherDelivery(int, int const*, int const*)
+0 945 0 420 99 0 0 24
+cfn=(8438)
+calls=105 0 
+0 2995 1200 330 6 0 98 2 0 47 330 19
+0 1155 630 0 0 0 0 0 0 0 105 1
+
+fn=(8562)
+0 55109 16420 8192 950 0 730 110 0 276 11745 1026
+
+fn=(8564)
+0 42120 10044 6156 1651 69 0 170 11 0 2268 179
+cfn=(8566)
+calls=324 0 
+0 1944 1296 0 145 0 0 75
+0 1944 648 324 0 0 0 0 0 0 324
+cfn=(8566)
+calls=324 0 
+0 1944 1296
+0 2268 324 324 133 0 0 17
+
+fn=(8576)
+0 252 48 108 10 0 4 5 0 2 4
+cfn=(8578)
+calls=4 0 
+0 884 284 96 14 3 4 7 0 2 100 14
+0 300 80 120
+cfn=(8578)
+calls=20 0 
+0 3820 1224 400 0 4 0 0 0 0 432 35
+0 208 96 4 2 0 0 1 0 0 28 5
+cfn=(8580)
+calls=4 0 
+0 472 122 52 23 8 0 21 4 0 58 11
+0 140 84 24 4 0 0 2 0 0 8
+
+fn=(8612)
+0 7808 2176 896 896 744 0 277 228 0 1536 319
+
+fn=(8630)
+0 32 8 16 4 0 8 4 0 8
+cfn=(8632)
+calls=4 0 
+0 191776 76583 31591 127 8840 74 114 8182 50 28922 3496 2930 598
+0 12 4 0 0 4
+cfn=(8654)
+calls=4 0 
+0 42697 7817 6404 262 1593 929 79 252 238 7469 454 271 7
+
+fn=(8664)
+0 528 176 96 4 8 0 4 0 0 64 13
+cfn=(5056)
+calls=32 0 
+0 96 64
+0 32 0 16 4 0 0 4
+cfn=(5056)
+calls=16 0 
+0 48 32
+0 208 80 0 4 0 0 4 0 0 48 21
+
+fn=(8694)
+0 7776 2168 1904 640 496 255 247 10 2 768 60
+cob=(12)
+cfi=(199)
+cfn=(8698)
+calls=128 0 
+0 21205 5290 2737 1213 803 39 224 285 24 2566 484 267 11
+0 128 128 0 128 128 0 69 19 0 0 0 128 1
+0 640 128 256 128 46 0 52 1
+cob=(12)
+cfi=(199)
+cfn=(8734)
+calls=128 0 
+0 9329 2859 1584 248 186 1 28 38 0 1274 333 131 3
+0 128 128 0 128 128 0 54 17 0 0 0 128 1
+0 7436 2430 1666 768 31 374 288 0 73 640 327
+cob=(12)
+cfi=(199)
+cfn=(1798)
+calls=8 0 
+0 2039 354 226 112 98 20 7 12 6 432 35 8
+0 8 8 0 1 8 0 1 0 0 0 0 8
+0 784 8 704 8 8 78 3 2 70 680 29
+cob=(12)
+cfi=(199)
+cfn=(5168)
+calls=8 0 
+0 5764 1288 847 395 98 40 12 3 26 963 127 16
+0 8 8 0 8 8 0 2 0 0 0 0 8 6
+0 56 16 10 10 0 0 5 0 0 8 1
+cfn=(9416)
+calls=2 0 
+0 260 72 44 12 18 4 10 2 2 20 6 4
+0 6 4
+
+fn=(8806)
+0 1302 546 189 86 18 1 70 14 1 147 57
+cfn=(8448)
+calls=21 0 
+0 189 63 0 18 0 0 14 0 0 21 16
+0 105 42 21 0 8 0 0 3
+cfn=(8808) Map::getClearAreasGradient(int, int)
+calls=21 0 
+0 16969945 5577850 525075 187 326471 16444 82 80130 16428 3317793 17718 46 1
+0 294 168 0 14 32 0 10 16 0 21
+
+fn=(8828)
+0 2240 952 168 108 0 4 68 0 4 168 12
+
+fn=(8838)
+0 8176 2128 560 26 32 142 19 25 118 784 199
+
+fn=(8954)
+0 840 240 0 120 210 0 37 43 0 120 120
+cfn=(8956)
+calls=128 0 
+0 1865538389 263857578 214142462 7393 29357668 1056776 2989 132978 226735 131034596 5112483 938 7
+
+fn=(8978)
+0 463522 148999 56000 1639 3643 1788 568 800 786 55782 788
+
+fn=(9006)
+0 536 102 68 16 20 0 13 13 0 104 55
+cfn=(3802)
+calls=2 0 
+0 30 6 0 1 0 0 1 0 0 2
+0 20 0 8
+cfn=(3802)
+calls=4 0 
+0 60 12 0 0 0 0 0 0 0 4 1
+0 384 116 10 27 19 2 15 9 1 90 35
+
+fn=(9398)
+0 2563 1165 0 68 70 0 35 39 0 233 1
+
+fn=(9434)
+0 46 9 0 4 5 0 4 2 0 7 3
+
+fn=(8422)
+0 6235 3655 430 391 418 97 146 267 52 1720 32
+
+fn=(8442)
+0 750 60 270 20 0 16 11 0 11 30 2
+cfn=(8444) (anonymous namespace)::considerBuildingCandidate(Building&, Unit*, int*, int, int&)
+calls=30 0 
+0 29387569 8806330 888691 732 492762 25734 668 399902 11205 6445811 55779 178 4
+0 310 60 100 7 6 0 5 3 0 50 2
+cfn=(8482)
+calls=20 0 
+0 80 60 0 5 8 0 2 6
+0 140 40 60 6 5 0 5 5
+cfn=(8448)
+calls=20 0 
+0 180 60 0 0 0 0 0 0 0 20 9
+0 260 100 80 6 8 0 5 6
+cfn=(8484)
+calls=20 0 
+0 108736317 21422489 10982364 638 1745367 94542 593 89416 42929 10071926 255184 28547 11
+0 760 370 20 13 8 3 9 8 3 110 7
+
+fn=(8444)
+0 560 60 320 14 11 24 10 7 15 30 9
+cfn=(8446)
+calls=20 0 
+0 428 160 0 12 22 0 10 19 0 84 11
+0 500 200 60 12 14 0 10 9 0 80 8
+cfn=(8448)
+calls=20 0 
+0 180 60 0 17 0 0 14 0 0 20 5
+0 180 20 40
+cfn=(8452)
+calls=20 0 
+0 29384741 8805270 888161 645 492703 25702 599 399855 11184 6445477 55734 178 4
+0 700 480 30 16 11 3 12 11 3 110 8
+cfn=(9414)
+calls=10 0 
+0 200 80 70 10 1 5 8 1 3 10 4
+0 80 0 10 6 0 0 5
+
+fn=(8506)
+0 21 0 14 1 0 4 1 0 1
+cfn=(8472)
+calls=7 0 
+0 153332 50527 66565 27 1077 2072 22 31 2037 66387 119 38 1
+0 963 21 696 2 0 0 2
+cfn=(8472)
+calls=116 0 
+0 681275 72141 157182 1 6527 11320 1 112 4746 152501 963 596
+0 1454 928 252 2 73 0 2
+cfn=(8472)
+calls=42 0 
+0 395462 43996 95091 15 3812 6746 14 350 4957 92034 445 228 1
+0 77467452 10675832 9129520 134 1257472 41477 134 13069 10600 4874789 214116
+
+fn=(8512) Map::planeKeyForSlot(unsigned short* const*) const
+0 3624 246 196 416 0 0 147 0 0 419 74
+
+fn=(8526)
+0 88 16 32 6 0 0 6
+cfn=(8486)
+calls=8 0 
+0 1248 320 160 0 0 2 0 0 2 200 22 16
+0 96 64 0 0 1
+
+fn=(8542) Building::step()
+0 2880 784 392 129 352 0 61 89 0 460 6
+cfn=(8544)
+calls=68 0 
+0 47766 13473 5579 255 631 68 102 225 36 5449 253
+0 768 0 256 129 0 0 66
+cfn=(8544)
+calls=256 0 
+0 149662 42185 20547 910 866 510 323 277 254 13513 485
+0 2268 1296 324 0 190 0 0 91 0 324 41
+cfn=(8534)
+calls=324 0 
+0 223702 75632 24950 3417 1093 0 1235 353 0 33540 1670
+0 2596 1296 2 129 2 0 43 1 0 648 4
+cfn=(8546)
+calls=2 0 
+0 302 76 14 10 4 0 5 4 0 100 9
+0 2
+
+fn=(8552) Building::swarmStep()
+0 8704 4096 2048 502 256 0 105 26 0 1024 2
+cfn=(8550)
+calls=256 0 
+0 17408 5888 1280 0 0 0 0 0 0 2560 2
+0 18944 4352 0 506 30 0 134 12 0 3840 516
+
+fn=(5868)
+0 19 5 4 2 3 0 2 2 0 2 1 1 1
+cfn=(5880)
+calls=127 0 
+0 97 28 14 1 0 0 1 0 0 12 0 3
+0 10 3 1 0 0 0 0 0 0 2
+cob=(12)
+cfi=(199)
+cfn=(2316)
+calls=211 0 
+0 93 27 14 0 0 0 0 0 0 12 1 2
+0 1 1 0 0 0 0 0 0 0 0 0 1
+0 10 4 1 2 0 0 2 0 0 1 1
+
+fn=(7184)
+0 16896 6144 3072 781 782 0 85 273 0 1536 46
+
+fn=(7752)
+0 16384 6144 2048 287 1022 0 76 200 0 3072 14
+
+fn=(8034)
+cfn=(8044)
+calls=1 0 
+0 2579162248 479227323 298122079 115857 42318368 2682073 35183 8069589 1434334 291957128 6555683 64798 1898
+
+fn=(8342)
+0 17048 3269 7944 0 307 8 0 14 0 1945 62 1324
+cfn=(5090)
+calls=1875 0 
+0 46340 17212 5296 2 601 30 1 11 6 3972 150 2648 111
+0 14564 3972 1324 75 0 0 75 0 0 1324 25
+cfn=(8344)
+calls=1747 0 
+0 45016 6620 3972 265 1129 0 130 369 0 2648 142
+0 49609 20481 9268 267 21 704 267 4 92 5296
+
+fn=(8406)
+0 1792 128 1024 256 0 0 68
+cfn=(5040)
+calls=128 0 
+0 5888 2304 1024 256 0 0 51 0 0 640 4
+0 256 0 128
+cfn=(7844)
+calls=128 0 
+0 4224 1792 1024 512 128 0 116 12 0 384 116
+0 3705 1472 1232 370 488 128 92 176 33 368 19 120 1
+cfn=(8970) std::_Function_handler<void (unsigned short**), Map::configureGradientPipeline(unsigned int, unsigned int)::{lambda(unsigned short**)#1}>::_M_invoke(std::_Any_data const&, unsigned short**&&)
+calls=120 0 
+0 7610 1600 1290 770 210 70 230 91 15 600 74
+0 3488 1331 596 247 869 119 50 401 33 605 86
+cfn=(8936)
+calls=120 0 
+0 2385785412 435072735 274368996 33504 39474704 2376310 9499 7391722 1206794 257007379 6183539 8365 560
+0 603 241 1 121 0 0 36 0 0 240 113
+cob=(12)
+cfi=(199)
+cfn=(2316)
+calls=1 0 
+0 93 27 14 6 11 0 0 1 0 12 0 2 1
+0 1 1 0 0 1 0 0 0 0 0 0 1
+0 558 262 11 260 241 0 72 76 0 135 93
+cob=(12)
+cfi=(199)
+cfn=(1798)
+calls=1 0 
+0 60 16 10 0 8 0 0 2 0 8 2 1
+0 1 1 0 0 1 0 0 0 0 0 0 1
+0 1550 1030 2 130 121 0 57 21 0 129 52
+cfn=(8408)
+calls=128 0 
+0 3844 1668 1152 514 260 0 152 128 0 258 12
+
+fn=(8410)
+0 3584 256 2048 260 0 0 36
+cfn=(7748)
+calls=256 0 
+0 4266479 1596490 6358 2921 71879 0 677 34853 0 1063150 2670
+0 2304 256 512 130 0 0 18 0 0 256
+cfn=(8074)
+calls=256 0 
+0 25088 8192 5632 310 979 198 193 237 70 1792 4 768 1
+0 2632960 527872 2304 393 1234 2 54 250 2 527616 559
+cfn=(8412)
+calls=1024 0 
+0 17230545 5660210 552895 5810 330993 17203 3439 82259 16897 3355122 22557 310 49
+0 9216 2048 2048 131 0 0 18 0 0 2048 4
+cfn=(8414)
+calls=1024 0 
+0 15360 9216 0 242 840 0 50 130 0 2048
+0 9728 3328 1280 282 0 2 36 0 2 3072 2
+cfn=(8342)
+calls=256 0 
+0 32768 9728 5376 596 135 122 461 73 33 2816 80 768
+0 1536 0 512 132 0 0 18
+cfn=(8074)
+calls=256 0 
+0 25088 8192 5632 0 305 13 0 153 2 1792 166 768
+0 5632 1024 1024 546 384 0 71 180 0 768 8
+cfn=(8416)
+calls=256 0 
+0 138718244 30392728 11949792 13624 2244067 122391 4790 491401 55101 16608035 315445 31309 339
+0 2560 1024 256 137 139 0 18 24
+cfn=(8528)
+calls=256 0 
+0 6150 2562 1792 585 0 0 42 0 0 514 4
+0 6912 3072 768
+cfn=(8528)
+calls=768 0 
+0 38216 12162 5598 0 3 4 0 0 4 7844 35 4
+0 1053508 524288 324 0 2349 0 0 387 0 263168 408
+cfn=(8542)
+calls=324 0 
+0 429946 134742 52064 4979 3138 578 1835 1040 290 54034 2468
+0 972 648 324
+cfn=(8548)
+calls=324 0 
+0 10176 4960 1108 957 260 0 252 40 0 1040 73
+0 1312256 256 256 225 5 0 17 2 0 262400 318
+cfn=(8552)
+calls=256 0 
+0 45056 14336 3328 1008 286 0 239 38 0 7424 520
+0 8704 3840 1792 264 574 6 34 120 3 1536 263
+cfn=(8550)
+calls=768 0 
+0 52224 17664 3840 1011 1688 0 373 576 0 7680 284
+0 5120 1536 256 387 113 0 51 21 0 1280 236
+cfn=(8342)
+calls=256 0 
+0 32768 9728 5376 0 4 4 0 3 3 2816 6 768
+0 1024 0 256
+cfn=(8554)
+calls=256 0 
+0 6053566 180745 5355992 10521 7150 89617 1814 3045 85794 5382248 5219 1726 2
+0 512 0 256 1
+cfn=(8602)
+calls=256 0 
+0 5888 2304 256 520 385 0 68 133 0 1536 4
+0 512 0 256
+cfn=(8340)
+calls=256 0 
+0 2560 768 256 0 2 0 0 1 0 256
+0 512 256 256 0 2 0 0 1
+cfn=(8340)
+calls=256 0 
+0 2560 768 256 0 11 0 0 3 0 256
+0 9216 3840 1024 784 352 5 104 36 1 1536 32
+
+fn=(8432)
+0 4200 210 1680 304 103 617 85 39 296 420 15
+cfn=(8434)
+calls=105 0 
+0 9330 3465 1155 399 233 204 127 75 53 2340 185
+0 226 105 8 3 0 0 0 0 0 105 7
+cob=(12)
+cfi=(199)
+cfn=(1798)
+calls=8 0 
+0 891 196 126 1 24 2 0 1 1 146 37 8
+0 8 8 0 0 0 0 0 0 0 0 0 8
+0 40 8 16 6 0 0 5
+cob=(12)
+cfi=(199)
+cfn=(4516)
+calls=8 0 
+0 72 16 24 6 0 0 6
+0 8 8 0 6 6 0 6 5 0 0 0 8 6
+0 56 8 16
+cfn=(8516)
+calls=8 0 
+0 15520 3672 910 198 84 13 169 19 11 1517 280 32
+0 24 16 8
+cfn=(8528)
+calls=8 0 
+0 186407 32198 16620 181 784 434 130 432 362 38015 654 102
+0 7563 4305 315 795 8 0 302 6 0 1680 128
+cfn=(8440)
+calls=105 0 
+0 138141081 30235279 11872915 2030 2238205 120300 1579 489370 54153 16521622 311328 28725 15
+0 630 210 105
+cfn=(8514)
+calls=105 0 
+0 990 237 52 195 25 0 67 17 0 189 41
+0 945 210 105 99 0 0 41 0 0 105 101
+cfn=(8436)
+calls=105 0 
+0 5095 1830 750 105 0 98 26 0 47 435 20
+0 1244 0 0 102 0 0 47 0 0 420 22
+
+fn=(8448)
+0 504 252 0 32 2 0 18
+cfn=(8450)
+calls=126 0 
+0 630 126 0 67 0 0 61 0 0 126 41
+
+fn=(8478)
+0 4756 1544 0 13 25 0 13 15 0 1136 59
+
+fn=(8510)
+0 1353 0 861 244 0 0 69
+cfn=(8512)
+calls=123 0 
+0 3624 246 196 416 0 0 147 0 0 419 74
+0 2496 1165 284 137 224 70 41 105 15 215 8
+cob=(12)
+cfi=(199)
+cfn=(2316)
+calls=2 0 
+0 186 54 28 12 10 0 7 2 0 24 5 4 2
+0 2 2 0 1 2 0 1 0 0 0 0 2
+0 27 4 12 2 0 0 2 0 0 1
+cob=(12)
+cfi=(199)
+cfn=(1798)
+calls=1 0 
+0 63 16 10 0 8 0 0 2 0 8 2 1
+0 1 1 0 0 1 0 0 0 0 0 0 1
+0 8 0 6 4 0 0 4
+cob=(12)
+cfi=(199)
+cfn=(1798)
+calls=2 0 
+0 126 32 20 0 16 0 0 6 0 16 1 2
+0 2 2 0 0 2 0 0 0 0 0 0 2
+0 49 9 9 3 0 3 3 0 2 3 2
+
+fn=(8560)
+0 15360 2048 3072 587 91 0 51 2 0 3072 213
+cfn=(8414)
+calls=1024 0 
+0 15360 9216 0 6 258 0 2 2 0 2048 16
+0 16384 6144 0 265 230 0 34 1 0 4096 8
+
+fn=(8570)
+0 259 37 74 2 2 0 2
+cfn=(8572)
+calls=37 0 
+0 2107 605 74 13 63 0 13 9 0 313 31
+0 74 37 0 2 0 0 2
+
+fn=(8620)
+0 88 8 40 8 4 4 8 4 0 4 2
+cob=(2)
+cfi=(282)
+cfn=(3058)
+calls=4 77 
+0 148 40 20 1 16 0 0 3 0 28 1
+0 4 4 0 0 4 0 0 0 0 0 0 4 1
+0 32 8 12 4 4 0 4 4 0 4
+cob=(2)
+cfi=(283)
+cfn=(3066)
+calls=4 367 
+0 92 20 16 0 0 0 0 0 0 16 1
+0 4 4 0 0 4 0 0 0 0 0 0 4
+0 68 52 0 12 4 0 12 3 0 12 8
+
+fn=(8740)
+0 1536 384 384 250 130 0 60 0 0 128 2
+cfn=(8030)
+calls=128 0 
+0 3200 896 256 256 256 0 48 77 0 512 3
+0 2304 768 128 128 128 0 40 27
+cfn=(8742)
+calls=128 0 
+0 3067 1277 640 256 638 0 64 23 0 510 252
+
+fn=(8784)
+0 8389517 2097451 291 8 16398 0 4 16390 0 2097156 63
+
+fn=(8786)
+0 176 8 88 16 0 0 16
+cfn=(8074)
+calls=8 0 
+0 784 256 176 0 24 8 0 0 6 56 9 24
+0 112 16 40 24 0 0 24 0 0 8 8
+cfn=(8340)
+calls=8 0 
+0 1064 312 176 0 8 8 0 0 0 88 9 24
+0 88 72 0 0 0 0 0 0 0 8 7
+
+fn=(8808)
+0 424 118 86 25 16 0 23 5 0 23 6
+cob=(12)
+cfi=(199)
+cfn=(5168)
+calls=2 0 
+0 1459 322 207 96 34 10 1 6 7 246 30 4
+0 2 2 0 2 2 0 1 0 0 0 0 2 1
+0 10 0 4
+cfn=(8810)
+calls=2 0 
+0 16968036 5577396 524778 64 326415 16434 57 80115 16421 3317524 17682 40
+0 14 12 0 0 4 0 0 4
+
+fn=(8862)
+0 4063 239 1912 130 0 0 1
+cob=(2)
+cfi=(282)
+cfn=(3058)
+calls=513 77 
+0 8843 2390 1195 0 0 0 0 0 0 1673
+0 239 239 0 0 0 0 0 0 0 0 0 239
+0 13862 3346 1195 151 738 0 1 656 0 1434 173
+cob=(2)
+cfi=(283)
+cfn=(3066)
+calls=513 367 
+0 5497 1195 956 0 0 0 0 0 0 956 2
+0 239 239 0 0 0 0 0 0 0 0 0 239
+0 8126 3346 2868 360 120 0 2
+cob=(4)
+cfi=(184)
+cfn=(3356)
+calls=513 0 
+0 7170 2868 717 0 0 0 0 0 0 717 11 478
+0 1434 717 478 0 0 0 0 0 0 0 0 239 239
+cfn=(8972)
+calls=128 0 
+0 44902227 8668046 2938211 9989 564675 31575 2912 293168 1119 3442486 116324 476
+cfn=(8940)
+calls=128 0 
+0 2340405446 426291621 271395117 16180 38873031 2344017 5821 7094430 1205504 253462877 6062076 3222 320
+0 239 0 239 120 0 0 3
+cob=(4)
+cfi=(184)
+cfn=(3356)
+calls=513 0 
+0 7170 2868 717 0 0 0 0 0 0 717 2 478
+0 7648 2629 1673 240 478 358 5 95 19
+cob=(2)
+cfi=(282)
+cfn=(3058)
+calls=513 77 
+0 8843 2390 1195 1 717 0 1 44 0 1673 9
+0 239 239 0 0 239 0 0 13 0 0 0 239 1
+0 5497 1434 478 182 956 0 5 157 0 1195 122
+cob=(2)
+cfi=(283)
+cfn=(3066)
+calls=513 367 
+0 5497 1195 956 0 0 0 0 0 0 956 116
+0 239 239 0 0 239 0 0 21 0 0 0 239
+0 18642 5497 1195 1262 1208 0 23 153 0 2629 227
+cob=(12)
+cfi=(199)
+cfn=(7422)
+calls=385 0 
+0 6453 2151 1434 376 478 0 13 41 0 239 155 239
+0 239 239 0 120 239 0 1 30 0 0 0 239
+0 239 0 0 120 0 0 1
+
+fn=(8938)
+0 360 0 120 120 0 0 43
+cob=(2)
+cfi=(282)
+cfn=(3058)
+calls=128 77 
+0 4440 1200 600 0 120 0 0 0 0 840
+0 120 120 0 0 0 0 0 0 0 0 0 120
+0 480 120 0 0 0 0 0 0 0 120 1
+
+fn=(8970)
+0 480 240
+cfn=(8510)
+calls=120 0 
+0 7130 1360 1290 770 210 70 230 91 15 600 74
+
+fn=(8992)
+0 445 267 0 130 65 0 52 16 0 89 88
+
+fn=(9232)
+0 342 72 144 24 3 9 24 0 0 18 5
+
+ob=(2)
+fl=(252)
+fn=(1802)
+255 660 0 0 76 0 0 5
++1 660
++6 660
++1 660 0 0 0 0 0 0 0 0 660 80
++2 650 650 0 0 513 0 0 48
++1 650
++1 650 0 0 0 0 0 0 0 0 650 24
++3 10 10
++1 10 0 10
++1 10 0 10
++3 20 10
++30 10
++1 10 0 0 0 0 0 0 0 0 10 5
++2 5
++1 5 0 0 0 0 0 0 0 0 5
++33 5 5 0 4 0 0 1
++1 5 5
++1 5 0 5
++1 5 0 5
++2 5 5
++17 5 5 0 4 0 0 1
++1 5 5
++1 5 0 5
++1 5 0 5
++1 5 5
++7 5 5
++1 5 5
++1 5 0 5 0 0 2 0 0 1
++1 5 0 5 0 0 3 0 0 2
++1 5 0 5
++1 5 0 5
++1 10 5
++5 640 640 0 76 319 0 5 1
++1 640 0 0 0 0 0 0 0 0 640 37
++5 555
++1 555 0 0 0 0 0 0 0 0 555 202
++2 10 10
++1 10
++1 10 0 0 0 0 0 0 0 0 10 5
++2 5 5
++1 5 5
++1 5 5
++1 5 5
++1 5 5
++1 5 5 0 4 0 0 1
++1 5 0 5
++1 5 0 5 0 0 3 0 0 3
++1 5 0 5 0 0 2 0 0 1
++1 5 0 5 0 0 3 0 0 3
++1 5 0 5 0 0 5 0 0 4
++1 5 0 5
++1 5 0 5 0 0 2 0 0 1
++1 5 0 5
++1 10 5
++4 545 0 0 72 0 0 18
++1 545
++4 545
++2 545 0 0 76 0 0 5 0 0 545 1
++4 545 545 0 0 304 0 0 1
++1 545 0 0 0 0 0 0 0 0 545 5
++11 545
++3 545
++2 545
++2 545
++4 545
++1 545 0 0 0 0 0 0 0 0 545 23
++9 527 527 0 0 221 0 0 9
++1 527 527 0 0 112 0 0 2
++2 527
++2 527
++1 527 527 0 76 189 0 6 7
++1 527 527 0 0 114 0 0 5
++3 527
++2 527
++2 527
++2 1054
++6 527 527 0 0 102 0 0 4
++1 527 527 0 0 277 0 0 6
++1 527 527 0 0 151 0 0 4
++1 527 527 0 0 284 0 0 8
++1 527
++1 527 0 527 0 0 344 0 0 31
++1 527 0 527 0 0 391 0 0 42
++1 527 0 527 74 0 136 5 0 43
++1 527 0 527 0 0 391 0 0 41
++1 527
++1 527
++1 527 0 0 0 0 0 0 0 0 527
+-11 23562 23562 0 0 6414 0 0 151
++1 23562 23562 0 0 14802 0 0 381
++1 23562 23562 0 0 6272 0 0 195
++1 23562 23562 0 0 14651 0 0 413
++1 23562
++1 23562 0 23562 0 0 3508 0 0 1756
++1 23562 0 23562 0 0 19268 0 0 1502
++1 23562 0 23562 0 0 3508 0 0 1779
++1 23562 0 23562 0 0 19270 0 0 1501
++1 23562
++1 23562
++1 23562 0 0 0 0 0 0 0 0 23562 544
++2 527 0 527 0 0 322 0 0 39
++1 527 0 527 0 0 136 0 0 41
++1 527 0 527
++1 527 0 527
++2 527 0 527
++4 1054 527
++13 18 18 0 1 6
++1 18 18 0 0 10
++2 18 0 0 3 0 0 3
++1 18 18 0 0 6
++1 18 18 0 0 12 0 0 2
++2 18
++2 18
++2 36
++6 18 18 0 0 3
++1 18 18 0 0 9
++1 18 18 0 0 5
++1 18 18 0 0 10 0 0 2
++1 18
++1 18 0 18 0 0 15 0 0 11
++1 18 0 18 3 0 6 3 0 6
++1 18 0 18 0 0 12 0 0 8
++1 18 0 18 0 0 6 0 0 6
++1 18
++1 18
++1 18 0 0 0 0 0 0 0 0 18 1
+-11 808 808 0 0 276
++1 808 808 0 0 389 0 0 20
++1 808 808 0 0 274
++1 808 808 0 0 387 0 0 18
++1 808
++1 808 0 808 0 0 436 0 0 333
++1 808 0 808 0 0 372 0 0 372
++1 808 0 808 0 0 436 0 0 330
++1 808 0 808 0 0 372 0 0 372
++1 808
++1 808
++1 808 0 0 0 0 0 0 0 0 808 18
++2 18 0 18
++1 18 0 18 0 0 12 0 0 8
++1 18 0 18
++1 18 0 18
++2 18 0 18
++1 36 18
++9 85 85 0 71 81 0 24 44
++7 85
++1 85 0 0 0 0 0 0 0 0 85 4
++6 72
++3 72
++2 72
++3 72
++1 72
++2 72
++2 36729576 36729504 36729504 0 573880 573951 0 207684 548004 36729576 97
++2 72 0 72 0 0 71 0 0 68
++2 72 0 72 0 0 70
++2 144 72 0 0 72 0 0 5
++5 85 0 0 71 0 0 23
++1 85
++4 85
++2 85 0 0 0 0 0 0 0 0 85 2
++3 85
++4 85 85 0 0 15
++1 85 0 0 0 0 0 0 0 0 85 2
++4 85 85
++4 85 0 0 0 0 0 0 0 0 85 2
++24 13
++2 13
++2 13
++2 13 0 0 2 0 0 2
++3 13
++1 13
++2 245421 245408 245408 0 3827 3835 0 0 3568 245421 13
++3 13 0 13 0 0 11
++2 13 0 13 0 0 1
++2 26 13 0 0 13
+
+fl=(265) ./csu/../sysdeps/nptl/libc_start_call_main.h
+fn=(2584) (below main)
+cob=(38)
+cfi=(250)
+cfn=(2592)
+calls=1 0 
+58 2579162248 479227323 298122079 115857 42318368 2682073 35183 8069589 1434334 291957128 6555683 64798 1898
+
+fl=(283)
+fn=(3066)
+367 1729
+51 5187 1729 0 0 4 0 0 3
++1 3458 0 0 0 0 0 0 0 0 1729 148
+367 5187 0 1729
+57 3458 0 0 0 0 0 0 0 0 1729 127
++8 1729 0 1729
+-3 1729 0 1729
+-23 1729 1729
++1 6916 1729 0 0 0 0 0 0 0 3458 254
++1 1729 0 1729
++29 1729
++2 1729
+369 3458 3458
+74 2 0 0 1 0 0 1 0 0 1 1
++6 4 1 0 0 0 0 0 0 0 1
++4 3 2 0 0 0 0 0 0 0 1 1
++3 2 0 1 1 0 0 1 0 0 1 1
+
+fl=(222) ./misc/./misc/sbrk.c
+fn=(1240) sbrk
+37 168 0 84 12 0 8 4 0 3
++3 21 21 0 0 21 0 0 2
++3 21 21 0 0 21 0 0 2
+-3 21 21 0 0 19 0 0 2
++3 21 0 0 0 0 0 0 0 0 21 11
++15 42 0 0 13 0 0 4 0 0 21
++4 42 0 0 0 0 0 0 0 0 21
++4 84 0 0 0 0 0 0 0 0 42 1
++12 21
+-28 21
++28 126 105
+-4 21 0 21 14 0 0 4
+cfi=(223) ./misc/../sysdeps/unix/sysv/linux/brk.c
+cfn=(1242) brk
+calls=136 -38 
+* 231 63 42 14 18 18 4 1 5 21 2
+* 42 0 0 0 0 0 0 0 0 21
+
+fl=(340) ./stdlib/./stdlib/cxa_thread_atexit_impl.c
+fn=(5082) __cxa_thread_atexit_impl
+102 5 0 2 1 0 0 1
++4 1
+-4 3 0 2
++1 1
++3 1
+-4 1 0 1
++1 2 1
++3 1 0 1 1 0 0 1
+cob=(4)
+cfi=(184)
+cfn=(2142) 0x00000000058cb450
+calls=2 0 
+* 297 54 35 11 6 1 11 3 1 51 13 1 1
++1 2 0 0 0 0 0 0 0 0 1 1
++3 2 0 1
++7 1 1 0 0 1
+-6 1 0 1
++1 1 1
++5 1
+-5 2 1 1
++1 1 0 1
++4 1 0 1
+cfi=(282)
+cfn=(3058)
+calls=2 -40 
+* 44 12 6 3 1 0 3 1 0 9 6
++3 2 0 0 0 0 0 0 0 0 1 1
++16 1 1 1 1 1 0 1 1 0 1
++1 2 0 1
+cfi=(283)
+cfn=(3066)
+calls=2 367 
+* 34 8 5 2 0 0 2 0 0 8 5
++2 2 1 1
++3 7 6
+-18 2 0 1 1 0 0 1
+cob=(4)
+cfi=(184)
+cfn=(5084) 0x00000000058cb4e0
+calls=2 0 
+* 33 13 5 5 5 0 5 4 0 6 2 1 1
++4 5 1 1 0 0 0 0 0 0 1 1
+
+fl=(358) ./nptl/./nptl/pthread_cond_broadcast.c
+fn=(7428) pthread_cond_broadcast@@GLIBC_2.3.2
+39 2151 0 1434 120 0 0 4
++1 239
++2 239 239 0 0 239 0 0 24
++1 717 0 0 0 0 0 0 0 0 239 155
++45 2151 1673 0 120 0 0 4
+
+fl=(282)
+fn=(3058)
+77 1729 0 0 20 0 0 2
++3 5187 1729 0 0 906 0 0 207
++2 1729
++2 3458 0 0 0 0 0 0 0 0 1729 17
+-7 6916 0 3458 0 0 25 0 0 1
++11 3458 0 0 0 0 0 0 0 0 1729 116
++2 5184 1728 0 8 530 0 3 2 0 1728 17
+-46 1728 1728
++1 6912 1728 0 0 268 0 0 1 0 3456 247
++49 5184 1728 0 0 0 0 0 0 0 1728
++85 1729 1729 0 0 537 0 0 32
++3 1729 0 1729
++2 1729 0 1729
++3 1729
+-63 1729
++66 5187 5187
+45 5184 1728 0 21 128 0 3 29 0 1728 93
++1 3456 0 1728
++51 2 0 0 1 0 0 1 0 0 1 1
++11 4 1 0 0 0 0 0 0 0 1 1
++4 1 1
++3 2 1 0 0 0 0 0 0 0 1 1
+-71 1 1 0 1 0 0 1
++1 7 2 0 1 0 0 1 0 0 3 2
++1 1 0 1
++84 3 1 0 0 0 0 0 0 0 1
++1 2 0 1
+
+fl=(251)
+fn=(1702)
+cfi=(265)
+cfn=(2584)
+calls=1 29 
+360 2579162248 479227323 298122079 115857 42318368 2682073 35183 8069589 1434334 291957128 6555683 64798 1898
+
+fl=(212) ./string/../sysdeps/x86_64/multiarch/strlen-avx2.S
+fn=(906) __strlen_avx2
+52 7 0 0 2 0 0 1
++13 7
++1 7
++1 7
++3 7
++2 7
++1 7 0 0 0 0 0 0 0 0 7
++3 7 7 0 0 5 0 0 1
++1 7
++8 7
++1 7 0 0 0 0 0 0 0 0 7
++1 7
++5 14 7
+
+fl=(217) ./string/../sysdeps/x86_64/multiarch/strcmp-avx2.S
+fn=(1212) __strncmp_avx2
+206 140 0 0 2 0 0 1
++24 140
++5 140 0 0 0 0 0 0 0 0 140
++14 140
++25 140
++1 140
++1 140
++2 140
++1 140 0 0 3 0 0 1 0 0 140 7
++4 140 140
++4 140 140 0 0 45 0 0 27
++2 140
++2 140
++3 140
++2 140
++1 140 0 0 0 0 0 0 0 0 140
++11 140
++10 140 140
++1 140 140
++3 140
++4 280 140
++5 140
++1 140
++1 140 0 0 0 0 0 0 0 0 140
+957 7 0 0 2 0 0 1
++1 7
++1 7
++1 7
++2 7
++3 7
++1 7 0 0 0 0 0 0 0 0 7
+1076 7 0 0 2 0 0 1
++1 7 0 0 0 0 0 0 0 0 7
+
+fl=(221) ./malloc/./malloc/morecore.c
+fn=(1238) __glibc_morecore
+25 21 0 0 12 0 0 3
++1 42 21 0 0 0 0 0 0 0 21 2
+-1 42 0 21 12 0 0 3
++4 21 0 21 0 0 1
+cfi=(222)
+cfn=(1240)
+calls=160 +8 
+* 882 231 147 53 79 26 16 7 8 147 14
++1 42 0 0 0 0 0 0 0 0 21
+-3 21
++7 42 42
+
+fl=(223)
+fn=(1242)
+36 21 0 0 14 0 0 4
+fi=(386) ./misc/../sysdeps/unix/sysv/linux/brk_call.h
+-12 42
+fe=(223)
++13 42 21 21
++1 42 0 0 0 0 0 0 0 0 21 2
++2 42 21 21 0 18 18 0 1 5
++1 42 21
+
+fl=(319) ./misc/../sysdeps/unix/sysv/linux/setvmaname.c
+fn=(3690) __set_vma_name
+33 147 0 84 12 0 0 4
++2 105 42 21 0 21 8 0 2 2 21
++14 189 147 0 14 0 0 4 0 0 21 2
+
+fl=(218) ./malloc/./malloc/malloc.c
+fn=(2576) unlink_chunk.isra.0
+1608 599 0 599 18 0 0 4
++2 1797 599
+-2 599
++2 1198 599 0 19 304 0 4 99 0 599 9
++3 599 599 0 0 39 0 0 9
++1 1198 599
++2 2396 1198 0 0 151 0 0 36 0 1198 10
+-3 599 599
++6 599 0 599
++1 599 0 599
++1 2653 485 0 11 72 0 3 16 0 1084 162
++2 918 459 0 0 44 0 0 10 0 459 8
++1 1377 918 0 0 25 0 0 9 0 459
++3 918 459 0 0 112 0 0 4 0 459 1
++14 458 0 458
++1 458 0 458
++3 1196 1196 0 7 0 0 1
+-16 2 0 0 0 0 0 0 0 0 1
++4 4 0 1
++2 1 0 1 1 0 0 1
++1 2 1 1
++9 2 2
+
+fn=(4366) sysmalloc_mmap_fallback.constprop.0
+2490 231 0 126 14 0 0 3
++4 21 21
++3 63 21 0 12 0 0 3 0 0 21
++4 42 0 0 0 0 0 0 0 0 21 15
++1 32
++4 16
+-1 32 0 0 0 0 0 0 0 0 16
++1 5
+-1 10 0 0 0 0 0 0 0 0 5 3
++3 168 0 21 14 0 0 3
+cfi=(318) ./misc/../sysdeps/unix/sysv/linux/mmap64.c
+cfn=(3688) mmap
+calls=73 47 
+* 546 84 63 26 0 1 8 0 0 84 15
+* 21
++3 42 0 0 0 0 0 0 0 0 21 2
++4 42 0 0 0 0 0 0 0 0 21 3
++4 84 0 21
+cfi=(319)
+cfn=(3690)
+calls=73 33 
+* 441 189 105 26 21 8 8 2 2 42 2
++5 21 0 21
++2 21 0 21
++2 189 147
+2008 84 21 0 14 0 0 3 0 0 21
+
+fn=(1224) malloc
+3294 5368 0 2684 59 0 9 15 0 6
++7 1342 671 0 0 384 0 0 3 0 671 19
+1326 1342 0 0 0 0 0 0 0 0 671 3
++19 3239 0 0 102 0 0 32 0 0 671 129
+3311 1110
++2 2684 1342 0 0 736 0 0 34 0 671 1
++3 1342 671 0 0 340 0 0 2 0 671 141
++10 868 434 0 23 261 0 4 0 0 434 23
++28 2604 2170 0 16 0 0 4
+-36 981 327 0 58 200 0 17 66 0 327 41
+3178 474 237 0 0 198 0 0 70
++4 474 0 0 0 0 0 0 0 0 237 1
++4 237
++4 237
+-4 711 237 237 24 233 0 6 72
++4 237 0 237
++1 237 0 237
+3354 1422 1185
+-26 1736 0 434 1 0 246 0 0 16
+cfn=(1236) _int_malloc
+calls=594707 3846 
+* 151316 27377 18957 1256 4522 1629 294 448 440 31628 3185
++1 2170 434 0 17 1 0 3 0 0 868 16
+fi=(219) ./malloc/./malloc/arena.c
+153 868 0 0 0 0 0 0 0 0 434 15
+fe=(218)
+
+fn=(2144) calloc
+3699 2 0 1 1 0 0 1
++10 1
+-10 7 0 5
++10 8 0 0 1 0 0 1 0 0 2
++8 2 1 0 0 0 0 0 0 0 1
++3 3 2 0 0 0 0 0 0 0 1
++2 2 1 0 1 0 0 1 0 0 1
++34 5 1 0 1 0 0 1 0 0 1
+fi=(219)
+153 2 0 0 0 0 0 0 0 0 1 1
+fe=(218)
+3732 1 1 0 1 0 0 1
++1 1
++21 2
+-21 2 1 0 0 1
++21 1 0 1
+cfn=(1236)
+calls=253 +92 
+* 218 37 25 0 4 1 0 2 1 36 8
++2 2 0 0 0 0 0 0 0 0 1 1
++81 8 7 0 1 0 0 1
+-41 1 1 0 1 0 0 1
+-12 1
++12 2 0 0 0 0 0 0 0 0 1 1
++3 5
++8 1 0 0 1 0 0 1
++2 2 0 0 0 0 0 0 0 0 1
++2 2 0 0 0 0 0 0 0 0 1
++5 1
++2 1 0 1
+-2 1 0 1
++3 2 0 0 0 0 0 0 0 0 1
++2 1 0 1
++2 2 0 0 0 0 0 0 0 0 1 1
+-67 3 0 0 1 0 0 1 0 0 1
++3 3 1 0 1 0 0 1 0 0 1 1
+
+fn=(2328) free
+3359 431 0 0 102 0 0 25
++4 862 0 0 0 0 0 0 0 0 431 4
+-4 1293 0 862 97 0 8 24
++14 431
+-14 1293 0 862 0 0 7
++12 431 431 0 0 306
++4 431 431 0 0 138 0 0 20
+-4 431 431 0 0 322 0 0 24
++4 862 0 0 0 0 0 0 0 0 431 6
++17 1293 862 0 0 35 0 0 0 0 431 4
+fi=(219)
+153 1293 0 0 0 0 0 0 0 0 431 27
+fe=(218)
+3398 1293 0 431 100 0 0 27
+cfn=(2332) _int_free
+calls=1451504 4495 
+* 45373 13260 7572 661 568 23 167 23 1 7515 326
++3 431 0 431
++1 2586 2155
+
+fn=(2332)
+4495 3164 0 1808 115 0 18 30 0 1
++4 1356 452
++6 1808 0 0 0 0 0 0 0 0 452 1
++1 904 0 0 104 0 0 25 0 0 452 2
++4 2260 0 0 0 0 0 0 0 0 904 2
++8 1808 904 0 0 0 0 0 0 0 452 2
+-1 904
++1 904 452 0 0 17 0 0 0 0 452 106
++29 220 220 0 93 0 0 23
+-20 220 220 0 0 165 0 0 1
+-6 220
++6 440 220 0 0 0 0 0 0 0 220
++20 880 220 0 0 11 0 0 0 0 220 78
+1792 232 232 0 4 15 0 1
+4561 464 0 0 0 0 0 0 0 0 232 3
++97 1320 1100 0 101 0 0 24
+-21 464 232 0 6 0 0 2 0 0 232
++3 464 232 0 0 33 0 0 0 0 232
++18 232
+-12 232
++12 928 928
+-12 232
+cfn=(2638) _int_free_merge_chunk
+calls=18627 +19 
+* 26541 8269 5388 186 318 6 34 19 1 4192 191
+3163 220 220 0 108 0 0 23
++4 220
+-4 220 0 220
++2 880 220 220 97 9 0 23 3
++1 220 0 220
++1 220 0 220
+4550 220
+
+fn=(1236)
+3846 4785 435 3045 12 187 281 3 2 20
+1326 870 0 0 0 0 0 0 0 0 435 3
++19 2605 0 0 15 0 0 4 0 0 435
+3887 860 0 0 0 0 0 0 0 0 430
+1794 430 430
+3914 860 0 0 0 0 0 0 0 0 430 25
++65 12
+-63 24
++3 6 6 0 3 4 0 1
++2 12 0 0 0 0 0 0 0 0 6
++56 848 0 0 50 0 0 8 0 0 424 24
++62 4402 0 0 7 0 0 2 0 0 844 208
++1 1242 414 0 5 263 0 1 2 0 414
++20 434 434 0 20 0 0 5
+-1 434
+-1 434
++1 868 0 434 0 0 7 0 0 5
++1 868 434 0 0 0 0 0 0 0 434
+-2 868 434
++12 2170 434 434 0 257 0 0 2 0 434 8
+-1 860 0 430 14 0 0 4
++4 860 430 0 0 236 0 0 10
++1 430
++2 860 0 0 0 0 0 0 0 0 430 2
+-3 406 203 0 0 39 0 0 1
++1 203
++2 406 0 0 0 0 0 0 0 0 203 10
++1 1899 633 0 0 265 0 0 2 0 633 9
++2 633 633 0 0 452 0 0 16
++1 2532 0 0 16 0 0 5 0 0 1266 5
++2 2532 633 0 0 0 0 0 0 0 633 5
+-10 633 633 0 0 68 0 0 1
++12 1266 633 0 0 169 0 0 8 0 633
++1 1266 633 0 0 0 0 0 0 0 633 6
++2 1266 0 0 0 0 0 0 0 0 633 2
++11 2126 0 0 7 0 0 1 0 0 1063 370
++29 626 0 626 10 0 0 2
++1 626 0 626
++4 1252 0 0 0 0 0 0 0 0 626 4
++29 1252 0 0 0 0 0 0 0 0 626 159
++8 4257 0 193 15 0 0 4 0 0 823 260
++1 193
++1 193 193 0 0 158 0 0 1
+-1 193
++4 386 0 0 0 0 0 0 0 0 193 47
+-4 285 0 0 3 0 0 1
++1 285 285 0 0 240 0 0 13
+-1 285
++4 570 0 0 0 0 0 0 0 0 285 24
++5 109 109
+-2 109
++2 327 109 0 10 101 0 4 12 0 109 2
++1 218 0 0 0 0 0 0 0 0 109 55
++7 43 43 0 0 34
+-1 172 0 43 0 0 5
++2 129 0 86 0 0 16
+3887 10 0 0 1 0 0 0 0 0 5
++27 10 5 0 0 0 0 0 0 0 5
++66 21 0 0 12 0 0 4
++2 21 21 0 0 17 0 0 3
+-2 21
++2 42 0 0 0 0 0 0 0 0 21 1
++2 1 1 0 0 1
++1 2 1 0 0 0 0 0 0 0 1
++6 1
+-4 1 0 1
++1 1 0 1
++1 1 0 1
++2 2 0 0 0 0 0 0 0 0 1 1
++7 4 2 0 1 0 0 0 0 0 1
+-1 2
++1 2 1 0 0 0 0 0 0 0 1
++5 5 2 0 1 0 0 0 0 0 1
++1 2 0 0 0 0 0 0 0 0 1 1
+-90 15 0 0 1 0 0 1
+1345 5 0 0 1
+3919 10 5 0 0 3
++2 10 0 0 0 0 0 0 0 0 5
++9 33 0 0 1
+4487 5220 3915 0 20 0 0 3 0 0 435
+1985 1 1
+4020 1
+1985 2 0 0 0 0 0 0 0 0 1
+4163 304 0 152 10
++1 456
++1 152 152 0 0 138 0 0 16
+-1 152
++57 304 152 0 10 0 0 1
++9 152 0 152
+-9 304
++9 152 152
+-9 456 0 152 0 0 85
++1 152 0 152
++1 152 0 152
++1 152 0 152 0 0 4 0 0 2
++1 152 0 152
++6 304 0 0 0 0 0 0 0 0 152 1
+-10 956 478 0 12 0 0 4
++9 478 0 478
+-9 956
++9 478 478
+-9 1434 0 478 0 0 185 0 0 2
++1 478 0 478
++1 478 0 478
++1 478 0 478
++1 478 0 478
++6 956 0 0 0 0 0 0 0 0 478 30
+4070 1890 630 0 21 0 0 3 0 0 630 102
+4246 854 0 0 0 0 0 0 0 0 427 6
++11 1293 0 0 20 0 0 5 0 0 431 25
++2 1242
++3 414 414 0 0 270 0 0 8
+-3 414
++3 828 0 0 0 0 0 0 0 0 414 98
++1 524 89 0 0 82 0 0 5 0 89 5
++71 1038
+-4 346
++1 346
++1 346
+-1 346 0 0 18 0 0 4
++1 346
++1 692 346 0 0 2
++1 1038
++5 1727 0 0 0 0 0 0 0 0 551 89
++16 2575
++2 5150 0 0 0 0 0 0 0 0 2575 53
+-4 6210 0 0 0 0 0 0 0 0 3105 572
++8 530 530 0 0 227 0 0 19
++3 1060 0 0 0 0 0 0 0 0 530 236
++2 205
++1 205
++1 205
+-2 820 0 205
+-27 205
+-99 2520 630 630 42 0 0 7 0 0 630 6
+4099 36 18 0 8 0 0 4 0 0 18 12
++2 7
+-1 14 0 0 0 0 0 0 0 0 7 5
++27 4 0 4
++1 4 0 4
++4 8 0 0 0 0 0 0 0 0 4
++29 141 0 0 10 0 0 4 0 0 4
++8 665 0 133
++49 369 0 0 15 0 0 3
+-48 369
++48 1107 0 369 0 0 91
+4343 222 0 0 28 0 0 6 0 0 74 10
++3 212 53 0 0 0 0 0 0 0 53 5
++97 21 21 0 14 0 0 3
++1 42 21 0 0 16 0 0 4
++2 42 21 0 0 0 0 0 0 0 21
++3 63 0 0 15 0 0 3 0 0 21
++17 84 21 21 0 0 0 0 0 0 21 1
+4070 10 0 0 10 0 0 4
+-91 60
+4169 1196 0 98 18 0 0 8 0 0 152 40
++23 198 66 0 2 47 0 0 13 0 66 3
++3 95 95 0 0 56 0 0 14
++1 285 95 0 0 88 0 0 34 0 95 2
+-3 322 0 0 7 0 0 3 0 0 161 33
++6 66 0 0 0 0 0 0 0 0 66 22
++7 32 32 0 0 14
+-1 128 0 32 0 0 5 0 0 3
++2 64 32 0 0 7 0 0 1 0 32
++2 32 0 32
++1 96 32 32
++2 32 32
++1 64 32 0 0 1 0 0 1 0 32 5
+-1 34 34 0 0 20 0 0 5
++1 68 34 0 2 0 0 0 0 0 34 5
+-44 486 0 45 12 0 0 6 0 0 54 13
++33 68 34 0 6 1 0 2
+-33 99 0 9 6 0 0 2
+4343 53 0 0 9 0 0 3
++5 212
++1 106 0 0 9 0 0 4
++24 1300 325 0 10 205 0 1 53
++3 650 0 0 0 0 0 0 0 0 325 10
++2 325
++3 650 0 325
+-3 650 0 325
++3 325 0 325 0 0 199 0 0 12
+cfn=(2576)
+calls=12464 1608 
+* 10380 4402 1559 49 523 0 6 154 0 2485 53
++3 1300 650 0 17 0 0 5 0 0 325 5
++15 646 323
+-5 323
++5 646
++1 646 323 0 0 0 0 0 0 0 323 31
++3 323 0 323 0 0 320 0 0 193
++1 323 0 323
++1 323 0 323
++3 646 0 0 0 0 0 0 0 0 323 127
++1 15 0 15 7 0 0 1
++1 646 0 0 10 0 0 4 0 0 323 103
++2 448 0 224 0 0 65 0 0 41
++3 1792 0 224
++2 672 0 224 0 0 45 0 0 38
++1 224 0 224 9 0 0 4
+1985 224 224
+4421 224
+1985 448 0 0 0 0 0 0 0 0 224 9
+4415 792 0 99
++2 297 0 99 0 0 28 0 0 10
++1 99 0 99 10 0 0 1
+1985 99 99
+4421 99
+1985 200 2 0 0 0 0 0 0 0 99 4
+4421 2
+1985 4 0 0 0 0 0 0 0 0 2
+4387 2 0 0 1 0 0 1
+-1 2 0 2
++1 4 0 0 0 0 0 0 0 0 2
+4105 3 0 0 3 0 0 1
+-1 3 0 0 3 0 0 1
++3 3
+-1 3 0 3
++1 6 0 3
++1 9 0 3 0 0 1 0 0 1
++1 6 0 0 0 0 0 0 0 0 3 2
++6 3
++6 3
+-6 3
++7 3 0 0 3 0 0 1
+-7 18 0 3
++2 9 0 3
++5 3
+-4 3 0 3
++4 3 0 3 0 0 1
+cfn=(1244) alloc_perturb
+calls=33050 1985 
+* 12 6 0 1 0 0 1 0 0 3
++1 3
+2552 21 21 0 15 6 0 3
++12 21 21 0 0 21 0 0 2
+-12 105 21 42 0 21 2 0 8
++12 21 0 0 0 0 0 0 0 0 21 2
+4460 318 0 106 13 0 0 3
+cfn=(1244)
+calls=286056 1985 
+* 424 212 0 7 0 0 2 0 0 106 2
++1 106 0 0 9 0 0 1
+-2 170 0 0 4 0 0 2
+4266 85 85 0 6 62 0 2 3
++1 510 85 0 0 21 0 0 4 0 85 2
++6 170 85 0 0 0 0 0 0 0 85 3
++2 3 3
++1 6 3 0 0 2
++2 3
++1 6 0 3
+-1 6 0 3 1
++1 3 0 3 0 0 1 0 0 1
+cfn=(2576)
+calls=218 1608 
+* 72 30 9 3 4 0 3 1 0 15 3
+-1 82
++1 164 0 82
+-1 164 0 82 5 0 0 1
++1 82 0 82 0 0 77 0 0 2
+cfn=(2576)
+calls=397 1608 
+* 2706 1148 410 3 98 0 3 23 0 656 39
++3 340 170 0 0 0 0 0 0 0 85 14
++13 144 72
+-4 72
++4 144
++1 144 72 0 0 0 0 0 0 0 72 2
++3 72 0 72 0 0 72 0 0 25
++1 72 0 72 5 0 0 1
++1 72 0 72
++1 144 0 0 0 0 0 0 0 0 72 17
++2 48 0 24 0 0 7 0 0 7
++3 192 0 24
++2 72 0 24 2 0 2 2 0 2
++1 24 0 24
++3 24
+-6 384 0 48
++2 144 0 48 3 0 22 0 0 1
++1 48 0 48
++3 48
+2553 21 0 21 14 0 0 3
++36 63 21
++1 21
+-1 21 0 21
++1 21 0 21
++9 210 63 0 13 0 0 3 0 0 84 5
++6 63 42 0 0 0 0 0 0 0 21 2
++3 63 0 0 0 0 0 0 0 0 21 1
+2921 63 42 0 15 0 0 3 0 0 21 1
++1 21 0 21 15 0 0 3
++4 21 21
++4 105 42 0 0 0 0 0 0 0 21
++5 21
+-2 21
++5 21
+-3 42
+-3 21
++2 21 0 21
++1 21
++1 21 0 0 15 0 0 3
+-1 63 0 21
++1 21 0 21 0 0 21 0 0 21
+4482 21
+2669 63 21 21 14 0 0 3
++8 42 21 0 13 0 0 3 0 0 21
++14 21 21
++2 21 21
+-2 42 0 0 0 0 0 0 0 0 21
++8 105 21 21
++8 42 0 0 12 0 0 3 0 0 21 1
++20 21 21
++1 21
+-1 42 0 0 0 0 0 0 0 0 21
++11 42 21 0 14 0 0 3
++4 42 0 0 0 0 0 0 0 0 21
++2 21 21
++2 21 21
+-2 21 0 0 0 0 0 0 0 0 21
++2 21
++6 21
+-6 21 0 21
++9 42 21 0 0 0 0 0 0 0 21
+2873 21 0 0 12 0 0 3
++3 21
+-1 21 0 21
++1 84 0 21 12 0 21 3 0 21
++12 21 21
+-11 21 0 21
++11 42 0 0 0 0 0 0 0 0 21
++7 42
++1 63 0 21
++8 21 0 21 0 0 21 0 0 21
++2 21 0 21
++5 42 0 0 0 0 0 0 0 0 21
++2 84 0 21
+cfn=(2332)
+calls=68 4495 
+* 3024 861 504 153 0 1 18 0 1 525 59
+* 21
+-66 42 0 0 14 0 0 3 0 0 21
+-65 21
++84 42 0 0 0 0 0 0 0 0 21 11
+2732 126 42 21 13 0 0 3
+cfn=(4366)
+calls=73 2490 
+* 2111 483 378 106 21 9 28 2 2 252 40
+* 21
++2 42 0 0 0 0 0 0 0 0 21 12
+-25 63 0 42 14 0 9 3 0 2
+cfi=(221)
+cfn=(1238)
+calls=136 25 
+* 1113 294 189 77 79 27 22 7 8 189 16
++1 42 21
+-1 21
++1 21 0 0 0 0 0 0 0 0 21 2
++2 21
++3 42 0 0 0 0 0 0 0 0 21
+4285 13 0 0 2 0 0 2
+-1 13 0 13
++1 26 0 0 0 0 0 0 0 0 13 5
+
+fn=(2638)
+4665 1160 0 928 19 0 0 3
++1 232
+-1 696 0 464 19 0 0 3
++5 1392 232 0 0 20 0 0 0 0 232
++3 464 232 0 0 18 0 0 0 0 232
++5 696 232 0 0 15 0 0 5 0 232
++3 464
++1 464 0 0 20 0 0 3 0 0 232
++1 464 232 0 0 15 0 0 0 0 232
+1992 696 232 0 0 0 0 0 0 0 232
+4689 464 232 0 0 0 0 0 0 0 232 10
++2 10 10
++2 10
+-1 10
++2 40 10 0 0 5 0 0 1 0 10 2
++2 20 0 10
+cfn=(2576)
+calls=3651 1608 
+* 309 131 46 0 3 0 0 2 0 73 6
++18 464 232 0 19 0 0 3 0 0 232
++6 464 232 0 0 80 0 0 8 0 232 42
++4 53 0 53
++9 53 53
+-1 53
++1 159
++1 106 53 0 0 13 0 0 0 0 53
+-1 179 179
+-1 179
++1 537
++1 358 179 0 0 14 0 0 0 0 179 1
++2 232 0 232 20 0 1 3
++2 464 0 0 0 0 0 0 0 0 232 2
++5 232 0 232
++1 232 0 232
++2 696 0 232
++1 232 0 232
+-45 232
+-1 464
++1 1392 1392
+-1 232
+cfn=(2640) _int_free_maybe_consolidate
+calls=18588 +69 
+* 5820 2404 1624 66 16 0 14 0 0 527 39
++39 696 0 232 13 0 5 1 0 1
+-19 179 0 0 4 0 0 1
++1 179
+-1 179 0 179 5 0 0 2
+cfn=(2576)
+calls=1883 1608 
+* 4705 2002 692 1 119 0 1 3 0 1030 89
++1 179
+
+fn=(2640)
+4770 2552 232 1624 19 16 0 4
++6 464 0 0 20 0 0 4 0 0 232 19
++22 2552 2088 0 0 0 0 0 0 0 232 2
+-20 84 21 0 0 0 0 0 0 0 21 2
++3 63 0 0 12 0 0 3 0 0 21 13
++3 105 63 0 15 0 0 3 0 0 21 3
+
+fn=(1244)
+1985 327 109 0 8 0 0 3 0 0 109 2
++2 109 109
+
+fl=(216)
+fn=(1208)
+24 63 0 42 4 0 0 2
++1 56 21 0 0 15 0 0 2 0 14 6
++3 7 0 7
+cob=(4)
+cfi=(184)
+cfn=(904) 0x00000000058cb500
+calls=86 -28 
+* 112 21 0 4 10 0 2 2 0 14 0 7
++1 7 7 0 0 5 0 0 3
+-1 7
++1 2674 665 0 0 60 0 0 36 0 672 12
++2 1330 665 0 2 210 0 1 126 0 665 160
++1 560 0 140
+cob=(4)
+cfi=(184)
+cfn=(1210) 0x00000000058cb600
+calls=1418 -32 
+* 3843 840 0 11 50 0 5 28 0 574 7 140
+* 280 0 0 0 0 0 0 0 0 140
++5 63 49
+
+fl=(300)
+fn=(3364)
+30 5296 0 0 1
++8 10592 10592 0 0 1021 0 0 82
++2 10592 0 0 0 0 0 0 0 0 5296 204
++28 10592
++1 10592 0 0 0 0 0 0 0 0 5296 146
+-25 10592 5296
+
+fl=(318)
+fn=(3688)
+47 21 0 0 13 0 0 4
++3 42 0 0 0 0 0 0 0 0 21
+-3 126 0 63 0 0 1
++6 42 0 0 0 0 0 0 0 0 21 14
++5 126 0 0 0 0 0 0 0 0 21 1
++2 84 84
+-7 105 0 0 13 0 0 4 0 0 21
+
+fl=(253)
+fn=(2148)
+158 45 0 0 8
++1 90
++5 45
++1 45 0 0 0 0 0 0 0 0 45 9
++1 45
++1 45
++1 45 0 0 0 0 0 0 0 0 45 2
++13 1 0 1
++1 1 0 1
++2 2 1
++53 45 45 0 8 44 0 3
++1 45 0 0 0 0 0 0 0 0 45 6
++6 1 0 1
++1 1 0 1 0 0 1
++12 1
++3 1
++1 1 0 0 0 0 0 0 0 0 1 1
++64 44 0 0 8 0 0 1
++1 44
++1 44
++1 13280759 0 13280715 0 0 207495 0 0 207356 13280759 47
++1 44
++1 88 44 0 0 42 0 0 1
+
+ob=(11)
+fl=(198)
+fn=(7520)
+0 823872 39232 0 246 0 0 69
+
+ob=(4)
+fl=(184)
+fn=(1800)
+0 70 70 0 70 70 0 14 0 0 0 0 70
+cob=(2)
+cfi=(252)
+cfn=(1802)
+calls=2058861 255 
+0 36699040 36697220 36696940 140 573580 573580 45 207757 547562 36697360 104
+
+fn=(5828) 0x00000000051741a0
+0 512 256 0 250 256 0 133 97 0 0 0 256
+cob=(2)
+cfi=(300)
+cfn=(3364)
+calls=518 30 
+0 2816 768 0 0 0 0 0 0 0 512 1
+
+fn=(5084)
+0 2 1 0 1 1 0 1 0 0 0 0 1 1
+cob=(1)
+cfi=(341)
+cfn=(5086)
+calls=2 214 
+0 31 12 5 4 4 0 4 4 0 6 2
+
+fn=(8700)
+0 496 248 0 248 248 0 26 40 0 0 0 248 2
+cob=(12)
+cfi=(199)
+cfn=(3534)
+calls=313 0 
+0 9176 496 0 992 0 0 206 0 0 744 317
+cob=(1)
+cfi=(200)
+cfn=(726)
+calls=1 71 
+0 1329 483 160 43 125 20 43 122 7 221 30 1 1
+0 5 2 2 2 1 0 2 1 0 0 0 1
+
+fn=(8736)
+0 496 248 0 239 248 0 28 29 0 0 0 248 2
+cob=(2)
+cfi=(283)
+cfn=(3066)
+calls=313 367 
+0 5704 1240 992 0 0 0 0 0 0 992 239
+cob=(1)
+cfi=(200)
+cfn=(726)
+calls=1 71 
+0 1516 553 174 0 58 1 0 19 0 250 18 2 1
+0 5 2 2 1 0 0 1 0 0 0 0 1
+
+fn=(2142)
+0 2 1 0 1 1 0 1 1 0 0 0 1 1
+cob=(2)
+cfi=(218)
+cfn=(2144)
+calls=230 3699 
+0 295 53 35 10 5 1 10 2 1 51 13
+
+fn=(1220)
+0 1342 671 0 115 381 0 19 32 0 0 0 671
+cob=(2)
+cfi=(218)
+cfn=(1224)
+calls=1451037 3294 
+0 180999 35085 22786 1556 6875 1884 375 695 462 37283 3574
+
+fn=(8728)
+0 496 248 0 248 248 0 42 29 0 0 0 248 2
+cob=(2)
+cfi=(282)
+cfn=(3058)
+calls=313 77 
+0 9176 2480 1240 0 247 0 0 119 0 1736 253
+cob=(1)
+cfi=(200)
+cfn=(726)
+calls=1 71 
+0 1459 526 160 6 78 1 6 42 0 244 15 2 2
+0 5 2 2 1 0 0 1 0 0 0 0 1
+
+fn=(1210)
+0 280 140 0 2 5 0 1 1 0 0 0 140
+cob=(2)
+cfi=(217)
+cfn=(1212)
+calls=5009 206 
+0 3563 700 0 9 45 0 4 27 0 574 7
+
+fn=(2318)
+0 862 431 0 108 325 0 15 20 0 0 0 431 115
+cob=(12)
+cfi=(199)
+cfn=(2322)
+calls=1450845 0 
+0 60458 18001 10158 1056 1703 38 259 99 1 9239 367 431
+
+fn=(3360)
+0 9120 4560 0 2 515 0 0 30 0 0 0 4560 243
+cob=(2)
+cfi=(300)
+cfn=(3364)
+calls=7578 30 
+0 50160 13680 0 1 781 0 0 69 0 9120 320
+
+fn=(5078)
+0 2 1 0 1 1 0 1 1 0 0 0 1 1
+cob=(2)
+cfi=(340)
+cfn=(5082)
+calls=2 102 
+0 456 100 67 25 14 1 25 9 1 78 29 2 2
+
+fn=(2324)
+0 862 431 0 96 334 0 16 32 0 0 0 431
+cob=(2)
+cfi=(218)
+cfn=(2328)
+calls=1451081 3359 
+0 58734 17570 10158 960 1369 38 243 67 1 9239 367
+
+fn=(7424)
+0 478 239 0 16 239 0 0 17 0 0 0 239
+cob=(2)
+cfi=(358)
+cfn=(7428)
+calls=648 39 
+0 5497 1912 1434 240 239 0 8 24 0 239 155
+
+fn=(8720)
+0 2 1 0 1 1 0 1 1 0 0 0 1 1
+cob=(12)
+cfi=(199)
+cfn=(2254)
+calls=1 0 
+0 6 3 1 1 0 0 1 0 0 1
+cob=(1)
+cfi=(200)
+cfn=(726)
+calls=1 71 
+0 1252 466 153 0 43 0 0 14 0 207 12 1 1
+0 5 2 2 1 0 0 1 0 0 0 0 1
+
+fn=(904)
+0 14 7 0 2 5 0 1 1 0 0 0 7
+cob=(2)
+cfi=(212)
+cfn=(906)
+calls=35868 52 
+0 98 14 0 2 5 0 1 1 0 14
+
+fn=(2778)
+0 34 17 0 13 17 0 4 4 0 0 0 17
+cob=(12)
+cfi=(199)
+cfn=(1798)
+calls=632 0 
+0 10485 2327 1527 650 174 88 129 29 58 1767 260 17
+
+fn=(3356)
+0 4560 4560 0 2 512 0 1 21 0 0 0 4560
+cob=(12)
+cfi=(199)
+cfn=(3358)
+calls=7578 0 
+0 132240 50160 13680 4 1306 196 0 99 18 13680 355 4560 243
+
+fn=(8708)
+0 2 1 0 1 1 0 1 1 0 0 0 1 1
+cob=(12)
+cfi=(199)
+cfn=(2250)
+calls=1 0 
+0 21 7 3 2 1 0 2 1 0 3 1
+cob=(1)
+cfi=(200)
+cfn=(726)
+calls=1 71 
+0 1260 467 153 1 42 2 1 20 1 209 21 1 1
+0 5 2 2 1 0 0 1 0 0 0 0 1
+
+ob=(26)
+fl=(238)
+fn=(5834) SDL_GetPerformanceCounter_REAL
+0 5376 1792 768 750 256 0 261 47 0 768 112
+cob=(4)
+cfi=(184)
+cfn=(5828)
+calls=517 0 
+0 3328 1024 0 250 256 0 133 97 0 512 1 256
+0 768 512 0 249 0 0 181
+
+fn=(5800) SDL_GetTicks_REAL
+0 1792 256 768 250 256 0 73 37 0 256 7
+cfn=(5834)
+calls=516 0 
+0 9472 3328 768 1249 512 0 575 144 0 1280 113 256
+0 4096 1536 0 250 0 0 75
+
+fn=(5798)
+0 512 256 0 250 256 0 72 30 0 0 0 256 1
+cfn=(5800)
+calls=516 0 
+0 15360 5120 1536 1749 768 0 723 181 0 1536 120 256
+
+totals: 2579162248 479227323 298122079 115857 42318368 2682073 35183 8069589 1434334 291957128 6555683 64798 1898

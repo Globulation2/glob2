@@ -1,0 +1,30 @@
+--------------------------------------------------------------------------------
+Profile data file 'artifacts/gradient-cpu-profile/compact-lookup.callgrind' (creator: callgrind-3.22.0)
+--------------------------------------------------------------------------------
+I1 cache: 32768 B, 64 B, 8-way associative
+D1 cache: 32768 B, 64 B, 8-way associative
+LL cache: 16777216 B, 64 B, direct-mapped
+Timerange: Basic block 0 - 1147182724
+Trigger: Program termination
+Profiled target:  artifacts/gradient-cpu-profile/compact-lookup-symbols game run --load-game artifacts/gradient-cpu-ab/fixtures/512/initial.game.gz --ticks 128 --compute-threads 1 --gpu off --data-dir data --output-dir artifacts/gradient-cpu-profile/compact-lookup-run --profile cpu-profile (PID 1041174, part 1)
+Events recorded:  Ir Dr Dw I1mr D1mr D1mw ILmr DLmr DLmw Bc Bcm Bi Bim
+Events shown:     Ir Dr Dw Bc Bcm D1mr DLmr
+Event sort order: Ir Dr Dw I1mr D1mr D1mw ILmr DLmr DLmw Bc Bcm Bi Bim
+Thresholds:       90 0 0 0 0 0 0 0 0 0 0 0 0
+Include dirs:     
+User annotated:   
+Auto-annotation:  off
+
+--------------------------------------------------------------------------------
+Ir                     Dr                   Dw                   Bc                   Bcm                D1mr                DLmr               
+--------------------------------------------------------------------------------
+2,514,277,279 (100.0%) 465,383,733 (100.0%) 298,124,544 (100.0%) 292,002,796 (100.0%) 6,561,597 (100.0%) 42,307,105 (100.0%) 8,067,338 (100.0%)  PROGRAM TOTALS
+
+--------------------------------------------------------------------------------
+Ir                     Dr                   Dw                   Bc                   Bcm                D1mr                DLmr                file:function
+--------------------------------------------------------------------------------
+1,815,066,127 (72.19%) 250,556,877 (53.84%) 213,792,437 (71.71%) 114,309,562 (39.15%) 5,109,807 (77.87%) 28,922,358 (68.36%)    41,986 ( 0.52%)  ???:void gradient_kernel::propagateFieldCPU<gradient_kernel::propagateTerrainField<gradient_preparation::propagate(gradient_preparation::Request const&, SimulationSnapshot::Handle const&, unsigned short*, GradientWorkspace&)::{lambda(unsigned long)#1}>(unsigned short*, int, int, field::Grid, GradientWorkspace&, gradient_preparation::propagate(gradient_preparation::Request const&, SimulationSnapshot::Handle const&, unsigned short*, GradientWorkspace&)::{lambda(unsigned long)#1}, bool, CellRuleTable const&, unsigned int, gradient_kernel::CostIdentity)::{lambda(unsigned long)#1}>(unsigned short*, int, int, field::Grid, GradientWorkspace&, gradient_kernel::propagateTerrainField<gradient_preparation::propagate(gradient_preparation::Request const&, SimulationSnapshot::Handle const&, unsigned short*, GradientWorkspace&)::{lambda(unsigned long)#1}>(unsigned short*, int, int, field::Grid, GradientWorkspace&, gradient_preparation::propagate(gradient_preparation::Request const&, SimulationSnapshot::Handle const&, unsigned short*, GradientWorkspace&)::{lambda(unsigned long)#1}, bool, CellRuleTable const&, unsigned int, gradient_kernel::CostIdentity)::{lambda(unsigned long)#1}) [/home/bradley/.codex/worktrees/cc21/glob2/artifacts/gradient-cpu-profile/compact-lookup-symbols]
+  279,678,144 (11.12%)  89,370,184 (19.20%)  13,110,280 ( 4.40%)  66,552,324 (22.79%)   443,056 ( 6.75%)  7,748,843 (18.32%) 6,003,409 (74.42%)  ???:gradient_preparation::seed(gradient_preparation::Request const&, SimulationSnapshot::Handle const&, unsigned short*, gradient_preparation::CrowdingScratch&) [/home/bradley/.codex/worktrees/cc21/glob2/artifacts/gradient-cpu-profile/compact-lookup-symbols]
+   96,215,143 ( 3.83%)  24,352,286 ( 5.23%)   3,782,955 ( 1.27%)  15,568,918 ( 5.33%)   503,985 ( 7.68%)  1,151,243 ( 2.72%)   760,790 ( 9.43%)  ???:gradient_preparation::MaterialSeedCache::trySeed(SimulationSnapshot::Handle const&, int, int, int, unsigned short*, unsigned short const*) [/home/bradley/.codex/worktrees/cc21/glob2/artifacts/gradient-cpu-profile/compact-lookup-symbols]
+   77,469,890 ( 3.08%)  10,676,781 ( 2.29%)   9,130,482 ( 3.06%)   4,874,789 ( 1.67%)   214,098 ( 3.26%)  1,257,694 ( 2.97%)    12,774 ( 0.16%)  ???:void gradient_kernel::propagateFieldCPU<Map::propagateGradient(unsigned short*, int, int, gradient_kernel::Family)::{lambda(unsigned long)#1}>(unsigned short*, int, int, field::Grid, GradientWorkspace&, Map::propagateGradient(unsigned short*, int, int, gradient_kernel::Family)::{lambda(unsigned long)#1}) [/home/bradley/.codex/worktrees/cc21/glob2/artifacts/gradient-cpu-profile/compact-lookup-symbols]
+

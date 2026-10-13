@@ -1,0 +1,146 @@
+<?xml version='1.0' encoding='utf-8'?>
+<testsuites tests="144" failures="0" errors="0" skipped="0"><testsuite name="src/map/gradient/GradientPipelineHarness.cpp"><testcase classname="src/map/gradient/GradientPipelineHarness.cpp" name="GradientPipeline/worker GPU submissions finish ahead of deadlines and preserve errors and immutable leases" time="0.307126" status="run" />
+    <testcase classname="src/map/gradient/GradientPipelineHarness.cpp" name="GradientPipeline/CPU fields keep their original worker" time="0.060208" status="run" />
+  </testsuite><testsuite name="ComputeExecutor"><testcase classname="ComputeExecutor" name="automatic sizing respects platform limits and supports unknown CPU counts" time="0" status="run" />
+    <testcase classname="ComputeExecutor" name="thread configuration accepts auto and rejects malformed or overflowing overrides" time="0.003266" status="run" />
+    <testcase classname="ComputeExecutor" name="supported platforms execute jobs concurrently on distinct threads" time="0.072872" status="run" />
+    <testcase classname="ComputeExecutor" name="exclusive slots; nested batches; reuse; errors; barriers and reconfiguration" time="0.404052" status="run" />
+    <testcase classname="ComputeExecutor" name="deferred batches complete with lanes and isolated errors" time="0.434608" status="run" />
+    <testcase classname="ComputeExecutor" name="lane groups run in index order and the horizon is bounded" time="0.074324" status="run" />
+    <testcase classname="ComputeExecutor" name="workers run deferred batches earliest due first and the owner only waits" time="0.122947" status="run" />
+    <testcase classname="ComputeExecutor" name="without workers the owner runs the jobs due no later than the join" time="0.046378" status="run" />
+    <testcase classname="ComputeExecutor" name="a lane keeps submission order: a lane job due before a live earlier one is rejected" time="0.090355" status="run" />
+    <testcase classname="ComputeExecutor" name="the slot count covers every producer's horizon" time="0" status="run" />
+    <testcase classname="ComputeExecutor" name="presentation cannot delay simulation barriers with spare workers or run on the simulation owner" time="0.090334" status="run" />
+    <testcase classname="ComputeExecutor" name="with one worker the owner waits through its presentation chunk and never runs the join itself" time="0.064327" status="run" />
+    <testcase classname="ComputeExecutor" name="presentation progresses before a continuous simulation backlog drains" time="0.127373" status="run" />
+    <testcase classname="ComputeExecutor" name="presentation replacement, chunk pumping, cancellation and errors retain no captures" time="0.103022" status="run" />
+    <testcase classname="ComputeExecutor" name="resumable presentation yields without advancing or retaining canceled inputs" time="0.049591" status="run" />
+    <testcase classname="ComputeExecutor" name="worker only maintenance never uses the owner including creation failure" time="0.070737" status="run" />
+    <testcase classname="ComputeExecutor" name="worker only maintenance yields to required jobs and cannot delay their completed join" time="0.04253" status="run" />
+    <testcase classname="ComputeExecutor" name="suspended device work releases the only worker and preserves lane completion" time="0.034063" status="run" />
+    <testcase classname="ComputeExecutor" name="early device failure resumes exactly once on the worker at its original lane position" time="0.035987" status="run" />
+    <testcase classname="ComputeExecutor" name="early asynchronous completion cannot release an invoking callback's inputs" time="0.043921" status="run" />
+    <testcase classname="ComputeExecutor" name="continuation of a nonzero lane-group index keeps its original sequence" time="0.055104" status="run" />
+    <testcase classname="ComputeExecutor" name="retained completion tickets can be resolved after executor destruction" time="0.033864" status="run" />
+    <testcase classname="ComputeExecutor" name="graphics batches finish once, retain failures and release captures" time="0.131855" status="run" />
+    <testcase classname="ComputeExecutor" name="serial graphics finish never pumps scene or required work and abandonment releases captures" time="0.025754" status="run" />
+    <testcase classname="ComputeExecutor" name="graphics cancellation drains claimed work and reconfiguration releases inputs" time="0.154558" status="run" />
+    <testcase classname="ComputeExecutor" name="both presentation classes progress during required lane backlog" time="0.078979" status="run" />
+    <testcase classname="ComputeExecutor" name="graphics callback barriers are rejected and completed tickets do not pump newer work" time="0.038156" status="run" />
+    <testcase classname="ComputeExecutor" name="empty graphics submissions bypass occupied admission and concurrency metrics respect ceilings" time="0.113785" status="run" />
+    <testcase classname="ComputeExecutor" name="graphics capture destruction can inspect scheduler metrics before completion" time="0.079016" status="run" />
+    <testcase classname="ComputeExecutor" name="disabled diagnostics do not read the injected clock or collect counters" time="0.002029" status="run" />
+    <testcase classname="ComputeExecutor" name="owner execution, stale handles, reuse and lifecycle attribution use one locked inspection" time="0.000259" status="run" />
+    <testcase classname="ComputeExecutor" name="worker waits aggregate distinct ticks globally and per producer without worker timing" time="0.006171" status="run" />
+    <testcase classname="ComputeExecutor" name="complete joins and trace overflow remain valid and snapshots require drain" time="0.001219" status="run" />
+    <testcase classname="ComputeExecutor" name="trace preserves early external resolution and continuation callback ordering" time="0.077333" status="run" />
+    <testcase classname="ComputeExecutor" name="trace storage allocation failure downgrades without losing required work" time="0.000125" status="run" />
+    <testcase classname="ComputeExecutor" name="blocking fork join failures and presentation remain traced without entering tick waits" time="0.079757" status="run" />
+    <testcase classname="ComputeExecutor" name="graphics diagnostics are optional and waits mode attributes the owner barrier" time="0.072188" status="run" />
+    <testcase classname="ComputeExecutor" name="yielded presentation chunks keep callback indices paired" time="0.027299" status="run" />
+    <testcase classname="ComputeExecutor" name="worker-only maintenance is traced as other work without a required join" time="0.048532" status="run" />
+    <testcase classname="ComputeExecutor" name="session reset suppresses a returning maintenance interval from the previous epoch" time="0.084847" status="run" />
+    <testcase classname="ComputeExecutor" name="synchronous graphics adapter keeps empty calls idle and guards owner callbacks" time="0.019917" status="run" />
+    <testcase classname="ComputeExecutor" name="graphics adapter restores callback state on failure and never pumps other work" time="0.014455" status="run" />
+    <testcase classname="ComputeExecutor" name="graphics adapter preserves occupied admission and serial finish shares the scene cap" time="0.032717" status="run" />
+    <testcase classname="ComputeExecutor" name="canceling a slot-blocked graphics batch wakes its owner before scene completion" time="0.043102" status="run" />
+  </testsuite><testsuite name="FieldGradient"><testcase classname="FieldGradient" name="classic propagation preserves deferred seeds weighted costs and scratch reuse" time="0.035542" status="run" />
+    <testcase classname="FieldGradient" name="Distance FIFO preserves order through wrap growth and scratch reuse" time="0.003104" status="run" />
+    <testcase classname="FieldGradient" name="Uniform fields preserve metrics obstacles and wrapping" time="0.005664" status="run" />
+    <testcase classname="FieldGradient" name="Ordered payload traversal stops on the threshold crossing cell" time="0" status="run" />
+    <testcase classname="FieldGradient" name="Bounded traversal preserves unwrapped domain coordinates" time="0" status="run" />
+    <testcase classname="FieldGradient" name="Directional sweep digests preserve original byte arithmetic and scan order" time="0.001311" status="run" />
+    <testcase classname="FieldGradient" name="Convergent influence agrees with an independent strongest first frontier" time="0.008836" status="run" />
+    <testcase classname="FieldGradient" name="Map independent weighted kernel agrees with a heap oracle" time="0.018663" status="run" />
+    <testcase classname="FieldGradient" name="FIFO discovery can stop without admitting later neighbours" time="0" status="run" />
+    <testcase classname="FieldGradient" name="FIFO visitor stop retains vector history and ring pending entries" time="0" status="run" />
+    <testcase classname="FieldGradient" name="Priority traversal preserves zero costs stale entries and heap tie order" time="0" status="run" />
+    <testcase classname="FieldGradient" name="Depth first traversal preserves stack discovery order" time="0" status="run" />
+    <testcase classname="FieldGradient" name="Power of two remainders preserve signed and mixed integer arithmetic" time="0.001131" status="run" />
+    <testcase classname="FieldGradient" name="Generator torus masks retain general and mutated grid wrapping" time="0.000545" status="run" />
+  </testsuite><testsuite name="Gradient"><testcase classname="Gradient" name="OpenGridIsOctileOnTorus" time="0.004851" status="run" />
+    <testcase classname="Gradient" name="ObstaclesForcePathAround" time="0.00087" status="run" />
+    <testcase classname="Gradient" name="WaterCostsBySwimClass" time="0.004162" status="run" />
+    <testcase classname="Gradient" name="UnreachableCellsStayUnreachable" time="0.000868" status="run" />
+    <testcase classname="Gradient" name="SeedBelowGoalPropagates" time="0.000813" status="run" />
+    <testcase classname="Gradient" name="SeedsBeyondBucketWindow" time="0.000832" status="run" />
+    <testcase classname="Gradient" name="MaxCostStopsPropagation" time="0.003864" status="run" />
+    <testcase classname="Gradient" name="DirectionPrefersCheapestTotal" time="0.001998" status="run" />
+    <testcase classname="Gradient" name="DirectionBlockedNeighbour" time="0.003966" status="run" />
+    <testcase classname="Gradient" name="SwimClassFromSpeeds" time="0" status="run" />
+    <testcase classname="Gradient" name="RandomFieldsAgainstReference" time="1.16982" status="run" />
+    <testcase classname="Gradient" name="MatchesLegacyKernelOnLargeMaps" time="24.1728" status="run" />
+  </testsuite><testsuite name="GradientBFS"><testcase classname="GradientBFS" name="EmptyQueueIsNoop" time="0" status="run" />
+    <testcase classname="GradientBFS" name="SingleSourceMatchesChebyshev" time="0" status="run" />
+    <testcase classname="GradientBFS" name="WrapAroundSmallGrid" time="0" status="run" />
+    <testcase classname="GradientBFS" name="ObstacleNotOverwritten" time="0" status="run" />
+    <testcase classname="GradientBFS" name="MultipleSourcesUseMinimum" time="0" status="run" />
+    <testcase classname="GradientBFS" name="IsolatedCellRemainsUnreachable" time="0" status="run" />
+    <testcase classname="GradientBFS" name="QueueIsDrained" time="0" status="run" />
+  </testsuite><testsuite name="GradientPipeline"><testcase classname="GradientPipeline" name="fixed publication; supersession; bounded buffers; scheduling stress; fallback; exceptions and teardown" time="9.67828" status="run" />
+    <testcase classname="GradientPipeline" name="reservation is invalidatable before preparation and seed failures cannot strand it" time="0.046942" status="run" />
+    <testcase classname="GradientPipeline" name="projected terrain leases end at completion including failed work" time="0.031981" status="run" />
+    <testcase classname="GradientPipeline" name="gradient, building and AI batches share the maximum deferred horizon" time="0.167044" status="run" />
+    <testcase classname="GradientPipeline" name="building pipeline admits several jobs per tick, publishes in reservation order at fixed deadlines, supersedes, survives slow and failing workers" time="2.18696" status="run" />
+    <testcase classname="GradientPipeline" name="building pipeline pending results survive a save-style round trip" time="0.028496" status="run" />
+    <testcase classname="GradientPipeline" name="owner-only preparation computes at submission and errors surface at the deadline" time="0.000636" status="run" />
+    <testcase classname="GradientPipeline" name="shared preparation executes off the owner and retains its deadline" time="0.002795" status="run" />
+    <testcase classname="GradientPipeline" name="backend selection is shared across owner and resized worker scratch" time="0.206773" status="run" />
+    <testcase classname="GradientPipeline" name="owned GPU service initializes with two slots and leaves the sole worker free until fixed publication" time="0.092569" status="run" />
+    <testcase classname="GradientPipeline" name="GPU decline recovers original seeds exactly once on a worker and retains inputs until recovery" time="0.171861" status="run" />
+    <testcase classname="GradientPipeline" name="one-slot device configuration creates no driver activity" time="0" status="run" />
+    <testcase classname="GradientPipeline" name="proven gradient mismatch resolves tickets without recovery or publication" time="0.049272" status="run" />
+    <testcase classname="GradientPipeline" name="availability changes during seeding do not reinterpret captured CPU execution" time="0.045882" status="run" />
+    <testcase classname="GradientPipeline" name="nullable GPU preparation recovers once on the original worker without device reentry" time="0.168994" status="run" />
+    <testcase classname="GradientPipeline" name="device registration stop and reconfigure never join a slow background initializer" time="0.001527" status="run" />
+    <testcase classname="GradientPipeline" name="application shutdown joins background initialization and later registrations restart" time="0.104907" status="run" />
+    <testcase classname="GradientPipeline" name="two device registrations share exactly one process coordinator" time="0.007001" status="run" />
+    <testcase classname="GradientPipeline" name="pending required GPU work cancels at publication and drains through one worker recovery" time="0.233014" status="run" />
+    <testcase classname="GradientPipeline" name="bounded required device queue recovers excess fields exactly once" time="0.001994" status="run" />
+    <testcase classname="GradientPipeline" name="malformed captured configurations decline and recover once" time="0.005954" status="run" />
+  </testsuite><testsuite name="GradientPreparationContract"><testcase classname="GradientPreparationContract" name="Generated predicates preserve independent seed precedence" time="0.006605" status="run" />
+    <testcase classname="GradientPreparationContract" name="Shared residency model preserves exact versions and retirement" time="0" status="run" />
+    <testcase classname="GradientPreparationContract" name="Transfer planning charges widened coalesced bytes and speculative limits" time="0.000319" status="run" />
+    <testcase classname="GradientPreparationContract" name="Residency invalidation retains owners until the final lease and transfer retire" time="0" status="run" />
+    <testcase classname="GradientPreparationContract" name="Upload ranges cover changed cells without escaping the original owner" time="0.03085" status="run" />
+    <testcase classname="GradientPreparationContract" name="Native records retain explicit decode layouts" time="0" status="run" />
+  </testsuite><testsuite name="PathGradient"><testcase classname="PathGradient" name="building depth history follows readers rather than preparation [pathfinding]" time="0.184786" status="run" />
+    <testcase classname="PathGradient" name="reader depth agrees for lazy and fully prepared weighted fields [pathfinding]" time="0.118551" status="run" />
+    <testcase classname="PathGradient" name="immutable water snapshots share storage and retain their captured terrain [pathfinding]" time="0.001078" status="run" />
+    <testcase classname="PathGradient" name="analytic oracle" time="0.000857" status="run" />
+    <testcase classname="PathGradient" name="parallel searches" time="1.59394" status="run" />
+    <testcase classname="PathGradient" name="lazy building fields" time="0.682698" status="run" />
+    <testcase classname="PathGradient" name="boundary; random and exhaustive seeds against the heap oracle" time="9.40148" status="run" />
+  </testsuite><testsuite name="RuntimeGradientBackend"><testcase classname="RuntimeGradientBackend" name="stable selection IDs and unsupported algorithm normalization" time="0" status="run" />
+    <testcase classname="RuntimeGradientBackend" name="verification environment accepts CLI and boolean spellings" time="0" status="run" />
+    <testcase classname="RuntimeGradientBackend" name="invalid preferences normalize before indexed dispatch" time="0.000176" status="run" />
+    <testcase classname="RuntimeGradientBackend" name="CPU scopes have one restoration owner and restore after exceptions" time="0" status="run" />
+    <testcase classname="RuntimeGradientBackend" name="plan decisions retain the captured backend and compatible algorithm" time="0" status="run" />
+    <testcase classname="RuntimeGradientBackend" name="shadow verification rejects mismatches with original-input evidence" time="0.00355" status="run" />
+    <testcase classname="RuntimeGradientBackend" name="shadow telemetry follows admitted configuration after preferences change" time="0" status="run" />
+    <testcase classname="RuntimeGradientBackend" name="direct CPU recovery honors explicit variant rather than process preference" time="0" status="run" />
+    <testcase classname="RuntimeGradientBackend" name="runtime CPU variants agree with independent heap oracle" time="0.125937" status="run" />
+    <testcase classname="RuntimeGradientBackend" name="runtime terrain kernels preserve every completed cost layer" time="0.001407" status="run" />
+    <testcase classname="RuntimeGradientBackend" name="Vulkan algorithms agree with oracle for weighted capped wrapped fields" time="1.07055" status="run" />
+    <testcase classname="RuntimeGradientBackend" name="wrapped dense sources reject invented paths before GPU publication" time="0.364808" status="run" />
+    <testcase classname="RuntimeGradientBackend" name="Vulkan cancellation leaves original seeds untouched" time="0.008451" status="run" />
+    <testcase classname="RuntimeGradientBackend" name="fixed-point proof agrees with independent weighted oracle on narrow tori" time="0.002702" status="run" />
+    <testcase classname="RuntimeGradientBackend" name="fixed-point proof rejects malformed spans costs caps and fabricated sources" time="0" status="run" />
+    <testcase classname="RuntimeGradientBackend" name="proof evidence preserves original seeds and out-of-range readback portably" time="0.000419" status="run" />
+    <testcase classname="RuntimeGradientBackend" name="discovery distinguishes supported devices from selectable status" time="0" status="run" />
+    <testcase classname="RuntimeGradientBackend" name="malformed direct groups reject before touching fields or diagnostics" time="0" status="run" />
+    <testcase classname="RuntimeGradientBackend" name="direct group accepts one owned batch recovery without individual callbacks" time="0" status="run" />
+    <testcase classname="RuntimeGradientBackend" name="shadow mismatch reports evidence failure without losing the primary error" time="0.000223" status="run" />
+  </testsuite><testsuite name="TerrainRegistry"><testcase classname="TerrainRegistry" name="imports preserve builtins and IDs and round trip resolved definitions" time="0.012428" status="run" />
+    <testcase classname="TerrainRegistry" name="appearance presets preserve snapshot names and resolved saved metadata" time="0.010127" status="run" />
+    <testcase classname="TerrainRegistry" name="farm material names support every material and import legacy crop slots" time="0.014097" status="run" />
+    <testcase classname="TerrainRegistry" name="invalid imports and saved registries are rejected without changing their owner" time="0.017506" status="run" />
+    <testcase classname="TerrainRegistry" name="catalogue groups share one profile, every paintable built-in is a preset and format-136 saved IDs remap behind the current built-ins" time="0.092015" status="run" />
+    <testcase classname="TerrainRegistry" name="large registries compile equivalent definitions into bounded movement profiles" time="37.0761" status="run" />
+    <testcase classname="TerrainRegistry" name="runtime SIMD propagation agrees with heap oracle across queue boundaries and thin grids" time="0.039732" status="run" />
+    <testcase classname="TerrainRegistry" name="many distinct hazard costs retain compact profile indices and exact propagation" time="0.061267" status="run" />
+    <testcase classname="TerrainRegistry" name="runtime searches reject undersized queues before changing the field" time="0.00056" status="run" />
+    <testcase classname="TerrainRegistry" name="unused large edge definitions preserve the 64 bucket path" time="0.001334" status="run" />
+    <testcase classname="TerrainRegistry" name="all legal speed factors preserve distinct cost collisions" time="0.198803" status="run" />
+  </testsuite></testsuites>

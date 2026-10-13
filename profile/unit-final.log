@@ -1,0 +1,13 @@
+PASS glob2-unit-tests GradientBFS (7 cases) (0.0s)
+PASS glob2-unit-tests FieldGradient (14 cases) (0.1s)
+PASS glob2-unit-tests GradientPreparationContract (6 cases) (0.1s)
+PASS glob2-unit-tests RuntimeGradientBackend (20 cases) (1.8s)
+PASS glob2-unit-tests (2 cases) (0.4s)
+PASS glob2-unit-tests ComputeExecutor (44 cases) (3.2s)
+PASS glob2-unit-tests GradientPipeline (21 cases) (13.3s)
+PASS glob2-unit-tests PathGradient (7 cases) (12.0s)
+PASS glob2-unit-tests Gradient (12 cases) (25.4s)
+PASS glob2-unit-tests TerrainRegistry (11 cases) (37.6s)
+
+10 passed, 0 failed, 0 skipped (94.0s of test time)
+[run_tests] JUnit report: artifacts/gradient-cpu-profile/unit-final.xml (144 cases)

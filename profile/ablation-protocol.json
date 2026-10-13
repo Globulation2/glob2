@@ -1,0 +1,22 @@
+{
+  "pairs": 8,
+  "counts": [
+    1,
+    8
+  ],
+  "sizes": [
+    128,
+    512
+  ],
+  "warmup": 256,
+  "measured_ticks": 2048,
+  "order": "forward/reverse alternating",
+  "cpu_affinity": "0,2,4,6,8,10,12,14",
+  "metrics": "all-thread process CPU including final drain; seed/solve cumulative counters include warmup",
+  "binary_sha256": {
+    "control": "155c2a06498449761fb04422fad7813090179119dd0527497b5e605504d74119",
+    "original": "b82f6e838a219315105222e875de5579951214518af5dc54b9a5aa5dd371ab12",
+    "clear-once": "f5b46a42c3c6f3e8ded8bf4fc5c0adf3381cb06375f7763954be8ad5cbbb8c6a",
+    "compact-lookup": "023eb1498391a5084ba2362d0cea7e94d01a58903edaaffd505acdc1a7b68f57"
+  }
+}

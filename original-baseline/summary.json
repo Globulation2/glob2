@@ -1,0 +1,3408 @@
+[
+  {
+    "baseline": "before",
+    "candidate": "after",
+    "cells": [
+      {
+        "fixture": "128-early",
+        "count": 1,
+        "metrics": {
+          "cpu_per_tick_ms": {
+            "before_mean": 0.3814083334350586,
+            "after_mean": 0.3806330478515625,
+            "change_percent": {
+              "mean": 0.26170277582191215,
+              "ci95": [
+                -8.614851221714865,
+                9.138256773358691
+              ]
+            }
+          },
+          "startup_inclusive_cpu_seconds": {
+            "before_mean": 1.2355355000000352,
+            "after_mean": 1.236660500000036,
+            "change_percent": {
+              "mean": 0.5062556714094739,
+              "ci95": [
+                -6.553013591833827,
+                7.5655249346527755
+              ]
+            }
+          },
+          "setup_cpu_seconds": {
+            "before_mean": 0.32300321325,
+            "after_mean": 0.32069794549999997,
+            "change_percent": {
+              "mean": -0.42205631821754663,
+              "ci95": [
+                -4.773107959055283,
+                3.9289953226201892
+              ]
+            }
+          },
+          "run_wall_seconds": {
+            "before_mean": 0.906851274375,
+            "after_mean": 0.94439633225,
+            "change_percent": {
+              "mean": 3.568339963417734,
+              "ci95": [
+                -7.854663202875723,
+                14.99134312971119
+              ]
+            }
+          },
+          "tick_p95_ms": {
+            "before_mean": 1.392913,
+            "after_mean": 1.42384925,
+            "change_percent": {
+              "mean": -0.011868187996886992,
+              "ci95": [
+                -17.546033359418736,
+                17.522296983424965
+              ]
+            }
+          },
+          "periodic_seed_cpu_us_per_field": {
+            "before_mean": 43.978573133680555,
+            "after_mean": 48.04457611762153,
+            "change_percent": {
+              "mean": 9.034942289944984,
+              "ci95": [
+                1.1929688712153643,
+                16.876915708674606
+              ]
+            }
+          },
+          "periodic_solve_cpu_us_per_field": {
+            "before_mean": 56.918945692274306,
+            "after_mean": 57.73118901909722,
+            "change_percent": {
+              "mean": 1.8278639881984904,
+              "ci95": [
+                -4.533398406120684,
+                8.189126382517665
+              ]
+            }
+          }
+        }
+      },
+      {
+        "fixture": "128-early",
+        "count": 2,
+        "metrics": {
+          "cpu_per_tick_ms": {
+            "before_mean": 0.39953659045410156,
+            "after_mean": 0.43290744055175784,
+            "change_percent": {
+              "mean": 8.293972013963797,
+              "ci95": [
+                -2.26341694712006,
+                18.851360975047655
+              ]
+            }
+          },
+          "startup_inclusive_cpu_seconds": {
+            "before_mean": 1.2900278750000014,
+            "after_mean": 1.3879952499999635,
+            "change_percent": {
+              "mean": 7.759239369132382,
+              "ci95": [
+                -0.2973377104685735,
+                15.815816448733338
+              ]
+            }
+          },
+          "setup_cpu_seconds": {
+            "before_mean": 0.3291492225,
+            "after_mean": 0.350993709625,
+            "change_percent": {
+              "mean": 9.03549775093099,
+              "ci95": [
+                -7.535012998076812,
+                25.606008499938792
+              ]
+            }
+          },
+          "run_wall_seconds": {
+            "before_mean": 0.766286413,
+            "after_mean": 0.8517701,
+            "change_percent": {
+              "mean": 10.375910151355157,
+              "ci95": [
+                -2.1228385939984165,
+                22.87465889670873
+              ]
+            }
+          },
+          "tick_p95_ms": {
+            "before_mean": 1.377990625,
+            "after_mean": 1.476362625,
+            "change_percent": {
+              "mean": 7.857032097405981,
+              "ci95": [
+                -7.566334782587183,
+                23.280398977399145
+              ]
+            }
+          },
+          "periodic_seed_cpu_us_per_field": {
+            "before_mean": 40.84324278428819,
+            "after_mean": 48.68966384548611,
+            "change_percent": {
+              "mean": 19.168570992310137,
+              "ci95": [
+                7.009160179906514,
+                31.327981804713758
+              ]
+            }
+          },
+          "periodic_solve_cpu_us_per_field": {
+            "before_mean": 57.04148697916667,
+            "after_mean": 59.99078933376736,
+            "change_percent": {
+              "mean": 5.262322218975406,
+              "ci95": [
+                -3.7552159249588364,
+                14.279860362909648
+              ]
+            }
+          }
+        }
+      },
+      {
+        "fixture": "128-early",
+        "count": 4,
+        "metrics": {
+          "cpu_per_tick_ms": {
+            "before_mean": 0.4406853856201172,
+            "after_mean": 0.46350735375976565,
+            "change_percent": {
+              "mean": 5.42880024121703,
+              "ci95": [
+                1.6946758833169677,
+                9.162924599117092
+              ]
+            }
+          },
+          "startup_inclusive_cpu_seconds": {
+            "before_mean": 1.3806493750000035,
+            "after_mean": 1.4090436249999914,
+            "change_percent": {
+              "mean": 2.3609622360417872,
+              "ci95": [
+                -1.0908973665514985,
+                5.812821838635073
+              ]
+            }
+          },
+          "setup_cpu_seconds": {
+            "before_mean": 0.31988580237500003,
+            "after_mean": 0.30558737325,
+            "change_percent": {
+              "mean": -4.16582320136067,
+              "ci95": [
+                -9.478488086494563,
+                1.1468416837732232
+              ]
+            }
+          },
+          "run_wall_seconds": {
+            "before_mean": 0.63642931525,
+            "after_mean": 0.641275229375,
+            "change_percent": {
+              "mean": 5.102009964925775,
+              "ci95": [
+                -3.6297790426585026,
+                13.833798972510053
+              ]
+            }
+          },
+          "tick_p95_ms": {
+            "before_mean": 1.04478775,
+            "after_mean": 1.038387625,
+            "change_percent": {
+              "mean": 9.240284939561342,
+              "ci95": [
+                -5.780022748695707,
+                24.26059262781839
+              ]
+            }
+          },
+          "periodic_seed_cpu_us_per_field": {
+            "before_mean": 55.939220323350696,
+            "after_mean": 63.04699473741319,
+            "change_percent": {
+              "mean": 12.878784092663423,
+              "ci95": [
+                8.03412358738401,
+                17.723444597942837
+              ]
+            }
+          },
+          "periodic_solve_cpu_us_per_field": {
+            "before_mean": 63.261937391493056,
+            "after_mean": 64.37564328342015,
+            "change_percent": {
+              "mean": 1.9195460567038707,
+              "ci95": [
+                -1.4936469674742259,
+                5.332739080881967
+              ]
+            }
+          }
+        }
+      },
+      {
+        "fixture": "128-early",
+        "count": 8,
+        "metrics": {
+          "cpu_per_tick_ms": {
+            "before_mean": 0.5771936525268555,
+            "after_mean": 0.6018890195922851,
+            "change_percent": {
+              "mean": 4.260108407448728,
+              "ci95": [
+                -0.7782632134601597,
+                9.298480028357616
+              ]
+            }
+          },
+          "startup_inclusive_cpu_seconds": {
+            "before_mean": 1.7024572500000394,
+            "after_mean": 1.768183874999956,
+            "change_percent": {
+              "mean": 3.9830022513805172,
+              "ci95": [
+                -0.6634915359758429,
+                8.629496038736878
+              ]
+            }
+          },
+          "setup_cpu_seconds": {
+            "before_mean": 0.326598218625,
+            "after_mean": 0.33695466012499997,
+            "change_percent": {
+              "mean": 4.10654944899172,
+              "ci95": [
+                -4.700182563467008,
+                12.913281461450447
+              ]
+            }
+          },
+          "run_wall_seconds": {
+            "before_mean": 0.8233403097499999,
+            "after_mean": 0.882609494125,
+            "change_percent": {
+              "mean": 9.595023266941823,
+              "ci95": [
+                -6.934320208632659,
+                26.124366742516305
+              ]
+            }
+          },
+          "tick_p95_ms": {
+            "before_mean": 1.1343533749999999,
+            "after_mean": 1.32459025,
+            "change_percent": {
+              "mean": 26.704517612374108,
+              "ci95": [
+                -12.5341202157535,
+                65.94315544050171
+              ]
+            }
+          },
+          "periodic_seed_cpu_us_per_field": {
+            "before_mean": 74.36173518880209,
+            "after_mean": 82.2176439344618,
+            "change_percent": {
+              "mean": 10.372562809973951,
+              "ci95": [
+                5.313612954616725,
+                15.431512665331176
+              ]
+            }
+          },
+          "periodic_solve_cpu_us_per_field": {
+            "before_mean": 64.55630528428819,
+            "after_mean": 67.62856656901042,
+            "change_percent": {
+              "mean": 4.5340614746468875,
+              "ci95": [
+                1.4939807527568574,
+                7.574142196536918
+              ]
+            }
+          }
+        }
+      },
+      {
+        "fixture": "128-established",
+        "count": 1,
+        "metrics": {
+          "cpu_per_tick_ms": {
+            "before_mean": 0.43183076916503904,
+            "after_mean": 0.45019255712890627,
+            "change_percent": {
+              "mean": 4.511920615058392,
+              "ci95": [
+                -4.270265622541638,
+                13.294106852658421
+              ]
+            }
+          },
+          "startup_inclusive_cpu_seconds": {
+            "before_mean": 1.3404071250000136,
+            "after_mean": 1.3580342499999758,
+            "change_percent": {
+              "mean": 1.3028094207629803,
+              "ci95": [
+                -5.00716216059338,
+                7.612781002119339
+              ]
+            }
+          },
+          "setup_cpu_seconds": {
+            "before_mean": 0.331942737,
+            "after_mean": 0.316158704375,
+            "change_percent": {
+              "mean": -4.419662844495216,
+              "ci95": [
+                -8.849692686510245,
+                0.010366997519813737
+              ]
+            }
+          },
+          "run_wall_seconds": {
+            "before_mean": 1.070803142375,
+            "after_mean": 1.088448830125,
+            "change_percent": {
+              "mean": 2.777246556048406,
+              "ci95": [
+                -7.228851110182612,
+                12.783344222279423
+              ]
+            }
+          },
+          "tick_p95_ms": {
+            "before_mean": 2.182278125,
+            "after_mean": 2.201813125,
+            "change_percent": {
+              "mean": 1.6161570090553106,
+              "ci95": [
+                -3.7556777083453508,
+                6.987991726455972
+              ]
+            }
+          },
+          "periodic_seed_cpu_us_per_field": {
+            "before_mean": 41.98390999348958,
+            "after_mean": 46.18227739800347,
+            "change_percent": {
+              "mean": 9.386243785152738,
+              "ci95": [
+                2.2117704972826475,
+                16.56071707302283
+              ]
+            }
+          },
+          "periodic_solve_cpu_us_per_field": {
+            "before_mean": 63.726738444010415,
+            "after_mean": 65.30133897569445,
+            "change_percent": {
+              "mean": 2.5522101902712118,
+              "ci95": [
+                -3.080710896300805,
+                8.18513127684323
+              ]
+            }
+          }
+        }
+      },
+      {
+        "fixture": "128-established",
+        "count": 2,
+        "metrics": {
+          "cpu_per_tick_ms": {
+            "before_mean": 0.48623195916748047,
+            "after_mean": 0.4789652153320313,
+            "change_percent": {
+              "mean": -1.0128215843234256,
+              "ci95": [
+                -5.776570651151981,
+                3.750927482505129
+              ]
+            }
+          },
+          "startup_inclusive_cpu_seconds": {
+            "before_mean": 1.4705181249999073,
+            "after_mean": 1.4527890000000334,
+            "change_percent": {
+              "mean": -0.9017427497399908,
+              "ci95": [
+                -4.555048768587373,
+                2.7515632691073915
+              ]
+            }
+          },
+          "setup_cpu_seconds": {
+            "before_mean": 0.33449603025,
+            "after_mean": 0.327206567,
+            "change_percent": {
+              "mean": -1.7966321582638765,
+              "ci95": [
+                -7.533814954848503,
+                3.94055063832075
+              ]
+            }
+          },
+          "run_wall_seconds": {
+            "before_mean": 0.87327908675,
+            "after_mean": 0.86824231075,
+            "change_percent": {
+              "mean": -0.18951301351692174,
+              "ci95": [
+                -4.683051465322623,
+                4.30402543828878
+              ]
+            }
+          },
+          "tick_p95_ms": {
+            "before_mean": 1.982914375,
+            "after_mean": 1.9185881249999999,
+            "change_percent": {
+              "mean": -2.619178400435332,
+              "ci95": [
+                -7.033907134041891,
+                1.795550333171227
+              ]
+            }
+          },
+          "periodic_seed_cpu_us_per_field": {
+            "before_mean": 42.26020014105903,
+            "after_mean": 45.3092328016493,
+            "change_percent": {
+              "mean": 8.028049657714973,
+              "ci95": [
+                1.6151631730485576,
+                14.44093614238139
+              ]
+            }
+          },
+          "periodic_solve_cpu_us_per_field": {
+            "before_mean": 65.40349853515625,
+            "after_mean": 65.22634065755209,
+            "change_percent": {
+              "mean": -0.33179386230275254,
+              "ci95": [
+                -3.480115590376648,
+                2.816527865771143
+              ]
+            }
+          }
+        }
+      },
+      {
+        "fixture": "128-established",
+        "count": 4,
+        "metrics": {
+          "cpu_per_tick_ms": {
+            "before_mean": 0.5538886837768555,
+            "after_mean": 0.5704432493896484,
+            "change_percent": {
+              "mean": 2.8223449529863984,
+              "ci95": [
+                0.07883950110098192,
+                5.565850404871815
+              ]
+            }
+          },
+          "startup_inclusive_cpu_seconds": {
+            "before_mean": 1.6354476250000347,
+            "after_mean": 1.6687287500000887,
+            "change_percent": {
+              "mean": 1.8689683881130779,
+              "ci95": [
+                -0.5539616414429984,
+                4.291898417669154
+              ]
+            }
+          },
+          "setup_cpu_seconds": {
+            "before_mean": 0.3416191425,
+            "after_mean": 0.33972786050000003,
+            "change_percent": {
+              "mean": -0.13222431875658947,
+              "ci95": [
+                -7.62546200215915,
+                7.36101336464597
+              ]
+            }
+          },
+          "run_wall_seconds": {
+            "before_mean": 0.76366007675,
+            "after_mean": 0.757778189375,
+            "change_percent": {
+              "mean": -0.9743994923336385,
+              "ci95": [
+                -4.483961341950354,
+                2.5351623572830775
+              ]
+            }
+          },
+          "tick_p95_ms": {
+            "before_mean": 1.31015,
+            "after_mean": 1.16915375,
+            "change_percent": {
+              "mean": -9.682997159404568,
+              "ci95": [
+                -33.35114263375005,
+                13.985148314940915
+              ]
+            }
+          },
+          "periodic_seed_cpu_us_per_field": {
+            "before_mean": 58.473682725694445,
+            "after_mean": 64.21866324869792,
+            "change_percent": {
+              "mean": 9.194622229126376,
+              "ci95": [
+                6.106283894814116,
+                12.282960563438635
+              ]
+            }
+          },
+          "periodic_solve_cpu_us_per_field": {
+            "before_mean": 74.20571978081597,
+            "after_mean": 75.59333702256944,
+            "change_percent": {
+              "mean": 1.5436416621807947,
+              "ci95": [
+                -1.660022107427149,
+                4.747305431788739
+              ]
+            }
+          }
+        }
+      },
+      {
+        "fixture": "128-established",
+        "count": 8,
+        "metrics": {
+          "cpu_per_tick_ms": {
+            "before_mean": 0.7051549102783203,
+            "after_mean": 0.6926485687866211,
+            "change_percent": {
+              "mean": -2.087008357270974,
+              "ci95": [
+                -5.573950202838179,
+                1.3999334882962309
+              ]
+            }
+          },
+          "startup_inclusive_cpu_seconds": {
+            "before_mean": 1.9840679999999313,
+            "after_mean": 1.964365124999961,
+            "change_percent": {
+              "mean": -1.2824547814470024,
+              "ci95": [
+                -4.261634680931937,
+                1.6967251180379328
+              ]
+            }
+          },
+          "setup_cpu_seconds": {
+            "before_mean": 0.341343236875,
+            "after_mean": 0.33757339199999997,
+            "change_percent": {
+              "mean": -0.6012698667210616,
+              "ci95": [
+                -7.408605416324132,
+                6.206065682882009
+              ]
+            }
+          },
+          "run_wall_seconds": {
+            "before_mean": 1.05306994825,
+            "after_mean": 1.0612296365,
+            "change_percent": {
+              "mean": 1.7440926543615842,
+              "ci95": [
+                -11.983280749281985,
+                15.471466058005152
+              ]
+            }
+          },
+          "tick_p95_ms": {
+            "before_mean": 1.7331907500000001,
+            "after_mean": 1.8322741249999999,
+            "change_percent": {
+              "mean": 10.105163973180485,
+              "ci95": [
+                -23.922844293421665,
+                44.13317223978264
+              ]
+            }
+          },
+          "periodic_seed_cpu_us_per_field": {
+            "before_mean": 79.89376150173611,
+            "after_mean": 82.96896489800346,
+            "change_percent": {
+              "mean": 3.3952382624734696,
+              "ci95": [
+                -2.132427698761777,
+                8.922904223708716
+              ]
+            }
+          },
+          "periodic_solve_cpu_us_per_field": {
+            "before_mean": 76.51689019097222,
+            "after_mean": 76.42394211154514,
+            "change_percent": {
+              "mean": -0.47040937203947786,
+              "ci95": [
+                -3.4520429353698994,
+                2.5112241912909434
+              ]
+            }
+          }
+        }
+      },
+      {
+        "fixture": "256-early",
+        "count": 1,
+        "metrics": {
+          "cpu_per_tick_ms": {
+            "before_mean": 0.8146946240844727,
+            "after_mean": 0.805577333984375,
+            "change_percent": {
+              "mean": -1.149596850190074,
+              "ci95": [
+                -7.723777121155536,
+                5.424583420775389
+              ]
+            }
+          },
+          "startup_inclusive_cpu_seconds": {
+            "before_mean": 2.281353875000043,
+            "after_mean": 2.2444647499999677,
+            "change_percent": {
+              "mean": -1.845866183083339,
+              "ci95": [
+                -9.577023697706823,
+                5.885291331540145
+              ]
+            }
+          },
+          "setup_cpu_seconds": {
+            "before_mean": 0.333123204625,
+            "after_mean": 0.308051509125,
+            "change_percent": {
+              "mean": -7.3447351153871665,
+              "ci95": [
+                -20.723644578371385,
+                6.034174347597052
+              ]
+            }
+          },
+          "run_wall_seconds": {
+            "before_mean": 2.0176885220000003,
+            "after_mean": 1.965556515625,
+            "change_percent": {
+              "mean": -1.9933650698708894,
+              "ci95": [
+                -9.51371494821624,
+                5.526984808474462
+              ]
+            }
+          },
+          "tick_p95_ms": {
+            "before_mean": 2.0028405,
+            "after_mean": 1.939876625,
+            "change_percent": {
+              "mean": -3.1092217982865478,
+              "ci95": [
+                -11.93119729053909,
+                5.712753693965995
+              ]
+            }
+          },
+          "periodic_seed_cpu_us_per_field": {
+            "before_mean": 116.67962543402778,
+            "after_mean": 131.39711290147568,
+            "change_percent": {
+              "mean": 12.020317128843487,
+              "ci95": [
+                2.795683969262944,
+                21.24495028842403
+              ]
+            }
+          },
+          "periodic_solve_cpu_us_per_field": {
+            "before_mean": 339.3068023546007,
+            "after_mean": 336.76404779730905,
+            "change_percent": {
+              "mean": -0.8324793434705766,
+              "ci95": [
+                -6.456894771919809,
+                4.791936084978656
+              ]
+            }
+          }
+        }
+      },
+      {
+        "fixture": "256-early",
+        "count": 2,
+        "metrics": {
+          "cpu_per_tick_ms": {
+            "before_mean": 0.9120090938720703,
+            "after_mean": 0.8919999240112304,
+            "change_percent": {
+              "mean": -2.291292502106833,
+              "ci95": [
+                -9.308087407723736,
+                4.725502403510071
+              ]
+            }
+          },
+          "startup_inclusive_cpu_seconds": {
+            "before_mean": 2.5194452499999813,
+            "after_mean": 2.4789921249999987,
+            "change_percent": {
+              "mean": -1.4938036370499799,
+              "ci95": [
+                -8.22670985413938,
+                5.239102580039419
+              ]
+            }
+          },
+          "setup_cpu_seconds": {
+            "before_mean": 0.331197510625,
+            "after_mean": 0.327818080125,
+            "change_percent": {
+              "mean": 1.3938956603675452,
+              "ci95": [
+                -15.901530719377682,
+                18.68932204011277
+              ]
+            }
+          },
+          "run_wall_seconds": {
+            "before_mean": 1.923183833875,
+            "after_mean": 1.863379763125,
+            "change_percent": {
+              "mean": -2.3867894012058786,
+              "ci95": [
+                -10.239940778066412,
+                5.466361975654655
+              ]
+            }
+          },
+          "tick_p95_ms": {
+            "before_mean": 2.269447125,
+            "after_mean": 1.995097125,
+            "change_percent": {
+              "mean": -8.94355821807277,
+              "ci95": [
+                -25.019045080944448,
+                7.131928644798908
+              ]
+            }
+          },
+          "periodic_seed_cpu_us_per_field": {
+            "before_mean": 127.40641726345487,
+            "after_mean": 140.76788471137152,
+            "change_percent": {
+              "mean": 10.233542428287029,
+              "ci95": [
+                1.938393419723127,
+                18.52869143685093
+              ]
+            }
+          },
+          "periodic_solve_cpu_us_per_field": {
+            "before_mean": 362.3333025716146,
+            "after_mean": 347.40275368923614,
+            "change_percent": {
+              "mean": -3.7860685342150244,
+              "ci95": [
+                -10.00635048398054,
+                2.4342134155504915
+              ]
+            }
+          }
+        }
+      },
+      {
+        "fixture": "256-early",
+        "count": 4,
+        "metrics": {
+          "cpu_per_tick_ms": {
+            "before_mean": 0.9382653666992188,
+            "after_mean": 1.009677737182617,
+            "change_percent": {
+              "mean": 7.580533149996385,
+              "ci95": [
+                4.789816953473347,
+                10.371249346519424
+              ]
+            }
+          },
+          "startup_inclusive_cpu_seconds": {
+            "before_mean": 2.564350999999993,
+            "after_mean": 2.728547625000069,
+            "change_percent": {
+              "mean": 6.373206310131282,
+              "ci95": [
+                4.380484171076951,
+                8.365928449185613
+              ]
+            }
+          },
+          "setup_cpu_seconds": {
+            "before_mean": 0.31643757875,
+            "after_mean": 0.31164196975,
+            "change_percent": {
+              "mean": -1.348160870515053,
+              "ci95": [
+                -9.19416290188958,
+                6.497841160859474
+              ]
+            }
+          },
+          "run_wall_seconds": {
+            "before_mean": 1.033511987125,
+            "after_mean": 1.235533342375,
+            "change_percent": {
+              "mean": 14.399633183423372,
+              "ci95": [
+                3.7670922734852024,
+                25.03217409336154
+              ]
+            }
+          },
+          "tick_p95_ms": {
+            "before_mean": 1.8251265,
+            "after_mean": 2.181128625,
+            "change_percent": {
+              "mean": 14.510406710186816,
+              "ci95": [
+                -10.014663750286777,
+                39.03547717066041
+              ]
+            }
+          },
+          "periodic_seed_cpu_us_per_field": {
+            "before_mean": 168.8441150716146,
+            "after_mean": 203.98958875868055,
+            "change_percent": {
+              "mean": 20.766498670265946,
+              "ci95": [
+                16.519957537060318,
+                25.013039803471575
+              ]
+            }
+          },
+          "periodic_solve_cpu_us_per_field": {
+            "before_mean": 382.99018956163195,
+            "after_mean": 400.50548046875,
+            "change_percent": {
+              "mean": 4.66136346060802,
+              "ci95": [
+                2.45929177518417,
+                6.86343514603187
+              ]
+            }
+          }
+        }
+      },
+      {
+        "fixture": "256-early",
+        "count": 8,
+        "metrics": {
+          "cpu_per_tick_ms": {
+            "before_mean": 1.0852176917114258,
+            "after_mean": 1.1075994794311523,
+            "change_percent": {
+              "mean": 1.7558600021580286,
+              "ci95": [
+                -1.9493071594520748,
+                5.461027163768132
+              ]
+            }
+          },
+          "startup_inclusive_cpu_seconds": {
+            "before_mean": 2.9390640000000365,
+            "after_mean": 2.999170375000031,
+            "change_percent": {
+              "mean": 1.8096515811257097,
+              "ci95": [
+                -0.8549802213942146,
+                4.474283383645634
+              ]
+            }
+          },
+          "setup_cpu_seconds": {
+            "before_mean": 0.332332652125,
+            "after_mean": 0.34199299024999996,
+            "change_percent": {
+              "mean": 3.8571104958562197,
+              "ci95": [
+                -1.4393292954101273,
+                9.153550287122567
+              ]
+            }
+          },
+          "run_wall_seconds": {
+            "before_mean": 1.4080190435,
+            "after_mean": 1.445646024125,
+            "change_percent": {
+              "mean": 4.644529091100166,
+              "ci95": [
+                -9.148257935022201,
+                18.437316117222533
+              ]
+            }
+          },
+          "tick_p95_ms": {
+            "before_mean": 2.277169625,
+            "after_mean": 2.405192875,
+            "change_percent": {
+              "mean": 7.068364916794897,
+              "ci95": [
+                -8.914185070336481,
+                23.050914903926277
+              ]
+            }
+          },
+          "periodic_seed_cpu_us_per_field": {
+            "before_mean": 216.26512613932292,
+            "after_mean": 242.53724093967014,
+            "change_percent": {
+              "mean": 11.544997023854537,
+              "ci95": [
+                5.327575141781086,
+                17.762418905927987
+              ]
+            }
+          },
+          "periodic_solve_cpu_us_per_field": {
+            "before_mean": 391.17128407118054,
+            "after_mean": 394.0927813042535,
+            "change_percent": {
+              "mean": 0.4794441092452043,
+              "ci95": [
+                -2.829984213666805,
+                3.788872432157214
+              ]
+            }
+          }
+        }
+      },
+      {
+        "fixture": "512-early",
+        "count": 1,
+        "metrics": {
+          "cpu_per_tick_ms": {
+            "before_mean": 2.952115944519043,
+            "after_mean": 3.149145487670898,
+            "change_percent": {
+              "mean": 7.047116878020098,
+              "ci95": [
+                1.846819635247276,
+                12.247414120792921
+              ]
+            }
+          },
+          "startup_inclusive_cpu_seconds": {
+            "before_mean": 7.400597375000009,
+            "after_mean": 7.9025451249999685,
+            "change_percent": {
+              "mean": 7.157746771784365,
+              "ci95": [
+                1.8234994946781562,
+                12.491994048890573
+              ]
+            }
+          },
+          "setup_cpu_seconds": {
+            "before_mean": 0.341523321,
+            "after_mean": 0.3601717715,
+            "change_percent": {
+              "mean": 6.116697776610801,
+              "ci95": [
+                -3.403031003783715,
+                15.636426557005317
+              ]
+            }
+          },
+          "run_wall_seconds": {
+            "before_mean": 7.236696076125,
+            "after_mean": 8.00979242075,
+            "change_percent": {
+              "mean": 9.835760166285542,
+              "ci95": [
+                3.254459359815793,
+                16.41706097275529
+              ]
+            }
+          },
+          "tick_p95_ms": {
+            "before_mean": 6.767449125000001,
+            "after_mean": 7.561879625,
+            "change_percent": {
+              "mean": 11.240901401685356,
+              "ci95": [
+                2.870822836129042,
+                19.61097996724167
+              ]
+            }
+          },
+          "periodic_seed_cpu_us_per_field": {
+            "before_mean": 422.54771006944446,
+            "after_mean": 512.9614090711806,
+            "change_percent": {
+              "mean": 20.944775162930206,
+              "ci95": [
+                14.98775396429441,
+                26.901796361566003
+              ]
+            }
+          },
+          "periodic_solve_cpu_us_per_field": {
+            "before_mean": 1419.1890546875002,
+            "after_mean": 1481.5115703125,
+            "change_percent": {
+              "mean": 4.678257514729217,
+              "ci95": [
+                -0.315354283659409,
+                9.671869313117842
+              ]
+            }
+          }
+        }
+      },
+      {
+        "fixture": "512-early",
+        "count": 2,
+        "metrics": {
+          "cpu_per_tick_ms": {
+            "before_mean": 3.189622743713379,
+            "after_mean": 3.253045347229004,
+            "change_percent": {
+              "mean": 1.7898635880875466,
+              "ci95": [
+                -2.281129041056705,
+                5.860856217231799
+              ]
+            }
+          },
+          "startup_inclusive_cpu_seconds": {
+            "before_mean": 8.044144374999949,
+            "after_mean": 8.128128124999991,
+            "change_percent": {
+              "mean": 1.0773322327027197,
+              "ci95": [
+                -3.9409219576769656,
+                6.095586423082405
+              ]
+            }
+          },
+          "setup_cpu_seconds": {
+            "before_mean": 0.38013508549999997,
+            "after_mean": 0.35341016725,
+            "change_percent": {
+              "mean": -4.62068078190716,
+              "ci95": [
+                -26.973773358390396,
+                17.73241179457608
+              ]
+            }
+          },
+          "run_wall_seconds": {
+            "before_mean": 6.927891015625,
+            "after_mean": 6.992071864,
+            "change_percent": {
+              "mean": 1.2510807699485245,
+              "ci95": [
+                -5.704839273126501,
+                8.20700081302355
+              ]
+            }
+          },
+          "tick_p95_ms": {
+            "before_mean": 6.972434875,
+            "after_mean": 6.50228425,
+            "change_percent": {
+              "mean": -5.358912308499353,
+              "ci95": [
+                -14.933847243713025,
+                4.2160226267143175
+              ]
+            }
+          },
+          "periodic_seed_cpu_us_per_field": {
+            "before_mean": 453.5290146484375,
+            "after_mean": 517.5848844401041,
+            "change_percent": {
+              "mean": 13.076833401726118,
+              "ci95": [
+                5.994124073610364,
+                20.15954272984187
+              ]
+            }
+          },
+          "periodic_solve_cpu_us_per_field": {
+            "before_mean": 1478.6012855360243,
+            "after_mean": 1473.9391450195312,
+            "change_percent": {
+              "mean": -0.14570025623170113,
+              "ci95": [
+                -5.62668234727791,
+                5.3352818348145075
+              ]
+            }
+          }
+        }
+      },
+      {
+        "fixture": "512-early",
+        "count": 4,
+        "metrics": {
+          "cpu_per_tick_ms": {
+            "before_mean": 3.6625219172973633,
+            "after_mean": 3.6554521981811523,
+            "change_percent": {
+              "mean": -0.5757945634599639,
+              "ci95": [
+                -9.599006722210426,
+                8.4474175952905
+              ]
+            }
+          },
+          "startup_inclusive_cpu_seconds": {
+            "before_mean": 9.136161749999973,
+            "after_mean": 9.113592250000018,
+            "change_percent": {
+              "mean": -0.652954919476946,
+              "ci95": [
+                -9.528615744710184,
+                8.222705905756293
+              ]
+            }
+          },
+          "setup_cpu_seconds": {
+            "before_mean": 0.358081196375,
+            "after_mean": 0.367426357375,
+            "change_percent": {
+              "mean": 2.723024593577236,
+              "ci95": [
+                -2.663437255017179,
+                8.10948644217165
+              ]
+            }
+          },
+          "run_wall_seconds": {
+            "before_mean": 3.993394870625,
+            "after_mean": 4.01422955575,
+            "change_percent": {
+              "mean": -0.10819445387730198,
+              "ci95": [
+                -15.698659959246903,
+                15.482271051492301
+              ]
+            }
+          },
+          "tick_p95_ms": {
+            "before_mean": 6.490911875,
+            "after_mean": 6.088172875,
+            "change_percent": {
+              "mean": -3.9558165997189487,
+              "ci95": [
+                -23.402442936737252,
+                15.490809737299356
+              ]
+            }
+          },
+          "periodic_seed_cpu_us_per_field": {
+            "before_mean": 662.227028266059,
+            "after_mean": 734.4268875868056,
+            "change_percent": {
+              "mean": 10.300068575063836,
+              "ci95": [
+                0.035992143930782206,
+                20.56414500619689
+              ]
+            }
+          },
+          "periodic_solve_cpu_us_per_field": {
+            "before_mean": 1757.9381908637154,
+            "after_mean": 1705.687208875868,
+            "change_percent": {
+              "mean": -3.3178985044423013,
+              "ci95": [
+                -12.798683545437038,
+                6.162886536552437
+              ]
+            }
+          }
+        }
+      },
+      {
+        "fixture": "512-early",
+        "count": 8,
+        "metrics": {
+          "cpu_per_tick_ms": {
+            "before_mean": 3.9078297341918944,
+            "after_mean": 4.067091109313965,
+            "change_percent": {
+              "mean": 3.634546664398665,
+              "ci95": [
+                -0.9386123987926092,
+                8.20770572758994
+              ]
+            }
+          },
+          "startup_inclusive_cpu_seconds": {
+            "before_mean": 9.764474625000028,
+            "after_mean": 10.113072500000024,
+            "change_percent": {
+              "mean": 3.079098165894144,
+              "ci95": [
+                -1.1471375971996647,
+                7.305333928987952
+              ]
+            }
+          },
+          "setup_cpu_seconds": {
+            "before_mean": 0.372750942125,
+            "after_mean": 0.367939106875,
+            "change_percent": {
+              "mean": -1.2918380153601126,
+              "ci95": [
+                -8.526739950718062,
+                5.943063919997837
+              ]
+            }
+          },
+          "run_wall_seconds": {
+            "before_mean": 4.071567935625,
+            "after_mean": 4.2360902185,
+            "change_percent": {
+              "mean": 2.0890393061952217,
+              "ci95": [
+                -4.551317565423527,
+                8.729396177813971
+              ]
+            }
+          },
+          "tick_p95_ms": {
+            "before_mean": 6.07999775,
+            "after_mean": 6.32143025,
+            "change_percent": {
+              "mean": 2.545155549429,
+              "ci95": [
+                -6.409980413998385,
+                11.500291512856384
+              ]
+            }
+          },
+          "periodic_seed_cpu_us_per_field": {
+            "before_mean": 859.1965550672743,
+            "after_mean": 968.603423828125,
+            "change_percent": {
+              "mean": 12.217917109878092,
+              "ci95": [
+                6.414076827704644,
+                18.02175739205154
+              ]
+            }
+          },
+          "periodic_solve_cpu_us_per_field": {
+            "before_mean": 1766.6768598632812,
+            "after_mean": 1808.5734293619792,
+            "change_percent": {
+              "mean": 1.859826400384905,
+              "ci95": [
+                -2.020028431008739,
+                5.739681231778548
+              ]
+            }
+          }
+        }
+      }
+    ],
+    "fixtures": {
+      "128-early": {
+        "cpu_per_tick_ms": {
+          "before_mean": 0.4497059905090332,
+          "after_mean": 0.4697342154388428,
+          "change_percent": {
+            "mean": 4.561145859612867,
+            "ci95": [
+              -0.053170493466170754,
+              9.175462212691905
+            ]
+          }
+        },
+        "startup_inclusive_cpu_seconds": {
+          "before_mean": 1.40216750000002,
+          "after_mean": 1.4504708124999868,
+          "change_percent": {
+            "mean": 3.6523648819910406,
+            "ci95": [
+              0.06634094163742921,
+              7.2383888223446515
+            ]
+          }
+        },
+        "setup_cpu_seconds": {
+          "before_mean": 0.3246591141875,
+          "after_mean": 0.32855842212499997,
+          "change_percent": {
+            "mean": 2.138541920086123,
+            "ci95": [
+              -3.761003610076334,
+              8.038087450248579
+            ]
+          }
+        },
+        "run_wall_seconds": {
+          "before_mean": 0.78322682809375,
+          "after_mean": 0.8300127889375,
+          "change_percent": {
+            "mean": 7.160320836660123,
+            "ci95": [
+              -1.5257529227489925,
+              15.846394596069239
+            ]
+          }
+        },
+        "tick_p95_ms": {
+          "before_mean": 1.2375111875,
+          "after_mean": 1.3157974375,
+          "change_percent": {
+            "mean": 10.947491615336137,
+            "ci95": [
+              -0.36165755839899383,
+              22.25664078907127
+            ]
+          }
+        },
+        "periodic_seed_cpu_us_per_field": {
+          "before_mean": 53.78069285753038,
+          "after_mean": 60.49971965874566,
+          "change_percent": {
+            "mean": 12.863715046223124,
+            "ci95": [
+              7.9415304058284795,
+              17.785899686617768
+            ]
+          }
+        },
+        "periodic_solve_cpu_us_per_field": {
+          "before_mean": 60.444668836805555,
+          "after_mean": 62.43154705132378,
+          "change_percent": {
+            "mean": 3.3859484346311635,
+            "ci95": [
+              0.696176320185963,
+              6.0757205490763635
+            ]
+          }
+        }
+      },
+      "128-established": {
+        "cpu_per_tick_ms": {
+          "before_mean": 0.5442765805969239,
+          "after_mean": 0.5480623976593018,
+          "change_percent": {
+            "mean": 1.0586089066125977,
+            "ci95": [
+              -1.4780313966219227,
+              3.5952492098471183
+            ]
+          }
+        },
+        "startup_inclusive_cpu_seconds": {
+          "before_mean": 1.6076102187499717,
+          "after_mean": 1.6109792812500148,
+          "change_percent": {
+            "mean": 0.24689506942226633,
+            "ci95": [
+              -1.1813280739776983,
+              1.6751182128222308
+            ]
+          }
+        },
+        "setup_cpu_seconds": {
+          "before_mean": 0.33735028665625,
+          "after_mean": 0.33016663096875,
+          "change_percent": {
+            "mean": -1.737447297059186,
+            "ci95": [
+              -6.153842963827666,
+              2.678948369709293
+            ]
+          }
+        },
+        "run_wall_seconds": {
+          "before_mean": 0.94020306353125,
+          "after_mean": 0.9439247416875,
+          "change_percent": {
+            "mean": 0.8393566761398572,
+            "ci95": [
+              -4.076065333810266,
+              5.754778686089981
+            ]
+          }
+        },
+        "tick_p95_ms": {
+          "before_mean": 1.8021333125,
+          "after_mean": 1.78045728125,
+          "change_percent": {
+            "mean": -0.1452136444010264,
+            "ci95": [
+              -11.056922880634072,
+              10.766495591832019
+            ]
+          }
+        },
+        "periodic_seed_cpu_us_per_field": {
+          "before_mean": 55.65288859049479,
+          "after_mean": 59.66978458658854,
+          "change_percent": {
+            "mean": 7.501038483616889,
+            "ci95": [
+              4.4069255700516585,
+              10.59515139718212
+            ]
+          }
+        },
+        "periodic_solve_cpu_us_per_field": {
+          "before_mean": 69.96321173773872,
+          "after_mean": 70.63623969184027,
+          "change_percent": {
+            "mean": 0.8234121545274441,
+            "ci95": [
+              -1.0460266522940525,
+              2.6928509613489404
+            ]
+          }
+        }
+      },
+      "256-early": {
+        "cpu_per_tick_ms": {
+          "before_mean": 0.9375466940917969,
+          "after_mean": 0.9537136186523437,
+          "change_percent": {
+            "mean": 1.4738759499643768,
+            "ci95": [
+              -1.1238718168377548,
+              4.071623716766508
+            ]
+          }
+        },
+        "startup_inclusive_cpu_seconds": {
+          "before_mean": 2.5760535312500137,
+          "after_mean": 2.6127937187500168,
+          "change_percent": {
+            "mean": 1.2107970177809184,
+            "ci95": [
+              -2.169851908232309,
+              4.591445943794145
+            ]
+          }
+        },
+        "setup_cpu_seconds": {
+          "before_mean": 0.32827273653125,
+          "after_mean": 0.3223761373125,
+          "change_percent": {
+            "mean": -0.8604724574196134,
+            "ci95": [
+              -7.199971048751923,
+              5.479026133912695
+            ]
+          }
+        },
+        "run_wall_seconds": {
+          "before_mean": 1.595600846625,
+          "after_mean": 1.6275289113125,
+          "change_percent": {
+            "mean": 3.6660019508616926,
+            "ci95": [
+              -1.9578340940389007,
+              9.289837995762285
+            ]
+          }
+        },
+        "tick_p95_ms": {
+          "before_mean": 2.0936459375,
+          "after_mean": 2.1303238125,
+          "change_percent": {
+            "mean": 2.3814979026555982,
+            "ci95": [
+              -3.7706548494502115,
+              8.533650654761407
+            ]
+          }
+        },
+        "periodic_seed_cpu_us_per_field": {
+          "before_mean": 157.29882097710504,
+          "after_mean": 179.67295682779948,
+          "change_percent": {
+            "mean": 13.64133881281275,
+            "ci95": [
+              9.438862030507169,
+              17.84381559511833
+            ]
+          }
+        },
+        "periodic_solve_cpu_us_per_field": {
+          "before_mean": 368.95039463975695,
+          "after_mean": 369.6912658148872,
+          "change_percent": {
+            "mean": 0.13056492304190576,
+            "ci95": [
+              -2.0016791239703533,
+              2.2628089700541647
+            ]
+          }
+        }
+      },
+      "512-early": {
+        "cpu_per_tick_ms": {
+          "before_mean": 3.42802258493042,
+          "after_mean": 3.531183535598755,
+          "change_percent": {
+            "mean": 2.9739331417615866,
+            "ci95": [
+              -0.5486856715021413,
+              6.496551955025314
+            ]
+          }
+        },
+        "startup_inclusive_cpu_seconds": {
+          "before_mean": 8.58634453124999,
+          "after_mean": 8.814334500000001,
+          "change_percent": {
+            "mean": 2.6653055627260707,
+            "ci95": [
+              -0.9793652925374703,
+              6.309976417989612
+            ]
+          }
+        },
+        "setup_cpu_seconds": {
+          "before_mean": 0.36312263625,
+          "after_mean": 0.36223685075,
+          "change_percent": {
+            "mean": 0.7318008932301915,
+            "ci95": [
+              -7.131665561902773,
+              8.595267348363157
+            ]
+          }
+        },
+        "run_wall_seconds": {
+          "before_mean": 5.5573874745,
+          "after_mean": 5.81304601475,
+          "change_percent": {
+            "mean": 3.2669214471379964,
+            "ci95": [
+              -3.2727961432787667,
+              9.80663903755476
+            ]
+          }
+        },
+        "tick_p95_ms": {
+          "before_mean": 6.57769840625,
+          "after_mean": 6.61844175,
+          "change_percent": {
+            "mean": 1.1178320107240132,
+            "ci95": [
+              -6.456834773595917,
+              8.692498795043942
+            ]
+          }
+        },
+        "periodic_seed_cpu_us_per_field": {
+          "before_mean": 599.3750770128038,
+          "after_mean": 683.3941512315538,
+          "change_percent": {
+            "mean": 14.134898562399563,
+            "ci95": [
+              8.245031065156853,
+              20.024766059642275
+            ]
+          }
+        },
+        "periodic_solve_cpu_us_per_field": {
+          "before_mean": 1605.6013477376302,
+          "after_mean": 1617.4278383924695,
+          "change_percent": {
+            "mean": 0.7686212886100301,
+            "ci95": [
+              -2.82961637794233,
+              4.366858955162391
+            ]
+          }
+        }
+      }
+    },
+    "cohort": {
+      "cpu_per_tick_ms": {
+        "mean": 2.5168909644878568,
+        "ci95": [
+          0.2406676144999529,
+          4.79311431447576
+        ]
+      },
+      "startup_inclusive_cpu_seconds": {
+        "mean": 1.943840632980074,
+        "ci95": [
+          -0.05569346401771136,
+          3.943374729977859
+        ]
+      },
+      "setup_cpu_seconds": {
+        "mean": 0.06810576470937865,
+        "ci95": [
+          -2.417846600190223,
+          2.55405812960898
+        ]
+      },
+      "run_wall_seconds": {
+        "mean": 3.7331502276999173,
+        "ci95": [
+          0.2709249550300159,
+          7.195375500369819
+        ]
+      },
+      "tick_p95_ms": {
+        "mean": 3.575401971078681,
+        "ci95": [
+          -1.2780079786087093,
+          8.428811920766071
+        ]
+      },
+      "periodic_seed_cpu_us_per_field": {
+        "mean": 12.035247726263082,
+        "ci95": [
+          8.654071330388275,
+          15.416424122137888
+        ]
+      },
+      "periodic_solve_cpu_us_per_field": {
+        "mean": 1.277136700202636,
+        "ci95": [
+          -0.7164003736918962,
+          3.270673774097168
+        ]
+      }
+    }
+  },
+  {
+    "baseline": "control",
+    "candidate": "after",
+    "cells": [
+      {
+        "fixture": "128-early",
+        "count": 1,
+        "metrics": {
+          "cpu_per_tick_ms": {
+            "before_mean": 0.37393980603027344,
+            "after_mean": 0.3806330478515625,
+            "change_percent": {
+              "mean": 1.751681455218716,
+              "ci95": [
+                -5.576915754051997,
+                9.08027866448943
+              ]
+            }
+          },
+          "startup_inclusive_cpu_seconds": {
+            "before_mean": 1.217519999999947,
+            "after_mean": 1.236660500000036,
+            "change_percent": {
+              "mean": 1.6137662930131622,
+              "ci95": [
+                -2.8126618573913715,
+                6.040194443417696
+              ]
+            }
+          },
+          "setup_cpu_seconds": {
+            "before_mean": 0.319667155375,
+            "after_mean": 0.32069794549999997,
+            "change_percent": {
+              "mean": 0.6750258288651014,
+              "ci95": [
+                -2.702008174552205,
+                4.052059832282407
+              ]
+            }
+          },
+          "run_wall_seconds": {
+            "before_mean": 0.952012018625,
+            "after_mean": 0.94439633225,
+            "change_percent": {
+              "mean": 0.6663427299591643,
+              "ci95": [
+                -8.715912071289075,
+                10.048597531207403
+              ]
+            }
+          },
+          "tick_p95_ms": {
+            "before_mean": 1.569259375,
+            "after_mean": 1.42384925,
+            "change_percent": {
+              "mean": -1.9765675196272716,
+              "ci95": [
+                -20.72972248277408,
+                16.77658744351954
+              ]
+            }
+          },
+          "periodic_seed_cpu_us_per_field": {
+            "before_mean": 42.50666748046875,
+            "after_mean": 48.04457611762153,
+            "change_percent": {
+              "mean": 12.46246458480032,
+              "ci95": [
+                8.830337763496669,
+                16.094591406103973
+              ]
+            }
+          },
+          "periodic_solve_cpu_us_per_field": {
+            "before_mean": 55.091707899305554,
+            "after_mean": 57.73118901909722,
+            "change_percent": {
+              "mean": 4.829115002082641,
+              "ci95": [
+                1.1632733773222217,
+                8.494956626843061
+              ]
+            }
+          }
+        }
+      },
+      {
+        "fixture": "128-early",
+        "count": 2,
+        "metrics": {
+          "cpu_per_tick_ms": {
+            "before_mean": 0.3975021685180664,
+            "after_mean": 0.43290744055175784,
+            "change_percent": {
+              "mean": 8.589177573049685,
+              "ci95": [
+                -0.1821132610024847,
+                17.360468407101855
+              ]
+            }
+          },
+          "startup_inclusive_cpu_seconds": {
+            "before_mean": 1.2795026250000059,
+            "after_mean": 1.3879952499999635,
+            "change_percent": {
+              "mean": 8.654732740066304,
+              "ci95": [
+                -1.1071612654864342,
+                18.41662674561904
+              ]
+            }
+          },
+          "setup_cpu_seconds": {
+            "before_mean": 0.3263258355,
+            "after_mean": 0.350993709625,
+            "change_percent": {
+              "mean": 9.21396296312615,
+              "ci95": [
+                -7.438758805911981,
+                25.86668473216428
+              ]
+            }
+          },
+          "run_wall_seconds": {
+            "before_mean": 0.718192596125,
+            "after_mean": 0.8517701,
+            "change_percent": {
+              "mean": 17.18301281180983,
+              "ci95": [
+                0.09319894354709746,
+                34.27282668007257
+              ]
+            }
+          },
+          "tick_p95_ms": {
+            "before_mean": 1.32268875,
+            "after_mean": 1.476362625,
+            "change_percent": {
+              "mean": 11.890148359736843,
+              "ci95": [
+                -5.018139192137932,
+                28.79843591161162
+              ]
+            }
+          },
+          "periodic_seed_cpu_us_per_field": {
+            "before_mean": 39.557406141493054,
+            "after_mean": 48.68966384548611,
+            "change_percent": {
+              "mean": 22.742190730201017,
+              "ci95": [
+                9.11927572086448,
+                36.365105739537555
+              ]
+            }
+          },
+          "periodic_solve_cpu_us_per_field": {
+            "before_mean": 53.836024576822915,
+            "after_mean": 59.99078933376736,
+            "change_percent": {
+              "mean": 11.196118820156416,
+              "ci95": [
+                2.32291182524782,
+                20.069325815065014
+              ]
+            }
+          }
+        }
+      },
+      {
+        "fixture": "128-early",
+        "count": 4,
+        "metrics": {
+          "cpu_per_tick_ms": {
+            "before_mean": 0.44603024328613283,
+            "after_mean": 0.46350735375976565,
+            "change_percent": {
+              "mean": 3.917363533774236,
+              "ci95": [
+                -0.9414283527784542,
+                8.776155420326926
+              ]
+            }
+          },
+          "startup_inclusive_cpu_seconds": {
+            "before_mean": 1.3744217499999822,
+            "after_mean": 1.4090436249999914,
+            "change_percent": {
+              "mean": 2.4986901748488637,
+              "ci95": [
+                -1.6279158288819686,
+                6.6252961785796955
+              ]
+            }
+          },
+          "setup_cpu_seconds": {
+            "before_mean": 0.31430902025,
+            "after_mean": 0.30558737325,
+            "change_percent": {
+              "mean": -2.380467243444051,
+              "ci95": [
+                -11.508821558532336,
+                6.747887071644233
+              ]
+            }
+          },
+          "run_wall_seconds": {
+            "before_mean": 0.648999524625,
+            "after_mean": 0.641275229375,
+            "change_percent": {
+              "mean": 3.2137165718982494,
+              "ci95": [
+                -15.125714513382526,
+                21.553147657179025
+              ]
+            }
+          },
+          "tick_p95_ms": {
+            "before_mean": 1.0086705,
+            "after_mean": 1.038387625,
+            "change_percent": {
+              "mean": 20.879982862215755,
+              "ci95": [
+                -46.577583605101125,
+                88.33754932953264
+              ]
+            }
+          },
+          "periodic_seed_cpu_us_per_field": {
+            "before_mean": 52.9217880859375,
+            "after_mean": 63.04699473741319,
+            "change_percent": {
+              "mean": 18.862690170800768,
+              "ci95": [
+                11.75570096676792,
+                25.969679374833618
+              ]
+            }
+          },
+          "periodic_solve_cpu_us_per_field": {
+            "before_mean": 60.19375233289931,
+            "after_mean": 64.37564328342015,
+            "change_percent": {
+              "mean": 6.581294419339612,
+              "ci95": [
+                1.5948845179484534,
+                11.567704320730769
+              ]
+            }
+          }
+        }
+      },
+      {
+        "fixture": "128-early",
+        "count": 8,
+        "metrics": {
+          "cpu_per_tick_ms": {
+            "before_mean": 0.5681174201049805,
+            "after_mean": 0.6018890195922851,
+            "change_percent": {
+              "mean": 5.986564840131392,
+              "ci95": [
+                0.3405883784779693,
+                11.632541301784814
+              ]
+            }
+          },
+          "startup_inclusive_cpu_seconds": {
+            "before_mean": 1.6588237499999638,
+            "after_mean": 1.768183874999956,
+            "change_percent": {
+              "mean": 6.305703631405255,
+              "ci95": [
+                1.5654272504784021,
+                11.045980012332107
+              ]
+            }
+          },
+          "setup_cpu_seconds": {
+            "before_mean": 0.310825763375,
+            "after_mean": 0.33695466012499997,
+            "change_percent": {
+              "mean": 9.290231266361094,
+              "ci95": [
+                -3.565906196041457,
+                22.146368728763644
+              ]
+            }
+          },
+          "run_wall_seconds": {
+            "before_mean": 0.835159257875,
+            "after_mean": 0.882609494125,
+            "change_percent": {
+              "mean": 5.559196900501388,
+              "ci95": [
+                -5.0272456312540585,
+                16.145639432256836
+              ]
+            }
+          },
+          "tick_p95_ms": {
+            "before_mean": 1.28681425,
+            "after_mean": 1.32459025,
+            "change_percent": {
+              "mean": 7.471863022266895,
+              "ci95": [
+                -11.607874657987704,
+                26.551600702521494
+              ]
+            }
+          },
+          "periodic_seed_cpu_us_per_field": {
+            "before_mean": 67.89495627170139,
+            "after_mean": 82.2176439344618,
+            "change_percent": {
+              "mean": 20.356501669303267,
+              "ci95": [
+                12.049123020738257,
+                28.663880317868276
+              ]
+            }
+          },
+          "periodic_solve_cpu_us_per_field": {
+            "before_mean": 60.926066080729164,
+            "after_mean": 67.62856656901042,
+            "change_percent": {
+              "mean": 10.739985464870225,
+              "ci95": [
+                4.854250928308857,
+                16.625720001431592
+              ]
+            }
+          }
+        }
+      },
+      {
+        "fixture": "128-established",
+        "count": 1,
+        "metrics": {
+          "cpu_per_tick_ms": {
+            "before_mean": 0.4381280532836914,
+            "after_mean": 0.45019255712890627,
+            "change_percent": {
+              "mean": 2.0171952812287373,
+              "ci95": [
+                -4.848847434436871,
+                8.883237996894344
+              ]
+            }
+          },
+          "startup_inclusive_cpu_seconds": {
+            "before_mean": 1.3492521250000002,
+            "after_mean": 1.3580342499999758,
+            "change_percent": {
+              "mean": 0.15258224969544454,
+              "ci95": [
+                -6.068298937517753,
+                6.373463436908642
+              ]
+            }
+          },
+          "setup_cpu_seconds": {
+            "before_mean": 0.33252088125,
+            "after_mean": 0.316158704375,
+            "change_percent": {
+              "mean": -4.420938398208589,
+              "ci95": [
+                -11.677858473114183,
+                2.8359816766970045
+              ]
+            }
+          },
+          "run_wall_seconds": {
+            "before_mean": 1.01705210775,
+            "after_mean": 1.088448830125,
+            "change_percent": {
+              "mean": 4.7465841231080415,
+              "ci95": [
+                -5.012265659146296,
+                14.505433905362379
+              ]
+            }
+          },
+          "tick_p95_ms": {
+            "before_mean": 2.0924351249999997,
+            "after_mean": 2.201813125,
+            "change_percent": {
+              "mean": 4.256789909033384,
+              "ci95": [
+                0.25192355895340857,
+                8.261656259113359
+              ]
+            }
+          },
+          "periodic_seed_cpu_us_per_field": {
+            "before_mean": 42.35111376953125,
+            "after_mean": 46.18227739800347,
+            "change_percent": {
+              "mean": 7.707776135045363,
+              "ci95": [
+                0.04712631980862447,
+                15.368425950282102
+              ]
+            }
+          },
+          "periodic_solve_cpu_us_per_field": {
+            "before_mean": 62.41185286458334,
+            "after_mean": 65.30133897569445,
+            "change_percent": {
+              "mean": 4.166964731804762,
+              "ci95": [
+                -0.7727292108965154,
+                9.10665867450604
+              ]
+            }
+          }
+        }
+      },
+      {
+        "fixture": "128-established",
+        "count": 2,
+        "metrics": {
+          "cpu_per_tick_ms": {
+            "before_mean": 0.47155301751708983,
+            "after_mean": 0.4789652153320313,
+            "change_percent": {
+              "mean": 2.2267988375135883,
+              "ci95": [
+                -4.134481535096256,
+                8.588079210123434
+              ]
+            }
+          },
+          "startup_inclusive_cpu_seconds": {
+            "before_mean": 1.4262625000000024,
+            "after_mean": 1.4527890000000334,
+            "change_percent": {
+              "mean": 2.0055359408482354,
+              "ci95": [
+                -0.9731831427239586,
+                4.984255024420429
+              ]
+            }
+          },
+          "setup_cpu_seconds": {
+            "before_mean": 0.32017935137500003,
+            "after_mean": 0.327206567,
+            "change_percent": {
+              "mean": 2.169494799662333,
+              "ci95": [
+                -4.873492381734302,
+                9.212481981058968
+              ]
+            }
+          },
+          "run_wall_seconds": {
+            "before_mean": 0.934704608375,
+            "after_mean": 0.86824231075,
+            "change_percent": {
+              "mean": -0.20916920019320878,
+              "ci95": [
+                -13.121459111700503,
+                12.703120711314085
+              ]
+            }
+          },
+          "tick_p95_ms": {
+            "before_mean": 2.0548155,
+            "after_mean": 1.9185881249999999,
+            "change_percent": {
+              "mean": -1.295777491433979,
+              "ci95": [
+                -13.494782887546304,
+                10.903227904678346
+              ]
+            }
+          },
+          "periodic_seed_cpu_us_per_field": {
+            "before_mean": 39.86696451822917,
+            "after_mean": 45.3092328016493,
+            "change_percent": {
+              "mean": 14.416077525590373,
+              "ci95": [
+                8.204231103363643,
+                20.627923947817102
+              ]
+            }
+          },
+          "periodic_solve_cpu_us_per_field": {
+            "before_mean": 63.09253830295139,
+            "after_mean": 65.22634065755209,
+            "change_percent": {
+              "mean": 3.385111211055142,
+              "ci95": [
+                -0.8295784372041841,
+                7.599800859314469
+              ]
+            }
+          }
+        }
+      },
+      {
+        "fixture": "128-established",
+        "count": 4,
+        "metrics": {
+          "cpu_per_tick_ms": {
+            "before_mean": 0.5151999862060547,
+            "after_mean": 0.5704432493896484,
+            "change_percent": {
+              "mean": 10.839463316762025,
+              "ci95": [
+                4.657633696278489,
+                17.021292937245562
+              ]
+            }
+          },
+          "startup_inclusive_cpu_seconds": {
+            "before_mean": 1.5281371249999975,
+            "after_mean": 1.6687287500000887,
+            "change_percent": {
+              "mean": 9.163859163448544,
+              "ci95": [
+                3.574823981047622,
+                14.752894345849466
+              ]
+            }
+          },
+          "setup_cpu_seconds": {
+            "before_mean": 0.325271773,
+            "after_mean": 0.33972786050000003,
+            "change_percent": {
+              "mean": 5.015550997423383,
+              "ci95": [
+                -4.351874928233346,
+                14.382976923080111
+              ]
+            }
+          },
+          "run_wall_seconds": {
+            "before_mean": 0.70257550675,
+            "after_mean": 0.757778189375,
+            "change_percent": {
+              "mean": 7.228342142568376,
+              "ci95": [
+                -2.596828384759032,
+                17.053512669895785
+              ]
+            }
+          },
+          "tick_p95_ms": {
+            "before_mean": 1.148375125,
+            "after_mean": 1.16915375,
+            "change_percent": {
+              "mean": -4.492004135842455,
+              "ci95": [
+                -22.91331564536072,
+                13.92930737367581
+              ]
+            }
+          },
+          "periodic_seed_cpu_us_per_field": {
+            "before_mean": 52.411071397569444,
+            "after_mean": 64.21866324869792,
+            "change_percent": {
+              "mean": 22.50265230765997,
+              "ci95": [
+                13.931313801757051,
+                31.073990813562894
+              ]
+            }
+          },
+          "periodic_solve_cpu_us_per_field": {
+            "before_mean": 66.7820166015625,
+            "after_mean": 75.59333702256944,
+            "change_percent": {
+              "mean": 12.747646211080665,
+              "ci95": [
+                8.291554452067887,
+                17.203737970093442
+              ]
+            }
+          }
+        }
+      },
+      {
+        "fixture": "128-established",
+        "count": 8,
+        "metrics": {
+          "cpu_per_tick_ms": {
+            "before_mean": 0.6544866884765624,
+            "after_mean": 0.6926485687866211,
+            "change_percent": {
+              "mean": 6.077918050031663,
+              "ci95": [
+                2.9446814695557264,
+                9.211154630507599
+              ]
+            }
+          },
+          "startup_inclusive_cpu_seconds": {
+            "before_mean": 1.8687603750000665,
+            "after_mean": 1.964365124999961,
+            "change_percent": {
+              "mean": 5.205250970401731,
+              "ci95": [
+                1.9130302209137957,
+                8.497471719889667
+              ]
+            }
+          },
+          "setup_cpu_seconds": {
+            "before_mean": 0.340319121875,
+            "after_mean": 0.33757339199999997,
+            "change_percent": {
+              "mean": -0.23188299312150584,
+              "ci95": [
+                -8.694295720882266,
+                8.230529734639255
+              ]
+            }
+          },
+          "run_wall_seconds": {
+            "before_mean": 1.021211398125,
+            "after_mean": 1.0612296365,
+            "change_percent": {
+              "mean": 5.1091373814455,
+              "ci95": [
+                -0.3470329799516838,
+                10.565307742842684
+              ]
+            }
+          },
+          "tick_p95_ms": {
+            "before_mean": 1.67394175,
+            "after_mean": 1.8322741249999999,
+            "change_percent": {
+              "mean": 13.459345454579093,
+              "ci95": [
+                1.81533773601749,
+                25.103353173140697
+              ]
+            }
+          },
+          "periodic_seed_cpu_us_per_field": {
+            "before_mean": 70.55721321614584,
+            "after_mean": 82.96896489800346,
+            "change_percent": {
+              "mean": 17.74260998737554,
+              "ci95": [
+                12.700056387186867,
+                22.785163587564213
+              ]
+            }
+          },
+          "periodic_solve_cpu_us_per_field": {
+            "before_mean": 70.69234662543403,
+            "after_mean": 76.42394211154514,
+            "change_percent": {
+              "mean": 7.910350241559066,
+              "ci95": [
+                5.983963168385419,
+                9.836737314732714
+              ]
+            }
+          }
+        }
+      },
+      {
+        "fixture": "256-early",
+        "count": 1,
+        "metrics": {
+          "cpu_per_tick_ms": {
+            "before_mean": 0.8327927075805664,
+            "after_mean": 0.805577333984375,
+            "change_percent": {
+              "mean": -3.024646272843699,
+              "ci95": [
+                -14.785491835416643,
+                8.736199289729246
+              ]
+            }
+          },
+          "startup_inclusive_cpu_seconds": {
+            "before_mean": 2.348743499999991,
+            "after_mean": 2.2444647499999677,
+            "change_percent": {
+              "mean": -4.217855101552242,
+              "ci95": [
+                -16.6166525226662,
+                8.180942319561714
+              ]
+            }
+          },
+          "setup_cpu_seconds": {
+            "before_mean": 0.341191121625,
+            "after_mean": 0.308051509125,
+            "change_percent": {
+              "mean": -9.550297413531482,
+              "ci95": [
+                -22.034387619939274,
+                2.933792792876311
+              ]
+            }
+          },
+          "run_wall_seconds": {
+            "before_mean": 2.109044554125,
+            "after_mean": 1.965556515625,
+            "change_percent": {
+              "mean": -5.284045456025841,
+              "ci95": [
+                -19.10705457897771,
+                8.538963666926026
+              ]
+            }
+          },
+          "tick_p95_ms": {
+            "before_mean": 1.84133975,
+            "after_mean": 1.939876625,
+            "change_percent": {
+              "mean": 5.912775502707612,
+              "ci95": [
+                -23.71998566820669,
+                35.54553667362191
+              ]
+            }
+          },
+          "periodic_seed_cpu_us_per_field": {
+            "before_mean": 117.79488579644097,
+            "after_mean": 131.39711290147568,
+            "change_percent": {
+              "mean": 11.005751752298298,
+              "ci95": [
+                -2.8450655915408802,
+                24.856569096137477
+              ]
+            }
+          },
+          "periodic_solve_cpu_us_per_field": {
+            "before_mean": 344.75134722222225,
+            "after_mean": 336.76404779730905,
+            "change_percent": {
+              "mean": -2.1918836373001533,
+              "ci95": [
+                -12.591539677265317,
+                8.207772402665011
+              ]
+            }
+          }
+        }
+      },
+      {
+        "fixture": "256-early",
+        "count": 2,
+        "metrics": {
+          "cpu_per_tick_ms": {
+            "before_mean": 0.881007856262207,
+            "after_mean": 0.8919999240112304,
+            "change_percent": {
+              "mean": 1.494688564715263,
+              "ci95": [
+                -5.985253043214654,
+                8.974630172645181
+              ]
+            }
+          },
+          "startup_inclusive_cpu_seconds": {
+            "before_mean": 2.4467764999999972,
+            "after_mean": 2.4789921249999987,
+            "change_percent": {
+              "mean": 1.487999419594635,
+              "ci95": [
+                -4.8981407703423745,
+                7.874139609531644
+              ]
+            }
+          },
+          "setup_cpu_seconds": {
+            "before_mean": 0.329144965,
+            "after_mean": 0.327818080125,
+            "change_percent": {
+              "mean": 0.14782150435780195,
+              "ci95": [
+                -11.887836977661985,
+                12.18347998637759
+              ]
+            }
+          },
+          "run_wall_seconds": {
+            "before_mean": 1.80271617175,
+            "after_mean": 1.863379763125,
+            "change_percent": {
+              "mean": 3.2737766957754393,
+              "ci95": [
+                -4.972874560302548,
+                11.520427951853426
+              ]
+            }
+          },
+          "tick_p95_ms": {
+            "before_mean": 1.9779245,
+            "after_mean": 1.995097125,
+            "change_percent": {
+              "mean": 5.08689993032954,
+              "ci95": [
+                -8.892565249234181,
+                19.066365109893262
+              ]
+            }
+          },
+          "periodic_seed_cpu_us_per_field": {
+            "before_mean": 121.60617757161458,
+            "after_mean": 140.76788471137152,
+            "change_percent": {
+              "mean": 15.592683070644773,
+              "ci95": [
+                8.290069304470688,
+                22.895296836818858
+              ]
+            }
+          },
+          "periodic_solve_cpu_us_per_field": {
+            "before_mean": 344.5680191514757,
+            "after_mean": 347.40275368923614,
+            "change_percent": {
+              "mean": 1.1900751364763125,
+              "ci95": [
+                -5.46025091373311,
+                7.840401186685734
+              ]
+            }
+          }
+        }
+      },
+      {
+        "fixture": "256-early",
+        "count": 4,
+        "metrics": {
+          "cpu_per_tick_ms": {
+            "before_mean": 0.9172349412231445,
+            "after_mean": 1.009677737182617,
+            "change_percent": {
+              "mean": 10.118750178857718,
+              "ci95": [
+                6.898233817161493,
+                13.339266540553943
+              ]
+            }
+          },
+          "startup_inclusive_cpu_seconds": {
+            "before_mean": 2.520636124999972,
+            "after_mean": 2.728547625000069,
+            "change_percent": {
+              "mean": 8.216060634464897,
+              "ci95": [
+                5.492625741452446,
+                10.939495527477348
+              ]
+            }
+          },
+          "setup_cpu_seconds": {
+            "before_mean": 0.318828272375,
+            "after_mean": 0.31164196975,
+            "change_percent": {
+              "mean": -1.8052449008968021,
+              "ci95": [
+                -12.170265635192452,
+                8.559775833398847
+              ]
+            }
+          },
+          "run_wall_seconds": {
+            "before_mean": 1.070159946875,
+            "after_mean": 1.235533342375,
+            "change_percent": {
+              "mean": 13.442693169130502,
+              "ci95": [
+                5.209393032661291,
+                21.67599330559971
+              ]
+            }
+          },
+          "tick_p95_ms": {
+            "before_mean": 1.9027253750000002,
+            "after_mean": 2.181128625,
+            "change_percent": {
+              "mean": 23.787410894129586,
+              "ci95": [
+                -22.207250856934593,
+                69.78207264519376
+              ]
+            }
+          },
+          "periodic_seed_cpu_us_per_field": {
+            "before_mean": 161.0518761935764,
+            "after_mean": 203.98958875868055,
+            "change_percent": {
+              "mean": 26.64426549444793,
+              "ci95": [
+                20.369356002902116,
+                32.91917498599374
+              ]
+            }
+          },
+          "periodic_solve_cpu_us_per_field": {
+            "before_mean": 372.20798003472225,
+            "after_mean": 400.50548046875,
+            "change_percent": {
+              "mean": 7.4966861135397105,
+              "ci95": [
+                4.566876739846773,
+                10.426495487232648
+              ]
+            }
+          }
+        }
+      },
+      {
+        "fixture": "256-early",
+        "count": 8,
+        "metrics": {
+          "cpu_per_tick_ms": {
+            "before_mean": 1.0597899924316407,
+            "after_mean": 1.1075994794311523,
+            "change_percent": {
+              "mean": 4.224342724377006,
+              "ci95": [
+                0.2924071067279552,
+                8.156278342026058
+              ]
+            }
+          },
+          "startup_inclusive_cpu_seconds": {
+            "before_mean": 2.87176799999998,
+            "after_mean": 2.999170375000031,
+            "change_percent": {
+              "mean": 4.2544724325927135,
+              "ci95": [
+                0.46262188661324855,
+                8.046322978572178
+              ]
+            }
+          },
+          "setup_cpu_seconds": {
+            "before_mean": 0.325009911375,
+            "after_mean": 0.34199299024999996,
+            "change_percent": {
+              "mean": 7.358987582325079,
+              "ci95": [
+                -7.800843007654099,
+                22.518818172304258
+              ]
+            }
+          },
+          "run_wall_seconds": {
+            "before_mean": 1.45152598375,
+            "after_mean": 1.445646024125,
+            "change_percent": {
+              "mean": -0.3871335524491424,
+              "ci95": [
+                -7.110301663681783,
+                6.336034558783497
+              ]
+            }
+          },
+          "tick_p95_ms": {
+            "before_mean": 2.28185875,
+            "after_mean": 2.405192875,
+            "change_percent": {
+              "mean": 3.0525820689546306,
+              "ci95": [
+                -6.963559544112708,
+                13.068723682021968
+              ]
+            }
+          },
+          "periodic_seed_cpu_us_per_field": {
+            "before_mean": 203.2936130642361,
+            "after_mean": 242.53724093967014,
+            "change_percent": {
+              "mean": 18.721501661293914,
+              "ci95": [
+                11.850913383608631,
+                25.592089938979196
+              ]
+            }
+          },
+          "periodic_solve_cpu_us_per_field": {
+            "before_mean": 376.8632785373264,
+            "after_mean": 394.0927813042535,
+            "change_percent": {
+              "mean": 4.330085672826517,
+              "ci95": [
+                0.9682821359190341,
+                7.691889209733999
+              ]
+            }
+          }
+        }
+      },
+      {
+        "fixture": "512-early",
+        "count": 1,
+        "metrics": {
+          "cpu_per_tick_ms": {
+            "before_mean": 2.9693188538208006,
+            "after_mean": 3.149145487670898,
+            "change_percent": {
+              "mean": 6.397529186395838,
+              "ci95": [
+                2.0256752568439573,
+                10.769383115947718
+              ]
+            }
+          },
+          "startup_inclusive_cpu_seconds": {
+            "before_mean": 7.466285749999951,
+            "after_mean": 7.9025451249999685,
+            "change_percent": {
+              "mean": 6.2556002925639955,
+              "ci95": [
+                1.5470215936712863,
+                10.964178991456706
+              ]
+            }
+          },
+          "setup_cpu_seconds": {
+            "before_mean": 0.3515840955,
+            "after_mean": 0.3601717715,
+            "change_percent": {
+              "mean": 3.5323744739287637,
+              "ci95": [
+                -9.090214464539798,
+                16.154963412397326
+              ]
+            }
+          },
+          "run_wall_seconds": {
+            "before_mean": 7.5796087825,
+            "after_mean": 8.00979242075,
+            "change_percent": {
+              "mean": 6.37174908296214,
+              "ci95": [
+                1.50787040656403,
+                11.235627759360248
+              ]
+            }
+          },
+          "tick_p95_ms": {
+            "before_mean": 7.310631375,
+            "after_mean": 7.561879625,
+            "change_percent": {
+              "mean": 6.87021793241151,
+              "ci95": [
+                -1.5284064993300444,
+                15.268842364153064
+              ]
+            }
+          },
+          "periodic_seed_cpu_us_per_field": {
+            "before_mean": 418.0259424913194,
+            "after_mean": 512.9614090711806,
+            "change_percent": {
+              "mean": 22.160202818905386,
+              "ci95": [
+                17.09813026105298,
+                27.222275376757793
+              ]
+            }
+          },
+          "periodic_solve_cpu_us_per_field": {
+            "before_mean": 1409.944880045573,
+            "after_mean": 1481.5115703125,
+            "change_percent": {
+              "mean": 5.3493294614749205,
+              "ci95": [
+                0.7515281114293337,
+                9.947130811520507
+              ]
+            }
+          }
+        }
+      },
+      {
+        "fixture": "512-early",
+        "count": 2,
+        "metrics": {
+          "cpu_per_tick_ms": {
+            "before_mean": 3.2020796248779297,
+            "after_mean": 3.253045347229004,
+            "change_percent": {
+              "mean": 1.3541324674115325,
+              "ci95": [
+                -2.790190450118682,
+                5.498455384941747
+              ]
+            }
+          },
+          "startup_inclusive_cpu_seconds": {
+            "before_mean": 8.02117637499997,
+            "after_mean": 8.128128124999991,
+            "change_percent": {
+              "mean": 1.3533419592123952,
+              "ci95": [
+                -3.189987311126715,
+                5.896671229551505
+              ]
+            }
+          },
+          "setup_cpu_seconds": {
+            "before_mean": 0.35590633,
+            "after_mean": 0.35341016725,
+            "change_percent": {
+              "mean": 2.1370299729191435,
+              "ci95": [
+                -15.326287125343352,
+                19.60034707118164
+              ]
+            }
+          },
+          "run_wall_seconds": {
+            "before_mean": 7.01441261325,
+            "after_mean": 6.992071864,
+            "change_percent": {
+              "mean": 0.2488776156722481,
+              "ci95": [
+                -5.416778428223507,
+                5.914533659568004
+              ]
+            }
+          },
+          "tick_p95_ms": {
+            "before_mean": 6.94780225,
+            "after_mean": 6.50228425,
+            "change_percent": {
+              "mean": -3.280575584594421,
+              "ci95": [
+                -13.950528256875725,
+                7.389377087686881
+              ]
+            }
+          },
+          "periodic_seed_cpu_us_per_field": {
+            "before_mean": 445.90400716145837,
+            "after_mean": 517.5848844401041,
+            "change_percent": {
+              "mean": 14.97592244165645,
+              "ci95": [
+                7.1024974630316455,
+                22.849347420281255
+              ]
+            }
+          },
+          "periodic_solve_cpu_us_per_field": {
+            "before_mean": 1464.6298280707465,
+            "after_mean": 1473.9391450195312,
+            "change_percent": {
+              "mean": 0.5210292298378689,
+              "ci95": [
+                -4.656981194891712,
+                5.69903965456745
+              ]
+            }
+          }
+        }
+      },
+      {
+        "fixture": "512-early",
+        "count": 4,
+        "metrics": {
+          "cpu_per_tick_ms": {
+            "before_mean": 3.5315118317260743,
+            "after_mean": 3.6554521981811523,
+            "change_percent": {
+              "mean": 3.2548507041599533,
+              "ci95": [
+                -0.8486671553912362,
+                7.358368563711142
+              ]
+            }
+          },
+          "startup_inclusive_cpu_seconds": {
+            "before_mean": 8.852881875,
+            "after_mean": 9.113592250000018,
+            "change_percent": {
+              "mean": 2.524144819994974,
+              "ci95": [
+                -1.8277820706481522,
+                6.8760717106381
+              ]
+            }
+          },
+          "setup_cpu_seconds": {
+            "before_mean": 0.36811695275,
+            "after_mean": 0.367426357375,
+            "change_percent": {
+              "mean": -0.7817203408030743,
+              "ci95": [
+                -9.299133539324945,
+                7.735692857718796
+              ]
+            }
+          },
+          "run_wall_seconds": {
+            "before_mean": 3.931045953375,
+            "after_mean": 4.01422955575,
+            "change_percent": {
+              "mean": 2.203754814985344,
+              "ci95": [
+                -8.799362477012235,
+                13.206872106982924
+              ]
+            }
+          },
+          "tick_p95_ms": {
+            "before_mean": 6.07959975,
+            "after_mean": 6.088172875,
+            "change_percent": {
+              "mean": 5.147480218170292,
+              "ci95": [
+                -10.50060334748149,
+                20.795563783822075
+              ]
+            }
+          },
+          "periodic_seed_cpu_us_per_field": {
+            "before_mean": 633.7659081488715,
+            "after_mean": 734.4268875868056,
+            "change_percent": {
+              "mean": 15.109078956336704,
+              "ci95": [
+                6.940731508234922,
+                23.277426404438486
+              ]
+            }
+          },
+          "periodic_solve_cpu_us_per_field": {
+            "before_mean": 1662.1085537109375,
+            "after_mean": 1705.687208875868,
+            "change_percent": {
+              "mean": 2.3454905725865465,
+              "ci95": [
+                -2.7609341138120773,
+                7.451915258985171
+              ]
+            }
+          }
+        }
+      },
+      {
+        "fixture": "512-early",
+        "count": 8,
+        "metrics": {
+          "cpu_per_tick_ms": {
+            "before_mean": 3.9177456109008792,
+            "after_mean": 4.067091109313965,
+            "change_percent": {
+              "mean": 3.5018509923930337,
+              "ci95": [
+                0.7231341852164839,
+                6.280567799569583
+              ]
+            }
+          },
+          "startup_inclusive_cpu_seconds": {
+            "before_mean": 9.745213249999967,
+            "after_mean": 10.113072500000024,
+            "change_percent": {
+              "mean": 3.381310122650931,
+              "ci95": [
+                0.32740477391730405,
+                6.4352154713845575
+              ]
+            }
+          },
+          "setup_cpu_seconds": {
+            "before_mean": 0.364331837125,
+            "after_mean": 0.367939106875,
+            "change_percent": {
+              "mean": 1.2117355801641208,
+              "ci95": [
+                -4.553931091770938,
+                6.9774022520991785
+              ]
+            }
+          },
+          "run_wall_seconds": {
+            "before_mean": 4.194127760875,
+            "after_mean": 4.2360902185,
+            "change_percent": {
+              "mean": -0.8360428417182708,
+              "ci95": [
+                -5.402168261998656,
+                3.730082578562114
+              ]
+            }
+          },
+          "tick_p95_ms": {
+            "before_mean": 6.39270325,
+            "after_mean": 6.32143025,
+            "change_percent": {
+              "mean": -1.8893063405053323,
+              "ci95": [
+                -11.161198641348756,
+                7.382585960338092
+              ]
+            }
+          },
+          "periodic_seed_cpu_us_per_field": {
+            "before_mean": 831.4394704861111,
+            "after_mean": 968.603423828125,
+            "change_percent": {
+              "mean": 15.935542370480007,
+              "ci95": [
+                9.997118266804637,
+                21.873966474155377
+              ]
+            }
+          },
+          "periodic_solve_cpu_us_per_field": {
+            "before_mean": 1731.9711941189237,
+            "after_mean": 1808.5734293619792,
+            "change_percent": {
+              "mean": 4.009848177467844,
+              "ci95": [
+                0.5963732843643075,
+                7.42332307057138
+              ]
+            }
+          }
+        }
+      }
+    ],
+    "fixtures": {
+      "128-early": {
+        "cpu_per_tick_ms": {
+          "before_mean": 0.4463974094848633,
+          "after_mean": 0.4697342154388428,
+          "change_percent": {
+            "mean": 5.061196850543507,
+            "ci95": [
+              1.713398649108517,
+              8.408995051978497
+            ]
+          }
+        },
+        "startup_inclusive_cpu_seconds": {
+          "before_mean": 1.3825670312499747,
+          "after_mean": 1.4504708124999868,
+          "change_percent": {
+            "mean": 4.768223209833397,
+            "ci95": [
+              1.5357510258879463,
+              8.000695393778848
+            ]
+          }
+        },
+        "setup_cpu_seconds": {
+          "before_mean": 0.317781943625,
+          "after_mean": 0.32855842212499997,
+          "change_percent": {
+            "mean": 4.1996882037270735,
+            "ci95": [
+              -1.7234266081580243,
+              10.12280301561217
+            ]
+          }
+        },
+        "run_wall_seconds": {
+          "before_mean": 0.7885908493125,
+          "after_mean": 0.8300127889375,
+          "change_percent": {
+            "mean": 6.655567253542158,
+            "ci95": [
+              -2.478893099494088,
+              15.790027606578406
+            ]
+          }
+        },
+        "tick_p95_ms": {
+          "before_mean": 1.29685821875,
+          "after_mean": 1.3157974375,
+          "change_percent": {
+            "mean": 9.566356681148056,
+            "ci95": [
+              -15.336958188905887,
+              34.469671551202
+            ]
+          }
+        },
+        "periodic_seed_cpu_us_per_field": {
+          "before_mean": 50.72020449490017,
+          "after_mean": 60.49971965874566,
+          "change_percent": {
+            "mean": 18.605961788776344,
+            "ci95": [
+              12.838729792638171,
+              24.37319378491452
+            ]
+          }
+        },
+        "periodic_solve_cpu_us_per_field": {
+          "before_mean": 57.51188772243923,
+          "after_mean": 62.43154705132378,
+          "change_percent": {
+            "mean": 8.336628426612224,
+            "ci95": [
+              4.644866878708363,
+              12.028389974516084
+            ]
+          }
+        }
+      },
+      "128-established": {
+        "cpu_per_tick_ms": {
+          "before_mean": 0.5198419363708496,
+          "after_mean": 0.5480623976593018,
+          "change_percent": {
+            "mean": 5.290343871384003,
+            "ci95": [
+              2.3346861493309543,
+              8.246001593437052
+            ]
+          }
+        },
+        "startup_inclusive_cpu_seconds": {
+          "before_mean": 1.5431030312500167,
+          "after_mean": 1.6109792812500148,
+          "change_percent": {
+            "mean": 4.131807081098489,
+            "ci95": [
+              1.9911356706053835,
+              6.2724784915915945
+            ]
+          }
+        },
+        "setup_cpu_seconds": {
+          "before_mean": 0.329572781875,
+          "after_mean": 0.33016663096875,
+          "change_percent": {
+            "mean": 0.6330561014389054,
+            "ci95": [
+              -2.552969890599292,
+              3.8190820934771033
+            ]
+          }
+        },
+        "run_wall_seconds": {
+          "before_mean": 0.91888590525,
+          "after_mean": 0.9439247416875,
+          "change_percent": {
+            "mean": 4.218723611732178,
+            "ci95": [
+              1.87551071086757,
+              6.561936512596786
+            ]
+          }
+        },
+        "tick_p95_ms": {
+          "before_mean": 1.742391875,
+          "after_mean": 1.78045728125,
+          "change_percent": {
+            "mean": 2.9820884340840106,
+            "ci95": [
+              -3.3455866121696998,
+              9.309763480337722
+            ]
+          }
+        },
+        "periodic_seed_cpu_us_per_field": {
+          "before_mean": 51.29659072536892,
+          "after_mean": 59.66978458658854,
+          "change_percent": {
+            "mean": 15.592278988917814,
+            "ci95": [
+              11.834234602316624,
+              19.350323375519004
+            ]
+          }
+        },
+        "periodic_solve_cpu_us_per_field": {
+          "before_mean": 65.7446885986328,
+          "after_mean": 70.63623969184027,
+          "change_percent": {
+            "mean": 7.052518098874909,
+            "ci95": [
+              4.754495560779192,
+              9.350540636970626
+            ]
+          }
+        }
+      },
+      "256-early": {
+        "cpu_per_tick_ms": {
+          "before_mean": 0.9227063743743896,
+          "after_mean": 0.9537136186523437,
+          "change_percent": {
+            "mean": 3.2032837987765723,
+            "ci95": [
+              -1.4952891628259137,
+              7.901856760379058
+            ]
+          }
+        },
+        "startup_inclusive_cpu_seconds": {
+          "before_mean": 2.546981031249985,
+          "after_mean": 2.6127937187500168,
+          "change_percent": {
+            "mean": 2.435169346275001,
+            "ci95": [
+              -1.9662199059951684,
+              6.83655859854517
+            ]
+          }
+        },
+        "setup_cpu_seconds": {
+          "before_mean": 0.32854356759375,
+          "after_mean": 0.3223761373125,
+          "change_percent": {
+            "mean": -0.9621833069363507,
+            "ci95": [
+              -5.279109532832493,
+              3.3547429189597917
+            ]
+          }
+        },
+        "run_wall_seconds": {
+          "before_mean": 1.608361664125,
+          "after_mean": 1.6275289113125,
+          "change_percent": {
+            "mean": 2.7613227141077394,
+            "ci95": [
+              -2.9761295860165107,
+              8.49877501423199
+            ]
+          }
+        },
+        "tick_p95_ms": {
+          "before_mean": 2.00096209375,
+          "after_mean": 2.1303238125,
+          "change_percent": {
+            "mean": 9.459917099030342,
+            "ci95": [
+              -6.507149617274289,
+              25.42698381533497
+            ]
+          }
+        },
+        "periodic_seed_cpu_us_per_field": {
+          "before_mean": 150.936638156467,
+          "after_mean": 179.67295682779948,
+          "change_percent": {
+            "mean": 17.991050494671228,
+            "ci95": [
+              12.316970242300194,
+              23.665130747042262
+            ]
+          }
+        },
+        "periodic_solve_cpu_us_per_field": {
+          "before_mean": 359.59765623643665,
+          "after_mean": 369.6912658148872,
+          "change_percent": {
+            "mean": 2.7062408213855966,
+            "ci95": [
+              -1.3842666346604084,
+              6.796748277431602
+            ]
+          }
+        }
+      },
+      "512-early": {
+        "cpu_per_tick_ms": {
+          "before_mean": 3.405163980331421,
+          "after_mean": 3.531183535598755,
+          "change_percent": {
+            "mean": 3.6270908375900897,
+            "ci95": [
+              1.3532588310502387,
+              5.900922844129941
+            ]
+          }
+        },
+        "startup_inclusive_cpu_seconds": {
+          "before_mean": 8.521389312499972,
+          "after_mean": 8.814334500000001,
+          "change_percent": {
+            "mean": 3.378599298605574,
+            "ci95": [
+              1.0122514321550145,
+              5.744947165056134
+            ]
+          }
+        },
+        "setup_cpu_seconds": {
+          "before_mean": 0.35998480384375,
+          "after_mean": 0.36223685075,
+          "change_percent": {
+            "mean": 1.5248549215522387,
+            "ci95": [
+              -5.494146587752793,
+              8.54385643085727
+            ]
+          }
+        },
+        "run_wall_seconds": {
+          "before_mean": 5.6797987775,
+          "after_mean": 5.81304601475,
+          "change_percent": {
+            "mean": 1.9970846679753653,
+            "ci95": [
+              -0.962985777627146,
+              4.957155113577876
+            ]
+          }
+        },
+        "tick_p95_ms": {
+          "before_mean": 6.68268415625,
+          "after_mean": 6.61844175,
+          "change_percent": {
+            "mean": 1.7119540563705122,
+            "ci95": [
+              -3.2557863083540655,
+              6.67969442109509
+            ]
+          }
+        },
+        "periodic_seed_cpu_us_per_field": {
+          "before_mean": 582.2838320719401,
+          "after_mean": 683.3941512315538,
+          "change_percent": {
+            "mean": 17.045186646844638,
+            "ci95": [
+              11.287343382447915,
+              22.80302991124136
+            ]
+          }
+        },
+        "periodic_solve_cpu_us_per_field": {
+          "before_mean": 1567.1636139865452,
+          "after_mean": 1617.4278383924695,
+          "change_percent": {
+            "mean": 3.056424360341795,
+            "ci95": [
+              0.6248740781078279,
+              5.487974642575762
+            ]
+          }
+        }
+      }
+    },
+    "cohort": {
+      "cpu_per_tick_ms": {
+        "mean": 4.295478839573543,
+        "ci95": [
+          2.121350360407043,
+          6.469607318740044
+        ]
+      },
+      "startup_inclusive_cpu_seconds": {
+        "mean": 3.678449733953115,
+        "ci95": [
+          1.3943221091206341,
+          5.9625773587855955
+        ]
+      },
+      "setup_cpu_seconds": {
+        "mean": 1.3488539799454666,
+        "ci95": [
+          -1.7470566173239717,
+          4.4447645772149045
+        ]
+      },
+      "run_wall_seconds": {
+        "mean": 3.90817456183936,
+        "ci95": [
+          0.5638700091393778,
+          7.252479114539343
+        ]
+      },
+      "tick_p95_ms": {
+        "mean": 5.93007906765823,
+        "ci95": [
+          -1.4254473929580254,
+          13.285605528274486
+        ]
+      },
+      "periodic_seed_cpu_us_per_field": {
+        "mean": 17.308619479802505,
+        "ci95": [
+          13.343649532139858,
+          21.273589427465154
+        ]
+      },
+      "periodic_solve_cpu_us_per_field": {
+        "mean": 5.287952926803631,
+        "ci95": [
+          2.7572806600447124,
+          7.81862519356255
+        ]
+      }
+    }
+  }
+]

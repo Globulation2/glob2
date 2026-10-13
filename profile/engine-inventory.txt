@@ -1,0 +1,73 @@
+GradientBackendSwitch/backend switch drains privately and preserves pending publication
+GradientBackendSwitch/repeated backend requests coalesce without moving publication ticks
+GradientPreparation/all supported team masks match the scalar fields
+GradientPreparation/cached natural goals follow immobile occupancy and live overlays
+GradientPreparation/compact clearing traits preserve custom high-ID property combinations
+GradientPreparation/compiled preparation tables preserve rule and catalog interpretation
+GradientPreparation/compound passable material goals track depletion visibility and overlapping suppliers
+GradientPreparation/concurrent lazy requests publish one complete resource field
+GradientPreparation/concurrent preparation owns buffers and serializes dirty cache refresh
+GradientPreparation/custom terrain and registry replacement preserve cached and direct seeds
+GradientPreparation/explicit clearing overrides farm crop protection but never forbidden paint
+GradientPreparation/explicit snapshot batches isolate invalid fields and retain exact output
+GradientPreparation/map dimensions enforce power-of-two exponents before mutation
+GradientPreparation/material plane and cache keys retain legacy seven-class identity
+GradientPreparation/minimal GPU views release source graphs and recover exact CPU fields
+GradientPreparation/minimal view pressure declines without moving original seeds
+GradientPreparation/modified terrain costs remain exact when field obstacles change
+GradientPreparation/movement profile rejection rolls back previously appended swim classes
+GradientPreparation/mutation and reset boundaries use current state
+GradientPreparation/optional cache storage can be unavailable or over budget
+GradientPreparation/periodic supplier snapshots subtract reservations and retain overlay seeds
+GradientPreparation/published plane registry matches a sweep of live material fields
+GradientPreparation/rejected corner identities preserve all compiled gradient tables
+GradientPreparation/resource cache tracks cell writes and falls back through mutation bursts
+GradientPreparation/seed cells match scalar predicates across policies and changing overlays
+GradientPreparation/snapshot material templates refresh changed chunks and accept older snapshots
+GradientPreparation/snapshot seeds preserve every periodic kind after the live world changes
+GradientPreparation/supplier seed indexing rejects foreign and invalid building IDs in cached and direct fields
+GradientPreparation/warm preparation keeps custom supplier unions exclusions penalties and overlays live
+VertexTerrain/a cell's four corners paint it uniform and its neighbours mixed
+VertexTerrain/a vertex write re-derives the four cells around it
+VertexTerrain/equal corners keep their terrain's exact rules
+VertexTerrain/every built-in pair combines into valid transition rules
+VertexTerrain/grass directly against water is walkable and unbuildable
+VertexTerrain/ground costs follow the walkable corners and hazards take the worst
+VertexTerrain/mixed cells take the shore habitat and intersect explicit resource lists
+VertexTerrain/mixed classic corners are exactly the retired shore profile
+VertexTerrain/old cell terrain moves onto the vertices it covers
+VertexTerrain/snapshots keep the rule table they were taken with
+VertexTerrain/terrain IDs of older files skip the retired shores
+VertexTerrain/the rule table numbers uniform rules by terrain and interns mixed ones in order
+VertexTerrain/vertex terrain round-trips through packed and text saves
+WorldSnapshot/AI boundary validates each captured map array before fast reads
+WorldSnapshot/AI fast scalar reads preserve checked values and frozen lease isolation
+WorldSnapshot/a retained consumer leaves the newest free buffer to absorb only later changes
+WorldSnapshot/building snapshots copy shared scalar records and freeze selected stock
+WorldSnapshot/capture requirements exclude arrays that no scheduled consumer requests
+WorldSnapshot/capture verification rejects writes that bypass the change trackers
+WorldSnapshot/catalog refresh survives intervening projections and rules reuse independently
+WorldSnapshot/component leases and weak control blocks outlive the owning store
+WorldSnapshot/component mutation generations preserve isolation and reuse unchanged arrays
+WorldSnapshot/coordinate wrapping preserves signed edges for power of two and general dimensions
+WorldSnapshot/explicit observation boundaries refresh paused state and retain old leases
+WorldSnapshot/farm paint queries match frozen growth and resource inputs
+WorldSnapshot/flat relationship ranges preserve every building list in order
+WorldSnapshot/map snapshots bulk copy authoritative records without translation
+WorldSnapshot/memory metrics distinguish held epochs from reusable high water capacity
+WorldSnapshot/narrow component queries preserve combined tile values and projection defaults
+WorldSnapshot/no-op map writes reuse components while changed values remain isolated
+WorldSnapshot/on-demand construction feasibility matches live helpers and remains frozen
+WorldSnapshot/outcome reasons survive the read boundary without changing simulation state
+WorldSnapshot/pooled captures never overwrite a held worker projection
+WorldSnapshot/projected terrain lease cannot retain unrelated world components
+WorldSnapshot/resource copy metrics include multi-material stock sidecars
+WorldSnapshot/reused buffers copy sparse chunks and refresh dense changes contiguously
+WorldSnapshot/same tick component expansion preserves narrow leases and captures arrays once
+WorldSnapshot/shared entity indices preserve empty slots and canonical record addresses
+WorldSnapshot/snapshot capability tables share authoritative immutable catalog data
+WorldSnapshot/unit snapshots share authoritative scalar state and remain frozen
+WorldSnapshot/vertex changes preserve retained terrain and reuse unchanged versions
+WorldSnapshot/warm component buffers stop allocating at a fixed population
+WorldSnapshot/worker final lease release synchronizes owner buffer reuse
+72 cases

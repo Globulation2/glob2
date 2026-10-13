@@ -1,0 +1,219 @@
+{
+  "record_sizes": {
+    "resource": 12,
+    "occupancy": 8,
+    "areas": 16,
+    "terrain_cell": 2,
+    "terrain_vertex": 2,
+    "stock_index": 4,
+    "stock": 24,
+    "visibility": 8,
+    "cell_rule": 144,
+    "preparation_rule": 36,
+    "cpu_seed_columns": 6,
+    "resource_properties": 28,
+    "resource_yields": 192,
+    "chunk_stamp": 8,
+    "resource_capacity": 16384,
+    "rule_capacity": 65536
+  },
+  "table_rules": 256,
+  "table_resources": 64,
+  "assumptions": [
+    "whole-version arrays have capacity equal to their logical length",
+    "whole-snapshot host staging remains live together",
+    "eight fields can retain separate 32-bit host readbacks",
+    "all versions share one table owner"
+  ],
+  "budgets": {
+    "host": 67108864,
+    "device": 134217728
+  },
+  "omissions": [
+    "variable catalog strings, terrain whitelist/habitat allocations and indexes",
+    "allocator/control-block overhead and adapter allocation alignment",
+    "shared budgets already consumed by other gradient work"
+  ],
+  "rows": [
+    {
+      "side": 128,
+      "stock_sidecar_every_cell": false,
+      "snapshot_versions": 1,
+      "pending_fields": 8,
+      "host_bytes": 2524672,
+      "device_bytes": 2934528,
+      "host_limit_fits_before_omissions": true,
+      "device_limit_fits_before_omissions": true
+    },
+    {
+      "side": 128,
+      "stock_sidecar_every_cell": false,
+      "snapshot_versions": 2,
+      "pending_fields": 8,
+      "host_bytes": 3379200,
+      "device_bytes": 3756288,
+      "host_limit_fits_before_omissions": true,
+      "device_limit_fits_before_omissions": true
+    },
+    {
+      "side": 128,
+      "stock_sidecar_every_cell": false,
+      "snapshot_versions": 4,
+      "pending_fields": 8,
+      "host_bytes": 5088256,
+      "device_bytes": 5399808,
+      "host_limit_fits_before_omissions": true,
+      "device_limit_fits_before_omissions": true
+    },
+    {
+      "side": 128,
+      "stock_sidecar_every_cell": true,
+      "snapshot_versions": 1,
+      "pending_fields": 8,
+      "host_bytes": 3311104,
+      "device_bytes": 3327744,
+      "host_limit_fits_before_omissions": true,
+      "device_limit_fits_before_omissions": true
+    },
+    {
+      "side": 128,
+      "stock_sidecar_every_cell": true,
+      "snapshot_versions": 2,
+      "pending_fields": 8,
+      "host_bytes": 4558848,
+      "device_bytes": 4542720,
+      "host_limit_fits_before_omissions": true,
+      "device_limit_fits_before_omissions": true
+    },
+    {
+      "side": 128,
+      "stock_sidecar_every_cell": true,
+      "snapshot_versions": 4,
+      "pending_fields": 8,
+      "host_bytes": 7054336,
+      "device_bytes": 6972672,
+      "host_limit_fits_before_omissions": true,
+      "device_limit_fits_before_omissions": true
+    },
+    {
+      "side": 256,
+      "stock_sidecar_every_cell": false,
+      "snapshot_versions": 1,
+      "pending_fields": 8,
+      "host_bytes": 9912832,
+      "device_bytes": 11703552,
+      "host_limit_fits_before_omissions": true,
+      "device_limit_fits_before_omissions": true
+    },
+    {
+      "side": 256,
+      "stock_sidecar_every_cell": false,
+      "snapshot_versions": 2,
+      "pending_fields": 8,
+      "host_bytes": 13330944,
+      "device_bytes": 14990592,
+      "host_limit_fits_before_omissions": true,
+      "device_limit_fits_before_omissions": true
+    },
+    {
+      "side": 256,
+      "stock_sidecar_every_cell": false,
+      "snapshot_versions": 4,
+      "pending_fields": 8,
+      "host_bytes": 20167168,
+      "device_bytes": 21564672,
+      "host_limit_fits_before_omissions": true,
+      "device_limit_fits_before_omissions": true
+    },
+    {
+      "side": 256,
+      "stock_sidecar_every_cell": true,
+      "snapshot_versions": 1,
+      "pending_fields": 8,
+      "host_bytes": 13058560,
+      "device_bytes": 13276416,
+      "host_limit_fits_before_omissions": true,
+      "device_limit_fits_before_omissions": true
+    },
+    {
+      "side": 256,
+      "stock_sidecar_every_cell": true,
+      "snapshot_versions": 2,
+      "pending_fields": 8,
+      "host_bytes": 18049536,
+      "device_bytes": 18136320,
+      "host_limit_fits_before_omissions": true,
+      "device_limit_fits_before_omissions": true
+    },
+    {
+      "side": 256,
+      "stock_sidecar_every_cell": true,
+      "snapshot_versions": 4,
+      "pending_fields": 8,
+      "host_bytes": 28031488,
+      "device_bytes": 27856128,
+      "host_limit_fits_before_omissions": true,
+      "device_limit_fits_before_omissions": true
+    },
+    {
+      "side": 512,
+      "stock_sidecar_every_cell": false,
+      "snapshot_versions": 1,
+      "pending_fields": 8,
+      "host_bytes": 39465472,
+      "device_bytes": 46779648,
+      "host_limit_fits_before_omissions": true,
+      "device_limit_fits_before_omissions": true
+    },
+    {
+      "side": 512,
+      "stock_sidecar_every_cell": false,
+      "snapshot_versions": 2,
+      "pending_fields": 8,
+      "host_bytes": 53137920,
+      "device_bytes": 59927808,
+      "host_limit_fits_before_omissions": true,
+      "device_limit_fits_before_omissions": true
+    },
+    {
+      "side": 512,
+      "stock_sidecar_every_cell": false,
+      "snapshot_versions": 4,
+      "pending_fields": 8,
+      "host_bytes": 80482816,
+      "device_bytes": 86224128,
+      "host_limit_fits_before_omissions": false,
+      "device_limit_fits_before_omissions": true
+    },
+    {
+      "side": 512,
+      "stock_sidecar_every_cell": true,
+      "snapshot_versions": 1,
+      "pending_fields": 8,
+      "host_bytes": 52048384,
+      "device_bytes": 53071104,
+      "host_limit_fits_before_omissions": true,
+      "device_limit_fits_before_omissions": true
+    },
+    {
+      "side": 512,
+      "stock_sidecar_every_cell": true,
+      "snapshot_versions": 2,
+      "pending_fields": 8,
+      "host_bytes": 72012288,
+      "device_bytes": 72510720,
+      "host_limit_fits_before_omissions": false,
+      "device_limit_fits_before_omissions": true
+    },
+    {
+      "side": 512,
+      "stock_sidecar_every_cell": true,
+      "snapshot_versions": 4,
+      "pending_fields": 8,
+      "host_bytes": 111940096,
+      "device_bytes": 111389952,
+      "host_limit_fits_before_omissions": false,
+      "device_limit_fits_before_omissions": true
+    }
+  ]
+}

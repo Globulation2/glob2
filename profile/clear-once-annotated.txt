@@ -1,0 +1,30 @@
+--------------------------------------------------------------------------------
+Profile data file 'artifacts/gradient-cpu-profile/clear-once.callgrind' (creator: callgrind-3.22.0)
+--------------------------------------------------------------------------------
+I1 cache: 32768 B, 64 B, 8-way associative
+D1 cache: 32768 B, 64 B, 8-way associative
+LL cache: 16777216 B, 64 B, direct-mapped
+Timerange: Basic block 0 - 1147028385
+Trigger: Program termination
+Profiled target:  artifacts/gradient-cpu-profile/clear-once-symbols game run --load-game artifacts/gradient-cpu-ab/fixtures/512/initial.game.gz --ticks 128 --compute-threads 1 --gpu off --data-dir data --output-dir artifacts/gradient-cpu-profile/clear-once-run --profile cpu-profile (PID 1038140, part 1)
+Events recorded:  Ir Dr Dw I1mr D1mr D1mw ILmr DLmr DLmw Bc Bcm Bi Bim
+Events shown:     Ir Dr Dw Bc Bcm D1mr DLmr
+Event sort order: Ir Dr Dw I1mr D1mr D1mw ILmr DLmr DLmw Bc Bcm Bi Bim
+Thresholds:       90 0 0 0 0 0 0 0 0 0 0 0 0
+Include dirs:     
+User annotated:   
+Auto-annotation:  off
+
+--------------------------------------------------------------------------------
+Ir                     Dr                   Dw                   Bc                   Bcm                D1mr                DLmr               
+--------------------------------------------------------------------------------
+2,579,162,248 (100.0%) 479,227,323 (100.0%) 298,122,079 (100.0%) 291,957,128 (100.0%) 6,555,683 (100.0%) 42,318,368 (100.0%) 8,069,589 (100.0%)  PROGRAM TOTALS
+
+--------------------------------------------------------------------------------
+Ir                     Dr                   Dw                   Bc                   Bcm                D1mr                DLmr                file:function
+--------------------------------------------------------------------------------
+1,815,066,127 (70.37%) 250,556,877 (52.28%) 213,792,437 (71.71%) 114,309,562 (39.15%) 5,110,094 (77.95%) 28,934,875 (68.37%)    51,069 ( 0.63%)  ???:void gradient_kernel::propagateFieldCPU<gradient_kernel::propagateTerrainField<gradient_preparation::propagate(gradient_preparation::Request const&, SimulationSnapshot::Handle const&, unsigned short*, GradientWorkspace&)::{lambda(unsigned long)#1}>(unsigned short*, int, int, field::Grid, GradientWorkspace&, gradient_preparation::propagate(gradient_preparation::Request const&, SimulationSnapshot::Handle const&, unsigned short*, GradientWorkspace&)::{lambda(unsigned long)#1}, bool, CellRuleTable const&, unsigned int, gradient_kernel::CostIdentity)::{lambda(unsigned long)#1}>(unsigned short*, int, int, field::Grid, GradientWorkspace&, gradient_kernel::propagateTerrainField<gradient_preparation::propagate(gradient_preparation::Request const&, SimulationSnapshot::Handle const&, unsigned short*, GradientWorkspace&)::{lambda(unsigned long)#1}>(unsigned short*, int, int, field::Grid, GradientWorkspace&, gradient_preparation::propagate(gradient_preparation::Request const&, SimulationSnapshot::Handle const&, unsigned short*, GradientWorkspace&)::{lambda(unsigned long)#1}, bool, CellRuleTable const&, unsigned int, gradient_kernel::CostIdentity)::{lambda(unsigned long)#1}) [/home/bradley/.codex/worktrees/cc21/glob2/artifacts/gradient-cpu-profile/clear-once-symbols]
+  338,051,134 (13.11%) 101,282,824 (21.13%)  13,109,500 ( 4.40%)  66,551,524 (22.79%)   442,635 ( 6.75%)  7,747,751 (18.31%) 5,987,678 (74.20%)  ???:gradient_preparation::seed(gradient_preparation::Request const&, SimulationSnapshot::Handle const&, unsigned short*, gradient_preparation::CrowdingScratch&) [/home/bradley/.codex/worktrees/cc21/glob2/artifacts/gradient-cpu-profile/clear-once-symbols]
+   96,215,143 ( 3.73%)  24,352,286 ( 5.08%)   3,782,955 ( 1.27%)  15,568,918 ( 5.33%)   503,912 ( 7.69%)  1,152,217 ( 2.72%)   763,272 ( 9.46%)  ???:gradient_preparation::MaterialSeedCache::trySeed(SimulationSnapshot::Handle const&, int, int, int, unsigned short*, unsigned short const*) [/home/bradley/.codex/worktrees/cc21/glob2/artifacts/gradient-cpu-profile/clear-once-symbols]
+   77,469,890 ( 3.00%)  10,676,781 ( 2.23%)   9,130,482 ( 3.06%)   4,874,789 ( 1.67%)   214,116 ( 3.27%)  1,257,545 ( 2.97%)    13,069 ( 0.16%)  ???:void gradient_kernel::propagateFieldCPU<Map::propagateGradient(unsigned short*, int, int, gradient_kernel::Family)::{lambda(unsigned long)#1}>(unsigned short*, int, int, field::Grid, GradientWorkspace&, Map::propagateGradient(unsigned short*, int, int, gradient_kernel::Family)::{lambda(unsigned long)#1}) [/home/bradley/.codex/worktrees/cc21/glob2/artifacts/gradient-cpu-profile/clear-once-symbols]
+

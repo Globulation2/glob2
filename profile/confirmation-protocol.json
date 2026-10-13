@@ -1,0 +1,10 @@
+{
+  "purpose": "Independent confirmation of the small 128-established/count1 increase; exploratory selection from 16 cells",
+  "pairs": 16,
+  "warmup": 256,
+  "measured_ticks": 2048,
+  "count": 1,
+  "fixture": "128-established",
+  "order": "alternating master/fixed and fixed/master",
+  "ci": "Student t 95%, df15, new pairs only"
+}

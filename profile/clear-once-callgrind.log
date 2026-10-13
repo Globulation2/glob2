@@ -1,0 +1,38 @@
+==1038140== Callgrind, a call-graph generating cache profiler
+==1038140== Copyright (C) 2002-2017, and GNU GPL'd, by Josef Weidendorfer et al.
+==1038140== Using Valgrind-3.22.0 and LibVEX; rerun with -h for copyright info
+==1038140== Command: artifacts/gradient-cpu-profile/clear-once-symbols game run --load-game artifacts/gradient-cpu-ab/fixtures/512/initial.game.gz --ticks 128 --compute-threads 1 --gpu off --data-dir data --output-dir artifacts/gradient-cpu-profile/clear-once-run --profile cpu-profile
+==1038140== 
+--1038140-- warning: L3 cache found, using its data for the LL simulation.
+==1038140== For interactive control, run 'callgrind_control -h'.
+Settings::load("preferences.txt") : error, can't open file.
+==1038140== brk segment overflow in thread #1: can't grow to 0x4843000
+==1038140== (see section Limitations in user manual)
+==1038140== NOTE: further instances of this message will not be shown
+nox::game started
+nox::gui.game.checkSum() = 765cff52
+automaticEndingGame ended: 128 ticks, 0 minutes, 4 seconds
+GLOB2_GAME_END ticks=128 winner_team=-1 seed=713 map="study-15-713-r0" orders=0 players=team0:Castor,team1:Cortex
+==1038140== 
+==1038140== Events    : Ir Dr Dw I1mr D1mr D1mw ILmr DLmr DLmw Bc Bcm Bi Bim
+==1038140== Collected : 2579162248 479227323 298122079 115857 42318368 2682073 35183 8069589 1434334 291957128 6555683 64798 1898
+==1038140== 
+==1038140== I   refs:      2,579,162,248
+==1038140== I1  misses:          115,857
+==1038140== LLi misses:           35,183
+==1038140== I1  miss rate:          0.00%
+==1038140== LLi miss rate:          0.00%
+==1038140== 
+==1038140== D   refs:        777,349,402  (479,227,323 rd + 298,122,079 wr)
+==1038140== D1  misses:       45,000,441  ( 42,318,368 rd +   2,682,073 wr)
+==1038140== LLd misses:        9,503,923  (  8,069,589 rd +   1,434,334 wr)
+==1038140== D1  miss rate:           5.8% (        8.8%   +         0.9%  )
+==1038140== LLd miss rate:           1.2% (        1.7%   +         0.5%  )
+==1038140== 
+==1038140== LL refs:          45,116,298  ( 42,434,225 rd +   2,682,073 wr)
+==1038140== LL misses:         9,539,106  (  8,104,772 rd +   1,434,334 wr)
+==1038140== LL miss rate:            0.3% (        0.3%   +         0.5%  )
+==1038140== 
+==1038140== Branches:        292,021,926  (291,957,128 cond +      64,798 ind)
+==1038140== Mispredicts:       6,557,581  (  6,555,683 cond +       1,898 ind)
+==1038140== Mispred rate:            2.2% (        2.2%     +         2.9%   )
