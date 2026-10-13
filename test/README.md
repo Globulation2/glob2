@@ -136,6 +136,12 @@ comparisons. `GLOB2_ENTITY_SCENARIO` selects one fixture (0–5),
 is the default. Inventory phases report separate keys, and layout diagnostics
 include actual allocation alignment and usable sizes.
 
+Component timing intervals do not drain asynchronous workers. Work submitted by
+owner steps can cross phase boundaries, so these timings explain individual costs
+but cannot establish total CPU savings. Use whole-match and advancing-frame runs
+with worker drains at both measurement boundaries for inclusive process CPU;
+do not add independently measured phases together.
+
 `GLOB2_ENTITY_LEASES` controls retained handles (1–21, within the component pool horizon), and
 `GLOB2_ENTITY_BENCH_CONFIG` names a JSON file mapping scenario numbers to operation
 counts (`capture`, `inventory_read`, `inventory_update`, `owner`, `consumer`).

@@ -1270,6 +1270,7 @@ TEST_SUITE("WorldSnapshot")
             std::ifstream in(path); in>>configuration;
         }
         const int selected=std::getenv("GLOB2_ENTITY_SCENARIO") ? std::stoi(std::getenv("GLOB2_ENTITY_SCENARIO")) : -1;
+        REQUIRE(selected>=-1); REQUIRE(selected<6);
         const int retained=std::getenv("GLOB2_ENTITY_LEASES") ? std::stoi(std::getenv("GLOB2_ENTITY_LEASES")) : 8;
         REQUIRE(retained>=1); REQUIRE(retained<int(SimulationSnapshot::BufferPool<SimulationSnapshot::Entities>::Limit));
         for(int scenario=0;scenario<6;++scenario) {
