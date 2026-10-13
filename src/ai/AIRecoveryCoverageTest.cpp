@@ -39,6 +39,77 @@ template<class Operation> decltype(auto) withCastorObservation(AICastor& ai, Gam
 
 TEST_SUITE("AIRecoveryCoverage")
 {
+    TEST_CASE("Nicowar dig-out rejects missing starts without allocating orders")
+    {
+        glob2test::HeadlessGlobals globals;
+        glob2test::HeadlessGame w(glob2test::GameOptions{
+            .teams=2,.discovered=true,.clearImmobile=true,.loadDefaultRace=true,.header=true});
+        auto* enemy=w.addBuilding("swarm",20,20,0,1);
+        REQUIRE(enemy);
+        enemy->seenByMask=w.team->me;
+        // With no surviving home building there is no accessible start. The old
+        // (0,0) fallback lands on stone and endlessly enqueues clearing orders.
+        w.game.map.setResourceByIndex(0,0,STONE,1);
+        AISharedRuntime::Runtime runtime(new NewNicowar,w.game.players[0]);
+        AISharedRuntime::Runtime::OwnerObservationScope observation(runtime);
+        MersenneTwister random(713);runtime.setRandomEngine(random);
+        runtime.gm.reset(new AISharedRuntime::Gradients::GradientManager(&w.game.map));
+        runtime.br.initiate();
+        auto& ai=*static_cast<NewNicowar*>(runtime.runtimeai.get());ai.target=1;
+        CHECK_FALSE(ai.dig_out_enemy(runtime));
+        CHECK(runtime.building_orders.empty());CHECK(runtime.management_orders.empty());
+        CHECK_FALSE(ai.is_digging_out);
+    }
+
+    TEST_CASE("Nicowar dig-out validates frozen routes before committing clearing orders")
+    {
+        glob2test::HeadlessGlobals globals;
+        glob2test::HeadlessGame w(glob2test::GameOptions{
+            .teams=2,.discovered=true,.clearImmobile=true,.loadDefaultRace=true,.header=true});
+        auto* enemy=w.addBuilding("swarm",8,8,0,1);REQUIRE(enemy);
+        enemy->seenByMask=w.team->me;
+        AISharedRuntime::Runtime runtime(new NewNicowar,w.game.players[0]);
+        AISharedRuntime::Runtime::OwnerObservationScope observation(runtime);
+        MersenneTwister random(713);runtime.setRandomEngine(random);
+        runtime.gm.reset(new AISharedRuntime::Gradients::GradientManager(&w.game.map));
+        runtime.br.initiate();
+        auto& ai=*static_cast<NewNicowar*>(runtime.runtimeai.get());ai.target=1;
+        using namespace AISharedRuntime::Gradients;
+        GradientInfo homeInfo;homeInfo.terrainTravel=field::TerrainTravel::Swim;
+        homeInfo.add_source(new Entities::AnyTeamBuilding(0,false));
+        homeInfo.add_obstacle(new Entities::ResourceGroundObstacle);
+        auto& home=runtime.gm->get_gradient(homeInfo);
+        std::fill(home.gradient.begin(),home.gradient.end(),0);
+        home.gradient[8*32+1]=2; // Only (1,8) is accessible from home.
+        GradientInfo pathInfo;pathInfo.terrainTravel=field::TerrainTravel::Swim;
+        pathInfo.add_source(new Entities::Position(8,8));
+        pathInfo.add_obstacle(new Entities::MaterialSource(materialIndex(MaterialId::Stone)));
+        auto& path=runtime.gm->get_gradient(pathInfo);
+        std::fill(path.gradient.begin(),path.gradient.end(),1);
+        path.gradient[8*32+8]=2; // get_height subtracts the source seed (2).
+        bool valid=false;std::size_t flags=0;
+        SUBCASE("unreached start") {path.gradient[8*32+1]=0;}
+        SUBCASE("obstacle start") {path.gradient[8*32+1]=1;}
+        SUBCASE("isolated reachable tile") {path.gradient[8*32+1]=5;}
+        SUBCASE("equal-height two-tile cycle") {
+            path.gradient[8*32+1]=3;path.gradient[8*32+2]=3;
+        }
+        SUBCASE("valid corridor keeps flag spacing and management orders") {
+            for(int x=1;x<=8;++x)path.gradient[8*32+x]=10-x;
+            valid=true;flags=2;
+        }
+        SUBCASE("valid corridor crosses the torus seam") {
+            home.gradient[8*32+1]=0;home.gradient[8*32+31]=2;
+            path.gradient[8*32+31]=11;
+            for(int x=0;x<=8;++x)path.gradient[8*32+x]=10-x;
+            valid=true;flags=3;
+        }
+        CHECK(ai.dig_out_enemy(runtime)==valid);
+        CHECK(ai.is_digging_out==valid);
+        CHECK(runtime.building_orders.size()==flags);
+        CHECK(runtime.management_orders.size()==(valid?2*flags+1:0));
+    }
+
     TEST_CASE("Cabino declared inputs omit published fields without changing decisions")
  {
   glob2test::HeadlessGlobals globals;
