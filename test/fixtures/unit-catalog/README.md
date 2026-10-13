@@ -18,10 +18,12 @@ with the uninterrupted simulation.
 `legacy152-stock.replay.gz` is a retained 128-tick replay produced by master
 `69ef3e1b2bf453aa280a69be72f83167b1511d9d`, before unit catalogs. It starts from
 SmallForTwo with seed 19 and Cortex/Maxima, and includes the original recorded orders
-and simulation checksums. `EngineSession` loads this replay through the real replay
-reader and runs every recorded tick using the version-152 representation adapter.
-Keep this historical replay unchanged: it verifies accepted replay execution across
-the unit-catalog boundary independently of current golden regeneration.
+and simulation checksums. It originally verified replay execution across the
+unit-catalog boundary. The resource-stock simulation change raised the replay
+acceptance floor to 154; `EngineSession` now checks that the real replay loader
+rejects this older recording without committing replay state. Keep the historical
+replay unchanged. This replay boundary does not change the separate save-loading
+compatibility floor.
 
 `legacy152-team3-ranged-stats.bin.gz` retains the fourth team's exact format-152
 `TeamStats` bytes from master `69ef3e1b2bf453aa280a69be72f83167b1511d9d`,
