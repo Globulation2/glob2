@@ -44,9 +44,9 @@ int main(int argc, char** argv)
 try
 {
     if (argc != 4 || std::string(argv[1]) != "--prepare")
-        throw std::runtime_error("Usage: HiringStudyHarness --prepare sustainable|contention|opportunities OUTPUT_DIR");
+        throw std::runtime_error("Usage: HiringStudyHarness --prepare sustainable|contention|opportunities|opportunity-save OUTPUT_DIR");
     const std::string kind = argv[2];
-    if (kind != "sustainable" && kind != "contention" && kind != "opportunities") throw std::invalid_argument("Unknown fixture kind");
+    if (kind != "sustainable" && kind != "contention" && kind != "opportunities" && kind != "opportunity-save") throw std::invalid_argument("Unknown fixture kind");
     const fs::path directory = argv[3];
     if (fs::exists(directory)) throw std::runtime_error("Output directory already exists");
     fs::create_directories(directory);
@@ -86,7 +86,7 @@ try
         }
         game.teams[t]->createLists();
     }
-    if(kind=="opportunities") {
+    if(kind=="opportunities" || kind=="opportunity-save") {
         // Isolated real-engine hiring opportunities. No simulation ticks run:
         // stock/positions remain fixed, and subscription resets are untimed.
         nlohmann::json rows=nlohmann::json::array();
@@ -106,6 +106,7 @@ try
         for(int t=0;t<2;++t)for(auto* b:std::span(game.teams[t]->myBuildings,Building::MAX_COUNT))if(b)
             for(int swim=0;swim<SWIM_CLASS_COUNT;++swim)game.map.buildingGradient(b,swim);
         for(int t=0;t<2;++t)for(int swim=0;swim<SWIM_CLASS_COUNT;++swim)game.map.getMaterialGradientSlot(t,WHEAT,swim);
+        if(kind=="opportunity-save") {save(gui,directory/"initial.game.gz");return 0;}
         for(unsigned stride:{1u,4u,8u}) {
             reset(stride);game.snapshotStore().invalidateBoundary();
             auto snapshot=game.captureReadBoundary({},true,SimulationSnapshot::Simulation);

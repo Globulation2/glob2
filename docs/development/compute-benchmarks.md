@@ -132,7 +132,7 @@ separate policy control that rejects observed-busy/medical candidates before rou
 work and uses the entire capacity for its available-only combined list. The default
 is `all`; do not interpret this control as a live admission or delay guarantee.
 `--hiring-diversity rounds` is an explicit available-only, vacancy-sized control
-for single-material teams without attraction roles and with aggregate vacancies
+for teams where each building has one material with eligible suggestions, no attraction roles, and aggregate vacancies
 plus backups within `L`. The owner captures its priority order; private fair
 rounds choose distinct primary suggestions across buildings, then add backups.
 Workers are not reserved or assigned in the live world. A wider private ranking
@@ -141,7 +141,8 @@ job shapes fall back to independent lists and increment `coordinationSkipped`.
 This is a policy experiment, not proof of equivalent hires or live delay.
 The `hiring-study --prepare opportunities OUTPUT_DIR` harness compares warmed,
 static real-engine opportunities with rotated repeated planner controls and a
-shared-executor control. Direct fill timings include subscriptions and immediate
+shared-executor control. `--prepare opportunity-save OUTPUT_DIR` emits the
+open-vacancy input for scheduled determinism checks. Direct fill timings include subscriptions and immediate
 swaps; planner timings exclude commitment and snapshot capture. Its separate
 K4/R4 waiting model freezes positions, stock and medical availability while
 hypothetical hires remain busy. It is not a live gameplay delay measurement.
