@@ -775,7 +775,7 @@ TEST_CASE("JavaScript telemetry scene permissions and replay diagnostic roundtri
 	auto observe = [&] {
 		// Fixture writes bypass the simulation tick/order boundary.
 		game.snapshots().invalidateBoundary();
-		extractor.prepare(game.captureReadBoundary({}, true, SceneExtractor::requirements(request)), request, scene);
+		extractor.prepare(game.captureReadBoundary(SceneExtractor::captureOptions(request)), request, scene);
 	};
 	observe();
 	REQUIRE(scene.panels.aiTelemetry.size() == 1);
@@ -968,7 +968,7 @@ TEST_CASE("JavaScript custom library and telemetry dialogs render [display:1280x
 		request.includeTelemetry = true;
 		PresentationFrame presentation;
 		world.game.snapshots().invalidateBoundary();
-		SceneExtractor().prepare(world.game.captureReadBoundary({}, true, SceneExtractor::requirements(request)), request, presentation);
+		SceneExtractor().prepare(world.game.captureReadBoundary(SceneExtractor::captureOptions(request)), request, presentation);
 		world.gui.setPublishedScene(&presentation);
 		glob2test::drawGUI(world.gui,0);
 		const auto before = world.checksum();
@@ -1778,7 +1778,8 @@ TEST_CASE("JavaScript projected boundary preserves history and spatial resources
     auto& game=fixture.game;
     game.gameHeader.setAIConfig(0,config("export function step(ctx){return null;}"));
     AIJavaScript controller(game.players[0]);
-    const auto requirements=controller.observationRequirements();
+    const auto requirements=SimulationSnapshot::Simulation & ~(SimulationSnapshot::bit(SimulationSnapshot::Component::Growth)
+        | SimulationSnapshot::bit(SimulationSnapshot::Component::ResourceFields));
     CHECK_FALSE(SimulationSnapshot::needs(requirements,SimulationSnapshot::Component::Growth));
     CHECK_FALSE(SimulationSnapshot::needs(requirements,SimulationSnapshot::Component::ResourceFields));
     for(int y=0;y<16;++y)for(int x=0;x<16;++x)game.map.fogOfWar[game.map.coordToIndex(x,y)]=1;

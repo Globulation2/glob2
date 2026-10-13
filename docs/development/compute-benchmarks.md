@@ -96,8 +96,10 @@ The nested `ai_pipeline` object reports session counters:
 | `captures` | Distinct snapshot capture boundaries. |
 | `extraction_ns` | Owner elapsed extraction time, excluding the separately measured preparation subset. |
 | `preparation_ns` | Owner elapsed time deriving building checks and preparing the growth field. |
-| `bytes_copied` | Component payload actually copied across captures: for map arrays only the 16x16 chunks changed since the reused buffer was last filled, plus whole entity, team and published resource-plane payloads. |
-| `component_reuses` | Unchanged component or resource-plane reuse events. |
+| `map_bytes_copied` | Always-on count of bytes copied into map and area-fertility buffers, including dirty 16x16 chunks and full fills. Shared immutable payloads do not count as copies. |
+| `detailed_captures` | Captures with detailed byte/reuse accounting enabled by compute telemetry (`waits` or `trace`), or explicitly by a snapshot harness. |
+| `bytes_copied` | Estimated component payload traffic for `detailed_captures`: exact map copies plus sizes of entity, team and other refreshed payloads. Zero when detailed accounting is disabled. |
+| `component_reuses` | Unchanged component or resource-plane reuse events during `detailed_captures`. Zero when detailed accounting is disabled. |
 | `allocations` | Instrumented component/payload pool-object, vector-growth and resource-plane allocation events. |
 | `computation_ns` | Summed elapsed time executing decision callbacks, across inline or worker execution. |
 | `submitted`, `delivered` | Admitted polls and deadline publications, including null outputs. |
@@ -113,7 +115,8 @@ The nested `ai_pipeline` object reports session counters:
 
 Elapsed work across threads is not process CPU time. Preparation and extraction partition
 owner capture work; decision and deadline-wait durations can overlap other work, so do not
-sum all counters into a total. `bytes_copied` is cumulative traffic, and `allocations` is
+sum all counters into a total. `bytes_copied` is cumulative estimated traffic for
+the measured captures, and `allocations` is
 not an exhaustive allocator trace. Use process user-plus-system CPU and peak RSS alongside
 the explicit metrics. Worker-local implicit scopes are not merged into owner totals.
 

@@ -3,6 +3,27 @@
 #include <SDL3/SDL_stdinc.h>
 namespace SimulationSnapshot
 {
+// Every boundary contains the complete simulation view. Interactive callers add
+// the ordinary presentation payload; only cold UI/diagnostic data is optional.
+struct CaptureOptions
+{
+ bool presentation = false;
+ bool history = false;
+ bool telemetry = false;
+ bool entityDiagnostics = false;
+ bool annotations = false;
+ void include(CaptureOptions other)
+ {
+  presentation |= other.presentation;
+  history |= other.history;
+  telemetry |= other.telemetry;
+  entityDiagnostics |= other.entityDiagnostics;
+  annotations |= other.annotations;
+ }
+};
+
+// Internal component flags for incremental capture and narrow buffer leases.
+// Consumers select CaptureOptions and named Handle views instead of assembling masks.
 enum class Component : Uint32
 {
  Catalogs = 1, Terrain = 2, Resources = 4, Occupancy = 8,
@@ -15,4 +36,14 @@ constexpr Requirements bit(Component value) { return static_cast<Requirements>(v
 constexpr Requirements Simulation = 2047;
 constexpr Requirements All = 262143;
 constexpr bool needs(Requirements mask, Component value) { return (mask & bit(value)) != 0; }
+constexpr Requirements captureRequirements(CaptureOptions options)
+{
+ auto result = Simulation;
+ if (options.presentation) result |= bit(Component::Session) | bit(Component::Effects) | bit(Component::Statistics);
+ if (options.history) result |= bit(Component::History);
+ if (options.telemetry) result |= bit(Component::Telemetry);
+ if (options.entityDiagnostics) result |= bit(Component::EntityDiagnostics);
+ if (options.annotations) result |= bit(Component::Annotations);
+ return result;
+}
 }

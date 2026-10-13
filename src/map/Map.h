@@ -114,7 +114,6 @@ class Map
 	mutable std::unique_ptr<GradientRuntime> gradientRuntime;
 	// Scheduled building gradients (MapGradientScheduling.cpp).
 	void stageBuildingGradientPreparation();
-	SimulationSnapshot::Requirements pendingBuildingRequirements() const;
 	void prepareStagedBuildingGradients(const SimulationSnapshot::Handle& foundation);
 	void resetBuildingGradientPipeline() noexcept;
 	Building *buildingGradientDestination(int team, int id, Uint32 identity) const;
@@ -268,7 +267,7 @@ public:
 	// Owner selects/reserves and captures inputs before dispatch. Deferred jobs
 	// seed and propagate private data from immutable leases; join before save/reconfigure.
 	void stagePeriodicGradientPreparation();
-    SimulationSnapshot::Requirements pendingWorldRequirements() const;
+    bool hasPendingWorldPreparation() const;
     void preparePendingWorld();
     void preparePendingWorld(const SimulationSnapshot::Handle&);
     void stageResourceGrowth();
@@ -277,7 +276,6 @@ public:
     unsigned resourceGrowthDelay() const;
     const ResourceGrowth::Metrics& resourceGrowthMetrics() const;
 	bool hasPendingGradientPreparation() const;
-	SimulationSnapshot::Requirements pendingGradientRequirements() const;
 	void preparePendingGradient();
 	void preparePendingGradient(const SimulationSnapshot::Handle& foundation);
 	void advanceGradientPipeline();

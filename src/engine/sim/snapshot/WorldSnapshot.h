@@ -156,6 +156,15 @@ struct Handle
 	std::shared_ptr<const BuildingAreaEffects::FertilitySnapshot> areaFertility;
 	Uint64 worldIdentity = 0, configurationRevision = 0;
 	std::array<Uint64, 5> mapGenerations{};
+	//! Standard leases keep unrelated payloads out of long-lived jobs and frames.
+	Handle simulationView() const;
+	Handle gradientView() const;
+	Handle buildingGradientView() const;
+	Handle growthView() const;
+	Handle sceneMapView() const;
+	Handle presentationView(CaptureOptions options) const;
+	bool supports(CaptureOptions options) const;
+	// Low-level component projection for capture/storage verification.
 	Handle project(Requirements requested) const;
 	// Scalar readers touch only their requested immutable component. Defaults
 	// match a combined tile whose corresponding component was not captured.

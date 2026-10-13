@@ -512,8 +512,7 @@ TEST_SUITE("ResourceGrowthBenchmark")
 				auto &map = world.game.map;
 				setup(map, scenario);
 				map.resourceGrowthField();
-				const auto captured = world.game.snapshotStore().captureBoundary(
-					world.game, ResourceGrowth::Pipeline::requirements());
+				const auto captured = world.game.snapshotStore().captureBoundary(world.game);
 				const std::array<MapState::View, 2> views{map.stateView(), captured.view()};
 				ResourceGrowth::Batch output[2];
 				for (auto &batch : output)
@@ -598,12 +597,10 @@ TEST_SUITE("ResourceGrowthBenchmark")
 						if (variant || sharedCapture)
 						{
 							const auto cold = Clock::now();
-							world.game.snapshotStore().captureBoundary(
-								world.game, sharedCapture
-												? SimulationSnapshot::All
-												: ResourceGrowth::Pipeline::requirements());
+							world.game.snapshotStore().captureBoundary(world.game, SimulationSnapshot::CaptureOptions{.presentation=sharedCapture});
 							coldCaptureNs = ns(cold);
 							world.game.snapshotStore().metrics = {};
+							world.game.snapshotStore().setDetailedMetrics(true);
 						}
 						const auto before = stocks(map);
 						const auto start = Clock::now();
@@ -631,8 +628,7 @@ TEST_SUITE("ResourceGrowthBenchmark")
 								if (variant > 1)
 									map.gradientRuntime->growth.publish(map, tick);
 								world.game.snapshotStore().invalidateBoundary();
-								existing = world.game.snapshotStore().captureBoundary(
-									world.game, SimulationSnapshot::All);
+								existing = world.game.snapshotStore().captureBoundary(world.game, SimulationSnapshot::CaptureOptions{.presentation=true});
 							}
 							if (variant == 0)
 								map.growResources();
@@ -642,9 +638,8 @@ TEST_SUITE("ResourceGrowthBenchmark")
 									world.game.snapshotStore().invalidateBoundary();
 								auto snapshot =
 									sharedCapture
-										? existing.project(ResourceGrowth::Pipeline::requirements())
-										: world.game.snapshotStore().captureBoundary(
-											  world.game, ResourceGrowth::Pipeline::requirements());
+										? existing.growthView()
+										: world.game.snapshotStore().captureBoundary(world.game);
 								MersenneTwister random(syncRand());
 								const auto computing = Clock::now();
 								ResourceGrowth::calculate(snapshot.view(), random, immediateBatch);

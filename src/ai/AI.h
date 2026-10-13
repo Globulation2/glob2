@@ -97,7 +97,6 @@ public:
 	// Owner setup precedes dispatch; decide borrows captured inputs only. The
 	// completed sample is published independently from the controller's stream.
 	void prepareDecision();
-	SimulationSnapshot::Requirements observationRequirements() const;
 	AIEngine::Command decide(const AIEngine::DecisionContext& context);
 	void publishDecision(const AIEngine::Command& output);
 
