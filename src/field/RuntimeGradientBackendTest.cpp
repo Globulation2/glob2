@@ -2,8 +2,10 @@
 #include "Glob2Test.h"
 #include "ScopedEnvironment.h"
 #include "GradientAccelerators.h"
+#include "OpenCLGradient.h"
 #include "GradientGpuValidation.h"
 #include "test/fixtures/gradients/WrappedMaterialSeeds.h"
+#include "test/fixtures/gradients/RetainedVulkanSeeds.h"
 #include "GradientPropagation.h"
 #include "TerrainGradient.h"
 #include <queue>
@@ -449,6 +451,238 @@ TEST_SUITE("RuntimeGradientBackend")
 				CHECK(actual == expected);
 			}
 	}
+	TEST_CASE("Vulkan movement classes preserve deferred seeds on wrapped partial tiles")
+	{
+		using namespace gradient_kernel;
+		if (!initializeVulkanGradient())
+		{
+			if (std::getenv("GLOB2_REQUIRE_VULKAN"))
+				FAIL(vulkanGradientStatus().error);
+			MESSAGE("Vulkan unavailable: ", vulkanGradientStatus().error);
+			return;
+		}
+		BackendSession session;
+		for (const auto dimensions : {std::pair{1, 17}, std::pair{19, 1},
+									 std::pair{17, 33}, std::pair{33, 17}})
+			for (unsigned swim = 0; swim < std::size(WATER_STEP); ++swim)
+				for (const int cap : {0, 1, 70, 400, COST_LIMIT})
+				{
+					CAPTURE(dimensions.first);
+					CAPTURE(dimensions.second);
+					CAPTURE(swim);
+					CAPTURE(cap);
+					const field::Grid grid{dimensions.first, dimensions.second};
+					std::vector<std::uint16_t> seeds(grid.cells(), 1);
+					std::vector<EntrySteps> costs(grid.cells(), LAND_STEPS);
+					for (std::size_t i = 0; i < grid.cells(); ++i)
+					{
+						if (i % 5 == 2)
+						{
+							if (!swim)
+								seeds[i] = 0;
+							else
+								costs[i] = entrySteps(WATER_STEP[swim]);
+						}
+						if (i % 13 == 4)
+							seeds[i] = 0;
+					}
+					seeds.front() = 65535;
+					seeds[grid.cells() / 2] = 65535 - 71;
+					seeds.back() = 65535 - 400;
+					const auto expected = oracle(seeds, grid, costs, cap);
+					for (const auto plan : {Plan::VulkanFrozen8, Plan::VulkanJacobi})
+					{
+						const auto planID = int(plan);
+						CAPTURE(planID);
+						auto actual = seeds;
+						BackendRequest request{actual.data(), cap, grid, session, &costs,
+							[](void *p, auto i) { return (*static_cast<std::vector<EntrySteps> *>(p))[i]; },
+							nullptr};
+						bool committed = false, observed = false;
+						request.executedOnDevice = &committed;
+						request.deviceExecutionObserved = &observed;
+						REQUIRE(executeVulkanGradient(std::span(&request, 1), plan));
+						REQUIRE(observed);
+						REQUIRE(committed);
+						CHECK(actual == expected);
+					}
+				}
+	}
+	TEST_CASE("retained Vulkan proof inputs require exact device commits")
+	{
+		using namespace gradient_kernel;
+		if (!initializeVulkanGradient())
+		{
+			if (std::getenv("GLOB2_REQUIRE_VULKAN"))
+				FAIL(vulkanGradientStatus().error);
+			MESSAGE("Vulkan unavailable: ", vulkanGradientStatus().error);
+			return;
+		}
+		const auto device = vulkanGradientStatus();
+		MESSAGE("Vulkan retained proofs: device=", device.device, " driver=", device.driver,
+				" shader=", device.shaderIdentity);
+		const field::Grid grid{gradient_fixture::retainedVulkanWidth,
+			gradient_fixture::retainedVulkanHeight};
+		const int cap = gradient_fixture::retainedVulkanCap;
+		BackendSession session;
+		const std::array<std::span<const std::uint16_t>, 5> fixtures{
+			gradient_fixture::retainedVulkanRuns0, gradient_fixture::retainedVulkanRuns1,
+			gradient_fixture::retainedVulkanRuns2, gradient_fixture::retainedVulkanRuns3,
+			gradient_fixture::retainedVulkanRuns4};
+		for (std::size_t fixture = 0; fixture < fixtures.size(); ++fixture)
+		{
+			CAPTURE(fixture);
+			std::vector<std::uint16_t> seeds;
+			for (const auto run : fixtures[fixture])
+				seeds.insert(seeds.end(), run >> 2, (run & 3) == 2 ? 65535 : run & 3);
+			REQUIRE(seeds.size() == grid.cells());
+			const std::vector<EntrySteps> costs(grid.cells(), LAND_STEPS);
+			const auto expected = oracle(seeds, grid, costs, cap);
+			for (const auto plan : {Plan::VulkanFrozen8, Plan::VulkanJacobi})
+				for (const char *transfers : std::array<const char *, 2>{"0", "1"})
+				{
+					const auto planID = int(plan);
+					CAPTURE(planID);
+					CAPTURE(transfers);
+					glob2test::ScopedEnvironment verify("GLOB2_VULKAN_VERIFY_TRANSFERS", transfers);
+					for (int repeat = 0; repeat < 3; ++repeat)
+					{
+						CAPTURE(repeat);
+						auto actual = seeds;
+						BackendRequest request{actual.data(), cap, grid, session, nullptr,
+							[](void *, auto) { return LAND_STEPS; }, nullptr};
+						bool committed = false, observed = false;
+						request.executedOnDevice = &committed;
+						request.deviceExecutionObserved = &observed;
+						const auto before = vulkanGradientStatus();
+						REQUIRE(executeVulkanGradient(std::span(&request, 1), plan));
+						REQUIRE(observed);
+						REQUIRE(committed);
+						CHECK(vulkanGradientStatus().fields == before.fields + 1);
+						CHECK(vulkanGradientStatus().dispatches > before.dispatches);
+						CHECK(actual == expected);
+					}
+				}
+		}
+	}
+	TEST_CASE("Vulkan upload roundtrips retire before staging reuse at cohort sizes")
+	{
+		using namespace gradient_kernel;
+		if (!initializeVulkanGradient())
+		{
+			if (std::getenv("GLOB2_REQUIRE_VULKAN"))
+				FAIL(vulkanGradientStatus().error);
+			MESSAGE("Vulkan unavailable: ", vulkanGradientStatus().error);
+			return;
+		}
+		glob2test::ScopedEnvironment verify("GLOB2_VULKAN_VERIFY_TRANSFERS", "1");
+		BackendSession session;
+		for (const int side : {128, 256, 512})
+			for (unsigned repeat = 0; repeat < 8; ++repeat)
+				for (const auto plan : {Plan::VulkanFrozen8, Plan::VulkanJacobi})
+				{
+					CAPTURE(side);
+					CAPTURE(repeat);
+					const auto planID = int(plan);
+					CAPTURE(planID);
+					const field::Grid grid{side, side};
+					std::vector<std::uint16_t> seeds(grid.cells());
+					for (std::size_t i = 0; i < grid.cells(); ++i)
+						seeds[i] = (i + repeat) % 17 == 0 ? 65535 : (i + repeat) % 5 == 0 ? 0 : 1;
+					auto actual = seeds;
+					EntrySteps costs{1 + repeat * 17, 2 + repeat * 23};
+					BackendRequest request{actual.data(), 0, grid, session, &costs,
+						[](void *p, auto) { return *static_cast<EntrySteps *>(p); }, nullptr};
+					bool committed = false, observed = false;
+					request.executedOnDevice = &committed;
+					request.deviceExecutionObserved = &observed;
+					REQUIRE(executeVulkanGradient(std::span(&request, 1), plan));
+					REQUIRE(observed);
+					REQUIRE(committed);
+					// With cap zero no positive edge can extend any original source.
+					CHECK(actual == seeds);
+				}
+	}
+	TEST_CASE("Vulkan mapped transfer storage shares the host admission budget")
+	{
+		using namespace gradient_kernel;
+		if (!initializeVulkanGradient())
+		{
+			if (std::getenv("GLOB2_REQUIRE_VULKAN"))
+				FAIL(vulkanGradientStatus().error);
+			MESSAGE("Vulkan unavailable: ", vulkanGradientStatus().error);
+			return;
+		}
+		BackendSession session;
+		const field::Grid grid{17, 19};
+		std::vector<std::uint16_t> seeds(grid.cells(), 1);
+		seeds.front() = 65535;
+		auto actual = seeds;
+		BackendRequest request{actual.data(), COST_LIMIT, grid, session, nullptr,
+			[](void *, auto) { return LAND_STEPS; }, nullptr};
+		bool committed = false, observed = false;
+		request.executedOnDevice = &committed;
+		request.deviceExecutionObserved = &observed;
+		const auto before = openCLHostBytes();
+		REQUIRE(before + grid.cells() * 2 < OpenCLHostBudget);
+		{
+			// Leave room for the immutable seed backup, but no mapped storage.
+			const auto bytes = OpenCLHostBudget - before - grid.cells() * 2;
+			REQUIRE(reserveOpenCLHostBytes(bytes));
+			struct Lease { std::size_t bytes; ~Lease() { releaseOpenCLHostBytes(bytes); } } lease{bytes};
+			CHECK_FALSE(executeVulkanGradient(std::span(&request, 1), Plan::VulkanFrozen8));
+			CHECK_FALSE(committed);
+			CHECK_FALSE(observed);
+			CHECK(actual == seeds);
+			CHECK(openCLHostBytes() == before + bytes);
+		}
+		CHECK(openCLHostBytes() == before);
+		REQUIRE(executeVulkanGradient(std::span(&request, 1), Plan::VulkanFrozen8));
+		CHECK(committed);
+		CHECK(observed);
+		CHECK(openCLHostBytes() == before);
+	}
+	TEST_CASE("Vulkan batch rollback retains execution evidence without claiming commits")
+	{
+		using namespace gradient_kernel;
+		if (!initializeVulkanGradient())
+		{
+			if (std::getenv("GLOB2_REQUIRE_VULKAN"))
+				FAIL(vulkanGradientStatus().error);
+			MESSAGE("Vulkan unavailable: ", vulkanGradientStatus().error);
+			return;
+		}
+		BackendSession session;
+		for (const auto plan : {Plan::VulkanFrozen8, Plan::VulkanJacobi})
+		{
+			const field::Grid grid{17, 19};
+			std::vector<std::uint16_t> seeds(grid.cells(), 1);
+			seeds[0] = 65535;
+			auto first = seeds, second = seeds;
+			std::array<BackendRequest, 2> requests{
+				BackendRequest{first.data(), COST_LIMIT, grid, session, nullptr,
+					[](void *, auto) { return LAND_STEPS; }, nullptr},
+				BackendRequest{second.data(), COST_LIMIT, grid, session, nullptr,
+					[](void *, auto) { return LAND_STEPS; }, nullptr}};
+			requests[1].requiredControl = std::make_shared<OpenCLRequiredControl>();
+			requests[1].requiredControl->requestCancel();
+			std::array<bool, 2> committed{true, true}, observed{true, true};
+			for (unsigned i = 0; i < 2; ++i)
+			{
+				requests[i].executedOnDevice = &committed[i];
+				requests[i].deviceExecutionObserved = &observed[i];
+			}
+			const auto before = vulkanGradientStatus();
+			CHECK_FALSE(executeVulkanGradient(requests, plan));
+			CHECK(observed[0]);
+			CHECK_FALSE(observed[1]);
+			CHECK_FALSE(committed[0]);
+			CHECK_FALSE(committed[1]);
+			CHECK(first == seeds);
+			CHECK(second == seeds);
+			CHECK(vulkanGradientStatus().fields == before.fields);
+		}
+	}
 	TEST_CASE("Vulkan cancellation leaves original seeds untouched")
 	{
 		using namespace gradient_kernel;
@@ -466,6 +700,51 @@ TEST_SUITE("RuntimeGradientBackend")
 		request.requiredControl->requestCancel();
 		CHECK_FALSE(executeVulkanGradient(std::span(&request, 1), Plan::VulkanJacobi));
 		CHECK(values == seeds);
+	}
+
+	TEST_CASE("transfer mismatch preserves original seeds expected words and actual readback")
+	{
+		using namespace gradient_kernel;
+		const auto directory = std::filesystem::path("artifacts") /
+			("transfer-validation-" + std::to_string(monotonicNs()));
+		std::filesystem::create_directories(directory);
+		glob2test::ScopedEnvironment artifacts("GLOB2_TEST_ARTIFACTS", directory.string().c_str());
+		const std::array<std::uint16_t, 2> seeds{65535, 1};
+		const std::array<std::uint32_t, 2> actual{917514, 1};
+		try
+		{
+			failGradientTransfer(2, seeds, actual, {2, 1}, 70,
+				[](auto) { return 917514u; }, {"device", "driver", "shader", 123});
+			FAIL("transfer mismatch must stop execution");
+		}
+		catch (const GradientProofFailure &error)
+		{
+			CHECK(std::string(error.what()).find("expected 917514, actual 1") != std::string::npos);
+		}
+		std::size_t payloads = 0;
+		for (const auto &entry : std::filesystem::directory_iterator(directory))
+			if (entry.path().extension() == ".bin")
+			{
+				++payloads;
+				std::ifstream input(entry.path(), std::ios::binary);
+				const std::vector<unsigned char> bytes{std::istreambuf_iterator<char>(input), {}};
+				REQUIRE(bytes.size() == 48);
+				const auto word = [&](std::size_t i) {
+					return unsigned(bytes[i]) | (unsigned(bytes[i+1]) << 8) |
+						(unsigned(bytes[i+2]) << 16) | (unsigned(bytes[i+3]) << 24);
+				};
+				CHECK(word(0) == 0x47545246u);
+				CHECK(word(8) == 2);
+				CHECK(bytes[28] == 255);
+				CHECK(bytes[29] == 255);
+				CHECK(bytes[30] == 1);
+				CHECK(word(32) == 917514);
+				CHECK(word(36) == 917514);
+				CHECK(word(40) == 917514);
+				CHECK(word(44) == 1);
+			}
+		CHECK(payloads == 1);
+		std::filesystem::remove_all(directory);
 	}
 
 	TEST_CASE("fixed-point proof agrees with independent weighted oracle on narrow tori")

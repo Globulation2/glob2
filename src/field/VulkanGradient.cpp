@@ -31,7 +31,7 @@ struct VulkanError : std::runtime_error
 };
 struct MemoryDecline : std::runtime_error
 {
-	MemoryDecline() : std::runtime_error("Vulkan device memory budget exceeded") {}
+	MemoryDecline() : std::runtime_error("Vulkan shared memory budget exceeded") {}
 };
 void check(VkResult result)
 {
@@ -93,7 +93,7 @@ struct Buffer
 	VkBuffer buffer = VK_NULL_HANDLE;
 	VkDeviceMemory memory = VK_NULL_HANDLE;
 	void *mapped = nullptr;
-	std::size_t charged = 0;
+	std::size_t charged = 0, hostCharged = 0;
 	Buffer() = default;
 	Buffer(const Buffer &) = delete;
 	Buffer &operator=(const Buffer &) = delete;
@@ -156,7 +156,7 @@ struct Runtime
 		VULKAN_FUNCTIONS(LOAD)
 #undef LOAD
 	}
-	void allocate(Buffer &out, std::size_t bytes)
+	void allocate(Buffer &out, std::size_t bytes, bool hostAccess)
 	{
 		out.runtime = this;
 		VkBufferCreateInfo info{VK_STRUCTURE_TYPE_BUFFER_CREATE_INFO};
@@ -172,23 +172,40 @@ struct Runtime
 			throw MemoryDecline();
 		out.charged = std::size_t(requirements.size);
 		unsigned type = memory.memoryTypeCount;
+		int best = -1;
 		for (unsigned i = 0; i < memory.memoryTypeCount; ++i)
-			if ((requirements.memoryTypeBits & (1u << i)) &&
-				(memory.memoryTypes[i].propertyFlags &
-				 (VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT)) ==
-					(VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT))
+		{
+			const auto flags = memory.memoryTypes[i].propertyFlags;
+			const auto required =
+				VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT;
+			if (!(requirements.memoryTypeBits & (1u << i)) ||
+				(hostAccess && (flags & required) != required))
+				continue;
+			// Compute storage stays on the device. CPU transfer/control
+			// storage prefers cached coherent memory and is separately charged.
+			const int score = hostAccess ? bool(flags & VK_MEMORY_PROPERTY_HOST_CACHED_BIT)
+				: bool(flags & VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT);
+			if (score > best)
 			{
 				type = i;
-				break;
+				best = score;
 			}
+		}
 		if (type == memory.memoryTypeCount)
-			throw std::runtime_error("No coherent Vulkan storage memory");
+			throw std::runtime_error("No compatible Vulkan storage memory");
+		if (hostAccess)
+		{
+			if (!reserveOpenCLHostBytes(std::size_t(requirements.size)))
+				throw MemoryDecline();
+			out.hostCharged = std::size_t(requirements.size);
+		}
 		VkMemoryAllocateInfo allocation{VK_STRUCTURE_TYPE_MEMORY_ALLOCATE_INFO};
 		allocation.allocationSize = requirements.size;
 		allocation.memoryTypeIndex = type;
 		check(AllocateMemory(device, &allocation, nullptr, &out.memory));
 		check(BindBufferMemory(device, out.buffer, out.memory, 0));
-		check(MapMemory(device, out.memory, 0, bytes, 0, &out.mapped));
+		if (hostAccess)
+			check(MapMemory(device, out.memory, 0, bytes, 0, &out.mapped));
 	}
 	bool initialize()
 	{
@@ -417,7 +434,7 @@ struct Runtime
 			cells * 4, cells * 4, cells * 4, 4,
 			16,        tiles * 4, tiles * 4, std::max<std::size_t>(cells * 4, 16)};
 		for (unsigned i = 0; i < BufferCount; ++i)
-			allocate(work->buffers[i], sizes[i]);
+			allocate(work->buffers[i], sizes[i], i == Changed || i == Transfer);
 		VkCommandPoolCreateInfo cp{VK_STRUCTURE_TYPE_COMMAND_POOL_CREATE_INFO};
 		cp.queueFamilyIndex = queueFamily;
 		cp.flags = VK_COMMAND_POOL_CREATE_RESET_COMMAND_BUFFER_BIT;
@@ -434,7 +451,8 @@ struct Runtime
 		// convergence/tile controls are populated through explicit GPU copies
 		// and fills, with a retirement proof before reusing staging storage.
 		auto *staging = static_cast<std::uint32_t *>(work->buffers[Transfer].mapped);
-		const bool verifyTransfers = std::getenv("GLOB2_VULKAN_VERIFY_TRANSFERS") != nullptr;
+		const auto *transferVerification = std::getenv("GLOB2_VULKAN_VERIFY_TRANSFERS");
+		const bool verifyTransfers = transferVerification && std::strcmp(transferVerification, "1") == 0;
 		const auto copyInput = [&](unsigned destination, std::size_t bytes)
 		{
 			beginCommands(*work);
@@ -473,7 +491,7 @@ struct Runtime
 			if (verifyTransfers)
 			{
 				std::atomic_thread_fence(std::memory_order_acquire);
-				for (std::size_t i = 0; i < bytes / 4; ++i)
+				const auto expectedAt = [&](std::size_t i)
 				{
 					std::uint32_t expected = 1;
 					if (destination == InputA)
@@ -491,11 +509,16 @@ struct Runtime
 							w, h, unsigned(std::min(request.limit, COST_LIMIT)), pitch};
 						expected = p[i];
 					}
-					if (staging[i] != expected)
-						throw GradientProofFailure("Vulkan upload roundtrip mismatch in buffer " +
-												   std::to_string(destination) + " at word " +
-												   std::to_string(i));
-				}
+					return expected;
+				};
+				for (std::size_t i = 0; i < bytes / 4; ++i)
+					if (staging[i] != expectedAt(i))
+						failGradientTransfer(destination,
+							std::span<const std::uint16_t>(request.gradient, cells),
+							std::span<const std::uint32_t>(staging, bytes / 4), request.grid,
+							request.limit, expectedAt,
+							{status.device, status.driver, status.shaderIdentity,
+							 request.capturedGeneration.value_or(request.session.currentGeneration())});
 			}
 			return true;
 		};
@@ -746,6 +769,8 @@ Buffer::~Buffer()
 		runtime->FreeMemory(runtime->device, memory, nullptr);
 	if (charged)
 		releaseGradientDeviceBytes(charged);
+	if (hostCharged)
+		releaseOpenCLHostBytes(hostCharged);
 }
 Work::~Work()
 {
@@ -778,6 +803,13 @@ bool initializeVulkanGradient()
 }
 bool executeVulkanGradient(std::span<const BackendRequest> requests, Plan plan)
 {
+	for (const auto &request : requests)
+	{
+		if (request.executedOnDevice)
+			*request.executedOnDevice = false;
+		if (request.deviceExecutionObserved)
+			*request.deviceExecutionObserved = false;
+	}
 	auto &r = runtime();
 	std::lock_guard lock(r.mutex);
 	if (r.device)
@@ -817,6 +849,9 @@ bool executeVulkanGradient(std::span<const BackendRequest> requests, Plan plan)
 		{
 			auto request = requests[i];
 			request.gradient = seeds[i].data();
+			// A completed private field is execution evidence, but publication
+			// belongs to the whole batch. A later decline must not report a commit.
+			request.executedOnDevice = nullptr;
 			if (!r.execute(request, plan))
 			{
 				success = false;
@@ -826,7 +861,11 @@ bool executeVulkanGradient(std::span<const BackendRequest> requests, Plan plan)
 		if (success)
 		{
 			for (std::size_t i = 0; i < requests.size(); ++i)
+			{
 				std::copy(seeds[i].begin(), seeds[i].end(), requests[i].gradient);
+				if (requests[i].executedOnDevice)
+					*requests[i].executedOnDevice = true;
+			}
 			r.status.fields += requests.size();
 			r.publish();
 			return true;
