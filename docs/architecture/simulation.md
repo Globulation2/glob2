@@ -561,4 +561,4 @@ preserves the original preferred target at the head and ranks alternatives.
 Capture joins the shared completed-tick snapshot union and existing compute pool.
 See [targeting lifecycle and measurement](../development/compute-benchmarks.md#cached-turret-targeting)
 for scheduling, memory bounds, checksums and saved continuation. Format 159 and
-simulation revision 54 deliberately replace earlier save/replay targeting behavior.
+simulation revision 55 deliberately replace earlier save/replay targeting behavior.

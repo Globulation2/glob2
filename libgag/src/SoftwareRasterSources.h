@@ -107,12 +107,25 @@ public:
         PERF_SCOPE_TIME(RasterSnapshot);
         snapshot->pixels = std::make_unique_for_overwrite<Uint32[]>(std::size_t(retained.w) * retained.h);
         if (!SDL_LockSurface(&source)) throw std::runtime_error(SDL_GetError());
+        struct Unlock
+        {
+            SDL_Surface *surface;
+            ~Unlock() { SDL_UnlockSurface(surface); }
+        } unlock{&source};
+        const auto *format = SDL_GetPixelFormatDetails(source.format);
         for (int y = 0; y < retained.h; ++y)
-            std::memcpy(snapshot->pixels.get() + std::size_t(y) * retained.w,
-                        static_cast<const Uint8 *>(source.pixels) +
-                            std::ptrdiff_t(retained.y + y) * source.pitch + retained.x * 4,
-                        std::size_t(retained.w) * 4);
-        SDL_UnlockSurface(&source);
+        {
+            const auto *input = static_cast<const Uint8 *>(source.pixels) +
+                std::ptrdiff_t(retained.y + y) * source.pitch +
+                retained.x * format->bytes_per_pixel;
+            auto *output = snapshot->pixels.get() + std::size_t(y) * retained.w;
+            if (source.format == SDL_PIXELFORMAT_ARGB8888)
+                std::memcpy(output, input, std::size_t(retained.w) * 4);
+            else if (!SDL_ConvertPixels(retained.w, 1, source.format, input,
+                                        retained.w * format->bytes_per_pixel,
+                                        SDL_PIXELFORMAT_ARGB8888, output, retained.w * 4))
+                throw std::runtime_error(SDL_GetError());
+        }
         snapshot->region = retained;
         snapshot->bytes = needed;
         snapshot->ledger = ledger;

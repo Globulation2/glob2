@@ -40,7 +40,7 @@ recover their saved race tables through format-gated loading, preserving cached
 effective values;
 current saves validate redundant tables against the embedded catalog.
 
-Version 159 adopts cached turret targeting (L3/R2/K1) and simulation revision 54.
+Version 159 adopts cached turret targeting (L3/R2/K1) and simulation revision 55.
 The replay and saved-match floors are 159: earlier recordings and saved matches
 are deliberately rejected. The map-format floor remains 58 so existing maps can
 start new matches. New saves retain published lists, pending completed outputs,

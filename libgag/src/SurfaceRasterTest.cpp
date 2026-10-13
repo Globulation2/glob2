@@ -5,6 +5,9 @@
 #include <cstring>
 #include <memory>
 #include <limits>
+#include <algorithm>
+#include <cmath>
+#include <vector>
 
 namespace
 {
@@ -269,4 +272,236 @@ TEST_CASE("negative target pitch preserves aliased regional forward sampling" *
           doctest::test_suite("SurfaceRaster"))
 {
     checkSignedPitchAlias(false);
+}
+
+namespace
+{
+Uint32 portableReference(Uint32 sample, Uint32 original,
+                         const SDL_PixelFormatDetails &source, const SDL_PixelFormatDetails &target,
+                         Uint8 opacity, Uint8 red, Uint8 green, Uint8 blue, bool forceAlpha)
+{
+    const unsigned alpha = (source.Amask ? (sample & source.Amask) >> source.Ashift : 255) * opacity / 255;
+    if (!alpha) return original;
+    const auto channel = [&](Uint32 smask, unsigned sshift, Uint32 dmask, unsigned dshift, unsigned tint)
+    {
+        const unsigned value = ((sample & smask) >> sshift) * tint / 255;
+        return ((value * alpha + ((original & dmask) >> dshift) * (255-alpha)) / 255) << dshift;
+    };
+    const unsigned outAlpha = forceAlpha ? 255 : alpha + ((original & target.Amask) >> target.Ashift)*(255-alpha)/255;
+    return channel(source.Rmask,source.Rshift,target.Rmask,target.Rshift,red) |
+        channel(source.Gmask,source.Gshift,target.Gmask,target.Gshift,green) |
+        channel(source.Bmask,source.Bshift,target.Bmask,target.Bshift,blue) |
+        (target.Amask ? outAlpha << target.Ashift : 0);
+}
+}
+TEST_CASE("portable nearest scalar and SIMD match independent arithmetic across tiles formats and signed pitches" *
+          doctest::test_suite("SurfaceRaster"))
+{
+    using namespace GAGCore::SurfaceRaster;
+    constexpr int width=23,height=11,pitch=29;
+    const auto sourceFormat=*SDL_GetPixelFormatDetails(SDL_PIXELFORMAT_ARGB8888);
+    std::array<Uint32,pitch*height> source;
+    for (std::size_t i=0;i<source.size();++i)
+        source[i]=Uint32(i*2654435761u);
+    source[0]=0; source[1]=0xff123456; source[2]=0x01123456;
+    for (const auto format : {SDL_PIXELFORMAT_ARGB8888,SDL_PIXELFORMAT_RGBA32,SDL_PIXELFORMAT_XRGB8888})
+    for (const Uint8 opacity : {Uint8(0),Uint8(1),Uint8(37),Uint8(128),Uint8(254),Uint8(255)})
+    for (bool forceAlpha : {false,true})
+    for (bool tint : {false,true})
+    for (bool opaque : {false,true})
+    for (bool signedPitch : {false,true})
+    for (const SDL_Rect destination : std::array<SDL_Rect,3>{{{0,0,width,height},{-3,-2,37,19},{4,1,13,7}}})
+    {
+        const auto targetFormat=*SDL_GetPixelFormatDetails(format);
+        std::array<Uint32,pitch*height> scalar,automatic,expected;
+        for (std::size_t i=0;i<scalar.size();++i) scalar[i]=Uint32(i*977u+0x137ab892);
+        automatic=expected=scalar;
+        const int base=signedPitch ? pitch*(height-1) : 0;
+        const int rowStep=signedPitch ? -pitch : pitch;
+        RasterCommand command;
+        command.kind=RasterCommand::Kind::Blit;
+        command.blend=RasterCommand::Blending::Portable;
+        command.source={reinterpret_cast<const Uint8 *>(source.data()+base),width,height,rowStep*4,sourceFormat};
+        command.sourceRect={0,0,width,height};
+        command.destination=destination;
+        command.clip={1,0,width-2,height};
+        command.opacity=opacity;
+        command.forceOpaqueAlpha=forceAlpha;command.opaque=opaque;
+        if(tint) {command.red=31;command.green=97;command.blue=181;}
+        for(int y=0;y<height;++y)for(int x=1;x<width-1;++x)
+        {
+            if(x<destination.x || x>=destination.x+destination.w || y<destination.y || y>=destination.y+destination.h)continue;
+            const int sx=int((std::int64_t(x-destination.x)*2+1)*width/(2*destination.w));
+            const int sy=int((std::int64_t(y-destination.y)*2+1)*height/(2*destination.h));
+            const int index=base+y*rowStep+x;
+            const auto sample=source[base+sy*rowStep+sx];
+            if(opaque && opacity==255 && !tint && sourceFormat.format==targetFormat.format)
+                expected[index]=sample;
+            else
+                expected[index]=portableReference(opaque ? sample|sourceFormat.Amask : sample,
+                    expected[index],sourceFormat,targetFormat,opacity,command.red,command.green,command.blue,forceAlpha);
+        }
+        WritablePixelView a{reinterpret_cast<Uint8 *>(automatic.data()+base),width,height,rowStep*4,targetFormat};
+        WritablePixelView b{reinterpret_cast<Uint8 *>(scalar.data()+base),width,height,rowStep*4,targetFormat};
+        executeCommand(command,b,{0,0,width,height},KernelMode::Scalar);
+        for(int y=0;y<height;y+=5)for(int x=0;x<width;x+=7)
+            executeCommand(command,a,{x,y,7,5});
+        CHECK(scalar==expected);
+        CHECK(automatic==expected);
+    }
+}
+TEST_CASE("portable fill scalar and SIMD match independent arithmetic with stored alpha clipping and signed pitches" *
+          doctest::test_suite("SurfaceRaster"))
+{
+    using namespace GAGCore::SurfaceRaster;
+    for (const auto packedFormat : {SDL_PIXELFORMAT_ARGB8888,SDL_PIXELFORMAT_RGBA32,SDL_PIXELFORMAT_XRGB8888})
+    for (const Uint8 storedAlpha : {Uint8(0),Uint8(127),Uint8(255)})
+    for (bool negativePitch : {false,true})
+    for (unsigned alpha=0;alpha<=255;++alpha)
+    {
+        const auto format=*SDL_GetPixelFormatDetails(packedFormat);
+        std::array<Uint32,37*3> actual,scalar,expected;
+        for(unsigned i=0;i<actual.size();++i)actual[i]=i*2654435761u;
+        scalar=expected=actual;
+        const int base=negativePitch ? 74 : 0,step=negativePitch ? -37 : 37;
+        RasterCommand command;
+        command.kind=RasterCommand::Kind::Fill;
+        command.fillBlend=FillBlend::PortableSourceOver;
+        command.destination={0,0,31,3};command.clip={1,0,29,3};
+        command.color=(0x31u<<format.Rshift)|(0x7bu<<format.Gshift)|(0xc9u<<format.Bshift)|
+            (format.Amask ? Uint32(storedAlpha)<<format.Ashift : Uint32(storedAlpha)<<24);
+        command.opacity=Uint8(alpha);
+        // Packed color alpha does not participate: explicit fill opacity owns coverage.
+        for(int y=0;y<3;++y)for(int x=1;x<30;++x)
+        {
+            const int index=base+y*step+x;
+            expected[index]=portableReference(command.color|format.Amask,expected[index],format,format,
+                Uint8(alpha),255,255,255,false);
+        }
+        const WritablePixelView output{reinterpret_cast<Uint8 *>(actual.data()+base),31,3,step*4,format};
+        for(int y=0;y<3;y+=2)for(int x=0;x<31;x+=7)
+            executeCommand(command,output,{x,y,7,2});
+        executeCommand(command,{reinterpret_cast<Uint8 *>(scalar.data()+base),31,3,step*4,format},
+            {0,0,31,3},KernelMode::Scalar);
+        CHECK(actual==expected);CHECK(scalar==expected);
+    }
+}
+TEST_CASE("portable linear sampling uses whole fractional geometry and premultiplied frame edges" *
+          doctest::test_suite("SurfaceRaster"))
+{
+    using namespace GAGCore::SurfaceRaster;
+    const auto format=*SDL_GetPixelFormatDetails(SDL_PIXELFORMAT_ARGB8888);
+    const std::array<Uint32,8> input{0xffff0000,0x0000ff00,0xff0000ff,0xffffffff,
+                                  0x00ffffff,0x80123456,0x01334455,0xff876543};
+    for (const auto targetFormat : {SDL_PIXELFORMAT_ARGB8888, SDL_PIXELFORMAT_RGBA32})
+    for(const SDL_FRect dst : std::array<SDL_FRect,3>{{{-.25f,.75f,17.5f,9.25f},{2.125f,-.375f,4.5f,3.75f},{1.5f,2.5f,8.f,4.f}}})
+    for(Uint8 opacity : {Uint8(0),Uint8(1),Uint8(127),Uint8(255)})
+    {
+        const auto tf=*SDL_GetPixelFormatDetails(targetFormat);
+        std::array<Uint32,24*15> actual,expected,whole;
+        for(std::size_t i=0;i<actual.size();++i)actual[i]=Uint32(i*977+0x475bc991);
+        whole=expected=actual;
+        RasterCommand command;
+        command.kind=RasterCommand::Kind::Blit;
+        command.blend=RasterCommand::Blending::Portable;
+        command.sampling=RasterCommand::Sampling::LinearPremultiplied;
+        command.source={reinterpret_cast<const Uint8 *>(input.data()),4,2,16,format};
+        command.sourceRect={1,0,2,2}; // Adjacent opaque frame pixels cannot bleed in.
+        command.destinationFloat=dst;
+        const int left=int(std::ceil(dst.x-.5f)),top=int(std::ceil(dst.y-.5f));
+        const int right=int(std::ceil(dst.x+dst.w-.5f)),bottom=int(std::ceil(dst.y+dst.h-.5f));
+        command.destination={left,top,right-left,bottom-top};
+        command.clip={1,1,19,12};command.opacity=opacity;
+        if(opacity)
+        for(int y=std::max(1,top);y<std::min(13,bottom);++y)
+        for(int x=std::max(1,left);x<std::min(20,right);++x)
+        {
+            const float u=std::clamp((x-dst.x+.5f)*2/dst.w-.5f,0.f,1.f);
+            const float v=std::clamp((y-dst.y+.5f)*2/dst.h-.5f,0.f,1.f);
+            const int ix=int(u),iy=int(v);
+            const float fx=u-ix,fy=v-iy;
+            const float weights[]{(1-fx)*(1-fy),fx*(1-fy),(1-fx)*fy,fx*fy};
+            const Uint32 samples[]{input[iy*4+1+ix],input[iy*4+1+std::min(ix+1,1)],
+                input[std::min(iy+1,1)*4+1+ix],input[std::min(iy+1,1)*4+1+std::min(ix+1,1)]};
+            float coverage=0,red=0,green=0,blue=0;
+            for(int i=0;i<4;++i)
+            {
+                const float a=float(samples[i]>>24)*weights[i]/255.f;
+                coverage+=a;red+=((samples[i]>>16)&255)*a;green+=((samples[i]>>8)&255)*a;blue+=(samples[i]&255)*a;
+            }
+            const float fade=opacity/255.f;
+            coverage*=fade;red*=fade;green*=fade;blue*=fade;
+            const Uint32 original=expected[y*24+x];
+            const auto c=[&](float value,unsigned before){return Uint32(std::clamp(std::lround(value+before*(1-coverage)),0l,255l));};
+            expected[y*24+x]=(c(coverage*255,(original & tf.Amask) >> tf.Ashift) << tf.Ashift) |
+                (c(red,(original & tf.Rmask) >> tf.Rshift) << tf.Rshift) |
+                (c(green,(original & tf.Gmask) >> tf.Gshift) << tf.Gshift) |
+                (c(blue,(original & tf.Bmask) >> tf.Bshift) << tf.Bshift);
+        }
+        for(int y=0;y<15;y+=3)for(int x=0;x<21;x+=5)
+            executeCommand(command,{reinterpret_cast<Uint8 *>(actual.data()),21,15,24*4,tf},{x,y,5,3});
+        executeCommand(command,{reinterpret_cast<Uint8 *>(whole.data()),21,15,24*4,tf},{0,0,21,15},KernelMode::Scalar);
+        CHECK(actual==expected);CHECK(whole==expected);
+    }
+}
+TEST_CASE("SDL nearest fixed-point centers preserve samples across clipped tile boundaries" *
+          doctest::test_suite("SurfaceRaster"))
+{
+    using namespace GAGCore::SurfaceRaster;
+    const auto format=*SDL_GetPixelFormatDetails(SDL_PIXELFORMAT_ARGB8888);
+    auto input=surface(6,3,SDL_PIXELFORMAT_ARGB8888);
+    for(int y=0;y<3;++y)for(int x=0;x<6;++x)put(input.get(),x,y,0xff000000u|Uint32((y*6+x)*977));
+    for(const int width : {9,257,513})
+    {
+        auto reference=surface(width,7,SDL_PIXELFORMAT_ARGB8888);
+        REQUIRE(SDL_SetSurfaceBlendMode(input.get(),SDL_BLENDMODE_NONE));
+        const SDL_Rect src{0,0,6,3}; SDL_Rect dst{0,0,width,7};
+        REQUIRE(SDL_BlitSurfaceScaled(input.get(),&src,reference.get(),&dst,SDL_SCALEMODE_NEAREST));
+        std::vector<Uint32> expected(std::size_t(width)*7,0x72456381),tiled=expected,whole=expected;
+        const int stepX=(6*65536)/width,stepY=(3*65536)/7;
+        for(int y=1;y<6;++y)for(int x=1;x<width-1;++x)
+        {
+            const int sx=(stepX/2+x*stepX)/65536,sy=(stepY/2+y*stepY)/65536;
+            expected[std::size_t(y)*width+x]=pixel(input.get(),sx,sy);
+            CHECK(expected[std::size_t(y)*width+x]==pixel(reference.get(),x,y));
+        }
+        RasterCommand command;
+        command.kind=RasterCommand::Kind::Blit;
+        command.blend=RasterCommand::Blending::Portable;
+        command.sampling=RasterCommand::Sampling::SDLNearest;
+        command.source={static_cast<const Uint8 *>(input->pixels),6,3,input->pitch,format};
+        command.sourceRect=src;command.destination=dst;command.clip={1,1,width-2,5};
+        for(int x=0;x<width;x+=7)
+            executeCommand(command,{reinterpret_cast<Uint8 *>(tiled.data()),width,7,width*4,format},{x,0,7,7});
+        executeCommand(command,{reinterpret_cast<Uint8 *>(whole.data()),width,7,width*4,format},dst,KernelMode::Scalar);
+        CHECK(tiled==expected);CHECK(whole==expected);
+    }
+}
+TEST_CASE("wide portable aliased views retain forward row traversal without sampling allocations" *
+          doctest::test_suite("SurfaceRaster"))
+{
+    using namespace GAGCore::SurfaceRaster;
+    const auto format=*SDL_GetPixelFormatDetails(SDL_PIXELFORMAT_ARGB8888);
+    for (const auto sampling : {RasterCommand::Sampling::Nearest,RasterCommand::Sampling::SDLNearest})
+    {
+        std::array<Uint32,350*2> actual,expected;
+        for(std::size_t i=0;i<actual.size();++i)actual[i]=0xff000000u|Uint32(i*977);
+        expected=actual;
+        RasterCommand command;
+        command.kind=RasterCommand::Kind::Blit;
+        command.blend=RasterCommand::Blending::Portable;command.sampling=sampling;
+        command.source={reinterpret_cast<const Uint8 *>(actual.data()),200,2,350*4,format};
+        command.sourceRect={0,0,200,2};command.destination={10,0,300,2};command.clip={0,0,320,2};
+        command.opaque=true;
+        for(int y=0;y<2;++y)for(int x=10;x<310;++x)
+        {
+            const int delta=x-10;
+            const int step=(200*65536)/300;
+            const int sx=sampling==RasterCommand::Sampling::Nearest ? (2*delta+1)*200/600 :
+                (step/2+delta*step)/65536;
+            expected[y*350+x]=expected[y*350+sx];
+        }
+        executeCommand(command,{reinterpret_cast<Uint8 *>(actual.data()),320,2,350*4,format},{0,0,320,2});
+        CHECK(actual==expected);
+    }
 }

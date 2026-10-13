@@ -386,7 +386,7 @@ and deadlines, independently of worker completion. Numeric input fingerprints
 exclude host byte order, padding, local stamps and private caches.
 
 Format 159 deliberately rejects earlier saved matches and replays. Existing maps
-remain loadable through the map-format floor 58. Simulation revision 54 partitions
+remain loadable through the map-format floor 58. Simulation revision 55 partitions
 network matches from earlier targeting behavior. This compatibility break was an
 explicit maintainer decision; it is separate from deterministic continuation of
 newly saved matches.
