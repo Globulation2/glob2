@@ -323,20 +323,19 @@ void SettingsScreen::buildGeneral()
         }
         choice("gameplay.gradientBackend","Gradient backend","Applies at the next simulation boundary. Unsupported work uses CPU automatic; rendering is independent.",selectedIndex,names,
             [this,backends](int v){if(v<0 || v>=int(backends.size()))return;
-                auto& settings=globalContainer->settings;settings.gradientBackend=backends[v];
-                if(!supportsAlgorithm(*settings.gradientBackend,settings.gradientAlgorithm))settings.gradientAlgorithm=isGPU(*settings.gradientBackend)?Algorithm::Frozen8:Algorithm::Buckets;
+                auto chosen=globalContainer->gradientConfiguration();chosen.backend=backends[v];
+                chosen=normalizedConfiguration(chosen);
+                auto& settings=globalContainer->settings;settings.gradientBackend=chosen.backend;settings.gradientAlgorithm=chosen.algorithm;
                 // A later explicit menu choice supersedes the launch choice for this run.
-                globalContainer->gradientBackendOverride=*settings.gradientBackend;
-                globalContainer->gradientAlgorithmOverride=settings.gradientAlgorithm;
-                requestBackendConfiguration(globalContainer->gradientConfiguration());commit();});
+                globalContainer->requestMenuGradientConfiguration(chosen);commit();});
         form.back().enabledChoices=enabled;
         const std::vector<Algorithm> algorithms=!isGPU(selected.backend)?std::vector{Algorithm::Buckets}:selected.backend==Backend::OpenCL?std::vector{Algorithm::Frozen8}:std::vector{Algorithm::Frozen8,Algorithm::Jacobi};
         std::vector<std::string> algorithmLabels;int algorithmIndex=0;
         for(std::size_t i=0;i<algorithms.size();++i){algorithmLabels.push_back(algorithms[i]==Algorithm::Buckets?tr("Bucket propagation"):algorithms[i]==Algorithm::Frozen8?"Frozen8":"Jacobi");if(algorithms[i]==selected.algorithm)algorithmIndex=int(i);}
         choice("gameplay.gradientAlgorithm","Gradient algorithm","All choices compute the same exact field.",algorithmIndex,algorithmLabels,
-            [this,algorithms](int v){if(v<0 || v>=int(algorithms.size()))return;globalContainer->settings.gradientAlgorithm=algorithms[v];globalContainer->gradientAlgorithmOverride=algorithms[v];requestBackendConfiguration(globalContainer->gradientConfiguration());commit();});
+            [this,algorithms](int v){if(v<0 || v>=int(algorithms.size()))return;globalContainer->settings.gradientAlgorithm=algorithms[v];auto chosen=globalContainer->gradientConfiguration();chosen.algorithm=algorithms[v];globalContainer->requestMenuGradientConfiguration(chosen);commit();});
         toggle("gameplay.gradientVerify","Verify gradient results","Compare GPU results with scalar CPU before publication. Adds computation and stops the game on a mismatch.",selected.verify,
-            [this](int v){globalContainer->settings.gradientVerify=bool(v);globalContainer->gradientVerifyOverride=bool(v);requestBackendConfiguration(globalContainer->gradientConfiguration());commit();});
+            [this](int v){globalContainer->settings.gradientVerify=bool(v);auto chosen=globalContainer->gradientConfiguration();chosen.verify=bool(v);globalContainer->requestMenuGradientConfiguration(chosen);commit();});
         const auto active=configuration();const auto status=acceleratorStatus(active.backend);
         const std::string actual=isGPU(active.backend)?status.availability==Availability::Ready?status.device:std::string(backendName(automaticCPU()))+" ("+tr("CPU fallback")+")":backendName(cpuBackend());
         info(std::string(tr("Gradient computation"))+": "+backendName(active.backend)+" / "+algorithmName(active.algorithm)+"; "+actual+"; "+std::to_string(status.fields)+" "+tr("GPU fields")+"; "+std::to_string(status.fallbacks)+" "+tr("CPU fallbacks")+"; upload/compute/readback "+std::to_string(status.uploadNs/1000000)+"/"+std::to_string(status.computeNs/1000000)+"/"+std::to_string(status.readbackNs/1000000)+" ms"+(status.error.empty()?"":"; "+status.error));

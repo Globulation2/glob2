@@ -27,4 +27,6 @@ std::uint64_t parsePlanningMemoryBytes(std::string_view);
 // Legacy explicit values fill absent typed overrides; matching values are accepted,
 // and conflicting explicit values are rejected rather than silently replaced.
 ResourcePlan resolveApplicationResourcePlan(const ApplicationResourceInputs &);
+// Cold explicit menu admission using the setup inputs; no discovery or CPU reconfiguration.
+ResourcePlan resolveLiveComputeGpuPlan(const ResourcePlan &setup, GpuPolicy requested);
 } // namespace resource_policy

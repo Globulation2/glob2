@@ -26,6 +26,16 @@
 void GlobalContainer::applyCommand(const Cli::Request &request)
 {
 	const auto &r = request;
+    if (r.has("--gpu") || r.has("--gradient-backend")) {
+        // Remove only the replaced menu backend/automatic algorithm; an explicit
+        // later algorithm or verification command retains its own precedence.
+        if (menuGradientConfiguration && r.has("--gpu") && !r.has("--gradient-backend"))
+            gradientBackendOverride.reset();
+        if (menuGradientConfiguration && gradientAlgorithmFromMenu && !r.has("--gradient-algorithm")) {
+            gradientAlgorithmOverride.reset(); gradientAlgorithmFromMenu=false;
+        }
+        menuGradientConfiguration.reset(); liveGpuAdmission.reset();
+    }
 	for (const auto &path : r.all("--data-dir"))
 		fileManager->addDir(path);
 	if (r.has("--compute-threads"))
@@ -39,8 +49,12 @@ void GlobalContainer::applyCommand(const Cli::Request &request)
     if (r.has("--memory-budget-bytes"))
         executionResourceRequest.planningMemoryBytes = resource_policy::parsePlanningMemoryBytes(r.get("--memory-budget-bytes"));
 	if(r.has("--gradient-backend"))gradientBackendOverride=*gradient_kernel::parseBackend(r.get("--gradient-backend"));
-    if(r.has("--gradient-algorithm"))gradientAlgorithmOverride=*gradient_kernel::parseAlgorithm(r.get("--gradient-algorithm"));
-    if(r.has("--gradient-verify"))gradientVerifyOverride=r.get("--gradient-verify")=="on";
+    if(r.has("--gradient-algorithm")) {gradientAlgorithmOverride=*gradient_kernel::parseAlgorithm(r.get("--gradient-algorithm"));gradientAlgorithmFromMenu=false;}
+    if(r.has("--gradient-verify")) {gradientVerifyOverride=r.get("--gradient-verify")=="on";gradientVerifyFromMenu=false;}
+    if(menuGradientConfiguration && (r.has("--gradient-algorithm") || r.has("--gradient-verify"))) {
+        menuGradientConfiguration=gradientConfiguration();
+        gradient_kernel::requestBackendConfiguration(resolvedGradientConfiguration());
+    }
     auto toggle = [&](const char *name, unsigned bit)
 	{
 		if (r.has(std::string("--") + name))
@@ -164,14 +178,36 @@ bool GlobalContainer::gpuComputeEnabled() const {return gradient_kernel::isGPU(g
 gradient_kernel::Configuration GlobalContainer::resolvedGradientConfiguration() const
 {
     auto configuration = gradientConfiguration();
-    if (!frozenResourcePlan) return configuration;
+    const auto *admission = liveGpuAdmission ? &*liveGpuAdmission : frozenResourcePlan ? &*frozenResourcePlan : nullptr;
+    if (!admission) return configuration;
     using namespace gradient_kernel;
-    if (frozenResourcePlan->resources.computeGpu == resource_policy::GpuPolicy::Disabled && isGPU(configuration.backend))
+    if (admission->resources.computeGpu == resource_policy::GpuPolicy::Disabled && isGPU(configuration.backend))
         configuration = {Backend::CPU, Algorithm::Buckets, configuration.verify};
-    else if (frozenResourcePlan->request.computeGpu == resource_policy::GpuPolicy::Enabled && !isGPU(configuration.backend))
+    else if (admission->resources.computeGpu != resource_policy::GpuPolicy::Disabled &&
+             admission->request.computeGpu == resource_policy::GpuPolicy::Enabled && !isGPU(configuration.backend))
         configuration = {Backend::OpenCL, Algorithm::Frozen8, configuration.verify};
     return configuration;
 }
+void GlobalContainer::requestMenuGradientConfiguration(gradient_kernel::Configuration chosen)
+{
+    using namespace gradient_kernel;
+    chosen = normalizedConfiguration(chosen);
+    // Before the first session, use the existing cold owner-phase adapter so
+    // explicit intent/memory/presentation inputs retain their real provenance.
+    // The live session path reuses setup inputs without another OS discovery.
+    auto admitted = resource_policy::resolveLiveComputeGpuPlan(
+        frozenResourcePlan ? *frozenResourcePlan : ownerPhaseResourcePlan(),
+        isGPU(chosen.backend) ? resource_policy::GpuPolicy::Enabled : resource_policy::GpuPolicy::Disabled);
+    menuGradientConfiguration = chosen;
+    liveGpuAdmission = std::move(admitted);
+    // A later explicit menu choice wins over launch/environment choices for this run.
+    gradientBackendOverride = chosen.backend;
+    gradientAlgorithmOverride = chosen.algorithm;
+    gradientVerifyOverride = chosen.verify;
+    gradientAlgorithmFromMenu=true; gradientVerifyFromMenu=true;
+    requestBackendConfiguration(resolvedGradientConfiguration());
+}
+
 void GlobalContainer::configureGradientBackend() const
 {
     const auto configuration = resolvedGradientConfiguration();
@@ -183,6 +219,8 @@ void GlobalContainer::refreshResourcePlan(bool ownerOnly)
 {
     resource_policy::ApplicationResourceInputs input;
     input.request = executionResourceRequest;
+    if (menuGradientConfiguration)
+        input.request.computeGpu = gradient_kernel::isGPU(menuGradientConfiguration->backend) ? resource_policy::GpuPolicy::Enabled : resource_policy::GpuPolicy::Disabled;
     input.request.constraints=resource_policy::discoverApplicationRuntimeConstraints(input.request.constraints);
     input.savedProfile = settings.executionProfile;
     input.headless = runNoX;
@@ -198,6 +236,9 @@ void GlobalContainer::refreshResourcePlan(bool ownerOnly)
     CpuAvailabilityObservation sampledCpuAvailability;
     input.capabilities = resource_policy::discoverApplicationResourceCapabilities(&sampledCpuAvailability);
     frozenResourcePlan = resource_policy::resolveApplicationResourcePlan(input);
+    if (menuGradientConfiguration)
+        liveGpuAdmission = resource_policy::resolveLiveComputeGpuPlan(*frozenResourcePlan,
+            gradient_kernel::isGPU(menuGradientConfiguration->backend) ? resource_policy::GpuPolicy::Enabled : resource_policy::GpuPolicy::Disabled);
     frozenGradientConfiguration = resolvedGradientConfiguration();
     frozenCpuAvailability=sampledCpuAvailability;
     frozenResourceObservationNs=SDL_GetTicksNS();
@@ -213,7 +254,7 @@ unsigned GlobalContainer::resolvedComputeParticipants() const
 }
 bool GlobalContainer::resolvedGpuComputeEnabled() const
 {
-    return resourcePlan().resources.computeGpu != resource_policy::GpuPolicy::Disabled;
+    return (liveGpuAdmission ? *liveGpuAdmission : resourcePlan()).resources.computeGpu != resource_policy::GpuPolicy::Disabled;
 }
 nlohmann::json GlobalContainer::resourcePlanJson() const
 {
@@ -223,16 +264,28 @@ nlohmann::json GlobalContainer::resourcePlanJson() const
             {"algorithm", gradient_kernel::algorithmName(configuration.algorithm)},
             {"verify", configuration.verify}};
     };
+    value["current_gpu_admission"] = nullptr;
+    if (liveGpuAdmission && menuGradientConfiguration) {
+        const auto admitted = resource_policy::describeResourcePlan(*liveGpuAdmission);
+        value["current_gpu_admission"] = {
+            {"source", "explicit menu choice"}, {"chosen_configuration", describeGradient(*menuGradientConfiguration)},
+            {"requested_policy", admitted["original_request"]["resource_overrides"]["gpu_compute_policy"]},
+            {"resolved_policy", admitted["resolved_resources"]["gpu_compute_policy"]},
+            {"gpu_compute_supported", admitted["device_capabilities"]["gpu_compute_supported"]},
+            {"diagnostics", admitted["diagnostics"]},
+            {"scope", "Current cold menu admission against setup inputs; CPU pool and original setup plan unchanged. Requested/applied configurations remain the existing atomic boundary observations."}
+        };
+    }
     const auto environmentPresent = [](const char *name) { const auto *value=std::getenv(name); return value && *value; };
     value["gradient_configuration"] = {
         {"setup", frozenGradientConfiguration ? describeGradient(*frozenGradientConfiguration) : nlohmann::json(nullptr)},
         {"current_requested", describeGradient(gradient_kernel::requestedBackendConfiguration())},
         {"current_applied", describeGradient(gradient_kernel::configuration())},
-        {"backend_source", gradientBackendOverride ? "explicit backend or later menu choice" : gpuComputeOverride ? "explicit legacy GPU override" :
+        {"backend_source", menuGradientConfiguration ? "explicit menu choice" : gradientBackendOverride ? "explicit backend or later menu choice" : gpuComputeOverride ? "explicit legacy GPU override" :
             environmentPresent("GLOB2_GRADIENT_BACKEND") ? "environment" : settings.gradientBackend || settings.gpuCompute ? "saved preference" : "context default"},
-        {"algorithm_source", gradientAlgorithmOverride ? "explicit algorithm or later menu choice" : environmentPresent("GLOB2_GRADIENT_ALGORITHM") ? "environment" : "saved/default preference"},
-        {"verify_source", gradientVerifyOverride ? "explicit verification or later menu choice" : environmentPresent("GLOB2_GRADIENT_VERIFY") ? "environment" : "saved/default preference"},
-        {"scope", "Setup permission belongs to the frozen resource plan; later backend requests apply at the existing simulation boundary, without resizing the compute pool. Per-job backend generations remain scheduler-owned."}
+        {"algorithm_source", gradientAlgorithmFromMenu ? "explicit menu choice" : gradientAlgorithmOverride ? "explicit algorithm command" : environmentPresent("GLOB2_GRADIENT_ALGORITHM") ? "environment" : "saved/default preference"},
+        {"verify_source", gradientVerifyFromMenu ? "explicit menu choice" : gradientVerifyOverride ? "explicit verification command" : environmentPresent("GLOB2_GRADIENT_VERIFY") ? "environment" : "saved/default preference"},
+        {"scope", "Original setup permission belongs to the frozen resource plan; centrally admitted menu requests apply at the existing simulation boundary, without resizing the compute pool. Per-job backend generations remain scheduler-owned."}
     };
     value["frozen_host_observation_sdl_ns"]=frozenResourceObservationNs;
     value["cpu_availability_observation"] = {

@@ -63,6 +63,8 @@ public:
     gradient_kernel::Configuration gradientConfiguration() const;
     gradient_kernel::Configuration resolvedGradientConfiguration() const;
 	void configureGradientBackend() const;
+    // Application/GUI owner only. Workers consume the existing atomic backend request.
+    void requestMenuGradientConfiguration(gradient_kernel::Configuration);
     // Resolve only at an explicit owner/session setup boundary. Queries never rediscover.
     void refreshResourcePlan(bool ownerOnly = false);
     resource_policy::PhaseResourceInputs phaseResourceInputs() const;
@@ -157,6 +159,10 @@ public:
     resource_policy::ExecutionRequest executionResourceRequest;
     std::optional<resource_policy::ResourcePlan> frozenResourcePlan;
     std::optional<gradient_kernel::Configuration> frozenGradientConfiguration;
+    // Cold GUI-owner state, separate from immutable session setup/provenance.
+    std::optional<gradient_kernel::Configuration> menuGradientConfiguration;
+    std::optional<resource_policy::ResourcePlan> liveGpuAdmission;
+    bool gradientAlgorithmFromMenu=false, gradientVerifyFromMenu=false;
     CpuAvailabilityObservation frozenCpuAvailability;
     std::uint64_t frozenResourceObservationNs=0;
     std::optional<gradient_kernel::Backend> gradientBackendOverride;

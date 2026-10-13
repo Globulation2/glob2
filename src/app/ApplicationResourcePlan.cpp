@@ -64,4 +64,10 @@ ResourcePlan resolveApplicationResourcePlan(const ApplicationResourceInputs &inp
     // guessing memory tiers or changing any simulation-visible cache policy.
     return resolveResourcePlan(request, input.capabilities, workload);
 }
+ResourcePlan resolveLiveComputeGpuPlan(const ResourcePlan &setup, GpuPolicy requested)
+{
+    auto request = setup.request;
+    request.computeGpu = requested;
+    return resolveResourcePlan(request, setup.capabilities, setup.workload);
+}
 } // namespace resource_policy

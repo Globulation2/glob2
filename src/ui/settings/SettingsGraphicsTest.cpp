@@ -127,6 +127,140 @@ TEST_SUITE("SettingsGraphics")
         CHECK(globals->resourcePlanJson()["gradient_configuration"]["current_requested"]["backend"] == "webgpu");
         requestBackendConfiguration(configuration());
     }
+    TEST_CASE("live menu GPU admission preserves setup pool and exact variants until boundary")
+    {
+        using namespace gradient_kernel;
+        glob2test::ScopedEnvironment backend("GLOB2_GRADIENT_BACKEND", "");
+        glob2test::ScopedEnvironment algorithm("GLOB2_GRADIENT_ALGORITHM", "");
+        glob2test::ScopedEnvironment verify("GLOB2_GRADIENT_VERIFY", "");
+        const auto oldApplied=configuration(), oldRequested=requestedBackendConfiguration();
+        struct Restore { Configuration applied, requested; ~Restore(){applyBackendConfiguration(applied);requestBackendConfiguration(requested);} } restore{oldApplied,oldRequested};
+        glob2test::HeadlessGlobals globals;
+        globals->computeThreads=1;
+        glob2test::HeadlessGame fixture({.wDec=5,.hDec=5,.teams=1});
+        const auto actualPool=fixture.game.map.computeExecutor().threadCount();
+        globals->applyCommand(Cli::parse({"play","--gpu=off"}));
+        globals->refreshResourcePlan();
+        const auto setup=globals->resourcePlan();
+        const auto setupGradient=*globals->frozenGradientConfiguration;
+        const auto setupCpu=globals->frozenCpuAvailability;
+        const auto setupTime=globals->frozenResourceObservationNs;
+        const auto applied=configuration();
+        globals->requestMenuGradientConfiguration({Backend::Vulkan,Algorithm::Jacobi,true});
+        CHECK((requestedBackendConfiguration()==Configuration{Backend::Vulkan,Algorithm::Jacobi,true}));
+        CHECK(configuration()==applied); // UI does not apply or drain simulation work.
+        CHECK(globals->resourcePlan()==setup);
+        CHECK(*globals->frozenGradientConfiguration==setupGradient);
+        CHECK(globals->frozenResourceObservationNs==setupTime);
+        CHECK(globals->frozenCpuAvailability.eligibleLogicalCpuCount==setupCpu.eligibleLogicalCpuCount);
+        CHECK(globals->resolvedComputeParticipants()==1);
+        CHECK(fixture.game.map.computeExecutor().threadCount()==actualPool);
+        CHECK(globals->resolvedGpuComputeEnabled());
+        const auto observed=globals->resourcePlanJson();
+        CHECK(observed["current_gpu_admission"]["source"]=="explicit menu choice");
+        CHECK(observed["current_gpu_admission"]["resolved_policy"]=="enabled");
+        CHECK(observed["resolved_resources"]["gpu_compute_policy"]=="disabled");
+        globals->requestMenuGradientConfiguration({Backend::WebGPU,Algorithm::Jacobi,false});
+        CHECK((globals->resolvedGradientConfiguration()==Configuration{Backend::WebGPU,Algorithm::Jacobi,false}));
+        globals->requestMenuGradientConfiguration({Backend::Scalar,Algorithm::Buckets,true});
+        CHECK_FALSE(globals->resolvedGpuComputeEnabled());
+        CHECK((globals->resolvedGradientConfiguration()==Configuration{Backend::Scalar,Algorithm::Buckets,true}));
+        CHECK(globals->resourcePlan()==setup);
+        // New session setup uses the later explicit choice, not the original launch GPU flag.
+        globals->refreshResourcePlan();
+        CHECK(globals->resourcePlan().request.computeGpu==resource_policy::GpuPolicy::Disabled);
+        CHECK(globals->resolvedGradientConfiguration().backend==Backend::Scalar);
+        globals->applyCommand(Cli::parse({"play","--gradient-backend=opencl","--gradient-algorithm=frozen8"}));
+        CHECK_FALSE(globals->liveGpuAdmission.has_value());
+        CHECK_FALSE(globals->menuGradientConfiguration.has_value());
+        globals->requestMenuGradientConfiguration({Backend::Scalar,Algorithm::Buckets,true});
+        globals->applyCommand(Cli::parse({"play","--gpu=on"}));
+        globals->refreshResourcePlan();
+        CHECK(globals->resolvedGradientConfiguration().backend==Backend::OpenCL);
+        CHECK(globals->resolvedGradientConfiguration().algorithm==Algorithm::Frozen8);
+    }
+    TEST_CASE("pre-session menu admission retains real owner phase request provenance")
+    {
+        using namespace gradient_kernel;
+        glob2test::HeadlessGlobals globals;
+        const auto oldRequested=requestedBackendConfiguration();
+        struct Restore { Configuration requested; ~Restore(){requestBackendConfiguration(requested);} } restore{oldRequested};
+        globals->applyCommand(Cli::parse({"play","--execution-profile=balanced","--memory-budget-bytes=67108864"}));
+        globals->settings.targetRenderFps=90;
+        REQUIRE_FALSE(globals->frozenResourcePlan.has_value());
+        globals->requestMenuGradientConfiguration({Backend::Scalar,Algorithm::Buckets,true});
+        REQUIRE(globals->liveGpuAdmission.has_value());
+        const auto& admitted=*globals->liveGpuAdmission;
+        CHECK(admitted.request.explicitProfile==resource_policy::ExecutionProfile::Balanced);
+        CHECK(admitted.request.planningMemoryBytes==67108864);
+        CHECK(admitted.resources.planningMemoryBytes==67108864);
+        CHECK(admitted.resources.render.frameRate==90);
+        CHECK(admitted.resources.computeParticipants==1); // Existing owner phase, no session pool claim.
+        CHECK_FALSE(globals->frozenResourcePlan.has_value());
+    }
+    TEST_CASE("algorithm and verify commands preserve the later menu backend permission")
+    {
+        using namespace gradient_kernel;
+        glob2test::ScopedEnvironment backend("GLOB2_GRADIENT_BACKEND", "");
+        glob2test::ScopedEnvironment algorithm("GLOB2_GRADIENT_ALGORITHM", "");
+        glob2test::ScopedEnvironment verify("GLOB2_GRADIENT_VERIFY", "");
+        glob2test::HeadlessGlobals globals;
+        const auto oldRequested=requestedBackendConfiguration();
+        struct Restore { Configuration requested; ~Restore(){requestBackendConfiguration(requested);} } restore{oldRequested};
+        globals->computeThreads=1;
+        globals->applyCommand(Cli::parse({"play","--gpu=on"}));
+        globals->refreshResourcePlan();
+        globals->requestMenuGradientConfiguration({Backend::Scalar,Algorithm::Buckets,true});
+        const auto initial=*globals->frozenResourcePlan;
+        globals->applyCommand(Cli::parse({"play","--gradient-verify=off"}));
+        CHECK((globals->menuGradientConfiguration==Configuration{Backend::Scalar,Algorithm::Buckets,false}));
+        CHECK((requestedBackendConfiguration()==Configuration{Backend::Scalar,Algorithm::Buckets,false}));
+        CHECK_FALSE(globals->resolvedGpuComputeEnabled());
+        CHECK(globals->resourcePlan()==initial);
+        CHECK(globals->resourcePlanJson()["gradient_configuration"]["verify_source"]=="explicit verification command");
+        globals->refreshResourcePlan();
+        CHECK((globals->resolvedGradientConfiguration()==Configuration{Backend::Scalar,Algorithm::Buckets,false}));
+        CHECK(globals->resourcePlan().resources.computeParticipants==1);
+        globals->requestMenuGradientConfiguration({Backend::WebGPU,Algorithm::Frozen8,true});
+        globals->applyCommand(Cli::parse({"play","--gradient-algorithm=jacobi"}));
+        CHECK((globals->menuGradientConfiguration==Configuration{Backend::WebGPU,Algorithm::Jacobi,true}));
+        CHECK((requestedBackendConfiguration()==Configuration{Backend::WebGPU,Algorithm::Jacobi,true}));
+        CHECK(globals->resolvedGpuComputeEnabled());
+        const auto observed=globals->resourcePlanJson();
+        CHECK(observed["current_gpu_admission"]["chosen_configuration"]["algorithm"]=="jacobi");
+        CHECK(observed["gradient_configuration"]["algorithm_source"]=="explicit algorithm command");
+        globals->refreshResourcePlan();
+        CHECK((globals->resolvedGradientConfiguration()==Configuration{Backend::WebGPU,Algorithm::Jacobi,true}));
+    }
+    TEST_CASE("live menu known unsupported GPU keeps preference and records admitted CPU fallback")
+    {
+        using namespace gradient_kernel;
+        glob2test::ScopedEnvironment backend("GLOB2_GRADIENT_BACKEND", "");
+        glob2test::ScopedEnvironment algorithm("GLOB2_GRADIENT_ALGORITHM", "");
+        glob2test::ScopedEnvironment verify("GLOB2_GRADIENT_VERIFY", "");
+        glob2test::HeadlessGlobals globals;
+        const auto oldRequested=requestedBackendConfiguration();
+        struct Restore { Configuration requested; ~Restore(){requestBackendConfiguration(requested);} } restore{oldRequested};
+        globals->computeThreads=1;
+        globals->refreshResourcePlan();
+        auto setup=globals->resourcePlan();
+        setup.capabilities.computeGpuSupported=false; // Injected platform policy, not physical hardware evidence.
+        setup.request.computeGpu=resource_policy::GpuPolicy::Enabled;
+        setup=resource_policy::resolveResourcePlan(setup.request,setup.capabilities,setup.workload);
+        globals->frozenResourcePlan=setup;
+        globals->gradientBackendOverride=Backend::Scalar; globals->gradientAlgorithmOverride=Algorithm::Buckets;
+        CHECK(globals->resolvedGradientConfiguration().backend==Backend::Scalar); // Denied Enabled must not force OpenCL.
+        globals->requestMenuGradientConfiguration({Backend::WebGPU,Algorithm::Jacobi,true});
+        CHECK((globals->gradientConfiguration()==Configuration{Backend::WebGPU,Algorithm::Jacobi,true}));
+        CHECK((requestedBackendConfiguration()==Configuration{Backend::CPU,Algorithm::Buckets,true}));
+        CHECK_FALSE(globals->resolvedGpuComputeEnabled());
+        CHECK(globals->resourcePlan()==setup);
+        const auto observed=globals->resourcePlanJson()["current_gpu_admission"];
+        CHECK(observed["requested_policy"]=="enabled");
+        CHECK(observed["resolved_policy"]=="disabled");
+        CHECK(observed["gpu_compute_supported"]==false);
+        CHECK(observed["diagnostics"].get<std::vector<std::string>>().back()=="compute_gpu_unavailable");
+    }
     TEST_CASE("verification environment and explicit CLI override saved preference")
     {
         glob2test::ScopedEnvironment backend("GLOB2_GRADIENT_BACKEND", "");

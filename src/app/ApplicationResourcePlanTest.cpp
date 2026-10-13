@@ -259,4 +259,32 @@ TEST_CASE("CPU observation does not infer which gradient accelerator is availabl
     input.legacyGpuComputeEnabled = true; input.legacyGpuComputeExplicit = true;
     CHECK(resolveApplicationResourcePlan(input).resources.computeGpu == GpuPolicy::Enabled);
 }
+TEST_CASE("live GPU admission changes only permission against frozen setup inputs")
+{
+    auto input = application();
+    input.legacyRequestedComputeParticipants = 3;
+    input.request.explicitProfile = ExecutionProfile::EfficientThroughput;
+    input.request.planningMemoryBytes = 64 * 1024 * 1024;
+    input.request.recoverableMemoryBytes = 8 * 1024 * 1024;
+    input.request.renderFrameRate = 90;
+    input.request.renderGpu = GpuPolicy::Disabled;
+    for (const auto supported : {std::optional<bool>{}, std::optional<bool>{true}, std::optional<bool>{false}})
+    {
+        input.capabilities.computeGpuSupported = supported;
+        const auto setup = resolveApplicationResourcePlan(input);
+        for (auto requested : {GpuPolicy::Disabled, GpuPolicy::Enabled, GpuPolicy::Automatic})
+        {
+            const auto admitted = resolveLiveComputeGpuPlan(setup, requested);
+            auto expected = setup;
+            expected.request.computeGpu = requested;
+            expected.computeGpuSource = ValueSource::ExplicitOverride;
+            expected.resources.computeGpu = supported == false ? GpuPolicy::Disabled : requested;
+            if (supported == false && requested != GpuPolicy::Disabled)
+                expected.diagnostics.push_back(Diagnostic::ComputeGpuUnavailable);
+            CHECK(admitted == expected); // Includes CPU, memory, rendering, intent, capabilities and original defaults.
+            CHECK(setup == resolveApplicationResourcePlan(input)); // Original setup is immutable.
+        }
+    }
+}
+
 }

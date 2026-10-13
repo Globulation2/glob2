@@ -499,14 +499,16 @@ owner computes their jobs at joins when there are no workers.
 Periodic material, market, guard and clear gradients use the same executor as AI.
 Their immutable inputs are captured at the completed-tick boundary; seeding and
 propagation both execute privately and retain the existing publication deadlines.
-`--compute-threads auto|N` controls the shared pool for all sessions; `auto` uses
-reported logical CPU threads (one if unavailable), bounded on Linux and Android
-by the calling thread's eligible CPUs. This respects affinity and cpuset limits;
-CPU-time quotas and SMT throughput are not inferred. Other native platforms use
-the portable hardware hint; browser automatic sizing remains capped at eight.
-N is a positive unsigned participant count including the owner and is not clamped
-by CPU eligibility. Platforms without worker support retain the serial executor
-fallback. Saving drains
+`--compute-threads auto|N` controls the shared pool for all sessions. The central
+application policy uses the calling thread's observed eligible logical CPUs on
+Linux and Android; unknown allocation uses one participant. This respects
+affinity and cpuset limits; CPU-time quotas and SMT throughput are not inferred.
+The legacy standalone sizing helper still has a portable hardware-hint fallback
+and a browser ceiling of eight; that hint is not a known application allocation.
+N is a positive unsigned participant count including the owner. Explicit counts
+above observed eligibility report oversubscription; unsupported platform or
+owner-only workload counts are rejected. Platforms without worker support retain
+the serial executor fallback. Saving drains
 private work without publishing it early and continues to serialize completed
 fields with their remaining deadlines.
 

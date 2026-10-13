@@ -403,11 +403,15 @@ phase budgets, not a process-wide simultaneous admission guarantee. Tournament
 coordinators allocate frozen, disjoint CPU shares to concurrent games; see
 [tournament resource allocation](../tools/tournaments.md).
 
-GPU permission and gradient implementation selection are distinct. Resource
-telemetry retains the setup configuration and reports current requested/applied
-backend, algorithm and verification settings separately. Existing gradient
-switches apply at simulation boundaries, retaining captured job generations and
-publication deadlines; compute pool resizing remains a session setup operation.
+GPU permission and gradient implementation selection are distinct. Explicit menu
+choices pass through the central resolver using the session's captured inputs.
+Resource telemetry retains the initial setup and records a separate
+`current_gpu_admission`, alongside the requested and applied backend, algorithm
+and verification settings. A known unsupported GPU resolves to CPU fallback;
+unknown support permits the existing backend availability and fallback checks.
+Existing gradient switches apply at simulation boundaries, retaining captured job
+generations and publication deadlines; compute pool resizing remains a session
+setup operation.
 
 ## Optional GPU gradient computation
 
