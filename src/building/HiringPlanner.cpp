@@ -97,16 +97,20 @@ int warped(const World &world, int a, int b, int c, int d)
 	int dx = std::abs(a - c), dy = std::abs(b - d);
 	return std::max(std::min(dx, world.width - dx), std::min(dy, world.height - dy));
 }
+bool naturalMaterialGoal(const World &world, int material, std::size_t i, Uint32 teamMask)
+{
+	const auto resource = world.resourceAt(i).resource;
+	return MapState::hasMaterialSlot(world.state(), i, material) &&
+		   (resource.type == NO_RES_TYPE ||
+			!world.resourceRegistry->properties(static_cast<ResourceId>(resource.type))
+				 .visibleToHarvest ||
+			(world.visibilityAt(i).visible & teamMask));
+}
 bool materialGoal(const World &world, const B &b, int material, std::size_t i, unsigned supplyModes)
 {
 	if (world.areasAt(i).forbidden & world.teams[b.team].mask)
 		return false;
-	const auto resource = world.resourceAt(i).resource;
-	if (MapState::hasMaterialSlot(world.state(), i, material) &&
-		(resource.type == NO_RES_TYPE ||
-		 !world.resourceRegistry->properties(static_cast<ResourceId>(resource.type))
-			  .visibleToHarvest ||
-		 (world.visibilityAt(i).visible & world.teams[b.team].mask)))
+	if (naturalMaterialGoal(world, material, i, world.teams[b.team].mask))
 		return true;
 	const auto o = world.occupancyAt(i);
 	if (o.building == NOGBID)
@@ -126,6 +130,15 @@ std::uint64_t geography(const World &world, int team, std::array<std::uint64_t, 
 	mix(hash, world.width);
 	mix(hash, world.height);
 	mix(hash, world.terrainRevision);
+	mix(hash, world.terrain->checksum());
+	mix(hash, world.resourceRegistry->checksum());
+	for (unsigned char value : world.components().catalogs->buildingFingerprint)
+		mix(hash, value);
+	for (const auto &kind : *world.catalog)
+	{
+		mix(hash, kind.resolvedType.runtimeSuppliesStockMask);
+		mix(hash, kind.resolvedType.runtimeSuppliesDirectStockMask);
+	}
 	parts.fill(1469598103934665603ull);
 	mix(parts[0], world.terrainRevision);
 	for (std::size_t i = 0; i < std::size_t(world.width) * world.height; ++i)
@@ -244,8 +257,7 @@ struct Cache::Impl
 			value = geo;
 			for (std::size_t i = 0; i < std::size_t(world.width) * world.height; ++i)
 			{
-				mix(value, MapState::hasMaterialSlot(world.state(), i, material));
-				mix(value, world.visibilityAt(i).visible & world.teams[b.team].mask);
+				mix(value, naturalMaterialGoal(world, material, i, world.teams[b.team].mask));
 			}
 			stamped[material] = true;
 		}
@@ -259,6 +271,7 @@ struct Cache::Impl
 				{
 					mix(stamp, identity(supplier.identity));
 					mix(stamp, supplier.typeNum);
+					mix(stamp, supplier.hiringEpoch);
 					mix(stamp, supplier.buildingState);
 					mix(stamp, supplier.usesTeamResources);
 					mix(stamp, supplier.availableSupplyMask);

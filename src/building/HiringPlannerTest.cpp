@@ -1,5 +1,5 @@
-#include "HiringPipeline.h"
 // SPDX-License-Identifier: GPL-3.0-or-later
+#include "HiringPipeline.h"
 #include "EngineFixtures.h"
 #include "HiringPlanner.h"
 #include "HiringDiagnostics.h"
@@ -45,6 +45,57 @@ TEST_SUITE("HiringPlanner")
 		REQUIRE(fetch(enrolled).size() == fetch(normal).size());
 		CHECK(fetch(enrolled)[0].unit == fetch(normal)[0].unit);
 		CHECK(fetch(enrolled)[0].value == fetch(normal)[0].value);
+	}
+	TEST_CASE("warm and fresh resource estimates agree after same-material visibility-rule changes")
+	{
+		glob2test::HeadlessGlobals globals;
+		glob2test::HeadlessGame w({.discovered = true, .loadDefaultRace = true});
+		auto a = nlohmann::json::parse(ResourceRegistry::builtins()->serialize())["resources"][0];
+		a["key"] = "fixture:visible-food";
+		a["properties"]["visibleToHarvest"] = true;
+		auto b = a;
+		b["key"] = "fixture:unseen-food";
+		b["properties"]["visibleToHarvest"] = false;
+		w.game.map.installResourceDefinitions(
+			nlohmann::json{{"schemaVersion", 1}, {"resources", {a, b}}}.dump());
+		auto *building = w.addBuilding("inn", 8, 8);
+		building->maxUnitWorking = 1;
+		building->materials[WHEAT] = 0;
+		building->updateCallLists();
+		auto *u = w.addUnit(WORKER, 6, 8);
+		u->activity = Unit::ACT_RANDOM;
+		u->medical = Unit::MED_FREE;
+		u->hungriness = 0;
+		HiringPlanner::Cache warm;
+		const auto count = [](const auto &output)
+		{
+			for (const auto &b : output.buildings)
+				for (const auto &j : b.jobs)
+					if (j.key == Hiring::Key{Hiring::Job::Fetch, WHEAT})
+						return j.candidates.size();
+			throw std::runtime_error("missing fetch list");
+		};
+		for (unsigned phase = 0; phase < 3; ++phase)
+		{
+			if (phase == 2)
+			{
+				b["properties"]["visibleToHarvest"] = true;
+				w.game.map.installResourceDefinitions(
+					nlohmann::json{{"schemaVersion", 1}, {"resources", {a, b}}}.dump());
+			}
+			w.game.map.setResourceByIndex(5, 8, phase == 0 ? 0 : 1, 0);
+			REQUIRE(w.game.map.getResource(w.game.map.coordToIndex(5, 8)).type ==
+					(phase == 0 ? 0 : 1));
+			w.game.snapshotStore().invalidateBoundary();
+			auto input = HiringPipeline::bindRoutes(w.game, w.game.captureReadBoundary());
+			auto hidden = std::make_shared<SimulationSnapshot::Visibility>(*input.world.visibility);
+			std::fill(hidden->visible.begin(), hidden->visible.end(), 0);
+			input.world.visibility = hidden;
+			HiringPlanner::Cache fresh;
+			const auto reused = warm.rank(input, 0), rebuilt = fresh.rank(input, 0);
+			CHECK(count(reused) == count(rebuilt));
+			CHECK(count(reused) == (phase == 1 ? 1u : 0u));
+		}
 	}
 	TEST_CASE("worker demand uses immutable shared funding and staffing facts")
 	{
