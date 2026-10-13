@@ -483,5 +483,104 @@ class TournamentResourceRuntime(unittest.TestCase):
         self.assertEqual([a['execution_allocation']['allocation']['participants'] for a in attempts],[1,1])
 
 
+class LocalRunJobResources(unittest.TestCase):
+    """Reject unsupported requests before any bundle probe or engine launch."""
+
+    def invoke(self, kind, **overrides):
+        from pathlib import Path
+        from unittest.mock import patch
+        from tools.tournaments import local
+        with patch.object(local, 'supplied_binary', return_value=Path('/bundles/' + 'a' * 64)) as bundle, \
+             patch.object(local, 'execute_jobs', return_value=[{'status': 'completed'}]) as execute:
+            result, source=local.run_job('/unused/glob2', '/unused/data', '/unused/results', kind,
+                config={'fixture': 'unchanged'}, seeds={'map': 123}, **overrides)
+            self.assertEqual(result, {'status': 'completed'})
+            self.assertEqual(source, [{'status': 'completed'}])
+            bundle.assert_called_once()
+            execute.assert_called_once()
+            return execute.call_args.args[1][0], execute.call_args.kwargs
+
+    def test_omitted_generation_requests_preserve_job_identity(self):
+        from tools.tournaments.model import job
+        value, options=self.invoke('generate_map')
+        expected=job('generate_map', 'a' * 64, config={'fixture': 'unchanged'}, seeds={'map': 123},
+                     limits={'timeout_seconds': 3600}, execution=None)
+        self.assertEqual(value, expected)
+        self.assertEqual(options, {'cpu_ids': None, 'memory_planning_budget_bytes': None,
+                                  'participants_per_game': None})
+
+    def test_omitted_game_profile_keeps_existing_defaults(self):
+        from tools.tournaments.resources import default_execution_request
+        value, options=self.invoke('game', cpu_ids=[3, 19])
+        self.assertEqual(value['execution'], default_execution_request())
+        self.assertEqual(options['cpu_ids'], [3, 19])
+
+    def test_explicit_game_profile_and_compatibility_preserved(self):
+        from tools.tournaments.resources import default_execution_request
+        for profile, mode in [('balanced', 'require_profile'), ('fast-simulation', 'legacy_argv')]:
+            with self.subTest(profile=profile, mode=mode):
+                value, options=self.invoke('game', cpu_ids=[3, 19], participants_per_game=1,
+                    requested_execution_profile=profile, compatibility_mode=mode)
+                self.assertEqual(value['execution'], default_execution_request(
+                    requested_execution_profile=profile, compatibility_mode=mode))
+                self.assertEqual(options['participants_per_game'], 1)
+
+    def test_explicit_non_game_requests_never_package_or_launch(self):
+        from unittest.mock import patch
+        from tools.tournaments import local
+        requests={'cpu_ids': [3, 19], 'memory_planning_budget_bytes': 8192,
+                  'participants_per_game': 1, 'compatibility_mode': 'require_profile',
+                  'requested_execution_profile': 'efficient-throughput'}
+        for kind in ['generate_map', 'verify_match']:
+            for name, value in requests.items():
+                with self.subTest(kind=kind, name=name), \
+                     patch.object(local, 'supplied_binary') as bundle, \
+                     patch.object(local, 'execute_jobs') as execute, \
+                     patch.object(local, 'configure_hosts') as configure:
+                    with self.assertRaisesRegex(ValueError, 'unsupported resource requests.*' + name):
+                        local.run_job('/unused/glob2', '/unused/data', '/unused/results', kind,
+                                      config={}, seeds={}, **{name: value})
+                    bundle.assert_not_called()
+                    execute.assert_not_called()
+                    configure.assert_not_called()
+
+    def test_direct_allocations_reject_any_job_without_execution(self):
+        from pathlib import Path
+        from unittest.mock import patch
+        from tools.tournaments import local
+        from tools.tournaments.model import job
+        legacy=job('game', 'a' * 64, execution=None)
+        generation=job('generate_map', 'a' * 64)
+        current=job('game', 'a' * 64)
+        for jobs in [[legacy], [generation], [current, legacy], [current, generation]]:
+            for overrides in [{'cpu_ids': [3, 19]}, {'participants_per_game': 1},
+                              {'memory_planning_budget_bytes': 8192}]:
+                with self.subTest(jobs=[j['type'] for j in jobs], overrides=overrides), \
+                     patch.object(local.Coordinator, 'submit') as submit, \
+                     patch.object(local, 'configure_hosts') as configure:
+                    with self.assertRaisesRegex(ValueError, 'without execution contracts'):
+                        local.execute_jobs('/unused/results', jobs, Path('/unused/bundle'), **overrides)
+                    submit.assert_not_called()
+                    configure.assert_not_called()
+
+    def test_direct_legacy_without_allocations_still_dispatches(self):
+        from pathlib import Path
+        from unittest.mock import Mock, patch
+        from tools.tournaments import local
+        from tools.tournaments.model import job
+        jobs=[job('generate_map', 'a' * 64), job('game', 'a' * 64, execution=None)]
+        coordinator=Mock()
+        coordinator.run.return_value={'jobs': {'completed': 2}}
+        with patch.object(local.Coordinator, 'submit', return_value=coordinator) as submit, \
+             patch.object(local, 'Transport') as transport, \
+             patch.object(local, 'Results') as results:
+            self.assertIs(local.execute_jobs('/unused/results', jobs, Path('/unused/bundle')), results.return_value)
+            self.assertEqual(submit.call_args.args[1]['jobs'], jobs)
+            self.assertNotIn('caller_allocation_plan', submit.call_args.args[1]['settings'])
+            coordinator.run.assert_called_once()
+            coordinator.close.assert_called_once()
+            transport.return_value.rpc.assert_called_once_with('stop')
+
+
 if __name__ == '__main__':
     unittest.main()

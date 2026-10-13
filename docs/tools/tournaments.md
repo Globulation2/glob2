@@ -83,6 +83,17 @@ requires worker CPU allocation proof and does not claim an engine-resolved plan.
 Previously signed jobs without an execution envelope retain their original
 command and identity. Missing capabilities never trigger an automatic fallback.
 
+The Python `local.run_job` resource arguments apply only to `game` jobs. Omitted
+game profile and compatibility arguments select `efficient-throughput` and
+`require_profile`. Non-game calls such as `generate_map` retain their existing
+native defaults when these arguments are omitted; explicit CPU IDs, participant
+counts, planning memory budgets, profiles or compatibility modes are rejected
+before bundling or launch. Resource-plan provenance for direct map and scene
+tool adapters remains pending; this helper does not promise their allocation.
+Likewise, `local.execute_jobs` rejects explicit allocation budgets if any job
+lacks an execution contract, including mixed batches of new and legacy jobs.
+Legacy batches without explicit allocations retain their existing behavior.
+
 Planning validates and expands jobs without starting games. Generation jobs save
 verified rotations; dependent games consume the exact committed map artifact.
 Rotation export normalizes the save header after loading initializes generated

@@ -27,6 +27,8 @@ def supplied_binary(binary, data_root, cache):
 
 
 def execute_jobs(directory, jobs, bundle, slots=1, *, cpu_ids=None, memory_planning_budget_bytes=None, participants_per_game=None):
+    if any(value is not None for value in (cpu_ids, memory_planning_budget_bytes, participants_per_game)) and any('execution' not in value for value in jobs):
+        raise ValueError('unsupported local resource allocation for jobs without execution contracts')
     directory=Path(directory).resolve()
     manifest={'schema_version':1,'id':'local-'+digest([j['id'] for j in jobs])[:24], 'jobs':jobs,
               'settings':{'heartbeat_seconds':1,'lease_seconds':300}}
@@ -52,11 +54,22 @@ def execute_jobs(directory, jobs, bundle, slots=1, *, cpu_ids=None, memory_plann
 
 
 def run_job(binary, data_root, directory, kind, *, config, seeds, inputs=None, outputs=None, timeout=3600, labels=None,
-            cpu_ids=None, memory_planning_budget_bytes=None, participants_per_game=None, compatibility_mode='require_profile', requested_execution_profile='efficient-throughput'):
+            cpu_ids=None, memory_planning_budget_bytes=None, participants_per_game=None, compatibility_mode=None, requested_execution_profile=None):
     directory=Path(directory).resolve()
     # Validate before packaging or creating an experiment. Older CLI2 is an
     # explicit request, never a fallback when profiles are absent.
-    execution=default_execution_request(compatibility_mode=compatibility_mode, requested_execution_profile=requested_execution_profile) if kind == 'game' else None
+    if kind == 'game':
+        execution=default_execution_request(
+            compatibility_mode='require_profile' if compatibility_mode is None else compatibility_mode,
+            requested_execution_profile='efficient-throughput' if requested_execution_profile is None else requested_execution_profile)
+    else:
+        unsupported=[name for name,value in (
+            ('cpu_ids',cpu_ids), ('memory_planning_budget_bytes',memory_planning_budget_bytes),
+            ('participants_per_game',participants_per_game), ('compatibility_mode',compatibility_mode),
+            ('requested_execution_profile',requested_execution_profile)) if value is not None]
+        if unsupported:
+            raise ValueError('unsupported resource requests for non-game job ' + repr(kind) + ': ' + ', '.join(unsupported))
+        execution=None
     configure_hosts([{'slots':1}], cpu_ids=cpu_ids, memory_planning_budget_bytes=memory_planning_budget_bytes, participants_per_game=participants_per_game,
                     resource_aware=execution is not None)
     bundle=supplied_binary(binary,data_root,Path(data_root)/'.cache/tournament-bundles')
