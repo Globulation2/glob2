@@ -259,7 +259,7 @@ public:
 	bool loadAI(GAGCore::InputStream* stream);
 	void observeUnpolledAI();
 	// Research producer only: original targeting remains authoritative.
-	void configureTurretTargetingShadow(unsigned delay=1,unsigned refresh=1,unsigned capacity=8,unsigned margin=1);
+	void configureTurretTargetingShadow(unsigned delay=1,unsigned refresh=1,unsigned capacity=8,unsigned margin=1,bool forecast=true,bool reusePreparation=true,bool profileCpu=false);
 	TurretTargeting::Pipeline* turretShadow() const { return turretTargetingShadow.get(); }
 	SimulationSnapshot::Store& snapshotStore() { return worldSnapshots; }
 	std::vector<std::pair<std::string, Uint64>> aiMetrics() const;

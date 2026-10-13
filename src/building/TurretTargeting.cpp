@@ -11,6 +11,7 @@
 #include <tuple>
 #include <stdexcept>
 #include <atomic>
+#include <ctime>
 
 namespace TurretTargeting
 {
@@ -168,7 +169,7 @@ template<class World> Shot shot(const Source& s,const World& w,int x,int y)
 int score(const Source& s,const UnitFact& u,int ring)
 {
     if (u.priority!=3) return -u.hp;
-    const int damage=unsigned(u.type)<s.damage.size() ? s.damage[u.type] : 0;
+    const int damage=unsigned(u.type)<s.damageCount() ? s.damageAt(u.type) : 0;
     const int weakness=u.hp>0 ? (u.hp<damage ? 512 : 256/u.hp) : 0;
     return int(std::clamp<Sint64>(Sint64(u.offense)*u.attackSpeed+weakness+(ring<=0 ? 512 : 256/ring),0,INT_MAX));
 }
@@ -246,7 +247,7 @@ template<class World,class Visit> void traverse(const Source& s,const World& wor
     for (const auto& tile:tiles) visit(tile.x,tile.y,tile.ring,
         s.width==2 && s.height==2 ? ((tile.ring<<5)+32)/(s.speed>>8) : -1,tile.ordinal);
 }
-template<class World> Plan run(const Source& s,const World& world,unsigned capacity,unsigned margin)
+template<class World> Plan run(const Source& s,const World& world,unsigned capacity,unsigned margin,bool compactOutputs=false)
 {
     if (s.width<=0 || s.height<=0 || s.speed<256 || s.range<0 || margin>2 || (capacity && capacity!=4 && capacity!=8 && capacity!=16 && capacity!=32))
         throw std::invalid_argument("Invalid turret planner configuration");
@@ -290,7 +291,7 @@ template<class World> Plan run(const Source& s,const World& world,unsigned capac
         const auto unit=[&](Uint16 gid,bool isGround) {
             if (!eligible(gid,s.unitTeams)) return;
             const auto u=world.unit(gid);
-            if (unsigned(u.type)>=s.damage.size() || s.damage[u.type]<=0) {
+            if (unsigned(u.type)>=s.damageCount() || s.damageAt(u.type)<=0) {
                 if (fold && !tileReturned && u.ticks<=ringTicks) tileReturned=true;
                 return;
             }
@@ -328,6 +329,7 @@ template<class World> Plan run(const Source& s,const World& world,unsigned capac
             if (fold && !tileReturned && result.preferred.priority==0) apply(t);
         }
     });
+    if (compactOutputs) result.entries.reserve(capacity ? std::min<std::size_t>(capacity,candidates.size()) : candidates.size());
     if (result.preferred.found()) result.entries.push_back(result.preferred.entry);
     std::vector<Candidate> top;
     const auto limit=capacity ? capacity-result.entries.size() : candidates.size();
@@ -346,29 +348,49 @@ template<class World> Plan run(const Source& s,const World& world,unsigned capac
 }
 }
 
-Source source(const Building& b)
+Source source(const Building& b,std::shared_ptr<const std::vector<int>> damage)
 {
     Source s{Game::refOf(&b),b.posX,b.posY,b.runtime->width,b.runtime->height,
         b.runtime->shootingRange,b.runtime->shootSpeed,
         b.owner->attackableTeams() & ~b.owner->sharedVisionExchange,
         b.owner->attackableTeams(),b.runtime->projectileBuildingDamage,{}};
-    for (unsigned id=0;id<b.runtime->unitCount;++id) s.damage.push_back(b.runtime->damage(id));
+    s.sharedDamage=std::move(damage);
+    if (!s.sharedDamage) {
+        s.damage.reserve(b.runtime->unitCount);
+        for (unsigned id=0;id<b.runtime->unitCount;++id) s.damage.push_back(b.runtime->damage(id));
+    }
     return s;
 }
-Observation observe(const Game& game,const SimulationSnapshot::Handle& captured,const Observation* previous)
+Observation observe(const Game& game,const SimulationSnapshot::Handle& captured,const Observation* previous,bool capturedFacts,bool profileCpu)
 {
     if (captured.tick!=game.stepCounter || captured.worldIdentity!=game.map.identity())
         throw std::invalid_argument("Turret observation is not the completed-world boundary");
     Observation o;
-    o.world=captured.project(requirements);
+    o.compactOutputs=capturedFacts;
+    o.world=captured.project(capturedFacts ? targetingRequirements : requirements);
     o.blocksProjectiles=game.map.hasProjectileBlockingTerrain();
     o.indexBudget=previous && previous->indexBudget ? previous->indexBudget : std::make_shared<IndexBudget>();
+    const auto indexStart=profileCpu ? threadCpuNs() : 0;
     o.index=buildIndex(o,previous);
+    if (profileCpu) o.indexCpu=threadCpuNs()-indexStart;
+    const auto factsStart=profileCpu ? threadCpuNs() : 0;
+    o.offense.reserve(o.world.entities->units.size());
     for (const auto& u:o.world.entities->units) {
-        const auto* live=game.resolveUnit(u.identity);
-        if (!live) throw std::logic_error("Turret observation boundary changed");
-        o.offense.push_back(live->getRealAttackStrength());
+        if (capturedFacts) {
+            const int strength=int(std::clamp<Sint64>((Sint64(u.performance[ATTACK_STRENGTH])+u.experienceLevel)*game.gameHeader.getGlassCannonScale(),0,INT_MAX));
+            if (!game.areaEffects.enabled()) o.offense.push_back(strength);
+            else {
+                const auto* live=game.resolveUnit(u.identity);
+                if (!live) throw std::logic_error("Turret observation boundary changed");
+                o.offense.push_back(live->applyAreaAttack(strength));
+            }
+        } else {
+            const auto* live=game.resolveUnit(u.identity);
+            if (!live) throw std::logic_error("Turret observation boundary changed");
+            o.offense.push_back(live->getRealAttackStrength());
+        }
     }
+    if (profileCpu) o.factsCpu=threadCpuNs()-factsStart;
     return o;
 }
 Observation observe(const Game& game,const Observation* previous)
@@ -382,9 +404,9 @@ std::size_t retainedIndexBytes(const Observation& o) { return o.indexBudget ? o.
 Plan plan(const Building& b,unsigned capacity,unsigned margin) { return run(source(b),Live{b},capacity,margin); }
 Plan plan(const Source& s,const Observation& o,unsigned capacity,unsigned margin)
 {
-    if ((o.world.requirements & requirements)!=requirements || !o.world.entities || !o.world.catalogs || !o.world.occupancy || !o.world.terrain || !o.world.teams)
+    if ((o.world.requirements & targetingRequirements)!=targetingRequirements || !o.world.entities || !o.world.catalogs || !o.world.occupancy || !o.world.terrain || !o.world.teams)
         throw std::invalid_argument("Incomplete turret observation");
-    return run(s,Frozen{o,o.world.view()},capacity,margin);
+    return run(s,Frozen{o,o.world.view()},capacity,margin,o.compactOutputs);
 }
 Target firstValid(const Building& b,const std::vector<Entry>& entries,Metrics* metrics)
 {
@@ -441,6 +463,22 @@ Target firstValid(const Building& b,const std::vector<Entry>& entries,Metrics* m
         if (metrics) ++metrics->rejected;
     }
     return {};
+}
+Uint64 threadCpuNs()
+{
+#if defined(CLOCK_THREAD_CPUTIME_ID)
+    timespec value{};
+    if (clock_gettime(CLOCK_THREAD_CPUTIME_ID,&value)!=0) throw std::runtime_error("Thread CPU clock unavailable");
+    return Uint64(value.tv_sec)*1000000000u+value.tv_nsec;
+#else
+    throw std::runtime_error("Turret CPU profiling requires a thread CPU clock on this platform");
+#endif
+}
+bool refreshNeeded(int cooldown,unsigned rhythm,unsigned delay,unsigned refresh)
+{
+    // At completed boundary t, the next turretStep still uses counter t.
+    // The last attempt served by this generation is t+delay+refresh-1.
+    return stepsUntilReady(cooldown,rhythm)<=Uint64(delay)+refresh-1;
 }
 Uint64 stepsUntilReady(int cooldown,unsigned rhythm)
 {

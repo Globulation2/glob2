@@ -39,6 +39,13 @@ void compare(const Building& turret,const Observation& observation)
     const auto reference=turret.findBestTarget();
     const auto live=plan(turret,8,2);
     const auto frozen=plan(source(turret),observation,8,2);
+    const auto reused=observe(*turret.owner->game,observation.world,nullptr,true);
+    CHECK(reused.offense==observation.offense);
+    const auto row=std::make_shared<const std::vector<int>>(source(turret).damage);
+    const auto compact=plan(source(turret,row),reused,8,2);
+    CHECK(compact.entries==frozen.entries);
+    CHECK(compact.preferred.x==frozen.preferred.x);
+    CHECK(compact.preferred.y==frozen.preferred.y);
     CHECK(live.preferred.found()==reference.found());
     if (reference.found()) {
         CHECK(live.preferred.x==reference.x);
@@ -327,7 +334,7 @@ TEST_SUITE("TurretTargeting")
                 for (auto* b:owner->liveBuildings.entries()) if (b) owner->addToStaticAbilitiesLists(b);
                 owner->stats.step(owner);
             }
-            if (shadow) world.game.configureTurretTargetingShadow();
+            if (shadow) world.game.configureTurretTargetingShadow(1,1,8,1,false,false);
             Observation previous;
             for (int tick=0;tick<256;++tick) {
                 if (shadow) {
@@ -377,6 +384,9 @@ TEST_SUITE("TurretTargeting")
     TEST_CASE("Numbi Castor stock combat measures delayed shadow matrix [artifacts]")
     {
         glob2test::HeadlessGlobals globals;
+        const bool pipelineOnly=std::getenv("TURRET_PIPELINE_ONLY")!=nullptr;
+        const unsigned actualCapacity=std::getenv("TURRET_CAPACITY") ? std::stoul(std::getenv("TURRET_CAPACITY")) : 8;
+        const std::string actualVariant=std::getenv("TURRET_VARIANT") ? std::getenv("TURRET_VARIANT") : "combined";
         struct Window { bool active=false; unsigned start=0; Entry reference; };
         struct Lists { Source source; bool initialized=false; std::vector<Entry> published; std::map<unsigned,std::vector<Entry>> pending; Window window; };
         struct Configuration {
@@ -388,6 +398,11 @@ TEST_SUITE("TurretTargeting")
         };
         struct Research {
             Game* game;
+            struct Actual {
+                std::map<std::pair<Uint16,Uint32>,Window> windows;
+                unsigned opportunities=0,agreement=0,missed=0,censored=0;
+                std::vector<unsigned> delays;
+            } actual;
             std::vector<Configuration> matrix;
             unsigned eligible=0,shots=0,found=0,unitShots=0,buildingShots=0,combatEligible=0,combatFound=0;
             static void attempt(void* opaque,const Building& turret) {
@@ -406,6 +421,17 @@ TEST_SUITE("TurretTargeting")
                     const auto control=firstValid(turret,fresh.entries);
                     REQUIRE(control.found()); CHECK(control.entry==reference.entry); CHECK(control.x==reference.x); CHECK(control.y==reference.y);
                 }
+                auto& actual=self.actual;
+                auto& window=actual.windows[{turret.gid,turret.scriptIdentity}];
+                const auto candidate=firstValid(turret,self.game->turretShadow()->entries(turret));
+                if (window.active && !firstValid(turret,{window.reference}).found()) { ++actual.missed; window.active=false; }
+                if (fires) {
+                    if (window.active) { ++actual.censored; window.active=false; }
+                    ++actual.opportunities;
+                    actual.agreement+=candidate.found() && candidate.entry==reference.entry && candidate.x==reference.x && candidate.y==reference.y;
+                    window={true,t,reference.entry};
+                }
+                if (window.active && candidate.found()) { actual.delays.push_back(t-window.start); window.active=false; }
                 for (auto& c:self.matrix) {
                     auto& lists=c.turrets[{turret.gid,turret.scriptIdentity}];
                     // Orders and team stepping can change the source after the
@@ -476,16 +502,17 @@ TEST_SUITE("TurretTargeting")
                     for (auto* b:owner->liveBuildings.entries()) if (b) owner->addToStaticAbilitiesLists(b);
                 owner->stats.step(owner);
                 }
-                Research research{&world.game,{}};
-                if (shadow) for (unsigned k : {1,2,4}) for (unsigned r : {1,2,4})
+                Research research{&world.game,{}, {}};
+                if (shadow && !pipelineOnly) for (unsigned k : {1,2,4}) for (unsigned r : {1,2,4})
                     for (unsigned l : {4,8,16,32,0}) for (unsigned margin : {0,1,2})
                         research.matrix.push_back({k,r,l,margin});
                 ScopedAttemptObserver observer(shadow ? Research::attempt : nullptr,&research);
-                if (shadow) world.game.configureTurretTargetingShadow();
+                if (shadow) world.game.configureTurretTargetingShadow(1,1,actualCapacity,1,
+                    actualVariant=="forecast" || actualVariant=="combined",actualVariant=="preparation" || actualVariant=="combined");
                 Observation previous;
                 Result result;
                 for (unsigned t=0;t<1024;++t) {
-                    if (shadow) {
+                    if (shadow && !pipelineOnly) {
                         const std::array<unsigned,2> readers{0,1};
                         const auto observed=observe(world.game,world.game.captureReadBoundary(readers,false,requirements),previous.world.entities ? &previous : nullptr);
                         for (auto& c:research.matrix) for (auto& [identity,lists]:c.turrets) {
@@ -538,6 +565,12 @@ TEST_SUITE("TurretTargeting")
                         csv << '\n';
                     }
                     csv.flush(); REQUIRE(csv.good());
+                    std::ofstream actual(glob2test::artifactDir()/(fixture+"-"+std::to_string(seed)+"-producer.csv"));
+                    for (const auto& [identity,window]:research.actual.windows) if (window.active) ++research.actual.censored;
+                    actual << "fixture,seed,L,variant,opportunities,agreement,missed,censored,delays\n";
+                    actual << fixture << ',' << seed << ',' << actualCapacity << ',' << actualVariant << ',' << research.actual.opportunities << ',' << research.actual.agreement << ',' << research.actual.missed << ',' << research.actual.censored << ',';
+                    for (unsigned delay:research.actual.delays) actual << delay << ';';
+                    actual << '\n'; actual.flush(); REQUIRE(actual.good());
                     std::printf("stock_combat,fixture=%s,seed=%u,eligible=%u,found=%u,shots=%u,unit_shots=%u,building_shots=%u\n",fixture.c_str(),seed,research.eligible,research.found,research.shots,research.unitShots,research.buildingShots);
                 }
                 const auto prefix=fixture+"-"+std::to_string(seed)+(shadow ? "-shadow" : "-reference");
@@ -753,6 +786,71 @@ TEST_SUITE("TurretTargeting")
             }
         }
     }
+    TEST_CASE("captured offense preserves glass cannon saturation and active area modifiers")
+    {
+        glob2test::HeadlessGlobals globals;
+        glob2test::HeadlessGame world({.teams=2,.loadDefaultRace=true,.header=true});
+        auto catalog=nlohmann::json::parse(world.game.buildingsTypes.snapshotJson());
+        const auto id=world.game.buildingsTypes.getTypeNum("stonewall",0,false);
+        catalog["variants"][id]["semantics"]["areaEffects"]={{"radius",4},{"attackBuffBps",5000}};
+        world.game.buildingsTypes.loadSnapshotJson(catalog.dump()); world.game.configureBuildingCatalog();
+        REQUIRE(world.addBuilding("stonewall",8,8,0,1));
+        auto* unit=world.addUnit(WARRIOR,9,8,1); REQUIRE(unit);
+        world.game.areaEffects.beginTick(world.game);
+        REQUIRE(world.game.areaEffects.enabled());
+        for (unsigned level : {0,1,2}) for (int strength : {-1,0,17,INT_MAX}) for (int experience : {0,7,INT_MAX}) {
+            world.game.gameHeader.setGlassCannonLevel(level);
+            unit->performance[ATTACK_STRENGTH]=strength; unit->experienceLevel=experience;
+            const auto original=observe(world.game);
+            const auto optimized=observe(world.game,original.world,nullptr,true);
+            CHECK(original.offense==optimized.offense);
+        }
+    }
+    TEST_CASE("cooldown admission includes exact serving boundary and empty ammunition")
+    {
+        glob2test::HeadlessGlobals globals;
+        for (unsigned delay : {1,2,4}) for (unsigned refresh : {1,2,4}) {
+            if (delay+refresh-1>4) continue;
+            for (unsigned readyOffset : {0,1,2,3,4}) {
+                glob2test::HeadlessGame world({.wDec=6,.hDec=6,.teams=2,.loadDefaultRace=true,.header=true});
+                auto* turret=world.addBuilding("defencetower",8,8); turret->owner->enemies=2;
+                turret->owner->addToStaticAbilitiesLists(turret);
+                turret->bullets=0;
+                turret->shootingCooldown=readyOffset*turret->runtime->shootRhythm;
+                world.game.configureTurretTargetingShadow(delay,refresh,8,1,true,true);
+                const bool admitted=readyOffset<=delay+refresh-1;
+                auto* pipeline=world.game.turretShadow();
+                CHECK((pipeline->pendingRequirements(world.game,false)!=0)==admitted);
+                world.game.captureReadBoundary({},false);
+                pipeline->drain();
+                CHECK(pipeline->statistics().sources==unsigned(admitted));
+                CHECK(pipeline->statistics().observations==unsigned(admitted));
+                world.game.stepCounter=delay;
+                pipeline->publish(world.game);
+                CHECK(pipeline->statistics().publications==unsigned(admitted));
+            }
+        }
+    }
+    TEST_CASE("forecast refresh arrives before the first ready step after zero crossing")
+    {
+        glob2test::HeadlessGlobals globals;
+        glob2test::HeadlessGame world({.wDec=6,.hDec=6,.teams=2,.loadDefaultRace=true,.header=true});
+        auto* turret=world.addBuilding("defencetower",8,8); turret->owner->enemies=2;
+        turret->owner->addToStaticAbilitiesLists(turret);
+        auto* target=world.addUnit(WARRIOR,11,8,1); REQUIRE(target); target->speed=0;
+        turret->shootingCooldown=turret->runtime->shootRhythm;
+        world.game.configureTurretTargetingShadow(1,1,8,1,true,true);
+        auto* pipeline=world.game.turretShadow();
+        world.game.captureReadBoundary({},false);
+        CHECK(pipeline->statistics().sources==1);
+        CHECK_FALSE(turret->tickShootingCooldown()); // Step at counter zero.
+        CHECK(turret->shootingCooldown<=0);
+        world.game.stepCounter=1;
+        pipeline->publish(world.game);
+        REQUIRE(!pipeline->entries(*turret).empty());
+        CHECK(turret->tickShootingCooldown()); // First ready step at counter one.
+        CHECK(firstValid(*turret,pipeline->entries(*turret)).found());
+    }
     TEST_CASE("shared completed boundary captures once and publishes only at deadlines")
     {
         glob2test::HeadlessGlobals globals;
@@ -762,7 +860,7 @@ TEST_SUITE("TurretTargeting")
             auto* turret=world.addBuilding("defencetower",8,8); turret->owner->enemies=2;
             turret->owner->addToStaticAbilitiesLists(turret);
             auto* enemy=world.addUnit(WARRIOR,11,8,1); enemy->speed=0;
-            world.game.configureTurretTargetingShadow(delay,1,8,1);
+            world.game.configureTurretTargetingShadow(delay,1,8,1,false,false);
             auto* pipeline=world.game.turretShadow();
             const auto before=world.game.snapshots().metrics.captures;
             const auto shared=world.game.captureReadBoundary({},false,SimulationSnapshot::Simulation);
@@ -805,7 +903,7 @@ TEST_SUITE("TurretTargeting")
         glob2test::HeadlessGame world({.wDec=6,.hDec=6,.teams=2,.loadDefaultRace=true,.header=true});
         auto* turret=world.addBuilding("defencetower",8,8,0,1); turret->owner->enemies=1;
         turret->owner->addToStaticAbilitiesLists(turret);
-        world.game.configureTurretTargetingShadow(1,2,8,1);
+        world.game.configureTurretTargetingShadow(1,2,8,1,false,false);
         auto* pipeline=world.game.turretShadow();
         CHECK(pipeline->pendingRequirements(world.game,false)==0); // Only team one has turrets.
         auto shared=world.game.captureReadBoundary({},false,SimulationSnapshot::bit(SimulationSnapshot::Component::Terrain));
@@ -823,7 +921,7 @@ TEST_SUITE("TurretTargeting")
         world.game.stepCounter=2;
         pipeline->drain(); CHECK(pipeline->statistics().publications==0);
         pipeline->publish(world.game); CHECK(pipeline->statistics().publications==1);
-        CHECK_THROWS_AS(world.game.configureTurretTargetingShadow(4,2,8,1),std::invalid_argument);
+        CHECK_THROWS_AS(world.game.configureTurretTargetingShadow(4,2,8,1,false,false),std::invalid_argument);
     }
     TEST_CASE("engine-style stepping reuses admitted boundary after orders mutate occupancy")
     {
@@ -831,7 +929,7 @@ TEST_SUITE("TurretTargeting")
         glob2test::HeadlessGame world({.wDec=6,.hDec=6,.teams=2,.loadDefaultRace=true,.header=true});
         auto* turret=world.addBuilding("defencetower",8,8); turret->owner->enemies=2;
         turret->owner->addToStaticAbilitiesLists(turret);
-        world.game.configureTurretTargetingShadow();
+        world.game.configureTurretTargetingShadow(1,1,8,1,false,false);
         const auto shared=world.game.captureReadBoundary({},false,SimulationSnapshot::Simulation);
         world.game.map.preparePendingWorld(shared);
         const auto captures=world.game.snapshots().metrics.captures;
@@ -853,7 +951,7 @@ TEST_SUITE("TurretTargeting")
             world.game.map.computeExecutor().configure(participants);
             auto* turret=world.addBuilding("defencetower",8,8); turret->owner->enemies=2;
             turret->owner->addToStaticAbilitiesLists(turret);
-            world.game.configureTurretTargetingShadow();
+            world.game.configureTurretTargetingShadow(1,1,8,1,false,false);
             turret->posX=-1; // Corrupt source geometry forces the immutable worker to fail.
             world.game.captureReadBoundary({},false);
             auto* pipeline=world.game.turretShadow();
@@ -890,7 +988,7 @@ TEST_SUITE("TurretTargeting")
                 const unsigned path=(order+repeat)%5;
                 world.game.clearAI(); // Outside timing; drains and clears trial state.
                 world.game.map.computeExecutor().configure(path ? 1u<<(path-1) : 1u);
-                if (path) world.game.configureTurretTargetingShadow(1,1,8,1);
+                if (path) world.game.configureTurretTargetingShadow(1,1,8,1,false,false);
                 auto* pipeline=world.game.turretShadow();
                 auto initial=world.game.captureReadBoundary({},false,existing);
                 if (pipeline) pipeline->drain();
@@ -1143,5 +1241,20 @@ TEST_SUITE("TurretTargeting")
             CHECK(steps==stepsUntilReady(cooldown,rhythm));
         }
         CHECK(stepsUntilReady(1,0)==std::numeric_limits<Uint64>::max());
+        for (unsigned delay : {1,2,4}) for (unsigned refresh : {1,2,4}) {
+            if (delay+refresh-1>4) continue;
+            for (unsigned rhythm : {1,2,128,1700}) for (int cooldown : {-1,0,1,128,1700,3400,65536}) {
+                auto runtime=*turret->runtime; runtime.shootRhythm=rhythm;
+                const auto* original=turret->runtime; turret->runtime=&runtime;
+                turret->shootingCooldown=cooldown;
+                bool ready=false;
+                for (unsigned offset=0;offset<=delay+refresh-1;++offset) {
+                    const bool attempt=turret->tickShootingCooldown();
+                    if (offset>=delay) ready |= attempt;
+                }
+                turret->runtime=original;
+                CHECK(refreshNeeded(cooldown,rhythm,delay,refresh)==ready);
+            }
+        }
     }
 }

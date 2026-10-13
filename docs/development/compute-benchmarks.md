@@ -425,6 +425,21 @@ snapshot leases without publishing early. Ordered lists and completed pending
 outputs stay private research state; save/load does not enable or resume this
 shadow tool. It is not the persistent live match experiment.
 
+The research producer defaults to cooldown-aware admission. At completed boundary
+`t`, its serving attempts are `t+K` through `t+K+R-1`; the next cooldown call is
+`t` (the counter increments after team stepping). Admit when the count of
+unsuccessful cooldown calls is at most `K+R-1`.
+A positive cooldown reaching zero still consumes an unsuccessful call. Ammunition
+never suppresses admission. Source upgrades and configuration changes still
+invalidate incompatible lists on consumption/publication.
+
+Source preparation shares one immutable damage row per interaction row within an
+admission, and reserves shortlist output once. This boundary-local table is not a
+mutable query cache. Unit offense uses captured performance/experience facts;
+active area modifiers are folded into supplemental immutable offense at the same
+boundary. Snapshot `Effects` contains render bullet/explosion/death records, not
+those modifiers, and optimized targeting does not request it.
+
 The index reuse cache holds only index chunks, not an old world snapshot.
 Deferred batches reserve five slots (four-tick horizon plus one admission before
 publication). The snapshot buffer horizon remains max(16,8,8,4)+1, within the
@@ -468,6 +483,35 @@ shared pool size. Total wall/process CPU includes completion/draining of admitte
 work at the end of the sample, without early publication. Cheap attempt/found/shot
 and surviving-entity counters are exported after timing; correctness additionally
 exports per-tick heavy checksums, orders and final saves outside timing runs.
+
+Use `TURRET_VARIANT=baseline|forecast|preparation|combined` to isolate the research
+optimizations and `TURRET_CAPACITY=4|8` to compare output lengths. The baseline
+retains the previous admission/preparation behavior, using the same indexed kernel.
+All configurations retain original targeting as their paired comparison. Timing
+includes initial boundary admission and final draining, and omits CPU probes.
+
+Run the same timing case separately with `TURRET_PROFILE_CPU=1`. It reports
+per-thread CPU for original scans, shared boundary capture/requirements (minus
+admission), source/fact preparation, index maintenance, all planning jobs,
+publication excluding joins, and cached consumption including list validation.
+Worker planning CPU is summed after joins, including jobs executed by the owner;
+publication excludes owner join CPU to avoid counting those jobs twice. Shared
+capture is a union cost: report its paired increase over original, rather than
+charging all common capture to targeting. Probe calls have overhead, so these
+breakdowns must not replace uninstrumented whole-engine timing/process CPU.
+Thread CPU probes require a platform thread CPU clock and fail explicitly if it
+is unavailable.
+
+The separate `reference trajectory measures cached opportunities` case measures
+agreement and first-valid delay on the original trajectory with the actual producer,
+including cooldown filtering. It reports missed and still-open windows separately;
+misses are failures, not removed from a passing delay claim. This does not establish
+combat outcomes on the cached trajectory. For the more contested existing stock
+Numbi/Castor corpus, run `Numbi Castor stock combat*` in `glob2-engine-tests` with
+`TURRET_PIPELINE_ONLY=1` and the same variant/capacity variables. This omits the
+serial parameter matrix and records actual-producer agreement, full delay samples,
+missed/censored windows, reference/shadow saves, orders and checksums for twenty
+matched battles. These checks are diagnostic and must not run during timing.
 
 Original/shadow trajectories must match across participants. Cached firing must
 be deterministic across participants on its own trajectory; combat outcomes may

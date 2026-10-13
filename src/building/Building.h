@@ -71,6 +71,7 @@ class Building : public BuildingUtils, public BuildingStateRecord
 	static const int MAX_COUNT=1024;
 	const BuildingRuntimeTraits* runtime=nullptr;
 	void bindType(Sint32 id, BuildingsTypes* catalog=nullptr);
+    int shootingCooldownRemaining() const { return shootingCooldown; }
 
 	/// `lastShootStep = LAST_SHOOT_STEP_NEVER` means this turret has
 	/// not fired yet this game; the field is `Uint32` step counter.

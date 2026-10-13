@@ -12,6 +12,7 @@
 #include <fstream>
 #include <cstdlib>
 #include <algorithm>
+#include <map>
 
 namespace
 {
@@ -21,19 +22,49 @@ struct Selection {
     unsigned attempts=0,found=0,shadowValid=0;
     bool diagnostics=false;
     Uint32 networkDigest=0;
+    Uint64 scanCpu=0,consumptionCpu=0,boundaryCpu=0;
+    struct Window { TurretTargeting::Entry reference; unsigned start=0; };
+    std::map<std::pair<Uint16,Uint32>,Window> windows;
+    unsigned opportunities=0,agreement=0,missed=0;
+    std::vector<unsigned> delays;
     TurretTargeting::Metrics rejections;
 };
 thread_local Selection* selection=nullptr;
+unsigned capacity=8;
+bool forecast=true,reusePreparation=true,profileCpu=false,opportunities=false;
+const char* variant="combined";
+void configure() {
+    if (const auto* value=std::getenv("TURRET_VARIANT")) variant=value;
+    forecast=std::string(variant)=="forecast" || std::string(variant)=="combined";
+    reusePreparation=std::string(variant)=="preparation" || std::string(variant)=="combined";
+    if (const auto* value=std::getenv("TURRET_CAPACITY")) capacity=std::stoul(value);
+    profileCpu=std::getenv("TURRET_PROFILE_CPU")!=nullptr;
+    opportunities=std::getenv("TURRET_OPPORTUNITIES")!=nullptr;
+}
 constexpr std::array<unsigned,2> seats{0,1};
 const char* modeName(Mode mode) { return mode==Original ? "original" : mode==Shadow ? "shadow" : "cached"; }
 struct Run {
     Uint64 wall=0,cpu=0;
     Selection targeting;
     Uint64 shots=0,units=0,turrets=0,captures=0,indexBytes=0,listBytes=0;
+    TurretTargeting::Pipeline::Statistics pipeline;
     std::vector<Uint32> checksums;
     std::vector<std::string> orders;
     std::vector<char> save;
 };
+void followWindow(void*,const Building& b)
+{
+    if (!selection || !opportunities || selection->mode!=Shadow) return;
+    const auto key=std::pair{b.gid,b.scriptIdentity};
+    const auto it=selection->windows.find(key);
+    if (it==selection->windows.end()) return;
+    const auto reference=TurretTargeting::firstValid(b,{it->second.reference});
+    if (!reference.found()) { ++selection->missed; selection->windows.erase(it); return; }
+    if (TurretTargeting::firstValid(b,b.owner->game->turretShadow()->entries(b)).found()) {
+        selection->delays.push_back(b.owner->game->stepCounter-it->second.start);
+        selection->windows.erase(it);
+    }
+}
 void setup(glob2test::HeadlessGame& world,unsigned fixture,unsigned seed,unsigned participants,Mode mode)
 {
     auto& game=world.game;
@@ -67,12 +98,14 @@ void setup(glob2test::HeadlessGame& world,unsigned fixture,unsigned seed,unsigne
         for (auto* b:game.teams[team]->liveBuildings.entries()) if (b) game.teams[team]->addToStaticAbilitiesLists(b);
         game.teams[team]->stats.step(game.teams[team]);
     }
-    if (mode!=Original) game.configureTurretTargetingShadow(1,1,8,1);
+    if (mode!=Original) game.configureTurretTargetingShadow(1,1,capacity,1,forecast,reusePreparation,profileCpu);
 }
 void advance(glob2test::HeadlessGame& fixture,Run* evidence)
 {
     auto& game=fixture.game;
+    const auto boundaryStart=profileCpu ? TurretTargeting::threadCpuNs() : 0;
     const auto world=game.captureReadBoundary(seats,false);
+    if (profileCpu && selection) selection->boundaryCpu+=TurretTargeting::threadCpuNs()-boundaryStart;
     for (auto [seat,order]:game.prepareAIOrders(seats,false,{},&world)) {
         order=game.validateAIOrder(order,seat); order->sender=seat;
         if (evidence) {
@@ -85,7 +118,9 @@ void advance(glob2test::HeadlessGame& fixture,Run* evidence)
     if (selection) selection->networkDigest^=game.checkSum(nullptr,nullptr,nullptr,false);
     game.syncStep(0,Game::PreparationCompletion::Deferred);
     fixture.gui.consumeClientEvents();
+    const auto completedStart=profileCpu ? TurretTargeting::threadCpuNs() : 0;
     game.captureReadBoundary(seats,false); // Engine completed boundary, before pacing/next orders.
+    if (profileCpu && selection) selection->boundaryCpu+=TurretTargeting::threadCpuNs()-completedStart;
     if (evidence) evidence->checksums.push_back(game.checkSum(nullptr,nullptr,nullptr,true));
 }
 Run run(unsigned fixture,unsigned seed,unsigned participants,Mode mode,bool correctness,unsigned ticks=256)
@@ -95,8 +130,11 @@ Run run(unsigned fixture,unsigned seed,unsigned participants,Mode mode,bool corr
     setup(world,fixture,seed,participants,mode);
     Run result; result.targeting.mode=mode; result.targeting.diagnostics=correctness; selection=&result.targeting;
     struct Reset { ~Reset(){selection=nullptr;} } reset;
-    world.game.captureReadBoundary(seats,false);
+    TurretTargeting::ScopedAttemptObserver observer(opportunities ? followWindow : nullptr,nullptr);
     const auto start=std::chrono::steady_clock::now(); const auto cpu=std::clock();
+    const auto firstBoundary=profileCpu ? TurretTargeting::threadCpuNs() : 0;
+    world.game.captureReadBoundary(seats,false);
+    if (profileCpu) result.targeting.boundaryCpu+=TurretTargeting::threadCpuNs()-firstBoundary;
     for (unsigned t=0;t<ticks;++t) advance(world,correctness ? &result : nullptr);
     world.game.drainAI(); // Include all admitted computation, never publish early.
     world.game.map.finishGradientPipeline(); world.game.map.finishResourceGrowth();
@@ -107,7 +145,7 @@ Run run(unsigned fixture,unsigned seed,unsigned participants,Mode mode,bool corr
         for (const auto* u:world.game.teams[team]->liveUnits.entries()) if (u && !u->isDead) ++result.units; result.turrets+=world.game.teams[team]->turrets.size();
     }
     result.captures=world.game.snapshots().metrics.captures;
-    if (const auto* pipeline=world.game.turretShadow()) { result.indexBytes=pipeline->statistics().indexBytes; result.listBytes=pipeline->statistics().shortlistBytes; }
+    if (const auto* pipeline=world.game.turretShadow()) { result.pipeline=pipeline->statistics(); result.indexBytes=pipeline->statistics().indexBytes; result.listBytes=pipeline->statistics().shortlistBytes; }
     if (correctness) {
         auto* memory=new GAGCore::MemoryStreamBackend; GAGCore::BinaryOutputStream output(memory);
         world.game.save(&output,false,"turret engine comparison"); output.flush(); const auto bytes=memory->takeContents(); result.save.assign(bytes.begin(),bytes.end());
@@ -124,7 +162,7 @@ Run resume(unsigned fixture,unsigned participants,Mode mode,const std::vector<ch
     world.game.setWaitingOnMask(0); world.game.map.configureCompute(participants);
     REQUIRE(world.game.map.computeExecutor().threadCount()==participants);
     world.game.map.configureGradientPipeline(participants,8);
-    if (mode!=Original) world.game.configureTurretTargetingShadow();
+    if (mode!=Original) world.game.configureTurretTargetingShadow(1,1,capacity,1,forecast,reusePreparation,profileCpu);
     Run result; result.targeting.mode=mode; result.targeting.diagnostics=true; selection=&result.targeting;
     struct Reset { ~Reset(){selection=nullptr;} } reset;
     for (unsigned t=0;t<ticks;++t) advance(world,&result);
@@ -138,23 +176,55 @@ Building::TurretTarget turretEngineBenchmarkTarget(const Building& b)
     ++selection->attempts;
     auto* pipeline=b.owner->game->turretShadow();
     if (selection->mode==Cached) {
+        const auto cpuStart=profileCpu ? TurretTargeting::threadCpuNs() : 0;
         const auto target=TurretTargeting::firstValid(b,pipeline->entries(b),selection->diagnostics ? &selection->rejections : nullptr);
+        if (profileCpu) selection->consumptionCpu+=TurretTargeting::threadCpuNs()-cpuStart;
         selection->found+=target.found();
         Building::TurretTarget result;
         if (target.found()) { result.type=target.entry.kind==TurretTargeting::Kind::Building ? Building::TARGETTYPE_BUILDING : Building::TARGETTYPE_GENERAL;
             result.x=target.x; result.y=target.y; result.ticks=target.ticks; }
         return result;
     }
-    const auto target=b.findBestTarget(); selection->found+=target.found();
-    if (selection->mode==Shadow) selection->shadowValid+=TurretTargeting::firstValid(b,pipeline->entries(b),selection->diagnostics ? &selection->rejections : nullptr).found();
+    const auto cpuStart=profileCpu ? TurretTargeting::threadCpuNs() : 0;
+    const auto target=b.findBestTarget();
+    if (profileCpu) selection->scanCpu+=TurretTargeting::threadCpuNs()-cpuStart;
+    selection->found+=target.found();
+    if (selection->mode==Shadow) {
+        const auto candidate=TurretTargeting::firstValid(b,pipeline->entries(b),selection->diagnostics ? &selection->rejections : nullptr);
+        selection->shadowValid+=candidate.found();
+        if (opportunities && target.found() && b.computeFiringSolution(target.x,target.y).ticksLeft<target.ticks) {
+            const auto reference=TurretTargeting::plan(b,0,1).preferred;
+            ++selection->opportunities;
+            selection->agreement+=candidate.found() && candidate.entry==reference.entry && candidate.x==reference.x && candidate.y==reference.y;
+            const auto key=std::pair{b.gid,b.scriptIdentity};
+            if (selection->windows.contains(key)) ++selection->missed;
+            if (candidate.found()) { selection->delays.push_back(0); selection->windows.erase(key); }
+            else selection->windows.insert_or_assign(key,Selection::Window{reference.entry,b.owner->game->stepCounter});
+        }
+    }
     return target;
 }
 TEST_SUITE("TurretEngine")
 {
+    TEST_CASE("reference trajectory measures cached opportunities [artifacts]")
+    {
+        configure(); opportunities=true;
+        glob2test::HeadlessGlobals globals;
+        for (unsigned fixture=0;fixture<3;++fixture) for (unsigned seed : {713,1919,7919,104729,15485863,32452843,49979687,67867967,86028121,123456}) {
+            auto result=run(fixture,seed,4,Shadow,false);
+            auto& target=result.targeting; std::sort(target.delays.begin(),target.delays.end());
+            const unsigned p95=target.delays.empty() ? 0 : target.delays[(target.delays.size()*95+99)/100-1];
+            std::printf("turret_opportunity,%u,%u,%u,%u,%u,%zu,%u\n",fixture,seed,target.opportunities,target.agreement,target.missed,target.windows.size(),p95);
+            CHECK(target.missed==0);
+            CHECK(p95<=4);
+        }
+    }
     TEST_CASE("whole headless ticks compare original shadow and cached firing [benchmark]")
     {
+        configure();
         glob2test::HeadlessGlobals globals;
         constexpr std::array<unsigned,10> seeds{713,1919,7919,104729,15485863,32452843,49979687,67867967,86028121,123456};
+        std::printf("variant,%s,capacity,%u,profile,%u\n",variant,capacity,profileCpu);
         std::printf("turret_engine,fixture,participants,repeat,seed,mode,ticks,wall_ns,cpu_ns,attempts,found,shots,units,turrets,captures,index_bytes,list_bytes\n");
         for (unsigned participants : {1,2,4,8}) for (unsigned fixture=0;fixture<3;++fixture) {
             for (unsigned mode=0;mode<3;++mode) (void)run(fixture,713,participants,Mode(mode),false);
@@ -165,11 +235,20 @@ TEST_SUITE("TurretEngine")
                     (unsigned long long)r.wall,(unsigned long long)r.cpu,r.targeting.attempts,r.targeting.found,
                     (unsigned long long)r.shots,(unsigned long long)r.units,(unsigned long long)r.turrets,(unsigned long long)r.captures,
                     (unsigned long long)r.indexBytes,(unsigned long long)r.listBytes);
+                if (profileCpu) std::printf("turret_cpu,%s,%u,%u,%s,%llu,%llu,%llu,%llu,%llu,%llu,%llu,%llu,%llu,%llu,%llu\n",
+                    fixture==0 ? "empty100" : fixture==1 ? "combat100" : "ordinary4",participants,repeat,modeName(mode),
+                    (unsigned long long)r.targeting.scanCpu,(unsigned long long)r.targeting.boundaryCpu-r.pipeline.admissionCpu,
+                    (unsigned long long)r.pipeline.sourceCpu,(unsigned long long)r.pipeline.indexCpu,
+                    (unsigned long long)r.pipeline.planningCpu,(unsigned long long)r.pipeline.publicationCpu,
+                    (unsigned long long)r.targeting.consumptionCpu,(unsigned long long)r.pipeline.sources,(unsigned long long)r.pipeline.skipped,
+                    (unsigned long long)(r.pipeline.admissionCpu-r.pipeline.sourceCpu-r.pipeline.indexCpu),
+                    (unsigned long long)r.pipeline.waitNs);
             }
         }
     }
     TEST_CASE("whole engine cached traces agree across participants and shadow preserves reference [artifacts]")
     {
+        configure();
         glob2test::HeadlessGlobals globals;
         for (unsigned fixture=0;fixture<3;++fixture) {
             const auto reference=run(fixture,713,1,Original,true);
@@ -193,6 +272,7 @@ TEST_SUITE("TurretEngine")
     }
     TEST_CASE("whole engine save continuation distinguishes persistent simulation from research cache [artifacts]")
     {
+        configure();
         glob2test::HeadlessGlobals globals;
         std::ofstream report(glob2test::artifactDir()/"continuation.csv");
         report << "mode,cut,remaining,checksums_equal\n";

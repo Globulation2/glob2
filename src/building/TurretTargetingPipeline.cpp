@@ -24,8 +24,8 @@ bool compatible(const Source& a,const Building& b)
         || a.range!=b.runtime->shootingRange || a.speed!=b.runtime->shootSpeed
         || a.buildingDamage!=b.runtime->projectileBuildingDamage
         || a.unitTeams!=(b.owner->attackableTeams() & ~b.owner->sharedVisionExchange)
-        || a.buildingTeams!=b.owner->attackableTeams() || a.damage.size()!=b.runtime->unitCount) return false;
-    for (unsigned i=0;i<a.damage.size();++i) if (a.damage[i]!=b.runtime->damage(i)) return false;
+        || a.buildingTeams!=b.owner->attackableTeams() || a.damageCount()!=b.runtime->unitCount) return false;
+    for (unsigned i=0;i<a.damageCount();++i) if (a.damageAt(i)!=b.runtime->damage(i)) return false;
     return true;
 }
 bool due(const Game& game,unsigned team,const Configuration& rules)
@@ -34,7 +34,7 @@ bool due(const Game& game,unsigned team,const Configuration& rules)
 }
 std::size_t recordBytes(const Source& source,std::size_t capacity)
 {
-    return sizeof(Source)+sizeof(std::vector<Entry>)+capacity*sizeof(Entry)+source.damage.capacity()*sizeof(int)+512;
+    return sizeof(Source)+sizeof(std::vector<Entry>)+capacity*sizeof(Entry)+(source.damage.capacity()+(source.sharedDamage ? source.sharedDamage->capacity() : 0))*sizeof(int)+512;
 }
 }
 struct Pipeline::State
@@ -43,15 +43,18 @@ struct Pipeline::State
     struct Job {
         const Observation* observation=nullptr;
         unsigned capacity=0,margin=0;
+        bool profile=false; Uint64 cpu=0;
         std::vector<Source> sources;
         std::vector<Record> output;
         static void run(void* context,std::size_t) {
             auto& job=*static_cast<Job*>(context);
+            const auto cpuStart=job.profile ? threadCpuNs() : 0;
             job.output.reserve(job.sources.size());
             for (auto& source:job.sources) {
                 auto result=plan(source,*job.observation,job.capacity,job.margin);
                 job.output.push_back({std::move(source),std::move(result.entries),job.observation->world.tick});
             }
+            if (job.profile) job.cpu=threadCpuNs()-cpuStart;
             // Moved sources no longer own damage allocations. All outputs are
             // private to this job until its batch is joined.
         }
@@ -75,9 +78,12 @@ struct Pipeline::State
     State(Game& game,Configuration configuration):executor(game.map.computeExecutor()),rules(configuration) {}
     void complete(Generation& generation) {
         if (!generation.batch.empty()) {
+            const auto joinStart=rules.profileCpu ? threadCpuNs() : 0;
             const auto start=std::chrono::steady_clock::now();
             try { executor.join(generation.batch); } catch (...) { generation.error=std::current_exception(); }
+            if (rules.profileCpu) metrics.joinCpu+=threadCpuNs()-joinStart;
             metrics.waitNs+=std::chrono::duration_cast<std::chrono::nanoseconds>(std::chrono::steady_clock::now()-start).count();
+            for (const auto& job:generation.jobs) metrics.planningCpu+=job->cpu;
             generation.observation.reset(); // Completed jobs need no world lease.
         }
     }
@@ -103,31 +109,51 @@ SimulationSnapshot::Requirements Pipeline::pendingRequirements(const Game& game,
     if (!admissionPending(game,paused)) return 0;
     for (int team=0;team<game.mapHeader.getNumberOfTeams();++team)
         if (due(game,team,s.rules)) for (const auto* turret:game.teams[team]->turrets)
-            if (turret->buildingState!=Building::DEAD && turret->runtime->shootSpeed>=256) return requirements;
+            if (turret->buildingState!=Building::DEAD && turret->runtime->shootSpeed>=256
+                && (!s.rules.forecast || refreshNeeded(turret->shootingCooldownRemaining(),turret->runtime->shootRhythm,s.rules.delay,s.rules.refresh))) return s.rules.reusePreparation ? targetingRequirements : requirements;
     return 0;
 }
 void Pipeline::admit(const Game& game,const SimulationSnapshot::Handle& captured,bool paused)
 {
     auto& s=*state;
     if (paused || s.admitted==game.stepCounter) return;
+    const auto admissionStart=s.rules.profileCpu ? threadCpuNs() : 0;
+    const auto sourceStart=admissionStart;
+    // Boundary-local preparation table. Values are immutable and job-owned;
+    // no mutable query cache survives admission.
+    std::map<const BuildingUnitInteraction*,std::shared_ptr<const std::vector<int>>> rows;
     auto generation=std::make_unique<State::Generation>();
     generation->deadline=Uint64(game.stepCounter)+s.rules.delay;
     for (int team=0;team<game.mapHeader.getNumberOfTeams();++team) if (due(game,team,s.rules)) {
         auto job=std::make_unique<State::Job>();
-        job->capacity=s.rules.capacity; job->margin=s.rules.margin;
+        job->capacity=s.rules.capacity; job->margin=s.rules.margin; job->profile=s.rules.profileCpu;
         for (const auto* turret:game.teams[team]->turrets) {
             if (turret->buildingState==Building::DEAD || turret->runtime->shootSpeed<256) continue;
-            job->sources.push_back(source(*turret));
+            if (s.rules.forecast && !refreshNeeded(turret->shootingCooldownRemaining(),turret->runtime->shootRhythm,s.rules.delay,s.rules.refresh)) { ++s.metrics.skipped; continue; }
+            std::shared_ptr<const std::vector<int>> damage;
+            if (s.rules.reusePreparation) {
+                auto [it,inserted]=rows.try_emplace(turret->runtime->interactions);
+                if (inserted) {
+                    auto row=std::make_shared<std::vector<int>>(); row->reserve(turret->runtime->unitCount);
+                    for (unsigned id=0;id<turret->runtime->unitCount;++id) row->push_back(turret->runtime->damage(id));
+                    it->second=std::move(row);
+                }
+                damage=it->second;
+            }
+            job->sources.push_back(source(*turret,std::move(damage))); ++s.metrics.sources;
         }
         std::sort(job->sources.begin(),job->sources.end(),[](const auto& a,const auto& b){return IdentityLess{}(a.identity,b.identity);});
         for (const auto& source:job->sources) generation->reserved+=recordBytes(source,s.rules.capacity);
         if (!job->sources.empty()) generation->jobs.push_back(std::move(job));
     }
-    if (generation->jobs.empty()) { s.admitted=game.stepCounter; return; }
+    if (s.rules.profileCpu) s.metrics.sourceCpu+=threadCpuNs()-sourceStart;
+    if (generation->jobs.empty()) { if (s.rules.profileCpu) s.metrics.admissionCpu+=threadCpuNs()-admissionStart; s.admitted=game.stepCounter; return; }
     if (generation->reserved>ShortlistLimit-s.reservations-s.publishedBytes)
         throw std::length_error("Turret shadow shortlist storage bound exceeded");
     const auto start=std::chrono::steady_clock::now();
-    generation->observation=std::make_unique<Observation>(observe(game,captured,&s.indexCache));
+    generation->observation=std::make_unique<Observation>(observe(game,captured,&s.indexCache,s.rules.reusePreparation,s.rules.profileCpu));
+    s.metrics.indexCpu+=generation->observation->indexCpu;
+    s.metrics.sourceCpu+=generation->observation->factsCpu;
     s.indexCache.index=generation->observation->index;
     s.indexCache.indexBudget=generation->observation->indexBudget;
     s.metrics.indexNs+=std::chrono::duration_cast<std::chrono::nanoseconds>(std::chrono::steady_clock::now()-start).count();
@@ -144,11 +170,14 @@ void Pipeline::admit(const Game& game,const SimulationSnapshot::Handle& captured
     s.reservations+=scheduled.reserved;
     ++s.metrics.admissions; ++s.metrics.observations; s.metrics.teamJobs+=scheduled.jobs.size();
     s.admitted=game.stepCounter;
+    if (s.rules.profileCpu) s.metrics.admissionCpu+=threadCpuNs()-admissionStart;
     s.metrics.pendingPeak=std::max(s.metrics.pendingPeak,s.pending.size()); s.account();
 }
 void Pipeline::publish(Game& game)
 {
     auto& s=*state;
+    const auto publicationStart=s.rules.profileCpu ? threadCpuNs() : 0;
+    const auto joinBefore=s.metrics.joinCpu;
     while (!s.pending.empty() && s.pending.front()->deadline<=game.stepCounter) {
         auto& generation=*s.pending.front();
         s.complete(generation);
@@ -173,6 +202,7 @@ void Pipeline::publish(Game& game)
         } else ++it;
     }
     s.metrics.indexBytes=retainedIndexBytes(s.indexCache); s.account();
+    if (s.rules.profileCpu) s.metrics.publicationCpu+=threadCpuNs()-publicationStart-(s.metrics.joinCpu-joinBefore);
 }
 void Pipeline::drain() { for (auto& generation:state->pending) state->complete(*generation); }
 const std::vector<Entry>& Pipeline::entries(const Building& turret)
