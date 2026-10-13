@@ -69,7 +69,7 @@ std::shared_ptr<const std::vector<BuildingKindView>> captureCatalog(const Game& 
 }
 
 Handle capture(const Game& game,
-	std::shared_ptr<const std::vector<BuildingKindView>> catalog, Requirements requirements, const Handle* previous, Storage* storage)
+	std::shared_ptr<const std::vector<BuildingKindView>> catalog, Requirements requirements, const Handle* previous, Storage* storage, bool unchangedBoundary)
 {
 	if (needs(requirements, Component::Catalogs) && (!catalog || catalog->size() != game.buildingsTypes.size()))
 		throw std::invalid_argument("AI observation needs the current building catalog");
@@ -85,6 +85,9 @@ Handle capture(const Game& game,
 			if (needs(requirements, component) && source && unchanged)
 			{ destination = source; requirements &= ~bit(component); }
 		};
+		// The store certifies the complete owner boundary before widening its
+		// optional payload. Entity records and their sidecars remain immutable.
+		reuse(Component::Entities, result->entities, previous->entities, unchangedBoundary);
 		const bool sameCatalog = previous->catalogs && previous->catalogs->buildings == catalog && previous->configurationRevision == result->configurationRevision
 			&& (!needs(requirements, Component::Session) || !previous->catalogs->buildingFingerprint.empty())
             && previous->catalogs->assets == game.map.frozenAssetBundle()

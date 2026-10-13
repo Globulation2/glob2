@@ -927,10 +927,18 @@ TEST_SUITE("WorldSnapshot")
 		glob2test::HeadlessGlobals globals;
 		glob2test::HeadlessGame fixture{glob2test::GameOptions{.wDec=5, .hDec=5, .teams=1, .discovered=true, .clearImmobile=true, .loadDefaultRace=true}};
 		SimulationSnapshot::Store store;
+		store.setDetailedMetrics(true);
+		auto* unit = fixture.addUnit(WORKER, 12, 12, 0);
+		auto* building = fixture.addBuilding("inn", 4, 4, 0, 0);
+		REQUIRE(unit); REQUIRE(building);
+		building->unitsWorking.push_back(unit);
 		const auto simulation = store.captureBoundary(fixture.game);
 		const auto mapBytes = store.metrics.mapBytesCopied;
 		const auto full = store.captureBoundary(fixture.game, {.presentation=true, .history=true});
 		CHECK(full.terrain == simulation.terrain); CHECK(full.resources == simulation.resources);
+		CHECK(full.entities == simulation.entities);
+		REQUIRE(full.entities->units.size() == 1);
+		CHECK(full.entities->relationships.front() == Game::refOf(unit));
 		CHECK_FALSE(simulation.session); CHECK_FALSE(simulation.history);
 		REQUIRE(full.session); REQUIRE(full.effects); REQUIRE(full.statistics); REQUIRE(full.history);
 		CHECK(store.metrics.captures == 2);
@@ -950,6 +958,54 @@ TEST_SUITE("WorldSnapshot")
 		CHECK_FALSE(frame.history);
 		CHECK_FALSE(frame.supportsPresentation({.history=true}));
 		CHECK(full.presentationView({.history=true}).supportsPresentation({.history=true}));
+	}
+
+	TEST_CASE("presentation upgrades refresh entities after each owner boundary change")
+	{
+		glob2test::HeadlessGlobals globals;
+		glob2test::HeadlessGame fixture{glob2test::GameOptions{.wDec=5, .hDec=5, .teams=1, .loadDefaultRace=true}};
+		auto& game = fixture.game;
+		auto* unit = fixture.addUnit(WORKER, 12, 12, 0);
+		REQUIRE(unit);
+		SimulationSnapshot::Store store;
+		const auto before = store.captureBoundary(game);
+		const auto oldHp = unit->hp;
+		--unit->hp;
+		SUBCASE("advancing tick") { ++game.stepCounter; }
+		SUBCASE("paused edit") { store.invalidateBoundary(); }
+		SUBCASE("configuration revision") { game.gameHeader.setAIOrderDelay(1); }
+		SUBCASE("map generation") { game.map.setResourceByIndex(20, 20, WHEAT, 1); }
+		SUBCASE("store reset") { store.reset(); }
+		const auto after = store.captureBoundary(game, {.presentation=true});
+		CHECK(after.entities != before.entities);
+		CHECK(after.entities->units.front().hp == oldHp - 1);
+		CHECK(before.entities->units.front().hp == oldHp);
+	}
+	TEST_CASE("same boundary entity reuse is excluded from copied byte accounting")
+	{
+		glob2test::HeadlessGlobals globals;
+		glob2test::HeadlessGame fixture{glob2test::GameOptions{.wDec=5, .hDec=5, .teams=1, .loadDefaultRace=true}};
+		REQUIRE(fixture.addUnit(WORKER, 12, 12, 0));
+		SimulationSnapshot::Store reusedStore, freshStore;
+		reusedStore.setDetailedMetrics(true); freshStore.setDetailedMetrics(true);
+		const auto before = reusedStore.captureBoundary(fixture.game);
+		freshStore.captureBoundary(fixture.game);
+		freshStore.invalidateBoundary();
+		const auto reusedBytes = reusedStore.metrics.bytesCopied;
+		const auto freshBytes = freshStore.metrics.bytesCopied;
+		const auto reused = reusedStore.captureBoundary(fixture.game, {.presentation=true});
+		const auto fresh = freshStore.captureBoundary(fixture.game, {.presentation=true});
+		CHECK(reused.entities == before.entities);
+		CHECK(fresh.entities != before.entities);
+		const auto& entities = *fresh.entities;
+		const auto entityBytes = entities.buildings.size() * sizeof(SimulationSnapshot::BuildingView)
+			+ entities.units.size() * sizeof(SimulationSnapshot::UnitView)
+			+ entities.projects.size() * sizeof(SimulationSnapshot::BuildProjectView)
+			+ (entities.buildingSlotIndices.size() + entities.unitSlotIndices.size()) * sizeof(Uint32)
+			+ entities.relationships.size() * sizeof(UnitRef);
+		CHECK((freshStore.metrics.bytesCopied - freshBytes)
+			- (reusedStore.metrics.bytesCopied - reusedBytes) == entityBytes);
+		CHECK(reusedStore.metrics.reusedComponents == freshStore.metrics.reusedComponents + 1);
 	}
 
 }

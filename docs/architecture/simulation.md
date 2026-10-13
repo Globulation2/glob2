@@ -325,7 +325,10 @@ For timing and scheduling, start with `src/game/Game_sync.cpp` and `src/engine/E
   Complete snapshots still share unchanged components and refresh dirty map
   chunks in reusable buffers. Paused edits, configuration changes and world
   replacement retain their explicit invalidation boundaries. A cold option may
-  widen the cached capture within a boundary; named views drop unwanted extras.
+  widen the cached capture within a boundary, reusing its immutable entity records
+  and sidecars without another extraction. A changed tick, observation revision,
+  configuration revision or map generation refreshes entities; named views drop
+  unwanted extras.
 - Gradient selection, round-robin flags, invalidation and publication stay on the
   simulation owner. Jobs own their output and use worker-private scratch; they never read live map
   arrays or mutable seed caches. Publication remains after the configured delay
