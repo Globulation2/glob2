@@ -1,0 +1,28 @@
+{
+  "base_revision": "c7d688e9cb85ad481e7f883d83a2971946876400",
+  "branch": "codex/compute-wait-telemetry",
+  "source_state": "committed master integration",
+  "platform": "Linux-7.0.0-38-generic-x86_64-with-glibc2.39",
+  "architecture": "x86_64",
+  "compiler": "g++ (Ubuntu 13.3.0-6ubuntu2~24.04.1) 13.3.0",
+  "sdl_prefix": "/home/bradley/glob2/build/sdl3/prefix",
+  "dev_build_flags": [
+    "dev_fast=1",
+    "linker=auto",
+    "-O0",
+    "-g1"
+  ],
+  "release_microbenchmark_flags": [
+    "-std=c++20",
+    "-O3",
+    "-DNDEBUG",
+    "-pthread"
+  ],
+  "limits": [
+    "Linux x86_64 only; Windows, macOS, mobile and browser checksum equivalence not run.",
+    "Release microbenchmarks are paired against current Off callbacks with owner mode dispatch removed; full retained-game release performance and RSS/tick-latency overhead remain unverified.",
+    "Other independent builds ran concurrently; wall-time confidence intervals are noisy.",
+    "No claim of zero overhead or release readiness."
+  ],
+  "tested_commit": "69f605662422d347228cfa5154a23bdecd2e5fbf"
+}

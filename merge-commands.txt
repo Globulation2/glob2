@@ -1,0 +1,7 @@
+GLOB2_SDL3_PREFIX=/home/bradley/glob2/build/sdl3/prefix python3 tools/dev_build.py unit-tests engine-tests build/linux/client/debug/dev-dev_fast-true-linker-auto/src/glob2 -j8
+python3 test/run_tests.py --build-dir build/linux/client/debug/dev-dev_fast-true-linker-auto --binary unit --filter 'ComputeExecutor/*' --filter 'GradientPipeline/*' --filter 'BuildingGradientPipeline/*' --filter 'ReadOnlyPhase/*' --junit artifacts/compute-telemetry/unit-merge-junit.xml
+python3 test/run_tests.py --build-dir build/linux/client/debug/dev-dev_fast-true-linker-auto --binary engine --filter 'AIOrderScheduler/*' --filter 'SharedWorkerLifecycle/*' --filter 'SimulationReadPhase/*' --filter 'ResourceGrowth/*' --filter 'TurnEngineHarness/*' --filter 'CommandLine/*' --filter 'GradientBackendSwitch/*' --filter 'GradientPreparation/*' --junit artifacts/compute-telemetry/engine-merge-junit.xml
+python3 artifacts/compute-telemetry/check_modes_merge.py
+python3 tools/test_compute_trace.py
+git diff --check
+python3 test/run_tests.py --build-dir build/linux/client/debug/dev-dev_fast-true-linker-auto --binary engine --filter 'TurnEngineHarness/a client sending hostile orders of every type*' --timeout 600 -j1 --junit artifacts/compute-telemetry/engine-fuzz-retry-junit.xml

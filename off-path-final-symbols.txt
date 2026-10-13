@@ -1,0 +1,16 @@
+                 U _GLOBAL_OFFSET_TABLE_
+                 U _Unwind_Resume
+                 U std::__exception_ptr::exception_ptr::_M_release()
+                 U std::__exception_ptr::exception_ptr::_M_addref()
+                 U std::condition_variable::notify_all()
+                 U std::condition_variable::wait(std::unique_lock<std::mutex>&)
+                 U std::current_exception()
+                 U std::__throw_system_error(int)
+                 U std::__throw_bad_function_call()
+                 U __cxa_begin_catch
+                 U __cxa_end_catch
+                 U __gxx_personality_v0
+                 U __libc_single_threaded
+                 U __stack_chk_fail
+                 U pthread_mutex_lock
+                 U pthread_mutex_unlock

@@ -1,0 +1,13 @@
+{
+  "compiler": "c++ (Ubuntu 13.3.0-6ubuntu2~24.04.1) 13.3.0",
+  "flags": "-std=c++20 -O3 -DNDEBUG -pthread",
+  "affinity": [
+    12,
+    13,
+    14,
+    15
+  ],
+  "revision": "2d5cf67e8ea20ad8ebb983c9b207e24234e0356c",
+  "control": "current Off specialization with owner mode dispatch and worker launch mode selection removed",
+  "host_contention": "Other independent repository builds ran concurrently; paired runs rotate order and pin four CPUs."
+}

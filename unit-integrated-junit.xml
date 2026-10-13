@@ -1,0 +1,67 @@
+<?xml version='1.0' encoding='utf-8'?>
+<testsuites tests="65" failures="0" errors="0" skipped="0"><testsuite name="src/map/gradient/GradientPipelineHarness.cpp"><testcase classname="src/map/gradient/GradientPipelineHarness.cpp" name="GradientPipeline/worker GPU submissions finish ahead of deadlines and preserve errors and immutable leases" time="0.110994" status="run" />
+    <testcase classname="src/map/gradient/GradientPipelineHarness.cpp" name="GradientPipeline/CPU fields keep their original worker" time="0.02217" status="run" />
+  </testsuite><testsuite name="ComputeExecutor"><testcase classname="ComputeExecutor" name="automatic sizing respects platform limits and supports unknown CPU counts" time="0" status="run" />
+    <testcase classname="ComputeExecutor" name="thread configuration accepts auto and rejects malformed or overflowing overrides" time="0.000129" status="run" />
+    <testcase classname="ComputeExecutor" name="supported platforms execute jobs concurrently on distinct threads" time="0.024423" status="run" />
+    <testcase classname="ComputeExecutor" name="exclusive slots; nested batches; reuse; errors; barriers and reconfiguration" time="0.116588" status="run" />
+    <testcase classname="ComputeExecutor" name="deferred batches complete with lanes and isolated errors" time="0.201241" status="run" />
+    <testcase classname="ComputeExecutor" name="lane groups run in index order and the horizon is bounded" time="0.029682" status="run" />
+    <testcase classname="ComputeExecutor" name="workers run deferred batches earliest due first and the owner only waits" time="0.037546" status="run" />
+    <testcase classname="ComputeExecutor" name="without workers the owner runs the jobs due no later than the join" time="0.022309" status="run" />
+    <testcase classname="ComputeExecutor" name="a lane keeps submission order: a lane job due before a live earlier one is rejected" time="0.052104" status="run" />
+    <testcase classname="ComputeExecutor" name="the slot count covers every producer's horizon" time="0" status="run" />
+    <testcase classname="ComputeExecutor" name="presentation cannot delay simulation barriers with spare workers or run on the simulation owner" time="0.042845" status="run" />
+    <testcase classname="ComputeExecutor" name="with one worker the owner waits through its presentation chunk and never runs the join itself" time="0.041702" status="run" />
+    <testcase classname="ComputeExecutor" name="presentation progresses before a continuous simulation backlog drains" time="0.035554" status="run" />
+    <testcase classname="ComputeExecutor" name="presentation replacement, chunk pumping, cancellation and errors retain no captures" time="0.03179" status="run" />
+    <testcase classname="ComputeExecutor" name="resumable presentation yields without advancing or retaining canceled inputs" time="0.020923" status="run" />
+    <testcase classname="ComputeExecutor" name="worker only maintenance never uses the owner including creation failure" time="0.042262" status="run" />
+    <testcase classname="ComputeExecutor" name="worker only maintenance yields to required jobs and cannot delay their completed join" time="0.020951" status="run" />
+    <testcase classname="ComputeExecutor" name="suspended device work releases the only worker and preserves lane completion" time="0.021453" status="run" />
+    <testcase classname="ComputeExecutor" name="early device failure resumes exactly once on the worker at its original lane position" time="0.021383" status="run" />
+    <testcase classname="ComputeExecutor" name="early asynchronous completion cannot release an invoking callback's inputs" time="0.022571" status="run" />
+    <testcase classname="ComputeExecutor" name="continuation of a nonzero lane-group index keeps its original sequence" time="0.022063" status="run" />
+    <testcase classname="ComputeExecutor" name="retained completion tickets can be resolved after executor destruction" time="0.02196" status="run" />
+    <testcase classname="ComputeExecutor" name="graphics batches finish once, retain failures and release captures" time="0.071722" status="run" />
+    <testcase classname="ComputeExecutor" name="serial graphics finish never pumps scene or required work and abandonment releases captures" time="0.013024" status="run" />
+    <testcase classname="ComputeExecutor" name="graphics cancellation drains claimed work and reconfiguration releases inputs" time="0.051324" status="run" />
+    <testcase classname="ComputeExecutor" name="both presentation classes progress during required lane backlog" time="0.023249" status="run" />
+    <testcase classname="ComputeExecutor" name="graphics callback barriers are rejected and completed tickets do not pump newer work" time="0.01261" status="run" />
+    <testcase classname="ComputeExecutor" name="empty graphics submissions bypass occupied admission and concurrency metrics respect ceilings" time="0.041692" status="run" />
+    <testcase classname="ComputeExecutor" name="graphics capture destruction can inspect scheduler metrics before completion" time="0.054131" status="run" />
+    <testcase classname="ComputeExecutor" name="disabled diagnostics do not read the injected clock or collect counters" time="0.00064" status="run" />
+    <testcase classname="ComputeExecutor" name="owner execution, stale handles, reuse and lifecycle attribution use one locked inspection" time="0.000202" status="run" />
+    <testcase classname="ComputeExecutor" name="worker waits aggregate distinct ticks globally and per producer without worker timing" time="0.000393" status="run" />
+    <testcase classname="ComputeExecutor" name="complete joins and trace overflow remain valid and snapshots require drain" time="0.000963" status="run" />
+    <testcase classname="ComputeExecutor" name="trace preserves early external resolution and continuation callback ordering" time="0.033312" status="run" />
+    <testcase classname="ComputeExecutor" name="trace storage allocation failure downgrades without losing required work" time="0.000106" status="run" />
+    <testcase classname="ComputeExecutor" name="blocking fork join failures and presentation remain traced without entering tick waits" time="0.033246" status="run" />
+    <testcase classname="ComputeExecutor" name="graphics diagnostics are optional and waits mode attributes the owner barrier" time="0.031297" status="run" />
+    <testcase classname="ComputeExecutor" name="yielded presentation chunks keep callback indices paired" time="0.024071" status="run" />
+    <testcase classname="ComputeExecutor" name="worker-only maintenance is traced as other work without a required join" time="0.019561" status="run" />
+    <testcase classname="ComputeExecutor" name="session reset suppresses a returning maintenance interval from the previous epoch" time="0.037788" status="run" />
+    <testcase classname="ComputeExecutor" name="synchronous graphics adapter keeps empty calls idle and guards owner callbacks" time="0.008978" status="run" />
+    <testcase classname="ComputeExecutor" name="graphics adapter restores callback state on failure and never pumps other work" time="0.00778" status="run" />
+    <testcase classname="ComputeExecutor" name="graphics adapter preserves occupied admission and serial finish shares the scene cap" time="0.026928" status="run" />
+    <testcase classname="ComputeExecutor" name="canceling a slot-blocked graphics batch wakes its owner before scene completion" time="0.028416" status="run" />
+  </testsuite><testsuite name="GradientPipeline"><testcase classname="GradientPipeline" name="fixed publication; supersession; bounded buffers; scheduling stress; fallback; exceptions and teardown" time="2.36117" status="run" />
+    <testcase classname="GradientPipeline" name="reservation is invalidatable before preparation and seed failures cannot strand it" time="0.047635" status="run" />
+    <testcase classname="GradientPipeline" name="projected terrain leases end at completion including failed work" time="0.068028" status="run" />
+    <testcase classname="GradientPipeline" name="gradient, building and AI batches share the maximum deferred horizon" time="0.017345" status="run" />
+    <testcase classname="GradientPipeline" name="building pipeline admits several jobs per tick, publishes in reservation order at fixed deadlines, supersedes, survives slow and failing workers" time="1.23422" status="run" />
+    <testcase classname="GradientPipeline" name="building pipeline pending results survive a save-style round trip" time="0.002698" status="run" />
+    <testcase classname="GradientPipeline" name="owner-only preparation computes at submission and errors surface at the deadline" time="0.000158" status="run" />
+    <testcase classname="GradientPipeline" name="shared preparation executes off the owner and retains its deadline" time="0.00017" status="run" />
+    <testcase classname="GradientPipeline" name="backend selection is shared across owner and resized worker scratch" time="0.080425" status="run" />
+    <testcase classname="GradientPipeline" name="owned GPU service initializes with two slots and leaves the sole worker free until fixed publication" time="0.033292" status="run" />
+    <testcase classname="GradientPipeline" name="GPU decline recovers original seeds exactly once on a worker and retains inputs until recovery" time="0.065506" status="run" />
+    <testcase classname="GradientPipeline" name="one-slot device configuration creates no driver activity" time="0" status="run" />
+    <testcase classname="GradientPipeline" name="nullable GPU preparation recovers once on the original worker without device reentry" time="0.063544" status="run" />
+    <testcase classname="GradientPipeline" name="device registration stop and reconfigure never join a slow background initializer" time="0.000181" status="run" />
+    <testcase classname="GradientPipeline" name="application shutdown joins background initialization and later registrations restart" time="0.100489" status="run" />
+    <testcase classname="GradientPipeline" name="two device registrations share exactly one process coordinator" time="0" status="run" />
+    <testcase classname="GradientPipeline" name="pending required GPU work cancels at publication and drains through one worker recovery" time="0.128374" status="run" />
+    <testcase classname="GradientPipeline" name="bounded required device queue recovers excess fields exactly once" time="0.001064" status="run" />
+  </testsuite><testsuite name="ReadOnlyPhase"><testcase classname="ReadOnlyPhase" name="borrowed groups cover serial parallel empty and exception barriers" time="0.051988" status="run" />
+  </testsuite></testsuites>

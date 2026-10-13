@@ -1,0 +1,299 @@
+PASS AIOrderScheduler/saved repeated enrollments retain the first initialization tick (0.1s)
+PASS AIOrderScheduler/failure joins work and cannot partially publish or lose the original error (0.1s)
+PASS AIOrderScheduler/cancellation joins the old controller generation before replacement (0.1s)
+PASS AIOrderScheduler/restore refuses truncated duplicate and out of window pending requests (0.1s)
+PASS AIOrderScheduler/same initialization identity cannot restore contradictory planes (0.1s)
+PASS AIOrderScheduler/Diagnostic captures do not change saved pending orders (0.1s)
+PASS CommandLine/default launch groups URLs and help paths (0.0s)
+PASS AIOrderScheduler/configuration rejects live work and submissions after a tick was dispatched (0.1s)
+PASS AIOrderScheduler/save drains computation and retains future outputs without recomputing (0.1s)
+PASS CommandLine/malformed input fails before handlers (0.1s)
+PASS CommandLine/typed options equals ordered repeats and literal filenames (0.1s)
+PASS CommandLine/completion scripts contain all command options without running jobs (0.1s)
+PASS CommandLine/saved games can use the normal presentation loop with explicit display (0.1s)
+PASS AIOrderScheduler/sharing follows the delay and the measured decision work (0.2s)
+PASS CommandLine/every leaf accepts a minimal request and rejects missing required inputs (0.2s)
+PASS CommandLine/registry describes every executable command and help is asset independent (0.3s)
+PASS SharedWorkerLifecycle/background saves finish on a worker and remain readable after teardown (1.0s)
+PASS ResourceGrowth/material growth events oscillate independently and create configured seed stocks (1.3s)
+PASS SimulationReadPhase/presentation borrows the published no-AI read boundary without recapture (1.8s)
+PASS ResourceGrowth/proposal capacity grows safely and is retained for reuse (1.9s)
+PASS ResourceGrowth/mature growth events oscillate and respect intervening harvests (2.0s)
+PASS ResourceGrowth/signed proposals use only current resource type and apply in order (2.2s)
+PASS SimulationReadPhase/AI and pending gradients consume the presentation union without another capture (2.3s)
+PASS SharedWorkerLifecycle/resource catalog import drains deferred material preparation before replacing stocks (2.4s)
+PASS ResourceGrowth/source decisions cannot shift scan sampling or another source (2.4s)
+PASS ResourceGrowth/legacy pending masks migrate and signed pending proposals validate on load (2.3s)
+PASS ResourceGrowth/format 144 and 145 packed growth headers cannot alias artwork lengths (0.1s)
+PASS ResourceGrowth/text save layout probes are relative and preserve section state (0.1s)
+PASS AIOrderScheduler/all delays preserve every FIFO poll and fixed player ordered deadlines (2.8s)
+PASS ResourceGrowth/kernel is immutable deterministic and responds to disabled growth and scarcity (2.6s)
+PASS ResourceGrowth/setting the delay leaves reservations and unfinished work untouched (1.8s)
+PASS ResourceGrowth/pipeline waits at exact deadline and pause does not publish (1.9s)
+PASS ResourceGrowth/configured seeds preserve rates variety collisions and saved output (1.5s)
+PASS ResourceGrowth/light checksums leave zero-worker work deferred and world replacement discards it (2.1s)
+PASS ResourceGrowth/later completed work cannot publish ahead of an earlier batch (2.0s)
+PASS GradientPreparation/material plane and cache keys retain legacy seven-class identity (0.1s)
+PASS SimulationReadPhase/direct completed steps match deferred preparation across worker counts (4.4s)
+PASS ResourceGrowth/publication accounts for proposals rejected by a different world (2.2s)
+PASS ResourceGrowth/typed proposal loading validates fields and preserves old queued units (2.1s)
+PASS ResourceGrowth/frozen input outlives terrain and resource edits and wrapping remains valid (2.9s)
+PASS GradientBackendSwitch/backend switch drains privately and preserves pending publication (1.6s)
+PASS ResourceGrowth/finishing the last deferred tick computes without publishing early (2.6s)
+PASS GradientPreparation/map dimensions enforce power-of-two exponents before mutation (1.7s)
+PASS GradientBackendSwitch/repeated backend requests coalesce without moving publication ticks (2.0s)
+PASS GradientPreparation/supplier seed indexing rejects foreign and invalid building IDs in cached and direct fields (2.0s)
+PASS GradientPreparation/warm preparation keeps custom supplier unions exclusions penalties and overlays live (2.3s)
+PASS SharedWorkerLifecycle/pending gradient work survives a save and continues at the same deadlines (6.9s)
+PASS GradientPreparation/concurrent preparation owns buffers and serializes dirty cache refresh (2.1s)
+PASS GradientPreparation/explicit clearing overrides farm crop protection but never forbidden paint (1.4s)
+PASS GradientPreparation/custom terrain and registry replacement preserve cached and direct seeds (2.8s)
+PASS ResourceGrowth/zero seed stocks use authoritative resource initialization (5.9s)
+PASS GradientPreparation/cached natural goals follow immobile occupancy and live overlays (3.6s)
+PASS GradientPreparation/all supported team masks match the scalar fields (3.1s)
+PASS GradientPreparation/mutation and reset boundaries use current state (2.6s)
+PASS GradientPreparation/compact clearing traits preserve custom high-ID property combinations (1.6s)
+PASS GradientPreparation/concurrent lazy requests publish one complete resource field (2.5s)
+PASS GradientPreparation/compound passable material goals track depletion visibility and overlapping suppliers (2.9s)
+PASS GradientPreparation/published plane registry matches a sweep of live material fields (2.5s)
+PASS GradientPreparation/explicit snapshot batches isolate invalid fields and retain exact output (1.6s)
+PASS GradientPreparation/periodic supplier snapshots subtract reservations and retain overlay seeds (2.5s)
+PASS GradientPreparation/snapshot seeds preserve every periodic kind after the live world changes (3.0s)
+PASS GradientPreparation/rejected corner identities preserve all compiled gradient tables (0.7s)
+PASS GradientPreparation/minimal view pressure declines without moving original seeds (1.6s)
+PASS GradientPreparation/movement profile rejection rolls back previously appended swim classes (0.8s)
+PASS GradientPreparation/modified terrain costs remain exact when field obstacles change (3.2s)
+PASS ResourceGrowth/engine preflight opens both historical growth and released vertex saves (9.4s)
+PASS GradientPreparation/compiled preparation tables preserve rule and catalog interpretation (2.6s)
+PASS ResourceGrowth/zero-worker and shared deadlines match and pending work survives saving (13.5s)
+PASS GradientPreparation/optional cache storage can be unavailable or over budget (10.9s)
+PASS GradientPreparation/snapshot material templates refresh changed chunks and accept older snapshots (7.6s)
+PASS GradientPreparation/resource cache tracks cell writes and falls back through mutation bursts (14.1s)
+PASS TurnEngineHarness/a player who leaves stays listed as Left, and the one left standing learns why it won [network-sim] (9.3s)
+PASS TurnEngineHarness/shared scripted maps play and produce verified ordinary replays without installation [network-sim][artifacts] (22.6s)
+PASS TurnEngineHarness/orders a hostile relay forges for a seat are refused by the verifier, which still verifies [network-sim] (18.1s)
+PASS TurnEngineHarness/a player who quits leaves through the relay's quit order and the rest play on [network-sim] (26.0s)
+PASS TurnEngineHarness/embedded terrain definitions travel with shared matches and verifier replays [network-sim][artifacts] (34.7s)
+PASS GradientPreparation/minimal GPU views release source graphs and recover exact CPU fields (41.3s)
+PASS TurnEngineHarness/without a pause limit a pause lasts until someone resumes it [network-sim] (15.2s)
+PASS TurnEngineHarness/a save with closed seats: reteamed players keep their colonies, closed ones are cleared [network-sim] (40.1s)
+PASS SharedWorkerLifecycle/reduced saved AI rosters retire trailing controllers and preserve continuation (57.5s)
+PASS TurnEngineHarness/a pause limit is enforced identically everywhere and the record verifies [network-sim][artifacts] (22.6s)
+PASS TurnEngineHarness/a 10 s flag drag and a held key keep the input delay bounded, without a flood [network-sim][artifacts] (39.2s)
+PASS SharedWorkerLifecycle/no-AI completed ticks and saved continuation agree across diagnostic modes and worker counts [artifacts] (63.0s)
+PASS TurnEngineHarness/the committed match record verifies to the committed checksum trace [network-sim][golden] (12.7s)
+PASS TurnEngineHarness/one client claiming the game finished does not end it for a player who is reconnecting [network-sim] (18.8s)
+PASS TurnEngineHarness/a client that executes a tampered order is repaired by an in-place reload and named by the verifier [network-sim][artifacts] (59.2s)
+PASS TurnEngineHarness/two engines with AI seats under latency, jitter and loss agree at every tick and the record verifies [network-sim][artifacts] (65.4s)
+PASS TurnEngineHarness/voice packets do not hold up a player's orders [network-sim][artifacts] (44.2s)
+PASS ResourceGrowth/both format 144 and 145 lineages and compact growth saves retain continuation [save-format] (76.0s)
+PASS TurnEngineHarness/four engines survive a stall and a restart: the restarted client reloads and fast-forwards [network-sim][artifacts] (66.4s)
+PASS GradientPreparation/seed cells match scalar predicates across policies and changing overlays (77.1s)
+PASS TurnEngineHarness/engines report network telemetry, and its output changes nothing they execute [network-sim][artifacts] (29.0s)
+PASS TurnEngineHarness/closed seats are closed colonies: the last player standing wins everywhere and the record verifies [network-sim] (92.6s)
+TIMEOUT TurnEngineHarness/a client sending hostile orders of every type crashes no one and is refused identically everywhere [network-sim][fuzz][artifacts] (120.2s)
+
+===== TIMEOUT TurnEngineHarness/a client sending hostile orders of every type crashes no one and is refused identically everywhere [network-sim][fuzz][artifacts] =====
+Bad packet received in Order.cpp (222)
+Bad packet received in Order.cpp (228)
+Bad packet received in Order.cpp (222)
+Bad packet received in Order.cpp (92)
+Bad packet received in Order.cpp (126)
+Bad packet received in Order.cpp (203)
+Bad packet received in Order.cpp (228)
+Bad packet received in Order.cpp (203)
+Bad packet received in Order.cpp (222)
+Bad packet received in Order.cpp (203)
+Bad packet received in Order.cpp (112)
+Bad packet received in Order.cpp (102)
+Bad packet received in Order.cpp (112)
+Bad packet received in Order.cpp (102)
+Bad packet received in Order.cpp (222)
+Bad packet received in Order.cpp (112)
+Bad packet received in Order.cpp (222)
+Bad packet received in Order.cpp (102)
+Bad packet received in Order.cpp (222)
+Bad packet received in Order.cpp (81)
+Bad packet received in Order.cpp (81)
+Bad packet received in Order.cpp (81)
+Bad packet received in Order.cpp (149)
+Bad packet received in Order.cpp (149)
+Bad packet received in Order.cpp (199)
+Bad packet received in Order.cpp (199)
+Bad packet received in Order.cpp (149)
+Bad packet received in Order.cpp (199)
+Bad packet received in Order.cpp (209)
+Bad packet received in Order.cpp (209)
+Bad packet received in Order.cpp (209)
+Bad packet received in Order.cpp (6)
+Bad packet received in Order.cpp (6)
+Bad packet received in Order.cpp (143)
+Bad packet received in Order.cpp (143)
+Bad packet received in Order.cpp (6)
+Bad packet received in Order.cpp (189)
+Bad packet received in Order.cpp (189)
+Bad packet received in Order.cpp (143)
+Bad packet received in Order.cpp (186)
+Bad packet received in Order.cpp (186)
+Bad packet received in Order.cpp (15)
+Bad packet received in Order.cpp (189)
+Bad packet received in Order.cpp (15)
+Bad packet received in Order.cpp (186)
+Bad packet received in Order.cpp (15)
+Bad packet received in Order.cpp (174)
+Bad packet received in Order.cpp (101)
+Bad packet received in Order.cpp (174)
+Bad packet received in Order.cpp (101)
+Bad packet received in Order.cpp (147)
+Bad packet received in Order.cpp (174)
+Bad packet received in Order.cpp (147)
+Bad packet received in Order.cpp (101)
+Bad packet received in Order.cpp (147)
+Bad packet received in Order.cpp (251)
+Bad packet received in Order.cpp (251)
+Bad packet received in Order.cpp (251)
+Bad packet received in Order.cpp (64)
+Bad packet received in Order.cpp (64)
+Bad packet received in Order.cpp (187)
+Bad packet received in Order.cpp (187)
+Bad packet received in Order.cpp (157)
+Bad packet received in Order.cpp (64)
+Bad packet received in Order.cpp (238)
+Bad packet received in Order.cpp (157)
+Bad packet received in Order.cpp (238)
+Bad packet received in Order.cpp (187)
+Bad packet received in Order.cpp (157)
+Bad packet received in Order.cpp (238)
+Bad packet received in Order.cpp (246)
+Bad packet received in Order.cpp (89)
+Bad packet received in Order.cpp (246)
+Bad packet received in Order.cpp (89)
+Bad packet received in Order.cpp (49)
+Bad packet received in Order.cpp (246)
+Bad packet received in Order.cpp (89)
+Bad packet received in Order.cpp (49)
+Bad packet received in Order.cpp (49)
+Bad packet received in Order.cpp (172)
+Bad packet received in Order.cpp (172)
+Bad packet received in Order.cpp (229)
+Bad packet received in Order.cpp (172)
+Bad packet received in Order.cpp (194)
+Bad packet received in Order.cpp (229)
+Bad packet received in Order.cpp (194)
+Bad packet received in Order.cpp (112)
+Bad packet received in Order.cpp (112)
+Bad packet received in Order.cpp (229)
+Bad packet received in Order.cpp (194)
+Bad packet received in Order.cpp (118)
+Bad packet received in Order.cpp (118)
+Bad packet received in Order.cpp (112)
+Bad packet received in Order.cpp (118)
+Bad packet received in Order.cpp (161)
+Bad packet received in Order.cpp (161)
+Bad packet received in Order.cpp (161)
+Bad packet received in Order.cpp (99)
+Bad packet received in Order.cpp (99)
+Bad packet received in Order.cpp (99)
+Bad packet received in Order.cpp (172)
+Bad packet received in Order.cpp (15)
+Bad packet received in Order.cpp (172)
+Bad packet received in Order.cpp (15)
+Bad packet received in Order.cpp (76)
+Bad packet received in Order.cpp (76)
+Bad packet received in Order.cpp (172)
+Bad packet received in Order.cpp (15)
+Bad packet received in Order.cpp (92)
+Bad packet received in Order.cpp (92)
+Bad packet received in Order.cpp (76)
+Bad packet received in Order.cpp (92)
+Bad packet received in Order.cpp (211)
+Bad packet received in Order.cpp (211)
+Bad packet received in Order.cpp (211)
+Bad packet received in Order.cpp (247)
+Bad packet received in Order.cpp (247)
+Bad packet received in Order.cpp (29)
+Bad packet received in Order.cpp (184)
+Bad packet received in Order.cpp (29)
+Bad packet received in Order.cpp (247)
+Bad packet received in Order.cpp (184)
+Bad packet received in Order.cpp (169)
+Bad packet received in Order.cpp (169)
+Bad packet received in Order.cpp (29)
+Bad packet received in Order.cpp (184)
+Bad packet received in Order.cpp (122)
+Bad packet received in Order.cpp (169)
+Bad packet received in Order.cpp (122)
+Bad packet received in Order.cpp (238)
+Bad packet received in Order.cpp (238)
+Bad packet received in Order.cpp (110)
+Bad packet received in Order.cpp (122)
+Bad packet received in Order.cpp (110)
+Bad packet received in Order.cpp (238)
+Bad packet received in Order.cpp (110)
+Bad packet received in Order.cpp (253)
+Bad packet received in Order.cpp (253)
+Bad packet received in Order.cpp (63)
+Bad packet received in Order.cpp (169)
+Bad packet received in Order.cpp (63)
+
+[run_tests] timeout process group:
+ 948332  947384  948332 Rsl  /home/bradley/.codex/worktrees/compute-wait-telemetry/glob2/build/linux/client/debug/dev-dev_fast-true-linker-auto/test/glob2-engine-tests -r=junit -o=/tmp/glob2-test-2d8c7364/junit.xml --no-breaks=true -tc=a client sending hostile orders of every type crashes no one and is refused identically everywhere [network-sim][fuzz][artifacts] -ts=TurnEngineHarness
+  thread 948332: 0
+  thread 948739: futex_do_wait
+  thread 948741: futex_do_wait
+  thread 948742: poll_schedule_timeout.constprop.0
+  thread 948791: futex_do_wait
+  thread 948792: futex_do_wait
+  thread 948793: futex_do_wait
+  thread 948794: futex_do_wait
+  thread 948795: futex_do_wait
+  thread 951348: futex_do_wait
+  thread 951349: futex_do_wait
+  thread 951350: futex_do_wait
+  thread 951351: futex_do_wait
+  thread 951352: futex_do_wait
+  thread 951353: futex_do_wait
+  thread 951354: futex_do_wait
+  thread 951355: futex_do_wait
+  thread 951356: futex_do_wait
+  thread 951357: futex_do_wait
+  thread 951358: futex_do_wait
+  thread 951359: futex_do_wait
+  thread 951360: futex_do_wait
+  thread 951361: futex_do_wait
+  thread 951362: futex_do_wait
+  thread 951409: futex_do_wait
+  thread 951410: futex_do_wait
+  thread 951411: futex_do_wait
+  thread 951412: futex_do_wait
+  thread 951413: futex_do_wait
+  thread 951414: futex_do_wait
+  thread 951415: futex_do_wait
+  thread 951416: futex_do_wait
+  thread 951417: futex_do_wait
+  thread 951418: futex_do_wait
+  thread 951419: futex_do_wait
+  thread 951420: futex_do_wait
+  thread 951421: futex_do_wait
+  thread 951422: futex_do_wait
+  thread 951423: futex_do_wait
+  thread 951435: futex_do_wait
+  thread 951436: 0
+  thread 951437: futex_do_wait
+  thread 951438: futex_do_wait
+  thread 951439: futex_do_wait
+  thread 951440: futex_do_wait
+  thread 951441: futex_do_wait
+  thread 951442: futex_do_wait
+  thread 951443: futex_do_wait
+  thread 951444: futex_do_wait
+  thread 951445: futex_do_wait
+  thread 951446: futex_do_wait
+  thread 951447: futex_do_wait
+  thread 951448: futex_do_wait
+  thread 951449: futex_do_wait
+
+[run_tests] killed after 120s
+
+93 passed, 1 failed, 0 skipped (1220.4s of test time)
+[run_tests] JUnit report: artifacts/compute-telemetry/engine-merge-junit.xml (94 cases)

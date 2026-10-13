@@ -1,0 +1,28 @@
+{
+  "base_revision": "2d5cf67e8ea20ad8ebb983c9b207e24234e0356c",
+  "branch": "codex/compute-wait-telemetry",
+  "source_state": "uncommitted implementation",
+  "changed_source_sha256": "f2113ad5687500437a383d0b38c4608152fd9ea89edbfe69feea147711a94b71",
+  "platform": "Linux-7.0.0-38-generic-x86_64-with-glibc2.39",
+  "architecture": "x86_64",
+  "compiler": "g++ (Ubuntu 13.3.0-6ubuntu2~24.04.1) 13.3.0",
+  "sdl_prefix": "/home/bradley/glob2/build/sdl3/prefix",
+  "dev_build_flags": [
+    "dev_fast=1",
+    "linker=auto",
+    "-O0",
+    "-g1"
+  ],
+  "release_microbenchmark_flags": [
+    "-std=c++20",
+    "-O3",
+    "-DNDEBUG",
+    "-pthread"
+  ],
+  "limits": [
+    "Linux x86_64 only; Windows, macOS, mobile and browser checksum equivalence not run.",
+    "Release microbenchmarks are paired against current Off callbacks with owner mode dispatch removed; full retained-game release performance and RSS/tick-latency overhead remain unverified.",
+    "Other independent builds ran concurrently; wall-time confidence intervals are noisy.",
+    "No claim of zero overhead or release readiness."
+  ]
+}

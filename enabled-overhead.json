@@ -1,0 +1,32 @@
+[
+  {
+    "mode": "off",
+    "peak_rss_kib": 3888,
+    "total_user_seconds": 0.11,
+    "total_system_seconds": 0.23,
+    "wall_ns": 166974029,
+    "cpu_ns": 348393000,
+    "value": 1015568748,
+    "lost_events": 0
+  },
+  {
+    "mode": "waits",
+    "peak_rss_kib": 3976,
+    "total_user_seconds": 0.13,
+    "total_system_seconds": 0.24,
+    "wall_ns": 186182702,
+    "cpu_ns": 384565000,
+    "value": 1015568748,
+    "lost_events": 0
+  },
+  {
+    "mode": "trace",
+    "peak_rss_kib": 20248,
+    "total_user_seconds": 0.14,
+    "total_system_seconds": 0.27,
+    "wall_ns": 188915709,
+    "cpu_ns": 395972000,
+    "value": 1015568748,
+    "lost_events": 30873
+  }
+]
