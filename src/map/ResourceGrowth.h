@@ -81,7 +81,6 @@ class Pipeline
 	unsigned delay = 8;
 	Metrics metrics;
 	~Pipeline() { reset(); }
-	static SimulationSnapshot::Requirements requirements();
 	bool needsPreparation() const { return reservation.has_value(); }
 	std::size_t count() const { return pending.size(); }
 	void stage(Uint32 tick, Uint32 seed);

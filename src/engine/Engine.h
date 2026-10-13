@@ -373,11 +373,10 @@ private:
     std::shared_ptr<const SceneInputs> retainedPresentation;
     bool readBoundaryOpened = false;
     std::vector<unsigned> observationPlayers(bool wasReadyLastTick) const;
-    SimulationSnapshot::Handle openReadBoundary(std::span<const unsigned> players, bool paused, bool present);
+    SimulationSnapshot::Handle openReadBoundary(bool present);
     void refreshRetainedPresentation();
     std::optional<SceneRequest> admitPresentation(bool worldAdvanced = false);
     void publishPresentation(const SimulationSnapshot::Handle& world,SceneRequest request);
-    SimulationSnapshot::Requirements presentationRequirements(const SceneRequest& request) const;
     //! Host clock minus SDL_GetTicks(), published by the main thread for sessionClock.
     std::atomic<Sint64> sessionClockOffset{0};
     void publishSessionClock(Uint64 now);

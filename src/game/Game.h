@@ -244,9 +244,8 @@ public:
 	std::vector<std::pair<unsigned, std::shared_ptr<Order>>> prepareAIOrders(
 		std::span<const unsigned> eligiblePlayers, bool paused, const std::shared_ptr<GameDiagnostics::Session>& diagnostics = {},
 		const SimulationSnapshot::Handle* captured = nullptr);
-	//! Declare every reader before publishing this immutable observation boundary.
-	SimulationSnapshot::Handle captureReadBoundary(std::span<const unsigned> eligiblePlayers, bool paused,
-		SimulationSnapshot::Requirements additional = 0) const;
+	//! Publish the complete simulation view, optionally with presentation/diagnostic data.
+	SimulationSnapshot::Handle captureReadBoundary(SimulationSnapshot::CaptureOptions options = {}) const;
 	std::shared_ptr<Order> validateAIOrder(std::shared_ptr<Order> order, unsigned player);
 	void settleAIOrder(const std::shared_ptr<Order>& order, bool accepted);
 	void cancelAI(unsigned player);

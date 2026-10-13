@@ -1588,3 +1588,96 @@ TEST_CASE("sparse CPU terrain edits snapshot only changed materials [display]" *
     CHECK(cache.workMetrics.cells - originalCells < SoftwareTerrainCache::ChunkTiles * SoftwareTerrainCache::ChunkTiles);
     CHECK(cache.bytes() < originalBytes);
 }
+
+TEST_CASE("partial direct CPU terrain writes stay unpublished after a failed rebuild [display]" *
+          doctest::test_suite("TerrainMaterials"))
+{
+    glob2test::ScopedEnvironment mode("GLOB2_RENDER_EXECUTION", "parallel");
+    glob2test::HeadlessGlobals globals({.display = true});
+    glob2test::HeadlessGame fixture({.wDec = 5, .hDec = 5, .terrain = SAND, .discovered = true});
+    fixture.game.map.setVertexTerrain(7, 9, WATER);
+    SceneMap scene;
+    glob2test::observeMap(fixture.game.map, scene);
+    SoftwareTerrainCache cache;
+    ComputeExecutor executor;
+    executor.configure(4);
+    {
+        GAGCore::PresentationWorkScope scope(executor);
+        REQUIRE(cache.prepare(scene, *globals->terrain, 0, 0, 15, 15, 0, 0,
+                              fixture.team->me, true, 0));
+    }
+    const auto originalBatches = cache.workMetrics.batches;
+    const auto originalMasks = cache.maskBytes();
+    // Change every cell and retain animated coverage, so the first group
+    // installs new masks/opacity metadata before the second group fails.
+    for (int y = 0; y <= SoftwareTerrainCache::ChunkTiles; ++y)
+        for (int x = 0; x <= SoftwareTerrainCache::ChunkTiles; ++x)
+            fixture.game.map.setVertexTerrain(x, y, (x + y) % 2 ? GRASS : WATER);
+    glob2test::observeMap(fixture.game.map, scene);
+    struct FailedRebuild : GAGCore::PresentationWork
+    {
+        unsigned completedGroups = 0, failedGroups = 0;
+        void executePresentationJobs(std::size_t count,
+                                     const std::function<void(std::size_t)> &job) override
+        {
+            REQUIRE(count > 0);
+            if (!completedGroups)
+            {
+                for (std::size_t i = 0; i < count; ++i) job(i);
+                ++completedGroups;
+                return; // The owner installs this group's retained metadata.
+            }
+            job(0); // Partially mutate the second unpublished group.
+            ++failedGroups;
+            throw std::runtime_error("Injected direct terrain rebuild failure");
+        }
+    } failure;
+    const auto available = GAGCore::RenderWorkReservation::available();
+    {
+        GAGCore::PresentationWorkScope scope(failure);
+        CHECK_THROWS_AS(cache.prepare(scene, *globals->terrain, 0, 0, 15, 15, 0, 0,
+                                     fixture.team->me, true, 0), std::runtime_error);
+    }
+    CHECK(failure.completedGroups == 1);
+    CHECK(failure.failedGroups == 1);
+    CHECK(cache.workMetrics.batches == originalBatches + 1);
+    CHECK(cache.maskBytes() > originalMasks);
+    CHECK(cache.bytes() > 0); // Non-allocation failures retain the invalid cache page.
+    CHECK(GAGCore::RenderWorkReservation::available() == available);
+
+    auto pixels = [&]
+    {
+        const auto *surface = globals->gfx->getSDLSurface();
+        std::vector<Uint32> result;
+        for (int y = 0; y < surface->h; ++y)
+        {
+            const auto *row = reinterpret_cast<const Uint32 *>(
+                static_cast<const Uint8 *>(surface->pixels) + y * surface->pitch);
+            result.insert(result.end(), row, row + surface->w);
+        }
+        return result;
+    };
+    globals->gfx->drawFilledRect(0, 0, globals->gfx->getW(), globals->gfx->getH(),
+                                GAGCore::Color(11, 22, 33));
+    const auto untouched = pixels();
+    cache.draw(*globals->gfx);
+    CHECK(pixels() == untouched);
+
+    // Retained partial pixels must be overwritten by a complete rebuild, and
+    // the owner's surface lock must have unwound before that recovery begins.
+    {
+        GAGCore::PresentationWorkScope scope(executor);
+        REQUIRE(cache.prepare(scene, *globals->terrain, 0, 0, 15, 15, 0, 0,
+                              fixture.team->me, true, 0));
+    }
+    cache.draw(*globals->gfx);
+    const auto recovered = pixels();
+    SoftwareTerrainCache reference;
+    glob2test::ScopedEnvironment immediate("GLOB2_RENDER_EXECUTION", "immediate");
+    REQUIRE(reference.prepare(scene, *globals->terrain, 0, 0, 15, 15, 0, 0,
+                              fixture.team->me, true, 0));
+    globals->gfx->drawFilledRect(0, 0, globals->gfx->getW(), globals->gfx->getH(),
+                                GAGCore::Color(11, 22, 33));
+    reference.draw(*globals->gfx);
+    CHECK(pixels() == recovered);
+}

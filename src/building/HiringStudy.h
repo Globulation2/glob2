@@ -22,7 +22,7 @@ struct Schedule
 void configureScheduled(Schedule);
 void advance(const Game&);
 void drain(const Game&);
-std::uint32_t requirements(const Game&,bool paused);
+bool refreshDue(const Game&,bool paused);
 void observe(const Game&, const SimulationSnapshot::Handle&, bool paused);
 void clear(const Game&);
 void write(std::ostream&,bool finish=true);

@@ -51,7 +51,7 @@ void MapEdit::preparePresentation()
     request.selectedBuilding=Game::refOf(view.selectedBuilding);
     request.selectedUnit=Game::refOf(view.selectedUnit);
     request.view.displayW=int(camera.visibleW());request.view.displayH=int(camera.visibleH());
-    SceneExtractor().prepare(game.captureReadBoundary({},true,SceneExtractor::requirements(request)),request,view.render.ownScene);
+    SceneExtractor().prepare(game.captureReadBoundary(SceneExtractor::captureOptions(request)),request,view.render.ownScene);
     view.scene=&view.render.ownScene;
 }
 

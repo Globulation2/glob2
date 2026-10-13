@@ -318,7 +318,7 @@ TEST_SUITE("EngineSession")
         const auto captures=engine.gui.game.snapshots().metrics.captures;
         engine.gatherAndAdvanceOrders(true);
         CHECK(engine.gui.game.snapshots().metrics.captures==captures);
-        const auto reused=engine.gui.game.captureReadBoundary({},true,published.requirements);
+        const auto reused=engine.gui.game.captureReadBoundary({.presentation=true});
         CHECK(reused.entities==published.entities);
         CHECK(reused.resources==published.resources);
         CHECK(engine.gui.game.snapshots().metrics.captures==captures);
@@ -341,7 +341,7 @@ TEST_SUITE("EngineSession")
         SceneRequest request;
         request.view.displayW=128; request.view.displayH=128;
         runner.requestScene(request);
-        const auto world=game.captureReadBoundary({},true,SceneExtractor::requirements(request));
+        const auto world=game.captureReadBoundary(SceneExtractor::captureOptions(request));
         const auto captures=game.snapshots().metrics.captures;
         REQUIRE(runner.admitPresentation());
         runner.publishPresentation(world,request);
@@ -388,7 +388,7 @@ TEST_SUITE("EngineSession")
             };
             engine.gui.recordTick(1000,33);
             camera(0);
-            engine.openReadBoundary({},true,true);
+            engine.openReadBoundary(true);
             finish();
 
             // A completed camera refresh consumes the client request before the
@@ -398,7 +398,7 @@ TEST_SUITE("EngineSession")
             finish();
             ++game.stepCounter;
             engine.gui.recordTick(1033,33);
-            engine.openReadBoundary({},true,true);
+            engine.openReadBoundary(true);
             REQUIRE(engine.retainedPresentation->world.tick==game.stepCounter);
             CHECK(engine.retainedPresentation->request.tickTime==1033);
             finish();
@@ -410,14 +410,14 @@ TEST_SUITE("EngineSession")
             engine.refreshRetainedPresentation();
             ++game.stepCounter;
             engine.gui.recordTick(1066,33);
-            engine.openReadBoundary({},true,true);
+            engine.openReadBoundary(true);
             CHECK(engine.retainedPresentation->world.tick==game.stepCounter-1);
             finish();
             camera(3);
             const auto retained=engine.retainedPresentation;
             engine.refreshRetainedPresentation();
             CHECK(engine.retainedPresentation==retained);
-            engine.openReadBoundary({},true,true);
+            engine.openReadBoundary(true);
             REQUIRE(engine.retainedPresentation->world.tick==game.stepCounter);
             CHECK(engine.retainedPresentation->request.tickTime==1066);
             finish();

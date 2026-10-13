@@ -162,6 +162,16 @@ struct Handle
 	std::shared_ptr<const BuildingAreaEffects::FertilitySnapshot> areaFertility;
 	Uint64 worldIdentity = 0, configurationRevision = 0;
 	std::array<Uint64, 5> mapGenerations{};
+	//! Named views share existing buffers and retain only their consumer's inputs.
+	Handle simulationView() const;
+	Handle gradientView() const;
+	Handle buildingGradientView() const;
+	Handle growthView() const;
+	Handle sceneMapView() const;
+	// Presentation helpers imply options.presentation and omit resource-gradient planes.
+	Handle presentationView(CaptureOptions options = {}) const;
+	bool supportsPresentation(CaptureOptions options = {}) const;
+	// Internal projection behind named views and low-level capture/storage tests.
 	Handle project(Requirements requested) const;
 	// Scalar readers touch only their requested immutable component. Defaults
 	// match a combined tile whose corresponding component was not captured.

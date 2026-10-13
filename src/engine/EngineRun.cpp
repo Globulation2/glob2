@@ -176,9 +176,9 @@ void Engine::gatherAndAdvanceOrders(bool wasReadyLastTick)
         gui.game.players[orderPlayer]->ai;
     const auto eligible=observationPlayers(wasReadyLastTick);
     const bool paused=gui.gamePaused || globalContainer->replaying;
-    // After startup, the completed world's union was published before pacing.
+    // After startup, the completed world's snapshot was published before pacing.
     // AI polling and delivery remain at their original logical deadline.
-    const auto world=openReadBoundary(eligible,paused,!readBoundaryOpened);
+    const auto world=openReadBoundary(!readBoundaryOpened);
     const auto scheduled=gui.game.prepareAIOrders(eligible,paused,diagnostics,&world);
     for(const auto& [actor,order]:scheduled) {
         if(localAI && actor==unsigned(orderPlayer)) localOrder=order;
@@ -352,15 +352,16 @@ std::vector<unsigned> Engine::observationPlayers(bool wasReadyLastTick) const
     return eligible;
 }
 
-SimulationSnapshot::Handle Engine::openReadBoundary(std::span<const unsigned> players, bool paused, bool present)
+SimulationSnapshot::Handle Engine::openReadBoundary(bool present)
 {
     const bool worldAdvanced=!retainedPresentation || retainedPresentation->world.tick!=gui.game.stepCounter;
     const auto presentation=present ? admitPresentation(worldAdvanced) : std::optional<SceneRequest>{};
-    const auto world=gui.game.captureReadBoundary(players,paused,
-        (presentation ? presentationRequirements(*presentation) : 0)
-        | (diagnostics ? diagnostics->observationRequirements(gui.game.stepCounter) : 0));
+    SimulationSnapshot::CaptureOptions options{.presentation=!globalContainer->runNoX};
+    if (presentation) options.include(SceneExtractor::captureOptions(*presentation));
+    if (diagnostics) options.include(diagnostics->captureOptions(gui.game.stepCounter));
+    const auto world=gui.game.captureReadBoundary(options);
     readBoundaryOpened=true;
-    if (presentation) publishPresentation(world.project(presentationRequirements(*presentation)),*presentation);
+    if (presentation) publishPresentation(world,*presentation);
     return world;
 }
 
@@ -375,17 +376,11 @@ std::optional<SceneRequest> Engine::admitPresentation(bool worldAdvanced)
     if (request) gui.stampPresentationRequest(*request);
     return request;
 }
-SimulationSnapshot::Requirements Engine::presentationRequirements(const SceneRequest& request) const
-{
-    auto required=SceneExtractor::requirements(request);
-    if (gui.game.gameHeader.hasExperiment(ExperimentId::FarmAreas)) required|=SimulationSnapshot::bit(SimulationSnapshot::Component::Growth);
-    return required;
-}
 void Engine::publishPresentation(const SimulationSnapshot::Handle& world,SceneRequest request)
 {
-    retainedPresentation=std::make_shared<const SceneInputs>(SceneInputs{world,request});
-    if (runner) runner->publishPresentation(world,std::move(request));
-    else serialPresentation->submit(std::make_shared<const SceneInputs>(SceneInputs{world,std::move(request)}));
+    retainedPresentation=SceneExtractor::inputs(world,request);
+    if (runner) runner->publishPresentation(retainedPresentation->world,std::move(request));
+    else serialPresentation->submit(retainedPresentation);
 }
 
 void Engine::refreshRetainedPresentation()
@@ -401,8 +396,7 @@ void Engine::refreshRetainedPresentation()
     request->tickTime=retainedPresentation->request.tickTime;
     request->tickInterval=retainedPresentation->request.tickInterval;
     if (*request==retainedPresentation->request) return;
-    const auto required=presentationRequirements(*request);
-    if ((retainedPresentation->world.requirements & required)!=required) return;
+    if (!retainedPresentation->world.supportsPresentation(SceneExtractor::captureOptions(*request))) return;
     const auto world=retainedPresentation->world;
     publishPresentation(world,*request);
 }
@@ -1293,8 +1287,7 @@ bool Engine::advanceSession(Uint64 now, const std::function<void()>& clientWork,
         // Its AI/gradient projections are consumed at the next gather without
         // another world copy. Presentation can prepare this completed tick
         // immediately, with the timestamp and receipts belonging to that tick.
-        const auto players=gui.hardPause ? std::vector<unsigned>{} : observationPlayers(st.wasReadyLastTick);
-        openReadBoundary(players,gui.hardPause || gui.gamePaused || globalContainer->replaying,true);
+        openReadBoundary(true);
     }
     workTime.stop();
     loopTime.stop();

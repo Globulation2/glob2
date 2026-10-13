@@ -308,11 +308,6 @@ void Map::stageBuildingGradientPreparation()
 	}
 }
 
-SimulationSnapshot::Requirements Map::pendingBuildingRequirements() const
-{
-	return gradientRuntime->stagedBuildings.empty() ? 0 : gradient_preparation::buildingRequirements();
-}
-
 void Map::prepareStagedBuildingGradients(const SimulationSnapshot::Handle& foundation)
 {
 	auto& rt = *gradientRuntime;
@@ -327,7 +322,7 @@ void Map::prepareStagedBuildingGradients(const SimulationSnapshot::Handle& found
 		p.seed = gradient_preparation::captureBuildingSeed(*b, p.swim, p.route);
 		// Owner cost planes from the same boundary as the lease the seeder reads.
 		p.inputs = BuildingGradientSearch::Inputs::of(*this, p.swim);
-		job->snapshotLease = foundation.project(gradient_preparation::buildingRequirements());
+		job->snapshotLease = foundation.buildingGradientView();
 	}
 	rt.buildings.prepare(staged);
 }

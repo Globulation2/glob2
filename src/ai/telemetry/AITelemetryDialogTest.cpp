@@ -288,7 +288,7 @@ TEST_CASE("telemetry full-game timings and desktop phone captures [display:1280x
 			{
                 auto request = world.gui.sceneRequest();
                 request.includeTelemetry = true;
-                SceneExtractor().prepare(world.game.captureReadBoundary({}, true, SceneExtractor::requirements(request)), request, presentation);
+                SceneExtractor().prepare(world.game.captureReadBoundary(SceneExtractor::captureOptions(request)), request, presentation);
                 world.gui.setPublishedScene(&presentation);
 				glob2test::drawGUI(world.gui,0);
 				REQUIRE_FALSE(world.gui.drawnScene().panels.aiTelemetry.empty());

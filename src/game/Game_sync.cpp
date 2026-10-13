@@ -293,7 +293,8 @@ void Game::syncStep(Sint32 localTeam, PreparationCompletion completion)
         map.stageResourceGrowth();
 		if (completion == PreparationCompletion::Complete) {
             if(HiringStudy::enabled()) {
-                const auto world=captureReadBoundary({},false);
+                const auto world=captureReadBoundary();
+                HiringStudy::observe(*this,world,false);
                 map.preparePendingWorld(world);
             } else map.preparePendingWorld();
         }

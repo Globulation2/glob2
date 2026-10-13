@@ -5,11 +5,12 @@ How immutable observations, compute ownership and delayed AI orders interact. Re
 ## AI observations and delayed orders
 
 All shipped AI controllers decide from an immutable engine snapshot through
-`AIEngine::AIWorldView`. The simulation owner captures a union of required
-components through `Game::captureReadBoundary()`. The engine declares AI, gradient,
-admitted presentation and diagnostic requirements before publishing their union.
-`Game::snapshots()` owns the shared Store; the AI pipeline receives a projection
-of that published handle and does not initiate capture. Explicit
+`AIEngine::AIWorldView`. The simulation owner captures the standard simulation
+preset through `Game::captureReadBoundary()`, with `CaptureOptions` for ordinary
+presentation and explicit cold UI/diagnostic payloads. AI controllers and map jobs
+do not declare capture masks. `Game::snapshots()` owns the shared Store; the AI
+pipeline constructs one `simulationView()` adapter shared by all polled controllers
+at that boundary and does not initiate another capture. Explicit
 `Store::invalidateBoundary()` revisions allow an owner to publish same-tick edits
 without advancing game time; existing leases stay immutable. Engine snapshot records live under
 `src/engine/sim/snapshot/`; the AI adapter and shared queries live under
@@ -72,8 +73,8 @@ including farm eligibility, which remains an explicit derived query when only
 that value is needed. Keep capture and derived-query costs separate in profiles.
 
 `AIWorldView` validates dimensions and leased map-array sizes when it binds an
-observation. Its scalar readers borrow the retained arrays directly: callers must
-request the corresponding component and supply an index from that view's geometry.
+observation. Its scalar readers borrow the retained arrays directly from the
+complete simulation view; callers supply an index from that view's geometry.
 Dimensions are immutable and wrapping masks/shifts are cached. Keep checked handle
 queries at diagnostic boundaries; do not add component or bounds checks to each
 inner-loop read. Use full tiles only when the consumer needs the combined fields,
@@ -85,7 +86,9 @@ pointer; the pool reuses a buffer once that pointer is the only one left, after 
 acquire fence that orders the consumer's final reads before the owner's next write,
 including inputs retired by delayed gradient jobs. Reads need no locking, and a
 buffer outlives the capture Store while any consumer holds it. Memory metrics are
-computed on telemetry query, never on the capture path. Component pools permit
+computed on telemetry query, never on the capture path. Detailed byte/reuse
+accounting is enabled by compute telemetry or explicitly by a snapshot harness;
+the exact map-copy counter remains available without it. Component pools permit
 22 buffers, retaining the existing safety ceiling until the combined consumer
 horizon is measured. Buffers allocate only on demand. Retired frame slots release
 their world leases immediately while preserving reusable derived arrays; the

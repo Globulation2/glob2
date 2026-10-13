@@ -18,7 +18,7 @@ TEST_CASE("worker demand uses immutable shared funding and staffing facts")
     auto* inn=world.addBuilding("inn",8,8);auto* unit=world.addUnit(WORKER,12,12);
     REQUIRE(inn);REQUIRE(unit);inn->desiredMaxUnitWorking=2;
     inn->unitsWorking.push_back(unit);unit->destinationPurpose=WHEAT;
-    const auto observed=world.game.captureReadBoundary({},true,SimulationSnapshot::Simulation);
+    const auto observed=world.game.captureReadBoundary();
     const auto inputs=HiringPlanner::capture(world.game,observed);
     const auto before=HiringPlanner::prepare(inputs,0);REQUIRE(before.size()==1);
     CHECK(before.front().seats==1);
@@ -40,7 +40,7 @@ TEST_CASE("observed funding reproduces live material apportionment")
     for(const int stock:{0,1,5,20}) {
         inn->materials[WHEAT]=stock;inn->reservedMaterials[WHEAT]=1;
         world.game.snapshotStore().invalidateBoundary();
-        const auto snapshot=world.game.captureReadBoundary({},true,SimulationSnapshot::Simulation);
+        const auto snapshot=world.game.captureReadBoundary();
         auto input=HiringPlanner::capture(world.game,snapshot);const auto supplies=HiringPlanner::prepare(input,0);
         REQUIRE(supplies.size()==1);
         const auto& supply=supplies.front();
@@ -68,8 +68,7 @@ TEST_CASE("snapshot planning retains busy workers and never changes the game")
     free->activity=Unit::ACT_RANDOM;busy->activity=Unit::ACT_FILLING;
     for(int swim=0;swim<SWIM_CLASS_COUNT;++swim)world.game.map.buildingGradient(inn,swim);
     const auto checksum=world.checksum();
-    const auto snapshot=world.game.captureReadBoundary({},true,
-        SimulationSnapshot::Simulation & ~SimulationSnapshot::bit(SimulationSnapshot::Component::Growth));
+    const auto snapshot=world.game.captureReadBoundary();
     auto inputs=HiringPlanner::capture(world.game,snapshot);
     HiringPlanner::Cache cache;
     auto result=cache.rank(inputs,0,8);
@@ -104,7 +103,7 @@ TEST_CASE("planning skips zero-demand and staffed buildings and resumes on vacan
     HiringPlanner::Cache cache;
     const auto plan=[&] {
         world.game.snapshotStore().invalidateBoundary(); // Announce these owner-side fixture edits.
-        auto snapshot=world.game.captureReadBoundary({},true,SimulationSnapshot::Simulation);
+        auto snapshot=world.game.captureReadBoundary();
         auto inputs=HiringPlanner::capture(world.game,snapshot);
         auto output=cache.rank(inputs,0,8);
         return std::pair{std::move(inputs),std::move(output)};
@@ -137,7 +136,7 @@ TEST_CASE("job quotas skip supplied materials and distance reuse keeps exact ran
     }
     world.game.map.incResourceByIndex(20,20,WHEAT,0);
     for(int swim=0;swim<SWIM_CLASS_COUNT;++swim){world.game.map.buildingGradient(inn,swim);world.game.map.getMaterialGradientSlot(0,WHEAT,swim,false,inn);}
-    auto snapshot=world.game.captureReadBoundary({},true,SimulationSnapshot::Simulation);
+    auto snapshot=world.game.captureReadBoundary();
     auto inputs=HiringPlanner::capture(world.game,snapshot);
     HiringPlanner::Cache cache;
     const auto uncached=cache.rank(inputs,0,128,HiringPlanner::Pools::All,{.reuseDistances=false,.pruneFetch=false});
@@ -165,7 +164,7 @@ TEST_CASE("job quotas skip supplied materials and distance reuse keeps exact ran
         }
     }
     inn->materials[WHEAT]=inn->type->maxMaterial[WHEAT];
-    world.game.snapshotStore().invalidateBoundary();snapshot=world.game.captureReadBoundary({},true,SimulationSnapshot::Simulation);
+    world.game.snapshotStore().invalidateBoundary();snapshot=world.game.captureReadBoundary();
     const auto full=cache.rank(HiringPlanner::capture(world.game,snapshot),0,128);
     for(const auto& list:full.buildings[0].jobs)CHECK(list.key.material!=WHEAT);
     CHECK(full.metrics.jobsSkippedNoQuota>=2);
@@ -180,7 +179,7 @@ TEST_CASE("diverse material offers cover peers without reserving live workers")
     world.game.map.incResourceByIndex(24,24,WHEAT,0);
     for(auto* building:{a,b})for(int swim=0;swim<SWIM_CLASS_COUNT;++swim)world.game.map.buildingGradient(building,swim);
     for(int swim=0;swim<SWIM_CLASS_COUNT;++swim)world.game.map.getMaterialGradientSlot(0,WHEAT,swim);
-    auto snapshot=world.game.captureReadBoundary({},true,SimulationSnapshot::Simulation);
+    auto snapshot=world.game.captureReadBoundary();
     auto inputs=HiringPlanner::capture(world.game,snapshot);const auto checksum=world.checksum();
     HiringPlanner::Cache cache;
     auto output=cache.rank(inputs,0,128,HiringPlanner::Pools::Split,{.extras=2,.availableOnly=true,.coordinate=true});
@@ -232,7 +231,7 @@ TEST_CASE("missing building fields never trigger private construction")
     glob2test::HeadlessGame world({.discovered=true,.loadDefaultRace=true});
     auto* inn=world.addBuilding("inn",8,8);REQUIRE(inn);inn->desiredMaxUnitWorking=1;
     auto* unit=world.addUnit(WORKER,12,12);REQUIRE(unit);unit->carriedMaterial=WHEAT;
-    auto snapshot=world.game.captureReadBoundary({},true,SimulationSnapshot::Simulation);
+    auto snapshot=world.game.captureReadBoundary();
     HiringPlanner::Cache cache;
     const auto output=cache.rank(HiringPlanner::capture(world.game,snapshot),0,8);
     CHECK(output.metrics.sharedQueries==0);CHECK(output.metrics.missingBuildingFields>0);
@@ -280,7 +279,7 @@ TEST_CASE("fetch permission without suppliers reuses the existing natural plane"
     world.game.map.buildingGradient(inn,swim);
     world.game.map.getMaterialGradientSlot(0,WHEAT,swim,false,inn);
     const auto checksum=world.checksum();
-    auto snapshot=world.game.captureReadBoundary({},true,SimulationSnapshot::Simulation);
+    auto snapshot=world.game.captureReadBoundary();
     auto inputs=HiringPlanner::capture(world.game,snapshot);
     const auto supplies=HiringPlanner::prepare(inputs,0);
     REQUIRE(supplies.size()==1);
@@ -307,8 +306,7 @@ TEST_CASE("private fetch fields include suppliers without natural material")
     market->materials[CHERRY]=10;
     for(int swim=0;swim<SWIM_CLASS_COUNT;++swim)world.game.map.buildingGradient(inn,swim);
     worker->activity=Unit::ACT_RANDOM;worker->medical=Unit::MED_FREE;
-    auto snapshot=world.game.captureReadBoundary({},true,
-        SimulationSnapshot::Simulation & ~SimulationSnapshot::bit(SimulationSnapshot::Component::Growth));
+    auto snapshot=world.game.captureReadBoundary();
     auto inputs=HiringPlanner::capture(world.game,snapshot);
     const auto supplies=HiringPlanner::prepare(inputs,0);
     const auto supply=std::find_if(supplies.begin(),supplies.end(),[&](const auto& s){return s.building==Game::refOf(inn);});
@@ -329,7 +327,7 @@ TEST_CASE("private fetch fields include suppliers without natural material")
     REQUIRE(supply->modes[CHERRY]==1);
     CHECK_FALSE(supply->consumerSpecific[CHERRY]);
     world.game.map.getMaterialGradientSlot(0,CHERRY,worker->swimClass(),false,inn);
-    auto published=world.game.captureReadBoundary({},true,SimulationSnapshot::Simulation);
+    auto published=world.game.captureReadBoundary();
     const auto shared=cache.rank(HiringPlanner::capture(world.game,published),0,8);
     CHECK(shared.metrics.publishedResourceReads>0);
     CHECK(shared.metrics.privateResourceReads==0);
@@ -351,9 +349,9 @@ TEST_CASE("scheduled pool and owner publish the same immutable outputs at fixed 
         world.game.map.configureGradientPipeline(2,8);
         world.game.map.configureCompute(participants);
         HiringStudy::configureScheduled({.delay=delay,.refresh=1,.capacity=8,.split=true,.parallel=parallel});
-        world.game.captureReadBoundary({},false);
+        HiringStudy::observe(world.game,world.game.captureReadBoundary(),false);
         const auto initial=world.checksum();
-        world.game.captureReadBoundary({},true); // Pausing neither admits nor publishes.
+        HiringStudy::observe(world.game,world.game.captureReadBoundary(),true); // Pausing neither admits nor publishes.
         CHECK(world.checksum()==initial);
         world.step(12);
         std::ostringstream out;HiringStudy::write(out);auto report=nlohmann::json::parse(out.str());
@@ -386,7 +384,7 @@ TEST_CASE("a vacancy after a skipped refresh publishes on the next fixed deadlin
         HiringStudy::configureScheduled({.delay=4,.refresh=4,.capacity=8,.parallel=parallel});
         const auto boundary=[&](unsigned tick) {
             world.game.stepCounter=tick;
-            world.game.captureReadBoundary({},false);
+            HiringStudy::observe(world.game,world.game.captureReadBoundary(),false);
             HiringStudy::advance(world.game);
         };
         const auto metric=[&](const char* key) {
@@ -419,7 +417,7 @@ TEST_CASE("worker failure aborts publication and teardown still drains [slow]")
     // queue storage cannot fit that bound in one active job; this is a deterministic planner
     // failure, with other successful team outputs in the same generation.
     HiringStudy::configureScheduled({.delay=1,.refresh=1,.capacity=8});
-    world.game.captureReadBoundary({},false);
+    HiringStudy::observe(world.game,world.game.captureReadBoundary(),false);
     world.game.stepCounter=1;
     const auto before=world.checksum();
     CHECK_THROWS_AS(HiringStudy::advance(world.game),std::length_error);

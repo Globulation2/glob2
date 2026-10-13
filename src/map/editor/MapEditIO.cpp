@@ -257,7 +257,7 @@ bool MapEdit::finishFertility(bool completed)
         pendingSaveFilename.clear(); pendingSaveName.clear();
     } else if (completed) {
         overlay.forceRecompute();
-        overlay.compute(game.captureReadBoundary({},true,SimulationSnapshot::bit(SimulationSnapshot::Component::Resources)), OverlayArea::Fertility, team,game.map.fertilityMaximum);
+        overlay.compute(game.captureReadBoundary(), OverlayArea::Fertility, team,game.map.fertilityMaximum);
         fertilityStale = false;
     } else if (!fertilityStale) isFertilityOn = false;
     return true;

@@ -8,7 +8,7 @@
 
 TEST_SUITE("WarrushObservation")
 {
- TEST_CASE("declared inputs omit published fields without changing decisions")
+ TEST_CASE("standard observation preserves decisions from the legacy narrow view")
  {
   glob2test::HeadlessGlobals globals;
   glob2test::HeadlessGame fixture{glob2test::GameOptions{.wDec=5,.hDec=5,.teams=2,.discovered=true,.clearImmobile=true,.loadDefaultRace=true,.header=true}};
@@ -20,7 +20,7 @@ TEST_SUITE("WarrushObservation")
   AIWarrush full(game.players[0]),projected(game.players[0]);
   MersenneTwister fullRandom(713),projectedRandom(713);
   full.setRandomEngine(fullRandom);projected.setRandomEngine(projectedRandom);
-  const auto requirements=projected.observationRequirements();
+  const auto requirements=SimulationSnapshot::Simulation & ~SimulationSnapshot::bit(SimulationSnapshot::Component::ResourceFields);
   CHECK_FALSE(SimulationSnapshot::needs(requirements,SimulationSnapshot::Component::ResourceFields));
   CHECK(SimulationSnapshot::needs(requirements,SimulationSnapshot::Component::Growth));
   const auto world=AIEngine::AIWorldView::capture(game,AIEngine::AIWorldView::captureCatalog(game));

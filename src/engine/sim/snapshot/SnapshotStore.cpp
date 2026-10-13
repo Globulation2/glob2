@@ -4,35 +4,50 @@
 #include <algorithm>
 namespace SimulationSnapshot
 {
-Handle Store::captureBoundary(const Game& game, Requirements required)
+Handle Store::captureBoundary(const Game& game, CaptureOptions options)
 {
-	const auto requested = required;
+	auto required = captureRequirements(options);
 	if (latest && latest->worldIdentity != game.map.identity()) reset();
 	if (latest && latest->tick == game.stepCounter && latest->observationRevision == observationRevision
         && latest->configurationRevision == game.gameHeader.observationRevision()
         && latest->mapGenerations == game.map.snapshotGenerations()) {
-		if ((required & latest->requirements) == required) return latest->project(requested);
+		if ((required & latest->requirements) == required) return *latest;
 		required |= latest->requirements;
 	}
 	const auto start = std::chrono::steady_clock::now();
 	const auto preparedBefore = storage.preparationNs;
-	if (needs(required, Component::Catalogs) && (!catalog || catalogConfigurationRevision != game.gameHeader.observationRevision())) {
+	if (!catalog || catalogConfigurationRevision != game.gameHeader.observationRevision()) {
 		catalog = captureCatalog(game);
 		catalogConfigurationRevision = game.gameHeader.observationRevision();
 	}
 	const auto copiedBefore = storage.bytesCopied;
 	auto next = capture(game, catalog, required, latest ? &*latest : nullptr, &storage);
 	next.observationRevision = observationRevision;
+	metrics.mapBytesCopied += storage.bytesCopied - copiedBefore;
+	if (detailedMetrics || game.map.computeExecutor().telemetryEnabled()) {
+		const Handle empty;
+		accountCapture(next, latest ? *latest : empty, storage.bytesCopied - copiedBefore);
+		++metrics.detailedCaptures;
+	}
+	metrics.allocations = storage.allocations;
+	const auto preparation = storage.preparationNs-preparedBefore;
+	metrics.preparationNs += preparation;
+	++metrics.captures;
+	metrics.captureNs += std::chrono::duration_cast<std::chrono::nanoseconds>(std::chrono::steady_clock::now() - start).count()-preparation;
+	latest = std::move(next);
+	return *latest;
+}
+
+void Store::accountCapture(const Handle& next, const Handle& previous, Uint64 copiedMapBytes)
+{
 	// Map arrays report the chunks they actually copied; other components are
 	// accounted by size when not shared with the previous capture.
-	metrics.bytesCopied += storage.bytesCopied - copiedBefore;
+	metrics.bytesCopied += copiedMapBytes;
 	auto account = [&](const auto& current, const auto& previous, Uint64 bytes) {
 		if (!current) return;
 		if (current == previous) ++metrics.reusedComponents;
 		else metrics.bytesCopied += bytes;
 	};
-	const Handle empty;
-	const auto& previous = latest ? *latest : empty;
 	account(next.terrain, previous.terrain, 0);
 	account(next.resources, previous.resources, 0);
 	account(next.occupancy, previous.occupancy, 0);
@@ -95,13 +110,6 @@ Handle Store::captureBoundary(const Game& game, Requirements required)
         for (const auto& name : next.annotations->areaNames) metrics.bytesCopied += name.size();
     }
     account(next.annotations,previous.annotations,0); // Stamped array copies counted by storage.
-	metrics.allocations = storage.allocations;
-	const auto preparation = storage.preparationNs-preparedBefore;
-	metrics.preparationNs += preparation;
-	++metrics.captures;
-	metrics.captureNs += std::chrono::duration_cast<std::chrono::nanoseconds>(std::chrono::steady_clock::now() - start).count()-preparation;
-	latest = std::move(next);
-	return latest->project(requested);
 }
 
 MemoryMetrics Store::memoryMetrics() const

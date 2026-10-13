@@ -219,12 +219,12 @@ void configureScheduled(Schedule selected)
         throw std::invalid_argument("Hiring study schedule exceeds the eight-tick trial contract");
     configure(false);selectedSchedule=selected;collectingStudy=true;
 }
-std::uint32_t requirements(const Game& game,bool paused)
+bool refreshDue(const Game& game,bool paused)
 {
     if(!collectingStudy || paused)return 0;
     if(selectedSchedule){bool admit=false;for(int t=0;t<game.teamsCount();++t)admit|=game.stepCounter%selectedSchedule->refresh==unsigned(t)%selectedSchedule->refresh;
         if(!admit)return 0;}
-    return SimulationSnapshot::Simulation & ~SimulationSnapshot::bit(SimulationSnapshot::Component::Growth);
+    return true;
 }
 void advance(const Game& game)
 { if(session && session->game==&game && session->schedule)session->joinDue(game.stepCounter); }
@@ -232,7 +232,7 @@ void drain(const Game& game)
 { if(session && session->game==&game)session->drain(); }
 void observe(const Game& game,const SimulationSnapshot::Handle& world,bool paused)
 {
-    if(!collectingStudy || paused)return;
+    if(!refreshDue(game,paused))return;
     if(!session || session->game!=&game){session=std::make_unique<Session>(game,selectedSchedule);if(!selectedSchedule || selectedSchedule->score)HiringDiagnostics::setObserver(onOpportunity,session.get());}
     if(session->last==world.tick)return;
     if(session->last!=unsigned(-1) && world.tick<session->last)throw std::logic_error("Hiring shadow boundary moved backwards");

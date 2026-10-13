@@ -135,24 +135,30 @@ publishes under the scheduler mutex and wakes admission waiters, including when 
 cancelled owner batch finishes while an unrelated scene chunk still occupies the
 ceiling. Captured inputs are destroyed outside both scheduler and batch locks.
 
-CPU terrain preparation separates owner planning, private cell composition and canonical
-installation. Published materials contain only immutable composition pixels for the
+CPU terrain preparation separates owner planning, disjoint cell composition and canonical
+metadata installation. Published materials contain only immutable composition pixels for the
 changed cells' referenced materials and catalog definitions. Planning finds changed
 cells before acquiring material snapshots, so a sparse edit does not copy unchanged
 materials. Unchanged material revisions share storage; the compositor keeps bounded weak
 records per material revision, allowing reuse while any snapshot still owns unchanged
 pixels. Each cache charges its retained lease against subsequent admission. Current-page
 masks remain protected until the synchronous group finishes. Hidden cells release
-obsolete discovery masks during canonical installation. Results occupy disjoint spans in
-one owner-held pixel slab, whose lifetime covers the synchronous join and installation.
+obsolete discovery masks during canonical installation. The owner locks the unpublished
+cache page once and supplies disjoint cell pointers and its pitch to workers. Workers
+write complete cells directly, including clearing hidden cells; no intermediate pixel
+slab or installation copy is needed. The page remains invalid until the join and
+metadata installation finish. Failed groups cannot publish partially written pages;
+subsequent preparation rebuilds every cell.
 Opacity classification selects an opaque or empty predicate from the first pixel and
 scans once; cells starting with partial alpha need neither uniform scan. Workers reuse
 bounded scratch and never create `HeldMask` or drawable objects. Jobs sample at most 16K
-pixels; a group admits up to 32 changed cells under a 4 MiB additional reservation and
+pixels; a group admits up to 64 changed cells under a 4 MiB additional reservation and
 available cache headroom. Queued raster sources and active terrain work share an
 additional 8 MiB owner reservation ceiling; raster bookkeeping reserves 2 MiB within it
-for the backend lifetime, including retained vector capacity. Captured source
-reservations release when the segment finishes or is discarded. The reservation includes
+for the backend lifetime, including retained vector capacity. Source allocations are
+charged once even when both the source cache and a segment retain them. Uncached
+captures release on segment completion; cached revisions release on eviction, forget,
+reset or discard. The reservation includes
 material revisions, catalog/control storage, results, masks, metadata and two scratch
 slots. Oversized HD cells, reductions, and groups without headroom use existing serial
 composition. GPU composition and emergency fallback retain their existing paths.
@@ -164,19 +170,32 @@ publishing partial output.
 The software recorder captures supported opaque nearest blits, backing-pixel
 triangle-style blits and rectangle fills. Unsupported geometry, linear sampling, color
 keys, mixed formats and legacy large-image cases flush the preceding segment before
-owner execution. Arbitrary borrowed source pixels are copied at capture time, including
-terrain views. Overlapping byte ranges between distinct source/target views flush
-earlier drawing before the source snapshot. Source mutation or destruction cannot change
+owner execution. Keyed sources follow the existing content-revision and forget contract:
+raw writes require `markPixelsChanged()`, and destruction forgets the source key.
+The first eligible draw copies the requested source region into immutable owned pixels;
+subsequent draws of the same revision reuse it when that region covers their requested
+crop. A different crop takes a new regional snapshot; queued commands keep previous
+snapshots alive across replacement or eviction. This also supports keyed terrain run
+views, which are forgotten before their backing page changes. Regions up to the
+1 MiB warm-cache limit can reuse revisions regardless of the complete image size.
+Larger regions and anonymous borrowed sources take fresh regional copies per draw.
+No capture copies unrequested offscreen pixels. Overlapping backing ranges, including negative pitches,
+flush earlier drawing before a fresh snapshot and never use the revision cache. Source mutation or destruction cannot change
 a captured command. Supported fully clipped or zero-opacity commands are discarded
 before recording or allocating source storage. Owned source arrays are allocated without
 initialization and completely filled before publication. Each segment is bounded by
-1,024 commands and 4 MiB of copied sources; bin bookkeeping is bounded by 4,096 tiles
+1,024 commands. Cached and in-flight snapshots share a 4 MiB allocation bound,
+within the shared 8 MiB reservation. Presentation trims the warm source cache to
+1 MiB so retained pixels do not crowd out next-frame terrain work. Cache entries
+are bounded by the command limit; bin bookkeeping is bounded by 4,096 tiles
 and 65,536 references. Excessive tile work uses serial command traversal in regions at
 most 128 pixels wide within each command's visible bounds, bounding sampling scratch
-independently of target width. Tile and reference vectors retain bounded capacity
-between segments. Segment cleanup destroys commands before their owned sources and
-releases source reservations on completion, failure and discard. Current candidates are
-128-pixel tiles and at most sixteen command references per tile; these are conservative
+independently of target width. Tile, reference and job vectors retain bounded capacity
+between segments. Segment cleanup destroys commands before releasing source leases.
+Consecutive populated tiles share a job with at most sixteen total command references.
+Each reference covers at most 128×128 pixels, preserving the former maximum callback
+work of 262,144 sampled pixels while reducing dispatches for sparse tiles. Current
+candidates are 128-pixel tiles and at most sixteen command references per tile; these are conservative
 experimental bounds, not measured performance thresholds.
 
 The owner drains earlier SDL geometry, locks the target once, and captures its
