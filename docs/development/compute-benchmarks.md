@@ -109,6 +109,13 @@ fixed publication delay and no population fallback. This changes shortlist
 availability: a vacancy arising after capture can wait for the next publication.
 Reference hiring can fill such vacancies before a later snapshot ever observes
 them, so demand-filtered shadow coverage must not be interpreted as live delay.
+An isolated experiment that replaces those scans must also handle cold building
+fields: shadow capture only leases fields that already exist. Initialize the
+existing lazy field through a point-query path and count that owner work in the
+comparison. `Map::buildingGradient` completes the entire field; using it merely
+to establish a lease turns lazy route preparation into an eager full-map cost.
+Keep reference, shadow and replacement controls separate, and compare actual
+simulation work and economic outcomes alongside timing.
 Attack strengths are captured only for teams with an active defense recruitment need.
 Material jobs are filtered using outstanding deliveries after existing subscriptions,
 with the same target/multiplier arithmetic as owner hiring. Attraction roles retain
