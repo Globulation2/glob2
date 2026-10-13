@@ -869,7 +869,7 @@ TEST_CASE("compound passable material goals track depletion visibility and overl
         REQUIRE(map.gradientRuntime->resourceSeeds.valid);
         requireSameField(map,"compound source",cached,direct);
         gradient_preparation::Request request{gradient_preparation::Kind::Materials,0,material,0};
-        auto snapshot=SimulationSnapshot::capture(world.game,SimulationSnapshot::captureCatalog(world.game),request.requirements());
+        auto snapshot=SimulationSnapshot::capture(world.game,SimulationSnapshot::captureCatalog(world.game),SimulationSnapshot::Simulation);
         REQUIRE(snapshotCache.trySeed(snapshot,0,material,0,cached.data(),nullptr));
         requireSameField(map,"compound snapshot cache",cached,direct);
     };
@@ -1154,7 +1154,7 @@ TEST_CASE("snapshot seeds preserve every periodic kind after the live world chan
     for (auto kind : {Kind::Materials, Kind::Markets, Kind::Guard, Kind::Clear})
     for (int swim=0; swim<SWIM_CLASS_COUNT; ++swim) {
         Request request{kind,0,WHEAT,swim,game.teams[0]->allies,true,m.terrainQueueBuckets()};
-        auto snapshot=SimulationSnapshot::capture(game, SimulationSnapshot::captureCatalog(game), request.requirements());
+        auto snapshot=SimulationSnapshot::capture(game, SimulationSnapshot::captureCatalog(game), SimulationSnapshot::Simulation);
         std::vector<Uint16> expected(m.size), actual(m.size);
         if(kind==Kind::Materials || kind==Kind::Markets) scalarResource(m,0,WHEAT,swim,expected.data(),kind==Kind::Markets);
         else if(kind==Kind::Clear) scalarClear(m,0,swim,expected.data());
@@ -1196,7 +1196,7 @@ TEST_CASE("periodic supplier snapshots subtract reservations and retain overlay 
     CrowdingScratch scratch;
     for (int reserved : {0,10}) {
         supplier->reservedMaterials[WHEAT]=reserved;
-        auto snapshot=SimulationSnapshot::capture(game,SimulationSnapshot::captureCatalog(game),request.requirements());
+        auto snapshot=SimulationSnapshot::capture(game,SimulationSnapshot::captureCatalog(game),SimulationSnapshot::Simulation);
         std::vector<Uint16> expected(m.size),actual(m.size);
         m.seedMaterialGradient(0,WHEAT,0,expected.data(),true);
         supplier->materials[WHEAT]=0;
@@ -1218,7 +1218,7 @@ TEST_CASE("snapshot material templates refresh changed chunks and accept older s
     using namespace gradient_preparation;
     Request request{Kind::Materials,0,WHEAT,0};
     SimulationSnapshot::Store store;
-    auto before=store.captureBoundary(game,request.requirements());
+    auto before=store.captureBoundary(game);
     CrowdingScratch scratch;
     std::vector<Uint16> actual(map.size),expected(map.size);
     auto check=[&](const auto& snapshot) {
@@ -1243,14 +1243,14 @@ TEST_CASE("snapshot material templates refresh changed chunks and accept older s
     map.occupancyCells[3].immobileUnit=0; map.markOccupancy(3);
     map.fogOfWar[6]=0; map.markVisibility(6);
     ++game.stepCounter;
-    auto after=store.captureBoundary(game,request.requirements());
+    auto after=store.captureBoundary(game);
     check(after);
     CHECK(scratch.materials.refreshedCells-initial==256);
     check(before); // Worker scheduling need not visit snapshot ticks in order.
     check(after);
     // A reused cache must discard templates after registry/world replacement.
     glob2test::HeadlessGame replacement({.wDec=7,.hDec=7,.teams=2,.discovered=true,.clearImmobile=true,.header=true});
-    auto other=SimulationSnapshot::capture(replacement.game,SimulationSnapshot::captureCatalog(replacement.game),request.requirements());
+    auto other=SimulationSnapshot::capture(replacement.game,SimulationSnapshot::captureCatalog(replacement.game),SimulationSnapshot::Simulation);
     check(other);
 }
 
@@ -1262,7 +1262,7 @@ TEST_CASE("GradientPreparation/explicit snapshot batches isolate invalid fields 
     glob2test::HeadlessGame fixture({.wDec=6,.hDec=6,.teams=1,.discovered=true,.clearImmobile=true,.header=true});
     auto& game=fixture.game;auto& map=game.map;
     map.setVertexTerrain(5,5,WATER);
-    auto snapshot=SimulationSnapshot::capture(game,SimulationSnapshot::captureCatalog(game),gradient_preparation::buildingRequirements());
+    auto snapshot=SimulationSnapshot::capture(game,SimulationSnapshot::captureCatalog(game),SimulationSnapshot::Simulation);
     std::array<std::vector<Uint16>,3> outputs,expected;
     std::array<std::exception_ptr,3> errors{};
     std::array<GradientWorkspace,3> scratch;
@@ -1294,7 +1294,7 @@ TEST_CASE("GradientPreparation/modified terrain costs remain exact when field ob
     map.importTerrainDefinitions(R"({"schemaVersion":1,"terrains":[{"key":"test:gpu-cost","name":"Slow ground","base":"grass","appearance":"grass","properties":{"groundSpeedQ8":192}}]})");
     map.setGame(&world.game);
     map.paintCell(3,*map.terrainRegistry().find("test:gpu-cost"));
-    const auto snapshot=SimulationSnapshot::capture(world.game,SimulationSnapshot::captureCatalog(world.game),gradient_preparation::buildingRequirements());
+    const auto snapshot=SimulationSnapshot::capture(world.game,SimulationSnapshot::captureCatalog(world.game),SimulationSnapshot::Simulation);
     REQUIRE(snapshot.terrain->movementModifiers);
     gradient_preparation::Request request;
     GradientWorkspace scratch;
@@ -1352,7 +1352,7 @@ TEST_CASE("GradientPreparation/minimal GPU views release source graphs and recov
             map.setGame(&world.game);map.paintCell(3,*map.terrainRegistry().find("test:minimal-cost"));
         }
         map.setVertexTerrain(5,5,WATER);
-        auto snapshot=SimulationSnapshot::capture(world.game,SimulationSnapshot::captureCatalog(world.game),gradient_preparation::buildingRequirements());
+        auto snapshot=SimulationSnapshot::capture(world.game,SimulationSnapshot::captureCatalog(world.game),SimulationSnapshot::Simulation);
         // Distinct owners let expiry prove that the view did not retain the
         // Terrain or its table even though the live map has its own catalog.
         auto terrain=std::make_shared<SimulationSnapshot::Terrain>(*snapshot.terrain);
@@ -1415,7 +1415,7 @@ TEST_CASE("GradientPreparation/minimal view pressure declines without moving ori
     using namespace gradient_kernel;
     glob2test::HeadlessGlobals globals;
     glob2test::HeadlessGame world({.wDec=4,.hDec=4,.teams=1,.discovered=true,.clearImmobile=true,.header=true});
-    auto snapshot=SimulationSnapshot::capture(world.game,SimulationSnapshot::captureCatalog(world.game),gradient_preparation::buildingRequirements());
+    auto snapshot=SimulationSnapshot::capture(world.game,SimulationSnapshot::captureCatalog(world.game),SimulationSnapshot::Simulation);
     auto data=std::make_unique<Uint16[]>(world.game.map.size);std::fill_n(data.get(),world.game.map.size,Uint16(77));
     const auto original=data.get();auto session=std::make_shared<BackendSession>();gradient_preparation::Request request;
     const auto current=openCLStatus().hostBytes;
@@ -1442,8 +1442,7 @@ TEST_CASE("compiled preparation tables preserve rule and catalog interpretation"
     glob2test::HeadlessGame world({.wDec=5,.hDec=5,.teams=2,.discovered=true,.clearImmobile=true,.loadDefaultRace=true,.header=true});
     auto& map=world.game.map;
     for(std::size_t i=0;i<map.size;++i)map.paintCell(i,static_cast<TerrainType>(i%TERRAIN_COUNT));
-    const auto snapshot=SimulationSnapshot::capture(world.game,SimulationSnapshot::captureCatalog(world.game),
-        gradient_preparation::Request{gradient_preparation::Kind::Clear}.requirements());
+    const auto snapshot=world.game.captureReadBoundary().gradientView();
     const auto& rules=*snapshot.terrain->rules;
     REQUIRE(rules.gradientPreparation().size()==rules.size());
     for(std::size_t id=0;id<rules.size();++id)for(unsigned swim=0;swim<8;++swim){
@@ -1571,7 +1570,7 @@ TEST_CASE("CPU snapshot dispatch preserves trivial fields and validates before i
     glob2test::HeadlessGlobals globals;
     glob2test::HeadlessGame fixture({.wDec=4,.hDec=4,.teams=1,.discovered=true,.clearImmobile=true,.header=true});
     auto& game=fixture.game;auto& map=game.map;
-    auto snapshot=SimulationSnapshot::capture(game,SimulationSnapshot::captureCatalog(game),gradient_preparation::buildingRequirements());
+    auto snapshot=SimulationSnapshot::capture(game,SimulationSnapshot::captureCatalog(game),SimulationSnapshot::Simulation);
     gradient_preparation::Request request;request.swim=0;request.terrainBuckets=64;
     GradientWorkspace scratch;
     // Unchanged scratch proves this is the trivial shortcut, rather than a
@@ -1589,7 +1588,7 @@ TEST_CASE("CPU snapshot dispatch preserves trivial fields and validates before i
     map.game=nullptr;
     map.importTerrainDefinitions(R"({"schemaVersion":1,"terrains":[{"key":"test:cpu-audit-slow","name":"Slow water","base":"water","appearance":"water","properties":{"groundSpeedQ8":64}}]})");
     map.setGame(&game);map.paintCell(0,*map.terrainRegistry().find("test:cpu-audit-slow"));
-    snapshot=SimulationSnapshot::capture(game,SimulationSnapshot::captureCatalog(game),gradient_preparation::buildingRequirements());
+    snapshot=SimulationSnapshot::capture(game,SimulationSnapshot::captureCatalog(game),SimulationSnapshot::Simulation);
     request.terrainBuckets=64;request.swim=6;
     CHECK_THROWS_AS(gradient_preparation::propagateCPU(request,snapshot,output.data(),scratch),std::invalid_argument);
     CHECK(std::all_of(output.begin(),output.end(),[](auto cell){return cell==GRADIENT_AT_GOAL;}));

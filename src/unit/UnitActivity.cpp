@@ -136,8 +136,8 @@ void Unit::handleActivity(void)
 						}
 						const Uint16 targetGID = GIDfrom(targetID, targetTeam->teamNumber);
 						const Uint32 identity = owner->game->allocateScriptIdentity(false, targetGID);
-						++currentTeam->stats.measurements.conversionsOut[typeNum];
-						++targetTeam->stats.measurements.conversionsIn[typeNum];
+						++currentTeam->stats.events().conversionsOut[typeNum];
+						++targetTeam->stats.events().conversionsIn[typeNum];
 						Sint32 currentID=Unit::GIDtoID(gid);
 						assert(currentTeam->myUnits[currentID]);
 						currentTeam->myUnits[currentID]=NULL;

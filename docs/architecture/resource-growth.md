@@ -5,8 +5,9 @@ Resource ecology runs from captured inputs and publishes at fixed logical deadli
 ## Delayed resource growth
 
 Natural growth reads the completed-tick engine observation through `MapState::View`.
-The snapshot store captures resource, occupancy, terrain, ecology, catalog and rule
-requirements together with AI and periodic gradients. One batch per advancing tick
+The snapshot store publishes the complete simulation preset shared with AI and
+periodic gradients. Growth jobs retain its `growthView()`, containing resource,
+occupancy, terrain, ecology, catalog and rule inputs. One batch per advancing tick
 uses one owner-drawn seed and a private MT19937 stream; calculation never reads or
 writes live map state. Every attempt sees the original snapshot, so proposals do
 not seed further growth within the same pass.

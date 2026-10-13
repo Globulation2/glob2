@@ -318,7 +318,7 @@ TEST_SUITE("EngineSession")
         const auto captures=engine.gui.game.snapshots().metrics.captures;
         engine.gatherAndAdvanceOrders(true);
         CHECK(engine.gui.game.snapshots().metrics.captures==captures);
-        const auto reused=engine.gui.game.captureReadBoundary({},true,published.requirements);
+        const auto reused=engine.gui.game.captureReadBoundary({.presentation=true});
         CHECK(reused.entities==published.entities);
         CHECK(reused.resources==published.resources);
         CHECK(engine.gui.game.snapshots().metrics.captures==captures);
@@ -341,7 +341,7 @@ TEST_SUITE("EngineSession")
         SceneRequest request;
         request.view.displayW=128; request.view.displayH=128;
         runner.requestScene(request);
-        const auto world=game.captureReadBoundary({},true,SceneExtractor::requirements(request));
+        const auto world=game.captureReadBoundary(SceneExtractor::captureOptions(request));
         const auto captures=game.snapshots().metrics.captures;
         REQUIRE(runner.admitPresentation());
         runner.publishPresentation(world,request);
@@ -388,7 +388,7 @@ TEST_SUITE("EngineSession")
             };
             engine.gui.recordTick(1000,33);
             camera(0);
-            engine.openReadBoundary({},true,true);
+            engine.openReadBoundary(true);
             finish();
 
             // A completed camera refresh consumes the client request before the
@@ -398,7 +398,7 @@ TEST_SUITE("EngineSession")
             finish();
             ++game.stepCounter;
             engine.gui.recordTick(1033,33);
-            engine.openReadBoundary({},true,true);
+            engine.openReadBoundary(true);
             REQUIRE(engine.retainedPresentation->world.tick==game.stepCounter);
             CHECK(engine.retainedPresentation->request.tickTime==1033);
             finish();
@@ -410,14 +410,14 @@ TEST_SUITE("EngineSession")
             engine.refreshRetainedPresentation();
             ++game.stepCounter;
             engine.gui.recordTick(1066,33);
-            engine.openReadBoundary({},true,true);
+            engine.openReadBoundary(true);
             CHECK(engine.retainedPresentation->world.tick==game.stepCounter-1);
             finish();
             camera(3);
             const auto retained=engine.retainedPresentation;
             engine.refreshRetainedPresentation();
             CHECK(engine.retainedPresentation==retained);
-            engine.openReadBoundary({},true,true);
+            engine.openReadBoundary(true);
             REQUIRE(engine.retainedPresentation->world.tick==game.stepCounter);
             CHECK(engine.retainedPresentation->request.tickTime==1066);
             finish();
@@ -479,25 +479,18 @@ TEST_SUITE("EngineSession")
         CHECK(work->status() == ComputeExecutor::Presentation::Status::Canceled);
     }
 
-    TEST_CASE("a retained version-152 stock replay preserves recorded simulation checksums [save-format]")
+    TEST_CASE("retained version-152 replay is rejected by the delayed-statistics replay floor [save-format]")
     {
+        static_assert(REPLAY_MINIMUM_VERSION_MINOR > 152);
         glob2test::HeadlessGlobals globals({.loadStrings=true});
         REQUIRE(NET_Init());
         struct NetworkScope {~NetworkScope(){NET_Quit();}} network;
         globals->automaticEndingGame=false;
         const auto path=glob2test::inflated("unit-catalog/legacy152-stock.replay.gz");
-        Engine engine; REQUIRE(engine.loadReplayTask(path.string()).run());
-        auto& reader=*globals->replayReader;
-        REQUIRE(reader.formatVersion()==152);
-        REQUIRE(reader.getNumStepsTotal()==128);
-        engine.beginSession(0);
-        for(unsigned tick=0;tick<128;++tick) {
-            reader.setCheckSum(engine.gui.game.checkSum(nullptr,nullptr,nullptr,false,true));
-            REQUIRE(engine.stepSession(tick*40,{}));
-            REQUIRE(reader.isValid());
-            CHECK(engine.gui.game.stepCounter==tick+1);
-        }
-        engine.gui.isRunning=false; engine.finishSession();
+        Engine engine;
+        CHECK_FALSE(engine.loadReplayTask(path.string()).run());
+        // Saved state from this era remains readable; replay acceptance follows
+        // the new simulation timing and has its own, deliberately newer floor.
     }
 
     TEST_CASE("external replay retains recorded simulation checksums [benchmark][artifacts]")

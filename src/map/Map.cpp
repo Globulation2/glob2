@@ -577,6 +577,7 @@ void Map::applyGradientBackendRequest()
 
 void Map::configureCompute(unsigned threads)
 {
+    if(game)game->drainTeamStats();
 	finishGradientPipeline({JoinReason::Reconfigure, ComputeTelemetry::NoTick});
 	finishResourceGrowth({JoinReason::Reconfigure, ComputeTelemetry::NoTick});
 	compute.configure(threads);

@@ -349,7 +349,7 @@ TEST_SUITE("UnitCustomization")
                 world.game.map.addClearArea(8,8,world.team->teamNumber);
                 for (int tick=0;tick<2048 && world.game.map.getResource(8,8).amount;++tick) world.game.syncStep(0);
                 CHECK(world.game.map.getResource(8,8).amount == 0);
-                CHECK(world.team->stats.measurements.cleared[WOOD] > 0);
+                CHECK(world.team->stats.events().cleared[WOOD] > 0);
             } else {
                 world.game.map.addGuardArea(9,8,world.team->teamNumber);
                 unit->handleDisplacement(); CHECK(unit->displacement == Unit::DIS_ATTACKING_AROUND);
@@ -411,7 +411,7 @@ TEST_SUITE("UnitCustomization")
             REQUIRE(harvesting); REQUIRE(continued);
             for(const auto& point:targets)
                 CHECK(world.game.map.getResource(point[0],point[1]).amount==0);
-            CHECK(world.team->stats.measurements.cleared[WOOD]==3);
+            CHECK(world.team->stats.events().cleared[WOOD]==3);
             CHECK(unit->hp==initialHealth-3*selfDamage);
             CHECK(unit->hasCarriedMaterial(STONE));
             CHECK(unit->activity==Unit::ACT_RANDOM);
@@ -442,7 +442,7 @@ TEST_SUITE("UnitCustomization")
             world.game.syncStep(0);
         CHECK(inn->materials[WHEAT]>0);
         CHECK(world.game.map.getResource(6,7).amount==3);
-        CHECK(world.team->stats.measurements.cleared[WOOD]==0);
+        CHECK(world.team->stats.events().cleared[WOOD]==0);
         CHECK(world.team->integrity());
     }
 
@@ -519,7 +519,7 @@ TEST_SUITE("UnitCustomization")
             const auto original=world.game.unitCargo.entries();
             world.team->stats.beginMeasurementSnapshot(world.team);
             world.team->stats.observeMeasurementUnit(unit);
-            CHECK(world.team->stats.measurements.carried[WOOD]==1);
+            CHECK(world.team->stats.measurements().carried[WOOD]==1);
             const auto saveUnit=[&](Unit& value,bool textual) {
                 auto* backend=new GAGCore::MemoryStreamBackend;
                 std::string bytes;
@@ -543,11 +543,11 @@ TEST_SUITE("UnitCustomization")
             REQUIRE(loaded->widePrimaryCargo); CHECK(loaded->carriedPacketCount()==1);
             CHECK(saveUnit(*loaded,text)==bytes); CHECK(restored.game.unitCargo.entries()==original);
             restored.team->stats.beginMeasurementSnapshot(restored.team); restored.team->stats.observeMeasurementUnit(loaded);
-            CHECK(restored.team->stats.measurements.carried[WOOD]==1);
-            CHECK(restored.team->stats.measurements.materialSpillageEvents==0);
+            CHECK(restored.team->stats.measurements().carried[WOOD]==1);
+            CHECK(restored.team->stats.events().materialSpillageEvents==0);
             checkPhaseContinuation(world.game,64);
             CHECK(world.game.unitCargo.entries()==original);
-            CHECK(world.team->stats.measurements.materialSpillageEvents==0);
+            CHECK(world.team->stats.events().materialSpillageEvents==0);
             // Admission of the primary alias must not admit a different first
             // material or a second packet into this capacity-one inventory.
             if(text) for(bool wrongMaterial:{false,true}) {
@@ -723,14 +723,14 @@ TEST_SUITE("UnitCustomization")
         }
         CHECK(victim->hp==INT_MIN);
         CHECK(victim->diagnosticDeathCause==GameplayMeasurements::COMBAT);
-        CHECK(world.team->stats.measurements.damageDealt[GameplayMeasurements::MELEE][GameplayMeasurements::UNIT]==1000000);
+        CHECK(world.team->stats.events().damageDealt[GameplayMeasurements::MELEE][GameplayMeasurements::UNIT]==1000000);
         victim->delta=255; victim->syncStep(); CHECK(victim->isDead);
         auto* magicVictim=world.addUnit(3,10,8,1); REQUIRE(magicVictim);
         magicVictim->fruitCount=3;
         for(int repeat=0;repeat<2;++repeat) { attacker->magicActionTimeout=0; attacker->handleMagic(); }
         CHECK(magicVictim->hp==INT_MIN);
         CHECK(magicVictim->diagnosticDeathCause==GameplayMeasurements::COMBAT);
-        CHECK(world.team->stats.measurements.damageDealt[GameplayMeasurements::MAGIC][GameplayMeasurements::UNIT]==1000000);
+        CHECK(world.team->stats.events().damageDealt[GameplayMeasurements::MAGIC][GameplayMeasurements::UNIT]==1000000);
     }
 
     TEST_CASE("maximum healing multiplier and health complete a diagonal service visit")
@@ -781,8 +781,8 @@ TEST_SUITE("UnitCustomization")
         auto& stats=world.game.teams[0]->stats;
         stats.beginMeasurementSnapshot(world.game.teams[0]);
         stats.observeMeasurementUnit(unit);
-        CHECK(stats.measurements.carried[WOOD]==2);
-        CHECK(stats.measurements.carried[STONE]==1);
+        CHECK(stats.measurements().carried[WOOD]==2);
+        CHECK(stats.measurements().carried[STONE]==1);
         CHECK_FALSE(unit->canCarryMaterial(WOOD));
         CHECK(unit->hasCarriedMaterial(STONE));
         auto* inn=world.addBuilding("inn",8,8);
@@ -856,14 +856,14 @@ TEST_SUITE("UnitCustomization")
         for (int tick=0;tick<32;++tick) unit->syncStep();
         CHECK(inn->materials[WHEAT]==3); CHECK(unit->carriedPacketCount()==1);
         CHECK(unit->hasCarriedMaterial(WOOD));
-        CHECK(world.team->stats.measurements.materialSpillageEvents==0);
+        CHECK(world.team->stats.events().materialSpillageEvents==0);
         unit->clearCargo();
         unit->receiveCargoPacket(STONE,{1,1000001});
         unit->receiveCarriedMaterial(WOOD,{});
         REQUIRE(unit->widePrimaryCargo);
         world.team->stats.beginMeasurementSnapshot(world.team); world.team->stats.observeMeasurementUnit(unit);
-        CHECK(world.team->stats.measurements.carried[STONE]==1);
-        CHECK(world.team->stats.measurements.carried[WOOD]==1);
+        CHECK(world.team->stats.measurements().carried[STONE]==1);
+        CHECK(world.team->stats.measurements().carried[WOOD]==1);
     }
 
     TEST_CASE("documented bulk carrier setup enables an inherited-cost production recipe")
@@ -934,8 +934,8 @@ TEST_SUITE("UnitCustomization")
         CHECK(carrier->runtimeTraits().meshClass==WORKER);
         CHECK(carrier->runtimeTraits().cargoCapacity==4);
         CHECK(carrier->runtimeTraits().cargoKinds==3);
-        CHECK(world.team->stats.measurements.births[type]==1);
-        CHECK(world.team->stats.measurements.births[WORKER]==0);
+        CHECK(world.team->stats.events().births[type]==1);
+        CHECK(world.team->stats.events().births[WORKER]==0);
         CHECK(producer->materials[WHEAT]==0);
         CHECK(producer->reservedMaterials[WHEAT]==0);
         CHECK(world.team->integrity());
@@ -1018,14 +1018,14 @@ TEST_SUITE("UnitCustomization")
         REQUIRE(swimmer); REQUIRE(stationary); REQUIRE(walker);
         world.team->stats.sampleTraps(world.team);
         for (int kind=0;kind<2;++kind) {
-            CHECK(world.team->stats.measurements.trappedUnits[kind][swimmer->typeNum]==1);
-            CHECK(world.team->stats.measurements.trappedUnits[kind][stationary->typeNum]==1);
-            CHECK(world.team->stats.measurements.trappedUnits[kind][WORKER]==0);
+            CHECK(world.team->stats.measurements().trappedUnits[kind][swimmer->typeNum]==1);
+            CHECK(world.team->stats.measurements().trappedUnits[kind][stationary->typeNum]==1);
+            CHECK(world.team->stats.measurements().trappedUnits[kind][WORKER]==0);
         }
         world.game.map.paintCell(7,8,WATER);
         world.team->stats.sampleTraps(world.team);
         for (int kind=0;kind<2;++kind)
-            CHECK(world.team->stats.measurements.trappedUnits[kind][swimmer->typeNum]==0);
+            CHECK(world.team->stats.measurements().trappedUnits[kind][swimmer->typeNum]==0);
     }
 
     TEST_CASE("survival eligibility is independent of movement and work capabilities")
@@ -1212,7 +1212,7 @@ TEST_SUITE("UnitCustomization")
             CAPTURE(key);
             CHECK(sawMixed);
             CHECK(inn->materials[WOOD]==1); CHECK(inn->materials[WHEAT]==3);
-            CHECK(world.team->stats.measurements.materialSpillageEvents==0);
+            CHECK(world.team->stats.events().materialSpillageEvents==0);
             for (int material:{WOOD,WHEAT}) {
                 int held=unit->carriedMaterial==material ? 1 : 0;
                 if (const auto* overflow=world.game.unitCargo.find(unit->gid))
@@ -1224,7 +1224,7 @@ TEST_SUITE("UnitCustomization")
                         remaining+=world.game.map.getResource(position[0],position[1]).amount;
                 }
                 CHECK(remaining+inn->materials[material]+held==3);
-                CHECK(world.team->stats.measurements.harvested[material]==Uint64(inn->materials[material]+held));
+                CHECK(world.team->stats.events().harvested[material]==Uint64(inn->materials[material]+held));
             }
         }
     }
@@ -1332,7 +1332,7 @@ TEST_SUITE("UnitCustomization")
         CHECK(world.game.map.getResource(15,15).amount==0);
         CHECK(unit->hasCarriedMaterial(STONE));
         CHECK(clearer->hasCarriedMaterial(STONE));
-        CHECK(world.team->stats.measurements.cleared[WOOD]>0);
+        CHECK(world.team->stats.events().cleared[WOOD]>0);
     }
 
     TEST_CASE("conversion cancels pending transport and transfers the complete cargo identity")
@@ -1393,7 +1393,7 @@ TEST_SUITE("UnitCustomization")
             for (int tick=0;tick<256;++tick) world.game.syncStep(0);
             CHECK(unit->hasCarriedMaterial(STONE)); CHECK_FALSE(unit->hasCarriedMaterial(WHEAT));
             CHECK(world.game.map.getResource(8,7).amount==3); CHECK(inn->materials[WHEAT]==0);
-            CHECK(world.team->stats.measurements.materialSpillageEvents==0);
+            CHECK(world.team->stats.events().materialSpillageEvents==0);
         }
     }
 
@@ -1474,17 +1474,17 @@ TEST_SUITE("UnitCustomization")
         CHECK(unit->deliverCargo(*building)); CHECK(building->materials[WOOD]==1);
         CHECK(unit->carriedPacket.numerator==1); CHECK(unit->carriedPacket.denominator==6);
         CHECK(unit->carriedPacketCount()==2); CHECK(unit->hasCarriedMaterial(STONE));
-        CHECK(world.team->stats.measurements.materialSpillageEvents==0);
+        CHECK(world.team->stats.events().materialSpillageEvents==0);
         building->materials[WOOD]=0;
-        const auto delivered=world.team->stats.measurements.delivered[WOOD];
+        const auto delivered=world.team->stats.events().delivered[WOOD];
         const int health=building->hp;
         constexpr Uint64 maximum=std::numeric_limits<Uint64>::max();
         const WideMaterialPacket incoming{maximum/2,maximum-2};
         const auto result=building->deliverCargoPacket(WOOD,incoming);
         CHECK(result.acceptedStock==0); CHECK(result.residual==incoming);
         CHECK(building->materials[WOOD]==0); CHECK(building->hp==health);
-        CHECK(world.team->stats.measurements.delivered[WOOD]==delivered);
-        CHECK(world.team->stats.measurements.materialSpillageEvents==0);
+        CHECK(world.team->stats.events().delivered[WOOD]==delivered);
+        CHECK(world.team->stats.events().materialSpillageEvents==0);
     }
 
     TEST_CASE("legacy setup sentinel retains resolved map definitions and cached unit values")
@@ -1574,7 +1574,7 @@ TEST_SUITE("UnitCustomization")
         const int x=stationary->posX,y=stationary->posY;
         CHECK(world.game.map.terrainPropertiesAt(x,y).walkable);
         CHECK(stationary->performance[WALK]==0); CHECK(stationary->performance[SWIM]==0);
-        CHECK(world.team->stats.measurements.births[type]==1);
+        CHECK(world.team->stats.events().births[type]==1);
         for (int tick=0;tick<96;++tick) world.game.syncStep(0);
         CHECK(stationary->posX==x); CHECK(stationary->posY==y);
     }
@@ -1601,12 +1601,13 @@ TEST_SUITE("UnitCustomization")
             unit->destinationPurpose=WHEAT;
             unit->subscriptionSuccess(inn,false,false,UnitJobPurpose::Transport); inn->unitsWorking.push_back(unit);
             gids.push_back(unit->gid);
-            CHECK(world.team->stats.measurements.births[id]==0);
+            CHECK(world.team->stats.events().births[id]==0);
             CHECK(turret->runtime->damage(id)==turret->runtime->damage(WORKER));
         }
         inn->updateCallLists();
         for (int tick=0;tick<32;++tick) world.game.syncStep(0);
-        for (int id:{35,275,1023}) CHECK(world.team->stats.getLatestStat()->numberUnitPerType[id]==1);
+        // The first aggregate is still pending at its fixed publication deadline.
+        for (int id:{35,275,1023}) CHECK(world.team->stats.getLatestStat()->numberUnitPerType[id]==0);
         auto* storage=new GAGCore::MemoryStreamBackend; GAGCore::BinaryOutputStream output(storage);
         world.game.save(&output,false,"high unit identity continuation");
         const std::string bytes(storage->getBuffer(),storage->getPosition());
@@ -1620,9 +1621,13 @@ TEST_SUITE("UnitCustomization")
             auto* unit=resumed.game.teams[0]->myUnits[Unit::GIDtoID(gid)]; REQUIRE(unit);
             CHECK(unit->typeNum>31); CHECK(unit->jobPurpose==UnitJobPurpose::Transport);
             CHECK(unit->carriedPacketCount()==2); CHECK(unit->hasCarriedMaterial(STONE));
-            CHECK(resumed.game.teams[0]->stats.getLatestStat()->numberUnitPerType[unit->typeNum]==1);
+            CHECK(resumed.game.teams[0]->stats.getLatestStat()->numberUnitPerType[unit->typeNum]==0);
         }
         for (int tick=0;tick<96;++tick) { resumed.game.syncStep(0); CHECK(trace(resumed.game)==expected[tick]); }
+        for (int id:{35,275,1023}) {
+            CHECK(world.team->stats.getLatestStat()->numberUnitPerType[id]==1);
+            CHECK(resumed.game.teams[0]->stats.getLatestStat()->numberUnitPerType[id]==1);
+        }
         CHECK(inn->materials[WHEAT]>0);
         auto& stats=world.team->stats;
         const auto* maxima=&stats.samplingMaxima.isFree[3];
@@ -1843,7 +1848,7 @@ TEST_SUITE("UnitCustomization")
             CHECK(unit->activity!=Unit::ACT_FILLING); CHECK(inn->unitsWorking.empty());
             CHECK(unit->carriedPacketCount()==unsigned(capacity)); CHECK_FALSE(unit->hasCarriedMaterial(WHEAT));
             CHECK(world.game.map.getResource(7,8).amount==3);
-            CHECK(world.team->stats.measurements.materialSpillageEvents==0);
+            CHECK(world.team->stats.events().materialSpillageEvents==0);
         }
     }
 
@@ -1865,7 +1870,7 @@ TEST_SUITE("UnitCustomization")
         for (int tick=0;tick<4096 && inn->materials[WHEAT]==0;++tick) world.game.syncStep(0);
         CHECK(inn->materials[WHEAT]==1); CHECK(unit->hasCarriedMaterial(WOOD));
         CHECK_FALSE(unit->hasCarriedMaterial(WHEAT)); CHECK(unit->carriedPacketCount()==1);
-        CHECK(world.team->stats.measurements.materialSpillageEvents==0);
+        CHECK(world.team->stats.events().materialSpillageEvents==0);
     }
 
     TEST_CASE("unit loading rejects mismatched assigned purposes and over-capacity primary packets")
@@ -1916,7 +1921,7 @@ TEST_SUITE("UnitCustomization")
         CHECK(unit->activity==Unit::ACT_RANDOM); CHECK_FALSE(unit->attachedBuilding);
         CHECK(inn->unitsWorking.empty()); CHECK(inn->materials[WHEAT]==0);
         CHECK(unit->carriedPacketCount()==1); CHECK(unit->carriedPacket==MaterialPacket{1,2});
-        CHECK(world.team->stats.measurements.materialSpillageEvents==0);
+        CHECK(world.team->stats.events().materialSpillageEvents==0);
         GameGUI resumed;
         GAGCore::BinaryInputStream input(new GAGCore::MemoryStreamBackend(bytes.data(),bytes.size())); input.seekFromStart(0);
         REQUIRE(resumed.game.load(&input)); resumed.game.setWaitingOnMask(0);
@@ -1943,11 +1948,11 @@ TEST_SUITE("UnitCustomization")
         CHECK(seeker->movement==Unit::MOV_GOING_TARGET);
         CHECK(seeker->validTarget); CHECK(seeker->targetX==12); CHECK(seeker->targetY==8);
         CHECK((seeker->dx!=0 || seeker->dy!=0));
-        for(int tick=0;tick<256 && world.team->stats.measurements.shots[GameplayMeasurements::MELEE]==0;++tick) {
+        for(int tick=0;tick<256 && world.team->stats.events().shots[GameplayMeasurements::MELEE]==0;++tick) {
             world.game.map.setMapDiscovered(12,8,seeker->owner->sharedVisionOther);
             world.game.syncStep(0);
         }
-        CHECK(world.team->stats.measurements.shots[GameplayMeasurements::MELEE]>0);
+        CHECK(world.team->stats.events().shots[GameplayMeasurements::MELEE]>0);
     }
 
     TEST_CASE("pending lethal scouts have bounded attraction ranking and resolve death")
@@ -1983,7 +1988,7 @@ TEST_SUITE("UnitCustomization")
         victim->delta=255; victim->syncStep();
         CHECK(victim->isDead); CHECK(attraction->unitsWorking.empty());
         CHECK(world.game.map.getGroundUnit(8,8)==NOGUID);
-        CHECK(world.team->stats.measurements.deaths[3][GameplayMeasurements::COMBAT]==1);
+        CHECK(world.team->stats.events().deaths[3][GameplayMeasurements::COMBAT]==1);
     }
 
     TEST_CASE("construction qualification excludes higher-level couriers in live and captured queries")
@@ -2024,8 +2029,8 @@ TEST_SUITE("UnitCustomization")
             hospital->updateCallLists();
             REQUIRE_FALSE(patient->isUnitHungry());
             REQUIRE(world.team->findNearestHeal(patient)==hospital);
-            for(int tick=0;tick<4096 && world.team->stats.measurements.healingVisits==0;++tick) world.game.syncStep(0);
-            REQUIRE(world.team->stats.measurements.healingVisits==1);
+            for(int tick=0;tick<4096 && world.team->stats.events().healingVisits==0;++tick) world.game.syncStep(0);
+            REQUIRE(world.team->stats.events().healingVisits==1);
             for(int tick=0;tick<256;++tick) world.game.syncStep(0);
             CHECK(patient->hp==patient->performance[HP]); CHECK(patient->hungry==retainedHunger);
             CHECK(patient->medical==Unit::MED_FREE);
@@ -2068,7 +2073,7 @@ TEST_SUITE("UnitCustomization")
             caster->handleMagic();
             REQUIRE(target->hp<previousHP);
             CHECK(caster->magicActionTimeout==(legacy?22:33));
-            CHECK(world.team->stats.measurements.shots[GameplayMeasurements::MAGIC]==1);
+            CHECK(world.team->stats.events().shots[GameplayMeasurements::MAGIC]==1);
         }
     }
 
@@ -2345,9 +2350,9 @@ TEST_SUITE("UnitCustomization")
             }
             REQUIRE(inn->materials[ALGA]==3); REQUIRE(restoredInn->materials[ALGA]==3);
             REQUIRE(unit->hasCarriedMaterial(STONE)); REQUIRE(restoredUnit->hasCarriedMaterial(STONE));
-            REQUIRE(world.team->stats.measurements.harvested[ALGA]==3);
-            REQUIRE(restored.teams[0]->stats.measurements.harvested[ALGA]==3);
-            REQUIRE(world.team->stats.measurements.materialSpillageEvents==0);
+            REQUIRE(world.team->stats.events().harvested[ALGA]==3);
+            REQUIRE(restored.teams[0]->stats.events().harvested[ALGA]==3);
+            REQUIRE(world.team->stats.events().materialSpillageEvents==0);
             REQUIRE(unit->integrity()); REQUIRE(restoredUnit->integrity());
             // Check the selected row actually publishes the new passability value.
             map.finishBuildingGradient(inn,WATER_ONLY_CLASS,BuildingRoute::Footprint);
@@ -2406,8 +2411,8 @@ TEST_SUITE("UnitCustomization")
                 checkPhaseContinuation(world.game,512);
                 CHECK(inn->materials[material]==3);
                 CHECK(unit->hasCarriedMaterial(STONE));
-                CHECK(world.team->stats.measurements.harvested[material]==3);
-                CHECK(world.team->stats.measurements.materialSpillageEvents==0);
+                CHECK(world.team->stats.events().harvested[material]==3);
+                CHECK(world.team->stats.events().materialSpillageEvents==0);
                 CHECK(unit->integrity());
                 if(waterOnly) CHECK(world.game.map.terrainPropertiesAt(unit->posX,unit->posY).swimmable);
             }
@@ -2449,7 +2454,7 @@ TEST_SUITE("UnitCustomization")
                 CHECK(inn->unitsInside.empty()); CHECK(unit->integrity());
                 if(purpose==FEED) CHECK(unit->hungry==unit->foodCapacity());
                 else if(purpose==HEAL) CHECK(unit->hp==unit->performance[HP]);
-                else { CHECK(unit->level[WALK]==1); CHECK(world.team->stats.measurements.trainingVisits[unit->typeNum]==1); }
+                else { CHECK(unit->level[WALK]==1); CHECK(world.team->stats.events().trainingVisits[unit->typeNum]==1); }
             }
     }
 
@@ -2467,10 +2472,10 @@ TEST_SUITE("UnitCustomization")
         world.game.syncStep(0);
         REQUIRE(enemy->hp<enemy->performance[HP]);
         REQUIRE(fighter->regenerationRemainder!=0);
-        const auto melee=world.team->stats.measurements.shots[GameplayMeasurements::MELEE];
+        const auto melee=world.team->stats.events().shots[GameplayMeasurements::MELEE];
         checkPhaseContinuation(world.game,128);
         CHECK(fighter->hp>100); CHECK(fighter->carriedPacketCount()==2);
-        CHECK(world.team->stats.measurements.shots[GameplayMeasurements::MELEE]>melee);
+        CHECK(world.team->stats.events().shots[GameplayMeasurements::MELEE]>melee);
         CHECK(fighter->integrity());
     }
 
@@ -2762,7 +2767,7 @@ TEST_SUITE("UnitCustomization")
         CHECK(world.game.map.terrainPropertiesAt(unit->posX,unit->posY).swimmable);
         CHECK(inn->unitsInside.empty()); CHECK_FALSE(unit->serviceResourcesReserved);
         CHECK(inn->reservedMaterials[WHEAT]==0); CHECK(inn->materials[WHEAT]==0);
-        CHECK(world.team->stats.measurements.trainingVisits[3]==1); CHECK(unit->integrity());
+        CHECK(world.team->stats.events().trainingVisits[3]==1); CHECK(unit->integrity());
     }
 
     TEST_CASE("restored unsafe ongoing training exits without charging materials or changing levels")
@@ -2795,8 +2800,8 @@ TEST_SUITE("UnitCustomization")
         unit->insideTimeout=0; unit->delta=255;
         checkPhaseContinuation(world.game,256);
         CHECK(unit->level[WALK]==0); CHECK(unit->performance[WALK]>0);
-        CHECK(world.team->stats.measurements.trainingVisits[3]==0);
-        CHECK(world.team->stats.measurements.abilityGains[3][WALK]==0);
+        CHECK(world.team->stats.events().trainingVisits[3]==0);
+        CHECK(world.team->stats.events().abilityGains[3][WALK]==0);
         CHECK_FALSE(unit->serviceResourcesReserved); CHECK(inn->reservedMaterials[WHEAT]==0);
         CHECK(inn->materials[WHEAT]==2); CHECK(inn->unitsInside.empty()); CHECK(unit->integrity());
     }
@@ -2865,7 +2870,7 @@ TEST_SUITE("UnitCustomization")
                 checkPhaseContinuation(world.game,256);
                 CHECK(unit->constructionLevel==2); CHECK(inn->materials[WHEAT]==0); CHECK(inn->reservedMaterials[WHEAT]==0);
                 CHECK(inn->unitsInside.empty()); CHECK_FALSE(unit->serviceResourcesReserved);
-                CHECK(world.team->stats.measurements.trainingVisits[3]==1);
+                CHECK(world.team->stats.events().trainingVisits[3]==1);
             }
             CHECK(unit->level[BUILD]==0); CHECK(unit->level[HARVEST]==0);
             CHECK(unit->performance[BUILD]==build); CHECK(unit->performance[HARVEST]==harvest); CHECK(unit->integrity());
@@ -2943,7 +2948,7 @@ TEST_SUITE("UnitCustomization")
                 CHECK(unit->performance[WALK]==0); CHECK(unit->performance[SWIM]==0); CHECK(unit->performance[FLY]==16);
                 CHECK(unit->level[WALK]==1); CHECK(unit->level[SWIM]==1);
                 CHECK(inn->materials[WHEAT]==0); CHECK(inn->reservedMaterials[WHEAT]==0); CHECK(inn->unitsInside.empty());
-                CHECK(world.team->stats.measurements.trainingVisits[3]==1); CHECK(unit->integrity());
+                CHECK(world.team->stats.events().trainingVisits[3]==1); CHECK(unit->integrity());
             } else {
                 // Each grant alone preserves the other mode. The service must
                 // reject their combined effect rather than applying them in order.

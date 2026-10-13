@@ -2,6 +2,11 @@
 // Copyright (C) 2026 glob2 contributors
 
 #include "gradient/SnapshotGradient.h"
+#include "Game.h"
+
+// Unit Map fixtures have no game-owned statistics pipeline. Its real barrier
+// is exercised by the engine's statistics and save/load suites.
+void Game::drainTeamStats() {}
 
 // Unit Map fixtures do not link SnapshotGradient.cpp or create owned snapshot
 // cost views. Supply only their diagnostic getter; real cost-view admission,

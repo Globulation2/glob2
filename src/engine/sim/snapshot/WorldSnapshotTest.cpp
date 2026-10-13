@@ -1,5 +1,6 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "EngineFixtures.h"
+#include "sim/snapshot/TeamRecords.h"
 #include "WorldSnapshot.h"
 #include "SnapshotStore.h"
 #include "Building.h"
@@ -15,8 +16,75 @@
 #include <nlohmann/json.hpp>
 #include <ThreadSupport.h>
 
+namespace {
+constexpr SimulationSnapshot::CaptureOptions allOptions{
+    .presentation=true, .history=true, .telemetry=true, .entityDiagnostics=true, .annotations=true};
+}
+
 TEST_SUITE("WorldSnapshot")
 {
+    TEST_CASE("named views retain only their standard inputs")
+    {
+        glob2test::HeadlessGlobals globals;
+        glob2test::HeadlessGame fixture({.loadDefaultRace=true, .header=true});
+        auto full=SimulationSnapshot::capture(fixture.game,SimulationSnapshot::captureCatalog(fixture.game));
+        {
+            const auto ai=full.simulationView();
+            CHECK(ai.requirements==SimulationSnapshot::Simulation);
+            CHECK(ai.entities==full.entities); CHECK(ai.resourceFields==full.resourceFields);
+            CHECK_FALSE(ai.session); CHECK_FALSE(ai.history); CHECK_FALSE(ai.telemetry);
+            const auto gradient=full.gradientView();
+            CHECK(gradient.entities==full.entities); CHECK(gradient.visibility==full.visibility);
+            CHECK_FALSE(gradient.resourceFields); CHECK_FALSE(gradient.teams); CHECK_FALSE(gradient.growth);
+            const auto building=full.buildingGradientView();
+            CHECK(building.resources==full.resources); CHECK(building.areas==full.areas);
+            CHECK_FALSE(building.entities); CHECK_FALSE(building.visibility);
+            const auto map=full.sceneMapView();
+            CHECK(map.growth==full.growth); CHECK(map.annotations==full.annotations);
+            CHECK_FALSE(map.entities); CHECK_FALSE(map.history); CHECK_FALSE(map.resourceFields);
+            const auto frame=full.presentationView({.presentation=true});
+            CHECK(frame.session==full.session); CHECK(frame.statistics==full.statistics);
+            CHECK_FALSE(frame.history); CHECK_FALSE(frame.telemetry); CHECK_FALSE(frame.annotations);
+            CHECK_FALSE(frame.resourceFields); CHECK_FALSE(frame.statisticsInputs);
+            CHECK(ai.statisticsInputs == full.statisticsInputs);
+            const auto periodic = full.statisticsView();
+            CHECK(periodic.statisticsInputs == full.statisticsInputs);
+            CHECK(periodic.terrain == full.terrain);
+            CHECK_FALSE(periodic.visibility); CHECK_FALSE(periodic.growth);
+            full.tick = 1;
+            const auto ordinary = full.statisticsView();
+            CHECK(ordinary.entities == full.entities);
+            CHECK(ordinary.statisticsInputs == full.statisticsInputs);
+            CHECK_FALSE(ordinary.terrain); CHECK_FALSE(ordinary.resources);
+            CHECK_FALSE(ordinary.occupancy); CHECK_FALSE(ordinary.areas);
+        }
+        std::weak_ptr<const SimulationSnapshot::Entities> entities=full.entities;
+        std::weak_ptr<const SimulationSnapshot::History> history=full.history;
+        auto growth=full.growthView();
+        CHECK(growth.resources==full.resources); CHECK(growth.growth==full.growth);
+        CHECK_FALSE(growth.entities); CHECK_FALSE(growth.areas); CHECK_FALSE(growth.visibility);
+        full={};
+        CHECK(entities.expired()); CHECK(history.expired());
+        CHECK_THROWS_AS(growth.simulationView(),std::invalid_argument);
+    }
+
+    TEST_CASE("detailed accounting is optional while exact map bytes remain available")
+    {
+        glob2test::HeadlessGlobals globals;
+        glob2test::HeadlessGame fixture({.loadDefaultRace=true, .header=true});
+        SimulationSnapshot::Store ordinary, measured;
+        measured.setDetailedMetrics(true);
+        const auto a=ordinary.captureBoundary(fixture.game);
+        const auto b=measured.captureBoundary(fixture.game);
+        CHECK(a.requirements==b.requirements);
+        CHECK(ordinary.metrics.captures==1); CHECK(measured.metrics.captures==1);
+        CHECK(ordinary.metrics.mapBytesCopied==measured.metrics.mapBytesCopied);
+        CHECK(ordinary.metrics.mapBytesCopied>0);
+        CHECK(ordinary.metrics.detailedCaptures==0); CHECK(ordinary.metrics.bytesCopied==0);
+        CHECK(measured.metrics.detailedCaptures==1);
+        CHECK(measured.metrics.bytesCopied>=measured.metrics.mapBytesCopied);
+    }
+
     TEST_CASE("outcome reasons survive the read boundary without changing simulation state")
     {
         glob2test::HeadlessGlobals globals;
@@ -91,6 +159,23 @@ TEST_SUITE("WorldSnapshot")
             }
         }
         CHECK(world.buildingAtSlot(0xffff)==nullptr); CHECK(world.unitAtSlot(0xffff)==nullptr);
+    }
+    TEST_CASE("team record ranges preserve canonical addresses and empty teams")
+    {
+        glob2test::HeadlessGlobals globals;
+        glob2test::HeadlessGame fixture{glob2test::GameOptions{.teams=3,.loadDefaultRace=true}};
+        fixture.addUnit(WORKER,12,12,0); fixture.addUnit(WORKER,13,12,0);
+        fixture.addUnit(WORKER,14,12,2);
+        const auto capture=SimulationSnapshot::capture(fixture.game,SimulationSnapshot::captureCatalog(fixture.game));
+        const std::span<const SimulationSnapshot::UnitView> units=capture.entities->units;
+        const auto first=SimulationSnapshot::teamRecords(units,0);
+        const auto last=SimulationSnapshot::teamRecords(units,2);
+        CHECK(first.size()==2); CHECK(first.data()==units.data());
+        CHECK(last.size()==1); CHECK(last.data()==units.data()+2);
+        CHECK(SimulationSnapshot::teamRecords(units,1).empty());
+        CHECK(SimulationSnapshot::teamRecords(units,-1).empty());
+        CHECK(SimulationSnapshot::teamRecords(units,3).empty());
+        CHECK(SimulationSnapshot::teamRecords(units.first(0),0).empty());
     }
     TEST_CASE("snapshot capability tables share authoritative immutable catalog data")
     {
@@ -180,7 +265,7 @@ TEST_SUITE("WorldSnapshot")
         for(Uint8 flag : {Uint8(0),Uint8(1),Uint8(2),Uint8(255)}) {
             map.setResourcesGrow(5,5,flag);
             ++fixture.game.stepCounter;
-            const auto observed=store.captureBoundary(fixture.game,SimulationSnapshot::All);
+            const auto observed=store.captureBoundary(fixture.game, allOptions);
             const auto index=map.coordToIndex(5,5);
             CHECK(observed.resources->cells[index].mayGrow==flag);
             CHECK(std::memcmp(observed.resources->cells.data(),map.resourceState().data(),map.resourceState().size_bytes())==0);
@@ -202,7 +287,7 @@ TEST_SUITE("WorldSnapshot")
 		fixture.game.map.setResourceByIndex(20, 20,WHEAT, 1);
 		fixture.game.map.addForbidden(20, 20, 0);
 		SimulationSnapshot::Store store;
-		const auto captured=store.captureBoundary(fixture.game,SimulationSnapshot::All);
+		const auto captured=store.captureBoundary(fixture.game, allOptions);
 		using namespace SimulationSnapshot;
 		for (Requirements mask : {All, Requirements(0), bit(Component::Terrain), bit(Component::Resources),
 			bit(Component::Occupancy), bit(Component::Areas), bit(Component::Visibility)})
@@ -309,7 +394,7 @@ TEST_SUITE("WorldSnapshot")
 		map.addForbidden(20,20,0); map.addGuardArea(20,20,0); map.addClearArea(20,20,0);
 		map.setMapDiscovered(20,20,1u);
 		SimulationSnapshot::Store store;
-		const auto captured=store.captureBoundary(game,SimulationSnapshot::All);
+		const auto captured=store.captureBoundary(game, allOptions);
 		AIEngine::AIWorldView original(captured);
 		for (std::size_t i=0;i<1024;++i)
 		{
@@ -334,7 +419,7 @@ TEST_SUITE("WorldSnapshot")
 		map.setGroundUnit(20,20,9); map.setAirUnit(20,20,10);
 		map.removeForbidden(20,20,0); map.setMapDiscovered(20,20,2u);
 		++game.stepCounter;
-		AIEngine::AIWorldView changed(store.captureBoundary(game,SimulationSnapshot::All));
+		AIEngine::AIWorldView changed(store.captureBoundary(game, allOptions));
 		CHECK(original.resourceAt(index).resource.amount==1); CHECK(changed.resourceAt(index).resource.amount==2);
 		CHECK(original.resourceAt(index).fertility==123); CHECK(changed.resourceAt(index).fertility==456);
 		CHECK(original.resourceAt(index).mayGrow); CHECK_FALSE(changed.resourceAt(index).mayGrow);
@@ -352,7 +437,7 @@ TEST_SUITE("WorldSnapshot")
 		std::weak_ptr<const SimulationSnapshot::Resources> weak;
 		{
 			SimulationSnapshot::Store store;
-			held = store.captureBoundary(fixture.game, SimulationSnapshot::bit(SimulationSnapshot::Component::Resources));
+			held = store.captureBoundary(fixture.game);
 			weak = held.resources;
 		}
 		REQUIRE(held.resources);
@@ -400,18 +485,18 @@ TEST_SUITE("WorldSnapshot")
 		glob2test::HeadlessGame fixture{glob2test::GameOptions{.wDec=5, .hDec=5, .teams=1, .loadDefaultRace=true}};
 		auto& game=fixture.game;
 		SimulationSnapshot::Store store;
-		const auto first=store.captureBoundary(game,SimulationSnapshot::All);
+		const auto first=store.captureBoundary(game, allOptions);
 		game.gameHeader.setUnitUpgradesDisabled(true);
 		++game.stepCounter;
-		store.captureBoundary(game,SimulationSnapshot::bit(SimulationSnapshot::Component::Terrain));
+		store.captureBoundary(game);
 		++game.stepCounter;
-		const auto refreshed=store.captureBoundary(game,SimulationSnapshot::All);
+		const auto refreshed=store.captureBoundary(game, allOptions);
 		CHECK(refreshed.catalogs->buildings!=first.catalogs->buildings);
 		++game.stepCounter;
-		const auto rules=store.captureBoundary(game,SimulationSnapshot::bit(SimulationSnapshot::Component::Rules));
+		const auto rules=store.captureBoundary(game);
 		CHECK(rules.rules==refreshed.rules);
 		++game.stepCounter;
-		const auto nextRules=store.captureBoundary(game,SimulationSnapshot::bit(SimulationSnapshot::Component::Rules));
+		const auto nextRules=store.captureBoundary(game);
 		CHECK(nextRules.rules==rules.rules);
 	}
 	TEST_CASE("projected terrain lease cannot retain unrelated world components")
@@ -454,7 +539,7 @@ TEST_SUITE("WorldSnapshot")
 		map.setResourceByIndex(20,20,WHEAT,1); map.setResourcesGrow(20,20,1);
 		map.setMapDiscovered(20,20,1u);
 		SimulationSnapshot::Store store;
-		const auto next=[&] { ++game.stepCounter; return store.captureBoundary(game,SimulationSnapshot::All); };
+		const auto next=[&] { ++game.stepCounter; return store.captureBoundary(game, allOptions); };
 		const auto original=next();
 		map.setGroundUnit(20,20,map.getGroundUnit(20,20));
 		map.setAirUnit(20,20,map.getAirUnit(20,20));
@@ -491,15 +576,22 @@ TEST_SUITE("WorldSnapshot")
 		CHECK(switched.visibilityAt(index).visible==map.fogOfWar[index]);
 		CHECK(switched.resources==changed.resources); CHECK(switched.occupancy==changed.occupancy);
 	}
-	TEST_CASE("capture requirements exclude arrays that no scheduled consumer requests")
+	TEST_CASE("ordinary boundaries always contain the complete simulation preset")
 	{
 		glob2test::HeadlessGlobals globals;
 		glob2test::HeadlessGame fixture{glob2test::GameOptions{.wDec=5, .hDec=5, .teams=1, .discovered=true, .clearImmobile=true, .loadDefaultRace=true}};
 		SimulationSnapshot::Store store;
-		auto terrain = store.captureBoundary(fixture.game, SimulationSnapshot::bit(SimulationSnapshot::Component::Terrain));
-		REQUIRE(terrain.terrain); CHECK_FALSE(terrain.entities); CHECK_FALSE(terrain.resources); CHECK_FALSE(terrain.growth);
-		CHECK(store.metrics.captures == 1); CHECK(store.metrics.bytesCopied == 1024 * sizeof(Uint16));
-		store.captureBoundary(fixture.game, SimulationSnapshot::bit(SimulationSnapshot::Component::Terrain));
+		const auto world = store.captureBoundary(fixture.game);
+		CHECK(world.requirements == SimulationSnapshot::Simulation);
+		REQUIRE(world.catalogs); REQUIRE(world.terrain); REQUIRE(world.resources);
+		REQUIRE(world.occupancy); REQUIRE(world.areas); REQUIRE(world.visibility);
+		REQUIRE(world.entities); REQUIRE(world.teams); REQUIRE(world.rules);
+		REQUIRE(world.resourceFields); REQUIRE(world.growth);
+		CHECK_FALSE(world.session); CHECK_FALSE(world.effects); CHECK_FALSE(world.statistics);
+		CHECK_FALSE(world.history); CHECK_FALSE(world.telemetry);
+		CHECK_FALSE(world.entityDiagnostics); CHECK_FALSE(world.annotations);
+		const auto again = store.captureBoundary(fixture.game);
+		CHECK(again.entities == world.entities); CHECK(again.terrain == world.terrain);
 		CHECK(store.metrics.captures == 1);
 	}
 	TEST_CASE("vertex changes preserve retained terrain and reuse unchanged versions")
@@ -509,13 +601,12 @@ TEST_SUITE("WorldSnapshot")
 		auto& game = fixture.game;
 		auto& map = game.map;
 		SimulationSnapshot::Store store;
-		const auto required = SimulationSnapshot::bit(SimulationSnapshot::Component::Terrain);
 		map.setVertexTerrain(4, 5, GRASS);
-		const auto original = store.captureBoundary(game, required);
+		const auto original = store.captureBoundary(game);
 		const auto index = map.coordToIndex(4, 5);
 		map.setVertexTerrain(4, 5, WATER);
 		store.invalidateBoundary();
-		const auto changed = store.captureBoundary(game, required);
+		const auto changed = store.captureBoundary(game);
 		CHECK(original.terrain != changed.terrain);
 		CHECK((*original.terrain->vertices)[index] == GRASS);
 		CHECK((*changed.terrain->vertices)[index] == WATER);
@@ -524,7 +615,7 @@ TEST_SUITE("WorldSnapshot")
 		CHECK_NOTHROW(SimulationSnapshot::verifyCapture(game, changed));
 		map.setVertexTerrain(4, 5, WATER);
 		store.invalidateBoundary();
-		CHECK(store.captureBoundary(game, required).terrain == changed.terrain);
+		CHECK(store.captureBoundary(game).terrain == changed.terrain);
 		store.reset();
 		CHECK((*original.terrain->vertices)[index] == GRASS);
 		CHECK((*changed.terrain->vertices)[index] == WATER);
@@ -549,13 +640,13 @@ TEST_SUITE("WorldSnapshot")
 			game.map.setMapDiscovered(20, 20, game.teams[0]->me);
 			game.map.updateMaterialGradient(0, Uint8(materialIndex(MaterialId::Food)), 0);
 			building->priority = int(game.stepCounter);
-			return store.captureBoundary(game, SimulationSnapshot::All);
+			return store.captureBoundary(game, allOptions);
 		};
 		for (int i = 0; i < 6; ++i) mutateAndCapture();
 		const auto warmedAllocations = store.metrics.allocations;
 		const auto warmedMemory = store.memoryMetrics();
 		REQUIRE(warmedMemory.allocatedBuffers > 0);
-		const auto copied = store.metrics.bytesCopied;
+		const auto copied = store.metrics.mapBytesCopied;
 		for (int i = 0; i < 24; ++i) {
 			auto snapshot = mutateAndCapture();
 			CHECK(snapshot.entities->buildings.front().priority == int(game.stepCounter));
@@ -564,7 +655,7 @@ TEST_SUITE("WorldSnapshot")
 			CHECK(memory.allocatedBuffers == warmedMemory.allocatedBuffers);
 			CHECK(memory.capacityBytes == warmedMemory.capacityBytes);
 		}
-		CHECK(store.metrics.bytesCopied > copied);
+		CHECK(store.metrics.mapBytesCopied > copied);
 	}
 	TEST_CASE("pooled captures never overwrite a held worker projection")
 	{
@@ -576,7 +667,7 @@ TEST_SUITE("WorldSnapshot")
 		SimulationSnapshot::Store store;
 		const auto required = SimulationSnapshot::bit(SimulationSnapshot::Component::Resources)
 			| SimulationSnapshot::bit(SimulationSnapshot::Component::Entities);
-		auto full = store.captureBoundary(game, SimulationSnapshot::All);
+		auto full = store.captureBoundary(game, allOptions);
 		auto held = full.project(required);
 		full = {};
 		const int oldPriority = held.entities->buildings.front().priority;
@@ -586,7 +677,7 @@ TEST_SUITE("WorldSnapshot")
 			++game.stepCounter;
 			building->priority = oldPriority + i + 1;
 			game.map.setResourceByIndex(20, 20,WHEAT, 1);
-			auto latest = store.captureBoundary(game, SimulationSnapshot::All);
+			auto latest = store.captureBoundary(game, allOptions);
 			CHECK(latest.resources != held.resources);
 			CHECK(latest.entities != held.entities);
 			CHECK(held.entities->buildings.front().priority == oldPriority);
@@ -682,7 +773,7 @@ TEST_SUITE("WorldSnapshot")
 		SimulationSnapshot::Store store;
 		auto checkParity = [&] {
 			++game.stepCounter;
-			auto snapshot = store.captureBoundary(game, SimulationSnapshot::All);
+			auto snapshot = store.captureBoundary(game, allOptions);
 			for (int y = 0; y < game.map.getH(); ++y)
 				for (int x = 0; x < game.map.getW(); ++x)
 					CHECK(snapshot.tileAt(game.map.coordToIndex(x, y)).canPaintFarm == game.map.canPaintFarmArea(x, y));
@@ -701,6 +792,35 @@ TEST_SUITE("WorldSnapshot")
 		CHECK_FALSE(checkParity().tileAt(grassIndex).canPaintFarm);
 	}
 
+	TEST_CASE("statistics inputs and entity records reuse buffers without changing held generations")
+	{
+		glob2test::HeadlessGlobals globals;
+		glob2test::HeadlessGame fixture{glob2test::GameOptions{.loadDefaultRace=true}};
+		auto* unit=fixture.addUnit(WORKER,12,12);
+		fixture.team->stats.enableCollection();
+		SimulationSnapshot::Store store;
+		store.setVerification(true);
+		fixture.team->stats.events().births[WORKER]=1;
+		auto held=store.captureBoundary(fixture.game);
+		const auto oldHP=unit->hp;
+		for(unsigned tick=1;tick<10;++tick) {
+			fixture.game.stepCounter=tick; unit->hp=oldHP-int(tick);
+			fixture.team->stats.events().births[WORKER]=tick+1;
+			const auto current=store.captureBoundary(fixture.game);
+			CHECK(current.statisticsInputs->events[0].births[WORKER]==tick+1);
+			CHECK(current.entities->units[0].hp==unit->hp);
+			CHECK(held.statisticsInputs->events[0].births[WORKER]==1);
+			CHECK(held.entities->units[0].hp==oldHP);
+		}
+		const auto allocations=store.metrics.allocations;
+		const auto buffers=store.memoryMetrics().allocatedBuffers;
+		for(unsigned tick=10;tick<20;++tick) {
+			fixture.game.stepCounter=tick;
+			store.captureBoundary(fixture.game);
+		}
+		CHECK(store.metrics.allocations==allocations);
+		CHECK(store.memoryMetrics().allocatedBuffers==buffers);
+	}
 	TEST_CASE("memory metrics distinguish held epochs from reusable high water capacity")
 	{
 		glob2test::HeadlessGlobals globals;
@@ -708,20 +828,24 @@ TEST_SUITE("WorldSnapshot")
 		auto& game = fixture.game;
 		SimulationSnapshot::Store store;
 		const auto resources = SimulationSnapshot::bit(SimulationSnapshot::Component::Resources);
-		const auto areas = SimulationSnapshot::bit(SimulationSnapshot::Component::Areas);
-		auto initial = store.captureBoundary(game, resources | areas);
+		auto initial = store.captureBoundary(game);
 		auto held = initial.project(resources);
 		initial = {};
 		const auto first = store.memoryMetrics();
-		CHECK(first.allocatedBuffers == 2); CHECK(first.leasedBuffers == 2); CHECK(first.reusableBuffers == 0);
+		CHECK(first.allocatedBuffers > 2); CHECK(first.reusableBuffers == 0);
+		CHECK(first.leasedBuffers == first.allocatedBuffers);
 		++game.stepCounter; game.map.setResourceByIndex(20, 20,WHEAT, 1);
-		store.captureBoundary(game, resources);
+		store.captureBoundary(game);
 		const auto retained = store.memoryMetrics();
-		CHECK(retained.allocatedBuffers == 3); CHECK(retained.leasedBuffers == 2); CHECK(retained.reusableBuffers == 1);
+		// The fixed preset refreshes entities, teams and field wrappers too.
+		CHECK(retained.allocatedBuffers > first.allocatedBuffers);
+		CHECK(retained.leasedBuffers == first.leasedBuffers + 1);
+		CHECK(retained.reusableBuffers == retained.allocatedBuffers - retained.leasedBuffers);
 		CHECK(retained.retainedBytes > first.retainedBytes);
 		held = {};
 		const auto released = store.memoryMetrics();
-		CHECK(released.leasedBuffers == 1); CHECK(released.reusableBuffers == 2);
+		CHECK(released.leasedBuffers == retained.leasedBuffers - 1);
+		CHECK(released.reusableBuffers == retained.reusableBuffers + 1);
 		CHECK(released.retainedBytes == retained.retainedBytes); CHECK(released.capacityBytes == retained.capacityBytes);
 		CHECK(released.leasedBytes < retained.leasedBytes);
 		CHECK(released.peakLeasedBytes == retained.peakLeasedBytes);
@@ -737,22 +861,20 @@ TEST_SUITE("WorldSnapshot")
 		auto& game = fixture.game; auto& map = game.map;
 		SimulationSnapshot::Store store;
 		store.setVerification(true);
-		// Map arrays only: entity and team records are copied whole every capture.
-		const auto arrays = SimulationSnapshot::bit(SimulationSnapshot::Component::Resources)
-			| SimulationSnapshot::bit(SimulationSnapshot::Component::Occupancy) | SimulationSnapshot::bit(SimulationSnapshot::Component::Areas);
-		const auto next = [&] { ++game.stepCounter; return store.captureBoundary(game, arrays); };
+		// The exact map counter excludes the preset's entity and team records.
+		const auto next = [&] { ++game.stepCounter; return store.captureBoundary(game); };
 		auto first = next();
 		map.setResourceByIndex(5, 5, WHEAT, 1);
 		auto second = next(); // first still holds buffer A, so B is filled completely
 		CHECK(second.resources != first.resources);
 		first = {};
-		const auto before = store.metrics.bytesCopied;
+		const auto before = store.metrics.mapBytesCopied;
 		map.setResourceByIndex(6, 6, WHEAT, 1); // same chunk as the first change
 		auto third = next(); // reuses A: only the changed chunk moves
 		const auto chunkCells = MapState::ChunkGeometry::Side * MapState::ChunkGeometry::Side;
 		const auto expected = chunkCells * sizeof(SimulationSnapshot::ResourceCell)
 			+ (map.resourceStockIndexState().empty() ? 0 : chunkCells * sizeof(Uint32));
-		CHECK(store.metrics.bytesCopied - before == expected);
+		CHECK(store.metrics.mapBytesCopied - before == expected);
 		CHECK(third.occupancy == second.occupancy); CHECK(third.areas == second.areas);
 		CHECK(third.resources != second.resources);
 		CHECK(third.resourceAt(map.coordToIndex(5, 5)).resource.type == WHEAT);
@@ -761,10 +883,10 @@ TEST_SUITE("WorldSnapshot")
 		// Buffer B last saw the world at the second capture, so reusing it moves
 		// three dirty chunks out of four trigger a contiguous refresh.
 		second = {};
-		const auto threeBefore = store.metrics.bytesCopied;
+		const auto threeBefore = store.metrics.mapBytesCopied;
 		map.setResourceByIndex(20, 20, WOOD, 1); map.setResourceByIndex(5, 20, STONE, 1);
 		auto fourth = next();
-		CHECK(store.metrics.bytesCopied - threeBefore == 4 * expected);
+		CHECK(store.metrics.mapBytesCopied - threeBefore == 4 * expected);
 		CHECK(sameCells(fourth.resources->cells, map.resourceState()));
 		CHECK(third.resourceAt(map.coordToIndex(20, 20)).resource.type != WOOD);
 		// Keep A held so the next capture must allocate C, then reuse the
@@ -773,9 +895,9 @@ TEST_SUITE("WorldSnapshot")
 		auto fifth = next();
 		fourth = {};
 		map.setResourceByIndex(22, 22, WOOD, 1);
-		const auto sparseBefore = store.metrics.bytesCopied;
+		const auto sparseBefore = store.metrics.mapBytesCopied;
 		auto sixth = next();
-		CHECK(store.metrics.bytesCopied - sparseBefore == expected);
+		CHECK(store.metrics.mapBytesCopied - sparseBefore == expected);
 		CHECK(sameCells(sixth.resources->cells, map.resourceState()));
 		CHECK(fifth.resourceAt(map.coordToIndex(22, 22)).resource.type != WOOD);
 	}
@@ -793,18 +915,18 @@ TEST_SUITE("WorldSnapshot")
 		REQUIRE_FALSE(map.resourceStockState().empty());
 		SimulationSnapshot::Store store;
 		store.setVerification(true);
-		const auto next = [&] { ++game.stepCounter; return store.captureBoundary(game, SimulationSnapshot::bit(SimulationSnapshot::Component::Resources)); };
+		const auto next = [&] { ++game.stepCounter; return store.captureBoundary(game); };
 		auto first = next();
-		CHECK(store.metrics.bytesCopied == map.resourceState().size_bytes()
+		CHECK(store.metrics.mapBytesCopied >= map.resourceState().size_bytes()
 			+ map.resourceStockIndexState().size_bytes() + map.resourceStockState().size_bytes());
 		map.setResourceByIndex(6, 6, type, 1);
 		auto second = next();
 		first = {};
 		map.setResourceByIndex(7, 7, type, 1);
-		const auto before = store.metrics.bytesCopied;
+		const auto before = store.metrics.mapBytesCopied;
 		auto third = next();
 		const auto chunkCells = MapState::ChunkGeometry::Side * MapState::ChunkGeometry::Side;
-		CHECK(store.metrics.bytesCopied - before == chunkCells * (sizeof(SimulationSnapshot::ResourceCell) + sizeof(Uint32))
+		CHECK(store.metrics.mapBytesCopied - before == chunkCells * (sizeof(SimulationSnapshot::ResourceCell) + sizeof(Uint32))
 			+ map.resourceStockState().size_bytes());
 		CHECK(sameCells(third.resources->cells, map.resourceState()));
 		CHECK(sameCells(third.resources->stockIndices, map.resourceStockIndexState()));
@@ -817,8 +939,7 @@ TEST_SUITE("WorldSnapshot")
 		auto& game = fixture.game; auto& map = game.map;
 		SimulationSnapshot::Store store;
 		store.setVerification(true);
-		const auto areas = SimulationSnapshot::bit(SimulationSnapshot::Component::Areas);
-		const auto next = [&] { ++game.stepCounter; return store.captureBoundary(game, areas); };
+		const auto next = [&] { ++game.stepCounter; return store.captureBoundary(game); };
 		auto held = next();                       // buffer A, retained by a slow consumer
 		map.addForbidden(2, 2, 0);
 		auto b = next();                          // buffer B, full fill
@@ -826,19 +947,19 @@ TEST_SUITE("WorldSnapshot")
 		auto c = next();                          // buffer C, full fill (A and B both held)
 		b = {};
 		map.addClearArea(21, 21, 0);              // same chunk as the guard area
-		const auto before = store.metrics.bytesCopied;
+		const auto before = store.metrics.mapBytesCopied;
 		auto d = next();                          // B is the newest free buffer: one chunk since its fill
 		const auto chunkBytes = MapState::ChunkGeometry::Side * MapState::ChunkGeometry::Side * sizeof(SimulationSnapshot::AreaCell);
-		CHECK(store.metrics.bytesCopied - before == chunkBytes);
+		CHECK(store.metrics.mapBytesCopied - before == chunkBytes);
 		CHECK(sameCells(d.areas->cells, map.areaState()));
 		CHECK(held.areasAt(map.coordToIndex(2, 2)).forbidden == 0);
 		CHECK(held.areasAt(map.coordToIndex(20, 20)).guard == 0);
 		held = {};
-		const auto reuseBefore = store.metrics.bytesCopied;
+		const auto reuseBefore = store.metrics.mapBytesCopied;
 		map.addForbidden(3, 3, 0);
 		auto e = next();                          // C is newer than A: chunks since C's fill only
 		// Exactly half dirty remains a sparse copy.
-		CHECK(store.metrics.bytesCopied - reuseBefore == 2 * chunkBytes);
+		CHECK(store.metrics.mapBytesCopied - reuseBefore == 2 * chunkBytes);
 		CHECK(sameCells(e.areas->cells, map.areaState()));
 	}
 	TEST_CASE("capture verification rejects writes that bypass the change trackers")
@@ -848,7 +969,7 @@ TEST_SUITE("WorldSnapshot")
 		auto& game = fixture.game; auto& map = game.map;
 		SimulationSnapshot::Store store;
 		store.setVerification(true);
-		const auto next = [&] { ++game.stepCounter; return store.captureBoundary(game, SimulationSnapshot::All); };
+		const auto next = [&] { ++game.stepCounter; return store.captureBoundary(game, allOptions); };
 		auto first = next();
 		map.setFertility(4, 4, 9);
 		auto second = next();
@@ -857,24 +978,98 @@ TEST_SUITE("WorldSnapshot")
 		CHECK_THROWS_WITH_AS(next(), "snapshot verification: resources chunk 0 differs from the live map", std::logic_error);
 		map.markResource(map.coordToIndex(4, 4));
 		CHECK_NOTHROW(next());
-		CHECK(store.captureBoundary(game, SimulationSnapshot::All).resourceAt(map.coordToIndex(4, 4)).fertility == 10);
+		CHECK(store.captureBoundary(game, allOptions).resourceAt(map.coordToIndex(4, 4)).fertility == 10);
 	}
-	TEST_CASE("same tick component expansion preserves narrow leases and captures arrays once")
+	TEST_CASE("same boundary presentation additions reuse maps and remain outside simulation leases")
 	{
 		glob2test::HeadlessGlobals globals;
 		glob2test::HeadlessGame fixture{glob2test::GameOptions{.wDec=5, .hDec=5, .teams=1, .discovered=true, .clearImmobile=true, .loadDefaultRace=true}};
 		SimulationSnapshot::Store store;
-		const auto terrainMask = SimulationSnapshot::bit(SimulationSnapshot::Component::Terrain);
-		auto terrain = store.captureBoundary(fixture.game, terrainMask);
-		const auto terrainBytes = store.metrics.bytesCopied;
-		auto full = store.captureBoundary(fixture.game, SimulationSnapshot::All);
-		CHECK(full.terrain == terrain.terrain); CHECK_FALSE(terrain.resources); CHECK_FALSE(terrain.entities);
-		CHECK(store.metrics.captures == 2); CHECK(store.metrics.reusedComponents >= 1);
-		const auto bytes = store.metrics.bytesCopied;
-		CHECK(bytes > terrainBytes);
-		auto resources = store.captureBoundary(fixture.game, SimulationSnapshot::bit(SimulationSnapshot::Component::Resources));
-		CHECK(resources.resources == full.resources); CHECK_FALSE(resources.terrain); CHECK_FALSE(resources.entities);
-		CHECK(store.metrics.bytesCopied == bytes); CHECK(store.metrics.captures == 2);
+		store.setDetailedMetrics(true);
+		auto* unit = fixture.addUnit(WORKER, 12, 12, 0);
+		auto* building = fixture.addBuilding("inn", 4, 4, 0, 0);
+		REQUIRE(unit); REQUIRE(building);
+		building->unitsWorking.push_back(unit);
+		const auto simulation = store.captureBoundary(fixture.game);
+		const auto mapBytes = store.metrics.mapBytesCopied;
+		const auto full = store.captureBoundary(fixture.game, {.presentation=true, .history=true});
+		CHECK(full.terrain == simulation.terrain); CHECK(full.resources == simulation.resources);
+		CHECK(full.entities == simulation.entities);
+		REQUIRE(full.entities->units.size() == 1);
+		CHECK(full.entities->relationships.front() == Game::refOf(unit));
+		CHECK_FALSE(simulation.session); CHECK_FALSE(simulation.history);
+		REQUIRE(full.session); REQUIRE(full.effects); REQUIRE(full.statistics); REQUIRE(full.history);
+		CHECK(store.metrics.captures == 2);
+		const auto bytes = store.metrics.mapBytesCopied;
+		CHECK(bytes == mapBytes);
+		const auto reused = store.captureBoundary(fixture.game).simulationView();
+		CHECK(reused.resources == full.resources); CHECK(reused.entities == full.entities);
+		CHECK_FALSE(reused.session); CHECK_FALSE(reused.history);
+		CHECK(store.metrics.mapBytesCopied == bytes); CHECK(store.metrics.captures == 2);
+		CHECK_FALSE(simulation.supportsPresentation());
+		CHECK(full.supportsPresentation({.history=true}));
+		CHECK_FALSE(full.supportsPresentation({.telemetry=true}));
+		const auto frame = full.presentationView();
+		CHECK(frame.supportsPresentation());
+		CHECK(frame.supportsPresentation({.presentation=true}));
+		CHECK_FALSE(frame.resourceFields); CHECK_FALSE(frame.statisticsInputs);
+
+		CHECK_FALSE(frame.history);
+		CHECK_FALSE(frame.supportsPresentation({.history=true}));
+		CHECK(full.presentationView({.history=true}).supportsPresentation({.history=true}));
+	}
+
+	TEST_CASE("presentation upgrades refresh entities after each owner boundary change")
+	{
+		glob2test::HeadlessGlobals globals;
+		for (unsigned change = 0; change < 5; ++change) {
+			CAPTURE(change);
+			glob2test::HeadlessGame fixture{glob2test::GameOptions{.wDec=5, .hDec=5, .teams=1, .loadDefaultRace=true}};
+			auto& game = fixture.game;
+			auto* unit = fixture.addUnit(WORKER, 12, 12, 0);
+			REQUIRE(unit);
+			SimulationSnapshot::Store store;
+			const auto before = store.captureBoundary(game);
+			const auto oldHp = unit->hp;
+			--unit->hp;
+			switch (change) {
+			case 0: ++game.stepCounter; break;
+			case 1: store.invalidateBoundary(); break;
+			case 2: game.gameHeader.setAIOrderDelay(1); break;
+			case 3: game.map.setResourceByIndex(20, 20, WHEAT, 1); break;
+			case 4: store.reset(); break;
+			}
+			const auto after = store.captureBoundary(game, {.presentation=true});
+			CHECK(after.entities != before.entities);
+			CHECK(after.entities->units.front().hp == oldHp - 1);
+			CHECK(before.entities->units.front().hp == oldHp);
+		}
+	}
+	TEST_CASE("same boundary entity reuse is excluded from copied byte accounting")
+	{
+		glob2test::HeadlessGlobals globals;
+		glob2test::HeadlessGame fixture{glob2test::GameOptions{.wDec=5, .hDec=5, .teams=1, .loadDefaultRace=true}};
+		REQUIRE(fixture.addUnit(WORKER, 12, 12, 0));
+		SimulationSnapshot::Store reusedStore, freshStore;
+		reusedStore.setDetailedMetrics(true); freshStore.setDetailedMetrics(true);
+		const auto before = reusedStore.captureBoundary(fixture.game);
+		freshStore.captureBoundary(fixture.game);
+		freshStore.invalidateBoundary();
+		const auto reusedBytes = reusedStore.metrics.bytesCopied;
+		const auto freshBytes = freshStore.metrics.bytesCopied;
+		const auto reused = reusedStore.captureBoundary(fixture.game, {.presentation=true});
+		const auto fresh = freshStore.captureBoundary(fixture.game, {.presentation=true});
+		CHECK(reused.entities == before.entities);
+		CHECK(fresh.entities != before.entities);
+		const auto& entities = *fresh.entities;
+		const auto entityBytes = entities.buildings.size() * sizeof(SimulationSnapshot::BuildingView)
+			+ entities.units.size() * sizeof(SimulationSnapshot::UnitView)
+			+ entities.projects.size() * sizeof(SimulationSnapshot::BuildProjectView)
+			+ (entities.buildingSlotIndices.size() + entities.unitSlotIndices.size()) * sizeof(Uint32)
+			+ entities.relationships.size() * sizeof(UnitRef);
+		CHECK((freshStore.metrics.bytesCopied - freshBytes)
+			- (reusedStore.metrics.bytesCopied - reusedBytes) == entityBytes);
+		CHECK(reusedStore.metrics.reusedComponents == freshStore.metrics.reusedComponents + 1);
 	}
 
 }
@@ -888,16 +1083,14 @@ TEST_CASE("explicit observation boundaries refresh paused state and retain old l
     auto* unit = fixture.addUnit(WORKER,12,12,0);
     REQUIRE(unit);
     auto& store = fixture.game.snapshots();
-    constexpr auto needed = SimulationSnapshot::bit(SimulationSnapshot::Component::Entities)
-        | SimulationSnapshot::bit(SimulationSnapshot::Component::Terrain);
-    const auto before = store.captureBoundary(fixture.game, needed);
+    const auto before = store.captureBoundary(fixture.game);
     const auto previousHp = before.entities->units.front().hp;
     unit->hp -= 1;
     // Captures within a declared boundary stay coherent, even if a caller
     // prematurely writes. Only the owner's explicit boundary makes it visible.
-    CHECK(store.captureBoundary(fixture.game, needed).entities == before.entities);
+    CHECK(store.captureBoundary(fixture.game).entities == before.entities);
     store.invalidateBoundary();
-    const auto after = store.captureBoundary(fixture.game, needed);
+    const auto after = store.captureBoundary(fixture.game);
     CHECK(after.tick == before.tick);
     CHECK(after.observationRevision == before.observationRevision + 1);
     CHECK(after.entities->units.front().hp == previousHp - 1);
@@ -909,7 +1102,7 @@ TEST_CASE("explicit observation boundaries refresh paused state and retain old l
     fixture.game.clearAI();
     // Store reset does not invalidate handles already owned by consumers.
     CHECK(before.entities->units.front().hp == previousHp);
-    CHECK(fixture.game.snapshots().captureBoundary(fixture.game, needed).entities->units.front().hp == previousHp - 1);
+    CHECK(fixture.game.snapshots().captureBoundary(fixture.game).entities->units.front().hp == previousHp - 1);
 }
 }
 
@@ -969,6 +1162,7 @@ TEST_SUITE("WorldSnapshot")
         SUBCASE("unit order") { std::swap(entities->units[0],entities->units[1]); }
         SUBCASE("unit lookup") { entities->unitSlotIndices[worker->gid]=SimulationSnapshot::Entities::NoRecord; }
         SUBCASE("unit team") { entities->units[0].team=1; }
+        SUBCASE("unit attack strength") { ++entities->units[0].realAttackStrength; }
         SUBCASE("working reference") { entities->relationships[entities->buildings[0].working.offset]=Game::refOf(occupant); }
         SUBCASE("inside reference") { entities->relationships[entities->buildings[0].inside.offset]=Game::refOf(worker); }
         SUBCASE("working count") { entities->buildings[0].working.count=0; }

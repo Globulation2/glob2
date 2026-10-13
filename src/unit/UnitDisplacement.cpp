@@ -102,7 +102,7 @@ void Unit::handleDisplacement(void)
 				{
 					// we got the resource.
 					receiveCarriedMaterial(destinationPurpose,{});
-					++owner->stats.measurements.harvested[destinationPurpose];
+					++owner->stats.events().harvested[destinationPurpose];
 
 					if (continueCargoCollection()) break;
 
@@ -375,7 +375,7 @@ void Unit::handleDisplacement(void)
 					const auto courses=trainingVisit && !owner->game->gameHeader.isUnitUpgradesDisabled()
 						? trainingVisitCourses(*attachedBuilding,destinationPurpose) : std::optional<Uint32>{};
 					if (trainingVisit && !owner->game->gameHeader.isUnitUpgradesDisabled() && courses)
-						++owner->stats.measurements.trainingVisits[typeNum];
+						++owner->stats.events().trainingVisits[typeNum];
 
 					if (destinationPurpose==FEED)
 					{
@@ -387,8 +387,8 @@ void Unit::handleDisplacement(void)
 					else if (destinationPurpose==HEAL)
 					{
 						attachedBuilding->settleService(this);
-						++attachedBuilding->owner->stats.measurements.healingVisits;
-						attachedBuilding->owner->stats.measurements.hpRestored +=
+						++attachedBuilding->owner->stats.events().healingVisits;
+						attachedBuilding->owner->stats.events().hpRestored +=
 							std::max<Sint64>(0, Sint64(performance[HP]) - hp);
 						hp=performance[HP];
 						if (owner->game->areaEffects.enabled()) areaServiceRemainders[BuildingAreaEffects::Healing]=0;
@@ -417,7 +417,7 @@ void Unit::handleDisplacement(void)
 							applyTrainingUnchecked(attachedBuilding->type->semantics.training[destinationPurpose], destinationPurpose);
 
 						for (int a = 0; a < NB_ABILITY; ++a)
-							owner->stats.measurements.abilityGains[typeNum][a] +=
+							owner->stats.events().abilityGains[typeNum][a] +=
 								std::max(0, level[a] - previousLevels[a]);
 					}
 				}
@@ -545,7 +545,7 @@ void Unit::applyPartialInsideBenefit()
 		if (attachedBuilding->type->semantics.healing.partial == BuildingPartialService::None) return;
 		attachedBuilding->settleService(this);
 		const Sint64 restored = ((Sint64(performance[HP]) - hp) * elapsed) / total;
-		attachedBuilding->owner->stats.measurements.hpRestored += std::max<Sint64>(0, restored);
+		attachedBuilding->owner->stats.events().hpRestored += std::max<Sint64>(0, restored);
 		hp=int(Sint64(hp)+restored);
 		if (hp>=performance[HP] && owner->game->areaEffects.enabled()) areaServiceRemainders[BuildingAreaEffects::Healing]=0;
 	}

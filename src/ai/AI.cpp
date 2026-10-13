@@ -151,15 +151,6 @@ std::shared_ptr<Order> AI::getOrder(bool paused)
 	return order;
 }
 
-SimulationSnapshot::Requirements AI::observationRequirements() const
-{
- auto required=aiImplementation->observationRequirements();
- if(implementationID!=JAVASCRIPT && player->game->gameHeader.isUnitUpgradesDisabled())
-  required|=SimulationSnapshot::bit(SimulationSnapshot::Component::Catalogs)
-   |SimulationSnapshot::bit(SimulationSnapshot::Component::Entities)
-   |SimulationSnapshot::bit(SimulationSnapshot::Component::Rules);
- return required;
-}
 void AI::prepareDecision()
 {
 	if (!aiImplementation->supportsObservation()) throw std::logic_error("AI decision boundary audit incomplete");

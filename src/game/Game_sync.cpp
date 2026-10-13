@@ -217,7 +217,9 @@ void Game::prestigeSyncStep()
 void Game::syncStep(Sint32 localTeam, PreparationCompletion completion)
 {
 	map.applyGradientBackendRequest();
-	map.preparePendingWorld();
+    // Also serves standalone/headless callers without an Engine read boundary.
+    const auto observed=prepareReadBoundary(anyPlayerWaited);
+	map.preparePendingWorld(observed);
 	applyClientRequests();
 	if (!anyPlayerWaited)
 	{
@@ -242,7 +244,7 @@ void Game::syncStep(Sint32 localTeam, PreparationCompletion completion)
 		if ((stepCounter & 31) == 0)
 		{
 			for (int t = 0; t < mapHeader.getNumberOfTeams(); ++t)
-				AITelemetry::capture(teams[t], false, false);
+				AITelemetry::capture(teams[t], (stepCounter & 511)==0, getenv("GLOB2_TEAM_TIMELINE")!=nullptr);
 			if (globalContainer->replayWriter)
 				globalContainer->replayWriter->captureTelemetry();
 		}

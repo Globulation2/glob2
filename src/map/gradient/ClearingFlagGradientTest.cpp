@@ -175,6 +175,6 @@ TEST_CASE("empty persistent deposits remain clearing flag goals and worker targe
         CHECK(worker->dy==0);
         worker->handleMovementClearingResources();
         CHECK(map.getResource(index).type==NO_RES_TYPE);
-        CHECK(f.game.teams[0]->stats.measurements.cleared[materialIndex(MaterialId::Gold)]==1);
+        CHECK(f.game.teams[0]->stats.measurements().cleared[materialIndex(MaterialId::Gold)]==1);
     }
 }
