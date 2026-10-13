@@ -27,7 +27,7 @@ constexpr const char *phases[] = {"attempt", "consumption",          "subscripti
 								  "swap",    "field_initialization", "field_extension"};
 constexpr const char *counters[] = {
 	"visits",          "qualifications", "building_queries", "resource_queries", "hires",
-	"failed_attempts", "busy",           "rejected"};
+	"failed_attempts", "busy",           "rejected",         "missing_lists",    "exhausted_lists"};
 } // namespace
 thread_local Row *active = nullptr;
 std::atomic<bool> collecting{false};

@@ -293,7 +293,10 @@ bool Building::hireMaterialUnit(const int *targets, const int *served)
 	HiringDiagnostics::Scope consume(HiringDiagnostics::Phase::Consumption);
 	const auto *lists = owner->game->hiringCandidates(*this);
 	if (!lists)
+	{
+		HiringDiagnostics::add(HiringDiagnostics::Counter::MissingLists);
 		return false;
+	}
 	const Map &map = *owner->map;
 	field::AirDistanceField air(
 		map.getW(), map.getH(), posX, posY,
@@ -356,7 +359,10 @@ bool Building::hireMaterialUnit(const int *targets, const int *served)
 			selected = choose(Hiring::Job::Fetch, order[i]);
 	}
 	if (!selected)
+	{
+		HiringDiagnostics::add(HiringDiagnostics::Counter::ExhaustedLists);
 		return false;
+	}
 	unitsWorking.push_back(selected);
 	{
 		HiringDiagnostics::Scope admission(*this, HiringDiagnostics::Phase::Subscription);
@@ -578,7 +584,10 @@ bool Building::hireFlagUnits()
 	HiringDiagnostics::Scope consume(HiringDiagnostics::Phase::Consumption);
 	const auto *lists = owner->game->hiringCandidates(*this);
 	if (!lists)
+	{
+		HiringDiagnostics::add(HiringDiagnostics::Counter::MissingLists);
 		return false;
+	}
 	const Map &map = *owner->map;
 	field::AirDistanceField air(
 		map.getW(), map.getH(), posX, posY,
@@ -641,7 +650,10 @@ bool Building::hireFlagUnits()
 				}
 			}
 		if (!selected)
+		{
+			HiringDiagnostics::add(HiringDiagnostics::Counter::ExhaustedLists);
 			break;
+		}
 		unitsWorking.push_back(selected);
 		{
 			HiringDiagnostics::Scope admission(*this, HiringDiagnostics::Phase::Subscription);

@@ -33,6 +33,8 @@ enum class Counter : unsigned
 	FailedAttempts,
 	Busy,
 	Rejected,
+	MissingLists,
+	ExhaustedLists,
 	Count
 };
 struct Row
