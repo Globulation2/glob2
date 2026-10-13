@@ -194,7 +194,8 @@ private:
 std::shared_ptr<const std::vector<BuildingKindView>> captureCatalog(const Game& game);
 struct Storage;
 Handle capture(const Game& game, std::shared_ptr<const std::vector<BuildingKindView>> catalog,
-	Requirements requirements = All, const Handle* previous = nullptr, Storage* storage = nullptr);
+	Requirements requirements = All, const Handle* previous = nullptr, Storage* storage = nullptr,
+	bool unchangedBoundary = false);
 //! Throw if a captured map array or entity list differs from the live game.
 void verifyCapture(const Game& game, const Handle& handle);
 } // namespace SimulationSnapshot

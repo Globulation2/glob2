@@ -8,10 +8,12 @@ Handle Store::captureBoundary(const Game& game, CaptureOptions options)
 {
 	auto required = captureRequirements(options);
 	if (latest && latest->worldIdentity != game.map.identity()) reset();
+	bool unchangedBoundary = false;
 	if (latest && latest->tick == game.stepCounter && latest->observationRevision == observationRevision
         && latest->configurationRevision == game.gameHeader.observationRevision()
         && latest->mapGenerations == game.map.snapshotGenerations()) {
 		if ((required & latest->requirements) == required) return *latest;
+		unchangedBoundary = true;
 		required |= latest->requirements;
 	}
 	const auto start = std::chrono::steady_clock::now();
@@ -21,7 +23,7 @@ Handle Store::captureBoundary(const Game& game, CaptureOptions options)
 		catalogConfigurationRevision = game.gameHeader.observationRevision();
 	}
 	const auto copiedBefore = storage.bytesCopied;
-	auto next = capture(game, catalog, required, latest ? &*latest : nullptr, &storage);
+	auto next = capture(game, catalog, required, latest ? &*latest : nullptr, &storage, unchangedBoundary);
 	next.observationRevision = observationRevision;
 	metrics.mapBytesCopied += storage.bytesCopied - copiedBefore;
 	if (detailedMetrics || game.map.computeExecutor().telemetryEnabled()) {
@@ -59,7 +61,8 @@ void Store::accountCapture(const Handle& next, const Handle& previous, Uint64 co
 		const auto sizes=next.growth->storageSizes();
 		account(next.growth,previous.growth,(sizes[0]+sizes[1])*sizeof(Uint32)+sizes[2]*sizeof(Uint16));
 	}
-	if (next.entities) {
+	if (next.entities && next.entities == previous.entities) ++metrics.reusedComponents;
+	else if (next.entities) {
 		metrics.bytesCopied += next.entities->buildings.size() * sizeof(BuildingView) + next.entities->units.size() * sizeof(UnitView)
 			+ next.entities->projects.size() * sizeof(BuildProjectView)
             + (next.entities->buildingSlotIndices.size() + next.entities->unitSlotIndices.size()) * sizeof(Uint32);
