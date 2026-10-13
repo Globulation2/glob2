@@ -591,8 +591,10 @@ bool SoftwareTerrainCache::tryBuildCpuPage(Chunk &page,
         sizeof(TerrainVisual::Compositor::CellMask) + sizeof(Tile) + 256;
     const std::size_t allowance = bytes() <= budget ? std::min({inFlightLimit, budget - bytes(), GAGCore::RenderWorkReservation::available()}) : 0;
     const std::size_t fixed = materialBytes * 2 + perCell * 2;
+    // Amortize synchronous tickets across more cells without increasing any
+    // callback's 16K-sample bound or exceeding the reservation/headroom limits.
     const std::size_t groupCells =
-        allowance > fixed ? std::min(std::size_t(32), (allowance - fixed) / perCell) : 0;
+        allowance > fixed ? std::min(std::size_t(64), (allowance - fixed) / perCell) : 0;
     const std::size_t reserve = fixed + perCell * groupCells;
     if (groupCells < 2) return false;
     GAGCore::RenderWorkReservation workReservation;

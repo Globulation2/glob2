@@ -152,7 +152,7 @@ subsequent preparation rebuilds every cell.
 Opacity classification selects an opaque or empty predicate from the first pixel and
 scans once; cells starting with partial alpha need neither uniform scan. Workers reuse
 bounded scratch and never create `HeldMask` or drawable objects. Jobs sample at most 16K
-pixels; a group admits up to 32 changed cells under a 4 MiB additional reservation and
+pixels; a group admits up to 64 changed cells under a 4 MiB additional reservation and
 available cache headroom. Queued raster sources and active terrain work share an
 additional 8 MiB owner reservation ceiling; raster bookkeeping reserves 2 MiB within it
 for the backend lifetime, including retained vector capacity. Source allocations are
