@@ -97,3 +97,11 @@ python3 software-raster-depth/analyze_final.py
 Privileged read-only perf and the audited temporary cgroup require existing host permissions; no perf security or global CPU setting changes were made. The supplied cpuset example is specific to this machine and must fail on incompatible topology. Run timing independently of profilers/builds. Exact original commands/environments remain in every profile metadata and comparison manifest.
 
 Evidence is isolated on a dedicated orphan branch; these generated reports, profiles and executables are not production PR contents.
+
+## Latest-master functional integration supplement
+
+Final integrated revision **7be681f05d26093249b0d1ec47a153280274eb37** is validated against master **7556a9ecb**. Build succeeds; 78 focused unit, 159 affected engine and 24 display cases pass. Four half/native GUI immediate/parallel smoke runs pass with exact per-case capture equality. Commands, environments, JUnit XML, build context, logs and generated test artifacts are retained in `integration.tar.gz`; `integration-file-manifest.json` inventories and hashes them.
+
+These final checks use development builds (`dev_fast=1`, `-O0 -g1`) and establish functional integration only. They do not establish new timing or PMU results on the later master base. The five measured raster/backend/source/benchmark blobs are unchanged, as recorded in the included latest-source JSON; shared executor/snapshot/statistics integration is covered by the expanded functional cases. The original release performance measurements remain scoped to measured revision 49bddcbed against base 6b95.
+
+Verify updated `SHA256SUMS` and extract `integration.tar.gz` alongside the original evidence archive. Platform limitations and absent human playtest described above still apply.

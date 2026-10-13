@@ -1,0 +1,13 @@
+{
+  "revision": "7be681f05d26093249b0d1ec47a153280274eb37",
+  "base": "7556a9ecb",
+  "build_command": "GLOB2_SDL3_PREFIX=/home/bradley/glob2/build/sdl3/prefix python3 tools/dev_build.py -j8 unit-tests engine-tests software-render-benchmark",
+  "build_exit_code": 0,
+  "flags": "dev_fast=1 linker=auto -O0 -g1",
+  "binary_sha256": {
+    "glob2-unit-tests": "9145b20e7dc988b08cb5e0dd07d611861d44fbf8e09734ddecaa121d21b10b44",
+    "glob2-engine-tests": "9604ac6650514078068a9c691b5b2f5fddd1ee38af6ee449d1730af4766ce7ef",
+    "SoftwareRenderBenchmark": "4b7f003f14ef119e418f9daef5efb46691ffe0c8888749db4049625eac78386e"
+  },
+  "measurement_boundary": "Final integration checks are functional only. No latency or PMU claims for this newer master base."
+}

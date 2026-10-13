@@ -1,0 +1,32 @@
+{
+  "tested_revision": "7be681f05d26093249b0d1ec47a153280274eb37",
+  "integration_base": "7556a9ecb",
+  "measured_revision": "49bddcbeda51d0ecc980b9d8a1e03592d4eabf32",
+  "unchanged_measured_renderer_sources": {
+    "libgag/src/SurfaceRaster.cpp": {
+      "measured_blob": "45d117b0c8aeff7d0d5924298463165ec938b336",
+      "integrated_blob": "45d117b0c8aeff7d0d5924298463165ec938b336",
+      "equal": true
+    },
+    "libgag/include/SurfaceRaster.h": {
+      "measured_blob": "e4a1e2a7cf46f49bb2d810a47df9be3e166d92ab",
+      "integrated_blob": "e4a1e2a7cf46f49bb2d810a47df9be3e166d92ab",
+      "equal": true
+    },
+    "libgag/src/SoftwareRenderBackend.cpp": {
+      "measured_blob": "73d3cc214b01da8e4257f952d822e392eddc043a",
+      "integrated_blob": "73d3cc214b01da8e4257f952d822e392eddc043a",
+      "equal": true
+    },
+    "libgag/src/SoftwareRasterSources.h": {
+      "measured_blob": "403222662444ef3eb163cdfd8873bf2851b6d23a",
+      "integrated_blob": "403222662444ef3eb163cdfd8873bf2851b6d23a",
+      "equal": true
+    },
+    "src/render/SoftwareRenderBenchmark.cpp": {
+      "measured_blob": "ad90aae3a63fe7a34e647b96217bcef5f6a0f854",
+      "integrated_blob": "ad90aae3a63fe7a34e647b96217bcef5f6a0f854",
+      "equal": true
+    }
+  }
+}

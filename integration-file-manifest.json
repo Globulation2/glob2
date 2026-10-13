@@ -1,0 +1,431 @@
+{
+  "tested_revision": "7be681f05d26093249b0d1ec47a153280274eb37",
+  "base": "7556a9ecb",
+  "functional_case_counts": {
+    "unit": 78,
+    "engine": 159,
+    "display": 24
+  },
+  "files": [
+    {
+      "path": "run_latest_validation.py",
+      "bytes": 1824,
+      "sha256": "10a61a6f571254a47ca11ecb8107e8fef770fea2a7ae1ca4541fa3f39ecce7a3"
+    },
+    {
+      "path": "software-raster-depth-latest-base-review.json",
+      "bytes": 435,
+      "sha256": "1f990eb043f36e7f91116865e29b75171d32541d66461e6b5438b39d3e8a9719"
+    },
+    {
+      "path": "software-raster-depth-latest-build-context.json",
+      "bytes": 749,
+      "sha256": "aa95a4be1b60a2f9313858c425c60efc77ce57eb47c4ade5cdabfd0d6ad7f7d1"
+    },
+    {
+      "path": "software-raster-depth-latest-build.log",
+      "bytes": 2040535,
+      "sha256": "b58a77f359268437e5d751da252849cb7e0ba629d0c76c9845bd41129088c527"
+    },
+    {
+      "path": "software-raster-depth-latest-commands.json",
+      "bytes": 3479,
+      "sha256": "0ba178b2fffb3e6150133dee47a6d8a5200eeae29b233c30a73e2bd2b8787957"
+    },
+    {
+      "path": "software-raster-depth-latest-display/HighResolutionIntegration/HD_artwork_cursor_scaling_and_replay_fixture_in_OpenGL_display_1024x768_artifacts_writes-preferences/replay-fixture/replays/current.replay",
+      "bytes": 812009,
+      "sha256": "09d108db5a28984d23748bddbe78f800551e6bde1240bca382d1148186c9af87"
+    },
+    {
+      "path": "software-raster-depth-latest-display/HighResolutionIntegration/HD_artwork_cursor_scaling_and_replay_fixture_in_OpenGL_display_1024x768_artifacts_writes-preferences/runtime-check/dense-hd-37.png",
+      "bytes": 467875,
+      "sha256": "66443aa4b6eeb51cd8c39a84583203c006aa051c684909f99c1276569cc85532"
+    },
+    {
+      "path": "software-raster-depth-latest-display/HighResolutionIntegration/HD_artwork_cursor_scaling_and_replay_fixture_in_OpenGL_display_1024x768_artifacts_writes-preferences/runtime-check/dense-hd-50.png",
+      "bytes": 344101,
+      "sha256": "85e3475b35756abb24d2b7dfe0a0c887cb151c5ca4aaace78b9d481669e8b3c4"
+    },
+    {
+      "path": "software-raster-depth-latest-display/HighResolutionIntegration/HD_artwork_cursor_scaling_and_replay_fixture_in_OpenGL_display_1024x768_artifacts_writes-preferences/runtime-check/dense-hd-500.png",
+      "bytes": 557538,
+      "sha256": "7c2eed0b030e3c6ed29fb584e0b270e6b301dc67f39fa17c9fa3cae2cdb6fde0"
+    },
+    {
+      "path": "software-raster-depth-latest-display/HighResolutionIntegration/HD_artwork_cursor_scaling_and_replay_fixture_in_OpenGL_display_1024x768_artifacts_writes-preferences/runtime-check/dense-original-37.png",
+      "bytes": 467970,
+      "sha256": "2d51aeff1bf4beebad7cc81b5217e59ca96d9ad501ddf26922e155ea59928283"
+    },
+    {
+      "path": "software-raster-depth-latest-display/HighResolutionIntegration/HD_artwork_cursor_scaling_and_replay_fixture_in_OpenGL_display_1024x768_artifacts_writes-preferences/runtime-check/dense-original-50.png",
+      "bytes": 344227,
+      "sha256": "68cd9a8fcc9b8afb67719efd1e2b9cac649b900b754f029657eb0b7b3facb09c"
+    },
+    {
+      "path": "software-raster-depth-latest-display/HighResolutionIntegration/HD_artwork_cursor_scaling_and_replay_fixture_in_OpenGL_display_1024x768_artifacts_writes-preferences/runtime-check/dense-original-500.png",
+      "bytes": 181823,
+      "sha256": "de1206505730d5f90d95c326fbdd190de9b81e3dab7543cfc829061668040564"
+    },
+    {
+      "path": "software-raster-depth-latest-display/HighResolutionIntegration/HD_artwork_cursor_scaling_and_replay_fixture_in_OpenGL_display_1024x768_artifacts_writes-preferences/runtime-check/editor-hd-100.png",
+      "bytes": 1084694,
+      "sha256": "726cbe3c4d0cc607ad0bc6f3c665baeb1297b141cc4bbbe3b74c03e07c7fccc0"
+    },
+    {
+      "path": "software-raster-depth-latest-display/HighResolutionIntegration/HD_artwork_cursor_scaling_and_replay_fixture_in_OpenGL_display_1024x768_artifacts_writes-preferences/runtime-check/editor-hd-18.png",
+      "bytes": 684826,
+      "sha256": "cc7835bfef32fd6325aa14ea80a0060114f848ce0fe1196ea8be78015c12a757"
+    },
+    {
+      "path": "software-raster-depth-latest-display/HighResolutionIntegration/HD_artwork_cursor_scaling_and_replay_fixture_in_OpenGL_display_1024x768_artifacts_writes-preferences/runtime-check/editor-hd-200.png",
+      "bytes": 1063325,
+      "sha256": "61c04476ca8a9b2956f6e5f5bacb006fcd73f68faff94288d54d883d5ca1a46e"
+    },
+    {
+      "path": "software-raster-depth-latest-display/HighResolutionIntegration/HD_artwork_cursor_scaling_and_replay_fixture_in_OpenGL_display_1024x768_artifacts_writes-preferences/runtime-check/editor-hd-50.png",
+      "bytes": 1396195,
+      "sha256": "f871a6b7103a3c2cf2d9c25525ac5475fdc7513b3612a1686a3a24708cd2eb28"
+    },
+    {
+      "path": "software-raster-depth-latest-display/HighResolutionIntegration/HD_artwork_cursor_scaling_and_replay_fixture_in_OpenGL_display_1024x768_artifacts_writes-preferences/runtime-check/editor-hd-500.png",
+      "bytes": 493897,
+      "sha256": "40181758f618989ce621a1fb4cd8b9b4a963428f1d4edc1989f873e27da75880"
+    },
+    {
+      "path": "software-raster-depth-latest-display/HighResolutionIntegration/HD_artwork_cursor_scaling_and_replay_fixture_in_OpenGL_display_1024x768_artifacts_writes-preferences/runtime-check/game-hd-100.png",
+      "bytes": 344147,
+      "sha256": "becce04a041a661ad7fc8061d73de7288f193c0d71a5731827141064d391ef91"
+    },
+    {
+      "path": "software-raster-depth-latest-display/HighResolutionIntegration/HD_artwork_cursor_scaling_and_replay_fixture_in_OpenGL_display_1024x768_artifacts_writes-preferences/runtime-check/game-hd-200.png",
+      "bytes": 866837,
+      "sha256": "22d7991cc57f82c156cd5cc6f5458815973abcb2c729bf05456ea4da0317e1aa"
+    },
+    {
+      "path": "software-raster-depth-latest-display/HighResolutionIntegration/HD_artwork_cursor_scaling_and_replay_fixture_in_OpenGL_display_1024x768_artifacts_writes-preferences/runtime-check/game-hd-50.png",
+      "bytes": 166900,
+      "sha256": "30c1c131696999d6e75694d8df479a8d8e2b3422203dc07aabb5391422ffe802"
+    },
+    {
+      "path": "software-raster-depth-latest-display/HighResolutionIntegration/HD_artwork_cursor_scaling_and_replay_fixture_in_OpenGL_display_1024x768_artifacts_writes-preferences/runtime-check/game-hd-500.png",
+      "bytes": 757469,
+      "sha256": "70efc5193dcc6f7ea3fa78382aedb6e2e278c9110c4d5c5ec9dde07b2ed2ed7b"
+    },
+    {
+      "path": "software-raster-depth-latest-display/HighResolutionIntegration/HD_artwork_cursor_scaling_and_replay_fixture_in_OpenGL_display_1024x768_artifacts_writes-preferences/runtime-check/game-hd-independent-effects.png",
+      "bytes": 296766,
+      "sha256": "9866d1193893e3929c665d86913963f0c6837f19bc94293f3b9895b471eb9170"
+    },
+    {
+      "path": "software-raster-depth-latest-display/HighResolutionIntegration/HD_artwork_cursor_scaling_and_replay_fixture_in_OpenGL_display_1024x768_artifacts_writes-preferences/runtime-check/game-original-100.png",
+      "bytes": 296267,
+      "sha256": "b39a1ca97942d00570d921a31735fd9b88dd9bccbb3cae2882c920260e764dd0"
+    },
+    {
+      "path": "software-raster-depth-latest-display/HighResolutionIntegration/HD_artwork_cursor_scaling_and_replay_fixture_in_OpenGL_display_1024x768_artifacts_writes-preferences/runtime-check/game-original-200.png",
+      "bytes": 304721,
+      "sha256": "739fa3eed04ad8b317a62d928999bad51e15c8169657f35535fad3ee3abdf7e7"
+    },
+    {
+      "path": "software-raster-depth-latest-display/HighResolutionIntegration/HD_artwork_cursor_scaling_and_replay_fixture_in_OpenGL_display_1024x768_artifacts_writes-preferences/runtime-check/game-original-50.png",
+      "bytes": 167156,
+      "sha256": "44bd219a98430e31016664b931b6cbe1eec74e0acf0f91d36859d94896014382"
+    },
+    {
+      "path": "software-raster-depth-latest-display/HighResolutionIntegration/HD_artwork_cursor_scaling_and_replay_fixture_in_OpenGL_display_1024x768_artifacts_writes-preferences/runtime-check/game-original-500.png",
+      "bytes": 161149,
+      "sha256": "870517407bd0e68637d5583ead5638e79a03484da3412664068669a0966592de"
+    },
+    {
+      "path": "software-raster-depth-latest-display/HighResolutionIntegration/HD_artwork_cursor_scaling_and_replay_fixture_in_OpenGL_display_1024x768_artifacts_writes-preferences/runtime-check/replay-hd.png",
+      "bytes": 321903,
+      "sha256": "6cc74199eb9f7d96a103c2ea53252c3e9e2025e4fad42df103290180668e66d3"
+    },
+    {
+      "path": "software-raster-depth-latest-display/HighResolutionIntegration/HD_artwork_cursor_scaling_and_replay_fixture_in_OpenGL_display_1024x768_artifacts_writes-preferences/runtime-check/seam-corners-50.png",
+      "bytes": 706507,
+      "sha256": "6953bbf4fb3b148e77b7ad91b7e9278abe3dafd6af71e0b7847fd2425ab8c497"
+    },
+    {
+      "path": "software-raster-depth-latest-display/HighResolutionIntegration/HD_artwork_cursor_scaling_and_replay_fixture_in_OpenGL_display_1024x768_artifacts_writes-preferences/runtime-check/settings.png",
+      "bytes": 85576,
+      "sha256": "3fc25e505aca78b86e4013a10a9484716725d1bd76c1928e34b6e98fef7596cb"
+    },
+    {
+      "path": "software-raster-depth-latest-display/HighResolutionIntegration/HD_artwork_cursor_scaling_and_replay_fixture_in_OpenGL_display_1024x768_artifacts_writes-preferences/runtime-check/small-map-repeated.png",
+      "bytes": 697631,
+      "sha256": "beedf819170a494a909cb816c6d1009a733cfe32b3db0979656b03a2ed5d7ba1"
+    },
+    {
+      "path": "software-raster-depth-latest-display/SoftwareRenderer/terrain_cache_matches_integer-transformed_coastlines_and_discovery_across_wraps_and_mutations_display_artifacts/transformed-software.bmp",
+      "bytes": 1228938,
+      "sha256": "47f767873a9c9e31698ad505263e1eec043a215d4ddd4bde5d4a4db7b74a977f"
+    },
+    {
+      "path": "software-raster-depth-latest-display/TerrainPresentation/GPU_terrain_pages_match_CPU_composition_through_edits_wrapping_recovery_and_live_switches_display_isolated_artifacts_writes-preferences/gpu-terrain-integration.txt",
+      "bytes": 25,
+      "sha256": "63741427c0b450450ef89475c4bcae1f19c7e44c25fde1baff0da59b66f0fd03"
+    },
+    {
+      "path": "software-raster-depth-latest-display/TerrainPresentation/HD_material_pages_and_fractional_zoom_preserve_cached_pixels_with_missing_optional_atlas_display_artifacts/cache-memory.txt",
+      "bytes": 102,
+      "sha256": "80c71f98f12065b827f5234facdbe568b707ed2bf9147c34f826dd9ae9651a9c"
+    },
+    {
+      "path": "software-raster-depth-latest-display/TerrainPresentation/HD_material_pages_and_fractional_zoom_preserve_cached_pixels_with_missing_optional_atlas_display_artifacts/synthetic-hd/frames.txt",
+      "bytes": 502,
+      "sha256": "41978fefc8a58964b1a64f09d57aeb086b98b395903caadedf2f21077619ae08"
+    },
+    {
+      "path": "software-raster-depth-latest-display/TerrainPresentation/HD_material_pages_and_fractional_zoom_preserve_cached_pixels_with_missing_optional_atlas_display_artifacts/synthetic-hd/grass.webp",
+      "bytes": 44,
+      "sha256": "0896e81fe68c2a65254fa6895093e86a789de78d6e215000f44e52b11548a36d"
+    },
+    {
+      "path": "software-raster-depth-latest-display/TerrainPresentation/emergency_tiles_remain_deterministic_and_cover_opaque_fractional_terrain_display/synthetic-hd/frames.txt",
+      "bytes": 502,
+      "sha256": "41978fefc8a58964b1a64f09d57aeb086b98b395903caadedf2f21077619ae08"
+    },
+    {
+      "path": "software-raster-depth-latest-display/TerrainPresentation/emergency_tiles_remain_deterministic_and_cover_opaque_fractional_terrain_display/synthetic-hd/grass.webp",
+      "bytes": 44,
+      "sha256": "0896e81fe68c2a65254fa6895093e86a789de78d6e215000f44e52b11548a36d"
+    },
+    {
+      "path": "software-raster-depth-latest-display/TerrainPresentation/every_paintable_built-in_binds_a_material_has_an_editor_icon_and_exports_its_own_colour_display_artifacts/terrain-catalogue-colors.png",
+      "bytes": 238,
+      "sha256": "fe3ab9c5a1f73d907c5e06aa2f85c55a1cd69138182eeffd865204a6cbefe6af"
+    },
+    {
+      "path": "software-raster-depth-latest-display/TerrainPresentation/overview_palette_follows_detailed_shore_coverage_across_both_wrapped_axes_display_artifacts/overview-alignment/crossfade.png",
+      "bytes": 273357,
+      "sha256": "287017dd2a64b60938bf15884f2d4aeca867e69c321768d742281d9149cb5b3e"
+    },
+    {
+      "path": "software-raster-depth-latest-display/TerrainPresentation/overview_palette_follows_detailed_shore_coverage_across_both_wrapped_axes_display_artifacts/overview-alignment/detailed.png",
+      "bytes": 323809,
+      "sha256": "009a2a2e72689c3bf62727e09e86bba7772e782c103becaab9eba4d161fe7104"
+    },
+    {
+      "path": "software-raster-depth-latest-display/TerrainPresentation/overview_palette_follows_detailed_shore_coverage_across_both_wrapped_axes_display_artifacts/overview-alignment/overview.png",
+      "bytes": 3404,
+      "sha256": "739bd5829b29882f6bec3ea2e0c49d0e18b7bd8008399ca8b89886c54b023fa8"
+    },
+    {
+      "path": "software-raster-depth-latest-display/TerrainPresentation/portable_texture_limits_reduce_HD_pages_and_admit_only_fitting_fallback_tiles_display/synthetic-hd/frames.txt",
+      "bytes": 502,
+      "sha256": "41978fefc8a58964b1a64f09d57aeb086b98b395903caadedf2f21077619ae08"
+    },
+    {
+      "path": "software-raster-depth-latest-display/TerrainPresentation/portable_texture_limits_reduce_HD_pages_and_admit_only_fitting_fallback_tiles_display/synthetic-hd/grass.webp",
+      "bytes": 44,
+      "sha256": "0896e81fe68c2a65254fa6895093e86a789de78d6e215000f44e52b11548a36d"
+    },
+    {
+      "path": "software-raster-depth-latest-display/TerrainPresentation/streaming_pages_match_cached_fractional_pixels_across_wraps_and_small_maps_display/synthetic-hd/frames.txt",
+      "bytes": 502,
+      "sha256": "41978fefc8a58964b1a64f09d57aeb086b98b395903caadedf2f21077619ae08"
+    },
+    {
+      "path": "software-raster-depth-latest-display/TerrainPresentation/streaming_pages_match_cached_fractional_pixels_across_wraps_and_small_maps_display/synthetic-hd/grass.webp",
+      "bytes": 44,
+      "sha256": "0896e81fe68c2a65254fa6895093e86a789de78d6e215000f44e52b11548a36d"
+    },
+    {
+      "path": "software-raster-depth-latest-display/TerrainPresentation/tiled_capture_keeps_whole-map_density_and_warm_pages_at_narrow_edges_display/synthetic-hd/frames.txt",
+      "bytes": 502,
+      "sha256": "41978fefc8a58964b1a64f09d57aeb086b98b395903caadedf2f21077619ae08"
+    },
+    {
+      "path": "software-raster-depth-latest-display/TerrainPresentation/tiled_capture_keeps_whole-map_density_and_warm_pages_at_narrow_edges_display/synthetic-hd/grass.webp",
+      "bytes": 44,
+      "sha256": "0896e81fe68c2a65254fa6895093e86a789de78d6e215000f44e52b11548a36d"
+    },
+    {
+      "path": "software-raster-depth-latest-display/TerrainPresentation/whole-cell_layers_preserve_OpenGL_terrain_caching_display/cache-memory.txt",
+      "bytes": 100,
+      "sha256": "1dddd774d7f8a2653ee5cfb1912a1e6cbff65e92f86bf4203fb510ba0ad17702"
+    },
+    {
+      "path": "software-raster-depth-latest-display/TerrainPresentation/whole-cell_layers_preserve_software_terrain_caching_display_artifacts/cache-memory.txt",
+      "bytes": 94,
+      "sha256": "edcb58c31f48a3bf36cccdc80d72945b1047d426f87a72b5e01a5be308118613"
+    },
+    {
+      "path": "software-raster-depth-latest-display/TerrainPresentation/whole-cell_layers_preserve_software_terrain_caching_display_artifacts/terrain-layers.png",
+      "bytes": 497324,
+      "sha256": "19215fbc02bf753e1a2762a77262f1643121811432a76d3745ef4fd5e5588d0d"
+    },
+    {
+      "path": "software-raster-depth-latest-display/TerrainPresentation/zoomed-out_GPU_terrain_retains_pages_across_frames_and_wrapped_views_display_artifacts/zoom-opengl.png",
+      "bytes": 752597,
+      "sha256": "9f0be812d389b18d739ba1d39313d9c2f3ca305e1a5e5aa6ce87b310ce11e8be"
+    },
+    {
+      "path": "software-raster-depth-latest-display/TerrainPresentation/zoomed-out_GPU_terrain_retains_pages_across_frames_and_wrapped_views_display_artifacts/zoom-opengl.txt",
+      "bytes": 68,
+      "sha256": "caf1607b07ae7dedaf5ffcba8b8f6a7ab7f91a693fb07421fa6569927e1a6876"
+    },
+    {
+      "path": "software-raster-depth-latest-display/TerrainPresentation/zoomed-out_GPU_terrain_retains_pages_across_frames_and_wrapped_views_display_artifacts/zoom-portable.png",
+      "bytes": 616377,
+      "sha256": "7b8079ac3135e8ff932777efff4c1351681f67633c49a55100faea64a4e69ab0"
+    },
+    {
+      "path": "software-raster-depth-latest-display/TerrainPresentation/zoomed-out_GPU_terrain_retains_pages_across_frames_and_wrapped_views_display_artifacts/zoom-portable.txt",
+      "bytes": 68,
+      "sha256": "f7d48704b4be4298bd4bad0a5861a34ad253dcf9c3c605547542fd2b63175b12"
+    },
+    {
+      "path": "software-raster-depth-latest-display.log",
+      "bytes": 3168,
+      "sha256": "7e97f29d4ea7237de6704af0069e61ac234bf880798c6ecab8adae24ffe6749e"
+    },
+    {
+      "path": "software-raster-depth-latest-display.xml",
+      "bytes": 4564,
+      "sha256": "06bb1d9a348bd4adc47d55ba92920f7d92048416bf13a857e466dd37100fb7d5"
+    },
+    {
+      "path": "software-raster-depth-latest-engine/SharedWorkerLifecycle/no-AI_completed_ticks_and_saved_continuation_agree_across_diagnostic_modes_and_worker_counts_artifacts/compute-off-1.trace",
+      "bytes": 1306,
+      "sha256": "9f5ffeeddaa23d728948afd6cebad2ff3a8cd6c52c76514657cf68b1fab95c36"
+    },
+    {
+      "path": "software-raster-depth-latest-engine/SharedWorkerLifecycle/no-AI_completed_ticks_and_saved_continuation_agree_across_diagnostic_modes_and_worker_counts_artifacts/compute-off-2.trace",
+      "bytes": 1306,
+      "sha256": "9f5ffeeddaa23d728948afd6cebad2ff3a8cd6c52c76514657cf68b1fab95c36"
+    },
+    {
+      "path": "software-raster-depth-latest-engine/SharedWorkerLifecycle/no-AI_completed_ticks_and_saved_continuation_agree_across_diagnostic_modes_and_worker_counts_artifacts/compute-off-4.trace",
+      "bytes": 1306,
+      "sha256": "9f5ffeeddaa23d728948afd6cebad2ff3a8cd6c52c76514657cf68b1fab95c36"
+    },
+    {
+      "path": "software-raster-depth-latest-engine/SharedWorkerLifecycle/no-AI_completed_ticks_and_saved_continuation_agree_across_diagnostic_modes_and_worker_counts_artifacts/compute-off-8.trace",
+      "bytes": 1306,
+      "sha256": "9f5ffeeddaa23d728948afd6cebad2ff3a8cd6c52c76514657cf68b1fab95c36"
+    },
+    {
+      "path": "software-raster-depth-latest-engine/SharedWorkerLifecycle/no-AI_completed_ticks_and_saved_continuation_agree_across_diagnostic_modes_and_worker_counts_artifacts/compute-trace-1.trace",
+      "bytes": 1306,
+      "sha256": "9f5ffeeddaa23d728948afd6cebad2ff3a8cd6c52c76514657cf68b1fab95c36"
+    },
+    {
+      "path": "software-raster-depth-latest-engine/SharedWorkerLifecycle/no-AI_completed_ticks_and_saved_continuation_agree_across_diagnostic_modes_and_worker_counts_artifacts/compute-trace-2.trace",
+      "bytes": 1306,
+      "sha256": "9f5ffeeddaa23d728948afd6cebad2ff3a8cd6c52c76514657cf68b1fab95c36"
+    },
+    {
+      "path": "software-raster-depth-latest-engine/SharedWorkerLifecycle/no-AI_completed_ticks_and_saved_continuation_agree_across_diagnostic_modes_and_worker_counts_artifacts/compute-trace-4.trace",
+      "bytes": 1306,
+      "sha256": "9f5ffeeddaa23d728948afd6cebad2ff3a8cd6c52c76514657cf68b1fab95c36"
+    },
+    {
+      "path": "software-raster-depth-latest-engine/SharedWorkerLifecycle/no-AI_completed_ticks_and_saved_continuation_agree_across_diagnostic_modes_and_worker_counts_artifacts/compute-trace-8.trace",
+      "bytes": 1306,
+      "sha256": "9f5ffeeddaa23d728948afd6cebad2ff3a8cd6c52c76514657cf68b1fab95c36"
+    },
+    {
+      "path": "software-raster-depth-latest-engine/SharedWorkerLifecycle/no-AI_completed_ticks_and_saved_continuation_agree_across_diagnostic_modes_and_worker_counts_artifacts/compute-waits-1.trace",
+      "bytes": 1306,
+      "sha256": "9f5ffeeddaa23d728948afd6cebad2ff3a8cd6c52c76514657cf68b1fab95c36"
+    },
+    {
+      "path": "software-raster-depth-latest-engine/SharedWorkerLifecycle/no-AI_completed_ticks_and_saved_continuation_agree_across_diagnostic_modes_and_worker_counts_artifacts/compute-waits-2.trace",
+      "bytes": 1306,
+      "sha256": "9f5ffeeddaa23d728948afd6cebad2ff3a8cd6c52c76514657cf68b1fab95c36"
+    },
+    {
+      "path": "software-raster-depth-latest-engine/SharedWorkerLifecycle/no-AI_completed_ticks_and_saved_continuation_agree_across_diagnostic_modes_and_worker_counts_artifacts/compute-waits-4.trace",
+      "bytes": 1306,
+      "sha256": "9f5ffeeddaa23d728948afd6cebad2ff3a8cd6c52c76514657cf68b1fab95c36"
+    },
+    {
+      "path": "software-raster-depth-latest-engine/SharedWorkerLifecycle/no-AI_completed_ticks_and_saved_continuation_agree_across_diagnostic_modes_and_worker_counts_artifacts/compute-waits-8.trace",
+      "bytes": 1306,
+      "sha256": "9f5ffeeddaa23d728948afd6cebad2ff3a8cd6c52c76514657cf68b1fab95c36"
+    },
+    {
+      "path": "software-raster-depth-latest-engine/SharedWorkerLifecycle/no-AI_completed_ticks_and_saved_continuation_agree_across_diagnostic_modes_and_worker_counts_artifacts/no-ai.game",
+      "bytes": 1480918,
+      "sha256": "f174233dfd6e856f8b9a331d82f4deeda5de3bbab8559b4f00a0074db0b08bcc"
+    },
+    {
+      "path": "software-raster-depth-latest-engine.log",
+      "bytes": 16210,
+      "sha256": "2375f91ecce1300dbcfd4c77e29be5d1c5b076fb4f25bfdd3f2b8a11ec70aafd"
+    },
+    {
+      "path": "software-raster-depth-latest-engine.xml",
+      "bytes": 24554,
+      "sha256": "2f0d30739168b1d041ceb6fdd9f7ed39838e0fbb138692f7061b1e43d41f4729"
+    },
+    {
+      "path": "software-raster-depth-latest-smoke/half-gui-immediate.bmp",
+      "bytes": 4096138,
+      "sha256": "8a3f2b6672d79f8cfcb72b78ce934b401e280b17857d5b505783e2aa0530f7ba"
+    },
+    {
+      "path": "software-raster-depth-latest-smoke/half-gui-immediate.log",
+      "bytes": 1749,
+      "sha256": "5a66424a4602583f25c1fc90ba6dc68e8cb960a7097e6fc213cf42049c9b3bdf"
+    },
+    {
+      "path": "software-raster-depth-latest-smoke/half-gui-parallel.bmp",
+      "bytes": 4096138,
+      "sha256": "8a3f2b6672d79f8cfcb72b78ce934b401e280b17857d5b505783e2aa0530f7ba"
+    },
+    {
+      "path": "software-raster-depth-latest-smoke/half-gui-parallel.log",
+      "bytes": 1787,
+      "sha256": "a019d2aed3562dcee13519784347ee0788d0c99bde4514d2e9e0f03c8a276f78"
+    },
+    {
+      "path": "software-raster-depth-latest-smoke/manifest.json",
+      "bytes": 5684,
+      "sha256": "f86cd030a63d2fb73252bcfb9a6c1078ec035569e997eb2f0848021269f3148b"
+    },
+    {
+      "path": "software-raster-depth-latest-smoke/native-gui-immediate.bmp",
+      "bytes": 4096138,
+      "sha256": "2add5addcbc14f6fb45f9a2a5ff3a765a1f90d207a41475fce7a25b1c863aa35"
+    },
+    {
+      "path": "software-raster-depth-latest-smoke/native-gui-immediate.log",
+      "bytes": 1747,
+      "sha256": "11dbb158ffe1f5adb17d30b703f1e122d64685d4c4cdcf0ace9eba80bf2991cc"
+    },
+    {
+      "path": "software-raster-depth-latest-smoke/native-gui-parallel.bmp",
+      "bytes": 4096138,
+      "sha256": "2add5addcbc14f6fb45f9a2a5ff3a765a1f90d207a41475fce7a25b1c863aa35"
+    },
+    {
+      "path": "software-raster-depth-latest-smoke/native-gui-parallel.log",
+      "bytes": 1785,
+      "sha256": "d6f7881021181af0adb7762058404e8ff0e5f269d2deda9bfcfd0648ea5c5aaf"
+    },
+    {
+      "path": "software-raster-depth-latest-source.json",
+      "bytes": 1247,
+      "sha256": "9d657a04f820f36d6f029a7fcb3eb998dfc56f6894ee5f4ac6b8c11dd8eb54e7"
+    },
+    {
+      "path": "software-raster-depth-latest-unit/build-provenance.json",
+      "bytes": 823,
+      "sha256": "4cb914f846192b5d6f9cea284449e8a6d4037e676d342bc028d1b16b70758175"
+    },
+    {
+      "path": "software-raster-depth-latest-unit.log",
+      "bytes": 658,
+      "sha256": "4221028eaa23652c2f8941b6504bbed822f63176632544e30d37f293616c407b"
+    },
+    {
+      "path": "software-raster-depth-latest-unit.xml",
+      "bytes": 12413,
+      "sha256": "888a76187f5ff20b9cc896a62c77e41a597209fe70e3d28b6b6873ef598b0441"
+    }
+  ]
+}
