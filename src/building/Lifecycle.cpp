@@ -316,8 +316,9 @@ void Building::load(GAGCore::InputStream *stream, BuildingsTypes *types, Team *o
 	}
 
 
-	minLevelToFlag = stream->readSint32("minLevelToFlag");
-	if (minLevelToFlag < 0 || minLevelToFlag >= NB_UNIT_LEVELS) throw std::runtime_error("Invalid flag level");
+	const Sint32 savedMinLevelToFlag = stream->readSint32("minLevelToFlag");
+	if (savedMinLevelToFlag < 0 || savedMinLevelToFlag >= NB_UNIT_LEVELS) throw std::runtime_error("Invalid flag level");
+	minLevelToFlag = Uint8(savedMinLevelToFlag);
 
 	// Building Specific
 	for (int i=0; i<MaterialSlotCount; i++)
@@ -385,8 +386,9 @@ void Building::load(GAGCore::InputStream *stream, BuildingsTypes *types, Team *o
 	productionUnit = -1;
 	if (versionMinor >= FILE_FORMAT_VERSION_BUILDING_CATALOG)
 	{
-		minWorkerLevelToFlag = stream->readSint32("minWorkerLevelToFlag");
-		if (minWorkerLevelToFlag < 0 || minWorkerLevelToFlag >= NB_UNIT_LEVELS) throw std::runtime_error("Invalid worker flag qualification");
+		const Sint32 savedMinWorkerLevelToFlag = stream->readSint32("minWorkerLevelToFlag");
+		if (savedMinWorkerLevelToFlag < 0 || savedMinWorkerLevelToFlag >= NB_UNIT_LEVELS) throw std::runtime_error("Invalid worker flag qualification");
+		minWorkerLevelToFlag = Uint8(savedMinWorkerLevelToFlag);
 		explorersRequireBombing = stream->readUint8("explorersRequireBombing") != 0;
 		siteCompletionPending = stream->readUint8("siteCompletionPending") != 0;
 		for (int unit=0; unit<NB_UNIT_TYPE; ++unit) {
@@ -607,9 +609,10 @@ void Building::loadCrossRef(GAGCore::InputStream *stream, BuildingsTypes *types,
 	stream->readEnterSection("Building");
 
 	// units
-	maxUnitInside = stream->readSint32("maxUnitInside");
-	if (maxUnitInside < 0 || maxUnitInside >= MAX_UNIT_INSIDE_LIMIT)
+	const Sint32 savedMaxUnitInside = stream->readSint32("maxUnitInside");
+	if (savedMaxUnitInside < 0 || savedMaxUnitInside >= MAX_UNIT_INSIDE_LIMIT)
 		throw std::runtime_error("Invalid building capacity");
+	maxUnitInside = Uint16(savedMaxUnitInside);
 
 	unsigned nbWorking = stream->readUint32("nbWorking");
 	if (nbWorking > Unit::MAX_COUNT) throw std::runtime_error("Invalid building unit list size");

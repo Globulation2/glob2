@@ -253,9 +253,9 @@ before signed division and remainder. Seventeen learning flags use an unsigned
 mask with value getters and explicit setters that preserve neighboring bits.
 Editor level controls bind the byte fields explicitly and retain wide arithmetic.
 
-Buildings retain their existing layout: reducing their inline scalar widths
-slowed inventory access in release measurements. Lifecycle and recruitment fields,
-including the capacity field accepting 0 through 65535, therefore remain wide.
+Building lifecycle enums and recruitment levels use explicit byte storage. Inside
+capacity uses unsigned 16-bit storage, preserving accepted values through 65535.
+Live inventory bindings retain their existing ordering outside the state record.
 Private stock, cached demand, production counters and ratios, staffing, priorities,
 exchange masks, unrestricted simulation timers and identifiers also remain wide.
 All fifteen inventory slots use the same lossless inline storage for ordinary and

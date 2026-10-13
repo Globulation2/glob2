@@ -124,7 +124,9 @@ Learning flags retain the historical nonzero-to-boolean loading behavior and are
 written individually in the existing order. Their unsigned mask is reconstructed,
 with unused bits cleared on initialization and loading, rather than serialized.
 `isDead` remains signed 32-bit because loading historically accepts values beyond
-zero and one. Building priority, staffing, failure counters, inventory, demand and
+zero and one. Building loaders validate lifecycle values, recruitment levels and
+inside capacity in wide temporaries before narrowing; capacity remains unsigned
+and accepts 0 through 65535. Building priority, staffing, failure counters, inventory, demand and
 exchange masks likewise retain their existing full-width accepted values.
 
 Presentation animation clocks still initialize to zero on load rather than
