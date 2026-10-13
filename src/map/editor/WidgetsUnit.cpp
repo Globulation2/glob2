@@ -101,27 +101,22 @@ void UnitPicture::draw()
 
 
 
-FractionValueText::FractionValueText(MapEdit& me, const widgetRectangle& area, const std::string& group, const std::string& name, const std::string& action, const std::string& label, Sint32* numerator, Sint32* denominator)
-	: MapEditorWidget(me, area, group, name, action), label(label), numerator(numerator), denominator(denominator), isDenominatorPreset(false)
+FractionValueText::FractionValueText(MapEdit& me, const widgetRectangle& area, const std::string& group, const std::string& name, const std::string& action, const std::string& label)
+	: MapEditorWidget(me, area, group, name, action), label(label)
 {
 
 }
 
 
 
-FractionValueText::FractionValueText(MapEdit& me, const widgetRectangle& area, const std::string& group, const std::string& name, const std::string& action, const std::string& label, Sint32* numerator, Sint32 denominator)
-	: MapEditorWidget(me, area, group, name, action), label(label), numerator(numerator), denominator(new Sint32(denominator)), isDenominatorPreset(true)
+FractionValueText::FractionValueText(MapEdit& me, const widgetRectangle& area, const std::string& group, const std::string& name, const std::string& action, const std::string& label, Sint32 denominator)
+	: MapEditorWidget(me, area, group, name, action), label(label), denominator(denominator), isDenominatorPreset(true)
 {
 
 }
 
 
 
-FractionValueText::~FractionValueText()
-{
-	if(isDenominatorPreset)
-		delete denominator;
-}
 
 
 
@@ -129,27 +124,23 @@ void FractionValueText::draw()
 {
     if (!me.view.scene || !readValue || (!isDenominatorPreset && !readMax)) return;
     const auto value=readValue(*me.view.scene);
-    const auto maximum=isDenominatorPreset ? *denominator : readMax(*me.view.scene);
+    const auto maximum=isDenominatorPreset ? denominator : readMax(*me.view.scene);
 	globalContainer->gfx->drawString(area.x, area.y, globalContainer->littleFont, FormattableString("%0:  %1/%2").arg(Toolkit::getStringTable()->getString(label.c_str())).arg(value).arg(maximum).c_str());
 }
 
 
 
-void FractionValueText::setValues(Sint32* aNumerator, Sint32* aDenominator, EditorValueReader reader, EditorValueReader maxReader)
+void FractionValueText::setValues(EditorValueReader reader, EditorValueReader maxReader)
 {
-	if (isDenominatorPreset) delete denominator;
 	isDenominatorPreset=false;
-	numerator=aNumerator;
     readValue=std::move(reader);
-	denominator=aDenominator;
     readMax=std::move(maxReader);
 }
 
 
 
-void FractionValueText::setValues(Sint32* aNumerator, EditorValueReader reader)
+void FractionValueText::setValues(EditorValueReader reader)
 {
-	numerator=aNumerator;
     readValue=std::move(reader);
 }
 
@@ -164,18 +155,13 @@ ValueScrollBox::ValueScrollBox(MapEdit& me, const widgetRectangle& area, const s
 
 
 ValueScrollBox::ValueScrollBox(MapEdit& me, const widgetRectangle& area, const std::string& group, const std::string& name, const std::string& action, Sint32* value, Sint32 max)
-	: MapEditorWidget(me, area, group, name, action), value(value), max(new Sint32(max)), isMaxPreset(true)
+	: MapEditorWidget(me, area, group, name, action), value(value), fixedMax(max), isMaxPreset(true)
 {
 
 }
 
 
 
-ValueScrollBox::~ValueScrollBox()
-{
-	if(isMaxPreset)
-		delete max;
-}
 
 
 
@@ -201,9 +187,9 @@ void ValueScrollBox::handleClick(int relMouseX, int relMouseY)
 	if(relMouseX<10)
 		writeLiveValue(std::max(before-1, 0));
 	else if(relMouseX>102)
-		writeLiveValue(std::min(before+1, (*max)));
+		writeLiveValue(std::min(before+1, liveMaximum()));
 	else
-		writeLiveValue(int(float(relMouseX-10) * (float(*max)/float(92))+0.5));
+		writeLiveValue(int(float(relMouseX-10) * (float(liveMaximum())/float(92))+0.5));
     if (liveValue()!=before) me.game.snapshots().invalidateBoundary();
 	MapEditorWidget::handleClick(relMouseX, relMouseY);
 }
@@ -213,7 +199,7 @@ void ValueScrollBox::handleClick(int relMouseX, int relMouseY)
 void ValueScrollBox::setValue(int requested)
 {
     const auto before=liveValue();
-    writeLiveValue(std::clamp(requested, 0, std::max(0, int(*max))));
+    writeLiveValue(std::clamp(requested, 0, std::max(0, liveMaximum())));
     if (liveValue()!=before) me.game.snapshots().invalidateBoundary();
     me.mapHasBeenModified();
     activate();
@@ -221,7 +207,6 @@ void ValueScrollBox::setValue(int requested)
 
 void ValueScrollBox::setValues(Sint32* aValue, Sint32* aMax, EditorValueReader reader, EditorValueReader maxReader)
 {
-	if (isMaxPreset) delete max;
 	isMaxPreset=false;
 	value=aValue;
 	byteValue=nullptr;
@@ -247,14 +232,9 @@ int ValueScrollBox::currentValue() const
 }
 int ValueScrollBox::maximumValue() const
 {
-    return isMaxPreset ? *max : me.view.scene && readMax ? readMax(*me.view.scene) : 0;
+    return isMaxPreset ? fixedMax : me.view.scene && readMax ? readMax(*me.view.scene) : 0;
 }
 
-void FractionValueText::setValues(Uint8*, EditorValueReader reader)
-{
-    numerator=nullptr;
-    readValue=std::move(reader);
-}
 void ValueScrollBox::setValues(Uint8* aValue, EditorValueReader reader)
 {
     value=nullptr;

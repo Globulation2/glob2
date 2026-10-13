@@ -337,26 +337,22 @@ public:
 
 
 
-///This is a small text object. It shows two values and a label, like "label 1/2". The denominator can be fixed or variable. Either way, the numerator is done 
-///by pointer because this class is used for the convenient editing of values in a Unit or Building
+// Display readers use immutable presentation state; editable controls bind live values.
 using EditorValueReader=std::function<Sint32(const PresentationFrame&)>;
 
 class FractionValueText : public MapEditorWidget
 {
 public:
-	FractionValueText(MapEdit& me, const widgetRectangle& area, const std::string& group, const std::string& name, const std::string& action, const std::string& label, Sint32* numerator, Sint32* denominator);
-	FractionValueText(MapEdit& me, const widgetRectangle& area, const std::string& group, const std::string& name, const std::string& action, const std::string& label, Sint32* numerator, Sint32 denominator);
-	~FractionValueText();
+	FractionValueText(MapEdit& me, const widgetRectangle& area, const std::string& group, const std::string& name, const std::string& action, const std::string& label);
+	FractionValueText(MapEdit& me, const widgetRectangle& area, const std::string& group, const std::string& name, const std::string& action, const std::string& label, Sint32 denominator);
 	void draw();
-	void setValues(Sint32* numerator, Sint32* denominator, EditorValueReader readValue, EditorValueReader readMax);
-	void setValues(Sint32* numerator, EditorValueReader readValue);
-	void setValues(Uint8* numerator, EditorValueReader readValue);
+	void setValues(EditorValueReader readValue, EditorValueReader readMax);
+	void setValues(EditorValueReader readValue);
 private:
 	std::string label;
-	Sint32* numerator;
     EditorValueReader readValue,readMax;
-	Sint32* denominator;
-	bool isDenominatorPreset;
+	Sint32 denominator = 0;
+	bool isDenominatorPreset = false;
 };
 
 
@@ -367,7 +363,6 @@ class ValueScrollBox : public MapEditorWidget
 public:
 	ValueScrollBox(MapEdit& me, const widgetRectangle& area, const std::string& group, const std::string& name, const std::string& action, Sint32* value, Sint32* max);
 	ValueScrollBox(MapEdit& me, const widgetRectangle& area, const std::string& group, const std::string& name, const std::string& action, Sint32* value, Sint32 max);
-	~ValueScrollBox();
 	void draw();
 	void handleClick(int relMouseX, int relMouseY);
 	void setValues(Sint32* value, Sint32* max, EditorValueReader readValue, EditorValueReader readMax);
@@ -383,8 +378,10 @@ private:
 	int liveValue() const { return byteValue ? int(*byteValue) : *value; }
 	void writeLiveValue(int requested) { if (byteValue) *byteValue = Uint8(requested); else *value = requested; }
     EditorValueReader readValue,readMax;
-	Sint32* max;
+	Sint32* max = nullptr;
+	Sint32 fixedMax = 0;
 	bool isMaxPreset;
+	int liveMaximum() const { return isMaxPreset ? fixedMax : *max; }
 };
 
 

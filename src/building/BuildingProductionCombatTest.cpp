@@ -1016,7 +1016,7 @@ TEST_CASE("ground buildings with attraction radii remain melee targets")
 
 TEST_SUITE("BuildingProductionCombat")
 {
-    TEST_CASE("compact building fields retain unsigned capacity and reject wide inputs [save-format]")
+    TEST_CASE("building saves retain capacity boundaries and reject invalid lifecycle values [save-format]")
     {
         glob2test::HeadlessGlobals globals;
         glob2test::HeadlessGame world({.clearImmobile=true,.header=true});

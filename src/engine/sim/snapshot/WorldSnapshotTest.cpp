@@ -942,23 +942,139 @@ TEST_SUITE("WorldSnapshot")
     }
 }
 
+TEST_SUITE("WorldSnapshot")
+{
+    TEST_CASE("entity verification rejects incomplete records and changed relationship sidecars")
+    {
+        glob2test::HeadlessGlobals globals;
+        glob2test::HeadlessGame fixture({.wDec=5,.hDec=5,.teams=1,.clearImmobile=true,.loadDefaultRace=true});
+        auto* worker=fixture.addUnit(WORKER,12,12); REQUIRE(worker);
+        auto* occupant=fixture.addUnit(WORKER,13,12); REQUIRE(occupant);
+        auto* building=fixture.addBuilding("inn",4,4); REQUIRE(building);
+        REQUIRE(fixture.addBuilding("inn",8,4));
+        building->unitsWorking.push_back(worker);
+        building->unitsInside.push_back(occupant);
+        const auto original=SimulationSnapshot::capture(fixture.game,SimulationSnapshot::captureCatalog(fixture.game),
+            SimulationSnapshot::bit(SimulationSnapshot::Component::Entities));
+        CHECK_NOTHROW(SimulationSnapshot::verifyCapture(fixture.game,original));
+
+        // Mutate a private component copy, keeping the original immutable lease.
+        auto changed=original;
+        auto entities=std::make_shared<SimulationSnapshot::Entities>(*original.entities);
+        changed.entities=entities;
+        SUBCASE("omitted unit") { entities->units.pop_back(); }
+        SUBCASE("omitted building") { entities->buildings.pop_back(); }
+        SUBCASE("duplicate unit") { entities->units[1]=entities->units[0]; }
+        SUBCASE("duplicate building") { entities->buildings[1]=entities->buildings[0]; }
+        SUBCASE("unit order") { std::swap(entities->units[0],entities->units[1]); }
+        SUBCASE("unit lookup") { entities->unitSlotIndices[worker->gid]=SimulationSnapshot::Entities::NoRecord; }
+        SUBCASE("unit team") { entities->units[0].team=1; }
+        SUBCASE("working reference") { entities->relationships[entities->buildings[0].working.offset]=Game::refOf(occupant); }
+        SUBCASE("inside reference") { entities->relationships[entities->buildings[0].inside.offset]=Game::refOf(worker); }
+        SUBCASE("working count") { entities->buildings[0].working.count=0; }
+        SUBCASE("inside offset") { entities->buildings[0].inside.offset=entities->relationships.size(); }
+        SUBCASE("unreferenced relationship") { entities->relationships.push_back(Game::refOf(worker)); }
+        SUBCASE("derived maximum hp") { ++entities->buildings[0].maxHp; }
+        SUBCASE("shared inventory binding") { entities->buildings[0].usesTeamResources=!entities->buildings[0].usesTeamResources; }
+        SUBCASE("supply mask") { entities->buildings[0].availableSupplyMask^=1; }
+        CHECK_THROWS_AS(SimulationSnapshot::verifyCapture(fixture.game,changed),std::logic_error);
+        CHECK_NOTHROW(SimulationSnapshot::verifyCapture(fixture.game,original));
+    }
+}
+
 #include <fstream>
 #include <filesystem>
 #include <BinaryStream.h>
 #include <StreamBackend.h>
 #include <iostream>
+#include <ctime>
+#if defined(__GLIBC__)
+#include <malloc.h>
+#endif
+#if __has_include(<valgrind/callgrind.h>)
+#include <valgrind/callgrind.h>
+#else
+#define CALLGRIND_START_INSTRUMENTATION ((void)0)
+#define CALLGRIND_STOP_INSTRUMENTATION ((void)0)
+#define CALLGRIND_ZERO_STATS ((void)0)
+#define CALLGRIND_DUMP_STATS_AT(name) ((void)0)
+#endif
+namespace EntityStorageMeasurement {
+using Clock=std::chrono::steady_clock;
+volatile Sint64 sink=0;
+int count(const nlohmann::json& config,const char* key,int fallback) {
+    const int value=config.value(key,fallback);
+    if(value<1 || value>2000000000) throw std::runtime_error("invalid benchmark iteration count");
+    return value;
+}
+template<class F> nlohmann::json measure(const char* phase,int iterations,F operation) {
+    CALLGRIND_START_INSTRUMENTATION; CALLGRIND_ZERO_STATS;
+    const auto wall=Clock::now();
+#if !defined(_WIN32) && !defined(__EMSCRIPTEN__)
+    const auto process=std::clock();
+#endif
+    timespec before{},after{};
+    bool threadAvailable=false;
+#if defined(CLOCK_THREAD_CPUTIME_ID) && !defined(__EMSCRIPTEN__)
+    threadAvailable=clock_gettime(CLOCK_THREAD_CPUTIME_ID,&before)==0;
+#endif
+    for(int i=0;i<iterations;++i) operation(i);
+#if defined(CLOCK_THREAD_CPUTIME_ID) && !defined(__EMSCRIPTEN__)
+    threadAvailable=(clock_gettime(CLOCK_THREAD_CPUTIME_ID,&after)==0) && threadAvailable;
+#endif
+#if !defined(_WIN32) && !defined(__EMSCRIPTEN__)
+    const auto processEnd=std::clock();
+#endif
+    const auto elapsed=std::chrono::duration_cast<std::chrono::nanoseconds>(Clock::now()-wall).count();
+    CALLGRIND_DUMP_STATS_AT(phase); CALLGRIND_STOP_INSTRUMENTATION;
+    nlohmann::json processCpu=nullptr,threadCpu=nullptr;
+    // Windows and browser clocks report wall time instead of CPU time.
+#if !defined(_WIN32) && !defined(__EMSCRIPTEN__)
+    if(process!=std::clock_t(-1) && processEnd!=std::clock_t(-1))
+        processCpu=double(processEnd-process)*1e9/CLOCKS_PER_SEC;
+#endif
+    if(threadAvailable)threadCpu=Sint64(after.tv_sec-before.tv_sec)*1000000000+after.tv_nsec-before.tv_nsec;
+    return {{"iterations",iterations},{"wall_ns",elapsed},{"process_cpu_ns",processCpu},{"thread_cpu_ns",threadCpu}};
+}
+Uint64 payload(const SimulationSnapshot::Entities& e) {
+    Uint64 bytes=e.units.size()*sizeof(SimulationSnapshot::UnitView)+e.buildings.size()*sizeof(SimulationSnapshot::BuildingView)
+        +e.extraProduction.size()*sizeof(SimulationSnapshot::ExtraProductionState)+e.relationships.size()*sizeof(UnitRef)
+        +e.projects.size()*sizeof(SimulationSnapshot::BuildProjectView)
+        +(e.unitSlotIndices.size()+e.buildingSlotIndices.size())*sizeof(Uint32);
+    for(const auto& [gid,inventory]:e.unitCargo.entries())bytes+=sizeof(gid)+inventory.size()*sizeof(UnitCargoEntry);
+    return bytes;
+}
+}
 TEST_SUITE("WorldSnapshot")
 {
     TEST_CASE("paired entity storage workload [benchmark]")
     {
+        using namespace EntityStorageMeasurement;
+        CALLGRIND_STOP_INSTRUMENTATION;
         glob2test::HeadlessGlobals globals;
+        globals->settings.gradientBackend=gradient_kernel::Backend::CPU;
         const char* output=std::getenv("GLOB2_ENTITY_EVIDENCE_DIR");
-        for (int scenario=0;scenario<5;++scenario) {
+        nlohmann::json configuration=nlohmann::json::object();
+        if(const char* path=std::getenv("GLOB2_ENTITY_BENCH_CONFIG")) {
+            std::ifstream in(path); in>>configuration;
+        }
+        const int selected=std::getenv("GLOB2_ENTITY_SCENARIO") ? std::stoi(std::getenv("GLOB2_ENTITY_SCENARIO")) : -1;
+        const int retained=std::getenv("GLOB2_ENTITY_LEASES") ? std::stoi(std::getenv("GLOB2_ENTITY_LEASES")) : 8;
+        REQUIRE(retained>=1); REQUIRE(retained<int(SimulationSnapshot::BufferPool<SimulationSnapshot::Entities>::Limit));
+        for(int scenario=0;scenario<6;++scenario) {
+            if(selected>=0 && scenario!=selected)continue;
+            const auto config=configuration.value(std::to_string(scenario),nlohmann::json::object());
             glob2test::HeadlessGame fixture({.wDec=7,.hDec=7,.teams=1,.clearImmobile=true,.header=true,.seed=9123});
             auto& game=fixture.game;
             game.gameHeader.setHungerDisabled(true); game.gameHeader.setResourceGrowthDisabled(true);
+            if(scenario==5) {
+                auto definitions=nlohmann::json::parse(game.unitCatalog().serialize());
+                definitions["units"][WORKER]["behaviors"]["cargoCapacity"]=4;
+                definitions["units"][WORKER]["behaviors"]["cargoKinds"]=2;
+                game.gameHeader.setUnitCatalog(UnitCatalog::deserialize(definitions.dump())); game.configureBuildingCatalog();
+            }
             const int units=scenario==1 ? 512 : 32;
-            const int buildings=scenario>=2 ? 256 : 16;
+            const int buildings=scenario>=2 && scenario<=4 ? 256 : 16;
             for(int i=0;i<buildings;++i) {
                 auto* b=fixture.addBuilding("inn",4+(i%16)*6,4+(i/16)*6); REQUIRE(b);
                 for(int material=0;material<MaterialSlotCount;++material) {
@@ -966,42 +1082,75 @@ TEST_SUITE("WorldSnapshot")
                     b->wishedMaterials[material]=(scenario==3 || (scenario==4 && i%2)) ? -40000 : 0;
                 }
             }
-            for(int i=0;i<units;++i) REQUIRE(fixture.addUnit(WORKER,2+(i%63)*2,108+i/63));
+            for(int i=0;i<units;++i) {
+                auto* unit=fixture.addUnit(WORKER,2+(i%63)*2,108+i/63); REQUIRE(unit);
+                if(scenario==5)for(int packet=0;packet<4;++packet)unit->receiveCarriedMaterial(WHEAT,{});
+            }
+            Uint64 liveHeap=0;
+#if defined(__GLIBC__)
+            for(auto* u:fixture.team->liveUnits.entries())liveHeap+=malloc_usable_size(u);
+            for(auto* b:fixture.team->liveBuildings.entries())liveHeap+=malloc_usable_size(b);
+#endif
             SimulationSnapshot::Storage storage;
             const auto catalog=SimulationSnapshot::captureCatalog(game);
-            std::array<SimulationSnapshot::Handle,8> leases;
-            const auto capture=[&](int i) { leases[i%leases.size()]=SimulationSnapshot::capture(game,catalog,SimulationSnapshot::Simulation,nullptr,&storage); };
-            for(int i=0;i<64;++i) capture(i);
-            const auto start=std::chrono::steady_clock::now();
-            for(int i=0;i<512;++i) capture(i);
-            const auto captureNs=std::chrono::duration_cast<std::chrono::nanoseconds>(std::chrono::steady_clock::now()-start).count();
+            std::vector<SimulationSnapshot::Handle> leases(retained);
+            SimulationSnapshot::Handle latest;
+            const bool fresh=std::getenv("GLOB2_ENTITY_FRESH")!=nullptr;
+            const auto capture=[&](int i) {
+                auto next=SimulationSnapshot::capture(game,catalog,SimulationSnapshot::Simulation,fresh ? nullptr : &latest,&storage);
+                leases[i%retained]=next; latest=std::move(next);
+            };
+            for(int i=0;i<128;++i)capture(i);
+            const int captures=count(config,"capture",4096);
+            const auto recordBefore=storage.entityBytesCopied;
+            const auto sidecarBefore=storage.entitySidecarBytesCopied;
+            const auto mapBefore=storage.bytesCopied;
+            const auto allocationsBefore=storage.allocations;
+            auto captureMetric=measure("capture",captures,capture);
+            const auto copied=storage.entityBytesCopied-recordBefore;
+            const auto sidecars=storage.entitySidecarBytesCopied-sidecarBefore;
+            const auto mapCopied=storage.bytesCopied-mapBefore;
             const auto memory=storage.memoryMetrics();
-            for(int i=0;i<16;++i) fixture.step();
-            std::vector<Uint32> checksums;
-            Sint64 ownerNs=0, consumerNs=0;
-            for(int i=0;i<64;++i) {
-                auto begin=std::chrono::steady_clock::now(); fixture.step();
-                ownerNs+=std::chrono::duration_cast<std::chrono::nanoseconds>(std::chrono::steady_clock::now()-begin).count();
-                checksums.push_back(game.checkSum());
-                begin=std::chrono::steady_clock::now(); glob2test::sceneOf(game);
-                consumerNs+=std::chrono::duration_cast<std::chrono::nanoseconds>(std::chrono::steady_clock::now()-begin).count();
-            }
+            const auto& frozen=*leases[0].entities;
+            const auto entityRecords=Uint64(units)*sizeof(SimulationSnapshot::UnitView)+Uint64(buildings)*sizeof(SimulationSnapshot::BuildingView);
+            const auto read=[&](int) {
+                Sint64 sum=0;
+                for(auto* b:fixture.team->liveBuildings.entries())for(int material=0;material<MaterialSlotCount;++material)
+                    sum+=b->availableMaterial(material)+Sint64(b->wishedMaterials[material]);
+                sink=sum;
+            };
+            const auto update=[&](int) {
+                Sint64 sum=0;
+                for(auto* b:fixture.team->liveBuildings.entries()) {b->materials[WHEAT]^=1;sum+=b->availableMaterial(WHEAT);}
+                sink=sum;
+            };
+            for(int i=0;i<128;++i)read(i);
+            auto reads=measure("inventory_read",count(config,"inventory_read",10000),read);
+            int updateIterations=count(config,"inventory_update",10000); if(updateIterations%2)++updateIterations;
+            auto updates=measure("inventory_update",updateIterations,update);
+            fixture.step(128);
+            const auto owner=measure("owner",count(config,"owner",512),[&](int){fixture.step();});
+            REQUIRE(fixture.team->liveUnits.size()==std::size_t(units));
+            for(int i=0;i<128;++i)glob2test::sceneOf(game);
+            const auto checksum=game.checkSum();
+            const auto consumer=measure("consumer",count(config,"consumer",4096),[&](int){game.snapshots().invalidateBoundary();glob2test::sceneOf(game);});
+            REQUIRE(game.checkSum()==checksum);
             if(output) {
                 std::filesystem::create_directories(output);
                 const auto base=std::string(output)+"/scenario-"+std::to_string(scenario);
-                std::ofstream trace(base+".trace"); for(auto checksum:checksums) trace<<checksum<<'\n';
                 auto* backend=new GAGCore::MemoryStreamBackend;
-                GAGCore::BinaryOutputStream out(backend); game.save(&out,false,"Entity storage paired workload"); out.flush();
-                const auto bytes=backend->takeContents(); std::ofstream save(base+".game",std::ios::binary); save.write(bytes.data(),bytes.size());
+                GAGCore::BinaryOutputStream out(backend); game.save(&out,false,"Entity storage cost surface"); out.flush();
+                const auto bytes=backend->takeContents();std::ofstream save(base+".game",std::ios::binary);save.write(bytes.data(),bytes.size());
+                std::ofstream trace(base+".trace");trace<<checksum<<'\n';
             }
-            const Uint64 entityPayload=leases[0].entities->units.size()*sizeof(SimulationSnapshot::UnitView)
-                +leases[0].entities->buildings.size()*sizeof(SimulationSnapshot::BuildingView);
-            std::cout<<"ENTITY_BENCH "<<nlohmann::json{{"scenario",scenario},{"units",units},{"buildings",buildings},
-                {"unit_state",sizeof(UnitState)},{"building_state",sizeof(BuildingStateRecord)},
-                {"unit_live",sizeof(Unit)},{"building_live",sizeof(Building)},
-                {"entity_payload",entityPayload},{"retained_bytes",memory.retainedBytes},{"capacity_bytes",memory.capacityBytes},
-                {"leased_bytes",memory.leasedBytes},{"buffers",memory.allocatedBuffers},
-                {"capture_ns",captureNs},{"owner_ns",ownerNs},{"consumer_ns",consumerNs}}.dump()<<'\n';
+            std::cout<<"ENTITY_BENCH "<<nlohmann::json{{"scenario",scenario},{"capture_mode",fresh ? "fresh" : "steady"},{"units",units},{"buildings",buildings},{"retained_leases",retained},
+                {"unit_state",sizeof(UnitState)},{"building_state",sizeof(BuildingStateRecord)},{"unit_live",sizeof(Unit)},{"building_live",sizeof(Building)},
+                {"entity_records_payload",entityRecords},{"populated_entity_payload",payload(frozen)},{"live_object_payload",units*sizeof(Unit)+buildings*sizeof(Building)},
+                {"live_object_allocator_bytes",liveHeap},{"unit_cargo_retained_bytes",game.unitCargo.capacityBytes()},
+                {"retained_bytes",memory.retainedBytes},{"capacity_bytes",memory.capacityBytes},{"leased_bytes",memory.leasedBytes},
+                {"allocated_buffers",memory.allocatedBuffers},{"pool_growth_allocations",storage.allocations},{"capture_pool_growth_allocations",storage.allocations-allocationsBefore},
+                {"record_bytes_copied",copied},{"sidecar_bytes_copied",sidecars},{"map_bytes_copied",mapCopied},
+                {"capture",captureMetric},{"inventory_read",reads},{"inventory_update",updates},{"owner",owner},{"consumer",consumer},{"checksum",checksum}}.dump()<<'\n';
         }
     }
 }

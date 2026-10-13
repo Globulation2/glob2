@@ -127,6 +127,23 @@ and selects the dummy drivers when the environment does not, so
 `build/darwin/client/release/test/glob2-unit-tests -ts=MapQuery` never touches
 `~/.glob2`. Doctest's own options apply: `-ltc`, `-tc=`, `-ts=`, `-s`, `-r=junit`.
 
+The `WorldSnapshot` case `paired entity storage workload [benchmark]` emits
+`ENTITY_BENCH` JSON for authoritative copy traffic, populated entity payload,
+retained snapshot capacity, live object sizes, and separate capture, inventory,
+owner simulation, and scene preparation timings. Use a release build for runtime
+comparisons. `GLOB2_ENTITY_SCENARIO` selects one fixture (0–5),
+`GLOB2_ENTITY_LEASES` controls retained handles (1–21, within the component pool horizon), and
+`GLOB2_ENTITY_BENCH_CONFIG` names a JSON file mapping scenario numbers to operation
+counts (`capture`, `inventory_read`, `inventory_update`, `owner`, `consumer`).
+Counts must match across compared binaries. Capture normally supplies the previous
+handle so unchanged components are reused; `GLOB2_ENTITY_FRESH=1` measures fresh
+capture separately. `GLOB2_ENTITY_EVIDENCE_DIR` saves canonical states and final
+checksums. Synthetic fixtures disable hunger and resource growth; qualify ordinary
+advancing matches separately. Optional Callgrind headers enable phase markers,
+without requiring Valgrind for normal builds or execution. CPU-time metrics are
+`null` when unavailable; Windows and browser wall clocks are not reported as CPU
+time.
+
 ## Writing a test
 
 Include `Glob2Test.h` (unit tests) or `EngineFixtures.h` (engine tests) and use

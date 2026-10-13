@@ -595,35 +595,105 @@ void verifyCapture(const Game& game, const Handle& handle)
     if (handle.catalogs && handle.catalogs->units!=game.gameHeader.getUnitCatalog())
         throw std::logic_error("snapshot verification: unit catalog differs from the game");
     if (handle.entities) {
-        if (handle.entities->unitCargo.entries()!=game.unitCargo.entries())
+        const auto& entities = *handle.entities;
+        const int teams = game.mapHeader.getNumberOfTeams();
+        if (entities.unitSlotIndices.size() != std::size_t(teams) * Unit::MAX_COUNT
+            || entities.buildingSlotIndices.size() != std::size_t(teams) * Building::MAX_COUNT)
+            throw std::logic_error("snapshot verification: entity lookup sizes differ from the game");
+        if (entities.unitCargo.entries() != game.unitCargo.entries())
             throw std::logic_error("snapshot verification: unit cargo differs from the game");
-        for (const auto& unit : handle.entities->units) {
-            const auto* liveUnit = game.resolveUnit(unit.identity);
-            if (!liveUnit || static_cast<const UnitState&>(unit) != static_cast<const UnitState&>(*liveUnit)
-                || unit.attached != Game::refOf(liveUnit->attachedBuilding) || unit.target != Game::refOf(liveUnit->targetBuilding))
-                throw std::logic_error("snapshot verification: unit state differs from the game");
-        }
-        for (const auto& building:handle.entities->buildings) {
-            const auto* liveBuilding=game.resolveBuilding(building.identity);
-            if (!liveBuilding || static_cast<const BuildingStateRecord&>(building) != static_cast<const BuildingStateRecord&>(*liveBuilding)
-                || building.extraProductionCount!=liveBuilding->extraProductionRatios.size())
-                throw std::logic_error("snapshot verification: production storage differs from the game");
-            for (unsigned id=0;id<BuiltinUnitCount;++id)
-                if (building.constructionOriginRatios[id]!=liveBuilding->originProductionRatio(id))
-                    throw std::logic_error("snapshot verification: production origin differs from the game");
-            for (unsigned extra=0;extra<building.extraProductionCount;++extra) {
-                const auto& value=handle.entities->extraProduction.at(building.extraProductionOffset+extra);
-                const unsigned id=BuiltinUnitCount+extra;
-                if (value.ratio!=liveBuilding->productionRatio(id) || value.used!=liveBuilding->productionUsed(id)
-                    || value.constructionOriginRatio!=liveBuilding->originProductionRatio(id))
-                    throw std::logic_error("snapshot verification: additional production differs from the game");
+
+        // Walk the same team/slot order as capture, checking completeness as well
+        // as values. Resolving only captured identities would miss omitted rows.
+        std::size_t unitIndex = 0, buildingIndex = 0, relationshipIndex = 0, productionIndex = 0;
+        const auto compareRelationships = [&](UnitRange range, const auto& live) {
+            if (range.offset != relationshipIndex || range.count != live.size()
+                || relationshipIndex > entities.relationships.size()
+                || live.size() > entities.relationships.size() - relationshipIndex)
+                throw std::logic_error("snapshot verification: building relationship range differs from the game");
+            for (const auto* unit : live)
+                if (entities.relationships[relationshipIndex++] != Game::refOf(unit))
+                    throw std::logic_error("snapshot verification: building relationship differs from the game");
+        };
+        for (int t = 0; t < teams; ++t) {
+            const auto* team = game.teams[t];
+            if (!team) continue;
+            if (!team->liveUnits.matches(team->myUnits, Unit::MAX_COUNT)
+                || !team->liveBuildings.matches(team->myBuildings, Building::MAX_COUNT))
+                throw std::logic_error("snapshot verification: team " + std::to_string(t) + " live entity lists differ from its slots");
+            for (int slot = 0; slot < Unit::MAX_COUNT; ++slot) {
+                const auto* live = team->myUnits[slot];
+                const auto lookup = entities.unitSlotIndices[t * Unit::MAX_COUNT + slot];
+                if (!live) {
+                    if (lookup != Entities::NoRecord)
+                        throw std::logic_error("snapshot verification: empty unit lookup differs from the game");
+                    continue;
+                }
+                if (unitIndex >= entities.units.size() || lookup != unitIndex)
+                    throw std::logic_error("snapshot verification: unit count or lookup differs from the game");
+                const auto& unit = entities.units[unitIndex++];
+                if (unit.identity != Game::refOf(live) || unit.team != t)
+                    throw std::logic_error("snapshot verification: unit identity or order differs from the game");
+                if (static_cast<const UnitState&>(unit) != static_cast<const UnitState&>(*live))
+                    throw std::logic_error("snapshot verification: unit state differs from the game");
+                if (unit.attached != Game::refOf(live->attachedBuilding) || unit.target != Game::refOf(live->targetBuilding))
+                    throw std::logic_error("snapshot verification: unit building references differ from the game");
+            }
+            for (int slot = 0; slot < Building::MAX_COUNT; ++slot) {
+                const auto* live = team->myBuildings[slot];
+                const auto lookup = entities.buildingSlotIndices[t * Building::MAX_COUNT + slot];
+                if (!live) {
+                    if (lookup != Entities::NoRecord)
+                        throw std::logic_error("snapshot verification: empty building lookup differs from the game");
+                    continue;
+                }
+                if (buildingIndex >= entities.buildings.size() || lookup != buildingIndex)
+                    throw std::logic_error("snapshot verification: building count or lookup differs from the game");
+                const auto& building = entities.buildings[buildingIndex++];
+                if (building.identity != Game::refOf(live) || building.team != t)
+                    throw std::logic_error("snapshot verification: building identity or order differs from the game");
+                if (static_cast<const BuildingStateRecord&>(building) != static_cast<const BuildingStateRecord&>(*live))
+                    throw std::logic_error("snapshot verification: building state differs from the game");
+                MaterialMask supplyMask = 0;
+                for (unsigned supplied = live->runtime->suppliesStockMask; supplied; supplied &= supplied - 1) {
+                    const unsigned material = std::countr_zero(supplied);
+                    if (live->availableMaterial(material) > 0) supplyMask |= MaterialMask(1u << material);
+                }
+                if (building.maxHp != live->getEffectiveMaxHp()
+                    || building.usesTeamResources != (live->materials == team->teamMaterials)
+                    || building.availableSupplyMask != supplyMask)
+                    throw std::logic_error("snapshot verification: building query values differ from the game");
+                compareRelationships(building.working, live->unitsWorking);
+                compareRelationships(building.inside, live->unitsInside);
+                if (building.extraProductionOffset != productionIndex
+                    || building.extraProductionCount != live->extraProductionRatios.size()
+                    || productionIndex > entities.extraProduction.size()
+                    || building.extraProductionCount > entities.extraProduction.size() - productionIndex)
+                    throw std::logic_error("snapshot verification: production range differs from the game");
+                for (unsigned id = 0; id < BuiltinUnitCount; ++id)
+                    if (building.constructionOriginRatios[id] != live->originProductionRatio(id))
+                        throw std::logic_error("snapshot verification: production origin differs from the game");
+                for (unsigned extra = 0; extra < building.extraProductionCount; ++extra) {
+                    const auto& value = entities.extraProduction[productionIndex++];
+                    const unsigned id = BuiltinUnitCount + extra;
+                    if (value.ratio != live->productionRatio(id) || value.used != live->productionUsed(id)
+                        || value.constructionOriginRatio != live->originProductionRatio(id))
+                        throw std::logic_error("snapshot verification: additional production differs from the game");
+                }
             }
         }
+        if (unitIndex != entities.units.size() || buildingIndex != entities.buildings.size()
+            || relationshipIndex != entities.relationships.size() || productionIndex != entities.extraProduction.size())
+            throw std::logic_error("snapshot verification: entity or sidecar counts differ from the game");
+        if (entities.projects.size() != game.buildProjects.size())
+            throw std::logic_error("snapshot verification: building project count differs from the game");
+        std::size_t projectIndex = 0;
+        for (const auto& live : game.buildProjects) {
+            const auto& project = entities.projects[projectIndex++];
+            if (project.posX != live.posX || project.posY != live.posY || project.teamNumber != live.teamNumber
+                || project.typeNum != live.typeNum || project.unitWorking != live.unitWorking || project.unitWorkingFuture != live.unitWorkingFuture)
+                throw std::logic_error("snapshot verification: building project differs from the game");
+        }
     }
-	if (handle.entities)
-		for (int t = 0; t < game.mapHeader.getNumberOfTeams(); ++t)
-			if (const auto* team = game.teams[t])
-				if (!team->liveUnits.matches(team->myUnits, Unit::MAX_COUNT) || !team->liveBuildings.matches(team->myBuildings, Building::MAX_COUNT))
-					throw std::logic_error("snapshot verification: team " + std::to_string(t) + " live entity lists differ from its slots");
 }
 } // namespace SimulationSnapshot

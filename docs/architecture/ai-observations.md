@@ -181,11 +181,13 @@ before signed division and remainder. Seventeen learning flags use an unsigned
 mask with value getters and explicit setters that preserve neighboring bits.
 Editor level controls bind the byte fields explicitly and retain wide arithmetic.
 
-Building lifecycle enums and recruitment qualifications use byte storage.
-`maxUnitInside` uses unsigned 16-bit storage, including accepted capacities of
-32768 through 65535. Private stock, cached demand, production counters and ratios,
-staffing, priorities, exchange masks, timers and identifiers remain wide. Ordinary
-and exceptional inventories therefore still share the same inline storage.
+Buildings retain their existing layout: reducing their inline scalar widths
+slowed inventory access in release measurements. Lifecycle and recruitment fields,
+including the capacity field accepting 0 through 65535, therefore remain wide.
+Private stock, cached demand, production counters and ratios, staffing, priorities,
+exchange masks, unrestricted simulation timers and identifiers also remain wide.
+All fifteen inventory slots use the same lossless inline storage for ordinary and
+exceptional values.
 Snapshot views inherit the authoritative records for bulk capture; only those
 base records have a standard-layout guarantee, and views only promise trivial
 copyability. Natural alignment is retained without packed structs.
@@ -199,5 +201,7 @@ view metadata, slot-index preparation, retained capacity, allocator overhead and
 vector growth copies. `Store::Metrics` exposes their deltas alongside the existing
 aggregate `bytesCopied` estimate, whose meaning is unchanged. Pool memory metrics
 continue to describe retained capacity and leases separately. Verification compares
-all logical scalar fields, including presentation state, and copied cargo and
-production sidecars; it never compares entity padding bytes.
+entity completeness, team/slot ordering, identities, lookup tables and logical
+scalar fields, including presentation state. It also checks ordered working/inside
+relationships, cargo, production and building-project sidecars, without comparing
+entity padding bytes.
