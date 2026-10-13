@@ -221,18 +221,13 @@ bool Building::wantsAnotherDelivery(int r, const int *targets, const int *served
 
 int Building::workRoleTarget(int role) const
 {
-	bool active[4]{};
-	for (int r = 0; r < MaterialCount; ++r)
-		active[0] |= materialDeliveryNeed(r) > 0;
-	int count = active[0];
-	for (unsigned job = 0; job < 3; ++job)
-		count += active[job + 1] = runtime->attractsRole(job);
-	if (!count || !active[role + 1])
-		return 0;
-	int rank = 0;
-	for (int i = 0; i < role + 1; ++i)
-		rank += active[i];
-	return desiredMaxUnitWorking / count + (rank < desiredMaxUnitWorking % count);
+	bool delivery = false;
+	for (int material = 0; material < MaterialCount; ++material)
+		delivery |= materialDeliveryNeed(material) > 0;
+	const auto targets = Hiring::roleTargets(
+		unsigned(std::max(0, desiredMaxUnitWorking)), delivery,
+		{runtime->attractsRole(0), runtime->attractsRole(1), runtime->attractsRole(2)});
+	return targets[role + 1];
 }
 
 bool Building::subscribeWorkStep()

@@ -948,18 +948,11 @@ Output Cache::rank(const Inputs &input, unsigned team, unsigned capacity)
 								Hiring::PublicationDelay + Hiring::RefreshInterval - 1 >=
 							32)
 		{
-			std::array<unsigned, 3> assigned{}, targets{};
+			std::array<unsigned, 3> assigned{};
 			unsigned deliveries = 0;
-			unsigned activeRoles = supply->materialDemand;
-			for (unsigned role = 0; role < 3; ++role)
-				activeRoles += type.attractsRole(role);
-			unsigned roleRank = supply->materialDemand;
-			for (unsigned role = 0; role < 3; ++role)
-				if (type.attractsRole(role))
-				{
-					targets[role] = unsigned(b.desiredMaxUnitWorking) / activeRoles +
-									(roleRank++ < unsigned(b.desiredMaxUnitWorking) % activeRoles);
-				}
+			const auto targets = Hiring::roleTargets(
+				unsigned(b.desiredMaxUnitWorking), supply->materialDemand,
+				{type.attractsRole(0), type.attractsRole(1), type.attractsRole(2)});
 			for (unsigned i = 0; i < b.working.count; ++i)
 			{
 				const auto ref = input.world.entities->relationships.at(b.working.offset + i);
@@ -973,11 +966,7 @@ Output Cache::rank(const Inputs &input, unsigned team, unsigned capacity)
 						++assigned[role];
 				}
 			}
-			const unsigned deliveryTarget =
-				supply->materialDemand && activeRoles
-					? unsigned(b.desiredMaxUnitWorking) / activeRoles +
-						  (unsigned(b.desiredMaxUnitWorking) % activeRoles != 0)
-					: 0;
+			const unsigned deliveryTarget = targets[0];
 			const unsigned deliveryVacancies =
 				deliveryTarget > deliveries ? deliveryTarget - deliveries : 0;
 			const unsigned roleSeats = supply->seats - std::min(supply->seats, deliveryVacancies);
@@ -990,7 +979,7 @@ Output Cache::rank(const Inputs &input, unsigned team, unsigned capacity)
 						if (list.key.job >= Job::Clear)
 						{
 							const unsigned role = unsigned(list.key.job) - unsigned(Job::Clear);
-							if ((!pass && assigned[role] >= targets[role]) ||
+							if ((!pass && assigned[role] >= targets[role + 1]) ||
 								(selectedRole >= 0 && assigned[role] >= assigned[selectedRole]))
 								continue;
 							for (const auto &entry : list.candidates)
