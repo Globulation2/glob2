@@ -1,0 +1,17 @@
+{
+  "archive_bytes": 62128115,
+  "archive_sha256": "1696be699a0a5dbe47cfe5d8a246596bb2a4afa7fce5fb2e00aa5b5b622d75a6",
+  "files": 15038,
+  "parts": [
+    {
+      "name": "rig-cohort-results.tar.gz.part01",
+      "bytes": 46137344,
+      "sha256": "9d495cb066e9597ac1e124b372bbed2d1b3c1fea759a8135b0d852e981b90dc6"
+    },
+    {
+      "name": "rig-cohort-results.tar.gz.part02",
+      "bytes": 15990771,
+      "sha256": "1253444851921d24817b05d96d032416f6987219c05156a50cbb6b173796efa9"
+    }
+  ]
+}

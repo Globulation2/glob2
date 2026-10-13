@@ -1,0 +1,2868 @@
+{
+  "primary_analysis_unchanged": true,
+  "scope": "Secondary descriptive endpoints only; no multiplicity-adjusted claims. Time-use denominator is the existing recorded labour+filling counter, separately from exact Unit::syncStep exposure. Snapshot means include matches still represented at that tick and report n; early-ended matches are not forward-filled. Do not interpret conditional late trajectories as unconditional survival.",
+  "overall": {
+    "original": {
+      "games": 600,
+      "totals": {
+        "unit_ticks": 4147975687,
+        "worker_ticks": 3031150035,
+        "births": 268453,
+        "meals": 472761,
+        "new_buildings": 81585,
+        "upgrades": 19400,
+        "repairs": 651,
+        "starvation_deaths": 22305,
+        "combat_deaths": 94860,
+        "other_deaths": 0,
+        "delivered": 4010802,
+        "harvested": 3336734,
+        "lost_colonies": 2474
+      },
+      "median_final_population": 274.5,
+      "mean_final_population": 284.14666666666665,
+      "matches_with_any_colony_loss": 594,
+      "delivered_per_worker_tick": 0.001323194811767211,
+      "harvested_per_worker_tick": 0.0011008145296245622,
+      "births_per_unit_tick": 6.471903893779983e-05,
+      "food_time_fraction_of_recorded_worker_time": 0.1609979944416539,
+      "idle_fraction_of_recorded_worker_time": 0.09452196210318589,
+      "filling_fraction_of_recorded_worker_time": 0.5886911943595117,
+      "recorded_worker_time": 3031196281
+    },
+    "cached-material": {
+      "games": 599,
+      "totals": {
+        "unit_ticks": 4134461128,
+        "worker_ticks": 3018813656,
+        "births": 270540,
+        "meals": 471537,
+        "new_buildings": 80960,
+        "upgrades": 19915,
+        "repairs": 694,
+        "starvation_deaths": 21454,
+        "combat_deaths": 96514,
+        "other_deaths": 0,
+        "delivered": 3982568,
+        "harvested": 3362325,
+        "lost_colonies": 2496
+      },
+      "median_final_population": 270,
+      "mean_final_population": 286.7111853088481,
+      "matches_with_any_colony_loss": 590,
+      "delivered_per_worker_tick": 0.001319249365420255,
+      "harvested_per_worker_tick": 0.0011137901782434496,
+      "births_per_unit_tick": 6.543537153313877e-05,
+      "food_time_fraction_of_recorded_worker_time": 0.1591548704547503,
+      "idle_fraction_of_recorded_worker_time": 0.1036323377032042,
+      "filling_fraction_of_recorded_worker_time": 0.5784196733755893,
+      "recorded_worker_time": 3018858321
+    }
+  },
+  "strata": {
+    "islands/four-ai": {
+      "original": {
+        "games": 50,
+        "totals": {
+          "unit_ticks": 370454803,
+          "worker_ticks": 262010007,
+          "births": 26008,
+          "meals": 40891,
+          "new_buildings": 7022,
+          "upgrades": 1368,
+          "repairs": 139,
+          "starvation_deaths": 1351,
+          "combat_deaths": 6911,
+          "other_deaths": 0,
+          "delivered": 346209,
+          "harvested": 292982,
+          "lost_colonies": 171
+        },
+        "median_final_population": 384.0,
+        "mean_final_population": 386.92,
+        "matches_with_any_colony_loss": 50,
+        "delivered_per_worker_tick": 0.0013213579281344014,
+        "harvested_per_worker_tick": 0.0011182091987807167,
+        "births_per_unit_tick": 7.020559536381554e-05,
+        "food_time_fraction_of_recorded_worker_time": 0.15004984638669217,
+        "idle_fraction_of_recorded_worker_time": 0.1546371115763353,
+        "filling_fraction_of_recorded_worker_time": 0.5612464073983867,
+        "recorded_worker_time": 262017989
+      },
+      "cached-material": {
+        "games": 50,
+        "totals": {
+          "unit_ticks": 364770876,
+          "worker_ticks": 260655228,
+          "births": 25733,
+          "meals": 40248,
+          "new_buildings": 6887,
+          "upgrades": 1303,
+          "repairs": 190,
+          "starvation_deaths": 1229,
+          "combat_deaths": 6750,
+          "other_deaths": 0,
+          "delivered": 342381,
+          "harvested": 289521,
+          "lost_colonies": 175
+        },
+        "median_final_population": 358.5,
+        "mean_final_population": 387.08,
+        "matches_with_any_colony_loss": 50,
+        "delivered_per_worker_tick": 0.0013135397384011036,
+        "harvested_per_worker_tick": 0.0011107431154229524,
+        "births_per_unit_tick": 7.054565397923929e-05,
+        "food_time_fraction_of_recorded_worker_time": 0.14745642960599026,
+        "idle_fraction_of_recorded_worker_time": 0.16534044752565188,
+        "filling_fraction_of_recorded_worker_time": 0.5521532747657215,
+        "recorded_worker_time": 260663181
+      }
+    },
+    "islands/nico-castor": {
+      "original": {
+        "games": 50,
+        "totals": {
+          "unit_ticks": 330414515,
+          "worker_ticks": 237447504,
+          "births": 20704,
+          "meals": 39914,
+          "new_buildings": 7844,
+          "upgrades": 2167,
+          "repairs": 0,
+          "starvation_deaths": 725,
+          "combat_deaths": 6391,
+          "other_deaths": 0,
+          "delivered": 318361,
+          "harvested": 279296,
+          "lost_colonies": 169
+        },
+        "median_final_population": 306.5,
+        "mean_final_population": 303.76,
+        "matches_with_any_colony_loss": 49,
+        "delivered_per_worker_tick": 0.0013407637251895475,
+        "harvested_per_worker_tick": 0.0011762431497279499,
+        "births_per_unit_tick": 6.266068547261007e-05,
+        "food_time_fraction_of_recorded_worker_time": 0.13496028964789258,
+        "idle_fraction_of_recorded_worker_time": 0.0895566201134052,
+        "filling_fraction_of_recorded_worker_time": 0.6078553377693536,
+        "recorded_worker_time": 237453825
+      },
+      "cached-material": {
+        "games": 50,
+        "totals": {
+          "unit_ticks": 341758310,
+          "worker_ticks": 245338601,
+          "births": 21670,
+          "meals": 40952,
+          "new_buildings": 7936,
+          "upgrades": 2266,
+          "repairs": 0,
+          "starvation_deaths": 631,
+          "combat_deaths": 6961,
+          "other_deaths": 0,
+          "delivered": 324324,
+          "harvested": 290594,
+          "lost_colonies": 170
+        },
+        "median_final_population": 316.0,
+        "mean_final_population": 313.56,
+        "matches_with_any_colony_loss": 47,
+        "delivered_per_worker_tick": 0.001321944441999977,
+        "harvested_per_worker_tick": 0.00118446098092815,
+        "births_per_unit_tick": 6.340738283730394e-05,
+        "food_time_fraction_of_recorded_worker_time": 0.13628458364179705,
+        "idle_fraction_of_recorded_worker_time": 0.09501515368797402,
+        "filling_fraction_of_recorded_worker_time": 0.596233234866235,
+        "recorded_worker_time": 245344896
+      }
+    },
+    "islands/nico-numbi": {
+      "original": {
+        "games": 50,
+        "totals": {
+          "unit_ticks": 348956899,
+          "worker_ticks": 250227877,
+          "births": 23541,
+          "meals": 38238,
+          "new_buildings": 4444,
+          "upgrades": 2312,
+          "repairs": 20,
+          "starvation_deaths": 3341,
+          "combat_deaths": 7267,
+          "other_deaths": 0,
+          "delivered": 295375,
+          "harvested": 266044,
+          "lost_colonies": 221
+        },
+        "median_final_population": 289.5,
+        "mean_final_population": 290.66,
+        "matches_with_any_colony_loss": 50,
+        "delivered_per_worker_tick": 0.0011804240340495716,
+        "harvested_per_worker_tick": 0.0010632068784246608,
+        "births_per_unit_tick": 6.746105340648388e-05,
+        "food_time_fraction_of_recorded_worker_time": 0.16963228330504349,
+        "idle_fraction_of_recorded_worker_time": 0.12735907251303735,
+        "filling_fraction_of_recorded_worker_time": 0.5421092759150501,
+        "recorded_worker_time": 250233512
+      },
+      "cached-material": {
+        "games": 50,
+        "totals": {
+          "unit_ticks": 346200726,
+          "worker_ticks": 248991028,
+          "births": 23145,
+          "meals": 38228,
+          "new_buildings": 4650,
+          "upgrades": 2336,
+          "repairs": 12,
+          "starvation_deaths": 3332,
+          "combat_deaths": 7263,
+          "other_deaths": 0,
+          "delivered": 293822,
+          "harvested": 267923,
+          "lost_colonies": 225
+        },
+        "median_final_population": 268.5,
+        "mean_final_population": 283,
+        "matches_with_any_colony_loss": 50,
+        "delivered_per_worker_tick": 0.0011800505518616518,
+        "harvested_per_worker_tick": 0.001076034755758348,
+        "births_per_unit_tick": 6.68542792137299e-05,
+        "food_time_fraction_of_recorded_worker_time": 0.16813679038642246,
+        "idle_fraction_of_recorded_worker_time": 0.13442510020140686,
+        "filling_fraction_of_recorded_worker_time": 0.5360001038408154,
+        "recorded_worker_time": 248996504
+      }
+    },
+    "islands/nicowar": {
+      "original": {
+        "games": 50,
+        "totals": {
+          "unit_ticks": 499928501,
+          "worker_ticks": 363716320,
+          "births": 33708,
+          "meals": 58291,
+          "new_buildings": 6581,
+          "upgrades": 3465,
+          "repairs": 1,
+          "starvation_deaths": 1189,
+          "combat_deaths": 12533,
+          "other_deaths": 0,
+          "delivered": 430362,
+          "harvested": 392818,
+          "lost_colonies": 135
+        },
+        "median_final_population": 404.0,
+        "mean_final_population": 431.72,
+        "matches_with_any_colony_loss": 47,
+        "delivered_per_worker_tick": 0.0011832353302155922,
+        "harvested_per_worker_tick": 0.0010800120269555131,
+        "births_per_unit_tick": 6.742564173191638e-05,
+        "food_time_fraction_of_recorded_worker_time": 0.1384541848837592,
+        "idle_fraction_of_recorded_worker_time": 0.08155187294179254,
+        "filling_fraction_of_recorded_worker_time": 0.5991840292802215,
+        "recorded_worker_time": 363724571
+      },
+      "cached-material": {
+        "games": 50,
+        "totals": {
+          "unit_ticks": 499287384,
+          "worker_ticks": 360937808,
+          "births": 34237,
+          "meals": 58283,
+          "new_buildings": 6493,
+          "upgrades": 3354,
+          "repairs": 0,
+          "starvation_deaths": 1136,
+          "combat_deaths": 12896,
+          "other_deaths": 0,
+          "delivered": 425073,
+          "harvested": 392481,
+          "lost_colonies": 144
+        },
+        "median_final_population": 419.0,
+        "mean_final_population": 436.1,
+        "matches_with_any_colony_loss": 48,
+        "delivered_per_worker_tick": 0.0011776904236089339,
+        "harvested_per_worker_tick": 0.0010873923188451347,
+        "births_per_unit_tick": 6.857173062478182e-05,
+        "food_time_fraction_of_recorded_worker_time": 0.13677753193760084,
+        "idle_fraction_of_recorded_worker_time": 0.0929967966207586,
+        "filling_fraction_of_recorded_worker_time": 0.5893297944434599,
+        "recorded_worker_time": 360946336
+      }
+    },
+    "river/four-ai": {
+      "original": {
+        "games": 50,
+        "totals": {
+          "unit_ticks": 342484881,
+          "worker_ticks": 254780877,
+          "births": 20621,
+          "meals": 40103,
+          "new_buildings": 6799,
+          "upgrades": 689,
+          "repairs": 215,
+          "starvation_deaths": 602,
+          "combat_deaths": 7956,
+          "other_deaths": 0,
+          "delivered": 359471,
+          "harvested": 260826,
+          "lost_colonies": 220
+        },
+        "median_final_population": 247.5,
+        "mean_final_population": 273.26,
+        "matches_with_any_colony_loss": 50,
+        "delivered_per_worker_tick": 0.0014109025929760026,
+        "harvested_per_worker_tick": 0.0010237267532445145,
+        "births_per_unit_tick": 6.0209957122165634e-05,
+        "food_time_fraction_of_recorded_worker_time": 0.16097244785833784,
+        "idle_fraction_of_recorded_worker_time": 0.1159767846220501,
+        "filling_fraction_of_recorded_worker_time": 0.6191715295726717,
+        "recorded_worker_time": 254782154
+      },
+      "cached-material": {
+        "games": 50,
+        "totals": {
+          "unit_ticks": 328397103,
+          "worker_ticks": 241083433,
+          "births": 20338,
+          "meals": 38099,
+          "new_buildings": 6833,
+          "upgrades": 663,
+          "repairs": 202,
+          "starvation_deaths": 851,
+          "combat_deaths": 7904,
+          "other_deaths": 0,
+          "delivered": 339298,
+          "harvested": 255483,
+          "lost_colonies": 221
+        },
+        "median_final_population": 257.0,
+        "mean_final_population": 263.66,
+        "matches_with_any_colony_loss": 50,
+        "delivered_per_worker_tick": 0.0014073882878546864,
+        "harvested_per_worker_tick": 0.0010597285629328167,
+        "births_per_unit_tick": 6.193111880161744e-05,
+        "food_time_fraction_of_recorded_worker_time": 0.1600235116325626,
+        "idle_fraction_of_recorded_worker_time": 0.12073626167920919,
+        "filling_fraction_of_recorded_worker_time": 0.6111167520664068,
+        "recorded_worker_time": 241084067
+      }
+    },
+    "river/nico-castor": {
+      "original": {
+        "games": 50,
+        "totals": {
+          "unit_ticks": 255468379,
+          "worker_ticks": 182577736,
+          "births": 16080,
+          "meals": 28231,
+          "new_buildings": 6713,
+          "upgrades": 766,
+          "repairs": 1,
+          "starvation_deaths": 2486,
+          "combat_deaths": 6228,
+          "other_deaths": 0,
+          "delivered": 259762,
+          "harvested": 211112,
+          "lost_colonies": 247
+        },
+        "median_final_population": 167.5,
+        "mean_final_population": 179.32,
+        "matches_with_any_colony_loss": 50,
+        "delivered_per_worker_tick": 0.0014227474044261343,
+        "harvested_per_worker_tick": 0.0011562855615648558,
+        "births_per_unit_tick": 6.294321067422595e-05,
+        "food_time_fraction_of_recorded_worker_time": 0.1851442696932483,
+        "idle_fraction_of_recorded_worker_time": 0.08434371466951561,
+        "filling_fraction_of_recorded_worker_time": 0.580644856341547,
+        "recorded_worker_time": 182579580
+      },
+      "cached-material": {
+        "games": 50,
+        "totals": {
+          "unit_ticks": 251096779,
+          "worker_ticks": 180326816,
+          "births": 16032,
+          "meals": 27444,
+          "new_buildings": 6604,
+          "upgrades": 689,
+          "repairs": 2,
+          "starvation_deaths": 2326,
+          "combat_deaths": 6255,
+          "other_deaths": 0,
+          "delivered": 254438,
+          "harvested": 209222,
+          "lost_colonies": 262
+        },
+        "median_final_population": 178.0,
+        "mean_final_population": 181.02,
+        "matches_with_any_colony_loss": 50,
+        "delivered_per_worker_tick": 0.0014109826017224194,
+        "harvested_per_worker_tick": 0.0011602378650106039,
+        "births_per_unit_tick": 6.384789189191471e-05,
+        "food_time_fraction_of_recorded_worker_time": 0.18115680400791515,
+        "idle_fraction_of_recorded_worker_time": 0.09396468838466564,
+        "filling_fraction_of_recorded_worker_time": 0.5697745039772416,
+        "recorded_worker_time": 180328369
+      }
+    },
+    "river/nico-numbi": {
+      "original": {
+        "games": 50,
+        "totals": {
+          "unit_ticks": 294295272,
+          "worker_ticks": 222552412,
+          "births": 17578,
+          "meals": 33627,
+          "new_buildings": 6453,
+          "upgrades": 771,
+          "repairs": 1,
+          "starvation_deaths": 2809,
+          "combat_deaths": 7330,
+          "other_deaths": 0,
+          "delivered": 291010,
+          "harvested": 235407,
+          "lost_colonies": 218
+        },
+        "median_final_population": 180.5,
+        "mean_final_population": 180.78,
+        "matches_with_any_colony_loss": 50,
+        "delivered_per_worker_tick": 0.0013076020941979276,
+        "harvested_per_worker_tick": 0.0010577598233354577,
+        "births_per_unit_tick": 5.972912809825908e-05,
+        "food_time_fraction_of_recorded_worker_time": 0.18747950892209267,
+        "idle_fraction_of_recorded_worker_time": 0.12088155001969902,
+        "filling_fraction_of_recorded_worker_time": 0.5526959102965032,
+        "recorded_worker_time": 222554178
+      },
+      "cached-material": {
+        "games": 50,
+        "totals": {
+          "unit_ticks": 298369458,
+          "worker_ticks": 220927665,
+          "births": 18432,
+          "meals": 33916,
+          "new_buildings": 6143,
+          "upgrades": 930,
+          "repairs": 0,
+          "starvation_deaths": 2736,
+          "combat_deaths": 7487,
+          "other_deaths": 0,
+          "delivered": 294120,
+          "harvested": 239436,
+          "lost_colonies": 234
+        },
+        "median_final_population": 193.0,
+        "mean_final_population": 196.18,
+        "matches_with_any_colony_loss": 50,
+        "delivered_per_worker_tick": 0.0013312954717554272,
+        "harvested_per_worker_tick": 0.00108377554255145,
+        "births_per_unit_tick": 6.17757599036829e-05,
+        "food_time_fraction_of_recorded_worker_time": 0.18579409980931924,
+        "idle_fraction_of_recorded_worker_time": 0.12643512429555007,
+        "filling_fraction_of_recorded_worker_time": 0.5408783536211805,
+        "recorded_worker_time": 220929470
+      }
+    },
+    "river/nicowar": {
+      "original": {
+        "games": 50,
+        "totals": {
+          "unit_ticks": 356100360,
+          "worker_ticks": 258245600,
+          "births": 23081,
+          "meals": 37279,
+          "new_buildings": 6619,
+          "upgrades": 1103,
+          "repairs": 0,
+          "starvation_deaths": 4510,
+          "combat_deaths": 9812,
+          "other_deaths": 0,
+          "delivered": 326047,
+          "harvested": 270227,
+          "lost_colonies": 235
+        },
+        "median_final_population": 184.5,
+        "mean_final_population": 207.18,
+        "matches_with_any_colony_loss": 50,
+        "delivered_per_worker_tick": 0.0012625461963340324,
+        "harvested_per_worker_tick": 0.0010463953693693137,
+        "births_per_unit_tick": 6.481599737781788e-05,
+        "food_time_fraction_of_recorded_worker_time": 0.20132432701806025,
+        "idle_fraction_of_recorded_worker_time": 0.08821207066392604,
+        "filling_fraction_of_recorded_worker_time": 0.5547678232700117,
+        "recorded_worker_time": 258246789
+      },
+      "cached-material": {
+        "games": 49,
+        "totals": {
+          "unit_ticks": 339245500,
+          "worker_ticks": 247027289,
+          "births": 22004,
+          "meals": 36249,
+          "new_buildings": 6167,
+          "upgrades": 1085,
+          "repairs": 0,
+          "starvation_deaths": 4033,
+          "combat_deaths": 9479,
+          "other_deaths": 0,
+          "delivered": 307825,
+          "harvested": 260655,
+          "lost_colonies": 238
+        },
+        "median_final_population": 199,
+        "mean_final_population": 205.30612244897958,
+        "matches_with_any_colony_loss": 49,
+        "delivered_per_worker_tick": 0.0012461173874599742,
+        "harvested_per_worker_tick": 0.0010551668240993406,
+        "births_per_unit_tick": 6.4861582541257e-05,
+        "food_time_fraction_of_recorded_worker_time": 0.19574544122465742,
+        "idle_fraction_of_recorded_worker_time": 0.09351169765654364,
+        "filling_fraction_of_recorded_worker_time": 0.5489094737458441,
+        "recorded_worker_time": 247028624
+      }
+    },
+    "swamp/four-ai": {
+      "original": {
+        "games": 50,
+        "totals": {
+          "unit_ticks": 351162768,
+          "worker_ticks": 260363241,
+          "births": 22905,
+          "meals": 40161,
+          "new_buildings": 7610,
+          "upgrades": 1264,
+          "repairs": 262,
+          "starvation_deaths": 223,
+          "combat_deaths": 6475,
+          "other_deaths": 0,
+          "delivered": 397043,
+          "harvested": 292694,
+          "lost_colonies": 221
+        },
+        "median_final_population": 359.5,
+        "mean_final_population": 356.14,
+        "matches_with_any_colony_loss": 50,
+        "delivered_per_worker_tick": 0.001524957972081781,
+        "harvested_per_worker_tick": 0.0011241755897484775,
+        "births_per_unit_tick": 6.522616315634008e-05,
+        "food_time_fraction_of_recorded_worker_time": 0.14666820777533388,
+        "idle_fraction_of_recorded_worker_time": 0.08047604526156883,
+        "filling_fraction_of_recorded_worker_time": 0.6433186258313377,
+        "recorded_worker_time": 260366671
+      },
+      "cached-material": {
+        "games": 50,
+        "totals": {
+          "unit_ticks": 360580716,
+          "worker_ticks": 264556644,
+          "births": 23785,
+          "meals": 41149,
+          "new_buildings": 7730,
+          "upgrades": 1409,
+          "repairs": 269,
+          "starvation_deaths": 232,
+          "combat_deaths": 7648,
+          "other_deaths": 0,
+          "delivered": 393674,
+          "harvested": 301427,
+          "lost_colonies": 190
+        },
+        "median_final_population": 338.0,
+        "mean_final_population": 350.1,
+        "matches_with_any_colony_loss": 50,
+        "delivered_per_worker_tick": 0.0014880518366418346,
+        "harvested_per_worker_tick": 0.0011393665849495733,
+        "births_per_unit_tick": 6.596303946548267e-05,
+        "food_time_fraction_of_recorded_worker_time": 0.1480312016853122,
+        "idle_fraction_of_recorded_worker_time": 0.09613067240825304,
+        "filling_fraction_of_recorded_worker_time": 0.6204896030612372,
+        "recorded_worker_time": 264559171
+      }
+    },
+    "swamp/nico-castor": {
+      "original": {
+        "games": 50,
+        "totals": {
+          "unit_ticks": 288535920,
+          "worker_ticks": 211023690,
+          "births": 17700,
+          "meals": 34509,
+          "new_buildings": 8393,
+          "upgrades": 1567,
+          "repairs": 0,
+          "starvation_deaths": 871,
+          "combat_deaths": 6116,
+          "other_deaths": 0,
+          "delivered": 304055,
+          "harvested": 252464,
+          "lost_colonies": 203
+        },
+        "median_final_population": 248.5,
+        "mean_final_population": 246.26,
+        "matches_with_any_colony_loss": 49,
+        "delivered_per_worker_tick": 0.0014408571852762124,
+        "harvested_per_worker_tick": 0.0011963775251963417,
+        "births_per_unit_tick": 6.134418203459729e-05,
+        "food_time_fraction_of_recorded_worker_time": 0.14857397665793,
+        "idle_fraction_of_recorded_worker_time": 0.05438363960579396,
+        "filling_fraction_of_recorded_worker_time": 0.6280030062546588,
+        "recorded_worker_time": 211026700
+      },
+      "cached-material": {
+        "games": 50,
+        "totals": {
+          "unit_ticks": 278000177,
+          "worker_ticks": 205724998,
+          "births": 17305,
+          "meals": 33235,
+          "new_buildings": 8252,
+          "upgrades": 1562,
+          "repairs": 1,
+          "starvation_deaths": 792,
+          "combat_deaths": 5775,
+          "other_deaths": 0,
+          "delivered": 298545,
+          "harvested": 248418,
+          "lost_colonies": 216
+        },
+        "median_final_population": 244.0,
+        "mean_final_population": 246.76,
+        "matches_with_any_colony_loss": 49,
+        "delivered_per_worker_tick": 0.0014511848482312295,
+        "harvested_per_worker_tick": 0.0012075246198325396,
+        "births_per_unit_tick": 6.224816180602648e-05,
+        "food_time_fraction_of_recorded_worker_time": 0.14670867538057922,
+        "idle_fraction_of_recorded_worker_time": 0.06741846494216754,
+        "filling_fraction_of_recorded_worker_time": 0.6092968342882091,
+        "recorded_worker_time": 205727793
+      }
+    },
+    "swamp/nico-numbi": {
+      "original": {
+        "games": 50,
+        "totals": {
+          "unit_ticks": 309322009,
+          "worker_ticks": 229174988,
+          "births": 20538,
+          "meals": 34743,
+          "new_buildings": 5935,
+          "upgrades": 1810,
+          "repairs": 12,
+          "starvation_deaths": 2434,
+          "combat_deaths": 7404,
+          "other_deaths": 0,
+          "delivered": 306981,
+          "harvested": 259671,
+          "lost_colonies": 232
+        },
+        "median_final_population": 244.5,
+        "mean_final_population": 246,
+        "matches_with_any_colony_loss": 50,
+        "delivered_per_worker_tick": 0.0013395048154207824,
+        "harvested_per_worker_tick": 0.001133068675016141,
+        "births_per_unit_tick": 6.639682726229804e-05,
+        "food_time_fraction_of_recorded_worker_time": 0.17023903843995208,
+        "idle_fraction_of_recorded_worker_time": 0.08690255143855152,
+        "filling_fraction_of_recorded_worker_time": 0.571285126827963,
+        "recorded_worker_time": 229177575
+      },
+      "cached-material": {
+        "games": 50,
+        "totals": {
+          "unit_ticks": 316744599,
+          "worker_ticks": 236084118,
+          "births": 20884,
+          "meals": 36054,
+          "new_buildings": 6064,
+          "upgrades": 1992,
+          "repairs": 18,
+          "starvation_deaths": 2351,
+          "combat_deaths": 7213,
+          "other_deaths": 0,
+          "delivered": 324084,
+          "harvested": 269996,
+          "lost_colonies": 227
+        },
+        "median_final_population": 252.0,
+        "mean_final_population": 258.4,
+        "matches_with_any_colony_loss": 48,
+        "delivered_per_worker_tick": 0.0013727479965424867,
+        "harvested_per_worker_tick": 0.00114364321618619,
+        "births_per_unit_tick": 6.593324737322514e-05,
+        "food_time_fraction_of_recorded_worker_time": 0.16870688904061262,
+        "idle_fraction_of_recorded_worker_time": 0.10130307889451436,
+        "filling_fraction_of_recorded_worker_time": 0.5597583492628417,
+        "recorded_worker_time": 236087010
+      }
+    },
+    "swamp/nicowar": {
+      "original": {
+        "games": 50,
+        "totals": {
+          "unit_ticks": 400851380,
+          "worker_ticks": 299029783,
+          "births": 25989,
+          "meals": 46774,
+          "new_buildings": 7172,
+          "upgrades": 2118,
+          "repairs": 0,
+          "starvation_deaths": 1764,
+          "combat_deaths": 10437,
+          "other_deaths": 0,
+          "delivered": 376126,
+          "harvested": 323193,
+          "lost_colonies": 202
+        },
+        "median_final_population": 291.0,
+        "mean_final_population": 307.76,
+        "matches_with_any_colony_loss": 49,
+        "delivered_per_worker_tick": 0.0012578211983653815,
+        "harvested_per_worker_tick": 0.0010808053858635213,
+        "births_per_unit_tick": 6.483450300208521e-05,
+        "food_time_fraction_of_recorded_worker_time": 0.15636855505890648,
+        "idle_fraction_of_recorded_worker_time": 0.05424889650125498,
+        "filling_fraction_of_recorded_worker_time": 0.5968010552637252,
+        "recorded_worker_time": 299032737
+      },
+      "cached-material": {
+        "games": 50,
+        "totals": {
+          "unit_ticks": 410009500,
+          "worker_ticks": 307160028,
+          "births": 26975,
+          "meals": 47680,
+          "new_buildings": 7201,
+          "upgrades": 2326,
+          "repairs": 0,
+          "starvation_deaths": 1805,
+          "combat_deaths": 10883,
+          "other_deaths": 0,
+          "delivered": 384984,
+          "harvested": 337169,
+          "lost_colonies": 194
+        },
+        "median_final_population": 304.0,
+        "mean_final_population": 317.74,
+        "matches_with_any_colony_loss": 49,
+        "delivered_per_worker_tick": 0.001253366209486086,
+        "harvested_per_worker_tick": 0.0010976981679400029,
+        "births_per_unit_tick": 6.5791158497547e-05,
+        "food_time_fraction_of_recorded_worker_time": 0.1547533116792425,
+        "idle_fraction_of_recorded_worker_time": 0.062180748391163124,
+        "filling_fraction_of_recorded_worker_time": 0.5956224856582615,
+        "recorded_worker_time": 307162900
+      }
+    }
+  },
+  "trajectories": [
+    {
+      "arm": "cached-material",
+      "tick": 0,
+      "games_observed": 599,
+      "population": 32,
+      "alive_colonies": 8,
+      "starvation_deaths": 0,
+      "new_buildings": 0
+    },
+    {
+      "arm": "cached-material",
+      "tick": 512,
+      "games_observed": 599,
+      "population": 36.89649415692821,
+      "alive_colonies": 8,
+      "starvation_deaths": 0,
+      "new_buildings": 0.7362270450751253
+    },
+    {
+      "arm": "cached-material",
+      "tick": 1024,
+      "games_observed": 599,
+      "population": 49.35559265442404,
+      "alive_colonies": 8,
+      "starvation_deaths": 0,
+      "new_buildings": 3.4106844741235394
+    },
+    {
+      "arm": "cached-material",
+      "tick": 1536,
+      "games_observed": 599,
+      "population": 59.21202003338898,
+      "alive_colonies": 8,
+      "starvation_deaths": 0,
+      "new_buildings": 7.023372287145242
+    },
+    {
+      "arm": "cached-material",
+      "tick": 2048,
+      "games_observed": 599,
+      "population": 68.31719532554257,
+      "alive_colonies": 8,
+      "starvation_deaths": 0,
+      "new_buildings": 9.362270450751252
+    },
+    {
+      "arm": "cached-material",
+      "tick": 2560,
+      "games_observed": 599,
+      "population": 76.25542570951586,
+      "alive_colonies": 8,
+      "starvation_deaths": 0,
+      "new_buildings": 11.814691151919867
+    },
+    {
+      "arm": "cached-material",
+      "tick": 3072,
+      "games_observed": 599,
+      "population": 83.78964941569282,
+      "alive_colonies": 8,
+      "starvation_deaths": 0,
+      "new_buildings": 14.824707846410684
+    },
+    {
+      "arm": "cached-material",
+      "tick": 3584,
+      "games_observed": 599,
+      "population": 91.40567612687813,
+      "alive_colonies": 8,
+      "starvation_deaths": 0,
+      "new_buildings": 18.641068447412355
+    },
+    {
+      "arm": "cached-material",
+      "tick": 4096,
+      "games_observed": 599,
+      "population": 99.81302170283806,
+      "alive_colonies": 8,
+      "starvation_deaths": 0,
+      "new_buildings": 22.507512520868115
+    },
+    {
+      "arm": "cached-material",
+      "tick": 4608,
+      "games_observed": 599,
+      "population": 109.41569282136895,
+      "alive_colonies": 8,
+      "starvation_deaths": 0.1986644407345576,
+      "new_buildings": 26.030050083472453
+    },
+    {
+      "arm": "cached-material",
+      "tick": 5120,
+      "games_observed": 599,
+      "population": 119.48580968280467,
+      "alive_colonies": 8,
+      "starvation_deaths": 0.5509181969949917,
+      "new_buildings": 29.54924874791319
+    },
+    {
+      "arm": "cached-material",
+      "tick": 5632,
+      "games_observed": 599,
+      "population": 130.07512520868113,
+      "alive_colonies": 7.989983305509182,
+      "starvation_deaths": 0.5542570951585977,
+      "new_buildings": 32.751252086811355
+    },
+    {
+      "arm": "cached-material",
+      "tick": 6144,
+      "games_observed": 599,
+      "population": 139.64941569282138,
+      "alive_colonies": 7.981636060100167,
+      "starvation_deaths": 0.5559265442404007,
+      "new_buildings": 35.38230383973289
+    },
+    {
+      "arm": "cached-material",
+      "tick": 6656,
+      "games_observed": 599,
+      "population": 147.80801335559266,
+      "alive_colonies": 7.861435726210351,
+      "starvation_deaths": 0.5592654424040067,
+      "new_buildings": 37.792988313856426
+    },
+    {
+      "arm": "cached-material",
+      "tick": 7168,
+      "games_observed": 599,
+      "population": 155.64273789649417,
+      "alive_colonies": 7.829716193656093,
+      "starvation_deaths": 0.5709515859766278,
+      "new_buildings": 40.26878130217028
+    },
+    {
+      "arm": "cached-material",
+      "tick": 7680,
+      "games_observed": 599,
+      "population": 163.6677796327212,
+      "alive_colonies": 7.791318864774625,
+      "starvation_deaths": 0.6010016694490818,
+      "new_buildings": 43.06176961602671
+    },
+    {
+      "arm": "cached-material",
+      "tick": 8192,
+      "games_observed": 599,
+      "population": 171.73455759599332,
+      "alive_colonies": 7.752921535893155,
+      "starvation_deaths": 0.6861435726210351,
+      "new_buildings": 46.02003338898164
+    },
+    {
+      "arm": "cached-material",
+      "tick": 8704,
+      "games_observed": 599,
+      "population": 179.69949916527545,
+      "alive_colonies": 7.729549248747913,
+      "starvation_deaths": 0.8714524207011686,
+      "new_buildings": 48.891485809682806
+    },
+    {
+      "arm": "cached-material",
+      "tick": 9216,
+      "games_observed": 599,
+      "population": 187.35392320534223,
+      "alive_colonies": 7.697829716193656,
+      "starvation_deaths": 1.01669449081803,
+      "new_buildings": 52.15692821368948
+    },
+    {
+      "arm": "cached-material",
+      "tick": 9728,
+      "games_observed": 599,
+      "population": 194.7295492487479,
+      "alive_colonies": 7.646076794657763,
+      "starvation_deaths": 1.1836393989983305,
+      "new_buildings": 55.37228714524207
+    },
+    {
+      "arm": "cached-material",
+      "tick": 10240,
+      "games_observed": 599,
+      "population": 201.46410684474122,
+      "alive_colonies": 7.597662771285476,
+      "starvation_deaths": 1.4056761268781301,
+      "new_buildings": 58.49415692821369
+    },
+    {
+      "arm": "cached-material",
+      "tick": 10752,
+      "games_observed": 599,
+      "population": 207.68948247078464,
+      "alive_colonies": 7.542570951585977,
+      "starvation_deaths": 1.8347245409015025,
+      "new_buildings": 61.54757929883139
+    },
+    {
+      "arm": "cached-material",
+      "tick": 11264,
+      "games_observed": 599,
+      "population": 211.86644407345577,
+      "alive_colonies": 7.480801335559265,
+      "starvation_deaths": 3.5225375626043407,
+      "new_buildings": 64.55091819699499
+    },
+    {
+      "arm": "cached-material",
+      "tick": 11776,
+      "games_observed": 599,
+      "population": 216.25542570951586,
+      "alive_colonies": 7.412353923205342,
+      "starvation_deaths": 4.370617696160267,
+      "new_buildings": 67.81636060100168
+    },
+    {
+      "arm": "cached-material",
+      "tick": 12288,
+      "games_observed": 599,
+      "population": 219.87646076794658,
+      "alive_colonies": 7.340567612687813,
+      "starvation_deaths": 5.464106844741235,
+      "new_buildings": 71.03839732888147
+    },
+    {
+      "arm": "cached-material",
+      "tick": 12800,
+      "games_observed": 599,
+      "population": 222.85642737896495,
+      "alive_colonies": 7.263772954924875,
+      "starvation_deaths": 6.535893155258765,
+      "new_buildings": 74.19198664440735
+    },
+    {
+      "arm": "cached-material",
+      "tick": 13312,
+      "games_observed": 599,
+      "population": 225.19365609348915,
+      "alive_colonies": 7.155258764607679,
+      "starvation_deaths": 7.734557595993322,
+      "new_buildings": 77.09181969949917
+    },
+    {
+      "arm": "cached-material",
+      "tick": 13824,
+      "games_observed": 599,
+      "population": 227.00166944908182,
+      "alive_colonies": 7.065108514190317,
+      "starvation_deaths": 9.001669449081803,
+      "new_buildings": 79.9983305509182
+    },
+    {
+      "arm": "cached-material",
+      "tick": 14336,
+      "games_observed": 599,
+      "population": 228.3772954924875,
+      "alive_colonies": 6.974958263772955,
+      "starvation_deaths": 10.290484140233723,
+      "new_buildings": 82.80634390651085
+    },
+    {
+      "arm": "cached-material",
+      "tick": 14848,
+      "games_observed": 599,
+      "population": 229.787979966611,
+      "alive_colonies": 6.891485809682805,
+      "starvation_deaths": 11.762938230383973,
+      "new_buildings": 85.59599332220367
+    },
+    {
+      "arm": "cached-material",
+      "tick": 15360,
+      "games_observed": 599,
+      "population": 231.04674457429047,
+      "alive_colonies": 6.816360601001669,
+      "starvation_deaths": 13.348914858096828,
+      "new_buildings": 88.23372287145241
+    },
+    {
+      "arm": "cached-material",
+      "tick": 15872,
+      "games_observed": 599,
+      "population": 232.6143572621035,
+      "alive_colonies": 6.732888146911519,
+      "starvation_deaths": 14.908180300500835,
+      "new_buildings": 90.76460767946578
+    },
+    {
+      "arm": "cached-material",
+      "tick": 16384,
+      "games_observed": 599,
+      "population": 234.62771285475793,
+      "alive_colonies": 6.654424040066778,
+      "starvation_deaths": 16.36727879799666,
+      "new_buildings": 93.2270450751252
+    },
+    {
+      "arm": "cached-material",
+      "tick": 16896,
+      "games_observed": 599,
+      "population": 236.81803005008348,
+      "alive_colonies": 6.572621035058431,
+      "starvation_deaths": 17.757929883138566,
+      "new_buildings": 95.48580968280467
+    },
+    {
+      "arm": "cached-material",
+      "tick": 17408,
+      "games_observed": 599,
+      "population": 239.2671118530885,
+      "alive_colonies": 6.485809682804675,
+      "starvation_deaths": 18.94991652754591,
+      "new_buildings": 97.58597662771285
+    },
+    {
+      "arm": "cached-material",
+      "tick": 17920,
+      "games_observed": 599,
+      "population": 241.90150250417364,
+      "alive_colonies": 6.424040066777963,
+      "starvation_deaths": 20.020033388981638,
+      "new_buildings": 99.61936560934892
+    },
+    {
+      "arm": "cached-material",
+      "tick": 18432,
+      "games_observed": 599,
+      "population": 244.41903171953254,
+      "alive_colonies": 6.362270450751252,
+      "starvation_deaths": 20.893155258764608,
+      "new_buildings": 101.52754590984975
+    },
+    {
+      "arm": "cached-material",
+      "tick": 18944,
+      "games_observed": 599,
+      "population": 247.2220367278798,
+      "alive_colonies": 6.267111853088481,
+      "starvation_deaths": 21.667779632721203,
+      "new_buildings": 103.36894824707846
+    },
+    {
+      "arm": "cached-material",
+      "tick": 19456,
+      "games_observed": 599,
+      "population": 250.15692821368947,
+      "alive_colonies": 6.175292153589315,
+      "starvation_deaths": 22.320534223706176,
+      "new_buildings": 105.0601001669449
+    },
+    {
+      "arm": "cached-material",
+      "tick": 19968,
+      "games_observed": 599,
+      "population": 253.24707846410683,
+      "alive_colonies": 6.068447412353923,
+      "starvation_deaths": 22.86644407345576,
+      "new_buildings": 106.68948247078464
+    },
+    {
+      "arm": "cached-material",
+      "tick": 20418,
+      "games_observed": 1,
+      "population": 93,
+      "alive_colonies": 1,
+      "starvation_deaths": 98,
+      "new_buildings": 33
+    },
+    {
+      "arm": "cached-material",
+      "tick": 20480,
+      "games_observed": 598,
+      "population": 256.2658862876254,
+      "alive_colonies": 5.956521739130435,
+      "starvation_deaths": 23.334448160535118,
+      "new_buildings": 108.32441471571906
+    },
+    {
+      "arm": "cached-material",
+      "tick": 20992,
+      "games_observed": 598,
+      "population": 259,
+      "alive_colonies": 5.842809364548495,
+      "starvation_deaths": 23.842809364548494,
+      "new_buildings": 109.876254180602
+    },
+    {
+      "arm": "cached-material",
+      "tick": 21504,
+      "games_observed": 598,
+      "population": 261.6404682274248,
+      "alive_colonies": 5.7324414715719065,
+      "starvation_deaths": 24.357859531772576,
+      "new_buildings": 111.40969899665552
+    },
+    {
+      "arm": "cached-material",
+      "tick": 22016,
+      "games_observed": 598,
+      "population": 264.09364548494983,
+      "alive_colonies": 5.642140468227424,
+      "starvation_deaths": 24.837792642140467,
+      "new_buildings": 112.87792642140468
+    },
+    {
+      "arm": "cached-material",
+      "tick": 22306,
+      "games_observed": 1,
+      "population": 146,
+      "alive_colonies": 1,
+      "starvation_deaths": 21,
+      "new_buildings": 88
+    },
+    {
+      "arm": "cached-material",
+      "tick": 22528,
+      "games_observed": 597,
+      "population": 266.6683417085427,
+      "alive_colonies": 5.559463986599665,
+      "starvation_deaths": 25.31825795644891,
+      "new_buildings": 114.321608040201
+    },
+    {
+      "arm": "cached-material",
+      "tick": 22754,
+      "games_observed": 1,
+      "population": 143,
+      "alive_colonies": 1,
+      "starvation_deaths": 82,
+      "new_buildings": 63
+    },
+    {
+      "arm": "cached-material",
+      "tick": 23040,
+      "games_observed": 596,
+      "population": 268.998322147651,
+      "alive_colonies": 5.483221476510067,
+      "starvation_deaths": 25.77181208053691,
+      "new_buildings": 115.8489932885906
+    },
+    {
+      "arm": "cached-material",
+      "tick": 23170,
+      "games_observed": 1,
+      "population": 150,
+      "alive_colonies": 1,
+      "starvation_deaths": 48,
+      "new_buildings": 66
+    },
+    {
+      "arm": "cached-material",
+      "tick": 23552,
+      "games_observed": 595,
+      "population": 271.40840336134454,
+      "alive_colonies": 5.4033613445378155,
+      "starvation_deaths": 26.297478991596638,
+      "new_buildings": 117.28571428571429
+    },
+    {
+      "arm": "cached-material",
+      "tick": 23842,
+      "games_observed": 2,
+      "population": 174,
+      "alive_colonies": 1,
+      "starvation_deaths": 42,
+      "new_buildings": 103
+    },
+    {
+      "arm": "cached-material",
+      "tick": 24034,
+      "games_observed": 1,
+      "population": 139,
+      "alive_colonies": 1,
+      "starvation_deaths": 32,
+      "new_buildings": 88
+    },
+    {
+      "arm": "cached-material",
+      "tick": 24064,
+      "games_observed": 592,
+      "population": 273.93243243243245,
+      "alive_colonies": 5.319256756756757,
+      "starvation_deaths": 26.760135135135137,
+      "new_buildings": 118.77364864864865
+    },
+    {
+      "arm": "cached-material",
+      "tick": 24576,
+      "games_observed": 592,
+      "population": 275.66047297297297,
+      "alive_colonies": 5.214527027027027,
+      "starvation_deaths": 27.30743243243243,
+      "new_buildings": 120.08108108108108
+    },
+    {
+      "arm": "cached-material",
+      "tick": 24738,
+      "games_observed": 1,
+      "population": 232,
+      "alive_colonies": 1,
+      "starvation_deaths": 40,
+      "new_buildings": 87
+    },
+    {
+      "arm": "cached-material",
+      "tick": 25088,
+      "games_observed": 591,
+      "population": 277.2182741116751,
+      "alive_colonies": 5.143824027072758,
+      "starvation_deaths": 27.859560067681894,
+      "new_buildings": 121.35871404399323
+    },
+    {
+      "arm": "cached-material",
+      "tick": 25090,
+      "games_observed": 1,
+      "population": 152,
+      "alive_colonies": 1,
+      "starvation_deaths": 23,
+      "new_buildings": 69
+    },
+    {
+      "arm": "cached-material",
+      "tick": 25314,
+      "games_observed": 1,
+      "population": 346,
+      "alive_colonies": 1,
+      "starvation_deaths": 6,
+      "new_buildings": 98
+    },
+    {
+      "arm": "cached-material",
+      "tick": 25506,
+      "games_observed": 1,
+      "population": 107,
+      "alive_colonies": 1,
+      "starvation_deaths": 88,
+      "new_buildings": 76
+    },
+    {
+      "arm": "cached-material",
+      "tick": 25600,
+      "games_observed": 588,
+      "population": 279.04931972789115,
+      "alive_colonies": 5.076530612244898,
+      "starvation_deaths": 28.389455782312925,
+      "new_buildings": 122.81462585034014
+    },
+    {
+      "arm": "cached-material",
+      "tick": 25634,
+      "games_observed": 1,
+      "population": 230,
+      "alive_colonies": 1,
+      "starvation_deaths": 8,
+      "new_buildings": 131
+    },
+    {
+      "arm": "cached-material",
+      "tick": 25858,
+      "games_observed": 1,
+      "population": 107,
+      "alive_colonies": 1,
+      "starvation_deaths": 119,
+      "new_buildings": 55
+    },
+    {
+      "arm": "cached-material",
+      "tick": 25890,
+      "games_observed": 1,
+      "population": 128,
+      "alive_colonies": 1,
+      "starvation_deaths": 81,
+      "new_buildings": 39
+    },
+    {
+      "arm": "cached-material",
+      "tick": 25922,
+      "games_observed": 1,
+      "population": 251,
+      "alive_colonies": 1,
+      "starvation_deaths": 36,
+      "new_buildings": 122
+    },
+    {
+      "arm": "cached-material",
+      "tick": 26112,
+      "games_observed": 584,
+      "population": 281.0359589041096,
+      "alive_colonies": 4.998287671232877,
+      "starvation_deaths": 28.715753424657535,
+      "new_buildings": 124.22431506849315
+    },
+    {
+      "arm": "cached-material",
+      "tick": 26624,
+      "games_observed": 584,
+      "population": 282.0941780821918,
+      "alive_colonies": 4.892123287671233,
+      "starvation_deaths": 29.214041095890412,
+      "new_buildings": 125.38013698630137
+    },
+    {
+      "arm": "cached-material",
+      "tick": 26754,
+      "games_observed": 1,
+      "population": 118,
+      "alive_colonies": 1,
+      "starvation_deaths": 20,
+      "new_buildings": 82
+    },
+    {
+      "arm": "cached-material",
+      "tick": 26978,
+      "games_observed": 1,
+      "population": 252,
+      "alive_colonies": 1,
+      "starvation_deaths": 14,
+      "new_buildings": 141
+    },
+    {
+      "arm": "cached-material",
+      "tick": 27136,
+      "games_observed": 582,
+      "population": 283.30584192439864,
+      "alive_colonies": 4.805841924398625,
+      "starvation_deaths": 29.872852233676976,
+      "new_buildings": 126.43470790378007
+    },
+    {
+      "arm": "cached-material",
+      "tick": 27170,
+      "games_observed": 1,
+      "population": 192,
+      "alive_colonies": 1,
+      "starvation_deaths": 21,
+      "new_buildings": 124
+    },
+    {
+      "arm": "cached-material",
+      "tick": 27554,
+      "games_observed": 1,
+      "population": 251,
+      "alive_colonies": 1,
+      "starvation_deaths": 28,
+      "new_buildings": 132
+    },
+    {
+      "arm": "cached-material",
+      "tick": 27586,
+      "games_observed": 1,
+      "population": 178,
+      "alive_colonies": 1,
+      "starvation_deaths": 33,
+      "new_buildings": 122
+    },
+    {
+      "arm": "cached-material",
+      "tick": 27648,
+      "games_observed": 579,
+      "population": 284.433506044905,
+      "alive_colonies": 4.725388601036269,
+      "starvation_deaths": 30.447322970639032,
+      "new_buildings": 127.53367875647669
+    },
+    {
+      "arm": "cached-material",
+      "tick": 27714,
+      "games_observed": 1,
+      "population": 190,
+      "alive_colonies": 1,
+      "starvation_deaths": 89,
+      "new_buildings": 77
+    },
+    {
+      "arm": "cached-material",
+      "tick": 27970,
+      "games_observed": 1,
+      "population": 259,
+      "alive_colonies": 1,
+      "starvation_deaths": 3,
+      "new_buildings": 127
+    },
+    {
+      "arm": "cached-material",
+      "tick": 28160,
+      "games_observed": 577,
+      "population": 285.3362218370884,
+      "alive_colonies": 4.629116117850953,
+      "starvation_deaths": 30.937608318890813,
+      "new_buildings": 128.64124783362217
+    },
+    {
+      "arm": "cached-material",
+      "tick": 28162,
+      "games_observed": 2,
+      "population": 162,
+      "alive_colonies": 1,
+      "starvation_deaths": 47,
+      "new_buildings": 83.5
+    },
+    {
+      "arm": "cached-material",
+      "tick": 28258,
+      "games_observed": 2,
+      "population": 224.5,
+      "alive_colonies": 1,
+      "starvation_deaths": 15.5,
+      "new_buildings": 149.5
+    },
+    {
+      "arm": "cached-material",
+      "tick": 28418,
+      "games_observed": 1,
+      "population": 163,
+      "alive_colonies": 1,
+      "starvation_deaths": 31,
+      "new_buildings": 83
+    },
+    {
+      "arm": "cached-material",
+      "tick": 28610,
+      "games_observed": 1,
+      "population": 201,
+      "alive_colonies": 1,
+      "starvation_deaths": 32,
+      "new_buildings": 131
+    },
+    {
+      "arm": "cached-material",
+      "tick": 28672,
+      "games_observed": 571,
+      "population": 287.11908931698775,
+      "alive_colonies": 4.563922942206655,
+      "starvation_deaths": 31.48511383537653,
+      "new_buildings": 129.8476357267951
+    },
+    {
+      "arm": "cached-material",
+      "tick": 28898,
+      "games_observed": 1,
+      "population": 122,
+      "alive_colonies": 1,
+      "starvation_deaths": 0,
+      "new_buildings": 90
+    },
+    {
+      "arm": "cached-material",
+      "tick": 28962,
+      "games_observed": 3,
+      "population": 158,
+      "alive_colonies": 1,
+      "starvation_deaths": 50,
+      "new_buildings": 117
+    },
+    {
+      "arm": "cached-material",
+      "tick": 29058,
+      "games_observed": 1,
+      "population": 169,
+      "alive_colonies": 1,
+      "starvation_deaths": 81,
+      "new_buildings": 86
+    },
+    {
+      "arm": "cached-material",
+      "tick": 29184,
+      "games_observed": 566,
+      "population": 288.98763250883394,
+      "alive_colonies": 4.501766784452297,
+      "starvation_deaths": 31.954063604240282,
+      "new_buildings": 130.98409893992934
+    },
+    {
+      "arm": "cached-material",
+      "tick": 29250,
+      "games_observed": 1,
+      "population": 238,
+      "alive_colonies": 1,
+      "starvation_deaths": 58,
+      "new_buildings": 150
+    },
+    {
+      "arm": "cached-material",
+      "tick": 29282,
+      "games_observed": 1,
+      "population": 248,
+      "alive_colonies": 1,
+      "starvation_deaths": 0,
+      "new_buildings": 118
+    },
+    {
+      "arm": "cached-material",
+      "tick": 29314,
+      "games_observed": 1,
+      "population": 195,
+      "alive_colonies": 1,
+      "starvation_deaths": 68,
+      "new_buildings": 128
+    },
+    {
+      "arm": "cached-material",
+      "tick": 29346,
+      "games_observed": 1,
+      "population": 182,
+      "alive_colonies": 1,
+      "starvation_deaths": 57,
+      "new_buildings": 107
+    },
+    {
+      "arm": "cached-material",
+      "tick": 29474,
+      "games_observed": 2,
+      "population": 172,
+      "alive_colonies": 1,
+      "starvation_deaths": 94.5,
+      "new_buildings": 93
+    },
+    {
+      "arm": "cached-material",
+      "tick": 29602,
+      "games_observed": 1,
+      "population": 243,
+      "alive_colonies": 1,
+      "starvation_deaths": 47,
+      "new_buildings": 80
+    },
+    {
+      "arm": "cached-material",
+      "tick": 29696,
+      "games_observed": 559,
+      "population": 290.76565295169945,
+      "alive_colonies": 4.447227191413238,
+      "starvation_deaths": 32.15384615384615,
+      "new_buildings": 132.27549194991056
+    },
+    {
+      "arm": "cached-material",
+      "tick": 29730,
+      "games_observed": 1,
+      "population": 113,
+      "alive_colonies": 1,
+      "starvation_deaths": 16,
+      "new_buildings": 115
+    },
+    {
+      "arm": "cached-material",
+      "tick": 29858,
+      "games_observed": 1,
+      "population": 109,
+      "alive_colonies": 1,
+      "starvation_deaths": 70,
+      "new_buildings": 135
+    },
+    {
+      "arm": "cached-material",
+      "tick": 29954,
+      "games_observed": 1,
+      "population": 159,
+      "alive_colonies": 1,
+      "starvation_deaths": 46,
+      "new_buildings": 116
+    },
+    {
+      "arm": "cached-material",
+      "tick": 29986,
+      "games_observed": 1,
+      "population": 194,
+      "alive_colonies": 1,
+      "starvation_deaths": 86,
+      "new_buildings": 124
+    },
+    {
+      "arm": "cached-material",
+      "tick": 30018,
+      "games_observed": 1,
+      "population": 208,
+      "alive_colonies": 1,
+      "starvation_deaths": 99,
+      "new_buildings": 112
+    },
+    {
+      "arm": "cached-material",
+      "tick": 30178,
+      "games_observed": 1,
+      "population": 170,
+      "alive_colonies": 1,
+      "starvation_deaths": 78,
+      "new_buildings": 131
+    },
+    {
+      "arm": "cached-material",
+      "tick": 30208,
+      "games_observed": 553,
+      "population": 292.875226039783,
+      "alive_colonies": 4.403254972875226,
+      "starvation_deaths": 32.31645569620253,
+      "new_buildings": 133.39240506329114
+    },
+    {
+      "arm": "cached-material",
+      "tick": 30242,
+      "games_observed": 1,
+      "population": 168,
+      "alive_colonies": 1,
+      "starvation_deaths": 95,
+      "new_buildings": 98
+    },
+    {
+      "arm": "cached-material",
+      "tick": 30338,
+      "games_observed": 1,
+      "population": 182,
+      "alive_colonies": 1,
+      "starvation_deaths": 19,
+      "new_buildings": 168
+    },
+    {
+      "arm": "cached-material",
+      "tick": 30434,
+      "games_observed": 1,
+      "population": 220,
+      "alive_colonies": 1,
+      "starvation_deaths": 47,
+      "new_buildings": 143
+    },
+    {
+      "arm": "cached-material",
+      "tick": 30720,
+      "games_observed": 550,
+      "population": 294.1381818181818,
+      "alive_colonies": 4.361818181818182,
+      "starvation_deaths": 32.70181818181818,
+      "new_buildings": 134.36
+    },
+    {
+      "arm": "cached-material",
+      "tick": 30754,
+      "games_observed": 1,
+      "population": 256,
+      "alive_colonies": 1,
+      "starvation_deaths": 22,
+      "new_buildings": 106
+    },
+    {
+      "arm": "cached-material",
+      "tick": 30786,
+      "games_observed": 1,
+      "population": 112,
+      "alive_colonies": 1,
+      "starvation_deaths": 109,
+      "new_buildings": 113
+    },
+    {
+      "arm": "cached-material",
+      "tick": 31074,
+      "games_observed": 1,
+      "population": 162,
+      "alive_colonies": 1,
+      "starvation_deaths": 64,
+      "new_buildings": 150
+    },
+    {
+      "arm": "cached-material",
+      "tick": 31232,
+      "games_observed": 547,
+      "population": 295.3308957952468,
+      "alive_colonies": 4.3144424131627055,
+      "starvation_deaths": 33.087751371115175,
+      "new_buildings": 135.40219378427787
+    },
+    {
+      "arm": "cached-material",
+      "tick": 31266,
+      "games_observed": 2,
+      "population": 306,
+      "alive_colonies": 1,
+      "starvation_deaths": 18.5,
+      "new_buildings": 145.5
+    },
+    {
+      "arm": "cached-material",
+      "tick": 31298,
+      "games_observed": 1,
+      "population": 190,
+      "alive_colonies": 1,
+      "starvation_deaths": 68,
+      "new_buildings": 112
+    },
+    {
+      "arm": "cached-material",
+      "tick": 31458,
+      "games_observed": 1,
+      "population": 143,
+      "alive_colonies": 1,
+      "starvation_deaths": 8,
+      "new_buildings": 122
+    },
+    {
+      "arm": "cached-material",
+      "tick": 31522,
+      "games_observed": 1,
+      "population": 270,
+      "alive_colonies": 1,
+      "starvation_deaths": 38,
+      "new_buildings": 120
+    },
+    {
+      "arm": "cached-material",
+      "tick": 31554,
+      "games_observed": 1,
+      "population": 263,
+      "alive_colonies": 1,
+      "starvation_deaths": 36,
+      "new_buildings": 119
+    },
+    {
+      "arm": "cached-material",
+      "tick": 31586,
+      "games_observed": 1,
+      "population": 203,
+      "alive_colonies": 1,
+      "starvation_deaths": 73,
+      "new_buildings": 66
+    },
+    {
+      "arm": "cached-material",
+      "tick": 31682,
+      "games_observed": 1,
+      "population": 310,
+      "alive_colonies": 1,
+      "starvation_deaths": 56,
+      "new_buildings": 100
+    },
+    {
+      "arm": "cached-material",
+      "tick": 31744,
+      "games_observed": 539,
+      "population": 296.5380333951762,
+      "alive_colonies": 4.2690166975881265,
+      "starvation_deaths": 33.47866419294991,
+      "new_buildings": 136.582560296846
+    },
+    {
+      "arm": "cached-material",
+      "tick": 31810,
+      "games_observed": 1,
+      "population": 178,
+      "alive_colonies": 1,
+      "starvation_deaths": 40,
+      "new_buildings": 125
+    },
+    {
+      "arm": "cached-material",
+      "tick": 32066,
+      "games_observed": 1,
+      "population": 244,
+      "alive_colonies": 1,
+      "starvation_deaths": 10,
+      "new_buildings": 193
+    },
+    {
+      "arm": "cached-material",
+      "tick": 32162,
+      "games_observed": 1,
+      "population": 149,
+      "alive_colonies": 1,
+      "starvation_deaths": 32,
+      "new_buildings": 105
+    },
+    {
+      "arm": "cached-material",
+      "tick": 32194,
+      "games_observed": 1,
+      "population": 141,
+      "alive_colonies": 1,
+      "starvation_deaths": 111,
+      "new_buildings": 119
+    },
+    {
+      "arm": "cached-material",
+      "tick": 32256,
+      "games_observed": 535,
+      "population": 297.86168224299064,
+      "alive_colonies": 4.218691588785047,
+      "starvation_deaths": 33.85981308411215,
+      "new_buildings": 137.41121495327104
+    },
+    {
+      "arm": "cached-material",
+      "tick": 32258,
+      "games_observed": 1,
+      "population": 241,
+      "alive_colonies": 1,
+      "starvation_deaths": 99,
+      "new_buildings": 156
+    },
+    {
+      "arm": "cached-material",
+      "tick": 32290,
+      "games_observed": 1,
+      "population": 180,
+      "alive_colonies": 1,
+      "starvation_deaths": 30,
+      "new_buildings": 93
+    },
+    {
+      "arm": "cached-material",
+      "tick": 32514,
+      "games_observed": 1,
+      "population": 251,
+      "alive_colonies": 1,
+      "starvation_deaths": 33,
+      "new_buildings": 111
+    },
+    {
+      "arm": "cached-material",
+      "tick": 32768,
+      "games_observed": 532,
+      "population": 298.77443609022555,
+      "alive_colonies": 4.184210526315789,
+      "starvation_deaths": 34.24812030075188,
+      "new_buildings": 138.37406015037595
+    },
+    {
+      "arm": "original",
+      "tick": 0,
+      "games_observed": 600,
+      "population": 32,
+      "alive_colonies": 8,
+      "starvation_deaths": 0,
+      "new_buildings": 0
+    },
+    {
+      "arm": "original",
+      "tick": 512,
+      "games_observed": 600,
+      "population": 37.23833333333334,
+      "alive_colonies": 8,
+      "starvation_deaths": 0,
+      "new_buildings": 0.7983333333333333
+    },
+    {
+      "arm": "original",
+      "tick": 1024,
+      "games_observed": 600,
+      "population": 49.626666666666665,
+      "alive_colonies": 8,
+      "starvation_deaths": 0,
+      "new_buildings": 3.295
+    },
+    {
+      "arm": "original",
+      "tick": 1536,
+      "games_observed": 600,
+      "population": 59.67166666666667,
+      "alive_colonies": 8,
+      "starvation_deaths": 0,
+      "new_buildings": 6.925
+    },
+    {
+      "arm": "original",
+      "tick": 2048,
+      "games_observed": 600,
+      "population": 68.725,
+      "alive_colonies": 8,
+      "starvation_deaths": 0,
+      "new_buildings": 9.345
+    },
+    {
+      "arm": "original",
+      "tick": 2560,
+      "games_observed": 600,
+      "population": 76.64,
+      "alive_colonies": 8,
+      "starvation_deaths": 0,
+      "new_buildings": 11.645
+    },
+    {
+      "arm": "original",
+      "tick": 3072,
+      "games_observed": 600,
+      "population": 84.235,
+      "alive_colonies": 8,
+      "starvation_deaths": 0,
+      "new_buildings": 14.77
+    },
+    {
+      "arm": "original",
+      "tick": 3584,
+      "games_observed": 600,
+      "population": 91.91833333333334,
+      "alive_colonies": 8,
+      "starvation_deaths": 0,
+      "new_buildings": 18.69333333333333
+    },
+    {
+      "arm": "original",
+      "tick": 4096,
+      "games_observed": 600,
+      "population": 100.55833333333334,
+      "alive_colonies": 7.998333333333333,
+      "starvation_deaths": 0,
+      "new_buildings": 22.60333333333333
+    },
+    {
+      "arm": "original",
+      "tick": 4608,
+      "games_observed": 600,
+      "population": 110.15833333333333,
+      "alive_colonies": 7.996666666666667,
+      "starvation_deaths": 0.205,
+      "new_buildings": 26.241666666666667
+    },
+    {
+      "arm": "original",
+      "tick": 5120,
+      "games_observed": 600,
+      "population": 120.105,
+      "alive_colonies": 7.995,
+      "starvation_deaths": 0.5316666666666666,
+      "new_buildings": 29.856666666666666
+    },
+    {
+      "arm": "original",
+      "tick": 5632,
+      "games_observed": 600,
+      "population": 130.635,
+      "alive_colonies": 7.975,
+      "starvation_deaths": 0.54,
+      "new_buildings": 33.22666666666667
+    },
+    {
+      "arm": "original",
+      "tick": 6144,
+      "games_observed": 600,
+      "population": 139.975,
+      "alive_colonies": 7.963333333333333,
+      "starvation_deaths": 0.5433333333333333,
+      "new_buildings": 35.696666666666665
+    },
+    {
+      "arm": "original",
+      "tick": 6656,
+      "games_observed": 600,
+      "population": 148.24666666666667,
+      "alive_colonies": 7.866666666666666,
+      "starvation_deaths": 0.55,
+      "new_buildings": 37.99166666666667
+    },
+    {
+      "arm": "original",
+      "tick": 7168,
+      "games_observed": 600,
+      "population": 156.005,
+      "alive_colonies": 7.836666666666667,
+      "starvation_deaths": 0.565,
+      "new_buildings": 40.42
+    },
+    {
+      "arm": "original",
+      "tick": 7680,
+      "games_observed": 600,
+      "population": 164.04833333333335,
+      "alive_colonies": 7.793333333333333,
+      "starvation_deaths": 0.595,
+      "new_buildings": 43.27166666666667
+    },
+    {
+      "arm": "original",
+      "tick": 8192,
+      "games_observed": 600,
+      "population": 172.145,
+      "alive_colonies": 7.766666666666667,
+      "starvation_deaths": 0.6533333333333333,
+      "new_buildings": 46.13
+    },
+    {
+      "arm": "original",
+      "tick": 8704,
+      "games_observed": 600,
+      "population": 179.76666666666668,
+      "alive_colonies": 7.713333333333333,
+      "starvation_deaths": 0.8633333333333333,
+      "new_buildings": 49.04
+    },
+    {
+      "arm": "original",
+      "tick": 9216,
+      "games_observed": 600,
+      "population": 187.59166666666667,
+      "alive_colonies": 7.661666666666667,
+      "starvation_deaths": 0.9916666666666667,
+      "new_buildings": 52.278333333333336
+    },
+    {
+      "arm": "original",
+      "tick": 9728,
+      "games_observed": 600,
+      "population": 194.79333333333332,
+      "alive_colonies": 7.64,
+      "starvation_deaths": 1.1766666666666667,
+      "new_buildings": 55.455
+    },
+    {
+      "arm": "original",
+      "tick": 10240,
+      "games_observed": 600,
+      "population": 201.42833333333334,
+      "alive_colonies": 7.591666666666667,
+      "starvation_deaths": 1.36,
+      "new_buildings": 58.565
+    },
+    {
+      "arm": "original",
+      "tick": 10752,
+      "games_observed": 600,
+      "population": 207.185,
+      "alive_colonies": 7.558333333333334,
+      "starvation_deaths": 1.8533333333333333,
+      "new_buildings": 61.538333333333334
+    },
+    {
+      "arm": "original",
+      "tick": 11264,
+      "games_observed": 600,
+      "population": 211.12666666666667,
+      "alive_colonies": 7.498333333333333,
+      "starvation_deaths": 3.4566666666666666,
+      "new_buildings": 64.765
+    },
+    {
+      "arm": "original",
+      "tick": 11776,
+      "games_observed": 600,
+      "population": 215.195,
+      "alive_colonies": 7.441666666666666,
+      "starvation_deaths": 4.47,
+      "new_buildings": 68.155
+    },
+    {
+      "arm": "original",
+      "tick": 12288,
+      "games_observed": 600,
+      "population": 218.59333333333333,
+      "alive_colonies": 7.38,
+      "starvation_deaths": 5.596666666666667,
+      "new_buildings": 71.40166666666667
+    },
+    {
+      "arm": "original",
+      "tick": 12800,
+      "games_observed": 600,
+      "population": 221.38,
+      "alive_colonies": 7.298333333333333,
+      "starvation_deaths": 6.736666666666666,
+      "new_buildings": 74.565
+    },
+    {
+      "arm": "original",
+      "tick": 13312,
+      "games_observed": 600,
+      "population": 223.565,
+      "alive_colonies": 7.213333333333333,
+      "starvation_deaths": 7.963333333333333,
+      "new_buildings": 77.47833333333334
+    },
+    {
+      "arm": "original",
+      "tick": 13824,
+      "games_observed": 600,
+      "population": 225.33833333333334,
+      "alive_colonies": 7.14,
+      "starvation_deaths": 9.24,
+      "new_buildings": 80.23333333333333
+    },
+    {
+      "arm": "original",
+      "tick": 14336,
+      "games_observed": 600,
+      "population": 226.935,
+      "alive_colonies": 7.045,
+      "starvation_deaths": 10.575,
+      "new_buildings": 83.09166666666667
+    },
+    {
+      "arm": "original",
+      "tick": 14848,
+      "games_observed": 600,
+      "population": 228.72,
+      "alive_colonies": 6.965,
+      "starvation_deaths": 11.88,
+      "new_buildings": 85.78666666666666
+    },
+    {
+      "arm": "original",
+      "tick": 15360,
+      "games_observed": 600,
+      "population": 230.42333333333335,
+      "alive_colonies": 6.886666666666667,
+      "starvation_deaths": 13.273333333333333,
+      "new_buildings": 88.39166666666667
+    },
+    {
+      "arm": "original",
+      "tick": 15872,
+      "games_observed": 600,
+      "population": 232.16333333333333,
+      "alive_colonies": 6.831666666666667,
+      "starvation_deaths": 14.753333333333334,
+      "new_buildings": 90.93
+    },
+    {
+      "arm": "original",
+      "tick": 16384,
+      "games_observed": 600,
+      "population": 234.51833333333335,
+      "alive_colonies": 6.755,
+      "starvation_deaths": 16.126666666666665,
+      "new_buildings": 93.37
+    },
+    {
+      "arm": "original",
+      "tick": 16896,
+      "games_observed": 600,
+      "population": 236.88,
+      "alive_colonies": 6.696666666666666,
+      "starvation_deaths": 17.498333333333335,
+      "new_buildings": 95.71666666666667
+    },
+    {
+      "arm": "original",
+      "tick": 17408,
+      "games_observed": 600,
+      "population": 239.48166666666665,
+      "alive_colonies": 6.605,
+      "starvation_deaths": 18.641666666666666,
+      "new_buildings": 97.84333333333333
+    },
+    {
+      "arm": "original",
+      "tick": 17920,
+      "games_observed": 600,
+      "population": 242.25333333333333,
+      "alive_colonies": 6.538333333333333,
+      "starvation_deaths": 19.72833333333333,
+      "new_buildings": 99.9
+    },
+    {
+      "arm": "original",
+      "tick": 18432,
+      "games_observed": 600,
+      "population": 244.91166666666666,
+      "alive_colonies": 6.445,
+      "starvation_deaths": 20.658333333333335,
+      "new_buildings": 101.85833333333333
+    },
+    {
+      "arm": "original",
+      "tick": 18944,
+      "games_observed": 600,
+      "population": 248.025,
+      "alive_colonies": 6.34,
+      "starvation_deaths": 21.44,
+      "new_buildings": 103.745
+    },
+    {
+      "arm": "original",
+      "tick": 19456,
+      "games_observed": 600,
+      "population": 250.985,
+      "alive_colonies": 6.246666666666667,
+      "starvation_deaths": 22.096666666666668,
+      "new_buildings": 105.50666666666666
+    },
+    {
+      "arm": "original",
+      "tick": 19968,
+      "games_observed": 600,
+      "population": 253.81833333333333,
+      "alive_colonies": 6.14,
+      "starvation_deaths": 22.775,
+      "new_buildings": 107.13333333333334
+    },
+    {
+      "arm": "original",
+      "tick": 20480,
+      "games_observed": 600,
+      "population": 256.25666666666666,
+      "alive_colonies": 6.016666666666667,
+      "starvation_deaths": 23.411666666666665,
+      "new_buildings": 108.68833333333333
+    },
+    {
+      "arm": "original",
+      "tick": 20992,
+      "games_observed": 600,
+      "population": 258.76,
+      "alive_colonies": 5.906666666666666,
+      "starvation_deaths": 24.008333333333333,
+      "new_buildings": 110.21666666666667
+    },
+    {
+      "arm": "original",
+      "tick": 21346,
+      "games_observed": 1,
+      "population": 168,
+      "alive_colonies": 1,
+      "starvation_deaths": 26,
+      "new_buildings": 92
+    },
+    {
+      "arm": "original",
+      "tick": 21504,
+      "games_observed": 599,
+      "population": 261.56093489148583,
+      "alive_colonies": 5.794657762938231,
+      "starvation_deaths": 24.524207011686144,
+      "new_buildings": 111.72954924874792
+    },
+    {
+      "arm": "original",
+      "tick": 22016,
+      "games_observed": 599,
+      "population": 263.68614357262106,
+      "alive_colonies": 5.729549248747913,
+      "starvation_deaths": 25.035058430717864,
+      "new_buildings": 113.18363939899832
+    },
+    {
+      "arm": "original",
+      "tick": 22528,
+      "games_observed": 599,
+      "population": 265.9015025041736,
+      "alive_colonies": 5.646076794657763,
+      "starvation_deaths": 25.669449081803005,
+      "new_buildings": 114.69782971619365
+    },
+    {
+      "arm": "original",
+      "tick": 23040,
+      "games_observed": 599,
+      "population": 267.51252086811354,
+      "alive_colonies": 5.572621035058431,
+      "starvation_deaths": 26.33889816360601,
+      "new_buildings": 116.0601001669449
+    },
+    {
+      "arm": "original",
+      "tick": 23106,
+      "games_observed": 1,
+      "population": 134,
+      "alive_colonies": 1,
+      "starvation_deaths": 34,
+      "new_buildings": 84
+    },
+    {
+      "arm": "original",
+      "tick": 23362,
+      "games_observed": 1,
+      "population": 79,
+      "alive_colonies": 1,
+      "starvation_deaths": 39,
+      "new_buildings": 48
+    },
+    {
+      "arm": "original",
+      "tick": 23552,
+      "games_observed": 597,
+      "population": 269.61976549413737,
+      "alive_colonies": 5.505862646566164,
+      "starvation_deaths": 26.916247906197654,
+      "new_buildings": 117.64154103852596
+    },
+    {
+      "arm": "original",
+      "tick": 24064,
+      "games_observed": 597,
+      "population": 271.27973199329983,
+      "alive_colonies": 5.410385259631491,
+      "starvation_deaths": 27.586264656616414,
+      "new_buildings": 119
+    },
+    {
+      "arm": "original",
+      "tick": 24194,
+      "games_observed": 1,
+      "population": 196,
+      "alive_colonies": 1,
+      "starvation_deaths": 29,
+      "new_buildings": 91
+    },
+    {
+      "arm": "original",
+      "tick": 24576,
+      "games_observed": 596,
+      "population": 273.0234899328859,
+      "alive_colonies": 5.348993288590604,
+      "starvation_deaths": 28.22986577181208,
+      "new_buildings": 120.29865771812081
+    },
+    {
+      "arm": "original",
+      "tick": 25088,
+      "games_observed": 596,
+      "population": 274.4530201342282,
+      "alive_colonies": 5.251677852348993,
+      "starvation_deaths": 28.880872483221477,
+      "new_buildings": 121.55704697986577
+    },
+    {
+      "arm": "original",
+      "tick": 25600,
+      "games_observed": 596,
+      "population": 275.7097315436242,
+      "alive_colonies": 5.152684563758389,
+      "starvation_deaths": 29.453020134228186,
+      "new_buildings": 122.80201342281879
+    },
+    {
+      "arm": "original",
+      "tick": 25826,
+      "games_observed": 2,
+      "population": 186.5,
+      "alive_colonies": 1,
+      "starvation_deaths": 75.5,
+      "new_buildings": 94.5
+    },
+    {
+      "arm": "original",
+      "tick": 25954,
+      "games_observed": 1,
+      "population": 146,
+      "alive_colonies": 1,
+      "starvation_deaths": 78,
+      "new_buildings": 113
+    },
+    {
+      "arm": "original",
+      "tick": 25986,
+      "games_observed": 1,
+      "population": 137,
+      "alive_colonies": 1,
+      "starvation_deaths": 76,
+      "new_buildings": 88
+    },
+    {
+      "arm": "original",
+      "tick": 26112,
+      "games_observed": 592,
+      "population": 277.6722972972973,
+      "alive_colonies": 5.094594594594595,
+      "starvation_deaths": 29.763513513513512,
+      "new_buildings": 124.15033783783784
+    },
+    {
+      "arm": "original",
+      "tick": 26562,
+      "games_observed": 1,
+      "population": 190,
+      "alive_colonies": 1,
+      "starvation_deaths": 61,
+      "new_buildings": 84
+    },
+    {
+      "arm": "original",
+      "tick": 26624,
+      "games_observed": 591,
+      "population": 278.8578680203046,
+      "alive_colonies": 5.0152284263959395,
+      "starvation_deaths": 30.37901861252115,
+      "new_buildings": 125.39932318104907
+    },
+    {
+      "arm": "original",
+      "tick": 26818,
+      "games_observed": 1,
+      "population": 207,
+      "alive_colonies": 1,
+      "starvation_deaths": 106,
+      "new_buildings": 103
+    },
+    {
+      "arm": "original",
+      "tick": 27042,
+      "games_observed": 1,
+      "population": 199,
+      "alive_colonies": 1,
+      "starvation_deaths": 54,
+      "new_buildings": 110
+    },
+    {
+      "arm": "original",
+      "tick": 27136,
+      "games_observed": 589,
+      "population": 280.0356536502547,
+      "alive_colonies": 4.906621392190153,
+      "starvation_deaths": 30.838709677419356,
+      "new_buildings": 126.56536502546689
+    },
+    {
+      "arm": "original",
+      "tick": 27138,
+      "games_observed": 1,
+      "population": 189,
+      "alive_colonies": 1,
+      "starvation_deaths": 80,
+      "new_buildings": 113
+    },
+    {
+      "arm": "original",
+      "tick": 27170,
+      "games_observed": 1,
+      "population": 208,
+      "alive_colonies": 1,
+      "starvation_deaths": 9,
+      "new_buildings": 129
+    },
+    {
+      "arm": "original",
+      "tick": 27362,
+      "games_observed": 1,
+      "population": 206,
+      "alive_colonies": 1,
+      "starvation_deaths": 56,
+      "new_buildings": 98
+    },
+    {
+      "arm": "original",
+      "tick": 27648,
+      "games_observed": 586,
+      "population": 281.438566552901,
+      "alive_colonies": 4.82764505119454,
+      "starvation_deaths": 31.33447098976109,
+      "new_buildings": 127.68600682593856
+    },
+    {
+      "arm": "original",
+      "tick": 27810,
+      "games_observed": 1,
+      "population": 222,
+      "alive_colonies": 1,
+      "starvation_deaths": 30,
+      "new_buildings": 124
+    },
+    {
+      "arm": "original",
+      "tick": 27938,
+      "games_observed": 1,
+      "population": 149,
+      "alive_colonies": 1,
+      "starvation_deaths": 75,
+      "new_buildings": 89
+    },
+    {
+      "arm": "original",
+      "tick": 28160,
+      "games_observed": 584,
+      "population": 282.2859589041096,
+      "alive_colonies": 4.741438356164384,
+      "starvation_deaths": 31.852739726027398,
+      "new_buildings": 128.8595890410959
+    },
+    {
+      "arm": "original",
+      "tick": 28258,
+      "games_observed": 1,
+      "population": 209,
+      "alive_colonies": 1,
+      "starvation_deaths": 41,
+      "new_buildings": 150
+    },
+    {
+      "arm": "original",
+      "tick": 28322,
+      "games_observed": 1,
+      "population": 210,
+      "alive_colonies": 1,
+      "starvation_deaths": 26,
+      "new_buildings": 97
+    },
+    {
+      "arm": "original",
+      "tick": 28482,
+      "games_observed": 1,
+      "population": 158,
+      "alive_colonies": 1,
+      "starvation_deaths": 51,
+      "new_buildings": 93
+    },
+    {
+      "arm": "original",
+      "tick": 28610,
+      "games_observed": 1,
+      "population": 194,
+      "alive_colonies": 1,
+      "starvation_deaths": 47,
+      "new_buildings": 132
+    },
+    {
+      "arm": "original",
+      "tick": 28672,
+      "games_observed": 580,
+      "population": 283.72241379310344,
+      "alive_colonies": 4.665517241379311,
+      "starvation_deaths": 32.37931034482759,
+      "new_buildings": 129.95172413793102
+    },
+    {
+      "arm": "original",
+      "tick": 28962,
+      "games_observed": 1,
+      "population": 154,
+      "alive_colonies": 1,
+      "starvation_deaths": 70,
+      "new_buildings": 114
+    },
+    {
+      "arm": "original",
+      "tick": 28994,
+      "games_observed": 1,
+      "population": 151,
+      "alive_colonies": 1,
+      "starvation_deaths": 32,
+      "new_buildings": 103
+    },
+    {
+      "arm": "original",
+      "tick": 29184,
+      "games_observed": 578,
+      "population": 285.0363321799308,
+      "alive_colonies": 4.596885813148789,
+      "starvation_deaths": 32.85121107266436,
+      "new_buildings": 131.04671280276816
+    },
+    {
+      "arm": "original",
+      "tick": 29696,
+      "games_observed": 578,
+      "population": 285.8598615916955,
+      "alive_colonies": 4.501730103806229,
+      "starvation_deaths": 33.418685121107266,
+      "new_buildings": 132.0363321799308
+    },
+    {
+      "arm": "original",
+      "tick": 29698,
+      "games_observed": 1,
+      "population": 191,
+      "alive_colonies": 1,
+      "starvation_deaths": 84,
+      "new_buildings": 119
+    },
+    {
+      "arm": "original",
+      "tick": 29794,
+      "games_observed": 1,
+      "population": 144,
+      "alive_colonies": 1,
+      "starvation_deaths": 167,
+      "new_buildings": 157
+    },
+    {
+      "arm": "original",
+      "tick": 29890,
+      "games_observed": 1,
+      "population": 181,
+      "alive_colonies": 1,
+      "starvation_deaths": 118,
+      "new_buildings": 138
+    },
+    {
+      "arm": "original",
+      "tick": 30146,
+      "games_observed": 1,
+      "population": 157,
+      "alive_colonies": 1,
+      "starvation_deaths": 57,
+      "new_buildings": 83
+    },
+    {
+      "arm": "original",
+      "tick": 30208,
+      "games_observed": 574,
+      "population": 287.2473867595819,
+      "alive_colonies": 4.456445993031359,
+      "starvation_deaths": 33.458188153310104,
+      "new_buildings": 133.06271777003485
+    },
+    {
+      "arm": "original",
+      "tick": 30370,
+      "games_observed": 1,
+      "population": 110,
+      "alive_colonies": 1,
+      "starvation_deaths": 61,
+      "new_buildings": 114
+    },
+    {
+      "arm": "original",
+      "tick": 30434,
+      "games_observed": 1,
+      "population": 199,
+      "alive_colonies": 1,
+      "starvation_deaths": 18,
+      "new_buildings": 96
+    },
+    {
+      "arm": "original",
+      "tick": 30498,
+      "games_observed": 1,
+      "population": 261,
+      "alive_colonies": 1,
+      "starvation_deaths": 48,
+      "new_buildings": 107
+    },
+    {
+      "arm": "original",
+      "tick": 30530,
+      "games_observed": 1,
+      "population": 183,
+      "alive_colonies": 1,
+      "starvation_deaths": 55,
+      "new_buildings": 125
+    },
+    {
+      "arm": "original",
+      "tick": 30562,
+      "games_observed": 1,
+      "population": 205,
+      "alive_colonies": 1,
+      "starvation_deaths": 108,
+      "new_buildings": 70
+    },
+    {
+      "arm": "original",
+      "tick": 30594,
+      "games_observed": 1,
+      "population": 280,
+      "alive_colonies": 1,
+      "starvation_deaths": 15,
+      "new_buildings": 157
+    },
+    {
+      "arm": "original",
+      "tick": 30690,
+      "games_observed": 1,
+      "population": 140,
+      "alive_colonies": 1,
+      "starvation_deaths": 53,
+      "new_buildings": 140
+    },
+    {
+      "arm": "original",
+      "tick": 30720,
+      "games_observed": 567,
+      "population": 289.1111111111111,
+      "alive_colonies": 4.414462081128748,
+      "starvation_deaths": 33.735449735449734,
+      "new_buildings": 134.22222222222223
+    },
+    {
+      "arm": "original",
+      "tick": 30914,
+      "games_observed": 1,
+      "population": 291,
+      "alive_colonies": 1,
+      "starvation_deaths": 6,
+      "new_buildings": 176
+    },
+    {
+      "arm": "original",
+      "tick": 31074,
+      "games_observed": 1,
+      "population": 205,
+      "alive_colonies": 1,
+      "starvation_deaths": 86,
+      "new_buildings": 100
+    },
+    {
+      "arm": "original",
+      "tick": 31138,
+      "games_observed": 2,
+      "population": 187,
+      "alive_colonies": 1,
+      "starvation_deaths": 66.5,
+      "new_buildings": 109
+    },
+    {
+      "arm": "original",
+      "tick": 31232,
+      "games_observed": 563,
+      "population": 289.955595026643,
+      "alive_colonies": 4.341030195381883,
+      "starvation_deaths": 34.09946714031972,
+      "new_buildings": 135.1740674955595
+    },
+    {
+      "arm": "original",
+      "tick": 31234,
+      "games_observed": 1,
+      "population": 123,
+      "alive_colonies": 1,
+      "starvation_deaths": 69,
+      "new_buildings": 135
+    },
+    {
+      "arm": "original",
+      "tick": 31394,
+      "games_observed": 1,
+      "population": 197,
+      "alive_colonies": 1,
+      "starvation_deaths": 42,
+      "new_buildings": 116
+    },
+    {
+      "arm": "original",
+      "tick": 31744,
+      "games_observed": 561,
+      "population": 290.825311942959,
+      "alive_colonies": 4.242424242424242,
+      "starvation_deaths": 34.62032085561497,
+      "new_buildings": 136.0891265597148
+    },
+    {
+      "arm": "original",
+      "tick": 31778,
+      "games_observed": 1,
+      "population": 156,
+      "alive_colonies": 1,
+      "starvation_deaths": 144,
+      "new_buildings": 95
+    },
+    {
+      "arm": "original",
+      "tick": 31810,
+      "games_observed": 1,
+      "population": 276,
+      "alive_colonies": 1,
+      "starvation_deaths": 67,
+      "new_buildings": 146
+    },
+    {
+      "arm": "original",
+      "tick": 32130,
+      "games_observed": 1,
+      "population": 274,
+      "alive_colonies": 1,
+      "starvation_deaths": 14,
+      "new_buildings": 149
+    },
+    {
+      "arm": "original",
+      "tick": 32256,
+      "games_observed": 558,
+      "population": 291.18637992831543,
+      "alive_colonies": 4.166666666666667,
+      "starvation_deaths": 34.946236559139784,
+      "new_buildings": 136.97491039426524
+    },
+    {
+      "arm": "original",
+      "tick": 32258,
+      "games_observed": 1,
+      "population": 210,
+      "alive_colonies": 1,
+      "starvation_deaths": 73,
+      "new_buildings": 124
+    },
+    {
+      "arm": "original",
+      "tick": 32514,
+      "games_observed": 1,
+      "population": 242,
+      "alive_colonies": 1,
+      "starvation_deaths": 88,
+      "new_buildings": 133
+    },
+    {
+      "arm": "original",
+      "tick": 32642,
+      "games_observed": 2,
+      "population": 272,
+      "alive_colonies": 1,
+      "starvation_deaths": 21.5,
+      "new_buildings": 137
+    },
+    {
+      "arm": "original",
+      "tick": 32738,
+      "games_observed": 1,
+      "population": 125,
+      "alive_colonies": 1,
+      "starvation_deaths": 70,
+      "new_buildings": 137
+    },
+    {
+      "arm": "original",
+      "tick": 32768,
+      "games_observed": 553,
+      "population": 292.11754068716095,
+      "alive_colonies": 4.106690777576854,
+      "starvation_deaths": 35.289330922242314,
+      "new_buildings": 137.85171790235083
+    }
+  ]
+}

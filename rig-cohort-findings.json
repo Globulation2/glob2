@@ -1,0 +1,352 @@
+{
+  "protocol_sha256": "941a77adc5701821b4f44db80b7da0dedaa9a173ecc1e4ae07df87b73a5d2dac",
+  "manifest_sha256": "aa44f00e9165ee2ed4476845bce23fbb1e95a60bd0211362818b93d79e063402",
+  "planned_games": 1200,
+  "successful_games": 1199,
+  "technical_failures": [
+    {
+      "id": "river-nicowar-019",
+      "arm": "cached-material",
+      "stratum": "river/nicowar",
+      "command": [
+        "/home/bradley/glob2-hiring-cohort-20261013/artifacts/hiring-cohort/glob2-cohort",
+        "game",
+        "run",
+        "--map-file",
+        "/home/bradley/glob2-hiring-cohort-20261013/artifacts/hiring-cohort/inputs/river-nicowar-019.map.gz",
+        "--game-seed",
+        "3907061736",
+        "--ticks",
+        "32768",
+        "--benchmark-warmup",
+        "0",
+        "--compute-threads",
+        "4",
+        "--gpu",
+        "off",
+        "--output-dir",
+        "/home/bradley/glob2-hiring-cohort-20261013/artifacts/hiring-cohort/runs/river-nicowar-019/game",
+        "--player",
+        "nicowar",
+        "--player",
+        "nicowar",
+        "--player",
+        "nicowar",
+        "--player",
+        "nicowar",
+        "--player",
+        "nicowar",
+        "--player",
+        "nicowar",
+        "--player",
+        "nicowar",
+        "--player",
+        "nicowar",
+        "--hiring-schedule",
+        "4:4:128:combined",
+        "--hiring-extras",
+        "2",
+        "--hiring-availability",
+        "available",
+        "--hiring-diversity",
+        "rounds",
+        "--hiring-execution",
+        "pool"
+      ],
+      "map_sha256": "55805dd560fb8d3eb9e82bc03b349bba26a565a5e34178c50db65533d01bf00b",
+      "start_utc": "2026-10-13T15:22:32Z",
+      "returncode": -9,
+      "completed": false,
+      "elapsed_wall_s": 850.4497230481356,
+      "end_utc": "2026-10-13T15:36:43Z"
+    }
+  ],
+  "primary": {
+    "starvation_rate": {
+      "original_rate": 5.377321778887273e-06,
+      "cached_rate": 5.1890680153469325e-06,
+      "rate_ratio": 0.9649911663684564,
+      "relative_delta": -0.03500883363154361,
+      "match_bootstrap_95_ratio_interval": [
+        0.894943442916856,
+        1.0418541777883288
+      ],
+      "randomization_p": 0.35056494350564943,
+      "holm_p": 0.7011298870112989,
+      "significant_at_0_05": false
+    },
+    "critical_hunger_fraction": {
+      "original_rate": 0.06742608855604895,
+      "cached_rate": 0.06624943747687352,
+      "rate_ratio": 0.9825490236142451,
+      "relative_delta": -0.01745097638575488,
+      "match_bootstrap_95_ratio_interval": [
+        0.9561612252121493,
+        1.0098905241218359
+      ],
+      "randomization_p": 0.20507949205079493,
+      "holm_p": 0.6152384761523848,
+      "significant_at_0_05": false
+    },
+    "construction_rate": {
+      "original_rate": 2.6915526799385238e-05,
+      "cached_rate": 2.6818482101102566e-05,
+      "rate_ratio": 0.9963944715254509,
+      "relative_delta": -0.003605528474549091,
+      "match_bootstrap_95_ratio_interval": [
+        0.97707764826018,
+        1.0163896577976341
+      ],
+      "randomization_p": 0.7207279272072793,
+      "holm_p": 0.7207279272072793,
+      "significant_at_0_05": false
+    }
+  },
+  "secondary_descriptive": {
+    "original": {
+      "games": 600,
+      "units_at_end": 170488,
+      "starvation_deaths": 22305,
+      "lost_colonies": 2474,
+      "new_buildings": 81585,
+      "mean_ticks": 32473.97,
+      "early_finished": 47,
+      "winners_by_ai": {
+        "nicowar": 46,
+        "maxima": 1
+      }
+    },
+    "cached-material": {
+      "games": 599,
+      "units_at_end": 171740,
+      "starvation_deaths": 21454,
+      "lost_colonies": 2496,
+      "new_buildings": 80960,
+      "mean_ticks": 32302.754590984976,
+      "early_finished": 67,
+      "winners_by_ai": {
+        "nicowar": 62,
+        "maxima": 5
+      }
+    }
+  },
+  "strata_descriptive": {
+    "islands/four-ai": {
+      "original": {
+        "games": 50,
+        "rates": {
+          "starvation_rate": 3.646868630287404e-06,
+          "critical_hunger_fraction": 0.05274178345583496,
+          "construction_rate": 2.680050308154833e-05
+        }
+      },
+      "cached-material": {
+        "games": 50,
+        "rates": {
+          "starvation_rate": 3.3692382831572334e-06,
+          "critical_hunger_fraction": 0.0519524617968678,
+          "construction_rate": 2.6421875566600952e-05
+        }
+      }
+    },
+    "islands/nico-castor": {
+      "original": {
+        "games": 50,
+        "rates": {
+          "starvation_rate": 2.1942135320538205e-06,
+          "critical_hunger_fraction": 0.05131398056165904,
+          "construction_rate": 3.3034670265474764e-05
+        }
+      },
+      "cached-material": {
+        "games": 50,
+        "rates": {
+          "starvation_rate": 1.8463340364715638e-06,
+          "critical_hunger_fraction": 0.05247581251206445,
+          "construction_rate": 3.234713154657632e-05
+        }
+      }
+    },
+    "islands/nico-numbi": {
+      "original": {
+        "games": 50,
+        "rates": {
+          "starvation_rate": 9.574248308528212e-06,
+          "critical_hunger_fraction": 0.07869789386224457,
+          "construction_rate": 1.7759811789475397e-05
+        }
+      },
+      "cached-material": {
+        "games": 50,
+        "rates": {
+          "starvation_rate": 9.624474328803113e-06,
+          "critical_hunger_fraction": 0.07706802729235178,
+          "construction_rate": 1.8675371708574175e-05
+        }
+      }
+    },
+    "islands/nicowar": {
+      "original": {
+        "games": 50,
+        "rates": {
+          "starvation_rate": 2.3783400978773163e-06,
+          "critical_hunger_fraction": 0.056520082258722834,
+          "construction_rate": 1.8093771541513452e-05
+        }
+      },
+      "cached-material": {
+        "games": 50,
+        "rates": {
+          "starvation_rate": 2.27524274877332e-06,
+          "critical_hunger_fraction": 0.05488195351637405,
+          "construction_rate": 1.7989248718438497e-05
+        }
+      }
+    },
+    "river/four-ai": {
+      "original": {
+        "games": 50,
+        "rates": {
+          "starvation_rate": 1.7577418256895258e-06,
+          "critical_hunger_fraction": 0.049911198853767796,
+          "construction_rate": 2.6685676256621095e-05
+        }
+      },
+      "cached-material": {
+        "games": 50,
+        "rates": {
+          "starvation_rate": 2.591374869710711e-06,
+          "critical_hunger_fraction": 0.051182729221579036,
+          "construction_rate": 2.8342884929799385e-05
+        }
+      }
+    },
+    "river/nico-castor": {
+      "original": {
+        "games": 50,
+        "rates": {
+          "starvation_rate": 9.731145630356077e-06,
+          "critical_hunger_fraction": 0.08799508607677821,
+          "construction_rate": 3.676790033150592e-05
+        }
+      },
+      "cached-material": {
+        "games": 50,
+        "rates": {
+          "starvation_rate": 9.263360562661778e-06,
+          "critical_hunger_fraction": 0.08553748114785654,
+          "construction_rate": 3.6622395639703415e-05
+        }
+      }
+    },
+    "river/nico-numbi": {
+      "original": {
+        "games": 50,
+        "rates": {
+          "starvation_rate": 9.544835637046864e-06,
+          "critical_hunger_fraction": 0.08408273375183548,
+          "construction_rate": 2.8995417043604094e-05
+        }
+      },
+      "cached-material": {
+        "games": 50,
+        "rates": {
+          "starvation_rate": 9.169839360702931e-06,
+          "critical_hunger_fraction": 0.0828452890778117,
+          "construction_rate": 2.78054810383299e-05
+        }
+      }
+    },
+    "river/nicowar": {
+      "original": {
+        "games": 50,
+        "rates": {
+          "starvation_rate": 1.2664968943024939e-05,
+          "critical_hunger_fraction": 0.1062342256548126,
+          "construction_rate": 2.5630639979926086e-05
+        }
+      },
+      "cached-material": {
+        "games": 49,
+        "rates": {
+          "starvation_rate": 1.1888145900240386e-05,
+          "critical_hunger_fraction": 0.10174282636026123,
+          "construction_rate": 2.4964853174581856e-05
+        }
+      }
+    },
+    "swamp/four-ai": {
+      "original": {
+        "games": 50,
+        "rates": {
+          "starvation_rate": 6.35033153628633e-07,
+          "critical_hunger_fraction": 0.044772929913799976,
+          "construction_rate": 2.922839633879039e-05
+        }
+      },
+      "cached-material": {
+        "games": 50,
+        "rates": {
+          "starvation_rate": 6.434065653139365e-07,
+          "critical_hunger_fraction": 0.046253200074071625,
+          "construction_rate": 2.9218695411028875e-05
+        }
+      }
+    },
+    "swamp/nico-castor": {
+      "original": {
+        "games": 50,
+        "rates": {
+          "starvation_rate": 3.0186882797815954e-06,
+          "critical_hunger_fraction": 0.060384779822214164,
+          "construction_rate": 3.9772785700032065e-05
+        }
+      },
+      "cached-material": {
+        "games": 50,
+        "rates": {
+          "starvation_rate": 2.8489190494292385e-06,
+          "critical_hunger_fraction": 0.05846425054614264,
+          "construction_rate": 4.0111800122608335e-05
+        }
+      }
+    },
+    "swamp/nico-numbi": {
+      "original": {
+        "games": 50,
+        "rates": {
+          "starvation_rate": 7.868822551194539e-06,
+          "critical_hunger_fraction": 0.0769141487116101,
+          "construction_rate": 2.589724145638441e-05
+        }
+      },
+      "cached-material": {
+        "games": 50,
+        "rates": {
+          "starvation_rate": 7.4223838620212745e-06,
+          "critical_hunger_fraction": 0.07425525194195971,
+          "construction_rate": 2.5685760022196835e-05
+        }
+      }
+    },
+    "swamp/nicowar": {
+      "original": {
+        "games": 50,
+        "rates": {
+          "starvation_rate": 4.4006334716871875e-06,
+          "critical_hunger_fraction": 0.07080998199382524,
+          "construction_rate": 2.398423303540972e-05
+        }
+      },
+      "cached-material": {
+        "games": 50,
+        "rates": {
+          "starvation_rate": 4.4023370190202906e-06,
+          "critical_hunger_fraction": 0.07064782645280171,
+          "construction_rate": 2.344380565038886e-05
+        }
+      }
+    }
+  },
+  "interpretation": "Independent randomized match-level cohort. Bootstrap clustered by match and stratified by arm/generator/mix; policy-label randomization stratified by generator/mix; three primary p-values Holm-adjusted. Secondary/stratum summaries descriptive. Nonsignificance is not equivalence. Failure missingness can invalidate gameplay comparisons. Concurrent timings are not quiet-host performance evidence."
+}

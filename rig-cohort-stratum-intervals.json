@@ -1,0 +1,428 @@
+{
+  "scope": "Exploratory descriptive subgroup intervals added after the primary results. These are individual, unadjusted95% match-bootstrap intervals, not preregistered subgroup discovery tests or simultaneous coverage across12strata\u00d73endpoints. Primary analysis and its multiplicity correction remain unchanged. Completed-match selection applies; river/nicowar has49cached completions.",
+  "draws_per_stratum": 10000,
+  "seed": 713051,
+  "input_sha256": "f12d10fd2f6d243209c032b06bbaa22029fe650006c98794e6e30be1ce4b8eef",
+  "strata": {
+    "islands/four-ai": {
+      "starvation_rate": {
+        "original_events": 1351,
+        "original_exposure": 370454803,
+        "cached_events": 1229,
+        "cached_exposure": 364770876,
+        "ratio": 0.9238715799016071,
+        "unadjusted_descriptive_95_ratio_interval": [
+          0.6707947937160582,
+          1.2792933360083547
+        ]
+      },
+      "critical_hunger_fraction": {
+        "original_events": 19538447,
+        "original_exposure": 370454803,
+        "cached_events": 18950745,
+        "cached_exposure": 364770876,
+        "ratio": 0.9850342251010885,
+        "unadjusted_descriptive_95_ratio_interval": [
+          0.8744870410200574,
+          1.112345486862516
+        ]
+      },
+      "construction_rate": {
+        "original_events": 7022,
+        "original_exposure": 262010007,
+        "cached_events": 6887,
+        "cached_exposure": 260655228,
+        "ratio": 0.9858723728507897,
+        "unadjusted_descriptive_95_ratio_interval": [
+          0.9189596356494482,
+          1.0578896549696897
+        ]
+      }
+    },
+    "islands/nico-castor": {
+      "starvation_rate": {
+        "original_events": 725,
+        "original_exposure": 330414515,
+        "cached_events": 631,
+        "cached_exposure": 341758310,
+        "ratio": 0.8414559519844745,
+        "unadjusted_descriptive_95_ratio_interval": [
+          0.6237009331905443,
+          1.140529377839221
+        ]
+      },
+      "critical_hunger_fraction": {
+        "original_events": 16954884,
+        "original_exposure": 330414515,
+        "cached_events": 17934045,
+        "cached_exposure": 341758310,
+        "ratio": 1.022641625882236,
+        "unadjusted_descriptive_95_ratio_interval": [
+          0.9482866853760065,
+          1.1021950527329034
+        ]
+      },
+      "construction_rate": {
+        "original_events": 7844,
+        "original_exposure": 237447504,
+        "cached_events": 7936,
+        "cached_exposure": 245338601,
+        "ratio": 0.9791873594204751,
+        "unadjusted_descriptive_95_ratio_interval": [
+          0.9110817042387284,
+          1.0536458003717208
+        ]
+      }
+    },
+    "islands/nico-numbi": {
+      "starvation_rate": {
+        "original_events": 3341,
+        "original_exposure": 348956899,
+        "cached_events": 3332,
+        "cached_exposure": 346200726,
+        "ratio": 1.0052459492021073,
+        "unadjusted_descriptive_95_ratio_interval": [
+          0.8079739563138552,
+          1.2510463659937932
+        ]
+      },
+      "critical_hunger_fraction": {
+        "original_events": 27462173,
+        "original_exposure": 348956899,
+        "cached_events": 26681007,
+        "cached_exposure": 346200726,
+        "ratio": 0.9792895782859734,
+        "unadjusted_descriptive_95_ratio_interval": [
+          0.8780484839664531,
+          1.0933977233406842
+        ]
+      },
+      "construction_rate": {
+        "original_events": 4444,
+        "original_exposure": 250227877,
+        "cached_events": 4650,
+        "cached_exposure": 248991028,
+        "ratio": 1.051552343569392,
+        "unadjusted_descriptive_95_ratio_interval": [
+          0.9696186942464046,
+          1.1406830758203343
+        ]
+      }
+    },
+    "islands/nicowar": {
+      "starvation_rate": {
+        "original_events": 1189,
+        "original_exposure": 499928501,
+        "cached_events": 1136,
+        "cached_exposure": 499287384,
+        "ratio": 0.9566515532425276,
+        "unadjusted_descriptive_95_ratio_interval": [
+          0.7233056534724717,
+          1.263050328279731
+        ]
+      },
+      "critical_hunger_fraction": {
+        "original_events": 28256000,
+        "original_exposure": 499928501,
+        "cached_events": 27401867,
+        "cached_exposure": 499287384,
+        "ratio": 0.9710168726427151,
+        "unadjusted_descriptive_95_ratio_interval": [
+          0.9018884289964519,
+          1.0476288496356878
+        ]
+      },
+      "construction_rate": {
+        "original_events": 6581,
+        "original_exposure": 363716320,
+        "cached_events": 6493,
+        "cached_exposure": 360937808,
+        "ratio": 0.9942232705417363,
+        "unadjusted_descriptive_95_ratio_interval": [
+          0.9326574097394008,
+          1.0584182817266428
+        ]
+      }
+    },
+    "river/four-ai": {
+      "starvation_rate": {
+        "original_events": 602,
+        "original_exposure": 342484881,
+        "cached_events": 851,
+        "cached_exposure": 328397103,
+        "ratio": 1.4742636443177133,
+        "unadjusted_descriptive_95_ratio_interval": [
+          0.7606483259665803,
+          2.7342016530880904
+        ]
+      },
+      "critical_hunger_fraction": {
+        "original_events": 17093831,
+        "original_exposure": 342484881,
+        "cached_events": 16808260,
+        "cached_exposure": 328397103,
+        "ratio": 1.0254758530552759,
+        "unadjusted_descriptive_95_ratio_interval": [
+          0.8933210634770106,
+          1.1901322553295688
+        ]
+      },
+      "construction_rate": {
+        "original_events": 6799,
+        "original_exposure": 254780877,
+        "cached_events": 6833,
+        "cached_exposure": 241083433,
+        "ratio": 1.0621010559088646,
+        "unadjusted_descriptive_95_ratio_interval": [
+          0.9821594100385989,
+          1.1483431409021077
+        ]
+      }
+    },
+    "river/nico-castor": {
+      "starvation_rate": {
+        "original_events": 2486,
+        "original_exposure": 255468379,
+        "cached_events": 2326,
+        "cached_exposure": 251096779,
+        "ratio": 0.9519290856941803,
+        "unadjusted_descriptive_95_ratio_interval": [
+          0.7559071205826874,
+          1.201002566887852
+        ]
+      },
+      "critical_hunger_fraction": {
+        "original_events": 22479962,
+        "original_exposure": 255468379,
+        "cached_events": 21478186,
+        "cached_exposure": 251096779,
+        "ratio": 0.9720711117121094,
+        "unadjusted_descriptive_95_ratio_interval": [
+          0.881456842899384,
+          1.0737381141136868
+        ]
+      },
+      "construction_rate": {
+        "original_events": 6713,
+        "original_exposure": 182577736,
+        "cached_events": 6604,
+        "cached_exposure": 180326816,
+        "ratio": 0.9960426162361569,
+        "unadjusted_descriptive_95_ratio_interval": [
+          0.935198803633156,
+          1.062610401680139
+        ]
+      }
+    },
+    "river/nico-numbi": {
+      "starvation_rate": {
+        "original_events": 2809,
+        "original_exposure": 294295272,
+        "cached_events": 2736,
+        "cached_exposure": 298369458,
+        "ratio": 0.9607121284636437,
+        "unadjusted_descriptive_95_ratio_interval": [
+          0.7631391999194177,
+          1.2048431344326362
+        ]
+      },
+      "critical_hunger_fraction": {
+        "original_events": 24745151,
+        "original_exposure": 294295272,
+        "cached_events": 24718504,
+        "cached_exposure": 298369458,
+        "ratio": 0.9852830109249777,
+        "unadjusted_descriptive_95_ratio_interval": [
+          0.8873978574062156,
+          1.0919810810698627
+        ]
+      },
+      "construction_rate": {
+        "original_events": 6453,
+        "original_exposure": 222552412,
+        "cached_events": 6143,
+        "cached_exposure": 220927665,
+        "ratio": 0.9589612384783176,
+        "unadjusted_descriptive_95_ratio_interval": [
+          0.8934247825272602,
+          1.0288202342099975
+        ]
+      }
+    },
+    "river/nicowar": {
+      "starvation_rate": {
+        "original_events": 4510,
+        "original_exposure": 356100360,
+        "cached_events": 4033,
+        "cached_exposure": 339245500,
+        "ratio": 0.9386636440816243,
+        "unadjusted_descriptive_95_ratio_interval": [
+          0.7857946734901216,
+          1.121981897119295
+        ]
+      },
+      "critical_hunger_fraction": {
+        "original_events": 37830046,
+        "original_exposure": 356100360,
+        "cached_events": 34515796,
+        "cached_exposure": 339245500,
+        "ratio": 0.957721729820432,
+        "unadjusted_descriptive_95_ratio_interval": [
+          0.878232123941837,
+          1.0413041654211193
+        ]
+      },
+      "construction_rate": {
+        "original_events": 6619,
+        "original_exposure": 258245600,
+        "cached_events": 6167,
+        "cached_exposure": 247027289,
+        "ratio": 0.9740237931684237,
+        "unadjusted_descriptive_95_ratio_interval": [
+          0.9222194687255084,
+          1.0291976526155342
+        ]
+      }
+    },
+    "swamp/four-ai": {
+      "starvation_rate": {
+        "original_events": 223,
+        "original_exposure": 351162768,
+        "cached_events": 232,
+        "cached_exposure": 360580716,
+        "ratio": 1.0131857866592588,
+        "unadjusted_descriptive_95_ratio_interval": [
+          0.6431142993043786,
+          1.5973881927608622
+        ]
+      },
+      "critical_hunger_fraction": {
+        "original_events": 15722586,
+        "original_exposure": 351162768,
+        "cached_events": 16678012,
+        "cached_exposure": 360580716,
+        "ratio": 1.033061721962837,
+        "unadjusted_descriptive_95_ratio_interval": [
+          0.9643363662205339,
+          1.1067646898214272
+        ]
+      },
+      "construction_rate": {
+        "original_events": 7610,
+        "original_exposure": 260363241,
+        "cached_events": 7730,
+        "cached_exposure": 264556644,
+        "ratio": 0.9996680992125238,
+        "unadjusted_descriptive_95_ratio_interval": [
+          0.9401908873288006,
+          1.065490113174663
+        ]
+      }
+    },
+    "swamp/nico-castor": {
+      "starvation_rate": {
+        "original_events": 871,
+        "original_exposure": 288535920,
+        "cached_events": 792,
+        "cached_exposure": 278000177,
+        "ratio": 0.9437605957894268,
+        "unadjusted_descriptive_95_ratio_interval": [
+          0.700606941571641,
+          1.275224266900131
+        ]
+      },
+      "critical_hunger_fraction": {
+        "original_events": 17423178,
+        "original_exposure": 288535920,
+        "cached_events": 16253072,
+        "cached_exposure": 278000177,
+        "ratio": 0.9681951431846572,
+        "unadjusted_descriptive_95_ratio_interval": [
+          0.9032566310987211,
+          1.0384418362511953
+        ]
+      },
+      "construction_rate": {
+        "original_events": 8393,
+        "original_exposure": 211023690,
+        "cached_events": 8252,
+        "cached_exposure": 205724998,
+        "ratio": 1.008523778674522,
+        "unadjusted_descriptive_95_ratio_interval": [
+          0.9435219041442621,
+          1.0774973689412026
+        ]
+      }
+    },
+    "swamp/nico-numbi": {
+      "starvation_rate": {
+        "original_events": 2434,
+        "original_exposure": 309322009,
+        "cached_events": 2351,
+        "cached_exposure": 316744599,
+        "ratio": 0.9432648676128181,
+        "unadjusted_descriptive_95_ratio_interval": [
+          0.732661145131849,
+          1.2286130400728668
+        ]
+      },
+      "critical_hunger_fraction": {
+        "original_events": 23791239,
+        "original_exposure": 309322009,
+        "cached_events": 23519950,
+        "cached_exposure": 316744599,
+        "ratio": 0.9654303296052859,
+        "unadjusted_descriptive_95_ratio_interval": [
+          0.8696113483924033,
+          1.071227361984952
+        ]
+      },
+      "construction_rate": {
+        "original_events": 5935,
+        "original_exposure": 229174988,
+        "cached_events": 6064,
+        "cached_exposure": 236084118,
+        "ratio": 0.9918338239019107,
+        "unadjusted_descriptive_95_ratio_interval": [
+          0.9084148117290823,
+          1.0823069963343783
+        ]
+      }
+    },
+    "swamp/nicowar": {
+      "starvation_rate": {
+        "original_events": 1764,
+        "original_exposure": 400851380,
+        "cached_events": 1805,
+        "cached_exposure": 410009500,
+        "ratio": 1.000387114115289,
+        "unadjusted_descriptive_95_ratio_interval": [
+          0.8060839092832015,
+          1.2286214622642406
+        ]
+      },
+      "critical_hunger_fraction": {
+        "original_events": 28384279,
+        "original_exposure": 400851380,
+        "cached_events": 28966280,
+        "cached_exposure": 410009500,
+        "ratio": 0.9977099903649507,
+        "unadjusted_descriptive_95_ratio_interval": [
+          0.9444411719967792,
+          1.053326971183534
+        ]
+      },
+      "construction_rate": {
+        "original_events": 7172,
+        "original_exposure": 299029783,
+        "cached_events": 7201,
+        "cached_exposure": 307160028,
+        "ratio": 0.9774673893376958,
+        "unadjusted_descriptive_95_ratio_interval": [
+          0.9360913782176095,
+          1.0207069948260068
+        ]
+      }
+    }
+  }
+}
