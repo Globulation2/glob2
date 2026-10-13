@@ -11,6 +11,22 @@
 
 TEST_SUITE("HiringPlanner")
 {
+	TEST_CASE("unrelated live route enrollment cannot change hiring inputs")
+	{
+		glob2test::HeadlessGlobals globals;
+		glob2test::HeadlessGame w({.discovered = true, .loadDefaultRace = true});
+		auto *building = w.addBuilding("inn", 8, 8);
+		building->maxUnitWorking = 1;
+		building->updateCallLists();
+		w.addUnit(WORKER, 6, 8);
+		const auto snapshot = w.game.captureReadBoundary();
+		const auto before = HiringPipeline::bindRoutes(w.game, snapshot);
+		// Other query consumers may enroll unused movement classes or routes.
+		w.game.map.buildingGradient(building, SWIM_CLASS_COUNT - 1, BuildingRoute::Combat);
+		const auto after = HiringPipeline::bindRoutes(w.game, snapshot);
+		CHECK(before.routes->size() == after.routes->size());
+		CHECK(before.routeIdentity == after.routeIdentity);
+	}
 	TEST_CASE("local AI resource-plane enrollment cannot hide sources in the observed world")
 	{
 		glob2test::HeadlessGlobals globals;
@@ -50,7 +66,10 @@ TEST_SUITE("HiringPlanner")
 	{
 		glob2test::HeadlessGlobals globals;
 		glob2test::HeadlessGame w({.discovered = true, .loadDefaultRace = true});
-		auto a = nlohmann::json::parse(ResourceRegistry::builtins()->serialize())["resources"][0];
+		const auto registry = ResourceRegistry::builtins();
+		const auto food = registry->find("wheat");
+		REQUIRE(food);
+		auto a = nlohmann::json::parse(registry->serialize())["resources"][resourceIndex(*food)];
 		a["key"] = "fixture:visible-food";
 		a["properties"]["visibleToHarvest"] = true;
 		auto b = a;

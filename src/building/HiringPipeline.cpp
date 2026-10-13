@@ -525,6 +525,7 @@ HiringPlanner::Inputs HiringPipeline::bindRoutes(Game &game, SimulationSnapshot:
 		// The owner creates safe live generations; worker route queries only
 		// expand the leased generations under their existing locks.
 		const auto &type = inputs.world.catalogs->buildings->at(b.typeNum).resolvedType;
+		std::bitset<BUILDING_GRADIENT_COUNT> requiredRoutes;
 		for (unsigned c = 0; c < SWIM_CLASS_COUNT; ++c)
 			if (inputs.world.entities->groundClasses[b.team] & (1u << c))
 			{
@@ -546,12 +547,17 @@ HiringPlanner::Inputs HiringPipeline::bindRoutes(Game &game, SimulationSnapshot:
 						!(type.attractsRole(1) || type.attractsRole(2)))
 						continue;
 					game.map.buildingAvailable(live, c, b.posX, b.posY, &distance, route);
+					requiredRoutes.set(live->routeSlot(c, route));
 				}
 			}
-		// Only lease existing generations. Workers choose movement classes.
+		// Lease only the routes established from this observation. Unrelated
+		// live queries can enroll additional slots independently on each client.
 		for (int slot = 0; slot < BUILDING_GRADIENT_COUNT; ++slot)
-			if (auto field = live->leaseGradient(slot))
+			if (requiredRoutes.test(slot))
 			{
+				auto field = live->leaseGradient(slot);
+				if (!field)
+					throw std::logic_error("Hiring route generation missing after preparation");
 				auto guard = SharedBuildingGradient::lock(field);
 				auto bytes = std::size_t(field->width) * field->height * sizeof(Uint16) +
 							 sizeof(SharedBuildingGradient);
