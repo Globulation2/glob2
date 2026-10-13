@@ -310,6 +310,12 @@ For timing and scheduling, start with `src/game/Game_sync.cpp` and `src/engine/E
   explicit deferred stepping leaves that capture to its caller. Direct map
   stepping invalidates the cached boundary because its caller need not advance
   the game's tick counter.
+- Optional headless hiring-shadow diagnostics add hiring records to that same
+  completed-boundary requirement union. Their planner reads immutable snapshot
+  values and private route fields on the owner or shared pool, retains identity-based suggestions,
+  and observes reference hiring without changing assignments. This diagnostic
+  state does not enter simulation checksums or saves; it is not a live hiring
+  pipeline. See [the measurement contract](../development/performance-telemetry.md#cost-and-sampling).
 - Gradient selection, round-robin flags, invalidation and publication stay on the
   simulation owner. Jobs own their output and use worker-private scratch; they never read live map
   arrays or mutable seed caches. Publication remains after the configured delay
@@ -463,3 +469,10 @@ fallback and report accelerator allocations.
   colony placement; a cell it fails is a "Generation failed" a player would see.
 - A cache or other retained state with no eviction policy needs an explicit bound —
   a count or a byte budget. "It would take an enormous game to reach" is not a bound.
+
+The diagnostic hiring planner leases existing building-route generations. Owner reads
+and proposal expansion share a per-generation mutex; retired generations retain their
+original buffer and search until readers release them. Proposal queries do not alter
+owner refresh-demand history or create missing building fields. This producer remains
+an opt-in measurement path with original hiring authoritative; its leases are not saved
+continuation state.

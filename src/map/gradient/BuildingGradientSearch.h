@@ -71,6 +71,9 @@ class BuildingGradientSearch
 	// target == cells finishes the field. A whole cost layer is completed to
 	// preserve equal-distance sidesteps as well as the requested scalar value.
 	void resolve(std::size_t target);
+    // Caller holds its generation's lock. Proposal work changes only settled
+    // values/frontier, never owner query counters or refresh-demand history.
+    void resolveForProposal(std::size_t target);
 	void finish() { resolve(cells); }
 	// Settles whole cost layers up to and including cost. Settled values equal
 	// a full build's, and later resolve() calls continue from the same queues.

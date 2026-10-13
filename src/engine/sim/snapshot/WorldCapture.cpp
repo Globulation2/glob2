@@ -1,3 +1,4 @@
+#include "SharedBuildingGradient.h"
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "WorldSnapshot.h"
 #include "SnapshotStorage.h"
@@ -440,6 +441,7 @@ Handle capture(const Game& game,
             if (b->verbose==1 || b->verbose==2) {
                 int swim=b->verbose==1 ? 0 : 1;
                 while (b->verbose==2 && swim<SWIM_CLASS_COUNT-1 && !b->globalGradient[swim]) ++swim;
+                auto guard=SharedBuildingGradient::lock(b->sharedGradient[swim]);
                 if (b->globalGradient[swim]) value.gradient.assign(b->globalGradient[swim],b->globalGradient[swim]+cellCount);
             }
             diagnostics->buildings.push_back(std::move(value));

@@ -1,5 +1,6 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "Game.h"
+#include "HiringStudy.h"
 #include "GameDiagnostics.h"
 #include "ai/engine/AIPipeline.h"
 #include "AIJavaScript.h"
@@ -7,7 +8,7 @@
 SimulationSnapshot::Handle Game::captureReadBoundary(std::span<const unsigned> players, bool paused,
  SimulationSnapshot::Requirements additional) const
 {
- auto requirements=additional | map.pendingWorldRequirements();
+ auto requirements=additional | map.pendingWorldRequirements() | HiringStudy::requirements(*this,paused);
  if (SimulationSnapshot::needs(additional,SimulationSnapshot::Component::Areas) && gameHeader.hasExperiment(ExperimentId::FarmAreas))
   requirements|=SimulationSnapshot::bit(SimulationSnapshot::Component::Growth);
  if (!paused) for (auto p:players) {
@@ -15,7 +16,9 @@ SimulationSnapshot::Handle Game::captureReadBoundary(std::span<const unsigned> p
   if (this->players[p] && this->players[p]->ai && this->players[p]->team->isAlive)
    requirements |= this->players[p]->ai->observationRequirements();
  }
- return worldSnapshots.captureBoundary(*this,requirements);
+ auto world=worldSnapshots.captureBoundary(*this,requirements);
+ HiringStudy::observe(*this,world,paused);
+ return world;
 }
 std::vector<std::pair<unsigned,std::shared_ptr<Order>>> Game::prepareAIOrders(std::span<const unsigned> players,
  bool paused,const std::shared_ptr<GameDiagnostics::Session>& diagnostics,const SimulationSnapshot::Handle* captured)
@@ -30,7 +33,7 @@ std::shared_ptr<Order> Game::validateAIOrder(std::shared_ptr<Order> order,unsign
 void Game::settleAIOrder(const std::shared_ptr<Order>& order,bool accepted) {if(aiPipeline)aiPipeline->settle(*this,order,accepted);}
 void Game::cancelAI(unsigned player) {if(aiPipeline)aiPipeline->cancel(player);}
 void Game::drainAI() {if(aiPipeline)aiPipeline->drain();}
-void Game::clearAI() { map.finishGradientPipeline(); map.finishResourceGrowth(); aiPipeline.reset(); worldSnapshots.reset(); }
+void Game::clearAI() { HiringStudy::clear(*this); map.finishGradientPipeline(); map.finishResourceGrowth(); aiPipeline.reset(); worldSnapshots.reset(); }
 void Game::saveAI(GAGCore::OutputStream* stream) {if(!aiPipeline){aiPipeline=std::make_unique<AIEngine::Pipeline>();aiPipeline->prepare(*this,{},true,nullptr,captureReadBoundary({},true));}aiPipeline->save(stream);}
 bool Game::loadAI(GAGCore::InputStream* stream) {auto pipeline=std::make_unique<AIEngine::Pipeline>();if(!pipeline->load(*this,stream))return false;aiPipeline=std::move(pipeline);return true;}
 std::vector<std::pair<std::string,Uint64>> Game::aiMetrics() const {

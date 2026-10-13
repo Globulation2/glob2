@@ -1,3 +1,4 @@
+#include "SharedBuildingGradient.h"
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "BuildingGradientStats.h"
 
@@ -51,7 +52,8 @@ const char *BuildingGradientStats::name(Event event)
 
 BuildingGradientStats::Context BuildingGradientStats::context(const Building &building, int slot)
 {
-	Context value;
+	auto guard=SharedBuildingGradient::lock(building.sharedGradient[slot]);
+    Context value;
 	value.known = true;
 	const Uint16 hint = building.settledCostHint[slot];
 	value.previousHint = hint == Building::UNKNOWN_SETTLED_COST ? -1 : hint;
@@ -98,7 +100,8 @@ std::uint64_t BuildingGradientStats::key(const Building &building, int slot)
 BuildingGradientStats::Row BuildingGradientStats::previousRow(const Building &building, int slot, Event event,
 															   std::uint32_t tick, bool hasPrevious, int access)
 {
-	Row row;
+	auto guard=SharedBuildingGradient::lock(building.sharedGradient[slot]);
+    Row row;
 	row.tick = tick;
 	row.gid = building.gid;
 	row.team = std::uint8_t(building.owner->teamNumber);

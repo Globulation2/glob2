@@ -10,6 +10,8 @@
 
 #include "Building.h"
 #include "FetchApportionment.h"
+#include "HiringDiagnostics.h"
+#include "HiringRanking.h"
 #include "BuildingType.h"
 #include "FixedPoint.h"
 #include "Game.h"
@@ -21,10 +23,6 @@
 
 namespace
 {
-	/// Weight of the harvest level in a material-fetching candidate's ranking key. The
-	/// harvest level dominates the comparison; the walk level breaks ties.
-	constexpr int HARVEST_LEVEL_WEIGHT = 10;
-
 	/// Tiles of detour a candidate pays for turning up with a material this
 	/// building cannot take. Legacy one-packet workers discard rejected cargo on
 	/// their next harvest; extended carriers can retain unrelated packets. The
@@ -36,7 +34,7 @@ namespace
 	/// higher is preferred.
 	int bringMaterialsLevel(const Unit* unit)
 	{
-		return unit->workerLevel() * HARVEST_LEVEL_WEIGHT + unit->level[WALK];
+		return HiringRanking::materialLevel(unit->workerLevel(), unit->level[WALK]);
 	}
 }
 
@@ -66,6 +64,7 @@ void Building::setRecordFailingUnits(bool on)
 
 void Building::noteUnitFailing(Unit* unit, UnitCantWorkReason reason)
 {
+	HiringDiagnostics::add(reason == UnitNotAvailable ? HiringDiagnostics::Counter::Busy : HiringDiagnostics::Counter::Rejected);
 	unitsFailingRequirements[reason] += 1;
 	// "Not available" is every busy unit of the colony: counted, never marked.
 	if(recordFailingUnits && reason!=UnitNotAvailable)
@@ -99,6 +98,7 @@ int remainingFoodTime(const Unit& unit)
 bool considerBuildingCandidate(Building& building, Unit* unit, int* distBuilding,
                                int airDistance, int& timeLeft)
 {
+	HiringDiagnostics::add(HiringDiagnostics::Counter::Qualifications);
 	if(unit->activity != Unit::ACT_RANDOM || unit->medical != Unit::MED_FREE)
 	{
 		building.noteUnitFailing(unit, Building::UnitNotAvailable);
@@ -186,6 +186,7 @@ bool Building::considerUnitForMaterial(Unit* unit, int wantedMaterial, int* dist
 
 int Building::gatherBringMaterialsCandidates(BringMaterialsCandidate* candidates, int wantedMaterial, const int* airDistances)
 {
+	HiringDiagnostics::Scope diagnostic(*this, HiringDiagnostics::Phase::FetchScan);
 	// The tallies count units, and the same unit is offered every material the
 	// building tries to staff, so start each scan from zero: what the info panel
 	// ends up showing is one coherent pass, for the last material attempted.
@@ -194,6 +195,7 @@ int Building::gatherBringMaterialsCandidates(BringMaterialsCandidate* candidates
 	int count=0;
 	for(Unit* unit : owner->liveUnits.entries())
 	{
+		HiringDiagnostics::add(HiringDiagnostics::Counter::Visits);
 		if(!unit->hasCapability(UnitRuntimeTraits::Transport) || !unit->performance[HARVEST] || !unit->performance[BUILD])
 			continue;
 		if(unit->attachedBuilding == this && unit->activity == Unit::ACT_FILLING)
@@ -202,6 +204,7 @@ int Building::gatherBringMaterialsCandidates(BringMaterialsCandidate* candidates
 		int dist;
 		if(considerUnitForMaterial(unit, wantedMaterial, &dist,airDistances?airDistances[Unit::GIDtoID(unit->gid)]:-1))
 		{
+			HiringDiagnostics::qualified(*unit,{Hiring::Job::Fetch,wantedMaterial});
 			candidates[count].unit = unit;
 			candidates[count++].distance = dist;
 		}
@@ -238,8 +241,10 @@ bool Building::wantsAnotherDelivery(int r, const int* targets, const int* served
 
 void Building::selectUnitCarryingWantedMaterial(const int* targets, const int* served, BringMaterialsSelection& sel, const int* airDistances)
 {
+	HiringDiagnostics::Scope diagnostic(*this, HiringDiagnostics::Phase::CarryingScan);
 	for(Unit* unit : owner->liveUnits.entries())
 	{
+		HiringDiagnostics::add(HiringDiagnostics::Counter::Visits);
 		if(!unit->hasCapability(UnitRuntimeTraits::Transport) || !unit->performance[BUILD])
 			continue;
 		if(unit->attachedBuilding == this && unit->activity == Unit::ACT_FILLING)
@@ -264,8 +269,9 @@ void Building::selectUnitCarryingWantedMaterial(const int* targets, const int* s
 		int level = bringMaterialsLevel(unit);
 		// Every carrying candidate has its destinationPurpose set to the
 		// material it carries, not only the one finally chosen.
+		HiringDiagnostics::qualified(*unit,{Hiring::Job::Delivery,r});
 		unit->destinationPurpose=r;
-		if ((level>sel.maxLevel) || (level==sel.maxLevel && value<sel.minValue))
+		if (HiringRanking::materialBetter(level, value, sel.maxLevel, sel.minValue))
 		{
 			sel.minValue=value;
 			sel.maxLevel=level;
@@ -276,6 +282,7 @@ void Building::selectUnitCarryingWantedMaterial(const int* targets, const int* s
 
 void Building::selectFetcher(const BringMaterialsCandidate* candidates, int count, int wantedMaterial, BringMaterialsSelection& sel)
 {
+	HiringDiagnostics::Scope diagnostic(*this, HiringDiagnostics::Phase::Selection);
 	for(int n=0; n<count; ++n)
 	{
 		Unit* unit=candidates[n].unit;
@@ -290,7 +297,7 @@ void Building::selectFetcher(const BringMaterialsCandidate* candidates, int coun
 		if(carried>=0)
 			value += CARRIED_MATERIAL_PENALTY_TILES<<Q8_FIXED_POINT_SHIFT;
 		int level = bringMaterialsLevel(unit);
-		if ((level>sel.maxLevel) || (level==sel.maxLevel && value<sel.minValue))
+		if (HiringRanking::materialBetter(level, value, sel.maxLevel, sel.minValue))
 		{
 			sel.minValue=value;
 			sel.maxLevel=level;
@@ -316,8 +323,9 @@ int Building::workRoleTarget(int role) const
 
 bool Building::subscribeWorkStep()
 {
+	HiringDiagnostics::Scope diagnostic(*this, HiringDiagnostics::Phase::Attempt);
 	const bool attracts=runtime->attractionRoles!=0;
-	if (!attracts) return subscribeToBringMaterialsStep();
+	if (!attracts) { const bool result=subscribeToBringMaterialsStep(); if(!result) HiringDiagnostics::add(HiringDiagnostics::Counter::FailedAttempts); return result; }
 	const bool recruitmentRound=subscriptionWorkingTimer>=32;
 	bool hired=subscribeToBringMaterialsStep();
 	// Fill fair delivery quota before the attraction round can borrow it.
@@ -325,6 +333,7 @@ bool Building::subscribeWorkStep()
 	hired=subscribeForFlagingStep() || hired;
 	// Attraction exhausted its eligible candidates; unused seats may deliver.
 	if (recruitmentRound) while (subscribeToBringMaterialsStep(true)) hired=true;
+	if (!hired) HiringDiagnostics::add(HiringDiagnostics::Counter::FailedAttempts);
 	return hired;
 }
 
@@ -361,6 +370,7 @@ bool Building::subscribeToBringMaterialsStep(bool borrowUnused)
 // Active selection keeps its scratch frame out of the admission wrapper.
 bool Building::hireMaterialUnit(const int* targets, const int* served, const int* airDistances)
 {
+	HiringDiagnostics::beginSearch();
 	BringMaterialsSelection sel;
 	sel.maxLevel = -1;
 	sel.minValue = INT_MAX;
@@ -371,6 +381,7 @@ bool Building::hireMaterialUnit(const int* targets, const int* served, const int
 	// we still have to send out. It is subscription-aware in its own right, so
 	// it cannot oversubscribe a material either.
 	selectUnitCarryingWantedMaterial(targets, served, sel,airDistances);
+	const bool delivery=sel.choosen!=nullptr;
 
 	// Otherwise staff the material whose subscriptions sit furthest below its
 	// share of the building's targets, falling to the next one whenever no
@@ -392,9 +403,13 @@ bool Building::hireMaterialUnit(const int* targets, const int* served, const int
 
 	if (sel.choosen)
 	{
+		HiringDiagnostics::hired(*sel.choosen,{delivery?Hiring::Job::Delivery:Hiring::Job::Fetch,sel.choosen->destinationPurpose});
 		unitsWorking.push_back(sel.choosen);
-		sel.choosen->subscriptionSuccess(this, false);
-		owner->swapTask(sel.choosen);
+		{ HiringDiagnostics::Scope admission(*this, HiringDiagnostics::Phase::Subscription);
+		  sel.choosen->subscriptionSuccess(this, false); }
+		HiringDiagnostics::add(HiringDiagnostics::Counter::Hires);
+		{ HiringDiagnostics::Scope swap(*this, HiringDiagnostics::Phase::Swap);
+		  owner->swapTask(sel.choosen); }
 		return true;
 	}
 	return false;
@@ -425,6 +440,7 @@ bool Building::hireMaterialUnitWithFlyingDistances(const int* targets, const int
 
 bool Building::considerUnitForExplorerFlag(Unit* unit, int* dist, int terrainDistance)
 {
+	HiringDiagnostics::add(HiringDiagnostics::Counter::Qualifications);
 	if (unit->activity != Unit::ACT_RANDOM || unit->medical != Unit::MED_FREE)
 	{
 		noteUnitFailing(unit, UnitNotAvailable);
@@ -476,6 +492,7 @@ bool Building::considerUnitForExplorerFlag(Unit* unit, int* dist, int terrainDis
 
 bool Building::considerUnitForWorkerFlag(Unit* unit, int* dist)
 {
+	HiringDiagnostics::add(HiringDiagnostics::Counter::Qualifications);
 	if (unit->activity != Unit::ACT_RANDOM || unit->medical != Unit::MED_FREE)
 	{
 		noteUnitFailing(unit, UnitNotAvailable);
@@ -519,6 +536,7 @@ bool Building::considerUnitForWorkerFlag(Unit* unit, int* dist)
 
 bool Building::considerUnitForWarriorFlag(Unit* unit, int* dist, int terrainDistance)
 {
+	HiringDiagnostics::add(HiringDiagnostics::Counter::Qualifications);
 	if (unit->activity != Unit::ACT_RANDOM || unit->medical != Unit::MED_FREE)
 	{
 		noteUnitFailing(unit, UnitNotAvailable);
@@ -602,25 +620,32 @@ bool Building::hireFlagUnits()
 		// attachedBuilding==this); without this, the same failing units
 		// would be counted N times across N iterations.
 		resetFailureTallies();
+            HiringDiagnostics::beginSearch();
 
             // A hybrid may be eligible for multiple jobs, but receives one
             // assignment and consumes one building seat after selection.
             Uint8 possibleJobs[Unit::MAX_COUNT]{};
             // Successful qualification writes its distance; reads require the matching job bit.
             int distances[3][Unit::MAX_COUNT];
+            { HiringDiagnostics::Scope scan(*this, HiringDiagnostics::Phase::FlagScan);
             for (int n=0;n<Unit::MAX_COUNT;++n) {
+                HiringDiagnostics::add(HiringDiagnostics::Counter::Slots);
                 Unit* unit=owner->myUnits[n];
-                if (!unit || unit->attachedBuilding==this) continue;
+                if (!unit) continue;
+                HiringDiagnostics::add(HiringDiagnostics::Counter::Visits);
+                if (unit->attachedBuilding==this) continue;
                 const auto& interaction=runtime->interaction(unit->typeNum);
                 int travelDistance=-1;
                 if(unit->performance[FLY] && airRoutes.enabled()){const auto cost=airRoutes.costTo(unit->posX,unit->posY);travelDistance=cost==decltype(airRoutes)::unreachable ? INT_MAX : int((cost+GRADIENT_STEP-1)/GRADIENT_STEP);}
                 if (interaction.recruits(1)) {
-                    if (considerUnitForExplorerFlag(unit,&distances[1][n],travelDistance)) possibleJobs[n]|=2;
+                    if (considerUnitForExplorerFlag(unit,&distances[1][n],travelDistance)) { possibleJobs[n]|=2; HiringDiagnostics::qualified(*unit,{Hiring::Job::Explore,-1}); }
                 }
-                if (interaction.recruits(0) && considerUnitForWorkerFlag(unit,&distances[0][n])) possibleJobs[n]|=1;
-                if (interaction.recruits(2) && considerUnitForWarriorFlag(unit,&distances[2][n],travelDistance)) possibleJobs[n]|=4;
+                if (interaction.recruits(0) && considerUnitForWorkerFlag(unit,&distances[0][n])) { possibleJobs[n]|=1; HiringDiagnostics::qualified(*unit,{Hiring::Job::Clear,-1}); }
+                if (interaction.recruits(2) && considerUnitForWarriorFlag(unit,&distances[2][n],travelDistance)) { possibleJobs[n]|=4; HiringDiagnostics::qualified(*unit,{Hiring::Job::Defend,-1}); }
             }
 
+            }
+		HiringDiagnostics::Scope ranking(*this, HiringDiagnostics::Phase::Selection);
 		int assigned[3]{};
 		for (const Unit* unit : unitsWorking)
 			if (unit->activity == Unit::ACT_FLAG) {
@@ -648,7 +673,7 @@ bool Building::hireFlagUnits()
 				if (role == 1) { timeLeft=std::clamp<Sint64>(timeLeft,-1000000000,1000000000); timeLeft*=timeLeft; hp=std::clamp<Sint64>(hp,-1000000000,1000000000); hp*=hp; }
 				const Sint64 value=distances[role][n]-(role == 0 ? 1 : 2)*(timeLeft+hp);
 				const Sint64 level=role == 0 ? unit->workerLevel() : role == 1 ? unit->level[MAGIC_ATTACK_GROUND] : Sint64(unit->performance[ATTACK_SPEED])*unit->getRealAttackStrength();
-				if ((role == 2 ? level>bestLevel : level<bestLevel) || (level==bestLevel && value<bestValue))
+				if (HiringRanking::roleBetter(role, level, value, bestLevel, bestValue))
 				{ best=unit; bestLevel=level; bestValue=value; }
 			}
 			if (best && assigned[role]<chosenCount)
@@ -657,8 +682,11 @@ bool Building::hireFlagUnits()
 
 		if (choosen)
 		{
+			HiringDiagnostics::hired(*choosen,{Hiring::Job(unsigned(Hiring::Job::Clear)+chosenJob),-1});
 			unitsWorking.push_back(choosen);
-			choosen->subscriptionSuccess(this,false,true,static_cast<UnitJobPurpose>(int(UnitJobPurpose::Clear)+chosenJob));
+			{ HiringDiagnostics::Scope admission(*this, HiringDiagnostics::Phase::Subscription);
+			  choosen->subscriptionSuccess(this,false,true,static_cast<UnitJobPurpose>(int(UnitJobPurpose::Clear)+chosenJob)); }
+			HiringDiagnostics::add(HiringDiagnostics::Counter::Hires);
 			hired=true;
 		}
 		else

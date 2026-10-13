@@ -31,6 +31,7 @@ class Unit;
 class Team;
 class Map;
 class BuildingGradientSearch;
+struct SharedBuildingGradient;
 struct BuildingType;
 class BuildingsTypes;
 class Order;
@@ -595,6 +596,10 @@ public:
 	//! Building owns these buffers; resetPathfindGradients frees them. Refresh and
 	//! stuck-unit retry policy lives in Map::buildingGradient / pathfindBuilding.
 	Uint16 *globalGradient[BUILDING_GRADIENT_COUNT];
+    // Owner creates/replaces leases. Workers touch the leased generation only.
+    std::shared_ptr<SharedBuildingGradient> sharedGradient[BUILDING_GRADIENT_COUNT];
+    std::shared_ptr<SharedBuildingGradient> leaseGradient(int slot);
+    void retireSharedGradient(int slot);
 	//! Retained propagation queues. Never serialized: saving completes
 	//! their fields first. Null for loaded or locked fields; owned with globalGradient.
 	std::unique_ptr<BuildingGradientSearch> globalGradientSearch[BUILDING_GRADIENT_COUNT];

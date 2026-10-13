@@ -55,6 +55,71 @@ use `--compute-threads auto|N`. The optional area, initialization and hiring com
 paths and their environment selector have also been removed. Structural area
 refreshes and live field initialization retain their serial production order.
 
+The hiring study is separately available through `--telemetry hiring-stats` and
+`--telemetry hiring-shadow` ([measurement contract](performance-telemetry.md#cost-and-sampling)).
+The full matrix uses an owner-executed control. `--hiring-schedule K:R:L:split|combined`
+selects one diagnostic schedule; `--hiring-execution owner|pool` compares the same
+planner on the owner or shared executor. The pool uses separate FIFO team lanes,
+admits at `t % R == team % R`, and joins/publishes before team stepping at `t + K`.
+Old lists remain visible until replacement. Zero delay joins in the capture boundary.
+Draining at teardown, reconfiguration or export finishes pending work without early
+publication. Hiring remains authoritative and this diagnostic continuation is not
+saved match state. `K + R - 1` must stay within eight ticks.
+
+Without `--telemetry hiring-shadow`, a selected schedule measures compute without
+reference-opportunity collection. `hiring-compute.json` records publication digest,
+worker/owner job counts, waits and bounded output/cache reservations. Its
+`planner_metrics` separates setup, geography hashing, prechecks, candidate evaluation
+and sorting/output batches; evaluation includes nested route seeding and propagation.
+Timers report elapsed nanoseconds, not CPU time, and include startup. Counters report
+field hits/misses, cells seeded, evictions, changed geography components, candidate
+counts and published/private resource reads. Metrics cover retained/published outputs;
+future outputs drained without publication are excluded. Use process CPU and a sampling
+profiler alongside these timers, and compare the same planner in owner/pool modes.
+These diagnostics do not enter simulation checksums or the publication digest. Snapshot leases
+end when each job completes. Its maximum pending batches is `K + 1`; admission at
+one boundary shares one batch across its selected teams. The shared executor reserves
+nine additional slots and sixteen lanes for this producer.
+Shadow output retains three ranked controls per job (combined, observed available,
+observed busy) to compare bounded policies; this matrix storage is not a proposed
+live output format. Building distance queries lease the engine's existing field generation at admission.
+A per-generation recursive mutex protects search expansion and owner reads; replacement
+transfers the existing buffer/search to the lease without copying them. Proposal queries
+do not update owner refresh-demand history. Missing building fields yield no suggestion;
+the planner neither creates nor refreshes them. Leases remain usable after building removal.
+`shared_route_owner_wait_ns` and `shared_route_owner_contentions` report owner lock waits;
+planner counters report shared queries, expansions, missing fields and worker waits.
+`sharedQueryNs` times actual expansion only; cached reads use counters, not inner-loop timers.
+Admission accounting includes leased storage at capture and the measured peak storage
+of retired generations (`shared_route_peak_retired_bytes`). Expansion of the engine's
+current field uses its existing workspace; it is not a second planner cache. This
+prototype measures retired workspace growth rather than reserving its full theoretical
+worst case. Accounted peaks above 160 MiB stop the diagnostic study.
+The owner captures the engine's resolved supplier modes (catalog support and actual
+team supplier lists), rather than treating fetch permissions as supplier presence.
+Natural fields and non-self-excluding unified market fields reuse the matching
+published snapshot plane. Direct-supplier or self-excluding fields, and absent
+published planes, use a private snapshot field; capture does not create or refresh
+live resource fields. Geography hashing is lazy and runs only for private fields.
+Candidate selection uses bounded partitioning followed by sorting retained prefixes;
+the resulting canonical lists equal full-sort prefixes. Scheduled runs build only
+the selected pool policy; the full shadow matrix builds both controls.
+Resource fields otherwise use a private,
+deterministically evicted cache bounded to at most 32 MiB per team and 128 MiB per match. The study rejects an
+accounted cache-plus-output working set exceeding 160 MiB.
+
+Build the `hiring-study` target to prepare deterministic sustainable and contention
+saves with `HiringStudyHarness --prepare sustainable|contention OUTPUT_DIR`.
+The harness checks population throughout its 4,096-tick window. Inactive controllers
+provide null orders when continuing these fixtures in the full headless engine.
+`test/benchmark_hiring.py` accepts a workload JSON array with `name`, `save`, and
+absolute `ticks`. Its `verify` mode compares disabled, statistics and shadow modes
+against `--baseline` using traces, replay bytes and final saves. Its `shadow` mode
+collects reference coverage; `timing` uses one process warmup and ten rotated paired
+repetitions by default, without diagnostic exports or saves. Retain its metadata,
+commands, input/executable hashes, raw measurements and host observations under
+`artifacts/`. Timing results alone do not establish a cached-hiring speedup.
+
 Structured `game run` accepts `--ai-order-delay D` for a new match (default 8
 ticks). Delays are simulation rules, separate from local thread configuration.
 A loaded match's configured AI delay cannot be overridden.

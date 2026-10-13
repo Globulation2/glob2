@@ -49,6 +49,30 @@ Startup timings include generation attempts performed while preparing the sessio
 
 ## Cost and sampling
 
+Structured headless runs can add `--telemetry hiring-stats`. This writes
+`hiring-stats.json`, attributed by team and building incarnation: candidate visits,
+qualification attempts, route queries, successful hires, unavailable/rejected units,
+unsuccessful attempts, and exact elapsed timers around scan, selection, subscription,
+immediate swap, and building-field initialization/extension batches. Periodic team
+swaps are reported separately. Timers are inclusive; scan time includes its route
+queries. Counters avoid individual inner-loop timers. Diagnostics have measurable
+overhead and must be disabled for representative throughput comparisons.
+
+`--telemetry hiring-shadow` also writes `hiring-shadow.json`. It builds candidate rankings from snapshot entity values and leased engine building-route
+generations on the owner and examines 200 delay/refresh/capacity/pool policies (including zero delay)
+while existing hiring remains authoritative. Shadow choices use a private team
+assignment set; current qualification comes from the reference hiring attempt.
+Coverage means a currently qualified cached suggestion exists. Worker-choice
+agreement is reported separately, both under the reference attempt's eligibility
+and with the shadow assignment exclusion set. The comparison fixes the reference
+building/job; it is not full counterfactual job selection. Zero-delay publication
+is a calibration control, not a promise of exact choices. Startup opportunities
+are separate from steady coverage. This measures usefulness
+along the reference trajectory, not recruitment delay or a counterfactual economy.
+It is not a live hiring experiment or a performance benchmark. Neither diagnostic
+mode contributes simulation state or serialized continuation. These modes require
+the default headless simulation owner; the `GLOB2_SIM_THREAD=1` test switch is rejected.
+
 `PerformanceScopes.inc` defines stable scope names and sampling strides. Major phases and
 expensive rebuilds are timed on every execution. Hot path-query/direction scopes count every
 call and time one in 64 calls. The selected residue rotates between capture windows without

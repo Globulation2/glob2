@@ -21,6 +21,7 @@
 #include "EntityRandomIO.h"
 #include "Bullet.h"
 #include "BuildingGradientSearch.h"
+#include "SharedBuildingGradient.h"
 #include "BuildingGradientStats.h"
 
 Building::Building(GAGCore::InputStream *stream, BuildingsTypes *types, Team *owner, Sint32 versionMinor)
@@ -197,9 +198,11 @@ void Building::resetPathfindGradients(GradientDrop cause)
 			lastGlobalGradientUpdateStepCounter[i] = std::min(lastGlobalGradientUpdateStepCounter[i], due);
 			continue;
 		}
-		if (stats) stats->fieldReleased(*this, i, BuildingGradientStats::Event::Drop, owner->game->stepCounter);
+		auto guard=SharedBuildingGradient::lock(sharedGradient[i]);
+        if (stats) stats->fieldReleased(*this, i, BuildingGradientStats::Event::Drop, owner->game->stepCounter);
 		dropGradientSlot(i, cause);
-		recycleBuildingGradientSearch(std::move(globalGradientSearch[i]));
+		retireSharedGradient(i);
+        recycleBuildingGradientSearch(std::move(globalGradientSearch[i]));
 		owner->game->map.recycleBuildingGradientBuffer(globalGradient[i]);
 		globalGradient[i] = NULL;
 		gradientGeneration[i] = 0;
@@ -215,10 +218,12 @@ void Building::freeIdleGradients()
 	{
 		if (globalGradient[c] && globalGradientUsedStep[c]+IDLE_TICKS<now)
 		{
-			if (auto *stats = owner->game->map.gradientStats.get())
+			auto guard=SharedBuildingGradient::lock(sharedGradient[c]);
+            if (auto *stats = owner->game->map.gradientStats.get())
 				stats->fieldReleased(*this, c, BuildingGradientStats::Event::Evict, now);
 			dropGradientSlot(c, GradientDrop::Idle);
-			recycleBuildingGradientSearch(std::move(globalGradientSearch[c]));
+			retireSharedGradient(c);
+            recycleBuildingGradientSearch(std::move(globalGradientSearch[c]));
 			owner->game->map.recycleBuildingGradientBuffer(globalGradient[c]);
 			globalGradient[c] = NULL;
 		}
@@ -233,7 +238,8 @@ void Building::freeGradients()
 	for (int i=0; i<BUILDING_GRADIENT_COUNT; i++)
 	{
 		dropGradientSlot(i, GradientDrop::New);
-		globalGradientSearch[i].reset();
+		retireSharedGradient(i);
+        globalGradientSearch[i].reset();
 		delete[] globalGradient[i];
 		globalGradient[i] = NULL;
 		gradientGeneration[i] = 0;
@@ -813,4 +819,26 @@ void Building::configureProductionState()
 {
     const auto count=type->semantics.production.recipes.size()-NB_UNIT_TYPE;
     extraProductionRatios.resize(count); extraProductionUsed.resize(count); extraConstructionOriginRatios.resize(count);
+}
+
+std::shared_ptr<SharedBuildingGradient> Building::leaseGradient(int slot)
+{
+    if (!globalGradient[slot]) return {};
+    auto& lease=sharedGradient[slot];
+    if (!lease) {
+        lease=std::make_shared<SharedBuildingGradient>();
+        lease->values=globalGradient[slot];lease->search=globalGradientSearch[slot].get();
+        lease->width=owner->game->map.getW();lease->height=owner->game->map.getH();
+    }
+    return lease;
+}
+void Building::retireSharedGradient(int slot)
+{
+    auto lease=sharedGradient[slot];
+    if (!lease) return;
+    auto guard=SharedBuildingGradient::lock(lease);
+    lease->retiredValues.reset(globalGradient[slot]);
+    lease->retiredSearch=std::move(globalGradientSearch[slot]);
+    lease->accountRetired();
+    globalGradient[slot]=nullptr;sharedGradient[slot].reset();
 }

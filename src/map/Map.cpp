@@ -3,6 +3,7 @@
 
 #include <atomic>
 #include "Map.h"
+#include "HiringStudy.h"
 #include "MapAssetBundle.h"
 #include "TerrainLine.h"
 #include <stdexcept>
@@ -564,6 +565,7 @@ std::vector<std::pair<std::string,Uint64>> Map::gradientExecutionMetrics() const
 
 void Map::configureCompute(unsigned threads)
 {
+    if(game)HiringStudy::drain(*game);
 	finishGradientPipeline();
 	finishResourceGrowth();
 	compute.configure(threads);

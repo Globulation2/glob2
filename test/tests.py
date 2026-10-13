@@ -105,6 +105,7 @@ ENGINE_TESTS = [
     ('#src/team/stats/WinProbabilityTest.cpp', dict(cxxflags=['-fno-access-control'])),
     ('#src/engine/sim/ClientChannelsTest.cpp', dict(cxxflags=['-fno-access-control'])),
     '#src/building/HiringBucketHarness.cpp',
+    '#src/building/HiringPlannerTest.cpp',
     '#src/unit/HungryDefeatHarness.cpp',
     '#src/map/gradient/ImmobileUnitGradientHarness.cpp',
     '#src/building/InnSwapHarness.cpp',
@@ -208,6 +209,7 @@ ENGINE_TESTS = [
 
 # glob2-unit-tests: libgag, libusl, the production sources below and stubs.
 UNIT_TESTS = [
+    '#src/building/HiringRankingTest.cpp',
     '#src/map/TerrainRegistryTest.cpp',
     '#libgag/src/TextStreamTest.cpp',
     '#libgag/src/AssetLoaderTest.cpp',
@@ -484,6 +486,7 @@ UNIT_PRODUCTION_SOURCES = [
 UNIT_STUBS = [
     'unit/stubs/MapSectorStubs.cpp',
     'unit/stubs/SnapshotGradientStubs.cpp',
+    'unit/stubs/HiringDiagnosticsStubs.cpp',
     'unit/stubs/MapHeaderStubs.cpp',
     'unit/stubs/OrderStubs.cpp',
     'unit/stubs/GameGUIStubs.cpp',
@@ -494,6 +497,7 @@ UNIT_STUBS = [
 # CI through their own runners; 'tools' are developer utilities and benchmarks. The
 # transport programs the browser tests drive stay in src/SConscript under 'transport-test'.
 PROGRAMS = [
+    ('HiringStudyHarness', 'HiringStudyHarness.cpp', 'hiring-study', 'tools'),
     ('SaveSizeHarness', 'SaveSizeHarness.cpp', 'save-size-harness', 'tools'),
 
     ('recording-multiplayer-peer', '#src/net/turn/RecordingMultiplayerPeer.cpp', 'recording-multiplayer-test', 'tools'),
