@@ -31,6 +31,7 @@
 #include "TurnTelemetry.h"
 #include "Version.h"
 #include "WinningConditions.h"
+#include "field/GradientAccelerators.h"
 
 namespace fs = std::filesystem;
 using nlohmann::json;
@@ -279,11 +280,22 @@ MatchVerifier::Verdict MatchVerifier::verify(const Turn::MatchRecord& record, co
     ComputeTelemetry::writeJson(result, game.map.computeExecutor().telemetrySnapshot());
     result << '}';
 	Headless::writeJson((output / "result.json").string(), result.str());
+	const auto gradient = gradient_kernel::configuration();
+	const auto accelerator = gradient_kernel::acceleratorStatus(gradient.backend);
 	Headless::writeJson((output / "compute.json").string(), json{
 	    {"compute_requested_threads", globals.computeThreads ? std::to_string(globals.computeThreads) : "auto"},
 	    {"compute_resolved_threads", resolveComputeThreadCount(globals.computeThreads)},
 	    {"compute_threads", game.map.computeExecutor().threadCount()},
-	    {"compute_workers", game.map.computeExecutor().threadCount() - 1}}.dump());
+	    {"compute_workers", game.map.computeExecutor().threadCount() - 1},
+	    {"gradient_backend", gradient_kernel::backendName(gradient.backend)},
+	    {"gradient_algorithm", gradient_kernel::algorithmName(gradient.algorithm)},
+	    {"gradient_device", accelerator.device},
+	    {"gradient_driver", accelerator.driver},
+	    {"gradient_shader", accelerator.shaderIdentity},
+	    {"gradient_gpu_fields", accelerator.fields},
+	    {"gradient_dispatches", accelerator.dispatches},
+	    {"gradient_cpu_fallbacks", accelerator.fallbacks},
+	    {"gradient_verified", accelerator.verified}}.dump());
 
 	json teams = json::array();
 	for (int t = 0; t < game.mapHeader.getNumberOfTeams(); ++t)

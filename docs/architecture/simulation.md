@@ -442,11 +442,21 @@ readback to `artifacts/gradient-proof-*.bin` (or `GLOB2_TEST_ARTIFACTS`). The bi
 uses little-endian records, with a text sidecar identifying the device, driver,
 shader and job generation. It does not
 count as a committed GPU field or a successful CPU fallback.
+Vulkan batch commit flags are published only after every member succeeds. A
+completed private field followed by cancellation retains its dispatch observation,
+but reports no GPU commit and leaves all caller seed arrays unchanged.
+Opt-in Vulkan upload roundtrip failures also stop execution and retain original
+seeds plus expected and actual transfer words in a separate little-endian `GTRF`
+v1 payload. Packed costs and control words must not be interpreted as field output.
 
-Vulkan integration remains unqualified: native NVIDIA stress runs have produced
-intermittent fixed-point proof failures. Retaining this guard prevents those
-fields from reaching simulation state; passing individual kernel tests does not
-establish live-game correctness. Threaded-browser WebGPU also requires complete
+Vulkan uses device-local compute storage and maps only coherent transfer/control
+buffers, preferring host-cached memory. Mapped allocations also charge the shared
+host budget; their leases remain charged during quarantine. Earlier native NVIDIA
+stress runs with uncached host memory for all buffers produced intermittent upload
+and fixed-point failures. Preserve whole-game stress coverage alongside the
+isolated regression fixtures when changing storage or synchronization.
+Vulkan platform/performance qualification remains separate from these correctness
+checks. Threaded-browser WebGPU also requires complete
 game, continuation and platform qualification before production enablement of
 resident preparation.
 

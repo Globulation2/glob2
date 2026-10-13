@@ -243,6 +243,34 @@ hardware a test failure; otherwise hardware-only cases report their omission.
 Chromium's `gradient-compute.spec.js` checks generated WGSL against independent
 exact fields. Keep real hardware and software-driver coverage distinct.
 
+The `RuntimeGradientBackend` retained Vulkan case replays all three original
+NVIDIA proof inputs from `codex/runtime-gradient-merge-evidence` and two subsequent
+whole-game failures, with both
+algorithms and input roundtrip verification enabled and disabled. The compact
+permanent inputs retain the original proof hashes in
+`test/fixtures/gradients/RetainedVulkanSeeds.h`. Successful dispatch observations,
+GPU commits and independent heap-oracle equality are all required. These isolated
+tests do not resolve intermittent whole-game failures or qualify performance.
+`GLOB2_VULKAN_VERIFY_TRANSFERS=1` verifies uploads through GPU copy/readback;
+unset or `0` disables the additional transfers. Use it only in diagnostic runs.
+
+Analyze a saved proof independently, including untouched 32-bit corruption:
+
+```sh
+python3 tools/gradient_proof.py artifacts/gradient-proof-*.bin \
+  --output artifacts/gradient-proof-analysis.json
+python3 tools/test_gradient_proof.py
+```
+
+The analysis reports cells above and below the independent shortest-path result
+and rejects malformed payloads. It consumes the captured seeds and costs rather
+than reconstructing inputs from the current live world.
+The same tool reads `artifacts/gradient-transfer-*.bin`, reporting expected/actual
+word differences separately from field correctness. Transfer evidence retains the
+original seeds, buffer slot, dimensions, cap and device/shader/generation sidecar.
+The upload-retirement regression varies seed and cost patterns at 128², 256² and
+512² with a zero propagation cap, isolating input preservation from relaxation.
+
 Compare per-tick checksums, saves and replays across backends, worker counts and
 platforms. Exercise initialization, memory, dispatch, readback, cancellation,
 device loss, live changes and shutdown. Headless tests do not establish GUI
