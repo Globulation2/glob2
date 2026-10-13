@@ -114,7 +114,7 @@ TEST_CASE("job quotas skip supplied materials and distance reuse keeps exact ran
     }
     for(auto pools:{HiringPlanner::Pools::All,HiringPlanner::Pools::Combined,HiringPlanner::Pools::Split})for(int extras:{0,2,4}) {
         const auto exact=cache.rank(inputs,0,128,pools,{.extras=extras,.pruneFetch=false});
-        const auto pruned=cache.rank(inputs,0,128,pools,{.extras=extras});
+        const auto pruned=cache.rank(inputs,0,128,pools,{.extras=extras,.pruneFetch=true});
         for(unsigned j=0;j<exact.buildings[0].jobs.size();++j) {
             const auto& a=exact.buildings[0].jobs[j];const auto& b=pruned.buildings[0].jobs[j];
             CHECK(same(a.combined,b.combined));CHECK(same(a.available,b.available));CHECK(same(a.busy,b.busy));
@@ -147,6 +147,17 @@ TEST_CASE("diverse material offers cover peers without reserving live workers")
         for(unsigned i=0;i<2;++i)CHECK(primary.insert({list.combined[i].unit.gid,list.combined[i].unit.generation}).second);
     }
     CHECK(primary.size()==4);
+    // A narrow ceiling cannot hold the private team ranking buffer. Falling
+    // back must retain the same independent vacancy-sized prefixes.
+    const auto fallback=cache.rank(inputs,0,4,HiringPlanner::Pools::Split,{.extras=2,.availableOnly=true,.coordinate=true});
+    const auto independent=cache.rank(inputs,0,4,HiringPlanner::Pools::Split,{.extras=2,.availableOnly=true});
+    CHECK(fallback.metrics.coordinationSkipped==1);
+    for(unsigned bi=0;bi<fallback.buildings.size();++bi)for(unsigned ji=0;ji<fallback.buildings[bi].jobs.size();++ji) {
+        const auto& actual=fallback.buildings[bi].jobs[ji].combined;
+        const auto& expected=independent.buildings[bi].jobs[ji].combined;
+        REQUIRE(actual.size()==expected.size());
+        for(unsigned n=0;n<actual.size();++n)CHECK(actual[n].unit==expected[n].unit);
+    }
     CHECK_THROWS_AS(cache.rank(inputs,0,128,HiringPlanner::Pools::Split,{.extras=2,.coordinate=true}),std::invalid_argument);
 }
 TEST_CASE("shared field survives replacement and proposals preserve owner demand")

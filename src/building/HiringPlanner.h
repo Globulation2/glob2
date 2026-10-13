@@ -71,7 +71,7 @@ struct Inputs
     std::vector<std::pair<UnitRef, int>> attack;
 };
 Inputs capture(const Game&, SimulationSnapshot::Handle);
-struct Options { int extras=-1; bool availableOnly=false, reuseDistances=true, pruneFetch=true, coordinate=false; };
+struct Options { int extras=-1; bool availableOnly=false, reuseDistances=true, pruneFetch=false, coordinate=false; };
 class Cache
 {
     struct Impl;

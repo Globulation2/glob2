@@ -117,8 +117,10 @@ and cargo indexes are built lazily once per team refresh. Worker-to-building
 distances are reused within each building/route refresh, including unreachable
 results; per-field lock scopes remain one query. Flying building-distance queries
 share one incremental snapshot-backed air field within a building refresh.
-For ground fetch jobs with an existing resource plane, a bounded heap uses the
-exact lower bound `2 * resourceDistance` on the trip score. A building-distance
+An optional pure-planner measurement control for ground fetch jobs with an existing
+resource plane uses a bounded heap and the
+exact lower bound `2 * resourceDistance` on the trip score. It is disabled by
+default because maintaining the heaps can cost more than the queries avoided. A building-distance
 query is skipped only when that lower bound cannot enter any requested pool,
 including level and identity ties. This preserves the same canonical shortlist
 as exhaustive evaluation; it is not approximate distance ranking.
@@ -137,6 +139,12 @@ Workers are not reserved or assigned in the live world. A wider private ranking
 buffer supports this projection; only vacancy-sized lists are published. Other
 job shapes fall back to independent lists and increment `coordinationSkipped`.
 This is a policy experiment, not proof of equivalent hires or live delay.
+The `hiring-study --prepare opportunities OUTPUT_DIR` harness compares warmed,
+static real-engine opportunities with rotated repeated planner controls and a
+shared-executor control. Direct fill timings include subscriptions and immediate
+swaps; planner timings exclude commitment and snapshot capture. Its separate
+K4/R4 waiting model freezes positions, stock and medical availability while
+hypothetical hires remain busy. It is not a live gameplay delay measurement.
 These options require `--hiring-schedule`. Neither changes normal hiring.
 Candidate selection uses bounded partitioning followed by sorting retained prefixes;
 the resulting canonical lists equal full-sort prefixes. Scheduled runs build only
