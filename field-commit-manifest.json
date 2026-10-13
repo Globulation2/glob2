@@ -1,0 +1,7 @@
+{
+  "archive": "field-commit-experiment.tar.gz",
+  "sha256": "7041c963296feccfe22b1f563e82d36dceba6a5d6267f16cb1243e95df1b0228",
+  "source": "c17ab63138e5244c2cae6586b6cd98ec030b27ce",
+  "base": "348f087b31ad20df0b4c5d5ef7ae40a1b46d8986",
+  "decision": "keep draft; not CPU-qualified, 256 late fixture has repeatable CPU/runtime regression"
+}
