@@ -4,6 +4,8 @@
 #include "Engine.h"
 #include "Player.h"
 #include "AI.h"
+#include "AIImplementation.h"
+#include "ai/engine/AIDecision.h"
 #include "Order.h"
 #include "Building.h"
 #include "TeamStatsPipeline.h"
@@ -27,6 +29,20 @@ SimulationSnapshot::Handle input(glob2test::HeadlessGame &w)
 	w.game.snapshots().invalidateBoundary();
 	return w.game.captureReadBoundary();
 }
+class StatisticsBoundaryObserver final : public AIImplementation
+{
+  public:
+	std::shared_ptr<const AIEngine::AIWorldView> observation;
+	bool load(GAGCore::InputStream *, Player *, Sint32) override { return true; }
+	void save(GAGCore::OutputStream *) override {}
+	bool supportsObservation() const override { return true; }
+	std::shared_ptr<Order> getOrder() override { throw std::logic_error("live statistics observation"); }
+	std::shared_ptr<Order> getOrder(const AIEngine::DecisionContext &context) override
+	{
+		observation = context.observation;
+		return std::make_shared<NullOrder>();
+	}
+};
 } // namespace
 TEST_SUITE("TeamStatsPipeline")
 {
@@ -289,6 +305,71 @@ TEST_SUITE("TeamStatsPipeline")
 				CHECK(pipeline.metrics.submitted == tick + 1);
 				CHECK(pipeline.metrics.published == (tick >= delay ? tick - delay + 1 : 0));
 				CHECK(pipeline.metrics.peakPending <= delay + 1);
+			}
+		}
+	}
+	TEST_CASE("delayed statistics AI and presentation share one capture per boundary")
+	{
+		glob2test::HeadlessGlobals globals;
+		for (unsigned participants : {1u, 3u})
+		{
+			CAPTURE(participants);
+			glob2test::HeadlessGame w({.teams = 2, .loadDefaultRace = true, .header = true});
+			w.addUnit(WORKER, 10, 10);
+			w.addUnit(WORKER, 20, 20, 1);
+			REQUIRE(w.game.gameHeader.getTeamStatsDelay() == 8);
+			w.game.gameHeader.setAIOrderDelay(0);
+			w.game.map.configureCompute(participants);
+			std::array<StatisticsBoundaryObserver *, 2> observers;
+			constexpr std::array<unsigned, 2> players{0, 1};
+			for (auto player : players)
+			{
+				w.game.players[player]->makeItAI(AI::NUMBI);
+				auto &implementation = w.game.players[player]->ai->aiImplementation;
+				delete implementation;
+				implementation = observers[player] = new StatisticsBoundaryObserver;
+			}
+			for (unsigned tick = 0; tick < 40; ++tick)
+			{
+				CAPTURE(tick);
+				w.game.stepCounter = tick;
+				const auto captures = w.game.snapshots().metrics.captures;
+				const auto world = w.game.prepareReadBoundary(false, {.presentation = true});
+				REQUIRE(w.game.snapshots().metrics.captures == captures + 1);
+				REQUIRE(w.game.prepareAIOrders(players, false, {}, &world).size() == players.size());
+				w.game.drainAI();
+				REQUIRE(observers[0]->observation);
+				CHECK(observers[1]->observation == observers[0]->observation);
+				const auto &observed = observers[0]->observation->components();
+				CHECK(observed.entities == world.entities);
+				CHECK(observed.teams == world.teams);
+				CHECK(observed.statisticsInputs == world.statisticsInputs);
+				const auto display = world.presentationView();
+				CHECK(display.entities == observed.entities);
+				CHECK(display.teams == observed.teams);
+				CHECK_FALSE(display.statisticsInputs);
+				const auto statistics = world.statisticsView();
+				CHECK(statistics.entities == observed.entities);
+				CHECK(statistics.statisticsInputs == observed.statisticsInputs);
+				CHECK_FALSE(statistics.session);
+				CHECK_FALSE(statistics.statistics);
+				CHECK_FALSE(statistics.resourceFields);
+				if (tick)
+					CHECK_FALSE(statistics.terrain);
+				const auto repeated = w.game.prepareReadBoundary(false, {.presentation = true});
+				CHECK(repeated.entities == world.entities);
+				CHECK(repeated.teams == world.teams);
+				CHECK(w.game.snapshots().metrics.captures == captures + 1);
+				if (tick >= 8)
+				{
+					CHECK(w.team->stats.sourceTick == tick - 8);
+					CHECK(w.team->stats.publishedTick == tick);
+				}
+				if (tick == 39)
+				{
+					CHECK(world.teams->values[0].statistics.totalUnit == 1);
+					CHECK(display.statistics->teams[0]->getLatestStat()->totalUnit == 1);
+				}
 			}
 		}
 	}
