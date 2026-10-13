@@ -1,0 +1,24 @@
+{
+  "previous_evidence": "070e038fb5255cce7c348bcf5a25ce202fce84c7",
+  "archives": [
+    {
+      "path": "upload-experiment.tar.gz",
+      "sha256": "ff2d64a5bae3f275a751795cd0b794bdf8355ea40036b07eab6cc7597108c3b8",
+      "bytes": 6463781,
+      "entries": 1251
+    },
+    {
+      "path": "preparation-experiments.tar.gz",
+      "sha256": "61e3e0334366605e9cf959bef23ab707e7de1d1435f97f6c0f71e1a21fd8ae2d",
+      "bytes": 728850,
+      "entries": 2058
+    }
+  ],
+  "upload_source": "7a96ad2ee79ab025cc7995696c76cecb5f8f1ac3",
+  "production_base": "348f087b31ad20df0b4c5d5ef7ae40a1b46d8986",
+  "decisions": {
+    "upload": "reject; repeatable fixture CPU/runtime regressions",
+    "lookup": "reject; CPU regression",
+    "farming_specialization": "inconclusive; not enabled"
+  }
+}
