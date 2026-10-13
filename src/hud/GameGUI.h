@@ -284,7 +284,7 @@ public:
 	SceneRequest sceneRequest(bool includeTiming = true);
     void stampPresentationRequest(SceneRequest& request) const { request.tickTime=lastTickTime;request.tickInterval=tickInterval; }
 	/// Standalone owner-side observation through the shared read boundary.
-	void prepareLocalPresentation(PresentationFrame& scene) { const auto request=sceneRequest(); sceneExtractor.prepare(game.captureReadBoundary({},true,SceneExtractor::requirements(request)),request,scene); }
+	void prepareLocalPresentation(PresentationFrame& scene) { const auto request=sceneRequest(); sceneExtractor.prepare(game.captureReadBoundary(SceneExtractor::captureOptions(request)),request,scene); }
     // Explicit observation for standalone clients and owner-side tools.
     void prepareLocalPresentation()
     {

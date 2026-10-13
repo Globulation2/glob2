@@ -316,6 +316,8 @@ GAGCore::CooperativeTask Game::loadTask(GAGCore::InputStream *stream)
         if (!turretTargetingPipeline->load(*this,stream)) co_return false;
     }
 
+	if(versionMinor >= FILE_FORMAT_VERSION_TEAM_STATS_PIPELINE && mapHeader.getIsSavedGame()) loadTeamStats(stream,versionMinor);
+
 	// Legacy saves reconstruct service lists by running building updates. That
 	// changes tie-breaking order and can even advance construction. New saved
 	// games carry the live lists and bookkeeping instead.
@@ -666,6 +668,7 @@ void Game::save(GAGCore::OutputStream *stream, bool fileIsAMap, const std::strin
 {
 	PERF_SCOPE_TIME(Serialize);
 	assert(stream);
+	drainTeamStats();
 	drainAI(); // Freeze submissions and finish private state, without delivering future orders.
 	for (int t = 0; t < mapHeader.getNumberOfTeams(); ++t)
 		if (teams[t])
@@ -785,7 +788,7 @@ void Game::save(GAGCore::OutputStream *stream, bool fileIsAMap, const std::strin
 	}
 	stream->writeLeaveSection();
 	stream->write(FILE_SIG_GAME_PLAYER, FILE_SIG_LEN, "signatureAfterPlayers");
-	if (!fileIsAMap) { saveAI(stream); turretTargeting()->save(*this,stream); }
+	if (!fileIsAMap) {saveAI(stream);turretTargeting()->save(*this,stream);saveTeamStats(stream);}
 
 	// Save the old map script state
 	sgslScript.save(stream, this);
@@ -795,7 +798,7 @@ void Game::save(GAGCore::OutputStream *stream, bool fileIsAMap, const std::strin
 
 	///Save game objectives
 	objectives.encodeData(stream);
-	stream->writeText(missionBriefing, "missionBriefing");
+	stream->writeText(missionBriefing, "briefing");
 	gameHints.encodeData(stream);
 
 	saveBuildProjects(stream);
@@ -950,6 +953,9 @@ Uint32 Game::checkSum(std::vector<Uint32> *checkSumsVector, std::vector<Uint32> 
     {
         const auto catalogCs=unitCatalog().checksum();
         cs=rotr1(cs)^catalogCs;
+        const auto statsCs=teamStatsChecksum(heavy && includePending);
+        cs=rotr1(cs)^statsCs;
+        if(checkSumsVector)checkSumsVector->push_back(statsCs);
         if(checkSumsVector)checkSumsVector->push_back(catalogCs);
     }
 	return cs;

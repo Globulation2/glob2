@@ -139,8 +139,8 @@ The header-prefix parser bounds every count and byte range through the player
 count. Format 153 adds unit definitions later in GameHeader; it adds no
 MapHeader metadata or player-count offset.
 
-Normal targeting uses the persisted L=3/R=2/K=1 pipeline from format 155,
-SIM_REVISION 49. Current runners select `profile1-initial155.game.gz` and
-`realistic-profile1-initial155.game.gz`, with the corresponding
-`*-256-cached155.checksums.gz` traces. The new initial states preserve the
+Normal targeting uses the persisted L=3/R=2/K=1 pipeline from format 159,
+SIM_REVISION 49. Current runners select `profile1-initial159.game.gz` and
+`realistic-profile1-initial159.game.gz`, with the corresponding
+`*-256-cached159.checksums.gz` traces. The new initial states preserve the
 released setup, scripts and catalogs; old saved matches are deliberately rejected.

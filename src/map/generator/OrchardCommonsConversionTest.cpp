@@ -313,7 +313,7 @@ void run(const Scenario &scenario, const std::filesystem::path &output, unsigned
 	require(restored.game.stepCounter == firstStep + 64, "conversion fixture advances game ticks");
 	require(worker->owner->teamNumber == (scenario.converts ? 1 : 0),
 			"normal game ticks realize expected ownership");
-	require(restored.game.teams[1]->stats.measurements.conversionsIn[WORKER] ==
+	require(restored.game.teams[1]->stats.measurements().conversionsIn[WORKER] ==
 				(scenario.converts ? 1u : 0u),
 			"conversion telemetry records expected result");
 	std::printf("%s seed=%u size=256x256 teams=4 clearing=%d,%d fruit_distance_squared=%d owner=%d "

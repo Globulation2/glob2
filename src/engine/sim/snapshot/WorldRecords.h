@@ -36,6 +36,7 @@ struct BuildingView : BuildingStateRecord
 
 struct UnitView : UnitState
 {
+    int realAttackStrength = 0;
 	UnitRef identity;
 	int team = 0;
 	BuildingRef attached, target;

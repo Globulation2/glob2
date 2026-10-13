@@ -87,20 +87,20 @@ TEST_SUITE("SceneExtract")
 		world.game.map.setPoint(8, 3, 4);
         world.game.map.setAreaName(8, "Original area");
 		PresentationFrame scene; SceneRequest request;
-		SceneExtractor().prepare((world.game).captureReadBoundary({},true,SceneExtractor::requirements(request)), request, scene);
+		SceneExtractor().prepare((world.game).captureReadBoundary(SceneExtractor::captureOptions(request)), request, scene);
 		CHECK_FALSE(scene.map.isPointSet(8,3,4));
 		request.includeScriptAreas=true;
-		SceneExtractor().prepare((world.game).captureReadBoundary({},true,SceneExtractor::requirements(request)), request, scene);
+		SceneExtractor().prepare((world.game).captureReadBoundary(SceneExtractor::captureOptions(request)), request, scene);
 		world.game.map.unsetPoint(8,3,4);
         world.game.map.setAreaName(8, "Renamed area");
         CHECK(scene.map.getAreaName(8) == "Original area");
         PresentationFrame renamed;
-        SceneExtractor().prepare(world.game.captureReadBoundary({},true,SceneExtractor::requirements(request)), request, renamed);
+        SceneExtractor().prepare(world.game.captureReadBoundary(SceneExtractor::captureOptions(request)), request, renamed);
         CHECK(renamed.map.getAreaName(8) == "Renamed area");
 		CHECK(scene.map.isPointSet(8,3,4));
 		CHECK_FALSE(scene.map.isPointSet(7,3,4));
 		request.includeScriptAreas=false;
-		SceneExtractor().prepare((world.game).captureReadBoundary({},true,SceneExtractor::requirements(request)), request, scene);
+		SceneExtractor().prepare((world.game).captureReadBoundary(SceneExtractor::captureOptions(request)), request, scene);
 		CHECK_FALSE(scene.map.isPointSet(8,3,4));
 	}
 
@@ -113,7 +113,7 @@ TEST_SUITE("SceneExtract")
         SceneRequest request;request.localTeam=0;
         SceneExtractor preparer;
         PresentationFrame frame;
-        const auto captured=world.game.captureReadBoundary({},true,SceneExtractor::requirements(request));
+        const auto captured=world.game.captureReadBoundary(SceneExtractor::captureOptions(request));
         preparer.prepare(captured,request,frame);
         REQUIRE(frame.map.isForbiddenInDisplayedView(3,4));
         frame.releaseWorld();
@@ -122,7 +122,7 @@ TEST_SUITE("SceneExtract")
         preparer.prepare(captured,request,frame);
         CHECK(frame.map.isForbiddenInDisplayedView(3,4));
         world.game.map.setAreaMask(index,&Tile::forbidden,0);
-        preparer.prepare(world.game.captureReadBoundary({},true,SceneExtractor::requirements(request)),request,frame);
+        preparer.prepare(world.game.captureReadBoundary(SceneExtractor::captureOptions(request)),request,frame);
         CHECK_FALSE(frame.map.isForbiddenInDisplayedView(3,4));
     }
 
@@ -133,13 +133,13 @@ TEST_SUITE("SceneExtract")
         SceneExtractor preparer;
         SceneRequest request; request.view.overlay=OverlayArea::Fertility;
         PresentationFrame frame;
-        const auto required=SceneExtractor::requirements(request);
-        preparer.prepare(world.game.captureReadBoundary({},true,required),request,frame);
+        const auto required=SceneExtractor::captureOptions(request);
+        preparer.prepare(world.game.captureReadBoundary(required),request,frame);
         const auto old=frame.overlay;
         const auto value=old->getValue(3,4);
         const Uint16 fertility=value==123 ? 124 : 123;
         world.game.map.setFertility(3,4,fertility);
-        preparer.prepare(world.game.captureReadBoundary({},true,required),request,frame);
+        preparer.prepare(world.game.captureReadBoundary(required),request,frame);
         REQUIRE(frame.overlay);
         CHECK(frame.overlay!=old);
         CHECK(frame.overlay->getValue(3,4)==fertility);
@@ -165,7 +165,7 @@ TEST_SUITE("SceneExtract")
 		request.selectedBuilding = Game::refOf(inn);
 		request.selectedUnit = Game::refOf(worker);
 		PresentationFrame scene;
-		SceneExtractor().prepare((world.game).captureReadBoundary({},true,SceneExtractor::requirements(request)), request, scene);
+		SceneExtractor().prepare((world.game).captureReadBoundary(SceneExtractor::captureOptions(request)), request, scene);
 
 		const SnapshotUnit *u = scene.entities.unit(worker->gid);
 		REQUIRE(u);
@@ -196,7 +196,7 @@ TEST_SUITE("SceneExtract")
 		request.view.overlay = OverlayArea::Damage;
 		PresentationFrame scene;
 		world.game.stepCounter = 26; // window 1 starts at tick 26
-		extractor.prepare((world.game).captureReadBoundary({},true,SceneExtractor::requirements(request)), request, scene);
+		extractor.prepare((world.game).captureReadBoundary(SceneExtractor::captureOptions(request)), request, scene);
 		REQUIRE(scene.overlay);
 		OverlayArea direct;
 		direct.compute(scene.world, OverlayArea::Damage, 0, scene.world.session->fertilityMaximum);
@@ -208,22 +208,22 @@ TEST_SUITE("SceneExtract")
 		const auto first = scene.overlay;
 		wounded->medical = Unit::MED_FREE;
 		world.game.stepCounter = 50;
-		extractor.prepare((world.game).captureReadBoundary({},true,SceneExtractor::requirements(request)), request, scene);
+		extractor.prepare((world.game).captureReadBoundary(SceneExtractor::captureOptions(request)), request, scene);
 		CHECK(scene.overlay == first);
 
 		// Next window (ticks 51..75): recomputed.
 		world.game.stepCounter = 51;
-		extractor.prepare((world.game).captureReadBoundary({},true,SceneExtractor::requirements(request)), request, scene);
+		extractor.prepare((world.game).captureReadBoundary(SceneExtractor::captureOptions(request)), request, scene);
 		CHECK(scene.overlay != first);
 		CHECK(scene.overlay->getValue(10, 10) == 0);
 
 		// A type change recomputes at once; None drops the overlay.
 		const auto damage = scene.overlay;
 		request.view.overlay = OverlayArea::Defence;
-		extractor.prepare((world.game).captureReadBoundary({},true,SceneExtractor::requirements(request)), request, scene);
+		extractor.prepare((world.game).captureReadBoundary(SceneExtractor::captureOptions(request)), request, scene);
 		CHECK((scene.overlay != damage && scene.overlay->getOverlayType() == OverlayArea::Defence));
 		request.view.overlay = OverlayArea::None;
-		extractor.prepare((world.game).captureReadBoundary({},true,SceneExtractor::requirements(request)), request, scene);
+		extractor.prepare((world.game).captureReadBoundary(SceneExtractor::captureOptions(request)), request, scene);
 		CHECK(!scene.overlay);
 	}
     TEST_CASE("published scene retains old entity fields while subsequent scenes reflect changes")
@@ -233,14 +233,14 @@ TEST_SUITE("SceneExtract")
         auto* unit=world.addUnit(WORKER,10,10);
         SceneExtractor extractor; SceneRequest request; PresentationFrame before,after;
         const auto gid=unit->gid; const auto hp=unit->hp;
-        extractor.prepare((world.game).captureReadBoundary({},true,SceneExtractor::requirements(request)), request, before);
+        extractor.prepare((world.game).captureReadBoundary(SceneExtractor::captureOptions(request)), request, before);
         unit->hp=1;
         world.game.snapshots().invalidateBoundary(); // Explicit same-tick owner edit.
-        extractor.prepare((world.game).captureReadBoundary({},true,SceneExtractor::requirements(request)), request, after);
+        extractor.prepare((world.game).captureReadBoundary(SceneExtractor::captureOptions(request)), request, after);
         REQUIRE(before.entities.unit(gid)); REQUIRE(after.entities.unit(gid));
         CHECK(before.entities.unit(gid)->hp==hp); CHECK(after.entities.unit(gid)->hp==1);
         REQUIRE(world.game.removeUnitAndBuildingAndFlags(10,10,Game::DEL_UNIT));
-        extractor.prepare((world.game).captureReadBoundary({},true,SceneExtractor::requirements(request)), request, after);
+        extractor.prepare((world.game).captureReadBoundary(SceneExtractor::captureOptions(request)), request, after);
         CHECK(after.entities.unit(gid)==nullptr);
         CHECK(before.entities.unit(gid)->hp==hp);
     }
@@ -252,12 +252,12 @@ TEST_SUITE("SceneExtract")
         auto* unit=world.addUnit(WORKER,10,10);
         SceneExtractor extractor; SceneRequest request; PresentationFrame scene;
         request.selectedUnit=Game::refOf(unit); const auto gid=unit->gid;
-        extractor.prepare((world.game).captureReadBoundary({},true,SceneExtractor::requirements(request)), request, scene);
+        extractor.prepare((world.game).captureReadBoundary(SceneExtractor::captureOptions(request)), request, scene);
         REQUIRE(scene.entities.unit(gid)); CHECK(scene.entities.isSelected(*scene.entities.unit(gid)));
         REQUIRE(world.game.removeUnitAndBuildingAndFlags(10,10,Game::DEL_UNIT));
         auto* replacement=world.addUnit(WORKER,10,10);
         REQUIRE(replacement->gid==gid);
-        extractor.prepare((world.game).captureReadBoundary({},true,SceneExtractor::requirements(request)), request, scene);
+        extractor.prepare((world.game).captureReadBoundary(SceneExtractor::captureOptions(request)), request, scene);
         REQUIRE(scene.entities.unit(gid)); CHECK_FALSE(scene.entities.isSelected(*scene.entities.unit(gid)));
     }
 
@@ -276,7 +276,7 @@ TEST_SUITE("SceneExtract")
 		request.tickTime = 1000;
 		request.tickInterval = 40;
 		PresentationFrame scene;
-		SceneExtractor().prepare((world.game).captureReadBoundary({},true,SceneExtractor::requirements(request)), request, scene);
+		SceneExtractor().prepare((world.game).captureReadBoundary(SceneExtractor::captureOptions(request)), request, scene);
 		CHECK((scene.tickTime == 1000 && scene.tickInterval == 40));
 		const SnapshotUnit *u = scene.entities.unit(walker->gid);
 		REQUIRE(u);
@@ -321,7 +321,7 @@ TEST_SUITE("SceneExtract")
         world.addBuilding("explorationflag",4+first->type->width,4);
         world.addBuilding("explorationflag",4,4+first->type->height,0,1);
         SceneRequest request;
-        SceneExtractor().prepare((world.game).captureReadBoundary({},true,SceneExtractor::requirements(request)), request, scene);
+        SceneExtractor().prepare((world.game).captureReadBoundary(SceneExtractor::captureOptions(request)), request, scene);
         extracted=scene.entities.building(first->gid);
         REQUIRE(extracted);
         CHECK(scene.entities.connections(*extracted)==1);
@@ -446,7 +446,7 @@ TEST_SUITE("SceneExtract")
             auto* teamBoundary=add("visual.refuge",27,5);add("visual.infirmary",28,5,1);
             auto* groupBoundary=add("visual.refuge",27,11);add("visual.other-group",28,11);
             auto* damage=add("visual.damage",13,28);
-            PresentationFrame scene;SceneRequest request;SceneExtractor().prepare((world.game).captureReadBoundary({},true,SceneExtractor::requirements(request)), request, scene);
+            PresentationFrame scene;SceneRequest request;SceneExtractor().prepare((world.game).captureReadBoundary(SceneExtractor::captureOptions(request)), request, scene);
             CHECK(scene.entities.connections(*scene.entities.building(teamBoundary->gid))==0);
             CHECK(scene.entities.connections(*scene.entities.building(groupBoundary->gid))==0);
             for(const auto& [gid,mask]:centers)
@@ -481,7 +481,7 @@ TEST_SUITE("SceneExtract")
             };
             const auto actual=render(scene,"connected");
             SceneExtractor workerExtractor;
-            auto inputs = SceneExtractor::inputs((world.game).captureReadBoundary({},true,SceneExtractor::requirements(request)), request);
+            auto inputs = SceneExtractor::inputs((world.game).captureReadBoundary(SceneExtractor::captureOptions(request)), request);
             PresentationFrame prepared;
             workerExtractor.prepare(*inputs, prepared);
             CHECK_MESSAGE(actual == render(prepared, "snapshot"), "snapshot preparation must preserve every rendered pixel");
@@ -521,7 +521,7 @@ TEST_CASE("snapshot preparation retains definitions after the source game is des
         SceneRequest request;
         request.selectedUnit = Game::refOf(unit);
         request.selectedBuilding = Game::refOf(building);
-        input = SceneExtractor::inputs((world.game).captureReadBoundary({},true,SceneExtractor::requirements(request)), request);
+        input = SceneExtractor::inputs((world.game).captureReadBoundary(SceneExtractor::captureOptions(request)), request);
     }
     PresentationFrame scene;
     extractor.prepare(*input, scene);
@@ -556,8 +556,8 @@ TEST_CASE("snapshot preparation matches retained queries and survives later live
         request.view.overlay = overlay;
         SceneExtractor legacyExtractor, snapshotExtractor;
         PresentationFrame legacy, actual;
-        legacyExtractor.prepare((world.game).captureReadBoundary({},true,SceneExtractor::requirements(request)), request, legacy);
-        auto input = SceneExtractor::inputs((world.game).captureReadBoundary({},true,SceneExtractor::requirements(request)), request);
+        legacyExtractor.prepare((world.game).captureReadBoundary(SceneExtractor::captureOptions(request)), request, legacy);
+        auto input = SceneExtractor::inputs((world.game).captureReadBoundary(SceneExtractor::captureOptions(request)), request);
         // No later read may reach the live unit or any map layer.
         const auto hp = unit->hp;
         unit->hp = 123;
@@ -619,7 +619,7 @@ TEST_CASE("Serial hosts publish immutable Scenes through workers or explicit fal
         REQUIRE(presentation.readyToCapture());
         const auto gid=unit->gid;
         const auto hp=unit->hp;
-        presentation.submit(SceneExtractor::inputs((world.game).captureReadBoundary({},true,SceneExtractor::requirements({})), {}));
+        presentation.submit(SceneExtractor::inputs((world.game).captureReadBoundary(SceneExtractor::captureOptions({})), {}));
         unit->hp=hp-1;
         const PresentationFrame* scene=nullptr;
         const auto deadline=std::chrono::steady_clock::now()+std::chrono::seconds(5);
@@ -631,7 +631,7 @@ TEST_CASE("Serial hosts publish immutable Scenes through workers or explicit fal
         // Publishing can precede the task's final return; allow that narrow tail.
         while (!presentation.readyToCapture() && std::chrono::steady_clock::now()<deadline) std::this_thread::yield();
         REQUIRE(presentation.readyToCapture());
-        presentation.submit(SceneExtractor::inputs((world.game).captureReadBoundary({},true,SceneExtractor::requirements({})), {}));
+        presentation.submit(SceneExtractor::inputs((world.game).captureReadBoundary(SceneExtractor::captureOptions({})), {}));
         // Destruction cancels without waiting; an active chunk owns its storage.
     }
 }
@@ -644,7 +644,7 @@ TEST_CASE("client paint survives old Scenes and retires only with its execution 
     glob2test::HeadlessGame world;
     SceneExtractor extractor;
     PresentationFrame oldScene;
-    extractor.prepare(*SceneExtractor::inputs((world.game).captureReadBoundary({},true,SceneExtractor::requirements({})), {}),oldScene);
+    extractor.prepare(*SceneExtractor::inputs((world.game).captureReadBoundary(SceneExtractor::captureOptions({})), {}),oldScene);
     ClientAreaPreview preview;
     preview.refresh(oldScene,0);
     const auto index=oldScene.map.coordToIndex(3,4);
@@ -661,7 +661,7 @@ TEST_CASE("client paint survives old Scenes and retires only with its execution 
     PresentationFrame next;
     auto tile=world.game.map.getTile(3,4); tile.forbidden|=1;
     world.game.map.replaceTile(3,4,tile);
-    extractor.prepare(*SceneExtractor::inputs((world.game).captureReadBoundary({},true,SceneExtractor::requirements({})), {}),next);
+    extractor.prepare(*SceneExtractor::inputs((world.game).captureReadBoundary(SceneExtractor::captureOptions({})), {}),next);
     next.executedOrderRevision=1;
     preview.refresh(next,0);
     CHECK_FALSE(preview.shown[0].get(index));
@@ -681,9 +681,9 @@ TEST_CASE("order execution revisions are captured even without advancing the tic
     world.game.clientEvents=&events;
     SceneExtractor extractor;
     PresentationFrame before,after;
-    extractor.prepare(*SceneExtractor::inputs((world.game).captureReadBoundary({},true,SceneExtractor::requirements({})), {}),before);
+    extractor.prepare(*SceneExtractor::inputs((world.game).captureReadBoundary(SceneExtractor::captureOptions({})), {}),before);
     world.game.publishClientEvent(ClientEvent::OrderExecuted{std::make_shared<NullOrder>()});
-    extractor.prepare(*SceneExtractor::inputs((world.game).captureReadBoundary({},true,SceneExtractor::requirements({})), {}),after);
+    extractor.prepare(*SceneExtractor::inputs((world.game).captureReadBoundary(SceneExtractor::captureOptions({})), {}),after);
     CHECK(before.tick==after.tick);
     CHECK(after.executedOrderRevision==before.executedOrderRevision+1);
     events.drain([&](auto event) {
@@ -702,7 +702,7 @@ TEST_CASE("farm input eligibility is frozen with presentation inputs" * doctest:
     options.experiments.set(ExperimentId::FarmAreas);
     glob2test::HeadlessGame world(options);
     SceneExtractor extractor;
-    auto input=SceneExtractor::inputs((world.game).captureReadBoundary({},true,SceneExtractor::requirements({})), {});
+    auto input=SceneExtractor::inputs((world.game).captureReadBoundary(SceneExtractor::captureOptions({})), {});
     PresentationFrame scene;
     extractor.prepare(*input,scene);
     for(int y=0;y<world.game.map.getH();++y)
@@ -719,14 +719,14 @@ TEST_CASE("published catalog definitions remain immutable across owner reconfigu
     glob2test::HeadlessGame fixture;
     auto& game=fixture.game;
     SceneRequest request;
-    const auto required=SceneExtractor::requirements(request);
-    const auto before=game.captureReadBoundary({},true,required);
+    const auto required=SceneExtractor::captureOptions(request);
+    const auto before=game.captureReadBoundary(required);
     const int type=game.buildingsTypes.getFinishedTypeNum("inn");
     REQUIRE(type>=0);
     const int hp=before.catalogs->typeDefinitions->at(type).hpMax;
     game.buildingsTypes.get(type)->hpMax=hp+17;
     game.configureBuildingCatalog();
-    const auto after=game.captureReadBoundary({},true,required);
+    const auto after=game.captureReadBoundary(required);
     CHECK(before.catalogs->typeDefinitions->at(type).hpMax==hp);
     CHECK(after.catalogs->typeDefinitions->at(type).hpMax==hp+17);
     CHECK(before.catalogs!=after.catalogs);
@@ -744,10 +744,10 @@ TEST_CASE("statistics history is optional immutable and reused until a new sampl
     auto& game = fixture.game;
     SceneRequest normal, chart;
     chart.includeHistory = true;
-    const auto ordinary = game.captureReadBoundary({}, true, SceneExtractor::requirements(normal));
+    const auto ordinary = game.captureReadBoundary(SceneExtractor::captureOptions(normal));
     CHECK_FALSE(ordinary.history);
     CHECK_FALSE(ordinary.telemetry);
-    const auto before = game.captureReadBoundary({}, true, SceneExtractor::requirements(chart));
+    const auto before = game.captureReadBoundary(SceneExtractor::captureOptions(chart));
     REQUIRE(before.history);
     REQUIRE_FALSE(before.history->teams.empty());
     const auto retained = before.history->teams[0];
@@ -755,14 +755,14 @@ TEST_CASE("statistics history is optional immutable and reused until a new sampl
     game.objectives.setGameObjectiveText(0, "original objective");
     game.gameHints.setHintVisible(0);
     game.snapshots().invalidateBoundary();
-    const auto unchanged = game.captureReadBoundary({}, true, SceneExtractor::requirements(chart));
+    const auto unchanged = game.captureReadBoundary(SceneExtractor::captureOptions(chart));
     CHECK(unchanged.history->teams[0] == retained);
     game.teams[0]->stats.initializeMeasurements(game.stepCounter);
     game.snapshots().invalidateBoundary();
-    const auto changed = game.captureReadBoundary({}, true, SceneExtractor::requirements(chart));
+    const auto changed = game.captureReadBoundary(SceneExtractor::captureOptions(chart));
     CHECK(changed.history->teams[0] != retained);
     CHECK(retained->measurementHistory.size() == samples);
-    CHECK_FALSE(changed.project(SceneExtractor::requirements(normal)).history);
+    CHECK_FALSE(changed.presentationView(SceneExtractor::captureOptions(normal)).history);
 }
 
 TEST_CASE("ordinary captures reuse unchanged HUD samples" * doctest::test_suite("SceneExtract"))
@@ -770,10 +770,10 @@ TEST_CASE("ordinary captures reuse unchanged HUD samples" * doctest::test_suite(
     glob2test::HeadlessGlobals globals;
     glob2test::HeadlessGame fixture;
     auto& game = fixture.game;
-    const auto required = SceneExtractor::requirements({});
-    const auto before = game.captureReadBoundary({}, true, required);
+    const auto required = SceneExtractor::captureOptions({});
+    const auto before = game.captureReadBoundary(required);
     game.snapshots().invalidateBoundary();
-    const auto after = game.captureReadBoundary({}, true, required);
+    const auto after = game.captureReadBoundary(required);
     REQUIRE(before.statistics);
     REQUIRE(after.statistics);
     REQUIRE_FALSE(before.statistics->teams.empty());
@@ -790,7 +790,7 @@ TEST_CASE("large defence overlay preparation yields and finishes its kernel" * d
     fixture.game.configureBuildingCatalog();
     SceneRequest request;
     request.view.overlay = OverlayArea::Defence;
-    const auto world = fixture.game.captureReadBoundary({}, true, SceneExtractor::requirements(request));
+    const auto world = fixture.game.captureReadBoundary(SceneExtractor::captureOptions(request));
     const auto input = SceneExtractor::inputs(world, request);
     SceneExtractor extractor;
     PresentationFrame frame;
@@ -820,7 +820,7 @@ TEST_CASE("empty worlds and a view whose team disappeared prepare without live f
     glob2test::HeadlessGlobals globals;
     glob2test::HeadlessGame fixture({.teams=0});
     SceneRequest request;
-    const auto world=fixture.game.captureReadBoundary({},true,SceneExtractor::requirements(request));
+    const auto world=fixture.game.captureReadBoundary(SceneExtractor::captureOptions(request));
     SceneExtractor extractor;
     PresentationFrame frame;
     extractor.prepare(world,request,frame);
@@ -840,12 +840,12 @@ TEST_CASE("session narrative payloads are immutable and reused until mutation" *
     game.missionBriefing = "original briefing";
     game.objectives.setGameObjectiveText(0, "original objective");
     game.gameHints.addNewHint("original hint", false, 1);
-    const auto required = SceneExtractor::requirements({});
-    const auto first = game.captureReadBoundary({}, true, required);
+    const auto required = SceneExtractor::captureOptions({});
+    const auto first = game.captureReadBoundary(required);
     game.objectives.setGameObjectiveText(0, "original objective");
     game.gameHints.setHintVisible(0);
     game.snapshots().invalidateBoundary();
-    const auto unchanged = game.captureReadBoundary({}, true, required);
+    const auto unchanged = game.captureReadBoundary(required);
     CHECK(first.session->objectives == unchanged.session->objectives);
     CHECK(first.session->hints == unchanged.session->hints);
     CHECK(first.session->missionBriefing == unchanged.session->missionBriefing);
@@ -854,7 +854,7 @@ TEST_CASE("session narrative payloads are immutable and reused until mutation" *
     game.gameHints.setHintHidden(0);
     game.missionBriefing = "edited briefing";
     game.snapshots().invalidateBoundary();
-    const auto changed = game.captureReadBoundary({}, true, required);
+    const auto changed = game.captureReadBoundary(required);
     CHECK(first.session->objectives->getGameObjectiveText(0) == "original objective");
     CHECK_FALSE(first.session->objectives->isObjectiveComplete(0));
     CHECK(first.session->hints->isHintVisible(0));

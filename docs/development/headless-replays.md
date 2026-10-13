@@ -40,9 +40,9 @@ recover their saved race tables through format-gated loading, preserving cached
 effective values;
 current saves validate redundant tables against the embedded catalog.
 
-Version155 adopts cached turret targeting (L3/R2/K1) and simulation revision49.
-The replay and saved-match floors are155: earlier recordings and saved matches
-are deliberately rejected. The map-format floor remains58 so existing maps can
+Version 159 adopts cached turret targeting (L3/R2/K1) and simulation revision 54.
+The replay and saved-match floors are 159: earlier recordings and saved matches
+are deliberately rejected. The map-format floor remains 58 so existing maps can
 start new matches. New saves retain published lists, pending completed outputs,
 admissions and remaining publication deadlines for deterministic continuation.
 
@@ -117,6 +117,12 @@ and runs its fallback on the simulation owner. Publication deadlines are identic
 simulation behavior and is rejected while a loaded queue is pending.
 
 ## CLI Flags
+
+`--rule teamStatsDelay=N` (0 through 8, default 8 for new games) controls
+statistics publication latency. All teams sample the shared between-tick world;
+workers calculate privately and the owner publishes exactly N ticks later.
+Older saves migrate to this boundary with N=0. This changes AI/script inputs and
+replay trajectories; pre-format-157 replays are not accepted.
 
 ### `game repeat <game-file> --ticks <steps> --runs <runs>`
 
@@ -474,7 +480,7 @@ Version 120 makes periodic resource, guard and clear fields publish eight ticks
 after their observation boundary. Current execution uses the shared compute pool. Saves retain
 completed pending fields and their remaining deadlines without publishing them early;
 older formats originally started with an empty queue. Current saved-match
-compatibility starts at155; existing map compatibility remains58. Version 123 narrows forbidden-zone invalidations to affected
+compatibility starts at 159; existing map compatibility remains 58. Version 123 narrows forbidden-zone invalidations to affected
 fields and gives escape fields an independent bounded refresh schedule. Replay
 versions before 123 used a different routing schedule. The replay floor introduced in format
 127 reflected the sixteen-team capacity changing Warrush's opening window from 24 to 32 ticks.

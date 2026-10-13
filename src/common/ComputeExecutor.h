@@ -3,6 +3,7 @@
 
 #include <algorithm>
 #include <array>
+#include <bit>
 #include <cassert>
 #include <atomic>
 #include <chrono>
@@ -147,6 +148,7 @@ private:
                              std::memory_order_release);
                 finished.store(true, std::memory_order_release);
                 done.notify_all();
+                owner->graphicsReady.notify_all();
                 owner->ready.notify_all();
             }
         }
@@ -285,6 +287,8 @@ public:
 	};
 	using CompletionTicket = std::shared_ptr<Completion>;
 	static constexpr unsigned NoLane = ~0u;
+	// AI occupies player lanes 0–15; all statistics batches share lane 16.
+	static constexpr unsigned StatisticsLaneBase = 16;
 	static constexpr unsigned Lanes = 32;
 	struct Group
 	{
@@ -307,10 +311,10 @@ public:
 	// A batch occupies a slot from submission until its join. Each deferred
 	// producer submits at most one batch per tick and joins it at its horizon,
 	// so it holds at most horizon + 1 slots: AI decisions (8), periodic
-	// gradients (16), building gradients (8), growth (16) and turret jobs (4), plus headroom for tests and
-	// teardown. The producers static_assert their horizons against these.
-	static constexpr std::size_t AIHorizon = 8, GradientHorizon = 16, BuildingHorizon = 8, GrowthHorizon = 16, TurretHorizon = 4;
-	static constexpr std::size_t Slots = (AIHorizon + 1) + (GradientHorizon + 1) + (BuildingHorizon + 1) + (GrowthHorizon + 1) + (TurretHorizon + 1) + 13;
+	// gradients (16), building gradients (8), growth (16) statistics (8) and turrets (4),
+	// plus headroom for tests and teardown. Producers assert their horizons.
+	static constexpr std::size_t AIHorizon = 8, GradientHorizon = 16, BuildingHorizon = 8, GrowthHorizon = 16, StatisticsHorizon = 8, TurretHorizon = 4;
+	static constexpr std::size_t Slots = (AIHorizon + 1) + (GradientHorizon + 1) + (BuildingHorizon + 1) + (GrowthHorizon + 1) + (StatisticsHorizon + 1) + (TurretHorizon + 1) + 13;
 private:
 	using Clock = std::chrono::steady_clock;
 	inline static thread_local ComputeExecutor *active = nullptr;
@@ -334,7 +338,9 @@ private:
 	std::shared_ptr<CompletionLifetime> completionLifetime = std::make_shared<CompletionLifetime>(this);
 	std::vector<std::thread> workers;
 	mutable std::mutex mutex;
-	std::condition_variable ready, runFinished, slotDone;
+	// Only workers wait on ready: a targeted deferred-work wakeup must not
+	// be consumed by an owner waiting for a presentation slot or trace drain.
+	std::condition_variable ready, graphicsReady, runFinished, slotDone;
 	bool stopping = false;
 	// run(): one blocking batch at a time. inFlight counts workers inside
 	// invoke() for the current generation; the batch state changes only when
@@ -345,6 +351,17 @@ private:
 	std::exception_ptr error;
 	// submit()/join(): live batches, each held from submission to its join.
 	std::array<Slot, Slots> slots;
+	// Under mutex. Pick visits only batches with unclaimed work, rather than
+	// branching over the entire horizon (including completed retained tickets).
+	std::array<std::uint64_t, (Slots + 63) / 64> unclaimedSlots{};
+	std::size_t unclaimedBatches = 0;
+	void markUnclaimed(std::size_t index, bool value)
+	{
+		const auto bit = std::uint64_t(1) << (index % 64);
+		if (value) unclaimedSlots[index / 64] |= bit;
+		else unclaimedSlots[index / 64] &= ~bit;
+		unclaimedBatches += value ? 1 : std::size_t(-1);
+	}
 	std::size_t live = 0;
 	std::uint64_t nextSerial = 1;
 	std::array<std::uint64_t, Lanes> laneIssued{}, laneCompleted{}, laneDue{};
@@ -537,6 +554,7 @@ private:
 			presentationRunning = false;
 		}
 		presentationDone.notify_all();
+		graphicsReady.notify_all();
 		ready.notify_all();
 	}
 
@@ -643,6 +661,7 @@ private:
         standaloneEvent<Mode>(ComputeTelemetry::EventKind::Complete, 3, serial, index, unsigned(worker));
         if constexpr (Mode == ComputeTelemetryMode::Trace) --diagnostics->traceGraphicsInFlight;
         if (final) standaloneEvent<Mode>(ComputeTelemetry::EventKind::Retire, 3, serial, work->count, unsigned(worker));
+		graphicsReady.notify_all();
 		ready.notify_all();
 	}
 
@@ -686,6 +705,7 @@ private:
 	static bool before(const Slot& a, const Slot& b) { return a.due != b.due ? a.due < b.due : a.serial < b.serial; }
 	std::size_t group(const Slot& slot, std::size_t index) const
 	{
+		if (slot.groups.size() == 1) return 0;
 		return std::size_t(std::upper_bound(slot.starts.begin(), slot.starts.end(), index) - slot.starts.begin()) - 1;
 	}
 	// A job is ready when its lane predecessor has completed.
@@ -707,14 +727,34 @@ private:
 	Claim pick(bool owner, const Slot* limit) const
 	{
 		Claim best;
-		for (std::size_t i = 0; i < Slots; ++i)
-		{
+		const auto consider = [&](std::size_t i) {
 			const auto& slot = slots[i];
-			if (!slot.serial || !slot.unclaimed) continue;
-			if (owner && limit && before(*limit, slot)) continue;
-			if (best.valid && !before(slot, slots[best.slot])) continue;
+			if (owner && limit && before(*limit, slot)) return;
+			if (best.valid && !before(slot, slots[best.slot])) return;
 			const auto index = firstClaimable(slot, owner);
 			if (index != slot.total) best = {i, index, true};
+		};
+		// A dense scan avoids a bit-scan per slot at sustained full occupancy.
+		if (unclaimedBatches > Slots / 2)
+		{
+			for (std::size_t i = 0; i < Slots; ++i)
+			{
+				const auto& slot = slots[i];
+				if (!slot.serial || !slot.unclaimed) continue;
+				if (owner && limit && before(*limit, slot)) continue;
+				if (best.valid && !before(slot, slots[best.slot])) continue;
+				const auto index = firstClaimable(slot, owner);
+				if (index != slot.total) best = {i, index, true};
+			}
+			return best;
+		}
+		for (std::size_t word = 0; word < unclaimedSlots.size(); ++word)
+		{
+			for (auto bits = unclaimedSlots[word]; bits; bits &= bits - 1)
+			{
+				const auto i = word * 64 + std::countr_zero(bits);
+				consider(i);
+			}
 		}
 		return best;
 	}
@@ -727,6 +767,7 @@ private:
 		if (!best.valid) return best;
 		auto& slot = slots[best.slot];
 		slot.claimed[best.index] = 1; --slot.unclaimed;
+		if (!slot.unclaimed) markUnclaimed(best.slot, false);
 		while (slot.firstUnclaimed < slot.total && slot.claimed[slot.firstUnclaimed]) ++slot.firstUnclaimed;
 		event<Mode>(ComputeTelemetry::EventKind::Claim, best.slot, best.index, thread);
 		return best;
@@ -734,6 +775,7 @@ private:
 	template<ComputeTelemetryMode Mode>
 	void freeSlot(Slot& slot)
 	{
+		assert(slot.unclaimed == 0);
 		event<Mode>(ComputeTelemetry::EventKind::Retire, std::size_t(&slot - slots.data()));
 		slot.serial = 0; slot.groups.clear(); slot.starts.clear(); slot.laneBases.clear(); slot.claimed.clear(); slot.completions.clear(); slot.continuations.clear();
 		slot.total = slot.unclaimed = slot.completed = slot.firstUnclaimed = 0; slot.error = nullptr;
@@ -748,7 +790,12 @@ private:
 		if (auto& ticket = slot.completions[index]) ticket->owner.store(nullptr, std::memory_order_release);
 		slot.completions[index].reset();
 		const auto lane = slot.groups[group(slot, index)].lane;
-		if (lane != NoLane) { ++laneCompleted[lane]; ready.notify_all(); }
+		if (lane != NoLane) {
+			++laneCompleted[lane];
+			// A returning worker claims the newly runnable successor itself.
+			// External resolution has no returning worker, so wake one.
+			if (thread == ~0u && !ownerRunsDeferred()) ready.notify_one();
+		}
 		if (++slot.completed == slot.total) slotDone.notify_all();
 	}
 	template<ComputeTelemetryMode Mode>
@@ -757,12 +804,13 @@ private:
 		auto& slot = slots[ticket.slot];
 		if (ticket.continuation.invoke && !ticket.error) {
 			slot.continuations[ticket.index] = ticket.continuation;
-			slot.claimed[ticket.index] = 0; ++slot.unclaimed;
+			slot.claimed[ticket.index] = 0;
+			if (++slot.unclaimed == 1) markUnclaimed(ticket.slot, true);
 			slot.firstUnclaimed = std::min(slot.firstUnclaimed, ticket.index);
 			ticket.owner.store(nullptr, std::memory_order_release);
 			slot.completions[ticket.index].reset();
 			event<Mode>(ComputeTelemetry::EventKind::Runnable, ticket.slot, ticket.index, thread);
-			ready.notify_all();
+			if (thread == ~0u && !ownerRunsDeferred()) ready.notify_one();
 		} else completeJob<Mode>(slot, ticket.index, ticket.error, thread);
 	}
 	template<ComputeTelemetryMode Mode>
@@ -1064,7 +1112,7 @@ private:
             while (!ticket.finished()) {
                 bool firstInspection = true, blocked = false;
                 const auto waitStart = diagnosticStart<Mode>();
-                ready.wait(lock, [&] {
+                graphicsReady.wait(lock, [&] {
                     const bool runnable = ticket.finished() || graphicsClaimable(true);
                     if constexpr (Mode != ComputeTelemetryMode::Off) {
                         if (firstInspection) { blocked = !runnable; firstInspection = false; }
@@ -1088,7 +1136,7 @@ private:
         if constexpr (Mode != ComputeTelemetryMode::Off) {
             std::unique_lock lock(mutex);
             if constexpr (Mode == ComputeTelemetryMode::Trace) {
-                if (graphicsBatch == ticket.work) ready.wait(lock, [&] { return diagnostics->traceGraphicsInFlight == 0; });
+                if (graphicsBatch == ticket.work) graphicsReady.wait(lock, [&] { return diagnostics->traceGraphicsInFlight == 0; });
             }
             if (graphicsBatch == ticket.work && !diagnostics->graphicsJoined && ticket.work->count) {
                 auto& value = diagnostics->summary.joins[unsigned(ComputeProducer::Presentation)][unsigned(context.reason)];
@@ -1477,16 +1525,22 @@ private:
 		slot.due = due;
 		slot.groups.assign(groups.begin(), groups.end());
 		slot.starts.clear(); slot.laneBases.clear();
-		std::size_t start = 0;
+		std::size_t start = 0, runnable = 0;
 		for (const auto& group : slot.groups)
 		{
 			slot.starts.push_back(start); start += group.count;
 			slot.laneBases.push_back(group.lane == NoLane ? 0 : laneIssued[group.lane]);
-			if (group.lane != NoLane) { laneIssued[group.lane] += group.count; laneDue[group.lane] = due; }
+			if (group.lane != NoLane) {
+				// Only the head of an idle lane can run; queued successors do
+				// not need a wakeup until their predecessor completes.
+				if (group.count && laneCompleted[group.lane] == laneIssued[group.lane]) ++runnable;
+				laneIssued[group.lane] += group.count; laneDue[group.lane] = due;
+			} else runnable += group.count;
 		}
 		slot.total = slot.unclaimed = total; slot.completed = slot.firstUnclaimed = 0; slot.error = nullptr;
 		slot.claimed.assign(total, 0);
 		slot.completions.assign(total, {}); slot.continuations.assign(total, {});
+		markUnclaimed(index, true);
 		++live;
 		if constexpr (Mode != ComputeTelemetryMode::Off) { ++totals.deferredBatches; totals.deferredJobs += total; }
 
@@ -1494,7 +1548,10 @@ private:
         event<Mode>(ComputeTelemetry::EventKind::Submit, index);
 		batch.slot = index; batch.serial = slot.serial;
 		lock.unlock();
-		if (!ownerRunsDeferred()) ready.notify_all();
+		if (!ownerRunsDeferred()) {
+			if (runnable == 1) ready.notify_one();
+			else if (runnable) ready.notify_all();
+		}
 		return batch;
 	}
 public:

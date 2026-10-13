@@ -290,7 +290,7 @@ void firing(const std::filesystem::path &output, bool buildingTarget)
 					++added;
 			}
 		require(added == 3, "supply workers fit near tower");
-		auto &m = game.teams[0]->stats.measurements;
+		auto &m = game.teams[0]->stats.editMeasurements();
 		const auto shots = m.shots[GameplayMeasurements::TOWER];
 		int ticks = 0;
 		for (; ticks < 12000 &&

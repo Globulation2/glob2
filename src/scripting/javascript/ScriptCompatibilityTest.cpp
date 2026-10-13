@@ -98,7 +98,7 @@ TEST_CASE("JavaScript current text saves validate unused generation counters" *
 	GameGUI original;
 	GAGCore::BinaryInputStream initial(glob2OpenMapOrSaveInputStreamBackend(
 		*GAGCore::Toolkit::getFileManager(),
-		glob2test::inflated("javascript/profile1-initial155.game.gz").string()));
+		glob2test::inflated("javascript/profile1-initial159.game.gz").string()));
 	REQUIRE(original.game.load(&initial));
 	auto *storage = new GAGCore::MemoryStreamBackend;
 	GAGCore::TextOutputStream output(storage);
@@ -134,9 +134,9 @@ TEST_CASE("Resource oscillation rejects earlier replays and enforces acceptance 
 	glob2test::GlobalsOptions options;
 	options.loadStrings = true;
 	glob2test::HeadlessGlobals globals(options);
-	CHECK(REPLAY_MINIMUM_VERSION_MINOR == 155);
-	CHECK(VERSION_MINOR == 155);
-	CHECK(NET_PROTOCOL_VERSION == 69);
+	CHECK(REPLAY_MINIMUM_VERSION_MINOR == 159);
+	CHECK(VERSION_MINOR == 159);
+	CHECK(NET_PROTOCOL_VERSION == 70);
 	CHECK(FILE_FORMAT_VERSION_JAVASCRIPT == 125);
 	CHECK(FILE_FORMAT_VERSION_EXPERIMENTS == 124);
 	ReplayReader released;
@@ -192,7 +192,7 @@ TEST_CASE("JavaScript current saves reject truncated generation tables" *
 {
 	glob2test::HeadlessGlobals globals;
 	const auto bytes = glob2test::readFile(
-		glob2test::inflated("javascript/profile1-initial155.game.gz"));
+		glob2test::inflated("javascript/profile1-initial159.game.gz"));
 	GAGCore::BinaryInputStream complete(
 		new GAGCore::MemoryStreamBackend(bytes.data(), bytes.size()));
 	complete.seekFromStart(0);

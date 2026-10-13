@@ -209,7 +209,7 @@ void Map::recordNaturalGrowth(int x,int y,int resourceType,int oldType,const std
         for (int t=0;t<game->mapHeader.getNumberOfTeams();++t)
         {
             Team* team=game->teams[t]; if (!team) continue;
-            auto& m=team->stats.measurements;
+            auto& m=team->stats.events();
             m.growthGlobal[0][material]+=added;
             m.growthGlobal[1][material]+=std::max(0,delta);
             m.growthGlobal[2][material]+=std::max(0,-delta);
@@ -254,18 +254,12 @@ gradient_preparation::Request gradientRequest(const GradientRuntime::Preparation
     return request;
 }
 }
-SimulationSnapshot::Requirements Map::pendingGradientRequirements() const
-{
-    // One capture serves the periodic job and every staged building job.
-    const auto periodic=gradientRuntime->preparation.job ? gradientRequest(gradientRuntime->preparation, *this).requirements() : 0;
-    return periodic | pendingBuildingRequirements();
-}
 void Map::preparePendingGradient()
 {
-    if (const auto requirements=pendingGradientRequirements()) {
+    if (hasPendingGradientPreparation()) {
         auto& store=game->snapshotStore();
         store.invalidateBoundary(); // Direct map stepping may not advance Game's tick.
-        preparePendingGradient(store.captureBoundary(*game, requirements));
+        preparePendingGradient(store.captureBoundary(*game));
     }
 }
 void Map::preparePendingGradient(const SimulationSnapshot::Handle& foundation)
@@ -278,7 +272,7 @@ void Map::preparePendingGradient(const SimulationSnapshot::Handle& foundation)
     prepareStagedBuildingGradients(foundation);
     if (!gradientRuntime->preparation.job) return;
     const auto request=gradientRequest(gradientRuntime->preparation, *this);
-    auto projected=foundation.project(request.requirements());
+    auto projected=foundation.gradientView();
     auto* job=std::exchange(gradientRuntime->preparation, {}).job;
     job->request=request;
     job->snapshotLease=std::move(projected);

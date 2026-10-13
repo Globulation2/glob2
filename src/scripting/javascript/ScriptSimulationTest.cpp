@@ -199,7 +199,7 @@ void samePayload(std::string actual, std::string expected)
 void fixture(const std::string &name)
 {
 	const auto initial =
-		glob2test::inflated("test/fixtures/javascript/" + name + "-initial155.game.gz");
+		glob2test::inflated("test/fixtures/javascript/" + name + "-initial159.game.gz");
 	const auto released = glob2test::readFile(
 		glob2test::inflated("test/fixtures/javascript/" + name + "-256.checksums.gz"));
 	const auto expanded = glob2test::readFile(
@@ -219,7 +219,7 @@ void fixture(const std::string &name)
 	const auto serial = execute(initial, directory / "workers1", 1, false, true);
 	// Configurable units have their own trace; retain released traces above and
 	// the terrain/resource traces as historical migration evidence.
-	const auto unitFixture = "test/fixtures/javascript/" + name + "-256-cached155.checksums.gz";
+	const auto unitFixture = "test/fixtures/javascript/" + name + "-256-cached159.checksums.gz";
 	if (glob2test::updatingFixtures())
 	{
 		gzFile output = gzopen((glob2test::sourceRoot() / unitFixture).string().c_str(), "wb9");

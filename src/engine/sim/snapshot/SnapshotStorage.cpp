@@ -42,6 +42,12 @@ MemoryMetrics Storage::memoryMetrics() const
         for (const auto& team:value.teams) remember(team,leased);
         return bytes;
     });
+    account(statisticsInputs, [&](const StatisticsInputs& value, bool) {
+        Uint64 bytes=vectorBytes(value.events)+vectorBytes(value.enemies)+vectorBytes(value.coverage);
+        for (const auto& row:value.events) bytes+=row.capacityBytes();
+        for (const auto& row:value.coverage) bytes+=vectorBytes(row);
+        return bytes;
+    });
     account(telemetry, [&](const Telemetry& value, bool) {
         Uint64 bytes = vectorBytes(value.rows);
         for (const auto& row : value.rows) bytes += vectorBytes(row.fields) + vectorBytes(row.values) + vectorBytes(row.named);

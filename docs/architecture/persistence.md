@@ -82,3 +82,40 @@ replacement: if it fails, the new local file remains available for export while
 the previously persisted browser copy remains intact. A retry creates a new save
 operation; each operation's terminal state is sticky and its success callback
 runs once. Other background string writers still keep the newest queued snapshot.
+
+## Pending team statistics
+
+Format 155 saves the live event collector separately from published statistics.
+The save barrier joins pending statistics jobs without changing their publication
+ticks, then serializes their completed raw samples, FIFO deadlines and sampling
+phases. Restoring these results needs no historical world snapshot. Future
+publication proceeds at the original deadlines, including after resaving.
+Format 156 omits the redundant snapshot input digest; loading format 155 reads
+and discards that field. Routine checksums cover pending identities; full checksums
+join and cover every completed sample, including restored results. World-state
+checksums retain their existing coverage. Neither check publishes early.
+Older saves remain readable and migrate to shared snapshot timing at delay zero;
+this is an intentional simulation-continuation change. Ending a match leaves
+pending samples unpublished; reporting uses the already published histories.
+
+Format 157 marks pending aggregates as worker-finalized. Formats 155/156 have raw
+aggregates: loading retains that mode, and their publication performs the original
+exact reduction from the consecutive owner ring. Resaving keeps the mode until
+those rows publish; new submissions use the frozen published-window calculation.
+No historical window is needed to restore completed jobs. The minimum readable
+save version remains 58. Loading does not append an extra sample.
+
+Format 158 marks pending measurement frames as complete (cumulative labour and
+carried spatial diagnostics included). Loading formats 155–157 completes their
+raw measurement deltas in source order from the published state without advancing
+publication. Their aggregate-finalization mode remains unchanged, preserving
+older pending exact smoothing. Worker continuation is seeded from the last
+completed pending frame, or published measurements when the queue is empty.
+Resaving stores complete frames; no historical snapshots are required.
+
+Format 159 persists cached turret targeting lists and delayed outputs. The saved-match
+and replay floors deliberately advance to 159; existing maps retain floor 58.
+Text statistics saves isolate pending teams, sampling phases and coverage anchors
+in indexed sections so distinct records survive loading. Binary section markers
+carry no bytes. See [turret targeting](../development/compute-benchmarks.md#cached-turret-targeting)
+for its snapshot, checksum and continuation boundaries.

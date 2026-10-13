@@ -117,7 +117,7 @@ void advance(glob2test::HeadlessGame& fixture,Run* evidence)
 {
     auto& game=fixture.game;
     const auto boundaryStart=profileOwner ? TurretTargeting::threadCpuNs() : 0;
-    const auto world=game.captureReadBoundary(seats,false);
+    const auto world=game.prepareReadBoundary(false);
     if (profileOwner && selection) selection->boundaryCpu+=TurretTargeting::threadCpuNs()-boundaryStart;
     for (auto [seat,order]:game.prepareAIOrders(seats,false,{},&world)) {
         order=game.validateAIOrder(order,seat); order->sender=seat;
@@ -138,7 +138,7 @@ void advance(glob2test::HeadlessGame& fixture,Run* evidence)
     }
     fixture.gui.consumeClientEvents();
     const auto completedStart=profileOwner ? TurretTargeting::threadCpuNs() : 0;
-    game.captureReadBoundary(seats,false); // Engine completed boundary, before pacing/next orders.
+    game.prepareReadBoundary(false); // Engine completed boundary, before pacing/next orders.
     if (profileOwner && selection) selection->boundaryCpu+=TurretTargeting::threadCpuNs()-completedStart;
     if (evidence) evidence->checksums.push_back(game.checkSum(nullptr,nullptr,nullptr,true));
 }
@@ -154,7 +154,7 @@ Run run(unsigned fixture,unsigned seed,unsigned participants,Mode mode,bool corr
     const auto start=std::chrono::steady_clock::now(); const auto cpu=std::clock();
     const auto ownerStart=profileOwner ? TurretTargeting::threadCpuNs() : 0;
     const auto firstBoundary=profileOwner ? TurretTargeting::threadCpuNs() : 0;
-    world.game.captureReadBoundary(seats,false);
+    world.game.prepareReadBoundary(false);
     if (profileOwner) result.targeting.boundaryCpu+=TurretTargeting::threadCpuNs()-firstBoundary;
     for (unsigned t=0;t<ticks;++t) advance(world,correctness ? &result : nullptr);
     world.game.drainAI(); // Include all admitted computation, never publish early.
@@ -167,7 +167,7 @@ Run run(unsigned fixture,unsigned seed,unsigned participants,Mode mode,bool corr
         CALLGRIND_STOP_INSTRUMENTATION;
     }
     for (int team=0;team<2;++team) {
-        result.shots+=world.game.teams[team]->stats.measurements.shots[GameplayMeasurements::TOWER];
+        result.shots+=world.game.teams[team]->stats.measurements().shots[GameplayMeasurements::TOWER];
         for (const auto* u:world.game.teams[team]->liveUnits.entries()) if (u && !u->isDead) ++result.units; result.turrets+=world.game.teams[team]->turrets.size();
     }
     result.captures=world.game.snapshots().metrics.captures;

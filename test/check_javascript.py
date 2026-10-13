@@ -171,11 +171,11 @@ def main():
                    for tick, record in released_ticks.items()), name + ': released entity records differ'
         # Preserve historical migration evidence independently of the current
         # simulation trace. Still load the original version-125 save below.
-        trace = FIXTURE / (name + '-256-cached155.checksums.gz')
+        trace = FIXTURE / (name + '-256-cached159.checksums.gz')
         expected = gzip.decompress(trace.read_bytes())
         ticks = complete_ticks(expected)
         assert set(ticks) == set(range(256)), name + ': incomplete unit-era trace'
-        initial = FIXTURE / (name + '-initial155.game.gz')
+        initial = FIXTURE / (name + '-initial159.game.gz')
         manifest['fixtures'][name] = {'initialSha256': hashlib.sha256(initial.read_bytes()).hexdigest(),
                                      'trace': str(trace.relative_to(ROOT)),
                                      'releasedTraceSha256': hashlib.sha256(released).hexdigest(),

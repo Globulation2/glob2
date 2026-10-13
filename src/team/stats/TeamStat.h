@@ -6,6 +6,8 @@
 #include "UnitConsts.h"
 #include "UnitStatistics.h"
 #include <array>
+#include <span>
+#include "Version.h"
 #include "IntBuildingType.h"
 #include "Ressource.h"
 
@@ -26,10 +28,10 @@ static constexpr int NB_BUILDING_LONG_LEVELS = 6;
 //! Used by the assertion in TeamStat.cpp guarding the histogram write.
 static constexpr int MAX_BUILDING_LONG_LEVEL = NB_BUILDING_LONG_LEVELS - 1;
 
-//! Bitmask used by TeamStats::step to append an EndOfGameStat snapshot
+//! Bitmask used by the snapshot pipeline to sample history and spatial diagnostics
 //! every 512 ticks (~20.5 s at 25 Hz): `(stepCounter & MASK) == 0`.
 //! The 512-tick cadence is the gameplay-meaningful constant — the mask
-//! width is independent of Team::MAX_COUNT. See TeamStat.cpp:122.
+//! width is independent of Team::MAX_COUNT.
 static constexpr int END_OF_GAME_STAT_INTERVAL_MASK = 0x1FF;
 
 // Wire-locked growth-distance bands: keep order and count stable for old saves.
@@ -120,7 +122,8 @@ struct BuildingMeasurement
 	bool operator==(const BuildingMeasurement&) const = default;
 };
 
-// Diagnostic only: never used by AI, orders, RNG or simulation checksums.
+// Collected on the owner and published from snapshots. Diagnostic values do not
+// drive rules or RNG; scheduled state is included in current simulation checksums.
 struct GameplayMeasurements
 {
     std::size_t capacityBytes() const { return variants.capacity()*sizeof(BuildingMeasurement)+unitCapacityBytes(); }
@@ -312,7 +315,50 @@ struct GameplayMeasurements
 	Uint32 defenceTick = 0;
 };
 
+// Only cumulative events cross the read boundary. Instantaneous measurements and
+// labour deltas are calculated afresh; they are never copied from the collector.
+struct GameplayEventCounters
+{
+    struct Variant { Uint64 completed[3]{}, removed[3]{}; };
+    std::vector<Variant> variants;
+    decltype(GameplayMeasurements::births) births{};
+    decltype(GameplayMeasurements::deaths) deaths{};
+    decltype(GameplayMeasurements::conversionsIn) conversionsIn{};
+    decltype(GameplayMeasurements::conversionsOut) conversionsOut{};
+    decltype(GameplayMeasurements::harvested) harvested{};
+    decltype(GameplayMeasurements::cleared) cleared{};
+    decltype(GameplayMeasurements::delivered) delivered{};
+    decltype(GameplayMeasurements::withdrawn) withdrawn{};
+    decltype(GameplayMeasurements::transferredIn) transferredIn{};
+    decltype(GameplayMeasurements::transferredOut) transferredOut{};
+    decltype(GameplayMeasurements::consumed) consumed{};
+    decltype(GameplayMeasurements::repairDelivered) repairDelivered{};
+    decltype(GameplayMeasurements::materialSpillageEvents) materialSpillageEvents{};
+    decltype(GameplayMeasurements::meals) meals{};
+    decltype(GameplayMeasurements::healingVisits) healingVisits{};
+    decltype(GameplayMeasurements::hpRestored) hpRestored{};
+    decltype(GameplayMeasurements::damageDealt) damageDealt{};
+    decltype(GameplayMeasurements::damageReceived) damageReceived{};
+    decltype(GameplayMeasurements::shots) shots{};
+    decltype(GameplayMeasurements::impacts) impacts{};
+    decltype(GameplayMeasurements::completed) completed{};
+    decltype(GameplayMeasurements::removed) removed{};
+    decltype(GameplayMeasurements::trainingVisits) trainingVisits{};
+    decltype(GameplayMeasurements::abilityGains) abilityGains{};
+    decltype(GameplayMeasurements::growthTiles) growthTiles{};
+    decltype(GameplayMeasurements::growthAmount) growthAmount{};
+    decltype(GameplayMeasurements::growthReduction) growthReduction{};
+    decltype(GameplayMeasurements::growthGlobal) growthGlobal{};
+    decltype(GameplayMeasurements::combatDeathPlace) combatDeathPlace{};
+    decltype(GameplayMeasurements::combatDeathAssignment) combatDeathAssignment{};
+    void capture(const GameplayMeasurements&);
+    void applyTo(GameplayMeasurements&) const;
+    std::size_t capacityBytes() const;
+};
+
 class Team;
+struct TeamStatsSample;
+namespace SimulationSnapshot { struct Handle; }
 
 class TeamStats
 {
@@ -325,7 +371,10 @@ public:
   Uint32 coverageBuildingTick = 0;
   Uint32 coverageBuildingGeneration = 0;
   std::vector<std::shared_ptr<AITelemetry::Series>> aiTelemetry;
-  GameplayMeasurements measurements;
+  // Cold legacy scans/load/fixture edits detach a retained immutable frame.
+  GameplayMeasurements& editMeasurements();
+  const GameplayMeasurements& measurements() const;
+  std::shared_ptr<const GameplayMeasurements> publishedMeasurementFrame() const { return publishedMeasurements; }
   Uint32 coverageStartTick = 0;
   Uint32 extendedCoverageStartTick = 0;
   Uint32 labourCoverageStartTick = 0;
@@ -349,6 +398,25 @@ public:
   virtual ~TeamStats(void);
 
   void step(Team *team, bool reloaded = false);
+  void enableCollection();
+  GameplayMeasurements& events() { return collectionEnabled ? collectedMeasurements : editMeasurements(); }
+  const GameplayMeasurements& events() const { return collectionEnabled ? collectedMeasurements : measurements(); }
+  void publishFrame(TeamStatsSample&, Uint32 publicationTick, const std::shared_ptr<const UnitCatalog>&);
+  static void completeMeasurements(TeamStatsSample&, const GameplayMeasurements& previous);
+  void applySample(TeamStatsSample&&, Uint32 publicationTick, const std::shared_ptr<const UnitCatalog>&);
+  void applySample(const TeamStatsSample&, Uint32 publicationTick, const std::shared_ptr<const UnitCatalog>&);
+  unsigned samplingPhase() const { return smoothedIndex; }
+  // Capture the latest 31 published rows only at aggregate boundaries; workers add their current row.
+  void captureSmoothingWindow(std::vector<TeamSmoothedStat>&) const;
+  static void finishAggregate(TeamStat&, const UnitStatistics<std::array<int,4>>&,
+      std::span<const TeamSmoothedStat>, const UnitCatalog&, const TeamSmoothedStat* current = nullptr);
+  Uint32 sourceTick = 0, publishedTick = 0;
+  Uint32 checkSum() const;
+  static Uint32 measurementChecksum(const GameplayMeasurements&);
+  void printEconomy(const Team*, Uint32 tick) const;
+  static void saveSample(GAGCore::OutputStream*, const TeamStatsSample&);
+  static TeamStatsSample loadSample(GAGCore::InputStream*, int versionMinor = VERSION_MINOR);
+
 
   std::shared_ptr<const TeamStats> frozenDisplay() const;
   std::shared_ptr<const TeamStats> frozenHistory() const;
@@ -363,6 +431,10 @@ public:
   int getStarvingUnits() const;
 
 private:
+    GameplayMeasurements legacyMeasurements;
+    std::shared_ptr<GameplayMeasurements> publishedMeasurements;
+    bool collectionEnabled = false;
+    GameplayMeasurements collectedMeasurements;
     mutable std::weak_ptr<const TeamStats> displaySnapshot;
     mutable std::weak_ptr<const TeamStats> historySnapshot;
     // Sampling scratch and immutable qualification rows are derived live state.
@@ -411,3 +483,21 @@ public:
 	//! headless team-timeline dump (Engine::printAutomaticEndingSummary).
 	const std::vector<EndOfGameStat> &getEndOfGameStats(void) const { return endOfGameStats; }
 };
+
+// Raw rows remain consecutive owner history; aggregate results can be finalized by workers.
+struct TeamStatsSample
+{
+    Uint32 tick = 0;
+    int prestige = 0;
+    bool aggregate = false, periodic = false, finalized = false;
+    TeamSmoothedStat smoothing;
+    TeamStat stat;
+    UnitStatistics<std::array<int,4>> eligible;
+    GameplayMeasurements measurements;
+    // Complete immutable worker result; publication swaps ownership with a reusable old frame.
+    std::shared_ptr<GameplayMeasurements> frame;
+    const GameplayMeasurements& measurementFrame() const { return frame ? *frame : measurements; }
+    std::vector<TeamStats::CoverageBuilding> coverage;
+};
+TeamStatsSample computeTeamStatsSample(const SimulationSnapshot::Handle&, unsigned team, bool aggregate,
+    std::span<const TeamSmoothedStat> window = {}, bool includeCurrent = false);

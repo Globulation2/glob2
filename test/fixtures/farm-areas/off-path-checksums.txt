@@ -1,8 +1,8 @@
 100 e4152c7d wheat 1 cleared 0
-200 6e4c9f14 wheat 2 cleared 0
-300 6d79d951 wheat 2 cleared 2
+200 6e4c9f14 wheat 1 cleared 0
+300 6d79d951 wheat 2 cleared 1
 400 5b4ae267 wheat 3 cleared 6
-500 b230a7b4 wheat 4 cleared 11
+500 b230a7b4 wheat 4 cleared 10
 600 bd224f2f wheat 4 cleared 14
 700 b62fa0cc wheat 5 cleared 17
 800 6a05457e wheat 6 cleared 17
@@ -13,7 +13,7 @@
 1300 43460cd wheat 9 cleared 17
 1400 3da9a2ee wheat 9 cleared 17
 1500 cef28644 wheat 10 cleared 17
-1600 d338ab52 wheat 11 cleared 18
+1600 d338ab52 wheat 10 cleared 18
 1700 c8f499f1 wheat 11 cleared 18
 1800 eb826eda wheat 12 cleared 18
 1900 eef96215 wheat 13 cleared 18

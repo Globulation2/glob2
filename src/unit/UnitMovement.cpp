@@ -94,7 +94,7 @@ bool Unit::tryClaimClearingAreaForHarvesting()
 							   GameplayMeasurements::CLEARING);
 			map->decResource(posX + dx, posY + dy);
 			if (clearedBefore != map->getResource(posX + dx, posY + dy))
-				++owner->stats.measurements.cleared[materialIndex(
+				++owner->stats.events().cleared[materialIndex(
 					map->resourcePropertiesByIndex(clearedBefore.type).primaryMaterial)];
 			hp=int(std::max<Sint64>(INT_MIN,Sint64(hp)-race->getUnitType(typeNum, level[HARVEST])->harvestDamage));
 		}
@@ -413,7 +413,7 @@ void Unit::handleMovementClearingResources()
 						   GameplayMeasurements::CLEARING);
 		map->decResource(posX + dx, posY + dy);
 		if (clearedBefore != map->getResource(posX + dx, posY + dy))
-			++owner->stats.measurements.cleared[materialIndex(
+			++owner->stats.events().cleared[materialIndex(
 				map->resourcePropertiesByIndex(clearedBefore.type).primaryMaterial)];
 		hp=int(std::max<Sint64>(INT_MIN,Sint64(hp)-race->getUnitType(typeNum, level[HARVEST])->harvestDamage));
 	}

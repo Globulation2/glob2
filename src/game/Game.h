@@ -40,6 +40,7 @@ namespace GAGCore
 using namespace GAGCore;
 namespace SimulationSnapshot { class Store; }
 namespace TurretTargeting { class Pipeline; }
+class TeamStatsPipeline;
 class GameGUI;
 class SceneMap;
 struct PresentationFrame;
@@ -245,13 +246,20 @@ public:
 	std::vector<std::pair<unsigned, std::shared_ptr<Order>>> prepareAIOrders(
 		std::span<const unsigned> eligiblePlayers, bool paused, const std::shared_ptr<GameDiagnostics::Session>& diagnostics = {},
 		const SimulationSnapshot::Handle* captured = nullptr);
-	//! Declare every reader before publishing this immutable observation boundary.
-	SimulationSnapshot::Handle captureReadBoundary(std::span<const unsigned> eligiblePlayers, bool paused,
-		SimulationSnapshot::Requirements additional = 0) const;
+	//! Capture the standard view without admitting simulation work (UI, saves, tests).
+	SimulationSnapshot::Handle captureReadBoundary(SimulationSnapshot::CaptureOptions options = {}) const;
+	//! Publish due statistics and admit statistics/turret work once per owner boundary.
+	SimulationSnapshot::Handle prepareReadBoundary(bool paused = false,
+		SimulationSnapshot::CaptureOptions options = {});
 	std::shared_ptr<Order> validateAIOrder(std::shared_ptr<Order> order, unsigned player);
 	void settleAIOrder(const std::shared_ptr<Order>& order, bool accepted);
 	void cancelAI(unsigned player);
 	void drainAI();
+    void drainTeamStats();
+    void saveTeamStats(GAGCore::OutputStream*);
+    void loadTeamStats(GAGCore::InputStream*, int versionMinor);
+    Uint32 teamStatsChecksum(bool heavy = false) const;
+    std::vector<std::pair<std::string, Uint64>> teamStatsMetrics() const;
 	//! Simulation-owner service shared by AI, gradients and presentation.
 	SimulationSnapshot::Store& snapshots() const { return worldSnapshots; }
 	void clearAI();
@@ -269,6 +277,7 @@ private:
 	mutable std::unique_ptr<TurretTargeting::Pipeline> turretTargetingPipeline;
     void ensureTurretTargeting() const;
 	std::unique_ptr<AIEngine::Pipeline> aiPipeline;
+    std::unique_ptr<TeamStatsPipeline> statsPipeline;
 public:
 
 	/// Makes a step for building projects that are waiting for the areas to clear of units.

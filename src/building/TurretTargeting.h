@@ -58,8 +58,7 @@ constexpr SimulationSnapshot::Requirements requirements =
     SimulationSnapshot::bit(SimulationSnapshot::Component::Terrain) |
     SimulationSnapshot::bit(SimulationSnapshot::Component::Entities) |
     SimulationSnapshot::bit(SimulationSnapshot::Component::Teams) |
-    SimulationSnapshot::bit(SimulationSnapshot::Component::Catalogs) |
-    SimulationSnapshot::bit(SimulationSnapshot::Component::Effects);
+    SimulationSnapshot::bit(SimulationSnapshot::Component::Catalogs);
 // Effects contains render bullet/explosion records, not area attack modifiers.
 // Those modifiers are folded into the boundary-owned offense facts.
 constexpr auto targetingRequirements = requirements & ~SimulationSnapshot::bit(SimulationSnapshot::Component::Effects);

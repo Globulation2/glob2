@@ -541,12 +541,12 @@ TEST_CASE("six native strategies construct and use separate demanded production 
         const unsigned expected=controller==AI::ECONO ? 1u<<EXPLORER : (1u<<EXPLORER)|(1u<<WARRIOR);
         CHECK((created&expected)==expected);CHECK((configured&expected)==expected);
         for(int unit=EXPLORER;unit<=WARRIOR;++unit) if(expected&(1u<<unit)) {
-            const auto before=team.stats.measurements.births[unit];
+            const auto before=team.stats.measurements().births[unit];
             for(auto* producer:team.swarms) if(producer->type->semantics.production.recipes[unit].enabled) {
                 REQUIRE(producer->ratio[unit]>0);
                 for(int step=0;step<3;++step) producer->swarmStep();
             }
-            CHECK(team.stats.measurements.births[unit]>before);
+            CHECK(team.stats.measurements().births[unit]>before);
         }
     }
 }

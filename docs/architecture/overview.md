@@ -25,7 +25,7 @@ Units, buildings, teams, resources and maps own their domain state. Map terrain 
 
 ## Immutable observations
 
-The game-owned snapshot store captures a union of consumer requirements at a read boundary. AI and gradient workers read immutable projections. Their outputs are published by the owner in stable order. Presentation uses extracted scenes rather than live simulation entities. [AI observations](ai-observations.md) explains retained inputs, compute lanes and deadlines.
+The game-owned snapshot store captures the complete simulation preset at each read boundary. Interactive sessions also include the ordinary presentation payload; cold UI and diagnostic data remain optional. AI controllers share one immutable view, and map jobs retain standard views containing their inputs. Their outputs are published by the owner in stable order. Presentation uses extracted scenes rather than live simulation entities. [AI observations](ai-observations.md) explains retained inputs, compute lanes and deadlines.
 
 ## Client and presentation
 

@@ -340,7 +340,7 @@ TEST_SUITE("TurretTargeting")
             for (int tick=0;tick<256;++tick) {
                 if (shadow) {
                     const std::array<unsigned,2> readers{0,1};
-                    auto captured=observe(world.game,world.game.captureReadBoundary(readers,false,requirements),previous.world.entities ? &previous : nullptr);
+                    auto captured=observe(world.game,world.game.captureReadBoundary(),previous.world.entities ? &previous : nullptr);
                     for (int team=0;team<2;++team) for (const auto* b:world.game.teams[team]->liveBuildings.entries())
                         if (b && b->runtime->shootSpeed>=256) {
                             compare(*b,captured);
@@ -517,7 +517,7 @@ TEST_SUITE("TurretTargeting")
                 for (unsigned t=0;t<1024;++t) {
                     if (shadow && !pipelineOnly) {
                         const std::array<unsigned,2> readers{0,1};
-                        const auto observed=observe(world.game,world.game.captureReadBoundary(readers,false,requirements),previous.world.entities ? &previous : nullptr);
+                        const auto observed=observe(world.game,world.game.captureReadBoundary(),previous.world.entities ? &previous : nullptr);
                         for (auto& c:research.matrix) for (auto& [identity,lists]:c.turrets) {
                             if (lists.window.active && !world.game.resolveBuilding({identity.first,identity.second})) { ++c.missed; lists.window.active=false; }
                         }
@@ -824,7 +824,7 @@ TEST_SUITE("TurretTargeting")
                 const bool admitted=readyOffset<=delay+refresh-1;
                 auto* pipeline=world.game.turretTargeting();
                 CHECK((pipeline->pendingRequirements(world.game,false)!=0)==admitted);
-                world.game.captureReadBoundary({},false);
+                world.game.prepareReadBoundary(false);
                 pipeline->drain();
                 CHECK(pipeline->statistics().sources==unsigned(admitted));
                 CHECK(pipeline->statistics().observations==unsigned(admitted));
@@ -844,7 +844,7 @@ TEST_SUITE("TurretTargeting")
         turret->shootingCooldown=turret->runtime->shootRhythm;
         world.game.configureTurretTargeting(1,1,8,1,true,true);
         auto* pipeline=world.game.turretTargeting();
-        world.game.captureReadBoundary({},false);
+        world.game.prepareReadBoundary(false);
         CHECK(pipeline->statistics().sources==1);
         CHECK_FALSE(turret->tickShootingCooldown()); // Step at counter zero.
         CHECK(turret->shootingCooldown<=0);
@@ -866,18 +866,18 @@ TEST_SUITE("TurretTargeting")
             world.game.configureTurretTargeting(delay,1,8,1,false,false);
             auto* pipeline=world.game.turretTargeting();
             const auto before=world.game.snapshots().metrics.captures;
-            const auto shared=world.game.captureReadBoundary({},false,SimulationSnapshot::Simulation);
+            const auto shared=world.game.prepareReadBoundary(false);
             const auto job=pipeline->pendingObservation();
             CHECK(world.game.snapshots().metrics.captures==before+1);
             CHECK(job.entities==shared.entities); CHECK(job.occupancy==shared.occupancy);
             CHECK(job.terrain==shared.terrain); CHECK(job.catalogs==shared.catalogs);
             CHECK(job.teams==shared.teams); CHECK(job.effects==shared.effects);
-            const auto aiReader=world.game.captureReadBoundary({},false,SimulationSnapshot::Simulation);
+            const auto aiReader=world.game.prepareReadBoundary(false);
             CHECK(aiReader.entities==shared.entities);
             world.game.prepareAIOrders({},true,{},&shared);
             CHECK(world.game.snapshots().metrics.captures==before+1);
             CHECK(pipeline->statistics().admissions==1);
-            world.game.captureReadBoundary({},true);
+            world.game.prepareReadBoundary(true);
             CHECK(pipeline->statistics().admissions==1);
             pipeline->drain();
             CHECK(pipeline->entries(*turret).empty()); // Save/pause drain never publishes early.
@@ -885,7 +885,7 @@ TEST_SUITE("TurretTargeting")
             for (unsigned t=1;t<=delay;++t) {
                 world.game.stepCounter=t;
                 const auto before=world.game.snapshots().metrics.captures;
-                world.game.captureReadBoundary({},false,SimulationSnapshot::Simulation);
+                world.game.prepareReadBoundary(false);
                 CHECK(world.game.snapshots().metrics.captures==before+1);
                 pipeline->publish(world.game);
                 if (t<delay) CHECK(pipeline->entries(*turret).empty());
@@ -915,12 +915,12 @@ TEST_SUITE("TurretTargeting")
         }
         world.game.configureTurretTargeting(4,1,8,1);
         auto* pipeline=world.game.turretTargeting();
-        world.game.captureReadBoundary({},false);
+        world.game.prepareReadBoundary(false);
         auto* changed=turrets[7]; const auto* original=changed->runtime;
         auto upgraded=*original; ++upgraded.shootingRange; changed->runtime=&upgraded;
         for (unsigned tick=1;tick<=5;++tick) {
             world.game.stepCounter=tick;
-            world.game.captureReadBoundary({},false);
+            world.game.prepareReadBoundary(false);
             pipeline->publish(world.game);
             if (tick==4) {
                 CHECK(pipeline->entries(*changed).empty()); // The old source output is incompatible.
@@ -934,7 +934,7 @@ TEST_SUITE("TurretTargeting")
         pipeline->publish(world.game); // Remove the old incarnation in the middle of the table.
         for (auto* turret:turrets) if (turret!=changed) CHECK(pipeline->entries(*turret)==plan(*turret,8,1).entries);
         world.game.stepCounter=6;
-        world.game.captureReadBoundary({},false);
+        world.game.prepareReadBoundary(false);
         pipeline->drain();
         world.game.stepCounter=10;
         pipeline->publish(world.game);
@@ -959,7 +959,7 @@ TEST_SUITE("TurretTargeting")
             std::size_t chunks=0;
             for (unsigned tick=0;tick<4;++tick) {
                 world.game.stepCounter=tick;
-                const auto captured=world.game.captureReadBoundary({},false);
+                const auto captured=world.game.prepareReadBoundary(false);
                 chunks=captured.occupancy->stamps.chunks.size();
             }
             pipeline->drain();
@@ -989,7 +989,7 @@ TEST_SUITE("TurretTargeting")
             for (unsigned reuse=0;reuse<100;++reuse) {
                 turret->scriptIdentity=identity+reuse;
                 if (reuse) CHECK(pipeline->entries(*turret).empty());
-                world.game.captureReadBoundary({},false);
+                world.game.prepareReadBoundary(false);
                 pipeline->drain();
                 ++world.game.stepCounter;
                 pipeline->publish(world.game);
@@ -1010,17 +1010,17 @@ TEST_SUITE("TurretTargeting")
         world.game.configureTurretTargeting(1,2,8,1,false,false);
         auto* pipeline=world.game.turretTargeting();
         CHECK(pipeline->pendingRequirements(world.game,false)==0); // Only team one has turrets.
-        auto shared=world.game.captureReadBoundary({},false,SimulationSnapshot::bit(SimulationSnapshot::Component::Terrain));
-        CHECK_FALSE(shared.entities); CHECK(pipeline->statistics().observations==0);
+        auto shared=world.game.prepareReadBoundary(false);
+        CHECK(shared.entities); CHECK(pipeline->statistics().observations==0);
         world.game.stepCounter=1;
         CHECK(pipeline->pendingRequirements(world.game,true)==0);
-        world.game.captureReadBoundary({},true);
+        world.game.prepareReadBoundary(true);
         CHECK(pipeline->statistics().admissions==0);
         CHECK(pipeline->pendingRequirements(world.game,false)==requirements);
-        world.game.captureReadBoundary({},false);
+        world.game.prepareReadBoundary(false);
         CHECK(pipeline->statistics().admissions==1);
         world.game.snapshots().invalidateBoundary(); // A paused edit does not readmit this logical tick.
-        world.game.captureReadBoundary({},false);
+        world.game.prepareReadBoundary(false);
         CHECK(pipeline->statistics().admissions==1);
         world.game.stepCounter=2;
         pipeline->drain(); CHECK(pipeline->statistics().publications==0);
@@ -1034,17 +1034,17 @@ TEST_SUITE("TurretTargeting")
         auto* turret=world.addBuilding("defencetower",8,8); turret->owner->enemies=2;
         turret->owner->addToStaticAbilitiesLists(turret);
         world.game.configureTurretTargeting(1,1,8,1,false,false);
-        const auto shared=world.game.captureReadBoundary({},false,SimulationSnapshot::Simulation);
+        const auto shared=world.game.prepareReadBoundary(false);
         world.game.map.preparePendingWorld(shared);
         const auto captures=world.game.snapshots().metrics.captures;
         REQUIRE(world.addUnit(WARRIOR,11,8,1)); // Represents an order after completed capture.
         world.game.setWaitingOnMask(0);
         world.game.syncStep(0,Game::PreparationCompletion::Deferred);
-        CHECK(world.game.snapshots().metrics.captures==captures);
+        CHECK(world.game.snapshots().metrics.captures==captures+1); // Standard view reflects the order; no turret readmission.
         CHECK(world.game.turretTargeting()->statistics().admissions==1);
         CHECK(world.game.turretTargeting()->statistics().publications==0);
-        world.game.captureReadBoundary({},false,SimulationSnapshot::Simulation);
-        CHECK(world.game.snapshots().metrics.captures==captures+1);
+        world.game.prepareReadBoundary(false);
+        CHECK(world.game.snapshots().metrics.captures==captures+2);
         CHECK(world.game.turretTargeting()->statistics().admissions==2);
     }
     TEST_CASE("shared turret worker failures are reported at publication after draining")
@@ -1057,7 +1057,7 @@ TEST_SUITE("TurretTargeting")
             turret->owner->addToStaticAbilitiesLists(turret);
             world.game.configureTurretTargeting(1,1,8,1,false,false);
             turret->posX=-1; // Corrupt source geometry forces the immutable worker to fail.
-            world.game.captureReadBoundary({},false);
+            world.game.prepareReadBoundary(false);
             auto* pipeline=world.game.turretTargeting();
             CHECK_NOTHROW(pipeline->drain());
             CHECK(pipeline->statistics().publications==0);
@@ -1096,7 +1096,7 @@ TEST_SUITE("TurretTargeting")
                 world.game.map.computeExecutor().configure(path ? 1u<<(path-1) : 1u);
                 if (path) world.game.configureTurretTargeting(1,1,8,1,false,false);
                 auto* pipeline=world.game.turretTargeting();
-                auto initial=world.game.captureReadBoundary({},false,existing);
+                auto initial=world.game.prepareReadBoundary(false);
                 if (pipeline) pipeline->drain();
                 initial={};
                 const auto captureBefore=world.game.snapshots().metrics;
@@ -1108,7 +1108,7 @@ TEST_SUITE("TurretTargeting")
                 for (unsigned cycle=0;cycle<16;++cycle) {
                     ++world.game.stepCounter;
                     auto phase=Clock::now();
-                    const auto shared=world.game.captureReadBoundary({},false,existing);
+                    const auto shared=world.game.prepareReadBoundary(false);
                     captureNs+=elapsed(phase);
                     phase=Clock::now(); if (pipeline) pipeline->publish(world.game);
                     publishNs+=elapsed(phase);
@@ -1209,7 +1209,7 @@ TEST_SUITE("TurretTargeting")
                 if (!available && wasAvailable && !hit[n]) ++c.missed;
             }
             const int ammunition=turret->bullets;
-            world.game.captureReadBoundary({},false); world.game.turretTargeting()->publish(world.game);
+            world.game.prepareReadBoundary(false); world.game.turretTargeting()->publish(world.game);
             turret->turretStep(t); // Delayed lists miss these one-tick windows.
             CHECK(turret->bullets==ammunition);
             wasAvailable=available;
@@ -1260,7 +1260,7 @@ TEST_SUITE("TurretTargeting")
             game.configureTurretTargeting(delay,refresh,3,1);
             for (unsigned phase=0;phase<=delay;++phase) {
                 game.stepCounter=phase;
-                game.captureReadBoundary({},false); game.turretTargeting()->publish(game);
+                game.prepareReadBoundary(false); game.turretTargeting()->publish(game);
                 const auto checksum=game.turretTargeting()->checkSum(game);
                 const auto entries=game.turretTargeting()->entries(*turret);
                 auto* backend=new GAGCore::MemoryStreamBackend;
@@ -1278,6 +1278,12 @@ TEST_SUITE("TurretTargeting")
             }
             game.stepCounter+=delay; game.turretTargeting()->publish(game);
             REQUIRE(!game.turretTargeting()->entries(*turret).empty());
+            CHECK(firstValid(*turret,game.turretTargeting()->entries(*turret)).found());
+            const auto ordered=game.turretTargeting()->entries(*turret);
+            turret->owner->enemies=0;
+            CHECK(game.turretTargeting()->entries(*turret)==ordered);
+            CHECK_FALSE(firstValid(*turret,game.turretTargeting()->entries(*turret)).found());
+            turret->owner->enemies=2;
             CHECK(firstValid(*turret,game.turretTargeting()->entries(*turret)).found());
         }
     }
@@ -1332,7 +1338,7 @@ TEST_SUITE("TurretTargeting")
         auto* turret=world.addBuilding("defencetower",8,8); turret->owner->enemies=2;
         turret->owner->addToStaticAbilitiesLists(turret); turret->shootingCooldown=0;
         auto* target=world.addUnit(WARRIOR,11,8,1); REQUIRE(target); target->speed=0;
-        auto& game=world.game; game.captureReadBoundary({},false); game.stepCounter=1;
+        auto& game=world.game; game.prepareReadBoundary(false); game.stepCounter=1;
         game.turretTargeting()->publish(game); REQUIRE(!game.turretTargeting()->entries(*turret).empty());
         const auto* original=turret->runtime; auto altered=*original; ++altered.shootingRange;
         const auto epoch=turret->targetingEpoch;

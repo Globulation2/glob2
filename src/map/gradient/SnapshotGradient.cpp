@@ -137,17 +137,6 @@ bool MaterialSeedCache::trySeed(const SimulationSnapshot::Handle& snapshot, int 
     return true;
 }
 
-SimulationSnapshot::Requirements Request::requirements() const
-{
-    using namespace SimulationSnapshot;
-    auto result = bit(Component::Catalogs) | bit(Component::Terrain) | bit(Component::Resources)
-        | bit(Component::Occupancy) | bit(Component::Areas);
-    if (kind == Kind::Materials || kind == Kind::Markets) result |= bit(Component::Visibility);
-    if (kind == Kind::Markets) result |= bit(Component::Entities);
-    if (kind == Kind::Guard && crowding) result |= bit(Component::Entities);
-    return result;
-}
-
 void boxSum(Uint16* grid, int w, int h, CrowdingScratch& scratch)
 {
 	const int wMask=w-1, hMask=h-1;
@@ -608,13 +597,6 @@ std::shared_ptr<gradient_kernel::OwnedGradientField> ownPropagation(
         }
     };
     owned->data=std::move(data);return owned;
-}
-
-SimulationSnapshot::Requirements buildingRequirements()
-{
-    using namespace SimulationSnapshot;
-    return bit(Component::Catalogs) | bit(Component::Terrain) | bit(Component::Resources)
-        | bit(Component::Occupancy) | bit(Component::Areas);
 }
 
 BuildingSeed captureBuildingSeed(const Building& building, int swim, BuildingRoute route)

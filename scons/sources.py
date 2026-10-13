@@ -559,6 +559,8 @@ CLIENT_SOURCES = (
     'team/TeamRouting.cpp',
     'team/TeamStep.cpp',
     'team/stats/TeamStat.cpp',
+    'team/stats/TeamStatsSample.cpp',
+    'team/stats/TeamStatsPipeline.cpp',
     'unit/Unit.cpp',
     'unit/UnitAction.cpp',
     'unit/UnitActivity.cpp',

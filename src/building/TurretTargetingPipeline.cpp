@@ -43,8 +43,7 @@ bool compatible(const SourceSignature& a,const Building& b,bool inspectDamage=fa
         || a.x!=b.posX || a.y!=b.posY || a.width!=b.runtime->width || a.height!=b.runtime->height
         || a.range!=b.runtime->shootingRange || a.speed!=b.runtime->shootSpeed || a.rhythm!=b.runtime->shootRhythm
         || a.buildingDamage!=b.runtime->projectileBuildingDamage
-        || a.unitTeams!=(b.owner->attackableTeams() & ~b.owner->sharedVisionExchange)
-        || a.buildingTeams!=b.owner->attackableTeams() || a.damageCount!=b.runtime->unitCount) return false;
+        || a.damageCount!=b.runtime->unitCount) return false;
     return !inspectDamage || a.damageDigest==damageDigest(b);
 }
 bool due(const Game& game,unsigned team,const Configuration& rules)
@@ -69,6 +68,11 @@ Uint64 recordDigest(const SourceSignature& source,const std::vector<Entry>& entr
 std::size_t recordBytes(std::size_t capacity) { return 768+capacity*16; }
 
 }
+// The allocation-ablation control grows three entries to a four-entry vector.
+// Reserve its worst output capacity even before workers finish.
+static unsigned outputReservation(const Configuration& rules)
+{ return rules.capacity==3 && !rules.reusePreparation ? 4 : rules.capacity; }
+
 struct Pipeline::State
 {
     struct Record { SourceSignature source; std::vector<Entry> entries; Uint32 observed=0; Uint64 digest=0; };
@@ -264,7 +268,7 @@ void Pipeline::admit(const Game& game,const SimulationSnapshot::Handle& captured
             }
             job->sources.push_back(source(*turret,std::move(damage),rowDigest)); ++s.metrics.sources;
         }
-        generation->reserved+=job->sources.size()*recordBytes(s.rules.capacity);
+        generation->reserved+=job->sources.size()*recordBytes(outputReservation(s.rules));
         if (!job->sources.empty()) generation->jobs.push_back(std::move(job));
     }
     if (s.rules.profileCpu) s.metrics.sourceCpu+=threadCpuNs()-sourceStart;
@@ -472,7 +476,7 @@ bool Pipeline::load(const Game& game,GAGCore::InputStream* in)
             for (unsigned n=0;n<records;++n) {
                 in->readEnterSection(n); auto r=record(); in->readLeaveSection();
                 if (!job->output.empty() && !IdentityLess{}(job->output.back().source.identity,r.source.identity)) return false;
-                g->reserved+=recordBytes(rules.capacity); job->output.push_back(std::move(r));
+                g->reserved+=recordBytes(outputReservation(rules)); job->output.push_back(std::move(r));
             }
             g->jobs.push_back(std::move(job)); s.reservations+=g->reserved; s.pending.push_back(std::move(g)); in->readLeaveSection();
         }

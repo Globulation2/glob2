@@ -63,7 +63,7 @@ void Building::kill(int diagnosticRemoval)
 
 	if (!type->isVirtual)
 	{
-		auto& measurements=owner->stats.measurements;
+		auto& measurements=owner->stats.events();
 		measurements.variants.resize(owner->game->buildingsTypes.size());
 		++measurements.variants[typeNum].removed[diagnosticRemoval];
 		if (type->shortTypeNum>=0 && type->shortTypeNum<IntBuildingType::NB_BUILDING && getLongLevel()<NB_BUILDING_LONG_LEVELS)
@@ -125,7 +125,7 @@ void Building::kill(int diagnosticRemoval)
 		else
 		{
 			if (!u->isDead)
-				++u->owner->stats.measurements.deaths[u->typeNum][u->hp < UNIT_HP_DEATH_THRESHOLD ? u->diagnosticDeathCause : GameplayMeasurements::TRAPPED];
+				++u->owner->stats.events().deaths[u->typeNum][u->hp < UNIT_HP_DEATH_THRESHOLD ? u->diagnosticDeathCause : GameplayMeasurements::TRAPPED];
 			u->isDead=true;
 			u->standardRandomActivity();
 		}
@@ -245,18 +245,18 @@ MaterialDeliveryResult Building::deliverMaterialPacket(int resourceType, Materia
 		funding[resourceType]=std::min(accepted,constructionMaterialNeed(resourceType));
 		if (reserveMaterials(funding)) { funded=funding[resourceType]; constructionReserved[resourceType]+=funded; }
 	}
-	owner->stats.measurements.delivered[resourceType] += accepted;
+	owner->stats.events().delivered[resourceType] += accepted;
 	if (type->canExchange)
-		owner->stats.measurements.transferredIn[resourceType] += accepted;
+		owner->stats.events().transferredIn[resourceType] += accepted;
 	if (constructionResultState == REPAIR)
-		owner->stats.measurements.repairDelivered[resourceType] += accepted;
+		owner->stats.events().repairDelivered[resourceType] += accepted;
 	applyConstructionHealth(funded);
 	MaterialDeliveryResult result; result.acceptedStock=accepted;
 	result.discardedNumerator=Uint64(packet.numerator)*multiplier-Uint64(accepted)*packet.denominator;
 	result.discardedDenominator=Uint64(packet.denominator)*multiplier;
 	const auto divisor=std::gcd(result.discardedNumerator,result.discardedDenominator);
 	result.discardedNumerator/=divisor; result.discardedDenominator/=divisor;
-	if (result.discardedNumerator) ++owner->stats.measurements.materialSpillageEvents;
+	if (result.discardedNumerator) ++owner->stats.events().materialSpillageEvents;
 	update();
 	return result;
 }
@@ -305,9 +305,9 @@ MaterialPacket Building::withdrawMaterialPacket(int resourceType)
 	const int before = materials[resourceType];
 	materials[resourceType]-=std::min(availableMaterial(resourceType), type->materialMultiplier[resourceType]);
 	materials[resourceType]= std::max(materials[resourceType], 0);
-	owner->stats.measurements.withdrawn[resourceType] += before - materials[resourceType];
+	owner->stats.events().withdrawn[resourceType] += before - materials[resourceType];
 	if (type->canExchange)
-		owner->stats.measurements.transferredOut[resourceType] += before - materials[resourceType];
+		owner->stats.events().transferredOut[resourceType] += before - materials[resourceType];
 	if ((type->runtimeSuppliesStock || type->runtimeSuppliesDirectStock || type->useTeamMaterials) && availableMaterial(resourceType)<=0)
 		owner->map->dirtyMarketGradientsSlot(owner->teamNumber, resourceType);
 	updateCallLists();
@@ -483,7 +483,7 @@ Uint32 Building::eatOnce(Uint32 *mask, Unit* visitor)
 		if (!reserveMaterials(cost)) throw std::runtime_error("Insufficient meal materials");
 		consumeReservedMaterials(cost, GameplayMeasurements::MEAL);
 	}
-	++owner->stats.measurements.meals;
+	++owner->stats.events().meals;
 	Uint32 fruitMask=0;
 	Uint32 fruitCount=0;
 	for (int i=0; i<HAPPINESS_COUNT; i++)
@@ -494,7 +494,7 @@ Uint32 Building::eatOnce(Uint32 *mask, Unit* visitor)
 			materials[resId]--;
 			if ((type->useTeamMaterials || type->runtimeSuppliesStock || type->runtimeSuppliesDirectStock) && availableMaterial(resId)==0)
 				owner->map->dirtyMarketGradientsSlot(owner->teamNumber,resId);
-			++owner->stats.measurements.consumed[GameplayMeasurements::MEAL][resId];
+			++owner->stats.events().consumed[GameplayMeasurements::MEAL][resId];
 			fruitMask|=(1<<i);
 			fruitCount++;
 		}

@@ -102,7 +102,7 @@ TEST_SUITE("TeamStatsSave")
 		auto *site = world.game.addBuilding(
 			20, 40, globalContainer->buildingsTypes.getTypeNum("inn", 0, true), 0);
 		REQUIRE(site != nullptr);
-		auto &m = world.team->stats.measurements;
+		auto &m = world.team->stats.editMeasurements();
 
 		auto expect = [&](Uint64 &bucket)
 		{
@@ -255,7 +255,7 @@ TEST_SUITE("TeamStatsSave")
 		auto *clearing = w.flag("clearingflag", 30, 50, 0);
 		auto *exploration = w.flag("explorationflag", 50, 50, 0);
 		sampleAll(w.game());
-		auto &m = w.team(0)->stats.measurements;
+		auto &m = w.team(0)->stats.editMeasurements();
 		struct Case
 		{
 			int type, x, y;
@@ -323,7 +323,7 @@ TEST_SUITE("TeamStatsSave")
 		dead->isDead = true;
 		const Uint32 checksum = w.game().checkSum();
 		w.team(0)->stats.sampleDefence(w.team(0));
-		const auto &m = w.team(0)->stats.measurements;
+		const auto &m = w.team(0)->stats.editMeasurements();
 		CHECK(m.defenceTick == w.game().stepCounter);
 		CHECK(m.warriors[M::HOME] == 2);
 		CHECK(m.warriors[M::AWAY] == 1);
@@ -358,8 +358,8 @@ TEST_SUITE("TeamStatsSave")
 		world.step(1100);
 		const auto &stats = world.team->stats;
 		REQUIRE(stats.measurementHistory.size() >= 2);
-		CHECK(workerTicks(stats.measurements) > 0);
-		CHECK(stats.measurements.defenceTick == 1024);
+		CHECK(workerTicks(stats.measurements()) > 0);
+		CHECK(stats.measurements().defenceTick == 1024);
 
 		auto *backend = new GAGCore::MemoryStreamBackend;
 		GAGCore::BinaryOutputStream out(backend);
@@ -373,10 +373,10 @@ TEST_SUITE("TeamStatsSave")
 		const auto &loaded = restored.game.teams[0]->stats;
 		CHECK(loaded.labourCoverageStartTick == stats.labourCoverageStartTick);
 		CHECK(loaded.measurementHistory == stats.measurementHistory);
-		CHECK(std::equal(std::begin(loaded.measurements.labour), std::end(loaded.measurements.labour),
-						 std::begin(stats.measurements.labour)));
-		CHECK(std::equal(&loaded.measurements.filling[0][0], &loaded.measurements.filling[0][0] + 16,
-						 &stats.measurements.filling[0][0]));
+		CHECK(std::equal(std::begin(loaded.measurements().labour), std::end(loaded.measurements().labour),
+						 std::begin(stats.measurements().labour)));
+		CHECK(std::equal(&loaded.measurements().filling[0][0], &loaded.measurements().filling[0][0] + 16,
+						 &stats.measurements().filling[0][0]));
 	}
 
 	TEST_CASE("the obsolete team-stats/version129-muka-1100.game.gz save is rejected [save-format]")

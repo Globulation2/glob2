@@ -1072,7 +1072,7 @@ TEST_CASE("embedded resource save starts with an invalid installed catalog" * do
     CHECK_THROWS(ResourceRegistry::builtins());
     // Old files carry numeric IDs only. Their adapter must be frozen too, not
     // fall back to the missing or invalid default catalog at process startup.
-    const auto legacyBytes=glob2test::readFile(glob2test::inflated("javascript/profile1-initial155.game.gz"));
+    const auto legacyBytes=glob2test::readFile(glob2test::inflated("javascript/profile1-initial159.game.gz"));
     GAGCore::BinaryInputStream oldInput(new GAGCore::MemoryStreamBackend(legacyBytes.data(),legacyBytes.size()));
     oldInput.seekFromStart(0);
     GameGUI oldGame(false);
@@ -1355,7 +1355,7 @@ TEST_CASE("frozen resource saves ignore reordered modified installed defaults in
     const auto defaults=ResourceRegistry::builtins();
     REQUIRE(defaults->properties(*defaults->find("trees")).growthRate==0);
     REQUIRE(resourceIndex(*defaults->find("trees"))==0);
-    const auto bytes=glob2test::readFile(glob2test::inflated("javascript/profile1-initial155.game.gz"));
+    const auto bytes=glob2test::readFile(glob2test::inflated("javascript/profile1-initial159.game.gz"));
     GAGCore::BinaryInputStream input(new GAGCore::MemoryStreamBackend(bytes.data(),bytes.size()));
     input.seekFromStart(0);
     GameGUI restored(false);

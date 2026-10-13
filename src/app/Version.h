@@ -7,10 +7,14 @@
 // This is the version of map and savegame format, and all of the recorded data on the server
 #define VERSION_MAJOR 0
 #define MINIMUM_VERSION_MINOR 58
-#define VERSION_MINOR 155
-#define SAVE_MINIMUM_VERSION_MINOR 155
-// version 155 uses persisted cached turret targeting; earlier saved games are rejected.
+#define VERSION_MINOR 159
+#define SAVE_MINIMUM_VERSION_MINOR 159
+// version 159 uses persisted cached turret targeting; earlier saved games are rejected.
 // MINIMUM_VERSION_MINOR remains the map-format floor so existing maps stay usable.
+// version 158 persists completed pending statistics frames.
+// version 157 persists worker-finalized approximate statistics aggregates.
+// version 156 removes the redundant pending statistics input digest.
+// version 155 schedules team statistics from shared world snapshots.
 // version 154 restores mature resource stock oscillation; replay trajectories change.
 // version 153 embeds immutable unit catalogs and composed unit continuation.
 // version 152 gives world operations and legacy stories private streams.
@@ -194,7 +198,8 @@
 //NetMessage, and the likes, in parallel to change of the VERSION_MINOR above. It is part of
 //the simulation version (src/online/SimVersion.cpp). The YOG lobby that also checked it
 //(YOG_MIN_CLIENT_NET_PROTOCOL_VERSION) was removed at protocol 51.
-#define NET_PROTOCOL_VERSION 69
+#define NET_PROTOCOL_VERSION 70
+// Protocol 70 transfers complete delayed measurement frames (format 158).
 // Protocol 68 transfers area-effect funding and fractional services.
 // Protocol 67 combines scheduled building gradients and delayed resource growth.
 // protocol 61 requires format-143 AI decision scheduling and the match-wide AI order delay.

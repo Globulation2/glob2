@@ -1089,8 +1089,8 @@ FeedingSceneResult measureFeedingScene(const char* label,int stage,int distance,
             }
             if(tick+1==warmup) {
                 for(int unit=0;unit<Unit::MAX_COUNT;++unit)settledSurvivors+=world.team->myUnits[unit]!=nullptr;
-                previousMeals=world.team->stats.measurements.meals;
-                previousDelivered=world.team->stats.measurements.delivered[WHEAT];
+                previousMeals=world.team->stats.measurements().meals;
+                previousDelivered=world.team->stats.measurements().delivered[WHEAT];
             }
             if(tick>=warmup) {
                 reservedSeatTicks+=inn->unitsInside.size();workingTicks+=inn->unitsWorking.size();
@@ -1099,10 +1099,10 @@ FeedingSceneResult measureFeedingScene(const char* label,int stage,int distance,
             }
         }
         int survivors=0;for(int unit=0;unit<Unit::MAX_COUNT;++unit)survivors+=world.team->myUnits[unit]!=nullptr;
-        const auto meals=world.team->stats.measurements.meals-previousMeals;
+        const auto meals=world.team->stats.measurements().meals-previousMeals;
         std::cout<<"MAXIMA_FEEDING_MEASUREMENT case="<<label<<" stage="<<stage<<" route="<<distance<<" population="<<population
             <<" workers="<<workers<<" explorers="<<explorers<<" distinct_carriers="<<carriers.size()<<" additional_feeders="<<additionalFeeders<<" survivors="<<survivors
-            <<" settled_survivors="<<settledSurvivors<<" meals="<<meals<<" delivered="<<world.team->stats.measurements.delivered[WHEAT]-previousDelivered
+            <<" settled_survivors="<<settledSurvivors<<" meals="<<meals<<" delivered="<<world.team->stats.measurements().delivered[WHEAT]-previousDelivered
             <<" seat_ticks="<<reservedSeatTicks<<" carrier_ticks="<<workingTicks<<" hungry_ticks="<<hungryTicks
             <<" window="<<window<<'\n';
         CHECK(reservedSeatTicks<=Uint64(window)*inn->maxUnitInside);

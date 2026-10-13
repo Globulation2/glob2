@@ -493,7 +493,7 @@ TEST_SUITE("BuildingAreaEffects")
 		SimulationSnapshot::Storage storage;
 		auto snapshot = SimulationSnapshot::capture(
 			world.game, SimulationSnapshot::captureCatalog(world.game),
-			ResourceGrowth::Pipeline::requirements(), nullptr, &storage);
+			SimulationSnapshot::Simulation, nullptr, &storage);
 		CHECK(snapshot.areaFertility->values[tile] == 20000);
 		const auto fertilityGeneration = world.game.areaEffects.fertilityGeneration();
 		world.team->allies ^= 2;

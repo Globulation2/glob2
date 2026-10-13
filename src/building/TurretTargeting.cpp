@@ -391,7 +391,7 @@ Observation observe(const Game& game,const SimulationSnapshot::Handle& captured,
         throw std::invalid_argument("Turret observation is not the completed-world boundary");
     Observation o;
     o.compactOutputs=capturedFacts;
-    o.world=captured.project(capturedFacts ? targetingRequirements : requirements);
+    o.world=captured.turretView();
     o.blocksProjectiles=game.map.hasProjectileBlockingTerrain();
     o.indexBudget=previous && previous->indexBudget ? previous->indexBudget : std::make_shared<IndexBudget>();
     if (!deferIndex) prepareIndex(o,previous ? previous->index : nullptr,profileCpu);
@@ -405,19 +405,7 @@ Observation observe(const Game& game,const SimulationSnapshot::Handle& captured,
     o.logicalDigest=digestWord(o.logicalDigest,o.world.catalogs->units->checksum());
     o.offense.reserve(o.world.entities->units.size());
     for (const auto& u:o.world.entities->units) {
-        if (capturedFacts) {
-            const int strength=int(std::clamp<Sint64>((Sint64(u.performance[ATTACK_STRENGTH])+u.experienceLevel)*game.gameHeader.getGlassCannonScale(),0,INT_MAX));
-            if (!game.areaEffects.enabled()) o.offense.push_back(strength);
-            else {
-                const auto* live=game.resolveUnit(u.identity);
-                if (!live) throw std::logic_error("Turret observation boundary changed");
-                o.offense.push_back(live->applyAreaAttack(strength));
-            }
-        } else {
-            const auto* live=game.resolveUnit(u.identity);
-            if (!live) throw std::logic_error("Turret observation boundary changed");
-            o.offense.push_back(live->getRealAttackStrength());
-        }
+        o.offense.push_back(u.realAttackStrength);
         // Independent entity fingerprints avoid a long owner-thread hash chain.
         // Slot/identity resolution makes compact record order irrelevant.
         Uint64 hash=SimulationSnapshot::DigestSeed^0x554e4954u;
@@ -445,7 +433,7 @@ Observation observe(const Game& game,const Observation* previous)
     // Fixtures may mutate scalar facts without advancing time. Announce that
     // observation explicitly; production passes the existing boundary instead.
     game.snapshots().invalidateBoundary();
-    return observe(game,game.captureReadBoundary({},true,requirements),previous);
+    return observe(game,game.captureReadBoundary(),previous);
 }
 std::size_t retainedIndexBytes(const Observation& o) { return o.indexBudget ? o.indexBudget->bytes.load()+DigestReservation : 0; }
 Plan plan(const Building& b,unsigned capacity,unsigned margin) { return run(source(b),Live{b},capacity,margin); }

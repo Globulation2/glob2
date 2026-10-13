@@ -20,6 +20,7 @@
 #include "DatasetWriter.h"
 #include "Game.h"
 #include "TurretTargeting.h"
+#include "TeamStatsPipeline.h"
 #include "BuildingArtwork.h"
 #include "ai/BuildingCapabilities.h"
 #include "GameUtilities.h"
@@ -304,6 +305,7 @@ void Game::clearGame()
 void Game::setGameHeader(const GameHeader& newGameHeader, bool saveAI)
 {
 	if (saveAI) {
+        if(statsPipeline && statsPipeline->hasState() && gameHeader.getTeamStatsDelay()!=newGameHeader.getTeamStatsDelay())throw std::logic_error("A saved match cannot change its statistics delay");
 		drainAI();
 		if (aiPipeline && gameHeader.getAIOrderDelay()!=newGameHeader.getAIOrderDelay())
 			throw std::logic_error("A saved match cannot change its AI delay");

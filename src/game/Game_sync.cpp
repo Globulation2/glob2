@@ -219,11 +219,9 @@ void Game::syncStep(Sint32 localTeam, PreparationCompletion completion)
 {
 	ensureTurretTargeting();
 	map.applyGradientBackendRequest();
-	if (turretTargetingPipeline && (turretTargetingPipeline->admissionPending(*this,anyPlayerWaited) || map.pendingWorldRequirements())) {
-		const auto captured=captureReadBoundary({},anyPlayerWaited);
-		map.preparePendingWorld(captured);
-	} else map.preparePendingWorld();
-
+    // Also serves standalone/headless callers without an Engine read boundary.
+    const auto observed=prepareReadBoundary(anyPlayerWaited);
+	map.preparePendingWorld(observed);
 	applyClientRequests();
 	if (!anyPlayerWaited)
 	{
@@ -249,7 +247,7 @@ void Game::syncStep(Sint32 localTeam, PreparationCompletion completion)
 		if ((stepCounter & 31) == 0)
 		{
 			for (int t = 0; t < mapHeader.getNumberOfTeams(); ++t)
-				AITelemetry::capture(teams[t], false, false);
+				AITelemetry::capture(teams[t], (stepCounter & 511)==0, getenv("GLOB2_TEAM_TIMELINE")!=nullptr);
 			if (globalContainer->replayWriter)
 				globalContainer->replayWriter->captureTelemetry();
 		}
@@ -297,13 +295,7 @@ void Game::syncStep(Sint32 localTeam, PreparationCompletion completion)
 		map.stagePeriodicGradientPreparation();
         map.stageResourceGrowth();
 		if (completion == PreparationCompletion::Complete) {
-            if (turretTargetingPipeline) {
-                std::vector<unsigned> readers;
-                for (unsigned p=0;p<unsigned(gameHeader.getNumberOfPlayers());++p)
-                    if (players[p] && players[p]->ai) readers.push_back(p);
-                map.preparePendingWorld(captureReadBoundary(readers,false));
-            }
-            else map.preparePendingWorld();
+            map.preparePendingWorld(prepareReadBoundary(false));
         }
 	}
 }

@@ -203,7 +203,7 @@ TEST_SUITE("ResourceGrowth")
 		b.proposals = {increment(m, m.coordToIndex(8, 8), id)};
 		ResourceGrowth::apply(m, b, metrics);
 		CHECK(m.getResource(8, 8).type == NO_RES_TYPE);
-		const auto &stats = world.game.teams[0]->stats.measurements;
+		const auto &stats = world.game.teams[0]->stats.editMeasurements();
 		CHECK(stats.growthGlobal[0][materialIndex(MaterialId::Food)] == 1);
 		CHECK(stats.growthGlobal[0][materialIndex(MaterialId::Paper)] == 1);
 		CHECK(stats.growthGlobal[1][materialIndex(MaterialId::Food)] == 6);
@@ -300,8 +300,7 @@ TEST_SUITE("ResourceGrowth")
 		auto &m = world.game.map;
 		const auto id = crop(m, true);
 		seed(m, id);
-		const auto snapshot = world.game.snapshotStore().captureBoundary(
-			world.game, ResourceGrowth::Pipeline::requirements());
+		const auto snapshot = world.game.snapshotStore().captureBoundary(world.game);
 		const auto before = m.checkSum(true);
 		ResourceGrowth::Batch a, b;
 		MersenneTwister r1(991), r2(991);
@@ -364,17 +363,19 @@ TEST_SUITE("ResourceGrowth")
 				return total;
 			};
 			const auto initialFood = foodStocks();
+			// Conservation compares the current map and live event ledger;
+			// published measurements deliberately lag the simulation.
 			const auto initialAdded =
-				shared.game.teams[0]->stats.measurements.growthGlobal[1][materialIndex(MaterialId::Food)];
-            const auto initialRemoved = shared.game.teams[0]->stats.measurements.growthGlobal[2][materialIndex(MaterialId::Food)];
+				shared.game.teams[0]->stats.events().growthGlobal[1][materialIndex(MaterialId::Food)];
+            const auto initialRemoved = shared.game.teams[0]->stats.events().growthGlobal[2][materialIndex(MaterialId::Food)];
 			for (int tick = 0; tick < 40; ++tick)
 			{
 				fallback.step();
 				shared.step();
 				const auto &metrics = shared.game.map.resourceGrowthMetrics();
 				CHECK(metrics.publishedProposals == metrics.accepted + metrics.rejected);
-				CHECK(foodStocks() + shared.game.teams[0]->stats.measurements.growthGlobal[2][materialIndex(MaterialId::Food)] - initialRemoved == initialFood + metrics.stockAdded);
-				CHECK(shared.game.teams[0]->stats.measurements.growthGlobal[1][materialIndex(MaterialId::Food)] ==
+				CHECK(foodStocks() + shared.game.teams[0]->stats.events().growthGlobal[2][materialIndex(MaterialId::Food)] - initialRemoved == initialFood + metrics.stockAdded);
+				CHECK(shared.game.teams[0]->stats.events().growthGlobal[1][materialIndex(MaterialId::Food)] ==
 					  initialAdded + metrics.stockAdded);
 				CHECK(shared.game.checkSum(nullptr, nullptr, nullptr, true) ==
 					  fallback.game.checkSum(nullptr, nullptr, nullptr, true));
@@ -394,8 +395,7 @@ TEST_SUITE("ResourceGrowth")
 		CHECK_THROWS(map.setResourceGrowthDelay(3));
 		CHECK(pipeline.needsPreparation());
 		CHECK(pipeline.count() == 0);
-		auto snapshot = world.game.snapshotStore().captureBoundary(
-			world.game, ResourceGrowth::Pipeline::requirements());
+		auto snapshot = world.game.snapshotStore().captureBoundary(world.game);
 		pipeline.prepare(snapshot, map.computeExecutor());
 		map.setResourceGrowthDelay(8);
 		CHECK_THROWS(map.setResourceGrowthDelay(3));
@@ -431,8 +431,7 @@ TEST_SUITE("ResourceGrowth")
 		glob2test::HeadlessGame world({.header = true});
 		auto &m = world.game.map;
 		seed(m, crop(m));
-		const auto snapshot = world.game.snapshotStore().captureBoundary(
-			world.game, ResourceGrowth::Pipeline::requirements());
+		const auto snapshot = world.game.snapshotStore().captureBoundary(world.game);
 		ResourceGrowth::Batch a, b;
 		MersenneTwister first(991), second(991);
 		ResourceGrowth::calculate(snapshot.view(), first, a);
@@ -483,8 +482,7 @@ TEST_SUITE("ResourceGrowth")
 		seed(map, crop(map));
 		ResourceGrowth::Pipeline pipeline;
 
-		auto snapshot = world.game.snapshotStore().captureBoundary(
-			world.game, ResourceGrowth::Pipeline::requirements());
+		auto snapshot = world.game.snapshotStore().captureBoundary(world.game);
 		pipeline.stage(snapshot.tick, 991);
 		pipeline.prepare(snapshot, map.computeExecutor());
 		pipeline.finish();
@@ -507,8 +505,7 @@ TEST_SUITE("ResourceGrowth")
 		map.configureCompute(3);
 		auto &executor = map.computeExecutor();
 		ResourceGrowth::Pipeline pipeline;
-		auto first = world.game.snapshotStore().captureBoundary(
-			world.game, ResourceGrowth::Pipeline::requirements());
+		auto first = world.game.snapshotStore().captureBoundary(world.game);
 		pipeline.stage(first.tick, 1);
 		pipeline.prepare(first, executor);
 		pipeline.finish();
@@ -531,8 +528,7 @@ TEST_SUITE("ResourceGrowth")
 			pipeline.pending.front()->work = fence.work;
 			fence.entered.wait();
 			world.game.stepCounter = 1;
-			auto second = world.game.snapshotStore().captureBoundary(
-				world.game, ResourceGrowth::Pipeline::requirements());
+			auto second = world.game.snapshotStore().captureBoundary(world.game);
 			pipeline.stage(second.tick, 2);
 			pipeline.prepare(second, executor);
 			// Join only the later job; the first worker remains blocked.
@@ -615,7 +611,7 @@ TEST_CASE("configured seeds preserve rates variety collisions and saved output" 
     for (int y = 0; y < map.getH(); y += 2)
         for (int x = 0; x < map.getW(); x += 2)
             map.replaceResource(map.coordToIndex(x, y), Resource{Uint16(resourceIndex(id)), 3, 1, 0});
-    auto snapshot = world.game.snapshotStore().captureBoundary(world.game, ResourceGrowth::Pipeline::requirements());
+    auto snapshot = world.game.snapshotStore().captureBoundary(world.game);
     ResourceGrowth::Batch batch;
     MersenneTwister random(991);
     ResourceGrowth::calculate(snapshot.view(), random, batch);

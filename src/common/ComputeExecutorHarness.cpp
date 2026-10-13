@@ -212,6 +212,165 @@ TEST_CASE("deferred batches complete with lanes and isolated errors")
 		CHECK(executor.metrics().deferredBatches == 0); CHECK(executor.metrics().ownerJobs + executor.metrics().workerJobs == 0);
 	}
 }
+
+TEST_CASE("idle workers retain parallelism for independent and mixed lane groups")
+{
+    if constexpr (!GAGCore::ThreadSupport::available) return;
+    for (const auto mode : {ComputeTelemetryMode::Off, ComputeTelemetryMode::Waits,
+                            ComputeTelemetryMode::Trace})
+    {
+        ComputeExecutor executor;
+        executor.configureTelemetry(mode);
+        executor.configure(3);
+        for (unsigned shape = 0; shape < 4; ++shape)
+        {
+            CAPTURE(mode); CAPTURE(shape);
+            struct Gate {
+                std::atomic<unsigned> entered{0};
+                std::atomic<bool> release{false};
+                static void run(void* value, std::size_t) {
+                    auto& gate = *static_cast<Gate*>(value);
+                    ++gate.entered;
+                    const auto deadline = std::chrono::steady_clock::now() + std::chrono::seconds(5);
+                    while (!gate.release && std::chrono::steady_clock::now() < deadline)
+                        std::this_thread::yield();
+                }
+            } gate;
+            // Let both workers park between bursts. A lone notification must
+            // not serialize a batch that has two independent runnable heads.
+            std::this_thread::sleep_for(std::chrono::milliseconds(2));
+            const ComputeExecutor::Job job{Gate::run, &gate};
+            std::array<ComputeExecutor::Group, 2> groups;
+            switch (shape) {
+                case 0: groups = {{{2, job}, {0, job}}}; break;
+                case 1: groups = {{{1, job, 4}, {1, job, 5}}}; break;
+                case 2: groups = {{{2, job, 4}, {1, job, 5}}}; break;
+                default: groups = {{{1, job, 4}, {1, job}}}; break;
+            }
+            auto batch = executor.submit(groups, shape);
+            const auto deadline = std::chrono::steady_clock::now() + std::chrono::seconds(5);
+            while (gate.entered < 2 && std::chrono::steady_clock::now() < deadline)
+                std::this_thread::yield();
+            CHECK(gate.entered >= 2);
+            gate.release = true;
+            executor.join(batch);
+            CHECK(gate.entered == (shape == 2 ? 3u : 2u));
+        }
+    }
+}
+
+TEST_CASE("repeated lane groups and empty groups preserve ordering and independent work")
+{
+    for (unsigned threads : {1u, 3u})
+    {
+        CAPTURE(threads);
+        ComputeExecutor executor;
+        executor.configure(threads);
+        struct State {
+            std::atomic<unsigned> entered{0}, active{0}, overlaps{0};
+            std::atomic<bool> release{false}, first{true};
+            std::mutex mutex;
+            std::vector<std::size_t> order;
+            static void wait(State& state) {
+                ++state.entered;
+                const auto deadline = std::chrono::steady_clock::now() + std::chrono::seconds(5);
+                while (!state.release && std::chrono::steady_clock::now() < deadline)
+                    std::this_thread::yield();
+            }
+            static void ordered(void* value, std::size_t index) {
+                auto& state = *static_cast<State*>(value);
+                if (state.active.fetch_add(1)) ++state.overlaps;
+                if (state.first.exchange(false)) wait(state);
+                { std::lock_guard lock(state.mutex); state.order.push_back(index); }
+                --state.active;
+            }
+            static void independent(void* value, std::size_t) { wait(*static_cast<State*>(value)); }
+        } state;
+        const ComputeExecutor::Job job{State::ordered, &state};
+        const std::array<ComputeExecutor::Group, 5> groups{{
+            {0, job, 4}, {2, job, 4}, {0, job, 4}, {2, job, 4},
+            {1, {State::independent, &state}}}};
+        // Serial fallback starts at join; threaded submission must expose both heads.
+        if (threads == 1 || !GAGCore::ThreadSupport::available) state.release = true;
+        auto batch = executor.submit(groups, 10);
+        if (!state.release)
+        {
+            const auto deadline = std::chrono::steady_clock::now() + std::chrono::seconds(5);
+            while (state.entered < 2 && std::chrono::steady_clock::now() < deadline)
+                std::this_thread::yield();
+            CHECK(state.entered == 2);
+            state.release = true;
+        }
+        executor.join(batch);
+        CHECK(state.order == std::vector<std::size_t>{0, 1, 0, 1});
+        CHECK(state.overlaps == 0);
+        CHECK(state.entered == 2);
+        CHECK(executor.liveBatches() == 0);
+    }
+}
+
+TEST_CASE("external completion and continuation wake parked lane successors")
+{
+    if constexpr (!GAGCore::ThreadSupport::available) return;
+    for (const auto mode : {ComputeTelemetryMode::Off, ComputeTelemetryMode::Waits,
+                            ComputeTelemetryMode::Trace})
+    {
+        ComputeExecutor executor;
+        executor.configureTelemetry(mode);
+        executor.configure(2);
+        for (bool resume : {false, true})
+        for (bool early : {false, true})
+        {
+            CAPTURE(mode); CAPTURE(resume); CAPTURE(early);
+            struct Suspended {
+                ComputeExecutor& executor;
+                std::mutex mutex;
+                std::condition_variable ready;
+                ComputeExecutor::CompletionTicket ticket;
+                std::atomic<bool> allowReturn{true};
+                static void run(void* value, std::size_t) {
+                    auto& state = *static_cast<Suspended*>(value);
+                    auto ticket = state.executor.defer();
+                    { std::lock_guard lock(state.mutex); state.ticket = std::move(ticket); }
+                    state.ready.notify_one();
+                    const auto deadline = std::chrono::steady_clock::now() + std::chrono::seconds(5);
+                    while (!state.allowReturn && std::chrono::steady_clock::now() < deadline)
+                        std::this_thread::yield();
+                }
+            } state{executor};
+            state.allowReturn = !early;
+            const ComputeExecutor::Group suspend{1, {Suspended::run, &state}, 7};
+            auto first = executor.submit(std::span(&suspend, 1), 10);
+            ComputeExecutor::CompletionTicket ticket;
+            {
+                std::unique_lock lock(state.mutex);
+                REQUIRE(state.ready.wait_for(lock, std::chrono::seconds(5), [&] { return bool(state.ticket); }));
+                ticket = state.ticket;
+            }
+            Counter continued, successor, unrelated;
+            const ComputeExecutor::Group next{3, {bump, &successor}, 7};
+            auto second = executor.submit(std::span(&next, 1), 11);
+            const ComputeExecutor::Group loose{1, {bump, &unrelated}};
+            auto other = executor.submit(std::span(&loose, 1), 11);
+            // The late case parks the worker after the callback returns. The
+            // early case resolves the ticket while its callback is still active.
+            if (!early)
+            {
+                executor.join(other);
+                std::this_thread::sleep_for(std::chrono::milliseconds(2));
+            }
+            CHECK(successor.value == 0);
+            CHECK_FALSE(executor.finished(first));
+            CHECK(resume ? ticket->resume({bump, &continued}) : ticket->complete());
+            state.allowReturn = true;
+            executor.join(other);
+            executor.join(first);
+            executor.join(second);
+            CHECK(continued.value == (resume ? 1 : 0));
+            CHECK(successor.value == 6);
+        }
+    }
+}
 }
 
 TEST_SUITE("ComputeExecutor")
@@ -391,9 +550,9 @@ TEST_CASE("a lane keeps submission order: a lane job due before a live earlier o
 TEST_CASE("the slot count covers every producer's horizon")
 {
 	static_assert(ComputeExecutor::Slots >= (ComputeExecutor::AIHorizon + 1) + (ComputeExecutor::GradientHorizon + 1)
-		+ (ComputeExecutor::BuildingHorizon + 1) + (ComputeExecutor::GrowthHorizon + 1) + (ComputeExecutor::TurretHorizon + 1));
+		+ (ComputeExecutor::BuildingHorizon + 1) + (ComputeExecutor::GrowthHorizon + 1) + (ComputeExecutor::StatisticsHorizon + 1) + (ComputeExecutor::TurretHorizon + 1));
 	static_assert(ComputeExecutor::boundaryDue(7) < ComputeExecutor::advanceDue(7) && ComputeExecutor::advanceDue(7) < ComputeExecutor::boundaryDue(8));
-	CHECK(ComputeExecutor::Slots == 70);
+	CHECK(ComputeExecutor::Slots == 79);
 }
 }
 

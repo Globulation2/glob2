@@ -66,6 +66,7 @@
     "AIOrderScheduler/*",
     "AIPipeline/*",
     "WorldSnapshot/*",
+    "TeamStatsPipeline/*",
     "SharedWorkerLifecycle/*",
     "ResourceGrowth/*",
     "ResourceGrowthBenchmark/player-free*",

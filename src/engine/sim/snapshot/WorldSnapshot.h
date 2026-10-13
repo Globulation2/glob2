@@ -140,6 +140,7 @@ struct Handle
 	std::shared_ptr<const Session> session;
 	std::shared_ptr<const Effects> effects;
 	std::shared_ptr<const Statistics> statistics;
+	std::shared_ptr<const StatisticsInputs> statisticsInputs;
 	std::shared_ptr<const History> history;
 	std::shared_ptr<const Telemetry> telemetry;
 	std::shared_ptr<const EntityDiagnostics> entityDiagnostics;
@@ -158,6 +159,19 @@ struct Handle
 	std::shared_ptr<const BuildingAreaEffects::FertilitySnapshot> areaFertility;
 	Uint64 worldIdentity = 0, configurationRevision = 0;
 	std::array<Uint64, 5> mapGenerations{};
+	//! Named views share existing buffers and retain only their consumer's inputs.
+	Handle simulationView() const;
+    Handle turretView() const;
+    // Retain map inputs only on spatial-diagnostic sample ticks.
+    Handle statisticsView() const;
+	Handle gradientView() const;
+	Handle buildingGradientView() const;
+	Handle growthView() const;
+	Handle sceneMapView() const;
+	// Presentation helpers imply options.presentation and omit resource-gradient planes.
+	Handle presentationView(CaptureOptions options = {}) const;
+	bool supportsPresentation(CaptureOptions options = {}) const;
+	// Internal projection behind named views and low-level capture/storage tests.
 	Handle project(Requirements requested) const;
 	// Scalar readers touch only their requested immutable component. Defaults
 	// match a combined tile whose corresponding component was not captured.
@@ -186,7 +200,8 @@ private:
 std::shared_ptr<const std::vector<BuildingKindView>> captureCatalog(const Game& game);
 struct Storage;
 Handle capture(const Game& game, std::shared_ptr<const std::vector<BuildingKindView>> catalog,
-	Requirements requirements = All, const Handle* previous = nullptr, Storage* storage = nullptr);
+	Requirements requirements = All, const Handle* previous = nullptr, Storage* storage = nullptr,
+	bool unchangedBoundary = false);
 //! Throw if a captured map array or entity list differs from the live game.
 void verifyCapture(const Game& game, const Handle& handle);
 } // namespace SimulationSnapshot

@@ -433,8 +433,8 @@ TEST_CASE("retained tournament replay contains no unavailable orders")
     }
     for(int team=0;team<g.mapHeader.getNumberOfTeams();++team)
         if(g.gameHeader.isUnitUpgradesDisabled()) {
-            CHECK(g.teams[team]->stats.measurements.trainingVisits[WORKER]==0);
-            CHECK(g.teams[team]->stats.measurements.trainingVisits[WARRIOR]==0);
+            CHECK(g.teams[team]->stats.measurements().trainingVisits[WORKER]==0);
+            CHECK(g.teams[team]->stats.measurements().trainingVisits[WARRIOR]==0);
         }
 }
 TEST_CASE("native controllers exclude disabled work and continue after reload [slow]")
@@ -464,8 +464,8 @@ TEST_CASE("native controllers exclude disabled work and continue after reload [s
         CHECK(decisions>0);
         CHECK(g.teams[0]->isAlive);
         CHECK(school->maxUnitWorking==0);
-        CHECK(g.teams[0]->stats.measurements.trainingVisits[WORKER]==0);
-        CHECK(g.teams[0]->stats.measurements.trainingVisits[WARRIOR]==0);
+        CHECK(g.teams[0]->stats.measurements().trainingVisits[WORKER]==0);
+        CHECK(g.teams[0]->stats.measurements().trainingVisits[WARRIOR]==0);
         auto* backend=new GAGCore::MemoryStreamBackend;
         GAGCore::BinaryOutputStream out(backend);g.save(&out,false,"AI custom rules");out.flush();
         const auto bytes=backend->takeContents();
@@ -516,7 +516,7 @@ TEST_CASE("engine prevents training and upgrades while retaining repairs and sta
     worker->setTargetBuilding(school);school->unitsInside.push_back(worker);
     worker->handleDisplacement();
     CHECK(worker->displacement==Unit::DIS_EXITING_BUILDING);CHECK(worker->level[BUILD]==0);
-    CHECK(w.team->stats.measurements.trainingVisits[WORKER]==0);
+    CHECK(w.team->stats.measurements().trainingVisits[WORKER]==0);
     // Leave cleanup to the ordinary exiting path; the unit remains a valid subscriber.
     g.gameHeader.setHungerDisabled(true);worker->hungry=0;
     CHECK(!worker->isUnitHungry());

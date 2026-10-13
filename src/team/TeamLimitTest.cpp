@@ -154,7 +154,7 @@ TEST_CASE("growth bands attribute overlapping coverage to all sixteen teams")
     }
     for (int t = 0; t < Team::MAX_COUNT; ++t)
     {
-        auto &m = game.teams[t]->stats.measurements;
+        auto &m = game.teams[t]->stats.editMeasurements();
         CHECK(m.growthTiles[0][WHEAT] == 1);
         CHECK(m.growthTiles[1][WHEAT] == 3);
         CHECK(m.growthTiles[2][WHEAT] == 5);

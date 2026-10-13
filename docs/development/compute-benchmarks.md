@@ -5,8 +5,9 @@ Measure scheduled AI, gradients, growth and scene preparation using retained inp
 ## Scheduled AI decisions and shared computation
 
 All shipped controllers borrow immutable engine snapshots for decisions. The simulation
-owner captures the required component union once per poll tick; unchanged components are
-shared, and mutable component buffers are reused only after their consumer leases end.
+owner captures the complete simulation preset at each read boundary; all polled
+controllers share one AI view of it. Unchanged components are shared, and mutable
+component buffers are reused only after their consumer leases end.
 Map arrays are tracked per 16x16 chunk, and a reused buffer copies only the chunks that
 changed since it was last filled. `GLOB2_SNAPSHOT_VERIFY=1` makes every capture byte-compare
 its arrays and entity lists with the live game and throw on a mismatch; use it in test runs
@@ -89,15 +90,20 @@ of dropping them. `building_gradient_synchronous_by_reason` splits that count:
 (a map without a game, as in the editor) and `other`.
 `setup_ns` ends before `Engine::run`; `run_ns` includes that call's finalization.
 
-The nested `ai_pipeline` object reports session counters:
+The nested `ai_pipeline` object reports session counters. Snapshot clock timings
+are opt-in through `GLOB2_SNAPSHOT_PROFILE=1` or `GLOB2_STATS_PROFILE=1`; extraction
+and preparation nanoseconds remain zero otherwise. Copy counts retain the
+accounting policy below:
 
 | Metric | Meaning |
 | --- | --- |
 | `captures` | Distinct snapshot capture boundaries. |
 | `extraction_ns` | Owner elapsed extraction time, excluding the separately measured preparation subset. |
 | `preparation_ns` | Owner elapsed time deriving building checks and preparing the growth field. |
-| `bytes_copied` | Component payload actually copied across captures: for map arrays only the 16x16 chunks changed since the reused buffer was last filled, plus whole entity, team and published resource-plane payloads. |
-| `component_reuses` | Unchanged component or resource-plane reuse events. |
+| `map_bytes_copied` | Always-on count of bytes copied into map and area-fertility buffers, including dirty 16x16 chunks and full fills. Shared immutable payloads do not count as copies. |
+| `detailed_captures` | Captures with detailed byte/reuse accounting enabled by compute telemetry (`waits` or `trace`), or explicitly by a snapshot harness. |
+| `bytes_copied` | Estimated component payload traffic for `detailed_captures`: exact map copies plus sizes of entity, team and other refreshed payloads. Zero when detailed accounting is disabled. |
+| `component_reuses` | Unchanged component or resource-plane reuse events during `detailed_captures`. Zero when detailed accounting is disabled. |
 | `allocations` | Instrumented component/payload pool-object, vector-growth and resource-plane allocation events. |
 | `computation_ns` | Summed elapsed time executing decision callbacks, across inline or worker execution. |
 | `submitted`, `delivered` | Admitted polls and deadline publications, including null outputs. |
@@ -113,7 +119,8 @@ The nested `ai_pipeline` object reports session counters:
 
 Elapsed work across threads is not process CPU time. Preparation and extraction partition
 owner capture work; decision and deadline-wait durations can overlap other work, so do not
-sum all counters into a total. `bytes_copied` is cumulative traffic, and `allocations` is
+sum all counters into a total. `bytes_copied` is cumulative estimated traffic for
+the measured captures, and `allocations` is
 not an exhaustive allocator trace. Use process user-plus-system CPU and peak RSS alongside
 the explicit metrics. Worker-local implicit scopes are not merged into owner totals.
 
@@ -191,13 +198,13 @@ determinism and timing control for each delay. Different delays may produce
 different games. A loaded game's delay cannot change while jobs are pending.
 
 The owner reserves one allocated material, market, guard or clear field at the
-completed-tick round-robin boundary. AI and gradients capture the union of their
-required immutable components once; each job leases only its own projection. A
-shared-executor job seeds and propagates the field in private storage. It never
+completed-tick round-robin boundary. AI and gradients share the standard simulation
+capture; periodic jobs retain its `gradientView()`. A shared-executor job seeds and
+propagates the field in private storage. It never
 reads live map arrays, supplier stock or mutable seed caches. Market observations
-include material availability after reservations, and guard jobs capture alliances
-and, when crowd balancing is enabled, units. Publication stays before the teams
-step at the existing fixed deadline. Immediate on-demand and forbidden/building
+include material availability after reservations, and guard jobs read captured
+alliances and use units when crowd balancing is enabled. Publication stays before
+the teams step at the existing fixed deadline. Immediate on-demand and forbidden/building
 fields keep their synchronous paths.
 
 The mutable material seed cache remains on synchronous paths. Periodic material
@@ -345,8 +352,10 @@ positions; buildings use saved footprint offsets. New turrets wait for their
 first published list. Invalid source geometry/weapon/incarnation rejects the list.
 
 At completed boundary t, teams satisfying `t % R == team % R` are admitted once.
-Due requirements join `Game::captureReadBoundary`'s shared union with AI,
-gradients and resource growth. One job per due team processes source identities
+`Game::prepareReadBoundary` supplies the existing standard simulation snapshot,
+shared with AI, gradients, resource growth and team statistics. Turret jobs retain
+only the named turret view. Captured unit attack strength supplies scoring facts
+without resolving live units or recomputing effects during turret preparation. One job per due team processes source identities
 in order. The existing shared `ComputeExecutor` runs these jobs; no dedicated
 threads or mutable team query caches exist. Results publish before team stepping
 at t+K, joining unfinished work at that deadline. Worker readiness never chooses
@@ -360,12 +369,12 @@ storage; team masks and canonical occupied encounter order avoid empty-cell
 clearance checks. Completed work releases its world lease. Publication validates
 incoming sources and replaces records by entity slot; consumption still validates
 the current source. Dead records are reclaimed at storage pressure. Derived index
-and protocol digest metadata are bounded within32MiB, and published/pending list
-storage within a separate32MiB. Published checksums are updated incrementally; entity retirement removes its
+and protocol digest metadata are bounded within 32 MiB, and published/pending list
+storage within a separate 32 MiB. Published checksums are updated incrementally; entity retirement removes its
 record without a full per-tick sweep. Completed outputs retain no damage tables.
-The occupied index reserves1MiB for canonical
+The occupied index reserves 1 MiB for canonical
 terrain/occupancy digest metadata: each shared snapshot buffer retains at most
-16KiB of chunk digests per component. Larger maps use a full digest computation
+16 KiB of chunk digests per component. Larger maps use a full digest computation
 without retaining chunk arrays. Local stamps select incremental work but never
 enter checksums.
 
@@ -376,8 +385,8 @@ saved. Normal checksums include published per-turret order and logical pending i
 and deadlines, independently of worker completion. Numeric input fingerprints
 exclude host byte order, padding, local stamps and private caches.
 
-Format155 deliberately rejects earlier saved matches and replays. Existing maps
-remain loadable through the map-format floor58. Simulation revision49 partitions
+Format 159 deliberately rejects earlier saved matches and replays. Existing maps
+remain loadable through the map-format floor 58. Simulation revision 54 partitions
 network matches from earlier targeting behavior. This compatibility break was an
 explicit maintainer decision; it is separate from deterministic continuation of
 newly saved matches.
