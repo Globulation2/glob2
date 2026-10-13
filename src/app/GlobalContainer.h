@@ -2,6 +2,7 @@
 // Copyright (C) 2001-2004 Stephane Magnenat & Luc-Olivier de Charrière
 
 #pragma once
+#include "ComputeTelemetry.h"
 #include <atomic>
 #include "ApplicationPhaseResources.h"
 
@@ -151,6 +152,7 @@ public:
 	// Zero selects automatic eligible-CPU sizing (one if unavailable). Structured
 	// --run-game configures its own compute executor instead.
 	unsigned computeThreads = 0;
+    ComputeTelemetryMode computeTelemetry = ComputeTelemetryMode::Off;
 	std::optional<bool> gpuComputeOverride;
     resource_policy::ExecutionRequest executionResourceRequest;
     std::optional<resource_policy::ResourcePlan> frozenResourcePlan;

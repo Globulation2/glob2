@@ -370,6 +370,7 @@ const std::vector<Command> &commands()
 		append(launch, assets());
 		launch.push_back(value("--building-catalog", "file", "Building catalog manifest"));
 		launch.push_back(compute());
+        launch.push_back(choice("--compute-telemetry", "Compute wait attribution and scheduler tracing", {"off", "waits", "trace"}, "off"));
 		launch.push_back(gpu());launch.push_back(gradientBackend());launch.push_back(gradientAlgorithm());launch.push_back(gradientVerify());
 		add("play", "Launch the graphical game", {}, 0, launch, "Interactive game",
 			{"glob2 play --window-size 1280x720 --no-fullscreen"});
@@ -455,6 +456,7 @@ const std::vector<Command> &commands()
 		auto game = profile();
 		append(game, assets());
 		game.push_back(compute());
+        game.push_back(choice("--compute-telemetry", "Compute wait attribution and scheduler tracing", {"off", "waits", "trace"}, "off"));
 		game.push_back(gpu());game.push_back(gradientBackend());game.push_back(gradientAlgorithm());game.push_back(gradientVerify());
 		append(
 			game,

@@ -34,7 +34,7 @@ public:
 		}};
 		jobs += count;
 	}
-	void run(ComputeExecutor &executor) const
+	void run(ComputeExecutor &executor, JoinContext context = {JoinReason::ImmediateRequired, ComputeTelemetry::NoTick}) const
 	{
 		executor.run(jobs, [&](std::size_t index) {
 			for (std::size_t group = 0; group < groupCount; ++group) {
@@ -44,6 +44,6 @@ public:
 				}
 				index -= groups[group].count;
 			}
-		});
+		}, {ComputeProducer::Mixed, context.logicalTick, context.logicalTick}, context);
 	}
 };

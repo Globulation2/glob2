@@ -277,7 +277,9 @@ MatchVerifier::Verdict MatchVerifier::verify(const Turn::MatchRecord& record, co
 	Headless::playersAndTeamsJson(result, game, engine.teamEliminatedTick);
 	result << ",\"verification\":" << verification.dump()
 	       << ",\"execution_resources\":" << globals.resourcePlanJson().dump()
-	       << ",\"network\":" << Turn::recordNetworkSummary(record).dump() << '}';
+	       << ",\"network\":" << Turn::recordNetworkSummary(record).dump() << ",\"compute_telemetry\":";
+    ComputeTelemetry::writeJson(result, game.map.computeExecutor().telemetrySnapshot());
+    result << '}';
 	Headless::writeJson((output / "result.json").string(), result.str());
 	Headless::writeJson((output / "compute.json").string(), json{
 	    {"compute_requested_threads", globals.computeThreads ? std::to_string(globals.computeThreads) : "auto"},

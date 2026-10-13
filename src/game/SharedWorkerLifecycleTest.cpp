@@ -184,7 +184,7 @@ TEST_CASE("direct completed steps match deferred preparation across worker count
 }
 }
 
-TEST_CASE("no-AI completed ticks agree across shared worker counts [artifacts]" * doctest::test_suite("SharedWorkerLifecycle"))
+TEST_CASE("no-AI completed ticks and saved continuation agree across diagnostic modes and worker counts [artifacts]" * doctest::test_suite("SharedWorkerLifecycle"))
 {
     glob2test::HeadlessGlobals globals;
     GameGUI source;
@@ -204,12 +204,15 @@ TEST_CASE("no-AI completed ticks agree across shared worker counts [artifacts]" 
     const auto fixture=glob2test::artifactDir()/"no-ai.game";
     std::ofstream(fixture,std::ios::binary).write(checkpoint.data(),checkpoint.size());
     std::vector<Uint32> expected;
+    for (auto mode : {ComputeTelemetryMode::Off, ComputeTelemetryMode::Waits, ComputeTelemetryMode::Trace})
     for (unsigned threads : {1,2,4,8}) {
+        CAPTURE(mode); CAPTURE(threads);
         GameGUI game;
         GAGCore::BinaryInputStream reader(new GAGCore::MemoryStreamBackend(checkpoint.data(),checkpoint.size()));
         reader.seekFromStart(0);
         REQUIRE(game.load(&reader));
         game.game.map.configureCompute(threads);
+        game.game.map.computeExecutor().configureTelemetry(mode);
         std::vector<Uint32> actual;
         for (unsigned tick=0; tick<96; ++tick) {
             game.game.syncStep(0,Game::PreparationCompletion::Deferred);
@@ -218,7 +221,25 @@ TEST_CASE("no-AI completed ticks agree across shared worker counts [artifacts]" 
         }
         game.game.map.finishGradientPipeline();
         REQUIRE(game.game.map.gradientPipelineStatus().published>0);
-        if (threads==1) expected=actual; else CHECK(actual==expected);
+        if (expected.empty()) expected=actual; else CHECK(actual==expected);
+        const auto tracePath=glob2test::artifactDir()/("compute-"+std::string(ComputeTelemetry::ModeNames[unsigned(mode)])+"-"+std::to_string(threads)+".trace");
+        std::ofstream trace(tracePath);
+        for (std::size_t i=0;i<actual.size();++i) trace<<i<<' '<<actual[i]<<'\n';
+        game.game.map.finishResourceGrowth();
+        auto* saveStorage=new GAGCore::MemoryStreamBackend;
+        GAGCore::BinaryOutputStream saved(saveStorage);
+        game.save(&saved,"compute diagnostics continuation"); saved.flush();
+        const std::string bytes(saveStorage->getBuffer(),saveStorage->getPosition());
+        GameGUI restored;
+        GAGCore::BinaryInputStream continuation(new GAGCore::MemoryStreamBackend(bytes.data(),bytes.size()));
+        continuation.seekFromStart(0); REQUIRE(restored.load(&continuation));
+        restored.game.map.configureCompute(threads);
+        restored.game.map.computeExecutor().configureTelemetry(mode);
+        CHECK(restored.game.map.computeExecutor().telemetrySnapshot().summary.advancingTicks==0);
+        for(unsigned tick=0;tick<16;++tick) {
+            game.game.syncStep(0); restored.game.syncStep(0);
+            CHECK(game.game.checkSum(nullptr,nullptr,nullptr,true)==restored.game.checkSum(nullptr,nullptr,nullptr,true));
+        }
     }
 }
 

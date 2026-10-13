@@ -347,7 +347,7 @@ void batchCPUGroup(std::span<const gradient_kernel::BackendRequest* const> reque
     first.executor->run(requests.size(), [&](std::size_t i) {
         try { requests[i]->cpu(requests[i]->context, destinations[i]); }
         catch(...) { if(requests[i]->failure) requests[i]->failure(requests[i]->context,std::current_exception()); else throw; }
-    });
+    }, {ComputeProducer::PeriodicGradient, 0, 0});
 }
 } // namespace
 void propagateCPU(const Request& request,const SimulationSnapshot::Handle& snapshot,Uint16* output,GradientWorkspace& scratch)
