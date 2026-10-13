@@ -1198,6 +1198,12 @@ TEST_SUITE("WorldSnapshot")
 #define CALLGRIND_ZERO_STATS ((void)0)
 #define CALLGRIND_DUMP_STATS_AT(name) ((void)0)
 #endif
+#if __has_include(<valgrind/cachegrind.h>)
+#include <valgrind/cachegrind.h>
+#else
+#define CACHEGRIND_START_INSTRUMENTATION ((void)0)
+#define CACHEGRIND_STOP_INSTRUMENTATION ((void)0)
+#endif
 namespace EntityStorageMeasurement {
 using Clock=std::chrono::steady_clock;
 volatile Sint64 sink=0;
@@ -1207,6 +1213,10 @@ int count(const nlohmann::json& config,const char* key,int fallback) {
     return value;
 }
 template<class F> nlohmann::json measure(const char* phase,int iterations,F operation) {
+    // Cachegrind aggregates one selected phase; Callgrind dumps each phase.
+    const auto* selected=std::getenv("GLOB2_ENTITY_PROFILE_PHASE");
+    const bool cachePhase=selected && std::string(selected)==phase;
+    if(cachePhase)CACHEGRIND_START_INSTRUMENTATION;
     CALLGRIND_START_INSTRUMENTATION; CALLGRIND_ZERO_STATS;
     const auto wall=Clock::now();
 #if !defined(_WIN32) && !defined(__EMSCRIPTEN__)
@@ -1226,6 +1236,7 @@ template<class F> nlohmann::json measure(const char* phase,int iterations,F oper
 #endif
     const auto elapsed=std::chrono::duration_cast<std::chrono::nanoseconds>(Clock::now()-wall).count();
     CALLGRIND_DUMP_STATS_AT(phase); CALLGRIND_STOP_INSTRUMENTATION;
+    if(cachePhase)CACHEGRIND_STOP_INSTRUMENTATION;
     nlohmann::json processCpu=nullptr,threadCpu=nullptr;
     // Windows and browser clocks report wall time instead of CPU time.
 #if !defined(_WIN32) && !defined(__EMSCRIPTEN__)
@@ -1249,7 +1260,7 @@ TEST_SUITE("WorldSnapshot")
     TEST_CASE("paired entity storage workload [benchmark]")
     {
         using namespace EntityStorageMeasurement;
-        CALLGRIND_STOP_INSTRUMENTATION;
+        CALLGRIND_STOP_INSTRUMENTATION; CACHEGRIND_STOP_INSTRUMENTATION;
         glob2test::HeadlessGlobals globals;
         globals->settings.gradientBackend=gradient_kernel::Backend::CPU;
         const char* output=std::getenv("GLOB2_ENTITY_EVIDENCE_DIR");

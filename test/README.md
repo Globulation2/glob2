@@ -143,8 +143,10 @@ Counts must match across compared binaries. Capture normally supplies the previo
 handle so unchanged components are reused; `GLOB2_ENTITY_FRESH=1` measures fresh
 capture separately. `GLOB2_ENTITY_EVIDENCE_DIR` saves canonical states and final
 checksums. Synthetic fixtures disable hunger and resource growth; qualify ordinary
-advancing matches separately. Optional Callgrind headers enable phase markers,
-without requiring Valgrind for normal builds or execution. CPU-time metrics are
+advancing matches separately. Optional Valgrind headers enable Callgrind phase markers. For Cachegrind,
+`GLOB2_ENTITY_PROFILE_PHASE` selects one reported phase (for example
+`private_inventory_read` or `shared_capture`) when instrumentation starts disabled.
+Valgrind is not required for normal builds or execution. CPU-time metrics are
 `null` when unavailable; Windows and browser wall clocks are not reported as CPU
 time.
 
