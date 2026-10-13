@@ -19,8 +19,8 @@ class Order;
 //! Malformed or truncated replay bodies are rejected, including partial recordings.
 
 //! Oldest replay format (the VERSION_MINOR the replay was written with) that
-//! the reader still accepts. Version 154 restores mature resource stock
-//! oscillation, changing earlier replay trajectories.
+//! the reader still accepts. Version 158 uses delayed snapshot statistics,
+//! changing earlier replay trajectories.
 //! Save compatibility has a separate floor in Version.h.
 static constexpr Uint16 REPLAY_MINIMUM_VERSION_MINOR = 158;
 
