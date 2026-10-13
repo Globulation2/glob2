@@ -215,7 +215,10 @@ class DeviceBroker
 			state->queue.erase(earliest);
 			// Only fields already admitted are eligible. A singleton never waits
 			// to fill a batch, and every field retains its own due/ticket/control.
-			while (count < held.size())
+			// Only OpenCL currently shares driver orchestration across fields.
+			// The Vulkan/WebGPU adapters execute members sequentially, so grouping
+			// them would couple a completed field to a later member's decline.
+			while (count < std::min<std::size_t>(held.size(), state->totals.configuredMaxBatch))
 			{
 				auto next = state->queue.end();
 				for (auto candidate = state->queue.begin(); candidate != state->queue.end();
@@ -669,6 +672,7 @@ void GradientDeviceService::configure(unsigned computeThreads, Backend mode)
 	next->lease.bytes = bytes;
 	next->hooks = hooks;
 	next->backend = mode;
+	next->totals.configuredMaxBatch = mode == Backend::OpenCL ? 8 : 1;
 	next->totals.diagnostics = gradientDiagnosticsRequested();
 	next->started = true;
 	{

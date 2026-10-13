@@ -243,8 +243,11 @@ work and transferred bytes from device-confirmed execution and committed fields.
 `executed_fields` proves at least one completed dispatch, `converged_fields`
 requires complete converged readback, and `validated_fields` records successful
 independent fixed-point checks where implemented. `committed_fields` counts
-successful transactions. A canceled batch can have validated private fields
-without commits; these milestones must not be treated as synonyms.
+successful transactions. A canceled adapter batch can have validated private
+fields without commits; these milestones must not be treated as synonyms.
+The device service batches OpenCL fields, but admits individual Vulkan/WebGPU
+transactions so a later sequential field's decline cannot discard an earlier
+completed field. Direct adapter batch callers still receive an atomic outcome.
 OpenCL submissions count explicit queue flushes; command enqueues are separate.
 Vulkan submissions count successful queue submissions. `resource_reuses` counts
 retired Vulkan work sets borrowed from the bounded adapter pool. Mapped control reads are

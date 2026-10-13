@@ -427,9 +427,12 @@ the launch choice for the current run and also saves the preference.
 
 The process coordinator is additional to the shared CPU pool; compute thread
 counts still include the owner. One-slot pools stay CPU-only. Initialization,
-submission and completion run outside the game loop. Already-ready compatible
-requests group up to eight without waiting for a batch. New backends use simple
-per-field transfers inside those groups. Frozen8 uses four-color integer relaxation
+submission and completion run outside the game loop. OpenCL groups up to eight
+already-ready compatible requests without waiting to fill a batch. Vulkan and
+WebGPU use individual service transactions because their adapters execute fields
+sequentially: a later decline must not roll back an earlier completed field.
+Each transaction retains its original due tick, ticket, controls and immutable
+inputs. Frozen8 uses four-color integer relaxation
 on 16×16 tiles with frozen halos and eight sweeps; Jacobi uses separate input/output
 buffers for each round. A convergence signal starts complete-field validation;
 it does not by itself establish correct execution.
