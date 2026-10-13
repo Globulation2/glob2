@@ -461,7 +461,7 @@ void scheduledKernelsMatchSynchronous(KernelTerrain config)
 	REQUIRE(buildings[4]->type->width != buildings[4]->type->height);
 
 	const auto snapshot = SimulationSnapshot::capture(game, SimulationSnapshot::captureCatalog(game),
-		buildingRequirements());
+		SimulationSnapshot::Simulation);
 	const size_t cells = size_t(m.getW()) * m.getH();
 	std::vector<Uint16> actual(cells), partial(cells);
 	int locked = 0, clearing = 0, partials = 0;

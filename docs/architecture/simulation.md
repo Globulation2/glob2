@@ -307,13 +307,25 @@ For timing and scheduling, start with `src/game/Game_sync.cpp` and `src/engine/E
 
 - The engine has a completed-tick observation phase. After fog, projects and
   scripts, `Game::syncStep` selects/reserves one periodic gradient job. The next
-  observation captures AI and gradient requirements together in a game-owned
-  snapshot store. AI and gradient batches share the compute executor; gradient
-  seeding and propagation both read immutable projections and may outlive the
+  observation publishes the complete simulation preset in a game-owned snapshot
+  store. `Game::captureReadBoundary()` does not depend on the polled players or
+  pending job kinds. All polled controllers share one immutable AI view of that
+  boundary. Map jobs retain named gradient, building-gradient or growth views,
+  which release unrelated components independently. AI and gradient batches share
+  the compute executor; gradient seeding and propagation may outlive the
   observation boundary. Direct stepping captures and submits before returning;
   explicit deferred stepping leaves that capture to its caller. Direct map
   stepping invalidates the cached boundary because its caller need not advance
   the game's tick counter.
+- The simulation preset always includes catalogs, terrain, resources, occupancy,
+  areas, visibility, entities, teams, rules, published resource fields and growth.
+  `CaptureOptions` adds the ordinary presentation preset (session, effects and
+  compact statistics), with explicit history, telemetry, entity-diagnostic and
+  annotation options. Consumers do not contribute arbitrary capture masks.
+  Complete snapshots still share unchanged components and refresh dirty map
+  chunks in reusable buffers. Paused edits, configuration changes and world
+  replacement retain their explicit invalidation boundaries. A cold option may
+  widen the cached capture within a boundary; named views drop unwanted extras.
 - Gradient selection, round-robin flags, invalidation and publication stay on the
   simulation owner. Jobs own their output and use worker-private scratch; they never read live map
   arrays or mutable seed caches. Publication remains after the configured delay

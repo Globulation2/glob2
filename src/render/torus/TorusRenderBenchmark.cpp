@@ -56,8 +56,7 @@ class TorusRenderBenchmark
     {
         gui.game.snapshots().invalidateBoundary(); // Synthetic fixtures edit public records.
         const auto request = gui.sceneRequest();
-        SceneExtractor().prepare(gui.game.captureReadBoundary({}, true,
-            SceneExtractor::requirements(request)), request, gui.view.render.ownScene);
+        SceneExtractor().prepare(gui.game.captureReadBoundary(SceneExtractor::captureOptions(request)), request, gui.view.render.ownScene);
         gui.view.scene = &gui.view.render.ownScene;
     }
 

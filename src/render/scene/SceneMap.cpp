@@ -96,13 +96,9 @@ void SceneMap::bindSnapshot(const SimulationSnapshot::Handle& world,int displayW
 void SceneMap::bindSnapshot(const SimulationSnapshot::Handle& world)
 {
     using namespace SimulationSnapshot;
-    auto required = bit(Component::Terrain) | bit(Component::Resources) | bit(Component::Occupancy)
-        | bit(Component::Visibility) | bit(Component::Catalogs) | bit(Component::Areas);
-    if (world.annotations) required |= bit(Component::Annotations);
     if (world.width != w || world.height != h || world.worldIdentity != sourceIdentity)
         throw std::invalid_argument("PresentationFrame display metadata and snapshot belong to different worlds");
-    if (world.growth) required |= bit(Component::Growth) | bit(Component::Rules);
-    snapshot = std::make_shared<const Handle>(world.project(required));
+    snapshot = std::make_shared<const Handle>(world.sceneMapView());
     snapshotFog = snapshot->visibility->visible.data();
     tick = world.tick; registry = snapshot->terrain->registry; resourceDefinitions = snapshot->catalogs->resources; assets = snapshot->catalogs->assets;
     presentMaterials = 0;

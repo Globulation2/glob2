@@ -94,7 +94,7 @@ TEST_CASE("private diagnostic reservation survives owner ticks and serialization
     maxima->fieldDiagnostics=stable;
     session.publishCapture(restored);CHECK(stable->captured);CHECK(stable->tick==0);
     restored.fields[0].values[0]=5;CHECK(stable->fields[0].values[0]!=5);
-    session.completeTick(fixture.game.captureReadBoundary({},true,session.observationRequirements(fixture.game.stepCounter)));REQUIRE(session.pending());session.drain();
+    session.completeTick(fixture.game.captureReadBoundary(session.captureOptions(fixture.game.stepCounter)));REQUIRE(session.pending());session.drain();
     fixture.game.stepCounter=9;session.beginTick(fixture.game);CHECK_FALSE(session.reserveCapture(0,9));
     fixture.game.stepCounter=10;session.beginTick(fixture.game);CHECK(session.reserveCapture(0,10)!=nullptr);
     CHECK(maxima->fieldDiagnostics==stable);
@@ -123,13 +123,13 @@ TEST_CASE("pending diagnostic output does not block world advancement or alias l
     const auto second=session.reserveCapture(0,1);REQUIRE(second);
     state.tiles[0].foodOpportunity=19;second->capture(state);
     session.publishCapture(*first);
-    session.completeTick(fixture.game.captureReadBoundary({},true,0));REQUIRE(session.pending());
+    session.completeTick(fixture.game.captureReadBoundary());REQUIRE(session.pending());
     session.publishCapture(*second);
     fixture.game.syncStep(0);
     CHECK(fixture.game.stepCounter==2);
     session.beginTick(fixture.game);CHECK_FALSE(session.reserveCapture(0,2));
     session.drain();CHECK_FALSE(session.pending());
-    session.completeTick(fixture.game.captureReadBoundary({},true,0));REQUIRE(session.pending());
+    session.completeTick(fixture.game.captureReadBoundary());REQUIRE(session.pending());
     session.drain();session.finish();
     for (const auto [tick,expected]:{std::pair{0,7},std::pair{1,19}}) {
         std::ifstream input(directory/(tick ? "tick-0000001.player0.team0" : "tick-0000000.player0.team0")/"foodOpportunity.field");
@@ -152,7 +152,7 @@ TEST_CASE("diagnostic budget counts private captures across the delay horizon [a
     // another full field allocation while the first private output is held.
     fixture.game.stepCounter=1;session.beginTick(fixture.game);
     CHECK_FALSE(session.reserveCapture(0,1));
-    session.completeTick(fixture.game.captureReadBoundary({},true,session.observationRequirements(fixture.game.stepCounter)));REQUIRE(session.pending());session.drain();
+    session.completeTick(fixture.game.captureReadBoundary(session.captureOptions(fixture.game.stepCounter)));REQUIRE(session.pending());session.drain();
     session.publishCapture(*first);first.reset(); // an uncaptured invocation releases its reservation
     fixture.game.stepCounter=2;session.beginTick(fixture.game);
     auto second=session.reserveCapture(0,2);REQUIRE(second);
@@ -181,7 +181,7 @@ TEST_CASE("controllers sharing a team publish distinct complete captures and rec
 			auto* maxima=dynamic_cast<AIMaxima::Maxima*>(world.game.players[p]->ai->aiImplementation);
 			REQUIRE(maxima);REQUIRE(maxima->fieldDiagnostics);maxima->fieldDiagnostics->capture(state);
 		}
-		session.completeTick(world.game.captureReadBoundary({},true,session.observationRequirements(world.game.stepCounter)));REQUIRE(session.pending());session.drain();CHECK_FALSE(session.pending());
+		session.completeTick(world.game.captureReadBoundary(session.captureOptions(world.game.stepCounter)));REQUIRE(session.pending());session.drain();CHECK_FALSE(session.pending());
 	};
 	capture();CHECK(std::filesystem::is_regular_file(path/"diagnostics"));
 	std::filesystem::remove(path/"diagnostics");world.game.stepCounter=10;capture();session.finish();
@@ -192,7 +192,7 @@ TEST_CASE("controllers sharing a team publish distinct complete captures and rec
 	// A smaller injected budget exercises the same production admission path.
 	GameDiagnostics::Session limited(world.game,(path/"limited").string(),10,false,1024);
 	world.game.stepCounter=20;
-	limited.beginTick(world.game);limited.completeTick(world.game.captureReadBoundary({},true,limited.observationRequirements(world.game.stepCounter)));REQUIRE(limited.pending());limited.drain();limited.finish();
+	limited.beginTick(world.game);limited.completeTick(world.game.captureReadBoundary(limited.captureOptions(world.game.stepCounter)));REQUIRE(limited.pending());limited.drain();limited.finish();
 	std::ifstream final(path/"limited/summary.json");final>>status;CHECK(status["skipped"]==2);
 }
 TEST_CASE("capped scene export survives repeated graphics lifetimes and write failures [artifacts]")
@@ -204,7 +204,7 @@ TEST_CASE("capped scene export survives repeated graphics lifetimes and write fa
 		REQUIRE(world.addBuilding("inn",4,4)); REQUIRE(world.addUnit(WORKER,12,8));
 		world.game.map.setResourceByIndex(18,10,WHEAT,1);
 		PresentationFrame scene; SceneRequest request; request.includePanels=false;
-		SceneExtractor().prepare((world.game).captureReadBoundary({},true,SceneExtractor::requirements(request)), request, scene);
+		SceneExtractor().prepare((world.game).captureReadBoundary(SceneExtractor::captureOptions(request)), request, scene);
 		const auto checksum=world.game.checkSum();
 		const auto path=(glob2test::artifactDir()/("render-"+std::to_string(lifetime)+".png")).string();
 		MapRender::toPng(scene,path,128);
@@ -226,7 +226,7 @@ TEST_CASE("portrait exports cover the whole map after dimension rounding [artifa
 {
 	glob2test::HeadlessGlobals globals;
 	glob2test::HeadlessGame world({.wDec=4,.hDec=6,.teams=1,.discovered=true,.loadDefaultRace=true});
-	PresentationFrame scene;SceneRequest request;request.includePanels=false;SceneExtractor().prepare((world.game).captureReadBoundary({},true,SceneExtractor::requirements(request)), request, scene);
+	PresentationFrame scene;SceneRequest request;request.includePanels=false;SceneExtractor().prepare((world.game).captureReadBoundary(SceneExtractor::captureOptions(request)), request, scene);
 	const auto path=(glob2test::artifactDir()/"portrait.png").string();
 	MapRender::toPng(scene,path,9);
 	SDL_Surface* image=IMG_Load(path.c_str());REQUIRE(image);
@@ -414,7 +414,7 @@ TEST_CASE("Delayed diagnostic offers cover planner ticks without duplicate captu
     REQUIRE(maxima);
     CHECK(maxima->fieldDiagnostics->tick==3);
     CHECK(maxima->fieldDiagnostics->nextTick==503);
-    session.completeTick(fixture.game.captureReadBoundary({}, true, session.observationRequirements(fixture.game.stepCounter)));
+    session.completeTick(fixture.game.captureReadBoundary(session.captureOptions(fixture.game.stepCounter)));
     REQUIRE(session.pending());
     session.drain();
     fixture.game.stepCounter=502; session.beginTick(fixture.game);

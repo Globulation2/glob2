@@ -252,14 +252,14 @@ TEST_CASE("presentation borrows the published no-AI read boundary without recapt
     const auto identity=Game::refOf(unit);
     SceneRequest request;
     request.selectedUnit=identity;
-    const auto required=SceneExtractor::requirements(request);
+    const auto required=SceneExtractor::captureOptions(request);
     const auto captures=game.snapshots().metrics.captures;
-    const auto published=game.captureReadBoundary({},false,required);
+    const auto published=game.captureReadBoundary(required);
     REQUIRE(game.snapshots().metrics.captures==captures+1);
     REQUIRE(game.prepareAIOrders({},false,nullptr,&published).empty());
     SceneExtractor preparer;
     PresentationFrame frame;
-    preparer.prepare(SceneInputs{published.project(required),request},frame);
+    preparer.prepare(SceneInputs{published.presentationView(required),request},frame);
     CHECK(game.snapshots().metrics.captures==captures+1);
     CHECK(frame.entities.units.data()==published.entities->units.data());
     CHECK(frame.entities.buildings.data()==published.entities->buildings.data());
@@ -271,7 +271,7 @@ TEST_CASE("presentation borrows the published no-AI read boundary without recapt
     const auto hp=frame.panels.unit.state().hp;
     unit->hp=1;
     game.snapshots().invalidateBoundary();
-    const auto edited=game.captureReadBoundary({},true,required);
+    const auto edited=game.captureReadBoundary(required);
     CHECK(edited.observationRevision!=published.observationRevision);
     CHECK(frame.panels.unit.state().hp==hp);
     request.view.viewportX=7;
@@ -289,49 +289,54 @@ class BoundaryObserver final : public AIImplementation
 {
 public:
     SimulationSnapshot::Handle observed;
+    std::shared_ptr<const AIEngine::AIWorldView> observation;
     bool load(GAGCore::InputStream*,Player*,Sint32) override { return true; }
     void save(GAGCore::OutputStream*) override {}
     bool supportsObservation() const override { return true; }
-    SimulationSnapshot::Requirements observationRequirements() const override
-    { return SimulationSnapshot::bit(SimulationSnapshot::Component::Entities)|SimulationSnapshot::bit(SimulationSnapshot::Component::Terrain); }
     std::shared_ptr<Order> getOrder() override { throw std::logic_error("live AI observation"); }
     std::shared_ptr<Order> getOrder(const AIEngine::DecisionContext& context) override
-    { observed=context.world.components(); return std::make_shared<NullOrder>(); }
+    { observation=context.observation; observed=context.world.components(); return std::make_shared<NullOrder>(); }
 };
 }
-TEST_CASE("AI and pending gradients consume the presentation union without another capture" * doctest::test_suite("SimulationReadPhase"))
+TEST_CASE("AI and pending gradients share the standard boundary with presentation" * doctest::test_suite("SimulationReadPhase"))
 {
     glob2test::HeadlessGlobals globals;
-    glob2test::HeadlessGame fixture({.loadDefaultRace=true,.header=true});
+    glob2test::HeadlessGame fixture({.teams=2,.loadDefaultRace=true,.header=true});
     auto& game=fixture.game;
     fixture.addBuilding("swarm",4,4); fixture.addUnit(WORKER,12,12);
+    fixture.addBuilding("swarm",20,4,0,1); fixture.addUnit(WORKER,24,12,1);
     game.gameHeader.setAIOrderDelay(0);
     game.players[0]->makeItAI(AI::NUMBI);
     auto* observer=new BoundaryObserver;
     delete game.players[0]->ai->aiImplementation;
     game.players[0]->ai->aiImplementation=observer;
+    game.players[1]->makeItAI(AI::NUMBI);
+    auto* secondObserver=new BoundaryObserver;
+    delete game.players[1]->ai->aiImplementation;
+    game.players[1]->ai->aiImplementation=secondObserver;
     game.map.configureCompute(2);
     game.map.configureGradientPipeline(0,8);
     game.map.getClearAreasGradient(0,0);
     game.syncStep(0,Game::PreparationCompletion::Deferred);
     REQUIRE(game.map.hasPendingGradientPreparation());
-    const auto gradientRequirements=game.map.pendingGradientRequirements();
-    REQUIRE(gradientRequirements!=0);
-    constexpr std::array<unsigned,1> players{0};
+    REQUIRE(game.map.hasPendingWorldPreparation());
+    constexpr std::array<unsigned,2> players{0,1};
     SceneRequest request;
-    const auto rendering=SceneExtractor::requirements(request);
+    const auto rendering=SceneExtractor::captureOptions(request);
     const auto captures=game.snapshots().metrics.captures;
-    const auto published=game.captureReadBoundary(players,false,rendering);
-    CHECK((published.requirements&gradientRequirements)==gradientRequirements);
-    REQUIRE(game.prepareAIOrders(players,false,{},&published).size()==1);
+    const auto published=game.captureReadBoundary(rendering);
+    CHECK_NOTHROW(published.simulationView());
+    REQUIRE(game.prepareAIOrders(players,false,{},&published).size()==2);
     game.drainAI();
     CHECK_FALSE(game.map.hasPendingGradientPreparation());
     REQUIRE(observer->observed.entities);
+    REQUIRE(observer->observation);
+    CHECK(secondObserver->observation==observer->observation);
     CHECK(observer->observed.entities==published.entities);
     CHECK(observer->observed.terrain==published.terrain);
     CHECK_FALSE(observer->observed.session); // projection excludes presentation-only state
     PresentationFrame frame;
-    SceneExtractor().prepare(published.project(rendering),request,frame);
+    SceneExtractor().prepare(published.presentationView(rendering),request,frame);
     CHECK(frame.world.entities==observer->observed.entities);
     CHECK(frame.world.terrain==observer->observed.terrain);
     CHECK(game.snapshots().metrics.captures==captures+1);

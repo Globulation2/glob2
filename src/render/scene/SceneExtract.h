@@ -19,7 +19,7 @@ class OverlayArea;
 class SceneExtractor
 {
 public:
-    static SimulationSnapshot::Requirements requirements(const SceneRequest& request);
+    static SimulationSnapshot::CaptureOptions captureOptions(const SceneRequest& request);
     static std::shared_ptr<SceneInputs> inputs(const SimulationSnapshot::Handle& world,const SceneRequest& request);
     void prepare(const SimulationSnapshot::Handle& world,const SceneRequest& request,PresentationFrame& scene);
     //! Pure preparation from owned immutable inputs, safe beyond the read phase.

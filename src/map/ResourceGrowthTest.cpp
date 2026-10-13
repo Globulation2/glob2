@@ -300,8 +300,7 @@ TEST_SUITE("ResourceGrowth")
 		auto &m = world.game.map;
 		const auto id = crop(m, true);
 		seed(m, id);
-		const auto snapshot = world.game.snapshotStore().captureBoundary(
-			world.game, ResourceGrowth::Pipeline::requirements());
+		const auto snapshot = world.game.snapshotStore().captureBoundary(world.game);
 		const auto before = m.checkSum(true);
 		ResourceGrowth::Batch a, b;
 		MersenneTwister r1(991), r2(991);
@@ -394,8 +393,7 @@ TEST_SUITE("ResourceGrowth")
 		CHECK_THROWS(map.setResourceGrowthDelay(3));
 		CHECK(pipeline.needsPreparation());
 		CHECK(pipeline.count() == 0);
-		auto snapshot = world.game.snapshotStore().captureBoundary(
-			world.game, ResourceGrowth::Pipeline::requirements());
+		auto snapshot = world.game.snapshotStore().captureBoundary(world.game);
 		pipeline.prepare(snapshot, map.computeExecutor());
 		map.setResourceGrowthDelay(8);
 		CHECK_THROWS(map.setResourceGrowthDelay(3));
@@ -431,8 +429,7 @@ TEST_SUITE("ResourceGrowth")
 		glob2test::HeadlessGame world({.header = true});
 		auto &m = world.game.map;
 		seed(m, crop(m));
-		const auto snapshot = world.game.snapshotStore().captureBoundary(
-			world.game, ResourceGrowth::Pipeline::requirements());
+		const auto snapshot = world.game.snapshotStore().captureBoundary(world.game);
 		ResourceGrowth::Batch a, b;
 		MersenneTwister first(991), second(991);
 		ResourceGrowth::calculate(snapshot.view(), first, a);
@@ -483,8 +480,7 @@ TEST_SUITE("ResourceGrowth")
 		seed(map, crop(map));
 		ResourceGrowth::Pipeline pipeline;
 
-		auto snapshot = world.game.snapshotStore().captureBoundary(
-			world.game, ResourceGrowth::Pipeline::requirements());
+		auto snapshot = world.game.snapshotStore().captureBoundary(world.game);
 		pipeline.stage(snapshot.tick, 991);
 		pipeline.prepare(snapshot, map.computeExecutor());
 		pipeline.finish();
@@ -507,8 +503,7 @@ TEST_SUITE("ResourceGrowth")
 		map.configureCompute(3);
 		auto &executor = map.computeExecutor();
 		ResourceGrowth::Pipeline pipeline;
-		auto first = world.game.snapshotStore().captureBoundary(
-			world.game, ResourceGrowth::Pipeline::requirements());
+		auto first = world.game.snapshotStore().captureBoundary(world.game);
 		pipeline.stage(first.tick, 1);
 		pipeline.prepare(first, executor);
 		pipeline.finish();
@@ -531,8 +526,7 @@ TEST_SUITE("ResourceGrowth")
 			pipeline.pending.front()->work = fence.work;
 			fence.entered.wait();
 			world.game.stepCounter = 1;
-			auto second = world.game.snapshotStore().captureBoundary(
-				world.game, ResourceGrowth::Pipeline::requirements());
+			auto second = world.game.snapshotStore().captureBoundary(world.game);
 			pipeline.stage(second.tick, 2);
 			pipeline.prepare(second, executor);
 			// Join only the later job; the first worker remains blocked.
@@ -658,7 +652,7 @@ TEST_CASE("configured seeds preserve rates variety collisions and saved output" 
     for (int y = 0; y < map.getH(); y += 2)
         for (int x = 0; x < map.getW(); x += 2)
             map.replaceResource(map.coordToIndex(x, y), Resource{Uint16(resourceIndex(id)), 3, 1, 0});
-    auto snapshot = world.game.snapshotStore().captureBoundary(world.game, ResourceGrowth::Pipeline::requirements());
+    auto snapshot = world.game.snapshotStore().captureBoundary(world.game);
     ResourceGrowth::Batch batch;
     MersenneTwister random(991);
     ResourceGrowth::calculate(snapshot.view(), random, batch);

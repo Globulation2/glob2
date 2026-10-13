@@ -51,13 +51,12 @@ executable using full simulation ticks, and every missing fixture must be
 reconciled against its generation-failure report. Report both delay-versus-delay
 and delay-versus-baseline comparisons: only the former isolates scheduling.
 
-
-
 For attribution, set `GLOB2_GROWTH_EXISTING_CAPTURE=1` when running the paired
-`ResourceGrowthBenchmark` case. Every variant then captures the full shared
-component union once per observation, including the legacy control; new growth
-uses that existing handle. This separates the standalone cost of introducing
-snapshots from growth on an already captured world. It does not simulate AI worker
+`ResourceGrowthBenchmark` case. Every variant then captures the standard simulation
+and ordinary presentation payloads once per observation, including the legacy
+control; new growth uses that existing handle. Cold UI and diagnostic payloads
+remain excluded. This separates the standalone cost of introducing snapshots from
+growth on an already captured world. It does not simulate AI worker
 contention or retained AI leases, and old/new growth trajectories still differ.
 Compare full-engine capture counts, capture time and copied bytes as well; total
 shared capture time must not be attributed entirely to growth. Worker compute,

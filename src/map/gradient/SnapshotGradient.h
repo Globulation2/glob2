@@ -35,7 +35,6 @@ struct Request
     Uint32 allies = 0;
     bool crowding = false;
     unsigned terrainBuckets = 64;
-    SimulationSnapshot::Requirements requirements() const;
 };
 // One executor thread owns each cache. Stamps identify immutable inputs, not ticks:
 // jobs may arrive out of order and a pooled snapshot buffer may have been reused.
@@ -92,13 +91,10 @@ struct MinimalCostViewMetrics {
 };
 MinimalCostViewMetrics minimalCostViewMetrics() noexcept;
 
-// The snapshot components a building field reads: terrain, resources,
-// occupancy and areas, without visibility or entities.
-SimulationSnapshot::Requirements buildingRequirements();
 // Owner side, O(1) per field: the scalars a worker needs instead of the
 // Building. route may be Automatic.
 BuildingSeed captureBuildingSeed(const Building& building, int swim, BuildingRoute route);
-// Worker side, reading only the captured map (buildingRequirements()).
+// Worker side, reading only the standard building-gradient view.
 BuildingSeedResult seedBuilding(const BuildingSeed& building, const SimulationSnapshot::Handle& snapshot, Uint16* output);
 // Seeds the walking field and, unless it is locked, begins the search on it and
 // settles cost layers up to depthTarget (COST_LIMIT or more finishes it).
