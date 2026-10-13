@@ -546,9 +546,11 @@ TEST_SUITE("EngineSession")
         source.game.map.getMaterialGradient(0,MaterialId::Food,0);
         source.game.map.getGuardAreasGradient(0,0);
         source.game.map.getClearAreasGradient(0,0);
-        source.game.map.configureGradientPipeline(1,3);
-        source.game.map.syncStep(0,false);
-        source.game.map.stagePeriodicGradientPreparation();
+        // Use the production advance -> completed tick -> stage sequence, not
+        // a Map-only stage at epoch zero (reserve requires an advanced tick).
+        { auto random=source.game.bindRandom();source.game.syncStep(0,Game::PreparationCompletion::Deferred); }
+        const auto initialStep=source.game.stepCounter;
+        REQUIRE(initialStep==1);
         REQUIRE(source.game.map.hasPendingGradientPreparation());
         const auto save=[&](GameGUI& gui,const std::filesystem::path& path) {
             auto* storage=new GAGCore::MemoryStreamBackend;
@@ -594,7 +596,7 @@ TEST_SUITE("EngineSession")
                 for(unsigned tick=0;tick<128;++tick) {
                     if(changes)transition(tick);
                     order(engine,tick);REQUIRE(engine.stepSession(1000+tick*40,{}));
-                    REQUIRE(engine.gui.game.stepCounter==tick+1);
+                    REQUIRE(engine.gui.game.stepCounter==initialStep+tick+1);
                     if(tick==16 || tick==40 || tick==72 || tick==112) {
                         REQUIRE(engine.gui.game.teams[0]->myBuildings[buildingSlot]);
                         CHECK(engine.gui.game.teams[0]->myBuildings[buildingSlot]->maxUnitWorking==(tick==16 || tick==112 ? 3 : 1));
@@ -619,7 +621,7 @@ TEST_SUITE("EngineSession")
                 for(unsigned tick=80;tick<128;++tick) {
                     if(changes)transition(tick);
                     order(resumed,tick);REQUIRE(resumed.stepSession(1000+(tick-80)*40,{}));
-                    REQUIRE(resumed.gui.game.stepCounter==tick+1);
+                    REQUIRE(resumed.gui.game.stepCounter==initialStep+tick+1);
                     CHECK(state(resumed.gui.game)==actual[tick]);
                     CHECK(resumed.gui.game.map.computeExecutor().threadCount()==count);
                 }
