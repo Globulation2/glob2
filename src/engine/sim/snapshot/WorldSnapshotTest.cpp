@@ -1182,6 +1182,7 @@ TEST_SUITE("WorldSnapshot")
 #include <StreamBackend.h>
 #include <iostream>
 #include <ctime>
+#include <cstdint>
 #if defined(__GLIBC__)
 #include <malloc.h>
 #endif
@@ -1248,6 +1249,7 @@ TEST_SUITE("WorldSnapshot")
         glob2test::HeadlessGlobals globals;
         globals->settings.gradientBackend=gradient_kernel::Backend::CPU;
         const char* output=std::getenv("GLOB2_ENTITY_EVIDENCE_DIR");
+        const bool sharedInventory=std::getenv("GLOB2_ENTITY_SHARED") && std::string(std::getenv("GLOB2_ENTITY_SHARED"))=="1";
         nlohmann::json configuration=nlohmann::json::object();
         if(const char* path=std::getenv("GLOB2_ENTITY_BENCH_CONFIG")) {
             std::ifstream in(path); in>>configuration;
@@ -1267,12 +1269,22 @@ TEST_SUITE("WorldSnapshot")
                 definitions["units"][WORKER]["behaviors"]["cargoKinds"]=2;
                 game.gameHeader.setUnitCatalog(UnitCatalog::deserialize(definitions.dump())); game.configureBuildingCatalog();
             }
+
+            // Separate processes select ordinary private or actual catalog-backed
+            // shared stock. No live binding or catalog is changed inside a timer.
+            if(sharedInventory) {
+                auto definitions=nlohmann::json::parse(game.buildingsTypes.snapshotJson());
+                for(auto& variant:definitions["variants"])
+                    variant["semantics"]["market"]["sharedStock"]=true;
+                game.buildingsTypes.loadSnapshotJson(definitions.dump());
+                game.configureBuildingCatalog();
+            }
             const int units=scenario==1 ? 512 : 32;
             const int buildings=scenario>=2 && scenario<=4 ? 256 : 16;
             for(int i=0;i<buildings;++i) {
                 auto* b=fixture.addBuilding("inn",4+(i%16)*6,4+(i/16)*6); REQUIRE(b);
                 for(int material=0;material<MaterialSlotCount;++material) {
-                    b->localMaterials[material]=(scenario==3 || (scenario==4 && i%2)) ? 100000 : 0;
+                    b->localMaterials[material]=(scenario==3 || (scenario==4 && i%2)) ? 100000 : 200;
                     b->wishedMaterials[material]=(scenario==3 || (scenario==4 && i%2)) ? -40000 : 0;
                 }
             }
@@ -1280,6 +1292,48 @@ TEST_SUITE("WorldSnapshot")
                 auto* unit=fixture.addUnit(WORKER,2+(i%63)*2,108+i/63); REQUIRE(unit);
                 if(scenario==5)for(int packet=0;packet<4;++packet)unit->receiveCarriedMaterial(WHEAT,{});
             }
+
+            std::array<Sint32,MaterialSlotCount> initialTeamStock{},initialTeamReservations{};
+            for(int material=0;material<MaterialSlotCount;++material) {
+                if(sharedInventory) fixture.team->teamMaterials[material]=(scenario==3 || scenario==4) ? 100000 : 200;
+                initialTeamReservations[material]=fixture.team->reservedTeamMaterials[material];
+                if(sharedInventory) fixture.team->reservedTeamMaterials[material]=7;
+                initialTeamStock[material]=fixture.team->teamMaterials[material];
+            }
+            nlohmann::json layout={{"state_size",sizeof(BuildingStateRecord)},{"state_alignment",alignof(BuildingStateRecord)},
+                {"live_size",sizeof(Building)},{"live_alignment",alignof(Building)}};
+            nlohmann::json addressMod64=nlohmann::json::object(),stockMod64=nlohmann::json::object(),demandMod64=nlohmann::json::object();
+            nlohmann::json allocationSizes=nlohmann::json::object();
+            const auto histogram=[](nlohmann::json& values,std::uintptr_t address) {
+                const auto key=std::to_string(address%64);
+                values[key]=values.value(key,Uint64(0))+1;
+            };
+            std::vector<BuildingMaterialCost> initialPrivateReservations;
+            for(auto* building:fixture.team->liveBuildings.entries()) {
+                initialPrivateReservations.push_back(building->reservedMaterials);
+                if(!sharedInventory) building->reservedMaterials.fill(7);
+                REQUIRE(building->materials==(sharedInventory ? fixture.team->teamMaterials : building->localMaterials));
+                const auto base=reinterpret_cast<std::uintptr_t>(building);
+                if(!layout.contains("offsets")) {
+                    const auto offset=[&](const void* field) {return reinterpret_cast<std::uintptr_t>(field)-base;};
+                    layout["offsets"]={{"localMaterials",offset(building->localMaterials)},{"wishedMaterials",offset(building->wishedMaterials)},
+                        {"type",offset(&building->type)},{"owner",offset(&building->owner)},
+                        {"materials",offset(&building->materials)},{"reservedMaterials",offset(&building->reservedMaterials)}};
+                }
+                histogram(addressMod64,base);
+                histogram(stockMod64,reinterpret_cast<std::uintptr_t>(building->localMaterials));
+                histogram(demandMod64,reinterpret_cast<std::uintptr_t>(building->wishedMaterials));
+#if defined(__GLIBC__)
+                const auto key=std::to_string(malloc_usable_size(const_cast<Building*>(building)));
+                allocationSizes[key]=allocationSizes.value(key,Uint64(0))+1;
+#endif
+            }
+            layout["object_address_mod64"]=addressMod64;
+            layout["private_stock_address_mod64"]=stockMod64;
+            layout["demand_address_mod64"]=demandMod64;
+            layout["allocator_usable_size_histogram"]=allocationSizes;
+            layout["team_stock_address_mod64"]=reinterpret_cast<std::uintptr_t>(fixture.team->teamMaterials)%64;
+            layout["team_reservation_address_mod64"]=reinterpret_cast<std::uintptr_t>(&fixture.team->reservedTeamMaterials)%64;
             Uint64 liveHeap=0;
 #if defined(__GLIBC__)
             for(auto* u:fixture.team->liveUnits.entries())liveHeap+=malloc_usable_size(u);
@@ -1300,7 +1354,7 @@ TEST_SUITE("WorldSnapshot")
             const auto sidecarBefore=storage.entitySidecarBytesCopied;
             const auto mapBefore=storage.bytesCopied;
             const auto allocationsBefore=storage.allocations;
-            auto captureMetric=measure("capture",captures,capture);
+            auto captureMetric=measure(sharedInventory ? "shared_capture" : "private_capture",captures,capture);
             const auto copied=storage.entityBytesCopied-recordBefore;
             const auto sidecars=storage.entitySidecarBytesCopied-sidecarBefore;
             const auto mapCopied=storage.bytesCopied-mapBefore;
@@ -1319,9 +1373,22 @@ TEST_SUITE("WorldSnapshot")
                 sink=sum;
             };
             for(int i=0;i<128;++i)read(i);
-            auto reads=measure("inventory_read",count(config,"inventory_read",10000),read);
+            auto reads=measure(sharedInventory ? "shared_inventory_read" : "private_inventory_read",count(config,"inventory_read",10000),read);
             int updateIterations=count(config,"inventory_update",10000); if(updateIterations%2)++updateIterations;
-            auto updates=measure("inventory_update",updateIterations,update);
+            auto updates=measure(sharedInventory ? "shared_inventory_update" : "private_inventory_update",updateIterations,update);
+
+            // Even update counts restore every touched slot, including the alias
+            // shared by all buildings. Preserve inactive private inventory too.
+            for(int material=0;material<MaterialSlotCount;++material) {
+                REQUIRE(fixture.team->teamMaterials[material]==initialTeamStock[material]);
+                fixture.team->reservedTeamMaterials[material]=initialTeamReservations[material];
+            }
+            for(int i=0;i<buildings;++i) {
+                auto* building=fixture.team->liveBuildings.entries()[i];
+                building->reservedMaterials=initialPrivateReservations[i];
+                for(int material=0;material<MaterialSlotCount;++material)
+                    REQUIRE(building->localMaterials[material]==((scenario==3 || (scenario==4 && i%2)) ? 100000 : 200));
+            }
             fixture.step(128);
             const auto owner=measure("owner",count(config,"owner",512),[&](int){fixture.step();});
             REQUIRE(fixture.team->liveUnits.size()==std::size_t(units));
@@ -1344,7 +1411,8 @@ TEST_SUITE("WorldSnapshot")
                 {"retained_bytes",memory.retainedBytes},{"capacity_bytes",memory.capacityBytes},{"leased_bytes",memory.leasedBytes},
                 {"allocated_buffers",memory.allocatedBuffers},{"pool_growth_allocations",storage.allocations},{"capture_pool_growth_allocations",storage.allocations-allocationsBefore},
                 {"record_bytes_copied",copied},{"sidecar_bytes_copied",sidecars},{"map_bytes_copied",mapCopied},
-                {"capture",captureMetric},{"inventory_read",reads},{"inventory_update",updates},{"owner",owner},{"consumer",consumer},{"checksum",checksum}}.dump()<<'\n';
+                {"building_layout",layout},{"inventory_mode",sharedInventory ? "shared" : "private"},
+                {"capture",captureMetric},{sharedInventory ? "shared_inventory_read" : "private_inventory_read",reads},{sharedInventory ? "shared_inventory_update" : "private_inventory_update",updates},{"owner",owner},{"consumer",consumer},{"checksum",checksum}}.dump()<<'\n';
         }
     }
 }

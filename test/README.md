@@ -132,6 +132,10 @@ The `WorldSnapshot` case `paired entity storage workload [benchmark]` emits
 retained snapshot capacity, live object sizes, and separate capture, inventory,
 owner simulation, and scene preparation timings. Use a release build for runtime
 comparisons. `GLOB2_ENTITY_SCENARIO` selects one fixture (0–5),
+`GLOB2_ENTITY_SHARED=1` selects catalog-backed team inventory; private inventory
+is the default. Inventory phases report separate keys, and layout diagnostics
+include actual allocation alignment and usable sizes.
+
 `GLOB2_ENTITY_LEASES` controls retained handles (1–21, within the component pool horizon), and
 `GLOB2_ENTITY_BENCH_CONFIG` names a JSON file mapping scenario numbers to operation
 counts (`capture`, `inventory_read`, `inventory_update`, `owner`, `consumer`).
