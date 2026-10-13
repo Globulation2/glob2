@@ -493,7 +493,11 @@ to honor the pool. Separate pools still share cache, memory bandwidth and therma
 limits, so reserved-core measurements are not equivalent to quiet-host qualification.
 
 Use `TURRET_VARIANT=baseline|forecast|preparation|combined` to isolate the research
-optimizations and `TURRET_CAPACITY=4|8` to compare output lengths. The baseline
+optimizations and `TURRET_CAPACITY=2|3|4|8` to compare output lengths.
+Set `TURRET_REFRESH` and `TURRET_DELAY` for the refresh interval and publication
+delay (both default to one). The producer validates the configuration, including
+the four-tick maximum age bound. These variables also configure the actual
+producer in the stock combat corpus; its output records K and R. The baseline
 retains the previous admission/preparation behavior, using the same indexed kernel.
 All configurations retain original targeting as their paired comparison. Timing
 includes initial boundary admission and final draining, and omits CPU probes.

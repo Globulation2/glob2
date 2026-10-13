@@ -38,7 +38,7 @@ struct Selection {
     TurretTargeting::Metrics rejections;
 };
 thread_local Selection* selection=nullptr;
-unsigned capacity=8;
+unsigned capacity=8,refresh=1,delay=1;
 bool forecast=true,reusePreparation=true,profileCpu=false,opportunities=false;
 bool profileOwner=false;
 bool callgrindRegion=false;
@@ -48,6 +48,8 @@ void configure() {
     forecast=std::string(variant)=="forecast" || std::string(variant)=="combined";
     reusePreparation=std::string(variant)=="preparation" || std::string(variant)=="combined";
     if (const auto* value=std::getenv("TURRET_CAPACITY")) capacity=std::stoul(value);
+    if (const auto* value=std::getenv("TURRET_REFRESH")) refresh=std::stoul(value);
+    if (const auto* value=std::getenv("TURRET_DELAY")) delay=std::stoul(value);
     profileCpu=std::getenv("TURRET_PROFILE_CPU")!=nullptr;
     profileOwner=profileCpu || std::getenv("TURRET_PROFILE_OWNER")!=nullptr;
     opportunities=std::getenv("TURRET_OPPORTUNITIES")!=nullptr;
@@ -109,7 +111,7 @@ void setup(glob2test::HeadlessGame& world,unsigned fixture,unsigned seed,unsigne
         for (auto* b:game.teams[team]->liveBuildings.entries()) if (b) game.teams[team]->addToStaticAbilitiesLists(b);
         game.teams[team]->stats.step(game.teams[team]);
     }
-    if (mode!=Original) game.configureTurretTargetingShadow(1,1,capacity,1,forecast,reusePreparation,profileCpu);
+    if (mode!=Original) game.configureTurretTargetingShadow(delay,refresh,capacity,1,forecast,reusePreparation,profileCpu);
 }
 void advance(glob2test::HeadlessGame& fixture,Run* evidence)
 {
@@ -186,7 +188,7 @@ Run resume(unsigned fixture,unsigned participants,Mode mode,const std::vector<ch
     world.game.setWaitingOnMask(0); world.game.map.configureCompute(participants);
     REQUIRE(world.game.map.computeExecutor().threadCount()==participants);
     world.game.map.configureGradientPipeline(participants,8);
-    if (mode!=Original) world.game.configureTurretTargetingShadow(1,1,capacity,1,forecast,reusePreparation,profileCpu);
+    if (mode!=Original) world.game.configureTurretTargetingShadow(delay,refresh,capacity,1,forecast,reusePreparation,profileCpu);
     Run result; result.targeting.mode=mode; result.targeting.diagnostics=true; selection=&result.targeting;
     struct Reset { ~Reset(){selection=nullptr;} } reset;
     for (unsigned t=0;t<ticks;++t) advance(world,&result);
@@ -263,7 +265,7 @@ TEST_SUITE("TurretEngine")
         configure();
         glob2test::HeadlessGlobals globals;
         constexpr std::array<unsigned,10> seeds{713,1919,7919,104729,15485863,32452843,49979687,67867967,86028121,123456};
-        std::printf("variant,%s,capacity,%u,profile,%u\n",variant,capacity,profileCpu);
+        std::printf("variant,%s,capacity,%u,refresh,%u,delay,%u,profile,%u\n",variant,capacity,refresh,delay,profileCpu);
         std::printf("turret_engine,fixture,participants,repeat,seed,mode,ticks,wall_ns,cpu_ns,attempts,found,shots,units,turrets,captures,index_bytes,list_bytes\n");
         const unsigned requestedParticipants=std::getenv("TURRET_PARTICIPANTS") ? std::stoul(std::getenv("TURRET_PARTICIPANTS")) : 0;
         const auto* requestedRepeat=std::getenv("TURRET_REPEAT");

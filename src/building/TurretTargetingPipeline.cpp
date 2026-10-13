@@ -165,7 +165,7 @@ Pipeline::Pipeline(Game& game,Configuration rules):state(std::make_unique<State>
     if ((rules.delay!=1 && rules.delay!=2 && rules.delay!=4)
         || (rules.refresh!=1 && rules.refresh!=2 && rules.refresh!=4)
         || rules.delay+rules.refresh-1>4
-        || (rules.capacity!=4 && rules.capacity!=8 && rules.capacity!=16 && rules.capacity!=32) || rules.margin>2)
+        || (rules.capacity!=2 && rules.capacity!=3 && rules.capacity!=4 && rules.capacity!=8 && rules.capacity!=16 && rules.capacity!=32) || rules.margin>2)
         throw std::invalid_argument("Invalid turret shadow rules");
     static_assert(ComputeExecutor::TurretHorizon>=4);
 }

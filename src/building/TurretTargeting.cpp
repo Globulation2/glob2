@@ -256,7 +256,7 @@ template<class World,class Visit> void traverse(const Source& s,const World& wor
 }
 template<class World> Plan run(const Source& s,const World& world,unsigned capacity,unsigned margin,bool compactOutputs=false)
 {
-    if (s.width<=0 || s.height<=0 || s.speed<256 || s.range<0 || margin>2 || (capacity && capacity!=4 && capacity!=8 && capacity!=16 && capacity!=32))
+    if (s.width<=0 || s.height<=0 || s.speed<256 || s.range<0 || margin>2 || (capacity && capacity!=2 && capacity!=3 && capacity!=4 && capacity!=8 && capacity!=16 && capacity!=32))
         throw std::invalid_argument("Invalid turret planner configuration");
     const Sint64 end=Sint64(s.range)+margin;
     constexpr Sint64 coordinateLimit=INT_MAX/32;

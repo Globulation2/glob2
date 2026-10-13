@@ -386,6 +386,8 @@ TEST_SUITE("TurretTargeting")
         glob2test::HeadlessGlobals globals;
         const bool pipelineOnly=std::getenv("TURRET_PIPELINE_ONLY")!=nullptr;
         const unsigned actualCapacity=std::getenv("TURRET_CAPACITY") ? std::stoul(std::getenv("TURRET_CAPACITY")) : 8;
+        const unsigned actualRefresh=std::getenv("TURRET_REFRESH") ? std::stoul(std::getenv("TURRET_REFRESH")) : 1;
+        const unsigned actualDelay=std::getenv("TURRET_DELAY") ? std::stoul(std::getenv("TURRET_DELAY")) : 1;
         const std::string actualVariant=std::getenv("TURRET_VARIANT") ? std::getenv("TURRET_VARIANT") : "combined";
         struct Window { bool active=false; unsigned start=0; Entry reference; };
         struct Lists { Source source; bool initialized=false; std::vector<Entry> published; std::map<unsigned,std::vector<Entry>> pending; Window window; };
@@ -504,10 +506,10 @@ TEST_SUITE("TurretTargeting")
                 }
                 Research research{&world.game,{}, {}};
                 if (shadow && !pipelineOnly) for (unsigned k : {1,2,4}) for (unsigned r : {1,2,4})
-                    for (unsigned l : {4,8,16,32,0}) for (unsigned margin : {0,1,2})
+                    for (unsigned l : {2,3,4,8,16,32,0}) for (unsigned margin : {0,1,2})
                         research.matrix.push_back({k,r,l,margin});
                 ScopedAttemptObserver observer(shadow ? Research::attempt : nullptr,&research);
-                if (shadow) world.game.configureTurretTargetingShadow(1,1,actualCapacity,1,
+                if (shadow) world.game.configureTurretTargetingShadow(actualDelay,actualRefresh,actualCapacity,1,
                     actualVariant=="forecast" || actualVariant=="combined",actualVariant=="preparation" || actualVariant=="combined");
                 Observation previous;
                 Result result;
@@ -567,10 +569,10 @@ TEST_SUITE("TurretTargeting")
                     csv.flush(); REQUIRE(csv.good());
                     std::ofstream actual(glob2test::artifactDir()/(fixture+"-"+std::to_string(seed)+"-producer.csv"));
                     for (const auto& [identity,window]:research.actual.windows) if (window.active) ++research.actual.censored;
-                    actual << "fixture,seed,L,variant,opportunities,agreement,missed,censored,delays\n";
+                    actual << "fixture,seed,L,variant,opportunities,agreement,missed,censored,delays,K,R\n";
                     actual << fixture << ',' << seed << ',' << actualCapacity << ',' << actualVariant << ',' << research.actual.opportunities << ',' << research.actual.agreement << ',' << research.actual.missed << ',' << research.actual.censored << ',';
                     for (unsigned delay:research.actual.delays) actual << delay << ';';
-                    actual << '\n'; actual.flush(); REQUIRE(actual.good());
+                    actual << ',' << actualDelay << ',' << actualRefresh << '\n'; actual.flush(); REQUIRE(actual.good());
                     std::printf("stock_combat,fixture=%s,seed=%u,eligible=%u,found=%u,shots=%u,unit_shots=%u,building_shots=%u\n",fixture.c_str(),seed,research.eligible,research.found,research.shots,research.unitShots,research.buildingShots);
                 }
                 const auto prefix=fixture+"-"+std::to_string(seed)+(shadow ? "-shadow" : "-reference");
@@ -606,7 +608,7 @@ TEST_SUITE("TurretTargeting")
             turret->owner->enemies=2; turret->bullets=turret->type->maxBullets; turret->shootingCooldown=0;
             struct Configuration { unsigned k,r,l,margin,first=UINT_MAX; std::vector<Entry> published; std::map<unsigned,std::vector<Entry>> pending; };
             std::vector<Configuration> matrix;
-            for (unsigned k : {1,2,4}) for (unsigned r : {1,2,4}) for (unsigned l : {4,8,16,32,0}) for (unsigned margin : {0,1,2}) matrix.push_back({k,r,l,margin});
+            for (unsigned k : {1,2,4}) for (unsigned r : {1,2,4}) for (unsigned l : {2,3,4,8,16,32,0}) for (unsigned margin : {0,1,2}) matrix.push_back({k,r,l,margin});
             unsigned referenceFirst=UINT_MAX,windowEnd=UINT_MAX; Entry windowTarget;
             Unit* enemy=nullptr;
             Observation previous;
@@ -1161,7 +1163,7 @@ TEST_SUITE("TurretTargeting")
         };
         std::vector<Configuration> matrix;
         for (unsigned k : {1,2,4}) for (unsigned r : {1,2,4})
-            for (unsigned l : {4,8,16,32,0}) for (unsigned margin : {0,1,2})
+            for (unsigned l : {2,3,4,8,16,32,0}) for (unsigned margin : {0,1,2})
                 matrix.push_back({k,r,l,margin});
         bool wasAvailable=false;
         std::vector<bool> hit(matrix.size(),false);
@@ -1269,7 +1271,7 @@ TEST_SUITE("TurretTargeting")
             }
         }
         CHECK(sawBuilding); CHECK(sawGuard);
-        for (unsigned capacity : {4,8,16,32}) {
+        for (unsigned capacity : {2,3,4,8,16,32}) {
             const auto limited=plan(source(*turret),observed,capacity,2);
             const auto size=std::min<std::size_t>(capacity,full.entries.size());
             CHECK(limited.entries==std::vector<Entry>(full.entries.begin(),full.entries.begin()+size));
