@@ -738,6 +738,16 @@ TEST_SUITE("RuntimeGradientBackend")
                 REQUIRE(executeVulkanGradient(std::span(&request,1),plan));
                 CHECK(committed); CHECK(actual==expected);
                 const auto after=gradientDiagnosticSnapshot(Backend::Vulkan);
+                const auto delta=[&](GradientCounter counter) {
+                    return after.counters[unsigned(counter)]-before.counters[unsigned(counter)];
+                };
+                // All four uploads share one fence; readback owns the other
+                // non-dispatch submission, including transfer-proof roundtrips.
+                CHECK(delta(GradientCounter::Submissions)==delta(GradientCounter::Dispatches)+2);
+                const auto tiles=std::size_t((dimensions.first+15)/16)*((dimensions.second+15)/16);
+                const auto uploaded=(grid.cells()*2+tiles+4)*sizeof(std::uint32_t);
+                CHECK(delta(GradientCounter::UploadBytes)==uploaded);
+                CHECK(delta(GradientCounter::ReadbackBytes)==uploaded+grid.cells()*sizeof(std::uint32_t));
                 if (plan==Plan::VulkanJacobi || iteration>=3) {
                     CHECK(after.counters[unsigned(GradientCounter::ResourceReuses)] - before.counters[unsigned(GradientCounter::ResourceReuses)] == 1);
                     CHECK(after.counters[unsigned(GradientCounter::BufferAllocations)] == before.counters[unsigned(GradientCounter::BufferAllocations)]);
@@ -747,7 +757,7 @@ TEST_SUITE("RuntimeGradientBackend")
             }
             ++iteration;
         }
-        CHECK(openCLHostBytes() >= hostBefore+512*512*sizeof(std::uint32_t));
+        CHECK(openCLHostBytes() >= hostBefore+(512*512*2+32*32+4)*sizeof(std::uint32_t));
         shutdownVulkanGradient();
         CHECK(openCLHostBytes()==hostBefore);
     }

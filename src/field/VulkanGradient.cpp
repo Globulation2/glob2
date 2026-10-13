@@ -441,6 +441,8 @@ struct Runtime
 		if (!cells || cells > properties.limits.maxStorageBufferRange / 4 || cells > UINT32_MAX ||
 			request.limit < 0)
 			return false;
+		if (cells > (SIZE_MAX - 16) / 8 || tiles > (SIZE_MAX - cells * 8 - 16) / 4)
+			return false;
 		if ((frozen && (pitch > properties.limits.maxComputeWorkGroupCount[0] ||
 						rows > properties.limits.maxComputeWorkGroupCount[1])) ||
 			(!frozen && (cells + 127) / 128 > properties.limits.maxComputeWorkGroupCount[0]))
@@ -473,7 +475,7 @@ struct Runtime
 		} returnRetired{*this, work};
 		const std::array<std::size_t, BufferCount> sizes{
 			cells * 4, cells * 4, cells * 4, 4,
-			16,        tiles * 4, tiles * 4, std::max<std::size_t>(cells * 4, 16)};
+			16,        tiles * 4, tiles * 4, cells * 8 + tiles * 4 + 16};
 		if (!work->fence)
 		{
 			for (unsigned i = 0; i < BufferCount; ++i)
@@ -540,14 +542,30 @@ struct Runtime
 		work->reusable = true;
 		phase.setPhase(GradientPhase::InputConversion);
 		const auto upload = monotonicNs();
-		// Only staging/readback is written by the host. Compute inputs and
-		// convergence/tile controls are populated through explicit GPU copies
-		// and fills, with a retirement proof before reusing staging storage.
+		// Keep every input in a separate staging range until the shared upload
+		// fence retires. No host write can replace a queued transfer's source.
 		auto *staging = static_cast<std::uint32_t *>(work->buffers[Transfer].mapped);
+		const std::array<unsigned, 4> destinations{InputA, Costs, ActiveA, Params};
+		const std::array<std::size_t, 4> offsets{0, cells, cells * 2, cells * 2 + tiles};
+		const std::array<std::size_t, 4> words{cells, cells, tiles, 4};
+		const std::array<std::uint32_t, 4> params{
+			w, h, unsigned(std::min(request.limit, COST_LIMIT)), pitch};
+		for (std::size_t i = 0; i < cells; ++i)
+			staging[offsets[0] + i] = request.gradient[i];
+		for (std::size_t i = 0; i < cells; ++i)
+		{
+			const auto cost = request.gradient[i] || request.identity.allCells
+								  ? request.costAt(request.context, i)
+								  : LAND_STEPS;
+			if (!cost.cardinal || !cost.diagonal || cost.cardinal > 65535 || cost.diagonal > 65535)
+				return false;
+			staging[offsets[1] + i] = cost.cardinal | (cost.diagonal << 16);
+		}
+		std::fill_n(staging + offsets[2], tiles, 1u);
+		std::memcpy(staging + offsets[3], params.data(), sizeof(params));
 		const auto *transferVerification = std::getenv("GLOB2_VULKAN_VERIFY_TRANSFERS");
 		const bool verifyTransfers =
 			transferVerification && std::strcmp(transferVerification, "1") == 0;
-		const auto copyInput = [&](unsigned destination, std::size_t bytes)
 		{
 			GradientPhaseScope phase(GradientPhase::Recording);
 			beginCommands(*work);
@@ -557,23 +575,25 @@ struct Runtime
 			CmdPipelineBarrier(
 				work->command, VK_PIPELINE_STAGE_HOST_BIT | VK_PIPELINE_STAGE_TRANSFER_BIT,
 				VK_PIPELINE_STAGE_TRANSFER_BIT, 0, 1, &barrier, 0, nullptr, 0, nullptr);
-			VkBufferCopy copy{0, 0, bytes};
-			CmdCopyBuffer(work->command, work->buffers[Transfer].buffer,
-						  work->buffers[destination].buffer, 1, &copy);
+			for (unsigned input = 0; input < destinations.size(); ++input)
+			{
+				VkBufferCopy copy{offsets[input] * 4, 0, words[input] * 4};
+				CmdCopyBuffer(work->command, work->buffers[Transfer].buffer,
+							  work->buffers[destinations[input]].buffer, 1, &copy);
+			}
 			if (verifyTransfers)
 			{
-				barrier.srcAccessMask = VK_ACCESS_TRANSFER_WRITE_BIT;
-				barrier.dstAccessMask = VK_ACCESS_TRANSFER_READ_BIT;
+				barrier.srcAccessMask = VK_ACCESS_TRANSFER_WRITE_BIT | VK_ACCESS_TRANSFER_READ_BIT;
+				barrier.dstAccessMask = VK_ACCESS_TRANSFER_READ_BIT | VK_ACCESS_TRANSFER_WRITE_BIT;
 				CmdPipelineBarrier(work->command, VK_PIPELINE_STAGE_TRANSFER_BIT,
 								   VK_PIPELINE_STAGE_TRANSFER_BIT, 0, 1, &barrier, 0, nullptr, 0,
 								   nullptr);
-				CmdCopyBuffer(work->command, work->buffers[destination].buffer,
-							  work->buffers[Transfer].buffer, 1, &copy);
-				barrier.srcAccessMask = VK_ACCESS_TRANSFER_WRITE_BIT;
-				barrier.dstAccessMask = VK_ACCESS_HOST_READ_BIT;
-				CmdPipelineBarrier(work->command, VK_PIPELINE_STAGE_TRANSFER_BIT,
-								   VK_PIPELINE_STAGE_HOST_BIT, 0, 1, &barrier, 0, nullptr, 0,
-								   nullptr);
+				for (unsigned input = 0; input < destinations.size(); ++input)
+				{
+					VkBufferCopy copy{0, offsets[input] * 4, words[input] * 4};
+					CmdCopyBuffer(work->command, work->buffers[destinations[input]].buffer,
+								  work->buffers[Transfer].buffer, 1, &copy);
+				}
 			}
 			barrier.srcAccessMask = VK_ACCESS_TRANSFER_WRITE_BIT;
 			barrier.dstAccessMask = VK_ACCESS_SHADER_READ_BIT | VK_ACCESS_HOST_READ_BIT;
@@ -582,6 +602,7 @@ struct Runtime
 							   1, &barrier, 0, nullptr, 0, nullptr);
 			phase.setPhase(GradientPhase::Upload);
 			submitCommands(*work);
+			const auto bytes = (cells * 2 + tiles + params.size()) * 4;
 			countGradientWork(GradientCounter::UploadBytes, bytes);
 			if (verifyTransfers)
 				countGradientWork(GradientCounter::ReadbackBytes, bytes);
@@ -591,61 +612,36 @@ struct Runtime
 			{
 				phase.setPhase(GradientPhase::Validation);
 				std::atomic_thread_fence(std::memory_order_acquire);
-				const auto expectedAt = [&](std::size_t i)
+				for (unsigned input = 0; input < destinations.size(); ++input)
 				{
-					std::uint32_t expected = 1;
-					if (destination == InputA)
-						expected = request.gradient[i];
-					if (destination == Costs)
+					const auto destination = destinations[input];
+					const auto expectedAt = [&](std::size_t i) -> std::uint32_t
 					{
-						const auto cost = request.gradient[i] || request.identity.allCells
-											  ? request.costAt(request.context, i)
-											  : LAND_STEPS;
-						expected = cost.cardinal | (cost.diagonal << 16);
-					}
-					if (destination == Params)
-					{
-						const std::array<std::uint32_t, 4> p{
-							w, h, unsigned(std::min(request.limit, COST_LIMIT)), pitch};
-						expected = p[i];
-					}
-					return expected;
-				};
-				for (std::size_t i = 0; i < bytes / 4; ++i)
-					if (staging[i] != expectedAt(i))
-						failGradientTransfer(
-							destination, std::span<const std::uint16_t>(request.gradient, cells),
-							std::span<const std::uint32_t>(staging, bytes / 4), request.grid,
-							request.limit, expectedAt,
-							{status.device, status.driver, status.shaderIdentity,
-							 request.capturedGeneration.value_or(
-								 request.session.currentGeneration())});
+						if (destination == InputA)
+							return request.gradient[i];
+						if (destination == Costs)
+						{
+							const auto cost = request.gradient[i] || request.identity.allCells
+												  ? request.costAt(request.context, i)
+												  : LAND_STEPS;
+							return cost.cardinal | (cost.diagonal << 16);
+						}
+						return destination == Params ? params[i] : 1u;
+					};
+					const std::span<const std::uint32_t> actual(staging + offsets[input],
+																words[input]);
+					for (std::size_t i = 0; i < actual.size(); ++i)
+						if (actual[i] != expectedAt(i))
+							failGradientTransfer(
+								destination,
+								std::span<const std::uint16_t>(request.gradient, cells), actual,
+								request.grid, request.limit, expectedAt,
+								{status.device, status.driver, status.shaderIdentity,
+								 request.capturedGeneration.value_or(
+									 request.session.currentGeneration())});
+				}
 			}
-			return true;
-		};
-		for (std::size_t i = 0; i < cells; ++i)
-			staging[i] = request.gradient[i];
-		if (!copyInput(InputA, cells * 4))
-			return false;
-		for (std::size_t i = 0; i < cells; ++i)
-		{
-			const auto cost = request.gradient[i] || request.identity.allCells
-								  ? request.costAt(request.context, i)
-								  : LAND_STEPS;
-			if (!cost.cardinal || !cost.diagonal || cost.cardinal > 65535 || cost.diagonal > 65535)
-				return false;
-			staging[i] = cost.cardinal | (cost.diagonal << 16);
 		}
-		if (!copyInput(Costs, cells * 4))
-			return false;
-		std::fill_n(staging, tiles, 1u);
-		if (!copyInput(ActiveA, tiles * 4))
-			return false;
-		const std::array<std::uint32_t, 4> params{
-			w, h, unsigned(std::min(request.limit, COST_LIMIT)), pitch};
-		std::memcpy(staging, params.data(), 16);
-		if (!copyInput(Params, 16))
-			return false;
 		status.uploadNs += monotonicNs() - upload;
 		phase.setPhase(GradientPhase::Convergence);
 		unsigned current = InputA, active = ActiveA;

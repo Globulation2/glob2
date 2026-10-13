@@ -423,7 +423,9 @@ quarantined and charged. Host metadata and mapped allocations share the host
 limit; every device allocation retains its device charge. An idle set is evicted
 before declining seed-backup admission or replacing it with larger storage, and
 explicit shutdown releases it after retirement. Inputs are overwritten for each
-captured request; serving fields remain separate from this storage.
+captured request; serving fields remain separate from this storage. Seeds, costs,
+active tiles and parameters occupy separate mapped staging ranges and upload in
+one submission. Those ranges cannot be overwritten until its fence retires.
 The GLSL sources generate pinned SPIR-V and WGSL with integer-only wrapping.
 Vulkan/WebGPU readback also passes an exact positive-cost fixed-point check against
 original seeds before commit. A convergence flag alone cannot publish fabricated
