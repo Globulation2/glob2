@@ -67,14 +67,17 @@ Command& OrderScheduler::complete(Pending& entry)
 	if (!entry.completed) throw std::logic_error("AI decision was never executed");
 	return *entry.completed;
 }
+template<bool Measure, bool Collect>
 void OrderScheduler::Pending::run(void* context, std::size_t)
 {
 	auto& entry = *static_cast<Pending*>(context);
-	const auto start = std::chrono::steady_clock::now();
+	const auto start = [] { if constexpr (Measure) return std::chrono::steady_clock::now(); else return std::chrono::steady_clock::time_point{}; }();
 	try { entry.completed = entry.decide(*entry.world); }
 	catch (...) { entry.failure = std::current_exception(); }
-	entry.computationNs = std::chrono::duration_cast<std::chrono::nanoseconds>(std::chrono::steady_clock::now() - start).count();
-	entry.owner->computationNs.fetch_add(entry.computationNs, std::memory_order_relaxed);
+	if constexpr (Measure) {
+        entry.computationNs = std::chrono::duration_cast<std::chrono::nanoseconds>(std::chrono::steady_clock::now() - start).count();
+        if constexpr (Collect) entry.owner->computationNs.fetch_add(entry.computationNs, std::memory_order_relaxed);
+    }
 	// The observation lease and the decision closure end with the computation.
 	entry.world.reset(); entry.decide = nullptr;
 }
@@ -104,7 +107,7 @@ void OrderScheduler::configureExecution(ComputeExecutor& target, bool sharedExec
 {
 	// Placement changes only between batches: finish what the previous executor
 	// configuration was given before switching.
-	joinAll();
+	joinAll({JoinReason::Reconfigure, ComputeTelemetry::NoTick});
 	executor = &target; shared = sharedExecution;
 }
 std::size_t OrderScheduler::pendingCount() const
@@ -137,25 +140,31 @@ void OrderScheduler::dispatch()
 	{
 		// Not deferred: the owner decides now, as synchronous AI does; the
 		// decisions are still delivered at their deadline.
-		for (auto& entry : batch.entries) Pending::run(&entry, 0);
+		for (auto& entry : batch.entries) {
+            if (executor->telemetryMode() == ComputeTelemetryMode::Trace) Pending::run<true, true>(&entry, 0);
+            else if (!delay) Pending::run<true, false>(&entry, 0);
+            else Pending::run<false, false>(&entry, 0);
+        }
 		return;
 	}
 	batch.groups.clear();
-	for (auto& entry : batch.entries) batch.groups.push_back({1, {&Pending::run, &entry}, entry.request.player});
+	const auto callback = executor->telemetryMode() == ComputeTelemetryMode::Trace ? &Pending::run<true, true>
+        : !delay ? &Pending::run<true, false> : &Pending::run<false, false>;
+	for (auto& entry : batch.entries) batch.groups.push_back({1, {callback, &entry}, entry.request.player});
 	++metrics.sharedBatches;
 	// Joined at the observation boundary of its due tick (takeDue).
-	batch.batch = executor->submit(batch.groups, ComputeExecutor::boundaryDue(batch.dueTick));
+	batch.batch = executor->submit(batch.groups, ComputeExecutor::boundaryDue(batch.dueTick), {ComputeProducer::AI, batch.observedTick, batch.dueTick});
 }
-void OrderScheduler::joinBatch(TickBatch& batch)
+void OrderScheduler::joinBatch(TickBatch& batch, JoinContext context)
 {
 	if (!batch.dispatched) dispatch();
-	if (executor) executor->join(batch.batch);
+	if (executor) executor->join(batch.batch, context);
 	batch.batch = {};
 }
-void OrderScheduler::joinAll()
+void OrderScheduler::joinAll(JoinContext context)
 {
 	dispatch();
-	for (auto& batch : batches) joinBatch(batch);
+	for (auto& batch : batches) joinBatch(batch, context);
 }
 void OrderScheduler::submit(RequestId request, std::shared_ptr<const AIWorldView> world, Decide decide)
 {
@@ -201,15 +210,10 @@ std::vector<Delivery> OrderScheduler::takeDue(Uint32 tick)
 		if (front.dueTick < tick) throw std::logic_error("AI order deadline was skipped");
 		if (front.dueTick == tick)
 		{
-			const auto start = std::chrono::steady_clock::now();
-			// At delay zero the owner always joins its own tick's batch; a miss
-			// is a delayed batch that outlived its horizon.
-			const bool missed = delay && executor && !executor->finished(front.batch);
-			joinBatch(front);
-			if (missed) { ++metrics.deadlineMisses; metrics.deadlineWaitNs += std::chrono::duration_cast<std::chrono::nanoseconds>(std::chrono::steady_clock::now() - start).count(); }
+			joinBatch(front, {JoinReason::TickDeadline, tick});
 			Uint64 work = 0;
 			for (const auto& entry : front.entries) work += entry.computationNs;
-			recentWorkNs = (recentWorkNs * 3 + work) / 4;
+			if (!delay) recentWorkNs = (recentWorkNs * 3 + work) / 4;
 			// The whole batch finished; a failure anywhere publishes nothing.
 			for (auto& entry : front.entries) complete(entry);
 			for (auto& entry : front.entries) deliveries.push_back({entry.request, entry.dueTick, std::move(*entry.completed)});
@@ -223,9 +227,9 @@ std::vector<Delivery> OrderScheduler::takeDue(Uint32 tick)
 	metrics.delivered += deliveries.size();
 	return deliveries;
 }
-void OrderScheduler::drain()
+void OrderScheduler::drain(JoinContext context)
 {
-	joinAll();
+	joinAll(context);
 	for (auto& batch : batches) for (auto& entry : batch.entries) complete(entry);
 }
 void OrderScheduler::adoptDiagnostics(GameDiagnostics::Session& session)
@@ -262,7 +266,7 @@ void OrderScheduler::clear()
 }
 void OrderScheduler::save(GAGCore::OutputStream* stream)
 {
-	drain();
+	drain({JoinReason::Save, ComputeTelemetry::NoTick});
 	stream->writeEnterSection("AIOrderScheduler");
 	stream->writeUint32(delay, "delay");
 	stream->writeUint8(submissionTick.has_value(), "hasSubmission");

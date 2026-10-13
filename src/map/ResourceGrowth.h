@@ -48,7 +48,7 @@ struct Metrics
 };
 // Pure calculation: all attempts see the same immutable input, including stocks.
 void calculate(const MapState::View &view, MersenneTwister &random, Batch &output);
-void apply(Map &map, const Batch &batch, Metrics &metrics);
+void apply(Map &map, const Batch &batch, Metrics &metrics, bool measure = true);
 
 // Lifecycle: stage -> prepare -> run -> join -> publish. Calculation uses the
 // shared executor, with its zero-worker fallback. The simulation owner manages
@@ -74,8 +74,8 @@ class Pipeline
 	ComputeExecutor *executor = nullptr;
 	std::size_t proposalReserve = 0;
 	std::optional<std::pair<Uint32, Uint32>> reservation;
-	static void run(void *, std::size_t);
-	void join(Job &);
+	template<bool Measure> static void run(void *, std::size_t);
+	void join(Job &, JoinContext);
 
   public:
 	unsigned delay = 8;
@@ -87,7 +87,7 @@ class Pipeline
 	void stage(Uint32 tick, Uint32 seed);
 	void prepare(const SimulationSnapshot::Handle &, ComputeExecutor &);
 	void publish(Map &, Uint32 tick);
-	void finish();
+	void finish(JoinContext context = {JoinReason::Verification, ComputeTelemetry::NoTick});
 	void reset() noexcept;
 	void setDelay(unsigned ticks);
 	void save(GAGCore::OutputStream *, Uint32 tick);

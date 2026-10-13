@@ -295,11 +295,11 @@ void Map::advanceGradientPipeline()
 	// Building fields publish after the periodic planes, before teams step.
 	if (gradientRuntime->buildings.enabled()) gradientRuntime->buildings.advance();
 }
-void Map::finishGradientPipeline()
+void Map::finishGradientPipeline(JoinContext context)
 {
 	preparePendingGradient();
-	gradientRuntime->pipeline.finish();
-	gradientRuntime->buildings.finish();
+	gradientRuntime->pipeline.finish(context);
+	gradientRuntime->buildings.finish(context);
 }
 void Map::resetGradientPipeline() noexcept
 {

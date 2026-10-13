@@ -34,11 +34,13 @@ std::shared_ptr<Order> Game::validateAIOrder(std::shared_ptr<Order> order,unsign
 void Game::settleAIOrder(const std::shared_ptr<Order>& order,bool accepted) {if(aiPipeline)aiPipeline->settle(*this,order,accepted);}
 void Game::cancelAI(unsigned player) {if(aiPipeline)aiPipeline->cancel(player);}
 void Game::drainAI() {if(aiPipeline)aiPipeline->drain();}
-void Game::clearAI() { movementShadow.reset(); map.finishGradientPipeline(); map.finishResourceGrowth(); aiPipeline.reset(); worldSnapshots.reset(); }
+void Game::clearAI() { movementShadow.reset(); map.finishGradientPipeline({JoinReason::Teardown, ComputeTelemetry::NoTick}); map.finishResourceGrowth({JoinReason::Teardown, ComputeTelemetry::NoTick}); aiPipeline.reset(); worldSnapshots.reset(); }
 void Game::saveAI(GAGCore::OutputStream* stream) {if(!aiPipeline){aiPipeline=std::make_unique<AIEngine::Pipeline>();aiPipeline->prepare(*this,{},true,nullptr,captureReadBoundary({},true));}aiPipeline->save(stream);}
 bool Game::loadAI(GAGCore::InputStream* stream) {auto pipeline=std::make_unique<AIEngine::Pipeline>();if(!pipeline->load(*this,stream))return false;aiPipeline=std::move(pipeline);return true;}
 std::vector<std::pair<std::string,Uint64>> Game::aiMetrics() const {
  if(!aiPipeline)return {};
+ const auto compute=map.computeExecutor().telemetrySnapshot();
+ const auto& waits=compute.summary.joins[unsigned(ComputeProducer::AI)][unsigned(JoinReason::TickDeadline)];
  const auto& capture=worldSnapshots.metrics;const auto& scheduling=aiPipeline->schedulingMetrics();const auto memory=worldSnapshots.memoryMetrics();const auto queryMemory=aiPipeline->queryVectorMemory();
  return {{"captures",capture.captures},{"extraction_ns",capture.captureNs},{"preparation_ns",capture.preparationNs},
   {"bytes_copied",capture.bytesCopied},{"component_reuses",capture.reusedComponents},{"allocations",capture.allocations},
@@ -51,7 +53,7 @@ std::vector<std::pair<std::string,Uint64>> Game::aiMetrics() const {
   {"snapshot_peak_allocated_buffers",memory.peakAllocatedBuffers},{"snapshot_peak_reusable_buffers",memory.peakReusableBuffers},{"snapshot_peak_leased_buffers",memory.peakLeasedBuffers},
   {"snapshot_peak_retained_bytes",memory.peakRetainedBytes},{"snapshot_peak_capacity_bytes",memory.peakCapacityBytes},
   {"snapshot_peak_leased_bytes",memory.peakLeasedBytes},
-  {"deadline_misses",scheduling.deadlineMisses},{"deadline_wait_ns",scheduling.deadlineWaitNs},{"maximum_pending",scheduling.maximumPending},
+  {"deadline_misses",waits.incomplete},{"deadline_wait_ns",waits.background.totalNs},{"maximum_pending",scheduling.maximumPending},
   {"shared_batches",scheduling.sharedBatches}};
 }
 void Game::observeUnpolledAI() {

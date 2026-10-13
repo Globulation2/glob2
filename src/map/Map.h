@@ -269,6 +269,7 @@ public:
 	void configureCompute(unsigned threads);
     std::vector<std::pair<std::string,Uint64>> gradientExecutionMetrics() const;
 	ComputeExecutor &computeExecutor() { return compute; }
+    const ComputeExecutor &computeExecutor() const { return compute; }
 	// Live field seeding retains its serial production order.
 	template<class Function> void initializeGradientCells(Function function) const
 	{
@@ -294,7 +295,7 @@ public:
     void preparePendingWorld();
     void preparePendingWorld(const SimulationSnapshot::Handle&);
     void stageResourceGrowth();
-    void finishResourceGrowth();
+    void finishResourceGrowth(JoinContext context = {JoinReason::Verification, ComputeTelemetry::NoTick});
     void setResourceGrowthDelay(unsigned delay);
     unsigned resourceGrowthDelay() const;
     const ResourceGrowth::Metrics& resourceGrowthMetrics() const;
@@ -303,7 +304,7 @@ public:
 	void preparePendingGradient();
 	void preparePendingGradient(const SimulationSnapshot::Handle& foundation);
 	void advanceGradientPipeline();
-	void finishGradientPipeline();
+	void finishGradientPipeline(JoinContext context = {JoinReason::Verification, ComputeTelemetry::NoTick});
 	void resetGradientPipeline() noexcept;
 	void setGradientWorkerCount(unsigned workers);
 	void configureGradientPipeline(unsigned workers, unsigned delay);

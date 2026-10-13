@@ -289,6 +289,7 @@ void Game::syncStep(Sint32 localTeam, PreparationCompletion completion)
 		Uint64 endTick=SDL_GetTicks();
 		ticksGameSum[stepCounter&(TICK_PROFILE_BUF_LEN-1)]+=static_cast<Sint64>(endTick) - static_cast<Sint64>(startTick);
 		publishTickEvents();
+		map.computeExecutor().advancingTick(stepCounter);
 		stepCounter++;
 		// All world mutations, including script/fog/project tail work, are done.
 		// Selection stays ordered; only private preparation can join AI decisions.

@@ -314,6 +314,8 @@ static void interactiveBenchmark()
 			std::vector<double> draw, present;
 			RenderOperations initialOps{};
             decltype(terrainCache.workMetrics) initialWork{};
+            if (const char* mode = getenv("PROFILE_COMPUTE_TELEMETRY"))
+                gui.game.map.computeExecutor().configureTelemetry(ComputeTelemetry::parseMode(mode));
             auto initialGraphics = gui.game.map.computeExecutor().graphicsMetrics();
 			std::uint64_t initialHits = 0, initialRebuilds = 0;
 			double c0 = 0;
@@ -415,12 +417,18 @@ static void interactiveBenchmark()
                    (unsigned long long)(ops.rasterSnapshotBytes - initialOps.rasterSnapshotBytes),
                    (unsigned long long)ops.rasterPeakRetainedBytes,
                    (unsigned long long)(ops.rasterFallbacks - initialOps.rasterFallbacks));
-            printf("graphics_executor batches=%llu parallel_batches=%llu jobs=%llu "
-                   "summed_queue_ns=%llu summed_active_ns=%llu owner_wait_ns=%llu\n",
-                   (unsigned long long)(graphics.batches - initialGraphics.batches),
-                   (unsigned long long)(graphics.parallelBatches - initialGraphics.parallelBatches), (unsigned long long)(graphics.jobs - initialGraphics.jobs),
-                   (unsigned long long)(graphics.queueNs - initialGraphics.queueNs), (unsigned long long)(graphics.activeNs - initialGraphics.activeNs),
-                   (unsigned long long)(graphics.waitNs - initialGraphics.waitNs));
+            const auto computeMode = gui.game.map.computeExecutor().telemetryMode();
+            const bool graphicsAvailable = computeMode == ComputeTelemetryMode::Trace;
+            const auto field = [](std::uint64_t value, bool available) { return available ? std::to_string(value) : std::string("na"); };
+            printf("graphics_executor mode=%s worker_available=%s batches=%s parallel_batches=%s jobs=%s "
+                   "summed_queue_ns=%s summed_active_ns=%s owner_wait_ns=%s\n",
+                   ComputeTelemetry::ModeNames[unsigned(computeMode)].data(), graphicsAvailable ? "true" : "false",
+                   field(graphics.batches-initialGraphics.batches,graphicsAvailable).c_str(),
+                   field(graphics.parallelBatches-initialGraphics.parallelBatches,graphicsAvailable).c_str(),
+                   field(graphics.jobs-initialGraphics.jobs,graphicsAvailable).c_str(),
+                   field(graphics.queueNs-initialGraphics.queueNs,graphicsAvailable).c_str(),
+                   field(graphics.activeNs-initialGraphics.activeNs,graphicsAvailable).c_str(),
+                   field(graphics.waitNs-initialGraphics.waitNs,computeMode!=ComputeTelemetryMode::Off).c_str());
 			PerformanceTelemetry::collector().write(std::cout, "profile", gui.game.stepCounter,
 													false);
 			if (const char *p = getenv("PROFILE_CAPTURE"))

@@ -2,6 +2,7 @@
 // Copyright (C) 2001-2004 Stephane Magnenat & Luc-Olivier de Charrière
 
 #pragma once
+#include "ComputeTelemetry.h"
 #include <atomic>
 
 #include <memory>
@@ -133,6 +134,7 @@ public:
 	// Zero selects the reported logical CPU count (one if unavailable). Structured
 	// --run-game configures its own compute executor instead.
 	unsigned computeThreads = 0;
+    ComputeTelemetryMode computeTelemetry = ComputeTelemetryMode::Off;
 	std::optional<bool> gpuComputeOverride;
     std::optional<gradient_kernel::Backend> gradientBackendOverride;
     std::optional<gradient_kernel::Algorithm> gradientAlgorithmOverride;

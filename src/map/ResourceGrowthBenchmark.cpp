@@ -92,6 +92,8 @@ TEST_SUITE("ResourceGrowthBenchmark")
 					auto &map = world.game.map;
 					setup(map, scenario);
 					map.configureCompute(variant == "shared" ? 4 : 1);
+                    if (const char* mode = std::getenv("GLOB2_COMPUTE_TELEMETRY"))
+                        map.computeExecutor().configureTelemetry(ComputeTelemetry::parseMode(mode));
 					map.setResourceGrowthDelay(delay);
 					auto scan = [&]()
 					{
@@ -402,6 +404,8 @@ TEST_SUITE("ResourceGrowthBenchmark")
 					else REQUIRE(loadedChecksum == initialChecksum);
 					auto &map = game.map;
 					map.configureCompute(variant == "shared" ? 4 : 1);
+                    if (const char* mode = std::getenv("GLOB2_COMPUTE_TELEMETRY"))
+                        map.computeExecutor().configureTelemetry(ComputeTelemetry::parseMode(mode));
 					map.setResourceGrowthDelay(delay ? delay : 8);
 					auto scan = [&]()
 					{
@@ -583,6 +587,8 @@ TEST_SUITE("ResourceGrowthBenchmark")
 						auto &map = world.game.map;
 						setup(map, scenario);
 						map.configureCompute(variant == 3 ? 4 : 1);
+                    if (const char* mode = std::getenv("GLOB2_COMPUTE_TELEMETRY"))
+                        map.computeExecutor().configureTelemetry(ComputeTelemetry::parseMode(mode));
 						map.setResourceGrowthDelay(8);
 						// Warm ecology before timing; snapshot capture remains inside timing.
 						map.resourceGrowthField();
@@ -672,9 +678,16 @@ TEST_SUITE("ResourceGrowthBenchmark")
 							{"cold_capture_ns", coldCaptureNs},
 							{"capture_ns", world.game.snapshotStore().metrics.captureNs},
 							{"copied_bytes", world.game.snapshotStore().metrics.bytesCopied},
-							{"compute_ns", m.computeNs},
-							{"publication_ns", m.publicationNs},
-							{"wait_ns", m.waitNs},
+                            {"compute_telemetry_mode", ComputeTelemetry::ModeNames[unsigned(map.computeExecutor().telemetryMode())]},
+                            {"compute_ns", variant == 1 || map.computeExecutor().telemetryMode() == ComputeTelemetryMode::Trace ? Json(m.computeNs) : Json(nullptr)},
+							{"publication_ns", variant == 1 || map.computeExecutor().telemetryEnabled() ? Json(m.publicationNs) : Json(nullptr)},
+							{"wait_ns", [&]() -> Json {
+                                if (!map.computeExecutor().telemetryEnabled()) return nullptr;
+                                const auto snapshot = map.computeExecutor().telemetrySnapshot();
+                                std::uint64_t ns = 0;
+                                for(const auto& reason : snapshot.summary.joins[unsigned(ComputeProducer::ResourceGrowth)]) ns += reason.total.totalNs;
+                                return ns;
+                            }()},
 							{"proposals", m.proposals},
 							{"accepted", m.accepted},
 							{"sampled", m.sampled},

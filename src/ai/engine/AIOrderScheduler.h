@@ -61,7 +61,7 @@ private:
 		std::exception_ptr failure;
 		Uint64 computationNs = 0;
 		OrderScheduler* owner = nullptr;
-		static void run(void* context, std::size_t);
+		template<bool Measure, bool Collect> static void run(void* context, std::size_t);
 	};
 	// The decisions admitted at one observation tick, dispatched to the executor
 	// as one batch (one group per controller on that controller's lane) once the
@@ -88,8 +88,8 @@ private:
 	std::optional<Uint32> deliveryTick;
 	static Command& complete(Pending& entry);
 	TickBatch& batchFor(Uint32 observedTick);
-	void joinBatch(TickBatch& batch);
-	void joinAll();
+	void joinBatch(TickBatch& batch, JoinContext context);
+	void joinAll(JoinContext context = {JoinReason::Teardown, ComputeTelemetry::NoTick});
 	bool liveWork() const;
 
 public:
@@ -121,7 +121,7 @@ public:
 	// batch before returning any outputs; errors cannot partially publish it.
 	std::vector<Delivery> takeDue(Uint32 tick);
 	// Lifecycle barriers finish private work without advancing deadlines.
-	void drain();
+	void drain(JoinContext context = {JoinReason::Verification, ComputeTelemetry::NoTick});
 	void adoptDiagnostics(GameDiagnostics::Session& session);
 	std::vector<Delivery> cancel(unsigned player, Uint32 generation);
 	void clear();
