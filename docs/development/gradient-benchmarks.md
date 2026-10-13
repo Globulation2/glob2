@@ -231,6 +231,42 @@ fallback. A one-slot pool cannot execute GPU gradients.
 metrics. Check actual committed fields before attributing a result to the GPU.
 Settings displays backend timing and fallback status during live comparisons.
 
+Set `GLOB2_GRADIENT_DIAGNOSTICS=1` for host attribution runs. Native OpenCL and
+Vulkan expose `gradient_host_diagnostics` in the game result or match's
+`compute.json`. Its nested phases partition thread CPU and elapsed time: snapshot
+capture (shared with other snapshot consumers), preparation, input conversion,
+allocation, uploads, command recording, submission, convergence checks, waiting,
+readback, validation, output conversion, CPU solving, recovery and retirement.
+Nested scopes subtract their inclusive duration from their parent, including
+scopes belonging to an inner adapter session. Counters distinguish submitted
+work and transferred bytes from device-confirmed execution and committed fields.
+`executed_fields` proves at least one completed dispatch, `converged_fields`
+requires complete converged readback, and `validated_fields` records successful
+independent fixed-point checks where implemented. `committed_fields` counts
+successful transactions. A canceled batch can have validated private fields
+without commits; these milestones must not be treated as synonyms.
+OpenCL submissions count explicit queue flushes; command enqueues are separate.
+Vulkan submissions count successful queue submissions. Mapped control reads are
+separate from explicit transfer/readback bytes. Elapsed totals accumulate thread
+scopes; overlapping threads do not form a process critical-path measurement.
+These are API costs, not
+measurements of GPU kernel duration or a separation of driver and application CPU.
+
+The enable decision travels with admitted jobs. Disabled scopes read no clocks
+and update no counters. `cpu_ns` is null without a usable CPU sample; inspect
+`cpu_invalid` before using any partial aggregate. Browser clocks do not establish
+worker CPU usage. The shared counters and phases do not qualify browser execution
+or provide JavaScript/GPU-process attribution.
+
+Result snapshots precede application teardown. When diagnostics and
+`GLOB2_TEST_ARTIFACTS` are enabled, `gradient-host-final.json` captures cumulative
+totals through explicit coordinator/adapter drain. Static driver teardown and
+the diagnostic file writing itself may follow that snapshot. Measure complete
+child-process user plus system CPU separately to include startup, final drain,
+recovery and exit. Keep diagnostics, native sampling and GPU profiling outside
+acceptance runs, and check actual GPU commits: short release runs can finish
+before asynchronous device initialization makes any field eligible.
+
 Freeze save inputs, source/executable/shader hashes, orders, tick windows, CPU
 affinity and compute budgets. Separate initialization, uploads, device computation,
 readback and deadline waiting. Measure driver/coordinator process CPU too; worker

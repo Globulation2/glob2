@@ -5,6 +5,7 @@
 #include "OpenCLLaneRegistry.h"
 #include "GradientBackend.h"
 #include "ThreadCpuClock.h"
+#include "GradientDiagnostics.h"
 #include <SDL3/SDL_loadso.h>
 #include <SDL3/SDL_platform_defines.h>
 #include <array>
@@ -758,6 +759,7 @@ struct Runtime : std::enable_shared_from_this<Runtime>
     }
     void buffers()
     {
+        GradientPhaseScope phase(GradientPhase::Retirement);
         for (auto *buffer : {&first, &second, &changed, &descriptors, &tilesFirst, &tilesSecond})
             if (*buffer)
             {
@@ -789,20 +791,25 @@ struct Runtime : std::enable_shared_from_this<Runtime>
 	}
 	template <class... Args> Int fill(Args... args)
 	{
+		GradientPhaseScope phase(GradientPhase::Recording);
 		const auto result = api.EnqueueFillBuffer(args...);
+		if (!result) countGradientWork(GradientCounter::Enqueues);
 		if (required)
 			required->proof.enqueueUnobserved(result);
 		return result;
 	}
 	template <class... Args> Int enqueueKernel(Args... args)
 	{
+		GradientPhaseScope phase(GradientPhase::Recording);
 		const auto result = api.EnqueueNDRangeKernel(args...);
+		if (!result) { countGradientWork(GradientCounter::Enqueues); countGradientWork(GradientCounter::Dispatches); }
 		if (required)
 			required->proof.enqueueUnobserved(result);
 		return result;
 	}
 	template <class T> void argumentTo(Handle target, UInt index, T value)
 	{
+		GradientPhaseScope phase(GradientPhase::Recording);
 		check(api.SetKernelArg(target, index, sizeof(T), &value));
 		++status.kernelArgumentUpdates;
 	}
@@ -822,9 +829,11 @@ struct Runtime : std::enable_shared_from_this<Runtime>
 	};
 	void await(Event &event)
 	{
+		GradientPhaseScope phase(GradientPhase::Waiting);
 		if (!event.value || (!required && !shared->status.pollMicros))
 			return;
-		check(api.Flush(queue));
+		{ GradientPhaseScope submission(GradientPhase::Submission);
+		check(api.Flush(queue)); countGradientWork(GradientCounter::Submissions); }
 		for (;;)
 		{
 			if (required && required->canceled())
@@ -835,7 +844,8 @@ struct Runtime : std::enable_shared_from_this<Runtime>
 				--required->diagnosticQueryFailures;
 				throw std::runtime_error("Injected required event query failure");
 			}
-			check(api.GetEventInfo(event.value, 0x11D3, sizeof state, &state, nullptr));
+			{ GradientPhaseScope convergence(GradientPhase::Convergence);
+			check(api.GetEventInfo(event.value, 0x11D3, sizeof state, &state, nullptr)); }
 			if(state<0)check(state);
             if(!state) {if(required)required->proof.eventCompleted();return;}
             // Polling remains interruptible by required publication/save/stop.
@@ -846,12 +856,14 @@ struct Runtime : std::enable_shared_from_this<Runtime>
 		// Failure unwinds only into batch's nonblocking proof/quarantine guard.
         // All transfer endpoints and retained events already belong to it.
 	}
-	void read(Handle buffer,void* output,std::size_t bytes,bool /*finalOutput*/) {
+	void read(Handle buffer,void* output,std::size_t bytes,bool finalOutput) {
+        GradientPhaseScope phase(finalOutput ? GradientPhase::Readback : GradientPhase::Convergence);
         if(required && required->canceled())throw RequiredCanceled();
         Event event(api);
         const bool asynchronous=required || shared->status.pollMicros!=0;
         const bool capture=asynchronous;
         const auto result=api.EnqueueReadBuffer(queue,buffer,!asynchronous,0,bytes,output,0,nullptr,capture ? &event.value : nullptr);
+        if(!result) { countGradientWork(GradientCounter::Enqueues); countGradientWork(GradientCounter::ReadbackBytes,bytes); }
         requiredEnqueue(result,event.value,!asynchronous);
         if(required && event.value)event.owns=false;
         check(result);
@@ -860,11 +872,13 @@ struct Runtime : std::enable_shared_from_this<Runtime>
     }
     void write(Handle buffer, const void *data, std::size_t bytes)
     {
+        GradientPhaseScope phase(GradientPhase::Upload);
         if(required && required->canceled())throw RequiredCanceled();
         Event event(api);
         const bool asynchronous=required || shared->status.pollMicros!=0;
         const bool capture=asynchronous;
         const auto result=api.EnqueueWriteBuffer(queue,buffer,!asynchronous,0,bytes,data,0,nullptr,capture ? &event.value : nullptr);
+        if(!result) { countGradientWork(GradientCounter::Enqueues); countGradientWork(GradientCounter::UploadBytes,bytes); }
         requiredEnqueue(result,event.value,!asynchronous);
         if(required && event.value)event.owns=false;
         check(result);
@@ -872,6 +886,7 @@ struct Runtime : std::enable_shared_from_this<Runtime>
         await(event);
     }
     void awaitPlane(const std::shared_ptr<Device::Plane>& p) {
+        GradientPhaseScope phase(GradientPhase::Waiting);
         while(p->ready.wait_for(std::chrono::milliseconds(1))!=std::future_status::ready) {
             if(required && required->canceled())throw RequiredCanceled();
             if(shared->failed.load()) throw std::runtime_error("OpenCL cost preparation failed on another lane");
@@ -879,6 +894,7 @@ struct Runtime : std::enable_shared_from_this<Runtime>
         p->ready.get();
     }
     std::shared_ptr<Device::Plane> costPlane(const BackendRequest& r) {
+        GradientPhaseScope phase(GradientPhase::InputConversion);
         const auto packed=r.identity.packedUniformCost;
         const bool knownUniform=r.identity.owner && r.identity.allCells &&
             (packed&65535u) && (packed>>16);
@@ -944,7 +960,10 @@ struct Runtime : std::enable_shared_from_this<Runtime>
             const auto bytes=p->data.size()*sizeof(UInt);
             try {p->storage->deviceLease.resize(bytes);}
             catch(const BudgetExceeded&) {shared->evictUnusedPlanes();p->storage->deviceLease.resize(bytes);}
-            Int error=0;p->buffer=p->storage->buffer=api.CreateBuffer(context,1,bytes,nullptr,&error);check(error);
+            Int error=0;
+            { GradientPhaseScope allocation(GradientPhase::Allocation);
+                p->buffer=p->storage->buffer=api.CreateBuffer(context,1,bytes,nullptr,&error);check(error);
+                countGradientWork(GradientCounter::BufferAllocations); }
             if(required)required->preparing=p;
             write(p->buffer,p->data.data(),bytes);++status.costUploads;
             if(required)required->preparing.reset();
@@ -962,6 +981,7 @@ struct Runtime : std::enable_shared_from_this<Runtime>
     }
     void computeBatch(std::span<const BackendRequest *const> requests,std::span<std::uint16_t> staging)
     {
+        GradientPhaseScope phase(GradientPhase::Bookkeeping);
         if(shared->failed.load()) throw std::runtime_error("OpenCL device failed on another lane");
         std::size_t total = 0;
         UInt width = 0, height = 0;
@@ -976,6 +996,7 @@ struct Runtime : std::enable_shared_from_this<Runtime>
             throw std::runtime_error("Gradient batch exceeds OpenCL index range");
         if (total > capacity)
         {
+            GradientPhaseScope allocation(GradientPhase::Allocation);
             buffers();
             try {deviceLease.resize(total*2*sizeof(std::uint16_t)+288);}
             catch(const BudgetExceeded&) {shared->evictUnusedPlanes();deviceLease.resize(total*2*sizeof(std::uint16_t)+288);}
@@ -983,16 +1004,17 @@ struct Runtime : std::enable_shared_from_this<Runtime>
             for (auto *buffer : {&first, &second})
             {
                 *buffer = api.CreateBuffer(context, 1, total * sizeof(std::uint16_t), nullptr, &error);
-                check(error);
+                check(error); countGradientWork(GradientCounter::BufferAllocations);
             }
             changed = api.CreateBuffer(context, 1, 8 * sizeof(UInt), nullptr, &error);
-            check(error);
+            check(error); countGradientWork(GradientCounter::BufferAllocations);
             descriptors = api.CreateBuffer(context, 1, 64 * sizeof(UInt), nullptr, &error);
-            check(error);
+            check(error); countGradientWork(GradientCounter::BufferAllocations);
             capacity = total;
         }
         // Polling failure may outlive this stack frame. Every borrowed endpoint
         // belongs to the pre-admitted transaction, never to these locals.
+        phase.setPhase(GradientPhase::InputConversion);
         auto& desc=required->descriptors;desc.fill(0);
         auto& held=required->costs;held.fill({});
         // Even an errored blocking call has ambiguous acceptance. Never borrow
@@ -1032,6 +1054,7 @@ struct Runtime : std::enable_shared_from_this<Runtime>
             throw std::runtime_error("OpenCL tile mask exceeds index range");
         if (tileCount > tileCapacity)
         {
+            GradientPhaseScope allocation(GradientPhase::Allocation);
             for(auto* mask:{&tilesFirst,&tilesSecond}) {if(*mask) api.ReleaseMemObject(*mask);*mask=nullptr;}
             deviceLease.resize(capacity*2*sizeof(std::uint16_t)+288);
             tileCapacity=0;
@@ -1043,10 +1066,11 @@ struct Runtime : std::enable_shared_from_this<Runtime>
                 *mask = nullptr;
                 Int error = 0;
                 *mask = api.CreateBuffer(context, 1, tileCount * sizeof(UInt), nullptr, &error);
-                check(error);
+                check(error); countGradientWork(GradientCounter::BufferAllocations);
             }
             tileCapacity = tileCount;
         }
+        phase.setPhase(GradientPhase::Recording);
         UInt one = 1;
         check(fill(queue, tilesFirst, &one, sizeof one, 0, tileCount * sizeof(UInt), 0,
                                     nullptr, nullptr));
@@ -1076,6 +1100,7 @@ struct Runtime : std::enable_shared_from_this<Runtime>
             const auto count=std::min<UInt>(checkInterval,65536-round);
             for (unsigned dispatch = 0; dispatch < count; ++dispatch)
             {
+                phase.setPhase(GradientPhase::Recording);
                 // Only the last dispatch's changes are read by the host. The
                 // in-order queue clears earlier accumulated flags before it.
                 if (dispatch+1 == count)
@@ -1094,6 +1119,7 @@ struct Runtime : std::enable_shared_from_this<Runtime>
                 ++status.dispatches;
             }
             round+=count;
+            phase.setPhase(GradientPhase::Convergence);
             read(changed,flags.data(),requests.size()*sizeof(UInt),false);
             if(!deviceObserved) {
                 // This successful in-order read proves completion of every
@@ -1101,8 +1127,10 @@ struct Runtime : std::enable_shared_from_this<Runtime>
                 for(const auto* request:requests)
                     if(request->deviceExecutionObserved)*request->deviceExecutionObserved=true;
                 status.deviceObservedFields+=requests.size();deviceObserved=true;
+                countGradientWork(GradientCounter::ExecutedFields,requests.size());
             }
             ++status.hostChecks;
+            countGradientWork(GradientCounter::ConvergenceChecks);
             bool retired = false;
             for (std::size_t f = 0; f < requests.size(); ++f)
                 if (desc[f * 8 + 5] && !flags[f])
@@ -1113,7 +1141,9 @@ struct Runtime : std::enable_shared_from_this<Runtime>
                 }
             if (std::none_of(flags.begin(), flags.begin() + requests.size(), [](UInt v) { return v != 0; }))
             {
+                phase.setPhase(GradientPhase::Readback);
                 read(a,staging.data(),total*sizeof(std::uint16_t),true);
+                countGradientWork(GradientCounter::ConvergedFields,requests.size());
                 return;
             }
             // No later kernel consumes descriptors once every field is done.
@@ -1138,6 +1168,10 @@ struct Runtime : std::enable_shared_from_this<Runtime>
     }
     bool batch(std::span<const BackendRequest> input, Plan plan)
     {
+        const bool diagnostics=input.empty() ? gradientProfilingRequested()
+            : (input.front().diagnostics ? *input.front().diagnostics : gradientProfilingRequested());
+        GradientProfileSession profile(Backend::OpenCL,diagnostics);
+        GradientPhaseScope phase(GradientPhase::Bookkeeping);
         struct CPUTimer {
             Device& device;bool outer;std::uint64_t start;
             explicit CPUTimer(Device& device):device(device),outer(backendCPUDepth++==0),start(outer ? threadCPUClock() : 0) {}
@@ -1170,6 +1204,7 @@ struct Runtime : std::enable_shared_from_this<Runtime>
                 for(const auto& r:input) r.session.fail();
                 return false; }
         }
+        profile.count(GradientCounter::AttemptedFields,input.size());
         std::lock_guard lock(mutex);
         struct Active {
             Device& d;
@@ -1184,6 +1219,7 @@ struct Runtime : std::enable_shared_from_this<Runtime>
         std::shared_ptr<RequiredTransaction> transaction;
         struct CurrentGuard {Runtime& lane;~CurrentGuard(){lane.required=nullptr;}} currentGuard{*this};
         try {
+            phase.setPhase(GradientPhase::Allocation);
             BudgetLease reserved{hostBudget};reserved.resize(sizeof(RequiredTransaction)+256);
             transaction=std::make_shared<RequiredTransaction>(shared_from_this(),reserved,*slot);
             transaction->admission.owns=true;slotGuard.transferred=true;required=transaction.get();
@@ -1202,6 +1238,7 @@ struct Runtime : std::enable_shared_from_this<Runtime>
             if(total>OpenCLHostBudget/sizeof(std::uint16_t)) throw BudgetExceeded();
             try {resizeStaging(values,total,valuesLease);}
             catch(const BudgetExceeded&) {shared->evictUnusedPlanes();resizeStaging(values,total,valuesLease);}
+            phase.setPhase(GradientPhase::Bookkeeping);
             std::size_t outputOffset=0;
             for(std::size_t begin=0;begin<input.size();begin+=8) {
                 const auto count=std::min<std::size_t>(8,input.size()-begin);
@@ -1216,12 +1253,14 @@ struct Runtime : std::enable_shared_from_this<Runtime>
             if(std::any_of(input.begin(),input.end(),[](const auto& r){return r.requiredControl && r.requiredControl->shouldCancel(monotonicNs());}))throw RequiredCanceled();
             if(shared->failed.load() || std::any_of(input.begin(),input.end(),[](const auto& r){return r.session.failed.load();}))
                 throw std::runtime_error("OpenCL device or session failed on another lane");
+            phase.setPhase(GradientPhase::OutputConversion);
             outputOffset=0;
             for(const auto& r:input) {
                 std::copy_n(values.data()+outputOffset,r.grid.cells(),r.gradient);
                 status.outputCopiedBytes+=r.grid.cells()*sizeof(std::uint16_t);
                 if(r.executedOnDevice) *r.executedOnDevice=true;
                 ++status.committedFields;
+                countGradientWork(GradientCounter::CommittedFields);
                 outputOffset+=r.grid.cells();
             }
             ++status.schedulerBatches;
@@ -1249,6 +1288,7 @@ struct Runtime : std::enable_shared_from_this<Runtime>
         }
     }
     void protectFailedTransaction(const std::shared_ptr<RequiredTransaction>& transaction) noexcept {
+        GradientPhaseScope phase(GradientPhase::Retirement);
         // A covered positive event is proof. Failure/absence is never permission
         // to block on Finish or release borrowed endpoints during CPU recovery.
         if(RequiredTransaction::terminalProof(transaction.get()))return;
@@ -1296,6 +1336,8 @@ bool executeBatch(std::span<const BackendRequest> requests, Plan choice)
 }
 void prepare()
 {
+    GradientProfileSession profile(Backend::OpenCL,gradientProfilingRequested());
+    GradientPhaseScope phase(GradientPhase::Initialization);
 #if !defined(SDL_PLATFORM_EMSCRIPTEN) && !defined(SDL_PLATFORM_ANDROID) && !defined(SDL_PLATFORM_IOS)
     auto& device=*runtime().shared;
     device.initialize();
@@ -1348,6 +1390,8 @@ bool requiredOpenCLQuarantinePending() noexcept {
 #endif
 }
 bool reapOpenCLRequiredQuarantine() noexcept {
+    GradientProfileSession profile(Backend::OpenCL,gradientProfilingRequested());
+    GradientPhaseScope phase(GradientPhase::Retirement);
 #if !defined(SDL_PLATFORM_EMSCRIPTEN) && !defined(SDL_PLATFORM_ANDROID) && !defined(SDL_PLATFORM_IOS)
     try {auto device=runtime().shared;const bool reaped=device->requiredLifetime.tryReap(&Runtime::RequiredTransaction::terminalProof);
         device->reapExpiredLanes();return reaped;}catch(...){return false;}

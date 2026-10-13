@@ -3,6 +3,7 @@
 #include "OpenCLGradient.h"
 #include "GradientComputeShaders.h"
 #include "GradientGpuValidation.h"
+#include "GradientDiagnostics.h"
 #include <SDL3/SDL_loadso.h>
 #include <array>
 #include <mutex>
@@ -158,6 +159,7 @@ struct Runtime
 	}
 	void allocate(Buffer &out, std::size_t bytes, bool hostAccess)
 	{
+		GradientPhaseScope phase(GradientPhase::Allocation);
 		out.runtime = this;
 		VkBufferCreateInfo info{VK_STRUCTURE_TYPE_BUFFER_CREATE_INFO};
 		info.size = bytes;
@@ -165,6 +167,7 @@ struct Runtime
 					 VK_BUFFER_USAGE_TRANSFER_DST_BIT;
 		info.sharingMode = VK_SHARING_MODE_EXCLUSIVE;
 		check(CreateBuffer(device, &info, nullptr, &out.buffer));
+		countGradientWork(GradientCounter::BufferAllocations);
 		VkMemoryRequirements requirements{};
 		GetBufferMemoryRequirements(device, out.buffer, &requirements);
 		if (requirements.size > SIZE_MAX ||
@@ -373,6 +376,7 @@ struct Runtime
 	}
 	void beginCommands(Work &work)
 	{
+		GradientPhaseScope phase(GradientPhase::Recording);
 		// Every reuse follows a successful fence wait. A quarantined Work is
 		// never recorded again and continues owning all referenced storage.
 		check(ResetCommandBuffer(work.command, 0));
@@ -382,6 +386,7 @@ struct Runtime
 	}
 	void submitCommands(Work &work)
 	{
+		GradientPhaseScope phase(GradientPhase::Submission);
 		check(EndCommandBuffer(work.command));
 		check(ResetFences(device, 1, &work.fence));
 		VkSubmitInfo submit{VK_STRUCTURE_TYPE_SUBMIT_INFO};
@@ -391,9 +396,11 @@ struct Runtime
 		check(QueueSubmit(queue, 1, &submit, work.fence));
 		// Only successful submission transfers storage ownership to the queue.
 		work.submitted = true;
+		countGradientWork(GradientCounter::Submissions);
 	}
 	bool waitSubmission(std::unique_ptr<Work> &work, const BackendRequest &request)
 	{
+		GradientPhaseScope phase(GradientPhase::Waiting);
 		for (;;)
 		{
 			const auto result = WaitForFences(device, 1, &work->fence, VK_TRUE, 1000000);
@@ -417,6 +424,7 @@ struct Runtime
 	}
 	bool execute(const BackendRequest &request, Plan plan)
 	{
+		GradientPhaseScope phase(GradientPhase::Bookkeeping);
 		const bool frozen = plan == Plan::VulkanFrozen8;
 		const auto cells = request.grid.cells();
 		const auto w = unsigned(request.grid.width()), h = unsigned(request.grid.height()),
@@ -429,6 +437,7 @@ struct Runtime
 						rows > properties.limits.maxComputeWorkGroupCount[1])) ||
 			(!frozen && (cells + 127) / 128 > properties.limits.maxComputeWorkGroupCount[0]))
 			return false;
+		phase.setPhase(GradientPhase::Allocation);
 		auto work = std::make_unique<Work>(this);
 		const std::array<std::size_t, BufferCount> sizes{
 			cells * 4, cells * 4, cells * 4, 4,
@@ -439,13 +448,17 @@ struct Runtime
 		cp.queueFamilyIndex = queueFamily;
 		cp.flags = VK_COMMAND_POOL_CREATE_RESET_COMMAND_BUFFER_BIT;
 		check(CreateCommandPool(device, &cp, nullptr, &work->commands));
+		countGradientWork(GradientCounter::CommandAllocations);
 		VkCommandBufferAllocateInfo ca{VK_STRUCTURE_TYPE_COMMAND_BUFFER_ALLOCATE_INFO};
 		ca.commandPool = work->commands;
 		ca.level = VK_COMMAND_BUFFER_LEVEL_PRIMARY;
 		ca.commandBufferCount = 1;
 		check(AllocateCommandBuffers(device, &ca, &work->command));
+		countGradientWork(GradientCounter::CommandAllocations);
 		VkFenceCreateInfo fc{VK_STRUCTURE_TYPE_FENCE_CREATE_INFO};
 		check(CreateFence(device, &fc, nullptr, &work->fence));
+		countGradientWork(GradientCounter::CommandAllocations);
+		phase.setPhase(GradientPhase::InputConversion);
 		const auto upload = monotonicNs();
 		// Only staging/readback is written by the host. Compute inputs and
 		// convergence/tile controls are populated through explicit GPU copies
@@ -455,6 +468,7 @@ struct Runtime
 		const bool verifyTransfers = transferVerification && std::strcmp(transferVerification, "1") == 0;
 		const auto copyInput = [&](unsigned destination, std::size_t bytes)
 		{
+			GradientPhaseScope phase(GradientPhase::Recording);
 			beginCommands(*work);
 			VkMemoryBarrier barrier{VK_STRUCTURE_TYPE_MEMORY_BARRIER};
 			barrier.srcAccessMask = VK_ACCESS_HOST_WRITE_BIT | VK_ACCESS_TRANSFER_WRITE_BIT;
@@ -485,11 +499,15 @@ struct Runtime
 			CmdPipelineBarrier(work->command, VK_PIPELINE_STAGE_TRANSFER_BIT,
 							   VK_PIPELINE_STAGE_COMPUTE_SHADER_BIT | VK_PIPELINE_STAGE_HOST_BIT, 0,
 							   1, &barrier, 0, nullptr, 0, nullptr);
+			phase.setPhase(GradientPhase::Upload);
 			submitCommands(*work);
+			countGradientWork(GradientCounter::UploadBytes, bytes);
+			if (verifyTransfers) countGradientWork(GradientCounter::ReadbackBytes, bytes);
 			if (!waitSubmission(work, request))
 				return false;
 			if (verifyTransfers)
 			{
+				phase.setPhase(GradientPhase::Validation);
 				std::atomic_thread_fence(std::memory_order_acquire);
 				const auto expectedAt = [&](std::size_t i)
 				{
@@ -546,12 +564,14 @@ struct Runtime
 		if (!copyInput(Params, 16))
 			return false;
 		status.uploadNs += monotonicNs() - upload;
+		phase.setPhase(GradientPhase::Allocation);
 		VkDescriptorPoolSize poolSize{VK_DESCRIPTOR_TYPE_STORAGE_BUFFER, 14};
 		VkDescriptorPoolCreateInfo dp{VK_STRUCTURE_TYPE_DESCRIPTOR_POOL_CREATE_INFO};
 		dp.maxSets = 2;
 		dp.poolSizeCount = 1;
 		dp.pPoolSizes = &poolSize;
 		check(CreateDescriptorPool(device, &dp, nullptr, &work->descriptors));
+		countGradientWork(GradientCounter::BindingAllocations);
 		std::array<VkDescriptorSet, 2> sets{};
 		const std::array layouts{descriptors, descriptors};
 		VkDescriptorSetAllocateInfo da{VK_STRUCTURE_TYPE_DESCRIPTOR_SET_ALLOCATE_INFO};
@@ -559,6 +579,8 @@ struct Runtime
 		da.descriptorSetCount = 2;
 		da.pSetLayouts = layouts.data();
 		check(AllocateDescriptorSets(device, &da, sets.data()));
+		countGradientWork(GradientCounter::BindingAllocations, sets.size());
+		phase.setPhase(GradientPhase::Recording);
 		// Each ping-pong orientation owns an immutable descriptor set. No set is
 		// rewritten while retained command buffers reference its bindings.
 		std::array<VkDescriptorBufferInfo, 14> bi{};
@@ -581,6 +603,7 @@ struct Runtime
 			}
 		}
 		UpdateDescriptorSets(device, writes.size(), writes.data(), 0, nullptr);
+		phase.setPhase(GradientPhase::Convergence);
 		unsigned current = InputA, active = ActiveA;
 		const auto computeStart = monotonicNs();
 		// Positive integer edges bound any useful simple path by the field range.
@@ -589,6 +612,7 @@ struct Runtime
 		{
 			if (request.requiredControl && request.requiredControl->shouldCancel(monotonicNs()))
 				return false;
+			phase.setPhase(GradientPhase::Recording);
 			beginCommands(*work);
 			VkMemoryBarrier beforeFill{VK_STRUCTURE_TYPE_MEMORY_BARRIER};
 			beforeFill.srcAccessMask = VK_ACCESS_SHADER_READ_BIT | VK_ACCESS_SHADER_WRITE_BIT |
@@ -620,8 +644,13 @@ struct Runtime
 							   VK_PIPELINE_STAGE_HOST_BIT, 0, 1, &barrier, 0, nullptr, 0, nullptr);
 			submitCommands(*work);
 			++status.dispatches;
+			countGradientWork(GradientCounter::Dispatches);
+			phase.setPhase(GradientPhase::Convergence);
 			if (!waitSubmission(work, request))
 				return false;
+			countGradientWork(GradientCounter::ConvergenceChecks);
+			countGradientWork(GradientCounter::MappedControlBytesRead, sizeof(std::uint32_t));
+			if (round == 0) countGradientWork(GradientCounter::ExecutedFields);
 			if (request.deviceExecutionObserved)
 				*request.deviceExecutionObserved = true;
 			current = 1 - current;
@@ -630,6 +659,7 @@ struct Runtime
 			{
 				status.computeNs += monotonicNs() - computeStart;
 				const auto readback = monotonicNs();
+				phase.setPhase(GradientPhase::Recording);
 				beginCommands(*work);
 				barrier.srcAccessMask = VK_ACCESS_SHADER_WRITE_BIT;
 				barrier.dstAccessMask = VK_ACCESS_TRANSFER_READ_BIT;
@@ -644,12 +674,16 @@ struct Runtime
 				CmdPipelineBarrier(work->command, VK_PIPELINE_STAGE_TRANSFER_BIT,
 								   VK_PIPELINE_STAGE_HOST_BIT, 0, 1, &barrier, 0, nullptr, 0,
 								   nullptr);
+				phase.setPhase(GradientPhase::Readback);
 				submitCommands(*work);
+				countGradientWork(GradientCounter::ReadbackBytes, cells * 4);
 				if (!waitSubmission(work, request))
 					return false;
 				std::atomic_thread_fence(std::memory_order_acquire);
 				const auto *out =
 					static_cast<const std::uint32_t *>(work->buffers[Transfer].mapped);
+				countGradientWork(GradientCounter::ConvergedFields);
+				phase.setPhase(GradientPhase::Validation);
 				if (!exactGradientFixedPoint(
 						std::span<const std::uint16_t>(request.gradient, cells),
 						std::span<const std::uint32_t>(out, cells), request.grid, request.limit,
@@ -673,6 +707,8 @@ struct Runtime
 						{status.device, status.driver, status.shaderIdentity,
 						 request.capturedGeneration.value_or(request.session.currentGeneration())});
 				}
+				countGradientWork(GradientCounter::ValidatedFields);
+				phase.setPhase(GradientPhase::OutputConversion);
 				for (std::size_t i = 0; i < cells; ++i)
 					request.gradient[i] = std::uint16_t(out[i]);
 				status.readbackNs += monotonicNs() - readback;
@@ -685,6 +721,7 @@ struct Runtime
 	}
 	void maintain()
 	{
+		GradientPhaseScope phase(GradientPhase::Retirement);
 		for (auto at = quarantine.begin(); at != quarantine.end();)
 		{
 			const auto result = GetFenceStatus(device, (*at)->fence);
@@ -759,6 +796,7 @@ struct Runtime
 };
 Buffer::~Buffer()
 {
+	GradientPhaseScope phase(GradientPhase::Retirement);
 	if (!runtime)
 		return;
 	if (mapped)
@@ -774,6 +812,7 @@ Buffer::~Buffer()
 }
 Work::~Work()
 {
+	GradientPhaseScope phase(GradientPhase::Retirement);
 	if (submitted)
 		std::terminate();
 	if (fence)
@@ -791,6 +830,8 @@ Runtime &runtime()
 } // namespace
 bool initializeVulkanGradient()
 {
+	GradientProfileSession profile(Backend::Vulkan, gradientProfilingRequested());
+	GradientPhaseScope phase(GradientPhase::Initialization);
 	auto &r = runtime();
 	std::lock_guard lock(r.mutex);
 	const bool ready = r.initialize();
@@ -803,6 +844,11 @@ bool initializeVulkanGradient()
 }
 bool executeVulkanGradient(std::span<const BackendRequest> requests, Plan plan)
 {
+	const bool diagnostics = requests.empty() ? gradientProfilingRequested()
+		: requests.front().diagnostics ? *requests.front().diagnostics : gradientProfilingRequested();
+	GradientProfileSession profile(Backend::Vulkan, diagnostics);
+	GradientPhaseScope phase(GradientPhase::Bookkeeping);
+	profile.count(GradientCounter::AttemptedFields, requests.size());
 	for (const auto &request : requests)
 	{
 		if (request.executedOnDevice)
@@ -839,9 +885,11 @@ bool executeVulkanGradient(std::span<const BackendRequest> requests, Plan plan)
 		std::size_t bytes;
 		~Lease() { releaseOpenCLHostBytes(bytes); }
 	} lease{bytes};
+	phase.setPhase(GradientPhase::Allocation);
 	std::vector<std::vector<std::uint16_t>> seeds;
 	for (const auto &q : requests)
 		seeds.emplace_back(q.gradient, q.gradient + q.grid.cells());
+	phase.setPhase(GradientPhase::Bookkeeping);
 	try
 	{
 		bool success = true;
@@ -860,6 +908,7 @@ bool executeVulkanGradient(std::span<const BackendRequest> requests, Plan plan)
 		}
 		if (success)
 		{
+			phase.setPhase(GradientPhase::OutputConversion);
 			for (std::size_t i = 0; i < requests.size(); ++i)
 			{
 				std::copy(seeds[i].begin(), seeds[i].end(), requests[i].gradient);
@@ -867,6 +916,7 @@ bool executeVulkanGradient(std::span<const BackendRequest> requests, Plan plan)
 					*requests[i].executedOnDevice = true;
 			}
 			r.status.fields += requests.size();
+			profile.count(GradientCounter::CommittedFields, requests.size());
 			r.publish();
 			return true;
 		}
@@ -913,6 +963,8 @@ AcceleratorStatus vulkanGradientStatus()
 }
 void maintainVulkanGradient() noexcept
 {
+	GradientProfileSession profile(Backend::Vulkan, gradientProfilingRequested());
+	GradientPhaseScope phase(GradientPhase::Retirement);
 	auto &r = runtime();
 	std::lock_guard lock(r.mutex);
 	if (r.device)
@@ -920,6 +972,8 @@ void maintainVulkanGradient() noexcept
 }
 void shutdownVulkanGradient() noexcept
 {
+	GradientProfileSession profile(Backend::Vulkan, gradientProfilingRequested());
+	GradientPhaseScope phase(GradientPhase::Shutdown);
 	auto &r = runtime();
 	std::lock_guard lock(r.mutex);
 	if (r.device)

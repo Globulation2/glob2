@@ -6,6 +6,7 @@
 // and compares every checksum the clients reported with the verifier's own.
 
 #include "VerifyMatch.h"
+#include "field/GradientDiagnostics.h"
 
 #include <algorithm>
 #include <chrono>
@@ -282,7 +283,10 @@ MatchVerifier::Verdict MatchVerifier::verify(const Turn::MatchRecord& record, co
 	Headless::writeJson((output / "result.json").string(), result.str());
 	const auto gradient = gradient_kernel::configuration();
 	const auto accelerator = gradient_kernel::acceleratorStatus(gradient.backend);
+	std::ostringstream hostDiagnostics;
+	gradient_kernel::writeGradientDiagnostics(hostDiagnostics, gradient_kernel::gradientDiagnosticSnapshot(gradient.backend));
 	Headless::writeJson((output / "compute.json").string(), json{
+        {"gradient_host_diagnostics", json::parse(hostDiagnostics.str())},
 	    {"compute_requested_threads", globals.computeThreads ? std::to_string(globals.computeThreads) : "auto"},
 	    {"compute_resolved_threads", resolveComputeThreadCount(globals.computeThreads)},
 	    {"compute_threads", game.map.computeExecutor().threadCount()},

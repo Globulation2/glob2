@@ -1,11 +1,16 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "SnapshotStore.h"
 #include "Game.h"
+#include "field/GradientDiagnostics.h"
 #include <algorithm>
 namespace SimulationSnapshot
 {
 Handle Store::captureBoundary(const Game& game, Requirements required)
 {
+	std::optional<gradient_kernel::GradientProfileSession> profile;
+    if (gradient_kernel::gradientProfilingRequested())
+        profile.emplace(gradient_kernel::configuration().backend, true);
+    gradient_kernel::GradientPhaseScope phase(gradient_kernel::GradientPhase::SnapshotCapture);
 	const auto requested = required;
 	if (latest && latest->worldIdentity != game.map.identity()) reset();
 	if (latest && latest->tick == game.stepCounter && latest->observationRevision == observationRevision

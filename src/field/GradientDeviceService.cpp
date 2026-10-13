@@ -2,19 +2,21 @@
 #include "GradientDeviceService.h"
 #include "GradientGpuValidation.h"
 #include "GradientAccelerators.h"
+#include "GradientDiagnostics.h"
 #include "common/ThreadCpuClock.h"
 #include <algorithm>
 #include <array>
 #include <condition_variable>
 #include <cstdlib>
 #include <cstring>
+#include <filesystem>
+#include <fstream>
 
 namespace gradient_kernel
 {
 bool gradientDiagnosticsRequested() noexcept
 {
-	const auto *value = std::getenv("GLOB2_GRADIENT_DIAGNOSTICS");
-	return value && std::strcmp(value, "1") == 0;
+	return gradientProfilingRequested();
 }
 template <class T, std::size_t N> class BoundedEntries
 {
@@ -79,6 +81,9 @@ bool validCpu(std::uint64_t start, std::uint64_t end) noexcept
 void recoverField(void *context, std::size_t) noexcept
 {
 	auto &field = *static_cast<OwnedGradientField *>(context);
+	GradientProfileSession profile(field.decision.configuration.backend, field.diagnostics);
+	GradientPhaseScope phase(GradientPhase::Recovery);
+	profile.count(GradientCounter::RecoveredFields);
 	const auto start = glob2::threadCpuNs();
 	CPUSelectionScope selection(field.decision.configuration.backend);
 	recordGradientFallback(field.decision.configuration.backend);
@@ -94,6 +99,7 @@ void recoverField(void *context, std::size_t) noexcept
 	}
 	field.fallbackCpuNs = glob2::threadCpuDeltaNs(start, glob2::threadCpuNs());
 	const auto cleanup = field.diagnostics ? glob2::threadCpuNs() : 0;
+	phase.setPhase(GradientPhase::Retirement);
 	field.inputs.reset();
 	field.identity = {};
 	if (field.diagnostics)
@@ -276,6 +282,7 @@ class DeviceBroker
 					requests[i].executedOnDevice = &field.executedGPU;
 					requests[i].deviceExecutionObserved = &field.deviceExecutionObserved;
 					requests[i].requiredControl = field.requiredControl;
+					requests[i].diagnostics = field.diagnostics;
 				}
 				prepared = glob2::threadCpuNs();
 				if (state->totals.diagnostics)
@@ -577,10 +584,32 @@ DeviceBroker &broker()
 } // namespace
 void shutdownGradientDeviceCoordinator() noexcept
 {
-	// CPU-only applications must not initialize an otherwise unused backend.
-	if (auto *value = existingBroker.load(std::memory_order_acquire))
-		value->shutdown();
-	shutdownGradientAccelerators();
+	{
+		GradientProfileSession profile(configuration().backend, gradientProfilingRequested());
+		GradientPhaseScope phase(GradientPhase::Shutdown);
+		// CPU-only applications must not initialize an otherwise unused backend.
+		if (auto *value = existingBroker.load(std::memory_order_acquire))
+			value->shutdown();
+		shutdownGradientAccelerators();
+	}
+	// Result files precede application teardown. Preserve a separate cumulative
+	// diagnostic snapshot after the explicit coordinator/adapter drain instead
+	// of presenting that earlier window as complete process CPU consumption.
+	if (gradientProfilingRequested())
+		if (const auto *directory = std::getenv("GLOB2_TEST_ARTIFACTS"))
+			try
+			{
+				std::filesystem::create_directories(directory);
+				std::ofstream out(std::filesystem::path(directory) / "gradient-host-final.json");
+				out << "{\"window\":\"through_explicit_adapter_drain\",\"backends\":{";
+				for (unsigned i = 0; i < unsigned(Backend::Count); ++i)
+				{
+					out << (i ? "," : "") << '"' << backendName(Backend(i)) << "\":";
+					writeGradientDiagnostics(out, gradientDiagnosticSnapshot(Backend(i)));
+				}
+				out << "}}\n";
+			}
+			catch (...) {} // Diagnostics cannot turn successful shutdown into failure.
 }
 OwnedGradientField::~OwnedGradientField()
 {
