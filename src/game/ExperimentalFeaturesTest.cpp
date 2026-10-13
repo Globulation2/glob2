@@ -320,7 +320,7 @@ TEST_SUITE("ExperimentalFeatures")
             const size_t emptyCatalogTails = 3*sizeof(Uint32); // building catalog, artwork, resource experiments
             REQUIRE(bytes.size() > sectionBytes.size()+emptyCatalogTails+2*sizeof(Uint8));
             std::string legacyBytes=bytes;
-            glob2test::removeUnitCatalogWireSection(legacyBytes, original);
+            glob2test::removeModernHeaderFields(legacyBytes, original);
             legacyBytes.resize(legacyBytes.size()-sectionBytes.size()-emptyCatalogTails);
             legacyBytes.erase(sizeof(Sint32)+sizeof(Uint8),2*sizeof(Uint8));
             const size_t legacySize=legacyBytes.size();

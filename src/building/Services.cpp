@@ -69,7 +69,7 @@ void Building::consumeReservedMaterials(const BuildingMaterialCost& cost, int di
 			assert(owner->reservedTeamMaterials[r] >= cost[r]);
 			owner->reservedTeamMaterials[r] -= cost[r];
 		}
-		if (diagnosticUse >= 0) owner->stats.measurements.consumed[diagnosticUse][r] += cost[r];
+		if (diagnosticUse >= 0) owner->stats.events().consumed[diagnosticUse][r] += cost[r];
 	}
 }
 

@@ -125,8 +125,12 @@ borrowed from standard snapshot components. There is no second entity extraction
 or map-array capture. `Game::drawMap` requires an explicitly supplied frame;
 `Game::drawSceneMap` accepts it directly.
 
-- The engine admits presentation only when its bounded producer has capacity,
-  declares requirements with AI and gradients, and publishes one shared capture.
+- Interactive engines capture the standard simulation preset at each read
+  boundary. When the bounded producer admits presentation preparation, capture
+  also includes its session, effects and statistics payloads and any requested
+  history, telemetry, entity diagnostics or annotations. Diagnostic requests can
+  independently add the payloads they need. AI, map jobs and presentation
+  borrow the same captured data through standard views.
   `SceneExtractor::prepare` accepts an immutable handle and request, never live
   simulation objects. Preparation runs on the shared compute executor. A complete
   frame is published through `SceneBuffer`; drawing keeps the previous complete
@@ -165,11 +169,11 @@ or map-array capture. `Game::drawMap` requires an explicitly supplied frame;
 - The editor and standalone tools explicitly obtain an owner-boundary snapshot before
   preparing a frame. Offline map images and diagnostic PNGs use the same drawing
   passes and graphics-thread asset ownership. Diagnostic preparation consumes the
-  published union rather than recapturing from the live game. A bounded diagnostic
+  published boundary rather than recapturing from the live game. A bounded diagnostic
   batch owns its fields and snapshot independently; PNG preparation and export do
   not park the simulation. Occupied publication slots stop further diagnostic
   admission, with skipped or superseded output reported explicitly.
-- The animated menu colony includes admitted presentation requirements in its AI
+- The animated menu colony captures the presentation preset with its simulation
   boundary and uses the same bounded preparation producer. Drawing and resizing
   never capture another world; headless menu simulations admit no presentation.
 - `test/build_system/test_scene_boundary.py` checks the rendering dependency boundary;
@@ -225,8 +229,9 @@ also remains the headless default and the equivalence reference.
 
 - The simulation thread paces itself with the speed presets and runs ticks
   (`Engine::simulationStep`: orders, network, `Game::syncStep`). Before pacing,
-  the engine publishes the completed world's shared read boundary with the union
-  of AI, gradient and admitted presentation requirements. Presentation preparation
+  the engine publishes the completed world's standard simulation snapshot,
+  adding presentation payloads only when preparation is admitted (or diagnostics
+  require them). Presentation preparation
   borrows that publication and runs on the compute executor. A worker publishes
   the completed `PresentationFrame` into a `SceneBuffer` (lock-free triple buffer);
   only one preparation is in flight, and a newer complete frame can supersede an

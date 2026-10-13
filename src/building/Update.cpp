@@ -47,7 +47,7 @@ void Building::updateBuildingSite(void)
 			int kind = constructionResultState == REPAIR    ? GameplayMeasurements::REPAIRED
 					   : constructionResultState == UPGRADE ? GameplayMeasurements::UPGRADED
 															: GameplayMeasurements::NEW_BUILDING;
-			auto& measurements=owner->stats.measurements;
+			auto& measurements=owner->stats.events();
 			measurements.variants.resize(owner->game->buildingsTypes.size());
 			++measurements.variants[completedTypeNum].completed[kind];
 			if (completed->shortTypeNum>=0 && completed->shortTypeNum<IntBuildingType::NB_BUILDING && completed->level<NB_UNIT_LEVELS)

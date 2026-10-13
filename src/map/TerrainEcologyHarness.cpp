@@ -134,7 +134,7 @@ TEST_CASE("saved-map growth calibration [benchmark][slow]")
                     glob2test::BoundGameRandom random(game);
                     setSyncRandSeed(static_cast<Uint32>(seed));
                     auto& map=game.map;
-                    auto& measures=game.teams[0]->stats.measurements;
+                    auto& measures=game.teams[0]->stats.editMeasurements();
                     for(auto& band:measures.growthGlobal) std::fill(std::begin(band),std::end(band),0);
                     std::array<std::uint64_t,LegacyResourceCount> harvested{},initial{};
                     for(int i=0;i<map.getW()*map.getH();++i)
@@ -198,7 +198,7 @@ TEST_CASE("four growth opportunities preserve capped stacks and measured conserv
         setSyncRandSeed(719);
         map.rebuildGrowthCoverage();
         for(int i=0;i<visits;++i)Fertility::applyGrowthOpportunities(map,12,12,rate,1);
-        const auto& growth=game.teams[0]->stats.measurements.growthGlobal;
+        const auto& growth=game.teams[0]->stats.editMeasurements().growthGlobal;
         Outcome result;
         for(int i=0;i<map.getW()*map.getH();++i)
             if(map.getResource(i).type==type)result.values[0]+=map.getResource(i).amount;

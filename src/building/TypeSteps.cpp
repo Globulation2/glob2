@@ -139,7 +139,7 @@ void Building::swarmStep(void)
 	}
 	consumeReservedMaterials(recipe.cost, GameplayMeasurements::SPAWNING);
 	productionUnit = -1;
-	++owner->stats.measurements.births[chosen];
+	++owner->stats.events().births[chosen];
 	updateCallLists();
 	u->activity = Unit::ACT_RANDOM;
 	u->displacement = Unit::DIS_RANDOM;
@@ -179,7 +179,7 @@ void Building::convertStoneToBullet()
 	if (availableMaterial(resource) >= cost && bullets <= type->maxBullets - type->multiplierStoneToBullets)
 	{
 		materials[resource] -= cost;
-		owner->stats.measurements.consumed[GameplayMeasurements::AMMUNITION][resource] += cost;
+		owner->stats.events().consumed[GameplayMeasurements::AMMUNITION][resource] += cost;
 		bullets += type->multiplierStoneToBullets;
 		if (cost && (type->useTeamMaterials || type->runtimeSuppliesStock || type->runtimeSuppliesDirectStock)) owner->map->dirtyMarketGradientsSlot(owner->teamNumber, resource);
 		updateCallLists();
@@ -450,7 +450,7 @@ void Building::fireBullet(const TurretTarget& target, Uint32 stepCounter)
 		b->unitDamage.resize(runtime->unitCount);
 		for (unsigned unit=0;unit<runtime->unitCount;++unit) b->unitDamage[unit]=applyAreaAttack(runtime->damage(unit));
 		b->sourceTeam = owner->teamNumber;
-		++owner->stats.measurements.shots[GameplayMeasurements::TOWER];
+		++owner->stats.events().shots[GameplayMeasurements::TOWER];
 		s->bullets.push_front(b);
 		bullets--;
 		shootingCooldown = SHOOTING_COOLDOWN_MAX;

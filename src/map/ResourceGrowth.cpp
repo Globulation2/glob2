@@ -40,7 +40,7 @@ void recordDelta(Map &map, const Proposal &p, bool newTile, int delta)
 		auto *team = map.game->teams[t];
 		if (!team)
 			continue;
-		auto &m = team->stats.measurements;
+		auto &m = team->stats.events();
 		m.growthGlobal[0][p.material] += newTile;
 		m.growthGlobal[1][p.material] += std::max(0, delta);
 		m.growthGlobal[2][p.material] += std::max(0, -delta);
@@ -236,12 +236,6 @@ void apply(Map &map, const Batch &batch, Metrics &metrics, bool measure)
 	if (measure) metrics.publicationNs += now() - start;
 }
 
-SimulationSnapshot::Requirements Pipeline::requirements()
-{
-	using namespace SimulationSnapshot;
-	return bit(Component::Resources) | bit(Component::Terrain) | bit(Component::Growth) |
-		   bit(Component::Catalogs) | bit(Component::Rules) | bit(Component::Occupancy);
-}
 void Pipeline::stage(Uint32 tick, Uint32 seed)
 {
 	if (reservation)
@@ -302,7 +296,7 @@ void Pipeline::prepare(const SimulationSnapshot::Handle &snapshot, ComputeExecut
 	j->seed = reservation->second;
 	j->catalog = snapshot.catalogs->resources->checksum();
 	j->world = snapshot.worldIdentity;
-	j->snapshot = snapshot.project(requirements());
+	j->snapshot = snapshot.growthView();
 	j->error = {};
 	j->collected = false;
 	j->work = {};
@@ -575,19 +569,17 @@ Uint32 Pipeline::checksum(bool heavy)
 } // namespace ResourceGrowth
 
 
-SimulationSnapshot::Requirements Map::pendingWorldRequirements() const
+bool Map::hasPendingWorldPreparation() const
 {
-	return pendingGradientRequirements() |
-		   (gradientRuntime->growth.needsPreparation() ? ResourceGrowth::Pipeline::requirements()
-													   : 0);
+	return hasPendingGradientPreparation() || gradientRuntime->growth.needsPreparation();
 }
 void Map::preparePendingWorld()
 {
-	if (const auto requirements = pendingWorldRequirements())
+	if (hasPendingWorldPreparation())
 	{
 		auto &store = game->snapshotStore();
 		store.invalidateBoundary();
-		preparePendingWorld(store.captureBoundary(*game, requirements));
+		preparePendingWorld(store.captureBoundary(*game));
 	}
 }
 void Map::preparePendingWorld(const SimulationSnapshot::Handle &snapshot)

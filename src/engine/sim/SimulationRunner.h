@@ -20,10 +20,10 @@ class Engine;
 //! Runs a game session's simulation on its own thread while the main thread
 //! handles input and draws.
 //!
-//! - The simulation thread paces and runs ticks (Engine::simulationStep) and,
-//!   whenever the main thread has taken the previous PresentationFrame, captures immutable
-//!   inputs for a compute-worker presentation task. That task publishes a complete
-//!   PresentationFrame without participating in simulation barriers.
+//! - The simulation thread paces and runs ticks (Engine::simulationStep), publishing
+//!   a standard immutable snapshot at each read boundary. Presentation jobs are
+//!   admitted when the bounded producer has capacity. They prepare and publish a
+//!   complete PresentationFrame without participating in simulation barriers.
 //! - withGame() protects exceptional live-state access (save capture, dialogs,
 //!   settings and diagnostics). Routine input and rendering use immutable Scenes.
 //! - Drawing reads only acquireScene() and GUI state.

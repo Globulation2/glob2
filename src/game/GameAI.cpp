@@ -1,45 +1,60 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "Game.h"
+#include "TeamStatsPipeline.h"
+#include "TeamStatsChecksum.h"
+#include "Team.h"
 #include "GameDiagnostics.h"
 #include "ai/engine/AIPipeline.h"
 #include "AIJavaScript.h"
 #include "Player.h"
-SimulationSnapshot::Handle Game::captureReadBoundary(std::span<const unsigned> players, bool paused,
- SimulationSnapshot::Requirements additional) const
+SimulationSnapshot::Handle Game::captureReadBoundary(SimulationSnapshot::CaptureOptions options) const
 {
- auto requirements=additional | map.pendingWorldRequirements();
- if (SimulationSnapshot::needs(additional,SimulationSnapshot::Component::Areas) && gameHeader.hasExperiment(ExperimentId::FarmAreas))
-  requirements|=SimulationSnapshot::bit(SimulationSnapshot::Component::Growth);
- if (!paused) for (auto p:players) {
-  if (p>=unsigned(gameHeader.getNumberOfPlayers())) throw std::invalid_argument("Invalid observation player");
-  if (this->players[p] && this->players[p]->ai && this->players[p]->team->isAlive)
-   requirements |= this->players[p]->ai->observationRequirements();
+ return worldSnapshots.captureBoundary(*this, options);
+}
+SimulationSnapshot::Handle Game::prepareReadBoundary(bool paused, SimulationSnapshot::CaptureOptions options)
+{
+ const bool statisticsActive = !paused && !anyPlayerWaited;
+ if (statisticsActive) {
+  if (statsPipeline && !statsPipeline->matchesWorld(map.identity())) statsPipeline.reset();
+  if (!statsPipeline) statsPipeline = std::make_unique<TeamStatsPipeline>(map.computeExecutor());
+  for (int t = 0; t < teamsCount(); ++t) teams[t]->stats.enableCollection();
+  if (statsPipeline->publishDue(*this)) worldSnapshots.invalidateBoundary();
  }
- return worldSnapshots.captureBoundary(*this,requirements);
+ auto world = worldSnapshots.captureBoundary(*this, options);
+ if (statisticsActive && statsPipeline->needsSample(stepCounter)) {
+  statsPipeline->prepareBoundary(*this, world);
+  if (statsPipeline->publishDue(*this)) {
+   worldSnapshots.invalidateBoundary();
+   world = worldSnapshots.captureBoundary(*this, options);
+  }
+ }
+ return world;
 }
 std::vector<std::pair<unsigned,std::shared_ptr<Order>>> Game::prepareAIOrders(std::span<const unsigned> players,
  bool paused,const std::shared_ptr<GameDiagnostics::Session>& diagnostics,const SimulationSnapshot::Handle* captured)
 {
  if(!aiPipeline) aiPipeline=std::make_unique<AIEngine::Pipeline>();
  // Standalone simulation callers use the same boundary service; engine callers
- // supply the union already published for all admitted consumers.
- const auto world=captured ? *captured : captureReadBoundary(players,paused,diagnostics ? diagnostics->observationRequirements(stepCounter) : 0);
+ // supply the standard snapshot already published at this boundary.
+ if (captured) return aiPipeline->prepare(*this,players,paused,diagnostics,*captured);
+ const auto world=prepareReadBoundary(paused, diagnostics ? diagnostics->captureOptions(stepCounter) : SimulationSnapshot::CaptureOptions{});
  return aiPipeline->prepare(*this,players,paused,diagnostics,world);
 }
 std::shared_ptr<Order> Game::validateAIOrder(std::shared_ptr<Order> order,unsigned player) {return aiPipeline?aiPipeline->validate(*this,std::move(order),player):order;}
 void Game::settleAIOrder(const std::shared_ptr<Order>& order,bool accepted) {if(aiPipeline)aiPipeline->settle(*this,order,accepted);}
 void Game::cancelAI(unsigned player) {if(aiPipeline)aiPipeline->cancel(player);}
 void Game::drainAI() {if(aiPipeline)aiPipeline->drain();}
-void Game::clearAI() { map.finishGradientPipeline({JoinReason::Teardown, ComputeTelemetry::NoTick}); map.finishResourceGrowth({JoinReason::Teardown, ComputeTelemetry::NoTick}); aiPipeline.reset(); worldSnapshots.reset(); }
-void Game::saveAI(GAGCore::OutputStream* stream) {if(!aiPipeline){aiPipeline=std::make_unique<AIEngine::Pipeline>();aiPipeline->prepare(*this,{},true,nullptr,captureReadBoundary({},true));}aiPipeline->save(stream);}
+void Game::clearAI() { statsPipeline.reset(); map.finishGradientPipeline({JoinReason::Teardown, ComputeTelemetry::NoTick}); map.finishResourceGrowth({JoinReason::Teardown, ComputeTelemetry::NoTick}); aiPipeline.reset(); worldSnapshots.reset(); }
+void Game::saveAI(GAGCore::OutputStream* stream) {if(!aiPipeline){aiPipeline=std::make_unique<AIEngine::Pipeline>();aiPipeline->prepare(*this,{},true,nullptr,captureReadBoundary());}aiPipeline->save(stream);}
 bool Game::loadAI(GAGCore::InputStream* stream) {auto pipeline=std::make_unique<AIEngine::Pipeline>();if(!pipeline->load(*this,stream))return false;aiPipeline=std::move(pipeline);return true;}
 std::vector<std::pair<std::string,Uint64>> Game::aiMetrics() const {
- if(!aiPipeline)return {};
+ if(!aiPipeline)return teamStatsMetrics();
  const auto compute=map.computeExecutor().telemetrySnapshot();
  const auto& waits=compute.summary.joins[unsigned(ComputeProducer::AI)][unsigned(JoinReason::TickDeadline)];
  const auto& capture=worldSnapshots.metrics;const auto& scheduling=aiPipeline->schedulingMetrics();const auto memory=worldSnapshots.memoryMetrics();const auto queryMemory=aiPipeline->queryVectorMemory();
- return {{"captures",capture.captures},{"extraction_ns",capture.captureNs},{"preparation_ns",capture.preparationNs},
-  {"bytes_copied",capture.bytesCopied},{"component_reuses",capture.reusedComponents},{"allocations",capture.allocations},
+ auto values=teamStatsMetrics();
+ const std::vector<std::pair<std::string,Uint64>> aiValues={{"captures",capture.captures},{"extraction_ns",capture.captureNs},{"preparation_ns",capture.preparationNs},
+  {"map_bytes_copied",capture.mapBytesCopied},{"detailed_captures",capture.detailedCaptures},{"bytes_copied",capture.bytesCopied},{"component_reuses",capture.reusedComponents},{"allocations",capture.allocations},
   {"computation_ns",aiPipeline->computationNs()},{"controller_query_vector_bytes",queryMemory.first},
   {"controller_query_vector_peak_bytes",aiPipeline->peakQueryVectorMemory()},
   {"controller_query_vector_samples",queryMemory.second},{"submitted",scheduling.submitted},{"delivered",scheduling.delivered},
@@ -51,6 +66,7 @@ std::vector<std::pair<std::string,Uint64>> Game::aiMetrics() const {
   {"snapshot_peak_leased_bytes",memory.peakLeasedBytes},
   {"deadline_misses",waits.incomplete},{"deadline_wait_ns",waits.background.totalNs},{"maximum_pending",scheduling.maximumPending},
   {"shared_batches",scheduling.sharedBatches}};
+ values.insert(values.end(),aiValues.begin(),aiValues.end());return values;
 }
 void Game::observeUnpolledAI() {
  std::vector<AIJavaScript*> idle;
@@ -62,14 +78,28 @@ void Game::observeUnpolledAI() {
  // Replay/inactive replicas still update their historical visibility at the
  // legacy phase. Serialize this exceptional observation against private jobs.
  drainAI();
- // Resource memories read the registry's material yields, so the catalogs ride along.
- constexpr auto requirements=SimulationSnapshot::bit(SimulationSnapshot::Component::Catalogs)
-  |SimulationSnapshot::bit(SimulationSnapshot::Component::Terrain)
-  |SimulationSnapshot::bit(SimulationSnapshot::Component::Resources)
-  |SimulationSnapshot::bit(SimulationSnapshot::Component::Visibility)
-  |SimulationSnapshot::bit(SimulationSnapshot::Component::Teams);
  // Replica-only observations historically capture fresh inputs at this mid-tick phase.
  if(!aiPipeline) worldSnapshots.invalidateBoundary();
- const AIEngine::AIWorldView world(worldSnapshots.captureBoundary(*this,requirements));
+ const AIEngine::AIWorldView world(worldSnapshots.captureBoundary(*this).simulationView());
  for(auto* controller:idle)controller->observe(world);
+}
+
+void Game::drainTeamStats(){if(statsPipeline)statsPipeline->drain(JoinReason::Reconfigure);}
+void Game::saveTeamStats(GAGCore::OutputStream* s){if(!statsPipeline)statsPipeline=std::make_unique<TeamStatsPipeline>(map.computeExecutor());statsPipeline->save(s);}
+void Game::loadTeamStats(GAGCore::InputStream* s, int versionMinor){auto p=std::make_unique<TeamStatsPipeline>(map.computeExecutor());p->load(*this,s,versionMinor);statsPipeline=std::move(p);}
+Uint32 Game::teamStatsChecksum(bool heavy) const {
+ const auto queue=statsPipeline ? statsPipeline->checkSum(heavy) : 0;
+ Uint32 cs=(queue^gameHeader.getTeamStatsDelay())*16777619u;
+ for(int t=0;t<teamsCount();++t) {
+  const auto& stats=teams[t]->stats;
+  const auto value=heavy ? stats.checkSum() : teamStatsCoreChecksum(stats,stats.smoothedStats,stats.statsIndex,stats.smoothedIndex);
+  cs=(cs^value)*16777619u;
+ }
+ return cs;
+}
+
+std::vector<std::pair<std::string,Uint64>> Game::teamStatsMetrics() const {
+ if(!statsPipeline)return {};
+ const auto& m=statsPipeline->metrics;
+ return {{"stats_submitted",m.submitted},{"stats_published",m.published},{"stats_worker_ns",m.workerNs},{"stats_allocation_ns",m.allocationNs},{"stats_submission_ns",m.submissionNs},{"stats_publication_ns",m.publicationNs},{"stats_deadline_misses",m.deadlineMisses},{"stats_deadline_wait_ns",m.deadlineWaitNs},{"stats_peak_pending",m.peakPending}};
 }

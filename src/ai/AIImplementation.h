@@ -13,7 +13,6 @@ The main method is std::shared_ptr<Order> getOrder() which return the order to b
 #include "AITelemetry.h"
 #include "MersenneTwister.h"
 #include "ai/engine/AIDiagnostics.h"
-#include "sim/snapshot/Requirements.h"
 #include <cassert>
 #include <memory>
 #include <optional>
@@ -85,7 +84,6 @@ public:
 	// to owned observation inputs. The default cannot accidentally call the
 	// legacy live-world implementation on a background thread.
 	virtual bool supportsObservation() const { return false; }
-	virtual SimulationSnapshot::Requirements observationRequirements() const { return SimulationSnapshot::Simulation; }
 	// Sampled only by the controller's own lane after a decision. Empty means
 	// this controller has not supplied retained vector-capacity accounting.
 	virtual std::optional<Uint64> retainedQueryVectorBytes() const { return std::nullopt; }

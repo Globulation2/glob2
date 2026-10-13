@@ -69,7 +69,7 @@ std::shared_ptr<const std::vector<BuildingKindView>> captureCatalog(const Game& 
 }
 
 Handle capture(const Game& game,
-	std::shared_ptr<const std::vector<BuildingKindView>> catalog, Requirements requirements, const Handle* previous, Storage* storage)
+	std::shared_ptr<const std::vector<BuildingKindView>> catalog, Requirements requirements, const Handle* previous, Storage* storage, bool unchangedBoundary)
 {
 	if (needs(requirements, Component::Catalogs) && (!catalog || catalog->size() != game.buildingsTypes.size()))
 		throw std::invalid_argument("AI observation needs the current building catalog");
@@ -85,6 +85,9 @@ Handle capture(const Game& game,
 			if (needs(requirements, component) && source && unchanged)
 			{ destination = source; requirements &= ~bit(component); }
 		};
+		// The store certifies the complete owner boundary before widening its
+		// optional payload. Entity records and their sidecars remain immutable.
+		reuse(Component::Entities, result->entities, previous->entities, unchangedBoundary);
 		const bool sameCatalog = previous->catalogs && previous->catalogs->buildings == catalog && previous->configurationRevision == result->configurationRevision
 			&& (!needs(requirements, Component::Session) || !previous->catalogs->buildingFingerprint.empty())
             && previous->catalogs->assets == game.map.frozenAssetBundle()
@@ -140,11 +143,19 @@ Handle capture(const Game& game,
 	auto* rules = rulesOwner ? rulesOwner.get() : &unusedRules;
 	// Map buffers keep their constructed range when reused. Overwrite selected
 	// arrays directly rather than clearing and growing them one cell at a time.
-	entities->buildings.clear(); entities->units.clear(); entities->relationships.clear(); entities->projects.clear();
+	entities->relationships.clear(); entities->projects.clear();
     entities->extraProduction.clear();
     if (needs(requirements, Component::Entities)) entities->unitCargo = game.unitCargo;
 	if (needs(requirements, Component::Entities)) {
 		const auto teams = game.mapHeader.getNumberOfTeams();
+		std::size_t buildings = 0, units = 0;
+		for (int t = 0; t < teams; ++t) if (const auto* team = game.teams[t]) {
+			buildings += team->liveBuildings.size(); units += team->liveUnits.size();
+		}
+		reserve(entities->buildings, buildings); reserve(entities->units, units);
+		// Reuse constructed records and fill them in place. Every field is
+		// overwritten below; no temporary record or per-record push_back copy.
+		entities->buildings.resize(buildings); entities->units.resize(units);
 		reserve(entities->buildingSlotIndices, teams * Building::MAX_COUNT);
 		reserve(entities->unitSlotIndices, teams * Unit::MAX_COUNT);
 		entities->buildingSlotIndices.resize(teams * Building::MAX_COUNT);
@@ -297,6 +308,7 @@ Handle capture(const Game& game,
 			else std::fill_n(visibility->visible.begin() + start, length, 0u);
 		});
 	}
+	std::size_t buildingRecordCount = 0, unitRecordCount = 0;
 	for (int t = 0; (needs(requirements, Component::Teams) || needs(requirements, Component::Entities)) && t < game.mapHeader.getNumberOfTeams(); ++t)
 	{
 		const auto* team = game.teams[t];
@@ -350,8 +362,8 @@ Handle capture(const Game& game,
 			auto& slot = entities->buildingSlotIndices[t * Building::MAX_COUNT + i];
 			if (auto* b = team->liveBuildings.entries()[n])
 			{
-				slot = Uint32(entities->buildings.size());
-				BuildingView v;
+				slot = Uint32(buildingRecordCount);
+				auto& v = entities->buildings[buildingRecordCount++];
 				std::memcpy(static_cast<BuildingStateRecord*>(&v), static_cast<const BuildingStateRecord*>(b), sizeof(BuildingStateRecord));
 				v.identity = Game::refOf(b); v.team = t;
                 for (unsigned id=0; id<BuiltinUnitCount; ++id) v.constructionOriginRatios[id]=b->originProductionRatio(id);
@@ -363,6 +375,7 @@ Handle capture(const Game& game,
                 }
 				v.maxHp = b->getEffectiveMaxHp();
 				v.usesTeamResources = b->materials == team->teamMaterials;
+				v.availableSupplyMask = 0;
 				for (unsigned supplied=b->runtime->suppliesStockMask; supplied; supplied &= supplied-1) {
 					const unsigned material=std::countr_zero(supplied);
 					if (b->availableMaterial(material)>0) v.availableSupplyMask |= MaterialMask(1u<<material);
@@ -371,7 +384,6 @@ Handle capture(const Game& game,
 				for (const auto* u : b->unitsWorking) append(entities->relationships, Game::refOf(u));
 				v.inside = {Uint32(entities->relationships.size()), Uint32(b->unitsInside.size())};
 				for (const auto* u : b->unitsInside) append(entities->relationships, Game::refOf(u));
-				append(entities->buildings, std::move(v));
 			}
 		}
 		for (std::size_t n = 0; n < team->liveUnits.size(); ++n)
@@ -380,16 +392,18 @@ Handle capture(const Game& game,
 			auto& slot = entities->unitSlotIndices[t * Unit::MAX_COUNT + i];
 			if (const auto* u = team->liveUnits.entries()[n])
 			{
-				slot = Uint32(entities->units.size());
-				UnitView v;
+				slot = Uint32(unitRecordCount);
+				auto& v = entities->units[unitRecordCount++];
 				std::memcpy(static_cast<UnitState*>(&v), static_cast<const UnitState*>(u), sizeof(UnitState));
 				v.identity = Game::refOf(u); v.team = t;
+				v.realAttackStrength = u->getRealAttackStrength();
 				v.attached = Game::refOf(u->attachedBuilding);
 				v.target = Game::refOf(u->targetBuilding);
-				append(entities->units, std::move(v));
 			}
 		}
 	}
+	entities->buildings.resize(buildingRecordCount);
+	entities->units.resize(unitRecordCount);
 
     if (auto session=acquire(&Storage::session,Component::Session)) {
         session->editor=game.edit!=nullptr;
@@ -480,9 +494,9 @@ Handle capture(const Game& game,
 	if (needs(requirements, Component::Teams)) result->teams = std::move(teamsOwner);
 	if (needs(requirements, Component::Rules)) result->rules = std::move(rulesOwner);
 	if (needs(requirements, Component::Growth)) {
-		const auto start=std::chrono::steady_clock::now();
+		const auto start=storage && storage->profiling ? std::chrono::steady_clock::now() : std::chrono::steady_clock::time_point{};
 		const auto& source=game.map.resourceGrowthField();
-		if (storage) storage->preparationNs += std::chrono::duration_cast<std::chrono::nanoseconds>(std::chrono::steady_clock::now()-start).count();
+		if (storage && storage->profiling) storage->preparationNs += std::chrono::duration_cast<std::chrono::nanoseconds>(std::chrono::steady_clock::now()-start).count();
 		auto frozen=storage ? storage->growth.acquire(storage->allocations) : std::make_shared<Fertility::GrowthCache>();
 		const auto oldCap=frozen->storageCapacities(), required=source.storageSizes();
 		if (storage) for(unsigned i=0;i<oldCap.size();++i) if(oldCap[i]<required[i]) ++storage->allocations;
@@ -535,7 +549,24 @@ Handle capture(const Game& game,
 		}
 		result->resourceFields = std::move(fields);
 	}
-	if (storage && storage->verify) verifyCapture(game, value);
+	if (auto input = acquire(&Storage::statisticsInputs, Component::StatisticsInputs)) {
+        input->events.resize(game.teamsCount());
+        input->enemies.resize(game.teamsCount());
+        input->coverage.resize(game.teamsCount());
+        for (int t=0; t<game.teamsCount(); ++t) {
+            const auto* team=game.teams[t];
+            if (team) {
+                input->events[t].capture(team->stats.events());
+                input->coverage[t] = team->stats.coverageBuildings;
+            } else {
+                input->events[t] = {};
+                input->coverage[t].clear();
+            }
+            input->enemies[t] = team ? team->enemies : 0;
+        }
+        result->statisticsInputs = std::move(input);
+    }
+    if (storage && storage->verify) verifyCapture(game, value);
 	return value;
 }
 
