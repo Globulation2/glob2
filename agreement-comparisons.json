@@ -1,0 +1,650 @@
+[
+  {
+    "game": "symmetric-arena-1",
+    "delay": 0,
+    "ticks": 12000,
+    "files": {
+      "world.checksums": true,
+      "game.replay": true,
+      "game.replay.checksums": true,
+      "final.game.gz": true
+    },
+    "trace_errors": 0
+  },
+  {
+    "game": "symmetric-arena-1",
+    "delay": 1,
+    "ticks": 12000,
+    "files": {
+      "world.checksums": true,
+      "game.replay": true,
+      "game.replay.checksums": true,
+      "final.game.gz": true
+    },
+    "trace_errors": 0
+  },
+  {
+    "game": "symmetric-arena-1",
+    "delay": 2,
+    "ticks": 12000,
+    "files": {
+      "world.checksums": true,
+      "game.replay": true,
+      "game.replay.checksums": true,
+      "final.game.gz": true
+    },
+    "trace_errors": 0
+  },
+  {
+    "game": "symmetric-arena-1",
+    "delay": 3,
+    "ticks": 12000,
+    "files": {
+      "world.checksums": true,
+      "game.replay": true,
+      "game.replay.checksums": true,
+      "final.game.gz": true
+    },
+    "trace_errors": 0
+  },
+  {
+    "game": "symmetric-arena-1",
+    "delay": 4,
+    "ticks": 12000,
+    "files": {
+      "world.checksums": true,
+      "game.replay": true,
+      "game.replay.checksums": true,
+      "final.game.gz": true
+    },
+    "trace_errors": 0
+  },
+  {
+    "game": "symmetric-arena-1",
+    "delay": 5,
+    "ticks": 12000,
+    "files": {
+      "world.checksums": true,
+      "game.replay": true,
+      "game.replay.checksums": true,
+      "final.game.gz": true
+    },
+    "trace_errors": 0
+  },
+  {
+    "game": "symmetric-arena-1",
+    "delay": 6,
+    "ticks": 12000,
+    "files": {
+      "world.checksums": true,
+      "game.replay": true,
+      "game.replay.checksums": true,
+      "final.game.gz": true
+    },
+    "trace_errors": 0
+  },
+  {
+    "game": "symmetric-arena-1",
+    "delay": 7,
+    "ticks": 12000,
+    "files": {
+      "world.checksums": true,
+      "game.replay": true,
+      "game.replay.checksums": true,
+      "final.game.gz": true
+    },
+    "trace_errors": 0
+  },
+  {
+    "game": "symmetric-arena-1",
+    "delay": 8,
+    "ticks": 12000,
+    "files": {
+      "world.checksums": true,
+      "game.replay": true,
+      "game.replay.checksums": true,
+      "final.game.gz": true
+    },
+    "trace_errors": 0
+  },
+  {
+    "game": "symmetric-arena-2",
+    "delay": 0,
+    "ticks": 12000,
+    "files": {
+      "world.checksums": true,
+      "game.replay": true,
+      "game.replay.checksums": true,
+      "final.game.gz": true
+    },
+    "trace_errors": 0
+  },
+  {
+    "game": "symmetric-arena-2",
+    "delay": 1,
+    "ticks": 12000,
+    "files": {
+      "world.checksums": true,
+      "game.replay": true,
+      "game.replay.checksums": true,
+      "final.game.gz": true
+    },
+    "trace_errors": 0
+  },
+  {
+    "game": "symmetric-arena-2",
+    "delay": 2,
+    "ticks": 12000,
+    "files": {
+      "world.checksums": true,
+      "game.replay": true,
+      "game.replay.checksums": true,
+      "final.game.gz": true
+    },
+    "trace_errors": 0
+  },
+  {
+    "game": "symmetric-arena-2",
+    "delay": 3,
+    "ticks": 12000,
+    "files": {
+      "world.checksums": true,
+      "game.replay": true,
+      "game.replay.checksums": true,
+      "final.game.gz": true
+    },
+    "trace_errors": 0
+  },
+  {
+    "game": "symmetric-arena-2",
+    "delay": 4,
+    "ticks": 12000,
+    "files": {
+      "world.checksums": true,
+      "game.replay": true,
+      "game.replay.checksums": true,
+      "final.game.gz": true
+    },
+    "trace_errors": 0
+  },
+  {
+    "game": "symmetric-arena-2",
+    "delay": 5,
+    "ticks": 12000,
+    "files": {
+      "world.checksums": true,
+      "game.replay": true,
+      "game.replay.checksums": true,
+      "final.game.gz": true
+    },
+    "trace_errors": 0
+  },
+  {
+    "game": "symmetric-arena-2",
+    "delay": 6,
+    "ticks": 12000,
+    "files": {
+      "world.checksums": true,
+      "game.replay": true,
+      "game.replay.checksums": true,
+      "final.game.gz": true
+    },
+    "trace_errors": 0
+  },
+  {
+    "game": "symmetric-arena-2",
+    "delay": 7,
+    "ticks": 12000,
+    "files": {
+      "world.checksums": true,
+      "game.replay": true,
+      "game.replay.checksums": true,
+      "final.game.gz": true
+    },
+    "trace_errors": 0
+  },
+  {
+    "game": "symmetric-arena-2",
+    "delay": 8,
+    "ticks": 12000,
+    "files": {
+      "world.checksums": true,
+      "game.replay": true,
+      "game.replay.checksums": true,
+      "final.game.gz": true
+    },
+    "trace_errors": 0
+  },
+  {
+    "game": "symmetric-arena-3",
+    "delay": 0,
+    "ticks": 12000,
+    "files": {
+      "world.checksums": true,
+      "game.replay": true,
+      "game.replay.checksums": true,
+      "final.game.gz": true
+    },
+    "trace_errors": 0
+  },
+  {
+    "game": "symmetric-arena-3",
+    "delay": 1,
+    "ticks": 12000,
+    "files": {
+      "world.checksums": true,
+      "game.replay": true,
+      "game.replay.checksums": true,
+      "final.game.gz": true
+    },
+    "trace_errors": 0
+  },
+  {
+    "game": "symmetric-arena-3",
+    "delay": 2,
+    "ticks": 12000,
+    "files": {
+      "world.checksums": true,
+      "game.replay": true,
+      "game.replay.checksums": true,
+      "final.game.gz": true
+    },
+    "trace_errors": 0
+  },
+  {
+    "game": "symmetric-arena-3",
+    "delay": 3,
+    "ticks": 12000,
+    "files": {
+      "world.checksums": true,
+      "game.replay": true,
+      "game.replay.checksums": true,
+      "final.game.gz": true
+    },
+    "trace_errors": 0
+  },
+  {
+    "game": "symmetric-arena-3",
+    "delay": 4,
+    "ticks": 12000,
+    "files": {
+      "world.checksums": true,
+      "game.replay": true,
+      "game.replay.checksums": true,
+      "final.game.gz": true
+    },
+    "trace_errors": 0
+  },
+  {
+    "game": "symmetric-arena-3",
+    "delay": 5,
+    "ticks": 12000,
+    "files": {
+      "world.checksums": true,
+      "game.replay": true,
+      "game.replay.checksums": true,
+      "final.game.gz": true
+    },
+    "trace_errors": 0
+  },
+  {
+    "game": "symmetric-arena-3",
+    "delay": 6,
+    "ticks": 12000,
+    "files": {
+      "world.checksums": true,
+      "game.replay": true,
+      "game.replay.checksums": true,
+      "final.game.gz": true
+    },
+    "trace_errors": 0
+  },
+  {
+    "game": "symmetric-arena-3",
+    "delay": 7,
+    "ticks": 12000,
+    "files": {
+      "world.checksums": true,
+      "game.replay": true,
+      "game.replay.checksums": true,
+      "final.game.gz": true
+    },
+    "trace_errors": 0
+  },
+  {
+    "game": "symmetric-arena-3",
+    "delay": 8,
+    "ticks": 12000,
+    "files": {
+      "world.checksums": true,
+      "game.replay": true,
+      "game.replay.checksums": true,
+      "final.game.gz": true
+    },
+    "trace_errors": 0
+  },
+  {
+    "game": "river-1",
+    "delay": 0,
+    "ticks": 12000,
+    "files": {
+      "world.checksums": true,
+      "game.replay": true,
+      "game.replay.checksums": true,
+      "final.game.gz": true
+    },
+    "trace_errors": 0
+  },
+  {
+    "game": "river-1",
+    "delay": 1,
+    "ticks": 12000,
+    "files": {
+      "world.checksums": true,
+      "game.replay": true,
+      "game.replay.checksums": true,
+      "final.game.gz": true
+    },
+    "trace_errors": 0
+  },
+  {
+    "game": "river-1",
+    "delay": 2,
+    "ticks": 12000,
+    "files": {
+      "world.checksums": true,
+      "game.replay": true,
+      "game.replay.checksums": true,
+      "final.game.gz": true
+    },
+    "trace_errors": 0
+  },
+  {
+    "game": "river-1",
+    "delay": 3,
+    "ticks": 12000,
+    "files": {
+      "world.checksums": true,
+      "game.replay": true,
+      "game.replay.checksums": true,
+      "final.game.gz": true
+    },
+    "trace_errors": 0
+  },
+  {
+    "game": "river-1",
+    "delay": 4,
+    "ticks": 12000,
+    "files": {
+      "world.checksums": true,
+      "game.replay": true,
+      "game.replay.checksums": true,
+      "final.game.gz": true
+    },
+    "trace_errors": 0
+  },
+  {
+    "game": "river-1",
+    "delay": 5,
+    "ticks": 12000,
+    "files": {
+      "world.checksums": true,
+      "game.replay": true,
+      "game.replay.checksums": true,
+      "final.game.gz": true
+    },
+    "trace_errors": 0
+  },
+  {
+    "game": "river-1",
+    "delay": 6,
+    "ticks": 12000,
+    "files": {
+      "world.checksums": true,
+      "game.replay": true,
+      "game.replay.checksums": true,
+      "final.game.gz": true
+    },
+    "trace_errors": 0
+  },
+  {
+    "game": "river-1",
+    "delay": 7,
+    "ticks": 12000,
+    "files": {
+      "world.checksums": true,
+      "game.replay": true,
+      "game.replay.checksums": true,
+      "final.game.gz": true
+    },
+    "trace_errors": 0
+  },
+  {
+    "game": "river-1",
+    "delay": 8,
+    "ticks": 12000,
+    "files": {
+      "world.checksums": true,
+      "game.replay": true,
+      "game.replay.checksums": true,
+      "final.game.gz": true
+    },
+    "trace_errors": 0
+  },
+  {
+    "game": "river-2",
+    "delay": 0,
+    "ticks": 12000,
+    "files": {
+      "world.checksums": true,
+      "game.replay": true,
+      "game.replay.checksums": true,
+      "final.game.gz": true
+    },
+    "trace_errors": 0
+  },
+  {
+    "game": "river-2",
+    "delay": 1,
+    "ticks": 12000,
+    "files": {
+      "world.checksums": true,
+      "game.replay": true,
+      "game.replay.checksums": true,
+      "final.game.gz": true
+    },
+    "trace_errors": 0
+  },
+  {
+    "game": "river-2",
+    "delay": 2,
+    "ticks": 12000,
+    "files": {
+      "world.checksums": true,
+      "game.replay": true,
+      "game.replay.checksums": true,
+      "final.game.gz": true
+    },
+    "trace_errors": 0
+  },
+  {
+    "game": "river-2",
+    "delay": 3,
+    "ticks": 12000,
+    "files": {
+      "world.checksums": true,
+      "game.replay": true,
+      "game.replay.checksums": true,
+      "final.game.gz": true
+    },
+    "trace_errors": 0
+  },
+  {
+    "game": "river-2",
+    "delay": 4,
+    "ticks": 12000,
+    "files": {
+      "world.checksums": true,
+      "game.replay": true,
+      "game.replay.checksums": true,
+      "final.game.gz": true
+    },
+    "trace_errors": 0
+  },
+  {
+    "game": "river-2",
+    "delay": 5,
+    "ticks": 12000,
+    "files": {
+      "world.checksums": true,
+      "game.replay": true,
+      "game.replay.checksums": true,
+      "final.game.gz": true
+    },
+    "trace_errors": 0
+  },
+  {
+    "game": "river-2",
+    "delay": 6,
+    "ticks": 12000,
+    "files": {
+      "world.checksums": true,
+      "game.replay": true,
+      "game.replay.checksums": true,
+      "final.game.gz": true
+    },
+    "trace_errors": 0
+  },
+  {
+    "game": "river-2",
+    "delay": 7,
+    "ticks": 12000,
+    "files": {
+      "world.checksums": true,
+      "game.replay": true,
+      "game.replay.checksums": true,
+      "final.game.gz": true
+    },
+    "trace_errors": 0
+  },
+  {
+    "game": "river-2",
+    "delay": 8,
+    "ticks": 12000,
+    "files": {
+      "world.checksums": true,
+      "game.replay": true,
+      "game.replay.checksums": true,
+      "final.game.gz": true
+    },
+    "trace_errors": 0
+  },
+  {
+    "game": "river-3",
+    "delay": 0,
+    "ticks": 12000,
+    "files": {
+      "world.checksums": true,
+      "game.replay": true,
+      "game.replay.checksums": true,
+      "final.game.gz": true
+    },
+    "trace_errors": 0
+  },
+  {
+    "game": "river-3",
+    "delay": 1,
+    "ticks": 12000,
+    "files": {
+      "world.checksums": true,
+      "game.replay": true,
+      "game.replay.checksums": true,
+      "final.game.gz": true
+    },
+    "trace_errors": 0
+  },
+  {
+    "game": "river-3",
+    "delay": 2,
+    "ticks": 12000,
+    "files": {
+      "world.checksums": true,
+      "game.replay": true,
+      "game.replay.checksums": true,
+      "final.game.gz": true
+    },
+    "trace_errors": 0
+  },
+  {
+    "game": "river-3",
+    "delay": 3,
+    "ticks": 12000,
+    "files": {
+      "world.checksums": true,
+      "game.replay": true,
+      "game.replay.checksums": true,
+      "final.game.gz": true
+    },
+    "trace_errors": 0
+  },
+  {
+    "game": "river-3",
+    "delay": 4,
+    "ticks": 12000,
+    "files": {
+      "world.checksums": true,
+      "game.replay": true,
+      "game.replay.checksums": true,
+      "final.game.gz": true
+    },
+    "trace_errors": 0
+  },
+  {
+    "game": "river-3",
+    "delay": 5,
+    "ticks": 12000,
+    "files": {
+      "world.checksums": true,
+      "game.replay": true,
+      "game.replay.checksums": true,
+      "final.game.gz": true
+    },
+    "trace_errors": 0
+  },
+  {
+    "game": "river-3",
+    "delay": 6,
+    "ticks": 12000,
+    "files": {
+      "world.checksums": true,
+      "game.replay": true,
+      "game.replay.checksums": true,
+      "final.game.gz": true
+    },
+    "trace_errors": 0
+  },
+  {
+    "game": "river-3",
+    "delay": 7,
+    "ticks": 12000,
+    "files": {
+      "world.checksums": true,
+      "game.replay": true,
+      "game.replay.checksums": true,
+      "final.game.gz": true
+    },
+    "trace_errors": 0
+  },
+  {
+    "game": "river-3",
+    "delay": 8,
+    "ticks": 12000,
+    "files": {
+      "world.checksums": true,
+      "game.replay": true,
+      "game.replay.checksums": true,
+      "final.game.gz": true
+    },
+    "trace_errors": 0
+  }
+]

@@ -1,0 +1,1682 @@
+[
+  {
+    "path": "symmetric-arena-1/reference/world.checksums",
+    "bytes": 189727,
+    "sha256": "2f5cf8108acd2b6239c0b3834a5ac582ae4bae2e3524c196ba8327b7ffc37334",
+    "canonical_sha256": "2f5cf8108acd2b6239c0b3834a5ac582ae4bae2e3524c196ba8327b7ffc37334",
+    "reviewer_payload": "agreement-symmetric-arena-1.zip:symmetric-arena-1/reference/world.checksums"
+  },
+  {
+    "path": "symmetric-arena-1/reference/game.replay",
+    "bytes": 16951215,
+    "sha256": "db3c0515c22250458e2b3be059cb66d47d8918ebd6c9db7d7ab3d8552281078b",
+    "canonical_sha256": "db3c0515c22250458e2b3be059cb66d47d8918ebd6c9db7d7ab3d8552281078b",
+    "reviewer_payload": "agreement-symmetric-arena-1.zip:symmetric-arena-1/reference/game.replay"
+  },
+  {
+    "path": "symmetric-arena-1/reference/game.replay.checksums",
+    "bytes": 135025772,
+    "sha256": "712703dccf3421189c5af15c9db47e50af93e21c14a42e8332369b5d663f37cb",
+    "canonical_sha256": "712703dccf3421189c5af15c9db47e50af93e21c14a42e8332369b5d663f37cb",
+    "reviewer_payload": "agreement-symmetric-arena-1.zip:symmetric-arena-1/reference/game.replay.checksums"
+  },
+  {
+    "path": "symmetric-arena-1/reference/final.game.gz",
+    "bytes": 715803,
+    "sha256": "f5b9a3b58b5b66bdb3198c3f7e89bab0d4e2c9370830a4eed96bc3a825fa27d8",
+    "canonical_sha256": "47f022100ea5da23f0a3eb905648f2617fba5f89f65a259f59e74ac9406ca705",
+    "reviewer_payload": "agreement-symmetric-arena-1.zip:symmetric-arena-1/reference/final.game.gz"
+  },
+  {
+    "path": "symmetric-arena-1/delay-0/world.checksums",
+    "bytes": 189727,
+    "sha256": "2f5cf8108acd2b6239c0b3834a5ac582ae4bae2e3524c196ba8327b7ffc37334",
+    "canonical_sha256": "2f5cf8108acd2b6239c0b3834a5ac582ae4bae2e3524c196ba8327b7ffc37334",
+    "reviewer_payload": "agreement-symmetric-arena-1.zip:symmetric-arena-1/reference/world.checksums"
+  },
+  {
+    "path": "symmetric-arena-1/delay-0/game.replay",
+    "bytes": 16951215,
+    "sha256": "db3c0515c22250458e2b3be059cb66d47d8918ebd6c9db7d7ab3d8552281078b",
+    "canonical_sha256": "db3c0515c22250458e2b3be059cb66d47d8918ebd6c9db7d7ab3d8552281078b",
+    "reviewer_payload": "agreement-symmetric-arena-1.zip:symmetric-arena-1/reference/game.replay"
+  },
+  {
+    "path": "symmetric-arena-1/delay-0/game.replay.checksums",
+    "bytes": 135025772,
+    "sha256": "712703dccf3421189c5af15c9db47e50af93e21c14a42e8332369b5d663f37cb",
+    "canonical_sha256": "712703dccf3421189c5af15c9db47e50af93e21c14a42e8332369b5d663f37cb",
+    "reviewer_payload": "agreement-symmetric-arena-1.zip:symmetric-arena-1/reference/game.replay.checksums"
+  },
+  {
+    "path": "symmetric-arena-1/delay-0/final.game.gz",
+    "bytes": 715803,
+    "sha256": "f5b9a3b58b5b66bdb3198c3f7e89bab0d4e2c9370830a4eed96bc3a825fa27d8",
+    "canonical_sha256": "47f022100ea5da23f0a3eb905648f2617fba5f89f65a259f59e74ac9406ca705",
+    "reviewer_payload": "agreement-symmetric-arena-1.zip:symmetric-arena-1/reference/final.game.gz"
+  },
+  {
+    "path": "symmetric-arena-1/delay-1/world.checksums",
+    "bytes": 189727,
+    "sha256": "2f5cf8108acd2b6239c0b3834a5ac582ae4bae2e3524c196ba8327b7ffc37334",
+    "canonical_sha256": "2f5cf8108acd2b6239c0b3834a5ac582ae4bae2e3524c196ba8327b7ffc37334",
+    "reviewer_payload": "agreement-symmetric-arena-1.zip:symmetric-arena-1/reference/world.checksums"
+  },
+  {
+    "path": "symmetric-arena-1/delay-1/game.replay",
+    "bytes": 16951215,
+    "sha256": "db3c0515c22250458e2b3be059cb66d47d8918ebd6c9db7d7ab3d8552281078b",
+    "canonical_sha256": "db3c0515c22250458e2b3be059cb66d47d8918ebd6c9db7d7ab3d8552281078b",
+    "reviewer_payload": "agreement-symmetric-arena-1.zip:symmetric-arena-1/reference/game.replay"
+  },
+  {
+    "path": "symmetric-arena-1/delay-1/game.replay.checksums",
+    "bytes": 135025772,
+    "sha256": "712703dccf3421189c5af15c9db47e50af93e21c14a42e8332369b5d663f37cb",
+    "canonical_sha256": "712703dccf3421189c5af15c9db47e50af93e21c14a42e8332369b5d663f37cb",
+    "reviewer_payload": "agreement-symmetric-arena-1.zip:symmetric-arena-1/reference/game.replay.checksums"
+  },
+  {
+    "path": "symmetric-arena-1/delay-1/final.game.gz",
+    "bytes": 715803,
+    "sha256": "f5b9a3b58b5b66bdb3198c3f7e89bab0d4e2c9370830a4eed96bc3a825fa27d8",
+    "canonical_sha256": "47f022100ea5da23f0a3eb905648f2617fba5f89f65a259f59e74ac9406ca705",
+    "reviewer_payload": "agreement-symmetric-arena-1.zip:symmetric-arena-1/reference/final.game.gz"
+  },
+  {
+    "path": "symmetric-arena-1/delay-2/world.checksums",
+    "bytes": 189727,
+    "sha256": "2f5cf8108acd2b6239c0b3834a5ac582ae4bae2e3524c196ba8327b7ffc37334",
+    "canonical_sha256": "2f5cf8108acd2b6239c0b3834a5ac582ae4bae2e3524c196ba8327b7ffc37334",
+    "reviewer_payload": "agreement-symmetric-arena-1.zip:symmetric-arena-1/reference/world.checksums"
+  },
+  {
+    "path": "symmetric-arena-1/delay-2/game.replay",
+    "bytes": 16951215,
+    "sha256": "db3c0515c22250458e2b3be059cb66d47d8918ebd6c9db7d7ab3d8552281078b",
+    "canonical_sha256": "db3c0515c22250458e2b3be059cb66d47d8918ebd6c9db7d7ab3d8552281078b",
+    "reviewer_payload": "agreement-symmetric-arena-1.zip:symmetric-arena-1/reference/game.replay"
+  },
+  {
+    "path": "symmetric-arena-1/delay-2/game.replay.checksums",
+    "bytes": 135025772,
+    "sha256": "712703dccf3421189c5af15c9db47e50af93e21c14a42e8332369b5d663f37cb",
+    "canonical_sha256": "712703dccf3421189c5af15c9db47e50af93e21c14a42e8332369b5d663f37cb",
+    "reviewer_payload": "agreement-symmetric-arena-1.zip:symmetric-arena-1/reference/game.replay.checksums"
+  },
+  {
+    "path": "symmetric-arena-1/delay-2/final.game.gz",
+    "bytes": 715803,
+    "sha256": "f5b9a3b58b5b66bdb3198c3f7e89bab0d4e2c9370830a4eed96bc3a825fa27d8",
+    "canonical_sha256": "47f022100ea5da23f0a3eb905648f2617fba5f89f65a259f59e74ac9406ca705",
+    "reviewer_payload": "agreement-symmetric-arena-1.zip:symmetric-arena-1/reference/final.game.gz"
+  },
+  {
+    "path": "symmetric-arena-1/delay-3/world.checksums",
+    "bytes": 189727,
+    "sha256": "2f5cf8108acd2b6239c0b3834a5ac582ae4bae2e3524c196ba8327b7ffc37334",
+    "canonical_sha256": "2f5cf8108acd2b6239c0b3834a5ac582ae4bae2e3524c196ba8327b7ffc37334",
+    "reviewer_payload": "agreement-symmetric-arena-1.zip:symmetric-arena-1/reference/world.checksums"
+  },
+  {
+    "path": "symmetric-arena-1/delay-3/game.replay",
+    "bytes": 16951215,
+    "sha256": "db3c0515c22250458e2b3be059cb66d47d8918ebd6c9db7d7ab3d8552281078b",
+    "canonical_sha256": "db3c0515c22250458e2b3be059cb66d47d8918ebd6c9db7d7ab3d8552281078b",
+    "reviewer_payload": "agreement-symmetric-arena-1.zip:symmetric-arena-1/reference/game.replay"
+  },
+  {
+    "path": "symmetric-arena-1/delay-3/game.replay.checksums",
+    "bytes": 135025772,
+    "sha256": "712703dccf3421189c5af15c9db47e50af93e21c14a42e8332369b5d663f37cb",
+    "canonical_sha256": "712703dccf3421189c5af15c9db47e50af93e21c14a42e8332369b5d663f37cb",
+    "reviewer_payload": "agreement-symmetric-arena-1.zip:symmetric-arena-1/reference/game.replay.checksums"
+  },
+  {
+    "path": "symmetric-arena-1/delay-3/final.game.gz",
+    "bytes": 715803,
+    "sha256": "f5b9a3b58b5b66bdb3198c3f7e89bab0d4e2c9370830a4eed96bc3a825fa27d8",
+    "canonical_sha256": "47f022100ea5da23f0a3eb905648f2617fba5f89f65a259f59e74ac9406ca705",
+    "reviewer_payload": "agreement-symmetric-arena-1.zip:symmetric-arena-1/reference/final.game.gz"
+  },
+  {
+    "path": "symmetric-arena-1/delay-4/world.checksums",
+    "bytes": 189727,
+    "sha256": "2f5cf8108acd2b6239c0b3834a5ac582ae4bae2e3524c196ba8327b7ffc37334",
+    "canonical_sha256": "2f5cf8108acd2b6239c0b3834a5ac582ae4bae2e3524c196ba8327b7ffc37334",
+    "reviewer_payload": "agreement-symmetric-arena-1.zip:symmetric-arena-1/reference/world.checksums"
+  },
+  {
+    "path": "symmetric-arena-1/delay-4/game.replay",
+    "bytes": 16951215,
+    "sha256": "db3c0515c22250458e2b3be059cb66d47d8918ebd6c9db7d7ab3d8552281078b",
+    "canonical_sha256": "db3c0515c22250458e2b3be059cb66d47d8918ebd6c9db7d7ab3d8552281078b",
+    "reviewer_payload": "agreement-symmetric-arena-1.zip:symmetric-arena-1/reference/game.replay"
+  },
+  {
+    "path": "symmetric-arena-1/delay-4/game.replay.checksums",
+    "bytes": 135025772,
+    "sha256": "712703dccf3421189c5af15c9db47e50af93e21c14a42e8332369b5d663f37cb",
+    "canonical_sha256": "712703dccf3421189c5af15c9db47e50af93e21c14a42e8332369b5d663f37cb",
+    "reviewer_payload": "agreement-symmetric-arena-1.zip:symmetric-arena-1/reference/game.replay.checksums"
+  },
+  {
+    "path": "symmetric-arena-1/delay-4/final.game.gz",
+    "bytes": 715803,
+    "sha256": "f5b9a3b58b5b66bdb3198c3f7e89bab0d4e2c9370830a4eed96bc3a825fa27d8",
+    "canonical_sha256": "47f022100ea5da23f0a3eb905648f2617fba5f89f65a259f59e74ac9406ca705",
+    "reviewer_payload": "agreement-symmetric-arena-1.zip:symmetric-arena-1/reference/final.game.gz"
+  },
+  {
+    "path": "symmetric-arena-1/delay-5/world.checksums",
+    "bytes": 189727,
+    "sha256": "2f5cf8108acd2b6239c0b3834a5ac582ae4bae2e3524c196ba8327b7ffc37334",
+    "canonical_sha256": "2f5cf8108acd2b6239c0b3834a5ac582ae4bae2e3524c196ba8327b7ffc37334",
+    "reviewer_payload": "agreement-symmetric-arena-1.zip:symmetric-arena-1/reference/world.checksums"
+  },
+  {
+    "path": "symmetric-arena-1/delay-5/game.replay",
+    "bytes": 16951215,
+    "sha256": "db3c0515c22250458e2b3be059cb66d47d8918ebd6c9db7d7ab3d8552281078b",
+    "canonical_sha256": "db3c0515c22250458e2b3be059cb66d47d8918ebd6c9db7d7ab3d8552281078b",
+    "reviewer_payload": "agreement-symmetric-arena-1.zip:symmetric-arena-1/reference/game.replay"
+  },
+  {
+    "path": "symmetric-arena-1/delay-5/game.replay.checksums",
+    "bytes": 135025772,
+    "sha256": "712703dccf3421189c5af15c9db47e50af93e21c14a42e8332369b5d663f37cb",
+    "canonical_sha256": "712703dccf3421189c5af15c9db47e50af93e21c14a42e8332369b5d663f37cb",
+    "reviewer_payload": "agreement-symmetric-arena-1.zip:symmetric-arena-1/reference/game.replay.checksums"
+  },
+  {
+    "path": "symmetric-arena-1/delay-5/final.game.gz",
+    "bytes": 715803,
+    "sha256": "f5b9a3b58b5b66bdb3198c3f7e89bab0d4e2c9370830a4eed96bc3a825fa27d8",
+    "canonical_sha256": "47f022100ea5da23f0a3eb905648f2617fba5f89f65a259f59e74ac9406ca705",
+    "reviewer_payload": "agreement-symmetric-arena-1.zip:symmetric-arena-1/reference/final.game.gz"
+  },
+  {
+    "path": "symmetric-arena-1/delay-6/world.checksums",
+    "bytes": 189727,
+    "sha256": "2f5cf8108acd2b6239c0b3834a5ac582ae4bae2e3524c196ba8327b7ffc37334",
+    "canonical_sha256": "2f5cf8108acd2b6239c0b3834a5ac582ae4bae2e3524c196ba8327b7ffc37334",
+    "reviewer_payload": "agreement-symmetric-arena-1.zip:symmetric-arena-1/reference/world.checksums"
+  },
+  {
+    "path": "symmetric-arena-1/delay-6/game.replay",
+    "bytes": 16951215,
+    "sha256": "db3c0515c22250458e2b3be059cb66d47d8918ebd6c9db7d7ab3d8552281078b",
+    "canonical_sha256": "db3c0515c22250458e2b3be059cb66d47d8918ebd6c9db7d7ab3d8552281078b",
+    "reviewer_payload": "agreement-symmetric-arena-1.zip:symmetric-arena-1/reference/game.replay"
+  },
+  {
+    "path": "symmetric-arena-1/delay-6/game.replay.checksums",
+    "bytes": 135025772,
+    "sha256": "712703dccf3421189c5af15c9db47e50af93e21c14a42e8332369b5d663f37cb",
+    "canonical_sha256": "712703dccf3421189c5af15c9db47e50af93e21c14a42e8332369b5d663f37cb",
+    "reviewer_payload": "agreement-symmetric-arena-1.zip:symmetric-arena-1/reference/game.replay.checksums"
+  },
+  {
+    "path": "symmetric-arena-1/delay-6/final.game.gz",
+    "bytes": 715803,
+    "sha256": "f5b9a3b58b5b66bdb3198c3f7e89bab0d4e2c9370830a4eed96bc3a825fa27d8",
+    "canonical_sha256": "47f022100ea5da23f0a3eb905648f2617fba5f89f65a259f59e74ac9406ca705",
+    "reviewer_payload": "agreement-symmetric-arena-1.zip:symmetric-arena-1/reference/final.game.gz"
+  },
+  {
+    "path": "symmetric-arena-1/delay-7/world.checksums",
+    "bytes": 189727,
+    "sha256": "2f5cf8108acd2b6239c0b3834a5ac582ae4bae2e3524c196ba8327b7ffc37334",
+    "canonical_sha256": "2f5cf8108acd2b6239c0b3834a5ac582ae4bae2e3524c196ba8327b7ffc37334",
+    "reviewer_payload": "agreement-symmetric-arena-1.zip:symmetric-arena-1/reference/world.checksums"
+  },
+  {
+    "path": "symmetric-arena-1/delay-7/game.replay",
+    "bytes": 16951215,
+    "sha256": "db3c0515c22250458e2b3be059cb66d47d8918ebd6c9db7d7ab3d8552281078b",
+    "canonical_sha256": "db3c0515c22250458e2b3be059cb66d47d8918ebd6c9db7d7ab3d8552281078b",
+    "reviewer_payload": "agreement-symmetric-arena-1.zip:symmetric-arena-1/reference/game.replay"
+  },
+  {
+    "path": "symmetric-arena-1/delay-7/game.replay.checksums",
+    "bytes": 135025772,
+    "sha256": "712703dccf3421189c5af15c9db47e50af93e21c14a42e8332369b5d663f37cb",
+    "canonical_sha256": "712703dccf3421189c5af15c9db47e50af93e21c14a42e8332369b5d663f37cb",
+    "reviewer_payload": "agreement-symmetric-arena-1.zip:symmetric-arena-1/reference/game.replay.checksums"
+  },
+  {
+    "path": "symmetric-arena-1/delay-7/final.game.gz",
+    "bytes": 715803,
+    "sha256": "f5b9a3b58b5b66bdb3198c3f7e89bab0d4e2c9370830a4eed96bc3a825fa27d8",
+    "canonical_sha256": "47f022100ea5da23f0a3eb905648f2617fba5f89f65a259f59e74ac9406ca705",
+    "reviewer_payload": "agreement-symmetric-arena-1.zip:symmetric-arena-1/reference/final.game.gz"
+  },
+  {
+    "path": "symmetric-arena-1/delay-8/world.checksums",
+    "bytes": 189727,
+    "sha256": "2f5cf8108acd2b6239c0b3834a5ac582ae4bae2e3524c196ba8327b7ffc37334",
+    "canonical_sha256": "2f5cf8108acd2b6239c0b3834a5ac582ae4bae2e3524c196ba8327b7ffc37334",
+    "reviewer_payload": "agreement-symmetric-arena-1.zip:symmetric-arena-1/reference/world.checksums"
+  },
+  {
+    "path": "symmetric-arena-1/delay-8/game.replay",
+    "bytes": 16951215,
+    "sha256": "db3c0515c22250458e2b3be059cb66d47d8918ebd6c9db7d7ab3d8552281078b",
+    "canonical_sha256": "db3c0515c22250458e2b3be059cb66d47d8918ebd6c9db7d7ab3d8552281078b",
+    "reviewer_payload": "agreement-symmetric-arena-1.zip:symmetric-arena-1/reference/game.replay"
+  },
+  {
+    "path": "symmetric-arena-1/delay-8/game.replay.checksums",
+    "bytes": 135025772,
+    "sha256": "712703dccf3421189c5af15c9db47e50af93e21c14a42e8332369b5d663f37cb",
+    "canonical_sha256": "712703dccf3421189c5af15c9db47e50af93e21c14a42e8332369b5d663f37cb",
+    "reviewer_payload": "agreement-symmetric-arena-1.zip:symmetric-arena-1/reference/game.replay.checksums"
+  },
+  {
+    "path": "symmetric-arena-1/delay-8/final.game.gz",
+    "bytes": 715803,
+    "sha256": "f5b9a3b58b5b66bdb3198c3f7e89bab0d4e2c9370830a4eed96bc3a825fa27d8",
+    "canonical_sha256": "47f022100ea5da23f0a3eb905648f2617fba5f89f65a259f59e74ac9406ca705",
+    "reviewer_payload": "agreement-symmetric-arena-1.zip:symmetric-arena-1/reference/final.game.gz"
+  },
+  {
+    "path": "symmetric-arena-2/reference/world.checksums",
+    "bytes": 189726,
+    "sha256": "11957f1c8ee50070b719145e4138f4ffb989565b860df03e5eba4429d0b321f3",
+    "canonical_sha256": "11957f1c8ee50070b719145e4138f4ffb989565b860df03e5eba4429d0b321f3",
+    "reviewer_payload": "agreement-symmetric-arena-2.zip:symmetric-arena-2/reference/world.checksums"
+  },
+  {
+    "path": "symmetric-arena-2/reference/game.replay",
+    "bytes": 17049199,
+    "sha256": "23d4937a8256670df7f7f82cef3dada38fd96ba84e1a8f26e93d7d27c2e1f3d9",
+    "canonical_sha256": "23d4937a8256670df7f7f82cef3dada38fd96ba84e1a8f26e93d7d27c2e1f3d9",
+    "reviewer_payload": "agreement-symmetric-arena-2.zip:symmetric-arena-2/reference/game.replay"
+  },
+  {
+    "path": "symmetric-arena-2/reference/game.replay.checksums",
+    "bytes": 167807212,
+    "sha256": "08198a78233e892a4685646719cf6c33f9f95c28f9565b14feba29e85ef71aa3",
+    "canonical_sha256": "08198a78233e892a4685646719cf6c33f9f95c28f9565b14feba29e85ef71aa3",
+    "reviewer_payload": "agreement-symmetric-arena-2.zip:symmetric-arena-2/reference/game.replay.checksums"
+  },
+  {
+    "path": "symmetric-arena-2/reference/final.game.gz",
+    "bytes": 824615,
+    "sha256": "8299796f8f2c6d7cc6098c7d2aa9c42c5a586796b3200c5df4ee7eceb80d9220",
+    "canonical_sha256": "42960a4f148bd820c213e829c72e06cd2eb1653bdb72a65a7fea7e925011a68c",
+    "reviewer_payload": "agreement-symmetric-arena-2.zip:symmetric-arena-2/reference/final.game.gz"
+  },
+  {
+    "path": "symmetric-arena-2/delay-0/world.checksums",
+    "bytes": 189726,
+    "sha256": "11957f1c8ee50070b719145e4138f4ffb989565b860df03e5eba4429d0b321f3",
+    "canonical_sha256": "11957f1c8ee50070b719145e4138f4ffb989565b860df03e5eba4429d0b321f3",
+    "reviewer_payload": "agreement-symmetric-arena-2.zip:symmetric-arena-2/reference/world.checksums"
+  },
+  {
+    "path": "symmetric-arena-2/delay-0/game.replay",
+    "bytes": 17049199,
+    "sha256": "23d4937a8256670df7f7f82cef3dada38fd96ba84e1a8f26e93d7d27c2e1f3d9",
+    "canonical_sha256": "23d4937a8256670df7f7f82cef3dada38fd96ba84e1a8f26e93d7d27c2e1f3d9",
+    "reviewer_payload": "agreement-symmetric-arena-2.zip:symmetric-arena-2/reference/game.replay"
+  },
+  {
+    "path": "symmetric-arena-2/delay-0/game.replay.checksums",
+    "bytes": 167807212,
+    "sha256": "08198a78233e892a4685646719cf6c33f9f95c28f9565b14feba29e85ef71aa3",
+    "canonical_sha256": "08198a78233e892a4685646719cf6c33f9f95c28f9565b14feba29e85ef71aa3",
+    "reviewer_payload": "agreement-symmetric-arena-2.zip:symmetric-arena-2/reference/game.replay.checksums"
+  },
+  {
+    "path": "symmetric-arena-2/delay-0/final.game.gz",
+    "bytes": 824615,
+    "sha256": "8299796f8f2c6d7cc6098c7d2aa9c42c5a586796b3200c5df4ee7eceb80d9220",
+    "canonical_sha256": "42960a4f148bd820c213e829c72e06cd2eb1653bdb72a65a7fea7e925011a68c",
+    "reviewer_payload": "agreement-symmetric-arena-2.zip:symmetric-arena-2/reference/final.game.gz"
+  },
+  {
+    "path": "symmetric-arena-2/delay-1/world.checksums",
+    "bytes": 189726,
+    "sha256": "11957f1c8ee50070b719145e4138f4ffb989565b860df03e5eba4429d0b321f3",
+    "canonical_sha256": "11957f1c8ee50070b719145e4138f4ffb989565b860df03e5eba4429d0b321f3",
+    "reviewer_payload": "agreement-symmetric-arena-2.zip:symmetric-arena-2/reference/world.checksums"
+  },
+  {
+    "path": "symmetric-arena-2/delay-1/game.replay",
+    "bytes": 17049199,
+    "sha256": "23d4937a8256670df7f7f82cef3dada38fd96ba84e1a8f26e93d7d27c2e1f3d9",
+    "canonical_sha256": "23d4937a8256670df7f7f82cef3dada38fd96ba84e1a8f26e93d7d27c2e1f3d9",
+    "reviewer_payload": "agreement-symmetric-arena-2.zip:symmetric-arena-2/reference/game.replay"
+  },
+  {
+    "path": "symmetric-arena-2/delay-1/game.replay.checksums",
+    "bytes": 167807212,
+    "sha256": "08198a78233e892a4685646719cf6c33f9f95c28f9565b14feba29e85ef71aa3",
+    "canonical_sha256": "08198a78233e892a4685646719cf6c33f9f95c28f9565b14feba29e85ef71aa3",
+    "reviewer_payload": "agreement-symmetric-arena-2.zip:symmetric-arena-2/reference/game.replay.checksums"
+  },
+  {
+    "path": "symmetric-arena-2/delay-1/final.game.gz",
+    "bytes": 824615,
+    "sha256": "8299796f8f2c6d7cc6098c7d2aa9c42c5a586796b3200c5df4ee7eceb80d9220",
+    "canonical_sha256": "42960a4f148bd820c213e829c72e06cd2eb1653bdb72a65a7fea7e925011a68c",
+    "reviewer_payload": "agreement-symmetric-arena-2.zip:symmetric-arena-2/reference/final.game.gz"
+  },
+  {
+    "path": "symmetric-arena-2/delay-2/world.checksums",
+    "bytes": 189726,
+    "sha256": "11957f1c8ee50070b719145e4138f4ffb989565b860df03e5eba4429d0b321f3",
+    "canonical_sha256": "11957f1c8ee50070b719145e4138f4ffb989565b860df03e5eba4429d0b321f3",
+    "reviewer_payload": "agreement-symmetric-arena-2.zip:symmetric-arena-2/reference/world.checksums"
+  },
+  {
+    "path": "symmetric-arena-2/delay-2/game.replay",
+    "bytes": 17049199,
+    "sha256": "23d4937a8256670df7f7f82cef3dada38fd96ba84e1a8f26e93d7d27c2e1f3d9",
+    "canonical_sha256": "23d4937a8256670df7f7f82cef3dada38fd96ba84e1a8f26e93d7d27c2e1f3d9",
+    "reviewer_payload": "agreement-symmetric-arena-2.zip:symmetric-arena-2/reference/game.replay"
+  },
+  {
+    "path": "symmetric-arena-2/delay-2/game.replay.checksums",
+    "bytes": 167807212,
+    "sha256": "08198a78233e892a4685646719cf6c33f9f95c28f9565b14feba29e85ef71aa3",
+    "canonical_sha256": "08198a78233e892a4685646719cf6c33f9f95c28f9565b14feba29e85ef71aa3",
+    "reviewer_payload": "agreement-symmetric-arena-2.zip:symmetric-arena-2/reference/game.replay.checksums"
+  },
+  {
+    "path": "symmetric-arena-2/delay-2/final.game.gz",
+    "bytes": 824615,
+    "sha256": "8299796f8f2c6d7cc6098c7d2aa9c42c5a586796b3200c5df4ee7eceb80d9220",
+    "canonical_sha256": "42960a4f148bd820c213e829c72e06cd2eb1653bdb72a65a7fea7e925011a68c",
+    "reviewer_payload": "agreement-symmetric-arena-2.zip:symmetric-arena-2/reference/final.game.gz"
+  },
+  {
+    "path": "symmetric-arena-2/delay-3/world.checksums",
+    "bytes": 189726,
+    "sha256": "11957f1c8ee50070b719145e4138f4ffb989565b860df03e5eba4429d0b321f3",
+    "canonical_sha256": "11957f1c8ee50070b719145e4138f4ffb989565b860df03e5eba4429d0b321f3",
+    "reviewer_payload": "agreement-symmetric-arena-2.zip:symmetric-arena-2/reference/world.checksums"
+  },
+  {
+    "path": "symmetric-arena-2/delay-3/game.replay",
+    "bytes": 17049199,
+    "sha256": "23d4937a8256670df7f7f82cef3dada38fd96ba84e1a8f26e93d7d27c2e1f3d9",
+    "canonical_sha256": "23d4937a8256670df7f7f82cef3dada38fd96ba84e1a8f26e93d7d27c2e1f3d9",
+    "reviewer_payload": "agreement-symmetric-arena-2.zip:symmetric-arena-2/reference/game.replay"
+  },
+  {
+    "path": "symmetric-arena-2/delay-3/game.replay.checksums",
+    "bytes": 167807212,
+    "sha256": "08198a78233e892a4685646719cf6c33f9f95c28f9565b14feba29e85ef71aa3",
+    "canonical_sha256": "08198a78233e892a4685646719cf6c33f9f95c28f9565b14feba29e85ef71aa3",
+    "reviewer_payload": "agreement-symmetric-arena-2.zip:symmetric-arena-2/reference/game.replay.checksums"
+  },
+  {
+    "path": "symmetric-arena-2/delay-3/final.game.gz",
+    "bytes": 824615,
+    "sha256": "8299796f8f2c6d7cc6098c7d2aa9c42c5a586796b3200c5df4ee7eceb80d9220",
+    "canonical_sha256": "42960a4f148bd820c213e829c72e06cd2eb1653bdb72a65a7fea7e925011a68c",
+    "reviewer_payload": "agreement-symmetric-arena-2.zip:symmetric-arena-2/reference/final.game.gz"
+  },
+  {
+    "path": "symmetric-arena-2/delay-4/world.checksums",
+    "bytes": 189726,
+    "sha256": "11957f1c8ee50070b719145e4138f4ffb989565b860df03e5eba4429d0b321f3",
+    "canonical_sha256": "11957f1c8ee50070b719145e4138f4ffb989565b860df03e5eba4429d0b321f3",
+    "reviewer_payload": "agreement-symmetric-arena-2.zip:symmetric-arena-2/reference/world.checksums"
+  },
+  {
+    "path": "symmetric-arena-2/delay-4/game.replay",
+    "bytes": 17049199,
+    "sha256": "23d4937a8256670df7f7f82cef3dada38fd96ba84e1a8f26e93d7d27c2e1f3d9",
+    "canonical_sha256": "23d4937a8256670df7f7f82cef3dada38fd96ba84e1a8f26e93d7d27c2e1f3d9",
+    "reviewer_payload": "agreement-symmetric-arena-2.zip:symmetric-arena-2/reference/game.replay"
+  },
+  {
+    "path": "symmetric-arena-2/delay-4/game.replay.checksums",
+    "bytes": 167807212,
+    "sha256": "08198a78233e892a4685646719cf6c33f9f95c28f9565b14feba29e85ef71aa3",
+    "canonical_sha256": "08198a78233e892a4685646719cf6c33f9f95c28f9565b14feba29e85ef71aa3",
+    "reviewer_payload": "agreement-symmetric-arena-2.zip:symmetric-arena-2/reference/game.replay.checksums"
+  },
+  {
+    "path": "symmetric-arena-2/delay-4/final.game.gz",
+    "bytes": 824615,
+    "sha256": "8299796f8f2c6d7cc6098c7d2aa9c42c5a586796b3200c5df4ee7eceb80d9220",
+    "canonical_sha256": "42960a4f148bd820c213e829c72e06cd2eb1653bdb72a65a7fea7e925011a68c",
+    "reviewer_payload": "agreement-symmetric-arena-2.zip:symmetric-arena-2/reference/final.game.gz"
+  },
+  {
+    "path": "symmetric-arena-2/delay-5/world.checksums",
+    "bytes": 189726,
+    "sha256": "11957f1c8ee50070b719145e4138f4ffb989565b860df03e5eba4429d0b321f3",
+    "canonical_sha256": "11957f1c8ee50070b719145e4138f4ffb989565b860df03e5eba4429d0b321f3",
+    "reviewer_payload": "agreement-symmetric-arena-2.zip:symmetric-arena-2/reference/world.checksums"
+  },
+  {
+    "path": "symmetric-arena-2/delay-5/game.replay",
+    "bytes": 17049199,
+    "sha256": "23d4937a8256670df7f7f82cef3dada38fd96ba84e1a8f26e93d7d27c2e1f3d9",
+    "canonical_sha256": "23d4937a8256670df7f7f82cef3dada38fd96ba84e1a8f26e93d7d27c2e1f3d9",
+    "reviewer_payload": "agreement-symmetric-arena-2.zip:symmetric-arena-2/reference/game.replay"
+  },
+  {
+    "path": "symmetric-arena-2/delay-5/game.replay.checksums",
+    "bytes": 167807212,
+    "sha256": "08198a78233e892a4685646719cf6c33f9f95c28f9565b14feba29e85ef71aa3",
+    "canonical_sha256": "08198a78233e892a4685646719cf6c33f9f95c28f9565b14feba29e85ef71aa3",
+    "reviewer_payload": "agreement-symmetric-arena-2.zip:symmetric-arena-2/reference/game.replay.checksums"
+  },
+  {
+    "path": "symmetric-arena-2/delay-5/final.game.gz",
+    "bytes": 824615,
+    "sha256": "8299796f8f2c6d7cc6098c7d2aa9c42c5a586796b3200c5df4ee7eceb80d9220",
+    "canonical_sha256": "42960a4f148bd820c213e829c72e06cd2eb1653bdb72a65a7fea7e925011a68c",
+    "reviewer_payload": "agreement-symmetric-arena-2.zip:symmetric-arena-2/reference/final.game.gz"
+  },
+  {
+    "path": "symmetric-arena-2/delay-6/world.checksums",
+    "bytes": 189726,
+    "sha256": "11957f1c8ee50070b719145e4138f4ffb989565b860df03e5eba4429d0b321f3",
+    "canonical_sha256": "11957f1c8ee50070b719145e4138f4ffb989565b860df03e5eba4429d0b321f3",
+    "reviewer_payload": "agreement-symmetric-arena-2.zip:symmetric-arena-2/reference/world.checksums"
+  },
+  {
+    "path": "symmetric-arena-2/delay-6/game.replay",
+    "bytes": 17049199,
+    "sha256": "23d4937a8256670df7f7f82cef3dada38fd96ba84e1a8f26e93d7d27c2e1f3d9",
+    "canonical_sha256": "23d4937a8256670df7f7f82cef3dada38fd96ba84e1a8f26e93d7d27c2e1f3d9",
+    "reviewer_payload": "agreement-symmetric-arena-2.zip:symmetric-arena-2/reference/game.replay"
+  },
+  {
+    "path": "symmetric-arena-2/delay-6/game.replay.checksums",
+    "bytes": 167807212,
+    "sha256": "08198a78233e892a4685646719cf6c33f9f95c28f9565b14feba29e85ef71aa3",
+    "canonical_sha256": "08198a78233e892a4685646719cf6c33f9f95c28f9565b14feba29e85ef71aa3",
+    "reviewer_payload": "agreement-symmetric-arena-2.zip:symmetric-arena-2/reference/game.replay.checksums"
+  },
+  {
+    "path": "symmetric-arena-2/delay-6/final.game.gz",
+    "bytes": 824615,
+    "sha256": "8299796f8f2c6d7cc6098c7d2aa9c42c5a586796b3200c5df4ee7eceb80d9220",
+    "canonical_sha256": "42960a4f148bd820c213e829c72e06cd2eb1653bdb72a65a7fea7e925011a68c",
+    "reviewer_payload": "agreement-symmetric-arena-2.zip:symmetric-arena-2/reference/final.game.gz"
+  },
+  {
+    "path": "symmetric-arena-2/delay-7/world.checksums",
+    "bytes": 189726,
+    "sha256": "11957f1c8ee50070b719145e4138f4ffb989565b860df03e5eba4429d0b321f3",
+    "canonical_sha256": "11957f1c8ee50070b719145e4138f4ffb989565b860df03e5eba4429d0b321f3",
+    "reviewer_payload": "agreement-symmetric-arena-2.zip:symmetric-arena-2/reference/world.checksums"
+  },
+  {
+    "path": "symmetric-arena-2/delay-7/game.replay",
+    "bytes": 17049199,
+    "sha256": "23d4937a8256670df7f7f82cef3dada38fd96ba84e1a8f26e93d7d27c2e1f3d9",
+    "canonical_sha256": "23d4937a8256670df7f7f82cef3dada38fd96ba84e1a8f26e93d7d27c2e1f3d9",
+    "reviewer_payload": "agreement-symmetric-arena-2.zip:symmetric-arena-2/reference/game.replay"
+  },
+  {
+    "path": "symmetric-arena-2/delay-7/game.replay.checksums",
+    "bytes": 167807212,
+    "sha256": "08198a78233e892a4685646719cf6c33f9f95c28f9565b14feba29e85ef71aa3",
+    "canonical_sha256": "08198a78233e892a4685646719cf6c33f9f95c28f9565b14feba29e85ef71aa3",
+    "reviewer_payload": "agreement-symmetric-arena-2.zip:symmetric-arena-2/reference/game.replay.checksums"
+  },
+  {
+    "path": "symmetric-arena-2/delay-7/final.game.gz",
+    "bytes": 824615,
+    "sha256": "8299796f8f2c6d7cc6098c7d2aa9c42c5a586796b3200c5df4ee7eceb80d9220",
+    "canonical_sha256": "42960a4f148bd820c213e829c72e06cd2eb1653bdb72a65a7fea7e925011a68c",
+    "reviewer_payload": "agreement-symmetric-arena-2.zip:symmetric-arena-2/reference/final.game.gz"
+  },
+  {
+    "path": "symmetric-arena-2/delay-8/world.checksums",
+    "bytes": 189726,
+    "sha256": "11957f1c8ee50070b719145e4138f4ffb989565b860df03e5eba4429d0b321f3",
+    "canonical_sha256": "11957f1c8ee50070b719145e4138f4ffb989565b860df03e5eba4429d0b321f3",
+    "reviewer_payload": "agreement-symmetric-arena-2.zip:symmetric-arena-2/reference/world.checksums"
+  },
+  {
+    "path": "symmetric-arena-2/delay-8/game.replay",
+    "bytes": 17049199,
+    "sha256": "23d4937a8256670df7f7f82cef3dada38fd96ba84e1a8f26e93d7d27c2e1f3d9",
+    "canonical_sha256": "23d4937a8256670df7f7f82cef3dada38fd96ba84e1a8f26e93d7d27c2e1f3d9",
+    "reviewer_payload": "agreement-symmetric-arena-2.zip:symmetric-arena-2/reference/game.replay"
+  },
+  {
+    "path": "symmetric-arena-2/delay-8/game.replay.checksums",
+    "bytes": 167807212,
+    "sha256": "08198a78233e892a4685646719cf6c33f9f95c28f9565b14feba29e85ef71aa3",
+    "canonical_sha256": "08198a78233e892a4685646719cf6c33f9f95c28f9565b14feba29e85ef71aa3",
+    "reviewer_payload": "agreement-symmetric-arena-2.zip:symmetric-arena-2/reference/game.replay.checksums"
+  },
+  {
+    "path": "symmetric-arena-2/delay-8/final.game.gz",
+    "bytes": 824615,
+    "sha256": "8299796f8f2c6d7cc6098c7d2aa9c42c5a586796b3200c5df4ee7eceb80d9220",
+    "canonical_sha256": "42960a4f148bd820c213e829c72e06cd2eb1653bdb72a65a7fea7e925011a68c",
+    "reviewer_payload": "agreement-symmetric-arena-2.zip:symmetric-arena-2/reference/final.game.gz"
+  },
+  {
+    "path": "symmetric-arena-3/reference/world.checksums",
+    "bytes": 189685,
+    "sha256": "2357ec652f73c89a60fd8af7ccb29c10a40e4044036bd9542e72250e2ec0a312",
+    "canonical_sha256": "2357ec652f73c89a60fd8af7ccb29c10a40e4044036bd9542e72250e2ec0a312",
+    "reviewer_payload": "agreement-symmetric-arena-3.zip:symmetric-arena-3/reference/world.checksums"
+  },
+  {
+    "path": "symmetric-arena-3/reference/game.replay",
+    "bytes": 17128971,
+    "sha256": "27be1489fdfde221f8bea89f737ed4c1a70c9b2ec3e64ac368245c4c1d89d990",
+    "canonical_sha256": "27be1489fdfde221f8bea89f737ed4c1a70c9b2ec3e64ac368245c4c1d89d990",
+    "reviewer_payload": "agreement-symmetric-arena-3.zip:symmetric-arena-3/reference/game.replay"
+  },
+  {
+    "path": "symmetric-arena-3/reference/game.replay.checksums",
+    "bytes": 117485996,
+    "sha256": "a7f7e5fb004fdb0ed6b87bda5653de9a5e48b84eebcc045825a29cc1869a740d",
+    "canonical_sha256": "a7f7e5fb004fdb0ed6b87bda5653de9a5e48b84eebcc045825a29cc1869a740d",
+    "reviewer_payload": "agreement-symmetric-arena-3.zip:symmetric-arena-3/reference/game.replay.checksums"
+  },
+  {
+    "path": "symmetric-arena-3/reference/final.game.gz",
+    "bytes": 672588,
+    "sha256": "da475a959fe167705d345a2d387a28dd5f124cb2cc74b1240dcf33d00891b3f0",
+    "canonical_sha256": "3682032f819c6e8647a16de21eb6f9680a33d535eedb4b0e1214ef7997eb9149",
+    "reviewer_payload": "agreement-symmetric-arena-3.zip:symmetric-arena-3/reference/final.game.gz"
+  },
+  {
+    "path": "symmetric-arena-3/delay-0/world.checksums",
+    "bytes": 189685,
+    "sha256": "2357ec652f73c89a60fd8af7ccb29c10a40e4044036bd9542e72250e2ec0a312",
+    "canonical_sha256": "2357ec652f73c89a60fd8af7ccb29c10a40e4044036bd9542e72250e2ec0a312",
+    "reviewer_payload": "agreement-symmetric-arena-3.zip:symmetric-arena-3/reference/world.checksums"
+  },
+  {
+    "path": "symmetric-arena-3/delay-0/game.replay",
+    "bytes": 17128971,
+    "sha256": "27be1489fdfde221f8bea89f737ed4c1a70c9b2ec3e64ac368245c4c1d89d990",
+    "canonical_sha256": "27be1489fdfde221f8bea89f737ed4c1a70c9b2ec3e64ac368245c4c1d89d990",
+    "reviewer_payload": "agreement-symmetric-arena-3.zip:symmetric-arena-3/reference/game.replay"
+  },
+  {
+    "path": "symmetric-arena-3/delay-0/game.replay.checksums",
+    "bytes": 117485996,
+    "sha256": "a7f7e5fb004fdb0ed6b87bda5653de9a5e48b84eebcc045825a29cc1869a740d",
+    "canonical_sha256": "a7f7e5fb004fdb0ed6b87bda5653de9a5e48b84eebcc045825a29cc1869a740d",
+    "reviewer_payload": "agreement-symmetric-arena-3.zip:symmetric-arena-3/reference/game.replay.checksums"
+  },
+  {
+    "path": "symmetric-arena-3/delay-0/final.game.gz",
+    "bytes": 672588,
+    "sha256": "da475a959fe167705d345a2d387a28dd5f124cb2cc74b1240dcf33d00891b3f0",
+    "canonical_sha256": "3682032f819c6e8647a16de21eb6f9680a33d535eedb4b0e1214ef7997eb9149",
+    "reviewer_payload": "agreement-symmetric-arena-3.zip:symmetric-arena-3/reference/final.game.gz"
+  },
+  {
+    "path": "symmetric-arena-3/delay-1/world.checksums",
+    "bytes": 189685,
+    "sha256": "2357ec652f73c89a60fd8af7ccb29c10a40e4044036bd9542e72250e2ec0a312",
+    "canonical_sha256": "2357ec652f73c89a60fd8af7ccb29c10a40e4044036bd9542e72250e2ec0a312",
+    "reviewer_payload": "agreement-symmetric-arena-3.zip:symmetric-arena-3/reference/world.checksums"
+  },
+  {
+    "path": "symmetric-arena-3/delay-1/game.replay",
+    "bytes": 17128971,
+    "sha256": "27be1489fdfde221f8bea89f737ed4c1a70c9b2ec3e64ac368245c4c1d89d990",
+    "canonical_sha256": "27be1489fdfde221f8bea89f737ed4c1a70c9b2ec3e64ac368245c4c1d89d990",
+    "reviewer_payload": "agreement-symmetric-arena-3.zip:symmetric-arena-3/reference/game.replay"
+  },
+  {
+    "path": "symmetric-arena-3/delay-1/game.replay.checksums",
+    "bytes": 117485996,
+    "sha256": "a7f7e5fb004fdb0ed6b87bda5653de9a5e48b84eebcc045825a29cc1869a740d",
+    "canonical_sha256": "a7f7e5fb004fdb0ed6b87bda5653de9a5e48b84eebcc045825a29cc1869a740d",
+    "reviewer_payload": "agreement-symmetric-arena-3.zip:symmetric-arena-3/reference/game.replay.checksums"
+  },
+  {
+    "path": "symmetric-arena-3/delay-1/final.game.gz",
+    "bytes": 672588,
+    "sha256": "da475a959fe167705d345a2d387a28dd5f124cb2cc74b1240dcf33d00891b3f0",
+    "canonical_sha256": "3682032f819c6e8647a16de21eb6f9680a33d535eedb4b0e1214ef7997eb9149",
+    "reviewer_payload": "agreement-symmetric-arena-3.zip:symmetric-arena-3/reference/final.game.gz"
+  },
+  {
+    "path": "symmetric-arena-3/delay-2/world.checksums",
+    "bytes": 189685,
+    "sha256": "2357ec652f73c89a60fd8af7ccb29c10a40e4044036bd9542e72250e2ec0a312",
+    "canonical_sha256": "2357ec652f73c89a60fd8af7ccb29c10a40e4044036bd9542e72250e2ec0a312",
+    "reviewer_payload": "agreement-symmetric-arena-3.zip:symmetric-arena-3/reference/world.checksums"
+  },
+  {
+    "path": "symmetric-arena-3/delay-2/game.replay",
+    "bytes": 17128971,
+    "sha256": "27be1489fdfde221f8bea89f737ed4c1a70c9b2ec3e64ac368245c4c1d89d990",
+    "canonical_sha256": "27be1489fdfde221f8bea89f737ed4c1a70c9b2ec3e64ac368245c4c1d89d990",
+    "reviewer_payload": "agreement-symmetric-arena-3.zip:symmetric-arena-3/reference/game.replay"
+  },
+  {
+    "path": "symmetric-arena-3/delay-2/game.replay.checksums",
+    "bytes": 117485996,
+    "sha256": "a7f7e5fb004fdb0ed6b87bda5653de9a5e48b84eebcc045825a29cc1869a740d",
+    "canonical_sha256": "a7f7e5fb004fdb0ed6b87bda5653de9a5e48b84eebcc045825a29cc1869a740d",
+    "reviewer_payload": "agreement-symmetric-arena-3.zip:symmetric-arena-3/reference/game.replay.checksums"
+  },
+  {
+    "path": "symmetric-arena-3/delay-2/final.game.gz",
+    "bytes": 672588,
+    "sha256": "da475a959fe167705d345a2d387a28dd5f124cb2cc74b1240dcf33d00891b3f0",
+    "canonical_sha256": "3682032f819c6e8647a16de21eb6f9680a33d535eedb4b0e1214ef7997eb9149",
+    "reviewer_payload": "agreement-symmetric-arena-3.zip:symmetric-arena-3/reference/final.game.gz"
+  },
+  {
+    "path": "symmetric-arena-3/delay-3/world.checksums",
+    "bytes": 189685,
+    "sha256": "2357ec652f73c89a60fd8af7ccb29c10a40e4044036bd9542e72250e2ec0a312",
+    "canonical_sha256": "2357ec652f73c89a60fd8af7ccb29c10a40e4044036bd9542e72250e2ec0a312",
+    "reviewer_payload": "agreement-symmetric-arena-3.zip:symmetric-arena-3/reference/world.checksums"
+  },
+  {
+    "path": "symmetric-arena-3/delay-3/game.replay",
+    "bytes": 17128971,
+    "sha256": "27be1489fdfde221f8bea89f737ed4c1a70c9b2ec3e64ac368245c4c1d89d990",
+    "canonical_sha256": "27be1489fdfde221f8bea89f737ed4c1a70c9b2ec3e64ac368245c4c1d89d990",
+    "reviewer_payload": "agreement-symmetric-arena-3.zip:symmetric-arena-3/reference/game.replay"
+  },
+  {
+    "path": "symmetric-arena-3/delay-3/game.replay.checksums",
+    "bytes": 117485996,
+    "sha256": "a7f7e5fb004fdb0ed6b87bda5653de9a5e48b84eebcc045825a29cc1869a740d",
+    "canonical_sha256": "a7f7e5fb004fdb0ed6b87bda5653de9a5e48b84eebcc045825a29cc1869a740d",
+    "reviewer_payload": "agreement-symmetric-arena-3.zip:symmetric-arena-3/reference/game.replay.checksums"
+  },
+  {
+    "path": "symmetric-arena-3/delay-3/final.game.gz",
+    "bytes": 672588,
+    "sha256": "da475a959fe167705d345a2d387a28dd5f124cb2cc74b1240dcf33d00891b3f0",
+    "canonical_sha256": "3682032f819c6e8647a16de21eb6f9680a33d535eedb4b0e1214ef7997eb9149",
+    "reviewer_payload": "agreement-symmetric-arena-3.zip:symmetric-arena-3/reference/final.game.gz"
+  },
+  {
+    "path": "symmetric-arena-3/delay-4/world.checksums",
+    "bytes": 189685,
+    "sha256": "2357ec652f73c89a60fd8af7ccb29c10a40e4044036bd9542e72250e2ec0a312",
+    "canonical_sha256": "2357ec652f73c89a60fd8af7ccb29c10a40e4044036bd9542e72250e2ec0a312",
+    "reviewer_payload": "agreement-symmetric-arena-3.zip:symmetric-arena-3/reference/world.checksums"
+  },
+  {
+    "path": "symmetric-arena-3/delay-4/game.replay",
+    "bytes": 17128971,
+    "sha256": "27be1489fdfde221f8bea89f737ed4c1a70c9b2ec3e64ac368245c4c1d89d990",
+    "canonical_sha256": "27be1489fdfde221f8bea89f737ed4c1a70c9b2ec3e64ac368245c4c1d89d990",
+    "reviewer_payload": "agreement-symmetric-arena-3.zip:symmetric-arena-3/reference/game.replay"
+  },
+  {
+    "path": "symmetric-arena-3/delay-4/game.replay.checksums",
+    "bytes": 117485996,
+    "sha256": "a7f7e5fb004fdb0ed6b87bda5653de9a5e48b84eebcc045825a29cc1869a740d",
+    "canonical_sha256": "a7f7e5fb004fdb0ed6b87bda5653de9a5e48b84eebcc045825a29cc1869a740d",
+    "reviewer_payload": "agreement-symmetric-arena-3.zip:symmetric-arena-3/reference/game.replay.checksums"
+  },
+  {
+    "path": "symmetric-arena-3/delay-4/final.game.gz",
+    "bytes": 672588,
+    "sha256": "da475a959fe167705d345a2d387a28dd5f124cb2cc74b1240dcf33d00891b3f0",
+    "canonical_sha256": "3682032f819c6e8647a16de21eb6f9680a33d535eedb4b0e1214ef7997eb9149",
+    "reviewer_payload": "agreement-symmetric-arena-3.zip:symmetric-arena-3/reference/final.game.gz"
+  },
+  {
+    "path": "symmetric-arena-3/delay-5/world.checksums",
+    "bytes": 189685,
+    "sha256": "2357ec652f73c89a60fd8af7ccb29c10a40e4044036bd9542e72250e2ec0a312",
+    "canonical_sha256": "2357ec652f73c89a60fd8af7ccb29c10a40e4044036bd9542e72250e2ec0a312",
+    "reviewer_payload": "agreement-symmetric-arena-3.zip:symmetric-arena-3/reference/world.checksums"
+  },
+  {
+    "path": "symmetric-arena-3/delay-5/game.replay",
+    "bytes": 17128971,
+    "sha256": "27be1489fdfde221f8bea89f737ed4c1a70c9b2ec3e64ac368245c4c1d89d990",
+    "canonical_sha256": "27be1489fdfde221f8bea89f737ed4c1a70c9b2ec3e64ac368245c4c1d89d990",
+    "reviewer_payload": "agreement-symmetric-arena-3.zip:symmetric-arena-3/reference/game.replay"
+  },
+  {
+    "path": "symmetric-arena-3/delay-5/game.replay.checksums",
+    "bytes": 117485996,
+    "sha256": "a7f7e5fb004fdb0ed6b87bda5653de9a5e48b84eebcc045825a29cc1869a740d",
+    "canonical_sha256": "a7f7e5fb004fdb0ed6b87bda5653de9a5e48b84eebcc045825a29cc1869a740d",
+    "reviewer_payload": "agreement-symmetric-arena-3.zip:symmetric-arena-3/reference/game.replay.checksums"
+  },
+  {
+    "path": "symmetric-arena-3/delay-5/final.game.gz",
+    "bytes": 672588,
+    "sha256": "da475a959fe167705d345a2d387a28dd5f124cb2cc74b1240dcf33d00891b3f0",
+    "canonical_sha256": "3682032f819c6e8647a16de21eb6f9680a33d535eedb4b0e1214ef7997eb9149",
+    "reviewer_payload": "agreement-symmetric-arena-3.zip:symmetric-arena-3/reference/final.game.gz"
+  },
+  {
+    "path": "symmetric-arena-3/delay-6/world.checksums",
+    "bytes": 189685,
+    "sha256": "2357ec652f73c89a60fd8af7ccb29c10a40e4044036bd9542e72250e2ec0a312",
+    "canonical_sha256": "2357ec652f73c89a60fd8af7ccb29c10a40e4044036bd9542e72250e2ec0a312",
+    "reviewer_payload": "agreement-symmetric-arena-3.zip:symmetric-arena-3/reference/world.checksums"
+  },
+  {
+    "path": "symmetric-arena-3/delay-6/game.replay",
+    "bytes": 17128971,
+    "sha256": "27be1489fdfde221f8bea89f737ed4c1a70c9b2ec3e64ac368245c4c1d89d990",
+    "canonical_sha256": "27be1489fdfde221f8bea89f737ed4c1a70c9b2ec3e64ac368245c4c1d89d990",
+    "reviewer_payload": "agreement-symmetric-arena-3.zip:symmetric-arena-3/reference/game.replay"
+  },
+  {
+    "path": "symmetric-arena-3/delay-6/game.replay.checksums",
+    "bytes": 117485996,
+    "sha256": "a7f7e5fb004fdb0ed6b87bda5653de9a5e48b84eebcc045825a29cc1869a740d",
+    "canonical_sha256": "a7f7e5fb004fdb0ed6b87bda5653de9a5e48b84eebcc045825a29cc1869a740d",
+    "reviewer_payload": "agreement-symmetric-arena-3.zip:symmetric-arena-3/reference/game.replay.checksums"
+  },
+  {
+    "path": "symmetric-arena-3/delay-6/final.game.gz",
+    "bytes": 672588,
+    "sha256": "da475a959fe167705d345a2d387a28dd5f124cb2cc74b1240dcf33d00891b3f0",
+    "canonical_sha256": "3682032f819c6e8647a16de21eb6f9680a33d535eedb4b0e1214ef7997eb9149",
+    "reviewer_payload": "agreement-symmetric-arena-3.zip:symmetric-arena-3/reference/final.game.gz"
+  },
+  {
+    "path": "symmetric-arena-3/delay-7/world.checksums",
+    "bytes": 189685,
+    "sha256": "2357ec652f73c89a60fd8af7ccb29c10a40e4044036bd9542e72250e2ec0a312",
+    "canonical_sha256": "2357ec652f73c89a60fd8af7ccb29c10a40e4044036bd9542e72250e2ec0a312",
+    "reviewer_payload": "agreement-symmetric-arena-3.zip:symmetric-arena-3/reference/world.checksums"
+  },
+  {
+    "path": "symmetric-arena-3/delay-7/game.replay",
+    "bytes": 17128971,
+    "sha256": "27be1489fdfde221f8bea89f737ed4c1a70c9b2ec3e64ac368245c4c1d89d990",
+    "canonical_sha256": "27be1489fdfde221f8bea89f737ed4c1a70c9b2ec3e64ac368245c4c1d89d990",
+    "reviewer_payload": "agreement-symmetric-arena-3.zip:symmetric-arena-3/reference/game.replay"
+  },
+  {
+    "path": "symmetric-arena-3/delay-7/game.replay.checksums",
+    "bytes": 117485996,
+    "sha256": "a7f7e5fb004fdb0ed6b87bda5653de9a5e48b84eebcc045825a29cc1869a740d",
+    "canonical_sha256": "a7f7e5fb004fdb0ed6b87bda5653de9a5e48b84eebcc045825a29cc1869a740d",
+    "reviewer_payload": "agreement-symmetric-arena-3.zip:symmetric-arena-3/reference/game.replay.checksums"
+  },
+  {
+    "path": "symmetric-arena-3/delay-7/final.game.gz",
+    "bytes": 672588,
+    "sha256": "da475a959fe167705d345a2d387a28dd5f124cb2cc74b1240dcf33d00891b3f0",
+    "canonical_sha256": "3682032f819c6e8647a16de21eb6f9680a33d535eedb4b0e1214ef7997eb9149",
+    "reviewer_payload": "agreement-symmetric-arena-3.zip:symmetric-arena-3/reference/final.game.gz"
+  },
+  {
+    "path": "symmetric-arena-3/delay-8/world.checksums",
+    "bytes": 189685,
+    "sha256": "2357ec652f73c89a60fd8af7ccb29c10a40e4044036bd9542e72250e2ec0a312",
+    "canonical_sha256": "2357ec652f73c89a60fd8af7ccb29c10a40e4044036bd9542e72250e2ec0a312",
+    "reviewer_payload": "agreement-symmetric-arena-3.zip:symmetric-arena-3/reference/world.checksums"
+  },
+  {
+    "path": "symmetric-arena-3/delay-8/game.replay",
+    "bytes": 17128971,
+    "sha256": "27be1489fdfde221f8bea89f737ed4c1a70c9b2ec3e64ac368245c4c1d89d990",
+    "canonical_sha256": "27be1489fdfde221f8bea89f737ed4c1a70c9b2ec3e64ac368245c4c1d89d990",
+    "reviewer_payload": "agreement-symmetric-arena-3.zip:symmetric-arena-3/reference/game.replay"
+  },
+  {
+    "path": "symmetric-arena-3/delay-8/game.replay.checksums",
+    "bytes": 117485996,
+    "sha256": "a7f7e5fb004fdb0ed6b87bda5653de9a5e48b84eebcc045825a29cc1869a740d",
+    "canonical_sha256": "a7f7e5fb004fdb0ed6b87bda5653de9a5e48b84eebcc045825a29cc1869a740d",
+    "reviewer_payload": "agreement-symmetric-arena-3.zip:symmetric-arena-3/reference/game.replay.checksums"
+  },
+  {
+    "path": "symmetric-arena-3/delay-8/final.game.gz",
+    "bytes": 672588,
+    "sha256": "da475a959fe167705d345a2d387a28dd5f124cb2cc74b1240dcf33d00891b3f0",
+    "canonical_sha256": "3682032f819c6e8647a16de21eb6f9680a33d535eedb4b0e1214ef7997eb9149",
+    "reviewer_payload": "agreement-symmetric-arena-3.zip:symmetric-arena-3/reference/final.game.gz"
+  },
+  {
+    "path": "river-1/reference/world.checksums",
+    "bytes": 189667,
+    "sha256": "480235b2d546bf9f647dd38f959747eeeb9087fbb449fb6733030b0bd4c32d21",
+    "canonical_sha256": "480235b2d546bf9f647dd38f959747eeeb9087fbb449fb6733030b0bd4c32d21",
+    "reviewer_payload": "agreement-river-1.zip:river-1/reference/world.checksums"
+  },
+  {
+    "path": "river-1/reference/game.replay",
+    "bytes": 16876714,
+    "sha256": "a3bd10501857f6a8c999e784313f62fb7a006258747d2bc75602685ed6a1ebf4",
+    "canonical_sha256": "a3bd10501857f6a8c999e784313f62fb7a006258747d2bc75602685ed6a1ebf4",
+    "reviewer_payload": "agreement-river-1.zip:river-1/reference/game.replay"
+  },
+  {
+    "path": "river-1/reference/game.replay.checksums",
+    "bytes": 167626344,
+    "sha256": "9a19a679ea77e5f92bb59d24d6a9d136c2c3364ab8696bb8b57b4e024a94857a",
+    "canonical_sha256": "9a19a679ea77e5f92bb59d24d6a9d136c2c3364ab8696bb8b57b4e024a94857a",
+    "reviewer_payload": "agreement-river-1.zip:river-1/reference/game.replay.checksums"
+  },
+  {
+    "path": "river-1/reference/final.game.gz",
+    "bytes": 517170,
+    "sha256": "21b60b4c4701bfd0ca2a7d7508798e869eff1192b34f8b0c9d46b307e9ad0860",
+    "canonical_sha256": "007ceb53410e8c69d5feeb6e48b0540d10a5502a83eb2aaeb5d4055376ce4e68",
+    "reviewer_payload": "agreement-river-1.zip:river-1/reference/final.game.gz"
+  },
+  {
+    "path": "river-1/delay-0/world.checksums",
+    "bytes": 189667,
+    "sha256": "480235b2d546bf9f647dd38f959747eeeb9087fbb449fb6733030b0bd4c32d21",
+    "canonical_sha256": "480235b2d546bf9f647dd38f959747eeeb9087fbb449fb6733030b0bd4c32d21",
+    "reviewer_payload": "agreement-river-1.zip:river-1/reference/world.checksums"
+  },
+  {
+    "path": "river-1/delay-0/game.replay",
+    "bytes": 16876714,
+    "sha256": "a3bd10501857f6a8c999e784313f62fb7a006258747d2bc75602685ed6a1ebf4",
+    "canonical_sha256": "a3bd10501857f6a8c999e784313f62fb7a006258747d2bc75602685ed6a1ebf4",
+    "reviewer_payload": "agreement-river-1.zip:river-1/reference/game.replay"
+  },
+  {
+    "path": "river-1/delay-0/game.replay.checksums",
+    "bytes": 167626344,
+    "sha256": "9a19a679ea77e5f92bb59d24d6a9d136c2c3364ab8696bb8b57b4e024a94857a",
+    "canonical_sha256": "9a19a679ea77e5f92bb59d24d6a9d136c2c3364ab8696bb8b57b4e024a94857a",
+    "reviewer_payload": "agreement-river-1.zip:river-1/reference/game.replay.checksums"
+  },
+  {
+    "path": "river-1/delay-0/final.game.gz",
+    "bytes": 517170,
+    "sha256": "21b60b4c4701bfd0ca2a7d7508798e869eff1192b34f8b0c9d46b307e9ad0860",
+    "canonical_sha256": "007ceb53410e8c69d5feeb6e48b0540d10a5502a83eb2aaeb5d4055376ce4e68",
+    "reviewer_payload": "agreement-river-1.zip:river-1/reference/final.game.gz"
+  },
+  {
+    "path": "river-1/delay-1/world.checksums",
+    "bytes": 189667,
+    "sha256": "480235b2d546bf9f647dd38f959747eeeb9087fbb449fb6733030b0bd4c32d21",
+    "canonical_sha256": "480235b2d546bf9f647dd38f959747eeeb9087fbb449fb6733030b0bd4c32d21",
+    "reviewer_payload": "agreement-river-1.zip:river-1/reference/world.checksums"
+  },
+  {
+    "path": "river-1/delay-1/game.replay",
+    "bytes": 16876714,
+    "sha256": "a3bd10501857f6a8c999e784313f62fb7a006258747d2bc75602685ed6a1ebf4",
+    "canonical_sha256": "a3bd10501857f6a8c999e784313f62fb7a006258747d2bc75602685ed6a1ebf4",
+    "reviewer_payload": "agreement-river-1.zip:river-1/reference/game.replay"
+  },
+  {
+    "path": "river-1/delay-1/game.replay.checksums",
+    "bytes": 167626344,
+    "sha256": "9a19a679ea77e5f92bb59d24d6a9d136c2c3364ab8696bb8b57b4e024a94857a",
+    "canonical_sha256": "9a19a679ea77e5f92bb59d24d6a9d136c2c3364ab8696bb8b57b4e024a94857a",
+    "reviewer_payload": "agreement-river-1.zip:river-1/reference/game.replay.checksums"
+  },
+  {
+    "path": "river-1/delay-1/final.game.gz",
+    "bytes": 517170,
+    "sha256": "21b60b4c4701bfd0ca2a7d7508798e869eff1192b34f8b0c9d46b307e9ad0860",
+    "canonical_sha256": "007ceb53410e8c69d5feeb6e48b0540d10a5502a83eb2aaeb5d4055376ce4e68",
+    "reviewer_payload": "agreement-river-1.zip:river-1/reference/final.game.gz"
+  },
+  {
+    "path": "river-1/delay-2/world.checksums",
+    "bytes": 189667,
+    "sha256": "480235b2d546bf9f647dd38f959747eeeb9087fbb449fb6733030b0bd4c32d21",
+    "canonical_sha256": "480235b2d546bf9f647dd38f959747eeeb9087fbb449fb6733030b0bd4c32d21",
+    "reviewer_payload": "agreement-river-1.zip:river-1/reference/world.checksums"
+  },
+  {
+    "path": "river-1/delay-2/game.replay",
+    "bytes": 16876714,
+    "sha256": "a3bd10501857f6a8c999e784313f62fb7a006258747d2bc75602685ed6a1ebf4",
+    "canonical_sha256": "a3bd10501857f6a8c999e784313f62fb7a006258747d2bc75602685ed6a1ebf4",
+    "reviewer_payload": "agreement-river-1.zip:river-1/reference/game.replay"
+  },
+  {
+    "path": "river-1/delay-2/game.replay.checksums",
+    "bytes": 167626344,
+    "sha256": "9a19a679ea77e5f92bb59d24d6a9d136c2c3364ab8696bb8b57b4e024a94857a",
+    "canonical_sha256": "9a19a679ea77e5f92bb59d24d6a9d136c2c3364ab8696bb8b57b4e024a94857a",
+    "reviewer_payload": "agreement-river-1.zip:river-1/reference/game.replay.checksums"
+  },
+  {
+    "path": "river-1/delay-2/final.game.gz",
+    "bytes": 517170,
+    "sha256": "21b60b4c4701bfd0ca2a7d7508798e869eff1192b34f8b0c9d46b307e9ad0860",
+    "canonical_sha256": "007ceb53410e8c69d5feeb6e48b0540d10a5502a83eb2aaeb5d4055376ce4e68",
+    "reviewer_payload": "agreement-river-1.zip:river-1/reference/final.game.gz"
+  },
+  {
+    "path": "river-1/delay-3/world.checksums",
+    "bytes": 189667,
+    "sha256": "480235b2d546bf9f647dd38f959747eeeb9087fbb449fb6733030b0bd4c32d21",
+    "canonical_sha256": "480235b2d546bf9f647dd38f959747eeeb9087fbb449fb6733030b0bd4c32d21",
+    "reviewer_payload": "agreement-river-1.zip:river-1/reference/world.checksums"
+  },
+  {
+    "path": "river-1/delay-3/game.replay",
+    "bytes": 16876714,
+    "sha256": "a3bd10501857f6a8c999e784313f62fb7a006258747d2bc75602685ed6a1ebf4",
+    "canonical_sha256": "a3bd10501857f6a8c999e784313f62fb7a006258747d2bc75602685ed6a1ebf4",
+    "reviewer_payload": "agreement-river-1.zip:river-1/reference/game.replay"
+  },
+  {
+    "path": "river-1/delay-3/game.replay.checksums",
+    "bytes": 167626344,
+    "sha256": "9a19a679ea77e5f92bb59d24d6a9d136c2c3364ab8696bb8b57b4e024a94857a",
+    "canonical_sha256": "9a19a679ea77e5f92bb59d24d6a9d136c2c3364ab8696bb8b57b4e024a94857a",
+    "reviewer_payload": "agreement-river-1.zip:river-1/reference/game.replay.checksums"
+  },
+  {
+    "path": "river-1/delay-3/final.game.gz",
+    "bytes": 517170,
+    "sha256": "21b60b4c4701bfd0ca2a7d7508798e869eff1192b34f8b0c9d46b307e9ad0860",
+    "canonical_sha256": "007ceb53410e8c69d5feeb6e48b0540d10a5502a83eb2aaeb5d4055376ce4e68",
+    "reviewer_payload": "agreement-river-1.zip:river-1/reference/final.game.gz"
+  },
+  {
+    "path": "river-1/delay-4/world.checksums",
+    "bytes": 189667,
+    "sha256": "480235b2d546bf9f647dd38f959747eeeb9087fbb449fb6733030b0bd4c32d21",
+    "canonical_sha256": "480235b2d546bf9f647dd38f959747eeeb9087fbb449fb6733030b0bd4c32d21",
+    "reviewer_payload": "agreement-river-1.zip:river-1/reference/world.checksums"
+  },
+  {
+    "path": "river-1/delay-4/game.replay",
+    "bytes": 16876714,
+    "sha256": "a3bd10501857f6a8c999e784313f62fb7a006258747d2bc75602685ed6a1ebf4",
+    "canonical_sha256": "a3bd10501857f6a8c999e784313f62fb7a006258747d2bc75602685ed6a1ebf4",
+    "reviewer_payload": "agreement-river-1.zip:river-1/reference/game.replay"
+  },
+  {
+    "path": "river-1/delay-4/game.replay.checksums",
+    "bytes": 167626344,
+    "sha256": "9a19a679ea77e5f92bb59d24d6a9d136c2c3364ab8696bb8b57b4e024a94857a",
+    "canonical_sha256": "9a19a679ea77e5f92bb59d24d6a9d136c2c3364ab8696bb8b57b4e024a94857a",
+    "reviewer_payload": "agreement-river-1.zip:river-1/reference/game.replay.checksums"
+  },
+  {
+    "path": "river-1/delay-4/final.game.gz",
+    "bytes": 517170,
+    "sha256": "21b60b4c4701bfd0ca2a7d7508798e869eff1192b34f8b0c9d46b307e9ad0860",
+    "canonical_sha256": "007ceb53410e8c69d5feeb6e48b0540d10a5502a83eb2aaeb5d4055376ce4e68",
+    "reviewer_payload": "agreement-river-1.zip:river-1/reference/final.game.gz"
+  },
+  {
+    "path": "river-1/delay-5/world.checksums",
+    "bytes": 189667,
+    "sha256": "480235b2d546bf9f647dd38f959747eeeb9087fbb449fb6733030b0bd4c32d21",
+    "canonical_sha256": "480235b2d546bf9f647dd38f959747eeeb9087fbb449fb6733030b0bd4c32d21",
+    "reviewer_payload": "agreement-river-1.zip:river-1/reference/world.checksums"
+  },
+  {
+    "path": "river-1/delay-5/game.replay",
+    "bytes": 16876714,
+    "sha256": "a3bd10501857f6a8c999e784313f62fb7a006258747d2bc75602685ed6a1ebf4",
+    "canonical_sha256": "a3bd10501857f6a8c999e784313f62fb7a006258747d2bc75602685ed6a1ebf4",
+    "reviewer_payload": "agreement-river-1.zip:river-1/reference/game.replay"
+  },
+  {
+    "path": "river-1/delay-5/game.replay.checksums",
+    "bytes": 167626344,
+    "sha256": "9a19a679ea77e5f92bb59d24d6a9d136c2c3364ab8696bb8b57b4e024a94857a",
+    "canonical_sha256": "9a19a679ea77e5f92bb59d24d6a9d136c2c3364ab8696bb8b57b4e024a94857a",
+    "reviewer_payload": "agreement-river-1.zip:river-1/reference/game.replay.checksums"
+  },
+  {
+    "path": "river-1/delay-5/final.game.gz",
+    "bytes": 517170,
+    "sha256": "21b60b4c4701bfd0ca2a7d7508798e869eff1192b34f8b0c9d46b307e9ad0860",
+    "canonical_sha256": "007ceb53410e8c69d5feeb6e48b0540d10a5502a83eb2aaeb5d4055376ce4e68",
+    "reviewer_payload": "agreement-river-1.zip:river-1/reference/final.game.gz"
+  },
+  {
+    "path": "river-1/delay-6/world.checksums",
+    "bytes": 189667,
+    "sha256": "480235b2d546bf9f647dd38f959747eeeb9087fbb449fb6733030b0bd4c32d21",
+    "canonical_sha256": "480235b2d546bf9f647dd38f959747eeeb9087fbb449fb6733030b0bd4c32d21",
+    "reviewer_payload": "agreement-river-1.zip:river-1/reference/world.checksums"
+  },
+  {
+    "path": "river-1/delay-6/game.replay",
+    "bytes": 16876714,
+    "sha256": "a3bd10501857f6a8c999e784313f62fb7a006258747d2bc75602685ed6a1ebf4",
+    "canonical_sha256": "a3bd10501857f6a8c999e784313f62fb7a006258747d2bc75602685ed6a1ebf4",
+    "reviewer_payload": "agreement-river-1.zip:river-1/reference/game.replay"
+  },
+  {
+    "path": "river-1/delay-6/game.replay.checksums",
+    "bytes": 167626344,
+    "sha256": "9a19a679ea77e5f92bb59d24d6a9d136c2c3364ab8696bb8b57b4e024a94857a",
+    "canonical_sha256": "9a19a679ea77e5f92bb59d24d6a9d136c2c3364ab8696bb8b57b4e024a94857a",
+    "reviewer_payload": "agreement-river-1.zip:river-1/reference/game.replay.checksums"
+  },
+  {
+    "path": "river-1/delay-6/final.game.gz",
+    "bytes": 517170,
+    "sha256": "21b60b4c4701bfd0ca2a7d7508798e869eff1192b34f8b0c9d46b307e9ad0860",
+    "canonical_sha256": "007ceb53410e8c69d5feeb6e48b0540d10a5502a83eb2aaeb5d4055376ce4e68",
+    "reviewer_payload": "agreement-river-1.zip:river-1/reference/final.game.gz"
+  },
+  {
+    "path": "river-1/delay-7/world.checksums",
+    "bytes": 189667,
+    "sha256": "480235b2d546bf9f647dd38f959747eeeb9087fbb449fb6733030b0bd4c32d21",
+    "canonical_sha256": "480235b2d546bf9f647dd38f959747eeeb9087fbb449fb6733030b0bd4c32d21",
+    "reviewer_payload": "agreement-river-1.zip:river-1/reference/world.checksums"
+  },
+  {
+    "path": "river-1/delay-7/game.replay",
+    "bytes": 16876714,
+    "sha256": "a3bd10501857f6a8c999e784313f62fb7a006258747d2bc75602685ed6a1ebf4",
+    "canonical_sha256": "a3bd10501857f6a8c999e784313f62fb7a006258747d2bc75602685ed6a1ebf4",
+    "reviewer_payload": "agreement-river-1.zip:river-1/reference/game.replay"
+  },
+  {
+    "path": "river-1/delay-7/game.replay.checksums",
+    "bytes": 167626344,
+    "sha256": "9a19a679ea77e5f92bb59d24d6a9d136c2c3364ab8696bb8b57b4e024a94857a",
+    "canonical_sha256": "9a19a679ea77e5f92bb59d24d6a9d136c2c3364ab8696bb8b57b4e024a94857a",
+    "reviewer_payload": "agreement-river-1.zip:river-1/reference/game.replay.checksums"
+  },
+  {
+    "path": "river-1/delay-7/final.game.gz",
+    "bytes": 517170,
+    "sha256": "21b60b4c4701bfd0ca2a7d7508798e869eff1192b34f8b0c9d46b307e9ad0860",
+    "canonical_sha256": "007ceb53410e8c69d5feeb6e48b0540d10a5502a83eb2aaeb5d4055376ce4e68",
+    "reviewer_payload": "agreement-river-1.zip:river-1/reference/final.game.gz"
+  },
+  {
+    "path": "river-1/delay-8/world.checksums",
+    "bytes": 189667,
+    "sha256": "480235b2d546bf9f647dd38f959747eeeb9087fbb449fb6733030b0bd4c32d21",
+    "canonical_sha256": "480235b2d546bf9f647dd38f959747eeeb9087fbb449fb6733030b0bd4c32d21",
+    "reviewer_payload": "agreement-river-1.zip:river-1/reference/world.checksums"
+  },
+  {
+    "path": "river-1/delay-8/game.replay",
+    "bytes": 16876714,
+    "sha256": "a3bd10501857f6a8c999e784313f62fb7a006258747d2bc75602685ed6a1ebf4",
+    "canonical_sha256": "a3bd10501857f6a8c999e784313f62fb7a006258747d2bc75602685ed6a1ebf4",
+    "reviewer_payload": "agreement-river-1.zip:river-1/reference/game.replay"
+  },
+  {
+    "path": "river-1/delay-8/game.replay.checksums",
+    "bytes": 167626344,
+    "sha256": "9a19a679ea77e5f92bb59d24d6a9d136c2c3364ab8696bb8b57b4e024a94857a",
+    "canonical_sha256": "9a19a679ea77e5f92bb59d24d6a9d136c2c3364ab8696bb8b57b4e024a94857a",
+    "reviewer_payload": "agreement-river-1.zip:river-1/reference/game.replay.checksums"
+  },
+  {
+    "path": "river-1/delay-8/final.game.gz",
+    "bytes": 517170,
+    "sha256": "21b60b4c4701bfd0ca2a7d7508798e869eff1192b34f8b0c9d46b307e9ad0860",
+    "canonical_sha256": "007ceb53410e8c69d5feeb6e48b0540d10a5502a83eb2aaeb5d4055376ce4e68",
+    "reviewer_payload": "agreement-river-1.zip:river-1/reference/final.game.gz"
+  },
+  {
+    "path": "river-2/reference/world.checksums",
+    "bytes": 189784,
+    "sha256": "5b869f5192bc994801f5d2aea1571209e28ef7037f3e5396298bb7105fdd2aa5",
+    "canonical_sha256": "5b869f5192bc994801f5d2aea1571209e28ef7037f3e5396298bb7105fdd2aa5",
+    "reviewer_payload": "agreement-river-2.zip:river-2/reference/world.checksums"
+  },
+  {
+    "path": "river-2/reference/game.replay",
+    "bytes": 16890580,
+    "sha256": "749c522203deac4b1fc47ab9150a157f291b22b98f4c91b3e3ee7f6096ed683d",
+    "canonical_sha256": "749c522203deac4b1fc47ab9150a157f291b22b98f4c91b3e3ee7f6096ed683d",
+    "reviewer_payload": "agreement-river-2.zip:river-2/reference/game.replay"
+  },
+  {
+    "path": "river-2/reference/game.replay.checksums",
+    "bytes": 164815776,
+    "sha256": "2006ca1d615e1560b9349f8dce1ac21994c2be50e7232797a879d12fc3087b6e",
+    "canonical_sha256": "2006ca1d615e1560b9349f8dce1ac21994c2be50e7232797a879d12fc3087b6e",
+    "reviewer_payload": "agreement-river-2.zip:river-2/reference/game.replay.checksums"
+  },
+  {
+    "path": "river-2/reference/final.game.gz",
+    "bytes": 492676,
+    "sha256": "22f06ad3361ae60f9a539b826e5c85696f023014d064d8269bd831f9bfb2b46f",
+    "canonical_sha256": "0a368d963d4dfe6767872442a5e6b675a7e03da0e5a8699532aea9f4f95e36e7",
+    "reviewer_payload": "agreement-river-2.zip:river-2/reference/final.game.gz"
+  },
+  {
+    "path": "river-2/delay-0/world.checksums",
+    "bytes": 189784,
+    "sha256": "5b869f5192bc994801f5d2aea1571209e28ef7037f3e5396298bb7105fdd2aa5",
+    "canonical_sha256": "5b869f5192bc994801f5d2aea1571209e28ef7037f3e5396298bb7105fdd2aa5",
+    "reviewer_payload": "agreement-river-2.zip:river-2/reference/world.checksums"
+  },
+  {
+    "path": "river-2/delay-0/game.replay",
+    "bytes": 16890580,
+    "sha256": "749c522203deac4b1fc47ab9150a157f291b22b98f4c91b3e3ee7f6096ed683d",
+    "canonical_sha256": "749c522203deac4b1fc47ab9150a157f291b22b98f4c91b3e3ee7f6096ed683d",
+    "reviewer_payload": "agreement-river-2.zip:river-2/reference/game.replay"
+  },
+  {
+    "path": "river-2/delay-0/game.replay.checksums",
+    "bytes": 164815776,
+    "sha256": "2006ca1d615e1560b9349f8dce1ac21994c2be50e7232797a879d12fc3087b6e",
+    "canonical_sha256": "2006ca1d615e1560b9349f8dce1ac21994c2be50e7232797a879d12fc3087b6e",
+    "reviewer_payload": "agreement-river-2.zip:river-2/reference/game.replay.checksums"
+  },
+  {
+    "path": "river-2/delay-0/final.game.gz",
+    "bytes": 492676,
+    "sha256": "22f06ad3361ae60f9a539b826e5c85696f023014d064d8269bd831f9bfb2b46f",
+    "canonical_sha256": "0a368d963d4dfe6767872442a5e6b675a7e03da0e5a8699532aea9f4f95e36e7",
+    "reviewer_payload": "agreement-river-2.zip:river-2/reference/final.game.gz"
+  },
+  {
+    "path": "river-2/delay-1/world.checksums",
+    "bytes": 189784,
+    "sha256": "5b869f5192bc994801f5d2aea1571209e28ef7037f3e5396298bb7105fdd2aa5",
+    "canonical_sha256": "5b869f5192bc994801f5d2aea1571209e28ef7037f3e5396298bb7105fdd2aa5",
+    "reviewer_payload": "agreement-river-2.zip:river-2/reference/world.checksums"
+  },
+  {
+    "path": "river-2/delay-1/game.replay",
+    "bytes": 16890580,
+    "sha256": "749c522203deac4b1fc47ab9150a157f291b22b98f4c91b3e3ee7f6096ed683d",
+    "canonical_sha256": "749c522203deac4b1fc47ab9150a157f291b22b98f4c91b3e3ee7f6096ed683d",
+    "reviewer_payload": "agreement-river-2.zip:river-2/reference/game.replay"
+  },
+  {
+    "path": "river-2/delay-1/game.replay.checksums",
+    "bytes": 164815776,
+    "sha256": "2006ca1d615e1560b9349f8dce1ac21994c2be50e7232797a879d12fc3087b6e",
+    "canonical_sha256": "2006ca1d615e1560b9349f8dce1ac21994c2be50e7232797a879d12fc3087b6e",
+    "reviewer_payload": "agreement-river-2.zip:river-2/reference/game.replay.checksums"
+  },
+  {
+    "path": "river-2/delay-1/final.game.gz",
+    "bytes": 492676,
+    "sha256": "22f06ad3361ae60f9a539b826e5c85696f023014d064d8269bd831f9bfb2b46f",
+    "canonical_sha256": "0a368d963d4dfe6767872442a5e6b675a7e03da0e5a8699532aea9f4f95e36e7",
+    "reviewer_payload": "agreement-river-2.zip:river-2/reference/final.game.gz"
+  },
+  {
+    "path": "river-2/delay-2/world.checksums",
+    "bytes": 189784,
+    "sha256": "5b869f5192bc994801f5d2aea1571209e28ef7037f3e5396298bb7105fdd2aa5",
+    "canonical_sha256": "5b869f5192bc994801f5d2aea1571209e28ef7037f3e5396298bb7105fdd2aa5",
+    "reviewer_payload": "agreement-river-2.zip:river-2/reference/world.checksums"
+  },
+  {
+    "path": "river-2/delay-2/game.replay",
+    "bytes": 16890580,
+    "sha256": "749c522203deac4b1fc47ab9150a157f291b22b98f4c91b3e3ee7f6096ed683d",
+    "canonical_sha256": "749c522203deac4b1fc47ab9150a157f291b22b98f4c91b3e3ee7f6096ed683d",
+    "reviewer_payload": "agreement-river-2.zip:river-2/reference/game.replay"
+  },
+  {
+    "path": "river-2/delay-2/game.replay.checksums",
+    "bytes": 164815776,
+    "sha256": "2006ca1d615e1560b9349f8dce1ac21994c2be50e7232797a879d12fc3087b6e",
+    "canonical_sha256": "2006ca1d615e1560b9349f8dce1ac21994c2be50e7232797a879d12fc3087b6e",
+    "reviewer_payload": "agreement-river-2.zip:river-2/reference/game.replay.checksums"
+  },
+  {
+    "path": "river-2/delay-2/final.game.gz",
+    "bytes": 492676,
+    "sha256": "22f06ad3361ae60f9a539b826e5c85696f023014d064d8269bd831f9bfb2b46f",
+    "canonical_sha256": "0a368d963d4dfe6767872442a5e6b675a7e03da0e5a8699532aea9f4f95e36e7",
+    "reviewer_payload": "agreement-river-2.zip:river-2/reference/final.game.gz"
+  },
+  {
+    "path": "river-2/delay-3/world.checksums",
+    "bytes": 189784,
+    "sha256": "5b869f5192bc994801f5d2aea1571209e28ef7037f3e5396298bb7105fdd2aa5",
+    "canonical_sha256": "5b869f5192bc994801f5d2aea1571209e28ef7037f3e5396298bb7105fdd2aa5",
+    "reviewer_payload": "agreement-river-2.zip:river-2/reference/world.checksums"
+  },
+  {
+    "path": "river-2/delay-3/game.replay",
+    "bytes": 16890580,
+    "sha256": "749c522203deac4b1fc47ab9150a157f291b22b98f4c91b3e3ee7f6096ed683d",
+    "canonical_sha256": "749c522203deac4b1fc47ab9150a157f291b22b98f4c91b3e3ee7f6096ed683d",
+    "reviewer_payload": "agreement-river-2.zip:river-2/reference/game.replay"
+  },
+  {
+    "path": "river-2/delay-3/game.replay.checksums",
+    "bytes": 164815776,
+    "sha256": "2006ca1d615e1560b9349f8dce1ac21994c2be50e7232797a879d12fc3087b6e",
+    "canonical_sha256": "2006ca1d615e1560b9349f8dce1ac21994c2be50e7232797a879d12fc3087b6e",
+    "reviewer_payload": "agreement-river-2.zip:river-2/reference/game.replay.checksums"
+  },
+  {
+    "path": "river-2/delay-3/final.game.gz",
+    "bytes": 492676,
+    "sha256": "22f06ad3361ae60f9a539b826e5c85696f023014d064d8269bd831f9bfb2b46f",
+    "canonical_sha256": "0a368d963d4dfe6767872442a5e6b675a7e03da0e5a8699532aea9f4f95e36e7",
+    "reviewer_payload": "agreement-river-2.zip:river-2/reference/final.game.gz"
+  },
+  {
+    "path": "river-2/delay-4/world.checksums",
+    "bytes": 189784,
+    "sha256": "5b869f5192bc994801f5d2aea1571209e28ef7037f3e5396298bb7105fdd2aa5",
+    "canonical_sha256": "5b869f5192bc994801f5d2aea1571209e28ef7037f3e5396298bb7105fdd2aa5",
+    "reviewer_payload": "agreement-river-2.zip:river-2/reference/world.checksums"
+  },
+  {
+    "path": "river-2/delay-4/game.replay",
+    "bytes": 16890580,
+    "sha256": "749c522203deac4b1fc47ab9150a157f291b22b98f4c91b3e3ee7f6096ed683d",
+    "canonical_sha256": "749c522203deac4b1fc47ab9150a157f291b22b98f4c91b3e3ee7f6096ed683d",
+    "reviewer_payload": "agreement-river-2.zip:river-2/reference/game.replay"
+  },
+  {
+    "path": "river-2/delay-4/game.replay.checksums",
+    "bytes": 164815776,
+    "sha256": "2006ca1d615e1560b9349f8dce1ac21994c2be50e7232797a879d12fc3087b6e",
+    "canonical_sha256": "2006ca1d615e1560b9349f8dce1ac21994c2be50e7232797a879d12fc3087b6e",
+    "reviewer_payload": "agreement-river-2.zip:river-2/reference/game.replay.checksums"
+  },
+  {
+    "path": "river-2/delay-4/final.game.gz",
+    "bytes": 492676,
+    "sha256": "22f06ad3361ae60f9a539b826e5c85696f023014d064d8269bd831f9bfb2b46f",
+    "canonical_sha256": "0a368d963d4dfe6767872442a5e6b675a7e03da0e5a8699532aea9f4f95e36e7",
+    "reviewer_payload": "agreement-river-2.zip:river-2/reference/final.game.gz"
+  },
+  {
+    "path": "river-2/delay-5/world.checksums",
+    "bytes": 189784,
+    "sha256": "5b869f5192bc994801f5d2aea1571209e28ef7037f3e5396298bb7105fdd2aa5",
+    "canonical_sha256": "5b869f5192bc994801f5d2aea1571209e28ef7037f3e5396298bb7105fdd2aa5",
+    "reviewer_payload": "agreement-river-2.zip:river-2/reference/world.checksums"
+  },
+  {
+    "path": "river-2/delay-5/game.replay",
+    "bytes": 16890580,
+    "sha256": "749c522203deac4b1fc47ab9150a157f291b22b98f4c91b3e3ee7f6096ed683d",
+    "canonical_sha256": "749c522203deac4b1fc47ab9150a157f291b22b98f4c91b3e3ee7f6096ed683d",
+    "reviewer_payload": "agreement-river-2.zip:river-2/reference/game.replay"
+  },
+  {
+    "path": "river-2/delay-5/game.replay.checksums",
+    "bytes": 164815776,
+    "sha256": "2006ca1d615e1560b9349f8dce1ac21994c2be50e7232797a879d12fc3087b6e",
+    "canonical_sha256": "2006ca1d615e1560b9349f8dce1ac21994c2be50e7232797a879d12fc3087b6e",
+    "reviewer_payload": "agreement-river-2.zip:river-2/reference/game.replay.checksums"
+  },
+  {
+    "path": "river-2/delay-5/final.game.gz",
+    "bytes": 492676,
+    "sha256": "22f06ad3361ae60f9a539b826e5c85696f023014d064d8269bd831f9bfb2b46f",
+    "canonical_sha256": "0a368d963d4dfe6767872442a5e6b675a7e03da0e5a8699532aea9f4f95e36e7",
+    "reviewer_payload": "agreement-river-2.zip:river-2/reference/final.game.gz"
+  },
+  {
+    "path": "river-2/delay-6/world.checksums",
+    "bytes": 189784,
+    "sha256": "5b869f5192bc994801f5d2aea1571209e28ef7037f3e5396298bb7105fdd2aa5",
+    "canonical_sha256": "5b869f5192bc994801f5d2aea1571209e28ef7037f3e5396298bb7105fdd2aa5",
+    "reviewer_payload": "agreement-river-2.zip:river-2/reference/world.checksums"
+  },
+  {
+    "path": "river-2/delay-6/game.replay",
+    "bytes": 16890580,
+    "sha256": "749c522203deac4b1fc47ab9150a157f291b22b98f4c91b3e3ee7f6096ed683d",
+    "canonical_sha256": "749c522203deac4b1fc47ab9150a157f291b22b98f4c91b3e3ee7f6096ed683d",
+    "reviewer_payload": "agreement-river-2.zip:river-2/reference/game.replay"
+  },
+  {
+    "path": "river-2/delay-6/game.replay.checksums",
+    "bytes": 164815776,
+    "sha256": "2006ca1d615e1560b9349f8dce1ac21994c2be50e7232797a879d12fc3087b6e",
+    "canonical_sha256": "2006ca1d615e1560b9349f8dce1ac21994c2be50e7232797a879d12fc3087b6e",
+    "reviewer_payload": "agreement-river-2.zip:river-2/reference/game.replay.checksums"
+  },
+  {
+    "path": "river-2/delay-6/final.game.gz",
+    "bytes": 492676,
+    "sha256": "22f06ad3361ae60f9a539b826e5c85696f023014d064d8269bd831f9bfb2b46f",
+    "canonical_sha256": "0a368d963d4dfe6767872442a5e6b675a7e03da0e5a8699532aea9f4f95e36e7",
+    "reviewer_payload": "agreement-river-2.zip:river-2/reference/final.game.gz"
+  },
+  {
+    "path": "river-2/delay-7/world.checksums",
+    "bytes": 189784,
+    "sha256": "5b869f5192bc994801f5d2aea1571209e28ef7037f3e5396298bb7105fdd2aa5",
+    "canonical_sha256": "5b869f5192bc994801f5d2aea1571209e28ef7037f3e5396298bb7105fdd2aa5",
+    "reviewer_payload": "agreement-river-2.zip:river-2/reference/world.checksums"
+  },
+  {
+    "path": "river-2/delay-7/game.replay",
+    "bytes": 16890580,
+    "sha256": "749c522203deac4b1fc47ab9150a157f291b22b98f4c91b3e3ee7f6096ed683d",
+    "canonical_sha256": "749c522203deac4b1fc47ab9150a157f291b22b98f4c91b3e3ee7f6096ed683d",
+    "reviewer_payload": "agreement-river-2.zip:river-2/reference/game.replay"
+  },
+  {
+    "path": "river-2/delay-7/game.replay.checksums",
+    "bytes": 164815776,
+    "sha256": "2006ca1d615e1560b9349f8dce1ac21994c2be50e7232797a879d12fc3087b6e",
+    "canonical_sha256": "2006ca1d615e1560b9349f8dce1ac21994c2be50e7232797a879d12fc3087b6e",
+    "reviewer_payload": "agreement-river-2.zip:river-2/reference/game.replay.checksums"
+  },
+  {
+    "path": "river-2/delay-7/final.game.gz",
+    "bytes": 492676,
+    "sha256": "22f06ad3361ae60f9a539b826e5c85696f023014d064d8269bd831f9bfb2b46f",
+    "canonical_sha256": "0a368d963d4dfe6767872442a5e6b675a7e03da0e5a8699532aea9f4f95e36e7",
+    "reviewer_payload": "agreement-river-2.zip:river-2/reference/final.game.gz"
+  },
+  {
+    "path": "river-2/delay-8/world.checksums",
+    "bytes": 189784,
+    "sha256": "5b869f5192bc994801f5d2aea1571209e28ef7037f3e5396298bb7105fdd2aa5",
+    "canonical_sha256": "5b869f5192bc994801f5d2aea1571209e28ef7037f3e5396298bb7105fdd2aa5",
+    "reviewer_payload": "agreement-river-2.zip:river-2/reference/world.checksums"
+  },
+  {
+    "path": "river-2/delay-8/game.replay",
+    "bytes": 16890580,
+    "sha256": "749c522203deac4b1fc47ab9150a157f291b22b98f4c91b3e3ee7f6096ed683d",
+    "canonical_sha256": "749c522203deac4b1fc47ab9150a157f291b22b98f4c91b3e3ee7f6096ed683d",
+    "reviewer_payload": "agreement-river-2.zip:river-2/reference/game.replay"
+  },
+  {
+    "path": "river-2/delay-8/game.replay.checksums",
+    "bytes": 164815776,
+    "sha256": "2006ca1d615e1560b9349f8dce1ac21994c2be50e7232797a879d12fc3087b6e",
+    "canonical_sha256": "2006ca1d615e1560b9349f8dce1ac21994c2be50e7232797a879d12fc3087b6e",
+    "reviewer_payload": "agreement-river-2.zip:river-2/reference/game.replay.checksums"
+  },
+  {
+    "path": "river-2/delay-8/final.game.gz",
+    "bytes": 492676,
+    "sha256": "22f06ad3361ae60f9a539b826e5c85696f023014d064d8269bd831f9bfb2b46f",
+    "canonical_sha256": "0a368d963d4dfe6767872442a5e6b675a7e03da0e5a8699532aea9f4f95e36e7",
+    "reviewer_payload": "agreement-river-2.zip:river-2/reference/final.game.gz"
+  },
+  {
+    "path": "river-3/reference/world.checksums",
+    "bytes": 189693,
+    "sha256": "a467a85ff32e5133d105a5b8bbd29050205e919090267c2d1e78d8b41a60e57a",
+    "canonical_sha256": "a467a85ff32e5133d105a5b8bbd29050205e919090267c2d1e78d8b41a60e57a",
+    "reviewer_payload": "agreement-river-3.zip:river-3/reference/world.checksums"
+  },
+  {
+    "path": "river-3/reference/game.replay",
+    "bytes": 17010169,
+    "sha256": "0063dc69f64acb5d6594fb25344b5cc48b6c8eaeeba59dad550fc59e7ff4d195",
+    "canonical_sha256": "0063dc69f64acb5d6594fb25344b5cc48b6c8eaeeba59dad550fc59e7ff4d195",
+    "reviewer_payload": "agreement-river-3.zip:river-3/reference/game.replay"
+  },
+  {
+    "path": "river-3/reference/game.replay.checksums",
+    "bytes": 224349502,
+    "sha256": "37341098004cda702b4418d55f5057db7a8c5feabd29000864677302f65bc595",
+    "canonical_sha256": "37341098004cda702b4418d55f5057db7a8c5feabd29000864677302f65bc595",
+    "reviewer_payload": "agreement-river-3.zip:river-3/reference/game.replay.checksums"
+  },
+  {
+    "path": "river-3/reference/final.game.gz",
+    "bytes": 545774,
+    "sha256": "3df4924753ca9fcd47b536a2b0112577e1fdea4f9f7b4f6d9932f65bc001804a",
+    "canonical_sha256": "62c04df76eec04402fb9166e82f31747dda99a723062c278341b6db52849b80a",
+    "reviewer_payload": "agreement-river-3.zip:river-3/reference/final.game.gz"
+  },
+  {
+    "path": "river-3/delay-0/world.checksums",
+    "bytes": 189693,
+    "sha256": "a467a85ff32e5133d105a5b8bbd29050205e919090267c2d1e78d8b41a60e57a",
+    "canonical_sha256": "a467a85ff32e5133d105a5b8bbd29050205e919090267c2d1e78d8b41a60e57a",
+    "reviewer_payload": "agreement-river-3.zip:river-3/reference/world.checksums"
+  },
+  {
+    "path": "river-3/delay-0/game.replay",
+    "bytes": 17010169,
+    "sha256": "0063dc69f64acb5d6594fb25344b5cc48b6c8eaeeba59dad550fc59e7ff4d195",
+    "canonical_sha256": "0063dc69f64acb5d6594fb25344b5cc48b6c8eaeeba59dad550fc59e7ff4d195",
+    "reviewer_payload": "agreement-river-3.zip:river-3/reference/game.replay"
+  },
+  {
+    "path": "river-3/delay-0/game.replay.checksums",
+    "bytes": 224349502,
+    "sha256": "37341098004cda702b4418d55f5057db7a8c5feabd29000864677302f65bc595",
+    "canonical_sha256": "37341098004cda702b4418d55f5057db7a8c5feabd29000864677302f65bc595",
+    "reviewer_payload": "agreement-river-3.zip:river-3/reference/game.replay.checksums"
+  },
+  {
+    "path": "river-3/delay-0/final.game.gz",
+    "bytes": 545774,
+    "sha256": "3df4924753ca9fcd47b536a2b0112577e1fdea4f9f7b4f6d9932f65bc001804a",
+    "canonical_sha256": "62c04df76eec04402fb9166e82f31747dda99a723062c278341b6db52849b80a",
+    "reviewer_payload": "agreement-river-3.zip:river-3/reference/final.game.gz"
+  },
+  {
+    "path": "river-3/delay-1/world.checksums",
+    "bytes": 189693,
+    "sha256": "a467a85ff32e5133d105a5b8bbd29050205e919090267c2d1e78d8b41a60e57a",
+    "canonical_sha256": "a467a85ff32e5133d105a5b8bbd29050205e919090267c2d1e78d8b41a60e57a",
+    "reviewer_payload": "agreement-river-3.zip:river-3/reference/world.checksums"
+  },
+  {
+    "path": "river-3/delay-1/game.replay",
+    "bytes": 17010169,
+    "sha256": "0063dc69f64acb5d6594fb25344b5cc48b6c8eaeeba59dad550fc59e7ff4d195",
+    "canonical_sha256": "0063dc69f64acb5d6594fb25344b5cc48b6c8eaeeba59dad550fc59e7ff4d195",
+    "reviewer_payload": "agreement-river-3.zip:river-3/reference/game.replay"
+  },
+  {
+    "path": "river-3/delay-1/game.replay.checksums",
+    "bytes": 224349502,
+    "sha256": "37341098004cda702b4418d55f5057db7a8c5feabd29000864677302f65bc595",
+    "canonical_sha256": "37341098004cda702b4418d55f5057db7a8c5feabd29000864677302f65bc595",
+    "reviewer_payload": "agreement-river-3.zip:river-3/reference/game.replay.checksums"
+  },
+  {
+    "path": "river-3/delay-1/final.game.gz",
+    "bytes": 545774,
+    "sha256": "3df4924753ca9fcd47b536a2b0112577e1fdea4f9f7b4f6d9932f65bc001804a",
+    "canonical_sha256": "62c04df76eec04402fb9166e82f31747dda99a723062c278341b6db52849b80a",
+    "reviewer_payload": "agreement-river-3.zip:river-3/reference/final.game.gz"
+  },
+  {
+    "path": "river-3/delay-2/world.checksums",
+    "bytes": 189693,
+    "sha256": "a467a85ff32e5133d105a5b8bbd29050205e919090267c2d1e78d8b41a60e57a",
+    "canonical_sha256": "a467a85ff32e5133d105a5b8bbd29050205e919090267c2d1e78d8b41a60e57a",
+    "reviewer_payload": "agreement-river-3.zip:river-3/reference/world.checksums"
+  },
+  {
+    "path": "river-3/delay-2/game.replay",
+    "bytes": 17010169,
+    "sha256": "0063dc69f64acb5d6594fb25344b5cc48b6c8eaeeba59dad550fc59e7ff4d195",
+    "canonical_sha256": "0063dc69f64acb5d6594fb25344b5cc48b6c8eaeeba59dad550fc59e7ff4d195",
+    "reviewer_payload": "agreement-river-3.zip:river-3/reference/game.replay"
+  },
+  {
+    "path": "river-3/delay-2/game.replay.checksums",
+    "bytes": 224349502,
+    "sha256": "37341098004cda702b4418d55f5057db7a8c5feabd29000864677302f65bc595",
+    "canonical_sha256": "37341098004cda702b4418d55f5057db7a8c5feabd29000864677302f65bc595",
+    "reviewer_payload": "agreement-river-3.zip:river-3/reference/game.replay.checksums"
+  },
+  {
+    "path": "river-3/delay-2/final.game.gz",
+    "bytes": 545774,
+    "sha256": "3df4924753ca9fcd47b536a2b0112577e1fdea4f9f7b4f6d9932f65bc001804a",
+    "canonical_sha256": "62c04df76eec04402fb9166e82f31747dda99a723062c278341b6db52849b80a",
+    "reviewer_payload": "agreement-river-3.zip:river-3/reference/final.game.gz"
+  },
+  {
+    "path": "river-3/delay-3/world.checksums",
+    "bytes": 189693,
+    "sha256": "a467a85ff32e5133d105a5b8bbd29050205e919090267c2d1e78d8b41a60e57a",
+    "canonical_sha256": "a467a85ff32e5133d105a5b8bbd29050205e919090267c2d1e78d8b41a60e57a",
+    "reviewer_payload": "agreement-river-3.zip:river-3/reference/world.checksums"
+  },
+  {
+    "path": "river-3/delay-3/game.replay",
+    "bytes": 17010169,
+    "sha256": "0063dc69f64acb5d6594fb25344b5cc48b6c8eaeeba59dad550fc59e7ff4d195",
+    "canonical_sha256": "0063dc69f64acb5d6594fb25344b5cc48b6c8eaeeba59dad550fc59e7ff4d195",
+    "reviewer_payload": "agreement-river-3.zip:river-3/reference/game.replay"
+  },
+  {
+    "path": "river-3/delay-3/game.replay.checksums",
+    "bytes": 224349502,
+    "sha256": "37341098004cda702b4418d55f5057db7a8c5feabd29000864677302f65bc595",
+    "canonical_sha256": "37341098004cda702b4418d55f5057db7a8c5feabd29000864677302f65bc595",
+    "reviewer_payload": "agreement-river-3.zip:river-3/reference/game.replay.checksums"
+  },
+  {
+    "path": "river-3/delay-3/final.game.gz",
+    "bytes": 545774,
+    "sha256": "3df4924753ca9fcd47b536a2b0112577e1fdea4f9f7b4f6d9932f65bc001804a",
+    "canonical_sha256": "62c04df76eec04402fb9166e82f31747dda99a723062c278341b6db52849b80a",
+    "reviewer_payload": "agreement-river-3.zip:river-3/reference/final.game.gz"
+  },
+  {
+    "path": "river-3/delay-4/world.checksums",
+    "bytes": 189693,
+    "sha256": "a467a85ff32e5133d105a5b8bbd29050205e919090267c2d1e78d8b41a60e57a",
+    "canonical_sha256": "a467a85ff32e5133d105a5b8bbd29050205e919090267c2d1e78d8b41a60e57a",
+    "reviewer_payload": "agreement-river-3.zip:river-3/reference/world.checksums"
+  },
+  {
+    "path": "river-3/delay-4/game.replay",
+    "bytes": 17010169,
+    "sha256": "0063dc69f64acb5d6594fb25344b5cc48b6c8eaeeba59dad550fc59e7ff4d195",
+    "canonical_sha256": "0063dc69f64acb5d6594fb25344b5cc48b6c8eaeeba59dad550fc59e7ff4d195",
+    "reviewer_payload": "agreement-river-3.zip:river-3/reference/game.replay"
+  },
+  {
+    "path": "river-3/delay-4/game.replay.checksums",
+    "bytes": 224349502,
+    "sha256": "37341098004cda702b4418d55f5057db7a8c5feabd29000864677302f65bc595",
+    "canonical_sha256": "37341098004cda702b4418d55f5057db7a8c5feabd29000864677302f65bc595",
+    "reviewer_payload": "agreement-river-3.zip:river-3/reference/game.replay.checksums"
+  },
+  {
+    "path": "river-3/delay-4/final.game.gz",
+    "bytes": 545774,
+    "sha256": "3df4924753ca9fcd47b536a2b0112577e1fdea4f9f7b4f6d9932f65bc001804a",
+    "canonical_sha256": "62c04df76eec04402fb9166e82f31747dda99a723062c278341b6db52849b80a",
+    "reviewer_payload": "agreement-river-3.zip:river-3/reference/final.game.gz"
+  },
+  {
+    "path": "river-3/delay-5/world.checksums",
+    "bytes": 189693,
+    "sha256": "a467a85ff32e5133d105a5b8bbd29050205e919090267c2d1e78d8b41a60e57a",
+    "canonical_sha256": "a467a85ff32e5133d105a5b8bbd29050205e919090267c2d1e78d8b41a60e57a",
+    "reviewer_payload": "agreement-river-3.zip:river-3/reference/world.checksums"
+  },
+  {
+    "path": "river-3/delay-5/game.replay",
+    "bytes": 17010169,
+    "sha256": "0063dc69f64acb5d6594fb25344b5cc48b6c8eaeeba59dad550fc59e7ff4d195",
+    "canonical_sha256": "0063dc69f64acb5d6594fb25344b5cc48b6c8eaeeba59dad550fc59e7ff4d195",
+    "reviewer_payload": "agreement-river-3.zip:river-3/reference/game.replay"
+  },
+  {
+    "path": "river-3/delay-5/game.replay.checksums",
+    "bytes": 224349502,
+    "sha256": "37341098004cda702b4418d55f5057db7a8c5feabd29000864677302f65bc595",
+    "canonical_sha256": "37341098004cda702b4418d55f5057db7a8c5feabd29000864677302f65bc595",
+    "reviewer_payload": "agreement-river-3.zip:river-3/reference/game.replay.checksums"
+  },
+  {
+    "path": "river-3/delay-5/final.game.gz",
+    "bytes": 545774,
+    "sha256": "3df4924753ca9fcd47b536a2b0112577e1fdea4f9f7b4f6d9932f65bc001804a",
+    "canonical_sha256": "62c04df76eec04402fb9166e82f31747dda99a723062c278341b6db52849b80a",
+    "reviewer_payload": "agreement-river-3.zip:river-3/reference/final.game.gz"
+  },
+  {
+    "path": "river-3/delay-6/world.checksums",
+    "bytes": 189693,
+    "sha256": "a467a85ff32e5133d105a5b8bbd29050205e919090267c2d1e78d8b41a60e57a",
+    "canonical_sha256": "a467a85ff32e5133d105a5b8bbd29050205e919090267c2d1e78d8b41a60e57a",
+    "reviewer_payload": "agreement-river-3.zip:river-3/reference/world.checksums"
+  },
+  {
+    "path": "river-3/delay-6/game.replay",
+    "bytes": 17010169,
+    "sha256": "0063dc69f64acb5d6594fb25344b5cc48b6c8eaeeba59dad550fc59e7ff4d195",
+    "canonical_sha256": "0063dc69f64acb5d6594fb25344b5cc48b6c8eaeeba59dad550fc59e7ff4d195",
+    "reviewer_payload": "agreement-river-3.zip:river-3/reference/game.replay"
+  },
+  {
+    "path": "river-3/delay-6/game.replay.checksums",
+    "bytes": 224349502,
+    "sha256": "37341098004cda702b4418d55f5057db7a8c5feabd29000864677302f65bc595",
+    "canonical_sha256": "37341098004cda702b4418d55f5057db7a8c5feabd29000864677302f65bc595",
+    "reviewer_payload": "agreement-river-3.zip:river-3/reference/game.replay.checksums"
+  },
+  {
+    "path": "river-3/delay-6/final.game.gz",
+    "bytes": 545774,
+    "sha256": "3df4924753ca9fcd47b536a2b0112577e1fdea4f9f7b4f6d9932f65bc001804a",
+    "canonical_sha256": "62c04df76eec04402fb9166e82f31747dda99a723062c278341b6db52849b80a",
+    "reviewer_payload": "agreement-river-3.zip:river-3/reference/final.game.gz"
+  },
+  {
+    "path": "river-3/delay-7/world.checksums",
+    "bytes": 189693,
+    "sha256": "a467a85ff32e5133d105a5b8bbd29050205e919090267c2d1e78d8b41a60e57a",
+    "canonical_sha256": "a467a85ff32e5133d105a5b8bbd29050205e919090267c2d1e78d8b41a60e57a",
+    "reviewer_payload": "agreement-river-3.zip:river-3/reference/world.checksums"
+  },
+  {
+    "path": "river-3/delay-7/game.replay",
+    "bytes": 17010169,
+    "sha256": "0063dc69f64acb5d6594fb25344b5cc48b6c8eaeeba59dad550fc59e7ff4d195",
+    "canonical_sha256": "0063dc69f64acb5d6594fb25344b5cc48b6c8eaeeba59dad550fc59e7ff4d195",
+    "reviewer_payload": "agreement-river-3.zip:river-3/reference/game.replay"
+  },
+  {
+    "path": "river-3/delay-7/game.replay.checksums",
+    "bytes": 224349502,
+    "sha256": "37341098004cda702b4418d55f5057db7a8c5feabd29000864677302f65bc595",
+    "canonical_sha256": "37341098004cda702b4418d55f5057db7a8c5feabd29000864677302f65bc595",
+    "reviewer_payload": "agreement-river-3.zip:river-3/reference/game.replay.checksums"
+  },
+  {
+    "path": "river-3/delay-7/final.game.gz",
+    "bytes": 545774,
+    "sha256": "3df4924753ca9fcd47b536a2b0112577e1fdea4f9f7b4f6d9932f65bc001804a",
+    "canonical_sha256": "62c04df76eec04402fb9166e82f31747dda99a723062c278341b6db52849b80a",
+    "reviewer_payload": "agreement-river-3.zip:river-3/reference/final.game.gz"
+  },
+  {
+    "path": "river-3/delay-8/world.checksums",
+    "bytes": 189693,
+    "sha256": "a467a85ff32e5133d105a5b8bbd29050205e919090267c2d1e78d8b41a60e57a",
+    "canonical_sha256": "a467a85ff32e5133d105a5b8bbd29050205e919090267c2d1e78d8b41a60e57a",
+    "reviewer_payload": "agreement-river-3.zip:river-3/reference/world.checksums"
+  },
+  {
+    "path": "river-3/delay-8/game.replay",
+    "bytes": 17010169,
+    "sha256": "0063dc69f64acb5d6594fb25344b5cc48b6c8eaeeba59dad550fc59e7ff4d195",
+    "canonical_sha256": "0063dc69f64acb5d6594fb25344b5cc48b6c8eaeeba59dad550fc59e7ff4d195",
+    "reviewer_payload": "agreement-river-3.zip:river-3/reference/game.replay"
+  },
+  {
+    "path": "river-3/delay-8/game.replay.checksums",
+    "bytes": 224349502,
+    "sha256": "37341098004cda702b4418d55f5057db7a8c5feabd29000864677302f65bc595",
+    "canonical_sha256": "37341098004cda702b4418d55f5057db7a8c5feabd29000864677302f65bc595",
+    "reviewer_payload": "agreement-river-3.zip:river-3/reference/game.replay.checksums"
+  },
+  {
+    "path": "river-3/delay-8/final.game.gz",
+    "bytes": 545774,
+    "sha256": "3df4924753ca9fcd47b536a2b0112577e1fdea4f9f7b4f6d9932f65bc001804a",
+    "canonical_sha256": "62c04df76eec04402fb9166e82f31747dda99a723062c278341b6db52849b80a",
+    "reviewer_payload": "agreement-river-3.zip:river-3/reference/final.game.gz"
+  }
+]

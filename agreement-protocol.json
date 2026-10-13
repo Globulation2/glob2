@@ -1,0 +1,81 @@
+{
+  "binary": "/home/bradley/.codex/worktrees/a181/glob2/build/movement-release/src/glob2",
+  "binary_sha256": "99c297bc993f12732f226cd4f0afa7a45300dc05a09dbb792b89148f9ab37daa",
+  "ticks": 12000,
+  "compute_threads": 4,
+  "games": [
+    {
+      "name": "symmetric-arena-1",
+      "generator": "symmetric-arena",
+      "map_seed": 1101,
+      "game_seed": 101,
+      "players": [
+        "cortex",
+        "warrush"
+      ]
+    },
+    {
+      "name": "symmetric-arena-2",
+      "generator": "symmetric-arena",
+      "map_seed": 1102,
+      "game_seed": 102,
+      "players": [
+        "nicowar",
+        "warrush"
+      ]
+    },
+    {
+      "name": "symmetric-arena-3",
+      "generator": "symmetric-arena",
+      "map_seed": 1103,
+      "game_seed": 103,
+      "players": [
+        "cortex",
+        "nicowar"
+      ]
+    },
+    {
+      "name": "river-1",
+      "generator": "river",
+      "map_seed": 1101,
+      "game_seed": 101,
+      "players": [
+        "cortex",
+        "warrush"
+      ]
+    },
+    {
+      "name": "river-2",
+      "generator": "river",
+      "map_seed": 1102,
+      "game_seed": 102,
+      "players": [
+        "nicowar",
+        "warrush"
+      ]
+    },
+    {
+      "name": "river-3",
+      "generator": "river",
+      "map_seed": 1103,
+      "game_seed": 103,
+      "players": [
+        "cortex",
+        "nicowar"
+      ]
+    }
+  ],
+  "delays": [
+    0,
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8
+  ],
+  "reference": "no diagnostic",
+  "trace": "first 64 per outcome per team/mode; all aggregate counts retained"
+}

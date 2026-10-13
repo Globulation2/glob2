@@ -1,0 +1,44 @@
+[
+  {
+    "archive": "agreement-symmetric-arena-1.zip",
+    "bad_member": null,
+    "members": 16,
+    "bytes": 11611217
+  },
+  {
+    "archive": "agreement-symmetric-arena-2.zip",
+    "bad_member": null,
+    "members": 16,
+    "bytes": 15450321
+  },
+  {
+    "archive": "agreement-symmetric-arena-3.zip",
+    "bad_member": null,
+    "members": 16,
+    "bytes": 12051872
+  },
+  {
+    "archive": "agreement-river-1.zip",
+    "bad_member": null,
+    "members": 16,
+    "bytes": 14623989
+  },
+  {
+    "archive": "agreement-river-2.zip",
+    "bad_member": null,
+    "members": 16,
+    "bytes": 14204593
+  },
+  {
+    "archive": "agreement-river-3.zip",
+    "bad_member": null,
+    "members": 16,
+    "bytes": 24774787
+  },
+  {
+    "archive": "agreement-evidence.zip",
+    "bad_member": null,
+    "members": 419,
+    "bytes": 48480448
+  }
+]

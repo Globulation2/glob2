@@ -21,3 +21,10 @@ Twenty paired GUI repetitions and a separate longer-window replication establish
 ![Engine and drawing confidence intervals](compact-runtime-intervals.png)
 
 The timings compare frozen revisions; final integration checks are separately identified in the report. Movement remains Stage A. The archive includes raw commands, samples, profiles, JUnit XML, baseline reproductions, saves/replays/checksums and corrected software images. Reproduced baseline failures and unavailable platform/gameplay coverage remain explicit.
+
+
+[Real-game direction agreement and delay sweep](agreement-report.md) · [Raw metrics/traces/commands](agreement-evidence.zip)
+
+Six active AI games, diagnostic delays 0 through 8, 54 matched reference comparisons. Exact agreement is 38.99% to 38.77%; usable coverage is 56.45% to 55.81%. Resource steering agrees about 75%, while building comparison coverage is poor and requires validation-semantic investigation. These are conditional steps along unchanged reference histories, not adopted-policy gameplay. The report links deduplicated initial saves, replays and checksums for every game. The core/detail layout remains unchanged.
+
+![Direction agreement and comparison coverage versus delay](agreement-delay.png)

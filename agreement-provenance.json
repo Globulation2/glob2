@@ -1,0 +1,18 @@
+{
+  "source_commit": "e09f80733c8c99533925baede8f24abc3427e4d0",
+  "base": "277510840054b1416f2defd7d86fe1431dd0ddc0",
+  "platform": "Linux-7.0.0-31-generic-x86_64-with-glibc2.43",
+  "architecture": "x86_64",
+  "compiler": "g++ (Ubuntu 15.2.0-16ubuntu1) 15.2.0",
+  "runtime_build": "scons release=1 --build=build/movement-release -j12 build/movement-release/src/glob2; -O3; SDL3.4.16; scalar gradients; four compute participants",
+  "notes": "Runtime binary built from working tree subsequently committed as 54c2ce8d0. The only subsequent source edit is a CLI test fixture correction. No unit representation changes included. Agreement workload is not a runtime benchmark; no timing comparison claims.",
+  "unavailable": [
+    "macOS arm64",
+    "Windows x64",
+    "browser serial",
+    "browser threaded"
+  ],
+  "affinity": "No exclusive CPU reservation claimed for this correctness/agreement sweep.",
+  "measurement_code_commit": "54c2ce8d0",
+  "layout_decision": "Keep existing core/detail split; separate presentation split cancelled without implementation."
+}
