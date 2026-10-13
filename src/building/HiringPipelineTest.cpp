@@ -473,6 +473,19 @@ TEST_SUITE("HiringInputDigest")
 		}
 		CHECK(reusedAddress);
 	}
+	TEST_CASE("presentation widening cannot change logical hiring input identity")
+	{
+		glob2test::HeadlessGlobals globals;
+		glob2test::HeadlessGame w({.discovered = true, .loadDefaultRace = true});
+		innWithWorker(w);
+		const auto catalog = SimulationSnapshot::captureCatalog(w.game);
+		const auto normal =
+			SimulationSnapshot::capture(w.game, catalog, SimulationSnapshot::Simulation);
+		const auto widened = SimulationSnapshot::capture(w.game, catalog, SimulationSnapshot::All);
+		CHECK(normal.catalogs->buildingFingerprint == widened.catalogs->buildingFingerprint);
+		HiringInputDigests hashes;
+		CHECK(hashes.digest(normal, 0) == hashes.digest(widened, 0));
+	}
 	TEST_CASE("multi-yield stock numbering and unused slots do not change logical input identity")
 	{
 		glob2test::HeadlessGlobals globals;

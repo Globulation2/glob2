@@ -182,11 +182,10 @@ Handle capture(const Game& game,
 	terrain->airConstraints = game.map.hasAirTerrainConstraints();
 	const auto& header = game.gameHeader;
 	if (needs(requirements, Component::Catalogs)) {
-		// Preference identity is needed by session consumers, not standalone AI
-        // observations. Computing it serializes the authored catalog; do that
-        // once when a shared session catalog is admitted, never per AI poll.
-        catalogs->buildingFingerprint = needs(requirements, Component::Session)
-            ? game.buildingsTypes.fingerprint() : std::string();
+        // Canonical catalog identity is also a pending hiring input. Presentation
+        // widening must not change it. Catalog components are reused until catalog
+        // invalidation, so serialization happens once per admitted catalog.
+        catalogs->buildingFingerprint = game.buildingsTypes.fingerprint();
 		catalogs->buildings = std::move(catalog);
 		catalogs->capabilities = game.buildingCapabilities().frozenTables();
 		catalogs->units = header.getUnitCatalog();
