@@ -207,7 +207,7 @@ void onOpportunity(const HiringDiagnostics::Opportunity& event,void* context)
 }
 CaptureMetrics captureMetrics(){return capturedFacts;}
 void resetCaptureMetrics(){capturedFacts={};}
-void recordCapture(std::uint64_t ns,std::uint64_t bytes,std::uint64_t growths){capturedFacts.ns+=ns;capturedFacts.logicalBytes+=bytes;capturedFacts.fundingGrowths+=growths;++capturedFacts.observations;}
+void recordCapture(std::uint64_t ns,std::uint64_t bytes,std::uint64_t growths,std::uint64_t copiedBytes){capturedFacts.ns+=ns;capturedFacts.logicalBytes+=bytes;capturedFacts.copiedBytes+=copiedBytes;capturedFacts.fundingGrowths+=growths;++capturedFacts.observations;}
 bool enabled(){return collectingStudy;}
 void configure(bool shadow)
 {

@@ -59,7 +59,7 @@ queries. Counters avoid individual inner-loop timers. Diagnostics have measurabl
 overhead and must be disabled for representative throughput comparisons.
 
 `--telemetry hiring-shadow` also writes `hiring-shadow.json`. It builds candidate rankings from snapshot entity values and leased engine building-route
-generations on the owner and examines 200 delay/refresh/capacity/pool policies (including zero delay)
+generations and examines 200 delay/refresh/capacity/pool policies (including zero delay)
 while existing hiring remains authoritative. Shadow choices use a private team
 assignment set; current qualification comes from the reference hiring attempt.
 Coverage means a currently qualified cached suggestion exists. Worker-choice
@@ -69,6 +69,9 @@ building/job; it is not full counterfactual job selection. Zero-delay publicatio
 is a calibration control, not a promise of exact choices. Startup opportunities
 are separate from steady coverage. This measures usefulness
 along the reference trajectory, not recruitment delay or a counterfactual economy.
+Scheduled jobs borrow the normal completed-world records by reference and share
+a single route-handle table. No hiring snapshot or team copy is extracted.
+
 Scheduled hiring reports separate owner route-handle capture, preparation,
 submission and publication (including deadline join) from worker preparation and
 ranking. `hiring_world_record_copy_bytes` counts copies by the hiring supplement,

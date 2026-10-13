@@ -117,8 +117,13 @@ comparison. `Map::buildingGradient` completes the entire field; using it merely
 to establish a lease turns lazy route preparation into an eager full-map cost.
 Keep reference, shadow and replacement controls separate, and compare actual
 simulation work and economic outcomes alongside timing.
-Attack strengths are captured only for teams with an active defense recruitment need.
-Material jobs are filtered using outstanding deliveries after existing subscriptions,
+Attack strength is derived on the worker from observed performance, experience and
+rules, using the frozen area modifier in the normal unit record. The team id
+and modifier share one 32-bit word, so the unit record does not grow. Sparse
+construction funding and reservation facts live in the normal entity component;
+unfunded buildings add only an index in the building record. Account for record
+padding using the tested platform ABI, rather than assuming identical layouts.
+On the worker, material jobs are filtered using outstanding deliveries after existing subscriptions,
 with the same target/multiplier arithmetic as owner hiring. Attraction roles retain
 borrowing alternatives within the building's remaining seats. Team qualification
 and cargo indexes are built lazily once per team refresh. Worker-to-building

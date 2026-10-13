@@ -55,6 +55,26 @@ TEST_CASE("observed funding reproduces live material apportionment")
         CHECK(snapshot.entities->funding.front().reservedMaterials[WHEAT]==1);
     }
 }
+TEST_CASE("worker construction quotas match repair funding")
+{
+    glob2test::HeadlessGlobals globals;
+    glob2test::HeadlessGame world({.loadDefaultRace=true});
+    auto* inn=world.addBuilding("inn",8,8);REQUIRE(inn);
+    inn->hp=inn->getEffectiveMaxHp()/2;inn->launchConstruction(2,2);
+    REQUIRE(inn->tryToBuildingSiteRoom());inn->desiredMaxUnitWorking=2;
+    for(int r=0;r<MaterialCount;++r)inn->materials[r]=3;
+    const auto snapshot=world.game.captureReadBoundary();
+    const auto input=HiringPlanner::capture(world.game,snapshot);const auto supplies=HiringPlanner::prepare(input,0);
+    REQUIRE(supplies.size()==1);
+    for(unsigned r=0;r<MaterialCount;++r) {
+        const int multiplier=inn->type->materialMultiplier[r];
+        const int target=(inn->materialDeliveryTarget(r)+multiplier-1)/multiplier;
+        const int missing=inn->materialDeliveryNeed(r);
+        const int served=target-(missing+multiplier-1)/multiplier;
+        CHECK(supplies.front().vacancies[r]==(missing>0&&served<target?std::min(2u,unsigned(target-served)):0u));
+    }
+    SimulationSnapshot::verifyCapture(world.game,snapshot);
+}
 TEST_CASE("snapshot planning retains busy workers and never changes the game")
 {
     glob2test::HeadlessGlobals globals;

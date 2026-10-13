@@ -356,7 +356,7 @@ Handle capture(const Game& game,
 				slot = Uint32(entities->buildings.size());
 				BuildingView v;
 				std::memcpy(static_cast<BuildingStateRecord*>(&v), static_cast<const BuildingStateRecord*>(b), sizeof(BuildingStateRecord));
-				v.identity = Game::refOf(b); v.team = t;
+				v.identity = Game::refOf(b); v.team = t;v.fundingOffset=Entities::NoRecord;
                 for (unsigned id=0; id<BuiltinUnitCount; ++id) v.constructionOriginRatios[id]=b->originProductionRatio(id);
                 v.extraProductionOffset = Uint32(entities->extraProduction.size());
                 v.extraProductionCount = Uint32(b->extraProductionRatios.size());
@@ -410,16 +410,16 @@ Handle capture(const Game& game,
                 append(entities->funding,FundingState{b->constructionBudget,b->constructionReserved,b->reservedMaterials});
             }
         }
-        for(auto& v:entities->units) {
+        if(game.areaEffects.enabled())for(auto& v:entities->units) {
             const auto* u=game.resolveUnit(v.identity);
             if(!u)throw std::logic_error("snapshot attack modifier lost unit");
-            if ((u->performance[ATTACK_STRENGTH] || u->experienceLevel) && game.areaEffects.enabled() && u->insideTimeout>=0 &&
+            if ((u->performance[ATTACK_STRENGTH] || u->experienceLevel) && u->insideTimeout>=0 &&
                 u->displacement!=Unit::DIS_INSIDE && u->displacement!=Unit::DIS_ENTERING_BUILDING &&
                 !(u->displacement==Unit::DIS_EXITING_BUILDING && u->attachedBuilding))
                 v.attackFactor=game.areaEffects.at(BuildingAreaEffects::UnitAttack,v.team,game.map.coordToIndex(u->posX,u->posY));
         }
         const auto ns=timed?std::chrono::duration_cast<std::chrono::nanoseconds>(std::chrono::steady_clock::now()-start).count():0;
-        HiringStudy::recordCapture(ns,entities->funding.size()*sizeof(FundingState)+entities->buildings.size()*sizeof(Uint32)+entities->units.size()*sizeof(Uint16),growths);
+        HiringStudy::recordCapture(ns,entities->funding.size()*sizeof(FundingState)+entities->buildings.size()*sizeof(Uint32)+entities->units.size()*sizeof(Uint16),growths,entities->funding.size()*sizeof(FundingState));
     }
 
     if (auto session=acquire(&Storage::session,Component::Session)) {
