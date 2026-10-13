@@ -1,0 +1,17 @@
+{
+  "implementation_revision": "2cfb2cdbed2b25fda0e7efd091075b4df6c060f2",
+  "production_and_timing_source": "35dd09ea11656cf2c812f82bdfff14d8a84290d4",
+  "base_revision": "26715e41b177da04f068f01ca436abad5c1f95d2",
+  "source_correspondence": "Final head adds only the save-only opportunity fixture mode and documentation; production and timed planner code is identical to 35dd09ea1. The save-only fixture mode was built and exercised in 12 nonempty output verification runs.",
+  "compiler": "Apple clang 21.0.0 clang-2100.3.34.2",
+  "target": "arm64-apple-darwin25.6.0",
+  "build_command": "quota-validation.tar.gz/final-build-command.json",
+  "test_link_command": "quota-validation.tar.gz/test-link-command.json",
+  "test_result": "156 passing focused engine cases, no failed or skipped cases",
+  "verification": "27 nine-workload diagnostics/disabled runs;24 two-workload scheduled runs;12 open-vacancy coordinated runs, all identical trace/replay/save bytes. Nonempty coordinated candidate digests identical across owner/pool and participants1,2,4,8.",
+  "timing": "one warmup repetition and ten rotated repetitions, twenty static opportunity iterations per sample; no diagnostic export inside measured planner/direct batches; separate original phase diagnostics",
+  "coverage_omissions": "No live consumer, save scheduling implementation, gameplay delay/economy footage, TSAN, Linux/Windows/browser matching traces or whole-engine acceptance-gate claim. General shadow usefulness remains unestablished.",
+  "archive_sha256": "f26674a2956408d8afc941d6105c077c8b3f44eec73383785fdf49c9065f129e",
+  "archive_bytes": 82685071,
+  "archive_omissions": "Detailed game.replay.checksums field dumps omitted except one controlled case; every world.checksums, replay and final save retained with comparison digests and exact regeneration commands."
+}

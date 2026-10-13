@@ -1,0 +1,603 @@
+{
+  "source_revision": "2cfb2cdbed2b25fda0e7efd091075b4df6c060f2",
+  "measurement_source_revision": "35dd09ea11656cf2c812f82bdfff14d8a84290d4",
+  "base_revision": "26715e41b177da04f068f01ca436abad5c1f95d2",
+  "fetched_master": "277510840054b1416f2defd7d86fe1431dd0ddc0",
+  "host": "macOS-26.6.2-arm64-arm-64bit-Mach-O",
+  "machine": "arm64",
+  "build_flags": "dev_fast=0 release=1; ordinary -O3 compilation, no unity/PCH",
+  "mode_names": {
+    "-2": "original full fill including commit/swaps",
+    "-1": "fixed128/all with bounds",
+    "3": "vacancy+2/available with bounds",
+    "5": "vacancy+4/available with bounds",
+    "6": "vacancy+2/available/distinct rounds with bounds",
+    "7": "vacancy+4/available/distinct rounds with bounds",
+    "8": "vacancy+2/available/distinct rounds without bounds serial",
+    "9": "vacancy+2/available/independent without bounds serial",
+    "10": "same as 8 on shared executor, four participants"
+  },
+  "measurements": [
+    {
+      "availability_stride": 1,
+      "modes": {
+        "-2": {
+          "median_cpu_us_per_refresh": 24320.75,
+          "median_elapsed_us_per_refresh": 24326.303099999997,
+          "useful_offer_fraction": null,
+          "reference_hires_per_fill": 192.0,
+          "queries_per_refresh": 0.0,
+          "bound_skips_per_refresh": 0.0,
+          "retained_bytes_per_refresh": 0.0
+        },
+        "-1": {
+          "median_cpu_us_per_refresh": 1148.025,
+          "median_elapsed_us_per_refresh": 1149.1864750000002,
+          "useful_offer_fraction": 1.0,
+          "reference_hires_per_fill": 192.0,
+          "queries_per_refresh": 28800.0,
+          "bound_skips_per_refresh": 0.0,
+          "retained_bytes_per_refresh": 182000.0
+        },
+        "0": {
+          "median_cpu_us_per_refresh": 862.1,
+          "median_elapsed_us_per_refresh": 863.3634500000001,
+          "useful_offer_fraction": 0.4166666666666667,
+          "reference_hires_per_fill": 192.0,
+          "queries_per_refresh": 28800.0,
+          "bound_skips_per_refresh": 0.0,
+          "retained_bytes_per_refresh": 39152.0
+        },
+        "1": {
+          "median_cpu_us_per_refresh": 852.275,
+          "median_elapsed_us_per_refresh": 853.5896,
+          "useful_offer_fraction": 0.5,
+          "reference_hires_per_fill": 192.0,
+          "queries_per_refresh": 28800.0,
+          "bound_skips_per_refresh": 0.0,
+          "retained_bytes_per_refresh": 40688.0
+        },
+        "2": {
+          "median_cpu_us_per_refresh": 864.125,
+          "median_elapsed_us_per_refresh": 865.7594,
+          "useful_offer_fraction": 0.5833333333333334,
+          "reference_hires_per_fill": 192.0,
+          "queries_per_refresh": 28800.0,
+          "bound_skips_per_refresh": 0.0,
+          "retained_bytes_per_refresh": 42224.0
+        },
+        "3": {
+          "median_cpu_us_per_refresh": 858.35,
+          "median_elapsed_us_per_refresh": 859.271825,
+          "useful_offer_fraction": 0.75,
+          "reference_hires_per_fill": 192.0,
+          "queries_per_refresh": 28800.0,
+          "bound_skips_per_refresh": 0.0,
+          "retained_bytes_per_refresh": 43760.0
+        },
+        "4": {
+          "median_cpu_us_per_refresh": 854.25,
+          "median_elapsed_us_per_refresh": 854.8937,
+          "useful_offer_fraction": 0.75,
+          "reference_hires_per_fill": 192.0,
+          "queries_per_refresh": 28800.0,
+          "bound_skips_per_refresh": 0.0,
+          "retained_bytes_per_refresh": 43760.0
+        },
+        "5": {
+          "median_cpu_us_per_refresh": 853.7,
+          "median_elapsed_us_per_refresh": 854.781225,
+          "useful_offer_fraction": 0.9166666666666666,
+          "reference_hires_per_fill": 192.0,
+          "queries_per_refresh": 28800.0,
+          "bound_skips_per_refresh": 0.0,
+          "retained_bytes_per_refresh": 46832.0
+        },
+        "6": {
+          "median_cpu_us_per_refresh": 1284.575,
+          "median_elapsed_us_per_refresh": 1285.7885999999999,
+          "useful_offer_fraction": 1.0,
+          "reference_hires_per_fill": 192.0,
+          "queries_per_refresh": 28800.0,
+          "bound_skips_per_refresh": 0.0,
+          "retained_bytes_per_refresh": 43760.0
+        },
+        "7": {
+          "median_cpu_us_per_refresh": 1279.0,
+          "median_elapsed_us_per_refresh": 1279.946875,
+          "useful_offer_fraction": 1.0,
+          "reference_hires_per_fill": 192.0,
+          "queries_per_refresh": 28800.0,
+          "bound_skips_per_refresh": 0.0,
+          "retained_bytes_per_refresh": 46832.0
+        },
+        "8": {
+          "median_cpu_us_per_refresh": 952.175,
+          "median_elapsed_us_per_refresh": 953.10415,
+          "useful_offer_fraction": 1.0,
+          "reference_hires_per_fill": 192.0,
+          "queries_per_refresh": 28800.0,
+          "bound_skips_per_refresh": 0.0,
+          "retained_bytes_per_refresh": 43760.0
+        },
+        "9": {
+          "median_cpu_us_per_refresh": 742.9,
+          "median_elapsed_us_per_refresh": 743.612425,
+          "useful_offer_fraction": 0.75,
+          "reference_hires_per_fill": 192.0,
+          "queries_per_refresh": 28800.0,
+          "bound_skips_per_refresh": 0.0,
+          "retained_bytes_per_refresh": 43760.0
+        },
+        "10": {
+          "median_cpu_us_per_refresh": 1054.35,
+          "median_elapsed_us_per_refresh": 542.55735,
+          "useful_offer_fraction": 1.0,
+          "reference_hires_per_fill": 192.0,
+          "queries_per_refresh": 28800.0,
+          "bound_skips_per_refresh": 0.0,
+          "retained_bytes_per_refresh": 43760.0
+        }
+      },
+      "paired_pool_elapsed_ratio_median": 0.571214025728513,
+      "bootstrap_95_interval_for_ratio": [
+        0.5517510749136103,
+        0.5971354486936243
+      ],
+      "direct_inclusive_elapsed_phases_ns": {
+        "attempt": 28170585,
+        "carrying_scan": 332546,
+        "fetch_scan": 25660301,
+        "flag_scan": 0,
+        "selection": 230040,
+        "subscription": 30839,
+        "swap": 1808714,
+        "field_initialization": 0,
+        "field_extension": 0
+      },
+      "controlled_waits": [
+        {
+          "hires": 176,
+          "latest_tick": 37,
+          "mode": 0,
+          "p95_ticks": 36
+        },
+        {
+          "hires": 192,
+          "latest_tick": 29,
+          "mode": 1,
+          "p95_ticks": 28
+        },
+        {
+          "hires": 192,
+          "latest_tick": 21,
+          "mode": 2,
+          "p95_ticks": 20
+        },
+        {
+          "hires": 192,
+          "latest_tick": 13,
+          "mode": 3,
+          "p95_ticks": 13
+        },
+        {
+          "hires": 192,
+          "latest_tick": 13,
+          "mode": 4,
+          "p95_ticks": 13
+        },
+        {
+          "hires": 192,
+          "latest_tick": 13,
+          "mode": 5,
+          "p95_ticks": 12
+        },
+        {
+          "hires": 192,
+          "latest_tick": 5,
+          "mode": 6,
+          "p95_ticks": 5
+        },
+        {
+          "hires": 192,
+          "latest_tick": 5,
+          "mode": 7,
+          "p95_ticks": 5
+        }
+      ]
+    },
+    {
+      "availability_stride": 4,
+      "modes": {
+        "-2": {
+          "median_cpu_us_per_refresh": 7423.025,
+          "median_elapsed_us_per_refresh": 7425.411425,
+          "useful_offer_fraction": null,
+          "reference_hires_per_fill": 192.0,
+          "queries_per_refresh": 0.0,
+          "bound_skips_per_refresh": 0.0,
+          "retained_bytes_per_refresh": 0.0
+        },
+        "-1": {
+          "median_cpu_us_per_refresh": 1159.35,
+          "median_elapsed_us_per_refresh": 1160.50305,
+          "useful_offer_fraction": 1.0,
+          "reference_hires_per_fill": 192.0,
+          "queries_per_refresh": 28800.0,
+          "bound_skips_per_refresh": 0.0,
+          "retained_bytes_per_refresh": 231152.0
+        },
+        "0": {
+          "median_cpu_us_per_refresh": 894.7,
+          "median_elapsed_us_per_refresh": 895.4853250000001,
+          "useful_offer_fraction": 0.2916666666666667,
+          "reference_hires_per_fill": 192.0,
+          "queries_per_refresh": 28800.0,
+          "bound_skips_per_refresh": 0.0,
+          "retained_bytes_per_refresh": 40688.0
+        },
+        "1": {
+          "median_cpu_us_per_refresh": 248.6,
+          "median_elapsed_us_per_refresh": 249.21052500000002,
+          "useful_offer_fraction": 0.375,
+          "reference_hires_per_fill": 192.0,
+          "queries_per_refresh": 7200.0,
+          "bound_skips_per_refresh": 0.0,
+          "retained_bytes_per_refresh": 40688.0
+        },
+        "2": {
+          "median_cpu_us_per_refresh": 896.35,
+          "median_elapsed_us_per_refresh": 897.0802249999999,
+          "useful_offer_fraction": 0.4791666666666667,
+          "reference_hires_per_fill": 192.0,
+          "queries_per_refresh": 28800.0,
+          "bound_skips_per_refresh": 0.0,
+          "retained_bytes_per_refresh": 43760.0
+        },
+        "3": {
+          "median_cpu_us_per_refresh": 255.975,
+          "median_elapsed_us_per_refresh": 256.41880000000003,
+          "useful_offer_fraction": 0.5208333333333334,
+          "reference_hires_per_fill": 192.0,
+          "queries_per_refresh": 7200.0,
+          "bound_skips_per_refresh": 0.0,
+          "retained_bytes_per_refresh": 43760.0
+        },
+        "4": {
+          "median_cpu_us_per_refresh": 905.275,
+          "median_elapsed_us_per_refresh": 906.2666499999999,
+          "useful_offer_fraction": 0.5208333333333334,
+          "reference_hires_per_fill": 192.0,
+          "queries_per_refresh": 28800.0,
+          "bound_skips_per_refresh": 0.0,
+          "retained_bytes_per_refresh": 46832.0
+        },
+        "5": {
+          "median_cpu_us_per_refresh": 263.15,
+          "median_elapsed_us_per_refresh": 263.3812750000001,
+          "useful_offer_fraction": 0.6666666666666666,
+          "reference_hires_per_fill": 192.0,
+          "queries_per_refresh": 7200.0,
+          "bound_skips_per_refresh": 0.0,
+          "retained_bytes_per_refresh": 46832.0
+        },
+        "6": {
+          "median_cpu_us_per_refresh": 521.875,
+          "median_elapsed_us_per_refresh": 522.4813750000001,
+          "useful_offer_fraction": 1.0,
+          "reference_hires_per_fill": 192.0,
+          "queries_per_refresh": 7200.0,
+          "bound_skips_per_refresh": 0.0,
+          "retained_bytes_per_refresh": 43760.0
+        },
+        "7": {
+          "median_cpu_us_per_refresh": 520.075,
+          "median_elapsed_us_per_refresh": 520.5521,
+          "useful_offer_fraction": 1.0,
+          "reference_hires_per_fill": 192.0,
+          "queries_per_refresh": 7200.0,
+          "bound_skips_per_refresh": 0.0,
+          "retained_bytes_per_refresh": 46832.0
+        },
+        "8": {
+          "median_cpu_us_per_refresh": 406.04999999999995,
+          "median_elapsed_us_per_refresh": 406.53644999999995,
+          "useful_offer_fraction": 1.0,
+          "reference_hires_per_fill": 192.0,
+          "queries_per_refresh": 7200.0,
+          "bound_skips_per_refresh": 0.0,
+          "retained_bytes_per_refresh": 43760.0
+        },
+        "9": {
+          "median_cpu_us_per_refresh": 221.35,
+          "median_elapsed_us_per_refresh": 221.74165,
+          "useful_offer_fraction": 0.5208333333333334,
+          "reference_hires_per_fill": 192.0,
+          "queries_per_refresh": 7200.0,
+          "bound_skips_per_refresh": 0.0,
+          "retained_bytes_per_refresh": 43760.0
+        },
+        "10": {
+          "median_cpu_us_per_refresh": 508.925,
+          "median_elapsed_us_per_refresh": 267.472975,
+          "useful_offer_fraction": 1.0,
+          "reference_hires_per_fill": 192.0,
+          "queries_per_refresh": 7200.0,
+          "bound_skips_per_refresh": 0.0,
+          "retained_bytes_per_refresh": 43760.0
+        }
+      },
+      "paired_pool_elapsed_ratio_median": 0.6543293765361864,
+      "bootstrap_95_interval_for_ratio": [
+        0.6096750062030223,
+        0.6788158537753396
+      ],
+      "direct_inclusive_elapsed_phases_ns": {
+        "attempt": 9891503,
+        "carrying_scan": 338128,
+        "fetch_scan": 7555972,
+        "flag_scan": 0,
+        "selection": 43946,
+        "subscription": 34877,
+        "swap": 1807005,
+        "field_initialization": 0,
+        "field_extension": 0
+      },
+      "controlled_waits": [
+        {
+          "hires": 152,
+          "latest_tick": 37,
+          "mode": 0,
+          "p95_ticks": 36
+        },
+        {
+          "hires": 188,
+          "latest_tick": 37,
+          "mode": 1,
+          "p95_ticks": 36
+        },
+        {
+          "hires": 192,
+          "latest_tick": 29,
+          "mode": 2,
+          "p95_ticks": 28
+        },
+        {
+          "hires": 192,
+          "latest_tick": 21,
+          "mode": 3,
+          "p95_ticks": 21
+        },
+        {
+          "hires": 192,
+          "latest_tick": 21,
+          "mode": 4,
+          "p95_ticks": 21
+        },
+        {
+          "hires": 192,
+          "latest_tick": 13,
+          "mode": 5,
+          "p95_ticks": 13
+        },
+        {
+          "hires": 192,
+          "latest_tick": 5,
+          "mode": 6,
+          "p95_ticks": 5
+        },
+        {
+          "hires": 192,
+          "latest_tick": 5,
+          "mode": 7,
+          "p95_ticks": 5
+        }
+      ]
+    },
+    {
+      "availability_stride": 8,
+      "modes": {
+        "-2": {
+          "median_cpu_us_per_refresh": 4038.4,
+          "median_elapsed_us_per_refresh": 4040.31455,
+          "useful_offer_fraction": null,
+          "reference_hires_per_fill": 150.0,
+          "queries_per_refresh": 0.0,
+          "bound_skips_per_refresh": 0.0,
+          "retained_bytes_per_refresh": 0.0
+        },
+        "-1": {
+          "median_cpu_us_per_refresh": 1032.25,
+          "median_elapsed_us_per_refresh": 1033.3916,
+          "useful_offer_fraction": 1.0,
+          "reference_hires_per_fill": 150.0,
+          "queries_per_refresh": 28800.0,
+          "bound_skips_per_refresh": 0.0,
+          "retained_bytes_per_refresh": 198896.0
+        },
+        "0": {
+          "median_cpu_us_per_refresh": 867.7,
+          "median_elapsed_us_per_refresh": 868.721925,
+          "useful_offer_fraction": 0.36,
+          "reference_hires_per_fill": 150.0,
+          "queries_per_refresh": 28800.0,
+          "bound_skips_per_refresh": 0.0,
+          "retained_bytes_per_refresh": 40688.0
+        },
+        "1": {
+          "median_cpu_us_per_refresh": 153.55,
+          "median_elapsed_us_per_refresh": 153.89795000000004,
+          "useful_offer_fraction": 0.48,
+          "reference_hires_per_fill": 150.0,
+          "queries_per_refresh": 3600.0,
+          "bound_skips_per_refresh": 0.0,
+          "retained_bytes_per_refresh": 40688.0
+        },
+        "2": {
+          "median_cpu_us_per_refresh": 881.65,
+          "median_elapsed_us_per_refresh": 883.0093999999999,
+          "useful_offer_fraction": 0.6,
+          "reference_hires_per_fill": 150.0,
+          "queries_per_refresh": 28800.0,
+          "bound_skips_per_refresh": 0.0,
+          "retained_bytes_per_refresh": 43760.0
+        },
+        "3": {
+          "median_cpu_us_per_refresh": 160.35,
+          "median_elapsed_us_per_refresh": 160.887575,
+          "useful_offer_fraction": 0.6666666666666666,
+          "reference_hires_per_fill": 150.0,
+          "queries_per_refresh": 3600.0,
+          "bound_skips_per_refresh": 0.0,
+          "retained_bytes_per_refresh": 43760.0
+        },
+        "4": {
+          "median_cpu_us_per_refresh": 880.375,
+          "median_elapsed_us_per_refresh": 881.1468500000001,
+          "useful_offer_fraction": 0.6666666666666666,
+          "reference_hires_per_fill": 150.0,
+          "queries_per_refresh": 28800.0,
+          "bound_skips_per_refresh": 0.0,
+          "retained_bytes_per_refresh": 46832.0
+        },
+        "5": {
+          "median_cpu_us_per_refresh": 166.45,
+          "median_elapsed_us_per_refresh": 166.78335,
+          "useful_offer_fraction": 0.8,
+          "reference_hires_per_fill": 150.0,
+          "queries_per_refresh": 3600.0,
+          "bound_skips_per_refresh": 0.0,
+          "retained_bytes_per_refresh": 46832.0
+        },
+        "6": {
+          "median_cpu_us_per_refresh": 335.575,
+          "median_elapsed_us_per_refresh": 336.0084,
+          "useful_offer_fraction": 1.0,
+          "reference_hires_per_fill": 150.0,
+          "queries_per_refresh": 3600.0,
+          "bound_skips_per_refresh": 0.0,
+          "retained_bytes_per_refresh": 43760.0
+        },
+        "7": {
+          "median_cpu_us_per_refresh": 333.6,
+          "median_elapsed_us_per_refresh": 334.01675,
+          "useful_offer_fraction": 1.0,
+          "reference_hires_per_fill": 150.0,
+          "queries_per_refresh": 3600.0,
+          "bound_skips_per_refresh": 0.0,
+          "retained_bytes_per_refresh": 46832.0
+        },
+        "8": {
+          "median_cpu_us_per_refresh": 285.325,
+          "median_elapsed_us_per_refresh": 285.586375,
+          "useful_offer_fraction": 1.0,
+          "reference_hires_per_fill": 150.0,
+          "queries_per_refresh": 3600.0,
+          "bound_skips_per_refresh": 0.0,
+          "retained_bytes_per_refresh": 43760.0
+        },
+        "9": {
+          "median_cpu_us_per_refresh": 135.25,
+          "median_elapsed_us_per_refresh": 135.5146,
+          "useful_offer_fraction": 0.6666666666666666,
+          "reference_hires_per_fill": 150.0,
+          "queries_per_refresh": 3600.0,
+          "bound_skips_per_refresh": 0.0,
+          "retained_bytes_per_refresh": 43760.0
+        },
+        "10": {
+          "median_cpu_us_per_refresh": 370.45,
+          "median_elapsed_us_per_refresh": 195.541675,
+          "useful_offer_fraction": 1.0,
+          "reference_hires_per_fill": 150.0,
+          "queries_per_refresh": 3600.0,
+          "bound_skips_per_refresh": 0.0,
+          "retained_bytes_per_refresh": 43760.0
+        }
+      },
+      "paired_pool_elapsed_ratio_median": 0.6893378225022946,
+      "bootstrap_95_interval_for_ratio": [
+        0.6586470479388874,
+        0.7124427475491154
+      ],
+      "direct_inclusive_elapsed_phases_ns": {
+        "attempt": 6366175,
+        "carrying_scan": 347839,
+        "fetch_scan": 4744049,
+        "flag_scan": 0,
+        "selection": 20009,
+        "subscription": 29281,
+        "swap": 1117464,
+        "field_initialization": 0,
+        "field_extension": 0
+      },
+      "controlled_waits": [
+        {
+          "hires": 144,
+          "latest_tick": 37,
+          "mode": 0,
+          "p95_ticks": 36
+        },
+        {
+          "hires": 150,
+          "latest_tick": 37,
+          "mode": 1,
+          "p95_ticks": 28
+        },
+        {
+          "hires": 150,
+          "latest_tick": 21,
+          "mode": 2,
+          "p95_ticks": 20
+        },
+        {
+          "hires": 150,
+          "latest_tick": 21,
+          "mode": 3,
+          "p95_ticks": 13
+        },
+        {
+          "hires": 150,
+          "latest_tick": 21,
+          "mode": 4,
+          "p95_ticks": 13
+        },
+        {
+          "hires": 150,
+          "latest_tick": 13,
+          "mode": 5,
+          "p95_ticks": 13
+        },
+        {
+          "hires": 150,
+          "latest_tick": 5,
+          "mode": 6,
+          "p95_ticks": 5
+        },
+        {
+          "hires": 150,
+          "latest_tick": 5,
+          "mode": 7,
+          "p95_ticks": 5
+        }
+      ]
+    }
+  ],
+  "limitations": [
+    "Static 1200-worker,48-building warmed real-engine opportunities; no live economy or total tick improvement claim.",
+    "Planner times exclude capture and commit; original fill includes commitment and serial swaps. Diagnostics are separate from timing.",
+    "Delay model freezes positions, stock and medical availability; no live-game p95 claim.",
+    "Distinct-round projection supports one eligible material per building and no attraction roles, aggregate team vacancies+backups <= L. Other shapes fall back.",
+    "Independent small lists fail controlled responsiveness; broader useful coverage gate remains unproven.",
+    "Narrow quota filtering yields no published candidate lists on retained reference trajectories once reference hiring fills demand. Empty-output CPU savings are not useful live speedups.",
+    "macOS arm64 only; no matching Linux/Windows/browser traces, TSAN or gameplay footage.",
+    "Host activity uncontrolled; compilation and other engine runs separated from timing. Raw samples and warmup retained.",
+    "Current fetched master renderer-only changes were not merged; integrated CPU-gradient base was rebuilt and validated."
+  ],
+  "executable_sha256": {
+    "glob2": "ed3581168e7a00e8efd04f53d6e8d787b7cb54491d4bc359f261915a8f2f69db",
+    "glob2-tests": "51848cd119a5e672a960c60e9c8f316ba8be45569b6046d95c0ad1c466e42581",
+    "opportunity-harness": "78a73d3c3a6f0af857631cc86cee917c00776b84db14e140a6e72af90bc3d5e6",
+    "opportunity-save-harness": "4f22342b61a4b814e05c993486bab454d4bc4f2093127c9a5e138264b3e0fc9d"
+  }
+}
