@@ -1077,6 +1077,158 @@ TEST_CASE("pending required GPU work cancels at publication and drains through o
     }
 }
 
+TEST_CASE("sequential device adapters retain completed fields when a later ready field declines" *
+		  doctest::test_suite("GradientPipeline"))
+{
+	using namespace gradient_kernel;
+	if constexpr (!GAGCore::ThreadSupport::available)
+		return;
+	for (const auto algorithm : {Algorithm::Frozen8, Algorithm::Jacobi})
+	{
+		constexpr auto backend = Backend::Vulkan;
+		struct Gate
+		{
+			std::promise<void> entered, release;
+			std::shared_future<void> released = release.get_future().share();
+			std::atomic<bool> opened{false};
+			std::atomic<unsigned> submitted{0}, calls{0}, cpu{0};
+			void open()
+			{
+				if (!opened.exchange(true))
+					release.set_value();
+			}
+		};
+		auto gate = std::make_shared<Gate>();
+		auto entered = gate->entered.get_future();
+		auto service = std::make_shared<GradientDeviceService>(GradientDeviceService::Hooks{
+			[] { return true; },
+			[gate](std::span<const BackendRequest> requests, Plan)
+			{
+				++gate->calls;
+				// A sequential adapter's all-or-nothing batch would discard
+				// its earlier valid member when the later member declines.
+				if (requests.size() != 1)
+					return false;
+				const auto &request = requests.front();
+				if (request.gradient[0] == 76)
+				{
+					gate->entered.set_value();
+					gate->released.wait();
+				}
+				if (request.gradient[0] == 78)
+					return false;
+				request.gradient[0] += 100;
+				*request.executedOnDevice = true;
+				return true;
+			}});
+		service->configure(2, backend);
+		const auto until = std::chrono::steady_clock::now() + std::chrono::seconds(5);
+		while (!service->metrics().ready && std::chrono::steady_clock::now() < until)
+			std::this_thread::yield();
+		REQUIRE(service->metrics().ready);
+		ComputeExecutor executor;
+		executor.configure(2);
+		struct Release
+		{
+			std::shared_ptr<Gate> gate;
+			~Release() { gate->open(); }
+		} release{gate};
+		auto session = std::make_shared<BackendSession>();
+		struct Context
+		{
+			std::shared_ptr<OwnedGradientField> field;
+			std::shared_ptr<GradientDeviceService> service;
+			ComputeExecutor *executor;
+			std::shared_ptr<Gate> gate;
+			std::future<void> *entered;
+		};
+		std::array<Context, 3> contexts;
+		for (unsigned i = 0; i < contexts.size(); ++i)
+		{
+			auto field = std::make_shared<OwnedGradientField>();
+			field->session = session;
+			field->decision = {selectedPlan(backend, algorithm),
+							   session->currentGeneration(),
+							   {backend, algorithm, false}};
+			field->due = 1000 + i;
+			field->data = std::make_unique<std::uint16_t[]>(1);
+			field->data[0] = 76 + i;
+			field->inputs = gate;
+			field->costAt = [](const auto &, std::size_t) { return LAND_STEPS; };
+			field->cpu = [](auto &field)
+			{
+				CHECK(ComputeExecutor::workerSlot() != 0);
+				CHECK(field.data[0] >= 76);
+				CHECK(field.data[0] <= 78);
+				++const_cast<Gate *>(static_cast<const Gate *>(field.inputs.get()))->cpu;
+				field.data[0] += 10;
+			};
+			contexts[i] = {field, service, &executor, gate, &entered};
+		}
+		const ComputeExecutor::Group group{
+			contexts.size(),
+			{[](void *value, std::size_t index)
+			 {
+				 auto &context = static_cast<Context *>(value)[index];
+				 context.field->completion = context.executor->defer();
+				 if (!context.service->submit(context.field))
+					 context.service->recoverOnWorker(context.field);
+				 if (!index)
+				 {
+					 const auto status = context.entered->wait_for(std::chrono::seconds(5));
+					 if (status != std::future_status::ready)
+						 context.gate->open();
+					 REQUIRE(status == std::future_status::ready);
+				 }
+				 ++context.gate->submitted;
+			 },
+			 contexts.data()},
+			ComputeExecutor::NoLane};
+		auto ticket = executor.submit(std::span(&group, 1), 1000);
+		struct Drain
+		{
+			ComputeExecutor &executor;
+			ComputeExecutor::Batch &ticket;
+			std::shared_ptr<Gate> gate;
+			~Drain()
+			{
+				gate->open();
+				try
+				{
+					executor.join(ticket);
+				}
+				catch (...)
+				{
+				}
+			}
+		} drain{executor, ticket, gate};
+		const auto filledUntil = std::chrono::steady_clock::now() + std::chrono::seconds(5);
+		while (gate->submitted != contexts.size() && std::chrono::steady_clock::now() < filledUntil)
+			std::this_thread::yield();
+		if (gate->submitted != contexts.size())
+			gate->open();
+		REQUIRE(gate->submitted == contexts.size());
+		REQUIRE(service->metrics().queued == 2);
+		gate->open();
+		executor.join(ticket);
+		CHECK(contexts[0].field->data[0] == 176);
+		CHECK(contexts[1].field->data[0] == 177);
+		CHECK(contexts[2].field->data[0] == 88);
+		CHECK(contexts[0].field->executedGPU);
+		CHECK(contexts[1].field->executedGPU);
+		CHECK_FALSE(contexts[2].field->executedGPU);
+		for (unsigned i = 0; i < contexts.size(); ++i)
+			CHECK(contexts[i].field->due == 1000 + i);
+		CHECK(gate->calls == 3);
+		CHECK(gate->cpu == 1);
+		CHECK(service->metrics().configuredMaxBatch == 1);
+		CHECK(service->metrics().maxBatch == 1);
+		CHECK(service->metrics().executed == 2);
+		CHECK(service->metrics().fallbacks == 1);
+		service->stop();
+	}
+}
+
 TEST_CASE("bounded required device queue recovers excess fields exactly once" * doctest::test_suite("GradientPipeline"))
 {
     using namespace gradient_kernel;

@@ -231,6 +231,60 @@ fallback. A one-slot pool cannot execute GPU gradients.
 metrics. Check actual committed fields before attributing a result to the GPU.
 Settings displays backend timing and fallback status during live comparisons.
 
+Set `GLOB2_GRADIENT_DIAGNOSTICS=1` for host attribution runs. Native OpenCL and
+Vulkan expose `gradient_host_diagnostics` in the game result or match's
+`compute.json`. Its nested phases partition thread CPU and elapsed time for
+instrumented GPU jobs and adapters: preparation, input conversion,
+allocation, uploads, command recording, submission, convergence checks, waiting,
+readback, validation, output conversion, CPU solving, recovery and retirement.
+Generic snapshot capture is not instrumented; its reserved phase remains empty.
+These diagnostics do not establish a complete CPU-only preparation breakdown.
+Nested scopes subtract their inclusive duration from their parent, including
+scopes belonging to an inner adapter session. Counters distinguish submitted
+work and transferred bytes from device-confirmed execution and committed fields.
+`executed_fields` proves at least one completed dispatch, `converged_fields`
+requires complete converged readback, and `validated_fields` records successful
+independent fixed-point checks where implemented. `committed_fields` counts
+successful transactions. A canceled adapter batch can have validated private
+fields without commits; these milestones must not be treated as synonyms.
+The device service batches OpenCL fields, but admits individual Vulkan/WebGPU
+transactions so a later sequential field's decline cannot discard an earlier
+completed field. Direct adapter batch callers still receive an atomic outcome.
+OpenCL submissions count explicit queue flushes; command enqueues are separate.
+Vulkan submissions count successful queue submissions. `gpu_validation_dispatches`
+and `gpu_validated_fields` separately report its independent GPU proof pass;
+`reference_upload_bytes_submitted` identifies independent uploads of immutable
+seed/cost references within total uploaded bytes.
+Vulkan's validation policy may omit the CPU fixed-point check for captured
+immutable inputs only when the exact device, driver and shader identities have
+validator coverage and shadow verification is disabled. Other callers retain the
+CPU check. `cpu_fixed_point_checks` and `cpu_fixed_point_checks_skipped` distinguish
+execution from assumed savings. Passing validator tests does not qualify CPU
+savings, resident preparation or broader GPU enablement.
+`proveVulkanGradientFixedPoint` is a synchronous diagnostic harness, not a solver
+or publication path: tests require its device marker and reject missing results.
+Its generated WGSL is currently unused by WebGPU. `resource_reuses` counts
+retired Vulkan work sets borrowed from the bounded adapter pool. Mapped control
+reads are separate from explicit transfer/readback bytes. Elapsed totals accumulate
+thread scopes; overlapping threads do not form a process critical-path measurement.
+These are host phase costs. They do not measure GPU kernel duration or separate
+driver CPU from application CPU; native sampling is required for that attribution.
+
+The enable decision travels with admitted jobs. Disabled scopes read no clocks
+and update no counters. `cpu_ns` is null without a usable CPU sample; inspect
+`cpu_invalid` before using any partial aggregate. Browser clocks do not establish
+worker CPU usage. The shared counters and phases do not qualify browser execution
+or provide JavaScript/GPU-process attribution.
+
+Result snapshots precede application teardown. When diagnostics and
+`GLOB2_TEST_ARTIFACTS` are enabled, `gradient-host-final.json` captures cumulative
+totals through explicit coordinator/adapter drain. Static driver teardown and
+the diagnostic file writing itself may follow that snapshot. Measure complete
+child-process user plus system CPU separately to include startup, final drain,
+recovery and exit. Keep diagnostics, native sampling and GPU profiling outside
+acceptance runs, and check actual GPU commits: short release runs can finish
+before asynchronous device initialization makes any field eligible.
+
 Freeze save inputs, source/executable/shader hashes, orders, tick windows, CPU
 affinity and compute budgets. Separate initialization, uploads, device computation,
 readback and deadline waiting. Measure driver/coordinator process CPU too; worker
@@ -242,6 +296,36 @@ existing gradient/save/replay suites. `GLOB2_REQUIRE_VULKAN=1` makes missing Vul
 hardware a test failure; otherwise hardware-only cases report their omission.
 Chromium's `gradient-compute.spec.js` checks generated WGSL against independent
 exact fields. Keep real hardware and software-driver coverage distinct.
+
+The `RuntimeGradientBackend` retained Vulkan case replays permanent reduced proof
+inputs with both algorithms and input roundtrip verification enabled and disabled.
+The fixtures retain original proof hashes in
+`test/fixtures/gradients/RetainedVulkanSeeds.h`. Successful dispatch observations,
+GPU commits and independent heap-oracle equality are all required. Isolated tests
+alone do not establish whole-game correctness or qualify performance.
+`GLOB2_VULKAN_VERIFY_TRANSFERS=1` verifies uploads through GPU copy/readback;
+unset or `0` disables the additional transfers. Use it only in diagnostic runs.
+
+Analyze a saved proof independently, including untouched 32-bit corruption:
+
+```sh
+python3 tools/gradient_proof.py artifacts/gradient-proof-*.bin \
+  --output artifacts/gradient-proof-analysis.json
+python3 tools/test_gradient_proof.py
+```
+
+The analysis reports cells above and below the independent shortest-path result
+and rejects malformed payloads. It consumes the captured seeds and costs rather
+than reconstructing inputs from the current live world.
+The same tool reads `artifacts/gradient-transfer-*.bin`, reporting expected/actual
+word differences separately from field correctness. Transfer evidence retains the
+original seeds, buffer slot, dimensions, cap and device/shader/generation sidecar.
+Control-only `artifacts/gradient-control-vulkan-*.bin` evidence records a confirmed
+GPU validation failure when field readback was unavailable. Analysis identifies
+that missing output explicitly and cannot claim field equality from the control
+record.
+The upload-retirement regression varies seed and cost patterns at 128², 256² and
+512² with a zero propagation cap, isolating input preservation from relaxation.
 
 Compare per-tick checksums, saves and replays across backends, worker counts and
 platforms. Exercise initialization, memory, dispatch, readback, cancellation,

@@ -261,7 +261,12 @@ glob2 info sim-version --format json
 
 `match verify` accepts the same compute sizing as game sessions. Its `compute.json`
 records requested, resolved and actual sizing separately from deterministic
-verification results. Headless `online turn-client` also accepts this setting and
+verification results. It also records gradient backend/algorithm, device, driver,
+shader identity, committed GPU fields, dispatches, CPU fallbacks and shadow-verified
+fields. A matching trace with zero GPU commits is CPU recovery evidence, not GPU
+correctness evidence. These counters describe execution before session teardown;
+whole-process CPU measurements must also include teardown and final drain.
+Headless `online turn-client` also accepts this setting and
 reports sizing in its result telemetry.
 
 `match verify` replays a relay match record (the format is in the

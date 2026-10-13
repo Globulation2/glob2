@@ -6,6 +6,7 @@
 // and compares every checksum the clients reported with the verifier's own.
 
 #include "VerifyMatch.h"
+#include "field/GradientDiagnostics.h"
 
 #include <algorithm>
 #include <chrono>
@@ -31,6 +32,7 @@
 #include "TurnTelemetry.h"
 #include "Version.h"
 #include "WinningConditions.h"
+#include "field/GradientAccelerators.h"
 
 namespace fs = std::filesystem;
 using nlohmann::json;
@@ -279,11 +281,34 @@ MatchVerifier::Verdict MatchVerifier::verify(const Turn::MatchRecord& record, co
     ComputeTelemetry::writeJson(result, game.map.computeExecutor().telemetrySnapshot());
     result << '}';
 	Headless::writeJson((output / "result.json").string(), result.str());
-	Headless::writeJson((output / "compute.json").string(), json{
+	const auto gradient = gradient_kernel::configuration();
+	json compute{
 	    {"compute_requested_threads", globals.computeThreads ? std::to_string(globals.computeThreads) : "auto"},
 	    {"compute_resolved_threads", resolveComputeThreadCount(globals.computeThreads)},
 	    {"compute_threads", game.map.computeExecutor().threadCount()},
-	    {"compute_workers", game.map.computeExecutor().threadCount() - 1}}.dump());
+	    {"compute_workers", game.map.computeExecutor().threadCount() - 1}};
+    // Device receipts belong to GPU runs. CPU-only verification keeps its
+    // existing schema and performs no device-status or diagnostic formatting.
+    if (gradient_kernel::isGPU(gradient.backend)) {
+        const auto accelerator = gradient_kernel::acceleratorStatus(gradient.backend);
+        compute.update(json{
+	    {"gradient_backend", gradient_kernel::backendName(gradient.backend)},
+	    {"gradient_algorithm", gradient_kernel::algorithmName(gradient.algorithm)},
+	    {"gradient_device", accelerator.device},
+	    {"gradient_driver", accelerator.driver},
+	    {"gradient_shader", accelerator.shaderIdentity},
+	    {"gradient_gpu_fields", accelerator.fields},
+	    {"gradient_dispatches", accelerator.dispatches},
+	    {"gradient_cpu_fallbacks", accelerator.fallbacks},
+	    {"gradient_verified", accelerator.verified}});
+        const auto gradientDiagnostics = gradient_kernel::gradientDiagnosticSnapshot(gradient.backend);
+        if (gradientDiagnostics.collected) {
+            std::ostringstream hostDiagnostics;
+            gradient_kernel::writeGradientDiagnostics(hostDiagnostics, gradientDiagnostics);
+            compute["gradient_host_diagnostics"] = json::parse(hostDiagnostics.str());
+        }
+    }
+	Headless::writeJson((output / "compute.json").string(), compute.dump());
 
 	json teams = json::array();
 	for (int t = 0; t < game.mapHeader.getNumberOfTeams(); ++t)

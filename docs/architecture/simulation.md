@@ -427,28 +427,71 @@ the launch choice for the current run and also saves the preference.
 
 The process coordinator is additional to the shared CPU pool; compute thread
 counts still include the owner. One-slot pools stay CPU-only. Initialization,
-submission and completion run outside the game loop. Already-ready compatible
-requests group up to eight without waiting for a batch. New backends use simple
-per-field transfers inside those groups. Frozen8 uses four-color integer relaxation
+submission and completion run outside the game loop. OpenCL groups up to eight
+already-ready compatible requests without waiting to fill a batch. Vulkan and
+WebGPU use individual service transactions because their adapters execute fields
+sequentially: a later decline must not roll back an earlier completed field.
+Each transaction retains its original due tick, ticket, controls and immutable
+inputs. Frozen8 uses four-color integer relaxation
 on 16×16 tiles with frozen halos and eight sweeps; Jacobi uses separate input/output
 buffers for each round. A convergence signal starts complete-field validation;
 it does not by itself establish correct execution.
+
+Vulkan retains one adapter-owned work set because its execution is serial. The
+set holds buffers, immutable descriptor bindings, command resources, a fence and
+mapped staging/readback storage. It is reused only after all submissions retire,
+including canceled work whose fence later proves completion. Unknown work stays
+quarantined and charged. Host metadata and mapped allocations share the host
+limit; every device allocation retains its device charge. An idle set is evicted
+before declining seed-backup admission or replacing it with larger storage, and
+explicit shutdown releases it after retirement. Inputs are overwritten for each
+captured request; serving fields remain separate from this storage.
+
 The GLSL sources generate pinned SPIR-V and WGSL with integer-only wrapping.
-Vulkan/WebGPU readback also passes an exact positive-cost fixed-point check against
-original seeds before commit. A convergence flag alone cannot publish fabricated
-sources or stale data. A proven fixed-point mismatch stops the run through the
-original completion ticket and writes original seeds, costs and the full 32-bit
+Before commit, Vulkan and WebGPU require an exact positive-cost fixed-point proof
+against original seeds. Vulkan runs an independent integer validation shader
+against separately uploaded immutable seed and cost references. Its control buffer
+contains an execution marker, failure flag and first invalid cell. A missing marker
+cannot count as successful validation. WebGPU retains its CPU proof; the generated
+WGSL validator is not wired into that adapter.
+
+Vulkan can omit the CPU proof only for captured immutable inputs with shadow
+verification disabled and an exact device, driver and shader identity admitted by
+its validation policy. Generic callers and other combinations retain the CPU
+proof. This policy establishes validator coverage; it does not qualify CPU savings,
+resident preparation or a new backend default. A convergence flag alone cannot
+publish fabricated sources or stale data. A proven fixed-point mismatch stops the
+run through the original completion ticket and writes original seeds, costs and the full 32-bit
 readback to `artifacts/gradient-proof-*.bin` (or `GLOB2_TEST_ARTIFACTS`). The binary
 uses little-endian records, with a text sidecar identifying the device, driver,
-shader and job generation. It does not
-count as a committed GPU field or a successful CPU fallback.
+shader and job generation. It does not count as a committed GPU field or a
+successful CPU fallback.
 
-Vulkan integration remains unqualified: native NVIDIA stress runs have produced
-intermittent fixed-point proof failures. Retaining this guard prevents those
-fields from reaching simulation state; passing individual kernel tests does not
-establish live-game correctness. Threaded-browser WebGPU also requires complete
-game, continuation and platform qualification before production enablement of
-resident preparation.
+A confirmed GPU validation failure stays fatal even when subsequent readback is
+lost or canceled. That case writes `gradient-control-vulkan-*.bin` (GPCF v1) with
+the confirmed control result and original seeds/costs, and explicitly omits the
+unavailable field. It is not a successful recovery or an inferred readback.
+
+Direct Vulkan adapter batches remain atomic: batch commit flags publish only after
+every member succeeds. A completed private field followed by cancellation retains
+its dispatch observation,
+but reports no GPU commit and leaves all caller seed arrays unchanged.
+Opt-in Vulkan upload roundtrip failures also stop execution and retain original
+seeds plus expected and actual transfer words in a separate little-endian `GTRF`
+v1 payload. Packed costs and control words must not be interpreted as field output.
+
+Vulkan uses device-local compute storage and maps only coherent transfer/control
+buffers, preferring host-cached memory. Mapped allocations also charge the shared
+host budget; their leases remain charged during quarantine. Preserve whole-game
+stress coverage alongside isolated transfer and fixed-point regression fixtures
+when changing storage or synchronization.
+
+Backend/platform qualification remains separate from correctness checks and is
+based on total CPU consumed, including recovery, final drain and startup reported
+separately. Failed or inconclusive experiments do not establish CPU offloading.
+Keep their measurements in review evidence. Resident preparation requires its own
+memory, game, continuation and platform qualification; it is not enabled by these
+solver and validator changes.
 
 Accelerator payloads share 64 MiB of host storage and 128 MiB of tracked device
 storage. Demand-sized storage and immutable cost-buffer leases bound retained
@@ -482,6 +525,15 @@ and writes `gradient-mismatch-*.bin` in the artifact directory with geometry, ca
 family, seeds, expected/actual fields and packed costs. Verification has separate
 CPU timing and should be disabled for performance comparisons. There is no
 automatic policy, calibration or tuning.
+
+Opt-in native GPU host diagnostics partition CPU and elapsed time into exclusive
+phases and retain the admitted diagnostic decision through recovery. Device
+completion and publication remain separate counters. Missing CPU clocks remain
+unavailable, including in browsers. Result-file snapshots precede teardown;
+complete process CPU measurement must include final drain and exit. See
+[gradient benchmarks](../development/gradient-benchmarks.md) for attribution
+windows and counter semantics.
+
 `GLOB2_GRADIENT_VERIFY` accepts `1/on/true` and `0/off/false`; explicit CLI choices
 take precedence. Unknown values disable verification. Standalone CPU benchmarks
 force verification off and bucket propagation so inherited game settings cannot

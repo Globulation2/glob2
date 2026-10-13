@@ -2,6 +2,7 @@
 #pragma once
 #include "field/GradientWorkspace.h"
 #include "field/GradientAccelerators.h"
+#include "field/GradientDiagnostics.h"
 #include "field/GradientDeviceService.h"
 #include "common/ThreadCpuClock.h"
 #include "map/TerrainType.h"
@@ -21,6 +22,7 @@
 #include "ComputeExecutor.h"
 #include "SnapshotGradient.h"
 #include <stdexcept>
+#include <type_traits>
 #include <vector>
 #include <utility>
 
@@ -120,22 +122,41 @@ private:
     template<bool Collect> static std::uint64_t elapsed(Clock::time_point start) noexcept {
         if constexpr (Collect) return ns(start); else return 0;
     }
-	template<bool Collect>
+    // Trace counters predate GPU profiling. Keep both the ordinary and trace-only
+    // instantiations free of profiling TLS, scope state and clock probes.
+    struct UnprofiledSession {
+        UnprofiledSession(gradient_kernel::Backend, bool) noexcept {}
+    };
+    struct UnprofiledPhase {
+        explicit UnprofiledPhase(gradient_kernel::GradientPhase) noexcept {}
+        void setPhase(gradient_kernel::GradientPhase) noexcept {}
+    };
+	template<bool Collect, bool Profile>
 	void execute(Job &job, Workspace &scratch) noexcept {
+        static_assert(!Profile || Collect);
 		const auto start = clockTime<Collect>();
 		job.crowding = &scratch.crowding;
+        const auto captured = gradient_kernel::configuration();
+        using ProfileSession = std::conditional_t<Profile,
+            gradient_kernel::GradientProfileSession, UnprofiledSession>;
+        using PhaseScope = std::conditional_t<Profile,
+            gradient_kernel::GradientPhaseScope, UnprofiledPhase>;
+        [[maybe_unused]] ProfileSession profile(captured.backend, true);
+        PhaseScope phase(gradient_kernel::GradientPhase::Bookkeeping);
 		try
 		{
             // Capture execution before preparation. Later availability/admission
             // changes may recover this job, but cannot reinterpret its choice.
-            const auto captured = gradient_kernel::configuration();
             const auto choice = captured.backend;
             const auto family=gradient_preparation::backendFamily(job.request.kind);
             const auto decision=backendSession->choose(family,1,captured);
             gradient_kernel::CPUSelectionScope cpuSelection(decision.configuration.backend);
 			const auto preparationStart = clockTime<Collect>();
             const auto preparationCpu = cpuTime<Collect>();
-			try { if (job.seed) job.seed(job); }
+			try {
+                PhaseScope preparation(gradient_kernel::GradientPhase::Preparation);
+                if (job.seed) job.seed(job);
+            }
 			catch (...) { if constexpr (Collect) job.preparationNs = elapsed<Collect>(preparationStart); throw; }
 			if constexpr (Collect) job.preparationNs = elapsed<Collect>(preparationStart);
             const auto preparedCpu=cpuTime<Collect>();
@@ -146,7 +167,10 @@ private:
             if constexpr (Collect) { if(selectedGPU) selectedGpu.fetch_add(1,std::memory_order_relaxed); }
             if(selectedGPU && deviceService && asyncWork && executor->slot()) {
                 const auto ownedStart=diagnostics ? cpuTime<Collect>() : 0;
-                job.deviceField=asyncWork(job,decision);
+                {
+                    PhaseScope conversion(gradient_kernel::GradientPhase::InputConversion);
+                    job.deviceField=asyncWork(job,decision);
+                }
                 if(!job.deviceField) {
                     // A bounded owned-view admission can decline before seed
                     // ownership moves. Recovery stays on this original worker
@@ -157,7 +181,10 @@ private:
             if constexpr (Collect) { handoffCpu.fetch_add(glob2::threadCpuDeltaNs(handoffStart,ownedStart),std::memory_order_relaxed); }
                     }
                     job.cpuOnly=true;
-                    work(job,scratch.propagation);
+                    {
+                        PhaseScope solving(gradient_kernel::GradientPhase::CpuSolving);
+                        work(job,scratch.propagation);
+                    }
                     const auto cpuEnd=cpuTime<Collect>();
             if constexpr (Collect) { propagationCpu.fetch_add(glob2::threadCpuDeltaNs(cpuStart,cpuEnd),std::memory_order_relaxed); }
             if constexpr (Collect) { cpuReasons[unsigned(CPUReason::OwnedInputDecline)].fetch_add(1,std::memory_order_relaxed); }
@@ -193,7 +220,10 @@ private:
                 // accelerator request construction and a second configuration
                 // read, including when this is an explicit CPU choice.
                 job.cpuOnly=true;
-                work(job,scratch.propagation);
+                {
+                    PhaseScope solving(gradient_kernel::GradientPhase::CpuSolving);
+                    work(job,scratch.propagation);
+                }
             if constexpr (Collect) { propagationCpu.fetch_add(glob2::threadCpuDeltaNs(cpuStart,cpuTime<Collect>()),std::memory_order_relaxed); }
             if constexpr (Collect) { cpuFields.fetch_add(1,std::memory_order_relaxed); }
             }
@@ -203,6 +233,7 @@ private:
 			job.error = std::current_exception();
 		}
 		// Completion releases all borrowed immutable inputs, including failures.
+        phase.setPhase(gradient_kernel::GradientPhase::Retirement);
         const auto cleanupStart=diagnostics ? cpuTime<Collect>() : 0;
 		job.water.reset(); job.terrain.reset(); job.registry.reset(); job.profiles.reset();
 		job.snapshotLease.reset(); job.seed = {}; job.crowding = nullptr;
@@ -210,11 +241,11 @@ private:
 		job.done = true;
             if constexpr (Collect) { if(diagnostics)cleanupCpu.fetch_add(glob2::threadCpuDeltaNs(cleanupStart,cpuTime<Collect>()),std::memory_order_relaxed); }
 	}
-	template<bool Collect>
+	template<bool Collect, bool Profile>
 	static void run(void* context, std::size_t) {
 		auto& job = *static_cast<Job*>(context);
 		auto& pipeline = *job.owner;
-		pipeline.execute<Collect>(job, pipeline.workspaces[pipeline.executor->slot()]);
+		pipeline.execute<Collect, Profile>(job, pipeline.workspaces[pipeline.executor->slot()]);
 	}
 	void wait(Job &job, bool publication = false, JoinContext context = {JoinReason::Verification, ComputeTelemetry::NoTick}) {
         const bool trackStalls=diagnostics;
@@ -387,10 +418,14 @@ public:
 			// Owner-only execution computes now; publication keeps its deadline.
 			const bool collect = diagnostics || executor->telemetryMode() == ComputeTelemetryMode::Trace;
 			if (!shared) {
-                if (collect) execute<true>(*ptr, workspaces[0]); else execute<false>(*ptr, workspaces[0]);
+                if (diagnostics) execute<true, true>(*ptr, workspaces[0]);
+                else if (collect) execute<true, false>(*ptr, workspaces[0]);
+                else execute<false, false>(*ptr, workspaces[0]);
                 return;
             }
-			const ComputeExecutor::Group group{1, {collect ? &run<true> : &run<false>, ptr}, ComputeExecutor::NoLane};
+            const auto callback = diagnostics ? &run<true, true>
+                : collect ? &run<true, false> : &run<false, false>;
+			const ComputeExecutor::Group group{1, {callback, ptr}, ComputeExecutor::NoLane};
 			const unsigned remaining = unsigned(ptr->due - tick);
             ptr->executorDue=deadline ? deadline(remaining) : ComputeExecutor::advanceDue(ptr->due);
 			ptr->batch = executor->submit(std::span(&group, 1),ptr->executorDue, {ComputeProducer::PeriodicGradient, deadline ? ptr->executorDue/2 - remaining + 1 : tick, ptr->executorDue/2});
