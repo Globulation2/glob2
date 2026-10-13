@@ -1,0 +1,59 @@
+{
+  "commit": "1e3ee6857d5f59aab2ed6bf1ccf1120e48ada3dd",
+  "base": "b4c463a439953059c9ac058902cff8a652e87f02",
+  "platform": "macOS 26.6.2 arm64",
+  "compiler": "Apple Clang 21.0.0",
+  "build": "PYTHONPATH=. python3 tools/dev_build.py engine-tests",
+  "build_flags": "dev_fast=1, -O0 -g1; existing native dependencies; no runtime dependency changes",
+  "test_command": "python3 test/run_tests.py --build-dir build/darwin/client/debug/dev-dev_fast-true-linker-auto --binary engine --filter 'EngineSession/*' --filter 'TeamStatsPipeline/*' --filter 'WorldSnapshot/*' --filter 'SceneExtract/*' --filter 'GameDiagnostics/*' --filter 'SimulationReadPhase/*' --filter 'AIPipeline/*' --no-display -j 4 --junit artifacts/snapshot-integration/tests.xml",
+  "result": {
+    "passed": 108,
+    "failed": 0,
+    "skipped": [
+      {
+        "name": "buffered input receipts wait for GUI dispatch and cancel exact ranges [display]",
+        "reason": "needs a display"
+      },
+      {
+        "name": "automatic GUI sessions poll asset finalizers on the presentation thread [display]",
+        "reason": "needs a display"
+      },
+      {
+        "name": "paced sessions publish completed worlds before waiting and AI reuses them [display]",
+        "reason": "needs a display"
+      },
+      {
+        "name": "menu colony rendering consumes its shared boundary without recapture [display]",
+        "reason": "needs a display"
+      },
+      {
+        "name": "render ceilings preserve per tick simulation checksums [display][artifacts]",
+        "reason": "needs a display"
+      },
+      {
+        "name": "routine snapshot input needs no simulation boundary [display][artifacts][writes-preferences]",
+        "reason": "needs a display"
+      },
+      {
+        "name": "momentum uses the SDL clock after session suspension [display][artifacts]",
+        "reason": "needs a display"
+      },
+      {
+        "name": "offscreen pass restores transformed drawing after exceptions [display]",
+        "reason": "needs a display"
+      },
+      {
+        "name": "custom ground and overlay frames render connections and damage [display:1100x1100][artifacts]",
+        "reason": "needs a display"
+      }
+    ]
+  },
+  "documentation": "309 documents checked, 0 errors",
+  "scope": "Presentation admission only; standard simulation and merged statistics runtime preserved. Regressions cover presentation producer backpressure and K8 capture reuse with serial/two-worker execution. No simulation version or saved format changes.",
+  "limitations": [
+    "No release performance measurements",
+    "No Windows or browser execution",
+    "No new cross-platform replay comparison"
+  ],
+  "initial_build_failure": "SCons asset-packaging worker lacked repository import path; resolved using PYTHONPATH=."
+}

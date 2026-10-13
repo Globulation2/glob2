@@ -1,0 +1,110 @@
+<?xml version='1.0' encoding='utf-8'?>
+<testsuites tests="117" failures="0" errors="0" skipped="9"><testsuite name="AIPipeline"><testcase classname="AIPipeline" name="a submitted deadline is delivered even when no new poll is eligible" time="0.536106" status="run" />
+  <testcase classname="AIPipeline" name="every shipped controller preserves orders and state across worker counts and all delays" time="22.5883" status="run" />
+  <testcase classname="AIPipeline" name="pause and repeated boundary calls cannot execute a published command twice" time="2.73923" status="run" />
+  <testcase classname="AIPipeline" name="replacement cancels an old output without rejecting identical new wire bytes" time="0.532004" status="run" />
+  <testcase classname="AIPipeline" name="save continuation retains controller caches receipts and future commands at pipeline boundaries" time="114.934" status="run" />
+  <testcase classname="AIPipeline" name="team death cancels submitted work and saves receipts for a revived controller" time="1.02432" status="run" />
+  <testcase classname="AIPipeline" name="wrapper preemption preserves controller rejection feedback and pending release identity across save" time="1.13608" status="run" />
+  </testsuite><testsuite name="EngineSession"><testcase classname="EngineSession" name="camera refreshes cannot starve advancing presentation worlds" time="0.702674" status="run" />
+  <testcase classname="EngineSession" name="disabled prestige victory cannot end automatic matches" time="0.401525" status="run" />
+  <testcase classname="EngineSession" name="eliminated prestige leaders cannot make every survivor lose" time="0.884206" status="run" />
+  <testcase classname="EngineSession" name="incremental sessions; editor decisions; fertility equivalence and cancellation [writes-preferences]" time="17.847" status="run" />
+  <testcase classname="EngineSession" name="native presentation fallback yields between expensive chunks" time="0.354552" status="run" />
+  <testcase classname="EngineSession" name="new client requests replace completed pending frames without recapture" time="0.348794" status="run" />
+  <testcase classname="EngineSession" name="observation players preserve seat order and spectator readiness" time="0.408689" status="run" />
+  <testcase classname="EngineSession" name="retained version-152 replay is rejected by the delayed-statistics replay floor [save-format]" time="1.2739" status="run" />
+  <testcase classname="EngineSession" name="serial sessions retain chat text across skipped GUI frames" time="2.141" status="run" />
+  <testcase classname="EngineSession" name="buffered input receipts wait for GUI dispatch and cancel exact ranges [display]" time="0.000"><skipped message="needs a display" /></testcase><testcase classname="EngineSession" name="automatic GUI sessions poll asset finalizers on the presentation thread [display]" time="0.000"><skipped message="needs a display" /></testcase><testcase classname="EngineSession" name="paced sessions publish completed worlds before waiting and AI reuses them [display]" time="0.000"><skipped message="needs a display" /></testcase><testcase classname="EngineSession" name="menu colony rendering consumes its shared boundary without recapture [display]" time="0.000"><skipped message="needs a display" /></testcase><testcase classname="EngineSession" name="render ceilings preserve per tick simulation checksums [display][artifacts]" time="0.000"><skipped message="needs a display" /></testcase><testcase classname="EngineSession" name="routine snapshot input needs no simulation boundary [display][artifacts][writes-preferences]" time="0.000"><skipped message="needs a display" /></testcase><testcase classname="EngineSession" name="momentum uses the SDL clock after session suspension [display][artifacts]" time="0.000"><skipped message="needs a display" /></testcase></testsuite><testsuite name="GameDiagnostics"><testcase classname="GameDiagnostics" name="Delayed diagnostic offers cover planner ticks without duplicate captures" time="0.404492" status="run" />
+  <testcase classname="GameDiagnostics" name="capped scene export survives repeated graphics lifetimes and write failures [artifacts]" time="6.00294" status="run" />
+  <testcase classname="GameDiagnostics" name="controller capture follows simulation cadence and preserves unsigned values" time="0" status="run" />
+  <testcase classname="GameDiagnostics" name="controllers sharing a team publish distinct complete captures and recover after failures [artifacts]" time="0.435443" status="run" />
+  <testcase classname="GameDiagnostics" name="diagnostic budget counts private captures across the delay horizon [artifacts]" time="0.427731" status="run" />
+  <testcase classname="GameDiagnostics" name="field reader rejects malformed counts and retains unsigned food values [artifacts]" time="0.001277" status="run" />
+  <testcase classname="GameDiagnostics" name="pending diagnostic output does not block world advancement or alias later worker output [artifacts]" time="0.404981" status="run" />
+  <testcase classname="GameDiagnostics" name="portrait exports cover the whole map after dimension rounding [artifacts]" time="3.02066" status="run" />
+  <testcase classname="GameDiagnostics" name="private diagnostic reservation survives owner ticks and serialization [artifacts]" time="0.41047" status="run" />
+  <testcase classname="GameDiagnostics" name="offscreen pass restores transformed drawing after exceptions [display]" time="0.000"><skipped message="needs a display" /></testcase></testsuite><testsuite name="SceneExtract"><testcase classname="SceneExtract" name="Serial hosts publish immutable Scenes through workers or explicit fallback" time="0.367798" status="run" />
+  <testcase classname="SceneExtract" name="building events preserve concrete catalog IDs and key-only display names" time="0.533972" status="run" />
+  <testcase classname="SceneExtract" name="building sprite frames honor damage effective maximum and connection precedence" time="0.000202" status="run" />
+  <testcase classname="SceneExtract" name="client paint survives old Scenes and retires only with its execution revision" time="0.271311" status="run" />
+  <testcase classname="SceneExtract" name="connected overlays use configured groups and scene retains its catalog" time="0.351978" status="run" />
+  <testcase classname="SceneExtract" name="empty worlds and a view whose team disappeared prepare without live fallback" time="0.284262" status="run" />
+  <testcase classname="SceneExtract" name="farm input eligibility is frozen with presentation inputs" time="0.385479" status="run" />
+  <testcase classname="SceneExtract" name="large defence overlay preparation yields and finishes its kernel" time="0.283909" status="run" />
+  <testcase classname="SceneExtract" name="map service indicators follow arbitrary and free recipes" time="0" status="run" />
+  <testcase classname="SceneExtract" name="order execution revisions are captured even without advancing the tick" time="0.267363" status="run" />
+  <testcase classname="SceneExtract" name="ordinary captures reuse unchanged HUD samples" time="0.265415" status="run" />
+  <testcase classname="SceneExtract" name="overlay maps match a direct computation and refresh per 25-tick window or type change" time="0.278463" status="run" />
+  <testcase classname="SceneExtract" name="published catalog definitions remain immutable across owner reconfiguration" time="0.282921" status="run" />
+  <testcase classname="SceneExtract" name="published scene retains old entity fields while subsequent scenes reflect changes" time="0.297017" status="run" />
+  <testcase classname="SceneExtract" name="retired map storage reuses masks without retaining a world or clearing its values" time="0.297035" status="run" />
+  <testcase classname="SceneExtract" name="same-tick map edits refresh overlays while retained frames remain immutable" time="0.270673" status="run" />
+  <testcase classname="SceneExtract" name="script area snapshots are opt-in and independent of later map edits" time="0.276786" status="run" />
+  <testcase classname="SceneExtract" name="session narrative payloads are immutable and reused until mutation" time="0.275645" status="run" />
+  <testcase classname="SceneExtract" name="smooth unit motion advances the drawn delta within the current action only" time="0.275525" status="run" />
+  <testcase classname="SceneExtract" name="snapshot preparation matches retained queries and survives later live mutations" time="0.309016" status="run" />
+  <testcase classname="SceneExtract" name="snapshot preparation retains definitions after the source game is destroyed" time="0.270823" status="run" />
+  <testcase classname="SceneExtract" name="stale selection generation never selects a replacement occupying the same gid" time="0.274775" status="run" />
+  <testcase classname="SceneExtract" name="statistics history is optional immutable and reused until a new sample" time="0.264545" status="run" />
+  <testcase classname="SceneExtract" name="superseded and retired frames promptly release all world leases" time="0.000444" status="run" />
+  <testcase classname="SceneExtract" name="units and buildings resolve by gid with their drawn fields and the selection" time="0.264262" status="run" />
+  <testcase classname="SceneExtract" name="custom ground and overlay frames render connections and damage [display:1100x1100][artifacts]" time="0.000"><skipped message="needs a display" /></testcase></testsuite><testsuite name="SimulationReadPhase"><testcase classname="SimulationReadPhase" name="AI and pending gradients share the standard boundary with presentation" time="0.425884" status="run" />
+  <testcase classname="SimulationReadPhase" name="direct completed steps match deferred preparation across worker counts" time="2.36265" status="run" />
+  <testcase classname="SimulationReadPhase" name="presentation borrows the published no-AI read boundary without recapture" time="0.270321" status="run" />
+  </testsuite><testsuite name="TeamStatsPipeline"><testcase classname="TeamStatsPipeline" name="complete frames preserve cumulative measurements and retained readers" time="1.06564" status="run" />
+  <testcase classname="TeamStatsPipeline" name="delayed statistics AI and presentation share one capture per boundary" time="0.646521" status="run" />
+  <testcase classname="TeamStatsPipeline" name="direct scalar checksums match canonical binary bytes" time="0" status="run" />
+  <testcase classname="TeamStatsPipeline" name="failed computation or submission remains a failure at later owner barriers" time="0.413439" status="run" />
+  <testcase classname="TeamStatsPipeline" name="format 155 pending digests are discarded without losing samples" time="0.256304" status="run" />
+  <testcase classname="TeamStatsPipeline" name="format 156 raw aggregate samples retain exact smoothing after loading and resaving" time="0.254897" status="run" />
+  <testcase classname="TeamStatsPipeline" name="format 157 pending measurement deltas migrate and resave without early publication" time="0.258096" status="run" />
+  <testcase classname="TeamStatsPipeline" name="full game save preserves statistics across smoothing and history boundaries" time="2.51961" status="run" />
+  <testcase classname="TeamStatsPipeline" name="lagged windows include current samples and never feed approximations into the raw ring" time="0.490221" status="run" />
+  <testcase classname="TeamStatsPipeline" name="late workers are joined at the deadline without choosing publication time" time="0.279052" status="run" />
+  <testcase classname="TeamStatsPipeline" name="light checks do not execute jobs and full checks cover computed pending samples" time="0.330948" status="run" />
+  <testcase classname="TeamStatsPipeline" name="periodic snapshot places match live coverage at wrapped footprint boundaries" time="0.246091" status="run" />
+  <testcase classname="TeamStatsPipeline" name="profiling is optional and does not change pending samples" time="0.260036" status="run" />
+  <testcase classname="TeamStatsPipeline" name="publication is fixed to source tick plus delay and boundaries are idempotent" time="0.522145" status="run" />
+  <testcase classname="TeamStatsPipeline" name="pure captures pause and waiting admit no statistics and readers share the generation" time="0.272942" status="run" />
+  <testcase classname="TeamStatsPipeline" name="raw snapshot samples retain synchronous aggregation and smoothing" time="0.255849" status="run" />
+  <testcase classname="TeamStatsPipeline" name="routine statistics coverage excludes diagnostic ledgers and full checks retain them" time="0.25203" status="run" />
+  <testcase classname="TeamStatsPipeline" name="save drains work without moving deadlines and restores pending samples" time="0.260719" status="run" />
+  <testcase classname="TeamStatsPipeline" name="worker counts produce identical publication and pending sample checksums" time="1.40976" status="run" />
+  </testsuite><testsuite name="WorldSnapshot"><testcase classname="WorldSnapshot" name="AI boundary validates each captured map array before fast reads" time="0.235945" status="run" />
+  <testcase classname="WorldSnapshot" name="AI fast scalar reads preserve checked values and frozen lease isolation" time="0.357999" status="run" />
+  <testcase classname="WorldSnapshot" name="a retained consumer leaves the newest free buffer to absorb only later changes" time="0.258607" status="run" />
+  <testcase classname="WorldSnapshot" name="building snapshots copy shared scalar records and freeze selected stock" time="0.295942" status="run" />
+  <testcase classname="WorldSnapshot" name="capture verification rejects writes that bypass the change trackers" time="0.295765" status="run" />
+  <testcase classname="WorldSnapshot" name="catalog refresh survives intervening projections and rules reuse independently" time="0.375436" status="run" />
+  <testcase classname="WorldSnapshot" name="component leases and weak control blocks outlive the owning store" time="0.317121" status="run" />
+  <testcase classname="WorldSnapshot" name="component mutation generations preserve isolation and reuse unchanged arrays" time="0.297" status="run" />
+  <testcase classname="WorldSnapshot" name="coordinate wrapping preserves signed edges for power of two and general dimensions" time="0.000425" status="run" />
+  <testcase classname="WorldSnapshot" name="detailed accounting is optional while exact map bytes remain available" time="0.523141" status="run" />
+  <testcase classname="WorldSnapshot" name="explicit observation boundaries refresh paused state and retain old leases" time="0.258706" status="run" />
+  <testcase classname="WorldSnapshot" name="farm paint queries match frozen growth and resource inputs" time="0.292161" status="run" />
+  <testcase classname="WorldSnapshot" name="flat relationship ranges preserve every building list in order" time="0.280522" status="run" />
+  <testcase classname="WorldSnapshot" name="map snapshots bulk copy authoritative records without translation" time="0.39144" status="run" />
+  <testcase classname="WorldSnapshot" name="memory metrics distinguish held epochs from reusable high water capacity" time="0.258959" status="run" />
+  <testcase classname="WorldSnapshot" name="named views retain only their standard inputs" time="0.639557" status="run" />
+  <testcase classname="WorldSnapshot" name="narrow component queries preserve combined tile values and projection defaults" time="0.389543" status="run" />
+  <testcase classname="WorldSnapshot" name="no-op map writes reuse components while changed values remain isolated" time="0.27596" status="run" />
+  <testcase classname="WorldSnapshot" name="on-demand construction feasibility matches live helpers and remains frozen" time="0.497191" status="run" />
+  <testcase classname="WorldSnapshot" name="ordinary boundaries always contain the complete simulation preset" time="0.295396" status="run" />
+  <testcase classname="WorldSnapshot" name="outcome reasons survive the read boundary without changing simulation state" time="0.538852" status="run" />
+  <testcase classname="WorldSnapshot" name="pooled captures never overwrite a held worker projection" time="0.278687" status="run" />
+  <testcase classname="WorldSnapshot" name="presentation upgrades refresh entities after each owner boundary change" time="0.638982" status="run" />
+  <testcase classname="WorldSnapshot" name="projected terrain lease cannot retain unrelated world components" time="0.325725" status="run" />
+  <testcase classname="WorldSnapshot" name="resource copy metrics include multi-material stock sidecars" time="0.270116" status="run" />
+  <testcase classname="WorldSnapshot" name="reused buffers copy sparse chunks and refresh dense changes contiguously" time="0.257177" status="run" />
+  <testcase classname="WorldSnapshot" name="same boundary entity reuse is excluded from copied byte accounting" time="0.292586" status="run" />
+  <testcase classname="WorldSnapshot" name="same boundary presentation additions reuse maps and remain outside simulation leases" time="0.299346" status="run" />
+  <testcase classname="WorldSnapshot" name="shared entity indices preserve empty slots and canonical record addresses" time="0.592756" status="run" />
+  <testcase classname="WorldSnapshot" name="snapshot capability tables share authoritative immutable catalog data" time="0.370282" status="run" />
+  <testcase classname="WorldSnapshot" name="statistics inputs and entity records reuse buffers without changing held generations" time="0.263078" status="run" />
+  <testcase classname="WorldSnapshot" name="team record ranges preserve canonical addresses and empty teams" time="0.388098" status="run" />
+  <testcase classname="WorldSnapshot" name="unit snapshots share authoritative scalar state and remain frozen" time="0.403876" status="run" />
+  <testcase classname="WorldSnapshot" name="vertex changes preserve retained terrain and reuse unchanged versions" time="0.292521" status="run" />
+  <testcase classname="WorldSnapshot" name="warm component buffers stop allocating at a fixed population" time="0.286755" status="run" />
+  <testcase classname="WorldSnapshot" name="worker final lease release synchronizes owner buffer reuse" time="0.00137" status="run" />
+  </testsuite></testsuites>
