@@ -201,7 +201,7 @@ bool needsCandidates(const SimulationSnapshot::BuildingView& b)
 Inputs capture(const Game& game,SimulationSnapshot::Handle world)
 {
     if(world.tick!=game.stepCounter) throw std::logic_error("Hiring input boundary mismatch");
-    Inputs inputs;inputs.world=std::move(world);
+    Inputs inputs;inputs.world=world.simulationView();
     auto routes=std::make_shared<std::vector<Inputs::Route>>();
     for(const auto& b:inputs.world.entities->buildings) {
         if(!needsCandidates(b))continue;
@@ -228,10 +228,8 @@ std::vector<Supply> prepare(const Inputs& inputs,unsigned team)
         stock|=t.runtimeSuppliesStockMask;direct|=t.runtimeSuppliesDirectStockMask;
         extraDirect|=t.runtimeSuppliesDirectStockMask&~t.runtimeSuppliesStockMask;
     }
-    for(const auto* b:world.buildingSlots(team))if(b && b->buildingState==B::ALIVE) {
-        const auto& t=world.catalog->at(b->typeNum).resolvedType;
-        hasStock|=t.runtimeSuppliesStock;hasDirect|=t.runtimeSuppliesDirectStock;
-    }
+    hasStock=world.teams[team].supplierPresence&1;
+    hasDirect=world.teams[team].supplierPresence&2;
     std::vector<Supply> supplies;
     std::vector<const B*> ordered;
     for(const auto* b:world.buildingSlots(team))if(b && needsCandidates(*b)) {

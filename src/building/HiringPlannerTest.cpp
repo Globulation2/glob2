@@ -75,6 +75,48 @@ TEST_CASE("worker construction quotas match repair funding")
     }
     SimulationSnapshot::verifyCapture(world.game,snapshot);
 }
+TEST_CASE("defense score uses frozen attack modifiers and saturated integer strength")
+{
+    glob2test::HeadlessGlobals globals;
+    glob2test::HeadlessGame world({.discovered=true,.loadDefaultRace=true});
+    auto catalog=nlohmann::json::parse(world.game.buildingsTypes.snapshotJson());
+    const int id=world.game.buildingsTypes.getTypeNum("stonewall",0,false);
+    catalog["variants"][id]["semantics"]["areaEffects"]={{"radius",4},{"attackBuffBps",2000}};
+    world.game.buildingsTypes.loadSnapshotJson(catalog.dump());world.game.configureBuildingCatalog();
+    REQUIRE(world.addBuilding("stonewall",12,12));
+    auto* flag=world.addBuilding("warflag",8,8);auto* warrior=world.addUnit(WARRIOR,10,10);
+    REQUIRE(flag);REQUIRE(warrior);flag->desiredMaxUnitWorking=1;
+    warrior->activity=Unit::ACT_RANDOM;warrior->medical=Unit::MED_FREE;warrior->hungriness=0;warrior->insideTimeout=0;
+    warrior->experienceLevel=INT_MAX;world.game.gameHeader.setGlassCannonLevel(2);
+    world.game.areaEffects.beginTick(world.game);
+    world.game.map.buildingGradient(flag,warrior->swimClass(),BuildingRoute::Combat);
+    const auto expected=std::int64_t(warrior->performance[ATTACK_SPEED])*warrior->getRealAttackStrength();
+    const auto snapshot=world.game.captureReadBoundary();
+    REQUIRE(snapshot.entities->units.size()==1);
+    CHECK(snapshot.entities->units.front().attackFactor!=BuildingAreaEffects::Neutral);
+    HiringPlanner::Cache cache;const auto output=cache.rank(HiringPlanner::capture(world.game,snapshot),0,8);
+    bool found=false;
+    for(const auto& b:output.buildings)for(const auto& list:b.jobs)if(list.key.job==Hiring::Job::Defend)
+        for(const auto& candidate:list.combined){found=true;CHECK(candidate.level==expected);}
+    CHECK(found);
+}
+TEST_CASE("supplier membership survives waiting-for-construction observations")
+{
+    glob2test::HeadlessGlobals globals;
+    glob2test::GameOptions options;options.discovered=true;options.loadDefaultRace=true;options.header=true;
+    options.experiments.set(ExperimentId::MarketsV2);
+    glob2test::HeadlessGame world(options);
+    auto* inn=world.addBuilding("inn",6,6,1);auto* market=world.addBuilding("market",24,24);
+    REQUIRE(inn);REQUIRE(market);inn->desiredMaxUnitWorking=1;
+    REQUIRE(!world.team->stockSuppliers.empty());
+    // A waiting provider can remain enrolled even while excluded as a goal.
+    market->buildingState=Building::WAITING_FOR_CONSTRUCTION;
+    const auto snapshot=world.game.captureReadBoundary();
+    const auto supplies=HiringPlanner::prepare(HiringPlanner::capture(world.game,snapshot),0);
+    REQUIRE(supplies.size()==1);
+    CHECK(supplies.front().modes[CHERRY]==world.game.map.materialSupplyModesSlot(inn,CHERRY));
+    CHECK(snapshot.teams->values[0].supplierPresence&1);
+}
 TEST_CASE("snapshot planning retains busy workers and never changes the game")
 {
     glob2test::HeadlessGlobals globals;
@@ -347,6 +389,7 @@ TEST_CASE("private fetch fields include suppliers without natural material")
     REQUIRE(supply->modes[CHERRY]==1);
     CHECK_FALSE(supply->consumerSpecific[CHERRY]);
     world.game.map.getMaterialGradientSlot(0,CHERRY,worker->swimClass(),false,inn);
+    world.game.snapshotStore().invalidateBoundary(); // Announce this mid-boundary fixture query.
     auto published=world.game.captureReadBoundary();
     const auto shared=cache.rank(HiringPlanner::capture(world.game,published),0,8);
     CHECK(shared.metrics.publishedResourceReads>0);

@@ -123,7 +123,9 @@ and modifier share one 32-bit word, so the unit record does not grow. Sparse
 construction funding and reservation facts live in the normal entity component;
 unfunded buildings add only an index in the building record. Account for record
 padding using the tested platform ABI, rather than assuming identical layouts.
-On the worker, material jobs are filtered using outstanding deliveries after existing subscriptions,
+A packed team supplier-presence byte preserves existing membership during
+construction transitions; it is observed, while supplier modes are derived on
+workers. On the worker, material jobs are filtered using outstanding deliveries after existing subscriptions,
 with the same target/multiplier arithmetic as owner hiring. Attraction roles retain
 borrowing alternatives within the building's remaining seats. Team qualification
 and cargo indexes are built lazily once per team refresh. Worker-to-building

@@ -313,6 +313,7 @@ Handle capture(const Game& game,
 		}
 		if (needs(requirements, Component::Teams)) {
 		auto& target = teams->values[t]; target.number = t;
+        target.supplierPresence=(!team->stockSuppliers.empty()?1:0)|(!team->directStockSuppliers.empty()?2:0);
 		target.virtualBuildings.clear(); target.swarms.clear();
 		target.prestige = team->prestige; target.alive = team->isAlive;
 		target.startX = team->startPosX; target.startY = team->startPosY;
@@ -411,15 +412,13 @@ Handle capture(const Game& game,
             }
         }
         if(game.areaEffects.enabled())for(auto& v:entities->units) {
-            const auto* u=game.resolveUnit(v.identity);
-            if(!u)throw std::logic_error("snapshot attack modifier lost unit");
-            if ((u->performance[ATTACK_STRENGTH] || u->experienceLevel) && u->insideTimeout>=0 &&
-                u->displacement!=Unit::DIS_INSIDE && u->displacement!=Unit::DIS_ENTERING_BUILDING &&
-                !(u->displacement==Unit::DIS_EXITING_BUILDING && u->attachedBuilding))
-                v.attackFactor=game.areaEffects.at(BuildingAreaEffects::UnitAttack,v.team,game.map.coordToIndex(u->posX,u->posY));
+            if ((v.performance[ATTACK_STRENGTH] || v.experienceLevel) && v.insideTimeout>=0 &&
+                v.displacement!=Unit::DIS_INSIDE && v.displacement!=Unit::DIS_ENTERING_BUILDING &&
+                !(v.displacement==Unit::DIS_EXITING_BUILDING && !v.attached.empty()))
+                v.attackFactor=game.areaEffects.at(BuildingAreaEffects::UnitAttack,v.team,game.map.coordToIndex(v.posX,v.posY));
         }
         const auto ns=timed?std::chrono::duration_cast<std::chrono::nanoseconds>(std::chrono::steady_clock::now()-start).count():0;
-        HiringStudy::recordCapture(ns,entities->funding.size()*sizeof(FundingState)+entities->buildings.size()*sizeof(Uint32)+entities->units.size()*sizeof(Uint16),growths,entities->funding.size()*sizeof(FundingState));
+        HiringStudy::recordCapture(ns,entities->funding.size()*sizeof(FundingState)+entities->buildings.size()*sizeof(Uint32)+entities->units.size()*sizeof(Uint16)+game.teamsCount()*sizeof(Uint8),growths,entities->funding.size()*sizeof(FundingState));
     }
 
     if (auto session=acquire(&Storage::session,Component::Session)) {

@@ -52,6 +52,7 @@ struct TeamView
 	int number = 0, prestige = 0, startX = 0, startY = 0;
 	bool alive = false, won = false, lost = false;
 	ColorRecord color;
+    Uint8 supplierPresence = 0; // Raw membership facts: stock=1, direct=2.
 	std::string firstPlayerName;
 	std::string outcomeReasonKey; // Translation key, resolved at the simulation read boundary.
 	int unitConversionGained = 0, unitConversionLost = 0, noMoreBuildingSitesCountdown = 0;
