@@ -89,7 +89,7 @@ class SoftwareRenderBackend final : public RenderBackend
 
     bool recordFill(SDL_Rect dst, SDL_Color color)
     {
-        if (execution == RenderExecution::Auto)
+        if (execution == RenderExecution::Immediate)
             return false;
         if (color.a == 0)
             return true;
@@ -111,7 +111,7 @@ class SoftwareRenderBackend final : public RenderBackend
     }
     bool recordBlit(SDL_Surface *source, SDL_Rect src, SDL_Rect dst, Uint8 alpha, bool opaque)
     {
-        if (execution == RenderExecution::Auto || source->format != target->format ||
+        if (execution == RenderExecution::Immediate || source->format != target->format ||
             source->format != SDL_PIXELFORMAT_ARGB8888)
             return false;
         if (alpha == 0)
@@ -433,7 +433,7 @@ class SoftwareRenderBackend final : public RenderBackend
 			fallback().blit(key, source, revision, opaque, sourceRect, destination, alpha);
 			return;
 		}
-        if (execution != RenderExecution::Auto)
+        if (execution != RenderExecution::Immediate)
         {
             PERF_SCOPE_TIME(RasterCapture);
             if (recordBlit(source, sourceRect, mapped, alpha, opaque))
@@ -448,7 +448,7 @@ class SoftwareRenderBackend final : public RenderBackend
     bool fillPixels(const SDL_Rect &rect, SDL_Color color) override
     {
         ++counts.fills;
-        if (execution != RenderExecution::Auto)
+        if (execution != RenderExecution::Immediate)
         {
             PERF_SCOPE_TIME(RasterCapture);
             if (recordFill(rect, color))
@@ -463,7 +463,7 @@ class SoftwareRenderBackend final : public RenderBackend
     bool blitPixels(SDL_Surface *source, const SDL_Rect &src, const SDL_Rect &dst, Uint8 alpha) override
     {
         ++counts.blits;
-        if (execution != RenderExecution::Auto)
+        if (execution != RenderExecution::Immediate)
         {
             PERF_SCOPE_TIME(RasterCapture);
             if (recordBlit(source, src, dst, alpha, false))
@@ -489,7 +489,7 @@ class SoftwareRenderBackend final : public RenderBackend
 			fallback().fill(rect, color);
 			return;
 		}
-        if (execution != RenderExecution::Auto)
+        if (execution != RenderExecution::Immediate)
         {
             PERF_SCOPE_TIME(RasterCapture);
             if (recordFill(pixels(rect), color))
