@@ -125,9 +125,10 @@ bool towerThreat(const SimulationSnapshot::Handle& world, const Task& task, int 
     }
     return false;
 }
-bool legal(const SimulationSnapshot::Handle& world, const Task& task, int x, int y, bool occupancy)
+namespace
 {
-    const auto view = world.view();
+bool legal(const MapState::View& view, const Task& task, int x, int y, bool occupancy)
+{
     const auto index = view.index(x,y);
     const auto& terrain = view.terrainProperties(index);
     const auto& cell = view.occupancy[index];
@@ -137,6 +138,11 @@ bool legal(const SimulationSnapshot::Handle& world, const Task& task, int x, int
         && !(view.areas[index].forbidden & (1u<<task.team))
         && cell.building==0xffff && !MapState::resourceBlocksGround(view,index)
         && (!occupancy || cell.groundUnit==0xffff || cell.groundUnit==task.unit.gid);
+}
+}
+bool legal(const SimulationSnapshot::Handle& world, const Task& task, int x, int y, bool occupancy)
+{
+    return legal(world.view(),task,x,y,occupancy);
 }
 Uint64 Planner::retainedBytes() const
 {
@@ -162,7 +168,7 @@ Planner::Field Planner::build(const SimulationSnapshot::Handle& world, const Req
     };
     const auto view = world.view();
     const auto seedAt = [&](int x,int y,Uint32 destination) {
-        if (!legal(world,r.task,x,y,false)) return;
+        if (!legal(view,r.task,x,y,false)) return;
         const auto i = Uint32(view.index(x,y));
         if (field.costs[i]==0) { field.destinations[i]=std::min(field.destinations[i],destination); return; }
         field.costs[i]=0; field.destinations[i]=destination; enqueue(i);
@@ -212,7 +218,7 @@ Planner::Field Planner::build(const SimulationSnapshot::Handle& world, const Req
         const int x=int(current%world.width), y=int(current/world.width);
         for (auto d : Directions) {
             const int nx=view.normalizeX(x+d[0]),ny=view.normalizeY(y+d[1]);
-            if (!legal(world,r.task,nx,ny,false)) continue;
+            if (!legal(view,r.task,nx,ny,false)) continue;
             const auto next=Uint32(view.index(nx,ny));
             // Reverse arc u<-v pays entry(v), as in the forward u->v move.
             const auto candidate=field.costs[current]+step(world,r.task,current,d[0]&&d[1]);
@@ -259,7 +265,7 @@ Suggestion Planner::plan(const SimulationSnapshot::Handle& world, const Request&
         const auto oldDistance=distance(request.task.x,request.task.y,targetX,targetY,world.width,world.height);
         for (unsigned i=0;i<8;++i) {
             const auto d=Directions[i]; const int x=view.normalizeX(request.task.x+d[0]), y=view.normalizeY(request.task.y+d[1]);
-            if (!legal(world,request.task,x,y,false)) continue;
+            if (!legal(view,request.task,x,y,false)) continue;
             const auto remaining=unsigned(distance(x,y,targetX,targetY,world.width,world.height));
             if (wander) {
                 const auto& terrain=view.terrainProperties(view.index(x,y));
@@ -290,12 +296,25 @@ Suggestion Planner::plan(const SimulationSnapshot::Handle& world, const Request&
         for(unsigned i=0;i<8;++i) {
             const auto d=Directions[i]; const auto next=view.index(request.task.x+d[0],request.task.y+d[1]);
             const auto value=plane[next];
-            if(value<=GRADIENT_UNREACHABLE || !legal(world,request.task,request.task.x+d[0],request.task.y+d[1],false))continue;
+            if(value<=GRADIENT_UNREACHABLE || !legal(view,request.task,request.task.x+d[0],request.task.y+d[1],false))continue;
             ranks[i]={value>old?0u:value==old?1u:2u,unsigned(GRADIENT_AT_GOAL-value)+step(world,request.task,next,d[0]&&d[1])};
         }
     } else {
-        Task sharedTask=request.task;
-        sharedTask.unit={}; sharedTask.x=sharedTask.y=0;
+        // Route fields depend on travel capabilities and goal semantics, not
+        // each caller's medical/activity state, assignment or incarnation.
+        // Keep the full task on the suggestion for authoritative validation.
+        Task sharedTask;
+        sharedTask.team=request.task.team;
+        sharedTask.walk=request.task.walk;
+        sharedTask.swim=request.task.swim;
+        sharedTask.fly=request.task.fly;
+        if(request.mode==Mode::Resource) {
+            sharedTask.material=request.task.material;
+            sharedTask.attached=request.task.attached; // supplier/home semantics
+        } else if(request.mode!=Mode::Clearing && request.mode!=Mode::Idle) {
+            if(building(world,request.task.target))sharedTask.target=request.task.target;
+            else { sharedTask.targetX=request.task.targetX;sharedTask.targetY=request.task.targetY; }
+        }
         Uint64 structures=0;
         for (const auto& b:world.entities->buildings)
             structures=mix(structures^mix(Uint64(b.identity.generation)<<16|b.identity.gid)^mix(Uint64(b.posX)<<32|Uint32(b.posY))^mix(Uint64(b.typeNum)<<32|b.availableSupplyMask));
@@ -321,7 +340,7 @@ Suggestion Planner::plan(const SimulationSnapshot::Handle& world, const Request&
         for (unsigned i=0;i<8;++i) {
             const auto d=Directions[i]; const auto next=view.index(request.task.x+d[0],request.task.y+d[1]);
             const auto remaining=found->costs[next];
-            if(remaining==Unknown || !legal(world,request.task,request.task.x+d[0],request.task.y+d[1],false))continue;
+            if(remaining==Unknown || !legal(view,request.task,request.task.x+d[0],request.task.y+d[1],false))continue;
             const unsigned group=remaining<old?0u:remaining==old?1u:2u;
             ranks[i]={group,remaining+step(world,request.task,next,d[0]&&d[1])};
         }

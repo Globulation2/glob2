@@ -63,6 +63,7 @@ public:
     Shadow(ComputeExecutor& executor,unsigned delay,unsigned teams,int width,int height);
     ~Shadow();
     bool planningEnabled() const { return delay != 0; }
+    bool needsBoundary(Uint32 tick) const { return planningEnabled() && (!lastBoundary || *lastBoundary != tick); }
     static constexpr auto requirements = SimulationSnapshot::Simulation | SimulationSnapshot::bit(SimulationSnapshot::Component::Exploration);
     void boundary(const Game& game,const SimulationSnapshot::Handle& world);
     void completeAction(const Unit& unit);

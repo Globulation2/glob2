@@ -224,7 +224,10 @@ void Game::syncStep(Sint32 localTeam, PreparationCompletion completion)
 	{
 		PERF_SCOPE_TIME(Tick);
         // Direct callers share the same idempotent completed-world boundary.
-        if (movementShadow && movementShadow->planningEnabled()) captureReadBoundary({},false);
+        // An engine observation already admitted this tick before orders. Order
+        // acknowledgements may invalidate snapshots for other consumers; avoid
+        // rebuilding one merely to discover that movement admission is complete.
+        if (movementShadow && movementShadow->needsBoundary(stepCounter)) captureReadBoundary({},false);
 		if (globalContainer->replayWriter && globalContainer->replayWriter->isValid())
 		{
 			globalContainer->replayWriter->advanceStep();

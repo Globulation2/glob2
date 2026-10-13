@@ -82,6 +82,35 @@ TEST_SUITE("MovementPlanning")
         CHECK(legal(world,r.task,6,5,false));CHECK_FALSE(legal(world,r.task,6,5,true));
         Planner planner;CHECK(planner.plan(world,r,1).directions[0]==3);
     }
+    TEST_CASE("compatible building goals share fields without sharing caller task identity")
+    {
+        glob2test::HeadlessGlobals globals;
+        glob2test::HeadlessGame fixture({.loadDefaultRace=true,.header=true});
+        auto* goal=fixture.addBuilding("inn",10,10);REQUIRE(goal);
+        const auto world=fixture.game.captureReadBoundary({},false,Shadow::requirements);
+        auto first=request(world,Mode::Building);
+        first.task.target=Game::refOf(goal);
+        Planner shared;
+        shared.plan(world,first,1);
+        auto second=first;
+        second.task.unit={9,3};second.task.x=6;second.task.y=7;
+        second.task.attached={15,4};second.task.targetX=20;second.task.targetY=21;
+        second.task.material=1;second.task.capabilities=123;
+        second.task.displacement=UnitState::DIS_GOING_TO_BUILDING;
+        const auto reused=shared.plan(world,second,1);
+        Planner fresh;const auto expected=fresh.plan(world,second,1);
+        CHECK(shared.metrics.fields==1);CHECK(shared.metrics.cacheHits==1);
+        CHECK(reused.request.task==second.task);
+        CHECK(reused.directions==expected.directions);CHECK(reused.preferred==expected.preferred);
+        CHECK(reused.disposition==expected.disposition);
+        REQUIRE(reused.destination);REQUIRE(expected.destination);
+        CHECK(reused.destination->x==expected.destination->x);
+        CHECK(reused.destination->y==expected.destination->y);
+        CHECK(reused.destination->supplier==expected.destination->supplier);
+        // An unresolved target uses the requested coordinates instead.
+        second.task.target={};second.task.targetX=2;second.task.targetY=2;
+        shared.plan(world,second,1);CHECK(shared.metrics.fields==2);
+    }
     TEST_CASE("captured tower hazards match the live range and projectile policy")
     {
         glob2test::HeadlessGlobals globals;
@@ -166,6 +195,23 @@ TEST_SUITE("MovementPlanning")
         CHECK(value("maximum_batches")==1);fixture.game.drainMovementShadow();
         CHECK(value("team_0_idle_published")==0);
         CHECK_THROWS(fixture.game.configureMovementShadow(3));
+    }
+    TEST_CASE("order acknowledgement invalidation does not recapture an admitted movement tick")
+    {
+        glob2test::HeadlessGlobals globals;
+        glob2test::HeadlessGame fixture({.loadDefaultRace=true,.header=true});
+        REQUIRE(fixture.addUnit(WORKER,8,8));
+        auto& game=fixture.game;
+        game.configureMovementShadow(4);
+        game.captureReadBoundary({},false);
+        const auto captures=game.snapshots().metrics.captures;
+        // The engine can invalidate presentation/session inputs after admission.
+        game.snapshots().invalidateBoundary();
+        game.syncStep(0,Game::PreparationCompletion::Deferred);
+        CHECK(game.snapshots().metrics.captures==captures);
+        CHECK(game.movementDiagnostics()->needsBoundary(game.stepCounter));
+        game.captureReadBoundary({},false);
+        CHECK_FALSE(game.movementDiagnostics()->needsBoundary(game.stepCounter));
     }
 }
 

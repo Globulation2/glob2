@@ -538,6 +538,12 @@ contaminate their timing.
 
 The optional movement shadow is owned by `Game`, alongside the AI pipeline, and
 leases projected immutable inputs from the shared completed-world boundary.
+Direct simulation stepping captures movement inputs only when the current tick
+has not already been admitted; later order acknowledgements can invalidate other
+snapshot consumers without forcing a second movement capture. Route searches
+reuse one prepared map view, and field keys include capabilities and goal inputs
+rather than caller identity or unrelated task state. Suggestions retain the full
+caller task for validation.
 Exploration is a separately requested component containing the aging per-team
 exploration bytes. Its chunk tracking is enabled lazily when a capture requests
 it; discovery and visibility are independent observations. Refresh, decay,
