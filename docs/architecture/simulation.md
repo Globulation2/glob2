@@ -415,6 +415,15 @@ per-field transfers inside those groups. Frozen8 uses four-color integer relaxat
 on 16×16 tiles with frozen halos and eight sweeps; Jacobi uses separate input/output
 buffers for each round. A convergence signal starts complete-field validation;
 it does not by itself establish correct execution.
+Vulkan retains one adapter-owned work set because its execution is serial. The
+set holds buffers, immutable descriptor bindings, command resources, a fence and
+mapped staging/readback storage. It is reused only after all submissions retire,
+including canceled work whose fence later proves completion. Unknown work stays
+quarantined and charged. Host metadata and mapped allocations share the host
+limit; every device allocation retains its device charge. An idle set is evicted
+before declining seed-backup admission or replacing it with larger storage, and
+explicit shutdown releases it after retirement. Inputs are overwritten for each
+captured request; serving fields remain separate from this storage.
 The GLSL sources generate pinned SPIR-V and WGSL with integer-only wrapping.
 Vulkan/WebGPU readback also passes an exact positive-cost fixed-point check against
 original seeds before commit. A convergence flag alone cannot publish fabricated
