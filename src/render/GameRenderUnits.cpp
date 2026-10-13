@@ -320,7 +320,7 @@ void Game::drawUnitPathLine(int left, int top, int right, int bot, int sw, int s
 
 	if(scene.entities.owner(*unit).otherVision & visibleTeams)
 	{
-		if (unit->validTarget)
+		if (unit->validTarget())
 		{
 			int px = ((unit->posX - viewportX) & map.getMaskW()) * 32;
 			int py = ((unit->posY - viewportY) & map.getMaskH()) * 32;

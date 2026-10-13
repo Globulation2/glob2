@@ -197,7 +197,7 @@ TEST_CASE("terrain strokes clear incompatible resources; buildings and units")
         {
             World world(swarm, swarmW, swarmH, offset[0], offset[1]);
             Unit* worker = world.game.getUnit(world.workerGid);
-            worker->performance[SWIM] = swimming ? worker->race->getUnitType(WORKER, 1)->performance[SWIM] : 0;
+            worker->setPerformance(SWIM,swimming ? worker->race->getUnitType(WORKER, 1)->performance[SWIM] : 0);
             Unit* explorer = world.game.getUnit(world.explorerGid);
             world.game.map.setAirUnit(explorer->posX, explorer->posY, NOGUID);
             explorer->posX = world.workerX;
@@ -490,7 +490,7 @@ TEST_CASE("workers carry food from camp-sites to an inn and leave their other yi
     auto* inn=world.addBuilding("inn",6,6,1);
     REQUIRE(inn);
     inn->maxUnitWorking=3;
-    inn->materials[WHEAT]=0;
+    inn->setMaterial(WHEAT, 0);
     const int sites[][2]={{16,8},{16,10},{16,12}};
     for (const auto& site : sites) REQUIRE(g.map.incResourceByIndex(site[0],site[1],resourceIndex(*camp),0));
     const auto stock=[&](MaterialId material) {
@@ -501,7 +501,7 @@ TEST_CASE("workers carry food from camp-sites to an inn and leave their other yi
     REQUIRE(stock(MaterialId::Food)==6);
     for (int i=0;i<3;++i) world.addUnit(WORKER,4+i,16,0,1);
     inn->updateCallLists();
-    for (int tick=0;tick<3000 && inn->materials[WHEAT]<3;++tick)
+    for (int tick=0;tick<3000 && inn->material(WHEAT)<3;++tick)
     {
         for (int i=0;i<3;++i)
         {
@@ -512,8 +512,8 @@ TEST_CASE("workers carry food from camp-sites to an inn and leave their other yi
         world.step();
     }
     // Every meal in the inn came out of a camp-site; wood and fabric stay for later.
-    CHECK(inn->materials[WHEAT]>=3);
-    CHECK(stock(MaterialId::Food)==6-inn->materials[WHEAT]);
+    CHECK(inn->material(WHEAT)>=3);
+    CHECK(stock(MaterialId::Food)==6-inn->material(WHEAT));
     CHECK(stock(MaterialId::Wood)==6);
     CHECK(stock(MaterialId::Fabric)==3);
 }

@@ -24,7 +24,7 @@ Building* place(glob2test::HeadlessGame& world, const char* key, int x, int y)
     if (building->type->semantics.occupiesGround)
         world.game.map.setBuilding(x, y, building->type->width, building->type->height, building->gid);
     world.team->addToStaticAbilitiesLists(building);
-    for (int resource=0; resource<MaterialCount; ++resource) building->materials[resource]=64;
+    for (int resource=0; resource<MaterialCount; ++resource) building->setMaterial(resource, 64);
     return building;
 }
 std::vector<Uint32> components(Game& game, bool legacy152Representation=false)
@@ -52,9 +52,9 @@ void invariants(Game& game)
             CHECK(building->unitsInside.size() <= std::size_t(building->maxUnitInside));
             for (int resource=0; resource<MaterialCount; ++resource)
             {
-                CHECK(building->materials[resource] >= 0);
+                CHECK(building->material(resource) >= 0);
                 CHECK(building->reservedMaterials[resource] >= 0);
-                CHECK(building->reservedMaterials[resource] <= building->materials[resource]);
+                CHECK(building->reservedMaterials[resource] <= building->material(resource));
             }
         }
 }
@@ -156,14 +156,14 @@ TEST_CASE("retained split recipes conserve every charged resource through cancel
                 for (int unit=0; unit<NB_UNIT_TYPE; ++unit)
                     spent += world.team->stats.measurements().births[unit] *
                         forge->type->semantics.production.recipes[unit].cost[resource];
-                CHECK(forge->materials[resource] + spent == 64);
+                CHECK(forge->material(resource) + spent == 64);
                 CHECK(forge->availableMaterial(resource) >= 0);
             }
             if (tick % 53 == 0)
             {
                 forge->cancelProduction();
                 for (int resource=0; resource<MaterialCount; ++resource)
-                    CHECK(forge->availableMaterial(resource) == forge->materials[resource]);
+                    CHECK(forge->availableMaterial(resource) == forge->material(resource));
             }
         }
         for (int unit=0; unit<NB_UNIT_TYPE; ++unit)

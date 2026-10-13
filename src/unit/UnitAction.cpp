@@ -58,7 +58,7 @@ void Unit::handleActionRandomGround()
 	assert(!performance[FLY]);
 	if (!performance[WALK] && !performance[SWIM]) {
 		dx=dy=0; direction=UNIT_DIRECTION_NONE; action=STOP_WALK;
-		speed=std::max(1,performance[STOP_WALK]); return;
+		speed=std::max(1,int(performance[STOP_WALK])); return;
 	}
 	clearOccupiedMapSlot();
 	owner->map->pathfindRandom(this);
@@ -104,7 +104,7 @@ void Unit::handleActionGoingTarget()
 {
 	assert(!performance[FLY]);
 	clearOccupiedMapSlot();
-	owner->map->pathfindPointToPoint(posX, posY, targetX, targetY, &dx, &dy, swimClass(), owner->me, GOING_TARGET_MAX_PATH_LENGTH);
+	findDisplacement([&](int* pathDx, int* pathDy) { return owner->map->pathfindPointToPoint(posX, posY, targetX, targetY, pathDx, pathDy, swimClass(), owner->me, GOING_TARGET_MAX_PATH_LENGTH); });
 	directionFromDxDy();
 	wrapPosition();
 

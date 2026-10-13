@@ -609,7 +609,8 @@ BuildingSeed captureBuildingSeed(const Building& building, int swim, BuildingRou
     seed.route=building.resolveRoute(route);
     seed.occupiesGround=building.type->semantics.occupiesGround;
     seed.teamMask=building.owner->me; seed.allies=building.owner->allies;
-    std::copy(std::begin(building.clearingMaterials), std::end(building.clearingMaterials), seed.clearingMaterials.begin());
+    for (unsigned material=0; material<MaterialCount; ++material)
+        seed.clearingMaterials[material]=building.clearsMaterial(material);
     return seed;
 }
 

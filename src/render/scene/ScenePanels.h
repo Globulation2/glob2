@@ -24,7 +24,7 @@ struct SceneBuildingPanel
     const SimulationSnapshot::TeamView* ownerRecord = nullptr;
     const SimulationSnapshot::TeamView& owner() const { static const SimulationSnapshot::TeamView empty{}; return ownerRecord ? *ownerRecord : empty; }
     const BuildingType* type = nullptr;
-    const Sint32* materials = nullptr; // borrowed from the retained world
+    BuildingStockView materials; // borrowed from the retained world
     int productionDuration = 0;
     std::span<const UnitRef> insideUnits, workingUnits;
     bool hardSpaceForRepair = false, hardSpaceForUpgrade = false, showLevel = false;

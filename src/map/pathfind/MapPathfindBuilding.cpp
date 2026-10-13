@@ -71,7 +71,7 @@ bool Map::prepareBuildingGradient(Building *building, int swimClass, BuildingRou
 		if (gradientStats) gradientStats->setPendingReason(reason);
 		updateGlobalGradient(building, swimClass, route);
 	}
-	return !building->locked[building->routeAccess(swimClass, route)];
+	return !building->isLocked(building->routeAccess(swimClass, route));
 }
 
 const Uint16 *Map::buildingGradient(Building *building, int swimClass, BuildingRoute route)
@@ -158,7 +158,7 @@ bool Map::pathfindBuilding(EntityRandom& random, Building *building, int swimCla
 	noteBuildingSyncReason(BuildingSyncReason::Other);
 	if (gradientStats) gradientStats->setPendingReason(BuildingGradientStats::Reason::Stuck);
 	updateGlobalGradient(building, swimClass, route);
-	if (building->locked[building->routeAccess(swimClass, route)])
+	if (building->isLocked(building->routeAccess(swimClass, route)))
 		return false;
 	if (buildingGradientDirection(random, building, swimClass, x, y, dx, dy, true, route))
 		return true;

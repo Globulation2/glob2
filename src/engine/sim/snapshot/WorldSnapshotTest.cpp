@@ -242,13 +242,13 @@ TEST_SUITE("WorldSnapshot")
         static_assert(std::is_base_of_v<UnitState,SimulationSnapshot::UnitView>);
         CHECK(observed.typeNum==unit->typeNum); CHECK(observed.posX==unit->posX); CHECK(observed.posY==unit->posY);
         CHECK(observed.configuredVisionRadius==unit->configuredVisionRadius);
-        CHECK(observed.action==unit->action); CHECK(observed.needToRecheckMedical==unit->needToRecheckMedical);
-        CHECK(observed.serviceResourcesReserved==unit->serviceResourcesReserved);
+        CHECK(observed.action==unit->action); CHECK(observed.needToRecheckMedical()==unit->needToRecheckMedical());
+        CHECK(observed.serviceResourcesReserved()==unit->serviceResourcesReserved());
         CHECK(observed.trigHP==unit->trigHP); CHECK(observed.trigHungryCarrying==unit->trigHungryCarrying);
         CHECK(observed.delta==unit->delta); CHECK(observed.jobTimer==17); CHECK(observed.terrainHealthRemainder==9);
         for(int i=0;i<NB_ABILITY;++i) {
             CHECK(observed.performance[i]==unit->performance[i]); CHECK(observed.level[i]==unit->level[i]);
-            CHECK(observed.canLearn[i]==unit->canLearn[i]);
+            CHECK(observed.canLearn(i)==unit->canLearn(i));
         }
         const int oldLevel=observed.level[WALK]; unit->level[WALK]=oldLevel+1; unit->jobTimer=31;
         CHECK(observed.level[WALK]==oldLevel); CHECK(observed.jobTimer==17);
@@ -695,12 +695,12 @@ TEST_SUITE("WorldSnapshot")
 		local->localMaterials[WOOD] = 17;
 		shared->localMaterials[WOOD] = 19;
 		// Exercise the actual runtime binding independently of the catalog flag.
-		shared->materials = fixture.game.teams[0]->teamMaterials;
+		shared->sharedMaterials = fixture.game.teams[0]->teamMaterials;
 		fixture.game.teams[0]->teamMaterials[WOOD] = 23;
 		local->priority = -1; local->maxUnitWorking = 3;
 		shared->minWorkerLevelToFlag = 2;
 		shared->explorersRequireBombing = true;
-		local->locked[4] = true;
+		local->setLocked(4,true);
 		const auto catalog = SimulationSnapshot::captureCatalog(fixture.game);
 		auto captured = SimulationSnapshot::capture(fixture.game, catalog);
 		AIEngine::AIWorldView held(captured);
@@ -715,8 +715,8 @@ TEST_SUITE("WorldSnapshot")
 		}
 		CHECK_FALSE(frozenLocal->usesTeamResources);
 		CHECK(frozenShared->usesTeamResources);
-		CHECK(held.buildingResources(*frozenLocal).data() == frozenLocal->localMaterials);
-		CHECK(held.buildingResources(*frozenShared).data() == held.teams[0].materials.data());
+		CHECK(held.buildingResources(*frozenLocal).privateData() == frozenLocal->localMaterials);
+		CHECK(held.buildingResources(*frozenShared).teamData() == held.teams[0].materials.data());
 		CHECK(held.buildingResources(*frozenLocal)[WOOD] == 17);
 		CHECK(held.buildingResources(*frozenShared)[WOOD] == 23);
 		local->localMaterials[WOOD] = 31;
@@ -1104,4 +1104,78 @@ TEST_CASE("explicit observation boundaries refresh paused state and retain old l
     CHECK(before.entities->units.front().hp == previousHp);
     CHECK(fixture.game.snapshots().captureBoundary(fixture.game).entities->units.front().hp == previousHp - 1);
 }
+}
+
+TEST_SUITE("WorldSnapshot")
+{
+    TEST_CASE("entity copy accounting is separate from map traffic and logical verification includes presentation")
+    {
+        glob2test::HeadlessGlobals globals;
+        glob2test::HeadlessGame fixture({.wDec=5,.hDec=5,.teams=1,.clearImmobile=true,.loadDefaultRace=true});
+        auto* unit=fixture.addUnit(WORKER,12,12); REQUIRE(unit);
+        auto* building=fixture.addBuilding("inn",4,4,0,0); REQUIRE(building);
+        SimulationSnapshot::Storage storage;
+        const auto requirements=SimulationSnapshot::bit(SimulationSnapshot::Component::Entities);
+        const auto catalog=SimulationSnapshot::captureCatalog(fixture.game);
+        auto first=SimulationSnapshot::capture(fixture.game,catalog,requirements,nullptr,&storage);
+        CHECK(storage.bytesCopied==0);
+        CHECK(storage.entityBytesCopied==sizeof(UnitState)+sizeof(BuildingStateRecord));
+        CHECK(storage.entitySidecarBytesCopied==sizeof(SimulationSnapshot::BuildingView::constructionOriginRatios));
+        CHECK_NOTHROW(SimulationSnapshot::verifyCapture(fixture.game,first));
+        unit->levelUpAnimation=LEVEL_UP_ANIMATION_FRAME_COUNT;
+        CHECK_THROWS_AS(SimulationSnapshot::verifyCapture(fixture.game,first),std::logic_error);
+        CHECK(first.entities->units.front().levelUpAnimation==0);
+        auto second=SimulationSnapshot::capture(fixture.game,catalog,requirements,&first,&storage);
+        CHECK_NOTHROW(SimulationSnapshot::verifyCapture(fixture.game,second));
+        CHECK(second.entities!=first.entities);
+        CHECK(second.entities->units.front().levelUpAnimation==LEVEL_UP_ANIMATION_FRAME_COUNT);
+        building->setPrivateMaterial(MaterialSlotCount-1,255);
+        CHECK_THROWS_AS(SimulationSnapshot::verifyCapture(fixture.game,second),std::logic_error);
+        CHECK(first.entities->buildings.front().localMaterials[MaterialSlotCount-1]==0);
+    }
+}
+
+TEST_SUITE("WorldSnapshot")
+{
+    TEST_CASE("entity verification rejects incomplete records and changed relationship sidecars")
+    {
+        glob2test::HeadlessGlobals globals;
+        glob2test::HeadlessGame fixture({.wDec=5,.hDec=5,.teams=1,.clearImmobile=true,.loadDefaultRace=true});
+        auto* worker=fixture.addUnit(WORKER,12,12); REQUIRE(worker);
+        auto* occupant=fixture.addUnit(WORKER,13,12); REQUIRE(occupant);
+        auto* building=fixture.addBuilding("inn",4,4); REQUIRE(building);
+        REQUIRE(fixture.addBuilding("inn",8,4));
+        building->unitsWorking.push_back(worker);
+        building->unitsInside.push_back(occupant);
+        const auto original=SimulationSnapshot::capture(fixture.game,SimulationSnapshot::captureCatalog(fixture.game),
+            SimulationSnapshot::bit(SimulationSnapshot::Component::Entities));
+        CHECK_NOTHROW(SimulationSnapshot::verifyCapture(fixture.game,original));
+
+        // Mutate a private component copy, keeping the original immutable lease.
+        const auto check=[&](const char* name,const auto& mutate) {
+            INFO(name);
+            auto changed=original;
+            auto entities=std::make_shared<SimulationSnapshot::Entities>(*original.entities);
+            mutate(*entities);
+            changed.entities=std::move(entities);
+            CHECK_THROWS_AS(SimulationSnapshot::verifyCapture(fixture.game,changed),std::logic_error);
+            CHECK_NOTHROW(SimulationSnapshot::verifyCapture(fixture.game,original));
+        };
+        check("omitted unit", [&](auto& entities) { entities.units.pop_back(); });
+        check("omitted building", [&](auto& entities) { entities.buildings.pop_back(); });
+        check("duplicate unit", [&](auto& entities) { entities.units[1]=entities.units[0]; });
+        check("duplicate building", [&](auto& entities) { entities.buildings[1]=entities.buildings[0]; });
+        check("unit order", [&](auto& entities) { std::swap(entities.units[0],entities.units[1]); });
+        check("unit lookup", [&](auto& entities) { entities.unitSlotIndices[worker->gid]=SimulationSnapshot::Entities::NoRecord; });
+        check("unit team", [&](auto& entities) { entities.units[0].team=1; });
+        check("unit attack strength", [&](auto& entities) { ++entities.units[0].realAttackStrength; });
+        check("working reference", [&](auto& entities) { entities.relationships[entities.buildings[0].working.offset]=Game::refOf(occupant); });
+        check("inside reference", [&](auto& entities) { entities.relationships[entities.buildings[0].inside.offset]=Game::refOf(worker); });
+        check("working count", [&](auto& entities) { entities.buildings[0].working.count=0; });
+        check("inside offset", [&](auto& entities) { entities.buildings[0].inside.offset=entities.relationships.size(); });
+        check("unreferenced relationship", [&](auto& entities) { entities.relationships.push_back(Game::refOf(worker)); });
+        check("derived maximum hp", [&](auto& entities) { ++entities.buildings[0].maxHp; });
+        check("shared inventory binding", [&](auto& entities) { entities.buildings[0].usesTeamResources=!entities.buildings[0].usesTeamResources; });
+        check("supply mask", [&](auto& entities) { entities.buildings[0].availableSupplyMask^=1; });
+    }
 }

@@ -91,9 +91,9 @@ std::string marketTrace(bool enabled, bool report=false)
 		g.teams[0]->sharedVisionOther = g.teams[0]->sharedVisionExchange;
 		g.teams[1]->sharedVisionOther = g.teams[1]->sharedVisionExchange;
 		inn->maxUnitWorking = 3;
-		inn->materials[WHEAT] = inn->type->maxMaterial[WHEAT] - 1;
-		market->materials[CHERRY] = 100;
-		second->materials[ORANGE] = 100;
+		inn->setMaterial(WHEAT, inn->type->maxMaterial[WHEAT] - 1);
+		market->setMaterial(CHERRY, 100);
+		second->setMaterial(ORANGE, 100);
 		g.map.setResourceByIndex(5, 10, WHEAT, 0);
 		for (int i=0; i<6; ++i) world.addUnit(WORKER, 4+i, 4, 0, 1);
 		inn->updateCallLists();
@@ -127,8 +127,8 @@ std::string marketTrace(bool enabled, bool report=false)
 		}
         // There are no natural cherry tiles. This checks actual market-to-inn
         // delivery; ownExchangeBuilding is retained only for old saved journeys.
-        CHECK(inn->materials[CHERRY] > 0);
-		CHECK(market->materials[CHERRY] < 100);
+        CHECK(inn->material(CHERRY) > 0);
+		CHECK(market->material(CHERRY) < 100);
 #if VERSION_MINOR >= 135
 		std::size_t fields=0;
 		for (int t=0;t<Team::MAX_COUNT;++t) for (int r=0;r<MaterialSlotCount;++r) for (int sw=0;sw<SWIM_CLASS_COUNT;++sw)
@@ -183,7 +183,7 @@ TEST_CASE("identical gradient refresh workloads report CPU and memory [benchmark
 		options.experiments.set(ExperimentId::MarketsV2,enabled);
 		glob2test::HeadlessGame world(options);
 		auto *market=world.addBuilding("market",8,8);
-		market->materials[CHERRY]=100;
+		market->setMaterial(CHERRY, 100);
 		for (int r=0;r<MaterialCount;++r)
 		{
 			world.game.map.setResourceByIndex(20+r*2,20,r,0);
@@ -205,7 +205,7 @@ TEST_CASE("disabled gate blocks explicit fetch APIs and upgrade execution")
 	auto &g=world.game;
 	auto *market=world.addBuilding("market",8,8);
 	REQUIRE(market);
-	market->materials[CHERRY]=20;
+	market->setMaterial(CHERRY, 20);
 	CHECK_FALSE(g.map.marketsV2Enabled());
 	CHECK_FALSE(market->isUpgradeAvailable());
 	for (int sw=0; sw<SWIM_CLASS_COUNT; ++sw)
@@ -247,7 +247,7 @@ TEST_CASE("each market level accepts only its resources across all swim classes"
         if(waterOnly)
             for(int y=0;y<g.map.getH();++y)for(int x=0;x<g.map.getW();++x)
                 if(g.map.getBuilding(x,y)==NOGBID)g.map.paintCell(x,y,WATER);
-		for (int r=0; r<MaterialSlotCount; ++r) market->materials[r]=100;
+		for (int r=0; r<MaterialSlotCount; ++r) market->setMaterial(r, 100);
 		CHECK_FALSE(market->fetchesFromMarkets());
 		for (int r=0; r<MaterialCount; ++r)
 			for (int sw=waterOnly?SWIM_CLASS_COUNT-1:0; sw<(waterOnly?SWIM_CLASS_COUNT:SWIM_CLASS_COUNT-1); ++sw)
@@ -270,7 +270,7 @@ TEST_CASE("market routes respect forbidden ground and water across swim classes"
 	options.experiments.set(ExperimentId::MarketsV2);
 	glob2test::HeadlessGame world(options);
 	auto *market=world.addBuilding("market",8,8);
-	market->materials[CHERRY]=20;
+	market->setMaterial(CHERRY, 20);
     if(waterOnly)
         for(int y=0;y<world.game.map.getH();++y)for(int x=0;x<world.game.map.getW();++x)
             if(world.game.map.getBuilding(x,y)==NOGBID)world.game.map.paintCell(x,y,WATER);
@@ -296,12 +296,12 @@ TEST_CASE("a frequently refreshed market field publishes depletion and restockin
 	world.game.gameHeader.setResourceGrowthDisabled(true);
 	auto *market=world.addBuilding("market",8,8);
 	REQUIRE(market);
-	market->materials[CHERRY]=20;
+	market->setMaterial(CHERRY, 20);
 	map.configureGradientPipeline(2,3);
 	map.getMaterialGradientSlot(0,CHERRY,0,true);
 	for (int tick=0;tick<8;++tick) { map.advanceGradientPipeline(); map.syncStep(tick); }
 	CHECK(map.gradientPipelineStatus().published>0);
-	market->materials[CHERRY]=0;
+	market->setMaterial(CHERRY, 0);
 	map.dirtyMarketGradientsSlot(0,CHERRY);
 	for (int tick=8;tick<16;++tick) { map.advanceGradientPipeline(); map.syncStep(tick); }
 	CHECK_FALSE(map.materialAvailableSlot(0,CHERRY,0,5,5,true));
@@ -318,7 +318,7 @@ TEST_CASE("upgrading cancelling and completing preserve shared stock and gate")
 	auto &g=world.game;
 	auto *market=world.addBuilding("market",8,8);
 	REQUIRE(market);
-	market->materials[CHERRY]=100;
+	market->setMaterial(CHERRY, 100);
 	for (bool text : {false,true})
 	{
 		market->launchConstruction(1,1);
@@ -333,16 +333,16 @@ TEST_CASE("upgrading cancelling and completing preserve shared stock and gate")
 		CHECK(simulation(resumed.game)==simulation(g));
 		market->cancelConstruction(1);
 		CHECK(market->typeNum==50);
-		CHECK(market->materials[CHERRY]==100);
+		CHECK(market->material(CHERRY)==100);
 	}
 	for (int level=1; level<=2; ++level)
 	{
 		market->launchConstruction(1,1);
 		REQUIRE(market->tryToBuildingSiteRoom());
-		for (int r=0; r<MaterialSlotCount; ++r) market->materials[r]=market->type->maxMaterial[r];
+		for (int r=0; r<MaterialSlotCount; ++r) market->setMaterial(r, market->type->maxMaterial[r]);
 		market->updateBuildingSite();
 		CHECK(market->type->level==level);
-		CHECK(market->materials[CHERRY]==100);
+		CHECK(market->material(CHERRY)==100);
 		CHECK(market->isUpgradeAvailable()==(level==1));
 		market->hp=market->getEffectiveMaxHp(); // complete the provisional level's repair before upgrading again
 	}
@@ -354,15 +354,15 @@ TEST_CASE("market repair materials do not overwrite shared stock")
 	options.experiments.set(ExperimentId::MarketsV2);
 	glob2test::HeadlessGame world(options);
 	auto *market=world.addBuilding("market",8,8,1);
-	market->materials[WHEAT]=57; market->materials[CHERRY]=91;
+	market->setMaterial(WHEAT, 57); market->setMaterial(CHERRY, 91);
 	market->hp=market->getEffectiveMaxHp()/2;
 	market->launchConstruction(1,1);
 	REQUIRE(market->tryToBuildingSiteRoom());
 	CHECK(world.team->teamMaterials[WHEAT]==57);
 	CHECK(world.team->teamMaterials[CHERRY]==91);
 	market->cancelConstruction(1);
-	CHECK(market->materials[WHEAT]==57);
-	CHECK(market->materials[CHERRY]==91);
+	CHECK(market->material(WHEAT)==57);
+	CHECK(market->material(CHERRY)==91);
 }
 TEST_CASE("market panels show gated upgrades and shared stock [display][artifacts]")
 {
@@ -379,7 +379,7 @@ TEST_CASE("market panels show gated upgrades and shared stock [display][artifact
 		world.addUnit(WORKER,18,18,0,2);
 		auto *market=world.addBuilding("market",8,8,enabled ? 1 : 0);
 		REQUIRE(market);
-		for (int r=0;r<MaterialSlotCount;++r) market->materials[r]=market->type->maxMaterial[r]/2;
+		for (int r=0;r<MaterialSlotCount;++r) market->setMaterial(r, market->type->maxMaterial[r]/2);
 		world.gui.setSelection(GameGUI::BUILDING_SELECTION,market);
 		for (bool touch : {false,true})
 		{

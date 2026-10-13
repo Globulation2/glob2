@@ -146,9 +146,9 @@ public:
 	} tiles;
 	// Shared stock queries require a captured Teams component. Local stock is
 	// part of the building's authoritative scalar record.
-	std::span<const Sint32, MaterialSlotCount> buildingResources(const BuildingView& building) const
+	BuildingStockView buildingResources(const BuildingView& building) const
 	{
-		if (building.usesTeamResources) return teams[building.team].materials;
+		if (building.usesTeamResources) return teams[building.team].materials.data();
 		return building.localMaterials;
 	}
 	std::span<const UnitRef> workers(const BuildingView& building) const

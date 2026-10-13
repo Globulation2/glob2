@@ -314,7 +314,8 @@ bool Game::executeModifyClearingFlag(const OrderModifyClearingFlag& omcf, int lo
 		&& b->buildingState==Building::ALIVE
 		&& b->runtime->attractsRole(0))
 	{
-		memcpy(b->clearingMaterials, omcf.clearingMaterials, sizeof(bool)*MaterialCount);
+		for (unsigned material=0; material<MaterialCount; ++material)
+			b->setClearsMaterial(material,omcf.clearingMaterials[material]);
 		return true;
 	}
 
@@ -531,7 +532,7 @@ bool Game::executeModifySwarm(const OrderModifySwarm& oms, int localPlayer)
 			if (!b->runtime->produces(j) && oms.ratio[j]) return false;
 		for (int j=0; j<NB_UNIT_TYPE; j++)
 		{
-			b->ratio[j]=oms.ratio[j];
+			b->setProductionRatio(j,oms.ratio[j]);
 		}
 		b->update();
 		return true;

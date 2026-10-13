@@ -65,7 +65,7 @@ struct World
 		u->activity = Unit::ACT_UPGRADING;
 		u->displacement = displacement;
 		u->destinationPurpose = purpose;
-		u->needToRecheckMedical = false;
+		u->setNeedToRecheckMedical(false);
 		b->unitsInside.push_back(u);
 	}
 
@@ -142,7 +142,7 @@ static void destroyedInnExpelsEveryone()
 	for (Unit* u : units)
 		u->hungry = 0;
 	units[3]->displacement = Unit::DIS_EXITING_BUILDING;  // waiting for a free exit
-	inn->materials[WHEAT] = 10;
+	inn->setMaterial(WHEAT, 10);
 	// Recreate admission commitments for unpaid visits. The blocked exiting
 	// visitor already settled its meal and must not be charged again.
 	for (int i : {0,1,2,4}) inn->reserveService(units[i]);
@@ -157,14 +157,14 @@ static void destroyedInnExpelsEveryone()
 		require(u->attachedBuilding == nullptr && u->targetBuilding == nullptr, "unit is detached");
 		require(u->activity == Unit::ACT_RANDOM && u->displacement == Unit::DIS_RANDOM, "unit is free");
 		require(u->movement == Unit::MOV_EXITING_BUILDING && u->delta == 0, "unit walks out");
-		require(u->insideTimeout == 0 && u->needToRecheckMedical, "unit is out and re-evaluates its needs");
+		require(u->insideTimeout == 0 && u->needToRecheckMedical(), "unit is out and re-evaluates its needs");
 		require(u->speed > 0, "unit has a speed");
 		require(world.registered(u), "unit is registered on its tile");
 		require(world.inFootprintOrRing(u, bx, by, w, h), "unit lands on the footprint or the ring");
 	}
 	for (int i = 0; i < 3; ++i)
 		require(units[i]->hungry == (Unit::HUNGRY_MAX * (total / 2)) / total, "half a meal is kept");
-	require(inn->materials[WHEAT] == 7, "each started meal cost one wheat, nothing else did");
+	require(inn->material(WHEAT) == 7, "each started meal cost one wheat, nothing else did");
 	require(units[3]->hungry == 0, "a unit already on its way out gets nothing more");
 	require(units[4]->posX == bx - 1 && units[4]->posY == by && units[4]->dx == -1 && units[4]->dy == 0,
 	        "entering unit steps back onto the tile it came from");

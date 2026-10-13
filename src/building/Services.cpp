@@ -11,7 +11,7 @@
 Sint32 Building::availableMaterial(int resource) const
 {
 	const auto reserved = type->useTeamMaterials ? owner->reservedTeamMaterials[resource] : reservedMaterials[resource];
-	return std::max(0, materials[resource] - reserved);
+	return std::max(0, material(resource) - reserved);
 }
 
 bool Building::restoreMaterialsReservation(const BuildingMaterialCost& cost)
@@ -61,8 +61,8 @@ void Building::consumeReservedMaterials(const BuildingMaterialCost& cost, int di
 	// does not change, so no resource-gradient invalidation is needed.
 	for (int r=0; r<MaterialSlotCount; ++r)
 	{
-		assert(materials[r] >= cost[r] && reservedMaterials[r] >= cost[r]);
-		materials[r] -= cost[r];
+		assert(material(r) >= cost[r] && reservedMaterials[r] >= cost[r]);
+		changeMaterial(r, -(cost[r]));
 		reservedMaterials[r] -= cost[r];
 		if (type->useTeamMaterials)
 		{
@@ -140,7 +140,7 @@ bool Building::canOfferService(const Unit* unit, int purpose) const
 			Sint64 admissionBuffer = 0;
 			for (const Unit* occupant : unitsInside)
 			{
-				if (occupant->serviceResourcesReserved) continue;
+				if (occupant->serviceResourcesReserved()) continue;
 				if (occupant->destinationPurpose == FEED && spec.feeding.holdAdmissionUntilExit)
 					admissionBuffer += spec.feeding.cost[r];
 				else if (occupant->destinationPurpose == HEAL && spec.healing.holdAdmissionUntilExit)
@@ -154,36 +154,49 @@ bool Building::canOfferService(const Unit* unit, int purpose) const
 
 void Building::reserveService(Unit* unit)
 {
-	assert(!unit->serviceResourcesReserved);
+	assert(!unit->serviceResourcesReserved());
 	if (!reserveMaterials(serviceCost(unit, unit->destinationPurpose)))
 		throw std::runtime_error("Service admission overbooked building materials");
-	unit->serviceResourcesReserved = true;
+	unit->setServiceResourcesReserved(true);
 }
 
 void Building::releaseService(Unit* unit)
 {
-	if (!unit->serviceResourcesReserved) return;
+	if (!unit->serviceResourcesReserved()) return;
 	releaseMaterials(serviceCost(unit, unit->destinationPurpose));
-	unit->serviceResourcesReserved = false;
+	unit->setServiceResourcesReserved(false);
 }
 
 void Building::settleService(Unit* unit)
 {
 	// Completion, expulsion and destruction may all visit settlement. Only the
 	// outstanding commitment can debit inventory; an already settled visit cannot.
-	if (!unit->serviceResourcesReserved) return;
+	if (!unit->serviceResourcesReserved()) return;
 	consumeReservedMaterials(serviceCost(unit, unit->destinationPurpose),
 		unit->destinationPurpose == FEED ? GameplayMeasurements::MEAL :
 		unit->destinationPurpose == HEAL ? GameplayMeasurements::HEALING_COST : GameplayMeasurements::TRAINING_COST);
-	unit->serviceResourcesReserved = false;
+	unit->setServiceResourcesReserved(false);
 }
 
 void Building::restoreServiceReservations()
 {
-	for (Unit* unit : unitsInside)
-	{
-		if (!unit->serviceResourcesReserved) continue;
-		const auto cost = serviceCost(unit, unit->destinationPurpose);
-		if (!restoreMaterialsReservation(cost)) throw std::runtime_error("Saved building services exceed available materials");
-	}
+    for(auto it=unitsInside.begin();it!=unitsInside.end();) {
+        auto current=it++;
+        Unit* unit=*current;
+        if(!unit->serviceResourcesReserved()) continue;
+        const auto cost=serviceCost(unit,unit->destinationPurpose);
+        if(restoreMaterialsReservation(cost)) continue;
+        if(usesTeamMaterials() || !privateStockClampedOnLoad)
+            throw std::runtime_error("Saved building services exceed available materials");
+        // This commitment was not restored, so releasing it would subtract a
+        // different visitor's reservation. Cancel without granting a benefit.
+        unit->setServiceResourcesReserved(false);
+        unit->setNeedToRecheckMedical(true);
+        if(unit->displacement==Unit::DIS_ENTERING_BUILDING || unit->displacement==Unit::DIS_INSIDE) {
+            unit->displacement=Unit::DIS_EXITING_BUILDING;
+        } else {
+            unitsInside.erase(current);
+            unit->standardRandomActivity();
+        }
+    }
 }

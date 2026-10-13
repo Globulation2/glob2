@@ -80,8 +80,8 @@ static void siteSpreadsItsFetchersAcrossBothResources()
 		Unit* unit = new Unit(siteX - 2, siteY - 2 + (n % 5), slot, WORKER, team, 0);
 		team->myUnits[slot] = unit;
 		team->rebuildLiveLists();
-		unit->performance[WALK] = 10;
-		unit->performance[HARVEST] = 10;
+		unit->setPerformance(WALK,10);
+		unit->setPerformance(HARVEST,10);
 		unit->activity = Unit::ACT_RANDOM;
 		unit->displacement = Unit::DIS_RANDOM;
 		unit->medical = Unit::MED_FREE;
@@ -141,7 +141,7 @@ static int hireOneOfTwo(int emptyX, int emptyY, int loadedX, int loadedY, int* e
 	game.map.setBuilding(siteX, siteY, type->width, type->height, site->gid);
 
 	// Stone only, so the apportionment has exactly one job to staff.
-	site->materials[WOOD] = type->maxMaterial[WOOD];
+	site->setMaterial(WOOD, type->maxMaterial[WOOD]);
 	require(site->neededMaterial(WOOD) == 0, "the site wants no more wood");
 	require(site->neededMaterial(STONE) > 0, "the site still wants stone");
 	require(game.map.incResourceByIndex(22, 9, STONE, 0), "seed the stone tile");
@@ -152,8 +152,8 @@ static int hireOneOfTwo(int emptyX, int emptyY, int loadedX, int loadedY, int* e
 		Unit* unit = new Unit(positions[n][0], positions[n][1], n, WORKER, team, 0);
 		team->myUnits[n] = unit;
 		team->rebuildLiveLists();
-		unit->performance[WALK] = 10;
-		unit->performance[HARVEST] = 10;
+		unit->setPerformance(WALK,10);
+		unit->setPerformance(HARVEST,10);
 		unit->activity = Unit::ACT_RANDOM;
 		unit->displacement = Unit::DIS_RANDOM;
 		unit->medical = Unit::MED_FREE;

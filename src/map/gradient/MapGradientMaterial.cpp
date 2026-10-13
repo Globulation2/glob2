@@ -139,7 +139,7 @@ void Map::dirtyMarketGradientsSlot(int teamNumber, int resourceType)
 
 bool Map::stockSupplierEligibleSlot(const Building* supplier, const Building* consumer, int resource, unsigned modes) const
 {
-    return supplier && supplier!=consumer && (!consumer || supplier->materials!=consumer->materials)
+    return supplier && supplier!=consumer && (!consumer || !supplier->sharesMaterialPool(*consumer))
         && supplier->buildingState==Building::ALIVE
         && ((((modes&1) ? supplier->runtime->suppliesStockMask : 0) | ((modes&2) ? supplier->runtime->suppliesDirectStockMask : 0))&(1u<<resource))
         && supplier->availableMaterial(resource)>0;

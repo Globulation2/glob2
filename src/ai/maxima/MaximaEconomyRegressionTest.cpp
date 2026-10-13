@@ -225,10 +225,10 @@ void colonyStartupAndAffordability()
     REQUIRE(!ai.budget.colony_swarm_requested);
     Unit* worker=f.game.addUnit(20,20,0,WORKER,0,0,0,0); REQUIRE(worker);
     swarm->unitsWorking.push_back(worker);
-    swarm->materials[WHEAT]=swarm->type->foodPerUnit;
+    swarm->setMaterial(WHEAT, swarm->type->foodPerUnit);
     ai.finalize_director_plan(ai.context);
     REQUIRE(ai.budget.colony_swarm_requested);
-    swarm->unitsWorking.clear(); swarm->materials[WHEAT]=0;
+    swarm->unitsWorking.clear(); swarm->setMaterial(WHEAT, 0);
     ai.finalize_director_plan(ai.context);
     REQUIRE(ai.budget.colony_swarm_requested); // Later idleness is not a new startup.
 }
@@ -263,7 +263,7 @@ void distantWheatFundsRecovery()
     ai.manage_swarm(c,0);f.applyStaffing();REQUIRE(swarm->ratio[WORKER]>0);
     // Full stores cannot manufacture recurring capacity when no wheat remains.
     f.game.map.setNoResource(36,11,1);
-    swarm->materials[WHEAT]=swarm->type->maxMaterial[WHEAT];
+    swarm->setMaterial(WHEAT, swarm->type->maxMaterial[WHEAT]);
     ai.update_environment_model(c);glob2test::withMaximaObservation(ai.context,[&]() -> decltype(auto) {return ai.build_policy_bids();});glob2test::withMaximaObservation(ai.context,[&]() -> decltype(auto) {return ai.arbitrate_policy_bids();});
     REQUIRE(ai.budget.swarm_workers==0);
     f.game.map.setResourceByIndex(36,11,WHEAT,1);
@@ -290,13 +290,13 @@ void soleSwarmStaffsFromItsOwnStock()
     // Carriers no longer come from the colony birth budget: the swarm reads
     // its own wheat stock. A full swarm holds the minimum whatever the budget
     // says, and an empty one asks for more.
-    swarm->materials[WHEAT]=swarm->type->maxMaterial[WHEAT];
+    swarm->setMaterial(WHEAT, swarm->type->maxMaterial[WHEAT]);
     for(int budget:{10,0,2}) {
         ai.budget.swarm_workers=budget;
         for(int pass=0;pass<6;++pass){ai.manage_swarm(c,0);f.applyStaffing();}
         REQUIRE(swarm->maxUnitWorking==1);
     }
-    swarm->materials[WHEAT]=0;
+    swarm->setMaterial(WHEAT, 0);
     for(int pass=0;pass<6;++pass){ai.manage_swarm(c,0);f.applyStaffing();}
     REQUIRE(swarm->maxUnitWorking>1);
 }
@@ -345,8 +345,8 @@ void nearbyCornDeterminesStaffing()
     // Staffing no longer divides a colony total between swarms by nearby corn.
     // Each reads its own stock, so the empty one outgrows the full one and
     // neither drops below the minimum.
-    first->materials[WHEAT]=0;
-    second->materials[WHEAT]=second->type->maxMaterial[WHEAT];
+    first->setMaterial(WHEAT, 0);
+    second->setMaterial(WHEAT, second->type->maxMaterial[WHEAT]);
     for(int pass=0;pass<6;++pass)
     {
         for(int id=0;id<2;++id) ai.manage_swarm(c,id);
@@ -399,10 +399,10 @@ void cornPileInteriorIsSupply()
     ai.budget.staffing_slack=1;
     ai.budget.staffing_minimum_workers=1;
     ai.budget.staffing_maximum_workers=20;
-    inn->materials[WHEAT]=0;
+    inn->setMaterial(WHEAT, 0);
     for(int pass=0;pass<6;++pass){ai.manage_inn(c,1); f.applyStaffing();}
     REQUIRE(inn->maxUnitWorking>=2);
-    inn->materials[WHEAT]=inn->type->maxMaterial[WHEAT];
+    inn->setMaterial(WHEAT, inn->type->maxMaterial[WHEAT]);
     for(int pass=0;pass<12;++pass){ai.manage_inn(c,1); f.applyStaffing();}
     REQUIRE(inn->maxUnitWorking==1);
 }
@@ -544,7 +544,7 @@ void armyBirthsMatchPlatformChecksums()
     defense.desired_warriors=12;defense.warrior_ratio=3;defense.utility=100;
     glob2test::withMaximaObservation(a.context,[&]() -> decltype(auto) {return a.arbitrate_policy_bids();});a.manage_swarm(c,0);f.applyStaffing();
     REQUIRE((swarm->ratio[WORKER]==0 && swarm->ratio[WARRIOR]>0));
-    swarm->materials[WHEAT]=swarm->type->maxMaterial[WHEAT];
+    swarm->setMaterial(WHEAT, swarm->type->maxMaterial[WHEAT]);
     swarm->productionTimeout=-1;
     const std::string fixtureFile=(glob2test::sourceRoot() / "test/maxima/fixtures/army-birth-checksums.txt").string();
     const char* path=fixtureFile.c_str();
@@ -604,14 +604,14 @@ void crisisProductionPause()
         // are the building's own business now and keep their minimum.
         REQUIRE(swarm->maxUnitWorking>=1);
         for(int type=0;type<NB_UNIT_TYPE;++type) REQUIRE(swarm->ratio[type]==0);
-        swarm->materials[WHEAT]=20;
+        swarm->setMaterial(WHEAT, 20);
         swarm->productionTimeout=expiredTimer;
         const int before=f.population();
         for(int tick=0;tick<1000;++tick) swarm->swarmStep();
         // The existing engine cannot cancel an already-expired timer through
         // AI orders. That one pending birth may finish; further births stop.
         const int pending=expiredTimer<0 ? 1 : 0;
-        REQUIRE((f.population()==before+pending && swarm->materials[WHEAT]==20-5*pending));
+        REQUIRE((f.population()==before+pending && swarm->material(WHEAT)==20-5*pending));
         REQUIRE(swarm->productionTimeout==(pending ? swarm->type->unitProductionTime : expiredTimer));
 
         // Funding returns through the same director and executor path.
@@ -623,7 +623,7 @@ void crisisProductionPause()
         REQUIRE((swarm->ratio[WORKER]==4 && swarm->ratio[EXPLORER]==1
             && swarm->ratio[WARRIOR]==2));
         for(int tick=0;tick<=swarm->type->unitProductionTime;++tick) swarm->swarmStep();
-        REQUIRE((f.population()==before+pending+1 && swarm->materials[WHEAT]==15-5*pending));
+        REQUIRE((f.population()==before+pending+1 && swarm->material(WHEAT)==15-5*pending));
     }
 }
 
@@ -650,7 +650,7 @@ void completionReallocatesColony()
     // The construction site carries the workers the placement action asked for.
     REQUIRE(fresh->maxUnitWorking==2);
     for(int resource=0;resource<MaterialCount;++resource)
-        fresh->materials[resource]=fresh->type->maxMaterial[resource];
+        fresh->setMaterial(resource, fresh->type->maxMaterial[resource]);
     fresh->updateBuildingSite();
     REQUIRE(fresh->maxUnitWorking==1);
     // Completion no longer redistributes a colony total. Each swarm runs its
@@ -658,7 +658,7 @@ void completionReallocatesColony()
     ai.budget.staffing_window_samples=2;
     ai.budget.staffing_cooldown_passes=0;
     ai.budget.staffing_minimum_workers=1;
-    old->materials[WHEAT]=0; fresh->materials[WHEAT]=0;
+    old->setMaterial(WHEAT, 0); fresh->setMaterial(WHEAT, 0);
     for(int pass=0;pass<6;++pass)
     {
         // The pre-existing swarm is the first building the fixture created.
@@ -685,7 +685,7 @@ void trackerLogicalCadence()
         Fixture f;
         Building* swarm=f.swarm(10,10);
         auto& c=f.ai->context; c.initialize(); c.timer=phase;
-        swarm->materials[WHEAT]=20;
+        swarm->setMaterial(WHEAT, 20);
         c.add_material_tracker(new Management::MaterialTracker(c,0,25,WHEAT),0);
         IdleAI idle;
         auto tracker=c.get_material_tracker(0);
@@ -699,7 +699,7 @@ void trackerLogicalCadence()
         REQUIRE((tracker->get_age()==10 && tracker->get_total_level()==20));
         for(int i=10;i<250;++i) tick();
         REQUIRE((tracker->get_age()==250 && tracker->get_total_level()==500));
-        swarm->materials[WHEAT]=0;
+        swarm->setMaterial(WHEAT, 0);
         for(int i=0;i<250;++i) tick();
         REQUIRE((tracker->get_age()==500 && tracker->get_total_level()==0));
     }
@@ -754,8 +754,8 @@ void newBuildingsStartStaffed()
     REQUIRE(inn->maxUnitWorking==4);
     // The seed applies once. From here the loop owns the number, so a building
     // that stays full hands carriers back below its starting count.
-    swarm->materials[WHEAT]=swarm->type->maxMaterial[WHEAT];
-    inn->materials[WHEAT]=inn->type->maxMaterial[WHEAT];
+    swarm->setMaterial(WHEAT, swarm->type->maxMaterial[WHEAT]);
+    inn->setMaterial(WHEAT, inn->type->maxMaterial[WHEAT]);
     for(int pass=0;pass<40;++pass)
     {
         ai.manage_swarm(c,0); ai.manage_inn(c,1); f.applyStaffing();
@@ -975,11 +975,11 @@ TEST_CASE("service rate uses simulated visit ticks" * doctest::test_suite("Maxim
     glob2test::HeadlessGlobals globals;
     glob2test::HeadlessGame world({.loadDefaultRace=true});
     Building* inn=world.addBuilding("inn",8,8);
-    inn->materials[WHEAT]=10;
+    inn->setMaterial(WHEAT, 10);
     Unit* worker=world.addUnit(WORKER);
     worker->destinationPurpose=FEED;
     inn->subscribeUnitForInside(worker);
-    REQUIRE(worker->serviceResourcesReserved);
+    REQUIRE(worker->serviceResourcesReserved());
     worker->displacement=Unit::DIS_ENTERING_BUILDING;
     worker->delta=255;worker->syncStep();
     REQUIRE(worker->displacement==Unit::DIS_INSIDE);
@@ -988,7 +988,7 @@ TEST_CASE("service rate uses simulated visit ticks" * doctest::test_suite("Maxim
     while(worker->displacement==Unit::DIS_INSIDE && elapsed<2000){worker->syncStep();++elapsed;}
     CHECK(worker->displacement==Unit::DIS_EXITING_BUILDING);
     CHECK(elapsed==AIMaximaBuildings::serviceTicks(*inn->type,inn->type->semantics.feeding.duration));
-    CHECK(inn->materials[WHEAT]==9);
+    CHECK(inn->material(WHEAT)==9);
 }
 
 TEST_CASE("feeding estimate shares resources and seats across capability combinations" * doctest::test_suite("Maxima.Economy"))
@@ -1610,7 +1610,7 @@ TEST_CASE("recipient meal demand follows saved hunger and external action clocks
     const auto recurring=readMeal();
     worker->hungry=Unit::HUNGRY_MAX;worker->speed=256;worker->displacement=Unit::DIS_INSIDE;
     CHECK(readMeal()==recurring); // service state cannot erase recurring demand
-    worker->displacement=Unit::DIS_RANDOM;worker->performance[WALK]=24;
+    worker->displacement=Unit::DIS_RANDOM;worker->setPerformance(WALK,24);
     CHECK(readMeal()>recurring);
     worker->hungriness=0;CHECK(readMeal()==0);
     worker->hungriness=700;f.game.gameHeader.setHungerDisabled(true);
@@ -2102,7 +2102,7 @@ TEST_CASE("custom construction supply counts reachable mixed yields and shore ac
     CHECK((world.tile(21,20).sources()&materialBit(MaterialId::Paper))!=0);
     CHECK((world.tile(40,40).sources()&materialBit(MaterialId::Gold))==0);
     CHECK((world.tile(40,40).sources()&materialBit(MaterialId::Paper))==0);
-    worker->performance[SWIM]=1;
+    worker->setPerformance(SWIM,1);
     world=f.ai->collect_development_world(f.ai->context);
     CHECK(world.accessibleSupplies[materialIndex(MaterialId::Gold)]==2);
     CHECK(world.accessibleSupplies[materialIndex(MaterialId::Paper)]==6);

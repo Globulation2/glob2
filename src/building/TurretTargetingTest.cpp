@@ -327,7 +327,7 @@ TEST_SUITE("TurretTargeting")
                 owner->startPosSet=Team::START_POS_FROM_UNIT; owner->enemies=1u<<(1-team);
                 auto* swarm=world.addBuilding("swarm",4+offset,4+offset,0,team);
                 auto* inn=world.addBuilding("inn",10+offset,4+offset,0,team);
-                for (auto* b : {swarm,inn}) { b->materials[WHEAT]=b->type->maxMaterial[WHEAT]; b->update(); }
+                for (auto* b : {swarm,inn}) { b->setMaterial(WHEAT, b->type->maxMaterial[WHEAT]); b->update(); }
                 auto* turret=world.addBuilding("defencetower",16+offset,4+offset,0,team);
                 turret->bullets=10;
                 for (int n=0;n<12;++n) world.addUnit(n<8 ? WORKER : WARRIOR,4+offset+n,12+offset,team);
@@ -484,16 +484,16 @@ TEST_SUITE("TurretTargeting")
                     owner->enemies=1u<<(1-team);
                     for (const char* kind : {"swarm","inn"}) {
                         auto* b=world.addBuilding(kind,home,kind==std::string("swarm") ? 6 : 12,0,team);
-                        REQUIRE(b); b->materials[WHEAT]=b->type->maxMaterial[WHEAT]; b->update();
+                        REQUIRE(b); b->setMaterial(WHEAT, b->type->maxMaterial[WHEAT]); b->update();
                     }
                     for (int n=0;n<2;++n) {
                         auto* b=world.addBuilding("defencetower",team ? 30 : 16,20+n*12,0,team);
                         REQUIRE(b); b->bullets=b->type->maxBullets;
-                        b->materials[STONE]=b->type->maxMaterial[STONE]; b->update();
+                        b->setMaterial(STONE, b->type->maxMaterial[STONE]); b->update();
                     }
                     if (fortified) {
                         auto* outpost=world.addBuilding("inn",team ? 20 : 26,team ? 36 : 14,0,team);
-                        REQUIRE(outpost); outpost->materials[WHEAT]=outpost->type->maxMaterial[WHEAT]; outpost->update();
+                        REQUIRE(outpost); outpost->setMaterial(WHEAT, outpost->type->maxMaterial[WHEAT]); outpost->update();
                     }
                     for (int n=0;n<12;++n) REQUIRE(world.addUnit(WORKER,home+n%4,17+n/4,team));
                     // Stock ground and airborne forces start between the colonies;

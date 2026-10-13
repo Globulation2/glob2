@@ -31,7 +31,7 @@ namespace WorldHelpers
 		const Sint64 rate=Sint64(AIEngine::ObservationQueries::realAttackStrength(world,*warrior))
 			*warrior->performance[ATTACK_SPEED];
 		if (rate<=0) return 1;
-		const Sint64 maximumHealth=std::max(1,warrior->performance[HP]);
+		const Sint64 maximumHealth=std::max(1,int(warrior->performance[HP]));
 		// Avoid overflowing even the wide numerator when importing old cached
 		// performances. Ordinary units take only the original division below.
 		if (rate>INT_MAX && rate>Sint64(INT_MAX)*maximumHealth/warrior->hp) return INT_MAX;
@@ -47,7 +47,7 @@ namespace WorldHelpers
     inline int unlearned_eligible_damage_rate(const AIEngine::AIWorldView& world,
         const AIEngine::UnitView& unit, int referenceArmour)
     {
-        const int level=std::clamp(std::min(unit.level[ATTACK_SPEED],unit.level[ATTACK_STRENGTH]),0,NB_UNIT_LEVELS-1);
+        const int level=std::clamp(int(std::min(unit.level[ATTACK_SPEED],unit.level[ATTACK_STRENGTH])),0,NB_UNIT_LEVELS-1);
         // Imported historical race tables used this private, fixed strategy
         // calibration even when their cached ability tables differed.
         if (unit.capabilityFlags&UnitRuntimeTraits::LegacyPerformancePolicies) {

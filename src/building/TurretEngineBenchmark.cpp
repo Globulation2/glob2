@@ -89,7 +89,7 @@ void setup(glob2test::HeadlessGame& world,unsigned fixture,unsigned seed,unsigne
         owner->enemies=1u<<(1-team); owner->startPosX=home; owner->startPosY=8; owner->startPosSet=Team::START_POS_FROM_UNIT;
         for (const char* kind : {"swarm","inn"}) {
             auto* b=world.addBuilding(kind,home,kind==std::string("swarm") ? 8 : 14,0,team);
-            b->materials[WHEAT]=b->type->maxMaterial[WHEAT]; b->update();
+            b->setMaterial(WHEAT, b->type->maxMaterial[WHEAT]); b->update();
         }
         for (int n=0;n<12;++n) world.addUnit(WORKER,home+n%4,20+n/4,team);
         for (int y=24;y<32;++y) for (int x=home;x<home+12;++x) game.map.setResourceByIndex(x,y,WHEAT,1);
@@ -100,7 +100,7 @@ void setup(glob2test::HeadlessGame& world,unsigned fixture,unsigned seed,unsigne
         const int x=fixture==1 ? 16+(n%10)*10 : (team ? 140 : 8)+int(n%(count/2)%5)*12;
         const int y=fixture==1 ? 40+(n/10)*9 : 48+int(n%(count/2)/5)*12;
         auto* b=world.addBuilding("defencetower",x,y,0,team);
-        REQUIRE(b); b->bullets=b->type->maxBullets; b->materials[STONE]=b->type->maxMaterial[STONE]; b->update();
+        REQUIRE(b); b->bullets=b->type->maxBullets; b->setMaterial(STONE, b->type->maxMaterial[STONE]); b->update();
         if (fixture==1) { auto* u=world.addUnit(WARRIOR,x+3,y,1-team); REQUIRE(u); }
     }
     for (int team=0;team<2;++team) {

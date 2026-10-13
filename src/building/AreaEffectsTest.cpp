@@ -216,30 +216,30 @@ TEST_SUITE("BuildingAreaEffects")
 							 {"cost", {{"food", 1}, {"wood", 1}}}});
 		auto *b = world.addBuilding("stonewall", 4, 4);
 		auto *overlapping = world.addBuilding("stonewall", 6, 4);
-		overlapping->materials[WHEAT] = 4;
-		overlapping->materials[WOOD] = 4;
+		overlapping->setMaterial(WHEAT, 4);
+		overlapping->setMaterial(WOOD, 4);
 		auto *u = world.addUnit(WORKER, 7, 7);
 		u->hp -= 5;
 		u->hungry -= 5;
 		auto *enemy = world.addUnit(WORKER, 7, 8, 1);
 		const int enemyHp = enemy->hp;
-		b->materials[WHEAT] = 4;
-		b->materials[WOOD] = 0;
+		b->setMaterial(WHEAT, 4);
+		b->setMaterial(WOOD, 0);
 		refresh(world, 0);
 		CHECK_FALSE(b->areaFunded);
-		CHECK(b->materials[WHEAT] == 4);
+		CHECK(b->material(WHEAT) == 4);
 		CHECK(overlapping->areaFunded);
-		CHECK(overlapping->materials[WHEAT] == 3);
-		CHECK(overlapping->materials[WOOD] == 3);
-		b->materials[WOOD] = 4;
+		CHECK(overlapping->material(WHEAT) == 3);
+		CHECK(overlapping->material(WOOD) == 3);
+		b->setMaterial(WOOD, 4);
 		refresh(world, 1);
 		CHECK_FALSE(b->areaFunded);
 		refresh(world, 16);
 		REQUIRE(b->areaFunded);
-		CHECK(b->materials[WOOD] == 3);
-		CHECK(b->materials[WHEAT] == 3);
-		CHECK(overlapping->materials[WHEAT] == 2);
-		CHECK(overlapping->materials[WOOD] == 2);
+		CHECK(b->material(WOOD) == 3);
+		CHECK(b->material(WHEAT) == 3);
+		CHECK(overlapping->material(WHEAT) == 2);
+		CHECK(overlapping->material(WOOD) == 2);
 		const int hp = u->hp, hunger = u->hungry;
 		u->applyAreaServices();
 		CHECK(u->hp == hp);
@@ -259,9 +259,9 @@ TEST_SUITE("BuildingAreaEffects")
 		CHECK(enemy->areaServiceRemainders[Damage] == 0);
 		u->applyAreaServices();
 		CHECK(u->areaServiceRemainders[Healing] == 0);
-		const int food = b->materials[WHEAT];
+		const int food = b->material(WHEAT);
 		refresh(world, 32);
-		CHECK(b->materials[WHEAT] == food);
+		CHECK(b->material(WHEAT) == food);
 		u->hp = u->performance[HP];
 		u->hungry = Unit::HUNGRY_MAX;
 		refresh(world, 48);
@@ -273,7 +273,7 @@ TEST_SUITE("BuildingAreaEffects")
 		refresh(world, 64);
 		u->applyAreaServices();
 		CHECK(u->areaServiceRemainders[Healing] == 0);
-		b->materials[WOOD] = 0;
+		b->setMaterial(WOOD, 0);
 		refresh(world, 80);
 		CHECK_FALSE(b->areaFunded);
 		CHECK(value(world.game, Healing, 7, 7) == 0);
@@ -339,7 +339,7 @@ TEST_SUITE("BuildingAreaEffects")
 		world.game.buildingsTypes.loadSnapshotJson(catalog.dump());
 		world.game.configureBuildingCatalog();
 		auto *b = world.addBuilding("inn", 12, 12);
-		b->materials[WHEAT] = 10;
+		b->setMaterial(WHEAT, 10);
 		for (int purpose : {int(FEED), int(HEAL)})
 		{
 			auto *u = world.addUnit(WORKER, 6 + purpose % 2, 6);
@@ -441,8 +441,8 @@ TEST_SUITE("BuildingAreaEffects")
 		auto *caster = world.addUnit(EXPLORER, 8, 8, 0, 1);
 		REQUIRE(caster->performance[FLY] > 0);
 		auto *target = world.addUnit(WARRIOR, 9, 8, 1);
-		caster->performance[MAGIC_ATTACK_GROUND] = 3;
-		caster->performance[MAGIC_ATTACK_AIR] = 0;
+		caster->setPerformance(MAGIC_ATTACK_GROUND,3);
+		caster->setPerformance(MAGIC_ATTACK_AIR,0);
 		caster->magicActionTimeout = 0;
 		caster->hp -= 2;
 		caster->hungry -= 2;
@@ -457,7 +457,7 @@ TEST_SUITE("BuildingAreaEffects")
 		caster->hungry = Unit::HUNGRY_MAX;
 		caster->hungriness = 0;
 		caster->medical = Unit::MED_FREE;
-		caster->needToRecheckMedical = false;
+		caster->setNeedToRecheckMedical(false);
 		caster->delta = 255;
 		caster->speed = 1;
 		caster->syncStep();
@@ -591,10 +591,10 @@ TEST_SUITE("BuildingAreaEffects")
 		glob2test::HeadlessGame world({.teams = 2, .loadDefaultRace = true, .header = true});
 		install(world.game, {{"radius", 4}, {"healingQ8", 256}, {"cost", {{"food", 1}}}});
 		auto *b = world.addBuilding("stonewall", 4, 4);
-		b->materials[WHEAT] = 4;
+		b->setMaterial(WHEAT, 4);
 		refresh(world, 0);
 		REQUIRE(b->areaFunded);
-		CHECK(b->materials[WHEAT] == 3);
+		CHECK(b->material(WHEAT) == 3);
 		const auto previous = b->gid;
 		auto *old = b->owner;
 		auto *next = world.game.teams[1];
@@ -614,12 +614,12 @@ TEST_SUITE("BuildingAreaEffects")
 			  256); // published coverage is fixed for the tick
 		refresh(world, 1);
 		CHECK_FALSE(b->areaFunded);
-		CHECK(b->materials[WHEAT] == 3);
+		CHECK(b->material(WHEAT) == 3);
 		CHECK(value(world.game, Healing, 5, 5, 0) == 0);
 		CHECK(value(world.game, Healing, 5, 5, 1) == 0);
 		refresh(world, 16);
 		REQUIRE(b->areaFunded);
-		CHECK(b->materials[WHEAT] == 2);
+		CHECK(b->material(WHEAT) == 2);
 		CHECK(value(world.game, Healing, 5, 5, 0) == 0);
 		CHECK(value(world.game, Healing, 5, 5, 1) == 256);
 	}
@@ -631,19 +631,19 @@ TEST_SUITE("BuildingAreaEffects")
 		install(world.game, Json::object(),
 				{{"radius", 4}, {"healingQ8", 256}, {"cost", {{"food", 1}}}});
 		auto *b = world.addBuilding("inn", 4, 4);
-		b->materials[WHEAT] = 10;
+		b->setMaterial(WHEAT, 10);
 		const int completed = b->typeNum, site = b->type->prevLevel;
 		REQUIRE(site >= 0);
 		refresh(world, 0);
 		REQUIRE(b->areaFunded);
-		const int stock = b->materials[WHEAT];
+		const int stock = b->material(WHEAT);
 		b->constructionOriginTypeNum = completed;
 		b->constructionResultState = Building::REPAIR;
 		b->bindType(site);
 		refresh(world, 1);
 		CHECK(b->areaFunded);
 		CHECK(value(world.game, Healing, 5, 5) == 256);
-		CHECK(b->materials[WHEAT] == stock);
+		CHECK(b->material(WHEAT) == stock);
 		b->launchDelete();
 		refresh(world, 2);
 		CHECK_FALSE(b->areaFunded);
@@ -736,7 +736,7 @@ TEST_SUITE("BuildingAreaEffects")
 								 {"fertilityBuffBps", 1000},
 								 {"cost", {{"food", 1}}}});
 			auto *b = world.addBuilding("stonewall", 4, 4);
-			b->materials[WHEAT] = 32;
+			b->setMaterial(WHEAT, 32);
 			auto *u = world.addUnit(WORKER, 6, 6);
 			u->hp -= 10;
 			u->hungry -= 100;

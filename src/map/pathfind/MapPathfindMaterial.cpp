@@ -50,7 +50,7 @@ void Map::pathfindRandom(Unit *unit)
 	}
 	if ((areaCells[x+(y<<wDec)].forbidden)&unit->owner->me)
 	{
-		if (pathfindForbidden(NULL, unit->owner->teamNumber, unit->swimClass(), x, y, &unit->dx, &unit->dy)
+		if (unit->findDisplacement([&](int* dx, int* dy) { return pathfindForbidden(NULL, unit->owner->teamNumber, unit->swimClass(), x, y, dx, dy); })
 			&& terrainPropertiesAt(x+unit->dx,y+unit->dy).groundHealthQ8 >= 0)
 		{
 			unit->directionFromDxDy();

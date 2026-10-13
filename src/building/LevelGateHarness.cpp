@@ -41,7 +41,7 @@ static bool hiringPass(const char* kind, int level, bool site, int carried, int 
 	Building* building = game.addBuilding(8, 8, typeNum, 0);
 	require(building != nullptr, "create building");
 	building->maxUnitWorking = 2;
-	building->materials[carried] = 0;
+	building->setMaterial(carried, 0);
 	building->updateCallLists();
 	Unit* unit = game.addUnit(12, 12, 0, WORKER, 0, 255, 0, 0);
 	require(unit != nullptr, "create worker");

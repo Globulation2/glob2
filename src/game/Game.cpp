@@ -502,7 +502,7 @@ void Game::applyStartingRules(void)
 				continue;
 			if (hpDivisor != 1)
 			{
-				unit->performance[HP] = std::max(1, unit->performance[HP] / hpDivisor);
+				unit->setPerformance(HP,std::max(1,int(unit->performance[HP])/hpDivisor));
 				unit->hp = std::max(1, unit->hp / hpDivisor);
 				unit->trigHP /= hpDivisor;
 			}

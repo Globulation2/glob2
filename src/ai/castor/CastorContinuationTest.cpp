@@ -110,7 +110,7 @@ struct World
             auto* inn=world.addBuilding("inn",10+offset,4+offset,0,team);
             for (auto* building : {swarm,inn})
             {
-                building->materials[WHEAT]=depleted ? 0 : building->type->maxMaterial[WHEAT];
+                building->setMaterial(WHEAT, depleted ? 0 : building->type->maxMaterial[WHEAT]);
                 building->update();
             }
             for (int unit=0; unit<12; ++unit)

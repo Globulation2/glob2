@@ -100,9 +100,9 @@ static void checkContinuation(int checkpoint, bool hazards = false)
     auto* secondInn = game.addBuilding(20, 4, innType, 0);
     REQUIRE((firstInn && secondInn));
     // Availability order deliberately differs from building-id order.
-    secondInn->materials[WHEAT] = 10;
+    secondInn->setMaterial(WHEAT, 10);
     secondInn->update();
-    firstInn->materials[WHEAT] = 10;
+    firstInn->setMaterial(WHEAT, 10);
     firstInn->update();
     auto* flyer = game.addUnit(12, 4, 0, EXPLORER, 0, 0, 0, 0);
     REQUIRE((flyer && game.teams[0]->findNearestFood(flyer) == firstInn));
@@ -170,13 +170,13 @@ TEST_SUITE("UnitContinuation")
             if (serviceAvailable) {
                 service=world.addBuilding(medical==Unit::MED_HUNGRY?"inn":"hospital",10,8);
                 REQUIRE(service);
-                if (medical==Unit::MED_HUNGRY) service->materials[WHEAT]=20;
+                if (medical==Unit::MED_HUNGRY) service->setMaterial(WHEAT, 20);
                 world.team->addToStaticAbilitiesLists(service);
                 service->update();
                 REQUIRE((medical==Unit::MED_HUNGRY?world.team->findNearestFood(unit):world.team->findNearestHeal(unit))==service);
             }
             unit->medical=Unit::Medical(medical);
-            unit->needToRecheckMedical=true;
+            unit->setNeedToRecheckMedical(true);
             const auto random=unit->entityRandom;
             UnitActivityAccess::run(*unit);
             CHECK(unit->jobPurpose==UnitJobPurpose::None);

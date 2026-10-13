@@ -38,7 +38,7 @@ copies to avoid many strided row copies. Both paths copy the same authoritative
 records without per-cell translation. Copy-byte metrics include the multi-material
 stock sidecar, which is copied whole when resources are refreshed. Writes that
 bypass the marked setters are caught by `GLOB2_SNAPSHOT_VERIFY=1`, which
-byte-compares every capture with the live game. Published material gradient planes
+compares captured map bytes and logical entity values with the live game. Published material gradient planes
 sit in a dense registry keyed like the snapshot's plane table
 (`src/map/ResourcePlaneKey.h`); teams keep sorted live entity lists
 (`src/team/LiveSlotList.h`) so extraction visits occupied slots only. The old
@@ -179,7 +179,7 @@ Save barriers finish outstanding computation without delivering future orders
 early. Format 143 retains the match delay, completed pending command bytes and
 deadlines, request sequences, execution feedback, controller RNG and private
 continuation state. Before format 159, legacy saves loaded with delay0 and an empty engine
-order queue. Current saved matches require155; map compatibility remains58. Lifecycle changes cancel
+order queue. Current saved matches require159; map compatibility remains58. Lifecycle changes cancel
 requests by controller generation. Verify delay 0 and 8, rejection and identity
 reuse, serial/threaded execution, and save/load with outstanding work. A snapshot
 migration alone does not establish identical AI trajectories or performance;
@@ -239,3 +239,60 @@ Publication swaps the completed measurement frame into the published reader
 accessor, installs raw ring rows and finalized aggregates, and appends periodic
 histories. Replaced frame storage travels back with the reusable batch; a retained
 frame is never overwritten. The legacy live calculation is a cold reference path.
+
+## Compact entity records
+
+The single `UnitState` record retains pointer-free, standard-layout, trivially
+copyable storage. Medical, activity, displacement and movement enums use explicit
+byte backing and retain their historical numeric values and gaps. The action
+selector, direction and one-cell displacement components are bytes; global ability
+IDs retain their existing enum. Wide pathfinding outputs are stored even on failure.
+Training levels and construction qualification are bytes, destination and carried
+material IDs are signed bytes, animation clocks are bytes, and the terrain health
+remainder is signed 16-bit storage. Terrain exposure accumulates in an `int`
+before signed division and remainder. Seventeen learning flags use an unsigned
+mask shared with service reservation, primary-cargo ownership, medical recheck
+and target-validity flags. Value getters and explicit setters preserve neighboring
+bits; natural field ordering groups byte storage without packed structs.
+Editor level controls bind the byte fields explicitly and retain wide arithmetic.
+
+Cached unit performance uses unsigned 16-bit storage with an explicit 0–65535
+cap. Catalog and per-team race tables remain wide; HP rule division occurs in wide
+arithmetic before a newly computed cache value is capped. Actual HP, hunger,
+speed, movement surplus, experience and unrestricted timers remain wide. Loaded
+cache values outside the cap are deliberately normalized, so this part of the
+change alters historical or authored extreme-value continuation; it is not a
+lossless narrowing. See [persistence](persistence.md#entity-storage-and-serialized-values)
+for validation and save normalization.
+
+Building lifecycle enums and recruitment levels use byte storage. Inside capacity
+uses unsigned 16-bit storage through 65535. Catalog-bounded identifiers, stay range,
+and builtin production preferences use 16-bit storage; production counters remain
+wide because valid ratio changes can carry them beyond that range. Named unsigned
+masks store clearing preferences and footprint locks; wire encodings still write
+individual logical flags.
+Private building stock contains fifteen bytes and saturates at 255. Shared team
+stock remains wide. Live accessors select the active pool, while immutable stock
+views return logical values without widening the captured private array. Bindings
+retain inactive private stock; private-to-team upgrades transfer it once. Demand,
+staffing, failure counters, exchange masks and unrestricted timers remain wide.
+A private commitment needing more than 255 of any material cannot be funded under
+this cap; catalog costs are not silently reduced. See [persistence](persistence.md#entity-storage-and-serialized-values)
+for the deliberate normalization of historical stock and reservation migration.
+Snapshot views inherit the authoritative records for bulk capture; only those
+base records have a standard-layout guarantee, and views only promise trivial
+copyability. Natural alignment is retained without packed structs.
+
+`Storage::bytesCopied` counts actual map-array copies. Separate cumulative
+`entityBytesCopied` and `entitySidecarBytesCopied` counters count authoritative
+entity records and logical sidecar payload read during capture. Entity sidecars
+include builtin construction-origin preferences, extra production state, cargo
+rows (including their identity keys), and relationship IDs. These counters exclude
+view metadata, slot-index preparation, retained capacity, allocator overhead and
+vector growth copies. `Store::Metrics` exposes their deltas alongside the existing
+aggregate `bytesCopied` estimate, whose meaning is unchanged. Pool memory metrics
+continue to describe retained capacity and leases separately. Verification compares
+entity completeness, team/slot ordering, identities, lookup tables and logical
+scalar fields, including presentation state. It also checks ordered working/inside
+relationships, cargo, production and building-project sidecars, without comparing
+entity padding bytes.

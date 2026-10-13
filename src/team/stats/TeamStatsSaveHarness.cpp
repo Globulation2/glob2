@@ -431,7 +431,7 @@ static void measurementScenarios()
 				"starting/editor buildings are not completions");
 		swarm->ratio[0] = 1;
 		swarm->ratio[1] = swarm->ratio[2] = 0;
-		swarm->materials[WHEAT] = swarm->type->foodPerUnit;
+		swarm->setMaterial(WHEAT, swarm->type->foodPerUnit);
 		swarm->productionTimeout = -1;
 		swarm->swarmStep();
 		require(t->stats.measurements().births[WORKER] == 1, "successful swarm birth");
@@ -441,29 +441,29 @@ static void measurementScenarios()
 		for (int y = 0; y < 32; ++y)
 			for (int x = 0; x < 32; ++x)
 				w.game.map.setGroundUnit(x, y, 0);
-		swarm->materials[WHEAT] = swarm->type->foodPerUnit;
+		swarm->setMaterial(WHEAT, swarm->type->foodPerUnit);
 		swarm->productionTimeout = -1;
 		swarm->swarmStep();
 		require(t->stats.measurements().births[WORKER] == 1, "blocked birth produces no event");
-		require(swarm->materials[WHEAT] == swarm->type->foodPerUnit,
+		require(swarm->material(WHEAT) == swarm->type->foodPerUnit,
 				"blocked birth consumes nothing");
 	}
 	{
 		TeamStatsMeasurementFixture w;
 		auto *inn = w.building("inn");
 		auto &m = w.game.teams[0]->stats.editMeasurements();
-		inn->materials[WHEAT] = inn->type->maxMaterial[WHEAT] - 1;
+		inn->setMaterial(WHEAT, inn->type->maxMaterial[WHEAT] - 1);
 		inn->addMaterialIntoBuilding(WHEAT);
 		inn->addMaterialIntoBuilding(WHEAT);
 		require(m.delivered[WHEAT] == 1, "delivery uses accepted capacity-clamped amount");
-		inn->materials[CHERRY] = 1;
+		inn->setMaterial(CHERRY, 1);
 		inn->eatOnce(nullptr);
 		require(m.meals == 1 && m.consumed[Measurements::MEAL][WHEAT] == 1 &&
 					m.consumed[Measurements::MEAL][CHERRY] == 1,
 				"meal wheat and fruit consumed");
 		auto *market = w.building("market", 14, 8);
 		w.building("market", 20, 8);
-		market->materials[CHERRY] = 7;
+		market->setMaterial(CHERRY, 7);
 		w.game.teams[0]->stats.refreshMeasurements(w.game.teams[0]);
 		require(m.stock[CHERRY] == 7, "shared storage counted once across two markets");
 		market->removeMaterialFromBuilding(CHERRY);
@@ -473,7 +473,7 @@ static void measurementScenarios()
 		require(m.withdrawn[CHERRY] == m.transferredOut[CHERRY] && m.harvested[CHERRY] == 0,
 				"withdrawal is transfer, not harvest");
 		auto *tower = w.building("defencetower", 8, 16);
-		tower->materials[STONE] = 1;
+		tower->setMaterial(STONE, 1);
 		tower->bullets = 0;
 		TeamStatsMeasurementFixture::ammunition(tower);
 		require(m.consumed[Measurements::AMMUNITION][STONE] == 1,
@@ -516,7 +516,7 @@ static void measurementScenarios()
 		attacker->dx = 1;
 		attacker->dy = 0;
 		victim->hp = 1;
-		attacker->performance[ATTACK_STRENGTH] = 1000;
+		attacker->setPerformance(ATTACK_STRENGTH,1000);
 		attacker->syncStep();
 		require(w.game.teams[0]->stats.measurements().damageDealt[Measurements::MELEE]
 															   [Measurements::UNIT] == 1,
@@ -542,7 +542,7 @@ static void measurementScenarios()
 		auto *explorer = w.unit(EXPLORER, 20, 20, 0);
 		auto *victim = w.unit(WORKER, 21, 20, 1);
 		victim->hp = 3;
-		explorer->performance[MAGIC_ATTACK_GROUND] = 1000;
+		explorer->setPerformance(MAGIC_ATTACK_GROUND,1000);
 		explorer->magicActionTimeout = 0;
 		TeamStatsMeasurementFixture::magic(explorer);
 		require(w.game.teams[0]->stats.measurements().damageDealt[Measurements::MAGIC]
@@ -645,7 +645,7 @@ static void measurementScenarios()
 																		   : Building::REPAIR;
         // Seed a fully paid construction ledger. Storage capacity is independent
         // of the construction budget; repair deliveries are reserved as they arrive.
-        for (int r = 0; r < MaterialCount; ++r) site->materials[r]=site->constructionBudget[r];
+        for (int r = 0; r < MaterialCount; ++r) site->setMaterial(r, site->constructionBudget[r]);
         require(site->reserveMaterials(site->constructionBudget),"fixture construction resources reserve");
         site->constructionReserved=site->constructionBudget;
 		int level = site->type->level, shortType = site->type->shortTypeNum;
@@ -665,8 +665,8 @@ static void measurementScenarios()
 	{
 		TeamStatsMeasurementFixture w;
 		auto *inn = w.building("inn", 8, 8, 1);
-		inn->materials[WHEAT] = 10;
-		inn->materials[CHERRY] = 10;
+		inn->setMaterial(WHEAT, 10);
+		inn->setMaterial(CHERRY, 10);
 		inn->updateCallLists();
 		TeamStatsMeasurementFixture::allowConversion(inn);
 		w.game.teams[1]->sharedVisionFood |= w.game.teams[0]->me;
@@ -674,7 +674,7 @@ static void measurementScenarios()
 		auto *u = w.unit(EXPLORER, 12, 8);
 		u->hungry = u->trigHungry;
 		u->medical = Unit::MED_HUNGRY;
-		u->needToRecheckMedical = true;
+		u->setNeedToRecheckMedical(true);
 		TeamStatsMeasurementFixture::activity(u);
 		require(u->owner == w.game.teams[1], "foreign inn converts hungry explorer");
 		require(w.game.teams[0]->stats.measurements().conversionsOut[EXPLORER] == 1 &&
@@ -718,7 +718,7 @@ static void measurementScenarios()
 		attacker->delta = UNIT_ATTACK_HIT_DELTA;
 		attacker->dx = 1;
 		attacker->dy = 0;
-		attacker->performance[ATTACK_STRENGTH] = 1000;
+		attacker->setPerformance(ATTACK_STRENGTH,1000);
 		attacker->syncStep();
 		require(w.game.teams[0]->stats.measurements().damageDealt[Measurements::MELEE]
 															   [Measurements::BUILDING] == 1,
@@ -750,7 +750,7 @@ static void measurementScenarios()
 		TeamStatsMeasurementFixture w;
 		auto *site = w.building("inn", 8, 8, 0, true);
 		site->constructionResultState = Building::REPAIR;
-		site->materials[WOOD] = 0;
+		site->setMaterial(WOOD, 0);
 		site->addMaterialIntoBuilding(WOOD);
 		require(w.game.teams[0]->stats.measurements().repairDelivered[WOOD] ==
 					Uint64(site->type->materialMultiplier[WOOD]),
@@ -844,10 +844,11 @@ static void measurementReplayBoundaries()
 	// Format 124 introduced experiments; format 125 adds JavaScript identities.
 	// Format 128 changes save encoding, retaining the format-127 replay floor.
 	// Format 130 adds the farm-areas tile mask, still retaining that floor.
-	// Save compatibility is independent of the integrated replay/network gates.
-	require(REPLAY_MINIMUM_VERSION_MINOR == 159 && NET_PROTOCOL_VERSION == 70,
+	// Format 160 caps private stock and cached performance; replay/network gates
+	// advance together while the historical save compatibility floor remains.
+	require(REPLAY_MINIMUM_VERSION_MINOR == 160 && NET_PROTOCOL_VERSION == 71,
 			"integrated simulation uses current replay and network gates");
-	for (int version : {98, 99, 100, 101, 102, 103, 104, 105, 106, 107, 115, 119, 120, 121, 122, 123, 124, 133, 134, 135, FILE_FORMAT_VERSION_RUNTIME_TERRAIN, FILE_FORMAT_VERSION_TERRAIN_SEED, 139, FILE_FORMAT_VERSION_RUNTIME_RESOURCES, FILE_FORMAT_VERSION_TERRAIN_CATALOGUE, FILE_FORMAT_VERSION_AI_PIPELINE, FILE_FORMAT_VERSION_BUILDING_ARTWORK, FILE_FORMAT_VERSION_VERTEX_TERRAIN, FILE_FORMAT_VERSION_GREEDY_FETCHING, FILE_FORMAT_VERSION_PRIVATE_RANDOM-1, FILE_FORMAT_VERSION_PRIVATE_RANDOM, FILE_FORMAT_VERSION_ENTITY_RANDOM, 155, 156, VERSION_MINOR, VERSION_MINOR+1})
+	for (int version : {98, 99, 100, 101, 102, 103, 104, 105, 106, 107, 115, 119, 120, 121, 122, 123, 124, 133, 134, 135, FILE_FORMAT_VERSION_RUNTIME_TERRAIN, FILE_FORMAT_VERSION_TERRAIN_SEED, 139, FILE_FORMAT_VERSION_RUNTIME_RESOURCES, FILE_FORMAT_VERSION_TERRAIN_CATALOGUE, FILE_FORMAT_VERSION_AI_PIPELINE, FILE_FORMAT_VERSION_BUILDING_ARTWORK, FILE_FORMAT_VERSION_VERTEX_TERRAIN, FILE_FORMAT_VERSION_GREEDY_FETCHING, FILE_FORMAT_VERSION_PRIVATE_RANDOM-1, FILE_FORMAT_VERSION_PRIVATE_RANDOM, FILE_FORMAT_VERSION_ENTITY_RANDOM, 155, 156, REPLAY_MINIMUM_VERSION_MINOR-1, VERSION_MINOR, VERSION_MINOR+1})
 	{
 		auto *bytes = new GAGCore::MemoryStreamBackend;
 		GAGCore::BinaryOutputStream writer(bytes);
@@ -1274,7 +1275,7 @@ TEST_CASE("clearing telemetry counts operations once by configured primary mater
                 auto *worker = w.unit();
                 auto *inn = w.building("inn");
                 inn->unitStayRange = 32;
-                inn->clearingMaterials[materialIndex(MaterialId::Gold)] = true;
+                inn->setClearsMaterial(materialIndex(MaterialId::Gold),true);
                 worker->attachedBuilding = inn;
                 worker->medical = Unit::MED_FREE;
                 worker->displacement = Unit::DIS_RANDOM;
@@ -1462,8 +1463,8 @@ TEST_CASE("Scripting identity survives conversion and save load" * doctest::test
  glob2test::HeadlessGlobals globals;
  TeamStatsMeasurementFixture w;
  auto *inn=w.building("inn",8,8,1);
- inn->materials[WHEAT]=10;
- inn->materials[CHERRY]=10;
+ inn->setMaterial(WHEAT, 10);
+ inn->setMaterial(CHERRY, 10);
  inn->updateCallLists();
  TeamStatsMeasurementFixture::allowConversion(inn);
  w.game.teams[1]->sharedVisionFood |= w.game.teams[0]->me;
@@ -1471,7 +1472,7 @@ TEST_CASE("Scripting identity survives conversion and save load" * doctest::test
  auto *u=w.unit(EXPLORER,12,8);
  u->hungry=u->trigHungry;
  u->medical=Unit::MED_HUNGRY;
- u->needToRecheckMedical=true;
+ u->setNeedToRecheckMedical(true);
  u->entityRandom.nextU32();
  const auto randomBefore=u->entityRandom;
  TeamStatsMeasurementFixture::activity(u);
@@ -1504,13 +1505,13 @@ TEST_CASE("Scripting conversion allocates fresh identity in a reused destination
  auto previousReference=Script::Value::object().set("id",unsigned(previous->gid)).set("generation",previous->scriptIdentity);
  REQUIRE(w.game.removeUnitAndBuildingAndFlags(20,20,Game::DEL_UNIT));
  auto *inn=w.building("inn",8,8,1);
- inn->materials[WHEAT]=10; inn->materials[CHERRY]=10; inn->updateCallLists();
+ inn->setMaterial(WHEAT, 10); inn->setMaterial(CHERRY, 10); inn->updateCallLists();
  TeamStatsMeasurementFixture::allowConversion(inn);
  w.game.teams[1]->sharedVisionFood |= w.game.teams[0]->me;
  w.game.teams[1]->allies &= ~w.game.teams[0]->me;
  auto *u=w.unit(EXPLORER,12,8);
  auto originalReference=Script::Value::object().set("id",unsigned(u->gid)).set("generation",u->scriptIdentity);
- u->hungry=u->trigHungry; u->medical=Unit::MED_HUNGRY; u->needToRecheckMedical=true;
+ u->hungry=u->trigHungry; u->medical=Unit::MED_HUNGRY; u->setNeedToRecheckMedical(true);
  TeamStatsMeasurementFixture::activity(u);
  REQUIRE(u->owner==w.game.teams[1]);
  CHECK(u->scriptIdentity==2);
@@ -1616,7 +1617,7 @@ TEST_CASE("Scripting building completion upgrade and repair preserve identity" *
   }
   REQUIRE(site->type->isBuildingSite);
   REQUIRE(site->constructionResultState==kind);
-  for(int resource=0;resource<MaterialCount;++resource)site->materials[resource]=site->constructionBudget[resource];
+  for(int resource=0;resource<MaterialCount;++resource)site->setMaterial(resource, site->constructionBudget[resource]);
   REQUIRE(site->reserveMaterials(site->constructionBudget));
   site->constructionReserved=site->constructionBudget;
   site->update(); site->update();
@@ -1636,22 +1637,22 @@ TEST_CASE("Scripting conversion back never resurrects the original reference" * 
  TeamStatsMeasurementFixture world;
  auto *destination=world.building("inn",8,8,1);
  auto *home=world.building("inn",16,8,0);
- destination->materials[WHEAT]=10; destination->materials[CHERRY]=10; destination->updateCallLists();
+ destination->setMaterial(WHEAT, 10); destination->setMaterial(CHERRY, 10); destination->updateCallLists();
  TeamStatsMeasurementFixture::allowConversion(destination);
  world.game.teams[1]->sharedVisionFood |= world.game.teams[0]->me;
  world.game.teams[1]->allies &= ~world.game.teams[0]->me;
  auto *unit=world.unit(EXPLORER,12,8);
  auto reference=Script::Value::object().set("id",unsigned(unit->gid)).set("generation",unit->scriptIdentity);
- unit->hungry=unit->trigHungry; unit->medical=Unit::MED_HUNGRY; unit->needToRecheckMedical=true;
+ unit->hungry=unit->trigHungry; unit->medical=Unit::MED_HUNGRY; unit->setNeedToRecheckMedical(true);
  TeamStatsMeasurementFixture::activity(unit);
  REQUIRE(unit->owner==world.game.teams[1]);
  auto converted=Script::Value::object().set("id",unsigned(unit->gid)).set("generation",unit->scriptIdentity);
- destination->materials[WHEAT]=0; destination->materials[CHERRY]=0; destination->updateCallLists();
- home->materials[WHEAT]=10; home->materials[CHERRY]=10; home->updateCallLists();
+ destination->setMaterial(WHEAT, 0); destination->setMaterial(CHERRY, 0); destination->updateCallLists();
+ home->setMaterial(WHEAT, 10); home->setMaterial(CHERRY, 10); home->updateCallLists();
  TeamStatsMeasurementFixture::allowConversion(home);
  world.game.teams[0]->sharedVisionFood |= world.game.teams[1]->me;
  world.game.teams[0]->allies &= ~world.game.teams[1]->me;
- unit->hungry=unit->trigHungry; unit->medical=Unit::MED_HUNGRY; unit->needToRecheckMedical=true;
+ unit->hungry=unit->trigHungry; unit->medical=Unit::MED_HUNGRY; unit->setNeedToRecheckMedical(true);
  TeamStatsMeasurementFixture::activity(unit);
  REQUIRE(unit->owner==world.game.teams[0]);
  CHECK(unit->scriptIdentity==2);

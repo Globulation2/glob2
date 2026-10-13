@@ -527,9 +527,9 @@ public:
             auto* ordinary=game.addBuilding(12,4,completed,0);
             auto* construction=game.addBuilding(20,4,site,0);
             REQUIRE(recurring);REQUIRE(ordinary);REQUIRE(construction);
-            recurring->materials[WHEAT]=7;recurring->materials[ORANGE]=5;
-            recurring->materials[PRUNE]=11;recurring->materials[WOOD]=13;
-            ordinary->materials[WOOD]=17;
+            recurring->setMaterial(WHEAT, 7);recurring->setMaterial(ORANGE, 5);
+            recurring->setMaterial(PRUNE, 11);recurring->setMaterial(WOOD, 13);
+            ordinary->setMaterial(WOOD, 17);
             auto& controller=runtime(game,0);
             controller.getOrder(); // initialize the register through its normal path
             auto& registry=controller.get_building_register();

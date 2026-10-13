@@ -9,7 +9,7 @@ namespace UnitTraining
 {
 template<class State> bool needed(const State& unit,const BuildingTrainingSpec& training,int ability)
 {
-    return training.enabled && unit.canLearn[ability] && training.units.matches(unit.typeNum,training.unitMask)
+    return training.enabled && unit.canLearn(ability) && training.units.matches(unit.typeNum,training.unitMask)
         && (unit.level[ability]<training.targetLevel
             || ((unit.capabilityFlags&UnitRuntimeTraits::LearnConstruction) && unit.constructionLevel<training.constructionLevel));
 }

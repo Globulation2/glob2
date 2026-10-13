@@ -76,8 +76,14 @@ void Building::restoreProductionReservations()
 		p.scheduling != BuildingProductionScheduling::WeightedCommittedJob ||
 		buildingState != ALIVE || productionTimeout < -1 || productionTimeout > p.recipes[productionUnit].duration)
 		throw std::runtime_error("Invalid saved committed production job");
-	if (!restoreMaterialsReservation(p.recipes[productionUnit].cost))
-		throw std::runtime_error("Saved production overbooks materials");
+    if (!restoreMaterialsReservation(p.recipes[productionUnit].cost)) {
+        if(usesTeamMaterials() || !privateStockClampedOnLoad)
+            throw std::runtime_error("Saved production overbooks materials");
+        // The budget was not reserved: clear the job before resetting its timer
+        // so cancelProduction does not release somebody else's commitment.
+        productionUnit=-1;
+        resetProduction();
+    }
 }
 
 void Building::regenerationStep()
@@ -171,7 +177,7 @@ void Building::convertStoneToBullet()
 	const int cost = type->semantics.ammunitionCost;
 	if (availableMaterial(resource) >= cost && bullets <= type->maxBullets - type->multiplierStoneToBullets)
 	{
-		materials[resource] -= cost;
+		changeMaterial(resource, -(cost));
 		owner->stats.events().consumed[GameplayMeasurements::AMMUNITION][resource] += cost;
 		bullets += type->multiplierStoneToBullets;
 		if (cost && (type->useTeamMaterials || type->runtimeSuppliesStock || type->runtimeSuppliesDirectStock)) owner->map->dirtyMarketGradientsSlot(owner->teamNumber, resource);
@@ -332,12 +338,13 @@ void Building::transitionProductionPreferences(const BuildingType* previous, con
     totalRatio=0;
     for (unsigned unit=0; unit<productionTypeCount(); ++unit)
     {
-        auto& preference=productionRatio(unit);
+        Sint32 preference=productionRatio(unit);
         if (restoring) preference=originProductionRatio(unit);
         else if (!type->semantics.production.recipes[unit].enabled) preference=0;
         else if (previous->semantics.production.recipes[unit].enabled) {} // retain the current preference
         else if (origin && origin->semantics.production.recipes[unit].enabled) preference=originProductionRatio(unit);
         else preference=type->semantics.production.initialRatios[unit];
+        setProductionRatio(unit,preference);
         totalRatio+=preference; productionUsed(unit)=0;
     }
 }

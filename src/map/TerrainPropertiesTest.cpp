@@ -1219,7 +1219,7 @@ TEST_CASE("escape fields separate team permissions swimming and forbidden-area e
     REQUIRE(map.pathfindTerrainSafety(first));
     CHECK(first->dx==1); CHECK(first->dy==0);
     // Swimming exposes the surrounding safe water as additional escape goals.
-    first->performance[SWIM]=first->performance[WALK];
+    first->setPerformance(SWIM,first->performance[WALK]);
     REQUIRE(map.pathfindTerrainSafety(first));
     CHECK(first->dy!=0);
 }

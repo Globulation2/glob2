@@ -8,6 +8,7 @@
 #include "TextStream.h"
 #include "StreamBackend.h"
 #include "FileFormatVersions.h"
+#include "Version.h"
 #include "Team.h"
 #include "FileManager.h"
 #include "render/UnitAnimation.h"
@@ -18,7 +19,8 @@ namespace {
 // fixtures exercise both actual Team binding points, rather than patching a
 // current header while retaining its newer record representation.
 void writePre73Team(GAGCore::OutputStream& out, int version, const Unit& cached,
-                   const std::vector<std::array<UnitType,NB_UNIT_LEVELS>>& tables)
+                   const std::vector<std::array<UnitType,NB_UNIT_LEVELS>>& tables,
+                   int cachedOverrideAbility=-1,Sint32 cachedOverridePerformance=0)
 {
     out.writeEnterSection("BaseTeam");
     out.writeUint32(BaseTeam::T_HUMAN,"type");
@@ -53,8 +55,8 @@ void writePre73Team(GAGCore::OutputStream& out, int version, const Unit& cached,
             out.writeEnterSection("abilities");
             for(int ability=0;ability<NB_ABILITY;++ability) {
                 out.writeEnterSection(ability);
-                out.writeSint32(ability==WALK?17:cached.performance[ability],"performance");
-                out.writeSint32(cached.level[ability],"level"); out.writeUint32(cached.canLearn[ability],"canLearn");
+                out.writeSint32(ability==cachedOverrideAbility ? cachedOverridePerformance : ability==WALK?17:cached.performance[ability],"performance");
+                out.writeSint32(cached.level[ability],"level"); out.writeUint32(cached.canLearn(ability),"canLearn");
                 out.writeLeaveSection();
             }
             out.writeLeaveSection();
@@ -88,6 +90,32 @@ void writePre73Team(GAGCore::OutputStream& out, int version, const Unit& cached,
 }
 TEST_SUITE("UnitCatalog")
 {
+    TEST_CASE("legacy signed cached performance normalizes without narrowing race tables [save-format]")
+    {
+        glob2test::HeadlessGlobals globals;
+        glob2test::HeadlessGame source({.clearImmobile=true,.header=true});
+        auto* cached=source.addUnit(WORKER,8,8);REQUIRE(cached);
+        const auto catalog=UnitCatalog::legacy();
+        std::vector<std::array<UnitType,NB_UNIT_LEVELS>> tables;
+        for(unsigned type=0;type<catalog->size();++type)tables.push_back(catalog->levels(type));
+        tables[WORKER][0].performance[ARMOR]=1000000;
+        auto* bytes=new GAGCore::MemoryStreamBackend;
+        GAGCore::BinaryOutputStream out(bytes);writePre73Team(out,58,*cached,tables,ARMOR,-1);
+        const auto saved=bytes->takeContents();
+        glob2test::HeadlessGame loaded({.clearImmobile=true,.header=true});
+        GAGCore::BinaryInputStream in(new GAGCore::MemoryStreamBackend(saved.data(),saved.size()));in.seekFromStart(0);
+        REQUIRE(loaded.team->load(&in,&loaded.game.buildingsTypes,58));
+        auto* unit=loaded.team->myUnits[0];REQUIRE(unit);
+        CHECK(unit->performance[ARMOR]==0);
+        CHECK(loaded.team->race.getUnitType(WORKER,0)->performance[ARMOR]==1000000);
+        auto* canonical=new GAGCore::MemoryStreamBackend;
+        GAGCore::BinaryOutputStream resave(canonical);unit->save(&resave);
+        const auto normalized=canonical->takeContents();
+        GAGCore::BinaryInputStream current(new GAGCore::MemoryStreamBackend(normalized.data(),normalized.size()));current.seekFromStart(0);
+        Unit resumed(&current,loaded.team,VERSION_MINOR);
+        CHECK(resumed.performance[ARMOR]==0);CHECK(resumed.checkSum(nullptr)==unit->checkSum(nullptr));
+    }
+
     TEST_CASE("authored animation spans stay inside the stock atlas")
     {
         glob2test::HeadlessGlobals globals;
@@ -235,7 +263,7 @@ TEST_SUITE("UnitCatalog")
             producer->ratio[WORKER]=1; producer->ratio[EXPLORER]=0; producer->ratio[WARRIOR]=0;
             producer->productionTimeout=0;
             for(unsigned material=0;material<MaterialCount;++material)
-                producer->materials[material]=producer->type->semantics.production.recipes[WORKER].cost[material];
+                producer->setMaterial(material, producer->type->semantics.production.recipes[WORKER].cost[material]);
             producer->swarmStep();
             auto* born=world.team->myUnits[1]; REQUIRE(born);
             CHECK(born->performance[WALK]==23); CHECK(born->performance[HP]==333); CHECK(born->hungriness==700);

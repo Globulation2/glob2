@@ -144,3 +144,8 @@ SIM_REVISION 49. Current runners select `profile1-initial159.game.gz` and
 `realistic-profile1-initial159.game.gz`, with the corresponding
 `*-256-cached159.checksums.gz` traces. The new initial states preserve the
 released setup, scripts and catalogs; old saved matches are deliberately rejected.
+
+The current cached159 traces also include format-160 private-stock and cached-unit-
+performance caps (SIM_REVISION 56). The filename identifies the format-159 input
+save; expected traces follow the current simulation and snapshot digest layout.
+One/four-worker execution, save continuation and replay playback remain required.

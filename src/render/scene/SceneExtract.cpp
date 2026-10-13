@@ -83,7 +83,7 @@ void prepareSource(const SceneInputs& input,PresentationFrame& scene)
         const auto& b=*selected;auto& bp=panels.building;
         bp.record=selected;bp.valid=true;bp.ownerRecord=&world.teams->values.at(b.team);
         bp.type=&scene.buildingTypes->at(b.typeNum);
-        bp.materials=b.usesTeamResources ? world.teams->values.at(b.team).materials.data() : b.localMaterials;
+        bp.materials=scene.entities.materials(b);
         int recipe=b.productionUnit;
         if (recipe<0) {
             Sint64 best=std::numeric_limits<Sint64>::max();
@@ -327,7 +327,7 @@ bool SceneExtractor::prepareChunk(const SceneInputs& input, PresentationFrame& s
                 }
                 if (candidateCell < cells) return false;
             }
-            const auto* materials = e.materials(b);
+            const auto materials = e.materials(b);
             for (unsigned m = 0; m < MaterialCount; ++m)
                 if (materials[m]) e.materialPresence |= 1u << m;
             ++candidateBuilding;

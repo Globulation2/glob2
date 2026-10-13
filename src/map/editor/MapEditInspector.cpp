@@ -93,7 +93,7 @@ InspectorModel buildInspectorModel(MapEdit &editor)
 								{ATTACK_STRENGTH, editor.unitAttackStrengthLevelScrollBox, "attack-strength", "[At. strength]"},
 								{MAGIC_ATTACK_GROUND, editor.unitMagicGroundAttackLevelScrollBox, "magic-ground", "[Magic At. Ground]"}};
 		for (const auto &skill : skills)
-			if (unit->canLearn[skill.ability])
+			if (unit->canLearn(skill.ability))
 				model.rows.push_back({skill.key, fe::tr(skill.caption), skill.box});
 	}
 	return model;

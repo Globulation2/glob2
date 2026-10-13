@@ -27,7 +27,7 @@ void admit(Building* building, Unit* unit, int purpose)
     unit->destinationPurpose = purpose;
     REQUIRE(building->canOfferService(unit, purpose));
     building->subscribeUnitForInside(unit);
-    REQUIRE(unit->serviceResourcesReserved);
+    REQUIRE(unit->serviceResourcesReserved());
 }
 }
 
@@ -39,7 +39,7 @@ TEST_CASE("mixed visits share capacity and inventory and settle once")
     glob2test::HeadlessGame world({.loadDefaultRace=true});
     serviceCatalog(world.game);
     Building* b = world.addBuilding("inn",8,8);
-    b->materials[WHEAT]=3; b->materials[WOOD]=3;
+    b->setMaterial(WHEAT, 3); b->setMaterial(WOOD, 3);
     Unit* eater=world.addUnit(WORKER);
     Unit* patient=world.addUnit(WORKER);
     Unit* next=world.addUnit(WORKER);
@@ -52,12 +52,12 @@ TEST_CASE("mixed visits share capacity and inventory and settle once")
     CHECK_FALSE(b->canOfferService(next,FEED));
     b->settleService(patient);
     b->settleService(patient);
-    CHECK(b->materials[WOOD]==0);
-    CHECK(b->materials[WHEAT]==2);
+    CHECK(b->material(WOOD)==0);
+    CHECK(b->material(WHEAT)==2);
     b->removeUnitFromInside(eater);
     eater->standardRandomActivity();
     CHECK(b->availableMaterial(WHEAT)==2);
-    CHECK(b->materials[WHEAT]==2);
+    CHECK(b->material(WHEAT)==2);
     CHECK(b->canOfferService(next,FEED));
 }
 
@@ -91,7 +91,7 @@ TEST_CASE("completed feeding admission buffer ignores unrelated mixed services")
     catalog["variants"][3]["semantics"]["feeding"]["holdAdmissionUntilExit"]=true;
     world.game.buildingsTypes.loadSnapshotJson(catalog.dump()); world.game.configureBuildingCatalog();
     Building* b=world.addBuilding("inn",8,8);
-    b->materials[WHEAT]=5; b->materials[WOOD]=3;
+    b->setMaterial(WHEAT, 5); b->setMaterial(WOOD, 3);
     Unit* eater=world.addUnit(WORKER);
     Unit* patient=world.addUnit(WORKER);
     Unit* next=world.addUnit(WORKER);
@@ -109,7 +109,7 @@ TEST_CASE("pending mixed visits restore reservations and cancellation releases o
     glob2test::HeadlessGame world({.loadDefaultRace=true,.header=true});
     serviceCatalog(world.game,true);
     Building* b=world.addBuilding("inn",8,8);
-    b->materials[WHEAT]=10; b->materials[WOOD]=6;
+    b->setMaterial(WHEAT, 10); b->setMaterial(WOOD, 6);
     Unit* eater=world.addUnit(WORKER);
     Unit* patient=world.addUnit(WORKER);
     admit(b,eater,FEED); admit(b,patient,HEAL);
@@ -128,8 +128,8 @@ TEST_CASE("pending mixed visits restore reservations and cancellation releases o
     restored->kill();
     CHECK(restored->owner->reservedTeamMaterials[WHEAT]==0);
     CHECK(restored->owner->reservedTeamMaterials[WOOD]==0);
-    CHECK(restored->materials[WHEAT]==10);
-    CHECK(restored->materials[WOOD]==6);
+    CHECK(restored->material(WHEAT)==10);
+    CHECK(restored->material(WOOD)==6);
 }
 
 TEST_CASE("construction eligibility and work speed are independently trainable")
@@ -156,10 +156,10 @@ TEST_CASE("shared delivery never discards inventory above a recipient capacity")
     glob2test::HeadlessGame world({.loadDefaultRace=true});
     serviceCatalog(world.game,true);
     Building* b=world.addBuilding("inn",8,8);
-    b->materials[WHEAT]=b->type->maxMaterial[WHEAT]+7;
-    const int before=b->materials[WHEAT];
+    b->setMaterial(WHEAT, b->type->maxMaterial[WHEAT]+7);
+    const int before=b->material(WHEAT);
     b->addMaterialIntoBuilding(WHEAT);
-    CHECK(b->materials[WHEAT]==before);
+    CHECK(b->material(WHEAT)==before);
 }
 
 TEST_CASE("parallel training waits for the slowest requested course")
@@ -188,7 +188,7 @@ TEST_CASE("save loading rejects a reservation detached from its visitor list")
     glob2test::HeadlessGame world({.loadDefaultRace=true,.header=true});
     serviceCatalog(world.game);
     Building* b=world.addBuilding("inn",8,8);
-    b->materials[WHEAT]=10;
+    b->setMaterial(WHEAT, 10);
     Unit* eater=world.addUnit(WORKER);
     admit(b,eater,FEED);
     b->unitsInside.clear();
@@ -353,7 +353,7 @@ TEST_CASE("stock tiny deficit healing completes without storing a post exit spee
     Unit* patient=world.addUnit(WORKER,7,8);
     patient->hp=patient->performance[HP]-1;
     for (int resource=0;resource<MaterialSlotCount;++resource)
-        hospital->materials[resource]=hospital->type->semantics.healing.cost[resource];
+        hospital->setMaterial(resource, hospital->type->semantics.healing.cost[resource]);
     admit(hospital,patient,HEAL);
     patient->displacement=Unit::DIS_ENTERING_BUILDING;
     patient->action=STOP_WALK; patient->dx=patient->dy=0; patient->speed=1; patient->delta=255;

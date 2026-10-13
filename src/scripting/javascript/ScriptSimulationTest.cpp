@@ -87,15 +87,15 @@ void prepareConversion(Engine &engine, const std::filesystem::path &directory)
 			inn = building;
 	}
 	REQUIRE(inn);
-	inn->materials[WHEAT] = 10;
-	inn->materials[CHERRY] = 10;
+	inn->setMaterial(WHEAT, 10);
+	inn->setMaterial(CHERRY, 10);
 	inn->updateCallLists();
 	inn->canNotConvertUnitTimer = 0;
 	game.teams[1]->sharedVisionFood |= game.teams[0]->me;
 	game.teams[1]->allies &= ~game.teams[0]->me;
 	unit->hungry = unit->trigHungry;
 	unit->medical = Unit::MED_HUNGRY;
-	unit->needToRecheckMedical = true;
+	unit->setNeedToRecheckMedical(true);
 	REQUIRE(game.teams[0]->findNearestFood(unit) == inn);
 	unit->handleActivity();
 	REQUIRE(unit->owner == game.teams[1]);
