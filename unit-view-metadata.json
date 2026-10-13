@@ -1,0 +1,22 @@
+{
+  "source": "fdca48059e632268f0b814abba25afc60e2370f0",
+  "base": "277510840054b1416f2defd7d86fe1431dd0ddc0",
+  "platform": "Linux-7.0.0-31-generic-x86_64-with-glibc2.43",
+  "compiler": "g++ (Ubuntu 15.2.0-16ubuntu1) 15.2.0",
+  "release_binary_sha256": "981cea49a4b280ebf838b331d880c5fcd88a4a6b59d8f4ba2a2f57117cc7d498",
+  "sampling": "Six real AI games; four Null-AI headless cases; six GUI sessions. Frequencies are exact observed counts; GUI readiness is load-dependent. No timing comparison.",
+  "test_command": "GLOB2_BUILD_DIR=build/movement-dev python3 test/run_tests.py --binary engine --filter WorldSnapshot/* --filter CompactUnitSnapshot/* --filter MovementPlanning/* --filter SceneExtract/* --filter GradientPreparation/* --filter WarrushObservation/* --filter CortexActionCoverage/* --no-display --junit artifacts/movement-deep/final-focused-tests.xml",
+  "results": "127 pass; 1 display-tagged skip; matched canonical controls at participants 2 and 4 pass all four outputs",
+  "omissions": [
+    "macOS",
+    "Windows",
+    "browser serial/threaded",
+    "GPU backends",
+    "human multiplayer selection patterns"
+  ],
+  "fixture_sha256": {
+    "artifacts/movement-planning/fixtures/ordinary-control.game": "546090796c2904a1848e2e439f74b5bc49ab047ca9ad9469033526cba0d907b7",
+    "artifacts/movement-planning/fixtures/large-colony.game": "9dd4a52c891da10f15e1238e49173e23cff78fb0c283653c75721e55c25ecf60",
+    "artifacts/compact-live/fixtures/cortex-colony.game": "a36b9991c31aa6d8311dbf4d444ba3cdc9011048e26df19475d999f8316f91dc"
+  }
+}

@@ -1,0 +1,56 @@
+[
+  {
+    "file": "tournament-symmetric-arena.zip",
+    "bytes": 48908143,
+    "sha256": "43370cc3035a20d1b54f18bcc922d1414725f90b5bba91b999c5b9c676ebfc07",
+    "crc_valid": true
+  },
+  {
+    "file": "tournament-river.zip",
+    "bytes": 41834804,
+    "sha256": "dcb1f14f73e7cff94228d60a526e0f98a17cc36aba9979409c0a8aecd7058333",
+    "crc_valid": true
+  },
+  {
+    "file": "tournament-isles.zip",
+    "bytes": 48939337,
+    "sha256": "c959cbdd7906f1e5ccbd6b9fce68cdcd4dbf917d79bfb46f3620d110f790c4d7",
+    "crc_valid": true
+  },
+  {
+    "file": "tournament-swamp.zip",
+    "bytes": 43017435,
+    "sha256": "079b6f305b4a798c2c27570a597c6ec984426a081ad1de06638a577a60016d6d",
+    "crc_valid": true
+  },
+  {
+    "file": "tournament-fingerprint.zip",
+    "bytes": 38951406,
+    "sha256": "88749df228cb788bc31288aa71a38fb08831c31541633ec99c3c7e6c834ea1cb",
+    "crc_valid": true
+  },
+  {
+    "file": "tournament-maze.zip",
+    "bytes": 45719560,
+    "sha256": "d7cf2f6c52d3a9467a430aa2e8d124325e880bf71b5a540391513441ac217fa4",
+    "crc_valid": true
+  },
+  {
+    "file": "tournament-stone-highlands.zip",
+    "bytes": 38127441,
+    "sha256": "18c9dc015c9f085c95e68c95e6d8317d777275bd7d9b5168b94c0e887c592a01",
+    "crc_valid": true
+  },
+  {
+    "file": "tournament-canals.zip",
+    "bytes": 43241752,
+    "sha256": "2747a339061ef9c57466cd9e1af0b5868c2c05b1d4cab786838d19919abd2897",
+    "crc_valid": true
+  },
+  {
+    "file": "tournament-metadata.zip",
+    "bytes": 2966516,
+    "sha256": "685c7ee8fa9372ea1e85cf414c641e3fbd34c9e4b513e66de4758e4542b2fc4c",
+    "crc_valid": true
+  }
+]

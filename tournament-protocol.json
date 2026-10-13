@@ -1,0 +1,3170 @@
+{
+  "kind": "unmatched aggregate conditional-step research tournament",
+  "games_per_arm": 120,
+  "maps": 40,
+  "families": [
+    "symmetric-arena",
+    "river",
+    "isles",
+    "swamp",
+    "fingerprint",
+    "maze",
+    "stone-highlands",
+    "canals"
+  ],
+  "matchups": [
+    [
+      "cortex",
+      "warrush"
+    ],
+    [
+      "cortex",
+      "nicowar"
+    ],
+    [
+      "nicowar",
+      "warrush"
+    ]
+  ],
+  "independent_gameplay_seeds": true,
+  "seed": 20261013,
+  "ticks": 30000,
+  "analysis_horizon": 12288,
+  "compute_threads": 2,
+  "slots": 6,
+  "binary_sha256": "f476f788eabcc5996310bec54d342c40a437125ffb1559f77d090b6384f5a541",
+  "scope": "Both arms use the separately patched research binary. Before retains reference movement with shadow only; after replaces usable final travel steps after unchanged serial preparation. Original movement is fallback for missing/rejected suggestions. No live match rule, save/replay export or production adoption.",
+  "primary_endpoints": [
+    "food_delivered_per_1000_worker_ticks",
+    "transport_walk_fraction",
+    "meal_walk_fraction",
+    "idle_worker_fraction",
+    "worker_starvation_per_1000_worker_ticks",
+    "unit_damage_per_1000_ticks",
+    "worker_moves_per_food_delivery",
+    "population_at_horizon"
+  ],
+  "analysis": "Descriptive arm means, unpaired stratified permutation tests, map-cluster bootstrap confidence intervals, Holm correction for eight primary endpoints; AI/map strata preserved. Both teams form one game observation. No action/team pseudoreplication. Ended games carry their last state as absorbing at horizon; exposure records explicit. Secondary outcomes exploratory.",
+  "jobs": [
+    {
+      "id": "swamp-1-1-before",
+      "family": "swamp",
+      "map_seed": 58002,
+      "map_index": 1,
+      "matchup": 1,
+      "players": [
+        "cortex",
+        "nicowar"
+      ],
+      "arm": "before",
+      "game_seed": 969566684
+    },
+    {
+      "id": "river-4-2-after",
+      "family": "river",
+      "map_seed": 56005,
+      "map_index": 4,
+      "matchup": 2,
+      "players": [
+        "nicowar",
+        "warrush"
+      ],
+      "arm": "after",
+      "game_seed": 1536279950
+    },
+    {
+      "id": "symmetric-arena-3-2-before",
+      "family": "symmetric-arena",
+      "map_seed": 55004,
+      "map_index": 3,
+      "matchup": 2,
+      "players": [
+        "warrush",
+        "nicowar"
+      ],
+      "arm": "before",
+      "game_seed": 1806219081
+    },
+    {
+      "id": "stone-highlands-3-0-before",
+      "family": "stone-highlands",
+      "map_seed": 61004,
+      "map_index": 3,
+      "matchup": 0,
+      "players": [
+        "warrush",
+        "cortex"
+      ],
+      "arm": "before",
+      "game_seed": 1768641103
+    },
+    {
+      "id": "river-2-1-after",
+      "family": "river",
+      "map_seed": 56003,
+      "map_index": 2,
+      "matchup": 1,
+      "players": [
+        "nicowar",
+        "cortex"
+      ],
+      "arm": "after",
+      "game_seed": 1454147980
+    },
+    {
+      "id": "stone-highlands-1-2-after",
+      "family": "stone-highlands",
+      "map_seed": 61002,
+      "map_index": 1,
+      "matchup": 2,
+      "players": [
+        "warrush",
+        "nicowar"
+      ],
+      "arm": "after",
+      "game_seed": 467723153
+    },
+    {
+      "id": "canals-3-0-before",
+      "family": "canals",
+      "map_seed": 62004,
+      "map_index": 3,
+      "matchup": 0,
+      "players": [
+        "warrush",
+        "cortex"
+      ],
+      "arm": "before",
+      "game_seed": 703924837
+    },
+    {
+      "id": "symmetric-arena-4-2-after",
+      "family": "symmetric-arena",
+      "map_seed": 55005,
+      "map_index": 4,
+      "matchup": 2,
+      "players": [
+        "nicowar",
+        "warrush"
+      ],
+      "arm": "after",
+      "game_seed": 1232953979
+    },
+    {
+      "id": "isles-2-0-before",
+      "family": "isles",
+      "map_seed": 57003,
+      "map_index": 2,
+      "matchup": 0,
+      "players": [
+        "cortex",
+        "warrush"
+      ],
+      "arm": "before",
+      "game_seed": 524163401
+    },
+    {
+      "id": "symmetric-arena-2-0-after",
+      "family": "symmetric-arena",
+      "map_seed": 55003,
+      "map_index": 2,
+      "matchup": 0,
+      "players": [
+        "cortex",
+        "warrush"
+      ],
+      "arm": "after",
+      "game_seed": 1337630968
+    },
+    {
+      "id": "isles-4-1-before",
+      "family": "isles",
+      "map_seed": 57005,
+      "map_index": 4,
+      "matchup": 1,
+      "players": [
+        "nicowar",
+        "cortex"
+      ],
+      "arm": "before",
+      "game_seed": 1382907080
+    },
+    {
+      "id": "isles-1-0-after",
+      "family": "isles",
+      "map_seed": 57002,
+      "map_index": 1,
+      "matchup": 0,
+      "players": [
+        "warrush",
+        "cortex"
+      ],
+      "arm": "after",
+      "game_seed": 926020871
+    },
+    {
+      "id": "fingerprint-0-2-before",
+      "family": "fingerprint",
+      "map_seed": 59001,
+      "map_index": 0,
+      "matchup": 2,
+      "players": [
+        "nicowar",
+        "warrush"
+      ],
+      "arm": "before",
+      "game_seed": 636887261
+    },
+    {
+      "id": "symmetric-arena-2-0-before",
+      "family": "symmetric-arena",
+      "map_seed": 55003,
+      "map_index": 2,
+      "matchup": 0,
+      "players": [
+        "cortex",
+        "warrush"
+      ],
+      "arm": "before",
+      "game_seed": 891153173
+    },
+    {
+      "id": "fingerprint-4-1-before",
+      "family": "fingerprint",
+      "map_seed": 59005,
+      "map_index": 4,
+      "matchup": 1,
+      "players": [
+        "nicowar",
+        "cortex"
+      ],
+      "arm": "before",
+      "game_seed": 1483764686
+    },
+    {
+      "id": "stone-highlands-1-1-before",
+      "family": "stone-highlands",
+      "map_seed": 61002,
+      "map_index": 1,
+      "matchup": 1,
+      "players": [
+        "cortex",
+        "nicowar"
+      ],
+      "arm": "before",
+      "game_seed": 595867241
+    },
+    {
+      "id": "isles-0-2-after",
+      "family": "isles",
+      "map_seed": 57001,
+      "map_index": 0,
+      "matchup": 2,
+      "players": [
+        "nicowar",
+        "warrush"
+      ],
+      "arm": "after",
+      "game_seed": 1019770583
+    },
+    {
+      "id": "fingerprint-1-2-after",
+      "family": "fingerprint",
+      "map_seed": 59002,
+      "map_index": 1,
+      "matchup": 2,
+      "players": [
+        "warrush",
+        "nicowar"
+      ],
+      "arm": "after",
+      "game_seed": 1788144699
+    },
+    {
+      "id": "isles-0-2-before",
+      "family": "isles",
+      "map_seed": 57001,
+      "map_index": 0,
+      "matchup": 2,
+      "players": [
+        "nicowar",
+        "warrush"
+      ],
+      "arm": "before",
+      "game_seed": 1204571043
+    },
+    {
+      "id": "swamp-1-2-before",
+      "family": "swamp",
+      "map_seed": 58002,
+      "map_index": 1,
+      "matchup": 2,
+      "players": [
+        "warrush",
+        "nicowar"
+      ],
+      "arm": "before",
+      "game_seed": 2140078128
+    },
+    {
+      "id": "fingerprint-4-2-after",
+      "family": "fingerprint",
+      "map_seed": 59005,
+      "map_index": 4,
+      "matchup": 2,
+      "players": [
+        "nicowar",
+        "warrush"
+      ],
+      "arm": "after",
+      "game_seed": 1166717875
+    },
+    {
+      "id": "river-3-2-after",
+      "family": "river",
+      "map_seed": 56004,
+      "map_index": 3,
+      "matchup": 2,
+      "players": [
+        "warrush",
+        "nicowar"
+      ],
+      "arm": "after",
+      "game_seed": 852333259
+    },
+    {
+      "id": "swamp-3-2-before",
+      "family": "swamp",
+      "map_seed": 58004,
+      "map_index": 3,
+      "matchup": 2,
+      "players": [
+        "warrush",
+        "nicowar"
+      ],
+      "arm": "before",
+      "game_seed": 423240307
+    },
+    {
+      "id": "fingerprint-2-1-after",
+      "family": "fingerprint",
+      "map_seed": 59003,
+      "map_index": 2,
+      "matchup": 1,
+      "players": [
+        "nicowar",
+        "cortex"
+      ],
+      "arm": "after",
+      "game_seed": 1725554357
+    },
+    {
+      "id": "maze-1-2-after",
+      "family": "maze",
+      "map_seed": 60002,
+      "map_index": 1,
+      "matchup": 2,
+      "players": [
+        "warrush",
+        "nicowar"
+      ],
+      "arm": "after",
+      "game_seed": 989283679
+    },
+    {
+      "id": "symmetric-arena-3-0-before",
+      "family": "symmetric-arena",
+      "map_seed": 55004,
+      "map_index": 3,
+      "matchup": 0,
+      "players": [
+        "warrush",
+        "cortex"
+      ],
+      "arm": "before",
+      "game_seed": 1777258971
+    },
+    {
+      "id": "fingerprint-3-1-before",
+      "family": "fingerprint",
+      "map_seed": 59004,
+      "map_index": 3,
+      "matchup": 1,
+      "players": [
+        "cortex",
+        "nicowar"
+      ],
+      "arm": "before",
+      "game_seed": 1793556304
+    },
+    {
+      "id": "stone-highlands-1-0-before",
+      "family": "stone-highlands",
+      "map_seed": 61002,
+      "map_index": 1,
+      "matchup": 0,
+      "players": [
+        "warrush",
+        "cortex"
+      ],
+      "arm": "before",
+      "game_seed": 1471399637
+    },
+    {
+      "id": "river-4-0-after",
+      "family": "river",
+      "map_seed": 56005,
+      "map_index": 4,
+      "matchup": 0,
+      "players": [
+        "cortex",
+        "warrush"
+      ],
+      "arm": "after",
+      "game_seed": 1623588641
+    },
+    {
+      "id": "canals-0-0-after",
+      "family": "canals",
+      "map_seed": 62001,
+      "map_index": 0,
+      "matchup": 0,
+      "players": [
+        "cortex",
+        "warrush"
+      ],
+      "arm": "after",
+      "game_seed": 1670782662
+    },
+    {
+      "id": "fingerprint-0-1-after",
+      "family": "fingerprint",
+      "map_seed": 59001,
+      "map_index": 0,
+      "matchup": 1,
+      "players": [
+        "nicowar",
+        "cortex"
+      ],
+      "arm": "after",
+      "game_seed": 152601080
+    },
+    {
+      "id": "stone-highlands-0-1-after",
+      "family": "stone-highlands",
+      "map_seed": 61001,
+      "map_index": 0,
+      "matchup": 1,
+      "players": [
+        "nicowar",
+        "cortex"
+      ],
+      "arm": "after",
+      "game_seed": 822390451
+    },
+    {
+      "id": "isles-1-1-before",
+      "family": "isles",
+      "map_seed": 57002,
+      "map_index": 1,
+      "matchup": 1,
+      "players": [
+        "cortex",
+        "nicowar"
+      ],
+      "arm": "before",
+      "game_seed": 983623645
+    },
+    {
+      "id": "fingerprint-2-2-after",
+      "family": "fingerprint",
+      "map_seed": 59003,
+      "map_index": 2,
+      "matchup": 2,
+      "players": [
+        "nicowar",
+        "warrush"
+      ],
+      "arm": "after",
+      "game_seed": 774029285
+    },
+    {
+      "id": "stone-highlands-0-0-before",
+      "family": "stone-highlands",
+      "map_seed": 61001,
+      "map_index": 0,
+      "matchup": 0,
+      "players": [
+        "cortex",
+        "warrush"
+      ],
+      "arm": "before",
+      "game_seed": 742261191
+    },
+    {
+      "id": "canals-1-1-after",
+      "family": "canals",
+      "map_seed": 62002,
+      "map_index": 1,
+      "matchup": 1,
+      "players": [
+        "cortex",
+        "nicowar"
+      ],
+      "arm": "after",
+      "game_seed": 1642153910
+    },
+    {
+      "id": "isles-4-2-before",
+      "family": "isles",
+      "map_seed": 57005,
+      "map_index": 4,
+      "matchup": 2,
+      "players": [
+        "nicowar",
+        "warrush"
+      ],
+      "arm": "before",
+      "game_seed": 98931147
+    },
+    {
+      "id": "canals-0-1-before",
+      "family": "canals",
+      "map_seed": 62001,
+      "map_index": 0,
+      "matchup": 1,
+      "players": [
+        "nicowar",
+        "cortex"
+      ],
+      "arm": "before",
+      "game_seed": 2144811608
+    },
+    {
+      "id": "isles-4-2-after",
+      "family": "isles",
+      "map_seed": 57005,
+      "map_index": 4,
+      "matchup": 2,
+      "players": [
+        "nicowar",
+        "warrush"
+      ],
+      "arm": "after",
+      "game_seed": 1382285414
+    },
+    {
+      "id": "symmetric-arena-0-0-after",
+      "family": "symmetric-arena",
+      "map_seed": 55001,
+      "map_index": 0,
+      "matchup": 0,
+      "players": [
+        "cortex",
+        "warrush"
+      ],
+      "arm": "after",
+      "game_seed": 981693574
+    },
+    {
+      "id": "maze-2-0-before",
+      "family": "maze",
+      "map_seed": 60003,
+      "map_index": 2,
+      "matchup": 0,
+      "players": [
+        "cortex",
+        "warrush"
+      ],
+      "arm": "before",
+      "game_seed": 1630846214
+    },
+    {
+      "id": "maze-0-1-after",
+      "family": "maze",
+      "map_seed": 60001,
+      "map_index": 0,
+      "matchup": 1,
+      "players": [
+        "nicowar",
+        "cortex"
+      ],
+      "arm": "after",
+      "game_seed": 1460565626
+    },
+    {
+      "id": "swamp-3-0-before",
+      "family": "swamp",
+      "map_seed": 58004,
+      "map_index": 3,
+      "matchup": 0,
+      "players": [
+        "warrush",
+        "cortex"
+      ],
+      "arm": "before",
+      "game_seed": 2048794840
+    },
+    {
+      "id": "stone-highlands-3-1-after",
+      "family": "stone-highlands",
+      "map_seed": 61004,
+      "map_index": 3,
+      "matchup": 1,
+      "players": [
+        "cortex",
+        "nicowar"
+      ],
+      "arm": "after",
+      "game_seed": 2038209592
+    },
+    {
+      "id": "maze-2-1-after",
+      "family": "maze",
+      "map_seed": 60003,
+      "map_index": 2,
+      "matchup": 1,
+      "players": [
+        "nicowar",
+        "cortex"
+      ],
+      "arm": "after",
+      "game_seed": 1577307504
+    },
+    {
+      "id": "stone-highlands-0-2-after",
+      "family": "stone-highlands",
+      "map_seed": 61001,
+      "map_index": 0,
+      "matchup": 2,
+      "players": [
+        "nicowar",
+        "warrush"
+      ],
+      "arm": "after",
+      "game_seed": 98576673
+    },
+    {
+      "id": "canals-2-1-before",
+      "family": "canals",
+      "map_seed": 62003,
+      "map_index": 2,
+      "matchup": 1,
+      "players": [
+        "nicowar",
+        "cortex"
+      ],
+      "arm": "before",
+      "game_seed": 495073510
+    },
+    {
+      "id": "stone-highlands-3-2-before",
+      "family": "stone-highlands",
+      "map_seed": 61004,
+      "map_index": 3,
+      "matchup": 2,
+      "players": [
+        "warrush",
+        "nicowar"
+      ],
+      "arm": "before",
+      "game_seed": 1285316341
+    },
+    {
+      "id": "canals-4-1-before",
+      "family": "canals",
+      "map_seed": 62005,
+      "map_index": 4,
+      "matchup": 1,
+      "players": [
+        "nicowar",
+        "cortex"
+      ],
+      "arm": "before",
+      "game_seed": 43394992
+    },
+    {
+      "id": "swamp-2-1-before",
+      "family": "swamp",
+      "map_seed": 58003,
+      "map_index": 2,
+      "matchup": 1,
+      "players": [
+        "nicowar",
+        "cortex"
+      ],
+      "arm": "before",
+      "game_seed": 1936452909
+    },
+    {
+      "id": "canals-4-2-after",
+      "family": "canals",
+      "map_seed": 62005,
+      "map_index": 4,
+      "matchup": 2,
+      "players": [
+        "nicowar",
+        "warrush"
+      ],
+      "arm": "after",
+      "game_seed": 2002447819
+    },
+    {
+      "id": "maze-1-0-after",
+      "family": "maze",
+      "map_seed": 60002,
+      "map_index": 1,
+      "matchup": 0,
+      "players": [
+        "warrush",
+        "cortex"
+      ],
+      "arm": "after",
+      "game_seed": 1826324157
+    },
+    {
+      "id": "river-0-0-before",
+      "family": "river",
+      "map_seed": 56001,
+      "map_index": 0,
+      "matchup": 0,
+      "players": [
+        "cortex",
+        "warrush"
+      ],
+      "arm": "before",
+      "game_seed": 1769068125
+    },
+    {
+      "id": "stone-highlands-1-2-before",
+      "family": "stone-highlands",
+      "map_seed": 61002,
+      "map_index": 1,
+      "matchup": 2,
+      "players": [
+        "warrush",
+        "nicowar"
+      ],
+      "arm": "before",
+      "game_seed": 1536234795
+    },
+    {
+      "id": "river-2-0-before",
+      "family": "river",
+      "map_seed": 56003,
+      "map_index": 2,
+      "matchup": 0,
+      "players": [
+        "cortex",
+        "warrush"
+      ],
+      "arm": "before",
+      "game_seed": 100268298
+    },
+    {
+      "id": "symmetric-arena-0-0-before",
+      "family": "symmetric-arena",
+      "map_seed": 55001,
+      "map_index": 0,
+      "matchup": 0,
+      "players": [
+        "cortex",
+        "warrush"
+      ],
+      "arm": "before",
+      "game_seed": 1310678489
+    },
+    {
+      "id": "stone-highlands-3-1-before",
+      "family": "stone-highlands",
+      "map_seed": 61004,
+      "map_index": 3,
+      "matchup": 1,
+      "players": [
+        "cortex",
+        "nicowar"
+      ],
+      "arm": "before",
+      "game_seed": 1779015736
+    },
+    {
+      "id": "fingerprint-0-2-after",
+      "family": "fingerprint",
+      "map_seed": 59001,
+      "map_index": 0,
+      "matchup": 2,
+      "players": [
+        "nicowar",
+        "warrush"
+      ],
+      "arm": "after",
+      "game_seed": 1555646898
+    },
+    {
+      "id": "stone-highlands-2-0-before",
+      "family": "stone-highlands",
+      "map_seed": 61003,
+      "map_index": 2,
+      "matchup": 0,
+      "players": [
+        "cortex",
+        "warrush"
+      ],
+      "arm": "before",
+      "game_seed": 1950377377
+    },
+    {
+      "id": "fingerprint-1-1-before",
+      "family": "fingerprint",
+      "map_seed": 59002,
+      "map_index": 1,
+      "matchup": 1,
+      "players": [
+        "cortex",
+        "nicowar"
+      ],
+      "arm": "before",
+      "game_seed": 632563581
+    },
+    {
+      "id": "canals-0-2-after",
+      "family": "canals",
+      "map_seed": 62001,
+      "map_index": 0,
+      "matchup": 2,
+      "players": [
+        "nicowar",
+        "warrush"
+      ],
+      "arm": "after",
+      "game_seed": 1223554992
+    },
+    {
+      "id": "maze-3-2-before",
+      "family": "maze",
+      "map_seed": 60004,
+      "map_index": 3,
+      "matchup": 2,
+      "players": [
+        "warrush",
+        "nicowar"
+      ],
+      "arm": "before",
+      "game_seed": 2037088294
+    },
+    {
+      "id": "stone-highlands-2-1-before",
+      "family": "stone-highlands",
+      "map_seed": 61003,
+      "map_index": 2,
+      "matchup": 1,
+      "players": [
+        "nicowar",
+        "cortex"
+      ],
+      "arm": "before",
+      "game_seed": 2121562301
+    },
+    {
+      "id": "canals-3-0-after",
+      "family": "canals",
+      "map_seed": 62004,
+      "map_index": 3,
+      "matchup": 0,
+      "players": [
+        "warrush",
+        "cortex"
+      ],
+      "arm": "after",
+      "game_seed": 1986659639
+    },
+    {
+      "id": "fingerprint-2-0-after",
+      "family": "fingerprint",
+      "map_seed": 59003,
+      "map_index": 2,
+      "matchup": 0,
+      "players": [
+        "cortex",
+        "warrush"
+      ],
+      "arm": "after",
+      "game_seed": 1566602902
+    },
+    {
+      "id": "swamp-4-1-before",
+      "family": "swamp",
+      "map_seed": 58005,
+      "map_index": 4,
+      "matchup": 1,
+      "players": [
+        "nicowar",
+        "cortex"
+      ],
+      "arm": "before",
+      "game_seed": 1806775150
+    },
+    {
+      "id": "maze-0-2-before",
+      "family": "maze",
+      "map_seed": 60001,
+      "map_index": 0,
+      "matchup": 2,
+      "players": [
+        "nicowar",
+        "warrush"
+      ],
+      "arm": "before",
+      "game_seed": 18648660
+    },
+    {
+      "id": "swamp-3-1-after",
+      "family": "swamp",
+      "map_seed": 58004,
+      "map_index": 3,
+      "matchup": 1,
+      "players": [
+        "cortex",
+        "nicowar"
+      ],
+      "arm": "after",
+      "game_seed": 804112151
+    },
+    {
+      "id": "canals-3-2-after",
+      "family": "canals",
+      "map_seed": 62004,
+      "map_index": 3,
+      "matchup": 2,
+      "players": [
+        "warrush",
+        "nicowar"
+      ],
+      "arm": "after",
+      "game_seed": 1790531285
+    },
+    {
+      "id": "maze-3-1-after",
+      "family": "maze",
+      "map_seed": 60004,
+      "map_index": 3,
+      "matchup": 1,
+      "players": [
+        "cortex",
+        "nicowar"
+      ],
+      "arm": "after",
+      "game_seed": 961297080
+    },
+    {
+      "id": "river-0-2-before",
+      "family": "river",
+      "map_seed": 56001,
+      "map_index": 0,
+      "matchup": 2,
+      "players": [
+        "nicowar",
+        "warrush"
+      ],
+      "arm": "before",
+      "game_seed": 536712458
+    },
+    {
+      "id": "river-1-2-before",
+      "family": "river",
+      "map_seed": 56002,
+      "map_index": 1,
+      "matchup": 2,
+      "players": [
+        "warrush",
+        "nicowar"
+      ],
+      "arm": "before",
+      "game_seed": 1562654985
+    },
+    {
+      "id": "canals-4-0-after",
+      "family": "canals",
+      "map_seed": 62005,
+      "map_index": 4,
+      "matchup": 0,
+      "players": [
+        "cortex",
+        "warrush"
+      ],
+      "arm": "after",
+      "game_seed": 1690809836
+    },
+    {
+      "id": "maze-2-1-before",
+      "family": "maze",
+      "map_seed": 60003,
+      "map_index": 2,
+      "matchup": 1,
+      "players": [
+        "nicowar",
+        "cortex"
+      ],
+      "arm": "before",
+      "game_seed": 1151634651
+    },
+    {
+      "id": "stone-highlands-2-2-after",
+      "family": "stone-highlands",
+      "map_seed": 61003,
+      "map_index": 2,
+      "matchup": 2,
+      "players": [
+        "nicowar",
+        "warrush"
+      ],
+      "arm": "after",
+      "game_seed": 614589997
+    },
+    {
+      "id": "river-3-1-after",
+      "family": "river",
+      "map_seed": 56004,
+      "map_index": 3,
+      "matchup": 1,
+      "players": [
+        "cortex",
+        "nicowar"
+      ],
+      "arm": "after",
+      "game_seed": 1601488368
+    },
+    {
+      "id": "canals-2-2-after",
+      "family": "canals",
+      "map_seed": 62003,
+      "map_index": 2,
+      "matchup": 2,
+      "players": [
+        "nicowar",
+        "warrush"
+      ],
+      "arm": "after",
+      "game_seed": 1268012966
+    },
+    {
+      "id": "swamp-2-0-after",
+      "family": "swamp",
+      "map_seed": 58003,
+      "map_index": 2,
+      "matchup": 0,
+      "players": [
+        "cortex",
+        "warrush"
+      ],
+      "arm": "after",
+      "game_seed": 915419630
+    },
+    {
+      "id": "stone-highlands-0-0-after",
+      "family": "stone-highlands",
+      "map_seed": 61001,
+      "map_index": 0,
+      "matchup": 0,
+      "players": [
+        "cortex",
+        "warrush"
+      ],
+      "arm": "after",
+      "game_seed": 998079360
+    },
+    {
+      "id": "symmetric-arena-4-2-before",
+      "family": "symmetric-arena",
+      "map_seed": 55005,
+      "map_index": 4,
+      "matchup": 2,
+      "players": [
+        "nicowar",
+        "warrush"
+      ],
+      "arm": "before",
+      "game_seed": 1560596668
+    },
+    {
+      "id": "stone-highlands-2-1-after",
+      "family": "stone-highlands",
+      "map_seed": 61003,
+      "map_index": 2,
+      "matchup": 1,
+      "players": [
+        "nicowar",
+        "cortex"
+      ],
+      "arm": "after",
+      "game_seed": 474563191
+    },
+    {
+      "id": "maze-4-1-after",
+      "family": "maze",
+      "map_seed": 60005,
+      "map_index": 4,
+      "matchup": 1,
+      "players": [
+        "nicowar",
+        "cortex"
+      ],
+      "arm": "after",
+      "game_seed": 1470187187
+    },
+    {
+      "id": "symmetric-arena-0-1-before",
+      "family": "symmetric-arena",
+      "map_seed": 55001,
+      "map_index": 0,
+      "matchup": 1,
+      "players": [
+        "nicowar",
+        "cortex"
+      ],
+      "arm": "before",
+      "game_seed": 415253520
+    },
+    {
+      "id": "fingerprint-4-2-before",
+      "family": "fingerprint",
+      "map_seed": 59005,
+      "map_index": 4,
+      "matchup": 2,
+      "players": [
+        "nicowar",
+        "warrush"
+      ],
+      "arm": "before",
+      "game_seed": 1473413445
+    },
+    {
+      "id": "fingerprint-4-0-after",
+      "family": "fingerprint",
+      "map_seed": 59005,
+      "map_index": 4,
+      "matchup": 0,
+      "players": [
+        "cortex",
+        "warrush"
+      ],
+      "arm": "after",
+      "game_seed": 190378294
+    },
+    {
+      "id": "river-3-0-after",
+      "family": "river",
+      "map_seed": 56004,
+      "map_index": 3,
+      "matchup": 0,
+      "players": [
+        "warrush",
+        "cortex"
+      ],
+      "arm": "after",
+      "game_seed": 1907377515
+    },
+    {
+      "id": "maze-3-0-before",
+      "family": "maze",
+      "map_seed": 60004,
+      "map_index": 3,
+      "matchup": 0,
+      "players": [
+        "warrush",
+        "cortex"
+      ],
+      "arm": "before",
+      "game_seed": 1664155609
+    },
+    {
+      "id": "swamp-3-1-before",
+      "family": "swamp",
+      "map_seed": 58004,
+      "map_index": 3,
+      "matchup": 1,
+      "players": [
+        "cortex",
+        "nicowar"
+      ],
+      "arm": "before",
+      "game_seed": 438078345
+    },
+    {
+      "id": "symmetric-arena-4-0-before",
+      "family": "symmetric-arena",
+      "map_seed": 55005,
+      "map_index": 4,
+      "matchup": 0,
+      "players": [
+        "cortex",
+        "warrush"
+      ],
+      "arm": "before",
+      "game_seed": 158177800
+    },
+    {
+      "id": "fingerprint-0-0-before",
+      "family": "fingerprint",
+      "map_seed": 59001,
+      "map_index": 0,
+      "matchup": 0,
+      "players": [
+        "cortex",
+        "warrush"
+      ],
+      "arm": "before",
+      "game_seed": 2142052088
+    },
+    {
+      "id": "swamp-2-2-after",
+      "family": "swamp",
+      "map_seed": 58003,
+      "map_index": 2,
+      "matchup": 2,
+      "players": [
+        "nicowar",
+        "warrush"
+      ],
+      "arm": "after",
+      "game_seed": 54909540
+    },
+    {
+      "id": "canals-3-1-after",
+      "family": "canals",
+      "map_seed": 62004,
+      "map_index": 3,
+      "matchup": 1,
+      "players": [
+        "cortex",
+        "nicowar"
+      ],
+      "arm": "after",
+      "game_seed": 446571796
+    },
+    {
+      "id": "river-4-0-before",
+      "family": "river",
+      "map_seed": 56005,
+      "map_index": 4,
+      "matchup": 0,
+      "players": [
+        "cortex",
+        "warrush"
+      ],
+      "arm": "before",
+      "game_seed": 896179309
+    },
+    {
+      "id": "river-1-1-before",
+      "family": "river",
+      "map_seed": 56002,
+      "map_index": 1,
+      "matchup": 1,
+      "players": [
+        "cortex",
+        "nicowar"
+      ],
+      "arm": "before",
+      "game_seed": 970291917
+    },
+    {
+      "id": "symmetric-arena-0-2-after",
+      "family": "symmetric-arena",
+      "map_seed": 55001,
+      "map_index": 0,
+      "matchup": 2,
+      "players": [
+        "nicowar",
+        "warrush"
+      ],
+      "arm": "after",
+      "game_seed": 2058859115
+    },
+    {
+      "id": "symmetric-arena-2-1-after",
+      "family": "symmetric-arena",
+      "map_seed": 55003,
+      "map_index": 2,
+      "matchup": 1,
+      "players": [
+        "nicowar",
+        "cortex"
+      ],
+      "arm": "after",
+      "game_seed": 1527320178
+    },
+    {
+      "id": "fingerprint-4-1-after",
+      "family": "fingerprint",
+      "map_seed": 59005,
+      "map_index": 4,
+      "matchup": 1,
+      "players": [
+        "nicowar",
+        "cortex"
+      ],
+      "arm": "after",
+      "game_seed": 1158027008
+    },
+    {
+      "id": "river-4-2-before",
+      "family": "river",
+      "map_seed": 56005,
+      "map_index": 4,
+      "matchup": 2,
+      "players": [
+        "nicowar",
+        "warrush"
+      ],
+      "arm": "before",
+      "game_seed": 1561305222
+    },
+    {
+      "id": "fingerprint-1-0-after",
+      "family": "fingerprint",
+      "map_seed": 59002,
+      "map_index": 1,
+      "matchup": 0,
+      "players": [
+        "warrush",
+        "cortex"
+      ],
+      "arm": "after",
+      "game_seed": 466749486
+    },
+    {
+      "id": "river-0-1-before",
+      "family": "river",
+      "map_seed": 56001,
+      "map_index": 0,
+      "matchup": 1,
+      "players": [
+        "nicowar",
+        "cortex"
+      ],
+      "arm": "before",
+      "game_seed": 224382476
+    },
+    {
+      "id": "isles-3-1-before",
+      "family": "isles",
+      "map_seed": 57004,
+      "map_index": 3,
+      "matchup": 1,
+      "players": [
+        "cortex",
+        "nicowar"
+      ],
+      "arm": "before",
+      "game_seed": 1476746136
+    },
+    {
+      "id": "canals-4-0-before",
+      "family": "canals",
+      "map_seed": 62005,
+      "map_index": 4,
+      "matchup": 0,
+      "players": [
+        "cortex",
+        "warrush"
+      ],
+      "arm": "before",
+      "game_seed": 1496294401
+    },
+    {
+      "id": "symmetric-arena-3-2-after",
+      "family": "symmetric-arena",
+      "map_seed": 55004,
+      "map_index": 3,
+      "matchup": 2,
+      "players": [
+        "warrush",
+        "nicowar"
+      ],
+      "arm": "after",
+      "game_seed": 1260827420
+    },
+    {
+      "id": "canals-0-0-before",
+      "family": "canals",
+      "map_seed": 62001,
+      "map_index": 0,
+      "matchup": 0,
+      "players": [
+        "cortex",
+        "warrush"
+      ],
+      "arm": "before",
+      "game_seed": 1216204662
+    },
+    {
+      "id": "river-1-0-after",
+      "family": "river",
+      "map_seed": 56002,
+      "map_index": 1,
+      "matchup": 0,
+      "players": [
+        "warrush",
+        "cortex"
+      ],
+      "arm": "after",
+      "game_seed": 431482379
+    },
+    {
+      "id": "fingerprint-4-0-before",
+      "family": "fingerprint",
+      "map_seed": 59005,
+      "map_index": 4,
+      "matchup": 0,
+      "players": [
+        "cortex",
+        "warrush"
+      ],
+      "arm": "before",
+      "game_seed": 1382674559
+    },
+    {
+      "id": "river-0-0-after",
+      "family": "river",
+      "map_seed": 56001,
+      "map_index": 0,
+      "matchup": 0,
+      "players": [
+        "cortex",
+        "warrush"
+      ],
+      "arm": "after",
+      "game_seed": 1193948371
+    },
+    {
+      "id": "fingerprint-0-0-after",
+      "family": "fingerprint",
+      "map_seed": 59001,
+      "map_index": 0,
+      "matchup": 0,
+      "players": [
+        "cortex",
+        "warrush"
+      ],
+      "arm": "after",
+      "game_seed": 1028962930
+    },
+    {
+      "id": "swamp-1-2-after",
+      "family": "swamp",
+      "map_seed": 58002,
+      "map_index": 1,
+      "matchup": 2,
+      "players": [
+        "warrush",
+        "nicowar"
+      ],
+      "arm": "after",
+      "game_seed": 1135287383
+    },
+    {
+      "id": "isles-2-1-after",
+      "family": "isles",
+      "map_seed": 57003,
+      "map_index": 2,
+      "matchup": 1,
+      "players": [
+        "nicowar",
+        "cortex"
+      ],
+      "arm": "after",
+      "game_seed": 1702527166
+    },
+    {
+      "id": "canals-0-2-before",
+      "family": "canals",
+      "map_seed": 62001,
+      "map_index": 0,
+      "matchup": 2,
+      "players": [
+        "nicowar",
+        "warrush"
+      ],
+      "arm": "before",
+      "game_seed": 1266121188
+    },
+    {
+      "id": "maze-2-2-after",
+      "family": "maze",
+      "map_seed": 60003,
+      "map_index": 2,
+      "matchup": 2,
+      "players": [
+        "nicowar",
+        "warrush"
+      ],
+      "arm": "after",
+      "game_seed": 840992136
+    },
+    {
+      "id": "river-1-0-before",
+      "family": "river",
+      "map_seed": 56002,
+      "map_index": 1,
+      "matchup": 0,
+      "players": [
+        "warrush",
+        "cortex"
+      ],
+      "arm": "before",
+      "game_seed": 276864017
+    },
+    {
+      "id": "isles-2-1-before",
+      "family": "isles",
+      "map_seed": 57003,
+      "map_index": 2,
+      "matchup": 1,
+      "players": [
+        "nicowar",
+        "cortex"
+      ],
+      "arm": "before",
+      "game_seed": 1572737888
+    },
+    {
+      "id": "canals-1-0-before",
+      "family": "canals",
+      "map_seed": 62002,
+      "map_index": 1,
+      "matchup": 0,
+      "players": [
+        "warrush",
+        "cortex"
+      ],
+      "arm": "before",
+      "game_seed": 1923852820
+    },
+    {
+      "id": "canals-4-2-before",
+      "family": "canals",
+      "map_seed": 62005,
+      "map_index": 4,
+      "matchup": 2,
+      "players": [
+        "nicowar",
+        "warrush"
+      ],
+      "arm": "before",
+      "game_seed": 704178754
+    },
+    {
+      "id": "river-3-0-before",
+      "family": "river",
+      "map_seed": 56004,
+      "map_index": 3,
+      "matchup": 0,
+      "players": [
+        "warrush",
+        "cortex"
+      ],
+      "arm": "before",
+      "game_seed": 1257910139
+    },
+    {
+      "id": "symmetric-arena-1-1-after",
+      "family": "symmetric-arena",
+      "map_seed": 55002,
+      "map_index": 1,
+      "matchup": 1,
+      "players": [
+        "cortex",
+        "nicowar"
+      ],
+      "arm": "after",
+      "game_seed": 2051637873
+    },
+    {
+      "id": "swamp-1-0-before",
+      "family": "swamp",
+      "map_seed": 58002,
+      "map_index": 1,
+      "matchup": 0,
+      "players": [
+        "warrush",
+        "cortex"
+      ],
+      "arm": "before",
+      "game_seed": 2119071798
+    },
+    {
+      "id": "river-4-1-before",
+      "family": "river",
+      "map_seed": 56005,
+      "map_index": 4,
+      "matchup": 1,
+      "players": [
+        "nicowar",
+        "cortex"
+      ],
+      "arm": "before",
+      "game_seed": 1444689662
+    },
+    {
+      "id": "river-2-1-before",
+      "family": "river",
+      "map_seed": 56003,
+      "map_index": 2,
+      "matchup": 1,
+      "players": [
+        "nicowar",
+        "cortex"
+      ],
+      "arm": "before",
+      "game_seed": 1444673136
+    },
+    {
+      "id": "maze-4-2-after",
+      "family": "maze",
+      "map_seed": 60005,
+      "map_index": 4,
+      "matchup": 2,
+      "players": [
+        "nicowar",
+        "warrush"
+      ],
+      "arm": "after",
+      "game_seed": 1228165183
+    },
+    {
+      "id": "swamp-4-2-before",
+      "family": "swamp",
+      "map_seed": 58005,
+      "map_index": 4,
+      "matchup": 2,
+      "players": [
+        "nicowar",
+        "warrush"
+      ],
+      "arm": "before",
+      "game_seed": 83386647
+    },
+    {
+      "id": "maze-2-2-before",
+      "family": "maze",
+      "map_seed": 60003,
+      "map_index": 2,
+      "matchup": 2,
+      "players": [
+        "nicowar",
+        "warrush"
+      ],
+      "arm": "before",
+      "game_seed": 1270878460
+    },
+    {
+      "id": "isles-1-2-before",
+      "family": "isles",
+      "map_seed": 57002,
+      "map_index": 1,
+      "matchup": 2,
+      "players": [
+        "warrush",
+        "nicowar"
+      ],
+      "arm": "before",
+      "game_seed": 1915319759
+    },
+    {
+      "id": "canals-2-0-before",
+      "family": "canals",
+      "map_seed": 62003,
+      "map_index": 2,
+      "matchup": 0,
+      "players": [
+        "cortex",
+        "warrush"
+      ],
+      "arm": "before",
+      "game_seed": 575144906
+    },
+    {
+      "id": "isles-3-2-after",
+      "family": "isles",
+      "map_seed": 57004,
+      "map_index": 3,
+      "matchup": 2,
+      "players": [
+        "warrush",
+        "nicowar"
+      ],
+      "arm": "after",
+      "game_seed": 505459518
+    },
+    {
+      "id": "river-0-1-after",
+      "family": "river",
+      "map_seed": 56001,
+      "map_index": 0,
+      "matchup": 1,
+      "players": [
+        "nicowar",
+        "cortex"
+      ],
+      "arm": "after",
+      "game_seed": 2123946727
+    },
+    {
+      "id": "isles-3-1-after",
+      "family": "isles",
+      "map_seed": 57004,
+      "map_index": 3,
+      "matchup": 1,
+      "players": [
+        "cortex",
+        "nicowar"
+      ],
+      "arm": "after",
+      "game_seed": 899182976
+    },
+    {
+      "id": "swamp-0-1-before",
+      "family": "swamp",
+      "map_seed": 58001,
+      "map_index": 0,
+      "matchup": 1,
+      "players": [
+        "nicowar",
+        "cortex"
+      ],
+      "arm": "before",
+      "game_seed": 1436394455
+    },
+    {
+      "id": "maze-1-2-before",
+      "family": "maze",
+      "map_seed": 60002,
+      "map_index": 1,
+      "matchup": 2,
+      "players": [
+        "warrush",
+        "nicowar"
+      ],
+      "arm": "before",
+      "game_seed": 1706998408
+    },
+    {
+      "id": "isles-2-2-before",
+      "family": "isles",
+      "map_seed": 57003,
+      "map_index": 2,
+      "matchup": 2,
+      "players": [
+        "nicowar",
+        "warrush"
+      ],
+      "arm": "before",
+      "game_seed": 657031051
+    },
+    {
+      "id": "stone-highlands-4-1-before",
+      "family": "stone-highlands",
+      "map_seed": 61005,
+      "map_index": 4,
+      "matchup": 1,
+      "players": [
+        "nicowar",
+        "cortex"
+      ],
+      "arm": "before",
+      "game_seed": 1169237627
+    },
+    {
+      "id": "stone-highlands-0-2-before",
+      "family": "stone-highlands",
+      "map_seed": 61001,
+      "map_index": 0,
+      "matchup": 2,
+      "players": [
+        "nicowar",
+        "warrush"
+      ],
+      "arm": "before",
+      "game_seed": 1769943172
+    },
+    {
+      "id": "canals-1-1-before",
+      "family": "canals",
+      "map_seed": 62002,
+      "map_index": 1,
+      "matchup": 1,
+      "players": [
+        "cortex",
+        "nicowar"
+      ],
+      "arm": "before",
+      "game_seed": 2017704053
+    },
+    {
+      "id": "symmetric-arena-1-2-before",
+      "family": "symmetric-arena",
+      "map_seed": 55002,
+      "map_index": 1,
+      "matchup": 2,
+      "players": [
+        "warrush",
+        "nicowar"
+      ],
+      "arm": "before",
+      "game_seed": 1017113081
+    },
+    {
+      "id": "canals-0-1-after",
+      "family": "canals",
+      "map_seed": 62001,
+      "map_index": 0,
+      "matchup": 1,
+      "players": [
+        "nicowar",
+        "cortex"
+      ],
+      "arm": "after",
+      "game_seed": 769482632
+    },
+    {
+      "id": "symmetric-arena-4-0-after",
+      "family": "symmetric-arena",
+      "map_seed": 55005,
+      "map_index": 4,
+      "matchup": 0,
+      "players": [
+        "cortex",
+        "warrush"
+      ],
+      "arm": "after",
+      "game_seed": 40193931
+    },
+    {
+      "id": "stone-highlands-0-1-before",
+      "family": "stone-highlands",
+      "map_seed": 61001,
+      "map_index": 0,
+      "matchup": 1,
+      "players": [
+        "nicowar",
+        "cortex"
+      ],
+      "arm": "before",
+      "game_seed": 1038925880
+    },
+    {
+      "id": "canals-2-2-before",
+      "family": "canals",
+      "map_seed": 62003,
+      "map_index": 2,
+      "matchup": 2,
+      "players": [
+        "nicowar",
+        "warrush"
+      ],
+      "arm": "before",
+      "game_seed": 1299325533
+    },
+    {
+      "id": "stone-highlands-3-0-after",
+      "family": "stone-highlands",
+      "map_seed": 61004,
+      "map_index": 3,
+      "matchup": 0,
+      "players": [
+        "warrush",
+        "cortex"
+      ],
+      "arm": "after",
+      "game_seed": 1821108782
+    },
+    {
+      "id": "stone-highlands-2-0-after",
+      "family": "stone-highlands",
+      "map_seed": 61003,
+      "map_index": 2,
+      "matchup": 0,
+      "players": [
+        "cortex",
+        "warrush"
+      ],
+      "arm": "after",
+      "game_seed": 1885459985
+    },
+    {
+      "id": "stone-highlands-4-0-before",
+      "family": "stone-highlands",
+      "map_seed": 61005,
+      "map_index": 4,
+      "matchup": 0,
+      "players": [
+        "cortex",
+        "warrush"
+      ],
+      "arm": "before",
+      "game_seed": 1582074061
+    },
+    {
+      "id": "isles-3-0-before",
+      "family": "isles",
+      "map_seed": 57004,
+      "map_index": 3,
+      "matchup": 0,
+      "players": [
+        "warrush",
+        "cortex"
+      ],
+      "arm": "before",
+      "game_seed": 1802199336
+    },
+    {
+      "id": "fingerprint-1-0-before",
+      "family": "fingerprint",
+      "map_seed": 59002,
+      "map_index": 1,
+      "matchup": 0,
+      "players": [
+        "warrush",
+        "cortex"
+      ],
+      "arm": "before",
+      "game_seed": 84055479
+    },
+    {
+      "id": "fingerprint-0-1-before",
+      "family": "fingerprint",
+      "map_seed": 59001,
+      "map_index": 0,
+      "matchup": 1,
+      "players": [
+        "nicowar",
+        "cortex"
+      ],
+      "arm": "before",
+      "game_seed": 2114417288
+    },
+    {
+      "id": "stone-highlands-4-2-before",
+      "family": "stone-highlands",
+      "map_seed": 61005,
+      "map_index": 4,
+      "matchup": 2,
+      "players": [
+        "nicowar",
+        "warrush"
+      ],
+      "arm": "before",
+      "game_seed": 1543361932
+    },
+    {
+      "id": "river-1-2-after",
+      "family": "river",
+      "map_seed": 56002,
+      "map_index": 1,
+      "matchup": 2,
+      "players": [
+        "warrush",
+        "nicowar"
+      ],
+      "arm": "after",
+      "game_seed": 328775960
+    },
+    {
+      "id": "isles-2-2-after",
+      "family": "isles",
+      "map_seed": 57003,
+      "map_index": 2,
+      "matchup": 2,
+      "players": [
+        "nicowar",
+        "warrush"
+      ],
+      "arm": "after",
+      "game_seed": 22237595
+    },
+    {
+      "id": "swamp-4-0-before",
+      "family": "swamp",
+      "map_seed": 58005,
+      "map_index": 4,
+      "matchup": 0,
+      "players": [
+        "cortex",
+        "warrush"
+      ],
+      "arm": "before",
+      "game_seed": 1955606487
+    },
+    {
+      "id": "symmetric-arena-2-2-before",
+      "family": "symmetric-arena",
+      "map_seed": 55003,
+      "map_index": 2,
+      "matchup": 2,
+      "players": [
+        "nicowar",
+        "warrush"
+      ],
+      "arm": "before",
+      "game_seed": 1276310585
+    },
+    {
+      "id": "isles-0-1-before",
+      "family": "isles",
+      "map_seed": 57001,
+      "map_index": 0,
+      "matchup": 1,
+      "players": [
+        "nicowar",
+        "cortex"
+      ],
+      "arm": "before",
+      "game_seed": 1994562544
+    },
+    {
+      "id": "symmetric-arena-1-1-before",
+      "family": "symmetric-arena",
+      "map_seed": 55002,
+      "map_index": 1,
+      "matchup": 1,
+      "players": [
+        "cortex",
+        "nicowar"
+      ],
+      "arm": "before",
+      "game_seed": 704212590
+    },
+    {
+      "id": "stone-highlands-4-1-after",
+      "family": "stone-highlands",
+      "map_seed": 61005,
+      "map_index": 4,
+      "matchup": 1,
+      "players": [
+        "nicowar",
+        "cortex"
+      ],
+      "arm": "after",
+      "game_seed": 561480481
+    },
+    {
+      "id": "stone-highlands-3-2-after",
+      "family": "stone-highlands",
+      "map_seed": 61004,
+      "map_index": 3,
+      "matchup": 2,
+      "players": [
+        "warrush",
+        "nicowar"
+      ],
+      "arm": "after",
+      "game_seed": 588602255
+    },
+    {
+      "id": "canals-1-0-after",
+      "family": "canals",
+      "map_seed": 62002,
+      "map_index": 1,
+      "matchup": 0,
+      "players": [
+        "warrush",
+        "cortex"
+      ],
+      "arm": "after",
+      "game_seed": 1873056176
+    },
+    {
+      "id": "isles-3-0-after",
+      "family": "isles",
+      "map_seed": 57004,
+      "map_index": 3,
+      "matchup": 0,
+      "players": [
+        "warrush",
+        "cortex"
+      ],
+      "arm": "after",
+      "game_seed": 318239781
+    },
+    {
+      "id": "symmetric-arena-1-0-after",
+      "family": "symmetric-arena",
+      "map_seed": 55002,
+      "map_index": 1,
+      "matchup": 0,
+      "players": [
+        "warrush",
+        "cortex"
+      ],
+      "arm": "after",
+      "game_seed": 1515647314
+    },
+    {
+      "id": "isles-1-1-after",
+      "family": "isles",
+      "map_seed": 57002,
+      "map_index": 1,
+      "matchup": 1,
+      "players": [
+        "cortex",
+        "nicowar"
+      ],
+      "arm": "after",
+      "game_seed": 2104370911
+    },
+    {
+      "id": "canals-3-2-before",
+      "family": "canals",
+      "map_seed": 62004,
+      "map_index": 3,
+      "matchup": 2,
+      "players": [
+        "warrush",
+        "nicowar"
+      ],
+      "arm": "before",
+      "game_seed": 491909900
+    },
+    {
+      "id": "swamp-4-2-after",
+      "family": "swamp",
+      "map_seed": 58005,
+      "map_index": 4,
+      "matchup": 2,
+      "players": [
+        "nicowar",
+        "warrush"
+      ],
+      "arm": "after",
+      "game_seed": 1504397745
+    },
+    {
+      "id": "stone-highlands-1-1-after",
+      "family": "stone-highlands",
+      "map_seed": 61002,
+      "map_index": 1,
+      "matchup": 1,
+      "players": [
+        "cortex",
+        "nicowar"
+      ],
+      "arm": "after",
+      "game_seed": 1750163034
+    },
+    {
+      "id": "fingerprint-1-2-before",
+      "family": "fingerprint",
+      "map_seed": 59002,
+      "map_index": 1,
+      "matchup": 2,
+      "players": [
+        "warrush",
+        "nicowar"
+      ],
+      "arm": "before",
+      "game_seed": 1075136326
+    },
+    {
+      "id": "river-2-2-before",
+      "family": "river",
+      "map_seed": 56003,
+      "map_index": 2,
+      "matchup": 2,
+      "players": [
+        "nicowar",
+        "warrush"
+      ],
+      "arm": "before",
+      "game_seed": 481634111
+    },
+    {
+      "id": "isles-0-0-after",
+      "family": "isles",
+      "map_seed": 57001,
+      "map_index": 0,
+      "matchup": 0,
+      "players": [
+        "cortex",
+        "warrush"
+      ],
+      "arm": "after",
+      "game_seed": 1721479857
+    },
+    {
+      "id": "swamp-0-1-after",
+      "family": "swamp",
+      "map_seed": 58001,
+      "map_index": 0,
+      "matchup": 1,
+      "players": [
+        "nicowar",
+        "cortex"
+      ],
+      "arm": "after",
+      "game_seed": 1994448528
+    },
+    {
+      "id": "canals-3-1-before",
+      "family": "canals",
+      "map_seed": 62004,
+      "map_index": 3,
+      "matchup": 1,
+      "players": [
+        "cortex",
+        "nicowar"
+      ],
+      "arm": "before",
+      "game_seed": 422177465
+    },
+    {
+      "id": "isles-1-0-before",
+      "family": "isles",
+      "map_seed": 57002,
+      "map_index": 1,
+      "matchup": 0,
+      "players": [
+        "warrush",
+        "cortex"
+      ],
+      "arm": "before",
+      "game_seed": 1020545419
+    },
+    {
+      "id": "canals-1-2-after",
+      "family": "canals",
+      "map_seed": 62002,
+      "map_index": 1,
+      "matchup": 2,
+      "players": [
+        "warrush",
+        "nicowar"
+      ],
+      "arm": "after",
+      "game_seed": 1371043210
+    },
+    {
+      "id": "swamp-2-0-before",
+      "family": "swamp",
+      "map_seed": 58003,
+      "map_index": 2,
+      "matchup": 0,
+      "players": [
+        "cortex",
+        "warrush"
+      ],
+      "arm": "before",
+      "game_seed": 54370019
+    },
+    {
+      "id": "canals-1-2-before",
+      "family": "canals",
+      "map_seed": 62002,
+      "map_index": 1,
+      "matchup": 2,
+      "players": [
+        "warrush",
+        "nicowar"
+      ],
+      "arm": "before",
+      "game_seed": 1502141398
+    },
+    {
+      "id": "fingerprint-1-1-after",
+      "family": "fingerprint",
+      "map_seed": 59002,
+      "map_index": 1,
+      "matchup": 1,
+      "players": [
+        "cortex",
+        "nicowar"
+      ],
+      "arm": "after",
+      "game_seed": 333163365
+    },
+    {
+      "id": "maze-1-0-before",
+      "family": "maze",
+      "map_seed": 60002,
+      "map_index": 1,
+      "matchup": 0,
+      "players": [
+        "warrush",
+        "cortex"
+      ],
+      "arm": "before",
+      "game_seed": 962892089
+    },
+    {
+      "id": "symmetric-arena-4-1-before",
+      "family": "symmetric-arena",
+      "map_seed": 55005,
+      "map_index": 4,
+      "matchup": 1,
+      "players": [
+        "nicowar",
+        "cortex"
+      ],
+      "arm": "before",
+      "game_seed": 475098439
+    },
+    {
+      "id": "symmetric-arena-4-1-after",
+      "family": "symmetric-arena",
+      "map_seed": 55005,
+      "map_index": 4,
+      "matchup": 1,
+      "players": [
+        "nicowar",
+        "cortex"
+      ],
+      "arm": "after",
+      "game_seed": 1544967666
+    },
+    {
+      "id": "maze-0-0-before",
+      "family": "maze",
+      "map_seed": 60001,
+      "map_index": 0,
+      "matchup": 0,
+      "players": [
+        "cortex",
+        "warrush"
+      ],
+      "arm": "before",
+      "game_seed": 1329329911
+    },
+    {
+      "id": "swamp-3-0-after",
+      "family": "swamp",
+      "map_seed": 58004,
+      "map_index": 3,
+      "matchup": 0,
+      "players": [
+        "warrush",
+        "cortex"
+      ],
+      "arm": "after",
+      "game_seed": 903561237
+    },
+    {
+      "id": "river-2-2-after",
+      "family": "river",
+      "map_seed": 56003,
+      "map_index": 2,
+      "matchup": 2,
+      "players": [
+        "nicowar",
+        "warrush"
+      ],
+      "arm": "after",
+      "game_seed": 387262039
+    },
+    {
+      "id": "river-4-1-after",
+      "family": "river",
+      "map_seed": 56005,
+      "map_index": 4,
+      "matchup": 1,
+      "players": [
+        "nicowar",
+        "cortex"
+      ],
+      "arm": "after",
+      "game_seed": 729007918
+    },
+    {
+      "id": "isles-0-1-after",
+      "family": "isles",
+      "map_seed": 57001,
+      "map_index": 0,
+      "matchup": 1,
+      "players": [
+        "nicowar",
+        "cortex"
+      ],
+      "arm": "after",
+      "game_seed": 1269765533
+    },
+    {
+      "id": "fingerprint-3-0-before",
+      "family": "fingerprint",
+      "map_seed": 59004,
+      "map_index": 3,
+      "matchup": 0,
+      "players": [
+        "warrush",
+        "cortex"
+      ],
+      "arm": "before",
+      "game_seed": 866231065
+    },
+    {
+      "id": "maze-4-2-before",
+      "family": "maze",
+      "map_seed": 60005,
+      "map_index": 4,
+      "matchup": 2,
+      "players": [
+        "nicowar",
+        "warrush"
+      ],
+      "arm": "before",
+      "game_seed": 1082395157
+    },
+    {
+      "id": "fingerprint-2-2-before",
+      "family": "fingerprint",
+      "map_seed": 59003,
+      "map_index": 2,
+      "matchup": 2,
+      "players": [
+        "nicowar",
+        "warrush"
+      ],
+      "arm": "before",
+      "game_seed": 1185445103
+    },
+    {
+      "id": "isles-2-0-after",
+      "family": "isles",
+      "map_seed": 57003,
+      "map_index": 2,
+      "matchup": 0,
+      "players": [
+        "cortex",
+        "warrush"
+      ],
+      "arm": "after",
+      "game_seed": 1977624585
+    },
+    {
+      "id": "swamp-4-1-after",
+      "family": "swamp",
+      "map_seed": 58005,
+      "map_index": 4,
+      "matchup": 1,
+      "players": [
+        "nicowar",
+        "cortex"
+      ],
+      "arm": "after",
+      "game_seed": 497066609
+    },
+    {
+      "id": "maze-1-1-before",
+      "family": "maze",
+      "map_seed": 60002,
+      "map_index": 1,
+      "matchup": 1,
+      "players": [
+        "cortex",
+        "nicowar"
+      ],
+      "arm": "before",
+      "game_seed": 411587144
+    },
+    {
+      "id": "symmetric-arena-0-2-before",
+      "family": "symmetric-arena",
+      "map_seed": 55001,
+      "map_index": 0,
+      "matchup": 2,
+      "players": [
+        "nicowar",
+        "warrush"
+      ],
+      "arm": "before",
+      "game_seed": 1887827596
+    },
+    {
+      "id": "stone-highlands-2-2-before",
+      "family": "stone-highlands",
+      "map_seed": 61003,
+      "map_index": 2,
+      "matchup": 2,
+      "players": [
+        "nicowar",
+        "warrush"
+      ],
+      "arm": "before",
+      "game_seed": 776523103
+    },
+    {
+      "id": "symmetric-arena-2-1-before",
+      "family": "symmetric-arena",
+      "map_seed": 55003,
+      "map_index": 2,
+      "matchup": 1,
+      "players": [
+        "nicowar",
+        "cortex"
+      ],
+      "arm": "before",
+      "game_seed": 1327744316
+    },
+    {
+      "id": "maze-3-2-after",
+      "family": "maze",
+      "map_seed": 60004,
+      "map_index": 3,
+      "matchup": 2,
+      "players": [
+        "warrush",
+        "nicowar"
+      ],
+      "arm": "after",
+      "game_seed": 1374450476
+    },
+    {
+      "id": "canals-4-1-after",
+      "family": "canals",
+      "map_seed": 62005,
+      "map_index": 4,
+      "matchup": 1,
+      "players": [
+        "nicowar",
+        "cortex"
+      ],
+      "arm": "after",
+      "game_seed": 266703174
+    },
+    {
+      "id": "symmetric-arena-1-2-after",
+      "family": "symmetric-arena",
+      "map_seed": 55002,
+      "map_index": 1,
+      "matchup": 2,
+      "players": [
+        "warrush",
+        "nicowar"
+      ],
+      "arm": "after",
+      "game_seed": 208261850
+    },
+    {
+      "id": "fingerprint-3-2-after",
+      "family": "fingerprint",
+      "map_seed": 59004,
+      "map_index": 3,
+      "matchup": 2,
+      "players": [
+        "warrush",
+        "nicowar"
+      ],
+      "arm": "after",
+      "game_seed": 1829677155
+    },
+    {
+      "id": "maze-4-0-after",
+      "family": "maze",
+      "map_seed": 60005,
+      "map_index": 4,
+      "matchup": 0,
+      "players": [
+        "cortex",
+        "warrush"
+      ],
+      "arm": "after",
+      "game_seed": 703699855
+    },
+    {
+      "id": "maze-2-0-after",
+      "family": "maze",
+      "map_seed": 60003,
+      "map_index": 2,
+      "matchup": 0,
+      "players": [
+        "cortex",
+        "warrush"
+      ],
+      "arm": "after",
+      "game_seed": 145780170
+    },
+    {
+      "id": "river-1-1-after",
+      "family": "river",
+      "map_seed": 56002,
+      "map_index": 1,
+      "matchup": 1,
+      "players": [
+        "cortex",
+        "nicowar"
+      ],
+      "arm": "after",
+      "game_seed": 1051002165
+    },
+    {
+      "id": "isles-4-1-after",
+      "family": "isles",
+      "map_seed": 57005,
+      "map_index": 4,
+      "matchup": 1,
+      "players": [
+        "nicowar",
+        "cortex"
+      ],
+      "arm": "after",
+      "game_seed": 1618943706
+    },
+    {
+      "id": "maze-4-1-before",
+      "family": "maze",
+      "map_seed": 60005,
+      "map_index": 4,
+      "matchup": 1,
+      "players": [
+        "nicowar",
+        "cortex"
+      ],
+      "arm": "before",
+      "game_seed": 605218649
+    },
+    {
+      "id": "river-3-2-before",
+      "family": "river",
+      "map_seed": 56004,
+      "map_index": 3,
+      "matchup": 2,
+      "players": [
+        "warrush",
+        "nicowar"
+      ],
+      "arm": "before",
+      "game_seed": 699002487
+    },
+    {
+      "id": "fingerprint-3-1-after",
+      "family": "fingerprint",
+      "map_seed": 59004,
+      "map_index": 3,
+      "matchup": 1,
+      "players": [
+        "cortex",
+        "nicowar"
+      ],
+      "arm": "after",
+      "game_seed": 1618779818
+    },
+    {
+      "id": "canals-2-0-after",
+      "family": "canals",
+      "map_seed": 62003,
+      "map_index": 2,
+      "matchup": 0,
+      "players": [
+        "cortex",
+        "warrush"
+      ],
+      "arm": "after",
+      "game_seed": 420645133
+    },
+    {
+      "id": "fingerprint-2-0-before",
+      "family": "fingerprint",
+      "map_seed": 59003,
+      "map_index": 2,
+      "matchup": 0,
+      "players": [
+        "cortex",
+        "warrush"
+      ],
+      "arm": "before",
+      "game_seed": 989610355
+    },
+    {
+      "id": "symmetric-arena-2-2-after",
+      "family": "symmetric-arena",
+      "map_seed": 55003,
+      "map_index": 2,
+      "matchup": 2,
+      "players": [
+        "nicowar",
+        "warrush"
+      ],
+      "arm": "after",
+      "game_seed": 114677229
+    },
+    {
+      "id": "swamp-2-2-before",
+      "family": "swamp",
+      "map_seed": 58003,
+      "map_index": 2,
+      "matchup": 2,
+      "players": [
+        "nicowar",
+        "warrush"
+      ],
+      "arm": "before",
+      "game_seed": 1728307296
+    },
+    {
+      "id": "symmetric-arena-3-0-after",
+      "family": "symmetric-arena",
+      "map_seed": 55004,
+      "map_index": 3,
+      "matchup": 0,
+      "players": [
+        "warrush",
+        "cortex"
+      ],
+      "arm": "after",
+      "game_seed": 1548625624
+    },
+    {
+      "id": "symmetric-arena-1-0-before",
+      "family": "symmetric-arena",
+      "map_seed": 55002,
+      "map_index": 1,
+      "matchup": 0,
+      "players": [
+        "warrush",
+        "cortex"
+      ],
+      "arm": "before",
+      "game_seed": 1956651044
+    },
+    {
+      "id": "maze-4-0-before",
+      "family": "maze",
+      "map_seed": 60005,
+      "map_index": 4,
+      "matchup": 0,
+      "players": [
+        "cortex",
+        "warrush"
+      ],
+      "arm": "before",
+      "game_seed": 1260771713
+    },
+    {
+      "id": "swamp-0-2-before",
+      "family": "swamp",
+      "map_seed": 58001,
+      "map_index": 0,
+      "matchup": 2,
+      "players": [
+        "nicowar",
+        "warrush"
+      ],
+      "arm": "before",
+      "game_seed": 150931410
+    },
+    {
+      "id": "fingerprint-2-1-before",
+      "family": "fingerprint",
+      "map_seed": 59003,
+      "map_index": 2,
+      "matchup": 1,
+      "players": [
+        "nicowar",
+        "cortex"
+      ],
+      "arm": "before",
+      "game_seed": 312521536
+    },
+    {
+      "id": "swamp-1-0-after",
+      "family": "swamp",
+      "map_seed": 58002,
+      "map_index": 1,
+      "matchup": 0,
+      "players": [
+        "warrush",
+        "cortex"
+      ],
+      "arm": "after",
+      "game_seed": 1170994264
+    },
+    {
+      "id": "symmetric-arena-3-1-before",
+      "family": "symmetric-arena",
+      "map_seed": 55004,
+      "map_index": 3,
+      "matchup": 1,
+      "players": [
+        "cortex",
+        "nicowar"
+      ],
+      "arm": "before",
+      "game_seed": 1894299433
+    },
+    {
+      "id": "river-3-1-before",
+      "family": "river",
+      "map_seed": 56004,
+      "map_index": 3,
+      "matchup": 1,
+      "players": [
+        "cortex",
+        "nicowar"
+      ],
+      "arm": "before",
+      "game_seed": 1306879312
+    },
+    {
+      "id": "stone-highlands-1-0-after",
+      "family": "stone-highlands",
+      "map_seed": 61002,
+      "map_index": 1,
+      "matchup": 0,
+      "players": [
+        "warrush",
+        "cortex"
+      ],
+      "arm": "after",
+      "game_seed": 1381824139
+    },
+    {
+      "id": "maze-1-1-after",
+      "family": "maze",
+      "map_seed": 60002,
+      "map_index": 1,
+      "matchup": 1,
+      "players": [
+        "cortex",
+        "nicowar"
+      ],
+      "arm": "after",
+      "game_seed": 1262754739
+    },
+    {
+      "id": "isles-4-0-after",
+      "family": "isles",
+      "map_seed": 57005,
+      "map_index": 4,
+      "matchup": 0,
+      "players": [
+        "cortex",
+        "warrush"
+      ],
+      "arm": "after",
+      "game_seed": 1293199432
+    },
+    {
+      "id": "maze-0-2-after",
+      "family": "maze",
+      "map_seed": 60001,
+      "map_index": 0,
+      "matchup": 2,
+      "players": [
+        "nicowar",
+        "warrush"
+      ],
+      "arm": "after",
+      "game_seed": 1531980388
+    },
+    {
+      "id": "maze-0-0-after",
+      "family": "maze",
+      "map_seed": 60001,
+      "map_index": 0,
+      "matchup": 0,
+      "players": [
+        "cortex",
+        "warrush"
+      ],
+      "arm": "after",
+      "game_seed": 2017708143
+    },
+    {
+      "id": "symmetric-arena-0-1-after",
+      "family": "symmetric-arena",
+      "map_seed": 55001,
+      "map_index": 0,
+      "matchup": 1,
+      "players": [
+        "nicowar",
+        "cortex"
+      ],
+      "arm": "after",
+      "game_seed": 1234557636
+    },
+    {
+      "id": "stone-highlands-4-0-after",
+      "family": "stone-highlands",
+      "map_seed": 61005,
+      "map_index": 4,
+      "matchup": 0,
+      "players": [
+        "cortex",
+        "warrush"
+      ],
+      "arm": "after",
+      "game_seed": 1420385863
+    },
+    {
+      "id": "maze-3-0-after",
+      "family": "maze",
+      "map_seed": 60004,
+      "map_index": 3,
+      "matchup": 0,
+      "players": [
+        "warrush",
+        "cortex"
+      ],
+      "arm": "after",
+      "game_seed": 254085214
+    },
+    {
+      "id": "swamp-2-1-after",
+      "family": "swamp",
+      "map_seed": 58003,
+      "map_index": 2,
+      "matchup": 1,
+      "players": [
+        "nicowar",
+        "cortex"
+      ],
+      "arm": "after",
+      "game_seed": 1644238806
+    },
+    {
+      "id": "isles-4-0-before",
+      "family": "isles",
+      "map_seed": 57005,
+      "map_index": 4,
+      "matchup": 0,
+      "players": [
+        "cortex",
+        "warrush"
+      ],
+      "arm": "before",
+      "game_seed": 220063905
+    },
+    {
+      "id": "isles-3-2-before",
+      "family": "isles",
+      "map_seed": 57004,
+      "map_index": 3,
+      "matchup": 2,
+      "players": [
+        "warrush",
+        "nicowar"
+      ],
+      "arm": "before",
+      "game_seed": 1757967594
+    },
+    {
+      "id": "maze-3-1-before",
+      "family": "maze",
+      "map_seed": 60004,
+      "map_index": 3,
+      "matchup": 1,
+      "players": [
+        "cortex",
+        "nicowar"
+      ],
+      "arm": "before",
+      "game_seed": 1937014065
+    },
+    {
+      "id": "river-0-2-after",
+      "family": "river",
+      "map_seed": 56001,
+      "map_index": 0,
+      "matchup": 2,
+      "players": [
+        "nicowar",
+        "warrush"
+      ],
+      "arm": "after",
+      "game_seed": 1288513791
+    },
+    {
+      "id": "stone-highlands-4-2-after",
+      "family": "stone-highlands",
+      "map_seed": 61005,
+      "map_index": 4,
+      "matchup": 2,
+      "players": [
+        "nicowar",
+        "warrush"
+      ],
+      "arm": "after",
+      "game_seed": 367987699
+    },
+    {
+      "id": "maze-0-1-before",
+      "family": "maze",
+      "map_seed": 60001,
+      "map_index": 0,
+      "matchup": 1,
+      "players": [
+        "nicowar",
+        "cortex"
+      ],
+      "arm": "before",
+      "game_seed": 1378434259
+    },
+    {
+      "id": "swamp-0-0-after",
+      "family": "swamp",
+      "map_seed": 58001,
+      "map_index": 0,
+      "matchup": 0,
+      "players": [
+        "cortex",
+        "warrush"
+      ],
+      "arm": "after",
+      "game_seed": 961989522
+    },
+    {
+      "id": "swamp-0-0-before",
+      "family": "swamp",
+      "map_seed": 58001,
+      "map_index": 0,
+      "matchup": 0,
+      "players": [
+        "cortex",
+        "warrush"
+      ],
+      "arm": "before",
+      "game_seed": 2117632881
+    },
+    {
+      "id": "isles-0-0-before",
+      "family": "isles",
+      "map_seed": 57001,
+      "map_index": 0,
+      "matchup": 0,
+      "players": [
+        "cortex",
+        "warrush"
+      ],
+      "arm": "before",
+      "game_seed": 1009410115
+    },
+    {
+      "id": "river-2-0-after",
+      "family": "river",
+      "map_seed": 56003,
+      "map_index": 2,
+      "matchup": 0,
+      "players": [
+        "cortex",
+        "warrush"
+      ],
+      "arm": "after",
+      "game_seed": 298960720
+    },
+    {
+      "id": "swamp-3-2-after",
+      "family": "swamp",
+      "map_seed": 58004,
+      "map_index": 3,
+      "matchup": 2,
+      "players": [
+        "warrush",
+        "nicowar"
+      ],
+      "arm": "after",
+      "game_seed": 1846165818
+    },
+    {
+      "id": "fingerprint-3-0-after",
+      "family": "fingerprint",
+      "map_seed": 59004,
+      "map_index": 3,
+      "matchup": 0,
+      "players": [
+        "warrush",
+        "cortex"
+      ],
+      "arm": "after",
+      "game_seed": 1715697886
+    },
+    {
+      "id": "swamp-0-2-after",
+      "family": "swamp",
+      "map_seed": 58001,
+      "map_index": 0,
+      "matchup": 2,
+      "players": [
+        "nicowar",
+        "warrush"
+      ],
+      "arm": "after",
+      "game_seed": 1012928674
+    },
+    {
+      "id": "swamp-1-1-after",
+      "family": "swamp",
+      "map_seed": 58002,
+      "map_index": 1,
+      "matchup": 1,
+      "players": [
+        "cortex",
+        "nicowar"
+      ],
+      "arm": "after",
+      "game_seed": 303593390
+    },
+    {
+      "id": "swamp-4-0-after",
+      "family": "swamp",
+      "map_seed": 58005,
+      "map_index": 4,
+      "matchup": 0,
+      "players": [
+        "cortex",
+        "warrush"
+      ],
+      "arm": "after",
+      "game_seed": 1772231048
+    },
+    {
+      "id": "isles-1-2-after",
+      "family": "isles",
+      "map_seed": 57002,
+      "map_index": 1,
+      "matchup": 2,
+      "players": [
+        "warrush",
+        "nicowar"
+      ],
+      "arm": "after",
+      "game_seed": 849416744
+    },
+    {
+      "id": "canals-2-1-after",
+      "family": "canals",
+      "map_seed": 62003,
+      "map_index": 2,
+      "matchup": 1,
+      "players": [
+        "nicowar",
+        "cortex"
+      ],
+      "arm": "after",
+      "game_seed": 1890068144
+    },
+    {
+      "id": "symmetric-arena-3-1-after",
+      "family": "symmetric-arena",
+      "map_seed": 55004,
+      "map_index": 3,
+      "matchup": 1,
+      "players": [
+        "cortex",
+        "nicowar"
+      ],
+      "arm": "after",
+      "game_seed": 508973991
+    },
+    {
+      "id": "fingerprint-3-2-before",
+      "family": "fingerprint",
+      "map_seed": 59004,
+      "map_index": 3,
+      "matchup": 2,
+      "players": [
+        "warrush",
+        "nicowar"
+      ],
+      "arm": "before",
+      "game_seed": 310678408
+    }
+  ]
+}

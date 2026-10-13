@@ -1,0 +1,151 @@
+{
+  "bootstrap_draws": 20000,
+  "seed": 20261013,
+  "method": "Descriptive arm means, unpaired stratified permutation tests, map-cluster bootstrap confidence intervals, Holm correction for eight primary endpoints; AI/map strata preserved. Both teams form one game observation. No action/team pseudoreplication. Ended games carry their last state as absorbing at horizon; exposure records explicit. Secondary outcomes exploratory.",
+  "results": [
+    {
+      "metric": "food_delivered_per_1000_worker_ticks",
+      "before": 1.1502652057369636,
+      "after": 0.8010668292909242,
+      "difference": -0.34919837644603935,
+      "ci95": [
+        -0.3967709381937983,
+        -0.3024177786511122
+      ],
+      "p_raw": 4.999750012499375e-05,
+      "counts": {
+        "before": 120,
+        "after": 120
+      },
+      "relative_percent": -30.358075225122665,
+      "p_holm": 0.00039998000099995,
+      "significant_holm_05": true
+    },
+    {
+      "metric": "transport_walk_fraction",
+      "before": 0.5655650970626463,
+      "after": 0.5518625831355505,
+      "difference": -0.013702513927095872,
+      "ci95": [
+        -0.027093962848156662,
+        -7.64795413233484e-05
+      ],
+      "p_raw": 0.11069446527673617,
+      "counts": {
+        "before": 120,
+        "after": 120
+      },
+      "relative_percent": -2.422800487205114,
+      "p_holm": 0.11069446527673617,
+      "significant_holm_05": false
+    },
+    {
+      "metric": "meal_walk_fraction",
+      "before": 0.017887558154049122,
+      "after": 0.014865617050116232,
+      "difference": -0.0030219411039328903,
+      "ci95": [
+        -0.005234083004852124,
+        -0.0008663754294961245
+      ],
+      "p_raw": 0.019349032548372582,
+      "counts": {
+        "before": 120,
+        "after": 120
+      },
+      "relative_percent": -16.89409520241771,
+      "p_holm": 0.038698065096745164,
+      "significant_holm_05": true
+    },
+    {
+      "metric": "idle_worker_fraction",
+      "before": 0.08242208817508914,
+      "after": 0.060916301846538616,
+      "difference": -0.021505786328550526,
+      "ci95": [
+        -0.03312785792398462,
+        -0.010160222951704916
+      ],
+      "p_raw": 0.0016499175041247937,
+      "counts": {
+        "before": 120,
+        "after": 120
+      },
+      "relative_percent": -26.092260951780077,
+      "p_holm": 0.004949752512374381,
+      "significant_holm_05": true
+    },
+    {
+      "metric": "worker_starvation_per_1000_worker_ticks",
+      "before": 0.014148752484946998,
+      "after": 0.023513801299452484,
+      "difference": 0.009365048814505486,
+      "ci95": [
+        0.006543819650456057,
+        0.01222042876276822
+      ],
+      "p_raw": 4.999750012499375e-05,
+      "counts": {
+        "before": 120,
+        "after": 120
+      },
+      "relative_percent": 66.18992610457394,
+      "p_holm": 0.00039998000099995,
+      "significant_holm_05": true
+    },
+    {
+      "metric": "unit_damage_per_1000_ticks",
+      "before": 143.14212572991886,
+      "after": 87.54229125101371,
+      "difference": -55.59983447890515,
+      "ci95": [
+        -86.15868547994117,
+        -26.96649491714582
+      ],
+      "p_raw": 0.0010499475026248687,
+      "counts": {
+        "before": 120,
+        "after": 120
+      },
+      "relative_percent": -38.84239820764653,
+      "p_holm": 0.004199790010499475,
+      "significant_holm_05": true
+    },
+    {
+      "metric": "worker_moves_per_food_delivery",
+      "before": 33.97796018731129,
+      "after": 40.50148772281082,
+      "difference": 6.523527535499532,
+      "ci95": [
+        4.650966073888581,
+        8.458473054830751
+      ],
+      "p_raw": 4.999750012499375e-05,
+      "counts": {
+        "before": 120,
+        "after": 120
+      },
+      "relative_percent": 19.199291245080907,
+      "p_holm": 0.00039998000099995,
+      "significant_holm_05": true
+    },
+    {
+      "metric": "population_at_horizon",
+      "before": 64.38333333333334,
+      "after": 43.71666666666667,
+      "difference": -20.66666666666667,
+      "ci95": [
+        -25.183541666666663,
+        -16.05833333333333
+      ],
+      "p_raw": 4.999750012499375e-05,
+      "counts": {
+        "before": 120,
+        "after": 120
+      },
+      "relative_percent": -32.09940460781776,
+      "p_holm": 0.00039998000099995,
+      "significant_holm_05": true
+    }
+  ]
+}

@@ -1,5 +1,17 @@
 # Compact unit core evidence
 
+[Unit view frequency measurements](unit-view-report.md) · [Raw samples](unit-view-samples.csv) · [Commands and controls](unit-view-evidence.zip)
+
+Six real AI matches need details on every advancing gameplay tick. Null-AI movement-only runs need cores only on every advancing tick. The unselected 1,024-unit GUI colony is core-only on 98.9% of observed ticks; selecting a unit requests details on 98.7%. Cortex GUI sessions need details on all ticks regardless of selection. Requests are unioned within a tick; copy counts/bytes are separate.
+
+![Unit requirements per logical tick](unit-view-ticks.png)
+
+[Movement disagreement investigation](deep-report.md) · [Traces and controls](movement-deep-evidence.zip) · [240-game research tournament](tournament-report.md)
+
+The revised K=1 shadow policy reaches 78.46% exact agreement and 86.96% comparison coverage on the same six reference histories; all 60 reference comparisons preserve canonical outputs. **The separately patched conditional-step tournament fails:** food/worker-time −30.36%, starvation/worker-time +66.19%, worker moves/food-delivery +19.20%, significant after Holm correction. Do not adopt this policy. Production remains shadow-only, disabled by default; original gates are unchanged. No new net runtime benefit is claimed for the added completion refresh.
+
+![Gameplay intervals](tournament-effects.png)
+
 [New reserved-core live match comparison](live-report.md) · [Live raw evidence](live-evidence.zip)
 
 Ten paired release repetitions per scenario, with concurrent simulation and software presentation: the normal 1,024-unit colony uses about **1.2% less game CPU** (95% CI 0.75–1.76%). Capture is about **35% cheaper**, with **36% less logical capture payload**. Both variants hold 60 FPS/30 TPS; uncapped FPS and maximum TPS gains are inconclusive. The full-observation Cortex case and ordinary control are reported separately. CPU restoration audits, all paired samples and byte-identical live replay/checksum evidence are included. Linux software/Xvfb coverage does not establish GPU/desktop-display performance.
