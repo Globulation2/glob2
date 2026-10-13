@@ -327,3 +327,20 @@ Compare movement, guard and market requests independently and alongside renderin
 and full AI observations. Rendering panels/selection and starvation overlays can
 require details, so report those settings with capture measurements. Use release
 builds, rotated paired samples and confidence intervals for runtime claims.
+
+For capture-inclusive pipeline measurements, include capture and Scene preparation
+at every advancing observation boundary. A drawing benchmark that prepares its
+Scene once can compare drawing costs, but cannot establish the runtime benefit of
+smaller snapshots. The loaded-game software benchmark prepares presentation each
+frame; report capture cadence, selection/panels, extra observation requirements,
+and whether presentation itself is timed. Shared AI or movement requirements alone
+are observation controls, not measurements of controller or planner execution.
+Threaded rendering draws an already published Scene: account for capture and Scene
+preparation on their owner, and distinguish a serial pipeline benchmark from live
+match frame rates or concurrent simulation/rendering throughput.
+
+Report capture's fraction of total frame/tick time alongside its reduction. That
+fraction limits the benefit attributable to capture alone; other phase changes
+need separate evidence. Use internal warmup and longer measured windows to reduce
+startup and timer noise, retaining paired run-level samples for confidence
+intervals rather than treating individual frames as independent repetitions.
