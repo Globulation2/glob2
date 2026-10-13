@@ -1,0 +1,13 @@
+{
+  "id": "river-nicowar-019",
+  "arm": "cached-material",
+  "game_seed": 3907061736,
+  "returncode": -9,
+  "last_reported_tick": 15360,
+  "kernel_anon_rss_kib": 107257084,
+  "reference_under_4GiB_limit": "completed exit0",
+  "cached_under_4GiB_limit": "std::bad_alloc in NewNicowar::dig_out_enemy on AI worker",
+  "suspected_mechanism": "Existing AI path-following loop permits no progress or cycles while repeatedly creating clearing and management orders. Exact loop state has not yet been inspected.",
+  "interpretation": "Failure retained without replacement. Completed-match outcome comparisons are conditional on successful completion; this policy-specific missingness prevents clean gameplay-equivalence acceptance.",
+  "archive_sha256": "db0fc1c154b5be04add11949e01aed1d717393f76afc56fd4d05dc2c5b430ca5"
+}
