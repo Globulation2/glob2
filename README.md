@@ -99,3 +99,22 @@ raw total counts support attribution. The final native timing binaries have no
 profiling hooks. The profiling container and all builds/tests were stopped before
 timing. Planner CPU/elapsed reductions do not establish a live match speedup:
 original hiring still runs, and completed-boundary demand can already be filled.
+
+## Net hot-path measurement with isolated live material hiring
+
+`live-hiring-findings.json`, `live-hiring-provenance.json`,
+`live-hiring-normal-tests.xml`, `live-hiring-evidence.tar.gz` and
+`live-hiring-manifest.json` retain the real-simulation consumer measurements.
+The archive contains the isolated replacement source/generator, exact compilation
+and linkage, 32 determinism runs, final helper checks, raw rotated paired timing,
+separate diagnostics, normal156-case validation and excluded host-loaded attempts.
+No live game option, persistence, replay or network support was added. Main source
+`e3e56387f` only fixes scheduled planner options to honor pruning's measured default.
+
+Owner-side population scans are removed and controlled vacancy cohorts all fill
+with six-tick p95 delay. The hiring-stress scenario improves elapsed31% and CPU5%,
+but aborts trips every64ticks and completes no deliveries in the measured window.
+The quieter productive service case regresses elapsed24%,CPU20%,p95ticks34%,
+and deliveries7.3%. Stress p95ticks also regress44%. Trial gates fail; this is
+evidence of an owner-path benefit and unresolved capture/latency/economy costs,
+not live-policy qualification or a general match speedup.

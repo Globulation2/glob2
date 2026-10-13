@@ -1,0 +1,16 @@
+{
+  "implementation_head": "e3e56387f6008dccc6bb4dd1fc165178d40ead1a",
+  "baseline": "dda12cd3be7d7e21296da109a996a99921c78f71",
+  "isolated_trial": "No shipped live option added. Patched material consumer, capture preparation/empty generations and phase timers compile as separate objects and link only to the standalone harness. Source,generator,all compile/link argv archived. Current main only fixes the scheduled pruning default and docs.",
+  "compiler": "Apple clang21.0.0,ordinary -O3 release,dev_fast=0,no PCH/unity. Reuses unchanged matching dev-linker-auto release objects.",
+  "source_correspondence": "Only HiringStudy default option initializer differs from baseline matching release objects; that TU is explicitly recompiled for both the isolated trial and normal156-case harness. Read-only delivery counter added after32-run verification; two final trace/digest checks match prior verification.",
+  "timing": "One warmup and ten rotated paired four-control groups in two real simulation workloads,256warmup+1024measuredticks,n4. Timing diagnostics off. End drain included without early publication. Compiler/test-overlapped attempts retained separately and excluded; final detector handles renamed engine test programs.",
+  "scope": "1,200groundworkers,48stocked inns. Steady productive delivery and artificial64tick vacancy waves. All nonwheat stock full. No rendering,AI,network,persistence or broad gameplay compatibility claim. Churn interrupts trips before completed deliveries; do not describe it as an economy speedup.",
+  "verification": "156 normal focused tests pass.32 isolated runs deterministic across1,2,4,8; shadow matches original simulation; live owner matches pooled live;all controlled cohorts fill andp95delay6ticks. Two final helper validations preservetracesandlistdigests.",
+  "decision": "Trial gates fail: quieter-workload CPU/elapsed/p95 worsen,and productive deliveries drop7.3%. No wider delay or generallive rollout.",
+  "binary_sha256": "7d04c3edde217f6b6ecbd47e7c93b85c59bd3b70049a7cb18bd8970587e392da",
+  "archive_sha256": "11b7524eb02cdaaeba14c23472ac521ebebd080009fca5aa1b28e94d645e5d4b",
+  "archive_bytes": 334941,
+  "binary_distribution": "Executable retained locally; public source generator and exact commands enable reproduction.",
+  "limitations": "macOSarm64only,nosanitizers,nonetwork/replay/saveadmissionforchangedbehavior;isolatedbinaryhasnoexposedcontinuationinterface."
+}
