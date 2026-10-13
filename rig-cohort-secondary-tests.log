@@ -1,0 +1,32 @@
+Exploratory permutations 2000
+Exploratory permutations 4000
+Exploratory permutations 6000
+Exploratory permutations 8000
+Exploratory permutations 10000
+{
+  "idle_fraction": {
+    "original": 0.09452196210318589,
+    "cached": 0.1036323377032042,
+    "difference": 0.009110375600018303,
+    "randomization_p": 9.999000099990002e-05,
+    "holm_p_51": 0.005099490050994901,
+    "exploratory_significant_0_05": true
+  },
+  "filling_fraction": {
+    "original": 0.5886911943595117,
+    "cached": 0.5784196733755893,
+    "difference": -0.010271520983922366,
+    "randomization_p": 9.999000099990002e-05,
+    "holm_p_51": 0.005099490050994901,
+    "exploratory_significant_0_05": true
+  },
+  "early_finish_fraction": {
+    "original": 0.07833333333333334,
+    "cached": 0.11185308848080133,
+    "difference": 0.033519755147467994,
+    "randomization_p": 0.0402959704029597,
+    "holm_p_51": 1,
+    "exploratory_significant_0_05": false
+  }
+}
+{"difference": 8.336330440211853e-07, "randomization_p": 0.31366863313668636, "holm_p_51": 1, "exploratory_significant_0_05": false}

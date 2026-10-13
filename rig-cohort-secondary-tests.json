@@ -1,0 +1,346 @@
+{
+  "scope": "Post-result exploratory analysis requested after descriptive changes were reported. Primary preregistered analysis unchanged. Two-sided within-stratum whole-match label randomization,10000draws. Holm correction jointly over15secondary endpoints and all36inspected subgroup endpoints(51tests), rather than only selecting the unfavorable river subgroup. Completion-selection caveat remains because one cached game failed. Findings require independent confirmation; no retrospective confirmatory/equivalence claim.",
+  "seed": 713099,
+  "tests_in_family": 51,
+  "input_sha256": "f12d10fd2f6d243209c032b06bbaa22029fe650006c98794e6e30be1ce4b8eef",
+  "secondary": {
+    "idle_fraction": {
+      "original": 0.09452196210318589,
+      "cached": 0.1036323377032042,
+      "difference": 0.009110375600018303,
+      "randomization_p": 9.999000099990002e-05,
+      "holm_p_51": 0.005099490050994901,
+      "exploratory_significant_0_05": true
+    },
+    "filling_fraction": {
+      "original": 0.5886911943595117,
+      "cached": 0.5784196733755893,
+      "difference": -0.010271520983922366,
+      "randomization_p": 9.999000099990002e-05,
+      "holm_p_51": 0.005099490050994901,
+      "exploratory_significant_0_05": true
+    },
+    "food_time_fraction": {
+      "original": 0.1609979944416539,
+      "cached": 0.1591548704547503,
+      "difference": -0.0018431239869036165,
+      "randomization_p": 0.0908909109089091,
+      "holm_p_51": 1,
+      "exploratory_significant_0_05": false
+    },
+    "early_finish_fraction": {
+      "original": 0.07833333333333334,
+      "cached": 0.11185308848080133,
+      "difference": 0.033519755147467994,
+      "randomization_p": 0.0402959704029597,
+      "holm_p_51": 1,
+      "exploratory_significant_0_05": false
+    },
+    "lost_colonies_per_match": {
+      "original": 4.123333333333333,
+      "cached": 4.166944908180301,
+      "difference": 0.04361157484696765,
+      "randomization_p": 0.630936906309369,
+      "holm_p_51": 1,
+      "exploratory_significant_0_05": false
+    },
+    "delivered_per_worker_tick": {
+      "original": 0.001323194811767211,
+      "cached": 0.001319249365420255,
+      "difference": -3.945446346955914e-06,
+      "randomization_p": 0.6201379862013798,
+      "holm_p_51": 1,
+      "exploratory_significant_0_05": false
+    },
+    "harvested_per_worker_tick": {
+      "original": 0.0011008145296245622,
+      "cached": 0.0011137901782434496,
+      "difference": 1.2975648618887472e-05,
+      "randomization_p": 0.0168983101689831,
+      "holm_p_51": 0.828017198280172,
+      "exploratory_significant_0_05": false
+    },
+    "births_per_unit_tick": {
+      "original": 6.471903893779983e-05,
+      "cached": 6.543537153313877e-05,
+      "difference": 7.16332595338936e-07,
+      "randomization_p": 0.10518948105189481,
+      "holm_p_51": 1,
+      "exploratory_significant_0_05": false
+    },
+    "combat_deaths_per_unit_tick": {
+      "original": 2.2868986502813126e-05,
+      "cached": 2.334379185388244e-05,
+      "difference": 4.7480535106931326e-07,
+      "randomization_p": 0.20957904209579042,
+      "holm_p_51": 1,
+      "exploratory_significant_0_05": false
+    },
+    "starvation_deaths_per_match": {
+      "original": 37.175,
+      "cached": 35.81636060100167,
+      "difference": -1.3586393989983279,
+      "randomization_p": 0.28787121287871215,
+      "holm_p_51": 1,
+      "exploratory_significant_0_05": false
+    },
+    "combat_deaths_per_match": {
+      "original": 158.1,
+      "cached": 161.12520868113523,
+      "difference": 3.02520868113524,
+      "randomization_p": 0.42225777422257776,
+      "holm_p_51": 1,
+      "exploratory_significant_0_05": false
+    },
+    "new_buildings_per_match": {
+      "original": 135.975,
+      "cached": 135.15859766277129,
+      "difference": -0.816402337228709,
+      "randomization_p": 0.5348465153484652,
+      "holm_p_51": 1,
+      "exploratory_significant_0_05": false
+    },
+    "upgrades_per_match": {
+      "original": 32.333333333333336,
+      "cached": 33.24707846410684,
+      "difference": 0.9137451307735063,
+      "randomization_p": 0.28247175282471754,
+      "holm_p_51": 1,
+      "exploratory_significant_0_05": false
+    },
+    "final_population_mean": {
+      "original": 284.14666666666665,
+      "cached": 286.7111853088481,
+      "difference": 2.56451864218144,
+      "randomization_p": 0.6261373862613738,
+      "holm_p_51": 1,
+      "exploratory_significant_0_05": false
+    },
+    "match_ticks_mean": {
+      "original": 32473.97,
+      "cached": 32302.754590984976,
+      "difference": -171.21540901502522,
+      "randomization_p": 0.031196880311968805,
+      "holm_p_51": 1,
+      "exploratory_significant_0_05": false
+    }
+  },
+  "subgroups": {
+    "islands/four-ai | starvation_rate": {
+      "difference": -2.776303471301705e-07,
+      "randomization_p": 0.6331366863313669,
+      "holm_p_51": 1,
+      "exploratory_significant_0_05": false
+    },
+    "islands/four-ai | critical_hunger_fraction": {
+      "difference": -0.0007893216589671612,
+      "randomization_p": 0.8115188481151885,
+      "holm_p_51": 1,
+      "exploratory_significant_0_05": false
+    },
+    "islands/four-ai | construction_rate": {
+      "difference": -3.7862751494737896e-07,
+      "randomization_p": 0.7025297470252975,
+      "holm_p_51": 1,
+      "exploratory_significant_0_05": false
+    },
+    "islands/nico-castor | starvation_rate": {
+      "difference": -3.4787949558225673e-07,
+      "randomization_p": 0.265973402659734,
+      "holm_p_51": 1,
+      "exploratory_significant_0_05": false
+    },
+    "islands/nico-castor | critical_hunger_fraction": {
+      "difference": 0.0011618319504054092,
+      "randomization_p": 0.555044495550445,
+      "holm_p_51": 1,
+      "exploratory_significant_0_05": false
+    },
+    "islands/nico-castor | construction_rate": {
+      "difference": -6.875387188984451e-07,
+      "randomization_p": 0.5781421857814218,
+      "holm_p_51": 1,
+      "exploratory_significant_0_05": false
+    },
+    "islands/nico-numbi | starvation_rate": {
+      "difference": 5.022602027490021e-08,
+      "randomization_p": 0.9632036796320368,
+      "holm_p_51": 1,
+      "exploratory_significant_0_05": false
+    },
+    "islands/nico-numbi | critical_hunger_fraction": {
+      "difference": -0.0016298665698927933,
+      "randomization_p": 0.7073292670732927,
+      "holm_p_51": 1,
+      "exploratory_significant_0_05": false
+    },
+    "islands/nico-numbi | construction_rate": {
+      "difference": 9.155599190987778e-07,
+      "randomization_p": 0.22607739226077392,
+      "holm_p_51": 1,
+      "exploratory_significant_0_05": false
+    },
+    "islands/nicowar | starvation_rate": {
+      "difference": -1.0309734910399652e-07,
+      "randomization_p": 0.7605239476052394,
+      "holm_p_51": 1,
+      "exploratory_significant_0_05": false
+    },
+    "islands/nicowar | critical_hunger_fraction": {
+      "difference": -0.0016381287423487823,
+      "randomization_p": 0.45225477452254775,
+      "holm_p_51": 1,
+      "exploratory_significant_0_05": false
+    },
+    "islands/nicowar | construction_rate": {
+      "difference": -1.045228230749547e-07,
+      "randomization_p": 0.8529147085291471,
+      "holm_p_51": 1,
+      "exploratory_significant_0_05": false
+    },
+    "river/four-ai | starvation_rate": {
+      "difference": 8.336330440211853e-07,
+      "randomization_p": 0.31366863313668636,
+      "holm_p_51": 1,
+      "exploratory_significant_0_05": false
+    },
+    "river/four-ai | critical_hunger_fraction": {
+      "difference": 0.0012715303678112397,
+      "randomization_p": 0.7427257274272573,
+      "holm_p_51": 1,
+      "exploratory_significant_0_05": false
+    },
+    "river/four-ai | construction_rate": {
+      "difference": 1.6572086731782899e-06,
+      "randomization_p": 0.1493850614938506,
+      "holm_p_51": 1,
+      "exploratory_significant_0_05": false
+    },
+    "river/nico-castor | starvation_rate": {
+      "difference": -4.6778506769429865e-07,
+      "randomization_p": 0.6801319868013199,
+      "holm_p_51": 1,
+      "exploratory_significant_0_05": false
+    },
+    "river/nico-castor | critical_hunger_fraction": {
+      "difference": -0.002457604928921664,
+      "randomization_p": 0.5858414158584142,
+      "holm_p_51": 1,
+      "exploratory_significant_0_05": false
+    },
+    "river/nico-castor | construction_rate": {
+      "difference": -1.4550469180250262e-07,
+      "randomization_p": 0.9039096090390961,
+      "holm_p_51": 1,
+      "exploratory_significant_0_05": false
+    },
+    "river/nico-numbi | starvation_rate": {
+      "difference": -3.749962763439329e-07,
+      "randomization_p": 0.7323267673232676,
+      "holm_p_51": 1,
+      "exploratory_significant_0_05": false
+    },
+    "river/nico-numbi | critical_hunger_fraction": {
+      "difference": -0.0012374446740237716,
+      "randomization_p": 0.78002199780022,
+      "holm_p_51": 1,
+      "exploratory_significant_0_05": false
+    },
+    "river/nico-numbi | construction_rate": {
+      "difference": -1.189936005274195e-06,
+      "randomization_p": 0.24487551244875513,
+      "holm_p_51": 1,
+      "exploratory_significant_0_05": false
+    },
+    "river/nicowar | starvation_rate": {
+      "difference": -7.768230427845527e-07,
+      "randomization_p": 0.5034496550344966,
+      "holm_p_51": 1,
+      "exploratory_significant_0_05": false
+    },
+    "river/nicowar | critical_hunger_fraction": {
+      "difference": -0.0044913992945513626,
+      "randomization_p": 0.3360663933606639,
+      "holm_p_51": 1,
+      "exploratory_significant_0_05": false
+    },
+    "river/nicowar | construction_rate": {
+      "difference": -6.657868053442299e-07,
+      "randomization_p": 0.35636436356364365,
+      "holm_p_51": 1,
+      "exploratory_significant_0_05": false
+    },
+    "swamp/four-ai | starvation_rate": {
+      "difference": 8.373411685303547e-09,
+      "randomization_p": 0.9579042095790421,
+      "holm_p_51": 1,
+      "exploratory_significant_0_05": false
+    },
+    "swamp/four-ai | critical_hunger_fraction": {
+      "difference": 0.001480270160271649,
+      "randomization_p": 0.3457654234576542,
+      "holm_p_51": 1,
+      "exploratory_significant_0_05": false
+    },
+    "swamp/four-ai | construction_rate": {
+      "difference": -9.70092776151371e-09,
+      "randomization_p": 0.9908009199080092,
+      "holm_p_51": 1,
+      "exploratory_significant_0_05": false
+    },
+    "swamp/nico-castor | starvation_rate": {
+      "difference": -1.6976923035235684e-07,
+      "randomization_p": 0.7117288271172882,
+      "holm_p_51": 1,
+      "exploratory_significant_0_05": false
+    },
+    "swamp/nico-castor | critical_hunger_fraction": {
+      "difference": -0.001920529276071524,
+      "randomization_p": 0.37846215378462156,
+      "holm_p_51": 1,
+      "exploratory_significant_0_05": false
+    },
+    "swamp/nico-castor | construction_rate": {
+      "difference": 3.3901442257627004e-07,
+      "randomization_p": 0.8046195380461953,
+      "holm_p_51": 1,
+      "exploratory_significant_0_05": false
+    },
+    "swamp/nico-numbi | starvation_rate": {
+      "difference": -4.4643868917326454e-07,
+      "randomization_p": 0.6564343565643436,
+      "holm_p_51": 1,
+      "exploratory_significant_0_05": false
+    },
+    "swamp/nico-numbi | critical_hunger_fraction": {
+      "difference": -0.002658896769650393,
+      "randomization_p": 0.5094490550944906,
+      "holm_p_51": 1,
+      "exploratory_significant_0_05": false
+    },
+    "swamp/nico-numbi | construction_rate": {
+      "difference": -2.1148143418757523e-07,
+      "randomization_p": 0.857014298570143,
+      "holm_p_51": 1,
+      "exploratory_significant_0_05": false
+    },
+    "swamp/nicowar | starvation_rate": {
+      "difference": 1.7035473331030894e-09,
+      "randomization_p": 0.9972002799720028,
+      "holm_p_51": 1,
+      "exploratory_significant_0_05": false
+    },
+    "swamp/nicowar | critical_hunger_fraction": {
+      "difference": -0.0001621555410235287,
+      "randomization_p": 0.9357064293570643,
+      "holm_p_51": 1,
+      "exploratory_significant_0_05": false
+    },
+    "swamp/nicowar | construction_rate": {
+      "difference": -5.404273850208621e-07,
+      "randomization_p": 0.3301669833016698,
+      "holm_p_51": 1,
+      "exploratory_significant_0_05": false
+    }
+  }
+}
