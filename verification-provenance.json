@@ -1,0 +1,28 @@
+{
+  "source": "e65b48024143f15b6fe683e820f19d961b3c2a4e",
+  "base": "277510840054b1416f2defd7d86fe1431dd0ddc0",
+  "mac_os": "macOS-26.6.2-arm64-arm-64bit-Mach-O",
+  "mac_arch": "arm64",
+  "compiler": "Apple clang version 21.0.0 (clang-2100.3.34.2)\nTarget: arm64-apple-darwin25.6.0\nThread model: posix\nInstalledDir: /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin\n",
+  "mac_build": "dev_fast=1 linker=auto; temporary registry excludes unrelated failing MCPTest; selected unit registry retains mobile platform harness stubs",
+  "mac_final_engine_cases": 22,
+  "mac_final_replay_protocol_cases": 65,
+  "mac_earlier_strategy_continuation_cases": 80,
+  "linux_clean_release_status": "in progress",
+  "limits": [
+    "Mac fast build only; default engine build blocked by unrelated MCP std::atomic<shared_ptr> fixture",
+    "Isolated failing-seed reproduction uses original cohort runtime with Attack.cpp alone replaced; not a clean production build",
+    "Windows/browser execution unavailable",
+    "Linux release/cross-platform golden validation pending"
+  ],
+  "file_sha256": {
+    "mac-turn-admission.xml": "56f1bb31207c1af949f7b73f86bfd20c7225f1ae30dc6a82df6929d1bb22e1af",
+    "mac-final-engine-tests.xml": "9b15fea096242d9be36fa52b53069fa75a98a7c480a0be55d3d6a74bc90ba145",
+    "regression-evidence.tar.gz": "ffe0e50ed7220b26aa29eab778ac08dfdc66d0e790b3c51efd4bae0899399827",
+    "mac-evidence.tar.gz": "b676541905a93ce6f9d88c2048fbdbc0eef5034f9111278f00cd3bf3cd448263",
+    "mac-replay-admission.xml": "73e5ca614912f01d277c8ce3f251eafa5221110413eff9e9a08aa7958f2774ab",
+    "regression-verification.json": "2ea0ab677db68e6456985caad6378bd719931ea5b82221828a84276c4e57327f",
+    "mac-strategy-tests.xml": "117b4b72951dcad37e5b1c44a8bcb895a0bd9ad3a94417bb888b5bfbbea45b48",
+    "source-provenance.json": "44bbeda5f2098505414ebd2e41f7c7055cf17618c0a386a47d8200f13669a1b6"
+  }
+}

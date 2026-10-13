@@ -1,0 +1,52 @@
+<?xml version='1.0' encoding='utf-8'?>
+<testsuites tests="50" failures="0" errors="0" skipped="0"><testsuite name="TurnJitterBuffer"><testcase classname="TurnJitterBuffer" name="jitter is the p95 delay above the fastest delivery" time="0" status="run" />
+    <testcase classname="TurnJitterBuffer" name="the target rises at once and falls one tick per hold period" time="0" status="run" />
+    <testcase classname="TurnJitterBuffer" name="with bundles every few ticks the controller holds the sawtooth's mean" time="0" status="run" />
+    <testcase classname="TurnJitterBuffer" name="the delay controller nudges by at most five percent and catches up" time="0" status="run" />
+  </testsuite><testsuite name="TurnMatchRecord"><testcase classname="TurnMatchRecord" name="round-trips through bytes and files" time="0.000367" status="run" />
+    <testcase classname="TurnMatchRecord" name="rejects corruption, truncation, newer versions and disorder" time="0.000441" status="run" />
+    <testcase classname="TurnMatchRecord" name="CRC-32 matches the IEEE check value" time="0" status="run" />
+  </testsuite><testsuite name="TurnMessages"><testcase classname="TurnMessages" name="every message round-trips" time="0.000881" status="run" />
+    <testcase classname="TurnMessages" name="every truncation and any trailing byte is rejected" time="0.00566" status="run" />
+    <testcase classname="TurnMessages" name="malformed fields and non-turn types are rejected" time="0.000643" status="run" />
+    <testcase classname="TurnMessages" name="bundles split at tick boundaries under the frame limit" time="0.001557" status="run" />
+    <testcase classname="TurnMessages" name="the quit order matches PlayerQuitsGameOrder's encoding" time="0" status="run" />
+  </testsuite><testsuite name="TurnSequencer"><testcase classname="TurnSequencer" name="turn defaults use 30 TPS and retain fractional tick periods" time="0.000273" status="run" />
+    <testcase classname="TurnSequencer" name="bundles every tick by default, empty or not" time="0" status="run" />
+    <testcase classname="TurnSequencer" name="bundles every two ticks from match start, empty or not" time="0" status="run" />
+    <testcase classname="TurnSequencer" name="the load barrier holds the clock until every human seat has connected" time="0" status="run" />
+    <testcase classname="TurnSequencer" name="the load barrier gives up after its timeout; the late seat gets grace from the start" time="0" status="run" />
+    <testcase classname="TurnSequencer" name="without a barrier the clock starts when the sequencer is created" time="0" status="run" />
+    <testcase classname="TurnSequencer" name="an order takes the earliest tick not yet broadcast, whatever the relay clock" time="0.000194" status="run" />
+    <testcase classname="TurnSequencer" name="orders execute the tick after arrival, one per seat per tick" time="0.000269" status="run" />
+    <testcase classname="TurnSequencer" name="a full tick spills orders to the next one" time="0.000723" status="run" />
+    <testcase classname="TurnSequencer" name="duplicates, nulls and latency adjustments are dropped; a flood is dropped, not the seat" time="0.002441" status="run" />
+    <testcase classname="TurnSequencer" name="admission: tickets, versions, first message and seat takeover" time="0.000198" status="run" />
+    <testcase classname="TurnSequencer" name="resume serves the log from the client's horizon, or from zero" time="0.000134" status="run" />
+    <testcase classname="TurnSequencer" name="grace expiry and explicit quits sequence PlayerQuitsGameOrder" time="0.000205" status="run" />
+    <testcase classname="TurnSequencer" name="an explicit Quit message leaves at once" time="0" status="run" />
+    <testcase classname="TurnSequencer" name="one client's GameFinished decides nothing: the others keep their grace" time="0.000186" status="run" />
+    <testcase classname="TurnSequencer" name="a game is decided when every seat still playing reports it finished" time="0.000362" status="run" />
+    <testcase classname="TurnSequencer" name="the next wake: a bundle while connected, grace while empty, now for presence" time="0" status="run" />
+    <testcase classname="TurnSequencer" name="arbitration stays incremental over a long match and the record keeps every report" time="0.69843" status="run" />
+    <testcase classname="TurnSequencer" name="three clients: the majority wins and the minority rejoins" time="0.00017" status="run" />
+    <testcase classname="TurnSequencer" name="two clients that disagree are flagged, not dropped" time="0" status="run" />
+    <testcase classname="TurnSequencer" name="no strict majority is flagged; a silent seat times out of arbitration" time="0.000261" status="run" />
+    <testcase classname="TurnSequencer" name="presence reports lag, reconnecting and grace remaining" time="0.000102" status="run" />
+    <testcase classname="TurnSequencer" name="versions 1 and 2 are both served; only version 2 receives seat round trips" time="0" status="run" />
+  </testsuite><testsuite name="TurnSession"><testcase classname="TurnSession" name="executes bundled human orders and local AI orders tick by tick" time="0.000248" status="run" />
+    <testcase classname="TurnSession" name="local orders are submitted, and resubmitted after a reconnect" time="0" status="run" />
+    <testcase classname="TurnSession" name="a gap asks for a resync, and a rejoin notice asks for a reload" time="0" status="run" />
+    <testcase classname="TurnSession" name="seat round trips from the relay reach the connection panel" time="0" status="run" />
+    <testcase classname="TurnSession" name="a silent link shows as lost within the stall threshold and reconnects after five seconds" time="0.000329" status="run" />
+    <testcase classname="TurnSession" name="a horizon that stops moving shows as lost even while pongs arrive" time="0.000166" status="run" />
+    <testcase classname="TurnSession" name="after a stall the delay estimate starts over instead of keeping the gap" time="0.00113" status="run" />
+    <testcase classname="TurnSession" name="an older relay that refuses version 2 is offered version 1 once" time="0" status="run" />
+    <testcase classname="TurnSession" name="orders go out at one per tick after a burst; a later move of the same flag replaces a waiting one" time="0.000154" status="run" />
+    <testcase classname="TurnSession" name="orders that must all execute are paced but never merged" time="0.000111" status="run" />
+    <testcase classname="TurnSession" name="voice waits for gameplay orders and keeps its own gap" time="0" status="run" />
+    <testcase classname="TurnSession" name="the local queue is bounded and says so" time="0.000116" status="run" />
+    <testcase classname="TurnSession" name="quitting sends the orders still waiting, then Quit" time="0" status="run" />
+    <testcase classname="TurnSession" name="a flooding reject reconnects instead of ending the match" time="0" status="run" />
+    <testcase classname="TurnSession" name="a reject ends the session" time="0" status="run" />
+  </testsuite></testsuites>
