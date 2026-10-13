@@ -739,6 +739,7 @@ int runMapStudy(int argc, char **argv)
 		Headless::writeJson(resultPath,
 			"{\"schema_version\":1,\"job_type\":\"generate_map\",\"status\":" +
 			Headless::quote(result.error == GenerationError::InvalidRequest ? "invalid_request" : "generation_failed") +
+			",\"execution_resources\":" + globals.resourcePlanJson().dump() +
 			",\"generator\":" + Headless::quote(result.generatorId) +
 			",\"map_seed\":" + std::to_string(seed) + ",\"chosen_seed\":" + std::to_string(result.seed) +
 			",\"seconds\":" + std::to_string(seconds) + ",\"diagnostic\":" + Headless::quote(result.diagnostic()) +
