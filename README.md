@@ -24,3 +24,15 @@ are available locally rather than uploaded. Historical performance measurements
 apply to the source tree committed as `59ce0a239`, before integrating newer master
 changes. These results do not establish live hiring gains, gameplay delay or final
 cross-platform compatibility. Original hiring remains authoritative.
+
+## Master-integrated head
+
+`integration-provenance.json`, `integration-test-results.xml` and
+`integration-validation.tar.gz` retain the refreshed release build, 152 passing
+tests and 24 scheduled plus 18 disabled verification runs at the integrated PR
+head. `integration-manifest.json` hashes every result file. Large checksum traces
+are omitted from this second archive; their bytes match traces already retained
+in the measurement archive, as established by the verification records.
+Historical timing ratios were not rerun after integrating master.
+`callgrind-original-sources.tar.gz` retains original planner/owner sources from
+the profiling container, before its isolated controls.

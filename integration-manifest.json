@@ -1,0 +1,2622 @@
+[
+  {
+    "path": "artifacts/hiring-study/pr-integration/cross-participant-verification.json",
+    "sha256": "b03c1b2fe8fbe35546cb3b294518f1e1091075fe28328a6c16e1a09088cc631a",
+    "bytes": 1031
+  },
+  {
+    "path": "artifacts/hiring-study/pr-integration/test-build-command.json",
+    "sha256": "10ed012405c6a8840d279d18af6138e03f788e2b7c0d6c04ad6a18cfaeec3931",
+    "bytes": 1553
+  },
+  {
+    "path": "artifacts/hiring-study/pr-integration/test-build.log",
+    "sha256": "dabe345faef875a4f6b0def20989234edd0d8267da4e3c621b7672b1089aff15",
+    "bytes": 222327
+  },
+  {
+    "path": "artifacts/hiring-study/pr-integration/test-link-command.json",
+    "sha256": "1a94c7f8c06c3b960ace7f257093926a882166f904d57f2c39ff3faebeb23621",
+    "bytes": 55623
+  },
+  {
+    "path": "artifacts/hiring-study/pr-integration/test-link.log",
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "bytes": 0
+  },
+  {
+    "path": "artifacts/hiring-study/pr-integration/test-results/UnitCustomization/all_locked_capability_ablations_match_fixed_tick_and_RNG_traces_golden_artifacts/unit-ablations.trace",
+    "sha256": "95d87548aa0ce39d8eb5a15a2bbcd8d1ced68f75e70c022e8189d2829db5c094",
+    "bytes": 1339
+  },
+  {
+    "path": "artifacts/hiring-study/pr-integration/test-results.log",
+    "sha256": "98f1e6335e701e9d8f84094c8b7d93bc59ae42e9c6e8e206905ea7a5c0b7c561",
+    "bytes": 15912
+  },
+  {
+    "path": "artifacts/hiring-study/pr-integration/test-results.xml",
+    "sha256": "6fad6d408d2041745363252e1f5f244bbb94748e50301e55bd01b10a79b6b133",
+    "bytes": 24240
+  },
+  {
+    "path": "artifacts/hiring-study/pr-integration/verify-disabled/archipelago-baseline-n1-r0/artifacts.json",
+    "sha256": "2a7258b193702c6d7a55c599af3f78cc77dfef0eb2e896b74cda7dc4f357994d",
+    "bytes": 311
+  },
+  {
+    "path": "artifacts/hiring-study/pr-integration/verify-disabled/archipelago-baseline-n1-r0/engine.log",
+    "sha256": "5200a7f48d36cb25aa146bd3b5b3eedf3f9ee99b3863271669ac761c327492e5",
+    "bytes": 490
+  },
+  {
+    "path": "artifacts/hiring-study/pr-integration/verify-disabled/archipelago-baseline-n1-r0/final.game.gz",
+    "sha256": "0bf574f55489fe8420c4d2ef5ee1805b980efa3d7d12c66cf8b95c1324611199",
+    "bytes": 380568
+  },
+  {
+    "path": "artifacts/hiring-study/pr-integration/verify-disabled/archipelago-baseline-n1-r0/game.replay",
+    "sha256": "576d7458dc6510c8cf7170065c933b2b60011bbb38eb3f9f5ee1b978770cb8bb",
+    "bytes": 3952771
+  },
+  {
+    "path": "artifacts/hiring-study/pr-integration/verify-disabled/archipelago-baseline-n1-r0/game.replay.checksums",
+    "sha256": "5b3cacf41c5ff8e727de09564c8b35b8ad9384102987b7dc3b841f38b56ae717",
+    "bytes": 4388800
+  },
+  {
+    "path": "artifacts/hiring-study/pr-integration/verify-disabled/archipelago-baseline-n1-r0/profile/keyboard-gui.txt",
+    "sha256": "af43f1cb9fe42f9ded2a91aeead00fbb4276c18ce610afa2bc502ee127dbe1a6",
+    "bytes": 1811
+  },
+  {
+    "path": "artifacts/hiring-study/pr-integration/verify-disabled/archipelago-baseline-n1-r0/profile/keyboard-mapedit.txt",
+    "sha256": "d0d81f9dbbba069ef0364ac3cad74da54c614d7bf3c40e8b6f0460d94a96c7db",
+    "bytes": 708
+  },
+  {
+    "path": "artifacts/hiring-study/pr-integration/verify-disabled/archipelago-baseline-n1-r0/profile/preferences.txt",
+    "sha256": "e934427e2eee2672868e90714b99138ffcaf2af8825fa4a43805eef0fed664b6",
+    "bytes": 967
+  },
+  {
+    "path": "artifacts/hiring-study/pr-integration/verify-disabled/archipelago-baseline-n1-r0/progress.jsonl",
+    "sha256": "672359a868f96e50309155372cc860015c3b4545439369c94dcddc95db58b979",
+    "bytes": 64
+  },
+  {
+    "path": "artifacts/hiring-study/pr-integration/verify-disabled/archipelago-baseline-n1-r0/result.json",
+    "sha256": "3966d565643136573df98d4453771d26b34691540bf5de7322e6ced5078b5e1f",
+    "bytes": 17536
+  },
+  {
+    "path": "artifacts/hiring-study/pr-integration/verify-disabled/archipelago-baseline-n1-r0/world.checksums",
+    "sha256": "a2e67db89f54c4623fbdb35181300c58fb48a2d1a5d9c79de90a662c98217372",
+    "bytes": 7431
+  },
+  {
+    "path": "artifacts/hiring-study/pr-integration/verify-disabled/archipelago-disabled-n1-r0/artifacts.json",
+    "sha256": "c317a22f10b09202723a9a2d495fb025aa52c193006ef8dc35edc504bfb9af28",
+    "bytes": 311
+  },
+  {
+    "path": "artifacts/hiring-study/pr-integration/verify-disabled/archipelago-disabled-n1-r0/engine.log",
+    "sha256": "f69148f2265657c47cf67f0bdbfc1aa11c52f34b00e299eef9e9a25393d3e969",
+    "bytes": 490
+  },
+  {
+    "path": "artifacts/hiring-study/pr-integration/verify-disabled/archipelago-disabled-n1-r0/final.game.gz",
+    "sha256": "0bf574f55489fe8420c4d2ef5ee1805b980efa3d7d12c66cf8b95c1324611199",
+    "bytes": 380568
+  },
+  {
+    "path": "artifacts/hiring-study/pr-integration/verify-disabled/archipelago-disabled-n1-r0/game.replay",
+    "sha256": "576d7458dc6510c8cf7170065c933b2b60011bbb38eb3f9f5ee1b978770cb8bb",
+    "bytes": 3952771
+  },
+  {
+    "path": "artifacts/hiring-study/pr-integration/verify-disabled/archipelago-disabled-n1-r0/game.replay.checksums",
+    "sha256": "5b3cacf41c5ff8e727de09564c8b35b8ad9384102987b7dc3b841f38b56ae717",
+    "bytes": 4388800
+  },
+  {
+    "path": "artifacts/hiring-study/pr-integration/verify-disabled/archipelago-disabled-n1-r0/profile/keyboard-gui.txt",
+    "sha256": "af43f1cb9fe42f9ded2a91aeead00fbb4276c18ce610afa2bc502ee127dbe1a6",
+    "bytes": 1811
+  },
+  {
+    "path": "artifacts/hiring-study/pr-integration/verify-disabled/archipelago-disabled-n1-r0/profile/keyboard-mapedit.txt",
+    "sha256": "d0d81f9dbbba069ef0364ac3cad74da54c614d7bf3c40e8b6f0460d94a96c7db",
+    "bytes": 708
+  },
+  {
+    "path": "artifacts/hiring-study/pr-integration/verify-disabled/archipelago-disabled-n1-r0/profile/preferences.txt",
+    "sha256": "789fc092fed4bba2e764881aa1fd87d0c827de544b7c71ba6f3e6bf4d6076a21",
+    "bytes": 1055
+  },
+  {
+    "path": "artifacts/hiring-study/pr-integration/verify-disabled/archipelago-disabled-n1-r0/progress.jsonl",
+    "sha256": "672359a868f96e50309155372cc860015c3b4545439369c94dcddc95db58b979",
+    "bytes": 64
+  },
+  {
+    "path": "artifacts/hiring-study/pr-integration/verify-disabled/archipelago-disabled-n1-r0/result.json",
+    "sha256": "341dcef4c9c7e0ccd31cac68225db8348bd3b229f0a53870b7a7540e1040139b",
+    "bytes": 17810
+  },
+  {
+    "path": "artifacts/hiring-study/pr-integration/verify-disabled/archipelago-disabled-n1-r0/world.checksums",
+    "sha256": "a2e67db89f54c4623fbdb35181300c58fb48a2d1a5d9c79de90a662c98217372",
+    "bytes": 7431
+  },
+  {
+    "path": "artifacts/hiring-study/pr-integration/verify-disabled/bigarena-baseline-n1-r0/artifacts.json",
+    "sha256": "0faddfb22dad96379803ffaaabd0a046c9508a4120bf5152de407d89069ee011",
+    "bytes": 313
+  },
+  {
+    "path": "artifacts/hiring-study/pr-integration/verify-disabled/bigarena-baseline-n1-r0/engine.log",
+    "sha256": "7224a9fd5d34a6bbde548522f6c736a71683b4bb0f7a82ea2913d6591100dc07",
+    "bytes": 562
+  },
+  {
+    "path": "artifacts/hiring-study/pr-integration/verify-disabled/bigarena-baseline-n1-r0/final.game.gz",
+    "sha256": "a44e43bd08b94b18a7a74ca319f30c43b710a1748d0945853daf2b7a68b3c72a",
+    "bytes": 1797664
+  },
+  {
+    "path": "artifacts/hiring-study/pr-integration/verify-disabled/bigarena-baseline-n1-r0/game.replay",
+    "sha256": "72dd8c2d3467be466a5243ffe0fa0488584bb8d37a20d568c15361df84ae0f19",
+    "bytes": 13919928
+  },
+  {
+    "path": "artifacts/hiring-study/pr-integration/verify-disabled/bigarena-baseline-n1-r0/game.replay.checksums",
+    "sha256": "56248e952d3361091392253b261b578702f7677b4bb988dfa144a0b710d50871",
+    "bytes": 7254506
+  },
+  {
+    "path": "artifacts/hiring-study/pr-integration/verify-disabled/bigarena-baseline-n1-r0/profile/keyboard-gui.txt",
+    "sha256": "af43f1cb9fe42f9ded2a91aeead00fbb4276c18ce610afa2bc502ee127dbe1a6",
+    "bytes": 1811
+  },
+  {
+    "path": "artifacts/hiring-study/pr-integration/verify-disabled/bigarena-baseline-n1-r0/profile/keyboard-mapedit.txt",
+    "sha256": "d0d81f9dbbba069ef0364ac3cad74da54c614d7bf3c40e8b6f0460d94a96c7db",
+    "bytes": 708
+  },
+  {
+    "path": "artifacts/hiring-study/pr-integration/verify-disabled/bigarena-baseline-n1-r0/profile/preferences.txt",
+    "sha256": "e934427e2eee2672868e90714b99138ffcaf2af8825fa4a43805eef0fed664b6",
+    "bytes": 967
+  },
+  {
+    "path": "artifacts/hiring-study/pr-integration/verify-disabled/bigarena-baseline-n1-r0/progress.jsonl",
+    "sha256": "672359a868f96e50309155372cc860015c3b4545439369c94dcddc95db58b979",
+    "bytes": 64
+  },
+  {
+    "path": "artifacts/hiring-study/pr-integration/verify-disabled/bigarena-baseline-n1-r0/result.json",
+    "sha256": "9346285bf6e034203212390d2b0ee25d975bcd59cb553e1864814b80f0346019",
+    "bytes": 29837
+  },
+  {
+    "path": "artifacts/hiring-study/pr-integration/verify-disabled/bigarena-baseline-n1-r0/world.checksums",
+    "sha256": "cf6d1cb97da5c3ce2a912b5b8c0b7c4e96668bbd7d427db10fb5b7f0af6135bd",
+    "bytes": 7454
+  },
+  {
+    "path": "artifacts/hiring-study/pr-integration/verify-disabled/bigarena-disabled-n1-r0/artifacts.json",
+    "sha256": "12476d325468d71c5d22224a01e9d1718393594d0c17ae9a07dcd4fa8eb4bb10",
+    "bytes": 313
+  },
+  {
+    "path": "artifacts/hiring-study/pr-integration/verify-disabled/bigarena-disabled-n1-r0/engine.log",
+    "sha256": "94c4a190d5270d20a801ca302837a270226f49897677884268b01efc6b89b454",
+    "bytes": 562
+  },
+  {
+    "path": "artifacts/hiring-study/pr-integration/verify-disabled/bigarena-disabled-n1-r0/final.game.gz",
+    "sha256": "a44e43bd08b94b18a7a74ca319f30c43b710a1748d0945853daf2b7a68b3c72a",
+    "bytes": 1797664
+  },
+  {
+    "path": "artifacts/hiring-study/pr-integration/verify-disabled/bigarena-disabled-n1-r0/game.replay",
+    "sha256": "72dd8c2d3467be466a5243ffe0fa0488584bb8d37a20d568c15361df84ae0f19",
+    "bytes": 13919928
+  },
+  {
+    "path": "artifacts/hiring-study/pr-integration/verify-disabled/bigarena-disabled-n1-r0/game.replay.checksums",
+    "sha256": "56248e952d3361091392253b261b578702f7677b4bb988dfa144a0b710d50871",
+    "bytes": 7254506
+  },
+  {
+    "path": "artifacts/hiring-study/pr-integration/verify-disabled/bigarena-disabled-n1-r0/profile/keyboard-gui.txt",
+    "sha256": "af43f1cb9fe42f9ded2a91aeead00fbb4276c18ce610afa2bc502ee127dbe1a6",
+    "bytes": 1811
+  },
+  {
+    "path": "artifacts/hiring-study/pr-integration/verify-disabled/bigarena-disabled-n1-r0/profile/keyboard-mapedit.txt",
+    "sha256": "d0d81f9dbbba069ef0364ac3cad74da54c614d7bf3c40e8b6f0460d94a96c7db",
+    "bytes": 708
+  },
+  {
+    "path": "artifacts/hiring-study/pr-integration/verify-disabled/bigarena-disabled-n1-r0/profile/preferences.txt",
+    "sha256": "789fc092fed4bba2e764881aa1fd87d0c827de544b7c71ba6f3e6bf4d6076a21",
+    "bytes": 1055
+  },
+  {
+    "path": "artifacts/hiring-study/pr-integration/verify-disabled/bigarena-disabled-n1-r0/progress.jsonl",
+    "sha256": "672359a868f96e50309155372cc860015c3b4545439369c94dcddc95db58b979",
+    "bytes": 64
+  },
+  {
+    "path": "artifacts/hiring-study/pr-integration/verify-disabled/bigarena-disabled-n1-r0/result.json",
+    "sha256": "b2955a0ca45996f41a05914052d020f4e5bb3ad397eb0a1a008aab802dd2a462",
+    "bytes": 30102
+  },
+  {
+    "path": "artifacts/hiring-study/pr-integration/verify-disabled/bigarena-disabled-n1-r0/world.checksums",
+    "sha256": "cf6d1cb97da5c3ce2a912b5b8c0b7c4e96668bbd7d427db10fb5b7f0af6135bd",
+    "bytes": 7454
+  },
+  {
+    "path": "artifacts/hiring-study/pr-integration/verify-disabled/contention-baseline-n1-r0/artifacts.json",
+    "sha256": "a0d95c6770a4adef62980760dec214cfc0055e92556ad5adeb8c0f55b75d7614",
+    "bytes": 313
+  },
+  {
+    "path": "artifacts/hiring-study/pr-integration/verify-disabled/contention-baseline-n1-r0/engine.log",
+    "sha256": "0fec093e648877e9773da4cb94f5171a566a573bdc8224531ec18ed9b021bf4c",
+    "bytes": 431
+  },
+  {
+    "path": "artifacts/hiring-study/pr-integration/verify-disabled/contention-baseline-n1-r0/final.game.gz",
+    "sha256": "fc4e90d49048eb278111f3045d8b71911188af0243ade4258b66a16341cc7c4c",
+    "bytes": 196858
+  },
+  {
+    "path": "artifacts/hiring-study/pr-integration/verify-disabled/contention-baseline-n1-r0/game.replay",
+    "sha256": "7973a640ab1186b5a966c134868d21e7f483ffab701d630092ad56da5a966196",
+    "bytes": 1728156
+  },
+  {
+    "path": "artifacts/hiring-study/pr-integration/verify-disabled/contention-baseline-n1-r0/game.replay.checksums",
+    "sha256": "31bfb975e096441e69b82c89e3cda5c94c2c6e9da3ed1dda8883672d029547e8",
+    "bytes": 119848980
+  },
+  {
+    "path": "artifacts/hiring-study/pr-integration/verify-disabled/contention-baseline-n1-r0/profile/keyboard-gui.txt",
+    "sha256": "af43f1cb9fe42f9ded2a91aeead00fbb4276c18ce610afa2bc502ee127dbe1a6",
+    "bytes": 1811
+  },
+  {
+    "path": "artifacts/hiring-study/pr-integration/verify-disabled/contention-baseline-n1-r0/profile/keyboard-mapedit.txt",
+    "sha256": "d0d81f9dbbba069ef0364ac3cad74da54c614d7bf3c40e8b6f0460d94a96c7db",
+    "bytes": 708
+  },
+  {
+    "path": "artifacts/hiring-study/pr-integration/verify-disabled/contention-baseline-n1-r0/profile/preferences.txt",
+    "sha256": "e934427e2eee2672868e90714b99138ffcaf2af8825fa4a43805eef0fed664b6",
+    "bytes": 967
+  },
+  {
+    "path": "artifacts/hiring-study/pr-integration/verify-disabled/contention-baseline-n1-r0/progress.jsonl",
+    "sha256": "672359a868f96e50309155372cc860015c3b4545439369c94dcddc95db58b979",
+    "bytes": 64
+  },
+  {
+    "path": "artifacts/hiring-study/pr-integration/verify-disabled/contention-baseline-n1-r0/result.json",
+    "sha256": "483eed98a352858d4ba6c45bffe5c84f0dba6e917d1b24fde8d6db0bdd65c6fa",
+    "bytes": 11405
+  },
+  {
+    "path": "artifacts/hiring-study/pr-integration/verify-disabled/contention-baseline-n1-r0/world.checksums",
+    "sha256": "e58efa0a860b50ccb35b774ffc6b52a6b275ab079e9cdd13be226aef87addad8",
+    "bytes": 7448
+  },
+  {
+    "path": "artifacts/hiring-study/pr-integration/verify-disabled/contention-disabled-n1-r0/artifacts.json",
+    "sha256": "8f0af25b185b3bfe8cf27efcd60a92f82f852e5a49b59d3e93997f3144a79d4a",
+    "bytes": 313
+  },
+  {
+    "path": "artifacts/hiring-study/pr-integration/verify-disabled/contention-disabled-n1-r0/engine.log",
+    "sha256": "075617d073e725774f1800bd2648f4b7f138bbf335eeb2868745f1a53e82cf69",
+    "bytes": 431
+  },
+  {
+    "path": "artifacts/hiring-study/pr-integration/verify-disabled/contention-disabled-n1-r0/final.game.gz",
+    "sha256": "fc4e90d49048eb278111f3045d8b71911188af0243ade4258b66a16341cc7c4c",
+    "bytes": 196858
+  },
+  {
+    "path": "artifacts/hiring-study/pr-integration/verify-disabled/contention-disabled-n1-r0/game.replay",
+    "sha256": "7973a640ab1186b5a966c134868d21e7f483ffab701d630092ad56da5a966196",
+    "bytes": 1728156
+  },
+  {
+    "path": "artifacts/hiring-study/pr-integration/verify-disabled/contention-disabled-n1-r0/game.replay.checksums",
+    "sha256": "31bfb975e096441e69b82c89e3cda5c94c2c6e9da3ed1dda8883672d029547e8",
+    "bytes": 119848980
+  },
+  {
+    "path": "artifacts/hiring-study/pr-integration/verify-disabled/contention-disabled-n1-r0/profile/keyboard-gui.txt",
+    "sha256": "af43f1cb9fe42f9ded2a91aeead00fbb4276c18ce610afa2bc502ee127dbe1a6",
+    "bytes": 1811
+  },
+  {
+    "path": "artifacts/hiring-study/pr-integration/verify-disabled/contention-disabled-n1-r0/profile/keyboard-mapedit.txt",
+    "sha256": "d0d81f9dbbba069ef0364ac3cad74da54c614d7bf3c40e8b6f0460d94a96c7db",
+    "bytes": 708
+  },
+  {
+    "path": "artifacts/hiring-study/pr-integration/verify-disabled/contention-disabled-n1-r0/profile/preferences.txt",
+    "sha256": "789fc092fed4bba2e764881aa1fd87d0c827de544b7c71ba6f3e6bf4d6076a21",
+    "bytes": 1055
+  },
+  {
+    "path": "artifacts/hiring-study/pr-integration/verify-disabled/contention-disabled-n1-r0/progress.jsonl",
+    "sha256": "672359a868f96e50309155372cc860015c3b4545439369c94dcddc95db58b979",
+    "bytes": 64
+  },
+  {
+    "path": "artifacts/hiring-study/pr-integration/verify-disabled/contention-disabled-n1-r0/result.json",
+    "sha256": "49aa4c3a292efafbff7021e205eee83cf66ee410e4d08975d4512fa642ebe576",
+    "bytes": 11685
+  },
+  {
+    "path": "artifacts/hiring-study/pr-integration/verify-disabled/contention-disabled-n1-r0/world.checksums",
+    "sha256": "e58efa0a860b50ccb35b774ffc6b52a6b275ab079e9cdd13be226aef87addad8",
+    "bytes": 7448
+  },
+  {
+    "path": "artifacts/hiring-study/pr-integration/verify-disabled/dense-baseline-n1-r0/artifacts.json",
+    "sha256": "b4778ab6a244c9568c413a9289cce3bc97d20fe1aad33d9175ba2fc1555f540c",
+    "bytes": 316
+  },
+  {
+    "path": "artifacts/hiring-study/pr-integration/verify-disabled/dense-baseline-n1-r0/engine.log",
+    "sha256": "6ff747fb598d608ba6ac41b3a2481b03b5e3116aa0b184cb21bba4de9f3a4d6b",
+    "bytes": 92284
+  },
+  {
+    "path": "artifacts/hiring-study/pr-integration/verify-disabled/dense-baseline-n1-r0/final.game.gz",
+    "sha256": "05f6a7e7d2190438d963da8d048683e251f1ad022cfba303b31476fafd65492b",
+    "bytes": 663722
+  },
+  {
+    "path": "artifacts/hiring-study/pr-integration/verify-disabled/dense-baseline-n1-r0/game.replay",
+    "sha256": "ef995ba19cdcdbce028b3ee81368a56663deae54086832be6801fae8d38b91f4",
+    "bytes": 9043081
+  },
+  {
+    "path": "artifacts/hiring-study/pr-integration/verify-disabled/dense-baseline-n1-r0/game.replay.checksums",
+    "sha256": "101f241feec7efb46fcc13adaae4f214e2e2e47d3ad719b90e48ebfd2269517e",
+    "bytes": 199703758
+  },
+  {
+    "path": "artifacts/hiring-study/pr-integration/verify-disabled/dense-baseline-n1-r0/profile/keyboard-gui.txt",
+    "sha256": "af43f1cb9fe42f9ded2a91aeead00fbb4276c18ce610afa2bc502ee127dbe1a6",
+    "bytes": 1811
+  },
+  {
+    "path": "artifacts/hiring-study/pr-integration/verify-disabled/dense-baseline-n1-r0/profile/keyboard-mapedit.txt",
+    "sha256": "d0d81f9dbbba069ef0364ac3cad74da54c614d7bf3c40e8b6f0460d94a96c7db",
+    "bytes": 708
+  },
+  {
+    "path": "artifacts/hiring-study/pr-integration/verify-disabled/dense-baseline-n1-r0/profile/preferences.txt",
+    "sha256": "e934427e2eee2672868e90714b99138ffcaf2af8825fa4a43805eef0fed664b6",
+    "bytes": 967
+  },
+  {
+    "path": "artifacts/hiring-study/pr-integration/verify-disabled/dense-baseline-n1-r0/progress.jsonl",
+    "sha256": "672359a868f96e50309155372cc860015c3b4545439369c94dcddc95db58b979",
+    "bytes": 64
+  },
+  {
+    "path": "artifacts/hiring-study/pr-integration/verify-disabled/dense-baseline-n1-r0/result.json",
+    "sha256": "eee3026ee305b20ee75c0ab5f49801a14fcb7d0daf63fb30e1f87037ebb994fa",
+    "bytes": 107128
+  },
+  {
+    "path": "artifacts/hiring-study/pr-integration/verify-disabled/dense-baseline-n1-r0/world.checksums",
+    "sha256": "bcbf93b33228875430e2f4fc43411785a8b701b91b6b350a805a5476c010a2c9",
+    "bytes": 7441
+  },
+  {
+    "path": "artifacts/hiring-study/pr-integration/verify-disabled/dense-disabled-n1-r0/artifacts.json",
+    "sha256": "403a1828c68cf6562c493ef93a9c35bfab8d99bf2f95fc9d3799db5caa84efc6",
+    "bytes": 316
+  },
+  {
+    "path": "artifacts/hiring-study/pr-integration/verify-disabled/dense-disabled-n1-r0/engine.log",
+    "sha256": "b1d15ba65797d7490a851173620bec9a0fd3679c42b285a6d6675f64dfd29604",
+    "bytes": 92284
+  },
+  {
+    "path": "artifacts/hiring-study/pr-integration/verify-disabled/dense-disabled-n1-r0/final.game.gz",
+    "sha256": "05f6a7e7d2190438d963da8d048683e251f1ad022cfba303b31476fafd65492b",
+    "bytes": 663722
+  },
+  {
+    "path": "artifacts/hiring-study/pr-integration/verify-disabled/dense-disabled-n1-r0/game.replay",
+    "sha256": "ef995ba19cdcdbce028b3ee81368a56663deae54086832be6801fae8d38b91f4",
+    "bytes": 9043081
+  },
+  {
+    "path": "artifacts/hiring-study/pr-integration/verify-disabled/dense-disabled-n1-r0/game.replay.checksums",
+    "sha256": "101f241feec7efb46fcc13adaae4f214e2e2e47d3ad719b90e48ebfd2269517e",
+    "bytes": 199703758
+  },
+  {
+    "path": "artifacts/hiring-study/pr-integration/verify-disabled/dense-disabled-n1-r0/profile/keyboard-gui.txt",
+    "sha256": "af43f1cb9fe42f9ded2a91aeead00fbb4276c18ce610afa2bc502ee127dbe1a6",
+    "bytes": 1811
+  },
+  {
+    "path": "artifacts/hiring-study/pr-integration/verify-disabled/dense-disabled-n1-r0/profile/keyboard-mapedit.txt",
+    "sha256": "d0d81f9dbbba069ef0364ac3cad74da54c614d7bf3c40e8b6f0460d94a96c7db",
+    "bytes": 708
+  },
+  {
+    "path": "artifacts/hiring-study/pr-integration/verify-disabled/dense-disabled-n1-r0/profile/preferences.txt",
+    "sha256": "789fc092fed4bba2e764881aa1fd87d0c827de544b7c71ba6f3e6bf4d6076a21",
+    "bytes": 1055
+  },
+  {
+    "path": "artifacts/hiring-study/pr-integration/verify-disabled/dense-disabled-n1-r0/progress.jsonl",
+    "sha256": "672359a868f96e50309155372cc860015c3b4545439369c94dcddc95db58b979",
+    "bytes": 64
+  },
+  {
+    "path": "artifacts/hiring-study/pr-integration/verify-disabled/dense-disabled-n1-r0/result.json",
+    "sha256": "1e2340250eaa2397f54f56662df8994d24df317cc02760ddc4ea1a8eef7f8dae",
+    "bytes": 107392
+  },
+  {
+    "path": "artifacts/hiring-study/pr-integration/verify-disabled/dense-disabled-n1-r0/world.checksums",
+    "sha256": "bcbf93b33228875430e2f4fc43411785a8b701b91b6b350a805a5476c010a2c9",
+    "bytes": 7441
+  },
+  {
+    "path": "artifacts/hiring-study/pr-integration/verify-disabled/land-maxima-mid-baseline-n1-r0/artifacts.json",
+    "sha256": "59490caaaf9ef17cd9e35ff1bafc8b8cb11e66ac7cad089c9bc81bcf942c7745",
+    "bytes": 316
+  },
+  {
+    "path": "artifacts/hiring-study/pr-integration/verify-disabled/land-maxima-mid-baseline-n1-r0/engine.log",
+    "sha256": "132db40129a6c1807ca6a47896fc3d3bb25b0176daec7cda17372ea079f09e52",
+    "bytes": 92296
+  },
+  {
+    "path": "artifacts/hiring-study/pr-integration/verify-disabled/land-maxima-mid-baseline-n1-r0/final.game.gz",
+    "sha256": "d5596baea9e4a2fb12be4fb3f691f1478ad9f2a15885c3b60fd2c541acf97f0a",
+    "bytes": 902640
+  },
+  {
+    "path": "artifacts/hiring-study/pr-integration/verify-disabled/land-maxima-mid-baseline-n1-r0/game.replay",
+    "sha256": "0e50e5917836e90427ff0b738694165db3a78d422f7b8eca611b1e1c4f7424f0",
+    "bytes": 41598488
+  },
+  {
+    "path": "artifacts/hiring-study/pr-integration/verify-disabled/land-maxima-mid-baseline-n1-r0/game.replay.checksums",
+    "sha256": "fcca03178db3af6f540645b3fed5f713c39852d71ce86c4d21f3cd1931bdb6a3",
+    "bytes": 11455902
+  },
+  {
+    "path": "artifacts/hiring-study/pr-integration/verify-disabled/land-maxima-mid-baseline-n1-r0/profile/keyboard-gui.txt",
+    "sha256": "af43f1cb9fe42f9ded2a91aeead00fbb4276c18ce610afa2bc502ee127dbe1a6",
+    "bytes": 1811
+  },
+  {
+    "path": "artifacts/hiring-study/pr-integration/verify-disabled/land-maxima-mid-baseline-n1-r0/profile/keyboard-mapedit.txt",
+    "sha256": "d0d81f9dbbba069ef0364ac3cad74da54c614d7bf3c40e8b6f0460d94a96c7db",
+    "bytes": 708
+  },
+  {
+    "path": "artifacts/hiring-study/pr-integration/verify-disabled/land-maxima-mid-baseline-n1-r0/profile/preferences.txt",
+    "sha256": "e934427e2eee2672868e90714b99138ffcaf2af8825fa4a43805eef0fed664b6",
+    "bytes": 967
+  },
+  {
+    "path": "artifacts/hiring-study/pr-integration/verify-disabled/land-maxima-mid-baseline-n1-r0/progress.jsonl",
+    "sha256": "15d8e19d28f0c21da9b83fafd1dfe8c2a75a0d11225ac34852523b2238562ac5",
+    "bytes": 66
+  },
+  {
+    "path": "artifacts/hiring-study/pr-integration/verify-disabled/land-maxima-mid-baseline-n1-r0/result.json",
+    "sha256": "70542eb5aebe40baad80efe950e8e4199ff083cd54c5157250de2480a562f6a9",
+    "bytes": 108281
+  },
+  {
+    "path": "artifacts/hiring-study/pr-integration/verify-disabled/land-maxima-mid-baseline-n1-r0/world.checksums",
+    "sha256": "0ca87a313b64dba27156ec6620295ee587885ef27fa097582200cea73ad6e77d",
+    "bytes": 8060
+  },
+  {
+    "path": "artifacts/hiring-study/pr-integration/verify-disabled/land-maxima-mid-disabled-n1-r0/artifacts.json",
+    "sha256": "43d49e6f6716d74369547cb62af76c200c122571d1109dcac5d744a13cd0ce45",
+    "bytes": 316
+  },
+  {
+    "path": "artifacts/hiring-study/pr-integration/verify-disabled/land-maxima-mid-disabled-n1-r0/engine.log",
+    "sha256": "5ea19582c11b3c580b3bcf880e39886af38a4f5f40b862c529c563952918cb1c",
+    "bytes": 92296
+  },
+  {
+    "path": "artifacts/hiring-study/pr-integration/verify-disabled/land-maxima-mid-disabled-n1-r0/final.game.gz",
+    "sha256": "d5596baea9e4a2fb12be4fb3f691f1478ad9f2a15885c3b60fd2c541acf97f0a",
+    "bytes": 902640
+  },
+  {
+    "path": "artifacts/hiring-study/pr-integration/verify-disabled/land-maxima-mid-disabled-n1-r0/game.replay",
+    "sha256": "0e50e5917836e90427ff0b738694165db3a78d422f7b8eca611b1e1c4f7424f0",
+    "bytes": 41598488
+  },
+  {
+    "path": "artifacts/hiring-study/pr-integration/verify-disabled/land-maxima-mid-disabled-n1-r0/game.replay.checksums",
+    "sha256": "fcca03178db3af6f540645b3fed5f713c39852d71ce86c4d21f3cd1931bdb6a3",
+    "bytes": 11455902
+  },
+  {
+    "path": "artifacts/hiring-study/pr-integration/verify-disabled/land-maxima-mid-disabled-n1-r0/profile/keyboard-gui.txt",
+    "sha256": "af43f1cb9fe42f9ded2a91aeead00fbb4276c18ce610afa2bc502ee127dbe1a6",
+    "bytes": 1811
+  },
+  {
+    "path": "artifacts/hiring-study/pr-integration/verify-disabled/land-maxima-mid-disabled-n1-r0/profile/keyboard-mapedit.txt",
+    "sha256": "d0d81f9dbbba069ef0364ac3cad74da54c614d7bf3c40e8b6f0460d94a96c7db",
+    "bytes": 708
+  },
+  {
+    "path": "artifacts/hiring-study/pr-integration/verify-disabled/land-maxima-mid-disabled-n1-r0/profile/preferences.txt",
+    "sha256": "789fc092fed4bba2e764881aa1fd87d0c827de544b7c71ba6f3e6bf4d6076a21",
+    "bytes": 1055
+  },
+  {
+    "path": "artifacts/hiring-study/pr-integration/verify-disabled/land-maxima-mid-disabled-n1-r0/progress.jsonl",
+    "sha256": "15d8e19d28f0c21da9b83fafd1dfe8c2a75a0d11225ac34852523b2238562ac5",
+    "bytes": 66
+  },
+  {
+    "path": "artifacts/hiring-study/pr-integration/verify-disabled/land-maxima-mid-disabled-n1-r0/result.json",
+    "sha256": "4ca8627c1697b55ea971b13c22cc93846418bd31b90fe7a7b5021dd0e5b9d791",
+    "bytes": 108547
+  },
+  {
+    "path": "artifacts/hiring-study/pr-integration/verify-disabled/land-maxima-mid-disabled-n1-r0/world.checksums",
+    "sha256": "0ca87a313b64dba27156ec6620295ee587885ef27fa097582200cea73ad6e77d",
+    "bytes": 8060
+  },
+  {
+    "path": "artifacts/hiring-study/pr-integration/verify-disabled/large-baseline-n1-r0/artifacts.json",
+    "sha256": "49be3546ce32e95f820fc547d17a4494b01eb5a607e63dfce8a56d364d0342f6",
+    "bytes": 311
+  },
+  {
+    "path": "artifacts/hiring-study/pr-integration/verify-disabled/large-baseline-n1-r0/engine.log",
+    "sha256": "64ec50838042ab3db9f4cd45b70899c904674eb57cc9ef8d3c3eae72c69e6987",
+    "bytes": 472
+  },
+  {
+    "path": "artifacts/hiring-study/pr-integration/verify-disabled/large-baseline-n1-r0/final.game.gz",
+    "sha256": "ae1abbfd53e9d54d01cc09e8b3d558aa1d9608aea7b59d5fe88dd37c032a69f1",
+    "bytes": 246621
+  },
+  {
+    "path": "artifacts/hiring-study/pr-integration/verify-disabled/large-baseline-n1-r0/game.replay",
+    "sha256": "b739d9ce7e5514d1e5b613e2216031f701effaaa4298de96eaa59c07b2d891c0",
+    "bytes": 3272520
+  },
+  {
+    "path": "artifacts/hiring-study/pr-integration/verify-disabled/large-baseline-n1-r0/game.replay.checksums",
+    "sha256": "a8e6f0ffd181f8e7a6dacae64c4c17c0f49203388b0bf875742e244891687767",
+    "bytes": 2692744
+  },
+  {
+    "path": "artifacts/hiring-study/pr-integration/verify-disabled/large-baseline-n1-r0/profile/keyboard-gui.txt",
+    "sha256": "af43f1cb9fe42f9ded2a91aeead00fbb4276c18ce610afa2bc502ee127dbe1a6",
+    "bytes": 1811
+  },
+  {
+    "path": "artifacts/hiring-study/pr-integration/verify-disabled/large-baseline-n1-r0/profile/keyboard-mapedit.txt",
+    "sha256": "d0d81f9dbbba069ef0364ac3cad74da54c614d7bf3c40e8b6f0460d94a96c7db",
+    "bytes": 708
+  },
+  {
+    "path": "artifacts/hiring-study/pr-integration/verify-disabled/large-baseline-n1-r0/profile/preferences.txt",
+    "sha256": "e934427e2eee2672868e90714b99138ffcaf2af8825fa4a43805eef0fed664b6",
+    "bytes": 967
+  },
+  {
+    "path": "artifacts/hiring-study/pr-integration/verify-disabled/large-baseline-n1-r0/progress.jsonl",
+    "sha256": "672359a868f96e50309155372cc860015c3b4545439369c94dcddc95db58b979",
+    "bytes": 64
+  },
+  {
+    "path": "artifacts/hiring-study/pr-integration/verify-disabled/large-baseline-n1-r0/result.json",
+    "sha256": "0d7d08b51ca5fcedd76d3d4e9e537c831340f53f0e1ced881ddcc25d5f4c9b69",
+    "bytes": 15477
+  },
+  {
+    "path": "artifacts/hiring-study/pr-integration/verify-disabled/large-baseline-n1-r0/world.checksums",
+    "sha256": "63f1b21fef2fdc6836b04af4963623e32d21f1dacdaca70e334f44dc126324e1",
+    "bytes": 7424
+  },
+  {
+    "path": "artifacts/hiring-study/pr-integration/verify-disabled/large-disabled-n1-r0/artifacts.json",
+    "sha256": "d53458ac9befff47ddd7554a2493d7c9fbb851366711f1bebee9c4c84b7b73d8",
+    "bytes": 311
+  },
+  {
+    "path": "artifacts/hiring-study/pr-integration/verify-disabled/large-disabled-n1-r0/engine.log",
+    "sha256": "cd4f1d402f43c2ffde0f9556a9e5f76d366a8a704b9b07c8c84b689a2d80cbee",
+    "bytes": 472
+  },
+  {
+    "path": "artifacts/hiring-study/pr-integration/verify-disabled/large-disabled-n1-r0/final.game.gz",
+    "sha256": "ae1abbfd53e9d54d01cc09e8b3d558aa1d9608aea7b59d5fe88dd37c032a69f1",
+    "bytes": 246621
+  },
+  {
+    "path": "artifacts/hiring-study/pr-integration/verify-disabled/large-disabled-n1-r0/game.replay",
+    "sha256": "b739d9ce7e5514d1e5b613e2216031f701effaaa4298de96eaa59c07b2d891c0",
+    "bytes": 3272520
+  },
+  {
+    "path": "artifacts/hiring-study/pr-integration/verify-disabled/large-disabled-n1-r0/game.replay.checksums",
+    "sha256": "a8e6f0ffd181f8e7a6dacae64c4c17c0f49203388b0bf875742e244891687767",
+    "bytes": 2692744
+  },
+  {
+    "path": "artifacts/hiring-study/pr-integration/verify-disabled/large-disabled-n1-r0/profile/keyboard-gui.txt",
+    "sha256": "af43f1cb9fe42f9ded2a91aeead00fbb4276c18ce610afa2bc502ee127dbe1a6",
+    "bytes": 1811
+  },
+  {
+    "path": "artifacts/hiring-study/pr-integration/verify-disabled/large-disabled-n1-r0/profile/keyboard-mapedit.txt",
+    "sha256": "d0d81f9dbbba069ef0364ac3cad74da54c614d7bf3c40e8b6f0460d94a96c7db",
+    "bytes": 708
+  },
+  {
+    "path": "artifacts/hiring-study/pr-integration/verify-disabled/large-disabled-n1-r0/profile/preferences.txt",
+    "sha256": "789fc092fed4bba2e764881aa1fd87d0c827de544b7c71ba6f3e6bf4d6076a21",
+    "bytes": 1055
+  },
+  {
+    "path": "artifacts/hiring-study/pr-integration/verify-disabled/large-disabled-n1-r0/progress.jsonl",
+    "sha256": "672359a868f96e50309155372cc860015c3b4545439369c94dcddc95db58b979",
+    "bytes": 64
+  },
+  {
+    "path": "artifacts/hiring-study/pr-integration/verify-disabled/large-disabled-n1-r0/result.json",
+    "sha256": "36c77109f114fa0a2f803b28a4da943e0182312d93da458125e2752f0aef57ee",
+    "bytes": 15751
+  },
+  {
+    "path": "artifacts/hiring-study/pr-integration/verify-disabled/large-disabled-n1-r0/world.checksums",
+    "sha256": "63f1b21fef2fdc6836b04af4963623e32d21f1dacdaca70e334f44dc126324e1",
+    "bytes": 7424
+  },
+  {
+    "path": "artifacts/hiring-study/pr-integration/verify-disabled/measurements.jsonl",
+    "sha256": "f17edc9b2c25864054d85fdbd3a752c74dd67154ecaa06340981894952d0565e",
+    "bytes": 743474
+  },
+  {
+    "path": "artifacts/hiring-study/pr-integration/verify-disabled/metadata.json",
+    "sha256": "0da4c3a3e17fda24cb014079f42053deeeefba27acfc51fb09c27e5a5341aad2",
+    "bytes": 3180
+  },
+  {
+    "path": "artifacts/hiring-study/pr-integration/verify-disabled/small-baseline-n1-r0/artifacts.json",
+    "sha256": "35b4702ccb5c46cf11d9b8e1c68a5186879ff1eaad5ff1508b37c8a4e4103cf8",
+    "bytes": 310
+  },
+  {
+    "path": "artifacts/hiring-study/pr-integration/verify-disabled/small-baseline-n1-r0/engine.log",
+    "sha256": "2d36285f1ffc485bc994686c674e3706fae43231ccde592858f2480ba34857d2",
+    "bytes": 440
+  },
+  {
+    "path": "artifacts/hiring-study/pr-integration/verify-disabled/small-baseline-n1-r0/final.game.gz",
+    "sha256": "acc808c432db06dcc925103cb8edaf9b765f4b62e2ffb6649b5464ef8c253ad9",
+    "bytes": 62041
+  },
+  {
+    "path": "artifacts/hiring-study/pr-integration/verify-disabled/small-baseline-n1-r0/game.replay",
+    "sha256": "880c61e5e7a80ba54b31212d418d94cd097933f83e8185f13e787d6555a9cf1f",
+    "bytes": 1484416
+  },
+  {
+    "path": "artifacts/hiring-study/pr-integration/verify-disabled/small-baseline-n1-r0/game.replay.checksums",
+    "sha256": "082dd1796840554f3a8f1c5246bb7c7c1d2747f4a2e664bcefdeda930c4756fd",
+    "bytes": 1050308
+  },
+  {
+    "path": "artifacts/hiring-study/pr-integration/verify-disabled/small-baseline-n1-r0/profile/keyboard-gui.txt",
+    "sha256": "af43f1cb9fe42f9ded2a91aeead00fbb4276c18ce610afa2bc502ee127dbe1a6",
+    "bytes": 1811
+  },
+  {
+    "path": "artifacts/hiring-study/pr-integration/verify-disabled/small-baseline-n1-r0/profile/keyboard-mapedit.txt",
+    "sha256": "d0d81f9dbbba069ef0364ac3cad74da54c614d7bf3c40e8b6f0460d94a96c7db",
+    "bytes": 708
+  },
+  {
+    "path": "artifacts/hiring-study/pr-integration/verify-disabled/small-baseline-n1-r0/profile/preferences.txt",
+    "sha256": "e934427e2eee2672868e90714b99138ffcaf2af8825fa4a43805eef0fed664b6",
+    "bytes": 967
+  },
+  {
+    "path": "artifacts/hiring-study/pr-integration/verify-disabled/small-baseline-n1-r0/progress.jsonl",
+    "sha256": "672359a868f96e50309155372cc860015c3b4545439369c94dcddc95db58b979",
+    "bytes": 64
+  },
+  {
+    "path": "artifacts/hiring-study/pr-integration/verify-disabled/small-baseline-n1-r0/result.json",
+    "sha256": "f6addf784541496ad218cea1fb9fa41ad2d79348da78760bdf31185529d4b28d",
+    "bytes": 11357
+  },
+  {
+    "path": "artifacts/hiring-study/pr-integration/verify-disabled/small-baseline-n1-r0/world.checksums",
+    "sha256": "687a5712c0932058c05a2194c27115e9beb507b1263775c59012d1f66658b33d",
+    "bytes": 7434
+  },
+  {
+    "path": "artifacts/hiring-study/pr-integration/verify-disabled/small-disabled-n1-r0/artifacts.json",
+    "sha256": "332d64c162356bdae6373f7606ca02124b1494380821e2e0f4bc9aea6d6c5efd",
+    "bytes": 310
+  },
+  {
+    "path": "artifacts/hiring-study/pr-integration/verify-disabled/small-disabled-n1-r0/engine.log",
+    "sha256": "7a804b5e45702da080525fc51f526929b69971c8caceb75e025457119923ecc5",
+    "bytes": 440
+  },
+  {
+    "path": "artifacts/hiring-study/pr-integration/verify-disabled/small-disabled-n1-r0/final.game.gz",
+    "sha256": "acc808c432db06dcc925103cb8edaf9b765f4b62e2ffb6649b5464ef8c253ad9",
+    "bytes": 62041
+  },
+  {
+    "path": "artifacts/hiring-study/pr-integration/verify-disabled/small-disabled-n1-r0/game.replay",
+    "sha256": "880c61e5e7a80ba54b31212d418d94cd097933f83e8185f13e787d6555a9cf1f",
+    "bytes": 1484416
+  },
+  {
+    "path": "artifacts/hiring-study/pr-integration/verify-disabled/small-disabled-n1-r0/game.replay.checksums",
+    "sha256": "082dd1796840554f3a8f1c5246bb7c7c1d2747f4a2e664bcefdeda930c4756fd",
+    "bytes": 1050308
+  },
+  {
+    "path": "artifacts/hiring-study/pr-integration/verify-disabled/small-disabled-n1-r0/profile/keyboard-gui.txt",
+    "sha256": "af43f1cb9fe42f9ded2a91aeead00fbb4276c18ce610afa2bc502ee127dbe1a6",
+    "bytes": 1811
+  },
+  {
+    "path": "artifacts/hiring-study/pr-integration/verify-disabled/small-disabled-n1-r0/profile/keyboard-mapedit.txt",
+    "sha256": "d0d81f9dbbba069ef0364ac3cad74da54c614d7bf3c40e8b6f0460d94a96c7db",
+    "bytes": 708
+  },
+  {
+    "path": "artifacts/hiring-study/pr-integration/verify-disabled/small-disabled-n1-r0/profile/preferences.txt",
+    "sha256": "789fc092fed4bba2e764881aa1fd87d0c827de544b7c71ba6f3e6bf4d6076a21",
+    "bytes": 1055
+  },
+  {
+    "path": "artifacts/hiring-study/pr-integration/verify-disabled/small-disabled-n1-r0/progress.jsonl",
+    "sha256": "672359a868f96e50309155372cc860015c3b4545439369c94dcddc95db58b979",
+    "bytes": 64
+  },
+  {
+    "path": "artifacts/hiring-study/pr-integration/verify-disabled/small-disabled-n1-r0/result.json",
+    "sha256": "3dfb0aa639c9f6f4c256616e54a7bcc2d5299292a8111e5b7e0d6904b8c55ea1",
+    "bytes": 11639
+  },
+  {
+    "path": "artifacts/hiring-study/pr-integration/verify-disabled/small-disabled-n1-r0/world.checksums",
+    "sha256": "687a5712c0932058c05a2194c27115e9beb507b1263775c59012d1f66658b33d",
+    "bytes": 7434
+  },
+  {
+    "path": "artifacts/hiring-study/pr-integration/verify-disabled/sustainable-baseline-n1-r0/artifacts.json",
+    "sha256": "4671e1486e76df5d57ffd7d1661cc930c82c96e381ccdda11ecbca72dd5f5267",
+    "bytes": 313
+  },
+  {
+    "path": "artifacts/hiring-study/pr-integration/verify-disabled/sustainable-baseline-n1-r0/engine.log",
+    "sha256": "fc2fad58b0db2cf5af8bd5babb124710f0c3f3755523521cdd63c8832ab8f03e",
+    "bytes": 432
+  },
+  {
+    "path": "artifacts/hiring-study/pr-integration/verify-disabled/sustainable-baseline-n1-r0/final.game.gz",
+    "sha256": "8c27455d36053bd51b53c88da7efcac5a6b8f7bd5f2ad14e8cc2244047894f51",
+    "bytes": 199454
+  },
+  {
+    "path": "artifacts/hiring-study/pr-integration/verify-disabled/sustainable-baseline-n1-r0/game.replay",
+    "sha256": "1b8814635bbaa12e055dc37c9ac8083761a8f6288696638cfb8e4f51feda05f5",
+    "bytes": 1728124
+  },
+  {
+    "path": "artifacts/hiring-study/pr-integration/verify-disabled/sustainable-baseline-n1-r0/game.replay.checksums",
+    "sha256": "4805421676d7be432639c0c815e95a351a11c9ab179f69144f67ddcecaf37a34",
+    "bytes": 119848980
+  },
+  {
+    "path": "artifacts/hiring-study/pr-integration/verify-disabled/sustainable-baseline-n1-r0/profile/keyboard-gui.txt",
+    "sha256": "af43f1cb9fe42f9ded2a91aeead00fbb4276c18ce610afa2bc502ee127dbe1a6",
+    "bytes": 1811
+  },
+  {
+    "path": "artifacts/hiring-study/pr-integration/verify-disabled/sustainable-baseline-n1-r0/profile/keyboard-mapedit.txt",
+    "sha256": "d0d81f9dbbba069ef0364ac3cad74da54c614d7bf3c40e8b6f0460d94a96c7db",
+    "bytes": 708
+  },
+  {
+    "path": "artifacts/hiring-study/pr-integration/verify-disabled/sustainable-baseline-n1-r0/profile/preferences.txt",
+    "sha256": "e934427e2eee2672868e90714b99138ffcaf2af8825fa4a43805eef0fed664b6",
+    "bytes": 967
+  },
+  {
+    "path": "artifacts/hiring-study/pr-integration/verify-disabled/sustainable-baseline-n1-r0/progress.jsonl",
+    "sha256": "672359a868f96e50309155372cc860015c3b4545439369c94dcddc95db58b979",
+    "bytes": 64
+  },
+  {
+    "path": "artifacts/hiring-study/pr-integration/verify-disabled/sustainable-baseline-n1-r0/result.json",
+    "sha256": "49508690e7c566306c1eae3bb32868db41e338539a2802ebc2f22a313515afd5",
+    "bytes": 11406
+  },
+  {
+    "path": "artifacts/hiring-study/pr-integration/verify-disabled/sustainable-baseline-n1-r0/world.checksums",
+    "sha256": "27d341fc152c8dac9b4050f0f139369f621b073bbe9ac756de09e5bcaf42d230",
+    "bytes": 7441
+  },
+  {
+    "path": "artifacts/hiring-study/pr-integration/verify-disabled/sustainable-disabled-n1-r0/artifacts.json",
+    "sha256": "726dbcb3d34156dbf6effdbbbf9ae791a2055d2fad67b286f6ad10fe9d5c9409",
+    "bytes": 313
+  },
+  {
+    "path": "artifacts/hiring-study/pr-integration/verify-disabled/sustainable-disabled-n1-r0/engine.log",
+    "sha256": "89cf92c98093accfeb4d02c306b981ed51cfd725803cfe136aef1c45dda91d01",
+    "bytes": 432
+  },
+  {
+    "path": "artifacts/hiring-study/pr-integration/verify-disabled/sustainable-disabled-n1-r0/final.game.gz",
+    "sha256": "8c27455d36053bd51b53c88da7efcac5a6b8f7bd5f2ad14e8cc2244047894f51",
+    "bytes": 199454
+  },
+  {
+    "path": "artifacts/hiring-study/pr-integration/verify-disabled/sustainable-disabled-n1-r0/game.replay",
+    "sha256": "1b8814635bbaa12e055dc37c9ac8083761a8f6288696638cfb8e4f51feda05f5",
+    "bytes": 1728124
+  },
+  {
+    "path": "artifacts/hiring-study/pr-integration/verify-disabled/sustainable-disabled-n1-r0/game.replay.checksums",
+    "sha256": "4805421676d7be432639c0c815e95a351a11c9ab179f69144f67ddcecaf37a34",
+    "bytes": 119848980
+  },
+  {
+    "path": "artifacts/hiring-study/pr-integration/verify-disabled/sustainable-disabled-n1-r0/profile/keyboard-gui.txt",
+    "sha256": "af43f1cb9fe42f9ded2a91aeead00fbb4276c18ce610afa2bc502ee127dbe1a6",
+    "bytes": 1811
+  },
+  {
+    "path": "artifacts/hiring-study/pr-integration/verify-disabled/sustainable-disabled-n1-r0/profile/keyboard-mapedit.txt",
+    "sha256": "d0d81f9dbbba069ef0364ac3cad74da54c614d7bf3c40e8b6f0460d94a96c7db",
+    "bytes": 708
+  },
+  {
+    "path": "artifacts/hiring-study/pr-integration/verify-disabled/sustainable-disabled-n1-r0/profile/preferences.txt",
+    "sha256": "789fc092fed4bba2e764881aa1fd87d0c827de544b7c71ba6f3e6bf4d6076a21",
+    "bytes": 1055
+  },
+  {
+    "path": "artifacts/hiring-study/pr-integration/verify-disabled/sustainable-disabled-n1-r0/progress.jsonl",
+    "sha256": "672359a868f96e50309155372cc860015c3b4545439369c94dcddc95db58b979",
+    "bytes": 64
+  },
+  {
+    "path": "artifacts/hiring-study/pr-integration/verify-disabled/sustainable-disabled-n1-r0/result.json",
+    "sha256": "7ffae94e1682eadf573b1c834a8d55becbd906e37352b832386e8144e2b99d31",
+    "bytes": 11684
+  },
+  {
+    "path": "artifacts/hiring-study/pr-integration/verify-disabled/sustainable-disabled-n1-r0/world.checksums",
+    "sha256": "27d341fc152c8dac9b4050f0f139369f621b073bbe9ac756de09e5bcaf42d230",
+    "bytes": 7441
+  },
+  {
+    "path": "artifacts/hiring-study/pr-integration/verify-disabled/verification.json",
+    "sha256": "3d3dbf2a8a1931189ac9cfaaef5afd007f1ee93c4f0630c1dd76d6bf3dd510d3",
+    "bytes": 37
+  },
+  {
+    "path": "artifacts/hiring-study/pr-integration/verify-disabled/water-cortex-late-baseline-n1-r0/artifacts.json",
+    "sha256": "6d0e904a09c9ac94599063cea061ed2d74f67b375dd01a112a95c0a5b167584e",
+    "bytes": 311
+  },
+  {
+    "path": "artifacts/hiring-study/pr-integration/verify-disabled/water-cortex-late-baseline-n1-r0/engine.log",
+    "sha256": "5f492970259536391dcddf770e7961db431b3f124c9fe9f447bf54288bb6a5a8",
+    "bytes": 477
+  },
+  {
+    "path": "artifacts/hiring-study/pr-integration/verify-disabled/water-cortex-late-baseline-n1-r0/final.game.gz",
+    "sha256": "ce31d207d6795641c85fdd3c5a24fb6889a564ed83f3bc58343060ab9e7136ca",
+    "bytes": 596614
+  },
+  {
+    "path": "artifacts/hiring-study/pr-integration/verify-disabled/water-cortex-late-baseline-n1-r0/game.replay",
+    "sha256": "419e24e23acea62a5aeccce2b0bd78663d9ebbe73f957cadb09afadbc8b77d32",
+    "bytes": 5945682
+  },
+  {
+    "path": "artifacts/hiring-study/pr-integration/verify-disabled/water-cortex-late-baseline-n1-r0/game.replay.checksums",
+    "sha256": "41baf7526c5b0bf060e7276f4e21f9dab9ee1e8b20c29e5412ae4e027d1f0d47",
+    "bytes": 6987796
+  },
+  {
+    "path": "artifacts/hiring-study/pr-integration/verify-disabled/water-cortex-late-baseline-n1-r0/profile/keyboard-gui.txt",
+    "sha256": "af43f1cb9fe42f9ded2a91aeead00fbb4276c18ce610afa2bc502ee127dbe1a6",
+    "bytes": 1811
+  },
+  {
+    "path": "artifacts/hiring-study/pr-integration/verify-disabled/water-cortex-late-baseline-n1-r0/profile/keyboard-mapedit.txt",
+    "sha256": "d0d81f9dbbba069ef0364ac3cad74da54c614d7bf3c40e8b6f0460d94a96c7db",
+    "bytes": 708
+  },
+  {
+    "path": "artifacts/hiring-study/pr-integration/verify-disabled/water-cortex-late-baseline-n1-r0/profile/preferences.txt",
+    "sha256": "e934427e2eee2672868e90714b99138ffcaf2af8825fa4a43805eef0fed664b6",
+    "bytes": 967
+  },
+  {
+    "path": "artifacts/hiring-study/pr-integration/verify-disabled/water-cortex-late-baseline-n1-r0/progress.jsonl",
+    "sha256": "6d6e2f656875e483835f11a1bd17c6241b0e307896aa1048b14a50930d68deba",
+    "bytes": 68
+  },
+  {
+    "path": "artifacts/hiring-study/pr-integration/verify-disabled/water-cortex-late-baseline-n1-r0/result.json",
+    "sha256": "18cb21345f2be6cdd633cac8890ff824f15259bb26d8d187e6f6a0f3354f4902",
+    "bytes": 21250
+  },
+  {
+    "path": "artifacts/hiring-study/pr-integration/verify-disabled/water-cortex-late-baseline-n1-r0/world.checksums",
+    "sha256": "02b1e337c47075677c6702fe823f3bc1f6db73ca91493ff123f7e7deb77503c5",
+    "bytes": 8578
+  },
+  {
+    "path": "artifacts/hiring-study/pr-integration/verify-disabled/water-cortex-late-disabled-n1-r0/artifacts.json",
+    "sha256": "5447edd4ad994fc643a77edfc30e8ab98023a75536f68b770b82206d244c8a85",
+    "bytes": 311
+  },
+  {
+    "path": "artifacts/hiring-study/pr-integration/verify-disabled/water-cortex-late-disabled-n1-r0/engine.log",
+    "sha256": "880e58c7f4f1b376bc321fd0367d0e0ad6743ce75ad7a3655ec55bcb87a3a536",
+    "bytes": 477
+  },
+  {
+    "path": "artifacts/hiring-study/pr-integration/verify-disabled/water-cortex-late-disabled-n1-r0/final.game.gz",
+    "sha256": "ce31d207d6795641c85fdd3c5a24fb6889a564ed83f3bc58343060ab9e7136ca",
+    "bytes": 596614
+  },
+  {
+    "path": "artifacts/hiring-study/pr-integration/verify-disabled/water-cortex-late-disabled-n1-r0/game.replay",
+    "sha256": "419e24e23acea62a5aeccce2b0bd78663d9ebbe73f957cadb09afadbc8b77d32",
+    "bytes": 5945682
+  },
+  {
+    "path": "artifacts/hiring-study/pr-integration/verify-disabled/water-cortex-late-disabled-n1-r0/game.replay.checksums",
+    "sha256": "41baf7526c5b0bf060e7276f4e21f9dab9ee1e8b20c29e5412ae4e027d1f0d47",
+    "bytes": 6987796
+  },
+  {
+    "path": "artifacts/hiring-study/pr-integration/verify-disabled/water-cortex-late-disabled-n1-r0/profile/keyboard-gui.txt",
+    "sha256": "af43f1cb9fe42f9ded2a91aeead00fbb4276c18ce610afa2bc502ee127dbe1a6",
+    "bytes": 1811
+  },
+  {
+    "path": "artifacts/hiring-study/pr-integration/verify-disabled/water-cortex-late-disabled-n1-r0/profile/keyboard-mapedit.txt",
+    "sha256": "d0d81f9dbbba069ef0364ac3cad74da54c614d7bf3c40e8b6f0460d94a96c7db",
+    "bytes": 708
+  },
+  {
+    "path": "artifacts/hiring-study/pr-integration/verify-disabled/water-cortex-late-disabled-n1-r0/profile/preferences.txt",
+    "sha256": "789fc092fed4bba2e764881aa1fd87d0c827de544b7c71ba6f3e6bf4d6076a21",
+    "bytes": 1055
+  },
+  {
+    "path": "artifacts/hiring-study/pr-integration/verify-disabled/water-cortex-late-disabled-n1-r0/progress.jsonl",
+    "sha256": "6d6e2f656875e483835f11a1bd17c6241b0e307896aa1048b14a50930d68deba",
+    "bytes": 68
+  },
+  {
+    "path": "artifacts/hiring-study/pr-integration/verify-disabled/water-cortex-late-disabled-n1-r0/result.json",
+    "sha256": "13964937deefbaa0111083e170b825fcc87cac98de7f58d529172d67b9357ffa",
+    "bytes": 21519
+  },
+  {
+    "path": "artifacts/hiring-study/pr-integration/verify-disabled/water-cortex-late-disabled-n1-r0/world.checksums",
+    "sha256": "02b1e337c47075677c6702fe823f3bc1f6db73ca91493ff123f7e7deb77503c5",
+    "bytes": 8578
+  },
+  {
+    "path": "artifacts/hiring-study/pr-integration/verify-scheduled/contention-disabled-n1-r0/artifacts.json",
+    "sha256": "d340ab137e13653ef1cc9898f2541d9c7f403b9f7e5ca7b54ba06fc5d9789663",
+    "bytes": 313
+  },
+  {
+    "path": "artifacts/hiring-study/pr-integration/verify-scheduled/contention-disabled-n1-r0/engine.log",
+    "sha256": "7c9b495bfb9a6ed0bb8c214d4a145e2cb48950e72e7f5d3c67fb868fc41c8b18",
+    "bytes": 432
+  },
+  {
+    "path": "artifacts/hiring-study/pr-integration/verify-scheduled/contention-disabled-n1-r0/final.game.gz",
+    "sha256": "fc4e90d49048eb278111f3045d8b71911188af0243ade4258b66a16341cc7c4c",
+    "bytes": 196858
+  },
+  {
+    "path": "artifacts/hiring-study/pr-integration/verify-scheduled/contention-disabled-n1-r0/game.replay",
+    "sha256": "7973a640ab1186b5a966c134868d21e7f483ffab701d630092ad56da5a966196",
+    "bytes": 1728156
+  },
+  {
+    "path": "artifacts/hiring-study/pr-integration/verify-scheduled/contention-disabled-n1-r0/game.replay.checksums",
+    "sha256": "31bfb975e096441e69b82c89e3cda5c94c2c6e9da3ed1dda8883672d029547e8",
+    "bytes": 119848980
+  },
+  {
+    "path": "artifacts/hiring-study/pr-integration/verify-scheduled/contention-disabled-n1-r0/profile/keyboard-gui.txt",
+    "sha256": "af43f1cb9fe42f9ded2a91aeead00fbb4276c18ce610afa2bc502ee127dbe1a6",
+    "bytes": 1811
+  },
+  {
+    "path": "artifacts/hiring-study/pr-integration/verify-scheduled/contention-disabled-n1-r0/profile/keyboard-mapedit.txt",
+    "sha256": "d0d81f9dbbba069ef0364ac3cad74da54c614d7bf3c40e8b6f0460d94a96c7db",
+    "bytes": 708
+  },
+  {
+    "path": "artifacts/hiring-study/pr-integration/verify-scheduled/contention-disabled-n1-r0/profile/preferences.txt",
+    "sha256": "789fc092fed4bba2e764881aa1fd87d0c827de544b7c71ba6f3e6bf4d6076a21",
+    "bytes": 1055
+  },
+  {
+    "path": "artifacts/hiring-study/pr-integration/verify-scheduled/contention-disabled-n1-r0/progress.jsonl",
+    "sha256": "672359a868f96e50309155372cc860015c3b4545439369c94dcddc95db58b979",
+    "bytes": 64
+  },
+  {
+    "path": "artifacts/hiring-study/pr-integration/verify-scheduled/contention-disabled-n1-r0/result.json",
+    "sha256": "082e08c8271995389c79dd40b33a54085e4d530ea9a93602cc8a0f1a1bfa5152",
+    "bytes": 11685
+  },
+  {
+    "path": "artifacts/hiring-study/pr-integration/verify-scheduled/contention-disabled-n1-r0/world.checksums",
+    "sha256": "e58efa0a860b50ccb35b774ffc6b52a6b275ab079e9cdd13be226aef87addad8",
+    "bytes": 7448
+  },
+  {
+    "path": "artifacts/hiring-study/pr-integration/verify-scheduled/contention-disabled-n2-r0/artifacts.json",
+    "sha256": "ae55ed23b990ec1165790863fc3150958fafb68dad3a556112f2ddedd18802fa",
+    "bytes": 313
+  },
+  {
+    "path": "artifacts/hiring-study/pr-integration/verify-scheduled/contention-disabled-n2-r0/engine.log",
+    "sha256": "6b85abdac7e3fe5f4cd38b8cbc581a6a3c4dcac67cdb4091213a8e4a1712ed8a",
+    "bytes": 432
+  },
+  {
+    "path": "artifacts/hiring-study/pr-integration/verify-scheduled/contention-disabled-n2-r0/final.game.gz",
+    "sha256": "fc4e90d49048eb278111f3045d8b71911188af0243ade4258b66a16341cc7c4c",
+    "bytes": 196858
+  },
+  {
+    "path": "artifacts/hiring-study/pr-integration/verify-scheduled/contention-disabled-n2-r0/game.replay",
+    "sha256": "7973a640ab1186b5a966c134868d21e7f483ffab701d630092ad56da5a966196",
+    "bytes": 1728156
+  },
+  {
+    "path": "artifacts/hiring-study/pr-integration/verify-scheduled/contention-disabled-n2-r0/game.replay.checksums",
+    "sha256": "31bfb975e096441e69b82c89e3cda5c94c2c6e9da3ed1dda8883672d029547e8",
+    "bytes": 119848980
+  },
+  {
+    "path": "artifacts/hiring-study/pr-integration/verify-scheduled/contention-disabled-n2-r0/profile/keyboard-gui.txt",
+    "sha256": "af43f1cb9fe42f9ded2a91aeead00fbb4276c18ce610afa2bc502ee127dbe1a6",
+    "bytes": 1811
+  },
+  {
+    "path": "artifacts/hiring-study/pr-integration/verify-scheduled/contention-disabled-n2-r0/profile/keyboard-mapedit.txt",
+    "sha256": "d0d81f9dbbba069ef0364ac3cad74da54c614d7bf3c40e8b6f0460d94a96c7db",
+    "bytes": 708
+  },
+  {
+    "path": "artifacts/hiring-study/pr-integration/verify-scheduled/contention-disabled-n2-r0/profile/preferences.txt",
+    "sha256": "789fc092fed4bba2e764881aa1fd87d0c827de544b7c71ba6f3e6bf4d6076a21",
+    "bytes": 1055
+  },
+  {
+    "path": "artifacts/hiring-study/pr-integration/verify-scheduled/contention-disabled-n2-r0/progress.jsonl",
+    "sha256": "672359a868f96e50309155372cc860015c3b4545439369c94dcddc95db58b979",
+    "bytes": 64
+  },
+  {
+    "path": "artifacts/hiring-study/pr-integration/verify-scheduled/contention-disabled-n2-r0/result.json",
+    "sha256": "4f11d67cc026291c288b7035bae365b348e19a4b954174af340bfade21efce58",
+    "bytes": 11684
+  },
+  {
+    "path": "artifacts/hiring-study/pr-integration/verify-scheduled/contention-disabled-n2-r0/world.checksums",
+    "sha256": "e58efa0a860b50ccb35b774ffc6b52a6b275ab079e9cdd13be226aef87addad8",
+    "bytes": 7448
+  },
+  {
+    "path": "artifacts/hiring-study/pr-integration/verify-scheduled/contention-disabled-n4-r0/artifacts.json",
+    "sha256": "d340ab137e13653ef1cc9898f2541d9c7f403b9f7e5ca7b54ba06fc5d9789663",
+    "bytes": 313
+  },
+  {
+    "path": "artifacts/hiring-study/pr-integration/verify-scheduled/contention-disabled-n4-r0/engine.log",
+    "sha256": "183c19d132189bafdcac3d61b8b65c916052f012dce8528ad142c875c2d9e53d",
+    "bytes": 432
+  },
+  {
+    "path": "artifacts/hiring-study/pr-integration/verify-scheduled/contention-disabled-n4-r0/final.game.gz",
+    "sha256": "fc4e90d49048eb278111f3045d8b71911188af0243ade4258b66a16341cc7c4c",
+    "bytes": 196858
+  },
+  {
+    "path": "artifacts/hiring-study/pr-integration/verify-scheduled/contention-disabled-n4-r0/game.replay",
+    "sha256": "7973a640ab1186b5a966c134868d21e7f483ffab701d630092ad56da5a966196",
+    "bytes": 1728156
+  },
+  {
+    "path": "artifacts/hiring-study/pr-integration/verify-scheduled/contention-disabled-n4-r0/game.replay.checksums",
+    "sha256": "31bfb975e096441e69b82c89e3cda5c94c2c6e9da3ed1dda8883672d029547e8",
+    "bytes": 119848980
+  },
+  {
+    "path": "artifacts/hiring-study/pr-integration/verify-scheduled/contention-disabled-n4-r0/profile/keyboard-gui.txt",
+    "sha256": "af43f1cb9fe42f9ded2a91aeead00fbb4276c18ce610afa2bc502ee127dbe1a6",
+    "bytes": 1811
+  },
+  {
+    "path": "artifacts/hiring-study/pr-integration/verify-scheduled/contention-disabled-n4-r0/profile/keyboard-mapedit.txt",
+    "sha256": "d0d81f9dbbba069ef0364ac3cad74da54c614d7bf3c40e8b6f0460d94a96c7db",
+    "bytes": 708
+  },
+  {
+    "path": "artifacts/hiring-study/pr-integration/verify-scheduled/contention-disabled-n4-r0/profile/preferences.txt",
+    "sha256": "789fc092fed4bba2e764881aa1fd87d0c827de544b7c71ba6f3e6bf4d6076a21",
+    "bytes": 1055
+  },
+  {
+    "path": "artifacts/hiring-study/pr-integration/verify-scheduled/contention-disabled-n4-r0/progress.jsonl",
+    "sha256": "672359a868f96e50309155372cc860015c3b4545439369c94dcddc95db58b979",
+    "bytes": 64
+  },
+  {
+    "path": "artifacts/hiring-study/pr-integration/verify-scheduled/contention-disabled-n4-r0/result.json",
+    "sha256": "4699f24e24410fa029fe775e168a344310b8547c213d9133ee1c0bd2e5e07930",
+    "bytes": 11685
+  },
+  {
+    "path": "artifacts/hiring-study/pr-integration/verify-scheduled/contention-disabled-n4-r0/world.checksums",
+    "sha256": "e58efa0a860b50ccb35b774ffc6b52a6b275ab079e9cdd13be226aef87addad8",
+    "bytes": 7448
+  },
+  {
+    "path": "artifacts/hiring-study/pr-integration/verify-scheduled/contention-disabled-n8-r0/artifacts.json",
+    "sha256": "d340ab137e13653ef1cc9898f2541d9c7f403b9f7e5ca7b54ba06fc5d9789663",
+    "bytes": 313
+  },
+  {
+    "path": "artifacts/hiring-study/pr-integration/verify-scheduled/contention-disabled-n8-r0/engine.log",
+    "sha256": "8ab9c53d1a72b63af0017b70263d7f1bdeac463e8ac2e76730f533b92acdef4e",
+    "bytes": 432
+  },
+  {
+    "path": "artifacts/hiring-study/pr-integration/verify-scheduled/contention-disabled-n8-r0/final.game.gz",
+    "sha256": "fc4e90d49048eb278111f3045d8b71911188af0243ade4258b66a16341cc7c4c",
+    "bytes": 196858
+  },
+  {
+    "path": "artifacts/hiring-study/pr-integration/verify-scheduled/contention-disabled-n8-r0/game.replay",
+    "sha256": "7973a640ab1186b5a966c134868d21e7f483ffab701d630092ad56da5a966196",
+    "bytes": 1728156
+  },
+  {
+    "path": "artifacts/hiring-study/pr-integration/verify-scheduled/contention-disabled-n8-r0/game.replay.checksums",
+    "sha256": "31bfb975e096441e69b82c89e3cda5c94c2c6e9da3ed1dda8883672d029547e8",
+    "bytes": 119848980
+  },
+  {
+    "path": "artifacts/hiring-study/pr-integration/verify-scheduled/contention-disabled-n8-r0/profile/keyboard-gui.txt",
+    "sha256": "af43f1cb9fe42f9ded2a91aeead00fbb4276c18ce610afa2bc502ee127dbe1a6",
+    "bytes": 1811
+  },
+  {
+    "path": "artifacts/hiring-study/pr-integration/verify-scheduled/contention-disabled-n8-r0/profile/keyboard-mapedit.txt",
+    "sha256": "d0d81f9dbbba069ef0364ac3cad74da54c614d7bf3c40e8b6f0460d94a96c7db",
+    "bytes": 708
+  },
+  {
+    "path": "artifacts/hiring-study/pr-integration/verify-scheduled/contention-disabled-n8-r0/profile/preferences.txt",
+    "sha256": "789fc092fed4bba2e764881aa1fd87d0c827de544b7c71ba6f3e6bf4d6076a21",
+    "bytes": 1055
+  },
+  {
+    "path": "artifacts/hiring-study/pr-integration/verify-scheduled/contention-disabled-n8-r0/progress.jsonl",
+    "sha256": "672359a868f96e50309155372cc860015c3b4545439369c94dcddc95db58b979",
+    "bytes": 64
+  },
+  {
+    "path": "artifacts/hiring-study/pr-integration/verify-scheduled/contention-disabled-n8-r0/result.json",
+    "sha256": "964b0f5811cf640baedeac1bae856ce6d6a7acd27f052289540d77b7055bbf12",
+    "bytes": 11685
+  },
+  {
+    "path": "artifacts/hiring-study/pr-integration/verify-scheduled/contention-disabled-n8-r0/world.checksums",
+    "sha256": "e58efa0a860b50ccb35b774ffc6b52a6b275ab079e9cdd13be226aef87addad8",
+    "bytes": 7448
+  },
+  {
+    "path": "artifacts/hiring-study/pr-integration/verify-scheduled/contention-owner-n1-r0/artifacts.json",
+    "sha256": "200337859bc7221f18659a6d2282dd143444649db8b025468b70b882ba77b791",
+    "bytes": 443
+  },
+  {
+    "path": "artifacts/hiring-study/pr-integration/verify-scheduled/contention-owner-n1-r0/engine.log",
+    "sha256": "3517db5e5c3c2a3645637d97fba2d5f8ffc22c3e9d6a9fe134f46e6b2da3e90f",
+    "bytes": 429
+  },
+  {
+    "path": "artifacts/hiring-study/pr-integration/verify-scheduled/contention-owner-n1-r0/final.game.gz",
+    "sha256": "fc4e90d49048eb278111f3045d8b71911188af0243ade4258b66a16341cc7c4c",
+    "bytes": 196858
+  },
+  {
+    "path": "artifacts/hiring-study/pr-integration/verify-scheduled/contention-owner-n1-r0/game.replay",
+    "sha256": "7973a640ab1186b5a966c134868d21e7f483ffab701d630092ad56da5a966196",
+    "bytes": 1728156
+  },
+  {
+    "path": "artifacts/hiring-study/pr-integration/verify-scheduled/contention-owner-n1-r0/game.replay.checksums",
+    "sha256": "31bfb975e096441e69b82c89e3cda5c94c2c6e9da3ed1dda8883672d029547e8",
+    "bytes": 119848980
+  },
+  {
+    "path": "artifacts/hiring-study/pr-integration/verify-scheduled/contention-owner-n1-r0/hiring-compute.json",
+    "sha256": "eebcb64a4a817be96bccf2ead55950f1fbd8e9e9799f56520d40b38c083c12b2",
+    "bytes": 2915
+  },
+  {
+    "path": "artifacts/hiring-study/pr-integration/verify-scheduled/contention-owner-n1-r0/hiring-shadow.json",
+    "sha256": "eebcb64a4a817be96bccf2ead55950f1fbd8e9e9799f56520d40b38c083c12b2",
+    "bytes": 2915
+  },
+  {
+    "path": "artifacts/hiring-study/pr-integration/verify-scheduled/contention-owner-n1-r0/hiring-stats.json",
+    "sha256": "dd4573e7d815ea1508ec54a3f414a4856342aac0fd2084d6ee58505a6bababc4",
+    "bytes": 26248
+  },
+  {
+    "path": "artifacts/hiring-study/pr-integration/verify-scheduled/contention-owner-n1-r0/profile/keyboard-gui.txt",
+    "sha256": "af43f1cb9fe42f9ded2a91aeead00fbb4276c18ce610afa2bc502ee127dbe1a6",
+    "bytes": 1811
+  },
+  {
+    "path": "artifacts/hiring-study/pr-integration/verify-scheduled/contention-owner-n1-r0/profile/keyboard-mapedit.txt",
+    "sha256": "d0d81f9dbbba069ef0364ac3cad74da54c614d7bf3c40e8b6f0460d94a96c7db",
+    "bytes": 708
+  },
+  {
+    "path": "artifacts/hiring-study/pr-integration/verify-scheduled/contention-owner-n1-r0/profile/preferences.txt",
+    "sha256": "789fc092fed4bba2e764881aa1fd87d0c827de544b7c71ba6f3e6bf4d6076a21",
+    "bytes": 1055
+  },
+  {
+    "path": "artifacts/hiring-study/pr-integration/verify-scheduled/contention-owner-n1-r0/progress.jsonl",
+    "sha256": "672359a868f96e50309155372cc860015c3b4545439369c94dcddc95db58b979",
+    "bytes": 64
+  },
+  {
+    "path": "artifacts/hiring-study/pr-integration/verify-scheduled/contention-owner-n1-r0/result.json",
+    "sha256": "2b7bb3bcb75b35f324e23f03b31a916dca584c099b42257c87159a35549c8b95",
+    "bytes": 11691
+  },
+  {
+    "path": "artifacts/hiring-study/pr-integration/verify-scheduled/contention-owner-n1-r0/world.checksums",
+    "sha256": "e58efa0a860b50ccb35b774ffc6b52a6b275ab079e9cdd13be226aef87addad8",
+    "bytes": 7448
+  },
+  {
+    "path": "artifacts/hiring-study/pr-integration/verify-scheduled/contention-owner-n2-r0/artifacts.json",
+    "sha256": "e5ee82353012938f71d114e1beaedcee6c81f8ad77f0c727911e07109dc45a44",
+    "bytes": 443
+  },
+  {
+    "path": "artifacts/hiring-study/pr-integration/verify-scheduled/contention-owner-n2-r0/engine.log",
+    "sha256": "7705dbe1e80347e433173302bdf8c189f56e021ea9acb925bfb817269e988bab",
+    "bytes": 429
+  },
+  {
+    "path": "artifacts/hiring-study/pr-integration/verify-scheduled/contention-owner-n2-r0/final.game.gz",
+    "sha256": "fc4e90d49048eb278111f3045d8b71911188af0243ade4258b66a16341cc7c4c",
+    "bytes": 196858
+  },
+  {
+    "path": "artifacts/hiring-study/pr-integration/verify-scheduled/contention-owner-n2-r0/game.replay",
+    "sha256": "7973a640ab1186b5a966c134868d21e7f483ffab701d630092ad56da5a966196",
+    "bytes": 1728156
+  },
+  {
+    "path": "artifacts/hiring-study/pr-integration/verify-scheduled/contention-owner-n2-r0/game.replay.checksums",
+    "sha256": "31bfb975e096441e69b82c89e3cda5c94c2c6e9da3ed1dda8883672d029547e8",
+    "bytes": 119848980
+  },
+  {
+    "path": "artifacts/hiring-study/pr-integration/verify-scheduled/contention-owner-n2-r0/hiring-compute.json",
+    "sha256": "46efad92eeb3e748851a180da5ff068b6d9a6dbe220c4e4d5736efe38dd8c981",
+    "bytes": 2915
+  },
+  {
+    "path": "artifacts/hiring-study/pr-integration/verify-scheduled/contention-owner-n2-r0/hiring-shadow.json",
+    "sha256": "46efad92eeb3e748851a180da5ff068b6d9a6dbe220c4e4d5736efe38dd8c981",
+    "bytes": 2915
+  },
+  {
+    "path": "artifacts/hiring-study/pr-integration/verify-scheduled/contention-owner-n2-r0/hiring-stats.json",
+    "sha256": "fd2cf2eac9f97833d1c0de1c4459e2f80d4c7be586df1f2d2b27efeeb3287ef5",
+    "bytes": 26230
+  },
+  {
+    "path": "artifacts/hiring-study/pr-integration/verify-scheduled/contention-owner-n2-r0/profile/keyboard-gui.txt",
+    "sha256": "af43f1cb9fe42f9ded2a91aeead00fbb4276c18ce610afa2bc502ee127dbe1a6",
+    "bytes": 1811
+  },
+  {
+    "path": "artifacts/hiring-study/pr-integration/verify-scheduled/contention-owner-n2-r0/profile/keyboard-mapedit.txt",
+    "sha256": "d0d81f9dbbba069ef0364ac3cad74da54c614d7bf3c40e8b6f0460d94a96c7db",
+    "bytes": 708
+  },
+  {
+    "path": "artifacts/hiring-study/pr-integration/verify-scheduled/contention-owner-n2-r0/profile/preferences.txt",
+    "sha256": "789fc092fed4bba2e764881aa1fd87d0c827de544b7c71ba6f3e6bf4d6076a21",
+    "bytes": 1055
+  },
+  {
+    "path": "artifacts/hiring-study/pr-integration/verify-scheduled/contention-owner-n2-r0/progress.jsonl",
+    "sha256": "672359a868f96e50309155372cc860015c3b4545439369c94dcddc95db58b979",
+    "bytes": 64
+  },
+  {
+    "path": "artifacts/hiring-study/pr-integration/verify-scheduled/contention-owner-n2-r0/result.json",
+    "sha256": "bb22a8144ef1edd46515e32d54c12c6acc6f868869b466cecbd29a6e0dc3e583",
+    "bytes": 11691
+  },
+  {
+    "path": "artifacts/hiring-study/pr-integration/verify-scheduled/contention-owner-n2-r0/world.checksums",
+    "sha256": "e58efa0a860b50ccb35b774ffc6b52a6b275ab079e9cdd13be226aef87addad8",
+    "bytes": 7448
+  },
+  {
+    "path": "artifacts/hiring-study/pr-integration/verify-scheduled/contention-owner-n4-r0/artifacts.json",
+    "sha256": "94daa9046e8d3c95e7b2760dd06e9428afce0829056b940c902ede9a9ebe1c96",
+    "bytes": 443
+  },
+  {
+    "path": "artifacts/hiring-study/pr-integration/verify-scheduled/contention-owner-n4-r0/engine.log",
+    "sha256": "44539ce7084a33daa1339f8d5736c950970b8a32d3985a8c53f1f330b4b41ba7",
+    "bytes": 429
+  },
+  {
+    "path": "artifacts/hiring-study/pr-integration/verify-scheduled/contention-owner-n4-r0/final.game.gz",
+    "sha256": "fc4e90d49048eb278111f3045d8b71911188af0243ade4258b66a16341cc7c4c",
+    "bytes": 196858
+  },
+  {
+    "path": "artifacts/hiring-study/pr-integration/verify-scheduled/contention-owner-n4-r0/game.replay",
+    "sha256": "7973a640ab1186b5a966c134868d21e7f483ffab701d630092ad56da5a966196",
+    "bytes": 1728156
+  },
+  {
+    "path": "artifacts/hiring-study/pr-integration/verify-scheduled/contention-owner-n4-r0/game.replay.checksums",
+    "sha256": "31bfb975e096441e69b82c89e3cda5c94c2c6e9da3ed1dda8883672d029547e8",
+    "bytes": 119848980
+  },
+  {
+    "path": "artifacts/hiring-study/pr-integration/verify-scheduled/contention-owner-n4-r0/hiring-compute.json",
+    "sha256": "74e7d3a79c589eca19e0d14b2414e8e2a3f4acf99db4f112b593d08ef4dc5b42",
+    "bytes": 2916
+  },
+  {
+    "path": "artifacts/hiring-study/pr-integration/verify-scheduled/contention-owner-n4-r0/hiring-shadow.json",
+    "sha256": "74e7d3a79c589eca19e0d14b2414e8e2a3f4acf99db4f112b593d08ef4dc5b42",
+    "bytes": 2916
+  },
+  {
+    "path": "artifacts/hiring-study/pr-integration/verify-scheduled/contention-owner-n4-r0/hiring-stats.json",
+    "sha256": "9059a02b88e7df3f3fce506d07814a25296766289a31f31383772e6ac666f9c6",
+    "bytes": 26237
+  },
+  {
+    "path": "artifacts/hiring-study/pr-integration/verify-scheduled/contention-owner-n4-r0/profile/keyboard-gui.txt",
+    "sha256": "af43f1cb9fe42f9ded2a91aeead00fbb4276c18ce610afa2bc502ee127dbe1a6",
+    "bytes": 1811
+  },
+  {
+    "path": "artifacts/hiring-study/pr-integration/verify-scheduled/contention-owner-n4-r0/profile/keyboard-mapedit.txt",
+    "sha256": "d0d81f9dbbba069ef0364ac3cad74da54c614d7bf3c40e8b6f0460d94a96c7db",
+    "bytes": 708
+  },
+  {
+    "path": "artifacts/hiring-study/pr-integration/verify-scheduled/contention-owner-n4-r0/profile/preferences.txt",
+    "sha256": "789fc092fed4bba2e764881aa1fd87d0c827de544b7c71ba6f3e6bf4d6076a21",
+    "bytes": 1055
+  },
+  {
+    "path": "artifacts/hiring-study/pr-integration/verify-scheduled/contention-owner-n4-r0/progress.jsonl",
+    "sha256": "672359a868f96e50309155372cc860015c3b4545439369c94dcddc95db58b979",
+    "bytes": 64
+  },
+  {
+    "path": "artifacts/hiring-study/pr-integration/verify-scheduled/contention-owner-n4-r0/result.json",
+    "sha256": "6e528751f7bd92fad69529880ca6ac855e5c8854f909e27c68ef65aa778f31a8",
+    "bytes": 11692
+  },
+  {
+    "path": "artifacts/hiring-study/pr-integration/verify-scheduled/contention-owner-n4-r0/world.checksums",
+    "sha256": "e58efa0a860b50ccb35b774ffc6b52a6b275ab079e9cdd13be226aef87addad8",
+    "bytes": 7448
+  },
+  {
+    "path": "artifacts/hiring-study/pr-integration/verify-scheduled/contention-owner-n8-r0/artifacts.json",
+    "sha256": "70522244301cd570e16d0206420f5fffeaaabfaf38e5d842aa51780f322061ba",
+    "bytes": 443
+  },
+  {
+    "path": "artifacts/hiring-study/pr-integration/verify-scheduled/contention-owner-n8-r0/engine.log",
+    "sha256": "a1529968feeb3f284af3b603ad14b8c8d9d2270b6eae5dd6f01e3b06e8c39e16",
+    "bytes": 429
+  },
+  {
+    "path": "artifacts/hiring-study/pr-integration/verify-scheduled/contention-owner-n8-r0/final.game.gz",
+    "sha256": "fc4e90d49048eb278111f3045d8b71911188af0243ade4258b66a16341cc7c4c",
+    "bytes": 196858
+  },
+  {
+    "path": "artifacts/hiring-study/pr-integration/verify-scheduled/contention-owner-n8-r0/game.replay",
+    "sha256": "7973a640ab1186b5a966c134868d21e7f483ffab701d630092ad56da5a966196",
+    "bytes": 1728156
+  },
+  {
+    "path": "artifacts/hiring-study/pr-integration/verify-scheduled/contention-owner-n8-r0/game.replay.checksums",
+    "sha256": "31bfb975e096441e69b82c89e3cda5c94c2c6e9da3ed1dda8883672d029547e8",
+    "bytes": 119848980
+  },
+  {
+    "path": "artifacts/hiring-study/pr-integration/verify-scheduled/contention-owner-n8-r0/hiring-compute.json",
+    "sha256": "eb1dbb0b0e22f5d9c9f84c9ecf2affe1f222a44c1b79d09fe20d9ae583116a4c",
+    "bytes": 2916
+  },
+  {
+    "path": "artifacts/hiring-study/pr-integration/verify-scheduled/contention-owner-n8-r0/hiring-shadow.json",
+    "sha256": "eb1dbb0b0e22f5d9c9f84c9ecf2affe1f222a44c1b79d09fe20d9ae583116a4c",
+    "bytes": 2916
+  },
+  {
+    "path": "artifacts/hiring-study/pr-integration/verify-scheduled/contention-owner-n8-r0/hiring-stats.json",
+    "sha256": "4de00a500a739e72b1982eeb93430fce0922f95fa2565d1af2b7fd9e0126f2de",
+    "bytes": 26239
+  },
+  {
+    "path": "artifacts/hiring-study/pr-integration/verify-scheduled/contention-owner-n8-r0/profile/keyboard-gui.txt",
+    "sha256": "af43f1cb9fe42f9ded2a91aeead00fbb4276c18ce610afa2bc502ee127dbe1a6",
+    "bytes": 1811
+  },
+  {
+    "path": "artifacts/hiring-study/pr-integration/verify-scheduled/contention-owner-n8-r0/profile/keyboard-mapedit.txt",
+    "sha256": "d0d81f9dbbba069ef0364ac3cad74da54c614d7bf3c40e8b6f0460d94a96c7db",
+    "bytes": 708
+  },
+  {
+    "path": "artifacts/hiring-study/pr-integration/verify-scheduled/contention-owner-n8-r0/profile/preferences.txt",
+    "sha256": "789fc092fed4bba2e764881aa1fd87d0c827de544b7c71ba6f3e6bf4d6076a21",
+    "bytes": 1055
+  },
+  {
+    "path": "artifacts/hiring-study/pr-integration/verify-scheduled/contention-owner-n8-r0/progress.jsonl",
+    "sha256": "672359a868f96e50309155372cc860015c3b4545439369c94dcddc95db58b979",
+    "bytes": 64
+  },
+  {
+    "path": "artifacts/hiring-study/pr-integration/verify-scheduled/contention-owner-n8-r0/result.json",
+    "sha256": "0ee32d98fe9fed6ee94401a243e8c45c34f4d7b1e2b455a46fa6577479825090",
+    "bytes": 11692
+  },
+  {
+    "path": "artifacts/hiring-study/pr-integration/verify-scheduled/contention-owner-n8-r0/world.checksums",
+    "sha256": "e58efa0a860b50ccb35b774ffc6b52a6b275ab079e9cdd13be226aef87addad8",
+    "bytes": 7448
+  },
+  {
+    "path": "artifacts/hiring-study/pr-integration/verify-scheduled/contention-pool-n1-r0/artifacts.json",
+    "sha256": "462bf98be96f5a7cc57329a292e6915e362404683981cc7eae1e20b99d08a00c",
+    "bytes": 443
+  },
+  {
+    "path": "artifacts/hiring-study/pr-integration/verify-scheduled/contention-pool-n1-r0/engine.log",
+    "sha256": "fdf73ff9e0f5bf3f8b7e890663af1de3e08f14ef5d4efdf92b6309a755672d40",
+    "bytes": 428
+  },
+  {
+    "path": "artifacts/hiring-study/pr-integration/verify-scheduled/contention-pool-n1-r0/final.game.gz",
+    "sha256": "fc4e90d49048eb278111f3045d8b71911188af0243ade4258b66a16341cc7c4c",
+    "bytes": 196858
+  },
+  {
+    "path": "artifacts/hiring-study/pr-integration/verify-scheduled/contention-pool-n1-r0/game.replay",
+    "sha256": "7973a640ab1186b5a966c134868d21e7f483ffab701d630092ad56da5a966196",
+    "bytes": 1728156
+  },
+  {
+    "path": "artifacts/hiring-study/pr-integration/verify-scheduled/contention-pool-n1-r0/game.replay.checksums",
+    "sha256": "31bfb975e096441e69b82c89e3cda5c94c2c6e9da3ed1dda8883672d029547e8",
+    "bytes": 119848980
+  },
+  {
+    "path": "artifacts/hiring-study/pr-integration/verify-scheduled/contention-pool-n1-r0/hiring-compute.json",
+    "sha256": "0acf7bdfcad3111929c9dc3291893c5954f049e8275f383d9b38d4f387847815",
+    "bytes": 2915
+  },
+  {
+    "path": "artifacts/hiring-study/pr-integration/verify-scheduled/contention-pool-n1-r0/hiring-shadow.json",
+    "sha256": "0acf7bdfcad3111929c9dc3291893c5954f049e8275f383d9b38d4f387847815",
+    "bytes": 2915
+  },
+  {
+    "path": "artifacts/hiring-study/pr-integration/verify-scheduled/contention-pool-n1-r0/hiring-stats.json",
+    "sha256": "ccfb6d29c054328abebd2701f060586daddb70b20275a04ff4e622d55829412e",
+    "bytes": 26239
+  },
+  {
+    "path": "artifacts/hiring-study/pr-integration/verify-scheduled/contention-pool-n1-r0/profile/keyboard-gui.txt",
+    "sha256": "af43f1cb9fe42f9ded2a91aeead00fbb4276c18ce610afa2bc502ee127dbe1a6",
+    "bytes": 1811
+  },
+  {
+    "path": "artifacts/hiring-study/pr-integration/verify-scheduled/contention-pool-n1-r0/profile/keyboard-mapedit.txt",
+    "sha256": "d0d81f9dbbba069ef0364ac3cad74da54c614d7bf3c40e8b6f0460d94a96c7db",
+    "bytes": 708
+  },
+  {
+    "path": "artifacts/hiring-study/pr-integration/verify-scheduled/contention-pool-n1-r0/profile/preferences.txt",
+    "sha256": "789fc092fed4bba2e764881aa1fd87d0c827de544b7c71ba6f3e6bf4d6076a21",
+    "bytes": 1055
+  },
+  {
+    "path": "artifacts/hiring-study/pr-integration/verify-scheduled/contention-pool-n1-r0/progress.jsonl",
+    "sha256": "672359a868f96e50309155372cc860015c3b4545439369c94dcddc95db58b979",
+    "bytes": 64
+  },
+  {
+    "path": "artifacts/hiring-study/pr-integration/verify-scheduled/contention-pool-n1-r0/result.json",
+    "sha256": "9e364ebb50b3136457aa38e90bda7a73694a4b998225d96d0fbfcbb6e4efe407",
+    "bytes": 11691
+  },
+  {
+    "path": "artifacts/hiring-study/pr-integration/verify-scheduled/contention-pool-n1-r0/world.checksums",
+    "sha256": "e58efa0a860b50ccb35b774ffc6b52a6b275ab079e9cdd13be226aef87addad8",
+    "bytes": 7448
+  },
+  {
+    "path": "artifacts/hiring-study/pr-integration/verify-scheduled/contention-pool-n2-r0/artifacts.json",
+    "sha256": "6cd286b0cd4223fa00699203769793e69a42595b5d498ce80f9aca6cda72488f",
+    "bytes": 443
+  },
+  {
+    "path": "artifacts/hiring-study/pr-integration/verify-scheduled/contention-pool-n2-r0/engine.log",
+    "sha256": "293bd27ab29d5821393605cba212dc3b200a9bcd6809392f16fbc17b0efaf9bc",
+    "bytes": 428
+  },
+  {
+    "path": "artifacts/hiring-study/pr-integration/verify-scheduled/contention-pool-n2-r0/final.game.gz",
+    "sha256": "fc4e90d49048eb278111f3045d8b71911188af0243ade4258b66a16341cc7c4c",
+    "bytes": 196858
+  },
+  {
+    "path": "artifacts/hiring-study/pr-integration/verify-scheduled/contention-pool-n2-r0/game.replay",
+    "sha256": "7973a640ab1186b5a966c134868d21e7f483ffab701d630092ad56da5a966196",
+    "bytes": 1728156
+  },
+  {
+    "path": "artifacts/hiring-study/pr-integration/verify-scheduled/contention-pool-n2-r0/game.replay.checksums",
+    "sha256": "31bfb975e096441e69b82c89e3cda5c94c2c6e9da3ed1dda8883672d029547e8",
+    "bytes": 119848980
+  },
+  {
+    "path": "artifacts/hiring-study/pr-integration/verify-scheduled/contention-pool-n2-r0/hiring-compute.json",
+    "sha256": "a289c34af648fb19e4c5bf17e19989ad8370a168ba97a8a76da14ec4e9d4de06",
+    "bytes": 2915
+  },
+  {
+    "path": "artifacts/hiring-study/pr-integration/verify-scheduled/contention-pool-n2-r0/hiring-shadow.json",
+    "sha256": "a289c34af648fb19e4c5bf17e19989ad8370a168ba97a8a76da14ec4e9d4de06",
+    "bytes": 2915
+  },
+  {
+    "path": "artifacts/hiring-study/pr-integration/verify-scheduled/contention-pool-n2-r0/hiring-stats.json",
+    "sha256": "9127f33e2c9f9a11562c5b04d249949b0e6f63c3f847590429d15b57c46ee21c",
+    "bytes": 26242
+  },
+  {
+    "path": "artifacts/hiring-study/pr-integration/verify-scheduled/contention-pool-n2-r0/profile/keyboard-gui.txt",
+    "sha256": "af43f1cb9fe42f9ded2a91aeead00fbb4276c18ce610afa2bc502ee127dbe1a6",
+    "bytes": 1811
+  },
+  {
+    "path": "artifacts/hiring-study/pr-integration/verify-scheduled/contention-pool-n2-r0/profile/keyboard-mapedit.txt",
+    "sha256": "d0d81f9dbbba069ef0364ac3cad74da54c614d7bf3c40e8b6f0460d94a96c7db",
+    "bytes": 708
+  },
+  {
+    "path": "artifacts/hiring-study/pr-integration/verify-scheduled/contention-pool-n2-r0/profile/preferences.txt",
+    "sha256": "789fc092fed4bba2e764881aa1fd87d0c827de544b7c71ba6f3e6bf4d6076a21",
+    "bytes": 1055
+  },
+  {
+    "path": "artifacts/hiring-study/pr-integration/verify-scheduled/contention-pool-n2-r0/progress.jsonl",
+    "sha256": "672359a868f96e50309155372cc860015c3b4545439369c94dcddc95db58b979",
+    "bytes": 64
+  },
+  {
+    "path": "artifacts/hiring-study/pr-integration/verify-scheduled/contention-pool-n2-r0/result.json",
+    "sha256": "12fb52b13d6302af2ebde5040b9122c85d78b9e8d0320da3dbf679ab5026dc9d",
+    "bytes": 11692
+  },
+  {
+    "path": "artifacts/hiring-study/pr-integration/verify-scheduled/contention-pool-n2-r0/world.checksums",
+    "sha256": "e58efa0a860b50ccb35b774ffc6b52a6b275ab079e9cdd13be226aef87addad8",
+    "bytes": 7448
+  },
+  {
+    "path": "artifacts/hiring-study/pr-integration/verify-scheduled/contention-pool-n4-r0/artifacts.json",
+    "sha256": "dcbb3aa95471abdcf939f9c5543d1b3bc64d7ca852b16ceeb66f5f083a0fa9be",
+    "bytes": 443
+  },
+  {
+    "path": "artifacts/hiring-study/pr-integration/verify-scheduled/contention-pool-n4-r0/engine.log",
+    "sha256": "1457f85f98e669d30d7c6cbc23fdb499dc0284a9c138a4e77d3ebf47c7cb60ea",
+    "bytes": 428
+  },
+  {
+    "path": "artifacts/hiring-study/pr-integration/verify-scheduled/contention-pool-n4-r0/final.game.gz",
+    "sha256": "fc4e90d49048eb278111f3045d8b71911188af0243ade4258b66a16341cc7c4c",
+    "bytes": 196858
+  },
+  {
+    "path": "artifacts/hiring-study/pr-integration/verify-scheduled/contention-pool-n4-r0/game.replay",
+    "sha256": "7973a640ab1186b5a966c134868d21e7f483ffab701d630092ad56da5a966196",
+    "bytes": 1728156
+  },
+  {
+    "path": "artifacts/hiring-study/pr-integration/verify-scheduled/contention-pool-n4-r0/game.replay.checksums",
+    "sha256": "31bfb975e096441e69b82c89e3cda5c94c2c6e9da3ed1dda8883672d029547e8",
+    "bytes": 119848980
+  },
+  {
+    "path": "artifacts/hiring-study/pr-integration/verify-scheduled/contention-pool-n4-r0/hiring-compute.json",
+    "sha256": "fce7d83131f83832952f811e9a0b38ee0d89de2c6825b995fd93c68e9f0b3ec6",
+    "bytes": 2916
+  },
+  {
+    "path": "artifacts/hiring-study/pr-integration/verify-scheduled/contention-pool-n4-r0/hiring-shadow.json",
+    "sha256": "fce7d83131f83832952f811e9a0b38ee0d89de2c6825b995fd93c68e9f0b3ec6",
+    "bytes": 2916
+  },
+  {
+    "path": "artifacts/hiring-study/pr-integration/verify-scheduled/contention-pool-n4-r0/hiring-stats.json",
+    "sha256": "c2a098279f4e969e13d2c767976bbe1b49df3c9c1a944370851e7cda2374bb42",
+    "bytes": 26239
+  },
+  {
+    "path": "artifacts/hiring-study/pr-integration/verify-scheduled/contention-pool-n4-r0/profile/keyboard-gui.txt",
+    "sha256": "af43f1cb9fe42f9ded2a91aeead00fbb4276c18ce610afa2bc502ee127dbe1a6",
+    "bytes": 1811
+  },
+  {
+    "path": "artifacts/hiring-study/pr-integration/verify-scheduled/contention-pool-n4-r0/profile/keyboard-mapedit.txt",
+    "sha256": "d0d81f9dbbba069ef0364ac3cad74da54c614d7bf3c40e8b6f0460d94a96c7db",
+    "bytes": 708
+  },
+  {
+    "path": "artifacts/hiring-study/pr-integration/verify-scheduled/contention-pool-n4-r0/profile/preferences.txt",
+    "sha256": "789fc092fed4bba2e764881aa1fd87d0c827de544b7c71ba6f3e6bf4d6076a21",
+    "bytes": 1055
+  },
+  {
+    "path": "artifacts/hiring-study/pr-integration/verify-scheduled/contention-pool-n4-r0/progress.jsonl",
+    "sha256": "672359a868f96e50309155372cc860015c3b4545439369c94dcddc95db58b979",
+    "bytes": 64
+  },
+  {
+    "path": "artifacts/hiring-study/pr-integration/verify-scheduled/contention-pool-n4-r0/result.json",
+    "sha256": "d5d6a7ac526e166975d4aeddae416c43ee9593d6a2b4b98e32cbb12018fe899d",
+    "bytes": 11692
+  },
+  {
+    "path": "artifacts/hiring-study/pr-integration/verify-scheduled/contention-pool-n4-r0/world.checksums",
+    "sha256": "e58efa0a860b50ccb35b774ffc6b52a6b275ab079e9cdd13be226aef87addad8",
+    "bytes": 7448
+  },
+  {
+    "path": "artifacts/hiring-study/pr-integration/verify-scheduled/contention-pool-n8-r0/artifacts.json",
+    "sha256": "2d438849f9c569df680774c9a5b77901ed93f7a1f9ede95d53a04ab37d6e13bf",
+    "bytes": 443
+  },
+  {
+    "path": "artifacts/hiring-study/pr-integration/verify-scheduled/contention-pool-n8-r0/engine.log",
+    "sha256": "401c207215f0406e1d7ac010d185de720ea54654f6b1067203e4d3981ea9dfba",
+    "bytes": 428
+  },
+  {
+    "path": "artifacts/hiring-study/pr-integration/verify-scheduled/contention-pool-n8-r0/final.game.gz",
+    "sha256": "fc4e90d49048eb278111f3045d8b71911188af0243ade4258b66a16341cc7c4c",
+    "bytes": 196858
+  },
+  {
+    "path": "artifacts/hiring-study/pr-integration/verify-scheduled/contention-pool-n8-r0/game.replay",
+    "sha256": "7973a640ab1186b5a966c134868d21e7f483ffab701d630092ad56da5a966196",
+    "bytes": 1728156
+  },
+  {
+    "path": "artifacts/hiring-study/pr-integration/verify-scheduled/contention-pool-n8-r0/game.replay.checksums",
+    "sha256": "31bfb975e096441e69b82c89e3cda5c94c2c6e9da3ed1dda8883672d029547e8",
+    "bytes": 119848980
+  },
+  {
+    "path": "artifacts/hiring-study/pr-integration/verify-scheduled/contention-pool-n8-r0/hiring-compute.json",
+    "sha256": "89434a4d8ff1e6c36fd7d8509cdef40724915aa2fd8de7b28786d5e668597112",
+    "bytes": 2916
+  },
+  {
+    "path": "artifacts/hiring-study/pr-integration/verify-scheduled/contention-pool-n8-r0/hiring-shadow.json",
+    "sha256": "89434a4d8ff1e6c36fd7d8509cdef40724915aa2fd8de7b28786d5e668597112",
+    "bytes": 2916
+  },
+  {
+    "path": "artifacts/hiring-study/pr-integration/verify-scheduled/contention-pool-n8-r0/hiring-stats.json",
+    "sha256": "69f58ad5cbe9de86e44e61895f404e1e83d10e922358f30bfd2a2b4ebb696f1c",
+    "bytes": 26233
+  },
+  {
+    "path": "artifacts/hiring-study/pr-integration/verify-scheduled/contention-pool-n8-r0/profile/keyboard-gui.txt",
+    "sha256": "af43f1cb9fe42f9ded2a91aeead00fbb4276c18ce610afa2bc502ee127dbe1a6",
+    "bytes": 1811
+  },
+  {
+    "path": "artifacts/hiring-study/pr-integration/verify-scheduled/contention-pool-n8-r0/profile/keyboard-mapedit.txt",
+    "sha256": "d0d81f9dbbba069ef0364ac3cad74da54c614d7bf3c40e8b6f0460d94a96c7db",
+    "bytes": 708
+  },
+  {
+    "path": "artifacts/hiring-study/pr-integration/verify-scheduled/contention-pool-n8-r0/profile/preferences.txt",
+    "sha256": "789fc092fed4bba2e764881aa1fd87d0c827de544b7c71ba6f3e6bf4d6076a21",
+    "bytes": 1055
+  },
+  {
+    "path": "artifacts/hiring-study/pr-integration/verify-scheduled/contention-pool-n8-r0/progress.jsonl",
+    "sha256": "672359a868f96e50309155372cc860015c3b4545439369c94dcddc95db58b979",
+    "bytes": 64
+  },
+  {
+    "path": "artifacts/hiring-study/pr-integration/verify-scheduled/contention-pool-n8-r0/result.json",
+    "sha256": "1ac4b38b29a5bafe4c4e17bb1723d1a628141648032f8d0f4b534d4b3994f12e",
+    "bytes": 11691
+  },
+  {
+    "path": "artifacts/hiring-study/pr-integration/verify-scheduled/contention-pool-n8-r0/world.checksums",
+    "sha256": "e58efa0a860b50ccb35b774ffc6b52a6b275ab079e9cdd13be226aef87addad8",
+    "bytes": 7448
+  },
+  {
+    "path": "artifacts/hiring-study/pr-integration/verify-scheduled/measurements.jsonl",
+    "sha256": "c8bf8e0587ad6ac0d7d04d2b4466cafcacadd2778ae25c32d5fe7429e3fdb3a3",
+    "bytes": 348369
+  },
+  {
+    "path": "artifacts/hiring-study/pr-integration/verify-scheduled/metadata.json",
+    "sha256": "ccd3c8e2a1e9c6aa1dcda3ec228241809d8d01dac06ea6c4fe2e7ae5c99b1c10",
+    "bytes": 1390
+  },
+  {
+    "path": "artifacts/hiring-study/pr-integration/verify-scheduled/sustainable-disabled-n1-r0/artifacts.json",
+    "sha256": "cde6b641e69c9368c03e2768ed318d337d74bf9441cc4e45a89addf9aea3ac9f",
+    "bytes": 313
+  },
+  {
+    "path": "artifacts/hiring-study/pr-integration/verify-scheduled/sustainable-disabled-n1-r0/engine.log",
+    "sha256": "32977e7531736f3377a73dbd2078194cd239c099ec296f83827edfa613c5e1a4",
+    "bytes": 433
+  },
+  {
+    "path": "artifacts/hiring-study/pr-integration/verify-scheduled/sustainable-disabled-n1-r0/final.game.gz",
+    "sha256": "8c27455d36053bd51b53c88da7efcac5a6b8f7bd5f2ad14e8cc2244047894f51",
+    "bytes": 199454
+  },
+  {
+    "path": "artifacts/hiring-study/pr-integration/verify-scheduled/sustainable-disabled-n1-r0/game.replay",
+    "sha256": "1b8814635bbaa12e055dc37c9ac8083761a8f6288696638cfb8e4f51feda05f5",
+    "bytes": 1728124
+  },
+  {
+    "path": "artifacts/hiring-study/pr-integration/verify-scheduled/sustainable-disabled-n1-r0/game.replay.checksums",
+    "sha256": "4805421676d7be432639c0c815e95a351a11c9ab179f69144f67ddcecaf37a34",
+    "bytes": 119848980
+  },
+  {
+    "path": "artifacts/hiring-study/pr-integration/verify-scheduled/sustainable-disabled-n1-r0/profile/keyboard-gui.txt",
+    "sha256": "af43f1cb9fe42f9ded2a91aeead00fbb4276c18ce610afa2bc502ee127dbe1a6",
+    "bytes": 1811
+  },
+  {
+    "path": "artifacts/hiring-study/pr-integration/verify-scheduled/sustainable-disabled-n1-r0/profile/keyboard-mapedit.txt",
+    "sha256": "d0d81f9dbbba069ef0364ac3cad74da54c614d7bf3c40e8b6f0460d94a96c7db",
+    "bytes": 708
+  },
+  {
+    "path": "artifacts/hiring-study/pr-integration/verify-scheduled/sustainable-disabled-n1-r0/profile/preferences.txt",
+    "sha256": "789fc092fed4bba2e764881aa1fd87d0c827de544b7c71ba6f3e6bf4d6076a21",
+    "bytes": 1055
+  },
+  {
+    "path": "artifacts/hiring-study/pr-integration/verify-scheduled/sustainable-disabled-n1-r0/progress.jsonl",
+    "sha256": "672359a868f96e50309155372cc860015c3b4545439369c94dcddc95db58b979",
+    "bytes": 64
+  },
+  {
+    "path": "artifacts/hiring-study/pr-integration/verify-scheduled/sustainable-disabled-n1-r0/result.json",
+    "sha256": "000e1965d00abae7a22364fdbc18ea4bfefcedb4296a7a1d2500e3fc47c58254",
+    "bytes": 11686
+  },
+  {
+    "path": "artifacts/hiring-study/pr-integration/verify-scheduled/sustainable-disabled-n1-r0/world.checksums",
+    "sha256": "27d341fc152c8dac9b4050f0f139369f621b073bbe9ac756de09e5bcaf42d230",
+    "bytes": 7441
+  },
+  {
+    "path": "artifacts/hiring-study/pr-integration/verify-scheduled/sustainable-disabled-n2-r0/artifacts.json",
+    "sha256": "4d777fb9f920d140acf079717018ebc999abbc334637eb45cd1237c32e99a635",
+    "bytes": 313
+  },
+  {
+    "path": "artifacts/hiring-study/pr-integration/verify-scheduled/sustainable-disabled-n2-r0/engine.log",
+    "sha256": "1f401c8b8394be839323d6ecc3332da520d1e8cef5c61933128391803f1a3977",
+    "bytes": 433
+  },
+  {
+    "path": "artifacts/hiring-study/pr-integration/verify-scheduled/sustainable-disabled-n2-r0/final.game.gz",
+    "sha256": "8c27455d36053bd51b53c88da7efcac5a6b8f7bd5f2ad14e8cc2244047894f51",
+    "bytes": 199454
+  },
+  {
+    "path": "artifacts/hiring-study/pr-integration/verify-scheduled/sustainable-disabled-n2-r0/game.replay",
+    "sha256": "1b8814635bbaa12e055dc37c9ac8083761a8f6288696638cfb8e4f51feda05f5",
+    "bytes": 1728124
+  },
+  {
+    "path": "artifacts/hiring-study/pr-integration/verify-scheduled/sustainable-disabled-n2-r0/game.replay.checksums",
+    "sha256": "4805421676d7be432639c0c815e95a351a11c9ab179f69144f67ddcecaf37a34",
+    "bytes": 119848980
+  },
+  {
+    "path": "artifacts/hiring-study/pr-integration/verify-scheduled/sustainable-disabled-n2-r0/profile/keyboard-gui.txt",
+    "sha256": "af43f1cb9fe42f9ded2a91aeead00fbb4276c18ce610afa2bc502ee127dbe1a6",
+    "bytes": 1811
+  },
+  {
+    "path": "artifacts/hiring-study/pr-integration/verify-scheduled/sustainable-disabled-n2-r0/profile/keyboard-mapedit.txt",
+    "sha256": "d0d81f9dbbba069ef0364ac3cad74da54c614d7bf3c40e8b6f0460d94a96c7db",
+    "bytes": 708
+  },
+  {
+    "path": "artifacts/hiring-study/pr-integration/verify-scheduled/sustainable-disabled-n2-r0/profile/preferences.txt",
+    "sha256": "789fc092fed4bba2e764881aa1fd87d0c827de544b7c71ba6f3e6bf4d6076a21",
+    "bytes": 1055
+  },
+  {
+    "path": "artifacts/hiring-study/pr-integration/verify-scheduled/sustainable-disabled-n2-r0/progress.jsonl",
+    "sha256": "672359a868f96e50309155372cc860015c3b4545439369c94dcddc95db58b979",
+    "bytes": 64
+  },
+  {
+    "path": "artifacts/hiring-study/pr-integration/verify-scheduled/sustainable-disabled-n2-r0/result.json",
+    "sha256": "d2122f295ba279797ed3692d00e4be48440dda32b21c6b68ef6ac324bef7636a",
+    "bytes": 11685
+  },
+  {
+    "path": "artifacts/hiring-study/pr-integration/verify-scheduled/sustainable-disabled-n2-r0/world.checksums",
+    "sha256": "27d341fc152c8dac9b4050f0f139369f621b073bbe9ac756de09e5bcaf42d230",
+    "bytes": 7441
+  },
+  {
+    "path": "artifacts/hiring-study/pr-integration/verify-scheduled/sustainable-disabled-n4-r0/artifacts.json",
+    "sha256": "4d777fb9f920d140acf079717018ebc999abbc334637eb45cd1237c32e99a635",
+    "bytes": 313
+  },
+  {
+    "path": "artifacts/hiring-study/pr-integration/verify-scheduled/sustainable-disabled-n4-r0/engine.log",
+    "sha256": "a41068bfa1f56e66bb3749935b95b0b510cc0383ec2320a00935f59491a2c1b1",
+    "bytes": 433
+  },
+  {
+    "path": "artifacts/hiring-study/pr-integration/verify-scheduled/sustainable-disabled-n4-r0/final.game.gz",
+    "sha256": "8c27455d36053bd51b53c88da7efcac5a6b8f7bd5f2ad14e8cc2244047894f51",
+    "bytes": 199454
+  },
+  {
+    "path": "artifacts/hiring-study/pr-integration/verify-scheduled/sustainable-disabled-n4-r0/game.replay",
+    "sha256": "1b8814635bbaa12e055dc37c9ac8083761a8f6288696638cfb8e4f51feda05f5",
+    "bytes": 1728124
+  },
+  {
+    "path": "artifacts/hiring-study/pr-integration/verify-scheduled/sustainable-disabled-n4-r0/game.replay.checksums",
+    "sha256": "4805421676d7be432639c0c815e95a351a11c9ab179f69144f67ddcecaf37a34",
+    "bytes": 119848980
+  },
+  {
+    "path": "artifacts/hiring-study/pr-integration/verify-scheduled/sustainable-disabled-n4-r0/profile/keyboard-gui.txt",
+    "sha256": "af43f1cb9fe42f9ded2a91aeead00fbb4276c18ce610afa2bc502ee127dbe1a6",
+    "bytes": 1811
+  },
+  {
+    "path": "artifacts/hiring-study/pr-integration/verify-scheduled/sustainable-disabled-n4-r0/profile/keyboard-mapedit.txt",
+    "sha256": "d0d81f9dbbba069ef0364ac3cad74da54c614d7bf3c40e8b6f0460d94a96c7db",
+    "bytes": 708
+  },
+  {
+    "path": "artifacts/hiring-study/pr-integration/verify-scheduled/sustainable-disabled-n4-r0/profile/preferences.txt",
+    "sha256": "789fc092fed4bba2e764881aa1fd87d0c827de544b7c71ba6f3e6bf4d6076a21",
+    "bytes": 1055
+  },
+  {
+    "path": "artifacts/hiring-study/pr-integration/verify-scheduled/sustainable-disabled-n4-r0/progress.jsonl",
+    "sha256": "672359a868f96e50309155372cc860015c3b4545439369c94dcddc95db58b979",
+    "bytes": 64
+  },
+  {
+    "path": "artifacts/hiring-study/pr-integration/verify-scheduled/sustainable-disabled-n4-r0/result.json",
+    "sha256": "738108ce5333f3d73725be96b3d4515b9f4f60ac2956f1f532d44c27acc041c7",
+    "bytes": 11685
+  },
+  {
+    "path": "artifacts/hiring-study/pr-integration/verify-scheduled/sustainable-disabled-n4-r0/world.checksums",
+    "sha256": "27d341fc152c8dac9b4050f0f139369f621b073bbe9ac756de09e5bcaf42d230",
+    "bytes": 7441
+  },
+  {
+    "path": "artifacts/hiring-study/pr-integration/verify-scheduled/sustainable-disabled-n8-r0/artifacts.json",
+    "sha256": "4d777fb9f920d140acf079717018ebc999abbc334637eb45cd1237c32e99a635",
+    "bytes": 313
+  },
+  {
+    "path": "artifacts/hiring-study/pr-integration/verify-scheduled/sustainable-disabled-n8-r0/engine.log",
+    "sha256": "f67344ba29212e1447cb6ac46ae0b8d99f0f6fca55ad26e2ff0b07faff308f24",
+    "bytes": 433
+  },
+  {
+    "path": "artifacts/hiring-study/pr-integration/verify-scheduled/sustainable-disabled-n8-r0/final.game.gz",
+    "sha256": "8c27455d36053bd51b53c88da7efcac5a6b8f7bd5f2ad14e8cc2244047894f51",
+    "bytes": 199454
+  },
+  {
+    "path": "artifacts/hiring-study/pr-integration/verify-scheduled/sustainable-disabled-n8-r0/game.replay",
+    "sha256": "1b8814635bbaa12e055dc37c9ac8083761a8f6288696638cfb8e4f51feda05f5",
+    "bytes": 1728124
+  },
+  {
+    "path": "artifacts/hiring-study/pr-integration/verify-scheduled/sustainable-disabled-n8-r0/game.replay.checksums",
+    "sha256": "4805421676d7be432639c0c815e95a351a11c9ab179f69144f67ddcecaf37a34",
+    "bytes": 119848980
+  },
+  {
+    "path": "artifacts/hiring-study/pr-integration/verify-scheduled/sustainable-disabled-n8-r0/profile/keyboard-gui.txt",
+    "sha256": "af43f1cb9fe42f9ded2a91aeead00fbb4276c18ce610afa2bc502ee127dbe1a6",
+    "bytes": 1811
+  },
+  {
+    "path": "artifacts/hiring-study/pr-integration/verify-scheduled/sustainable-disabled-n8-r0/profile/keyboard-mapedit.txt",
+    "sha256": "d0d81f9dbbba069ef0364ac3cad74da54c614d7bf3c40e8b6f0460d94a96c7db",
+    "bytes": 708
+  },
+  {
+    "path": "artifacts/hiring-study/pr-integration/verify-scheduled/sustainable-disabled-n8-r0/profile/preferences.txt",
+    "sha256": "789fc092fed4bba2e764881aa1fd87d0c827de544b7c71ba6f3e6bf4d6076a21",
+    "bytes": 1055
+  },
+  {
+    "path": "artifacts/hiring-study/pr-integration/verify-scheduled/sustainable-disabled-n8-r0/progress.jsonl",
+    "sha256": "672359a868f96e50309155372cc860015c3b4545439369c94dcddc95db58b979",
+    "bytes": 64
+  },
+  {
+    "path": "artifacts/hiring-study/pr-integration/verify-scheduled/sustainable-disabled-n8-r0/result.json",
+    "sha256": "e918b5d86adbafd02d886227523538452aaf5b11a539fe602b6f16b549383416",
+    "bytes": 11685
+  },
+  {
+    "path": "artifacts/hiring-study/pr-integration/verify-scheduled/sustainable-disabled-n8-r0/world.checksums",
+    "sha256": "27d341fc152c8dac9b4050f0f139369f621b073bbe9ac756de09e5bcaf42d230",
+    "bytes": 7441
+  },
+  {
+    "path": "artifacts/hiring-study/pr-integration/verify-scheduled/sustainable-owner-n1-r0/artifacts.json",
+    "sha256": "788f9010fd2479ff5f1a19e891dfe557341644a2e19ef8f82ab83d7de0992b19",
+    "bytes": 443
+  },
+  {
+    "path": "artifacts/hiring-study/pr-integration/verify-scheduled/sustainable-owner-n1-r0/engine.log",
+    "sha256": "11fe4aeaecbf0c04b86d6b55db4f223eaafcaa6b15e92be3a2cfdd2cc5e948de",
+    "bytes": 430
+  },
+  {
+    "path": "artifacts/hiring-study/pr-integration/verify-scheduled/sustainable-owner-n1-r0/final.game.gz",
+    "sha256": "8c27455d36053bd51b53c88da7efcac5a6b8f7bd5f2ad14e8cc2244047894f51",
+    "bytes": 199454
+  },
+  {
+    "path": "artifacts/hiring-study/pr-integration/verify-scheduled/sustainable-owner-n1-r0/game.replay",
+    "sha256": "1b8814635bbaa12e055dc37c9ac8083761a8f6288696638cfb8e4f51feda05f5",
+    "bytes": 1728124
+  },
+  {
+    "path": "artifacts/hiring-study/pr-integration/verify-scheduled/sustainable-owner-n1-r0/game.replay.checksums",
+    "sha256": "4805421676d7be432639c0c815e95a351a11c9ab179f69144f67ddcecaf37a34",
+    "bytes": 119848980
+  },
+  {
+    "path": "artifacts/hiring-study/pr-integration/verify-scheduled/sustainable-owner-n1-r0/hiring-compute.json",
+    "sha256": "875ccc7045c2036803c21ca7673479b389f0a336da109f77bd7b594c66a9686e",
+    "bytes": 2915
+  },
+  {
+    "path": "artifacts/hiring-study/pr-integration/verify-scheduled/sustainable-owner-n1-r0/hiring-shadow.json",
+    "sha256": "875ccc7045c2036803c21ca7673479b389f0a336da109f77bd7b594c66a9686e",
+    "bytes": 2915
+  },
+  {
+    "path": "artifacts/hiring-study/pr-integration/verify-scheduled/sustainable-owner-n1-r0/hiring-stats.json",
+    "sha256": "60b1607489e6662895f5230de37ca25b2aaaf248d9acf0ae4723420bdffa6295",
+    "bytes": 26395
+  },
+  {
+    "path": "artifacts/hiring-study/pr-integration/verify-scheduled/sustainable-owner-n1-r0/profile/keyboard-gui.txt",
+    "sha256": "af43f1cb9fe42f9ded2a91aeead00fbb4276c18ce610afa2bc502ee127dbe1a6",
+    "bytes": 1811
+  },
+  {
+    "path": "artifacts/hiring-study/pr-integration/verify-scheduled/sustainable-owner-n1-r0/profile/keyboard-mapedit.txt",
+    "sha256": "d0d81f9dbbba069ef0364ac3cad74da54c614d7bf3c40e8b6f0460d94a96c7db",
+    "bytes": 708
+  },
+  {
+    "path": "artifacts/hiring-study/pr-integration/verify-scheduled/sustainable-owner-n1-r0/profile/preferences.txt",
+    "sha256": "789fc092fed4bba2e764881aa1fd87d0c827de544b7c71ba6f3e6bf4d6076a21",
+    "bytes": 1055
+  },
+  {
+    "path": "artifacts/hiring-study/pr-integration/verify-scheduled/sustainable-owner-n1-r0/progress.jsonl",
+    "sha256": "672359a868f96e50309155372cc860015c3b4545439369c94dcddc95db58b979",
+    "bytes": 64
+  },
+  {
+    "path": "artifacts/hiring-study/pr-integration/verify-scheduled/sustainable-owner-n1-r0/result.json",
+    "sha256": "40073dd51f67201bda55b78abb97b6ee5484aad426803a900c9c2dafda42baa2",
+    "bytes": 11692
+  },
+  {
+    "path": "artifacts/hiring-study/pr-integration/verify-scheduled/sustainable-owner-n1-r0/world.checksums",
+    "sha256": "27d341fc152c8dac9b4050f0f139369f621b073bbe9ac756de09e5bcaf42d230",
+    "bytes": 7441
+  },
+  {
+    "path": "artifacts/hiring-study/pr-integration/verify-scheduled/sustainable-owner-n2-r0/artifacts.json",
+    "sha256": "382e0bcd2ede7250724f85331b3e47b80578bacc8a6a0eff3f4ca57148eb7eef",
+    "bytes": 443
+  },
+  {
+    "path": "artifacts/hiring-study/pr-integration/verify-scheduled/sustainable-owner-n2-r0/engine.log",
+    "sha256": "34a8ccdce6497df2150045eee91488007c3146a01700aab2f6336ce332560b86",
+    "bytes": 430
+  },
+  {
+    "path": "artifacts/hiring-study/pr-integration/verify-scheduled/sustainable-owner-n2-r0/final.game.gz",
+    "sha256": "8c27455d36053bd51b53c88da7efcac5a6b8f7bd5f2ad14e8cc2244047894f51",
+    "bytes": 199454
+  },
+  {
+    "path": "artifacts/hiring-study/pr-integration/verify-scheduled/sustainable-owner-n2-r0/game.replay",
+    "sha256": "1b8814635bbaa12e055dc37c9ac8083761a8f6288696638cfb8e4f51feda05f5",
+    "bytes": 1728124
+  },
+  {
+    "path": "artifacts/hiring-study/pr-integration/verify-scheduled/sustainable-owner-n2-r0/game.replay.checksums",
+    "sha256": "4805421676d7be432639c0c815e95a351a11c9ab179f69144f67ddcecaf37a34",
+    "bytes": 119848980
+  },
+  {
+    "path": "artifacts/hiring-study/pr-integration/verify-scheduled/sustainable-owner-n2-r0/hiring-compute.json",
+    "sha256": "027c729ffc3438743d8f70e5ccbe30a38e44d70792b7e7acf63f8cd9888f4097",
+    "bytes": 2914
+  },
+  {
+    "path": "artifacts/hiring-study/pr-integration/verify-scheduled/sustainable-owner-n2-r0/hiring-shadow.json",
+    "sha256": "027c729ffc3438743d8f70e5ccbe30a38e44d70792b7e7acf63f8cd9888f4097",
+    "bytes": 2914
+  },
+  {
+    "path": "artifacts/hiring-study/pr-integration/verify-scheduled/sustainable-owner-n2-r0/hiring-stats.json",
+    "sha256": "ffdceb7fff303f1c1dde392c06b320807b62c911673c409796cb089a88af5284",
+    "bytes": 26263
+  },
+  {
+    "path": "artifacts/hiring-study/pr-integration/verify-scheduled/sustainable-owner-n2-r0/profile/keyboard-gui.txt",
+    "sha256": "af43f1cb9fe42f9ded2a91aeead00fbb4276c18ce610afa2bc502ee127dbe1a6",
+    "bytes": 1811
+  },
+  {
+    "path": "artifacts/hiring-study/pr-integration/verify-scheduled/sustainable-owner-n2-r0/profile/keyboard-mapedit.txt",
+    "sha256": "d0d81f9dbbba069ef0364ac3cad74da54c614d7bf3c40e8b6f0460d94a96c7db",
+    "bytes": 708
+  },
+  {
+    "path": "artifacts/hiring-study/pr-integration/verify-scheduled/sustainable-owner-n2-r0/profile/preferences.txt",
+    "sha256": "789fc092fed4bba2e764881aa1fd87d0c827de544b7c71ba6f3e6bf4d6076a21",
+    "bytes": 1055
+  },
+  {
+    "path": "artifacts/hiring-study/pr-integration/verify-scheduled/sustainable-owner-n2-r0/progress.jsonl",
+    "sha256": "672359a868f96e50309155372cc860015c3b4545439369c94dcddc95db58b979",
+    "bytes": 64
+  },
+  {
+    "path": "artifacts/hiring-study/pr-integration/verify-scheduled/sustainable-owner-n2-r0/result.json",
+    "sha256": "87990f67832cb44a689413016d1f968a01092d5d65d4b697a1ff50021bc65e59",
+    "bytes": 11692
+  },
+  {
+    "path": "artifacts/hiring-study/pr-integration/verify-scheduled/sustainable-owner-n2-r0/world.checksums",
+    "sha256": "27d341fc152c8dac9b4050f0f139369f621b073bbe9ac756de09e5bcaf42d230",
+    "bytes": 7441
+  },
+  {
+    "path": "artifacts/hiring-study/pr-integration/verify-scheduled/sustainable-owner-n4-r0/artifacts.json",
+    "sha256": "5e33309df9ae6640f7f4c438db158065e7c1fb6fbb06395379e81a03c3f12203",
+    "bytes": 443
+  },
+  {
+    "path": "artifacts/hiring-study/pr-integration/verify-scheduled/sustainable-owner-n4-r0/engine.log",
+    "sha256": "0080fa92b861c69ae74954c195171e637290c97aa093398acefb7cdd5d1eb710",
+    "bytes": 430
+  },
+  {
+    "path": "artifacts/hiring-study/pr-integration/verify-scheduled/sustainable-owner-n4-r0/final.game.gz",
+    "sha256": "8c27455d36053bd51b53c88da7efcac5a6b8f7bd5f2ad14e8cc2244047894f51",
+    "bytes": 199454
+  },
+  {
+    "path": "artifacts/hiring-study/pr-integration/verify-scheduled/sustainable-owner-n4-r0/game.replay",
+    "sha256": "1b8814635bbaa12e055dc37c9ac8083761a8f6288696638cfb8e4f51feda05f5",
+    "bytes": 1728124
+  },
+  {
+    "path": "artifacts/hiring-study/pr-integration/verify-scheduled/sustainable-owner-n4-r0/game.replay.checksums",
+    "sha256": "4805421676d7be432639c0c815e95a351a11c9ab179f69144f67ddcecaf37a34",
+    "bytes": 119848980
+  },
+  {
+    "path": "artifacts/hiring-study/pr-integration/verify-scheduled/sustainable-owner-n4-r0/hiring-compute.json",
+    "sha256": "55c907bfb35a37ec5f2e33144c756816ee7e0a6fabb753054c446d1e928580d0",
+    "bytes": 2914
+  },
+  {
+    "path": "artifacts/hiring-study/pr-integration/verify-scheduled/sustainable-owner-n4-r0/hiring-shadow.json",
+    "sha256": "55c907bfb35a37ec5f2e33144c756816ee7e0a6fabb753054c446d1e928580d0",
+    "bytes": 2914
+  },
+  {
+    "path": "artifacts/hiring-study/pr-integration/verify-scheduled/sustainable-owner-n4-r0/hiring-stats.json",
+    "sha256": "153aabc6cdb5508d73205123155e88dc3f0942b876184864593ab2662feef6e1",
+    "bytes": 26253
+  },
+  {
+    "path": "artifacts/hiring-study/pr-integration/verify-scheduled/sustainable-owner-n4-r0/profile/keyboard-gui.txt",
+    "sha256": "af43f1cb9fe42f9ded2a91aeead00fbb4276c18ce610afa2bc502ee127dbe1a6",
+    "bytes": 1811
+  },
+  {
+    "path": "artifacts/hiring-study/pr-integration/verify-scheduled/sustainable-owner-n4-r0/profile/keyboard-mapedit.txt",
+    "sha256": "d0d81f9dbbba069ef0364ac3cad74da54c614d7bf3c40e8b6f0460d94a96c7db",
+    "bytes": 708
+  },
+  {
+    "path": "artifacts/hiring-study/pr-integration/verify-scheduled/sustainable-owner-n4-r0/profile/preferences.txt",
+    "sha256": "789fc092fed4bba2e764881aa1fd87d0c827de544b7c71ba6f3e6bf4d6076a21",
+    "bytes": 1055
+  },
+  {
+    "path": "artifacts/hiring-study/pr-integration/verify-scheduled/sustainable-owner-n4-r0/progress.jsonl",
+    "sha256": "672359a868f96e50309155372cc860015c3b4545439369c94dcddc95db58b979",
+    "bytes": 64
+  },
+  {
+    "path": "artifacts/hiring-study/pr-integration/verify-scheduled/sustainable-owner-n4-r0/result.json",
+    "sha256": "11bb80a3614420127520d9a8f5a813ad9f455717e2d66874c2c1a777dbb2d7c6",
+    "bytes": 11692
+  },
+  {
+    "path": "artifacts/hiring-study/pr-integration/verify-scheduled/sustainable-owner-n4-r0/world.checksums",
+    "sha256": "27d341fc152c8dac9b4050f0f139369f621b073bbe9ac756de09e5bcaf42d230",
+    "bytes": 7441
+  },
+  {
+    "path": "artifacts/hiring-study/pr-integration/verify-scheduled/sustainable-owner-n8-r0/artifacts.json",
+    "sha256": "358abbe9e49fd645ae82265a9e1d3669741408b88b3203e3e3163ef718907aec",
+    "bytes": 443
+  },
+  {
+    "path": "artifacts/hiring-study/pr-integration/verify-scheduled/sustainable-owner-n8-r0/engine.log",
+    "sha256": "e7601048a7669f405c50eb5aa07f6b02cf38681dedeb046d3829850871d15626",
+    "bytes": 430
+  },
+  {
+    "path": "artifacts/hiring-study/pr-integration/verify-scheduled/sustainable-owner-n8-r0/final.game.gz",
+    "sha256": "8c27455d36053bd51b53c88da7efcac5a6b8f7bd5f2ad14e8cc2244047894f51",
+    "bytes": 199454
+  },
+  {
+    "path": "artifacts/hiring-study/pr-integration/verify-scheduled/sustainable-owner-n8-r0/game.replay",
+    "sha256": "1b8814635bbaa12e055dc37c9ac8083761a8f6288696638cfb8e4f51feda05f5",
+    "bytes": 1728124
+  },
+  {
+    "path": "artifacts/hiring-study/pr-integration/verify-scheduled/sustainable-owner-n8-r0/game.replay.checksums",
+    "sha256": "4805421676d7be432639c0c815e95a351a11c9ab179f69144f67ddcecaf37a34",
+    "bytes": 119848980
+  },
+  {
+    "path": "artifacts/hiring-study/pr-integration/verify-scheduled/sustainable-owner-n8-r0/hiring-compute.json",
+    "sha256": "761d9f9a39731b53a96bc77ef58d1015537faf078b15c06cdb0dee1e24c01208",
+    "bytes": 2913
+  },
+  {
+    "path": "artifacts/hiring-study/pr-integration/verify-scheduled/sustainable-owner-n8-r0/hiring-shadow.json",
+    "sha256": "761d9f9a39731b53a96bc77ef58d1015537faf078b15c06cdb0dee1e24c01208",
+    "bytes": 2913
+  },
+  {
+    "path": "artifacts/hiring-study/pr-integration/verify-scheduled/sustainable-owner-n8-r0/hiring-stats.json",
+    "sha256": "479a0df0b762c7af4d1392e0c6afcc0613f7663ef095f6e6972b87e064528304",
+    "bytes": 26240
+  },
+  {
+    "path": "artifacts/hiring-study/pr-integration/verify-scheduled/sustainable-owner-n8-r0/profile/keyboard-gui.txt",
+    "sha256": "af43f1cb9fe42f9ded2a91aeead00fbb4276c18ce610afa2bc502ee127dbe1a6",
+    "bytes": 1811
+  },
+  {
+    "path": "artifacts/hiring-study/pr-integration/verify-scheduled/sustainable-owner-n8-r0/profile/keyboard-mapedit.txt",
+    "sha256": "d0d81f9dbbba069ef0364ac3cad74da54c614d7bf3c40e8b6f0460d94a96c7db",
+    "bytes": 708
+  },
+  {
+    "path": "artifacts/hiring-study/pr-integration/verify-scheduled/sustainable-owner-n8-r0/profile/preferences.txt",
+    "sha256": "789fc092fed4bba2e764881aa1fd87d0c827de544b7c71ba6f3e6bf4d6076a21",
+    "bytes": 1055
+  },
+  {
+    "path": "artifacts/hiring-study/pr-integration/verify-scheduled/sustainable-owner-n8-r0/progress.jsonl",
+    "sha256": "672359a868f96e50309155372cc860015c3b4545439369c94dcddc95db58b979",
+    "bytes": 64
+  },
+  {
+    "path": "artifacts/hiring-study/pr-integration/verify-scheduled/sustainable-owner-n8-r0/result.json",
+    "sha256": "757bca9205eb4f9bd4732bb127d536296f062d233f450b4165956a46482ea064",
+    "bytes": 11691
+  },
+  {
+    "path": "artifacts/hiring-study/pr-integration/verify-scheduled/sustainable-owner-n8-r0/world.checksums",
+    "sha256": "27d341fc152c8dac9b4050f0f139369f621b073bbe9ac756de09e5bcaf42d230",
+    "bytes": 7441
+  },
+  {
+    "path": "artifacts/hiring-study/pr-integration/verify-scheduled/sustainable-pool-n1-r0/artifacts.json",
+    "sha256": "51261ef692967f52929dfb6f4ed813b56a9578e61bdef781081c62f30f62b1de",
+    "bytes": 443
+  },
+  {
+    "path": "artifacts/hiring-study/pr-integration/verify-scheduled/sustainable-pool-n1-r0/engine.log",
+    "sha256": "ba5d094b71d504779470e0b642da84597e91f5a4f6b752ffdd15ce37720d0c11",
+    "bytes": 429
+  },
+  {
+    "path": "artifacts/hiring-study/pr-integration/verify-scheduled/sustainable-pool-n1-r0/final.game.gz",
+    "sha256": "8c27455d36053bd51b53c88da7efcac5a6b8f7bd5f2ad14e8cc2244047894f51",
+    "bytes": 199454
+  },
+  {
+    "path": "artifacts/hiring-study/pr-integration/verify-scheduled/sustainable-pool-n1-r0/game.replay",
+    "sha256": "1b8814635bbaa12e055dc37c9ac8083761a8f6288696638cfb8e4f51feda05f5",
+    "bytes": 1728124
+  },
+  {
+    "path": "artifacts/hiring-study/pr-integration/verify-scheduled/sustainable-pool-n1-r0/game.replay.checksums",
+    "sha256": "4805421676d7be432639c0c815e95a351a11c9ab179f69144f67ddcecaf37a34",
+    "bytes": 119848980
+  },
+  {
+    "path": "artifacts/hiring-study/pr-integration/verify-scheduled/sustainable-pool-n1-r0/hiring-compute.json",
+    "sha256": "3ebfa2d63f166d20a41490a2373f94e1552f06325fc8108942c891cead36839a",
+    "bytes": 2915
+  },
+  {
+    "path": "artifacts/hiring-study/pr-integration/verify-scheduled/sustainable-pool-n1-r0/hiring-shadow.json",
+    "sha256": "3ebfa2d63f166d20a41490a2373f94e1552f06325fc8108942c891cead36839a",
+    "bytes": 2915
+  },
+  {
+    "path": "artifacts/hiring-study/pr-integration/verify-scheduled/sustainable-pool-n1-r0/hiring-stats.json",
+    "sha256": "0f7dfc121804fbcb0b9ff2f21ce03359ce0955b30399b81b4f1dd24c6173612a",
+    "bytes": 26418
+  },
+  {
+    "path": "artifacts/hiring-study/pr-integration/verify-scheduled/sustainable-pool-n1-r0/profile/keyboard-gui.txt",
+    "sha256": "af43f1cb9fe42f9ded2a91aeead00fbb4276c18ce610afa2bc502ee127dbe1a6",
+    "bytes": 1811
+  },
+  {
+    "path": "artifacts/hiring-study/pr-integration/verify-scheduled/sustainable-pool-n1-r0/profile/keyboard-mapedit.txt",
+    "sha256": "d0d81f9dbbba069ef0364ac3cad74da54c614d7bf3c40e8b6f0460d94a96c7db",
+    "bytes": 708
+  },
+  {
+    "path": "artifacts/hiring-study/pr-integration/verify-scheduled/sustainable-pool-n1-r0/profile/preferences.txt",
+    "sha256": "789fc092fed4bba2e764881aa1fd87d0c827de544b7c71ba6f3e6bf4d6076a21",
+    "bytes": 1055
+  },
+  {
+    "path": "artifacts/hiring-study/pr-integration/verify-scheduled/sustainable-pool-n1-r0/progress.jsonl",
+    "sha256": "672359a868f96e50309155372cc860015c3b4545439369c94dcddc95db58b979",
+    "bytes": 64
+  },
+  {
+    "path": "artifacts/hiring-study/pr-integration/verify-scheduled/sustainable-pool-n1-r0/result.json",
+    "sha256": "fe197645bffde64b02d09a1c1012d2ee53ed4434f55ae8011b0f66ae395a6cc3",
+    "bytes": 11692
+  },
+  {
+    "path": "artifacts/hiring-study/pr-integration/verify-scheduled/sustainable-pool-n1-r0/world.checksums",
+    "sha256": "27d341fc152c8dac9b4050f0f139369f621b073bbe9ac756de09e5bcaf42d230",
+    "bytes": 7441
+  },
+  {
+    "path": "artifacts/hiring-study/pr-integration/verify-scheduled/sustainable-pool-n2-r0/artifacts.json",
+    "sha256": "21170f1ea9ee0ff1f4c11835a231096ec47c07a37c208b852d98a53111e6176a",
+    "bytes": 443
+  },
+  {
+    "path": "artifacts/hiring-study/pr-integration/verify-scheduled/sustainable-pool-n2-r0/engine.log",
+    "sha256": "5bc68c2f5541ad25b8da2d5df14e4ebdfdae7983e26d5a0cad3d371842f80311",
+    "bytes": 429
+  },
+  {
+    "path": "artifacts/hiring-study/pr-integration/verify-scheduled/sustainable-pool-n2-r0/final.game.gz",
+    "sha256": "8c27455d36053bd51b53c88da7efcac5a6b8f7bd5f2ad14e8cc2244047894f51",
+    "bytes": 199454
+  },
+  {
+    "path": "artifacts/hiring-study/pr-integration/verify-scheduled/sustainable-pool-n2-r0/game.replay",
+    "sha256": "1b8814635bbaa12e055dc37c9ac8083761a8f6288696638cfb8e4f51feda05f5",
+    "bytes": 1728124
+  },
+  {
+    "path": "artifacts/hiring-study/pr-integration/verify-scheduled/sustainable-pool-n2-r0/game.replay.checksums",
+    "sha256": "4805421676d7be432639c0c815e95a351a11c9ab179f69144f67ddcecaf37a34",
+    "bytes": 119848980
+  },
+  {
+    "path": "artifacts/hiring-study/pr-integration/verify-scheduled/sustainable-pool-n2-r0/hiring-compute.json",
+    "sha256": "cdbd0e85ecf99d6d8cbaf8c1f18a4c160eb90c97b26e8cba1340f6b336329274",
+    "bytes": 2914
+  },
+  {
+    "path": "artifacts/hiring-study/pr-integration/verify-scheduled/sustainable-pool-n2-r0/hiring-shadow.json",
+    "sha256": "cdbd0e85ecf99d6d8cbaf8c1f18a4c160eb90c97b26e8cba1340f6b336329274",
+    "bytes": 2914
+  },
+  {
+    "path": "artifacts/hiring-study/pr-integration/verify-scheduled/sustainable-pool-n2-r0/hiring-stats.json",
+    "sha256": "2fbc12d5c84aeb80777a7195a454a80ca858d61debf21b495b4be4ce5b00532e",
+    "bytes": 26261
+  },
+  {
+    "path": "artifacts/hiring-study/pr-integration/verify-scheduled/sustainable-pool-n2-r0/profile/keyboard-gui.txt",
+    "sha256": "af43f1cb9fe42f9ded2a91aeead00fbb4276c18ce610afa2bc502ee127dbe1a6",
+    "bytes": 1811
+  },
+  {
+    "path": "artifacts/hiring-study/pr-integration/verify-scheduled/sustainable-pool-n2-r0/profile/keyboard-mapedit.txt",
+    "sha256": "d0d81f9dbbba069ef0364ac3cad74da54c614d7bf3c40e8b6f0460d94a96c7db",
+    "bytes": 708
+  },
+  {
+    "path": "artifacts/hiring-study/pr-integration/verify-scheduled/sustainable-pool-n2-r0/profile/preferences.txt",
+    "sha256": "789fc092fed4bba2e764881aa1fd87d0c827de544b7c71ba6f3e6bf4d6076a21",
+    "bytes": 1055
+  },
+  {
+    "path": "artifacts/hiring-study/pr-integration/verify-scheduled/sustainable-pool-n2-r0/progress.jsonl",
+    "sha256": "672359a868f96e50309155372cc860015c3b4545439369c94dcddc95db58b979",
+    "bytes": 64
+  },
+  {
+    "path": "artifacts/hiring-study/pr-integration/verify-scheduled/sustainable-pool-n2-r0/result.json",
+    "sha256": "d9048f6a4ec28c4eccf86e75d100022d5a34edb446895d8f80ccc499ad4e8c7c",
+    "bytes": 11692
+  },
+  {
+    "path": "artifacts/hiring-study/pr-integration/verify-scheduled/sustainable-pool-n2-r0/world.checksums",
+    "sha256": "27d341fc152c8dac9b4050f0f139369f621b073bbe9ac756de09e5bcaf42d230",
+    "bytes": 7441
+  },
+  {
+    "path": "artifacts/hiring-study/pr-integration/verify-scheduled/sustainable-pool-n4-r0/artifacts.json",
+    "sha256": "2822a242df771acfc398cde4858955bf4abfbfef653825252e138d2946aa6c56",
+    "bytes": 443
+  },
+  {
+    "path": "artifacts/hiring-study/pr-integration/verify-scheduled/sustainable-pool-n4-r0/engine.log",
+    "sha256": "953587b9d109ece1b15b9304ed860282f08cf791caa7f7d983dfd0d92fb931c9",
+    "bytes": 429
+  },
+  {
+    "path": "artifacts/hiring-study/pr-integration/verify-scheduled/sustainable-pool-n4-r0/final.game.gz",
+    "sha256": "8c27455d36053bd51b53c88da7efcac5a6b8f7bd5f2ad14e8cc2244047894f51",
+    "bytes": 199454
+  },
+  {
+    "path": "artifacts/hiring-study/pr-integration/verify-scheduled/sustainable-pool-n4-r0/game.replay",
+    "sha256": "1b8814635bbaa12e055dc37c9ac8083761a8f6288696638cfb8e4f51feda05f5",
+    "bytes": 1728124
+  },
+  {
+    "path": "artifacts/hiring-study/pr-integration/verify-scheduled/sustainable-pool-n4-r0/game.replay.checksums",
+    "sha256": "4805421676d7be432639c0c815e95a351a11c9ab179f69144f67ddcecaf37a34",
+    "bytes": 119848980
+  },
+  {
+    "path": "artifacts/hiring-study/pr-integration/verify-scheduled/sustainable-pool-n4-r0/hiring-compute.json",
+    "sha256": "1f3c8db593deda2cf0373e5a4a048d80736302e6e68876ead9a9e523e80c6b31",
+    "bytes": 2914
+  },
+  {
+    "path": "artifacts/hiring-study/pr-integration/verify-scheduled/sustainable-pool-n4-r0/hiring-shadow.json",
+    "sha256": "1f3c8db593deda2cf0373e5a4a048d80736302e6e68876ead9a9e523e80c6b31",
+    "bytes": 2914
+  },
+  {
+    "path": "artifacts/hiring-study/pr-integration/verify-scheduled/sustainable-pool-n4-r0/hiring-stats.json",
+    "sha256": "0895f92c3b837bb1add5a50504944839a2d8435f2e9240fe0356b320af1eb41c",
+    "bytes": 26244
+  },
+  {
+    "path": "artifacts/hiring-study/pr-integration/verify-scheduled/sustainable-pool-n4-r0/profile/keyboard-gui.txt",
+    "sha256": "af43f1cb9fe42f9ded2a91aeead00fbb4276c18ce610afa2bc502ee127dbe1a6",
+    "bytes": 1811
+  },
+  {
+    "path": "artifacts/hiring-study/pr-integration/verify-scheduled/sustainable-pool-n4-r0/profile/keyboard-mapedit.txt",
+    "sha256": "d0d81f9dbbba069ef0364ac3cad74da54c614d7bf3c40e8b6f0460d94a96c7db",
+    "bytes": 708
+  },
+  {
+    "path": "artifacts/hiring-study/pr-integration/verify-scheduled/sustainable-pool-n4-r0/profile/preferences.txt",
+    "sha256": "789fc092fed4bba2e764881aa1fd87d0c827de544b7c71ba6f3e6bf4d6076a21",
+    "bytes": 1055
+  },
+  {
+    "path": "artifacts/hiring-study/pr-integration/verify-scheduled/sustainable-pool-n4-r0/progress.jsonl",
+    "sha256": "672359a868f96e50309155372cc860015c3b4545439369c94dcddc95db58b979",
+    "bytes": 64
+  },
+  {
+    "path": "artifacts/hiring-study/pr-integration/verify-scheduled/sustainable-pool-n4-r0/result.json",
+    "sha256": "fa025058e8c6945b72a846010cc05d37a9ad7ee7551f02fdbaf43a9a020c61e3",
+    "bytes": 11692
+  },
+  {
+    "path": "artifacts/hiring-study/pr-integration/verify-scheduled/sustainable-pool-n4-r0/world.checksums",
+    "sha256": "27d341fc152c8dac9b4050f0f139369f621b073bbe9ac756de09e5bcaf42d230",
+    "bytes": 7441
+  },
+  {
+    "path": "artifacts/hiring-study/pr-integration/verify-scheduled/sustainable-pool-n8-r0/artifacts.json",
+    "sha256": "f8fe99b84fb3c8121dccec542c70f0f386cebec862df8512499bda538027881f",
+    "bytes": 443
+  },
+  {
+    "path": "artifacts/hiring-study/pr-integration/verify-scheduled/sustainable-pool-n8-r0/engine.log",
+    "sha256": "65b55a857785b1828cb1f0c19dd3ee1cfbda1bb4dbd277f8af8156c2dd675443",
+    "bytes": 429
+  },
+  {
+    "path": "artifacts/hiring-study/pr-integration/verify-scheduled/sustainable-pool-n8-r0/final.game.gz",
+    "sha256": "8c27455d36053bd51b53c88da7efcac5a6b8f7bd5f2ad14e8cc2244047894f51",
+    "bytes": 199454
+  },
+  {
+    "path": "artifacts/hiring-study/pr-integration/verify-scheduled/sustainable-pool-n8-r0/game.replay",
+    "sha256": "1b8814635bbaa12e055dc37c9ac8083761a8f6288696638cfb8e4f51feda05f5",
+    "bytes": 1728124
+  },
+  {
+    "path": "artifacts/hiring-study/pr-integration/verify-scheduled/sustainable-pool-n8-r0/game.replay.checksums",
+    "sha256": "4805421676d7be432639c0c815e95a351a11c9ab179f69144f67ddcecaf37a34",
+    "bytes": 119848980
+  },
+  {
+    "path": "artifacts/hiring-study/pr-integration/verify-scheduled/sustainable-pool-n8-r0/hiring-compute.json",
+    "sha256": "6b084c0022fcdd541490a9cda20420b4ca2dbb08860d740f10b7e5e868e7be9d",
+    "bytes": 2914
+  },
+  {
+    "path": "artifacts/hiring-study/pr-integration/verify-scheduled/sustainable-pool-n8-r0/hiring-shadow.json",
+    "sha256": "6b084c0022fcdd541490a9cda20420b4ca2dbb08860d740f10b7e5e868e7be9d",
+    "bytes": 2914
+  },
+  {
+    "path": "artifacts/hiring-study/pr-integration/verify-scheduled/sustainable-pool-n8-r0/hiring-stats.json",
+    "sha256": "7b65e852046a05ea0658c97ef18645b7a1f6e2d14676a53478e1dc2dafe5670b",
+    "bytes": 26242
+  },
+  {
+    "path": "artifacts/hiring-study/pr-integration/verify-scheduled/sustainable-pool-n8-r0/profile/keyboard-gui.txt",
+    "sha256": "af43f1cb9fe42f9ded2a91aeead00fbb4276c18ce610afa2bc502ee127dbe1a6",
+    "bytes": 1811
+  },
+  {
+    "path": "artifacts/hiring-study/pr-integration/verify-scheduled/sustainable-pool-n8-r0/profile/keyboard-mapedit.txt",
+    "sha256": "d0d81f9dbbba069ef0364ac3cad74da54c614d7bf3c40e8b6f0460d94a96c7db",
+    "bytes": 708
+  },
+  {
+    "path": "artifacts/hiring-study/pr-integration/verify-scheduled/sustainable-pool-n8-r0/profile/preferences.txt",
+    "sha256": "789fc092fed4bba2e764881aa1fd87d0c827de544b7c71ba6f3e6bf4d6076a21",
+    "bytes": 1055
+  },
+  {
+    "path": "artifacts/hiring-study/pr-integration/verify-scheduled/sustainable-pool-n8-r0/progress.jsonl",
+    "sha256": "672359a868f96e50309155372cc860015c3b4545439369c94dcddc95db58b979",
+    "bytes": 64
+  },
+  {
+    "path": "artifacts/hiring-study/pr-integration/verify-scheduled/sustainable-pool-n8-r0/result.json",
+    "sha256": "4a1c6b1151588423be8d46548503d453776c184722079868bf64cd3b9036fbbf",
+    "bytes": 11691
+  },
+  {
+    "path": "artifacts/hiring-study/pr-integration/verify-scheduled/sustainable-pool-n8-r0/world.checksums",
+    "sha256": "27d341fc152c8dac9b4050f0f139369f621b073bbe9ac756de09e5bcaf42d230",
+    "bytes": 7441
+  },
+  {
+    "path": "artifacts/hiring-study/pr-integration/verify-scheduled/verification.json",
+    "sha256": "d8b0a7e5036b036a3d6bb71f8cf7156aa47560fef6439aed8cc1804c20e14d80",
+    "bytes": 37
+  }
+]

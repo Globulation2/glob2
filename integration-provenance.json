@@ -1,0 +1,60 @@
+{
+  "tested_commit": "aac2efeb3620825d7d9ede5bcc263471b9aaee3b",
+  "base": "3e2ba6c07450c94ce0f997220479fd309b71e461",
+  "environment": "macOS-26.6.2-arm64-arm-64bit-Mach-O",
+  "architecture": "arm64",
+  "compiler": "Apple clang version 21.0.0 (clang-2100.3.34.2)",
+  "python": "3.14.7",
+  "build_command": [
+    "env",
+    "PYTHONPATH=.",
+    "python3",
+    "tools/dev_build.py",
+    "dev_fast=0",
+    "release=1",
+    "-j8"
+  ],
+  "focus": "hiring planner, ranking/admission controls, shared-field lifetime, executor lanes, supplier handling and original-trace preservation",
+  "coverage_limitations": [
+    "No final Linux x86-64, Windows, browser or TSAN coverage",
+    "Historical timing ratios are pre-master-integration measurements",
+    "No live hiring consumer or gameplay acceptance"
+  ],
+  "binary_sha256": "a86fd87ef512bdefb5b04c3ae1506bd5649191fb2c2648ee629cb006ed0a7198",
+  "test_binary_sha256": "aa36cd531c8650ef6a772c5424a3ce9b734f2e6547c654eb8acdb48c81078b04",
+  "release_build_exit_code": 0,
+  "tests": {
+    "passed": 152,
+    "failed": 0,
+    "skipped": 0
+  },
+  "cross_participant_verification": {
+    "sustainable": {
+      "trace_replay_save_identical": true,
+      "candidate_digests_identical": true,
+      "runs": 12,
+      "hashes": {
+        "game.replay.checksums": "4805421676d7be432639c0c815e95a351a11c9ab179f69144f67ddcecaf37a34",
+        "game.replay": "1b8814635bbaa12e055dc37c9ac8083761a8f6288696638cfb8e4f51feda05f5",
+        "final.game.gz": "8c27455d36053bd51b53c88da7efcac5a6b8f7bd5f2ad14e8cc2244047894f51",
+        "world.checksums": "27d341fc152c8dac9b4050f0f139369f621b073bbe9ac756de09e5bcaf42d230"
+      }
+    },
+    "contention": {
+      "trace_replay_save_identical": true,
+      "candidate_digests_identical": true,
+      "runs": 12,
+      "hashes": {
+        "game.replay.checksums": "31bfb975e096441e69b82c89e3cda5c94c2c6e9da3ed1dda8883672d029547e8",
+        "game.replay": "7973a640ab1186b5a966c134868d21e7f483ffab701d630092ad56da5a966196",
+        "final.game.gz": "fc4e90d49048eb278111f3045d8b71911188af0243ade4258b66a16341cc7c4c",
+        "world.checksums": "e58efa0a860b50ccb35b774ffc6b52a6b275ab079e9cdd13be226aef87addad8"
+      }
+    }
+  },
+  "timing_refresh": "not rerun after master integration; historical measurements remain labeled as pre-integration",
+  "disabled_verification": {
+    "identical": true,
+    "runs": 18
+  }
+}
