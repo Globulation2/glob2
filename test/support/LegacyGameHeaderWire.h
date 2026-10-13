@@ -11,7 +11,7 @@ namespace glob2test
 {
 // Synthetic historical fixtures start from a current header. Remove the entire
 // format-153 catalog and format-155 statistics delay before transforming older
-// fields (formats152 and earlier). The catalog framing
+// fields (formats 152 and earlier). The catalog framing
 // is the published chunk count followed by length-prefixed 256 KiB chunks.
 inline void removeModernHeaderFields(std::string& bytes, const GameHeader& header,
                                         size_t followingBytes = 0)
