@@ -10,6 +10,7 @@
 #include <cmath>
 #include <optional>
 #include <stdexcept>
+#include "SoftwareRasterSources.h"
 
 namespace GAGCore
 {
@@ -44,20 +45,20 @@ class SoftwareRenderBackend final : public RenderBackend
 	RenderOperations counts;
     // Development execution controls are fixed for this backend lifetime.
     const RenderExecution execution = renderExecution();
-    static constexpr std::size_t MaximumCommands = 1024, MaximumSourceBytes = 4u * 1024u * 1024u;
+    static constexpr std::size_t MaximumCommands = 1024;
     static constexpr std::size_t MaximumBins = 4096, MaximumReferences = 65536;
-    RenderWorkReservation metadataReservation, sourceReservation;
+    RenderWorkReservation metadataReservation;
     bool metadataAdmitted = false;
     bool admitMetadata()
     {
-        // Covers command/source control storage, maximum bins/references,
+        // Covers command/source-cache control storage, maximum bins/references,
         // two bounded tile/serial sampling scratch slots.
         if (!metadataAdmitted) metadataAdmitted = metadataReservation.reserve(2u*1024u*1024u);
         return metadataAdmitted;
     }
     std::vector<SurfaceRaster::RasterCommand> commands;
-    std::vector<std::unique_ptr<Uint32[]>> snapshots;
-    std::size_t sourceBytes = 0;
+    detail::RasterSourceCache sourceCache;
+    std::vector<detail::RasterSourceCache::Lease> snapshots;
     bool failedRaster = false;
     struct Tile
     {
@@ -67,6 +68,8 @@ class SoftwareRenderBackend final : public RenderBackend
     // Owner-only workspaces retain bounded capacity between synchronous batches.
     std::vector<Tile> tiles;
     std::vector<std::size_t> references;
+    struct RasterJob { std::size_t begin = 0, end = 0; };
+    std::vector<RasterJob> jobs;
 
     SDL_Rect visibleBounds(SDL_Rect destination, SDL_Rect clip) const
     {
@@ -81,10 +84,10 @@ class SoftwareRenderBackend final : public RenderBackend
         // Commands borrow snapshot pixels; clear them before releasing inputs.
         commands.clear();
         snapshots.clear();
-        sourceBytes = 0;
-        sourceReservation.release();
+
         tiles.clear();
         references.clear();
+        jobs.clear();
     }
 
     bool recordFill(SDL_Rect dst, SDL_Color color)
@@ -109,75 +112,68 @@ class SoftwareRenderBackend final : public RenderBackend
         commands.push_back(command);
         return true;
     }
-    bool recordBlit(SDL_Surface *source, SDL_Rect src, SDL_Rect dst, Uint8 alpha, bool opaque)
+    bool recordBlit(SDL_Surface *source, SDL_Rect src, SDL_Rect dst, Uint8 alpha, bool opaque,
+                    const void *identity = nullptr, std::uint64_t revision = 0)
     {
         if (execution == RenderExecution::Immediate || source->format != target->format ||
             source->format != SDL_PIXELFORMAT_ARGB8888)
             return false;
-        if (alpha == 0)
-            return true;
+        if (alpha == 0) return true;
         const auto clip = outputClip();
         const auto visible = visibleBounds(dst, clip);
-        if (SDL_RectEmpty(&visible))
-            return true;
-        if (!admitMetadata())
+        if (SDL_RectEmpty(&visible)) return true;
+        if (!admitMetadata()) return false;
+        Uint32 colorKey;
+        if (SDL_GetSurfaceColorKey(source, &colorKey)) return false;
+        SDL_Rect retained{};
+        const SDL_Rect available{0, 0, source->w, source->h};
+        if (!SDL_GetRectIntersection(&src, &available, &retained)) return true;
+        if (commands.size() == MaximumCommands) flush();
+
+        // Distinct SDL descriptors may alias the target, including negative-pitch
+        // views. Such reads must observe earlier draws and never reuse cached pixels.
+        const auto range = [](SDL_Surface *surface) {
+            const auto first = reinterpret_cast<std::uintptr_t>(surface->pixels);
+            const auto row = reinterpret_cast<std::uintptr_t>(
+                static_cast<const Uint8 *>(surface->pixels) +
+                std::ptrdiff_t(surface->h - 1) * surface->pitch);
+            return std::pair{std::min(first, row), std::max(first, row) + std::size_t(surface->w) * 4};
+        };
+        const auto [first, last] = range(source);
+        const auto [targetFirst, targetLast] = range(target);
+        const bool aliased = first < targetLast && targetFirst < last;
+        if (aliased) { flush(); sourceCache.erase(identity); }
+        // Cache only regions that can survive warm-set trimming. Larger draws
+        // retain the same bounded per-draw regional capture as anonymous views.
+        const bool reusable = identity && !aliased && source->pitch > 0 &&
+            std::size_t(retained.w) * retained.h * 4 <= detail::RasterSourceCache::RetainedBytes;
+        const auto cacheIdentity = reusable ? identity : nullptr;
+        if (!reusable && std::size_t(retained.w) * retained.h * 4 > detail::RasterSourceCache::MaximumBytes)
             return false;
-        Uint32 key;
-        if (SDL_GetSurfaceColorKey(source, &key))
-            return false;
-        // Snapshot every borrowed source at capture time. This also freezes
-        // aliased surface views; allocation identity cannot affect sampling.
-        SDL_Rect available{0, 0, source->w, source->h}, retained;
-        if (!SDL_GetRectIntersection(&src, &available, &retained))
-            return true;
-        const std::size_t bytes = std::size_t(retained.w) * retained.h * 4;
-        if (bytes > MaximumSourceBytes)
-            return false;
-        if (commands.size() == MaximumCommands || sourceBytes + bytes > MaximumSourceBytes)
+        auto captured = sourceCache.capture(cacheIdentity, revision, *source, retained);
+        if (!captured)
+        {
+            // Joining releases queued leases that cache eviction could not free.
             flush();
-        // A read from our target must observe earlier recorded and SDL draws.
-        const auto first = reinterpret_cast<std::uintptr_t>(source->pixels);
-        const auto last = first + std::size_t(source->pitch) * source->h;
-        const auto targetFirst = reinterpret_cast<std::uintptr_t>(target->pixels);
-        const auto targetLast = targetFirst + std::size_t(target->pitch) * target->h;
-        if (first < targetLast && targetFirst < last)
-            flush();
-        // Failed allocation/locking must release only this uncommitted capture.
-        RenderWorkReservation captureReservation;
-        if (!captureReservation.reserve(bytes)) {
-            flush();
-            if (!captureReservation.reserve(bytes)) return false;
+            captured = sourceCache.capture(cacheIdentity, revision, *source, retained);
+            if (!captured) return false;
         }
-        PERF_SCOPE_TIME(RasterSnapshot);
-        // Every sample is replaced below; avoid a redundant zero-fill pass.
-        auto pixels = std::make_unique_for_overwrite<Uint32[]>(std::size_t(retained.w) * retained.h);
-        if (!SDL_LockSurface(source))
-            throw std::runtime_error(SDL_GetError());
-        for (int y = 0; y < retained.h; ++y)
-            std::memcpy(pixels.get() + y * retained.w,
-                        static_cast<const Uint8 *>(source->pixels) +
-                            (retained.y + y) * source->pitch + retained.x * 4,
-                        retained.w * 4);
-        SDL_UnlockSurface(source);
         SurfaceRaster::RasterCommand command;
         command.kind = SurfaceRaster::RasterCommand::Kind::Blit;
-        command.source = {reinterpret_cast<const Uint8 *>(pixels.get()), retained.w, retained.h,
-                          retained.w * 4, *SDL_GetPixelFormatDetails(source->format)};
-        command.sourceRect = {src.x - retained.x, src.y - retained.y, src.w, src.h};
+        command.source = {reinterpret_cast<const Uint8 *>(captured->pixels.get()),
+                          captured->region.w, captured->region.h, captured->region.w * 4,
+                          *SDL_GetPixelFormatDetails(source->format)};
+        command.sourceRect = {src.x - captured->region.x, src.y - captured->region.y, src.w, src.h};
         command.destination = dst;
         command.clip = clip;
         command.opacity = alpha;
         command.opaque = opaque;
-        counts.rasterSnapshotBytes += bytes;
-        // Reserve both slots before changing recorder ownership.
         if (commands.size() == commands.capacity())
             commands.reserve(std::min(MaximumCommands, std::max(std::size_t(32), commands.capacity()*2)));
         if (snapshots.size() == snapshots.capacity())
             snapshots.reserve(std::min(MaximumCommands, std::max(std::size_t(32), snapshots.capacity()*2)));
-        snapshots.push_back(std::move(pixels));
+        snapshots.push_back(std::move(captured));
         commands.push_back(command);
-        sourceReservation.absorb(captureReservation);
-        sourceBytes += bytes;
         return true;
     }
     void drainGeometry()
@@ -197,6 +193,7 @@ class SoftwareRenderBackend final : public RenderBackend
         drainGeometry();
         tiles.clear();
         references.clear();
+        jobs.clear();
         bool tiled = execution == RenderExecution::Parallel && PresentationWork::current;
         {
             PERF_SCOPE_TIME(RasterBinning);
@@ -243,18 +240,41 @@ class SoftwareRenderBackend final : public RenderBackend
                         visit(commands[i],
                               [&](std::size_t tile) { references[tiles[tile].end++] = i; });
                     std::erase_if(tiles, [](const auto &tile) { return tile.begin == tile.end; });
+                    // Pack neighboring disjoint tiles to amortize dispatcher
+                    // overhead. Keep the old callback's reference and pixel
+                    // ceilings, including mostly clipped or tiny commands.
+                    // Each reference covers at most 128*128 pixels, so sixteen
+                    // references also bound summed clipped work to 262144 pixels.
+                    constexpr std::size_t maximumJobReferences = 16;
+                    std::size_t first = 0, jobReferences = 0;
+                    for (std::size_t index = 0; index < tiles.size(); ++index)
+                    {
+                        const auto &tile = tiles[index];
+                        const auto tileReferences = tile.end - tile.begin;
+                        if (index != first &&
+                            jobReferences + tileReferences > maximumJobReferences)
+                        {
+                            jobs.push_back({first, index});
+                            first = index;
+                            jobReferences = 0;
+                        }
+                        jobReferences += tileReferences;
+                    }
+                    if (first < tiles.size()) jobs.push_back({first, tiles.size()});
                 }
             }
         }
         counts.rasterTiles += tiled ? tiles.size() : 0;
         counts.rasterReferences += tiled ? references.size() : 0;
+        counts.rasterJobs += tiled ? jobs.size() : 0;
         counts.rasterSerialBatches += !tiled;
         counts.rasterPeakRetainedBytes = std::max(
             counts.rasterPeakRetainedBytes,
-            std::uint64_t(sourceBytes + commands.capacity() * sizeof(SurfaceRaster::RasterCommand) +
+            std::uint64_t(sourceCache.bytes() + commands.capacity() * sizeof(SurfaceRaster::RasterCommand) +
                           snapshots.capacity() * sizeof(decltype(snapshots)::value_type) +
                           tiles.capacity() * sizeof(Tile) +
                           references.capacity() * sizeof(std::size_t) +
+                          jobs.capacity() * sizeof(RasterJob) +
                           2*128*sizeof(std::int64_t)));
         // Lock exactly once on the owner, before exposing stable target pixels.
         if (!SDL_LockSurface(target))
@@ -271,13 +291,17 @@ class SoftwareRenderBackend final : public RenderBackend
         {
             PERF_SCOPE_TIME(RasterBatch);
             if (tiled)
-                executePresentationJobs(tiles.size(),
+                executePresentationJobs(jobs.size(),
                                         [&](std::size_t index)
                                         {
-                                            const auto &tile = tiles[index];
-                                            for (std::size_t i = tile.begin; i < tile.end; ++i)
-                                                SurfaceRaster::executeCommand(
-                                                    commands[references[i]], output, tile.region);
+                                            const auto &job = jobs[index];
+                                            for (std::size_t tileIndex = job.begin; tileIndex < job.end; ++tileIndex)
+                                            {
+                                                const auto &tile = tiles[tileIndex];
+                                                for (std::size_t i = tile.begin; i < tile.end; ++i)
+                                                    SurfaceRaster::executeCommand(
+                                                        commands[references[i]], output, tile.region);
+                                            }
                                         });
             else
             {
@@ -436,7 +460,7 @@ class SoftwareRenderBackend final : public RenderBackend
         if (execution != RenderExecution::Immediate)
         {
             PERF_SCOPE_TIME(RasterCapture);
-            if (recordBlit(source, sourceRect, mapped, alpha, opaque))
+            if (recordBlit(source, sourceRect, mapped, alpha, opaque, key, revision))
                 return;
         }
 		// Direct writes must follow earlier queued triangles, not overtake them.
@@ -460,20 +484,25 @@ class SoftwareRenderBackend final : public RenderBackend
             color.a, SurfaceRaster::FillBlend::SourceOver);
         return true;
     }
-    bool blitPixels(SDL_Surface *source, const SDL_Rect &src, const SDL_Rect &dst, Uint8 alpha) override
+    bool blitPixels(const void *key, SDL_Surface *source, std::uint64_t revision,
+                    const SDL_Rect &src, const SDL_Rect &dst, Uint8 alpha) override
     {
         ++counts.blits;
         if (execution != RenderExecution::Immediate)
         {
             PERF_SCOPE_TIME(RasterCapture);
-            if (recordBlit(source, src, dst, alpha, false))
-                return true;
+            if (recordBlit(source, src, dst, alpha, false, key, revision)) return true;
         }
         flush();
         TargetClip clip(target, outputClip());
         SurfaceRaster::blit(target, source, src, dst, alpha, false, SurfaceRaster::BlitBlend::Triangle);
         return true;
     }
+    bool blitPixels(SDL_Surface *source, const SDL_Rect &src, const SDL_Rect &dst, Uint8 alpha) override
+    {
+        return blitPixels(nullptr, source, 0, src, dst, alpha);
+    }
+
     void blitLinear(const void *,SDL_Surface *source,std::uint64_t,const SDL_Rect &src,const SDL_FRect &dst,Uint8 alpha) override {
         ++counts.blits;flush();TargetClip clip(target,outputClip());
         const SDL_FRect mapped{float((dst.x*scale+offsetX)*nativeX),float((dst.y*scale+offsetY)*nativeY),float(dst.w*scale*nativeX),float(dst.h*scale*nativeY)};
@@ -512,16 +541,24 @@ class SoftwareRenderBackend final : public RenderBackend
 		++counts.triangles;
 		fallback().screenTriangles(vertices);
 	}
-	RenderOperations operations() const override { return counts; }
+	RenderOperations operations() const override {
+        auto result = counts;
+        result.rasterSourceRetainedBytes = sourceCache.bytes();
+        result.rasterSnapshotBytes = sourceCache.copiedBytes();
+        result.rasterSourceReuses = sourceCache.reuses();
+        return result;
+    }
 	void forget(const void *key) override
 	{
         flush();
+        sourceCache.erase(key);
 		if (geometry)
 			geometry->forget(key);
 	}
 	void reset() override
 	{
 		flush();
+        sourceCache.clear();
 		geometry.reset();
 	}
 	void flush() override
@@ -532,10 +569,14 @@ class SoftwareRenderBackend final : public RenderBackend
     void discardFrame() noexcept override
     {
         clearSegment();
+        sourceCache.clear();
         geometry.reset();
         failedRaster = false;
 	}
-	void present() override { flush(); }
+    void present() override {
+        flush();
+        sourceCache.trim();
+    }
 	void logicalSize(int, int) override { reset(); }
 	void nativeLogicalSize(int width, int height) override
 	{

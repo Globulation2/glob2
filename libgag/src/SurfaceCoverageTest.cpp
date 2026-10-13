@@ -290,4 +290,317 @@ TEST_SUITE("SurfaceCoverage")
         CHECK(pixel(cpu,4,2)==std::array<int,3>{85,0,0});
     }
 
+    TEST_CASE("packed raster jobs bound references and preserve disjoint tile painter order")
+    {
+        struct ReverseJobs : PresentationWork
+        {
+            std::vector<std::size_t> counts;
+            void executePresentationJobs(std::size_t count,
+                                         const std::function<void(std::size_t)> &job) override
+            {
+                counts.push_back(count);
+                // Reverse callback order makes accidental inter-job overlap visible.
+                for (std::size_t index = count; index > 0; --index) job(index - 1);
+            }
+        } dispatcher;
+        PresentationWorkScope scope(dispatcher);
+        constexpr int tileCount = 20, edge = 128, width = tileCount * edge;
+        for (const bool tiny : {false, true})
+            for (const unsigned perTile : {1u, 2u, 16u})
+            {
+                INFO("tiny " << tiny << " commands per tile " << perTile);
+                using Surface = std::unique_ptr<SDL_Surface, decltype(&SDL_DestroySurface)>;
+                Surface actual(SDL_CreateSurface(width, edge, SDL_PIXELFORMAT_ARGB8888), SDL_DestroySurface);
+                Surface expected(SDL_CreateSurface(width, edge, SDL_PIXELFORMAT_ARGB8888), SDL_DestroySurface);
+                REQUIRE(actual); REQUIRE(expected);
+                REQUIRE(SDL_FillSurfaceRect(actual.get(), nullptr, 0xff173b61));
+                REQUIRE(SDL_FillSurfaceRect(expected.get(), nullptr, 0xff173b61));
+                const auto draw = [&](RenderBackend &backend)
+                {
+                    for (int tile = 0; tile < tileCount; ++tile)
+                        for (unsigned command = 0; command < perTile; ++command)
+                            REQUIRE(backend.fillPixels(
+                                {tile * edge, 0, tiny ? 1 : edge, tiny ? 1 : edge},
+                                {Uint8(tile * 13), Uint8(command * 17), 191, 79}));
+                    backend.flush();
+                };
+                {
+                    glob2test::ScopedEnvironment mode("GLOB2_RENDER_EXECUTION", "immediate");
+                    auto backend = makeSoftwareRenderBackend(expected.get());
+                    draw(*backend);
+                }
+                glob2test::ScopedEnvironment mode("GLOB2_RENDER_EXECUTION", "parallel");
+                auto backend = makeSoftwareRenderBackend(actual.get());
+                const auto before = dispatcher.counts.size();
+                draw(*backend);
+                const auto operations = backend->operations();
+                const unsigned tilesPerJob = 16 / perTile;
+                const unsigned expectedJobs = (tileCount + tilesPerJob - 1) / tilesPerJob;
+                REQUIRE(dispatcher.counts.size() == before + 1);
+                CHECK(dispatcher.counts.back() == expectedJobs);
+                CHECK(operations.rasterJobs == expectedJobs);
+                CHECK(operations.rasterTiles == tileCount);
+                CHECK(operations.rasterReferences == tileCount * perTile);
+                CHECK(operations.rasterSerialBatches == 0);
+                for (int y = 0; y < edge; ++y)
+                    CHECK(std::memcmp(static_cast<const Uint8 *>(actual->pixels) + y * actual->pitch,
+                                      static_cast<const Uint8 *>(expected->pixels) + y * expected->pitch,
+                                      std::size_t(width) * 4) == 0);
+            }
+    }
+    TEST_CASE("dense raster tiles retain serial fallback before job packing")
+    {
+        struct NoJobs : PresentationWork
+        {
+            void executePresentationJobs(std::size_t,
+                                         const std::function<void(std::size_t)> &) override
+            { FAIL("dense tiles must not dispatch optional work"); }
+        } dispatcher;
+        glob2test::ScopedEnvironment mode("GLOB2_RENDER_EXECUTION", "parallel");
+        PresentationWorkScope scope(dispatcher);
+        using Surface = std::unique_ptr<SDL_Surface, decltype(&SDL_DestroySurface)>;
+        Surface target(SDL_CreateSurface(128, 128, SDL_PIXELFORMAT_ARGB8888), SDL_DestroySurface);
+        REQUIRE(target);
+        auto backend = makeSoftwareRenderBackend(target.get());
+        for (int i = 0; i < 17; ++i)
+            REQUIRE(backend->fillPixels({0, 0, 1, 1}, {31, 77, Uint8(i), 255}));
+        backend->flush();
+        CHECK(backend->operations().rasterSerialBatches == 1);
+        CHECK(backend->operations().rasterJobs == 0);
+        Uint32 pixel = 0;
+        std::memcpy(&pixel, target->pixels, 4);
+        CHECK(pixel == 0xff1f4d10);
+    }
+
+    TEST_CASE("revisioned source captures share crops and retain pending old revisions")
+    {
+        for (const char *execution : {"serial", "parallel"})
+        {
+            glob2test::ScopedEnvironment mode("GLOB2_RENDER_EXECUTION", execution);
+            const auto available = RenderWorkReservation::available();
+            {
+                using Surface = std::unique_ptr<SDL_Surface, decltype(&SDL_DestroySurface)>;
+                Surface target(SDL_CreateSurface(16, 4, SDL_PIXELFORMAT_ARGB8888), SDL_DestroySurface);
+                Surface source(SDL_CreateSurface(4, 2, SDL_PIXELFORMAT_ARGB8888), SDL_DestroySurface);
+                REQUIRE(target); REQUIRE(source);
+                REQUIRE(SDL_FillSurfaceRect(target.get(), nullptr, 0xff000000));
+                REQUIRE(SDL_FillSurfaceRect(source.get(), nullptr, 0xffff0000));
+                const SDL_Rect right{2, 0, 2, 2};
+                REQUIRE(SDL_FillSurfaceRect(source.get(), &right, 0xff0000ff));
+                auto backend = makeSoftwareRenderBackend(target.get());
+                const int identity = 0;
+                REQUIRE(backend->blitPixels(&identity, source.get(), 1, {0,0,4,2}, {0,0,4,2}, 255));
+                REQUIRE(backend->blitPixels(&identity, source.get(), 1, right, {2,0,2,2}, 255));
+                CHECK(backend->operations().rasterSnapshotBytes == 32);
+                CHECK(backend->operations().rasterSourceReuses == 1);
+                REQUIRE(SDL_FillSurfaceRect(source.get(), nullptr, 0xff00ff00));
+                REQUIRE(backend->blitPixels(&identity, source.get(), 2, {0,0,2,2}, {4,0,2,2}, 255));
+                CHECK(backend->operations().rasterSourceRetainedBytes == 48);
+                backend->present();
+                CHECK(backend->operations().rasterSourceRetainedBytes == 16);
+                const auto read = [&](int x) { Uint32 value; std::memcpy(&value, static_cast<Uint8*>(target->pixels)+x*4, 4); return value; };
+                CHECK(read(0) == 0xffff0000);
+                CHECK(read(2) == 0xff0000ff);
+                CHECK(read(4) == 0xff00ff00);
+                REQUIRE(backend->blitPixels(&identity, source.get(), 2, {1,0,1,1}, {6,0,1,1}, 255));
+                backend->present();
+                CHECK(read(6) == 0xff00ff00);
+                // A crop outside the retained region takes a new immutable copy.
+                REQUIRE(backend->blitPixels(&identity, source.get(), 2, right, {8,0,2,2}, 255));
+                backend->present();
+                CHECK(read(8) == 0xff00ff00);
+                CHECK(backend->operations().rasterSnapshotBytes == 64);
+                CHECK(backend->operations().rasterSourceReuses == 2);
+                backend->forget(&identity);
+                CHECK(backend->operations().rasterSourceRetainedBytes == 0);
+            }
+            CHECK(RenderWorkReservation::available() == available);
+        }
+    }
+    TEST_CASE("raw and null-key sources freeze each capture independently")
+    {
+        glob2test::ScopedEnvironment mode("GLOB2_RENDER_EXECUTION", "serial");
+        using Surface = std::unique_ptr<SDL_Surface, decltype(&SDL_DestroySurface)>;
+        Surface target(SDL_CreateSurface(8, 2, SDL_PIXELFORMAT_ARGB8888), SDL_DestroySurface);
+        Surface source(SDL_CreateSurface(2, 2, SDL_PIXELFORMAT_ARGB8888), SDL_DestroySurface);
+        REQUIRE(target); REQUIRE(source);
+        auto backend = makeSoftwareRenderBackend(target.get());
+        REQUIRE(SDL_FillSurfaceRect(source.get(), nullptr, 0xffff0000));
+        REQUIRE(backend->blitPixels(source.get(), {0,0,2,2}, {0,0,2,2}, 255));
+        REQUIRE(SDL_FillSurfaceRect(source.get(), nullptr, 0xff0000ff));
+        REQUIRE(backend->blitPixels(nullptr, source.get(), 1, {0,0,2,2}, {2,0,2,2}, 255));
+        REQUIRE(SDL_FillSurfaceRect(source.get(), nullptr, 0xff00ff00));
+        REQUIRE(backend->blitPixels(nullptr, source.get(), 1, {0,0,2,2}, {4,0,2,2}, 255));
+        source.reset();
+        backend->present();
+        const auto read = [&](int x) { Uint32 value; std::memcpy(&value, static_cast<Uint8*>(target->pixels)+x*4, 4); return value; };
+        CHECK(read(0) == 0xffff0000);
+        CHECK(read(2) == 0xff0000ff);
+        CHECK(read(4) == 0xff00ff00);
+        CHECK(backend->operations().rasterSourceReuses == 0);
+        CHECK(backend->operations().rasterSnapshotBytes == 48);
+        CHECK(backend->operations().rasterSourceRetainedBytes == 0);
+    }
+    TEST_CASE("keyed borrowed sources reuse owned copies and invalidate geometry or forgotten identities")
+    {
+        glob2test::ScopedEnvironment mode("GLOB2_RENDER_EXECUTION", "serial");
+        using Surface = std::unique_ptr<SDL_Surface, decltype(&SDL_DestroySurface)>;
+        std::array<Uint32,4> pixels{0xffff0000,0xffff0000,0xffff0000,0xffff0000};
+        Surface target(SDL_CreateSurface(8, 8, SDL_PIXELFORMAT_ARGB8888), SDL_DestroySurface);
+        Surface view(SDL_CreateSurfaceFrom(2,2,SDL_PIXELFORMAT_ARGB8888,pixels.data(),8), SDL_DestroySurface);
+        REQUIRE(target); REQUIRE(view);
+        auto backend = makeSoftwareRenderBackend(target.get());
+        const int identity = 0;
+        REQUIRE(backend->blitPixels(&identity, view.get(), 1, {0,0,2,2}, {0,0,2,2}, 255));
+        backend->present();
+        REQUIRE(backend->blitPixels(&identity, view.get(), 1, {0,0,2,2}, {2,0,2,2}, 255));
+        backend->present();
+        CHECK(backend->operations().rasterSourceReuses == 1);
+        pixels.fill(0xff0000ff);
+        REQUIRE(backend->blitPixels(&identity, view.get(), 2, {0,0,2,2}, {4,0,2,2}, 255));
+        backend->present();
+        backend->forget(&identity);
+        pixels.fill(0xff00ff00);
+        // Reuse the exact key and pixel address, as a new source lifetime may.
+        REQUIRE(backend->blitPixels(&identity, view.get(), 1, {0,0,2,2}, {0,3,2,2}, 255));
+        backend->present();
+        Surface resized(SDL_CreateSurfaceFrom(4,1,SDL_PIXELFORMAT_ARGB8888,pixels.data(),16), SDL_DestroySurface);
+        REQUIRE(resized);
+        pixels.fill(0xffaa00bb);
+        // Geometry is independently part of the contract even if a caller's
+        // revision remains unchanged while replacing an SDL descriptor.
+        REQUIRE(backend->blitPixels(&identity, resized.get(), 1, {0,0,4,1}, {0,6,4,1}, 255));
+        backend->present();
+        const auto read = [&](int x,int y) { Uint32 value; std::memcpy(&value, static_cast<Uint8*>(target->pixels)+y*target->pitch+x*4, 4); return value; };
+        CHECK(read(0,0) == 0xffff0000);
+        CHECK(read(2,0) == 0xffff0000);
+        CHECK(read(4,0) == 0xff0000ff);
+        CHECK(read(0,3) == 0xff00ff00);
+        CHECK(read(0,6) == 0xffaa00bb);
+        CHECK(backend->operations().rasterSourceReuses == 1);
+        CHECK(backend->operations().rasterSnapshotBytes == 64);
+        backend->reset();
+        CHECK(backend->operations().rasterSourceRetainedBytes == 0);
+    }
+    TEST_CASE("aliased revisioned views observe queued drawing and never reuse source captures")
+    {
+        for (const bool flipped : {false,true})
+        {
+            glob2test::ScopedEnvironment mode("GLOB2_RENDER_EXECUTION", "serial");
+            using Surface = std::unique_ptr<SDL_Surface, decltype(&SDL_DestroySurface)>;
+            Surface target(SDL_CreateSurface(8,2,SDL_PIXELFORMAT_ARGB8888), SDL_DestroySurface);
+            REQUIRE(target);
+            Surface view(SDL_CreateSurfaceFrom(2,2,SDL_PIXELFORMAT_ARGB8888,target->pixels,target->pitch), SDL_DestroySurface);
+            REQUIRE(view);
+            if (flipped) {
+                view->pixels = static_cast<Uint8*>(target->pixels)+target->pitch;
+                view->pitch = -target->pitch;
+            }
+            auto backend = makeSoftwareRenderBackend(target.get());
+            const int identity = 0;
+            REQUIRE(backend->fillPixels({0,0,2,2},{255,0,0,255}));
+            REQUIRE(backend->blitPixels(&identity, view.get(), 1, {0,0,2,2}, {2,0,2,2}, 255));
+            REQUIRE(backend->fillPixels({0,0,2,2},{0,0,255,255}));
+            REQUIRE(backend->blitPixels(&identity, view.get(), 1, {0,0,2,2}, {4,0,2,2}, 255));
+            backend->present();
+            Uint32 red,blue;
+            std::memcpy(&red, static_cast<Uint8*>(target->pixels)+2*4,4);
+            std::memcpy(&blue, static_cast<Uint8*>(target->pixels)+4*4,4);
+            CHECK(red == 0xffff0000);
+            CHECK(blue == 0xff0000ff);
+            CHECK(backend->operations().rasterSourceReuses == 0);
+            CHECK(backend->operations().rasterSourceRetainedBytes == 0);
+        }
+    }
+    TEST_CASE("source cache pressure bounds live copies and leaves a small warm set after present")
+    {
+        glob2test::ScopedEnvironment mode("GLOB2_RENDER_EXECUTION", "serial");
+        const auto available = RenderWorkReservation::available();
+        {
+            using Surface = std::unique_ptr<SDL_Surface, decltype(&SDL_DestroySurface)>;
+            Surface target(SDL_CreateSurface(8,8,SDL_PIXELFORMAT_ARGB8888), SDL_DestroySurface);
+            REQUIRE(target);
+            auto backend = makeSoftwareRenderBackend(target.get());
+            std::vector<Surface> sources;
+            for (unsigned i=0;i<21;++i)
+            {
+                sources.emplace_back(SDL_CreateSurface(256,256,SDL_PIXELFORMAT_ARGB8888), SDL_DestroySurface);
+                REQUIRE(sources.back());
+                REQUIRE(SDL_FillSurfaceRect(sources.back().get(),nullptr,0xff000000+i));
+                REQUIRE(backend->blitPixels(sources.back().get(), sources.back().get(), 1,
+                                            {0,0,256,256}, {0,0,1,1}, 255));
+                CHECK(backend->operations().rasterSourceRetainedBytes <= 4u*1024u*1024u);
+                CHECK(RenderWorkReservation::available() >= available-6u*1024u*1024u);
+            }
+            CHECK(backend->operations().rasterBatches > 0); // Pressure finished an earlier pinned segment.
+            backend->present();
+            CHECK(backend->operations().rasterSourceRetainedBytes == 1024u*1024u);
+            const auto copied = backend->operations().rasterSnapshotBytes;
+            REQUIRE(backend->blitPixels(sources.back().get(), sources.back().get(), 1,
+                                        {0,0,256,256}, {0,0,1,1}, 255));
+            CHECK(backend->operations().rasterSnapshotBytes == copied);
+            CHECK(backend->operations().rasterSourceReuses == 1);
+            REQUIRE(backend->blitPixels(sources.front().get(), sources.front().get(), 1,
+                                        {0,0,256,256}, {1,0,1,1}, 255));
+            CHECK(backend->operations().rasterSnapshotBytes == copied+256u*256u*4u);
+            backend->discardFrame();
+            CHECK(backend->operations().rasterSourceRetainedBytes == 0);
+        }
+        CHECK(RenderWorkReservation::available() == available);
+    }
+
+    TEST_CASE("native frame completion trims cached sources after map transform restores immediate drawing [display]")
+    {
+        glob2test::ScopedEnvironment mode("GLOB2_RENDER_EXECUTION", "serial");
+        const auto available = RenderWorkReservation::available();
+        {
+            glob2test::ToolkitScope toolkit;
+            auto *context = Toolkit::initGraphic(96,96,0,"source frame boundary");
+            REQUIRE(context);
+            std::vector<std::unique_ptr<DrawableSurface>> sources;
+            for (unsigned i=0;i<5;++i)
+            {
+                sources.push_back(std::make_unique<DrawableSurface>(256,256));
+                sources.back()->drawFilledRect(0,0,256,256,Color(31+int(i),77,191));
+            }
+            context->beginMapTransform(1,1,0,0,0,96,96);
+            for (unsigned i=0;i<sources.size();++i)
+                context->drawSurface(int(i)*12,0,8,8,sources[i].get());
+            context->endMapTransform();
+            REQUIRE(context->backendOperations().rasterSourceRetainedBytes == 5u*256u*256u*4u);
+            context->nextFrame();
+            CHECK(context->backendOperations().rasterSourceRetainedBytes == 1024u*1024u);
+            CHECK(pixel(*context,2,2) == std::array<int,3>{31,77,191});
+            CHECK(pixel(*context,50,2) == std::array<int,3>{35,77,191});
+        }
+        CHECK(RenderWorkReservation::available() == available);
+    }
+
+    TEST_CASE("large revisioned sources share requested regions without copying offscreen pixels")
+    {
+        glob2test::ScopedEnvironment mode("GLOB2_RENDER_EXECUTION", "serial");
+        const auto available = RenderWorkReservation::available();
+        {
+            glob2test::ToolkitScope toolkit;
+            Toolkit::initGraphic(64,64,0,"large source crops");
+            DrawableSurface source(512,1024), target(32,16);
+            source.drawFilledRect(0,0,512,1024,Color(31,77,191));
+            black(target);
+            auto backend = makeSoftwareRenderBackend(target.getSDLSurface());
+            const SDL_Rect crop{127,510,8,4};
+            for (int x : {0,16})
+                REQUIRE(backend->blitPixels(&source,source.getSDLSurface(),source.contentRevision(),
+                                           crop,{x,0,8,4},255));
+            backend->flush();
+            CHECK(backend->operations().rasterSnapshotBytes == 8u*4u*4u);
+            CHECK(backend->operations().rasterSourceReuses == 1);
+            CHECK(backend->operations().rasterSourceRetainedBytes == 8u*4u*4u);
+            backend->forget(&source);
+            CHECK(backend->operations().rasterSourceRetainedBytes == 0);
+            CHECK(pixel(target,2,2) == std::array<int,3>{31,77,191});
+            CHECK(pixel(target,18,2) == std::array<int,3>{31,77,191});
+        }
+        CHECK(RenderWorkReservation::available() == available);
+    }
+
 }

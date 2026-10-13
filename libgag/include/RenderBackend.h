@@ -14,6 +14,8 @@ struct RenderOperations
 {
 	std::uint64_t blits = 0, fills = 0, triangles = 0;
     std::uint64_t rasterBatches = 0, rasterTiles = 0, rasterReferences = 0, rasterSerialBatches = 0;
+    std::uint64_t rasterJobs = 0;
+    std::uint64_t rasterSourceReuses = 0, rasterSourceRetainedBytes = 0;
     std::uint64_t rasterSnapshotBytes = 0, rasterPeakRetainedBytes = 0, rasterFallbacks = 0;
 };
 
@@ -64,6 +66,12 @@ class RenderBackend
     // Optional CPU path for tile edges already snapped to backing pixels.
     // Retains the current clip and ordering without a logical-coordinate round trip.
     virtual bool blitPixels(SDL_Surface*, const SDL_Rect&, const SDL_Rect&, Uint8) { return false; }
+    // A non-null key/revision follows the same mutation/forget contract as blit.
+    // The default preserves backends that do not cache backing-pixel sources.
+    virtual bool blitPixels(const void *, SDL_Surface *source, std::uint64_t,
+                            const SDL_Rect &src, const SDL_Rect &dst, Uint8 alpha) {
+        return blitPixels(source, src, dst, alpha);
+    }
     virtual bool fillPixels(const SDL_Rect&, SDL_Color) { return false; }
 };
 std::unique_ptr<RenderBackend> makeSoftwareRenderBackend(SDL_Surface *surface);
