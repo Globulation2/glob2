@@ -1,0 +1,98 @@
+{
+  "analysis_sha256": "3dad61543b8ed8aa879b93f8ac6a14c996cab8637cfc3674f4dae65f829b96cc",
+  "checks": [
+    {
+      "case": "identical-arms",
+      "synthetic_matches": 96,
+      "passed": true,
+      "primary": {
+        "starvation_rate": {
+          "original_rate": 0.001,
+          "cached_rate": 0.001,
+          "rate_ratio": 1.0,
+          "relative_delta": 0.0,
+          "match_bootstrap_95_ratio_interval": [
+            1.0,
+            1.0
+          ],
+          "randomization_p": 1.0,
+          "holm_p": 1,
+          "significant_at_0_05": false
+        },
+        "critical_hunger_fraction": {
+          "original_rate": 0.01,
+          "cached_rate": 0.01,
+          "rate_ratio": 1.0,
+          "relative_delta": 0.0,
+          "match_bootstrap_95_ratio_interval": [
+            1.0,
+            1.0
+          ],
+          "randomization_p": 1.0,
+          "holm_p": 1,
+          "significant_at_0_05": false
+        },
+        "construction_rate": {
+          "original_rate": 0.0033333333333333335,
+          "cached_rate": 0.0033333333333333335,
+          "rate_ratio": 1.0,
+          "relative_delta": 0.0,
+          "match_bootstrap_95_ratio_interval": [
+            1.0,
+            1.0
+          ],
+          "randomization_p": 1.0,
+          "holm_p": 1,
+          "significant_at_0_05": false
+        }
+      }
+    },
+    {
+      "case": "known-effects",
+      "synthetic_matches": 96,
+      "passed": true,
+      "primary": {
+        "starvation_rate": {
+          "original_rate": 0.001,
+          "cached_rate": 0.0015,
+          "rate_ratio": 1.5,
+          "relative_delta": 0.5,
+          "match_bootstrap_95_ratio_interval": [
+            1.5,
+            1.5
+          ],
+          "randomization_p": 9.999000099990002e-05,
+          "holm_p": 0.00029997000299970003,
+          "significant_at_0_05": true
+        },
+        "critical_hunger_fraction": {
+          "original_rate": 0.01,
+          "cached_rate": 0.015,
+          "rate_ratio": 1.5,
+          "relative_delta": 0.5,
+          "match_bootstrap_95_ratio_interval": [
+            1.5,
+            1.5
+          ],
+          "randomization_p": 9.999000099990002e-05,
+          "holm_p": 0.00029997000299970003,
+          "significant_at_0_05": true
+        },
+        "construction_rate": {
+          "original_rate": 0.0033333333333333335,
+          "cached_rate": 0.0026666666666666666,
+          "rate_ratio": 0.7999999999999999,
+          "relative_delta": -0.20000000000000007,
+          "match_bootstrap_95_ratio_interval": [
+            0.7999999999999999,
+            0.7999999999999999
+          ],
+          "randomization_p": 9.999000099990002e-05,
+          "holm_p": 0.00029997000299970003,
+          "significant_at_0_05": true
+        }
+      }
+    }
+  ],
+  "limits": "Synthetic sanity checks verify known ratios, clustered tuple resampling for degenerate distributions, null/effect label tests and Holm bounds; they do not establish statistical coverage for real match distributions."
+}
