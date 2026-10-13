@@ -1,0 +1,442 @@
+[
+  {
+    "type": "save",
+    "variant": "master",
+    "count": 1,
+    "command": [
+      "/home/bradley/.codex/worktrees/cc21/glob2/artifacts/gradient-cpu-profile/master-baseline",
+      "game",
+      "run",
+      "--load-game",
+      "/home/bradley/.codex/worktrees/cc21/glob2/artifacts/gradient-cpu-audit/closeout/final/validate-128-established-8-before/final.game.gz",
+      "--ticks",
+      "6656",
+      "--compute-threads",
+      "1",
+      "--gpu",
+      "off",
+      "--telemetry",
+      "checksums",
+      "--save",
+      "final",
+      "--write-replay",
+      "--data-dir",
+      "/home/bradley/.codex/worktrees/cc21/glob2/data",
+      "--output-dir",
+      "/home/bradley/.codex/worktrees/cc21/glob2/artifacts/gradient-cpu-audit/continuation-1-master",
+      "--profile",
+      "audit-continuation"
+    ],
+    "checksum": 1247453203,
+    "trace": "/home/bradley/.codex/worktrees/cc21/glob2/artifacts/gradient-cpu-audit/continuation-1-master/world.checksums"
+  },
+  {
+    "type": "save",
+    "variant": "fixed",
+    "count": 1,
+    "command": [
+      "/home/bradley/.codex/worktrees/cc21/glob2/artifacts/gradient-cpu-audit/candidate-release",
+      "game",
+      "run",
+      "--load-game",
+      "/home/bradley/.codex/worktrees/cc21/glob2/artifacts/gradient-cpu-audit/closeout/final/validate-128-established-8-before/final.game.gz",
+      "--ticks",
+      "6656",
+      "--compute-threads",
+      "1",
+      "--gpu",
+      "off",
+      "--telemetry",
+      "checksums",
+      "--save",
+      "final",
+      "--write-replay",
+      "--data-dir",
+      "/home/bradley/.codex/worktrees/cc21/glob2/data",
+      "--output-dir",
+      "/home/bradley/.codex/worktrees/cc21/glob2/artifacts/gradient-cpu-audit/continuation-1-fixed",
+      "--profile",
+      "audit-continuation"
+    ],
+    "checksum": 1247453203,
+    "trace": "/home/bradley/.codex/worktrees/cc21/glob2/artifacts/gradient-cpu-audit/continuation-1-fixed/world.checksums"
+  },
+  {
+    "type": "canonical",
+    "variant": "fixed",
+    "count": 1,
+    "command": [
+      "/home/bradley/.codex/worktrees/cc21/glob2/artifacts/gradient-cpu-audit/candidate-release",
+      "match",
+      "verify",
+      "/home/bradley/.codex/worktrees/cc21/glob2/test/fixtures/multiplayer/FourSquares1.g2mr",
+      "--map-file",
+      "/home/bradley/.codex/worktrees/cc21/glob2/maps/FourSquares1.map.gz",
+      "--compute-threads",
+      "1",
+      "--output-dir",
+      "/home/bradley/.codex/worktrees/cc21/glob2/artifacts/gradient-cpu-audit/golden-final-1"
+    ],
+    "verdict": {
+      "orderRejections": [],
+      "outcome": {
+        "finalTick": 841,
+        "replayHash": "4297382591ac02f7cadd9e2cf7b43b2688f25139ae386cf8318466ed6f9730a0",
+        "resultHash": "75a7e2cf6c7ec3d04e167071f79f43ded4435fc817a234333bacf3fc0e3f81ff",
+        "teams": [
+          {
+            "outcome": "unresolved",
+            "prestige": 0,
+            "team": 0
+          },
+          {
+            "outcome": "unresolved",
+            "prestige": 0,
+            "team": 1
+          },
+          {
+            "outcome": "unresolved",
+            "prestige": 0,
+            "team": 2
+          },
+          {
+            "outcome": "unresolved",
+            "prestige": 0,
+            "team": 3
+          }
+        ]
+      },
+      "verdict": "verified"
+    }
+  },
+  {
+    "type": "save",
+    "variant": "master",
+    "count": 2,
+    "command": [
+      "/home/bradley/.codex/worktrees/cc21/glob2/artifacts/gradient-cpu-profile/master-baseline",
+      "game",
+      "run",
+      "--load-game",
+      "/home/bradley/.codex/worktrees/cc21/glob2/artifacts/gradient-cpu-audit/closeout/final/validate-128-established-8-before/final.game.gz",
+      "--ticks",
+      "6656",
+      "--compute-threads",
+      "2",
+      "--gpu",
+      "off",
+      "--telemetry",
+      "checksums",
+      "--save",
+      "final",
+      "--write-replay",
+      "--data-dir",
+      "/home/bradley/.codex/worktrees/cc21/glob2/data",
+      "--output-dir",
+      "/home/bradley/.codex/worktrees/cc21/glob2/artifacts/gradient-cpu-audit/continuation-2-master",
+      "--profile",
+      "audit-continuation"
+    ],
+    "checksum": 1247453203,
+    "trace": "/home/bradley/.codex/worktrees/cc21/glob2/artifacts/gradient-cpu-audit/continuation-2-master/world.checksums"
+  },
+  {
+    "type": "save",
+    "variant": "fixed",
+    "count": 2,
+    "command": [
+      "/home/bradley/.codex/worktrees/cc21/glob2/artifacts/gradient-cpu-audit/candidate-release",
+      "game",
+      "run",
+      "--load-game",
+      "/home/bradley/.codex/worktrees/cc21/glob2/artifacts/gradient-cpu-audit/closeout/final/validate-128-established-8-before/final.game.gz",
+      "--ticks",
+      "6656",
+      "--compute-threads",
+      "2",
+      "--gpu",
+      "off",
+      "--telemetry",
+      "checksums",
+      "--save",
+      "final",
+      "--write-replay",
+      "--data-dir",
+      "/home/bradley/.codex/worktrees/cc21/glob2/data",
+      "--output-dir",
+      "/home/bradley/.codex/worktrees/cc21/glob2/artifacts/gradient-cpu-audit/continuation-2-fixed",
+      "--profile",
+      "audit-continuation"
+    ],
+    "checksum": 1247453203,
+    "trace": "/home/bradley/.codex/worktrees/cc21/glob2/artifacts/gradient-cpu-audit/continuation-2-fixed/world.checksums"
+  },
+  {
+    "type": "canonical",
+    "variant": "fixed",
+    "count": 2,
+    "command": [
+      "/home/bradley/.codex/worktrees/cc21/glob2/artifacts/gradient-cpu-audit/candidate-release",
+      "match",
+      "verify",
+      "/home/bradley/.codex/worktrees/cc21/glob2/test/fixtures/multiplayer/FourSquares1.g2mr",
+      "--map-file",
+      "/home/bradley/.codex/worktrees/cc21/glob2/maps/FourSquares1.map.gz",
+      "--compute-threads",
+      "2",
+      "--output-dir",
+      "/home/bradley/.codex/worktrees/cc21/glob2/artifacts/gradient-cpu-audit/golden-final-2"
+    ],
+    "verdict": {
+      "orderRejections": [],
+      "outcome": {
+        "finalTick": 841,
+        "replayHash": "4297382591ac02f7cadd9e2cf7b43b2688f25139ae386cf8318466ed6f9730a0",
+        "resultHash": "75a7e2cf6c7ec3d04e167071f79f43ded4435fc817a234333bacf3fc0e3f81ff",
+        "teams": [
+          {
+            "outcome": "unresolved",
+            "prestige": 0,
+            "team": 0
+          },
+          {
+            "outcome": "unresolved",
+            "prestige": 0,
+            "team": 1
+          },
+          {
+            "outcome": "unresolved",
+            "prestige": 0,
+            "team": 2
+          },
+          {
+            "outcome": "unresolved",
+            "prestige": 0,
+            "team": 3
+          }
+        ]
+      },
+      "verdict": "verified"
+    }
+  },
+  {
+    "type": "save",
+    "variant": "master",
+    "count": 4,
+    "command": [
+      "/home/bradley/.codex/worktrees/cc21/glob2/artifacts/gradient-cpu-profile/master-baseline",
+      "game",
+      "run",
+      "--load-game",
+      "/home/bradley/.codex/worktrees/cc21/glob2/artifacts/gradient-cpu-audit/closeout/final/validate-128-established-8-before/final.game.gz",
+      "--ticks",
+      "6656",
+      "--compute-threads",
+      "4",
+      "--gpu",
+      "off",
+      "--telemetry",
+      "checksums",
+      "--save",
+      "final",
+      "--write-replay",
+      "--data-dir",
+      "/home/bradley/.codex/worktrees/cc21/glob2/data",
+      "--output-dir",
+      "/home/bradley/.codex/worktrees/cc21/glob2/artifacts/gradient-cpu-audit/continuation-4-master",
+      "--profile",
+      "audit-continuation"
+    ],
+    "checksum": 1247453203,
+    "trace": "/home/bradley/.codex/worktrees/cc21/glob2/artifacts/gradient-cpu-audit/continuation-4-master/world.checksums"
+  },
+  {
+    "type": "save",
+    "variant": "fixed",
+    "count": 4,
+    "command": [
+      "/home/bradley/.codex/worktrees/cc21/glob2/artifacts/gradient-cpu-audit/candidate-release",
+      "game",
+      "run",
+      "--load-game",
+      "/home/bradley/.codex/worktrees/cc21/glob2/artifacts/gradient-cpu-audit/closeout/final/validate-128-established-8-before/final.game.gz",
+      "--ticks",
+      "6656",
+      "--compute-threads",
+      "4",
+      "--gpu",
+      "off",
+      "--telemetry",
+      "checksums",
+      "--save",
+      "final",
+      "--write-replay",
+      "--data-dir",
+      "/home/bradley/.codex/worktrees/cc21/glob2/data",
+      "--output-dir",
+      "/home/bradley/.codex/worktrees/cc21/glob2/artifacts/gradient-cpu-audit/continuation-4-fixed",
+      "--profile",
+      "audit-continuation"
+    ],
+    "checksum": 1247453203,
+    "trace": "/home/bradley/.codex/worktrees/cc21/glob2/artifacts/gradient-cpu-audit/continuation-4-fixed/world.checksums"
+  },
+  {
+    "type": "canonical",
+    "variant": "fixed",
+    "count": 4,
+    "command": [
+      "/home/bradley/.codex/worktrees/cc21/glob2/artifacts/gradient-cpu-audit/candidate-release",
+      "match",
+      "verify",
+      "/home/bradley/.codex/worktrees/cc21/glob2/test/fixtures/multiplayer/FourSquares1.g2mr",
+      "--map-file",
+      "/home/bradley/.codex/worktrees/cc21/glob2/maps/FourSquares1.map.gz",
+      "--compute-threads",
+      "4",
+      "--output-dir",
+      "/home/bradley/.codex/worktrees/cc21/glob2/artifacts/gradient-cpu-audit/golden-final-4"
+    ],
+    "verdict": {
+      "orderRejections": [],
+      "outcome": {
+        "finalTick": 841,
+        "replayHash": "4297382591ac02f7cadd9e2cf7b43b2688f25139ae386cf8318466ed6f9730a0",
+        "resultHash": "75a7e2cf6c7ec3d04e167071f79f43ded4435fc817a234333bacf3fc0e3f81ff",
+        "teams": [
+          {
+            "outcome": "unresolved",
+            "prestige": 0,
+            "team": 0
+          },
+          {
+            "outcome": "unresolved",
+            "prestige": 0,
+            "team": 1
+          },
+          {
+            "outcome": "unresolved",
+            "prestige": 0,
+            "team": 2
+          },
+          {
+            "outcome": "unresolved",
+            "prestige": 0,
+            "team": 3
+          }
+        ]
+      },
+      "verdict": "verified"
+    }
+  },
+  {
+    "type": "save",
+    "variant": "master",
+    "count": 8,
+    "command": [
+      "/home/bradley/.codex/worktrees/cc21/glob2/artifacts/gradient-cpu-profile/master-baseline",
+      "game",
+      "run",
+      "--load-game",
+      "/home/bradley/.codex/worktrees/cc21/glob2/artifacts/gradient-cpu-audit/closeout/final/validate-128-established-8-before/final.game.gz",
+      "--ticks",
+      "6656",
+      "--compute-threads",
+      "8",
+      "--gpu",
+      "off",
+      "--telemetry",
+      "checksums",
+      "--save",
+      "final",
+      "--write-replay",
+      "--data-dir",
+      "/home/bradley/.codex/worktrees/cc21/glob2/data",
+      "--output-dir",
+      "/home/bradley/.codex/worktrees/cc21/glob2/artifacts/gradient-cpu-audit/continuation-8-master",
+      "--profile",
+      "audit-continuation"
+    ],
+    "checksum": 1247453203,
+    "trace": "/home/bradley/.codex/worktrees/cc21/glob2/artifacts/gradient-cpu-audit/continuation-8-master/world.checksums"
+  },
+  {
+    "type": "save",
+    "variant": "fixed",
+    "count": 8,
+    "command": [
+      "/home/bradley/.codex/worktrees/cc21/glob2/artifacts/gradient-cpu-audit/candidate-release",
+      "game",
+      "run",
+      "--load-game",
+      "/home/bradley/.codex/worktrees/cc21/glob2/artifacts/gradient-cpu-audit/closeout/final/validate-128-established-8-before/final.game.gz",
+      "--ticks",
+      "6656",
+      "--compute-threads",
+      "8",
+      "--gpu",
+      "off",
+      "--telemetry",
+      "checksums",
+      "--save",
+      "final",
+      "--write-replay",
+      "--data-dir",
+      "/home/bradley/.codex/worktrees/cc21/glob2/data",
+      "--output-dir",
+      "/home/bradley/.codex/worktrees/cc21/glob2/artifacts/gradient-cpu-audit/continuation-8-fixed",
+      "--profile",
+      "audit-continuation"
+    ],
+    "checksum": 1247453203,
+    "trace": "/home/bradley/.codex/worktrees/cc21/glob2/artifacts/gradient-cpu-audit/continuation-8-fixed/world.checksums"
+  },
+  {
+    "type": "canonical",
+    "variant": "fixed",
+    "count": 8,
+    "command": [
+      "/home/bradley/.codex/worktrees/cc21/glob2/artifacts/gradient-cpu-audit/candidate-release",
+      "match",
+      "verify",
+      "/home/bradley/.codex/worktrees/cc21/glob2/test/fixtures/multiplayer/FourSquares1.g2mr",
+      "--map-file",
+      "/home/bradley/.codex/worktrees/cc21/glob2/maps/FourSquares1.map.gz",
+      "--compute-threads",
+      "8",
+      "--output-dir",
+      "/home/bradley/.codex/worktrees/cc21/glob2/artifacts/gradient-cpu-audit/golden-final-8"
+    ],
+    "verdict": {
+      "orderRejections": [],
+      "outcome": {
+        "finalTick": 841,
+        "replayHash": "4297382591ac02f7cadd9e2cf7b43b2688f25139ae386cf8318466ed6f9730a0",
+        "resultHash": "75a7e2cf6c7ec3d04e167071f79f43ded4435fc817a234333bacf3fc0e3f81ff",
+        "teams": [
+          {
+            "outcome": "unresolved",
+            "prestige": 0,
+            "team": 0
+          },
+          {
+            "outcome": "unresolved",
+            "prestige": 0,
+            "team": 1
+          },
+          {
+            "outcome": "unresolved",
+            "prestige": 0,
+            "team": 2
+          },
+          {
+            "outcome": "unresolved",
+            "prestige": 0,
+            "team": 3
+          }
+        ]
+      },
+      "verdict": "verified"
+    }
+  }
+]

@@ -1,0 +1,23 @@
+PASS glob2-unit-tests GradientBFS (7 cases) (0.0s)
+PASS glob2-unit-tests GradientPreparationContract (6 cases) (0.0s)
+PASS glob2-unit-tests FieldGradient (14 cases) (0.1s)
+PASS glob2-unit-tests RuntimeGradientBackend (21 cases) (0.9s)
+PASS glob2-unit-tests (2 cases) (0.2s)
+PASS glob2-unit-tests ComputeExecutor (44 cases) (1.5s)
+FAIL glob2-unit-tests GradientPipeline (22 cases) (4.0s)
+PASS glob2-unit-tests PathGradient (7 cases) (4.8s)
+PASS glob2-unit-tests Gradient (12 cases) (13.9s)
+PASS glob2-unit-tests TerrainRegistry (11 cases) (22.6s)
+
+===== FAIL glob2-unit-tests GradientPipeline (22 cases) =====
+GLOB2_TEST_BUILD compiler=13.3.0 platform=Linux pointer_bits=64
+GLOB2_TEST_PROVENANCE {"compiler": "g++", "dirty": true, "flags": {"CCFLAGS": "-O0 -g1 -fdebug-prefix-map=/home/bradley/.codex/worktrees/cc21/glob2=.", "CPPDEFINES": "GLOB2_OFFICIAL_INSTANCE_ORIGIN \\\"https://app.glob2online.com\\\" GLOB2_OFFICIAL_INSTANCE_FORMER_ORIGINS \\\"https://glob2online.com\\\" HAVE_CONFIG_H GLOB2_RENDER_SHADER_DIR \\\"/home/bradley/.codex/worktrees/cc21/glob2/build/linux/client/debug/dev-dev_fast-true-linker-auto/shaders\\\" SDL_MAIN_HANDLED", "CXXFLAGS": "-std=gnu++20 -Wall -fPIC", "LINKFLAGS": "-Wl,-rpath,$ORIGIN/../lib/glob2 -Wall -Wl,-rpath,/home/bradley/glob2/build/sdl3/prefix/lib -Wl,--enable-new-dtags"}, "revision": "f96aba387b48e7069cf9676bebfbfd620b1c10ab", "sourceStatus": [" M docs/development/gradient-benchmarks.md", " M src/field/BackendSession.h", " M src/field/GradientPropagation.h", " M src/field/GradientRelaxation.h", " M src/field/GradientSelection.h", " M src/field/RuntimeGradientBackendTest.cpp", " M src/map/gradient/BuildingGradientSearch.cpp", " M src/map/gradient/GradientPipeline.h", " M src/map/gradient/GradientPipelineHarness.cpp", " M src/map/gradient/GradientPreparationTest.cpp", " M src/map/gradient/SnapshotGradient.cpp"], "sourceTreeSha256": "a88601a1fc75230cc1ac4f525c7024feb02f3ecda910214f4678b5e6e6b466a8"}
+
+[failure] nullable GPU preparation recovers once on the original worker without device reentry: true == false
+src/map/gradient/GradientPipelineHarness.cpp:892:
+CHECK( job.cpuOnly==(job.data[0]!=90) ) is NOT correct!
+  values: CHECK( true == false )
+
+
+9 passed, 1 failed, 0 skipped (48.0s of test time)
+[run_tests] JUnit report: artifacts/gradient-cpu-audit/unit.xml (146 cases)

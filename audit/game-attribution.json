@@ -1,0 +1,38 @@
+{
+  "before": {
+    "periodic_solver": 1785571564,
+    "immediate_solver": 76220894,
+    "periodic_seed": 292451712,
+    "material_cache": 96215143,
+    "solver_functions": [
+      {
+        "instructions": 1785571564,
+        "function": "void gradient_kernel::propagateFieldCPU<gradient_kernel::propagateTerrainField<gradient_preparation::propagate(gradient_preparation::Request const&, SimulationSnapshot::Handle const&, unsigned short*, GradientWorkspace&)::{lambda(unsigned long)#1}>(unsigned short*, int, int, field::Grid, GradientWorkspace&, gradient_preparation::propagate(gradient_preparation::Request const&, SimulationSnapshot::Handle const&, unsigned short*, GradientWorkspace&)::{lambda(unsigned long)#1}, bool, CellRuleTable const&, unsigned int, gradient_kernel::CostIdentity)::{lambda(unsigned long)#1}>(unsigned short*, int, int, field::Grid, GradientWorkspace&, gradient_kernel::propagateTerrainField<gradient_preparation::propagate(gradient_preparation::Request const&, SimulationSnapshot::Handle const&, unsigned short*, GradientWorkspace&)::{lambda(unsigned long)#1}>(unsigned short*, int, int, field::Grid, GradientWorkspace&, gradient_preparation::propagate(gradient_preparation::Request const&, SimulationSnapshot::Handle const&, unsigned short*, GradientWorkspace&)::{lambda(unsigned long)#1}, bool, CellRuleTable const&, unsigned int, gradient_kernel::CostIdentity)::{lambda(unsigned long)#1}) [/home/bradley/.codex/worktrees/cc21/glob2/artifacts/gradient-cpu-audit/before-symbols]"
+      }
+    ]
+  },
+  "fixed": {
+    "periodic_solver": 1815066127,
+    "immediate_solver": 77469890,
+    "periodic_seed": 485290304,
+    "material_cache": 96215143,
+    "solver_functions": [
+      {
+        "instructions": 1815066127,
+        "function": "void gradient_kernel::propagateFieldCPU<gradient_kernel::propagateTerrainField<gradient_preparation::propagate(gradient_preparation::Request const&, SimulationSnapshot::Handle const&, unsigned short*, GradientWorkspace&)::{lambda(unsigned long)#1}>(unsigned short*, int, int, field::Grid, GradientWorkspace&, gradient_preparation::propagate(gradient_preparation::Request const&, SimulationSnapshot::Handle const&, unsigned short*, GradientWorkspace&)::{lambda(unsigned long)#1}, bool, CellRuleTable const&, unsigned int, gradient_kernel::CostIdentity)::{lambda(unsigned long)#1}>(unsigned short*, int, int, field::Grid, GradientWorkspace&, gradient_kernel::propagateTerrainField<gradient_preparation::propagate(gradient_preparation::Request const&, SimulationSnapshot::Handle const&, unsigned short*, GradientWorkspace&)::{lambda(unsigned long)#1}>(unsigned short*, int, int, field::Grid, GradientWorkspace&, gradient_preparation::propagate(gradient_preparation::Request const&, SimulationSnapshot::Handle const&, unsigned short*, GradientWorkspace&)::{lambda(unsigned long)#1}, bool, CellRuleTable const&, unsigned int, gradient_kernel::CostIdentity)::{lambda(unsigned long)#1}) [/home/bradley/.codex/worktrees/cc21/glob2/artifacts/gradient-cpu-profile/after-symbols]"
+      }
+    ]
+  },
+  "candidate": {
+    "periodic_solver": 1785571214,
+    "immediate_solver": 76220894,
+    "periodic_seed": 290390404,
+    "material_cache": 96215143,
+    "solver_functions": [
+      {
+        "instructions": 1785571214,
+        "function": "void gradient_kernel::propagateFieldCPUVariant<true, gradient_preparation::(anonymous namespace)::batchCPU(gradient_preparation::PropagationField const&, unsigned short*)::{lambda(unsigned long)#2}>(unsigned short*, int, int, field::Grid, GradientWorkspace&, gradient_preparation::(anonymous namespace)::batchCPU(gradient_preparation::PropagationField const&, unsigned short*)::{lambda(unsigned long)#2}) [clone .constprop.0] [/home/bradley/.codex/worktrees/cc21/glob2/artifacts/gradient-cpu-audit/candidate-symbols]"
+      }
+    ]
+  }
+}

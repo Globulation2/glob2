@@ -1,0 +1,19 @@
+empty 1000000 281686
+rule_compile_builtin 1000 21016565
+rule_compile_mixed 1000 1314909855
+rule_clone 1000 4466487
+snapshot_project_release 1000000 58852391
+job_allocate_free 1000000 18764779
+output_allocate_free_128 1000000 58866216
+output_allocate_free_512 62500 3046232
+control_atomic_clear_null 1000000 21199516
+control_owner_clear_null 1000000 1097261
+backend_read 1000000 533327
+cpu_selection 1000000 2193840
+scoped_cpu_selection 1000000 509732
+backend_pending_disabled 1000000 1027520
+plan_choose_cpu 1000000 1114723
+host_reserve_release 1000000 5222460
+snapshot_pool_reuse 1000000 9677095
+snapshot_memory_accounting 100000 65085809
+job_bytes 672 handle_bytes 392 session_bytes 40 rule_bytes 42312

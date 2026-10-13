@@ -1,0 +1,44 @@
+<?xml version='1.0' encoding='utf-8'?>
+<testsuites tests="42" failures="0" errors="0" skipped="0"><testsuite name="GradientPreparation"><testcase classname="GradientPreparation" name="CPU snapshot dispatch preserves trivial fields and validates before its shortcut" time="0.45578" status="run" />
+  <testcase classname="GradientPreparation" name="all supported team masks match the scalar fields" time="0.599823" status="run" />
+  <testcase classname="GradientPreparation" name="cached natural goals follow immobile occupancy and live overlays" time="0.864135" status="run" />
+  <testcase classname="GradientPreparation" name="compact clearing traits preserve custom high-ID property combinations" time="0.677771" status="run" />
+  <testcase classname="GradientPreparation" name="compiled preparation tables preserve rule and catalog interpretation" time="0.513373" status="run" />
+  <testcase classname="GradientPreparation" name="compound passable material goals track depletion visibility and overlapping suppliers" time="0.50804" status="run" />
+  <testcase classname="GradientPreparation" name="concurrent lazy requests publish one complete resource field" time="0.477712" status="run" />
+  <testcase classname="GradientPreparation" name="concurrent preparation owns buffers and serializes dirty cache refresh" time="0.473873" status="run" />
+  <testcase classname="GradientPreparation" name="custom terrain and registry replacement preserve cached and direct seeds" time="0.580408" status="run" />
+  <testcase classname="GradientPreparation" name="explicit clearing overrides farm crop protection but never forbidden paint" time="0.456987" status="run" />
+  <testcase classname="GradientPreparation" name="map dimensions enforce power-of-two exponents before mutation" time="0.444312" status="run" />
+  <testcase classname="GradientPreparation" name="material plane and cache keys retain legacy seven-class identity" time="0.011823" status="run" />
+  <testcase classname="GradientPreparation" name="movement profile rejection rolls back previously appended swim classes" time="0.222621" status="run" />
+  <testcase classname="GradientPreparation" name="mutation and reset boundaries use current state" time="0.550725" status="run" />
+  <testcase classname="GradientPreparation" name="optional cache storage can be unavailable or over budget" time="2.07476" status="run" />
+  <testcase classname="GradientPreparation" name="periodic supplier snapshots subtract reservations and retain overlay seeds" time="0.569999" status="run" />
+  <testcase classname="GradientPreparation" name="published plane registry matches a sweep of live material fields" time="0.469347" status="run" />
+  <testcase classname="GradientPreparation" name="rejected corner identities preserve all compiled gradient tables" time="0.220888" status="run" />
+  <testcase classname="GradientPreparation" name="resource cache tracks cell writes and falls back through mutation bursts" time="2.84225" status="run" />
+  <testcase classname="GradientPreparation" name="seed cells match scalar predicates across policies and changing overlays" time="19.1539" status="run" />
+  <testcase classname="GradientPreparation" name="snapshot material templates refresh changed chunks and accept older snapshots" time="1.73596" status="run" />
+  <testcase classname="GradientPreparation" name="snapshot seeds preserve every periodic kind after the live world changes" time="0.765578" status="run" />
+  <testcase classname="GradientPreparation" name="supplier seed indexing rejects foreign and invalid building IDs in cached and direct fields" time="0.453221" status="run" />
+  <testcase classname="GradientPreparation" name="warm preparation keeps custom supplier unions exclusions penalties and overlays live" time="0.557699" status="run" />
+  </testsuite><testsuite name="src/map/gradient/GradientPreparationTest.cpp"><testcase classname="src/map/gradient/GradientPreparationTest.cpp" name="GradientPreparation/explicit snapshot batches isolate invalid fields and retain exact output" time="0.460546" status="run" />
+  <testcase classname="src/map/gradient/GradientPreparationTest.cpp" name="GradientPreparation/minimal GPU views release source graphs and recover exact CPU fields" time="7.20008" status="run" />
+  <testcase classname="src/map/gradient/GradientPreparationTest.cpp" name="GradientPreparation/minimal view pressure declines without moving original seeds" time="0.474923" status="run" />
+  <testcase classname="src/map/gradient/GradientPreparationTest.cpp" name="GradientPreparation/modified terrain costs remain exact when field obstacles change" time="0.774933" status="run" />
+  </testsuite><testsuite name="VertexTerrain"><testcase classname="VertexTerrain" name="a cell's four corners paint it uniform and its neighbours mixed" time="0.213469" status="run" />
+  <testcase classname="VertexTerrain" name="a vertex write re-derives the four cells around it" time="0.215242" status="run" />
+  <testcase classname="VertexTerrain" name="compiled CPU seed columns preserve frozen rules when mixed rules grow" time="0.2123" status="run" />
+  <testcase classname="VertexTerrain" name="equal corners keep their terrain's exact rules" time="0" status="run" />
+  <testcase classname="VertexTerrain" name="every built-in pair combines into valid transition rules" time="0.000978" status="run" />
+  <testcase classname="VertexTerrain" name="grass directly against water is walkable and unbuildable" time="0" status="run" />
+  <testcase classname="VertexTerrain" name="ground costs follow the walkable corners and hazards take the worst" time="0" status="run" />
+  <testcase classname="VertexTerrain" name="mixed cells take the shore habitat and intersect explicit resource lists" time="0.211701" status="run" />
+  <testcase classname="VertexTerrain" name="mixed classic corners are exactly the retired shore profile" time="0" status="run" />
+  <testcase classname="VertexTerrain" name="old cell terrain moves onto the vertices it covers" time="0.214212" status="run" />
+  <testcase classname="VertexTerrain" name="snapshots keep the rule table they were taken with" time="0.214047" status="run" />
+  <testcase classname="VertexTerrain" name="terrain IDs of older files skip the retired shores" time="0" status="run" />
+  <testcase classname="VertexTerrain" name="the rule table numbers uniform rules by terrain and interns mixed ones in order" time="0.212186" status="run" />
+  <testcase classname="VertexTerrain" name="vertex terrain round-trips through packed and text saves" time="2.91512" status="run" />
+  </testsuite></testsuites>

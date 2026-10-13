@@ -1,0 +1,571 @@
+diff --git a/docs/development/gradient-benchmarks.md b/docs/development/gradient-benchmarks.md
+index af5e42999..dbfa90860 100644
+--- a/docs/development/gradient-benchmarks.md
++++ b/docs/development/gradient-benchmarks.md
+@@ -39,6 +39,20 @@ immutable rule owners. They cost six host bytes per rule, in addition to the
+ or rebuild a terrain lookup for each field. Both representations are compiled
+ and rolled back together, and preserve all eight movement classes.
+ 
++Complete CPU fields select scalar or SIMD execution before entering the cost-layer
++sweep. A resumable building search resolves its CPU choice once per resume; a
++later resume can use a newly selected variant without rebuilding the queues.
++CPU-selected periodic jobs use their captured decision directly, retaining the
++same input validation, trivial-field shortcut and fixed publication deadline.
++GPU ownership admission, host-budget reservations and device coordination are
++skipped for these jobs. Existing snapshot leases and pooled output buffers are
++still required for asynchronous CPU execution and survive backend switching.
++Rule insertion rebuilds prepared movement metadata only when adding a distinct
++cost profile. Its rollback journal copies only the active prepared alternative,
++so an ordinary insertion does not copy the 256-profile storage for every class.
++Default execution omits optional compute diagnostics; enable telemetry explicitly
++when measuring phase attribution, then disable it for default-path comparisons.
++
+ The generated predicates and shared residency state/range contracts do not establish GPU
+ preparation execution or qualify any platform. GPU preparation requires separate
+ kernel execution evidence and release measurements against CPU preparation using
+diff --git a/src/field/BackendSession.h b/src/field/BackendSession.h
+index 9bcb1b704..52ae2bba7 100644
+--- a/src/field/BackendSession.h
++++ b/src/field/BackendSession.h
+@@ -106,8 +106,11 @@ public:
+     }
+     void fail() {if(!failed.exchange(true))invalidateConfiguration();}
+     bool pending() const noexcept override {
++        // Map-owned initialization is serviced externally. CPU jobs must not
++        // poll global backend configuration from the executor's idle predicate.
++        if (externalInitialization.load() || !wantsGPU.load()) return false;
+         const auto selected=backend();
+-        return !externalInitialization.load() && wantsGPU.load() && isGPU(selected) &&
++        return isGPU(selected) &&
+             (selected==Backend::OpenCL ? prepareAccelerator && initializationState.load()==0 : prepareSelectedAccelerator && selectedInitialization[unsigned(selected)].load()==0);
+     }
+     void process() noexcept override {
+diff --git a/src/field/GradientPropagation.h b/src/field/GradientPropagation.h
+index 12e5db4c9..c72730442 100644
+--- a/src/field/GradientPropagation.h
++++ b/src/field/GradientPropagation.h
+@@ -23,8 +23,8 @@ namespace gradient_kernel
+ // every run; a completed field cannot be reused as its own seed buffer.
+ // The cap limits propagation, not the supplied seed values. Preserve those
+ // values even when a deferred seed lies beyond the last expandable cost layer.
+-template<class IsWater>
+-void propagateFieldCPU(std::uint16_t *gradient, int swimClass, int maxCost,
++template<bool Simd, class IsWater>
++void propagateFieldCPUVariant(std::uint16_t *gradient, int swimClass, int maxCost,
+ 	field::Grid geometry, GradientWorkspace &workspace, IsWater isWater)
+ {
+ 	auto *buckets = workspace.buckets.data();
+@@ -64,7 +64,7 @@ void propagateFieldCPU(std::uint16_t *gradient, int swimClass, int maxCost,
+ 				buckets[unsigned(cur) % BUCKETS].push(std::uint32_t(deferredSeeds[nextSeed].second));
+ 				pending++;
+ 			}
+-			expandBucket<decltype(weighted)::value>(gradient, buckets, pending, cur, limit,
++			expandBucketForCPU<decltype(weighted)::value, Simd>(gradient, buckets, pending, cur, limit,
+ 				geometry, waterSteps, waterAt);
+ 		}
+ 	};
+@@ -76,6 +76,18 @@ void propagateFieldCPU(std::uint16_t *gradient, int swimClass, int maxCost,
+ 		sweep(std::true_type(), waterSteps, isWater);
+ 	}
+ }
++// Keep the scalar/SIMD choice outside both the cell and cost-layer loops.
++// This also keeps the two compiled sweeps separate: a layer dispatch otherwise
++// changes register allocation inside the hot relaxation loop.
++template<class IsWater>
++void propagateFieldCPU(std::uint16_t* gradient, int swimClass, int maxCost,
++    field::Grid grid, GradientWorkspace& workspace, IsWater isWater)
++{
++    if (cpuBackend() == Backend::Scalar)
++        propagateFieldCPUVariant<false>(gradient, swimClass, maxCost, grid, workspace, isWater);
++    else
++        propagateFieldCPUVariant<true>(gradient, swimClass, maxCost, grid, workspace, isWater);
++}
+ // Same entry point for CPU and optional exact full-field accelerators. Resumed
+ // searches still use expandBucket, since their completed-layer state is observable.
+ template<class IsWater>
+diff --git a/src/field/GradientRelaxation.h b/src/field/GradientRelaxation.h
+index 23c49fc79..42feef0ab 100644
+--- a/src/field/GradientRelaxation.h
++++ b/src/field/GradientRelaxation.h
+@@ -286,23 +286,37 @@ namespace gradient_kernel
+ 		pending += queued() - queuedBefore;
+ 		pending -= count-begin;
+ 	}
+-	// Optional full-field references may pause between <=CHUNK entries. Positive
+-	// edge costs guarantee the current source bucket cannot be appended/reallocated
+-	// while retaining its original count and read offset. Required searches still
+-	// clear only after the complete layer, preserving their observable boundary.
++	// A complete field selects its CPU variant once, before entering its layer
++	// sweep. Resumable callers use the runtime wrapper at each completed layer.
++	template<bool Weighted, bool Simd, typename IsWater, typename Reserve=DefaultGradientReserve>
++	void expandBucketRangeForCPU(std::uint16_t* gradient,GradientBucket* queue,size_t& pending,
++		int cur,int limit,const field::Grid& grid,EntrySteps waterSteps,IsWater isWater,
++		std::size_t begin,std::size_t end,Reserve reserve={})
++	{
++		if(grid.powerOfTwo())
++			expandBucketRangeAddressed<Weighted,true,IsWater,Reserve,Simd>(gradient,queue,pending,cur,limit,grid,waterSteps,isWater,begin,end,reserve);
++		else
++			expandBucketRangeAddressed<Weighted,false,IsWater,Reserve,Simd>(gradient,queue,pending,cur,limit,grid,waterSteps,isWater,begin,end,reserve);
++	}
++	// Optional references may pause between <=CHUNK entries; required searches
++	// clear only after a complete layer, preserving their observable boundary.
+ 	template<bool Weighted,typename IsWater,typename Reserve=DefaultGradientReserve>
+ 	void expandBucketRange(std::uint16_t* gradient,GradientBucket* queue,size_t& pending,
+ 		int cur,int limit,const field::Grid& grid,EntrySteps waterSteps,IsWater isWater,
+ 		std::size_t begin,std::size_t end,Reserve reserve={})
+ 	{
+-        const auto dispatch=[&]<bool Simd>() {
+-            if(grid.powerOfTwo())
+-                expandBucketRangeAddressed<Weighted,true,IsWater,Reserve,Simd>(gradient,queue,pending,cur,limit,grid,waterSteps,isWater,begin,end,reserve);
+-            else
+-                expandBucketRangeAddressed<Weighted,false,IsWater,Reserve,Simd>(gradient,queue,pending,cur,limit,grid,waterSteps,isWater,begin,end,reserve);
+-        };
+-        if(cpuBackend()==Backend::Scalar)dispatch.template operator()<false>();
+-        else dispatch.template operator()<true>();
++		if(cpuBackend()==Backend::Scalar)
++			expandBucketRangeForCPU<Weighted,false>(gradient,queue,pending,cur,limit,grid,waterSteps,isWater,begin,end,reserve);
++		else
++			expandBucketRangeForCPU<Weighted,true>(gradient,queue,pending,cur,limit,grid,waterSteps,isWater,begin,end,reserve);
++	}
++	template<bool Weighted, bool Simd, typename IsWater>
++	void expandBucketForCPU(std::uint16_t* gradient,GradientBucket* queue,size_t& pending,
++		int cur,int limit,const field::Grid& grid,EntrySteps waterSteps,IsWater isWater)
++	{
++		auto& bucket=queue[unsigned(cur)%BUCKETS];
++		expandBucketRangeForCPU<Weighted,Simd>(gradient,queue,pending,cur,limit,grid,waterSteps,isWater,0,bucket.size);
++		bucket.clear();
+ 	}
+ 	// Choose geometry once for a complete layer; both paths share relaxation,
+ 	// bucket accounting and SIMD rules, including thin-grid aliasing.
+diff --git a/src/field/GradientSelection.h b/src/field/GradientSelection.h
+index 37b336e8f..077c4363a 100644
+--- a/src/field/GradientSelection.h
++++ b/src/field/GradientSelection.h
+@@ -199,18 +199,25 @@ inline Backend automaticCPU()
+ 	return Backend::Scalar;
+ }
+ inline thread_local std::optional<Backend> cpuOverride;
+-inline Backend cpuBackend()
++inline Backend resolvedCPUBackend(Backend b)
+ {
+-	const auto b = cpuOverride.value_or(backend());
+ 	return (b == Backend::Scalar || b == Backend::SSE2 || b == Backend::NEON) &&
+ 				   cpuVariantAvailable(b)
+ 			   ? b
+ 			   : automaticCPU();
+ }
++// Scoped choices are resolved once at the job boundary. Avoid loading global
++// configuration or probing CPU capabilities again for every completed layer.
++inline Backend cpuBackend()
++{
++	if (cpuOverride)
++		return *cpuOverride;
++	return resolvedCPUBackend(backend());
++}
+ struct CPUSelectionScope
+ {
+ 	std::optional<Backend> previous = cpuOverride;
+-	explicit CPUSelectionScope(Backend b) { cpuOverride = b; }
++	explicit CPUSelectionScope(Backend b) { cpuOverride = resolvedCPUBackend(b); }
+ 	// A scope has exactly one restoration owner, even across nested dispatch.
+ 	CPUSelectionScope(const CPUSelectionScope &) = delete;
+ 	CPUSelectionScope &operator=(const CPUSelectionScope &) = delete;
+diff --git a/src/field/RuntimeGradientBackendTest.cpp b/src/field/RuntimeGradientBackendTest.cpp
+index f874a0fe5..76b5338dc 100644
+--- a/src/field/RuntimeGradientBackendTest.cpp
++++ b/src/field/RuntimeGradientBackendTest.cpp
+@@ -139,6 +139,25 @@ TEST_SUITE("RuntimeGradientBackend")
+ 		}
+ 		CHECK(cpuOverride == original);
+ 	}
++	TEST_CASE("CPU scopes freeze resolved variants across preference changes")
++	{
++		using namespace gradient_kernel;
++		ConfigurationGuard guard;
++		setBackend(Backend::CPU);
++		const auto automatic = automaticCPU();
++		{
++			CPUSelectionScope scope(Backend::CPU);
++			CHECK(cpuOverride == automatic);
++			setBackend(Backend::Scalar);
++			CHECK(cpuBackend() == automatic);
++			{
++				CPUSelectionScope fallback(Backend::Vulkan);
++				CHECK(cpuBackend() == automatic);
++			}
++			CHECK(cpuBackend() == automatic);
++		}
++		CHECK(cpuBackend() == Backend::Scalar);
++	}
+ 	TEST_CASE("plan decisions retain the captured backend and compatible algorithm")
+ 	{
+ 		using namespace gradient_kernel;
+diff --git a/src/map/CellRules.cpp b/src/map/CellRules.cpp
+index 29a7d6047..b8c12dbff 100644
+--- a/src/map/CellRules.cpp
++++ b/src/map/CellRules.cpp
+@@ -2,6 +2,7 @@
+ #include "CellRules.h"
+ #include <algorithm>
+ #include <stdexcept>
++#include <type_traits>
+ 
+ CellRuleTable::CellRuleTable(std::shared_ptr<const TerrainRegistry> terrains,
+ 							 std::shared_ptr<const ResourceRegistry> resources)
+@@ -88,13 +89,18 @@ std::uint16_t CellRuleTable::add(const Key &key, bool prepare)
+ 		std::size_t entries, profiles, ids, steps;
+ 		unsigned minimum;
+ 		std::optional<TerrainRegistry::Movement::Prepared> prepared;
++		bool preparedChanged = false;
+ 	};
+ 	std::array<MovementCheckpoint, std::size(gradient_kernel::WATER_STEP)> checkpoints;
+ 	for (unsigned sw = 0; sw < movement_.size(); ++sw)
+ 	{
+ 		const auto &m = movement_[sw];
+-		checkpoints[sw] = {m.entries.size(), m.profiles.size(), m.profileIds.size(), m.steps.size(),
+-			m.minimum, prepare ? m.prepared : std::nullopt};
++		auto &checkpoint = checkpoints[sw];
++		checkpoint.entries = m.entries.size();
++		checkpoint.profiles = m.profiles.size();
++		checkpoint.ids = m.profileIds.size();
++		checkpoint.steps = m.steps.size();
++		checkpoint.minimum = m.minimum;
+ 	}
+ 	const auto originalLists = uniqueLists_.size();
+ 	const auto originalPermissions = permissions_.size();
+@@ -134,7 +140,18 @@ std::uint16_t CellRuleTable::add(const Key &key, bool prepare)
+ 			m.profileIds.push_back(static_cast<std::uint8_t>(profile));
+ 			const auto &p = rule.properties;
+ 			if (gradient_kernel::terrainAllowsGround(p,sw)) m.minimum = std::min(m.minimum, cost.cardinal);
+-			if (prepare) m.prepare();
++			if (prepare && (m.profiles.size() != checkpoints[sw].profiles || !m.prepared))
++			{
++				auto &checkpoint = checkpoints[sw];
++				// Prepared metadata depends only on distinct cost profiles. Journal
++				// it only when changing, and copy its active alternative: copying
++				// the variant itself also copies storage for the 256-profile case.
++				if (m.prepared) std::visit([&](const auto &old) {
++					checkpoint.prepared.emplace(std::in_place_type<std::decay_t<decltype(old)>>, old);
++				}, *m.prepared);
++				checkpoint.preparedChanged = true;
++				m.prepare();
++			}
+ 		}
+ 		GradientPreparationRule preparation;
+ 		for (unsigned sw = 0; sw < rule.ground.size(); ++sw)
+@@ -162,7 +179,13 @@ std::uint16_t CellRuleTable::add(const Key &key, bool prepare)
+ 			m.profileIds.resize(checkpoint.ids);
+ 			m.steps.resize(checkpoint.steps);
+ 			m.minimum = checkpoint.minimum;
+-			if (prepare) m.prepared = std::move(checkpoint.prepared);
++			if (checkpoint.preparedChanged)
++			{
++				if (checkpoint.prepared) std::visit([&](const auto &old) {
++					m.prepared.emplace(std::in_place_type<std::decay_t<decltype(old)>>, old);
++				}, *checkpoint.prepared);
++				else m.prepared.reset();
++			}
+ 		}
+ 		// compile() inserts at most one whitelist cache entry, as its last step.
+ 		// Existing entries remain immutable; only a newly inserted owner is erased.
+diff --git a/src/map/gradient/BuildingGradientSearch.cpp b/src/map/gradient/BuildingGradientSearch.cpp
+index d43963095..e62f9c87f 100644
+--- a/src/map/gradient/BuildingGradientSearch.cpp
++++ b/src/map/gradient/BuildingGradientSearch.cpp
+@@ -131,6 +131,9 @@ void BuildingGradientSearch::resolveToCost(int cost)
+ // Expands one whole cost layer per iteration until done() or the queues drain.
+ template <class Done> void BuildingGradientSearch::advance(Done done)
+ {
++	// A resume may select a different CPU variant from the previous resume,
++	// but every completed layer in this invocation uses one resolved choice.
++	gradient_kernel::CPUSelectionScope cpuSelection(gradient_kernel::cpuBackend());
+ 	auto sweep = [&](auto weighted, EntrySteps waterSteps, auto waterAt)
+ 	{
+ 		while (pending && !done())
+diff --git a/src/map/gradient/GradientPipeline.h b/src/map/gradient/GradientPipeline.h
+index efe89ad01..33cc328b5 100644
+--- a/src/map/gradient/GradientPipeline.h
++++ b/src/map/gradient/GradientPipeline.h
+@@ -44,7 +44,7 @@ public:
+ 		int swim = 0;
+ 		std::uint64_t due = 0;
+ 		bool superseded = false, done = false;
+-        bool cpuOnly=false; // Unsaved, original-worker ownership admission recovery.
++        bool cpuOnly=false; // Unsaved captured CPU choice, including original-worker recovery.
+         std::atomic<bool> cancelGPU{false};
+         // Standard shared_ptr atomic functions also work with pinned Emscripten libc++.
+         std::shared_ptr<gradient_kernel::OpenCLRequiredControl> requiredControl;
+@@ -189,7 +189,10 @@ private:
+                 const auto cpuStart=cpuTime<Collect>();
+             if constexpr (Collect) { if(diagnostics)handoffCpu.fetch_add(glob2::threadCpuDeltaNs(handoffStart,cpuStart),std::memory_order_relaxed); }
+                 if(gradient_kernel::isGPU(choice))gradient_kernel::recordGradientFallback(choice);
+-                if(gradient_kernel::isGPU(choice))job.cpuOnly=true;
++                // The captured decision already selected CPU execution. Bypass
++                // accelerator request construction and a second configuration
++                // read, including when this is an explicit CPU choice.
++                job.cpuOnly=true;
+                 work(job,scratch.propagation);
+             if constexpr (Collect) { propagationCpu.fetch_add(glob2::threadCpuDeltaNs(cpuStart,cpuTime<Collect>()),std::memory_order_relaxed); }
+             if constexpr (Collect) { cpuFields.fetch_add(1,std::memory_order_relaxed); }
+diff --git a/src/map/gradient/GradientPipelineHarness.cpp b/src/map/gradient/GradientPipelineHarness.cpp
+index a247fcf64..7e79cd502 100644
+--- a/src/map/gradient/GradientPipelineHarness.cpp
++++ b/src/map/gradient/GradientPipelineHarness.cpp
+@@ -827,6 +827,33 @@ TEST_CASE("proven gradient mismatch resolves tickets without recovery or publica
+     pipeline.reset();service->stop();delete[] field;
+ }
+ 
++TEST_CASE("explicit CPU jobs bypass device ownership and retain publication deadlines" * doctest::test_suite("GradientPipeline"))
++{
++    using namespace gradient_kernel;
++    struct Restore {Configuration applied=configuration(), requested=requestedBackendConfiguration();
++        ~Restore(){applyBackendConfiguration(applied);requestBackendConfiguration(requested);}} restore;
++    for (const auto mode : {Backend::CPU, Backend::Scalar, Backend::SSE2, Backend::NEON}) {
++        if (!cpuVariantAvailable(mode)) continue;
++        setBackend(mode);
++        TestGradientPipeline pipeline;
++        unsigned solved=0, owned=0;
++        pipeline.configure(1,2,1,[&](auto& job,auto&){
++            CHECK(job.cpuOnly); CHECK(cpuBackend()==resolvedCPUBackend(mode));
++            ++solved;job.data[0]=88;
++        });
++        pipeline.setAsyncWork([&](auto&,PlanDecision)->std::shared_ptr<OwnedGradientField>{++owned;return {};});
++        auto* field=new std::uint16_t[1]{};
++        pipeline.advance();pipeline.submit(&field,0,[](auto& job){
++            job.data[0]=77;
++            setBackend(Backend::Vulkan); // A later preference cannot reinterpret this CPU job.
++        });
++        pipeline.finish();CHECK(solved==1);CHECK(owned==0);CHECK(field[0]==0);
++        pipeline.advance();CHECK(field[0]==0);
++        pipeline.advance();CHECK(field[0]==88);
++        pipeline.reset();delete[] field;
++    }
++}
++
+ TEST_CASE("availability changes during seeding do not reinterpret captured CPU execution" * doctest::test_suite("GradientPipeline"))
+ {
+     using namespace gradient_kernel;
+@@ -862,7 +889,7 @@ TEST_CASE("nullable GPU preparation recovers once on the original worker without
+     REQUIRE(service->metrics().ready);
+     TestGradientPipeline pipeline,restored;
+     pipeline.configure(1,2,1,[state](auto& job,auto&){
+-        CHECK(job.cpuOnly==(job.data[0]!=90));
++        CHECK(job.cpuOnly); // Both explicit CPU and ownership recovery bypass device dispatch.
+         if(job.data[0]!=90&&!ComputeExecutor::workerSlot())state->worker=false;
+         ++state->cpu;job.data[0]+=11;
+     });
+diff --git a/src/map/gradient/GradientPreparationTest.cpp b/src/map/gradient/GradientPreparationTest.cpp
+index ce0b56172..a55f259c7 100644
+--- a/src/map/gradient/GradientPreparationTest.cpp
++++ b/src/map/gradient/GradientPreparationTest.cpp
+@@ -1503,50 +1503,94 @@ TEST_CASE("movement profile rejection rolls back previously appended swim classe
+ 		  doctest::test_suite("GradientPreparation"))
+ {
+ 	glob2test::HeadlessGlobals globals;
+-	CellRuleTable table(TerrainRegistry::builtins(), ResourceRegistry::builtins());
+-	// Force the final class's documented profile limit. Earlier classes have
+-	// already appended entries when this rejection occurs; rollback must cover
+-	// their prepared metadata as well as the unpublished derived record.
+-	auto &capped = const_cast<TerrainRegistry::Movement &>(table.movement(7));
+-	capped.profiles.assign(256, gradient_kernel::EntrySteps{1, 1});
+-	const auto original = table;
+-	const auto corners = CellRuleTable::key(GRASS, SAND, GRASS, SAND);
+-	CHECK_THROWS_AS(table.intern(corners), std::length_error);
+-	CHECK_FALSE(table.find(corners).has_value());
+-	CHECK(table.size() == original.size());
+-	CHECK(table.gradientPreparation().size() == original.gradientPreparation().size());
+-	for (unsigned swim = 0; swim < 8; ++swim)
++	for (const auto count : {8u, 9u})
+ 	{
+-		CHECK(table.openTerrainSeeds(swimAccessVariant(swim)) ==
+-			  original.openTerrainSeeds(swimAccessVariant(swim)));
+-		const auto &actual = table.movement(swim);
+-		const auto &expected = original.movement(swim);
+-		REQUIRE(actual.entries.size() == expected.entries.size());
+-		REQUIRE(actual.profiles.size() == expected.profiles.size());
+-		CHECK(actual.profileIds == expected.profileIds);
+-		CHECK(actual.steps == expected.steps);
+-		CHECK(actual.minimum == expected.minimum);
+-		REQUIRE(actual.prepared.has_value() == expected.prepared.has_value());
+-		if (actual.prepared)
+-			std::visit(
+-				[&](const auto &profile)
+-				{
+-					using Profile = std::remove_cvref_t<decltype(profile)>;
+-					const auto *previous = std::get_if<Profile>(&*expected.prepared);
+-					REQUIRE(previous != nullptr);
+-					CHECK(profile.terrainClasses == previous->terrainClasses);
+-					CHECK(profile.cardinalSlots == previous->cardinalSlots);
+-					CHECK(profile.diagonalSlots == previous->diagonalSlots);
+-					CHECK(profile.steps == previous->steps);
+-					CHECK(profile.maxAppends == previous->maxAppends);
+-					CHECK(profile.classCount == previous->classCount);
+-					CHECK(profile.stepCount == previous->stepCount);
+-				},
+-				*actual.prepared);
+-		for (std::size_t i = 0; i < actual.entries.size(); ++i)
++		CAPTURE(count);
++		CellRuleTable table(TerrainRegistry::builtins(), ResourceRegistry::builtins());
++		// The first class gains a new cost before the last class rejects. Exercise
++		// rollback both across the 8/256 alternative transition and within 256.
++		auto &changed = const_cast<TerrainRegistry::Movement &>(table.movement(0));
++		changed.profiles.assign(count, gradient_kernel::EntrySteps{1, 1});
++		changed.prepare();
++		// Force the final class's documented profile limit. Earlier classes have
++		// already appended entries when this rejection occurs; rollback must cover
++		// their prepared metadata as well as the unpublished derived record.
++		auto &capped = const_cast<TerrainRegistry::Movement &>(table.movement(7));
++		capped.profiles.assign(256, gradient_kernel::EntrySteps{1, 1});
++		const auto original = table;
++		const auto corners = CellRuleTable::key(GRASS, SAND, GRASS, SAND);
++		CHECK_THROWS_AS(table.intern(corners), std::length_error);
++		CHECK_FALSE(table.find(corners).has_value());
++		CHECK(table.size() == original.size());
++		CHECK(table.gradientPreparation().size() == original.gradientPreparation().size());
++		for (unsigned swim = 0; swim < 8; ++swim)
+ 		{
+-			CHECK(actual.entries[i].cardinal == expected.entries[i].cardinal);
+-			CHECK(actual.entries[i].diagonal == expected.entries[i].diagonal);
++			CHECK(table.openTerrainSeeds(swimAccessVariant(swim)) ==
++				  original.openTerrainSeeds(swimAccessVariant(swim)));
++			const auto &actual = table.movement(swim);
++			const auto &expected = original.movement(swim);
++			REQUIRE(actual.entries.size() == expected.entries.size());
++			REQUIRE(actual.profiles.size() == expected.profiles.size());
++			CHECK(actual.profileIds == expected.profileIds);
++			CHECK(actual.steps == expected.steps);
++			CHECK(actual.minimum == expected.minimum);
++			REQUIRE(actual.prepared.has_value() == expected.prepared.has_value());
++			if (actual.prepared)
++				std::visit(
++					[&](const auto &profile)
++					{
++						using Profile = std::remove_cvref_t<decltype(profile)>;
++						const auto *previous = std::get_if<Profile>(&*expected.prepared);
++						REQUIRE(previous != nullptr);
++						CHECK(profile.terrainClasses == previous->terrainClasses);
++						CHECK(profile.cardinalSlots == previous->cardinalSlots);
++						CHECK(profile.diagonalSlots == previous->diagonalSlots);
++						CHECK(profile.steps == previous->steps);
++						CHECK(profile.maxAppends == previous->maxAppends);
++						CHECK(profile.classCount == previous->classCount);
++						CHECK(profile.stepCount == previous->stepCount);
++						for (std::size_t i = 0; i < profile.classes.size(); ++i) {
++							CHECK(profile.classes[i].cardinal == previous->classes[i].cardinal);
++							CHECK(profile.classes[i].diagonal == previous->classes[i].diagonal);
++						}
++					},
++					*actual.prepared);
++			for (std::size_t i = 0; i < actual.entries.size(); ++i)
++			{
++				CHECK(actual.entries[i].cardinal == expected.entries[i].cardinal);
++				CHECK(actual.entries[i].diagonal == expected.entries[i].diagonal);
++			}
+ 		}
+ 	}
+ }
++
++TEST_CASE("CPU snapshot dispatch preserves trivial fields and validates before its shortcut" *
++          doctest::test_suite("GradientPreparation"))
++{
++    using namespace gradient_kernel;
++    glob2test::HeadlessGlobals globals;
++    glob2test::HeadlessGame fixture({.wDec=4,.hDec=4,.teams=1,.discovered=true,.clearImmobile=true,.header=true});
++    auto& game=fixture.game;auto& map=game.map;
++    auto snapshot=SimulationSnapshot::capture(game,SimulationSnapshot::captureCatalog(game),gradient_preparation::buildingRequirements());
++    gradient_preparation::Request request;request.swim=0;request.terrainBuckets=64;
++    GradientWorkspace scratch;
++    // Unchanged scratch proves this is the trivial shortcut, rather than a
++    // full solve that happens to return an identical field.
++    scratch.buckets[0].push(17);
++    for (const auto value : {GRADIENT_FORBIDDEN, GRADIENT_AT_GOAL}) {
++        std::vector<Uint16> output(map.size,value);
++        gradient_preparation::propagateCPU(request,snapshot,output.data(),scratch);
++        CHECK(std::all_of(output.begin(),output.end(),[&](auto cell){return cell==value;}));
++        CHECK(scratch.buckets[0].size==1);
++    }
++    std::vector<Uint16> output(map.size,GRADIENT_AT_GOAL);
++    request.terrainBuckets=65;
++    CHECK_THROWS_AS(gradient_preparation::propagateCPU(request,snapshot,output.data(),scratch),std::invalid_argument);
++    map.game=nullptr;
++    map.importTerrainDefinitions(R"({"schemaVersion":1,"terrains":[{"key":"test:cpu-audit-slow","name":"Slow water","base":"water","appearance":"water","properties":{"groundSpeedQ8":64}}]})");
++    map.setGame(&game);map.paintCell(0,*map.terrainRegistry().find("test:cpu-audit-slow"));
++    snapshot=SimulationSnapshot::capture(game,SimulationSnapshot::captureCatalog(game),gradient_preparation::buildingRequirements());
++    request.terrainBuckets=64;request.swim=6;
++    CHECK_THROWS_AS(gradient_preparation::propagateCPU(request,snapshot,output.data(),scratch),std::invalid_argument);
++    CHECK(std::all_of(output.begin(),output.end(),[](auto cell){return cell==GRADIENT_AT_GOAL;}));
++}
+diff --git a/src/map/gradient/SnapshotGradient.cpp b/src/map/gradient/SnapshotGradient.cpp
+index 98e4db3f0..c6028cc93 100644
+--- a/src/map/gradient/SnapshotGradient.cpp
++++ b/src/map/gradient/SnapshotGradient.cpp
+@@ -320,6 +320,28 @@ gradient_kernel::EntrySteps batchCosts(const PropagationField &field, std::size_
+     const auto &movement = terrain.rules->movement(field.request.swim);
+     return movement.profiles[movement.profileIds[terrain.cellRules[cell]]];
+ }
++void validatePropagation(const PropagationField& field)
++{
++    using namespace gradient_kernel;
++    runtime_terrain::validateQueueSize(field.request.terrainBuckets);
++    const auto &terrain = *field.snapshot->terrain;
++    if (terrain.movementModifiers)
++    {
++        const auto &movement = terrain.rules->movement(field.request.swim);
++        if (std::any_of(movement.profiles.begin(), movement.profiles.end(),
++                        [&](auto cost)
++                        {
++                            return !cost.cardinal || !cost.diagonal ||
++                                   cost.cardinal >= field.request.terrainBuckets ||
++                                   cost.diagonal >= field.request.terrainBuckets;
++                        }))
++            for (std::size_t cell = 0;
++                 cell < std::size_t(field.snapshot->width) * field.snapshot->height; ++cell)
++                if (field.output[cell])
++                    runtime_terrain::validateQueueEdge(batchCosts(field, cell),
++                                                       field.request.terrainBuckets);
++    }
++}
+ void batchCPU(const PropagationField &field, Uint16 *out)
+ {
+     using namespace gradient_kernel;
+@@ -352,9 +374,12 @@ void batchCPUGroup(std::span<const gradient_kernel::BackendRequest* const> reque
+ } // namespace
+ void propagateCPU(const Request& request,const SimulationSnapshot::Handle& snapshot,Uint16* output,GradientWorkspace& scratch)
+ {
+-    gradient_kernel::runtime_terrain::validateQueueSize(request.terrainBuckets);
+     const PropagationField field{request,&snapshot,output,&scratch};
+-    batchCPU(field,output);
++    validatePropagation(field);
++    // Preserve the shared trivial-field shortcut and validation order without
++    // constructing an accelerator request or rereading its configuration.
++    if (!gradient_kernel::alreadyFixedGradient({output, std::size_t(snapshot.width)*snapshot.height}))
++        batchCPU(field,output);
+ }
+ void propagateBatch(std::span<const PropagationField> fields)
+ {
+@@ -365,24 +390,7 @@ void propagateBatch(std::span<const PropagationField> fields)
+     {
+         try
+         {
+-            runtime_terrain::validateQueueSize(field.request.terrainBuckets);
+-            const auto &terrain = *field.snapshot->terrain;
+-            if (terrain.movementModifiers)
+-            {
+-                const auto &movement = terrain.rules->movement(field.request.swim);
+-                if (std::any_of(movement.profiles.begin(), movement.profiles.end(),
+-                                [&](auto cost)
+-                                {
+-                                    return !cost.cardinal || !cost.diagonal ||
+-                                           cost.cardinal >= field.request.terrainBuckets ||
+-                                           cost.diagonal >= field.request.terrainBuckets;
+-                                }))
+-                    for (std::size_t cell = 0;
+-                         cell < std::size_t(field.snapshot->width) * field.snapshot->height; ++cell)
+-                        if (field.output[cell])
+-                            runtime_terrain::validateQueueEdge(batchCosts(field, cell),
+-                                                               field.request.terrainBuckets);
+-            }
++            validatePropagation(field);
+             requests.push_back(
+                 {field.output,
+                  COST_LIMIT,

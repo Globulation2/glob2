@@ -1,0 +1,47 @@
+--------------------------------------------------------------------------------
+Profile data file '/home/bradley/.codex/worktrees/cc21/glob2/artifacts/gradient-cpu-audit/candidate-final-game.callgrind' (creator: callgrind-3.22.0)
+--------------------------------------------------------------------------------
+I1 cache: 32768 B, 64 B, 8-way associative
+D1 cache: 32768 B, 64 B, 8-way associative
+LL cache: 16777216 B, 64 B, direct-mapped
+Timerange: Basic block 0 - 1146723812
+Trigger: Program termination
+Profiled target:  /home/bradley/.codex/worktrees/cc21/glob2/artifacts/gradient-cpu-audit/candidate-final-symbols game run --load-game /home/bradley/.codex/worktrees/cc21/glob2/artifacts/gradient-cpu-ab/fixtures/512/initial.game.gz --ticks 128 --compute-threads 1 --gpu off --data-dir /home/bradley/.codex/worktrees/cc21/glob2/data --output-dir /home/bradley/.codex/worktrees/cc21/glob2/artifacts/gradient-cpu-audit/candidate-final-game-profile --profile cpu-audit (PID 1211913, part 1)
+Events recorded:  Ir Dr Dw I1mr D1mr D1mw ILmr DLmr DLmw Bc Bcm Bi Bim
+Events shown:     Ir Dr Dw I1mr D1mr D1mw ILmr DLmr DLmw Bc Bcm Bi Bim
+Event sort order: Ir Dr Dw I1mr D1mr D1mw ILmr DLmr DLmw Bc Bcm Bi Bim
+Thresholds:       99 0 0 0 0 0 0 0 0 0 0 0 0
+Include dirs:     
+User annotated:   
+Auto-annotation:  on
+
+--------------------------------------------------------------------------------
+Ir                     Dr                   Dw                   I1mr             D1mr                D1mw               ILmr            DLmr               DLmw               Bc                   Bcm                Bi              Bim            
+--------------------------------------------------------------------------------
+2,496,743,593 (100.0%) 464,837,105 (100.0%) 297,111,497 (100.0%) 113,828 (100.0%) 42,206,152 (100.0%) 2,691,266 (100.0%) 33,551 (100.0%) 8,016,686 (100.0%) 1,420,919 (100.0%) 291,783,447 (100.0%) 6,558,053 (100.0%) 60,544 (100.0%) 1,958 (100.0%)  PROGRAM TOTALS
+
+--------------------------------------------------------------------------------
+Ir                     Dr                   Dw                   I1mr           D1mr                D1mw               ILmr           DLmr               DLmw             Bc                   Bcm                Bi              Bim           file:function
+--------------------------------------------------------------------------------
+1,785,571,214 (71.52%) 236,780,328 (50.94%) 212,837,592 (71.64%) 2,880 ( 2.53%) 28,832,387 (68.31%) 1,045,034 (38.83%) 1,235 ( 3.68%)    35,945 ( 0.45%) 207,130 (14.58%) 114,112,652 (39.11%) 5,110,786 (77.93%)      .            .           ???:void gradient_kernel::propagateFieldCPUVariant<true, gradient_preparation::(anonymous namespace)::batchCPU(gradient_preparation::PropagationField const&, unsigned short*)::{lambda(unsigned long)#2}>(unsigned short*, int, int, field::Grid, GradientWorkspace&, gradient_preparation::(anonymous namespace)::batchCPU(gradient_preparation::PropagationField const&, unsigned short*)::{lambda(unsigned long)#2}) [clone .constprop.0] [/home/bradley/.codex/worktrees/cc21/glob2/artifacts/gradient-cpu-audit/candidate-final-symbols]
+  290,390,404 (11.63%) 101,282,824 (21.79%)  13,109,500 ( 4.41%) 1,040 ( 0.91%)  7,747,682 (18.36%)   410,452 (15.25%)   335 ( 1.00%) 5,984,530 (74.65%) 363,410 (25.58%)  66,551,574 (22.81%)   442,527 ( 6.75%)      .            .           ???:gradient_preparation::seed(gradient_preparation::Request const&, SimulationSnapshot::Handle const&, unsigned short*, gradient_preparation::CrowdingScratch&) [/home/bradley/.codex/worktrees/cc21/glob2/artifacts/gradient-cpu-audit/candidate-final-symbols]
+   96,215,143 ( 3.85%)  24,352,286 ( 5.24%)   3,782,955 ( 1.27%) 3,456 ( 3.04%)  1,148,443 ( 2.72%)   210,705 ( 7.83%) 1,325 ( 3.95%)   743,949 ( 9.28%)   8,377 ( 0.59%)  15,568,918 ( 5.34%)   503,830 ( 7.68%)    376 ( 0.62%)   1 ( 0.05%)  ???:gradient_preparation::MaterialSeedCache::trySeed(SimulationSnapshot::Handle const&, int, int, int, unsigned short*, unsigned short const*) [/home/bradley/.codex/worktrees/cc21/glob2/artifacts/gradient-cpu-audit/candidate-final-symbols]
+   76,220,894 ( 3.05%)  10,092,320 ( 2.17%)   9,091,810 ( 3.06%)   136 ( 0.12%)  1,254,981 ( 2.97%)    41,326 ( 1.54%)   136 ( 0.41%)    11,817 ( 0.15%)   9,806 ( 0.69%)   4,866,350 ( 1.67%)   214,048 ( 3.26%)      .            .           ???:void gradient_kernel::propagateFieldCPUVariant<true, Map::propagateGradient(unsigned short*, int, int, gradient_kernel::Family)::{lambda(unsigned long)#1}>(unsigned short*, int, int, field::Grid, GradientWorkspace&, Map::propagateGradient(unsigned short*, int, int, gradient_kernel::Family)::{lambda(unsigned long)#1}) [/home/bradley/.codex/worktrees/cc21/glob2/artifacts/gradient-cpu-audit/candidate-final-symbols]
+   49,175,121 ( 1.97%)  13,112,616 ( 2.82%)       2,100 ( 0.00%) 1,203 ( 1.06%)    410,420 ( 0.97%)       240 ( 0.01%)   437 ( 1.30%)    81,644 ( 1.02%)      32 ( 0.00%)  16,388,686 ( 5.62%)       458 ( 0.01%)      .            .           ???:gradient_preparation::propagateCPU(gradient_preparation::Request const&, SimulationSnapshot::Handle const&, unsigned short*, GradientWorkspace&) [/home/bradley/.codex/worktrees/cc21/glob2/artifacts/gradient-cpu-audit/candidate-final-symbols]
+   42,533,932 ( 1.70%)   8,232,895 ( 1.77%)   2,761,783 ( 0.93%) 6,169 ( 5.42%)    514,350 ( 1.22%)    22,796 ( 0.85%) 1,689 ( 5.03%)   256,453 ( 3.20%)      59 ( 0.00%)   3,050,001 ( 1.05%)    97,442 ( 1.49%)      .            .           ???:ResourceGrowth::calculate(MapState::View const&, MersenneTwister&, ResourceGrowth::Batch&) [/home/bradley/.codex/worktrees/cc21/glob2/artifacts/gradient-cpu-audit/candidate-final-symbols]
+   37,299,261 ( 1.49%)  37,079,598 ( 7.98%)  37,077,583 (12.48%)   645 ( 0.57%)    623,241 ( 1.48%)   626,911 (23.29%)   159 ( 0.47%)   191,622 ( 2.39%) 559,055 (39.34%)  37,004,433 (12.68%)       942 ( 0.01%)      .            .           ./string/../sysdeps/x86_64/multiarch/memmove-vec-unaligned-erms.S:__memcpy_avx_unaligned_erms [/usr/lib/x86_64-linux-gnu/libc.so.6]
+   24,467,485 ( 0.98%)   7,993,341 ( 1.72%)     857,889 ( 0.29%)    81 ( 0.07%)    467,297 ( 1.11%)    24,594 ( 0.91%)    81 ( 0.24%)   393,163 ( 4.90%)   9,613 ( 0.68%)   4,847,993 ( 1.66%)    54,628 ( 0.83%)      .            .           ???:Map::updateGlobalGradient(Building*, int, BuildingRoute) [/home/bradley/.codex/worktrees/cc21/glob2/artifacts/gradient-cpu-audit/candidate-final-symbols]
+   24,286,427 ( 0.97%)   8,975,562 ( 1.93%)   1,006,871 ( 0.34%)    51 ( 0.04%)    467,731 ( 1.11%)    24,596 ( 0.91%)    51 ( 0.15%)    70,420 ( 0.88%)  16,454 ( 1.16%)   4,404,005 ( 1.51%)    43,318 ( 0.66%) 27,550 (45.50%)   .           ???:Map::seedMaterialGradientDirect(int, unsigned char, int, unsigned short*, unsigned short const*) [/home/bradley/.codex/worktrees/cc21/glob2/artifacts/gradient-cpu-audit/candidate-final-symbols]
+   13,281,482 ( 0.53%)          90 ( 0.00%)  13,280,719 ( 4.47%)    26 ( 0.02%)         85 ( 0.00%)   207,498 ( 7.71%)     3 ( 0.01%)         1 ( 0.00%) 207,358 (14.59%)  13,280,895 ( 4.55%)        69 ( 0.00%)      .            .           ./string/../sysdeps/x86_64/multiarch/memset-vec-unaligned-erms.S:__memset_avx2_unaligned_erms [/usr/lib/x86_64-linux-gnu/libc.so.6]
+   13,092,800 ( 0.52%)   5,052,434 ( 1.09%)     524,298 ( 0.18%)    13 ( 0.01%)    309,900 ( 0.73%)    16,384 ( 0.61%)    13 ( 0.04%)    70,568 ( 0.88%)  16,384 ( 1.15%)   2,661,872 ( 0.91%)    17,632 ( 0.27%)      .            .           ???:Map::seedClearAreasGradient(int, int, unsigned short*) [/home/bradley/.codex/worktrees/cc21/glob2/artifacts/gradient-cpu-audit/candidate-final-symbols]
+    8,389,517 ( 0.34%)   2,097,451 ( 0.45%)         291 ( 0.00%)    12 ( 0.01%)     16,402 ( 0.04%)         0              6 ( 0.02%)    16,389 ( 0.20%)       0            2,097,156 ( 0.72%)        62 ( 0.00%)      .            .           ???:Map::updateExploredArea(int) [/home/bradley/.codex/worktrees/cc21/glob2/artifacts/gradient-cpu-audit/candidate-final-symbols]
+    5,066,768 ( 0.20%)   1,073,544 ( 0.23%)      15,752 ( 0.01%) 3,886 ( 3.41%)      5,281 ( 0.01%)        11 ( 0.00%)   475 ( 1.42%)     1,335 ( 0.02%)       8 ( 0.00%)   1,063,680 ( 0.36%)     2,331 ( 0.04%)      .            .           ???:Team::syncStep() [/home/bradley/.codex/worktrees/cc21/glob2/artifacts/gradient-cpu-audit/candidate-final-symbols]
+    4,456,448 ( 0.18%)   1,703,936 ( 0.37%)   1,048,576 ( 0.35%)   384 ( 0.34%)     98,432 ( 0.23%)         0            188 ( 0.56%)    21,383 ( 0.27%)       0              524,288 ( 0.18%)        23 ( 0.00%)      .            .           ???:Sector::step() [/home/bradley/.codex/worktrees/cc21/glob2/artifacts/gradient-cpu-audit/candidate-final-symbols]
+    4,225,276 ( 0.17%)   1,581,328 ( 0.34%)       2,372 ( 0.00%) 1,319 ( 1.16%)     67,935 ( 0.16%)         0            180 ( 0.54%)    33,962 ( 0.42%)       0            1,055,248 ( 0.36%)     1,266 ( 0.02%)      .            .           ???:Team::integrity() [/home/bradley/.codex/worktrees/cc21/glob2/artifacts/gradient-cpu-audit/candidate-final-symbols]
+
+--------------------------------------------------------------------------------
+The following files chosen for auto-annotation could not be found:
+--------------------------------------------------------------------------------
+  ./string/../sysdeps/x86_64/multiarch/memmove-vec-unaligned-erms.S
+  ./string/../sysdeps/x86_64/multiarch/memset-vec-unaligned-erms.S
+

@@ -1,0 +1,3 @@
+<?xml version='1.0' encoding='utf-8'?>
+<testsuites tests="1" failures="0" errors="0" skipped="0"><testsuite name="GradientPreparation"><testcase classname="GradientPreparation" name="CPU snapshot dispatch preserves trivial fields and validates before its shortcut" time="0.502045" status="run" />
+  </testsuite></testsuites>

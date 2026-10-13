@@ -1,0 +1,117 @@
+<?xml version='1.0' encoding='utf-8'?>
+<testsuites tests="108" failures="0" errors="1" skipped="0"><testsuite name="AIPipeline"><testcase classname="AIPipeline" name="a submitted deadline is delivered even when no new poll is eligible" time="0.494772" status="run" />
+  <testcase classname="AIPipeline" name="every shipped controller preserves orders and state across worker counts and all delays" time="14.616" status="run" />
+  <testcase classname="AIPipeline" name="pause and repeated boundary calls cannot execute a published command twice" time="2.51203" status="run" />
+  <testcase classname="AIPipeline" name="replacement cancels an old output without rejecting identical new wire bytes" time="0.501487" status="run" />
+  <testcase classname="AIPipeline" name="save continuation retains controller caches receipts and future commands at pipeline boundaries" time="119.248" status="run" />
+  <testcase classname="AIPipeline" name="team death cancels submitted work and saves receipts for a revived controller" time="1.04727" status="run" />
+  <testcase classname="AIPipeline" name="wrapper preemption preserves controller rejection feedback and pending release identity across save" time="1.00938" status="run" />
+  </testsuite><testsuite name="AISavePortability"><testcase classname="AISavePortability" name="runtime initialisation; area order serialisation and Maxima reserved telemetry" time="0.389431" status="run" />
+  </testsuite><testsuite name="BuildingGradientInvalidation"><testcase classname="BuildingGradientInvalidation" name="a deleted building's pending result cannot replace a reused destination" time="0.404541" status="run" />
+  <testcase classname="BuildingGradientInvalidation" name="a paused field keeps its original obstacles" time="0.3333" status="run" />
+  <testcase classname="BuildingGradientInvalidation" name="a pending result keeps the generation a team-local edit carries forward" time="0.403523" status="run" />
+  <testcase classname="BuildingGradientInvalidation" name="a ring cuts off a virtual flags field" time="0.358123" status="run" />
+  <testcase classname="BuildingGradientInvalidation" name="a rival teams ring cuts off a cached field" time="0.325019" status="run" />
+  <testcase classname="BuildingGradientInvalidation" name="access metadata follows the newest capture across swim classes and saves" time="0.315786" status="run" />
+  <testcase classname="BuildingGradientInvalidation" name="an empty building pipeline follows a changed header delay through save and load" time="0.422532" status="run" />
+  <testcase classname="BuildingGradientInvalidation" name="area and team-wide resets keep stale walking fields serving with the pipeline on" time="0.693526" status="run" />
+  <testcase classname="BuildingGradientInvalidation" name="centre placed inside an existing ring" time="0.324924" status="run" />
+  <testcase classname="BuildingGradientInvalidation" name="delayed fields" time="2.27068" status="run" />
+  <testcase classname="BuildingGradientInvalidation" name="idle field storage is reused without stale routes" time="0.404745" status="run" />
+  <testcase classname="BuildingGradientInvalidation" name="partial scheduled fields resume on the owner from transferred buckets" time="0.989944" status="run" />
+  <testcase classname="BuildingGradientInvalidation" name="pending building results survive save boundaries and cannot resurrect evicted fields" time="5.3427" status="run" />
+  <testcase classname="BuildingGradientInvalidation" name="prediction retains reader demand across rebuilds and save completion" time="0.330869" status="run" />
+  <testcase classname="BuildingGradientInvalidation" name="public reads resolve their inputs" time="0.518859" status="run" />
+  <testcase classname="BuildingGradientInvalidation" name="released water-only footprint diagnostics export the locked water-only access row" time="0.311119" status="run" />
+  <testcase classname="BuildingGradientInvalidation" name="requests during team stepping are captured at the observation boundary" time="0.31513" status="run" />
+  <testcase classname="BuildingGradientInvalidation" name="retained format126 access flags restore walking and swimming locks into the footprint route and survive current saves [save-format]" time="17.5133" status="run" />
+  <testcase classname="BuildingGradientInvalidation" name="ring placed around an existing field" time="0.339437" status="run" />
+  <testcase classname="BuildingGradientInvalidation" name="same-tick swim classes write access metadata in request order" time="0.440697" status="run" />
+  <testcase classname="BuildingGradientInvalidation" name="scheduled building fields publish at fixed deadlines across worker counts and delays" time="1.62725" status="run" />
+  <testcase classname="BuildingGradientInvalidation" name="slow and failing workers never change the publication tick" time="1.04667" status="run" />
+  <testcase classname="BuildingGradientInvalidation" name="snapshot building seeds and captured-input searches match the synchronous kernels for every route and swim class" time="5.1698" status="run" />
+  <testcase classname="BuildingGradientInvalidation" name="synchronous rebuilds and lifecycle hooks supersede pending jobs that share a deadline" time="0.311073" status="run" />
+  </testsuite><testsuite name="GradientBackendSwitch"><testcase classname="GradientBackendSwitch" name="backend switch drains privately and preserves pending publication" time="0.459144" status="run" />
+  <testcase classname="GradientBackendSwitch" name="repeated backend requests coalesce without moving publication ticks" time="0.462403" status="run" />
+  </testsuite><testsuite name="GradientPreparation"><testcase classname="GradientPreparation" name="CPU snapshot dispatch preserves trivial fields and validates before its shortcut" time="1.617"><error message="error" type="error">GLOB2_TEST_BUILD compiler=13.3.0 platform=Linux pointer_bits=64
+GLOB2_TEST_PROVENANCE {"compiler": "g++", "dirty": true, "flags": {"CCFLAGS": "-O0 -g1 -fdebug-prefix-map=/home/bradley/.codex/worktrees/cc21/glob2=.", "CPPDEFINES": "GLOB2_OFFICIAL_INSTANCE_ORIGIN \\\"https://app.glob2online.com\\\" GLOB2_OFFICIAL_INSTANCE_FORMER_ORIGINS \\\"https://glob2online.com\\\" HAVE_CONFIG_H GLOB2_RENDER_SHADER_DIR \\\"/home/bradley/.codex/worktrees/cc21/glob2/build/linux/client/debug/dev-dev_fast-true-linker-auto/shaders\\\" SDL_MAIN_HANDLED", "CXXFLAGS": "-std=gnu++20 -Wall -fPIC", "LINKFLAGS": "-Wl,-rpath,$ORIGIN/../lib/glob2 -Wall -Wl,-rpath,/home/bradley/glob2/build/sdl3/prefix/lib -Wl,--enable-new-dtags"}, "revision": "f96aba387b48e7069cf9676bebfbfd620b1c10ab", "sourceStatus": [" M docs/development/gradient-benchmarks.md", " M src/field/BackendSession.h", " M src/field/GradientPropagation.h", " M src/field/GradientRelaxation.h", " M src/field/GradientSelection.h", " M src/field/RuntimeGradientBackendTest.cpp", " M src/map/gradient/BuildingGradientSearch.cpp", " M src/map/gradient/GradientPipeline.h", " M src/map/gradient/GradientPipelineHarness.cpp", " M src/map/gradient/GradientPreparationTest.cpp", " M src/map/gradient/SnapshotGradient.cpp"], "sourceTreeSha256": "a88601a1fc75230cc1ac4f525c7024feb02f3ecda910214f4678b5e6e6b466a8"}
+glob2-engine-tests: src/map/Map.cpp:778: void Map::setGame(Game*): Assertion `game' failed.
+
+[run_tests] exit status -6
+
+[error] CPU snapshot dispatch preserves trivial fields and validates before its shortcut: exception
+SIGABRT - Abort (abnormal termination) signal
+</error></testcase><testcase classname="GradientPreparation" name="all supported team masks match the scalar fields" time="0.617358" status="run" />
+  <testcase classname="GradientPreparation" name="cached natural goals follow immobile occupancy and live overlays" time="0.90752" status="run" />
+  <testcase classname="GradientPreparation" name="compact clearing traits preserve custom high-ID property combinations" time="0.686818" status="run" />
+  <testcase classname="GradientPreparation" name="compiled preparation tables preserve rule and catalog interpretation" time="0.523088" status="run" />
+  <testcase classname="GradientPreparation" name="compound passable material goals track depletion visibility and overlapping suppliers" time="0.520877" status="run" />
+  <testcase classname="GradientPreparation" name="concurrent lazy requests publish one complete resource field" time="0.500247" status="run" />
+  <testcase classname="GradientPreparation" name="concurrent preparation owns buffers and serializes dirty cache refresh" time="0.48803" status="run" />
+  <testcase classname="GradientPreparation" name="custom terrain and registry replacement preserve cached and direct seeds" time="0.600513" status="run" />
+  <testcase classname="GradientPreparation" name="explicit clearing overrides farm crop protection but never forbidden paint" time="0.483715" status="run" />
+  <testcase classname="GradientPreparation" name="map dimensions enforce power-of-two exponents before mutation" time="0.451165" status="run" />
+  <testcase classname="GradientPreparation" name="material plane and cache keys retain legacy seven-class identity" time="0.012531" status="run" />
+  <testcase classname="GradientPreparation" name="movement profile rejection rolls back previously appended swim classes" time="0.223568" status="run" />
+  <testcase classname="GradientPreparation" name="mutation and reset boundaries use current state" time="0.556118" status="run" />
+  <testcase classname="GradientPreparation" name="optional cache storage can be unavailable or over budget" time="2.1803" status="run" />
+  <testcase classname="GradientPreparation" name="periodic supplier snapshots subtract reservations and retain overlay seeds" time="0.572849" status="run" />
+  <testcase classname="GradientPreparation" name="published plane registry matches a sweep of live material fields" time="0.482399" status="run" />
+  <testcase classname="GradientPreparation" name="rejected corner identities preserve all compiled gradient tables" time="0.221468" status="run" />
+  <testcase classname="GradientPreparation" name="resource cache tracks cell writes and falls back through mutation bursts" time="2.93699" status="run" />
+  <testcase classname="GradientPreparation" name="seed cells match scalar predicates across policies and changing overlays" time="19.5881" status="run" />
+  <testcase classname="GradientPreparation" name="snapshot material templates refresh changed chunks and accept older snapshots" time="1.71036" status="run" />
+  <testcase classname="GradientPreparation" name="snapshot seeds preserve every periodic kind after the live world changes" time="0.771683" status="run" />
+  <testcase classname="GradientPreparation" name="supplier seed indexing rejects foreign and invalid building IDs in cached and direct fields" time="0.470063" status="run" />
+  <testcase classname="GradientPreparation" name="warm preparation keeps custom supplier unions exclusions penalties and overlays live" time="0.569635" status="run" />
+  </testsuite><testsuite name="src/map/gradient/GradientPreparationTest.cpp"><testcase classname="src/map/gradient/GradientPreparationTest.cpp" name="GradientPreparation/explicit snapshot batches isolate invalid fields and retain exact output" time="0.471968" status="run" />
+  <testcase classname="src/map/gradient/GradientPreparationTest.cpp" name="GradientPreparation/minimal GPU views release source graphs and recover exact CPU fields" time="7.37269" status="run" />
+  <testcase classname="src/map/gradient/GradientPreparationTest.cpp" name="GradientPreparation/minimal view pressure declines without moving original seeds" time="0.456609" status="run" />
+  <testcase classname="src/map/gradient/GradientPreparationTest.cpp" name="GradientPreparation/modified terrain costs remain exact when field obstacles change" time="0.767076" status="run" />
+  </testsuite><testsuite name="LegacyRoundTripSave"><testcase classname="LegacyRoundTripSave" name="a format-143 save with live round-trip fields plays on greedily [golden][save-format]" time="7.97953" status="run" />
+  </testsuite><testsuite name="SavegameSafety"><testcase classname="SavegameSafety" name="autosave defaults; atomic and background writes; truncated and malformed loads; imports and campaign progress [save-format][writes-preferences]" time="61.2259" status="run" />
+  </testsuite><testsuite name="VertexTerrain"><testcase classname="VertexTerrain" name="a cell's four corners paint it uniform and its neighbours mixed" time="0.229121" status="run" />
+  <testcase classname="VertexTerrain" name="a vertex write re-derives the four cells around it" time="0.227578" status="run" />
+  <testcase classname="VertexTerrain" name="compiled CPU seed columns preserve frozen rules when mixed rules grow" time="0.228842" status="run" />
+  <testcase classname="VertexTerrain" name="equal corners keep their terrain's exact rules" time="0" status="run" />
+  <testcase classname="VertexTerrain" name="every built-in pair combines into valid transition rules" time="0.001036" status="run" />
+  <testcase classname="VertexTerrain" name="grass directly against water is walkable and unbuildable" time="0" status="run" />
+  <testcase classname="VertexTerrain" name="ground costs follow the walkable corners and hazards take the worst" time="0" status="run" />
+  <testcase classname="VertexTerrain" name="mixed cells take the shore habitat and intersect explicit resource lists" time="0.224635" status="run" />
+  <testcase classname="VertexTerrain" name="mixed classic corners are exactly the retired shore profile" time="0" status="run" />
+  <testcase classname="VertexTerrain" name="old cell terrain moves onto the vertices it covers" time="0.227195" status="run" />
+  <testcase classname="VertexTerrain" name="snapshots keep the rule table they were taken with" time="0.229908" status="run" />
+  <testcase classname="VertexTerrain" name="terrain IDs of older files skip the retired shores" time="0" status="run" />
+  <testcase classname="VertexTerrain" name="the rule table numbers uniform rules by terrain and interns mixed ones in order" time="0.228232" status="run" />
+  <testcase classname="VertexTerrain" name="vertex terrain round-trips through packed and text saves" time="3.19895" status="run" />
+  </testsuite><testsuite name="WorldSnapshot"><testcase classname="WorldSnapshot" name="AI boundary validates each captured map array before fast reads" time="0.235057" status="run" />
+  <testcase classname="WorldSnapshot" name="AI fast scalar reads preserve checked values and frozen lease isolation" time="0.367858" status="run" />
+  <testcase classname="WorldSnapshot" name="a retained consumer leaves the newest free buffer to absorb only later changes" time="0.322942" status="run" />
+  <testcase classname="WorldSnapshot" name="building snapshots copy shared scalar records and freeze selected stock" time="0.366405" status="run" />
+  <testcase classname="WorldSnapshot" name="capture requirements exclude arrays that no scheduled consumer requests" time="0.323558" status="run" />
+  <testcase classname="WorldSnapshot" name="capture verification rejects writes that bypass the change trackers" time="0.340459" status="run" />
+  <testcase classname="WorldSnapshot" name="catalog refresh survives intervening projections and rules reuse independently" time="0.3662" status="run" />
+  <testcase classname="WorldSnapshot" name="component leases and weak control blocks outlive the owning store" time="0.331436" status="run" />
+  <testcase classname="WorldSnapshot" name="component mutation generations preserve isolation and reuse unchanged arrays" time="0.341405" status="run" />
+  <testcase classname="WorldSnapshot" name="coordinate wrapping preserves signed edges for power of two and general dimensions" time="0.000289" status="run" />
+  <testcase classname="WorldSnapshot" name="explicit observation boundaries refresh paused state and retain old leases" time="0.322377" status="run" />
+  <testcase classname="WorldSnapshot" name="farm paint queries match frozen growth and resource inputs" time="0.366377" status="run" />
+  <testcase classname="WorldSnapshot" name="flat relationship ranges preserve every building list in order" time="0.343974" status="run" />
+  <testcase classname="WorldSnapshot" name="map snapshots bulk copy authoritative records without translation" time="0.354607" status="run" />
+  <testcase classname="WorldSnapshot" name="memory metrics distinguish held epochs from reusable high water capacity" time="0.324415" status="run" />
+  <testcase classname="WorldSnapshot" name="narrow component queries preserve combined tile values and projection defaults" time="0.372125" status="run" />
+  <testcase classname="WorldSnapshot" name="no-op map writes reuse components while changed values remain isolated" time="0.343246" status="run" />
+  <testcase classname="WorldSnapshot" name="on-demand construction feasibility matches live helpers and remains frozen" time="0.495486" status="run" />
+  <testcase classname="WorldSnapshot" name="outcome reasons survive the read boundary without changing simulation state" time="0.507763" status="run" />
+  <testcase classname="WorldSnapshot" name="pooled captures never overwrite a held worker projection" time="0.351001" status="run" />
+  <testcase classname="WorldSnapshot" name="projected terrain lease cannot retain unrelated world components" time="0.351656" status="run" />
+  <testcase classname="WorldSnapshot" name="resource copy metrics include multi-material stock sidecars" time="0.335429" status="run" />
+  <testcase classname="WorldSnapshot" name="reused buffers copy sparse chunks and refresh dense changes contiguously" time="0.319976" status="run" />
+  <testcase classname="WorldSnapshot" name="same tick component expansion preserves narrow leases and captures arrays once" time="0.350806" status="run" />
+  <testcase classname="WorldSnapshot" name="shared entity indices preserve empty slots and canonical record addresses" time="0.367522" status="run" />
+  <testcase classname="WorldSnapshot" name="snapshot capability tables share authoritative immutable catalog data" time="0.361579" status="run" />
+  <testcase classname="WorldSnapshot" name="unit snapshots share authoritative scalar state and remain frozen" time="0.347092" status="run" />
+  <testcase classname="WorldSnapshot" name="vertex changes preserve retained terrain and reuse unchanged versions" time="0.330581" status="run" />
+  <testcase classname="WorldSnapshot" name="warm component buffers stop allocating at a fixed population" time="0.345501" status="run" />
+  <testcase classname="WorldSnapshot" name="worker final lease release synchronizes owner buffer reuse" time="0.001144" status="run" />
+  </testsuite></testsuites>

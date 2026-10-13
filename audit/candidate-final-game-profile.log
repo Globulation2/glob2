@@ -1,0 +1,38 @@
+==1211913== Callgrind, a call-graph generating cache profiler
+==1211913== Copyright (C) 2002-2017, and GNU GPL'd, by Josef Weidendorfer et al.
+==1211913== Using Valgrind-3.22.0 and LibVEX; rerun with -h for copyright info
+==1211913== Command: /home/bradley/.codex/worktrees/cc21/glob2/artifacts/gradient-cpu-audit/candidate-final-symbols game run --load-game /home/bradley/.codex/worktrees/cc21/glob2/artifacts/gradient-cpu-ab/fixtures/512/initial.game.gz --ticks 128 --compute-threads 1 --gpu off --data-dir /home/bradley/.codex/worktrees/cc21/glob2/data --output-dir /home/bradley/.codex/worktrees/cc21/glob2/artifacts/gradient-cpu-audit/candidate-final-game-profile --profile cpu-audit
+==1211913== 
+--1211913-- warning: L3 cache found, using its data for the LL simulation.
+==1211913== For interactive control, run 'callgrind_control -h'.
+Settings::load("preferences.txt") : error, can't open file.
+==1211913== brk segment overflow in thread #1: can't grow to 0x4844000
+==1211913== (see section Limitations in user manual)
+==1211913== NOTE: further instances of this message will not be shown
+nox::game started
+nox::gui.game.checkSum() = 765cff52
+automaticEndingGame ended: 128 ticks, 0 minutes, 4 seconds
+GLOB2_GAME_END ticks=128 winner_team=-1 seed=713 map="study-15-713-r0" orders=0 players=team0:Castor,team1:Cortex
+==1211913== 
+==1211913== Events    : Ir Dr Dw I1mr D1mr D1mw ILmr DLmr DLmw Bc Bcm Bi Bim
+==1211913== Collected : 2496743593 464837105 297111497 113828 42206152 2691266 33551 8016686 1420919 291783447 6558053 60544 1958
+==1211913== 
+==1211913== I   refs:      2,496,743,593
+==1211913== I1  misses:          113,828
+==1211913== LLi misses:           33,551
+==1211913== I1  miss rate:          0.00%
+==1211913== LLi miss rate:          0.00%
+==1211913== 
+==1211913== D   refs:        761,948,602  (464,837,105 rd + 297,111,497 wr)
+==1211913== D1  misses:       44,897,418  ( 42,206,152 rd +   2,691,266 wr)
+==1211913== LLd misses:        9,437,605  (  8,016,686 rd +   1,420,919 wr)
+==1211913== D1  miss rate:           5.9% (        9.1%   +         0.9%  )
+==1211913== LLd miss rate:           1.2% (        1.7%   +         0.5%  )
+==1211913== 
+==1211913== LL refs:          45,011,246  ( 42,319,980 rd +   2,691,266 wr)
+==1211913== LL misses:         9,471,156  (  8,050,237 rd +   1,420,919 wr)
+==1211913== LL miss rate:            0.3% (        0.3%   +         0.5%  )
+==1211913== 
+==1211913== Branches:        291,843,991  (291,783,447 cond +      60,544 ind)
+==1211913== Mispredicts:       6,560,011  (  6,558,053 cond +       1,958 ind)
+==1211913== Mispred rate:            2.2% (        2.2%     +         3.2%   )

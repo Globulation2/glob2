@@ -1,0 +1,50 @@
+[
+  {
+    "variant": "candidate-final",
+    "binary": "/home/bradley/.codex/worktrees/cc21/glob2/artifacts/gradient-cpu-audit/candidate-final-symbols",
+    "command": [
+      "valgrind",
+      "--tool=callgrind",
+      "--collect-atstart=no",
+      "--toggle-collect=Game::syncStep*",
+      "--dump-instr=yes",
+      "--collect-jumps=yes",
+      "--cache-sim=yes",
+      "--branch-sim=yes",
+      "--callgrind-out-file=/home/bradley/.codex/worktrees/cc21/glob2/artifacts/gradient-cpu-audit/candidate-final-game.callgrind",
+      "/home/bradley/.codex/worktrees/cc21/glob2/artifacts/gradient-cpu-audit/candidate-final-symbols",
+      "game",
+      "run",
+      "--load-game",
+      "/home/bradley/.codex/worktrees/cc21/glob2/artifacts/gradient-cpu-ab/fixtures/512/initial.game.gz",
+      "--ticks",
+      "128",
+      "--compute-threads",
+      "1",
+      "--gpu",
+      "off",
+      "--data-dir",
+      "/home/bradley/.codex/worktrees/cc21/glob2/data",
+      "--output-dir",
+      "/home/bradley/.codex/worktrees/cc21/glob2/artifacts/gradient-cpu-audit/candidate-final-game-profile",
+      "--profile",
+      "cpu-audit"
+    ],
+    "checksum": 82182947,
+    "events": {
+      "Ir": 2496743593,
+      "Dr": 464837105,
+      "Dw": 297111497,
+      "I1mr": 113828,
+      "D1mr": 42206152,
+      "D1mw": 2691266,
+      "ILmr": 33551,
+      "DLmr": 8016686,
+      "DLmw": 1420919,
+      "Bc": 291783447,
+      "Bcm": 6558053,
+      "Bi": 60544,
+      "Bim": 1958
+    }
+  }
+]

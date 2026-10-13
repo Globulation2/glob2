@@ -1,0 +1,2434 @@
+[
+  {
+    "pair": 0,
+    "threaded": false,
+    "variant": "before",
+    "command": [
+      "taskset",
+      "-c",
+      "0",
+      "/home/bradley/.codex/worktrees/cc21/glob2/artifacts/gradient-cpu-audit/before-lifecycle",
+      "1000000"
+    ],
+    "ns_per_operation": {
+      "empty": 0.114203,
+      "rule_compile_builtin": 9060.933,
+      "rule_compile_mixed": 321436.505,
+      "rule_clone": 2369.348,
+      "snapshot_project_release": 28.563037,
+      "job_allocate_free": 9.596133,
+      "output_allocate_free_128": 28.294957,
+      "output_allocate_free_512": 20.834928,
+      "control_atomic_clear_null": 12.652334,
+      "control_owner_clear_null": 0.289131,
+      "backend_read": 0.472012,
+      "backend_pending_disabled": 0.452666,
+      "plan_choose_cpu": 0.472193,
+      "host_reserve_release": 4.249632,
+      "snapshot_pool_reuse": 5.532189,
+      "snapshot_memory_accounting": 417.94485
+    },
+    "metadata": {
+      "job_bytes": 672,
+      "handle_bytes": 392,
+      "session_bytes": 40,
+      "rule_bytes": 42216
+    }
+  },
+  {
+    "pair": 0,
+    "threaded": false,
+    "variant": "master",
+    "command": [
+      "taskset",
+      "-c",
+      "0",
+      "/home/bradley/.codex/worktrees/cc21/glob2/artifacts/gradient-cpu-audit/master-lifecycle",
+      "1000000"
+    ],
+    "ns_per_operation": {
+      "empty": 0.113562,
+      "rule_compile_builtin": 11289.197,
+      "rule_compile_mixed": 763417.326,
+      "rule_clone": 2329.213,
+      "snapshot_project_release": 28.696987,
+      "job_allocate_free": 10.084255,
+      "output_allocate_free_128": 28.105853,
+      "output_allocate_free_512": 21.985408,
+      "control_atomic_clear_null": 13.358614,
+      "control_owner_clear_null": 0.296284,
+      "backend_read": 0.44983,
+      "cpu_selection": 0.719775,
+      "scoped_cpu_selection": 0.923566,
+      "backend_pending_disabled": 0.451644,
+      "plan_choose_cpu": 2.501705,
+      "host_reserve_release": 4.265862,
+      "snapshot_pool_reuse": 5.477026,
+      "snapshot_memory_accounting": 431.01316
+    },
+    "metadata": {
+      "job_bytes": 672,
+      "handle_bytes": 392,
+      "session_bytes": 40,
+      "rule_bytes": 42240
+    }
+  },
+  {
+    "pair": 0,
+    "threaded": false,
+    "variant": "fixed",
+    "command": [
+      "taskset",
+      "-c",
+      "0",
+      "/home/bradley/.codex/worktrees/cc21/glob2/artifacts/gradient-cpu-audit/fixed-lifecycle",
+      "1000000"
+    ],
+    "ns_per_operation": {
+      "empty": 0.222285,
+      "rule_compile_builtin": 11495.492,
+      "rule_compile_mixed": 762612.442,
+      "rule_clone": 2391.229,
+      "snapshot_project_release": 28.645311,
+      "job_allocate_free": 9.778914,
+      "output_allocate_free_128": 28.103098,
+      "output_allocate_free_512": 21.555632,
+      "control_atomic_clear_null": 12.654387,
+      "control_owner_clear_null": 0.289601,
+      "backend_read": 0.228317,
+      "cpu_selection": 0.684689,
+      "scoped_cpu_selection": 0.914649,
+      "backend_pending_disabled": 0.453437,
+      "plan_choose_cpu": 2.507056,
+      "host_reserve_release": 4.414189,
+      "snapshot_pool_reuse": 5.437962,
+      "snapshot_memory_accounting": 438.72157
+    },
+    "metadata": {
+      "job_bytes": 672,
+      "handle_bytes": 392,
+      "session_bytes": 40,
+      "rule_bytes": 42312
+    }
+  },
+  {
+    "pair": 0,
+    "threaded": false,
+    "variant": "candidate",
+    "command": [
+      "taskset",
+      "-c",
+      "0",
+      "/home/bradley/.codex/worktrees/cc21/glob2/artifacts/gradient-cpu-audit/candidate-lifecycle",
+      "1000000"
+    ],
+    "ns_per_operation": {
+      "empty": 0.226033,
+      "rule_compile_builtin": 11421.765,
+      "rule_compile_mixed": 127420.356,
+      "rule_clone": 2469.865,
+      "snapshot_project_release": 28.484912,
+      "job_allocate_free": 9.750451,
+      "output_allocate_free_128": 29.023548,
+      "output_allocate_free_512": 20.643216,
+      "control_atomic_clear_null": 12.755507,
+      "control_owner_clear_null": 0.28908,
+      "backend_read": 0.228317,
+      "cpu_selection": 1.157824,
+      "scoped_cpu_selection": 0.113832,
+      "backend_pending_disabled": 0.917885,
+      "plan_choose_cpu": 2.98633,
+      "host_reserve_release": 4.372832,
+      "snapshot_pool_reuse": 5.486493,
+      "snapshot_memory_accounting": 427.09163
+    },
+    "metadata": {
+      "job_bytes": 672,
+      "handle_bytes": 392,
+      "session_bytes": 40,
+      "rule_bytes": 42312
+    }
+  },
+  {
+    "pair": 0,
+    "threaded": true,
+    "variant": "before",
+    "command": [
+      "taskset",
+      "-c",
+      "0",
+      "/home/bradley/.codex/worktrees/cc21/glob2/artifacts/gradient-cpu-audit/before-lifecycle",
+      "1000000",
+      "threaded"
+    ],
+    "ns_per_operation": {
+      "empty": 0.113603,
+      "rule_compile_builtin": 8973.759,
+      "rule_compile_mixed": 321475.134,
+      "rule_clone": 2426.083,
+      "snapshot_project_release": 32.420937,
+      "job_allocate_free": 12.201852,
+      "output_allocate_free_128": 37.248528,
+      "output_allocate_free_512": 34.008672,
+      "control_atomic_clear_null": 15.910734,
+      "control_owner_clear_null": 0.453558,
+      "backend_read": 0.885835,
+      "backend_pending_disabled": 0.860268,
+      "plan_choose_cpu": 0.48671,
+      "host_reserve_release": 4.547227,
+      "snapshot_pool_reuse": 7.798463,
+      "snapshot_memory_accounting": 472.25854
+    },
+    "metadata": {
+      "job_bytes": 672,
+      "handle_bytes": 392,
+      "session_bytes": 40,
+      "rule_bytes": 42216
+    }
+  },
+  {
+    "pair": 0,
+    "threaded": true,
+    "variant": "master",
+    "command": [
+      "taskset",
+      "-c",
+      "0",
+      "/home/bradley/.codex/worktrees/cc21/glob2/artifacts/gradient-cpu-audit/master-lifecycle",
+      "1000000",
+      "threaded"
+    ],
+    "ns_per_operation": {
+      "empty": 0.115486,
+      "rule_compile_builtin": 12515.328,
+      "rule_compile_mixed": 867732.258,
+      "rule_clone": 2419.332,
+      "snapshot_project_release": 32.254887,
+      "job_allocate_free": 9.942911,
+      "output_allocate_free_128": 31.077076,
+      "output_allocate_free_512": 23.882704,
+      "control_atomic_clear_null": 12.767078,
+      "control_owner_clear_null": 0.302716,
+      "backend_read": 0.458607,
+      "cpu_selection": 0.697944,
+      "scoped_cpu_selection": 0.931641,
+      "backend_pending_disabled": 0.458627,
+      "plan_choose_cpu": 2.565123,
+      "host_reserve_release": 4.341343,
+      "snapshot_pool_reuse": 7.720789,
+      "snapshot_memory_accounting": 428.11133
+    },
+    "metadata": {
+      "job_bytes": 672,
+      "handle_bytes": 392,
+      "session_bytes": 40,
+      "rule_bytes": 42240
+    }
+  },
+  {
+    "pair": 0,
+    "threaded": true,
+    "variant": "fixed",
+    "command": [
+      "taskset",
+      "-c",
+      "0",
+      "/home/bradley/.codex/worktrees/cc21/glob2/artifacts/gradient-cpu-audit/fixed-lifecycle",
+      "1000000",
+      "threaded"
+    ],
+    "ns_per_operation": {
+      "empty": 0.228998,
+      "rule_compile_builtin": 11544.193,
+      "rule_compile_mixed": 772060.249,
+      "rule_clone": 2500.132,
+      "snapshot_project_release": 32.453588,
+      "job_allocate_free": 9.747786,
+      "output_allocate_free_128": 30.638275,
+      "output_allocate_free_512": 23.469936,
+      "control_atomic_clear_null": 12.775965,
+      "control_owner_clear_null": 0.291124,
+      "backend_read": 0.229609,
+      "cpu_selection": 0.708665,
+      "scoped_cpu_selection": 0.934417,
+      "backend_pending_disabled": 0.458617,
+      "plan_choose_cpu": 2.559022,
+      "host_reserve_release": 4.344699,
+      "snapshot_pool_reuse": 7.742709,
+      "snapshot_memory_accounting": 429.40404
+    },
+    "metadata": {
+      "job_bytes": 672,
+      "handle_bytes": 392,
+      "session_bytes": 40,
+      "rule_bytes": 42312
+    }
+  },
+  {
+    "pair": 0,
+    "threaded": true,
+    "variant": "candidate",
+    "command": [
+      "taskset",
+      "-c",
+      "0",
+      "/home/bradley/.codex/worktrees/cc21/glob2/artifacts/gradient-cpu-audit/candidate-lifecycle",
+      "1000000",
+      "threaded"
+    ],
+    "ns_per_operation": {
+      "empty": 0.242242,
+      "rule_compile_builtin": 11693.583,
+      "rule_compile_mixed": 130152.533,
+      "rule_clone": 2507.576,
+      "snapshot_project_release": 31.987256,
+      "job_allocate_free": 9.981393,
+      "output_allocate_free_128": 30.623949,
+      "output_allocate_free_512": 22.905216,
+      "control_atomic_clear_null": 12.782547,
+      "control_owner_clear_null": 0.290734,
+      "backend_read": 0.229739,
+      "cpu_selection": 1.173262,
+      "scoped_cpu_selection": 0.115776,
+      "backend_pending_disabled": 0.936911,
+      "plan_choose_cpu": 3.010766,
+      "host_reserve_release": 4.418717,
+      "snapshot_pool_reuse": 7.683449,
+      "snapshot_memory_accounting": 429.26389
+    },
+    "metadata": {
+      "job_bytes": 672,
+      "handle_bytes": 392,
+      "session_bytes": 40,
+      "rule_bytes": 42312
+    }
+  },
+  {
+    "pair": 1,
+    "threaded": false,
+    "variant": "candidate",
+    "command": [
+      "taskset",
+      "-c",
+      "0",
+      "/home/bradley/.codex/worktrees/cc21/glob2/artifacts/gradient-cpu-audit/candidate-lifecycle",
+      "1000000"
+    ],
+    "ns_per_operation": {
+      "empty": 0.228637,
+      "rule_compile_builtin": 11505.772,
+      "rule_compile_mixed": 126028.725,
+      "rule_clone": 2516.563,
+      "snapshot_project_release": 28.907039,
+      "job_allocate_free": 9.949373,
+      "output_allocate_free_128": 30.715439,
+      "output_allocate_free_512": 21.49056,
+      "control_atomic_clear_null": 12.754455,
+      "control_owner_clear_null": 0.273451,
+      "backend_read": 0.229619,
+      "cpu_selection": 1.164166,
+      "scoped_cpu_selection": 0.115125,
+      "backend_pending_disabled": 0.931771,
+      "plan_choose_cpu": 3.021176,
+      "host_reserve_release": 4.41965,
+      "snapshot_pool_reuse": 5.514656,
+      "snapshot_memory_accounting": 437.62211
+    },
+    "metadata": {
+      "job_bytes": 672,
+      "handle_bytes": 392,
+      "session_bytes": 40,
+      "rule_bytes": 42312
+    }
+  },
+  {
+    "pair": 1,
+    "threaded": false,
+    "variant": "fixed",
+    "command": [
+      "taskset",
+      "-c",
+      "0",
+      "/home/bradley/.codex/worktrees/cc21/glob2/artifacts/gradient-cpu-audit/fixed-lifecycle",
+      "1000000"
+    ],
+    "ns_per_operation": {
+      "empty": 0.228738,
+      "rule_compile_builtin": 11760.217,
+      "rule_compile_mixed": 772466.776,
+      "rule_clone": 2432.135,
+      "snapshot_project_release": 29.06253,
+      "job_allocate_free": 9.71239,
+      "output_allocate_free_128": 43.489181,
+      "output_allocate_free_512": 21.499376,
+      "control_atomic_clear_null": 12.742743,
+      "control_owner_clear_null": 0.291334,
+      "backend_read": 0.242764,
+      "cpu_selection": 0.687916,
+      "scoped_cpu_selection": 0.927383,
+      "backend_pending_disabled": 0.472443,
+      "plan_choose_cpu": 2.535909,
+      "host_reserve_release": 4.356241,
+      "snapshot_pool_reuse": 5.50099,
+      "snapshot_memory_accounting": 440.28978
+    },
+    "metadata": {
+      "job_bytes": 672,
+      "handle_bytes": 392,
+      "session_bytes": 40,
+      "rule_bytes": 42312
+    }
+  },
+  {
+    "pair": 1,
+    "threaded": false,
+    "variant": "master",
+    "command": [
+      "taskset",
+      "-c",
+      "0",
+      "/home/bradley/.codex/worktrees/cc21/glob2/artifacts/gradient-cpu-audit/master-lifecycle",
+      "1000000"
+    ],
+    "ns_per_operation": {
+      "empty": 0.114263,
+      "rule_compile_builtin": 11074.245,
+      "rule_compile_mixed": 867427.776,
+      "rule_clone": 3456.55,
+      "snapshot_project_release": 35.859142,
+      "job_allocate_free": 12.442582,
+      "output_allocate_free_128": 33.67493,
+      "output_allocate_free_512": 22.561856,
+      "control_atomic_clear_null": 12.849192,
+      "control_owner_clear_null": 0.320769,
+      "backend_read": 0.461343,
+      "cpu_selection": 0.70621,
+      "scoped_cpu_selection": 0.94143,
+      "backend_pending_disabled": 0.745243,
+      "plan_choose_cpu": 2.750049,
+      "host_reserve_release": 4.394803,
+      "snapshot_pool_reuse": 5.609042,
+      "snapshot_memory_accounting": 443.43226
+    },
+    "metadata": {
+      "job_bytes": 672,
+      "handle_bytes": 392,
+      "session_bytes": 40,
+      "rule_bytes": 42240
+    }
+  },
+  {
+    "pair": 1,
+    "threaded": false,
+    "variant": "before",
+    "command": [
+      "taskset",
+      "-c",
+      "0",
+      "/home/bradley/.codex/worktrees/cc21/glob2/artifacts/gradient-cpu-audit/before-lifecycle",
+      "1000000"
+    ],
+    "ns_per_operation": {
+      "empty": 0.115907,
+      "rule_compile_builtin": 9202.496,
+      "rule_compile_mixed": 328263.973,
+      "rule_clone": 2375.91,
+      "snapshot_project_release": 28.950892,
+      "job_allocate_free": 9.919998,
+      "output_allocate_free_128": 28.491012,
+      "output_allocate_free_512": 21.347568,
+      "control_atomic_clear_null": 12.80503,
+      "control_owner_clear_null": 0.291775,
+      "backend_read": 0.46009,
+      "backend_pending_disabled": 0.47047,
+      "plan_choose_cpu": 0.46517,
+      "host_reserve_release": 4.35033,
+      "snapshot_pool_reuse": 5.510187,
+      "snapshot_memory_accounting": 421.56008
+    },
+    "metadata": {
+      "job_bytes": 672,
+      "handle_bytes": 392,
+      "session_bytes": 40,
+      "rule_bytes": 42216
+    }
+  },
+  {
+    "pair": 1,
+    "threaded": true,
+    "variant": "candidate",
+    "command": [
+      "taskset",
+      "-c",
+      "0",
+      "/home/bradley/.codex/worktrees/cc21/glob2/artifacts/gradient-cpu-audit/candidate-lifecycle",
+      "1000000",
+      "threaded"
+    ],
+    "ns_per_operation": {
+      "empty": 0.228717,
+      "rule_compile_builtin": 11828.915,
+      "rule_compile_mixed": 129646.568,
+      "rule_clone": 2514.839,
+      "snapshot_project_release": 31.943866,
+      "job_allocate_free": 9.820332,
+      "output_allocate_free_128": 30.336622,
+      "output_allocate_free_512": 22.773936,
+      "control_atomic_clear_null": 12.941535,
+      "control_owner_clear_null": 0.28917,
+      "backend_read": 0.248414,
+      "cpu_selection": 1.15047,
+      "scoped_cpu_selection": 0.114464,
+      "backend_pending_disabled": 0.9253,
+      "plan_choose_cpu": 3.25358,
+      "host_reserve_release": 4.380175,
+      "snapshot_pool_reuse": 7.613558,
+      "snapshot_memory_accounting": 430.74195
+    },
+    "metadata": {
+      "job_bytes": 672,
+      "handle_bytes": 392,
+      "session_bytes": 40,
+      "rule_bytes": 42312
+    }
+  },
+  {
+    "pair": 1,
+    "threaded": true,
+    "variant": "fixed",
+    "command": [
+      "taskset",
+      "-c",
+      "0",
+      "/home/bradley/.codex/worktrees/cc21/glob2/artifacts/gradient-cpu-audit/fixed-lifecycle",
+      "1000000",
+      "threaded"
+    ],
+    "ns_per_operation": {
+      "empty": 0.226122,
+      "rule_compile_builtin": 11589.478,
+      "rule_compile_mixed": 768261.56,
+      "rule_clone": 2463.664,
+      "snapshot_project_release": 32.232856,
+      "job_allocate_free": 9.809532,
+      "output_allocate_free_128": 30.076024,
+      "output_allocate_free_512": 22.86544,
+      "control_atomic_clear_null": 12.881883,
+      "control_owner_clear_null": 0.289451,
+      "backend_read": 0.228317,
+      "cpu_selection": 0.699607,
+      "scoped_cpu_selection": 0.92046,
+      "backend_pending_disabled": 0.469607,
+      "plan_choose_cpu": 2.527624,
+      "host_reserve_release": 4.241437,
+      "snapshot_pool_reuse": 7.553876,
+      "snapshot_memory_accounting": 420.54389
+    },
+    "metadata": {
+      "job_bytes": 672,
+      "handle_bytes": 392,
+      "session_bytes": 40,
+      "rule_bytes": 42312
+    }
+  },
+  {
+    "pair": 1,
+    "threaded": true,
+    "variant": "master",
+    "command": [
+      "taskset",
+      "-c",
+      "0",
+      "/home/bradley/.codex/worktrees/cc21/glob2/artifacts/gradient-cpu-audit/master-lifecycle",
+      "1000000",
+      "threaded"
+    ],
+    "ns_per_operation": {
+      "empty": 0.13375,
+      "rule_compile_builtin": 11376.581,
+      "rule_compile_mixed": 768366.523,
+      "rule_clone": 2387.802,
+      "snapshot_project_release": 32.062446,
+      "job_allocate_free": 10.094394,
+      "output_allocate_free_128": 30.304642,
+      "output_allocate_free_512": 22.577712,
+      "control_atomic_clear_null": 12.649479,
+      "control_owner_clear_null": 0.284672,
+      "backend_read": 0.470389,
+      "cpu_selection": 0.695731,
+      "scoped_cpu_selection": 0.911403,
+      "backend_pending_disabled": 0.468265,
+      "plan_choose_cpu": 2.499581,
+      "host_reserve_release": 4.292542,
+      "snapshot_pool_reuse": 7.692024,
+      "snapshot_memory_accounting": 428.29988
+    },
+    "metadata": {
+      "job_bytes": 672,
+      "handle_bytes": 392,
+      "session_bytes": 40,
+      "rule_bytes": 42240
+    }
+  },
+  {
+    "pair": 1,
+    "threaded": true,
+    "variant": "before",
+    "command": [
+      "taskset",
+      "-c",
+      "0",
+      "/home/bradley/.codex/worktrees/cc21/glob2/artifacts/gradient-cpu-audit/before-lifecycle",
+      "1000000",
+      "threaded"
+    ],
+    "ns_per_operation": {
+      "empty": 0.113542,
+      "rule_compile_builtin": 9309.207,
+      "rule_compile_mixed": 324524.205,
+      "rule_clone": 2417.517,
+      "snapshot_project_release": 32.127127,
+      "job_allocate_free": 9.853303,
+      "output_allocate_free_128": 30.830946,
+      "output_allocate_free_512": 22.848608,
+      "control_atomic_clear_null": 12.710062,
+      "control_owner_clear_null": 0.29964,
+      "backend_read": 0.457746,
+      "backend_pending_disabled": 0.48679,
+      "plan_choose_cpu": 0.463576,
+      "host_reserve_release": 4.322758,
+      "snapshot_pool_reuse": 7.70566,
+      "snapshot_memory_accounting": 432.35096
+    },
+    "metadata": {
+      "job_bytes": 672,
+      "handle_bytes": 392,
+      "session_bytes": 40,
+      "rule_bytes": 42216
+    }
+  },
+  {
+    "pair": 2,
+    "threaded": false,
+    "variant": "before",
+    "command": [
+      "taskset",
+      "-c",
+      "0",
+      "/home/bradley/.codex/worktrees/cc21/glob2/artifacts/gradient-cpu-audit/before-lifecycle",
+      "1000000"
+    ],
+    "ns_per_operation": {
+      "empty": 0.113542,
+      "rule_compile_builtin": 9378.676,
+      "rule_compile_mixed": 324310.707,
+      "rule_clone": 2330.736,
+      "snapshot_project_release": 28.861414,
+      "job_allocate_free": 9.590643,
+      "output_allocate_free_128": 28.495701,
+      "output_allocate_free_512": 20.967344,
+      "control_atomic_clear_null": 12.887173,
+      "control_owner_clear_null": 0.28907,
+      "backend_read": 0.457355,
+      "backend_pending_disabled": 0.469508,
+      "plan_choose_cpu": 0.463566,
+      "host_reserve_release": 4.3183,
+      "snapshot_pool_reuse": 5.559379,
+      "snapshot_memory_accounting": 419.99567
+    },
+    "metadata": {
+      "job_bytes": 672,
+      "handle_bytes": 392,
+      "session_bytes": 40,
+      "rule_bytes": 42216
+    }
+  },
+  {
+    "pair": 2,
+    "threaded": false,
+    "variant": "master",
+    "command": [
+      "taskset",
+      "-c",
+      "0",
+      "/home/bradley/.codex/worktrees/cc21/glob2/artifacts/gradient-cpu-audit/master-lifecycle",
+      "1000000"
+    ],
+    "ns_per_operation": {
+      "empty": 0.113552,
+      "rule_compile_builtin": 11025.974,
+      "rule_compile_mixed": 773288.494,
+      "rule_clone": 2299.067,
+      "snapshot_project_release": 28.691428,
+      "job_allocate_free": 9.782,
+      "output_allocate_free_128": 28.358165,
+      "output_allocate_free_512": 21.377552,
+      "control_atomic_clear_null": 12.670127,
+      "control_owner_clear_null": 0.299921,
+      "backend_read": 0.456022,
+      "cpu_selection": 0.696601,
+      "scoped_cpu_selection": 0.914509,
+      "backend_pending_disabled": 0.456022,
+      "plan_choose_cpu": 2.542681,
+      "host_reserve_release": 4.309533,
+      "snapshot_pool_reuse": 5.441999,
+      "snapshot_memory_accounting": 419.13957
+    },
+    "metadata": {
+      "job_bytes": 672,
+      "handle_bytes": 392,
+      "session_bytes": 40,
+      "rule_bytes": 42240
+    }
+  },
+  {
+    "pair": 2,
+    "threaded": false,
+    "variant": "fixed",
+    "command": [
+      "taskset",
+      "-c",
+      "0",
+      "/home/bradley/.codex/worktrees/cc21/glob2/artifacts/gradient-cpu-audit/fixed-lifecycle",
+      "1000000"
+    ],
+    "ns_per_operation": {
+      "empty": 0.226183,
+      "rule_compile_builtin": 11323.371,
+      "rule_compile_mixed": 752308.367,
+      "rule_clone": 2443.156,
+      "snapshot_project_release": 28.867306,
+      "job_allocate_free": 9.867811,
+      "output_allocate_free_128": 46.46449,
+      "output_allocate_free_512": 21.3668,
+      "control_atomic_clear_null": 12.706705,
+      "control_owner_clear_null": 0.289351,
+      "backend_read": 0.245809,
+      "cpu_selection": 0.683958,
+      "scoped_cpu_selection": 0.914319,
+      "backend_pending_disabled": 0.468595,
+      "plan_choose_cpu": 2.558451,
+      "host_reserve_release": 4.339058,
+      "snapshot_pool_reuse": 5.475041,
+      "snapshot_memory_accounting": 440.17087
+    },
+    "metadata": {
+      "job_bytes": 672,
+      "handle_bytes": 392,
+      "session_bytes": 40,
+      "rule_bytes": 42312
+    }
+  },
+  {
+    "pair": 2,
+    "threaded": false,
+    "variant": "candidate",
+    "command": [
+      "taskset",
+      "-c",
+      "0",
+      "/home/bradley/.codex/worktrees/cc21/glob2/artifacts/gradient-cpu-audit/candidate-lifecycle",
+      "1000000"
+    ],
+    "ns_per_operation": {
+      "empty": 0.227435,
+      "rule_compile_builtin": 11826.631,
+      "rule_compile_mixed": 130512.376,
+      "rule_clone": 2640.855,
+      "snapshot_project_release": 28.934992,
+      "job_allocate_free": 10.130151,
+      "output_allocate_free_128": 28.735259,
+      "output_allocate_free_512": 20.962208,
+      "control_atomic_clear_null": 12.743143,
+      "control_owner_clear_null": 0.288159,
+      "backend_read": 0.227034,
+      "cpu_selection": 1.169846,
+      "scoped_cpu_selection": 0.133059,
+      "backend_pending_disabled": 0.910071,
+      "plan_choose_cpu": 2.972375,
+      "host_reserve_release": 4.381288,
+      "snapshot_pool_reuse": 5.436108,
+      "snapshot_memory_accounting": 440.89913
+    },
+    "metadata": {
+      "job_bytes": 672,
+      "handle_bytes": 392,
+      "session_bytes": 40,
+      "rule_bytes": 42312
+    }
+  },
+  {
+    "pair": 2,
+    "threaded": true,
+    "variant": "before",
+    "command": [
+      "taskset",
+      "-c",
+      "0",
+      "/home/bradley/.codex/worktrees/cc21/glob2/artifacts/gradient-cpu-audit/before-lifecycle",
+      "1000000",
+      "threaded"
+    ],
+    "ns_per_operation": {
+      "empty": 0.113573,
+      "rule_compile_builtin": 9390.789,
+      "rule_compile_mixed": 324476.737,
+      "rule_clone": 2446.572,
+      "snapshot_project_release": 32.041117,
+      "job_allocate_free": 9.85677,
+      "output_allocate_free_128": 30.540853,
+      "output_allocate_free_512": 26.399744,
+      "control_atomic_clear_null": 12.701365,
+      "control_owner_clear_null": 0.284231,
+      "backend_read": 0.449891,
+      "backend_pending_disabled": 0.464137,
+      "plan_choose_cpu": 0.465931,
+      "host_reserve_release": 4.262445,
+      "snapshot_pool_reuse": 7.618037,
+      "snapshot_memory_accounting": 432.99886
+    },
+    "metadata": {
+      "job_bytes": 672,
+      "handle_bytes": 392,
+      "session_bytes": 40,
+      "rule_bytes": 42216
+    }
+  },
+  {
+    "pair": 2,
+    "threaded": true,
+    "variant": "master",
+    "command": [
+      "taskset",
+      "-c",
+      "0",
+      "/home/bradley/.codex/worktrees/cc21/glob2/artifacts/gradient-cpu-audit/master-lifecycle",
+      "1000000",
+      "threaded"
+    ],
+    "ns_per_operation": {
+      "empty": 0.112781,
+      "rule_compile_builtin": 11316.498,
+      "rule_compile_mixed": 779320.736,
+      "rule_clone": 2413.39,
+      "snapshot_project_release": 31.857444,
+      "job_allocate_free": 9.743748,
+      "output_allocate_free_128": 30.19655,
+      "output_allocate_free_512": 22.428784,
+      "control_atomic_clear_null": 12.729147,
+      "control_owner_clear_null": 0.359822,
+      "backend_read": 0.466622,
+      "cpu_selection": 0.683958,
+      "scoped_cpu_selection": 0.927823,
+      "backend_pending_disabled": 0.468946,
+      "plan_choose_cpu": 2.529698,
+      "host_reserve_release": 4.315816,
+      "snapshot_pool_reuse": 7.601144,
+      "snapshot_memory_accounting": 421.11445
+    },
+    "metadata": {
+      "job_bytes": 672,
+      "handle_bytes": 392,
+      "session_bytes": 40,
+      "rule_bytes": 42240
+    }
+  },
+  {
+    "pair": 2,
+    "threaded": true,
+    "variant": "fixed",
+    "command": [
+      "taskset",
+      "-c",
+      "0",
+      "/home/bradley/.codex/worktrees/cc21/glob2/artifacts/gradient-cpu-audit/fixed-lifecycle",
+      "1000000",
+      "threaded"
+    ],
+    "ns_per_operation": {
+      "empty": 0.226162,
+      "rule_compile_builtin": 11587.194,
+      "rule_compile_mixed": 781898.003,
+      "rule_clone": 2472.38,
+      "snapshot_project_release": 32.532134,
+      "job_allocate_free": 9.609948,
+      "output_allocate_free_128": 30.573665,
+      "output_allocate_free_512": 22.853744,
+      "control_atomic_clear_null": 12.619984,
+      "control_owner_clear_null": 0.284582,
+      "backend_read": 0.22458,
+      "cpu_selection": 0.701561,
+      "scoped_cpu_selection": 0.924618,
+      "backend_pending_disabled": 0.456012,
+      "plan_choose_cpu": 2.550587,
+      "host_reserve_release": 4.369806,
+      "snapshot_pool_reuse": 7.666146,
+      "snapshot_memory_accounting": 428.1498
+    },
+    "metadata": {
+      "job_bytes": 672,
+      "handle_bytes": 392,
+      "session_bytes": 40,
+      "rule_bytes": 42312
+    }
+  },
+  {
+    "pair": 2,
+    "threaded": true,
+    "variant": "candidate",
+    "command": [
+      "taskset",
+      "-c",
+      "0",
+      "/home/bradley/.codex/worktrees/cc21/glob2/artifacts/gradient-cpu-audit/candidate-lifecycle",
+      "1000000",
+      "threaded"
+    ],
+    "ns_per_operation": {
+      "empty": 0.226093,
+      "rule_compile_builtin": 11550.866,
+      "rule_compile_mixed": 128145.794,
+      "rule_clone": 2451.631,
+      "snapshot_project_release": 31.826035,
+      "job_allocate_free": 9.78772,
+      "output_allocate_free_128": 30.303248,
+      "output_allocate_free_512": 22.698912,
+      "control_atomic_clear_null": 12.784521,
+      "control_owner_clear_null": 0.28905,
+      "backend_read": 0.228336,
+      "cpu_selection": 1.15073,
+      "scoped_cpu_selection": 0.114474,
+      "backend_pending_disabled": 0.929277,
+      "plan_choose_cpu": 3.01308,
+      "host_reserve_release": 4.382731,
+      "snapshot_pool_reuse": 7.55062,
+      "snapshot_memory_accounting": 434.42403
+    },
+    "metadata": {
+      "job_bytes": 672,
+      "handle_bytes": 392,
+      "session_bytes": 40,
+      "rule_bytes": 42312
+    }
+  },
+  {
+    "pair": 3,
+    "threaded": false,
+    "variant": "candidate",
+    "command": [
+      "taskset",
+      "-c",
+      "0",
+      "/home/bradley/.codex/worktrees/cc21/glob2/artifacts/gradient-cpu-audit/candidate-lifecycle",
+      "1000000"
+    ],
+    "ns_per_operation": {
+      "empty": 0.226112,
+      "rule_compile_builtin": 11512.413,
+      "rule_compile_mixed": 128524.148,
+      "rule_clone": 2485.936,
+      "snapshot_project_release": 28.753312,
+      "job_allocate_free": 9.75509,
+      "output_allocate_free_128": 28.539504,
+      "output_allocate_free_512": 20.832208,
+      "control_atomic_clear_null": 12.785854,
+      "control_owner_clear_null": 0.28909,
+      "backend_read": 0.228327,
+      "cpu_selection": 1.212787,
+      "scoped_cpu_selection": 0.114494,
+      "backend_pending_disabled": 0.923716,
+      "plan_choose_cpu": 2.983887,
+      "host_reserve_release": 4.365338,
+      "snapshot_pool_reuse": 5.423074,
+      "snapshot_memory_accounting": 435.08927
+    },
+    "metadata": {
+      "job_bytes": 672,
+      "handle_bytes": 392,
+      "session_bytes": 40,
+      "rule_bytes": 42312
+    }
+  },
+  {
+    "pair": 3,
+    "threaded": false,
+    "variant": "fixed",
+    "command": [
+      "taskset",
+      "-c",
+      "0",
+      "/home/bradley/.codex/worktrees/cc21/glob2/artifacts/gradient-cpu-audit/fixed-lifecycle",
+      "1000000"
+    ],
+    "ns_per_operation": {
+      "empty": 0.226173,
+      "rule_compile_builtin": 11380.728,
+      "rule_compile_mixed": 760469.906,
+      "rule_clone": 2417.758,
+      "snapshot_project_release": 28.943418,
+      "job_allocate_free": 9.587346,
+      "output_allocate_free_128": 28.457179,
+      "output_allocate_free_512": 20.706208,
+      "control_atomic_clear_null": 12.60233,
+      "control_owner_clear_null": 0.289551,
+      "backend_read": 0.366365,
+      "cpu_selection": 0.832075,
+      "scoped_cpu_selection": 0.921723,
+      "backend_pending_disabled": 0.473585,
+      "plan_choose_cpu": 2.528495,
+      "host_reserve_release": 4.302199,
+      "snapshot_pool_reuse": 5.456607,
+      "snapshot_memory_accounting": 431.72027
+    },
+    "metadata": {
+      "job_bytes": 672,
+      "handle_bytes": 392,
+      "session_bytes": 40,
+      "rule_bytes": 42312
+    }
+  },
+  {
+    "pair": 3,
+    "threaded": false,
+    "variant": "master",
+    "command": [
+      "taskset",
+      "-c",
+      "0",
+      "/home/bradley/.codex/worktrees/cc21/glob2/artifacts/gradient-cpu-audit/master-lifecycle",
+      "1000000"
+    ],
+    "ns_per_operation": {
+      "empty": 0.113562,
+      "rule_compile_builtin": 11083.122,
+      "rule_compile_mixed": 765075.113,
+      "rule_clone": 2349.681,
+      "snapshot_project_release": 28.744807,
+      "job_allocate_free": 9.799863,
+      "output_allocate_free_128": 28.488298,
+      "output_allocate_free_512": 20.424896,
+      "control_atomic_clear_null": 12.606548,
+      "control_owner_clear_null": 0.289461,
+      "backend_read": 0.466983,
+      "cpu_selection": 0.850209,
+      "scoped_cpu_selection": 0.964964,
+      "backend_pending_disabled": 0.477492,
+      "plan_choose_cpu": 2.529237,
+      "host_reserve_release": 4.312018,
+      "snapshot_pool_reuse": 5.486593,
+      "snapshot_memory_accounting": 429.6409
+    },
+    "metadata": {
+      "job_bytes": 672,
+      "handle_bytes": 392,
+      "session_bytes": 40,
+      "rule_bytes": 42240
+    }
+  },
+  {
+    "pair": 3,
+    "threaded": false,
+    "variant": "before",
+    "command": [
+      "taskset",
+      "-c",
+      "0",
+      "/home/bradley/.codex/worktrees/cc21/glob2/artifacts/gradient-cpu-audit/before-lifecycle",
+      "1000000"
+    ],
+    "ns_per_operation": {
+      "empty": 0.114254,
+      "rule_compile_builtin": 9032.88,
+      "rule_compile_mixed": 384302.629,
+      "rule_clone": 2773.824,
+      "snapshot_project_release": 29.510728,
+      "job_allocate_free": 9.817366,
+      "output_allocate_free_128": 31.313627,
+      "output_allocate_free_512": 40.438608,
+      "control_atomic_clear_null": 15.035558,
+      "control_owner_clear_null": 0.29421,
+      "backend_read": 0.47125,
+      "backend_pending_disabled": 0.463927,
+      "plan_choose_cpu": 0.481741,
+      "host_reserve_release": 4.417375,
+      "snapshot_pool_reuse": 5.647484,
+      "snapshot_memory_accounting": 489.23005
+    },
+    "metadata": {
+      "job_bytes": 672,
+      "handle_bytes": 392,
+      "session_bytes": 40,
+      "rule_bytes": 42216
+    }
+  },
+  {
+    "pair": 3,
+    "threaded": true,
+    "variant": "candidate",
+    "command": [
+      "taskset",
+      "-c",
+      "0",
+      "/home/bradley/.codex/worktrees/cc21/glob2/artifacts/gradient-cpu-audit/candidate-lifecycle",
+      "1000000",
+      "threaded"
+    ],
+    "ns_per_operation": {
+      "empty": 0.234257,
+      "rule_compile_builtin": 12438.655,
+      "rule_compile_mixed": 133508.805,
+      "rule_clone": 2562.969,
+      "snapshot_project_release": 32.785077,
+      "job_allocate_free": 10.133567,
+      "output_allocate_free_128": 30.97253,
+      "output_allocate_free_512": 24.18728,
+      "control_atomic_clear_null": 13.000654,
+      "control_owner_clear_null": 0.292336,
+      "backend_read": 0.230961,
+      "cpu_selection": 1.185926,
+      "scoped_cpu_selection": 0.130103,
+      "backend_pending_disabled": 0.921883,
+      "plan_choose_cpu": 3.093722,
+      "host_reserve_release": 4.469552,
+      "snapshot_pool_reuse": 7.748349,
+      "snapshot_memory_accounting": 430.72382
+    },
+    "metadata": {
+      "job_bytes": 672,
+      "handle_bytes": 392,
+      "session_bytes": 40,
+      "rule_bytes": 42312
+    }
+  },
+  {
+    "pair": 3,
+    "threaded": true,
+    "variant": "fixed",
+    "command": [
+      "taskset",
+      "-c",
+      "0",
+      "/home/bradley/.codex/worktrees/cc21/glob2/artifacts/gradient-cpu-audit/fixed-lifecycle",
+      "1000000",
+      "threaded"
+    ],
+    "ns_per_operation": {
+      "empty": 0.22996,
+      "rule_compile_builtin": 12140.618,
+      "rule_compile_mixed": 784506.856,
+      "rule_clone": 4135.398,
+      "snapshot_project_release": 38.192542,
+      "job_allocate_free": 10.700236,
+      "output_allocate_free_128": 32.072246,
+      "output_allocate_free_512": 25.837728,
+      "control_atomic_clear_null": 13.840394,
+      "control_owner_clear_null": 0.305862,
+      "backend_read": 0.230961,
+      "cpu_selection": 0.873883,
+      "scoped_cpu_selection": 1.294189,
+      "backend_pending_disabled": 0.777663,
+      "plan_choose_cpu": 3.068624,
+      "host_reserve_release": 4.401305,
+      "snapshot_pool_reuse": 7.843187,
+      "snapshot_memory_accounting": 471.19274
+    },
+    "metadata": {
+      "job_bytes": 672,
+      "handle_bytes": 392,
+      "session_bytes": 40,
+      "rule_bytes": 42312
+    }
+  },
+  {
+    "pair": 3,
+    "threaded": true,
+    "variant": "master",
+    "command": [
+      "taskset",
+      "-c",
+      "0",
+      "/home/bradley/.codex/worktrees/cc21/glob2/artifacts/gradient-cpu-audit/master-lifecycle",
+      "1000000",
+      "threaded"
+    ],
+    "ns_per_operation": {
+      "empty": 0.116958,
+      "rule_compile_builtin": 15447.619,
+      "rule_compile_mixed": 851265.822,
+      "rule_clone": 2416.456,
+      "snapshot_project_release": 32.333132,
+      "job_allocate_free": 9.938222,
+      "output_allocate_free_128": 33.451252,
+      "output_allocate_free_512": 22.619872,
+      "control_atomic_clear_null": 12.797706,
+      "control_owner_clear_null": 0.290763,
+      "backend_read": 0.47663,
+      "cpu_selection": 0.926351,
+      "scoped_cpu_selection": 0.939646,
+      "backend_pending_disabled": 0.458637,
+      "plan_choose_cpu": 2.572928,
+      "host_reserve_release": 4.34517,
+      "snapshot_pool_reuse": 7.64167,
+      "snapshot_memory_accounting": 432.09107
+    },
+    "metadata": {
+      "job_bytes": 672,
+      "handle_bytes": 392,
+      "session_bytes": 40,
+      "rule_bytes": 42240
+    }
+  },
+  {
+    "pair": 3,
+    "threaded": true,
+    "variant": "before",
+    "command": [
+      "taskset",
+      "-c",
+      "0",
+      "/home/bradley/.codex/worktrees/cc21/glob2/artifacts/gradient-cpu-audit/before-lifecycle",
+      "1000000",
+      "threaded"
+    ],
+    "ns_per_operation": {
+      "empty": 0.112931,
+      "rule_compile_builtin": 9046.205,
+      "rule_compile_mixed": 349682.791,
+      "rule_clone": 2504.971,
+      "snapshot_project_release": 40.317994,
+      "job_allocate_free": 12.450377,
+      "output_allocate_free_128": 33.850568,
+      "output_allocate_free_512": 24.330112,
+      "control_atomic_clear_null": 14.301405,
+      "control_owner_clear_null": 0.298909,
+      "backend_read": 0.469147,
+      "backend_pending_disabled": 0.466612,
+      "plan_choose_cpu": 0.502399,
+      "host_reserve_release": 4.434828,
+      "snapshot_pool_reuse": 7.838207,
+      "snapshot_memory_accounting": 454.6938
+    },
+    "metadata": {
+      "job_bytes": 672,
+      "handle_bytes": 392,
+      "session_bytes": 40,
+      "rule_bytes": 42216
+    }
+  },
+  {
+    "pair": 4,
+    "threaded": false,
+    "variant": "before",
+    "command": [
+      "taskset",
+      "-c",
+      "0",
+      "/home/bradley/.codex/worktrees/cc21/glob2/artifacts/gradient-cpu-audit/before-lifecycle",
+      "1000000"
+    ],
+    "ns_per_operation": {
+      "empty": 0.24642,
+      "rule_compile_builtin": 10438.838,
+      "rule_compile_mixed": 336625.699,
+      "rule_clone": 2383.734,
+      "snapshot_project_release": 29.193276,
+      "job_allocate_free": 9.816715,
+      "output_allocate_free_128": 28.871113,
+      "output_allocate_free_512": 21.543936,
+      "control_atomic_clear_null": 12.855965,
+      "control_owner_clear_null": 0.291304,
+      "backend_read": 0.474536,
+      "backend_pending_disabled": 0.468816,
+      "plan_choose_cpu": 0.464658,
+      "host_reserve_release": 4.336243,
+      "snapshot_pool_reuse": 5.512231,
+      "snapshot_memory_accounting": 438.21271
+    },
+    "metadata": {
+      "job_bytes": 672,
+      "handle_bytes": 392,
+      "session_bytes": 40,
+      "rule_bytes": 42216
+    }
+  },
+  {
+    "pair": 4,
+    "threaded": false,
+    "variant": "master",
+    "command": [
+      "taskset",
+      "-c",
+      "0",
+      "/home/bradley/.codex/worktrees/cc21/glob2/artifacts/gradient-cpu-audit/master-lifecycle",
+      "1000000"
+    ],
+    "ns_per_operation": {
+      "empty": 0.114844,
+      "rule_compile_builtin": 11431.742,
+      "rule_compile_mixed": 784402.941,
+      "rule_clone": 3921.198,
+      "snapshot_project_release": 39.929769,
+      "job_allocate_free": 11.403621,
+      "output_allocate_free_128": 33.856007,
+      "output_allocate_free_512": 21.35736,
+      "control_atomic_clear_null": 12.916168,
+      "control_owner_clear_null": 0.29416,
+      "backend_read": 0.477833,
+      "cpu_selection": 0.69586,
+      "scoped_cpu_selection": 0.939786,
+      "backend_pending_disabled": 0.475699,
+      "plan_choose_cpu": 2.57398,
+      "host_reserve_release": 4.407566,
+      "snapshot_pool_reuse": 5.696415,
+      "snapshot_memory_accounting": 451.95399
+    },
+    "metadata": {
+      "job_bytes": 672,
+      "handle_bytes": 392,
+      "session_bytes": 40,
+      "rule_bytes": 42240
+    }
+  },
+  {
+    "pair": 4,
+    "threaded": false,
+    "variant": "fixed",
+    "command": [
+      "taskset",
+      "-c",
+      "0",
+      "/home/bradley/.codex/worktrees/cc21/glob2/artifacts/gradient-cpu-audit/fixed-lifecycle",
+      "1000000"
+    ],
+    "ns_per_operation": {
+      "empty": 0.51373,
+      "rule_compile_builtin": 19785.665,
+      "rule_compile_mixed": 1261947.138,
+      "rule_clone": 4070.026,
+      "snapshot_project_release": 51.866225,
+      "job_allocate_free": 17.612673,
+      "output_allocate_free_128": 53.722434,
+      "output_allocate_free_512": 40.520512,
+      "control_atomic_clear_null": 19.580541,
+      "control_owner_clear_null": 0.472834,
+      "backend_read": 0.464959,
+      "cpu_selection": 1.502227,
+      "scoped_cpu_selection": 1.720776,
+      "backend_pending_disabled": 0.900212,
+      "plan_choose_cpu": 4.957794,
+      "host_reserve_release": 5.46329,
+      "snapshot_pool_reuse": 6.330871,
+      "snapshot_memory_accounting": 735.21073
+    },
+    "metadata": {
+      "job_bytes": 672,
+      "handle_bytes": 392,
+      "session_bytes": 40,
+      "rule_bytes": 42312
+    }
+  },
+  {
+    "pair": 4,
+    "threaded": false,
+    "variant": "candidate",
+    "command": [
+      "taskset",
+      "-c",
+      "0",
+      "/home/bradley/.codex/worktrees/cc21/glob2/artifacts/gradient-cpu-audit/candidate-lifecycle",
+      "1000000"
+    ],
+    "ns_per_operation": {
+      "empty": 0.228737,
+      "rule_compile_builtin": 11333.449,
+      "rule_compile_mixed": 129070.913,
+      "rule_clone": 2404.664,
+      "snapshot_project_release": 28.700985,
+      "job_allocate_free": 9.997152,
+      "output_allocate_free_128": 28.433405,
+      "output_allocate_free_512": 21.246752,
+      "control_atomic_clear_null": 12.680577,
+      "control_owner_clear_null": 0.289461,
+      "backend_read": 0.228317,
+      "cpu_selection": 1.157794,
+      "scoped_cpu_selection": 0.129673,
+      "backend_pending_disabled": 0.911414,
+      "plan_choose_cpu": 2.990989,
+      "host_reserve_release": 4.381338,
+      "snapshot_pool_reuse": 5.46913,
+      "snapshot_memory_accounting": 424.23188
+    },
+    "metadata": {
+      "job_bytes": 672,
+      "handle_bytes": 392,
+      "session_bytes": 40,
+      "rule_bytes": 42312
+    }
+  },
+  {
+    "pair": 4,
+    "threaded": true,
+    "variant": "before",
+    "command": [
+      "taskset",
+      "-c",
+      "0",
+      "/home/bradley/.codex/worktrees/cc21/glob2/artifacts/gradient-cpu-audit/before-lifecycle",
+      "1000000",
+      "threaded"
+    ],
+    "ns_per_operation": {
+      "empty": 0.114243,
+      "rule_compile_builtin": 9116.737,
+      "rule_compile_mixed": 361505.575,
+      "rule_clone": 3753.885,
+      "snapshot_project_release": 52.365027,
+      "job_allocate_free": 17.181608,
+      "output_allocate_free_128": 54.831917,
+      "output_allocate_free_512": 42.484832,
+      "control_atomic_clear_null": 18.96485,
+      "control_owner_clear_null": 0.303818,
+      "backend_read": 0.504202,
+      "backend_pending_disabled": 0.483824,
+      "plan_choose_cpu": 0.501897,
+      "host_reserve_release": 4.517963,
+      "snapshot_pool_reuse": 7.969643,
+      "snapshot_memory_accounting": 504.01799
+    },
+    "metadata": {
+      "job_bytes": 672,
+      "handle_bytes": 392,
+      "session_bytes": 40,
+      "rule_bytes": 42216
+    }
+  },
+  {
+    "pair": 4,
+    "threaded": true,
+    "variant": "master",
+    "command": [
+      "taskset",
+      "-c",
+      "0",
+      "/home/bradley/.codex/worktrees/cc21/glob2/artifacts/gradient-cpu-audit/master-lifecycle",
+      "1000000",
+      "threaded"
+    ],
+    "ns_per_operation": {
+      "empty": 0.11759,
+      "rule_compile_builtin": 14043.433,
+      "rule_compile_mixed": 852459.797,
+      "rule_clone": 2425.553,
+      "snapshot_project_release": 32.423532,
+      "job_allocate_free": 9.922923,
+      "output_allocate_free_128": 30.879988,
+      "output_allocate_free_512": 23.191648,
+      "control_atomic_clear_null": 13.13712,
+      "control_owner_clear_null": 0.301423,
+      "backend_read": 0.461252,
+      "cpu_selection": 0.696932,
+      "scoped_cpu_selection": 0.934967,
+      "backend_pending_disabled": 0.456013,
+      "plan_choose_cpu": 2.583478,
+      "host_reserve_release": 4.324802,
+      "snapshot_pool_reuse": 7.719095,
+      "snapshot_memory_accounting": 433.46624
+    },
+    "metadata": {
+      "job_bytes": 672,
+      "handle_bytes": 392,
+      "session_bytes": 40,
+      "rule_bytes": 42240
+    }
+  },
+  {
+    "pair": 4,
+    "threaded": true,
+    "variant": "fixed",
+    "command": [
+      "taskset",
+      "-c",
+      "0",
+      "/home/bradley/.codex/worktrees/cc21/glob2/artifacts/gradient-cpu-audit/fixed-lifecycle",
+      "1000000",
+      "threaded"
+    ],
+    "ns_per_operation": {
+      "empty": 0.228757,
+      "rule_compile_builtin": 11676.039,
+      "rule_compile_mixed": 822353.752,
+      "rule_clone": 2534.286,
+      "snapshot_project_release": 38.537748,
+      "job_allocate_free": 11.825268,
+      "output_allocate_free_128": 36.201571,
+      "output_allocate_free_512": 24.353664,
+      "control_atomic_clear_null": 13.331784,
+      "control_owner_clear_null": 0.296945,
+      "backend_read": 0.247773,
+      "cpu_selection": 0.703965,
+      "scoped_cpu_selection": 0.948993,
+      "backend_pending_disabled": 0.482472,
+      "plan_choose_cpu": 2.587596,
+      "host_reserve_release": 4.435228,
+      "snapshot_pool_reuse": 7.881449,
+      "snapshot_memory_accounting": 442.63116
+    },
+    "metadata": {
+      "job_bytes": 672,
+      "handle_bytes": 392,
+      "session_bytes": 40,
+      "rule_bytes": 42312
+    }
+  },
+  {
+    "pair": 4,
+    "threaded": true,
+    "variant": "candidate",
+    "command": [
+      "taskset",
+      "-c",
+      "0",
+      "/home/bradley/.codex/worktrees/cc21/glob2/artifacts/gradient-cpu-audit/candidate-lifecycle",
+      "1000000",
+      "threaded"
+    ],
+    "ns_per_operation": {
+      "empty": 0.232745,
+      "rule_compile_builtin": 11757.191,
+      "rule_compile_mixed": 131195.001,
+      "rule_clone": 2589.178,
+      "snapshot_project_release": 32.784376,
+      "job_allocate_free": 10.17283,
+      "output_allocate_free_128": 31.25611,
+      "output_allocate_free_512": 23.708944,
+      "control_atomic_clear_null": 13.047302,
+      "control_owner_clear_null": 0.269964,
+      "backend_read": 0.233637,
+      "cpu_selection": 1.180486,
+      "scoped_cpu_selection": 0.11782,
+      "backend_pending_disabled": 0.940257,
+      "plan_choose_cpu": 3.066791,
+      "host_reserve_release": 4.503065,
+      "snapshot_pool_reuse": 7.780109,
+      "snapshot_memory_accounting": 440.3443
+    },
+    "metadata": {
+      "job_bytes": 672,
+      "handle_bytes": 392,
+      "session_bytes": 40,
+      "rule_bytes": 42312
+    }
+  },
+  {
+    "pair": 5,
+    "threaded": false,
+    "variant": "candidate",
+    "command": [
+      "taskset",
+      "-c",
+      "0",
+      "/home/bradley/.codex/worktrees/cc21/glob2/artifacts/gradient-cpu-audit/candidate-lifecycle",
+      "1000000"
+    ],
+    "ns_per_operation": {
+      "empty": 0.248625,
+      "rule_compile_builtin": 11978.235,
+      "rule_compile_mixed": 131791.687,
+      "rule_clone": 2518.997,
+      "snapshot_project_release": 29.72547,
+      "job_allocate_free": 10.620958,
+      "output_allocate_free_128": 29.560091,
+      "output_allocate_free_512": 21.254272,
+      "control_atomic_clear_null": 13.350549,
+      "control_owner_clear_null": 0.294189,
+      "backend_read": 0.232334,
+      "cpu_selection": 1.17718,
+      "scoped_cpu_selection": 0.13348,
+      "backend_pending_disabled": 0.941028,
+      "plan_choose_cpu": 3.104301,
+      "host_reserve_release": 4.480472,
+      "snapshot_pool_reuse": 5.606056,
+      "snapshot_memory_accounting": 457.43954
+    },
+    "metadata": {
+      "job_bytes": 672,
+      "handle_bytes": 392,
+      "session_bytes": 40,
+      "rule_bytes": 42312
+    }
+  },
+  {
+    "pair": 5,
+    "threaded": false,
+    "variant": "fixed",
+    "command": [
+      "taskset",
+      "-c",
+      "0",
+      "/home/bradley/.codex/worktrees/cc21/glob2/artifacts/gradient-cpu-audit/fixed-lifecycle",
+      "1000000"
+    ],
+    "ns_per_operation": {
+      "empty": 0.229949,
+      "rule_compile_builtin": 11638.049,
+      "rule_compile_mixed": 789201.06,
+      "rule_clone": 2457.032,
+      "snapshot_project_release": 29.845244,
+      "job_allocate_free": 10.159516,
+      "output_allocate_free_128": 28.965429,
+      "output_allocate_free_512": 21.4888,
+      "control_atomic_clear_null": 13.122403,
+      "control_owner_clear_null": 0.291204,
+      "backend_read": 0.229629,
+      "cpu_selection": 0.71128,
+      "scoped_cpu_selection": 0.932132,
+      "backend_pending_disabled": 0.458677,
+      "plan_choose_cpu": 2.609967,
+      "host_reserve_release": 4.353426,
+      "snapshot_pool_reuse": 5.544562,
+      "snapshot_memory_accounting": 443.44478
+    },
+    "metadata": {
+      "job_bytes": 672,
+      "handle_bytes": 392,
+      "session_bytes": 40,
+      "rule_bytes": 42312
+    }
+  },
+  {
+    "pair": 5,
+    "threaded": false,
+    "variant": "master",
+    "command": [
+      "taskset",
+      "-c",
+      "0",
+      "/home/bradley/.codex/worktrees/cc21/glob2/artifacts/gradient-cpu-audit/master-lifecycle",
+      "1000000"
+    ],
+    "ns_per_operation": {
+      "empty": 0.114815,
+      "rule_compile_builtin": 11703.32,
+      "rule_compile_mixed": 784028.561,
+      "rule_clone": 2383.474,
+      "snapshot_project_release": 29.540674,
+      "job_allocate_free": 10.012792,
+      "output_allocate_free_128": 29.135566,
+      "output_allocate_free_512": 21.437184,
+      "control_atomic_clear_null": 13.113747,
+      "control_owner_clear_null": 0.290734,
+      "backend_read": 0.490356,
+      "cpu_selection": 0.717642,
+      "scoped_cpu_selection": 0.932413,
+      "backend_pending_disabled": 0.469767,
+      "plan_choose_cpu": 2.54698,
+      "host_reserve_release": 4.361871,
+      "snapshot_pool_reuse": 5.556533,
+      "snapshot_memory_accounting": 440.3439
+    },
+    "metadata": {
+      "job_bytes": 672,
+      "handle_bytes": 392,
+      "session_bytes": 40,
+      "rule_bytes": 42240
+    }
+  },
+  {
+    "pair": 5,
+    "threaded": false,
+    "variant": "before",
+    "command": [
+      "taskset",
+      "-c",
+      "0",
+      "/home/bradley/.codex/worktrees/cc21/glob2/artifacts/gradient-cpu-audit/before-lifecycle",
+      "1000000"
+    ],
+    "ns_per_operation": {
+      "empty": 0.114805,
+      "rule_compile_builtin": 9042.979,
+      "rule_compile_mixed": 331907.19,
+      "rule_clone": 2451.712,
+      "snapshot_project_release": 29.826909,
+      "job_allocate_free": 9.841792,
+      "output_allocate_free_128": 28.975768,
+      "output_allocate_free_512": 21.328816,
+      "control_atomic_clear_null": 13.07298,
+      "control_owner_clear_null": 0.292446,
+      "backend_read": 0.477212,
+      "backend_pending_disabled": 0.458617,
+      "plan_choose_cpu": 0.466311,
+      "host_reserve_release": 4.376538,
+      "snapshot_pool_reuse": 5.616816,
+      "snapshot_memory_accounting": 438.29588
+    },
+    "metadata": {
+      "job_bytes": 672,
+      "handle_bytes": 392,
+      "session_bytes": 40,
+      "rule_bytes": 42216
+    }
+  },
+  {
+    "pair": 5,
+    "threaded": true,
+    "variant": "candidate",
+    "command": [
+      "taskset",
+      "-c",
+      "0",
+      "/home/bradley/.codex/worktrees/cc21/glob2/artifacts/gradient-cpu-audit/candidate-lifecycle",
+      "1000000",
+      "threaded"
+    ],
+    "ns_per_operation": {
+      "empty": 0.228677,
+      "rule_compile_builtin": 11696.398,
+      "rule_compile_mixed": 132012.889,
+      "rule_clone": 2513.738,
+      "snapshot_project_release": 32.351939,
+      "job_allocate_free": 10.021588,
+      "output_allocate_free_128": 30.777095,
+      "output_allocate_free_512": 22.999296,
+      "control_atomic_clear_null": 13.145716,
+      "control_owner_clear_null": 0.290914,
+      "backend_read": 0.241943,
+      "cpu_selection": 1.159437,
+      "scoped_cpu_selection": 0.115145,
+      "backend_pending_disabled": 0.933475,
+      "plan_choose_cpu": 3.014764,
+      "host_reserve_release": 4.439256,
+      "snapshot_pool_reuse": 7.661898,
+      "snapshot_memory_accounting": 444.30469
+    },
+    "metadata": {
+      "job_bytes": 672,
+      "handle_bytes": 392,
+      "session_bytes": 40,
+      "rule_bytes": 42312
+    }
+  },
+  {
+    "pair": 5,
+    "threaded": true,
+    "variant": "fixed",
+    "command": [
+      "taskset",
+      "-c",
+      "0",
+      "/home/bradley/.codex/worktrees/cc21/glob2/artifacts/gradient-cpu-audit/fixed-lifecycle",
+      "1000000",
+      "threaded"
+    ],
+    "ns_per_operation": {
+      "empty": 0.24654,
+      "rule_compile_builtin": 11502.786,
+      "rule_compile_mixed": 778577.355,
+      "rule_clone": 2501.144,
+      "snapshot_project_release": 32.934276,
+      "job_allocate_free": 9.793642,
+      "output_allocate_free_128": 30.892541,
+      "output_allocate_free_512": 23.75976,
+      "control_atomic_clear_null": 13.754323,
+      "control_owner_clear_null": 0.291004,
+      "backend_read": 0.229739,
+      "cpu_selection": 0.719745,
+      "scoped_cpu_selection": 0.936099,
+      "backend_pending_disabled": 0.458627,
+      "plan_choose_cpu": 2.60078,
+      "host_reserve_release": 4.341222,
+      "snapshot_pool_reuse": 7.7589,
+      "snapshot_memory_accounting": 442.57446
+    },
+    "metadata": {
+      "job_bytes": 672,
+      "handle_bytes": 392,
+      "session_bytes": 40,
+      "rule_bytes": 42312
+    }
+  },
+  {
+    "pair": 5,
+    "threaded": true,
+    "variant": "master",
+    "command": [
+      "taskset",
+      "-c",
+      "0",
+      "/home/bradley/.codex/worktrees/cc21/glob2/artifacts/gradient-cpu-audit/master-lifecycle",
+      "1000000",
+      "threaded"
+    ],
+    "ns_per_operation": {
+      "empty": 0.124042,
+      "rule_compile_builtin": 11746.19,
+      "rule_compile_mixed": 797178.448,
+      "rule_clone": 2430.792,
+      "snapshot_project_release": 32.466943,
+      "job_allocate_free": 10.374458,
+      "output_allocate_free_128": 30.634497,
+      "output_allocate_free_512": 23.177712,
+      "control_atomic_clear_null": 13.124125,
+      "control_owner_clear_null": 0.290844,
+      "backend_read": 0.458647,
+      "cpu_selection": 0.698455,
+      "scoped_cpu_selection": 0.933364,
+      "backend_pending_disabled": 0.469628,
+      "plan_choose_cpu": 2.550516,
+      "host_reserve_release": 4.384483,
+      "snapshot_pool_reuse": 7.708505,
+      "snapshot_memory_accounting": 443.16176
+    },
+    "metadata": {
+      "job_bytes": 672,
+      "handle_bytes": 392,
+      "session_bytes": 40,
+      "rule_bytes": 42240
+    }
+  },
+  {
+    "pair": 5,
+    "threaded": true,
+    "variant": "before",
+    "command": [
+      "taskset",
+      "-c",
+      "0",
+      "/home/bradley/.codex/worktrees/cc21/glob2/artifacts/gradient-cpu-audit/before-lifecycle",
+      "1000000",
+      "threaded"
+    ],
+    "ns_per_operation": {
+      "empty": 0.114795,
+      "rule_compile_builtin": 9738.74,
+      "rule_compile_mixed": 331420.923,
+      "rule_clone": 2925.908,
+      "snapshot_project_release": 32.686644,
+      "job_allocate_free": 9.799843,
+      "output_allocate_free_128": 34.406838,
+      "output_allocate_free_512": 22.892544,
+      "control_atomic_clear_null": 12.789089,
+      "control_owner_clear_null": 0.286345,
+      "backend_read": 0.468335,
+      "backend_pending_disabled": 0.450913,
+      "plan_choose_cpu": 0.473244,
+      "host_reserve_release": 4.442702,
+      "snapshot_pool_reuse": 7.748921,
+      "snapshot_memory_accounting": 443.68353
+    },
+    "metadata": {
+      "job_bytes": 672,
+      "handle_bytes": 392,
+      "session_bytes": 40,
+      "rule_bytes": 42216
+    }
+  },
+  {
+    "pair": 6,
+    "threaded": false,
+    "variant": "before",
+    "command": [
+      "taskset",
+      "-c",
+      "0",
+      "/home/bradley/.codex/worktrees/cc21/glob2/artifacts/gradient-cpu-audit/before-lifecycle",
+      "1000000"
+    ],
+    "ns_per_operation": {
+      "empty": 0.114825,
+      "rule_compile_builtin": 9246.259,
+      "rule_compile_mixed": 330357.055,
+      "rule_clone": 2551.027,
+      "snapshot_project_release": 29.367381,
+      "job_allocate_free": 9.783302,
+      "output_allocate_free_128": 30.399379,
+      "output_allocate_free_512": 21.049104,
+      "control_atomic_clear_null": 12.84834,
+      "control_owner_clear_null": 0.290723,
+      "backend_read": 0.522226,
+      "backend_pending_disabled": 0.458637,
+      "plan_choose_cpu": 0.483974,
+      "host_reserve_release": 4.276712,
+      "snapshot_pool_reuse": 5.600736,
+      "snapshot_memory_accounting": 432.70782
+    },
+    "metadata": {
+      "job_bytes": 672,
+      "handle_bytes": 392,
+      "session_bytes": 40,
+      "rule_bytes": 42216
+    }
+  },
+  {
+    "pair": 6,
+    "threaded": false,
+    "variant": "master",
+    "command": [
+      "taskset",
+      "-c",
+      "0",
+      "/home/bradley/.codex/worktrees/cc21/glob2/artifacts/gradient-cpu-audit/master-lifecycle",
+      "1000000"
+    ],
+    "ns_per_operation": {
+      "empty": 0.114875,
+      "rule_compile_builtin": 11846.909,
+      "rule_compile_mixed": 788642.385,
+      "rule_clone": 2285.481,
+      "snapshot_project_release": 29.882834,
+      "job_allocate_free": 10.345924,
+      "output_allocate_free_128": 29.485331,
+      "output_allocate_free_512": 23.040336,
+      "control_atomic_clear_null": 12.845295,
+      "control_owner_clear_null": 0.299379,
+      "backend_read": 0.458627,
+      "cpu_selection": 0.702513,
+      "scoped_cpu_selection": 0.927133,
+      "backend_pending_disabled": 0.494184,
+      "plan_choose_cpu": 2.569061,
+      "host_reserve_release": 4.35036,
+      "snapshot_pool_reuse": 5.606296,
+      "snapshot_memory_accounting": 440.23278
+    },
+    "metadata": {
+      "job_bytes": 672,
+      "handle_bytes": 392,
+      "session_bytes": 40,
+      "rule_bytes": 42240
+    }
+  },
+  {
+    "pair": 6,
+    "threaded": false,
+    "variant": "fixed",
+    "command": [
+      "taskset",
+      "-c",
+      "0",
+      "/home/bradley/.codex/worktrees/cc21/glob2/artifacts/gradient-cpu-audit/fixed-lifecycle",
+      "1000000"
+    ],
+    "ns_per_operation": {
+      "empty": 0.229198,
+      "rule_compile_builtin": 11479.603,
+      "rule_compile_mixed": 785005.832,
+      "rule_clone": 2398.222,
+      "snapshot_project_release": 29.146818,
+      "job_allocate_free": 9.893679,
+      "output_allocate_free_128": 28.642245,
+      "output_allocate_free_512": 21.732768,
+      "control_atomic_clear_null": 12.717215,
+      "control_owner_clear_null": 0.300992,
+      "backend_read": 0.229609,
+      "cpu_selection": 0.699026,
+      "scoped_cpu_selection": 0.927623,
+      "backend_pending_disabled": 0.458617,
+      "plan_choose_cpu": 2.564703,
+      "host_reserve_release": 4.341414,
+      "snapshot_pool_reuse": 5.482906,
+      "snapshot_memory_accounting": 434.20151
+    },
+    "metadata": {
+      "job_bytes": 672,
+      "handle_bytes": 392,
+      "session_bytes": 40,
+      "rule_bytes": 42312
+    }
+  },
+  {
+    "pair": 6,
+    "threaded": false,
+    "variant": "candidate",
+    "command": [
+      "taskset",
+      "-c",
+      "0",
+      "/home/bradley/.codex/worktrees/cc21/glob2/artifacts/gradient-cpu-audit/candidate-lifecycle",
+      "1000000"
+    ],
+    "ns_per_operation": {
+      "empty": 0.241241,
+      "rule_compile_builtin": 11679.095,
+      "rule_compile_mixed": 127315.752,
+      "rule_clone": 2447.364,
+      "snapshot_project_release": 28.867567,
+      "job_allocate_free": 10.162511,
+      "output_allocate_free_128": 28.742322,
+      "output_allocate_free_512": 21.446,
+      "control_atomic_clear_null": 12.886242,
+      "control_owner_clear_null": 0.291715,
+      "backend_read": 0.230932,
+      "cpu_selection": 1.165679,
+      "scoped_cpu_selection": 0.115125,
+      "backend_pending_disabled": 0.928205,
+      "plan_choose_cpu": 3.013472,
+      "host_reserve_release": 4.416053,
+      "snapshot_pool_reuse": 5.517861,
+      "snapshot_memory_accounting": 429.30266
+    },
+    "metadata": {
+      "job_bytes": 672,
+      "handle_bytes": 392,
+      "session_bytes": 40,
+      "rule_bytes": 42312
+    }
+  },
+  {
+    "pair": 6,
+    "threaded": true,
+    "variant": "before",
+    "command": [
+      "taskset",
+      "-c",
+      "0",
+      "/home/bradley/.codex/worktrees/cc21/glob2/artifacts/gradient-cpu-audit/before-lifecycle",
+      "1000000",
+      "threaded"
+    ],
+    "ns_per_operation": {
+      "empty": 0.132288,
+      "rule_compile_builtin": 9098.062,
+      "rule_compile_mixed": 324276.502,
+      "rule_clone": 2474.224,
+      "snapshot_project_release": 32.064841,
+      "job_allocate_free": 9.705216,
+      "output_allocate_free_128": 32.033032,
+      "output_allocate_free_512": 23.15304,
+      "control_atomic_clear_null": 12.731262,
+      "control_owner_clear_null": 0.290753,
+      "backend_read": 0.477893,
+      "backend_pending_disabled": 0.458617,
+      "plan_choose_cpu": 0.485378,
+      "host_reserve_release": 4.357263,
+      "snapshot_pool_reuse": 7.735225,
+      "snapshot_memory_accounting": 430.39618
+    },
+    "metadata": {
+      "job_bytes": 672,
+      "handle_bytes": 392,
+      "session_bytes": 40,
+      "rule_bytes": 42216
+    }
+  },
+  {
+    "pair": 6,
+    "threaded": true,
+    "variant": "master",
+    "command": [
+      "taskset",
+      "-c",
+      "0",
+      "/home/bradley/.codex/worktrees/cc21/glob2/artifacts/gradient-cpu-audit/master-lifecycle",
+      "1000000",
+      "threaded"
+    ],
+    "ns_per_operation": {
+      "empty": 0.114855,
+      "rule_compile_builtin": 11423.448,
+      "rule_compile_mixed": 775039.035,
+      "rule_clone": 2469.235,
+      "snapshot_project_release": 32.152735,
+      "job_allocate_free": 10.389335,
+      "output_allocate_free_128": 30.284104,
+      "output_allocate_free_512": 23.275168,
+      "control_atomic_clear_null": 12.732344,
+      "control_owner_clear_null": 0.285774,
+      "backend_read": 0.450883,
+      "cpu_selection": 0.692153,
+      "scoped_cpu_selection": 0.951779,
+      "backend_pending_disabled": 0.458617,
+      "plan_choose_cpu": 2.554814,
+      "host_reserve_release": 4.299495,
+      "snapshot_pool_reuse": 7.642292,
+      "snapshot_memory_accounting": 435.09097
+    },
+    "metadata": {
+      "job_bytes": 672,
+      "handle_bytes": 392,
+      "session_bytes": 40,
+      "rule_bytes": 42240
+    }
+  },
+  {
+    "pair": 6,
+    "threaded": true,
+    "variant": "fixed",
+    "command": [
+      "taskset",
+      "-c",
+      "0",
+      "/home/bradley/.codex/worktrees/cc21/glob2/artifacts/gradient-cpu-audit/fixed-lifecycle",
+      "1000000",
+      "threaded"
+    ],
+    "ns_per_operation": {
+      "empty": 0.228698,
+      "rule_compile_builtin": 11438.015,
+      "rule_compile_mixed": 765348.002,
+      "rule_clone": 2485.926,
+      "snapshot_project_release": 32.242103,
+      "job_allocate_free": 9.73877,
+      "output_allocate_free_128": 30.365324,
+      "output_allocate_free_512": 23.648192,
+      "control_atomic_clear_null": 12.73017,
+      "control_owner_clear_null": 0.303226,
+      "backend_read": 0.229629,
+      "cpu_selection": 0.704106,
+      "scoped_cpu_selection": 0.931521,
+      "backend_pending_disabled": 0.458617,
+      "plan_choose_cpu": 2.541309,
+      "host_reserve_release": 4.330392,
+      "snapshot_pool_reuse": 7.724896,
+      "snapshot_memory_accounting": 437.87137
+    },
+    "metadata": {
+      "job_bytes": 672,
+      "handle_bytes": 392,
+      "session_bytes": 40,
+      "rule_bytes": 42312
+    }
+  },
+  {
+    "pair": 6,
+    "threaded": true,
+    "variant": "candidate",
+    "command": [
+      "taskset",
+      "-c",
+      "0",
+      "/home/bradley/.codex/worktrees/cc21/glob2/artifacts/gradient-cpu-audit/candidate-lifecycle",
+      "1000000",
+      "threaded"
+    ],
+    "ns_per_operation": {
+      "empty": 0.228827,
+      "rule_compile_builtin": 11611.43,
+      "rule_compile_mixed": 127560.999,
+      "rule_clone": 2515.431,
+      "snapshot_project_release": 32.104045,
+      "job_allocate_free": 9.960985,
+      "output_allocate_free_128": 30.438863,
+      "output_allocate_free_512": 23.078016,
+      "control_atomic_clear_null": 12.740739,
+      "control_owner_clear_null": 0.290703,
+      "backend_read": 0.229629,
+      "cpu_selection": 1.181718,
+      "scoped_cpu_selection": 0.115786,
+      "backend_pending_disabled": 0.930669,
+      "plan_choose_cpu": 3.014583,
+      "host_reserve_release": 4.410953,
+      "snapshot_pool_reuse": 7.672929,
+      "snapshot_memory_accounting": 426.14436
+    },
+    "metadata": {
+      "job_bytes": 672,
+      "handle_bytes": 392,
+      "session_bytes": 40,
+      "rule_bytes": 42312
+    }
+  },
+  {
+    "pair": 7,
+    "threaded": false,
+    "variant": "candidate",
+    "command": [
+      "taskset",
+      "-c",
+      "0",
+      "/home/bradley/.codex/worktrees/cc21/glob2/artifacts/gradient-cpu-audit/candidate-lifecycle",
+      "1000000"
+    ],
+    "ns_per_operation": {
+      "empty": 0.228738,
+      "rule_compile_builtin": 11533.513,
+      "rule_compile_mixed": 127293.099,
+      "rule_clone": 2487.288,
+      "snapshot_project_release": 28.84271,
+      "job_allocate_free": 10.639743,
+      "output_allocate_free_128": 29.082989,
+      "output_allocate_free_512": 21.412176,
+      "control_atomic_clear_null": 12.803376,
+      "control_owner_clear_null": 0.291355,
+      "backend_read": 0.229629,
+      "cpu_selection": 1.16106,
+      "scoped_cpu_selection": 0.115125,
+      "backend_pending_disabled": 0.93134,
+      "plan_choose_cpu": 3.022007,
+      "host_reserve_release": 4.416393,
+      "snapshot_pool_reuse": 5.504316,
+      "snapshot_memory_accounting": 440.24842
+    },
+    "metadata": {
+      "job_bytes": 672,
+      "handle_bytes": 392,
+      "session_bytes": 40,
+      "rule_bytes": 42312
+    }
+  },
+  {
+    "pair": 7,
+    "threaded": false,
+    "variant": "fixed",
+    "command": [
+      "taskset",
+      "-c",
+      "0",
+      "/home/bradley/.codex/worktrees/cc21/glob2/artifacts/gradient-cpu-audit/fixed-lifecycle",
+      "1000000"
+    ],
+    "ns_per_operation": {
+      "empty": 0.228687,
+      "rule_compile_builtin": 11421.784,
+      "rule_compile_mixed": 768811.345,
+      "rule_clone": 2441.212,
+      "snapshot_project_release": 29.149062,
+      "job_allocate_free": 9.754859,
+      "output_allocate_free_128": 28.930124,
+      "output_allocate_free_512": 21.529824,
+      "control_atomic_clear_null": 12.766918,
+      "control_owner_clear_null": 0.291184,
+      "backend_read": 0.229629,
+      "cpu_selection": 0.710057,
+      "scoped_cpu_selection": 0.928225,
+      "backend_pending_disabled": 0.458617,
+      "plan_choose_cpu": 2.562248,
+      "host_reserve_release": 4.338668,
+      "snapshot_pool_reuse": 5.53306,
+      "snapshot_memory_accounting": 437.09102
+    },
+    "metadata": {
+      "job_bytes": 672,
+      "handle_bytes": 392,
+      "session_bytes": 40,
+      "rule_bytes": 42312
+    }
+  },
+  {
+    "pair": 7,
+    "threaded": false,
+    "variant": "master",
+    "command": [
+      "taskset",
+      "-c",
+      "0",
+      "/home/bradley/.codex/worktrees/cc21/glob2/artifacts/gradient-cpu-audit/master-lifecycle",
+      "1000000"
+    ],
+    "ns_per_operation": {
+      "empty": 0.114874,
+      "rule_compile_builtin": 11317.22,
+      "rule_compile_mixed": 774130.718,
+      "rule_clone": 2368.156,
+      "snapshot_project_release": 28.935974,
+      "job_allocate_free": 10.400986,
+      "output_allocate_free_128": 29.674644,
+      "output_allocate_free_512": 21.844656,
+      "control_atomic_clear_null": 12.752099,
+      "control_owner_clear_null": 0.290844,
+      "backend_read": 0.458597,
+      "cpu_selection": 0.695229,
+      "scoped_cpu_selection": 0.933936,
+      "backend_pending_disabled": 0.475499,
+      "plan_choose_cpu": 2.520109,
+      "host_reserve_release": 4.325253,
+      "snapshot_pool_reuse": 5.496452,
+      "snapshot_memory_accounting": 426.23002
+    },
+    "metadata": {
+      "job_bytes": 672,
+      "handle_bytes": 392,
+      "session_bytes": 40,
+      "rule_bytes": 42240
+    }
+  },
+  {
+    "pair": 7,
+    "threaded": false,
+    "variant": "before",
+    "command": [
+      "taskset",
+      "-c",
+      "0",
+      "/home/bradley/.codex/worktrees/cc21/glob2/artifacts/gradient-cpu-audit/before-lifecycle",
+      "1000000"
+    ],
+    "ns_per_operation": {
+      "empty": 0.114875,
+      "rule_compile_builtin": 9144.699,
+      "rule_compile_mixed": 322602.903,
+      "rule_clone": 2415.674,
+      "snapshot_project_release": 28.975148,
+      "job_allocate_free": 10.139038,
+      "output_allocate_free_128": 28.604094,
+      "output_allocate_free_512": 21.010144,
+      "control_atomic_clear_null": 12.779472,
+      "control_owner_clear_null": 0.290773,
+      "backend_read": 0.475308,
+      "backend_pending_disabled": 0.458627,
+      "plan_choose_cpu": 0.482372,
+      "host_reserve_release": 4.337506,
+      "snapshot_pool_reuse": 5.531037,
+      "snapshot_memory_accounting": 430.60048
+    },
+    "metadata": {
+      "job_bytes": 672,
+      "handle_bytes": 392,
+      "session_bytes": 40,
+      "rule_bytes": 42216
+    }
+  },
+  {
+    "pair": 7,
+    "threaded": true,
+    "variant": "candidate",
+    "command": [
+      "taskset",
+      "-c",
+      "0",
+      "/home/bradley/.codex/worktrees/cc21/glob2/artifacts/gradient-cpu-audit/candidate-lifecycle",
+      "1000000",
+      "threaded"
+    ],
+    "ns_per_operation": {
+      "empty": 0.228728,
+      "rule_compile_builtin": 11499.28,
+      "rule_compile_mixed": 127138.59,
+      "rule_clone": 2611.57,
+      "snapshot_project_release": 31.989069,
+      "job_allocate_free": 10.198929,
+      "output_allocate_free_128": 31.223309,
+      "output_allocate_free_512": 23.33288,
+      "control_atomic_clear_null": 12.772449,
+      "control_owner_clear_null": 0.291124,
+      "backend_read": 0.229619,
+      "cpu_selection": 1.164126,
+      "scoped_cpu_selection": 0.115136,
+      "backend_pending_disabled": 0.932523,
+      "plan_choose_cpu": 3.018131,
+      "host_reserve_release": 4.416413,
+      "snapshot_pool_reuse": 7.66322,
+      "snapshot_memory_accounting": 427.5568
+    },
+    "metadata": {
+      "job_bytes": 672,
+      "handle_bytes": 392,
+      "session_bytes": 40,
+      "rule_bytes": 42312
+    }
+  },
+  {
+    "pair": 7,
+    "threaded": true,
+    "variant": "fixed",
+    "command": [
+      "taskset",
+      "-c",
+      "0",
+      "/home/bradley/.codex/worktrees/cc21/glob2/artifacts/gradient-cpu-audit/fixed-lifecycle",
+      "1000000",
+      "threaded"
+    ],
+    "ns_per_operation": {
+      "empty": 0.228707,
+      "rule_compile_builtin": 11364.557,
+      "rule_compile_mixed": 767048.503,
+      "rule_clone": 2528.646,
+      "snapshot_project_release": 32.325068,
+      "job_allocate_free": 9.7125,
+      "output_allocate_free_128": 31.994811,
+      "output_allocate_free_512": 23.379056,
+      "control_atomic_clear_null": 12.792046,
+      "control_owner_clear_null": 0.290703,
+      "backend_read": 0.229619,
+      "cpu_selection": 0.703705,
+      "scoped_cpu_selection": 0.929778,
+      "backend_pending_disabled": 0.474928,
+      "plan_choose_cpu": 2.548171,
+      "host_reserve_release": 4.341283,
+      "snapshot_pool_reuse": 7.724546,
+      "snapshot_memory_accounting": 433.11448
+    },
+    "metadata": {
+      "job_bytes": 672,
+      "handle_bytes": 392,
+      "session_bytes": 40,
+      "rule_bytes": 42312
+    }
+  },
+  {
+    "pair": 7,
+    "threaded": true,
+    "variant": "master",
+    "command": [
+      "taskset",
+      "-c",
+      "0",
+      "/home/bradley/.codex/worktrees/cc21/glob2/artifacts/gradient-cpu-audit/master-lifecycle",
+      "1000000",
+      "threaded"
+    ],
+    "ns_per_operation": {
+      "empty": 0.114955,
+      "rule_compile_builtin": 11380.267,
+      "rule_compile_mixed": 774303.13,
+      "rule_clone": 2465.999,
+      "snapshot_project_release": 32.01559,
+      "job_allocate_free": 11.305677,
+      "output_allocate_free_128": 30.576981,
+      "output_allocate_free_512": 22.829376,
+      "control_atomic_clear_null": 12.758943,
+      "control_owner_clear_null": 0.290643,
+      "backend_read": 0.469969,
+      "cpu_selection": 0.687836,
+      "scoped_cpu_selection": 0.928345,
+      "backend_pending_disabled": 0.47043,
+      "plan_choose_cpu": 2.548553,
+      "host_reserve_release": 4.352304,
+      "snapshot_pool_reuse": 7.702494,
+      "snapshot_memory_accounting": 436.52205
+    },
+    "metadata": {
+      "job_bytes": 672,
+      "handle_bytes": 392,
+      "session_bytes": 40,
+      "rule_bytes": 42240
+    }
+  },
+  {
+    "pair": 7,
+    "threaded": true,
+    "variant": "before",
+    "command": [
+      "taskset",
+      "-c",
+      "0",
+      "/home/bradley/.codex/worktrees/cc21/glob2/artifacts/gradient-cpu-audit/before-lifecycle",
+      "1000000",
+      "threaded"
+    ],
+    "ns_per_operation": {
+      "empty": 0.114875,
+      "rule_compile_builtin": 9146.151,
+      "rule_compile_mixed": 327343.663,
+      "rule_clone": 2503.008,
+      "snapshot_project_release": 32.147135,
+      "job_allocate_free": 9.914478,
+      "output_allocate_free_128": 30.659635,
+      "output_allocate_free_512": 23.552336,
+      "control_atomic_clear_null": 25.19394,
+      "control_owner_clear_null": 0.289501,
+      "backend_read": 0.473374,
+      "backend_pending_disabled": 0.456032,
+      "plan_choose_cpu": 0.488402,
+      "host_reserve_release": 4.331124,
+      "snapshot_pool_reuse": 7.721209,
+      "snapshot_memory_accounting": 434.44217
+    },
+    "metadata": {
+      "job_bytes": 672,
+      "handle_bytes": 392,
+      "session_bytes": 40,
+      "rule_bytes": 42216
+    }
+  }
+]
