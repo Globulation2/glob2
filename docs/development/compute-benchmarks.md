@@ -354,8 +354,9 @@ first published list. Invalid source geometry/weapon/incarnation rejects the lis
 At completed boundary t, teams satisfying `t % R == team % R` are admitted once.
 `Game::prepareReadBoundary` supplies the existing standard simulation snapshot,
 shared with AI, gradients, resource growth and team statistics. Turret jobs retain
-only the named turret view. Captured unit attack strength supplies scoring facts
-without resolving live units or recomputing effects during turret preparation. One job per due team processes source identities
+only the named turret view. Ranking reads effective attack strength directly from
+the captured unit records; preparation does not duplicate those facts, resolve
+live units or recompute effects. One job per due team processes source identities
 in order. The existing shared `ComputeExecutor` runs these jobs; no dedicated
 threads or mutable team query caches exist. Results publish before team stepping
 at t+K, joining unfinished work at that deadline. Worker readiness never chooses
