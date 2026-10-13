@@ -28,9 +28,9 @@ Handle Handle::sceneMapView() const
 }
 Handle Handle::presentationView(CaptureOptions options) const
 { return project(presentationRequirements(options)); }
-bool Handle::supports(CaptureOptions options) const
+bool Handle::supportsPresentation(CaptureOptions options) const
 {
-    const auto requested = options.presentation ? presentationRequirements(options) : captureRequirements(options);
+    const auto requested = presentationRequirements(options);
     return (requirements & requested) == requested;
 }
 

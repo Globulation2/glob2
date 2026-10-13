@@ -940,10 +940,16 @@ TEST_SUITE("WorldSnapshot")
 		CHECK(reused.resources == full.resources); CHECK(reused.entities == full.entities);
 		CHECK_FALSE(reused.session); CHECK_FALSE(reused.history);
 		CHECK(store.metrics.mapBytesCopied == bytes); CHECK(store.metrics.captures == 2);
-		CHECK_FALSE(simulation.supports({.presentation=true}));
-		CHECK(full.supports({.presentation=true, .history=true}));
-		CHECK_FALSE(full.supports({.presentation=true, .telemetry=true}));
-		CHECK_FALSE(full.presentationView({.presentation=true}).history);
+		CHECK_FALSE(simulation.supportsPresentation());
+		CHECK(full.supportsPresentation({.history=true}));
+		CHECK_FALSE(full.supportsPresentation({.telemetry=true}));
+		const auto frame = full.presentationView();
+		CHECK(frame.supportsPresentation());
+		CHECK(frame.supportsPresentation({.presentation=true}));
+		CHECK_FALSE(frame.resourceFields);
+		CHECK_FALSE(frame.history);
+		CHECK_FALSE(frame.supportsPresentation({.history=true}));
+		CHECK(full.presentationView({.history=true}).supportsPresentation({.history=true}));
 	}
 
 }

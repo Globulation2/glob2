@@ -8,7 +8,6 @@
 #include <memory>
 #include "MersenneTwister.h"
 #include "AITelemetry.h"
-#include "sim/snapshot/Requirements.h"
 #include "sim/EntityRef.h"
 #include <vector>
 namespace GAGCore

@@ -325,7 +325,7 @@ TEST_CASE("AI and pending gradients share the standard boundary with presentatio
     const auto rendering=SceneExtractor::captureOptions(request);
     const auto captures=game.snapshots().metrics.captures;
     const auto published=game.captureReadBoundary(rendering);
-    CHECK(published.supports({}));
+    CHECK_NOTHROW(published.simulationView());
     REQUIRE(game.prepareAIOrders(players,false,{},&published).size()==2);
     game.drainAI();
     CHECK_FALSE(game.map.hasPendingGradientPreparation());

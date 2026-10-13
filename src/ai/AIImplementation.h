@@ -13,7 +13,6 @@ The main method is std::shared_ptr<Order> getOrder() which return the order to b
 #include "AITelemetry.h"
 #include "MersenneTwister.h"
 #include "ai/engine/AIDiagnostics.h"
-#include "sim/snapshot/Requirements.h"
 #include <cassert>
 #include <memory>
 #include <optional>

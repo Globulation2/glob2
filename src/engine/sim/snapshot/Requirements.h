@@ -33,8 +33,13 @@ enum class Component : Uint32
 };
 using Requirements = Uint32;
 constexpr Requirements bit(Component value) { return static_cast<Requirements>(value); }
-constexpr Requirements Simulation = 2047;
-constexpr Requirements All = 262143;
+constexpr Requirements Simulation = bit(Component::Catalogs) | bit(Component::Terrain)
+ | bit(Component::Resources) | bit(Component::Occupancy) | bit(Component::Areas)
+ | bit(Component::Visibility) | bit(Component::Entities) | bit(Component::Teams)
+ | bit(Component::Rules) | bit(Component::ResourceFields) | bit(Component::Growth);
+constexpr Requirements All = Simulation | bit(Component::Session) | bit(Component::Effects)
+ | bit(Component::Statistics) | bit(Component::EntityDiagnostics) | bit(Component::Annotations)
+ | bit(Component::History) | bit(Component::Telemetry);
 constexpr bool needs(Requirements mask, Component value) { return (mask & bit(value)) != 0; }
 constexpr Requirements captureRequirements(CaptureOptions options)
 {

@@ -619,9 +619,9 @@ TEST_SUITE("ResourceGrowthBenchmark")
 										if (amount > 1)
 											map.setMaterialAmount(i, MaterialId::Food, amount - 1);
 									}
-							// Model the completed-tick capture already required by another
-							// consumer. All placements pay for the same component union;
-							// growth receives a projection of that capture, not another copy.
+							// Model an interactive boundary: every placement captures the
+							// standard simulation and ordinary presentation payloads.
+							// Growth retains its named view of those shared buffers.
 							SimulationSnapshot::Handle existing;
 							if (sharedCapture)
 							{

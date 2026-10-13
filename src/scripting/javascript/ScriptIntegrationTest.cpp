@@ -1776,8 +1776,6 @@ TEST_CASE("JavaScript projected boundary preserves history and spatial resources
     glob2test::HeadlessGlobals globals;
     glob2test::HeadlessGame fixture(glob2test::GameOptions{.wDec=4,.hDec=4,.clearImmobile=true,.loadDefaultRace=true,.header=true});
     auto& game=fixture.game;
-    game.gameHeader.setAIConfig(0,config("export function step(ctx){return null;}"));
-    AIJavaScript controller(game.players[0]);
     const auto requirements=SimulationSnapshot::Simulation & ~(SimulationSnapshot::bit(SimulationSnapshot::Component::Growth)
         | SimulationSnapshot::bit(SimulationSnapshot::Component::ResourceFields));
     CHECK_FALSE(SimulationSnapshot::needs(requirements,SimulationSnapshot::Component::Growth));

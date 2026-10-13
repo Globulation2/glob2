@@ -396,7 +396,7 @@ void Engine::refreshRetainedPresentation()
     request->tickTime=retainedPresentation->request.tickTime;
     request->tickInterval=retainedPresentation->request.tickInterval;
     if (*request==retainedPresentation->request) return;
-    if (!retainedPresentation->world.supports(SceneExtractor::captureOptions(*request))) return;
+    if (!retainedPresentation->world.supportsPresentation(SceneExtractor::captureOptions(*request))) return;
     const auto world=retainedPresentation->world;
     publishPresentation(world,*request);
 }
