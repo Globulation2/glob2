@@ -115,7 +115,7 @@ TEST_CASE("supplier membership survives waiting-for-construction observations")
     const auto supplies=HiringPlanner::prepare(HiringPlanner::capture(world.game,snapshot),0);
     REQUIRE(supplies.size()==1);
     CHECK(supplies.front().modes[CHERRY]==world.game.map.materialSupplyModesSlot(inn,CHERRY));
-    CHECK(snapshot.teams->values[0].supplierPresence&1);
+    CHECK((snapshot.teams->values[0].supplierPresence&1)!=0);
 }
 TEST_CASE("snapshot planning retains busy workers and never changes the game")
 {
