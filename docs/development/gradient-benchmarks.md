@@ -246,7 +246,8 @@ independent fixed-point checks where implemented. `committed_fields` counts
 successful transactions. A canceled batch can have validated private fields
 without commits; these milestones must not be treated as synonyms.
 OpenCL submissions count explicit queue flushes; command enqueues are separate.
-Vulkan submissions count successful queue submissions. Mapped control reads are
+Vulkan submissions count successful queue submissions. `resource_reuses` counts
+retired Vulkan work sets borrowed from the bounded adapter pool. Mapped control reads are
 separate from explicit transfer/readback bytes. Elapsed totals accumulate thread
 scopes; overlapping threads do not form a process critical-path measurement.
 These are API costs, not
