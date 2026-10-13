@@ -78,10 +78,10 @@ void Game::observeUnpolledAI() {
  for(auto* controller:idle)controller->observe(world);
 }
 
-void Game::configureMovementShadow(unsigned delay)
+void Game::configureMovementShadow(unsigned delay,bool agreementSweep)
 {
  movementShadow.reset();
- movementShadow=std::make_unique<MovementPlanning::Shadow>(map.computeExecutor(),delay,mapHeader.getNumberOfTeams(),map.getW(),map.getH());
+ movementShadow=std::make_unique<MovementPlanning::Shadow>(map.computeExecutor(),delay,mapHeader.getNumberOfTeams(),map.getW(),map.getH(),agreementSweep);
 }
 void Game::drainMovementShadow() { if(movementShadow)movementShadow->drain(); }
 std::vector<std::pair<std::string,Uint64>> Game::movementMetrics() const

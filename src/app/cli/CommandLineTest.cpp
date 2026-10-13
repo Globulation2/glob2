@@ -28,6 +28,13 @@ TEST_SUITE("CommandLine")
 				CHECK_FALSE(o.description.empty());
 		}
 	}
+	TEST_CASE("movement agreement delays remain separate from shadow trial values")
+	{
+		for(const auto delay : {"0", "1", "2", "3", "4", "5", "6", "7", "8"})
+			CHECK_EQ(Cli::parse({"game", "run", "--output-dir", "artifacts/cli-test", "--movement-agreement-delay", delay}).get("--movement-agreement-delay"), delay);
+		CHECK_THROWS(Cli::parse({"game", "run", "--output-dir", "artifacts/cli-test", "--movement-agreement-delay", "9"}));
+		CHECK_THROWS(Cli::parse({"game", "run", "--output-dir", "artifacts/cli-test", "--movement-shadow", "3"}));
+	}
 	TEST_CASE("default launch groups URLs and help paths")
 	{
 		CHECK_EQ(Cli::parse(std::vector<std::string>{}).command, "play");

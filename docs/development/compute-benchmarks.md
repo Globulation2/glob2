@@ -353,6 +353,26 @@ rejections, preferred-prefix success, selected ranks, blocked outcomes and
 prediction errors are separate counters. Rank 8 means every direction failed the
 current local checks. Shadow rank checks cannot establish gameplay after adoption.
 
+`--movement-agreement-delay D` provides a diagnostic sweep for integer delays
+0 through 8. It is mutually exclusive with the profile and shadow selectors;
+these extra delays do not become match rules. Zero computes and publishes inline
+at admission, using the completed-world snapshot. It does not recapture the world
+at each action or guarantee zero observation age. Nonzero delays use the shared
+executor and publish at their configured deadlines.
+
+Agreement counters compare a suggestion's first currently legal step with the
+reference action's committed cell, including wrapped edges and staying still.
+The comparison is conditional on reference target acquisition, claims and
+transitions: it does not simulate a game with adopted movement. Missing, stale,
+destination-rejected and cancelled suggestions are excluded from the agreement
+denominator and must be reported as coverage losses. Report exact direction,
+move/stay and moving-only direction agreement separately. Random wandering uses
+an independent planning RNG, so disagreement alone does not establish worse play.
+`agreement_observation_age_ticks / agreement_compared` reports mean input age.
+`GLOB2_MOVEMENT_AGREEMENT_TRACE` optionally names a CSV file containing at most 64
+early matching and 64 early differing examples per team/mode; these examples are
+not a representative sample. Aggregate counters cover every eligible comparison.
+
 `reference_phase_0_ns` through `reference_phase_4_ns` partition completed-action
 transitions, displacement, direction selection, action execution and visibility.
 Search time is an inclusive subset of those phases and must not be added again.

@@ -32,6 +32,46 @@ Request request(const SimulationSnapshot::Handle& world,Mode mode,int x=5,int y=
 }
 TEST_SUITE("MovementPlanning")
 {
+    TEST_CASE("agreement classifies all directions and stays without hiding exclusions")
+    {
+        Shadow::Metrics m;
+        for(unsigned proposed=0;proposed<9;++proposed)for(unsigned actual=0;actual<9;++actual)
+            Shadow::recordAgreement(m,proposed,actual);
+        CHECK(m.compared==81);CHECK(m.directionAgree==9);CHECK(m.moveStayAgree==65);
+        CHECK(m.bothMove==64);CHECK(m.movingDirectionAgree==8);CHECK(m.bothStay==1);
+        CHECK(m.proposalMoveReferenceStay==8);CHECK(m.proposalStayReferenceMove==8);
+        for(const auto& row:m.confusion)for(auto count:row)CHECK(count==1);
+        CHECK_THROWS(Shadow::recordAgreement(m,9,0));CHECK(m.compared==81);
+    }
+    TEST_CASE("dense agreement sweep stays diagnostic and publishes zero at its boundary")
+    {
+        glob2test::HeadlessGlobals globals;
+        std::vector<Uint32> baseline;std::string baselineSave;
+        for(unsigned delay=0;delay<=9;++delay) {
+            glob2test::HeadlessGame fixture({.loadDefaultRace=true,.header=true,.seed=71});
+            auto* unit=fixture.addUnit(WORKER,8,8);REQUIRE(unit);
+            if(delay<=8)fixture.game.configureMovementShadow(delay,true);
+            if(delay==0) {
+                fixture.game.captureReadBoundary({},false);
+                const auto stats=fixture.game.movementMetrics();
+                const auto published=std::find_if(stats.begin(),stats.end(),[](const auto& p){return p.first=="team_0_idle_published";});
+                REQUIRE(published!=stats.end());CHECK(published->second==1);
+            }
+            std::vector<Uint32> checks;
+            for(int tick=0;tick<128;++tick){fixture.step();checks.push_back(fixture.checksum());}
+            fixture.game.drainMovementShadow();const auto bytes=save(fixture.game);
+            if(baseline.empty()){baseline=checks;baselineSave=bytes;}else{CHECK(checks==baseline);CHECK(bytes==baselineSave);}
+            if(delay<=8) {
+                const auto stats=fixture.game.movementMetrics();
+                const auto compared=std::find_if(stats.begin(),stats.end(),[](const auto& p){return p.first=="team_0_idle_agreement_compared";});
+                REQUIRE(compared!=stats.end());CHECK(compared->second>0);
+            }
+        }
+        glob2test::HeadlessGame fixture({.loadDefaultRace=true,.header=true});
+        CHECK_THROWS(fixture.game.configureMovementShadow(9,true));
+        CHECK_THROWS(fixture.game.configureMovementShadow(3));
+        fixture.game.configureMovementShadow(0);CHECK_FALSE(fixture.game.movementDiagnostics()->planningEnabled());
+    }
     TEST_CASE("completion prediction agrees with the integer action clock")
     {
         UnitState u{};u.core.displacement=UnitState::DIS_RANDOM;

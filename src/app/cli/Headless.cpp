@@ -476,9 +476,10 @@ struct HeadlessRunner
         const auto computeMode = ComputeTelemetry::parseMode(one(options, "--compute-telemetry", "off"));
         if (engine.gui.game.map.computeExecutor().telemetryMode() != computeMode)
             engine.gui.game.map.computeExecutor().configureTelemetry(computeMode);
-        if (options.count("--movement-profile") && options.count("--movement-shadow"))
-            throw std::invalid_argument("choose --movement-profile or --movement-shadow");
-        if (options.count("--movement-shadow")) engine.gui.game.configureMovementShadow(integer(one(options,"--movement-shadow"),1,8));
+        if(options.count("--movement-profile")+options.count("--movement-shadow")+options.count("--movement-agreement-delay")>1)
+            throw std::invalid_argument("choose one movement diagnostic mode");
+        if(options.count("--movement-agreement-delay"))engine.gui.game.configureMovementShadow(integer(one(options,"--movement-agreement-delay"),0,8),true);
+        else if (options.count("--movement-shadow")) engine.gui.game.configureMovementShadow(integer(one(options,"--movement-shadow"),1,8));
         else if (options.count("--movement-profile")) engine.gui.game.configureMovementShadow(0);
         engine.gui.game.map.setResourceGrowthDelay(integer(
             one(options, "--resource-growth-delay", std::to_string(engine.gui.game.map.resourceGrowthDelay())), 1, 16));

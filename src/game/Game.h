@@ -260,7 +260,7 @@ public:
 	void observeUnpolledAI();
 	SimulationSnapshot::Store& snapshotStore() { return worldSnapshots; }
 	std::vector<std::pair<std::string, Uint64>> aiMetrics() const;
-    void configureMovementShadow(unsigned delay);
+    void configureMovementShadow(unsigned delay,bool agreementSweep=false);
     MovementPlanning::Shadow* movementDiagnostics() const { return movementShadow.get(); }
     std::vector<std::pair<std::string, Uint64>> movementMetrics() const;
     void drainMovementShadow();

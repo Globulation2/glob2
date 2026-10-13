@@ -7,6 +7,7 @@
 #include <algorithm>
 #include <chrono>
 #include <tuple>
+#include <cstdlib>
 
 namespace MovementPlanning
 {
@@ -60,14 +61,28 @@ bool currentTowerThreat(const Unit& unit,int x,int y)
                     && building->hasClearShotTo(x,y))return true;
     return false;
 }
+bool travelMovement(const Unit& unit)
+{
+    switch(unit.core.movement) {
+    case UnitState::MOV_RANDOM_GROUND: case UnitState::MOV_RANDOM_FLY:
+    case UnitState::MOV_GOING_TARGET: case UnitState::MOV_FLYING_TARGET:
+    case UnitState::MOV_GOING_DX_DY: return true;
+    default: return false;
+    }
+}
 constexpr const char* Names[] = {"idle","explore","resource","building","clearing","pursuit"};
 }
-Shadow::Shadow(ComputeExecutor& executor,unsigned delay,unsigned teams,int width,int height)
-    : executor(executor),delay(delay)
+Shadow::Shadow(ComputeExecutor& executor,unsigned delay,unsigned teams,int width,int height,bool agreementSweep)
+    : executor(executor),delay(delay),agreementSweep(agreementSweep)
 {
-    if (delay!=0 && delay!=1 && delay!=2 && delay!=4 && delay!=8) throw std::invalid_argument("movement shadow delay must be 1, 2, 4 or 8");
+    if (agreementSweep ? delay>8 : delay!=0 && delay!=1 && delay!=2 && delay!=4 && delay!=8) throw std::invalid_argument("movement shadow delay must be 1, 2, 4 or 8");
     if(!teams || teams>Team::MAX_COUNT || width<=0 || height<=0)throw std::invalid_argument("invalid movement shadow configuration");
-    if (!delay) return; // profiling-only reference control
+    if (!planningEnabled()) return; // profiling-only reference control
+    if(const char* path=std::getenv("GLOB2_MOVEMENT_AGREEMENT_TRACE");path && *path) {
+        agreementTrace=std::make_unique<std::ofstream>(path);
+        if(!*agreementTrace)throw std::runtime_error("Cannot open movement agreement trace");
+        *agreementTrace<<"tick,team,mode,gid,incarnation,sequence,observation_tick,publication_tick,origin_x,origin_y,proposed_direction,reference_direction,disposition,destination_present,destination_x,destination_y,reference_target_valid,reference_target_x,reference_target_y\n";
+    }
     const std::size_t quota=std::min<std::size_t>(32*1024*1024,128*1024*1024/teams);
     const Uint64 cells=Uint64(width)*height;
     // Conservative capture arrays (terrain/resource/occupancy/areas/visibility,
@@ -140,7 +155,7 @@ void Shadow::boundary(const Game& game,const SimulationSnapshot::Handle& world)
         if(actor.pendingSequence && actor.requestedGeneration==actor.actionGeneration && !moved && !changed)continue;
         if(actor.published)continue;
         const bool invalidated=changed || moved || !actor.requested || actor.requestedGeneration!=actor.actionGeneration;
-        if(!invalidated && *remaining>delay)continue;
+        if(!invalidated && *remaining>std::max(1u,delay))continue;
         Request request{task,*mode,actor.epoch,actor.actionGeneration,++actor.sequence,world.tick,
             world.tick+*remaining-1,batch->due};
         actor.pendingSequence=request.sequence;actor.requested=true;actor.requestedGeneration=actor.actionGeneration;
@@ -162,9 +177,23 @@ void Shadow::boundary(const Game& game,const SimulationSnapshot::Handle& world)
         else job.world={};
     }
     if(!groups.empty()) {
-        batch->ticket=executor.submit(groups,ComputeExecutor::advanceDue(batch->due));
-        pending.push_back(std::move(batch));maxBatches=std::max<Uint64>(maxBatches,pending.size());
-        if(pending.size()>delay+1)throw std::logic_error("movement shadow exceeded publication horizon");
+        if(agreementSweep && delay==0) {
+            // Zero is diagnostic immediate serial computation from this same
+            // completed boundary. Finish all jobs before any publication.
+            for(auto& job:batch->teams)if(!job.requests.empty())run(&job,0);
+            for(auto& job:batch->teams) {
+                activeNs+=job.activeNs;
+                for(auto& output:job.outputs) {
+                    ++metrics[output.request.task.team][unsigned(output.request.mode)].published;
+                    auto& actor=actors.at(output.request.task.unit.gid);
+                    actor.pendingSequence=0;actor.published=std::move(output);
+                }
+            }
+        } else {
+            batch->ticket=executor.submit(groups,ComputeExecutor::advanceDue(batch->due));
+            pending.push_back(std::move(batch));maxBatches=std::max<Uint64>(maxBatches,pending.size());
+            if(pending.size()>delay+1)throw std::logic_error("movement shadow exceeded publication horizon");
+        }
     }
     admissionNs+=elapsed(start);peakBytes=std::max(peakBytes,retainedBytes());
 }
@@ -174,10 +203,56 @@ Counters* Shadow::counters(const Unit& unit)
     if(!mode)return nullptr;
     return &metrics[unit.owner->teamNumber][unsigned(*mode)].reference;
 }
+void Shadow::recordAgreement(Metrics& m,unsigned proposed,unsigned reference)
+{
+    if(proposed>8 || reference>8)throw std::invalid_argument("Invalid movement comparison direction");
+    ++m.compared;++m.confusion[proposed][reference];
+    m.directionAgree+=proposed==reference;
+    m.moveStayAgree+=(proposed<8)==(reference<8);
+    if(proposed<8 && reference<8){++m.bothMove;m.movingDirectionAgree+=proposed==reference;}
+    else if(proposed==8 && reference==8)++m.bothStay;
+    else if(proposed<8)++m.proposalMoveReferenceStay;
+    else ++m.proposalStayReferenceMove;
+}
 void Shadow::completeAction(const Unit& unit)
 {
     const auto found=actors.find(unit.core.gid);
-    if(found!=actors.end() && found->second.task.unit==Game::refOf(&unit))++found->second.actionGeneration;
+    if(found==actors.end() || found->second.task.unit!=Game::refOf(&unit))return;
+    auto& actor=found->second;
+    if(actor.comparison) {
+        auto comparison=std::move(*actor.comparison);actor.comparison.reset();
+        const auto& r=comparison.request;
+        auto& m=metrics[r.task.team][unsigned(r.mode)];
+        // Compare the committed cell, including wrapped edges. Authoritative
+        // non-travel transitions and unexpected displacement are exclusions.
+        const auto& map=unit.owner->game->map;
+        if(unit.core.isDead || !travelMovement(unit) || unit.core.dx<-1 || unit.core.dx>1 || unit.core.dy<-1 || unit.core.dy>1 ||
+            unit.core.posX!=((r.task.x+unit.core.dx)&map.getMaskW()) ||
+            unit.core.posY!=((r.task.y+unit.core.dy)&map.getMaskH()))++m.agreementCancelled;
+        else {
+            const unsigned actual=Unit::directionFromDxDy(unit.core.dx,unit.core.dy);
+            recordAgreement(m,comparison.proposedDirection,actual);
+            m.observationAgeTicks+=Uint64(unit.owner->game->stepCounter)-r.observationTick;
+            if(comparison.destination && unit.core.validTarget) {
+                ++m.destinationCompared;
+                m.destinationCoordinateAgree+=((comparison.destination->x&map.getMaskW())==unit.core.targetX
+                    && (comparison.destination->y&map.getMaskH())==unit.core.targetY);
+            }
+            const unsigned equal=comparison.proposedDirection==actual;
+            // Deterministic bounded examples, independently for each team/mode
+            // and agreement outcome. Aggregate counters cover every comparison.
+            if(agreementTrace && m.traceSamples[equal]<64) {
+                ++m.traceSamples[equal];const auto d=comparison.destination;
+                *agreementTrace<<unit.owner->game->stepCounter<<','<<r.task.team<<','<<Names[unsigned(r.mode)]<<','
+                    <<r.task.unit.gid<<','<<r.task.unit.generation<<','<<r.sequence<<','<<r.observationTick<<','<<r.publicationTick<<','
+                    <<r.task.x<<','<<r.task.y<<','<<unsigned(comparison.proposedDirection)<<','<<actual<<','
+                    <<unsigned(comparison.disposition)<<','<<bool(d)<<','
+                    <<(d?d->x:0)<<','<<(d?d->y:0)<<','<<unit.core.validTarget<<','<<unit.core.targetX<<','<<unit.core.targetY<<'\n';
+                if(!*agreementTrace){++agreementTraceErrors;agreementTrace.reset();}
+            }
+        }
+    }
+    ++actor.actionGeneration;
 }
 void Shadow::observe(const Unit& unit)
 {
@@ -185,12 +260,14 @@ void Shadow::observe(const Unit& unit)
     // Clearing preemption and combat acquisition can replace a travel action.
     if(!mode || unit.core.movement==UnitState::MOV_ATTACKING_TARGET || unit.core.movement==UnitState::MOV_HARVESTING)return;
     auto& m=metrics[unit.owner->teamNumber][unsigned(*mode)];++m.reference.opportunities;
-    if(!delay)return;
+    const bool eligible=travelMovement(unit);
+    if(planningEnabled() && eligible)++m.agreementOpportunities;
+    if(!planningEnabled())return;
     auto task=taskOf(viewOf(unit));
     if(*mode==Mode::Pursuit)currentPursuitTarget(task,*unit.owner->game);
     auto found=actors.find(unit.core.gid);
     if(found==actors.end()) { ++m.rapid;++m.missing;return; }
-    auto& actor=found->second;
+    auto& actor=found->second;actor.comparison.reset();
     const bool stable=signature(task)==signature(actor.task);
     if(stable)++m.stable;else ++m.rapid;
     if(!actor.published) { ++m.missing; return; }
@@ -207,6 +284,7 @@ void Shadow::observe(const Unit& unit)
     if(suggestion.disposition==Disposition::GoalReached)++m.goalReached;
     if(suggestion.disposition==Disposition::NoRoute)++m.noRoute;
     auto& map=unit.owner->game->map;
+    bool destinationValid=true;
     if(suggestion.destination) {
         const auto& d=*suggestion.destination;
         bool valid=true;
@@ -225,7 +303,7 @@ void Shadow::observe(const Unit& unit)
                 }
             }
         } else if(r.mode==Mode::Resource)valid=map.isMaterialTakeableSlot(d.x,d.y,r.task.material);
-        if(!valid)++m.destinationRejected;
+        if(!valid) { ++m.destinationRejected;destinationValid=false; }
     }
     unsigned rank=0;
     for(auto direction:suggestion.directions) {
@@ -240,6 +318,17 @@ void Shadow::observe(const Unit& unit)
     }
     ++m.selectedRank[rank];
     if(rank==8)++m.blocked;else if(rank<suggestion.preferred)++m.preferredSuccess;
+    if(eligible) {
+        if(!destinationValid)++m.agreementDestinationRejected;
+        else {
+            // This models only the specified suggestion's first legal step.
+            // Missing/rejected fallback policies and serial service decisions
+            // are deliberately not invented by this observer.
+            const Uint8 direction=suggestion.disposition==Disposition::Travel && rank<8?suggestion.directions[rank]:8;
+            auto comparisonRequest=r;comparisonRequest.task.x=task.x;comparisonRequest.task.y=task.y;
+            actor.comparison=Comparison{comparisonRequest,suggestion.destination,direction,suggestion.disposition};
+        }
+    }
 }
 void Shadow::drain()
 {
@@ -265,7 +354,7 @@ std::vector<std::pair<std::string,Uint64>> Shadow::summary() const
     bool settled=true;
     for(const auto& batch:pending) { settled &= executor.finished(batch->ticket); }
     if(settled)for(const auto& batch:pending)for(const auto& job:batch->teams)completedActive+=job.activeNs;
-    std::vector<std::pair<std::string,Uint64>> result{{"owner_cpu_available",OwnerCpuAvailable},{"workers_settled",settled},{"delay",delay},{"active_ns",completedActive},{"admission_ns",admissionNs},
+    std::vector<std::pair<std::string,Uint64>> result{{"agreement_sweep",agreementSweep},{"agreement_trace_errors",agreementTraceErrors},{"owner_cpu_available",OwnerCpuAvailable},{"workers_settled",settled},{"delay",delay},{"active_ns",completedActive},{"admission_ns",admissionNs},
         {"deadline_waits",waits},{"deadline_wait_ns",waitNs},{"maximum_batches",maxBatches},{"owner_retained_bytes",retainedBytes()},{"owner_peak_bytes",peakBytes}};
     if(settled) {
         Uint64 cacheBytes=0,peakWorkspace=0,visited=0,hits=0,fields=0,unknown=0;
@@ -283,6 +372,13 @@ std::vector<std::pair<std::string,Uint64>> Shadow::summary() const
         auto add=[&](const char* name,Uint64 value){result.emplace_back(prefix+name,value);};
         add("admitted",m.admitted);add("published",m.published);add("stable_opportunities",m.stable);add("rapid_opportunities",m.rapid);
         add("valid",m.valid);add("missing",m.missing);add("position_rejected",m.positionRejected);add("task_rejected",m.taskRejected);add("generation_rejected",m.generationRejected);
+        add("agreement_opportunities",m.agreementOpportunities);add("agreement_destination_rejected",m.agreementDestinationRejected);add("agreement_cancelled",m.agreementCancelled);
+        add("agreement_compared",m.compared);add("agreement_direction_equal",m.directionAgree);add("agreement_move_stay_equal",m.moveStayAgree);
+        add("agreement_both_move",m.bothMove);add("agreement_moving_direction_equal",m.movingDirectionAgree);add("agreement_both_stay",m.bothStay);
+        add("agreement_proposal_move_reference_stay",m.proposalMoveReferenceStay);add("agreement_proposal_stay_reference_move",m.proposalStayReferenceMove);
+        add("agreement_observation_age_ticks",m.observationAgeTicks);add("agreement_destination_compared",m.destinationCompared);add("agreement_destination_coordinate_equal",m.destinationCoordinateAgree);
+        for(unsigned proposed=0;proposed<9;++proposed)for(unsigned actual=0;actual<9;++actual)
+            if(m.confusion[proposed][actual])add(("agreement_proposed_"+std::to_string(proposed)+"_reference_"+std::to_string(actual)).c_str(),m.confusion[proposed][actual]);
         add("preferred_success",m.preferredSuccess);add("blocked",m.blocked);add("goal_reached",m.goalReached);add("no_route",m.noRoute);add("destination_rejected",m.destinationRejected);
         add("prediction_error_ticks",m.predictionErrorTicks);
         for(unsigned rank=0;rank<9;++rank)result.emplace_back(prefix+"rank_"+std::to_string(rank),m.selectedRank[rank]);
