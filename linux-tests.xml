@@ -1,0 +1,101 @@
+<?xml version='1.0' encoding='utf-8'?>
+<testsuites tests="99" failures="0" errors="0" skipped="0"><testsuite name="AICustomCatalog"><testcase classname="AICustomCatalog" name="AI source selectors discover renamed multi-material deposits and independent depletion" time="0.831827" status="run" />
+  <testcase classname="AICustomCatalog" name="Castor bulk wheat reads preserve weighted distance rounding and sentinels" time="0.244473" status="run" />
+  <testcase classname="AICustomCatalog" name="Castor projects only its strategic demands and preserves mixed staffing" time="4.53604" status="run" />
+  <testcase classname="AICustomCatalog" name="Castor swimming workforce excludes inactive carriers" time="0.364801" status="run" />
+  <testcase classname="AICustomCatalog" name="Maxima exact anchors support rectangular footprints across the torus" time="1.14147" status="run" />
+  <testcase classname="AICustomCatalog" name="Nicowar and Econo keep independent weighted material objectives and stone clearance" time="1.40683" status="run" />
+  <testcase classname="AICustomCatalog" name="Nicowar resolves one aggregate production demand per colony management pass" time="2.83894" status="run" />
+  <testcase classname="AICustomCatalog" name="Nicowar retained attraction retirement completes missions across save load" time="1.03945" status="run" />
+  <testcase classname="AICustomCatalog" name="Warrush mixed producer staffing respects zero and saturated assignment limits" time="0.666075" status="run" />
+  <testcase classname="AICustomCatalog" name="Warrush staffing preserves intent priority slot order and current stage limits" time="0.356839" status="run" />
+  <testcase classname="AICustomCatalog" name="all native controllers continue deterministically with mixed permuted catalog" time="8.33113" status="run" />
+  <testcase classname="AICustomCatalog" name="all native controllers select renamed mixed providers and release missing demands" time="5.28745" status="run" />
+  <testcase classname="AICustomCatalog" name="always airborne carriers retain keyed flight course planning and independent levels" time="0.731092" status="run" />
+  <testcase classname="AICustomCatalog" name="construction tier arithmetic excludes couriers without construction" time="0.49937" status="run" />
+  <testcase classname="AICustomCatalog" name="historical farming reserves only propagating finite material donors" time="4.19595" status="run" />
+  <testcase classname="AICustomCatalog" name="independent nonmonotonic worker clocks retain keyed course eligibility" time="3.43178" status="run" />
+  <testcase classname="AICustomCatalog" name="keyed worker courses retain qualification grants and exclude unrelated recipients" time="0.399595" status="run" />
+  <testcase classname="AICustomCatalog" name="production placement falls back from an obstructed preferred footprint" time="0.487662" status="run" />
+  <testcase classname="AICustomCatalog" name="shared runtime exact anchors support rectangular attractors across the torus" time="0.492818" status="run" />
+  <testcase classname="AICustomCatalog" name="shared runtime retirement distinguishes attraction and feeding and preserves mixed services" time="1.71201" status="run" />
+  <testcase classname="AICustomCatalog" name="six native strategies construct and use separate demanded production classes" time="2.78871" status="run" />
+  </testsuite><testsuite name="AIRecoveryCoverage"><testcase classname="AIRecoveryCoverage" name="Cabino declared inputs omit published fields without changing decisions" time="0.506211" status="run" />
+  <testcase classname="AIRecoveryCoverage" name="Cabino defense records create assign deduplicate and retire actual flags" time="0.517911" status="run" />
+  <testcase classname="AIRecoveryCoverage" name="Cabino pending upgrades survive delayed observation and release rejected reservations" time="0.250817" status="run" />
+  <testcase classname="AIRecoveryCoverage" name="Cabino queued target identities survive saves and reject reused building slots" time="0.962713" status="run" />
+  <testcase classname="AIRecoveryCoverage" name="Castor food lock backs off growth and boot projects wait for their cadence" time="0.293024" status="run" />
+  <testcase classname="AIRecoveryCoverage" name="Castor projects deduplicate replace and decline already satisfied requests" time="0.970729" status="run" />
+  <testcase classname="AIRecoveryCoverage" name="Cortex amphibious assessment distinguishes land water and blocked targets" time="0.152805" status="run" />
+  <testcase classname="AIRecoveryCoverage" name="Cortex farm checkerboard retires prototype paint and wheat blitz releases it" time="0.507038" status="run" />
+  <testcase classname="AIRecoveryCoverage" name="Cortex shore harvest differs from inaccessible algae and swimming opens islands" time="0.185125" status="run" />
+  <testcase classname="AIRecoveryCoverage" name="Cortex wheat protection emits real area orders and food burst releases only our paint" time="0.426787" status="run" />
+  <testcase classname="AIRecoveryCoverage" name="Nicowar defense flags materialize once and withdraw when the threat disappears" time="0.344298" status="run" />
+  <testcase classname="AIRecoveryCoverage" name="Nicowar dig-out rejects missing starts without allocating orders" time="0.902399" status="run" />
+  <testcase classname="AIRecoveryCoverage" name="Nicowar dig-out validates frozen routes before committing clearing orders" time="2.98761" status="run" />
+  </testsuite><testsuite name="AIRules"><testcase classname="AIRules" name="Cabino migrates legacy warrior reservations only when training is disabled" time="0.493986" status="run" />
+  <testcase classname="AIRules" name="Cabino reservations match unit class and qualification instead of building level" time="0.226574" status="run" />
+  <testcase classname="AIRules" name="Cabino strategy roles require effective clocks and mobile labor" time="0.567937" status="run" />
+  <testcase classname="AIRules" name="Castor waits for configured recovery rather than exhausted finite food" time="0.185198" status="run" />
+  <testcase classname="AIRules" name="Cortex excludes unavailable technology from scoring and feeding prerequisites" time="0" status="run" />
+  <testcase classname="AIRules" name="JavaScript profiles can inspect rules and issue useful orders" time="0.721462" status="run" />
+  <testcase classname="AIRules" name="Maxima removes disabled reserves while retaining finite production supply" time="0.433687" status="run" />
+  <testcase classname="AIRules" name="construction staffing uses separate site and completed capacities" time="0.186891" status="run" />
+  <testcase classname="AIRules" name="disabled training preserves independent services of mixed providers" time="0.398817" status="run" />
+  <testcase classname="AIRules" name="effective melee threats remain local while reserves require movement" time="1.66286" status="run" />
+  <testcase classname="AIRules" name="engine prevents training and upgrades while retaining repairs and starting levels" time="0.603834" status="run" />
+  <testcase classname="AIRules" name="food population preserves migrated calibration and scales authored recipients" time="0.258167" status="run" />
+  <testcase classname="AIRules" name="legacy queued staffing imports explicit 135 wire without weakening modern validation" time="0.296416" status="run" />
+  <testcase classname="AIRules" name="loaded Population counts effective own roles once per hybrid" time="0.544786" status="run" />
+  <testcase classname="AIRules" name="native controllers exclude disabled work and continue after reload [slow]" time="106.217" status="run" />
+  <testcase classname="AIRules" name="no growth farms harvest their finite seed rather than waiting forever" time="0.506751" status="run" />
+  <testcase classname="AIRules" name="owner and snapshot selection audits agree for rule constrained orders" time="0.312412" status="run" />
+  <testcase classname="AIRules" name="prospective material supply combines mixed branch numerators without overflow" time="0.507173" status="run" />
+  <testcase classname="AIRules" name="renewable material potential survives saturation and honors yield policies" time="0.409483" status="run" />
+  <testcase classname="AIRules" name="restored controller queues discard unavailable work and release prerequisites" time="0.613986" status="run" />
+  <testcase classname="AIRules" name="retained tournament replay contains no unavailable orders" time="0.000284" status="run" />
+  <testcase classname="AIRules" name="rule parser and script observations use effective match values" time="0.540903" status="run" />
+  </testsuite><testsuite name="AISavePortability"><testcase classname="AISavePortability" name="runtime initialisation; area order serialisation and Maxima reserved telemetry" time="0.423792" status="run" />
+  </testsuite><testsuite name="AIStateContinuation"><testcase classname="AIStateContinuation" name="Cabino specialist modules survive save-load" time="35.5052" status="run" />
+  <testcase classname="AIStateContinuation" name="Castor and Maxima active full games preserve decisions and RNG [slow]" time="15.2126" status="run" />
+  <testcase classname="AIStateContinuation" name="Cortex economy and food shortage survive save-load" time="5.54832" status="run" />
+  <testcase classname="AIStateContinuation" name="Econo shared runtime survives save-load" time="12.1575" status="run" />
+  <testcase classname="AIStateContinuation" name="Nicowar shared runtime survives save-load" time="24.2379" status="run" />
+  <testcase classname="AIStateContinuation" name="Numbi growth and attack preparation survive save-load" time="25.4068" status="run" />
+  <testcase classname="AIStateContinuation" name="Warrush growth and attack preparation survive save-load" time="37.3985" status="run" />
+  <testcase classname="AIStateContinuation" name="all controllers continue alongside another AI and a shared-team controller [slow]" time="17.999" status="run" />
+  </testsuite><testsuite name="LegacyAIState"><testcase classname="LegacyAIState" name="Cabino construction polls preserve high material and combined source masks" time="0.229231" status="run" />
+  <testcase classname="LegacyAIState" name="Cabino material mask placement resumes without changing RNG" time="0.199446" status="run" />
+  <testcase classname="LegacyAIState" name="Cabino preserves stale gradients module latches and fruit memories" time="0.649253" status="run" />
+  <testcase classname="LegacyAIState" name="Cabino saving leaves its pending FIFO intact" time="0.558081" status="run" />
+  <testcase classname="LegacyAIState" name="Cortex saved policy and model supersede the current process selection" time="0.56126" status="run" />
+  <testcase classname="LegacyAIState" name="Nicowar explorer phases and full construction counts survive" time="0.435467" status="run" />
+  <testcase classname="LegacyAIState" name="Numbi phase clock survives and advances on the original poll" time="0.517274" status="run" />
+  <testcase classname="LegacyAIState" name="Numbi wrapper preserves an active phase clock and the next decision" time="0.17436" status="run" />
+  <testcase classname="LegacyAIState" name="Warrush timers and constructors round-trip at boundaries" time="0.922366" status="run" />
+  <testcase classname="LegacyAIState" name="Warrush wrapper preserves the next decision and its random stream" time="0.240681" status="run" />
+  <testcase classname="LegacyAIState" name="new timer records reject out-of-range missing and malformed values" time="0.745254" status="run" />
+  <testcase classname="LegacyAIState" name="old layouts default omitted clocks without consuming the following field" time="0.488914" status="run" />
+  <testcase classname="LegacyAIState" name="pre-fix format 127 writers remain aligned for Cabino Nicowar and Cortex" time="0.26657" status="run" />
+  <testcase classname="LegacyAIState" name="shared runtime reload replaces queues and registrations in binary and text" time="0.705019" status="run" />
+  </testsuite><testsuite name="MatchSetup"><testcase classname="MatchSetup" name="AI order delay is optional bounded integer data and round trips through headers" time="0.278892" status="run" />
+  <testcase classname="MatchSetup" name="Building gradient delay is optional bounded integer data and round trips through headers" time="0.275685" status="run" />
+  <testcase classname="MatchSetup" name="New match rules default to eight tick AI decisions" time="0.00106" status="run" />
+  <testcase classname="MatchSetup" name="SHA-256 matches the FIPS 180-4 test vectors" time="0.032633" status="run" />
+  <testcase classname="MatchSetup" name="Scripted map sources preserve exact provenance and enforce team count" time="0.001601" status="run" />
+  <testcase classname="MatchSetup" name="a map file is found and checked by the hash of its decompressed bytes" time="0.116525" status="run" />
+  <testcase classname="MatchSetup" name="catalog rules identity partitions ratings without changing the executable identity" time="0.000477" status="run" />
+  <testcase classname="MatchSetup" name="closed seats close their team and follow every player seat" time="0.305066" status="run" />
+  <testcase classname="MatchSetup" name="current files bind embedded migration catalogs as explicit authority [save-format]" time="2.04263" status="run" />
+  <testcase classname="MatchSetup" name="embedded catalogs carry dynamic experiments independently of installed definitions" time="1.12652" status="run" />
+  <testcase classname="MatchSetup" name="every MatchSetup and SimVersion contract fixture is accepted or rejected at its stage" time="0.307753" status="run" />
+  <testcase classname="MatchSetup" name="legacy resolved setup catalogs retain zero health privately and reject authoring escapes" time="0.273036" status="run" />
+  <testcase classname="MatchSetup" name="legacy turn setup validates recovered body catalogs before accepting the session [save-format]" time="2.94525" status="run" />
+  <testcase classname="MatchSetup" name="map-required terrain experiments propagate to setup and cannot be omitted" time="0.20651" status="run" />
+  <testcase classname="MatchSetup" name="the simulation data hash covers every data file the simulation loads" time="0.099224" status="run" />
+  <testcase classname="MatchSetup" name="the vendored fixtures match the protocol package when it is present" time="0.050685" status="run" />
+  <testcase classname="MatchSetup" name="unit catalogs survive setup conversion and reject tampered identity" time="0.586124" status="run" />
+  <testcase classname="MatchSetup" name="unknown experiments, JavaScript AIs and unexpressible headers are refused" time="0.340125" status="run" />
+  <testcase classname="MatchSetup" name="valid setups become the GameHeader every client and the verifier run" time="0.369693" status="run" />
+  </testsuite><testsuite name="TurnEngineHarness"><testcase classname="TurnEngineHarness" name="the committed match record verifies to the committed checksum trace [network-sim][golden]" time="2.10045" status="run" />
+  </testsuite></testsuites>

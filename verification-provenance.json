@@ -8,12 +8,11 @@
   "mac_final_engine_cases": 22,
   "mac_final_replay_protocol_cases": 65,
   "mac_earlier_strategy_continuation_cases": 80,
-  "linux_clean_release_status": "in progress",
+  "linux_clean_release_status": "Final clean e65head, ordinary full-feature release engine/client build passes;99focused engine cases pass;68golden reports verified,843-row actual trace matches Mac and committed golden",
   "limits": [
     "Mac fast build only; default engine build blocked by unrelated MCP std::atomic<shared_ptr> fixture",
     "Isolated failing-seed reproduction uses original cohort runtime with Attack.cpp alone replaced; not a clean production build",
-    "Windows/browser execution unavailable",
-    "Linux release/cross-platform golden validation pending"
+    "Windows/browser execution unavailable"
   ],
   "file_sha256": {
     "mac-turn-admission.xml": "56f1bb31207c1af949f7b73f86bfd20c7225f1ae30dc6a82df6929d1bb22e1af",
@@ -27,8 +26,12 @@
     "cross-platform-regression.json": "e7fd9006471353174d52ae8b2344bb23e71168a81af274439c809b3f83fc176b",
     "mac-regression-evidence.tar.gz": "ef7ddabd1781ea7b772cce2ca548baf2ff19027d6377d4fca01aef6585dc2ad7",
     "mac-golden-verification.json": "35620f96951a17381345f8697f7052eabc1cfb745c29e1fee205f0efbbf44733",
-    "mac-golden-evidence.tar.gz": "0d008babb4998b4e86a6ec160f6470d99efc24d74e7ed1c74e689e0f4e23a974"
+    "mac-golden-evidence.tar.gz": "0d008babb4998b4e86a6ec160f6470d99efc24d74e7ed1c74e689e0f4e23a974",
+    "linux-evidence.tar.gz": "fa9c31ced4eb901731c1c49ef35d2e681a1e51bf4038ae567feaaf5e2d05288d",
+    "linux-provenance.json": "f0a3381659b12def8dda69eb2ac7906e8819cf9fa2b8545a798ef31ba21eba2f",
+    "linux-tests.xml": "f38f22e6471c3adc0da8e00b32c7c9fb81983acb104bf481f07773bb7496e9a3"
   },
   "mac_linux_regression": "All32768compact per-tick checksums match on macOSarm64/Linuxx86-64 with1/4compute participants, isolated corrected consumer; Mac memory cap not applied",
-  "mac_clean_fast_client_golden": "Normal client verifies all68reports over842ticks;843-row actual checksum trace matches committed golden"
+  "mac_clean_fast_client_golden": "Normal client verifies all68reports over842ticks;843-row actual checksum trace matches committed golden",
+  "linux_golden_trace_sha256": "2287760e6a3f627e08584369f4cb7c202019d69458be4751d42790ebd19b3601"
 }
