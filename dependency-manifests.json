@@ -1,0 +1,142 @@
+{
+  "/home/bradley/glob2/build/sdl3/prefix/sdl3-manifest.json": {
+    "configuration": 11,
+    "threaded": false,
+    "versions": {
+      "webp": {
+        "version": "1.6.0",
+        "url": "https://storage.googleapis.com/downloads.webmproject.org/releases/webp/libwebp-1.6.0.tar.gz",
+        "sha256": "e4ab7009bf0629fd11982d4c2aa83964cf244cffba7347ecd39019a9e38c4564",
+        "archive": "libwebp-1.6.0.tar.gz"
+      },
+      "SDL": {
+        "version": "3.4.16",
+        "url": "https://github.com/libsdl-org/SDL/releases/download/release-3.4.16/SDL3-3.4.16.tar.gz",
+        "sha256": "7322236cd12090c3eb40b9728be4d49c76f66ad17d04369584d4ecad5cf77c68",
+        "archive": "SDL3-3.4.16.tar.gz"
+      },
+      "SDL_image": {
+        "version": "3.4.6",
+        "url": "https://github.com/libsdl-org/SDL_image/releases/download/release-3.4.6/SDL3_image-3.4.6.tar.gz",
+        "sha256": "d2e4637ae700f72e5196b8fbd749850ed2e5e1e09c5a5be8d06ff55aaccf3b01",
+        "archive": "SDL3_image-3.4.6.tar.gz"
+      },
+      "SDL_ttf": {
+        "version": "3.2.2",
+        "url": "https://github.com/libsdl-org/SDL_ttf/releases/download/release-3.2.2/SDL3_ttf-3.2.2.tar.gz",
+        "sha256": "63547d58d0185c833213885b635a2c0548201cc8f301e6587c0be1a67e1e045d",
+        "archive": "SDL3_ttf-3.2.2.tar.gz"
+      },
+      "SDL_net": {
+        "version": "3.2.0",
+        "url": "https://github.com/libsdl-org/SDL_net/releases/download/release-3.2.0/SDL3_net-3.2.0.tar.gz",
+        "sha256": "098522fc26d4e302ef9348aee6e76e67fe504dfefd7f596236568f8330570c41",
+        "archive": "SDL3_net-3.2.0.tar.gz"
+      }
+    },
+    "emscripten": null,
+    "platform": "Linux-7.0.0-30-generic-x86_64-with-glibc2.39",
+    "machine": "x86_64",
+    "source_patches": {
+      "x11-reparent-race.patch": "7ebad866971a36c2c833d6d91977d2628f13c82a0eeae11fd917e5ee8f7dcfab",
+      "x11-map-notify.patch": "a7ce2e7bc6773243ccda0282926ea92a9cce3023efa9289c81cc9dad0937f202",
+      "png16-preserve-channels.patch": "cfa402516b9692a8e50394e5f1dc659e5a7443cd99a4cbb59af2ac5d0fc05aee",
+      "kerning-moves-pen.patch": "40885a6f8dd3018cd01721197b263b363bbb26c4b55ef21e0ad919823ac7bd4c"
+    }
+  },
+  "/home/bradley/.local/share/glob2/development/dependencies/build-6b62ea86279899032d0eabbb/prefix/recording-manifest.json": {
+    "identity": {
+      "configuration": 1,
+      "versions": {
+        "ffmpeg": {
+          "url": "https://ffmpeg.org/releases/ffmpeg-8.0.tar.xz",
+          "archive": "ffmpeg-8.0.tar.xz",
+          "directory": "ffmpeg-8.0",
+          "sha256": "b2751fccb6cc4c77708113cd78b561059b6fa904b24162fa0be2d60273d27b8e"
+        },
+        "nv-codec-headers": {
+          "url": "https://codeload.github.com/FFmpeg/nv-codec-headers/tar.gz/refs/tags/n13.0.19.0",
+          "archive": "nv-codec-headers-13.0.19.0.tar.gz",
+          "directory": "nv-codec-headers-n13.0.19.0",
+          "sha256": "86d15d1a7c0ac73a0eafdfc57bebfeba7da8264595bf531cf4d8db1c22940116"
+        },
+        "x264": {
+          "url": "https://codeload.github.com/mirror/x264/tar.gz/0480cb05fa188d37ae87e8f4fd8f1aea3711f7ee",
+          "archive": "x264-0480cb05.tar.gz",
+          "directory": "x264-0480cb05fa188d37ae87e8f4fd8f1aea3711f7ee",
+          "sha256": "d0967a1348c85dfde363bb52610403be898171493100561efa0dd05d5fd1ae50"
+        }
+      },
+      "target": "linux",
+      "arch": "x86_64",
+      "compiler": "gcc (Ubuntu 13.3.0-6ubuntu2~24.04.1) 13.3.0\nCopyright (C) 2023 Free Software Foundation, Inc.\nThis is free software; see the source for copying conditions.  There is NO\nwarranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.\n\n",
+      "cc": "gcc",
+      "ar": "ar",
+      "flags": [
+        [],
+        []
+      ],
+      "vaapi_api": "1.20.0\n1.20.0",
+      "assembler": "NASM version 2.16.01",
+      "sdk": null,
+      "environment": {
+        "CFLAGS": "",
+        "CXXFLAGS": "",
+        "CPPFLAGS": "",
+        "LDFLAGS": "",
+        "SDKROOT": "",
+        "MACOSX_DEPLOYMENT_TARGET": "",
+        "DEVELOPER_DIR": ""
+      },
+      "recipe": "c4663701d5073dfa8a2518d7fa4d8965e05b3953ed0ed1bcc3b8f3e349f61066"
+    },
+    "archives": {
+      "libavformat.a": "bd08e8ed17d15063e03ca9f0d372938e31d082c26378855ecc4b7bf41c8cf356",
+      "libavcodec.a": "ba7880427f57372aa98655e5189ca5d82c1a3402c3f27f64dca903da077d89ca",
+      "libswscale.a": "8cdcbec14e8b6b8457be2384c5c15d85a089c567c1fe4f0447a342223e8d77a7",
+      "libswresample.a": "a43335c9cf03fa1ca87319e93c06e4fa706fd735bae1f662a3ad2f1cf11823d7",
+      "libavutil.a": "4387351ff842422abd85986038a1de88b22e0f621d758305d3178c27b275c8a8",
+      "libx264.a": "1999cfadd1cf4c85f23017a4e81627a295cae21d4e013f210e16f71b232ab15d"
+    }
+  },
+  "vcpkg_manifest": {
+    "$schema": "https://raw.githubusercontent.com/microsoft/vcpkg/master/scripts/vcpkg.schema.json",
+    "name": "globulation2",
+    "license": "GPL-3.0",
+    "version": "0.11.2.0",
+    "dependencies": [
+      "sdl3",
+      "sdl3-net",
+      "sdl3-ttf",
+      {
+        "name": "sdl3-image",
+        "features": [
+          "jpeg",
+          "png",
+          "webp"
+        ]
+      },
+      "zlib",
+      "fribidi",
+      "libogg",
+      {
+        "name": "opusfile",
+        "default-features": false
+      },
+      "boost-asio",
+      "boost-beast",
+      "speex",
+      "openssl",
+      "opengl",
+      "libepoxy",
+      "pcre"
+    ],
+    "builtin-baseline": "80d54ff62d528339c626a6fbc3489a7f25956ade",
+    "vcpkg-configuration": {
+      "overlay-ports": [
+        "scons/vcpkg-ports"
+      ]
+    }
+  },
+  "requirements_dev": "# Development-only Python environment for the repository's scripts: tests, analysis\n# and plotting tools, asset and artwork pipelines, build helpers and the music\n# pipeline core. Nothing here ships with or is loaded by the game, the relay or the\n# online platform; see \"Dependencies\" in AGENTS.md for the dev/runtime split.\n#\n#   uv venv --python 3.11 .venv\n#   uv pip install --python .venv/bin/python -r requirements-dev.txt\n#\n# Included sets keep their own pins and remain the source of truth for them:\n-r tools/asset-requirements.txt\n-r tools/music/requirements.txt\n-r tools/docs/requirements.txt\n#\n# Kept out on purpose:\n# - mobile/play-api-requirements.txt: hash-pinned, isolated venv for Play uploads.\n# - tools/music/requirements-{synth,samples,separation,genai}.txt: large or\n#   hardware-specific extras (pedalboard, torch/Demucs, ACE-Step).\n# - bpy, bmesh, mathutils (Blender), gimpfu (GIMP) and gi (PyGObject) come from the\n#   host application or system packages, not pip.\n\n# Data analysis and plotting. numpy and scipy repeat the music pipeline's pins;\n# change both files together.\nnumpy==2.4.6\nscipy==1.17.1\nscikit-learn==1.9.1\npandas==3.0.6\nmatplotlib==3.11.2\n\n# Build, web asset and deployment helpers\nscons==4.11.1\nfonttools==4.66.1\nbrotli==1.2.0\nPyYAML==6.0.3\n\n# Map toolkit binding generation; pair with the system libclang 18 library.\nclang==18.1.8\n"
+}

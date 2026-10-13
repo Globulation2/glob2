@@ -1,0 +1,19 @@
+{
+  "source": "389b821843ebda0492c88794ebefc93f5e209b45",
+  "tool": "perf version 7.0.14",
+  "event": "cpu-clock",
+  "frequency_hz": 199,
+  "call_graph": "dwarf,8192",
+  "capture": "launched process tree with inherited worker threads",
+  "binary": "artifacts/gpu-cost/baseline-source/build/frozen-full-release/src/glob2",
+  "fixture": "artifacts/gpu-cost/fixtures/river512-game/checkpoint-4096.game.gz",
+  "ticks": 8192,
+  "warmup": 512,
+  "count": 8,
+  "backend": "vulkan",
+  "algorithm": "frozen8",
+  "nvidia_resolved_samples_pct": 27.04,
+  "classification": "NVIDIA user modules and resolved _nv kernel symbols; shared kernel/libc work remains separately attributed",
+  "acceptance": false,
+  "limit": "Development builds were active during diagnostic capture"
+}
