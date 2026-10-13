@@ -311,7 +311,7 @@ static void interactiveBenchmark()
 			}
 			const double seconds = getenv("PROFILE_SECONDS") ? std::stod(getenv("PROFILE_SECONDS")) : 0;
 			Uint64 measuredStart = 0;
-			std::vector<double> draw, present;
+			std::vector<double> draw, present, frame;
 			RenderOperations initialOps{};
             decltype(terrainCache.workMetrics) initialWork{};
             if (const char* mode = getenv("PROFILE_COMPUTE_TELEMETRY"))
@@ -362,6 +362,7 @@ static void interactiveBenchmark()
 				{
 					draw.push_back(1000. * (b - a) / freq);
 					present.push_back(1000. * (c - b) / freq);
+                    frame.push_back(1000. * (c - a) / freq);
 				}
 			}
 			double totalCpu = cpu() - c0;
@@ -389,6 +390,7 @@ static void interactiveBenchmark()
 			printf("simulation_checksum=%u\n", checksum);
             distribution("draw", draw);
             distribution("present", present);
+            distribution("frame", frame);
 			printf("process_cpu_ms_per_frame=%.4f\n", totalCpu * 1000 / draw.size());
 			fflush(stdout);
 			auto ops = gfx->backendOperations();
@@ -408,13 +410,16 @@ static void interactiveBenchmark()
                    (unsigned long long)(work.batches - initialWork.batches), (unsigned long long)(work.jobs - initialWork.jobs),
                    (unsigned long long)(work.cells - initialWork.cells), (unsigned long long)(work.serialPages - initialWork.serialPages),
                    (unsigned long long)(work.batchNs - initialWork.batchNs), work.peakReservedBytes);
-            printf("raster_cpu batches=%llu tiles=%llu references=%llu "
-                   "serial_batches=%llu snapshot_bytes=%llu peak_retained_bytes=%llu "
+            printf("raster_cpu batches=%llu tiles=%llu references=%llu jobs=%llu "
+                   "serial_batches=%llu snapshot_bytes=%llu source_reuses=%llu source_retained_bytes=%llu peak_retained_bytes=%llu "
                    "fallback_operations=%llu\n",
                    (unsigned long long)(ops.rasterBatches - initialOps.rasterBatches), (unsigned long long)(ops.rasterTiles - initialOps.rasterTiles),
                    (unsigned long long)(ops.rasterReferences - initialOps.rasterReferences),
+                   (unsigned long long)(ops.rasterJobs - initialOps.rasterJobs),
                    (unsigned long long)(ops.rasterSerialBatches - initialOps.rasterSerialBatches),
                    (unsigned long long)(ops.rasterSnapshotBytes - initialOps.rasterSnapshotBytes),
+                   (unsigned long long)(ops.rasterSourceReuses - initialOps.rasterSourceReuses),
+                   (unsigned long long)ops.rasterSourceRetainedBytes,
                    (unsigned long long)ops.rasterPeakRetainedBytes,
                    (unsigned long long)(ops.rasterFallbacks - initialOps.rasterFallbacks));
             const auto computeMode = gui.game.map.computeExecutor().telemetryMode();

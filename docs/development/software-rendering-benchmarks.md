@@ -22,7 +22,8 @@ team's first such entity, so frames include its selection panel and map markers;
 `PROFILE_TOOL=<building type>` (for example `inn`) activates the building tool with the
 cursor over the middle of the map view, so frames include the placement preview. Use them
 with `PROFILE_MODE=gui` for Scene parity captures against another revision. The harness reports population, wall-time mean/median/p95,
-process CPU time, optional thread CPU stage costs, backend operation counts, cache memory
+process CPU time, complete draw-plus-presentation frame distributions, optional thread
+CPU stage costs, backend operation counts, cache memory
 and cache hit/rebuild counts. It also checks that drawing preserves the simulation checksum.
 Run captured fixtures from early, mid and late games; keep generated saves and profiles
 under ignored `artifacts/`. To advance a saved initial game into population fixtures,
@@ -65,3 +66,14 @@ opt-in executable. Timing thresholds are review criteria, not CI assertions. Run
 `SoftwareRenderer`, `PortableRenderer`, `WindowResize`, `MapRenderResize` and
 `HighResolutionIntegration` suites on supported SDL/platform builds, retain before/after
 captures, and report unavailable platform and maintainer-playtesting coverage explicitly.
+
+For CPU batch optimization, compare the same execution mode before and after the
+change, then compare the candidate's `immediate`, `serial` and `parallel` modes.
+`raster_cpu` distinguishes painted tiles/references from dispatched jobs and reports
+copied source bytes, source revision reuses and current retained source bytes. These
+counters establish whether less preparation and dispatch work occurred; frame time
+and process CPU establish whether that work reduction helps the complete frame.
+Use ordinary wall-clock scopes for parallel comparisons: `PROFILE_CPU_SCOPES=1`
+measures only the calling thread and cannot attribute worker CPU time. Run separate
+`PROFILE_COMPUTE_TELEMETRY=trace` diagnostics to examine executor activity and owner
+waits; keep telemetry configuration identical within each comparison.

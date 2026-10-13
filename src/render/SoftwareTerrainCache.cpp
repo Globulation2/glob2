@@ -459,7 +459,7 @@ struct TerrainCellResult
 {
     unsigned index;
     SoftwareTerrainCache::Tile input;
-    std::span<Uint32> pixels;
+    Uint8 *pixels = nullptr;
     std::optional<TerrainVisual::Compositor::CellMask> mask;
     const TerrainVisual::Compositor::CellMask *reused = nullptr;
     bool opaque = false, empty = false, keepMask = false;
@@ -490,7 +490,7 @@ std::pair<bool, bool> classifyAlpha(const SDL_Surface &surface, SDL_Rect rect)
 }
 void buildTerrainJob(std::span<TerrainCellResult> results,
                      const TerrainVisual::Compositor::CpuMaterials &materials, int samplingScale,
-                     std::size_t cellsPerJob, std::size_t job)
+                     int pitch, std::size_t cellsPerJob, std::size_t job)
 {
     TerrainVisual::Compositor::CpuScratch scratch;
     for (std::size_t k = job * cellsPerJob; k < results.size() && k < (job + 1) * cellsPerJob; ++k)
@@ -499,8 +499,8 @@ void buildTerrainJob(std::span<TerrainCellResult> results,
         SDL_Surface output{};
         output.format = SDL_PIXELFORMAT_ARGB8888;
         output.w = output.h = 32 * samplingScale;
-        output.pitch = output.w * 4;
-        output.pixels = result.pixels.data();
+        output.pitch = pitch;
+        output.pixels = result.pixels;
         if (result.input.discovered)
         {
             if (!result.reused && result.keepMask)
@@ -509,9 +509,18 @@ void buildTerrainJob(std::span<TerrainCellResult> results,
                               result.reused ? result.reused
                               : result.mask ? &*result.mask
                                             : nullptr);
+            std::tie(result.opaque, result.empty) =
+                classifyAlpha(output, {0, 0, output.w, output.h});
         }
-        std::tie(result.opaque, result.empty) =
-            classifyAlpha(output, {0, 0, output.w, output.h});
+        else
+        {
+            // Hidden cells formerly received the slab's zero initialization.
+            // Write their complete unpublished rectangle without touching SDL state.
+            for (int y = 0; y < output.h; ++y)
+                std::fill_n(reinterpret_cast<Uint32 *>(result.pixels + y * pitch), output.w, 0);
+            result.opaque = false;
+            result.empty = true;
+        }
     }
 }
 } // namespace
@@ -578,7 +587,7 @@ bool SoftwareTerrainCache::tryBuildCpuPage(Chunk &page,
     if (neededMaterials.empty()) return false;
     const std::size_t materialBytes = compositor.cpuMaterialBytes(neededMaterials);
     const std::size_t perCell =
-        cellPixels * (4 + sizeof(TerrainVisual::Compositor::CellMask::Sample)) +
+        cellPixels * sizeof(TerrainVisual::Compositor::CellMask::Sample) +
         sizeof(TerrainVisual::Compositor::CellMask) + sizeof(Tile) + 256;
     const std::size_t allowance = bytes() <= budget ? std::min({inFlightLimit, budget - bytes(), GAGCore::RenderWorkReservation::available()}) : 0;
     const std::size_t fixed = materialBytes * 2 + perCell * 2;
@@ -595,6 +604,17 @@ bool SoftwareTerrainCache::tryBuildCpuPage(Chunk &page,
         materials = compositor.cpuMaterials(neededMaterials);
     }
     cpuMaterialLease = materials;
+    // The page is unpublished for the whole rebuild. Lock on the owner once;
+    // workers receive only disjoint raw cell rectangles and the stable pitch.
+    // A failure may leave partial pixels, but the caller keeps the page invalid.
+    if (!SDL_LockSurface(target)) throw std::runtime_error(SDL_GetError());
+    struct Unlock
+    {
+        SDL_Surface *surface;
+        ~Unlock() { SDL_UnlockSurface(surface); }
+    } unlock{target};
+    auto *pixels = static_cast<Uint8 *>(target->pixels);
+    const int pitch = target->pitch, n = 32 * resolution;
     // Planning is owner-only. Masks cannot be evicted or
     // replaced until the synchronous group finishes.
     for (std::size_t first = 0; first < changed.size(); first += groupCells)
@@ -602,16 +622,13 @@ bool SoftwareTerrainCache::tryBuildCpuPage(Chunk &page,
         std::vector<TerrainCellResult> results;
         const auto count = std::min(groupCells, changed.size() - first);
         results.reserve(count);
-        // One owner allocation, disjoint worker spans. Storage outlives the
-        // synchronous join and canonical installation of every cell in the group.
-        std::vector<Uint32> pixels(count * cellPixels);
         for (std::size_t k = first; k < changed.size() && k < first + groupCells; ++k)
         {
             const unsigned i = changed[k];
             TerrainCellResult result{};
             result.index = i;
             result.input = tiles[i];
-            result.pixels = std::span(pixels).subspan((k - first) * cellPixels, cellPixels);
+            result.pixels = pixels + (i / ChunkTiles) * n * pitch + (i % ChunkTiles) * n * 4;
             const auto &recipe = tiles[i].recipe;
             const auto &held = page.masks[i];
             if (tiles[i].discovered && held && held->mask.recipe == recipe &&
@@ -630,8 +647,8 @@ bool SoftwareTerrainCache::tryBuildCpuPage(Chunk &page,
             PERF_SCOPE_TIME(TerrainBatch);
             GAGCore::executePresentationJobs(
                 (results.size() + cellsPerJob - 1) / cellsPerJob,
-                [&results, materials, samplingScale = resolution, cellsPerJob](std::size_t job)
-                { buildTerrainJob(results, *materials, samplingScale, cellsPerJob, job); });
+                [&results, materials, samplingScale = resolution, pitch, cellsPerJob](std::size_t job)
+                { buildTerrainJob(results, *materials, samplingScale, pitch, cellsPerJob, job); });
         }
         ++workMetrics.batches;
         workMetrics.jobs += (results.size() + cellsPerJob - 1) / cellsPerJob;
@@ -640,17 +657,11 @@ bool SoftwareTerrainCache::tryBuildCpuPage(Chunk &page,
                                    std::chrono::steady_clock::now() - started)
                                    .count();
         workMetrics.peakReservedBytes = std::max(workMetrics.peakReservedBytes, reserve);
-        // Canonical installation starts only after all jobs
-        // returned. No worker owns drawable or mask accounting.
+        // Pixel writes have joined before owner-only mask/opacity accounting.
+        // No worker publishes drawable state or retained mask ownership.
         PERF_SCOPE_TIME(TerrainInstall);
         for (auto &result : results)
         {
-            const int n = 32 * resolution;
-            const int x = result.index % ChunkTiles, y = result.index / ChunkTiles;
-            for (int row = 0; row < n; ++row)
-                std::memcpy(static_cast<Uint8 *>(target->pixels) + (y * n + row) * target->pitch +
-                                x * n * 4,
-                            result.pixels.data() + row * n, n * 4);
             auto &held = page.masks[result.index];
             if (held && !result.reused)
                 held.reset();

@@ -261,7 +261,7 @@ namespace GAGCore
                 {
                     auto *pixels = surface->getSDLSurface();
                     const SDL_Rect source{0, 0, pixels->w, pixels->h};
-                    const bool drawn = renderer->blitPixels(pixels, source, destination, alpha);
+                    const bool drawn = renderer->blitPixels(surface, pixels, surface->contentRevision(), source, destination, alpha);
                     assert(drawn);
                     (void)drawn;
                 }
