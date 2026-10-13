@@ -120,7 +120,8 @@ share one incremental snapshot-backed air field within a building refresh.
 An optional pure-planner measurement control for ground fetch jobs with an existing
 resource plane uses a bounded heap and the
 exact lower bound `2 * resourceDistance` on the trip score. It is disabled by
-default because maintaining the heaps can cost more than the queries avoided. A building-distance
+default because maintaining the heaps can cost more than the queries avoided. Scheduled jobs use this same default rather than
+overriding it when constructing planner options. A building-distance
 query is skipped only when that lower bound cannot enter any requested pool,
 including level and identity ties. This preserves the same canonical shortlist
 as exhaustive evaluation; it is not approximate distance ranking.

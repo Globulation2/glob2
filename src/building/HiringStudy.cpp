@@ -239,7 +239,7 @@ void observe(const Game& game,const SimulationSnapshot::Handle& world,bool pause
         {
             if(!inputs){const auto start=std::chrono::steady_clock::now();inputs=HiringPlanner::capture(game,world);
                 session->supplementNs+=std::chrono::duration_cast<std::chrono::nanoseconds>(std::chrono::steady_clock::now()-start).count();}
-            auto work=std::make_unique<Work>();work->inputs=*inputs;work->cache=session->caches[team].get();work->team=team;work->capacity=config.capacity;work->split=config.split;work->options={config.extras,config.availableOnly,true,true,config.coordinate};
+            auto work=std::make_unique<Work>();work->inputs=*inputs;work->cache=session->caches[team].get();work->team=team;work->capacity=config.capacity;work->split=config.split;work->options={.extras=config.extras,.availableOnly=config.availableOnly,.coordinate=config.coordinate};
             std::erase_if(work->inputs.routes,[&](const auto& r){return Building::GIDtoTeam(r.building.gid)!=team;});
             std::erase_if(work->inputs.supplies,[&](const auto& s){return Building::GIDtoTeam(s.building.gid)!=team;});
             work->inputs.routeBytes=0;for(const auto& route:work->inputs.routes)work->inputs.routeBytes+=route.bytes;
