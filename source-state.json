@@ -1,0 +1,19 @@
+{
+  "final_source": "523bac7c7874dd0e6c4b9667d7428342a5444bcd",
+  "base": "277510840054b1416f2defd7d86fe1431dd0ddc0",
+  "isolated_before": "3a3917757752fe64a2af9c1dc964c074794ebf3e",
+  "isolated_after": "5a40f7a9f281cd1aa71c6980573cee3f6f35a36f",
+  "platform": "Linux-7.0.0-31-generic-x86_64-with-glibc2.43",
+  "compiler": "g++ (Ubuntu 15.2.0-16ubuntu1) 15.2.0",
+  "valgrind": "valgrind-3.26.0",
+  "build_flags": {
+    "dev": "tools/dev_build.py -O0 -g1",
+    "release": "scons release=1 -O3 -s"
+  },
+  "sizes": {
+    "UnitCoreState": 132,
+    "UnitCoreView": 160,
+    "UnitDetailState": 216,
+    "UnitState": 352
+  }
+}
