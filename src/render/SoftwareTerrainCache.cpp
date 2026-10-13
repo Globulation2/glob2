@@ -544,7 +544,7 @@ bool SoftwareTerrainCache::tryBuildCpuPage(Chunk &page,
                                         bool wasValid, std::size_t budget)
 {
     if (downsample != 1 || resolution > 4 ||
-        GAGCore::renderExecution() == GAGCore::RenderExecution::Auto ||
+        GAGCore::renderExecution() == GAGCore::RenderExecution::Immediate ||
         !GAGCore::PresentationWork::current) return false;
     const auto materialChanged = [&](TerrainVisual::MaterialId id)
     {
@@ -678,7 +678,7 @@ bool SoftwareTerrainCache::prepareAtResolution(const SceneMap &map, GAGCore::Spr
         assets = map.frozenAssetBundle();
 	}
 
-    if (GAGCore::renderExecution() == GAGCore::RenderExecution::Auto)
+    if (GAGCore::renderExecution() == GAGCore::RenderExecution::Immediate)
     {
         cpuMaterialLease.reset();
     }

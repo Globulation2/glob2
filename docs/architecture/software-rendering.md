@@ -104,9 +104,13 @@ See [software renderer benchmarks](../development/software-rendering-benchmarks.
 
 `GLOB2_RENDER_EXECUTION=parallel` enables experimental CPU terrain groups and software
 raster tiles on native hosts. `serial` traverses the same CPU kernels on the graphics
-owner. The default `auto` retains immediate serial drawing and terrain preparation,
-using the shared composition and regional pixel kernels; it does not enable concurrency
-or recording until representative release measurements justify selection thresholds.
+owner. The default `immediate` uses direct serial drawing and terrain preparation,
+without command recording or packed terrain jobs. These are two execution paths:
+immediate drawing, and batching with either serial or parallel job execution. Both
+share composition and regional pixel kernels, so shared kernel improvements also
+benefit immediate drawing. There is no automatic selection policy. The former `auto`
+spelling remains an alias for `immediate` for existing launch scripts. CPU execution
+selection is independent of renderer backend selection (`--renderer`).
 These are development overrides, not gameplay settings; set them before launch. The
 recorder reads execution mode when its backend is created. `GLOB2_RENDER_WORKERS=N`
 accepts 1–64 and caps admitted scene/graphics concurrency at the smaller of the
