@@ -33,7 +33,7 @@ struct BuildingLists
     X(coordinationNs) X(coordinatedTeams) X(coordinationSkipped) X(distanceBoundSkips) X(distanceReuses) X(availableEvaluations) X(busyEvaluations) X(jobsSkippedNoQuota) \
     X(sharedQueries) X(sharedExpansions) X(sharedWaitNs) X(sharedQueryNs) X(missingBuildingFields) \
     X(buildingsExamined) X(buildingsNeedingHiring) X(buildingsSkippedNoDemand) \
-    X(setupNs) X(geographyNs) X(precheckNs) X(evaluationNs) X(sortOutputNs) \
+    X(preparationNs) X(setupNs) X(geographyNs) X(precheckNs) X(evaluationNs) X(sortOutputNs) \
     X(seedNs) X(propagationNs) X(fieldHits) X(fieldMisses) X(fieldCells) \
     X(terrainChanges) X(buildingOccupancyChanges) X(immobileChanges) X(forbiddenChanges) X(resourceBlockingChanges) \
     X(evictions) X(geographyChanges) X(refreshes) X(jobs) X(skippedJobs) \
@@ -52,6 +52,7 @@ struct Metrics
 struct Output
 {
     unsigned tick = 0, team = 0;
+    bool observedMaterialDemand = false;
     Metrics metrics;
     std::uint64_t ns = 0, candidateVisits = 0, retainedBytes = 0;
     std::vector<BuildingLists> buildings;
@@ -60,18 +61,21 @@ struct Inputs
 {
     SimulationSnapshot::Handle world;
     struct Route { BuildingRef building; int slot; std::shared_ptr<SharedBuildingGradient> field; std::uint64_t bytes; };
-    struct Supply { BuildingRef building; std::array<unsigned, MaterialCount> modes{};
-        std::array<bool, MaterialCount> consumerSpecific{};
-        std::array<unsigned, MaterialCount> vacancies{}; unsigned seats=0, visitRank=0; };
-    std::vector<Supply> supplies;
-    std::vector<Route> routes;
-    std::uint64_t routeBytes = 0;
-    // Derived attack includes experience, rules and auras. Captured once on
-    // the owner, not recomputed by a worker through a live unit pointer.
-    std::vector<std::pair<UnitRef, int>> attack;
+    // One immutable table per boundary, shared by every admitted team job.
+    std::shared_ptr<const std::vector<Route>> routes;
+    std::uint64_t routeBytes = 0, routeAllocations = 0;
+    // Scalar upper bounds accumulated during the required generation lease walk.
+    std::array<unsigned, 32> teamBuildings{};
+
 };
 Inputs capture(const Game&, SimulationSnapshot::Handle);
-struct Options { int extras=-1; bool availableOnly=false, reuseDistances=true, pruneFetch=false, coordinate=false; };
+struct Supply {
+    BuildingRef building; std::array<unsigned, MaterialCount> modes{}, vacancies{};
+    std::array<bool, MaterialCount> consumerSpecific{}; unsigned seats=0, visitRank=0; bool materialDemand=false;
+};
+// Worker-only derived bookkeeping, no live entities or copied world records.
+std::vector<Supply> prepare(const Inputs&, unsigned team);
+struct Options { int extras=-1; bool availableOnly=false, reuseDistances=true, pruneFetch=false, coordinate=false, materialOnly=false; };
 class Cache
 {
     struct Impl;

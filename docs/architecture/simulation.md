@@ -316,8 +316,14 @@ For timing and scheduling, start with `src/game/Game_sync.cpp` and `src/engine/E
   the game's tick counter.
 - Optional headless hiring-shadow diagnostics add hiring records to that same
   completed-boundary requirement union. Their planner reads immutable snapshot
-  values and private route fields on the owner or shared pool, retains identity-based suggestions,
-  and observes reference hiring without changing assignments. This diagnostic
+  values on the owner or shared pool, retains identity-based suggestions,
+  and observes reference hiring without changing assignments. Team jobs share the
+  completed-world lease and one immutable building-route handle table. Vacancy
+  calculations, material apportionment, supplier modes and visit ordering run on
+  the team lane; workers borrow existing building-field generations under their
+  established lock and retirement rules. Snapshot entities retain sparse raw
+  construction funding/reservation facts and the frozen unit attack modifier;
+  no per-team copy of world records is constructed. This diagnostic
   state does not enter simulation checksums or saves; it is not a live hiring
   pipeline. See [the measurement contract](../development/performance-telemetry.md#cost-and-sampling).
 - Gradient selection, round-robin flags, invalidation and publication stay on the

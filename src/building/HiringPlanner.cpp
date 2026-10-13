@@ -202,56 +202,85 @@ Inputs capture(const Game& game,SimulationSnapshot::Handle world)
 {
     if(world.tick!=game.stepCounter) throw std::logic_error("Hiring input boundary mismatch");
     Inputs inputs;inputs.world=std::move(world);
-    std::array<unsigned,Team::MAX_COUNT> classes{};
-    for(const auto& u:inputs.world.entities->units)if(!u.isDead && !u.performance[FLY])classes[u.team]|=1u<<swimClass(u);
-    std::array<bool,Team::MAX_COUNT> defense{};
+    auto routes=std::make_shared<std::vector<Inputs::Route>>();
     for(const auto& b:inputs.world.entities->buildings) {
         if(!needsCandidates(b))continue;
-        defense[b.team]|=inputs.world.catalogs->buildings->at(b.typeNum).resolvedType.attractsRole(2);
+        ++inputs.teamBuildings[b.team];
         auto* live=const_cast<Game&>(game).resolveBuilding(b.identity);
         if(!live)throw std::logic_error("Hiring capture lost building incarnation");
-        Inputs::Supply supply; supply.building=b.identity;
-        supply.seats=unsigned(b.desiredMaxUnitWorking)-b.working.count;
-        for(unsigned material=0;material<MaterialCount;++material) {
-            const int multiplier=live->type->materialMultiplier[material];
-            const int target=(live->materialDeliveryTarget(material)+multiplier-1)/multiplier;
-            const int missing=live->materialDeliveryNeed(material);
-            int served=target-(missing+multiplier-1)/multiplier;
-            for(const auto* u:live->unitsWorking)served+=u->destinationPurpose==int(material);
-            if(missing>0 && served<target)supply.vacancies[material]=std::min(supply.seats,unsigned(target-served));
-            const auto modes=supply.vacancies[material]?game.map.materialSupplyModesSlot(live,material):0;
-            supply.modes[material]=modes;
-            const auto supplied=((modes&1)?live->runtime->suppliesStockMask:0)|((modes&2)?live->runtime->suppliesDirectStockMask:0);
-            supply.consumerSpecific[material]=live->runtime->has(BuildingRuntimeTraits::SharedStock)||(supplied&(1u<<material));
-        }
-        inputs.supplies.push_back(supply);
-        for(int slot=0;slot<BUILDING_GRADIENT_COUNT;++slot)if(classes[b.team]&(1u<<(slot%SWIM_CLASS_COUNT)))if(auto field=live->leaseGradient(slot)) {
+        // Only lease existing generations. Workers choose movement classes.
+        for(int slot=0;slot<BUILDING_GRADIENT_COUNT;++slot)if(auto field=live->leaseGradient(slot)) {
             auto guard=SharedBuildingGradient::lock(field);
-            // Existing engine storage is leased, not duplicated. Account its
-            // current capacity; retired generations are measured separately.
             auto bytes=std::size_t(field->width)*field->height*sizeof(Uint16)+sizeof(SharedBuildingGradient);
             if(field->search)bytes+=field->search->retainedBytes();
-            inputs.routeBytes+=bytes;
-            inputs.routes.push_back({b.identity,slot,std::move(field),bytes});
+            inputs.routeBytes+=bytes;inputs.routeAllocations+=routes->size()==routes->capacity();routes->push_back({b.identity,slot,std::move(field),bytes});
         }
     }
-    for(const auto& unit:inputs.world.entities->units) {
-        if(!defense[unit.team] || unit.isDead)continue;
-        const auto* live=game.resolveUnit(unit.identity);
-        if(!live) throw std::logic_error("Hiring capture lost unit incarnation");
-        inputs.attack.emplace_back(unit.identity,live->getRealAttackStrength());
-    }
-    // Freeze the owner's priority order without changing any live buckets.
-    for(int team=0;team<game.teamsCount();++team) {
-        std::vector<Building*> ordered;
-        for(const auto& supply:inputs.supplies)if(Building::GIDtoTeam(supply.building.gid)==team)
-            ordered.push_back(const_cast<Game&>(game).resolveBuilding(supply.building));
-        std::sort(ordered.begin(),ordered.end(),Team::buildingHasHigherPriority);
-        for(unsigned rank=0;rank<ordered.size();++rank)for(auto& supply:inputs.supplies)
-            if(supply.building==Game::refOf(ordered[rank]))supply.visitRank=rank;
-    }
+    inputs.routes=std::move(routes);
     return inputs;
 }
+std::vector<Supply> prepare(const Inputs& inputs,unsigned team)
+{
+    const World world(inputs.world);
+    unsigned stock=0,direct=0,extraDirect=0;bool hasStock=false,hasDirect=false;
+    for(const auto& kind:*world.catalog) {
+        const auto& t=kind.resolvedType;
+        stock|=t.runtimeSuppliesStockMask;direct|=t.runtimeSuppliesDirectStockMask;
+        extraDirect|=t.runtimeSuppliesDirectStockMask&~t.runtimeSuppliesStockMask;
+    }
+    for(const auto* b:world.buildingSlots(team))if(b && b->buildingState==B::ALIVE) {
+        const auto& t=world.catalog->at(b->typeNum).resolvedType;
+        hasStock|=t.runtimeSuppliesStock;hasDirect|=t.runtimeSuppliesDirectStock;
+    }
+    std::vector<Supply> supplies;
+    std::vector<const B*> ordered;
+    for(const auto* b:world.buildingSlots(team))if(b && needsCandidates(*b)) {
+        const auto& type=world.catalog->at(b->typeNum).resolvedType;
+        Supply supply; supply.building=b->identity;
+        supply.seats=unsigned(b->desiredMaxUnitWorking)-b->working.count;
+        const auto resources=world.buildingResources(*b);
+        static const SimulationSnapshot::FundingState unfunded{};
+        const auto& funding=b->fundingOffset==SimulationSnapshot::Entities::NoRecord?unfunded:inputs.world.entities->funding.at(b->fundingOffset);
+        for(unsigned material=0;material<MaterialCount;++material) {
+            const unsigned bit=1u<<material;
+            const bool construction=type.isBuildingSite && (funding.constructionBudget[material] || type.semantics.constructionCost[material]);
+            // Replenishment is a catalog capability; use the same compiled traits.
+            const bool replenish=type.semantics.replenishMaterialMask&bit;
+            const int deliveryTarget=construction?funding.constructionBudget[material]:replenish?type.maxMaterial[material]:0;
+            const int reserved=type.useTeamMaterials?world.teams[team].reservedMaterials[material]:funding.reservedMaterials[material];
+            const int uncommitted=b->constructionResultState==B::REPAIR?0:std::max(0,resources[material]-reserved);
+            const int missing=construction?std::max(0,std::max(0,funding.constructionBudget[material]-funding.constructionReserved[material])-uncommitted):replenish?std::max(0,type.maxMaterial[material]-resources[material]):0;
+            supply.materialDemand|=missing>0;
+            const int multiplier=type.materialMultiplier[material];
+            const int target=(deliveryTarget+multiplier-1)/multiplier;
+            int served=target-(missing+multiplier-1)/multiplier;
+            for(const auto ref:world.workers(*b)) {
+                const auto* u=world.unit(ref);
+                if(!u)throw std::logic_error("Hiring observed relationship lost unit");
+                served+=u->destinationPurpose==int(material);
+            }
+            if(missing>0 && served<target)supply.vacancies[material]=std::min(supply.seats,unsigned(target-served));
+            unsigned modes=supply.vacancies[material]?((type.runtimeFetchesStockMask&stock&bit)&&hasStock?1u:0u)|((type.runtimeFetchesDirectStockMask&direct&bit)&&hasDirect?2u:0u):0;
+            if(modes==3 && !(extraDirect&bit))modes=1;
+            supply.modes[material]=modes;
+            const auto supplied=((modes&1)?type.runtimeSuppliesStockMask:0)|((modes&2)?type.runtimeSuppliesDirectStockMask:0);
+            supply.consumerSpecific[material]=type.useTeamMaterials||(supplied&bit);
+        }
+        supplies.push_back(supply);ordered.push_back(b);
+    }
+    std::sort(ordered.begin(),ordered.end(),[&](const B* a,const B* b) {
+        if(a->priority!=b->priority)return a->priority>b->priority;
+        const auto& at=world.catalog->at(a->typeNum).resolvedType;const auto& bt=world.catalog->at(b->typeNum).resolvedType;
+        if(at.semantics.workPriorityBias!=bt.semantics.workPriorityBias)return at.semantics.workPriorityBias>bt.semantics.workPriorityBias;
+        const int ar=(a->maxUnitWorking-int(a->working.count))*int(b->working.count),br=(b->maxUnitWorking-int(b->working.count))*int(a->working.count);
+        if(ar!=br)return ar>br;
+        int aw=0,bw=0;for(unsigned m=0;m<MaterialSlotCount;++m){aw+=a->wishedMaterials[m];bw+=b->wishedMaterials[m];}
+        return aw!=bw?aw>bw:a->gid<b->gid;
+    });
+    for(unsigned rank=0;rank<ordered.size();++rank)for(auto& supply:supplies)if(supply.building==ordered[rank]->identity)supply.visitRank=rank;
+    return supplies;
+}
+
 namespace {
 // Ordering direction is constant for a job. Keep the small comparison inline
 // in partition/sort instead of passing the job through every comparison.
@@ -296,8 +325,12 @@ Output Cache::rank(const Inputs& input,unsigned team,unsigned capacity,Pools poo
     const auto start=std::chrono::steady_clock::now();World world(input.world);
     if(team>=world.teams.size()) throw std::invalid_argument("Hiring team outside snapshot");
     Output output;output.tick=world.tick;output.team=team;
+    const auto prepareStart=Clock::now();const auto supplies=prepare(input,team);
+    output.metrics.preparationNs+=elapsed(prepareStart);
+    output.observedMaterialDemand=std::any_of(supplies.begin(),supplies.end(),[](const auto& s){return s.materialDemand;});
+    if(options.materialOnly && !output.observedMaterialDemand){output.metrics.refreshes=1;return output;}
     unsigned teamSeats=0;bool canCoordinate=options.coordinate;
-    for(const auto& supply:input.supplies)if(Building::GIDtoTeam(supply.building.gid)==team) {
+    for(const auto& supply:supplies)if(Building::GIDtoTeam(supply.building.gid)==team) {
         teamSeats+=supply.seats;
         const auto* b=world.buildingAtSlot(supply.building.gid);
         if((b&&(world.catalog->at(b->typeNum).resolvedType.attractsRole(0)||world.catalog->at(b->typeNum).resolvedType.attractsRole(1)||world.catalog->at(b->typeNum).resolvedType.attractsRole(2))))canCoordinate=false;
@@ -328,9 +361,6 @@ Output Cache::rank(const Inputs& input,unsigned team,unsigned capacity,Pools poo
         impl->previousParts=parts;impl->previousGeo=geo;impl->hasPreviousGeo=true;
         return geo;
     };
-    const auto attackStart=Clock::now();
-    std::map<std::pair<Uint16,Uint32>,int> attack;for(const auto& [unit,strength]:input.attack)attack[{unit.gid,unit.generation}]=strength;
-    output.metrics.setupNs+=elapsed(attackStart);
     // Qualification/cargo indexes are immutable and shared across this team's
     // building refreshes. Keep original slot order for deterministic traversal.
     std::vector<const U*> transport;std::array<std::vector<const U*>,3> roles;
@@ -355,8 +385,8 @@ Output Cache::rank(const Inputs& input,unsigned team,unsigned capacity,Pools poo
         if(!needsCandidates(*building)){++output.metrics.buildingsSkippedNoDemand;continue;}
         ++output.metrics.buildingsNeedingHiring;
         const auto& b=*building;const auto& type=world.catalog->at(b.typeNum).resolvedType;
-        const auto supply=std::find_if(input.supplies.begin(),input.supplies.end(),[&](const auto& value){return value.building==b.identity;});
-        if(supply==input.supplies.end())throw std::logic_error("Hiring input missing supplier modes");
+        const auto supply=std::find_if(supplies.begin(),supplies.end(),[&](const auto& value){return value.building==b.identity;});
+        if(supply==supplies.end())throw std::logic_error("Hiring input missing supplier modes");
         BuildingLists result{b.identity,b.typeNum,configuration(b),{}};
         std::vector<Key> jobs;
         for(unsigned r=0;r<MaterialCount;++r) if(type.maxMaterial[r]>0 || b.wishedMaterials[r]>0) {
@@ -404,7 +434,7 @@ Output Cache::rank(const Inputs& input,unsigned team,unsigned capacity,Pools poo
                 key.job==Job::Clear?BuildingRoute::Clearing:key.job==Job::Defend?BuildingRoute::Combat:BuildingRoute::Footprint;
             // Explore attraction follows the building's automatic route.
             const auto resolvedRoute=key.job==Job::Explore?BuildingRoute::Footprint:route;
-            for(const auto& captured:input.routes)if(captured.building==b.identity && captured.slot/SWIM_CLASS_COUNT==int(resolvedRoute))
+            for(const auto& captured:*input.routes)if(captured.building==b.identity && captured.slot/SWIM_CLASS_COUNT==int(resolvedRoute))
                 buildings[captured.slot%SWIM_CLASS_COUNT]=captured.field;
             impl->protectedAfter=impl->clock;
             const unsigned vacancies=key.material>=0?supply->vacancies[key.material]:supply->seats;
@@ -528,7 +558,7 @@ Output Cache::rank(const Inputs& input,unsigned team,unsigned capacity,Pools poo
                     std::int64_t time=u.hungriness>0?(std::int64_t(u.hungry)-(role==0?u.trigHungry:0))/u.hungriness:INT_MAX;
                     std::int64_t hp=std::int64_t(u.hp)*16/std::max(1,traits.flagRankingHealth);
                     if(role==1){time=std::clamp<std::int64_t>(time,-1000000000,1000000000);time*=time;hp=std::clamp<std::int64_t>(hp,-1000000000,1000000000);hp*=hp;distance=u.performance[FLY]&&!world.airTerrainConstraints?world.distanceSquared(u.posX,u.posY,b.posX,b.posY):int(std::min<std::int64_t>(INT_MAX,std::int64_t(distance)*distance));}
-                    candidate.level=role==0?u.constructionLevel:role==1?u.level[MAGIC_ATTACK_GROUND]:std::int64_t(u.performance[ATTACK_SPEED])*attack[{u.identity.gid,u.identity.generation}];
+                    candidate.level=role==0?u.constructionLevel:role==1?u.level[MAGIC_ATTACK_GROUND]:std::int64_t(u.performance[ATTACK_SPEED])*BuildingAreaEffects::scale(int(std::clamp<Sint64>((Sint64(u.performance[ATTACK_STRENGTH])+u.experienceLevel)*world.configuration->getGlassCannonScale(),0,INT_MAX)),u.attackFactor);
                     candidate.value=distance-(role==0?1:2)*(time+hp);
                 }
                 if(key.job==Job::Fetch && options.pruneFetch) {
@@ -559,7 +589,7 @@ Output Cache::rank(const Inputs& input,unsigned team,unsigned capacity,Pools poo
         ++output.metrics.coordinationSkipped;
         output.retainedBytes=0;
         for(auto& building:output.buildings) {
-            const auto& need=*std::find_if(input.supplies.begin(),input.supplies.end(),[&](const auto& x){return x.building==building.building;});
+            const auto& need=*std::find_if(supplies.begin(),supplies.end(),[&](const auto& x){return x.building==building.building;});
             for(auto& list:building.jobs) {
                 const auto n=std::min(capacity,(list.key.material>=0?need.vacancies[list.key.material]:need.seats)+unsigned(options.extras));
                 if(list.combined.size()>n)std::vector<Candidate>(list.combined.begin(),list.combined.begin()+n).swap(list.combined);
@@ -571,10 +601,10 @@ Output Cache::rank(const Inputs& input,unsigned team,unsigned capacity,Pools poo
         const auto coordinationStart=Clock::now();
         ++output.metrics.coordinatedTeams;
         std::vector<unsigned> order;
-        std::vector<const Inputs::Supply*> needs;
+        std::vector<const Supply*> needs;
         for(unsigned i=0;i<output.buildings.size();++i) {
             const auto id=output.buildings[i].building;
-            needs.push_back(&*std::find_if(input.supplies.begin(),input.supplies.end(),[&](const auto& x){return x.building==id;}));
+            needs.push_back(&*std::find_if(supplies.begin(),supplies.end(),[&](const auto& x){return x.building==id;}));
             order.push_back(i);
         }
         std::sort(order.begin(),order.end(),[&](unsigned a,unsigned b){return needs[a]->visitRank<needs[b]->visitRank;});

@@ -11,6 +11,50 @@
 
 TEST_SUITE("HiringPlanner")
 {
+TEST_CASE("worker demand uses immutable shared funding and staffing facts")
+{
+    glob2test::HeadlessGlobals globals;
+    glob2test::HeadlessGame world({.discovered=true,.loadDefaultRace=true});
+    auto* inn=world.addBuilding("inn",8,8);auto* unit=world.addUnit(WORKER,12,12);
+    REQUIRE(inn);REQUIRE(unit);inn->desiredMaxUnitWorking=2;
+    inn->unitsWorking.push_back(unit);unit->destinationPurpose=WHEAT;
+    const auto observed=world.game.captureReadBoundary({},true,SimulationSnapshot::Simulation);
+    const auto inputs=HiringPlanner::capture(world.game,observed);
+    const auto before=HiringPlanner::prepare(inputs,0);REQUIRE(before.size()==1);
+    CHECK(before.front().seats==1);
+    // Demand is frozen even if owner staffing and stock subsequently change.
+    inn->desiredMaxUnitWorking=0;inn->unitsWorking.clear();inn->materials[WHEAT]=100;
+    const auto after=HiringPlanner::prepare(inputs,0);REQUIRE(after.size()==1);
+    CHECK(after.front().seats==before.front().seats);CHECK(after.front().vacancies==before.front().vacancies);
+    CHECK(after.front().modes==before.front().modes);
+    const auto shared=inputs;CHECK(shared.world.entities.get()==inputs.world.entities.get());
+    CHECK(shared.routes.get()==inputs.routes.get());
+}
+TEST_CASE("observed funding reproduces live material apportionment")
+{
+    glob2test::HeadlessGlobals globals;
+    glob2test::HeadlessGame world({.discovered=true,.loadDefaultRace=true});
+    auto* inn=world.addBuilding("inn",8,8);auto* unit=world.addUnit(WORKER,12,12);
+    REQUIRE(inn);REQUIRE(unit);inn->desiredMaxUnitWorking=3;
+    inn->unitsWorking.push_back(unit);unit->destinationPurpose=WHEAT;
+    for(const int stock:{0,1,5,20}) {
+        inn->materials[WHEAT]=stock;inn->reservedMaterials[WHEAT]=1;
+        world.game.snapshotStore().invalidateBoundary();
+        const auto snapshot=world.game.captureReadBoundary({},true,SimulationSnapshot::Simulation);
+        auto input=HiringPlanner::capture(world.game,snapshot);const auto supplies=HiringPlanner::prepare(input,0);
+        REQUIRE(supplies.size()==1);
+        const auto& supply=supplies.front();
+        for(unsigned m=0;m<MaterialCount;++m) {
+            const int mult=inn->type->materialMultiplier[m],target=(inn->materialDeliveryTarget(m)+mult-1)/mult,missing=inn->materialDeliveryNeed(m);
+            int served=target-(missing+mult-1)/mult;for(auto* u:inn->unitsWorking)served+=u->destinationPurpose==int(m);
+            const unsigned vacancies=missing>0&&served<target?std::min(supply.seats,unsigned(target-served)):0;
+            CHECK(supply.vacancies[m]==vacancies);
+            CHECK(supply.modes[m]==(vacancies?world.game.map.materialSupplyModesSlot(inn,m):0));
+        }
+        REQUIRE(snapshot.entities->funding.size()==1);
+        CHECK(snapshot.entities->funding.front().reservedMaterials[WHEAT]==1);
+    }
+}
 TEST_CASE("snapshot planning retains busy workers and never changes the game")
 {
     glob2test::HeadlessGlobals globals;
@@ -67,15 +111,15 @@ TEST_CASE("planning skips zero-demand and staffed buildings and resumes on vacan
     };
     inn->desiredMaxUnitWorking=0;
     auto [zeroInputs,zero]=plan();
-    CHECK(zeroInputs.routes.empty());CHECK(zeroInputs.supplies.empty());CHECK(zeroInputs.attack.empty());
+    CHECK(zeroInputs.routes->empty());CHECK(HiringPlanner::prepare(zeroInputs,0).empty());
     CHECK(zero.buildings.empty());CHECK(zero.candidateVisits==0);CHECK(zero.metrics.buildingsSkippedNoDemand==1);
     inn->desiredMaxUnitWorking=1;inn->unitsWorking.push_back(worker);
     auto [staffedInputs,staffed]=plan();
-    CHECK(staffedInputs.routes.empty());CHECK(staffed.buildings.empty());CHECK(staffed.candidateVisits==0);
+    CHECK(staffedInputs.routes->empty());CHECK(staffed.buildings.empty());CHECK(staffed.candidateVisits==0);
     inn->unitsWorking.clear();
     auto [vacancyInputs,vacancy]=plan();
     REQUIRE(vacancy.buildings.size()==1);CHECK(vacancy.candidateVisits>0);
-    CHECK_FALSE(vacancyInputs.routes.empty());CHECK(vacancyInputs.attack.empty());
+    CHECK_FALSE(vacancyInputs.routes->empty());
     CHECK(vacancy.metrics.buildingsNeedingHiring==1);
     inn->desiredMaxUnitWorking=0;
     auto [finishedInputs,finished]=plan();
@@ -238,8 +282,9 @@ TEST_CASE("fetch permission without suppliers reuses the existing natural plane"
     const auto checksum=world.checksum();
     auto snapshot=world.game.captureReadBoundary({},true,SimulationSnapshot::Simulation);
     auto inputs=HiringPlanner::capture(world.game,snapshot);
-    REQUIRE(inputs.supplies.size()==1);
-    CHECK(inputs.supplies.front().modes[WHEAT]==0);
+    const auto supplies=HiringPlanner::prepare(inputs,0);
+    REQUIRE(supplies.size()==1);
+    CHECK(supplies.front().modes[WHEAT]==0);
     CHECK((inn->runtime->fetchesDirectStockMask&(1u<<WHEAT))!=0);
     HiringPlanner::Cache cache;
     const auto output=cache.rank(inputs,0,8,HiringPlanner::Pools::Split);
@@ -265,8 +310,9 @@ TEST_CASE("private fetch fields include suppliers without natural material")
     auto snapshot=world.game.captureReadBoundary({},true,
         SimulationSnapshot::Simulation & ~SimulationSnapshot::bit(SimulationSnapshot::Component::Growth));
     auto inputs=HiringPlanner::capture(world.game,snapshot);
-    const auto supply=std::find_if(inputs.supplies.begin(),inputs.supplies.end(),[&](const auto& s){return s.building==Game::refOf(inn);});
-    REQUIRE(supply!=inputs.supplies.end());
+    const auto supplies=HiringPlanner::prepare(inputs,0);
+    const auto supply=std::find_if(supplies.begin(),supplies.end(),[&](const auto& s){return s.building==Game::refOf(inn);});
+    REQUIRE(supply!=supplies.end());
     CHECK(supply->modes[CHERRY]==world.game.map.materialSupplyModesSlot(inn,CHERRY));
     CHECK(supply->modes[CHERRY]!=0);
     HiringPlanner::Cache cache;

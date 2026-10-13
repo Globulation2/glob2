@@ -8,6 +8,10 @@ namespace HiringStudy
 {
 // Shadow-only producer. It never reserves or assigns a live entity.
 bool enabled();
+struct CaptureMetrics { std::uint64_t ns=0, logicalBytes=0, fundingGrowths=0, observations=0; };
+CaptureMetrics captureMetrics();
+void resetCaptureMetrics();
+void recordCapture(std::uint64_t ns,std::uint64_t bytes,std::uint64_t growths);
 void configure(bool shadow);
 struct Schedule
 {

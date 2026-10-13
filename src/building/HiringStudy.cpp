@@ -41,7 +41,7 @@ struct Config
 };
 struct Work
 {
-    HiringPlanner::Inputs inputs;
+    std::shared_ptr<const HiringPlanner::Inputs> inputs;
     HiringPlanner::Cache* cache=nullptr;
     unsigned team=0,capacity=0,worker=0;
     bool split=true;
@@ -55,7 +55,8 @@ struct Work
         auto& work=*static_cast<Work*>(context);
         work.worker=unsigned(ComputeExecutor::workerSlot());
         try {
-            auto output=work.cache->rank(work.inputs,work.team,work.capacity,work.split?HiringPlanner::Pools::Split:HiringPlanner::Pools::Combined,work.options);
+            auto output=work.cache->rank(*work.inputs,work.team,work.capacity,work.split?HiringPlanner::Pools::Split:HiringPlanner::Pools::Combined,work.options);
+            if(output.retainedBytes>work.outputBound && work.outputBound)throw std::length_error("Hiring output exceeds reserved bound");
             work.output=std::make_shared<Output>(std::move(output));work.cacheBytes=work.cache->bytes();
         }
         catch(...) {work.error=std::current_exception();}
@@ -77,7 +78,8 @@ struct Session
     HiringPlanner::Metrics plannerMetrics;
     const std::uint64_t ownerWaitStart=SharedBuildingGradient::ownerWaitNs.load();
     const std::uint64_t ownerContentionStart=SharedBuildingGradient::ownerContentions.load();
-    std::uint64_t observations=0,planningNs=0,supplementNs=0,visits=0,peakBytes=0;
+    std::uint64_t observations=0,planningNs=0,supplementNs=0,preparationNs=0,submissionNs=0,publicationNs=0,visits=0,peakBytes=0;
+    std::uint64_t inputBytes=0,inputAllocations=0;
     std::array<std::unique_ptr<HiringPlanner::Cache>,Team::MAX_COUNT> caches;
     std::array<std::deque<std::shared_ptr<const Output>>,Team::MAX_COUNT> history;
     std::vector<Config> matrix;
@@ -111,12 +113,14 @@ struct Session
     {
         while(!pending.empty() && pending.front()->due<=tick)
         {
+            const auto publicationStart=std::chrono::steady_clock::now();
             auto& batch=*pending.front();const auto start=std::chrono::steady_clock::now();batch.join();
             waitNs+=std::chrono::duration_cast<std::chrono::nanoseconds>(std::chrono::steady_clock::now()-start).count();
             // Validate the entire generation before making any result visible.
             for(const auto& job:batch.jobs){if(job->error)std::rethrow_exception(job->error);if(!job->output)throw std::logic_error("Hiring batch lost its output");}
             for(auto& job:batch.jobs){ownerJobs+=job->worker==0;workerJobs+=job->worker!=0;retain(std::move(job->output));++publishedCount;}
             pending.pop_front();account();
+            publicationNs+=std::chrono::duration_cast<std::chrono::nanoseconds>(std::chrono::steady_clock::now()-publicationStart).count();
         }
     }
     void drain()
@@ -194,16 +198,20 @@ struct Session
         }
     }
 };
+thread_local CaptureMetrics capturedFacts;
 thread_local bool collectingStudy=false;
 thread_local std::optional<Schedule> selectedSchedule;
 thread_local std::unique_ptr<Session> session;
 void onOpportunity(const HiringDiagnostics::Opportunity& event,void* context)
 { static_cast<Session*>(context)->opportunity(event); }
 }
+CaptureMetrics captureMetrics(){return capturedFacts;}
+void resetCaptureMetrics(){capturedFacts={};}
+void recordCapture(std::uint64_t ns,std::uint64_t bytes,std::uint64_t growths){capturedFacts.ns+=ns;capturedFacts.logicalBytes+=bytes;capturedFacts.fundingGrowths+=growths;++capturedFacts.observations;}
 bool enabled(){return collectingStudy;}
 void configure(bool shadow)
 {
-    HiringDiagnostics::setObserver(nullptr,nullptr);session.reset();selectedSchedule.reset();collectingStudy=shadow;
+    resetCaptureMetrics();HiringDiagnostics::setObserver(nullptr,nullptr);session.reset();selectedSchedule.reset();collectingStudy=shadow;
 }
 void configureScheduled(Schedule selected)
 {
@@ -232,24 +240,21 @@ void observe(const Game& game,const SimulationSnapshot::Handle& world,bool pause
     if(session->schedule)
     {
         const auto& config=*session->schedule;
+        const auto preparationStart=std::chrono::steady_clock::now();
         auto batch=std::make_unique<Batch>();batch->tick=world.tick;batch->due=world.tick+config.delay;
-        std::optional<HiringPlanner::Inputs> inputs;
+        std::shared_ptr<const HiringPlanner::Inputs> inputs;
         std::vector<ComputeExecutor::Group> groups;
         for(int team=0;team<game.teamsCount();++team)if(world.tick%config.refresh==unsigned(team)%config.refresh)
         {
-            if(!inputs){const auto start=std::chrono::steady_clock::now();inputs=HiringPlanner::capture(game,world);
+            if(!inputs){const auto start=std::chrono::steady_clock::now();inputs=std::make_shared<HiringPlanner::Inputs>(HiringPlanner::capture(game,world));
+                session->inputBytes+=inputs->routes->capacity()*sizeof(HiringPlanner::Inputs::Route);
+                session->inputAllocations+=2+inputs->routeAllocations; // Shared objects and route vector capacity growth.
                 session->supplementNs+=std::chrono::duration_cast<std::chrono::nanoseconds>(std::chrono::steady_clock::now()-start).count();}
-            auto work=std::make_unique<Work>();work->inputs=*inputs;work->cache=session->caches[team].get();work->team=team;work->capacity=config.capacity;work->split=config.split;work->options={.extras=config.extras,.availableOnly=config.availableOnly,.coordinate=config.coordinate};
-            std::erase_if(work->inputs.routes,[&](const auto& r){return Building::GIDtoTeam(r.building.gid)!=team;});
-            std::erase_if(work->inputs.supplies,[&](const auto& s){return Building::GIDtoTeam(s.building.gid)!=team;});
-            work->inputs.routeBytes=0;for(const auto& route:work->inputs.routes)work->inputs.routeBytes+=route.bytes;
-            work->outputBound=sizeof(Output)+work->inputs.routeBytes+work->inputs.supplies.capacity()*sizeof(HiringPlanner::Inputs::Supply);
-            for(const auto& b:world.entities->buildings)if(b.team==team && HiringPlanner::needsCandidates(b)) {
-                const auto& type=world.catalogs->buildings->at(b.typeNum).resolvedType;
-                unsigned jobs=0;for(unsigned r=0;r<MaterialCount;++r)if(type.maxMaterial[r]>0 || b.wishedMaterials[r]>0)jobs+=2;
-                for(unsigned role=0;role<3;++role)jobs+=type.attractsRole(role);
-                work->outputBound+=2*sizeof(HiringPlanner::BuildingLists)+2*jobs*sizeof(HiringPlanner::List)+jobs*config.capacity*sizeof(HiringPlanner::Candidate);
-            }
+            auto work=std::make_unique<Work>();work->inputs=inputs;work->cache=session->caches[team].get();work->team=team;work->capacity=config.capacity;work->split=config.split;work->options={.extras=config.extras,.availableOnly=config.availableOnly,.coordinate=config.coordinate};
+            // Fixed bounded output reservation; observed demand bookkeeping runs
+            // on the lane. No world or supplier vectors are copied per team.
+            constexpr unsigned maxJobs=2*MaterialCount+3;
+            work->outputBound=sizeof(Output)+inputs->teamBuildings[team]*(2*sizeof(HiringPlanner::BuildingLists)+2*maxJobs*sizeof(HiringPlanner::List)+maxJobs*config.capacity*sizeof(HiringPlanner::Candidate));
             groups.push_back({1,{Work::run,work.get()},ComputeExecutor::HiringLaneBase+unsigned(team)});batch->jobs.push_back(std::move(work));
         }
         if(batch->jobs.empty())return;
@@ -257,20 +262,23 @@ void observe(const Game& game,const SimulationSnapshot::Handle& world,bool pause
         static_assert(SimulationSnapshot::BufferPool<int>::Limit>=ComputeExecutor::HiringHorizon+2);
         static_assert(ComputeExecutor::HiringLaneBase+Team::MAX_COUNT<=ComputeExecutor::Lanes);
         if(session->pending.size()>config.delay)throw std::logic_error("Hiring pending generations exceeded their horizon");
+        session->preparationNs+=std::chrono::duration_cast<std::chrono::nanoseconds>(std::chrono::steady_clock::now()-preparationStart).count();
+        const auto submissionStart=std::chrono::steady_clock::now();
         if(config.parallel){batch->executor=&const_cast<Game&>(game).map.computeExecutor();batch->ticket=batch->executor->submit(groups,ComputeExecutor::advanceDue(batch->due));}
         else for(auto& job:batch->jobs)Work::run(job.get(),0);
+        session->submissionNs+=std::chrono::duration_cast<std::chrono::nanoseconds>(std::chrono::steady_clock::now()-submissionStart).count();
         session->submitted+=batch->jobs.size();session->pending.push_back(std::move(batch));
         session->maxPending=std::max<std::uint64_t>(session->maxPending,session->pending.size());++session->observations;session->account();
         if(!config.delay)session->joinDue(world.tick);
         return;
     }
     const auto start=std::chrono::steady_clock::now();
-    auto inputs=HiringPlanner::capture(game,world);
+    auto inputs=std::make_shared<HiringPlanner::Inputs>(HiringPlanner::capture(game,world));
     session->supplementNs+=std::chrono::duration_cast<std::chrono::nanoseconds>(std::chrono::steady_clock::now()-start).count();
     std::uint64_t bytes=0;
     for(int team=0;team<game.teamsCount();++team)
     {
-        auto output=std::make_shared<Output>(session->caches[team]->rank(inputs,team));
+        auto output=std::make_shared<Output>(session->caches[team]->rank(*inputs,team));
         session->retain(std::move(output));
         auto& history=session->history[team];
         while(!history.empty() && world.tick-history.front()->tick>15)history.pop_front();
@@ -288,7 +296,7 @@ void clear(const Game& game)
         // export already surfaced a failure. Destruction cannot throw twice.
         try{session->drain();}catch(const std::exception& error){std::cerr<<"Hiring study teardown: "<<error.what()<<'\n';}
         catch(...){std::cerr<<"Hiring study teardown: unknown worker failure\n";}
-        HiringDiagnostics::setObserver(nullptr,nullptr);session.reset();
+        resetCaptureMetrics();HiringDiagnostics::setObserver(nullptr,nullptr);session.reset();
     }
 }
 void write(std::ostream& out,bool finish)
@@ -310,6 +318,8 @@ void write(std::ostream& out,bool finish)
         HIRING_PLANNER_METRICS(HIRING_REPORT_METRIC)
 #undef HIRING_REPORT_METRIC
         report["observations"]=session->observations;report["planning_ns"]=session->planningNs;
+        report["owner_route_handles_ns"]=session->supplementNs;report["owner_preparation_ns"]=session->schedule?session->preparationNs-session->supplementNs:0;report["submission_ns"]=session->submissionNs;report["publication_including_join_ns"]=session->publicationNs;
+        report["hiring_world_record_copy_bytes"]=0;report["route_handle_capacity_bytes_sum"]=session->inputBytes;report["input_object_allocations"]=session->inputAllocations;
         report["supplement_ns"]=session->supplementNs;report["candidate_visits"]=session->visits;report["peak_accounted_bytes"]=session->peakBytes;
         for(const auto& c:session->matrix) report["configurations"].push_back({{"K",c.delay},{"R",c.refresh},{"L",c.capacity},{"policy",c.split?"split":"combined"},
             {"trial_age_eligible",c.delay+c.refresh-1<=8},{"opportunities",c.opportunities},{"hits",c.hits},

@@ -1,4 +1,6 @@
 #include "SharedBuildingGradient.h"
+#include "HiringStudy.h"
+#include "HiringDiagnostics.h"
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "WorldSnapshot.h"
 #include "SnapshotStorage.h"
@@ -141,7 +143,7 @@ Handle capture(const Game& game,
 	auto* rules = rulesOwner ? rulesOwner.get() : &unusedRules;
 	// Map buffers keep their constructed range when reused. Overwrite selected
 	// arrays directly rather than clearing and growing them one cell at a time.
-	entities->buildings.clear(); entities->units.clear(); entities->relationships.clear(); entities->projects.clear();
+	entities->funding.clear(); entities->buildings.clear(); entities->units.clear(); entities->relationships.clear(); entities->projects.clear();
     entities->extraProduction.clear();
     if (needs(requirements, Component::Entities)) entities->unitCargo = game.unitCargo;
 	if (needs(requirements, Component::Entities)) {
@@ -387,10 +389,38 @@ Handle capture(const Game& game,
 				v.identity = Game::refOf(u); v.team = t;
 				v.attached = Game::refOf(u->attachedBuilding);
 				v.target = Game::refOf(u->targetBuilding);
+
 				append(entities->units, std::move(v));
 			}
 		}
 	}
+
+    if(needs(requirements,Component::Entities)) {
+        static_assert(Team::MAX_COUNT<=std::numeric_limits<Uint16>::max());
+        const bool timed=HiringDiagnostics::enabled();
+        const auto start=timed?std::chrono::steady_clock::now():std::chrono::steady_clock::time_point{};
+        std::uint64_t growths=0;
+        const auto nonzero=[](const auto& values){return std::any_of(values.begin(),values.end(),[](auto value){return value!=0;});};
+        for(auto& v:entities->buildings) {
+            const auto* b=game.resolveBuilding(v.identity);
+            if(!b)throw std::logic_error("snapshot funding lost building");
+            if(nonzero(b->constructionBudget)||nonzero(b->constructionReserved)||nonzero(b->reservedMaterials)) {
+                v.fundingOffset=Uint32(entities->funding.size());
+                growths+=entities->funding.size()==entities->funding.capacity();
+                append(entities->funding,FundingState{b->constructionBudget,b->constructionReserved,b->reservedMaterials});
+            }
+        }
+        for(auto& v:entities->units) {
+            const auto* u=game.resolveUnit(v.identity);
+            if(!u)throw std::logic_error("snapshot attack modifier lost unit");
+            if ((u->performance[ATTACK_STRENGTH] || u->experienceLevel) && game.areaEffects.enabled() && u->insideTimeout>=0 &&
+                u->displacement!=Unit::DIS_INSIDE && u->displacement!=Unit::DIS_ENTERING_BUILDING &&
+                !(u->displacement==Unit::DIS_EXITING_BUILDING && u->attachedBuilding))
+                v.attackFactor=game.areaEffects.at(BuildingAreaEffects::UnitAttack,v.team,game.map.coordToIndex(u->posX,u->posY));
+        }
+        const auto ns=timed?std::chrono::duration_cast<std::chrono::nanoseconds>(std::chrono::steady_clock::now()-start).count():0;
+        HiringStudy::recordCapture(ns,entities->funding.size()*sizeof(FundingState)+entities->buildings.size()*sizeof(Uint32)+entities->units.size()*sizeof(Uint16),growths);
+    }
 
     if (auto session=acquire(&Storage::session,Component::Session)) {
         session->editor=game.edit!=nullptr;
@@ -594,6 +624,10 @@ void verifyCapture(const Game& game, const Handle& handle)
             const auto* liveBuilding=game.resolveBuilding(building.identity);
             if (!liveBuilding || building.extraProductionCount!=liveBuilding->extraProductionRatios.size())
                 throw std::logic_error("snapshot verification: production storage differs from the game");
+            static const FundingState emptyFunding{};
+            const auto& funding=building.fundingOffset==Entities::NoRecord?emptyFunding:handle.entities->funding.at(building.fundingOffset);
+            if(funding.constructionBudget!=liveBuilding->constructionBudget || funding.constructionReserved!=liveBuilding->constructionReserved || funding.reservedMaterials!=liveBuilding->reservedMaterials)
+                throw std::logic_error("snapshot verification: funding differs from the game");
             for (unsigned id=0;id<BuiltinUnitCount;++id)
                 if (building.constructionOriginRatios[id]!=liveBuilding->originProductionRatio(id))
                     throw std::logic_error("snapshot verification: production origin differs from the game");

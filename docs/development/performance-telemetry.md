@@ -69,6 +69,17 @@ building/job; it is not full counterfactual job selection. Zero-delay publicatio
 is a calibration control, not a promise of exact choices. Startup opportunities
 are separate from steady coverage. This measures usefulness
 along the reference trajectory, not recruitment delay or a counterfactual economy.
+Scheduled hiring reports separate owner route-handle capture, preparation,
+submission and publication (including deadline join) from worker preparation and
+ranking. `hiring_world_record_copy_bytes` counts copies by the hiring supplement,
+not ordinary world snapshot extraction: it is zero when jobs borrow the shared
+completed-world lease. Route handle storage and job/output allocation remain.
+Snapshot copied-byte and pooled-buffer allocation metrics must be compared with
+an experiment-disabled run on the same inputs; sparse funding records and the
+attack modifier are additional normal entity facts. Buffer allocation metrics
+are not a census of every process heap allocation. Measure isolated live owner
+consumption separately, and keep diagnostic timing separate from release timing.
+
 It is not a live hiring experiment or a performance benchmark. Neither diagnostic
 mode contributes simulation state or serialized continuation. These modes require
 the default headless simulation owner; the `GLOB2_SIM_THREAD=1` test switch is rejected.
