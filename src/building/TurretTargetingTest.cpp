@@ -861,6 +861,7 @@ TEST_SUITE("TurretTargeting")
             world.game.map.computeExecutor().configure(participants);
             auto* turret=world.addBuilding("defencetower",8,8); turret->owner->enemies=2;
             turret->owner->addToStaticAbilitiesLists(turret);
+            turret->shootingCooldown=0; // This fixture tests admission/publication, not cooling.
             auto* enemy=world.addUnit(WARRIOR,11,8,1); enemy->speed=0;
             world.game.configureTurretTargeting(delay,1,8,1);
             auto* pipeline=world.game.turretTargeting();
@@ -951,6 +952,7 @@ TEST_SUITE("TurretTargeting")
                 auto* turret=world.addBuilding("defencetower",8+24*team,8,0,team);
                 turret->owner->enemies=1u<<(1-team);
                 turret->owner->addToStaticAbilitiesLists(turret);
+                turret->shootingCooldown=0; // This fixture tests admission/publication, not cooling.
                 auto* target=world.addUnit(WARRIOR,turret->posX+3,8,1-team); REQUIRE(target); target->speed=0;
             }
             world.game.configureTurretTargeting(4,1,8,1);
@@ -980,6 +982,7 @@ TEST_SUITE("TurretTargeting")
             world.game.map.computeExecutor().configure(participants);
             auto* turret=world.addBuilding("defencetower",8,8); turret->owner->enemies=2;
             turret->owner->addToStaticAbilitiesLists(turret);
+            turret->shootingCooldown=0; // This fixture tests admission/publication, not cooling.
             auto* target=world.addUnit(WARRIOR,11,8,1); REQUIRE(target); target->speed=0;
             world.game.configureTurretTargeting(1,1,8,1);
             auto* pipeline=world.game.turretTargeting();
@@ -1006,6 +1009,7 @@ TEST_SUITE("TurretTargeting")
         glob2test::HeadlessGame world({.wDec=6,.hDec=6,.teams=2,.loadDefaultRace=true,.header=true});
         auto* turret=world.addBuilding("defencetower",8,8,0,1); turret->owner->enemies=1;
         turret->owner->addToStaticAbilitiesLists(turret);
+        turret->shootingCooldown=0; // This fixture tests admission/publication, not cooling.
         world.game.configureTurretTargeting(1,2,8,1);
         auto* pipeline=world.game.turretTargeting();
         auto shared=world.game.prepareReadBoundary(false);
@@ -1029,6 +1033,7 @@ TEST_SUITE("TurretTargeting")
         glob2test::HeadlessGame world({.wDec=6,.hDec=6,.teams=2,.loadDefaultRace=true,.header=true});
         auto* turret=world.addBuilding("defencetower",8,8); turret->owner->enemies=2;
         turret->owner->addToStaticAbilitiesLists(turret);
+        turret->shootingCooldown=0; // This fixture tests admission/publication, not cooling.
         world.game.configureTurretTargeting(1,1,8,1);
         const auto shared=world.game.prepareReadBoundary(false);
         world.game.map.preparePendingWorld(shared);
@@ -1051,6 +1056,7 @@ TEST_SUITE("TurretTargeting")
             world.game.map.computeExecutor().configure(participants);
             auto* turret=world.addBuilding("defencetower",8,8); turret->owner->enemies=2;
             turret->owner->addToStaticAbilitiesLists(turret);
+            turret->shootingCooldown=0; // This fixture tests admission/publication, not cooling.
             world.game.configureTurretTargeting(1,1,8,1);
             turret->posX=-1; // Corrupt source geometry forces the immutable worker to fail.
             world.game.prepareReadBoundary(false);
