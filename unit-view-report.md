@@ -2,7 +2,9 @@
 
 Measured source `fdca48059` (full SHA in metadata), base `277510840054b1416f2defd7d86fe1431dd0ddc0`. The two-layer core/detail layout is unchanged; no presentation subdivision or production movement adoption.
 
-**The six real Cortex/Nicowar/Warrush games required details on every advancing gameplay tick.** Headless Null-AI movement-shadow runs required cores only on every advancing tick. Rendering without selection also uses cores only; selecting a unit adds details. Cortex already requires details, so selection adds no further unit capture in that case.
+**The six real Cortex/Nicowar/Warrush games requested details on every advancing gameplay tick under their current observation contracts.** Headless Null-AI movement-shadow runs required cores only on every advancing tick. Rendering without selection also uses cores only; selecting a unit adds details. Cortex already requires details, so selection adds no further unit capture in that case.
+
+The counters measure declared snapshot requirements, not per-field access tracing. A full request does not establish that detail fields are actually read, or dynamically necessary, on every tick.
 
 ## Observed sessions
 
