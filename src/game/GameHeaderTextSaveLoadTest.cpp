@@ -57,6 +57,7 @@ GameHeader makeFixtureHeader()
 	header.setGameLatency(12);
 	header.setOrderRate(3);
 	header.setAIOrderDelay(8);
+    header.setTeamStatsDelay(2);
 	header.setBuildingGradientDelay(2);
 	header.setRandomSeed(0xCAFEBABE);
 	header.setMapDiscovered(true);
@@ -123,6 +124,7 @@ void testFullRoundTrip()
 	check(loaded.getGameLatency() == 12, "full: gameLatency preserved");
 	check(loaded.getOrderRate() == 3, "full: orderRate preserved");
 	check(loaded.getAIOrderDelay() == 8, "full: AI order delay preserved");
+    check(loaded.getTeamStatsDelay()==2,"full: statistics delay preserved");
 	check(loaded.getBuildingGradientDelay() == 2, "full: building gradient delay preserved");
 	for (int team = 0; team < Team::MAX_COUNT; ++team)
 		check(loaded.getAllyTeamNumber(team) == original.getAllyTeamNumber(team),

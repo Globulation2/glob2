@@ -64,7 +64,7 @@ TEST_CASE("committed recipes reserve distinct resources and ratio changes choose
     CHECK(b->availableMaterial(WHEAT) == 8);
     b->ratio[WORKER] = 0; b->ratio[WARRIOR] = 1;
     b->swarmStep();
-    CHECK(world.team->stats.measurements.births[WORKER] == 1);
+    CHECK(world.team->stats.measurements().births[WORKER] == 1);
     CHECK(b->materials[WHEAT] == 8);
     CHECK(b->productionUnit == -1);
     b->swarmStep();
@@ -74,7 +74,7 @@ TEST_CASE("committed recipes reserve distinct resources and ratio changes choose
     b->cancelProduction();
     CHECK(b->materials[WOOD] == 10);
     CHECK(b->availableMaterial(WOOD) == 10);
-    CHECK(world.team->stats.measurements.births[EXPLORER] == 0);
+    CHECK(world.team->stats.measurements().births[EXPLORER] == 0);
 }
 
 TEST_CASE("completed blocked job retains its budget and zero duration remains a producer")
@@ -93,7 +93,7 @@ TEST_CASE("completed blocked job retains its budget and zero duration remains a 
     CHECK(b->productionTimeout == -1);
     CHECK(b->materials[WHEAT] == 2);
     CHECK(b->availableMaterial(WHEAT) == 0);
-    CHECK(world.team->stats.measurements.births[WORKER] == 0);
+    CHECK(world.team->stats.measurements().births[WORKER] == 0);
     b->launchDelete();
     CHECK(b->productionUnit == -1);
     CHECK(b->availableMaterial(WHEAT) == 2);
@@ -140,7 +140,7 @@ TEST_CASE("committed recipe survives binary and text continuation with its reser
         CHECK(copy->productionUnit == b->productionUnit);
         CHECK(copy->materials[WOOD] == 7);
         CHECK(copy->materials[WOOD] == b->materials[WOOD]);
-        CHECK(copy->owner->stats.measurements.births[WARRIOR] == 1);
+        CHECK(copy->owner->stats.measurements().births[WARRIOR] == 1);
     }
 }
 
@@ -533,7 +533,7 @@ TEST_CASE("partial supplier packets preserve raw equivalents and save continuati
         // 1/2 raw = 1 stock / 3 stock-per-raw + 1/6 deliberately discarded.
         CHECK(Uint64(cargo.numerator)*3*delivered.discardedDenominator
             == Uint64(cargo.denominator)*(Uint64(delivered.acceptedStock)*delivered.discardedDenominator+3*delivered.discardedNumerator));
-        CHECK(receiver->owner->stats.measurements.materialSpillageEvents==1);
+        CHECK(receiver->owner->stats.measurements().materialSpillageEvents==1);
         const auto fractional=receiver->deliverMaterialPacket(WOOD,{1,10});
         CHECK(fractional.acceptedStock==0); CHECK(fractional.discardedNumerator==1); CHECK(fractional.discardedDenominator==10);
     }
@@ -869,11 +869,11 @@ TEST_CASE("late choice advances the common timer and selects ratios only at comp
     for (int y=7;y<=12;++y) for (int x=7;x<=12;++x)
         if (x==7 || x==12 || y==7 || y==12) world.game.map.setResourceByIndex(x,y,STONE,1);
     for (int tick=0;tick<4;++tick) b->swarmStep();
-    CHECK(b->productionTimeout<0); CHECK(world.team->stats.measurements.births[WARRIOR]==0);
+    CHECK(b->productionTimeout<0); CHECK(world.team->stats.measurements().births[WARRIOR]==0);
     b->ratio[WARRIOR]=0; b->swarmStep();
-    CHECK(world.team->stats.measurements.births[WORKER]==0); // fallback is also ground-blocked
+    CHECK(world.team->stats.measurements().births[WORKER]==0); // fallback is also ground-blocked
     b->ratio[EXPLORER]=1; b->swarmStep();
-    CHECK(world.team->stats.measurements.births[EXPLORER]==1);
+    CHECK(world.team->stats.measurements().births[EXPLORER]==1);
     CHECK(b->materials[WHEAT]==0); CHECK(b->productionTimeout==5);
 }
 

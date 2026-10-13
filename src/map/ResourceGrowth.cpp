@@ -40,7 +40,7 @@ void recordDelta(Map &map, const Proposal &p, bool newTile, int delta)
 		auto *team = map.game->teams[t];
 		if (!team)
 			continue;
-		auto &m = team->stats.measurements;
+		auto &m = team->stats.events();
 		m.growthGlobal[0][p.material] += newTile;
 		m.growthGlobal[1][p.material] += std::max(0, delta);
 		m.growthGlobal[2][p.material] += std::max(0, -delta);

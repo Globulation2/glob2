@@ -39,6 +39,7 @@ namespace GAGCore
 }
 using namespace GAGCore;
 namespace SimulationSnapshot { class Store; }
+class TeamStatsPipeline;
 class GameGUI;
 class SceneMap;
 struct PresentationFrame;
@@ -244,12 +245,20 @@ public:
 	std::vector<std::pair<unsigned, std::shared_ptr<Order>>> prepareAIOrders(
 		std::span<const unsigned> eligiblePlayers, bool paused, const std::shared_ptr<GameDiagnostics::Session>& diagnostics = {},
 		const SimulationSnapshot::Handle* captured = nullptr);
-	//! Publish the complete simulation view, optionally with presentation/diagnostic data.
+	//! Capture the standard view without admitting simulation work (UI, saves, tests).
 	SimulationSnapshot::Handle captureReadBoundary(SimulationSnapshot::CaptureOptions options = {}) const;
+	//! Publish due statistics and admit one sample on an advancing owner boundary.
+	SimulationSnapshot::Handle prepareReadBoundary(bool paused = false,
+		SimulationSnapshot::CaptureOptions options = {});
 	std::shared_ptr<Order> validateAIOrder(std::shared_ptr<Order> order, unsigned player);
 	void settleAIOrder(const std::shared_ptr<Order>& order, bool accepted);
 	void cancelAI(unsigned player);
 	void drainAI();
+    void drainTeamStats();
+    void saveTeamStats(GAGCore::OutputStream*);
+    void loadTeamStats(GAGCore::InputStream*, int versionMinor);
+    Uint32 teamStatsChecksum(bool heavy = false) const;
+    std::vector<std::pair<std::string, Uint64>> teamStatsMetrics() const;
 	//! Simulation-owner service shared by AI, gradients and presentation.
 	SimulationSnapshot::Store& snapshots() const { return worldSnapshots; }
 	void clearAI();
@@ -261,6 +270,7 @@ public:
 private:
 	mutable SimulationSnapshot::Store worldSnapshots;
 	std::unique_ptr<AIEngine::Pipeline> aiPipeline;
+    std::unique_ptr<TeamStatsPipeline> statsPipeline;
 public:
 
 	/// Makes a step for building projects that are waiting for the areas to clear of units.

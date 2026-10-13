@@ -209,7 +209,7 @@ void Map::recordNaturalGrowth(int x,int y,int resourceType,int oldType,const std
         for (int t=0;t<game->mapHeader.getNumberOfTeams();++t)
         {
             Team* team=game->teams[t]; if (!team) continue;
-            auto& m=team->stats.measurements;
+            auto& m=team->stats.events();
             m.growthGlobal[0][material]+=added;
             m.growthGlobal[1][material]+=std::max(0,delta);
             m.growthGlobal[2][material]+=std::max(0,-delta);

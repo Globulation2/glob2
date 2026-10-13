@@ -318,7 +318,7 @@ For timing and scheduling, start with `src/game/Game_sync.cpp` and `src/engine/E
   stepping invalidates the cached boundary because its caller need not advance
   the game's tick counter.
 - The simulation preset always includes catalogs, terrain, resources, occupancy,
-  areas, visibility, entities, teams, rules, published resource fields and growth.
+  areas, visibility, entities, teams, rules, published resource fields, growth and cumulative statistics inputs.
   `CaptureOptions` adds the ordinary presentation preset (session, effects and
   compact statistics), with explicit history, telemetry, entity-diagnostic and
   annotation options. Consumers do not contribute arbitrary capture masks.

@@ -14,7 +14,7 @@ Handle Store::captureBoundary(const Game& game, CaptureOptions options)
 		if ((required & latest->requirements) == required) return *latest;
 		required |= latest->requirements;
 	}
-	const auto start = std::chrono::steady_clock::now();
+	const auto start = storage.profiling ? std::chrono::steady_clock::now() : std::chrono::steady_clock::time_point{};
 	const auto preparedBefore = storage.preparationNs;
 	if (!catalog || catalogConfigurationRevision != game.gameHeader.observationRevision()) {
 		catalog = captureCatalog(game);
@@ -33,7 +33,7 @@ Handle Store::captureBoundary(const Game& game, CaptureOptions options)
 	const auto preparation = storage.preparationNs-preparedBefore;
 	metrics.preparationNs += preparation;
 	++metrics.captures;
-	metrics.captureNs += std::chrono::duration_cast<std::chrono::nanoseconds>(std::chrono::steady_clock::now() - start).count()-preparation;
+	if (storage.profiling) metrics.captureNs += std::chrono::duration_cast<std::chrono::nanoseconds>(std::chrono::steady_clock::now() - start).count()-preparation;
 	latest = std::move(next);
 	return *latest;
 }
@@ -81,6 +81,10 @@ void Store::accountCapture(const Handle& next, const Handle& previous, Uint64 co
         metrics.bytesCopied+=next.effects->sectors.size()*sizeof(SectorEffects);
         for (const auto& sector:next.effects->sectors) metrics.bytesCopied+=sector.bullets.size()*sizeof(BulletRecord)
             +sector.explosions.size()*sizeof(ExplosionRecord)+sector.deaths.size()*sizeof(DeathRecord);
+    }
+    if(next.statisticsInputs) {
+        for(const auto& row:next.statisticsInputs->events)metrics.bytesCopied+=sizeof(GameplayEventCounters)+row.capacityBytes();
+        for(const auto& row:next.statisticsInputs->coverage)metrics.bytesCopied+=row.size()*sizeof(TeamStats::CoverageBuilding);
     }
     if (next.statistics) {
         for (size_t i=0;i<next.statistics->teams.size();++i) {

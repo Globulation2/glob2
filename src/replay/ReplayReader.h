@@ -22,7 +22,7 @@ class Order;
 //! the reader still accepts. Version 154 restores mature resource stock
 //! oscillation, changing earlier replay trajectories.
 //! Save compatibility has a separate floor in Version.h.
-static constexpr Uint16 REPLAY_MINIMUM_VERSION_MINOR = 154;
+static constexpr Uint16 REPLAY_MINIMUM_VERSION_MINOR = 158;
 
 /// This class is used for reading replays.
 /// The replay stream is kept open and read every time you do retrieveOrder.

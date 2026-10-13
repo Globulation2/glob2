@@ -177,7 +177,7 @@ TEST_CASE("retained split recipes conserve every charged resource through cancel
             {
                 int spent=0;
                 for (int unit=0; unit<NB_UNIT_TYPE; ++unit)
-                    spent += world.team->stats.measurements.births[unit] *
+                    spent += world.team->stats.measurements().births[unit] *
                         forge->type->semantics.production.recipes[unit].cost[resource];
                 CHECK(forge->materials[resource] + spent == 64);
                 CHECK(forge->availableMaterial(resource) >= 0);
@@ -190,7 +190,7 @@ TEST_CASE("retained split recipes conserve every charged resource through cancel
             }
         }
         for (int unit=0; unit<NB_UNIT_TYPE; ++unit)
-            CHECK(world.team->stats.measurements.births[unit] > 0);
+            CHECK(world.team->stats.measurements().births[unit] > 0);
     }
 }
 }

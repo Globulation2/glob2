@@ -72,7 +72,7 @@ double overviewFigure(const OverviewColumn &column, const TeamStats &stats)
 	if (column.figure == OverviewColumn::Total)
 	{
 		assert(metric.value);
-		return metric.value(stats.measurements);
+		return metric.value(stats.measurements());
 	}
 	assert(metric.sampled >= 0);
 	double figure = 0;

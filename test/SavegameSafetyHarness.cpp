@@ -745,7 +745,7 @@ static void checkRandomContinuation(bool text, bool ai)
 		step(gui.game);
 		continuation.push_back(simulationState(gui.game));
 		std::vector<GameplayMeasurements> measurements;
-		for (int t=0; t<gui.game.teamsCount(); ++t) measurements.push_back(gui.game.teams[t]->stats.measurements);
+		for (int t=0; t<gui.game.teamsCount(); ++t) measurements.push_back(gui.game.teams[t]->stats.measurements());
 		measurementContinuation.push_back(measurements);
 	}
 	// Unrelated draws from the process stream must not affect the restored game.
@@ -802,7 +802,7 @@ static void checkRandomContinuation(bool text, bool ai)
 		const auto actual = simulationState(restored.game);
 
 		for (int t=0; t<restored.game.teamsCount(); ++t)
-			REQUIRE(restored.game.teams[t]->stats.measurements == measurementContinuation[i][t]);
+			REQUIRE(restored.game.teams[t]->stats.measurements() == measurementContinuation[i][t]);
 		if (actual != continuation[i])
 		{
 			std::cerr << "Continuation mismatch at step " << i << " sizes " << actual.size() << '/' << continuation[i].size() << std::endl;

@@ -359,7 +359,7 @@ SimulationSnapshot::Handle Engine::openReadBoundary(bool present)
     SimulationSnapshot::CaptureOptions options{.presentation=!globalContainer->runNoX};
     if (presentation) options.include(SceneExtractor::captureOptions(*presentation));
     if (diagnostics) options.include(diagnostics->captureOptions(gui.game.stepCounter));
-    const auto world=gui.game.captureReadBoundary(options);
+    const auto world=gui.game.prepareReadBoundary(gui.gamePaused || gui.hardPause, options);
     readBoundaryOpened=true;
     if (presentation) publishPresentation(world,*presentation);
     return world;
@@ -811,7 +811,6 @@ void Engine::printTeamTimeline()
 				<< std::endl;
 		}
 
-		team->stats.refreshMeasurements(team);
 		team->stats.printMeasurements(t, true);
 		AITelemetry::capture(team, false, true, true);
 		// Final detailed snapshot: composition + food economy + building mix.

@@ -203,7 +203,7 @@ TEST_SUITE("ResourceGrowth")
 		b.proposals = {increment(m, m.coordToIndex(8, 8), id)};
 		ResourceGrowth::apply(m, b, metrics);
 		CHECK(m.getResource(8, 8).type == NO_RES_TYPE);
-		const auto &stats = world.game.teams[0]->stats.measurements;
+		const auto &stats = world.game.teams[0]->stats.editMeasurements();
 		CHECK(stats.growthGlobal[0][materialIndex(MaterialId::Food)] == 1);
 		CHECK(stats.growthGlobal[0][materialIndex(MaterialId::Paper)] == 1);
 		CHECK(stats.growthGlobal[1][materialIndex(MaterialId::Food)] == 6);
@@ -363,17 +363,19 @@ TEST_SUITE("ResourceGrowth")
 				return total;
 			};
 			const auto initialFood = foodStocks();
+			// Conservation compares the current map and live event ledger;
+			// published measurements deliberately lag the simulation.
 			const auto initialAdded =
-				shared.game.teams[0]->stats.measurements.growthGlobal[1][materialIndex(MaterialId::Food)];
-            const auto initialRemoved = shared.game.teams[0]->stats.measurements.growthGlobal[2][materialIndex(MaterialId::Food)];
+				shared.game.teams[0]->stats.events().growthGlobal[1][materialIndex(MaterialId::Food)];
+            const auto initialRemoved = shared.game.teams[0]->stats.events().growthGlobal[2][materialIndex(MaterialId::Food)];
 			for (int tick = 0; tick < 40; ++tick)
 			{
 				fallback.step();
 				shared.step();
 				const auto &metrics = shared.game.map.resourceGrowthMetrics();
 				CHECK(metrics.publishedProposals == metrics.accepted + metrics.rejected);
-				CHECK(foodStocks() + shared.game.teams[0]->stats.measurements.growthGlobal[2][materialIndex(MaterialId::Food)] - initialRemoved == initialFood + metrics.stockAdded);
-				CHECK(shared.game.teams[0]->stats.measurements.growthGlobal[1][materialIndex(MaterialId::Food)] ==
+				CHECK(foodStocks() + shared.game.teams[0]->stats.events().growthGlobal[2][materialIndex(MaterialId::Food)] - initialRemoved == initialFood + metrics.stockAdded);
+				CHECK(shared.game.teams[0]->stats.events().growthGlobal[1][materialIndex(MaterialId::Food)] ==
 					  initialAdded + metrics.stockAdded);
 				CHECK(shared.game.checkSum(nullptr, nullptr, nullptr, true) ==
 					  fallback.game.checkSum(nullptr, nullptr, nullptr, true));
