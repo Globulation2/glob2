@@ -83,9 +83,12 @@ TEST_SUITE("HiringPlanner")
 				w.game.map.installResourceDefinitions(
 					nlohmann::json{{"schemaVersion", 1}, {"resources", {a, b}}}.dump());
 			}
-			w.game.map.setResourceByIndex(5, 8, phase == 0 ? 0 : 1, 0);
-			REQUIRE(w.game.map.getResource(w.game.map.coordToIndex(5, 8)).type ==
-					(phase == 0 ? 0 : 1));
+			const auto resource = w.game.map.resourceRegistry().find(
+				phase == 0 ? "fixture:visible-food" : "fixture:unseen-food");
+			REQUIRE(resource);
+			const auto resourceId = resourceIndex(*resource);
+			w.game.map.setResourceByIndex(5, 8, resourceId, 0);
+			REQUIRE(w.game.map.getResource(w.game.map.coordToIndex(5, 8)).type == resourceId);
 			w.game.snapshotStore().invalidateBoundary();
 			auto input = HiringPipeline::bindRoutes(w.game, w.game.captureReadBoundary());
 			auto hidden = std::make_shared<SimulationSnapshot::Visibility>(*input.world.visibility);
