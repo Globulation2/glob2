@@ -180,6 +180,20 @@ int Building::totalWishedMaterial()
 	return sum;
 }
 
+void Building::constructionProgress(int* delivered, int* total) const
+{
+	*delivered=0;
+	*total=0;
+	if (!type->isBuildingSite)
+		return;
+	for (int r=0; r<MaterialSlotCount; ++r)
+	{
+		const int target=materialDeliveryTarget(r);
+		*total += target;
+		*delivered += target-materialDeliveryNeed(r);
+	}
+}
+
 
 
 int Building::getConstructionCompletionTypeNum() const
