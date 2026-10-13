@@ -6,6 +6,7 @@
 #include <sstream>
 #include "SharedBuildingGradient.h"
 #include <thread>
+#include <set>
 #include <nlohmann/json.hpp>
 
 TEST_SUITE("HiringPlanner")
@@ -80,6 +81,74 @@ TEST_CASE("planning skips zero-demand and staffed buildings and resumes on vacan
     auto [finishedInputs,finished]=plan();
     CHECK(finished.buildings.empty());CHECK(finished.candidateVisits==0);
 }
+TEST_CASE("job quotas skip supplied materials and distance reuse keeps exact rankings")
+{
+    glob2test::HeadlessGlobals globals;
+    glob2test::HeadlessGame world({.discovered=true,.loadDefaultRace=true});
+    auto* inn=world.addBuilding("inn",8,8,1);REQUIRE(inn);inn->desiredMaxUnitWorking=2;
+    for(int i=0;i<16;++i) {
+        auto* u=world.addUnit(WORKER,12+i%4,12+i/4,0,1);REQUIRE(u);
+        u->activity=i%2?Unit::ACT_FILLING:Unit::ACT_RANDOM;u->medical=Unit::MED_FREE;
+        if(i%3==0)u->carriedMaterial=WHEAT;
+    }
+    world.game.map.incResourceByIndex(20,20,WHEAT,0);
+    for(int swim=0;swim<SWIM_CLASS_COUNT;++swim){world.game.map.buildingGradient(inn,swim);world.game.map.getMaterialGradientSlot(0,WHEAT,swim,false,inn);}
+    auto snapshot=world.game.captureReadBoundary({},true,SimulationSnapshot::Simulation);
+    auto inputs=HiringPlanner::capture(world.game,snapshot);
+    HiringPlanner::Cache cache;
+    const auto uncached=cache.rank(inputs,0,128,HiringPlanner::Pools::All,{.reuseDistances=false,.pruneFetch=false});
+    const auto cached=cache.rank(inputs,0,128);
+    CHECK(cached.metrics.distanceReuses>0);CHECK(cached.metrics.sharedQueries<uncached.metrics.sharedQueries);
+    REQUIRE(cached.buildings.size()==uncached.buildings.size());
+    const auto same=[](const auto& a,const auto& b){return a.size()==b.size()&&std::equal(a.begin(),a.end(),b.begin(),[](const auto& x,const auto& y){return x.unit==y.unit&&x.level==y.level&&x.value==y.value&&x.available==y.available;});};
+    for(unsigned j=0;j<cached.buildings[0].jobs.size();++j) {
+        const auto& a=cached.buildings[0].jobs[j];const auto& b=uncached.buildings[0].jobs[j];
+        CHECK(same(a.combined,b.combined));CHECK(same(a.available,b.available));CHECK(same(a.busy,b.busy));
+    }
+    for(int extras:{0,2,4}) {
+        const auto small=cache.rank(inputs,0,128,HiringPlanner::Pools::Split,{.extras=extras});
+        for(const auto& list:small.buildings[0].jobs)CHECK(list.available.size()+list.busy.size()<=2+unsigned(extras));
+        const auto free=cache.rank(inputs,0,128,HiringPlanner::Pools::Split,{.extras=extras,.availableOnly=true});
+        CHECK(free.metrics.busyEvaluations==0);CHECK(free.candidateVisits<small.candidateVisits);
+        for(const auto& list:free.buildings[0].jobs)for(const auto& c:list.combined)CHECK(c.available);
+    }
+    for(auto pools:{HiringPlanner::Pools::All,HiringPlanner::Pools::Combined,HiringPlanner::Pools::Split})for(int extras:{0,2,4}) {
+        const auto exact=cache.rank(inputs,0,128,pools,{.extras=extras,.pruneFetch=false});
+        const auto pruned=cache.rank(inputs,0,128,pools,{.extras=extras});
+        for(unsigned j=0;j<exact.buildings[0].jobs.size();++j) {
+            const auto& a=exact.buildings[0].jobs[j];const auto& b=pruned.buildings[0].jobs[j];
+            CHECK(same(a.combined,b.combined));CHECK(same(a.available,b.available));CHECK(same(a.busy,b.busy));
+        }
+    }
+    inn->materials[WHEAT]=inn->type->maxMaterial[WHEAT];
+    world.game.snapshotStore().invalidateBoundary();snapshot=world.game.captureReadBoundary({},true,SimulationSnapshot::Simulation);
+    const auto full=cache.rank(HiringPlanner::capture(world.game,snapshot),0,128);
+    for(const auto& list:full.buildings[0].jobs)CHECK(list.key.material!=WHEAT);
+    CHECK(full.metrics.jobsSkippedNoQuota>=2);
+}
+TEST_CASE("diverse material offers cover peers without reserving live workers")
+{
+    glob2test::HeadlessGlobals globals;
+    glob2test::HeadlessGame world({.discovered=true,.loadDefaultRace=true});
+    auto* a=world.addBuilding("inn",8,8);auto* b=world.addBuilding("inn",16,8);
+    REQUIRE(a);REQUIRE(b);a->desiredMaxUnitWorking=b->desiredMaxUnitWorking=2;
+    for(int i=0;i<16;++i){auto* u=world.addUnit(WORKER,12+i%4,12+i/4);REQUIRE(u);u->medical=Unit::MED_FREE;u->activity=Unit::ACT_RANDOM;}
+    world.game.map.incResourceByIndex(24,24,WHEAT,0);
+    for(auto* building:{a,b})for(int swim=0;swim<SWIM_CLASS_COUNT;++swim)world.game.map.buildingGradient(building,swim);
+    for(int swim=0;swim<SWIM_CLASS_COUNT;++swim)world.game.map.getMaterialGradientSlot(0,WHEAT,swim);
+    auto snapshot=world.game.captureReadBoundary({},true,SimulationSnapshot::Simulation);
+    auto inputs=HiringPlanner::capture(world.game,snapshot);const auto checksum=world.checksum();
+    HiringPlanner::Cache cache;
+    auto output=cache.rank(inputs,0,128,HiringPlanner::Pools::Split,{.extras=2,.availableOnly=true,.coordinate=true});
+    CHECK(output.metrics.coordinatedTeams==1);CHECK(world.checksum()==checksum);
+    std::set<std::pair<Uint16,Uint32>> primary;
+    for(const auto& building:output.buildings)for(const auto& list:building.jobs)if(list.key==Hiring::Key{Hiring::Job::Fetch,WHEAT}) {
+        REQUIRE(list.combined.size()>=2);CHECK(list.combined.size()<=4);
+        for(unsigned i=0;i<2;++i)CHECK(primary.insert({list.combined[i].unit.gid,list.combined[i].unit.generation}).second);
+    }
+    CHECK(primary.size()==4);
+    CHECK_THROWS_AS(cache.rank(inputs,0,128,HiringPlanner::Pools::Split,{.extras=2,.coordinate=true}),std::invalid_argument);
+}
 TEST_CASE("shared field survives replacement and proposals preserve owner demand")
 {
     glob2test::HeadlessGlobals globals;
@@ -135,7 +204,7 @@ TEST_CASE("bounded shortlists match fully sorted prefixes for every job and pool
                     if(policy!=HiringPlanner::Pools::Split&&combined.size()<capacity)combined.push_back(c);
                     if(policy!=HiringPlanner::Pools::Combined) {
                         auto& pool=c.available?available:busy;
-                        if(pool.size()<(c.available?capacity*3/4:capacity/4))pool.push_back(c);
+                        if(pool.size()<(c.available?capacity-HiringPlanner::busyCapacity(capacity):HiringPlanner::busyCapacity(capacity)))pool.push_back(c);
                     }
                 }
                 const auto same=[](const auto& a,const auto& b){

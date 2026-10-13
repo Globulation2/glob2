@@ -13,6 +13,7 @@ struct Schedule
 {
     unsigned delay=4, refresh=4, capacity=128;
     bool split=true, parallel=true, score=false;
+    int extras=2; bool availableOnly=false, coordinate=false;
 };
 void configureScheduled(Schedule);
 void advance(const Game&);

@@ -110,6 +110,34 @@ availability: a vacancy arising after capture can wait for the next publication.
 Reference hiring can fill such vacancies before a later snapshot ever observes
 them, so demand-filtered shadow coverage must not be interpreted as live delay.
 Attack strengths are captured only for teams with an active defense recruitment need.
+Material jobs are filtered using outstanding deliveries after existing subscriptions,
+with the same target/multiplier arithmetic as owner hiring. Attraction roles retain
+borrowing alternatives within the building's remaining seats. Team qualification
+and cargo indexes are built lazily once per team refresh. Worker-to-building
+distances are reused within each building/route refresh, including unreachable
+results; per-field lock scopes remain one query. Flying building-distance queries
+share one incremental snapshot-backed air field within a building refresh.
+For ground fetch jobs with an existing resource plane, a bounded heap uses the
+exact lower bound `2 * resourceDistance` on the trip score. A building-distance
+query is skipped only when that lower bound cannot enter any requested pool,
+including level and identity ties. This preserves the same canonical shortlist
+as exhaustive evaluation; it is not approximate distance ranking.
+Scheduled shortlists default to remaining job vacancies plus two backups, capped
+by `L`. `--hiring-extras 0|2|4` controls backups; `fixed` restores the fixed-L
+measurement control. Capacity is total across split pools, with at least one busy
+slot when capacity is two or greater. `--hiring-availability available` is a
+separate policy control that rejects observed-busy/medical candidates before route
+work and uses the entire capacity for its available-only combined list. The default
+is `all`; do not interpret this control as a live admission or delay guarantee.
+`--hiring-diversity rounds` is an explicit available-only, vacancy-sized control
+for single-material teams without attraction roles and with aggregate vacancies
+plus backups within `L`. The owner captures its priority order; private fair
+rounds choose distinct primary suggestions across buildings, then add backups.
+Workers are not reserved or assigned in the live world. A wider private ranking
+buffer supports this projection; only vacancy-sized lists are published. Other
+job shapes fall back to independent lists and increment `coordinationSkipped`.
+This is a policy experiment, not proof of equivalent hires or live delay.
+These options require `--hiring-schedule`. Neither changes normal hiring.
 Candidate selection uses bounded partitioning followed by sorting retained prefixes;
 the resulting canonical lists equal full-sort prefixes. Scheduled runs build only
 the selected pool policy; the full shadow matrix builds both controls.
@@ -119,7 +147,16 @@ accounted cache-plus-output working set exceeding 160 MiB.
 
 Build the `hiring-study` target to prepare deterministic sustainable and contention
 saves with `HiringStudyHarness --prepare sustainable|contention OUTPUT_DIR`.
-The harness checks population throughout its 4,096-tick window. Inactive controllers
+The harness checks population throughout its 4,096-tick window.
+`HiringStudyHarness --prepare opportunities OUTPUT_DIR` measures isolated static
+1200-worker/48-building hiring opportunities at several availability fractions.
+Ten rotated repetitions compare a planner refresh with the original complete
+fill pass (including subscription/swaps); setup/reset are untimed. Private fair
+round overlays report how many seats suggestions can cover before conflicts
+exhaust shortlists. This is neither whole-engine timing nor a live economy or
+recruitment-delay measurement. Exact job filtering can eliminate all planner work
+on reference games that immediately fill deficits before completed-tick capture;
+such a no-output run is not useful evidence of live hiring efficiency. Inactive controllers
 provide null orders when continuing these fixtures in the full headless engine.
 `test/benchmark_hiring.py` accepts a workload JSON array with `name`, `save`, and
 absolute `ticks`. Its `verify` mode compares disabled, statistics and shadow modes

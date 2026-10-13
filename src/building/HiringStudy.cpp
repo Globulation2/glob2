@@ -45,6 +45,7 @@ struct Work
     HiringPlanner::Cache* cache=nullptr;
     unsigned team=0,capacity=0,worker=0;
     bool split=true;
+    HiringPlanner::Options options;
     std::size_t outputBound=0;
     std::shared_ptr<const Output> output;
     std::exception_ptr error;
@@ -54,7 +55,7 @@ struct Work
         auto& work=*static_cast<Work*>(context);
         work.worker=unsigned(ComputeExecutor::workerSlot());
         try {
-            auto output=work.cache->rank(work.inputs,work.team,work.capacity,work.split?HiringPlanner::Pools::Split:HiringPlanner::Pools::Combined);
+            auto output=work.cache->rank(work.inputs,work.team,work.capacity,work.split?HiringPlanner::Pools::Split:HiringPlanner::Pools::Combined,work.options);
             work.output=std::make_shared<Output>(std::move(output));work.cacheBytes=work.cache->bytes();
         }
         catch(...) {work.error=std::current_exception();}
@@ -183,7 +184,7 @@ struct Session
                 }
             };
             if(list) {
-                if(config.split){examine(list->available,config.capacity*3/4);examine(list->busy,config.capacity/4);}
+                if(config.split && !(schedule && schedule->availableOnly)){examine(list->available,config.capacity-HiringPlanner::busyCapacity(config.capacity));examine(list->busy,HiringPlanner::busyCapacity(config.capacity));}
                 else examine(list->combined,config.capacity);
             } else ++config.missing;
             // Startup is a separate policy cost: do not hide the expected
@@ -206,7 +207,7 @@ void configure(bool shadow)
 }
 void configureScheduled(Schedule selected)
 {
-    if(selected.delay>8 || !selected.refresh || selected.refresh>8 || !selected.capacity || selected.capacity>128 || selected.delay+selected.refresh-1>8)
+    if(selected.delay>8 || !selected.refresh || selected.refresh>8 || !selected.capacity || selected.capacity>128 || selected.delay+selected.refresh-1>8 || selected.extras < -1 || selected.extras>4 || (selected.coordinate&&(!selected.availableOnly||selected.extras<0)))
         throw std::invalid_argument("Hiring study schedule exceeds the eight-tick trial contract");
     configure(false);selectedSchedule=selected;collectingStudy=true;
 }
@@ -238,7 +239,7 @@ void observe(const Game& game,const SimulationSnapshot::Handle& world,bool pause
         {
             if(!inputs){const auto start=std::chrono::steady_clock::now();inputs=HiringPlanner::capture(game,world);
                 session->supplementNs+=std::chrono::duration_cast<std::chrono::nanoseconds>(std::chrono::steady_clock::now()-start).count();}
-            auto work=std::make_unique<Work>();work->inputs=*inputs;work->cache=session->caches[team].get();work->team=team;work->capacity=config.capacity;work->split=config.split;
+            auto work=std::make_unique<Work>();work->inputs=*inputs;work->cache=session->caches[team].get();work->team=team;work->capacity=config.capacity;work->split=config.split;work->options={config.extras,config.availableOnly,true,true,config.coordinate};
             std::erase_if(work->inputs.routes,[&](const auto& r){return Building::GIDtoTeam(r.building.gid)!=team;});
             std::erase_if(work->inputs.supplies,[&](const auto& s){return Building::GIDtoTeam(s.building.gid)!=team;});
             work->inputs.routeBytes=0;for(const auto& route:work->inputs.routes)work->inputs.routeBytes+=route.bytes;
@@ -293,14 +294,14 @@ void clear(const Game& game)
 void write(std::ostream& out,bool finish)
 {
     Json report={{"schema_version",1},{"mode","authoritative_shadow"},{"coverage_semantics","conservative reference-pass coverage; live qualifications include prior authoritative assignments"},{"agreement_semantics","same worker incarnation for the reference building/job attempt; not full counterfactual job selection"},{"delay_gate_established",false},{"persistent_exclusion_gate_established",false},{"startup_ticks",16},{"gate_coverage",0.95},{"minimum_opportunities",200},{"configurations",Json::array()}};
-    report["planning_policy"]="observed_staffing_demand";
+    report["planning_policy"]="observed_job_demand";
     if(session) {
         if(finish)session->drain();
         // Draining finishes future outputs without publishing them early.
         report["startup_tick_origin"]=session->firstTick;report["scheduled"]=bool(session->schedule);report["memory_accounting"]=session->schedule?"reserved_cache_and_output_bound":"retained_matrix_bytes";report["output_digest"]=session->outputDigest;
         report["submitted"]=session->submitted;report["published"]=session->publishedCount;
         report["deadline_wait_ns"]=session->waitNs;report["owner_jobs"]=session->ownerJobs;report["worker_jobs"]=session->workerJobs;report["max_pending_batches"]=session->maxPending;
-        if(session->schedule){const auto& c=*session->schedule;report["schedule"]={{"K",c.delay},{"R",c.refresh},{"L",c.capacity},{"policy",c.split?"split":"combined"},{"execution",c.parallel?"pool":"owner"}};}
+        if(session->schedule){const auto& c=*session->schedule;report["schedule"]={{"K",c.delay},{"R",c.refresh},{"L",c.capacity},{"policy",c.split?"split":"combined"},{"execution",c.parallel?"pool":"owner"},{"extras",c.extras},{"available_only",c.availableOnly},{"coordinate",c.coordinate}};}
         report["shared_route_peak_retired_bytes"]=SharedBuildingGradient::peakRetiredBytes.load();
         report["shared_route_owner_wait_ns"]=SharedBuildingGradient::ownerWaitNs.load()-session->ownerWaitStart;
         report["shared_route_owner_contentions"]=SharedBuildingGradient::ownerContentions.load()-session->ownerContentionStart;

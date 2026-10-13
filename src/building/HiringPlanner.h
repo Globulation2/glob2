@@ -30,6 +30,7 @@ struct BuildingLists
 // Batch timers are elapsed nanoseconds, not CPU time. Candidate evaluation
 // includes route work; seed/propagation timers are nested within it.
 #define HIRING_PLANNER_METRICS(X) \
+    X(coordinationNs) X(coordinatedTeams) X(coordinationSkipped) X(distanceBoundSkips) X(distanceReuses) X(availableEvaluations) X(busyEvaluations) X(jobsSkippedNoQuota) \
     X(sharedQueries) X(sharedExpansions) X(sharedWaitNs) X(sharedQueryNs) X(missingBuildingFields) \
     X(buildingsExamined) X(buildingsNeedingHiring) X(buildingsSkippedNoDemand) \
     X(setupNs) X(geographyNs) X(precheckNs) X(evaluationNs) X(sortOutputNs) \
@@ -60,7 +61,8 @@ struct Inputs
     SimulationSnapshot::Handle world;
     struct Route { BuildingRef building; int slot; std::shared_ptr<SharedBuildingGradient> field; std::uint64_t bytes; };
     struct Supply { BuildingRef building; std::array<unsigned, MaterialCount> modes{};
-        std::array<bool, MaterialCount> consumerSpecific{}; };
+        std::array<bool, MaterialCount> consumerSpecific{};
+        std::array<unsigned, MaterialCount> vacancies{}; unsigned seats=0, visitRank=0; };
     std::vector<Supply> supplies;
     std::vector<Route> routes;
     std::uint64_t routeBytes = 0;
@@ -69,6 +71,7 @@ struct Inputs
     std::vector<std::pair<UnitRef, int>> attack;
 };
 Inputs capture(const Game&, SimulationSnapshot::Handle);
+struct Options { int extras=-1; bool availableOnly=false, reuseDistances=true, pruneFetch=true, coordinate=false; };
 class Cache
 {
     struct Impl;
@@ -78,11 +81,12 @@ public:
     explicit Cache(std::size_t budget = MaxBytes); ~Cache();
     Cache(const Cache&) = delete;
     Cache& operator=(const Cache&) = delete;
-    Output rank(const Inputs&, unsigned team, unsigned capacity = 128, Pools pools = Pools::All);
+    Output rank(const Inputs&, unsigned team, unsigned capacity = 128, Pools pools = Pools::All, Options options = {});
     std::size_t bytes() const;
 };
 bool needsCandidates(const SimulationSnapshot::BuildingView&);
 std::uint64_t configuration(const BuildingStateRecord&);
 bool better(const Candidate&, const Candidate&, Job);
+unsigned busyCapacity(unsigned total);
 List shortlist(Key, std::vector<Candidate>, unsigned capacity, Pools = Pools::All);
 }

@@ -335,7 +335,7 @@ struct HeadlessRunner
 			if(telemetry=="hiring-stats" || telemetry=="hiring-shadow") HiringDiagnostics::configure(true);
         for (const auto& telemetry : many(options,"--telemetry"))
             if(telemetry=="hiring-shadow") HiringStudy::configure(true);
-        if(options.count("--hiring-execution") && !options.count("--hiring-schedule"))throw std::invalid_argument("--hiring-execution requires --hiring-schedule");
+        if((options.count("--hiring-execution") || options.count("--hiring-extras") || options.count("--hiring-availability") || options.count("--hiring-diversity")) && !options.count("--hiring-schedule"))throw std::invalid_argument("Hiring planner controls require --hiring-schedule");
         if(options.count("--hiring-schedule"))
         {
             if(simThread && std::string(simThread)!="0")throw std::invalid_argument("Hiring study requires the headless simulation owner");
@@ -344,6 +344,9 @@ struct HeadlessRunner
             if(parts.size()!=4 || (parts[3]!="split" && parts[3]!="combined"))throw std::invalid_argument("Expected hiring schedule K:R:L:split|combined");
             HiringStudy::Schedule schedule;
             schedule.delay=integer(parts[0],0,8);schedule.refresh=integer(parts[1],1,8);schedule.capacity=integer(parts[2],1,128);
+            const auto extras=one(options,"--hiring-extras","2");schedule.extras=extras=="fixed"?-1:integer(extras,0,4);
+            schedule.availableOnly=one(options,"--hiring-availability","all")=="available";
+            schedule.coordinate=one(options,"--hiring-diversity","independent")=="rounds";
             schedule.split=parts[3]=="split";schedule.parallel=one(options,"--hiring-execution","pool")=="pool";
             const auto telemetry=many(options,"--telemetry");schedule.score=std::find(telemetry.begin(),telemetry.end(),"hiring-shadow")!=telemetry.end();
             HiringStudy::configureScheduled(schedule);
