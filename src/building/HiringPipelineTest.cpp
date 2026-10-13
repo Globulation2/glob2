@@ -65,9 +65,23 @@ TEST_SUITE("HiringPipeline")
 		{
 			CAPTURE(participants);
 			glob2test::HeadlessGame w(
-				{.discovered = true, .loadDefaultRace = true, .header = true});
+				{.teams = 8, .discovered = true, .loadDefaultRace = true, .header = true});
 			w.game.map.configureCompute(participants);
 			innWithWorker(w);
+			for (unsigned team = 1; team < 8; ++team)
+			{
+				auto *b = w.addBuilding("warflag", 8 + team * 6, 16, 0, team);
+				b->maxUnitWorking = 2;
+				b->subscriptionWorkingTimer = 28;
+				b->updateCallLists();
+				for (unsigned i = 0; i < team; ++i)
+				{
+					auto *u = w.addUnit(WARRIOR, 8 + team * 6 + i % 3, 22 + i / 3, team);
+					u->activity = Unit::ACT_RANDOM;
+					u->medical = Unit::MED_FREE;
+					u->hungriness = 0;
+				}
+			}
 			std::vector<std::pair<Uint32, Uint32>> actual;
 			for (unsigned tick = 0; tick < 64; ++tick)
 			{
