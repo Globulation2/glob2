@@ -1,0 +1,29 @@
+{
+  "head": "aa2fdda766d2308aeecc6047c4538b39d9483f17",
+  "base": "0709322f3b140507f432aa820611c455314c91c2",
+  "unit_cases": 60,
+  "unit_result": "all passed",
+  "unit_binary_sha256": "0cb29a9bf2388aee733fe5007c7b8fcaa3dc8fb3d5d30ed7a9df2fc257e7685b",
+  "unit_command": "python3 test/run_tests.py --build-dir build/linux/client/debug/dev-dev_fast-true-linker-auto --binary unit -j2 --display-jobs 1 --timeout 600 --filter SurfaceCoverage/* --filter SurfaceRaster/* --filter ComputeExecutor/* --write-inventory artifacts/render-execution-names/unit-inventory.json --junit artifacts/render-execution-names/unit.xml --artifacts artifacts/render-execution-names/unit",
+  "native_contract_cases": 8,
+  "native_contract_result": "all passed",
+  "platform": "Linux-7.0.0-38-generic-x86_64-with-glibc2.39",
+  "compiler": "g++ (Ubuntu 13.3.0-6ubuntu2~24.04.1) 13.3.0",
+  "build_command": "GLOB2_SDL3_PREFIX=/home/bradley/glob2/build/sdl3/prefix python3 tools/dev_build.py -j8 unit-tests engine-tests",
+  "build_flags": "dev_fast=1, linker=auto, -O0 -g1; no new performance claims",
+  "runtime_dependencies": "existing pinned prefix; SDL3.4.16",
+  "limits": "Linux native naming/dispatch/pixel/terrain checks; other platforms not executed. No rendering algorithms, simulation scheduling/state, save/replay/network formats or runtime dependencies changed.",
+  "unit_junit": {
+    "tests": 60,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0
+  },
+  "engine_binary_sha256": "58a67be136159047632af68e0d82d2fffd3bcae9b4ec3373e1ecc6d0b8711bb3",
+  "engine_junit": {
+    "tests": 35,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0
+  }
+}
