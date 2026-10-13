@@ -1,0 +1,7 @@
+{
+  "source": "24903800acd1a5cd598406eb09f0f4d6be7db350",
+  "archive": "validator-prototype.tar.gz",
+  "sha256": "8e6d58a30fb6dd55d6012ac3fed0b259efbfebe44ac75382c43d8e64933eb917",
+  "cpu_fixed_point_check_retained": true,
+  "qualification": false
+}
