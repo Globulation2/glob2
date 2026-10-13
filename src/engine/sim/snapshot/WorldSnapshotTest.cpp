@@ -1152,27 +1152,31 @@ TEST_SUITE("WorldSnapshot")
         CHECK_NOTHROW(SimulationSnapshot::verifyCapture(fixture.game,original));
 
         // Mutate a private component copy, keeping the original immutable lease.
-        auto changed=original;
-        auto entities=std::make_shared<SimulationSnapshot::Entities>(*original.entities);
-        changed.entities=entities;
-        SUBCASE("omitted unit") { entities->units.pop_back(); }
-        SUBCASE("omitted building") { entities->buildings.pop_back(); }
-        SUBCASE("duplicate unit") { entities->units[1]=entities->units[0]; }
-        SUBCASE("duplicate building") { entities->buildings[1]=entities->buildings[0]; }
-        SUBCASE("unit order") { std::swap(entities->units[0],entities->units[1]); }
-        SUBCASE("unit lookup") { entities->unitSlotIndices[worker->gid]=SimulationSnapshot::Entities::NoRecord; }
-        SUBCASE("unit team") { entities->units[0].team=1; }
-        SUBCASE("unit attack strength") { ++entities->units[0].realAttackStrength; }
-        SUBCASE("working reference") { entities->relationships[entities->buildings[0].working.offset]=Game::refOf(occupant); }
-        SUBCASE("inside reference") { entities->relationships[entities->buildings[0].inside.offset]=Game::refOf(worker); }
-        SUBCASE("working count") { entities->buildings[0].working.count=0; }
-        SUBCASE("inside offset") { entities->buildings[0].inside.offset=entities->relationships.size(); }
-        SUBCASE("unreferenced relationship") { entities->relationships.push_back(Game::refOf(worker)); }
-        SUBCASE("derived maximum hp") { ++entities->buildings[0].maxHp; }
-        SUBCASE("shared inventory binding") { entities->buildings[0].usesTeamResources=!entities->buildings[0].usesTeamResources; }
-        SUBCASE("supply mask") { entities->buildings[0].availableSupplyMask^=1; }
-        CHECK_THROWS_AS(SimulationSnapshot::verifyCapture(fixture.game,changed),std::logic_error);
-        CHECK_NOTHROW(SimulationSnapshot::verifyCapture(fixture.game,original));
+        const auto check=[&](const char* name,const auto& mutate) {
+            INFO(name);
+            auto changed=original;
+            auto entities=std::make_shared<SimulationSnapshot::Entities>(*original.entities);
+            mutate(*entities);
+            changed.entities=std::move(entities);
+            CHECK_THROWS_AS(SimulationSnapshot::verifyCapture(fixture.game,changed),std::logic_error);
+            CHECK_NOTHROW(SimulationSnapshot::verifyCapture(fixture.game,original));
+        };
+        check("omitted unit", [&](auto& entities) { entities.units.pop_back(); });
+        check("omitted building", [&](auto& entities) { entities.buildings.pop_back(); });
+        check("duplicate unit", [&](auto& entities) { entities.units[1]=entities.units[0]; });
+        check("duplicate building", [&](auto& entities) { entities.buildings[1]=entities.buildings[0]; });
+        check("unit order", [&](auto& entities) { std::swap(entities.units[0],entities.units[1]); });
+        check("unit lookup", [&](auto& entities) { entities.unitSlotIndices[worker->gid]=SimulationSnapshot::Entities::NoRecord; });
+        check("unit team", [&](auto& entities) { entities.units[0].team=1; });
+        check("unit attack strength", [&](auto& entities) { ++entities.units[0].realAttackStrength; });
+        check("working reference", [&](auto& entities) { entities.relationships[entities.buildings[0].working.offset]=Game::refOf(occupant); });
+        check("inside reference", [&](auto& entities) { entities.relationships[entities.buildings[0].inside.offset]=Game::refOf(worker); });
+        check("working count", [&](auto& entities) { entities.buildings[0].working.count=0; });
+        check("inside offset", [&](auto& entities) { entities.buildings[0].inside.offset=entities.relationships.size(); });
+        check("unreferenced relationship", [&](auto& entities) { entities.relationships.push_back(Game::refOf(worker)); });
+        check("derived maximum hp", [&](auto& entities) { ++entities.buildings[0].maxHp; });
+        check("shared inventory binding", [&](auto& entities) { entities.buildings[0].usesTeamResources=!entities.buildings[0].usesTeamResources; });
+        check("supply mask", [&](auto& entities) { entities.buildings[0].availableSupplyMask^=1; });
     }
 }
 
