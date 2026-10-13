@@ -1,0 +1,17 @@
+{
+  "source": "db0e4b064344e4f6aa88c998093944240f668a3d",
+  "base": "6b95c81c0d438f64e3391ff4785bc95d3436d174",
+  "testcase_nodes": 190,
+  "suite": {
+    "name": "build/darwin/client/debug/dev-dev_fast-true-linker-auto/test/glob2-engine-tests",
+    "errors": "0",
+    "failures": "0",
+    "tests": "474474",
+    "time": "142.609",
+    "timestamp": "2026-10-13T19:10:33Z",
+    "doctest_version": "2.4.11"
+  },
+  "trace_comparisons": true,
+  "platform": "macOS arm64",
+  "integration": "Frozen comparison; later master integration abandoned at user request. No latest-master validation claimed."
+}

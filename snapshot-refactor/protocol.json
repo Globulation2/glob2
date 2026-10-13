@@ -1,0 +1,21 @@
+{
+  "source": "db0e4b064344e4f6aa88c998093944240f668a3d",
+  "integration_base": "6b95c81c0d438f64e3391ff4785bc95d3436d174",
+  "old_planner_source": "c2fa28a103ed0726c57b25770313bc47df3afbb9",
+  "comparison": "Fresh old-planner/owner-input control versus refactored worker-input planner on the same integrated standard-snapshot engine. Old baseline capture omits added funding facts; current record widths are identical to legacy (building408/unit384), with an index in building padding and 16-bit team plus16-bit modifier replacing unit team word. No live policy rollout.",
+  "timing_protocol": "Twelve existing256x256eight-Nicowar cases; one process warmup per arm/case; ten rotated before/after pairs,16384ticks including4096warmup,n4. Timing omits diagnostics/checksums/saves. Reject/retain pairs overlapping host compiler/test activity. Process CPU and measured elapsed include final drains. Fixed K4/R4/vacancies+2/available-only/round-coordinated policy.",
+  "verification_protocol": "Three map families8192ticks with per-tick compact world traces and full final candidate-output digest; old control atn4 and newn1/2/4/8; disabled-policy controls compare normal traces. Diagnostics separately measure owner snapshot, new-fact capture, route bootstrap, route handle capture, scheduling prep, submission, publication and owner hiring batches; detailed snapshot bytes/buffer-growth counters enabled separately.",
+  "source_status": "clean tracked working tree at final frozen head",
+  "layouts": {
+    "before_building": 408,
+    "after_building": 408,
+    "before_unit": 384,
+    "after_unit": 384,
+    "before_team": 2048,
+    "after_team": 2048,
+    "sparse_funding": 180
+  },
+  "limitations": "These layouts are measured on Mac arm64; do not generalize an ABI-size claim without checking other platforms. Fact timer covers sparse funding/aura batch; packed supplier-bit extraction is part of ordinary team capture. Copied-byte counters describe captured payload/map copies, not every compiler-generated memory transaction. Heap growth counters are scoped; not a process-wide allocation census.",
+  "new_master_seen": "b4c463a439953059c9ac058902cff8a652e87f02",
+  "integration_note": "Frozen comparison; later master integration abandoned at user request. No latest-master validation claimed."
+}

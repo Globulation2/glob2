@@ -1,0 +1,179 @@
+{
+  "scope": "Fixed twelve256x256 eight-Nicowar maps; ten paired repeated timings per map, not independent gameplay observations. Paired bootstrap uncertainty describes timing for these fixed cases, not a general map population. Baseline6b95/SIM48 frozen; latest statistics integration separate.",
+  "pairs": 120,
+  "warmup_pairs": 15,
+  "excluded_pairs": 9,
+  "metrics": {
+    "elapsed": {
+      "geometric_mean_paired_median_delta": -0.010298058627333281,
+      "paired_bootstrap_95_interval": [
+        -0.01852892101780651,
+        0.004230472606365076
+      ],
+      "per_map": {
+        "river-713": {
+          "paired_median_delta": -0.0024009584752667833,
+          "pairs": 10
+        },
+        "river-2017": {
+          "paired_median_delta": -0.011825999040524556,
+          "pairs": 10
+        },
+        "river-4093": {
+          "paired_median_delta": -0.005546167366927865,
+          "pairs": 10
+        },
+        "river-8191": {
+          "paired_median_delta": -0.007131720695991684,
+          "pairs": 10
+        },
+        "islands-713": {
+          "paired_median_delta": -0.0399247379789581,
+          "pairs": 10
+        },
+        "islands-2017": {
+          "paired_median_delta": -0.0070174486294440445,
+          "pairs": 10
+        },
+        "islands-4093": {
+          "paired_median_delta": -0.009785724317020105,
+          "pairs": 10
+        },
+        "islands-8191": {
+          "paired_median_delta": -0.018631104446037924,
+          "pairs": 10
+        },
+        "swamp-713": {
+          "paired_median_delta": 0.014896051591082825,
+          "pairs": 10
+        },
+        "swamp-2017": {
+          "paired_median_delta": -0.016612097846564266,
+          "pairs": 10
+        },
+        "swamp-4093": {
+          "paired_median_delta": -0.007000205887007509,
+          "pairs": 10
+        },
+        "swamp-8191": {
+          "paired_median_delta": -0.011712263217247979,
+          "pairs": 10
+        }
+      }
+    },
+    "process_cpu": {
+      "geometric_mean_paired_median_delta": -0.014295583707458938,
+      "paired_bootstrap_95_interval": [
+        -0.018599742456904603,
+        -0.006234289598791695
+      ],
+      "per_map": {
+        "river-713": {
+          "paired_median_delta": -0.0038581072420365288,
+          "pairs": 10
+        },
+        "river-2017": {
+          "paired_median_delta": -0.021918628936272718,
+          "pairs": 10
+        },
+        "river-4093": {
+          "paired_median_delta": -0.00506280953481235,
+          "pairs": 10
+        },
+        "river-8191": {
+          "paired_median_delta": -0.015785611885263243,
+          "pairs": 10
+        },
+        "islands-713": {
+          "paired_median_delta": -0.02315326328768883,
+          "pairs": 10
+        },
+        "islands-2017": {
+          "paired_median_delta": -0.01677765850795315,
+          "pairs": 10
+        },
+        "islands-4093": {
+          "paired_median_delta": -0.016868433444648456,
+          "pairs": 10
+        },
+        "islands-8191": {
+          "paired_median_delta": -0.018172209979005587,
+          "pairs": 10
+        },
+        "swamp-713": {
+          "paired_median_delta": 0.006778800393592987,
+          "pairs": 10
+        },
+        "swamp-2017": {
+          "paired_median_delta": -0.025542055387772,
+          "pairs": 10
+        },
+        "swamp-4093": {
+          "paired_median_delta": -0.010427746215111854,
+          "pairs": 10
+        },
+        "swamp-8191": {
+          "paired_median_delta": -0.02026401531768018,
+          "pairs": 10
+        }
+      }
+    },
+    "tick_p95": {
+      "geometric_mean_paired_median_delta": -0.0015591062453465603,
+      "paired_bootstrap_95_interval": [
+        -0.011765184607252246,
+        0.010202142198550136
+      ],
+      "per_map": {
+        "river-713": {
+          "paired_median_delta": 0.007825721414772741,
+          "pairs": 10
+        },
+        "river-2017": {
+          "paired_median_delta": -0.008178764624465928,
+          "pairs": 10
+        },
+        "river-4093": {
+          "paired_median_delta": 0.01294086234537541,
+          "pairs": 10
+        },
+        "river-8191": {
+          "paired_median_delta": 0.013526670235755744,
+          "pairs": 10
+        },
+        "islands-713": {
+          "paired_median_delta": -0.0323374362691945,
+          "pairs": 10
+        },
+        "islands-2017": {
+          "paired_median_delta": -0.002053355707496738,
+          "pairs": 10
+        },
+        "islands-4093": {
+          "paired_median_delta": 0.001451296885656995,
+          "pairs": 10
+        },
+        "islands-8191": {
+          "paired_median_delta": -0.023348569040056843,
+          "pairs": 10
+        },
+        "swamp-713": {
+          "paired_median_delta": 0.027453261372270586,
+          "pairs": 10
+        },
+        "swamp-2017": {
+          "paired_median_delta": -0.014320292814851433,
+          "pairs": 10
+        },
+        "swamp-4093": {
+          "paired_median_delta": -0.004557877548500366,
+          "pairs": 10
+        },
+        "swamp-8191": {
+          "paired_median_delta": 0.0044206223335356,
+          "pairs": 10
+        }
+      }
+    }
+  }
+}
