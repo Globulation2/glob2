@@ -1,0 +1,55 @@
+{
+  "tested_commit": "3e9ed25c818975129a433aa1de8df38213b77c6c",
+  "base": "6b95c81c0d438f64e3391ff4785bc95d3436d174",
+  "source_pr": 1154,
+  "source_pr_head": "fdca48059e632268f0b814abba25afc60e2370f0",
+  "platform": "Darwin arm64",
+  "compiler": "Apple clang version 21.0.0 (clang-2100.3.34.2)",
+  "scope": "same-boundary entity reuse; no simulation arithmetic/state-format/publication changes",
+  "build": "PYTHONPATH=\"$PWD\" python3 tools/dev_build.py engine-tests build/darwin/client/debug/dev-dev_fast-true-linker-auto/src/glob2",
+  "performance_claim": "Avoids repeated extraction and entity copy accounting; no measured whole-game timing claim",
+  "omissions": [
+    "other-platform runtime/checksum qualification",
+    "release performance",
+    "packaging",
+    "GPU/display gameplay review"
+  ],
+  "initial_build_failure": "Python asset worker ModuleNotFoundError: tools; resolved by PYTHONPATH; retained initial-build.log",
+  "os_version": "26.6.2",
+  "source_status": [
+    "?? .playwright-mcp/"
+  ],
+  "source_status_note": "Tracked files match tested commit; pre-existing untracked .playwright-mcp/ is included in provenance and left untouched.",
+  "binaries": {
+    "engine": {
+      "sha256": "142a25bdd58e5f71a8034175df46c82515980e6b4f3af9a121cacab784de4f9f",
+      "size": 202219680
+    },
+    "client": {
+      "sha256": "044f1c4f0cc4ce1292626f1a814273cada4fa79711cecfc802044d6591568782",
+      "size": 171468168
+    }
+  },
+  "final_build_log": "final-revision-build.log",
+  "baseline_control": "Entity reuse disabled by baseline-disable-reuse.patch; identical OpenCL completion-count failure persists",
+  "initial_cli_failure": "Unsupported --gradient-backend on match verify; corrected invocations omit it; original error retained",
+  "final_results": {
+    "cases": 104,
+    "passed": 102,
+    "failed": [
+      "GradientPreparation/modified terrain costs remain exact when field obstacles change"
+    ],
+    "skipped": 1,
+    "verified_compute_participants": [
+      1,
+      4
+    ],
+    "checksum_rows": 842,
+    "checksum_file_sha256": "2287760e6a3f627e08584369f4cb7c202019d69458be4751d42790ebd19b3601"
+  },
+  "input_sha256": {
+    "maps/FourSquares1.map.gz": "3f2ba4e3313fa31801449e057adaff679951abba7c599c271442a29578931869",
+    "test/fixtures/multiplayer/FourSquares1.g2mr": "f8f74795337dd3a85bd2bdd46bce936b058d5db8095ea6ded9466475177bc3b8",
+    "test/fixtures/multiplayer/FourSquares1.verify-trace.txt": "2287760e6a3f627e08584369f4cb7c202019d69458be4751d42790ebd19b3601"
+  }
+}
