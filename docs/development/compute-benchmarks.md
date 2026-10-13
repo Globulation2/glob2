@@ -90,7 +90,10 @@ of dropping them. `building_gradient_synchronous_by_reason` splits that count:
 (a map without a game, as in the editor) and `other`.
 `setup_ns` ends before `Engine::run`; `run_ns` includes that call's finalization.
 
-The nested `ai_pipeline` object reports session counters:
+The nested `ai_pipeline` object reports session counters. Snapshot clock timings
+are opt-in through `GLOB2_SNAPSHOT_PROFILE=1` or `GLOB2_STATS_PROFILE=1`; extraction
+and preparation nanoseconds remain zero otherwise. Copy counts retain the
+accounting policy below:
 
 | Metric | Meaning |
 | --- | --- |

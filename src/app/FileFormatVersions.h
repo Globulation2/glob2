@@ -269,3 +269,10 @@ static constexpr int FILE_FORMAT_VERSION_PRIVATE_RANDOM = 152;
 
 //! Immutable unit catalogs, counted race tables and composable unit state.
 static constexpr int FILE_FORMAT_VERSION_UNIT_CATALOG = 153;
+
+static constexpr int FILE_FORMAT_VERSION_TEAM_STATS_PIPELINE = 155;
+
+// Worker-finalized aggregate flags retain raw pending aggregates from older saves.
+static constexpr int FILE_FORMAT_VERSION_TEAM_STATS_FINALIZED = 157;
+// Completed pending measurement frames replace raw labour deltas.
+static constexpr int FILE_FORMAT_VERSION_TEAM_STATS_FRAMES = 158;

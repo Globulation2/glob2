@@ -308,7 +308,8 @@ For timing and scheduling, start with `src/game/Game_sync.cpp` and `src/engine/E
 - The engine has a completed-tick observation phase. After fog, projects and
   scripts, `Game::syncStep` selects/reserves one periodic gradient job. The next
   observation publishes the complete simulation preset in a game-owned snapshot
-  store. `Game::captureReadBoundary()` does not depend on the polled players or
+  store. `Game::prepareReadBoundary()` publishes due statistics before capture and
+  admits one new sample on advancing ticks. Its capture does not depend on polled players or
   pending job kinds. All polled controllers share one immutable AI view of that
   boundary. Map jobs retain named gradient, building-gradient or growth views,
   which release unrelated components independently. AI and gradient batches share
@@ -318,7 +319,8 @@ For timing and scheduling, start with `src/game/Game_sync.cpp` and `src/engine/E
   stepping invalidates the cached boundary because its caller need not advance
   the game's tick counter.
 - The simulation preset always includes catalogs, terrain, resources, occupancy,
-  areas, visibility, entities, teams, rules, published resource fields and growth.
+  areas, visibility, entities, teams, rules, published resource fields, growth and
+  cumulative statistics inputs.
   `CaptureOptions` adds the ordinary presentation preset (session, effects and
   compact statistics), with explicit history, telemetry, entity-diagnostic and
   annotation options. Consumers do not contribute arbitrary capture masks.

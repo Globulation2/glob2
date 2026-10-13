@@ -167,7 +167,7 @@ void Unit::handleMagic(void)
 		Sint32 magicLevel = std::max(level[MAGIC_ATTACK_AIR], level[MAGIC_ATTACK_GROUND]);
 		if (hasUsedMagicAction)
 		{
-			++owner->stats.measurements.shots[GameplayMeasurements::MAGIC];
+			++owner->stats.events().shots[GameplayMeasurements::MAGIC];
 			// Historical replays indexed an idle/movement level using the magic
 			// level as an ability index. Keep that quirk only for imported tables.
 			const int cooldownLevel=hasCapability(UnitRuntimeTraits::LegacyPerformancePolicies)
@@ -234,7 +234,7 @@ void Unit::resolveDeath()
 	{
 		if (!isDead)
 		{
-			++owner->stats.measurements.deaths[typeNum][diagnosticDeathCause];
+			++owner->stats.events().deaths[typeNum][diagnosticDeathCause];
 			if (diagnosticDeathCause == GameplayMeasurements::COMBAT)
 				owner->stats.recordCombatDeath(this);
 			// disconnect from building

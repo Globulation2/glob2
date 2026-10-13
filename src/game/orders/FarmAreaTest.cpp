@@ -140,7 +140,7 @@ namespace
 		for (int y = y0; y < y0 + 6; y++)
 			for (int x = x0; x < x0 + 6; x++)
 				run.tilesAlive += wheatAt(map, x, y) > 0;
-		run.harvested = world.team->stats.measurements.harvested[WHEAT];
+		run.harvested = world.team->stats.measurements().harvested[WHEAT];
 		return run;
 	}
 }
@@ -195,8 +195,8 @@ namespace
 					u->hungry = Unit::HUNGRY_MAX;
 			if (t % 100 == 0)
 				trace << t << ' ' << std::hex << simulationChecksum(world.game) << std::dec
-				      << " wheat " << world.team->stats.measurements.harvested[WHEAT]
-				      << " cleared " << world.team->stats.measurements.cleared[WOOD] << '\n';
+				      << " wheat " << world.team->stats.measurements().harvested[WHEAT]
+				      << " cleared " << world.team->stats.measurements().cleared[WOOD] << '\n';
 		}
 		return trace.str();
 	}
@@ -244,7 +244,7 @@ TEST_SUITE("FarmAreas")
 					}
 			}
 			struct { int harvested, left, carrying; } result{
-				int(world.team->stats.measurements.harvested[WHEAT]), totalWheat(map), carrying};
+				int(world.team->stats.measurements().harvested[WHEAT]), totalWheat(map), carrying};
 			return result;
 		};
 		const auto farmed = run(true);
