@@ -1,0 +1,9 @@
+{
+  "archive_sha256": "06431500c747dd8739d6beb94f1664c73cd36f55a3103053a5f606cc4d25d811",
+  "tested_source": "c3cda321fdd365af3a9b8f51a73562d1809d61dc",
+  "integration_base": "35b84d4ffd774742ada41d33c39ab1a50551f113",
+  "performance_base": "b4c463a439953059c9ac058902cff8a652e87f02",
+  "rendering": "skipped at user request",
+  "repeat_comparison": "not rerun on newer master at user request",
+  "files": 2204
+}
