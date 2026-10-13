@@ -1,0 +1,22 @@
+{
+  "runtime_source": "e3e56387f6008dccc6bb4dd1fc165178d40ead1a",
+  "pr_head": "c2fa28a103ed0726c57b25770313bc47df3afbb9",
+  "pr_head_change": "Documentation only: cold route preparation API distinction. No live code shipped.",
+  "integrated_base": "26715e41b177da04f068f01ca436abad5c1f95d2",
+  "fetched_master": "277510840054b1416f2defd7d86fe1431dd0ddc0",
+  "compiler": "Apple clang21, macOS arm64, ordinary -O3 release, dev_fast=0, no PCH/unity; exact argv archived; unchanged matching release objects reused.",
+  "binary_sha256": "f557f0ab6032f0dd5c34dda1f17c3d9a26ee00f3f7119b72d1623ba86588b1f7",
+  "fixtures": "Twelve exact-seed256x256generatedmaps:river/islands/swamp \u00d7713/2017/4093/8191;8Nicowar players,default workers/rules,game seed=map seed+100000. No stock/vacancy/food-budget injections.",
+  "policy": "Isolated live material consumer,K4/R4,vacancies+2,available-only combined,distinct rounds where supported; L128 is ceiling. Attractions/flying-carrier searches remain original. Original fair hiring wrapper, quotas, subscriptions and swaps retained; failed destination rejected. Existing lazy route bootstrapping through point query at admitted-team boundary.",
+  "timing": "12maps\u00d73paired repetitions at n4,1process warmup/map/control,4096warmup+12288measuredticks. Two post-screen selected maps extended to10pairs with seven additional pairs each.124accepted timing processes total;100measured controls; no detected host overlaps in final datasets. Quiet-host detection samples ps every250ms; undetected host activity remains a limitation. End drains included; diagnostics/checksum exports/saves disabled for timing.",
+  "verification": "15new compact8192tick runs plus3complete normal native baselines. Original/shadow match normal native world trace; live serial and pooled1/4 participants match per-tick traces and published-output digests on all three map types. All measured repetitions agree on final checksum and economy within each fixed policy. Previous156 normal focused cases remain applicable to unchanged runtime source.",
+  "superseded": "Earlier eager buildingGradient bootstrap completed full fields and biased owner cost; retained as superseded, excluded. Detailed checksum attempt filled host disk; some traces truncated, excluded. Complete native baseline world traces retained. No superseded binary distributed.",
+  "scope_limits": [
+    "Match openings (~9.1min), not full-match or late-war qualification.",
+    "Three repetitions in broad screen; ten-repeat confidence intervals apply only to two selected fixed maps, not general population.",
+    "Changed trajectories do not perform identical economic work; endpoint counts are not construction-time or exposure-adjusted death-rate gates.",
+    "No general recruitment delay/missed-opportunity gate established on AI games.",
+    "macOSarm64 only; no cross-platform/TSAN/gameplay footage, no live save/replay/network acceptance. Standalone live behavior is not integrated into production; normal game unchanged.",
+    "Phase counters are separate diagnostic runs. Planner totals include warmup; owner phase totals reset at4096. Reservation accounting is not measured incremental RSS."
+  ]
+}

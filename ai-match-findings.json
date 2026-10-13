@@ -1,0 +1,1045 @@
+{
+  "scope": "Exploratory 12-map eight-Nicowar sweep; three paired repetitions/map, four participants,4096warmup+12288measured ticks. Material consumer only, attractions/flying carrier search unchanged. Counts reflect intentional changed trajectories; not equal work. No10repeat gate claim, nor eight-tick/general economy acceptance.",
+  "summary": {
+    "all": {
+      "case_count": 12,
+      "elapsed": {
+        "geometric_mean_ratio": 1.0062426529974746,
+        "median_ratio": 1.0348357972367839,
+        "range_ratio": [
+          0.8489169021205552,
+          1.1588349339519268
+        ]
+      },
+      "cpu": {
+        "geometric_mean_ratio": 1.0603199826382985,
+        "median_ratio": 1.0735662655230986,
+        "range_ratio": [
+          0.8739440015589054,
+          1.249102395741976
+        ]
+      },
+      "p50": {
+        "geometric_mean_ratio": 1.1991654341535383,
+        "median_ratio": 1.218121965931462,
+        "range_ratio": [
+          1.0430089919478283,
+          1.304004555619487
+        ]
+      },
+      "p95": {
+        "geometric_mean_ratio": 1.0222361143572254,
+        "median_ratio": 1.0168307209311904,
+        "range_ratio": [
+          0.9260771727386616,
+          1.2318309690873939
+        ]
+      },
+      "p99": {
+        "geometric_mean_ratio": 0.8452405357128946,
+        "median_ratio": 0.9886374863826379,
+        "range_ratio": [
+          0.15649453440624642,
+          1.0475293458084314
+        ]
+      },
+      "economy_totals": {
+        "original": {
+          "population": 5383,
+          "buildings": 1226,
+          "sites": 237,
+          "starvation_deaths": 188,
+          "births": 6216,
+          "completed_construction": 1383,
+          "harvested": 56874,
+          "food_critical": 584,
+          "alive": 95
+        },
+        "pool": {
+          "population": 5433,
+          "buildings": 1224,
+          "sites": 255,
+          "starvation_deaths": 218,
+          "births": 6328,
+          "completed_construction": 1379,
+          "harvested": 57910,
+          "food_critical": 583,
+          "alive": 94
+        }
+      }
+    },
+    "river": {
+      "case_count": 4,
+      "elapsed": {
+        "geometric_mean_ratio": 0.9909227574934545,
+        "median_ratio": 1.0073566787937236,
+        "range_ratio": [
+          0.8668730111113819,
+          1.0990462755345676
+        ]
+      },
+      "cpu": {
+        "geometric_mean_ratio": 1.0062901500345527,
+        "median_ratio": 1.041460018736502,
+        "range_ratio": [
+          0.8739440015589054,
+          1.0824675205718877
+        ]
+      },
+      "p50": {
+        "geometric_mean_ratio": 1.1143477990208592,
+        "median_ratio": 1.1088867653909817,
+        "range_ratio": [
+          1.0430089919478283,
+          1.2023885430174162
+        ]
+      },
+      "p95": {
+        "geometric_mean_ratio": 0.9706283660562791,
+        "median_ratio": 0.9447432839687515,
+        "range_ratio": [
+          0.9260771727386616,
+          1.0738900685727621
+        ]
+      },
+      "p99": {
+        "geometric_mean_ratio": 1.0102829554171924,
+        "median_ratio": 1.0136950963216336,
+        "range_ratio": [
+          0.9843609981762459,
+          1.0299349904932193
+        ]
+      },
+      "economy_totals": {
+        "original": {
+          "population": 1537,
+          "buildings": 353,
+          "sites": 82,
+          "starvation_deaths": 79,
+          "births": 1766,
+          "completed_construction": 407,
+          "harvested": 16857,
+          "food_critical": 184,
+          "alive": 32
+        },
+        "pool": {
+          "population": 1473,
+          "buildings": 340,
+          "sites": 89,
+          "starvation_deaths": 119,
+          "births": 1717,
+          "completed_construction": 394,
+          "harvested": 16622,
+          "food_critical": 186,
+          "alive": 31
+        }
+      }
+    },
+    "islands": {
+      "case_count": 4,
+      "elapsed": {
+        "geometric_mean_ratio": 1.010081239256118,
+        "median_ratio": 1.0354069596380149,
+        "range_ratio": [
+          0.8489169021205552,
+          1.1588349339519268
+        ]
+      },
+      "cpu": {
+        "geometric_mean_ratio": 1.1056980050873062,
+        "median_ratio": 1.104178277048768,
+        "range_ratio": [
+          0.9834923481596399,
+          1.249102395741976
+        ]
+      },
+      "p50": {
+        "geometric_mean_ratio": 1.2560220939717057,
+        "median_ratio": 1.2489407373816475,
+        "range_ratio": [
+          1.2235932141595744,
+          1.304004555619487
+        ]
+      },
+      "p95": {
+        "geometric_mean_ratio": 1.0672842675490772,
+        "median_ratio": 1.0518804876415697,
+        "range_ratio": [
+          0.9520247825982521,
+          1.2318309690873939
+        ]
+      },
+      "p99": {
+        "geometric_mean_ratio": 0.6313934071980373,
+        "median_ratio": 0.9848901158222207,
+        "range_ratio": [
+          0.15649453440624642,
+          1.0475293458084314
+        ]
+      },
+      "economy_totals": {
+        "original": {
+          "population": 2355,
+          "buildings": 502,
+          "sites": 86,
+          "starvation_deaths": 30,
+          "births": 2749,
+          "completed_construction": 535,
+          "harvested": 23379,
+          "food_critical": 255,
+          "alive": 32
+        },
+        "pool": {
+          "population": 2383,
+          "buildings": 506,
+          "sites": 99,
+          "starvation_deaths": 33,
+          "births": 2794,
+          "completed_construction": 541,
+          "harvested": 23833,
+          "food_critical": 240,
+          "alive": 32
+        }
+      }
+    },
+    "swamp": {
+      "case_count": 4,
+      "elapsed": {
+        "geometric_mean_ratio": 1.0179162791563896,
+        "median_ratio": 1.0348357972367839,
+        "range_ratio": [
+          0.905647042679661,
+          1.1071894052920217
+        ]
+      },
+      "cpu": {
+        "geometric_mean_ratio": 1.0713986398797741,
+        "median_ratio": 1.0896685884495176,
+        "range_ratio": [
+          0.9897719172747181,
+          1.121306024700756
+        ]
+      },
+      "p50": {
+        "geometric_mean_ratio": 1.2320242780381547,
+        "median_ratio": 1.2344755961014626,
+        "range_ratio": [
+          1.175281419814955,
+          1.2867848581221708
+        ]
+      },
+      "p95": {
+        "geometric_mean_ratio": 1.0311469774538562,
+        "median_ratio": 1.0168307209311904,
+        "range_ratio": [
+          0.9682357910855603,
+          1.1293193722787678
+        ]
+      },
+      "p99": {
+        "geometric_mean_ratio": 0.9466684009823132,
+        "median_ratio": 0.9465763211135532,
+        "range_ratio": [
+          0.9034975970101705,
+          0.99291397458903
+        ]
+      },
+      "economy_totals": {
+        "original": {
+          "population": 1491,
+          "buildings": 371,
+          "sites": 69,
+          "starvation_deaths": 79,
+          "births": 1701,
+          "completed_construction": 441,
+          "harvested": 16638,
+          "food_critical": 145,
+          "alive": 31
+        },
+        "pool": {
+          "population": 1577,
+          "buildings": 378,
+          "sites": 67,
+          "starvation_deaths": 66,
+          "births": 1817,
+          "completed_construction": 444,
+          "harvested": 17455,
+          "food_critical": 157,
+          "alive": 31
+        }
+      }
+    }
+  },
+  "cases": {
+    "islands-2017": {
+      "pairs": 3,
+      "ratios": {
+        "elapsed": 0.9173436058943489,
+        "cpu": 1.053902209294528,
+        "p50": 1.304004555619487,
+        "p95": 1.0464116385339923,
+        "p99": 0.9617040558839847
+      },
+      "raw_ratios": {
+        "elapsed": [
+          0.9173436058943489,
+          0.9235489464729436,
+          0.7829031711917512
+        ],
+        "cpu": [
+          1.053902209294528,
+          1.061283648331112,
+          0.9805923045713669
+        ],
+        "p50": [
+          1.304004555619487,
+          1.3385703063629222,
+          1.202335452836764
+        ],
+        "p95": [
+          1.0464116385339923,
+          1.0640329907324673,
+          0.9823396899950129
+        ],
+        "p99": [
+          0.9617040558839847,
+          0.9716347775731105,
+          0.9009828261108169
+        ]
+      },
+      "economy": {
+        "original": {
+          "population": 452,
+          "buildings": 119,
+          "sites": 22,
+          "starvation_deaths": 14,
+          "births": 542,
+          "completed_construction": 135,
+          "harvested": 5041,
+          "food_critical": 76,
+          "alive": 8
+        },
+        "pool": {
+          "population": 526,
+          "buildings": 103,
+          "sites": 29,
+          "starvation_deaths": 10,
+          "births": 635,
+          "completed_construction": 123,
+          "harvested": 5456,
+          "food_critical": 86,
+          "alive": 8
+        }
+      },
+      "failures": [],
+      "final_checksum_original": 20461354,
+      "final_checksum_pool": 4289981293
+    },
+    "islands-4093": {
+      "pairs": 3,
+      "ratios": {
+        "elapsed": 1.1534703133816806,
+        "cpu": 1.249102395741976,
+        "p50": 1.242736927566761,
+        "p95": 1.2318309690873939,
+        "p99": 1.0080761757604568
+      },
+      "raw_ratios": {
+        "elapsed": [
+          1.1402093317270439,
+          1.1749998137407394,
+          1.1534703133816806
+        ],
+        "cpu": [
+          1.2220632834440879,
+          1.2641973346075972,
+          1.249102395741976
+        ],
+        "p50": [
+          1.204437417654809,
+          1.252869676939462,
+          1.242736927566761
+        ],
+        "p95": [
+          1.226569420328082,
+          1.2805605905735378,
+          1.2318309690873939
+        ],
+        "p99": [
+          0.9989746891438344,
+          1.0080761757604568,
+          1.011936440564137
+        ]
+      },
+      "economy": {
+        "original": {
+          "population": 588,
+          "buildings": 132,
+          "sites": 14,
+          "starvation_deaths": 6,
+          "births": 682,
+          "completed_construction": 134,
+          "harvested": 5816,
+          "food_critical": 60,
+          "alive": 8
+        },
+        "pool": {
+          "population": 551,
+          "buildings": 129,
+          "sites": 20,
+          "starvation_deaths": 11,
+          "births": 643,
+          "completed_construction": 138,
+          "harvested": 5673,
+          "food_critical": 51,
+          "alive": 8
+        }
+      },
+      "failures": [],
+      "final_checksum_original": 2024206748,
+      "final_checksum_pool": 836968184
+    },
+    "islands-713": {
+      "pairs": 3,
+      "ratios": {
+        "elapsed": 0.8489169021205552,
+        "cpu": 0.9834923481596399,
+        "p50": 1.2235932141595744,
+        "p95": 0.9520247825982521,
+        "p99": 0.15649453440624642
+      },
+      "raw_ratios": {
+        "elapsed": [
+          0.887077538348183,
+          0.6866725667507805,
+          0.8489169021205552
+        ],
+        "cpu": [
+          1.0352778384515784,
+          0.8767989163075001,
+          0.9834923481596399
+        ],
+        "p50": [
+          1.27626150164091,
+          1.036860879904875,
+          1.2235932141595744
+        ],
+        "p95": [
+          0.9917456153275076,
+          0.8465234298563914,
+          0.9520247825982521
+        ],
+        "p99": [
+          0.1687054630101113,
+          0.1558808673619785,
+          0.15649453440624642
+        ]
+      },
+      "economy": {
+        "original": {
+          "population": 698,
+          "buildings": 129,
+          "sites": 29,
+          "starvation_deaths": 7,
+          "births": 846,
+          "completed_construction": 146,
+          "harvested": 6903,
+          "food_critical": 72,
+          "alive": 8
+        },
+        "pool": {
+          "population": 692,
+          "buildings": 148,
+          "sites": 28,
+          "starvation_deaths": 5,
+          "births": 830,
+          "completed_construction": 153,
+          "harvested": 6867,
+          "food_critical": 56,
+          "alive": 8
+        }
+      },
+      "failures": [],
+      "final_checksum_original": 3026986686,
+      "final_checksum_pool": 666479903
+    },
+    "islands-8191": {
+      "pairs": 3,
+      "ratios": {
+        "elapsed": 1.1588349339519268,
+        "cpu": 1.1544543448030078,
+        "p50": 1.2551445471965341,
+        "p95": 1.057349336749147,
+        "p99": 1.0475293458084314
+      },
+      "raw_ratios": {
+        "elapsed": [
+          1.1299318614319391,
+          1.1588349339519268,
+          1.184272216132845
+        ],
+        "cpu": [
+          1.1263723488665385,
+          1.1544543448030078,
+          1.1604770524318124
+        ],
+        "p50": [
+          1.2219303893991256,
+          1.268248812517463,
+          1.2551445471965341
+        ],
+        "p95": [
+          1.0265498727552673,
+          1.057349336749147,
+          1.0900463774679596
+        ],
+        "p99": [
+          1.0312136177770261,
+          1.0647826511035408,
+          1.0475293458084314
+        ]
+      },
+      "economy": {
+        "original": {
+          "population": 617,
+          "buildings": 122,
+          "sites": 21,
+          "starvation_deaths": 3,
+          "births": 679,
+          "completed_construction": 120,
+          "harvested": 5619,
+          "food_critical": 47,
+          "alive": 8
+        },
+        "pool": {
+          "population": 614,
+          "buildings": 126,
+          "sites": 22,
+          "starvation_deaths": 7,
+          "births": 686,
+          "completed_construction": 127,
+          "harvested": 5837,
+          "food_critical": 47,
+          "alive": 8
+        }
+      },
+      "failures": [],
+      "final_checksum_original": 2295248722,
+      "final_checksum_pool": 2232851613
+    },
+    "river-2017": {
+      "pairs": 3,
+      "ratios": {
+        "elapsed": 0.8668730111113819,
+        "cpu": 0.8739440015589054,
+        "p50": 1.0430089919478283,
+        "p95": 0.9260771727386616,
+        "p99": 0.9843609981762459
+      },
+      "raw_ratios": {
+        "elapsed": [
+          0.8700705483950777,
+          0.8668730111113819,
+          0.8530504095884384
+        ],
+        "cpu": [
+          0.8743593903848162,
+          0.8739440015589054,
+          0.8684501476525386
+        ],
+        "p50": [
+          1.0430089919478283,
+          1.0532304629871458,
+          1.028289075630252
+        ],
+        "p95": [
+          0.9341440619383382,
+          0.9260771727386616,
+          0.8898285402753169
+        ],
+        "p99": [
+          0.9843609981762459,
+          0.9772751850572865,
+          0.984548893613786
+        ]
+      },
+      "economy": {
+        "original": {
+          "population": 444,
+          "buildings": 84,
+          "sites": 25,
+          "starvation_deaths": 40,
+          "births": 576,
+          "completed_construction": 101,
+          "harvested": 4900,
+          "food_critical": 96,
+          "alive": 8
+        },
+        "pool": {
+          "population": 368,
+          "buildings": 72,
+          "sites": 25,
+          "starvation_deaths": 54,
+          "births": 484,
+          "completed_construction": 92,
+          "harvested": 4394,
+          "food_critical": 81,
+          "alive": 7
+        }
+      },
+      "failures": [],
+      "final_checksum_original": 3446891582,
+      "final_checksum_pool": 658665210
+    },
+    "river-4093": {
+      "pairs": 3,
+      "ratios": {
+        "elapsed": 1.0598029855647504,
+        "cpu": 1.0684047173865074,
+        "p50": 1.1006018136102462,
+        "p95": 0.9379108858990041,
+        "p99": 1.0177056603773584
+      },
+      "raw_ratios": {
+        "elapsed": [
+          0.9973043183794161,
+          1.0598029855647504,
+          1.1193384522641083
+        ],
+        "cpu": [
+          0.9745614613353367,
+          1.0684047173865074,
+          1.0864714976798884
+        ],
+        "p50": [
+          1.0242870334675143,
+          1.1006018136102462,
+          1.2201375803528764
+        ],
+        "p95": [
+          0.9079599049634156,
+          0.9379108858990041,
+          0.9610321221695629
+        ],
+        "p99": [
+          1.0177056603773584,
+          0.973447385399708,
+          1.1252188025729837
+        ]
+      },
+      "economy": {
+        "original": {
+          "population": 295,
+          "buildings": 79,
+          "sites": 19,
+          "starvation_deaths": 5,
+          "births": 280,
+          "completed_construction": 79,
+          "harvested": 2924,
+          "food_critical": 25,
+          "alive": 8
+        },
+        "pool": {
+          "population": 306,
+          "buildings": 77,
+          "sites": 19,
+          "starvation_deaths": 7,
+          "births": 306,
+          "completed_construction": 73,
+          "harvested": 3035,
+          "food_critical": 27,
+          "alive": 8
+        }
+      },
+      "failures": [],
+      "final_checksum_original": 1176924602,
+      "final_checksum_pool": 2750026289
+    },
+    "river-713": {
+      "pairs": 3,
+      "ratios": {
+        "elapsed": 1.0990462755345676,
+        "cpu": 1.0824675205718877,
+        "p50": 1.1171717171717173,
+        "p95": 0.9515756820384988,
+        "p99": 1.0299349904932193
+      },
+      "raw_ratios": {
+        "elapsed": [
+          1.1330616072493436,
+          1.0990462755345676,
+          1.0712211974966463
+        ],
+        "cpu": [
+          1.1146999776811193,
+          1.0824675205718877,
+          1.0440589617953304
+        ],
+        "p50": [
+          1.1488673139158576,
+          1.1171717171717173,
+          1.0664172123479887
+        ],
+        "p95": [
+          0.9774973918379871,
+          0.9515756820384988,
+          0.9317772456495194
+        ],
+        "p99": [
+          1.0752699522312474,
+          1.0299349904932193,
+          1.01810082993091
+        ]
+      },
+      "economy": {
+        "original": {
+          "population": 375,
+          "buildings": 84,
+          "sites": 20,
+          "starvation_deaths": 6,
+          "births": 405,
+          "completed_construction": 99,
+          "harvested": 4065,
+          "food_critical": 33,
+          "alive": 8
+        },
+        "pool": {
+          "population": 397,
+          "buildings": 85,
+          "sites": 22,
+          "starvation_deaths": 11,
+          "births": 430,
+          "completed_construction": 98,
+          "harvested": 4193,
+          "food_critical": 41,
+          "alive": 8
+        }
+      },
+      "failures": [],
+      "final_checksum_original": 3820854591,
+      "final_checksum_pool": 3407185558
+    },
+    "river-8191": {
+      "pairs": 3,
+      "ratios": {
+        "elapsed": 0.9549103720226968,
+        "cpu": 1.0145153200864963,
+        "p50": 1.2023885430174162,
+        "p95": 1.0738900685727621,
+        "p99": 1.009684532265909
+      },
+      "raw_ratios": {
+        "elapsed": [
+          0.7272370249853338,
+          0.9549103720226968,
+          1.147730074897873
+        ],
+        "cpu": [
+          0.8575811244231726,
+          1.0145153200864963,
+          1.147486024238705
+        ],
+        "p50": [
+          1.0171365877681293,
+          1.2023885430174162,
+          1.3350391822827938
+        ],
+        "p95": [
+          0.8501127541424891,
+          1.0738900685727621,
+          1.2823776160145588
+        ],
+        "p99": [
+          0.8742479994208483,
+          1.009684532265909,
+          1.0436411437957536
+        ]
+      },
+      "economy": {
+        "original": {
+          "population": 423,
+          "buildings": 106,
+          "sites": 18,
+          "starvation_deaths": 28,
+          "births": 505,
+          "completed_construction": 128,
+          "harvested": 4968,
+          "food_critical": 30,
+          "alive": 8
+        },
+        "pool": {
+          "population": 402,
+          "buildings": 106,
+          "sites": 23,
+          "starvation_deaths": 47,
+          "births": 497,
+          "completed_construction": 131,
+          "harvested": 5000,
+          "food_critical": 37,
+          "alive": 8
+        }
+      },
+      "failures": [],
+      "final_checksum_original": 1119666373,
+      "final_checksum_pool": 1904281991
+    },
+    "swamp-2017": {
+      "pairs": 3,
+      "ratios": {
+        "elapsed": 1.0211882535583015,
+        "cpu": 1.0787278136596896,
+        "p50": 1.2563004744995758,
+        "p95": 1.1293193722787678,
+        "p99": 0.9193905336121477
+      },
+      "raw_ratios": {
+        "elapsed": [
+          1.0211882535583015,
+          1.0257954194920913,
+          1.0155750955878233
+        ],
+        "cpu": [
+          1.0787278136596896,
+          1.0811861398781015,
+          1.0756694299211564
+        ],
+        "p50": [
+          1.2673665986324325,
+          1.2563004744995758,
+          1.2271272495074639
+        ],
+        "p95": [
+          1.1228596212322608,
+          1.1293193722787678,
+          1.1333517786561265
+        ],
+        "p99": [
+          0.9194035759432811,
+          0.9193905336121477,
+          0.9001122934602428
+        ]
+      },
+      "economy": {
+        "original": {
+          "population": 348,
+          "buildings": 80,
+          "sites": 18,
+          "starvation_deaths": 4,
+          "births": 363,
+          "completed_construction": 95,
+          "harvested": 3612,
+          "food_critical": 23,
+          "alive": 8
+        },
+        "pool": {
+          "population": 333,
+          "buildings": 81,
+          "sites": 16,
+          "starvation_deaths": 8,
+          "births": 348,
+          "completed_construction": 94,
+          "harvested": 3562,
+          "food_critical": 27,
+          "alive": 8
+        }
+      },
+      "failures": [],
+      "final_checksum_original": 2669544379,
+      "final_checksum_pool": 2321138561
+    },
+    "swamp-4093": {
+      "pairs": 3,
+      "ratios": {
+        "elapsed": 1.1071894052920217,
+        "cpu": 1.121306024700756,
+        "p50": 1.2126507177033492,
+        "p95": 1.0223801692494197,
+        "p99": 0.99291397458903
+      },
+      "raw_ratios": {
+        "elapsed": [
+          1.1071894052920217,
+          1.1017232203441751,
+          1.1378317568377383
+        ],
+        "cpu": [
+          1.121306024700756,
+          1.1150692881037825,
+          1.1494754853714364
+        ],
+        "p50": [
+          1.2126507177033492,
+          1.1981205951448708,
+          1.2147419474004075
+        ],
+        "p95": [
+          1.0212573123506632,
+          1.0269529276693456,
+          1.0223801692494197
+        ],
+        "p99": [
+          0.99291397458903,
+          0.9927472486125483,
+          1.0362556424831657
+        ]
+      },
+      "economy": {
+        "original": {
+          "population": 432,
+          "buildings": 109,
+          "sites": 19,
+          "starvation_deaths": 19,
+          "births": 517,
+          "completed_construction": 136,
+          "harvested": 5042,
+          "food_critical": 55,
+          "alive": 8
+        },
+        "pool": {
+          "population": 423,
+          "buildings": 103,
+          "sites": 23,
+          "starvation_deaths": 28,
+          "births": 547,
+          "completed_construction": 139,
+          "harvested": 5240,
+          "food_critical": 70,
+          "alive": 7
+        }
+      },
+      "failures": [],
+      "final_checksum_original": 4246690197,
+      "final_checksum_pool": 2416155970
+    },
+    "swamp-713": {
+      "pairs": 3,
+      "ratios": {
+        "elapsed": 1.048483340915266,
+        "cpu": 1.1006093632393457,
+        "p50": 1.175281419814955,
+        "p95": 0.9682357910855603,
+        "p99": 0.9034975970101705
+      },
+      "raw_ratios": {
+        "elapsed": [
+          1.048483340915266,
+          1.0583690864180242,
+          1.0448179316071227
+        ],
+        "cpu": [
+          1.1006093632393457,
+          1.1091415341009445,
+          1.0940728025276392
+        ],
+        "p50": [
+          1.1779126363555232,
+          1.175281419814955,
+          1.1682835929116273
+        ],
+        "p95": [
+          0.9576280947557125,
+          0.9932340578307032,
+          0.9682357910855603
+        ],
+        "p99": [
+          0.9034975970101705,
+          0.895699528899531,
+          0.9258721383463974
+        ]
+      },
+      "economy": {
+        "original": {
+          "population": 377,
+          "buildings": 90,
+          "sites": 14,
+          "starvation_deaths": 13,
+          "births": 399,
+          "completed_construction": 94,
+          "harvested": 3788,
+          "food_critical": 29,
+          "alive": 8
+        },
+        "pool": {
+          "population": 406,
+          "buildings": 92,
+          "sites": 11,
+          "starvation_deaths": 10,
+          "births": 430,
+          "completed_construction": 94,
+          "harvested": 4023,
+          "food_critical": 30,
+          "alive": 8
+        }
+      },
+      "failures": [],
+      "final_checksum_original": 3821733981,
+      "final_checksum_pool": 3291142827
+    },
+    "swamp-8191": {
+      "pairs": 3,
+      "ratios": {
+        "elapsed": 0.905647042679661,
+        "cpu": 0.9897719172747181,
+        "p50": 1.2867848581221708,
+        "p95": 1.011281272612961,
+        "p99": 0.9737621086149585
+      },
+      "raw_ratios": {
+        "elapsed": [
+          0.9050793446088441,
+          0.905647042679661,
+          0.9142650749193978
+        ],
+        "cpu": [
+          0.9867601414525613,
+          0.9897719172747181,
+          1.0001607775462673
+        ],
+        "p50": [
+          1.2867848581221708,
+          1.2838089794363015,
+          1.3026864010824002
+        ],
+        "p95": [
+          1.011281272612961,
+          1.0086355108012737,
+          1.0178780991735537
+        ],
+        "p99": [
+          0.9727039133174918,
+          0.9794473428974925,
+          0.9737621086149585
+        ]
+      },
+      "economy": {
+        "original": {
+          "population": 334,
+          "buildings": 92,
+          "sites": 18,
+          "starvation_deaths": 43,
+          "births": 422,
+          "completed_construction": 116,
+          "harvested": 4196,
+          "food_critical": 38,
+          "alive": 7
+        },
+        "pool": {
+          "population": 415,
+          "buildings": 102,
+          "sites": 17,
+          "starvation_deaths": 20,
+          "births": 492,
+          "completed_construction": 117,
+          "harvested": 4630,
+          "food_critical": 30,
+          "alive": 8
+        }
+      },
+      "failures": [],
+      "final_checksum_original": 3161248068,
+      "final_checksum_pool": 4188176968
+    }
+  },
+  "rejected_pairs": 0,
+  "failed_runs": 0
+}

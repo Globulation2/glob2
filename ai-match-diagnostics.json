@@ -1,0 +1,38 @@
+{
+  "river": {
+    "measured_ticks": 12288,
+    "owner_hiring_before_ns": 402747010,
+    "owner_hiring_after_ns": 175214664,
+    "owner_hiring_reduction": 0.564951049543484,
+    "capture_submit_increment_ns": 315063694,
+    "suggestion_rejection_fraction": 0.9755341448631175,
+    "missing_lists": 14774,
+    "planner_total_ns_including_warmup": 206682833,
+    "pipeline_deadline_wait_ns_including_warmup": 3811194,
+    "peak_accounted_bytes": 93255744
+  },
+  "islands": {
+    "measured_ticks": 12288,
+    "owner_hiring_before_ns": 544352930,
+    "owner_hiring_after_ns": 205008995,
+    "owner_hiring_reduction": 0.6233895627235808,
+    "capture_submit_increment_ns": 464957740,
+    "suggestion_rejection_fraction": 0.9523781159722429,
+    "missing_lists": 27516,
+    "planner_total_ns_including_warmup": 204208427,
+    "pipeline_deadline_wait_ns_including_warmup": 2813633,
+    "peak_accounted_bytes": 102767976
+  },
+  "swamp": {
+    "measured_ticks": 12288,
+    "owner_hiring_before_ns": 351552282,
+    "owner_hiring_after_ns": 148372795,
+    "owner_hiring_reduction": 0.5779495608564987,
+    "capture_submit_increment_ns": 336687883,
+    "suggestion_rejection_fraction": 0.9755914153320868,
+    "missing_lists": 13915,
+    "planner_total_ns_including_warmup": 139354730,
+    "pipeline_deadline_wait_ns_including_warmup": 3362856,
+    "peak_accounted_bytes": 96802256
+  }
+}

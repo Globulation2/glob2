@@ -2,6 +2,23 @@
 
 This branch contains review evidence only. Implementation: `codex/cached-hiring-study`.
 
+## Corrected eight-player Nicowar match screen
+
+Runtime source e3e56387f; current PR c2fa28a10 adds benchmark documentation only. Live material consumer remains an isolated, non-shipped harness. Attractions/flying-carrier searches remain original. Existing lazy building fields are initialized by a point query; no full-field bootstrap.
+
+Twelve256x256maps (river/islands/swamp ×713/2017/4093/8191), eight Nicowar players, unmodified starting stocks/food/demand, 16384tick openings,4096warmup, n4. Three rotated paired repetitions/map give geometric means: elapsed+0.6%,CPU+6.0%,p95+2.2%. Five maps are faster. Starvation counts188→218; completed constructions1383→1379; population5383→5433. Counts are unique cases, not repeats; they do not establish exposure-adjusted mortality or construction-time gates. Cached policy loses team5 on river2017 and team0 on swamp4093 while avoiding baseline team0 loss on swamp8191.
+
+Post-screen selection: extend islands713 and swamp8191 to10pairs each (seven additional pairs). Islands713 elapsed−15.2% (paired95%CI−17.9–−12.0%),CPU approximately flat; construction146→153,starvation7→5. Swamp8191 elapsed−9.9% (−10.9–−8.9%),CPU−1.7%; construction116→117,starvation43→20. These confirm specific fixed cases, not a general rollout. Broad behavior/safety acceptance remains unestablished; normal game unchanged.
+
+Separate diagnostic owner hiring reductions57–62%, with315–465ms additional capture/preparation/submission per12288measuredticks. Compact per-tick world traces and published-list digests match serial/pool1/4participants on three8192tick cases; original/shadow match three normal native baselines. All final repetitions have stable final checksums/economy for their own policy. MacOSarm64 only; no full-match, cross-platform, live save/replay/network or footage claim.
+
+Files: `ai-match-findings.json`, `ai-match-confirmation.json`, `ai-match-diagnostics.json`, `ai-match-provenance.json`, `ai-match-verification.json`, `ai-match-evidence.tar.gz`, `ai-match-manifest.json`.
+
+The archive contains maps/hashes, isolated sources/generators, exact compile/link argv, commands, accepted raw runs, phase diagnostics, compact traces and superseded attempts. Giant disk-failed detailed dumps and executables remain local; hashes and complete native world traces are retained. Earlier eager-field figures and disk-truncated traces are explicitly superseded/excluded. Older narrow live-fixture performance used the same eager bootstrap; do not generalize that overhead attribution.
+
+Reproduction: use matching release objects from e3e56387f, extract the archive at repository root, run `python3 artifacts/hiring-study/ai-matches/build_trial.py`, then `verify.py`, `measure.py`, `diagnose.py`, `confirm.py`, `summarize.py` and `summarize_confirmation.py` in that directory. Archive already contains output directories; preserve/move them before rerunning scripts, which require fresh directories. `build-eager-superseded.py` exists only to reproduce the excluded mistake. Exact normal compiler/link commands are archived; normal production executable contains no live flag.
+
+
 - `findings.json`: final paired timing, ordinary-workload results, shadow coverage/agreement and limitations.
 - `callgrind-findings.json`: instruction attribution, supplier audit and isolated profiling controls.
 - `final-test-results.xml`: 128 passing focused engine tests before master integration.
