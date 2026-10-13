@@ -39,6 +39,20 @@ immutable rule owners. They cost six host bytes per rule, in addition to the
 or rebuild a terrain lookup for each field. Both representations are compiled
 and rolled back together, and preserve all eight movement classes.
 
+Complete CPU fields select scalar or SIMD execution before entering the cost-layer
+sweep. A resumable building search resolves its CPU choice once per resume; a
+later resume can use a newly selected variant without rebuilding the queues.
+CPU-selected periodic jobs use their captured decision directly, retaining the
+same input validation, trivial-field shortcut and fixed publication deadline.
+GPU ownership admission, host-budget reservations and device coordination are
+skipped for these jobs. Existing snapshot leases and pooled output buffers are
+still required for asynchronous CPU execution and survive backend switching.
+Rule insertion rebuilds prepared movement metadata only when adding a distinct
+cost profile. Its rollback journal copies only the active prepared alternative,
+so an ordinary insertion does not copy the 256-profile storage for every class.
+Default execution omits optional compute diagnostics; enable telemetry explicitly
+when measuring phase attribution, then disable it for default-path comparisons.
+
 The generated predicates and shared residency state/range contracts do not establish GPU
 preparation execution or qualify any platform. GPU preparation requires separate
 kernel execution evidence and release measurements against CPU preparation using

@@ -2,6 +2,7 @@
 #include "CellRules.h"
 #include <algorithm>
 #include <stdexcept>
+#include <type_traits>
 
 CellRuleTable::CellRuleTable(std::shared_ptr<const TerrainRegistry> terrains,
 							 std::shared_ptr<const ResourceRegistry> resources)
@@ -88,13 +89,18 @@ std::uint16_t CellRuleTable::add(const Key &key, bool prepare)
 		std::size_t entries, profiles, ids, steps;
 		unsigned minimum;
 		std::optional<TerrainRegistry::Movement::Prepared> prepared;
+		bool preparedChanged = false;
 	};
 	std::array<MovementCheckpoint, std::size(gradient_kernel::WATER_STEP)> checkpoints;
 	for (unsigned sw = 0; sw < movement_.size(); ++sw)
 	{
 		const auto &m = movement_[sw];
-		checkpoints[sw] = {m.entries.size(), m.profiles.size(), m.profileIds.size(), m.steps.size(),
-			m.minimum, prepare ? m.prepared : std::nullopt};
+		auto &checkpoint = checkpoints[sw];
+		checkpoint.entries = m.entries.size();
+		checkpoint.profiles = m.profiles.size();
+		checkpoint.ids = m.profileIds.size();
+		checkpoint.steps = m.steps.size();
+		checkpoint.minimum = m.minimum;
 	}
 	const auto originalLists = uniqueLists_.size();
 	const auto originalPermissions = permissions_.size();
@@ -134,7 +140,18 @@ std::uint16_t CellRuleTable::add(const Key &key, bool prepare)
 			m.profileIds.push_back(static_cast<std::uint8_t>(profile));
 			const auto &p = rule.properties;
 			if (gradient_kernel::terrainAllowsGround(p,sw)) m.minimum = std::min(m.minimum, cost.cardinal);
-			if (prepare) m.prepare();
+			if (prepare && (m.profiles.size() != checkpoints[sw].profiles || !m.prepared))
+			{
+				auto &checkpoint = checkpoints[sw];
+				// Prepared metadata depends only on distinct cost profiles. Journal
+				// it only when changing, and copy its active alternative: copying
+				// the variant itself also copies storage for the 256-profile case.
+				if (m.prepared) std::visit([&](const auto &old) {
+					checkpoint.prepared.emplace(std::in_place_type<std::decay_t<decltype(old)>>, old);
+				}, *m.prepared);
+				checkpoint.preparedChanged = true;
+				m.prepare();
+			}
 		}
 		GradientPreparationRule preparation;
 		for (unsigned sw = 0; sw < rule.ground.size(); ++sw)
@@ -162,7 +179,13 @@ std::uint16_t CellRuleTable::add(const Key &key, bool prepare)
 			m.profileIds.resize(checkpoint.ids);
 			m.steps.resize(checkpoint.steps);
 			m.minimum = checkpoint.minimum;
-			if (prepare) m.prepared = std::move(checkpoint.prepared);
+			if (checkpoint.preparedChanged)
+			{
+				if (checkpoint.prepared) std::visit([&](const auto &old) {
+					m.prepared.emplace(std::in_place_type<std::decay_t<decltype(old)>>, old);
+				}, *checkpoint.prepared);
+				else m.prepared.reset();
+			}
 		}
 		// compile() inserts at most one whitelist cache entry, as its last step.
 		// Existing entries remain immutable; only a newly inserted owner is erased.

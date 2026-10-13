@@ -106,8 +106,11 @@ public:
     }
     void fail() {if(!failed.exchange(true))invalidateConfiguration();}
     bool pending() const noexcept override {
+        // Map-owned initialization is serviced externally. CPU jobs must not
+        // poll global backend configuration from the executor's idle predicate.
+        if (externalInitialization.load() || !wantsGPU.load()) return false;
         const auto selected=backend();
-        return !externalInitialization.load() && wantsGPU.load() && isGPU(selected) &&
+        return isGPU(selected) &&
             (selected==Backend::OpenCL ? prepareAccelerator && initializationState.load()==0 : prepareSelectedAccelerator && selectedInitialization[unsigned(selected)].load()==0);
     }
     void process() noexcept override {

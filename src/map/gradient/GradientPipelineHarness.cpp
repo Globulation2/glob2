@@ -827,6 +827,33 @@ TEST_CASE("proven gradient mismatch resolves tickets without recovery or publica
     pipeline.reset();service->stop();delete[] field;
 }
 
+TEST_CASE("explicit CPU jobs bypass device ownership and retain publication deadlines" * doctest::test_suite("GradientPipeline"))
+{
+    using namespace gradient_kernel;
+    struct Restore {Configuration applied=configuration(), requested=requestedBackendConfiguration();
+        ~Restore(){applyBackendConfiguration(applied);requestBackendConfiguration(requested);}} restore;
+    for (const auto mode : {Backend::CPU, Backend::Scalar, Backend::SSE2, Backend::NEON}) {
+        if (!cpuVariantAvailable(mode)) continue;
+        setBackend(mode);
+        TestGradientPipeline pipeline;
+        unsigned solved=0, owned=0;
+        pipeline.configure(1,2,1,[&](auto& job,auto&){
+            CHECK(job.cpuOnly); CHECK(cpuBackend()==resolvedCPUBackend(mode));
+            ++solved;job.data[0]=88;
+        });
+        pipeline.setAsyncWork([&](auto&,PlanDecision)->std::shared_ptr<OwnedGradientField>{++owned;return {};});
+        auto* field=new std::uint16_t[1]{};
+        pipeline.advance();pipeline.submit(&field,0,[](auto& job){
+            job.data[0]=77;
+            setBackend(Backend::Vulkan); // A later preference cannot reinterpret this CPU job.
+        });
+        pipeline.finish();CHECK(solved==1);CHECK(owned==0);CHECK(field[0]==0);
+        pipeline.advance();CHECK(field[0]==0);
+        pipeline.advance();CHECK(field[0]==88);
+        pipeline.reset();delete[] field;
+    }
+}
+
 TEST_CASE("availability changes during seeding do not reinterpret captured CPU execution" * doctest::test_suite("GradientPipeline"))
 {
     using namespace gradient_kernel;
@@ -862,7 +889,7 @@ TEST_CASE("nullable GPU preparation recovers once on the original worker without
     REQUIRE(service->metrics().ready);
     TestGradientPipeline pipeline,restored;
     pipeline.configure(1,2,1,[state](auto& job,auto&){
-        CHECK(job.cpuOnly==(job.data[0]!=90));
+        CHECK(job.cpuOnly); // Both explicit CPU and ownership recovery bypass device dispatch.
         if(job.data[0]!=90&&!ComputeExecutor::workerSlot())state->worker=false;
         ++state->cpu;job.data[0]+=11;
     });
