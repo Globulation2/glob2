@@ -665,6 +665,25 @@ struct Runtime
 			return {};
 		return result;
 	}
+	bool gpuOnlyProof(const BackendRequest &request) const
+	{
+#if defined(__linux__) && defined(__x86_64__) && !defined(__ANDROID__)
+		// Experiment restricted to the actual device/driver and shader bundle
+		// exercised by independent oracle and device corruption tests. Legacy
+		// unowned inputs and every other combination retain the CPU check.
+		return properties.vendorID == 0x10de && properties.deviceID == 0x24a0 &&
+			   properties.deviceType == VK_PHYSICAL_DEVICE_TYPE_DISCRETE_GPU &&
+			   properties.driverVersion == 2435612928u &&
+			   status.shaderIdentity ==
+				   "370b0fb99b45a626bd717f78aa058c1e4992e25ffefcf6356d3617b99758893d" &&
+			   request.identity.owner && request.capturedGeneration &&
+			   request.capturedConfiguration &&
+			   request.capturedConfiguration->backend == Backend::Vulkan &&
+			   !request.capturedConfiguration->verify;
+#else
+		return false;
+#endif
+	}
 	bool execute(const BackendRequest &request, Plan plan)
 	{
 		GradientPhaseScope phase(GradientPhase::Bookkeeping);
@@ -925,15 +944,20 @@ struct Runtime
 					static_cast<const std::uint32_t *>(work->buffers[Transfer].mapped);
 				countGradientWork(GradientCounter::ConvergedFields);
 				phase.setPhase(GradientPhase::Validation);
-				const bool cpuProof = exactGradientFixedPoint(
-					std::span<const std::uint16_t>(request.gradient, cells),
-					std::span<const std::uint32_t>(out, cells), request.grid, request.limit,
-					[&](std::size_t i)
-					{
-						return request.gradient[i] || request.identity.allCells
-								   ? request.costAt(request.context, i)
-								   : LAND_STEPS;
-					});
+				const bool checkCPU = !gpuProof.valid || !gpuOnlyProof(request);
+				countGradientWork(checkCPU ? GradientCounter::CpuFixedPointChecks
+										   : GradientCounter::CpuFixedPointChecksSkipped);
+				const bool cpuProof =
+					!checkCPU ||
+					exactGradientFixedPoint(
+						std::span<const std::uint16_t>(request.gradient, cells),
+						std::span<const std::uint32_t>(out, cells), request.grid, request.limit,
+						[&](std::size_t i)
+						{
+							return request.gradient[i] || request.identity.allCells
+									   ? request.costAt(request.context, i)
+									   : LAND_STEPS;
+						});
 				if (!gpuProof.valid || !cpuProof)
 				{
 					failGradientProof(

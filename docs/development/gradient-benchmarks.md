@@ -253,7 +253,12 @@ Vulkan submissions count successful queue submissions. `gpu_validation_dispatche
 and `gpu_validated_fields` separately report its independent GPU proof pass;
 `reference_upload_bytes_submitted` identifies independent uploads of immutable
 seed/cost references within total uploaded bytes.
-The full CPU fixed-point check remains enabled while that pass is qualified.
+An experimental offload path omits the CPU fixed-point check only for captured
+immutable inputs on the tested Linux x86_64 RTX 3070 Ti Laptop / 580.178.04 driver
+and exact shader bundle, with shadow verification disabled. Generic callers,
+shadow runs and other combinations keep it. `cpu_fixed_point_checks` and
+`cpu_fixed_point_checks_skipped` distinguish execution from assumed savings.
+This experiment does not qualify resident preparation or broader GPU enablement.
 `proveVulkanGradientFixedPoint` is a synchronous diagnostic harness, not a solver
 or publication path: tests require its device marker and reject missing results.
 Its generated WGSL is currently unused by WebGPU. `resource_reuses` counts
