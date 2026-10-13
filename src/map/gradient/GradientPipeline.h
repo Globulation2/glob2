@@ -44,7 +44,7 @@ public:
 		int swim = 0;
 		std::uint64_t due = 0;
 		bool superseded = false, done = false;
-        bool cpuOnly=false; // Unsaved, original-worker ownership admission recovery.
+        bool cpuOnly=false; // Unsaved captured CPU choice, including original-worker recovery.
         std::atomic<bool> cancelGPU{false};
         // Standard shared_ptr atomic functions also work with pinned Emscripten libc++.
         std::shared_ptr<gradient_kernel::OpenCLRequiredControl> requiredControl;
@@ -189,7 +189,10 @@ private:
                 const auto cpuStart=cpuTime<Collect>();
             if constexpr (Collect) { if(diagnostics)handoffCpu.fetch_add(glob2::threadCpuDeltaNs(handoffStart,cpuStart),std::memory_order_relaxed); }
                 if(gradient_kernel::isGPU(choice))gradient_kernel::recordGradientFallback(choice);
-                if(gradient_kernel::isGPU(choice))job.cpuOnly=true;
+                // The captured decision already selected CPU execution. Bypass
+                // accelerator request construction and a second configuration
+                // read, including when this is an explicit CPU choice.
+                job.cpuOnly=true;
                 work(job,scratch.propagation);
             if constexpr (Collect) { propagationCpu.fetch_add(glob2::threadCpuDeltaNs(cpuStart,cpuTime<Collect>()),std::memory_order_relaxed); }
             if constexpr (Collect) { cpuFields.fetch_add(1,std::memory_order_relaxed); }

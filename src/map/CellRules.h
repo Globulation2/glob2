@@ -55,6 +55,10 @@ class CellRuleTable
   public:
 	static constexpr std::size_t Capacity = 65536;
 	using Key = std::array<TerrainType, 4>;
+	// Access has three variants even though movement costs have eight classes.
+	// CPU seed loops use one narrow column; the accelerator wire table retains
+	// its all-class mask and costs. Both are compiled from the same rule.
+	inline static constexpr std::array<int, 3> OpenTerrainClasses{0, 1, WATER_ONLY_CLASS};
 
 	CellRuleTable(std::shared_ptr<const TerrainRegistry> terrains,
 				  std::shared_ptr<const ResourceRegistry> resources);
@@ -72,6 +76,11 @@ class CellRuleTable
 	const CellRule &operator[](std::uint16_t rule) const { return rules_[rule]; }
 	const CellRule *data() const { return rules_.data(); }
 	const std::vector<GradientPreparationRule>& gradientPreparation() const { return gradientPreparation_; }
+	// Pass swimAccessVariant(swim), rather than the movement cost class.
+	const std::vector<std::uint16_t> &openTerrainSeeds(unsigned accessVariant) const
+	{
+		return openTerrainSeeds_.at(accessVariant);
+	}
 	const TerrainRegistry &terrains() const { return *terrains_; }
 	const ResourceRegistry &resources() const { return *resources_; }
 	const std::shared_ptr<const TerrainRegistry> &terrainRegistry() const { return terrains_; }
@@ -94,8 +103,13 @@ class CellRuleTable
 	const TerrainRegistry::Movement &movement(unsigned swim) const { return movement_[swim]; }
 
 	MaterialMask materialPermissions(std::uint16_t rule) const { return rules_[rule].materials; }
-	std::size_t capacityBytes() const { return rules_.capacity() * sizeof(CellRule) + permissions_.capacity()
-		+ gradientPreparation_.capacity() * sizeof(GradientPreparationRule); }
+	std::size_t capacityBytes() const
+	{
+		std::size_t bytes = rules_.capacity() * sizeof(CellRule) + permissions_.capacity()
+			+ gradientPreparation_.capacity() * sizeof(GradientPreparationRule);
+		for (const auto &column : openTerrainSeeds_) bytes += column.capacity() * sizeof(std::uint16_t);
+		return bytes;
+	}
 	int farmResource(std::uint16_t rule) const { return rules_[rule].farmResource; }
 
   private:
@@ -112,6 +126,7 @@ class CellRuleTable
 	std::shared_ptr<const ResourceRegistry> resources_;
 	std::vector<CellRule> rules_;
 	std::vector<GradientPreparationRule> gradientPreparation_;
+	std::array<std::vector<std::uint16_t>, OpenTerrainClasses.size()> openTerrainSeeds_;
 	std::map<Key, std::uint16_t> index_;
 	// Per resource registry: each resource's habitat profile, and per profile
 	// the materials it supplies and its first farmable resource per material.

@@ -76,14 +76,14 @@ void clearCells(const MapState::View& view, bool farm, int team, int swim, Uint1
                 const auto type=view.resources[i].resource.type;
                 const Uint32 flags=type==NO_RES_TYPE?0:traits[type];
                 const auto& cell=view.occupancy[i];
-                const bool goal=(flags&(1u<<18)) && ((area.clear&mask)
-                    || (farm && (area.farm&mask) && !(flags&(1u<<19))));
-                const bool openCell=cell.immobileUnit==IMMOBILE_UNIT_NONE
-                    && !(flags&(1u<<16)) && cell.building==NOGBID;
-                const Uint16 open=(!goal && openCell) ? terrainAt(i) : GRADIENT_FORBIDDEN;
+                // Classify once with an open-terrain placeholder. Goals and
+                // obstacles are final; only an otherwise open cell needs the
+                // terrain lookup. Checking those conditions before clearSeed
+                // duplicated the generated predicate for every cell.
                 value=Uint16(rules::clearSeed(0,cell.immobileUnit==IMMOBILE_UNIT_NONE,
-                    flags&(1u<<16),cell.building!=NOGBID,open,flags&(1u<<18),
+                    flags&(1u<<16),cell.building!=NOGBID,GRADIENT_UNREACHABLE,flags&(1u<<18),
                     flags&(1u<<19),area.clear&mask,area.farm&mask,farm));
+                if(value==GRADIENT_UNREACHABLE) value=terrainAt(i);
             }
             out[i]=value;
         }

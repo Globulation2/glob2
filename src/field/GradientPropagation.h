@@ -23,8 +23,8 @@ namespace gradient_kernel
 // every run; a completed field cannot be reused as its own seed buffer.
 // The cap limits propagation, not the supplied seed values. Preserve those
 // values even when a deferred seed lies beyond the last expandable cost layer.
-template<class IsWater>
-void propagateFieldCPU(std::uint16_t *gradient, int swimClass, int maxCost,
+template<bool Simd, class IsWater>
+void propagateFieldCPUVariant(std::uint16_t *gradient, int swimClass, int maxCost,
 	field::Grid geometry, GradientWorkspace &workspace, IsWater isWater)
 {
 	auto *buckets = workspace.buckets.data();
@@ -64,7 +64,7 @@ void propagateFieldCPU(std::uint16_t *gradient, int swimClass, int maxCost,
 				buckets[unsigned(cur) % BUCKETS].push(std::uint32_t(deferredSeeds[nextSeed].second));
 				pending++;
 			}
-			expandBucket<decltype(weighted)::value>(gradient, buckets, pending, cur, limit,
+			expandBucketForCPU<decltype(weighted)::value, Simd>(gradient, buckets, pending, cur, limit,
 				geometry, waterSteps, waterAt);
 		}
 	};
@@ -75,6 +75,18 @@ void propagateFieldCPU(std::uint16_t *gradient, int swimClass, int maxCost,
 		const EntrySteps waterSteps = entrySteps(WATER_STEP[swimClass]);
 		sweep(std::true_type(), waterSteps, isWater);
 	}
+}
+// Keep the scalar/SIMD choice outside both the cell and cost-layer loops.
+// This also keeps the two compiled sweeps separate: a layer dispatch otherwise
+// changes register allocation inside the hot relaxation loop.
+template<class IsWater>
+void propagateFieldCPU(std::uint16_t* gradient, int swimClass, int maxCost,
+    field::Grid grid, GradientWorkspace& workspace, IsWater isWater)
+{
+    if (cpuBackend() == Backend::Scalar)
+        propagateFieldCPUVariant<false>(gradient, swimClass, maxCost, grid, workspace, isWater);
+    else
+        propagateFieldCPUVariant<true>(gradient, swimClass, maxCost, grid, workspace, isWater);
 }
 // Same entry point for CPU and optional exact full-field accelerators. Resumed
 // searches still use expandBucket, since their completed-layer state is observable.
