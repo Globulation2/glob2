@@ -1,0 +1,49 @@
+{
+  "tested_feature_commit": "fba14920c24b4ea411a8e574e47c535e5db4bac3",
+  "tested_base": "f9eae2549f608f804c240709df819bfe5f09f3fb",
+  "integrated_draft_head": "7aafe4c10ff4d26e31823ac6a50574efd3a19fe9",
+  "integrated_master": "3e2ba6c07450c94ce0f997220479fd309b71e461",
+  "full_archive_sha256": "0cd8a9b8e542ae2383972daee21a8a312c27f1b9561f111f55cd0425ec1c00bf",
+  "parts": [
+    {
+      "file": "turret-evidence.tar.gz.part01",
+      "bytes": 25165824,
+      "sha256": "188abd1e7ff05b6249f864854d02bc5d9a1ab93829ef7adcbd306a475caa92df"
+    },
+    {
+      "file": "turret-evidence.tar.gz.part02",
+      "bytes": 25165824,
+      "sha256": "477d05bb63dd2e916f774659b0fdf195b395de42a9e490a3b95ebeb8876cbc01"
+    },
+    {
+      "file": "turret-evidence.tar.gz.part03",
+      "bytes": 25165824,
+      "sha256": "2ace961d497c6045cb9a1777727095b6080186a6c1637cde8f9b40c9f2d02220"
+    },
+    {
+      "file": "turret-evidence.tar.gz.part04",
+      "bytes": 25165824,
+      "sha256": "a504c46d67ba00389bb27bb919e384bc04034e63faec2c957cd10f99a72d61fa"
+    },
+    {
+      "file": "turret-evidence.tar.gz.part05",
+      "bytes": 25165824,
+      "sha256": "8fcfc81f1d8090adf9c66a6a893a04d969b2bfab6d175361f3494d2d28816645"
+    },
+    {
+      "file": "turret-evidence.tar.gz.part06",
+      "bytes": 25165824,
+      "sha256": "5b51fde84eaaec4c9cb5a8533ea0cbc4a97002806945c74c4e91aecf75ec29ed"
+    },
+    {
+      "file": "turret-evidence.tar.gz.part07",
+      "bytes": 25165824,
+      "sha256": "025a22e164f0f194af0ceae98b43b41e503ac9e6ab98c47dd008c714706cc736"
+    },
+    {
+      "file": "turret-evidence.tar.gz.part08",
+      "bytes": 14353133,
+      "sha256": "e76c44f84be8fcc61fb0d79fbea24919bcbf5dc5d579631d811355a708625cf3"
+    }
+  ]
+}

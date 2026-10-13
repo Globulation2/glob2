@@ -1,0 +1,78 @@
+{
+  "platform": "Linux-7.0.0-38-generic-x86_64-with-glibc2.39",
+  "cpu": "AMD Ryzen 7 6800H with Radeon Graphics",
+  "binary": "/home/bradley/.codex/worktrees/9dc2/glob2/artifacts/turret-targeting/whole-engine/glob2-turret-engine-benchmark",
+  "sha256": "9ebe100661e71ff68a2009a0914796f31c5b15387c7a94cc29a658634b81f852",
+  "affinity": [
+    0,
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11,
+    12,
+    13,
+    14,
+    15
+  ],
+  "commands": [
+    [
+      "/home/bradley/.codex/worktrees/9dc2/glob2/artifacts/turret-targeting/whole-engine/glob2-turret-engine-benchmark",
+      "--test-suite=TurretEngine",
+      "--test-case=whole headless ticks*",
+      "--no-colors=true"
+    ]
+  ],
+  "timing_returncode": 0,
+  "base": "f9eae2549f608f804c240709df819bfe5f09f3fb",
+  "fetched_master": "3e2ba6c07450c94ce0f997220479fd309b71e461",
+  "source_hashes": {
+    "src/building/TurretEngineBenchmark.cpp": "47cea503c6f440114b61fe0b4dacfaa05267440839c0ed3937345b0386038b65",
+    "src/building/TypeSteps.cpp": "1c7cf1a140a9f80aa6ee0ead5972714d4510bae46a6c7623ceeb0b7ec9e567b8",
+    "src/building/TurretTargeting.cpp": "26e63d54277fa6c64d3c30547e81bee752153a95b44412963189c43a6cb101ae",
+    "src/building/TurretTargetingPipeline.cpp": "345a949bffa6ab0dc05c9692753e739aece51efdd9e94e7608efd8bdef875e6c",
+    "src/building/TurretTargeting.h": "686317a5a43ffb2f265cd034fc7989334a98fb6b48805e5ff7719105891b030a",
+    "test/SConscript": "11a71cc8830177b91196034a721ed8367cbaa4d76e7d8fbabe077f4332d2356e",
+    "test/tests.py": "4bf525e72559b8c3042508db037b24b4112873a47dedd4b3676f0c2f06c9dda8"
+  },
+  "continuation_failures": [
+    {
+      "mode": "cached",
+      "cut": "39",
+      "remaining": "25",
+      "checksums_equal": "0"
+    },
+    {
+      "mode": "cached",
+      "cut": "40",
+      "remaining": "24",
+      "checksums_equal": "0"
+    }
+  ],
+  "validation": {
+    "production_checks": 58,
+    "benchmark_correctness_cases": 2,
+    "benchmark_correctness_assertions": 25336,
+    "cached_trace_worker_counts": [
+      1,
+      2,
+      4,
+      8
+    ]
+  },
+  "gate": "Not qualified: sustained combat regresses at 1/2/4 participants; 8 participant results unstable across repetitions; cached continuation fails first-shot boundaries.",
+  "limits": [
+    "Full headless simulation ticks, not renderer/network transport performance.",
+    "Linux x86_64 GCC13 release only; cross-platform comparisons unavailable.",
+    "Normal hiring executes; unmerged hiring experiments not measured or modified.",
+    "Newer-master full integration not tested.",
+    "Competing host benchmark processes retained in host samples.",
+    "Owner targeting time in whole-tick workload not separately instrumented; prior query controls remain separate."
+  ]
+}

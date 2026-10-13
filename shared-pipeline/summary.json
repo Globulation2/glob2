@@ -1,0 +1,285 @@
+{
+  "samples": [
+    {
+      "fixture": "empty",
+      "path": "pool_1",
+      "total_ns_us_per_cycle": 47.80184375,
+      "total_ns_paired_change_pct": -60.9264178070441,
+      "total_ns_paired_ci_pct": [
+        -62.01404724696936,
+        -59.82390515049967
+      ],
+      "cpu_ns_us_per_cycle": 47.875,
+      "cpu_ns_paired_change_pct": -60.89533132236528,
+      "cpu_ns_paired_ci_pct": [
+        -61.96222455403988,
+        -59.830339321357286
+      ],
+      "capture_submit_ns_us_per_cycle": 21.37421875,
+      "publish_ns_us_per_cycle": 22.02096875,
+      "consume_ns_us_per_cycle": 2.67503125,
+      "consume_ns_paired_change_pct": -97.6176747183355,
+      "consume_ns_paired_ci_pct": [
+        -97.67373090192213,
+        -97.49582751138968
+      ],
+      "index_ns_us_per_cycle": 0.6656562500000001,
+      "bytes_copied_per_cycle": 127456.0,
+      "max_index_bytes": 15176,
+      "max_shortlist_bytes": 137600
+    },
+    {
+      "fixture": "empty",
+      "path": "pool_2",
+      "total_ns_us_per_cycle": 36.8426875,
+      "total_ns_paired_change_pct": -69.91129032454619,
+      "total_ns_paired_ci_pct": [
+        -70.23071212531138,
+        -69.26593927884052
+      ],
+      "cpu_ns_us_per_cycle": 65.53125,
+      "cpu_ns_paired_change_pct": -46.29107497934686,
+      "cpu_ns_paired_ci_pct": [
+        -48.197692526161106,
+        -45.24596623081617
+      ],
+      "capture_submit_ns_us_per_cycle": 22.279343750000002,
+      "publish_ns_us_per_cycle": 8.927875,
+      "consume_ns_us_per_cycle": 2.691625,
+      "consume_ns_paired_change_pct": -97.63137256213945,
+      "consume_ns_paired_ci_pct": [
+        -97.70004471896462,
+        -97.45351940152061
+      ],
+      "index_ns_us_per_cycle": 1.054875,
+      "bytes_copied_per_cycle": 127456.0,
+      "max_index_bytes": 15176,
+      "max_shortlist_bytes": 137600
+    },
+    {
+      "fixture": "empty",
+      "path": "pool_4",
+      "total_ns_us_per_cycle": 35.32734375,
+      "total_ns_paired_change_pct": -70.9801299139362,
+      "total_ns_paired_ci_pct": [
+        -72.26353302582358,
+        -70.21605816908072
+      ],
+      "cpu_ns_us_per_cycle": 91.5,
+      "cpu_ns_paired_change_pct": -26.81761141129975,
+      "cpu_ns_paired_ci_pct": [
+        -28.182029445135537,
+        -25.1996007984032
+      ],
+      "capture_submit_ns_us_per_cycle": 24.0200625,
+      "publish_ns_us_per_cycle": 7.23715625,
+      "consume_ns_us_per_cycle": 2.5750625,
+      "consume_ns_paired_change_pct": -97.6827812551565,
+      "consume_ns_paired_ci_pct": [
+        -97.73575293081775,
+        -97.65157072082141
+      ],
+      "index_ns_us_per_cycle": 1.09290625,
+      "bytes_copied_per_cycle": 127456.0,
+      "max_index_bytes": 15176,
+      "max_shortlist_bytes": 137600
+    },
+    {
+      "fixture": "empty",
+      "path": "pool_8",
+      "total_ns_us_per_cycle": 37.05153125,
+      "total_ns_paired_change_pct": -70.06363075618478,
+      "total_ns_paired_ci_pct": [
+        -71.5118785727205,
+        -66.81330776758531
+      ],
+      "cpu_ns_us_per_cycle": 132.34375,
+      "cpu_ns_paired_change_pct": 8.954467769602449,
+      "cpu_ns_paired_ci_pct": [
+        3.9308176100628867,
+        12.792434046789447
+      ],
+      "capture_submit_ns_us_per_cycle": 25.53,
+      "publish_ns_us_per_cycle": 7.48365625,
+      "consume_ns_us_per_cycle": 2.6522187500000003,
+      "consume_ns_paired_change_pct": -97.64941683559448,
+      "consume_ns_paired_ci_pct": [
+        -97.69165963666549,
+        -97.03909259827049
+      ],
+      "index_ns_us_per_cycle": 1.1085625000000001,
+      "bytes_copied_per_cycle": 127456.0,
+      "max_index_bytes": 15176,
+      "max_shortlist_bytes": 137600
+    },
+    {
+      "fixture": "empty",
+      "path": "original",
+      "total_ns_us_per_cycle": 121.81846875,
+      "total_ns_paired_change_pct": 0.0,
+      "total_ns_paired_ci_pct": [
+        0.0,
+        0.0
+      ],
+      "cpu_ns_us_per_cycle": 121.90625,
+      "cpu_ns_paired_change_pct": 0.0,
+      "cpu_ns_paired_ci_pct": [
+        0.0,
+        0.0
+      ],
+      "capture_submit_ns_us_per_cycle": 9.39775,
+      "publish_ns_us_per_cycle": 0.02125,
+      "consume_ns_us_per_cycle": 112.23959375,
+      "consume_ns_paired_change_pct": 0.0,
+      "consume_ns_paired_ci_pct": [
+        0.0,
+        0.0
+      ],
+      "index_ns_us_per_cycle": 0.0,
+      "bytes_copied_per_cycle": 122848.0,
+      "max_index_bytes": 0,
+      "max_shortlist_bytes": 0
+    },
+    {
+      "fixture": "combat",
+      "path": "pool_1",
+      "total_ns_us_per_cycle": 115.71362500000001,
+      "total_ns_paired_change_pct": -38.46892341043559,
+      "total_ns_paired_ci_pct": [
+        -51.59791922958361,
+        -25.116298722364412
+      ],
+      "cpu_ns_us_per_cycle": 115.8125,
+      "cpu_ns_paired_change_pct": -38.481087187248875,
+      "cpu_ns_paired_ci_pct": [
+        -51.59255755282246,
+        -24.990885640584693
+      ],
+      "capture_submit_ns_us_per_cycle": 38.9445625,
+      "publish_ns_us_per_cycle": 62.86384375,
+      "consume_ns_us_per_cycle": 8.9669375,
+      "consume_ns_paired_change_pct": -94.66344474018157,
+      "consume_ns_paired_ci_pct": [
+        -95.51787319246692,
+        -93.30541111030286
+      ],
+      "index_ns_us_per_cycle": 2.573625,
+      "bytes_copied_per_cycle": 165856.0,
+      "max_index_bytes": 18456,
+      "max_shortlist_bytes": 139200
+    },
+    {
+      "fixture": "combat",
+      "path": "pool_2",
+      "total_ns_us_per_cycle": 65.1616875,
+      "total_ns_paired_change_pct": -61.72373867537506,
+      "total_ns_paired_ci_pct": [
+        -69.59026927115809,
+        -52.58371314505417
+      ],
+      "cpu_ns_us_per_cycle": 114.0,
+      "cpu_ns_paired_change_pct": -33.0825110689437,
+      "cpu_ns_paired_ci_pct": [
+        -45.991826469663636,
+        -20.708880923934693
+      ],
+      "capture_submit_ns_us_per_cycle": 35.051500000000004,
+      "publish_ns_us_per_cycle": 18.73740625,
+      "consume_ns_us_per_cycle": 7.2621875,
+      "consume_ns_paired_change_pct": -95.14135276685047,
+      "consume_ns_paired_ci_pct": [
+        -96.19634115635503,
+        -94.3922009283413
+      ],
+      "index_ns_us_per_cycle": 2.5284375,
+      "bytes_copied_per_cycle": 165856.0,
+      "max_index_bytes": 18456,
+      "max_shortlist_bytes": 139200
+    },
+    {
+      "fixture": "combat",
+      "path": "pool_4",
+      "total_ns_us_per_cycle": 63.627875,
+      "total_ns_paired_change_pct": -63.418992221279794,
+      "total_ns_paired_ci_pct": [
+        -68.18362687529964,
+        -57.094670764696254
+      ],
+      "cpu_ns_us_per_cycle": 137.6875,
+      "cpu_ns_paired_change_pct": -22.450346893724376,
+      "cpu_ns_paired_ci_pct": [
+        -27.507447864945377,
+        -7.950183973580361
+      ],
+      "capture_submit_ns_us_per_cycle": 39.9039375,
+      "publish_ns_us_per_cycle": 15.7101875,
+      "consume_ns_us_per_cycle": 8.23846875,
+      "consume_ns_paired_change_pct": -94.59006250626987,
+      "consume_ns_paired_ci_pct": [
+        -95.4706238267372,
+        -93.77638795374267
+      ],
+      "index_ns_us_per_cycle": 2.960875,
+      "bytes_copied_per_cycle": 165856.0,
+      "max_index_bytes": 18456,
+      "max_shortlist_bytes": 139200
+    },
+    {
+      "fixture": "combat",
+      "path": "pool_8",
+      "total_ns_us_per_cycle": 61.241249999999994,
+      "total_ns_paired_change_pct": -64.99851822100587,
+      "total_ns_paired_ci_pct": [
+        -69.29493272759622,
+        -55.27904285633627
+      ],
+      "cpu_ns_us_per_cycle": 183.5,
+      "cpu_ns_paired_change_pct": -2.0758880855077044,
+      "cpu_ns_paired_ci_pct": [
+        -7.249255213505457,
+        22.487587718081716
+      ],
+      "capture_submit_ns_us_per_cycle": 38.93065625,
+      "publish_ns_us_per_cycle": 14.247093750000001,
+      "consume_ns_us_per_cycle": 8.454562500000002,
+      "consume_ns_paired_change_pct": -94.9748900244048,
+      "consume_ns_paired_ci_pct": [
+        -95.52533290823996,
+        -92.57797601002888
+      ],
+      "index_ns_us_per_cycle": 2.6436562500000003,
+      "bytes_copied_per_cycle": 165856.0,
+      "max_index_bytes": 18456,
+      "max_shortlist_bytes": 139200
+    },
+    {
+      "fixture": "combat",
+      "path": "original",
+      "total_ns_us_per_cycle": 187.54587500000002,
+      "total_ns_paired_change_pct": 0.0,
+      "total_ns_paired_ci_pct": [
+        0.0,
+        0.0
+      ],
+      "cpu_ns_us_per_cycle": 187.65625,
+      "cpu_ns_paired_change_pct": 0.0,
+      "cpu_ns_paired_ci_pct": [
+        0.0,
+        0.0
+      ],
+      "capture_submit_ns_us_per_cycle": 17.927500000000002,
+      "publish_ns_us_per_cycle": 0.02225,
+      "consume_ns_us_per_cycle": 169.32575,
+      "consume_ns_paired_change_pct": 0.0,
+      "consume_ns_paired_ci_pct": [
+        0.0,
+        0.0
+      ],
+      "index_ns_us_per_cycle": 0.0,
+      "bytes_copied_per_cycle": 161248.0,
+      "max_index_bytes": 0,
+      "max_shortlist_bytes": 0
+    }
+  ],
+  "statistics": "Median costs; percentile bootstrap confidence intervals of median paired changes, 10000 resamples; retain all outliers."
+}

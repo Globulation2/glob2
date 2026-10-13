@@ -1,0 +1,69 @@
+{
+  "comparisons": [
+    {
+      "fixture": "empty",
+      "queries": 2000,
+      "before_instructions": 5318201,
+      "before_instructions_per_query": 2659.1005,
+      "after_instructions": 612201,
+      "after_instructions_per_query": 306.1005,
+      "instruction_reduction_percent": 88.48856972498783
+    },
+    {
+      "fixture": "combat",
+      "queries": 2000,
+      "before_instructions": 18933701,
+      "before_instructions_per_query": 9466.8505,
+      "after_instructions": 11289621,
+      "after_instructions_per_query": 5644.8105,
+      "instruction_reduction_percent": 40.372877970345044
+    },
+    {
+      "fixture": "custom-wrap",
+      "queries": 2000,
+      "before_instructions": 295020946,
+      "before_instructions_per_query": 147510.473,
+      "after_instructions": 292386319,
+      "after_instructions_per_query": 146193.1595,
+      "instruction_reduction_percent": 0.893030490113067
+    },
+    {
+      "fixture": "temporary",
+      "queries": 2000,
+      "before_instructions": 67869501,
+      "before_instructions_per_query": 33934.7505,
+      "after_instructions": 62688061,
+      "after_instructions_per_query": 31344.0305,
+      "instruction_reduction_percent": 7.634415935959216
+    }
+  ],
+  "tests": {
+    "tests": "54",
+    "failures": "0",
+    "errors": "0",
+    "skipped": "0"
+  },
+  "tool": "valgrind-3.22.0",
+  "base": "f9eae2549f608f804c240709df819bfe5f09f3fb",
+  "fetched_master": "0709322f3b140507f432aa820611c455314c91c2",
+  "changes": [
+    "One occupied-cell traversal for stock/custom geometry and every wrapped representative; no production scan-based shortlist enumerator.",
+    "Common chunk builder supplies retained or temporary chunks; 32 MiB retained allocation limit tested under exhaustion.",
+    "Only intersecting chunk spans are visited; root/team and occupant eligibility masks skip irrelevant work.",
+    "One packed tagged incarnation key replaces tuple comparisons; bounded ranking scratch reserves its final capacity."
+  ],
+  "coverage": [
+    "Independent original selector head oracle; test-only forward geometry checks alternative order in 90 map/footprint/range combinations, including blockers.",
+    "Random ground/air movement, alliances, custom footprints, large buildings, memory pressure, cooldown and repeated-wrap checks.",
+    "Twenty paired Numbi/Castor continuations preserve AI order bytes, per-tick checksums and final saves.",
+    "Shared pool ordered results at participants 1/2/4/8 and existing building combat/shared lifecycle checks."
+  ],
+  "limitations": [
+    "Callgrind figures measure guest instructions, not elapsed time or whole-engine speed. Capture/index maintenance excluded from ROI.",
+    "Native release samples were retained in rotated process order, but control timings fluctuate substantially under unrelated host compilation; no qualified native percentage-speedup claim.",
+    "Only Linux x86_64 GCC13 native release tested; other supported platforms unavailable.",
+    "Current fetched master includes newer gradient/renderer work; integration against that newer base remains unverified.",
+    "Feature remains a research/shadow prototype; shared snapshot production integration and live/persistence/version qualification remain separate unfinished milestones."
+  ],
+  "failure_history": "First full run: 53 passes, one 120-second battle-matrix timeout under host load. Final rerun at -j2 with 300-second per-case limit: all 54 pass."
+}

@@ -1,0 +1,60 @@
+<?xml version='1.0' encoding='utf-8'?>
+<testsuites tests="58" failures="0" errors="0" skipped="0"><testsuite name="BuildingProductionCombat"><testcase classname="BuildingProductionCombat" name="bounded supply cache excludes the recipient and its shared inventory and resumes eviction" time="0.111063" status="run" />
+  <testcase classname="BuildingProductionCombat" name="combined attraction profiles independently require warrior level and explorer bombing" time="0.051111" status="run" />
+  <testcase classname="BuildingProductionCombat" name="combined stock routes include both provider modes and track direct overlay relocation" time="0.06724" status="run" />
+  <testcase classname="BuildingProductionCombat" name="committed recipe survives binary and text continuation with its reservation" time="0.458924" status="run" />
+  <testcase classname="BuildingProductionCombat" name="committed recipes reserve distinct resources and ratio changes choose the next job" time="0.050502" status="run" />
+  <testcase classname="BuildingProductionCombat" name="completed blocked job retains its budget and zero duration remains a producer" time="0.050527" status="run" />
+  <testcase classname="BuildingProductionCombat" name="construction reserves independent costs beyond storage and survives continuation" time="0.111875" status="run" />
+  <testcase classname="BuildingProductionCombat" name="converging upgrades cancel to the instance origin and return real materials" time="0.050749" status="run" />
+  <testcase classname="BuildingProductionCombat" name="current saves reject construction origins outside the explicit job graph" time="0.488765" status="run" />
+  <testcase classname="BuildingProductionCombat" name="demolition settles shared partial construction only when removal becomes final" time="0.192673" status="run" />
+  <testcase classname="BuildingProductionCombat" name="direct stock withdrawal is independent of food and fruit exchange" time="0.051002" status="run" />
+  <testcase classname="BuildingProductionCombat" name="ground buildings with attraction radii remain melee targets" time="0.051484" status="run" />
+  <testcase classname="BuildingProductionCombat" name="hybrid attraction and service routes remain independent across save continuation" time="0.412891" status="run" />
+  <testcase classname="BuildingProductionCombat" name="idle producer sentinel survives binary and text continuation" time="0.422884" status="run" />
+  <testcase classname="BuildingProductionCombat" name="late choice advances the common timer and selects ratios only at completion" time="0.050448" status="run" />
+  <testcase classname="BuildingProductionCombat" name="mixed attraction borrows quota from an unavailable unit class" time="0.051021" status="run" />
+  <testcase classname="BuildingProductionCombat" name="overlay services and suppliers share a footprint without occupying ground" time="0.05171" status="run" />
+  <testcase classname="BuildingProductionCombat" name="overlay transition and cancellation discard cached footprint routes" time="0.050463" status="run" />
+  <testcase classname="BuildingProductionCombat" name="partial supplier packets preserve raw equivalents and save continuation" time="0.11153" status="run" />
+  <testcase classname="BuildingProductionCombat" name="physical combat attraction invalidates on enemy changes and mixed relocation resets routes" time="0.068746" status="run" />
+  <testcase classname="BuildingProductionCombat" name="production transitions initialize new recipes and restore canceled preferences" time="0.111281" status="run" />
+  <testcase classname="BuildingProductionCombat" name="rectangular hybrid shoots class-specific snapshots and regenerates without production" time="0.050801" status="run" />
+  <testcase classname="BuildingProductionCombat" name="repair budgets use independent fruit costs and cancellation creates no material credits" time="0.050512" status="run" />
+  <testcase classname="BuildingProductionCombat" name="repair earns only original damage and paid materials cannot be refunded after healing" time="0.050807" status="run" />
+  <testcase classname="BuildingProductionCombat" name="resource permissions separate storage replenishment and direct withdrawal" time="0.05055" status="run" />
+  <testcase classname="BuildingProductionCombat" name="shared ammunition consumption invalidates stock advertised by another building" time="0.050531" status="run" />
+  <testcase classname="BuildingProductionCombat" name="shared repair sites restore each recorded origin and staffing cap" time="0.1121" status="run" />
+  <testcase classname="BuildingProductionCombat" name="sole supplier demolition and cancellation preserve routing across save continuation" time="0.192729" status="run" />
+  <testcase classname="BuildingProductionCombat" name="stock suppliers route independently of fruit exchange with configured pickup cost" time="0.050888" status="run" />
+  <testcase classname="BuildingProductionCombat" name="unfunded new-site cooldown uses job state and counts fruit funding" time="0.050897" status="run" />
+  <testcase classname="BuildingProductionCombat" name="version135 partial repair imports remaining work without material credits" time="0.108789" status="run" />
+  <testcase classname="BuildingProductionCombat" name="zero cost repair preserves damage received after the repair started" time="0.051146" status="run" />
+  <testcase classname="BuildingProductionCombat" name="zero cost roots and upgrade stages complete without a delivery event" time="0.051428" status="run" />
+  </testsuite><testsuite name="SharedWorkerLifecycle"><testcase classname="SharedWorkerLifecycle" name="background saves finish on a worker and remain readable after teardown" time="0.027874" status="run" />
+  <testcase classname="SharedWorkerLifecycle" name="no-AI completed ticks agree across shared worker counts [artifacts]" time="0.353917" status="run" />
+  <testcase classname="SharedWorkerLifecycle" name="pending gradient work survives a save and continues at the same deadlines" time="0.186787" status="run" />
+  <testcase classname="SharedWorkerLifecycle" name="reduced saved AI rosters retire trailing controllers and preserve continuation" time="1.45952" status="run" />
+  <testcase classname="SharedWorkerLifecycle" name="resource catalog import drains deferred material preparation before replacing stocks" time="0.086987" status="run" />
+  </testsuite><testsuite name="TurretTargeting"><testcase classname="TurretTargeting" name="Numbi Castor stock combat measures delayed shadow matrix [artifacts]" time="23.2892" status="run" />
+  <testcase classname="TurretTargeting" name="Numbi and Castor orders checksums and saves agree with shadow queries [artifacts]" time="0.359423" status="run" />
+  <testcase classname="TurretTargeting" name="bounded capacities are prefixes of uncapped tier ranking" time="0.060712" status="run" />
+  <testcase classname="TurretTargeting" name="consumer rechecks incarnation occupancy alliance movement and cooldown boundaries" time="0.056759" status="run" />
+  <testcase classname="TurretTargeting" name="custom footprints blockers building offsets and frozen combat facts" time="0.069487" status="run" />
+  <testcase classname="TurretTargeting" name="empty range has one hundred armed turrets and no clearance work" time="0.059243" status="run" />
+  <testcase classname="TurretTargeting" name="engine-style stepping reuses admitted boundary after orders mutate occupancy" time="0.058281" status="run" />
+  <testcase classname="TurretTargeting" name="ground movement return suppresses air only in preferred fold" time="0.05702" status="run" />
+  <testcase classname="TurretTargeting" name="index shares unchanged chunks and refreshes changed occupancy" time="0.057652" status="run" />
+  <testcase classname="TurretTargeting" name="indexed encounter order covers custom footprints repeated wraps and temporary chunks" time="1.49212" status="run" />
+  <testcase classname="TurretTargeting" name="observing and shadow consumption preserve complete save bytes" time="0.106295" status="run" />
+  <testcase classname="TurretTargeting" name="pinned large building keeps its original unwrapped aim offset" time="0.068681" status="run" />
+  <testcase classname="TurretTargeting" name="reference and frozen head match randomized ground air wrap and alliances" time="0.069207" status="run" />
+  <testcase classname="TurretTargeting" name="retained index exhaustion rebuilds temporary chunks without changing results" time="0.105893" status="run" />
+  <testcase classname="TurretTargeting" name="serial shadow matrix exposes one tick newly created firing windows [artifacts]" time="0.082476" status="run" />
+  <testcase classname="TurretTargeting" name="shared completed boundary captures once and publishes only at deadlines" time="0.372419" status="run" />
+  <testcase classname="TurretTargeting" name="shared executor team jobs agree across participants and overlapping generations" time="0.06346" status="run" />
+  <testcase classname="TurretTargeting" name="shared turret worker failures are reported at publication after draining" time="0.116282" status="run" />
+  <testcase classname="TurretTargeting" name="stock birth and approaching warrior opportunities cover admission phases [artifacts]" time="0.541822" status="run" />
+  <testcase classname="TurretTargeting" name="turret admission requires due teams and survives paused repeated boundaries" time="0.057684" status="run" />
+  </testsuite></testsuites>

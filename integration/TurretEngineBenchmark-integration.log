@@ -1,0 +1,7 @@
+src/building/TurretEngineBenchmark.cpp: In function ‘{anonymous}::Run {anonymous}::run(unsigned int, unsigned int, unsigned int, Mode, bool, unsigned int)’:
+src/building/TurretEngineBenchmark.cpp:107:9: warning: this ‘for’ clause does not guard... [-Wmisleading-indentation]
+  107 |         for (const auto* u:world.game.teams[team]->liveUnits.entries()) if (u && !u->isDead) ++result.units; result.turrets+=world.game.teams[team]->turrets.size();
+      |         ^~~
+src/building/TurretEngineBenchmark.cpp:107:110: note: ...this statement, but the latter is misleadingly indented as if it were guarded by the ‘for’
+  107 |         for (const auto* u:world.game.teams[team]->liveUnits.entries()) if (u && !u->isDead) ++result.units; result.turrets+=world.game.teams[team]->turrets.size();
+      |                                                                                                              ^~~~~~

@@ -1,0 +1,140 @@
+{
+  "platform": "Linux-7.0.0-38-generic-x86_64-with-glibc2.39",
+  "cpu": "AMD Ryzen 7 6800H with Radeon Graphics",
+  "binary": "/home/bradley/.codex/worktrees/9dc2/glob2/build/linux/client/release/dev-linker-auto/test/glob2-engine-tests",
+  "sha256": "e487cf982a50cd48b1c75edf12f9633dcabf6e00ecb4864d58dc01359611dbc4",
+  "affinity": [
+    0,
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11,
+    12,
+    13,
+    14,
+    15
+  ],
+  "commands": [
+    [
+      "/home/bradley/.codex/worktrees/9dc2/glob2/build/linux/client/release/dev-linker-auto/test/glob2-engine-tests",
+      "--test-suite=TurretTargeting",
+      "--test-case=paired targeting batches*",
+      "--no-colors=true"
+    ],
+    [
+      "/home/bradley/.codex/worktrees/9dc2/glob2/build/linux/client/release/dev-linker-auto/test/glob2-engine-tests",
+      "--test-suite=TurretTargeting",
+      "--test-case=paired shared targeting cycles*",
+      "--no-colors=true"
+    ]
+  ],
+  "queries_returncode": 0,
+  "shared_returncode": 0,
+  "base": "f9eae2549f608f804c240709df819bfe5f09f3fb",
+  "fetched_master": "3e2ba6c07450c94ce0f997220479fd309b71e461",
+  "validation": {
+    "correctness": 117,
+    "compatibility": 36
+  },
+  "sources": {
+    "src/building/TurretTargeting.cpp": "26e63d54277fa6c64d3c30547e81bee752153a95b44412963189c43a6cb101ae",
+    "src/building/TurretTargeting.h": "686317a5a43ffb2f265cd034fc7989334a98fb6b48805e5ff7719105891b030a",
+    "src/building/TurretTargetingPipeline.cpp": "345a949bffa6ab0dc05c9692753e739aece51efdd9e94e7608efd8bdef875e6c",
+    "src/building/TurretTargetingTest.cpp": "f4c7aae8e99a00dd32112e4760ad7b64fcd122c1208577399d44e5f4e56c599d",
+    "src/game/GameAI.cpp": "51fd836a4a301dad2dfe73262b5e3c2a94b64eac3c7ece98e90d4f58d8a5290e",
+    "src/game/Game_sync.cpp": "25bf5e1f1234c7ec4bd8632927cf1d9f739909ffd59409a40e7ca28197c712de",
+    "src/common/ComputeExecutor.h": "2022ccacfe1fac8e7546839f39a7f9dde60a9d95f0e1383ac6a01190787f4db4"
+  },
+  "paired_continuations": [
+    {
+      "cohort": "fortified-104729",
+      "save_sha256": "0d7bbfe63f07f601f695de36f63a539adab845f2716b0a03c8409bdc5fa6a30b"
+    },
+    {
+      "cohort": "fortified-15485863",
+      "save_sha256": "d046c451185f4a28cda246be760fbd2fd159db5ce28458c8e78fa3de87cf4a13"
+    },
+    {
+      "cohort": "fortified-1919",
+      "save_sha256": "3a3720b3ff0110a1992aa01f59cdbf142ebd4435b596b6211fa9df5a133bad6d"
+    },
+    {
+      "cohort": "fortified-32452843",
+      "save_sha256": "651ab3006f4a50f6feac8f65e2b754bfaac70394c634ab34485a58417cc31bd6"
+    },
+    {
+      "cohort": "fortified-4201",
+      "save_sha256": "c6f1d1e551c2bb918b3c66ac4950a395ed51a9257f98f66c46d1c6821e843332"
+    },
+    {
+      "cohort": "fortified-49979687",
+      "save_sha256": "00df6e415b8868b1a5e434d70c0e4c1d0ac1a9a65156f137154f29b41013780e"
+    },
+    {
+      "cohort": "fortified-67867967",
+      "save_sha256": "b0cff46f5102f3f617063d7bc7210fa2132ac6411462f9c9e873c912c94107f3"
+    },
+    {
+      "cohort": "fortified-713",
+      "save_sha256": "9f452248929ff16f2ee1ef0d83eb01e9571e2bcaaa7bb488f6e833aacf68491c"
+    },
+    {
+      "cohort": "fortified-7919",
+      "save_sha256": "bc56784eb5590d6a9d183e18fb3f89586fb14b30bf56092ed7bc1bfc40286d3c"
+    },
+    {
+      "cohort": "fortified-86028121",
+      "save_sha256": "77b2002d94e68d4d23a7bf94d96b4c4552a2652501520c7e70f07872a64f99b8"
+    },
+    {
+      "cohort": "skirmish-104729",
+      "save_sha256": "39ec918dbd63e5627aa2102cc6bbbf65e562398e4bd9268780e65d3af8eb73c6"
+    },
+    {
+      "cohort": "skirmish-15485863",
+      "save_sha256": "6308ee93d989f8063dbd23414e8dd6f88523006fcfd53937dfaabadc95929318"
+    },
+    {
+      "cohort": "skirmish-1919",
+      "save_sha256": "3876c2f0801e1b33693f6463ed4f5d7498e9f7a1d52b81bb7df1a13395f2e785"
+    },
+    {
+      "cohort": "skirmish-32452843",
+      "save_sha256": "3d358b22625591e85da7ec5b4fff1e4f7c6ba51dc1e30649b8a2b2ffa68f1d98"
+    },
+    {
+      "cohort": "skirmish-4201",
+      "save_sha256": "d590596c31835f511cb9c05bf25425cb9a20e3e824816ab343da9d826bdfad60"
+    },
+    {
+      "cohort": "skirmish-49979687",
+      "save_sha256": "08bac5dccbdab5fbb146afa4428e23314c2d0b2657e6b7dc480815cc3b8f394b"
+    },
+    {
+      "cohort": "skirmish-67867967",
+      "save_sha256": "c4f340770d612a0d67f557a4585e8f3aee84fb1ab845e17fc6d0aecead49cb7e"
+    },
+    {
+      "cohort": "skirmish-713",
+      "save_sha256": "dded63363c1ff6815b61293cee74dec10410c93e5cd96262da9e9bcf54d65e74"
+    },
+    {
+      "cohort": "skirmish-7919",
+      "save_sha256": "3708ec280fbe1ac2e3749ad3649f086cda45c9edce1c0d58eae561f9f5a541ef"
+    },
+    {
+      "cohort": "skirmish-86028121",
+      "save_sha256": "312190def6d7a637527313dde8a29333144865333e0f18cff4517d6285d9d927"
+    }
+  ],
+  "master_api_check": "Turret producer compiles against fetched master executor/telemetry headers plus the turret slot bound. Full newer-master integration/runtime not verified.",
+  "platform_limits": "Linux x86_64 GCC13 release only; cross-platform comparisons unavailable.",
+  "profiling": "Serial ROI is complete single-participant cycle. Parallel ROI uses owner thread markers and does not establish total worker instruction counts; use native process CPU."
+}
