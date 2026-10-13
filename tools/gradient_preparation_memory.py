@@ -32,6 +32,7 @@ std::cout << "{\"resource\":" << sizeof(ResourceCell)
  << ",\"visibility\":" << 2 * sizeof(Uint32)
  << ",\"cell_rule\":" << sizeof(CellRule)
  << ",\"preparation_rule\":" << sizeof(GradientPreparationRule)
+ << ",\"cpu_seed_columns\":" << CellRuleTable::OpenTerrainClasses.size() * sizeof(Uint16)
  << ",\"resource_properties\":" << sizeof(ResourceProperties)
  << ",\"resource_yields\":" << sizeof(ResourceYields)
  << ",\"chunk_stamp\":" << sizeof(Uint64)
@@ -61,7 +62,7 @@ def worksheet(layout, jobs=8, table_rules=256, table_resources=64):
                                          'terrain_vertex', 'stock_index', 'visibility'))
     # GPU does not need terrain vertices. It reads the cell rules compiled on CPU.
     gpu_records = records - layout['terrain_vertex']
-    tables_host = table_rules * (layout['cell_rule'] + layout['preparation_rule'])
+    tables_host = table_rules * (layout['cell_rule'] + layout['preparation_rule'] + layout['cpu_seed_columns'])
     tables_host += table_resources * (layout['resource_properties'] + layout['resource_yields'] + 4)
     tables_device = table_rules * layout['preparation_rule'] + table_resources * 4
     rows = []

@@ -287,23 +287,37 @@ namespace gradient_kernel
 		pending += queued() - queuedBefore;
 		pending -= count-begin;
 	}
-	// Optional full-field references may pause between <=CHUNK entries. Positive
-	// edge costs guarantee the current source bucket cannot be appended/reallocated
-	// while retaining its original count and read offset. Required searches still
-	// clear only after the complete layer, preserving their observable boundary.
+	// A complete field selects its CPU variant once, before entering its layer
+	// sweep. Resumable callers use the runtime wrapper at each completed layer.
+	template<bool Weighted, bool Simd, typename IsWater, typename Reserve=DefaultGradientReserve>
+	void expandBucketRangeForCPU(std::uint16_t* gradient,GradientBucket* queue,size_t& pending,
+		int cur,int limit,const field::Grid& grid,EntrySteps waterSteps,IsWater isWater,
+		std::size_t begin,std::size_t end,Reserve reserve={})
+	{
+		if(grid.powerOfTwo())
+			expandBucketRangeAddressed<Weighted,true,IsWater,Reserve,Simd>(gradient,queue,pending,cur,limit,grid,waterSteps,isWater,begin,end,reserve);
+		else
+			expandBucketRangeAddressed<Weighted,false,IsWater,Reserve,Simd>(gradient,queue,pending,cur,limit,grid,waterSteps,isWater,begin,end,reserve);
+	}
+	// Optional references may pause between <=CHUNK entries; required searches
+	// clear only after a complete layer, preserving their observable boundary.
 	template<bool Weighted,typename IsWater,typename Reserve=DefaultGradientReserve>
 	void expandBucketRange(std::uint16_t* gradient,GradientBucket* queue,size_t& pending,
 		int cur,int limit,const field::Grid& grid,EntrySteps waterSteps,IsWater isWater,
 		std::size_t begin,std::size_t end,Reserve reserve={})
 	{
-        const auto dispatch=[&]<bool Simd>() {
-            if(grid.powerOfTwo())
-                expandBucketRangeAddressed<Weighted,true,IsWater,Reserve,Simd>(gradient,queue,pending,cur,limit,grid,waterSteps,isWater,begin,end,reserve);
-            else
-                expandBucketRangeAddressed<Weighted,false,IsWater,Reserve,Simd>(gradient,queue,pending,cur,limit,grid,waterSteps,isWater,begin,end,reserve);
-        };
-        if(cpuBackend()==Backend::Scalar)dispatch.template operator()<false>();
-        else dispatch.template operator()<true>();
+		if(cpuBackend()==Backend::Scalar)
+			expandBucketRangeForCPU<Weighted,false>(gradient,queue,pending,cur,limit,grid,waterSteps,isWater,begin,end,reserve);
+		else
+			expandBucketRangeForCPU<Weighted,true>(gradient,queue,pending,cur,limit,grid,waterSteps,isWater,begin,end,reserve);
+	}
+	template<bool Weighted, bool Simd, typename IsWater>
+	void expandBucketForCPU(std::uint16_t* gradient,GradientBucket* queue,size_t& pending,
+		int cur,int limit,const field::Grid& grid,EntrySteps waterSteps,IsWater isWater)
+	{
+		auto& bucket=queue[unsigned(cur)%BUCKETS];
+		expandBucketRangeForCPU<Weighted,Simd>(gradient,queue,pending,cur,limit,grid,waterSteps,isWater,0,bucket.size);
+		bucket.clear();
 	}
 	// Choose geometry once for a complete layer; both paths share relaxation,
 	// bucket accounting and SIMD rules, including thin-grid aliasing.

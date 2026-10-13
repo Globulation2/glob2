@@ -1451,6 +1451,10 @@ TEST_CASE("compiled preparation tables preserve rule and catalog interpretation"
         CHECK(bool(compact.accessibility&(1u<<swim))==gradient_kernel::terrainAllowsGround(original.properties,swim));
         CHECK((compact.costs[swim]&65535)==original.ground[swim].cardinal);
         CHECK((compact.costs[swim]>>16)==original.ground[swim].diagonal);
+        const auto& cpu=rules.openTerrainSeeds(swimAccessVariant(swim));
+        REQUIRE(cpu.size()==rules.size());
+        CHECK(cpu[id]==(gradient_kernel::terrainAllowsGround(original.properties,swim)
+            ? GRADIENT_UNREACHABLE : GRADIENT_FORBIDDEN));
     }
     const auto& resources=*snapshot.catalogs->resources;
     REQUIRE(resources.gradientPreparation().size()==resources.size());
@@ -1478,6 +1482,8 @@ TEST_CASE("rejected corner identities preserve all compiled gradient tables" *
 	CHECK(table.gradientPreparation().size() == original.gradientPreparation().size());
 	for (unsigned swim = 0; swim < 8; ++swim)
 	{
+		CHECK(table.openTerrainSeeds(swimAccessVariant(swim)) ==
+			  original.openTerrainSeeds(swimAccessVariant(swim)));
 		const auto &actual = table.movement(swim);
 		const auto &expected = original.movement(swim);
 		CHECK(actual.entries.size() == expected.entries.size());
@@ -1489,54 +1495,71 @@ TEST_CASE("rejected corner identities preserve all compiled gradient tables" *
 	// A subsequent valid insertion still issues the next stable rule identity.
 	CHECK(table.intern(GRASS, GRASS, GRASS, SAND) == original.size());
 	CHECK(table.gradientPreparation().size() == table.size());
+	for (unsigned variant = 0; variant < CellRuleTable::OpenTerrainClasses.size(); ++variant)
+		CHECK(table.openTerrainSeeds(variant).size() == table.size());
 }
 
 TEST_CASE("movement profile rejection rolls back previously appended swim classes" *
 		  doctest::test_suite("GradientPreparation"))
 {
 	glob2test::HeadlessGlobals globals;
-	CellRuleTable table(TerrainRegistry::builtins(), ResourceRegistry::builtins());
-	// Force the final class's documented profile limit. Earlier classes have
-	// already appended entries when this rejection occurs; rollback must cover
-	// their prepared metadata as well as the unpublished derived record.
-	auto &capped = const_cast<TerrainRegistry::Movement &>(table.movement(7));
-	capped.profiles.assign(256, gradient_kernel::EntrySteps{1, 1});
-	const auto original = table;
-	const auto corners = CellRuleTable::key(GRASS, SAND, GRASS, SAND);
-	CHECK_THROWS_AS(table.intern(corners), std::length_error);
-	CHECK_FALSE(table.find(corners).has_value());
-	CHECK(table.size() == original.size());
-	CHECK(table.gradientPreparation().size() == original.gradientPreparation().size());
-	for (unsigned swim = 0; swim < 8; ++swim)
+	for (const auto count : {8u, 9u})
 	{
-		const auto &actual = table.movement(swim);
-		const auto &expected = original.movement(swim);
-		REQUIRE(actual.entries.size() == expected.entries.size());
-		REQUIRE(actual.profiles.size() == expected.profiles.size());
-		CHECK(actual.profileIds == expected.profileIds);
-		CHECK(actual.steps == expected.steps);
-		CHECK(actual.minimum == expected.minimum);
-		REQUIRE(actual.prepared.has_value() == expected.prepared.has_value());
-		if (actual.prepared)
-			std::visit(
-				[&](const auto &profile)
-				{
-					using Profile = std::remove_cvref_t<decltype(profile)>;
-					const auto *previous = std::get_if<Profile>(&*expected.prepared);
-					REQUIRE(previous != nullptr);
-					CHECK(profile.terrainClasses == previous->terrainClasses);
-					CHECK(profile.cardinalSlots == previous->cardinalSlots);
-					CHECK(profile.diagonalSlots == previous->diagonalSlots);
-					CHECK(profile.steps == previous->steps);
-					CHECK(profile.maxAppends == previous->maxAppends);
-					CHECK(profile.classCount == previous->classCount);
-					CHECK(profile.stepCount == previous->stepCount);
-				},
-				*actual.prepared);
-		for (std::size_t i = 0; i < actual.entries.size(); ++i)
+		CAPTURE(count);
+		CellRuleTable table(TerrainRegistry::builtins(), ResourceRegistry::builtins());
+		// The first class gains a new cost before the last class rejects. Exercise
+		// rollback both across the 8/256 alternative transition and within 256.
+		auto &changed = const_cast<TerrainRegistry::Movement &>(table.movement(0));
+		changed.profiles.assign(count, gradient_kernel::EntrySteps{1, 1});
+		changed.prepare();
+		// Force the final class's documented profile limit. Earlier classes have
+		// already appended entries when this rejection occurs; rollback must cover
+		// their prepared metadata as well as the unpublished derived record.
+		auto &capped = const_cast<TerrainRegistry::Movement &>(table.movement(7));
+		capped.profiles.assign(256, gradient_kernel::EntrySteps{1, 1});
+		const auto original = table;
+		const auto corners = CellRuleTable::key(GRASS, SAND, GRASS, SAND);
+		CHECK_THROWS_AS(table.intern(corners), std::length_error);
+		CHECK_FALSE(table.find(corners).has_value());
+		CHECK(table.size() == original.size());
+		CHECK(table.gradientPreparation().size() == original.gradientPreparation().size());
+		for (unsigned swim = 0; swim < 8; ++swim)
 		{
-			CHECK(actual.entries[i].cardinal == expected.entries[i].cardinal);
-			CHECK(actual.entries[i].diagonal == expected.entries[i].diagonal);
+			CHECK(table.openTerrainSeeds(swimAccessVariant(swim)) ==
+				  original.openTerrainSeeds(swimAccessVariant(swim)));
+			const auto &actual = table.movement(swim);
+			const auto &expected = original.movement(swim);
+			REQUIRE(actual.entries.size() == expected.entries.size());
+			REQUIRE(actual.profiles.size() == expected.profiles.size());
+			CHECK(actual.profileIds == expected.profileIds);
+			CHECK(actual.steps == expected.steps);
+			CHECK(actual.minimum == expected.minimum);
+			REQUIRE(actual.prepared.has_value() == expected.prepared.has_value());
+			if (actual.prepared)
+				std::visit(
+					[&](const auto &profile)
+					{
+						using Profile = std::remove_cvref_t<decltype(profile)>;
+						const auto *previous = std::get_if<Profile>(&*expected.prepared);
+						REQUIRE(previous != nullptr);
+						CHECK(profile.terrainClasses == previous->terrainClasses);
+						CHECK(profile.cardinalSlots == previous->cardinalSlots);
+						CHECK(profile.diagonalSlots == previous->diagonalSlots);
+						CHECK(profile.steps == previous->steps);
+						CHECK(profile.maxAppends == previous->maxAppends);
+						CHECK(profile.classCount == previous->classCount);
+						CHECK(profile.stepCount == previous->stepCount);
+						for (std::size_t i = 0; i < profile.classes.size(); ++i) {
+							CHECK(profile.classes[i].cardinal == previous->classes[i].cardinal);
+							CHECK(profile.classes[i].diagonal == previous->classes[i].diagonal);
+						}
+					},
+					*actual.prepared);
+			for (std::size_t i = 0; i < actual.entries.size(); ++i)
+			{
+				CHECK(actual.entries[i].cardinal == expected.entries[i].cardinal);
+				CHECK(actual.entries[i].diagonal == expected.entries[i].diagonal);
+			}
 		}
 	}
 }
@@ -1591,4 +1614,35 @@ TEST_CASE("compact guard and building-only market requests match scalar gradient
             requireSameField(map,"shared gradient",shared,expected);
         }
     }
+}
+
+TEST_CASE("CPU snapshot dispatch preserves trivial fields and validates before its shortcut" *
+          doctest::test_suite("GradientPreparation"))
+{
+    using namespace gradient_kernel;
+    glob2test::HeadlessGlobals globals;
+    glob2test::HeadlessGame fixture({.wDec=4,.hDec=4,.teams=1,.discovered=true,.clearImmobile=true,.header=true});
+    auto& game=fixture.game;auto& map=game.map;
+    auto snapshot=SimulationSnapshot::capture(game,SimulationSnapshot::captureCatalog(game),gradient_preparation::buildingRequirements());
+    gradient_preparation::Request request;request.swim=0;request.terrainBuckets=64;
+    GradientWorkspace scratch;
+    // Unchanged scratch proves this is the trivial shortcut, rather than a
+    // full solve that happens to return an identical field.
+    scratch.buckets[0].push(17);
+    for (const auto value : {GRADIENT_FORBIDDEN, GRADIENT_AT_GOAL}) {
+        std::vector<Uint16> output(map.size,value);
+        gradient_preparation::propagateCPU(request,snapshot,output.data(),scratch);
+        CHECK(std::all_of(output.begin(),output.end(),[&](auto cell){return cell==value;}));
+        CHECK(scratch.buckets[0].size==1);
+    }
+    std::vector<Uint16> output(map.size,GRADIENT_AT_GOAL);
+    request.terrainBuckets=65;
+    CHECK_THROWS_AS(gradient_preparation::propagateCPU(request,snapshot,output.data(),scratch),std::invalid_argument);
+    map.game=nullptr;
+    map.importTerrainDefinitions(R"({"schemaVersion":1,"terrains":[{"key":"test:cpu-audit-slow","name":"Slow water","base":"water","appearance":"water","properties":{"groundSpeedQ8":64}}]})");
+    map.setGame(&game);map.paintCell(0,*map.terrainRegistry().find("test:cpu-audit-slow"));
+    snapshot=SimulationSnapshot::capture(game,SimulationSnapshot::captureCatalog(game),gradient_preparation::buildingRequirements());
+    request.terrainBuckets=64;request.swim=6;
+    CHECK_THROWS_AS(gradient_preparation::propagateCPU(request,snapshot,output.data(),scratch),std::invalid_argument);
+    CHECK(std::all_of(output.begin(),output.end(),[](auto cell){return cell==GRADIENT_AT_GOAL;}));
 }
