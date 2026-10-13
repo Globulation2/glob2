@@ -1,0 +1,275 @@
+{
+  "task": "Callgrind diagnosis of cached hiring CPU overhead",
+  "environment": {
+    "platform": "Linux arm64 Docker on macOS arm64",
+    "compiler": "GCC11.4 -O3 -g release, retain_symbols=1, recording=0, no fast/PCH/unity",
+    "valgrind": "3.18.1",
+    "scope": "K4 R4 L128 split, 1 participant, original hiring remains authoritative"
+  },
+  "fixture": {
+    "name": "sustainable",
+    "population": 1200,
+    "teams": 2,
+    "inns_per_team": 24,
+    "callgrind_ticks": [
+      2048,
+      2080
+    ],
+    "native_pair_ticks": [
+      2048,
+      2560
+    ],
+    "native_measured_ticks": [
+      2304,
+      2560
+    ]
+  },
+  "callgrind_instruction_counts": {
+    "regions-engine-disabled": 352192997,
+    "regions-engine-shared": 1886990817,
+    "regions-planner-shared": 1438569357,
+    "regions-engine-natural": 676097025,
+    "regions-planner-natural": 227663625,
+    "regions-engine-partial": 636662979,
+    "regions-planner-partial": 188431894
+  },
+  "resource_reuse_instruction_reduction": 0.8417430317890471,
+  "partial_selection_instruction_reduction": 0.17232322906217457,
+  "paired_resource_reuse_cpu": {
+    "numerator": "natural",
+    "denominator": "shared",
+    "paired_median_ratio": 0.349484251214066,
+    "bootstrap_95_ci": [
+      0.3445502751293089,
+      0.3562562398702279
+    ],
+    "ratios": [
+      0.35985026017675853,
+      0.35022961793307544,
+      0.34044983130129486,
+      0.34658499608997073,
+      0.34873888449505663,
+      0.350240354902878,
+      0.3486507189573229,
+      0.3562562398702279,
+      0.3663558297189087,
+      0.3346026698376735
+    ],
+    "median_cpu_seconds": {
+      "natural": 0.268162709,
+      "shared": 0.7671610600000001
+    },
+    "repetitions": 10,
+    "measured_ticks": 256,
+    "warmup_ticks": 256
+  },
+  "paired_partial_selection_cpu": {
+    "numerator": "partial",
+    "denominator": "natural",
+    "paired_median_ratio": 0.7585033666406054,
+    "bootstrap_95_ci": [
+      0.6818889678003107,
+      0.9287108277979045
+    ],
+    "ratios": [
+      0.8604985962205026,
+      0.6935978232345398,
+      0.9287108277979045,
+      1.0810479737407703,
+      0.6576153985250852,
+      0.9833531574250783,
+      0.7550196886276307,
+      0.6818889678003107,
+      0.7619870446535801,
+      0.6786581373316227
+    ],
+    "median_cpu_seconds": {
+      "partial": 0.5633507285,
+      "natural": 0.7284532465
+    },
+    "repetitions": 10,
+    "measured_ticks": 256,
+    "warmup_ticks": 256
+  },
+  "diagnosis": [
+    {
+      "cause": "Supplier permission incorrectly used as supplier presence",
+      "evidence": "gdb: stockSuppliers and directStockSuppliers empty, fetchesDirectStockMask=0xe2. Engine materialSupplyModesSlot returns natural mode for empty supplier lists; planner boolean markets remains true.",
+      "locations": [
+        "src/building/HiringPlanner.cpp:162",
+        "src/building/HiringPlanner.cpp:337",
+        "src/map/gradient/MapGradientMaterial.cpp:208"
+      ]
+    },
+    {
+      "cause": "Duplicated natural-resource fields and overbroad invalidation",
+      "evidence": "24 fields rebuilt per retained team refresh; 14 published refreshes rebuilt336 fields, seeded5505024cells, zero field hits. Natural control: zero private fields,201600 published-plane reads. Full32tick planner profile includes16 ranks and drained future work; counters cover14 published ranks.",
+      "locations": [
+        "src/building/HiringPlanner.cpp:165",
+        "src/building/HiringPlanner.cpp:178"
+      ]
+    },
+    {
+      "cause": "Sorts entire candidate populations and builds discarded combined lists",
+      "evidence": "After resource reuse, sort/output is median50.27% of native planner elapsed batch time. Split control partitions availability, selects exact top96/top32 with nth_element and sorts only retained prefixes. Output digests identical over32 and512tick runs.",
+      "locations": [
+        "src/building/HiringPlanner.cpp:370",
+        "src/building/HiringStudy.cpp:59"
+      ]
+    },
+    {
+      "cause": "Remaining avoidable work",
+      "evidence": "Unconditional geography hashing is about6% of planner elapsed batch time after all private field construction is removed. Attack map is constructed for all units even though this fixture has no defense jobs. These are inspected code paths, not yet ablated.",
+      "locations": [
+        "src/building/HiringPlanner.cpp:240",
+        "src/building/HiringPlanner.cpp:252"
+      ]
+    }
+  ],
+  "validation": {
+    "macos_linux_arm64_per_tick_trace": {
+      "platforms": [
+        "macOS arm64 clang21",
+        "Linux arm64 GCC11.4 Docker"
+      ],
+      "fixture": "sustainable checkpoint2048",
+      "ticks": [
+        2048,
+        2080
+      ],
+      "per_tick_traces_identical": true,
+      "trace_sha256": [
+        "56411fbbdcb30fc3af3846ce93cc9359d8352882dbc12a4c6109e6ce05548471",
+        "56411fbbdcb30fc3af3846ce93cc9359d8352882dbc12a4c6109e6ce05548471"
+      ]
+    },
+    "profile_game_checksums_identical": true,
+    "natural_partial_candidate_digests_identical": true,
+    "profile_game_checksums": {
+      "regions-engine-shared": 3131757874,
+      "regions-planner-shared": 3131757874,
+      "regions-engine-disabled": 3131757874,
+      "regions-planner-partial": 3131757874,
+      "regions-engine-partial": 3131757874,
+      "regions-engine-natural": 3131757874,
+      "regions-planner-natural": 3131757874
+    }
+  },
+  "production_changes": false,
+  "limitations": [
+    "Controls are only in the isolated Linux source copy; no production fix merged. Natural control assumes this audited supplier-free fixture. General fix must use actual captured supplier modes and corresponding existing fields.",
+    "Callgrind Ir is instruction count, not CPU seconds. Native process CPU is measured separately with ten rotated paired runs and one process warmup.",
+    "Absolute CPU levels shifted substantially between native timing batches; compare only paired ratios within each batch, not the combined absolute times or multiplied speedups.",
+    "Initial function-name toggled planner profile under-collected optimized/inlined code. Discarded; valid profiles use explicit Callgrind client regions with instrumentation disabled outside regions.",
+    "Valgrind reports brk segment overflow; libc fell back and runs completed with matching simulation checksums. Auto source annotation emits warnings for optimized line-zero entries; raw summaries and self tables retained.",
+    "No cache/branch simulation; no claim that instruction proportions are runtime percentages.",
+    "No Linux x86-64, Windows or browser coverage; no live consumer, delay/fairness gate or new-gameplay acceptance."
+  ],
+  "published_counters": {
+    "regions-planner-shared": {
+      "airQueries": 0,
+      "buildingOccupancyChanges": 0,
+      "evaluationNs": 2382278696,
+      "evictions": 0,
+      "fieldCells": 5505024,
+      "fieldHits": 0,
+      "fieldMisses": 336,
+      "forbiddenChanges": 0,
+      "geographyChanges": 8,
+      "geographyNs": 6590416,
+      "immobileChanges": 8,
+      "jobs": 2688,
+      "missingBuildingFields": 0,
+      "precheckNs": 129479917,
+      "privateResourceReads": 201600,
+      "propagationNs": 658507199,
+      "publishedResourceReads": 0,
+      "rankedCandidates": 222024,
+      "refreshes": 14,
+      "resourceBlockingChanges": 0,
+      "seedNs": 1269113956,
+      "setupNs": 36314045,
+      "sharedExpansions": 0,
+      "sharedQueries": 222024,
+      "sharedQueryNs": 0,
+      "sharedWaitNs": 0,
+      "skippedJobs": 2016,
+      "sortOutputNs": 322462936,
+      "terrainChanges": 0
+    },
+    "regions-planner-natural": {
+      "airQueries": 0,
+      "buildingOccupancyChanges": 0,
+      "evaluationNs": 384556677,
+      "evictions": 0,
+      "fieldCells": 0,
+      "fieldHits": 0,
+      "fieldMisses": 0,
+      "forbiddenChanges": 0,
+      "geographyChanges": 8,
+      "geographyNs": 6617624,
+      "immobileChanges": 8,
+      "jobs": 2688,
+      "missingBuildingFields": 0,
+      "precheckNs": 133403412,
+      "privateResourceReads": 0,
+      "propagationNs": 0,
+      "publishedResourceReads": 201600,
+      "rankedCandidates": 203880,
+      "refreshes": 14,
+      "resourceBlockingChanges": 0,
+      "seedNs": 0,
+      "setupNs": 36105001,
+      "sharedExpansions": 0,
+      "sharedQueries": 222024,
+      "sharedQueryNs": 0,
+      "sharedWaitNs": 0,
+      "skippedJobs": 2016,
+      "sortOutputNs": 438253343,
+      "terrainChanges": 0
+    },
+    "regions-planner-partial": {
+      "airQueries": 0,
+      "buildingOccupancyChanges": 0,
+      "evaluationNs": 376753639,
+      "evictions": 0,
+      "fieldCells": 0,
+      "fieldHits": 0,
+      "fieldMisses": 0,
+      "forbiddenChanges": 0,
+      "geographyChanges": 8,
+      "geographyNs": 6713041,
+      "immobileChanges": 8,
+      "jobs": 2688,
+      "missingBuildingFields": 0,
+      "precheckNs": 139312333,
+      "privateResourceReads": 0,
+      "propagationNs": 0,
+      "publishedResourceReads": 201600,
+      "rankedCandidates": 203880,
+      "refreshes": 14,
+      "resourceBlockingChanges": 0,
+      "seedNs": 0,
+      "setupNs": 37036830,
+      "sharedExpansions": 0,
+      "sharedQueries": 222024,
+      "sharedQueryNs": 0,
+      "sharedWaitNs": 0,
+      "skippedJobs": 2016,
+      "sortOutputNs": 158645246,
+      "terrainChanges": 0
+    }
+  },
+  "planner_self_instruction_families": {
+    "field_propagation": 511545884,
+    "material_goal_seeding": 649407312,
+    "other": 277616161
+  },
+  "field_family_instruction_fraction": 0.8070192725507915,
+  "binary_sha256": {
+    "glob2-linux-shared-profile": "dbce49381666d2748c54d6ad2eb60078f6bc34b8b0b88c61eb27fb016ad5556a",
+    "glob2-linux-partial-control": "3506649f4d5993829f6f8111c9fbf24abca56bf2c5c88c1db71068939bdc5adf",
+    "glob2-linux-original": "ab26831d41426116a9021f70b488d444d4c272084fcd39b4f2b159a73191fc97",
+    "glob2-linux-natural-control": "eeaf2cbda44cf20bf67a93a5c5499a22d152fdbffcaee32caee6463b764edce3"
+  }
+}

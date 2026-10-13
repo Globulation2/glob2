@@ -1,0 +1,511 @@
+{
+  "scope": "macOS arm64 ordinary -O3 release; original hiring authoritative. K4 R4 L128 split. Four participants. One process warmup plus ten rotated paired runs, CPU measured over last 256 ticks; elapsed time covers all 512 ticks. No timing checksum/save/diagnostic exports.",
+  "changes": [
+    "Capture exact owner-resolved supplier modes using the existing engine helper, including catalog support, actual supplier lists and redundant-direct mode folding.",
+    "Reuse published natural or unified market snapshot fields when consumer semantics match; preserve private direct/self-excluding/missing-plane fallback.",
+    "Lazy geography hashing only for private resource fields; supplier-cache stamps include supplier incarnation/type/state.",
+    "Exact bounded shortlist selection; scheduled jobs construct only the requested pool policy; full matrix retains both controls."
+  ],
+  "large": {
+    "sustainable": {
+      "median_measured_cpu_seconds": {
+        "disabled": 0.0530725,
+        "owner": 0.18033349999999998,
+        "pool": 0.227965,
+        "previous-pool": 0.826005
+      },
+      "paired_ratios": {
+        "pool/disabled": {
+          "measured_cpu_median": 4.243922038833183,
+          "measured_cpu_95_bootstrap_ci": [
+            3.9484139297096124,
+            4.344818371589268
+          ],
+          "entire_512_tick_elapsed_median": 2.036853809339183,
+          "entire_512_tick_elapsed_95_bootstrap_ci": [
+            2.0138811229515525,
+            2.058178430468564
+          ]
+        },
+        "pool/owner": {
+          "measured_cpu_median": 1.2570396967479156,
+          "measured_cpu_95_bootstrap_ci": [
+            1.2363363584116298,
+            1.2772715815927878
+          ],
+          "entire_512_tick_elapsed_median": 0.5265843654982332,
+          "entire_512_tick_elapsed_95_bootstrap_ci": [
+            0.5096296103539433,
+            0.5305671694541403
+          ]
+        },
+        "pool/previous-pool": {
+          "measured_cpu_median": 0.27683233007557084,
+          "measured_cpu_95_bootstrap_ci": [
+            0.27055760671163365,
+            0.27989949141690523
+          ],
+          "entire_512_tick_elapsed_median": 0.22669676827294588,
+          "entire_512_tick_elapsed_95_bootstrap_ci": [
+            0.22512414807570322,
+            0.2312040140063265
+          ]
+        }
+      }
+    },
+    "contention": {
+      "median_measured_cpu_seconds": {
+        "disabled": 0.054081500000000005,
+        "owner": 0.1813065,
+        "pool": 0.22778199999999998,
+        "previous-pool": 0.828138
+      },
+      "paired_ratios": {
+        "pool/disabled": {
+          "measured_cpu_median": 4.2333576006186036,
+          "measured_cpu_95_bootstrap_ci": [
+            3.877752908814434,
+            4.4002110487952635
+          ],
+          "entire_512_tick_elapsed_median": 2.059718581587857,
+          "entire_512_tick_elapsed_95_bootstrap_ci": [
+            1.9778772159417706,
+            2.0892216904661565
+          ]
+        },
+        "pool/owner": {
+          "measured_cpu_median": 1.2623094299333142,
+          "measured_cpu_95_bootstrap_ci": [
+            1.2329922325013092,
+            1.318866597499188
+          ],
+          "entire_512_tick_elapsed_median": 0.5226556439591068,
+          "entire_512_tick_elapsed_95_bootstrap_ci": [
+            0.5191297744054608,
+            0.5384860273147966
+          ]
+        },
+        "pool/previous-pool": {
+          "measured_cpu_median": 0.2780198445246944,
+          "measured_cpu_95_bootstrap_ci": [
+            0.26943840635881344,
+            0.28103275107291387
+          ],
+          "entire_512_tick_elapsed_median": 0.22856704653375864,
+          "entire_512_tick_elapsed_95_bootstrap_ci": [
+            0.2238509979609052,
+            0.23380415505526103
+          ]
+        }
+      }
+    }
+  },
+  "ordinary": {
+    "archipelago": {
+      "median_measured_cpu_seconds": {
+        "disabled": 0.0436895,
+        "pool": 0.051421,
+        "previous-pool": 0.08047750000000001
+      },
+      "paired_ratios": {
+        "pool/disabled": {
+          "measured_cpu_median": 1.184377595277125,
+          "measured_cpu_95_bootstrap_ci": [
+            1.1612888409158764,
+            1.2527279890580687
+          ],
+          "entire_512_tick_elapsed_median": 1.1037545606479269,
+          "entire_512_tick_elapsed_95_bootstrap_ci": [
+            1.0529023601719065,
+            1.1181709931109693
+          ]
+        },
+        "pool/previous-pool": {
+          "measured_cpu_median": 0.6628318349864303,
+          "measured_cpu_95_bootstrap_ci": [
+            0.6180820583015301,
+            0.7122360878578574
+          ],
+          "entire_512_tick_elapsed_median": 1.0051647456470527,
+          "entire_512_tick_elapsed_95_bootstrap_ci": [
+            0.900661000780383,
+            1.0139543048894222
+          ]
+        }
+      }
+    },
+    "bigarena": {
+      "median_measured_cpu_seconds": {
+        "disabled": 0.194459,
+        "pool": 0.193643,
+        "previous-pool": 0.4802725
+      },
+      "paired_ratios": {
+        "pool/disabled": {
+          "measured_cpu_median": 1.060712688677962,
+          "measured_cpu_95_bootstrap_ci": [
+            0.92760529853659,
+            1.0679177392122672
+          ],
+          "entire_512_tick_elapsed_median": 1.0096003739352155,
+          "entire_512_tick_elapsed_95_bootstrap_ci": [
+            0.9132740264037633,
+            1.0223667782292591
+          ]
+        },
+        "pool/previous-pool": {
+          "measured_cpu_median": 0.4248445029052706,
+          "measured_cpu_95_bootstrap_ci": [
+            0.4161563275552179,
+            0.4439539034841127
+          ],
+          "entire_512_tick_elapsed_median": 0.6378702424113251,
+          "entire_512_tick_elapsed_95_bootstrap_ci": [
+            0.6144811343004508,
+            0.6600318520062567
+          ]
+        }
+      }
+    },
+    "dense": {
+      "median_measured_cpu_seconds": {
+        "disabled": 0.2939855,
+        "pool": 0.3555785,
+        "previous-pool": 0.505946
+      },
+      "paired_ratios": {
+        "pool/disabled": {
+          "measured_cpu_median": 1.2100519268555463,
+          "measured_cpu_95_bootstrap_ci": [
+            1.0768421427004855,
+            1.2185857360049632
+          ],
+          "entire_512_tick_elapsed_median": 1.0971428081029035,
+          "entire_512_tick_elapsed_95_bootstrap_ci": [
+            1.0505294925514788,
+            1.1295995345356382
+          ]
+        },
+        "pool/previous-pool": {
+          "measured_cpu_median": 0.7073250537341484,
+          "measured_cpu_95_bootstrap_ci": [
+            0.6841226107624045,
+            0.7110850933881698
+          ],
+          "entire_512_tick_elapsed_median": 0.8195438012662477,
+          "entire_512_tick_elapsed_95_bootstrap_ci": [
+            0.7981947371698142,
+            0.8281732771655832
+          ]
+        }
+      }
+    },
+    "land-maxima-mid": {
+      "median_measured_cpu_seconds": {
+        "disabled": 0.18554900000000002,
+        "pool": 0.1999555,
+        "previous-pool": 2.0313115
+      },
+      "paired_ratios": {
+        "pool/disabled": {
+          "measured_cpu_median": 1.066326123782945,
+          "measured_cpu_95_bootstrap_ci": [
+            1.0075287547070222,
+            1.0985172340289722
+          ],
+          "entire_512_tick_elapsed_median": 1.010405843432416,
+          "entire_512_tick_elapsed_95_bootstrap_ci": [
+            0.9872265879014449,
+            1.0259026120985215
+          ]
+        },
+        "pool/previous-pool": {
+          "measured_cpu_median": 0.09559572526244994,
+          "measured_cpu_95_bootstrap_ci": [
+            0.09306037004344163,
+            0.10137706057561374
+          ],
+          "entire_512_tick_elapsed_median": 0.2596148705615853,
+          "entire_512_tick_elapsed_95_bootstrap_ci": [
+            0.24568518226053337,
+            0.2665745367071321
+          ]
+        }
+      }
+    },
+    "large": {
+      "median_measured_cpu_seconds": {
+        "disabled": 0.024722,
+        "pool": 0.028187,
+        "previous-pool": 0.0504415
+      },
+      "paired_ratios": {
+        "pool/disabled": {
+          "measured_cpu_median": 1.1743715379716408,
+          "measured_cpu_95_bootstrap_ci": [
+            1.1532246306949312,
+            1.3207284969059603
+          ],
+          "entire_512_tick_elapsed_median": 1.0879146234265673,
+          "entire_512_tick_elapsed_95_bootstrap_ci": [
+            1.078863272756597,
+            1.1757489362830915
+          ]
+        },
+        "pool/previous-pool": {
+          "measured_cpu_median": 0.5716702901661168,
+          "measured_cpu_95_bootstrap_ci": [
+            0.5603524491937031,
+            0.5992095988465596
+          ],
+          "entire_512_tick_elapsed_median": 0.863906486302185,
+          "entire_512_tick_elapsed_95_bootstrap_ci": [
+            0.8036226411885665,
+            0.8713845671375826
+          ]
+        }
+      }
+    },
+    "small": {
+      "median_measured_cpu_seconds": {
+        "disabled": 0.010169999999999998,
+        "pool": 0.012277,
+        "previous-pool": 0.0138435
+      },
+      "paired_ratios": {
+        "pool/disabled": {
+          "measured_cpu_median": 1.207185510925325,
+          "measured_cpu_95_bootstrap_ci": [
+            1.1266036209192802,
+            1.3502364848701045
+          ],
+          "entire_512_tick_elapsed_median": 1.1443583173435663,
+          "entire_512_tick_elapsed_95_bootstrap_ci": [
+            1.0976101548504587,
+            1.3483327935697704
+          ]
+        },
+        "pool/previous-pool": {
+          "measured_cpu_median": 0.8904242804735248,
+          "measured_cpu_95_bootstrap_ci": [
+            0.8293149817342709,
+            0.91922631473687
+          ],
+          "entire_512_tick_elapsed_median": 1.0876053936149344,
+          "entire_512_tick_elapsed_95_bootstrap_ci": [
+            1.0416135040645125,
+            1.1637325240197727
+          ]
+        }
+      }
+    },
+    "water-cortex-late": {
+      "median_measured_cpu_seconds": {
+        "disabled": 0.20198850000000002,
+        "pool": 0.22547899999999998,
+        "previous-pool": 1.8995425
+      },
+      "paired_ratios": {
+        "pool/disabled": {
+          "measured_cpu_median": 1.1235113075236807,
+          "measured_cpu_95_bootstrap_ci": [
+            1.0753999229816509,
+            1.201841279536577
+          ],
+          "entire_512_tick_elapsed_median": 1.0573443177600033,
+          "entire_512_tick_elapsed_95_bootstrap_ci": [
+            1.0401858692935353,
+            1.1220286110439022
+          ]
+        },
+        "pool/previous-pool": {
+          "measured_cpu_median": 0.11517782331649455,
+          "measured_cpu_95_bootstrap_ci": [
+            0.11138768431417362,
+            0.1248110492364246
+          ],
+          "entire_512_tick_elapsed_median": 0.11801351136797032,
+          "entire_512_tick_elapsed_95_bootstrap_ci": [
+            0.11541814874517584,
+            0.12403144030101498
+          ]
+        }
+      }
+    }
+  },
+  "shadow": {
+    "sustainable": {
+      "opportunities": {
+        "K": 4,
+        "L": 128,
+        "R": 4,
+        "agreement_given_covered": 0.7704280155642024,
+        "already_used": 8,
+        "busy": 2255,
+        "coverage": 0.9065255731922398,
+        "coverage_gate_passed": false,
+        "exact_worker_agreement": 0.6984126984126984,
+        "exact_worker_agreements": 396,
+        "examined": 7105,
+        "hits": 514,
+        "independent_agreement_given_covered": 0.7723735408560312,
+        "independent_coverage": 0.9065255731922398,
+        "independent_exact_worker_agreement": 0.7001763668430335,
+        "independent_exact_worker_agreements": 397,
+        "missing_lists": 192,
+        "opportunities": 567,
+        "policy": "split",
+        "qualification": 4328,
+        "replaced": 0,
+        "startup_agreements": 0,
+        "startup_hits": 0,
+        "startup_opportunities": 192,
+        "trial_age_eligible": true
+      },
+      "planner_metrics": {
+        "airQueries": 0,
+        "buildingOccupancyChanges": 0,
+        "evaluationNs": 1247653002,
+        "evictions": 0,
+        "fieldCells": 0,
+        "fieldHits": 0,
+        "fieldMisses": 0,
+        "forbiddenChanges": 0,
+        "geographyChanges": 0,
+        "geographyNs": 0,
+        "immobileChanges": 0,
+        "jobs": 392832,
+        "missingBuildingFields": 14400,
+        "precheckNs": 121850386,
+        "privateResourceReads": 0,
+        "propagationNs": 0,
+        "publishedResourceReads": 29448000,
+        "rankedCandidates": 30548664,
+        "refreshes": 2046,
+        "resourceBlockingChanges": 0,
+        "seedNs": 0,
+        "setupNs": 104191643,
+        "sharedExpansions": 1129,
+        "sharedQueries": 32737224,
+        "sharedQueryNs": 1212336,
+        "sharedWaitNs": 38772414,
+        "skippedJobs": 297408,
+        "sortOutputNs": 444250018,
+        "terrainChanges": 0
+      },
+      "peak_accounted_bytes": 78494600
+    },
+    "contention": {
+      "opportunities": {
+        "K": 4,
+        "L": 128,
+        "R": 4,
+        "agreement_given_covered": 0.7687861271676301,
+        "already_used": 9,
+        "busy": 2424,
+        "coverage": 0.9010416666666666,
+        "coverage_gate_passed": false,
+        "exact_worker_agreement": 0.6927083333333334,
+        "exact_worker_agreements": 399,
+        "examined": 7268,
+        "hits": 519,
+        "independent_agreement_given_covered": 0.7726396917148363,
+        "independent_coverage": 0.9010416666666666,
+        "independent_exact_worker_agreement": 0.6961805555555556,
+        "independent_exact_worker_agreements": 401,
+        "missing_lists": 192,
+        "opportunities": 576,
+        "policy": "split",
+        "qualification": 4316,
+        "replaced": 0,
+        "startup_agreements": 0,
+        "startup_hits": 0,
+        "startup_opportunities": 192,
+        "trial_age_eligible": true
+      },
+      "planner_metrics": {
+        "airQueries": 0,
+        "buildingOccupancyChanges": 0,
+        "evaluationNs": 1102621633,
+        "evictions": 0,
+        "fieldCells": 0,
+        "fieldHits": 0,
+        "fieldMisses": 0,
+        "forbiddenChanges": 0,
+        "geographyChanges": 0,
+        "geographyNs": 0,
+        "immobileChanges": 0,
+        "jobs": 392832,
+        "missingBuildingFields": 14400,
+        "precheckNs": 117397374,
+        "privateResourceReads": 0,
+        "propagationNs": 0,
+        "publishedResourceReads": 29448000,
+        "rankedCandidates": 30587016,
+        "refreshes": 2046,
+        "resourceBlockingChanges": 0,
+        "seedNs": 0,
+        "setupNs": 102223750,
+        "sharedExpansions": 1260,
+        "sharedQueries": 32737344,
+        "sharedQueryNs": 1497003,
+        "sharedWaitNs": 45952913,
+        "skippedJobs": 297408,
+        "sortOutputNs": 437435961,
+        "terrainChanges": 0
+      },
+      "peak_accounted_bytes": 78597760
+    }
+  },
+  "validation": {
+    "disabled_nine_workloads": {
+      "identical": true,
+      "runs": 18
+    },
+    "scheduled_two_workloads": {
+      "identical": true,
+      "runs": 24
+    },
+    "cross_participant": {
+      "sustainable": {
+        "identical_across_participants_and_modes": true,
+        "runs": 12,
+        "hashes": {
+          "game.replay.checksums": "4805421676d7be432639c0c815e95a351a11c9ab179f69144f67ddcecaf37a34",
+          "game.replay": "1b8814635bbaa12e055dc37c9ac8083761a8f6288696638cfb8e4f51feda05f5",
+          "final.game.gz": "8c27455d36053bd51b53c88da7efcac5a6b8f7bd5f2ad14e8cc2244047894f51",
+          "world.checksums": "27d341fc152c8dac9b4050f0f139369f621b073bbe9ac756de09e5bcaf42d230"
+        }
+      },
+      "contention": {
+        "identical_across_participants_and_modes": true,
+        "runs": 12,
+        "hashes": {
+          "game.replay.checksums": "31bfb975e096441e69b82c89e3cda5c94c2c6e9da3ed1dda8883672d029547e8",
+          "game.replay": "7973a640ab1186b5a966c134868d21e7f483ffab701d630092ad56da5a966196",
+          "final.game.gz": "fc4e90d49048eb278111f3045d8b71911188af0243ade4258b66a16341cc7c4c",
+          "world.checksums": "e58efa0a860b50ccb35b774ffc6b52a6b275ab079e9cdd13be226aef87addad8"
+        }
+      }
+    },
+    "tests": "128 focused engine tests; additionally planner/study suite 10 cases, 2565 assertions; final JUnit in final-test-results.xml"
+  },
+  "limits": [
+    "macOS arm64 coverage only for these final changes; Linux x86-64, Windows, browser and TSAN not run. Earlier Linux arm64 profiling controls are not final-code platform validation.",
+    "Original hiring still runs; these are added-planner costs, not live hiring speedups.",
+    "Coverage remains below 95%; exact worker agreement below informational 90% goal. No live-trial progression.",
+    "Shadow trajectory does not establish gameplay delay or counterfactual economy.",
+    "Direct/self-excluding supplier fields and missing planes can still build private snapshot fields.",
+    "Host activity uncontrolled. Preserve raw repetitions/outliers; paired confidence intervals are from ten pairs.",
+    "Memory accounting uses current leases and measured retired growth, not theoretical maximum expansion."
+  ],
+  "source_sha256": {
+    "src/building/HiringPlanner.h": "45edef3e9f2300a0d5fb47ce39b21fde3c3c8324e99bcd68e090e1eae06fe72f",
+    "src/building/HiringPlanner.cpp": "431c23fe1d410a2277739f22d815f7f50520351c3eff46165f2214ac553b40a8",
+    "src/building/HiringStudy.cpp": "3cd58a076d5ff6ab83ba74d606f0a337620880150f1710cba5a37b68df69e1ea",
+    "src/building/HiringPlannerTest.cpp": "b247ae98609a5ef090daf761b90b7a296fe120567c43b6148bed14848c768dfb",
+    "docs/development/compute-benchmarks.md": "adddb1b9ab7272e45fa188d0d37fc307f49d5198b6c62a8f34bd8e05f4d6d5f7"
+  },
+  "revision": "3510b4c4ee860428561d561b959e6c89e96c4b37",
+  "binary_sha256": "c2caa054cd085a70960ec72f1081acd65d869f813cf9f3cab02b054d4d18ee68"
+}

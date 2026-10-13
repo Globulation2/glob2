@@ -1,0 +1,43 @@
+{
+  "implementation_before_master_integration": "59ce0a239",
+  "integrated_pr_head": "aac2efeb3620825d7d9ede5bcc263471b9aaee3b",
+  "fetched_master": "3e2ba6c07450c94ce0f997220479fd309b71e461",
+  "archive_sha256": "2ac7ecd9b9bcde4d56c0f747ca34affcfb77a0c3f84fa27c3cd47411b2387388",
+  "files": {
+    "final-test-results.xml": {
+      "bytes": 20451,
+      "sha256": "f2c343308e53e93cd7085fd4a47919442a26f5a123fcaa9ee88c5ddd3d0d29b3"
+    },
+    "measurements-and-validation.tar.gz.part02": {
+      "bytes": 44010577,
+      "sha256": "c74112e886f2e2980f1e589dbde660928d96964063e702e73073b3fbc67a27c9"
+    },
+    "callgrind-evidence.tar.gz": {
+      "bytes": 4661811,
+      "sha256": "fcbbd1aeb921cc5c9807d34a210635386d3f315db3b31fd5362161469d91519a"
+    },
+    "findings.json": {
+      "bytes": 17807,
+      "sha256": "394bd155bd39fee12a1f35eda5d59b7221723a29a7694f67512cb8c9be02947e"
+    },
+    "measurements-manifest.json": {
+      "bytes": 674831,
+      "sha256": "f8666ec766b0d7c8dd89a66e3b651b8b476ccd57b485b26d76e6ca1b445475b8"
+    },
+    "measurements-and-validation.tar.gz.part01": {
+      "bytes": 62914560,
+      "sha256": "8123cec62817732bc5c4ffc38f671e3942cf1e70161541426586cc4e07f6cc4c"
+    },
+    "callgrind-findings.json": {
+      "bytes": 9916,
+      "sha256": "6f9c3a5fec23bacfaa05a2e7131a9e5d22f0497c37ddd9c1109da8893b2bc4d6"
+    }
+  },
+  "notes": [
+    "Performance measurements and 128-case tests apply to the pre-integration implementation tree committed as 59ce0a239, built with historical parent revision and dirty-source provenance.",
+    "Integrated-head build/tests are retained separately; historical paired timing ratios do not establish performance on the later master-integrated head.",
+    "Heavy binary checksum traces are content-deduplicated through tar hard links.",
+    "Executable hashes and exact commands are retained; executables are kept locally, not uploaded.",
+    "No live hiring consumer or gameplay trial has been enabled."
+  ]
+}
