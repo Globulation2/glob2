@@ -1,0 +1,145 @@
+{
+  "source": "d7d0f4d1a9d0ce21935ee8633a8771547a6e604d",
+  "summary": {
+    "pairs": 8,
+    "mode": "gpu",
+    "fixtures": {
+      "river-128-early-8": {
+        "before_mean": 503526.5197753906,
+        "after_mean": 479147.7966308594,
+        "savings_pct": 4.841596656201133,
+        "paired_95_ci_pct": [
+          -8.358311311063503,
+          18.04150462346577
+        ],
+        "median_elapsed_change_pct": -5.46315620017962,
+        "before_gpu_fields": 1167,
+        "after_gpu_fields": 1263
+      },
+      "river-128-middle-8": {
+        "before_mean": 600848.0834960938,
+        "after_mean": 529767.2424316406,
+        "savings_pct": 11.83008534384636,
+        "paired_95_ci_pct": [
+          -0.03610051750703321,
+          23.696271205199753
+        ],
+        "median_elapsed_change_pct": -12.479336077704406,
+        "before_gpu_fields": 2471,
+        "after_gpu_fields": 2105
+      },
+      "river-128-late-8": {
+        "before_mean": 634925.6286621094,
+        "after_mean": 605776.4587402344,
+        "savings_pct": 4.590958154153739,
+        "paired_95_ci_pct": [
+          -0.02314556242497441,
+          9.205061870732452
+        ],
+        "median_elapsed_change_pct": -3.7611381916561992,
+        "before_gpu_fields": 1667,
+        "after_gpu_fields": 1750
+      },
+      "river-256-early-8": {
+        "before_mean": 1113518.5852050781,
+        "after_mean": 972818.2373046875,
+        "savings_pct": 12.635653303844737,
+        "paired_95_ci_pct": [
+          0.8379152793729677,
+          24.433391328316503
+        ],
+        "median_elapsed_change_pct": -19.284099173799984,
+        "before_gpu_fields": 1711,
+        "after_gpu_fields": 1640
+      },
+      "river-256-middle-8": {
+        "before_mean": 1092465.1794433594,
+        "after_mean": 923340.6066894531,
+        "savings_pct": 15.48100350805504,
+        "paired_95_ci_pct": [
+          9.556091017890687,
+          21.405915998219392
+        ],
+        "median_elapsed_change_pct": -33.39685150611752,
+        "before_gpu_fields": 2862,
+        "after_gpu_fields": 3257
+      },
+      "river-256-late-8": {
+        "before_mean": 1424138.8854980469,
+        "after_mean": 1205292.8466796875,
+        "savings_pct": 15.366902838400133,
+        "paired_95_ci_pct": [
+          10.580088272405499,
+          20.153717404394765
+        ],
+        "median_elapsed_change_pct": -27.660607693561644,
+        "before_gpu_fields": 3635,
+        "after_gpu_fields": 3653
+      },
+      "river-512-early-8": {
+        "before_mean": 3933691.5283203125,
+        "after_mean": 2949046.6918945312,
+        "savings_pct": 25.031063807034837,
+        "paired_95_ci_pct": [
+          22.805538992188826,
+          27.25658862188084
+        ],
+        "median_elapsed_change_pct": -40.228317022655126,
+        "before_gpu_fields": 3373,
+        "after_gpu_fields": 4819
+      },
+      "river-512-middle-8": {
+        "before_mean": 4473636.138916016,
+        "after_mean": 3198706.512451172,
+        "savings_pct": 28.49873317533074,
+        "paired_95_ci_pct": [
+          24.828416937171976,
+          32.1690494134895
+        ],
+        "median_elapsed_change_pct": -43.19924270934029,
+        "before_gpu_fields": 4386,
+        "after_gpu_fields": 5801
+      },
+      "river-512-late-8": {
+        "before_mean": 4973401.702880859,
+        "after_mean": 3618411.7431640625,
+        "savings_pct": 27.24473188907935,
+        "paired_95_ci_pct": [
+          21.345756471923114,
+          33.14370730623559
+        ],
+        "median_elapsed_change_pct": -43.046207845615655,
+        "before_gpu_fields": 4080,
+        "after_gpu_fields": 5579
+      }
+    },
+    "qualification": false,
+    "cpu_per_tick": {
+      "before_mean": 2083350.2502441404,
+      "after_mean": 1609145.3484429251,
+      "savings_pct": 22.761650459189227,
+      "paired_95_ci_pct": [
+        19.860463184291387,
+        25.662837734087063
+      ]
+    },
+    "window_cpu_per_tick": {
+      "before_mean": 1970134.708158947,
+      "after_mean": 1480039.972032335,
+      "savings_pct": 24.876204357853084,
+      "paired_95_ci_pct": [
+        21.887463122555097,
+        27.86494559315107
+      ]
+    }
+  },
+  "runs": 144,
+  "checksum_pairs_equal": 72,
+  "archive_sha256": "b0fc22a2a26d9b3eb8baf24774c28a769da2260d11e8d3066750fdbab7151b74",
+  "qualification": false,
+  "limitations": [
+    "Comparison is GPU-only validation versus CPU plus GPU validation on Vulkan/Frozen8, not versus CPU-only solving",
+    "Nine candidate saves, compute count 8; workload audit, other counts and publication-wait p95 pending",
+    "Compiler overlap discarded attempt 1; accepted attempt 2"
+  ]
+}
