@@ -678,7 +678,7 @@ int runMapCommand(const Cli::Request &cli)
 			SceneRequest request;
 			request.includePanels = false;
 			SceneExtractor().prepare(
-				(game).captureReadBoundary({}, true, SceneExtractor::requirements(request)),
+				(game).captureReadBoundary(SceneExtractor::captureOptions(request)),
 				request, scene);
 			MapRender::toPng(scene, output, renderPixels, renderField.empty() ? nullptr : &field);
 			return 0;

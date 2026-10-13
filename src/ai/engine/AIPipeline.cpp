@@ -63,8 +63,7 @@ std::vector<std::pair<unsigned,std::shared_ptr<Order>>> Pipeline::prepare(Game& 
  else if(scheduler.delayTicks()!=game.gameHeader.getAIOrderDelay()) throw std::logic_error("AI delay cannot change during a match");
  else if(!scheduler.hasExecutor()||scheduler.sharedExecution()!=shared) scheduler.configureExecution(game.map.computeExecutor(),shared);
  if(paused) {
-  const auto worldRequirements=game.map.pendingWorldRequirements();
-  if(worldRequirements) game.map.preparePendingWorld(captured.project(worldRequirements));
+  game.map.preparePendingWorld(captured);
   for(auto p:eligible) result.emplace_back(p,std::make_shared<NullOrder>());
   return result;
  }
@@ -95,13 +94,13 @@ std::vector<std::pair<unsigned,std::shared_ptr<Order>>> Pipeline::prepare(Game& 
   std::vector<unsigned> polls(eligible.begin(),eligible.end());
   std::sort(polls.begin(),polls.end());
   if(std::adjacent_find(polls.begin(),polls.end())!=polls.end()) throw std::invalid_argument("Duplicate AI poll");
-  const auto worldRequirements=game.map.pendingWorldRequirements();
+  std::shared_ptr<const AIWorldView> world;
   for(auto p:polls) {
    auto* player=game.players[p]; auto& actor=actors[p]; actor.published.reset();
    if(!player||!player->ai||!player->team->isAlive) continue;
    actor.controller=player->ai; actor.suspended=false; auto* ai=actor.controller; ai->prepareDecision();
    if(actor.sequence==std::numeric_limits<Uint64>::max()) throw std::overflow_error("AI poll sequence overflow");
-   auto world=std::make_shared<const AIWorldView>(captured.project(ai->observationRequirements()));
+   if (!world) world=std::make_shared<const AIWorldView>(captured.simulationView());
    RequestId request{p,actor.generation,game.stepCounter,actor.sequence++,0};
    auto feedback=std::move(actor.feedback); actor.feedback.clear();
    auto fields=diagnostics?diagnostics->reserveCapture(p,game.stepCounter):nullptr;
@@ -112,7 +111,7 @@ std::vector<std::pair<unsigned,std::shared_ptr<Order>>> Pipeline::prepare(Game& 
    });
   }
   scheduler.dispatch();
-  if(worldRequirements)game.map.preparePendingWorld(captured.project(worldRequirements));
+  game.map.preparePendingWorld(captured);
   for(auto& delivery:scheduler.takeDue(game.stepCounter)) {
    newlyDelivered[delivery.request.player]=true;
    auto& actor=actors[delivery.request.player];

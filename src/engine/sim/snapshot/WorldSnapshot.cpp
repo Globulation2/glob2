@@ -5,6 +5,35 @@
 #include <algorithm>
 namespace SimulationSnapshot
 {
+namespace
+{
+constexpr auto MapInputs = bit(Component::Catalogs) | bit(Component::Terrain)
+    | bit(Component::Resources) | bit(Component::Occupancy) | bit(Component::Areas);
+Requirements presentationRequirements(CaptureOptions options)
+{
+    options.presentation = true;
+    return captureRequirements(options) & ~bit(Component::ResourceFields);
+}
+}
+Handle Handle::simulationView() const { return project(Simulation); }
+Handle Handle::gradientView() const
+{ return project(MapInputs | bit(Component::Visibility) | bit(Component::Entities)); }
+Handle Handle::buildingGradientView() const { return project(MapInputs); }
+Handle Handle::growthView() const
+{ return project((MapInputs & ~bit(Component::Areas)) | bit(Component::Rules) | bit(Component::Growth)); }
+Handle Handle::sceneMapView() const
+{
+    return project(MapInputs | bit(Component::Visibility) | bit(Component::Rules) | bit(Component::Growth)
+        | (annotations ? bit(Component::Annotations) : 0));
+}
+Handle Handle::presentationView(CaptureOptions options) const
+{ return project(presentationRequirements(options)); }
+bool Handle::supportsPresentation(CaptureOptions options) const
+{
+    const auto requested = presentationRequirements(options);
+    return (requirements & requested) == requested;
+}
+
 Handle Handle::project(Requirements requested) const
 {
 	if ((requested & requirements) != requested) throw std::invalid_argument("snapshot component was not captured");

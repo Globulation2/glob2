@@ -39,7 +39,7 @@ public:
 	// Simulation-owner API. The pipeline keeps a weak Session reference;
 	// workers receive private FieldSink values, never the Session.
 	void beginTick(const Game& game) noexcept;
-    SimulationSnapshot::Requirements observationRequirements(Uint32 tick) const;
+    SimulationSnapshot::CaptureOptions captureOptions(Uint32 tick) const;
 	void completeTick(const SimulationSnapshot::Handle& world) noexcept;
     std::shared_ptr<FieldSink> reserveCapture(int player, std::uint64_t observedTick) noexcept;
     void publishCapture(const FieldSink&) noexcept;

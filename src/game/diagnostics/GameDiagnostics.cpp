@@ -252,13 +252,12 @@ void Session::publishCapture(const FieldSink& completed) noexcept
         return;
     }
 }
-SimulationSnapshot::Requirements Session::observationRequirements(Uint32 tick) const
+SimulationSnapshot::CaptureOptions Session::captureOptions(Uint32 tick) const
 {
-    if (!png || pending()) return 0;
+    if (!png || pending()) return {};
     bool needed=!reservations.empty();
     for (const auto& sink:sinks) needed|=sink->captured || tick>=sink->nextTick;
-    SceneRequest request;request.includePanels=false;
-    return needed ? SceneExtractor::requirements(request) : 0;
+    return {.presentation=needed};
 }
 void Session::completeTick(const SimulationSnapshot::Handle& world) noexcept
 {
@@ -274,9 +273,7 @@ void Session::completeTick(const SimulationSnapshot::Handle& world) noexcept
         batch->sinks.reserve(sinks.size());
         if (png && captured) {
             SceneRequest request; request.includePanels=false;
-            auto required=SceneExtractor::requirements(request);
-            if (world.growth) required|=SimulationSnapshot::bit(SimulationSnapshot::Component::Growth);
-            batch->inputs=SceneExtractor::inputs(world.project(required),request);
+            batch->inputs=SceneExtractor::inputs(world,request);
         }
         for (auto& sink:sinks) if (sink->captured || sink->failed || sink->skipped) {
             batch->sinks.push_back(std::move(*sink));

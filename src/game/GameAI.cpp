@@ -4,26 +4,18 @@
 #include "ai/engine/AIPipeline.h"
 #include "AIJavaScript.h"
 #include "Player.h"
-SimulationSnapshot::Handle Game::captureReadBoundary(std::span<const unsigned> players, bool paused,
- SimulationSnapshot::Requirements additional) const
+SimulationSnapshot::Handle Game::captureReadBoundary(SimulationSnapshot::CaptureOptions options) const
 {
- auto requirements=additional | map.pendingWorldRequirements();
- if (SimulationSnapshot::needs(additional,SimulationSnapshot::Component::Areas) && gameHeader.hasExperiment(ExperimentId::FarmAreas))
-  requirements|=SimulationSnapshot::bit(SimulationSnapshot::Component::Growth);
- if (!paused) for (auto p:players) {
-  if (p>=unsigned(gameHeader.getNumberOfPlayers())) throw std::invalid_argument("Invalid observation player");
-  if (this->players[p] && this->players[p]->ai && this->players[p]->team->isAlive)
-   requirements |= this->players[p]->ai->observationRequirements();
- }
- return worldSnapshots.captureBoundary(*this,requirements);
+ return worldSnapshots.captureBoundary(*this, options);
 }
 std::vector<std::pair<unsigned,std::shared_ptr<Order>>> Game::prepareAIOrders(std::span<const unsigned> players,
  bool paused,const std::shared_ptr<GameDiagnostics::Session>& diagnostics,const SimulationSnapshot::Handle* captured)
 {
  if(!aiPipeline) aiPipeline=std::make_unique<AIEngine::Pipeline>();
  // Standalone simulation callers use the same boundary service; engine callers
- // supply the union already published for all admitted consumers.
- const auto world=captured ? *captured : captureReadBoundary(players,paused,diagnostics ? diagnostics->observationRequirements(stepCounter) : 0);
+ // supply the standard snapshot already published at this boundary.
+ if (captured) return aiPipeline->prepare(*this,players,paused,diagnostics,*captured);
+ const auto world=captureReadBoundary(diagnostics ? diagnostics->captureOptions(stepCounter) : SimulationSnapshot::CaptureOptions{});
  return aiPipeline->prepare(*this,players,paused,diagnostics,world);
 }
 std::shared_ptr<Order> Game::validateAIOrder(std::shared_ptr<Order> order,unsigned player) {return aiPipeline?aiPipeline->validate(*this,std::move(order),player):order;}
@@ -31,7 +23,7 @@ void Game::settleAIOrder(const std::shared_ptr<Order>& order,bool accepted) {if(
 void Game::cancelAI(unsigned player) {if(aiPipeline)aiPipeline->cancel(player);}
 void Game::drainAI() {if(aiPipeline)aiPipeline->drain();}
 void Game::clearAI() { map.finishGradientPipeline({JoinReason::Teardown, ComputeTelemetry::NoTick}); map.finishResourceGrowth({JoinReason::Teardown, ComputeTelemetry::NoTick}); aiPipeline.reset(); worldSnapshots.reset(); }
-void Game::saveAI(GAGCore::OutputStream* stream) {if(!aiPipeline){aiPipeline=std::make_unique<AIEngine::Pipeline>();aiPipeline->prepare(*this,{},true,nullptr,captureReadBoundary({},true));}aiPipeline->save(stream);}
+void Game::saveAI(GAGCore::OutputStream* stream) {if(!aiPipeline){aiPipeline=std::make_unique<AIEngine::Pipeline>();aiPipeline->prepare(*this,{},true,nullptr,captureReadBoundary());}aiPipeline->save(stream);}
 bool Game::loadAI(GAGCore::InputStream* stream) {auto pipeline=std::make_unique<AIEngine::Pipeline>();if(!pipeline->load(*this,stream))return false;aiPipeline=std::move(pipeline);return true;}
 std::vector<std::pair<std::string,Uint64>> Game::aiMetrics() const {
  if(!aiPipeline)return {};
@@ -39,7 +31,7 @@ std::vector<std::pair<std::string,Uint64>> Game::aiMetrics() const {
  const auto& waits=compute.summary.joins[unsigned(ComputeProducer::AI)][unsigned(JoinReason::TickDeadline)];
  const auto& capture=worldSnapshots.metrics;const auto& scheduling=aiPipeline->schedulingMetrics();const auto memory=worldSnapshots.memoryMetrics();const auto queryMemory=aiPipeline->queryVectorMemory();
  return {{"captures",capture.captures},{"extraction_ns",capture.captureNs},{"preparation_ns",capture.preparationNs},
-  {"bytes_copied",capture.bytesCopied},{"component_reuses",capture.reusedComponents},{"allocations",capture.allocations},
+  {"map_bytes_copied",capture.mapBytesCopied},{"detailed_captures",capture.detailedCaptures},{"bytes_copied",capture.bytesCopied},{"component_reuses",capture.reusedComponents},{"allocations",capture.allocations},
   {"computation_ns",aiPipeline->computationNs()},{"controller_query_vector_bytes",queryMemory.first},
   {"controller_query_vector_peak_bytes",aiPipeline->peakQueryVectorMemory()},
   {"controller_query_vector_samples",queryMemory.second},{"submitted",scheduling.submitted},{"delivered",scheduling.delivered},
@@ -62,14 +54,8 @@ void Game::observeUnpolledAI() {
  // Replay/inactive replicas still update their historical visibility at the
  // legacy phase. Serialize this exceptional observation against private jobs.
  drainAI();
- // Resource memories read the registry's material yields, so the catalogs ride along.
- constexpr auto requirements=SimulationSnapshot::bit(SimulationSnapshot::Component::Catalogs)
-  |SimulationSnapshot::bit(SimulationSnapshot::Component::Terrain)
-  |SimulationSnapshot::bit(SimulationSnapshot::Component::Resources)
-  |SimulationSnapshot::bit(SimulationSnapshot::Component::Visibility)
-  |SimulationSnapshot::bit(SimulationSnapshot::Component::Teams);
  // Replica-only observations historically capture fresh inputs at this mid-tick phase.
  if(!aiPipeline) worldSnapshots.invalidateBoundary();
- const AIEngine::AIWorldView world(worldSnapshots.captureBoundary(*this,requirements));
+ const AIEngine::AIWorldView world(worldSnapshots.captureBoundary(*this).simulationView());
  for(auto* controller:idle)controller->observe(world);
 }

@@ -45,7 +45,7 @@ namespace glob2test
         if (view.selectedBuilding) request.selectedBuilding=Game::refOf(view.selectedBuilding);
         if (view.selectedUnit) request.selectedUnit=Game::refOf(view.selectedUnit);
 		game.snapshots().invalidateBoundary(); // Fixture helpers may directly edit public state.
-		SceneExtractor().prepare(game.captureReadBoundary({},true,SceneExtractor::requirements(request)),request,scene);
+		SceneExtractor().prepare(game.captureReadBoundary(SceneExtractor::captureOptions(request)),request,scene);
 		return scene;
 	}
 
@@ -68,7 +68,7 @@ namespace glob2test
     {
         REQUIRE(map.game);
         SceneRequest request;request.includePanels=false;
-        const auto world=map.game->captureReadBoundary({},true,SceneExtractor::requirements(request));
+        const auto world=map.game->captureReadBoundary(SceneExtractor::captureOptions(request));
         view.bindSnapshot(world,map.displayViewportW,map.displayViewportH,map.displayedTeam);
         view.prepareChunk(0,size_t(world.width)*world.height);
     }
