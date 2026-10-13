@@ -139,6 +139,25 @@ TEST_SUITE("RuntimeGradientBackend")
 		}
 		CHECK(cpuOverride == original);
 	}
+	TEST_CASE("CPU scopes freeze resolved variants across preference changes")
+	{
+		using namespace gradient_kernel;
+		ConfigurationGuard guard;
+		setBackend(Backend::CPU);
+		const auto automatic = automaticCPU();
+		{
+			CPUSelectionScope scope(Backend::CPU);
+			CHECK(cpuOverride == automatic);
+			setBackend(Backend::Scalar);
+			CHECK(cpuBackend() == automatic);
+			{
+				CPUSelectionScope fallback(Backend::Vulkan);
+				CHECK(cpuBackend() == automatic);
+			}
+			CHECK(cpuBackend() == automatic);
+		}
+		CHECK(cpuBackend() == Backend::Scalar);
+	}
 	TEST_CASE("plan decisions retain the captured backend and compatible algorithm")
 	{
 		using namespace gradient_kernel;

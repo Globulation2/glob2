@@ -39,6 +39,12 @@ TEST_SUITE("GradientPreparationContract")
 				}
 				CHECK(clearSeed(flag(0), flag(1), flag(2), flag(3), terrain, flag(4), flag(5),
 								flag(7), flag(8), flag(9)) == clearing);
+				// An open placeholder defers terrain without changing precedence.
+				// Use the independent reference above, including clearing goals
+				// that override buildings and immobile units.
+				const auto classified = clearSeed(flag(0), flag(1), flag(2), flag(3),
+					GRADIENT_UNREACHABLE, flag(4), flag(5), flag(7), flag(8), flag(9));
+				CHECK((classified == GRADIENT_UNREACHABLE ? terrain : classified) == clearing);
 			}
 		for (unsigned mask = 0; mask <= AllMaterials; ++mask)
 			CHECK(resourceTraits(mask, 1, 1, 1, 1) == (mask | 0xf0000u));

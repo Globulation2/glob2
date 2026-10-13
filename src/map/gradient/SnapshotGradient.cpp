@@ -320,6 +320,28 @@ gradient_kernel::EntrySteps batchCosts(const PropagationField &field, std::size_
     const auto &movement = terrain.rules->movement(field.request.swim);
     return movement.profiles[movement.profileIds[terrain.cellRules[cell]]];
 }
+void validatePropagation(const PropagationField& field)
+{
+    using namespace gradient_kernel;
+    runtime_terrain::validateQueueSize(field.request.terrainBuckets);
+    const auto &terrain = *field.snapshot->terrain;
+    if (terrain.movementModifiers)
+    {
+        const auto &movement = terrain.rules->movement(field.request.swim);
+        if (std::any_of(movement.profiles.begin(), movement.profiles.end(),
+                        [&](auto cost)
+                        {
+                            return !cost.cardinal || !cost.diagonal ||
+                                   cost.cardinal >= field.request.terrainBuckets ||
+                                   cost.diagonal >= field.request.terrainBuckets;
+                        }))
+            for (std::size_t cell = 0;
+                 cell < std::size_t(field.snapshot->width) * field.snapshot->height; ++cell)
+                if (field.output[cell])
+                    runtime_terrain::validateQueueEdge(batchCosts(field, cell),
+                                                       field.request.terrainBuckets);
+    }
+}
 void batchCPU(const PropagationField &field, Uint16 *out)
 {
     using namespace gradient_kernel;
@@ -352,9 +374,12 @@ void batchCPUGroup(std::span<const gradient_kernel::BackendRequest* const> reque
 } // namespace
 void propagateCPU(const Request& request,const SimulationSnapshot::Handle& snapshot,Uint16* output,GradientWorkspace& scratch)
 {
-    gradient_kernel::runtime_terrain::validateQueueSize(request.terrainBuckets);
     const PropagationField field{request,&snapshot,output,&scratch};
-    batchCPU(field,output);
+    validatePropagation(field);
+    // Preserve the shared trivial-field shortcut and validation order without
+    // constructing an accelerator request or rereading its configuration.
+    if (!gradient_kernel::alreadyFixedGradient({output, std::size_t(snapshot.width)*snapshot.height}))
+        batchCPU(field,output);
 }
 void propagateBatch(std::span<const PropagationField> fields)
 {
@@ -365,24 +390,7 @@ void propagateBatch(std::span<const PropagationField> fields)
     {
         try
         {
-            runtime_terrain::validateQueueSize(field.request.terrainBuckets);
-            const auto &terrain = *field.snapshot->terrain;
-            if (terrain.movementModifiers)
-            {
-                const auto &movement = terrain.rules->movement(field.request.swim);
-                if (std::any_of(movement.profiles.begin(), movement.profiles.end(),
-                                [&](auto cost)
-                                {
-                                    return !cost.cardinal || !cost.diagonal ||
-                                           cost.cardinal >= field.request.terrainBuckets ||
-                                           cost.diagonal >= field.request.terrainBuckets;
-                                }))
-                    for (std::size_t cell = 0;
-                         cell < std::size_t(field.snapshot->width) * field.snapshot->height; ++cell)
-                        if (field.output[cell])
-                            runtime_terrain::validateQueueEdge(batchCosts(field, cell),
-                                                               field.request.terrainBuckets);
-            }
+            validatePropagation(field);
             requests.push_back(
                 {field.output,
                  COST_LIMIT,
