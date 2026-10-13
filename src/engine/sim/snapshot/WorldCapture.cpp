@@ -386,7 +386,7 @@ Handle capture(const Game& game,
 				v.maxHp = b->getEffectiveMaxHp();
 				v.usesTeamResources = b->materials == team->teamMaterials;
 				v.availableSupplyMask = 0;
-				for (unsigned supplied=b->runtime->suppliesStockMask; supplied; supplied &= supplied-1) {
+				for (unsigned supplied=b->runtime->suppliesStockMask|b->runtime->suppliesDirectStockMask; supplied; supplied &= supplied-1) {
 					const unsigned material=std::countr_zero(supplied);
 					if (b->availableMaterial(material)>0) v.availableSupplyMask |= MaterialMask(1u<<material);
 				}
@@ -575,8 +575,13 @@ Handle capture(const Game& game,
 			if (kept) if (const auto* same = kept->find(plane.key); same && same->generation == plane.generation) { fields->add(*same); continue; }
 			auto values = storage ? storage->resourcePlanes.acquire(storage->allocations) : std::make_shared<std::vector<Uint16>>();
 			if (storage && values->capacity() < planeCells) ++storage->allocations;
-			values->resize(planeCells); std::copy_n(*plane.slot, planeCells, values->begin());
-			fields->add(ResourceField{plane.key, plane.generation, std::move(values)});
+			values->resize(planeCells);
+            Uint32 contentChecksum=2166136261u;
+            for(std::size_t i=0;i<planeCells;++i) {
+                const auto value=(*plane.slot)[i];(*values)[i]=value;
+                contentChecksum=(contentChecksum^value)*16777619u;
+            }
+            fields->add(ResourceField{plane.key, plane.generation, std::move(values),contentChecksum});
 		}
 		result->resourceFields = std::move(fields);
 	}

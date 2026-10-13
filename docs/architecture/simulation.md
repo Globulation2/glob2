@@ -559,7 +559,13 @@ outputs before team stepping at `t + 4`. Workers derive demand, material
 apportionment, supplier modes, qualifications and integer rankings. The owner
 establishes immutable observations and safe building-route generations, enqueues
 jobs, publishes due results, and validates/commits hires in the existing priority
-buckets and rounds. Task swaps remain serial.
+buckets and rounds. Task swaps remain serial. Attraction clocks retain their normal progression;
+when a round cannot obtain fresh suggestions, its outstanding recruitment request
+may retry for eight ticks without extending the deadline. Delivery cannot borrow
+that round's attraction seats while the request is outstanding. This bounded
+retry changes recruitment timing and prevents a cache miss from adding another
+33-tick clock cycle. Requests survive save/load and configuration changes; live
+role demand determines whether they are still owed.
 
 Each supported job receives a bounded list of incarnation-aware unit references.
 Live admission rechecks ownership, activity, medical eligibility, skills, cargo,

@@ -600,6 +600,9 @@ Uint32 Building::checkSum(std::vector<Uint32> *checkSumsVector, bool legacy152)
 		checkSumsVector->push_back(cs);// [8]
 
 	cs^=subscriptionWorkingTimer;
+	cs^=Uint32(hiringRecruitmentDeadline);
+	cs=(cs<<31)|(cs>>1);
+	cs^=Uint32(hiringRecruitmentDeadline >> 32);
 	if (checkSumsVector)
 		checkSumsVector->push_back(cs);// [9]
 

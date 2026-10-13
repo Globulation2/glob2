@@ -13,7 +13,7 @@ class HiringInputDigests
 		std::weak_ptr<const void> owner;
 		const void *address;
 		unsigned domain;
-		Uint64 epoch, world;
+		Uint64 epoch;
 	};
 	struct Less
 	{
@@ -24,18 +24,14 @@ class HiringInputDigests
 				return true;
 			if (less(b.owner, a.owner))
 				return false;
-			return std::tie(a.address, a.domain, a.epoch, a.world) <
-				   std::tie(b.address, b.domain, b.epoch, b.world);
+			return std::tie(a.address, a.domain, a.epoch) < std::tie(b.address, b.domain, b.epoch);
 		}
 	};
 	std::map<Key, Uint32, Less> cached;
 	template <class T, class F>
-	Uint32 component(const std::shared_ptr<const T> &value, unsigned domain, F hash,
-					 Uint64 epoch = 0, Uint64 world = 0)
+	Uint32 component(const std::shared_ptr<const T> &value, unsigned domain, F hash)
 	{
-		if constexpr (requires { value->fillEpoch; })
-			epoch = value->fillEpoch;
-		Key key{value, value.get(), domain, epoch, world};
+		Key key{value, value.get(), domain, value->fillEpoch};
 		if (auto it = cached.find(key); it != cached.end())
 			return it->second;
 		if (cached.size() >= 256)

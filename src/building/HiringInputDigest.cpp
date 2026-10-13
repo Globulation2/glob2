@@ -138,6 +138,8 @@ Uint32 HiringInputDigests::digest(const SimulationSnapshot::Handle &w, Uint64 ro
 							s.add(b.desiredMaxUnitWorking);
 							s.add(b.maxUnitWorking);
 							s.add(b.priority);
+							s.add(b.subscriptionWorkingTimer);
+							s.wide(b.hiringRecruitmentDeadline);
 							s.values(b.wishedMaterials);
 							s.values(b.localMaterials);
 							s.add(b.usesTeamResources);
@@ -165,12 +167,14 @@ Uint32 HiringInputDigests::digest(const SimulationSnapshot::Handle &w, Uint64 ro
 							s.add(u.posY);
 							s.add(u.activity);
 							s.add(u.medical);
+							s.ref(u.attached);
 							s.add(u.carriedMaterial);
 							s.add(u.widePrimaryCargo);
 							s.add(u.carriedPacket.numerator);
 							s.add(u.carriedPacket.denominator);
 							s.add(u.movement);
 							s.add(u.destinationPurpose);
+							s.add(unsigned(u.jobPurpose));
 							s.add(u.hp);
 							s.add(u.hungry);
 							s.add(u.trigHungry);
@@ -191,7 +195,8 @@ Uint32 HiringInputDigests::digest(const SimulationSnapshot::Handle &w, Uint64 ro
 						}
 						return s.result();
 					}));
-	// Published planes are ranking inputs. Reuse generation-qualified content hashes
+	// Published planes are ranking inputs. Hashes are calculated alongside
+	// the existing snapshot copy, avoiding checksum-time full-plane scans.
 	// and hash by logical key, independently of publication container ordering.
 	unsigned count = 0;
 	for (unsigned key = 0; key < MapState::PlaneCount; ++key)
@@ -202,15 +207,7 @@ Uint32 HiringInputDigests::digest(const SimulationSnapshot::Handle &w, Uint64 ro
 		if (const auto *plane = w.resourceFields->find(key))
 		{
 			h.add(key);
-			h.add(component(
-				plane->values, 7,
-				[](const auto &values)
-				{
-					Hash s;
-					s.values(values);
-					return s.result();
-				},
-				plane->generation, w.worldIdentity));
+			h.add(plane->contentChecksum);
 		}
 	return h.result();
 }

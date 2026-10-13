@@ -70,6 +70,8 @@ Use repeated ordinary release runs without diagnostic exports, traces or saves f
 performance comparisons. Keep map/game seeds, player mix, warmup, tick window and
 participant count fixed; rotate pair order, retain outliers and report intervals.
 Use `--telemetry hiring-stats` separately for admission and route measurements.
+Owner consumption is inclusive of subscription and immediate swaps; those nested
+timers must not be added to consumption when computing totals.
 The former shadow matrix, schedule/pool selectors and standalone opportunity study
 have been removed. Their historical evidence applies to the recorded prototype
 revisions, not automatically to production hiring.

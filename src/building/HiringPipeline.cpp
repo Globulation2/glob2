@@ -212,7 +212,7 @@ void HiringPipeline::observe(Game &game, const SimulationSnapshot::Handle &snaps
 		return;
 	}
 	const auto routeStart = startTiming();
-	auto input = std::make_shared<HiringPlanner::Inputs>(capture(game, snapshot, teamMask));
+	auto input = std::make_shared<HiringPlanner::Inputs>(bindRoutes(game, snapshot, teamMask));
 	const auto routeNs = elapsed(routeStart);
 	metrics.routeHandlesNs += routeNs;
 	auto batch = std::make_unique<Batch>();
@@ -500,8 +500,8 @@ void mixRoute(Uint64 &hash, Uint64 value)
 	hash *= 1099511628211ull;
 }
 } // namespace
-HiringPlanner::Inputs HiringPipeline::capture(const Game &game, SimulationSnapshot::Handle world,
-											  unsigned teamMask)
+HiringPlanner::Inputs HiringPipeline::bindRoutes(Game &game, SimulationSnapshot::Handle world,
+												 unsigned teamMask)
 {
 	if (world.tick != game.stepCounter)
 		throw std::logic_error("Hiring input boundary mismatch");
@@ -519,7 +519,7 @@ HiringPlanner::Inputs HiringPipeline::capture(const Game &game, SimulationSnapsh
 		// or material apportionment. Final lists are at most vacancies + two.
 		const auto limit = std::min(128u, unsigned(b.desiredMaxUnitWorking) + 2);
 		inputs.outputBounds[b.team] += 2 * 64 + (2 * MaterialCount + 3) * (2 * 128 + limit * 32);
-		auto *live = const_cast<Game &>(game).resolveBuilding(b.identity);
+		auto *live = game.resolveBuilding(b.identity);
 		if (!live)
 			throw std::logic_error("Hiring capture lost building incarnation");
 		// The owner creates safe live generations; worker route queries only
@@ -545,8 +545,7 @@ HiringPlanner::Inputs HiringPipeline::capture(const Game &game, SimulationSnapsh
 					if (route == BuildingRoute::Combat &&
 						!(type.attractsRole(1) || type.attractsRole(2)))
 						continue;
-					const_cast<Game &>(game).map.buildingAvailable(live, c, b.posX, b.posY,
-																   &distance, route);
+					game.map.buildingAvailable(live, c, b.posX, b.posY, &distance, route);
 				}
 			}
 		// Only lease existing generations. Workers choose movement classes.

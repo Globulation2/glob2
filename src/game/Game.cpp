@@ -184,6 +184,10 @@ void Game::configureBuildingCatalog()
 	previous.reserve(buildingsTypes.size());
 	for (size_t id=0; id<buildingsTypes.size(); ++id) previous.push_back(routingFlags(buildingsTypes.get(id)));
 	buildingsTypes.configureExperiments(gameHeader.getExperiments().keys());
+    auto hiringConfiguration=buildingsTypes.snapshotJson()+unitCatalog().digest();
+    for(const auto &key:gameHeader.getExperiments().keys()){hiringConfiguration.push_back('\0');hiringConfiguration+=key;}
+    const bool hiringChanged=hiringPipeline && hiringCatalogFingerprint!=hiringConfiguration;
+    hiringCatalogFingerprint=std::move(hiringConfiguration);
     buildingCapabilityIndex = std::make_unique<const AIPlanning::BuildingCapabilityIndex>(buildingsTypes);
 	areaEffects.configure(*this);
 	bool routingChanged=false;
@@ -199,7 +203,7 @@ void Game::configureBuildingCatalog()
 				{
 					// Loaded hiring state is installed after catalog reconstruction. A live
 					// reconfiguration supersedes rankings even when type IDs are unchanged.
-					if (hiringPipeline) ++building->hiringEpoch;
+					if (hiringChanged) ++building->hiringEpoch;
 					if (building->type->runtimeSuppliesStock) team->stockSuppliers.push_back(building);
 					if (building->type->runtimeSuppliesDirectStock) team->directStockSuppliers.push_back(building);
 				}

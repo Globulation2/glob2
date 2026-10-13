@@ -108,6 +108,7 @@ void checkPhaseContinuation(Game& game,int ticks)
     const auto random=game.syncRandom;
     auto* storage=new GAGCore::MemoryStreamBackend;
     GAGCore::BinaryOutputStream output(storage);
+    glob2test::discardPrematureHiringSuggestions(game);
     game.save(&output,false,"custom unit phase continuation");
     const std::string bytes(storage->getBuffer(),storage->getPosition());
     GameGUI resumed;

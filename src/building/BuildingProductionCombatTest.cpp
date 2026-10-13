@@ -34,6 +34,7 @@ std::string saveProductionGame(Game& game, bool text)
     std::unique_ptr<GAGCore::OutputStream> out(text
         ? static_cast<GAGCore::OutputStream*>(new GAGCore::TextOutputStream(bytes))
         : static_cast<GAGCore::OutputStream*>(new GAGCore::BinaryOutputStream(bytes)));
+    glob2test::discardPrematureHiringSuggestions(game);
     game.save(out.get(), false, "Production capabilities");
     out->flush(); return bytes->takeContents();
 }
@@ -201,6 +202,7 @@ TEST_CASE("hybrid attraction and service routes remain independent across save c
     Unit* worker=world.addUnit(WORKER,6,8);
     Unit* explorer=world.addUnit(EXPLORER,6,9);
     Unit* warrior=world.addUnit(WARRIOR,6,10);
+    glob2test::publishCurrentHiringSuggestions(world.game);
     for (int tick=0; tick<33; ++tick) b->subscribeWorkStep();
     CHECK(b->desiredMaxUnitWorking==3);
     REQUIRE(b->unitsWorking.size()==3);
@@ -847,6 +849,7 @@ TEST_CASE("mixed attraction borrows quota from an unavailable unit class")
     world.game.buildingsTypes.loadSnapshotJson(json.dump()); world.game.configureBuildingCatalog();
     Building* b=world.addBuilding("inn",8,8); b->maxUnitWorking=3; b->update();
     for (int i=0;i<3;++i) world.addUnit(WARRIOR,6,7+i);
+    glob2test::publishCurrentHiringSuggestions(world.game);
     for (int tick=0;tick<33;++tick) b->subscribeWorkStep();
     CHECK(b->unitsWorking.size()==3);
     for (const Unit* unit : b->unitsWorking) CHECK(unit->typeNum==WARRIOR);

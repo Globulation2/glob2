@@ -50,7 +50,7 @@ void Building::noteUnitFailing(Unit *unit, UnitCantWorkReason reason)
 	HiringDiagnostics::add(reason == UnitNotAvailable ? HiringDiagnostics::Counter::Busy
 													  : HiringDiagnostics::Counter::Rejected);
 	unitsFailingRequirements[reason] += 1;
-	// "Not available" is every busy unit of the colony: counted, never marked.
+	// Unavailable suggestions are counted only when admission examines them.
 	if (recordFailingUnits && reason != UnitNotAvailable)
 		unitsFailingByReason[reason].push_back(unit->gid);
 }
@@ -246,7 +246,7 @@ bool Building::subscribeWorkStep()
 			HiringDiagnostics::add(HiringDiagnostics::Counter::FailedAttempts);
 		return result;
 	}
-	const bool recruitmentRound = subscriptionWorkingTimer >= 32;
+	const bool recruitmentRound = subscriptionWorkingTimer >= 32 || hiringRecruitmentDeadline != 0;
 	bool hired = subscribeToBringMaterialsStep();
 	// Fill fair delivery quota before the attraction round can borrow it.
 	if (recruitmentRound)
@@ -254,7 +254,7 @@ bool Building::subscribeWorkStep()
 			hired = true;
 	hired = subscribeForFlagingStep() || hired;
 	// Attraction exhausted its eligible candidates; unused seats may deliver.
-	if (recruitmentRound)
+	if (recruitmentRound && !hiringRecruitmentDeadline)
 		while (subscribeToBringMaterialsStep(true))
 			hired = true;
 	if (!hired)
@@ -295,6 +295,7 @@ bool Building::subscribeToBringMaterialsStep(bool borrowUnused)
 // front; temporary unavailability never permanently consumes a candidate.
 bool Building::hireMaterialUnit(const int *targets, const int *served)
 {
+	HiringDiagnostics::Scope consume(HiringDiagnostics::Phase::Consumption);
 	const auto *lists = owner->game->hiringCandidates(*this);
 	if (!lists)
 		return false;
@@ -313,6 +314,7 @@ bool Building::hireMaterialUnit(const int *targets, const int *served)
 			if (list.key == Hiring::Key{job, material})
 				for (const auto &suggestion : list.candidates)
 				{
+					HiringDiagnostics::add(HiringDiagnostics::Counter::Visits);
 					auto *u = owner->game->resolveUnit(suggestion.unit);
 					if (!u || u->isDead || u->owner != owner ||
 						!u->hasCapability(UnitRuntimeTraits::Transport) || !u->performance[BUILD] ||
@@ -543,25 +545,42 @@ bool Building::subscribeForFlagingStep()
 	}
 
 	bool hired = false;
-	subscriptionWorkingTimer++;
+	const Uint64 tick = owner->game->stepCounter;
+	if (hiringRecruitmentDeadline && tick > hiringRecruitmentDeadline)
+		hiringRecruitmentDeadline = 0;
+	++subscriptionWorkingTimer;
 	if (subscriptionWorkingTimer > 32)
 	{
-		// Reset stale failure counts for the case where the while loop below
-		// doesn't run (building already fully staffed). When the loop does run,
-		// this is overwritten by the per-iteration reset on iteration 1.
+		subscriptionWorkingTimer = 0;
+		if (!hiringRecruitmentDeadline)
+			hiringRecruitmentDeadline = tick + Hiring::RecruitmentRetryTicks;
+	}
+	if (hiringRecruitmentDeadline)
+	{
 		resetFailureTallies();
 		if (Sint32(unitsWorking.size()) < desiredMaxUnitWorking)
 			hired = hireFlagUnits();
-
+		bool owed = false;
+		for (int role = 0; role < 3; ++role)
+		{
+			int assigned = 0;
+			for (const auto *unit : unitsWorking)
+				assigned += unit->activity == Unit::ACT_FLAG &&
+							int(unit->jobPurpose) == int(UnitJobPurpose::Clear) + role;
+			owed |= assigned < workRoleTarget(role);
+		}
+		// Invalidated lists do not cancel an owed round. Current configuration
+		// decides whether there is still a role to staff.
+		if (!owed)
+			hiringRecruitmentDeadline = 0;
 		updateCallLists();
-
-		subscriptionWorkingTimer = 0;
 	}
 	return hired;
 }
 
 bool Building::hireFlagUnits()
 {
+	HiringDiagnostics::Scope consume(HiringDiagnostics::Phase::Consumption);
 	const auto *lists = owner->game->hiringCandidates(*this);
 	if (!lists)
 		return false;
@@ -597,6 +616,7 @@ bool Building::hireFlagUnits()
 					if (list.key.job == Hiring::Job(unsigned(Hiring::Job::Clear) + role))
 						for (const auto &entry : list.candidates)
 						{
+							HiringDiagnostics::add(HiringDiagnostics::Counter::Visits);
 							auto *u = owner->game->resolveUnit(entry.unit);
 							if (!u || u->isDead || u->owner != owner || u->attachedBuilding == this)
 								continue;

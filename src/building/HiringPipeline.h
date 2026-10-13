@@ -39,11 +39,12 @@ class HiringPipeline
 			   plannerNs = 0, inputDigestNs = 0;
 	};
 	mutable Metrics metrics;
-	static constexpr unsigned Delay = 4, Refresh = 4, Extras = 2, Capacity = 128;
+	static constexpr unsigned Delay = Hiring::PublicationDelay, Refresh = Hiring::RefreshInterval,
+							  Extras = Hiring::CandidateExtras, Capacity = 128;
 	static constexpr std::size_t MaxOutputBytes = 96u * 1024 * 1024;
 	std::size_t outputReservation() const;
-	static HiringPlanner::Inputs capture(const Game &, SimulationSnapshot::Handle,
-										 unsigned teamMask = ~0u);
+	static HiringPlanner::Inputs bindRoutes(Game &, SimulationSnapshot::Handle,
+											unsigned teamMask = ~0u);
 	explicit HiringPipeline(ComputeExecutor &);
 	~HiringPipeline();
 	void observe(Game &, const SimulationSnapshot::Handle &);

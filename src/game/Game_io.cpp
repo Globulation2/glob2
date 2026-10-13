@@ -947,9 +947,11 @@ Uint32 Game::checkSum(std::vector<Uint32> *checkSumsVector, std::vector<Uint32> 
         cs=rotr1(cs)^catalogCs;
         const auto statsCs=teamStatsChecksum(heavy && includePending);
         cs=rotr1(cs)^statsCs;
-        cs=rotr1(cs)^hiringChecksum();
+        const auto hiringCs=hiringChecksum();
+        cs=rotr1(cs)^hiringCs;
         if(checkSumsVector)checkSumsVector->push_back(statsCs);
         if(checkSumsVector)checkSumsVector->push_back(catalogCs);
+        if(checkSumsVector)checkSumsVector->push_back(hiringCs);
     }
 	return cs;
 }

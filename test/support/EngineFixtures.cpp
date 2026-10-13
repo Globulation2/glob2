@@ -187,11 +187,23 @@ namespace glob2test
 class HiringPipelineHarness
 {
   public:
+    static void discardPremature(Game &game)
+    {
+        if(!game.hiringPipeline)return;
+        game.drainHiring();
+        for(unsigned team=0;team<unsigned(game.teamsCount());++team)
+            if(const auto &o=game.hiringPipeline->published[team];o &&
+               (o->tick+HiringPipeline::Delay>game.stepCounter || o->tick%HiringPipeline::Refresh!=team%HiringPipeline::Refresh))
+            {
+                game.hiringPipeline->published[team].reset();
+                game.hiringPipeline->publishedBounds[team]=0;
+            }
+    }
 	static void publish(Game &game)
 	{
 		game.drainHiring();
 		game.snapshotStore().invalidateBoundary();
-		auto input = HiringPipeline::capture(game, game.captureReadBoundary());
+		auto input = HiringPipeline::bindRoutes(game, game.captureReadBoundary());
 		if (!game.hiringPipeline)
 			game.hiringPipeline = std::make_unique<HiringPipeline>(game.map.computeExecutor());
 		for (unsigned team = 0; team < unsigned(game.teamsCount()); ++team)
@@ -205,6 +217,10 @@ class HiringPipelineHarness
 };
 namespace glob2test
 {
+void discardPrematureHiringSuggestions(Game &game)
+{
+    HiringPipelineHarness::discardPremature(game);
+}
 void publishCurrentHiringSuggestions(Game &game)
 {
 	HiringPipelineHarness::publish(game);

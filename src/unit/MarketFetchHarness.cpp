@@ -158,7 +158,7 @@ TEST_CASE("MarketFetch/stocked markets are resource goals, depleted markets are 
 		bed.game.map.updateMaterialGradient(0, CHERRY, bed.unit->swimClass(), true);
 		require(!bed.game.map.materialAvailableSlot(0, CHERRY, bed.unit->swimClass(), 36, 36, &dist, true), "an empty market is no goal");
 		bed.hire();
-		require(bed.inn->unitsWorking.empty() && bed.inn->unitsFailingRequirements[Building::UnitCantAccessFruit] >= 1, "nobody hired, counted as no fruit reachable");
+		require(bed.inn->unitsWorking.empty() && bed.inn->unitsFailingRequirements[Building::UnitCantAccessFruit] == 0, "no cached suggestion; no population-wide failure tally");
 		std::puts("market fetch: an empty market is no source");
 	}
 	{

@@ -44,6 +44,9 @@ struct BuildingStateRecord
 	Sint32 priority;
 	EntityRandom entityRandom;
 	Uint32 hiringEpoch = 0;
+	Sint32 subscriptionWorkingTimer = 0;
+	// Absolute end of an owed attraction round; retries never extend it.
+	Uint64 hiringRecruitmentDeadline = 0;
 	Uint32 scriptIdentity = 0; // Excluded from legacy simulation checksums.
 	Uint16 gid;
 	Sint32 posX, posY;

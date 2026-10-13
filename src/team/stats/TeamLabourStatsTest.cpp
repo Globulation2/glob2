@@ -363,6 +363,7 @@ TEST_SUITE("TeamStatsSave")
 
 		auto *backend = new GAGCore::MemoryStreamBackend;
 		GAGCore::BinaryOutputStream out(backend);
+		glob2test::discardPrematureHiringSuggestions(world.game);
 		world.game.save(&out, false, "labour statistics");
 		out.flush();
 		const auto bytes = backend->takeContents();

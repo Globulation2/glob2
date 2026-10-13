@@ -23,18 +23,11 @@ std::uint64_t now()
 			   std::chrono::steady_clock::now().time_since_epoch())
 		.count();
 }
-constexpr const char *phases[] = {
-	"attempt",      "carrying_scan", "fetch_scan",           "flag_scan",      "selection",
-	"subscription", "swap",          "field_initialization", "field_extension"};
-constexpr const char *counters[] = {"visits",
-									"qualifications",
-									"building_queries",
-									"resource_queries",
-									"hires",
-									"failed_attempts",
-									"busy",
-									"rejected",
-									"slots"};
+constexpr const char *phases[] = {"attempt", "consumption",          "subscription",
+								  "swap",    "field_initialization", "field_extension"};
+constexpr const char *counters[] = {
+	"visits",          "qualifications", "building_queries", "resource_queries", "hires",
+	"failed_attempts", "busy",           "rejected"};
 } // namespace
 thread_local Row *active = nullptr;
 std::atomic<bool> collecting{false};

@@ -639,8 +639,6 @@ private:
 
 	// units: scratch counters for subscription / priority diff
 	Sint32 maxUnitWorkingPrevious;
-	///The subscribeToBringMaterialsStep and subscribeForFlagingStep operate every 32 ticks
-	Sint32 subscriptionWorkingTimer;
 	///This stores the old priority, so that if the priority changes, this building will be updated in Teams
 	Sint32 oldPriority;
 

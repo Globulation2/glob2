@@ -432,17 +432,15 @@ namespace
 // in partition/sort instead of passing the job through every comparison.
 struct CandidateOrder
 {
-	bool higherLevelFirst;
-	explicit CandidateOrder(Job job)
-		: higherLevelFirst(job == Job::Delivery || job == Job::Fetch || job == Job::Defend)
-	{
-	}
+	Job job;
+	explicit CandidateOrder(Job value) : job(value) {}
 	bool operator()(const Candidate &a, const Candidate &b) const
 	{
-		if (a.level != b.level)
-			return higherLevelFirst ? a.level > b.level : a.level < b.level;
-		if (a.value != b.value)
-			return a.value < b.value;
+		if (a.level != b.level || a.value != b.value)
+			return job <= Job::Fetch
+					   ? HiringRanking::materialBetter(a.level, a.value, b.level, b.value)
+					   : HiringRanking::roleBetter(int(job) - int(Job::Clear), a.level, a.value,
+												   b.level, b.value);
 		if (a.unit.gid != b.unit.gid)
 			return a.unit.gid < b.unit.gid;
 		return a.unit.generation < b.unit.generation;
@@ -542,11 +540,12 @@ Output Cache::rank(const Inputs &input, unsigned team, unsigned capacity)
 			return;
 		indexedTeam = true;
 		for (const auto *unit : world.unitSlots(team))
-			if (unit && !unit->isDead &&
-				(unit->activity == U::ACT_RANDOM && unit->medical == U::MED_FREE))
+			if (unit && !unit->isDead && unit->activity == U::ACT_RANDOM &&
+				unit->medical == U::MED_FREE)
 			{
 				const auto &traits = world.unitTraits(unit->typeNum);
-				if (traits.has(UnitRuntimeTraits::Transport) && unit->performance[BUILD] > 0)
+				if (unit->activity == U::ACT_RANDOM && unit->medical == U::MED_FREE &&
+					traits.has(UnitRuntimeTraits::Transport) && unit->performance[BUILD] > 0)
 				{
 					transport.push_back(unit);
 					for (unsigned r = 0; r < MaterialCount; ++r)
@@ -557,16 +556,28 @@ Output Cache::rank(const Inputs &input, unsigned team, unsigned capacity)
 						roles[role].push_back(unit);
 			}
 	};
+	std::vector<const B *> orderedBuildings;
 	for (const auto *building : world.buildingSlots(team))
+		if (building)
+		{
+			++output.metrics.buildingsExamined;
+			if (needsCandidates(*building))
+				orderedBuildings.push_back(building);
+			else
+				++output.metrics.buildingsSkippedNoDemand;
+		}
+	const auto needOf = [&](const B &b) -> const Supply &
+	{
+		return *std::find_if(supplies.begin(), supplies.end(),
+							 [&](const auto &s) { return s.building == b.identity; });
+	};
+	std::sort(orderedBuildings.begin(), orderedBuildings.end(),
+			  [&](const B *a, const B *b) { return needOf(*a).visitRank < needOf(*b).visitRank; });
+	std::array<bool, Unit::MAX_COUNT> roleOffers{};
+	for (const auto *building : orderedBuildings)
 	{
 		if (!building)
 			continue;
-		++output.metrics.buildingsExamined;
-		if (!needsCandidates(*building))
-		{
-			++output.metrics.buildingsSkippedNoDemand;
-			continue;
-		}
 		++output.metrics.buildingsNeedingHiring;
 		const auto &b = *building;
 		const auto &type = world.catalog->at(b.typeNum).resolvedType;
@@ -676,6 +687,8 @@ Output Cache::rank(const Inputs &input, unsigned team, unsigned capacity)
 				const auto &u = *unit;
 				const auto &traits = world.unitTraits(u.typeNum);
 				const bool transport = key.job == Job::Delivery || key.job == Job::Fetch;
+				if (!transport && roleOffers[Unit::GIDtoID(u.gid)])
+					continue;
 				if (transport)
 				{
 					if (!traits.has(UnitRuntimeTraits::Transport) || u.performance[BUILD] <= 0 ||
@@ -926,8 +939,78 @@ Output Cache::rank(const Inputs &input, unsigned team, unsigned capacity)
 			output.retainedBytes += list.candidates.capacity() * sizeof(Candidate);
 			result.jobs.push_back(std::move(list));
 		}
+		// Only an outstanding or imminent attraction round makes private offers.
+		// These reduce repeated shortlist exclusion between peers; they reserve
+		// nothing in the live simulation and use no gameplay randomness.
+		const bool imminent =
+			b.hiringRecruitmentDeadline >= world.tick && b.hiringRecruitmentDeadline != 0;
+		if (imminent || unsigned(std::max(0, b.subscriptionWorkingTimer)) +
+								Hiring::PublicationDelay + Hiring::RefreshInterval - 1 >=
+							32)
+		{
+			std::array<unsigned, 3> assigned{}, targets{};
+			unsigned deliveries = 0;
+			unsigned activeRoles = supply->materialDemand;
+			for (unsigned role = 0; role < 3; ++role)
+				activeRoles += type.attractsRole(role);
+			unsigned roleRank = supply->materialDemand;
+			for (unsigned role = 0; role < 3; ++role)
+				if (type.attractsRole(role))
+				{
+					targets[role] = unsigned(b.desiredMaxUnitWorking) / activeRoles +
+									(roleRank++ < unsigned(b.desiredMaxUnitWorking) % activeRoles);
+				}
+			for (unsigned i = 0; i < b.working.count; ++i)
+			{
+				const auto ref = input.world.entities->relationships.at(b.working.offset + i);
+				const auto *u = world.unitAtSlot(ref.gid);
+				if (u && u->identity == ref)
+					deliveries += u->activity == U::ACT_FILLING;
+				if (u && u->identity == ref && u->activity == U::ACT_FLAG)
+				{
+					const int role = int(u->jobPurpose) - int(UnitJobPurpose::Clear);
+					if (role >= 0 && role < 3)
+						++assigned[role];
+				}
+			}
+			const unsigned deliveryTarget =
+				supply->materialDemand && activeRoles
+					? unsigned(b.desiredMaxUnitWorking) / activeRoles +
+						  (unsigned(b.desiredMaxUnitWorking) % activeRoles != 0)
+					: 0;
+			const unsigned deliveryVacancies =
+				deliveryTarget > deliveries ? deliveryTarget - deliveries : 0;
+			const unsigned roleSeats = supply->seats - std::min(supply->seats, deliveryVacancies);
+			for (unsigned seat = 0; seat < roleSeats; ++seat)
+			{
+				const Candidate *offer = nullptr;
+				int selectedRole = -1;
+				for (unsigned pass = 0; pass < 2 && !offer; ++pass)
+					for (const auto &list : result.jobs)
+						if (list.key.job >= Job::Clear)
+						{
+							const unsigned role = unsigned(list.key.job) - unsigned(Job::Clear);
+							if ((!pass && assigned[role] >= targets[role]) ||
+								(selectedRole >= 0 && assigned[role] >= assigned[selectedRole]))
+								continue;
+							for (const auto &entry : list.candidates)
+								if (!roleOffers[Unit::GIDtoID(entry.unit.gid)])
+								{
+									offer = &entry;
+									selectedRole = role;
+									break;
+								}
+						}
+				if (!offer)
+					break;
+				roleOffers[Unit::GIDtoID(offer->unit.gid)] = true;
+				++assigned[selectedRole];
+			}
+		}
 		output.buildings.push_back(std::move(result));
 	}
+	std::sort(output.buildings.begin(), output.buildings.end(),
+			  [](const auto &a, const auto &b) { return a.building.gid < b.building.gid; });
 	if (canCoordinate)
 		for (const auto &building : output.buildings)
 		{

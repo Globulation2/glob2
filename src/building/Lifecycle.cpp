@@ -70,6 +70,7 @@ Building::Building(int x, int y, Uint16 gid, Sint32 typeNum, Team *team, Buildin
 	maxUnitWorkingPrevious = 0;
 	desiredMaxUnitWorking = maxUnitWorking;
 	subscriptionWorkingTimer = 0;
+	hiringRecruitmentDeadline = 0;
 	priority = 0;
 	oldPriority = 0;
 
@@ -383,6 +384,7 @@ void Building::load(GAGCore::InputStream *stream, BuildingsTypes *types, Team *o
 	maxUnitWorkingFuture = 1;
 	desiredMaxUnitWorking = maxUnitWorking;
 	subscriptionWorkingTimer = 0;
+	hiringRecruitmentDeadline = 0;
 
 	owner->prestige += type->prestige;
 
@@ -637,6 +639,14 @@ void Building::loadCrossRef(GAGCore::InputStream *stream, BuildingsTypes *types,
 	}
 
 	subscriptionWorkingTimer = stream->readSint32("subscriptionWorkingTimer");
+	hiringRecruitmentDeadline = 0;
+	if (versionMinor >= FILE_FORMAT_VERSION_CACHED_HIRING)
+	{
+		hiringRecruitmentDeadline = Uint64(stream->readUint32("hiringRecruitmentDeadlineHigh")) << 32;
+		hiringRecruitmentDeadline |= stream->readUint32("hiringRecruitmentDeadlineLow");
+		if (hiringRecruitmentDeadline > Uint64(owner->game->stepCounter) + Hiring::RecruitmentRetryTicks)
+			throw std::runtime_error("Invalid hiring recruitment deadline");
+	}
 	maxUnitWorking = stream->readSint32("maxUnitWorking");
 	maxUnitWorkingPreferred = stream->readSint32("maxUnitWorkingPreferred");
 	if(versionMinor>=FILE_FORMAT_VERSION_MAX_UNIT_WORKING_PREVIOUS)
@@ -751,6 +761,8 @@ void Building::saveCrossRef(GAGCore::OutputStream *stream)
 	}
 
 	stream->writeSint32(subscriptionWorkingTimer, "subscriptionWorkingTimer");
+	stream->writeUint32(hiringRecruitmentDeadline >> 32, "hiringRecruitmentDeadlineHigh");
+	stream->writeUint32(Uint32(hiringRecruitmentDeadline), "hiringRecruitmentDeadlineLow");
 	stream->writeSint32(maxUnitWorking, "maxUnitWorking");
 	stream->writeSint32(maxUnitWorkingPreferred, "maxUnitWorkingPreferred");
 	stream->writeSint32(maxUnitWorkingPrevious, "maxUnitWorkingPrevious");

@@ -2,6 +2,7 @@
 // Real-engine regression for Building::canUnitWorkHere: the schooling gate
 // reads the independent construction qualification, not work-speed training.
 #include "EngineFixtures.h"
+#include <algorithm>
 #include "GlobalContainer.h"
 #include "FileManager.h"
 #include <SDL3/SDL.h>
@@ -51,7 +52,12 @@ static bool hiringPass(const char* kind, int level, bool site, int carried, int 
 	unit->carriedMaterial = carried;
 	unit->activity = Unit::ACT_RANDOM;
 	unit->medical = Unit::MED_FREE;
-	(glob2test::publishCurrentHiringSuggestions(*team->game), team->updateAllBuildingTasks());
+	// Observe a qualified suggestion, then change the live qualification so
+    // this fixture tests admission rather than the planner's prefilter.
+    unit->constructionLevel=std::max(workerLevel,int(building->runtime->requiredWorkerLevel));
+    glob2test::publishCurrentHiringSuggestions(game);
+    unit->constructionLevel=workerLevel;
+    team->updateAllBuildingTasks();
 	*tooLowLevel = building->unitsFailingRequirements[Building::UnitTooLowLevel];
 	bool hired = building->unitsWorking.size() == 1;
 	std::printf("%s level %d %s, worker level %d -> %s (too low level: %u)\n",

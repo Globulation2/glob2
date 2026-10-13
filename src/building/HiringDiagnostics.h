@@ -16,10 +16,7 @@ namespace HiringDiagnostics
 enum class Phase : unsigned
 {
 	Attempt,
-	CarryingScan,
-	FetchScan,
-	FlagScan,
-	Selection,
+	Consumption,
 	Subscription,
 	Swap,
 	FieldInitialization,
@@ -36,7 +33,6 @@ enum class Counter : unsigned
 	FailedAttempts,
 	Busy,
 	Rejected,
-	Slots,
 	Count
 };
 struct Row

@@ -23,7 +23,7 @@ TEST_SUITE("HiringPlanner")
 		inn->unitsWorking.push_back(unit);
 		unit->destinationPurpose = WHEAT;
 		const auto observed = world.game.captureReadBoundary();
-		const auto inputs = HiringPipeline::capture(world.game, observed);
+		const auto inputs = HiringPipeline::bindRoutes(world.game, observed);
 		const auto before = HiringPlanner::prepare(inputs, 0);
 		REQUIRE(before.size() == 1);
 		CHECK(before.front().seats == 1);
@@ -57,7 +57,7 @@ TEST_SUITE("HiringPlanner")
 			inn->reservedMaterials[WHEAT] = 1;
 			world.game.snapshotStore().invalidateBoundary();
 			const auto snapshot = world.game.captureReadBoundary();
-			auto input = HiringPipeline::capture(world.game, snapshot);
+			auto input = HiringPipeline::bindRoutes(world.game, snapshot);
 			const auto supplies = HiringPlanner::prepare(input, 0);
 			REQUIRE(supplies.size() == 1);
 			const auto &supply = supplies.front();
@@ -93,7 +93,7 @@ TEST_SUITE("HiringPlanner")
 		for (int r = 0; r < MaterialCount; ++r)
 			inn->materials[r] = 3;
 		const auto snapshot = world.game.captureReadBoundary();
-		const auto input = HiringPipeline::capture(world.game, snapshot);
+		const auto input = HiringPipeline::bindRoutes(world.game, snapshot);
 		const auto supplies = HiringPlanner::prepare(input, 0);
 		REQUIRE(supplies.size() == 1);
 		for (unsigned r = 0; r < MaterialCount; ++r)
@@ -138,7 +138,7 @@ TEST_SUITE("HiringPlanner")
 		CHECK(snapshot.entities->units.front().realAttackStrength ==
 			  warrior->getRealAttackStrength());
 		HiringPlanner::Cache cache;
-		const auto output = cache.rank(HiringPipeline::capture(world.game, snapshot), 0, 8);
+		const auto output = cache.rank(HiringPipeline::bindRoutes(world.game, snapshot), 0, 8);
 		bool found = false;
 		for (const auto &b : output.buildings)
 			for (const auto &list : b.jobs)
@@ -169,7 +169,7 @@ TEST_SUITE("HiringPlanner")
 		market->buildingState = Building::WAITING_FOR_CONSTRUCTION;
 		const auto snapshot = world.game.captureReadBoundary();
 		const auto supplies =
-			HiringPlanner::prepare(HiringPipeline::capture(world.game, snapshot), 0);
+			HiringPlanner::prepare(HiringPipeline::bindRoutes(world.game, snapshot), 0);
 		REQUIRE(supplies.size() == 1);
 		CHECK(supplies.front().modes[CHERRY] ==
 			  world.game.map.materialSupplyModesSlot(inn, CHERRY));
@@ -197,7 +197,7 @@ TEST_SUITE("HiringPlanner")
 			world.game.map.buildingGradient(inn, swim);
 		const auto checksum = world.checksum();
 		const auto snapshot = world.game.captureReadBoundary();
-		auto inputs = HiringPipeline::capture(world.game, snapshot);
+		auto inputs = HiringPipeline::bindRoutes(world.game, snapshot);
 		HiringPlanner::Cache cache;
 		auto result = cache.rank(inputs, 0, 8);
 		CHECK(world.checksum() == checksum);
@@ -238,7 +238,7 @@ TEST_SUITE("HiringPlanner")
 			world.game.snapshotStore()
 				.invalidateBoundary(); // Announce these owner-side fixture edits.
 			auto snapshot = world.game.captureReadBoundary();
-			auto inputs = HiringPipeline::capture(world.game, snapshot);
+			auto inputs = HiringPipeline::bindRoutes(world.game, snapshot);
 			auto output = cache.rank(inputs, 0, 8);
 			return std::pair{std::move(inputs), std::move(output)};
 		};
@@ -283,7 +283,7 @@ TEST_SUITE("HiringPlanner")
 			u->carriedMaterial = WHEAT;
 		}
 		HiringPlanner::Cache cache;
-		const auto input = HiringPipeline::capture(world.game, world.game.captureReadBoundary());
+		const auto input = HiringPipeline::bindRoutes(world.game, world.game.captureReadBoundary());
 		const auto out = cache.rank(input, 0);
 		REQUIRE(out.buildings.size() == 1);
 		for (const auto &list : out.buildings.front().jobs)
@@ -312,7 +312,7 @@ TEST_SUITE("HiringPlanner")
 		for (int swim = 0; swim < SWIM_CLASS_COUNT; ++swim)
 			world.game.map.getMaterialGradientSlot(0, WHEAT, swim);
 		auto snapshot = world.game.captureReadBoundary();
-		auto inputs = HiringPipeline::capture(world.game, snapshot);
+		auto inputs = HiringPipeline::bindRoutes(world.game, snapshot);
 		const auto checksum = world.checksum();
 		HiringPlanner::Cache cache;
 		auto output = cache.rank(inputs, 0, 128);
@@ -389,7 +389,7 @@ TEST_SUITE("HiringPlanner")
 		unit->carriedMaterial = WHEAT;
 		auto snapshot = world.game.captureReadBoundary();
 		HiringPlanner::Cache cache;
-		auto inputs = HiringPipeline::capture(world.game, snapshot);
+		auto inputs = HiringPipeline::bindRoutes(world.game, snapshot);
 		inputs.routes = std::make_shared<const std::vector<HiringPlanner::Inputs::Route>>();
 		const auto output = cache.rank(inputs, 0, 8);
 		CHECK(output.metrics.sharedQueries == 0);
@@ -440,7 +440,7 @@ TEST_SUITE("HiringPlanner")
 		world.game.map.getMaterialGradientSlot(0, WHEAT, swim, false, inn);
 		const auto checksum = world.checksum();
 		auto snapshot = world.game.captureReadBoundary();
-		auto inputs = HiringPipeline::capture(world.game, snapshot);
+		auto inputs = HiringPipeline::bindRoutes(world.game, snapshot);
 		const auto supplies = HiringPlanner::prepare(inputs, 0);
 		REQUIRE(supplies.size() == 1);
 		CHECK(supplies.front().modes[WHEAT] == 0);
@@ -475,7 +475,7 @@ TEST_SUITE("HiringPlanner")
 		worker->activity = Unit::ACT_RANDOM;
 		worker->medical = Unit::MED_FREE;
 		auto snapshot = world.game.captureReadBoundary();
-		auto inputs = HiringPipeline::capture(world.game, snapshot);
+		auto inputs = HiringPipeline::bindRoutes(world.game, snapshot);
 		const auto supplies = HiringPlanner::prepare(inputs, 0);
 		const auto supply = std::find_if(supplies.begin(), supplies.end(), [&](const auto &s)
 										 { return s.building == Game::refOf(inn); });
@@ -503,7 +503,7 @@ TEST_SUITE("HiringPlanner")
 		world.game.snapshotStore()
 			.invalidateBoundary(); // Announce this mid-boundary fixture query.
 		auto published = world.game.captureReadBoundary();
-		const auto shared = cache.rank(HiringPipeline::capture(world.game, published), 0, 8);
+		const auto shared = cache.rank(HiringPipeline::bindRoutes(world.game, published), 0, 8);
 		CHECK(shared.metrics.publishedResourceReads > 0);
 		CHECK(shared.metrics.privateResourceReads == 0);
 		CHECK(shared.metrics.fieldMisses == 0);

@@ -36,16 +36,16 @@ struct BuildingLists
 	X(coordinatedTeams)                                                                            \
 	X(coordinationSkipped)                                                                         \
 	X(distanceReuses)                                                                              \
-	X(availableEvaluations) X(jobsSkippedNoQuota) X(sharedQueries) X(sharedExpansions)             \
-		X(sharedWaitNs) X(sharedQueryNs) X(missingBuildingFields) X(buildingsExamined)             \
-			X(buildingsNeedingHiring) X(buildingsSkippedNoDemand) X(preparationNs) X(setupNs)      \
-				X(geographyNs) X(precheckNs) X(evaluationNs) X(sortOutputNs) X(seedNs)             \
-					X(propagationNs) X(fieldHits) X(fieldMisses) X(fieldCells) X(terrainChanges)   \
-						X(buildingOccupancyChanges) X(immobileChanges) X(forbiddenChanges)         \
-							X(resourceBlockingChanges) X(evictions) X(geographyChanges)            \
-								X(refreshes) X(jobs) X(skippedJobs) X(rankedCandidates)            \
-									X(publishedResourceReads) X(privateResourceReads)              \
-										X(airQueries)
+	X(availableEvaluations)                                                                        \
+	X(jobsSkippedNoQuota) X(sharedQueries) X(sharedExpansions) X(sharedWaitNs) X(sharedQueryNs)    \
+		X(missingBuildingFields) X(buildingsExamined) X(buildingsNeedingHiring)                    \
+			X(buildingsSkippedNoDemand) X(preparationNs) X(setupNs) X(geographyNs) X(precheckNs)   \
+				X(evaluationNs) X(sortOutputNs) X(seedNs) X(propagationNs) X(fieldHits)            \
+					X(fieldMisses) X(fieldCells) X(terrainChanges) X(buildingOccupancyChanges)     \
+						X(immobileChanges) X(forbiddenChanges) X(resourceBlockingChanges)          \
+							X(evictions) X(geographyChanges) X(refreshes) X(jobs) X(skippedJobs)   \
+								X(rankedCandidates) X(publishedResourceReads)                      \
+									X(privateResourceReads) X(airQueries)
 struct Metrics
 {
 #define HIRING_DECLARE_METRIC(name) std::uint64_t name = 0;

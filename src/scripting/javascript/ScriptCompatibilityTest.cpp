@@ -134,9 +134,9 @@ TEST_CASE("Resource oscillation rejects earlier replays and enforces acceptance 
 	glob2test::GlobalsOptions options;
 	options.loadStrings = true;
 	glob2test::HeadlessGlobals globals(options);
-	CHECK(REPLAY_MINIMUM_VERSION_MINOR == 154);
-	CHECK(VERSION_MINOR == 154);
-	CHECK(NET_PROTOCOL_VERSION == 69);
+	CHECK(REPLAY_MINIMUM_VERSION_MINOR == FILE_FORMAT_VERSION_CACHED_HIRING);
+	CHECK(VERSION_MINOR >= FILE_FORMAT_VERSION_CACHED_HIRING);
+	CHECK(NET_PROTOCOL_VERSION >= 69);
 	CHECK(FILE_FORMAT_VERSION_JAVASCRIPT == 125);
 	CHECK(FILE_FORMAT_VERSION_EXPERIMENTS == 124);
 	ReplayReader released;
