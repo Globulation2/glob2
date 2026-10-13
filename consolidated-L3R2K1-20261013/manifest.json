@@ -1,0 +1,27 @@
+{
+  "source": "47fa805ed779d975592422834ae0ff6f69b3a8bf",
+  "base": "35b84d4ffd774742ada41d33c39ab1a50551f113",
+  "archive_sha256": "e9bfdd993a0b3ba7de14864f57f9d0fd5f333c8985f667d8e91da7335931a7b2",
+  "parts": [
+    {
+      "name": "integration-evidence.tar.gz.part-00",
+      "sha256": "31e61c39e5d57000514612de480b4a64c5884c3acb453fe0a2bfac1252b7e00f",
+      "bytes": 25165824
+    },
+    {
+      "name": "integration-evidence.tar.gz.part-01",
+      "sha256": "a90405024c47b9f05072f9ab6a933750c63541323a48addeb928c163226eb272",
+      "bytes": 25165824
+    },
+    {
+      "name": "integration-evidence.tar.gz.part-02",
+      "sha256": "1343ec3fc750bc10b3f407d20577d5a4b26256b69d5f5922ad70a19b721d1ca6",
+      "bytes": 25165824
+    },
+    {
+      "name": "integration-evidence.tar.gz.part-03",
+      "sha256": "c57c0fedc591959f34a2bf974f8218e64d24105cc5f18cc480b79535718a480c",
+      "bytes": 2854912
+    }
+  ]
+}
