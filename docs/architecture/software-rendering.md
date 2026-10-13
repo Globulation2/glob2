@@ -102,73 +102,94 @@ See [software renderer benchmarks](../development/software-rendering-benchmarks.
 
 ## Bounded CPU presentation work
 
-`GLOB2_RENDER_EXECUTION=parallel` enables experimental CPU terrain groups and
-software raster tiles on native hosts. `serial` traverses the same CPU kernels
-on the graphics owner. The default `auto` retains immediate serial drawing and
-terrain preparation, using the shared composition and regional pixel kernels;
-it does not enable concurrency or recording until representative release
-measurements justify selection thresholds. These are development overrides,
-not gameplay settings; set them before launch. The recorder reads execution
-mode when its backend is created. `GLOB2_RENDER_WORKERS=N` accepts 1–64 and caps presentation
-concurrency at the smaller of the request, two, and the available compute workers.
-Scene preparation consumes a slot in the same ceiling. Neither override changes
-simulation worker configuration. Browser graphics batches execute serially.
+`GLOB2_RENDER_EXECUTION=parallel` enables experimental CPU terrain groups and software
+raster tiles on native hosts. `serial` traverses the same CPU kernels on the graphics
+owner. The default `immediate` uses direct serial drawing and terrain preparation,
+without command recording or packed terrain jobs. These are two execution paths:
+immediate drawing, and batching with either serial or parallel job execution. Both
+share composition and regional pixel kernels, so shared kernel improvements also
+benefit immediate drawing. There is no automatic selection policy. The former `auto`
+spelling remains an alias for `immediate` for existing launch scripts. CPU execution
+selection is independent of renderer backend selection (`--renderer`).
+These are development overrides, not gameplay settings; set them before launch. The
+recorder reads execution mode when its backend is created. `GLOB2_RENDER_WORKERS=N`
+accepts 1–64 and caps admitted scene/graphics concurrency at the smaller of the
+request and two.
+Native worker availability can further limit achieved concurrency. Scene preparation
+consumes a slot in the same ceiling. Neither override changes simulation worker
+configuration. Browser graphics callbacks run serially on the owner within the same
+ceiling and use the same admission and ticket lifecycle as native batches.
 
 The engine installs a scoped `PresentationWork` dispatcher around drawing and
 presentation. Render code sees a synchronous CPU interface, without a `Map` or
-simulation reference. `ComputeExecutor` admits one graphics batch independently
-of the existing resumable scene mailbox. Required jobs retain due/lane order.
-After eight required claims, the designated presentation worker alternates
-eligible scene chunks and graphics jobs. Other workers claim graphics jobs only
-when no required job is claimable. Workers never join, call the backend, or wait
-for the graphics owner. Zero-job tickets complete immediately; cancellation
-stops new claims and drains callbacks. Finish, abandoned-ticket destruction,
-reconfiguration and shutdown release captures before publishing final status.
-Finished tickets retain failure information, but no job inputs.
+simulation reference. `ComputeExecutor` admits one graphics batch independently of the
+existing resumable scene mailbox. Required jobs retain due/lane order. After eight
+required claims, the designated presentation worker alternates eligible scene chunks and
+graphics jobs. Other workers claim graphics jobs only when no required job is claimable.
+Workers never join, call the backend, or wait for the graphics owner. Zero-job tickets
+complete immediately; cancellation stops new claims and drains callbacks. Finish,
+abandoned-ticket destruction, reconfiguration and shutdown release captures before
+publishing final status. Finished tickets retain failure information, but no job inputs.
+The owner obeys the same scene/graphics concurrency ceiling as workers. Completion
+publishes under the scheduler mutex and wakes admission waiters, including when a
+cancelled owner batch finishes while an unrelated scene chunk still occupies the
+ceiling. Captured inputs are destroyed outside both scheduler and batch locks.
 
-CPU terrain preparation separates owner planning, private cell composition and
-canonical installation. Published materials contain only immutable composition
-pixels for the page's referenced materials and catalog definitions. Unchanged material revisions share storage;
-the compositor keeps bounded weak records per material revision, allowing reuse
-while any snapshot still owns unchanged pixels. Each cache charges its retained
-lease against subsequent admission. Current-page masks remain protected until
-the synchronous group finishes. Workers reuse bounded scratch and never create
-`HeldMask` or drawable objects. Jobs sample at most 16K pixels; a group admits
-up to 32 changed cells under a 4 MiB additional reservation and available cache
-headroom. Queued raster sources and active terrain work share an additional
-8 MiB owner reservation ceiling; raster bookkeeping reserves 2 MiB within it for the backend lifetime,
-including retained vector capacity. Captured source reservations release when
-the segment finishes or is discarded.
-The reservation includes material revisions, catalog/control storage,
-results, masks, metadata and two scratch slots. Oversized HD cells, reductions,
-and groups without headroom use existing serial composition. GPU composition and emergency fallback retain their existing paths. Streamed
-CPU pages reuse the bounded page builder while keeping one temporary page alive. Installation
-keeps the page invalid until its pixels, masks, revisions and opaque runs are
-consistent. Allocation failure discards the invalid cache rather than publishing
-partial output.
+CPU terrain preparation separates owner planning, private cell composition and canonical
+installation. Published materials contain only immutable composition pixels for the
+changed cells' referenced materials and catalog definitions. Planning finds changed
+cells before acquiring material snapshots, so a sparse edit does not copy unchanged
+materials. Unchanged material revisions share storage; the compositor keeps bounded weak
+records per material revision, allowing reuse while any snapshot still owns unchanged
+pixels. Each cache charges its retained lease against subsequent admission. Current-page
+masks remain protected until the synchronous group finishes. Hidden cells release
+obsolete discovery masks during canonical installation. Results occupy disjoint spans in
+one owner-held pixel slab, whose lifetime covers the synchronous join and installation.
+Opacity classification selects an opaque or empty predicate from the first pixel and
+scans once; cells starting with partial alpha need neither uniform scan. Workers reuse
+bounded scratch and never create `HeldMask` or drawable objects. Jobs sample at most 16K
+pixels; a group admits up to 32 changed cells under a 4 MiB additional reservation and
+available cache headroom. Queued raster sources and active terrain work share an
+additional 8 MiB owner reservation ceiling; raster bookkeeping reserves 2 MiB within it
+for the backend lifetime, including retained vector capacity. Captured source
+reservations release when the segment finishes or is discarded. The reservation includes
+material revisions, catalog/control storage, results, masks, metadata and two scratch
+slots. Oversized HD cells, reductions, and groups without headroom use existing serial
+composition. GPU composition and emergency fallback retain their existing paths.
+Streamed CPU pages reuse the bounded page builder while keeping one temporary page
+alive. Installation keeps the page invalid until its pixels, masks, revisions and opaque
+runs are consistent. Allocation failure discards the invalid cache rather than
+publishing partial output.
 
 The software recorder captures supported opaque nearest blits, backing-pixel
-triangle-style blits and rectangle fills. Unsupported geometry, linear sampling,
-color keys, mixed formats and legacy large-image cases flush the preceding
-segment before owner execution. Arbitrary borrowed source pixels are copied at
-capture time, including terrain views. Overlapping byte ranges between distinct
-source/target views flush earlier drawing before the source snapshot. Source
-mutation or destruction cannot change a captured command. Each segment is
-bounded by 1,024 commands and 4 MiB of copied sources; bin bookkeeping is bounded
-by 4,096 tiles and 65,536 references. Excessive tile work uses serial command traversal in regions at most
-128 pixels wide, bounding sampling scratch independently of target width. Current candidates are 128-pixel tiles and at most sixteen command
-references per tile; these are conservative experimental bounds, not measured
-performance thresholds.
+triangle-style blits and rectangle fills. Unsupported geometry, linear sampling, color
+keys, mixed formats and legacy large-image cases flush the preceding segment before
+owner execution. Arbitrary borrowed source pixels are copied at capture time, including
+terrain views. Overlapping byte ranges between distinct source/target views flush
+earlier drawing before the source snapshot. Source mutation or destruction cannot change
+a captured command. Supported fully clipped or zero-opacity commands are discarded
+before recording or allocating source storage. Owned source arrays are allocated without
+initialization and completely filled before publication. Each segment is bounded by
+1,024 commands and 4 MiB of copied sources; bin bookkeeping is bounded by 4,096 tiles
+and 65,536 references. Excessive tile work uses serial command traversal in regions at
+most 128 pixels wide within each command's visible bounds, bounding sampling scratch
+independently of target width. Tile and reference vectors retain bounded capacity
+between segments. Segment cleanup destroys commands before their owned sources and
+releases source reservations on completion, failure and discard. Current candidates are
+128-pixel tiles and at most sixteen command references per tile; these are conservative
+experimental bounds, not measured performance thresholds.
 
 The owner drains earlier SDL geometry, locks the target once, and captures its
-format/pitch before dispatch. Jobs write disjoint half-open regions in painter
-order and sample from the original complete destination. They never touch SDL
-surface state. `GraphicContext::getSDLSurface()` fences active CPU drawing before
-returning pixels; accelerated contexts retain their existing CPU facade and need
-explicit capture for readback. Callers holding a base-class alias or an earlier
-raw target pointer must flush the owner before reading or modifying it.
-The owner unlocks after all jobs return, before fallback drawing,
-capture, target rotation or presentation. Failed work blocks capture and commit.
+format/pitch before dispatch. Jobs write disjoint half-open regions in painter order and
+sample from the original complete destination. They never touch SDL surface state.
+Verified opaque native-width copies with positive strides use row copies only when the complete source and
+target backing ranges are disjoint; aliased views retain ordered per-pixel execution.
+`GraphicContext::getSDLSurface()` fences active CPU drawing before returning pixels;
+accelerated contexts retain their existing CPU facade and need explicit capture for
+readback. Callers holding a base-class alias or an earlier raw target pointer must flush
+the owner before reading or modifying it. The owner unlocks after all jobs return,
+before fallback drawing, capture, target rotation or presentation. Failed work blocks
+capture and commit.
 `GraphicContext::discardFrame()` discards recorded drawing and restores the
 presenter's previous completed image, permitting a subsequent full or partial
 redraw. A capture of an offscreen target still fails with its drawing operation;

@@ -90,3 +90,12 @@ alone does not add `applinks:`. Check a TestFlight IPA with
 `codesign -d --entitlements - Payload/Glob2.app` before relying on universal links.
 
 [Mobile index](README.md) · [Documentation index](../README.md).
+
+### Vulkan gradient computation
+
+The iOS project embeds the matching hash-pinned MoltenVK 1.4.2 framework and its
+Apache-2.0 notice for device or simulator builds. Xcode signs the embedded framework
+on copy. Gradient compute loads it independently of rendering, and falls back to
+CPU for unavailable device capabilities. The lock is `scons/moltenvk.json`; no
+runtime shader compiler is shipped. Device correctness and signed package launch
+need Apple qualification in addition to cross-platform solver tests.

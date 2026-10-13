@@ -50,7 +50,7 @@ bool Map::stockSupplierEligibleSlot(const Building*, const Building*, int, unsig
 void Map::preparePendingGradient() {
     if (gradientRuntime->preparation.job) std::abort();
 }
-void Map::finishGradientPipeline() {
+void Map::finishGradientPipeline(JoinContext) {
     preparePendingGradient();
     gradientRuntime->pipeline.finish();
 }
@@ -64,7 +64,7 @@ void Map::resetBuildingGradientPipeline() noexcept {
 
 // Growth scheduling belongs to engine fixtures. Lightweight maps never submit
 // jobs; reject accidental use rather than silently simulating a fake pipeline.
-void Map::finishResourceGrowth() {
+void Map::finishResourceGrowth(JoinContext) {
     if (gradientRuntime->growth.count() || gradientRuntime->growth.needsPreparation()) std::abort();
 }
 void ResourceGrowth::Pipeline::reset() noexcept {

@@ -282,6 +282,8 @@ static int play(const Options& options, const fs::path& output)
 	       << ",\"wall_seconds\":" << elapsed() << ",\"first_tick_seconds\":" << firstTickAt
 	       << ",\"relay_error\":" << Headless::quote(transport->error()) << ",";
 	Headless::playersAndTeamsJson(result, game, engine.teamEliminatedTick);
+	result << ",\"compute_telemetry\":";
+    ComputeTelemetry::writeJson(result, game.map.computeExecutor().telemetrySnapshot());
 	result << '}';
 	Headless::writeJson((output / "result.json").string(), result.str());
 	{

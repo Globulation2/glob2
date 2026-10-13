@@ -455,7 +455,7 @@ TEST_CASE("recorded software segments freeze borrowed sources and preserve fallb
           doctest::test_suite("SoftwareRenderer"))
 {
     std::vector<Uint32> expected;
-    for (const char *execution : {"auto", "serial", "parallel"})
+    for (const char *execution : {"immediate", "serial", "parallel"})
     {
         glob2test::ScopedEnvironment mode("GLOB2_RENDER_EXECUTION", execution);
         ComputeExecutor executor;
@@ -494,7 +494,7 @@ TEST_CASE("recorder capacity and overlapping backing views retain immediate draw
           doctest::test_suite("SoftwareRenderer"))
 {
     std::vector<Uint32> expected;
-    for (const char *execution : {"auto", "serial", "parallel"})
+    for (const char *execution : {"immediate", "serial", "parallel"})
     {
         glob2test::ScopedEnvironment mode("GLOB2_RENDER_EXECUTION", execution);
         ComputeExecutor executor;
@@ -533,6 +533,7 @@ TEST_CASE("pending borrowed pixels survive destruction before flush and prove ti
     glob2test::ScopedEnvironment mode("GLOB2_RENDER_EXECUTION", "parallel");
     ComputeExecutor executor;
     executor.configure(4);
+    executor.configureTelemetry(ComputeTelemetryMode::Trace);
     PresentationWorkScope scope(executor);
     auto target = pixels(271, 263);
     auto backend = makeSoftwareRenderBackend(target.get());
@@ -628,7 +629,7 @@ TEST_CASE("very wide recorded targets retain bounded scratch and exact painter o
           doctest::test_suite("SoftwareRenderer"))
 {
     std::vector<Uint32> expected;
-    for (const char *execution : {"auto", "serial", "parallel"})
+    for (const char *execution : {"immediate", "serial", "parallel"})
     {
         glob2test::ScopedEnvironment mode("GLOB2_RENDER_EXECUTION", execution);
         auto target = pixels(300000, 1), source = pixels(7, 1);
@@ -670,7 +671,7 @@ TEST_CASE("render reservation rollback and commit preserve prior captures" *
 TEST_CASE("graphics context CPU pixel borrowing fences recorded main and offscreen drawing" *
           doctest::test_suite("SoftwareRenderer"))
 {
-    for (const char *execution : {"auto", "serial", "parallel"})
+    for (const char *execution : {"immediate", "serial", "parallel"})
     {
         glob2test::ScopedEnvironment mode("GLOB2_RENDER_EXECUTION", execution);
         GraphicContext context(64, 48, GraphicContext::NOAUDIO, "CPU pixel observation");
@@ -750,4 +751,50 @@ TEST_CASE("memory capture rejects failed raster output and resumes after owner d
     CHECK(red == 17);
     CHECK(green == 29);
     CHECK(blue == 43);
+}
+
+TEST_CASE("clipped and transparent recorded draws retain no commands or source pixels" *
+          doctest::test_suite("SoftwareRenderer"))
+{
+    for (const char *execution : {"serial", "parallel"})
+    {
+        glob2test::ScopedEnvironment mode("GLOB2_RENDER_EXECUTION", execution);
+        const auto available = RenderWorkReservation::available();
+        auto target = pixels(271, 263), source = pixels(37, 31);
+        REQUIRE(SDL_FillSurfaceRect(target.get(), nullptr, 0xff123456));
+        auto backend = makeSoftwareRenderBackend(target.get());
+        const SDL_Rect clip{3, 5, 7, 11};
+        backend->clip(&clip);
+        backend->fillPixels({13, 5, 23, 29}, {47, 91, 157, 255});
+        backend->blitPixels(source.get(), {0, 0, 37, 31}, {3, 17, 37, 31}, 173);
+        backend->blit(nullptr, source.get(), 0, true, {0, 0, 37, 31},
+                      {-39, 5, 37, 31}, 255);
+        backend->fillPixels({3, 5, 7, 11}, {47, 91, 157, 0});
+        backend->blitPixels(source.get(), {0, 0, 37, 31}, {3, 5, 7, 11}, 0);
+        backend->flush();
+        CHECK(backend->operations().rasterBatches == 0);
+        CHECK(backend->operations().rasterSnapshotBytes == 0);
+        CHECK(RenderWorkReservation::available() == available);
+        CHECK(pixel(target.get(), 5, 9) == 0xff123456);
+    }
+}
+
+TEST_CASE("narrow recorded commands preserve painter order on very wide targets" *
+          doctest::test_suite("SoftwareRenderer"))
+{
+    std::vector<Uint32> expected;
+    for (const char *execution : {"immediate", "serial", "parallel"})
+    {
+        glob2test::ScopedEnvironment mode("GLOB2_RENDER_EXECUTION", execution);
+        auto target = pixels(300000, 1);
+        REQUIRE(SDL_FillSurfaceRect(target.get(), nullptr, 0xff123456));
+        auto backend = makeSoftwareRenderBackend(target.get());
+        for (int i = 0; i < 1030; ++i)
+            backend->fillPixels({149000 + i % 17, 0, 3, 1},
+                                {Uint8(i), Uint8(i * 3), 117, 79});
+        backend->flush();
+        if (expected.empty()) expected = snapshot(target.get());
+        else CHECK(snapshot(target.get()) == expected);
+        CHECK(backend->operations().rasterPeakRetainedBytes < 2u * 1024u * 1024u);
+    }
 }

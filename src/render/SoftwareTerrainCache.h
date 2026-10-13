@@ -90,7 +90,7 @@ class SoftwareTerrainCache
 	};
 
   private:
-    bool buildCpuPage(Chunk&, const std::array<Tile, ChunkTiles*ChunkTiles>&,
+    bool tryBuildCpuPage(Chunk&, const std::array<Tile, ChunkTiles*ChunkTiles>&,
         TerrainVisual::Compositor&, SDL_Surface*, bool wasValid, std::size_t budget);
 	bool prepareAtResolution(const SceneMap &, GAGCore::Sprite &, int left, int top, int right,
 							 int bottom, int vx, int vy, Uint32 visibleTeams, bool wholeMap,

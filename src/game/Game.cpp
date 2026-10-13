@@ -252,6 +252,8 @@ void Game::clearGame()
     unitCargo.clear();
 	map.resetGradientPipeline(); // Discard reservations and drain callbacks before team destruction.
 	clearAI(); // Join all controller work before deleting teams or players.
+    map.computeExecutor().cancelPresentationAndWait();
+    map.computeExecutor().resetTelemetry();
 	scriptGenerations.fill(0);
 	recordingFailingUnits=BuildingRef();
 	hasSavedRandomState = false;

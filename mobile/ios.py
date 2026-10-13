@@ -137,6 +137,12 @@ def main():
         'target_sources(Glob2 PRIVATE '+cmake_quote(icons)+')',
         'set_source_files_properties('+cmake_quote(icons)+' PROPERTIES MACOSX_PACKAGE_LOCATION Resources)',
         'set_target_properties(Glob2 PROPERTIES XCODE_ATTRIBUTE_ASSETCATALOG_COMPILER_APPICON_NAME AppIcon)']
+    sys.path.insert(0, str(ROOT / 'scons'))
+    from moltenvk import prepare as prepare_moltenvk
+    compute_framework, compute_license = prepare_moltenvk('ios', output, args.environment)
+    lines += ['set_property(TARGET Glob2 PROPERTY XCODE_EMBED_FRAMEWORKS '+cmake_quote(compute_framework)+')',
+              'set_target_properties(Glob2 PROPERTIES XCODE_EMBED_FRAMEWORKS_CODE_SIGN_ON_COPY YES XCODE_EMBED_FRAMEWORKS_REMOVE_HEADERS_ON_COPY YES)',
+              'set_property(TARGET Glob2 APPEND PROPERTY BUILD_RPATH "@executable_path/Frameworks")']
     for framework in ('VideoToolbox','UniformTypeIdentifiers','UIKit','Foundation','AudioToolbox','CoreAudio','AVFoundation','CoreGraphics','CoreHaptics','CoreMotion','CoreBluetooth','CoreMedia','CoreVideo','GameController','Metal','QuartzCore','OpenGLES','Security','SystemConfiguration'):
         lines.append('target_link_libraries(Glob2 PRIVATE "-framework '+framework+'")')
     if args.script_tests:
@@ -149,6 +155,9 @@ def main():
     shutil.copytree(output/'shaders', asset_root/'shaders', dirs_exist_ok=True,
                     ignore=shutil.ignore_patterns('.*', 'RendererShaderLayouts.h', 'native-sources', '*.air'))
     shutil.copytree(recording_prefix/'share/licenses/recording',asset_root/'licenses/recording',dirs_exist_ok=True)
+    notice=asset_root/'licenses/MoltenVK'
+    notice.mkdir(parents=True,exist_ok=True)
+    shutil.copy2(compute_license,notice/'LICENSE')
     resource_roots = [(asset_root, folder) for folder in ('data','maps','campaigns','scripts','licenses','shaders')]
     if args.script_tests:
         resource_roots += [(ROOT, folder) for folder in ('games','test/fixtures','examples/javascript')]

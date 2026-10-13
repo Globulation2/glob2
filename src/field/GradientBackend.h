@@ -13,6 +13,7 @@
 #include <mutex>
 #include <span>
 #include <utility>
+#include <vector>
 
 namespace gradient_kernel
 {
@@ -60,6 +61,10 @@ struct BackendRequest
     // Retains true when later readback/session failure causes CPU fallback.
     bool* deviceExecutionObserved = nullptr;
     std::shared_ptr<OpenCLRequiredControl> requiredControl;
+    // Diagnostic identity follows the admitted job, never a later preference.
+    // Legacy direct callers may omit it; group/coordinator dispatch supplies it.
+    std::optional<Configuration> capturedConfiguration;
+    std::optional<std::uint64_t> capturedGeneration;
 };
 inline bool alreadyFixedGradient(std::span<const std::uint16_t> seeds) {
     const auto source=std::find_if(seeds.begin(),seeds.end(),[](auto value){return value>1;});
@@ -72,10 +77,18 @@ inline bool alreadyFixedGradient(std::span<const std::uint16_t> seeds) {
 inline bool (*accelerator)(const BackendRequest &, Plan) = nullptr;
 // Explicit scheduler batches own all contexts until this synchronous call ends.
 inline bool (*batchAccelerator)(std::span<const BackendRequest>, Plan) = nullptr;
+struct AcceleratorImplementation {
+    bool (*initialize)()=nullptr;
+    bool (*execute)(std::span<const BackendRequest>,Plan)=nullptr;
+};
+inline std::array<AcceleratorImplementation,unsigned(Backend::Count)> acceleratorImplementations{};
+inline bool (*reserveVerificationBytes)(std::size_t)=nullptr;
+inline void (*releaseVerificationBytes)(std::size_t)=nullptr;
+inline void (*validateAcceleratedResult)(const BackendRequest&,std::span<const std::uint16_t>)=nullptr;
 inline bool canBatch(const BackendSession &session)
 {
     const auto choice = backend();
-    return batchAccelerator && choice != Backend::CPU && !session.failed.load(std::memory_order_relaxed);
+    return isGPU(choice) && (choice==Backend::OpenCL ? bool(batchAccelerator) : bool(acceleratorImplementations[unsigned(choice)].execute)) && !session.failed.load(std::memory_order_relaxed);
 }
 
 // The shared layer selects once. Backends execute exactly that plan or decline
@@ -89,8 +102,16 @@ inline void executeGradientGroup(std::span<const BackendRequest> requests, Backe
     if (requests.size() > BATCH_CATEGORIES)
         throw std::invalid_argument("Gradient group exceeds eight requests");
     const auto& first=requests.front();
+    const bool batchRecovery = first.cpuBatch &&
+        std::all_of(requests.begin(),requests.end(),[&](const auto& request) {
+            return request.cpuBatch == first.cpuBatch;
+        });
     for (const auto& request : requests) {
         validateFamily(request.family);
+        // Validate borrowed input and recovery callbacks before even the
+        // trivial-field scan. Every admitted group must have a safe CPU path.
+        if (!request.gradient || !request.costAt || (!request.cpu && !batchRecovery))
+            throw std::invalid_argument("Gradient group requires seeds, costs and CPU recovery");
         if (request.family != first.family || &request.session != &first.session ||
             request.operation != first.operation)
             throw std::invalid_argument("Gradient group requires one family, session and operation");
@@ -108,13 +129,46 @@ inline void executeGradientGroup(std::span<const BackendRequest> requests, Backe
         return alreadyFixedGradient(std::span(request.gradient,request.grid.cells()));
     })) return;
     const auto chosen=eligible ? first.session.choose(first.family,requests.size(),mode) : PlanDecision{};
+    // CPU recovery belongs to this captured invocation, including when the
+    // caller selected a variant different from the process preference.
+    CPUSelectionScope cpuSelection(eligible ? chosen.configuration.backend : mode);
     bool handled=false;
+    struct VerificationLease {std::size_t bytes=0;~VerificationLease(){if(bytes && releaseVerificationBytes)releaseVerificationBytes(bytes);}} verification;
+    std::vector<std::vector<std::uint16_t>> originals;
+    if(chosen.plan!=Plan::CPU && chosen.configuration.verify && validateAcceleratedResult){
+        std::size_t bytes=0;
+        for(const auto& request:requests)bytes+=request.grid.cells()*sizeof(std::uint16_t);
+        if(!reserveVerificationBytes || !releaseVerificationBytes || !reserveVerificationBytes(bytes))
+            throw std::runtime_error("Gradient verification host budget exceeded");
+        verification.bytes=bytes;
+        for(const auto& request:requests)
+            originals.emplace_back(request.gradient,request.gradient+request.grid.cells());
+    }
     if(chosen.plan!=Plan::CPU) {
-        if(requests.size()==1 && accelerator) handled=accelerator(first,chosen.plan);
-        else if(batchAccelerator) handled=batchAccelerator(requests,chosen.plan);
+        // Adapter diagnostics and proof evidence must carry the same admission
+        // identity as dispatch, even for legacy synchronous callers.
+        std::vector<BackendRequest> capturedRequests(requests.begin(),requests.end());
+        for(auto& request:capturedRequests){
+            request.capturedConfiguration=chosen.configuration;
+            request.capturedGeneration=chosen.generation;
+        }
+        const auto capturedMode=chosen.configuration.backend;
+        const auto implementation=acceleratorImplementations[unsigned(capturedMode)].execute;
+        if(capturedMode!=Backend::OpenCL && implementation)
+            handled=implementation(capturedRequests,chosen.plan);
+        else if(capturedRequests.size()==1 && accelerator)
+            handled=accelerator(capturedRequests.front(),chosen.plan);
+        else if(batchAccelerator)
+            handled=batchAccelerator(capturedRequests,chosen.plan);
+    }
+    if(handled && !originals.empty())for(std::size_t i=0;i<requests.size();++i){
+        auto capturedRequest=requests[i];
+        capturedRequest.capturedConfiguration=chosen.configuration;
+        capturedRequest.capturedGeneration=chosen.generation;
+        validateAcceleratedResult(capturedRequest,originals[i]);
     }
     if(!handled) {
-        if(first.cpuBatch && std::all_of(requests.begin(),requests.end(),[&](const auto& r){return r.cpuBatch==first.cpuBatch;})) {
+        if(batchRecovery) {
             std::array<const BackendRequest*,8> pointers{};
             std::array<std::uint16_t*,8> outputs{};
             for(std::size_t i=0;i<requests.size();++i) { pointers[i]=&requests[i]; outputs[i]=requests[i].gradient; }

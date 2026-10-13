@@ -601,7 +601,7 @@ def main():
         from tools.package_assets import source_files
         bundle_assets = [str(p) for p in source_files(Path.cwd(), 'macos')]
         env.Depends(application, bundle_assets + ['tools/package_assets.py', 'tools/asset-requirements.txt',
-            'scons/bundle.py', 'scons/addDependentLibsToBundle.py', Value(bundle_assets)])
+            'scons/bundle.py', 'scons/addDependentLibsToBundle.py', 'scons/moltenvk.py', 'scons/moltenvk.json', Value(bundle_assets)])
         env.Alias("bundle", application)
         if "package" in COMMAND_LINE_TARGETS:
             image = env.Dmg("Glob2-%s.dmg" % env["VERSION"], application)

@@ -26,6 +26,7 @@ ENGINE_SUPPORT = [
 
 # glob2-engine-tests: every client object except the entry point, plus these.
 ENGINE_TESTS = [
+    ('#src/map/gradient/GradientBackendSwitchTest.cpp', dict(cxxflags=['-fno-access-control'])),
     ('#src/mcp/MCPTest.cpp', dict(cxxflags=['-fno-access-control'])),
     '#src/unit/types/UnitCatalogTest.cpp',
     ('#src/unit/UnitCustomizationTest.cpp', dict(cxxflags=['-fno-access-control'])),
@@ -261,6 +262,8 @@ UNIT_TESTS = [
     '#src/ai/shared_runtime/GradientBFSTest.cpp',
     '#src/field/FieldTraversalTest.cpp',
     '#src/field/OpenCLGradientTest.cpp',
+    '#src/field/RuntimeGradientBackendTest.cpp',
+    '#src/field/GradientPreparationContractTest.cpp',
     '#src/field/OpenCLBorrowedLifetimeTest.cpp',
     '#src/field/OpenCLRequiredLifetimePoolTest.cpp',
     '#src/field/OpenCLTransferProofTest.cpp',
@@ -373,6 +376,9 @@ UNIT_TESTS = [
 UNIT_PRODUCTION_SOURCES = [
     '#src/field/OpenCLGradient.cpp',
     '#src/field/GradientDeviceService.cpp',
+    '#src/field/GradientAccelerators.cpp',
+    '#src/field/VulkanGradient.cpp',
+    '#src/field/WebGPUGradient.cpp',
     '#src/app/cli/CommandLine.cpp',
     '#src/map/TerrainRegistry.cpp',
     '#src/map/CellRules.cpp',

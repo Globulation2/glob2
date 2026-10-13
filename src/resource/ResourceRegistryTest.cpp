@@ -261,6 +261,46 @@ TEST_SUITE("ResourceRegistry")
         CHECK(ResourceRegistry::deserialize(forward->serialize())->serialize() == forward->serialize());
     }
 
+    TEST_CASE("maximum resource catalog compiles every preparation trait and rejects overflow atomically")
+    {
+        Json definitions=Json::array();
+        auto entry=definition();
+        entry["yields"]=Json::object();
+        for(const auto key:MaterialKeys)
+            entry["yields"][std::string(key)]={{"capacity",1},{"initial",1},{"consumption","one"}};
+        for(unsigned index=0;index<ResourceRegistry::Capacity;++index)
+        {
+            // Fixed-width keys keep the import's stable alphabetical IDs equal
+            // to their independent fixture indexes, including the final 16383.
+            entry["key"]="test:capacity-"+std::to_string(100000+index);
+            auto& properties=entry["properties"];
+            properties["blocksGround"]=bool(index&1);
+            properties["visibleToHarvest"]=bool(index&2);
+            properties["clearable"]=bool(index&4);
+            properties["farmable"]=bool(index&8);
+            definitions.push_back(entry);
+        }
+        const auto registry=ResourceRegistry::fromJson(source(std::move(definitions)));
+        REQUIRE(registry->size()==ResourceRegistry::Capacity);
+        REQUIRE(registry->gradientPreparation().size()==ResourceRegistry::Capacity);
+        for(unsigned index=0;index<ResourceRegistry::Capacity;++index)
+        {
+            const auto id=static_cast<ResourceId>(index);
+            const std::uint32_t expected=AllMaterials | ((index&15u)<<16);
+            CHECK(registry->gradientPreparation()[index]==expected);
+            CHECK(registry->properties(id).materialMask==AllMaterials);
+        }
+        const auto last=static_cast<ResourceId>(ResourceRegistry::Capacity-1);
+        CHECK(registry->find("test:capacity-116383")==last);
+        CHECK(registry->gradientPreparation().back()==(std::uint32_t(AllMaterials)|0xf0000u));
+        CHECK_FALSE(registry->valid(ResourceRegistry::Capacity));
+        // Reject a new identity without altering the already published snapshot.
+        CHECK_THROWS(registry->importJson(source(Json::array({definition("test:overflow")}))));
+        CHECK(registry->size()==ResourceRegistry::Capacity);
+        CHECK(registry->gradientPreparation().back()==(std::uint32_t(AllMaterials)|0xf0000u));
+        CHECK_FALSE(registry->find("test:overflow").has_value());
+    }
+
     TEST_CASE("malformed definitions fail without publishing partial imports")
     {
         const auto original = stock();

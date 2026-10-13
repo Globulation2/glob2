@@ -432,6 +432,39 @@ void executeCommand(const RasterCommand &command, WritablePixelView target, SDL_
     if (src.w <= 0 || src.h <= 0)
         return;
     const bool nativeWidth = src.w == dst.w, nativeHeight = src.h == dst.h;
+    const bool copy = command.opaque && command.opacity == 255;
+    // Recorded sources have separate storage. Immediate owner views may alias:
+    // retain their forward pixel traversal instead of passing overlap to memcpy.
+    // This range proof covers forward rows only; signed-pitch views stay scalar.
+    const auto sourceFirst = reinterpret_cast<std::uintptr_t>(source.pixels);
+    const auto targetFirst = reinterpret_cast<std::uintptr_t>(target.pixels);
+    const auto sourceBytes = std::size_t(source.pitch) * source.height;
+    const auto targetBytes = std::size_t(target.pitch) * target.height;
+    const bool disjoint = source.pitch > 0 && target.pitch > 0 &&
+        (sourceFirst <= targetFirst ? targetFirst - sourceFirst >= sourceBytes
+                                   : sourceFirst - targetFirst >= targetBytes);
+    if (copy && nativeWidth && disjoint)
+    {
+        const auto copyLeft = std::max(left, std::int64_t(dst.x) - src.x);
+        const auto copyRight =
+            std::min(right, std::int64_t(dst.x) + source.width - src.x);
+        if (copyRight <= copyLeft)
+            return;
+        for (int y = int(top); y < bottom; ++y)
+        {
+            const auto sy = std::int64_t(src.y) +
+                (nativeHeight ? std::int64_t(y) - dst.y
+                              : ((std::int64_t(y) - dst.y) * 2 + 1) * src.h /
+                                    (std::int64_t(dst.h) * 2));
+            if (sy < 0 || sy >= source.height)
+                continue;
+            const auto sx = std::int64_t(src.x) + copyLeft - dst.x;
+            std::memcpy(target.pixels + y * target.pitch + copyLeft * 4,
+                        source.pixels + sy * source.pitch + sx * 4,
+                        std::size_t(copyRight - copyLeft) * 4);
+        }
+        return;
+    }
     // Tile jobs use bounded stack scratch; the owner full-region path can
     // allocate a wider lookup. Reuse each sampled column across all rows.
     std::array<std::int64_t, 128> localColumns;
@@ -449,7 +482,6 @@ void executeCommand(const RasterCommand &command, WritablePixelView target, SDL_
                                                           (std::int64_t(dst.w) * 2);
     }
 
-    const bool copy = command.opaque && command.opacity == 255;
     const bool rleBlend =
         command.opacity == 255 && nativeWidth && nativeHeight && alphaMask == 0xff000000;
     for (int y = int(top); y < bottom; ++y)

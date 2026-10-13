@@ -56,19 +56,54 @@ class SoftwareRenderBackend final : public RenderBackend
         return metadataAdmitted;
     }
     std::vector<SurfaceRaster::RasterCommand> commands;
-    std::vector<std::vector<Uint32>> snapshots;
+    std::vector<std::unique_ptr<Uint32[]>> snapshots;
     std::size_t sourceBytes = 0;
     bool failedRaster = false;
+    struct Tile
+    {
+        SDL_Rect region;
+        std::size_t begin = 0, end = 0;
+    };
+    // Owner-only workspaces retain bounded capacity between synchronous batches.
+    std::vector<Tile> tiles;
+    std::vector<std::size_t> references;
+
+    SDL_Rect visibleBounds(SDL_Rect destination, SDL_Rect clip) const
+    {
+        SDL_Rect bounds{}, visible{};
+        const SDL_Rect full{0, 0, target->w, target->h};
+        if (SDL_GetRectIntersection(&destination, &clip, &bounds))
+            SDL_GetRectIntersection(&bounds, &full, &visible);
+        return visible;
+    }
+    void clearSegment() noexcept
+    {
+        // Commands borrow snapshot pixels; clear them before releasing inputs.
+        commands.clear();
+        snapshots.clear();
+        sourceBytes = 0;
+        sourceReservation.release();
+        tiles.clear();
+        references.clear();
+    }
 
     bool recordFill(SDL_Rect dst, SDL_Color color)
     {
-        if (execution == RenderExecution::Auto || !admitMetadata())
+        if (execution == RenderExecution::Immediate)
+            return false;
+        if (color.a == 0)
+            return true;
+        const auto clip = outputClip();
+        const auto visible = visibleBounds(dst, clip);
+        if (SDL_RectEmpty(&visible))
+            return true;
+        if (!admitMetadata())
             return false;
         if (commands.size() == MaximumCommands)
             flush();
         SurfaceRaster::RasterCommand command;
         command.destination = dst;
-        command.clip = outputClip();
+        command.clip = clip;
         command.opacity = color.a;
         command.color = SDL_MapSurfaceRGBA(target, color.r, color.g, color.b, 255);
         commands.push_back(command);
@@ -76,8 +111,16 @@ class SoftwareRenderBackend final : public RenderBackend
     }
     bool recordBlit(SDL_Surface *source, SDL_Rect src, SDL_Rect dst, Uint8 alpha, bool opaque)
     {
-        if (execution == RenderExecution::Auto || source->format != target->format ||
-            source->format != SDL_PIXELFORMAT_ARGB8888 || !admitMetadata())
+        if (execution == RenderExecution::Immediate || source->format != target->format ||
+            source->format != SDL_PIXELFORMAT_ARGB8888)
+            return false;
+        if (alpha == 0)
+            return true;
+        const auto clip = outputClip();
+        const auto visible = visibleBounds(dst, clip);
+        if (SDL_RectEmpty(&visible))
+            return true;
+        if (!admitMetadata())
             return false;
         Uint32 key;
         if (SDL_GetSurfaceColorKey(source, &key))
@@ -106,22 +149,23 @@ class SoftwareRenderBackend final : public RenderBackend
             if (!captureReservation.reserve(bytes)) return false;
         }
         PERF_SCOPE_TIME(RasterSnapshot);
-        std::vector<Uint32> pixels(std::size_t(retained.w) * retained.h);
+        // Every sample is replaced below; avoid a redundant zero-fill pass.
+        auto pixels = std::make_unique_for_overwrite<Uint32[]>(std::size_t(retained.w) * retained.h);
         if (!SDL_LockSurface(source))
             throw std::runtime_error(SDL_GetError());
         for (int y = 0; y < retained.h; ++y)
-            std::memcpy(pixels.data() + y * retained.w,
+            std::memcpy(pixels.get() + y * retained.w,
                         static_cast<const Uint8 *>(source->pixels) +
                             (retained.y + y) * source->pitch + retained.x * 4,
                         retained.w * 4);
         SDL_UnlockSurface(source);
         SurfaceRaster::RasterCommand command;
         command.kind = SurfaceRaster::RasterCommand::Kind::Blit;
-        command.source = {reinterpret_cast<const Uint8 *>(pixels.data()), retained.w, retained.h,
+        command.source = {reinterpret_cast<const Uint8 *>(pixels.get()), retained.w, retained.h,
                           retained.w * 4, *SDL_GetPixelFormatDetails(source->format)};
         command.sourceRect = {src.x - retained.x, src.y - retained.y, src.w, src.h};
         command.destination = dst;
-        command.clip = outputClip();
+        command.clip = clip;
         command.opacity = alpha;
         command.opaque = opaque;
         counts.rasterSnapshotBytes += bytes;
@@ -151,14 +195,8 @@ class SoftwareRenderBackend final : public RenderBackend
             return;
         ++counts.rasterBatches;
         drainGeometry();
-        const SDL_Rect full{0, 0, target->w, target->h};
-        struct Tile
-        {
-            SDL_Rect region;
-            std::size_t begin = 0, end = 0;
-        };
-        std::vector<Tile> tiles;
-        std::vector<std::size_t> references;
+        tiles.clear();
+        references.clear();
         bool tiled = execution == RenderExecution::Parallel && PresentationWork::current;
         {
             PERF_SCOPE_TIME(RasterBinning);
@@ -176,9 +214,8 @@ class SoftwareRenderBackend final : public RenderBackend
                                        std::min(edge, target->h - int(i / columns) * edge)};
                 const auto visit = [&](const auto &command, const auto &append)
                 {
-                    SDL_Rect bounds, visible;
-                    if (!SDL_GetRectIntersection(&command.destination, &command.clip, &bounds) ||
-                        !SDL_GetRectIntersection(&bounds, &full, &visible))
+                    const auto visible = visibleBounds(command.destination, command.clip);
+                    if (SDL_RectEmpty(&visible))
                         return;
                     for (int y = visible.y / edge; y <= (visible.y + visible.h - 1) / edge; ++y)
                         for (int x = visible.x / edge; x <= (visible.x + visible.w - 1) / edge; ++x)
@@ -215,7 +252,7 @@ class SoftwareRenderBackend final : public RenderBackend
         counts.rasterPeakRetainedBytes = std::max(
             counts.rasterPeakRetainedBytes,
             std::uint64_t(sourceBytes + commands.capacity() * sizeof(SurfaceRaster::RasterCommand) +
-                          snapshots.capacity() * sizeof(std::vector<Uint32>) +
+                          snapshots.capacity() * sizeof(decltype(snapshots)::value_type) +
                           tiles.capacity() * sizeof(Tile) +
                           references.capacity() * sizeof(std::size_t) +
                           2*128*sizeof(std::int64_t)));
@@ -248,28 +285,27 @@ class SoftwareRenderBackend final : public RenderBackend
                 // narrow regions while retaining painter order. This bounds
                 // sampling scratch even on unusually wide offscreen targets.
                 for (const auto &command : commands)
-                    for (int x = 0; x < full.w;)
+                {
+                    const auto visible = visibleBounds(command.destination, command.clip);
+                    const int right = visible.x + visible.w;
+                    for (int x = visible.x; x < right;)
                     {
-                        const int width = std::min(128, full.w - x);
-                        SurfaceRaster::executeCommand(command, output, {x, 0, width, full.h});
+                        const int width = std::min(128, right - x);
+                        SurfaceRaster::executeCommand(
+                            command, output, {x, visible.y, width, visible.h});
                         x += width;
                     }
+                }
             }
         }
         catch (...)
         {
             // A partial working target must never reach capture or presentation.
             failedRaster = true;
-            commands.clear();
-            snapshots.clear();
-            sourceBytes = 0;
-            sourceReservation.release();
+            clearSegment();
             throw;
         }
-        commands.clear();
-        snapshots.clear();
-        sourceBytes = 0;
-        sourceReservation.release();
+        clearSegment();
     }
 
 	SDL_Rect nativeClip(SDL_Rect rect) const
@@ -397,7 +433,7 @@ class SoftwareRenderBackend final : public RenderBackend
 			fallback().blit(key, source, revision, opaque, sourceRect, destination, alpha);
 			return;
 		}
-        if (execution != RenderExecution::Auto)
+        if (execution != RenderExecution::Immediate)
         {
             PERF_SCOPE_TIME(RasterCapture);
             if (recordBlit(source, sourceRect, mapped, alpha, opaque))
@@ -412,7 +448,7 @@ class SoftwareRenderBackend final : public RenderBackend
     bool fillPixels(const SDL_Rect &rect, SDL_Color color) override
     {
         ++counts.fills;
-        if (execution != RenderExecution::Auto)
+        if (execution != RenderExecution::Immediate)
         {
             PERF_SCOPE_TIME(RasterCapture);
             if (recordFill(rect, color))
@@ -427,7 +463,7 @@ class SoftwareRenderBackend final : public RenderBackend
     bool blitPixels(SDL_Surface *source, const SDL_Rect &src, const SDL_Rect &dst, Uint8 alpha) override
     {
         ++counts.blits;
-        if (execution != RenderExecution::Auto)
+        if (execution != RenderExecution::Immediate)
         {
             PERF_SCOPE_TIME(RasterCapture);
             if (recordBlit(source, src, dst, alpha, false))
@@ -453,7 +489,7 @@ class SoftwareRenderBackend final : public RenderBackend
 			fallback().fill(rect, color);
 			return;
 		}
-        if (execution != RenderExecution::Auto)
+        if (execution != RenderExecution::Immediate)
         {
             PERF_SCOPE_TIME(RasterCapture);
             if (recordFill(pixels(rect), color))
@@ -495,10 +531,7 @@ class SoftwareRenderBackend final : public RenderBackend
 	}
     void discardFrame() noexcept override
     {
-        commands.clear();
-        snapshots.clear();
-        sourceBytes = 0;
-        sourceReservation.release();
+        clearSegment();
         geometry.reset();
         failedRaster = false;
 	}

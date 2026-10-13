@@ -851,6 +851,20 @@ void Engine::teardownSession()
     // close. Logical deadlines and queued commands remain game-owned.
     gui.game.drainAI();
 	gui.waitForAutosave();
+    if (std::getenv("GLOB2_TEAM_TIMELINE")) {
+        // Summary snapshots use existing synchronization; trace export requires
+        // a drained lifecycle boundary and never reads a running stream.
+        auto& executor = gui.game.map.computeExecutor();
+        if (executor.telemetryMode() == ComputeTelemetryMode::Trace) {
+            gui.game.map.finishGradientPipeline({JoinReason::Teardown, ComputeTelemetry::NoTick});
+            gui.game.map.finishResourceGrowth({JoinReason::Teardown, ComputeTelemetry::NoTick});
+            executor.cancelPresentationAndWait();
+            executor.joinAll({JoinReason::Teardown, ComputeTelemetry::NoTick});
+        }
+        std::cout << "GLOB2_COMPUTE_SUMMARY ";
+        ComputeTelemetry::writeJson(std::cout, executor.telemetrySnapshot(executor.telemetryMode() == ComputeTelemetryMode::Trace));
+        std::cout << std::endl;
+    }
 
 	if (checksumSidecar)
 	{
@@ -953,7 +967,11 @@ void Engine::reloadTurnInitialState()
 			checksumSidecar.reset();
 	}
 	if (!globalContainer->structuredHeadless || turn)
-		gui.game.map.configureCompute(resolveComputeThreadCount(globalContainer->computeThreads));
+		{
+            gui.game.map.configureCompute(resolveComputeThreadCount(globalContainer->computeThreads));
+            if (gui.game.map.computeExecutor().telemetryMode() != globalContainer->computeTelemetry)
+                gui.game.map.computeExecutor().configureTelemetry(globalContainer->computeTelemetry);
+        }
 	teamEliminatedTick.clear();
 	if (session)
 		session->wasReadyLastTick = true;
@@ -989,7 +1007,11 @@ void Engine::beginSession(Uint64 now)
     if (!net) throw std::logic_error("Engine session requires an initialized game");
     globalContainer->configureGradientBackend();
 	if (!globalContainer->structuredHeadless || turn)
-		gui.game.map.configureCompute(resolveComputeThreadCount(globalContainer->computeThreads));
+		{
+            gui.game.map.configureCompute(resolveComputeThreadCount(globalContainer->computeThreads));
+            if (gui.game.map.computeExecutor().telemetryMode() != globalContainer->computeTelemetry)
+                gui.game.map.computeExecutor().configureTelemetry(globalContainer->computeTelemetry);
+        }
     sessionEndingTarget = globalContainer->automaticEndingSteps;
     MainLoopState st{};
     st.adjustableGameSpeed = gui.canChangeGameSpeed();
