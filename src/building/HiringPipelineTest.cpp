@@ -64,8 +64,12 @@ TEST_SUITE("HiringPipeline")
 		for (unsigned participants : {1u, 2u, 4u, 8u})
 		{
 			CAPTURE(participants);
-			glob2test::HeadlessGame w(
-				{.teams = 8, .discovered = true, .loadDefaultRace = true, .header = true});
+			glob2test::HeadlessGame w({.wDec = 6,
+									   .hDec = 6,
+									   .teams = 8,
+									   .discovered = true,
+									   .loadDefaultRace = true,
+									   .header = true});
 			w.game.map.configureCompute(participants);
 			innWithWorker(w);
 			for (unsigned team = 1; team < 8; ++team)
@@ -350,14 +354,23 @@ TEST_SUITE("HiringPipeline")
 		w.game.buildingsTypes.loadSnapshotJson(catalog.dump());
 		w.game.configureBuildingCatalog();
 		auto *b = innWithWorker(w);
+		b->maxUnitWorking = 2;
+		b->updateCallLists();
+		auto *extra = w.addUnit(WORKER, 6, 9);
+		extra->activity = Unit::ACT_RANDOM;
+		extra->medical = Unit::MED_FREE;
+		extra->hungriness = 0;
+		extra->carriedMaterial = WHEAT;
 		b->hiringRecruitmentDeadline = 8;
 		glob2test::publishCurrentHiringSuggestions(w.game);
-		CHECK_FALSE(b->subscribeWorkStep());
-		CHECK(b->unitsWorking.empty());
+		CHECK(b->subscribeWorkStep()); // One fair delivery seat.
+		CHECK(b->unitsWorking.size() == 1);
+		CHECK_FALSE(b->subscribeWorkStep()); // Attraction seat remains owed.
+		CHECK(b->unitsWorking.size() == 1);
 		w.game.stepCounter = 9;
 		CHECK(b->subscribeWorkStep());
 		CHECK(b->hiringRecruitmentDeadline == 0);
-		CHECK(b->unitsWorking.size() == 1);
+		CHECK(b->unitsWorking.size() == 2);
 	}
 	TEST_CASE("imminent attraction peers receive alternatives without inactive peers claiming them")
 	{
