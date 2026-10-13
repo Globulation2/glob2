@@ -1,0 +1,43 @@
+{
+  "name": "Independent stratified cached-hiring gameplay cohort",
+  "source": "c2fa28a103ed0726c57b25770313bc47df3afbb9",
+  "runtime_source": "e3e56387f6008dccc6bb4dd1fc165178d40ead1a",
+  "arms": ["original", "cached-material"],
+  "design": "Independent accepted map/game seeds per arm. Randomize policy in balanced blocks within generator×player-mix strata after generating map inputs. Primary analysis does not pair divergent match trajectories.",
+  "generators": ["river", "islands", "swamp"],
+  "width": 128,
+  "height": 128,
+  "players": 8,
+  "mixes": {
+    "nicowar": ["nicowar", "nicowar", "nicowar", "nicowar", "nicowar", "nicowar", "nicowar", "nicowar"],
+    "nico-numbi": ["nicowar", "nicowar", "nicowar", "nicowar", "numbi", "numbi", "numbi", "numbi"],
+    "nico-castor": ["nicowar", "nicowar", "nicowar", "nicowar", "castor", "castor", "castor", "castor"],
+    "four-ai": ["nicowar", "nicowar", "numbi", "numbi", "castor", "castor", "maxima", "maxima"]
+  },
+  "ai_seats": "Randomly shuffle each composition across team seats using input randomization independent of policy assignment.",
+  "games_per_arm_per_stratum": 50,
+  "total_games": 1200,
+  "seed_generator": 261013731,
+  "policy_assignment_seed": 261013991,
+  "tick_horizon": 32768,
+  "compute_participants_per_game": 4,
+  "concurrent_games": 4,
+  "cached_policy": {"K":4,"R":4,"L_ceiling":128,"extras":2,"availability":"available","diversity":"rounds","pools":"combined"},
+  "scope": "Standalone live material consumer. Original attraction/flying-carrier searches, hiring rounds/quotas/clocks/admission/subscriptions/swaps remain. No synthetic vacancies, stock/food changes or gameplay RNG use by diagnostics. No production integration.",
+  "primary_metrics": [
+    {"name":"starvation_rate","numerator":"starvation deaths","denominator":"live unit sync-step exposures"},
+    {"name":"critical_hunger_fraction","numerator":"hungry/HP-damaged/not-already-fed unit sync-step exposures","denominator":"live unit sync-step exposures"},
+    {"name":"construction_rate","numerator":"new building completions","denominator":"worker sync-step exposures"}
+  ],
+  "secondary_metrics": ["raw starvation and combat deaths", "new constructions/upgrades", "deliveries and harvested material per worker exposure", "births/population trajectories", "worker food-seeking/feeding time", "colony survival", "winner AI composition and unresolved matches", "match duration", "technical failures"],
+  "analysis": {
+    "unit": "Match; teams and unit-ticks are clustered within each match, not independent observations.",
+    "rates": "Aggregate event/exposure ratios, both overall balanced cohort and stratified generator/mix summaries. Preserve each match numerator and denominator jointly.",
+    "confidence_intervals": "95% stratified match-level bootstrap, resampling independently within each arm×stratum; 10000 draws.",
+    "tests": "Two-sided policy-label randomization within each generator×mix stratum; 10000 permutations; Holm adjustment for the three primary endpoints.",
+    "stopping": "Fixed1200 games, no outcome-dependent early stopping. Interim inspection only for execution/telemetry validity. No repeated significant-result stopping.",
+    "interpretation": "Report effect sizes and uncertainty, not only p-values. A nonsignificant difference does not establish equivalence or pass the five-percent gameplay gate. This chosen generator/mix population does not represent all gameplay. Concurrent run timings are advisory, not a quiet-host performance benchmark."
+  },
+  "failures": "Retain all attempted games, stdout/stderr and statuses. Do not silently replace crashed/timed-out gameplay runs. Analyze technical-failure rates separately; gameplay estimates state missingness and are not accepted if policy failures cause differential missing outcomes. Map-generation failures retained before policy assignment; deterministic replacement seeds used until each stratum has100valid inputs.",
+  "evidence": "Retain protocol/manifest hashes before results, binary/build/dependency provenance, input maps/reports, commands, per-match JSON and512tick cumulative telemetry, compact validation traces, all failures, analysis scripts and results. Preserve historical PR evidence."
+}
