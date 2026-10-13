@@ -1,0 +1,128 @@
+{
+  "inactive-64": {
+    "baseline": {
+      "cpu_s": 0.762014,
+      "wall_s": 0.7685795839934144,
+      "peak_rss_bytes": 56000512,
+      "simulation_cpu_s": 0.503575,
+      "tick_p95_ns": 83833
+    },
+    "candidate": {
+      "cpu_s": 0.785182,
+      "wall_s": 0.7892917079880135,
+      "peak_rss_bytes": 55803904,
+      "simulation_cpu_s": 0.532561,
+      "tick_p95_ns": 88583
+    },
+    "cpu_s_change_percent": 3.04036408779893,
+    "wall_s_change_percent": 2.694857426082309,
+    "peak_rss_bytes_change_percent": -0.3510825043885335,
+    "simulation_cpu_s_change_percent": 5.756044283373862,
+    "tick_p95_ns_change_percent": 5.666026505075572
+  },
+  "numbi-64": {
+    "baseline": {
+      "cpu_s": 0.482772,
+      "wall_s": 0.48543050000444055,
+      "peak_rss_bytes": 59375616,
+      "simulation_cpu_s": 0.230439,
+      "tick_p95_ns": 42833
+    },
+    "candidate": {
+      "cpu_s": 0.468746,
+      "wall_s": 0.47252033300173935,
+      "peak_rss_bytes": 58114048,
+      "simulation_cpu_s": 0.221234,
+      "tick_p95_ns": 41167
+    },
+    "cpu_s_change_percent": -2.9053051958274234,
+    "wall_s_change_percent": -2.6595294285346904,
+    "peak_rss_bytes_change_percent": -2.124724061810157,
+    "simulation_cpu_s_change_percent": -3.9945495337160852,
+    "tick_p95_ns_change_percent": -3.889524432096747
+  },
+  "castor-64": {
+    "baseline": {
+      "cpu_s": 0.552651,
+      "wall_s": 0.5586922920047073,
+      "peak_rss_bytes": 61423616,
+      "simulation_cpu_s": 0.290926,
+      "tick_p95_ns": 58250
+    },
+    "candidate": {
+      "cpu_s": 0.5337289999999999,
+      "wall_s": 0.5387577499932377,
+      "peak_rss_bytes": 60375040,
+      "simulation_cpu_s": 0.276525,
+      "tick_p95_ns": 55125
+    },
+    "cpu_s_change_percent": -3.423860628136044,
+    "wall_s_change_percent": -3.5680717806111484,
+    "peak_rss_bytes_change_percent": -1.707121899173114,
+    "simulation_cpu_s_change_percent": -4.9500560279933765,
+    "tick_p95_ns_change_percent": -5.364806866952787
+  },
+  "warrush-64": {
+    "baseline": {
+      "cpu_s": 0.6811019999999999,
+      "wall_s": 0.695880750005017,
+      "peak_rss_bytes": 61489152,
+      "simulation_cpu_s": 0.41863,
+      "tick_p95_ns": 122750
+    },
+    "candidate": {
+      "cpu_s": 0.6813509999999999,
+      "wall_s": 0.6896997080039,
+      "peak_rss_bytes": 60342272,
+      "simulation_cpu_s": 0.408781,
+      "tick_p95_ns": 120375
+    },
+    "cpu_s_change_percent": 0.036558400944364244,
+    "wall_s_change_percent": -0.888232933742239,
+    "peak_rss_bytes_change_percent": -1.8651745270450326,
+    "simulation_cpu_s_change_percent": -2.352674199173499,
+    "tick_p95_ns_change_percent": -1.93482688391039
+  },
+  "mixed-128": {
+    "baseline": {
+      "cpu_s": 1.388767,
+      "wall_s": 1.4006582079891814,
+      "peak_rss_bytes": 76906496,
+      "simulation_cpu_s": 1.112608,
+      "tick_p95_ns": 360916
+    },
+    "candidate": {
+      "cpu_s": 1.349785,
+      "wall_s": 1.35751179199724,
+      "peak_rss_bytes": 75644928,
+      "simulation_cpu_s": 1.071897,
+      "tick_p95_ns": 352125
+    },
+    "cpu_s_change_percent": -2.8069503379616667,
+    "wall_s_change_percent": -3.0804385927872824,
+    "peak_rss_bytes_change_percent": -1.6403919897741814,
+    "simulation_cpu_s_change_percent": -3.6590605136759713,
+    "tick_p95_ns_change_percent": -2.435746821975193
+  },
+  "large-colony": {
+    "baseline": {
+      "cpu_s": 2.342723,
+      "wall_s": 2.3559217080037342,
+      "peak_rss_bytes": 67715072,
+      "simulation_cpu_s": 2.002425,
+      "tick_p95_ns": 6889875
+    },
+    "candidate": {
+      "cpu_s": 2.511038,
+      "wall_s": 2.664837999996962,
+      "peak_rss_bytes": 71843840,
+      "simulation_cpu_s": 2.163278,
+      "tick_p95_ns": 7308041
+    },
+    "cpu_s_change_percent": 7.184588190750696,
+    "wall_s_change_percent": 13.112332678278381,
+    "peak_rss_bytes_change_percent": 6.097265908541005,
+    "simulation_cpu_s_change_percent": 8.032910096507972,
+    "tick_p95_ns_change_percent": 6.069282824434397
+  }
+}

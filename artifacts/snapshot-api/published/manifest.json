@@ -1,0 +1,26 @@
+{
+  "head": "f9a9f765f3ea33d741db5cf399d16131be4b7132",
+  "base": "277510840054b1416f2defd7d86fe1431dd0ddc0",
+  "archives": [
+    {
+      "file": "snapshot-api-tests.tar.gz",
+      "bytes": 59971576,
+      "sha256": "d4497ada651708598c914e808dbf7cf01719a6fa91435c57335a30ff5630003f"
+    },
+    {
+      "file": "snapshot-api-simulation.tar.gz",
+      "bytes": 15169126,
+      "sha256": "c8643d307f6d4d8c481284db46f8f4494ee88b89ed2587c1d316759dc2aff5f7"
+    },
+    {
+      "file": "snapshot-api-capture.tar.gz",
+      "bytes": 50246240,
+      "sha256": "7f660caf1f817439e0e9dae5ea3bf2d0da07512ba6daedc88cb96b14e2e3b347"
+    },
+    {
+      "file": "snapshot-api-timings.tar.gz",
+      "bytes": 359716,
+      "sha256": "0ae246f21dab9a2fa85f8f91f787a77ee86edaae6b2f645fc04458dc412c7647"
+    }
+  ]
+}

@@ -1,0 +1,48 @@
+{
+  "head": "f9a9f765f3ea33d741db5cf399d16131be4b7132",
+  "base": "277510840054b1416f2defd7d86fe1431dd0ddc0",
+  "source_tree": "9f329978e614ef6406d8c1bf265ffd787b394e17",
+  "platform": "macOS-26.6.2-arm64-arm-64bit-Mach-O",
+  "compiler": "Apple clang version 21.0.0 (clang-2100.3.34.2)\nTarget: arm64-apple-darwin25.6.0\nThread model: posix\nInstalledDir: /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin\n",
+  "cpu": "Apple M3",
+  "build_command": "PYTHONPATH=$PWD python3 tools/dev_build.py dev_fast=0 release=1 -j5 engine-tests build/darwin/client/release/dev-linker-auto/src/glob2",
+  "baseline": {
+    "source": "277510840054b1416f2defd7d86fe1431dd0ddc0",
+    "binary_sha256": "a7f6a765ce4fc03ca6b3b2f7ccda53966b1e7c461e16c8a9c1cb086fa8ba102f",
+    "platform": "macOS-26.6.2-arm64-arm-64bit-Mach-O",
+    "compiler": "Apple clang version 21.0.0 (clang-2100.3.34.2)\nTarget: arm64-apple-darwin25.6.0\nThread model: posix\nInstalledDir: /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin\n",
+    "build_command": "PYTHONPATH=<worktree> python3 tools/dev_build.py dev_fast=0 release=1 -j4",
+    "build_identity": {
+      "client_features": {
+        "authoring_links": false,
+        "commander": false,
+        "community_ai": true,
+        "community_generators": true
+      },
+      "client_profile": "free",
+      "distribution": "direct",
+      "linker": "auto",
+      "mode": "release",
+      "native_wss": true,
+      "role": "client",
+      "target": "native",
+      "toolchain": "darwin"
+    }
+  },
+  "fixture_sha256": {
+    "fixtures/large.json": "a403097c2597c467290cefc8db9e732397e08daa90a429c667e873400ebc482c",
+    "fixtures/small.map.gz": "baa12cd5759d20d957003bd592769acc4350b7dba659de559ff29ea7a330e5d4",
+    "fixtures/large.map.gz": "44497e148f56cbb20b85a1945bf4b9a80f42f2f560c9e13618f58472a04925f5",
+    "fixtures/small.json": "13956548ea8bce9cd444d2c62c9c4e0972f9ed97ab7c8b991f7856c1fdee0bf9",
+    "fixtures/ordinary-control.game": "546090796c2904a1848e2e439f74b5bc49ab047ca9ad9469033526cba0d907b7",
+    "fixtures/large-colony.source.json": "320441c7e3e8f0ad450823ffde2f547dc6b11a2b9de8cb3d45a45f72c333190e",
+    "fixtures/ordinary-control.source.json": "c2894fdec7553c757e3021a5ed3c224645dedb6ea1e14f547fee8644d5cbfa6f",
+    "fixtures/large-colony.game": "9dd4a52c891da10f15e1238e49173e23cff78fb0c283653c75721e55c25ecf60"
+  },
+  "binary_sha256": {
+    "artifacts/snapshot-api/glob2-candidate": "7bd63d8613fec76b52f9ade2beda71f2aab1b1f3288e0d4a218652e1cd180aef",
+    "build/darwin/client/release/dev-linker-auto/test/glob2-engine-tests": "565d28a60f395c423c5cf0b436f72c85f0cdbd7731681560567dc12010847046"
+  },
+  "git_status": "",
+  "restored_test_binary_sha256": "ead13c77dc70add822259089525978815674e864dc22ee9507d4773282342258"
+}

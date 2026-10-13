@@ -1,0 +1,26 @@
+{
+  "revision": "f9a9f765f3ea33d741db5cf399d16131be4b7132",
+  "native_reports": {
+    "native-junit.xml": {
+      "tests": "297",
+      "failures": "3",
+      "errors": "0",
+      "skipped": "0"
+    },
+    "additional-native.xml": {
+      "tests": "12",
+      "failures": "0",
+      "errors": "0",
+      "skipped": "0"
+    }
+  },
+  "simulation_equivalence": "5 baseline/candidate scenarios passed: exact checksum sidecars, replays and final saves",
+  "parallel_equivalence": "PASS at 1/2/4/8/auto threads; exact checksums, replay bytes, final saves and continuation",
+  "capture_verification": "8 runs with GLOB2_SNAPSHOT_VERIFY=1; all checksum sidecars and replays identical to baseline",
+  "known_failures": {
+    "legacy_replay": "Version-152 fixture is below unchanged REPLAY_MINIMUM_VERSION_MINOR=154; rejection occurs before snapshot capture.",
+    "opencl": "Device failed to converge at entry=0 phase=0 for both legacy mask 63 and full Simulation 2047; CPU recovery matched expected fields. Temporary diagnostic patch retained, then removed.",
+    "metal": "MCP GPU capture test could not activate Metal because release shader output lacks Metal artifacts."
+  },
+  "platform_limits": "macOS arm64 only; Linux/Windows/mobile/browser builds, cross-platform checksums, Metal execution and manual gameplay not qualified. No hosted expensive CI requested."
+}

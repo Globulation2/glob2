@@ -1,0 +1,225 @@
+{
+  "origin/master": {
+    "files": 28,
+    "matching_lines": 65,
+    "matches": [
+      {
+        "path": "src/ai/AI.cpp",
+        "lines": [
+          154,
+          156,
+          158,
+          159,
+          160
+        ]
+      },
+      {
+        "path": "src/ai/AI.h",
+        "lines": [
+          100
+        ]
+      },
+      {
+        "path": "src/ai/AIImplementation.h",
+        "lines": [
+          88
+        ]
+      },
+      {
+        "path": "src/ai/castor/AICastor.h",
+        "lines": [
+          180
+        ]
+      },
+      {
+        "path": "src/ai/engine/AIPipeline.cpp",
+        "lines": [
+          66,
+          67,
+          98,
+          104,
+          115
+        ]
+      },
+      {
+        "path": "src/ai/javascript/AIJavaScript.h",
+        "lines": [
+          28,
+          29,
+          30
+        ]
+      },
+      {
+        "path": "src/ai/numbi/AINumbi.h",
+        "lines": [
+          45
+        ]
+      },
+      {
+        "path": "src/ai/simple/AICabino.h",
+        "lines": [
+          183
+        ]
+      },
+      {
+        "path": "src/ai/simple/AINull.h",
+        "lines": [
+          21
+        ]
+      },
+      {
+        "path": "src/ai/warrush/AIWarrush.h",
+        "lines": [
+          79
+        ]
+      },
+      {
+        "path": "src/engine/Engine.h",
+        "lines": [
+          380
+        ]
+      },
+      {
+        "path": "src/engine/EngineRun.cpp",
+        "lines": [
+          361,
+          363,
+          378,
+          381
+        ]
+      },
+      {
+        "path": "src/game/Game.h",
+        "lines": [
+          249
+        ]
+      },
+      {
+        "path": "src/game/GameAI.cpp",
+        "lines": [
+          8,
+          10,
+          12,
+          16,
+          26,
+          66,
+          67,
+          68,
+          69,
+          70
+        ]
+      },
+      {
+        "path": "src/game/diagnostics/GameDiagnostics.cpp",
+        "lines": [
+          255,
+          278,
+          279
+        ]
+      },
+      {
+        "path": "src/game/diagnostics/GameDiagnostics.h",
+        "lines": [
+          42
+        ]
+      },
+      {
+        "path": "src/map/Map.h",
+        "lines": [
+          117,
+          271,
+          280
+        ]
+      },
+      {
+        "path": "src/map/MapStep.cpp",
+        "lines": [
+          257,
+          261,
+          265,
+          281
+        ]
+      },
+      {
+        "path": "src/map/ResourceGrowth.cpp",
+        "lines": [
+          239,
+          305,
+          578,
+          580,
+          586
+        ]
+      },
+      {
+        "path": "src/map/ResourceGrowth.h",
+        "lines": [
+          84
+        ]
+      },
+      {
+        "path": "src/map/editor/MapEditIO.cpp",
+        "lines": [
+          260
+        ]
+      },
+      {
+        "path": "src/map/gradient/MapGradientScheduling.cpp",
+        "lines": [
+          308,
+          327
+        ]
+      },
+      {
+        "path": "src/map/gradient/SnapshotGradient.cpp",
+        "lines": [
+          140,
+          613
+        ]
+      },
+      {
+        "path": "src/map/gradient/SnapshotGradient.h",
+        "lines": [
+          38,
+          97
+        ]
+      },
+      {
+        "path": "src/render/scene/SceneExtract.cpp",
+        "lines": [
+          383
+        ]
+      },
+      {
+        "path": "src/render/scene/SceneExtract.h",
+        "lines": [
+          22
+        ]
+      },
+      {
+        "path": "src/render/scene/SceneMap.cpp",
+        "lines": [
+          105
+        ]
+      },
+      {
+        "path": "src/ui/MenuColony.cpp",
+        "lines": [
+          89,
+          125
+        ]
+      }
+    ]
+  },
+  "HEAD": {
+    "files": 0,
+    "matching_lines": 0,
+    "matches": []
+  },
+  "scope": "C++ production .h/.cpp outside engine/sim/snapshot; excludes Test, Harness and Benchmark paths.",
+  "query": "observationRequirements|pending(World|Gradient|Building)Requirements|SimulationSnapshot::Requirements|SimulationSnapshot::bit|.project(",
+  "excluded_geometry_project_calls": [
+    "src/map/generator/MapGeneratorToolkitChecks.h",
+    "src/map/generator/generators/SwitchbacksGenerator.cpp",
+    "src/map/generator/javascript/ToolkitBindings3.cpp"
+  ]
+}
