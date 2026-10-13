@@ -178,7 +178,7 @@ class TorusRenderBenchmark
         auto *gfx=globalContainer->gfx;
         if(gfx->backendSwitchStatus().active==GAGCore::RendererBackend::Software) {
             // This benchmark flushes drawing without presenting each software frame.
-            ContextAccess::backend(*gfx)->flush();
+            if(auto *backend=ContextAccess::backend(*gfx))backend->flush();
             std::unique_ptr<SDL_Surface,decltype(&SDL_DestroySurface)> pixels(SDL_ConvertSurface(gfx->getSDLSurface(),SDL_PIXELFORMAT_RGB24),SDL_DestroySurface);
             if(!pixels)throw std::runtime_error("Benchmark software capture failed");
             std::ofstream image(path,std::ios::binary);image<<"P6\n"<<pixels->w<<" "<<pixels->h<<"\n255\n";
