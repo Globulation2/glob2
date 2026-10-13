@@ -74,7 +74,7 @@ std::string validateGeneratedWorld(const Game &g, const GenerationRequest &r,
 			int workers = 0;
 			bool swarm = false;
 			for (int slot = 0; slot < Unit::MAX_COUNT; ++slot)
-				if (const auto *unit = team->myUnits[slot]; unit && unit->typeNum == WORKER)
+				if (const auto *unit = team->myUnits[slot]; unit && unit->core.typeNum == WORKER)
 					++workers;
 			for (int slot = 0; slot < Building::MAX_COUNT; ++slot)
 				if (const auto *building = team->myBuildings[slot];

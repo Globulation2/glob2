@@ -159,7 +159,7 @@ TEST_SUITE("SceneExtract")
 		Building *inn = world.addBuilding("inn", 4, 4);
 		Unit *worker = world.addUnit(WORKER, 10, 10);
 		Unit *other = world.addUnit(WORKER, 12, 10, 1);
-		worker->hp = 3;
+		worker->core.hp = 3;
 
 		SceneRequest request;
 		request.selectedBuilding = Game::refOf(inn);
@@ -167,19 +167,19 @@ TEST_SUITE("SceneExtract")
 		PresentationFrame scene;
 		SceneExtractor().prepare((world.game).captureReadBoundary({},true,SceneExtractor::requirements(request)), request, scene);
 
-		const SnapshotUnit *u = scene.entities.unit(worker->gid);
+		const SnapshotUnit *u = scene.entities.unit(worker->core.gid);
 		REQUIRE(u);
-		CHECK((u->posX == 10 && u->posY == 10 && u->hp == 3 && u->team == 0 && u->typeNum == WORKER));
-		CHECK(scene.entities.owner(*scene.entities.unit(other->gid)).number == 1);
+		CHECK((u->core.posX == 10 && u->core.posY == 10 && u->core.hp == 3 && u->team == 0 && u->core.typeNum == WORKER));
+		CHECK(scene.entities.owner(*scene.entities.unit(other->core.gid)).number == 1);
 		CHECK(scene.entities.isSelected(*u));
-		CHECK_FALSE(scene.entities.isSelected(*scene.entities.unit(other->gid)));
+		CHECK_FALSE(scene.entities.isSelected(*scene.entities.unit(other->core.gid)));
 
 		const SnapshotBuilding *b = scene.entities.building(inn->gid);
 		REQUIRE(b);
 		CHECK((b->posX == 4 && b->posY == 4 && scene.entities.type(*b)->key == inn->type->key && b->maxHp == inn->getEffectiveMaxHp()));
 		CHECK(scene.entities.isSelected(*b));
 		CHECK(scene.entities.selectedBuilding.ref == request.selectedBuilding);
-		CHECK(scene.map.getGroundUnit(10, 10) == worker->gid);
+		CHECK(scene.map.getGroundUnit(10, 10) == worker->core.gid);
 		CHECK(scene.map.getBuilding(4, 4) == inn->gid);
 		CHECK(scene.entities.unit(NOGUID) == nullptr);
 	}
@@ -189,7 +189,7 @@ TEST_SUITE("SceneExtract")
 		glob2test::HeadlessGlobals globals;
 		glob2test::HeadlessGame world({.teams = 1, .discovered = true, .loadDefaultRace = true});
 		Unit *wounded = world.addUnit(WORKER, 10, 10);
-		wounded->medical = Unit::MED_DAMAGED;
+		wounded->core.medical = Unit::MED_DAMAGED;
 
 		SceneExtractor extractor;
 		SceneRequest request;
@@ -206,7 +206,7 @@ TEST_SUITE("SceneExtract")
 
 		// Same window: the snapshot is reused even though the game changed.
 		const auto first = scene.overlay;
-		wounded->medical = Unit::MED_FREE;
+		wounded->core.medical = Unit::MED_FREE;
 		world.game.stepCounter = 50;
 		extractor.prepare((world.game).captureReadBoundary({},true,SceneExtractor::requirements(request)), request, scene);
 		CHECK(scene.overlay == first);
@@ -232,17 +232,17 @@ TEST_SUITE("SceneExtract")
         glob2test::HeadlessGame world({.clearImmobile=true,.loadDefaultRace=true});
         auto* unit=world.addUnit(WORKER,10,10);
         SceneExtractor extractor; SceneRequest request; PresentationFrame before,after;
-        const auto gid=unit->gid; const auto hp=unit->hp;
+        const auto gid=unit->core.gid; const auto hp=unit->core.hp;
         extractor.prepare((world.game).captureReadBoundary({},true,SceneExtractor::requirements(request)), request, before);
-        unit->hp=1;
+        unit->core.hp=1;
         world.game.snapshots().invalidateBoundary(); // Explicit same-tick owner edit.
         extractor.prepare((world.game).captureReadBoundary({},true,SceneExtractor::requirements(request)), request, after);
         REQUIRE(before.entities.unit(gid)); REQUIRE(after.entities.unit(gid));
-        CHECK(before.entities.unit(gid)->hp==hp); CHECK(after.entities.unit(gid)->hp==1);
+        CHECK(before.entities.unit(gid)->core.hp==hp); CHECK(after.entities.unit(gid)->core.hp==1);
         REQUIRE(world.game.removeUnitAndBuildingAndFlags(10,10,Game::DEL_UNIT));
         extractor.prepare((world.game).captureReadBoundary({},true,SceneExtractor::requirements(request)), request, after);
         CHECK(after.entities.unit(gid)==nullptr);
-        CHECK(before.entities.unit(gid)->hp==hp);
+        CHECK(before.entities.unit(gid)->core.hp==hp);
     }
 
     TEST_CASE("stale selection generation never selects a replacement occupying the same gid")
@@ -251,12 +251,12 @@ TEST_SUITE("SceneExtract")
         glob2test::HeadlessGame world({.clearImmobile=true,.loadDefaultRace=true});
         auto* unit=world.addUnit(WORKER,10,10);
         SceneExtractor extractor; SceneRequest request; PresentationFrame scene;
-        request.selectedUnit=Game::refOf(unit); const auto gid=unit->gid;
+        request.selectedUnit=Game::refOf(unit); const auto gid=unit->core.gid;
         extractor.prepare((world.game).captureReadBoundary({},true,SceneExtractor::requirements(request)), request, scene);
         REQUIRE(scene.entities.unit(gid)); CHECK(scene.entities.isSelected(*scene.entities.unit(gid)));
         REQUIRE(world.game.removeUnitAndBuildingAndFlags(10,10,Game::DEL_UNIT));
         auto* replacement=world.addUnit(WORKER,10,10);
-        REQUIRE(replacement->gid==gid);
+        REQUIRE(replacement->core.gid==gid);
         extractor.prepare((world.game).captureReadBoundary({},true,SceneExtractor::requirements(request)), request, scene);
         REQUIRE(scene.entities.unit(gid)); CHECK_FALSE(scene.entities.isSelected(*scene.entities.unit(gid)));
     }
@@ -267,10 +267,10 @@ TEST_SUITE("SceneExtract")
 		glob2test::HeadlessGlobals globals;
 		glob2test::HeadlessGame world({.teams = 1, .discovered = true, .loadDefaultRace = true});
 		Unit *walker = world.addUnit(WORKER, 10, 10);
-		walker->action = WALK;
-		walker->dx = 1;
-		walker->dy = 1;
-		walker->delta = 100;
+		walker->core.action = WALK;
+		walker->core.dx = 1;
+		walker->core.dy = 1;
+		walker->core.delta = 100;
 
 		SceneRequest request;
 		request.tickTime = 1000;
@@ -278,21 +278,21 @@ TEST_SUITE("SceneExtract")
 		PresentationFrame scene;
 		SceneExtractor().prepare((world.game).captureReadBoundary({},true,SceneExtractor::requirements(request)), request, scene);
 		CHECK((scene.tickTime == 1000 && scene.tickInterval == 40));
-		const SnapshotUnit *u = scene.entities.unit(walker->gid);
+		const SnapshotUnit *u = scene.entities.unit(walker->core.gid);
 		REQUIRE(u);
-		CHECK(unitActionStepSpeed(u->speed,u->action,u->dx,u->dy) == unitActionStepSpeed(walker->speed, WALK, 1, 1));
-		REQUIRE(unitActionStepSpeed(u->speed,u->action,u->dx,u->dy) > 0);
+		CHECK(unitActionStepSpeed(u->core.speed,u->core.action,u->core.dx,u->core.dy) == unitActionStepSpeed(walker->core.speed, WALK, 1, 1));
+		REQUIRE(unitActionStepSpeed(u->core.speed,u->core.action,u->core.dx,u->core.dy) > 0);
 
 		// Off (motion 0) draws exactly the simulated delta.
 		CHECK(drawnUnitDelta(*u, 0.f) == 100);
 		CHECK(unitMotionFraction(scene, 1000) == 0.f);
 		CHECK(unitMotionFraction(scene, 1020) == doctest::Approx(0.5f));
 		CHECK(unitMotionFraction(scene, 5000) == 1.f);
-		CHECK(drawnUnitDelta(*u, 0.5f) == 100 + int(0.5f * float(unitActionStepSpeed(u->speed,u->action,u->dx,u->dy))));
+		CHECK(drawnUnitDelta(*u, 0.5f) == 100 + int(0.5f * float(unitActionStepSpeed(u->core.speed,u->core.action,u->core.dx,u->core.dy))));
 		// A full interval reaches what the next tick computes, without crossing the action.
-		CHECK(drawnUnitDelta(*u, 1.f) == std::min(UNIT_DELTA_MAX, 100 + unitActionStepSpeed(u->speed,u->action,u->dx,u->dy)));
+		CHECK(drawnUnitDelta(*u, 1.f) == std::min(UNIT_DELTA_MAX, 100 + unitActionStepSpeed(u->core.speed,u->core.action,u->core.dx,u->core.dy)));
 		SnapshotUnit ending = *u;
-		ending.delta = UNIT_DELTA_MAX - 1;
+		ending.core.delta = UNIT_DELTA_MAX - 1;
 		CHECK(drawnUnitDelta(ending, 1.f) == UNIT_DELTA_MAX);
 
 		// Uncapped simulation: no interval, no motion between ticks.
@@ -517,7 +517,7 @@ TEST_CASE("snapshot preparation retains definitions after the source game is des
         auto* unit = world.addUnit(WORKER, 12, 12, 0);
         auto* building = world.addBuilding("inn", 4, 4, 0, 0);
         REQUIRE(unit); REQUIRE(building);
-        unitId = unit->gid; buildingId = building->gid;
+        unitId = unit->core.gid; buildingId = building->gid;
         SceneRequest request;
         request.selectedUnit = Game::refOf(unit);
         request.selectedBuilding = Game::refOf(building);
@@ -528,9 +528,9 @@ TEST_CASE("snapshot preparation retains definitions after the source game is des
     input.reset();
     REQUIRE(scene.entities.unit(unitId));
     REQUIRE(scene.entities.building(buildingId));
-    CHECK(scene.entities.units.data()==scene.world.entities->units.data());
+    CHECK(scene.entities.units.data()==scene.world.unitCores->units.data());
     CHECK(scene.entities.type(*scene.entities.building(buildingId))->key == "inn.0.finished");
-    CHECK(scene.panels.unit.unitTypes.data()==scene.world.catalogs->unitTypes[scene.panels.unit.state().typeNum].data());
+    CHECK(scene.panels.unit.unitTypes.data()==scene.world.catalogs->unitTypes[scene.panels.unit.state().core.typeNum].data());
     CHECK(scene.map.getW() == 32);
     CHECK(scene.map.getBuilding(4, 4) == buildingId);
 }
@@ -542,8 +542,8 @@ TEST_CASE("snapshot preparation matches retained queries and survives later live
     auto* unit = world.addUnit(WORKER,12,12,0);
     auto* building = world.addBuilding("inn",4,4,0,0);
     REQUIRE(unit); REQUIRE(building);
-    unit->levelUpAnimation = 7; unit->magicActionAnimation = 3;
-    unit->medical = Unit::MED_DAMAGED; unit->hp = 1; unit->hungry = 0;
+    unit->core.levelUpAnimation = 7; unit->core.magicActionAnimation = 3;
+    unit->core.medical = Unit::MED_DAMAGED; unit->core.hp = 1; unit->core.hungry = 0;
     building->lastShootStep = 19; building->lastShootSpeedX = 2;
     SceneRequest request;
     request.selectedUnit = Game::refOf(unit); request.selectedBuilding = Game::refOf(building);
@@ -559,22 +559,22 @@ TEST_CASE("snapshot preparation matches retained queries and survives later live
         legacyExtractor.prepare((world.game).captureReadBoundary({},true,SceneExtractor::requirements(request)), request, legacy);
         auto input = SceneExtractor::inputs((world.game).captureReadBoundary({},true,SceneExtractor::requirements(request)), request);
         // No later read may reach the live unit or any map layer.
-        const auto hp = unit->hp;
-        unit->hp = 123;
+        const auto hp = unit->core.hp;
+        unit->core.hp = 123;
         world.game.map.setGroundUnit(20,20,42);
         snapshotExtractor.prepare(*input, actual);
-        unit->hp = hp;
+        unit->core.hp = hp;
         world.game.map.setGroundUnit(20,20,legacy.map.getGroundUnit(20,20));
         CHECK(actual.tick == legacy.tick);
         CHECK(actual.entities.units.size() == legacy.entities.units.size());
         CHECK(actual.entities.buildings.size() == legacy.entities.buildings.size());
-        REQUIRE(actual.entities.unit(unit->gid));
-        const auto& u = *actual.entities.unit(unit->gid);
-        CHECK(u.hp == hp); CHECK(u.levelUpAnimation == 7); CHECK(u.magicActionAnimation == 3);
-        CHECK(drawnUnitDelta(u,0.5f)==drawnUnitDelta(*legacy.entities.unit(unit->gid),0.5f));
+        REQUIRE(actual.entities.unit(unit->core.gid));
+        const auto& u = *actual.entities.unit(unit->core.gid);
+        CHECK(u.core.hp == hp); CHECK(u.core.levelUpAnimation == 7); CHECK(u.core.magicActionAnimation == 3);
+        CHECK(drawnUnitDelta(u,0.5f)==drawnUnitDelta(*legacy.entities.unit(unit->core.gid),0.5f));
         CHECK(actual.entities.building(building->gid)->lastShootStep == 19);
         CHECK(actual.entities.building(building->gid)->lastShootSpeedX == 2);
-        CHECK(actual.panels.unit.state().hp == legacy.panels.unit.state().hp);
+        CHECK(actual.panels.unit.state().core.hp == legacy.panels.unit.state().core.hp);
         CHECK(actual.panels.building.hardSpaceForUpgrade == legacy.panels.building.hardSpaceForUpgrade);
         CHECK(actual.map.materialPresence() == legacy.map.materialPresence());
         for (int y=0; y<32; ++y) for (int x=0; x<32; ++x)
@@ -617,17 +617,17 @@ TEST_CASE("Serial hosts publish immutable Scenes through workers or explicit fal
         SceneExtractor extractor;
         ScenePreparation presentation(executor);
         REQUIRE(presentation.readyToCapture());
-        const auto gid=unit->gid;
-        const auto hp=unit->hp;
+        const auto gid=unit->core.gid;
+        const auto hp=unit->core.hp;
         presentation.submit(SceneExtractor::inputs((world.game).captureReadBoundary({},true,SceneExtractor::requirements({})), {}));
-        unit->hp=hp-1;
+        unit->core.hp=hp-1;
         const PresentationFrame* scene=nullptr;
         const auto deadline=std::chrono::steady_clock::now()+std::chrono::seconds(5);
         do { scene=presentation.acquire(); if (!scene) std::this_thread::yield(); }
         while (!scene && std::chrono::steady_clock::now()<deadline);
         REQUIRE(scene);
         REQUIRE(scene->entities.unit(gid));
-        CHECK(scene->entities.unit(gid)->hp==hp);
+        CHECK(scene->entities.unit(gid)->core.hp==hp);
         // Publishing can precede the task's final return; allow that narrow tail.
         while (!presentation.readyToCapture() && std::chrono::steady_clock::now()<deadline) std::this_thread::yield();
         REQUIRE(presentation.readyToCapture());

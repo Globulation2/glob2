@@ -661,7 +661,7 @@ unsigned int GridPollingSystem::pollArea(unsigned int x, unsigned int y, unsigne
 
 	//This is an optmization, as putting the switch inside the for loop causes it to do log2n checks
 	//For every single square, which has become to cumbersome.
-	const AIEngine::UnitView* u=NULL;
+	AIEngine::UnitObservation u=std::nullopt;
 	const AIEngine::BuildingView* b=NULL;
 	switch (poll_type)
 	{
@@ -751,7 +751,7 @@ unsigned int GridPollingSystem::pollArea(unsigned int x, unsigned int y, unsigne
 					u = getUnitFromGid(game, map->occupancyAt(map->tileIndex(x,y)).groundUnit);
 					if (u)
 					{
-						if((game->teams[u->team].mask & team->enemies) && u->posX==static_cast<int>(x) && u->posY == static_cast<int>(y))
+						if((game->teams[u->team].mask & team->enemies) && u->core.posX==static_cast<int>(x) && u->core.posY == static_cast<int>(y))
 						{
 							score++;
 						}
@@ -771,7 +771,7 @@ unsigned int GridPollingSystem::pollArea(unsigned int x, unsigned int y, unsigne
 					u = getUnitFromGid(game, map->occupancyAt(map->tileIndex(x,y)).groundUnit);
 					if (u)
 					{
-						if((game->teams[u->team].mask & team->enemies) && u->posX==static_cast<int>(x) && u->posY == static_cast<int>(y) && AIEngine::ObservationQueries::matchesStrategyUnitRole(*game,*u,WARRIOR))
+						if((game->teams[u->team].mask & team->enemies) && u->core.posX==static_cast<int>(x) && u->core.posY == static_cast<int>(y) && AIEngine::ObservationQueries::matchesStrategyUnitRole(*game,*u,WARRIOR))
 						{
 							score++;
 						}
@@ -1049,16 +1049,16 @@ unsigned int TeamStatsGenerator::getUnits(unsigned int type, Unit::Medical medic
 
 	for (int i=0; i<1024; i++)
 	{
-		const AIEngine::UnitView* u = myUnits[i];
+		AIEngine::UnitObservation u = myUnits[i];
 		if (u)
 		{
 			// This overload supplies recruitable free units; stationary combat
 			// contributes to the total-role overload but cannot reach an assignment.
-			if ((u->performance[FLY]>0 || u->performance[WALK]>0 || u->performance[SWIM]>0)
+			if ((u->performance(FLY)>0 || u->performance(WALK)>0 || u->performance(SWIM)>0)
 				&& AIEngine::ObservationQueries::matchesStrategyUnitRole(*world,*u,type)
-                && (type!=WARRIOR || activity!=Unit::ACT_RANDOM || world->unitTraits(u->typeNum).recruits(2))
-                && u->activity==activity && ((!isMinimum && (ability==BUILD ? u->constructionLevel : u->level[ability])==static_cast<int>(level)) ||
-				(isMinimum && (ability==BUILD ? u->constructionLevel : u->level[ability])>=static_cast<int>(level))) && u->medical==medical_state)
+                && (type!=WARRIOR || activity!=Unit::ACT_RANDOM || world->unitTraits(u->core.typeNum).recruits(2))
+                && u->core.activity==activity && ((!isMinimum && (ability==BUILD ? u->core.constructionLevel : u->detail.level[ability])==static_cast<int>(level)) ||
+				(isMinimum && (ability==BUILD ? u->core.constructionLevel : u->detail.level[ability])>=static_cast<int>(level))) && u->core.medical==medical_state)
 			{
 				free_workers+=1;
 			}
@@ -1078,11 +1078,11 @@ unsigned int TeamStatsGenerator::getUnits(unsigned int type, unsigned int abilit
 
 	for (int i=0; i<1024; i++)
 	{
-		const AIEngine::UnitView* u = myUnits[i];
+		AIEngine::UnitObservation u = myUnits[i];
 		if (u)
 		{
-			if (AIEngine::ObservationQueries::matchesStrategyUnitRole(*world,*u,type) && 	((!isMinimum && (ability==BUILD ? u->constructionLevel : u->level[ability])==static_cast<int>(level)) ||
-									(  isMinimum && (ability==BUILD ? u->constructionLevel : u->level[ability])>=static_cast<int>(level))))
+			if (AIEngine::ObservationQueries::matchesStrategyUnitRole(*world,*u,type) && 	((!isMinimum && (ability==BUILD ? u->core.constructionLevel : u->detail.level[ability])==static_cast<int>(level)) ||
+									(  isMinimum && (ability==BUILD ? u->core.constructionLevel : u->detail.level[ability])>=static_cast<int>(level))))
 			{
 				free_workers+=1;
 			}
@@ -3757,10 +3757,10 @@ int DistributedUnitManager::getNeededUnits(int unit_type, int ability, int level
 			int assigned=0;
 			for(const auto reference:ai.game->workers(*b))
 			{
-				const auto* unit=ai.game->unit(reference);
+				const auto unit=ai.game->unit(reference);
 				if(unit && AIEngine::ObservationQueries::matchesStrategyUnitRole(*ai.game,*unit,unit_type)
-                    && (unit_type!=WORKER || (unit->jobPurpose!=UnitJobPurpose::Defend && unit->jobPurpose!=UnitJobPurpose::Explore))
-					&& (ability==BUILD ? unit->constructionLevel : unit->level[ability])>=static_cast<int>(usage.minimum_level))++assigned;
+                    && (unit_type!=WORKER || (unit->core.jobPurpose!=UnitJobPurpose::Defend && unit->core.jobPurpose!=UnitJobPurpose::Explore))
+					&& (ability==BUILD ? unit->core.constructionLevel : unit->detail.level[ability])>=static_cast<int>(usage.minimum_level))++assigned;
 			}
 			needed+=std::max(0,static_cast<int>(usage.number)-assigned);
 		}

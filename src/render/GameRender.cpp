@@ -374,7 +374,7 @@ void Game::drawSceneMapRegion(const PresentationFrame& scene, int sx, int sy, in
 		for (UnitRef worker : entities.selectedBuilding.unitsWorking)
 		{
 			const SnapshotUnit *unit = entities.unit(worker.gid);
-			if(unit && unit->identity==worker && !isOnScreen(left, top, right, bot, viewportX, viewportY, unit->posX, unit->posY, map))
+			if(unit && unit->identity==worker && !isOnScreen(left, top, right, bot, viewportX, viewportY, unit->core.posX, unit->core.posY, map))
 			{
 				drawUnitOffScreen(0, topMargin, sw - rightMargin, sh-topMargin, viewportX, viewportY, *unit, drawOptions, scene, view.render.unitMotion);
 			}

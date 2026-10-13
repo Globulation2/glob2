@@ -30,7 +30,7 @@ static std::vector<Uint32> state(Game& game)
         const auto* team = game.teams[t];
         auto append = [&](const auto& list) {
             result.push_back(list.size());
-            for (const auto* entry : list) result.push_back(entry->gid);
+            for (const auto* entry : list) result.push_back(Game::refOf(entry).gid);
         };
         append(team->canFeedUnit);
         append(team->canHealUnit);
@@ -56,7 +56,7 @@ static std::vector<Uint32> state(Game& game)
         }
         for (int id = 0; id < Unit::MAX_COUNT; ++id) if (auto* unit = game.teams[t]->myUnits[id])
         {
-            result.push_back(unit->jobTimer);
+            result.push_back(unit->detail.jobTimer);
             result.push_back(unit->previousClearingArea.has_value());
             if (unit->previousClearingArea)
             {
@@ -106,14 +106,14 @@ static void checkContinuation(int checkpoint, bool hazards = false)
     firstInn->update();
     auto* flyer = game.addUnit(12, 4, 0, EXPLORER, 0, 0, 0, 0);
     REQUIRE((flyer && game.teams[0]->findNearestFood(flyer) == firstInn));
-    first->jobTimer = 40;
-    second->jobTimer = 7;
+    first->detail.jobTimer = 40;
+    second->detail.jobTimer = 7;
     // A current reservation and a retained distance without a current reservation
     // are both meaningful: other workers use distance to arbitrate a claim.
     first->previousClearingArea = Unit::ClearingAreaClaim{12, 12};
     first->previousClearingAreaDistance = 5;
     second->previousClearingAreaDistance = UNIT_CLEAR_AREA_DISTANCE_NONE;
-    game.map.setClearingAreaClaimed(12, 12, 0, first->gid);
+    game.map.setClearingAreaClaimed(12, 12, 0, first->core.gid);
     game.teams[0]->noMoreBuildingSitesCountdown = 91;
     for (int i = 0; i < checkpoint; ++i) game.syncStep(0);
     const auto before = state(game);
@@ -162,10 +162,10 @@ TEST_SUITE("UnitContinuation")
             auto* work=world.addBuilding(purpose==UnitJobPurpose::Transport?"inn":
                 purpose==UnitJobPurpose::Clear?"clearingflag":purpose==UnitJobPurpose::Explore?"explorationflag":"warflag",16,16);
             REQUIRE(work);
-            unit->destinationPurpose=purpose==UnitJobPurpose::Transport?WHEAT:UNIT_DEST_PURPOSE_NONE;
+            unit->core.destinationPurpose=purpose==UnitJobPurpose::Transport?WHEAT:UNIT_DEST_PURPOSE_NONE;
             work->unitsWorking.push_back(unit);
             unit->subscriptionSuccess(work,false,purpose!=UnitJobPurpose::Transport,purpose);
-            REQUIRE(unit->jobPurpose==purpose);
+            REQUIRE(unit->core.jobPurpose==purpose);
             Building* service=nullptr;
             if (serviceAvailable) {
                 service=world.addBuilding(medical==Unit::MED_HUNGRY?"inn":"hospital",10,8);
@@ -175,20 +175,20 @@ TEST_SUITE("UnitContinuation")
                 service->update();
                 REQUIRE((medical==Unit::MED_HUNGRY?world.team->findNearestFood(unit):world.team->findNearestHeal(unit))==service);
             }
-            unit->medical=Unit::Medical(medical);
-            unit->needToRecheckMedical=true;
-            const auto random=unit->entityRandom;
+            unit->core.medical=Unit::Medical(medical);
+            unit->detail.needToRecheckMedical=true;
+            const auto random=unit->detail.entityRandom;
             UnitActivityAccess::run(*unit);
-            CHECK(unit->jobPurpose==UnitJobPurpose::None);
+            CHECK(unit->core.jobPurpose==UnitJobPurpose::None);
             CHECK(work->unitsWorking.empty()); CHECK(work->unitsInside.empty());
-            CHECK(unit->entityRandom==random);
+            CHECK(unit->detail.entityRandom==random);
             if (serviceAvailable) {
-                CHECK(unit->activity==Unit::ACT_UPGRADING);
+                CHECK(unit->core.activity==Unit::ACT_UPGRADING);
                 CHECK(unit->attachedBuilding==service);
-                CHECK(unit->destinationPurpose==(medical==Unit::MED_HUNGRY?FEED:HEAL));
+                CHECK(unit->core.destinationPurpose==(medical==Unit::MED_HUNGRY?FEED:HEAL));
                 REQUIRE(std::find(service->unitsInside.begin(),service->unitsInside.end(),unit)!=service->unitsInside.end());
             } else {
-                CHECK(unit->activity==Unit::ACT_RANDOM);
+                CHECK(unit->core.activity==Unit::ACT_RANDOM);
                 CHECK_FALSE(unit->attachedBuilding); CHECK_FALSE(unit->targetBuilding);
             }
             auto* storage=new GAGCore::MemoryStreamBackend;
@@ -198,10 +198,10 @@ TEST_SUITE("UnitContinuation")
             GameGUI resumed;
             GAGCore::BinaryInputStream input(new GAGCore::MemoryStreamBackend(bytes.data(),bytes.size()));
             input.seekFromStart(0); REQUIRE(resumed.game.load(&input));
-            auto* restored=resumed.game.teams[0]->myUnits[Unit::GIDtoID(unit->gid)]; REQUIRE(restored);
-            CHECK(restored->jobPurpose==UnitJobPurpose::None);
-            CHECK(restored->activity==unit->activity);
-            CHECK(restored->entityRandom==random);
+            auto* restored=resumed.game.teams[0]->myUnits[Unit::GIDtoID(unit->core.gid)]; REQUIRE(restored);
+            CHECK(restored->core.jobPurpose==UnitJobPurpose::None);
+            CHECK(restored->core.activity==unit->core.activity);
+            CHECK(restored->detail.entityRandom==random);
         }
     }
 

@@ -846,7 +846,7 @@ int BuildingRegister::get_on_site(unsigned id) const
 	const int range=b->unitStayRange+1;
 	int result=0;
     for(const auto& identity:observation().workers(*b))
-        if(const auto* unit=observation().unit(identity);unit && observation().distanceSquared(b->posX,b->posY,unit->posX,unit->posY)<range*range) ++result;
+        if(auto unit=observation().unit(identity);unit && observation().distanceSquared(b->posX,b->posY,unit->core.posX,unit->core.posY)<range*range) ++result;
 	return result;
 }
 

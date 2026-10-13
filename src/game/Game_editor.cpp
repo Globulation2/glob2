@@ -159,7 +159,7 @@ void Game::regenerateDiscoveryMap(void)
 			Unit *u=teams[t]->myUnits[i];
 			if (u)
 			{
-				map.setMapDiscovered(u->posX-1, u->posY-1, 3, 3, teams[t]->sharedVisionOther);
+				map.setMapDiscovered(u->core.posX-1, u->core.posY-1, 3, 3, teams[t]->sharedVisionOther);
 			}
 		}
 		for (int i=0; i<Building::MAX_COUNT; i++)
@@ -217,14 +217,14 @@ Unit *Game::addUnit(int x, int y, int team, Sint32 typeNum, int level, int delta
 
 	teams[team]->myUnits[id]= new Unit(x, y, gid, typeNum, teams[team], level);
 	teams[team]->attachUnit(id);
-	teams[team]->myUnits[id]->dx=dx;
-	teams[team]->myUnits[id]->dy=dy;
+	teams[team]->myUnits[id]->core.dx=dx;
+	teams[team]->myUnits[id]->core.dy=dy;
 	teams[team]->myUnits[id]->directionFromDxDy();
-	teams[team]->myUnits[id]->delta=delta;
+	teams[team]->myUnits[id]->core.delta=delta;
 	teams[team]->myUnits[id]->selectPreferredMovement();
     const auto &terrain = map.terrainPropertiesAt(x,y);
     auto *unit = teams[team]->myUnits[id];
-    unit->speed = unitTerrainMovementSpeed(unit->speed,fly ? terrain.airSpeedQ8 : terrain.groundSpeedQ8);
+    unit->core.speed = unitTerrainMovementSpeed(unit->core.speed,fly ? terrain.airSpeedQ8 : terrain.groundSpeedQ8);
 	snapshots().invalidateBoundary();
 	return teams[team]->myUnits[id];
 }
@@ -388,7 +388,7 @@ void Game::removeUnallowedUnitsAndBuildings(int x, int y, int w, int h)
             if (!terrain.buildable)
                 removeUnitAndBuildingAndFlags(cx,cy,1,DEL_BUILDING);
             Uint16 guid=map.getGroundUnit(cx,cy);
-            if (guid!=NOGUID && !terrain.walkable && !(terrain.swimmable && getUnit(guid)->performance[SWIM]))
+            if (guid!=NOGUID && !terrain.walkable && !(terrain.swimmable && getUnit(guid)->performance(SWIM)))
                 removeUnitAndBuildingAndFlags(cx,cy,1,DEL_GROUND_UNIT);
             if (!terrain.flyable && map.getAirUnit(cx,cy)!=NOGUID)
                 removeUnitAndBuildingAndFlags(cx,cy,1,DEL_AIR_UNIT);

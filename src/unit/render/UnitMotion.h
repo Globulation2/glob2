@@ -28,6 +28,6 @@ inline float unitMotionFraction(const PresentationFrame &scene, Uint64 now)
 inline int drawnUnitDelta(const SnapshotUnit &unit, float motion)
 {
 	if (motion <= 0.f)
-		return unit.delta;
-	return std::min(UNIT_DELTA_MAX, unit.delta + int(motion * float(unitActionStepSpeed(unit.speed,unit.action,unit.dx,unit.dy))));
+		return unit.core.delta;
+	return std::min(UNIT_DELTA_MAX, unit.core.delta + int(motion * float(unitActionStepSpeed(unit.core.speed,unit.core.action,unit.core.dx,unit.core.dy))));
 }

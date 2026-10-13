@@ -108,10 +108,10 @@ bool Game::tileForPlay(int rx, int ry, int teamCount, int coloniesPerTeam)
 				}
 			}
 		for (int i = 0; i < Unit::MAX_COUNT && colony.anchorX < 0; i++)
-			if (teams[t]->myUnits[i] && !teams[t]->myUnits[i]->isDead)
+			if (teams[t]->myUnits[i] && !teams[t]->myUnits[i]->core.isDead)
 			{
-				colony.anchorX = teams[t]->myUnits[i]->posX;
-				colony.anchorY = teams[t]->myUnits[i]->posY;
+				colony.anchorX = teams[t]->myUnits[i]->core.posX;
+				colony.anchorY = teams[t]->myUnits[i]->core.posY;
 			}
 		if (colony.anchorX < 0)
 			continue;
@@ -142,18 +142,18 @@ bool Game::tileForPlay(int rx, int ry, int teamCount, int coloniesPerTeam)
 		for (int i = 0; i < Unit::MAX_COUNT; i++)
 		{
 			const Unit* u = teams[t]->myUnits[i];
-			if (!u || u->isDead)
+			if (!u || u->core.isDead)
 				continue;
 			// units inside a building are not on the map and are not carried over
-			if (map.getGroundUnit(u->posX, u->posY) != u->gid && map.getAirUnit(u->posX, u->posY) != u->gid)
+			if (map.getGroundUnit(u->core.posX, u->core.posY) != u->core.gid && map.getAirUnit(u->core.posX, u->core.posY) != u->core.gid)
 				continue;
-			UnitTemplate ut = {wrapOffset(u->posX, colony.anchorX, w0), wrapOffset(u->posY, colony.anchorY, h0),
-				u->typeNum, u->hp, u->hungry, u->hungriness, u->experience, u->experienceLevel, u->constructionLevel,
-				u->fruitMask, u->fruitCount, u->medical, {}};
+			UnitTemplate ut = {wrapOffset(u->core.posX, colony.anchorX, w0), wrapOffset(u->core.posY, colony.anchorY, h0),
+				u->core.typeNum, u->core.hp, u->core.hungry, u->detail.hungriness, u->detail.experience, u->core.experienceLevel, u->core.constructionLevel,
+				u->detail.fruitMask, u->detail.fruitCount, u->core.medical, {}};
 			for (int a = 0; a < NB_ABILITY; a++)
-				ut.level[a] = u->level[a];
-			ut.carriedMaterial=u->carriedMaterial; ut.carriedPacket=u->carriedPacket; ut.widePrimaryCargo=u->widePrimaryCargo;
-            if (const auto* cargo=unitCargo.find(u->gid)) ut.extraCargo=*cargo;
+				ut.level[a] = u->detail.level[a];
+			ut.carriedMaterial=u->core.carriedMaterial; ut.carriedPacket=u->detail.carriedPacket; ut.widePrimaryCargo=u->detail.widePrimaryCargo;
+            if (const auto* cargo=unitCargo.find(u->core.gid)) ut.extraCargo=*cargo;
             colonies[t].units.push_back(ut);
 		}
 	}
@@ -300,20 +300,20 @@ bool Game::tileForPlay(int rx, int ry, int teamCount, int coloniesPerTeam)
 						return false;
 					for (int a = 0; a < NB_ABILITY; a++)
 					{
-						u->level[a] = ut.level[a];
-						u->performance[a] = teams[k]->race.getUnitType(ut.typeNum, ut.level[a])->performance[a];
+						u->detail.level[a] = ut.level[a];
+						u->performance(a) = teams[k]->race.getUnitType(ut.typeNum, ut.level[a])->performance[a];
 					}
-					u->hp = ut.hp;
-					u->hungry = ut.hungry;
-					u->hungriness = ut.hungriness;
-					u->experience = ut.experience;
-					u->experienceLevel = ut.experienceLevel;
-					u->constructionLevel=ut.constructionLevel;
-					u->fruitMask = ut.fruitMask;
-					u->fruitCount = ut.fruitCount;
-					u->medical = ut.medical;
-                    u->carriedMaterial=ut.carriedMaterial; u->carriedPacket=ut.carriedPacket; u->widePrimaryCargo=ut.widePrimaryCargo;
-                    if (!ut.extraCargo.empty()) unitCargo.overflow(u->gid)=ut.extraCargo;
+					u->core.hp = ut.hp;
+					u->core.hungry = ut.hungry;
+					u->detail.hungriness = ut.hungriness;
+					u->detail.experience = ut.experience;
+					u->core.experienceLevel = ut.experienceLevel;
+					u->core.constructionLevel=ut.constructionLevel;
+					u->detail.fruitMask = ut.fruitMask;
+					u->detail.fruitCount = ut.fruitCount;
+					u->core.medical = ut.medical;
+                    u->core.carriedMaterial=ut.carriedMaterial; u->detail.carriedPacket=ut.carriedPacket; u->detail.widePrimaryCargo=ut.widePrimaryCargo;
+                    if (!ut.extraCargo.empty()) unitCargo.overflow(u->core.gid)=ut.extraCargo;
 				}
 			}
 

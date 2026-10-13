@@ -763,16 +763,16 @@ TEST_CASE("flat building relationships resolve captured unit incarnations" *
     REQUIRE(captured);
     REQUIRE(observed->workers(*captured).size()==1);
     REQUIRE(observed->occupants(*captured).size()==1);
-    const auto* readWorker=observed->unit(observed->workers(*captured).front());
-    const auto* readOccupant=observed->unit(observed->occupants(*captured).front());
+    auto readWorker=observed->unit(observed->workers(*captured).front());
+    auto readOccupant=observed->unit(observed->occupants(*captured).front());
     REQUIRE(readWorker);REQUIRE(readOccupant);
-    CHECK(readWorker->gid==worker->gid);
-    CHECK(readOccupant->gid==occupant->gid);
-    const auto* identityWorker=observed->unitAtSlot(worker->gid);
-    const auto* identityOccupant=observed->unitAtSlot(occupant->gid);
+    CHECK(readWorker->core.gid==worker->core.gid);
+    CHECK(readOccupant->core.gid==occupant->core.gid);
+    const auto identityWorker=observed->unitAtSlot(worker->core.gid);
+    const auto identityOccupant=observed->unitAtSlot(occupant->core.gid);
     REQUIRE(identityWorker);REQUIRE(identityOccupant);
-    CHECK(readWorker->scriptIdentity==identityWorker->identity.generation);
-    CHECK(readOccupant->scriptIdentity==identityOccupant->identity.generation);
+    CHECK(readWorker->core.scriptIdentity==identityWorker->identity.generation);
+    CHECK(readOccupant->core.scriptIdentity==identityOccupant->identity.generation);
 }
 
 TEST_CASE("queued orders preserve selection incarnations through save and slot replacement" *

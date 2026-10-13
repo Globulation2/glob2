@@ -468,8 +468,8 @@ std::string orbitMismatch(const Game &game, const Symmetry &s, int teams,
 					return "Unit" + at(x, y) + under;
 				if (ua != NOGUID &&
 					(!relate(Unit::GIDtoTeam(ua), Unit::GIDtoTeam(ub)) ||
-					 game.teams[Unit::GIDtoTeam(ua)]->myUnits[Unit::GIDtoID(ua)]->typeNum !=
-						 game.teams[Unit::GIDtoTeam(ub)]->myUnits[Unit::GIDtoID(ub)]->typeNum))
+					 game.teams[Unit::GIDtoTeam(ua)]->myUnits[Unit::GIDtoID(ua)]->core.typeNum !=
+						 game.teams[Unit::GIDtoTeam(ub)]->myUnits[Unit::GIDtoID(ub)]->core.typeNum))
 					return "Unit" + at(x, y) + under;
 			}
 		}

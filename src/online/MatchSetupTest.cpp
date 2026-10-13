@@ -276,9 +276,9 @@ TEST_SUITE("MatchSetup")
                 auto* team=engine.gameTeam(0); REQUIRE(team);
                 CHECK(team->game->gameHeader.getUnitCatalog()->digest()==recovered->digest());
                 REQUIRE(team->myUnits[0]);
-                CHECK(team->myUnits[0]->hp==0);
-                CHECK(team->myUnits[0]->performance[HP]==0);
-                CHECK(team->map->getAirUnit(7,8)==team->myUnits[0]->gid);
+                CHECK(team->myUnits[0]->core.hp==0);
+                CHECK(team->myUnits[0]->performance(HP)==0);
+                CHECK(team->map->getAirUnit(7,8)==team->myUnits[0]->core.gid);
                 REQUIRE(engine.turnSession());
             } else {
                 CHECK_FALSE(loaded); CHECK_FALSE(engine.turnSession());

@@ -74,7 +74,7 @@ TEST_SUITE("LegacyScriptCoverage")
             for (unsigned slot=0;slot<Unit::MAX_COUNT;++slot) {
                 const auto* a=original.world.game.teams[0]->myUnits[slot];
                 const auto* b=restored.world.game.teams[0]->myUnits[slot];
-                if (a && b) { CHECK(a->posX==b->posX); CHECK(a->posY==b->posY); CHECK(a->entityRandom==b->entityRandom); }
+                if (a && b) { CHECK(a->core.posX==b->core.posX); CHECK(a->core.posY==b->core.posY); CHECK(a->detail.entityRandom==b->detail.entityRandom); }
             }
         }
     }
@@ -162,9 +162,9 @@ TEST_SUITE("LegacyScriptCoverage")
         CHECK(units(w.world.game.teams[1]) == 16);
         for (int id = 0; id<Unit::MAX_COUNT; ++id) if (auto* unit=w.world.game.teams[1]->myUnits[id])
         {
-            CHECK(unit->typeNum == WARRIOR);
-            CHECK(w.world.game.map.isPointSet(0,unit->posX,unit->posY));
-            CHECK(unit->level[ATTACK_STRENGTH] == 2);
+            CHECK(unit->core.typeNum == WARRIOR);
+            CHECK(w.world.game.map.isPointSet(0,unit->core.posX,unit->core.posY));
+            CHECK(unit->detail.level[ATTACK_STRENGTH] == 2);
         }
         w.step();
         CHECK(units(w.world.game.teams[1]) == 16);
@@ -202,8 +202,8 @@ TEST_SUITE("LegacyScriptCoverage")
             CHECK(w.script.hasTeamWon(0));
             // Move off the scripted area without changing the team queried.
             w.world.game.map.setGroundUnit(4,4,NOGUID);
-            w.world.game.map.setGroundUnit(20,20,unit->gid);
-            unit->posX = 20; unit->posY = 20;
+            w.world.game.map.setGroundUnit(20,20,unit->core.gid);
+            unit->core.posX = 20; unit->core.posY = 20;
         }
         REQUIRE(w.compile("wait(not(area(\"zone\",0))) loose(1)").type == ErrorReport::ET_OK);
         w.step();

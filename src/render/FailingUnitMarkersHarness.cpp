@@ -98,8 +98,8 @@ namespace
 	{
 		Unit* u = game.addUnit(x, y, 0, WORKER, level, 0, 0, 0);
 		require(u != nullptr, "place a worker");
-		u->activity = Unit::ACT_RANDOM;
-		u->medical = Unit::MED_FREE;
+		u->core.activity = Unit::ACT_RANDOM;
+		u->core.medical = Unit::MED_FREE;
 		return u;
 	}
 }
@@ -265,8 +265,8 @@ public:
 	const std::vector<Uint16>& tooLow = inn->unitsFailingByReason[Building::UnitTooLowLevel];
 	require(tooLow.size() == LOW_COUNT, "every unschooled worker's gid is remembered under too-low-level");
 	for (int i = 0; i < LOW_COUNT; ++i)
-		require(std::find(tooLow.begin(), tooLow.end(), low[i]->gid) != tooLow.end(), "each unschooled worker is remembered");
-	require(std::find(tooLow.begin(), tooLow.end(), schooled->gid) == tooLow.end(), "the schooled worker (already hired) is not");
+		require(std::find(tooLow.begin(), tooLow.end(), low[i]->core.gid) != tooLow.end(), "each unschooled worker is remembered");
+	require(std::find(tooLow.begin(), tooLow.end(), schooled->core.gid) == tooLow.end(), "the schooled worker (already hired) is not");
 	std::puts("markers: the selected building remembers the units behind each tally");
 
 	// Render once without a selection (team colour is red too, so the sprites

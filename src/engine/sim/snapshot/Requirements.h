@@ -8,11 +8,19 @@ enum class Component : Uint32
  Catalogs = 1, Terrain = 2, Resources = 4, Occupancy = 8,
  Areas = 16, Visibility = 32, Entities = 64, Teams = 128, Rules = 256,
  ResourceFields = 512, Growth = 1024, Session = 2048, Effects = 4096,
- Statistics = 8192, EntityDiagnostics = 16384, Annotations = 32768, History = 65536, Telemetry = 131072, Exploration = 262144
+ Statistics = 8192, EntityDiagnostics = 16384, Annotations = 32768, History = 65536, Telemetry = 131072, Exploration = 262144, BuildingEntities = 524288, UnitCores = 1048576, UnitDetails = 2097152
 };
 using Requirements = Uint32;
 constexpr Requirements bit(Component value) { return static_cast<Requirements>(value); }
 constexpr Requirements Simulation = 2047;
-constexpr Requirements All = 524287;
+constexpr Requirements All = 4194303;
+// Entities remains the legacy aggregate request. Details always require cores.
+constexpr Requirements normalize(Requirements mask) {
+ if (mask & bit(Component::Entities)) mask |= bit(Component::BuildingEntities)|bit(Component::UnitCores)|bit(Component::UnitDetails);
+ if (mask & bit(Component::UnitDetails)) mask |= bit(Component::UnitCores);
+ constexpr auto entities=bit(Component::BuildingEntities)|bit(Component::UnitCores)|bit(Component::UnitDetails);
+ if((mask & entities)==entities)mask|=bit(Component::Entities);
+ return mask;
+}
 constexpr bool needs(Requirements mask, Component value) { return (mask & bit(value)) != 0; }
 }

@@ -76,7 +76,7 @@ ContinuationAudit continuationAudit(Game& game)
     result.first.insert(result.first.end(),units.begin(),units.end());
     const auto appendList=[&](const auto& list) {
         result.first.push_back(Uint32(list.size()));
-        for(const auto* entry:list) result.first.push_back(entry->gid);
+        for(const auto* entry:list) result.first.push_back(Game::refOf(entry).gid);
     };
     for(int t=0;t<game.teamsCount();++t) {
         const auto* team=game.teams[t];
@@ -95,9 +95,9 @@ ContinuationAudit continuationAudit(Game& game)
             auto* storage=new GAGCore::MemoryStreamBackend;
             GAGCore::BinaryOutputStream output(storage); unit->save(&output);
             result.second.emplace_back(storage->getBuffer(),storage->getPosition());
-            result.first.push_back(unit->capabilityFlags);
-            result.first.push_back(unit->configuredFoodCapacity);
-            result.first.push_back(unit->trigHungryCarrying);
+            result.first.push_back(unit->core.capabilityFlags);
+            result.first.push_back(unit->detail.configuredFoodCapacity);
+            result.first.push_back(unit->detail.trigHungryCarrying);
         }
     }
     return result;
@@ -133,11 +133,11 @@ void checkVisionAction(Unit& unit,int radius)
     auto& game=*unit.owner->game;
     auto& map=game.map;
     map.unsetMapDiscovered();
-    unit.delta=UNIT_DELTA_MAX;
+    unit.core.delta=UNIT_DELTA_MAX;
     { glob2test::BoundGameRandom bound(game); unit.syncStep(); }
     for(int y=0;y<map.getH();++y) for(int x=0;x<map.getW();++x) {
-        const int dx=std::min((x-unit.posX)&map.wMask,(unit.posX-x)&map.wMask);
-        const int dy=std::min((y-unit.posY)&map.hMask,(unit.posY-y)&map.hMask);
+        const int dx=std::min((x-unit.core.posX)&map.wMask,(unit.core.posX-x)&map.wMask);
+        const int dy=std::min((y-unit.core.posY)&map.hMask,(unit.core.posY-y)&map.hMask);
         CHECK(map.isMapDiscovered(x,y,unit.owner->me)==(dx<=radius && dy<=radius));
     }
 }
@@ -191,8 +191,8 @@ TEST_SUITE("UnitCustomization")
             REQUIRE(map.terrainPropertiesAt(9,8).swimmable);
             REQUIRE(map.isFreeForGroundUnit(9,7,true,unit->owner->me));
             REQUIRE(map.isFreeForGroundUnit(9,8,true,unit->owner->me));
-            unit->direction=2;
-            const auto random=game.syncRandom; const auto entity=unit->entityRandom;
+            unit->core.direction=2;
+            const auto random=game.syncRandom; const auto entity=unit->detail.entityRandom;
             // Select the attached-flag steering seam for every presentation
             // control, without fabricating a persistent work subscription.
             // Restore it before action, full-engine ticks or serialization.
@@ -200,25 +200,25 @@ TEST_SUITE("UnitCustomization")
             unit->attachedBuilding=flag;
             unit->handleMovementAttackingAround();
             unit->attachedBuilding=nullptr;
-            CHECK(game.syncRandom==random); CHECK(unit->entityRandom==entity);
-            if(mode==3) CHECK(unit->movement==Unit::MOV_RANDOM_GROUND);
+            CHECK(game.syncRandom==random); CHECK(unit->detail.entityRandom==entity);
+            if(mode==3) CHECK(unit->core.movement==Unit::MOV_RANDOM_GROUND);
             else {
-                REQUIRE(unit->movement==Unit::MOV_GOING_DX_DY);
-                CHECK(unit->dx==1); CHECK(unit->dy==(mode==0?0:-1));
+                REQUIRE(unit->core.movement==Unit::MOV_GOING_DX_DY);
+                CHECK(unit->core.dx==1); CHECK(unit->core.dy==(mode==0?0:-1));
             }
             unit->handleAction();
-            CHECK(game.syncRandom==random); CHECK(unit->entityRandom==entity);
-            CHECK(unit->posX==(mode==3?8:9)); CHECK(unit->posY==(mode==0||mode==3?8:7));
-            CHECK(unit->action==(mode==0?SWIM:mode==1?WALK:mode==2?FLY:STOP_WALK));
-            CHECK((mode==2?map.getAirUnit(unit->posX,unit->posY):map.getGroundUnit(unit->posX,unit->posY))==unit->gid);
+            CHECK(game.syncRandom==random); CHECK(unit->detail.entityRandom==entity);
+            CHECK(unit->core.posX==(mode==3?8:9)); CHECK(unit->core.posY==(mode==0||mode==3?8:7));
+            CHECK(unit->core.action==(mode==0?SWIM:mode==1?WALK:mode==2?FLY:STOP_WALK));
+            CHECK((mode==2?map.getAirUnit(unit->core.posX,unit->core.posY):map.getGroundUnit(unit->core.posX,unit->core.posY))==unit->core.gid);
             if(mode==0) {
                 REQUIRE(unit->swimClass()==WATER_ONLY_CLASS);
                 for(int tick=0;tick<64;++tick) {
                     CAPTURE(tick); game.syncStep(0);
-                    REQUIRE(map.terrainPropertiesAt(unit->posX,unit->posY).swimmable);
+                    REQUIRE(map.terrainPropertiesAt(unit->core.posX,unit->core.posY).swimmable);
                 }
                 checkPhaseContinuation(game,64);
-                CHECK(map.terrainPropertiesAt(unit->posX,unit->posY).swimmable);
+                CHECK(map.terrainPropertiesAt(unit->core.posX,unit->core.posY).swimmable);
             }
         }
     }
@@ -240,33 +240,33 @@ TEST_SUITE("UnitCustomization")
             REQUIRE(map.isMapDiscovered(8,12,unit->owner->sharedVisionOther));
             REQUIRE_FALSE(map.terrainPropertiesAt(7,8).swimmable);
             REQUIRE(map.terrainPropertiesAt(9,8).swimmable);
-            const auto random=game.syncRandom; auto expectedEntity=unit->entityRandom;
+            const auto random=game.syncRandom; auto expectedEntity=unit->detail.entityRandom;
             REQUIRE(unit->attachedBuilding==nullptr);
             unit->attachedBuilding=flag;
             unit->handleMovementRemovingBlackAround();
             unit->attachedBuilding=nullptr;
-            CHECK(game.syncRandom==random); CHECK(unit->entityRandom==expectedEntity);
-            if(mode==0||mode==3) REQUIRE(unit->movement==Unit::MOV_RANDOM_GROUND);
+            CHECK(game.syncRandom==random); CHECK(unit->detail.entityRandom==expectedEntity);
+            if(mode==0||mode==3) REQUIRE(unit->core.movement==Unit::MOV_RANDOM_GROUND);
             else {
-                REQUIRE(unit->movement==Unit::MOV_GOING_DX_DY);
-                CHECK(unit->dx==-1); CHECK(unit->dy==0);
+                REQUIRE(unit->core.movement==Unit::MOV_GOING_DX_DY);
+                CHECK(unit->core.dx==-1); CHECK(unit->core.dy==0);
             }
             // The swimmer's valid-neighbour fallback draws once even when
             // count==1. Stock direct steps and stationary actions draw none.
             if(mode==0) expectedEntity.nextU32();
             unit->handleAction();
-            CHECK(game.syncRandom==random); CHECK(unit->entityRandom==expectedEntity);
-            CHECK(unit->posX==(mode==0?9:mode==3?8:7)); CHECK(unit->posY==8);
-            CHECK(unit->action==(mode==0?SWIM:mode==1?WALK:mode==2?FLY:STOP_WALK));
-            CHECK((mode==2?map.getAirUnit(unit->posX,unit->posY):map.getGroundUnit(unit->posX,unit->posY))==unit->gid);
+            CHECK(game.syncRandom==random); CHECK(unit->detail.entityRandom==expectedEntity);
+            CHECK(unit->core.posX==(mode==0?9:mode==3?8:7)); CHECK(unit->core.posY==8);
+            CHECK(unit->core.action==(mode==0?SWIM:mode==1?WALK:mode==2?FLY:STOP_WALK));
+            CHECK((mode==2?map.getAirUnit(unit->core.posX,unit->core.posY):map.getGroundUnit(unit->core.posX,unit->core.posY))==unit->core.gid);
             if(mode==0) {
                 REQUIRE(unit->swimClass()==WATER_ONLY_CLASS);
                 for(int tick=0;tick<64;++tick) {
                     CAPTURE(tick); game.syncStep(0);
-                    REQUIRE(map.terrainPropertiesAt(unit->posX,unit->posY).swimmable);
+                    REQUIRE(map.terrainPropertiesAt(unit->core.posX,unit->core.posY).swimmable);
                 }
                 checkPhaseContinuation(game,64);
-                CHECK(map.terrainPropertiesAt(unit->posX,unit->posY).swimmable);
+                CHECK(map.terrainPropertiesAt(unit->core.posX,unit->core.posY).swimmable);
             }
         }
     }
@@ -314,16 +314,16 @@ TEST_SUITE("UnitCustomization")
             // to host a job that was already assigned.
             CHECK(flag->canUnitWorkHere(unit,true,int(role)));
             CHECK(flag->runtime->attractsRole(role));
-            CHECK(flag->runtime->interaction(unit->typeNum).recruits(role) == allowed);
-            unit->handleDisplacement(); CHECK(unit->displacement == Unit::DIS_RANDOM);
+            CHECK(flag->runtime->interaction(unit->core.typeNum).recruits(role) == allowed);
+            unit->handleDisplacement(); CHECK(unit->core.displacement == Unit::DIS_RANDOM);
             flag->maxUnitWorking = flag->desiredMaxUnitWorking = 1;
             flag->subscriptionWorkingTimer = 32;
             CHECK(flag->subscribeForFlagingStep() == allowed);
             if (allowed) {
-                CHECK(unit->attachedBuilding == flag); CHECK(unit->activity == Unit::ACT_FLAG);
-                CHECK(unit->jobPurpose == static_cast<UnitJobPurpose>(int(UnitJobPurpose::Clear)+role));
+                CHECK(unit->attachedBuilding == flag); CHECK(unit->core.activity == Unit::ACT_FLAG);
+                CHECK(unit->core.jobPurpose == static_cast<UnitJobPurpose>(int(UnitJobPurpose::Clear)+role));
             } else {
-                CHECK(unit->attachedBuilding == nullptr); CHECK(unit->activity == Unit::ACT_RANDOM);
+                CHECK(unit->attachedBuilding == nullptr); CHECK(unit->core.activity == Unit::ACT_RANDOM);
                 CHECK(flag->unitsWorking.empty());
             }
             checkPhaseContinuation(world.game,64);
@@ -351,10 +351,10 @@ TEST_SUITE("UnitCustomization")
                 CHECK(world.team->stats.measurements.cleared[WOOD] > 0);
             } else {
                 world.game.map.addGuardArea(9,8,world.team->teamNumber);
-                unit->handleDisplacement(); CHECK(unit->displacement == Unit::DIS_ATTACKING_AROUND);
-                for (int tick=0;tick<2048 && !world.game.map.isGuardArea(unit->posX,unit->posY,world.team->me);++tick)
+                unit->handleDisplacement(); CHECK(unit->core.displacement == Unit::DIS_ATTACKING_AROUND);
+                for (int tick=0;tick<2048 && !world.game.map.isGuardArea(unit->core.posX,unit->core.posY,world.team->me);++tick)
                     world.game.syncStep(0);
-                CHECK(world.game.map.isGuardArea(unit->posX,unit->posY,world.team->me));
+                CHECK(world.game.map.isGuardArea(unit->core.posX,unit->core.posY,world.team->me));
             }
             CHECK(unit->attachedBuilding == nullptr);
             checkPhaseContinuation(world.game,64);
@@ -394,12 +394,12 @@ TEST_SUITE("UnitCustomization")
                 for(const auto& point:targets) count+=world.game.map.getResource(point[0],point[1]).amount>0;
                 return count;
             };
-            const int initialHealth=unit->hp;
+            const int initialHealth=unit->core.hp;
             const int selfDamage=world.game.unitCatalog().levels(3)[0].harvestDamage;
             bool harvesting=false,continued=false;
             for (int tick=0;tick<4096 && remaining();++tick) {
                 world.game.syncStep(0);
-                harvesting |= unit->movement==Unit::MOV_HARVESTING;
+                harvesting |= unit->core.movement==Unit::MOV_HARVESTING;
                 // Continue during the first real clearing action, including
                 // its claim, self-damage, cargo and all private random streams.
                 if (harvesting && !continued) {
@@ -411,10 +411,10 @@ TEST_SUITE("UnitCustomization")
             for(const auto& point:targets)
                 CHECK(world.game.map.getResource(point[0],point[1]).amount==0);
             CHECK(world.team->stats.measurements.cleared[WOOD]==3);
-            CHECK(unit->hp==initialHealth-3*selfDamage);
+            CHECK(unit->core.hp==initialHealth-3*selfDamage);
             CHECK(unit->hasCarriedMaterial(STONE));
-            CHECK(unit->activity==Unit::ACT_RANDOM);
-            CHECK(unit->jobPurpose==UnitJobPurpose::None);
+            CHECK(unit->core.activity==Unit::ACT_RANDOM);
+            CHECK(unit->core.jobPurpose==UnitJobPurpose::None);
             CHECK(world.team->integrity());
         }
     }
@@ -434,7 +434,7 @@ TEST_SUITE("UnitCustomization")
         deposit(world.game.map,6,7,WOOD,3);
         world.game.map.addClearArea(6,7,world.team->teamNumber);
         unit->receiveCarriedMaterial(WHEAT,{});
-        unit->destinationPurpose=WHEAT;
+        unit->core.destinationPurpose=WHEAT;
         unit->subscriptionSuccess(inn,false,false,UnitJobPurpose::Transport);
         inn->unitsWorking.push_back(unit); inn->updateCallLists();
         for (int tick=0;tick<2048 && inn->materials[WHEAT]==0;++tick)
@@ -465,7 +465,7 @@ TEST_SUITE("UnitCustomization")
             flag->maxUnitWorking=flag->desiredMaxUnitWorking=1; flag->subscriptionWorkingTimer=32;
             REQUIRE(flag->subscribeForFlagingStep());
             const auto purpose=static_cast<UnitJobPurpose>(int(UnitJobPurpose::Clear)+role);
-            REQUIRE(unit->jobPurpose==purpose); REQUIRE(world.team->integrity());
+            REQUIRE(unit->core.jobPurpose==purpose); REQUIRE(world.team->integrity());
             const auto clearingMembership=world.team->clearingFlags;
             const auto combatMembership=world.team->combatFlags;
             const auto semanticRoles=flag->runtime->attractionRoles;
@@ -475,18 +475,18 @@ TEST_SUITE("UnitCustomization")
             // Recompile interaction rows without replacing live descriptors.
             world.game.configureBuildingCatalog();
             CHECK_FALSE(unit->runtimeTraits().recruits(role));
-            CHECK_FALSE(flag->runtime->interaction(unit->typeNum).recruits(role));
+            CHECK_FALSE(flag->runtime->interaction(unit->core.typeNum).recruits(role));
             CHECK(flag->runtime->attractionRoles==semanticRoles);
             CHECK(world.game.buildingsTypes.snapshotJson()==buildingCatalog);
             CHECK(world.team->clearingFlags==clearingMembership);
             CHECK(world.team->combatFlags==combatMembership);
-            CHECK(unit->activity==Unit::ACT_FLAG); CHECK(unit->attachedBuilding==flag);
-            CHECK(unit->jobPurpose==purpose); CHECK(flag->unitsWorking.size()==1);
+            CHECK(unit->core.activity==Unit::ACT_FLAG); CHECK(unit->attachedBuilding==flag);
+            CHECK(unit->core.jobPurpose==purpose); CHECK(flag->unitsWorking.size()==1);
             CHECK(flag->canUnitWorkHere(unit,true,int(role))); REQUIRE(world.team->integrity());
             auto *idle=world.addUnit(unitTypes[role],10,20); REQUIRE(idle);
             flag->maxUnitWorking=flag->desiredMaxUnitWorking=2; flag->subscriptionWorkingTimer=32;
             CHECK_FALSE(flag->subscribeForFlagingStep());
-            CHECK(idle->activity==Unit::ACT_RANDOM); CHECK(idle->attachedBuilding==nullptr);
+            CHECK(idle->core.activity==Unit::ACT_RANDOM); CHECK(idle->attachedBuilding==nullptr);
             REQUIRE(world.team->integrity());
             checkPhaseContinuation(world.game,64);
             const auto gid=flag->gid;
@@ -513,7 +513,7 @@ TEST_SUITE("UnitCustomization")
             REQUIRE(unit->hasCapability(UnitRuntimeTraits::SpillRejectedCargo));
             REQUIRE_FALSE(unit->hasCapability(UnitRuntimeTraits::ExtendedCargo));
             unit->receiveCargoPacket(WOOD,{1,denominator});
-            REQUIRE(unit->widePrimaryCargo); REQUIRE(unit->carriedPacketCount()==1);
+            REQUIRE(unit->detail.widePrimaryCargo); REQUIRE(unit->carriedPacketCount()==1);
             CHECK_FALSE(unit->canCarryMaterial(WOOD));
             const auto original=world.game.unitCargo.entries();
             world.team->stats.beginMeasurementSnapshot(world.team);
@@ -538,8 +538,8 @@ TEST_SUITE("UnitCustomization")
                 REQUIRE(input.getPosition()==bytes.size());
             }
             restored.team->myUnits[0]=loaded; restored.team->rebuildLiveLists();
-            restored.game.map.setGroundUnit(loaded->posX,loaded->posY,loaded->gid);
-            REQUIRE(loaded->widePrimaryCargo); CHECK(loaded->carriedPacketCount()==1);
+            restored.game.map.setGroundUnit(loaded->core.posX,loaded->core.posY,loaded->core.gid);
+            REQUIRE(loaded->detail.widePrimaryCargo); CHECK(loaded->carriedPacketCount()==1);
             CHECK(saveUnit(*loaded,text)==bytes); CHECK(restored.game.unitCargo.entries()==original);
             restored.team->stats.beginMeasurementSnapshot(restored.team); restored.team->stats.observeMeasurementUnit(loaded);
             CHECK(restored.team->stats.measurements.carried[WOOD]==1);
@@ -625,13 +625,13 @@ TEST_SUITE("UnitCustomization")
         world.game.gameHeader.setUnitCatalog(UnitCatalog::deserialize(definitions.dump()));
         world.game.configureBuildingCatalog();
         auto* unit=world.addUnit(WORKER,8,8); REQUIRE(unit);
-        unit->hp=INT_MIN; unit->hungry=INT_MIN;
+        unit->core.hp=INT_MIN; unit->core.hungry=INT_MIN;
         definitions["units"][WORKER]["behaviors"]["foodCapacity"]=1000000;
         for(auto& level:definitions["units"][WORKER]["levels"]) level["performance"][HP]=1000000;
         world.game.gameHeader.setUnitCatalog(UnitCatalog::deserialize(definitions.dump()));
         world.game.configureBuildingCatalog();
         unit->rebindDefinitionForSetup();
-        CHECK(unit->hp==INT_MIN); CHECK(unit->hungry==INT_MIN);
+        CHECK(unit->core.hp==INT_MIN); CHECK(unit->core.hungry==INT_MIN);
         auto restricted=definitions["units"][WORKER];
         restricted["key"]="fixture:zero-kind";
         restricted["behaviors"]["transport"]=false;
@@ -661,26 +661,26 @@ TEST_SUITE("UnitCustomization")
         for(int invalid=0;invalid<8;++invalid) {
             static_cast<UnitState&>(*unit)=original;
             switch(invalid) {
-                case 0: unit->performance[WALK]=-1; break;
-                case 1: unit->performance[HP]=0; break;
-                case 2: unit->performance[ARMOR]=1000001; break;
-                case 3: unit->fruitCount=4; break;
-                case 4: unit->experience=-1; break;
-                case 5: unit->experienceLevel=-1; break;
-                case 6: unit->speed=-1; break;
-                case 7: unit->delta=-1; break;
+                case 0: unit->performance(WALK)=-1; break;
+                case 1: unit->performance(HP)=0; break;
+                case 2: unit->performance(ARMOR)=1000001; break;
+                case 3: unit->detail.fruitCount=4; break;
+                case 4: unit->detail.experience=-1; break;
+                case 5: unit->core.experienceLevel=-1; break;
+                case 6: unit->core.speed=-1; break;
+                case 7: unit->core.delta=-1; break;
             }
             const auto bytes=serialized(); static_cast<UnitState&>(*unit)=original;
             GAGCore::BinaryInputStream input(new GAGCore::MemoryStreamBackend(bytes.data(),bytes.size())); input.seekFromStart(0);
             CHECK_THROWS_AS(Unit(&input,world.team,FILE_FORMAT_VERSION_UNIT_CATALOG),std::runtime_error);
         }
-        unit->hp=INT_MIN; unit->hungry=INT_MIN; unit->delta=INT_MAX; unit->speed=INT_MAX;
-        unit->experienceLevel=INT_MAX;
+        unit->core.hp=INT_MIN; unit->core.hungry=INT_MIN; unit->core.delta=INT_MAX; unit->core.speed=INT_MAX;
+        unit->core.experienceLevel=INT_MAX;
         const auto bytes=serialized(); static_cast<UnitState&>(*unit)=original;
         GAGCore::BinaryInputStream input(new GAGCore::MemoryStreamBackend(bytes.data(),bytes.size())); input.seekFromStart(0);
         Unit restored(&input,world.team,FILE_FORMAT_VERSION_UNIT_CATALOG);
-        CHECK(restored.hp==INT_MIN); CHECK(restored.hungry==INT_MIN);
-        CHECK(restored.delta==INT_MAX); CHECK(restored.speed==INT_MAX); CHECK(restored.experienceLevel==INT_MAX);
+        CHECK(restored.core.hp==INT_MIN); CHECK(restored.core.hungry==INT_MIN);
+        CHECK(restored.core.delta==INT_MAX); CHECK(restored.core.speed==INT_MAX); CHECK(restored.core.experienceLevel==INT_MAX);
     }
 
     TEST_CASE("custom combat extremes preserve observer estimates and clamp lethal overkill")
@@ -704,30 +704,30 @@ TEST_SUITE("UnitCustomization")
         world.game.configureBuildingCatalog(); world.game.gameHeader.setHungerDisabled(true);
         auto* attacker=world.addUnit(3,8,8); auto* victim=world.addUnit(3,9,8,1);
         REQUIRE(attacker); REQUIRE(victim);
-        attacker->hp=500000;
+        attacker->core.hp=500000;
         auto snapshot=AIEngine::AIWorldView::capture(world.game,AIEngine::AIWorldView::captureCatalog(world.game));
-        const auto* observed=snapshot->unitSlots(0)[Unit::GIDtoID(attacker->gid)]; REQUIRE(observed);
+        auto observed=snapshot->unitSlots(0)[Unit::GIDtoID(attacker->core.gid)]; REQUIRE(observed);
         CHECK(AIMaxima::WorldHelpers::warrior_power(*snapshot,observed)==127500000);
-        attacker->experienceLevel=INT_MAX;
+        attacker->core.experienceLevel=INT_MAX;
         snapshot=AIEngine::AIWorldView::capture(world.game,snapshot->catalog);
-        observed=snapshot->unitSlots(0)[Unit::GIDtoID(attacker->gid)]; REQUIRE(observed);
+        observed=snapshot->unitSlots(0)[Unit::GIDtoID(attacker->core.gid)]; REQUIRE(observed);
         CHECK(AIEngine::ObservationQueries::realAttackStrength(*snapshot,*observed)==INT_MAX);
         CHECK(AIMaxima::WorldHelpers::warrior_power(*snapshot,observed)==INT_MAX);
         CHECK(attacker->getRealAttackStrength()==INT_MAX);
-        victim->fruitCount=3;
+        victim->detail.fruitCount=3;
         for(int repeat=0;repeat<2;++repeat) {
-            attacker->action=ATTACK_SPEED; attacker->speed=12; attacker->delta=128;
-            attacker->dx=1; attacker->dy=0;
+            attacker->core.action=ATTACK_SPEED; attacker->core.speed=12; attacker->core.delta=128;
+            attacker->core.dx=1; attacker->core.dy=0;
             attacker->syncStep();
         }
-        CHECK(victim->hp==INT_MIN);
+        CHECK(victim->core.hp==INT_MIN);
         CHECK(victim->diagnosticDeathCause==GameplayMeasurements::COMBAT);
         CHECK(world.team->stats.measurements.damageDealt[GameplayMeasurements::MELEE][GameplayMeasurements::UNIT]==1000000);
-        victim->delta=255; victim->syncStep(); CHECK(victim->isDead);
+        victim->core.delta=255; victim->syncStep(); CHECK(victim->core.isDead);
         auto* magicVictim=world.addUnit(3,10,8,1); REQUIRE(magicVictim);
-        magicVictim->fruitCount=3;
-        for(int repeat=0;repeat<2;++repeat) { attacker->magicActionTimeout=0; attacker->handleMagic(); }
-        CHECK(magicVictim->hp==INT_MIN);
+        magicVictim->detail.fruitCount=3;
+        for(int repeat=0;repeat<2;++repeat) { attacker->detail.magicActionTimeout=0; attacker->handleMagic(); }
+        CHECK(magicVictim->core.hp==INT_MIN);
         CHECK(magicVictim->diagnosticDeathCause==GameplayMeasurements::COMBAT);
         CHECK(world.team->stats.measurements.damageDealt[GameplayMeasurements::MAGIC][GameplayMeasurements::UNIT]==1000000);
     }
@@ -745,20 +745,20 @@ TEST_SUITE("UnitCustomization")
         world.game.configureBuildingCatalog(); world.game.gameHeader.setHungerDisabled(true);
         auto* hospital=world.addBuilding("hospital",9,9); auto* patient=world.addUnit(3,8,8);
         REQUIRE(hospital); REQUIRE(patient);
-        patient->hp=999999;
+        patient->core.hp=999999;
         patient->subscriptionSuccess(hospital,true,false);
         hospital->unitsInside.push_back(patient);
-        patient->activity=Unit::ACT_UPGRADING; patient->destinationPurpose=HEAL;
-        patient->displacement=Unit::DIS_ENTERING_BUILDING;
-        patient->posX=9; patient->posY=9; patient->dx=1; patient->dy=1;
-        patient->action=WALK;
+        patient->core.activity=Unit::ACT_UPGRADING; patient->core.destinationPurpose=HEAL;
+        patient->core.displacement=Unit::DIS_ENTERING_BUILDING;
+        patient->core.posX=9; patient->core.posY=9; patient->core.dx=1; patient->core.dy=1;
+        patient->core.action=WALK;
         patient->handleDisplacement();
-        CHECK(patient->speed==INT_MAX);
-        CHECK(unitActionStepSpeed(patient->speed,WALK,1,1,true)==UNIT_DELTA_QUANTUM);
+        CHECK(patient->core.speed==INT_MAX);
+        CHECK(unitActionStepSpeed(patient->core.speed,WALK,1,1,true)==UNIT_DELTA_QUANTUM);
         const int duration=hospital->type->semantics.healing.duration;
         for(int tick=0;tick<=duration+2;++tick) patient->syncStep();
-        CHECK(patient->hp==1000000);
-        CHECK(patient->displacement!=Unit::DIS_INSIDE);
+        CHECK(patient->core.hp==1000000);
+        CHECK(patient->core.displacement!=Unit::DIS_INSIDE);
     }
 }
 
@@ -791,11 +791,11 @@ TEST_SUITE("UnitCustomization")
         CHECK(unit->carriedPacketCount()==3);
         auto* enemy=world.addUnit(WORKER,7,8,1);
         REQUIRE(enemy);
-        unit->action=ATTACK_SPEED; unit->speed=12; unit->delta=128;
-        unit->dx=1; unit->dy=0;
-        const int hp=enemy->hp;
+        unit->core.action=ATTACK_SPEED; unit->core.speed=12; unit->core.delta=128;
+        unit->core.dx=1; unit->core.dy=0;
+        const int hp=enemy->core.hp;
         unit->syncStep();
-        CHECK(enemy->hp<hp);
+        CHECK(enemy->core.hp<hp);
         CHECK(unit->carriedPacketCount()==3);
         unit->clearCargo();
         CHECK(world.game.unitCargo.empty());
@@ -841,13 +841,13 @@ TEST_SUITE("UnitCustomization")
         REQUIRE(inn); REQUIRE(unit);
         unit->receiveCarriedMaterial(WOOD,{});
         for (int i=0;i<3;++i) unit->receiveCarriedMaterial(WHEAT,{});
-        unit->destinationPurpose=WHEAT;
+        unit->core.destinationPurpose=WHEAT;
         unit->subscriptionSuccess(inn,false,false,UnitJobPurpose::Transport);
         unit->setTargetBuilding(inn);
         inn->unitsWorking.push_back(unit); inn->desiredMaxUnitWorking=inn->maxUnitWorking=1;
-        unit->destinationPurpose=WHEAT; unit->displacement=Unit::DIS_FILLING_BUILDING;
-        unit->movement=Unit::MOV_FILLING; unit->action=BUILD; unit->speed=unit->performance[BUILD];
-        unit->dx=1; unit->dy=0; unit->delta=255;
+        unit->core.destinationPurpose=WHEAT; unit->core.displacement=Unit::DIS_FILLING_BUILDING;
+        unit->core.movement=Unit::MOV_FILLING; unit->core.action=BUILD; unit->core.speed=unit->performance(BUILD);
+        unit->core.dx=1; unit->core.dy=0; unit->core.delta=255;
         unit->syncStep(); CHECK(inn->materials[WHEAT]==1); CHECK(unit->carriedPacketCount()==3);
         for (int tick=0;tick<31;++tick) unit->syncStep();
         CHECK(inn->materials[WHEAT]==1);
@@ -859,7 +859,7 @@ TEST_SUITE("UnitCustomization")
         unit->clearCargo();
         unit->receiveCargoPacket(STONE,{1,1000001});
         unit->receiveCarriedMaterial(WOOD,{});
-        REQUIRE(unit->widePrimaryCargo);
+        REQUIRE(unit->detail.widePrimaryCargo);
         world.team->stats.beginMeasurementSnapshot(world.team); world.team->stats.observeMeasurementUnit(unit);
         CHECK(world.team->stats.measurements.carried[STONE]==1);
         CHECK(world.team->stats.measurements.carried[WOOD]==1);
@@ -927,7 +927,7 @@ TEST_SUITE("UnitCustomization")
         Unit* carrier=nullptr;
         for(int tick=0;tick<4096 && !carrier;++tick) {
             game.syncStep(0);
-            for(Unit* unit:world.team->liveUnits.entries())if(unit->typeNum==type)carrier=unit;
+            for(Unit* unit:world.team->liveUnits.entries())if(unit->core.typeNum==type)carrier=unit;
         }
         REQUIRE(carrier);
         CHECK(carrier->runtimeTraits().meshClass==WORKER);
@@ -999,7 +999,7 @@ TEST_SUITE("UnitCustomization")
         CHECK(stats->carriers==2); CHECK(stats->builders==1); CHECK(stats->workersByConstructionLevel[0]==1);
         CHECK(stats->meleeUnits==2); CHECK(stats->scouts==1);
         CHECK(stats->idleCarriers==2); CHECK(stats->idleDefenders==1);
-        REQUIRE(courier); courier->performance[BUILD]=0;
+        REQUIRE(courier); courier->performance(BUILD)=0;
         for(int sample=0;sample<TeamStats::STATS_SMOOTH_SIZE;++sample) world.team->stats.step(world.team);
         stats=world.team->stats.getLatestStat();
         CHECK(stats->carriers==1); CHECK(stats->idleCarriers==1); CHECK(stats->idleDefenders==1);
@@ -1017,14 +1017,14 @@ TEST_SUITE("UnitCustomization")
         REQUIRE(swimmer); REQUIRE(stationary); REQUIRE(walker);
         world.team->stats.sampleTraps(world.team);
         for (int kind=0;kind<2;++kind) {
-            CHECK(world.team->stats.measurements.trappedUnits[kind][swimmer->typeNum]==1);
-            CHECK(world.team->stats.measurements.trappedUnits[kind][stationary->typeNum]==1);
+            CHECK(world.team->stats.measurements.trappedUnits[kind][swimmer->core.typeNum]==1);
+            CHECK(world.team->stats.measurements.trappedUnits[kind][stationary->core.typeNum]==1);
             CHECK(world.team->stats.measurements.trappedUnits[kind][WORKER]==0);
         }
         world.game.map.paintCell(7,8,WATER);
         world.team->stats.sampleTraps(world.team);
         for (int kind=0;kind<2;++kind)
-            CHECK(world.team->stats.measurements.trappedUnits[kind][swimmer->typeNum]==0);
+            CHECK(world.team->stats.measurements.trappedUnits[kind][swimmer->core.typeNum]==0);
     }
 
     TEST_CASE("survival eligibility is independent of movement and work capabilities")
@@ -1065,10 +1065,10 @@ TEST_SUITE("UnitCustomization")
             auto* unit=world.addUnit(WORKER,6,8); REQUIRE(unit); REQUIRE(inn->canConvertUnit());
             world.game.teams[1]->sharedVisionFood|=world.team->me;
             world.game.teams[1]->allies&=~world.team->me;
-            const auto oldGid=unit->gid;
+            const auto oldGid=unit->core.gid;
             unit->previousClearingArea=Unit::ClearingAreaClaim{7,7}; unit->previousClearingAreaDistance=1;
             world.game.map.setClearingAreaClaimed(7,7,0,oldGid);
-            unit->hungry=unit->trigHungryCarrying; unit->medical=Unit::MED_HUNGRY; unit->needToRecheckMedical=true;
+            unit->core.hungry=unit->detail.trigHungryCarrying; unit->core.medical=Unit::MED_HUNGRY; unit->detail.needToRecheckMedical=true;
             REQUIRE(world.team->findNearestFood(unit)==inn);
             unit->handleActivity();
             REQUIRE(unit->owner==world.game.teams[1]);
@@ -1092,11 +1092,11 @@ TEST_SUITE("UnitCustomization")
         CHECK_FALSE(world.game.map.pathfindPointToPoint(5,11,13,9,&dx,&dy,swimmer->swimClass(),world.team->me,20));
         auto* stationary=world.addUnit(*world.game.unitCatalog().find("stationary"),20,20);
         REQUIRE(stationary);
-        const int food=stationary->hungry;
+        const int food=stationary->core.hungry;
         for (int tick=0;tick<96;++tick) { stationary->syncStep(); swimmer->syncStep(); }
-        CHECK(stationary->posX==20); CHECK(stationary->posY==20);
-        CHECK(stationary->hungry==food); CHECK_FALSE(stationary->isUnitHungry());
-        CHECK(world.game.map.terrainPropertiesAt(swimmer->posX,swimmer->posY).swimmable);
+        CHECK(stationary->core.posX==20); CHECK(stationary->core.posY==20);
+        CHECK(stationary->core.hungry==food); CHECK_FALSE(stationary->isUnitHungry());
+        CHECK(world.game.map.terrainPropertiesAt(swimmer->core.posX,swimmer->core.posY).swimmable);
     }
 
     TEST_CASE("batch planning releases its own harvest obstacle for cold and warm fields without advancing clocks")
@@ -1124,31 +1124,31 @@ TEST_SUITE("UnitCustomization")
             auto* unit=world.addUnit(batched?*world.game.unitCatalog().find("ablation-1"):WORKER,6,8);
             REQUIRE(inn); REQUIRE(unit);
             deposit(world.game.map,7,9,WHEAT,3); world.game.map.setMapDiscovered();
-            unit->receiveCarriedMaterial(WOOD,{}); unit->destinationPurpose=WOOD;
+            unit->receiveCarriedMaterial(WOOD,{}); unit->core.destinationPurpose=WOOD;
             unit->subscriptionSuccess(inn,false,false,UnitJobPurpose::Transport);
             inn->unitsWorking.push_back(unit);
             if(warm) REQUIRE(world.game.map.materialAvailableSlot(world.team->teamNumber,WHEAT,unit->swimClass(),6,8,false,inn));
             world.game.map.markImmobileUnit(6,8,world.team->teamNumber);
             REQUIRE(world.game.map.isImmobileUnit(6,8));
-            const auto entityRandom=unit->entityRandom;
+            const auto entityRandom=unit->detail.entityRandom;
             const auto gameRandom=world.game.syncRandom;
-            const int action=unit->action, delta=unit->delta, speed=unit->speed;
+            const int action=unit->core.action, delta=unit->core.delta, speed=unit->core.speed;
             const auto epochs=world.game.map.snapshotGenerations();
             CHECK(unit->continueCargoCollection()==batched);
-            CHECK(unit->entityRandom==entityRandom); CHECK(world.game.syncRandom==gameRandom);
-            CHECK(unit->action==action); CHECK(unit->delta==delta); CHECK(unit->speed==speed);
-            CHECK(unit->posX==6); CHECK(unit->posY==8); CHECK(unit->carriedPacketCount()==1);
-            CHECK(unit->jobPurpose==UnitJobPurpose::Transport);
+            CHECK(unit->detail.entityRandom==entityRandom); CHECK(world.game.syncRandom==gameRandom);
+            CHECK(unit->core.action==action); CHECK(unit->core.delta==delta); CHECK(unit->core.speed==speed);
+            CHECK(unit->core.posX==6); CHECK(unit->core.posY==8); CHECK(unit->carriedPacketCount()==1);
+            CHECK(unit->core.jobPurpose==UnitJobPurpose::Transport);
             if(batched) {
                 CHECK_FALSE(world.game.map.isImmobileUnit(6,8));
-                CHECK(unit->destinationPurpose==WHEAT); CHECK(unit->targetX==7); CHECK(unit->targetY==9);
-                CHECK(unit->displacement==Unit::DIS_GOING_TO_RESOURCE); CHECK(unit->validTarget);
+                CHECK(unit->core.destinationPurpose==WHEAT); CHECK(unit->core.targetX==7); CHECK(unit->core.targetY==9);
+                CHECK(unit->core.displacement==Unit::DIS_GOING_TO_RESOURCE); CHECK(unit->core.validTarget);
                 const auto cleared=world.game.map.snapshotGenerations();
                 world.game.map.clearImmobileUnit(6,8);
                 CHECK(world.game.map.snapshotGenerations()==cleared);
             } else {
                 CHECK(world.game.map.isImmobileUnit(6,8)); CHECK(world.game.map.snapshotGenerations()==epochs);
-                CHECK(unit->destinationPurpose==WOOD);
+                CHECK(unit->core.destinationPurpose==WOOD);
             }
         }
         // Zero-capacity non-carriers still enter the extended helper's
@@ -1164,11 +1164,11 @@ TEST_SUITE("UnitCustomization")
         world.game.map.markImmobileUnit(6,8,world.team->teamNumber);
         const auto before=continuationAudit(world.game);
         const auto epochs=world.game.map.snapshotGenerations();
-        const auto random=unit->entityRandom;
+        const auto random=unit->detail.entityRandom;
         CHECK_FALSE(unit->continueCargoCollection());
         CHECK(continuationAudit(world.game)==before);
         CHECK(world.game.map.snapshotGenerations()==epochs);
-        CHECK(unit->entityRandom==random);
+        CHECK(unit->detail.entityRandom==random);
     }
 
     TEST_CASE("ground and airborne couriers collect mixed kinds and deliver through the engine")
@@ -1199,7 +1199,7 @@ TEST_SUITE("UnitCustomization")
                 deposit(world.game.map,position[0],position[1],WOOD,1);
             deposit(world.game.map,7,9,WHEAT,3);
             world.game.map.setMapDiscovered();
-            unit->destinationPurpose=WOOD;
+            unit->core.destinationPurpose=WOOD;
             unit->subscriptionSuccess(inn,false,false,UnitJobPurpose::Transport);
             inn->unitsWorking.push_back(unit);
             inn->updateCallLists();
@@ -1213,8 +1213,8 @@ TEST_SUITE("UnitCustomization")
             CHECK(inn->materials[WOOD]==1); CHECK(inn->materials[WHEAT]==3);
             CHECK(world.team->stats.measurements.materialSpillageEvents==0);
             for (int material:{WOOD,WHEAT}) {
-                int held=unit->carriedMaterial==material ? 1 : 0;
-                if (const auto* overflow=world.game.unitCargo.find(unit->gid))
+                int held=unit->core.carriedMaterial==material ? 1 : 0;
+                if (const auto* overflow=world.game.unitCargo.find(unit->core.gid))
                     for (const auto& packet:*overflow) if (packet.material==material) ++held;
                 int remaining=world.game.map.getResource(7,9).amount;
                 if (material==WOOD) {
@@ -1249,7 +1249,7 @@ TEST_SUITE("UnitCustomization")
         input.seekFromStart(0);
         REQUIRE(resumed.game.load(&input));
         resumed.game.setWaitingOnMask(0);
-        auto* copy=resumed.game.teams[0]->myUnits[Unit::GIDtoID(unit->gid)];
+        auto* copy=resumed.game.teams[0]->myUnits[Unit::GIDtoID(unit->core.gid)];
         REQUIRE(copy); CHECK(copy->carriedPacketCount()==2);
         for (int tick=0;tick<96;++tick) { resumed.game.syncStep(0); CHECK(trace(resumed.game)==expected[tick]); }
     }
@@ -1262,16 +1262,16 @@ TEST_SUITE("UnitCustomization")
         auto* healer=world.addUnit(*world.game.unitCatalog().find("healer"),6,8);
         auto* starver=world.addUnit(*world.game.unitCatalog().find("starver"),20,20);
         REQUIRE(healer); REQUIRE(starver);
-        healer->hp=100;
-        starver->hungry=0; starver->delta=255;
+        healer->core.hp=100;
+        starver->core.hungry=0; starver->core.delta=255;
         world.game.syncStep(0);
-        CHECK(healer->hp==101);
-        CHECK(starver->hp==197);
-        CHECK(starver->hungry==-1000);
+        CHECK(healer->core.hp==101);
+        CHECK(starver->core.hp==197);
+        CHECK(starver->core.hungry==-1000);
         CHECK_FALSE(healer->isUnitHungry());
         for (int tick=0;tick<31;++tick) world.game.syncStep(0);
-        CHECK(healer->hp==132);
-        CHECK(starver->hp<197);
+        CHECK(healer->core.hp==132);
+        CHECK(starver->core.hp<197);
     }
 
     TEST_CASE("configured service multipliers shorten complete meals and healing visits")
@@ -1286,20 +1286,20 @@ TEST_SUITE("UnitCustomization")
                 auto* unit=world.addUnit(fast?*world.game.unitCatalog().find("fast-service"):WORKER,6,8);
                 REQUIRE(building); REQUIRE(unit);
                 building->materials[WHEAT]=building->type->maxMaterial[WHEAT]; building->updateCallLists();
-                unit->hungry=purpose==FEED?10000:unit->foodCapacity();
-                unit->hp=purpose==HEAL?50:unit->performance[HP];
-                unit->medical=purpose==FEED?Unit::MED_HUNGRY:Unit::MED_DAMAGED;
-                unit->needToRecheckMedical=true;
+                unit->core.hungry=purpose==FEED?10000:unit->foodCapacity();
+                unit->core.hp=purpose==HEAL?50:unit->performance(HP);
+                unit->core.medical=purpose==FEED?Unit::MED_HUNGRY:Unit::MED_DAMAGED;
+                unit->detail.needToRecheckMedical=true;
                 bool entered=false,completed=false;
                 for (int tick=0;tick<10000 && !completed;++tick) {
                     world.game.syncStep(0);
-                    entered |= unit->displacement==Unit::DIS_INSIDE;
+                    entered |= unit->core.displacement==Unit::DIS_INSIDE;
                     if (entered) ++durations[fast];
-                    completed=entered && unit->displacement==Unit::DIS_EXITING_BUILDING;
+                    completed=entered && unit->core.displacement==Unit::DIS_EXITING_BUILDING;
                 }
                 CHECK(entered); CHECK(completed);
-                if (purpose==FEED) CHECK(unit->hungry>unit->trigHungry);
-                else CHECK(unit->hp==unit->performance[HP]);
+                if (purpose==FEED) CHECK(unit->core.hungry>unit->detail.trigHungry);
+                else CHECK(unit->core.hp==unit->performance(HP));
             }
             CHECK(durations[1]<durations[0]);
         }
@@ -1315,10 +1315,10 @@ TEST_SUITE("UnitCustomization")
         auto* enemy=world.addUnit(WORKER,9,8,1);
         REQUIRE(unit); REQUIRE(enemy);
         unit->receiveCarriedMaterial(STONE,{});
-        const int initialHp=enemy->hp;
-        unit->delta=255;
+        const int initialHp=enemy->core.hp;
+        unit->core.delta=255;
         world.game.syncStep(0);
-        CHECK(enemy->hp<initialHp);
+        CHECK(enemy->core.hp<initialHp);
         world.game.gameHeader.setResourceGrowthDisabled(true);
         auto* clearer=world.addUnit(*world.game.unitCatalog().find("ablation-6"),12,15);
         REQUIRE(clearer); clearer->receiveCarriedMaterial(STONE,{});
@@ -1351,26 +1351,26 @@ TEST_SUITE("UnitCustomization")
         world.game.teams[1]->sharedVisionFood |= world.team->me;
         world.game.teams[1]->allies &= ~world.team->me;
         unit->receiveCarriedMaterial(WOOD,{}); unit->receiveCarriedMaterial(STONE,{1,2});
-        unit->destinationPurpose=WHEAT;
+        unit->core.destinationPurpose=WHEAT;
         deposit(world.game.map,19,7,WHEAT,3);
         unit->subscriptionSuccess(ownInn,false,false,UnitJobPurpose::Transport);
         ownInn->unitsWorking.push_back(unit);
-        const Uint16 oldGid=unit->gid;
+        const Uint16 oldGid=unit->core.gid;
         unit->previousClearingArea=Unit::ClearingAreaClaim{7,7}; unit->previousClearingAreaDistance=1;
         world.game.map.setClearingAreaClaimed(7,7,world.team->teamNumber,oldGid);
-        unit->hungry=unit->trigHungryCarrying; unit->medical=Unit::MED_HUNGRY;
-        unit->needToRecheckMedical=true; unit->delta=255;
+        unit->core.hungry=unit->detail.trigHungryCarrying; unit->core.medical=Unit::MED_HUNGRY;
+        unit->detail.needToRecheckMedical=true; unit->core.delta=255;
         REQUIRE(world.team->findNearestFood(unit)==enemyInn);
         world.game.syncStep(0);
         CHECK(unit->owner==world.game.teams[1]);
-        CHECK(unit->gid!=oldGid);
+        CHECK(unit->core.gid!=oldGid);
         CHECK(world.game.map.isClearingAreaClaimed(7,7,world.team->teamNumber)==NOGUID);
         CHECK_FALSE(unit->previousClearingArea);
-        CHECK(unit->jobPurpose==UnitJobPurpose::None);
+        CHECK(unit->core.jobPurpose==UnitJobPurpose::None);
         CHECK(unit->carriedPacketCount()==2);
         CHECK_FALSE(world.game.unitCargo.find(oldGid));
-        REQUIRE(world.game.unitCargo.find(unit->gid));
-        CHECK(world.game.unitCargo.find(unit->gid)->front().material==STONE);
+        REQUIRE(world.game.unitCargo.find(unit->core.gid));
+        CHECK(world.game.unitCargo.find(unit->core.gid)->front().material==STONE);
         CHECK(std::find(ownInn->unitsWorking.begin(),ownInn->unitsWorking.end(),unit)==ownInn->unitsWorking.end());
     }
 
@@ -1386,9 +1386,9 @@ TEST_SUITE("UnitCustomization")
             REQUIRE(inn); REQUIRE(unit);
             deposit(world.game.map,8,7,WHEAT,3); world.game.map.setMapDiscovered();
             unit->receiveCarriedMaterial(STONE,{});
-            unit->destinationPurpose=WHEAT;
+            unit->core.destinationPurpose=WHEAT;
             unit->subscriptionSuccess(inn,false,false,UnitJobPurpose::Transport); inn->unitsWorking.push_back(unit);
-            unit->delta=255;
+            unit->core.delta=255;
             for (int tick=0;tick<256;++tick) world.game.syncStep(0);
             CHECK(unit->hasCarriedMaterial(STONE)); CHECK_FALSE(unit->hasCarriedMaterial(WHEAT));
             CHECK(world.game.map.getResource(8,7).amount==3); CHECK(inn->materials[WHEAT]==0);
@@ -1409,18 +1409,18 @@ TEST_SUITE("UnitCustomization")
         world.game.gameHeader.setUnitCatalog(UnitCatalog::deserialize(extreme.dump()));
         world.game.configureBuildingCatalog();
         auto* unit=world.addUnit(3,8,8); REQUIRE(unit);
-        unit->hungry=INT_MIN+500000;
+        unit->core.hungry=INT_MIN+500000;
         for (int tick=0;tick<16;++tick) world.game.syncStep(0);
-        CHECK(unit->hungry==INT_MIN); CHECK(unit->hp==unit->performance[HP]);
+        CHECK(unit->core.hungry==INT_MIN); CHECK(unit->core.hp==unit->performance(HP));
         CHECK(unit->foodStepsLeft(INT_MAX)<0); CHECK(unit->numberOfStepsLeftUntilHungry()<0);
-        unit->experienceLevel=46; unit->experience=INT_MAX-1;
+        unit->core.experienceLevel=46; unit->detail.experience=INT_MAX-1;
         CHECK(unit->getNextLevelThreshold()==INT_MAX);
-        unit->incrementExperience(1000000); CHECK(unit->experience==INT_MAX); CHECK(unit->experienceLevel==46);
+        unit->incrementExperience(1000000); CHECK(unit->detail.experience==INT_MAX); CHECK(unit->core.experienceLevel==46);
         for (int food:{INT_MIN,-1,0,150000,INT_MAX})
         for (int threshold:{INT_MIN,-1,0,37500,INT_MAX})
         for (int rate:{-1,0,1,425,INT_MAX}) {
             CAPTURE(food); CAPTURE(threshold); CAPTURE(rate);
-            unit->hungry=food; unit->trigHungry=threshold; unit->hungriness=rate;
+            unit->core.hungry=food; unit->detail.trigHungry=threshold; unit->detail.hungriness=rate;
             const Sint64 remaining=Sint64(food)-threshold;
             const int quotient=rate ? int(std::clamp<Sint64>(remaining/rate,INT_MIN,INT_MAX)) : INT_MAX;
             CHECK(unit->numberOfStepsLeftUntilHungry()==quotient);
@@ -1445,7 +1445,7 @@ TEST_SUITE("UnitCustomization")
         world.game.save(&output,false,"enabled unit experiment");
         const std::string bytes(storage->getBuffer(),storage->getPosition());
         GameGUI resumed; GAGCore::BinaryInputStream input(new GAGCore::MemoryStreamBackend(bytes.data(),bytes.size())); input.seekFromStart(0);
-        REQUIRE(resumed.game.load(&input)); CHECK(resumed.game.teams[0]->myUnits[Unit::GIDtoID(unit->gid)]->typeNum==3);
+        REQUIRE(resumed.game.load(&input)); CHECK(resumed.game.teams[0]->myUnits[Unit::GIDtoID(unit->core.gid)]->core.typeNum==3);
         header.getExperiments().clear();
         auto* malformed=new GAGCore::MemoryStreamBackend; GAGCore::BinaryOutputStream badOutput(malformed);
         world.game.save(&badOutput,false,"disabled live unit experiment");
@@ -1471,7 +1471,7 @@ TEST_SUITE("UnitCustomization")
         REQUIRE(building); REQUIRE(unit);
         unit->receiveCarriedMaterial(WOOD,{1,2}); unit->receiveCarriedMaterial(STONE,{});
         CHECK(unit->deliverCargo(*building)); CHECK(building->materials[WOOD]==1);
-        CHECK(unit->carriedPacket.numerator==1); CHECK(unit->carriedPacket.denominator==6);
+        CHECK(unit->detail.carriedPacket.numerator==1); CHECK(unit->detail.carriedPacket.denominator==6);
         CHECK(unit->carriedPacketCount()==2); CHECK(unit->hasCarriedMaterial(STONE));
         CHECK(world.team->stats.measurements.materialSpillageEvents==0);
         building->materials[WOOD]=0;
@@ -1496,21 +1496,21 @@ TEST_SUITE("UnitCustomization")
         const auto resolved=base->withLegacyLevels(levels,700);
         world.game.gameHeader.setUnitCatalog(resolved); world.game.configureBuildingCatalog();
         auto* unit=world.addUnit(WORKER,8,8); REQUIRE(unit);
-        unit->hp=147; unit->hungry=48123; unit->performance[WALK]=17; unit->hungriness=701;
-        const auto random=unit->entityRandom.exportState();
+        unit->core.hp=147; unit->core.hungry=48123; unit->performance(WALK)=17; unit->detail.hungriness=701;
+        const auto random=unit->detail.entityRandom.exportState();
         GameHeader setup=world.game.gameHeader;
         setup.setUnitCatalog(UnitCatalog::legacyMigration());
         world.game.setGameHeader(setup,true);
         CHECK(world.game.unitCatalog().digest()==resolved->digest());
         CHECK(world.team->race.getCatalog()->digest()==resolved->digest());
-        CHECK(unit->hp==147); CHECK(unit->hungry==48123);
-        CHECK(unit->performance[WALK]==17); CHECK(unit->hungriness==701);
-        CHECK(unit->entityRandom.exportState()==random);
+        CHECK(unit->core.hp==147); CHECK(unit->core.hungry==48123);
+        CHECK(unit->performance(WALK)==17); CHECK(unit->detail.hungriness==701);
+        CHECK(unit->detail.entityRandom.exportState()==random);
         setup.setUnitCatalog(UnitCatalog::fromJson(R"({"schemaVersion":1,"units":[{"key":"worker","behaviors":{"hungerRate":900}}]})"));
         CHECK_THROWS_AS(world.game.setGameHeader(setup,true),std::runtime_error);
         CHECK(world.game.unitCatalog().digest()==resolved->digest());
-        CHECK(unit->performance[WALK]==17); CHECK(unit->hungriness==701);
-        CHECK(unit->entityRandom.exportState()==random);
+        CHECK(unit->performance(WALK)==17); CHECK(unit->detail.hungriness==701);
+        CHECK(unit->detail.entityRandom.exportState()==random);
     }
 
     TEST_CASE("migrated tables retain cached performance idle and contact policies")
@@ -1530,14 +1530,14 @@ TEST_SUITE("UnitCustomization")
         auto* enemy=world.addUnit(WORKER,7,8,1);
         auto* groundedExplorer=world.addUnit(EXPLORER,18,18);
         REQUIRE(combatWorker); REQUIRE(enemy); REQUIRE(groundedExplorer);
-        combatWorker->delta=255; groundedExplorer->delta=255;
-        CHECK(combatWorker->trigHungry==30000);
+        combatWorker->core.delta=255; groundedExplorer->core.delta=255;
+        CHECK(combatWorker->detail.trigHungry==30000);
         world.game.syncStep(0);
-        CHECK(combatWorker->displacement==Unit::DIS_ATTACKING_AROUND);
-        CHECK(combatWorker->movement==Unit::MOV_ATTACKING_TARGET);
-        CHECK(groundedExplorer->displacement==Unit::DIS_RANDOM);
-        CHECK(groundedExplorer->movement==Unit::MOV_RANDOM_GROUND);
-        CHECK(world.game.map.getAirUnit(groundedExplorer->posX,groundedExplorer->posY)==NOGUID);
+        CHECK(combatWorker->core.displacement==Unit::DIS_ATTACKING_AROUND);
+        CHECK(combatWorker->core.movement==Unit::MOV_ATTACKING_TARGET);
+        CHECK(groundedExplorer->core.displacement==Unit::DIS_RANDOM);
+        CHECK(groundedExplorer->core.movement==Unit::MOV_RANDOM_GROUND);
+        CHECK(world.game.map.getAirUnit(groundedExplorer->core.posX,groundedExplorer->core.posY)==NOGUID);
     }
 
     TEST_CASE("an explicit producer creates stationary units on a legal birth cell")
@@ -1566,16 +1566,16 @@ TEST_SUITE("UnitCustomization")
         Unit* stationary=nullptr;
         for (int tick=0;tick<32 && !stationary;++tick) {
             world.game.syncStep(0);
-            for (Unit* unit:world.team->liveUnits.entries()) if (unit->typeNum==type) stationary=unit;
+            for (Unit* unit:world.team->liveUnits.entries()) if (unit->core.typeNum==type) stationary=unit;
         }
         REQUIRE(stationary);
         producer->productionRatio(type)=0;
-        const int x=stationary->posX,y=stationary->posY;
+        const int x=stationary->core.posX,y=stationary->core.posY;
         CHECK(world.game.map.terrainPropertiesAt(x,y).walkable);
-        CHECK(stationary->performance[WALK]==0); CHECK(stationary->performance[SWIM]==0);
+        CHECK(stationary->performance(WALK)==0); CHECK(stationary->performance(SWIM)==0);
         CHECK(world.team->stats.measurements.births[type]==1);
         for (int tick=0;tick<96;++tick) world.game.syncStep(0);
-        CHECK(stationary->posX==x); CHECK(stationary->posY==y);
+        CHECK(stationary->core.posX==x); CHECK(stationary->core.posY==y);
     }
 
     TEST_CASE("high unit IDs spawn work and resume all indexed state")
@@ -1595,11 +1595,11 @@ TEST_SUITE("UnitCustomization")
         for (int id:{35,275,1023}) {
             auto* unit=world.addUnit(id,6,8+int(gids.size())*4);
             REQUIRE(unit);
-            CHECK(unit->typeNum==id); CHECK(unit->hasCapability(UnitRuntimeTraits::Transport));
+            CHECK(unit->core.typeNum==id); CHECK(unit->hasCapability(UnitRuntimeTraits::Transport));
             unit->receiveCarriedMaterial(WHEAT,{}); unit->receiveCarriedMaterial(STONE,{1,2});
-            unit->destinationPurpose=WHEAT;
+            unit->core.destinationPurpose=WHEAT;
             unit->subscriptionSuccess(inn,false,false,UnitJobPurpose::Transport); inn->unitsWorking.push_back(unit);
-            gids.push_back(unit->gid);
+            gids.push_back(unit->core.gid);
             CHECK(world.team->stats.measurements.births[id]==0);
             CHECK(turret->runtime->damage(id)==turret->runtime->damage(WORKER));
         }
@@ -1617,9 +1617,9 @@ TEST_SUITE("UnitCustomization")
         CHECK(resumed.game.unitTypeCount()==1024);
         for (Uint16 gid:gids) {
             auto* unit=resumed.game.teams[0]->myUnits[Unit::GIDtoID(gid)]; REQUIRE(unit);
-            CHECK(unit->typeNum>31); CHECK(unit->jobPurpose==UnitJobPurpose::Transport);
+            CHECK(unit->core.typeNum>31); CHECK(unit->core.jobPurpose==UnitJobPurpose::Transport);
             CHECK(unit->carriedPacketCount()==2); CHECK(unit->hasCarriedMaterial(STONE));
-            CHECK(resumed.game.teams[0]->stats.getLatestStat()->numberUnitPerType[unit->typeNum]==1);
+            CHECK(resumed.game.teams[0]->stats.getLatestStat()->numberUnitPerType[unit->core.typeNum]==1);
         }
         for (int tick=0;tick<96;++tick) { resumed.game.syncStep(0); CHECK(trace(resumed.game)==expected[tick]); }
         CHECK(inn->materials[WHEAT]>0);
@@ -1663,7 +1663,7 @@ TEST_SUITE("UnitCustomization")
         second.game.gameHeader.setUnitCatalog(catalog); second.game.configureBuildingCatalog();
         auto* oldUnit=first.addUnit(WORKER,6,8); auto* changedUnit=second.addUnit(WORKER,6,8);
         REQUIRE(oldUnit); REQUIRE(changedUnit);
-        CHECK(oldUnit->performance[WALK]==16); CHECK(changedUnit->performance[WALK]==24);
+        CHECK(oldUnit->performance(WALK)==16); CHECK(changedUnit->performance(WALK)==24);
         CHECK(oldUnit->foodCapacity()==150000); CHECK(changedUnit->foodCapacity()==90000);
         for (int tick=0;tick<32;++tick) { first.game.syncStep(0); second.game.syncStep(0); }
         auto* storage=new GAGCore::MemoryStreamBackend; GAGCore::BinaryOutputStream output(storage);
@@ -1675,7 +1675,7 @@ TEST_SUITE("UnitCustomization")
         GAGCore::BinaryInputStream input(new GAGCore::MemoryStreamBackend(bytes.data(),bytes.size())); input.seekFromStart(0);
         REQUIRE(resumed.game.load(&input)); resumed.game.setWaitingOnMask(0);
         for (int tick=0;tick<96;++tick) { resumed.game.syncStep(0); second.game.syncStep(0); CHECK(trace(resumed.game)==expected[tick]); }
-        CHECK(oldUnit->performance[WALK]==16); CHECK(changedUnit->performance[WALK]==24);
+        CHECK(oldUnit->performance(WALK)==16); CHECK(changedUnit->performance(WALK)==24);
     }
 
     TEST_CASE("deleted units release wide cargo before a GID is reused")
@@ -1686,7 +1686,7 @@ TEST_SUITE("UnitCustomization")
         const int type=*world.game.unitCatalog().find("ablation-3");
         auto* unit=world.addUnit(type,6,8);
         REQUIRE(unit);
-        const Uint16 gid=unit->gid;
+        const Uint16 gid=unit->core.gid;
         unit->receiveCargoPacket(WOOD,{1,1000000000039ull});
         unit->receiveCarriedMaterial(STONE,{});
         REQUIRE(world.game.unitCargo.find(gid));
@@ -1697,9 +1697,9 @@ TEST_SUITE("UnitCustomization")
         CHECK(world.game.map.isClearingAreaClaimed(7,7,world.team->teamNumber)==NOGUID);
         auto* replacement=world.addUnit(type,6,8);
         REQUIRE(replacement);
-        CHECK(replacement->gid==gid);
+        CHECK(replacement->core.gid==gid);
         CHECK(replacement->carriedPacketCount()==0);
-        CHECK_FALSE(replacement->widePrimaryCargo);
+        CHECK_FALSE(replacement->detail.widePrimaryCargo);
     }
 
     TEST_CASE("mixed inventory and assigned purpose survive unit serialization")
@@ -1710,8 +1710,8 @@ TEST_SUITE("UnitCustomization")
         auto* unit=world.addUnit(*world.game.unitCatalog().find("ablation-3"),6,8);
         REQUIRE(unit);
         unit->receiveCargoPacket(WOOD,{1,1000000000039ull}); unit->receiveCarriedMaterial(STONE,{});
-        unit->activity=Unit::ACT_FLAG;
-        unit->jobPurpose=UnitJobPurpose::Defend;
+        unit->core.activity=Unit::ACT_FLAG;
+        unit->core.jobPurpose=UnitJobPurpose::Defend;
         auto* storage=new GAGCore::MemoryStreamBackend;
         GAGCore::BinaryOutputStream output(storage);
         unit->save(&output);
@@ -1720,12 +1720,12 @@ TEST_SUITE("UnitCustomization")
         GAGCore::BinaryInputStream input(new GAGCore::MemoryStreamBackend(bytes.data(),bytes.size()));
         input.seekFromStart(0);
         unit->load(&input,world.team,FILE_FORMAT_VERSION_UNIT_CATALOG);
-        CHECK(unit->jobPurpose==UnitJobPurpose::Defend);
+        CHECK(unit->core.jobPurpose==UnitJobPurpose::Defend);
         CHECK(unit->carriedPacketCount()==2);
         CHECK(unit->hasCarriedMaterial(WOOD)); CHECK(unit->hasCarriedMaterial(STONE));
-        CHECK(unit->widePrimaryCargo);
-        REQUIRE(world.game.unitCargo.find(unit->gid));
-        CHECK(world.game.unitCargo.find(unit->gid)->front().packet.denominator==1000000000039ull);
+        CHECK(unit->detail.widePrimaryCargo);
+        REQUIRE(world.game.unitCargo.find(unit->core.gid));
+        CHECK(world.game.unitCargo.find(unit->core.gid)->front().packet.denominator==1000000000039ull);
     }
 
     TEST_CASE("setup cancels obsolete live work clocks and claims without losing cargo or RNG")
@@ -1736,26 +1736,26 @@ TEST_SUITE("UnitCustomization")
             auto* unit=world.addUnit(WORKER,6,8);
             auto* inn=world.addBuilding("inn",10,8);
             REQUIRE(unit); REQUIRE(inn);
-            unit->destinationPurpose=WHEAT;
+            unit->core.destinationPurpose=WHEAT;
             unit->subscriptionSuccess(inn,false,false,UnitJobPurpose::Transport);
             inn->unitsWorking.push_back(unit);
             unit->receiveCarriedMaterial(WOOD,{});
-            unit->displacement=disabled==HARVEST?Unit::DIS_HARVESTING:Unit::DIS_FILLING_BUILDING;
-            unit->movement=disabled==HARVEST?Unit::MOV_HARVESTING:Unit::MOV_FILLING;
-            unit->action=Abilities(disabled); unit->speed=unit->performance[disabled];
+            unit->core.displacement=disabled==HARVEST?Unit::DIS_HARVESTING:Unit::DIS_FILLING_BUILDING;
+            unit->core.movement=disabled==HARVEST?Unit::MOV_HARVESTING:Unit::MOV_FILLING;
+            unit->core.action=Abilities(disabled); unit->core.speed=unit->performance(disabled);
             unit->previousClearingArea=Unit::ClearingAreaClaim{7,8};
-            world.game.map.setClearingAreaClaimed(7,8,world.team->teamNumber,unit->gid);
-            const auto random=unit->entityRandom.exportState();
+            world.game.map.setClearingAreaClaimed(7,8,world.team->teamNumber,unit->core.gid);
+            const auto random=unit->detail.entityRandom.exportState();
             auto altered=nlohmann::json::parse(world.game.unitCatalog().serialize());
             for (auto& level:altered["units"][WORKER]["levels"]) level["performance"][disabled]=0;
             world.game.gameHeader.setUnitCatalog(UnitCatalog::deserialize(altered.dump()));
             world.game.configureBuildingCatalog();
-            CHECK(unit->activity==Unit::ACT_RANDOM); CHECK(unit->jobPurpose==UnitJobPurpose::None);
+            CHECK(unit->core.activity==Unit::ACT_RANDOM); CHECK(unit->core.jobPurpose==UnitJobPurpose::None);
             CHECK_FALSE(unit->attachedBuilding); CHECK(inn->unitsWorking.empty());
             CHECK_FALSE(unit->previousClearingArea);
             CHECK(world.game.map.isClearingAreaClaimed(7,8,world.team->teamNumber)==NOGUID);
             CHECK(unit->hasCarriedMaterial(WOOD)); CHECK(unit->carriedPacketCount()==1);
-            CHECK(unit->entityRandom.exportState()==random); CHECK(unit->speed>0);
+            CHECK(unit->detail.entityRandom.exportState()==random); CHECK(unit->core.speed>0);
             for (int tick=0;tick<96;++tick) world.game.syncStep(0);
             CHECK(unit->integrity());
         }
@@ -1775,25 +1775,25 @@ TEST_SUITE("UnitCustomization")
             auto* unit=world.addUnit(WORKER,6,8); auto* school=world.addBuilding("inn",10,8);
             REQUIRE(unit); REQUIRE(school);
             school->materials[WHEAT]=5;
-            unit->destinationPurpose=WALK; school->subscribeUnitForInside(unit);
-            REQUIRE(unit->serviceResourcesReserved); REQUIRE(school->reservedMaterials[WHEAT]==5);
-            if (entered) unit->displacement=Unit::DIS_ENTERING_BUILDING;
-            const auto random=unit->entityRandom.exportState();
+            unit->core.destinationPurpose=WALK; school->subscribeUnitForInside(unit);
+            REQUIRE(unit->detail.serviceResourcesReserved); REQUIRE(school->reservedMaterials[WHEAT]==5);
+            if (entered) unit->core.displacement=Unit::DIS_ENTERING_BUILDING;
+            const auto random=unit->detail.entityRandom.exportState();
             const auto oldCatalog=world.game.gameHeader.getUnitCatalog();
             auto units=nlohmann::json::parse(oldCatalog->serialize());
             units["units"][WORKER]["behaviors"]["learnableMask"]=Uint32(world.game.unitCatalog().runtime(WORKER).learnableMask&~(1u<<BUILD));
             world.game.gameHeader.setUnitCatalog(UnitCatalog::deserialize(units.dump()));
             if (entered) {
                 CHECK_THROWS(world.game.configureBuildingCatalog());
-                CHECK(unit->serviceResourcesReserved); CHECK(school->reservedMaterials[WHEAT]==5);
+                CHECK(unit->detail.serviceResourcesReserved); CHECK(school->reservedMaterials[WHEAT]==5);
                 CHECK(unit->attachedBuilding==school); CHECK(world.team->race.getCatalog()==oldCatalog);
                 world.game.gameHeader.setUnitCatalog(oldCatalog);
             } else {
                 world.game.configureBuildingCatalog();
-                CHECK_FALSE(unit->serviceResourcesReserved); CHECK(school->reservedMaterials[WHEAT]==0);
-                CHECK(school->unitsInside.empty()); CHECK(unit->activity==Unit::ACT_RANDOM);
+                CHECK_FALSE(unit->detail.serviceResourcesReserved); CHECK(school->reservedMaterials[WHEAT]==0);
+                CHECK(school->unitsInside.empty()); CHECK(unit->core.activity==Unit::ACT_RANDOM);
             }
-            CHECK(school->materials[WHEAT]==5); CHECK(unit->entityRandom.exportState()==random);
+            CHECK(school->materials[WHEAT]==5); CHECK(unit->detail.entityRandom.exportState()==random);
         }
     }
 
@@ -1816,9 +1816,9 @@ TEST_SUITE("UnitCustomization")
         CHECK_FALSE(inn->subscribeToBringMaterialsStep());
         for (int tick=0;tick<96;++tick) {
             world.game.syncStep(0);
-            CHECK(empty->activity!=Unit::ACT_FILLING); CHECK(loaded->activity!=Unit::ACT_FILLING);
+            CHECK(empty->core.activity!=Unit::ACT_FILLING); CHECK(loaded->core.activity!=Unit::ACT_FILLING);
         }
-        CHECK(empty->speed>0); CHECK(loaded->speed>0);
+        CHECK(empty->core.speed>0); CHECK(loaded->core.speed>0);
         CHECK(loaded->hasCarriedMaterial(WHEAT)); CHECK(inn->unitsWorking.empty());
     }
 
@@ -1839,7 +1839,7 @@ TEST_SUITE("UnitCustomization")
             inn->desiredMaxUnitWorking=1; inn->maxUnitWorking=1;
             CHECK_FALSE(inn->subscribeToBringMaterialsStep());
             for (int tick=0;tick<96;++tick) world.game.syncStep(0);
-            CHECK(unit->activity!=Unit::ACT_FILLING); CHECK(inn->unitsWorking.empty());
+            CHECK(unit->core.activity!=Unit::ACT_FILLING); CHECK(inn->unitsWorking.empty());
             CHECK(unit->carriedPacketCount()==unsigned(capacity)); CHECK_FALSE(unit->hasCarriedMaterial(WHEAT));
             CHECK(world.game.map.getResource(7,8).amount==3);
             CHECK(world.team->stats.measurements.materialSpillageEvents==0);
@@ -1859,8 +1859,8 @@ TEST_SUITE("UnitCustomization")
         REQUIRE(unit); REQUIRE(inn);
         unit->receiveCarriedMaterial(WOOD,{}); unit->receiveCarriedMaterial(WHEAT,{});
         inn->desiredMaxUnitWorking=1; inn->maxUnitWorking=1;
-        REQUIRE(inn->subscribeToBringMaterialsStep()); CHECK(unit->destinationPurpose==WHEAT);
-        CHECK(unit->jobPurpose==UnitJobPurpose::Transport);
+        REQUIRE(inn->subscribeToBringMaterialsStep()); CHECK(unit->core.destinationPurpose==WHEAT);
+        CHECK(unit->core.jobPurpose==UnitJobPurpose::Transport);
         for (int tick=0;tick<4096 && inn->materials[WHEAT]==0;++tick) world.game.syncStep(0);
         CHECK(inn->materials[WHEAT]==1); CHECK(unit->hasCarriedMaterial(WOOD));
         CHECK_FALSE(unit->hasCarriedMaterial(WHEAT)); CHECK(unit->carriedPacketCount()==1);
@@ -1879,9 +1879,9 @@ TEST_SUITE("UnitCustomization")
                 world.game.gameHeader.setUnitCatalog(UnitCatalog::deserialize(catalog.dump())); world.game.configureBuildingCatalog();
             }
             auto* unit=world.addUnit(WORKER,6,8); REQUIRE(unit);
-            if (malformed==0) { unit->activity=Unit::ACT_FLAG; unit->jobPurpose=UnitJobPurpose::None; }
-            else if (malformed==1) { unit->activity=Unit::ACT_FILLING; unit->destinationPurpose=WHEAT; unit->jobPurpose=UnitJobPurpose::Defend; }
-            else { unit->carriedMaterial=WHEAT; unit->carriedPacket={}; }
+            if (malformed==0) { unit->core.activity=Unit::ACT_FLAG; unit->core.jobPurpose=UnitJobPurpose::None; }
+            else if (malformed==1) { unit->core.activity=Unit::ACT_FILLING; unit->core.destinationPurpose=WHEAT; unit->core.jobPurpose=UnitJobPurpose::Defend; }
+            else { unit->core.carriedMaterial=WHEAT; unit->detail.carriedPacket={}; }
             auto* storage=new GAGCore::MemoryStreamBackend; GAGCore::BinaryOutputStream output(storage);
             unit->save(&output);
             const std::string bytes(storage->getBuffer(),storage->getPosition());
@@ -1900,10 +1900,10 @@ TEST_SUITE("UnitCustomization")
         world.game.gameHeader.setHungerDisabled(true); world.game.gameHeader.setResourceGrowthDisabled(true);
         auto* inn=world.addBuilding("inn",10,8); auto* unit=world.addUnit(WORKER,9,8);
         REQUIRE(inn); REQUIRE(unit);
-        const Uint16 gid=unit->gid;
+        const Uint16 gid=unit->core.gid;
         unit->receiveCarriedMaterial(WHEAT,{1,2});
         CHECK_FALSE(unit->hasDeliverableCargo(*inn,WHEAT));
-        unit->destinationPurpose=WHEAT; unit->subscriptionSuccess(inn,false,false,UnitJobPurpose::Transport);
+        unit->core.destinationPurpose=WHEAT; unit->subscriptionSuccess(inn,false,false,UnitJobPurpose::Transport);
         inn->unitsWorking.push_back(unit); inn->updateCallLists();
         inn->desiredMaxUnitWorking=inn->maxUnitWorking=inn->maxUnitWorkingPreferred=1;
         for (int tick=0;tick<3;++tick) world.game.syncStep(0);
@@ -1912,16 +1912,16 @@ TEST_SUITE("UnitCustomization")
         const std::string bytes(storage->getBuffer(),storage->getPosition());
         std::vector<Uint32> expected;
         for (int tick=0;tick<192;++tick) { world.game.syncStep(0); expected.push_back(trace(world.game)); }
-        CHECK(unit->activity==Unit::ACT_RANDOM); CHECK_FALSE(unit->attachedBuilding);
+        CHECK(unit->core.activity==Unit::ACT_RANDOM); CHECK_FALSE(unit->attachedBuilding);
         CHECK(inn->unitsWorking.empty()); CHECK(inn->materials[WHEAT]==0);
-        CHECK(unit->carriedPacketCount()==1); CHECK(unit->carriedPacket==MaterialPacket{1,2});
+        CHECK(unit->carriedPacketCount()==1); CHECK(unit->detail.carriedPacket==MaterialPacket{1,2});
         CHECK(world.team->stats.measurements.materialSpillageEvents==0);
         GameGUI resumed;
         GAGCore::BinaryInputStream input(new GAGCore::MemoryStreamBackend(bytes.data(),bytes.size())); input.seekFromStart(0);
         REQUIRE(resumed.game.load(&input)); resumed.game.setWaitingOnMask(0);
         for (int tick=0;tick<192;++tick) { resumed.game.syncStep(0); CHECK(trace(resumed.game)==expected[tick]); }
         auto* copy=resumed.game.teams[0]->myUnits[Unit::GIDtoID(gid)]; REQUIRE(copy);
-        CHECK(copy->activity==Unit::ACT_RANDOM); CHECK(copy->carriedPacket==MaterialPacket{1,2});
+        CHECK(copy->core.activity==Unit::ACT_RANDOM); CHECK(copy->detail.carriedPacket==MaterialPacket{1,2});
     }
 
     TEST_CASE("target search handles a defender whose effective melee strength saturates")
@@ -1931,17 +1931,17 @@ TEST_SUITE("UnitCustomization")
         world.game.gameHeader.setHungerDisabled(true);
         auto* seeker=world.addUnit(WARRIOR,8,8); auto* defender=world.addUnit(WARRIOR,12,8,1);
         REQUIRE(seeker); REQUIRE(defender);
-        defender->experienceLevel=INT_MAX;
+        defender->core.experienceLevel=INT_MAX;
         REQUIRE(defender->getRealAttackStrength()==INT_MAX);
         // Permanent discovery does not grant current sight used by targeting.
         world.game.map.setMapDiscovered(12,8,seeker->owner->sharedVisionOther);
         // Keep the target's first movement after acquisition and the seeker's
         // initial strike; its strength still participates in target ranking.
-        defender->speed=1; defender->delta=0;
+        defender->core.speed=1; defender->core.delta=0;
         seeker->handleMovementAttackingAround();
-        CHECK(seeker->movement==Unit::MOV_GOING_TARGET);
-        CHECK(seeker->validTarget); CHECK(seeker->targetX==12); CHECK(seeker->targetY==8);
-        CHECK((seeker->dx!=0 || seeker->dy!=0));
+        CHECK(seeker->core.movement==Unit::MOV_GOING_TARGET);
+        CHECK(seeker->core.validTarget); CHECK(seeker->core.targetX==12); CHECK(seeker->core.targetY==8);
+        CHECK((seeker->core.dx!=0 || seeker->core.dy!=0));
         for(int tick=0;tick<256 && world.team->stats.measurements.shots[GameplayMeasurements::MELEE]==0;++tick) {
             world.game.map.setMapDiscovered(12,8,seeker->owner->sharedVisionOther);
             world.game.syncStep(0);
@@ -1968,19 +1968,19 @@ TEST_SUITE("UnitCustomization")
         REQUIRE(victim); REQUIRE(attacker); REQUIRE(attraction);
         // Ground exploration needs goals outside the inn's occupied footprint.
         attraction->unitStayRange=5; attraction->dirtyGradients();
-        attacker->experienceLevel=INT_MAX;
+        attacker->core.experienceLevel=INT_MAX;
         for(int hit=0;hit<2;++hit) {
-            attacker->action=ATTACK_SPEED; attacker->speed=12; attacker->delta=128;
-            attacker->dx=1; attacker->dy=0; attacker->syncStep();
+            attacker->core.action=ATTACK_SPEED; attacker->core.speed=12; attacker->core.delta=128;
+            attacker->core.dx=1; attacker->core.dy=0; attacker->syncStep();
         }
-        REQUIRE(victim->hp==INT_MIN); REQUIRE_FALSE(victim->isDead);
-        REQUIRE(victim->medical==Unit::MED_FREE);
+        REQUIRE(victim->core.hp==INT_MIN); REQUIRE_FALSE(victim->core.isDead);
+        REQUIRE(victim->core.medical==Unit::MED_FREE);
         attraction->desiredMaxUnitWorking=attraction->maxUnitWorking=1;
         attraction->subscriptionWorkingTimer=32;
         REQUIRE(attraction->subscribeForFlagingStep());
-        CHECK(victim->jobPurpose==UnitJobPurpose::Explore);
-        victim->delta=255; victim->syncStep();
-        CHECK(victim->isDead); CHECK(attraction->unitsWorking.empty());
+        CHECK(victim->core.jobPurpose==UnitJobPurpose::Explore);
+        victim->core.delta=255; victim->syncStep();
+        CHECK(victim->core.isDead); CHECK(attraction->unitsWorking.empty());
         CHECK(world.game.map.getGroundUnit(8,8)==NOGUID);
         CHECK(world.team->stats.measurements.deaths[3][GameplayMeasurements::COMBAT]==1);
     }
@@ -1996,7 +1996,7 @@ TEST_SUITE("UnitCustomization")
         world.game.gameHeader.setUnitCatalog(UnitCatalog::deserialize(units.dump())); world.game.configureBuildingCatalog();
         auto* carrier=world.addUnit(3,8,8,0,3); auto* builder=world.addUnit(WORKER,12,8,0,1);
         REQUIRE(carrier); REQUIRE(builder);
-        REQUIRE(carrier->performance[BUILD]>0); REQUIRE(carrier->workerLevel()==3);
+        REQUIRE(carrier->performance(BUILD)>0); REQUIRE(carrier->workerLevel()==3);
         REQUIRE_FALSE(carrier->hasCapability(UnitRuntimeTraits::Construct));
         CHECK(world.team->maxBuildLevel()==1);
         auto captured=AIEngine::AIWorldView::capture(world.game,AIEngine::AIWorldView::captureCatalog(world.game));
@@ -2017,8 +2017,8 @@ TEST_SUITE("UnitCustomization")
             auto* hospital=world.addBuilding("hospital",10,8); auto* inn=world.addBuilding("inn",20,20);
             REQUIRE(patient); REQUIRE(hospital); REQUIRE(inn);
             REQUIRE(patient->hasCapability(UnitRuntimeTraits::ServiceRebound));
-            patient->hp=patient->performance[HP]/2; patient->hungry=retainedHunger;
-            patient->medical=Unit::MED_DAMAGED; patient->needToRecheckMedical=true;
+            patient->core.hp=patient->performance(HP)/2; patient->core.hungry=retainedHunger;
+            patient->core.medical=Unit::MED_DAMAGED; patient->detail.needToRecheckMedical=true;
             inn->materials[WHEAT]=20; inn->updateCallLists();
             hospital->updateCallLists();
             REQUIRE_FALSE(patient->isUnitHungry());
@@ -2026,12 +2026,12 @@ TEST_SUITE("UnitCustomization")
             for(int tick=0;tick<4096 && world.team->stats.measurements.healingVisits==0;++tick) world.game.syncStep(0);
             REQUIRE(world.team->stats.measurements.healingVisits==1);
             for(int tick=0;tick<256;++tick) world.game.syncStep(0);
-            CHECK(patient->hp==patient->performance[HP]); CHECK(patient->hungry==retainedHunger);
-            CHECK(patient->medical==Unit::MED_FREE);
-            CHECK(patient->destinationPurpose!=FEED);
+            CHECK(patient->core.hp==patient->performance(HP)); CHECK(patient->core.hungry==retainedHunger);
+            CHECK(patient->core.medical==Unit::MED_FREE);
+            CHECK(patient->core.destinationPurpose!=FEED);
             CHECK(inn->materials[WHEAT]==20); CHECK(inn->reservedMaterials[WHEAT]==0);
             CHECK(inn->unitsInside.empty()); CHECK(hospital->unitsInside.empty());
-            CHECK_FALSE(patient->serviceResourcesReserved);
+            CHECK_FALSE(patient->detail.serviceResourcesReserved);
         }
     }
 
@@ -2060,13 +2060,13 @@ TEST_SUITE("UnitCustomization")
             auto* caster=world.addUnit(EXPLORER,8,8,0,2);
             auto* target=world.addUnit(WORKER,9,8,1);
             REQUIRE(caster); REQUIRE(target);
-            caster->level[MAGIC_ATTACK_AIR]=0; caster->performance[MAGIC_ATTACK_AIR]=0;
-            caster->level[STOP_FLY]=1;
-            REQUIRE(caster->performance[MAGIC_ATTACK_GROUND]==8);
-            const int previousHP=target->hp;
+            caster->detail.level[MAGIC_ATTACK_AIR]=0; caster->performance(MAGIC_ATTACK_AIR)=0;
+            caster->detail.level[STOP_FLY]=1;
+            REQUIRE(caster->performance(MAGIC_ATTACK_GROUND)==8);
+            const int previousHP=target->core.hp;
             caster->handleMagic();
-            REQUIRE(target->hp<previousHP);
-            CHECK(caster->magicActionTimeout==(legacy?22:33));
+            REQUIRE(target->core.hp<previousHP);
+            CHECK(caster->detail.magicActionTimeout==(legacy?22:33));
             CHECK(world.team->stats.measurements.shots[GameplayMeasurements::MAGIC]==1);
         }
     }
@@ -2081,19 +2081,19 @@ TEST_SUITE("UnitCustomization")
                 auto* patient=world.addUnit(WORKER,8,8); auto* inn=world.addBuilding("inn",9,9);
                 REQUIRE(patient); REQUIRE(inn);
                 inn->materials[WHEAT]=5;
-                patient->destinationPurpose=FEED;
+                patient->core.destinationPurpose=FEED;
                 inn->subscribeUnitForInside(patient);
-                REQUIRE(patient->serviceResourcesReserved);
+                REQUIRE(patient->detail.serviceResourcesReserved);
                 REQUIRE(patient->attachedBuilding==inn);
-                patient->posX=9; patient->posY=9; patient->dx=1; patient->dy=1;
-                patient->displacement=Unit::DIS_ENTERING_BUILDING;
-                patient->movement=Unit::MOV_ENTERING_BUILDING;
+                patient->core.posX=9; patient->core.posY=9; patient->core.dx=1; patient->core.dy=1;
+                patient->core.displacement=Unit::DIS_ENTERING_BUILDING;
+                patient->core.movement=Unit::MOV_ENTERING_BUILDING;
                 if(phase!=Unit::DIS_ENTERING_BUILDING) patient->handleDisplacement();
                 if(phase==Unit::DIS_EXITING_BUILDING) {
-                    patient->insideTimeout=0;
+                    patient->detail.insideTimeout=0;
                     patient->handleDisplacement();
                 }
-                REQUIRE(patient->displacement==phase);
+                REQUIRE(patient->core.displacement==phase);
                 const auto serialized=[](auto& entity) {
                     auto* memory=new GAGCore::MemoryStreamBackend;
                     GAGCore::BinaryOutputStream output(memory); entity.save(&output);
@@ -2148,8 +2148,8 @@ TEST_SUITE("UnitCustomization")
                 CAPTURE(activity); CAPTURE(purpose);
                 glob2test::HeadlessGame world({.clearImmobile=true,.header=true,.seed=4921});
                 auto* unit=world.addUnit(WORKER,8,8); REQUIRE(unit);
-                unit->activity=activity; unit->jobPurpose=purpose;
-                if(activity==Unit::ACT_UPGRADING) unit->destinationPurpose=FEED;
+                unit->core.activity=activity; unit->core.jobPurpose=purpose;
+                if(activity==Unit::ACT_UPGRADING) unit->core.destinationPurpose=FEED;
                 auto* memory=new GAGCore::MemoryStreamBackend;
                 GAGCore::BinaryOutputStream output(memory); unit->save(&output);
                 const auto bytes=memory->takeContents();
@@ -2173,7 +2173,7 @@ TEST_SUITE("UnitCustomization")
             auto result=continuationAudit(value);
             const auto append=[&](const auto& list) {
                 result.first.push_back(Uint32(list.size()));
-                for (const auto* entity : list) result.first.push_back(entity->gid);
+                for (const auto* entity : list) result.first.push_back(Game::refOf(entity).gid);
             };
             for (int teamId=0;teamId<value.teamsCount();++teamId) {
                 auto* team=value.teams[teamId];
@@ -2232,10 +2232,10 @@ TEST_SUITE("UnitCustomization")
                 for (int x=4;x<=14;++x) map.paintCell(x,row,WATER);
             deposit(map,7,y,ALGA,3);
             auto* unit=world.addUnit(type,5,y); REQUIRE(unit);
-            const auto unitId=Unit::GIDtoID(unit->gid), buildingId=Building::GIDtoID(inn->gid);
+            const auto unitId=Unit::GIDtoID(unit->core.gid), buildingId=Building::GIDtoID(inn->gid);
             REQUIRE(game.hasWaterOnlyUnits()); REQUIRE(unit->swimClass()==WATER_ONLY_CLASS);
             unit->receiveCarriedMaterial(STONE,{1,2});
-            unit->destinationPurpose=ALGA;
+            unit->core.destinationPurpose=ALGA;
             unit->subscriptionSuccess(inn,false,false,UnitJobPurpose::Transport);
             inn->unitsWorking.push_back(unit); inn->updateCallLists();
             REQUIRE(map.materialAvailable(0,MaterialId::Algae,WATER_ONLY_CLASS,5,y));
@@ -2392,15 +2392,15 @@ TEST_SUITE("UnitCustomization")
                 auto* unit=world.addUnit(type,5,y); REQUIRE(unit);
                 unit->receiveCarriedMaterial(STONE,{1,2});
                 REQUIRE(inn->materialDeliveryNeed(material)>0);
-                unit->destinationPurpose=material;
+                unit->core.destinationPurpose=material;
                 unit->subscriptionSuccess(inn,false,false,UnitJobPurpose::Transport);
                 inn->unitsWorking.push_back(unit); inn->updateCallLists();
-                REQUIRE(world.game.map.materialAvailable(world.team->teamNumber,static_cast<MaterialId>(material),unit->swimClass(),unit->posX,unit->posY));
+                REQUIRE(world.game.map.materialAvailable(world.team->teamNumber,static_cast<MaterialId>(material),unit->swimClass(),unit->core.posX,unit->core.posY));
                 REQUIRE(world.game.map.buildingGradient(inn,unit->swimClass()));
                 if(waterOnly) REQUIRE(unit->swimClass()==WATER_ONLY_CLASS);
-                for(int tick=0;tick<4096 && unit->displacement!=phase;++tick) world.game.syncStep(0);
-                REQUIRE(unit->displacement==phase);
-                REQUIRE(unit->jobPurpose==UnitJobPurpose::Transport);
+                for(int tick=0;tick<4096 && unit->core.displacement!=phase;++tick) world.game.syncStep(0);
+                REQUIRE(unit->core.displacement==phase);
+                REQUIRE(unit->core.jobPurpose==UnitJobPurpose::Transport);
                 if(phase==Unit::DIS_FILLING_BUILDING) REQUIRE(unit->hasCarriedMaterial(material));
                 checkPhaseContinuation(world.game,512);
                 CHECK(inn->materials[material]==3);
@@ -2408,7 +2408,7 @@ TEST_SUITE("UnitCustomization")
                 CHECK(world.team->stats.measurements.harvested[material]==3);
                 CHECK(world.team->stats.measurements.materialSpillageEvents==0);
                 CHECK(unit->integrity());
-                if(waterOnly) CHECK(world.game.map.terrainPropertiesAt(unit->posX,unit->posY).swimmable);
+                if(waterOnly) CHECK(world.game.map.terrainPropertiesAt(unit->core.posX,unit->core.posY).swimmable);
             }
     }
 
@@ -2433,22 +2433,22 @@ TEST_SUITE("UnitCustomization")
                 auto* unit=world.addUnit(*world.game.unitCatalog().find("fast-service"),6,8);
                 REQUIRE(inn); REQUIRE(unit);
                 inn->materials[WHEAT]=2;
-                unit->hp=purpose==HEAL?50:unit->performance[HP];
-                unit->hungry=purpose==FEED?10000:unit->foodCapacity();
-                unit->medical=purpose==FEED?Unit::MED_HUNGRY:purpose==HEAL?Unit::MED_DAMAGED:Unit::MED_FREE;
-                unit->destinationPurpose=purpose; unit->needToRecheckMedical=purpose==WALK;
+                unit->core.hp=purpose==HEAL?50:unit->performance(HP);
+                unit->core.hungry=purpose==FEED?10000:unit->foodCapacity();
+                unit->core.medical=purpose==FEED?Unit::MED_HUNGRY:purpose==HEAL?Unit::MED_DAMAGED:Unit::MED_FREE;
+                unit->core.destinationPurpose=purpose; unit->detail.needToRecheckMedical=purpose==WALK;
                 REQUIRE(inn->canOfferService(unit,purpose)); inn->subscribeUnitForInside(unit);
-                REQUIRE(unit->serviceResourcesReserved); REQUIRE(inn->reservedMaterials[WHEAT]==2);
-                for(int tick=0;tick<4096 && unit->displacement!=phase;++tick) world.game.syncStep(0);
-                REQUIRE(unit->displacement==phase);
-                REQUIRE(unit->jobPurpose==UnitJobPurpose::None);
+                REQUIRE(unit->detail.serviceResourcesReserved); REQUIRE(inn->reservedMaterials[WHEAT]==2);
+                for(int tick=0;tick<4096 && unit->core.displacement!=phase;++tick) world.game.syncStep(0);
+                REQUIRE(unit->core.displacement==phase);
+                REQUIRE(unit->core.jobPurpose==UnitJobPurpose::None);
                 checkPhaseContinuation(world.game,256);
-                CHECK_FALSE(unit->serviceResourcesReserved);
+                CHECK_FALSE(unit->detail.serviceResourcesReserved);
                 CHECK(inn->reservedMaterials[WHEAT]==0); CHECK(inn->materials[WHEAT]==0);
                 CHECK(inn->unitsInside.empty()); CHECK(unit->integrity());
-                if(purpose==FEED) CHECK(unit->hungry==unit->foodCapacity());
-                else if(purpose==HEAL) CHECK(unit->hp==unit->performance[HP]);
-                else { CHECK(unit->level[WALK]==1); CHECK(world.team->stats.measurements.trainingVisits[unit->typeNum]==1); }
+                if(purpose==FEED) CHECK(unit->core.hungry==unit->foodCapacity());
+                else if(purpose==HEAL) CHECK(unit->core.hp==unit->performance(HP));
+                else { CHECK(unit->detail.level[WALK]==1); CHECK(world.team->stats.measurements.trainingVisits[unit->core.typeNum]==1); }
             }
     }
 
@@ -2460,15 +2460,15 @@ TEST_SUITE("UnitCustomization")
         auto* fighter=world.addUnit(*world.game.unitCatalog().find("ablation-3"),8,8);
         auto* enemy=world.addUnit(WORKER,9,8,1); REQUIRE(fighter); REQUIRE(enemy);
         fighter->receiveCarriedMaterial(WOOD,{1,2}); fighter->receiveCarriedMaterial(STONE,{});
-        fighter->hp=100;
+        fighter->core.hp=100;
         world.game.map.setMapDiscovered(9,8,world.team->sharedVisionOther);
-        fighter->delta=255;
+        fighter->core.delta=255;
         world.game.syncStep(0);
-        REQUIRE(enemy->hp<enemy->performance[HP]);
-        REQUIRE(fighter->regenerationRemainder!=0);
+        REQUIRE(enemy->core.hp<enemy->performance(HP));
+        REQUIRE(fighter->detail.regenerationRemainder!=0);
         const auto melee=world.team->stats.measurements.shots[GameplayMeasurements::MELEE];
         checkPhaseContinuation(world.game,128);
-        CHECK(fighter->hp>100); CHECK(fighter->carriedPacketCount()==2);
+        CHECK(fighter->core.hp>100); CHECK(fighter->carriedPacketCount()==2);
         CHECK(world.team->stats.measurements.shots[GameplayMeasurements::MELEE]>melee);
         CHECK(fighter->integrity());
     }
@@ -2479,10 +2479,10 @@ TEST_SUITE("UnitCustomization")
         {
             glob2test::HeadlessGame world({.clearImmobile=true,.header=true,.seed=4921}); configure(world);
             auto* starver=world.addUnit(*world.game.unitCatalog().find("starver"),20,20); REQUIRE(starver);
-            starver->hungry=0; starver->delta=255; world.game.syncStep(0);
-            REQUIRE(starver->hungry==-1000); REQUIRE(starver->hp==197);
+            starver->core.hungry=0; starver->core.delta=255; world.game.syncStep(0);
+            REQUIRE(starver->core.hungry==-1000); REQUIRE(starver->core.hp==197);
             checkPhaseContinuation(world.game,64);
-            CHECK(starver->hp<197); CHECK(starver->hungry<-1000); CHECK(starver->integrity());
+            CHECK(starver->core.hp<197); CHECK(starver->core.hungry<-1000); CHECK(starver->integrity());
         }
         {
             glob2test::HeadlessGame world({.teams=2,.discovered=true,.clearImmobile=true,.header=true,.seed=4921}); configure(world);
@@ -2495,17 +2495,17 @@ TEST_SUITE("UnitCustomization")
             auto* unit=world.addUnit(*world.game.unitCatalog().find("ablation-0"),6,8); REQUIRE(unit);
             world.game.teams[1]->sharedVisionFood|=world.team->me; world.game.teams[1]->allies&=~world.team->me;
             unit->receiveCarriedMaterial(WOOD,{}); unit->receiveCarriedMaterial(STONE,{1,2});
-            unit->destinationPurpose=WHEAT; deposit(world.game.map,19,7,WHEAT,3);
+            unit->core.destinationPurpose=WHEAT; deposit(world.game.map,19,7,WHEAT,3);
             unit->subscriptionSuccess(ownInn,false,false,UnitJobPurpose::Transport); ownInn->unitsWorking.push_back(unit);
-            const auto oldGid=unit->gid;
+            const auto oldGid=unit->core.gid;
             unit->previousClearingArea=Unit::ClearingAreaClaim{7,7}; unit->previousClearingAreaDistance=1;
             world.game.map.setClearingAreaClaimed(7,7,world.team->teamNumber,oldGid);
-            unit->hungry=unit->trigHungryCarrying; unit->medical=Unit::MED_HUNGRY;
-            unit->needToRecheckMedical=true; unit->delta=255;
+            unit->core.hungry=unit->detail.trigHungryCarrying; unit->core.medical=Unit::MED_HUNGRY;
+            unit->detail.needToRecheckMedical=true; unit->core.delta=255;
             REQUIRE(world.team->findNearestFood(unit)==enemyInn);
             checkPhaseContinuation(world.game,64);
-            CHECK(unit->owner==world.game.teams[1]); CHECK(unit->gid!=oldGid);
-            CHECK(unit->configuredVisionRadius==unit->runtimeTraits().visionRadius);
+            CHECK(unit->owner==world.game.teams[1]); CHECK(unit->core.gid!=oldGid);
+            CHECK(unit->detail.configuredVisionRadius==unit->runtimeTraits().visionRadius);
             CHECK_FALSE(world.game.unitCargo.find(oldGid)); CHECK(unit->carriedPacketCount()==2);
             CHECK(world.game.map.isClearingAreaClaimed(7,7,world.team->teamNumber)==NOGUID);
             // Other workers may be recruited while the converted carrier is
@@ -2518,11 +2518,8 @@ TEST_SUITE("UnitCustomization")
     {
         static_assert(std::is_trivially_copyable_v<UnitState>);
         static_assert(std::is_standard_layout_v<UnitState>);
-        static_assert(offsetof(UnitState,configuredVisionRadius)==offsetof(UnitState,underAttackTimer)+1);
-        static_assert(offsetof(UnitState,hp)==offsetof(UnitState,underAttackTimer)+4);
-        // Native 64-bit layout guards; narrower targets still check the exact padding gap.
-        static_assert(sizeof(void*)!=8 || sizeof(UnitState)==360);
-        static_assert(sizeof(void*)!=8 || sizeof(Unit)==440);
+        static_assert(offsetof(UnitState,core)==0);
+        static_assert(sizeof(SimulationSnapshot::UnitCoreView)<=192);
         glob2test::HeadlessGlobals globals;
         glob2test::HeadlessGame world({.wDec=6,.hDec=6,.clearImmobile=true,.header=true,.seed=4921});
         auto definitions=nlohmann::json::parse(world.game.unitCatalog().serialize());
@@ -2531,14 +2528,14 @@ TEST_SUITE("UnitCustomization")
         world.game.gameHeader.setUnitCatalog(UnitCatalog::deserialize(definitions.dump()));
         world.game.configureBuildingCatalog();
         auto* unit=world.addUnit(3,30,30); REQUIRE(unit);
-        CHECK(unit->configuredVisionRadius==unit->runtimeTraits().visionRadius);
+        CHECK(unit->detail.configuredVisionRadius==unit->runtimeTraits().visionRadius);
         for(int radius:{0,1,3,32}) {
             CAPTURE(radius);
             definitions["units"][3]["behaviors"]["visionRadius"]=radius;
             world.game.gameHeader.setUnitCatalog(UnitCatalog::deserialize(definitions.dump()));
             world.game.configureBuildingCatalog(); // Actual supported live setup rebinding.
-            REQUIRE(unit->configuredVisionRadius==radius);
-            unit->resetAtLevel(1); REQUIRE(unit->configuredVisionRadius==radius);
+            REQUIRE(unit->detail.configuredVisionRadius==radius);
+            unit->resetAtLevel(1); REQUIRE(unit->detail.configuredVisionRadius==radius);
             const auto serialized=[&] {
                 auto* memory=new GAGCore::MemoryStreamBackend;
                 GAGCore::BinaryOutputStream output(memory); unit->save(&output);
@@ -2547,33 +2544,33 @@ TEST_SUITE("UnitCustomization")
             std::vector<Uint32> checksumBefore,checksumPoisoned;
             const auto checksum=unit->checkSum(&checksumBefore);
             const auto bytes=serialized();
-            unit->configuredVisionRadius=Uint8((radius+1)%33);
+            unit->detail.configuredVisionRadius=Uint8((radius+1)%33);
             CHECK(serialized()==bytes); // Derived cache adds no saved field.
             CHECK(unit->checkSum(&checksumPoisoned)==checksum);
             CHECK(checksumPoisoned==checksumBefore); // Adds no checksum field.
-            unit->configuredVisionRadius=Uint8(radius);
+            unit->detail.configuredVisionRadius=Uint8(radius);
             {
                 GAGCore::BinaryInputStream input(new GAGCore::MemoryStreamBackend(bytes.data(),bytes.size()));
                 input.seekFromStart(0);
                 Unit restored(&input,world.team,FILE_FORMAT_VERSION_UNIT_CATALOG);
-                REQUIRE(restored.configuredVisionRadius==radius);
+                REQUIRE(restored.detail.configuredVisionRadius==radius);
             }
             auto frozen=AIEngine::AIWorldView::capture(world.game,AIEngine::AIWorldView::captureCatalog(world.game));
-            const auto* observed=frozen->unitSlots(0)[Unit::GIDtoID(unit->gid)]; REQUIRE(observed);
-            CHECK(observed->configuredVisionRadius==radius);
-            unit->configuredVisionRadius=Uint8((radius+1)%33);
-            CHECK(observed->configuredVisionRadius==radius);
-            unit->configuredVisionRadius=Uint8(radius);
+            const auto observed=frozen->unitSlots(0)[Unit::GIDtoID(unit->core.gid)]; REQUIRE(observed);
+            CHECK(observed->detail.configuredVisionRadius==radius);
+            unit->detail.configuredVisionRadius=Uint8((radius+1)%33);
+            CHECK(observed->detail.configuredVisionRadius==radius);
+            unit->detail.configuredVisionRadius=Uint8(radius);
 
             world.game.map.unsetMapDiscovered();
-            unit->delta=255;
+            unit->core.delta=255;
             { glob2test::BoundGameRandom bound(world.game); unit->syncStep(); }
             // Independent rectangular torus oracle around the action's final position.
             // This checks actual discoveries, including radius zero and wrapping at 32.
             const auto& map=world.game.map;
             for(int y=0;y<map.getH();++y) for(int x=0;x<map.getW();++x) {
-                const int dx=std::min((x-unit->posX)&map.wMask,(unit->posX-x)&map.wMask);
-                const int dy=std::min((y-unit->posY)&map.hMask,(unit->posY-y)&map.hMask);
+                const int dx=std::min((x-unit->core.posX)&map.wMask,(unit->core.posX-x)&map.wMask);
+                const int dy=std::min((y-unit->core.posY)&map.hMask,(unit->core.posY-y)&map.hMask);
                 const bool expected=dx<=radius && dy<=radius;
                 CHECK(map.isMapDiscovered(x,y,world.team->me)==expected);
             }
@@ -2584,13 +2581,13 @@ TEST_SUITE("UnitCustomization")
             GameGUI resumed;
             GAGCore::BinaryInputStream input(new GAGCore::MemoryStreamBackend(checkpoint.data(),checkpoint.size()));
             input.seekFromStart(0); REQUIRE(resumed.game.load(&input)); resumed.game.setWaitingOnMask(0);
-            const auto* loaded=resumed.game.teams[0]->myUnits[Unit::GIDtoID(unit->gid)]; REQUIRE(loaded);
-            REQUIRE(loaded->configuredVisionRadius==radius);
+            const auto* loaded=resumed.game.teams[0]->myUnits[Unit::GIDtoID(unit->core.gid)]; REQUIRE(loaded);
+            REQUIRE(loaded->detail.configuredVisionRadius==radius);
             REQUIRE(resumed.game.unitCatalog().digest()==world.game.unitCatalog().digest());
             for(int tick=0;tick<32;++tick) {
                 CAPTURE(tick);
                 world.game.syncStep(0); resumed.game.syncStep(0);
-                CHECK(unit->configuredVisionRadius==radius); CHECK(loaded->configuredVisionRadius==radius);
+                CHECK(unit->detail.configuredVisionRadius==radius); CHECK(loaded->detail.configuredVisionRadius==radius);
                 REQUIRE(continuationAudit(world.game)==continuationAudit(resumed.game));
                 REQUIRE(world.game.map.mapDiscovered==resumed.game.map.mapDiscovered);
                 REQUIRE(world.game.syncRandom==resumed.game.syncRandom);
@@ -2622,16 +2619,16 @@ TEST_SUITE("UnitCustomization")
             if(differentCache) {
                 // Old saves preserve per-unit cached abilities independently of
                 // the final team's authoritative Race table. Keep occupancy valid.
-                if(tableFlight) world.game.map.setAirUnit(unit->posX,unit->posY,NOGUID);
-                else world.game.map.setGroundUnit(unit->posX,unit->posY,NOGUID);
-                unit->performance[FLY]=flying?16:0;
-                if(flying) world.game.map.setAirUnit(unit->posX,unit->posY,unit->gid);
-                else world.game.map.setGroundUnit(unit->posX,unit->posY,unit->gid);
-                unit->movement=flying?Unit::MOV_RANDOM_FLY:Unit::MOV_RANDOM_GROUND;
-                unit->selectPreferredMovement(); unit->speed=unit->performance[unit->action];
-                REQUIRE(unit->performance[FLY]!=world.team->race.getUnitType(type,0)->performance[FLY]);
+                if(tableFlight) world.game.map.setAirUnit(unit->core.posX,unit->core.posY,NOGUID);
+                else world.game.map.setGroundUnit(unit->core.posX,unit->core.posY,NOGUID);
+                unit->performance(FLY)=flying?16:0;
+                if(flying) world.game.map.setAirUnit(unit->core.posX,unit->core.posY,unit->core.gid);
+                else world.game.map.setGroundUnit(unit->core.posX,unit->core.posY,unit->core.gid);
+                unit->core.movement=flying?Unit::MOV_RANDOM_FLY:Unit::MOV_RANDOM_GROUND;
+                unit->selectPreferredMovement(); unit->core.speed=unit->performance(unit->core.action);
+                REQUIRE(unit->performance(FLY)!=world.team->race.getUnitType(type,0)->performance[FLY]);
             }
-            REQUIRE(unit->configuredVisionRadius==(flying?1:3));
+            REQUIRE(unit->detail.configuredVisionRadius==(flying?1:3));
             checkVisionAction(*unit,flying?3:1);
             checkVisionContinuation(world.game,64);
         }
@@ -2659,19 +2656,19 @@ TEST_SUITE("UnitCustomization")
         auto* inn=world.addBuilding("inn",32,30);
         auto* unit=world.addUnit(WORKER,30,30); REQUIRE(inn); REQUIRE(unit);
         REQUIRE(unit->hasCapability(UnitRuntimeTraits::LegacyPerformancePolicies));
-        REQUIRE(unit->performance[FLY]==0); REQUIRE(unit->configuredVisionRadius==1);
+        REQUIRE(unit->performance(FLY)==0); REQUIRE(unit->detail.configuredVisionRadius==1);
         checkVisionAction(*unit,1);
-        inn->materials[WHEAT]=2; unit->destinationPurpose=FLY;
+        inn->materials[WHEAT]=2; unit->core.destinationPurpose=FLY;
         REQUIRE(inn->canOfferService(unit,FLY)); inn->subscribeUnitForInside(unit);
-        for(int tick=0;tick<4096 && unit->displacement!=Unit::DIS_INSIDE;++tick) world.game.syncStep(0);
-        REQUIRE(unit->displacement==Unit::DIS_INSIDE); REQUIRE(unit->serviceResourcesReserved);
+        for(int tick=0;tick<4096 && unit->core.displacement!=Unit::DIS_INSIDE;++tick) world.game.syncStep(0);
+        REQUIRE(unit->core.displacement==Unit::DIS_INSIDE); REQUIRE(unit->detail.serviceResourcesReserved);
         checkVisionContinuation(world.game,128);
         for(int tick=0;tick<4096 && unit->attachedBuilding;++tick) world.game.syncStep(0);
         REQUIRE(unit->attachedBuilding==nullptr);
-        REQUIRE(unit->level[FLY]==1); REQUIRE(unit->performance[FLY]==16);
+        REQUIRE(unit->detail.level[FLY]==1); REQUIRE(unit->performance(FLY)==16);
         CHECK(inn->materials[WHEAT]==0); CHECK(inn->reservedMaterials[WHEAT]==0);
-        REQUIRE(world.game.map.getAirUnit(unit->posX,unit->posY)==unit->gid);
-        CHECK(unit->configuredVisionRadius==1); // Authored cache remains unchanged.
+        REQUIRE(world.game.map.getAirUnit(unit->core.posX,unit->core.posY)==unit->core.gid);
+        CHECK(unit->detail.configuredVisionRadius==1); // Authored cache remains unchanged.
         checkVisionAction(*unit,3);
         checkVisionContinuation(world.game,64);
     }
@@ -2699,17 +2696,17 @@ TEST_SUITE("UnitCustomization")
         world.game.buildingsTypes.loadSnapshotJson(buildings.dump()); world.game.configureBuildingCatalog();
         auto* inn=world.addBuilding("inn",10,8); auto* unit=world.addUnit(type,6,8);
         REQUIRE(inn); REQUIRE(unit); inn->materials[WHEAT]=2;
-        const auto random=unit->entityRandom.exportState(); const int walk=unit->performance[WALK];
+        const auto random=unit->detail.entityRandom.exportState(); const int walk=unit->performance(WALK);
         CHECK(unit->needsTraining(inn->type->semantics.training[WALK],WALK));
         CHECK_FALSE(inn->canOfferService(unit,WALK));
         CHECK(world.team->findBestUpgrade(unit)==nullptr);
         auto captured=AIEngine::AIWorldView::capture(world.game,AIEngine::AIWorldView::captureCatalog(world.game));
-        REQUIRE(captured->unitAtSlot(unit->gid)); REQUIRE(captured->buildingAtSlot(inn->gid));
-        CHECK_FALSE(AIEngine::ObservationQueries::trainingVisitSafe(*captured,*captured->unitAtSlot(unit->gid),*captured->buildingAtSlot(inn->gid),WALK));
+        REQUIRE(captured->unitAtSlot(unit->core.gid)); REQUIRE(captured->buildingAtSlot(inn->gid));
+        CHECK_FALSE(AIEngine::ObservationQueries::trainingVisitSafe(*captured,*captured->unitAtSlot(unit->core.gid),*captured->buildingAtSlot(inn->gid),WALK));
         CHECK_FALSE(unit->applyTraining(inn->type->semantics.training[WALK],WALK));
-        CHECK(unit->level[WALK]==0); CHECK(unit->performance[WALK]==walk);
-        CHECK(unit->entityRandom.exportState()==random);
-        CHECK_FALSE(unit->serviceResourcesReserved); CHECK(inn->reservedMaterials[WHEAT]==0); CHECK(inn->materials[WHEAT]==2);
+        CHECK(unit->detail.level[WALK]==0); CHECK(unit->performance(WALK)==walk);
+        CHECK(unit->detail.entityRandom.exportState()==random);
+        CHECK_FALSE(unit->detail.serviceResourcesReserved); CHECK(inn->reservedMaterials[WHEAT]==0); CHECK(inn->materials[WHEAT]==2);
         checkPhaseContinuation(world.game,64);
         CHECK(unit->integrity()); CHECK(inn->unitsInside.empty());
         }
@@ -2748,18 +2745,18 @@ TEST_SUITE("UnitCustomization")
         const auto grants=unit->trainingVisitCourses(*inn,WALK); REQUIRE(grants);
         CHECK((*grants&((1u<<WALK)|(1u<<SWIM)))==((1u<<WALK)|(1u<<SWIM)));
         auto captured=AIEngine::AIWorldView::capture(world.game,AIEngine::AIWorldView::captureCatalog(world.game));
-        REQUIRE(captured->unitAtSlot(unit->gid)); REQUIRE(captured->buildingAtSlot(inn->gid));
-        CHECK(AIEngine::ObservationQueries::trainingVisitSafe(*captured,*captured->unitAtSlot(unit->gid),*captured->buildingAtSlot(inn->gid),WALK));
-        REQUIRE(world.game.removeUnitAndBuildingAndFlags(occupant->posX,occupant->posY,Game::DEL_GROUND_UNIT));
-        unit->destinationPurpose=WALK; unit->needToRecheckMedical=true; inn->subscribeUnitForInside(unit);
-        REQUIRE(unit->serviceResourcesReserved); REQUIRE(inn->reservedMaterials[WHEAT]==5);
-        for(int tick=0;tick<4096 && unit->displacement!=Unit::DIS_INSIDE;++tick) world.game.syncStep(0);
-        REQUIRE(unit->displacement==Unit::DIS_INSIDE);
+        REQUIRE(captured->unitAtSlot(unit->core.gid)); REQUIRE(captured->buildingAtSlot(inn->gid));
+        CHECK(AIEngine::ObservationQueries::trainingVisitSafe(*captured,*captured->unitAtSlot(unit->core.gid),*captured->buildingAtSlot(inn->gid),WALK));
+        REQUIRE(world.game.removeUnitAndBuildingAndFlags(occupant->core.posX,occupant->core.posY,Game::DEL_GROUND_UNIT));
+        unit->core.destinationPurpose=WALK; unit->detail.needToRecheckMedical=true; inn->subscribeUnitForInside(unit);
+        REQUIRE(unit->detail.serviceResourcesReserved); REQUIRE(inn->reservedMaterials[WHEAT]==5);
+        for(int tick=0;tick<4096 && unit->core.displacement!=Unit::DIS_INSIDE;++tick) world.game.syncStep(0);
+        REQUIRE(unit->core.displacement==Unit::DIS_INSIDE);
         checkPhaseContinuation(world.game,256);
-        CHECK(unit->level[WALK]==1); CHECK(unit->level[SWIM]==1);
-        CHECK(unit->performance[WALK]==0); CHECK(unit->performance[SWIM]==16);
-        CHECK(world.game.map.terrainPropertiesAt(unit->posX,unit->posY).swimmable);
-        CHECK(inn->unitsInside.empty()); CHECK_FALSE(unit->serviceResourcesReserved);
+        CHECK(unit->detail.level[WALK]==1); CHECK(unit->detail.level[SWIM]==1);
+        CHECK(unit->performance(WALK)==0); CHECK(unit->performance(SWIM)==16);
+        CHECK(world.game.map.terrainPropertiesAt(unit->core.posX,unit->core.posY).swimmable);
+        CHECK(inn->unitsInside.empty()); CHECK_FALSE(unit->detail.serviceResourcesReserved);
         CHECK(inn->reservedMaterials[WHEAT]==0); CHECK(inn->materials[WHEAT]==0);
         CHECK(world.team->stats.measurements.trainingVisits[3]==1); CHECK(unit->integrity());
     }
@@ -2782,21 +2779,21 @@ TEST_SUITE("UnitCustomization")
         world.game.buildingsTypes.loadSnapshotJson(buildings.dump()); world.game.configureBuildingCatalog();
         auto* inn=world.addBuilding("inn",10,8); auto* unit=world.addUnit(3,6,8);
         REQUIRE(inn); REQUIRE(unit); inn->materials[WHEAT]=2;
-        unit->destinationPurpose=WALK; unit->needToRecheckMedical=true; inn->subscribeUnitForInside(unit);
-        REQUIRE(unit->serviceResourcesReserved);
-        for(int tick=0;tick<4096 && unit->displacement!=Unit::DIS_INSIDE;++tick) world.game.syncStep(0);
-        REQUIRE(unit->displacement==Unit::DIS_INSIDE); REQUIRE(inn->reservedMaterials[WHEAT]==2);
+        unit->core.destinationPurpose=WALK; unit->detail.needToRecheckMedical=true; inn->subscribeUnitForInside(unit);
+        REQUIRE(unit->detail.serviceResourcesReserved);
+        for(int tick=0;tick<4096 && unit->core.displacement!=Unit::DIS_INSIDE;++tick) world.game.syncStep(0);
+        REQUIRE(unit->core.displacement==Unit::DIS_INSIDE); REQUIRE(inn->reservedMaterials[WHEAT]==2);
         // A changed future level table is allowed during a visit: current clocks,
         // learnability, selection and reservation costs are all still unchanged.
         units["units"][3]["levels"][1]["performance"][WALK]=0;
         world.game.gameHeader.setUnitCatalog(UnitCatalog::deserialize(units.dump())); world.game.configureBuildingCatalog();
         CHECK_FALSE(unit->trainingVisitSafe(*inn,WALK));
-        unit->insideTimeout=0; unit->delta=255;
+        unit->detail.insideTimeout=0; unit->core.delta=255;
         checkPhaseContinuation(world.game,256);
-        CHECK(unit->level[WALK]==0); CHECK(unit->performance[WALK]>0);
+        CHECK(unit->detail.level[WALK]==0); CHECK(unit->performance(WALK)>0);
         CHECK(world.team->stats.measurements.trainingVisits[3]==0);
         CHECK(world.team->stats.measurements.abilityGains[3][WALK]==0);
-        CHECK_FALSE(unit->serviceResourcesReserved); CHECK(inn->reservedMaterials[WHEAT]==0);
+        CHECK_FALSE(unit->detail.serviceResourcesReserved); CHECK(inn->reservedMaterials[WHEAT]==0);
         CHECK(inn->materials[WHEAT]==2); CHECK(inn->unitsInside.empty()); CHECK(unit->integrity());
     }
 
@@ -2818,7 +2815,7 @@ TEST_SUITE("UnitCustomization")
         REQUIRE(unit->hasCapability(UnitRuntimeTraits::LegacyPerformancePolicies));
         CHECK(inn->canOfferService(unit,WALK));
         CHECK(unit->applyTraining(inn->type->semantics.training[WALK],WALK));
-        CHECK(unit->level[WALK]==1); CHECK(unit->performance[WALK]==0);
+        CHECK(unit->detail.level[WALK]==1); CHECK(unit->performance(WALK)==0);
     }
 
     TEST_CASE("parallel construction qualification captures all courses before grants and preserves immobile definitions")
@@ -2847,27 +2844,27 @@ TEST_SUITE("UnitCustomization")
             world.game.buildingsTypes.loadSnapshotJson(buildings.dump()); world.game.configureBuildingCatalog();
             auto* inn=world.addBuilding("inn",10,8); auto* unit=world.addUnit(3,6,8); REQUIRE(inn); REQUIRE(unit);
             inn->materials[WHEAT]=5;
-            const int build=unit->performance[BUILD],harvest=unit->performance[HARVEST];
-            REQUIRE(unit->constructionLevel==0); REQUIRE(inn->canOfferService(unit,BUILD));
+            const int build=unit->performance(BUILD),harvest=unit->performance(HARVEST);
+            REQUIRE(unit->core.constructionLevel==0); REQUIRE(inn->canOfferService(unit,BUILD));
             const auto courses=unit->trainingVisitCourses(*inn,BUILD); REQUIRE(courses);
             CHECK((*courses&((1u<<BUILD)|(1u<<HARVEST)))==((1u<<BUILD)|(1u<<HARVEST)));
             if(immobile) {
                 // Direct construction grants need no movement and remain useful
                 // to stationary definitions created by developer-authored setups.
                 CHECK(unit->applyTraining(inn->type->semantics.training[BUILD],BUILD));
-                CHECK(unit->constructionLevel==2); CHECK(unit->performance[WALK]==0); CHECK(unit->performance[SWIM]==0);
+                CHECK(unit->core.constructionLevel==2); CHECK(unit->performance(WALK)==0); CHECK(unit->performance(SWIM)==0);
             } else {
-                unit->destinationPurpose=BUILD; unit->needToRecheckMedical=true; inn->subscribeUnitForInside(unit);
+                unit->core.destinationPurpose=BUILD; unit->detail.needToRecheckMedical=true; inn->subscribeUnitForInside(unit);
                 REQUIRE(inn->reservedMaterials[WHEAT]==5);
-                for(int tick=0;tick<4096 && unit->displacement!=Unit::DIS_INSIDE;++tick) world.game.syncStep(0);
-                REQUIRE(unit->displacement==Unit::DIS_INSIDE);
+                for(int tick=0;tick<4096 && unit->core.displacement!=Unit::DIS_INSIDE;++tick) world.game.syncStep(0);
+                REQUIRE(unit->core.displacement==Unit::DIS_INSIDE);
                 checkPhaseContinuation(world.game,256);
-                CHECK(unit->constructionLevel==2); CHECK(inn->materials[WHEAT]==0); CHECK(inn->reservedMaterials[WHEAT]==0);
-                CHECK(inn->unitsInside.empty()); CHECK_FALSE(unit->serviceResourcesReserved);
+                CHECK(unit->core.constructionLevel==2); CHECK(inn->materials[WHEAT]==0); CHECK(inn->reservedMaterials[WHEAT]==0);
+                CHECK(inn->unitsInside.empty()); CHECK_FALSE(unit->detail.serviceResourcesReserved);
                 CHECK(world.team->stats.measurements.trainingVisits[3]==1);
             }
-            CHECK(unit->level[BUILD]==0); CHECK(unit->level[HARVEST]==0);
-            CHECK(unit->performance[BUILD]==build); CHECK(unit->performance[HARVEST]==harvest); CHECK(unit->integrity());
+            CHECK(unit->detail.level[BUILD]==0); CHECK(unit->detail.level[HARVEST]==0);
+            CHECK(unit->performance(BUILD)==build); CHECK(unit->performance(HARVEST)==harvest); CHECK(unit->integrity());
         }
     }
 
@@ -2904,21 +2901,21 @@ TEST_SUITE("UnitCustomization")
             world.game.buildingsTypes.loadSnapshotJson(buildings.dump()); world.game.configureBuildingCatalog();
             auto* inn=world.addBuilding("inn",10,8); auto* unit=world.addUnit(3,6,8); REQUIRE(inn); REQUIRE(unit);
             inn->materials[WHEAT]=5;
-            const int walk=unit->performance[WALK],swim=unit->performance[SWIM];
+            const int walk=unit->performance(WALK),swim=unit->performance(SWIM);
             REQUIRE(walk>0); REQUIRE(swim>0);
             CHECK(inn->canOfferService(unit,WALK)==airborneAlternative);
             CHECK(inn->canOfferService(unit,SWIM)==airborneAlternative);
             auto captured=AIEngine::AIWorldView::capture(world.game,AIEngine::AIWorldView::captureCatalog(world.game));
-            REQUIRE(captured->unitAtSlot(unit->gid)); REQUIRE(captured->buildingAtSlot(inn->gid));
-            CHECK(AIEngine::ObservationQueries::trainingVisitSafe(*captured,*captured->unitAtSlot(unit->gid),*captured->buildingAtSlot(inn->gid),WALK)==airborneAlternative);
-            CHECK(unit->level[WALK]==0); CHECK(unit->level[SWIM]==0);
-            CHECK(unit->performance[WALK]==walk); CHECK(unit->performance[SWIM]==swim);
-            CHECK_FALSE(unit->serviceResourcesReserved); CHECK(inn->reservedMaterials[WHEAT]==0); CHECK(inn->materials[WHEAT]==5);
+            REQUIRE(captured->unitAtSlot(unit->core.gid)); REQUIRE(captured->buildingAtSlot(inn->gid));
+            CHECK(AIEngine::ObservationQueries::trainingVisitSafe(*captured,*captured->unitAtSlot(unit->core.gid),*captured->buildingAtSlot(inn->gid),WALK)==airborneAlternative);
+            CHECK(unit->detail.level[WALK]==0); CHECK(unit->detail.level[SWIM]==0);
+            CHECK(unit->performance(WALK)==walk); CHECK(unit->performance(SWIM)==swim);
+            CHECK_FALSE(unit->detail.serviceResourcesReserved); CHECK(inn->reservedMaterials[WHEAT]==0); CHECK(inn->materials[WHEAT]==5);
             if(airborneAlternative) {
-                unit->destinationPurpose=WALK; unit->needToRecheckMedical=true; inn->subscribeUnitForInside(unit);
+                unit->core.destinationPurpose=WALK; unit->detail.needToRecheckMedical=true; inn->subscribeUnitForInside(unit);
                 REQUIRE(inn->reservedMaterials[WHEAT]==5);
-                for(int tick=0;tick<4096 && unit->displacement!=Unit::DIS_INSIDE;++tick)world.game.syncStep(0);
-                REQUIRE(unit->displacement==Unit::DIS_INSIDE);
+                for(int tick=0;tick<4096 && unit->core.displacement!=Unit::DIS_INSIDE;++tick)world.game.syncStep(0);
+                REQUIRE(unit->core.displacement==Unit::DIS_INSIDE);
                 // Close only the outside vertex ring after entry. Every ground
                 // exit perimeter cell becomes non-flyable, while every footprint
                 // cell remains a valid actual air exit.
@@ -2937,10 +2934,10 @@ TEST_SUITE("UnitCustomization")
                         REQUIRE(map.terrainPropertiesAt(x,y).flyable);
                 REQUIRE(unit->trainingVisitSafe(*inn,WALK));
                 captured=AIEngine::AIWorldView::capture(world.game,AIEngine::AIWorldView::captureCatalog(world.game));
-                CHECK(AIEngine::ObservationQueries::trainingVisitSafe(*captured,*captured->unitAtSlot(unit->gid),*captured->buildingAtSlot(inn->gid),WALK));
+                CHECK(AIEngine::ObservationQueries::trainingVisitSafe(*captured,*captured->unitAtSlot(unit->core.gid),*captured->buildingAtSlot(inn->gid),WALK));
                 checkPhaseContinuation(world.game,256);
-                CHECK(unit->performance[WALK]==0); CHECK(unit->performance[SWIM]==0); CHECK(unit->performance[FLY]==16);
-                CHECK(unit->level[WALK]==1); CHECK(unit->level[SWIM]==1);
+                CHECK(unit->performance(WALK)==0); CHECK(unit->performance(SWIM)==0); CHECK(unit->performance(FLY)==16);
+                CHECK(unit->detail.level[WALK]==1); CHECK(unit->detail.level[SWIM]==1);
                 CHECK(inn->materials[WHEAT]==0); CHECK(inn->reservedMaterials[WHEAT]==0); CHECK(inn->unitsInside.empty());
                 CHECK(world.team->stats.measurements.trainingVisits[3]==1); CHECK(unit->integrity());
             } else {
@@ -2948,11 +2945,11 @@ TEST_SUITE("UnitCustomization")
                 // reject their combined effect rather than applying them in order.
                 auto* isolated=world.addUnit(3,6,9); REQUIRE(isolated);
                 REQUIRE(isolated->applyTraining(inn->type->semantics.training[SWIM],SWIM));
-                CHECK(isolated->performance[WALK]==walk); CHECK(isolated->performance[SWIM]==0);
+                CHECK(isolated->performance(WALK)==walk); CHECK(isolated->performance(SWIM)==0);
                 REQUIRE(unit->applyTraining(inn->type->semantics.training[WALK],WALK));
-                CHECK(unit->performance[SWIM]==swim);
+                CHECK(unit->performance(SWIM)==swim);
                 CHECK_FALSE(unit->applyTraining(inn->type->semantics.training[SWIM],SWIM));
-                CHECK(unit->level[SWIM]==0); CHECK(unit->performance[SWIM]==swim);
+                CHECK(unit->detail.level[SWIM]==0); CHECK(unit->performance(SWIM)==swim);
             }
         }
     }
@@ -2991,7 +2988,7 @@ TEST_SUITE("UnitCustomization")
         auto* site=game.addBuilding(20,20,siteType,1); REQUIRE(site);
         game.map.setBuilding(site->posX,site->posY,site->type->width,site->type->height,site->gid);
         REQUIRE(site->type->isBuildingSite); REQUIRE(site->runtime->shootingRange==3);
-        REQUIRE(tower->bullets==0); REQUIRE(tower->runtime->interaction(observer->typeNum).projectileDamage==0);
+        REQUIRE(tower->bullets==0); REQUIRE(tower->runtime->interaction(observer->core.typeNum).projectileDamage==0);
         const auto reference=[](const Unit& unit,int x,int y) {
             // Retain the exact original full fixed-slot oracle, including its
             // non-ALIVE, zero-damage, range+1 and null-slot behavior.
@@ -3009,7 +3006,7 @@ TEST_SUITE("UnitCustomization")
         };
         const auto audit=[&](Game& candidate,Unit& unit) {
             const auto state=continuationAudit(candidate);
-            const auto random=candidate.syncRandom; const auto entity=unit.entityRandom.exportState();
+            const auto random=candidate.syncRandom; const auto entity=unit.detail.entityRandom.exportState();
             for(int team=0;team<candidate.teamsCount();++team) {
                 REQUIRE(candidate.teams[team]->liveBuildings.matches(candidate.teams[team]->myBuildings,Building::MAX_COUNT));
                 REQUIRE(std::is_sorted(candidate.teams[team]->liveBuildings.slots().begin(),candidate.teams[team]->liveBuildings.slots().end()));
@@ -3021,7 +3018,7 @@ TEST_SUITE("UnitCustomization")
                 REQUIRE(unit.locationIsInEnemyGuardTowerRange(x,y)==expected);
                 truth.push_back(expected);
             }
-            REQUIRE(candidate.syncRandom==random); REQUIRE(unit.entityRandom.exportState()==entity);
+            REQUIRE(candidate.syncRandom==random); REQUIRE(unit.detail.entityRandom.exportState()==entity);
             REQUIRE(continuationAudit(candidate)==state);
             return truth;
         };
@@ -3060,7 +3057,7 @@ TEST_SUITE("UnitCustomization")
         GameGUI resumed;
         GAGCore::BinaryInputStream input(new GAGCore::MemoryStreamBackend(bytes.data(),bytes.size()));
         input.seekFromStart(0); REQUIRE(resumed.game.load(&input)); resumed.game.setWaitingOnMask(0);
-        auto* loaded=resumed.game.teams[0]->myUnits[Unit::GIDtoID(observer->gid)]; REQUIRE(loaded);
+        auto* loaded=resumed.game.teams[0]->myUnits[Unit::GIDtoID(observer->core.gid)]; REQUIRE(loaded);
         REQUIRE(audit(game,*observer)==audit(resumed.game,*loaded));
         REQUIRE(continuationAudit(game)==continuationAudit(resumed.game));
         for(int tick=0;tick<16;++tick) {
@@ -3097,7 +3094,7 @@ TEST_SUITE("UnitCustomization")
         REQUIRE(Building::GIDtoID(tower->gid)==Building::MAX_COUNT-1);
         REQUIRE(enemy->liveBuildings.size()==std::size_t(Building::MAX_COUNT));
         REQUIRE(enemy->liveBuildings.matches(enemy->myBuildings,Building::MAX_COUNT));
-        const auto random=world.game.syncRandom; const auto entity=observer->entityRandom.exportState();
+        const auto random=world.game.syncRandom; const auto entity=observer->detail.entityRandom.exportState();
         int positives=0,negatives=0;
         const std::array<std::array<int,2>,8> points={{{8,8},{24,24},{31,31},{16,16},{7,8},{8,7},{0,8},{8,0}}};
         for(const auto& point:points) {
@@ -3110,7 +3107,7 @@ TEST_SUITE("UnitCustomization")
             positives+=expected;negatives+=!expected;
         }
         CHECK(positives>0); CHECK(negatives>0);
-        CHECK(world.game.syncRandom==random); CHECK(observer->entityRandom.exportState()==entity);
+        CHECK(world.game.syncRandom==random); CHECK(observer->detail.entityRandom.exportState()==entity);
     }
 
 }

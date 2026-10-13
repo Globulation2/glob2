@@ -169,7 +169,7 @@ TEST_SUITE("BuildingAreaEffectsBenchmark")
 					for (int n = 0; n < 256; ++n)
 					{
 						auto *u = world.addUnit(WORKER, 5 + 2 * (n % 64), 5 + 2 * (n / 64));
-						u->hungriness = 0;
+						u->detail.hungriness = 0;
 					}
 					world.team->createLists();
 					world.game.setWaitingOnMask(0);

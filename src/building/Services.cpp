@@ -94,7 +94,7 @@ bool Building::canOfferService(const Unit* unit, int purpose) const
 {
 	if (buildingState != ALIVE || static_cast<int>(unitsInside.size()) >= maxUnitInside) return false;
 	const auto& spec = type->semantics;
-	const auto* interaction=unit ? &runtime->interaction(unit->typeNum) : nullptr;
+	const auto* interaction=unit ? &runtime->interaction(unit->core.typeNum) : nullptr;
     bool allowed=unit ? interaction->has(BuildingUnitInteraction::Admitted) : true;
 	bool holdAdmission = false;
 	if (purpose == FEED)
@@ -140,10 +140,10 @@ bool Building::canOfferService(const Unit* unit, int purpose) const
 			Sint64 admissionBuffer = 0;
 			for (const Unit* occupant : unitsInside)
 			{
-				if (occupant->serviceResourcesReserved) continue;
-				if (occupant->destinationPurpose == FEED && spec.feeding.holdAdmissionUntilExit)
+				if (occupant->detail.serviceResourcesReserved) continue;
+				if (occupant->core.destinationPurpose == FEED && spec.feeding.holdAdmissionUntilExit)
 					admissionBuffer += spec.feeding.cost[r];
-				else if (occupant->destinationPurpose == HEAL && spec.healing.holdAdmissionUntilExit)
+				else if (occupant->core.destinationPurpose == HEAL && spec.healing.holdAdmissionUntilExit)
 					admissionBuffer += spec.healing.cost[r];
 			}
 			if (availableMaterial(r) < Sint64((*cost)[r]) + admissionBuffer) return false;
@@ -154,36 +154,36 @@ bool Building::canOfferService(const Unit* unit, int purpose) const
 
 void Building::reserveService(Unit* unit)
 {
-	assert(!unit->serviceResourcesReserved);
-	if (!reserveMaterials(serviceCost(unit, unit->destinationPurpose)))
+	assert(!unit->detail.serviceResourcesReserved);
+	if (!reserveMaterials(serviceCost(unit, unit->core.destinationPurpose)))
 		throw std::runtime_error("Service admission overbooked building materials");
-	unit->serviceResourcesReserved = true;
+	unit->detail.serviceResourcesReserved = true;
 }
 
 void Building::releaseService(Unit* unit)
 {
-	if (!unit->serviceResourcesReserved) return;
-	releaseMaterials(serviceCost(unit, unit->destinationPurpose));
-	unit->serviceResourcesReserved = false;
+	if (!unit->detail.serviceResourcesReserved) return;
+	releaseMaterials(serviceCost(unit, unit->core.destinationPurpose));
+	unit->detail.serviceResourcesReserved = false;
 }
 
 void Building::settleService(Unit* unit)
 {
 	// Completion, expulsion and destruction may all visit settlement. Only the
 	// outstanding commitment can debit inventory; an already settled visit cannot.
-	if (!unit->serviceResourcesReserved) return;
-	consumeReservedMaterials(serviceCost(unit, unit->destinationPurpose),
-		unit->destinationPurpose == FEED ? GameplayMeasurements::MEAL :
-		unit->destinationPurpose == HEAL ? GameplayMeasurements::HEALING_COST : GameplayMeasurements::TRAINING_COST);
-	unit->serviceResourcesReserved = false;
+	if (!unit->detail.serviceResourcesReserved) return;
+	consumeReservedMaterials(serviceCost(unit, unit->core.destinationPurpose),
+		unit->core.destinationPurpose == FEED ? GameplayMeasurements::MEAL :
+		unit->core.destinationPurpose == HEAL ? GameplayMeasurements::HEALING_COST : GameplayMeasurements::TRAINING_COST);
+	unit->detail.serviceResourcesReserved = false;
 }
 
 void Building::restoreServiceReservations()
 {
 	for (Unit* unit : unitsInside)
 	{
-		if (!unit->serviceResourcesReserved) continue;
-		const auto cost = serviceCost(unit, unit->destinationPurpose);
+		if (!unit->detail.serviceResourcesReserved) continue;
+		const auto cost = serviceCost(unit, unit->core.destinationPurpose);
 		if (!restoreMaterialsReservation(cost)) throw std::runtime_error("Saved building services exceed available materials");
 	}
 }

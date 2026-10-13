@@ -60,7 +60,7 @@ void OverlayArea::forceRecompute()
 size_t OverlayArea::chunks(const SimulationSnapshot::Handle& world,OverlayType requested)
 {
     const size_t clearChunks=(size_t(world.width)*world.height+1023)/1024;
-    if (requested==Starving || requested==Damage) return 1+clearChunks+(world.entities->units.size()+15)/16;
+    if (requested==Starving || requested==Damage) return 1+clearChunks+(world.unitCores->units.size()+15)/16;
     if (requested==Defence) return 1+clearChunks+(world.entities->buildings.size()+15)/16;
     if (requested==Fertility) return 1+(size_t(world.width)*world.height+1023)/1024;
     return 1;
@@ -92,14 +92,14 @@ bool OverlayArea::computeChunk(const SimulationSnapshot::Handle& world,OverlayTy
         chunk-=clearChunks;
     }
     if (type==Starving || type==Damage) {
-        const auto& units=world.entities->units;
+        const auto& units=world.unitCores->units;
         for (size_t i=chunk*16;i<std::min(units.size(),(chunk+1)*16);++i) {
             const auto& u=units[i];
-            if (u.team!=localteam || u.activity==UnitState::ACT_UPGRADING) continue;
-            const bool hungry=!world.rules->values.hungerDisabled
-                && u.hungry<=(u.carriedMaterial==-1 ? u.trigHungry : u.trigHungryCarrying);
-            if ((type==Starving && hungry && u.hp<u.performance[HP]) || (type==Damage && u.medical==UnitState::MED_DAMAGED))
-                OverlayFill::increasePoint(u.posX,u.posY,UNIT_OVERLAY_RADIUS,width,height,field,overlaymax);
+            if (u.team!=localteam || u.core.activity==UnitState::ACT_UPGRADING) continue;
+            const bool hungry=type==Starving && !world.rules->values.hungerDisabled
+                && u.core.hungry<=(u.core.carriedMaterial==-1 ? world.unitDetails->units[i].trigHungry : world.unitDetails->units[i].trigHungryCarrying);
+            if ((type==Starving && hungry && u.core.hp<u.performance(HP)) || (type==Damage && u.core.medical==UnitState::MED_DAMAGED))
+                OverlayFill::increasePoint(u.core.posX,u.core.posY,UNIT_OVERLAY_RADIUS,width,height,field,overlaymax);
         }
     } else if (type==Defence) {
         const auto& buildings=world.entities->buildings;

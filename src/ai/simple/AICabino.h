@@ -1508,8 +1508,8 @@ namespace Cabino
 	{ return resource.type==type && resource.amount>0; }
 	inline const AIEngine::BuildingView* getBuildingFromGid(const AIEngine::AIWorldView* world,int gid)
 	{ return gid>=0 && gid<Building::MAX_COUNT*Team::MAX_COUNT ? world->buildingAtSlot(gid) : nullptr; }
-	inline const AIEngine::UnitView* getUnitFromGid(const AIEngine::AIWorldView* world,int gid)
-	{ return gid>=0 && gid<Unit::MAX_COUNT*Team::MAX_COUNT ? world->unitAtSlot(gid) : nullptr; }
+	inline AIEngine::UnitObservation getUnitFromGid(const AIEngine::AIWorldView* world,int gid)
+	{ return gid>=0 && gid<Unit::MAX_COUNT*Team::MAX_COUNT ? world->unitAtSlot(gid) : std::nullopt; }
 
 	///Returns true if the given building hasn't been destroyed
 	bool buildingStillExists(const AIEngine::AIWorldView* team, const AIEngine::BuildingView* b);

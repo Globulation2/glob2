@@ -44,9 +44,9 @@ static void hiringRoundIsFair()
     for (int n = 0; n < 2; ++n) {
         auto* unit = game.addUnit(12+n, 12, 0, WORKER, 0, 255, 0, 0);
         require(unit != nullptr, "create available worker");
-        unit->carriedMaterial = WHEAT;
-        unit->activity = Unit::ACT_RANDOM;
-        unit->medical = Unit::MED_FREE;
+        unit->core.carriedMaterial = WHEAT;
+        unit->core.activity = Unit::ACT_RANDOM;
+        unit->core.medical = Unit::MED_FREE;
     }
     team->updateAllBuildingTasks();
     std::printf("Hiring round: first inn %zu workers, second inn %zu workers\n",

@@ -24,10 +24,10 @@ void serviceCatalog(Game& game, bool shared = false)
 }
 void admit(Building* building, Unit* unit, int purpose)
 {
-    unit->destinationPurpose = purpose;
+    unit->core.destinationPurpose = purpose;
     REQUIRE(building->canOfferService(unit, purpose));
     building->subscribeUnitForInside(unit);
-    REQUIRE(unit->serviceResourcesReserved);
+    REQUIRE(unit->detail.serviceResourcesReserved);
 }
 }
 
@@ -140,15 +140,15 @@ TEST_CASE("construction eligibility and work speed are independently trainable")
     BuildingTrainingSpec training;
     training.enabled=true; training.targetLevel=2;
     worker->applyTraining(training,BUILD);
-    CHECK(worker->level[BUILD]==2);
-    CHECK(worker->level[HARVEST]==0);
+    CHECK(worker->detail.level[BUILD]==2);
+    CHECK(worker->detail.level[HARVEST]==0);
     CHECK(worker->workerLevel()==0);
     training.targetLevel=0; training.constructionLevel=3;
     CHECK(worker->needsTraining(training,BUILD));
     worker->applyTraining(training,BUILD);
     CHECK(worker->workerLevel()==3);
-    CHECK(worker->level[BUILD]==2);
-    CHECK(worker->level[HARVEST]==0);
+    CHECK(worker->detail.level[BUILD]==2);
+    CHECK(worker->detail.level[HARVEST]==0);
 }
 TEST_CASE("shared delivery never discards inventory above a recipient capacity")
 {
@@ -175,11 +175,11 @@ TEST_CASE("parallel training waits for the slowest requested course")
     Building* school=world.addBuilding("inn",8,8);
     Unit* worker=world.addUnit(WORKER);
     admit(school,worker,WALK);
-    worker->displacement=Unit::DIS_ENTERING_BUILDING;
-    worker->delta=255;
+    worker->core.displacement=Unit::DIS_ENTERING_BUILDING;
+    worker->core.delta=255;
     worker->syncStep();
-    CHECK(worker->insideTimeout==-19);
-    CHECK(worker->speed==school->type->insideSpeed);
+    CHECK(worker->detail.insideTimeout==-19);
+    CHECK(worker->core.speed==school->type->insideSpeed);
 }
 
 TEST_CASE("save loading rejects a reservation detached from its visitor list")
@@ -246,13 +246,13 @@ TEST_CASE("zero duration parallel courses select the slowest inclusive action cl
     Building* school=world.addBuilding("inn",8,8);
     Unit* worker=world.addUnit(WORKER);
     admit(school,worker,WALK);
-    worker->displacement=Unit::DIS_ENTERING_BUILDING; worker->delta=255; worker->syncStep();
-    REQUIRE(worker->displacement==Unit::DIS_INSIDE);
-    CHECK(worker->speed==4); worker->delta=0;
+    worker->core.displacement=Unit::DIS_ENTERING_BUILDING; worker->core.delta=255; worker->syncStep();
+    REQUIRE(worker->core.displacement==Unit::DIS_INSIDE);
+    CHECK(worker->core.speed==4); worker->core.delta=0;
     for (int tick=1;tick<64;++tick) {
-        worker->syncStep(); CHECK(worker->level[BUILD]==0); CHECK(worker->level[WALK]==0);
+        worker->syncStep(); CHECK(worker->detail.level[BUILD]==0); CHECK(worker->detail.level[WALK]==0);
     }
-    worker->syncStep(); CHECK(worker->level[BUILD]==3); CHECK(worker->level[WALK]==1);
+    worker->syncStep(); CHECK(worker->detail.level[BUILD]==3); CHECK(worker->detail.level[WALK]==1);
 }
 
 
@@ -269,18 +269,18 @@ TEST_CASE("parallel training compares whole remaining ticks from the entry phase
     Building* school=world.addBuilding("inn",8,8);
     Unit* worker=world.addUnit(WORKER);
     admit(school,worker,WALK);
-    worker->displacement=Unit::DIS_ENTERING_BUILDING;
-    worker->action=STOP_WALK; worker->speed=32; worker->delta=255;
+    worker->core.displacement=Unit::DIS_ENTERING_BUILDING;
+    worker->core.action=STOP_WALK; worker->core.speed=32; worker->core.delta=255;
     worker->syncStep();
-    REQUIRE(worker->displacement==Unit::DIS_INSIDE);
-    REQUIRE(worker->delta==31);
-    CHECK(worker->insideTimeout==-1); CHECK(worker->speed==12);
+    REQUIRE(worker->core.displacement==Unit::DIS_INSIDE);
+    REQUIRE(worker->core.delta==31);
+    CHECK(worker->detail.insideTimeout==-1); CHECK(worker->core.speed==12);
     // WALK would finish at ceil((256-31)/6)=38, but BUILD needs
     // ceil((512-31)/12)=41. Equal duration/speed ratios are insufficient.
     for (int tick=1;tick<41;++tick) {
-        worker->syncStep(); CHECK(worker->level[BUILD]==0); CHECK(worker->level[WALK]==0);
+        worker->syncStep(); CHECK(worker->detail.level[BUILD]==0); CHECK(worker->detail.level[WALK]==0);
     }
-    worker->syncStep(); CHECK(worker->level[BUILD]==1); CHECK(worker->level[WALK]==2);
+    worker->syncStep(); CHECK(worker->detail.level[BUILD]==1); CHECK(worker->detail.level[WALK]==2);
 }
 
 TEST_CASE("minimum service speed completes after diagonal entry")
@@ -295,13 +295,13 @@ TEST_CASE("minimum service speed completes after diagonal entry")
     Building* school=world.addBuilding("inn",8,8);
     Unit* worker=world.addUnit(WORKER);
     admit(school,worker,WALK);
-    worker->displacement=Unit::DIS_ENTERING_BUILDING;
-    worker->action=WALK; worker->dx=worker->dy=1; worker->speed=2; worker->delta=255;
+    worker->core.displacement=Unit::DIS_ENTERING_BUILDING;
+    worker->core.action=WALK; worker->core.dx=worker->core.dy=1; worker->core.speed=2; worker->core.delta=255;
     worker->syncStep();
-    REQUIRE(worker->displacement==Unit::DIS_INSIDE);
-    REQUIRE(worker->delta==0); CHECK(worker->speed==1);
-    for (int tick=1;tick<256;++tick) { worker->syncStep(); CHECK(worker->level[WALK]==0); }
-    worker->syncStep(); CHECK(worker->level[WALK]==1);
+    REQUIRE(worker->core.displacement==Unit::DIS_INSIDE);
+    REQUIRE(worker->core.delta==0); CHECK(worker->core.speed==1);
+    for (int tick=1;tick<256;++tick) { worker->syncStep(); CHECK(worker->detail.level[WALK]==0); }
+    worker->syncStep(); CHECK(worker->detail.level[WALK]==1);
 }
 
 
@@ -316,15 +316,15 @@ TEST_CASE("long high speed healing retains bounded phase across save continuatio
     world.game.gameHeader.setHungerDisabled(true);
     Building* hospital=world.addBuilding("inn",8,8);
     Unit* patient=world.addUnit(WORKER,7,8);
-    patient->hp=patient->performance[HP]-1;
+    patient->core.hp=patient->performance(HP)-1;
     admit(hospital,patient,HEAL);
-    patient->displacement=Unit::DIS_ENTERING_BUILDING;
-    patient->action=STOP_WALK; patient->dx=patient->dy=0; patient->speed=1; patient->delta=255;
+    patient->core.displacement=Unit::DIS_ENTERING_BUILDING;
+    patient->core.action=STOP_WALK; patient->core.dx=patient->core.dy=0; patient->core.speed=1; patient->core.delta=255;
     patient->syncStep();
-    REQUIRE(patient->displacement==Unit::DIS_INSIDE);
-    REQUIRE(patient->speed>256); REQUIRE(patient->delta==0);
-    for (int tick=0;tick<1024;++tick) { patient->syncStep(); REQUIRE(patient->delta==0); }
-    CHECK(patient->insideTimeout==-1000000+1024);
+    REQUIRE(patient->core.displacement==Unit::DIS_INSIDE);
+    REQUIRE(patient->core.speed>256); REQUIRE(patient->core.delta==0);
+    for (int tick=0;tick<1024;++tick) { patient->syncStep(); REQUIRE(patient->core.delta==0); }
+    CHECK(patient->detail.insideTimeout==-1000000+1024);
     auto* bytes=new GAGCore::MemoryStreamBackend;
     GAGCore::BinaryOutputStream output(bytes);
     world.game.save(&output,false,"Bounded healing phase"); output.flush();
@@ -332,17 +332,17 @@ TEST_CASE("long high speed healing retains bounded phase across save continuatio
     GAGCore::BinaryInputStream input(data);
     glob2test::HeadlessGame copy({.loadDefaultRace=true,.header=true});
     REQUIRE(copy.game.load(&input));
-    Unit* resumed=copy.game.teams[0]->myUnits[Unit::GIDtoID(patient->gid)]; REQUIRE(resumed);
+    Unit* resumed=copy.game.teams[0]->myUnits[Unit::GIDtoID(patient->core.gid)]; REQUIRE(resumed);
     for (int tick=0;tick<256;++tick) {
         patient->syncStep(); resumed->syncStep();
-        CHECK(patient->delta==0); CHECK(resumed->delta==0);
-        CHECK(resumed->insideTimeout==patient->insideTimeout);
-        CHECK(resumed->hp==patient->hp);
+        CHECK(patient->core.delta==0); CHECK(resumed->core.delta==0);
+        CHECK(resumed->detail.insideTimeout==patient->detail.insideTimeout);
+        CHECK(resumed->core.hp==patient->core.hp);
     }
-    patient->insideTimeout=0; resumed->insideTimeout=0;
+    patient->detail.insideTimeout=0; resumed->detail.insideTimeout=0;
     patient->syncStep(); resumed->syncStep();
-    CHECK(patient->hp==patient->performance[HP]); CHECK(resumed->hp==patient->hp);
-    CHECK(patient->delta==0); CHECK(resumed->delta==0);
+    CHECK(patient->core.hp==patient->performance(HP)); CHECK(resumed->core.hp==patient->core.hp);
+    CHECK(patient->core.delta==0); CHECK(resumed->core.delta==0);
 }
 
 TEST_CASE("stock tiny deficit healing completes without storing a post exit speed burst")
@@ -351,16 +351,16 @@ TEST_CASE("stock tiny deficit healing completes without storing a post exit spee
     glob2test::HeadlessGame world({.loadDefaultRace=true});
     Building* hospital=world.addBuilding("hospital",8,8);
     Unit* patient=world.addUnit(WORKER,7,8);
-    patient->hp=patient->performance[HP]-1;
+    patient->core.hp=patient->performance(HP)-1;
     for (int resource=0;resource<MaterialSlotCount;++resource)
         hospital->materials[resource]=hospital->type->semantics.healing.cost[resource];
     admit(hospital,patient,HEAL);
-    patient->displacement=Unit::DIS_ENTERING_BUILDING;
-    patient->action=STOP_WALK; patient->dx=patient->dy=0; patient->speed=1; patient->delta=255;
-    patient->syncStep(); REQUIRE(patient->speed>256);
+    patient->core.displacement=Unit::DIS_ENTERING_BUILDING;
+    patient->core.action=STOP_WALK; patient->core.dx=patient->core.dy=0; patient->core.speed=1; patient->core.delta=255;
+    patient->syncStep(); REQUIRE(patient->core.speed>256);
     const int duration=hospital->type->semantics.healing.duration;
-    for (int tick=0;tick<duration;++tick) { patient->syncStep(); CHECK(patient->hp==patient->performance[HP]-1); }
-    patient->syncStep(); CHECK(patient->hp==patient->performance[HP]); CHECK(patient->delta==0);
+    for (int tick=0;tick<duration;++tick) { patient->syncStep(); CHECK(patient->core.hp==patient->performance(HP)-1); }
+    patient->syncStep(); CHECK(patient->core.hp==patient->performance(HP)); CHECK(patient->core.delta==0);
 }
 
 }

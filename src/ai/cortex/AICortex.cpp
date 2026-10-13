@@ -695,16 +695,16 @@ shared_ptr<Order> AICortex::decide()
 				int minHp = 1 << 30, minHungry = 1 << 30;
 				for (const auto ref : observedWorld->workers(*flag))
 				{
-                    const auto* u=observedWorld->unit(ref);if(!u)continue;
-					if (u == NULL)
+                    auto u=observedWorld->unit(ref);if(!u)continue;
+					if (u == std::nullopt)
 						continue;
 					n++;
-					hpSum += u->hp;
-					hungrySum += u->hungry;
-					if (u->hp < minHp) minHp = u->hp;
-					if (u->hungry < minHungry) minHungry = u->hungry;
-					if (u->medical == ::Unit::MED_HUNGRY) hungry++;
-					else if (u->medical == ::Unit::MED_DAMAGED) damaged++;
+					hpSum += u->core.hp;
+					hungrySum += u->core.hungry;
+					if (u->core.hp < minHp) minHp = u->core.hp;
+					if (u->core.hungry < minHungry) minHungry = u->core.hungry;
+					if (u->core.medical == ::Unit::MED_HUNGRY) hungry++;
+					else if (u->core.medical == ::Unit::MED_DAMAGED) damaged++;
 					else free++;
 				}
 				// Distance from the flag (the front) to the nearest own inn (food).

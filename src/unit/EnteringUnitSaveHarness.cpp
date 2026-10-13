@@ -64,20 +64,20 @@ TEST_SUITE("EnteringUnitSave")
 	                team->myUnits[0] = unit;
 	                team->rebuildLiveLists();
 	                unit->attachedBuilding = inn;
-	                unit->activity = Unit::ACT_UPGRADING;
-	                unit->destinationPurpose = FEED;
+	                unit->core.activity = Unit::ACT_UPGRADING;
+	                unit->core.destinationPurpose = FEED;
 	                const auto& meal=inn->type->semantics.feeding.cost;
 	                for (int resource=0;resource<MaterialSlotCount;++resource) inn->materials[resource]=meal[resource];
 	                inn->reserveService(unit);
 	                inn->unitsInside.push_back(unit);
-	                unit->displacement = Unit::DIS_ENTERING_BUILDING;
-	                unit->movement = Unit::MOV_ENTERING_BUILDING;
-	                unit->action = FLY;
-	                unit->dx = dx;
-	                unit->dy = dy;
+	                unit->core.displacement = Unit::DIS_ENTERING_BUILDING;
+	                unit->core.movement = Unit::MOV_ENTERING_BUILDING;
+	                unit->core.action = FLY;
+	                unit->core.dx = dx;
+	                unit->core.dy = dy;
 	                const int oldX = (position[0] - dx + 32) % 32;
 	                const int oldY = (position[1] - dy + 32) % 32;
-	                game.map.setAirUnit(oldX, oldY, unit->gid);
+	                game.map.setAirUnit(oldX, oldY, unit->core.gid);
 	                require(game.integrity(), "entering explorer occupies its previous tile");
 
 	                auto* bytes = new GAGCore::MemoryStreamBackend;
@@ -93,23 +93,23 @@ TEST_SUITE("EnteringUnitSave")
 	                Game& loaded = restoredGUI.game;
 	                require(loaded.load(&reader), "save during building entry must load");
 	                auto* restored = loaded.teams[0]->myUnits[0];
-	                require(restored->posX == position[0] && restored->posY == position[1],
+	                require(restored->core.posX == position[0] && restored->core.posY == position[1],
 	                        "save/load preserves animation destination");
 	                require(restored->attachedBuilding == loaded.teams[0]->myBuildings[0],
 	                        "save/load preserves the entered building reference");
-	                require(restored->dx == dx && restored->dy == dy, "save/load preserves entry direction");
-	                require(loaded.map.getAirUnit(oldX, oldY) == restored->gid,
+	                require(restored->core.dx == dx && restored->core.dy == dy, "save/load preserves entry direction");
+	                require(loaded.map.getAirUnit(oldX, oldY) == restored->core.gid,
 	                        "save/load preserves previous occupancy");
 
 	                // Invalid entering occupancy must still be rejected.
 	                loaded.map.setAirUnit(oldX, oldY, NOGUID);
-	                loaded.map.setAirUnit(position[0], position[1], restored->gid);
+	                loaded.map.setAirUnit(position[0], position[1], restored->core.gid);
 	                require(!loaded.integrity(), "entering unit registered at destination is invalid");
 	                // Outside the entering state, use current position rather than old tile.
-	                restored->displacement = Unit::DIS_RANDOM;
+	                restored->core.displacement = Unit::DIS_RANDOM;
 	                require(loaded.integrity(), "ordinary explorer occupies its current tile");
 	                loaded.map.setAirUnit(position[0], position[1], NOGUID);
-	                loaded.map.setAirUnit(oldX, oldY, restored->gid);
+	                loaded.map.setAirUnit(oldX, oldY, restored->core.gid);
 	                require(!loaded.integrity(), "ordinary explorer at stale tile is invalid");
 	                ++cases;
 	            }
@@ -123,13 +123,13 @@ TEST_SUITE("EnteringUnitSave")
 		REQUIRE(inn); REQUIRE(unit);
 		REQUIRE_FALSE(unit->hasCapability(UnitRuntimeTraits::LegacyPerformancePolicies));
 		unit->attachedBuilding=inn;
-		unit->activity=Unit::ACT_RANDOM;
-		unit->destinationPurpose=-1;
-		unit->serviceResourcesReserved=false;
-		unit->displacement=Unit::DIS_ENTERING_BUILDING;
-		unit->movement=Unit::MOV_ENTERING_BUILDING;
-		unit->action=FLY;
-		unit->posX=8; unit->posY=8; unit->dx=1; unit->dy=0;
+		unit->core.activity=Unit::ACT_RANDOM;
+		unit->core.destinationPurpose=-1;
+		unit->detail.serviceResourcesReserved=false;
+		unit->core.displacement=Unit::DIS_ENTERING_BUILDING;
+		unit->core.movement=Unit::MOV_ENTERING_BUILDING;
+		unit->core.action=FLY;
+		unit->core.posX=8; unit->core.posY=8; unit->core.dx=1; unit->core.dy=0;
 		inn->unitsInside.push_back(unit);
 		auto* bytes=new GAGCore::MemoryStreamBackend;
 		GAGCore::BinaryOutputStream writer(bytes);
@@ -151,20 +151,20 @@ TEST_SUITE("EnteringUnitSave")
 	        require(loaded.load(&reader), "load entering-explorer fixture");
 	        require(loaded.mapHeader.getNumberOfTeams() == 1 && loaded.teams[0], "fixture team exists");
 	        auto* unit = loaded.teams[0]->myUnits[0];
-	        require(unit && unit->typeNum == EXPLORER, "fixture explorer exists");
-	        require(unit->displacement == Unit::DIS_ENTERING_BUILDING, "fixture entry state");
-	        require(unit->posX == 8 && unit->posY == 8 && unit->dx == 1 && unit->dy == 0,
+	        require(unit && unit->core.typeNum == EXPLORER, "fixture explorer exists");
+	        require(unit->core.displacement == Unit::DIS_ENTERING_BUILDING, "fixture entry state");
+	        require(unit->core.posX == 8 && unit->core.posY == 8 && unit->core.dx == 1 && unit->core.dy == 0,
 	                "fixture destination and direction");
-	        require(loaded.map.getAirUnit(7, 8) == unit->gid, "fixture previous-tile occupancy");
+	        require(loaded.map.getAirUnit(7, 8) == unit->core.gid, "fixture previous-tile occupancy");
 	        require(unit->attachedBuilding == loaded.teams[0]->myBuildings[0], "fixture entered building");
 	        // The retained release fixture is format 88, including its historical
 	        // zero-valued race tables. A current resave must retain that catalog
 	        // and every cached entry value rather than replacing them with defaults.
 	        const auto catalogDigest=loaded.unitCatalog().digest();
 	        REQUIRE(unit->hasCapability(UnitRuntimeTraits::LegacyPerformancePolicies));
-	        REQUIRE(unit->activity==Unit::ACT_RANDOM);
-	        REQUIRE(unit->destinationPurpose==-1);
-	        REQUIRE_FALSE(unit->serviceResourcesReserved);
+	        REQUIRE(unit->core.activity==Unit::ACT_RANDOM);
+	        REQUIRE(unit->core.destinationPurpose==-1);
+	        REQUIRE_FALSE(unit->detail.serviceResourcesReserved);
 	        const auto originalUnit=static_cast<const UnitState&>(*unit);
 	        auto* currentBytes=new GAGCore::MemoryStreamBackend;
 	        GAGCore::BinaryOutputStream currentWriter(currentBytes);
@@ -178,13 +178,13 @@ TEST_SUITE("EnteringUnitSave")
 	        require(continued.unitCatalog().digest()==catalogDigest,"historical race catalog survives current resave");
 	        auto* currentUnit=continued.teams[0]->myUnits[0];
 	        require(currentUnit,"resaved explorer exists");
-	        CHECK(currentUnit->hp==originalUnit.hp);
-	        CHECK(currentUnit->hungry==originalUnit.hungry);
-	        CHECK(currentUnit->hungriness==originalUnit.hungriness);
-	        CHECK(std::equal(std::begin(currentUnit->performance),std::end(currentUnit->performance),std::begin(originalUnit.performance)));
-	        CHECK(currentUnit->entityRandom==originalUnit.entityRandom);
-	        CHECK(currentUnit->displacement==originalUnit.displacement);
-	        CHECK(continued.map.getAirUnit(7,8)==currentUnit->gid);
+	        CHECK(currentUnit->core.hp==originalUnit.core.hp);
+	        CHECK(currentUnit->core.hungry==originalUnit.core.hungry);
+	        CHECK(currentUnit->detail.hungriness==originalUnit.detail.hungriness);
+	        for(int ability=0;ability<NB_ABILITY;++ability) CHECK(currentUnit->performance(ability)==originalUnit.performance(ability));
+	        CHECK(currentUnit->detail.entityRandom==originalUnit.detail.entityRandom);
+	        CHECK(currentUnit->core.displacement==originalUnit.core.displacement);
+	        CHECK(continued.map.getAirUnit(7,8)==currentUnit->core.gid);
 	        const auto state=[](Game& game) {
 	            std::vector<Uint32> fields,buildings,units;
 	            game.checkSum(&fields,&buildings,&units,true);

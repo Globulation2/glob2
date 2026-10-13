@@ -734,10 +734,10 @@ void Building::saveCrossRef(GAGCore::OutputStream *stream)
 	for (std::list<Unit *>::iterator it=unitsWorking.begin(); it!=unitsWorking.end(); ++it)
 	{
 		assert(*it);
-		assert(owner->myUnits[Unit::GIDtoID((*it)->gid)]);
+		assert(owner->myUnits[Unit::GIDtoID((*it)->core.gid)]);
 		std::ostringstream oss;
 		oss << "unitsWorking[" << i++ << "]";
-		stream->writeUint16((*it)->gid, oss.str().c_str());
+		stream->writeUint16((*it)->core.gid, oss.str().c_str());
 	}
 
 	stream->writeSint32(subscriptionWorkingTimer, "subscriptionWorkingTimer");
@@ -761,10 +761,10 @@ void Building::saveCrossRef(GAGCore::OutputStream *stream)
 	for (std::list<Unit *>::iterator  it=unitsInside.begin(); it!=unitsInside.end(); ++it)
 	{
 		assert(*it);
-		assert(owner->myUnits[Unit::GIDtoID((*it)->gid)]);
+		assert(owner->myUnits[Unit::GIDtoID((*it)->core.gid)]);
 		std::ostringstream oss;
 		oss << "unitsInside[" << i++ << "]";
-		stream->writeUint16((*it)->gid, oss.str().c_str());
+		stream->writeUint16((*it)->core.gid, oss.str().c_str());
 	}
 	
 	stream->writeUint32(unitsHarvesting.size(), "nbHarvesting");
@@ -774,7 +774,7 @@ void Building::saveCrossRef(GAGCore::OutputStream *stream)
 		assert(*it);
 		std::ostringstream oss;
 		oss << "unitsHarvesting[" << i++ << "]";
-		stream->writeUint16((*it)->gid, oss.str().c_str());
+		stream->writeUint16((*it)->core.gid, oss.str().c_str());
 	}
 
 	stream->writeSint32(desiredMaxUnitWorking, "desiredMaxUnitWorking");

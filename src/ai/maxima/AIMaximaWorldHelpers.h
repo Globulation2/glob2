@@ -25,17 +25,17 @@ namespace WorldHelpers
 		return false;
 	}
 
-	inline int warrior_power(const AIEngine::AIWorldView& world,const AIEngine::UnitView* warrior)
+	inline int warrior_power(const AIEngine::AIWorldView& world,AIEngine::UnitObservation warrior)
 	{
-		if (warrior->hp<=0) return 1;
+		if (warrior->core.hp<=0) return 1;
 		const Sint64 rate=Sint64(AIEngine::ObservationQueries::realAttackStrength(world,*warrior))
-			*warrior->performance[ATTACK_SPEED];
+			*warrior->performance(ATTACK_SPEED);
 		if (rate<=0) return 1;
-		const Sint64 maximumHealth=std::max(1,warrior->performance[HP]);
+		const Sint64 maximumHealth=std::max(1,warrior->performance(HP));
 		// Avoid overflowing even the wide numerator when importing old cached
 		// performances. Ordinary units take only the original division below.
-		if (rate>INT_MAX && rate>Sint64(INT_MAX)*maximumHealth/warrior->hp) return INT_MAX;
-		return int(std::clamp<Sint64>(rate*warrior->hp/maximumHealth,1,INT_MAX));
+		if (rate>INT_MAX && rate>Sint64(INT_MAX)*maximumHealth/warrior->core.hp) return INT_MAX;
+		return int(std::clamp<Sint64>(rate*warrior->core.hp/maximumHealth,1,INT_MAX));
 	}
 
     // This strategy deliberately estimates both attack abilities at their
@@ -47,14 +47,14 @@ namespace WorldHelpers
     inline int unlearned_eligible_damage_rate(const AIEngine::AIWorldView& world,
         const AIEngine::UnitView& unit, int referenceArmour)
     {
-        const int level=std::clamp(std::min(unit.level[ATTACK_SPEED],unit.level[ATTACK_STRENGTH]),0,NB_UNIT_LEVELS-1);
+        const int level=std::clamp(std::min(unit.detail.level[ATTACK_SPEED],unit.detail.level[ATTACK_STRENGTH]),0,NB_UNIT_LEVELS-1);
         // Imported historical race tables used this private, fixed strategy
         // calibration even when their cached ability tables differed.
-        if (unit.capabilityFlags&UnitRuntimeTraits::LegacyPerformancePolicies) {
+        if (unit.core.capabilityFlags&UnitRuntimeTraits::LegacyPerformancePolicies) {
             constexpr int historicalRates[]={36,64,110,168};
             return historicalRates[level];
         }
-        const auto& performance=world.unitCatalog().levels(unit.typeNum)[level].performance;
+        const auto& performance=world.unitCatalog().levels(unit.core.typeNum)[level].performance;
         return Labour::combatDamageRate(performance[ATTACK_SPEED],performance[ATTACK_STRENGTH],referenceArmour);
     }
     }

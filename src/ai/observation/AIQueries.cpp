@@ -14,21 +14,21 @@ const BuildingView* AIWorldView::buildingAtSlot(Uint16 gid) const
 	const auto index = lease.entities->buildingSlotIndices[gid];
 	return index == SimulationSnapshot::Entities::NoRecord ? nullptr : &buildings[index];
 }
-const UnitView* AIWorldView::unitAtSlot(Uint16 gid) const
+UnitObservation AIWorldView::unitAtSlot(Uint16 gid) const
 {
-	if (!lease.entities || gid >= lease.entities->unitSlotIndices.size()) return nullptr;
-	const auto index = lease.entities->unitSlotIndices[gid];
-	return index == SimulationSnapshot::Entities::NoRecord ? nullptr : &units[index];
+    if(!lease.unitCores || !lease.unitDetails || gid>=lease.unitCores->unitSlotIndices.size())return std::nullopt;
+    const auto index=lease.unitCores->unitSlotIndices[gid];
+    return index==SimulationSnapshot::Entities::NoRecord ? std::nullopt : UnitObservation(units[index]);
 }
 const BuildingView* AIWorldView::building(BuildingRef identity) const
 {
 	const auto* value = buildingAtSlot(identity.gid);
 	return value && value->identity == identity ? value : nullptr;
 }
-const UnitView* AIWorldView::unit(UnitRef identity) const
+UnitObservation AIWorldView::unit(UnitRef identity) const
 {
-	const auto* value = unitAtSlot(identity.gid);
-	return value && value->identity == identity ? value : nullptr;
+    const auto value=unitAtSlot(identity.gid);
+    return value && value->identity==identity ? value : std::nullopt;
 }
 TileView AIWorldView::tile(int x, int y) const
 {

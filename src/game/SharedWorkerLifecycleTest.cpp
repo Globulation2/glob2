@@ -261,22 +261,22 @@ TEST_CASE("presentation borrows the published no-AI read boundary without recapt
     PresentationFrame frame;
     preparer.prepare(SceneInputs{published.project(required),request},frame);
     CHECK(game.snapshots().metrics.captures==captures+1);
-    CHECK(frame.entities.units.data()==published.entities->units.data());
+    CHECK(frame.entities.units.data()==published.unitCores->units.data());
     CHECK(frame.entities.buildings.data()==published.entities->buildings.data());
-    CHECK(frame.entities.unitIndex.data()==published.entities->unitSlotIndices.data());
+    CHECK(frame.entities.unitIndex.data()==published.unitCores->unitSlotIndices.data());
     CHECK(frame.entities.buildingIndex.data()==published.entities->buildingSlotIndices.data());
     CHECK(frame.entities.sectors.data()==published.effects->sectors.data());
     REQUIRE(frame.panels.unit.record);
-    CHECK(frame.panels.unit.record==frame.entities.unit(identity.gid));
-    const auto hp=frame.panels.unit.state().hp;
-    unit->hp=1;
+    CHECK(&frame.panels.unit.record->core==&frame.entities.unit(identity.gid)->core);
+    const auto hp=frame.panels.unit.state().core.hp;
+    unit->core.hp=1;
     game.snapshots().invalidateBoundary();
     const auto edited=game.captureReadBoundary({},true,required);
     CHECK(edited.observationRevision!=published.observationRevision);
-    CHECK(frame.panels.unit.state().hp==hp);
+    CHECK(frame.panels.unit.state().core.hp==hp);
     request.view.viewportX=7;
     preparer.prepare(SceneInputs{published,request},frame);
-    CHECK(frame.panels.unit.state().hp==hp);
+    CHECK(frame.panels.unit.state().core.hp==hp);
     CHECK(game.snapshots().metrics.captures==captures+2);
 }
 

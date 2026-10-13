@@ -190,7 +190,7 @@ TEST_SUITE("CortexActionCoverage")
         };
         for(int qualification=0;qualification<=1;++qualification) {
             CAPTURE(qualification);
-            worker->constructionLevel=qualification;
+            worker->core.constructionLevel=qualification;
             REQUIRE(world.team->maxBuildLevel()==qualification);
             BuildCandidate ordinary[2][CORTEX_BUILD_CANDIDATES];
             BuildCandidate forward[2];
@@ -236,7 +236,7 @@ TEST_SUITE("CortexActionCoverage")
         MersenneTwister random(713); SyncRandScope scope(random);
         const auto state=getSyncRandState();
         const auto first=Cortex::observeWorld(syncRandEngine(), view.get(),&view->teams[0],scratch,intents,nullptr,0,NOGBID);
-        swarm->maxUnitWorking=99; worker->constructionLevel=3; worker->posX=23;
+        swarm->maxUnitWorking=99; worker->core.constructionLevel=3; worker->core.posX=23;
         fixture.game.stepCounter+=8;
         setSyncRandState(state);
         const auto second=Cortex::observeWorld(syncRandEngine(), view.get(),&view->teams[0],scratch,intents,nullptr,0,NOGBID);

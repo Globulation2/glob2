@@ -33,7 +33,7 @@ void UnitInfoTitle::draw()
 	// draw "unit of player" title
 	Uint8 r, g, b;
 	std::string title;
-	title += getUnitName(u->typeNum);
+	title += getUnitName(u->core.typeNum);
 	title += " (";
 
 	title += displayPlayerName(frame.entities.teams[u->team].firstPlayerName);
@@ -74,13 +74,13 @@ void UnitPicture::draw()
     if (!unit) return;
 	// draw unit's image
 	int imgid;
-	const UnitType *ut=&frame.world.catalogs->unitTypes[unit->typeNum][0];
-	assert(unit->action>=0);
-	assert(unit->action<NB_MOVE);
-	imgid=ut->startImage[unit->action];
+	const UnitType *ut=&frame.world.catalogs->unitTypes[unit->core.typeNum][0];
+	assert(unit->core.action>=0);
+	assert(unit->core.action<NB_MOVE);
+	imgid=ut->startImage[unit->core.action];
 
-	int dir=unit->direction;
-	int delta=unit->delta;
+	int dir=unit->core.direction;
+	int delta=unit->core.delta;
 	assert(dir>=0);
 	assert(dir<9);
 	assert(delta>=0);

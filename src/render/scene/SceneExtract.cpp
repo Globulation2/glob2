@@ -20,7 +20,7 @@ void prepareSource(const SceneInputs& input,PresentationFrame& scene)
     scene.executedOrderRevision=state.executedOrderRevision;
     scene.map.bindSnapshot(world,request.view.displayW,request.view.displayH,request.localTeam);
     auto& e=scene.entities;
-    e.world=world; e.typeDefinitions=world.catalogs->typeDefinitions; e.units=world.entities->units;e.unitIndex=world.entities->unitSlotIndices;
+    e.world=world; e.typeDefinitions=world.catalogs->typeDefinitions; e.units=world.unitCores->units;e.unitIndex=world.unitCores->unitSlotIndices;
     e.buildings=world.entities->buildings;e.buildingIndex=world.entities->buildingSlotIndices;
     e.connectionMasks.assign(e.buildings.size(),0);
     e.teamCount=world.teams->values.size();e.teams=world.teams->values;
@@ -29,11 +29,11 @@ void prepareSource(const SceneInputs& input,PresentationFrame& scene)
         e.virtualBuildings[t.number]=t.virtualBuildings;
     }
     if (world.effects) e.sectors=world.effects->sectors;
-    const auto unit=[&](UnitRef ref)->const SimulationSnapshot::UnitView* {
-        if (ref.gid>=world.entities->unitSlotIndices.size()) return nullptr;
-        const auto index=world.entities->unitSlotIndices[ref.gid];
-        if (index>=world.entities->units.size()) return nullptr;
-        const auto& u=world.entities->units[index]; return u.identity==ref ? &u : nullptr;
+    const auto unit=[&](UnitRef ref)->const SimulationSnapshot::UnitCoreView* {
+        if (ref.gid>=world.unitCores->unitSlotIndices.size()) return nullptr;
+        const auto index=world.unitCores->unitSlotIndices[ref.gid];
+        if (index>=world.unitCores->units.size()) return nullptr;
+        const auto& u=world.unitCores->units[index]; return u.identity==ref ? &u : nullptr;
     };
     const auto building=[&](BuildingRef ref)->const SimulationSnapshot::BuildingView* {
         if (ref.gid>=world.entities->buildingSlotIndices.size()) return nullptr;
@@ -103,9 +103,9 @@ void prepareSource(const SceneInputs& input,PresentationFrame& scene)
         bp.showLevel=bp.type->presentation.showLevel;bp.buildingHpMultiplier=world.rules->configuration->getBuildingHpMultiplier();
     }
     if (selectedUnit) {
-        auto& up=panels.unit;up.record=selectedUnit;up.valid=true;
-        up.ownerRecord=&world.teams->values.at(selectedUnit->team);up.unitTypes=world.catalogs->unitTypes[selectedUnit->typeNum];
-        const auto& traits=world.catalogs->units->runtime(selectedUnit->typeNum);
+        auto& up=panels.unit;up.record=world.units().at(world.unitCores->unitSlotIndices.at(selectedUnit->core.gid));up.valid=true;
+        up.ownerRecord=&world.teams->values.at(selectedUnit->team);up.unitTypes=world.catalogs->unitTypes[selectedUnit->core.typeNum];
+        const auto& traits=world.catalogs->units->runtime(selectedUnit->core.typeNum);
         up.foodCapacity=traits.foodCapacity;up.meshClass=traits.meshClass;
         up.glassCannonScale=world.rules->configuration->getGlassCannonScale();
     }
@@ -249,19 +249,19 @@ void preparePanels(const SceneInputs& input, PresentationFrame& scene, const std
     auto& up = panels.unit;
     if (up.valid)
     {
-        const auto index = world.entities->unitSlotIndices.at(up.state().gid);
-        const auto& u = world.entities->units.at(index);
-        up.unitHungry = !world.rules->values.hungerDisabled && u.hungry <= (u.carriedMaterial==-1 ? u.trigHungry : u.trigHungryCarrying);
-        const auto& types = world.catalogs->unitTypes[u.typeNum];
-        up.realArmor = u.performance[ARMOR]/up.glassCannonScale - u.fruitCount*types[u.level[ARMOR]].armorReductionPerHappyness;
-        up.nextLevelThreshold = (u.experienceLevel+1)*(u.experienceLevel+1)*types[u.level[ATTACK_STRENGTH]].experiencePerLevel;
+        const auto index = world.unitCores->unitSlotIndices.at(up.state().core.gid);
+        const auto u = world.units().at(index);
+        up.unitHungry = !world.rules->values.hungerDisabled && u.core.hungry <= (u.core.carriedMaterial==-1 ? u.detail.trigHungry : u.detail.trigHungryCarrying);
+        const auto& types = world.catalogs->unitTypes[u.core.typeNum];
+        up.realArmor = u.performance(ARMOR)/up.glassCannonScale - u.detail.fruitCount*types[u.detail.level[ARMOR]].armorReductionPerHappyness;
+        up.nextLevelThreshold = (u.core.experienceLevel+1)*(u.core.experienceLevel+1)*types[u.detail.level[ATTACK_STRENGTH]].experiencePerLevel;
     }
 }
 }
 
 size_t SceneExtractor::preparationChunks(const SceneInputs& input)
 {
-    return 2 + OverlayArea::chunks(input.world,OverlayArea::OverlayType(input.request.view.overlay)) + (size_t(input.world.width)*input.world.height+1023)/1024 + (input.world.entities->units.size()+255)/256 + 2*((input.world.entities->buildings.size()+255)/256);
+    return 2 + OverlayArea::chunks(input.world,OverlayArea::OverlayType(input.request.view.overlay)) + (size_t(input.world.width)*input.world.height+1023)/1024 + (input.world.unitCores->units.size()+255)/256 + 2*((input.world.entities->buildings.size()+255)/256);
 }
 
 void SceneExtractor::prepare(const SceneInputs& input, PresentationFrame& scene)
@@ -295,7 +295,7 @@ bool SceneExtractor::prepareChunk(const SceneInputs& input, PresentationFrame& s
     const size_t mapChunks=(size_t(input.world.width)*input.world.height+1023)/1024;
     if (chunk<mapChunks) {scene.map.prepareChunk(chunk*1024,1024);return true;}
     chunk-=mapChunks;
-    const auto& units = input.world.entities->units;
+    const auto& units = input.world.unitCores->units;
     const auto& buildings = input.world.entities->buildings;
     const size_t unitChunks = (units.size()+255)/256, buildingChunks = (buildings.size()+255)/256;
     auto& e = scene.entities;
@@ -304,8 +304,8 @@ bool SceneExtractor::prepareChunk(const SceneInputs& input, PresentationFrame& s
       for (size_t i=chunk*256; i<std::min(units.size(),(chunk+1)*256); ++i)
       {
         const auto& u = units[i];
-        if (u.performance[BUILD]) buildLevels[u.team]=std::max(buildLevels[u.team],int(u.constructionLevel));
-        if (u.carriedMaterial >= 0 && validMaterial(u.carriedMaterial)) e.materialPresence |= 1u << u.carriedMaterial;
+        if (u.performance(BUILD)) buildLevels[u.team]=std::max(buildLevels[u.team],int(u.core.constructionLevel));
+        if (u.core.carriedMaterial >= 0 && validMaterial(u.core.carriedMaterial)) e.materialPresence |= 1u << u.core.carriedMaterial;
     }
       return true;
     }
@@ -385,8 +385,12 @@ SimulationSnapshot::Requirements SceneExtractor::requirements(const SceneRequest
     using namespace SimulationSnapshot;
     auto required=bit(Component::Catalogs)|bit(Component::Terrain)|bit(Component::Resources)
         |bit(Component::Occupancy)|bit(Component::Areas)|bit(Component::Visibility)
-        |bit(Component::Entities)|bit(Component::Teams)|bit(Component::Rules)|bit(Component::Session)|bit(Component::Effects);
-    if (request.includePanels) required|=bit(Component::Statistics);
+        |bit(Component::BuildingEntities)|bit(Component::UnitCores)|bit(Component::Teams)|bit(Component::Rules)|bit(Component::Session)|bit(Component::Effects);
+    if (request.includePanels) {
+        required|=bit(Component::Statistics);
+        if(!request.selectedUnit.empty() || !request.selectedBuilding.empty()) required|=bit(Component::UnitDetails);
+    }
+    if (request.includeUnitDetails || request.view.overlay==OverlayArea::Starving) required|=bit(Component::UnitDetails);
     if (request.includeHistory) required|=bit(Component::History);
     if (request.includeTelemetry) required|=bit(Component::Telemetry);
     if (!request.selectedBuilding.empty() || request.view.debugLayers) required|=bit(Component::EntityDiagnostics);

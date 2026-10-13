@@ -118,15 +118,15 @@ struct TeamStatsMeasurementFixture
 	void inside(Unit *u, Building *b, int purpose, int timeout = 0)
 	{
 		u->clearOccupiedMapSlot();
-		u->posX = b->getMidX();
-		u->posY = b->getMidY();
+		u->core.posX = b->getMidX();
+		u->core.posY = b->getMidY();
 		u->attachedBuilding = b;
 		u->setTargetBuilding(b);
-		u->activity = Unit::ACT_UPGRADING;
-		u->displacement = Unit::DIS_INSIDE;
-		u->movement = Unit::MOV_INSIDE;
-		u->destinationPurpose = purpose;
-		u->insideTimeout = timeout;
+		u->core.activity = Unit::ACT_UPGRADING;
+		u->core.displacement = Unit::DIS_INSIDE;
+		u->core.movement = Unit::MOV_INSIDE;
+		u->core.destinationPurpose = purpose;
+		u->detail.insideTimeout = timeout;
 		b->unitsInside.push_back(u);
 	}
 };
@@ -173,8 +173,8 @@ static void compare(TeamStats& expected, TeamStats& actual)
 static void sample(Game& game, unsigned tick)
 {
     auto* unit = game.teams[0]->myUnits[0];
-    unit->hungry = (tick % 11 < 5) ? 0 : unit->trigHungry + 100;
-    unit->medical = (tick % 17 < 8) ? Unit::MED_DAMAGED : Unit::MED_FREE;
+    unit->core.hungry = (tick % 11 < 5) ? 0 : unit->detail.trigHungry + 100;
+    unit->core.medical = (tick % 17 < 8) ? Unit::MED_DAMAGED : Unit::MED_FREE;
     game.stepCounter = tick;
     game.teams[0]->stats.step(game.teams[0]);
 }
@@ -322,11 +322,11 @@ static void measurementScenarios()
 	{
 		TeamStatsMeasurementFixture w;
 		auto *u = w.unit(WORKER,20,20);
-		u->hp = u->performance[HP] / 4;
-		u->hungry = Unit::HUNGRY_MAX / 2;
+		u->core.hp = u->performance(HP) / 4;
+		u->core.hungry = Unit::HUNGRY_MAX / 2;
 		for (int dy = -1; dy <= 1; ++dy)
 			for (int dx = -1; dx <= 1; ++dx)
-				if (dx || dy) w.game.map.setGroundUnit(20+dx,20+dy,u->gid);
+				if (dx || dy) w.game.map.setGroundUnit(20+dx,20+dy,u->core.gid);
 		auto &stats = w.game.teams[0]->stats;
 		stats.sampleTraps(w.game.teams[0]);
 		require(stats.measurements.trappedUnits[0][WORKER] == 0 &&
@@ -486,20 +486,20 @@ static void measurementScenarios()
 		w.game.map.incResourceByIndex(21, 20, WHEAT, 0);
 		worker->attachedBuilding = inn;
 		worker->setTargetBuilding(inn);
-		worker->activity = Unit::ACT_FILLING;
-		worker->displacement = Unit::DIS_HARVESTING;
-		worker->movement = Unit::MOV_HARVESTING;
-		worker->destinationPurpose = WHEAT;
-		worker->dx = 1;
-		worker->dy = 0;
+		worker->core.activity = Unit::ACT_FILLING;
+		worker->core.displacement = Unit::DIS_HARVESTING;
+		worker->core.movement = Unit::MOV_HARVESTING;
+		worker->core.destinationPurpose = WHEAT;
+		worker->core.dx = 1;
+		worker->core.dy = 0;
 		TeamStatsMeasurementFixture::displacement(worker);
-		require(m.harvested[WHEAT] == 1 && worker->carriedMaterial == WHEAT,
+		require(m.harvested[WHEAT] == 1 && worker->core.carriedMaterial == WHEAT,
 				"harvest completion counts a load");
 		worker->standardRandomActivity();
-		worker->carriedMaterial = -1;
+		worker->core.carriedMaterial = -1;
 		w.game.map.incResourceByIndex(21, 20, WOOD, 0);
-		worker->movement = Unit::MOV_HARVESTING;
-		worker->medical = Unit::MED_FREE;
+		worker->core.movement = Unit::MOV_HARVESTING;
+		worker->core.medical = Unit::MED_FREE;
 		const auto primaryMaterial = w.game.map.resourcePropertiesByIndex(
 			w.game.map.getResource(21, 20).type).primaryMaterial;
 		TeamStatsMeasurementFixture::clear(worker);
@@ -509,25 +509,25 @@ static void measurementScenarios()
 		TeamStatsMeasurementFixture w;
 		auto *attacker = w.unit(WARRIOR, 20, 20, 0);
 		auto *victim = w.unit(WORKER, 21, 20, 1);
-		attacker->action = ATTACK_SPEED;
-		attacker->speed = 1;
-		attacker->delta = UNIT_ATTACK_HIT_DELTA;
-		attacker->dx = 1;
-		attacker->dy = 0;
-		victim->hp = 1;
-		attacker->performance[ATTACK_STRENGTH] = 1000;
+		attacker->core.action = ATTACK_SPEED;
+		attacker->core.speed = 1;
+		attacker->core.delta = UNIT_ATTACK_HIT_DELTA;
+		attacker->core.dx = 1;
+		attacker->core.dy = 0;
+		victim->core.hp = 1;
+		attacker->performance(ATTACK_STRENGTH) = 1000;
 		attacker->syncStep();
 		require(w.game.teams[0]->stats.measurements.damageDealt[Measurements::MELEE]
 															   [Measurements::UNIT] == 1,
 				"melee overkill is capped to HP removed");
 		require(victim->diagnosticDeathCause == Measurements::COMBAT,
 				"first lethal transition attributed to combat");
-		attacker->delta = UNIT_ATTACK_HIT_DELTA;
+		attacker->core.delta = UNIT_ATTACK_HIT_DELTA;
 		attacker->syncStep();
 		require(w.game.teams[0]->stats.measurements.damageDealt[Measurements::MELEE]
 															   [Measurements::UNIT] == 1,
 				"repeated damage before death removes zero HP");
-		victim->hungry = 0;
+		victim->core.hungry = 0;
 		TeamStatsMeasurementFixture::medical(victim);
 		TeamStatsMeasurementFixture::medical(victim);
 		require(w.game.teams[1]->stats.measurements.deaths[WORKER][Measurements::COMBAT] == 1,
@@ -540,9 +540,9 @@ static void measurementScenarios()
 		TeamStatsMeasurementFixture w;
 		auto *explorer = w.unit(EXPLORER, 20, 20, 0);
 		auto *victim = w.unit(WORKER, 21, 20, 1);
-		victim->hp = 3;
-		explorer->performance[MAGIC_ATTACK_GROUND] = 1000;
-		explorer->magicActionTimeout = 0;
+		victim->core.hp = 3;
+		explorer->performance(MAGIC_ATTACK_GROUND) = 1000;
+		explorer->detail.magicActionTimeout = 0;
 		TeamStatsMeasurementFixture::magic(explorer);
 		require(w.game.teams[0]->stats.measurements.damageDealt[Measurements::MAGIC]
 															   [Measurements::UNIT] == 3,
@@ -558,7 +558,7 @@ static void measurementScenarios()
 		bullet->sourceTeam = 0;
 		auto *sector = w.game.map.getSector(20, 20);
 		sector->bullets.push_front(bullet);
-		victim->hp = 2;
+		victim->core.hp = 2;
 		sector->step();
 		require(w.game.teams[0]->stats.measurements.damageDealt[Measurements::TOWER]
 															   [Measurements::UNIT] == 2,
@@ -587,20 +587,20 @@ static void measurementScenarios()
 	{
 		TeamStatsMeasurementFixture w;
 		auto *u = w.unit();
-		u->hp = 0;
+		u->core.hp = 0;
 		if (cause == Measurements::STARVATION)
-			u->hungry = 0;
+			u->core.hungry = 0;
 		else if (cause == Measurements::CLEARING)
 		{
 			w.game.map.incResourceByIndex(21, 20, WOOD, 0);
-			u->dx = 1;
-			u->dy = 0;
-			u->movement = Unit::MOV_HARVESTING;
-			u->medical = Unit::MED_FREE;
+			u->core.dx = 1;
+			u->core.dy = 0;
+			u->core.movement = Unit::MOV_HARVESTING;
+			u->core.medical = Unit::MED_FREE;
 			TeamStatsMeasurementFixture::clear(u);
 		}
 		else
-			u->hp = -1;
+			u->core.hp = -1;
 		TeamStatsMeasurementFixture::medical(u);
 		require(w.game.teams[0]->stats.measurements.deaths[WORKER][cause] == 1,
 				"noncombat death cause");
@@ -610,12 +610,12 @@ static void measurementScenarios()
 		auto *hospital = w.building("hospital");
 		auto *patient = w.unit();
 		w.inside(patient, hospital, HEAL, -hospital->type->timeToHealUnit / 2);
-		patient->hp = patient->performance[HP] - 20;
+		patient->core.hp = patient->performance(HP) - 20;
 		TeamStatsMeasurementFixture::partial(patient);
 		auto &m = w.game.teams[0]->stats.measurements;
 		require(m.hpRestored == 10 && m.healingVisits == 0,
 				"partial healing credits actual restored HP, not a completed visit");
-		patient->insideTimeout = 0;
+		patient->detail.insideTimeout = 0;
 		TeamStatsMeasurementFixture::displacement(patient);
 		require(m.hpRestored == 20 && m.healingVisits == 1,
 				"completed healing credits remaining HP");
@@ -671,9 +671,9 @@ static void measurementScenarios()
 		w.game.teams[1]->sharedVisionFood |= w.game.teams[0]->me;
 		w.game.teams[1]->allies &= ~w.game.teams[0]->me;
 		auto *u = w.unit(EXPLORER, 12, 8);
-		u->hungry = u->trigHungry;
-		u->medical = Unit::MED_HUNGRY;
-		u->needToRecheckMedical = true;
+		u->core.hungry = u->detail.trigHungry;
+		u->core.medical = Unit::MED_HUNGRY;
+		u->detail.needToRecheckMedical = true;
 		TeamStatsMeasurementFixture::activity(u);
 		require(u->owner == w.game.teams[1], "foreign inn converts hungry explorer");
 		require(w.game.teams[0]->stats.measurements.conversionsOut[EXPLORER] == 1 &&
@@ -689,9 +689,9 @@ static void measurementScenarios()
 		w.inside(u, inn, FEED, -10);
 		for (int y = 0; y < 32; ++y)
 			for (int x = 0; x < 32; ++x)
-				w.game.map.setGroundUnit(x, y, u->gid);
+				w.game.map.setGroundUnit(x, y, u->core.gid);
 		inn->kill(Measurements::DESTROYED);
-		require(u->isDead &&
+		require(u->core.isDead &&
 					w.game.teams[0]->stats.measurements.deaths[WORKER][Measurements::TRAPPED] == 1,
 				"trapped occupant counted once");
 	}
@@ -712,12 +712,12 @@ static void measurementScenarios()
 		auto *attacker = w.unit(WARRIOR, 7, 8, 0);
 		auto *target = w.building("inn", 8, 8, 1);
 		target->hp = 1;
-		attacker->action = ATTACK_SPEED;
-		attacker->speed = 1;
-		attacker->delta = UNIT_ATTACK_HIT_DELTA;
-		attacker->dx = 1;
-		attacker->dy = 0;
-		attacker->performance[ATTACK_STRENGTH] = 1000;
+		attacker->core.action = ATTACK_SPEED;
+		attacker->core.speed = 1;
+		attacker->core.delta = UNIT_ATTACK_HIT_DELTA;
+		attacker->core.dx = 1;
+		attacker->core.dy = 0;
+		attacker->performance(ATTACK_STRENGTH) = 1000;
 		attacker->syncStep();
 		require(w.game.teams[0]->stats.measurements.damageDealt[Measurements::MELEE]
 															   [Measurements::BUILDING] == 1,
@@ -727,8 +727,8 @@ static void measurementScenarios()
 		TeamStatsMeasurementFixture w;
 		auto *tower = w.building("defencetower");
 		auto *target = w.unit(WORKER, 11, 8, 1);
-		target->speed = 1;
-		target->delta = 0;
+		target->core.speed = 1;
+		target->core.delta = 0;
 		TeamStatsMeasurementFixture::fire(tower);
 		require(w.game.teams[0]->stats.measurements.shots[Measurements::TOWER] == 1,
 				"real turret firing counts one launched projectile");
@@ -759,10 +759,10 @@ static void measurementScenarios()
 		TeamStatsMeasurementFixture w;
 		w.game.gameHeader.setHungerDisabled(true);
 		auto *u = w.unit();
-		u->hungry = 0;
-		const int hp = u->hp;
+		u->core.hungry = 0;
+		const int hp = u->core.hp;
 		TeamStatsMeasurementFixture::medical(u);
-		require(u->hp == hp && !u->isDead, "no hunger rule preserves health");
+		require(u->core.hp == hp && !u->core.isDead, "no hunger rule preserves health");
 		require(w.game.teams[0]->stats.measurements.deaths[WORKER][Measurements::STARVATION] == 0,
 				"no hunger produces no starvation event");
 	}
@@ -771,12 +771,12 @@ static void measurementScenarios()
 		w.game.gameHeader.setUnitUpgradesDisabled(true);
 		auto *b = w.building("barracks");
 		auto *u = w.unit(WARRIOR);
-		const int level = u->level[ATTACK_SPEED];
+		const int level = u->detail.level[ATTACK_SPEED];
 		w.inside(u, b, ATTACK_SPEED);
 		TeamStatsMeasurementFixture::displacement(u);
 		const auto &m = w.game.teams[0]->stats.measurements;
-		require(u->displacement == Unit::DIS_EXITING_BUILDING &&
-				u->level[ATTACK_SPEED] == level && m.trainingVisits[WARRIOR] == 0 &&
+		require(u->core.displacement == Unit::DIS_EXITING_BUILDING &&
+				u->detail.level[ATTACK_SPEED] == level && m.trainingVisits[WARRIOR] == 0 &&
 				m.abilityGains[WARRIOR][ATTACK_SPEED] == 0,
 				"disabled upgrades exit without recording a training visit or level gain");
 	}
@@ -870,7 +870,7 @@ static void measurementContinuation()
 {
 	TeamStatsMeasurementFixture w;
 	auto *u = w.unit(WORKER, 20, 20, 1);
-	u->hp = -2;
+	u->core.hp = -2;
 	u->diagnosticDeathCause = Measurements::CLEARING;
 	auto *bullet = new Bullet(0, 0, 1, 1, 10, 1000, 20, 20, 0, 0, 0, 0);
 	bullet->sourceTeam = 0;
@@ -1275,14 +1275,14 @@ TEST_CASE("clearing telemetry counts operations once by configured primary mater
                 inn->unitStayRange = 32;
                 inn->clearingMaterials[materialIndex(MaterialId::Gold)] = true;
                 worker->attachedBuilding = inn;
-                worker->medical = Unit::MED_FREE;
-                worker->displacement = Unit::DIS_RANDOM;
+                worker->core.medical = Unit::MED_FREE;
+                worker->core.displacement = Unit::DIS_RANDOM;
                 auto &measurements = w.game.teams[0]->stats.measurements;
                 for (unsigned attempt = 0; attempt < 2; ++attempt)
                 {
-                    worker->movement = Unit::MOV_HARVESTING;
-                    worker->dx = 1;
-                    worker->dy = 0;
+                    worker->core.movement = Unit::MOV_HARVESTING;
+                    worker->core.dx = 1;
+                    worker->core.dy = 0;
                     if (buildingClearing) TeamStatsMeasurementFixture::clearForBuilding(worker);
                     else TeamStatsMeasurementFixture::clear(worker);
                     Uint64 total = 0;
@@ -1303,7 +1303,7 @@ TEST_SUITE("TeamStatsSave")
         glob2test::HeadlessGlobals globals;
         glob2test::HeadlessGame world({.clearImmobile=true,.header=true,.seed=713});
         auto* explorer=world.addUnit(EXPLORER,8,8); REQUIRE(explorer);
-        REQUIRE(explorer->performance[MAGIC_ATTACK_AIR]>0);
+        REQUIRE(explorer->performance(MAGIC_ATTACK_AIR)>0);
         world.game.stepCounter=28672;
         const auto path=glob2test::inflated("unit-catalog/legacy152-team3-ranged-stats.bin.gz");
         FILE* file=std::fopen(path.string().c_str(),"rb"); REQUIRE(file);
@@ -1521,19 +1521,19 @@ TEST_CASE("Scripting identity survives conversion and save load" * doctest::test
  w.game.teams[1]->sharedVisionFood |= w.game.teams[0]->me;
  w.game.teams[1]->allies &= ~w.game.teams[0]->me;
  auto *u=w.unit(EXPLORER,12,8);
- u->hungry=u->trigHungry;
- u->medical=Unit::MED_HUNGRY;
- u->needToRecheckMedical=true;
- u->entityRandom.nextU32();
- const auto randomBefore=u->entityRandom;
+ u->core.hungry=u->detail.trigHungry;
+ u->core.medical=Unit::MED_HUNGRY;
+ u->detail.needToRecheckMedical=true;
+ u->detail.entityRandom.nextU32();
+ const auto randomBefore=u->detail.entityRandom;
  TeamStatsMeasurementFixture::activity(u);
  REQUIRE(u->owner==w.game.teams[1]);
- CHECK(u->entityRandom==randomBefore);
- REQUIRE(w.game.scriptGenerations[Game::scriptGenerationIndex(false, 1, Unit::GIDtoID(u->gid))]==u->scriptIdentity);
+ CHECK(u->detail.entityRandom==randomBefore);
+ REQUIRE(w.game.scriptGenerations[Game::scriptGenerationIndex(false, 1, Unit::GIDtoID(u->core.gid))]==u->core.scriptIdentity);
  auto loaded=roundTrip(w.game);
- REQUIRE(loaded->game.teams[1]->myUnits[Unit::GIDtoID(u->gid)]->scriptIdentity==u->scriptIdentity);
+ REQUIRE(loaded->game.teams[1]->myUnits[Unit::GIDtoID(u->core.gid)]->core.scriptIdentity==u->core.scriptIdentity);
  CHECK(loaded->game.scriptGenerations==w.game.scriptGenerations);
- CHECK(loaded->game.teams[1]->myUnits[Unit::GIDtoID(u->gid)]->entityRandom==randomBefore);
+ CHECK(loaded->game.teams[1]->myUnits[Unit::GIDtoID(u->core.gid)]->detail.entityRandom==randomBefore);
 }
 
 TEST_CASE("Scripting level reset preserves generation counters" * doctest::test_suite("JavaScriptLifecycle"))
@@ -1542,9 +1542,9 @@ TEST_CASE("Scripting level reset preserves generation counters" * doctest::test_
  TeamStatsMeasurementFixture w;
  auto *u=w.unit();
  auto generations=w.game.scriptGenerations;
- auto identity=u->scriptIdentity;
+ auto identity=u->core.scriptIdentity;
  u->resetAtLevel(1);
- CHECK(u->scriptIdentity==identity);
+ CHECK(u->core.scriptIdentity==identity);
  CHECK(w.game.scriptGenerations==generations);
 }
 
@@ -1553,7 +1553,7 @@ TEST_CASE("Scripting conversion allocates fresh identity in a reused destination
  glob2test::HeadlessGlobals globals;
  TeamStatsMeasurementFixture w;
  auto* previous=w.unit(EXPLORER,20,20,1);
- auto previousReference=Script::Value::object().set("id",unsigned(previous->gid)).set("generation",previous->scriptIdentity);
+ auto previousReference=Script::Value::object().set("id",unsigned(previous->core.gid)).set("generation",previous->core.scriptIdentity);
  REQUIRE(w.game.removeUnitAndBuildingAndFlags(20,20,Game::DEL_UNIT));
  auto *inn=w.building("inn",8,8,1);
  inn->materials[WHEAT]=10; inn->materials[CHERRY]=10; inn->updateCallLists();
@@ -1561,11 +1561,11 @@ TEST_CASE("Scripting conversion allocates fresh identity in a reused destination
  w.game.teams[1]->sharedVisionFood |= w.game.teams[0]->me;
  w.game.teams[1]->allies &= ~w.game.teams[0]->me;
  auto *u=w.unit(EXPLORER,12,8);
- auto originalReference=Script::Value::object().set("id",unsigned(u->gid)).set("generation",u->scriptIdentity);
- u->hungry=u->trigHungry; u->medical=Unit::MED_HUNGRY; u->needToRecheckMedical=true;
+ auto originalReference=Script::Value::object().set("id",unsigned(u->core.gid)).set("generation",u->core.scriptIdentity);
+ u->core.hungry=u->detail.trigHungry; u->core.medical=Unit::MED_HUNGRY; u->detail.needToRecheckMedical=true;
  TeamStatsMeasurementFixture::activity(u);
  REQUIRE(u->owner==w.game.teams[1]);
- CHECK(u->scriptIdentity==2);
+ CHECK(u->core.scriptIdentity==2);
  Script::Observations world(w.game,-1);
  CHECK(world.query("unit",{previousReference}).kind==Script::Value::Null);
  CHECK(world.query("unit",{originalReference}).kind==Script::Value::Null);
@@ -1631,7 +1631,7 @@ TEST_CASE("Scripting editor deletion and reuse never revive a reference" * docte
  glob2test::HeadlessGlobals globals;
  TeamStatsMeasurementFixture w;
  auto* unit=w.unit(); auto* building=w.building("inn");
- auto unitRef=Script::Value::object().set("id",unsigned(unit->gid)).set("generation",unit->scriptIdentity);
+ auto unitRef=Script::Value::object().set("id",unsigned(unit->core.gid)).set("generation",unit->core.scriptIdentity);
  auto buildingRef=Script::Value::object().set("id",unsigned(building->gid)).set("generation",building->scriptIdentity);
  REQUIRE(w.game.removeUnitAndBuildingAndFlags(20,20,Game::DEL_UNIT));
  REQUIRE(w.game.removeUnitAndBuildingAndFlags(8,8,Game::DEL_BUILDING));
@@ -1639,7 +1639,7 @@ TEST_CASE("Scripting editor deletion and reuse never revive a reference" * docte
  CHECK(world.query("unit",{unitRef}).kind==Script::Value::Null);
  CHECK(world.query("building",{buildingRef}).kind==Script::Value::Null);
  unit=w.unit(); building=w.building("inn");
- CHECK(unit->scriptIdentity==2); CHECK(building->scriptIdentity==2);
+ CHECK(unit->core.scriptIdentity==2); CHECK(building->scriptIdentity==2);
  CHECK(world.query("unit",{unitRef}).kind==Script::Value::Null);
  CHECK(world.query("building",{buildingRef}).kind==Script::Value::Null);
  auto loaded=roundTrip(w.game);
@@ -1693,20 +1693,20 @@ TEST_CASE("Scripting conversion back never resurrects the original reference" * 
  world.game.teams[1]->sharedVisionFood |= world.game.teams[0]->me;
  world.game.teams[1]->allies &= ~world.game.teams[0]->me;
  auto *unit=world.unit(EXPLORER,12,8);
- auto reference=Script::Value::object().set("id",unsigned(unit->gid)).set("generation",unit->scriptIdentity);
- unit->hungry=unit->trigHungry; unit->medical=Unit::MED_HUNGRY; unit->needToRecheckMedical=true;
+ auto reference=Script::Value::object().set("id",unsigned(unit->core.gid)).set("generation",unit->core.scriptIdentity);
+ unit->core.hungry=unit->detail.trigHungry; unit->core.medical=Unit::MED_HUNGRY; unit->detail.needToRecheckMedical=true;
  TeamStatsMeasurementFixture::activity(unit);
  REQUIRE(unit->owner==world.game.teams[1]);
- auto converted=Script::Value::object().set("id",unsigned(unit->gid)).set("generation",unit->scriptIdentity);
+ auto converted=Script::Value::object().set("id",unsigned(unit->core.gid)).set("generation",unit->core.scriptIdentity);
  destination->materials[WHEAT]=0; destination->materials[CHERRY]=0; destination->updateCallLists();
  home->materials[WHEAT]=10; home->materials[CHERRY]=10; home->updateCallLists();
  TeamStatsMeasurementFixture::allowConversion(home);
  world.game.teams[0]->sharedVisionFood |= world.game.teams[1]->me;
  world.game.teams[0]->allies &= ~world.game.teams[1]->me;
- unit->hungry=unit->trigHungry; unit->medical=Unit::MED_HUNGRY; unit->needToRecheckMedical=true;
+ unit->core.hungry=unit->detail.trigHungry; unit->core.medical=Unit::MED_HUNGRY; unit->detail.needToRecheckMedical=true;
  TeamStatsMeasurementFixture::activity(unit);
  REQUIRE(unit->owner==world.game.teams[0]);
- CHECK(unit->scriptIdentity==2);
+ CHECK(unit->core.scriptIdentity==2);
  Script::Observations observations(world.game,-1);
  CHECK(observations.query("unit",{reference}).kind==Script::Value::Null);
  CHECK(observations.query("unit",{converted}).kind==Script::Value::Null);
@@ -1722,17 +1722,17 @@ TEST_CASE("Scripting normal death invalidates lookup before cleanup and slot reu
  TeamStatsMeasurementFixture world;
  world.building("inn");
  auto *unit=world.unit();
- auto reference=Script::Value::object().set("id",unsigned(unit->gid)).set("generation",unit->scriptIdentity);
- auto slot=Unit::GIDtoID(unit->gid);
- unit->hp=-1;
+ auto reference=Script::Value::object().set("id",unsigned(unit->core.gid)).set("generation",unit->core.scriptIdentity);
+ auto slot=Unit::GIDtoID(unit->core.gid);
+ unit->core.hp=-1;
  TeamStatsMeasurementFixture::medical(unit);
  Script::Observations observations(world.game,-1);
  CHECK(observations.query("unit",{reference}).kind==Script::Value::Null);
  world.game.teams[0]->syncStep();
  REQUIRE(world.game.teams[0]->myUnits[slot]==nullptr);
  auto *replacement=world.unit();
- CHECK(Unit::GIDtoID(replacement->gid)==slot);
- CHECK(replacement->scriptIdentity==2);
+ CHECK(Unit::GIDtoID(replacement->core.gid)==slot);
+ CHECK(replacement->core.scriptIdentity==2);
  CHECK(observations.query("unit",{reference}).kind==Script::Value::Null);
  auto loaded=roundTrip(world.game);
  Script::Observations restored(loaded->game,-1);

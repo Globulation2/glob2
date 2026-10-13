@@ -219,10 +219,10 @@ TEST_SUITE("BuildingAreaEffects")
 		overlapping->materials[WHEAT] = 4;
 		overlapping->materials[WOOD] = 4;
 		auto *u = world.addUnit(WORKER, 7, 7);
-		u->hp -= 5;
-		u->hungry -= 5;
+		u->core.hp -= 5;
+		u->core.hungry -= 5;
 		auto *enemy = world.addUnit(WORKER, 7, 8, 1);
-		const int enemyHp = enemy->hp;
+		const int enemyHp = enemy->core.hp;
 		b->materials[WHEAT] = 4;
 		b->materials[WOOD] = 0;
 		refresh(world, 0);
@@ -240,39 +240,39 @@ TEST_SUITE("BuildingAreaEffects")
 		CHECK(b->materials[WHEAT] == 3);
 		CHECK(overlapping->materials[WHEAT] == 2);
 		CHECK(overlapping->materials[WOOD] == 2);
-		const int hp = u->hp, hunger = u->hungry;
+		const int hp = u->core.hp, hunger = u->core.hungry;
 		u->applyAreaServices();
-		CHECK(u->hp == hp);
-		CHECK(u->hungry == hunger);
+		CHECK(u->core.hp == hp);
+		CHECK(u->core.hungry == hunger);
 		enemy->applyAreaServices();
-		CHECK(enemy->hp == enemyHp);
-		CHECK(enemy->areaServiceRemainders[Damage] == 128);
+		CHECK(enemy->core.hp == enemyHp);
+		CHECK(enemy->detail.areaServiceRemainders[Damage] == 128);
 		refresh(world, 17);
 		u->applyAreaServices();
-		CHECK(u->areaServiceRemainders[Healing] == 128);
+		CHECK(u->detail.areaServiceRemainders[Healing] == 128);
 		refresh(world, 32);
 		u->applyAreaServices();
-		CHECK(u->hp == hp + 1);
-		CHECK(u->hungry == hunger + 1);
+		CHECK(u->core.hp == hp + 1);
+		CHECK(u->core.hungry == hunger + 1);
 		enemy->applyAreaServices();
-		CHECK(enemy->hp == enemyHp - 1);
-		CHECK(enemy->areaServiceRemainders[Damage] == 0);
+		CHECK(enemy->core.hp == enemyHp - 1);
+		CHECK(enemy->detail.areaServiceRemainders[Damage] == 0);
 		u->applyAreaServices();
-		CHECK(u->areaServiceRemainders[Healing] == 0);
+		CHECK(u->detail.areaServiceRemainders[Healing] == 0);
 		const int food = b->materials[WHEAT];
 		refresh(world, 32);
 		CHECK(b->materials[WHEAT] == food);
-		u->hp = u->performance[HP];
-		u->hungry = Unit::HUNGRY_MAX;
+		u->core.hp = u->performance(HP);
+		u->core.hungry = Unit::HUNGRY_MAX;
 		refresh(world, 48);
 		u->applyAreaServices();
-		CHECK(u->areaServiceRemainders[Healing] == 0);
-		CHECK(u->areaServiceRemainders[Feeding] == 0);
-		u->hp -= 2;
-		u->displacement = Unit::DIS_INSIDE;
+		CHECK(u->detail.areaServiceRemainders[Healing] == 0);
+		CHECK(u->detail.areaServiceRemainders[Feeding] == 0);
+		u->core.hp -= 2;
+		u->core.displacement = Unit::DIS_INSIDE;
 		refresh(world, 64);
 		u->applyAreaServices();
-		CHECK(u->areaServiceRemainders[Healing] == 0);
+		CHECK(u->detail.areaServiceRemainders[Healing] == 0);
 		b->materials[WOOD] = 0;
 		refresh(world, 80);
 		CHECK_FALSE(b->areaFunded);
@@ -299,12 +299,12 @@ TEST_SUITE("BuildingAreaEffects")
 		CHECK(enemy->getRealArmor(false) == earmor / 2);
 		CHECK(enemy->getRealArmor(true) == 0);
 		CHECK(b->getEffectiveArmor() == b->type->armor * 2);
-		u->posX = 20;
-		u->posY = 20;
+		u->core.posX = 20;
+		u->core.posY = 20;
 		CHECK(u->getRealAttackStrength() == attack);
-		u->posX = 6;
-		u->posY = 6;
-		u->displacement = Unit::DIS_ENTERING_BUILDING;
+		u->core.posX = 6;
+		u->core.posY = 6;
+		u->core.displacement = Unit::DIS_ENTERING_BUILDING;
 		CHECK(u->getRealAttackStrength() == attack);
 	}
 	TEST_CASE("even footprints receive combat modifiers at the northwestern center")
@@ -343,30 +343,30 @@ TEST_SUITE("BuildingAreaEffects")
 		for (int purpose : {int(FEED), int(HEAL)})
 		{
 			auto *u = world.addUnit(WORKER, 6 + purpose % 2, 6);
-			u->hp -= 2;
-			u->hungry -= 2;
-			u->areaServiceRemainders[Healing] = 128;
-			u->areaServiceRemainders[Feeding] = 128;
-			u->destinationPurpose = purpose;
+			u->core.hp -= 2;
+			u->core.hungry -= 2;
+			u->detail.areaServiceRemainders[Healing] = 128;
+			u->detail.areaServiceRemainders[Feeding] = 128;
+			u->core.destinationPurpose = purpose;
 			REQUIRE(b->canOfferService(u, purpose));
 			b->subscribeUnitForInside(u);
-			world.game.map.setGroundUnit(u->posX, u->posY, NOGUID);
-			u->posX = b->getMidX();
-			u->posY = b->getMidY();
-			u->displacement = Unit::DIS_INSIDE;
-			u->insideTimeout = 0;
-			u->delta = 255;
-			u->speed = 1;
+			world.game.map.setGroundUnit(u->core.posX, u->core.posY, NOGUID);
+			u->core.posX = b->getMidX();
+			u->core.posY = b->getMidY();
+			u->core.displacement = Unit::DIS_INSIDE;
+			u->detail.insideTimeout = 0;
+			u->core.delta = 255;
+			u->core.speed = 1;
 			u->syncStep();
 			if (purpose == FEED)
 			{
-				CHECK(u->hungry == Unit::HUNGRY_MAX);
-				CHECK(u->areaServiceRemainders[Feeding] == 0);
+				CHECK(u->core.hungry == Unit::HUNGRY_MAX);
+				CHECK(u->detail.areaServiceRemainders[Feeding] == 0);
 			}
 			else
 			{
-				CHECK(u->hp == u->performance[HP]);
-				CHECK(u->areaServiceRemainders[Healing] == 0);
+				CHECK(u->core.hp == u->performance(HP));
+				CHECK(u->detail.areaServiceRemainders[Healing] == 0);
 			}
 		}
 	}
@@ -378,16 +378,16 @@ TEST_SUITE("BuildingAreaEffects")
 		world.addBuilding("stonewall", 4, 4, 0, 0);
 		world.addBuilding("stonewall", 9, 4, 0, 1);
 		auto *u = world.addUnit(WORKER, 7, 7);
-		u->hp = 1;
+		u->core.hp = 1;
 		refresh(world, 0);
 		u->applyAreaServices();
-		CHECK(u->isDead);
+		CHECK(u->core.isDead);
 		auto *survivor = world.addUnit(WORKER, 7, 8);
-		survivor->hp = 1;
+		survivor->core.hp = 1;
 		world.game.gameHeader.setPermadeathDisabled(true);
 		refresh(world, 16);
 		survivor->applyAreaServices();
-		CHECK_FALSE(survivor->isDead);
+		CHECK_FALSE(survivor->core.isDead);
 	}
 	TEST_CASE("turret snapshots attack at firing and reads target armor at impact")
 	{
@@ -412,8 +412,8 @@ TEST_SUITE("BuildingAreaEffects")
 		auto *turret = world.addBuilding("inn", 8, 8);
 		turret->bullets = 10;
 		auto *target = world.addUnit(EXPLORER, 14, 9, 1);
-		target->speed = 1;
-		target->delta = 0;
+		target->core.speed = 1;
+		target->core.delta = 0;
 		refresh(world, 0);
 		turret->turretStep(0);
 		turret->turretStep(1);
@@ -425,10 +425,10 @@ TEST_SUITE("BuildingAreaEffects")
 		source->kill();
 		defense->kill();
 		refresh(world, 1);
-		const int before = target->hp, damage = std::max(1, 18 - target->getRealArmor(false));
+		const int before = target->core.hp, damage = std::max(1, 18 - target->getRealArmor(false));
 		shot->ticksLeft = 0;
 		sector->step();
-		CHECK(target->hp == before - damage);
+		CHECK(target->core.hp == before - damage);
 	}
 	TEST_CASE("magic and flying services use coverage without fruit bonuses")
 	{
@@ -438,33 +438,33 @@ TEST_SUITE("BuildingAreaEffects")
 				{{"radius", 8}, {"attackBuffBps", 10000}, {"healingQ8", 256}, {"feedingQ8", 256}});
 		world.addBuilding("stonewall", 4, 4);
 		auto *caster = world.addUnit(EXPLORER, 8, 8, 0, 1);
-		REQUIRE(caster->performance[FLY] > 0);
+		REQUIRE(caster->performance(FLY) > 0);
 		auto *target = world.addUnit(WARRIOR, 9, 8, 1);
-		caster->performance[MAGIC_ATTACK_GROUND] = 3;
-		caster->performance[MAGIC_ATTACK_AIR] = 0;
-		caster->magicActionTimeout = 0;
-		caster->hp -= 2;
-		caster->hungry -= 2;
+		caster->performance(MAGIC_ATTACK_GROUND) = 3;
+		caster->performance(MAGIC_ATTACK_AIR) = 0;
+		caster->detail.magicActionTimeout = 0;
+		caster->core.hp -= 2;
+		caster->core.hungry -= 2;
 		refresh(world, 0);
-		const int hp = caster->hp, hunger = caster->hungry, fruits = caster->fruitCount;
+		const int hp = caster->core.hp, hunger = caster->core.hungry, fruits = caster->detail.fruitCount;
 		caster->applyAreaServices();
-		CHECK(caster->hp == hp + 1);
-		CHECK(caster->hungry == hunger + 1);
-		CHECK(caster->fruitCount == fruits);
-		const int before = target->hp;
-		caster->hp = caster->performance[HP];
-		caster->hungry = Unit::HUNGRY_MAX;
-		caster->hungriness = 0;
-		caster->medical = Unit::MED_FREE;
-		caster->needToRecheckMedical = false;
-		caster->delta = 255;
-		caster->speed = 1;
+		CHECK(caster->core.hp == hp + 1);
+		CHECK(caster->core.hungry == hunger + 1);
+		CHECK(caster->detail.fruitCount == fruits);
+		const int before = target->core.hp;
+		caster->core.hp = caster->performance(HP);
+		caster->core.hungry = Unit::HUNGRY_MAX;
+		caster->detail.hungriness = 0;
+		caster->core.medical = Unit::MED_FREE;
+		caster->detail.needToRecheckMedical = false;
+		caster->core.delta = 255;
+		caster->core.speed = 1;
 		caster->syncStep();
-		CHECK(target->hp == before - 6 + target->getRealArmor(true));
+		CHECK(target->core.hp == before - 6 + target->getRealArmor(true));
 		auto *pendingDeath = world.addUnit(WORKER, 7, 8);
-		pendingDeath->hp = UNIT_HP_DEATH_THRESHOLD - 1;
+		pendingDeath->core.hp = UNIT_HP_DEATH_THRESHOLD - 1;
 		pendingDeath->applyAreaServices();
-		CHECK(pendingDeath->isDead);
+		CHECK(pendingDeath->core.isDead);
 	}
 	TEST_CASE("fertility snapshots retain their captured modifiers and only land changes")
 	{
@@ -737,8 +737,8 @@ TEST_SUITE("BuildingAreaEffects")
 			auto *b = world.addBuilding("stonewall", 4, 4);
 			b->materials[WHEAT] = 32;
 			auto *u = world.addUnit(WORKER, 6, 6);
-			u->hp -= 10;
-			u->hungry -= 100;
+			u->core.hp -= 10;
+			u->core.hungry -= 100;
 			for (int y = 0; y < 32; ++y)
 			{
 				world.game.map.setVertexTerrain(0, y, WATER);
@@ -749,7 +749,7 @@ TEST_SUITE("BuildingAreaEffects")
 			world.game.setWaitingOnMask(0);
 			world.step(checkpoint);
 			REQUIRE(b->areaFunded);
-			REQUIRE(u->areaServiceRemainders[Healing] == (checkpoint <= 16 ? 128 : 0));
+			REQUIRE(u->detail.areaServiceRemainders[Healing] == (checkpoint <= 16 ? 128 : 0));
 			auto *memory = new GAGCore::MemoryStreamBackend;
 			GAGCore::BinaryOutputStream output(memory);
 			world.game.save(&output, false, "area effects");

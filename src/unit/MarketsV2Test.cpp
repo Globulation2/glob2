@@ -105,7 +105,7 @@ std::string marketTrace(bool enabled, bool report=false)
 			for (int i=0; i<6; ++i)
 			{
 				auto *u = world.team->myUnits[i];
-				u->hungry = Unit::HUNGRY_MAX; u->medical = Unit::MED_FREE;
+				u->core.hungry = Unit::HUNGRY_MAX; u->core.medical = Unit::MED_FREE;
 			}
 			world.step();
 			Uint32 hash=2166136261u;
@@ -161,7 +161,7 @@ TEST_CASE("legacy workers already travelling to markets continue after migration
 	std::ostringstream trace;
 	for (int tick=750;tick<1000;++tick)
 	{
-		for (int i=0;i<6;++i) { world.team->myUnits[i]->hungry=Unit::HUNGRY_MAX; world.team->myUnits[i]->medical=Unit::MED_FREE; }
+		for (int i=0;i<6;++i) { world.team->myUnits[i]->core.hungry=Unit::HUNGRY_MAX; world.team->myUnits[i]->core.medical=Unit::MED_FREE; }
 		world.step();
 		Uint32 hash=2166136261u;
 		for (Uint32 value : historicalGoldenState(world.game)) hash=(hash^value)*16777619u;

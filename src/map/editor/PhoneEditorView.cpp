@@ -124,7 +124,7 @@ void PhoneEditor::drawInspector()
 			clearTool();
 			return;
 		}
-		title = getUnitName(unit->typeNum);
+		title = getUnitName(unit->core.typeNum);
 		detail =
 			GAGCore::FormattableString(GAGCore::Toolkit::getStringTable()->getString("[Team %0]"))
 				.arg(unit->team + 1);

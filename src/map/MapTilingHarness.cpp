@@ -56,7 +56,7 @@ int unitsOf(const Team* team)
 {
 	int n = 0;
 	for (int i = 0; i < Unit::MAX_COUNT; i++)
-		n += team->myUnits[i] && !team->myUnits[i]->isDead;
+		n += team->myUnits[i] && !team->myUnits[i]->core.isDead;
 	return n;
 }
 
@@ -106,8 +106,8 @@ TEST_CASE("copies colonies, painted areas and clearing settings [save-format]")
 	flag->clearingMaterials[WOOD] = false;
 	flag->minWorkerLevelToFlag=2;
 	for (int i=0; i<Unit::MAX_COUNT; ++i)
-		if (auto* unit=game.teams[0]->myUnits[i]; unit && unit->typeNum==WORKER)
-			unit->constructionLevel=2;
+		if (auto* unit=game.teams[0]->myUnits[i]; unit && unit->core.typeNum==WORKER)
+			unit->core.constructionLevel=2;
 
 	int anchorX[2], anchorY[2];
 	for (int t = 0; t < mapTeams; ++t)
@@ -140,7 +140,7 @@ TEST_CASE("copies colonies, painted areas and clearing settings [save-format]")
 	std::set<std::uint64_t> selectors;
 	for (int t = 0; t < teams; ++t) {
 		for (const auto* unit : game.teams[t]->liveUnits.entries())
-			require(selectors.insert(unit->entityRandom.exportState().increment).second, "tiled units have distinct streams");
+			require(selectors.insert(unit->detail.entityRandom.exportState().increment).second, "tiled units have distinct streams");
 		for (const auto* building : game.teams[t]->liveBuildings.entries())
 			require(selectors.insert(building->entityRandom.exportState().increment).second, "tiled buildings have distinct streams");
 	}
@@ -174,8 +174,8 @@ TEST_CASE("copies colonies, painted areas and clearing settings [save-format]")
 					}
 					require(flags == 1, "the copy has its clearing flag");
 					for (int u=0; u<Unit::MAX_COUNT; ++u)
-						if (const auto* unit=game.teams[k]->myUnits[u]; unit && unit->typeNum==WORKER)
-							require(unit->constructionLevel==2,"workers keep independent construction qualification");
+						if (const auto* unit=game.teams[k]->myUnits[u]; unit && unit->core.typeNum==WORKER)
+							require(unit->core.constructionLevel==2,"workers keep independent construction qualification");
 				}
 			}
 	std::puts("PASS a repeated map deals each colony, its areas and its flag settings to one team");
@@ -260,7 +260,7 @@ TEST_CASE("wraps swimmers, buildings and team areas together across the source s
 	game.map.paintCell(63, 10, WATER);
 	auto *swimmer = game.addUnit(63, 10, 0, WORKER, 3, 0, 0, 0);
 	REQUIRE(swimmer);
-	swimmer->level[WALK] = 0;
+	swimmer->detail.level[WALK] = 0;
 	game.map.addGuardArea(63, 10, 0);
 	game.map.addClearArea(63, 11, 0);
 	game.map.addForbidden(63, 12, 0);

@@ -6,13 +6,16 @@ namespace SimulationSnapshot
 {
 Handle Store::captureBoundary(const Game& game, Requirements required)
 {
+    required=normalize(required);
 	const auto requested = required;
+    bool unchangedBoundary=false;
 	if (latest && latest->worldIdentity != game.map.identity()) reset();
 	if (latest && latest->tick == game.stepCounter && latest->observationRevision == observationRevision
         && latest->configurationRevision == game.gameHeader.observationRevision()
         && latest->mapGenerations == game.map.snapshotGenerations()
         && (!needs(required | latest->requirements, Component::Exploration) || latest->explorationGenerations == game.map.explorationGenerations())) {
 		if ((required & latest->requirements) == required) return latest->project(requested);
+        unchangedBoundary=true;
 		required |= latest->requirements;
 	}
 	const auto start = std::chrono::steady_clock::now();
@@ -22,7 +25,7 @@ Handle Store::captureBoundary(const Game& game, Requirements required)
 		catalogConfigurationRevision = game.gameHeader.observationRevision();
 	}
 	const auto copiedBefore = storage.bytesCopied;
-	auto next = capture(game, catalog, required, latest ? &*latest : nullptr, &storage);
+	auto next = capture(game, catalog, required, latest ? &*latest : nullptr, &storage,unchangedBoundary);
 	next.observationRevision = observationRevision;
 	// Map arrays report the chunks they actually copied; other components are
 	// accounted by size when not shared with the previous capture.
@@ -42,16 +45,28 @@ Handle Store::captureBoundary(const Game& game, Requirements required)
 	account(next.exploration, previous.exploration, 0);
 	account(next.catalogs, previous.catalogs, 0);
 	account(next.rules, previous.rules, 0);
+    account(next.unitCores,previous.unitCores,0);
+    account(next.unitDetails,previous.unitDetails,0);
 	if(next.growth) {
 		const auto sizes=next.growth->storageSizes();
 		account(next.growth,previous.growth,(sizes[0]+sizes[1])*sizeof(Uint32)+sizes[2]*sizeof(Uint16));
 	}
-	if (next.entities) {
-		metrics.bytesCopied += next.entities->buildings.size() * sizeof(BuildingView) + next.entities->units.size() * sizeof(UnitView)
+	if (next.entities && next.entities!=previous.entities) {
+		metrics.bytesCopied += next.entities->buildings.size() * sizeof(BuildingView)
 			+ next.entities->projects.size() * sizeof(BuildProjectView)
-            + (next.entities->buildingSlotIndices.size() + next.entities->unitSlotIndices.size()) * sizeof(Uint32);
+            + next.entities->buildingSlotIndices.size() * sizeof(Uint32);
 		metrics.bytesCopied += next.entities->relationships.size() * sizeof(UnitRef);
 	}
+    if(next.unitCores && next.unitCores!=previous.unitCores) {
+        const auto count=next.unitCores->units.size();
+        metrics.unitStateBytesCopied+=count*sizeof(UnitCoreState);
+        metrics.unitRecordPayloadBytes+=count*sizeof(UnitCoreView);
+        metrics.bytesCopied+=count*sizeof(UnitCoreView)+next.unitCores->unitSlotIndices.size()*sizeof(Uint32);
+    }
+    if(next.unitDetails && next.unitDetails!=previous.unitDetails) {
+        const auto bytes=next.unitDetails->units.size()*sizeof(UnitDetailState);
+        metrics.unitStateBytesCopied+=bytes;metrics.unitRecordPayloadBytes+=bytes;metrics.bytesCopied+=bytes;
+    }
 	if (next.teams) {
 		metrics.bytesCopied += next.teams->values.size() * sizeof(TeamView);
 		for (const auto& team : next.teams->values) metrics.bytesCopied += team.statistics.buildingCountByVariant.size() * sizeof(int)

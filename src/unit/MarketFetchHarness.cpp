@@ -77,9 +77,9 @@ struct Bed
 		unit = new TestUnit(unitX, unitY, Unit::GIDfrom(0, 0), WORKER, team, 1);
 		team->myUnits[0] = unit;
 		team->rebuildLiveLists();
-		game.map.setGroundUnit(unitX, unitY, unit->gid);
-		unit->activity = Unit::ACT_RANDOM;
-		unit->medical = Unit::MED_FREE;
+		game.map.setGroundUnit(unitX, unitY, unit->core.gid);
+		unit->core.activity = Unit::ACT_RANDOM;
+		unit->core.medical = Unit::MED_FREE;
 	}
 	void hire() { team->updateAllBuildingTasks(); }
 	bool marketTile(int x, int y) const { return game.map.getBuilding(x, y) == market->gid; }
@@ -98,9 +98,9 @@ TEST_CASE("MarketFetch/stocked markets are resource goals, depleted markets are 
 		require(bed.game.map.materialAvailableSlot(0, CHERRY, bed.unit->swimClass(), 36, 36, &dist, true), "the with-markets gradient reaches the stocked market");
 		require(!bed.game.map.materialAvailableSlot(0, CHERRY, bed.unit->swimClass(), 36, 36, &dist, false), "the plain gradient knows no cherries");
 		bed.hire();
-		require(bed.inn->unitsWorking.size() == 1 && bed.unit->destinationPurpose == CHERRY, "inn hires the worker for cherries held by the market");
-		require(bed.unit->displacement == Unit::DIS_GOING_TO_RESOURCE, "walking the fetch gradient");
-		require(bed.marketTile(bed.unit->targetX, bed.unit->targetY), "the gradient's goal is the market");
+		require(bed.inn->unitsWorking.size() == 1 && bed.unit->core.destinationPurpose == CHERRY, "inn hires the worker for cherries held by the market");
+		require(bed.unit->core.displacement == Unit::DIS_GOING_TO_RESOURCE, "walking the fetch gradient");
+		require(bed.marketTile(bed.unit->core.targetX, bed.unit->core.targetY), "the gradient's goal is the market");
 		std::printf("market fetch: hired via the market, distance %d tiles\n", dist);
 	}
 	{
@@ -109,11 +109,11 @@ TEST_CASE("MarketFetch/stocked markets are resource goals, depleted markets are 
 		Bed bed(39, 39);
 		bed.market->materials[CHERRY] = 20;
 		bed.hire();
-		require(bed.inn->unitsWorking.size() == 1 && bed.unit->displacement == Unit::DIS_GOING_TO_RESOURCE, "hired and walking");
+		require(bed.inn->unitsWorking.size() == 1 && bed.unit->core.displacement == Unit::DIS_GOING_TO_RESOURCE, "hired and walking");
 		bed.unit->arrive();
-		require(bed.unit->carriedMaterial == CHERRY, "took a cherry out of the market");
+		require(bed.unit->core.carriedMaterial == CHERRY, "took a cherry out of the market");
 		require(bed.market->materials[CHERRY] == 10, "market stock went down by one take");
-		require(bed.unit->displacement == Unit::DIS_GOING_TO_BUILDING && bed.unit->targetBuilding == bed.inn, "carrying it to the inn");
+		require(bed.unit->core.displacement == Unit::DIS_GOING_TO_BUILDING && bed.unit->targetBuilding == bed.inn, "carrying it to the inn");
 		std::puts("market fetch: the resource is taken at the market's door");
 	}
 	{
@@ -126,15 +126,15 @@ TEST_CASE("MarketFetch/stocked markets are resource goals, depleted markets are 
 		other->removeMaterialFromBuilding(CHERRY);
 		CHECK(bed.market->materials[CHERRY]==10);
 		bed.hire();
-		REQUIRE(bed.unit->displacement==Unit::DIS_GOING_TO_RESOURCE);
+		REQUIRE(bed.unit->core.displacement==Unit::DIS_GOING_TO_RESOURCE);
 		other->removeMaterialFromBuilding(CHERRY);
 		bed.unit->arrive();
 		CHECK(bed.market->materials[CHERRY]==0);
-		CHECK(bed.unit->carriedMaterial==-1);
-		CHECK(bed.unit->displacement==Unit::DIS_GOING_TO_RESOURCE);
+		CHECK(bed.unit->core.carriedMaterial==-1);
+		CHECK(bed.unit->core.displacement==Unit::DIS_GOING_TO_RESOURCE);
 		other->addMaterialIntoBuilding(CHERRY);
 		bed.unit->arrive();
-		CHECK(bed.unit->carriedMaterial==CHERRY);
+		CHECK(bed.unit->core.carriedMaterial==CHERRY);
 		CHECK(other->materials[CHERRY]==0);
 		CHECK(bed.unit->targetBuilding==bed.inn);
 	}
@@ -144,8 +144,8 @@ TEST_CASE("MarketFetch/stocked markets are resource goals, depleted markets are 
 		bed.market->materials[CHERRY] = 10;
 		require(bed.game.map.incResourceByIndex(34, 36, CHERRY, 0), "seed a cherry tile near the worker");
 		bed.hire();
-		require(bed.inn->unitsWorking.size() == 1 && bed.unit->displacement == Unit::DIS_GOING_TO_RESOURCE, "hired for cherries");
-		require(bed.unit->targetX == 34 && bed.unit->targetY == 36, "the nearer tile is the goal, not the market");
+		require(bed.inn->unitsWorking.size() == 1 && bed.unit->core.displacement == Unit::DIS_GOING_TO_RESOURCE, "hired for cherries");
+		require(bed.unit->core.targetX == 34 && bed.unit->core.targetY == 36, "the nearer tile is the goal, not the market");
 		std::puts("market fetch: a nearer tile wins over the market");
 	}
 	{
@@ -188,27 +188,27 @@ TEST_CASE("MarketFetch/deliverer stays attached and fetches the next market deli
 	bed.market->materials[CHERRY]=30;
 	bed.hire();
 	bed.unit->arrive();
-	require(bed.unit->carriedMaterial==CHERRY, "first take from market");
+	require(bed.unit->core.carriedMaterial==CHERRY, "first take from market");
 	bed.game.map.setGroundUnit(39,39,NOGUID);
-	bed.unit->posX=5; bed.unit->posY=5;
-	bed.game.map.setGroundUnit(5,5,bed.unit->gid);
-	bed.unit->displacement=Unit::DIS_FILLING_BUILDING;
-	bed.unit->needToRecheckMedical=true;
+	bed.unit->core.posX=5; bed.unit->core.posY=5;
+	bed.game.map.setGroundUnit(5,5,bed.unit->core.gid);
+	bed.unit->core.displacement=Unit::DIS_FILLING_BUILDING;
+	bed.unit->detail.needToRecheckMedical=true;
 	// An idle majority would release this deliverer under #254's hiring gate.
 	for (int i=0; i<4; ++i)
 	{
 		auto *idle=bed.game.addUnit(20+i,20,0,WORKER,0,0,0,0);
 		require(idle!=nullptr, "place idle worker");
-		idle->medical=Unit::MED_FREE;
-		idle->activity=Unit::ACT_RANDOM;
+		idle->core.medical=Unit::MED_FREE;
+		idle->core.activity=Unit::ACT_RANDOM;
 	}
 	bed.unit->arrive();
 	require(bed.inn->materials[CHERRY]==10, "first delivery deposited");
-	require(bed.unit->attachedBuilding==bed.inn && bed.unit->activity==Unit::ACT_FILLING,
+	require(bed.unit->attachedBuilding==bed.inn && bed.unit->core.activity==Unit::ACT_FILLING,
 	        "master hiring behavior keeps the worker attached after depositing");
-	require(bed.unit->displacement==Unit::DIS_GOING_TO_RESOURCE,
+	require(bed.unit->core.displacement==Unit::DIS_GOING_TO_RESOURCE,
 	        "next delivery uses the resource gradient");
-	require(bed.marketTile(bed.unit->targetX,bed.unit->targetY), "next target is the stocked market");
+	require(bed.marketTile(bed.unit->core.targetX,bed.unit->core.targetY), "next target is the stocked market");
 }
 
 std::string saveMap(Map &map, bool text)

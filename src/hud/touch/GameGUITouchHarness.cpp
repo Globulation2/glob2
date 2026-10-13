@@ -3574,12 +3574,12 @@ class GameGUITouchHarness
 		glob2test::drawGUI(gui,0);
 		{
             PresentationFrame displayed=gui.drawnScene();
-            auto mutableEntities=std::make_shared<SimulationSnapshot::Entities>(*displayed.world.entities);
-            auto shown=std::find_if(mutableEntities->units.begin(),mutableEntities->units.end(),
-                [&](const auto& u){return u.gid==worker->gid;});
-            require(shown!=mutableEntities->units.end(),"Motion fixture has a drawn worker");
-            shown->action=WALK;shown->dx=1;shown->dy=0;shown->delta=0;shown->speed=128;
-            displayed.world.entities=mutableEntities;
+            auto mutableCores=std::make_shared<SimulationSnapshot::UnitCores>(*displayed.world.unitCores);
+            auto shown=std::find_if(mutableCores->units.begin(),mutableCores->units.end(),
+                [&](const auto& u){return u.core.gid==worker->core.gid;});
+            require(shown!=mutableCores->units.end(),"Motion fixture has a drawn worker");
+            shown->core.action=WALK;shown->core.dx=1;shown->core.dy=0;shown->core.delta=0;shown->core.speed=128;
+            displayed.world.unitCores=mutableCores;
             SceneExtractor().prepare(displayed.world,gui.sceneRequest(),displayed);
 			const auto *previousScene = gui.view.scene;
 			const float previousMotion = gui.view.render.unitMotion;
@@ -3593,8 +3593,8 @@ class GameGUITouchHarness
 				"Unit halo follows the last rendered smooth-motion centre");
 			require(gui.touch->unitAt({visibleCenter.x - 32 * reachUnit, visibleCenter.y}, 30).empty(),
 				"Smooth motion does not enlarge the 30-point halo");
-			++shown->scriptIdentity;
-            shown->identity.generation=shown->scriptIdentity;
+			++shown->core.scriptIdentity;
+            shown->identity.generation=shown->core.scriptIdentity;
 			require(gui.touch->unitAt(visibleCenter,30)==shown->identity,
                 "Selection resolves the displayed identity; command admission validates it on the owner");
 			gui.view.scene = previousScene;
@@ -3725,7 +3725,7 @@ class GameGUITouchHarness
 		gui.setSelection(GameGUI::UNIT_SELECTION,worker);
 		gui.touch->panelOpen = true;
 		glob2test::drawGUI(gui,0);
-		const int id = Unit::GIDtoID(worker->gid);
+		const int id = Unit::GIDtoID(worker->core.gid);
 		gui.localTeam->myUnits[id] = nullptr;
 		gui.localTeam->detachUnit(id);
 		gui.game.snapshots().invalidateBoundary();

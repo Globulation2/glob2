@@ -475,9 +475,9 @@ void TeamStats::step(Team *team, bool reloaded)
 		// Filter here: most of the 1024 slots hold no worker.
 		if (!reloaded && u && u->hasCapability(UnitRuntimeTraits::Transport))
 			observeLabour(u);
-		if ((u)&&(u->medical==Unit::MED_FREE)&&(u->activity==Unit::ACT_RANDOM))
+		if ((u)&&(u->core.medical==Unit::MED_FREE)&&(u->core.activity==Unit::ACT_RANDOM))
 		{
-			smoothedStat.isFree[(int)u->typeNum]++;
+			smoothedStat.isFree[(int)u->core.typeNum]++;
 			smoothedStat.totalFree++;
 		}
 	}
@@ -551,45 +551,45 @@ void TeamStats::step(Team *team, bool reloaded)
 		if (u)
 		{
 			stat.totalUnit++;
-			stat.numberUnitPerType[(int)u->typeNum]++;
-			stat.totalHP=int(std::clamp<Sint64>(Sint64(stat.totalHP)+u->hp, std::numeric_limits<int>::min(), std::numeric_limits<int>::max()));
-            const bool mobile=u->performance[FLY]>0 || u->performance[WALK]>0 || u->performance[SWIM]>0;
+			stat.numberUnitPerType[(int)u->core.typeNum]++;
+			stat.totalHP=int(std::clamp<Sint64>(Sint64(stat.totalHP)+u->core.hp, std::numeric_limits<int>::min(), std::numeric_limits<int>::max()));
+            const bool mobile=u->performance(FLY)>0 || u->performance(WALK)>0 || u->performance(SWIM)>0;
             const bool carrier=mobile && u->hasCapability(UnitRuntimeTraits::Transport)
-                && u->performance[BUILD]>0 && u->performance[HARVEST]>0
+                && u->performance(BUILD)>0 && u->performance(HARVEST)>0
                 && (!u->hasCapability(UnitRuntimeTraits::ExtendedCargo) || u->runtimeTraits().cargoCapacity>0);
             const bool builder=carrier && u->hasCapability(UnitRuntimeTraits::Construct);
             const int attackStrength=u->hasCapability(UnitRuntimeTraits::Melee) ? u->getRealAttackStrength() : 0;
-            const bool melee=u->hasCapability(UnitRuntimeTraits::Melee) && u->performance[ATTACK_SPEED]>0 && attackStrength>0;
-            const bool ranged=u->performance[MAGIC_ATTACK_AIR]>0 || u->performance[MAGIC_ATTACK_GROUND]>0;
+            const bool melee=u->hasCapability(UnitRuntimeTraits::Melee) && u->performance(ATTACK_SPEED)>0 && attackStrength>0;
+            const bool ranged=u->performance(MAGIC_ATTACK_AIR)>0 || u->performance(MAGIC_ATTACK_GROUND)>0;
             const bool defender=mobile && (melee || (u->hasCapability(UnitRuntimeTraits::GuardIdle) && ranged));
             stat.carriers+=carrier; stat.builders+=builder; stat.meleeUnits+=melee; stat.rangedUnits+=ranged;
             stat.scouts+=mobile && u->hasCapability(UnitRuntimeTraits::Explore);
             if (builder) ++stat.workersByConstructionLevel[u->workerLevel()];
-            const bool idle=u->medical==Unit::MED_FREE && u->activity==Unit::ACT_RANDOM;
-            auto& counts=eligible[u->typeNum];
+            const bool idle=u->core.medical==Unit::MED_FREE && u->core.activity==Unit::ACT_RANDOM;
+            auto& counts=eligible[u->core.typeNum];
             counts[0]+=carrier; counts[1]+=defender; counts[2]+=carrier && idle;
             counts[3]+=defender && idle
-                && (samplingQualifications[u->typeNum][1]&SamplingAcceptsDefenderRecruitment);
+                && (samplingQualifications[u->core.typeNum][1]&SamplingAcceptsDefenderRecruitment);
 
 			if (u->isUnitHungry())
 			{
-				if (u->attachedBuilding && u->insideTimeout<0 && u->attachedBuilding->type->canFeedUnit)
+				if (u->attachedBuilding && u->detail.insideTimeout<0 && u->attachedBuilding->type->canFeedUnit)
 					stat.needNothing++;
-				else if (u->hp<u->performance[HP])
+				else if (u->core.hp<u->performance(HP))
 				{
 					stat.needFoodCritical++;
 				}
 				else
 					stat.needFood++;
 					
-				if(u->activity != Unit::ACT_UPGRADING)
+				if(u->core.activity != Unit::ACT_UPGRADING)
 				{
 					stat.needFoodNoInns++;
 				}
 			}
-			else if (u->medical==Unit::MED_DAMAGED)
+			else if (u->core.medical==Unit::MED_DAMAGED)
 			{
-				if (u->attachedBuilding && u->insideTimeout<0 && u->attachedBuilding->type->canHealUnit)
+				if (u->attachedBuilding && u->detail.insideTimeout<0 && u->attachedBuilding->type->canHealUnit)
 					stat.needNothing++;
 				else
 				{
@@ -599,24 +599,24 @@ void TeamStats::step(Team *team, bool reloaded)
 			else
 			{
 				stat.needNothing++;
-				if (u->activity==Unit::ACT_RANDOM)
+				if (u->core.activity==Unit::ACT_RANDOM)
 				{
-					stat.isFree[(int)u->typeNum]++;
+					stat.isFree[(int)u->core.typeNum]++;
 					stat.totalFree++;
 				}
 			}
 			for (int j=0; j<NB_ABILITY; j++)
 			{
-				if (u->performance[j])
+				if (u->performance(j))
 				{
-					stat.upgradeState[j][u->level[j]]++;
-					stat.upgradeStatePerType[(int)u->typeNum][j][u->level[j]]++;
+					stat.upgradeState[j][u->detail.level[j]]++;
+					stat.upgradeStatePerType[(int)u->core.typeNum][j][u->detail.level[j]]++;
 				}
 			}
 			if (u->hasCapability(UnitRuntimeTraits::Melee))
-				stat.totalAttackPower=int(std::min<Sint64>(std::numeric_limits<int>::max(), Sint64(stat.totalAttackPower)+Sint64(u->performance[ATTACK_SPEED])*attackStrength));
+				stat.totalAttackPower=int(std::min<Sint64>(std::numeric_limits<int>::max(), Sint64(stat.totalAttackPower)+Sint64(u->performance(ATTACK_SPEED))*attackStrength));
 			
-			stat.happiness[u->fruitCount]++;
+			stat.happiness[u->detail.fruitCount]++;
 		}
 	}
 
@@ -1366,24 +1366,24 @@ void TeamStats::beginMeasurementSnapshot(Team *team)
 }
 void TeamStats::observeMeasurementUnit(Unit *u)
 {
-	if (u && !u->isDead)
+	if (u && !u->core.isDead)
 	{
-		if (!u->widePrimaryCargo && u->carriedMaterial >= 0 && u->carriedMaterial < MaterialSlotCount)
-			++measurements.carried[u->carriedMaterial];
-        if (u->hasCapability(UnitRuntimeTraits::ExtendedCargo) || u->widePrimaryCargo)
-            if (const auto* cargo=u->owner->game->unitCargo.find(u->gid))
+		if (!u->detail.widePrimaryCargo && u->core.carriedMaterial >= 0 && u->core.carriedMaterial < MaterialSlotCount)
+			++measurements.carried[u->core.carriedMaterial];
+        if (u->hasCapability(UnitRuntimeTraits::ExtendedCargo) || u->detail.widePrimaryCargo)
+            if (const auto* cargo=u->owner->game->unitCargo.find(u->core.gid))
                 for (const auto& packet:*cargo) ++measurements.carried[packet.material];
 		if (u->isUnitHungry())
 		{
 			++measurements.hungry;
-			if (u->hp < u->performance[HP])
+			if (u->core.hp < u->performance(HP))
 				++measurements.critical;
 		}
-		if (u->displacement == Unit::DIS_INSIDE)
+		if (u->core.displacement == Unit::DIS_INSIDE)
 		{
-			if (u->destinationPurpose == FEED)
+			if (u->core.destinationPurpose == FEED)
 				++measurements.feeding;
-			if (u->destinationPurpose == HEAL)
+			if (u->core.destinationPurpose == HEAL)
 				++measurements.healing;
 		}
 	}
@@ -1414,18 +1414,18 @@ GameplayMeasurements::Place TeamStats::placeOf(const Team *team, int x, int y)
 void TeamStats::observeLabour(Unit *u)
 {
 	using M = GameplayMeasurements;
-	if (!u || u->isDead || !u->hasCapability(UnitRuntimeTraits::Transport))
+	if (!u || u->core.isDead || !u->hasCapability(UnitRuntimeTraits::Transport))
 		return;
 	auto &m = measurements;
 	auto distanceTo = [u](Building *b)
 	{
-		return Uint64(u->owner->map->warpDistMax(u->posX, u->posY, b->getMidX(), b->getMidY()));
+		return Uint64(u->owner->map->warpDistMax(u->core.posX, u->core.posY, b->getMidX(), b->getMidY()));
 	};
-	const bool inside = u->displacement == Unit::DIS_INSIDE ||
-		u->displacement == Unit::DIS_ENTERING_BUILDING || u->displacement == Unit::DIS_EXITING_BUILDING;
-	if (u->medical != Unit::MED_FREE)
+	const bool inside = u->core.displacement == Unit::DIS_INSIDE ||
+		u->core.displacement == Unit::DIS_ENTERING_BUILDING || u->core.displacement == Unit::DIS_EXITING_BUILDING;
+	if (u->core.medical != Unit::MED_FREE)
 	{
-		const bool hungry = u->medical == Unit::MED_HUNGRY;
+		const bool hungry = u->core.medical == Unit::MED_HUNGRY;
 		if (inside)
 			++m.labour[hungry ? M::EAT_INSIDE : M::HEAL_INSIDE];
 		else if (!u->targetBuilding)
@@ -1441,13 +1441,13 @@ void TeamStats::observeLabour(Unit *u)
 		}
 		return;
 	}
-	switch (u->activity)
+	switch (u->core.activity)
 	{
 	case Unit::ACT_RANDOM:
 		++m.labour[M::IDLE];
 		return;
 	case Unit::ACT_UPGRADING:
-		if (u->destinationPurpose == HEAL)
+		if (u->core.destinationPurpose == HEAL)
 			++m.labour[inside ? M::HEAL_INSIDE : M::HEAL_WALKING];
 		else
 			++m.labour[inside ? M::TRAIN_INSIDE : M::TRAIN_WALKING];
@@ -1466,15 +1466,15 @@ void TeamStats::observeLabour(Unit *u)
 			else if (b->type->canFeedUnit)
 				job = M::INN_JOB;
 			M::LabourPhase phase = M::OTHER_PHASE;
-			if (u->displacement == Unit::DIS_GOING_TO_RESOURCE)
+			if (u->core.displacement == Unit::DIS_GOING_TO_RESOURCE)
 				phase = M::TO_RESOURCE;
-			else if (u->displacement == Unit::DIS_HARVESTING)
+			else if (u->core.displacement == Unit::DIS_HARVESTING)
 			{
 				phase = M::HARVESTING;
 				m.harvestDistance[job] += distanceTo(b);
 				++m.harvestSamples[job];
 			}
-			else if (u->displacement == Unit::DIS_GOING_TO_BUILDING)
+			else if (u->core.displacement == Unit::DIS_GOING_TO_BUILDING)
 				phase = M::TO_BUILDING;
 			++m.filling[job][phase];
 			return;
@@ -1489,22 +1489,22 @@ void TeamStats::observeLabour(Unit *u)
 void TeamStats::recordCombatDeath(Unit *u)
 {
 	using M = GameplayMeasurements;
-	if (u->typeNum < 0 || unsigned(u->typeNum)>=unitTypeCount)
+	if (u->core.typeNum < 0 || unsigned(u->core.typeNum)>=unitTypeCount)
 		return;
 	u->owner->map->rebuildGrowthCoverage();
-	++measurements.combatDeathPlace[u->typeNum][placeOf(u->owner, u->posX, u->posY)];
+	++measurements.combatDeathPlace[u->core.typeNum][placeOf(u->owner, u->core.posX, u->core.posY)];
 	M::Assignment assignment = M::UNASSIGNED;
 	if (u->attachedBuilding)
 	{
 		assignment=M::OTHER_BUILDING;
-		if (u->activity==Unit::ACT_FLAG)
+		if (u->core.activity==Unit::ACT_FLAG)
 		{
-			if (u->jobPurpose==UnitJobPurpose::Defend) assignment=M::WAR_FLAG;
-			else if (u->jobPurpose==UnitJobPurpose::Clear) assignment=M::CLEARING_FLAG;
-			else if (u->jobPurpose==UnitJobPurpose::Explore) assignment=M::EXPLORATION_FLAG;
+			if (u->core.jobPurpose==UnitJobPurpose::Defend) assignment=M::WAR_FLAG;
+			else if (u->core.jobPurpose==UnitJobPurpose::Clear) assignment=M::CLEARING_FLAG;
+			else if (u->core.jobPurpose==UnitJobPurpose::Explore) assignment=M::EXPLORATION_FLAG;
 		}
 	}
-	++measurements.combatDeathAssignment[u->typeNum][assignment];
+	++measurements.combatDeathAssignment[u->core.typeNum][assignment];
 }
 
 void TeamStats::sampleDefence(Team *team)
@@ -1515,19 +1515,19 @@ void TeamStats::sampleDefence(Team *team)
 	std::fill(std::begin(m.warriors), std::end(m.warriors), 0);
 	std::fill(std::begin(m.warriorLevels), std::end(m.warriorLevels), 0);
 	m.warriorsHurt = m.warriorsFlagged = m.warriorsInside = m.intruders = m.intruderLevels = 0;
-	auto attackLevels = [](const Unit *u) { return Uint64(u->level[ATTACK_SPEED] + u->level[ATTACK_STRENGTH]); };
+	auto attackLevels = [](const Unit *u) { return Uint64(u->detail.level[ATTACK_SPEED] + u->detail.level[ATTACK_STRENGTH]); };
 	for (int i = 0; i < Unit::MAX_COUNT; ++i)
 	{
 		Unit *u = team->myUnits[i];
-		if (!u || u->isDead || !u->hasCapability(UnitRuntimeTraits::Melee))
+		if (!u || u->core.isDead || !u->hasCapability(UnitRuntimeTraits::Melee))
 			continue;
-		const auto place = placeOf(team, u->posX, u->posY);
+		const auto place = placeOf(team, u->core.posX, u->core.posY);
 		++m.warriors[place];
 		m.warriorLevels[place] += attackLevels(u);
-		m.warriorsHurt += u->medical == Unit::MED_DAMAGED;
+		m.warriorsHurt += u->core.medical == Unit::MED_DAMAGED;
 		m.warriorsFlagged += u->attachedBuilding &&
-			u->activity == Unit::ACT_FLAG && u->jobPurpose==UnitJobPurpose::Defend;
-		m.warriorsInside += u->displacement == Unit::DIS_INSIDE;
+			u->core.activity == Unit::ACT_FLAG && u->core.jobPurpose==UnitJobPurpose::Defend;
+		m.warriorsInside += u->core.displacement == Unit::DIS_INSIDE;
 	}
 	for (int t = 0; t < team->game->teamsCount(); ++t)
 	{
@@ -1537,8 +1537,8 @@ void TeamStats::sampleDefence(Team *team)
 		for (int i = 0; i < Unit::MAX_COUNT; ++i)
 		{
 			const Unit *u = other->myUnits[i];
-			if (u && !u->isDead && u->hasCapability(UnitRuntimeTraits::Melee) &&
-				placeOf(team, u->posX, u->posY) == GameplayMeasurements::HOME)
+			if (u && !u->core.isDead && u->hasCapability(UnitRuntimeTraits::Melee) &&
+				placeOf(team, u->core.posX, u->core.posY) == GameplayMeasurements::HOME)
 			{
 				++m.intruders;
 				m.intruderLevels += attackLevels(u);
@@ -1577,20 +1577,20 @@ void TeamStats::sampleTraps(Team *team)
 	for (int i = 0; i < Unit::MAX_COUNT; ++i)
 	{
 		Unit *u = team->myUnits[i];
-		if (!u || u->isDead) continue;
+		if (!u || u->core.isDead) continue;
 		for (int band = 0; band < 3; ++band)
 		{
 			const int percent = (band + 1) * 25;
-			if (Sint64(u->hp) * 100 <= Sint64(u->performance[HP]) * percent)
-				++m.lowHP[band][u->typeNum];
-			if (Sint64(u->hungry) * 100 <= Sint64(u->runtimeTraits().foodCapacity) * percent)
-				++m.lowFood[band][u->typeNum];
+			if (Sint64(u->core.hp) * 100 <= Sint64(u->performance(HP)) * percent)
+				++m.lowHP[band][u->core.typeNum];
+			if (Sint64(u->core.hungry) * 100 <= Sint64(u->runtimeTraits().foodCapacity) * percent)
+				++m.lowFood[band][u->core.typeNum];
 		}
 		bool structural = false, current = false;
-		if (u->displacement == Unit::DIS_INSIDE && u->attachedBuilding)
+		if (u->core.displacement == Unit::DIS_INSIDE && u->attachedBuilding)
 		{
 			Building *b = u->attachedBuilding;
-			if (u->performance[FLY])
+			if (u->performance(FLY))
 			{
 				int x,y,dx,dy;
 				current = !b->findAirExit(&x,&y,&dx,&dy);
@@ -1602,38 +1602,38 @@ void TeamStats::sampleTraps(Team *team)
 					for (int x = b->posX - 1; x <= b->posX + b->type->width; ++x)
 						if (x < b->posX || x >= b->posX + b->type->width ||
 							y < b->posY || y >= b->posY + b->type->height)
-							hardExit |= (u->performance[WALK] || (u->performance[SWIM] && map->terrainPropertiesAt(x,y).swimmable))
-                                    && map->isHardSpaceForGroundUnit(x,y,u->performance[SWIM] > 0,team->me);
+							hardExit |= (u->performance(WALK) || (u->performance(SWIM) && map->terrainPropertiesAt(x,y).swimmable))
+                                    && map->isHardSpaceForGroundUnit(x,y,u->performance(SWIM) > 0,team->me);
 				structural = !hardExit;
 				int x,y,dx,dy;
-				current = !b->findGroundExit(&x,&y,&dx,&dy,u->performance[SWIM] > 0,u->performance[WALK]>0);
+				current = !b->findGroundExit(&x,&y,&dx,&dy,u->performance(SWIM) > 0,u->performance(WALK)>0);
 			}
 		}
-		else if (u->displacement != Unit::DIS_INSIDE)
+		else if (u->core.displacement != Unit::DIS_INSIDE)
 		{
 			bool hardExit = false, freeExit = false;
 			for (const auto &d : offsets)
 			{
-				const int x = u->posX + d[0], y = u->posY + d[1];
-				if (u->performance[FLY])
+				const int x = u->core.posX + d[0], y = u->core.posY + d[1];
+				if (u->performance(FLY))
 				{
 					hardExit = true;
 					freeExit |= map->isFreeForAirUnit(x,y);
 				}
 				else
 				{
-					hardExit |= (u->performance[WALK] || (u->performance[SWIM] && map->terrainPropertiesAt(x,y).swimmable))
-                                    && map->isHardSpaceForGroundUnit(x,y,u->performance[SWIM] > 0,team->me);
-					freeExit |= (u->performance[WALK] || (u->performance[SWIM] && map->terrainPropertiesAt(x,y).swimmable))
-                                    && map->isFreeForGroundUnit(x,y,u->performance[SWIM] > 0,team->me);
+					hardExit |= (u->performance(WALK) || (u->performance(SWIM) && map->terrainPropertiesAt(x,y).swimmable))
+                                    && map->isHardSpaceForGroundUnit(x,y,u->performance(SWIM) > 0,team->me);
+					freeExit |= (u->performance(WALK) || (u->performance(SWIM) && map->terrainPropertiesAt(x,y).swimmable))
+                                    && map->isFreeForGroundUnit(x,y,u->performance(SWIM) > 0,team->me);
 				}
 				if (hardExit && freeExit) break;
 			}
 			structural = !hardExit;
 			current = !freeExit;
 		}
-		if (structural) ++m.trappedUnits[0][u->typeNum];
-		if (current) ++m.trappedUnits[1][u->typeNum];
+		if (structural) ++m.trappedUnits[0][u->core.typeNum];
+		if (current) ++m.trappedUnits[1][u->core.typeNum];
 	}
 	for (int i = 0; i < Building::MAX_COUNT; ++i)
 	{

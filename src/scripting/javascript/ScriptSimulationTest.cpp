@@ -93,13 +93,13 @@ void prepareConversion(Engine &engine, const std::filesystem::path &directory)
 	inn->canNotConvertUnitTimer = 0;
 	game.teams[1]->sharedVisionFood |= game.teams[0]->me;
 	game.teams[1]->allies &= ~game.teams[0]->me;
-	unit->hungry = unit->trigHungry;
-	unit->medical = Unit::MED_HUNGRY;
-	unit->needToRecheckMedical = true;
+	unit->core.hungry = unit->detail.trigHungry;
+	unit->core.medical = Unit::MED_HUNGRY;
+	unit->detail.needToRecheckMedical = true;
 	REQUIRE(game.teams[0]->findNearestFood(unit) == inn);
 	unit->handleActivity();
 	REQUIRE(unit->owner == game.teams[1]);
-	CHECK(unit->scriptIdentity == 2);
+	CHECK(unit->core.scriptIdentity == 2);
 	// Commit a callback observing the stale reference immediately before save.
 	game.mapscript.syncStep(&engine.gui);
 	CHECK(game.mapscript.javascript.runtime->inspectGlobals().get("stale").number == 1);

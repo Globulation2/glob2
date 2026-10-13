@@ -119,7 +119,7 @@ static constexpr Uint32 UNIT_CLEAR_AREA_DISTANCE_NONE = static_cast<Uint32>(-1);
 
 // === HP / hunger trigger ratios ===
 //! Numerator of the "low HP, retreat to heal" trigger: `trigHP = (hp*3)/10`.
-//! Set in `Unit::init` after `hp` is overwritten from `performance[HP]`.
+//! Set in `Unit::init` after `hp` is overwritten from `performance(HP)`.
 static constexpr int UNIT_HP_TRIG_NUM = 3;
 //! Denominator of the low-HP retreat trigger.
 static constexpr int UNIT_HP_TRIG_DEN = 10;
@@ -150,7 +150,7 @@ static constexpr int UNIT_VISION_RADIUS_GROUND = 1;
 static constexpr int UNIT_HP_DEATH_THRESHOLD = 0;
 
 //! Inverse fraction of HP missing that triggers an idle worker to seek
-//! healing: `hp + (performance[HP] / N) < performance[HP]`, where
+//! healing: `hp + (performance(HP) / N) < performance(HP)`, where
 //! `N == UNIT_HEAL_TRIGGER_INV_RATIO`. UnitActivity.cpp:65.
 static constexpr int UNIT_HEAL_TRIGGER_INV_RATIO = 10;
 

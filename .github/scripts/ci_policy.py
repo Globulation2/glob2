@@ -28,7 +28,9 @@ UNCLASSIFIED = ('src/mcp/', 'libgag/shaders/', 'tools/shaders/', 'data/buildings
 UNCLASSIFIED_FILES = {'libgag/include/RenderFramePacer.h', 'src/team/BaseTeam.cpp', 'src/map/MapTiling.cpp', 'src/map/FertilityCalculator.cpp',
                       'src/map/Brush.cpp', 'src/map/BrushCoverage.cpp', 'src/unit/UnitDisplayNames.cpp',
                       'src/net/ConnectionOverlay.cpp', 'src/net/turn/TurnMatchPresenter.cpp',
-                      'src/map/editor/screens/EditorMainMenu.cpp'}
+                      'src/map/editor/screens/EditorMainMenu.cpp',
+                      'src/unit/UnitState.h', 'src/engine/sim/snapshot/WorldRecords.h',
+                      'src/engine/sim/snapshot/Requirements.h'}
 # Tests sit beside the code they test and are told apart by name.
 TEST_SOURCE = re.compile(r'(Test|Harness|Benchmark|Fixture)\.(cpp|mm|py)$')
 TEST_SOURCE_NAMES = {'RuntimePackCheck.cpp', 'MaximaStrategyDump.cpp', 'source_contracts.py', 'MapGeneratorStudy.cpp',

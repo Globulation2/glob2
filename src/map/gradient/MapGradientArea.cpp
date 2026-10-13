@@ -140,9 +140,9 @@ bool Map::computeWarriorCrowding(int teamNumber, Uint16 *out) const
 	for (int i = 0; i < Unit::MAX_COUNT; i++)
 	{
 		const Unit *u = team->myUnits[i];
-		if (!u || u->isDead || !u->hasCapability(UnitRuntimeTraits::GuardIdle) || u->displacement == Unit::DIS_INSIDE)
+		if (!u || u->core.isDead || !u->hasCapability(UnitRuntimeTraits::GuardIdle) || u->core.displacement == Unit::DIS_INSIDE)
 			continue;
-		crowdPositions.push_back(coordToIndex(u->posX, u->posY));
+		crowdPositions.push_back(coordToIndex(u->core.posX, u->core.posY));
 	}
 	if (crowdPositions.empty())
 		return false;

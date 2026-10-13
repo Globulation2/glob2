@@ -142,28 +142,28 @@ TEST_SUITE("EntityRandomLifecycle")
         AI controller(AI::NUMBI, world.game.players[0]);
         controller.getOrder(false);
         const auto aiRandom = controller.aiImplementation->snapshotRandom();
-        const auto workerBefore = worker->entityRandom;
-        const auto otherBefore = otherTeam->entityRandom;
+        const auto workerBefore = worker->detail.entityRandom;
+        const auto otherBefore = otherTeam->detail.entityRandom;
         const auto buildingBefore = building->entityRandom;
-        const auto flyerBefore = flyer->entityRandom;
+        const auto flyerBefore = flyer->detail.entityRandom;
         world.game.map.pathfindRandom(worker);
-        CHECK(worker->entityRandom != workerBefore);
-        CHECK(flyer->entityRandom == flyerBefore);
+        CHECK(worker->detail.entityRandom != workerBefore);
+        CHECK(flyer->detail.entityRandom == flyerBefore);
         // Force the random-fly action, without running ecology or another unit.
-        flyer->dx = flyer->dy = 0;
-        flyer->delta = 255;
+        flyer->core.dx = flyer->core.dy = 0;
+        flyer->core.delta = 255;
         flyer->syncStep();
-        CHECK(flyer->entityRandom != flyerBefore);
+        CHECK(flyer->detail.entityRandom != flyerBefore);
         CHECK(building->entityRandom == buildingBefore);
         auto expectedBuilding = buildingBefore;
         expectedBuilding.nextU32();
         CHECK(building->neededMaterial() != MATERIAL_TYPE_NONE);
         CHECK(building->entityRandom == expectedBuilding);
-        CHECK(otherTeam->entityRandom == otherBefore);
+        CHECK(otherTeam->detail.entityRandom == otherBefore);
         CHECK(world.game.map.worldRandom.streams == activeWorldRandom);
         CHECK(world.game.syncRandom == worldRandom);
         const auto checksum = worker->checkSum(nullptr);
-        worker->entityRandom.nextU32();
+        worker->detail.entityRandom.nextU32();
         CHECK(worker->checkSum(nullptr) != checksum);
         const auto buildingChecksum = building->checkSum(nullptr);
         building->entityRandom.nextU32();
@@ -182,14 +182,14 @@ TEST_SUITE("EntityRandomLifecycle")
         world.game.privateRandom(RandomDomain::GrowthJobs);
         const auto activeWorldRandom = world.game.map.worldRandom.streams;
         const auto worldRandom = world.game.syncRandom;
-        auto expected = worker->entityRandom;
+        auto expected = worker->detail.entityRandom;
         expected.nextU32();
         std::vector<Uint16> gradient(world.game.map.getW() * world.game.map.getH(), 100);
         int dx = 0, dy = 0;
-        REQUIRE(world.game.map.directionByGradient(worker->entityRandom,
-            worker->owner->me, worker->swimClass(), worker->posX, worker->posY,
+        REQUIRE(world.game.map.directionByGradient(worker->detail.entityRandom,
+            worker->owner->me, worker->swimClass(), worker->core.posX, worker->core.posY,
             gradient.data(), &dx, &dy, false));
-        CHECK(worker->entityRandom == expected);
+        CHECK(worker->detail.entityRandom == expected);
         CHECK(target->entityRandom == targetRandom);
         CHECK(world.game.map.worldRandom.streams == activeWorldRandom);
         CHECK(world.game.syncRandom == worldRandom);
@@ -206,11 +206,11 @@ TEST_SUITE("EntityRandomLifecycle")
         world.game.privateRandom(RandomDomain::GrowthJobs);
         const auto activeWorldRandom = world.game.map.worldRandom.streams;
         const auto worldRandom = world.game.syncRandom;
-        const auto otherRandom = other->entityRandom;
+        const auto otherRandom = other->detail.entityRandom;
         for (int tick = 0; tick < 64; ++tick) world.game.teams[0]->syncStep();
         CHECK(world.game.map.worldRandom.streams == activeWorldRandom);
         CHECK(world.game.syncRandom == worldRandom);
-        CHECK(other->entityRandom == otherRandom);
+        CHECK(other->detail.entityRandom == otherRandom);
     }
 
     TEST_CASE("upgrades preserve streams and reused slots receive a fresh salt")
@@ -219,19 +219,19 @@ TEST_SUITE("EntityRandomLifecycle")
         glob2test::HeadlessGame world({.clearImmobile=true, .header=true, .seed=19});
         auto* worker = world.addUnit(WORKER, 12, 12);
         REQUIRE(worker);
-        const auto gid = worker->gid;
-        const auto generation = worker->scriptIdentity;
-        worker->entityRandom.nextU32();
-        const auto before = worker->entityRandom;
+        const auto gid = worker->core.gid;
+        const auto generation = worker->core.scriptIdentity;
+        worker->detail.entityRandom.nextU32();
+        const auto before = worker->detail.entityRandom;
         worker->resetAtLevel(1);
-        CHECK(worker->entityRandom == before);
-        CHECK(worker->scriptIdentity == generation);
+        CHECK(worker->detail.entityRandom == before);
+        CHECK(worker->core.scriptIdentity == generation);
         REQUIRE(world.game.removeUnitAndBuildingAndFlags(12, 12, Game::DEL_UNIT));
         auto* replacement = world.addUnit(WORKER, 12, 12);
         REQUIRE(replacement);
-        CHECK(replacement->gid == gid);
-        CHECK(replacement->scriptIdentity == generation + 1);
-        CHECK(replacement->entityRandom.exportState().increment != before.exportState().increment);
+        CHECK(replacement->core.gid == gid);
+        CHECK(replacement->core.scriptIdentity == generation + 1);
+        CHECK(replacement->detail.entityRandom.exportState().increment != before.exportState().increment);
         auto* building = world.addBuilding("inn", 3, 3);
         REQUIRE(building);
         const auto buildingGid = building->gid;
@@ -252,27 +252,27 @@ TEST_SUITE("EntityRandomLifecycle")
         auto* unit = world.addUnit(WORKER, 12, 12);
         auto* building = world.addBuilding("inn", 3, 3);
         REQUIRE(unit); REQUIRE(building);
-        unit->entityRandom.nextU32(); building->entityRandom.nextU32();
+        unit->detail.entityRandom.nextU32(); building->entityRandom.nextU32();
         auto header = world.game.gameHeader;
         header.setRandomSeed(731);
         world.game.setGameHeader(header, true);
         EntityRandom expectedUnit, expectedBuilding;
-        expectedUnit.initialize(731, EntityRandom::Kind::Unit, unit->gid, unit->scriptIdentity);
+        expectedUnit.initialize(731, EntityRandom::Kind::Unit, unit->core.gid, unit->core.scriptIdentity);
         expectedBuilding.initialize(731, EntityRandom::Kind::Building, building->gid, building->scriptIdentity);
-        CHECK(unit->entityRandom == expectedUnit);
+        CHECK(unit->detail.entityRandom == expectedUnit);
         CHECK(building->entityRandom == expectedBuilding);
         world.step(7);
         const auto bytes = save(world.game);
         glob2test::HeadlessGame restored({.header=true});
         REQUIRE(load(restored.game, bytes));
-        auto* loadedUnit = restored.game.teams[0]->myUnits[Unit::GIDtoID(unit->gid)];
+        auto* loadedUnit = restored.game.teams[0]->myUnits[Unit::GIDtoID(unit->core.gid)];
         auto* loadedBuilding = restored.game.teams[0]->myBuildings[Building::GIDtoID(building->gid)];
         REQUIRE(loadedUnit); REQUIRE(loadedBuilding);
-        CHECK(loadedUnit->entityRandom == unit->entityRandom);
+        CHECK(loadedUnit->detail.entityRandom == unit->detail.entityRandom);
         CHECK(loadedBuilding->entityRandom == building->entityRandom);
         restored.game.setGameHeader(restored.game.gameHeader, true);
         restored.game.setGameHeader(restored.game.gameHeader, true);
-        CHECK(loadedUnit->entityRandom == unit->entityRandom);
+        CHECK(loadedUnit->detail.entityRandom == unit->detail.entityRandom);
         CHECK(loadedBuilding->entityRandom == building->entityRandom);
     }
 
@@ -283,15 +283,15 @@ TEST_SUITE("EntityRandomLifecycle")
         auto* unit = world.addUnit(WORKER, 12, 12);
         auto* building = world.addBuilding("inn", 3, 3);
         REQUIRE(unit); REQUIRE(building);
-        unit->entityRandom.nextU32(); building->entityRandom.nextU32();
+        unit->detail.entityRandom.nextU32(); building->entityRandom.nextU32();
         const auto captured = SimulationSnapshot::capture(world.game, SimulationSnapshot::captureCatalog(world.game));
         AIEngine::AIWorldView frozen(captured);
         REQUIRE(frozen.unit(Game::refOf(unit)));
         REQUIRE(frozen.building(Game::refOf(building)));
-        const auto unitBefore = unit->entityRandom;
+        const auto unitBefore = unit->detail.entityRandom;
         const auto buildingBefore = building->entityRandom;
-        unit->entityRandom.nextU32(); building->entityRandom.nextU32();
-        CHECK(frozen.unit(Game::refOf(unit))->entityRandom == unitBefore);
+        unit->detail.entityRandom.nextU32(); building->entityRandom.nextU32();
+        CHECK(frozen.unit(Game::refOf(unit))->detail.entityRandom == unitBefore);
         CHECK(frozen.building(Game::refOf(building))->entityRandom == buildingBefore);
     }
 
@@ -303,18 +303,18 @@ TEST_SUITE("EntityRandomLifecycle")
             auto* unit = world.addUnit(WORKER, 12, 12);
             auto* building = world.addBuilding("inn", 3, 3);
             REQUIRE(unit); REQUIRE(building);
-            for (int i = 0; i < 51; ++i) unit->entityRandom.nextU32();
+            for (int i = 0; i < 51; ++i) unit->detail.entityRandom.nextU32();
             for (int i = 0; i < 17; ++i) building->entityRandom.nextU32();
             const auto bytes = save(world.game, text);
             glob2test::HeadlessGame restored({.header=true});
             REQUIRE(load(restored.game, bytes, text));
-            auto* u = restored.game.teams[0]->myUnits[Unit::GIDtoID(unit->gid)];
+            auto* u = restored.game.teams[0]->myUnits[Unit::GIDtoID(unit->core.gid)];
             auto* b = restored.game.teams[0]->myBuildings[Building::GIDtoID(building->gid)];
             REQUIRE(u); REQUIRE(b);
-            CHECK(u->entityRandom == unit->entityRandom);
+            CHECK(u->detail.entityRandom == unit->detail.entityRandom);
             CHECK(b->entityRandom == building->entityRandom);
             for (int i = 0; i < 100; ++i) {
-                CHECK(u->entityRandom.nextU32() == unit->entityRandom.nextU32());
+                CHECK(u->detail.entityRandom.nextU32() == unit->detail.entityRandom.nextU32());
                 CHECK(b->entityRandom.nextU32() == building->entityRandom.nextU32());
             }
         }
@@ -327,13 +327,13 @@ TEST_SUITE("EntityRandomLifecycle")
         auto* unit = world.addUnit(WORKER, 12, 12);
         auto* building = world.addBuilding("inn", 3, 3);
         REQUIRE(unit); REQUIRE(building);
-        unit->areaServiceRemainders = {17, 83, 241};
-        unit->areaLastPulseTick = 0;
+        unit->detail.areaServiceRemainders = {17, 83, 241};
+        unit->detail.areaLastPulseTick = 0;
         building->areaFunded = true;
         building->areaFundingTeam = 0;
         building->areaFundingType = building->typeNum;
         building->areaFundingTick = 0;
-        unit->entityRandom.nextU32(); building->entityRandom.nextU32();
+        unit->detail.entityRandom.nextU32(); building->entityRandom.nextU32();
         auto bytes = save(world.game, true);
         // Reconstruct the released format-150 text layout: keep its area fields,
         // but remove every later RNG section, rather than just patching a header.
@@ -388,19 +388,19 @@ TEST_SUITE("EntityRandomLifecycle")
         std::ofstream(glob2test::artifactDir() / "format-150.game.txt", std::ios::binary) << bytes;
         glob2test::HeadlessGame migrated({.header=true});
         REQUIRE(load(migrated.game, bytes, true));
-        auto* u = migrated.game.teams[0]->myUnits[Unit::GIDtoID(unit->gid)];
+        auto* u = migrated.game.teams[0]->myUnits[Unit::GIDtoID(unit->core.gid)];
         auto* b = migrated.game.teams[0]->myBuildings[Building::GIDtoID(building->gid)];
         REQUIRE(u); REQUIRE(b);
-        CHECK(u->areaServiceRemainders == unit->areaServiceRemainders);
-        CHECK(u->areaLastPulseTick == unit->areaLastPulseTick);
+        CHECK(u->detail.areaServiceRemainders == unit->detail.areaServiceRemainders);
+        CHECK(u->detail.areaLastPulseTick == unit->detail.areaLastPulseTick);
         CHECK(b->areaFunded == building->areaFunded);
         CHECK(b->areaFundingType == building->areaFundingType);
         CHECK(b->areaFundingTeam == building->areaFundingTeam);
         CHECK(b->areaFundingTick == building->areaFundingTick);
         EntityRandom expectedUnit, expectedBuilding;
-        expectedUnit.initialize(731, EntityRandom::Kind::Unit, u->gid, u->scriptIdentity);
+        expectedUnit.initialize(731, EntityRandom::Kind::Unit, u->core.gid, u->core.scriptIdentity);
         expectedBuilding.initialize(731, EntityRandom::Kind::Building, b->gid, b->scriptIdentity);
-        CHECK(u->entityRandom == expectedUnit);
+        CHECK(u->detail.entityRandom == expectedUnit);
         CHECK(b->entityRandom == expectedBuilding);
         auto components = [](Game& game) {
             std::vector<Uint32> state, buildings, units;

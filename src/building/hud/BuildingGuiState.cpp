@@ -89,7 +89,7 @@ void computeFlagStatDisplayed(const Building& b, Sint32 posX, Sint32 posY,
 	const Sint32 stayRangeSquare = (1 + stayRange) * (1 + stayRange);
 	for (auto* unit : b.unitsWorking)
 	{
-		const Sint32 distSquare = b.owner->map->warpDistSquare(posX, posY, unit->posX, unit->posY);
+		const Sint32 distSquare = b.owner->map->warpDistSquare(posX, posY, unit->core.posX, unit->core.posY);
 		if (distSquare < stayRangeSquare)
 			(*onSpot)++;
 		else

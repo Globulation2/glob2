@@ -77,8 +77,8 @@ TEST_CASE("a format-143 save with live round-trip fields plays on greedily [gold
 	for (int t=0; t<g.teamsCount(); ++t) {
 		for (auto* unit : g.teams[t]->liveUnits.entries()) {
 			EntityRandom expected;
-			expected.initialize(g.gameHeader.getRandomSeed(), EntityRandom::Kind::Unit, unit->gid, unit->scriptIdentity);
-			CHECK(unit->entityRandom == expected);
+			expected.initialize(g.gameHeader.getRandomSeed(), EntityRandom::Kind::Unit, unit->core.gid, unit->core.scriptIdentity);
+			CHECK(unit->detail.entityRandom == expected);
 		}
 		for (auto* building : g.teams[t]->liveBuildings.entries()) {
 			EntityRandom expected;

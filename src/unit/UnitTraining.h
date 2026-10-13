@@ -9,9 +9,9 @@ namespace UnitTraining
 {
 template<class State> bool needed(const State& unit,const BuildingTrainingSpec& training,int ability)
 {
-    return training.enabled && unit.canLearn[ability] && training.units.matches(unit.typeNum,training.unitMask)
-        && (unit.level[ability]<training.targetLevel
-            || ((unit.capabilityFlags&UnitRuntimeTraits::LearnConstruction) && unit.constructionLevel<training.constructionLevel));
+    return training.enabled && unit.detail.canLearn[ability] && training.units.matches(unit.core.typeNum,training.unitMask)
+        && (unit.detail.level[ability]<training.targetLevel
+            || ((unit.core.capabilityFlags&UnitRuntimeTraits::LearnConstruction) && unit.core.constructionLevel<training.constructionLevel));
 }
 template<class State> Uint32 courses(const State& unit,const BuildingSemantics& spec,int purpose)
 {
@@ -35,7 +35,7 @@ template<class State> Uint32 movementCourses(const State& unit,const BuildingSem
 }
 template<class State> unsigned movementModes(const State& unit)
 {
-    return (unit.performance[WALK]>0?1u:0u)|(unit.performance[SWIM]>0?2u:0u)|(unit.performance[FLY]>0?4u:0u);
+    return (unit.performance(WALK)>0?1u:0u)|(unit.performance(SWIM)>0?2u:0u)|(unit.performance(FLY)>0?4u:0u);
 }
 template<class State,class Levels,class Training> unsigned movementAfter(
     const State& unit,Uint32 mask,const Training& training,const Levels& levels)
@@ -44,9 +44,9 @@ template<class State,class Levels,class Training> unsigned movementAfter(
     constexpr UnitRuntimeTraits::Flag gates[]={UnitRuntimeTraits::Walk,UnitRuntimeTraits::Swim,UnitRuntimeTraits::Fly};
     for(int index=0;index<3;++index) {
         const int ability=WALK+index;
-        const int target=(mask&(1u<<ability)) && unit.level[ability]<training[ability].targetLevel
-            ? levels[training[ability].targetLevel].performance[ability] : unit.performance[ability];
-        if((unit.capabilityFlags&gates[index]) && target>0)result|=1u<<index;
+        const int target=(mask&(1u<<ability)) && unit.detail.level[ability]<training[ability].targetLevel
+            ? levels[training[ability].targetLevel].performance[ability] : unit.performance(ability);
+        if((unit.core.capabilityFlags&gates[index]) && target>0)result|=1u<<index;
     }
     return result;
 }

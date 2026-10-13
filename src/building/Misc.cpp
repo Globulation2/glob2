@@ -74,18 +74,18 @@ void Building::kill(int diagnosticRemoval)
 	for (std::list<Unit *>::iterator it=unitsInside.begin(); it!=unitsInside.end(); ++it)
 	{
 		Unit *u=*it;
-		if (u->displacement==Unit::DIS_INSIDE || u->displacement==Unit::DIS_EXITING_BUILDING)
+		if (u->core.displacement==Unit::DIS_INSIDE || u->core.displacement==Unit::DIS_EXITING_BUILDING)
 			unitsToExpel.push_back(u);
-		else if (u->displacement==Unit::DIS_ENTERING_BUILDING)
+		else if (u->core.displacement==Unit::DIS_ENTERING_BUILDING)
 		{
 			// An entering unit still owns the tile it came from: step back onto it.
-			int x=(u->posX-u->dx)&owner->map->getMaskW();
-			int y=(u->posY-u->dy)&owner->map->getMaskH();
-			if (u->performance[FLY])
+			int x=(u->core.posX-u->core.dx)&owner->map->getMaskW();
+			int y=(u->core.posY-u->core.dy)&owner->map->getMaskH();
+			if (u->performance(FLY))
 				owner->map->setAirUnit(x, y, NOGUID);
 			else
 				owner->map->setGroundUnit(x, y, NOGUID);
-			u->expelFromBuilding(x, y, -u->dx, -u->dy);
+			u->expelFromBuilding(x, y, -u->core.dx, -u->core.dy);
 		}
 		else
 			u->standardRandomActivity();
@@ -120,13 +120,13 @@ void Building::kill(int diagnosticRemoval)
 	{
 		Unit *u=*it;
 		int x, y, dx, dy;
-		if (findExpelTile(u->performance[FLY], u->performance[SWIM], &x, &y, &dx, &dy, u->performance[WALK]>0))
+		if (findExpelTile(u->performance(FLY), u->performance(SWIM), &x, &y, &dx, &dy, u->performance(WALK)>0))
 			u->expelFromBuilding(x, y, dx, dy);
 		else
 		{
-			if (!u->isDead)
-				++u->owner->stats.measurements.deaths[u->typeNum][u->hp < UNIT_HP_DEATH_THRESHOLD ? u->diagnosticDeathCause : GameplayMeasurements::TRAPPED];
-			u->isDead=true;
+			if (!u->core.isDead)
+				++u->owner->stats.measurements.deaths[u->core.typeNum][u->core.hp < UNIT_HP_DEATH_THRESHOLD ? u->diagnosticDeathCause : GameplayMeasurements::TRAPPED];
+			u->core.isDead=true;
 			u->standardRandomActivity();
 		}
 	}
@@ -162,14 +162,14 @@ bool Building::isUpgradeAvailable() const
 
 bool Building::canUnitWorkHere(Unit* unit,bool attraction,int role)
 {
-    if (!attraction) return unit->hasCapability(UnitRuntimeTraits::Transport) && unit->performance[BUILD]>0
+    if (!attraction) return unit->hasCapability(UnitRuntimeTraits::Transport) && unit->performance(BUILD)>0
         && (!type->isBuildingSite || unit->hasCapability(UnitRuntimeTraits::Construct))
         && runtime->requiredWorkerLevel<=unit->workerLevel();
-    const auto& interaction=runtime->interaction(unit->typeNum);
+    const auto& interaction=runtime->interaction(unit->core.typeNum);
     const auto qualified=[&](int job) {
         if (job==0) return interaction.has(BuildingUnitInteraction::Clear) && unit->workerLevel()>=minWorkerLevelToFlag;
-        if (job==1) return interaction.has(BuildingUnitInteraction::Explore) && (!explorersRequireBombing || unit->level[MAGIC_ATTACK_GROUND]);
-        return interaction.has(BuildingUnitInteraction::Defend) && minLevelToFlag<=std::min(unit->level[ATTACK_SPEED],unit->level[ATTACK_STRENGTH]);
+        if (job==1) return interaction.has(BuildingUnitInteraction::Explore) && (!explorersRequireBombing || unit->detail.level[MAGIC_ATTACK_GROUND]);
+        return interaction.has(BuildingUnitInteraction::Defend) && minLevelToFlag<=std::min(unit->detail.level[ATTACK_SPEED],unit->detail.level[ATTACK_STRENGTH]);
     };
     return role>=0 ? role<3 && qualified(role) : qualified(0)||qualified(1)||qualified(2);
 }
@@ -529,7 +529,7 @@ bool Building::integrity()
 	for (std::list<Unit *>::iterator  it=unitsWorking.begin(); it!=unitsWorking.end(); ++it)
 	{
 		checkInvariant(*it);
-		checkInvariant(owner->myUnits[Unit::GIDtoID((*it)->gid)]);
+		checkInvariant(owner->myUnits[Unit::GIDtoID((*it)->core.gid)]);
 		checkInvariant((*it)->attachedBuilding==this);
 	}
 
@@ -537,7 +537,7 @@ bool Building::integrity()
 	for (std::list<Unit *>::iterator  it=unitsInside.begin(); it!=unitsInside.end(); ++it)
 	{
 		checkInvariant(*it);
-		checkInvariant(owner->myUnits[Unit::GIDtoID((*it)->gid)]);
+		checkInvariant(owner->myUnits[Unit::GIDtoID((*it)->core.gid)]);
 		checkInvariant((*it)->attachedBuilding==this);
 	}
 	for (std::list<Unit *>::iterator  it=unitsHarvesting.begin(); it!=unitsHarvesting.end(); ++it)

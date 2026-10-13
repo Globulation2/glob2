@@ -7,13 +7,13 @@
 #include "MaterialPacket.h"
 #include "UnitConsts.h"
 #include <type_traits>
+#include <cstddef>
+#include <stdexcept>
 
 enum class UnitJobPurpose : Uint8 { None, Transport, Clear, Explore, Defend };
 
-// Authoritative pointer-free unit state. Both live units and captured units use
-// this exact record; capture copies it without translating fields or arrays.
-// Relationships and query caches remain outside the record.
-struct UnitState
+// Stable enum values shared by all three representations.
+struct UnitEnums
 {
 	enum Medical
 	{
@@ -81,51 +81,99 @@ struct UnitState
 		HUNGRY_MAX=150000
 	};
 
-	Uint16 typeNum;
-	UnitJobPurpose jobPurpose = UnitJobPurpose::None;
-	Uint8 regenerationRemainder = 0;
-	// Keep frequently queried capabilities beside the identity in existing padding.
-	Uint32 capabilityFlags = 0;
-	EntityRandom entityRandom;
-	Uint32 scriptIdentity = 0; // Stable identity, excluded from legacy checksums.
-	Uint16 gid;
-	bool serviceResourcesReserved = false;
-	bool widePrimaryCargo = false; // First sidecar packet owns the inline material's amount.
-	Sint32 isDead;
-	Sint32 posX, posY, delta, dx, dy, direction;
-	Sint32 terrainHealthRemainder = 0;
-	Sint32 insideTimeout;
-	Sint32 configuredFoodCapacity = HUNGRY_MAX;
-	Sint32 speed;
-	bool needToRecheckMedical;
-	Medical medical;
-	Activity activity;
-	Displacement displacement;
-	Movement movement;
-	Abilities action = WALK; // Game::addUnit selects movement; loads restore saved action.
-	Sint32 targetX, targetY; // Target lines and movement destination.
-	bool validTarget;
-	Sint32 magicActionTimeout;
-	Uint8 underAttackTimer; // Counts down 240 frames after being attacked.
-	// Catalog-derived visibility cache occupies existing alignment padding.
-	Uint8 configuredVisionRadius = 1;
-	Sint32 hp, trigHP;
-	Sint32 hungry, hungriness, trigHungry, trigHungryCarrying;
-	Uint32 fruitMask, fruitCount;
-	Sint32 performance[NB_ABILITY];
-	Sint32 level[NB_ABILITY];
-	Sint32 constructionLevel = 0; // Independent of work/harvest speed.
-	bool canLearn[NB_ABILITY];
-	Sint32 experience, experienceLevel;
-	Sint32 destinationPurpose;
-	int carriedMaterial;
-	MaterialPacket carriedPacket{};
-	// Authoritative animation clocks; copied with the rest of unit state.
-	Sint32 levelUpAnimation = 0, magicActionAnimation = 0;
-	Sint32 jobTimer; // Waits 32 ticks for a job before seeking training or healing.
-	// Keep optional aura bookkeeping after existing hot simulation fields.
-	std::array<Uint8,3> areaServiceRemainders{};
-	Uint32 areaLastPulseTick = Uint32(-1);
 };
+
+// The hot, pointer-free authoritative prefix shared by movement and rendering.
+struct UnitCoreState
+{
+    using Medical=UnitEnums::Medical; using Activity=UnitEnums::Activity;
+    using Displacement=UnitEnums::Displacement; using Movement=UnitEnums::Movement;
+
+    Uint16 typeNum, gid;
+    Uint32 capabilityFlags = 0;
+    Uint32 scriptIdentity = 0;
+    Sint32 isDead;
+    Sint32 posX, posY, delta, dx, dy, direction;
+    Sint32 speed;
+    Medical medical;
+    Activity activity;
+    Displacement displacement;
+    Movement movement;
+    Abilities action = WALK;
+    Sint32 targetX, targetY;
+    Sint32 hp, hungry;
+    Sint32 constructionLevel = 0;
+    Sint32 experienceLevel;
+    Sint32 destinationPurpose;
+    int carriedMaterial;
+    Sint32 levelUpAnimation = 0, magicActionAnimation = 0;
+    // Authoritative values, not a cache of another ability array.
+    std::array<Sint32,6> abilities;
+    UnitJobPurpose jobPurpose = UnitJobPurpose::None;
+    bool validTarget;
+    Uint8 underAttackTimer;
+    bool operator==(const UnitCoreState&) const = default;
+    static constexpr int abilityIndex(int ability) {
+        switch (ability) {
+        case WALK: return 0; case SWIM: return 1; case FLY: return 2;
+        case BUILD: return 3; case HARVEST: return 4; case HP: return 5;
+        default: return -1;
+        }
+    }
+    Sint32& performance(int ability) { return abilities.at(abilityIndex(ability)); }
+    const Sint32& performance(int ability) const { return abilities.at(abilityIndex(ability)); }
+};
+struct UnitDetailState
+{
+
+    EntityRandom entityRandom;
+    Sint32 terrainHealthRemainder = 0;
+    Sint32 insideTimeout;
+    Sint32 configuredFoodCapacity = UnitEnums::HUNGRY_MAX;
+    Sint32 magicActionTimeout;
+    Sint32 trigHP;
+    Sint32 hungriness, trigHungry, trigHungryCarrying;
+    Uint32 fruitMask, fruitCount;
+    std::array<Sint32,NB_ABILITY-6> abilities;
+    Sint32 level[NB_ABILITY];
+    Sint32 experience;
+    MaterialPacket carriedPacket{};
+    Sint32 jobTimer;
+    Uint32 areaLastPulseTick = Uint32(-1);
+    bool canLearn[NB_ABILITY];
+    bool serviceResourcesReserved = false, widePrimaryCargo = false;
+    bool needToRecheckMedical;
+    Uint8 regenerationRemainder = 0, configuredVisionRadius = 1;
+    std::array<Uint8,3> areaServiceRemainders{};
+    bool operator==(const UnitDetailState&) const = default;
+};
+
+// Composition guarantees the hot core begins at offset zero. Live-only pointers
+// and caches belong to Unit, outside this value record.
+struct UnitState : UnitEnums
+{
+    UnitCoreState core;
+    UnitDetailState detail;
+    static constexpr int detailAbilityIndex(int ability) {
+        // Cold slots are STOP_* followed by ATTACK_* through ARMOR.
+        // Callers select the core first, so only these cold indices reach here.
+        return ability<STOP_FLY+1 ? ability : ability-5;
+    }
+    Sint32& performance(int ability) {
+        if (ability<0 || ability>=NB_ABILITY) throw std::out_of_range("unit ability");
+        const int hot=UnitCoreState::abilityIndex(ability);
+        return hot>=0 ? core.abilities[hot] : detail.abilities[detailAbilityIndex(ability)];
+    }
+    const Sint32& performance(int ability) const {
+        if (ability<0 || ability>=NB_ABILITY) throw std::out_of_range("unit ability");
+        const int hot=UnitCoreState::abilityIndex(ability);
+        return hot>=0 ? core.abilities[hot] : detail.abilities[detailAbilityIndex(ability)];
+    }
+};
+static_assert(std::is_trivially_copyable_v<UnitCoreState>);
+static_assert(std::is_standard_layout_v<UnitCoreState>);
+static_assert(std::is_trivially_copyable_v<UnitDetailState>);
+static_assert(std::is_standard_layout_v<UnitDetailState>);
 static_assert(std::is_trivially_copyable_v<UnitState>);
 static_assert(std::is_standard_layout_v<UnitState>);
+static_assert(offsetof(UnitState,core)==0);

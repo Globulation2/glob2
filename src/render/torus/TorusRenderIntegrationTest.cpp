@@ -635,7 +635,7 @@ static void run(bool gpu, int width, int height)
                 gui.view.mouseX = x * 32;
                 gui.view.mouseY = y * 32;
                 gui.view.mouseUnit = UnitRef();
-                gui.game.drawUnit(x, y, explorer->gid, (-x) & gui.game.map.getMaskW(),
+                gui.game.drawUnit(x, y, explorer->core.gid, (-x) & gui.game.map.getMaskW(),
                     (-y) & gui.game.map.getMaskH(), gui.game.map.getW(), gui.game.map.getH(),
                     0, Game::DRAW_WHOLE_MAP, gui.view, glob2test::sceneOf(gui.game, gui.view));
                 REQUIRE(gui.game.resolveUnit(gui.view.mouseUnit) == explorer);
@@ -907,7 +907,7 @@ static void run(bool gpu, int width, int height)
                 // A worker circle is white over whatever it covers, so count the
                 // bright pixels its own tile gains rather than trusting a threshold.
                 int ux, uy;
-                gui.game.map.mapCaseToDisplayable(explorer->posX, explorer->posY, &ux, &uy,
+                gui.game.map.mapCaseToDisplayable(explorer->core.posX, explorer->core.posY, &ux, &uy,
                     view.originX, view.originY);
                 auto brightAroundWorker = [&]()
                 {

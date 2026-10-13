@@ -91,11 +91,13 @@ TEST_SUITE("GUIInteractionCoverage")
             };
             // Counterfactual immutable records exercise visit clocks without changing the simulation.
             std::array<SnapshotUnit,3> visits{};
+            auto visitDetails=std::make_shared<SimulationSnapshot::UnitDetails>();visitDetails->units.resize(3);
+            gui.frameScene.entities.world.unitDetails=visitDetails;
             std::array<UnitRef,3> visitRefs{};
             std::array<Uint32,3> visitIndices{0,1,2};
             for (unsigned i=0;i<visits.size();++i) {
-                visits[i].identity=UnitRef{Uint16(i),1}; visits[i].gid=i;
-                visits[i].displacement=UnitState::DIS_INSIDE; visitRefs[i]=visits[i].identity;
+                visits[i].identity=UnitRef{Uint16(i),1}; visits[i].core.gid=i;
+                visits[i].core.displacement=UnitState::DIS_INSIDE; visitRefs[i]=visits[i].identity;
             }
             gui.frameScene.entities.units=visits; gui.frameScene.entities.unitIndex=visitIndices;
             // Render valid visit clocks into the presentation snapshot only.
@@ -105,7 +107,7 @@ TEST_SUITE("GUIInteractionCoverage")
             {
                 CAPTURE(smooth);CAPTURE(duration);CAPTURE(remaining);CAPTURE(delta);
                 globals->settings.smoothProgressIndicators=smooth;
-                visits[0].insideTimeout=-remaining; visits[0].delta=delta;
+                visitDetails->units[0].insideTimeout=-remaining; visits[0].core.delta=delta;
                 panel.insideUnits=std::span<const UnitRef>(visitRefs).first(1);
                 begin();int y=rowY;unsigned rowHeight=0;
                 gui.drawBuildingTimeToLeaveBar(&panel,building->type,y,rowHeight);gfx->nextFrame();
@@ -127,9 +129,9 @@ TEST_SUITE("GUIInteractionCoverage")
             // Full actual panel capture and actual production-slider click, with
             // both a present row and the existing all-zero/no-row behavior.
             SnapshotBuilding panelRecord=panel.state(); panelRecord.inside.count=3; panel.record=&panelRecord;
-            visits[0].insideTimeout=-feed; visits[0].delta=64;
-            visits[1].insideTimeout=-heal; visits[1].delta=127;
-            visits[2].insideTimeout=-training; visits[2].delta=0;
+            visitDetails->units[0].insideTimeout=-feed; visits[0].core.delta=64;
+            visitDetails->units[1].insideTimeout=-heal; visits[1].core.delta=127;
+            visitDetails->units[2].insideTimeout=-training; visits[2].core.delta=0;
             panel.insideUnits=visitRefs;
             begin();gui.drawBuildingInfos();gfx->nextFrame();
             REQUIRE(SDL_SaveBMP(gfx->completedFrame(),(glob2test::artifactDir()/(instant?"instant-services.bmp":"mixed-service-progress.bmp")).string().c_str()));
@@ -209,7 +211,7 @@ TEST_SUITE("GUIInteractionCoverage")
         catalog["variants"][nextSite]["semantics"]["constructionCost"]={{"wood",8},{"cherry",23},{"orange",29},{"prune",31}};
         world.game.buildingsTypes.loadSnapshotJson(catalog.dump());world.game.buildingsTypes.loadSprites();world.game.configureBuildingCatalog();
         auto* building=world.game.addBuilding(8,8,current,0);REQUIRE(building);
-        auto* worker=world.addUnit(WORKER,4,4);worker->constructionLevel=3;
+        auto* worker=world.addUnit(WORKER,4,4);worker->core.constructionLevel=3;
         gui.setSelection(GameGUI::BUILDING_SELECTION,building);
         auto* gfx=globalContainer->gfx;
         const auto render=[&](bool extract=true) {
@@ -288,8 +290,8 @@ TEST_SUITE("GUIInteractionCoverage")
         const auto gold=materialIndex(MaterialId::Gold);
         const auto priorGold=target->maxMaterial[gold];
         target->maxMaterial[gold]=19;render();CHECK(frameHash()==original);
-        worker->carriedMaterial=gold;render();CHECK(frameHash()!=original);
-        worker->carriedMaterial=-1;target->maxMaterial[gold]=priorGold;render();CHECK(frameHash()==original);
+        worker->core.carriedMaterial=gold;render();CHECK(frameHash()!=original);
+        worker->core.carriedMaterial=-1;target->maxMaterial[gold]=priorGold;render();CHECK(frameHash()==original);
         target->maxMaterial[WOOD]=9;render();CHECK(frameHash()!=original);
         const auto changedWood=frameHash();target->maxMaterial[STONE]=3;render();CHECK(frameHash()!=changedWood);
         target->maxMaterial[STONE]=0;target->maxMaterial[WOOD]=7;render();
@@ -375,8 +377,8 @@ TEST_SUITE("GUIInteractionCoverage")
                 const auto before=world.checksum();
                 const auto healthy=renderPanel(gui);
                 CHECK(world.checksum()==before);
-                unit->hp=1; unit->hungry=0;
-                if (type==WORKER) unit->carriedMaterial=WHEAT;
+                unit->core.hp=1; unit->core.hungry=0;
+                if (type==WORKER) unit->core.carriedMaterial=WHEAT;
                 if (type==WARRIOR) world.game.gameHeader.setGlassCannonLevel(1);
                 const auto damagedState=world.checksum();
                 const auto damaged=renderPanel(gui);

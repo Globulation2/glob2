@@ -41,9 +41,9 @@ std::shared_ptr<Order>AICastor::controlSwarms()
 	const auto myUnits=observation->unitSlots(observedTeam->number);
 	for (int i=0; i<Unit::MAX_COUNT; i++)
 	{
-		const AIEngine::UnitView *u=myUnits[i];
+		AIEngine::UnitObservation u=myUnits[i];
 		if (u) {
-            ++unitSumAll;++feedingCounts[u->typeNum];
+            ++unitSumAll;++feedingCounts[u->core.typeNum];
             unitSum[WORKER]+=AIEngine::ObservationQueries::matchesStrategyUnitRole(*observation,*u,WORKER);
             unitSum[EXPLORER]+=AIEngine::ObservationQueries::matchesStrategyUnitRole(*observation,*u,EXPLORER);
             unitSum[WARRIOR]+=AIEngine::ObservationQueries::matchesStrategyUnitRole(*observation,*u,WARRIOR);

@@ -112,15 +112,15 @@ struct Fixture
     {
         Unit* unit=game.addUnit(x,y,0,WARRIOR,level,0,0,0);
         REQUIRE(unit);
-        unit->medical=Unit::MED_FREE;
-        unit->activity=Unit::ACT_RANDOM;
+        unit->core.medical=Unit::MED_FREE;
+        unit->core.activity=Unit::ACT_RANDOM;
         return unit;
     }
 
     void attach(Unit* unit, ::Building* flag)
     {
         unit->attachedBuilding=flag;
-        unit->activity=Unit::ACT_FLAG;
+        unit->core.activity=Unit::ACT_FLAG;
         flag->unitsWorking.push_back(unit);
     }
 
@@ -193,7 +193,7 @@ static void defenseCoverage()
             Unit* unit=f.game.addUnit((point[0]+shift)%64,(point[1]+shift)%64,
                 invaders ? 1 : 0,invaders ? WARRIOR : WORKER,1,0,0,0);
             REQUIRE(unit);
-            if(!invaders) unit->underAttackTimer=100;
+            if(!invaders) unit->core.underAttackTimer=100;
         }
         a.budget.reactive_defense_enabled=true;
         a.budget.reactive_defense_flag_radius=5;
@@ -309,7 +309,7 @@ static void defenseDeadbandPreservesCoverage()
             auto unit=f.game.addUnit(x,y,threatKind==0?1:0,
                 threatKind==0?WARRIOR:WORKER,1,0,0,0);
             REQUIRE(unit);
-            if(threatKind==1) unit->underAttackTimer=100;
+            if(threatKind==1) unit->core.underAttackTimer=100;
         }
         auto flag=f.building(x-(covered?4:6),y,0,"warflag");
         flag->unitStayRange=5;
@@ -369,15 +369,15 @@ static void placeAtRally(Fixture& f, ::Building* flag, const std::vector<Unit*>&
 {
     for(int i=0;i<count;++i) {
         auto* unit=units[i];
-        f.game.map.setGroundUnit(unit->posX,unit->posY,NOGUID);
+        f.game.map.setGroundUnit(unit->core.posX,unit->core.posY,NOGUID);
         bool placed=false;
         for(int dy=-flag->unitStayRange;dy<=flag->unitStayRange && !placed;++dy)
             for(int dx=-flag->unitStayRange;dx<=flag->unitStayRange && !placed;++dx) {
                 if(dx*dx+dy*dy>flag->unitStayRange*flag->unitStayRange)continue;
                 const int x=f.game.map.normalizeX(flag->posX+dx),y=f.game.map.normalizeY(flag->posY+dy);
                 if(!f.game.map.isFreeForGroundUnit(x,y,false,f.player.team->me))continue;
-                unit->posX=x;unit->posY=y;
-                f.game.map.setGroundUnit(x,y,unit->gid);placed=true;
+                unit->core.posX=x;unit->core.posY=y;
+                f.game.map.setGroundUnit(x,y,unit->core.gid);placed=true;
             }
         REQUIRE(placed);
     }
@@ -403,8 +403,8 @@ static void nearbyWarriorsCountAsRallied()
                 const int x=f.game.map.normalizeX(flag->posX+dx),y=f.game.map.normalizeY(flag->posY+dy);
                 if(!f.game.map.isFreeForGroundUnit(x,y,false,f.player.team->me))continue;
                 auto* unit=warriors[placed++];
-                f.game.map.setGroundUnit(unit->posX,unit->posY,NOGUID);
-                unit->posX=x;unit->posY=y;f.game.map.setGroundUnit(x,y,unit->gid);
+                f.game.map.setGroundUnit(unit->core.posX,unit->core.posY,NOGUID);
+                unit->core.posX=x;unit->core.posY=y;f.game.map.setGroundUnit(x,y,unit->core.gid);
             }
         REQUIRE(placed==15);
         a.timer+=100;
@@ -503,7 +503,7 @@ static void rallyAssemblesByMovement()
             }
             arrived=0;
             for(auto* warrior:warriors)
-                arrived+=f.game.map.warpDistSquare(warrior->posX,warrior->posY,flag->posX,flag->posY)
+                arrived+=f.game.map.warpDistSquare(warrior->core.posX,warrior->core.posY,flag->posX,flag->posY)
                     <=arrivalRadius*arrivalRadius;
         }
         if(arrived<15)
@@ -512,8 +512,8 @@ static void rallyAssemblesByMovement()
         REQUIRE(arrived>=15);
         std::set<std::pair<int,int>> occupied;
         for(auto* warrior:warriors) {
-            REQUIRE(f.game.map.getBuilding(warrior->posX,warrior->posY)==NOGBID);
-            REQUIRE(occupied.insert({warrior->posX,warrior->posY}).second);
+            REQUIRE(f.game.map.getBuilding(warrior->core.posX,warrior->core.posY)==NOGBID);
+            REQUIRE(occupied.insert({warrior->core.posX,warrior->core.posY}).second);
         }
         a.timer+=100;
         a.plan_offense(c);a.control_offense(c);
@@ -611,8 +611,8 @@ static void waveDeliveryFallback()
         flag->unitsWorking.clear();
         for(int i=0;i<20;++i) {
             f.attach(warriors[i],flag);
-            warriors[i]->posX=i<arrived ? 35 : i;
-            warriors[i]->posY=i<arrived ? 30 : 2;
+            warriors[i]->core.posX=i<arrived ? 35 : i;
+            warriors[i]->core.posY=i<arrived ? 30 : 2;
         }
         Tactics::Wave wave;wave.flagId=id;wave.phase=Tactics::WaveAdvance;
         wave.targetX=35;wave.targetY=30;a.offense_waves.push_back(wave);
@@ -621,7 +621,7 @@ static void waveDeliveryFallback()
     };
     const auto spent=[&](bool retired=false) {
         const int before=a.failed_waves;
-        for(auto* warrior:warriors){warrior->posY=2;warrior->attachedBuilding=nullptr;}
+        for(auto* warrior:warriors){warrior->core.posY=2;warrior->attachedBuilding=nullptr;}
         // More than a quarter left: do not assess it yet.
         flag->unitsWorking.resize(6);a.observe_wave_delivery();
         REQUIRE(a.failed_waves==before);
@@ -752,7 +752,7 @@ static void streamingScalesWithArmy()
     a.plan_offense(c);REQUIRE(a.budget.tactical_requested_force==65);
     a.control_offense(c);apply();REQUIRE(a.attack_flags.size()==4);allocation(65);
     REQUIRE(std::equal(first.begin(),first.end(),a.attack_flags.begin()));
-    for(int i=25;i<65;++i)army[i]->medical=Unit::MED_DAMAGED;
+    for(int i=25;i<65;++i)army[i]->core.medical=Unit::MED_DAMAGED;
     a.plan_offense(c);REQUIRE(a.budget.tactical_requested_force==25);
     a.control_offense(c);apply();REQUIRE(a.attack_flags.size()==2);allocation(25);
     REQUIRE((a.attack_flags[0]==first[0] && a.attack_flags[1]==first[1]));
@@ -829,14 +829,14 @@ static void warriorEligibility()
     f.islands();
     for(int i=0; i<12; ++i) {
         auto unit=f.warrior(6+i,6);
-        unit->performance[SWIM]=0;
-        unit->level[SWIM]=0;
+        unit->performance(SWIM)=0;
+        unit->detail.level[SWIM]=0;
     }
     std::vector<Unit*> swimmers;
     for(int i=0; i<4; ++i) {
         auto unit=f.warrior(6+i,7,0);
-        unit->performance[SWIM]=1;
-        unit->level[SWIM]=1;
+        unit->performance(SWIM)=1;
+        unit->detail.level[SWIM]=1;
         swimmers.push_back(unit);
     }
     auto& a=*f.ai;
@@ -847,17 +847,17 @@ static void warriorEligibility()
     for(int ability:{ATTACK_SPEED,ATTACK_STRENGTH}) {
         // Neither single upgrade is sufficient for a level-2 tactical flag.
         for(auto unit:swimmers) {
-            unit->level[ATTACK_SPEED]=0;
-            unit->level[ATTACK_STRENGTH]=0;
-            unit->level[ability]=1;
+            unit->detail.level[ATTACK_SPEED]=0;
+            unit->detail.level[ATTACK_STRENGTH]=0;
+            unit->detail.level[ability]=1;
         }
         a.plan_offense(c);
         REQUIRE(a.budget.tactical_kind==Tactics::MissionNone);
     }
     for(auto unit:swimmers) {
-        unit->level[ATTACK_SPEED]=unit->level[ATTACK_STRENGTH]=1;
+        unit->detail.level[ATTACK_SPEED]=unit->detail.level[ATTACK_STRENGTH]=1;
         for(int ability:{ATTACK_SPEED,ATTACK_STRENGTH})
-            unit->performance[ability]=unit->race->getUnitType(WARRIOR,1)->performance[ability];
+            unit->performance(ability)=unit->race->getUnitType(WARRIOR,1)->performance[ability];
     }
     a.plan_offense(c);
     REQUIRE(a.budget.tactical_kind==Tactics::MissionSiege);
@@ -869,7 +869,7 @@ static void warriorEligibility()
     flag->updateCallLists();
     for(int step=0; step<33; ++step) flag->subscribeForFlagingStep();
     REQUIRE(flag->unitsWorking.size()==4);
-    for(auto unit:flag->unitsWorking) REQUIRE(unit->performance[SWIM]>0);
+    for(auto unit:flag->unitsWorking) REQUIRE(unit->performance(SWIM)>0);
 }
 
 static void untrainedWarriorsFightAtLevelOne()
@@ -1042,7 +1042,7 @@ static void sealedTargetOpensRoute()
     for(bool sealed:{false,true}) for(bool labor:{false,true}) {
         Fixture f; f.building(10,10,0);
         auto survivor=f.building(35,30,2);
-        for(int i=0;i<12;++i) f.warrior(6+i,6)->performance[SWIM]=0;
+        for(int i=0;i<12;++i) f.warrior(6+i,6)->performance(SWIM)=0;
         // A ring of wood seals the target: neither walkers nor swimmers can pass.
         if(sealed) for(int y=27;y<=37;++y) for(int x=32;x<=42;++x)
             if(x==32||x==42||y==27||y==37) f.game.map.setResourceByIndex(x,y,WOOD,1);
@@ -1071,8 +1071,8 @@ static void offenseFollowsDestroyedTargets()
     f.islands();
     for(int i=0;i<4;++i) {
         auto unit=f.warrior(6+i,6);
-        unit->level[SWIM]=1;
-        unit->performance[SWIM]=1;
+        unit->detail.level[SWIM]=1;
+        unit->performance(SWIM)=1;
     }
     auto first=f.building(30,30,1);
     auto next=f.building(40,40,1);
@@ -1163,7 +1163,7 @@ static void stalledTargetIsQuarantined()
     a.control_offense(c);
     REQUIRE(a.tactical_mission.flagId<0);
     // The fixture flag never actually disappears; release its warriors by hand.
-    for(auto unit:army) { unit->attachedBuilding=NULL; unit->activity=Unit::ACT_RANDOM; }
+    for(auto unit:army) { unit->attachedBuilding=NULL; unit->core.activity=Unit::ACT_RANDOM; }
     flag->unitsWorking.clear();
     a.timer=a.attack_target_quarantine_until[target->gid];
     a.plan_offense(c);
@@ -1517,15 +1517,20 @@ TEST_SUITE("Maxima.Combat")
             world.game.configureBuildingCatalog();
             auto* live=world.addUnit(WARRIOR,10,10); REQUIRE(live);
             const auto view=AIEngine::AIWorldView::capture(world.game,AIEngine::AIWorldView::captureCatalog(world.game));
-            auto unit=*view->unitSlots(0)[Unit::GIDtoID(live->gid)];
+            const auto observed=*view->unitSlots(0)[Unit::GIDtoID(live->core.gid)];
+            SimulationSnapshot::UnitCoreView core{};core.core=observed.core;core.identity=observed.identity;core.team=observed.team;
+            auto detail=observed.detail;
+            UnitState mutableUnit{};mutableUnit.core=observed.core;mutableUnit.detail=observed.detail;
+            const SimulationSnapshot::UnitView unit(core,detail);
             const auto& levels=view->unitCatalog().levels(WARRIOR);
             const int armour=AIMaxima::WorldHelpers::unlearned_reference_armour(*view);
             CHECK(armour==(variant==2?0:variant==1?5:10));
             for (int speedLevel=0;speedLevel<4;++speedLevel)
                 for (int strengthLevel=0;strengthLevel<4;++strengthLevel) {
-                    unit.level[ATTACK_SPEED]=speedLevel;unit.level[ATTACK_STRENGTH]=strengthLevel;
-                    unit.performance[ATTACK_SPEED]=variant==2?0:levels[speedLevel].performance[ATTACK_SPEED];
-                    unit.performance[ATTACK_STRENGTH]=variant==2?0:levels[strengthLevel].performance[ATTACK_STRENGTH];
+                    detail.level[ATTACK_SPEED]=speedLevel;detail.level[ATTACK_STRENGTH]=strengthLevel;
+                    mutableUnit.performance(ATTACK_SPEED)=variant==2?0:levels[speedLevel].performance[ATTACK_SPEED];
+                    mutableUnit.performance(ATTACK_STRENGTH)=variant==2?0:levels[strengthLevel].performance[ATTACK_STRENGTH];
+                    detail.abilities=mutableUnit.detail.abilities;
                     const int common=std::min(speedLevel,strengthLevel);
                     const int expected=variant==0?stockRates[common]:variant==2?0:
                         levels[common].performance[ATTACK_SPEED]*(levels[common].performance[ATTACK_STRENGTH]-armour);
@@ -1539,7 +1544,7 @@ TEST_SUITE("Maxima.Combat")
             CHECK(AIMaxima::WorldHelpers::unlearned_reference_damage_rate(*view,armour)==reference);
             CHECK(AIMaxima::Labour::attackStrengthSufficient(4LL*reference,4,reference));
             if (reference>0) CHECK_FALSE(AIMaxima::Labour::attackStrengthSufficient(4LL*reference-1,4,reference));
-            unit.performance[ATTACK_SPEED]=0;
+            mutableUnit.performance(ATTACK_SPEED)=0;detail.abilities=mutableUnit.detail.abilities;
             CHECK(AIMaxima::WorldHelpers::unlearned_warrior_damage_rate(*view,unit,armour)==0);
         }
     }
@@ -1589,8 +1594,8 @@ TEST_SUITE("Maxima.Combat")
         f.building(10,10,0);auto* target=f.building(35,30,1);
         auto* flag=f.building(12,10,0,"warflag");
         for(int i=0;i<6;++i)f.warrior(i,0,3);
-        auto* inactive=f.warrior(7,0,3);inactive->performance[ATTACK_SPEED]=0;
-        auto* stationary=f.warrior(8,0,3);stationary->performance[WALK]=stationary->performance[SWIM]=stationary->performance[FLY]=0;
+        auto* inactive=f.warrior(7,0,3);inactive->performance(ATTACK_SPEED)=0;
+        auto* stationary=f.warrior(8,0,3);stationary->performance(WALK)=stationary->performance(SWIM)=stationary->performance(FLY)=0;
         auto* denied=f.game.addUnit(9,0,0,3,3,0,0,0);REQUIRE(denied);
         auto* excluded=f.game.addUnit(10,0,0,4,3,0,0,0);REQUIRE(excluded);
         auto& ai=*f.ai;auto& context=ai.context;context.initialize();f.remember(target);
@@ -1601,7 +1606,7 @@ TEST_SUITE("Maxima.Combat")
         ai.tactical_mission.flagId=f.id(flag);
         ai.plan_offense(context);
         CHECK(ai.offense_diagnostics.eligibleWarriors==8);
-        inactive->performance[ATTACK_SPEED]=28;
+        inactive->performance(ATTACK_SPEED)=28;
         ai.plan_offense(context);
         CHECK(ai.offense_diagnostics.eligibleWarriors==9);
     }
@@ -1632,8 +1637,8 @@ TEST_SUITE("Maxima.Combat")
             auto* denied=f.game.addUnit(9,0,0,3,3,0,0,0);REQUIRE(denied);
             auto* excluded=f.game.addUnit(10,0,0,4,3,0,0,0);REQUIRE(excluded);
             auto* stationary=f.game.addUnit(scenario==4?12:11,scenario==4?10:0,0,5,3,0,0,0);REQUIRE(stationary);
-            stationary->performance[WALK]=stationary->performance[SWIM]=stationary->performance[FLY]=0;
-            for(auto* unit:{denied,excluded,stationary})unit->medical=Unit::MED_DAMAGED;
+            stationary->performance(WALK)=stationary->performance(SWIM)=stationary->performance(FLY)=0;
+            for(auto* unit:{denied,excluded,stationary})unit->core.medical=Unit::MED_DAMAGED;
             auto& ai=*f.ai;auto& context=ai.context;context.initialize();f.remember(target);
             ai.tactical_mission.flagId=f.id(flag);
             if(scenario==1)f.attach(denied,flag); // Current member bypasses changed recruitment policy.
@@ -1642,11 +1647,11 @@ TEST_SUITE("Maxima.Combat")
             }
             if(scenario==3 || scenario==4)f.attach(stationary,flag);
             if(scenario==5) {
-                auto* stock=f.warrior(15,0,3);stock->medical=Unit::MED_DAMAGED;
+                auto* stock=f.warrior(15,0,3);stock->core.medical=Unit::MED_DAMAGED;
                 f.attach(stock,otherFlag); // Service transition may retain a different flag.
             }
             if(scenario==6) {
-                f.attach(denied,flag);denied->performance[ATTACK_SPEED]=0;
+                f.attach(denied,flag);denied->performance(ATTACK_SPEED)=0;
             }
             ai.plan_offense(context);
             CHECK(ai.offense_diagnostics.eligibleWarriors==0);
@@ -1664,8 +1669,8 @@ TEST_SUITE("Maxima.Combat")
             combat_regressions::Fixture f;
             f.building(20,24,0);
             auto* enemy=f.game.addUnit(22,20,1,WARRIOR,1,0,0,0);REQUIRE(enemy);
-            enemy->performance[WALK]=enemy->performance[SWIM]=enemy->performance[FLY]=0;
-            if(!active)enemy->performance[ATTACK_SPEED]=0;
+            enemy->performance(WALK)=enemy->performance(SWIM)=enemy->performance(FLY)=0;
+            if(!active)enemy->performance(ATTACK_SPEED)=0;
             f.game.map.setMapExploredByUnit(22,20,1,1,0);
             auto& ai=*f.ai;auto& context=ai.context;context.initialize();
             ai.budget.reactive_defense_enabled=true;ai.budget.reactive_defense_flag_radius=5;
@@ -1689,11 +1694,15 @@ TEST_SUITE("Maxima.Combat")
         world.game.configureBuildingCatalog();
         auto* live=world.addUnit(WARRIOR,10,10); REQUIRE(live);
         const auto view=AIEngine::AIWorldView::capture(world.game,AIEngine::AIWorldView::captureCatalog(world.game));
-        auto unit=*view->unitSlots(0)[Unit::GIDtoID(live->gid)];
-        REQUIRE((unit.capabilityFlags&UnitRuntimeTraits::LegacyPerformancePolicies)!=0);
+        const auto observed=*view->unitSlots(0)[Unit::GIDtoID(live->core.gid)];
+            SimulationSnapshot::UnitCoreView core{};core.core=observed.core;core.identity=observed.identity;core.team=observed.team;
+            auto detail=observed.detail;
+            UnitState mutableUnit{};mutableUnit.core=observed.core;mutableUnit.detail=observed.detail;
+            const SimulationSnapshot::UnitView unit(core,detail);
+        REQUIRE((unit.core.capabilityFlags&UnitRuntimeTraits::LegacyPerformancePolicies)!=0);
         constexpr int oldRates[]={36,64,110,168};
         for (int level=0;level<4;++level) {
-            unit.level[ATTACK_SPEED]=3;unit.level[ATTACK_STRENGTH]=level;
+            detail.level[ATTACK_SPEED]=3;detail.level[ATTACK_STRENGTH]=level;
             CHECK(AIMaxima::WorldHelpers::unlearned_warrior_damage_rate(*view,unit,10)==oldRates[level]);
         }
         CHECK(AIMaxima::WorldHelpers::unlearned_reference_damage_rate(*view,10)==87);

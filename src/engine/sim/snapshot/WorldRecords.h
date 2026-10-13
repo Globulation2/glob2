@@ -14,6 +14,7 @@
 #include <string>
 #include <vector>
 #include <type_traits>
+#include <new>
 
 class Game;
 
@@ -34,11 +35,42 @@ struct BuildingView : BuildingStateRecord
 	UnitRange working, inside;
 };
 
-struct UnitView : UnitState
+// Compact authoritative prefix plus generation-checked observation relationships.
+struct UnitCoreView
 {
-	UnitRef identity;
-	int team = 0;
-	BuildingRef attached, target;
+    UnitCoreState core;
+    UnitRef identity;
+    int team = 0;
+    BuildingRef attached, target;
+    const Sint32& performance(int ability) const { return core.performance(ability); }
+    Sint32& performance(int ability) { return core.performance(ability); }
+};
+static_assert(std::is_standard_layout_v<UnitCoreView>);
+static_assert(std::is_trivially_copyable_v<UnitCoreView>);
+static_assert(sizeof(UnitCoreView)<=192);
+
+// A full observation borrows the two captured arrays; it owns no unit payload.
+struct UnitView
+{
+    const UnitCoreState& core;
+    const UnitDetailState& detail;
+    const UnitRef& identity;
+    const int& team;
+    const BuildingRef& attached;
+    const BuildingRef& target;
+    UnitView(const UnitCoreView& hot, const UnitDetailState& cold)
+        : core(hot.core),detail(cold),identity(hot.identity),team(hot.team),attached(hot.attached),target(hot.target) {}
+    UnitView(const UnitView&)=default;
+    UnitView& operator=(const UnitView& other) {
+        if(this!=&other) { this->~UnitView(); new(this) UnitView(other); }
+        return *this;
+    }
+    bool operator==(const UnitView& other) const { return &core==&other.core && &detail==&other.detail; }
+    const Sint32& performance(int ability) const {
+        if (ability<0 || ability>=NB_ABILITY) throw std::out_of_range("unit ability");
+        const int index=UnitCoreState::abilityIndex(ability);
+        return index>=0 ? core.abilities[index] : detail.abilities[UnitState::detailAbilityIndex(ability)];
+    }
 };
 
 struct ColorRecord { Uint8 r = 0, g = 0, b = 0, a = 255; };
@@ -99,6 +131,6 @@ struct RuleView
 
 struct BuildProjectView { int posX, posY, teamNumber, typeNum, unitWorking, unitWorkingFuture; };
 static_assert(std::is_trivially_copyable_v<BuildingView>);
-static_assert(std::is_trivially_copyable_v<UnitView>);
+
 static_assert(std::is_trivially_copyable_v<BuildProjectView>);
 } // namespace SimulationSnapshot

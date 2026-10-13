@@ -208,12 +208,12 @@ namespace
 		const int height=(*map).height;
 		for(int id=0; id<Unit::MAX_COUNT; ++id)
 		{
-			const AIEngine::UnitView* worker=world.unitSlots(observedTeam)[id];
+			AIEngine::UnitObservation worker=world.unitSlots(observedTeam)[id];
 			if(!worker || !AIEngine::ObservationQueries::matchesStrategyUnitRole(world,*worker,WORKER)
-			   || (swimming && worker->performance[SWIM]<=0))
+			   || (swimming && worker->performance(SWIM)<=0))
 				continue;
-			const int x=(*map).normalizeX(worker->posX);
-			const int y=(*map).normalizeY(worker->posY);
+			const int x=(*map).normalizeX(worker->core.posX);
+			const int y=(*map).normalizeY(worker->core.posY);
 			const int index=y*width+x;
 			if(walkable[index])
 			{
@@ -704,13 +704,13 @@ Maxima::StrategicSnapshot Maxima::collect_snapshot(Context& runtime)
 	}
 	for(int i=0; i<Unit::MAX_COUNT; ++i)
 	{
-		const AIEngine::UnitView* unit=runtime.observation().unitSlots(runtime.teamNumber())[i];
-        if(unit && !unit->isDead)recurringMeals[unit->typeNum]+=recipient_meal_rate(*unit);
-		if(unit && unit->underAttackTimer)
+		AIEngine::UnitObservation unit=runtime.observation().unitSlots(runtime.teamNumber())[i];
+        if(unit && !unit->core.isDead)recurringMeals[unit->core.typeNum]+=recipient_meal_rate(*unit);
+		if(unit && unit->core.underAttackTimer)
 			state.own_units_under_attack+=1;
-		if(unit && (unit->capabilityFlags&UnitRuntimeTraits::Explore)
-		   && unit->performance[SWIM]>0
-		   && unit->performance[MAGIC_ATTACK_GROUND]>0)
+		if(unit && (unit->core.capabilityFlags&UnitRuntimeTraits::Explore)
+		   && unit->performance(SWIM)>0
+		   && unit->performance(MAGIC_ATTACK_GROUND)>0)
 			state.amphibious_attack_explorers+=1;
 	}
     for(unsigned unit=0;unit<state.feeding_demand.size();++unit)state.feeding_demand[unit]=int(std::min<long long>(INT_MAX,(recurringMeals[unit]+MealRatePrecision/2)/MealRatePrecision));
@@ -1430,18 +1430,18 @@ void Maxima::sample_reconnaissance_forces(Context& runtime)
 		const AIEngine::TeamView* enemy_team=(&runtime.observation().teams[*team]);
 		for(int i=0; i<Unit::MAX_COUNT; ++i)
 		{
-			const AIEngine::UnitView* unit=runtime.observation().unitSlots(enemy_team->number)[i];
+			AIEngine::UnitObservation unit=runtime.observation().unitSlots(enemy_team->number)[i];
 			if(!unit || !AIEngine::ObservationQueries::visible(runtime.observation(),
-				unit->posX, unit->posY, runtime.observedTeam().mask))
+				unit->core.posX, unit->core.posY, runtime.observedTeam().mask))
 				continue;
 			const bool warrior=AIEngine::ObservationQueries::matchesStrategyUnitRole(runtime.observation(),*unit,WARRIOR);
-			const bool explorer=AIEngine::ObservationQueries::matchesStrategyUnitRole(runtime.observation(),*unit,EXPLORER) || unit->performance[MAGIC_ATTACK_GROUND]>0;
+			const bool explorer=AIEngine::ObservationQueries::matchesStrategyUnitRole(runtime.observation(),*unit,EXPLORER) || unit->performance(MAGIC_ATTACK_GROUND)>0;
 			if(!warrior && !explorer)
 				continue;
-			const bool attack_explorer=unit->performance[MAGIC_ATTACK_GROUND]>0;
+			const bool attack_explorer=unit->performance(MAGIC_ATTACK_GROUND)>0;
 			if(warrior)
-				threats.push_back(Tactics::ThreatSighting(unit->gid, *team,
-					unit->posX, unit->posY,
+				threats.push_back(Tactics::ThreatSighting(unit->core.gid, *team,
+					unit->core.posX, unit->core.posY,
 					warrior_power(runtime.observation(),unit)));
 			bool colony_threat=false;
 			bool colony_explorer_threat=false;
@@ -1451,7 +1451,7 @@ void Maxima::sample_reconnaissance_forces(Context& runtime)
 				for(std::vector<const AIEngine::BuildingView*>::const_iterator building=
 					own_buildings.begin(); building!=own_buildings.end(); ++building)
 				{
-					if(runtime.observation().distanceSquared(unit->posX, unit->posY,
+					if(runtime.observation().distanceSquared(unit->core.posX, unit->core.posY,
 						(*building)->posX, (*building)->posY)<=threat_radius)
 					{
 						colony_threat=warrior;
@@ -1503,41 +1503,41 @@ void Maxima::update_reconnaissance(Context& runtime)
 		const AIEngine::TeamView* enemy_team=(&runtime.observation().teams[*team]);
 		for(int i=0; i<Unit::MAX_COUNT; ++i)
 		{
-			const AIEngine::UnitView* unit=runtime.observation().unitSlots(enemy_team->number)[i];
+			AIEngine::UnitObservation unit=runtime.observation().unitSlots(enemy_team->number)[i];
 			if(!unit || !AIEngine::ObservationQueries::visible(runtime.observation(),
-				unit->posX, unit->posY, runtime.observedTeam().mask))
+				unit->core.posX, unit->core.posY, runtime.observedTeam().mask))
 				continue;
             const bool worker=AIEngine::ObservationQueries::matchesStrategyUnitRole(runtime.observation(),*unit,WORKER);
             const bool warrior=AIEngine::ObservationQueries::matchesStrategyUnitRole(runtime.observation(),*unit,WARRIOR);
-			if(!unit->isDead)
+			if(!unit->core.isDead)
 			{
 				if(worker) ++visible_workers[*team];
 				if(warrior) visible_power[*team]+=warrior_power(runtime.observation(),unit);
 			}
-			const bool explorer=AIEngine::ObservationQueries::matchesStrategyUnitRole(runtime.observation(),*unit,EXPLORER) || unit->performance[MAGIC_ATTACK_GROUND]>0;
-			const bool attack_explorer=unit->performance[MAGIC_ATTACK_GROUND]>0;
+			const bool explorer=AIEngine::ObservationQueries::matchesStrategyUnitRole(runtime.observation(),*unit,EXPLORER) || unit->performance(MAGIC_ATTACK_GROUND)>0;
+			const bool attack_explorer=unit->performance(MAGIC_ATTACK_GROUND)>0;
 			if(worker)
 			{
 				reconnaissance.observeEconomicActivity(*team,
-					unit->posX, unit->posY);
+					unit->core.posX, unit->core.posY);
 				int economic_value=strategy.raiding.other_resource_value;
-				if(unit->carriedMaterial==materialIndex(MaterialId::Food))
+				if(unit->core.carriedMaterial==materialIndex(MaterialId::Food))
 					economic_value=strategy.raiding.food_resource_value;
-				else if(unit->carriedMaterial==materialIndex(MaterialId::Wood)
-				   || unit->carriedMaterial==materialIndex(MaterialId::Stone)
-				   || unit->carriedMaterial==materialIndex(MaterialId::Algae))
+				else if(unit->core.carriedMaterial==materialIndex(MaterialId::Wood)
+				   || unit->core.carriedMaterial==materialIndex(MaterialId::Stone)
+				   || unit->core.carriedMaterial==materialIndex(MaterialId::Algae))
 					economic_value=strategy.raiding.material_resource_value;
-				else if(unit->carriedMaterial>=HAPPINESS_BASE
-				   && unit->carriedMaterial<MaterialCount)
+				else if(unit->core.carriedMaterial>=HAPPINESS_BASE
+				   && unit->core.carriedMaterial<MaterialCount)
 					economic_value=strategy.raiding.fruit_resource_value;
-				tactics.observeWorker(Tactics::WorkerSighting(unit->gid, *team,
-					unit->posX, unit->posY, timer,
-					unit->displacement==Unit::DIS_HARVESTING,
-					unit->carriedMaterial>=0, economic_value));
+				tactics.observeWorker(Tactics::WorkerSighting(unit->core.gid, *team,
+					unit->core.posX, unit->core.posY, timer,
+					unit->core.displacement==Unit::DIS_HARVESTING,
+					unit->core.carriedMaterial>=0, economic_value));
 			}
 			if(warrior)
-				tactics.observeThreat(Tactics::ThreatSighting(unit->gid, *team,
-					unit->posX, unit->posY,
+				tactics.observeThreat(Tactics::ThreatSighting(unit->core.gid, *team,
+					unit->core.posX, unit->core.posY,
 					warrior_power(runtime.observation(),unit)));
 			bool colony_threat=false;
 			bool colony_explorer_threat=false;
@@ -1548,7 +1548,7 @@ void Maxima::update_reconnaissance(Context& runtime)
 				{
 					const AIEngine::BuildingView* own=runtime.observation().buildingSlots(runtime.teamNumber())[b];
 					if(own && !AIEngine::ObservationQueries::buildingType(runtime.observation(),*own).isVirtual
-					   && runtime.observation().distanceSquared(unit->posX, unit->posY,
+					   && runtime.observation().distanceSquared(unit->core.posX, unit->core.posY,
 						own->posX, own->posY)<=threat_radius)
 					{
 						colony_threat=warrior;
@@ -4184,10 +4184,10 @@ int Maxima::feeding_capacity(int root,int position) const
 long long Maxima::recipient_meal_rate(const AIEngine::UnitView& unit) const
 {
  if(context.observation().configuration->isHungerDisabled())return 0;
- const int action=unit.performance[FLY]>0?FLY:unit.performance[WALK]>0?WALK:SWIM;
- if(unit.performance[action]<=0)return 0;
- return recipientMealRate(context.observation().unitTraits(unit.typeNum).foodCapacity,unit.trigHungry,unit.hungriness,
-     unit.performance[action],action,strategy.farming.management_radius,development_feeding_pause[unit.typeNum]);
+ const int action=unit.performance(FLY)>0?FLY:unit.performance(WALK)>0?WALK:SWIM;
+ if(unit.performance(action)<=0)return 0;
+ return recipientMealRate(context.observation().unitTraits(unit.core.typeNum).foodCapacity,unit.detail.trigHungry,unit.detail.hungriness,
+     unit.performance(action),action,strategy.farming.management_radius,development_feeding_pause[unit.core.typeNum]);
 }
 
 long long Maxima::base_recipient_meal_rate(unsigned unit) const
@@ -4383,8 +4383,8 @@ AIMaximaPlacement::WorldState Maxima::collect_development_world(
 	// Final placement validation must see losses since the last strategy tick.
 	for(int id=0; id<Unit::MAX_COUNT; ++id)
 	{
-		const AIEngine::UnitView* worker=runtime.observation().unitSlots(runtime.teamNumber())[id];
-		if(worker && (worker->capabilityFlags&UnitRuntimeTraits::Transport) && worker->performance[SWIM]>0)
+		AIEngine::UnitObservation worker=runtime.observation().unitSlots(runtime.teamNumber())[id];
+		if(worker && (worker->core.capabilityFlags&UnitRuntimeTraits::Transport) && worker->performance(SWIM)>0)
 			++world.swimmingBuilders;
 	}
 	world.accessibleSupplies[materialIndex(MaterialId::Wood)]=environment.accessible_wood;
@@ -4606,8 +4606,8 @@ AIMaximaPlacement::WorldState Maxima::collect_development_world(
     }
     std::vector<std::vector<long long>> colonyMeals(world.feedingColonies.size(),std::vector<long long>(context.observation().unitTypeCount()));
     for(auto& colony:world.feedingColonies)colony.demand.resize(context.observation().unitTypeCount());
-    for(int id=0;id<Unit::MAX_COUNT;++id)if(const auto* u=runtime.observation().unitSlots(runtime.teamNumber())[id];u && !u->isDead)
-        colonyMeals[world.feedingColonyAt(u->posX,u->posY)][u->typeNum]+=recipient_meal_rate(*u);
+    for(int id=0;id<Unit::MAX_COUNT;++id)if(const auto u=runtime.observation().unitSlots(runtime.teamNumber())[id];u && !u->core.isDead)
+        colonyMeals[world.feedingColonyAt(u->core.posX,u->core.posY)][u->core.typeNum]+=recipient_meal_rate(*u);
     for(size_t colony=0;colony<world.feedingColonies.size();++colony)for(unsigned unit=0;unit<context.observation().unitTypeCount();++unit)
         world.feedingColonies[colony].demand[unit]=int(std::min<long long>(INT_MAX,(colonyMeals[colony][unit]+MealRatePrecision/2)/MealRatePrecision));
     for(const auto& colony:world.feedingColonies) {
@@ -5744,29 +5744,29 @@ Labour::Observation Maxima::observe_labour(Context& runtime) const
 	}
 	for(int id=0; id<Unit::MAX_COUNT; ++id)
 	{
-		const AIEngine::UnitView* u=runtime.observation().unitSlots(team->number)[id];
-		if(!u || u->isDead) continue;
-		if(u->medical==Unit::MED_DAMAGED) ++result.hurtUnits;
-		if(!runtime.observation().configuration->isHungerDisabled() && u->medical==Unit::MED_HUNGRY) ++result.hungryUnits;
+		AIEngine::UnitObservation u=runtime.observation().unitSlots(team->number)[id];
+		if(!u || u->core.isDead) continue;
+		if(u->core.medical==Unit::MED_DAMAGED) ++result.hurtUnits;
+		if(!runtime.observation().configuration->isHungerDisabled() && u->core.medical==Unit::MED_HUNGRY) ++result.hungryUnits;
 		if(!AIEngine::ObservationQueries::matchesStrategyUnitRole(runtime.observation(),*u,WORKER)) continue;
         // A hybrid assigned to defense or exploration is not
         // simultaneously part of the transport workforce.
-        if(u->jobPurpose==UnitJobPurpose::Defend || u->jobPurpose==UnitJobPurpose::Explore) continue;
+        if(u->core.jobPurpose==UnitJobPurpose::Defend || u->core.jobPurpose==UnitJobPurpose::Explore) continue;
 		++result.workers;
-		if(u->level[WALK]==0) ++result.untrainedWalkers;
-		if(!runtime.observation().configuration->isHungerDisabled() && u->medical==Unit::MED_HUNGRY){++result.eating;continue;}
-		if(u->medical==Unit::MED_DAMAGED){++result.hurt;continue;}
-		if(u->activity==Unit::ACT_UPGRADING)
+		if(u->detail.level[WALK]==0) ++result.untrainedWalkers;
+		if(!runtime.observation().configuration->isHungerDisabled() && u->core.medical==Unit::MED_HUNGRY){++result.eating;continue;}
+		if(u->core.medical==Unit::MED_DAMAGED){++result.hurt;continue;}
+		if(u->core.activity==Unit::ACT_UPGRADING)
 		{
-			if(u->destinationPurpose==HEAL) ++result.hurt; else ++result.training;
+			if(u->core.destinationPurpose==HEAL) ++result.hurt; else ++result.training;
 			continue;
 		}
-		if(u->activity==Unit::ACT_RANDOM) ++result.idle;
+		if(u->core.activity==Unit::ACT_RANDOM) ++result.idle;
 		else if(const auto* attached=runtime.observation().building(u->attached))
 		{
 			const BuildingType* type=&AIEngine::ObservationQueries::buildingType(runtime.observation(),*attached);
-			if(u->jobPurpose!=UnitJobPurpose::None && u->jobPurpose!=UnitJobPurpose::Transport) ++result.otherAssigned;
-            else if(type->isBuildingSite && (u->capabilityFlags&UnitRuntimeTraits::Construct)) ++result.builders;
+			if(u->core.jobPurpose!=UnitJobPurpose::None && u->core.jobPurpose!=UnitJobPurpose::Transport) ++result.otherAssigned;
+            else if(type->isBuildingSite && (u->core.capabilityFlags&UnitRuntimeTraits::Construct)) ++result.builders;
             else if(type->isBuildingSite) ++result.otherAssigned;
 			else if(AIMaximaBuildings::serves(context.observation(),*type,AIMaximaBuildings::Production)) ++result.swarmCarriers;
 			else if(AIMaximaBuildings::serves(context.observation(),*type,AIMaximaBuildings::Feeding)) ++result.innCarriers;
@@ -5777,7 +5777,7 @@ Labour::Observation Maxima::observe_labour(Context& runtime) const
 		for(size_t b=0;b<schools.size() && !canTrain;++b)
 			for(int ability=0;ability<NB_ABILITY && !canTrain;++ability)
 				if((ability!=SWIM || swimming)
-                    && (workerTraining.courseMasks[schools[b]->typeNum][u->typeNum]&(1u<<ability))
+                    && (workerTraining.courseMasks[schools[b]->typeNum][u->core.typeNum]&(1u<<ability))
                     && AIEngine::ObservationQueries::needsTraining(*u,AIEngine::ObservationQueries::buildingType(runtime.observation(),*schools[b]).semantics.training[ability],ability)
                     && AIEngine::ObservationQueries::trainingVisitSafe(runtime.observation(),*u,*schools[b],ability))
 					canTrain=true;

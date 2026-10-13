@@ -1492,9 +1492,9 @@ UnitRef GameGUITouch::unitAt(ViewPoint screenPoint, double reachPoints) const
 					const SnapshotUnit *shown = scene ? scene->entities.unit(gid) : nullptr;
 					if (scene && !shown) continue;
                     if (!shown) continue;
-                    const int ux=shown->posX, uy=shown->posY;
-                    const int moveX=shown->dx, moveY=shown->dy;
-                    const int action=shown->action;
+                    const int ux=shown->core.posX, uy=shown->core.posY;
+                    const int moveX=shown->core.dx, moveY=shown->core.dy;
+                    const int action=shown->core.action;
                     const int delta=drawnUnitDelta(*shown,gui.view.render.unitMotion);
 					if (!wholeMap && !map.isFOWDiscovered(x, y, visible) &&
 						!map.isFOWDiscovered(x - moveX, y - moveY, visible))

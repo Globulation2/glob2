@@ -24,6 +24,7 @@ public:
 	{
 		Uint64 captures = 0, captureNs = 0, bytesCopied = 0, reusedComponents = 0, allocations = 0;
 		Uint64 preparationNs = 0;
+        Uint64 unitStateBytesCopied = 0, unitRecordPayloadBytes = 0;
 	} metrics;
 	// GLOB2_SNAPSHOT_VERIFY=1 turns capture verification on for every store.
 	Store() { if (const char* value = std::getenv("GLOB2_SNAPSHOT_VERIFY")) storage.verify = *value && *value != '0'; }

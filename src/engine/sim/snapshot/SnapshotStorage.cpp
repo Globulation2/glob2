@@ -72,8 +72,10 @@ MemoryMetrics Storage::memoryMetrics() const
         return bytes;
     });
 	account(entities, [&](const Entities& value, bool) {
-		return value.unitCargo.capacityBytes() + vectorBytes(value.extraProduction) + vectorBytes(value.buildings) + vectorBytes(value.units) + vectorBytes(value.buildingSlotIndices) + vectorBytes(value.unitSlotIndices) + vectorBytes(value.relationships) + vectorBytes(value.projects);
+		return vectorBytes(value.extraProduction) + vectorBytes(value.buildings) + vectorBytes(value.buildingSlotIndices) + vectorBytes(value.relationships) + vectorBytes(value.projects);
 	});
+    account(unitCores,[&](const UnitCores& value,bool) { return vectorBytes(value.units)+vectorBytes(value.unitSlotIndices); });
+    account(unitDetails,[&](const UnitDetails& value,bool) { return vectorBytes(value.units)+value.unitCargo.capacityBytes(); });
 	account(teams, [&](const Teams& value, bool) {
 		Uint64 bytes = vectorBytes(value.values);
 		for (const auto& team : value.values) bytes += team.statistics.capacityBytes()

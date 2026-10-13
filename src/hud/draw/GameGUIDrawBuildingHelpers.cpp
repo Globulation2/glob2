@@ -170,7 +170,7 @@ void GameGUI::drawBuildingFlagInfo(const SceneBuildingPanel* selBuild, const Bui
 		{
             const auto* worker=drawnScene().entities.unit(ref.gid);
             if (!worker || worker->identity!=ref) continue;
-            const auto x=worker->posX, y=worker->posY;
+            const auto x=worker->core.posX, y=worker->core.posY;
 			const Sint32 dx = warp(posX, x, w), dy = warp(posY, y, h);
 			if (dx * dx + dy * dy < stayRangeSquare)
 				onSpot++;
@@ -569,10 +569,11 @@ void GameGUI::drawBuildingTimeToLeaveBar(const SceneBuildingPanel* selBuild, con
 		for (const auto ref : selBuild->insideUnits)
 		{
             const auto* u=drawnScene().entities.unit(ref.gid);
-            if (!u || u->identity!=ref) continue;
-			if (u->displacement==UnitState::DIS_INSIDE)
+            const auto* detail=drawnScene().entities.detail(ref);
+            if (!u || u->identity!=ref || !detail) continue;
+			if (u->core.displacement==UnitState::DIS_INSIDE)
 			{
-				int dividend=-u->insideTimeout*128+128-u->delta/2;
+				int dividend=-detail->insideTimeout*128+128-u->core.delta/2;
 				int divisor=1+maxTimeTo;
 				int left=dividend/divisor;
 				int alpha=((dividend%divisor)*255)/divisor;

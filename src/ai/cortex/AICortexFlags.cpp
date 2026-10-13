@@ -263,10 +263,10 @@ int AICortex::countArrivedAtFlag(const AIEngine::BuildingView* flag) const
 	int arrived = 0;
 	for (const auto ref : observedWorld->workers(*flag))
 	{
-        const auto* u=observedWorld->unit(ref);if(!u)continue;
-		if (u == NULL)
+        auto u=observedWorld->unit(ref);if(!u)continue;
+		if (u == std::nullopt)
 			continue;
-		if (Cortex::warpDistMax(*observedWorld,u->posX, u->posY, Cortex::plannedX(intents,*flag), Cortex::plannedY(intents,*flag))
+		if (Cortex::warpDistMax(*observedWorld,u->core.posX, u->core.posY, Cortex::plannedX(intents,*flag), Cortex::plannedY(intents,*flag))
 		    <= flag->unitStayRange)
 			arrived++;
 	}

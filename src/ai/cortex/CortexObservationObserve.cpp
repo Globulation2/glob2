@@ -141,7 +141,7 @@ namespace Cortex
 		{
 			obs.buildLevel[lvl] = stat->workersByConstructionLevel[lvl];
 			// WALK == 3 (unit/UnitConsts.h:13). Any-type row == workers+warriors:
-			// explorers have performance[WALK]==0 at every level (game/entities/Race.cpp),
+			// explorers have performance(WALK)==0 at every level (game/entities/Race.cpp),
 			// so they never enter this bucket. Racetrack expand-vs-upgrade gate.
 			obs.walkLevel[lvl]                = stat->upgradeState[WALK][lvl];
 			// WARRIOR-only WALK slice: the attack-range envelope scales with the
@@ -230,20 +230,20 @@ namespace Cortex
 		}
 		for (int i = 0; i < ::Unit::MAX_COUNT; i++)
 		{
-			const AIEngine::UnitView* u = game->unitSlots(team->number)[i];
-			if (u == NULL)
-				continue;
-			// C++: Unit::underAttackTimer (Uint8), unit/Unit.h:241
-			if (u->underAttackTimer > 0)
-				obs.unitsUnderAttack++;
+            const auto* core=game->coreUnitSlots(team->number)[i];
+            if(!core)continue;
+            if(core->core.underAttackTimer>0)++obs.unitsUnderAttack;
+            if(core->core.activity!=::Unit::ACT_RANDOM || core->core.medical!=::Unit::MED_FREE)continue;
+            const auto u=game->unitAtSlot(core->identity.gid);
+            if(!u)continue;
 			// Free warriors: the exact pool a war flag's recruiter will draw from
 			// (Building::considerUnitForWarriorFlag requires activity == ACT_RANDOM &&
 			// medical == MED_FREE). A warrior already on a flag is ACT_FLAG and is never
 			// poached, so this counts only the immediately-recruitable reserve.
 			if (AIEngine::ObservationQueries::matchesStrategyUnitRole(*game,*u,WARRIOR)
-             && game->unitTraits(u->typeNum).recruits(2)
-             && (u->performance[WALK]>0 || u->performance[SWIM]>0 || u->performance[FLY]>0)
-			 && u->activity == ::Unit::ACT_RANDOM && u->medical == ::Unit::MED_FREE)
+             && game->unitTraits(u->core.typeNum).recruits(2)
+             && (u->performance(WALK)>0 || u->performance(SWIM)>0 || u->performance(FLY)>0)
+			 && u->core.activity == ::Unit::ACT_RANDOM && u->core.medical == ::Unit::MED_FREE)
 				obs.freeWarriors++;
 		}
 
@@ -502,17 +502,17 @@ namespace Cortex
 				es.totalUnit = 0;
 				for (int j = 0; j < ::Unit::MAX_COUNT; j++)
 				{
-					const AIEngine::UnitView* u = game->unitSlots(other->number)[j];
-					if (u == NULL)
+					AIEngine::UnitObservation u = game->unitSlots(other->number)[j];
+					if (u == std::nullopt)
 						continue;
 					// C++: Unit::posX/posY, unit/Unit.h:220
-					if (!isFOWDiscovered(*game,u->posX, u->posY, team->mask))
+					if (!isFOWDiscovered(*game,u->core.posX, u->core.posY, team->mask))
 						continue;
 					es.totalUnit++;
 					// Straggler grace: visible enemy still inside our flag's stay-range.
 					// Same warp-safe Chebyshev metric placeFlagTargets/ensureFlagAt use.
 					if (warFlagFound
-					 && warpDistMax(*game,u->posX, u->posY, warFlagX, warFlagY) <= warFlagRange)
+					 && warpDistMax(*game,u->core.posX, u->core.posY, warFlagX, warFlagY) <= warFlagRange)
 						obs.enemyUnitsNearFlag++;
 					// Threat sizing, per defense point: visible enemy near each building
 					// taking fire. defenseTargets[] is already resolved (the building scan
@@ -520,7 +520,7 @@ namespace Cortex
 					// point's flag must match.
 					for (int k = 0; k < CORTEX_MAX_DEFENSE_FLAGS; k++)
 						if (obs.defenseTargets[k].valid
-						 && warpDistMax(*game,u->posX, u->posY,
+						 && warpDistMax(*game,u->core.posX, u->core.posY,
 						        obs.defenseTargets[k].x, obs.defenseTargets[k].y)
 						    <= CORTEX_THREAT_SCAN_RADIUS)
 							obs.defenseThreatCount[k]++;
@@ -529,8 +529,8 @@ namespace Cortex
 					// Already inside the FOW gate above, so never unfogged truth.
 					// C++: Unit::level[] (unit/Unit.h), ATTACK_STRENGTH == 9.
 					if (AIEngine::ObservationQueries::matchesStrategyUnitRole(*game,*u,WARRIOR)
-					 && u->level[ATTACK_STRENGTH] > obs.enemyWarriorLevelVisible)
-						obs.enemyWarriorLevelVisible = u->level[ATTACK_STRENGTH];
+					 && u->detail.level[ATTACK_STRENGTH] > obs.enemyWarriorLevelVisible)
+						obs.enemyWarriorLevelVisible = u->detail.level[ATTACK_STRENGTH];
 				}
 
 				es.prestige = 0; // prestige is not a visible signal; left unfilled

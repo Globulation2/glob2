@@ -51,15 +51,22 @@ AIWorldView::AIWorldView(SimulationSnapshot::Handle captured) : lease(std::move(
 	if (lease.rules) { configuration = lease.rules->configuration; rules = lease.rules->values; ruleValues = lease.rules->named; experimentKeys = lease.rules->experiments; }
 	if (lease.areas) farmAreasEnabled = lease.areas->farmEnabled;
 	if (lease.teams) { teams = lease.teams->values; totalPrestige = lease.teams->totalPrestige; }
-	if (lease.entities) { buildings = lease.entities->buildings; units = lease.entities->units; buildProjects = lease.entities->projects; }
-	if (lease.entities) {
-		const auto buildingSlots = lease.entities->buildingSlotIndices.size();
-		const auto unitSlots = lease.entities->unitSlotIndices.size();
-		if (buildingSlots % BuildingUtils::MAX_COUNT || unitSlots % UnitUtils::MAX_COUNT
-			|| buildingSlots / BuildingUtils::MAX_COUNT != unitSlots / UnitUtils::MAX_COUNT
-			|| buildings.size() > buildingSlots || units.size() > unitSlots)
-			throw std::logic_error("AI observation entity slot index size mismatch");
-	}
+    if(lease.unitCores)unitCores=lease.unitCores->units;
+    units=lease.units();
+	if (lease.entities) { buildings = lease.entities->buildings;  buildProjects = lease.entities->projects; }
+    if(lease.unitCores) {
+        const auto slots=lease.unitCores->unitSlotIndices.size();
+        if(slots%UnitUtils::MAX_COUNT || unitCores.size()>slots)
+            throw std::logic_error("AI observation unit slot index size mismatch");
+        if(lease.unitDetails && lease.unitDetails->units.size()!=unitCores.size())
+            throw std::logic_error("AI observation unit detail size mismatch");
+    }
+    if(lease.entities) {
+        const auto slots=lease.entities->buildingSlotIndices.size();
+        if(slots%BuildingUtils::MAX_COUNT || buildings.size()>slots
+            || (lease.unitCores && slots/BuildingUtils::MAX_COUNT!=lease.unitCores->unitSlotIndices.size()/UnitUtils::MAX_COUNT))
+            throw std::logic_error("AI observation building slot index size mismatch");
+    }
 }
 std::shared_ptr<const AIWorldView::Catalog> AIWorldView::captureCatalog(const Game& game)
 { return SimulationSnapshot::captureCatalog(game); }

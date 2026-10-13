@@ -18,6 +18,7 @@
 #include "ResourcePlaneKey.h"
 #include "MapChangeTracking.h"
 #include <span>
+#include <optional>
 #include <stdexcept>
 #include <limits>
 
@@ -94,16 +95,48 @@ static_assert(std::is_trivially_copyable_v<VisibilityCell>);
 struct ExtraProductionState { Sint32 ratio=0, used=0, constructionOriginRatio=0; };
 struct Entities
 {
-    UnitCargoStore unitCargo;
     std::vector<ExtraProductionState> extraProduction;
 	static constexpr Uint32 NoRecord = std::numeric_limits<Uint32>::max();
 	std::vector<BuildingView> buildings;
-	std::vector<UnitView> units;
 	// Global entity slots index the compact records directly. Captured once in
 	// the entity extraction pass and shared by all readers; no controller table.
-	std::vector<Uint32> buildingSlotIndices, unitSlotIndices;
+	std::vector<Uint32> buildingSlotIndices;
 	std::vector<UnitRef> relationships;
 	std::vector<BuildProjectView> projects;
+};
+struct UnitCores
+{
+    std::vector<UnitCoreView> units;
+    std::vector<Uint32> unitSlotIndices;
+};
+struct UnitDetails
+{
+    std::vector<UnitDetailState> units;
+    UnitCargoStore unitCargo;
+};
+// Joined traversal constructs borrowed values on demand, never a second array.
+class UnitViews
+{
+    std::span<const UnitCoreView> cores;
+    std::span<const UnitDetailState> details;
+public:
+    UnitViews() = default;
+    UnitViews(std::span<const UnitCoreView> hot,std::span<const UnitDetailState> cold) : cores(hot),details(cold) {
+        if(cores.size()!=details.size()) throw std::logic_error("unit snapshot arrays differ in size");
+    }
+    std::size_t size() const { return cores.size(); }
+    bool empty() const { return cores.empty(); }
+    UnitView operator[](std::size_t i) const { return {cores[i],details[i]}; }
+    UnitView at(std::size_t i) const { if(i>=size())throw std::out_of_range("unit record");return (*this)[i]; }
+    UnitView front() const { return at(0); }
+    struct Iterator {
+        const UnitViews* owner; std::size_t index;
+        UnitView operator*() const { return (*owner)[index]; }
+        Iterator& operator++() { ++index;return *this; }
+        bool operator==(const Iterator&) const = default;
+    };
+    Iterator begin() const { return {this,0}; }
+    Iterator end() const { return {this,size()}; }
 };
 struct Teams { std::vector<TeamView> values; int totalPrestige = 0; };
 struct Rules
@@ -155,6 +188,12 @@ struct Handle
 	std::shared_ptr<const Visibility> visibility;
 	std::shared_ptr<const Exploration> exploration;
 	std::shared_ptr<const Entities> entities;
+    std::shared_ptr<const UnitCores> unitCores;
+    std::shared_ptr<const UnitDetails> unitDetails;
+    UnitViews units() const {
+        if(!unitCores || !unitDetails)return {};
+        return {unitCores->units,unitDetails->units};
+    }
 	std::shared_ptr<const Teams> teams;
 	std::shared_ptr<const Rules> rules;
 	std::shared_ptr<const ResourceFields> resourceFields;
@@ -191,7 +230,7 @@ private:
 std::shared_ptr<const std::vector<BuildingKindView>> captureCatalog(const Game& game);
 struct Storage;
 Handle capture(const Game& game, std::shared_ptr<const std::vector<BuildingKindView>> catalog,
-	Requirements requirements = All, const Handle* previous = nullptr, Storage* storage = nullptr);
+	Requirements requirements = All, const Handle* previous = nullptr, Storage* storage = nullptr, bool unchangedBoundary = false);
 //! Throw if a captured map array or entity list differs from the live game.
 void verifyCapture(const Game& game, const Handle& handle);
 } // namespace SimulationSnapshot

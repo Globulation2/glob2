@@ -107,7 +107,7 @@ bool Map::isHardSpaceForBuilding(int x, int y, int w, int h, Uint16 gid) const
 
 std::optional<Offset> Map::doesUnitTouchBuilding(Unit *unit, Uint16 gbid) const
 {
-	return doesPosTouchBuilding(unit->posX,unit->posY,gbid);
+	return doesPosTouchBuilding(unit->core.posX,unit->core.posY,gbid);
 }
 
 std::optional<Offset> Map::doesPosTouchBuilding(int x, int y, Uint16 gbid) const
@@ -132,8 +132,8 @@ std::optional<Offset> Map::doesPosTouchBuilding(int x, int y, Uint16 gbid) const
 
 std::optional<Offset> Map::doesUnitTouchResource(Unit *unit) const
 {
-	int x=unit->posX;
-	int y=unit->posY;
+	int x=unit->core.posX;
+	int y=unit->core.posY;
 	Uint32 me=unit->owner->me;
 	for (int tdx=-1; tdx<=1; tdx++)
 		for (int tdy=-1; tdy<=1; tdy++)
@@ -144,8 +144,8 @@ std::optional<Offset> Map::doesUnitTouchResource(Unit *unit) const
 
 std::optional<Offset> Map::doesUnitTouchMaterialSource(Unit *unit, MaterialId material) const
 {
-	int x=unit->posX;
-	int y=unit->posY;
+	int x=unit->core.posX;
+	int y=unit->core.posY;
 	Uint32 me=unit->owner->me;
 	for (int tdx=-1; tdx<=1; tdx++)
 		for (int tdy=-1; tdy<=1; tdy++)
@@ -214,7 +214,7 @@ Building *Map::touchedStockedMarketSlot(Unit *unit, int resourceType) const
 	for (int dx=-1; dx<=1; ++dx)
 		for (int dy=-1; dy<=1; ++dy)
 		{
-			const Uint16 gid=getBuilding(unit->posX+dx,unit->posY+dy);
+			const Uint16 gid=getBuilding(unit->core.posX+dx,unit->core.posY+dy);
 			if (!overlays)
 			{
 				if (isStockedMarketTile(gid,teamNumber,resourceType)) {
@@ -224,7 +224,7 @@ Building *Map::touchedStockedMarketSlot(Unit *unit, int resourceType) const
 				continue;
 			}
 			consider(gid);
-			const auto found=gradientRuntime->overlaySupplierLocations.find(coordToIndex(unit->posX+dx,unit->posY+dy));
+			const auto found=gradientRuntime->overlaySupplierLocations.find(coordToIndex(unit->core.posX+dx,unit->core.posY+dy));
 			if (found!=gradientRuntime->overlaySupplierLocations.end()) for (const Uint16 overlay : found->second) consider(overlay);
 		}
 	return best;
@@ -253,8 +253,8 @@ std::optional<Offset> Map::doesPosTouchMaterialSource(int x, int y, MaterialId m
 //!     NOT displace an already-found shooter at the same score.
 std::optional<Offset> Map::doesUnitTouchEnemy(Unit *unit) const
 {
-	int x=unit->posX;
-	int y=unit->posY;
+	int x=unit->core.posX;
+	int y=unit->core.posY;
 	int bestTime=ENEMY_TOUCH_BEST_TIME_NONE;//Shorter is better
 	int bdx=0, bdy=0;
 
@@ -304,7 +304,7 @@ std::optional<Offset> Map::doesUnitTouchEnemy(Unit *unit) const
 					Unit *otherUnit=game->teams[otherTeam]->myUnits[otherID];
 					if ((unit->owner->sharedVisionExchange & otherTeamMask)==0)
 					{
-						int time=(256-otherUnit->delta)/otherUnit->speed;
+						int time=(256-otherUnit->core.delta)/otherUnit->core.speed;
 						// Strict `<` — a unit never displaces a tied candidate.
 						if (time<bestTime)
 						{

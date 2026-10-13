@@ -73,12 +73,12 @@ TEST_SUITE("WorldSnapshot")
             CHECK(buildings.size()==std::size_t(Building::MAX_COUNT)); CHECK(units.size()==std::size_t(Unit::MAX_COUNT));
             CHECK(invalidBuildings.size()==0); CHECK(world.unitSlots(2).size()==0);
             std::size_t slot=0;
-            for(const auto* unit:units) {
+            for(const auto unit:units) {
                 CHECK(unit==world.unitAtSlot(Uint16(team*Unit::MAX_COUNT+slot)));
                 CHECK(bool(unit)==bool(fixture.game.teams[team]->myUnits[slot]));
                 if(unit) {
                     CHECK(unit==world.unit(unit->identity));
-                    CHECK(world.unit({unit->identity.gid,unit->identity.generation+1})==nullptr);
+                    CHECK(!world.unit({unit->identity.gid,unit->identity.generation+1}));
                 }
                 ++slot;
             }
@@ -90,7 +90,7 @@ TEST_SUITE("WorldSnapshot")
                 if(building) CHECK(building==world.building(building->identity));
             }
         }
-        CHECK(world.buildingAtSlot(0xffff)==nullptr); CHECK(world.unitAtSlot(0xffff)==nullptr);
+        CHECK(world.buildingAtSlot(0xffff)==nullptr); CHECK(!world.unitAtSlot(0xffff));
     }
     TEST_CASE("snapshot capability tables share authoritative immutable catalog data")
     {
@@ -149,27 +149,27 @@ TEST_SUITE("WorldSnapshot")
         glob2test::HeadlessGlobals globals;
         glob2test::HeadlessGame fixture{glob2test::GameOptions{.wDec=5, .hDec=5, .teams=1, .discovered=true, .clearImmobile=true, .loadDefaultRace=true}};
         auto* unit=fixture.addUnit(WORKER,12,12,0); REQUIRE(unit);
-        unit->jobTimer=17; unit->terrainHealthRemainder=9;
+        unit->detail.jobTimer=17; unit->detail.terrainHealthRemainder=9;
         auto captured=SimulationSnapshot::capture(fixture.game,SimulationSnapshot::captureCatalog(fixture.game));
-        REQUIRE(captured.entities->units.size()==1);
-        const auto& observed=captured.entities->units.front();
+        REQUIRE(captured.unitCores->units.size()==1);
+        const auto observed=captured.units().front();
         static_assert(std::is_base_of_v<UnitState,Unit>);
-        static_assert(std::is_base_of_v<UnitState,SimulationSnapshot::UnitView>);
-        CHECK(observed.typeNum==unit->typeNum); CHECK(observed.posX==unit->posX); CHECK(observed.posY==unit->posY);
-        CHECK(observed.configuredVisionRadius==unit->configuredVisionRadius);
-        CHECK(observed.action==unit->action); CHECK(observed.needToRecheckMedical==unit->needToRecheckMedical);
-        CHECK(observed.serviceResourcesReserved==unit->serviceResourcesReserved);
-        CHECK(observed.trigHP==unit->trigHP); CHECK(observed.trigHungryCarrying==unit->trigHungryCarrying);
-        CHECK(observed.delta==unit->delta); CHECK(observed.jobTimer==17); CHECK(observed.terrainHealthRemainder==9);
+        static_assert(offsetof(UnitState,core)==0);
+        CHECK(observed.core.typeNum==unit->core.typeNum); CHECK(observed.core.posX==unit->core.posX); CHECK(observed.core.posY==unit->core.posY);
+        CHECK(observed.detail.configuredVisionRadius==unit->detail.configuredVisionRadius);
+        CHECK(observed.core.action==unit->core.action); CHECK(observed.detail.needToRecheckMedical==unit->detail.needToRecheckMedical);
+        CHECK(observed.detail.serviceResourcesReserved==unit->detail.serviceResourcesReserved);
+        CHECK(observed.detail.trigHP==unit->detail.trigHP); CHECK(observed.detail.trigHungryCarrying==unit->detail.trigHungryCarrying);
+        CHECK(observed.core.delta==unit->core.delta); CHECK(observed.detail.jobTimer==17); CHECK(observed.detail.terrainHealthRemainder==9);
         for(int i=0;i<NB_ABILITY;++i) {
-            CHECK(observed.performance[i]==unit->performance[i]); CHECK(observed.level[i]==unit->level[i]);
-            CHECK(observed.canLearn[i]==unit->canLearn[i]);
+            CHECK(observed.performance(i)==unit->performance(i)); CHECK(observed.detail.level[i]==unit->detail.level[i]);
+            CHECK(observed.detail.canLearn[i]==unit->detail.canLearn[i]);
         }
-        const int oldLevel=observed.level[WALK]; unit->level[WALK]=oldLevel+1; unit->jobTimer=31;
-        CHECK(observed.level[WALK]==oldLevel); CHECK(observed.jobTimer==17);
-        const auto frozenVision=observed.configuredVisionRadius;
-        unit->configuredVisionRadius=Uint8(frozenVision+1);
-        CHECK(observed.configuredVisionRadius==frozenVision);
+        const int oldLevel=observed.detail.level[WALK]; unit->detail.level[WALK]=oldLevel+1; unit->detail.jobTimer=31;
+        CHECK(observed.detail.level[WALK]==oldLevel); CHECK(observed.detail.jobTimer==17);
+        const auto frozenVision=observed.detail.configuredVisionRadius;
+        unit->detail.configuredVisionRadius=Uint8(frozenVision+1);
+        CHECK(observed.detail.configuredVisionRadius==frozenVision);
     }
     TEST_CASE("map snapshots bulk copy authoritative records without translation")
     {
@@ -891,8 +891,8 @@ TEST_CASE("explicit observation boundaries refresh paused state and retain old l
     constexpr auto needed = SimulationSnapshot::bit(SimulationSnapshot::Component::Entities)
         | SimulationSnapshot::bit(SimulationSnapshot::Component::Terrain);
     const auto before = store.captureBoundary(fixture.game, needed);
-    const auto previousHp = before.entities->units.front().hp;
-    unit->hp -= 1;
+    const auto previousHp = before.unitCores->units.front().core.hp;
+    unit->core.hp -= 1;
     // Captures within a declared boundary stay coherent, even if a caller
     // prematurely writes. Only the owner's explicit boundary makes it visible.
     CHECK(store.captureBoundary(fixture.game, needed).entities == before.entities);
@@ -900,15 +900,88 @@ TEST_CASE("explicit observation boundaries refresh paused state and retain old l
     const auto after = store.captureBoundary(fixture.game, needed);
     CHECK(after.tick == before.tick);
     CHECK(after.observationRevision == before.observationRevision + 1);
-    CHECK(after.entities->units.front().hp == previousHp - 1);
-    CHECK(before.entities->units.front().hp == previousHp);
+    CHECK(after.unitCores->units.front().core.hp == previousHp - 1);
+    CHECK(before.unitCores->units.front().core.hp == previousHp);
     CHECK(after.terrain == before.terrain);
     const auto projected = after.project(SimulationSnapshot::bit(SimulationSnapshot::Component::Entities));
     CHECK(projected.observationRevision == after.observationRevision);
     CHECK_FALSE(projected.terrain);
     fixture.game.clearAI();
     // Store reset does not invalidate handles already owned by consumers.
-    CHECK(before.entities->units.front().hp == previousHp);
-    CHECK(fixture.game.snapshots().captureBoundary(fixture.game, needed).entities->units.front().hp == previousHp - 1);
+    CHECK(before.unitCores->units.front().core.hp == previousHp);
+    CHECK(fixture.game.snapshots().captureBoundary(fixture.game, needed).unitCores->units.front().core.hp == previousHp - 1);
 }
+}
+
+TEST_SUITE("CompactUnitSnapshot")
+{
+    TEST_CASE("every ability has one authoritative location and full views borrow both layers")
+    {
+        UnitState state{};
+        for(int ability=0;ability<NB_ABILITY;++ability)state.performance(ability)=100+ability;
+        SimulationSnapshot::UnitCoreView core{};core.core=state.core;
+        const SimulationSnapshot::UnitView full(core,state.detail);
+        for(int ability=0;ability<NB_ABILITY;++ability) {
+            CHECK(full.performance(ability)==100+ability);
+            const int hot=UnitCoreState::abilityIndex(ability);
+            if(hot>=0)CHECK(&state.performance(ability)==&state.core.abilities[hot]);
+            else CHECK(&state.performance(ability)==&state.detail.abilities[UnitState::detailAbilityIndex(ability)]);
+        }
+        CHECK(&full.core==&core.core);CHECK(&full.detail==&state.detail);
+        CHECK_THROWS_AS(state.performance(-1),std::out_of_range);
+        CHECK_THROWS_AS(state.performance(NB_ABILITY),std::out_of_range);
+        CHECK_THROWS_AS(core.performance(ATTACK_STRENGTH),std::out_of_range);
+    }
+    TEST_CASE("core capture upgrades share arrays and projections release unrelated details")
+    {
+        using namespace SimulationSnapshot;
+        glob2test::HeadlessGlobals globals;
+        glob2test::HeadlessGame fixture({.wDec=5,.hDec=5,.teams=2,.discovered=true,.clearImmobile=true,.loadDefaultRace=true});
+        auto* first=fixture.addUnit(WORKER,10,10,0);auto* second=fixture.addUnit(WARRIOR,14,14,1);
+        REQUIRE(first);REQUIRE(second);
+        Store store;store.setVerification(true);
+        const auto core=store.captureBoundary(fixture.game,bit(Component::UnitCores));
+        REQUIRE(core.unitCores);CHECK_FALSE(core.unitDetails);CHECK_FALSE(core.entities);
+        CHECK(core.unitCores->units.size()==2);
+        CHECK(store.metrics.unitStateBytesCopied==2*sizeof(UnitCoreState));
+        CHECK(store.metrics.unitRecordPayloadBytes==2*sizeof(UnitCoreView));
+        const auto full=store.captureBoundary(fixture.game,bit(Component::Entities));
+        REQUIRE(full.unitDetails);CHECK(full.unitCores==core.unitCores);
+        CHECK(store.metrics.unitStateBytesCopied==2*(sizeof(UnitCoreState)+sizeof(UnitDetailState)));
+        CHECK(&full.units()[0].core==&core.unitCores->units[0].core);
+        CHECK(full.units()[0].detail==first->detail);
+        const auto again=store.captureBoundary(fixture.game,bit(Component::UnitDetails));
+        CHECK(again.unitCores==full.unitCores);CHECK(again.unitDetails==full.unitDetails);CHECK_FALSE(again.entities);
+        const auto retained=full.units()[0];
+        first->core.hp-=1;store.invalidateBoundary();
+        const auto refreshed=store.captureBoundary(fixture.game,bit(Component::Entities));
+        CHECK(refreshed.unitCores!=core.unitCores);CHECK(refreshed.unitDetails!=full.unitDetails);
+        CHECK(retained.core.hp==first->core.hp+1);
+        CHECK(refreshed.units()[0].core.hp==first->core.hp);
+        auto projected=refreshed.project(bit(Component::UnitCores));
+        CHECK_FALSE(projected.unitDetails);CHECK_FALSE(projected.entities);
+        CHECK(projected.unitCores==refreshed.unitCores);
+        std::weak_ptr<const UnitDetails> retiredDetails;
+        Handle independentCore;
+        {
+            auto independentlyCaptured=capture(fixture.game,captureCatalog(fixture.game));
+            retiredDetails=independentlyCaptured.unitDetails;
+            independentCore=independentlyCaptured.project(bit(Component::UnitCores));
+        }
+        CHECK(retiredDetails.expired());REQUIRE(independentCore.unitCores);
+    }
+    TEST_CASE("standalone building requests capture no unit records or cargo")
+    {
+        using namespace SimulationSnapshot;
+        glob2test::HeadlessGlobals globals;
+        glob2test::HeadlessGame fixture({.wDec=5,.hDec=5,.teams=1,.discovered=true,.clearImmobile=true,.loadDefaultRace=true});
+        REQUIRE(fixture.addUnit(WORKER,12,12));REQUIRE(fixture.addBuilding("market",4,4));
+        Store store;
+        const auto buildings=store.captureBoundary(fixture.game,bit(Component::BuildingEntities));
+        REQUIRE(buildings.entities);CHECK_FALSE(buildings.unitCores);CHECK_FALSE(buildings.unitDetails);
+        CHECK(store.metrics.unitStateBytesCopied==0);CHECK(store.metrics.unitRecordPayloadBytes==0);
+        const auto combined=store.captureBoundary(fixture.game,bit(Component::BuildingEntities)|bit(Component::UnitCores));
+        CHECK(combined.entities==buildings.entities);REQUIRE(combined.unitCores);CHECK_FALSE(combined.unitDetails);
+        CHECK(store.metrics.unitStateBytesCopied==sizeof(UnitCoreState));
+    }
 }

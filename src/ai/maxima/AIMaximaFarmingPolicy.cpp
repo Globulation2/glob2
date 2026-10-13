@@ -541,10 +541,10 @@ std::vector<Uint8> Maxima::worker_reachable_circulation(Context& runtime, bool a
 		std::vector<int> queue;
 		for(int id=0;id<Unit::MAX_COUNT;++id)
 		{
-			const AIEngine::UnitView* worker=runtime.observation().unitSlots(runtime.teamNumber())[id];
+			AIEngine::UnitObservation worker=runtime.observation().unitSlots(runtime.teamNumber())[id];
 			if(!worker||!AIEngine::ObservationQueries::matchesStrategyUnitRole(runtime.observation(),*worker,WORKER)
-			   ||int(worker->performance[SWIM]>0)!=swimming)continue;
-			const int index=(*map).normalizeY(worker->posY)*w+(*map).normalizeX(worker->posX);
+			   ||int(worker->performance(SWIM)>0)!=swimming)continue;
+			const int index=(*map).normalizeY(worker->core.posY)*w+(*map).normalizeX(worker->core.posX);
 			if(!visited[index]){visited[index]=1;queue.push_back(index);}
 		}
 		field::traverse(queue,{w,h},field::Surrounding,

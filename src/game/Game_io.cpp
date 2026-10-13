@@ -236,7 +236,7 @@ GAGCore::CooperativeTask Game::loadTask(GAGCore::InputStream *stream)
 			if (const Building *b = teams[i]->myBuildings[slot]; b && !isBuildingTypeAvailable(b->typeNum)) co_return false;
         if (versionMinor >= FILE_FORMAT_VERSION_UNIT_CATALOG)
             for (int slot = 0; slot < Unit::MAX_COUNT; ++slot)
-                if (const Unit *unit = teams[i]->myUnits[slot]; unit && !isUnitTypeAvailable(unit->typeNum))
+                if (const Unit *unit = teams[i]->myUnits[slot]; unit && !isUnitTypeAvailable(unit->core.typeNum))
                     co_return false;
 		stream->readLeaveSection();
 	}
@@ -257,10 +257,10 @@ GAGCore::CooperativeTask Game::loadTask(GAGCore::InputStream *stream)
             for (int slot = 0; slot < Unit::MAX_COUNT; ++slot)
                 if (auto *unit = teams[team]->myUnits[slot])
                 {
-                    const auto &traits = teams[team]->race.getRuntime(unit->typeNum);
-                    unit->capabilityFlags = traits.flags;
-                    unit->configuredFoodCapacity = traits.foodCapacity;
-                    unit->configuredVisionRadius = Uint8(traits.visionRadius);
+                    const auto &traits = teams[team]->race.getRuntime(unit->core.typeNum);
+                    unit->core.capabilityFlags = traits.flags;
+                    unit->detail.configuredFoodCapacity = traits.foodCapacity;
+                    unit->detail.configuredVisionRadius = Uint8(traits.visionRadius);
                 }
         }
         configureBuildingCatalog();
@@ -455,7 +455,7 @@ GAGCore::CooperativeTask Game::loadTask(GAGCore::InputStream *stream)
 			{
 				const auto *unit = teams[t]->myUnits[slot];
 				const auto *building = teams[t]->myBuildings[slot];
-				if (unit && (!unit->scriptIdentity || unit->scriptIdentity !=
+				if (unit && (!unit->core.scriptIdentity || unit->core.scriptIdentity !=
 					scriptGenerations[scriptGenerationIndex(false, t, slot)]))
 					throw std::runtime_error("Invalid unit script identity");
 				if (building && (!building->scriptIdentity || building->scriptIdentity !=
@@ -610,9 +610,9 @@ bool Game::integrity(void)
 				// A unit on its final step into a building (DIS_ENTERING_BUILDING)
 				// already has the building's position but stays registered on the
 				// cell it came from until it is inside (see UnitDisplacement.cpp).
-				const bool entering = unit->displacement == Unit::DIS_ENTERING_BUILDING;
-				const int expectedX = entering ? ((unit->posX - unit->dx) & map.wMask) : unit->posX;
-				const int expectedY = entering ? ((unit->posY - unit->dy) & map.hMask) : unit->posY;
+				const bool entering = unit->core.displacement == Unit::DIS_ENTERING_BUILDING;
+				const int expectedX = entering ? ((unit->core.posX - unit->core.dx) & map.wMask) : unit->core.posX;
+				const int expectedY = entering ? ((unit->core.posY - unit->core.dy) & map.hMask) : unit->core.posY;
 				checkInvariant(expectedX == x);
 				checkInvariant(expectedY == y);
 			}

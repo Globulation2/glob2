@@ -243,7 +243,7 @@ TEST_CASE("retained format126 Maxima save preserves identities and subsequent AI
         for (int slot = 0; slot < Game::SCRIPT_ENTITY_SLOTS_PER_TEAM; ++slot)
         {
             if (auto *unit = legacy.game.teams[t]->myUnits[slot])
-                CHECK(unit->scriptIdentity == legacy.game.scriptGenerations[Game::scriptGenerationIndex(false, t, slot)]);
+                CHECK(unit->core.scriptIdentity == legacy.game.scriptGenerations[Game::scriptGenerationIndex(false, t, slot)]);
             if (auto *building = legacy.game.teams[t]->myBuildings[slot])
                 CHECK(building->scriptIdentity == legacy.game.scriptGenerations[Game::scriptGenerationIndex(true, t, slot)]);
         }

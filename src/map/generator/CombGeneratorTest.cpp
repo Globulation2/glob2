@@ -240,8 +240,8 @@ void firing(const std::filesystem::path &output, bool buildingTarget)
 	{
 		worker = game.addUnit(target % 256, target / 256, 1, WORKER, 1, 0, 0, 0);
 		require(worker != nullptr, "target worker placed");
-		worker->speed = 1;
-		worker->delta = 0;
+		worker->core.speed = 1;
+		worker->core.delta = 0;
 	}
 	game.teams[0]->allies &= ~game.teams[1]->me;
 	game.teams[0]->enemies |= game.teams[1]->me;
@@ -261,14 +261,14 @@ void firing(const std::filesystem::path &output, bool buildingTarget)
 	require(file, "scenario artifact opens");
 	GAGCore::BinaryOutputStream disk(new GAGCore::FileStreamBackend(file));
 	game.save(&disk, false, "Comb cross-channel firing");
-	const int before = buildingTarget ? enemyTower->hp : worker->hp;
+	const int before = buildingTarget ? enemyTower->hp : worker->core.hp;
 	// This fixture drives a running match directly, without a network wait phase.
 	game.anyPlayerWaited = false;
 	const auto beforeStep = game.stepCounter;
 	for (int tick = 0; tick < 32; ++tick)
 		game.syncStep(0);
 	require(game.stepCounter == beforeStep + 32, "controlled combat simulation advances");
-	require((buildingTarget ? enemyTower->hp : worker->hp) < before,
+	require((buildingTarget ? enemyTower->hp : worker->core.hp) < before,
 			"cross-channel projectile damages target");
 	if (buildingTarget)
 	{

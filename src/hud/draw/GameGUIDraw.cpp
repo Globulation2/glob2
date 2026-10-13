@@ -457,12 +457,12 @@ void GameGUI::drawOverlayInfos(void)
 					if (!unit || unit->identity!=worker)
 						continue;
 					int px, py;
-					sceneMap.mapCaseToDisplayable(unit->posX, unit->posY, &px, &py, viewportX, viewportY);
+					sceneMap.mapCaseToDisplayable(unit->core.posX, unit->core.posY, &px, &py, viewportX, viewportY);
 					int deltaLeft=255-drawnUnitDelta(*unit, view.render.unitMotion);
-					if (unit->action<BUILD)
+					if (unit->core.action<BUILD)
 					{
-						px-=(unit->dx*deltaLeft)>>3;
-						py-=(unit->dy*deltaLeft)>>3;
+						px-=(unit->core.dx*deltaLeft)>>3;
+						py-=(unit->core.dy*deltaLeft)>>3;
 					}
 					forEachMapCopy(px, py, px+32, py+32, drawnScene().map.getW()*32, drawnScene().map.getH()*32,
 						drawnScene().map.viewportWidth(), drawnScene().map.viewportHeight(), [&](int dx, int dy) {

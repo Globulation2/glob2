@@ -33,9 +33,14 @@ struct SceneBuildingPanel
 };
 struct SceneUnitPanel
 {
-    const SnapshotUnit* record = nullptr;
+    std::optional<SimulationSnapshot::UnitView> record;
     bool valid = false;
-    const SnapshotUnit& state() const { static const SnapshotUnit empty{}; return record ? *record : empty; }
+    const SimulationSnapshot::UnitView& state() const {
+        static const SimulationSnapshot::UnitCoreView core{};
+        static const UnitDetailState detail{};
+        static const SimulationSnapshot::UnitView empty(core,detail);
+        return record ? *record : empty;
+    }
     const SimulationSnapshot::TeamView* ownerRecord = nullptr;
     const SimulationSnapshot::TeamView& owner() const { static const SimulationSnapshot::TeamView empty{}; return ownerRecord ? *ownerRecord : empty; }
     std::span<const UnitType> unitTypes;

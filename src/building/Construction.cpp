@@ -158,10 +158,10 @@ void Building::computeWishedMaterials(int needs[MaterialSlotCount])
 		needs[ri]=(WISHED_MATERIAL_NUM*deliveries)/WISHED_MATERIAL_DEN;
 	}
 	for (std::list<Unit *>::iterator ui = unitsWorking.begin(); ui != unitsWorking.end(); ++ui)
-		if ((*ui)->destinationPurpose >= 0)
+		if ((*ui)->core.destinationPurpose >= 0)
 		{
-			assert((*ui)->destinationPurpose < MaterialSlotCount);
-			needs[(*ui)->destinationPurpose]--;
+			assert((*ui)->core.destinationPurpose < MaterialSlotCount);
+			needs[(*ui)->core.destinationPurpose]--;
 		}
 }
 
@@ -228,7 +228,7 @@ bool Building::launchConstruction(Sint32 unitWorking, Sint32 unitWorkingFuture)
 		{
 			Unit *u=*it;
 			assert(u);
-			int d=u->displacement;
+			int d=u->core.displacement;
 			if ((d!=Unit::DIS_INSIDE)&&(d!=Unit::DIS_ENTERING_BUILDING)&&(d!=Unit::DIS_EXITING_BUILDING))
 			{
 				u->standardRandomActivity();

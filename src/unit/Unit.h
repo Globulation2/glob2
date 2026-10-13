@@ -52,9 +52,9 @@ public:
 	///to being subscribed for work, inside is set to true.
 	void subscriptionSuccess(Building* building, bool inside, bool attraction = false,
 		UnitJobPurpose purpose = UnitJobPurpose::None);
-	bool hasCapability(UnitRuntimeTraits::Flag flag) const { return (capabilityFlags & flag)!=0; }
+	bool hasCapability(UnitRuntimeTraits::Flag flag) const { return (core.capabilityFlags & flag)!=0; }
 	const UnitRuntimeTraits& runtimeTraits() const;
-	int foodCapacity() const { return configuredFoodCapacity; }
+	int foodCapacity() const { return detail.configuredFoodCapacity; }
 	void refreshEffectiveAbilities();
 	void rebindDefinitionForSetup();
 	int foodStepsLeft(int threshold = 0) const;
@@ -147,7 +147,7 @@ protected:
 	void tryAcquireAttackTarget(int x, int y, int newQuality, int& quality);
 	void handleAction(void);
 	// handleAction() helpers — collapse the repeated clear-slot/wrap-move/claim-slot
-	// pattern. Air vs ground is selected by performance[FLY], matching the existing
+	// pattern. Air vs ground is selected by performance(FLY), matching the existing
 	// asserts in cases that hardcode one or the other.
 	void wrapPosition();
 	void clearOccupiedMapSlot();
@@ -190,7 +190,7 @@ public:
 	//! Pathfinding swim class from the unit's walk and swim speeds (see Map::swimClass).
 	int swimClass() const;
 	//! Construction eligibility is independent of work/harvest speed.
-	Sint32 workerLevel() const { return constructionLevel; }
+	Sint32 workerLevel() const { return core.constructionLevel; }
 	bool needsTraining(const BuildingTrainingSpec& training, int ability) const;
 	// Single developer/test grants reject loss of the last movement clock.
 	bool applyTraining(const BuildingTrainingSpec& training, int ability);

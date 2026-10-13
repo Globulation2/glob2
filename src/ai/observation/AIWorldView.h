@@ -11,6 +11,7 @@ namespace AIEngine
 {
 using SimulationSnapshot::BuildingView;
 using SimulationSnapshot::UnitView;
+using UnitObservation=std::optional<UnitView>;
 using SimulationSnapshot::TeamView;
 using SimulationSnapshot::BuildingKindView;
 using SimulationSnapshot::TileView;
@@ -128,11 +129,11 @@ public:
         const unsigned extra=type-BuiltinUnitCount;
         return extra<b.extraProductionCount ? lease.entities->extraProduction[b.extraProductionOffset+extra].constructionOriginRatio : 0;
     }
-    const UnitCargoStore::Inventory* extraCargo(const UnitView& u) const { return lease.entities->unitCargo.find(u.gid); }
+    const UnitCargoStore::Inventory* extraCargo(const UnitView& u) const { return lease.unitDetails->unitCargo.find(u.core.gid); }
 	const UnitType& unitType(int type, int level) const { return (*observedUnitTypes)[type][level]; }
 	std::span<const TeamView> teams;
 	std::span<const BuildingView> buildings;
-	std::span<const UnitView> units;
+	SimulationSnapshot::UnitViews units;
 	std::span<const BuildProjectView> buildProjects;
 	class Tiles
 	{
@@ -156,19 +157,46 @@ public:
 	std::span<const UnitRef> occupants(const BuildingView& building) const
 	{ return std::span<const UnitRef>(lease.entities->relationships).subspan(building.inside.offset, building.inside.count); }
 	const BuildingView* building(BuildingRef identity) const;
-	const UnitView* unit(UnitRef identity) const;
+	UnitObservation unit(UnitRef identity) const;
 	const BuildingView* buildingAtSlot(Uint16 gid) const;
-	const UnitView* unitAtSlot(Uint16 gid) const;
+	UnitObservation unitAtSlot(Uint16 gid) const;
 	EntitySlots<BuildingView> buildingSlots(int team) const
 	{
 		if (!lease.entities || team < 0 || std::size_t(team) >= lease.entities->buildingSlotIndices.size() / BuildingUtils::MAX_COUNT) return {};
 		return {buildings, std::span<const Uint32>(lease.entities->buildingSlotIndices).subspan(std::size_t(team) * BuildingUtils::MAX_COUNT, BuildingUtils::MAX_COUNT)};
 	}
-	EntitySlots<UnitView> unitSlots(int team) const
-	{
-		if (!lease.entities || team < 0 || std::size_t(team) >= lease.entities->unitSlotIndices.size() / UnitUtils::MAX_COUNT) return {};
-		return {units, std::span<const Uint32>(lease.entities->unitSlotIndices).subspan(std::size_t(team) * UnitUtils::MAX_COUNT, UnitUtils::MAX_COUNT)};
-	}
+    struct UnitSlots {
+        SimulationSnapshot::UnitViews records;
+        std::span<const Uint32> indices;
+        std::size_t size() const { return indices.size(); }
+        UnitObservation operator[](std::size_t slot) const {
+            const auto index=indices[slot];
+            return index==SimulationSnapshot::Entities::NoRecord ? std::nullopt : UnitObservation(records[index]);
+        }
+        struct Iterator {
+            const UnitSlots* owner; std::size_t index;
+            UnitObservation operator*() const { return (*owner)[index]; }
+            Iterator& operator++() { ++index;return *this; }
+            bool operator==(const Iterator&) const = default;
+        };
+        Iterator begin() const { return {this,0}; }
+        Iterator end() const { return {this,size()}; }
+    };
+    UnitSlots unitSlots(int team) const {
+        if(!lease.unitCores || !lease.unitDetails || team<0 || std::size_t(team)>=lease.unitCores->unitSlotIndices.size()/UnitUtils::MAX_COUNT)return {};
+        return {units,std::span<const Uint32>(lease.unitCores->unitSlotIndices).subspan(std::size_t(team)*UnitUtils::MAX_COUNT,UnitUtils::MAX_COUNT)};
+    }
+    std::span<const SimulationSnapshot::UnitCoreView> unitCores;
+    EntitySlots<SimulationSnapshot::UnitCoreView> coreUnitSlots(int team) const {
+        if(!lease.unitCores || team<0 || std::size_t(team)>=lease.unitCores->unitSlotIndices.size()/UnitUtils::MAX_COUNT)return {};
+        return {unitCores,std::span<const Uint32>(lease.unitCores->unitSlotIndices).subspan(std::size_t(team)*UnitUtils::MAX_COUNT,UnitUtils::MAX_COUNT)};
+    }
+    const SimulationSnapshot::UnitCoreView* coreUnit(UnitRef identity) const {
+        if(!lease.unitCores || identity.gid>=lease.unitCores->unitSlotIndices.size())return nullptr;
+        const auto index=lease.unitCores->unitSlotIndices[identity.gid];
+        if(index==SimulationSnapshot::Entities::NoRecord)return nullptr;
+        const auto& value=unitCores[index];return value.identity==identity ? &value : nullptr;
+    }
 	TileView tile(int x, int y) const;
 	std::size_t tileIndex(int x, int y) const
 	{

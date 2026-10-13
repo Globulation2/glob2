@@ -13,139 +13,139 @@
 
 void Unit::setNewValidDirectionGround(void)
 {
-	assert(!performance[FLY]);
+	assert(!performance(FLY));
 	int i=0;
-	bool swim=(performance[SWIM]>0);
+	bool swim=(performance(SWIM)>0);
 	Uint32 me=owner->me;
-	while ( i<8 && ((!performance[WALK] && !owner->map->terrainPropertiesAt(posX+dx,posY+dy).swimmable) || !owner->map->isFreeForGroundUnit(posX+dx, posY+dy, swim, me)))
+	while ( i<8 && ((!performance(WALK) && !owner->map->terrainPropertiesAt(core.posX+core.dx,core.posY+core.dy).swimmable) || !owner->map->isFreeForGroundUnit(core.posX+core.dx, core.posY+core.dy, swim, me)))
 	{
-		direction=(direction+1)&UNIT_DIRECTION_MASK;
+		core.direction=(core.direction+1)&UNIT_DIRECTION_MASK;
 		dxDyFromDirection();
 		i++;
 	}
 	if (i==UNIT_DIRECTION_COUNT)
 	{
-		direction=UNIT_DIRECTION_NONE;
+		core.direction=UNIT_DIRECTION_NONE;
 		dxDyFromDirection();
 	}
 }
 
 void Unit::setNewValidDirectionAir(void)
 {
-	assert(performance[FLY]);
+	assert(performance(FLY));
 	int i=0;
-	while ( i<8 && !owner->map->isFreeForAirUnit(posX+dx, posY+dy))
+	while ( i<8 && !owner->map->isFreeForAirUnit(core.posX+core.dx, core.posY+core.dy))
 	{
-		direction=(direction+1)&UNIT_DIRECTION_MASK;
+		core.direction=(core.direction+1)&UNIT_DIRECTION_MASK;
 		dxDyFromDirection();
 		i++;
 	}
 	if (i==UNIT_DIRECTION_COUNT)
 	{
-		direction=UNIT_DIRECTION_NONE;
-		dx=0;
-		dy=0;
+		core.direction=UNIT_DIRECTION_NONE;
+		core.dx=0;
+		core.dy=0;
 	}
 }
 
 void Unit::flyToTarget()
 {
-	assert(performance[FLY]);
+	assert(performance(FLY));
     if (owner->map->hasAirTerrainConstraints())
     {
-        dx = dy = 0;
-        owner->map->pathfindAirPointToPoint(posX,posY,targetX,targetY,&dx,&dy);
+        core.dx = core.dy = 0;
+        owner->map->pathfindAirPointToPoint(core.posX,core.posY,core.targetX,core.targetY,&core.dx,&core.dy);
         directionFromDxDy();
         return;
     }
-	int ldx=targetX-posX;
-	int ldy=targetY-posY;
-	simplifyDirection(ldx, ldy, &dx, &dy);
+	int ldx=core.targetX-core.posX;
+	int ldy=core.targetY-core.posY;
+	simplifyDirection(ldx, ldy, &core.dx, &core.dy);
 	directionFromDxDy();
 	Map *map=owner->map;
-	if (map->isFreeForAirUnit(posX+dx, posY+dy))
+	if (map->isFreeForAirUnit(core.posX+core.dx, core.posY+core.dy))
 		return;
-	int cDirection=direction;
-	direction=(cDirection+1)&UNIT_DIRECTION_MASK;
+	int cDirection=core.direction;
+	core.direction=(cDirection+1)&UNIT_DIRECTION_MASK;
 	dxDyFromDirection();
-	if (map->isFreeForAirUnit(posX+dx, posY+dy))
+	if (map->isFreeForAirUnit(core.posX+core.dx, core.posY+core.dy))
 		return;
-	direction=(cDirection+7)&UNIT_DIRECTION_MASK;
+	core.direction=(cDirection+7)&UNIT_DIRECTION_MASK;
 	dxDyFromDirection();
-	if (map->isFreeForAirUnit(posX+dx, posY+dy))
+	if (map->isFreeForAirUnit(core.posX+core.dx, core.posY+core.dy))
 		return;
-	direction=(cDirection+2)&UNIT_DIRECTION_MASK;
+	core.direction=(cDirection+2)&UNIT_DIRECTION_MASK;
 	dxDyFromDirection();
-	if (map->isFreeForAirUnit(posX+dx, posY+dy))
+	if (map->isFreeForAirUnit(core.posX+core.dx, core.posY+core.dy))
 		return;
-	direction=(cDirection+6)&UNIT_DIRECTION_MASK;
+	core.direction=(cDirection+6)&UNIT_DIRECTION_MASK;
 	dxDyFromDirection();
-	if (map->isFreeForAirUnit(posX+dx, posY+dy))
+	if (map->isFreeForAirUnit(core.posX+core.dx, core.posY+core.dy))
 		return;
-	direction=(cDirection+3)&UNIT_DIRECTION_MASK;
+	core.direction=(cDirection+3)&UNIT_DIRECTION_MASK;
 	dxDyFromDirection();
-	if (map->isFreeForAirUnit(posX+dx, posY+dy))
+	if (map->isFreeForAirUnit(core.posX+core.dx, core.posY+core.dy))
 		return;
-	direction=(cDirection+5)&UNIT_DIRECTION_MASK;
+	core.direction=(cDirection+5)&UNIT_DIRECTION_MASK;
 	dxDyFromDirection();
-	if (map->isFreeForAirUnit(posX+dx, posY+dy))
+	if (map->isFreeForAirUnit(core.posX+core.dx, core.posY+core.dy))
 		return;
-	direction=(cDirection+4)&UNIT_DIRECTION_MASK;
+	core.direction=(cDirection+4)&UNIT_DIRECTION_MASK;
 	dxDyFromDirection();
-	if (map->isFreeForAirUnit(posX+dx, posY+dy))
+	if (map->isFreeForAirUnit(core.posX+core.dx, core.posY+core.dy))
 		return;
-	dx=0;
-	dy=0;
-	direction=UNIT_DIRECTION_NONE;
+	core.dx=0;
+	core.dy=0;
+	core.direction=UNIT_DIRECTION_NONE;
 	if (verbose)
-		printf("guid=(%d) flyto failed pos=(%d, %d) \n", gid, posX, posY);
+		printf("guid=(%d) flyto failed pos=(%d, %d) \n", core.gid, core.posX, core.posY);
 }
 
 
 void Unit::escapeGroundTarget()
 {
-	int ldx=posX-targetX;
-	int ldy=posY-targetY;
-	simplifyDirection(ldx, ldy, &dx, &dy);
+	int ldx=core.posX-core.targetX;
+	int ldy=core.posY-core.targetY;
+	simplifyDirection(ldx, ldy, &core.dx, &core.dy);
 	directionFromDxDy();
-	bool canSwim=performance[SWIM];
+	bool canSwim=performance(SWIM);
 	Map *map=owner->map;
-	if ((performance[WALK] || map->terrainPropertiesAt(posX+dx,posY+dy).swimmable) && map->isFreeForGroundUnitNoForbidden(posX+dx, posY+dy, canSwim))
+	if ((performance(WALK) || map->terrainPropertiesAt(core.posX+core.dx,core.posY+core.dy).swimmable) && map->isFreeForGroundUnitNoForbidden(core.posX+core.dx, core.posY+core.dy, canSwim))
 		return;
-	int cDirection=direction;
-	direction=(cDirection+1)&UNIT_DIRECTION_MASK;
+	int cDirection=core.direction;
+	core.direction=(cDirection+1)&UNIT_DIRECTION_MASK;
 	dxDyFromDirection();
-	if ((performance[WALK] || map->terrainPropertiesAt(posX+dx,posY+dy).swimmable) && map->isFreeForGroundUnitNoForbidden(posX+dx, posY+dy, canSwim))
+	if ((performance(WALK) || map->terrainPropertiesAt(core.posX+core.dx,core.posY+core.dy).swimmable) && map->isFreeForGroundUnitNoForbidden(core.posX+core.dx, core.posY+core.dy, canSwim))
 		return;
-	direction=(cDirection+7)&UNIT_DIRECTION_MASK;
+	core.direction=(cDirection+7)&UNIT_DIRECTION_MASK;
 	dxDyFromDirection();
-	if ((performance[WALK] || map->terrainPropertiesAt(posX+dx,posY+dy).swimmable) && map->isFreeForGroundUnitNoForbidden(posX+dx, posY+dy, canSwim))
+	if ((performance(WALK) || map->terrainPropertiesAt(core.posX+core.dx,core.posY+core.dy).swimmable) && map->isFreeForGroundUnitNoForbidden(core.posX+core.dx, core.posY+core.dy, canSwim))
 		return;
-	direction=(cDirection+2)&UNIT_DIRECTION_MASK;
+	core.direction=(cDirection+2)&UNIT_DIRECTION_MASK;
 	dxDyFromDirection();
-	if ((performance[WALK] || map->terrainPropertiesAt(posX+dx,posY+dy).swimmable) && map->isFreeForGroundUnitNoForbidden(posX+dx, posY+dy, canSwim))
+	if ((performance(WALK) || map->terrainPropertiesAt(core.posX+core.dx,core.posY+core.dy).swimmable) && map->isFreeForGroundUnitNoForbidden(core.posX+core.dx, core.posY+core.dy, canSwim))
 		return;
-	direction=(cDirection+6)&UNIT_DIRECTION_MASK;
+	core.direction=(cDirection+6)&UNIT_DIRECTION_MASK;
 	dxDyFromDirection();
-	if ((performance[WALK] || map->terrainPropertiesAt(posX+dx,posY+dy).swimmable) && map->isFreeForGroundUnitNoForbidden(posX+dx, posY+dy, canSwim))
+	if ((performance(WALK) || map->terrainPropertiesAt(core.posX+core.dx,core.posY+core.dy).swimmable) && map->isFreeForGroundUnitNoForbidden(core.posX+core.dx, core.posY+core.dy, canSwim))
 		return;
-	direction=(cDirection+3)&UNIT_DIRECTION_MASK;
+	core.direction=(cDirection+3)&UNIT_DIRECTION_MASK;
 	dxDyFromDirection();
-	if ((performance[WALK] || map->terrainPropertiesAt(posX+dx,posY+dy).swimmable) && map->isFreeForGroundUnitNoForbidden(posX+dx, posY+dy, canSwim))
+	if ((performance(WALK) || map->terrainPropertiesAt(core.posX+core.dx,core.posY+core.dy).swimmable) && map->isFreeForGroundUnitNoForbidden(core.posX+core.dx, core.posY+core.dy, canSwim))
 		return;
-	direction=(cDirection+5)&UNIT_DIRECTION_MASK;
+	core.direction=(cDirection+5)&UNIT_DIRECTION_MASK;
 	dxDyFromDirection();
-	if ((performance[WALK] || map->terrainPropertiesAt(posX+dx,posY+dy).swimmable) && map->isFreeForGroundUnitNoForbidden(posX+dx, posY+dy, canSwim))
+	if ((performance(WALK) || map->terrainPropertiesAt(core.posX+core.dx,core.posY+core.dy).swimmable) && map->isFreeForGroundUnitNoForbidden(core.posX+core.dx, core.posY+core.dy, canSwim))
 		return;
-	direction=(cDirection+4)&UNIT_DIRECTION_MASK;
+	core.direction=(cDirection+4)&UNIT_DIRECTION_MASK;
 	dxDyFromDirection();
-	if ((performance[WALK] || map->terrainPropertiesAt(posX+dx,posY+dy).swimmable) && map->isFreeForGroundUnitNoForbidden(posX+dx, posY+dy, canSwim))
+	if ((performance(WALK) || map->terrainPropertiesAt(core.posX+core.dx,core.posY+core.dy).swimmable) && map->isFreeForGroundUnitNoForbidden(core.posX+core.dx, core.posY+core.dy, canSwim))
 		return;
-	dx=0;
-	dy=0;
-	direction=UNIT_DIRECTION_NONE;
+	core.dx=0;
+	core.dy=0;
+	core.direction=UNIT_DIRECTION_NONE;
 	if (verbose)
-		printf("guid=(%d) escapeGroundTarget failed pos=(%d, %d) \n", gid, posX, posY);
+		printf("guid=(%d) escapeGroundTarget failed pos=(%d, %d) \n", core.gid, core.posX, core.posY);
 }
 
 void Unit::endOfAction(void)
@@ -153,7 +153,7 @@ void Unit::endOfAction(void)
 auto* diagnostic = owner->game->movementDiagnostics();
     if (!diagnostic) {
         handleMedical();
-        if (isDead) return;
+        if (core.isDead) return;
         handleActivity(); handleDisplacement(); handleMovement(); handleAction();
         return;
     }
@@ -163,7 +163,7 @@ auto* diagnostic = owner->game->movementDiagnostics();
     {
         MovementPlanning::PhaseScope phase(MovementPlanning::Phase::Transitions);
         handleMedical();
-        if (isDead) return;
+        if (core.isDead) return;
         handleActivity();
     }
     { MovementPlanning::PhaseScope phase(MovementPlanning::Phase::Displacement); handleDisplacement(); }
@@ -179,21 +179,21 @@ void Unit::directionFromDxDy(void)
 	const int tab[3][3]={	{0, 1, 2},
 							{7, 8, 3},
 							{6, 5, 4} };
-	assert(dx>=-1);
-	assert(dx<=1);
-	assert(dy>=-1);
-	assert(dy<=1);
-	direction=tab[dy+1][dx+1];
+	assert(core.dx>=-1);
+	assert(core.dx<=1);
+	assert(core.dy>=-1);
+	assert(core.dy<=1);
+	core.direction=tab[core.dy+1][core.dx+1];
 }
 
 void Unit::dxDyFromDirection(void)
 {
-	dxDyFromDirection(direction,&dx,&dy);
+	dxDyFromDirection(core.direction,&core.dx,&core.dy);
 }
 
 int Unit::swimClass() const
 {
-	return Map::swimClass(performance[WALK], performance[SWIM]);
+	return Map::swimClass(performance(WALK), performance(SWIM));
 }
 
 int Unit::directionFromDxDy(int dx, int dy)

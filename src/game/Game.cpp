@@ -86,9 +86,9 @@ void Game::configureUnitCatalog()
     // occupied cell. Locate that cell before moving between occupancy planes.
     auto occupiedCell=[&](const Unit& unit, bool flight) {
         auto occupied=[&](int x,int y) { return flight?map.getAirUnit(x,y):map.getGroundUnit(x,y); };
-        if (occupied(unit.posX,unit.posY)==unit.gid) return std::pair(unit.posX,unit.posY);
-        const int x=(unit.posX-unit.dx)&map.wMask, y=(unit.posY-unit.dy)&map.hMask;
-        if (occupied(x,y)==unit.gid) return std::pair(x,y);
+        if (occupied(unit.core.posX,unit.core.posY)==unit.core.gid) return std::pair(unit.core.posX,unit.core.posY);
+        const int x=(unit.core.posX-unit.core.dx)&map.wMask, y=(unit.core.posY-unit.core.dy)&map.hMask;
+        if (occupied(x,y)==unit.core.gid) return std::pair(x,y);
         throw std::runtime_error("Live unit has no matching map occupancy during catalog setup");
     };
     // Setup may replace definitions for units already present in a map. Check
@@ -97,40 +97,40 @@ void Game::configureUnitCatalog()
         for (int slot=0;slot<Unit::MAX_COUNT;++slot) {
             Unit* unit=team->myUnits[slot];
             if (!unit) continue;
-            if (!catalog.valid(unit->typeNum)) throw std::runtime_error("Unit catalog removes a live unit definition");
-            if (!availability[unit->typeNum])
+            if (!catalog.valid(unit->core.typeNum)) throw std::runtime_error("Unit catalog removes a live unit definition");
+            if (!availability[unit->core.typeNum])
                 throw std::runtime_error("Unit experiment disables a live unit definition");
             if (team->race.getCatalog()==gameHeader.getUnitCatalog()) continue;
-            const auto& traits=catalog.runtime(unit->typeNum);
-            const auto& oldTraits=team->race.getRuntime(unit->typeNum);
-            if (unit->activity==Unit::ACT_UPGRADING && unit->destinationPurpose!=FEED && unit->destinationPurpose!=HEAL &&
-                unit->displacement!=Unit::DIS_GOING_TO_BUILDING &&
+            const auto& traits=catalog.runtime(unit->core.typeNum);
+            const auto& oldTraits=team->race.getRuntime(unit->core.typeNum);
+            if (unit->core.activity==Unit::ACT_UPGRADING && unit->core.destinationPurpose!=FEED && unit->core.destinationPurpose!=HEAL &&
+                unit->core.displacement!=Unit::DIS_GOING_TO_BUILDING &&
                 (oldTraits.learnableMask!=traits.learnableMask ||
                  oldTraits.has(UnitRuntimeTraits::LearnConstruction)!=traits.has(UnitRuntimeTraits::LearnConstruction)))
                 throw std::runtime_error("Unit catalog cannot change training eligibility during a reserved interior service");
             if (unit->carriedPacketCount()>traits.cargoCapacity)
                 throw std::runtime_error("Unit catalog capacity is smaller than a live inventory");
-            Uint32 cargoKinds=unit->carriedMaterial>=0 ? Uint32(1)<<unit->carriedMaterial : 0;
-            if (const auto* extra=unitCargo.find(unit->gid))
+            Uint32 cargoKinds=unit->core.carriedMaterial>=0 ? Uint32(1)<<unit->core.carriedMaterial : 0;
+            if (const auto* extra=unitCargo.find(unit->core.gid))
                 for (const auto& entry:*extra) cargoKinds|=Uint32(1)<<entry.material;
             if (std::popcount(cargoKinds)>traits.cargoKinds)
                 throw std::runtime_error("Unit catalog material-kind limit is smaller than a live inventory");
-            const bool oldFlight=unit->performance[FLY]!=0;
-            const bool newFlight=traits.has(UnitRuntimeTraits::Fly) && catalog.levels(unit->typeNum)[unit->level[FLY]].performance[FLY];
-            const bool swims=traits.has(UnitRuntimeTraits::Swim) && catalog.levels(unit->typeNum)[unit->level[SWIM]].performance[SWIM]>0;
-            const bool walks=traits.has(UnitRuntimeTraits::Walk) && catalog.levels(unit->typeNum)[unit->level[WALK]].performance[WALK]>0;
-            const bool inService=unit->displacement==Unit::DIS_ENTERING_BUILDING || unit->displacement==Unit::DIS_INSIDE ||
-                (unit->displacement==Unit::DIS_EXITING_BUILDING && unit->attachedBuilding);
-            if (!unit->isDead && inService && !newFlight && !swims && !walks)
+            const bool oldFlight=unit->performance(FLY)!=0;
+            const bool newFlight=traits.has(UnitRuntimeTraits::Fly) && catalog.levels(unit->core.typeNum)[unit->detail.level[FLY]].performance[FLY];
+            const bool swims=traits.has(UnitRuntimeTraits::Swim) && catalog.levels(unit->core.typeNum)[unit->detail.level[SWIM]].performance[SWIM]>0;
+            const bool walks=traits.has(UnitRuntimeTraits::Walk) && catalog.levels(unit->core.typeNum)[unit->detail.level[WALK]].performance[WALK]>0;
+            const bool inService=unit->core.displacement==Unit::DIS_ENTERING_BUILDING || unit->core.displacement==Unit::DIS_INSIDE ||
+                (unit->core.displacement==Unit::DIS_EXITING_BUILDING && unit->attachedBuilding);
+            if (!unit->core.isDead && inService && !newFlight && !swims && !walks)
                 throw std::runtime_error("Unit catalog cannot remove movement during an interior service");
-            if (!unit->isDead && unit->insideTimeout>=0 && unit->displacement!=Unit::DIS_INSIDE) {
+            if (!unit->core.isDead && unit->detail.insideTimeout>=0 && unit->core.displacement!=Unit::DIS_INSIDE) {
                 const auto [x,y]=occupiedCell(*unit,oldFlight);
                 const auto& terrain=map.terrainPropertiesAt(x,y);
                 if (newFlight ? (!terrain.flyable || map.resourceBlocksAir(map.coordToIndex(x,y))) :
                     !((terrain.walkable && (walks || !swims)) || (terrain.swimmable && swims)))
                     throw std::runtime_error("Unit catalog movement change conflicts with terrain");
                 const auto occupied=newFlight?map.getAirUnit(x,y):map.getGroundUnit(x,y);
-                if (oldFlight!=newFlight && occupied!=NOGUID && occupied!=unit->gid)
+                if (oldFlight!=newFlight && occupied!=NOGUID && occupied!=unit->core.gid)
                     throw std::runtime_error("Unit catalog flight change conflicts with map occupancy");
             }
         }
@@ -153,17 +153,17 @@ void Game::configureUnitCatalog()
         for (int slot=0;slot<Unit::MAX_COUNT;++slot) {
             Unit* unit=team->myUnits[slot];
             if (!unit) continue;
-            const bool oldFlight=unit->performance[FLY]!=0;
-            const auto& traits=catalog.runtime(unit->typeNum);
-            const bool expectedFlight=traits.has(UnitRuntimeTraits::Fly) && catalog.levels(unit->typeNum)[unit->level[FLY]].performance[FLY];
-            const auto cell=oldFlight!=expectedFlight && !unit->isDead && unit->insideTimeout>=0 && unit->displacement!=Unit::DIS_INSIDE ? occupiedCell(*unit,oldFlight) : std::pair(unit->posX,unit->posY);
+            const bool oldFlight=unit->performance(FLY)!=0;
+            const auto& traits=catalog.runtime(unit->core.typeNum);
+            const bool expectedFlight=traits.has(UnitRuntimeTraits::Fly) && catalog.levels(unit->core.typeNum)[unit->detail.level[FLY]].performance[FLY];
+            const auto cell=oldFlight!=expectedFlight && !unit->core.isDead && unit->detail.insideTimeout>=0 && unit->core.displacement!=Unit::DIS_INSIDE ? occupiedCell(*unit,oldFlight) : std::pair(unit->core.posX,unit->core.posY);
             unit->rebindDefinitionForSetup();
-            const bool newFlight=unit->performance[FLY]!=0;
-            if (oldFlight!=newFlight && !unit->isDead && unit->insideTimeout>=0 && unit->displacement!=Unit::DIS_INSIDE) {
+            const bool newFlight=unit->performance(FLY)!=0;
+            if (oldFlight!=newFlight && !unit->core.isDead && unit->detail.insideTimeout>=0 && unit->core.displacement!=Unit::DIS_INSIDE) {
                 if (oldFlight) map.setAirUnit(cell.first,cell.second,NOGUID);
                 else map.setGroundUnit(cell.first,cell.second,NOGUID);
-                if (newFlight) map.setAirUnit(cell.first,cell.second,unit->gid);
-                else map.setGroundUnit(cell.first,cell.second,unit->gid);
+                if (newFlight) map.setAirUnit(cell.first,cell.second,unit->core.gid);
+                else map.setGroundUnit(cell.first,cell.second,unit->core.gid);
             }
         }
     }
@@ -387,7 +387,7 @@ void Game::setGameHeader(const GameHeader& newGameHeader, bool saveAI)
 		{
 			for (int slot = 0; slot < Unit::MAX_COUNT; ++slot)
 				if (Unit* unit = teams[t]->myUnits[slot])
-					unit->entityRandom.initialize(newGameHeader.getRandomSeed(), EntityRandom::Kind::Unit, unit->gid, unit->scriptIdentity);
+					unit->detail.entityRandom.initialize(newGameHeader.getRandomSeed(), EntityRandom::Kind::Unit, unit->core.gid, unit->core.scriptIdentity);
 			for (int slot = 0; slot < Building::MAX_COUNT; ++slot)
 				if (Building* building = teams[t]->myBuildings[slot])
 					building->entityRandom.initialize(newGameHeader.getRandomSeed(), EntityRandom::Kind::Building, building->gid, building->scriptIdentity);
@@ -497,12 +497,12 @@ void Game::applyStartingRules(void)
 				continue;
 			if (hpDivisor != 1)
 			{
-				unit->performance[HP] = std::max(1, unit->performance[HP] / hpDivisor);
-				unit->hp = std::max(1, unit->hp / hpDivisor);
-				unit->trigHP /= hpDivisor;
+				unit->performance(HP) = std::max(1, unit->performance(HP) / hpDivisor);
+				unit->core.hp = std::max(1, unit->core.hp / hpDivisor);
+				unit->detail.trigHP /= hpDivisor;
 			}
 			if (fearless)
-				unit->trigHP = 0;
+				unit->detail.trigHP = 0;
 		}
 		if (buildingHpMultiplier != 1)
 			for (int i=0; i<Building::MAX_COUNT; ++i)
@@ -581,8 +581,8 @@ UnitRef Game::refOf(const Unit *u)
 	UnitRef ref;
 	if (u)
 	{
-		ref.gid = u->gid;
-		ref.generation = u->scriptIdentity;
+		ref.gid = u->core.gid;
+		ref.generation = u->core.scriptIdentity;
 	}
 	return ref;
 }
@@ -608,7 +608,7 @@ Unit *Game::resolveUnit(UnitRef ref) const
 	if (team < 0 || team >= Team::MAX_COUNT || !teams[team] || id < 0 || id >= Unit::MAX_COUNT)
 		return nullptr;
 	Unit *u = teams[team]->myUnits[id];
-	return (u && u->scriptIdentity == ref.generation) ? u : nullptr;
+	return (u && u->core.scriptIdentity == ref.generation) ? u : nullptr;
 }
 
 void Game::publishClientEvent(ClientEventVariant event)

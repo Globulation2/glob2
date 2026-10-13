@@ -364,6 +364,15 @@ CPU alongside them. `active_ns` is worker or serial planner elapsed work;
 `deadline_wait_ns` and capture costs can overlap it. Profiling is diagnostic work
 and must be excluded from final uninstrumented performance repetitions.
 
+Movement planning and guard crowding lease compact unit cores; market gradients
+lease building entities without triggering unit capture. Rendering shares the
+same cores, adding unit details for selected panels, editor inspection and
+starvation overlays. Full AI observations join the core/detail arrays. Measure
+each request alone and in combination: shared capture changes marginal cost, and
+an AI or panel already requesting details changes the reference workload.
+The unit state-copy and record-payload counters distinguish copied authoritative
+bytes from populated metadata and retained buffer capacity.
+
 Owner request/output storage, private cache/workspace peaks and pooled snapshot
 retention are reported separately. Snapshot payloads are shared with other
 consumers: compare paired reference/shadow retention rather than adding all

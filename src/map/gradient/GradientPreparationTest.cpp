@@ -1540,3 +1540,55 @@ TEST_CASE("movement profile rejection rolls back previously appended swim classe
 		}
 	}
 }
+
+TEST_CASE("compact guard and building-only market requests match scalar gradients through depletion" * doctest::test_suite("GradientPreparation"))
+{
+    using namespace SimulationSnapshot;
+    using namespace gradient_preparation;
+    glob2test::HeadlessGlobals globals;
+    glob2test::HeadlessGame world({.wDec=5,.hDec=5,.teams=2,.discovered=true,.clearImmobile=true,.loadDefaultRace=true,.header=true});
+    auto& game=world.game;auto& map=game.map;
+    game.gameHeader.getExperiments().set(ExperimentId::MarketsV2,true);
+    game.gameHeader.getExperiments().set(ExperimentId::GuardAreaBalancing,true);
+    game.configureBuildingCatalog();
+    auto* warrior=world.addUnit(WARRIOR,12,12);REQUIRE(warrior);
+    auto* ally=world.addUnit(WARRIOR,14,12);REQUIRE(ally);
+    auto* foreign=world.addUnit(WARRIOR,16,12,1);REQUIRE(foreign);
+    auto* supplier=world.addBuilding("market",4,4);REQUIRE(supplier);
+    const int food=materialIndex(MaterialId::Food);
+    for(int x=10;x<19;++x)for(int y=10;y<16;++y)map.areaCells[map.coordToIndex(x,y)].guard=1;
+    REQUIRE(map.incResource(24,24,static_cast<ResourceId>(WHEAT),0));
+    Request guard{.kind=Kind::Guard,.team=0,.allies=game.teams[0]->allies,.crowding=true};
+    Request market{.kind=Kind::Markets,.team=0,.material=food};
+    Store store;
+    for(int phase=0;phase<4;++phase) {
+        CAPTURE(phase);
+        supplier->materials[food]=phase==0 ? 12 : phase==1 ? 3 : 0;
+        warrior->core.isDead=phase==3 ? 1 : 0;
+        ally->core.displacement=phase==2 ? Unit::DIS_INSIDE : Unit::DIS_RANDOM;
+        if(phase==3)map.setMaterialAmount(map.coordToIndex(24,24),MaterialId::Food,0);
+        store.invalidateBoundary();
+        auto guardOnly=store.captureBoundary(game,guard.requirements());
+        REQUIRE(guardOnly.unitCores);CHECK_FALSE(guardOnly.unitDetails);CHECK_FALSE(guardOnly.entities);
+        auto marketOnly=store.captureBoundary(game,market.requirements());
+        REQUIRE(marketOnly.entities);CHECK_FALSE(marketOnly.unitCores);CHECK_FALSE(marketOnly.unitDetails);
+        auto combined=store.captureBoundary(game,guard.requirements()|market.requirements()|bit(Component::Entities));
+        CHECK(combined.unitCores==guardOnly.unitCores);CHECK(combined.entities==marketOnly.entities);
+        for(const auto& request:{guard,market}) {
+            const auto isolated=request.kind==Kind::Guard ? guardOnly : marketOnly;
+            std::vector<Uint16> expected(map.size),actual(map.size),shared(map.size);
+            if(request.kind==Kind::Guard)scalarGuard(map,0,0,expected.data());
+            else scalarResource(map,0,food,0,expected.data(),true);
+            CrowdingScratch seedScratch,combinedScratch;
+            seed(request,isolated,actual.data(),seedScratch);seed(request,combined,shared.data(),combinedScratch);
+            requireSameField(map,"compact isolated seeds",actual,expected);
+            requireSameField(map,"shared seeds",shared,expected);
+            GradientWorkspace reference,compact,joined;
+            propagateCPU(request,isolated,expected.data(),reference);
+            propagateCPU(request,isolated,actual.data(),compact);
+            propagateCPU(request,combined,shared.data(),joined);
+            requireSameField(map,"compact isolated gradient",actual,expected);
+            requireSameField(map,"shared gradient",shared,expected);
+        }
+    }
+}

@@ -42,14 +42,14 @@ const SimulationSnapshot::BuildingView* building(const SimulationSnapshot::Handl
     return nullptr;
 }
 }
-Task taskOf(const SimulationSnapshot::UnitView& u)
+Task taskOf(const SimulationSnapshot::UnitCoreView& u)
 {
-    return {u.identity,{},u.attached,u.target,u.team,u.posX,u.posY,u.targetX,u.targetY,u.destinationPurpose,
-        u.activity,u.medical,u.displacement,u.jobPurpose,u.capabilityFlags,u.performance[WALK],u.performance[SWIM],u.performance[FLY]};
+    return {u.identity,{},u.attached,u.target,u.team,u.core.posX,u.core.posY,u.core.targetX,u.core.targetY,u.core.destinationPurpose,
+        u.core.activity,u.core.medical,u.core.displacement,u.core.jobPurpose,u.core.capabilityFlags,u.performance(WALK),u.performance(SWIM),u.performance(FLY)};
 }
-std::optional<Mode> modeOf(const UnitState& u)
+std::optional<Mode> modeOf(const UnitCoreState& u)
 {
-    if ((!u.performance[WALK] && !u.performance[SWIM] && !u.performance[FLY]) || u.isDead || u.displacement==UnitState::DIS_INSIDE || u.displacement==UnitState::DIS_ENTERING_BUILDING
+    if ((!u.performance(WALK) && !u.performance(SWIM) && !u.performance(FLY)) || u.isDead || u.displacement==UnitState::DIS_INSIDE || u.displacement==UnitState::DIS_ENTERING_BUILDING
         || u.displacement==UnitState::DIS_EXITING_BUILDING || u.displacement==UnitState::DIS_HARVESTING
         || u.displacement==UnitState::DIS_FILLING_BUILDING) return {};
     switch (u.displacement) {
@@ -64,7 +64,7 @@ std::optional<Mode> modeOf(const UnitState& u)
     default: return {};
     }
 }
-std::optional<Uint32> completionTicks(const UnitState& u)
+std::optional<Uint32> completionTicks(const UnitCoreState& u)
 {
     const int advance = unitActionStepSpeed(u.speed,u.action,u.dx,u.dy,u.displacement==UnitState::DIS_INSIDE);
     if (advance <= 0) return {};

@@ -139,11 +139,11 @@ public:
 		REQUIRE(!third->recordFailingUnits);
 
 		Unit* unit = world.addUnit(WORKER, 10, 10);
-		const Uint16 unitGid = unit->gid;
+		const Uint16 unitGid = unit->core.gid;
 		gui.setSelection(GameGUI::UNIT_SELECTION, unit);
 		REQUIRE(game.removeUnitAndBuildingAndFlags(10, 10, Game::DEL_UNIT));
 		Unit* replacement = world.addUnit(WORKER, 12, 12);
-		REQUIRE(replacement->gid == unitGid);
+		REQUIRE(replacement->core.gid == unitGid);
 		REQUIRE(!gui.selectionUnit());
 		gui.checkSelection();
 		assertClearedKeepViewport(gui);
@@ -197,11 +197,11 @@ public:
 		const Uint16 targetGid = Unit::GIDfrom(5, 1);
 		const Uint32 identity = world.game.allocateScriptIdentity(false, targetGid);
 		world.game.publishClientEvent(ClientEvent::UnitConverted{before, UnitRef{targetGid, identity}});
-		world.game.teams[0]->myUnits[Unit::GIDtoID(unit->gid)] = nullptr;
+		world.game.teams[0]->myUnits[Unit::GIDtoID(unit->core.gid)] = nullptr;
 		target->myUnits[5] = unit;
 		world.game.map.setGroundUnit(10, 10, targetGid);
-		unit->scriptIdentity = identity;
-		unit->gid = targetGid;
+		unit->core.scriptIdentity = identity;
+		unit->core.gid = targetGid;
 		unit->owner = target;
 		REQUIRE(!gui.selectionUnit());
 		gui.consumeClientEvents();

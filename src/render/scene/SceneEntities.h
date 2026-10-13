@@ -20,7 +20,7 @@ inline GAGCore::Color presentationColor(const SimulationSnapshot::ColorRecord& c
 { return {c.r,c.g,c.b,c.a}; }
 
 //! The standard immutable records, borrowed without renderer-specific copies.
-using SnapshotUnit = SimulationSnapshot::UnitView;
+using SnapshotUnit = SimulationSnapshot::UnitCoreView;
 
 using SnapshotBuilding = SimulationSnapshot::BuildingView;
 
@@ -86,11 +86,21 @@ struct SceneEntities
 		const Uint32 i = gid < buildingIndex.size() ? buildingIndex[gid] : Uint32(-1);
 		return size_t(i)<buildings.size() ? &buildings[i] : nullptr;
 	}
+    std::optional<SimulationSnapshot::UnitView> fullUnit(UnitRef ref) const {
+        const auto* hot=unit(ref);const auto* cold=detail(ref);
+        return hot && cold ? std::optional<SimulationSnapshot::UnitView>(std::in_place,*hot,*cold) : std::nullopt;
+    }
+    const UnitDetailState* detail(UnitRef ref) const {
+        const auto* value=unit(ref);
+        if(!value || !world.unitDetails)return nullptr;
+        const auto index=unitIndex[ref.gid];
+        return index<world.unitDetails->units.size() ? &world.unitDetails->units[index] : nullptr;
+    }
     const SnapshotUnit* unit(UnitRef ref) const
     { const auto* value=unit(ref.gid); return value && value->identity==ref ? value : nullptr; }
     const SnapshotBuilding* building(BuildingRef ref) const
     { const auto* value=building(ref.gid); return value && value->identity==ref ? value : nullptr; }
-	bool isSelected(const SnapshotUnit &u) const { return u.gid == selectedUnit.gid && u.scriptIdentity == selectedUnit.generation; }
+	bool isSelected(const SnapshotUnit &u) const { return u.core.gid == selectedUnit.gid && u.core.scriptIdentity == selectedUnit.generation; }
 	bool isSelected(const SnapshotBuilding &b) const
 	{
 		return b.gid == selectedBuilding.ref.gid && b.scriptIdentity == selectedBuilding.ref.generation;

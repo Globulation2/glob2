@@ -312,3 +312,18 @@ mutex, and `trace_open_work` marks an open interval. A session reset discards th
 previous maintenance interval; an epoch check suppresses its returning events, while
 `trace_coverage_gap` marks that missing prefix until the next configuration/reset.
 Both flags contribute to `trace_incomplete`, independently of dropped-event counts.
+
+### Unit snapshot copy accounting
+
+Snapshot telemetry distinguishes `unit_state_bytes_copied` (authoritative core and
+detail state copied), `unit_record_payload_bytes` (populated observation records,
+including core metadata), and the existing retained/capacity memory counters.
+Movement diagnostics expose these as `snapshot_unit_state_bytes_copied` and
+`snapshot_unit_record_payload_bytes`. Shared components contribute no new copy
+bytes when a same-boundary consumer adds requirements. These counters measure
+logical copy/payload work; they do not measure memory bandwidth or allocator overhead.
+
+Compare movement, guard and market requests independently and alongside rendering
+and full AI observations. Rendering panels/selection and starvation overlays can
+require details, so report those settings with capture measurements. Use release
+builds, rotated paired samples and confidence intervals for runtime claims.

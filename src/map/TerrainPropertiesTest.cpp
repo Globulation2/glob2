@@ -179,11 +179,11 @@ TEST_CASE("ice exposure includes stationary units and preserves fractional healt
     map.paintCell(8,8,ICE);
     Unit* unit = world.addUnit(WORKER,8,8);
     REQUIRE(unit);
-    unit->hp = unit->performance[HP];
-    const int health = unit->hp;
+    unit->core.hp = unit->performance(HP);
+    const int health = unit->core.hp;
     for (int i=0;i<17;++i) unit->applyTerrainHealth();
-    CHECK_EQ(unit->hp,health);
-    CHECK_EQ(unit->terrainHealthRemainder,-136);
+    CHECK_EQ(unit->core.hp,health);
+    CHECK_EQ(unit->detail.terrainHealthRemainder,-136);
 
     auto* bytes = new GAGCore::MemoryStreamBackend;
     GAGCore::BinaryOutputStream output(bytes);
@@ -201,18 +201,18 @@ TEST_CASE("ice exposure includes stationary units and preserves fractional healt
     freshEcology.rebuild(resumed.game.map);
     CHECK(resumed.game.map.resourceGrowthField().landField().values()==freshEcology.landField().values());
     CHECK(resumed.game.map.resourceGrowthField().aquaticField()==freshEcology.aquaticField());
-    Unit* loaded = resumed.game.teams[0]->myUnits[Unit::GIDtoID(unit->gid)];
+    Unit* loaded = resumed.game.teams[0]->myUnits[Unit::GIDtoID(unit->core.gid)];
     REQUIRE(loaded);
-    CHECK_EQ(loaded->terrainHealthRemainder,unit->terrainHealthRemainder);
+    CHECK_EQ(loaded->detail.terrainHealthRemainder,unit->detail.terrainHealthRemainder);
     CHECK_EQ(resumed.game.map.terrainTypeAt(8,8),ICE);
     CHECK(resumed.game.gameHeader.hasExperiment(ExperimentId::IceTerrain));
     for (int i=0;i<15;++i) { unit->applyTerrainHealth(); loaded->applyTerrainHealth(); }
-    CHECK_EQ(unit->hp,health-1);
-    CHECK_EQ(loaded->hp,unit->hp);
-    CHECK_EQ(unit->terrainHealthRemainder,0);
-    unit->insideTimeout=-1;
+    CHECK_EQ(unit->core.hp,health-1);
+    CHECK_EQ(loaded->core.hp,unit->core.hp);
+    CHECK_EQ(unit->detail.terrainHealthRemainder,0);
+    unit->detail.insideTimeout=-1;
     for (int i=0;i<32;++i) unit->applyTerrainHealth();
-    CHECK_EQ(unit->hp,health-1);
+    CHECK_EQ(unit->core.hp,health-1);
 }
 
 TEST_CASE("explorers ignore ice damage and no-permadeath applies to ground hazards")
@@ -222,16 +222,16 @@ TEST_CASE("explorers ignore ice damage and no-permadeath applies to ground hazar
     world.game.map.paintCell(8,8,ICE);
     Unit* explorer=world.addUnit(EXPLORER,8,8);
     REQUIRE(explorer);
-    const int hp=explorer->hp;
+    const int hp=explorer->core.hp;
     for(int i=0;i<64;++i) explorer->applyTerrainHealth();
-    CHECK_EQ(explorer->hp,hp);
+    CHECK_EQ(explorer->core.hp,hp);
     Unit* worker=world.addUnit(WORKER,8,8);
     REQUIRE(worker);
-    worker->hp=1;
+    worker->core.hp=1;
     world.game.gameHeader.setPermadeathDisabled(true);
     for(int i=0;i<96;++i) worker->applyTerrainHealth();
-    CHECK_FALSE(worker->isDead);
-    CHECK_GE(worker->hp,1);
+    CHECK_FALSE(worker->core.isDead);
+    CHECK_GE(worker->core.hp,1);
 }
 
 TEST_CASE("health modifiers clip healing and expose units that have found an exit")
@@ -240,22 +240,22 @@ TEST_CASE("health modifiers clip healing and expose units that have found an exi
     glob2test::HeadlessGame world({.loadDefaultRace=true,.header=true});
     Unit* unit=world.addUnit(WORKER,8,8);
     REQUIRE(unit);
-    const int maximum=unit->performance[HP];
-    unit->hp=maximum;
+    const int maximum=unit->performance(HP);
+    unit->core.hp=maximum;
     for (int i=0;i<31;++i) unit->applyTerrainHealthRate(8);
-    CHECK_EQ(unit->terrainHealthRemainder,0);
-    unit->hp=maximum-2;
+    CHECK_EQ(unit->detail.terrainHealthRemainder,0);
+    unit->core.hp=maximum-2;
     for (int i=0;i<32;++i) unit->applyTerrainHealthRate(8);
-    CHECK_EQ(unit->hp,maximum-1);
+    CHECK_EQ(unit->core.hp,maximum-1);
     for (int i=0;i<32;++i) unit->applyTerrainHealthRate(12);
-    CHECK_EQ(unit->hp,maximum);
-    CHECK_EQ(unit->terrainHealthRemainder,0);
+    CHECK_EQ(unit->core.hp,maximum);
+    CHECK_EQ(unit->detail.terrainHealthRemainder,0);
     world.game.map.paintCell(8,8,ICE);
-    unit->displacement=Unit::DIS_EXITING_BUILDING;
+    unit->core.displacement=Unit::DIS_EXITING_BUILDING;
     unit->attachedBuilding=nullptr;
-    unit->insideTimeout=0;
+    unit->detail.insideTimeout=0;
     for (int i=0;i<32;++i) unit->applyTerrainHealth();
-    CHECK_EQ(unit->hp,maximum-1);
+    CHECK_EQ(unit->core.hp,maximum-1);
 }
 
 TEST_CASE("terrain health profiles choose independent air and ground rates")
@@ -268,17 +268,17 @@ TEST_CASE("terrain health profiles choose independent air and ground rates")
     auto terrain=terrainProperties(GRASS);
     terrain.groundHealthQ8=-16;
     terrain.airHealthQ8=32;
-    worker->hp=worker->performance[HP]-4;
-    explorer->hp=explorer->performance[HP]-4;
-    const int ground=worker->hp,air=explorer->hp;
+    worker->core.hp=worker->performance(HP)-4;
+    explorer->core.hp=explorer->performance(HP)-4;
+    const int ground=worker->core.hp,air=explorer->core.hp;
     for(int tick=0;tick<16;++tick) { worker->applyTerrainHealth(terrain); explorer->applyTerrainHealth(terrain); }
-    CHECK_EQ(worker->hp,ground-1);
-    CHECK_EQ(explorer->hp,air+2);
+    CHECK_EQ(worker->core.hp,ground-1);
+    CHECK_EQ(explorer->core.hp,air+2);
     terrain.groundHealthQ8=32;
     terrain.airHealthQ8=-16;
     for(int tick=0;tick<16;++tick) { worker->applyTerrainHealth(terrain); explorer->applyTerrainHealth(terrain); }
-    CHECK_EQ(worker->hp,ground+1);
-    CHECK_EQ(explorer->hp,air+1);
+    CHECK_EQ(worker->core.hp,ground+1);
+    CHECK_EQ(explorer->core.hp,air+1);
 }
 
 TEST_CASE("explorer flag eligibility applies route accessibility and hunger distance")
@@ -288,9 +288,9 @@ TEST_CASE("explorer flag eligibility applies route accessibility and hunger dist
     Unit* explorer=world.addUnit(EXPLORER,8,8);
     Building* flag=world.addBuilding("explorationflag",12,12);
     REQUIRE(explorer); REQUIRE(flag);
-    explorer->activity=Unit::ACT_RANDOM;
-    explorer->medical=Unit::MED_FREE;
-    explorer->hungry=explorer->trigHungry+10*explorer->race->hungriness;
+    explorer->core.activity=Unit::ACT_RANDOM;
+    explorer->core.medical=Unit::MED_FREE;
+    explorer->core.hungry=explorer->detail.trigHungry+10*explorer->race->hungriness;
     int distance=0;
     CHECK_FALSE(flag->considerUnitForExplorerFlag(explorer,&distance,INT_MAX));
     CHECK_FALSE(flag->considerUnitForExplorerFlag(explorer,&distance,11));
@@ -400,10 +400,10 @@ TEST_SUITE("TerrainRuntime")
 		CHECK(map.stepCost(1, 1, map.coordToIndex(8, 8), 0) == 40);
 		auto *worker = world.addUnit(WORKER, 8, 8);
 		REQUIRE(worker);
-		const int hp = worker->hp;
+		const int hp = worker->core.hp;
 		for (int i = 0; i < 16; ++i)
 			worker->applyTerrainHealth();
-		CHECK(worker->hp == hp - 1);
+		CHECK(worker->core.hp == hp - 1);
 		{
 			auto batch = map.editTerrain();
 			for (int y = 0; y < 32; ++y)
@@ -647,9 +647,9 @@ TEST_SUITE("TerrainRuntime")
 		CHECK(resumed.game.map.terrainQueueBuckets() == 256);
 		CHECK(resumed.game.map.gradientRuntime->pipeline.pendingCount() == 1);
 		CHECK(resumed.game.map.terrainTypeAt(8, 8) == map.terrainTypeAt(8, 8));
-		auto *loaded = resumed.game.teams[0]->myUnits[Unit::GIDtoID(worker->gid)];
+		auto *loaded = resumed.game.teams[0]->myUnits[Unit::GIDtoID(worker->core.gid)];
 		REQUIRE(loaded);
-		CHECK(loaded->terrainHealthRemainder == worker->terrainHealthRemainder);
+		CHECK(loaded->detail.terrainHealthRemainder == worker->detail.terrainHealthRemainder);
 		for (int i = 0; i < 2; ++i)
 		{
 			map.advanceGradientPipeline();
@@ -1028,17 +1028,17 @@ TEST_CASE("idle ground units avoid entering ice and escape a multi-cell patch")
     paintVertices(map,7,7,10,10,ICE);
     paintVertices(map,8,8,9,9,GRASS);
     CHECK(map.terrainPropertiesAt(8,8).groundHealthQ8==0);
-    for(int n=0;n<32;++n) { map.pathfindRandom(unit); CHECK(unit->dx==0); CHECK(unit->dy==0); }
+    for(int n=0;n<32;++n) { map.pathfindRandom(unit); CHECK(unit->core.dx==0); CHECK(unit->core.dy==0); }
     paintVertices(map,8,8,9,9,ICE);
     REQUIRE(map.pathfindTerrainSafety(unit));
-    CHECK((unit->dx!=0 || unit->dy!=0));
-    CHECK(map.terrainPropertiesAt(8+unit->dx,8+unit->dy).groundHealthQ8<0);
-    for(int n=0;n<8 && map.terrainPropertiesAt(unit->posX,unit->posY).groundHealthQ8<0;++n)
+    CHECK((unit->core.dx!=0 || unit->core.dy!=0));
+    CHECK(map.terrainPropertiesAt(8+unit->core.dx,8+unit->core.dy).groundHealthQ8<0);
+    for(int n=0;n<8 && map.terrainPropertiesAt(unit->core.posX,unit->core.posY).groundHealthQ8<0;++n)
         unit->handleActionRandomGround();
-    CHECK(map.terrainPropertiesAt(unit->posX,unit->posY).groundHealthQ8==0);
+    CHECK(map.terrainPropertiesAt(unit->core.posX,unit->core.posY).groundHealthQ8==0);
     map.fillTerrain(ICE);
     CHECK_FALSE(map.pathfindTerrainSafety(unit));
-    CHECK(unit->dx==0); CHECK(unit->dy==0);
+    CHECK(unit->core.dx==0); CHECK(unit->core.dy==0);
 }
 
 TEST_CASE("custom air damage routes flyers and idle flyers escape it")
@@ -1060,11 +1060,11 @@ TEST_CASE("custom air damage routes flyers and idle flyers escape it")
     REQUIRE(unit);
     paintVertices(map,7,7,10,10,*hazard);
     paintVertices(map,8,8,9,9,GRASS);
-    for(int n=0;n<32;++n) { unit->handleActionRandomFly(); CHECK(unit->posX==8); CHECK(unit->posY==8); }
+    for(int n=0;n<32;++n) { unit->handleActionRandomFly(); CHECK(unit->core.posX==8); CHECK(unit->core.posY==8); }
     paintVertices(map,8,8,9,9,*hazard);
-    for(int n=0;n<8 && map.terrainPropertiesAt(unit->posX,unit->posY).airHealthQ8<0;++n)
+    for(int n=0;n<8 && map.terrainPropertiesAt(unit->core.posX,unit->core.posY).airHealthQ8<0;++n)
         unit->handleActionRandomFly();
-    CHECK(map.terrainPropertiesAt(unit->posX,unit->posY).airHealthQ8==0);
+    CHECK(map.terrainPropertiesAt(unit->core.posX,unit->core.posY).airHealthQ8==0);
 }
 }
 
@@ -1221,16 +1221,16 @@ TEST_CASE("workers and warriors reuse escape fields and moving units do not inva
     CHECK(cache.builds==1); CHECK(cache.fields.size()==1);
     // Units around the worker hold it in place without invalidating the field.
     const int around[8][2]={{7,7},{8,7},{9,7},{7,8},{9,8},{7,9},{8,9},{9,9}};
-    for(const auto& cell:around) map.setGroundUnit(cell[0],cell[1],warrior->gid);
+    for(const auto& cell:around) map.setGroundUnit(cell[0],cell[1],warrior->core.gid);
     CHECK_FALSE(map.pathfindTerrainSafety(worker));
     CHECK(cache.builds==1);
     for(const auto& cell:around) map.setGroundUnit(cell[0],cell[1],NOGUID);
     REQUIRE(map.pathfindTerrainSafety(worker));
     CHECK(cache.builds==1);
-    const int dx=worker->dx,dy=worker->dy;
+    const int dx=worker->core.dx,dy=worker->core.dy;
     cache.fields.clear(); // eviction/load must reproduce the same next step
     REQUIRE(map.pathfindTerrainSafety(worker));
-    CHECK(worker->dx==dx); CHECK(worker->dy==dy);
+    CHECK(worker->core.dx==dx); CHECK(worker->core.dy==dy);
     CHECK(cache.builds==2);
 
     map.setResourceByIndex(14,8,WOOD,1); // block the only safe cell
@@ -1270,11 +1270,11 @@ TEST_CASE("escape fields separate team permissions swimming and forbidden-area e
     // A unit already on forbidden ice can leave through further forbidden cells.
     for(int y=6;y<=10;++y) for(int x=6;x<=13;++x) map.addForbidden(x,y,0);
     REQUIRE(map.pathfindTerrainSafety(first));
-    CHECK(first->dx==1); CHECK(first->dy==0);
+    CHECK(first->core.dx==1); CHECK(first->core.dy==0);
     // Swimming exposes the surrounding safe water as additional escape goals.
-    first->performance[SWIM]=first->performance[WALK];
+    first->performance(SWIM)=first->performance(WALK);
     REQUIRE(map.pathfindTerrainSafety(first));
-    CHECK(first->dy!=0);
+    CHECK(first->core.dy!=0);
 }
 TEST_CASE("flyers share safety fields across teams and ignore ground invalidations")
 {
@@ -1300,7 +1300,7 @@ TEST_CASE("flyers share safety fields across teams and ignore ground invalidatio
     map.paintCell(8,9,GRASS);
     REQUIRE(map.pathfindTerrainSafety(first));
     CHECK(map.gradientRuntime->safety.builds==2);
-    CHECK(first->dx==0); CHECK(first->dy==1);
+    CHECK(first->core.dx==0); CHECK(first->core.dy==1);
 }
 }
 
@@ -1353,7 +1353,7 @@ TEST_CASE("escape fields charge destination terrain and choose a cheaper indirec
     auto* unit=world.addUnit(WORKER,8,8);
     REQUIRE(unit);
     REQUIRE(map.pathfindTerrainSafety(unit));
-    CHECK(unit->dx==0); CHECK(unit->dy==-1);
+    CHECK(unit->core.dx==0); CHECK(unit->core.dy==-1);
     const auto& costs=map.gradientRuntime->safety.fields.begin()->second.costs;
     // Enter mild terrain (11), then grass (10); the adjacent slow goal costs 40.
     CHECK(costs[map.coordToIndex(8,8)]==21);

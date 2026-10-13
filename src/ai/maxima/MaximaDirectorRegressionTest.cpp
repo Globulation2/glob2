@@ -97,15 +97,15 @@ struct Fixture
     {
         Unit* unit=game.addUnit(x,y,0,WARRIOR,level,0,0,0);
         REQUIRE(unit);
-        unit->medical=Unit::MED_FREE;
-        unit->activity=Unit::ACT_RANDOM;
+        unit->core.medical=Unit::MED_FREE;
+        unit->core.activity=Unit::ACT_RANDOM;
         return unit;
     }
 
     void attach(Unit* unit, ::Building* flag)
     {
         unit->attachedBuilding=flag;
-        unit->activity=Unit::ACT_FLAG;
+        unit->core.activity=Unit::ACT_FLAG;
         flag->unitsWorking.push_back(unit);
     }
 
@@ -220,20 +220,20 @@ static void disconnectedArmy() {
     auto target=f.building(38,30,1); f.islands();
     std::vector<Unit*> warriors;
     for(int i=0;i<12;++i) {
-        auto u=f.warrior(6+i,6);u->performance[SWIM]=0;warriors.push_back(u);
+        auto u=f.warrior(6+i,6);u->performance(SWIM)=0;warriors.push_back(u);
     }
     auto& a=*f.ai; auto& c=a.context; c.initialize(); f.remember(target);
     a.plan_offense(c);
     REQUIRE(a.budget.tactical_kind==Tactics::MissionNone);
-    for(int i=0;i<4;++i) warriors[i]->performance[SWIM]=1;
+    for(int i=0;i<4;++i) warriors[i]->performance(SWIM)=1;
     a.plan_offense(c);
     REQUIRE(a.budget.tactical_kind==Tactics::MissionSiege);
     REQUIRE(a.budget.tactical_requested_force==a.offense_diagnostics.eligibleWarriors);
     // Warriors already in the destination component need no swimming ability.
     for(int i=0;i<4;++i) {
-        auto u=warriors[i];u->performance[SWIM]=0;
-        f.game.map.setGroundUnit(u->posX,u->posY,NOGUID);
-        u->posX=30+i;u->posY=20;f.game.map.setGroundUnit(u->posX,u->posY,u->gid);
+        auto u=warriors[i];u->performance(SWIM)=0;
+        f.game.map.setGroundUnit(u->core.posX,u->core.posY,NOGUID);
+        u->core.posX=30+i;u->core.posY=20;f.game.map.setGroundUnit(u->core.posX,u->core.posY,u->core.gid);
     }
     a.plan_offense(c);
     REQUIRE(a.budget.tactical_kind==Tactics::MissionSiege);
@@ -253,7 +253,7 @@ static void flyingArmyAndNonexploringMagicThreat() {
     f.game.gameHeader.setUnitCatalog(UnitCatalog::fromJson(definitions.dump()));f.game.configureBuildingCatalog();
     f.building(10,10,0);f.building(27,30,0);
     auto target=f.building(38,30,1);f.islands();
-    for(int i=0;i<12;++i){auto* unit=f.game.addUnit(6+i,6,0,3,1,0,0,0);REQUIRE(unit);unit->medical=Unit::MED_FREE;unit->activity=Unit::ACT_RANDOM;}
+    for(int i=0;i<12;++i){auto* unit=f.game.addUnit(6+i,6,0,3,1,0,0,0);REQUIRE(unit);unit->core.medical=Unit::MED_FREE;unit->core.activity=Unit::ACT_RANDOM;}
     auto& a=*f.ai;auto& c=a.context;c.initialize();f.remember(target);
     a.plan_offense(c);
     REQUIRE(a.budget.tactical_kind==Tactics::MissionSiege);

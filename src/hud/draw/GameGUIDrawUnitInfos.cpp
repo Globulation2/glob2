@@ -38,7 +38,7 @@ void GameGUI::drawUnitInfos(void)
 {
 	const SceneUnitPanel* selUnit = &drawnScene().panels.unit;
 	const auto* selected = std::get_if<UnitRef>(&selection);
-    if (!selUnit->valid || !selected || selected->gid != selUnit->state().gid || selected->generation != selUnit->state().scriptIdentity
+    if (!selUnit->valid || !selected || selected->gid != selUnit->state().core.gid || selected->generation != selUnit->state().core.scriptIdentity
         || drawnScene().panels.local.state().number != localTeamNo)
 		return;
 	int ypos = YPOS_BASE_UNIT;
@@ -46,7 +46,7 @@ void GameGUI::drawUnitInfos(void)
 
 	// draw "unit" of "player"
 	std::string title;
-	title += getUnitName(selUnit->state().typeNum, *drawnScene().world.catalogs->units);
+	title += getUnitName(selUnit->state().core.typeNum, *drawnScene().world.catalogs->units);
 	title += " (";
 
 	title += displayPlayerName(selUnit->owner().firstPlayerName);
@@ -71,12 +71,12 @@ void GameGUI::drawUnitInfos(void)
 	const SceneUnitPanel* unit=selUnit;
 	int imgid;
 	const UnitType *ut=&unit->unitTypes[0];
-	assert(unit->state().action>=0);
-	assert(unit->state().action<NB_MOVE);
-	imgid=ut->startImage[unit->state().action];
+	assert(unit->state().core.action>=0);
+	assert(unit->state().core.action<NB_MOVE);
+	imgid=ut->startImage[unit->state().core.action];
 
-	int dir=unit->state().direction;
-	int delta=unit->state().delta;
+	int dir=unit->state().core.direction;
+	int delta=unit->state().core.delta;
 	assert(dir>=0);
 	assert(dir<9);
 	assert(delta>=0);
@@ -96,13 +96,13 @@ void GameGUI::drawUnitInfos(void)
 	// draw HP
 	globalContainer->gfx->drawString(globalContainer->gfx->getW()-RIGHT_MENU_HALF_WIDTH, ypos, globalContainer->littleFont, FormattableString("%0:").arg(Toolkit::getStringTable()->getString("[hp]")).c_str());
 
-	if (selUnit->state().hp<=selUnit->state().trigHP)
+	if (selUnit->state().core.hp<=selUnit->state().detail.trigHP)
 		{ r=255; g=0; b=0; }
 	else
 		{ r=0; g=255; b=0; }
 
 	globalContainer->littleFont->pushStyle(Font::Style(Font::STYLE_NORMAL, r, g, b));
-	globalContainer->gfx->drawString(globalContainer->gfx->getW()-RIGHT_MENU_HALF_WIDTH, ypos+YOFFSET_TEXT_LINE, globalContainer->littleFont, FormattableString("%0/%1").arg(selUnit->state().hp).arg(selUnit->state().performance[HP]).c_str());
+	globalContainer->gfx->drawString(globalContainer->gfx->getW()-RIGHT_MENU_HALF_WIDTH, ypos+YOFFSET_TEXT_LINE, globalContainer->littleFont, FormattableString("%0/%1").arg(selUnit->state().core.hp).arg(selUnit->state().performance(HP)).c_str());
 	globalContainer->littleFont->popStyle();
 
 	globalContainer->gfx->drawString(globalContainer->gfx->getW()-RIGHT_MENU_HALF_WIDTH, ypos+YOFFSET_TEXT_LINE+YOFFSET_TEXT_PARA, globalContainer->littleFont, FormattableString("%0:").arg(Toolkit::getStringTable()->getString("[food]")).c_str());
@@ -114,19 +114,19 @@ void GameGUI::drawUnitInfos(void)
 		{ r=0; g=255; b=0; }
 
 	globalContainer->littleFont->pushStyle(Font::Style(Font::STYLE_NORMAL, r, g, b));
-	globalContainer->gfx->drawString(globalContainer->gfx->getW()-RIGHT_MENU_HALF_WIDTH, ypos+2*YOFFSET_TEXT_LINE+YOFFSET_TEXT_PARA, globalContainer->littleFont, FormattableString("%0 % (%1)").arg(((float)selUnit->state().hungry*100.0f)/(float)selUnit->foodCapacity, 0, 0).arg(selUnit->state().fruitCount).c_str());
+	globalContainer->gfx->drawString(globalContainer->gfx->getW()-RIGHT_MENU_HALF_WIDTH, ypos+2*YOFFSET_TEXT_LINE+YOFFSET_TEXT_PARA, globalContainer->littleFont, FormattableString("%0 % (%1)").arg(((float)selUnit->state().core.hungry*100.0f)/(float)selUnit->foodCapacity, 0, 0).arg(selUnit->state().detail.fruitCount).c_str());
 	globalContainer->littleFont->popStyle();
 
 	ypos += YOFFSET_ICON+10;
 
 	int rdec = (RIGHT_MENU_WIDTH-128)/2;
 
-	if (selUnit->state().performance[HARVEST])
+	if (selUnit->state().performance(HARVEST))
 	{
-		if (selUnit->state().carriedMaterial>=0)
+		if (selUnit->state().core.carriedMaterial>=0)
 		{
 			globalContainer->gfx->drawString(globalContainer->gfx->getW()-RIGHT_MENU_RIGHT_OFFSET+4, ypos+8, globalContainer->littleFont, Toolkit::getStringTable()->getString("[carry]"));
-			globalContainer->gfx->drawSprite(globalContainer->gfx->getW()-32-8-rdec, ypos, globalContainer->resourceMini, selUnit->state().carriedMaterial);
+			globalContainer->gfx->drawSprite(globalContainer->gfx->getW()-32-8-rdec, ypos, globalContainer->resourceMini, selUnit->state().core.carriedMaterial);
 			globalContainer->gfx->finishDrawingSprite(globalContainer->resourceMini, 255);
 		}
 		else
@@ -136,20 +136,20 @@ void GameGUI::drawUnitInfos(void)
 	}
 	ypos += YOFFSET_CARRYING+10;
 
-	globalContainer->gfx->drawString(globalContainer->gfx->getW()-RIGHT_MENU_RIGHT_OFFSET+4, ypos, globalContainer->littleFont, FormattableString("%0 : %1").arg(Toolkit::getStringTable()->getString("[current speed]")).arg(selUnit->state().speed).c_str());
+	globalContainer->gfx->drawString(globalContainer->gfx->getW()-RIGHT_MENU_RIGHT_OFFSET+4, ypos, globalContainer->littleFont, FormattableString("%0 : %1").arg(Toolkit::getStringTable()->getString("[current speed]")).arg(selUnit->state().core.speed).c_str());
 	ypos += YOFFSET_TEXT_PARA+10;
 
-	if (selUnit->state().performance[ARMOR])
+	if (selUnit->state().performance(ARMOR))
 	{
-		int armorReductionPerHappyness = selUnit->unitTypes[selUnit->state().level[ARMOR]].armorReductionPerHappyness;
+		int armorReductionPerHappyness = selUnit->unitTypes[selUnit->state().detail.level[ARMOR]].armorReductionPerHappyness;
 		// Custom-game "glass cannon" rule: show the actual armor combat uses
 		// (getRealArmor()), not just the pre-scale breakdown below -- at the
 		// rule's default (scale 1), this is identical to the old
-		// performance[ARMOR]-fruitCount*reduction computation.
+		// performance(ARMOR)-fruitCount*reduction computation.
 		int realArmor = selUnit->realArmor;
 		if (realArmor < 0)
 			globalContainer->littleFont->pushStyle(Font::Style(Font::STYLE_NORMAL, 255, 0, 0));
-		globalContainer->gfx->drawString(globalContainer->gfx->getW()-RIGHT_MENU_RIGHT_OFFSET+4, ypos, globalContainer->littleFont, FormattableString("%0 : %1 = %2 - %3 * %4").arg(Toolkit::getStringTable()->getString("[armor]")).arg(realArmor).arg(selUnit->state().performance[ARMOR]).arg(selUnit->state().fruitCount).arg(armorReductionPerHappyness).c_str());
+		globalContainer->gfx->drawString(globalContainer->gfx->getW()-RIGHT_MENU_RIGHT_OFFSET+4, ypos, globalContainer->littleFont, FormattableString("%0 : %1 = %2 - %3 * %4").arg(Toolkit::getStringTable()->getString("[armor]")).arg(realArmor).arg(selUnit->state().performance(ARMOR)).arg(selUnit->state().detail.fruitCount).arg(armorReductionPerHappyness).c_str());
 		if (realArmor < 0)
 			globalContainer->littleFont->popStyle();
 	}
@@ -161,26 +161,26 @@ void GameGUI::drawUnitInfos(void)
 
 	const int rowX = globalContainer->gfx->getW()-RIGHT_MENU_RIGHT_OFFSET+4;
 
-	if (selUnit->state().performance[WALK])
-		drawAbilityRow(rowX, ypos, "[Walk]", 1 + selUnit->state().level[WALK], selUnit->state().performance[WALK]);
+	if (selUnit->state().performance(WALK))
+		drawAbilityRow(rowX, ypos, "[Walk]", 1 + selUnit->state().detail.level[WALK], selUnit->state().performance(WALK));
 	ypos += YOFFSET_TEXT_LINE;
 
 	// SWIM is stored 1-based (0 = can't swim); pass raw, not 1+.
-	if (selUnit->state().performance[SWIM])
-		drawAbilityRow(rowX, ypos, "[Swim]", selUnit->state().level[SWIM], selUnit->state().performance[SWIM]);
+	if (selUnit->state().performance(SWIM))
+		drawAbilityRow(rowX, ypos, "[Swim]", selUnit->state().detail.level[SWIM], selUnit->state().performance(SWIM));
 	ypos += YOFFSET_TEXT_LINE;
 
-	if (selUnit->state().performance[BUILD])
-		drawAbilityRow(rowX, ypos, "[Build]", 1 + selUnit->state().level[BUILD], selUnit->state().performance[BUILD]);
+	if (selUnit->state().performance(BUILD))
+		drawAbilityRow(rowX, ypos, "[Build]", 1 + selUnit->state().detail.level[BUILD], selUnit->state().performance(BUILD));
 	ypos += YOFFSET_TEXT_LINE;
 
-	if (selUnit->state().performance[ATTACK_SPEED])
-		drawAbilityRow(rowX, ypos, "[At. speed]", 1 + selUnit->state().level[ATTACK_SPEED], selUnit->state().performance[ATTACK_SPEED]);
+	if (selUnit->state().performance(ATTACK_SPEED))
+		drawAbilityRow(rowX, ypos, "[At. speed]", 1 + selUnit->state().detail.level[ATTACK_SPEED], selUnit->state().performance(ATTACK_SPEED));
 	ypos += YOFFSET_TEXT_LINE;
 
-	if (selUnit->state().performance[ATTACK_STRENGTH])
+	if (selUnit->state().performance(ATTACK_STRENGTH))
 	{
-		std::string attackLine = FormattableString("%0 (%1+%2) : %3+%4").arg(Toolkit::getStringTable()->getString("[At. strength]")).arg(1+selUnit->state().level[ATTACK_STRENGTH]).arg(selUnit->state().experienceLevel).arg(selUnit->state().performance[ATTACK_STRENGTH]).arg(selUnit->state().experienceLevel).c_str();
+		std::string attackLine = FormattableString("%0 (%1+%2) : %3+%4").arg(Toolkit::getStringTable()->getString("[At. strength]")).arg(1+selUnit->state().detail.level[ATTACK_STRENGTH]).arg(selUnit->state().core.experienceLevel).arg(selUnit->state().performance(ATTACK_STRENGTH)).arg(selUnit->state().core.experienceLevel).c_str();
 		// Custom-game "glass cannon" rule: the breakdown above shows the base
 		// stat and experience bonus exactly as it always has, so append the
 		// scale actual combat applies on top -- at the rule's default (scale
@@ -193,20 +193,20 @@ void GameGUI::drawUnitInfos(void)
 		ypos += YOFFSET_TEXT_PARA + 2;
 	}
 
-	if (selUnit->state().performance[MAGIC_ATTACK_AIR])
+	if (selUnit->state().performance(MAGIC_ATTACK_AIR))
 	{
-		globalContainer->gfx->drawString(globalContainer->gfx->getW()-RIGHT_MENU_RIGHT_OFFSET+4, ypos, globalContainer->littleFont, FormattableString("%0 (%1+%2) : %3+%4").arg(Toolkit::getStringTable()->getString("[Magic At. Air]")).arg(1+selUnit->state().level[MAGIC_ATTACK_AIR]).arg(selUnit->state().experienceLevel).arg(selUnit->state().performance[MAGIC_ATTACK_AIR]).arg(selUnit->state().experienceLevel).c_str());
+		globalContainer->gfx->drawString(globalContainer->gfx->getW()-RIGHT_MENU_RIGHT_OFFSET+4, ypos, globalContainer->littleFont, FormattableString("%0 (%1+%2) : %3+%4").arg(Toolkit::getStringTable()->getString("[Magic At. Air]")).arg(1+selUnit->state().detail.level[MAGIC_ATTACK_AIR]).arg(selUnit->state().core.experienceLevel).arg(selUnit->state().performance(MAGIC_ATTACK_AIR)).arg(selUnit->state().core.experienceLevel).c_str());
 
 		ypos += YOFFSET_TEXT_PARA + 2;
 	}
 
-	if (selUnit->state().performance[MAGIC_ATTACK_GROUND])
+	if (selUnit->state().performance(MAGIC_ATTACK_GROUND))
 	{
-		globalContainer->gfx->drawString(globalContainer->gfx->getW()-RIGHT_MENU_RIGHT_OFFSET+4, ypos, globalContainer->littleFont, FormattableString("%0 (%1+%2) : %3+%4").arg(Toolkit::getStringTable()->getString("[Magic At. Ground]")).arg(1+selUnit->state().level[MAGIC_ATTACK_GROUND]).arg(selUnit->state().experienceLevel).arg(selUnit->state().performance[MAGIC_ATTACK_GROUND]).arg(selUnit->state().experienceLevel).c_str());
+		globalContainer->gfx->drawString(globalContainer->gfx->getW()-RIGHT_MENU_RIGHT_OFFSET+4, ypos, globalContainer->littleFont, FormattableString("%0 (%1+%2) : %3+%4").arg(Toolkit::getStringTable()->getString("[Magic At. Ground]")).arg(1+selUnit->state().detail.level[MAGIC_ATTACK_GROUND]).arg(selUnit->state().core.experienceLevel).arg(selUnit->state().performance(MAGIC_ATTACK_GROUND)).arg(selUnit->state().core.experienceLevel).c_str());
 
 		ypos += YOFFSET_TEXT_PARA + 2;
 	}
 
-	if (selUnit->state().performance[ATTACK_STRENGTH] || selUnit->state().performance[MAGIC_ATTACK_AIR] || selUnit->state().performance[MAGIC_ATTACK_GROUND])
-		drawXPProgressBar(globalContainer->gfx->getW()-RIGHT_MENU_RIGHT_OFFSET, ypos, selUnit->state().experience, selUnit->nextLevelThreshold);
+	if (selUnit->state().performance(ATTACK_STRENGTH) || selUnit->state().performance(MAGIC_ATTACK_AIR) || selUnit->state().performance(MAGIC_ATTACK_GROUND))
+		drawXPProgressBar(globalContainer->gfx->getW()-RIGHT_MENU_RIGHT_OFFSET, ypos, selUnit->state().detail.experience, selUnit->nextLevelThreshold);
 }

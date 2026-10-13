@@ -52,11 +52,11 @@ void NewNicowar::compute_defense_flag_positioning(AISharedRuntime::Runtime& runt
 	//Use the 'locations' list to keep track of non-zero squares
 	for(int i=0; i<Unit::MAX_COUNT; ++i)
 	{
-		const AIEngine::UnitView* unit = runtime.observation().unitSlots(runtime.teamNumber())[i];
-		if(unit && unit->underAttackTimer && unit->movement != Unit::MOV_ATTACKING_TARGET && unit->performance[FLY]==0 && unitGID[powerOfTwoRemainder(unit->posX+w, w) * h + powerOfTwoRemainder(unit->posY+h, h)] == NOGUID)
+		const SimulationSnapshot::UnitCoreView* unit = runtime.observation().coreUnitSlots(runtime.teamNumber())[i];
+		if(unit && unit->core.underAttackTimer && unit->core.movement != Unit::MOV_ATTACKING_TARGET && unit->performance(FLY)==0 && unitGID[powerOfTwoRemainder(unit->core.posX+w, w) * h + powerOfTwoRemainder(unit->core.posY+h, h)] == NOGUID)
 		{
-			unitGID[powerOfTwoRemainder(unit->posX+w, w) * h + powerOfTwoRemainder(unit->posY+h, h)] = unit->gid;
-			modify_points(counts, w, h, powerOfTwoRemainder(unit->posX+w, w), powerOfTwoRemainder(unit->posY+h, h), RADIUS, 1, locations);
+			unitGID[powerOfTwoRemainder(unit->core.posX+w, w) * h + powerOfTwoRemainder(unit->core.posY+h, h)] = unit->core.gid;
+			modify_points(counts, w, h, powerOfTwoRemainder(unit->core.posX+w, w), powerOfTwoRemainder(unit->core.posY+h, h), RADIUS, 1, locations);
 		}
 	}
 	for(int i=0; i<Building::MAX_COUNT; ++i)
@@ -124,8 +124,8 @@ void NewNicowar::compute_defense_flag_positioning(AISharedRuntime::Runtime& runt
 				int ny = powerOfTwoRemainder(max_y + py + h, h);
 				if(unitGID[nx * h + ny] != NOGUID)
 				{
-					const AIEngine::UnitView* unit = runtime.observation().unitSlots(runtime.teamNumber())[Unit::GIDtoID(unitGID[nx * h + ny])];
-					modify_points(counts, w, h, powerOfTwoRemainder(unit->posX+w, w), powerOfTwoRemainder(unit->posY+h, h), RADIUS, -1, locations);
+					const SimulationSnapshot::UnitCoreView* unit = runtime.observation().coreUnitSlots(runtime.teamNumber())[Unit::GIDtoID(unitGID[nx * h + ny])];
+					modify_points(counts, w, h, powerOfTwoRemainder(unit->core.posX+w, w), powerOfTwoRemainder(unit->core.posY+h, h), RADIUS, -1, locations);
 					unitGID[nx * h + ny] = NOGUID;
 				}
 				if(buildingGID[nx * h + ny] != NOGBID)
@@ -144,7 +144,7 @@ void NewNicowar::compute_defense_flag_positioning(AISharedRuntime::Runtime& runt
 					Uint16 guid = runtime.observation().occupancyAt(runtime.observation().tileIndex(nx,ny)).groundUnit;
 					if(guid != NOGUID && (1<<Unit::GIDtoTeam(guid)) & runtime.observedTeam().enemies)
 					{
-						const AIEngine::UnitView* unit = runtime.observation().unitSlots(Unit::GIDtoTeam(guid))[Unit::GIDtoID(guid)];
+						const auto unit = runtime.observation().unitAtSlot(guid);
 						if(AIEngine::ObservationQueries::matchesStrategyUnitRole(runtime.observation(),*unit,WARRIOR))
 						{
 							enemy_count += 1;
@@ -245,7 +245,7 @@ void NewNicowar::compute_defense_flag_positioning(AISharedRuntime::Runtime& runt
 						Uint16 guid = runtime.observation().occupancyAt(runtime.observation().tileIndex(nx,ny)).groundUnit;
 						if(guid != NOGUID && (1<<Unit::GIDtoTeam(guid)) & runtime.observedTeam().enemies)
 						{
-								const AIEngine::UnitView* unit = runtime.observation().unitSlots(Unit::GIDtoTeam(guid))[Unit::GIDtoID(guid)];
+								const auto unit = runtime.observation().unitAtSlot(guid);
 								if(AIEngine::ObservationQueries::matchesStrategyUnitRole(runtime.observation(),*unit,WARRIOR))
 								{
 										enemy_count += 1;
@@ -338,12 +338,12 @@ void NewNicowar::compute_explorer_flag_attack_positioning(AISharedRuntime::Runti
 	
 	if(explorer_attack_phase && target!=-1)
 	{
-		std::vector<const AIEngine::UnitView*> units(Unit::MAX_COUNT, nullptr);
-		const AIEngine::UnitView* first = NULL;
+		std::vector<AIEngine::UnitObservation> units(Unit::MAX_COUNT);
+		AIEngine::UnitObservation first = std::nullopt;
 		for(int i=0; i<Unit::MAX_COUNT; ++i)
 		{
-			const AIEngine::UnitView* unit = runtime.observation().unitSlots(target)[i];
-			if(unit && mi.is_discovered(unit->posX, unit->posY) && unit->performance[FLY]==0 && unit->activity != Unit::ACT_UPGRADING)
+			AIEngine::UnitObservation unit = runtime.observation().unitSlots(target)[i];
+			if(unit && mi.is_discovered(unit->core.posX, unit->core.posY) && unit->performance(FLY)==0 && unit->core.activity != Unit::ACT_UPGRADING)
 			{
 				if(!first)
 					first = unit;
@@ -351,7 +351,7 @@ void NewNicowar::compute_explorer_flag_attack_positioning(AISharedRuntime::Runti
 			}
 			else
 			{
-				units[i] = NULL;
+				units[i] = std::nullopt;
 			}
 		}
 		
@@ -361,19 +361,19 @@ void NewNicowar::compute_explorer_flag_attack_positioning(AISharedRuntime::Runti
 			int group_y = 0;
 			int group_size = 0;
 		
-			std::queue<const AIEngine::UnitView*> proccess;
+			std::queue<AIEngine::UnitObservation> proccess;
 			std::queue<int> xposs;
 			std::queue<int> yposs;
 			for(int i=0; i<Unit::MAX_COUNT; ++i)
 			{
 				if(units[i])
 				{
-					group_x += units[i]->posX;
-					group_y += units[i]->posY;
+					group_x += units[i]->core.posX;
+					group_y += units[i]->core.posY;
 					proccess.push(units[i]);
-					xposs.push(units[i]->posX);
-					yposs.push(units[i]->posY);
-					units[i] = NULL;
+					xposs.push(units[i]->core.posX);
+					yposs.push(units[i]->core.posY);
+					units[i] = std::nullopt;
 					group_size+=1;
 					break;
 				}
@@ -384,7 +384,7 @@ void NewNicowar::compute_explorer_flag_attack_positioning(AISharedRuntime::Runti
 			
 			while(!proccess.empty())
 			{
-				const AIEngine::UnitView* top = proccess.front();
+				AIEngine::UnitObservation top = proccess.front();
 				int ix = xposs.front();
 				int iy = yposs.front();
 				proccess.pop();
@@ -392,10 +392,10 @@ void NewNicowar::compute_explorer_flag_attack_positioning(AISharedRuntime::Runti
 				yposs.pop();
 				for(int dx = -AI_NICOWAR_EXPLORER_GROUP_SEARCH_RADIUS; dx<=AI_NICOWAR_EXPLORER_GROUP_SEARCH_RADIUS; ++dx)
 				{
-					int nx = powerOfTwoRemainder(top->posX + dx + w, w);
+					int nx = powerOfTwoRemainder(top->core.posX + dx + w, w);
 					for(int dy = -AI_NICOWAR_EXPLORER_GROUP_SEARCH_RADIUS; dy<=AI_NICOWAR_EXPLORER_GROUP_SEARCH_RADIUS; ++dy)
 					{
-						int ny = powerOfTwoRemainder(top->posY + dy + h, h);
+						int ny = powerOfTwoRemainder(top->core.posY + dy + h, h);
 						if(runtime.observation().distanceSquared(group_x / group_size, group_y / group_size, nx, ny) < (AI_NICOWAR_EXPLORER_GROUP_COHESION_TILES * AI_NICOWAR_EXPLORER_GROUP_COHESION_TILES))
 						{
 							Uint16 guid = runtime.observation().occupancyAt(runtime.observation().tileIndex(nx,ny)).groundUnit;
@@ -409,7 +409,7 @@ void NewNicowar::compute_explorer_flag_attack_positioning(AISharedRuntime::Runti
 									proccess.push(units[id]);
 									xposs.push(ix + dx);
 									yposs.push(iy + dy);
-									units[id] = NULL;
+									units[id] = std::nullopt;
 									group_size+=1;
 								}
 							}

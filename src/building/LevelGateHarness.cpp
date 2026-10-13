@@ -45,12 +45,12 @@ static bool hiringPass(const char* kind, int level, bool site, int carried, int 
 	building->updateCallLists();
 	Unit* unit = game.addUnit(12, 12, 0, WORKER, 0, 255, 0, 0);
 	require(unit != nullptr, "create worker");
-	unit->level[HARVEST] = harvestLevel < 0 ? workerLevel : harvestLevel;
-	unit->level[BUILD] = 3-workerLevel; // Deliberately different from qualification.
-	unit->constructionLevel = workerLevel;
-	unit->carriedMaterial = carried;
-	unit->activity = Unit::ACT_RANDOM;
-	unit->medical = Unit::MED_FREE;
+	unit->detail.level[HARVEST] = harvestLevel < 0 ? workerLevel : harvestLevel;
+	unit->detail.level[BUILD] = 3-workerLevel; // Deliberately different from qualification.
+	unit->core.constructionLevel = workerLevel;
+	unit->core.carriedMaterial = carried;
+	unit->core.activity = Unit::ACT_RANDOM;
+	unit->core.medical = Unit::MED_FREE;
 	team->updateAllBuildingTasks();
 	*tooLowLevel = building->unitsFailingRequirements[Building::UnitTooLowLevel];
 	bool hired = building->unitsWorking.size() == 1;

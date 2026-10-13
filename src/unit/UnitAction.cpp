@@ -24,97 +24,97 @@ namespace
 
 void Unit::wrapPosition()
 {
-	if (!performance[FLY] && !performance[WALK] && (dx || dy) && (!performance[SWIM] || !owner->map->terrainPropertiesAt(posX+dx,posY+dy).swimmable)) {
-		dx=dy=0; direction=UNIT_DIRECTION_NONE;
+	if (!performance(FLY) && !performance(WALK) && (core.dx || core.dy) && (!performance(SWIM) || !owner->map->terrainPropertiesAt(core.posX+core.dx,core.posY+core.dy).swimmable)) {
+		core.dx=core.dy=0; core.direction=UNIT_DIRECTION_NONE;
 	}
-	posX=(posX+dx)&(owner->map->getMaskW());
-	posY=(posY+dy)&(owner->map->getMaskH());
+	core.posX=(core.posX+core.dx)&(owner->map->getMaskW());
+	core.posY=(core.posY+core.dy)&(owner->map->getMaskH());
 }
 
 void Unit::clearOccupiedMapSlot()
 {
-	if (performance[FLY])
-		owner->map->setAirUnit(posX, posY, NOGUID);
+	if (performance(FLY))
+		owner->map->setAirUnit(core.posX, core.posY, NOGUID);
 	else
-		owner->map->setGroundUnit(posX, posY, NOGUID);
+		owner->map->setGroundUnit(core.posX, core.posY, NOGUID);
 }
 
 void Unit::claimOccupiedMapSlot()
 {
-	if (performance[FLY])
+	if (performance(FLY))
 	{
-		assert(owner->map->getAirUnit(posX, posY)==NOGUID);
-		owner->map->setAirUnit(posX, posY, gid);
+		assert(owner->map->getAirUnit(core.posX, core.posY)==NOGUID);
+		owner->map->setAirUnit(core.posX, core.posY, core.gid);
 	}
 	else
 	{
-		assert(owner->map->getGroundUnit(posX, posY)==NOGUID);
-		owner->map->setGroundUnit(posX, posY, gid);
+		assert(owner->map->getGroundUnit(core.posX, core.posY)==NOGUID);
+		owner->map->setGroundUnit(core.posX, core.posY, core.gid);
 	}
 }
 
 void Unit::handleActionRandomGround()
 {
-	assert(!performance[FLY]);
-	if (!performance[WALK] && !performance[SWIM]) {
-		dx=dy=0; direction=UNIT_DIRECTION_NONE; action=STOP_WALK;
-		speed=std::max(1,performance[STOP_WALK]); return;
+	assert(!performance(FLY));
+	if (!performance(WALK) && !performance(SWIM)) {
+		core.dx=core.dy=0; core.direction=UNIT_DIRECTION_NONE; core.action=STOP_WALK;
+		core.speed=std::max(1,performance(STOP_WALK)); return;
 	}
 	clearOccupiedMapSlot();
 	owner->map->pathfindRandom(this);
 	wrapPosition();
 	selectPreferredGroundMovement();
-	speed=unitTerrainMovementSpeed(performance[action], action == FLY
-        ? owner->map->terrainPropertiesAt(posX,posY).airSpeedQ8
-        : owner->map->terrainPropertiesAt(posX,posY).groundSpeedQ8, dx != 0 || dy != 0);
+	core.speed=unitTerrainMovementSpeed(performance(core.action), core.action == FLY
+        ? owner->map->terrainPropertiesAt(core.posX,core.posY).airSpeedQ8
+        : owner->map->terrainPropertiesAt(core.posX,core.posY).groundSpeedQ8, core.dx != 0 || core.dy != 0);
 	claimOccupiedMapSlot();
 }
 
 void Unit::handleActionRandomFly()
 {
-	assert(performance[FLY]);
+	assert(performance(FLY));
 	clearOccupiedMapSlot();
-	if (owner->map->terrainPropertiesAt(posX,posY).airHealthQ8 < 0)
+	if (owner->map->terrainPropertiesAt(core.posX,core.posY).airHealthQ8 < 0)
 		owner->map->pathfindTerrainSafety(this);
 	else
 	{
 		for(int q = 0; q < RANDOM_FLY_TOWER_AVOIDANCE_ATTEMPTS; ++q)
 		{
-			dx=-1+entityRandom.nextU32()%3;
-			dy=-1+entityRandom.nextU32()%3;
-			if(!locationIsInEnemyGuardTowerRange(posX + dx, posY + dy))
+			core.dx=-1+detail.entityRandom.nextU32()%3;
+			core.dy=-1+detail.entityRandom.nextU32()%3;
+			if(!locationIsInEnemyGuardTowerRange(core.posX + core.dx, core.posY + core.dy))
 				break;
 		}
 		directionFromDxDy();
 		setNewValidDirectionAir();
 		// Direction repair can rotate onto a hazard, so check the final step.
-		if (owner->map->terrainPropertiesAt(posX+dx,posY+dy).airHealthQ8 < 0) {
-			dx=dy=0;
+		if (owner->map->terrainPropertiesAt(core.posX+core.dx,core.posY+core.dy).airHealthQ8 < 0) {
+			core.dx=core.dy=0;
 			directionFromDxDy();
 		}
 	}
 
 	wrapPosition();
-	action=FLY;
-	speed=unitTerrainMovementSpeed(performance[FLY], owner->map->terrainPropertiesAt(posX,posY).airSpeedQ8, dx != 0 || dy != 0);
+	core.action=FLY;
+	core.speed=unitTerrainMovementSpeed(performance(FLY), owner->map->terrainPropertiesAt(core.posX,core.posY).airSpeedQ8, core.dx != 0 || core.dy != 0);
 	claimOccupiedMapSlot();
 }
 
 void Unit::handleActionGoingTarget()
 {
-	assert(!performance[FLY]);
+	assert(!performance(FLY));
 	clearOccupiedMapSlot();
-	owner->map->pathfindPointToPoint(posX, posY, targetX, targetY, &dx, &dy, swimClass(), owner->me, GOING_TARGET_MAX_PATH_LENGTH);
+	owner->map->pathfindPointToPoint(core.posX, core.posY, core.targetX, core.targetY, &core.dx, &core.dy, swimClass(), owner->me, GOING_TARGET_MAX_PATH_LENGTH);
 	directionFromDxDy();
 	wrapPosition();
 
-	if(dx == 0 && dy == 0)
-		if (!performance[FLY]) owner->map->markImmobileUnit(posX, posY, owner->teamNumber);
+	if(core.dx == 0 && core.dy == 0)
+		if (!performance(FLY)) owner->map->markImmobileUnit(core.posX, core.posY, owner->teamNumber);
 
 	selectPreferredGroundMovement();
-	speed=unitTerrainMovementSpeed(performance[action], action == FLY
-        ? owner->map->terrainPropertiesAt(posX,posY).airSpeedQ8
-        : owner->map->terrainPropertiesAt(posX,posY).groundSpeedQ8, dx != 0 || dy != 0);
+	core.speed=unitTerrainMovementSpeed(performance(core.action), core.action == FLY
+        ? owner->map->terrainPropertiesAt(core.posX,core.posY).airSpeedQ8
+        : owner->map->terrainPropertiesAt(core.posX,core.posY).groundSpeedQ8, core.dx != 0 || core.dy != 0);
 	claimOccupiedMapSlot();
 }
 
@@ -123,16 +123,16 @@ void Unit::handleActionFlyingTarget()
 	// No assert(getAirUnit==NOGUID) on the final claim — two flyers can
 	// converge on the same target tile, so the destination slot may be
 	// non-empty. Direct setAirUnit calls preserve that, unlike claimOccupiedMapSlot().
-	owner->map->setAirUnit(posX, posY, NOGUID);
+	owner->map->setAirUnit(core.posX, core.posY, NOGUID);
 
 	flyToTarget();
 
 	wrapPosition();
 
-	action=FLY;
-	speed=unitTerrainMovementSpeed(performance[FLY], owner->map->terrainPropertiesAt(posX,posY).airSpeedQ8, dx != 0 || dy != 0);
+	core.action=FLY;
+	core.speed=unitTerrainMovementSpeed(performance(FLY), owner->map->terrainPropertiesAt(core.posX,core.posY).airSpeedQ8, core.dx != 0 || core.dy != 0);
 
-	owner->map->setAirUnit(posX, posY, gid);
+	owner->map->setAirUnit(core.posX, core.posY, core.gid);
 }
 
 void Unit::handleActionGoingDxDy()
@@ -143,18 +143,18 @@ void Unit::handleActionGoingDxDy()
 
 	wrapPosition();
 
-	if(dx == 0 && dy == 0)
-		if (!performance[FLY]) owner->map->markImmobileUnit(posX, posY, owner->teamNumber);
+	if(core.dx == 0 && core.dy == 0)
+		if (!performance(FLY)) owner->map->markImmobileUnit(core.posX, core.posY, owner->teamNumber);
 
 	selectPreferredMovement();
-	speed=unitTerrainMovementSpeed(performance[action], action == FLY
-        ? owner->map->terrainPropertiesAt(posX,posY).airSpeedQ8
-        : owner->map->terrainPropertiesAt(posX,posY).groundSpeedQ8, dx != 0 || dy != 0);
+	core.speed=unitTerrainMovementSpeed(performance(core.action), core.action == FLY
+        ? owner->map->terrainPropertiesAt(core.posX,core.posY).airSpeedQ8
+        : owner->map->terrainPropertiesAt(core.posX,core.posY).groundSpeedQ8, core.dx != 0 || core.dy != 0);
 
 	claimOccupiedMapSlot();
 
 	if (verbose)
-		printf("guid=(%d) MOV_GOING_DX_DY d=(%d, %d; %d).\n", gid, direction, dx, dy);
+		printf("guid=(%d) MOV_GOING_DX_DY d=(%d, %d; %d).\n", core.gid, core.direction, core.dx, core.dy);
 }
 
 void Unit::handleActionEnteringBuilding()
@@ -164,50 +164,50 @@ void Unit::handleActionEnteringBuilding()
 	wrapPosition();
 	directionFromDxDy();
 	selectPreferredMovement();
-	speed=unitTerrainMovementSpeed(performance[action], action == FLY
-        ? owner->map->terrainPropertiesAt(posX,posY).airSpeedQ8
-        : owner->map->terrainPropertiesAt(posX,posY).groundSpeedQ8, dx != 0 || dy != 0);
+	core.speed=unitTerrainMovementSpeed(performance(core.action), core.action == FLY
+        ? owner->map->terrainPropertiesAt(core.posX,core.posY).airSpeedQ8
+        : owner->map->terrainPropertiesAt(core.posX,core.posY).groundSpeedQ8, core.dx != 0 || core.dy != 0);
 }
 
 void Unit::handleActionExitingBuilding()
 {
 	directionFromDxDy();
 	selectPreferredMovement();
-	speed=unitTerrainMovementSpeed(performance[action], action == FLY
-        ? owner->map->terrainPropertiesAt(posX,posY).airSpeedQ8
-        : owner->map->terrainPropertiesAt(posX,posY).groundSpeedQ8, dx != 0 || dy != 0);
+	core.speed=unitTerrainMovementSpeed(performance(core.action), core.action == FLY
+        ? owner->map->terrainPropertiesAt(core.posX,core.posY).airSpeedQ8
+        : owner->map->terrainPropertiesAt(core.posX,core.posY).groundSpeedQ8, core.dx != 0 || core.dy != 0);
 	claimOccupiedMapSlot();
 }
 
 void Unit::handleActionFilling()
 {
-	if (!performance[FLY]) owner->map->markImmobileUnit(posX, posY, owner->teamNumber);
+	if (!performance(FLY)) owner->map->markImmobileUnit(core.posX, core.posY, owner->teamNumber);
 	directionFromDxDy();
-	action=BUILD;
-	speed=performance[action];
+	core.action=BUILD;
+	core.speed=performance(core.action);
 }
 
 void Unit::handleActionAttackingTarget()
 {
-	if (!performance[FLY]) owner->map->markImmobileUnit(posX, posY, owner->teamNumber);
+	if (!performance(FLY)) owner->map->markImmobileUnit(core.posX, core.posY, owner->teamNumber);
 	directionFromDxDy();
-	action=ATTACK_SPEED;
-	speed=performance[action];
+	core.action=ATTACK_SPEED;
+	core.speed=performance(core.action);
 }
 
 void Unit::handleActionHarvesting()
 {
-	if (!performance[FLY]) owner->map->markImmobileUnit(posX, posY, owner->teamNumber);
+	if (!performance(FLY)) owner->map->markImmobileUnit(core.posX, core.posY, owner->teamNumber);
 	directionFromDxDy();
-	action=HARVEST;
-	speed=performance[action];
-	assert(speed!=0);
+	core.action=HARVEST;
+	core.speed=performance(core.action);
+	assert(core.speed!=0);
 }
 
 void Unit::handleAction(void)
 {
-	owner->map->clearImmobileUnit(posX, posY);
-	switch (movement)
+	owner->map->clearImmobileUnit(core.posX, core.posY);
+	switch (core.movement)
 	{
 		case MOV_RANDOM_GROUND:     handleActionRandomGround();     break;
 		case MOV_RANDOM_FLY:        handleActionRandomFly();        break;

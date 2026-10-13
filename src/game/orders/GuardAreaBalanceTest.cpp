@@ -82,15 +82,15 @@ namespace
 			if (movedTiles)
 				for (int i = 0; i < Unit::MAX_COUNT; ++i)
 					if (Unit* u = team->myUnits[i])
-						before[i] = game.map.coordToIndex(u->posX, u->posY);
+						before[i] = game.map.coordToIndex(u->core.posX, u->core.posY);
 			game.syncStep(0);
 			for (int i = 0; i < Unit::MAX_COUNT; ++i)
 				if (Unit* u = team->myUnits[i])
-					u->hungry = Unit::HUNGRY_MAX;
+					u->core.hungry = Unit::HUNGRY_MAX;
 			if (movedTiles)
 				for (int i = 0; i < Unit::MAX_COUNT; ++i)
 					if (Unit* u = team->myUnits[i])
-						moved += (int)game.map.coordToIndex(u->posX, u->posY) != before[i];
+						moved += (int)game.map.coordToIndex(u->core.posX, u->core.posY) != before[i];
 		}
 		const auto end = std::chrono::steady_clock::now();
 		if (movedTiles)
@@ -175,9 +175,9 @@ namespace
 			for (int i = 0; i < Unit::MAX_COUNT; ++i)
 			{
 				Unit* u = team->myUnits[i];
-				if (!u || u->isDead || u->typeNum != WARRIOR)
+				if (!u || u->core.isDead || u->core.typeNum != WARRIOR)
 					continue;
-				if (game.map.warpDistSquare(u->posX, u->posY, zone.x, zone.y) <= zone.countRadius * zone.countRadius)
+				if (game.map.warpDistSquare(u->core.posX, u->core.posY, zone.x, zone.y) <= zone.countRadius * zone.countRadius)
 					++n;
 			}
 			return n;
@@ -189,7 +189,7 @@ namespace
 			for (int i = 0; i < Unit::MAX_COUNT; ++i)
 			{
 				Unit* u = team->myUnits[i];
-				if (u && !u->isDead && u->typeNum == WARRIOR && u->medical == Unit::MED_FREE && u->activity == Unit::ACT_RANDOM)
+				if (u && !u->core.isDead && u->core.typeNum == WARRIOR && u->core.medical == Unit::MED_FREE && u->core.activity == Unit::ACT_RANDOM)
 					++n;
 			}
 			return n;
@@ -336,7 +336,7 @@ namespace
 		int nab = 0;
 		for (int i = 0; i < Unit::MAX_COUNT; ++i)
 			if (Unit* u = world.team->myUnits[i])
-				if (world.game.map.warpDistSquare(u->posX, u->posY, 30, 14) <= 8 * 8)
+				if (world.game.map.warpDistSquare(u->core.posX, u->core.posY, 30, 14) <= 8 * 8)
 					++nab;
 		const int nfar = world.countNear(FAR_AREA);
 		std::printf("[patches] near pair %d  far %d  elsewhere %d\n", nab, nfar, options.warriors - nab - nfar);
@@ -440,10 +440,10 @@ namespace
 				for (int i = 0; i < Unit::MAX_COUNT; ++i)
 				{
 					Unit* u = world.team->myUnits[i];
-					if (!u || u->isDead || u->typeNum != WARRIOR)
+					if (!u || u->core.isDead || u->core.typeNum != WARRIOR)
 						continue;
-					const int tile = (int)world.game.map.coordToIndex(u->posX, u->posY);
-					if (!world.game.map.isGuardArea(u->posX, u->posY, world.team->me))
+					const int tile = (int)world.game.map.coordToIndex(u->core.posX, u->core.posY);
+					if (!world.game.map.isGuardArea(u->core.posX, u->core.posY, world.team->me))
 					{
 						stillOn[i] = -1;
 						continue;
@@ -453,7 +453,7 @@ namespace
 					else if (stillOn[i] != tile)
 						stillOn[i] = -1;
 					++onPaint;
-					noDirection += u->direction == UNIT_DIRECTION_NONE;
+					noDirection += u->core.direction == UNIT_DIRECTION_NONE;
 				}
 			}
 			const int held = world.countNear(zone);
@@ -560,8 +560,8 @@ namespace
 				for (int i = 0; i < Unit::MAX_COUNT; ++i)
 					if (Unit* u = world.team->myUnits[i])
 					{
-						int ddx = std::abs(((u->posX - x) & map.wMask));
-						int ddy = std::abs(((u->posY - y) & map.hMask));
+						int ddx = std::abs(((u->core.posX - x) & map.wMask));
+						int ddy = std::abs(((u->core.posY - y) & map.hMask));
 						ddx = std::min(ddx, map.getW() - ddx);
 						ddy = std::min(ddy, map.getH() - ddy);
 						expected += std::max(ddx, ddy) <= GUARD_CROWD_RADIUS;

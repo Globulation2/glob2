@@ -43,25 +43,25 @@ struct Fixture {
         REQUIRE(building);
         unit = game.addUnit(20, 19, 0, WORKER, 0, 0, 0, 0);
         REQUIRE(unit);
-        id = Unit::GIDtoID(unit->gid);
+        id = Unit::GIDtoID(unit->core.gid);
         game.map.setGroundUnit(20, 19, NOGUID);
-        unit->posX = 20;
-        unit->posY = 20;
+        unit->core.posX = 20;
+        unit->core.posY = 20;
         unit->attachedBuilding = building;
         unit->setTargetBuilding(building);
         building->unitsInside.push_back(unit);
-        unit->activity = Unit::ACT_UPGRADING;
-        unit->displacement = Unit::DIS_EXITING_BUILDING;
-        unit->movement = Unit::MOV_INSIDE;
-        unit->action = WALK;
-        unit->delta = 255;
-        unit->destinationPurpose = purpose;
-        unit->insideTimeout = 0;
-        unit->medical = purpose == FEED ? Unit::MED_HUNGRY : Unit::MED_FREE;
-        unit->needToRecheckMedical = true;
-        unit->hungry = 10;
-        unit->hungriness = 2;
-        unit->hp = 2;
+        unit->core.activity = Unit::ACT_UPGRADING;
+        unit->core.displacement = Unit::DIS_EXITING_BUILDING;
+        unit->core.movement = Unit::MOV_INSIDE;
+        unit->core.action = WALK;
+        unit->core.delta = 255;
+        unit->core.destinationPurpose = purpose;
+        unit->detail.insideTimeout = 0;
+        unit->core.medical = purpose == FEED ? Unit::MED_HUNGRY : Unit::MED_FREE;
+        unit->detail.needToRecheckMedical = true;
+        unit->core.hungry = 10;
+        unit->detail.hungriness = 2;
+        unit->core.hp = 2;
         for (int y = 19; y <= 20 + building->type->height; ++y)
             for (int x = 19; x <= 20 + building->type->width; ++x) {
                 if (x >= 20 && x < 20 + building->type->width && y >= 20 && y < 20 + building->type->height) continue;
@@ -107,9 +107,9 @@ Trace finish(Game& game, int id) {
         trace.push_back(state(game, id));
     }
     REQUIRE(game.teams[0]->myUnits[id] != nullptr);
-    REQUIRE(!game.teams[0]->myUnits[id]->isDead);
-    REQUIRE(game.teams[0]->myUnits[id]->hungry == 10);
-    REQUIRE(game.teams[0]->myUnits[id]->hp == 2);
+    REQUIRE(!game.teams[0]->myUnits[id]->core.isDead);
+    REQUIRE(game.teams[0]->myUnits[id]->core.hungry == 10);
+    REQUIRE(game.teams[0]->myUnits[id]->core.hp == 2);
     REQUIRE(game.teams[0]->myBuildings[0]->unitsInside.size() == 1);
     REQUIRE((!game.teams[0]->isAlive && game.teams[0]->hasLost));
     REQUIRE(game.teams[1]->hasWon);
@@ -117,7 +117,7 @@ Trace finish(Game& game, int id) {
 }
 Trace eliminationAndSave(int resource, int purpose) {
     Fixture f(resource, purpose);
-    REQUIRE((f.unit->hungry == 10 && !f.unit->isDead));
+    REQUIRE((f.unit->core.hungry == 10 && !f.unit->core.isDead));
     REQUIRE((f.game.teams[0]->isAlive && !f.game.teams[0]->hasLost));
     REQUIRE(!f.game.teams[1]->hasWon);
     REQUIRE((f.unit->attachedBuilding == f.building && !f.building->unitsInside.empty()));
@@ -150,19 +150,19 @@ void rescue() {
     Fixture f;
     f.game.teams[0]->allies |= f.game.teams[1]->me;
     f.game.syncStep(0);
-    REQUIRE((f.unit->hungry == 10 && f.game.teams[0]->isAlive));
+    REQUIRE((f.unit->core.hungry == 10 && f.game.teams[0]->isAlive));
     f.game.map.replaceResource(20, 19, Resource{});
     for (int i = 0; i < 16 && f.unit->attachedBuilding; ++i) f.game.syncStep(0);
-    REQUIRE((f.game.teams[0]->myUnits[f.id] == f.unit && !f.unit->isDead));
+    REQUIRE((f.game.teams[0]->myUnits[f.id] == f.unit && !f.unit->core.isDead));
     REQUIRE((f.unit->attachedBuilding == nullptr && f.building->unitsInside.empty()));
-    REQUIRE(f.unit->movement == Unit::MOV_EXITING_BUILDING);
+    REQUIRE(f.unit->core.movement == Unit::MOV_EXITING_BUILDING);
     REQUIRE(f.game.teams[0]->isAlive);
 }
 void allyProtection(int inactiveReason) {
     Fixture f;
     f.game.teams[0]->allies |= f.game.teams[1]->me;
     for (int i = 0; i < 32; ++i) f.game.syncStep(0);
-    REQUIRE((f.game.teams[0]->isAlive && f.unit->hungry == 10));
+    REQUIRE((f.game.teams[0]->isAlive && f.unit->core.hungry == 10));
     if (inactiveReason == 0) f.game.teams[1]->isAlive = false;
     if (inactiveReason == 1) f.game.teams[1]->playersMask = 0;
     if (inactiveReason == 2) f.game.teams[1]->hasLost = true;
@@ -173,13 +173,13 @@ void freeUnitProtection() {
     Fixture f;
     REQUIRE(f.game.addUnit(10, 10, 0, WORKER, 0, 0, 0, 0));
     for (int i = 0; i < 16; ++i) f.game.syncStep(0);
-    REQUIRE((f.game.teams[0]->isAlive && f.unit->hungry == 10));
+    REQUIRE((f.game.teams[0]->isAlive && f.unit->core.hungry == 10));
 }
 void openExitProtection() {
     Fixture f;
     f.game.map.replaceResource(20, 19, Resource{});
     // Even before its movement update, an available exit must protect the unit.
-    f.unit->delta = 0;
+    f.unit->core.delta = 0;
     f.game.syncStep(0);
     REQUIRE(f.game.teams[0]->isAlive);
 }
@@ -208,7 +208,7 @@ void productionRecovery(bool stocked, bool blocked) {
     }
     f.game.syncStep(0);
     REQUIRE(f.game.teams[0]->isAlive == (stocked && !blocked));
-    REQUIRE(f.unit->hungry == 10);
+    REQUIRE(f.unit->core.hungry == 10);
     if (stocked && !blocked) {
         swarm->ratio[WORKER] = 1;
         swarm->productionTimeout = 0;
@@ -219,12 +219,12 @@ void productionRecovery(bool stocked, bool blocked) {
 }
 void activeService(int purpose) {
     Fixture f(WOOD, purpose);
-    f.unit->displacement = Unit::DIS_INSIDE;
-    f.unit->insideTimeout = -100;
+    f.unit->core.displacement = Unit::DIS_INSIDE;
+    f.unit->detail.insideTimeout = -100;
     for (int i = 0; i < 16; ++i) f.game.syncStep(0);
     REQUIRE(f.game.teams[0]->myUnits[f.id] == f.unit);
-    REQUIRE((f.unit->hungry == 10 && f.unit->hp == 2));
-    REQUIRE((f.unit->insideTimeout < 0 && f.unit->attachedBuilding == f.building));
+    REQUIRE((f.unit->core.hungry == 10 && f.unit->core.hp == 2));
+    REQUIRE((f.unit->detail.insideTimeout < 0 && f.unit->attachedBuilding == f.building));
     REQUIRE(f.game.teams[0]->isAlive);
 }
 }

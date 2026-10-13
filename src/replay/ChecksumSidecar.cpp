@@ -133,7 +133,7 @@ void ChecksumSidecarWriter::writeTick(Uint32 tick, Uint32 totalChecksum, Game& g
 			Unit* u = team->myUnits[i];
 			vec.clear();
 			Uint32 uCs = u->checkSum(&vec,legacy152);
-			writeU16((Uint16)u->gid);
+			writeU16((Uint16)u->core.gid);
 			writeU32(uCs);
 			writeU32((Uint32)vec.size());
 			for (size_t j = 0; j < vec.size(); j++)

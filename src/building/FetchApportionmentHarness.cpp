@@ -80,11 +80,11 @@ static void siteSpreadsItsFetchersAcrossBothResources()
 		Unit* unit = new Unit(siteX - 2, siteY - 2 + (n % 5), slot, WORKER, team, 0);
 		team->myUnits[slot] = unit;
 		team->rebuildLiveLists();
-		unit->performance[WALK] = 10;
-		unit->performance[HARVEST] = 10;
-		unit->activity = Unit::ACT_RANDOM;
-		unit->displacement = Unit::DIS_RANDOM;
-		unit->medical = Unit::MED_FREE;
+		unit->performance(WALK) = 10;
+		unit->performance(HARVEST) = 10;
+		unit->core.activity = Unit::ACT_RANDOM;
+		unit->core.displacement = Unit::DIS_RANDOM;
+		unit->core.medical = Unit::MED_FREE;
 		unit->attachedBuilding = NULL;
 	}
 
@@ -92,9 +92,9 @@ static void siteSpreadsItsFetchersAcrossBothResources()
 	// apportionment did the work and not an accidentally even map.
 	int woodDistance = 0, stoneDistance = 0;
 	Unit* probe = team->myUnits[0];
-	require(game.map.materialAvailableSlot(0, WOOD, probe->swimClass(), probe->posX, probe->posY, &woodDistance),
+	require(game.map.materialAvailableSlot(0, WOOD, probe->swimClass(), probe->core.posX, probe->core.posY, &woodDistance),
 		"the wood is reachable");
-	require(game.map.materialAvailableSlot(0, STONE, probe->swimClass(), probe->posX, probe->posY, &stoneDistance),
+	require(game.map.materialAvailableSlot(0, STONE, probe->swimClass(), probe->core.posX, probe->core.posY, &stoneDistance),
 		"the stone is reachable");
 	std::printf("probe distances: wood=%d stone=%d\n", woodDistance, stoneDistance);
 	require(stoneDistance > 3 * woodDistance, "the stone is far enough to tempt the old scorer");
@@ -106,8 +106,8 @@ static void siteSpreadsItsFetchersAcrossBothResources()
 
 	int subscribed[MaterialSlotCount] = {0};
 	for (std::list<Unit*>::iterator ui = site->unitsWorking.begin(); ui != site->unitsWorking.end(); ++ui)
-		if ((*ui)->destinationPurpose >= 0 && (*ui)->destinationPurpose < MaterialSlotCount)
-			subscribed[(*ui)->destinationPurpose]++;
+		if ((*ui)->core.destinationPurpose >= 0 && (*ui)->core.destinationPurpose < MaterialSlotCount)
+			subscribed[(*ui)->core.destinationPurpose]++;
 
 	std::printf("hired %d: wood=%d stone=%d (wood %d tiles away, stone %d)\n",
 		hires, subscribed[WOOD], subscribed[STONE], woodDistance, stoneDistance);
@@ -152,17 +152,17 @@ static int hireOneOfTwo(int emptyX, int emptyY, int loadedX, int loadedY, int* e
 		Unit* unit = new Unit(positions[n][0], positions[n][1], n, WORKER, team, 0);
 		team->myUnits[n] = unit;
 		team->rebuildLiveLists();
-		unit->performance[WALK] = 10;
-		unit->performance[HARVEST] = 10;
-		unit->activity = Unit::ACT_RANDOM;
-		unit->displacement = Unit::DIS_RANDOM;
-		unit->medical = Unit::MED_FREE;
+		unit->performance(WALK) = 10;
+		unit->performance(HARVEST) = 10;
+		unit->core.activity = Unit::ACT_RANDOM;
+		unit->core.displacement = Unit::DIS_RANDOM;
+		unit->core.medical = Unit::MED_FREE;
 		unit->attachedBuilding = NULL;
-		unit->trigHungry = 100;
-		unit->hungry = unit->trigHungry + 1000 * unit->race->hungriness;
+		unit->detail.trigHungry = 100;
+		unit->core.hungry = unit->detail.trigHungry + 1000 * unit->race->hungriness;
 	}
 	// Unit 1 turns up holding wheat, which this site has no use for at all.
-	team->myUnits[1]->carriedMaterial = WHEAT;
+	team->myUnits[1]->core.carriedMaterial = WHEAT;
 	require(site->neededMaterial(WHEAT) == 0, "the wheat is of no use here");
 
 	const int swimClass = team->myUnits[0]->swimClass();
@@ -170,9 +170,9 @@ static int hireOneOfTwo(int emptyX, int emptyY, int loadedX, int loadedY, int* e
 	{
 		Unit* unit = team->myUnits[n];
 		int distBuilding = 0, distResource = 0;
-		require(game.map.buildingAvailable(site, swimClass, unit->posX, unit->posY, &distBuilding),
+		require(game.map.buildingAvailable(site, swimClass, unit->core.posX, unit->core.posY, &distBuilding),
 			"the site is reachable from the candidate");
-		require(game.map.materialAvailableSlot(0, STONE, swimClass, unit->posX, unit->posY, &distResource),
+		require(game.map.materialAvailableSlot(0, STONE, swimClass, unit->core.posX, unit->core.posY, &distResource),
 			"the stone is reachable from the candidate");
 		*(n == 0 ? emptyCost : loadedCost) = distBuilding + distResource;
 	}
@@ -181,8 +181,8 @@ static int hireOneOfTwo(int emptyX, int emptyY, int loadedX, int loadedY, int* e
 	require(site->hireOne(), "somebody is hired");
 	require(site->unitsWorking.size() == 1, "exactly one unit is hired");
 	Unit* chosen = site->unitsWorking.front();
-	require(chosen->destinationPurpose == STONE, "hired for the stone");
-	return chosen->gid;
+	require(chosen->core.destinationPurpose == STONE, "hired for the stone");
+	return chosen->core.gid;
 }
 
 // A loaded candidate pays a detour, so an empty-handed one that is no closer

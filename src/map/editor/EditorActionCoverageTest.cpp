@@ -161,12 +161,12 @@ TEST_SUITE("EditorActionCoverage")
             select();CHECK_FALSE(shown(gold));CHECK_FALSE(shown(metal));
             if(source==0)editor.game.map.setResource(24,24,deposit,0);
             if(source==1)supplier->materials[gold]=1;
-            if(source==2)worker->carriedMaterial=gold;
+            if(source==2)worker->core.carriedMaterial=gold;
             if(source==3)team.teamMaterials[gold]=1;
             if(source==4)team.reservedTeamMaterials[gold]=1;
             select();CHECK(shown(gold));CHECK_FALSE(shown(metal));
             editor.game.map.replaceResource(24,24,Resource{});
-            supplier->materials[gold]=0;worker->carriedMaterial=-1;
+            supplier->materials[gold]=0;worker->core.carriedMaterial=-1;
             team.teamMaterials[gold]=team.reservedTeamMaterials[gold]=0;
             select();CHECK_FALSE(shown(gold));CHECK_FALSE(shown(metal));
         }
@@ -228,16 +228,16 @@ TEST_SUITE("EditorActionCoverage")
             REQUIRE(gid!=NOGUID);
             auto* unit=editor.game.teams[0]->myUnits[Unit::GIDtoID(gid)];
             REQUIRE(unit!=nullptr);
-            CHECK(unit->typeNum==entry.second);
+            CHECK(unit->core.typeNum==entry.second);
             CHECK(editor.hasMapBeenModified);
             editor.performAction("select map unit");
             REQUIRE(editor.view.selectedUnit==unit);
             editor.drawMap(0,0,globalContainer->gfx->getW(),globalContainer->gfx->getH());
             const auto displayedHp=editor.unitHPScrollBox->currentValue();
-            REQUIRE(displayedHp==unit->hp);
+            REQUIRE(displayedHp==unit->core.hp);
             REQUIRE(displayedHp>0);
             editor.unitHPScrollBox->setValue(displayedHp-1);
-            CHECK(unit->hp==displayedHp-1);
+            CHECK(unit->core.hp==displayedHp-1);
             CHECK(editor.unitHPScrollBox->currentValue()==displayedHp);
             editor.drawMap(0,0,globalContainer->gfx->getW(),globalContainer->gfx->getH());
             CHECK(editor.unitHPScrollBox->currentValue()==displayedHp-1);
@@ -247,18 +247,18 @@ TEST_SUITE("EditorActionCoverage")
                                       std::pair{"update unit attack strength level",ATTACK_STRENGTH},
                                       std::pair{"update unit magic ground attack level",MAGIC_ATTACK_GROUND}})
             {
-                unit->level[update.second]=1;
+                unit->detail.level[update.second]=1;
                 editor.hasMapBeenModified=false;
                 editor.performAction(update.first);
-                CHECK(unit->performance[update.second]==unit->race->getUnitType(unit->typeNum,1)->performance[update.second]);
+                CHECK(unit->performance(update.second)==unit->race->getUnitType(unit->core.typeNum,1)->performance[update.second]);
                 CHECK(editor.hasMapBeenModified);
             }
             if (entry.second==WORKER)
             {
-                unit->level[BUILD]=1;
+                unit->detail.level[BUILD]=1;
                 editor.performAction("update unit build level");
-                CHECK(unit->level[HARVEST]==1);
-                CHECK(unit->performance[HARVEST]==unit->race->getUnitType(WORKER,1)->performance[HARVEST]);
+                CHECK(unit->detail.level[HARVEST]==1);
+                CHECK(unit->performance(HARVEST)==unit->race->getUnitType(WORKER,1)->performance[HARVEST]);
             }
             editor.performAction("unselect");
             CHECK(editor.view.selectedUnit==nullptr);

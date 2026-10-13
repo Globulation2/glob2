@@ -50,6 +50,7 @@ void MapEdit::preparePresentation()
     request.view.overlay=isFertilityOn ? OverlayArea::Fertility : OverlayArea::None;
     request.selectedBuilding=Game::refOf(view.selectedBuilding);
     request.selectedUnit=Game::refOf(view.selectedUnit);
+    request.includeUnitDetails=!request.selectedUnit.empty();
     request.view.displayW=int(camera.visibleW());request.view.displayH=int(camera.visibleH());
     SceneExtractor().prepare(game.captureReadBoundary({},true,SceneExtractor::requirements(request)),request,view.render.ownScene);
     view.scene=&view.render.ownScene;

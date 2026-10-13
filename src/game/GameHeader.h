@@ -201,7 +201,7 @@ public:
 	///scale is defined, mirroring getBuildingHpMultiplier() below; every read
 	///of it (Unit::init's HP scaling, UnitStats.cpp's getRealAttackStrength()/
 	///getRealArmor(), any AI or UI code that needs a unit's *effective*
-	///combat stats rather than its base performance[]) should go through this
+	///combat stats rather than its base performance()) should go through this
 	///rather than re-deriving or re-duplicating the tier->scale mapping.
 	inline int getGlassCannonScale() const
 	{

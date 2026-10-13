@@ -22,8 +22,8 @@ MaterialMask editorMaterialPresence(const Game& game, MaterialMask requested)
         for (unsigned m=0;m<MaterialCount;++m)
             if (team->teamMaterials[m] || team->reservedTeamMaterials[m]) present|=MaterialMask(1u<<m);
         for (int id=0;id<Unit::MAX_COUNT;++id)
-            if (const Unit* unit=team->myUnits[id];unit && validMaterial(unit->carriedMaterial))
-                present|=MaterialMask(1u<<unit->carriedMaterial);
+            if (const Unit* unit=team->myUnits[id];unit && validMaterial(unit->core.carriedMaterial))
+                present|=MaterialMask(1u<<unit->core.carriedMaterial);
         for (int id=0;id<Building::MAX_COUNT;++id)
             if (const Building* building=team->myBuildings[id])
                 for (unsigned m=0;m<MaterialCount;++m)

@@ -127,10 +127,10 @@ TEST_CASE("terrain strokes clear incompatible resources; buildings and units")
 			Building* building = game.addBuilding(swarmX, swarmY, swarm, 0);
 			Unit* worker = game.addUnit(workerX, workerY, 0, WORKER, 0, 0, 0, 0);
 			Unit* explorer = game.addUnit(explorerX, explorerY, 0, EXPLORER, 0, 0, 0, 0);
-			REQUIRE((building && worker && explorer && !worker->performance[SWIM]));
+			REQUIRE((building && worker && explorer && !worker->performance(SWIM)));
 			swarmGid = building->gid;
-			workerGid = worker->gid;
-			explorerGid = explorer->gid;
+			workerGid = worker->core.gid;
+			explorerGid = explorer->core.gid;
 		}
 		bool alive(Uint16 gid, bool building) const
 		{
@@ -197,12 +197,12 @@ TEST_CASE("terrain strokes clear incompatible resources; buildings and units")
         {
             World world(swarm, swarmW, swarmH, offset[0], offset[1]);
             Unit* worker = world.game.getUnit(world.workerGid);
-            worker->performance[SWIM] = swimming ? worker->race->getUnitType(WORKER, 1)->performance[SWIM] : 0;
+            worker->performance(SWIM) = swimming ? worker->race->getUnitType(WORKER, 1)->performance[SWIM] : 0;
             Unit* explorer = world.game.getUnit(world.explorerGid);
-            world.game.map.setAirUnit(explorer->posX, explorer->posY, NOGUID);
-            explorer->posX = world.workerX;
-            explorer->posY = world.workerY;
-            world.game.map.setAirUnit(explorer->posX, explorer->posY, explorer->gid);
+            world.game.map.setAirUnit(explorer->core.posX, explorer->core.posY, NOGUID);
+            explorer->core.posX = world.workerX;
+            explorer->core.posY = world.workerY;
+            world.game.map.setAirUnit(explorer->core.posX, explorer->core.posY, explorer->core.gid);
             for (int y = world.workerY; y <= world.workerY + 1; ++y)
                 for (int x = world.workerX; x <= world.workerX + 1; ++x)
                     world.stroke(x & 15, y & 15, WATER);
@@ -219,10 +219,10 @@ TEST_CASE("terrain strokes clear incompatible resources; buildings and units")
     {
         World world(swarm, swarmW, swarmH);
         Unit* explorer = world.game.getUnit(world.explorerGid);
-        world.game.map.setAirUnit(explorer->posX, explorer->posY, NOGUID);
-        explorer->posX = world.workerX;
-        explorer->posY = world.workerY;
-        world.game.map.setAirUnit(explorer->posX, explorer->posY, explorer->gid);
+        world.game.map.setAirUnit(explorer->core.posX, explorer->core.posY, NOGUID);
+        explorer->core.posX = world.workerX;
+        explorer->core.posY = world.workerY;
+        world.game.map.setAirUnit(explorer->core.posX, explorer->core.posY, explorer->core.gid);
         world.game.removeUnitAndBuildingAndFlags(world.workerX, world.workerY, 1, flag);
         REQUIRE(world.alive(world.workerGid, false) == (flag == Game::DEL_AIR_UNIT));
         REQUIRE(world.alive(world.explorerGid, false) == (flag == Game::DEL_GROUND_UNIT));
@@ -506,8 +506,8 @@ TEST_CASE("workers carry food from camp-sites to an inn and leave their other yi
         for (int i=0;i<3;++i)
         {
             auto* unit=world.team->myUnits[i];
-            unit->hungry=Unit::HUNGRY_MAX;
-            unit->medical=Unit::MED_FREE;
+            unit->core.hungry=Unit::HUNGRY_MAX;
+            unit->core.medical=Unit::MED_FREE;
         }
         world.step();
     }
@@ -1455,10 +1455,10 @@ TEST_CASE("released terrain-seed format 138 retains legacy resource and material
             {
                 const auto *oldUnit = legacy.game.teams[t]->myUnits[u];
                 REQUIRE(oldUnit != nullptr);
-                CHECK(unit->movement == oldUnit->movement);
-                CHECK(unit->destinationPurpose == oldUnit->destinationPurpose);
-                CHECK(unit->carriedMaterial == oldUnit->carriedMaterial);
-                pendingHarvests += unit->movement == Unit::MOV_HARVESTING;
+                CHECK(unit->core.movement == oldUnit->core.movement);
+                CHECK(unit->core.destinationPurpose == oldUnit->core.destinationPurpose);
+                CHECK(unit->core.carriedMaterial == oldUnit->core.carriedMaterial);
+                pendingHarvests += unit->core.movement == Unit::MOV_HARVESTING;
             }
         for (unsigned b = 0; b < Building::MAX_COUNT; ++b)
             if (const auto *building = restored.game.teams[t]->myBuildings[b])
@@ -1510,7 +1510,7 @@ TEST_CASE("released observation format 139 imports legacy stocks and preserves c
     {
         for(unsigned u=0;u<Unit::MAX_COUNT;++u)
             if(const auto* unit=original.game.teams[team]->myUnits[u])
-                pendingHarvests+=unit->movement==Unit::MOV_HARVESTING;
+                pendingHarvests+=unit->core.movement==Unit::MOV_HARVESTING;
         for(unsigned b=0;b<Building::MAX_COUNT;++b)
             if(const auto* building=original.game.teams[team]->myBuildings[b])
                 for(unsigned material=8;material<MaterialCount;++material)

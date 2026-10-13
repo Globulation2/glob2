@@ -64,7 +64,7 @@ public:
     ~Shadow();
     bool planningEnabled() const { return delay != 0; }
     bool needsBoundary(Uint32 tick) const { return planningEnabled() && (!lastBoundary || *lastBoundary != tick); }
-    static constexpr auto requirements = SimulationSnapshot::Simulation | SimulationSnapshot::bit(SimulationSnapshot::Component::Exploration);
+    static constexpr auto requirements = (SimulationSnapshot::Simulation & ~SimulationSnapshot::bit(SimulationSnapshot::Component::Entities)) | SimulationSnapshot::bit(SimulationSnapshot::Component::BuildingEntities) | SimulationSnapshot::bit(SimulationSnapshot::Component::UnitCores) | SimulationSnapshot::bit(SimulationSnapshot::Component::Exploration);
     void boundary(const Game& game,const SimulationSnapshot::Handle& world);
     void completeAction(const Unit& unit);
     void observe(const Unit& unit); // after transitions, before the reference action

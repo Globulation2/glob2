@@ -43,8 +43,8 @@ bool Map::pathfindMaterial(EntityRandom& random, int teamNumber, Uint8 resourceT
 
 void Map::pathfindRandom(Unit *unit)
 {
-	int x=unit->posX;
-	int y=unit->posY;
+	int x=unit->core.posX;
+	int y=unit->core.posY;
 	if (terrainPropertiesAt(x,y).groundHealthQ8 < 0)
 	{
 		pathfindTerrainSafety(unit);
@@ -52,16 +52,16 @@ void Map::pathfindRandom(Unit *unit)
 	}
 	if ((areaCells[x+(y<<wDec)].forbidden)&unit->owner->me)
 	{
-		if (pathfindForbidden(NULL, unit->owner->teamNumber, unit->swimClass(), x, y, &unit->dx, &unit->dy)
-			&& terrainPropertiesAt(x+unit->dx,y+unit->dy).groundHealthQ8 >= 0)
+		if (pathfindForbidden(NULL, unit->owner->teamNumber, unit->swimClass(), x, y, &unit->core.dx, &unit->core.dy)
+			&& terrainPropertiesAt(x+unit->core.dx,y+unit->core.dy).groundHealthQ8 >= 0)
 		{
 			unit->directionFromDxDy();
 		}
 		else
 		{
-			unit->dx=0;
-			unit->dy=0;
-			unit->direction=8;
+			unit->core.dx=0;
+			unit->core.dy=0;
+			unit->core.direction=8;
 		}
 	}
 	else
@@ -82,8 +82,8 @@ void Map::pathfindRandom(Unit *unit)
 				int ty=(y+tabClose[di][1])&hMask;
 				if (pass == 0 && !(areaCells[coordToIndex(tx, ty)].guard & unit->owner->me))
 					da[di]=false;
-				else if ((unit->performance[WALK] || terrainPropertiesAt(tx,ty).swimmable) && terrainPropertiesAt(tx,ty).groundHealthQ8 >= 0
-					&& isFreeForGroundUnit(tx, ty, (unit->performance[SWIM]>0), unit->owner->me))
+				else if ((unit->performance(WALK) || terrainPropertiesAt(tx,ty).swimmable) && terrainPropertiesAt(tx,ty).groundHealthQ8 >= 0
+					&& isFreeForGroundUnit(tx, ty, (unit->performance(SWIM)>0), unit->owner->me))
 				{
 					da[di]=true;
 					count++;
@@ -94,18 +94,18 @@ void Map::pathfindRandom(Unit *unit)
 		}
 		if (count==0)
 		{
-			unit->dx=0;
-			unit->dy=0;
-			unit->direction=8;
+			unit->core.dx=0;
+			unit->core.dy=0;
+			unit->core.direction=8;
 			return;
 		}
-		int dir=unit->entityRandom.nextU32()%count;
+		int dir=unit->detail.entityRandom.nextU32()%count;
 		for (int di=0; di<8; di++)
 			if (da[di] && dir--==0)
 			{
-				unit->dx=tabClose[di][0];
-				unit->dy=tabClose[di][1];
-				unit->direction=di;
+				unit->core.dx=tabClose[di][0];
+				unit->core.dy=tabClose[di][1];
+				unit->core.direction=di;
 				return;
 			}
 		assert(false);

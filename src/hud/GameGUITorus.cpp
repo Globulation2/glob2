@@ -119,12 +119,12 @@ void GameGUI::drawTorusOverlays(const PresentationFrame &scene, int originX, int
                     if (!unit || unit->identity!=worker)
                         continue;
                     int ux, uy;
-                    scene.map.mapCaseToDisplayable(unit->posX, unit->posY, &ux, &uy, originX, originY);
+                    scene.map.mapCaseToDisplayable(unit->core.posX, unit->core.posY, &ux, &uy, originX, originY);
                     int deltaLeft = 255 - drawnUnitDelta(*unit, view.render.unitMotion);
-                    if (unit->action < BUILD)
+                    if (unit->core.action < BUILD)
                     {
-                        ux -= (unit->dx * deltaLeft) >> 3;
-                        uy -= (unit->dy * deltaLeft) >> 3;
+                        ux -= (unit->core.dx * deltaLeft) >> 3;
+                        uy -= (unit->core.dy * deltaLeft) >> 3;
                     }
                     globalContainer->gfx->drawCircle(ux + 16, uy + 16, 16, 255, 255, 255, 180);
                 }

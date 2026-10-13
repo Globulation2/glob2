@@ -275,9 +275,9 @@ static void executionRegressions()
         game.map.setMapDiscovered(x,y,player.team->me);
     for(int i=0;i<8;++i) {
         Unit* warrior=game.addUnit(6+i,7,0,WARRIOR,1,1,1,1); REQUIRE(warrior);
-        warrior->medical=Unit::MED_FREE;
-        warrior->activity=Unit::ACT_RANDOM;
-        warrior->level[ATTACK_SPEED]=warrior->level[ATTACK_STRENGTH]=1;
+        warrior->core.medical=Unit::MED_FREE;
+        warrior->core.activity=Unit::ACT_RANDOM;
+        warrior->detail.level[ATTACK_SPEED]=warrior->detail.level[ATTACK_STRENGTH]=1;
     }
 
     // A raid retarget can happen between director ticks. Explorers follow that
@@ -514,9 +514,9 @@ static void reviewBugRegressions()
     ai.strategy.tactics.min_force=4;
     for(int i=0;i<8;++i) {
         Unit* walker=game.addUnit(6+i,7,0,WARRIOR,1,1,1,1); REQUIRE(walker);
-        walker->medical=Unit::MED_FREE; walker->activity=Unit::ACT_RANDOM;
-        walker->level[ATTACK_SPEED]=walker->level[ATTACK_STRENGTH]=1;
-        walker->performance[SWIM]=0;
+        walker->core.medical=Unit::MED_FREE; walker->core.activity=Unit::ACT_RANDOM;
+        walker->detail.level[ATTACK_SPEED]=walker->detail.level[ATTACK_STRENGTH]=1;
+        walker->performance(SWIM)=0;
     }
     // Walkers cannot reach the far island, so no offense is planned.
     ai.plan_offense(c);
@@ -524,9 +524,9 @@ static void reviewBugRegressions()
     REQUIRE(ai.offense_diagnostics.rejections["too_few_reachable"]==1);
     for(int i=0;i<4;++i) {
         Unit* swimmer=game.addUnit(6+i,8,0,WARRIOR,1,1,1,1); REQUIRE(swimmer);
-        swimmer->medical=Unit::MED_FREE; swimmer->activity=Unit::ACT_RANDOM;
-        swimmer->level[ATTACK_SPEED]=swimmer->level[ATTACK_STRENGTH]=1;
-        swimmer->performance[SWIM]=1;
+        swimmer->core.medical=Unit::MED_FREE; swimmer->core.activity=Unit::ACT_RANDOM;
+        swimmer->detail.level[ATTACK_SPEED]=swimmer->detail.level[ATTACK_STRENGTH]=1;
+        swimmer->performance(SWIM)=1;
     }
     ai.plan_offense(c);
     REQUIRE(ai.budget.tactical_kind==AIMaxima::Tactics::MissionSiege);
@@ -576,8 +576,8 @@ static void missionForceRegressions()
     for(int n=0; n<12; ++n) {
         Unit* unit=game.addUnit(5+n,5,1,WARRIOR,1,0,0,0);
         REQUIRE(unit);
-        unit->medical=Unit::MED_FREE;
-        unit->activity=Unit::ACT_RANDOM;
+        unit->core.medical=Unit::MED_FREE;
+        unit->core.activity=Unit::ACT_RANDOM;
         army.push_back(unit);
     }
     ai.timer=100;
@@ -600,7 +600,7 @@ static void missionForceRegressions()
     ai.tactical_mission.targetTeam=2; ai.tactical_mission.targetGid=enemy->gid;
     for(Unit* unit:army) {
         unit->attachedBuilding=flag;
-        unit->activity=Unit::ACT_FLAG;
+        unit->core.activity=Unit::ACT_FLAG;
         flag->unitsWorking.push_back(unit);
     }
     ai.plan_offense(c);
@@ -612,7 +612,7 @@ static void missionForceRegressions()
     REQUIRE(ai.budget.tactical_kind==AIMaxima::Tactics::MissionNone);
     for(Unit* unit:army) {
         unit->attachedBuilding=NULL;
-        unit->activity=Unit::ACT_RANDOM;
+        unit->core.activity=Unit::ACT_RANDOM;
     }
     ai.plan_offense(c);
     REQUIRE(ai.budget.tactical_target_gid==enemy->gid);
@@ -745,7 +745,7 @@ static void directorUpgradeRegressions()
     // Prestige is a school level-two to level-three upgrade. Its thresholds
     // must use the current workforce and completed schools, not stale snapshots.
     const int trainingSchool=game.buildingsTypes.getTypeNum("school",1,false);
-    builder->constructionLevel=2;
+    builder->core.constructionLevel=2;
     const int schoolType=AIMaximaBuildings::lineageRoot(game,trainingSchool);
     REQUIRE(game.addBuilding(10,10,trainingSchool,0)); {auto observation=c.scopeOwnerObservation();c.buildings.initiate();}
     ai.budget.allow_level2_upgrades=true; ai.finalize_director_plan(c);
@@ -1456,11 +1456,11 @@ static void economicResourceAccessRegressions()
         REQUIRE(ai.environment.accessible_stone==stone);
     };
     verify(0,0);
-    worker->performance[SWIM]=1; verify(1,1);
+    worker->performance(SWIM)=1; verify(1,1);
     // Deposits reserved against harvesting must not become available supply.
     game.map.setAreaMask(game.map.coordToIndex(19,12), &Tile::forbidden, game.map.getTile(19,12).forbidden | (player.team->me)); verify(0,1);
     game.map.setAreaMask(game.map.coordToIndex(19,12), &Tile::forbidden, game.map.getTile(19,12).forbidden & (~player.team->me));
-    worker->performance[SWIM]=0; verify(0,0);
+    worker->performance(SWIM)=0; verify(0,0);
     // A local worker on the second island can reach its resources without swimming.
     REQUIRE(game.addUnit(20,16,0,WORKER,0,0,0,0)); verify(1,1);
 
@@ -1473,7 +1473,7 @@ static void economicResourceAccessRegressions()
     ai.update_environment_model(c);
     REQUIRE((ai.known_algae_units==7 && ai.walk_accessible_algae_units==4));
     REQUIRE((ai.accessible_algae_units==4 && ai.environment.accessible_algae==1));
-    worker->performance[SWIM]=1; ai.update_environment_model(c);
+    worker->performance(SWIM)=1; ai.update_environment_model(c);
     REQUIRE((ai.accessible_algae_units==7 && ai.environment.accessible_algae==2));
 }
 

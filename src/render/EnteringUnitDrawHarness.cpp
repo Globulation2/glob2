@@ -128,7 +128,7 @@ class EnteringUnitDrawHarness
 		std::set<Uint16> visible;
 		for (int delta : DELTAS)
 		{
-			unit->delta = delta;
+			unit->core.delta = delta;
 			gfx->drawFilledRect(0, 0, gfx->getW(), gfx->getH(), 0, 0, 0);
 			{ SceneMap layers; glob2test::observeMap(game.map,layers); game.drawMapTerrain(0, 0, DRAW_W >> 5, DRAW_H >> 5, 0, 0, 0, Game::DRAW_WHOLE_MAP, layers); }
 			game.drawMapGroundUnits(0, 0, DRAW_W >> 5, DRAW_H >> 5, DRAW_W, DRAW_H,
@@ -153,30 +153,30 @@ public:
 		Game::ViewState view;
 		Unit* unit = game.addUnit(FROM_X, FROM_Y, 0, WORKER, 0, 0, 1, 0);
 		require(unit != nullptr, "create the worker");
-		unit->action = WALK;
+		unit->core.action = WALK;
 		unit->directionFromDxDy();
-		require(game.map.getGroundUnit(FROM_X, FROM_Y) == unit->gid,
+		require(game.map.getGroundUnit(FROM_X, FROM_Y) == unit->core.gid,
 			"the worker starts registered on the tile it is leaving");
 		// Entering a building: posX/posY moved onto the building tile, the map slot
 		// deliberately left behind so the unit stays drawable.
-		unit->posX = INTO_X;
-		unit->posY = INTO_Y;
+		unit->core.posX = INTO_X;
+		unit->core.posY = INTO_Y;
 
 		capturePresentation(game, unit, view);
 
 		int checked = 0;
 		for (int delta : DELTAS)
 		{
-			unit->delta = delta;
+			unit->core.delta = delta;
 			const Frame entering = render(game, view);
 
 			// The same instant of the same step, expressed the way every other
 			// action leaves it: slot and position both on the destination tile.
 			game.map.setGroundUnit(FROM_X, FROM_Y, NOGUID);
-			game.map.setGroundUnit(INTO_X, INTO_Y, unit->gid);
+			game.map.setGroundUnit(INTO_X, INTO_Y, unit->core.gid);
 			const Frame walking = render(game, view);
 			game.map.setGroundUnit(INTO_X, INTO_Y, NOGUID);
-			game.map.setGroundUnit(FROM_X, FROM_Y, unit->gid);
+			game.map.setGroundUnit(FROM_X, FROM_Y, unit->core.gid);
 
 			int enteringLeft, enteringRight, walkingLeft, walkingRight;
 			spriteSpan(entering, &enteringLeft, &enteringRight);

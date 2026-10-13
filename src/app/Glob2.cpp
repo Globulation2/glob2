@@ -408,10 +408,10 @@ static void dumpTeams(const Game& game)
 		int units = 0, buildings = 0, swarmCount = 0;
 		std::string where;
 		for (int i = 0; i < Unit::MAX_COUNT; i++)
-			if (team->myUnits[i] && !team->myUnits[i]->isDead)
+			if (team->myUnits[i] && !team->myUnits[i]->core.isDead)
 			{
 				units++;
-				where += FormattableString(" u%0,%1").arg(team->myUnits[i]->posX).arg(team->myUnits[i]->posY);
+				where += FormattableString(" u%0,%1").arg(team->myUnits[i]->core.posX).arg(team->myUnits[i]->core.posY);
 			}
 		for (int i = 0; i < Building::MAX_COUNT; i++)
 			if (Building* b = team->myBuildings[i])

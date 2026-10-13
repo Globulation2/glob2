@@ -62,10 +62,10 @@ struct World
 	{
 		u->attachedBuilding = b;
 		u->setTargetBuilding(b);
-		u->activity = Unit::ACT_UPGRADING;
-		u->displacement = displacement;
-		u->destinationPurpose = purpose;
-		u->needToRecheckMedical = false;
+		u->core.activity = Unit::ACT_UPGRADING;
+		u->core.displacement = displacement;
+		u->core.destinationPurpose = purpose;
+		u->detail.needToRecheckMedical = false;
 		b->unitsInside.push_back(u);
 	}
 
@@ -73,47 +73,47 @@ struct World
 	Unit* addInside(Building* b, int typeNum, int purpose, int elapsed, int total)
 	{
 		Unit* u = addUnit(typeNum);
-		if (u->performance[FLY])
-			game.map.setAirUnit(u->posX, u->posY, NOGUID);
+		if (u->performance(FLY))
+			game.map.setAirUnit(u->core.posX, u->core.posY, NOGUID);
 		else
-			game.map.setGroundUnit(u->posX, u->posY, NOGUID);
-		u->posX = b->getMidX();
-		u->posY = b->getMidY();
+			game.map.setGroundUnit(u->core.posX, u->core.posY, NOGUID);
+		u->core.posX = b->getMidX();
+		u->core.posY = b->getMidY();
 		subscribe(u, b, purpose, Unit::DIS_INSIDE);
-		u->movement = Unit::MOV_INSIDE;
-		u->insideTimeout = -(total - elapsed);
-		u->speed = b->type->insideSpeed;
+		u->core.movement = Unit::MOV_INSIDE;
+		u->detail.insideTimeout = -(total - elapsed);
+		u->core.speed = b->type->insideSpeed;
 		return u;
 	}
 
 	Unit* addEntering(Building* b, int typeNum, int fromX, int fromY, int dx, int dy)
 	{
 		Unit* u = addUnit(typeNum, fromX, fromY);
-		u->posX = (fromX + dx) & game.map.getMaskW();
-		u->posY = (fromY + dy) & game.map.getMaskH();
-		u->dx = dx;
-		u->dy = dy;
+		u->core.posX = (fromX + dx) & game.map.getMaskW();
+		u->core.posY = (fromY + dy) & game.map.getMaskH();
+		u->core.dx = dx;
+		u->core.dy = dy;
 		subscribe(u, b, FEED, Unit::DIS_ENTERING_BUILDING);
-		u->movement = Unit::MOV_ENTERING_BUILDING;
+		u->core.movement = Unit::MOV_ENTERING_BUILDING;
 		return u;
 	}
 
 	bool alive(const Unit* u) const
 	{
-		return u && !u->isDead && team->myUnits[Unit::GIDtoID(u->gid)] == u;
+		return u && !u->core.isDead && team->myUnits[Unit::GIDtoID(u->core.gid)] == u;
 	}
 
 	bool registered(const Unit* u) const
 	{
-		if (u->performance[FLY])
-			return game.map.getAirUnit(u->posX, u->posY) == u->gid;
-		return game.map.getGroundUnit(u->posX, u->posY) == u->gid;
+		if (u->performance(FLY))
+			return game.map.getAirUnit(u->core.posX, u->core.posY) == u->core.gid;
+		return game.map.getGroundUnit(u->core.posX, u->core.posY) == u->core.gid;
 	}
 
 	bool inFootprintOrRing(const Unit* u, int bx, int by, int w, int h) const
 	{
-		const int ox = (u->posX - bx + 1) & game.map.getMaskW();
-		const int oy = (u->posY - by + 1) & game.map.getMaskH();
+		const int ox = (u->core.posX - bx + 1) & game.map.getMaskW();
+		const int oy = (u->core.posY - by + 1) & game.map.getMaskH();
 		return ox <= w + 1 && oy <= h + 1;
 	}
 
@@ -140,8 +140,8 @@ static void destroyedInnExpelsEveryone()
 	units[3] = world.addInside(inn, WORKER, FEED, 0, total);
 	units[4] = world.addEntering(inn, WORKER, bx - 1, by, 1, 0);
 	for (Unit* u : units)
-		u->hungry = 0;
-	units[3]->displacement = Unit::DIS_EXITING_BUILDING;  // waiting for a free exit
+		u->core.hungry = 0;
+	units[3]->core.displacement = Unit::DIS_EXITING_BUILDING;  // waiting for a free exit
 	inn->materials[WHEAT] = 10;
 	// Recreate admission commitments for unpaid visits. The blocked exiting
 	// visitor already settled its meal and must not be charged again.
@@ -155,20 +155,20 @@ static void destroyedInnExpelsEveryone()
 	{
 		require(world.alive(u), "unit survives the destruction");
 		require(u->attachedBuilding == nullptr && u->targetBuilding == nullptr, "unit is detached");
-		require(u->activity == Unit::ACT_RANDOM && u->displacement == Unit::DIS_RANDOM, "unit is free");
-		require(u->movement == Unit::MOV_EXITING_BUILDING && u->delta == 0, "unit walks out");
-		require(u->insideTimeout == 0 && u->needToRecheckMedical, "unit is out and re-evaluates its needs");
-		require(u->speed > 0, "unit has a speed");
+		require(u->core.activity == Unit::ACT_RANDOM && u->core.displacement == Unit::DIS_RANDOM, "unit is free");
+		require(u->core.movement == Unit::MOV_EXITING_BUILDING && u->core.delta == 0, "unit walks out");
+		require(u->detail.insideTimeout == 0 && u->detail.needToRecheckMedical, "unit is out and re-evaluates its needs");
+		require(u->core.speed > 0, "unit has a speed");
 		require(world.registered(u), "unit is registered on its tile");
 		require(world.inFootprintOrRing(u, bx, by, w, h), "unit lands on the footprint or the ring");
 	}
 	for (int i = 0; i < 3; ++i)
-		require(units[i]->hungry == (Unit::HUNGRY_MAX * (total / 2)) / total, "half a meal is kept");
+		require(units[i]->core.hungry == (Unit::HUNGRY_MAX * (total / 2)) / total, "half a meal is kept");
 	require(inn->materials[WHEAT] == 7, "each started meal cost one wheat, nothing else did");
-	require(units[3]->hungry == 0, "a unit already on its way out gets nothing more");
-	require(units[4]->posX == bx - 1 && units[4]->posY == by && units[4]->dx == -1 && units[4]->dy == 0,
+	require(units[3]->core.hungry == 0, "a unit already on its way out gets nothing more");
+	require(units[4]->core.posX == bx - 1 && units[4]->core.posY == by && units[4]->core.dx == -1 && units[4]->core.dy == 0,
 	        "entering unit steps back onto the tile it came from");
-	require(units[4]->hungry == 0, "entering unit had not started eating");
+	require(units[4]->core.hungry == 0, "entering unit had not started eating");
 	require(world.game.integrity(), "integrity right after the destruction");
 	world.step(40);
 	for (Unit* u : units)
@@ -198,10 +198,10 @@ static void noRoomKillsTheSurplus()
 	int survivors = 0, dead = 0;
 	for (Unit* u : inside)
 	{
-		if (u->isDead) { ++dead; continue; }
+		if (u->core.isDead) { ++dead; continue; }
 		++survivors;
 		require(world.registered(u), "survivor is registered");
-		require(((u->posX - bx) & world.game.map.getMaskW()) < w && ((u->posY - by) & world.game.map.getMaskH()) < h,
+		require(((u->core.posX - bx) & world.game.map.getMaskW()) < w && ((u->core.posY - by) & world.game.map.getMaskH()) < h,
 		        "survivor stands on the footprint");
 	}
 	require(survivors == footprint && dead == 1, "exactly the units without a free tile die");
@@ -217,11 +217,11 @@ static void healingIsKeptProRata()
 	const int total = hospital->type->timeToHealUnit;
 	require(total > 0, "hospital heals units");
 	Unit* u = world.addInside(hospital, WARRIOR, HEAL, (3 * total) / 4, total);
-	const int maxHp = u->performance[HP];
-	u->hp = maxHp / 10;
-	const int expected = u->hp + ((maxHp - u->hp) * ((3 * total) / 4)) / total;
+	const int maxHp = u->performance(HP);
+	u->core.hp = maxHp / 10;
+	const int expected = u->core.hp + ((maxHp - u->core.hp) * ((3 * total) / 4)) / total;
 	hospital->kill();
-	require(world.alive(u) && u->hp == expected, "three quarters of the healing is kept");
+	require(world.alive(u) && u->core.hp == expected, "three quarters of the healing is kept");
 	world.step(10);
 	std::puts("PASS healing is kept pro rata");
 }

@@ -102,8 +102,8 @@ TEST_CASE("fixed stock simulation without AI decisions [benchmark]")
                 world.step();
                 if(const auto* watched=world.game.teams[1]->myUnits[88])
                     std::printf("building_unit,%u,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d\n",
-                        world.game.stepCounter,watched->posX,watched->posY,watched->hp,watched->hungry,
-                        int(watched->activity),int(watched->displacement),int(watched->action),watched->delta,
+                        world.game.stepCounter,watched->core.posX,watched->core.posY,watched->core.hp,watched->core.hungry,
+                        int(watched->core.activity),int(watched->core.displacement),int(watched->core.action),watched->core.delta,
                         watched->attachedBuilding?int(watched->attachedBuilding->gid):-1,
                         watched->targetBuilding?int(watched->targetBuilding->gid):-1);
                 for(int team=0;team<2;++team)for(int id=0;id<Unit::MAX_COUNT;++id) {
@@ -111,7 +111,7 @@ TEST_CASE("fixed stock simulation without AI decisions [benchmark]")
                     const int index=team*Unit::MAX_COUNT+id;
                     if(present[index]!=(unit!=nullptr)) {
                         std::printf("building_event,%u,%d,%d,%s,%d\n",world.game.stepCounter,team,id,
-                            unit?"birth":"death",unit?unit->typeNum:-1);
+                            unit?"birth":"death",unit?unit->core.typeNum:-1);
                         present[index]=unit!=nullptr;
                     }
                 }
@@ -124,7 +124,7 @@ TEST_CASE("fixed stock simulation without AI decisions [benchmark]")
         for(int team=0;team<2;++team)
         {
             for(int id=0;id<Unit::MAX_COUNT;++id)
-                if(auto* unit=world.game.teams[team]->myUnits[id]) {++units;health+=unit->hp;}
+                if(auto* unit=world.game.teams[team]->myUnits[id]) {++units;health+=unit->core.hp;}
             for(int id=0;id<Building::MAX_COUNT;++id)
                 if(auto* building=world.game.teams[team]->myBuildings[id])
                 {

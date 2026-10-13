@@ -356,7 +356,7 @@ bool Game::executeMoveFlag(const OrderMoveFlag& omf, int localPlayer)
 	{
 		if (omf.x < 0 || omf.x >= map.getW() || omf.y < 0 || omf.y >= map.getH()) return false;
 		for (const Unit* unit : b->unitsInside)
-			if (unit->displacement == Unit::DIS_ENTERING_BUILDING || unit->displacement == Unit::DIS_EXITING_BUILDING) return false;
+			if (unit->core.displacement == Unit::DIS_ENTERING_BUILDING || unit->core.displacement == Unit::DIS_EXITING_BUILDING) return false;
 		if (b->type->semantics.occupiesGround)
 		{
 			// Entry/exit animations cross the old footprint boundary. Finish those

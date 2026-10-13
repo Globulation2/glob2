@@ -2,6 +2,13 @@
 
 The renderer consumes immutable scenes; presentation state and pacing stay outside authoritative simulation state.
 
+Unit drawing, motion interpolation and scene-wide unit scans borrow the same compact
+unit-core array used by movement planning and guard crowding. Detailed unit panels
+and building service-progress rows read the optional detail array from the retained
+scene snapshot; starvation overlays also request details. Ordinary rendering with
+no selection does not request unit details. AI readers that need full unit state
+join these shared arrays rather than causing another unit capture.
+
 ## Batching and geometry cache invariants
 
 The native desktop OpenGL renderer batches ground and air passes with

@@ -141,12 +141,12 @@ void Building::swarmStep(void)
 	productionUnit = -1;
 	++owner->stats.measurements.births[chosen];
 	updateCallLists();
-	u->activity = Unit::ACT_RANDOM;
-	u->displacement = Unit::DIS_RANDOM;
-	u->movement = Unit::MOV_EXITING_BUILDING;
-	u->speed = unitTerrainMovementSpeed(u->performance[u->action], u->performance[FLY]
-		? owner->map->terrainPropertiesAt(u->posX,u->posY).airSpeedQ8
-		: owner->map->terrainPropertiesAt(u->posX,u->posY).groundSpeedQ8);
+	u->core.activity = Unit::ACT_RANDOM;
+	u->core.displacement = Unit::DIS_RANDOM;
+	u->core.movement = Unit::MOV_EXITING_BUILDING;
+	u->core.speed = unitTerrainMovementSpeed(u->performance(u->core.action), u->performance(FLY)
+		? owner->map->terrainPropertiesAt(u->core.posX,u->core.posY).airSpeedQ8
+		: owner->map->terrainPropertiesAt(u->core.posX,u->core.posY).groundSpeedQ8);
 	productionTimeout = recipe.duration;
 	++productionUsed(chosen);
 	bool allDone = true;
@@ -168,7 +168,7 @@ namespace
 	/// Ticks a unit will remain on its current tile before it may move away.
 	int ticksUntilUnitMoves(const Unit* u)
 	{
-		return u->speed > 0 ? (TILE_DELTA_RANGE - u->delta) / u->speed : std::numeric_limits<int>::max();
+		return u->core.speed > 0 ? (TILE_DELTA_RANGE - u->core.delta) / u->core.speed : std::numeric_limits<int>::max();
 	}
 }
 
@@ -221,14 +221,14 @@ void Building::turretStep(Uint32 stepCounter)
 
 int Building::scoreWarriorTarget(const Unit* target, int ring) const
 {
-	const Sint64 targetOffense = Sint64(target->getRealAttackStrength()) * target->performance[ATTACK_SPEED]; // 88 to 1024 for stock units
+	const Sint64 targetOffense = Sint64(target->getRealAttackStrength()) * target->performance(ATTACK_SPEED); // 88 to 1024 for stock units
 	int targetWeakness = 0; // 0 to 512
-	if (target->hp > 0)
+	if (target->core.hp > 0)
 	{
-		if (target->hp < runtime->damage(target->typeNum)) // hahaha, how mean!
+		if (target->core.hp < runtime->damage(target->core.typeNum)) // hahaha, how mean!
 			targetWeakness = 512;
 		else
-			targetWeakness = 256 / target->hp;
+			targetWeakness = 256 / target->core.hp;
 	}
 	int targetProximity = 0; // 0 to 512
 	if (ring <= 0)
@@ -283,9 +283,9 @@ void Building::considerScanTile(int targetX, int targetY, int ring, int ticksToH
 				if (targetTicks <= ticksToHit)
 					return;
                 const auto priority=static_cast<TurretTargetType>(testUnit->runtimeTraits().turretPriority);
-                if (runtime->damage(testUnit->typeNum)>0 &&
+                if (runtime->damage(testUnit->core.typeNum)>0 &&
                     (priority!=TARGETTYPE_GENERAL || best.type!=TARGETTYPE_THREAT))
-                    applyCandidate(best,priority==TARGETTYPE_THREAT ? scoreWarriorTarget(testUnit,ring) : -testUnit->hp,
+                    applyCandidate(best,priority==TARGETTYPE_THREAT ? scoreWarriorTarget(testUnit,ring) : -testUnit->core.hp,
                         targetTicks,targetX,targetY,priority);
 			}
 		}
@@ -306,9 +306,9 @@ void Building::considerScanTile(int targetX, int targetY, int ring, int ticksToH
 				// skip this unit if it will move away too soon.
 				if (targetTicks <= ticksToHit)
 					return;
-				                if (runtime->damage(testUnit->typeNum)>0) {
+				                if (runtime->damage(testUnit->core.typeNum)>0) {
                     const auto priority=static_cast<TurretTargetType>(testUnit->runtimeTraits().turretPriority);
-                    applyCandidate(best,priority==TARGETTYPE_THREAT ? scoreWarriorTarget(testUnit,ring) : -testUnit->hp,
+                    applyCandidate(best,priority==TARGETTYPE_THREAT ? scoreWarriorTarget(testUnit,ring) : -testUnit->core.hp,
                         targetTicks,targetX,targetY,priority);
                 }
 			}

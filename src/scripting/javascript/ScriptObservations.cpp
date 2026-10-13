@@ -51,9 +51,9 @@ Value numbers(const Sint32 *values, int n)
 bool visible(const AIEngine::AIWorldView &world, int team, const AIEngine::UnitView &u)
 {
 	return team < 0 || u.team == team ||
-		   (u.insideTimeout >= 0 &&
-			((world.visibilityAt(world.tileIndex(u.posX, u.posY)).visible & world.teams[team].mask) ||
-			 (world.visibilityAt(world.tileIndex(u.posX - u.dx, u.posY - u.dy)).visible & world.teams[team].mask)));
+		   (u.detail.insideTimeout >= 0 &&
+			((world.visibilityAt(world.tileIndex(u.core.posX, u.core.posY)).visible & world.teams[team].mask) ||
+			 (world.visibilityAt(world.tileIndex(u.core.posX - u.core.dx, u.core.posY - u.core.dy)).visible & world.teams[team].mask)));
 }
 bool visible(const AIEngine::AIWorldView &world, int team, const AIEngine::BuildingView &b)
 {
@@ -81,48 +81,50 @@ Value Observations::ref(const AIEngine::BuildingView *b) const
 }
 Value Observations::unit(const AIEngine::UnitView &u, bool extended) const
 {
-	if (!visible(world(), team, u) || u.isDead)
+	if (!visible(world(), team, u) || u.core.isDead)
 		return {};
-	Value v = ref(&u);
+	std::array<Sint32,NB_ABILITY> performance{};
+    for(int ability=0;ability<NB_ABILITY;++ability)performance[ability]=u.performance(ability);
+    Value v = ref(&u);
 	v.set("team", u.team)
-		.set("type", u.typeNum)
-		.set("x", u.posX)
-		.set("y", u.posY)
-		.set("hp", u.hp)
-		.set("maxHp", u.performance[HP])
-		.set("levels", numbers(u.level, NB_ABILITY))
-		.set("performance", numbers(u.performance, NB_ABILITY));
-    if (extended) v.set("typeKey",world().unitCatalog().definition(u.typeNum).key)
-        .set("capabilities",u.capabilityFlags).set("foodCapacity",u.configuredFoodCapacity);
+		.set("type", u.core.typeNum)
+		.set("x", u.core.posX)
+		.set("y", u.core.posY)
+		.set("hp", u.core.hp)
+		.set("maxHp", u.performance(HP))
+		.set("levels", numbers(u.detail.level, NB_ABILITY))
+		.set("performance", numbers(performance.data(), NB_ABILITY));
+    if (extended) v.set("typeKey",world().unitCatalog().definition(u.core.typeNum).key)
+        .set("capabilities",u.core.capabilityFlags).set("foodCapacity",u.detail.configuredFoodCapacity);
 	if (team < 0 || u.team == team)
 	{
-		v.set("experience", u.experience)
-			.set("experienceLevel", u.experienceLevel)
-			.set("hunger", u.hungry)
-			.set("fruitCount", std::bit_cast<Sint32>(u.fruitCount));
-		v.set("activity", int(u.activity))
-			.set("movement", int(u.movement))
-			.set("action", int(u.action))
-			.set("medical", int(u.medical))
-			.set("insideTimeout", u.insideTimeout)
-			.set("carriedMaterial", u.carriedMaterial)
-			.set("carriedResource", u.carriedMaterial)
-			.set("speed", u.speed)
-			.set("direction", u.direction)
-			.set("fruitMask", std::bit_cast<Sint32>(u.fruitMask))
-			.set("destinationPurpose", u.destinationPurpose)
-			.set("targetX", u.targetX)
-			.set("targetY", u.targetY);
+		v.set("experience", u.detail.experience)
+			.set("experienceLevel", u.core.experienceLevel)
+			.set("hunger", u.core.hungry)
+			.set("fruitCount", std::bit_cast<Sint32>(u.detail.fruitCount));
+		v.set("activity", int(u.core.activity))
+			.set("movement", int(u.core.movement))
+			.set("action", int(u.core.action))
+			.set("medical", int(u.core.medical))
+			.set("insideTimeout", u.detail.insideTimeout)
+			.set("carriedMaterial", u.core.carriedMaterial)
+			.set("carriedResource", u.core.carriedMaterial)
+			.set("speed", u.core.speed)
+			.set("direction", u.core.direction)
+			.set("fruitMask", std::bit_cast<Sint32>(u.detail.fruitMask))
+			.set("destinationPurpose", u.core.destinationPurpose)
+			.set("targetX", u.core.targetX)
+			.set("targetY", u.core.targetY);
         if (extended) {
         Value cargo = Value::array();
         auto packet=[&](int material, Uint64 numerator, Uint64 denominator) {
             cargo.items.push_back(Value::object().set("material", material)
                 .set("numerator", std::to_string(numerator)).set("denominator", std::to_string(denominator)));
         };
-        if (u.carriedMaterial>=0 && !u.widePrimaryCargo) packet(u.carriedMaterial,u.carriedPacket.numerator,u.carriedPacket.denominator);
+        if (u.core.carriedMaterial>=0 && !u.detail.widePrimaryCargo) packet(u.core.carriedMaterial,u.detail.carriedPacket.numerator,u.detail.carriedPacket.denominator);
         if (const auto* extra=world().extraCargo(u)) for (const auto& entry:*extra)
             packet(entry.material,entry.packet.numerator,entry.packet.denominator);
-        v.set("cargo",std::move(cargo)).set("assignedPurpose",int(u.jobPurpose));
+        v.set("cargo",std::move(cargo)).set("assignedPurpose",int(u.core.jobPurpose));
         }
 		v.set("attachedBuilding", world().building(u.attached) && visible(world(), team, *world().building(u.attached))
 									  ? ref(world().building(u.attached))
@@ -274,8 +276,8 @@ Value Observations::tile(int x, int y) const
 			int owner = Unit::GIDtoTeam(id);
 			if (owner >= int(world().teams.size()))
 				return 65535u;
-			auto *u = world().unitAtSlot(id);
-			return u && !u->isDead && visible(world(), team, *u) ? id : 65535u;
+			auto u = world().unitAtSlot(id);
+			return u && !u->core.isDead && visible(world(), team, *u) ? id : 65535u;
 		};
 		unsigned buildingId = c.building;
 		int owner = buildingId < Building::MAX_COUNT * Team::MAX_COUNT
@@ -560,8 +562,8 @@ Value Observations::query(const std::string &name, const std::vector<Value> &arg
 					Value v;
 					if (name == "units")
 					{
-						auto *u = world().unitAtSlot(Unit::GIDfrom(i, t));
-						if (!u || u->isDead || !visible(world(), team, *u))
+						auto u = world().unitAtSlot(Unit::GIDfrom(i, t));
+						if (!u || u->core.isDead || !visible(world(), team, *u))
 							continue;
 						if (offset)
 						{
@@ -605,15 +607,15 @@ Value Observations::query(const std::string &name, const std::vector<Value> &arg
 			return {};
 		if (name != "building")
 		{
-			auto *u = world().unitAtSlot(id);
-			if (u && !u->isDead && visible(world(), team, *u) &&
-				generation.number == ref(u).get("generation").number)
+			auto u = world().unitAtSlot(id);
+			if (u && !u->core.isDead && visible(world(), team, *u) &&
+				generation.number == ref(&*u).get("generation").number)
 			{
 				charge(160);
 				if (name == "unitBehavior") {
-					charge(8, world().unitCatalog().definition(u->typeNum).key.size());
+					charge(8, world().unitCatalog().definition(u->core.typeNum).key.size());
 					if (team < 0 || u->team == team) {
-						std::size_t packets = u->carriedMaterial >= 0 && !u->widePrimaryCargo ? 1 : 0;
+						std::size_t packets = u->core.carriedMaterial >= 0 && !u->detail.widePrimaryCargo ? 1 : 0;
 						if (const auto* extra = world().extraCargo(*u)) packets += extra->size();
 						charge(packets * 8, packets * 64);
 					}
@@ -877,10 +879,10 @@ void Script::Observations::visitSpatialEntities(
 			for (int i = 0; i < capacity; ++i)
 				if (units)
 				{
-					const auto *u = world().unitAtSlot(Unit::GIDfrom(i, t));
-					if (u && !u->isDead && visible(world(), team, *u))
-						visit({t, u->typeNum, u->posX, u->posY, u->hp,
-							   u->performance[ATTACK_STRENGTH], false});
+					const auto u = world().unitAtSlot(Unit::GIDfrom(i, t));
+					if (u && !u->core.isDead && visible(world(), team, *u))
+						visit({t, u->core.typeNum, u->core.posX, u->core.posY, u->core.hp,
+							   u->performance(ATTACK_STRENGTH), false});
 				}
 				else
 				{

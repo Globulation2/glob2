@@ -90,18 +90,18 @@ static void aUnitIsJudgedOnTheWalkToTheResource()
 	Unit* unit = new Unit(siteX - 2, siteY, 0, WORKER, team, 0);
 	team->myUnits[0] = unit;
 	team->rebuildLiveLists();
-	unit->performance[WALK] = 10;
-	unit->performance[HARVEST] = 10;
-	unit->activity = Unit::ACT_RANDOM;
-	unit->displacement = Unit::DIS_RANDOM;
-	unit->medical = Unit::MED_FREE;
+	unit->performance(WALK) = 10;
+	unit->performance(HARVEST) = 10;
+	unit->core.activity = Unit::ACT_RANDOM;
+	unit->core.displacement = Unit::DIS_RANDOM;
+	unit->core.medical = Unit::MED_FREE;
 	unit->attachedBuilding = NULL;
 	const int swimClass = unit->swimClass();
 
 	int distBuilding = 0, distResource = 0;
-	require(game.map.buildingAvailable(site, swimClass, unit->posX, unit->posY, &distBuilding),
+	require(game.map.buildingAvailable(site, swimClass, unit->core.posX, unit->core.posY, &distBuilding),
 		"the site is reachable");
-	require(game.map.materialAvailableSlot(0, WOOD, swimClass, unit->posX, unit->posY, &distResource),
+	require(game.map.materialAvailableSlot(0, WOOD, swimClass, unit->core.posX, unit->core.posY, &distResource),
 		"the wood is reachable");
 
 	const int wholeTrip = distResource + std::max(distBuilding, distResource);
@@ -114,8 +114,8 @@ static void aUnitIsJudgedOnTheWalkToTheResource()
 	const int timeLeft = distResource + 2;
 	require(timeLeft > distBuilding, "the site itself is within reach");
 	require(timeLeft < wholeTrip, "the whole trip does not fit in the same budget");
-	unit->trigHungry = 100;
-	unit->hungry = unit->trigHungry + timeLeft * unit->race->hungriness;
+	unit->detail.trigHungry = 100;
+	unit->core.hungry = unit->detail.trigHungry + timeLeft * unit->race->hungriness;
 
 	int dist = 0;
 	require(FetchHiringScoreHarness::consider(site, unit, WOOD, &dist),
@@ -123,7 +123,7 @@ static void aUnitIsJudgedOnTheWalkToTheResource()
 	require(dist == (wholeTrip<<Q8_FIXED_POINT_SHIFT), "the hire is scored by the whole trip");
 
 	// One step short of the wood is not enough.
-	unit->hungry = unit->trigHungry + distResource * unit->race->hungriness;
+	unit->core.hungry = unit->detail.trigHungry + distResource * unit->race->hungriness;
 	require(!FetchHiringScoreHarness::consider(site, unit, WOOD, &dist),
 		"a unit that would starve before reaching the wood is not hired");
 	std::puts("PASS the hunger check measures the walk to the resource, not the whole trip");
@@ -156,20 +156,20 @@ static void theScoreEstimatesTheWholeTrip()
 	Unit* unit = new Unit(siteX - 2, siteY, 0, WORKER, team, 0);
 	team->myUnits[0] = unit;
 	team->rebuildLiveLists();
-	unit->performance[WALK] = 10;
-	unit->performance[HARVEST] = 10;
-	unit->activity = Unit::ACT_RANDOM;
-	unit->displacement = Unit::DIS_RANDOM;
-	unit->medical = Unit::MED_FREE;
+	unit->performance(WALK) = 10;
+	unit->performance(HARVEST) = 10;
+	unit->core.activity = Unit::ACT_RANDOM;
+	unit->core.displacement = Unit::DIS_RANDOM;
+	unit->core.medical = Unit::MED_FREE;
 	unit->attachedBuilding = NULL;
-	unit->trigHungry = 100;
-	unit->hungry = unit->trigHungry + 1000 * unit->race->hungriness;
+	unit->detail.trigHungry = 100;
+	unit->core.hungry = unit->detail.trigHungry + 1000 * unit->race->hungriness;
 
 	const int swimClass = unit->swimClass();
 	int distBuilding = 0, distResource = 0;
-	require(game.map.buildingAvailable(site, swimClass, unit->posX, unit->posY, &distBuilding),
+	require(game.map.buildingAvailable(site, swimClass, unit->core.posX, unit->core.posY, &distBuilding),
 		"the site is reachable");
-	require(game.map.materialAvailableSlot(0, WOOD, swimClass, unit->posX, unit->posY, &distResource),
+	require(game.map.materialAvailableSlot(0, WOOD, swimClass, unit->core.posX, unit->core.posY, &distResource),
 		"the wood is reachable");
 	require(distBuilding < distResource, "the unit is nearer the site than the wood");
 
@@ -199,25 +199,25 @@ TEST_SUITE("FetchHiringScore")
         REQUIRE(world.game.map.incResourceByIndex(18,8,WHEAT,0));
         auto* unit=world.addUnit(WORKER,6,8);
         REQUIRE(unit);
-        unit->activity=Unit::ACT_RANDOM; unit->medical=Unit::MED_FREE;
+        unit->core.activity=Unit::ACT_RANDOM; unit->core.medical=Unit::MED_FREE;
         int buildingDistance=0,resourceDistance=0;
-        REQUIRE(world.game.map.buildingAvailable(inn,unit->swimClass(),unit->posX,unit->posY,&buildingDistance));
-        REQUIRE(world.game.map.materialAvailableSlot(0,WHEAT,unit->swimClass(),unit->posX,unit->posY,&resourceDistance));
+        REQUIRE(world.game.map.buildingAvailable(inn,unit->swimClass(),unit->core.posX,unit->core.posY,&buildingDistance));
+        REQUIRE(world.game.map.materialAvailableSlot(0,WHEAT,unit->swimClass(),unit->core.posX,unit->core.posY,&resourceDistance));
         REQUIRE(buildingDistance<resourceDistance);
         REQUIRE(resourceDistance>1);
         const int expectedScore=(resourceDistance+std::max(buildingDistance,resourceDistance))<<Q8_FIXED_POINT_SHIFT;
-        const auto random=unit->entityRandom.exportState();
+        const auto random=unit->detail.entityRandom.exportState();
         const auto gameRandom=world.game.syncRandom;
         const auto query=[&](int hungry,int threshold,int rate,bool expected,int reason) {
             CAPTURE(hungry); CAPTURE(threshold); CAPTURE(rate);
-            unit->hungry=hungry; unit->trigHungry=threshold; unit->hungriness=rate;
+            unit->core.hungry=hungry; unit->detail.trigHungry=threshold; unit->detail.hungriness=rate;
             FetchHiringScoreHarness::resetFailures(inn);
             int score=-1;
             CHECK(FetchHiringScoreHarness::consider(inn,unit,WHEAT,&score)==expected);
             if(expected) CHECK(score==expectedScore);
             CHECK(FetchHiringScoreHarness::failures(inn,Building::UnitTooFarFromBuilding)==(reason==1));
             CHECK(FetchHiringScoreHarness::failures(inn,Building::UnitTooFarFromResource)==(reason==2));
-            CHECK(unit->entityRandom.exportState()==random);
+            CHECK(unit->detail.entityRandom.exportState()==random);
             CHECK(world.game.syncRandom==gameRandom);
         };
         for(int rate : {1,2,425,1000000}) {
@@ -247,15 +247,15 @@ TEST_SUITE("FetchHiringScore")
         for(int slot : {Unit::MAX_COUNT-1,3}) {
             auto* unit=new Unit(6,8,Unit::GIDfrom(slot,world.team->teamNumber),WORKER,world.team,0);
             world.team->myUnits[slot]=unit; world.team->attachUnit(slot);
-            unit->activity=Unit::ACT_RANDOM; unit->medical=Unit::MED_FREE;
-            unit->carriedMaterial=WHEAT; unit->destinationPurpose=-1;
-            unit->hungry=INT_MAX; unit->trigHungry=slot==3 ? -1 : -2; unit->hungriness=1;
+            unit->core.activity=Unit::ACT_RANDOM; unit->core.medical=Unit::MED_FREE;
+            unit->core.carriedMaterial=WHEAT; unit->core.destinationPurpose=-1;
+            unit->core.hungry=INT_MAX; unit->detail.trigHungry=slot==3 ? -1 : -2; unit->detail.hungriness=1;
         }
         // Both positive quotients saturate to the same signed32 budget; the
         // lower slot wins the unchanged traversal tie, and both are evaluated.
         CHECK(FetchHiringScoreHarness::carrying(inn)==world.team->myUnits[3]);
-        CHECK(world.team->myUnits[3]->destinationPurpose==WHEAT);
-        CHECK(world.team->myUnits[Unit::MAX_COUNT-1]->destinationPurpose==WHEAT);
+        CHECK(world.team->myUnits[3]->core.destinationPurpose==WHEAT);
+        CHECK(world.team->myUnits[Unit::MAX_COUNT-1]->core.destinationPurpose==WHEAT);
     }
 
     TEST_CASE("carrying candidates preserve sparse slot ties and all purpose writes")
@@ -273,18 +273,18 @@ TEST_SUITE("FetchHiringScore")
             auto* unit = new Unit(6, 8, slot, WORKER, team, 0);
             team->myUnits[slot] = unit;
             team->attachUnit(slot);
-            unit->performance[HARVEST] = 10;
-            unit->activity = Unit::ACT_RANDOM;
-            unit->medical = Unit::MED_FREE;
-            unit->carriedMaterial = WHEAT;
-            unit->destinationPurpose = -1;
+            unit->performance(HARVEST) = 10;
+            unit->core.activity = Unit::ACT_RANDOM;
+            unit->core.medical = Unit::MED_FREE;
+            unit->core.carriedMaterial = WHEAT;
+            unit->core.destinationPurpose = -1;
         }
         CHECK(FetchHiringScoreHarness::carrying(inn) == team->myUnits[3]);
-        CHECK(team->myUnits[3]->destinationPurpose == WHEAT);
-        CHECK(team->myUnits[Unit::MAX_COUNT-1]->destinationPurpose == WHEAT);
+        CHECK(team->myUnits[3]->core.destinationPurpose == WHEAT);
+        CHECK(team->myUnits[Unit::MAX_COUNT-1]->core.destinationPurpose == WHEAT);
         REQUIRE(world.game.map.incResourceByIndex(16, 8, WHEAT, 0));
         CHECK(FetchHiringScoreHarness::candidates(inn) == std::vector<Unit*>{team->myUnits[3], team->myUnits[Unit::MAX_COUNT-1]});
-        team->myUnits[Unit::MAX_COUNT-1]->activity = Unit::ACT_FILLING;
+        team->myUnits[Unit::MAX_COUNT-1]->core.activity = Unit::ACT_FILLING;
         CHECK(FetchHiringScoreHarness::candidates(inn) == std::vector<Unit*>{team->myUnits[3]});
         CHECK(FetchHiringScoreHarness::unavailable(inn) == 1);
         FetchHiringScoreHarness::candidates(inn);

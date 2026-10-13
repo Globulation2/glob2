@@ -77,7 +77,7 @@ InspectorModel buildInspectorModel(MapEdit &editor)
 		model.kind = InspectorModel::Kind::Unit;
 		model.identity = 65536 + editor.selectedUnitGID;
 		model.unit = unit;
-		model.title = getUnitName(unit->typeNum);
+		model.title = getUnitName(unit->core.typeNum);
 		model.detail = GAGCore::FormattableString(fe::tr("[Team %0]")).arg(unit->team + 1);
 		model.rows.push_back({"hp", fe::tr("[hp]"), editor.unitHPScrollBox});
 		struct Skill
@@ -93,7 +93,7 @@ InspectorModel buildInspectorModel(MapEdit &editor)
 								{ATTACK_STRENGTH, editor.unitAttackStrengthLevelScrollBox, "attack-strength", "[At. strength]"},
 								{MAGIC_ATTACK_GROUND, editor.unitMagicGroundAttackLevelScrollBox, "magic-ground", "[Magic At. Ground]"}};
 		for (const auto &skill : skills)
-			if (unit->canLearn[skill.ability])
+			if (const auto* detail=frame.entities.detail(unit->identity); detail && detail->canLearn[skill.ability])
 				model.rows.push_back({skill.key, fe::tr(skill.caption), skill.box});
 	}
 	return model;
@@ -137,8 +137,8 @@ void paintInspectorPicture(fe::Canvas &canvas, fe::Rect bounds, const InspectorM
 	else if (model.unit)
 	{
 		auto *unit = model.unit;
-		const auto *type = &model.world.catalogs->unitTypes[unit->typeNum][0];
-		const int image = unitAnimationFrame(type->startImage[unit->action], unit->direction, unit->delta);
+		const auto *type = &model.world.catalogs->unitTypes[unit->core.typeNum][0];
+		const int image = unitAnimationFrame(type->startImage[unit->core.action], unit->core.direction, unit->core.delta);
 		auto *sprite = globalContainer->units;
 		sprite->setBaseColor(presentationColor(model.world.teams->values[unit->team].color));
 		EditorDockPaint::spriteFit(canvas, bounds, sprite, image, 1.5);

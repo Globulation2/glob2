@@ -41,9 +41,9 @@ struct Suggestion
 };
 inline constexpr std::array<std::array<int,2>,8> Directions{{
     {-1,-1}, {0,-1}, {1,-1}, {1,0}, {1,1}, {0,1}, {-1,1}, {-1,0}}};
-Task taskOf(const SimulationSnapshot::UnitView& unit);
-std::optional<Mode> modeOf(const UnitState& unit);
-std::optional<Uint32> completionTicks(const UnitState& unit);
+Task taskOf(const SimulationSnapshot::UnitCoreView& unit);
+std::optional<Mode> modeOf(const UnitCoreState& unit);
+std::optional<Uint32> completionTicks(const UnitCoreState& unit);
 bool validPermutation(const Suggestion& suggestion);
 EntityRandom requestRandom(Uint32 seed, const Request& request);
 // Snapshot-only structural legality. Mobile occupancy is deliberately optional.

@@ -185,9 +185,9 @@ TEST_CASE("JavaScript pass assigns valid identities to released saves" *
 				if (auto *unit = gui.game.teams[team]->myUnits[slot])
 				{
 					++entities;
-					CHECK(unit->scriptIdentity > 0);
-					CHECK(unit->scriptIdentity ==
-						  gui.game.scriptGenerations[Game::scriptGenerationIndex(false, team, Unit::GIDtoID(unit->gid))]);
+					CHECK(unit->core.scriptIdentity > 0);
+					CHECK(unit->core.scriptIdentity ==
+						  gui.game.scriptGenerations[Game::scriptGenerationIndex(false, team, Unit::GIDtoID(unit->core.gid))]);
 				}
 			for (int slot = 0; slot < Building::MAX_COUNT; ++slot)
 				if (auto *building = gui.game.teams[team]->myBuildings[slot])
@@ -223,8 +223,8 @@ TEST_CASE("JavaScript upgrade retains genuine master124 experiments and continua
 				if (auto *unit = game.teams[team]->myUnits[slot])
 				{
 					++units;
-					CHECK(unit->scriptIdentity > 0);
-					CHECK(unit->scriptIdentity == game.scriptGenerations[Game::scriptGenerationIndex(false, team, slot)]);
+					CHECK(unit->core.scriptIdentity > 0);
+					CHECK(unit->core.scriptIdentity == game.scriptGenerations[Game::scriptGenerationIndex(false, team, slot)]);
 				}
 			for (int slot = 0; slot < Building::MAX_COUNT; ++slot)
 				if (auto *building = game.teams[team]->myBuildings[slot])

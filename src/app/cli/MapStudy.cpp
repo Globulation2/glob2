@@ -254,9 +254,9 @@ std::uint64_t colonySignature(const Game &game, int team)
 	for (int i = 0; i < Unit::MAX_COUNT; ++i)
 		if (const Unit *u = colony->myUnits[i])
 			for (std::int64_t v :
-				 {std::int64_t(i), std::int64_t(Unit::GIDtoID(u->gid)), std::int64_t(u->typeNum),
-				  std::int64_t(u->posX), std::int64_t(u->posY), std::int64_t(u->hp),
-				  std::int64_t(u->hungry), std::int64_t(u->direction)})
+				 {std::int64_t(i), std::int64_t(Unit::GIDtoID(u->core.gid)), std::int64_t(u->core.typeNum),
+				  std::int64_t(u->core.posX), std::int64_t(u->core.posY), std::int64_t(u->core.hp),
+				  std::int64_t(u->core.hungry), std::int64_t(u->core.direction)})
 				hash = fnv(hash, std::uint64_t(v));
 	for (int i = 0; i < Building::MAX_COUNT; ++i)
 		if (const Building *b = colony->myBuildings[i])
@@ -284,7 +284,7 @@ bool mapReferencesConsistent(const Game &game)
 					continue;
 				const int t = Unit::GIDtoTeam(gid);
 				const Unit *u = t < teams ? game.teams[t]->myUnits[Unit::GIDtoID(gid)] : nullptr;
-				if (!u || u->gid != gid || u->posX != x || u->posY != y)
+				if (!u || u->core.gid != gid || u->core.posX != x || u->core.posY != y)
 					return false;
 			}
 			const Uint16 gbid = map.getBuilding(x, y);
@@ -363,7 +363,7 @@ void shiftTeams(Game &game, int shift)
 			*bits = mask(*bits);
 		for (int i = 0; i < Unit::MAX_COUNT; ++i)
 			if (Unit *unit = team.myUnits[i])
-				unit->gid = unitGid(unit->gid);
+				unit->core.gid = unitGid(unit->core.gid);
 		for (int i = 0; i < Building::MAX_COUNT; ++i)
 			if (Building *building = team.myBuildings[i])
 			{

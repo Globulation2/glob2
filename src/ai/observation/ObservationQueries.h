@@ -57,9 +57,9 @@ inline int constructionCompletionType(const AIEngine::AIWorldView& world, const 
     return building.constructionResultState==::Building::REPAIR
         ? building.constructionOriginTypeNum : buildingType(world,building).nextLevel;
 }
-inline int realAttackStrength(const AIEngine::AIWorldView& world, const AIEngine::UnitView& unit)
+template<class Unit> inline int realAttackStrength(const AIEngine::AIWorldView& world, const Unit& unit)
 {
-    return int(std::clamp<Sint64>((Sint64(unit.performance[ATTACK_STRENGTH])+unit.experienceLevel)
+    return int(std::clamp<Sint64>((Sint64(unit.performance(ATTACK_STRENGTH))+unit.core.experienceLevel)
         *world.configuration->getGlassCannonScale(), 0, INT_MAX));
 }
 // Preserve each controller's default head-count calibration while scaling
@@ -81,31 +81,31 @@ template<class Counts> inline int normalizedFoodPopulation(const AIEngine::AIWor
     }
     return int(std::min<long long>(INT_MAX,(demand+precision-1)/precision));
 }
-inline bool matchesStrategyUnitRole(const AIEngine::AIWorldView& world,const AIEngine::UnitView& unit,unsigned role)
+template<class Unit> inline bool matchesStrategyUnitRole(const AIEngine::AIWorldView& world,const Unit& unit,unsigned role)
 {
     // The three built-ins name strategy ledger roles; recipient identity can
     // differ. Enabled behaviors must have effective clocks to fulfill the role.
-    const bool mobile=unit.performance[FLY]>0 || unit.performance[WALK]>0 || unit.performance[SWIM]>0;
+    const bool mobile=unit.performance(FLY)>0 || unit.performance(WALK)>0 || unit.performance(SWIM)>0;
     switch(role) {
         case WORKER:
-            return mobile && (unit.capabilityFlags&UnitRuntimeTraits::Transport)
-                && unit.performance[BUILD]>0 && unit.performance[HARVEST]>0
-                && (!(unit.capabilityFlags&UnitRuntimeTraits::ExtendedCargo) || world.unitTraits(unit.typeNum).cargoCapacity>0);
+            return mobile && (unit.core.capabilityFlags&UnitRuntimeTraits::Transport)
+                && unit.performance(BUILD)>0 && unit.performance(HARVEST)>0
+                && (!(unit.core.capabilityFlags&UnitRuntimeTraits::ExtendedCargo) || world.unitTraits(unit.core.typeNum).cargoCapacity>0);
         case EXPLORER:
-            return mobile && (unit.capabilityFlags&UnitRuntimeTraits::Explore);
+            return mobile && (unit.core.capabilityFlags&UnitRuntimeTraits::Explore);
         case WARRIOR:
             // A stationary melee unit still contributes actual combat strength.
-            return (unit.capabilityFlags&UnitRuntimeTraits::Melee) && unit.performance[ATTACK_SPEED]>0
+            return (unit.core.capabilityFlags&UnitRuntimeTraits::Melee) && unit.performance(ATTACK_SPEED)>0
                 && realAttackStrength(world,unit)>0;
         default:
-            return unit.typeNum==int(role);
+            return unit.core.typeNum==int(role);
     }
 }
-inline bool matchesConstructionRole(const AIEngine::AIWorldView& world,const AIEngine::UnitView& unit)
+template<class Unit> inline bool matchesConstructionRole(const AIEngine::AIWorldView& world,const Unit& unit)
 {
     // Existing construction jobs gather/deliver packets before building; the
     // engine still requires transport eligibility as well as Construct.
-    return (unit.capabilityFlags&UnitRuntimeTraits::Construct) && matchesStrategyUnitRole(world,unit,WORKER);
+    return (unit.core.capabilityFlags&UnitRuntimeTraits::Construct) && matchesStrategyUnitRole(world,unit,WORKER);
 }
 // Planning-only projection: ability levels are independent, so a recipient can
 // retain one clock while training another. Nonmonotonic tables need not have a
@@ -114,16 +114,15 @@ inline bool matchesConstructionRole(const AIEngine::AIWorldView& world,const AIE
 inline bool definitionCanServeStrategyRole(const AIEngine::AIWorldView& world,unsigned id,unsigned role)
 {
     const auto& traits=world.unitTraits(id);
-    AIEngine::UnitView probe;
-    probe.typeNum=id;probe.capabilityFlags=traits.flags;probe.experienceLevel=0;
-    std::fill(std::begin(probe.performance),std::end(probe.performance),0);
+    UnitState probe{};
+    probe.core.typeNum=id;probe.core.capabilityFlags=traits.flags;probe.core.experienceLevel=0;
     for(const auto& level:world.unitCatalog().levels(id))
         for(const int ability:{WALK,SWIM,FLY,BUILD,HARVEST,ATTACK_SPEED,ATTACK_STRENGTH})
-            probe.performance[ability]=std::max(probe.performance[ability],level.performance[ability]);
+            probe.performance(ability)=std::max(probe.performance(ability),level.performance[ability]);
     if(!traits.has(UnitRuntimeTraits::LegacyPerformancePolicies)) {
-        if(!traits.has(UnitRuntimeTraits::Walk))probe.performance[WALK]=0;
-        if(!traits.has(UnitRuntimeTraits::Swim))probe.performance[SWIM]=0;
-        if(!traits.has(UnitRuntimeTraits::Fly))probe.performance[FLY]=0;
+        if(!traits.has(UnitRuntimeTraits::Walk))probe.performance(WALK)=0;
+        if(!traits.has(UnitRuntimeTraits::Swim))probe.performance(SWIM)=0;
+        if(!traits.has(UnitRuntimeTraits::Fly))probe.performance(FLY)=0;
     }
     return matchesStrategyUnitRole(world,probe,role);
 }
@@ -217,12 +216,12 @@ inline bool needsTraining(const AIEngine::UnitView& unit, const BuildingTraining
 inline bool trainingVisitSafe(const AIEngine::AIWorldView& world,const AIEngine::UnitView& unit,
     const AIEngine::BuildingView& building,int purpose)
 {
-    if(unit.capabilityFlags&UnitRuntimeTraits::LegacyPerformancePolicies)return true;
+    if(unit.core.capabilityFlags&UnitRuntimeTraits::LegacyPerformancePolicies)return true;
     const auto& type=buildingType(world,building);
     const auto mask=UnitTraining::movementCourses(unit,type.semantics,purpose);
     if(!mask)return true;
     const unsigned before=UnitTraining::movementModes(unit);
-    const unsigned after=UnitTraining::movementAfter(unit,mask,type.semantics.training,world.unitCatalog().levels(unit.typeNum));
+    const unsigned after=UnitTraining::movementAfter(unit,mask,type.semantics.training,world.unitCatalog().levels(unit.core.typeNum));
     return UnitTraining::exitTerrainSafe(before,after,building.posX,building.posY,type.width,type.height,
         [&](int x,int y)->const TerrainProperties& { return terrain(world,x,y); });
 }
@@ -230,9 +229,9 @@ inline int maxBuildLevel(const AIEngine::AIWorldView& world, unsigned team)
 {
     int result=0;
     for(const auto& unit:world.units)
-        if(unit.team==int(team) && (unit.capabilityFlags&UnitRuntimeTraits::Construct)
+        if(unit.team==int(team) && (unit.core.capabilityFlags&UnitRuntimeTraits::Construct)
             && matchesStrategyUnitRole(world,unit,WORKER))
-            result=std::max(result,int(unit.constructionLevel));
+            result=std::max(result,int(unit.core.constructionLevel));
     return result;
 }
 inline bool buildingProvides(const AIEngine::AIWorldView& world, int type, AIPlanning::BuildingIntent intent)

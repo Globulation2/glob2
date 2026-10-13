@@ -755,8 +755,8 @@ std::string describeMap(Game &game, const GenerationRequest *request,
 		std::array<int, 3> units{};
 		int buildings = 0;
 		for (int u = 0; u < Unit::MAX_COUNT; ++u)
-			if (team.myUnits[u] && team.myUnits[u]->typeNum >= 0 && team.myUnits[u]->typeNum < 3)
-				++units[team.myUnits[u]->typeNum];
+			if (team.myUnits[u] && team.myUnits[u]->core.typeNum >= 0 && team.myUnits[u]->core.typeNum < 3)
+				++units[team.myUnits[u]->core.typeNum];
 		for (int b = 0; b < Building::MAX_COUNT; ++b)
 			buildings += team.myBuildings[b] != nullptr;
 		colonies.push_back(
@@ -895,7 +895,7 @@ std::string describeMap(Game &game, const GenerationRequest *request,
         for(int team=0;team<game.teamsCount();++team)
             for(int slot=0;slot<Unit::MAX_COUNT;++slot)if(const auto* unit=game.teams[team]->myUnits[slot])
             {
-                const auto& gate=game.unitCatalog().definition(unit->typeNum).requiredExperiment;
+                const auto& gate=game.unitCatalog().definition(unit->core.typeNum).requiredExperiment;
                 if(!gate.empty())required.insert(gate);
             }
         report["map"]["requiredUnitExperiments"]=required;

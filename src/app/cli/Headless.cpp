@@ -237,8 +237,8 @@ void Headless::playersAndTeamsJson(std::ostream &result, Game &game, const std::
 		long long warriorHP=0,warriorAttack=0;
 		for(int i=0;i<Unit::MAX_COUNT;++i) if(const Unit *u=team->myUnits[i])
 		{
-			++units;workers+=u->typeNum==WORKER;explorers+=u->typeNum==EXPLORER;
-			if(u->typeNum==WARRIOR){++warriors;warriorHP+=u->hp;warriorAttack+=u->getRealAttackStrength();}
+			++units;workers+=u->core.typeNum==WORKER;explorers+=u->core.typeNum==EXPLORER;
+			if(u->core.typeNum==WARRIOR){++warriors;warriorHP+=u->core.hp;warriorAttack+=u->getRealAttackStrength();}
 		}
 		for(int i=0;i<Building::MAX_COUNT;++i) if(const Building *b=team->myBuildings[i])
 			if(!b->type->isVirtual){if(b->type->isBuildingSite)++sites;else ++buildings;}

@@ -113,44 +113,44 @@ TEST_SUITE("TeamStatsSave")
 			CHECK(bucket == before + 1);
 			CHECK(workerTicks(m) == total + 1);
 		};
-		worker->medical = Unit::MED_FREE;
-		worker->activity = Unit::ACT_RANDOM;
+		worker->core.medical = Unit::MED_FREE;
+		worker->core.activity = Unit::ACT_RANDOM;
 		expect(m.labour[M::IDLE]);
 
-		worker->medical = Unit::MED_HUNGRY;
-		worker->displacement = Unit::DIS_GOING_TO_BUILDING;
+		worker->core.medical = Unit::MED_HUNGRY;
+		worker->core.displacement = Unit::DIS_GOING_TO_BUILDING;
 		worker->targetBuilding = nullptr;
 		expect(m.labour[M::EAT_NO_INN]);
 		worker->targetBuilding = inn;
 		expect(m.labour[M::EAT_WALKING]);
 		CHECK(m.eatWalkSamples == 1);
 		CHECK(m.eatWalkDistance == Uint64(world.game.map.warpDistMax(30, 30, inn->getMidX(), inn->getMidY())));
-		worker->displacement = Unit::DIS_INSIDE;
+		worker->core.displacement = Unit::DIS_INSIDE;
 		expect(m.labour[M::EAT_INSIDE]);
 
-		worker->medical = Unit::MED_DAMAGED;
-		worker->displacement = Unit::DIS_GOING_TO_BUILDING;
+		worker->core.medical = Unit::MED_DAMAGED;
+		worker->core.displacement = Unit::DIS_GOING_TO_BUILDING;
 		worker->targetBuilding = nullptr;
 		expect(m.labour[M::HEAL_NO_HOSPITAL]);
 		worker->targetBuilding = inn;
 		expect(m.labour[M::HEAL_WALKING]);
-		worker->displacement = Unit::DIS_ENTERING_BUILDING;
+		worker->core.displacement = Unit::DIS_ENTERING_BUILDING;
 		expect(m.labour[M::HEAL_INSIDE]);
 
-		worker->medical = Unit::MED_FREE;
-		worker->activity = Unit::ACT_UPGRADING;
-		worker->destinationPurpose = WALK;
-		worker->displacement = Unit::DIS_GOING_TO_BUILDING;
+		worker->core.medical = Unit::MED_FREE;
+		worker->core.activity = Unit::ACT_UPGRADING;
+		worker->core.destinationPurpose = WALK;
+		worker->core.displacement = Unit::DIS_GOING_TO_BUILDING;
 		expect(m.labour[M::TRAIN_WALKING]);
-		worker->displacement = Unit::DIS_INSIDE;
+		worker->core.displacement = Unit::DIS_INSIDE;
 		expect(m.labour[M::TRAIN_INSIDE]);
-		worker->destinationPurpose = HEAL;
+		worker->core.destinationPurpose = HEAL;
 		expect(m.labour[M::HEAL_INSIDE]);
 
-		worker->activity = Unit::ACT_FLAG;
+		worker->core.activity = Unit::ACT_FLAG;
 		expect(m.labour[M::FLAG_WORK]);
 
-		worker->activity = Unit::ACT_FILLING;
+		worker->core.activity = Unit::ACT_FILLING;
 		worker->attachedBuilding = nullptr;
 		expect(m.labour[M::OTHER_ACTIVITY]);
 		const std::pair<Building *, M::LabourJob> jobs[] = {
@@ -158,16 +158,16 @@ TEST_SUITE("TeamStatsSave")
 		for (const auto &[building, job] : jobs)
 		{
 			worker->attachedBuilding = building;
-			worker->displacement = Unit::DIS_GOING_TO_RESOURCE;
+			worker->core.displacement = Unit::DIS_GOING_TO_RESOURCE;
 			expect(m.filling[job][M::TO_RESOURCE]);
-			worker->displacement = Unit::DIS_HARVESTING;
+			worker->core.displacement = Unit::DIS_HARVESTING;
 			expect(m.filling[job][M::HARVESTING]);
 			CHECK(m.harvestSamples[job] == 1);
 			CHECK(m.harvestDistance[job] ==
 				  Uint64(world.game.map.warpDistMax(30, 30, building->getMidX(), building->getMidY())));
-			worker->displacement = Unit::DIS_GOING_TO_BUILDING;
+			worker->core.displacement = Unit::DIS_GOING_TO_BUILDING;
 			expect(m.filling[job][M::TO_BUILDING]);
-			worker->displacement = Unit::DIS_INSIDE;
+			worker->core.displacement = Unit::DIS_INSIDE;
 			expect(m.filling[job][M::OTHER_PHASE]);
 		}
 
@@ -176,9 +176,9 @@ TEST_SUITE("TeamStatsSave")
 		const Uint64 total = workerTicks(m);
 		world.team->stats.observeLabour(warrior);
 		world.team->stats.observeLabour(nullptr);
-		worker->isDead = true;
+		worker->core.isDead = true;
 		world.team->stats.observeLabour(worker);
-		worker->isDead = false;
+		worker->core.isDead = false;
 		CHECK(workerTicks(m) == total);
 
 		worker->attachedBuilding = worker->targetBuilding = nullptr;
@@ -277,8 +277,8 @@ TEST_SUITE("TeamStatsSave")
 			auto *u = w.world.addUnit(c.type, c.x, c.y, 0);
 			u->attachedBuilding = c.attached;
 			if(c.attached && c.attached->type->zonable[c.type]) {
-                u->activity=Unit::ACT_FLAG;
-                u->jobPurpose=c.assignment==M::WAR_FLAG ? UnitJobPurpose::Defend
+                u->core.activity=Unit::ACT_FLAG;
+                u->core.jobPurpose=c.assignment==M::WAR_FLAG ? UnitJobPurpose::Defend
                     : c.assignment==M::CLEARING_FLAG ? UnitJobPurpose::Clear : UnitJobPurpose::Explore;
             }
 			const Uint64 place = m.combatDeathPlace[c.type][c.place];
@@ -303,24 +303,24 @@ TEST_SUITE("TeamStatsSave")
 		auto warrior = [&](int x, int y, int team, int speed, int strength)
 		{
 			auto *u = w.world.addUnit(WARRIOR, x, y, team);
-			u->level[ATTACK_SPEED] = speed;
-			u->level[ATTACK_STRENGTH] = strength;
+			u->detail.level[ATTACK_SPEED] = speed;
+			u->detail.level[ATTACK_STRENGTH] = strength;
 			return u;
 		};
 		warrior(14, 14, 0, 1, 2);
 		auto *hurt = warrior(15, 14, 0, 0, 0);
-		hurt->medical = Unit::MED_DAMAGED;
+		hurt->core.medical = Unit::MED_DAMAGED;
 		auto *flagged = warrior(41, 15, 0, 3, 1);
 		flagged->attachedBuilding = war;
-		flagged->activity = Unit::ACT_FLAG;
-        flagged->jobPurpose = UnitJobPurpose::Defend;
+		flagged->core.activity = Unit::ACT_FLAG;
+        flagged->core.jobPurpose = UnitJobPurpose::Defend;
 		auto *inside = warrior(30, 50, 0, 0, 1);
-		inside->displacement = Unit::DIS_INSIDE;
+		inside->core.displacement = Unit::DIS_INSIDE;
 		warrior(13, 15, 1, 2, 2); // enemy warrior at our home
 		warrior(42, 16, 1, 1, 1); // enemy warrior at its own home
 		warrior(13, 16, 2, 3, 3); // allied warrior at our home
 		auto *dead = warrior(16, 14, 0, 4, 4);
-		dead->isDead = true;
+		dead->core.isDead = true;
 		const Uint32 checksum = w.game().checkSum();
 		w.team(0)->stats.sampleDefence(w.team(0));
 		const auto &m = w.team(0)->stats.measurements;
@@ -338,7 +338,7 @@ TEST_SUITE("TeamStatsSave")
 		CHECK(m.intruderLevels == 4);
 		CHECK(w.game().checkSum() == checksum);
 		flagged->attachedBuilding = nullptr;
-		dead->isDead = false;
+		dead->core.isDead = false;
 	}
 
 	TEST_CASE("labour, combat and defence measurements survive a save [save-format]")
@@ -493,12 +493,12 @@ TEST_SUITE("TeamStatsSave")
             else idle.push_back(unit);
         }
         REQUIRE(assigned); REQUIRE(idle.size()==2);
-        REQUIRE(assigned->activity==Unit::ACT_FLAG); REQUIRE(assigned->jobPurpose==UnitJobPurpose::Defend);
+        REQUIRE(assigned->core.activity==Unit::ACT_FLAG); REQUIRE(assigned->core.jobPurpose==UnitJobPurpose::Defend);
         auto sample=[&] { ++game.stepCounter; world.team->stats.step(world.team); };
         auto sampleWindow=[&] { for(int i=0;i<32;++i) sample(); };
         // Preserve the stock maximum over the sampling window: one idle unit
         // becomes unavailable after the first sample, but the reserve stays two.
-        sample(); --idle[0]->hp; idle[0]->medical=Unit::MED_DAMAGED;
+        sample(); --idle[0]->core.hp; idle[0]->core.medical=Unit::MED_DAMAGED;
         for(int i=1;i<32;++i) sample();
         auto* stats=world.team->stats.getLatestStat();
         CHECK(stats->meleeUnits==3); CHECK(stats->idleDefenders==2);
@@ -508,22 +508,22 @@ TEST_SUITE("TeamStatsSave")
         definitions["units"][WARRIOR]["behaviors"]["recruitDefend"]=false;
         game.gameHeader.setUnitCatalog(UnitCatalog::deserialize(definitions.dump())); game.configureBuildingCatalog();
         REQUIRE_FALSE(assigned->runtimeTraits().recruits(2));
-        CHECK(assigned->attachedBuilding==flag); CHECK(assigned->jobPurpose==UnitJobPurpose::Defend);
-        CHECK(assigned->activity==Unit::ACT_FLAG); CHECK(flag->unitsWorking.size()==1);
+        CHECK(assigned->attachedBuilding==flag); CHECK(assigned->core.jobPurpose==UnitJobPurpose::Defend);
+        CHECK(assigned->core.activity==Unit::ACT_FLAG); CHECK(flag->unitsWorking.size()==1);
         flag->maxUnitWorking=flag->desiredMaxUnitWorking=2;
         CHECK_FALSE(recruitmentRound());
         sampleWindow(); stats=world.team->stats.getLatestStat();
         // Physical fighters and historical free counters retain their meanings.
         CHECK(stats->meleeUnits==3); CHECK(stats->isFree[WARRIOR]==1);
         CHECK(stats->idleDefenders==0);
-        CHECK(assigned->attachedBuilding==flag); CHECK(assigned->activity==Unit::ACT_FLAG);
+        CHECK(assigned->attachedBuilding==flag); CHECK(assigned->core.activity==Unit::ACT_FLAG);
 
         definitions["units"][WARRIOR]["behaviors"]["recruitDefend"]=true;
         game.gameHeader.setUnitCatalog(UnitCatalog::deserialize(definitions.dump())); game.configureBuildingCatalog();
-        idle[0]->hp=idle[0]->performance[HP]; idle[0]->medical=Unit::MED_FREE;
+        idle[0]->core.hp=idle[0]->performance(HP); idle[0]->core.medical=Unit::MED_FREE;
         sampleWindow(); stats=world.team->stats.getLatestStat();
         CHECK(stats->meleeUnits==3); CHECK(stats->idleDefenders==2);
-        CHECK(assigned->attachedBuilding==flag); CHECK(assigned->jobPurpose==UnitJobPurpose::Defend);
+        CHECK(assigned->attachedBuilding==flag); CHECK(assigned->core.jobPurpose==UnitJobPurpose::Defend);
         REQUIRE(recruitmentRound());
         CHECK(flag->unitsWorking.size()==2);
         sampleWindow(); CHECK(world.team->stats.getLatestStat()->idleDefenders==1);
@@ -546,8 +546,8 @@ TEST_SUITE("TeamStatsSave")
         auto* recruit=world.addUnit(3,8,8); auto* refuse=world.addUnit(4,12,8);
         auto* noClock=world.addUnit(3,16,8,0,1);
         REQUIRE(recruit); REQUIRE(refuse); REQUIRE(noClock);
-        REQUIRE(recruit->performance[ATTACK_SPEED]>0); REQUIRE(refuse->performance[ATTACK_SPEED]>0);
-        REQUIRE(noClock->performance[ATTACK_SPEED]==0);
+        REQUIRE(recruit->performance(ATTACK_SPEED)>0); REQUIRE(refuse->performance(ATTACK_SPEED)>0);
+        REQUIRE(noClock->performance(ATTACK_SPEED)==0);
         auto sampleWindow=[&] {
             for(int i=0;i<32;++i) {
                 ++game.stepCounter; world.team->stats.step(world.team);

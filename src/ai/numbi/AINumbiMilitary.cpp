@@ -42,7 +42,7 @@ std::shared_ptr<Order>AINumbi::mayAttack(int criticalMass, int criticalTimeout, 
 	const auto myUnits=observation->unitSlots(teamNumber);
 	int ft=0;
 	for (int i=0; i<Unit::MAX_COUNT; i++)
-		if ((myUnits[i])&&(myUnits[i]->performance[ATTACK_SPEED])&&(myUnits[i]->medical==0))
+		if ((myUnits[i])&&(myUnits[i]->performance(ATTACK_SPEED))&&(myUnits[i]->core.medical==0))
 			ft++;
 
 	if (attackPhase==0)
@@ -204,10 +204,10 @@ std::shared_ptr<Order> AINumbi::mayUpgrade(const int ptrigger, const int ntrigge
 	std::array<int, NB_UNIT_LEVELS> workers{}, idle{}, training{};
     const auto workerTraining=AIEngine::ObservationQueries::workerTrainingProjection(*observation,false);
 	std::array<std::array<int, NB_UNIT_LEVELS>, std::size(priorities)> ready{}, underway{};
-	for (const AIEngine::UnitView* u : observation->unitSlots(teamNumber))
+	for (AIEngine::UnitObservation u : observation->unitSlots(teamNumber))
 		if (u && AIEngine::ObservationQueries::matchesConstructionRole(*observation,*u))
-			for (int level = 0; level <= u->constructionLevel && level < NB_UNIT_LEVELS; ++level)
-			{ ++workers[level]; if (u->activity == Unit::ACT_RANDOM) ++idle[level]; }
+			for (int level = 0; level <= u->core.constructionLevel && level < NB_UNIT_LEVELS; ++level)
+			{ ++workers[level]; if (u->core.activity == Unit::ACT_RANDOM) ++idle[level]; }
 	for (const AIEngine::BuildingView* b : observation->buildingSlots(teamNumber))
 	{
 		if (!b) continue;

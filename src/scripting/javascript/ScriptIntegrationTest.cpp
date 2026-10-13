@@ -69,7 +69,7 @@ TEST_CASE("JavaScript observations visibility memory pagination and stale refere
 	CHECK(definitions.items[0].get("id").number == EXPLORER);
 	CHECK(definitions.items[0].get("key").text == "explorer");
 	CHECK(definitions.items[0].get("performanceLevels").items.size() == 4);
-	auto ownRef = Value::object().set("id", unsigned(own->gid)).set("generation", own->scriptIdentity);
+	auto ownRef = Value::object().set("id", unsigned(own->core.gid)).set("generation", own->core.scriptIdentity);
 	auto ordinary = full.query("unit", {ownRef});
 	CHECK(ordinary.get("capabilities").kind == Value::Null);
 	CHECK(ordinary.get("cargo").kind == Value::Null);
@@ -95,7 +95,7 @@ TEST_CASE("JavaScript observations visibility memory pagination and stale refere
 	auto seen = fair.query("units", {});
 	GLOB2_REQUIRE(seen.items.size() == 1, "JavaScript contract");
 	auto enemyRef =
-		Value::object().set("id", unsigned(enemy->gid)).set("generation", enemy->scriptIdentity);
+		Value::object().set("id", unsigned(enemy->core.gid)).set("generation", enemy->core.scriptIdentity);
 	GLOB2_REQUIRE(fair.query("unit", {enemyRef}).kind == Value::Null, "JavaScript contract");
 	CHECK(fair.query("unitBehavior", {enemyRef}).kind == Value::Null);
 	GLOB2_REQUIRE(
@@ -106,8 +106,8 @@ TEST_CASE("JavaScript observations visibility memory pagination and stale refere
 	auto hidden = fair.query("tile", {22, 22});
 	GLOB2_REQUIRE(hidden.get("explored").number == 0, "JavaScript contract");
 	GLOB2_REQUIRE(hidden.get("resource").kind == Value::Null, "JavaScript contract");
-	enemy->scriptIdentity = game.allocateScriptIdentity(false, enemy->gid);
-	enemy->scriptIdentity = game.allocateScriptIdentity(false, enemy->gid);
+	enemy->core.scriptIdentity = game.allocateScriptIdentity(false, enemy->core.gid);
+	enemy->core.scriptIdentity = game.allocateScriptIdentity(false, enemy->core.gid);
 	game.map.setMapDiscovered(22, 22, game.teams[0]->me);
 	game.stepCounter++;
 	fair.observe();
@@ -126,21 +126,21 @@ TEST_CASE("JavaScript observations visibility memory pagination and stale refere
 	game.stepCounter++;
 	fair.observe();
 	auto firstEnemy = fair.query("units", {Value::object().set("team", 1)}).items.at(0);
-	GLOB2_REQUIRE(firstEnemy.get("generation").number == enemy->scriptIdentity &&
-					  enemy->scriptIdentity == 3,
+	GLOB2_REQUIRE(firstEnemy.get("generation").number == enemy->core.scriptIdentity &&
+					  enemy->core.scriptIdentity == 3,
 				  "JavaScript contract");
 	GLOB2_REQUIRE(fair.query("unit", {firstEnemy}).kind == Value::Object, "JavaScript contract");
 	game.map.switchFogOfWar();
 	game.map.switchFogOfWar();
-	enemy->scriptIdentity = game.allocateScriptIdentity(false, enemy->gid);
-	enemy->scriptIdentity = game.allocateScriptIdentity(false, enemy->gid);
+	enemy->core.scriptIdentity = game.allocateScriptIdentity(false, enemy->core.gid);
+	enemy->core.scriptIdentity = game.allocateScriptIdentity(false, enemy->core.gid);
 	game.map.setMapDiscovered(22, 22, game.teams[0]->me);
 	game.stepCounter++;
 	fair.observe();
 	GLOB2_REQUIRE(fair.query("unit", {firstEnemy}).kind == Value::Null, "JavaScript contract");
 	auto replacement = fair.query("units", {Value::object().set("team", 1)}).items.at(0);
-	GLOB2_REQUIRE(replacement.get("generation").number == enemy->scriptIdentity &&
-					  enemy->scriptIdentity == 5,
+	GLOB2_REQUIRE(replacement.get("generation").number == enemy->core.scriptIdentity &&
+					  enemy->core.scriptIdentity == 5,
 				  "JavaScript contract");
 	auto *identityMemory = new MemoryStreamBackend;
 	BinaryOutputStream identityOut(identityMemory);
@@ -155,7 +155,7 @@ TEST_CASE("JavaScript observations visibility memory pagination and stale refere
 					  identityLoaded.query("unit", {firstEnemy}).kind == Value::Null,
 				  "JavaScript contract");
 	auto paged = full.query("units", {Value::object().set("offset", 1).set("limit", 1)});
-	GLOB2_REQUIRE(paged.items.size() == 1 && paged.items[0].get("id").number == enemy->gid,
+	GLOB2_REQUIRE(paged.items.size() == 1 && paged.items[0].get("id").number == enemy->core.gid,
 				  "JavaScript contract");
 }
 TEST_CASE("JavaScript orders execute and survive save load" *
@@ -1036,7 +1036,7 @@ TEST_CASE("JavaScript native spatial answers exclude hidden terrain resources an
 	game.map.setFertility(22, 22, 65535);
 	game.map.paintCell(22, 22,WATER);
 	game.map.setResourceByIndex(21, 21, WHEAT, 1);
-	enemy->hp = 999;
+	enemy->core.hp = 999;
 	world.addUnit(WARRIOR, 24, 24, 1);
 	Observations after(game, 0);
 	after.setProfile(2);
@@ -1674,7 +1674,7 @@ TEST_CASE("JavaScript bound observations and order encoding remain isolated from
     auto* building = game.addBuilding(5, 5, swarm, 0, 2, 2);
     REQUIRE(unit);
     REQUIRE(building);
-    unit->fruitCount=0xffffffffu; unit->fruitMask=0x80000000u;
+    unit->detail.fruitCount=0xffffffffu; unit->detail.fruitMask=0x80000000u;
     building->receiveMaterialMask=0xffffffffu; building->sendMaterialMask=0x80000000u;
     const auto captured = AIEngine::AIWorldView::capture(game, AIEngine::AIWorldView::captureCatalog(game));
     Observations observations(game, 0);
@@ -1693,8 +1693,8 @@ TEST_CASE("JavaScript bound observations and order encoding remain isolated from
         .set("generation", building->scriptIdentity);
     const auto command = Value::object().set("type", "workers").set("building", reference).set("workers", 3);
     const auto before = Script::order(observations.world(), 0, command);
-    unit->hp = 1;
-    unit->posX = 12;
+    unit->core.hp = 1;
+    unit->core.posX = 12;
     building->maxUnitWorking = 7;
     building->scriptIdentity = game.allocateScriptIdentity(true, building->gid);
     game.stepCounter += 8;

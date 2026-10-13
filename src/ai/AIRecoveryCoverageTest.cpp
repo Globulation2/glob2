@@ -228,7 +228,7 @@ TEST_SUITE("AIRecoveryCoverage")
         auto* threatened=w.addUnit(WORKER,9,9);
         auto* enemy=w.addUnit(WARRIOR,8,8,1);
         w.team->enemies=w.game.teams[1]->me;
-        threatened->underAttackTimer=100;
+        threatened->core.underAttackTimer=100;
         AISharedRuntime::Runtime runtime(new NewNicowar,w.game.players[0]);
         AISharedRuntime::Runtime::OwnerObservationScope observationScope(runtime);
         MersenneTwister controllerRandom(713);runtime.setRandomEngine(controllerRandom);
@@ -255,8 +255,8 @@ TEST_SUITE("AIRecoveryCoverage")
         }
         ai.compute_defense_flag_positioning(runtime); flush();
         REQUIRE(ai.defense_flags.size()==1); CHECK(ai.defense_flags.front()==id);
-        w.game.map.setGroundUnit(enemy->posX,enemy->posY,NOGUID);
-        threatened->underAttackTimer=0;
+        w.game.map.setGroundUnit(enemy->core.posX,enemy->core.posY,NOGUID);
+        threatened->core.underAttackTimer=0;
         // Begin the next owner observation after removing the threat. Captured
         // records belong to one borrow; inspect the executed live result by GID.
         runtime.refreshOwnerObservation();
@@ -292,7 +292,7 @@ TEST_SUITE("AIRecoveryCoverage")
         CHECK(flag->maxUnitWorking==2);
         home->hp-=10; glob2test::withCabinoObservation(ai,w.game,[&]{return defense.perform(0);}); flush(); CHECK(defense.defending_zones.size()==1);
         glob2test::withCabinoObservation(ai,w.game,[&]{return defense.perform(1);}); flush(); CHECK(defense.defending_zones.size()==1);
-        w.game.map.setGroundUnit(enemy->posX,enemy->posY,NOGUID);
+        w.game.map.setGroundUnit(enemy->core.posX,enemy->core.posY,NOGUID);
         glob2test::withCabinoObservation(ai,w.game,[&]{return defense.perform(1);}); flush();
         CHECK(defense.defending_zones.empty()); CHECK(flag->buildingState!=Building::ALIVE);
     }

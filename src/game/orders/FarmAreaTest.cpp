@@ -134,7 +134,7 @@ namespace
 			world.step();
 			for (int i = 0; i < Unit::MAX_COUNT; ++i)
 				if (Unit* u = world.team->myUnits[i])
-					u->hungry = Unit::HUNGRY_MAX;
+					u->core.hungry = Unit::HUNGRY_MAX;
 		}
 		FieldRun run;
 		for (int y = y0; y < y0 + 6; y++)
@@ -192,7 +192,7 @@ namespace
 			world.step();
 			for (int i = 0; i < Unit::MAX_COUNT; ++i)
 				if (Unit* u = world.team->myUnits[i])
-					u->hungry = Unit::HUNGRY_MAX;
+					u->core.hungry = Unit::HUNGRY_MAX;
 			if (t % 100 == 0)
 				trace << t << ' ' << std::hex << simulationChecksum(world.game) << std::dec
 				      << " wheat " << world.team->stats.measurements.harvested[WHEAT]
@@ -239,8 +239,8 @@ TEST_SUITE("FarmAreas")
 				for (int i = 0; i < Unit::MAX_COUNT; ++i)
 					if (Unit* u = world.team->myUnits[i])
 					{
-						u->hungry = Unit::HUNGRY_MAX;
-						carrying += u->carriedMaterial == WHEAT;
+						u->core.hungry = Unit::HUNGRY_MAX;
+						carrying += u->core.carriedMaterial == WHEAT;
 					}
 			}
 			struct { int harvested, left, carrying; } result{

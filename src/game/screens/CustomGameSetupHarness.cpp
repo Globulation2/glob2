@@ -2746,7 +2746,7 @@ TEST_SUITE("CustomGameSetup")
 		checkPreviewRestart();
 		std::cout << "PASS preview restart joins superseded workers safely\n";
 	}
-	TEST_CASE("landscape preview performance [display][artifacts]")
+	TEST_CASE("landscape preview performance(display)[artifacts]")
 	{
 		glob2test::HeadlessGlobals globals(setupOptions(true));
 		CustomGameSetupHarness::landscapePerformance(glob2test::artifactDirFromWorkingDirectory(), false);

@@ -42,7 +42,7 @@ void GameGUI::setSelection(SelectionMode newSelMode, unsigned newSelection)
     if (selectionMode == UNIT_SELECTION)
     {
         const auto* u = drawnScene().entities.unit(newSelection);
-        selection = u ? UnitRef{u->gid, u->scriptIdentity} : UnitRef{};
+        selection = u ? UnitRef{u->core.gid, u->core.scriptIdentity} : UnitRef{};
         syncSelectionView();
         return;
     }
@@ -116,7 +116,7 @@ void GameGUI::checkSelection(void)
         else if (const auto* ref = std::get_if<UnitRef>(&selection))
         {
             const auto* u = scene.entities.unit(ref->gid);
-            valid = u && u->scriptIdentity == ref->generation;
+            valid = u && u->core.scriptIdentity == ref->generation;
         }
         else if (selectionMode == RESOURCE_SELECTION)
             valid = scene.map.getW() && scene.map.getResource(selectionResource()).type != NO_RES_TYPE;
@@ -148,11 +148,11 @@ void GameGUI::iterateSelection(void)
             const auto* ref = std::get_if<UnitRef>(&selection);
             const auto* selected = ref ? entities.unit(ref->gid) : nullptr;
             if (!selected) return;
-            const int start = selected->team == localTeamNo ? Unit::GIDtoID(selected->gid) : 0;
+            const int start = selected->team == localTeamNo ? Unit::GIDtoID(selected->core.gid) : 0;
             for (int n = 1; n < Unit::MAX_COUNT; ++n)
             {
                 const auto* u = entities.unit(Unit::GIDfrom((start+n)%Unit::MAX_COUNT, localTeamNo));
-                if (u && u->typeNum == selected->typeNum) { setSelection(UNIT_SELECTION, unsigned(u->gid)); centerViewportOnSelection(); break; }
+                if (u && u->core.typeNum == selected->core.typeNum) { setSelection(UNIT_SELECTION, unsigned(u->core.gid)); centerViewportOnSelection(); break; }
             }
         }
 }
@@ -170,7 +170,7 @@ void GameGUI::centerViewportOnSelection(void)
         else if (const auto* ref = std::get_if<UnitRef>(&selection))
         {
             const auto* u = entities.unit(ref->gid);
-            if (u && u->scriptIdentity == ref->generation) centerViewportOn(u->posX,u->posY);
+            if (u && u->core.scriptIdentity == ref->generation) centerViewportOn(u->core.posX,u->core.posY);
         }
 }
 

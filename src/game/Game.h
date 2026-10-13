@@ -42,7 +42,7 @@ namespace SimulationSnapshot { class Store; }
 class GameGUI;
 class SceneMap;
 struct PresentationFrame;
-using SnapshotUnit = SimulationSnapshot::UnitView;
+using SnapshotUnit = SimulationSnapshot::UnitCoreView;
 class MapEdit;
 class ClientCommandSink;
 class ClientRequests;

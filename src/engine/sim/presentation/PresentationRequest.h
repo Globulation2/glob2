@@ -10,6 +10,7 @@ struct SceneRequest
 	std::optional<std::pair<Uint32, Uint32>> highlights;
 	bool includeScriptAreas = false;
 	bool includePanels = true;
+    bool includeUnitDetails = false; // Editor inspection without HUD panels.
     bool includeHistory = false;
     bool includeTelemetry = false;
 	int localTeam = 0;

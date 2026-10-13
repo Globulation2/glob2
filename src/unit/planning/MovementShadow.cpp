@@ -19,9 +19,9 @@ void capturePursuitTarget(Task& task,const SimulationSnapshot::Handle& world)
 {
     const auto cell=world.occupancy->cells[world.view().index(task.targetX,task.targetY)];
     const auto gid=cell.groundUnit!=0xffff?cell.groundUnit:cell.airUnit;
-    if(gid<world.entities->unitSlotIndices.size()) {
-        const auto record=world.entities->unitSlotIndices[gid];
-        if(record!=SimulationSnapshot::Entities::NoRecord)task.targetUnit=world.entities->units.at(record).identity;
+    if(gid<world.unitCores->unitSlotIndices.size()) {
+        const auto record=world.unitCores->unitSlotIndices[gid];
+        if(record!=SimulationSnapshot::Entities::NoRecord)task.targetUnit=world.unitCores->units.at(record).identity;
     }
     if(cell.building<world.entities->buildingSlotIndices.size()) {
         const auto record=world.entities->buildingSlotIndices[cell.building];
@@ -42,10 +42,10 @@ void currentPursuitTarget(Task& task,const Game& game)
         if(team<game.teamsCount() && game.teams[team])task.target=Game::refOf(game.teams[team]->myBuildings[slot]);
     }
 }
-SimulationSnapshot::UnitView viewOf(const Unit& unit)
+SimulationSnapshot::UnitCoreView viewOf(const Unit& unit)
 {
-    SimulationSnapshot::UnitView view;
-    static_cast<UnitState&>(view)=static_cast<const UnitState&>(unit);
+    SimulationSnapshot::UnitCoreView view;
+    view.core=unit.core;
     view.identity=Game::refOf(&unit); view.team=unit.owner->teamNumber;
     view.attached=Game::refOf(unit.attachedBuilding); view.target=Game::refOf(unit.targetBuilding);
     return view;
@@ -119,23 +119,23 @@ void Shadow::boundary(const Game& game,const SimulationSnapshot::Handle& world)
     const unsigned teams=game.mapHeader.getNumberOfTeams();
     batch->teams.resize(teams);
     for(unsigned team=0;team<teams;++team) {
-        batch->teams[team].world=world;
+        batch->teams[team].world=world.project(requirements);
         batch->teams[team].planner=planners[team].get();
         batch->teams[team].seed=game.gameHeader.getRandomSeed();
     }
-    std::vector<Uint16> live; live.reserve(world.entities->units.size());
-    for(const auto& unit:world.entities->units) {
-        live.push_back(unit.gid);
-        auto& actor=actors[unit.gid];
+    std::vector<Uint16> live; live.reserve(world.unitCores->units.size());
+    for(const auto& unit:world.unitCores->units) {
+        live.push_back(unit.core.gid);
+        auto& actor=actors[unit.core.gid];
         auto task=taskOf(unit);
-        if(modeOf(unit)==Mode::Pursuit)capturePursuitTarget(task,world);
+        if(modeOf(unit.core)==Mode::Pursuit)capturePursuitTarget(task,world);
         if(!actor.initialized || actor.task.unit!=task.unit) { actor={};actor.task=task;actor.initialized=true; }
         const bool changed=signature(actor.task)!=signature(task);
         if(changed) { ++actor.epoch;actor.published.reset();actor.pendingSequence=0;actor.requested=false; }
         const bool moved=actor.task.x!=task.x || actor.task.y!=task.y;
         actor.task=task;
-        auto mode=modeOf(unit); if(!mode)continue;
-        auto remaining=completionTicks(unit); if(!remaining)continue;
+        auto mode=modeOf(unit.core); if(!mode)continue;
+        auto remaining=completionTicks(unit.core); if(!remaining)continue;
         if(actor.published && (actor.published->request.task!=task || actor.published->request.actionGeneration!=actor.actionGeneration))actor.published.reset();
         if(actor.pendingSequence && actor.requestedGeneration==actor.actionGeneration && !moved && !changed)continue;
         if(actor.published)continue;
@@ -170,25 +170,25 @@ void Shadow::boundary(const Game& game,const SimulationSnapshot::Handle& world)
 }
 Counters* Shadow::counters(const Unit& unit)
 {
-    const auto mode=modeOf(unit);
+    const auto mode=modeOf(unit.core);
     if(!mode)return nullptr;
     return &metrics[unit.owner->teamNumber][unsigned(*mode)].reference;
 }
 void Shadow::completeAction(const Unit& unit)
 {
-    const auto found=actors.find(unit.gid);
+    const auto found=actors.find(unit.core.gid);
     if(found!=actors.end() && found->second.task.unit==Game::refOf(&unit))++found->second.actionGeneration;
 }
 void Shadow::observe(const Unit& unit)
 {
-    const auto mode=modeOf(unit);
+    const auto mode=modeOf(unit.core);
     // Clearing preemption and combat acquisition can replace a travel action.
-    if(!mode || unit.movement==UnitState::MOV_ATTACKING_TARGET || unit.movement==UnitState::MOV_HARVESTING)return;
+    if(!mode || unit.core.movement==UnitState::MOV_ATTACKING_TARGET || unit.core.movement==UnitState::MOV_HARVESTING)return;
     auto& m=metrics[unit.owner->teamNumber][unsigned(*mode)];++m.reference.opportunities;
     if(!delay)return;
     auto task=taskOf(viewOf(unit));
     if(*mode==Mode::Pursuit)currentPursuitTarget(task,*unit.owner->game);
-    auto found=actors.find(unit.gid);
+    auto found=actors.find(unit.core.gid);
     if(found==actors.end()) { ++m.rapid;++m.missing;return; }
     auto& actor=found->second;
     const bool stable=signature(task)==signature(actor.task);

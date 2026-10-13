@@ -34,11 +34,11 @@ TEST_SUITE("MovementPlanning")
 {
     TEST_CASE("completion prediction agrees with the integer action clock")
     {
-        UnitState u{};u.displacement=UnitState::DIS_RANDOM;
+        UnitState u{};u.core.displacement=UnitState::DIS_RANDOM;
         for(auto action:{WALK,SWIM,FLY,STOP_WALK})for(int speed:{0,1,16,255,300})for(int delta:{0,12,254,255})for(int diagonal:{0,1}) {
-            u.action=action;u.speed=speed;u.delta=delta;u.dx=1;u.dy=diagonal;
+            u.core.action=action;u.core.speed=speed;u.core.delta=delta;u.core.dx=1;u.core.dy=diagonal;
             const int advance=unitActionStepSpeed(speed,action,1,diagonal);
-            const auto predicted=completionTicks(u);
+            const auto predicted=completionTicks(u.core);
             if(!advance){CHECK_FALSE(predicted);continue;}
             int actual=1,phase=delta;
             while(phase<=UNIT_DELTA_MAX-advance){phase+=advance;++actual;}
@@ -122,7 +122,7 @@ TEST_SUITE("MovementPlanning")
         fixture.game.teams[0]->enemies=2;
         fixture.game.map.paintCell(7,8,RIDGE_ROCK);
         const auto world=fixture.game.captureReadBoundary({},false,Shadow::requirements);
-        auto r=request(world,Mode::Explore);r.task.fly=unit->performance[FLY];
+        auto r=request(world,Mode::Explore);r.task.fly=unit->performance(FLY);
         for(int y=0;y<32;++y)for(int x=0;x<32;++x)
             CHECK(towerThreat(world,r.task,x,y)==unit->locationIsInEnemyGuardTowerRange(x,y));
     }
@@ -273,4 +273,20 @@ TEST_SUITE("MovementPlanningFixtures")
             const auto bytes=backend->takeContents();output.write(bytes.data(),bytes.size());REQUIRE(output.good());
         }
     }
+}
+
+TEST_CASE("pending movement leases omit full unit details" * doctest::test_suite("MovementPlanning"))
+{
+    glob2test::HeadlessGlobals globals;
+    glob2test::HeadlessGame fixture({.loadDefaultRace=true,.header=true});
+    REQUIRE(fixture.addUnit(WORKER,8,8));
+    std::weak_ptr<const SimulationSnapshot::UnitDetails> details;
+    Shadow shadow(fixture.game.map.computeExecutor(),4,1,fixture.game.map.getW(),fixture.game.map.getH());
+    {
+        auto world=SimulationSnapshot::capture(fixture.game,SimulationSnapshot::captureCatalog(fixture.game));
+        details=world.unitDetails;
+        shadow.boundary(fixture.game,world);
+    }
+    CHECK(details.expired());
+    shadow.drain();
 }

@@ -162,7 +162,7 @@ class HighResolutionIntegrationHarness
         // A moving unit crossing both seams must leave visible pieces in all four corners.
         Game units(nullptr);units.map.setSize(4,4,GRASS);units.map.setGame(&units);units.addTeam(0);
         auto unit=units.addUnit(0,0,0,0,0,128,1,1);REQUIRE(unit);
-        unit->action=WALK;unit->dx=unit->dy=1;unit->delta=128;
+        unit->core.action=WALK;unit->core.dx=unit->core.dy=1;unit->core.delta=128;
         gfx->drawFilledRect(0,0,gfx->getW(),gfx->getH(),0,0,0);
         gfx->beginMapTransform(.5,100,100,100,100,256,256);
         units.drawMapGroundUnits(0,0,16,16,512,512,0,0,0,Game::DRAW_WHOLE_MAP,editor.view, glob2test::sceneOf(units, editor.view));

@@ -168,11 +168,11 @@ TEST_CASE("empty persistent deposits remain clearing flag goals and worker targe
         auto* worker=f.game.addUnit(20,21,0,WORKER,0,0,0,0);
         REQUIRE(worker);
         worker->attachedBuilding=flag;
-        worker->movement=Unit::MOV_RANDOM_GROUND;
+        worker->core.movement=Unit::MOV_RANDOM_GROUND;
         worker->handleMovementClearingResources();
-        REQUIRE(worker->movement==Unit::MOV_HARVESTING);
-        CHECK(worker->dx==1);
-        CHECK(worker->dy==0);
+        REQUIRE(worker->core.movement==Unit::MOV_HARVESTING);
+        CHECK(worker->core.dx==1);
+        CHECK(worker->core.dy==0);
         worker->handleMovementClearingResources();
         CHECK(map.getResource(index).type==NO_RES_TYPE);
         CHECK(f.game.teams[0]->stats.measurements.cleared[materialIndex(MaterialId::Gold)]==1);

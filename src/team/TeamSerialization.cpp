@@ -48,7 +48,7 @@ GAGCore::CooperativeTask Team::loadTask(GAGCore::InputStream *stream, BuildingsT
 		if (isUsed)
 			{
 			myUnits[i] = new Unit(stream, this, versionMinor);
-			if (Unit::GIDtoID(myUnits[i]->gid) != i) throw std::runtime_error("Unit identity does not match slot");
+			if (Unit::GIDtoID(myUnits[i]->core.gid) != i) throw std::runtime_error("Unit identity does not match slot");
 		}
 		else
 			myUnits[i] = NULL;
@@ -232,9 +232,9 @@ GAGCore::CooperativeTask Team::loadTask(GAGCore::InputStream *stream, BuildingsT
 			if (Building* building=myBuildings[slot])
 				for (Unit* unit : building->unitsInside)
 				{
-					const int id=Unit::GIDtoID(unit->gid);
-					const int purpose=unit->destinationPurpose;
-					const auto& interaction=building->runtime->interaction(unit->typeNum);
+					const int id=Unit::GIDtoID(unit->core.gid);
+					const int purpose=unit->core.destinationPurpose;
+					const auto& interaction=building->runtime->interaction(unit->core.typeNum);
 					const bool validService=purpose==FEED ? interaction.has(BuildingUnitInteraction::Feeds) :
 						purpose==HEAL ? interaction.has(BuildingUnitInteraction::Heals) :
 						purpose>=0 && purpose<NB_ABILITY && (interaction.trainingMask & (1u<<purpose));
@@ -244,15 +244,15 @@ GAGCore::CooperativeTask Team::loadTask(GAGCore::InputStream *stream, BuildingsT
 					// through current resaves only with private migration provenance.
 					// Authored catalogs and all declared visits stay strictly checked.
 					const bool legacyOpaqueVisit=unit->hasCapability(UnitRuntimeTraits::LegacyPerformancePolicies)
-						&& unit->activity==Unit::ACT_RANDOM && purpose==-1 && !unit->serviceResourcesReserved;
+						&& unit->core.activity==Unit::ACT_RANDOM && purpose==-1 && !unit->detail.serviceResourcesReserved;
 					if (visits[id] || unit->attachedBuilding!=building
-						|| (!legacyOpaqueVisit && (unit->activity!=Unit::ACT_UPGRADING || !validService))
-						|| (unit->serviceResourcesReserved && unit->displacement==Unit::DIS_EXITING_BUILDING))
+						|| (!legacyOpaqueVisit && (unit->core.activity!=Unit::ACT_UPGRADING || !validService))
+						|| (unit->detail.serviceResourcesReserved && unit->core.displacement==Unit::DIS_EXITING_BUILDING))
 						throw std::runtime_error("Invalid saved building service membership");
 					visits[id]=true;
 				}
 		for (int id=0; id<Unit::MAX_COUNT; ++id)
-			if (myUnits[id] && myUnits[id]->serviceResourcesReserved && !visits[id])
+			if (myUnits[id] && myUnits[id]->detail.serviceResourcesReserved && !visits[id])
 				throw std::runtime_error("Saved unit reservation has no building service visit");
 	}
 

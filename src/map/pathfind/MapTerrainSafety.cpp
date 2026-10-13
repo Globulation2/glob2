@@ -119,14 +119,14 @@ void buildEscapeField(const Map& map, const EscapeProfile& profile, SafetyField&
 
 bool chooseEscapeStep(const Map& map, const EscapeProfile& profile, const SafetyField& field, Unit& unit)
 {
-    const auto here = field.costs[map.coordToIndex(unit.posX, unit.posY)];
+    const auto here = field.costs[map.coordToIndex(unit.core.posX, unit.core.posY)];
     if (here == SafetyField::Unreachable || here == 0) return false;
     Uint64 best = std::numeric_limits<Uint64>::max();
     for (const auto& offset : tabClose)
     {
         // Map cell queries wrap coordinates on the torus.
-        const int x = unit.posX + offset[0];
-        const int y = unit.posY + offset[1];
+        const int x = unit.core.posX + offset[0];
+        const int y = unit.core.posY + offset[1];
         const auto next = map.coordToIndex(x, y);
         // Strict descent prevents oscillation if traffic blocks the ideal step.
         // Blocked origins may still escape (e.g. a deposit appeared under a unit).
@@ -135,8 +135,8 @@ bool chooseEscapeStep(const Map& map, const EscapeProfile& profile, const Safety
         if (score < best)
         {
             best = score;
-            unit.dx = offset[0];
-            unit.dy = offset[1];
+            unit.core.dx = offset[0];
+            unit.core.dy = offset[1];
         }
     }
     unit.directionFromDxDy();
@@ -146,11 +146,11 @@ bool chooseEscapeStep(const Map& map, const EscapeProfile& profile, const Safety
 
 bool Map::pathfindTerrainSafety(Unit* unit)
 {
-    unit->dx = unit->dy = 0;
-    unit->direction = 8;
-    const bool air = unit->performance[FLY] > 0;
+    unit->core.dx = unit->core.dy = 0;
+    unit->core.direction = 8;
+    const bool air = unit->performance(FLY) > 0;
     const EscapeProfile profile{air, unit->swimClass(), unit->owner->me,
-        !air && bool(getForbidden(unit->posX, unit->posY) & unit->owner->me)};
+        !air && bool(getForbidden(unit->core.posX, unit->core.posY) & unit->owner->me)};
 
     // Avoid allocating a field on wholly hazardous maps. Counts are maintained
     // by map edits, so this scans terrain definitions rather than map cells.

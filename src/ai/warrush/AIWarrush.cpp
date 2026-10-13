@@ -34,21 +34,21 @@ namespace {
 		int n = 0;
 		for (int i = 0; i < Unit::MAX_COUNT; i++)
 		{
-			const AIEngine::UnitView *u = world.unitSlots(team->number)[i];
+			AIEngine::UnitObservation u = world.unitSlots(team->number)[i];
 			if (u && p(u)) n++;
 		}
 		return n;
 	}
 
 	template<typename Pred>
-	const AIEngine::UnitView *findUnitIf(const AIEngine::AIWorldView& world, const auto *team, Pred p)
+	AIEngine::UnitObservation findUnitIf(const AIEngine::AIWorldView& world, const auto *team, Pred p)
 	{
 		for (int i = 0; i < Unit::MAX_COUNT; i++)
 		{
-			const AIEngine::UnitView *u = world.unitSlots(team->number)[i];
+			AIEngine::UnitObservation u = world.unitSlots(team->number)[i];
 			if (u && p(u)) return u;
 		}
-		return nullptr;
+		return std::nullopt;
 	}
 
 	template<typename Pred>
@@ -238,7 +238,7 @@ int AIWarrush::numberOfUnitsWithSkillGreaterThanValue(const int skill, const int
 	telemetry.count(AITrace::AI3::AIWarrush_numberOfUnitsWithSkillGreaterThanValue_calls);
 	return telemetry.returnedInt(
 		AITrace::AI3::AIWarrush_numberOfUnitsWithSkillGreaterThanValue_result,
-		countUnitsIf(*observation, observedTeam, [skill, value](const AIEngine::UnitView *u) { return u->performance[skill] > value; }));
+		countUnitsIf(*observation, observedTeam, [skill, value](AIEngine::UnitObservation u) { return u->performance(skill) > value; }));
 }
 
 int AIWarrush::numberOfUnitsWithSkillEqualToValue(const int skill, const int value)const
@@ -248,7 +248,7 @@ int AIWarrush::numberOfUnitsWithSkillEqualToValue(const int skill, const int val
 	telemetry.count(AITrace::AI3::AIWarrush_numberOfUnitsWithSkillEqualToValue_calls);
 	return telemetry.returnedInt(
 		AITrace::AI3::AIWarrush_numberOfUnitsWithSkillEqualToValue_result,
-		countUnitsIf(*observation, observedTeam, [skill, value](const AIEngine::UnitView *u) { return u->performance[skill] == value; }));
+		countUnitsIf(*observation, observedTeam, [skill, value](AIEngine::UnitObservation u) { return u->performance(skill) == value; }));
 }
 
 bool AIWarrush::isAnyUnitWithLessThanOneThirdFood()const
@@ -260,10 +260,10 @@ bool AIWarrush::isAnyUnitWithLessThanOneThirdFood()const
 		AITrace::AI3::AIWarrush_isAnyUnitWithLessThanOneThirdFood_result,
 		AITrace::AI3::AIWarrush_isAnyUnitWithLessThanOneThirdFood_true,
 		findUnitIf(*observation, observedTeam,
-				   [this](const AIEngine::UnitView *u)
+				   [this](AIEngine::UnitObservation u)
 				   {
-					   return u->hungriness>0 && u->hungry < (observation->unitTraits(u->typeNum).foodCapacity / AI_WARRUSH_HUNGRY_THRESHOLD_DIVISOR);
-				   }) != nullptr);
+					   return u->detail.hungriness>0 && u->core.hungry < (observation->unitTraits(u->core.typeNum).foodCapacity / AI_WARRUSH_HUNGRY_THRESHOLD_DIVISOR);
+				   }) != std::nullopt);
 }
 
 bool AIWarrush::provides(const AIEngine::BuildingView& building, Intent intent) const
@@ -917,11 +917,11 @@ std::shared_ptr<Order> AIWarrush::setupExploreFlagForTeam(const AIEngine::TeamVi
 	//what, they have no buildings? o_O Find any unit:
 	for(int j=0;j<Unit::MAX_COUNT;j++)
 	{
-		const AIEngine::UnitView *u = observation->unitSlots(enemy_team->number)[j];
+		AIEngine::UnitObservation u = observation->unitSlots(enemy_team->number)[j];
 		if(u)
 		{
 			return telemetry.returnedOrder(AITrace::AI3::AIWarrush_setupExploreFlagForTeam_result,
-										   placeNear(u->posX, u->posY));
+										   placeNear(u->core.posX, u->core.posY));
 		}
 	}
 	//what, enemy has no buildings or units at the beginning of the game? o_O O_o o_O

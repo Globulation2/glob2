@@ -35,6 +35,8 @@ struct Storage
 	BufferPool<Visibility> visibility;
 	BufferPool<Exploration> exploration;
 	BufferPool<Entities> entities;
+    BufferPool<UnitCores> unitCores;
+    BufferPool<UnitDetails> unitDetails;
 	BufferPool<Teams> teams;
 	BufferPool<Rules> rules;
 	BufferPool<ResourceFields> resourceFields;

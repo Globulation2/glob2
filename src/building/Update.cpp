@@ -147,7 +147,7 @@ void Building::updateUnitsWorking(void)
 			// First choice: free a unit who has a material that is not needed..
 			for (std::list<Unit *>::iterator it=unitsWorking.begin(); it!=unitsWorking.end();)
 			{
-				int r=(*it)->carriedMaterial;
+				int r=(*it)->core.carriedMaterial;
 				if (r>=0 && !neededMaterial(r))
 				{
 					fu=(*it);
@@ -165,17 +165,17 @@ void Building::updateUnitsWorking(void)
 				int minDistSquare=INT_MAX;
 				for (std::list<Unit *>::iterator it=unitsWorking.begin(); it!=unitsWorking.end(); ++it)
 				{
-					int r=(*it)->carriedMaterial;
+					int r=(*it)->core.carriedMaterial;
 					if (r<0)
 					{
 						int tx = posX;
 						int ty = posY;
-						if((*it)->targetX != -1)
+						if((*it)->core.targetX != -1)
 						{
-							tx = (*it)->targetX;
-							ty = (*it)->targetY;
+							tx = (*it)->core.targetX;
+							ty = (*it)->core.targetY;
 						}
-						int newDistSquare=distSquare((*it)->posX, (*it)->posY, tx, ty);
+						int newDistSquare=distSquare((*it)->core.posX, (*it)->core.posY, tx, ty);
 						if (newDistSquare<minDistSquare)
 						{
 							minDistSquare=newDistSquare;
@@ -190,7 +190,7 @@ void Building::updateUnitsWorking(void)
 			if (fu==NULL)
 				for (std::list<Unit *>::iterator it=unitsWorking.begin(); it!=unitsWorking.end(); ++it)
 				{
-					int newDistSquare=distSquare((*it)->posX, (*it)->posY, posX, posY);
+					int newDistSquare=distSquare((*it)->core.posX, (*it)->core.posY, posX, posY);
 					if (newDistSquare>maxDistSquare)
 					{
 						maxDistSquare=newDistSquare;
@@ -202,7 +202,7 @@ void Building::updateUnitsWorking(void)
 			if (fu!=NULL)
 			{
 				if (verbose)
-					printf("bgid=%d, we free the unit gid=%d\n", gid, fu->gid);
+					printf("bgid=%d, we free the unit gid=%d\n", gid, fu->core.gid);
 				// We free the unit.
 				fu->standardRandomActivity();
 				unitsWorking.erase(ittemp);

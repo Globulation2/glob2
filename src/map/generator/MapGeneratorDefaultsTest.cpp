@@ -702,10 +702,10 @@ TEST_SUITE("MapGeneratorDefaults")
             for (int i=0; i<request.nbWorkers; ++i)
             {
                 const auto* worker=game.teams[0]->myUnits[i]; REQUIRE(worker);
-                CHECK(worker->posX==game.map.normalizeX(61+layout.workerX(i)));
-                CHECK(worker->posY==game.map.normalizeY(2+layout.workerY(i)));
-                CHECK(game.map.getGroundUnit(worker->posX,worker->posY)==worker->gid);
-                CHECK(game.map.getBuilding(worker->posX,worker->posY)==NOGBID);
+                CHECK(worker->core.posX==game.map.normalizeX(61+layout.workerX(i)));
+                CHECK(worker->core.posY==game.map.normalizeY(2+layout.workerY(i)));
+                CHECK(game.map.getGroundUnit(worker->core.posX,worker->core.posY)==worker->core.gid);
+                CHECK(game.map.getBuilding(worker->core.posX,worker->core.posY)==NOGBID);
             }
         }
     }

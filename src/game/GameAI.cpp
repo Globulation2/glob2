@@ -43,7 +43,7 @@ std::vector<std::pair<std::string,Uint64>> Game::aiMetrics() const {
  const auto& waits=compute.summary.joins[unsigned(ComputeProducer::AI)][unsigned(JoinReason::TickDeadline)];
  const auto& capture=worldSnapshots.metrics;const auto& scheduling=aiPipeline->schedulingMetrics();const auto memory=worldSnapshots.memoryMetrics();const auto queryMemory=aiPipeline->queryVectorMemory();
  return {{"captures",capture.captures},{"extraction_ns",capture.captureNs},{"preparation_ns",capture.preparationNs},
-  {"bytes_copied",capture.bytesCopied},{"component_reuses",capture.reusedComponents},{"allocations",capture.allocations},
+  {"bytes_copied",capture.bytesCopied},{"unit_state_bytes_copied",capture.unitStateBytesCopied},{"unit_record_payload_bytes",capture.unitRecordPayloadBytes},{"component_reuses",capture.reusedComponents},{"allocations",capture.allocations},
   {"computation_ns",aiPipeline->computationNs()},{"controller_query_vector_bytes",queryMemory.first},
   {"controller_query_vector_peak_bytes",aiPipeline->peakQueryVectorMemory()},
   {"controller_query_vector_samples",queryMemory.second},{"submitted",scheduling.submitted},{"delivered",scheduling.delivered},
@@ -95,5 +95,7 @@ std::vector<std::pair<std::string,Uint64>> Game::movementMetrics() const
  result.emplace_back("snapshot_retained_bytes",memory.retainedBytes);
  result.emplace_back("snapshot_peak_retained_bytes",memory.peakRetainedBytes);
  result.emplace_back("snapshot_bytes_copied",capture.bytesCopied);
+ result.emplace_back("snapshot_unit_state_bytes_copied",capture.unitStateBytesCopied);
+ result.emplace_back("snapshot_unit_record_payload_bytes",capture.unitRecordPayloadBytes);
  return result;
 }

@@ -31,10 +31,10 @@ bool allRemainingUnitsTrapped(Team& team)
 		if (!unit) { freeUnitSlot = true; continue; }
 		foundUnit = true;
 		// Active service and normal entry/exit are not a loss of agency.
-		if (unit->displacement != Unit::DIS_EXITING_BUILDING
-			|| unit->movement != Unit::MOV_INSIDE || !unit->attachedBuilding)
+		if (unit->core.displacement != Unit::DIS_EXITING_BUILDING
+			|| unit->core.movement != Unit::MOV_INSIDE || !unit->attachedBuilding)
 			return false;
-		if (hasExit(unit->attachedBuilding, unit->performance[FLY], unit->performance[SWIM],unit->performance[WALK]))
+		if (hasExit(unit->attachedBuilding, unit->performance(FLY), unit->performance(SWIM),unit->performance(WALK)))
 			return false;
 	}
 	if (!foundUnit) return false; // Keep the existing zero-unit rule.
@@ -174,9 +174,9 @@ namespace
 	// A unit on its way to fetch, or to deliver, a resource for its building.
 	bool isFetching(const Unit *u)
 	{
-		return u && u->activity == Unit::ACT_FILLING && u->attachedBuilding && u->ownExchangeBuilding == NULL
-			&& u->medical == Unit::MED_FREE && u->destinationPurpose >= 0
-			&& (u->displacement == Unit::DIS_GOING_TO_RESOURCE || u->displacement == Unit::DIS_GOING_TO_BUILDING);
+		return u && u->core.activity == Unit::ACT_FILLING && u->attachedBuilding && u->ownExchangeBuilding == NULL
+			&& u->core.medical == Unit::MED_FREE && u->core.destinationPurpose >= 0
+			&& (u->core.displacement == Unit::DIS_GOING_TO_RESOURCE || u->core.displacement == Unit::DIS_GOING_TO_BUILDING);
 	}
 
 	// Tiles `u` would walk to do the job (building, resource): deliver what it
@@ -188,12 +188,12 @@ namespace
 		int swimClass = u->swimClass();
 		if (b->globalGradient[swimClass] == NULL)
 			return false;
-		if (u->carriedMaterial >= 0)
-			return u->hasCarriedMaterial(resource) && map->buildingAvailable(b, swimClass, u->posX, u->posY, cost, BuildingRoute::Footprint);
+		if (u->core.carriedMaterial >= 0)
+			return u->hasCarriedMaterial(resource) && map->buildingAvailable(b, swimClass, u->core.posX, u->core.posY, cost, BuildingRoute::Footprint);
 		// Fetch and carry: the plain distances, as hiring uses them.
 		int toBuilding, toResource;
-		if (!map->buildingAvailable(b, swimClass, u->posX, u->posY, &toBuilding, BuildingRoute::Footprint)
-			|| !map->materialAvailableSlot(b->owner->teamNumber, resource, swimClass, u->posX, u->posY, &toResource, b->fetchesFromMarkets(), b))
+		if (!map->buildingAvailable(b, swimClass, u->core.posX, u->core.posY, &toBuilding, BuildingRoute::Footprint)
+			|| !map->materialAvailableSlot(b->owner->teamNumber, resource, swimClass, u->core.posX, u->core.posY, &toResource, b->fetchesFromMarkets(), b))
 			return false;
 		*cost = toBuilding + toResource;
 		return true;
@@ -202,8 +202,8 @@ namespace
 	// A unit walking to the inn where it booked its meal.
 	bool isWalkingToInn(const Unit *u)
 	{
-		return u && u->activity == Unit::ACT_UPGRADING && u->destinationPurpose == FEED
-			&& u->attachedBuilding && u->displacement == Unit::DIS_GOING_TO_BUILDING;
+		return u && u->core.activity == Unit::ACT_UPGRADING && u->core.destinationPurpose == FEED
+			&& u->attachedBuilding && u->core.displacement == Unit::DIS_GOING_TO_BUILDING;
 	}
 
 	// Tiles `u` walks to reach `b`: the building's gradient, which choosing an inn
@@ -211,12 +211,12 @@ namespace
 	bool innCost(Unit *u, Building *b, int *cost)
 	{
 		Map *map = b->owner->map;
-		if (u->performance[FLY])
+		if (u->performance(FLY))
 		{
-			*cost = 1 + (Sint32)sqrt(map->warpDistSquare(u->posX, u->posY, b->posX, b->posY));
+			*cost = 1 + (Sint32)sqrt(map->warpDistSquare(u->core.posX, u->core.posY, b->posX, b->posY));
 			return true;
 		}
-		return map->buildingAvailable(b, u->swimClass(), u->posX, u->posY, cost, BuildingRoute::Footprint);
+		return map->buildingAvailable(b, u->swimClass(), u->core.posX, u->core.posY, cost, BuildingRoute::Footprint);
 	}
 
 	// Move `u`'s booking from one inn to the other; both keep their head count.
@@ -232,21 +232,21 @@ namespace
 	{
 		u->attachedBuilding->removeUnitFromWorking(u);
 		u->attachedBuilding = b;
-		u->destinationPurpose = resource;
+		u->core.destinationPurpose = resource;
 		b->unitsWorking.push_back(u);
 		b->updateCallLists();
 		if (u->hasCarriedMaterial(resource))
 		{
-			u->displacement = Unit::DIS_GOING_TO_BUILDING;
+			u->core.displacement = Unit::DIS_GOING_TO_BUILDING;
 			u->setTargetBuilding(b);
 		}
 		else
 		{
-			u->displacement = Unit::DIS_GOING_TO_RESOURCE;
+			u->core.displacement = Unit::DIS_GOING_TO_RESOURCE;
 			u->setTargetBuilding(NULL);
-			b->owner->map->materialAvailableUpdateSlot(b->owner->teamNumber, resource, u->swimClass(), u->posX, u->posY, &u->targetX, &u->targetY, NULL, b->fetchesFromMarkets(), b);
+			b->owner->map->materialAvailableUpdateSlot(b->owner->teamNumber, resource, u->swimClass(), u->core.posX, u->core.posY, &u->core.targetX, &u->core.targetY, NULL, b->fetchesFromMarkets(), b);
 		}
-		u->validTarget = true;
+		u->core.validTarget = true;
 	}
 }
 
@@ -255,11 +255,11 @@ void Team::swapTask(Unit *unit)
 	if (!isFetching(unit))
 		return;
 	Building *a = unit->attachedBuilding;
-	int r = unit->destinationPurpose;
+	int r = unit->core.destinationPurpose;
 	int own;
 	if (!jobCost(unit, a, r, &own))
 		return;
-	int timeLeft = unit->foodStepsLeft(unit->trigHungry);
+	int timeLeft = unit->foodStepsLeft(unit->detail.trigHungry);
 	Unit *best = NULL;
 	int bestGain = SWAP_MIN_GAIN;
 	for (int i = 0; i < Unit::MAX_COUNT; i++)
@@ -268,13 +268,13 @@ void Team::swapTask(Unit *unit)
 		if (mate == unit || !isFetching(mate))
 			continue;
 		Building *b = mate->attachedBuilding;
-		int s = mate->destinationPurpose;
+		int s = mate->core.destinationPurpose;
 		if ((b == a && s == r) || !b->canUnitWorkHere(unit) || !a->canUnitWorkHere(mate))
 			continue;
 		int mateOwn, mine, theirs;
 		if (!jobCost(mate, b, s, &mateOwn) || !jobCost(unit, b, s, &mine) || !jobCost(mate, a, r, &theirs))
 			continue;
-		if (mine >= timeLeft || theirs >= mate->foodStepsLeft(mate->trigHungry))
+		if (mine >= timeLeft || theirs >= mate->foodStepsLeft(mate->detail.trigHungry))
 			continue;
 		int gain = own + mateOwn - mine - theirs;
 		if (gain > bestGain)
@@ -286,7 +286,7 @@ void Team::swapTask(Unit *unit)
 	if (best == NULL)
 		return;
 	Building *b = best->attachedBuilding;
-	int s = best->destinationPurpose;
+	int s = best->core.destinationPurpose;
 	assignTask(unit, b, s);
 	assignTask(best, a, r);
 }
@@ -307,8 +307,8 @@ void Team::swapInn(Unit *unit)
 		if (mate == unit || !isWalkingToInn(mate) || mate->attachedBuilding == a || mate->attachedBuilding->owner != this)
 			continue;
 		Building *b = mate->attachedBuilding;
-		if (!b->runtime->interaction(unit->typeNum).has(BuildingUnitInteraction::Feeds)
-			|| !a->runtime->interaction(mate->typeNum).has(BuildingUnitInteraction::Feeds)) continue;
+		if (!b->runtime->interaction(unit->core.typeNum).has(BuildingUnitInteraction::Feeds)
+			|| !a->runtime->interaction(mate->core.typeNum).has(BuildingUnitInteraction::Feeds)) continue;
 		int mateOwn, mine, theirs;
 		if (!innCost(mate, b, &mateOwn) || !innCost(unit, b, &mine) || !innCost(mate, a, &theirs))
 			continue;
@@ -356,21 +356,21 @@ void Team::syncStep(void)
 			if (u->hasCapability(UnitRuntimeTraits::CountsForSurvival))
 			{
 				nbUsefulUnits++;
-				if (u->medical == Unit::MED_FREE || (u->insideTimeout < 0 && u->destinationPurpose==FEED && u->attachedBuilding && u->attachedBuilding->type->semantics.feeding.enabled))
+				if (u->core.medical == Unit::MED_FREE || (u->detail.insideTimeout < 0 && u->core.destinationPurpose==FEED && u->attachedBuilding && u->attachedBuilding->type->semantics.feeding.enabled))
 					nbUsefulUnitsAlone++;
 			}
 			if constexpr (areaPulse) u->applyAreaServices();
 			u->syncStep();
 			// Check after the step: reserving the last service place removes the
 			// building from admission lists. Feeding and healing still offer recovery.
-			if (!u->isDead && u->owner == this && u->hasCapability(UnitRuntimeTraits::CountsForSurvival)
-				&& ((!u->isUnitHungry() && u->hp > u->trigHP)
-					|| (u->activity == Unit::ACT_UPGRADING && u->destinationPurpose == FEED
+			if (!u->core.isDead && u->owner == this && u->hasCapability(UnitRuntimeTraits::CountsForSurvival)
+				&& ((!u->isUnitHungry() && u->core.hp > u->detail.trigHP)
+					|| (u->core.activity == Unit::ACT_UPGRADING && u->core.destinationPurpose == FEED
 						&& u->attachedBuilding && u->attachedBuilding->type->canFeedUnit)
-					|| (u->activity == Unit::ACT_UPGRADING && u->destinationPurpose == HEAL
+					|| (u->core.activity == Unit::ACT_UPGRADING && u->core.destinationPurpose == HEAL
 						&& u->attachedBuilding && u->attachedBuilding->type->canHealUnit)))
 				hasHealthyOrRecoveringUnit = true;
-			if (u->isDead)
+			if (u->core.isDead)
 			{
 				// Client selections hold a UnitRef and notice the death when
 				// it no longer resolves; nothing to notify here.

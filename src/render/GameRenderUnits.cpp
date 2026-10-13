@@ -57,8 +57,8 @@ void Game::drawUnit(int x, int y, Uint16 gid, int viewportX, int viewportY, int 
 		globalContainer->gfx->drawRect((x<<5)+1, (y<<5)+1, 30, 30, 255, 255, 0);
 		return;
 	}
-	int dx=unit->dx;
-	int dy=unit->dy;
+	int dx=unit->core.dx;
+	int dy=unit->core.dy;
 
 	Uint32 visibleTeams = entities.teams[localTeam].mask;
 	if (globalContainer->isViewingGame()) visibleTeams = globalContainer->replayVisibleTeams;
@@ -88,32 +88,32 @@ void Game::drawUnit(int x, int y, Uint16 gid, int viewportX, int viewportY, int 
 	const auto faded = [fogAlpha](unsigned alpha) { return Uint8(alpha * fogAlpha / 255); };
 
 	int imgid;
-	assert(unit->action>=0);
-	assert(unit->action<NB_MOVE);
-	const auto& definition = scene.world.catalogs->units->definition(unit->typeNum);
+	assert(unit->core.action>=0);
+	assert(unit->core.action<NB_MOVE);
+	const auto& definition = scene.world.catalogs->units->definition(unit->core.typeNum);
 	const int meshClass = definition.runtime.meshClass;
 	const UnitSkin &skin = g_unitSkins[meshClass];
-	imgid=definition.levels[0].startImage[unit->action];
+	imgid=definition.levels[0].startImage[unit->core.action];
 	// Anchor on the visible occurrence x/y rather than on unit->posX/posY, so a
 	// unit on a map seam keeps its opposite-edge copy, and recover the unit's
 	// own tile from it: while entering a building the map slot lags one square
 	// behind the position (see UnitDrawGeometry.h).
-	int px = unitDrawTile(x, viewportX, unit->posX, map.getW()) * Map::TILE_PX;
-	int py = unitDrawTile(y, viewportY, unit->posY, map.getH()) * Map::TILE_PX;
+	int px = unitDrawTile(x, viewportX, unit->core.posX, map.getW()) * Map::TILE_PX;
+	int py = unitDrawTile(y, viewportY, unit->core.posY, map.getH()) * Map::TILE_PX;
 	// Smooth unit motion may draw the unit part of the way to its next tick.
 	const int delta=drawnUnitDelta(*unit, view.render.unitMotion);
 	int deltaLeft=255-delta;
-	if (unit->action<BUILD)
+	if (unit->core.action<BUILD)
 	{
-		px-=(unit->dx*deltaLeft)>>3;
-		py-=(unit->dy*deltaLeft)>>3;
+		px-=(unit->core.dx*deltaLeft)>>3;
+		py-=(unit->core.dy*deltaLeft)>>3;
 	}
 	else
 	{
 		// TODO : if looks ugly, do something intelligent here
 	}
 
-	int dir=unit->direction;
+	int dir=unit->core.direction;
 	assert(dir>=0);
 	assert(dir<9);
 	assert(delta>=0);
@@ -140,7 +140,7 @@ void Game::drawUnit(int x, int y, Uint16 gid, int viewportX, int viewportY, int 
 	// and their original ground shadows.
 	if (detail.unitSprite > 0 &&
 		!view.render.skinPreview().draw(*globalContainer->gfx, meshClass, unit->team,
-			unit->action, dir, delta, px, py, unitSprite->baseFrame(imgid), fogAlpha))
+			unit->core.action, dir, delta, px, py, unitSprite->baseFrame(imgid), fogAlpha))
 		globalContainer->gfx->drawSprite(px-decX, py-decY, unitSprite, imgid, fogAlpha);
 	if (detail.unitMarker > 0)
 	{
@@ -163,7 +163,7 @@ void Game::drawUnit(int x, int y, Uint16 gid, int viewportX, int viewportY, int 
 		for (int reason=0; reason<Building::UnitCantWorkReasonSize; ++reason)
 		{
 			const auto failing=selected.unitsFailingByReason[reason];
-			if (std::find(failing.begin(), failing.end(), unit->gid)!=failing.end())
+			if (std::find(failing.begin(), failing.end(), unit->core.gid)!=failing.end())
 				// Fist-size, in the tile's top-right corner: a badge, not a ring around the unit.
 				drawFailureShape(globalContainer->gfx, px+26, py+6, 4, static_cast<Building::UnitCantWorkReason>(reason), failureShapeColor());
 		}
@@ -183,17 +183,17 @@ void Game::drawUnit(int x, int y, Uint16 gid, int viewportX, int viewportY, int 
 
 	// draw xp animation. It and the magic effect belong to the sprite, and go
 	// with it once the unit is only a marker.
-	if (unit->levelUpAnimation && detail.unitSprite > 0)
+	if (unit->core.levelUpAnimation && detail.unitSprite > 0)
 	{
 		std::ostringstream oss;
-		oss << unit->experienceLevel;
+		oss << unit->core.experienceLevel;
 		globalContainer->standardFont->pushStyle(Font::Style(Font::STYLE_NORMAL, 242, 131, 14));
-		globalContainer->gfx->drawString(px + 16 - (globalContainer->standardFont->getStringWidth(oss.str().c_str()) >> 1), py - 16 - 2 *( LEVEL_UP_ANIMATION_FRAME_COUNT - unit->levelUpAnimation), globalContainer->standardFont, oss.str(), 0, faded((255*unit->levelUpAnimation) / LEVEL_UP_ANIMATION_FRAME_COUNT));
+		globalContainer->gfx->drawString(px + 16 - (globalContainer->standardFont->getStringWidth(oss.str().c_str()) >> 1), py - 16 - 2 *( LEVEL_UP_ANIMATION_FRAME_COUNT - unit->core.levelUpAnimation), globalContainer->standardFont, oss.str(), 0, faded((255*unit->core.levelUpAnimation) / LEVEL_UP_ANIMATION_FRAME_COUNT));
 		globalContainer->standardFont->popStyle();
 	}
 
 	// draw magic animation
-	if (unit->magicActionAnimation && detail.unitSprite > 0)
+	if (unit->core.magicActionAnimation && detail.unitSprite > 0)
 	{
 		if (!globalContainer->settings.fullMagicEffects)
 		{
@@ -201,11 +201,11 @@ void Game::drawUnit(int x, int y, Uint16 gid, int viewportX, int viewportY, int 
 		}
 		else
 		{
-			unsigned alpha = faded((unit->magicActionAnimation * 255) / MAGIC_ACTION_ANIMATION_FRAME_COUNT);
+			unsigned alpha = faded((unit->core.magicActionAnimation * 255) / MAGIC_ACTION_ANIMATION_FRAME_COUNT);
 			if (globalContainer->gfx->canDrawStretchedSprite())
 			{
-				int stretchW = ((MAGIC_ACTION_ANIMATION_FRAME_COUNT - unit->magicActionAnimation) * globalContainer->magiceffect->getW(0)) / (MAGIC_ACTION_ANIMATION_FRAME_COUNT * 2);
-				int stretchH = ((MAGIC_ACTION_ANIMATION_FRAME_COUNT - unit->magicActionAnimation) * globalContainer->magiceffect->getH(0)) / (MAGIC_ACTION_ANIMATION_FRAME_COUNT * 2);
+				int stretchW = ((MAGIC_ACTION_ANIMATION_FRAME_COUNT - unit->core.magicActionAnimation) * globalContainer->magiceffect->getW(0)) / (MAGIC_ACTION_ANIMATION_FRAME_COUNT * 2);
+				int stretchH = ((MAGIC_ACTION_ANIMATION_FRAME_COUNT - unit->core.magicActionAnimation) * globalContainer->magiceffect->getH(0)) / (MAGIC_ACTION_ANIMATION_FRAME_COUNT * 2);
 				globalContainer->gfx->drawSprite(px+16-stretchW, py+16-stretchH, stretchW*2, stretchH*2, globalContainer->magiceffect, 0, alpha);
 			}
 			else
@@ -216,19 +216,19 @@ void Game::drawUnit(int x, int y, Uint16 gid, int viewportX, int viewportY, int 
 	}
 
 	if ((px<view.mouseX)&&((px+32)>view.mouseX)&&(py<view.mouseY)&&((py+32)>view.mouseY)&&(((drawOptions & DRAW_WHOLE_MAP) != 0) ||(map.isFOWDiscovered(x+viewportX, y+viewportY, visibleTeams))||(Unit::GIDtoTeam(gid)==localTeam)))
-		view.mouseUnit=UnitRef{unit->gid, unit->scriptIdentity};
+		view.mouseUnit=UnitRef{unit->core.gid, unit->core.scriptIdentity};
 
 	if ((drawOptions & DRAW_HEALTH_FOOD_BAR) != 0 )
 	{
 		// A hungry or hurt unit keeps a status pip once every bar has faded.
-		const int food=int((Sint64(unit->hungry)*10)/definition.runtime.foodCapacity);
+		const int food=int((Sint64(unit->core.hungry)*10)/definition.runtime.foodCapacity);
 		const bool hungry=food<=1;
-		const bool hurt=unit->hp*10<=unit->performance[HP]*6;
+		const bool hurt=unit->core.hp*10<=unit->performance(HP)*6;
 		anchorBars(px+16, py+25, drawnRender, opacity);
 		drawPointBar(px+1, py+25, LEFT_TO_RIGHT, 10, food, 80, 179, 223, 2, drawnRender, opacity);
 
 		// At or below the ratio where the health bar stops being green.
-		float hpRatio=(float)unit->hp/(float)unit->performance[HP];
+		float hpRatio=(float)unit->core.hp/(float)unit->performance(HP);
 		anchorBars(px+16, py+25, drawnRender, opacity);
 		drawHealthBar(px+1, py+25+3, 10, 1+(int)(9*hpRatio), hpRatio, drawnRender, opacity);
 		if (hurt)
@@ -237,8 +237,8 @@ void Game::drawUnit(int x, int y, Uint16 gid, int viewportX, int viewportY, int 
 			drawStatusPip(px+16, py+28, 80, 179, 223, drawnRender, opacity);
 
 		const int carriedAlpha=faded(unsigned(view.render.detail.barAll*255));
-		if ((unit->performance[HARVEST]) && (unit->carriedMaterial>=0) && carriedAlpha>0)
-			globalContainer->gfx->drawSprite(px+24, py, globalContainer->resourceMini, unit->carriedMaterial, carriedAlpha);
+		if ((unit->performance(HARVEST)) && (unit->core.carriedMaterial>=0) && carriedAlpha>0)
+			globalContainer->gfx->drawSprite(px+24, py, globalContainer->resourceMini, unit->core.carriedMaterial, carriedAlpha);
 		globalContainer->gfx->finishDrawingSprite(globalContainer->resourceMini, 255);
 	}
 
@@ -254,7 +254,7 @@ void Game::drawUnit(int x, int y, Uint16 gid, int viewportX, int viewportY, int 
 		globalContainer->gfx->drawRect(accessX-4, accessY, accessW+8, accessH, Color(255, 255, 255, faded(127)));
 		globalContainer->gfx->drawString(accessX, accessY, globalContainer->littleFont, oss.str(), 0, fogAlpha);
 	}
-	if(unit->typeNum < 32 && (entities.highlightUnitType & (1u<<unit->typeNum)))
+	if(unit->core.typeNum < 32 && (entities.highlightUnitType & (1u<<unit->core.typeNum)))
 	{
 		globalContainer->gfx->drawSprite(px, py-decY-32, globalContainer->gamegui, 36, fogAlpha);
 	}
@@ -320,21 +320,21 @@ void Game::drawUnitPathLine(int left, int top, int right, int bot, int sw, int s
 
 	if(scene.entities.owner(*unit).otherVision & visibleTeams)
 	{
-		if (unit->validTarget)
+		if (unit->core.validTarget)
 		{
-			int px = ((unit->posX - viewportX) & map.getMaskW()) * 32;
-			int py = ((unit->posY - viewportY) & map.getMaskH()) * 32;
+			int px = ((unit->core.posX - viewportX) & map.getMaskW()) * 32;
+			int py = ((unit->core.posY - viewportY) & map.getMaskH()) * 32;
 			// Keep the shortest toroidal displacement even when the viewport spans
 			// several map copies. Mapping endpoints independently breaks seam crossings.
-			const int dx = ((unit->targetX-unit->posX+map.getW()/2) & map.getMaskW())-map.getW()/2;
-			const int dy = ((unit->targetY-unit->posY+map.getH()/2) & map.getMaskH())-map.getH()/2;
+			const int dx = ((unit->core.targetX-unit->core.posX+map.getW()/2) & map.getMaskW())-map.getW()/2;
+			const int dy = ((unit->core.targetY-unit->core.posY+map.getH()/2) & map.getMaskH())-map.getH()/2;
 			const int targetX = px + dx*32 + 16;
 			const int targetY = py + dy*32 + 16;
-			if (unit->action < BUILD)
+			if (unit->core.action < BUILD)
 			{
 				const int delta = drawnUnitDelta(*unit, unitMotion);
-				px -= (unit->dx*(255-delta)) >> 3;
-				py -= (unit->dy*(255-delta)) >> 3;
+				px -= (unit->core.dx*(255-delta)) >> 3;
+				py -= (unit->core.dy*(255-delta)) >> 3;
 			}
 			px += 16;
 			py += 16;
@@ -355,12 +355,12 @@ void Game::drawUnitOffScreen(int sx, int sy, int sw, int sh, int viewportX, int 
 	const SnapshotUnit *unit = &sceneUnit;
 	// Get the direction to the unit
 	int px, py;
-	map.mapCaseToDisplayableVector(unit->posX, unit->posY, &px, &py, viewportX, viewportY, sw, sh);
+	map.mapCaseToDisplayableVector(unit->core.posX, unit->core.posY, &px, &py, viewportX, viewportY, sw, sh);
 	int deltaLeft=255-drawnUnitDelta(*unit, unitMotion);
-	if (unit->action<BUILD)
+	if (unit->core.action<BUILD)
 	{
-		px-=(unit->dx*deltaLeft)>>3;
-		py-=(unit->dy*deltaLeft)>>3;
+		px-=(unit->core.dx*deltaLeft)>>3;
+		py-=(unit->core.dy*deltaLeft)>>3;
 	}
 
 	// To get the center of the unit
@@ -414,13 +414,13 @@ void Game::drawUnitOffScreen(int sx, int sy, int sw, int sh, int viewportX, int 
 
 	// draw unit's image
 	int imgid;
-	const UnitType *ut=&scene.world.catalogs->unitTypes[unit->typeNum][0];
-	assert(unit->action>=0);
+	const UnitType *ut=&scene.world.catalogs->unitTypes[unit->core.typeNum][0];
+	assert(unit->core.action>=0);
 
-	assert(unit->action<NB_MOVE);
-	imgid=ut->startImage[unit->action];
+	assert(unit->core.action<NB_MOVE);
+	imgid=ut->startImage[unit->core.action];
 
-	int dir=unit->direction;
+	int dir=unit->core.direction;
 	int delta=drawnUnitDelta(*unit, unitMotion);
 	assert(dir>=0);
 	assert(dir<9);

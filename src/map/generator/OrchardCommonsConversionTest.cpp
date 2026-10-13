@@ -271,13 +271,13 @@ void run(const Scenario &scenario, const std::filesystem::path &output, unsigned
 	game.teams[1]->allies &= ~game.teams[0]->me;
 	Unit *worker = game.addUnit(siteX + 7, siteY + 3, 0, WORKER, 0, 0, 0, 0);
 	require(worker != nullptr, "hungry worker fits between inns");
-	worker->hungry = worker->trigHungry;
-	worker->medical = Unit::MED_HUNGRY;
-	worker->needToRecheckMedical = true;
+	worker->core.hungry = worker->detail.trigHungry;
+	worker->core.medical = Unit::MED_HUNGRY;
+	worker->detail.needToRecheckMedical = true;
 	Building *chosen = game.teams[0]->findNearestFood(worker);
 	require(chosen == (scenario.converts ? rival : friendly),
 			"normal food routing selects expected inn");
-	const Uint16 workerId = worker->gid;
+	const Uint16 workerId = worker->core.gid;
 	auto *bytes = new GAGCore::MemoryStreamBackend;
 	GAGCore::BinaryOutputStream writer(bytes);
 	game.save(&writer, false, scenario.name);

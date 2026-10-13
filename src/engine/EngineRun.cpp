@@ -744,9 +744,9 @@ void Engine::printTeamResults()
 			if (!unit)
 				continue;
 			units++;
-			workers += unit->typeNum == WORKER;
-			explorers += unit->typeNum == EXPLORER;
-			warriors += unit->typeNum == WARRIOR;
+			workers += unit->core.typeNum == WORKER;
+			explorers += unit->core.typeNum == EXPLORER;
+			warriors += unit->core.typeNum == WARRIOR;
 		}
 		for (int i = 0; i < Building::MAX_COUNT; i++)
 		{

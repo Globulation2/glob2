@@ -118,21 +118,21 @@ void Sector::step(void)
 				int id = Unit::GIDtoID(gid);
 
 
-				game->teams[team]->pushGameEvent(GameEvent::unitUnderAttack(game->stepCounter, bullet->targetX, bullet->targetY, game->teams[team]->myUnits[id]->typeNum));
+				game->teams[team]->pushGameEvent(GameEvent::unitUnderAttack(game->stepCounter, bullet->targetX, bullet->targetY, game->teams[team]->myUnits[id]->core.typeNum));
 
 				if (bullet->revealW > 0 && bullet->revealH > 0)
 					game->map.setMapDiscovered(bullet->revealX, bullet->revealY, bullet->revealW, bullet->revealH, Team::teamNumberToMask(team));
 
 				const Unit* target = game->teams[team]->myUnits[id];
-				const int baseDamage = bullet->unitDamage[target->typeNum];
+				const int baseDamage = bullet->unitDamage[target->core.typeNum];
 				const int damage = baseDamage > 0 ? int(std::clamp<Sint64>(Sint64(baseDamage) - target->getRealArmor(false), BULLET_MIN_DAMAGE, INT_MAX)) : 0;
 				Unit *victim = game->teams[team]->myUnits[id];
 				TeamStats::recordDamage(bullet->sourceTeam >= 0 ? game->teams[bullet->sourceTeam]
 																: nullptr,
 										victim->owner, GameplayMeasurements::TOWER,
-										GameplayMeasurements::UNIT, victim->hp, damage);
+										GameplayMeasurements::UNIT, victim->core.hp, damage);
 				victim->recordLethalDamage(damage, GameplayMeasurements::COMBAT);
-				victim->hp=int(std::max<Sint64>(INT_MIN,Sint64(victim->hp)-damage));
+				victim->core.hp=int(std::max<Sint64>(INT_MIN,Sint64(victim->core.hp)-damage));
 			}
 			else
 			{

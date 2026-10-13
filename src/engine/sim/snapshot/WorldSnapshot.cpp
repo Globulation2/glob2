@@ -7,6 +7,7 @@ namespace SimulationSnapshot
 {
 Handle Handle::project(Requirements requested) const
 {
+    requested=normalize(requested);
 	if ((requested & requirements) != requested) throw std::invalid_argument("snapshot component was not captured");
 	Handle result;
 	result.tick = tick; result.width = width; result.height = height; result.requirements = requested;
@@ -27,11 +28,13 @@ Handle Handle::project(Requirements requested) const
 	if (needs(requested, Component::Areas)) result.areas = areas;
 	if (needs(requested, Component::Visibility)) result.visibility = visibility;
 	if (needs(requested, Component::Exploration)) result.exploration = exploration;
-	if (needs(requested, Component::Entities)) result.entities = entities;
+	if (needs(requested, Component::BuildingEntities)) result.entities = entities;
 	if (needs(requested, Component::Teams)) result.teams = teams;
 	if (needs(requested, Component::Rules)) result.rules = rules;
 	if (needs(requested, Component::Growth)) { result.growth = growth; result.areaFertility=areaFertility; }
 	if (needs(requested, Component::ResourceFields)) result.resourceFields = resourceFields;
+    if(needs(requested, Component::UnitCores))result.unitCores=unitCores;
+    if(needs(requested, Component::UnitDetails))result.unitDetails=unitDetails;
 	return result;
 }
 MapState::View Handle::view() const

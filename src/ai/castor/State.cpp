@@ -53,10 +53,10 @@ void AICastor::computeCanSwim()
 	int sumCantSwim=0;
 	for (int i=0; i<Unit::MAX_COUNT; i++)
 	{
-		const AIEngine::UnitView *u=myUnits[i];
-		if (u && AIEngine::ObservationQueries::matchesStrategyUnitRole(*observation,*u,WORKER) && u->medical==0)
+		AIEngine::UnitObservation u=myUnits[i];
+		if (u && AIEngine::ObservationQueries::matchesStrategyUnitRole(*observation,*u,WORKER) && u->core.medical==0)
 		{
-			if (u->performance[SWIM]>0)
+			if (u->performance(SWIM)>0)
 				sumCanSwim++;
 			else
 				sumCantSwim++;
@@ -197,11 +197,11 @@ void AICastor::computeWarLevel()
 	const int glassCannonScale = observation->configuration->getGlassCannonScale();
 	for (int i=0; i<Unit::MAX_COUNT; i++)
 	{
-		const AIEngine::UnitView *u=myUnits[i];
-		if (u && u->medical==Unit::MED_FREE && (u->capabilityFlags&UnitRuntimeTraits::Melee))
+		AIEngine::UnitObservation u=myUnits[i];
+		if (u && u->core.medical==Unit::MED_FREE && (u->core.capabilityFlags&UnitRuntimeTraits::Melee))
         {
-            const auto strength=std::clamp<Sint64>(Sint64(u->performance[ATTACK_STRENGTH])*glassCannonScale,0,INT_MAX);
-            const auto power=Sint64(std::max(0,u->performance[ATTACK_SPEED]))*strength;
+            const auto strength=std::clamp<Sint64>(Sint64(u->performance(ATTACK_STRENGTH))*glassCannonScale,0,INT_MAX);
+            const auto power=Sint64(std::max(0,u->performance(ATTACK_SPEED)))*strength;
             warPowerSum=int(std::min<Sint64>(INT_MAX,Sint64(warPowerSum)+power));
         }
 	}

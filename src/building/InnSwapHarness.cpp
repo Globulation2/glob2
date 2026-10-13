@@ -67,9 +67,9 @@ struct World
 	{
 		Unit* u = game.addUnit(x, y, 0, unitType, 0, 0, 0, 0);
 		require(u != nullptr, "worker placed");
-		u->hungry = 0;
-		u->medical = Unit::MED_HUNGRY;
-		u->needToRecheckMedical = true;
+		u->core.hungry = 0;
+		u->core.medical = Unit::MED_HUNGRY;
+		u->detail.needToRecheckMedical = true;
 		return u;
 	}
 
@@ -98,8 +98,8 @@ static void theLaterBookerTradesWithTheOneItWouldCross(unsigned unitType = WORKE
 	for (int i = 0; i < 100 && !(farWorker->attachedBuilding && nearWorker->attachedBuilding); ++i)
 		world.game.syncStep(0);
 
-	require(farWorker->activity == Unit::ACT_UPGRADING && farWorker->destinationPurpose == FEED, "the far unit goes to eat");
-	require(nearWorker->activity == Unit::ACT_UPGRADING && nearWorker->destinationPurpose == FEED, "the near unit goes to eat");
+	require(farWorker->core.activity == Unit::ACT_UPGRADING && farWorker->core.destinationPurpose == FEED, "the far unit goes to eat");
+	require(nearWorker->core.activity == Unit::ACT_UPGRADING && nearWorker->core.destinationPurpose == FEED, "the near unit goes to eat");
 	require(nearWorker->attachedBuilding == a && nearWorker->targetBuilding == a, "the near unit ends up with the near inn");
 	require(farWorker->attachedBuilding == b && farWorker->targetBuilding == b, "the far unit ends up with the far inn");
 	require(World::booked(a, nearWorker) && !World::booked(a, farWorker), "inn A's guest list follows");
@@ -112,13 +112,13 @@ static void theLaterBookerTradesWithTheOneItWouldCross(unsigned unitType = WORKE
 	for (int i = 0; i < 3000 && !(nearAte && farAte); ++i)
 	{
 		world.game.syncStep(0);
-		nearAte |= nearWorker->displacement == Unit::DIS_INSIDE && nearWorker->attachedBuilding == a;
-		farAte |= farWorker->displacement == Unit::DIS_INSIDE && farWorker->attachedBuilding == b;
+		nearAte |= nearWorker->core.displacement == Unit::DIS_INSIDE && nearWorker->attachedBuilding == a;
+		farAte |= farWorker->core.displacement == Unit::DIS_INSIDE && farWorker->attachedBuilding == b;
 	}
 	if (!(nearAte && farAte))
 		std::fprintf(stderr, "near: act=%d dis=%d att=%p dead=%d hp=%d | far: act=%d dis=%d att=%p dead=%d hp=%d (a=%p b=%p)\n",
-			nearWorker->activity, nearWorker->displacement, (void*)nearWorker->attachedBuilding, nearWorker->isDead, nearWorker->hp,
-			farWorker->activity, farWorker->displacement, (void*)farWorker->attachedBuilding, farWorker->isDead, farWorker->hp, (void*)a, (void*)b);
+			nearWorker->core.activity, nearWorker->core.displacement, (void*)nearWorker->attachedBuilding, nearWorker->core.isDead, nearWorker->core.hp,
+			farWorker->core.activity, farWorker->core.displacement, (void*)farWorker->attachedBuilding, farWorker->core.isDead, farWorker->core.hp, (void*)a, (void*)b);
 	require(nearAte, "the near unit eats at inn A");
 	require(farAte, "the far unit eats at inn B");
 	std::puts("PASS a later booker trades inns with the team mate it would have crossed");

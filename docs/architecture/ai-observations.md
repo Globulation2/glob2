@@ -44,10 +44,22 @@ sit in a dense registry keyed like the snapshot's plane table
 `Tile` value is assembled only for compatibility consumers such as editor undo.
 Growth flags retain their original byte values; growth predicates test nonzero.
 
-Unit and building scalar state uses the authoritative `UnitState` and
-`BuildingStateRecord` definitions beside those domains. Capture copies one record
-per live entity; heap entities are not a contiguous slot pool. Runtime pointers,
-query scratch and GUI state remain outside the records. Building observations
+Unit scalar state is composed from an authoritative `UnitCoreState` and
+`UnitDetailState`. The core contains movement/admission inputs and the values
+needed to draw units; remaining abilities, training, RNG, cargo and service state
+stay in details. Each ability has one authoritative location, accessed through
+`performance(ability)`. Building scalar state uses `BuildingStateRecord`.
+
+Capture stores compact unit cores and optional details in separate pooled arrays,
+with one shared slot index and matching record order. Full `UnitView` observations
+borrow both arrays; lookup returns an optional view by value. Core iteration and
+lookup avoid materializing full records. Runtime pointers, query scratch and GUI
+state remain outside the records. The legacy `Entities` requirement normalizes to
+building entities, unit cores and unit details. Guard crowding requests only cores;
+market gradients request only buildings. Same-boundary requirement upgrades reuse
+captured components, and projected handles lease only their requested data.
+
+Building observations
 select private stock or the captured team's stock through an immutable resource
 pool selector; team stock is not duplicated into every building. Supplier records
 also capture a material-availability mask after reservations, used by periodic

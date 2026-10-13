@@ -90,50 +90,50 @@ namespace
             ? &AIEngine::ObservationQueries::buildingType(world,*continuingFlag) : recruitmentType;
         const auto* selection=recipientType ? &recipientType->semantics.attractionUnits[2] : nullptr;
         return !selection || (selection->resolved.empty()
-            ? selection->matches(warrior.typeNum,1u<<WARRIOR)
-            : unsigned(warrior.typeNum)<selection->resolved.size() && selection->resolved[warrior.typeNum]);
+            ? selection->matches(warrior.core.typeNum,1u<<WARRIOR)
+            : unsigned(warrior.core.typeNum)<selection->resolved.size() && selection->resolved[warrior.core.typeNum]);
     }
 
     bool tactical_mobile_or_local(const AIEngine::AIWorldView& world,
         const AIEngine::UnitView& warrior,const AIEngine::BuildingView* continuingFlag)
     {
-        return warrior.performance[FLY]>0 || warrior.performance[WALK]>0 || warrior.performance[SWIM]>0
-            || (continuingFlag && world.tileIndex(warrior.posX,warrior.posY)==world.tileIndex(continuingFlag->posX,continuingFlag->posY));
+        return warrior.performance(FLY)>0 || warrior.performance(WALK)>0 || warrior.performance(SWIM)>0
+            || (continuingFlag && world.tileIndex(warrior.core.posX,warrior.core.posY)==world.tileIndex(continuingFlag->posX,continuingFlag->posY));
     }
 
-    bool tactical_warrior_available(const AIEngine::AIWorldView& world,const AIEngine::UnitView* warrior,
+    bool tactical_warrior_available(const AIEngine::AIWorldView& world,AIEngine::UnitObservation warrior,
         const AIEngine::BuildingView* continuingFlag, int minimumLevel,
         const std::vector<const AIEngine::BuildingView*>* offenseFlags=NULL,
         const BuildingType* recruitmentType=nullptr)
     {
         // Match the engine's flag subscription rule: the lower of the two combat
         // abilities must reach the flag's minimum level (user level minus one).
-        if(!warrior || !AIEngine::ObservationQueries::matchesStrategyUnitRole(world,*warrior,WARRIOR) || warrior->isDead
-           || warrior->medical!=Unit::MED_FREE
-           || std::min(warrior->level[ATTACK_SPEED],warrior->level[ATTACK_STRENGTH])<minimumLevel-1)
+        if(!warrior || !AIEngine::ObservationQueries::matchesStrategyUnitRole(world,*warrior,WARRIOR) || warrior->core.isDead
+           || warrior->core.medical!=Unit::MED_FREE
+           || std::min(warrior->detail.level[ATTACK_SPEED],warrior->detail.level[ATTACK_STRENGTH])<minimumLevel-1)
             return false;
         const auto* attached=world.building(warrior->attached);
         if(tactical_continuing_member(attached,continuingFlag,offenseFlags))return true;
         return !attached
             && tactical_recipient_admitted(world,*warrior,continuingFlag,recruitmentType)
-            && world.unitTraits(warrior->typeNum).recruits(2)
-            && warrior->activity==Unit::ACT_RANDOM
-            && warrior->movement!=Unit::MOV_ATTACKING_TARGET;
+            && world.unitTraits(warrior->core.typeNum).recruits(2)
+            && warrior->core.activity==Unit::ACT_RANDOM
+            && warrior->core.movement!=Unit::MOV_ATTACKING_TARGET;
     }
 
-    bool tactical_warrior_recovering(const AIEngine::AIWorldView& world,const AIEngine::UnitView* warrior,
+    bool tactical_warrior_recovering(const AIEngine::AIWorldView& world,AIEngine::UnitObservation warrior,
         const AIEngine::BuildingView* continuingFlag,
         const std::vector<const AIEngine::BuildingView*>* offenseFlags,
         const BuildingType* recruitmentType)
     {
-        if(!warrior || warrior->isDead
-            || (warrior->medical==Unit::MED_FREE && warrior->activity!=Unit::ACT_UPGRADING)
+        if(!warrior || warrior->core.isDead
+            || (warrior->core.medical==Unit::MED_FREE && warrior->core.activity!=Unit::ACT_UPGRADING)
             || !AIEngine::ObservationQueries::matchesStrategyUnitRole(world,*warrior,WARRIOR)
             || !tactical_mobile_or_local(world,*warrior,continuingFlag))return false;
         // Service transitions can still retain another attachment. Preserve
         // that recovery policy without crediting recipients unable to join.
         return tactical_continuing_member(world.building(warrior->attached),continuingFlag,offenseFlags)
-            || (world.unitTraits(warrior->typeNum).recruits(2)
+            || (world.unitTraits(warrior->core.typeNum).recruits(2)
                 && tactical_recipient_admitted(world,*warrior,continuingFlag,recruitmentType));
     }
 
@@ -154,12 +154,12 @@ namespace
 			const int target=(*map).normalizeY(y)*(*map).width+(*map).normalizeX(x);
 			for(int id=0; id<Unit::MAX_COUNT; ++id)
 			{
-				const AIEngine::UnitView* warrior=map->unitSlots(team->number)[id];
-				if(diagnostics && warrior && AIEngine::ObservationQueries::matchesStrategyUnitRole(*map,*warrior,WARRIOR) && !warrior->isDead)
+				AIEngine::UnitObservation warrior=map->unitSlots(team->number)[id];
+				if(diagnostics && warrior && AIEngine::ObservationQueries::matchesStrategyUnitRole(*map,*warrior,WARRIOR) && !warrior->core.isDead)
 				{
-					if(std::min(warrior->level[ATTACK_SPEED],warrior->level[ATTACK_STRENGTH])<minimumLevel-1)
+					if(std::min(warrior->detail.level[ATTACK_SPEED],warrior->detail.level[ATTACK_STRENGTH])<minimumLevel-1)
 						++(*diagnostics)["untrained"];
-					else if(warrior->medical!=Unit::MED_FREE)
+					else if(warrior->core.medical!=Unit::MED_FREE)
 						++(*diagnostics)["medical"];
 					else if(!tactical_warrior_available(*map,warrior,continuingFlag,minimumLevel,offenseFlags,recruitmentType))
 					{
@@ -167,23 +167,23 @@ namespace
 						if(map->building(warrior->attached))
 							++(*diagnostics)["busy_attached_type"+diagnostic_value(
 								map->building(warrior->attached)->typeNum)];
-						else if(warrior->activity!=Unit::ACT_RANDOM)
-							++(*diagnostics)["busy_activity"+diagnostic_value(int(warrior->activity))];
+						else if(warrior->core.activity!=Unit::ACT_RANDOM)
+							++(*diagnostics)["busy_activity"+diagnostic_value(int(warrior->core.activity))];
 						else
 							++(*diagnostics)["busy_attacking"];
 					}
 				}
 				if(!tactical_warrior_available(*map,warrior,continuingFlag,minimumLevel,offenseFlags,recruitmentType)) continue;
-				const bool swimming=warrior->performance[SWIM]>0;
-                const bool flying=warrior->performance[FLY]>0;
-                const bool walking=warrior->performance[WALK]>0;
+				const bool swimming=warrior->performance(SWIM)>0;
+                const bool flying=warrior->performance(FLY)>0;
+                const bool walking=warrior->performance(WALK)>0;
 				if(swimmersOnly && !swimming && !flying)
 				{
 					if(diagnostics) ++(*diagnostics)["no_swim"];
 					continue;
 				}
-				const int origin=(*map).normalizeY(warrior->posY)*(*map).width
-					+(*map).normalizeX(warrior->posX);
+				const int origin=(*map).normalizeY(warrior->core.posY)*(*map).width
+					+(*map).normalizeX(warrior->core.posX);
 				if(!flying && !walking && !swimming) {
                     if(origin==target)powers.push_back(warrior_power(*map,warrior));
                     else if(diagnostics)++(*diagnostics)["disconnected"];
@@ -405,12 +405,12 @@ void Maxima::plan_offense(Context& runtime)
 	// to the offense: they come back, and a siege dropped every time its army
 	// cycles through the inns is a siege that never finishes.
 	int recovering=0;
-	std::vector<const AIEngine::UnitView*> trainees;
+	std::vector<AIEngine::UnitObservation> trainees;
 	const auto muster=[&](int level) {
 		eligible=0;eligible_damage_rate=0;recovering=0;trainees.clear();
 		for(int id=0; id<Unit::MAX_COUNT; ++id)
 		{
-			const AIEngine::UnitView* warrior=runtime.observation().unitSlots(runtime.teamNumber())[id];
+			AIEngine::UnitObservation warrior=runtime.observation().unitSlots(runtime.teamNumber())[id];
 			if(tactical_warrior_available(runtime.observation(),warrior, flag, level, &offenseFlags,recruitmentType)
                 && tactical_mobile_or_local(*map,*warrior,flag))
 			{
@@ -469,7 +469,7 @@ void Maxima::plan_offense(Context& runtime)
 	for(size_t u=0;u<trainees.size();++u)
 		for(size_t b=0;b<barracks.size();++b)
 			for (int ability : {ATTACK_SPEED, ATTACK_STRENGTH})
-				if (AIEngine::ObservationQueries::buildingType(runtime.observation(),*barracks[b]).semantics.admittedUnits.matches(trainees[u]->typeNum,AIEngine::ObservationQueries::buildingType(runtime.observation(),*barracks[b]).semantics.admittedUnitMask)
+				if (AIEngine::ObservationQueries::buildingType(runtime.observation(),*barracks[b]).semantics.admittedUnits.matches(trainees[u]->core.typeNum,AIEngine::ObservationQueries::buildingType(runtime.observation(),*barracks[b]).semantics.admittedUnitMask)
 				   && AIEngine::ObservationQueries::needsTraining(*trainees[u],AIEngine::ObservationQueries::buildingType(runtime.observation(),*barracks[b]).semantics.training[ability], ability)
                    && AIEngine::ObservationQueries::trainingVisitSafe(runtime.observation(),*trainees[u],*barracks[b],ability))
 				{choices[u].push_back(int(b));break;}
@@ -772,9 +772,9 @@ void Maxima::observe_wave_delivery()
 		int arrived=0;
 		for(const auto reference:context.observation().workers(*flag))
 		{
-			const auto* warrior=context.observation().unit(reference);
-			if(warrior && !warrior->isDead && warrior->medical==Unit::MED_FREE
-			   && AIEngine::ObservationQueries::distanceMax(context.observation(),warrior->posX,warrior->posY,
+			auto warrior=context.observation().unit(reference);
+			if(warrior && !warrior->core.isDead && warrior->core.medical==Unit::MED_FREE
+			   && AIEngine::ObservationQueries::distanceMax(context.observation(),warrior->core.posX,warrior->core.posY,
 				wave.targetX,wave.targetY)<=budget.tactical_siege_radius)++arrived;
 		}
 		delivery.arrived=std::max(delivery.arrived,arrived);
@@ -924,12 +924,12 @@ bool Maxima::control_offense_waves(Context& runtime)
 		if(flag)
 			for(const auto reference:runtime.observation().workers(*flag))
 			{
-				const auto* warrior=runtime.observation().unit(reference);
-				if(warrior && !warrior->isDead && warrior->medical==Unit::MED_FREE
+				auto warrior=runtime.observation().unit(reference);
+				if(warrior && !warrior->core.isDead && warrior->core.medical==Unit::MED_FREE
 				   && (wave.phase==Tactics::WaveMuster
-					? (*map).distanceSquared(warrior->posX,warrior->posY,flag->posX,flag->posY)
+					? (*map).distanceSquared(warrior->core.posX,warrior->core.posY,flag->posX,flag->posY)
 						<=arrivalRadius*arrivalRadius
-					: AIEngine::ObservationQueries::distanceMax((*map),warrior->posX,warrior->posY,flag->posX,flag->posY)
+					: AIEngine::ObservationQueries::distanceMax((*map),warrior->core.posX,warrior->core.posY,flag->posX,flag->posY)
 						<=flag->unitStayRange))++arrived;
 			}
 		bool retire=false;
@@ -1831,11 +1831,11 @@ void Maxima::compute_defense_flag_positioning(AIMaximaRuntime::Context& runtime)
 	//Use the 'locations' list to keep track of non-zero squares
 	for(int i=0; i<Unit::MAX_COUNT; ++i)
 	{
-		const AIEngine::UnitView* unit = runtime.observation().unitSlots(runtime.teamNumber())[i];
-		if(unit && unit->underAttackTimer && unit->movement != Unit::MOV_ATTACKING_TARGET && unit->performance[FLY]==0 && unitGID[powerOfTwoRemainder(unit->posX+w, w) * h + powerOfTwoRemainder(unit->posY+h, h)] == NOGUID)
+		AIEngine::UnitObservation unit = runtime.observation().unitSlots(runtime.teamNumber())[i];
+		if(unit && unit->core.underAttackTimer && unit->core.movement != Unit::MOV_ATTACKING_TARGET && unit->performance(FLY)==0 && unitGID[powerOfTwoRemainder(unit->core.posX+w, w) * h + powerOfTwoRemainder(unit->core.posY+h, h)] == NOGUID)
 		{
-			unitGID[powerOfTwoRemainder(unit->posX+w, w) * h + powerOfTwoRemainder(unit->posY+h, h)] = unit->gid;
-			modify_points(counts, w, h, powerOfTwoRemainder(unit->posX+w, w), powerOfTwoRemainder(unit->posY+h, h), RADIUS, 1, locations);
+			unitGID[powerOfTwoRemainder(unit->core.posX+w, w) * h + powerOfTwoRemainder(unit->core.posY+h, h)] = unit->core.gid;
+			modify_points(counts, w, h, powerOfTwoRemainder(unit->core.posX+w, w), powerOfTwoRemainder(unit->core.posY+h, h), RADIUS, 1, locations);
 		}
 	}
 	for(int i=0; i<Building::MAX_COUNT; ++i)
@@ -1869,17 +1869,17 @@ void Maxima::compute_defense_flag_positioning(AIMaximaRuntime::Context& runtime)
 			continue;
 		for(int i=0; i<Unit::MAX_COUNT; ++i)
 		{
-			const AIEngine::UnitView* unit=runtime.observation().unitSlots(enemy_team->number)[i];
+			AIEngine::UnitObservation unit=runtime.observation().unitSlots(enemy_team->number)[i];
 			if(!unit || !AIEngine::ObservationQueries::matchesStrategyUnitRole(runtime.observation(),*unit,WARRIOR)
 			   || !AIEngine::ObservationQueries::visible(runtime.observation(),
-				unit->posX, unit->posY, runtime.observedTeam().mask))
+				unit->core.posX, unit->core.posY, runtime.observedTeam().mask))
 				continue;
 			bool near_colony=false;
 			for(int b=0; b<Building::MAX_COUNT; ++b)
 			{
 				const AIEngine::BuildingView* own=runtime.observation().buildingSlots(runtime.teamNumber())[b];
 				if(own && AIEngine::ObservationQueries::buildingType(runtime.observation(),*own).semantics.occupiesGround
-				   && runtime.observation().distanceSquared(unit->posX, unit->posY,
+				   && runtime.observation().distanceSquared(unit->core.posX, unit->core.posY,
 					own->posX, own->posY)<=144)
 				{
 					near_colony=true;
@@ -1888,12 +1888,12 @@ void Maxima::compute_defense_flag_positioning(AIMaximaRuntime::Context& runtime)
 			}
 			if(!near_colony)
 				continue;
-			const int pos=powerOfTwoRemainder(unit->posX+w, w)*h+powerOfTwoRemainder(unit->posY+h, h);
+			const int pos=powerOfTwoRemainder(unit->core.posX+w, w)*h+powerOfTwoRemainder(unit->core.posY+h, h);
 			if(enemyGID[pos]==NOGUID)
 			{
-				enemyGID[pos]=unit->gid;
-				modify_points(counts, w, h, powerOfTwoRemainder(unit->posX+w, w),
-					powerOfTwoRemainder(unit->posY+h, h), RADIUS, 1, locations);
+				enemyGID[pos]=unit->core.gid;
+				modify_points(counts, w, h, powerOfTwoRemainder(unit->core.posX+w, w),
+					powerOfTwoRemainder(unit->core.posY+h, h), RADIUS, 1, locations);
 			}
 		}
 	}
@@ -1958,9 +1958,9 @@ void Maxima::compute_defense_flag_positioning(AIMaximaRuntime::Context& runtime)
 					max_x, max_y, nx, ny)<=RADIUS*RADIUS;
 				if(covered && unitGID[nx * h + ny] != NOGUID)
 				{
-					const AIEngine::UnitView* unit = runtime.observation().unitSlots(runtime.teamNumber())[Unit::GIDtoID(unitGID[nx * h + ny])];
+					AIEngine::UnitObservation unit = runtime.observation().unitSlots(runtime.teamNumber())[Unit::GIDtoID(unitGID[nx * h + ny])];
 					covered_points.push_back(position(nx, ny));
-					modify_points(counts, w, h, powerOfTwoRemainder(unit->posX+w, w), powerOfTwoRemainder(unit->posY+h, h), RADIUS, -1, locations);
+					modify_points(counts, w, h, powerOfTwoRemainder(unit->core.posX+w, w), powerOfTwoRemainder(unit->core.posY+h, h), RADIUS, -1, locations);
 					unitGID[nx * h + ny] = NOGUID;
 				}
 				if(buildingGID[nx * h + ny] != NOGBID)
@@ -1980,10 +1980,10 @@ void Maxima::compute_defense_flag_positioning(AIMaximaRuntime::Context& runtime)
 				{
 					covered_points.push_back(position(nx, ny));
 					const Uint16 gid=enemyGID[nx * h + ny];
-					const AIEngine::UnitView* enemy=runtime.observation().unitAtSlot(gid);
+					AIEngine::UnitObservation enemy=runtime.observation().unitAtSlot(gid);
 					if(enemy)
-						modify_points(counts, w, h, powerOfTwoRemainder(enemy->posX+w, w),
-							powerOfTwoRemainder(enemy->posY+h, h), RADIUS, -1, locations);
+						modify_points(counts, w, h, powerOfTwoRemainder(enemy->core.posX+w, w),
+							powerOfTwoRemainder(enemy->core.posY+h, h), RADIUS, -1, locations);
 					enemyGID[nx * h + ny] = NOGUID;
 				}
 
@@ -1994,7 +1994,7 @@ void Maxima::compute_defense_flag_positioning(AIMaximaRuntime::Context& runtime)
 					Uint16 guid = runtime.observation().occupancyAt(runtime.observation().tileIndex(nx, ny)).groundUnit;
 					if(guid != NOGUID && (1<<Unit::GIDtoTeam(guid)) & runtime.observedTeam().enemies)
 					{
-						const AIEngine::UnitView* unit = runtime.observation().unitSlots(Unit::GIDtoTeam(guid))[Unit::GIDtoID(guid)];
+						AIEngine::UnitObservation unit = runtime.observation().unitSlots(Unit::GIDtoTeam(guid))[Unit::GIDtoID(guid)];
 						if(unit && AIEngine::ObservationQueries::matchesStrategyUnitRole(runtime.observation(),*unit,WARRIOR))
 						{
 							covered_points.push_back(position(nx, ny));
@@ -2136,7 +2136,7 @@ void Maxima::compute_defense_flag_positioning(AIMaximaRuntime::Context& runtime)
 					   || !((1<<Unit::GIDtoTeam(guid))
 						& runtime.observedTeam().enemies))
 						continue;
-					const AIEngine::UnitView* enemy=runtime.observation().unitAtSlot(guid);
+					AIEngine::UnitObservation enemy=runtime.observation().unitAtSlot(guid);
 					if(enemy && AIEngine::ObservationQueries::matchesStrategyUnitRole(runtime.observation(),*enemy,WARRIOR))
 						local_enemy_count+=1;
 				}
@@ -2261,14 +2261,14 @@ void Maxima::compute_explorer_flag_attack_positioning(AIMaximaRuntime::Context& 
 	   && teamAt(runtime.observation(),strike_target)->alive
 	   && (runtime.observedTeam().enemies&teamAt(runtime.observation(),strike_target)->mask))
 	{
-		const AIEngine::UnitView** units = new const AIEngine::UnitView*[Unit::MAX_COUNT];
-		const AIEngine::UnitView* first = NULL;
+		AIEngine::UnitObservation* units = new AIEngine::UnitObservation[Unit::MAX_COUNT];
+		AIEngine::UnitObservation first = std::nullopt;
 		for(int i=0; i<Unit::MAX_COUNT; ++i)
 		{
-			const AIEngine::UnitView* unit = runtime.observation().unitSlots(strike_target)[i];
-			if(unit && AIEngine::ObservationQueries::visible(runtime.observation(),unit->posX, unit->posY,
+			AIEngine::UnitObservation unit = runtime.observation().unitSlots(strike_target)[i];
+			if(unit && AIEngine::ObservationQueries::visible(runtime.observation(),unit->core.posX, unit->core.posY,
 				runtime.observedTeam().mask) && AIEngine::ObservationQueries::matchesStrategyUnitRole(runtime.observation(),*unit,WARRIOR)
-			   && unit->activity != Unit::ACT_UPGRADING)
+			   && unit->core.activity != Unit::ACT_UPGRADING)
 			{
 				if(!first)
 					first = unit;
@@ -2276,7 +2276,7 @@ void Maxima::compute_explorer_flag_attack_positioning(AIMaximaRuntime::Context& 
 			}
 			else
 			{
-				units[i] = NULL;
+				units[i] = std::nullopt;
 			}
 		}
 
@@ -2286,19 +2286,19 @@ void Maxima::compute_explorer_flag_attack_positioning(AIMaximaRuntime::Context& 
 			int group_y = 0;
 			int group_size = 0;
 
-			std::queue<const AIEngine::UnitView*> proccess;
+			std::queue<AIEngine::UnitObservation> proccess;
 			std::queue<int> xposs;
 			std::queue<int> yposs;
 			for(int i=0; i<Unit::MAX_COUNT; ++i)
 			{
 				if(units[i])
 				{
-					group_x += units[i]->posX;
-					group_y += units[i]->posY;
+					group_x += units[i]->core.posX;
+					group_y += units[i]->core.posY;
 					proccess.push(units[i]);
-					xposs.push(units[i]->posX);
-					yposs.push(units[i]->posY);
-					units[i] = NULL;
+					xposs.push(units[i]->core.posX);
+					yposs.push(units[i]->core.posY);
+					units[i] = std::nullopt;
 					group_size+=1;
 					break;
 				}
@@ -2309,7 +2309,7 @@ void Maxima::compute_explorer_flag_attack_positioning(AIMaximaRuntime::Context& 
 
 			while(!proccess.empty())
 			{
-				const AIEngine::UnitView* top = proccess.front();
+				AIEngine::UnitObservation top = proccess.front();
 				int ix = xposs.front();
 				int iy = yposs.front();
 				proccess.pop();
@@ -2317,10 +2317,10 @@ void Maxima::compute_explorer_flag_attack_positioning(AIMaximaRuntime::Context& 
 				yposs.pop();
 				for(int dx = -4; dx<=4; ++dx)
 				{
-					int nx = powerOfTwoRemainder(top->posX + dx + w, w);
+					int nx = powerOfTwoRemainder(top->core.posX + dx + w, w);
 					for(int dy = -4; dy<=4; ++dy)
 					{
-						int ny = powerOfTwoRemainder(top->posY + dy + h, h);
+						int ny = powerOfTwoRemainder(top->core.posY + dy + h, h);
 						if(runtime.observation().distanceSquared(group_x / group_size, group_y / group_size, nx, ny) < (6*6))
 						{
 							Uint16 guid = runtime.observation().occupancyAt(runtime.observation().tileIndex(nx, ny)).groundUnit;
@@ -2334,7 +2334,7 @@ void Maxima::compute_explorer_flag_attack_positioning(AIMaximaRuntime::Context& 
 									proccess.push(units[id]);
 									xposs.push(ix + dx);
 									yposs.push(iy + dy);
-									units[id] = NULL;
+									units[id] = std::nullopt;
 									group_size+=1;
 								}
 							}

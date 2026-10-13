@@ -36,11 +36,11 @@ void writePre73Team(GAGCore::OutputStream& out, int version, const Unit& cached,
         if(slot==0) {
             out.writeEnterSection("Unit");
             out.writeSint32(WORKER,"typeNum"); out.writeText("worker","skinName");
-            out.writeUint16(cached.gid,"gid"); out.writeSint32(0,"isDead");
+            out.writeUint16(cached.core.gid,"gid"); out.writeSint32(0,"isDead");
             for(const auto& [key,value]:std::initializer_list<std::pair<const char*,int>>{
-                {"posX",cached.posX},{"posY",cached.posY},{"delta",cached.delta},
-                {"dx",cached.dx},{"dy",cached.dy},{"direction",cached.direction},
-                {"insideTimeout",cached.insideTimeout},{"speed",cached.speed}}) out.writeSint32(value,key);
+                {"posX",cached.core.posX},{"posY",cached.core.posY},{"delta",cached.core.delta},
+                {"dx",cached.core.dx},{"dy",cached.core.dy},{"direction",cached.core.direction},
+                {"insideTimeout",cached.detail.insideTimeout},{"speed",cached.core.speed}}) out.writeSint32(value,key);
             out.writeUint32(1,"needToRecheckMedical"); out.writeUint32(Unit::MED_FREE,"medical");
             out.writeUint32(Unit::ACT_RANDOM,"activity"); out.writeUint32(Unit::DIS_RANDOM,"displacement");
             out.writeUint32(Unit::MOV_RANDOM_GROUND,"movement"); out.writeUint32(WALK,"action");
@@ -53,8 +53,8 @@ void writePre73Team(GAGCore::OutputStream& out, int version, const Unit& cached,
             out.writeEnterSection("abilities");
             for(int ability=0;ability<NB_ABILITY;++ability) {
                 out.writeEnterSection(ability);
-                out.writeSint32(ability==WALK?17:cached.performance[ability],"performance");
-                out.writeSint32(cached.level[ability],"level"); out.writeUint32(cached.canLearn[ability],"canLearn");
+                out.writeSint32(ability==WALK?17:cached.performance(ability),"performance");
+                out.writeSint32(cached.detail.level[ability],"level"); out.writeUint32(cached.detail.canLearn[ability],"canLearn");
                 out.writeLeaveSection();
             }
             out.writeLeaveSection();
@@ -219,17 +219,17 @@ TEST_SUITE("UnitCatalog")
             REQUIRE(world.team->race.getCatalog()->serialize()==expected->serialize());
             auto* loaded=world.team->myUnits[0]; REQUIRE(loaded);
             REQUIRE(loaded->runtimeTraits().hungerRate==700);
-            CHECK(loaded->configuredVisionRadius==loaded->runtimeTraits().visionRadius);
-            CHECK(loaded->performance[WALK]==17); CHECK(loaded->performance[HP]==200);
-            CHECK(loaded->hp==177); CHECK(loaded->hungriness==611); CHECK(loaded->trigHP==37); CHECK(loaded->trigHungry==31000);
+            CHECK(loaded->detail.configuredVisionRadius==loaded->runtimeTraits().visionRadius);
+            CHECK(loaded->performance(WALK)==17); CHECK(loaded->performance(HP)==200);
+            CHECK(loaded->core.hp==177); CHECK(loaded->detail.hungriness==611); CHECK(loaded->detail.trigHP==37); CHECK(loaded->detail.trigHungry==31000);
             // Model Game's final-team adoption after the actual old Team load.
             // This must not re-create effective fields loaded from the old unit.
             world.game.gameHeader.setUnitCatalog(world.team->race.getCatalog());
             world.game.configureBuildingCatalog();
-            CHECK(loaded->performance[WALK]==17); CHECK(loaded->hungriness==611);
-            CHECK(loaded->configuredVisionRadius==world.game.unitCatalog().runtime(WORKER).visionRadius);
+            CHECK(loaded->performance(WALK)==17); CHECK(loaded->detail.hungriness==611);
+            CHECK(loaded->detail.configuredVisionRadius==world.game.unitCatalog().runtime(WORKER).visionRadius);
             loaded->setWorkerLevel(1);
-            CHECK(loaded->performance[BUILD]==19); CHECK(loaded->performance[HARVEST]==13);
+            CHECK(loaded->performance(BUILD)==19); CHECK(loaded->performance(HARVEST)==13);
             auto* producer=world.addBuilding("swarm",8,8); REQUIRE(producer);
             world.team->addToStaticAbilitiesLists(producer);
             producer->ratio[WORKER]=1; producer->ratio[EXPLORER]=0; producer->ratio[WARRIOR]=0;
@@ -238,7 +238,7 @@ TEST_SUITE("UnitCatalog")
                 producer->materials[material]=producer->type->semantics.production.recipes[WORKER].cost[material];
             producer->swarmStep();
             auto* born=world.team->myUnits[1]; REQUIRE(born);
-            CHECK(born->performance[WALK]==23); CHECK(born->performance[HP]==333); CHECK(born->hungriness==700);
+            CHECK(born->performance(WALK)==23); CHECK(born->performance(HP)==333); CHECK(born->detail.hungriness==700);
             const auto vector=[&](Game& game) {
                 std::vector<Uint32> fields,buildings,units; game.checkSum(&fields,&buildings,&units,true);
                 fields.insert(fields.end(),buildings.begin(),buildings.end()); fields.insert(fields.end(),units.begin(),units.end()); return fields;

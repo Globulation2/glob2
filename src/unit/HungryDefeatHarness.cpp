@@ -63,11 +63,11 @@ struct Colony
         auto* u = new Unit(6, 8, 0, type, team, 0);
         team->myUnits[0] = u;
         team->rebuildLiveLists();
-        u->action = type == EXPLORER ? FLY : WALK;
-        u->hungry = u->trigHungry / 2;
-        u->medical = Unit::MED_HUNGRY;
-        if (type == EXPLORER) game.map.setAirUnit(6, 8, u->gid);
-        else game.map.setGroundUnit(6, 8, u->gid);
+        u->core.action = type == EXPLORER ? FLY : WALK;
+        u->core.hungry = u->detail.trigHungry / 2;
+        u->core.medical = Unit::MED_HUNGRY;
+        if (type == EXPLORER) game.map.setAirUnit(6, 8, u->core.gid);
+        else game.map.setGroundUnit(6, 8, u->core.gid);
         return u;
     }
 
@@ -85,25 +85,25 @@ static std::vector<Uint32> checkHealing(int type)
 {
     Colony c(0, "hospital");
     Unit* u = c.unit(type);
-    u->hungry = Unit::HUNGRY_MAX;
-    u->hp = u->trigHP;
-    u->medical = Unit::MED_DAMAGED;
-    u->delta = 255;
+    u->core.hungry = Unit::HUNGRY_MAX;
+    u->core.hp = u->detail.trigHP;
+    u->core.medical = Unit::MED_DAMAGED;
+    u->core.delta = 255;
     c.step(true, "reserving the final hospital place must not cause defeat");
-    require(u->attachedBuilding == c.inn && u->destinationPurpose == HEAL,
+    require(u->attachedBuilding == c.inn && u->core.destinationPurpose == HEAL,
             "injured unit reserves healing during the team step");
     require(c.team->canFeedUnit.empty() && c.team->canHealUnit.empty(),
             "full hospital is absent from admission lists");
     bool entered = false;
-    for (int tick = 0; tick < 2000 && u->hp != u->performance[HP]; ++tick)
+    for (int tick = 0; tick < 2000 && u->core.hp != u->performance(HP); ++tick)
     {
-        entered |= u->displacement == Unit::DIS_INSIDE;
+        entered |= u->core.displacement == Unit::DIS_INSIDE;
         c.step(true, "colony remains alive while approaching, entering and healing");
     }
-    require(entered && u->hp == u->performance[HP], "unit completes healing");
+    require(entered && u->core.hp == u->performance(HP), "unit completes healing");
     for (int tick = 0; tick < 300; ++tick)
         c.step(true, "healed colony remains alive through exit and medical refresh");
-    require(u->attachedBuilding == nullptr && u->medical == Unit::MED_FREE,
+    require(u->attachedBuilding == nullptr && u->core.medical == Unit::MED_FREE,
             "healed unit exits and refreshes medical status");
     return c.trace;
 }
@@ -113,27 +113,27 @@ static std::vector<Uint32> checkFeeding(int type, int corn)
     Colony c(corn);
     Unit* u = c.unit(type);
     // Complete an ordinary action: the simulation itself reserves the last meal.
-    u->delta = 255;
+    u->core.delta = 255;
     c.step(true, "reserving the final inn place must not cause defeat");
-    require(u->attachedBuilding == c.inn && u->destinationPurpose == FEED,
+    require(u->attachedBuilding == c.inn && u->core.destinationPurpose == FEED,
             "hungry unit reserves a meal during the team step");
     require(c.team->canFeedUnit.empty() && c.team->canHealUnit.empty(),
             "full inn is absent from admission lists");
-    require(u->insideTimeout == 0, "reservation precedes the feeding timer");
+    require(u->detail.insideTimeout == 0, "reservation precedes the feeding timer");
     bool entered = false;
     bool timerReachedZero = false;
-    for (int tick = 0; tick < 2000 && u->hungry != Unit::HUNGRY_MAX; ++tick)
+    for (int tick = 0; tick < 2000 && u->core.hungry != Unit::HUNGRY_MAX; ++tick)
     {
-        entered |= u->displacement == Unit::DIS_INSIDE;
-        timerReachedZero |= u->displacement == Unit::DIS_INSIDE && u->insideTimeout == 0;
+        entered |= u->core.displacement == Unit::DIS_INSIDE;
+        timerReachedZero |= u->core.displacement == Unit::DIS_INSIDE && u->detail.insideTimeout == 0;
         c.step(true, "colony remains alive while approaching, entering and eating");
     }
-    require(entered && timerReachedZero && u->hungry == Unit::HUNGRY_MAX,
+    require(entered && timerReachedZero && u->core.hungry == Unit::HUNGRY_MAX,
             "unit completes its meal, including the zero timer boundary");
     require(c.inn->materials[WHEAT] == corn - 1, "one meal consumes exactly one wheat");
     for (int tick = 0; tick < 300; ++tick)
         c.step(true, "fed colony remains alive through exit and medical refresh");
-    require(u->attachedBuilding == nullptr && u->medical == Unit::MED_FREE,
+    require(u->attachedBuilding == nullptr && u->core.medical == Unit::MED_FREE,
             "fed unit exits and refreshes medical status");
     Uint32 digest = 2166136261u;
     for (Uint32 checksum : c.trace) digest = (digest ^ checksum) * 16777619u;
@@ -154,9 +154,9 @@ TEST_SUITE("HungryDefeat")
         hospital->maxUnitInside = 1;
         hospital->updateCallLists();
         Unit* patient = world.addUnit(WORKER, 6, 8);
-        patient->hp = patient->trigHP;
-        patient->medical = Unit::MED_DAMAGED;
-        patient->delta = 255;
+        patient->core.hp = patient->detail.trigHP;
+        patient->core.medical = Unit::MED_DAMAGED;
+        patient->core.delta = 255;
         REQUIRE(world.addUnit(WORKER, 20, 20, 1));
         world.step();
         REQUIRE(patient->attachedBuilding == hospital);
@@ -219,8 +219,8 @@ TEST_SUITE("HungryDefeat")
 	    {
 	        Colony c;
 	        Unit* u = c.unit();
-	        u->medical = Unit::MED_FREE;
-	        u->hungry = Unit::HUNGRY_MAX;
+	        u->core.medical = Unit::MED_FREE;
+	        u->core.hungry = Unit::HUNGRY_MAX;
 	        c.inn->materials[WHEAT] = 0;
 	        c.inn->updateCallLists();
 	        c.step(true, "a healthy worker without food still sustains a colony");
@@ -235,18 +235,18 @@ TEST_SUITE("HungryDefeat")
 	    {
 	        Colony c(0);
 	        Unit* u = c.unit();
-	        u->hungry = Unit::HUNGRY_MAX;
-	        u->hp = u->trigHP;
+	        u->core.hungry = Unit::HUNGRY_MAX;
+	        u->core.hp = u->detail.trigHP;
 	        c.step(false, "being fed does not override needing unavailable healing");
 	    }
 	    {
 	        Colony c;
-	        c.unit(EXPLORER)->delta = 255;
+	        c.unit(EXPLORER)->core.delta = 255;
 	        c.step(false, "an explorer reservation alone does not sustain a colony");
 	    }
 	    {
 	        Colony c;
-	        c.unit()->delta = 255;
+	        c.unit()->core.delta = 255;
 	        c.team->playersMask = 0;
 	        c.step(false, "food reservations do not override lost player control");
 	    }

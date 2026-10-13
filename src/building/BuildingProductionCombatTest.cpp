@@ -164,7 +164,7 @@ TEST_CASE("rectangular hybrid shoots class-specific snapshots and regenerates wi
     b->hp-=10; const int hp=b->hp; b->regenerationStep(); CHECK(b->hp==hp+3);
     b->materials[WOOD]=2;
     Unit* enemy=world.addUnit(EXPLORER,14,9,1);
-    enemy->speed=1; enemy->delta=0;
+    enemy->core.speed=1; enemy->core.delta=0;
     b->turretStep(0); b->turretStep(1); b->turretStep(2);
     CHECK(b->materials[WOOD]==0); CHECK(b->bullets==1);
     Sector* sector=world.game.map.getSector(b->getMidX(),b->getMidY());
@@ -177,10 +177,10 @@ TEST_CASE("rectangular hybrid shoots class-specific snapshots and regenerates wi
     auto* duplicate=new GAGCore::MemoryStreamBackend(*storage); duplicate->seekFromStart(0);
     GAGCore::BinaryInputStream input(duplicate); Bullet loaded(&input,VERSION_MINOR);
     CHECK(loaded.unitDamage==shot->unitDamage);
-    const int before=enemy->hp;
+    const int before=enemy->core.hp;
     const int damage=std::max(1,9-enemy->getRealArmor(false));
     b->kill(); shot->ticksLeft=0; sector->step();
-    CHECK(enemy->hp==before-damage);
+    CHECK(enemy->core.hp==before-damage);
 }
 TEST_CASE("hybrid attraction and service routes remain independent across save continuation")
 {
@@ -204,9 +204,9 @@ TEST_CASE("hybrid attraction and service routes remain independent across save c
     for (int tick=0; tick<33; ++tick) b->subscribeWorkStep();
     CHECK(b->desiredMaxUnitWorking==3);
     REQUIRE(b->unitsWorking.size()==3);
-    CHECK(worker->activity==Unit::ACT_FLAG);
-    CHECK(explorer->activity==Unit::ACT_FLAG);
-    CHECK(warrior->activity==Unit::ACT_FLAG);
+    CHECK(worker->core.activity==Unit::ACT_FLAG);
+    CHECK(explorer->core.activity==Unit::ACT_FLAG);
+    CHECK(warrior->core.activity==Unit::ACT_FLAG);
     auto& map=world.game.map;
     const Uint16* services=map.buildingGradient(b,0,BuildingRoute::Footprint);
     const Uint16* clearing=map.buildingGradient(b,0,BuildingRoute::Clearing);
@@ -290,11 +290,11 @@ TEST_CASE("combined attraction profiles independently require warrior level and 
     CHECK(b->canUnitWorkHere(worker,true));
     b->minWorkerLevelToFlag=1;
     CHECK_FALSE(b->canUnitWorkHere(worker,true));
-    worker->constructionLevel=1;
+    worker->core.constructionLevel=1;
     CHECK(b->canUnitWorkHere(worker,true));
     b->explorersRequireBombing=true;
     CHECK_FALSE(b->canUnitWorkHere(explorer,true));
-    explorer->level[MAGIC_ATTACK_GROUND]=1;
+    explorer->detail.level[MAGIC_ATTACK_GROUND]=1;
     CHECK(b->canUnitWorkHere(explorer,true));
 }
 
@@ -352,13 +352,13 @@ TEST_CASE("direct stock withdrawal is independent of food and fruit exchange")
     worker->attachedBuilding=consumer;
     worker->ownExchangeBuilding=supplier;
     worker->setTargetBuilding(supplier);
-    worker->activity=Unit::ACT_FILLING;
-    worker->displacement=Unit::DIS_FILLING_BUILDING;
-    worker->destinationPurpose=WOOD;
-    worker->delta=UNIT_DELTA_MAX;
-    worker->action=STOP_WALK; worker->speed=1;
+    worker->core.activity=Unit::ACT_FILLING;
+    worker->core.displacement=Unit::DIS_FILLING_BUILDING;
+    worker->core.destinationPurpose=WOOD;
+    worker->core.delta=UNIT_DELTA_MAX;
+    worker->core.action=STOP_WALK; worker->core.speed=1;
     worker->syncStep();
-    CHECK(worker->carriedMaterial==WOOD);
+    CHECK(worker->core.carriedMaterial==WOOD);
     CHECK(supplier->materials[WOOD]==4);
     CHECK(worker->targetBuilding==consumer);
     worker->ownExchangeBuilding=nullptr;
@@ -522,10 +522,10 @@ TEST_CASE("partial supplier packets preserve raw equivalents and save continuati
     Unit* courier=world.addUnit(WORKER,7,7); courier->receiveCarriedMaterial(WOOD,packet);
     glob2test::HeadlessGame copy({.loadDefaultRace=true});
     REQUIRE(loadProductionGame(copy.game,saveProductionGame(world.game,false),false));
-    Unit* loaded=copy.game.teams[0]->myUnits[Unit::GIDtoID(courier->gid)];
-    REQUIRE(loaded); CHECK(loaded->carriedPacket.numerator==1); CHECK(loaded->carriedPacket.denominator==2);
+    Unit* loaded=copy.game.teams[0]->myUnits[Unit::GIDtoID(courier->core.gid)];
+    REQUIRE(loaded); CHECK(loaded->detail.carriedPacket.numerator==1); CHECK(loaded->detail.carriedPacket.denominator==2);
     Building* copiedSink=copy.game.teams[0]->myBuildings[Building::GIDtoID(sink->gid)];
-    for (auto [receiver,cargo] : {std::pair{sink,packet},std::pair{copiedSink,loaded->carriedPacket}})
+    for (auto [receiver,cargo] : {std::pair{sink,packet},std::pair{copiedSink,loaded->detail.carriedPacket}})
     {
         const auto delivered=receiver->deliverMaterialPacket(WOOD,cargo);
         CHECK(delivered.acceptedStock==1); CHECK(receiver->materials[WOOD]==1);
@@ -849,7 +849,7 @@ TEST_CASE("mixed attraction borrows quota from an unavailable unit class")
     for (int i=0;i<3;++i) world.addUnit(WARRIOR,6,7+i);
     for (int tick=0;tick<33;++tick) b->subscribeWorkStep();
     CHECK(b->unitsWorking.size()==3);
-    for (const Unit* unit : b->unitsWorking) CHECK(unit->typeNum==WARRIOR);
+    for (const Unit* unit : b->unitsWorking) CHECK(unit->core.typeNum==WARRIOR);
 }
 
 TEST_CASE("late choice advances the common timer and selects ratios only at completion")
@@ -1009,7 +1009,7 @@ TEST_CASE("ground buildings with attraction radii remain melee targets")
     world.team->enemies=world.game.teams[1]->me;
     const auto touched=world.game.map.doesUnitTouchEnemy(attacker);
     REQUIRE(touched);
-    CHECK(world.game.map.getBuilding(attacker->posX+touched->dx,attacker->posY+touched->dy)==target->gid);
+    CHECK(world.game.map.getBuilding(attacker->core.posX+touched->dx,attacker->core.posY+touched->dy)==target->gid);
 }
 
 }

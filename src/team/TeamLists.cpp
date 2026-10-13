@@ -63,13 +63,13 @@ void Team::clearMap(void)
 	{
 		if (myUnits[i])
 		{
-			if (myUnits[i]->performance[FLY])
+			if (myUnits[i]->performance(FLY))
 			{
-				map->setAirUnit(myUnits[i]->posX, myUnits[i]->posY, NOGUID);
+				map->setAirUnit(myUnits[i]->core.posX, myUnits[i]->core.posY, NOGUID);
 			}
 			else
 			{
-				map->setGroundUnit(myUnits[i]->posX, myUnits[i]->posY, NOGUID);
+				map->setGroundUnit(myUnits[i]->core.posX, myUnits[i]->core.posY, NOGUID);
 			}
 		}
 	}

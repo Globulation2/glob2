@@ -189,7 +189,7 @@ TEST_SUITE("EditorTerrainPaint")
 		Unit *worker = game.addUnit(18, 18, 0, WORKER, 0, 0, 0, 0);
 		Unit *explorer = game.addUnit(13, 18, 0, EXPLORER, 0, 0, 0, 0);
 		REQUIRE((building && worker && explorer));
-		const auto buildingGid = building->gid, workerGid = worker->gid, explorerGid = explorer->gid;
+		const auto buildingGid = building->gid, workerGid = worker->core.gid, explorerGid = explorer->core.gid;
 		for (int y = 12; y <= 20; ++y)
 			for (int x = 12; x <= 20; ++x)
 				if (map.isResourceAllowed(x, y, WHEAT))

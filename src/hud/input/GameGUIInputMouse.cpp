@@ -204,7 +204,7 @@ void GameGUI::handleMapClick(int mx, int my, int button)
             { setSelection(BUILDING_SELECTION,unsigned(nearest->gid)); selectionPushed=false; return; }
         if (unit)
         {
-            setSelection(UNIT_SELECTION,unsigned(unit->gid)); selectionPushed=true;
+            setSelection(UNIT_SELECTION,unsigned(unit->core.gid)); selectionPushed=true;
             dump(unit->identity,{});
             return;
         }

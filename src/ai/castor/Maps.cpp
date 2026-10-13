@@ -308,16 +308,16 @@ void AICastor::computeWorkPowerMap()
 	const auto myUnits=observation->unitSlots(observedTeam->number);
 	for (int i=0; i<Unit::MAX_COUNT; i++)
 	{
-		const AIEngine::UnitView *u=myUnits[i];
-		if (u && AIEngine::ObservationQueries::matchesStrategyUnitRole(*observation,*u,WORKER) && u->medical==0 && u->activity!=Unit::ACT_UPGRADING)
+		AIEngine::UnitObservation u=myUnits[i];
+		if (u && AIEngine::ObservationQueries::matchesStrategyUnitRole(*observation,*u,WORKER) && u->core.medical==0 && u->core.activity!=Unit::ACT_UPGRADING)
 		{
-			int range=u->hungriness>0 ? ((u->hungry-u->trigHungry)>>AI_CASTOR_HUNGER_RANGE_SHIFT)/u->hungriness : AI_CASTOR_GRADIENT_WALL;
+			int range=u->detail.hungriness>0 ? ((u->core.hungry-u->detail.trigHungry)>>AI_CASTOR_HUNGER_RANGE_SHIFT)/u->detail.hungriness : AI_CASTOR_GRADIENT_WALL;
 			if (range<0)
 				continue;
 			if (range>maxRange)
 				range=maxRange;
-			int ux=u->posX;
-			int uy=u->posY;
+			int ux=u->core.posX;
+			int uy=u->core.posY;
 			static const int reducer=AI_CASTOR_POWER_STAMP_REDUCER;
 			{
 				Uint8 *gp=&gradient[(ux&wMask)+((uy&hMask)<<wDec)];
@@ -382,15 +382,15 @@ void AICastor::computeWorkRangeMap()
 	const auto myUnits=observation->unitSlots(observedTeam->number);
 	for (int i=0; i<Unit::MAX_COUNT; i++)
 	{
-		const AIEngine::UnitView *u=myUnits[i];
-		if (u && AIEngine::ObservationQueries::matchesStrategyUnitRole(*observation,*u,WORKER) && u->medical==0 && u->activity!=Unit::ACT_UPGRADING)
+		AIEngine::UnitObservation u=myUnits[i];
+		if (u && AIEngine::ObservationQueries::matchesStrategyUnitRole(*observation,*u,WORKER) && u->core.medical==0 && u->core.activity!=Unit::ACT_UPGRADING)
 		{
-			int range=u->hungriness>0 ? ((u->hungry-u->trigHungry)>>AI_CASTOR_HUNGER_RANGE_SHIFT)/u->hungriness : AI_CASTOR_GRADIENT_WALL;
+			int range=u->detail.hungriness>0 ? ((u->core.hungry-u->detail.trigHungry)>>AI_CASTOR_HUNGER_RANGE_SHIFT)/u->detail.hungriness : AI_CASTOR_GRADIENT_WALL;
 			if (range<0)
 				continue;
 			if (range>AI_CASTOR_GRADIENT_WALL)
 				range=AI_CASTOR_GRADIENT_WALL;
-			int index=(u->posX&wMask)+((u->posY&hMask)<<wDec);
+			int index=(u->core.posX&wMask)+((u->core.posY&hMask)<<wDec);
 			gradient[index]=(Uint8)range;
 		}
 	}

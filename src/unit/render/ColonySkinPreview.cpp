@@ -341,15 +341,15 @@ void ColonySkinPreview::prepare(GAGCore::GraphicContext &gfx, const Presentation
                     {
                         if (fogFade && fogFade->active())
                         {
-                            if (std::min(fogFade->level(mx,my), fogFade->level(mx-unit->dx,my-unit->dy)) == FogFade::FOGGED) continue;
+                            if (std::min(fogFade->level(mx,my), fogFade->level(mx-unit->core.dx,my-unit->core.dy)) == FogFade::FOGGED) continue;
                         }
                         else if (!map.isFOWDiscovered(mx,my,visibleTeams) &&
-                                 !map.isFOWDiscovered(mx-unit->dx,my-unit->dy,visibleTeams)) continue;
+                                 !map.isFOWDiscovered(mx-unit->core.dx,my-unit->core.dy,visibleTeams)) continue;
                     }
-                    const auto meshClass = scene.world.catalogs->units->runtime(unit->typeNum).meshClass;
-                    const auto *mesh = unitMesh(meshClass,unit->action);
-                    if (mesh && unit->direction>=0 && unit->direction<=8 && unit->delta>=0 && unit->delta<=255)
-                        requests.push_back({mesh, static_cast<unsigned>(unitAnimationFrame(0,unit->direction,drawnUnitDelta(*unit,unitMotion))), textures[unit->team].get(), materials[unit->team].get(), unitRegion(meshClass)});
+                    const auto meshClass = scene.world.catalogs->units->runtime(unit->core.typeNum).meshClass;
+                    const auto *mesh = unitMesh(meshClass,unit->core.action);
+                    if (mesh && unit->core.direction>=0 && unit->core.direction<=8 && unit->core.delta>=0 && unit->core.delta<=255)
+                        requests.push_back({mesh, static_cast<unsigned>(unitAnimationFrame(0,unit->core.direction,drawnUnitDelta(*unit,unitMotion))), textures[unit->team].get(), materials[unit->team].get(), unitRegion(meshClass)});
                 }
                 if (!drawBuildings) continue;
                 const auto *building = entities.building(map.getBuilding(mx,my));

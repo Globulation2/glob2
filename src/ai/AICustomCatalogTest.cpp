@@ -966,11 +966,11 @@ TEST_CASE("keyed worker courses retain qualification grants and exclude unrelate
         {"duration",32},{"cost",nlohmann::json::object()}};
     game.buildingsTypes.loadSnapshotJson(buildings.dump());game.configureBuildingCatalog();
     world.addBuilding("school",4,4);
-    auto* worker=world.addUnit(WORKER,10,10);worker->constructionLevel=0;
-    auto* custom=world.addUnit(3,11,10);custom->constructionLevel=0;
-    auto* carrier=world.addUnit(4,12,10);carrier->constructionLevel=0;
-    auto* inactive=world.addUnit(WORKER,13,10);inactive->performance[HARVEST]=0;
-    auto* defender=world.addUnit(3,14,10);defender->jobPurpose=UnitJobPurpose::Defend;
+    auto* worker=world.addUnit(WORKER,10,10);worker->core.constructionLevel=0;
+    auto* custom=world.addUnit(3,11,10);custom->core.constructionLevel=0;
+    auto* carrier=world.addUnit(4,12,10);carrier->core.constructionLevel=0;
+    auto* inactive=world.addUnit(WORKER,13,10);inactive->performance(HARVEST)=0;
+    auto* defender=world.addUnit(3,14,10);defender->core.jobPurpose=UnitJobPurpose::Defend;
     const auto view=AIEngine::AIWorldView::capture(game,AIEngine::AIWorldView::captureCatalog(game));
     const auto projection=AIEngine::ObservationQueries::workerTrainingProjection(*view,false);
     CHECK(projection.labourProviders[school]==1);
@@ -986,11 +986,11 @@ TEST_CASE("keyed worker courses retain qualification grants and exclude unrelate
     CHECK(labour.workers==3); // worker, keyed builder, courier; defense owns its hybrid.
     CHECK(labour.idle==3);CHECK(labour.trainable==1);
     CHECK(labour.trainingSlots==game.buildingsTypes.get(school)->maxUnitInside);
-    custom->canLearn[ARMOR]=false;
+    custom->detail.canLearn[ARMOR]=false;
     const auto blocked=maxima.observe_labour(maxima.context);
     CHECK(blocked.trainingSlots==labour.trainingSlots);CHECK(blocked.trainable==0);
     auto* clearing=world.addBuilding("clearingflag",20,4);REQUIRE(clearing);
-    worker->attachedBuilding=clearing;worker->activity=Unit::ACT_FLAG;worker->jobPurpose=UnitJobPurpose::Clear;
+    worker->attachedBuilding=clearing;worker->core.activity=Unit::ACT_FLAG;worker->core.jobPurpose=UnitJobPurpose::Clear;
     clearing->unitsWorking.push_back(worker);
     const auto clearingLabour=maxima.observe_labour(maxima.context);
     CHECK(clearingLabour.workers==labour.workers);CHECK(clearingLabour.idle==labour.idle-1);
@@ -1010,10 +1010,10 @@ TEST_CASE("construction tier arithmetic excludes couriers without construction")
     courier["behaviors"]["construct"]=false;units["units"].push_back(courier);
     game.gameHeader.setUnitCatalog(UnitCatalog::deserialize(units.dump()));game.configureBuildingCatalog();
     world.addBuilding("inn",4,4);
-    auto* delivery=world.addUnit(3,12,12);delivery->constructionLevel=3;
+    auto* delivery=world.addUnit(3,12,12);delivery->core.constructionLevel=3;
     AINumbi ai(game.players[0]);
     CHECK(withNumbiObservation(ai,game,[&]{return ai.mayUpgrade(0,0);})->getOrderType()==ORDER_NULL);
-    auto* worker=world.addUnit(WORKER,13,12);worker->constructionLevel=1;
+    auto* worker=world.addUnit(WORKER,13,12);worker->core.constructionLevel=1;
     CHECK(withNumbiObservation(ai,game,[&]{return ai.mayUpgrade(0,0);})->getOrderType()==ORDER_CONSTRUCTION);
 }
 TEST_CASE("Castor swimming workforce excludes inactive carriers")
@@ -1023,12 +1023,12 @@ TEST_CASE("Castor swimming workforce excludes inactive carriers")
     auto* worker=world.addUnit(WORKER,10,10);
     for(int i=0;i<3;++i) {
         auto* inactive=world.addUnit(WORKER,11+i,10);
-        inactive->performance[SWIM]=10;inactive->performance[HARVEST]=0;
+        inactive->performance(SWIM)=10;inactive->performance(HARVEST)=0;
     }
     AICastor ai(world.game.players[0]);
     withCastorObservation(ai,world.game,[&]{ai.computeCanSwim();});
     CHECK_FALSE(ai.canSwim);
-    worker->performance[SWIM]=10;
+    worker->performance(SWIM)=10;
     withCastorObservation(ai,world.game,[&]{ai.computeCanSwim();});
     CHECK(ai.canSwim);
 }
@@ -1063,20 +1063,20 @@ TEST_CASE("independent nonmonotonic worker clocks retain keyed course eligibilit
     game.buildingsTypes.loadSnapshotJson(buildings.dump());game.configureBuildingCatalog();
     auto* provider=world.addBuilding("school",4,4);REQUIRE(provider);
     auto* custom=world.addUnit(3,11,10);REQUIRE(custom);
-    REQUIRE(custom->canLearn[HARVEST]);
-    REQUIRE(custom->performance[BUILD]==9);REQUIRE(custom->performance[HARVEST]==0);
+    REQUIRE(custom->detail.canLearn[HARVEST]);
+    REQUIRE(custom->performance(BUILD)==9);REQUIRE(custom->performance(HARVEST)==0);
     const auto& apprenticeship=provider->type->semantics.training[HARVEST];
     REQUIRE(custom->needsTraining(apprenticeship,HARVEST));
     custom->applyTraining(apprenticeship,HARVEST);
-    CHECK(custom->level[BUILD]==0);CHECK(custom->level[HARVEST]==1);
-    CHECK(custom->performance[BUILD]==9);CHECK(custom->performance[HARVEST]==11);
+    CHECK(custom->detail.level[BUILD]==0);CHECK(custom->detail.level[HARVEST]==1);
+    CHECK(custom->performance(BUILD)==9);CHECK(custom->performance(HARVEST)==11);
     const auto view=AIEngine::AIWorldView::capture(game,AIEngine::AIWorldView::captureCatalog(game));
-    const auto* captured=view->unitSlots(0)[Unit::GIDtoID(custom->gid)];REQUIRE(captured);
+    const auto captured=view->unitSlots(0)[Unit::GIDtoID(custom->core.gid)];REQUIRE(captured);
     CHECK(AIEngine::ObservationQueries::matchesStrategyUnitRole(*view,*captured,WORKER));
     // No equal-level probe can represent this effective, independently trained unit.
     for(const auto& level:game.unitCatalog().levels(3)) {
-        auto uniform=*captured;
-        std::copy(std::begin(level.performance),std::end(level.performance),uniform.performance);
+        UnitState uniform{};uniform.core=captured->core;uniform.detail=captured->detail;
+        for(int ability=0;ability<NB_ABILITY;++ability)uniform.performance(ability)=level.performance[ability];
         CHECK_FALSE(AIEngine::ObservationQueries::matchesStrategyUnitRole(*view,uniform,WORKER));
     }
     CHECK(AIEngine::ObservationQueries::definitionCanServeStrategyRole(*view,3,WORKER));
@@ -1088,7 +1088,7 @@ TEST_CASE("independent nonmonotonic worker clocks retain keyed course eligibilit
     AIMaxima::Maxima maxima(game.players[0]);const auto labour=maxima.observe_labour(maxima.context);
     CHECK(labour.workers==1);CHECK(labour.idle==1);CHECK(labour.trainable==1);
     CHECK(labour.trainingSlots==game.buildingsTypes.get(school)->maxUnitInside);
-    custom->canLearn[WALK]=false;
+    custom->detail.canLearn[WALK]=false;
     CHECK(maxima.observe_labour(maxima.context).trainable==0);
 }
 
@@ -1122,8 +1122,8 @@ TEST_CASE("always airborne carriers retain keyed flight course planning and inde
     game.buildingsTypes.loadSnapshotJson(buildings.dump());game.configureBuildingCatalog();
     auto* provider=world.addBuilding("school",4,4);REQUIRE(provider);
     auto* carrier=world.addUnit(WORKER,10,10);REQUIRE(carrier);
-    REQUIRE(carrier->performance[FLY]==8);
-    REQUIRE(carrier->performance[WALK]==0);REQUIRE(carrier->performance[SWIM]==0);
+    REQUIRE(carrier->performance(FLY)==8);
+    REQUIRE(carrier->performance(WALK)==0);REQUIRE(carrier->performance(SWIM)==0);
     const auto& course=provider->type->semantics.training[FLY];
     REQUIRE(carrier->needsTraining(course,FLY));
     const auto view=AIEngine::AIWorldView::capture(game,AIEngine::AIWorldView::captureCatalog(game));
@@ -1135,14 +1135,14 @@ TEST_CASE("always airborne carriers retain keyed flight course planning and inde
     const auto labour=maxima.observe_labour(maxima.context);
     CHECK(labour.workers==1);CHECK(labour.idle==1);CHECK(labour.trainable==1);
     CHECK(labour.trainingSlots==provider->maxUnitInside);
-    carrier->canLearn[FLY]=false;
+    carrier->detail.canLearn[FLY]=false;
     CHECK_FALSE(carrier->needsTraining(course,FLY));
     CHECK(maxima.observe_labour(maxima.context).trainable==0);
-    carrier->canLearn[FLY]=true;
+    carrier->detail.canLearn[FLY]=true;
     carrier->applyTraining(course,FLY);
-    CHECK(carrier->level[FLY]==1);CHECK(carrier->performance[FLY]==16);
-    CHECK(carrier->level[BUILD]==0);CHECK(carrier->level[HARVEST]==0);
-    CHECK(carrier->performance[WALK]==0);CHECK(carrier->performance[SWIM]==0);
+    CHECK(carrier->detail.level[FLY]==1);CHECK(carrier->performance(FLY)==16);
+    CHECK(carrier->detail.level[BUILD]==0);CHECK(carrier->detail.level[HARVEST]==0);
+    CHECK(carrier->performance(WALK)==0);CHECK(carrier->performance(SWIM)==0);
     CHECK_FALSE(carrier->needsTraining(course,FLY));
     CHECK(maxima.observe_labour(maxima.context).trainable==0);
 }

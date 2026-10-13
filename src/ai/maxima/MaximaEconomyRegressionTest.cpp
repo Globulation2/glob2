@@ -575,7 +575,7 @@ void armyBirthsMatchPlatformChecksums()
     }
     int workers=0,warriors=0;
     for(int i=0;i<Unit::MAX_COUNT;++i)if(auto* u=f.player.team->myUnits[i]) {
-        workers+=u->typeNum==WORKER;warriors+=u->typeNum==WARRIOR;
+        workers+=u->core.typeNum==WORKER;warriors+=u->core.typeNum==WARRIOR;
     }
     REQUIRE((workers==50 && warriors>0));
     if(!record){expected>>std::ws;REQUIRE(expected.eof());}
@@ -977,16 +977,16 @@ TEST_CASE("service rate uses simulated visit ticks" * doctest::test_suite("Maxim
     Building* inn=world.addBuilding("inn",8,8);
     inn->materials[WHEAT]=10;
     Unit* worker=world.addUnit(WORKER);
-    worker->destinationPurpose=FEED;
+    worker->core.destinationPurpose=FEED;
     inn->subscribeUnitForInside(worker);
-    REQUIRE(worker->serviceResourcesReserved);
-    worker->displacement=Unit::DIS_ENTERING_BUILDING;
-    worker->delta=255;worker->syncStep();
-    REQUIRE(worker->displacement==Unit::DIS_INSIDE);
-    worker->delta=0;
+    REQUIRE(worker->detail.serviceResourcesReserved);
+    worker->core.displacement=Unit::DIS_ENTERING_BUILDING;
+    worker->core.delta=255;worker->syncStep();
+    REQUIRE(worker->core.displacement==Unit::DIS_INSIDE);
+    worker->core.delta=0;
     int elapsed=0;
-    while(worker->displacement==Unit::DIS_INSIDE && elapsed<2000){worker->syncStep();++elapsed;}
-    CHECK(worker->displacement==Unit::DIS_EXITING_BUILDING);
+    while(worker->core.displacement==Unit::DIS_INSIDE && elapsed<2000){worker->syncStep();++elapsed;}
+    CHECK(worker->core.displacement==Unit::DIS_EXITING_BUILDING);
     CHECK(elapsed==AIMaximaBuildings::serviceTicks(*inn->type,inn->type->semantics.feeding.duration));
     CHECK(inn->materials[WHEAT]==9);
 }
@@ -1050,7 +1050,7 @@ FeedingSceneResult measureFeedingScene(const char* label,int stage,int distance,
             auto* created=world.addUnit(unit<workers?WORKER:unit<workers+explorers?EXPLORER:WARRIOR);
             // Supply carriers meet this building's explicit qualification;
             // movement, work speed and hunger remain the same at every stage.
-            if(unit<workers)created->constructionLevel=inn->type->semantics.requiredWorkerLevel;
+            if(unit<workers)created->core.constructionLevel=inn->type->semantics.requiredWorkerLevel;
         }
         Player player;player.setTeam(world.team);
         std::unique_ptr<AIMaxima::Maxima> controller;
@@ -1094,8 +1094,8 @@ FeedingSceneResult measureFeedingScene(const char* label,int stage,int distance,
             }
             if(tick>=warmup) {
                 reservedSeatTicks+=inn->unitsInside.size();workingTicks+=inn->unitsWorking.size();
-                for(const auto* carrier:inn->unitsWorking)carriers.insert(carrier->gid);
-                for(int unit=0;unit<Unit::MAX_COUNT;++unit)if(const auto* u=world.team->myUnits[unit];u && u->hungry<=u->trigHungry)++hungryTicks;
+                for(const auto* carrier:inn->unitsWorking)carriers.insert(carrier->core.gid);
+                for(int unit=0;unit<Unit::MAX_COUNT;++unit)if(const auto* u=world.team->myUnits[unit];u && u->core.hungry<=u->detail.trigHungry)++hungryTicks;
             }
         }
         int survivors=0;for(int unit=0;unit<Unit::MAX_COUNT;++unit)survivors+=world.team->myUnits[unit]!=nullptr;
@@ -1623,24 +1623,24 @@ TEST_CASE("recipient meal demand follows saved hunger and external action clocks
     auto* stat=f.player.team->stats.getLatestStat();stat->totalUnit=stat->numberUnitPerType[WORKER]=1;
     stat->carriers=stat->builders=stat->idleCarriers=1;
     glob2test::withMaximaObservation(ai.context,[&]() -> decltype(auto) {return ai.collect_building_profiles();});
-    worker->hungriness=425;
+    worker->detail.hungriness=425;
     ai.snapshot=ai.collect_snapshot(ai.context);
     const int initialDemand=ai.snapshot.feeding_demand[WORKER];
     const int inn=f.game.buildingsTypes.getPlaceableTypeNum("inn");
     const int capacity425=glob2test::withMaximaObservation(ai.context,[&]() -> decltype(auto) {return ai.feeding_capacity(inn,1);});
     REQUIRE(initialDemand>0);REQUIRE(capacity425>0);
-    worker->hungriness=700; // SmallForTwo's persisted race, not modern defaults.
+    worker->detail.hungriness=700; // SmallForTwo's persisted race, not modern defaults.
     ai.snapshot=ai.collect_snapshot(ai.context);
     CHECK(ai.snapshot.feeding_demand[WORKER]>initialDemand);
     CHECK(glob2test::withMaximaObservation(ai.context,[&]() -> decltype(auto) {return ai.feeding_capacity(inn,1);})<capacity425);
-    auto readMeal=[&] {auto observed=ai.context.scopeOwnerObservation();return glob2test::withMaximaObservation(ai.context,[&]() -> decltype(auto) {return ai.recipient_meal_rate(*ai.context.observation().unitAtSlot(worker->gid));});};
+    auto readMeal=[&] {auto observed=ai.context.scopeOwnerObservation();return glob2test::withMaximaObservation(ai.context,[&]() -> decltype(auto) {return ai.recipient_meal_rate(*ai.context.observation().unitAtSlot(worker->core.gid));});};
     const auto recurring=readMeal();
-    worker->hungry=Unit::HUNGRY_MAX;worker->speed=256;worker->displacement=Unit::DIS_INSIDE;
+    worker->core.hungry=Unit::HUNGRY_MAX;worker->core.speed=256;worker->core.displacement=Unit::DIS_INSIDE;
     CHECK(readMeal()==recurring); // service state cannot erase recurring demand
-    worker->displacement=Unit::DIS_RANDOM;worker->performance[WALK]=24;
+    worker->core.displacement=Unit::DIS_RANDOM;worker->performance(WALK)=24;
     CHECK(readMeal()>recurring);
-    worker->hungriness=0;CHECK(readMeal()==0);
-    worker->hungriness=700;f.game.gameHeader.setHungerDisabled(true);
+    worker->detail.hungriness=0;CHECK(readMeal()==0);
+    worker->detail.hungriness=700;f.game.gameHeader.setHungerDisabled(true);
     CHECK(readMeal()==0);
     f.game.gameHeader.setHungerDisabled(false);
     const auto slow=AIMaxima::recipientMealRate(150000,37500,1,1,WALK,16,534);
@@ -2129,7 +2129,7 @@ TEST_CASE("custom construction supply counts reachable mixed yields and shore ac
     CHECK((world.tile(21,20).sources()&materialBit(MaterialId::Paper))!=0);
     CHECK((world.tile(40,40).sources()&materialBit(MaterialId::Gold))==0);
     CHECK((world.tile(40,40).sources()&materialBit(MaterialId::Paper))==0);
-    worker->performance[SWIM]=1;
+    worker->performance(SWIM)=1;
     world=f.ai->collect_development_world(f.ai->context);
     CHECK(world.accessibleSupplies[materialIndex(MaterialId::Gold)]==2);
     CHECK(world.accessibleSupplies[materialIndex(MaterialId::Paper)]==6);

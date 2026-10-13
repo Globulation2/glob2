@@ -41,7 +41,7 @@ TEST_CASE("live slot lists follow every slot assignment and order the snapshot r
 			for (int sample=0; sample<32; ++sample) measured.step(current, true);
 			int expectedCount=0, expectedHP=0, expectedBuildingsCount=0;
 			for (int slot=0; slot<Unit::MAX_COUNT; ++slot)
-				if (auto* unit=current->myUnits[slot]) { ++expectedCount; expectedHP+=unit->hp; }
+				if (auto* unit=current->myUnits[slot]) { ++expectedCount; expectedHP+=unit->core.hp; }
 			for (int slot=0; slot<Building::MAX_COUNT; ++slot)
 				if (auto* building=current->myBuildings[slot])
 				{
@@ -74,7 +74,7 @@ TEST_CASE("live slot lists follow every slot assignment and order the snapshot r
 	consistent(); CHECK(team->liveUnits.size() == 7);
 
 	// Death collection in the team step detaches too.
-	team->liveUnits.entries()[3]->isDead = true;
+	team->liveUnits.entries()[3]->core.isDead = true;
 	team->syncStep();
 	consistent(); CHECK(team->liveUnits.size() == 6);
 
@@ -86,14 +86,14 @@ TEST_CASE("live slot lists follow every slot assignment and order the snapshot r
 	for (std::size_t n = 0; n < team->liveUnits.size(); ++n)
 	{
 		const auto slot = team->liveUnits.slots()[n];
-		const auto record = handle.entities->unitSlotIndices[slot];
+		const auto record = handle.unitCores->unitSlotIndices[slot];
 		REQUIRE(record != SimulationSnapshot::Entities::NoRecord);
-		CHECK(handle.entities->units[record].identity.gid == team->liveUnits.entries()[n]->gid);
+		CHECK(handle.unitCores->units[record].identity.gid == team->liveUnits.entries()[n]->core.gid);
 		if (n) CHECK(record > previous);
 		previous = record; ++records;
 	}
 	std::size_t indexed = 0;
-	for (int i = 0; i < Unit::MAX_COUNT; ++i) indexed += handle.entities->unitSlotIndices[i] != SimulationSnapshot::Entities::NoRecord;
+	for (int i = 0; i < Unit::MAX_COUNT; ++i) indexed += handle.unitCores->unitSlotIndices[i] != SimulationSnapshot::Entities::NoRecord;
 	CHECK(indexed == records);
 
 	// Direct slot writes (loaders, fixtures) are reconciled by a rebuild.

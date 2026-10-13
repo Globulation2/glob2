@@ -278,20 +278,20 @@ void run(bool gpu)
 	gui.clearSelection();
 	std::cout << "PASS building, worker and resource selection copies\n";
 
-	unit->validTarget=true;
-	unit->targetX=5; unit->targetY=3;
+	unit->core.validTarget=true;
+	unit->core.targetX=5; unit->core.targetY=3;
 	clear();
-	{ const PresentationFrame &pathScene = glob2test::sceneOf(game); game.drawUnitPathLine(0,0,52,34,1600,1100,0,0,0,0, *pathScene.entities.unit(unit->gid), pathScene); }
+	{ const PresentationFrame &pathScene = glob2test::sceneOf(game); game.drawUnitPathLine(0,0,52,34,1600,1100,0,0,0,0, *pathScene.entities.unit(unit->core.gid), pathScene); }
 	copies(110,110,70,5);
 	// A line crossing the map seam follows the short route in every copy.
-	unit->posX=15; unit->targetX=1;
+	unit->core.posX=15; unit->core.targetX=1;
 	clear();
-	{ const PresentationFrame &pathScene = glob2test::sceneOf(game); game.drawUnitPathLine(0,0,52,34,1600,1100,0,0,0,0, *pathScene.entities.unit(unit->gid), pathScene); }
+	{ const PresentationFrame &pathScene = glob2test::sceneOf(game); game.drawUnitPathLine(0,0,52,34,1600,1100,0,0,0,0, *pathScene.entities.unit(unit->core.gid), pathScene); }
 	capturePixels(gfx);
 	REQUIRE(colored(gfx->getSDLSurface(),0,110,48,5)>0);
 	REQUIRE(colored(gfx->getSDLSurface(),100,110,350,5)==0);
 	copies(495,110,60,5);
-	unit->posX=3;
+	unit->core.posX=3;
 	std::cout << "PASS repeated path lines and short seam crossings\n";
 
 	game.animations->resize(game.map.getSectorW()*game.map.getSectorH());
@@ -488,7 +488,7 @@ void run(bool gpu)
 	}
 
 	// A complete production map frame catches the separate virtual-flag pass.
-	unit->validTarget=false;
+	unit->core.validTarget=false;
 	globals->settings.setGraphicsDetail(false);
 	clear();
 	glob2test::drawMap(game,0,0,1800,1100,160,0,0,0,0,view,Game::DRAW_WHOLE_MAP);
@@ -590,17 +590,17 @@ void run(bool gpu)
 		const int mapW=world.map.getW(), mapH=world.map.getH();
 		for(int y=0;y<mapH;++y) for(int x=0;x<mapW;++x) world.map.clearImmobileUnit(x,y);
 		auto *walker=world.addUnit(1,1,0,WORKER,0,255,0,0);
-		REQUIRE(walker); walker->validTarget=true;
+		REQUIRE(walker); walker->core.validTarget=true;
 		for(int width : {640,1200,1800}) for(int reverse : {0,1})
 		{
 			resize(width);
-			walker->posX=reverse ? 1 : mapW-1;
-			walker->posY=reverse ? 1 : mapH-1;
-			walker->targetX=reverse ? mapW-1 : 1;
-			walker->targetY=reverse ? mapH-1 : 1;
+			walker->core.posX=reverse ? 1 : mapW-1;
+			walker->core.posY=reverse ? 1 : mapH-1;
+			walker->core.targetX=reverse ? mapW-1 : 1;
+			walker->core.targetY=reverse ? mapH-1 : 1;
 			clear();
 			gfx->setClipRect(0,0,width-GAME_GUI_RIGHT_MENU_WIDTH,1100);
-			{ const PresentationFrame &pathScene = glob2test::sceneOf(world); world.drawUnitPathLine(0,0,width/32,34,width-GAME_GUI_RIGHT_MENU_WIDTH,1100,0,0,0,0, *pathScene.entities.unit(walker->gid), pathScene); }
+			{ const PresentationFrame &pathScene = glob2test::sceneOf(world); world.drawUnitPathLine(0,0,width/32,34,width-GAME_GUI_RIGHT_MENU_WIDTH,1100,0,0,0,0, *pathScene.entities.unit(walker->core.gid), pathScene); }
 			capturePixels(gfx);
 			REQUIRE(colored(gfx->getSDLSurface(),0,0,50,50)>0);
 			REQUIRE(colored(gfx->getSDLSurface(),100,100,250,250)==0);

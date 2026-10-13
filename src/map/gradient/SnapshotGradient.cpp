@@ -143,8 +143,8 @@ SimulationSnapshot::Requirements Request::requirements() const
     auto result = bit(Component::Catalogs) | bit(Component::Terrain) | bit(Component::Resources)
         | bit(Component::Occupancy) | bit(Component::Areas);
     if (kind == Kind::Materials || kind == Kind::Markets) result |= bit(Component::Visibility);
-    if (kind == Kind::Markets) result |= bit(Component::Entities);
-    if (kind == Kind::Guard && crowding) result |= bit(Component::Entities);
+    if (kind == Kind::Markets) result |= bit(Component::BuildingEntities);
+    if (kind == Kind::Guard && crowding) result |= bit(Component::UnitCores);
     return result;
 }
 
@@ -244,9 +244,9 @@ void seed(const Request& request, const SimulationSnapshot::Handle& snapshot, Ui
     for (size_t i=0; i<size; ++i) if (out[i] == GRADIENT_AT_GOAL) scratch.seeds.push_back(i);
     if (scratch.seeds.empty()) return;
     scratch.positions.clear();
-    for (const auto& u : snapshot.entities->units)
-        if (u.team == request.team && !u.isDead && (u.capabilityFlags & UnitRuntimeTraits::GuardIdle) && u.displacement != Unit::DIS_INSIDE)
-            scratch.positions.push_back(view.index(u.posX, u.posY));
+    for (const auto& u : snapshot.unitCores->units)
+        if (u.team == request.team && !u.core.isDead && (u.core.capabilityFlags & UnitRuntimeTraits::GuardIdle) && u.core.displacement != Unit::DIS_INSIDE)
+            scratch.positions.push_back(view.index(u.core.posX, u.core.posY));
     if (scratch.positions.empty()) return;
     scratch.warriors.assign(size, 0);
     for (auto i : scratch.positions) ++scratch.warriors[i];
