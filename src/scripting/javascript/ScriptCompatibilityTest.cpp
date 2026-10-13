@@ -98,7 +98,7 @@ TEST_CASE("JavaScript current text saves validate unused generation counters" *
 	GameGUI original;
 	GAGCore::BinaryInputStream initial(glob2OpenMapOrSaveInputStreamBackend(
 		*GAGCore::Toolkit::getFileManager(),
-		glob2test::inflated("javascript/profile1-initial.game.gz").string()));
+		glob2test::inflated("javascript/profile1-initial159.game.gz").string()));
 	REQUIRE(original.game.load(&initial));
 	auto *storage = new GAGCore::MemoryStreamBackend;
 	GAGCore::TextOutputStream output(storage);
@@ -134,9 +134,9 @@ TEST_CASE("Resource oscillation rejects earlier replays and enforces acceptance 
 	glob2test::GlobalsOptions options;
 	options.loadStrings = true;
 	glob2test::HeadlessGlobals globals(options);
-	CHECK(REPLAY_MINIMUM_VERSION_MINOR == 154);
-	CHECK(VERSION_MINOR == 154);
-	CHECK(NET_PROTOCOL_VERSION == 69);
+	CHECK(REPLAY_MINIMUM_VERSION_MINOR == 159);
+	CHECK(VERSION_MINOR == 159);
+	CHECK(NET_PROTOCOL_VERSION == 70);
 	CHECK(FILE_FORMAT_VERSION_JAVASCRIPT == 125);
 	CHECK(FILE_FORMAT_VERSION_EXPERIMENTS == 124);
 	ReplayReader released;
@@ -163,132 +163,28 @@ TEST_CASE("Resource oscillation rejects earlier replays and enforces acceptance 
 	}
 }
 
-TEST_CASE("JavaScript pass assigns valid identities to released saves" *
+TEST_CASE("released saves below the current floor are rejected" *
 		  doctest::test_suite("JavaScriptCompatibility"))
 {
-	glob2test::HeadlessGlobals globals;
-	CHECK(MINIMUM_VERSION_MINOR == 58);
-	for (const char *fixture :
-		 {"team-stats/version88.game.gz",
-		  "team-stats/telemetry-expansion-validation/checkpoint-1024-v108.game.gz",
-		  "ai-random-streams/numbi-castor-v121.game.gz"})
-	{
-		CAPTURE(fixture);
-		GameGUI gui;
-		GAGCore::BinaryInputStream input(glob2OpenMapOrSaveInputStreamBackend(
-			*GAGCore::Toolkit::getFileManager(), glob2test::fixture(fixture).string()));
-		REQUIRE(gui.game.load(&input));
-		unsigned entities = 0;
-		for (int team = 0; team < gui.game.teamsCount(); ++team)
-		{
-			for (int slot = 0; slot < Unit::MAX_COUNT; ++slot)
-				if (auto *unit = gui.game.teams[team]->myUnits[slot])
-				{
-					++entities;
-					CHECK(unit->scriptIdentity > 0);
-					CHECK(unit->scriptIdentity ==
-						  gui.game.scriptGenerations[Game::scriptGenerationIndex(false, team, Unit::GIDtoID(unit->gid))]);
-				}
-			for (int slot = 0; slot < Building::MAX_COUNT; ++slot)
-				if (auto *building = gui.game.teams[team]->myBuildings[slot])
-				{
-					++entities;
-					CHECK(building->scriptIdentity > 0);
-					CHECK(building->scriptIdentity ==
-						  gui.game.scriptGenerations[Game::scriptGenerationIndex(true, team, Building::GIDtoID(building->gid))]);
-				}
-		}
-		CHECK(entities > 0);
-	}
+    glob2test::HeadlessGlobals globals;
+    CHECK(MINIMUM_VERSION_MINOR == 58);
+    for (const char* fixture : {"team-stats/version88.game.gz", "team-stats/telemetry-expansion-validation/checkpoint-1024-v108.game.gz", "ai-random-streams/numbi-castor-v121.game.gz"}) {
+        CAPTURE(fixture);
+        GameGUI gui;
+        GAGCore::BinaryInputStream input(glob2OpenMapOrSaveInputStreamBackend(*GAGCore::Toolkit::getFileManager(), glob2test::fixture(fixture).string()));
+        CHECK_FALSE(gui.game.load(&input));
+    }
 }
 
-TEST_CASE("JavaScript upgrade retains genuine master124 experiments and continuation" *
+TEST_CASE("the obsolete javascript/master-v124-experiments.game.gz save is rejected [save-format]" *
 		  doctest::test_suite("JavaScriptCompatibility"))
 {
-	glob2test::HeadlessGlobals globals;
-	GameGUI legacy;
-	GAGCore::BinaryInputStream input(glob2OpenMapOrSaveInputStreamBackend(
-		*GAGCore::Toolkit::getFileManager(),
-		glob2test::inflated("javascript/master-v124-experiments.game.gz").string()));
-	REQUIRE(legacy.game.load(&input));
-	REQUIRE(legacy.game.mapHeader.getVersionMinor() == 124);
-	CHECK(legacy.game.gameHeader.getRandomSeed() == 19);
-	REQUIRE(legacy.game.gameHeader.hasExperiment(ExperimentId::GuardAreaBalancing));
-	CHECK(legacy.game.mapscript.getMapScriptMode() == MapScript::USL);
-	const auto checkIdentities = [](const Game &game) {
-		unsigned units = 0, buildings = 0;
-		for (int team = 0; team < game.teamsCount(); ++team)
-		{
-			for (int slot = 0; slot < Unit::MAX_COUNT; ++slot)
-				if (auto *unit = game.teams[team]->myUnits[slot])
-				{
-					++units;
-					CHECK(unit->scriptIdentity > 0);
-					CHECK(unit->scriptIdentity == game.scriptGenerations[Game::scriptGenerationIndex(false, team, slot)]);
-				}
-			for (int slot = 0; slot < Building::MAX_COUNT; ++slot)
-				if (auto *building = game.teams[team]->myBuildings[slot])
-				{
-					++buildings;
-					CHECK(building->scriptIdentity > 0);
-					CHECK(building->scriptIdentity ==
-						game.scriptGenerations[Game::scriptGenerationIndex(true, team, slot)]);
-				}
-		}
-		CHECK(units > 0);
-		CHECK(buildings > 0);
-	};
-	checkIdentities(legacy.game);
-	legacy.game.map.finishGradientPipeline();
-	auto *storage = new GAGCore::MemoryStreamBackend;
-	GAGCore::BinaryOutputStream output(storage);
-	legacy.game.save(&output, false, "Master124 upgraded");
-	const auto checkpoint = storage->takeContents();
-	glob2test::writeFile(glob2test::artifactDir() / "master124-upgraded.game", checkpoint);
-	const auto identities = legacy.game.scriptGenerations;
-	const auto initialTick = legacy.game.stepCounter;
-	const auto continueGame = [&](Game &game, const char *name) {
-		std::ostringstream records;
-		records.imbue(std::locale::classic());
-		for (unsigned tick = 0; tick < 64; ++tick)
-		{
-			CAPTURE(tick);
-			std::vector<Uint32> world, buildings, units;
-			game.checkSum(&world, &buildings, &units);
-			REQUIRE(!world.empty());
-			// MapHeader includes the on-disk format in its checksum. Its sole
-			// field here is excluded for the 124 -> current comparison; retain all
-			// remaining world, team, player, map and entity checksum fields.
-			world.erase(world.begin());
-			records << game.stepCounter;
-			for (const auto *fields : {&world, &buildings, &units})
-			{
-				records << ' ' << fields->size();
-				for (auto value : *fields) records << ' ' << value;
-			}
-			records << '\n';
-			game.syncStep(-1);
-		}
-		CHECK(game.stepCounter == initialTick + 64);
-		const auto result = records.str();
-		glob2test::writeFile(glob2test::artifactDir() / name, result);
-		return result;
-	};
-	const auto legacyTrace = continueGame(legacy.game, "master124-world-fields.value");
-	// Reload resets the production RNG to the snapshot, rather than letting
-	// the first continuation's process-global stream influence the second.
-	GAGCore::BinaryInputStream upgradedInput(
-		new GAGCore::MemoryStreamBackend(checkpoint.data(), checkpoint.size()));
-	upgradedInput.seekFromStart(0);
-	GameGUI upgraded;
-	REQUIRE(upgraded.game.load(&upgradedInput));
-	CHECK(upgraded.game.mapHeader.getVersionMinor() == VERSION_MINOR);
-	CHECK(upgraded.game.gameHeader.getExperiments() == legacy.game.gameHeader.getExperiments());
-	CHECK(upgraded.game.scriptGenerations == identities);
-	checkIdentities(upgraded.game);
-	const auto upgradedTrace = continueGame(upgraded.game, "upgraded-world-fields.value");
-	CHECK(upgradedTrace == legacyTrace);
-	CHECK(upgraded.game.scriptGenerations == legacy.game.scriptGenerations);
+    glob2test::HeadlessGlobals globals;
+    const auto bytes = glob2test::readFile(glob2test::inflated("javascript/master-v124-experiments.game.gz"));
+    GAGCore::BinaryInputStream input(new GAGCore::MemoryStreamBackend(bytes.data(), bytes.size()));
+    input.seekFromStart(0);
+    GameGUI restored;
+    CHECK_FALSE(restored.game.load(&input));
 }
 
 TEST_CASE("JavaScript current saves reject truncated generation tables" *
@@ -296,7 +192,7 @@ TEST_CASE("JavaScript current saves reject truncated generation tables" *
 {
 	glob2test::HeadlessGlobals globals;
 	const auto bytes = glob2test::readFile(
-		glob2test::inflated("javascript/profile1-initial.game.gz"));
+		glob2test::inflated("javascript/profile1-initial159.game.gz"));
 	GAGCore::BinaryInputStream complete(
 		new GAGCore::MemoryStreamBackend(bytes.data(), bytes.size()));
 	complete.seekFromStart(0);

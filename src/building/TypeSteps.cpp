@@ -21,6 +21,7 @@
 #include "Utilities.h"
 #include "Order.h"
 #include "Bullet.h"
+#include "TurretTargeting.h"
 
 int Building::selectProductionRecipe() const
 {
@@ -158,18 +159,10 @@ void Building::swarmStep(void)
 
 namespace
 {
-	/// A unit's intra-tile movement progress (`delta`) spans 0..255; reaching
-	/// 256 means it has fully crossed into the next tile.
-	constexpr int TILE_DELTA_RANGE = 256;
 	/// Half the side length of a bullet, in pixels — subtracted so the bullet is
 	/// aimed at the centre of the target tile rather than its top-left corner.
 	constexpr int BULLET_HALF_SIZE_PX = 4;
 
-	/// Ticks a unit will remain on its current tile before it may move away.
-	int ticksUntilUnitMoves(const Unit* u)
-	{
-		return u->speed > 0 ? (TILE_DELTA_RANGE - u->delta) / u->speed : std::numeric_limits<int>::max();
-	}
 }
 
 void Building::convertStoneToBullet()
@@ -199,6 +192,7 @@ bool Building::tickShootingCooldown()
 void Building::turretStep(Uint32 stepCounter)
 {
 	convertStoneToBullet();
+	TurretTargeting::observeAttempt(*this);
 
 	// compute cooldown
 	if (!tickShootingCooldown())
@@ -210,45 +204,23 @@ void Building::turretStep(Uint32 stepCounter)
 
 	shootingStep = (shootingStep+1) & (SHOOTING_ANIMATION_FRAMES - 1);
 
-	TurretTarget target = findBestTarget();
+#ifdef GLOB2_TURRET_ENGINE_BENCHMARK
+    // Linked only into the dedicated research binary, never the game or tests.
+    extern TurretTarget turretEngineBenchmarkTarget(const Building&);
+    TurretTarget target = turretEngineBenchmarkTarget(*this);
+#else
+    const auto chosen=TurretTargeting::firstValid(*this,owner->game->turretTargeting()->entries(*this));
+    TurretTarget target;
+    if (chosen.found()) {
+        target.type=chosen.entry.kind==TurretTargeting::Kind::Building ? TARGETTYPE_BUILDING : TARGETTYPE_GENERAL;
+        target.x=chosen.x; target.y=chosen.y; target.ticks=chosen.ticks;
+    }
+#endif
 
 	if (target.found())
 	{
 		shootingStep = 0;
 		fireBullet(target, stepCounter);
-	}
-}
-
-int Building::scoreWarriorTarget(const Unit* target, int ring) const
-{
-	const Sint64 targetOffense = Sint64(target->getRealAttackStrength()) * target->performance[ATTACK_SPEED]; // 88 to 1024 for stock units
-	int targetWeakness = 0; // 0 to 512
-	if (target->hp > 0)
-	{
-		if (target->hp < runtime->damage(target->typeNum)) // hahaha, how mean!
-			targetWeakness = 512;
-		else
-			targetWeakness = 256 / target->hp;
-	}
-	int targetProximity = 0; // 0 to 512
-	if (ring <= 0)
-		targetProximity = 512;
-	else
-		targetProximity = (256 / ring);
-	return int(std::clamp<Sint64>(targetOffense + targetWeakness + targetProximity, 0, std::numeric_limits<int>::max()));
-}
-
-void Building::applyCandidate(TurretTarget& best, int score, int ticks,
-                              int x, int y, TurretTargetType type)
-{
-	// lower scores are overriden
-	if (score > best.score)
-	{
-		best.score = score;
-		best.ticks = ticks;
-		best.x = x;
-		best.y = y;
-		best.type = type;
 	}
 }
 
@@ -262,126 +234,16 @@ bool Building::hasClearShotTo(int targetX, int targetY) const
         shot.originX+shot.speedX*shot.ticksLeft,shot.originY+shot.speedY*shot.ticksLeft);
 }
 
-void Building::considerScanTile(int targetX, int targetY, int ring, int ticksToHit,
-                                Uint32 enemies, Map* map, TurretTarget& best) const
+// A read-only immediate reference for diagnostics uses the same pure kernel.
+Building::TurretTarget Building::targetingReference() const
 {
-	if (!hasClearShotTo(targetX,targetY)) return;
-	int targetGUID = map->getGroundUnit(targetX, targetY);
-	int airTargetGUID = map->getAirUnit(targetX, targetY);
-	if (targetGUID != NOGUID)
-	{
-		Sint32 otherTeam = Unit::GIDtoTeam(targetGUID);
-		Sint32 targetID = Unit::GIDtoID(targetGUID);
-		Uint32 otherTeamMask = Team::teamNumberToMask(otherTeam);
-		if (enemies & otherTeamMask)
-		{
-			Unit *testUnit = owner->game->teams[otherTeam]->myUnits[targetID];
-			if ((owner->sharedVisionExchange & otherTeamMask) == 0)
-			{
-				int targetTicks = ticksUntilUnitMoves(testUnit);
-				// skip this unit if it will move away too soon.
-				if (targetTicks <= ticksToHit)
-					return;
-                const auto priority=static_cast<TurretTargetType>(testUnit->runtimeTraits().turretPriority);
-                if (runtime->damage(testUnit->typeNum)>0 &&
-                    (priority!=TARGETTYPE_GENERAL || best.type!=TARGETTYPE_THREAT))
-                    applyCandidate(best,priority==TARGETTYPE_THREAT ? scoreWarriorTarget(testUnit,ring) : -testUnit->hp,
-                        targetTicks,targetX,targetY,priority);
-			}
-		}
-	}
-	//explorers are now priority targets as defined later
-
-	if (airTargetGUID != NOGUID)
-	{
-		Sint32 otherTeam = Unit::GIDtoTeam(airTargetGUID);
-		Sint32 targetID = Unit::GIDtoID(airTargetGUID);
-		Uint32 otherTeamMask = Team::teamNumberToMask(otherTeam);
-		if (enemies & otherTeamMask)
-		{
-			Unit *testUnit = owner->game->teams[otherTeam]->myUnits[targetID];
-			if ((owner->sharedVisionExchange & otherTeamMask) == 0)
-			{
-				int targetTicks = ticksUntilUnitMoves(testUnit);
-				// skip this unit if it will move away too soon.
-				if (targetTicks <= ticksToHit)
-					return;
-				                if (runtime->damage(testUnit->typeNum)>0) {
-                    const auto priority=static_cast<TurretTargetType>(testUnit->runtimeTraits().turretPriority);
-                    applyCandidate(best,priority==TARGETTYPE_THREAT ? scoreWarriorTarget(testUnit,ring) : -testUnit->hp,
-                        targetTicks,targetX,targetY,priority);
-                }
-			}
-		}
-	}
-
-	// shoot building only if no unit is found
-	if (best.type == TARGETTYPE_NONE && runtime->projectileBuildingDamage > 0)
-	{
-		Uint16 targetGBID = map->getBuilding(targetX, targetY);
-		if (targetGBID != NOGBID)
-		{
-			Sint32 otherTeam = Building::GIDtoTeam(targetGBID);
-			Uint32 otherTeamMask = Team::teamNumberToMask(otherTeam);
-			if (enemies & otherTeamMask)
-			{
-				// adjust score for range
-				applyCandidate(best, -ring,
-					TILE_DELTA_RANGE, targetX, targetY, TARGETTYPE_BUILDING);
-			}
-		}
-	}
-}
-
-Building::TurretTarget Building::findBestTarget() const
-{
-	int range = runtime->shootingRange;
-
-	Uint32 enemies = owner->attackableTeams();
-	Map *map = owner->map;
-	assert(map);
-
-	// half the building's pixel width — the centre offset of the turret footprint
-	const int halfWidthPx = (runtime->width << Map::TILE_PIXEL_SHIFT) / 2;
-
-	TurretTarget best;
-	if (runtime->width != TURRET_SIZE || runtime->height != TURRET_SIZE)
-	{
-		const auto consider = [&](int x, int y, int ring) {
-			const auto shot = computeFiringSolution(x, y);
-			considerScanTile(x, y, ring, shot.ticksLeft, enemies, map, best);
-		};
-		// The footprint may contain targets for a non-occupying structure.
-		for (int y = posY; y < posY + runtime->height; ++y)
-			for (int x = posX; x < posX + runtime->width; ++x) consider(x, y, 0);
-		for (int ring = 1; ring <= range && best.type != TARGETTYPE_PRIORITY; ++ring)
-		{
-			const int left = posX - ring, right = posX + runtime->width - 1 + ring;
-			const int top = posY - ring, bottom = posY + runtime->height - 1 + ring;
-			for (int x = left; x <= right; ++x) { consider(x, top, ring); consider(x, bottom, ring); }
-			for (int y = top + 1; y < bottom; ++y) { consider(left, y, ring); consider(right, y, ring); }
-		}
-		return best;
-	}
-
-	for (int i=0; i<=range ; i++)
-	{
-		// The number of ticks before the bullet hits the target at range "i".
-		int ticksToHit = ((i << Map::TILE_PIXEL_SHIFT) + halfWidthPx) / (runtime->shootSpeed>>Q8_FIXED_POINT_SHIFT);
-		for (int j=0; j<=i ; j++)
-		{
-			for (int k=0; k<8; k++)
-			{
-				int targetX, targetY;
-				turretScanTile(posX, posY, i, j, k, targetX, targetY);
-				considerScanTile(targetX, targetY, i, ticksToHit, enemies, map, best);
-			}
-		}
-		if (best.type == TARGETTYPE_PRIORITY)
-			break;//specifying explorers as high priority
-	}
-
-	return best;
+    const auto chosen=TurretTargeting::plan(*this,0,0).preferred;
+    TurretTarget target;
+    if (chosen.found()) {
+        target.type=static_cast<TurretTargetType>(chosen.priority);
+        target.score=chosen.score; target.ticks=chosen.ticks; target.x=chosen.x; target.y=chosen.y;
+    }
+    return target;
 }
 
 Building::TurretFiringSolution Building::computeFiringSolution(int targetX, int targetY) const

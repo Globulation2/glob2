@@ -29,7 +29,9 @@
 #include <AssetLoader.h>
 #include "DatasetWriter.h"
 #include "FileFormatVersions.h"
+#include "Version.h"
 #include "Game.h"
+#include "TurretTargeting.h"
 #include "EntityRandomIO.h"
 #include <DeferredStream.h>
 #include "GameUtilities.h"
@@ -180,6 +182,7 @@ GAGCore::CooperativeTask Game::loadTask(GAGCore::InputStream *stream)
 	mapHeader=tempMapHeader;
 	mapHeader.resolveGrowthLayout(stream);
 	Sint32 versionMinor=mapHeader.loadingVersion();
+    if (mapHeader.getIsSavedGame() && versionMinor<SAVE_MINIMUM_VERSION_MINOR) co_return false;
 
 
 	// We load the game header
@@ -308,6 +311,10 @@ GAGCore::CooperativeTask Game::loadTask(GAGCore::InputStream *stream)
 		co_return false;
 	if (versionMinor >= FILE_FORMAT_VERSION_AI_PIPELINE && mapHeader.getIsSavedGame())
 		if (!loadAI(stream)) co_return false;
+    if (mapHeader.getIsSavedGame()) {
+        ensureTurretTargeting();
+        if (!turretTargetingPipeline->load(*this,stream)) co_return false;
+    }
 
 	if(versionMinor >= FILE_FORMAT_VERSION_TEAM_STATS_PIPELINE && mapHeader.getIsSavedGame()) loadTeamStats(stream,versionMinor);
 
@@ -781,7 +788,7 @@ void Game::save(GAGCore::OutputStream *stream, bool fileIsAMap, const std::strin
 	}
 	stream->writeLeaveSection();
 	stream->write(FILE_SIG_GAME_PLAYER, FILE_SIG_LEN, "signatureAfterPlayers");
-	if (!fileIsAMap) {saveAI(stream);saveTeamStats(stream);}
+	if (!fileIsAMap) {saveAI(stream);turretTargeting()->save(*this,stream);saveTeamStats(stream);}
 
 	// Save the old map script state
 	sgslScript.save(stream, this);
@@ -928,6 +935,8 @@ Uint32 Game::checkSum(std::vector<Uint32> *checkSumsVector, std::vector<Uint32> 
 
 	cs=rotr1(cs);
 
+	cs^=turretTargeting()->checkSum(*this);
+	cs=rotr1(cs);
 	Uint32 scriptCs=sgslScript.checkSum();
 	if(mapscript.getMapScriptMode()==MapScript::JavaScript)
  {

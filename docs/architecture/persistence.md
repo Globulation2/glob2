@@ -112,3 +112,10 @@ publication. Their aggregate-finalization mode remains unchanged, preserving
 older pending exact smoothing. Worker continuation is seeded from the last
 completed pending frame, or published measurements when the queue is empty.
 Resaving stores complete frames; no historical snapshots are required.
+
+Format 159 persists cached turret targeting lists and delayed outputs. The saved-match
+and replay floors deliberately advance to 159; existing maps retain floor 58.
+Text statistics saves isolate pending teams, sampling phases and coverage anchors
+in indexed sections so distinct records survive loading. Binary section markers
+carry no bytes. See [turret targeting](../development/compute-benchmarks.md#cached-turret-targeting)
+for its snapshot, checksum and continuation boundaries.

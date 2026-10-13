@@ -7,7 +7,11 @@
 // This is the version of map and savegame format, and all of the recorded data on the server
 #define VERSION_MAJOR 0
 #define MINIMUM_VERSION_MINOR 58
-#define VERSION_MINOR 158
+#define VERSION_MINOR 159
+#define SAVE_MINIMUM_VERSION_MINOR 159
+// version 159 uses persisted cached turret targeting; earlier saved games are rejected.
+// MINIMUM_VERSION_MINOR remains the map-format floor so existing maps stay usable.
+// version 158 persists completed pending statistics frames.
 // version 157 persists worker-finalized approximate statistics aggregates.
 // version 156 removes the redundant pending statistics input digest.
 // version 155 schedules team statistics from shared world snapshots.

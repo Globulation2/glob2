@@ -550,9 +550,9 @@ TEST_CASE("a lane keeps submission order: a lane job due before a live earlier o
 TEST_CASE("the slot count covers every producer's horizon")
 {
 	static_assert(ComputeExecutor::Slots >= (ComputeExecutor::AIHorizon + 1) + (ComputeExecutor::GradientHorizon + 1)
-		+ (ComputeExecutor::BuildingHorizon + 1) + (ComputeExecutor::GrowthHorizon + 1) + (ComputeExecutor::StatisticsHorizon + 1));
+		+ (ComputeExecutor::BuildingHorizon + 1) + (ComputeExecutor::GrowthHorizon + 1) + (ComputeExecutor::StatisticsHorizon + 1) + (ComputeExecutor::TurretHorizon + 1));
 	static_assert(ComputeExecutor::boundaryDue(7) < ComputeExecutor::advanceDue(7) && ComputeExecutor::advanceDue(7) < ComputeExecutor::boundaryDue(8));
-	CHECK(ComputeExecutor::Slots == 74);
+	CHECK(ComputeExecutor::Slots == 79);
 }
 }
 

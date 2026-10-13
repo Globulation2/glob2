@@ -64,7 +64,7 @@ Capacity and pooling decisions do not affect simulation results.
 ## Save continuation and configuration
 
 Resource-growth integration introduced save format 149 and network protocol 67.
-The current version gates live in [Version.h](../../src/app/Version.h) and [ReplayReader.h](../../src/replay/ReplayReader.h). The save compatibility floor remains 58. Released layouts
+The current version gates live in [Version.h](../../src/app/Version.h) and [ReplayReader.h](../../src/replay/ReplayReader.h). Current saved matches require155; the map compatibility floor remains58. Released layouts
 146–148 and historical growth-draft layouts with the same numbers are resolved
 before loading game state: the map catalog or a bounded terrain-block probe
 identifies vertex versus legacy corner storage. Historical growth layouts retain

@@ -71,6 +71,7 @@ class Building : public BuildingUtils, public BuildingStateRecord
 	static const int MAX_COUNT=1024;
 	const BuildingRuntimeTraits* runtime=nullptr;
 	void bindType(Sint32 id, BuildingsTypes* catalog=nullptr);
+    int shootingCooldownRemaining() const { return shootingCooldown; }
 
 	/// `lastShootStep = LAST_SHOOT_STEP_NEVER` means this turret has
 	/// not fired yet this game; the field is `Uint32` step counter.
@@ -405,25 +406,8 @@ private:
 	/// still cooling it decrements by shootRhythm and returns false.
 	bool tickShootingCooldown();
 
-	/// Scan outward ring-by-ring for the best enemy target in range. Pure query
-	/// over map/units/buildings; mutates nothing on the turret.
-	TurretTarget findBestTarget() const;
-
-	/// Evaluate the single tile (targetX,targetY) on ring `ring` and update
-	/// `best` if it holds a higher-priority/higher-scoring target. `ticksToHit`
-	/// is how long a bullet would take to reach this ring; targets that will
-	/// move away before then are skipped (and, matching the original, skipping a
-	/// ground unit also skips the air/building checks at the same tile).
-	void considerScanTile(int targetX, int targetY, int ring, int ticksToHit,
-	                      Uint32 enemies, Map* map, TurretTarget& best) const;
-
-	/// Score a warrior target (offense + weakness + proximity); higher is more
-	/// urgent. `ring` is the scan ring distance used for the proximity term.
-	int scoreWarriorTarget(const Unit* target, int ring) const;
-
-	/// Overwrite `best` with this candidate when its score beats the incumbent.
-	static void applyCandidate(TurretTarget& best, int score, int ticks,
-	                           int x, int y, TurretTargetType type);
+    /// Read-only diagnostic reference, using the same pure planner as jobs.
+    TurretTarget targetingReference() const;
 
 	/// Phase 5 geometry: compute the bullet spawn origin and velocity aimed at
 	/// the target tile, accounting for toroidal map wrap.

@@ -9,6 +9,8 @@
 #include <limits>
 namespace
 {
+// Format 159 isolates each team in text saves; binary section markers have no bytes.
+constexpr int TeamSectionsVersion=159;
 using Clock = std::chrono::steady_clock;
 static_assert(ComputeExecutor::StatisticsHorizon >= 8);
 static_assert(ComputeExecutor::StatisticsLaneBase >= Team::MAX_COUNT);
@@ -239,8 +241,9 @@ void TeamStatsPipeline::save(GAGCore::OutputStream *s)
 	if (lastSubmitted)
 		s->writeUint32(*lastSubmitted, "last");
 	s->writeUint32(phases.size(), "teams");
-	for (auto phase : phases)
-		s->writeUint32(phase, "phase");
+	for (unsigned t=0;t<phases.size();++t) {
+        s->writeEnterSection(t); s->writeUint32(phases[t],"phase"); s->writeLeaveSection();
+    }
 	s->writeUint32(pending.size(), "pending");
 	for (unsigned i = 0; i < pending.size(); ++i)
 	{
@@ -248,8 +251,11 @@ void TeamStatsPipeline::save(GAGCore::OutputStream *s)
 		const auto &b = *pending[i];
 		s->writeUint32(b.tick, "tick");
 		s->writeUint32(b.due, "due");
-		for (const auto &sample : b.samples)
-			TeamStats::saveSample(s, sample);
+		for (unsigned t=0;t<b.samples.size();++t) {
+            s->writeEnterSection(t);
+            TeamStats::saveSample(s,b.samples[t]);
+            s->writeLeaveSection();
+        }
 		s->writeLeaveSection();
 	}
 	s->writeLeaveSection();
@@ -266,7 +272,9 @@ void TeamStatsPipeline::load(Game &game, GAGCore::InputStream *s, int versionMin
 		throw std::runtime_error("Invalid statistics team count");
 	for (unsigned t = 0; t < teams; ++t)
 	{
-		auto phase = s->readUint32("phase");
+		if (versionMinor>=TeamSectionsVersion) s->readEnterSection(t);
+        auto phase = s->readUint32("phase");
+        if (versionMinor>=TeamSectionsVersion) s->readLeaveSection();
 		if (phase >= 32)
 			throw std::runtime_error("Invalid statistics phase");
 		phases.push_back(phase);
@@ -292,7 +300,9 @@ void TeamStatsPipeline::load(Game &game, GAGCore::InputStream *s, int versionMin
 			throw std::runtime_error("Invalid statistics deadline");
 		for (unsigned t = 0; t < teams; ++t)
 		{
-			auto sample = TeamStats::loadSample(s, versionMinor);
+			if (versionMinor>=TeamSectionsVersion) s->readEnterSection(t);
+            auto sample = TeamStats::loadSample(s, versionMinor);
+            if (versionMinor>=TeamSectionsVersion) s->readLeaveSection();
 			if (sample.tick != b->tick ||
 				sample.measurementFrame().births.size() != game.unitCatalog().size() ||
 				sample.measurementFrame().variants.size() != game.buildingsTypes.size())

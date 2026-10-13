@@ -415,6 +415,7 @@ TEST_SUITE("BuildingAreaEffects")
 		target->speed = 1;
 		target->delta = 0;
 		refresh(world, 0);
+		glob2test::prepareTurretTargets(*turret);
 		turret->turretStep(0);
 		turret->turretStep(1);
 		turret->turretStep(2);

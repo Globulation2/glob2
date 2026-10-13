@@ -39,6 +39,7 @@ namespace GAGCore
 }
 using namespace GAGCore;
 namespace SimulationSnapshot { class Store; }
+namespace TurretTargeting { class Pipeline; }
 class TeamStatsPipeline;
 class GameGUI;
 class SceneMap;
@@ -247,7 +248,7 @@ public:
 		const SimulationSnapshot::Handle* captured = nullptr);
 	//! Capture the standard view without admitting simulation work (UI, saves, tests).
 	SimulationSnapshot::Handle captureReadBoundary(SimulationSnapshot::CaptureOptions options = {}) const;
-	//! Publish due statistics and admit one sample on an advancing owner boundary.
+	//! Publish due statistics and admit statistics/turret work once per owner boundary.
 	SimulationSnapshot::Handle prepareReadBoundary(bool paused = false,
 		SimulationSnapshot::CaptureOptions options = {});
 	std::shared_ptr<Order> validateAIOrder(std::shared_ptr<Order> order, unsigned player);
@@ -265,10 +266,16 @@ public:
 	void saveAI(GAGCore::OutputStream* stream);
 	bool loadAI(GAGCore::InputStream* stream);
 	void observeUnpolledAI();
+	// Normal-game target lists use the selected three-entry, two-tick cadence.
+	void forgetTurret(BuildingRef);
+	void configureTurretTargeting(unsigned delay=1,unsigned refresh=2,unsigned capacity=3,unsigned margin=1,bool profileCpu=false);
+	TurretTargeting::Pipeline* turretTargeting() const { ensureTurretTargeting(); return turretTargetingPipeline.get(); }
 	SimulationSnapshot::Store& snapshotStore() { return worldSnapshots; }
 	std::vector<std::pair<std::string, Uint64>> aiMetrics() const;
 private:
 	mutable SimulationSnapshot::Store worldSnapshots;
+	mutable std::unique_ptr<TurretTargeting::Pipeline> turretTargetingPipeline;
+    void ensureTurretTargeting() const;
 	std::unique_ptr<AIEngine::Pipeline> aiPipeline;
     std::unique_ptr<TeamStatsPipeline> statsPipeline;
 public:
