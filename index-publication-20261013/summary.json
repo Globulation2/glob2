@@ -1,0 +1,1362 @@
+{
+  "runs": 90,
+  "contended": 8,
+  "fixtures": {
+    "empty100": {
+      "comparisons": {
+        "before_index": {
+          "owner_owner": {
+            "before": 132.064621484375,
+            "after": 130.959798828125,
+            "added": -1.1048226562500005,
+            "added_ci": [
+              -3.860518085937497,
+              1.830767968749997
+            ],
+            "percent": -0.8365773087690376,
+            "percent_ci": [
+              -2.8705648067318297,
+              1.4148462436849414
+            ]
+          },
+          "owner_sync_cpu": {
+            "before": 64.613689453125,
+            "after": 63.63781757812499,
+            "added": -0.9758718750000035,
+            "added_ci": [
+              -1.9522272656250028,
+              -0.08023763671875364
+            ],
+            "percent": -1.5103175244434497,
+            "percent_ci": [
+              -3.022087566131642,
+              -0.12377734789383797
+            ]
+          },
+          "timing_wall": {
+            "before": 207.17433476562502,
+            "after": 199.562138671875,
+            "added": -7.612196093750003,
+            "added_ci": [
+              -22.10541462890625,
+              2.0860507812499973
+            ],
+            "percent": -3.67429493733461,
+            "percent_ci": [
+              -10.036078540965384,
+              1.0490320773263269
+            ]
+          },
+          "timing_process": {
+            "before": 536.343359375,
+            "after": 521.30390625,
+            "added": -15.039453125,
+            "added_ci": [
+              -38.44328125,
+              -0.254296875
+            ],
+            "percent": -2.80407184355288,
+            "percent_ci": [
+              -6.87686886308231,
+              -0.0489025243603134
+            ]
+          }
+        },
+        "index_combined": {
+          "owner_owner": {
+            "before": 130.959798828125,
+            "after": 127.46229609375,
+            "added": -3.497502734375,
+            "added_ci": [
+              -5.714864052734375,
+              -1.332616777343753
+            ],
+            "percent": -2.670668988248226,
+            "percent_ci": [
+              -4.337497373436185,
+              -1.0293312917637751
+            ]
+          },
+          "owner_sync_cpu": {
+            "before": 63.63781757812499,
+            "after": 62.385483984375,
+            "added": -1.2523335937499964,
+            "added_ci": [
+              -2.333977685546872,
+              -0.31326640624999624
+            ],
+            "percent": -1.9679078280969597,
+            "percent_ci": [
+              -3.6155323542799254,
+              -0.4954892340966016
+            ]
+          },
+          "timing_wall": {
+            "before": 199.562138671875,
+            "after": 198.202771484375,
+            "added": -1.3593671874999955,
+            "added_ci": [
+              -4.853927968750001,
+              1.4996458886718764
+            ],
+            "percent": -0.6811748944698937,
+            "percent_ci": [
+              -2.414771940420452,
+              0.7547183213656038
+            ]
+          },
+          "timing_process": {
+            "before": 521.30390625,
+            "after": 516.409375,
+            "added": -4.89453125,
+            "added_ci": [
+              -10.323525390625,
+              0.8480761718749974
+            ],
+            "percent": -0.9389017023119561,
+            "percent_ci": [
+              -1.978589073593775,
+              0.16291457949673166
+            ]
+          }
+        },
+        "before_combined": {
+          "owner_owner": {
+            "before": 132.064621484375,
+            "after": 127.46229609375,
+            "added": -4.602325390625,
+            "added_ci": [
+              -7.508219697265622,
+              -1.5618576171875005
+            ],
+            "percent": -3.484904086269258,
+            "percent_ci": [
+              -5.572914396010731,
+              -1.20187419540083
+            ]
+          },
+          "owner_sync_cpu": {
+            "before": 64.613689453125,
+            "after": 62.385483984375,
+            "added": -2.22820546875,
+            "added_ci": [
+              -3.226994638671876,
+              -1.2039626562499994
+            ],
+            "percent": -3.4485036957477733,
+            "percent_ci": [
+              -4.969129363862966,
+              -1.881258148944372
+            ]
+          },
+          "timing_wall": {
+            "before": 207.17433476562502,
+            "after": 198.202771484375,
+            "added": -8.971563281249999,
+            "added_ci": [
+              -22.127083994140616,
+              0.10668246093749395
+            ],
+            "percent": -4.330441457142598,
+            "percent_ci": [
+              -10.048752138340369,
+              0.05367499478298703
+            ]
+          },
+          "timing_process": {
+            "before": 536.343359375,
+            "after": 516.409375,
+            "added": -19.933984375,
+            "added_ci": [
+              -40.43986328125,
+              -6.02265625
+            ],
+            "percent": -3.716646067591678,
+            "percent_ci": [
+              -7.25495725951734,
+              -1.146561721273789
+            ]
+          }
+        }
+      },
+      "components": {
+        "before": {
+          "original": {
+            "scan": 159.7435984375,
+            "capture": 30.594151953125003,
+            "source": 0.0,
+            "index": 0.0,
+            "planning": 0.0,
+            "publication": 0.0,
+            "consumption": 0.0,
+            "sources": 0.0,
+            "skipped": 0.0,
+            "scheduling": 0.0,
+            "join_wall": 0.0,
+            "owner": 329.8177125,
+            "sync_cpu": 271.686219921875,
+            "sync_wall": 272.87776601562496,
+            "boundary": 30.594151953125003,
+            "admission": 0.0,
+            "join_cpu": 0.0,
+            "owner_planning": 0.0,
+            "worker_planning": 0.0,
+            "background_index": 0.0,
+            "owner_background_index": 0.0
+          },
+          "shadow": {
+            "scan": 162.52055820312503,
+            "capture": 30.968378906250003,
+            "source": 7.233926953125,
+            "index": 2.118404296875,
+            "planning": 7.168251562499999,
+            "publication": 5.621113671874999,
+            "consumption": 0.0,
+            "sources": 21900.0,
+            "skipped": 3800.0,
+            "scheduling": 3.85769375,
+            "join_wall": 0.971119921875,
+            "owner": 359.28442578125,
+            "sync_cpu": 287.36950390625,
+            "sync_wall": 288.02619648437496,
+            "boundary": 44.17840390624999,
+            "admission": 13.210024999999998,
+            "join_cpu": 0.68428671875,
+            "owner_planning": 0.0,
+            "worker_planning": 7.168251562499999,
+            "background_index": 0.0,
+            "owner_background_index": 0.0
+          },
+          "cached": {
+            "scan": 0.0,
+            "capture": 31.564530859374997,
+            "source": 6.679082421874999,
+            "index": 2.147641796875,
+            "planning": 6.861184375000001,
+            "publication": 5.537751953125,
+            "consumption": 58.015699609375,
+            "sources": 21900.0,
+            "skipped": 3800.0,
+            "scheduling": 3.5984761718750002,
+            "join_wall": 0.9578624999999998,
+            "owner": 246.412192578125,
+            "sync_cpu": 175.59333984375002,
+            "sync_wall": 175.957359765625,
+            "boundary": 43.98973124999999,
+            "admission": 12.425200390625,
+            "join_cpu": 0.66749921875,
+            "owner_planning": 0.0,
+            "worker_planning": 6.861184375000001,
+            "background_index": 0.0,
+            "owner_background_index": 0.0,
+            "owner_scopes": 76.646151171875,
+            "incremental_capture": 0.9703789062499943,
+            "worker_index": 0.0,
+            "turret_total": 84.47771445312499,
+            "owner_with_capture": 77.616530078125
+          }
+        },
+        "index": {
+          "original": {
+            "scan": 163.23735546875,
+            "capture": 30.790232421874997,
+            "source": 0.0,
+            "index": 0.0,
+            "planning": 0.0,
+            "publication": 0.0,
+            "consumption": 0.0,
+            "sources": 0.0,
+            "skipped": 0.0,
+            "scheduling": 0.0,
+            "join_wall": 0.0,
+            "owner": 331.898232421875,
+            "sync_cpu": 273.38489765625,
+            "sync_wall": 274.145198828125,
+            "boundary": 30.790232421874997,
+            "admission": 0.0,
+            "join_cpu": 0.0,
+            "owner_planning": 0.0,
+            "worker_planning": 0.0,
+            "background_index": 0.0,
+            "owner_background_index": 0.0
+          },
+          "shadow": {
+            "scan": 163.96714804687502,
+            "capture": 31.878209765625,
+            "source": 7.3420203125,
+            "index": 0.0,
+            "planning": 6.998093359375,
+            "publication": 5.882540625,
+            "consumption": 0.0,
+            "sources": 21900.0,
+            "skipped": 3800.0,
+            "scheduling": 3.5726992187500004,
+            "join_wall": 3.1601441406250004,
+            "owner": 358.90914453125004,
+            "sync_cpu": 287.52568867187495,
+            "sync_wall": 289.94612460937503,
+            "boundary": 42.792929296875,
+            "admission": 10.91471953125,
+            "join_cpu": 0.851904296875,
+            "owner_planning": 0.0,
+            "worker_planning": 6.998093359375,
+            "background_index": 2.682821875,
+            "owner_background_index": 0.0
+          },
+          "cached": {
+            "scan": 0.0,
+            "capture": 32.35525390625,
+            "source": 7.2899734375000005,
+            "index": 0.0,
+            "planning": 6.666210546875,
+            "publication": 5.796962109375,
+            "consumption": 58.101069921875,
+            "sources": 21900.0,
+            "skipped": 3800.0,
+            "scheduling": 3.3905058593749997,
+            "join_wall": 5.939026953125,
+            "owner": 247.02384609375,
+            "sync_cpu": 176.334303125,
+            "sync_wall": 181.78316562499998,
+            "boundary": 43.035733203125,
+            "admission": 10.680479296875,
+            "join_cpu": 0.9425699218750001,
+            "owner_planning": 0.0,
+            "worker_planning": 6.666210546875,
+            "background_index": 2.614912109375,
+            "owner_background_index": 0.0,
+            "owner_scopes": 75.52108125000001,
+            "incremental_capture": 1.565021484375002,
+            "worker_index": 2.614912109375,
+            "turret_total": 86.36722539062501,
+            "owner_with_capture": 77.086102734375
+          }
+        },
+        "combined": {
+          "original": {
+            "scan": 163.4556265625,
+            "capture": 31.034497265625003,
+            "source": 0.0,
+            "index": 0.0,
+            "planning": 0.0,
+            "publication": 0.0,
+            "consumption": 0.0,
+            "sources": 0.0,
+            "skipped": 0.0,
+            "scheduling": 0.0,
+            "join_wall": 0.0,
+            "owner": 333.80614921875,
+            "sync_cpu": 275.3356609375,
+            "sync_wall": 276.059433984375,
+            "boundary": 31.034497265625003,
+            "admission": 0.0,
+            "join_cpu": 0.0,
+            "owner_planning": 0.0,
+            "worker_planning": 0.0,
+            "background_index": 0.0,
+            "owner_background_index": 0.0
+          },
+          "shadow": {
+            "scan": 164.53518007812502,
+            "capture": 31.8400578125,
+            "source": 7.293961718749999,
+            "index": 0.0,
+            "planning": 7.403135156249999,
+            "publication": 5.6935796875,
+            "consumption": 0.0,
+            "sources": 21900.0,
+            "skipped": 3800.0,
+            "scheduling": 3.4766031249999996,
+            "join_wall": 2.54735390625,
+            "owner": 361.2571046875,
+            "sync_cpu": 290.08165351562496,
+            "sync_wall": 291.84189140625006,
+            "boundary": 42.610622656249994,
+            "admission": 10.77056484375,
+            "join_cpu": 0.8001730468750001,
+            "owner_planning": 0.0,
+            "worker_planning": 7.403135156249999,
+            "background_index": 2.8060332031249997,
+            "owner_background_index": 0.0
+          },
+          "cached": {
+            "scan": 0.0,
+            "capture": 32.91044765625,
+            "source": 7.140231249999999,
+            "index": 0.0,
+            "planning": 7.1441828125,
+            "publication": 5.644301953125,
+            "consumption": 58.578860546875,
+            "sources": 21900.0,
+            "skipped": 3800.0,
+            "scheduling": 3.345271484375,
+            "join_wall": 5.08933828125,
+            "owner": 248.65956953125,
+            "sync_cpu": 177.78581445312503,
+            "sync_wall": 183.408332421875,
+            "boundary": 43.395950390625,
+            "admission": 10.485502734375,
+            "join_cpu": 0.874428125,
+            "owner_planning": 0.0,
+            "worker_planning": 7.1441828125,
+            "background_index": 2.8081828125,
+            "owner_background_index": 0.0,
+            "owner_scopes": 75.583093359375,
+            "incremental_capture": 1.8759503906249968,
+            "worker_index": 2.8081828125,
+            "turret_total": 87.41140937499999,
+            "owner_with_capture": 77.45904374999999
+          }
+        }
+      },
+      "combined_vs_original": {
+        "owner_owner": {
+          "before": 220.45216640625,
+          "after": 127.46229609375,
+          "added": -92.9898703125,
+          "added_ci": [
+            -96.642613671875,
+            -89.16290607421875
+          ],
+          "percent": -42.18142730388866,
+          "percent_ci": [
+            -43.376985478701734,
+            -40.892899912721504
+          ]
+        },
+        "timing_wall": {
+          "before": 268.451405859375,
+          "after": 198.202771484375,
+          "added": -70.24863437499998,
+          "added_ci": [
+            -74.71065720703123,
+            -65.41854395507812
+          ],
+          "percent": -26.168100759285593,
+          "percent_ci": [
+            -27.266045301296604,
+            -24.908367089745873
+          ]
+        },
+        "timing_process": {
+          "before": 610.004296875,
+          "after": 516.409375,
+          "added": -93.594921875,
+          "added_ci": [
+            -105.011728515625,
+            -84.676123046875
+          ],
+          "percent": -15.343321736335113,
+          "percent_ci": [
+            -16.919290476862358,
+            -14.061178367141164
+          ]
+        }
+      }
+    },
+    "combat100": {
+      "comparisons": {
+        "before_index": {
+          "owner_owner": {
+            "before": 407.26771523437503,
+            "after": 401.018765234375,
+            "added": -6.248950000000008,
+            "added_ci": [
+              -11.830708291015634,
+              -0.1608481933594044
+            ],
+            "percent": -1.534359284139153,
+            "percent_ci": [
+              -2.8811046196226546,
+              -0.03995069066928996
+            ]
+          },
+          "owner_sync_cpu": {
+            "before": 324.40001289062496,
+            "after": 322.139526171875,
+            "added": -2.260486718750002,
+            "added_ci": [
+              -5.391066328125014,
+              1.1075773437500118
+            ],
+            "percent": -0.6968207857353304,
+            "percent_ci": [
+              -1.6461844336567353,
+              0.3481259604850795
+            ]
+          },
+          "timing_wall": {
+            "before": 480.30008789062504,
+            "after": 469.841746484375,
+            "added": -10.458341406250009,
+            "added_ci": [
+              -25.4550272265625,
+              -0.3898408496093885
+            ],
+            "percent": -2.177459815212779,
+            "percent_ci": [
+              -5.127505033626944,
+              -0.08311326249182717
+            ]
+          },
+          "timing_process": {
+            "before": 938.25625,
+            "after": 934.273828125,
+            "added": -3.982421875,
+            "added_ci": [
+              -13.447265625,
+              5.296494140625
+            ],
+            "percent": -0.4244492775827502,
+            "percent_ci": [
+              -1.4191925658396989,
+              0.5688019342116616
+            ]
+          }
+        },
+        "index_combined": {
+          "owner_owner": {
+            "before": 401.018765234375,
+            "after": 391.44390000000004,
+            "added": -9.574865234374993,
+            "added_ci": [
+              -14.208345830078114,
+              -4.943279853515621
+            ],
+            "percent": -2.387635209234895,
+            "percent_ci": [
+              -3.5568409075807392,
+              -1.2244493264461767
+            ]
+          },
+          "owner_sync_cpu": {
+            "before": 322.139526171875,
+            "after": 317.28460937500006,
+            "added": -4.854916796874994,
+            "added_ci": [
+              -7.501256035156247,
+              -2.173521132812502
+            ],
+            "percent": -1.5070850989842954,
+            "percent_ci": [
+              -2.3341006671791322,
+              -0.6740703917026273
+            ]
+          },
+          "timing_wall": {
+            "before": 469.841746484375,
+            "after": 463.2609472656251,
+            "added": -6.580799218750002,
+            "added_ci": [
+              -12.88130788085937,
+              -0.2564332812500108
+            ],
+            "percent": -1.4006416560450874,
+            "percent_ci": [
+              -2.733886120905635,
+              -0.05467157289461386
+            ]
+          },
+          "timing_process": {
+            "before": 934.273828125,
+            "after": 922.84765625,
+            "added": -11.426171875,
+            "added_ci": [
+              -19.6578515625,
+              -3.0217773437500086
+            ],
+            "percent": -1.22300031650584,
+            "percent_ci": [
+              -2.102310683432643,
+              -0.32399464014670504
+            ]
+          }
+        },
+        "before_combined": {
+          "owner_owner": {
+            "before": 407.26771523437503,
+            "after": 391.44390000000004,
+            "added": -15.823815234375001,
+            "added_ci": [
+              -24.142697802734382,
+              -7.369515478515625
+            ],
+            "percent": -3.8853595908697747,
+            "percent_ci": [
+              -5.886245412803804,
+              -1.8306737115630602
+            ]
+          },
+          "owner_sync_cpu": {
+            "before": 324.40001289062496,
+            "after": 317.28460937500006,
+            "added": -7.115403515624996,
+            "added_ci": [
+              -12.087200058593753,
+              -1.8032443164062397
+            ],
+            "percent": -2.193404202491178,
+            "percent_ci": [
+              -3.701198186984462,
+              -0.5640484229095802
+            ]
+          },
+          "timing_wall": {
+            "before": 480.30008789062504,
+            "after": 463.2609472656251,
+            "added": -17.03914062500001,
+            "added_ci": [
+              -31.840101191406266,
+              -6.265399755859382
+            ],
+            "percent": -3.5476030620423593,
+            "percent_ci": [
+              -6.4098437943417,
+              -1.3259498076907557
+            ]
+          },
+          "timing_process": {
+            "before": 938.25625,
+            "after": 922.84765625,
+            "added": -15.40859375,
+            "added_ci": [
+              -23.173857421875,
+              -8.257763671875004
+            ],
+            "percent": -1.6422585780803467,
+            "percent_ci": [
+              -2.4569008683612226,
+              -0.8829508078608583
+            ]
+          }
+        }
+      },
+      "components": {
+        "before": {
+          "original": {
+            "scan": 9.174111328125,
+            "capture": 37.3182734375,
+            "source": 0.0,
+            "index": 0.0,
+            "planning": 0.0,
+            "publication": 0.0,
+            "consumption": 0.0,
+            "sources": 0.0,
+            "skipped": 0.0,
+            "scheduling": 0.0,
+            "join_wall": 0.0,
+            "owner": 399.32378476562496,
+            "sync_cpu": 324.75319218749996,
+            "sync_wall": 353.86014687499994,
+            "boundary": 37.3182734375,
+            "admission": 0.0,
+            "join_cpu": 0.0,
+            "owner_planning": 0.0,
+            "worker_planning": 0.0,
+            "background_index": 0.0,
+            "owner_background_index": 0.0
+          },
+          "shadow": {
+            "scan": 9.162768359375,
+            "capture": 37.970066796875,
+            "source": 3.7121910156249998,
+            "index": 3.0552625000000004,
+            "planning": 5.5509953125000004,
+            "publication": 2.595960546875,
+            "consumption": 0.0,
+            "sources": 1796.9,
+            "skipped": 23903.1,
+            "scheduling": 2.027361328125,
+            "join_wall": 1.03598984375,
+            "owner": 415.849951953125,
+            "sync_cpu": 330.40128671874993,
+            "sync_wall": 360.67046914062496,
+            "boundary": 46.764881640625,
+            "admission": 8.79481484375,
+            "join_cpu": 0.307383203125,
+            "owner_planning": 0.0,
+            "worker_planning": 5.5509953125000004,
+            "background_index": 0.0,
+            "owner_background_index": 0.0
+          },
+          "cached": {
+            "scan": 0.0,
+            "capture": 39.218136328125,
+            "source": 3.7051453125,
+            "index": 2.776826953125,
+            "planning": 5.15105703125,
+            "publication": 2.4464226562499998,
+            "consumption": 3.5295707031250005,
+            "sources": 1731.8,
+            "skipped": 23968.2,
+            "scheduling": 1.8365800781250001,
+            "join_wall": 0.26333203125000004,
+            "owner": 421.14662500000003,
+            "sync_cpu": 333.795262890625,
+            "sync_wall": 359.54289648437504,
+            "boundary": 47.536688671875005,
+            "admission": 8.318552343750001,
+            "join_cpu": 0.23418125,
+            "owner_planning": 0.0,
+            "worker_planning": 5.15105703125,
+            "background_index": 0.0,
+            "owner_background_index": 0.0,
+            "owner_scopes": 14.528726953125,
+            "incremental_capture": 1.899862890625002,
+            "worker_index": 0.0,
+            "turret_total": 21.579646875,
+            "owner_with_capture": 16.428589843750004
+          }
+        },
+        "index": {
+          "original": {
+            "scan": 9.732109765625001,
+            "capture": 40.856621874999995,
+            "source": 0.0,
+            "index": 0.0,
+            "planning": 0.0,
+            "publication": 0.0,
+            "consumption": 0.0,
+            "sources": 0.0,
+            "skipped": 0.0,
+            "scheduling": 0.0,
+            "join_wall": 0.0,
+            "owner": 421.223835546875,
+            "sync_cpu": 341.817980859375,
+            "sync_wall": 369.7192375,
+            "boundary": 40.856621874999995,
+            "admission": 0.0,
+            "join_cpu": 0.0,
+            "owner_planning": 0.0,
+            "worker_planning": 0.0,
+            "background_index": 0.0,
+            "owner_background_index": 0.0
+          },
+          "shadow": {
+            "scan": 10.166878125,
+            "capture": 41.185479296874995,
+            "source": 3.85925078125,
+            "index": 0.0,
+            "planning": 5.798153515625001,
+            "publication": 2.869243359375,
+            "consumption": 0.0,
+            "sources": 1796.9,
+            "skipped": 23903.1,
+            "scheduling": 1.835941015625,
+            "join_wall": 3.7107582031249997,
+            "owner": 441.49841914062506,
+            "sync_cpu": 356.41540273437505,
+            "sync_wall": 389.714544921875,
+            "boundary": 46.880671093749996,
+            "admission": 5.695191796875,
+            "join_cpu": 0.43115468749999997,
+            "owner_planning": 0.0,
+            "worker_planning": 5.798153515625001,
+            "background_index": 4.033001953125,
+            "owner_background_index": 0.0
+          },
+          "cached": {
+            "scan": 0.0,
+            "capture": 41.649384375,
+            "source": 3.856533203125,
+            "index": 0.0,
+            "planning": 5.17168984375,
+            "publication": 2.602019921875,
+            "consumption": 3.6317609375,
+            "sources": 1731.8,
+            "skipped": 23968.2,
+            "scheduling": 1.52220625,
+            "join_wall": 0.39395039062500004,
+            "owner": 432.52743554687504,
+            "sync_cpu": 345.68821796875,
+            "sync_wall": 369.767455859375,
+            "boundary": 47.028123828125004,
+            "admission": 5.378739453125,
+            "join_cpu": 0.28290507812499993,
+            "owner_planning": 0.0,
+            "worker_planning": 5.17168984375,
+            "background_index": 3.388020703125,
+            "owner_background_index": 0.0,
+            "owner_scopes": 11.895425390625,
+            "incremental_capture": 0.792762500000002,
+            "worker_index": 3.388020703125,
+            "turret_total": 21.247898437500005,
+            "owner_with_capture": 12.688187890625002
+          }
+        },
+        "combined": {
+          "original": {
+            "scan": 10.5303828125,
+            "capture": 41.242346874999996,
+            "source": 0.0,
+            "index": 0.0,
+            "planning": 0.0,
+            "publication": 0.0,
+            "consumption": 0.0,
+            "sources": 0.0,
+            "skipped": 0.0,
+            "scheduling": 0.0,
+            "join_wall": 0.0,
+            "owner": 443.18485390625,
+            "sync_cpu": 360.53550664062504,
+            "sync_wall": 405.607851171875,
+            "boundary": 41.242346874999996,
+            "admission": 0.0,
+            "join_cpu": 0.0,
+            "owner_planning": 0.0,
+            "worker_planning": 0.0,
+            "background_index": 0.0,
+            "owner_background_index": 0.0
+          },
+          "shadow": {
+            "scan": 11.379370703125,
+            "capture": 44.644466796874994,
+            "source": 4.299678515625,
+            "index": 0.0,
+            "planning": 6.091483203125,
+            "publication": 2.75505703125,
+            "consumption": 0.0,
+            "sources": 1796.9,
+            "skipped": 23903.1,
+            "scheduling": 2.2749792968750002,
+            "join_wall": 9.669877734375001,
+            "owner": 474.24179804687503,
+            "sync_cpu": 377.398222265625,
+            "sync_wall": 439.82076289062496,
+            "boundary": 51.219124609375,
+            "admission": 6.5746578125,
+            "join_cpu": 0.443954296875,
+            "owner_planning": 0.0,
+            "worker_planning": 6.091483203125,
+            "background_index": 4.36874296875,
+            "owner_background_index": 0.0
+          },
+          "cached": {
+            "scan": 0.0,
+            "capture": 42.022322656250005,
+            "source": 3.8903609375,
+            "index": 0.0,
+            "planning": 5.58411640625,
+            "publication": 2.3783035156250003,
+            "consumption": 3.7997398437500003,
+            "sources": 1731.8,
+            "skipped": 23968.2,
+            "scheduling": 1.8487093750000003,
+            "join_wall": 8.438264453124999,
+            "owner": 452.7118070312499,
+            "sync_cpu": 361.403837890625,
+            "sync_wall": 406.814410546875,
+            "boundary": 47.76139296875,
+            "admission": 5.7390703125,
+            "join_cpu": 0.35038281250000003,
+            "owner_planning": 0.0,
+            "worker_planning": 5.58411640625,
+            "background_index": 3.883075390625,
+            "owner_background_index": 0.0,
+            "owner_scopes": 12.267496484375002,
+            "incremental_capture": 0.779975781250009,
+            "worker_index": 3.883075390625,
+            "turret_total": 22.51466406250001,
+            "owner_with_capture": 13.04747226562501
+          }
+        }
+      },
+      "combined_vs_original": {
+        "owner_owner": {
+          "before": 385.62036679687503,
+          "after": 391.44390000000004,
+          "added": 5.823533203125004,
+          "added_ci": [
+            -1.4723207421874942,
+            14.923467607421877
+          ],
+          "percent": 1.510172621715422,
+          "percent_ci": [
+            -0.37971067721068696,
+            3.90430424872415
+          ]
+        },
+        "timing_wall": {
+          "before": 449.1316984375,
+          "after": 463.2609472656251,
+          "added": 14.129248828124997,
+          "added_ci": [
+            7.596906201171874,
+            19.34777820312499
+          ],
+          "percent": 3.1459032789891817,
+          "percent_ci": [
+            1.6902888328653431,
+            4.323023455362951
+          ]
+        },
+        "timing_process": {
+          "before": 908.995703125,
+          "after": 922.84765625,
+          "added": 13.851953125,
+          "added_ci": [
+            5.4234375,
+            22.550185546874985
+          ],
+          "percent": 1.5238744338811339,
+          "percent_ci": [
+            0.5953624749206243,
+            2.486444954060407
+          ]
+        }
+      }
+    },
+    "ordinary4": {
+      "comparisons": {
+        "before_index": {
+          "owner_owner": {
+            "before": 74.4890765625,
+            "after": 72.68277421875,
+            "added": -1.8063023437499979,
+            "added_ci": [
+              -2.243656660156246,
+              -1.3629097949218743
+            ],
+            "percent": -2.4249224545486614,
+            "percent_ci": [
+              -2.9965892636637212,
+              -1.8384619301809684
+            ]
+          },
+          "owner_sync_cpu": {
+            "before": 40.08608359374999,
+            "after": 39.37468671875,
+            "added": -0.711396874999999,
+            "added_ci": [
+              -1.2028039941406234,
+              -0.24903749999999789
+            ],
+            "percent": -1.7746729319072396,
+            "percent_ci": [
+              -2.978309294605686,
+              -0.6301348058157333
+            ]
+          },
+          "timing_wall": {
+            "before": 175.10351054687501,
+            "after": 170.85494257812496,
+            "added": -4.248567968750007,
+            "added_ci": [
+              -6.901099541015625,
+              -1.614032031250011
+            ],
+            "percent": -2.426317984991344,
+            "percent_ci": [
+              -3.877403504451382,
+              -0.931614456778377
+            ]
+          },
+          "timing_process": {
+            "before": 458.535546875,
+            "after": 447.8421875,
+            "added": -10.693359375,
+            "added_ci": [
+              -14.7539453125,
+              -7.109765625
+            ],
+            "percent": -2.3320676985409516,
+            "percent_ci": [
+              -3.2076862739723397,
+              -1.5515659473138377
+            ]
+          }
+        },
+        "index_combined": {
+          "owner_owner": {
+            "before": 72.68277421875,
+            "after": 72.79131640625,
+            "added": 0.10854218749999944,
+            "added_ci": [
+              -1.0207423730468763,
+              1.2965249023437468
+            ],
+            "percent": 0.14933688025353664,
+            "percent_ci": [
+              -1.38387675110113,
+              1.808921599333933
+            ]
+          },
+          "owner_sync_cpu": {
+            "before": 39.37468671875,
+            "after": 40.063669140624995,
+            "added": 0.6889824218749994,
+            "added_ci": [
+              0.2578231347656239,
+              1.1353804687499995
+            ],
+            "percent": 1.7498105490878935,
+            "percent_ci": [
+              0.6458487321458173,
+              2.9207829331798796
+            ]
+          },
+          "timing_wall": {
+            "before": 170.85494257812496,
+            "after": 172.75714921875002,
+            "added": 1.9022066406250047,
+            "added_ci": [
+              -2.0026917968749958,
+              5.61068913085937
+            ],
+            "percent": 1.113345983394809,
+            "percent_ci": [
+              -1.1590891682749587,
+              3.3016388689750826
+            ]
+          },
+          "timing_process": {
+            "before": 447.8421875,
+            "after": 450.17265625,
+            "added": 2.33046875,
+            "added_ci": [
+              -4.030556640625,
+              8.575468749999994
+            ],
+            "percent": 0.5203772255153893,
+            "percent_ci": [
+              -0.8941465261688205,
+              1.9256628540344476
+            ]
+          }
+        },
+        "before_combined": {
+          "owner_owner": {
+            "before": 74.4890765625,
+            "after": 72.79131640625,
+            "added": -1.6977601562499984,
+            "added_ci": [
+              -2.8208702441406266,
+              -0.355315849609372
+            ],
+            "percent": -2.279206877837303,
+            "percent_ci": [
+              -3.738593883315583,
+              -0.4834020281274104
+            ]
+          },
+          "owner_sync_cpu": {
+            "before": 40.08608359374999,
+            "after": 40.063669140624995,
+            "added": -0.02241445312499977,
+            "added_ci": [
+              -0.6595136718749984,
+              0.645396660156247
+            ],
+            "percent": -0.055915796993666333,
+            "percent_ci": [
+              -1.6133143863441677,
+              1.6336483234287669
+            ]
+          },
+          "timing_wall": {
+            "before": 175.10351054687501,
+            "after": 172.75714921875002,
+            "added": -2.3463613281250018,
+            "added_ci": [
+              -6.848944726562499,
+              1.2827284277343676
+            ],
+            "percent": -1.3399853154268282,
+            "percent_ci": [
+              -3.8547806899563444,
+              0.7393942969372301
+            ]
+          },
+          "timing_process": {
+            "before": 458.535546875,
+            "after": 450.17265625,
+            "added": -8.362890625,
+            "added_ci": [
+              -14.146123046875001,
+              -2.166718750000007
+            ],
+            "percent": -1.8238260222123714,
+            "percent_ci": [
+              -3.069388274674358,
+              -0.4757663849567842
+            ]
+          }
+        }
+      },
+      "components": {
+        "before": {
+          "original": {
+            "scan": 7.2078296875,
+            "capture": 17.240574609375003,
+            "source": 0.0,
+            "index": 0.0,
+            "planning": 0.0,
+            "publication": 0.0,
+            "consumption": 0.0,
+            "sources": 0.0,
+            "skipped": 0.0,
+            "scheduling": 0.0,
+            "join_wall": 0.0,
+            "owner": 78.649683984375,
+            "sync_cpu": 47.684582031249995,
+            "sync_wall": 68.286310546875,
+            "boundary": 17.240574609375003,
+            "admission": 0.0,
+            "join_cpu": 0.0,
+            "owner_planning": 0.0,
+            "worker_planning": 0.0,
+            "background_index": 0.0,
+            "owner_background_index": 0.0
+          },
+          "shadow": {
+            "scan": 7.279753515625001,
+            "capture": 18.96004453125,
+            "source": 2.0071234374999998,
+            "index": 2.2462484374999994,
+            "planning": 1.9555914062500002,
+            "publication": 2.389334765625,
+            "consumption": 0.0,
+            "sources": 876.0,
+            "skipped": 152.0,
+            "scheduling": 2.801392578125,
+            "join_wall": 15.22005078125,
+            "owner": 95.04758398437501,
+            "sync_cpu": 54.200652734375,
+            "sync_wall": 83.81426796875,
+            "boundary": 26.014808984374998,
+            "admission": 7.054764453125,
+            "join_cpu": 1.3521609374999999,
+            "owner_planning": 0.0,
+            "worker_planning": 1.9555914062500002,
+            "background_index": 0.0,
+            "owner_background_index": 0.0
+          },
+          "cached": {
+            "scan": 0.0,
+            "capture": 19.0546015625,
+            "source": 2.00078203125,
+            "index": 2.261524609375,
+            "planning": 1.9139425781250001,
+            "publication": 2.399087109375,
+            "consumption": 2.61234609375,
+            "sources": 876.0,
+            "skipped": 152.0,
+            "scheduling": 2.6870058593749997,
+            "join_wall": 8.217453515625,
+            "owner": 89.62735039062501,
+            "sync_cpu": 49.04067265625,
+            "sync_wall": 71.53575,
+            "boundary": 26.0039140625,
+            "admission": 6.9493125,
+            "join_cpu": 1.2606957031250001,
+            "owner_planning": 0.0,
+            "worker_planning": 1.9139425781250001,
+            "background_index": 0.0,
+            "owner_background_index": 0.0,
+            "owner_scopes": 13.22144140625,
+            "incremental_capture": 1.8140269531249977,
+            "worker_index": 0.0,
+            "turret_total": 16.949410937499998,
+            "owner_with_capture": 15.035468359374997
+          }
+        },
+        "index": {
+          "original": {
+            "scan": 8.105719140625,
+            "capture": 20.9112984375,
+            "source": 0.0,
+            "index": 0.0,
+            "planning": 0.0,
+            "publication": 0.0,
+            "consumption": 0.0,
+            "sources": 0.0,
+            "skipped": 0.0,
+            "scheduling": 0.0,
+            "join_wall": 0.0,
+            "owner": 94.01368320312501,
+            "sync_cpu": 54.537012890625,
+            "sync_wall": 81.56182265625,
+            "boundary": 20.9112984375,
+            "admission": 0.0,
+            "join_cpu": 0.0,
+            "owner_planning": 0.0,
+            "worker_planning": 0.0,
+            "background_index": 0.0,
+            "owner_background_index": 0.0
+          },
+          "shadow": {
+            "scan": 7.780074218749999,
+            "capture": 21.469298046875,
+            "source": 2.2007671875,
+            "index": 0.0,
+            "planning": 1.85754453125,
+            "publication": 2.647641015625,
+            "consumption": 0.0,
+            "sources": 876.0,
+            "skipped": 152.0,
+            "scheduling": 2.78263125,
+            "join_wall": 29.6098234375,
+            "owner": 101.1880125,
+            "sync_cpu": 57.20865,
+            "sync_wall": 96.820505078125,
+            "boundary": 26.452696484374997,
+            "admission": 4.9833984375,
+            "join_cpu": 1.645129296875,
+            "owner_planning": 0.0,
+            "worker_planning": 1.85754453125,
+            "background_index": 2.993407421875,
+            "owner_background_index": 0.0
+          },
+          "cached": {
+            "scan": 0.0,
+            "capture": 20.557684375,
+            "source": 2.153980078125,
+            "index": 0.0,
+            "planning": 1.7887953125000002,
+            "publication": 2.5501156249999997,
+            "consumption": 2.60691171875,
+            "sources": 876.0,
+            "skipped": 152.0,
+            "scheduling": 2.5845789062499995,
+            "join_wall": 26.028100000000002,
+            "owner": 91.32804921875001,
+            "sync_cpu": 50.02294726562501,
+            "sync_wall": 89.191394921875,
+            "boundary": 25.296243359375,
+            "admission": 4.738558984375,
+            "join_cpu": 1.7089500000000002,
+            "owner_planning": 0.0,
+            "worker_planning": 1.7887953125000002,
+            "background_index": 2.8642144531250002,
+            "owner_background_index": 0.0,
+            "owner_scopes": 11.604536328125,
+            "incremental_capture": -0.35361406250000016,
+            "worker_index": 2.8642144531250002,
+            "turret_total": 15.903932031250001,
+            "owner_with_capture": 11.250922265625
+          }
+        },
+        "combined": {
+          "original": {
+            "scan": 8.153914453125001,
+            "capture": 19.711449218749998,
+            "source": 0.0,
+            "index": 0.0,
+            "planning": 0.0,
+            "publication": 0.0,
+            "consumption": 0.0,
+            "sources": 0.0,
+            "skipped": 0.0,
+            "scheduling": 0.0,
+            "join_wall": 0.0,
+            "owner": 91.43968398437501,
+            "sync_cpu": 55.174212499999996,
+            "sync_wall": 73.20122109375,
+            "boundary": 19.711449218749998,
+            "admission": 0.0,
+            "join_cpu": 0.0,
+            "owner_planning": 0.0,
+            "worker_planning": 0.0,
+            "background_index": 0.0,
+            "owner_background_index": 0.0
+          },
+          "shadow": {
+            "scan": 7.619459375,
+            "capture": 19.900644921875,
+            "source": 2.070195703125,
+            "index": 0.0,
+            "planning": 1.7871890625,
+            "publication": 2.3589988281250003,
+            "consumption": 0.0,
+            "sources": 876.0,
+            "skipped": 152.0,
+            "scheduling": 2.17217265625,
+            "join_wall": 6.13118984375,
+            "owner": 94.82956953124999,
+            "sync_cpu": 55.716492578125,
+            "sync_wall": 73.08147734375,
+            "boundary": 24.14301328125,
+            "admission": 4.242368359375,
+            "join_cpu": 1.410126953125,
+            "owner_planning": 0.0,
+            "worker_planning": 1.7871890625,
+            "background_index": 2.6852183593750003,
+            "owner_background_index": 0.0
+          },
+          "cached": {
+            "scan": 0.0,
+            "capture": 20.028641015625,
+            "source": 2.083411328125,
+            "index": 0.0,
+            "planning": 1.764176171875,
+            "publication": 2.41654609375,
+            "consumption": 2.688109375,
+            "sources": 876.0,
+            "skipped": 152.0,
+            "scheduling": 2.351108984375,
+            "join_wall": 14.070379687500003,
+            "owner": 90.17608125,
+            "sync_cpu": 50.862447656250005,
+            "sync_wall": 78.516711328125,
+            "boundary": 24.463161328125,
+            "admission": 4.4345203125,
+            "join_cpu": 1.5590621093750001,
+            "owner_planning": 0.0,
+            "worker_planning": 1.764176171875,
+            "background_index": 2.740106640625,
+            "owner_background_index": 0.0,
+            "owner_scopes": 11.098237890625,
+            "incremental_capture": 0.3171917968750009,
+            "worker_index": 2.740106640625,
+            "turret_total": 15.919712500000003,
+            "owner_with_capture": 11.415429687500001
+          }
+        }
+      },
+      "combined_vs_original": {
+        "owner_owner": {
+          "before": 72.94465468749999,
+          "after": 72.79131640625,
+          "added": -0.1533382812499994,
+          "added_ci": [
+            -1.4371051660156262,
+            1.2528339160156259
+          ],
+          "percent": -0.21021181319851312,
+          "percent_ci": [
+            -1.9376339376371288,
+            1.7459099709057917
+          ]
+        },
+        "timing_wall": {
+          "before": 169.74519765625,
+          "after": 172.75714921875002,
+          "added": 3.011951562499996,
+          "added_ci": [
+            -0.23956013671875256,
+            6.895996318359373
+          ],
+          "percent": 1.7743957437897473,
+          "percent_ci": [
+            -0.13960116834944153,
+            4.086870345363863
+          ]
+        },
+        "timing_process": {
+          "before": 443.405078125,
+          "after": 450.17265625,
+          "added": 6.767578125,
+          "added_ci": [
+            2.666796875,
+            11.482841796874997
+          ],
+          "percent": 1.5262743840502857,
+          "percent_ci": [
+            0.6013342889653456,
+            2.5923381687494946
+          ]
+        }
+      }
+    }
+  }
+}

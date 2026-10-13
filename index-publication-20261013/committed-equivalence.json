@@ -1,0 +1,47 @@
+{
+  "fixture-0-cached.game": {
+    "committed": "a118faa76ba5b568e4605af42e5ac7000942fe36c1accdb788063f8531ba8996",
+    "timed": "a118faa76ba5b568e4605af42e5ac7000942fe36c1accdb788063f8531ba8996",
+    "before": "a118faa76ba5b568e4605af42e5ac7000942fe36c1accdb788063f8531ba8996"
+  },
+  "fixture-1-checksums.csv": {
+    "committed": "4ca2092d81a9b6dfd266df5f271f168fa70860f078033d38206db9f7e7fea6e8",
+    "timed": "4ca2092d81a9b6dfd266df5f271f168fa70860f078033d38206db9f7e7fea6e8",
+    "before": "4ca2092d81a9b6dfd266df5f271f168fa70860f078033d38206db9f7e7fea6e8"
+  },
+  "fixture-2-cached.game": {
+    "committed": "34dcb99dc2c94aab2291826e3644bffddd4f2ee9f7af23aa728f60c755659690",
+    "timed": "34dcb99dc2c94aab2291826e3644bffddd4f2ee9f7af23aa728f60c755659690",
+    "before": "34dcb99dc2c94aab2291826e3644bffddd4f2ee9f7af23aa728f60c755659690"
+  },
+  "fixture-2-checksums.csv": {
+    "committed": "c2a206e5af84e4181db8f081af3ca44e3d698c1c0e337b1efb6cc46fc83dfd1c",
+    "timed": "c2a206e5af84e4181db8f081af3ca44e3d698c1c0e337b1efb6cc46fc83dfd1c",
+    "before": "c2a206e5af84e4181db8f081af3ca44e3d698c1c0e337b1efb6cc46fc83dfd1c"
+  },
+  "fixture-2-original.game": {
+    "committed": "34dcb99dc2c94aab2291826e3644bffddd4f2ee9f7af23aa728f60c755659690",
+    "timed": "34dcb99dc2c94aab2291826e3644bffddd4f2ee9f7af23aa728f60c755659690",
+    "before": "34dcb99dc2c94aab2291826e3644bffddd4f2ee9f7af23aa728f60c755659690"
+  },
+  "fixture-0-original.game": {
+    "committed": "a118faa76ba5b568e4605af42e5ac7000942fe36c1accdb788063f8531ba8996",
+    "timed": "a118faa76ba5b568e4605af42e5ac7000942fe36c1accdb788063f8531ba8996",
+    "before": "a118faa76ba5b568e4605af42e5ac7000942fe36c1accdb788063f8531ba8996"
+  },
+  "fixture-0-checksums.csv": {
+    "committed": "79266882de6713aa349ce4a7547be6bd993d5a4828db8cc21e6b3fbee9644b3b",
+    "timed": "79266882de6713aa349ce4a7547be6bd993d5a4828db8cc21e6b3fbee9644b3b",
+    "before": "79266882de6713aa349ce4a7547be6bd993d5a4828db8cc21e6b3fbee9644b3b"
+  },
+  "fixture-1-original.game": {
+    "committed": "145befbee78a9efd02a2ba7a45940642ae7116cd3eb2e5d4cf07541cb08ea674",
+    "timed": "145befbee78a9efd02a2ba7a45940642ae7116cd3eb2e5d4cf07541cb08ea674",
+    "before": "145befbee78a9efd02a2ba7a45940642ae7116cd3eb2e5d4cf07541cb08ea674"
+  },
+  "fixture-1-cached.game": {
+    "committed": "05333454dd7c1cf1fe1cecb171af389b60d379167985b591f0bf1f885335cdd1",
+    "timed": "05333454dd7c1cf1fe1cecb171af389b60d379167985b591f0bf1f885335cdd1",
+    "before": "05333454dd7c1cf1fe1cecb171af389b60d379167985b591f0bf1f885335cdd1"
+  }
+}

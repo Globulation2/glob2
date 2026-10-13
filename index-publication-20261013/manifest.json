@@ -1,0 +1,36 @@
+{
+  "commit": "7e9d63af602e6f3bf970ddff951fd2d0da0be35b",
+  "archive_sha256": "31037b23e995c03aaee908ed7a5d9127c01eefc394bf495ccfdbc857b4969655",
+  "parts": [
+    {
+      "name": "index-publication-evidence.tar.gz.part-00",
+      "bytes": 25165824,
+      "sha256": "f6efbc0edd542332dd2f94ba954751addd4869e7f13f00fdc0a717bb9dfce901"
+    },
+    {
+      "name": "index-publication-evidence.tar.gz.part-01",
+      "bytes": 25165824,
+      "sha256": "90bd84964b5d91ba56f124eca1a7e7b450bf884838d848dbe7411bce0e85957e"
+    },
+    {
+      "name": "index-publication-evidence.tar.gz.part-02",
+      "bytes": 25165824,
+      "sha256": "905e5e94a42248280d700b1b217f7f80c09aed740f3f866750c8f1898c52d3cc"
+    },
+    {
+      "name": "index-publication-evidence.tar.gz.part-03",
+      "bytes": 25165824,
+      "sha256": "fa20b17078837a708ab1b9d4c10db321ee4de6ea420a97d033a064eca1905799"
+    },
+    {
+      "name": "index-publication-evidence.tar.gz.part-04",
+      "bytes": 25165824,
+      "sha256": "25f85e75a72ff0b699f5d2a3439b83e0dc962c496fa179c3cb6fd311bf0658f9"
+    },
+    {
+      "name": "index-publication-evidence.tar.gz.part-05",
+      "bytes": 20907577,
+      "sha256": "ffa26e52cf1424109f0d8d60faccf83aa3764423b52b1e610e1ad39ad4827fd7"
+    }
+  ]
+}

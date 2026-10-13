@@ -1,0 +1,92 @@
+{
+  "before": {
+    "1": {
+      "admission": 8918098,
+      "publication": 2684919,
+      "index": 0,
+      "legacy_index": 6400537,
+      "capture": 60789499
+    },
+    "2": {
+      "admission": 0,
+      "publication": 0,
+      "index": 0,
+      "legacy_index": 0,
+      "capture": 0
+    },
+    "3": {
+      "admission": 0,
+      "publication": 0,
+      "index": 0,
+      "legacy_index": 0,
+      "capture": 0
+    },
+    "4": {
+      "admission": 0,
+      "publication": 0,
+      "index": 0,
+      "legacy_index": 0,
+      "capture": 0
+    }
+  },
+  "index": {
+    "1": {
+      "admission": 2436858,
+      "publication": 4362953,
+      "index": 0,
+      "legacy_index": 0,
+      "capture": 62044743
+    },
+    "2": {
+      "admission": 0,
+      "publication": 0,
+      "index": 1846721,
+      "legacy_index": 1845896,
+      "capture": 0
+    },
+    "3": {
+      "admission": 0,
+      "publication": 0,
+      "index": 2804200,
+      "legacy_index": 2803441,
+      "capture": 0
+    },
+    "4": {
+      "admission": 0,
+      "publication": 0,
+      "index": 1850453,
+      "legacy_index": 1849661,
+      "capture": 0
+    }
+  },
+  "combined": {
+    "1": {
+      "admission": 2415968,
+      "publication": 1346530,
+      "index": 0,
+      "legacy_index": 0,
+      "capture": 61467933
+    },
+    "2": {
+      "admission": 0,
+      "publication": 0,
+      "index": 1876028,
+      "legacy_index": 1875071,
+      "capture": 0
+    },
+    "3": {
+      "admission": 0,
+      "publication": 0,
+      "index": 3467811,
+      "legacy_index": 3467052,
+      "capture": 0
+    },
+    "4": {
+      "admission": 0,
+      "publication": 0,
+      "index": 1120346,
+      "legacy_index": 1119686,
+      "capture": 0
+    }
+  }
+}

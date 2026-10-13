@@ -1,0 +1,14 @@
+{
+  "commit": "7e9d63af602e6f3bf970ddff951fd2d0da0be35b",
+  "base": "db1c4f0526b287b7aca11e0dce1a5c142123cffb",
+  "master": "277510840054b1416f2defd7d86fe1431dd0ddc0",
+  "files": {
+    "docs/development/compute-benchmarks.md": "b21126a1b88f8233a4da252854d751bea61f74a12d4c779fc163f504af1624c4",
+    "src/building/TurretEngineBenchmark.cpp": "2602fa9a0b97cfab3a27933fda46f6dbdb21fd0e8e4555a12cb4910d9a513f1c",
+    "src/building/TurretTargeting.cpp": "c6533bf6182c5399a2fcfc8bb0143657d3304c37f4bad0cde2da438dd3ba694d",
+    "src/building/TurretTargeting.h": "cf695ce691ab713668f32f93e0dcd30f72d44798f763167112209dad23c275d5",
+    "src/building/TurretTargetingPipeline.cpp": "a745ba32cd6874e32754c4f0c1babff0410b8d3ba015f5418e7b93ef9e9bee8c",
+    "src/building/TurretTargetingTest.cpp": "3208c22dae7f9a54768e9a8821043c8548ab9d94038c28287105f9e8b5db5d41"
+  },
+  "note": "Frozen before is db1c4f052; controlled index-only overrides only publication with db1c4f052 while sharing final headers/objects. Final timed binary was built before commit with identical production sources; its banner reflects dirty source status. Committed-head rebuild tests and traces are separate."
+}
