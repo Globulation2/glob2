@@ -20,7 +20,7 @@ class Shadow
 public:
     struct Metrics
     {
-        Uint64 admitted=0, published=0, stable=0, rapid=0, valid=0, missing=0;
+        Uint64 admitted=0, published=0, refreshed=0, stable=0, rapid=0, valid=0, missing=0;
         Uint64 positionRejected=0, taskRejected=0, generationRejected=0;
         Uint64 preferredSuccess=0, blocked=0, goalReached=0, noRoute=0, destinationRejected=0;
         Uint64 predictionErrorTicks=0, selectedRank[9]{};
@@ -29,7 +29,11 @@ public:
         Uint64 compared=0, directionAgree=0, moveStayAgree=0, bothMove=0, movingDirectionAgree=0, bothStay=0;
         Uint64 proposalMoveReferenceStay=0, proposalStayReferenceMove=0;
         Uint64 destinationCompared=0, destinationCoordinateAgree=0, observationAgeTicks=0;
-        Uint64 confusion[9][9]{}, traceSamples[2]{};
+        Uint64 confusion[9][9]{}, traceSamples[10]{};
+        Uint64 disagreements=0, occupancyChanged=0, chosenAfterBlock=0, conflictAlteredChoice=0;
+        Uint64 randomCompared=0,randomAgree=0,patrolCompared=0,patrolAgree=0;
+        Uint64 freshCompared=0,freshAgree=0,freshFixesDisagreement=0,freshWorse=0,freshEqual=0,freshBetter=0,freshUnknown=0;
+        Uint64 classified[8]{}; // equal route, worse route, better route, unknown route, wander, explore, geometric, stay
         Counters reference;
     };
 private:
@@ -39,6 +43,12 @@ private:
         std::optional<Destination> destination;
         Uint8 proposedDirection=8;
         Disposition disposition=Disposition::NoRoute;
+        Steering steering=Steering::Route;
+        std::array<Uint32,8> stepCosts{};
+        Uint8 blockedMask=0, capturedBlockedMask=0;
+        unsigned selectedRank=0;
+        Uint8 currentOccupiedMask=0, unoccupiedDirection=8;
+        bool patrol=false;
     };
     struct Actor
     {
@@ -47,7 +57,7 @@ private:
         bool initialized=false, requested=false;
         std::optional<Suggestion> published;
         std::optional<Comparison> comparison;
-        Uint64 requestedGeneration=0;
+        Uint64 requestedGeneration=0, refreshGeneration=std::numeric_limits<Uint64>::max();
     };
     struct TeamJob
     {
@@ -67,6 +77,8 @@ private:
     ComputeExecutor& executor;
     unsigned delay;
     bool agreementSweep=false;
+    std::unique_ptr<Planner> diagnosticFreshPlanner;
+    bool refreshNearCompletion=true;
     std::unique_ptr<std::ofstream> agreementTrace;
     Uint64 agreementTraceErrors=0;
     std::array<std::unique_ptr<Planner>,Team::MAX_COUNT> planners;
@@ -85,6 +97,9 @@ public:
     static constexpr auto requirements = (SimulationSnapshot::Simulation & ~SimulationSnapshot::bit(SimulationSnapshot::Component::Entities)) | SimulationSnapshot::bit(SimulationSnapshot::Component::BuildingEntities) | SimulationSnapshot::bit(SimulationSnapshot::Component::UnitCores) | SimulationSnapshot::bit(SimulationSnapshot::Component::Exploration);
     void boundary(const Game& game,const SimulationSnapshot::Handle& world);
     void completeAction(const Unit& unit);
+    // Read-only diagnostic access used by isolated, separately patched research
+    // builds. Production never consumes this value or changes unit state.
+    std::optional<Uint8> preparedDirection(const Unit& unit) const;
     // Pure aggregation helper, also exercises all nine move/stay outcomes in tests.
     static void recordAgreement(Metrics& metrics,unsigned proposed,unsigned reference);
     void observe(const Unit& unit); // after transitions, before the reference action

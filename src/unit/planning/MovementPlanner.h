@@ -10,6 +10,8 @@ namespace MovementPlanning
 {
 enum class Mode : Uint8 { Idle, Explore, Resource, Building, Clearing, Pursuit, Count };
 enum class Disposition : Uint8 { Travel, GoalReached, NoRoute };
+enum class Steering : Uint8 { Wander, Exploration, Geometric, Route };
+inline constexpr Uint32 UnknownCost = std::numeric_limits<Uint32>::max();
 struct Task
 {
     UnitRef unit, targetUnit;
@@ -21,6 +23,7 @@ struct Task
     UnitJobPurpose purpose{};
     Uint32 capabilities = 0;
     int walk = 0, swim = 0, fly = 0;
+    int heading = 8; // observation input, not assignment identity
     bool operator==(const Task&) const = default;
 };
 struct Request
@@ -38,6 +41,11 @@ struct Suggestion
     std::array<Uint8, 8> directions{0,1,2,3,4,5,6,7};
     Uint8 preferred = 0;
     Disposition disposition = Disposition::NoRoute;
+    Steering steering = Steering::Route;
+    Uint32 originCost = UnknownCost;
+    std::array<Uint32,8> stepCosts{UnknownCost,UnknownCost,UnknownCost,UnknownCost,UnknownCost,UnknownCost,UnknownCost,UnknownCost};
+    Uint8 structuralMask = 0, occupiedMask = 0;
+    bool patrol = false;
 };
 inline constexpr std::array<std::array<int,2>,8> Directions{{
     {-1,-1}, {0,-1}, {1,-1}, {1,0}, {1,1}, {0,1}, {-1,1}, {-1,0}}};
@@ -48,6 +56,7 @@ bool validPermutation(const Suggestion& suggestion);
 EntityRandom requestRandom(Uint32 seed, const Request& request);
 // Snapshot-only structural legality. Mobile occupancy is deliberately optional.
 bool towerThreat(const SimulationSnapshot::Handle& world, const Task& task, int x, int y);
+bool legal(const MapState::View& view, const Task& task, int x, int y, bool occupancy);
 bool legal(const SimulationSnapshot::Handle& world, const Task& task, int x, int y, bool occupancy);
 
 class Planner

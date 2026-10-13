@@ -356,8 +356,14 @@ current local checks. Shadow rank checks cannot establish gameplay after adoptio
 `--movement-agreement-delay D` provides a diagnostic sweep for integer delays
 0 through 8. It is mutually exclusive with the profile and shadow selectors;
 these extra delays do not become match rules. Zero computes and publishes inline
-at admission, using the completed-world snapshot. It does not recapture the world
-at each action or guarantee zero observation age. Nonzero delays use the shared
+at admission, using the completed-world snapshot. A valid early suggestion is
+refreshed at most once per action, when the integer clock has K+1 ticks remaining,
+so publication coincides with completion. The refresh advances only diagnostic
+planning sequence; it preserves canonical state and keeps the batch horizon.
+Zero's refresh uses that completion's boundary snapshot, which still precedes
+serial unit transitions in the tick. `GLOB2_MOVEMENT_NO_REFRESH` retains the earlier
+admission-only diagnostic control. Report refreshed/admitted counts: fresher
+inputs require additional work and do not establish a net runtime saving. Nonzero delays use the shared
 executor and publish at their configured deadlines.
 
 Agreement counters compare a suggestion's first currently legal step with the
@@ -370,8 +376,33 @@ move/stay and moving-only direction agreement separately. Random wandering uses
 an independent planning RNG, so disagreement alone does not establish worse play.
 `agreement_observation_age_ticks / agreement_compared` reports mean input age.
 `GLOB2_MOVEMENT_AGREEMENT_TRACE` optionally names a CSV file containing at most 64
-early matching and 64 early differing examples per team/mode; these examples are
-not a representative sample. Aggregate counters cover every eligible comparison.
+early examples per team/mode/category, including rare fresh-cost regressions;
+these examples are not a representative sample. Aggregate counters cover every eligible comparison.
+
+Disagreement counters separate equal/higher/lower/unknown costs on the proposal's
+field, wandering, exploration, geometric steering and move/stay differences.
+Local occupancy-change and occupancy-altered-choice counts overlap those buckets;
+correlation with changed occupancy alone is not causal attribution. Random wandering
+and exploration-biased guard patrol are reported separately. Compare costs only
+with explicit goal semantics: a lower potential on a different goal field does
+not prove a faster or better path than the reference.
+
+`GLOB2_MOVEMENT_EXPLAIN` enables an expensive, separately captured current-world
+probe for the first 256 comparisons per team/mode. It recomputes the same planning
+policy from updated inputs with the same private request stream, to diagnose
+staleness. It is not an independent reference-path oracle or a random quality
+sample. Maps exceeding its 2 MiB planner quota are rejected at configuration.
+Do not use probe runs for runtime or total-memory qualification; their transient
+captures bypass the pooled-store accounting. No probe constructs a gameplay
+fallback route or adopts a suggestion.
+
+The diagnostic planner mirrors reference exploration contours and improving-cost
+direction ties, validates building destinations separately from material suppliers,
+and treats absent guard goals as wandering. The authoritative movement remains
+unchanged. A separately patched headless research build can study conditional
+final-step adoption after reference service/claim/target preparation; such a build
+is not a shipped experiment, replay/network-compatible mode, or a substitute for
+the original gates. Preserve its patch, binary identity and adoption coverage.
 
 `reference_phase_0_ns` through `reference_phase_4_ns` partition completed-action
 transitions, displacement, direction selection, action execution and visibility.

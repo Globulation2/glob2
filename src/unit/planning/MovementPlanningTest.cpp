@@ -2,6 +2,7 @@
 #include "EngineFixtures.h"
 #include "MovementPlanner.h"
 #include "MovementShadow.h"
+#include "field/GradientConstants.h"
 #include <StreamBackend.h>
 #include <Stream.h>
 #include <BinaryStream.h>
@@ -71,6 +72,45 @@ TEST_SUITE("MovementPlanning")
         CHECK_THROWS(fixture.game.configureMovementShadow(9,true));
         CHECK_THROWS(fixture.game.configureMovementShadow(3));
         fixture.game.configureMovementShadow(0);CHECK_FALSE(fixture.game.movementDiagnostics()->planningEnabled());
+    }
+    TEST_CASE("idle combat without a guard goal wanders instead of reporting no route")
+    {
+        glob2test::HeadlessGlobals globals;
+        glob2test::HeadlessGame fixture({.loadDefaultRace=true,.header=true});
+        const auto world=fixture.game.captureReadBoundary({},false,Shadow::requirements);
+        auto r=request(world,Mode::Idle);r.task.displacement=UnitState::DIS_ATTACKING_AROUND;
+        Planner planner;const auto result=planner.plan(world,r,19);
+        CHECK(result.disposition==Disposition::Travel);CHECK(result.steering==Steering::Wander);
+        CHECK(result.preferred==8);CHECK(validPermutation(result));CHECK(planner.metrics.fields==0);
+    }
+    TEST_CASE("improving gradient ties preserve reference index order across private RNG seeds")
+    {
+        glob2test::HeadlessGlobals globals;
+        glob2test::HeadlessGame fixture({.loadDefaultRace=true,.header=true});
+        auto world=fixture.game.captureReadBoundary({},false,Shadow::requirements);
+        auto values=std::make_shared<std::vector<Uint16>>(world.width*world.height,GRADIENT_UNREACHABLE);
+        (*values)[world.view().index(5,5)]=GRADIENT_AT_GOAL-32;
+        (*values)[world.view().index(5,4)]=(*values)[world.view().index(6,5)]=GRADIENT_AT_GOAL-16;
+        auto fields=std::make_shared<SimulationSnapshot::ResourceFields>();
+        fields->add({MapState::planeKey(0,0,0,false),1,values});world.resourceFields=fields;
+        auto r=request(world,Mode::Resource);r.task.material=0;
+        Planner planner;
+        for(unsigned seed=0;seed<64;++seed){const auto s=planner.plan(world,r,seed);CHECK(s.directions[0]==1);CHECK(s.directions[1]==3);CHECK(s.stepCosts[1]==s.stepCosts[3]);}
+    }
+    TEST_CASE("flat exploration wanders and completion refresh bounds ordinary input age")
+    {
+        glob2test::HeadlessGlobals globals;
+        glob2test::HeadlessGame fixture({.loadDefaultRace=true,.header=true});
+        auto* worker=fixture.addUnit(WORKER,8,8);REQUIRE(worker);
+        const auto world=fixture.game.captureReadBoundary({},false,Shadow::requirements);
+        Planner planner;auto r=request(world,Mode::Explore);r.task.fly=16;
+        const auto flat=planner.plan(world,r,23);CHECK(flat.disposition==Disposition::Travel);CHECK(flat.steering==Steering::Wander);
+        fixture.game.configureMovementShadow(1,true);
+        for(int tick=0;tick<128;++tick)fixture.step();
+        fixture.game.drainMovementShadow();const auto values=fixture.game.movementMetrics();
+        const auto get=[&](const char* key){for(const auto& [name,value]:values)if(name==key)return value;return Uint64(0);};
+        CHECK(get("team_0_idle_refreshed")>0);
+        CHECK(get("team_0_idle_agreement_observation_age_ticks")<=get("team_0_idle_agreement_compared"));
     }
     TEST_CASE("completion prediction agrees with the integer action clock")
     {

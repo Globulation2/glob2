@@ -35,6 +35,16 @@ int distance(int x, int y, int tx, int ty, int w, int h)
     const int wx = std::min(dx, w-dx), wy = std::min(dy, h-dy);
     return std::max(wx,wy)*GRADIENT_STEP + std::min(wx,wy)*(GRADIENT_DIAGONAL_STEP-GRADIENT_STEP);
 }
+unsigned heading(int dx,int dy,int width,int height)
+{
+    if(dx>width/2)dx-=width;else if(dx<-width/2)dx+=width;
+    if(dy>height/2)dy-=height;else if(dy<-height/2)dy+=height;
+    if(Sint64(100)*std::abs(Sint64(dx))>Sint64(241)*std::abs(Sint64(dy)))dy=0;
+    else if(Sint64(100)*std::abs(Sint64(dy))>Sint64(241)*std::abs(Sint64(dx)))dx=0;
+    const int x=(dx>0)-(dx<0),y=(dy>0)-(dy<0);
+    for(unsigned i=0;i<8;++i)if(Directions[i][0]==x && Directions[i][1]==y)return i;
+    return 8;
+}
 const SimulationSnapshot::BuildingView* building(const SimulationSnapshot::Handle& world, BuildingRef ref)
 {
     if (ref.empty()) return nullptr;
@@ -45,7 +55,7 @@ const SimulationSnapshot::BuildingView* building(const SimulationSnapshot::Handl
 Task taskOf(const SimulationSnapshot::UnitCoreView& u)
 {
     return {u.identity,{},u.attached,u.target,u.team,u.core.posX,u.core.posY,u.core.targetX,u.core.targetY,u.core.destinationPurpose,
-        u.core.activity,u.core.medical,u.core.displacement,u.core.jobPurpose,u.core.capabilityFlags,u.performance(WALK),u.performance(SWIM),u.performance(FLY)};
+        u.core.activity,u.core.medical,u.core.displacement,u.core.jobPurpose,u.core.capabilityFlags,u.performance(WALK),u.performance(SWIM),u.performance(FLY),u.core.direction};
 }
 std::optional<Mode> modeOf(const UnitCoreState& u)
 {
@@ -125,8 +135,6 @@ bool towerThreat(const SimulationSnapshot::Handle& world, const Task& task, int 
     }
     return false;
 }
-namespace
-{
 bool legal(const MapState::View& view, const Task& task, int x, int y, bool occupancy)
 {
     const auto index = view.index(x,y);
@@ -138,7 +146,6 @@ bool legal(const MapState::View& view, const Task& task, int x, int y, bool occu
         && !(view.areas[index].forbidden & (1u<<task.team))
         && cell.building==0xffff && !MapState::resourceBlocksGround(view,index)
         && (!occupancy || cell.groundUnit==0xffff || cell.groundUnit==task.unit.gid);
-}
 }
 bool legal(const SimulationSnapshot::Handle& world, const Task& task, int x, int y, bool occupancy)
 {
@@ -242,23 +249,55 @@ Suggestion Planner::plan(const SimulationSnapshot::Handle& world, const Request&
     const auto view=world.view();
     const auto here=view.index(request.task.x,request.task.y);
     auto targetX=request.task.targetX, targetY=request.task.targetY;
+    std::optional<unsigned> explorationHeading;
     if (request.mode==Mode::Explore) {
         if (!world.exploration || world.exploration->teams.at(request.task.team).empty())
             throw std::invalid_argument("exploration planner needs captured exploration");
         const auto& explored=world.exploration->teams[request.task.team];
-        Sint64 sx=0,sy=0;
-        for (int range=1;range<=std::min(world.width,world.height)/2;range*=2)
-            for (int d=-3;d<=3;++d) {
-                sx+=explored[view.index(request.task.x-4*range,request.task.y+d*range)]-explored[view.index(request.task.x+4*range,request.task.y+d*range)];
-                sy+=explored[view.index(request.task.x+d*range,request.task.y-4*range)]-explored[view.index(request.task.x+d*range,request.task.y+4*range)];
+        const auto simplified=[&](int x,int y) { return heading(x-request.task.x,y-request.task.y,world.width,world.height); };
+        if(const auto* attached=building(world,request.task.attached)) {
+            const auto d=simplified(attached->posX,attached->posY);
+            if(d<8) {
+                const auto v=Directions[d];const auto look=view.index(request.task.x+4*v[0],request.task.y+4*v[1]);
+                const bool discovered=world.visibility && (world.visibility->discovered[look]&world.teams->values.at(request.task.team).otherVision);
+                explorationHeading=discovered ? (d+2)%8 : d;
             }
-        targetX=view.normalizeX(request.task.x+(sx>0)-(sx<0));
-        targetY=view.normalizeY(request.task.y+(sy>0)-(sy<0));
+        } else {
+            // Same local contour test as the reference, before global steering.
+            constexpr int xs[8]={-4,-2,2,4,4,2,-2,-4},ys[8]={-2,-4,-4,-2,2,4,4,2};
+            int samples[8];
+            for(int i=0;i<8;++i)samples[i]=towerThreat(world,request.task,request.task.x+xs[i],request.task.y+ys[i])?1:explored[view.index(request.task.x+xs[i],request.task.y+ys[i])];
+            for(unsigned i=0;i<8;++i) {
+                const unsigned d=(i+request.task.heading+4)%8;
+                if(samples[d]>0 && samples[(d+1)%8]==0 && samples[(d+2)%8]==0){explorationHeading=(d+1)%8;break;}
+            }
+        }
+        if(!explorationHeading) {
+            Sint64 sx=0,sy=0;
+            for(int range=1;range<=std::min(world.width,world.height)/2;range*=2)
+                for(int d=-3;d<=3;++d) {
+                    sx+=explored[view.index(request.task.x-4*range,request.task.y+d*range)]-explored[view.index(request.task.x+4*range,request.task.y+d*range)];
+                    sy+=explored[view.index(request.task.x+d*range,request.task.y-4*range)]-explored[view.index(request.task.x+d*range,request.task.y+4*range)];
+                }
+            explorationHeading=simplified(request.task.x+int(sx),request.task.y+int(sy));
+        }
+        if(*explorationHeading<8){const auto d=Directions[*explorationHeading];targetX=view.normalizeX(request.task.x+d[0]);targetY=view.normalizeY(request.task.y+d[1]);}
+        else {targetX=request.task.x;targetY=request.task.y;}
         result.destination=Destination{targetX,targetY,{}};
     }
     const bool geometric=request.mode==Mode::Explore || (request.task.fly && !world.terrain->airConstraints
         && request.mode!=Mode::Resource && request.mode!=Mode::Clearing && request.mode!=Mode::Idle);
-    const bool wander=request.mode==Mode::Idle && request.task.displacement!=UnitState::DIS_ATTACKING_AROUND;
+    bool guardGoal=false;
+    if(request.mode==Mode::Idle && request.task.displacement==UnitState::DIS_ATTACKING_AROUND)
+        for(const auto& a:world.areas->cells)guardGoal|=bool(a.guard & (1u<<request.task.team));
+    const auto* patrolBuilding=building(world,request.task.attached);
+    const bool patrol=request.mode==Mode::Idle && request.task.displacement==UnitState::DIS_ATTACKING_AROUND
+        && (patrolBuilding || (world.areas->cells[here].guard & (1u<<request.task.team)));
+    result.patrol=patrol;
+    const bool wander=(request.mode==Mode::Idle && (!guardGoal || request.task.displacement!=UnitState::DIS_ATTACKING_AROUND || patrol))
+        || (explorationHeading && *explorationHeading==8);
+    const unsigned geometricHeading=heading(targetX-request.task.x,targetY-request.task.y,world.width,world.height);
+    result.steering=wander?Steering::Wander:request.mode==Mode::Explore?Steering::Exploration:geometric?Steering::Geometric:Steering::Route;
     std::array<std::pair<unsigned,unsigned>,8> ranks;
     ranks.fill({2,Unknown});
     if (wander || geometric) {
@@ -271,15 +310,30 @@ Suggestion Planner::plan(const SimulationSnapshot::Handle& world, const Request&
                 const auto& terrain=view.terrainProperties(view.index(x,y));
                 const bool hazard=(request.task.fly ? terrain.airHealthQ8 : terrain.groundHealthQ8)<0;
                 const bool tower=request.task.fly && towerThreat(world,request.task,x,y);
-                const bool guard=world.areas->cells[here].guard & (1u<<request.task.team);
+                const bool guard=world.rules && world.rules->configuration->hasExperiment(ExperimentId::GuardAreaBalancing)
+                    && (request.task.capabilities & UnitRuntimeTraits::GuardIdle) && (world.areas->cells[here].guard & (1u<<request.task.team));
                 const bool leavesGuard=guard && !(world.areas->cells[view.index(x,y)].guard & (1u<<request.task.team));
                 ranks[i]={hazard?2u:tower || leavesGuard?1u:0u,0};
+                if(patrol && world.exploration) {
+                    bool inside=bool(world.areas->cells[view.index(x,y)].guard & (1u<<request.task.team));
+                    if(patrolBuilding) {
+                        const int ax=std::abs(x-view.normalizeX(patrolBuilding->posX)),ay=std::abs(y-view.normalizeY(patrolBuilding->posY));
+                        const int wx=std::min(ax,world.width-ax),wy=std::min(ay,world.height-ay);
+                        inside=Sint64(wx)*wx+Sint64(wy)*wy<=Sint64(patrolBuilding->unitStayRange)*patrolBuilding->unitStayRange;
+                    }
+                    const auto& e=world.exploration->teams.at(request.task.team);
+                    const unsigned explored=e[view.index(request.task.x+2*d[0],request.task.y+2*d[1])]
+                        +e[view.index(request.task.x+2*d[0]-d[1],request.task.y+2*d[1]+d[0])]
+                        +e[view.index(request.task.x+2*d[0]+d[1],request.task.y+2*d[1]-d[0])];
+                    ranks[i]={inside?0u:2u,explored};
+                }
             } else {
                 if(request.mode==Mode::Explore && towerThreat(world,request.task,x,y))continue;
-                ranks[i]={remaining<unsigned(oldDistance)?0u:remaining==unsigned(oldDistance)?1u:2u,remaining};
+                ranks[i]={remaining<unsigned(oldDistance)?0u:remaining==unsigned(oldDistance)?1u:2u,remaining+step(world,request.task,view.index(x,y),d[0]&&d[1])};
+                if(explorationHeading && *explorationHeading<8)ranks[i]={i==*explorationHeading?0u:2u,0};
             }
         }
-        result.disposition=geometric && oldDistance==0 ? Disposition::GoalReached : Disposition::Travel;
+        result.disposition=geometric && !wander && oldDistance==0 ? Disposition::GoalReached : Disposition::Travel;
     } else if (request.mode==Mode::Resource && world.resourceFields
         && request.task.material>=0 && request.task.material<int(MaterialCount)
         && world.resourceFields->find(MapState::planeKey(request.task.team,request.task.material,swimClass(request.task),false))
@@ -288,6 +342,7 @@ Suggestion Planner::plan(const SimulationSnapshot::Handle& world, const Request&
               | world.catalogs->typeDefinitions->at(building(world,request.task.attached)->typeNum).runtimeFetchesDirectStockMask))) {
         const auto& plane=*world.resourceFields->find(MapState::planeKey(request.task.team,request.task.material,swimClass(request.task),false))->values;
         const auto old=plane[here];
+        if(old>GRADIENT_UNREACHABLE)result.originCost=GRADIENT_AT_GOAL-old;
         result.disposition=old==GRADIENT_AT_GOAL?Disposition::GoalReached:
             old<=GRADIENT_UNREACHABLE?Disposition::NoRoute:Disposition::Travel;
         ++metrics.cacheHits; // borrowed, immutable published plane; no lazy expansion
@@ -298,6 +353,7 @@ Suggestion Planner::plan(const SimulationSnapshot::Handle& world, const Request&
             const auto value=plane[next];
             if(value<=GRADIENT_UNREACHABLE || !legal(view,request.task,request.task.x+d[0],request.task.y+d[1],false))continue;
             ranks[i]={value>old?0u:value==old?1u:2u,unsigned(GRADIENT_AT_GOAL-value)+step(world,request.task,next,d[0]&&d[1])};
+            result.stepCosts[i]=ranks[i].second;
         }
     } else {
         // Route fields depend on travel capabilities and goal semantics, not
@@ -327,6 +383,7 @@ Suggestion Planner::plan(const SimulationSnapshot::Handle& world, const Request&
             cache.push_back(std::move(field)); found=cache.end()-1;
         } else ++metrics.cacheHits;
         const auto old=found->costs[here];
+        result.originCost=old;
         if (old==0) result.disposition=Disposition::GoalReached;
         else if (old==Unknown) { result.disposition=Disposition::NoRoute; if(found->truncated)++metrics.unknown; }
         else result.disposition=Disposition::Travel;
@@ -343,6 +400,7 @@ Suggestion Planner::plan(const SimulationSnapshot::Handle& world, const Request&
             if(remaining==Unknown || !legal(view,request.task,request.task.x+d[0],request.task.y+d[1],false))continue;
             const unsigned group=remaining<old?0u:remaining==old?1u:2u;
             ranks[i]={group,remaining+step(world,request.task,next,d[0]&&d[1])};
+            result.stepCosts[i]=ranks[i].second;
         }
     }
     // Only preferred groups sort by cost. The rest retains randomized order,
@@ -350,9 +408,25 @@ Suggestion Planner::plan(const SimulationSnapshot::Handle& world, const Request&
     std::stable_sort(result.directions.begin(),result.directions.end(),[&](auto a,auto b) {
         const auto ra=ranks[a].first<2?ranks[a]:std::pair<unsigned,unsigned>{2,0};
         const auto rb=ranks[b].first<2?ranks[b]:std::pair<unsigned,unsigned>{2,0};
-        return ra<rb;
+        if(ra!=rb)return ra<rb;
+        // The reference gradient kernel resolves improving-cost ties in index
+        // order. Sidesteps and the unused suffix retain private randomness.
+        if(result.steering==Steering::Route && ra.first==0)return a<b;
+        if(result.steering==Steering::Geometric && geometricHeading<8) {
+            constexpr unsigned order[8]={0,1,3,5,7,6,4,2};
+            return order[(a+8-geometricHeading)%8]<order[(b+8-geometricHeading)%8];
+        }
+        if(patrol && ra.first==0)return (a+8-request.task.heading%8)%8<(b+8-request.task.heading%8)%8;
+        return false;
     });
     for(auto d:result.directions) if(ranks[d].first<2)++result.preferred;
+    for(unsigned d=0;d<8;++d) {
+        const auto v=Directions[d];
+        if(legal(view,request.task,request.task.x+v[0],request.task.y+v[1],false))result.structuralMask|=1u<<d;
+        const auto& cell=view.occupancy[view.index(request.task.x+v[0],request.task.y+v[1])];
+        const auto occupant=request.task.fly?cell.airUnit:cell.groundUnit;
+        if(occupant!=0xffff && occupant!=request.task.unit.gid)result.occupiedMask|=1u<<d;
+    }
     return result;
 }
 }

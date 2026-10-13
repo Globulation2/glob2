@@ -15,7 +15,7 @@ namespace
 {
 using Clock=std::chrono::steady_clock;
 Uint64 elapsed(Clock::time_point start) { return std::chrono::duration_cast<std::chrono::nanoseconds>(Clock::now()-start).count(); }
-Task signature(Task task) { task.x=task.y=0; return task; }
+Task signature(Task task) { task.x=task.y=0;task.heading=8; return task; }
 void capturePursuitTarget(Task& task,const SimulationSnapshot::Handle& world)
 {
     const auto cell=world.occupancy->cells[world.view().index(task.targetX,task.targetY)];
@@ -78,13 +78,16 @@ Shadow::Shadow(ComputeExecutor& executor,unsigned delay,unsigned teams,int width
     if (agreementSweep ? delay>8 : delay!=0 && delay!=1 && delay!=2 && delay!=4 && delay!=8) throw std::invalid_argument("movement shadow delay must be 1, 2, 4 or 8");
     if(!teams || teams>Team::MAX_COUNT || width<=0 || height<=0)throw std::invalid_argument("invalid movement shadow configuration");
     if (!planningEnabled()) return; // profiling-only reference control
+    refreshNearCompletion=std::getenv("GLOB2_MOVEMENT_NO_REFRESH")==nullptr;
+    if(std::getenv("GLOB2_MOVEMENT_EXPLAIN"))diagnosticFreshPlanner=std::make_unique<Planner>(2*1024*1024);
     if(const char* path=std::getenv("GLOB2_MOVEMENT_AGREEMENT_TRACE");path && *path) {
         agreementTrace=std::make_unique<std::ofstream>(path);
         if(!*agreementTrace)throw std::runtime_error("Cannot open movement agreement trace");
-        *agreementTrace<<"tick,team,mode,gid,incarnation,sequence,observation_tick,publication_tick,origin_x,origin_y,proposed_direction,reference_direction,disposition,destination_present,destination_x,destination_y,reference_target_valid,reference_target_x,reference_target_y\n";
+        *agreementTrace<<"tick,team,mode,gid,incarnation,sequence,observation_tick,publication_tick,origin_x,origin_y,proposed_direction,reference_direction,disposition,destination_present,destination_x,destination_y,reference_target_valid,reference_target_x,reference_target_y,steering,cause,selected_rank,blocked_mask,captured_blocked_mask,proposal_cost,reference_cost,fresh_direction,fresh_proposal_cost,fresh_reference_cost\n";
     }
     const std::size_t quota=std::min<std::size_t>(32*1024*1024,128*1024*1024/teams);
     const Uint64 cells=Uint64(width)*height;
+    if(diagnosticFreshPlanner && cells>(2*1024*1024-4096)/16)throw std::invalid_argument("map exceeds optional fresh-probe diagnostic quota");
     // Conservative capture arrays (terrain/resource/occupancy/areas/visibility,
     // exploration per team) plus one scratch/field workspace per team. Published
     // planes, entities and nested payloads are reported separately by the store.
@@ -153,14 +156,18 @@ void Shadow::boundary(const Game& game,const SimulationSnapshot::Handle& world)
         auto remaining=completionTicks(unit.core); if(!remaining)continue;
         if(actor.published && (actor.published->request.task!=task || actor.published->request.actionGeneration!=actor.actionGeneration))actor.published.reset();
         if(actor.pendingSequence && actor.requestedGeneration==actor.actionGeneration && !moved && !changed)continue;
-        if(actor.published)continue;
+        const bool refresh=refreshNearCompletion && actor.published && *remaining==delay+1
+            && actor.refreshGeneration!=actor.actionGeneration && actor.published->request.observationTick+delay<world.tick;
+        if(actor.published && !refresh)continue;
+        if(refresh){actor.published.reset();actor.refreshGeneration=actor.actionGeneration;}
         const bool invalidated=changed || moved || !actor.requested || actor.requestedGeneration!=actor.actionGeneration;
-        if(!invalidated && *remaining>std::max(1u,delay))continue;
+        if(!invalidated && !refresh && *remaining>std::max(1u,delay))continue;
         Request request{task,*mode,actor.epoch,actor.actionGeneration,++actor.sequence,world.tick,
             world.tick+*remaining-1,batch->due};
         actor.pendingSequence=request.sequence;actor.requested=true;actor.requestedGeneration=actor.actionGeneration;
         batch->teams[unit.team].requests.push_back(request);
         ++metrics[unit.team][unsigned(*mode)].admitted;
+        if(refresh)++metrics[unit.team][unsigned(*mode)].refreshed;
     }
     std::sort(live.begin(),live.end());
     for(auto it=actors.begin();it!=actors.end();) {
@@ -214,6 +221,12 @@ void Shadow::recordAgreement(Metrics& m,unsigned proposed,unsigned reference)
     else if(proposed<8)++m.proposalMoveReferenceStay;
     else ++m.proposalStayReferenceMove;
 }
+std::optional<Uint8> Shadow::preparedDirection(const Unit& unit) const
+{
+    const auto found=actors.find(unit.core.gid);
+    if(found==actors.end() || found->second.task.unit!=Game::refOf(&unit) || !found->second.comparison)return {};
+    return found->second.comparison->proposedDirection;
+}
 void Shadow::completeAction(const Unit& unit)
 {
     const auto found=actors.find(unit.core.gid);
@@ -232,22 +245,67 @@ void Shadow::completeAction(const Unit& unit)
         else {
             const unsigned actual=Unit::directionFromDxDy(unit.core.dx,unit.core.dy);
             recordAgreement(m,comparison.proposedDirection,actual);
+            if(comparison.steering==Steering::Wander) {
+                if(comparison.patrol){++m.patrolCompared;m.patrolAgree+=comparison.proposedDirection==actual;}
+                else {++m.randomCompared;m.randomAgree+=comparison.proposedDirection==actual;}
+            }
+            unsigned cause=8; // exact agreement is not a disagreement category
+            Uint32 proposedCost=UnknownCost,referenceCost=UnknownCost;
+            if(comparison.proposedDirection<8)proposedCost=comparison.stepCosts[comparison.proposedDirection];
+            if(actual<8)referenceCost=comparison.stepCosts[actual];
+            if(comparison.proposedDirection!=actual) {
+                ++m.disagreements;
+                m.occupancyChanged+=comparison.currentOccupiedMask!=comparison.capturedBlockedMask;
+                m.conflictAlteredChoice+=comparison.proposedDirection!=comparison.unoccupiedDirection;
+                m.chosenAfterBlock+=comparison.selectedRank>0;
+                if(comparison.proposedDirection==8 || actual==8)cause=7;
+                else if(comparison.steering==Steering::Wander)cause=4;
+                else if(comparison.steering==Steering::Exploration)cause=5;
+                else if(comparison.steering==Steering::Geometric)cause=6;
+                else if(proposedCost==UnknownCost || referenceCost==UnknownCost)cause=3;
+                else cause=proposedCost==referenceCost?0:proposedCost>referenceCost?1:2;
+                ++m.classified[cause];
+            }
+            unsigned freshDirection=9;Uint32 freshProposedCost=UnknownCost,freshReferenceCost=UnknownCost;
+            if(diagnosticFreshPlanner && m.freshCompared<256) {
+                auto freshWorld=SimulationSnapshot::capture(*unit.owner->game,SimulationSnapshot::captureCatalog(*unit.owner->game),requirements);
+                auto freshRequest=r;freshRequest.observationTick=unit.owner->game->stepCounter;
+                const auto fresh=diagnosticFreshPlanner->plan(freshWorld,freshRequest,unit.owner->game->gameHeader.getRandomSeed());
+                unsigned direction=8;
+                if(fresh.disposition==Disposition::Travel)for(auto d:fresh.directions) {
+                    const auto v=Directions[d];const int x=r.task.x+v[0],y=r.task.y+v[1];
+                    bool allowed=legal(freshWorld,r.task,x,y,true);
+                    const auto& terrain=freshWorld.view().terrainProperties(freshWorld.view().index(x,y));
+                    if(r.mode==Mode::Idle || r.mode==Mode::Explore)allowed &= (r.task.fly?terrain.airHealthQ8:terrain.groundHealthQ8)>=0;
+                    if(r.mode==Mode::Explore)allowed &= !towerThreat(freshWorld,r.task,x,y);
+                    if(allowed){direction=d;break;}
+                }
+                freshDirection=direction;
+                ++m.freshCompared;m.freshAgree+=direction==actual;
+                m.freshFixesDisagreement+=comparison.proposedDirection!=actual && direction==actual;
+                const auto proposed=comparison.proposedDirection<8?fresh.stepCosts[comparison.proposedDirection]:UnknownCost;
+                const auto reference=actual<8?fresh.stepCosts[actual]:UnknownCost;
+                freshProposedCost=proposed;freshReferenceCost=reference;
+                if(fresh.steering==Steering::Route && proposed!=UnknownCost && reference!=UnknownCost) {
+                    m.freshWorse+=proposed>reference;m.freshEqual+=proposed==reference;m.freshBetter+=proposed<reference;
+                }else ++m.freshUnknown;
+            }
             m.observationAgeTicks+=Uint64(unit.owner->game->stepCounter)-r.observationTick;
             if(comparison.destination && unit.core.validTarget) {
                 ++m.destinationCompared;
                 m.destinationCoordinateAgree+=((comparison.destination->x&map.getMaskW())==unit.core.targetX
                     && (comparison.destination->y&map.getMaskH())==unit.core.targetY);
             }
-            const unsigned equal=comparison.proposedDirection==actual;
+            const unsigned traceCategory=freshProposedCost!=UnknownCost && freshReferenceCost!=UnknownCost && freshProposedCost>freshReferenceCost?9:cause;
             // Deterministic bounded examples, independently for each team/mode
-            // and agreement outcome. Aggregate counters cover every comparison.
-            if(agreementTrace && m.traceSamples[equal]<64) {
-                ++m.traceSamples[equal];const auto d=comparison.destination;
+            // and disagreement category (including rare fresh-cost regressions). Aggregate counters cover every comparison.
+            if(agreementTrace && m.traceSamples[traceCategory]<64) {
+                ++m.traceSamples[traceCategory];const auto d=comparison.destination;
                 *agreementTrace<<unit.owner->game->stepCounter<<','<<r.task.team<<','<<Names[unsigned(r.mode)]<<','
                     <<r.task.unit.gid<<','<<r.task.unit.generation<<','<<r.sequence<<','<<r.observationTick<<','<<r.publicationTick<<','
                     <<r.task.x<<','<<r.task.y<<','<<unsigned(comparison.proposedDirection)<<','<<actual<<','
                     <<unsigned(comparison.disposition)<<','<<bool(d)<<','
-                    <<(d?d->x:0)<<','<<(d?d->y:0)<<','<<unit.core.validTarget<<','<<unit.core.targetX<<','<<unit.core.targetY<<'\n';
+                    <<(d?d->x:0)<<','<<(d?d->y:0)<<','<<unit.core.validTarget<<','<<unit.core.targetX<<','<<unit.core.targetY<<','<<unsigned(comparison.steering)<<','<<cause<<','<<comparison.selectedRank<<','<<unsigned(comparison.blockedMask)<<','<<unsigned(comparison.capturedBlockedMask)<<','<<proposedCost<<','<<referenceCost<<','<<freshDirection<<','<<freshProposedCost<<','<<freshReferenceCost<<'\n';
                 if(!*agreementTrace){++agreementTraceErrors;agreementTrace.reset();}
             }
         }
@@ -291,8 +349,10 @@ void Shadow::observe(const Unit& unit)
         if(!d.supplier.empty()) {
             const auto* supplier=unit.owner->game->resolveBuilding(d.supplier);
             const auto* home=unit.attachedBuilding;
-            valid=supplier && home && supplier!=home && supplier->owner==unit.owner
+            if(r.mode==Mode::Resource)valid=supplier && home && supplier!=home && supplier->owner==unit.owner
                 && supplier->buildingState==Building::ALIVE && home->buildingState==Building::ALIVE;
+            else valid=supplier && supplier->buildingState==Building::ALIVE &&
+                (r.mode==Mode::Pursuit ? (unit.owner->enemies & supplier->owner->me)!=0 : Game::refOf(unit.targetBuilding)==d.supplier);
             if(valid && r.mode==Mode::Resource) {
                 const auto material=r.task.material;
                 valid=material>=0 && material<int(MaterialCount) && supplier->availableMaterial(material)>0;
@@ -305,7 +365,7 @@ void Shadow::observe(const Unit& unit)
         } else if(r.mode==Mode::Resource)valid=map.isMaterialTakeableSlot(d.x,d.y,r.task.material);
         if(!valid) { ++m.destinationRejected;destinationValid=false; }
     }
-    unsigned rank=0;
+    unsigned rank=0;Uint8 blockedMask=0,currentOccupiedMask=0,unoccupiedDirection=8;
     for(auto direction:suggestion.directions) {
         const auto d=Directions[direction]; const int x=task.x+d[0],y=task.y+d[1];
         bool allowed=task.fly ? map.isFreeForAirUnit(x,y) : map.isFreeForGroundUnit(x,y,task.swim>0,unit.owner->me);
@@ -313,9 +373,15 @@ void Shadow::observe(const Unit& unit)
         allowed &= task.fly || task.walk>0 || terrain.swimmable;
         if(*mode==Mode::Idle || *mode==Mode::Explore)allowed &= (task.fly?terrain.airHealthQ8:terrain.groundHealthQ8)>=0;
         if(*mode==Mode::Explore)allowed &= !currentTowerThreat(unit,x,y);
-        if(allowed)break;
-        ++rank;
+        if(!allowed)blockedMask|=1u<<direction;
+        const auto occupant=task.fly?map.getAirUnit(x,y):map.getGroundUnit(x,y);
+        if(occupant!=NOGUID && occupant!=task.unit.gid)currentOccupiedMask|=1u<<direction;
+        bool structural=legal(map.cellView(),task,x,y,false);
+        if(*mode==Mode::Idle || *mode==Mode::Explore)structural &= (task.fly?terrain.airHealthQ8:terrain.groundHealthQ8)>=0;
+        if(*mode==Mode::Explore)structural &= !currentTowerThreat(unit,x,y);
+        if(structural && unoccupiedDirection==8 && suggestion.disposition==Disposition::Travel)unoccupiedDirection=direction;
     }
+    while(rank<8 && (blockedMask & (1u<<suggestion.directions[rank])))++rank;
     ++m.selectedRank[rank];
     if(rank==8)++m.blocked;else if(rank<suggestion.preferred)++m.preferredSuccess;
     if(eligible) {
@@ -326,7 +392,7 @@ void Shadow::observe(const Unit& unit)
             // are deliberately not invented by this observer.
             const Uint8 direction=suggestion.disposition==Disposition::Travel && rank<8?suggestion.directions[rank]:8;
             auto comparisonRequest=r;comparisonRequest.task.x=task.x;comparisonRequest.task.y=task.y;
-            actor.comparison=Comparison{comparisonRequest,suggestion.destination,direction,suggestion.disposition};
+            actor.comparison=Comparison{comparisonRequest,suggestion.destination,direction,suggestion.disposition,suggestion.steering,suggestion.stepCosts,blockedMask,suggestion.occupiedMask,rank,currentOccupiedMask,unoccupiedDirection,suggestion.patrol};
         }
     }
 }
@@ -339,7 +405,7 @@ void Shadow::drain()
 }
 Uint64 Shadow::retainedBytes() const
 {
-    Uint64 bytes=sizeof(*this)+actors.size()*(sizeof(Actor)+4*sizeof(void*));
+    Uint64 bytes=sizeof(*this)+(diagnosticFreshPlanner?sizeof(Planner)+diagnosticFreshPlanner->retainedBytes():0)+actors.size()*(sizeof(Actor)+4*sizeof(void*));
     for(const auto& batch:pending) {
         bytes+=sizeof(Batch)+batch->teams.capacity()*sizeof(TeamJob);
         for(const auto& job:batch->teams)bytes+=job.requests.capacity()*sizeof(Request)+job.outputs.capacity()*sizeof(Suggestion);
@@ -354,7 +420,7 @@ std::vector<std::pair<std::string,Uint64>> Shadow::summary() const
     bool settled=true;
     for(const auto& batch:pending) { settled &= executor.finished(batch->ticket); }
     if(settled)for(const auto& batch:pending)for(const auto& job:batch->teams)completedActive+=job.activeNs;
-    std::vector<std::pair<std::string,Uint64>> result{{"agreement_sweep",agreementSweep},{"agreement_trace_errors",agreementTraceErrors},{"owner_cpu_available",OwnerCpuAvailable},{"workers_settled",settled},{"delay",delay},{"active_ns",completedActive},{"admission_ns",admissionNs},
+    std::vector<std::pair<std::string,Uint64>> result{{"quality_probe_enabled",bool(diagnosticFreshPlanner)},{"refresh_near_completion",refreshNearCompletion},{"agreement_sweep",agreementSweep},{"agreement_trace_errors",agreementTraceErrors},{"owner_cpu_available",OwnerCpuAvailable},{"workers_settled",settled},{"delay",delay},{"active_ns",completedActive},{"admission_ns",admissionNs},
         {"deadline_waits",waits},{"deadline_wait_ns",waitNs},{"maximum_batches",maxBatches},{"owner_retained_bytes",retainedBytes()},{"owner_peak_bytes",peakBytes}};
     if(settled) {
         Uint64 cacheBytes=0,peakWorkspace=0,visited=0,hits=0,fields=0,unknown=0;
@@ -370,9 +436,15 @@ std::vector<std::pair<std::string,Uint64>> Shadow::summary() const
         const auto& m=metrics[t][mode];if(!m.admitted && !m.reference.opportunities)continue;
         const std::string prefix="team_"+std::to_string(t)+"_"+Names[mode]+"_";
         auto add=[&](const char* name,Uint64 value){result.emplace_back(prefix+name,value);};
-        add("admitted",m.admitted);add("published",m.published);add("stable_opportunities",m.stable);add("rapid_opportunities",m.rapid);
+        add("admitted",m.admitted);add("published",m.published);add("refreshed",m.refreshed);add("stable_opportunities",m.stable);add("rapid_opportunities",m.rapid);
         add("valid",m.valid);add("missing",m.missing);add("position_rejected",m.positionRejected);add("task_rejected",m.taskRejected);add("generation_rejected",m.generationRejected);
         add("agreement_opportunities",m.agreementOpportunities);add("agreement_destination_rejected",m.agreementDestinationRejected);add("agreement_cancelled",m.agreementCancelled);
+        add("random_wander_compared",m.randomCompared);add("random_wander_agree",m.randomAgree);add("guard_patrol_compared",m.patrolCompared);add("guard_patrol_agree",m.patrolAgree);
+        add("fresh_probe_compared",m.freshCompared);add("fresh_probe_agree",m.freshAgree);add("fresh_probe_fixes_disagreement",m.freshFixesDisagreement);
+        add("fresh_probe_worse_cost",m.freshWorse);add("fresh_probe_equal_cost",m.freshEqual);add("fresh_probe_better_cost",m.freshBetter);add("fresh_probe_unknown_cost",m.freshUnknown);
+        add("disagreements",m.disagreements);add("disagreement_occupancy_changed",m.occupancyChanged);add("disagreement_chosen_after_block",m.chosenAfterBlock);add("disagreement_conflict_altered_choice",m.conflictAlteredChoice);
+        constexpr const char* causes[]={"equal_route_cost","worse_route_cost","better_route_cost","unknown_route_cost","wander","exploration","geometric","move_stay"};
+        for(unsigned i=0;i<8;++i)add((std::string("disagreement_")+causes[i]).c_str(),m.classified[i]);
         add("agreement_compared",m.compared);add("agreement_direction_equal",m.directionAgree);add("agreement_move_stay_equal",m.moveStayAgree);
         add("agreement_both_move",m.bothMove);add("agreement_moving_direction_equal",m.movingDirectionAgree);add("agreement_both_stay",m.bothStay);
         add("agreement_proposal_move_reference_stay",m.proposalMoveReferenceStay);add("agreement_proposal_stay_reference_move",m.proposalStayReferenceMove);
