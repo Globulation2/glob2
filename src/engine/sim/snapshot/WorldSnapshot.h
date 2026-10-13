@@ -19,6 +19,7 @@
 #include "MapChangeTracking.h"
 #include <span>
 #include <optional>
+#include <iterator>
 #include <stdexcept>
 #include <limits>
 
@@ -130,13 +131,18 @@ public:
     UnitView at(std::size_t i) const { if(i>=size())throw std::out_of_range("unit record");return (*this)[i]; }
     UnitView front() const { return at(0); }
     struct Iterator {
-        const UnitViews* owner; std::size_t index;
-        UnitView operator*() const { return (*owner)[index]; }
-        Iterator& operator++() { ++index;return *this; }
+        using value_type=UnitView;
+        using difference_type=std::ptrdiff_t;
+        using iterator_category=std::forward_iterator_tag;
+        const UnitCoreView* core=nullptr;
+        const UnitDetailState* detail=nullptr;
+        UnitView operator*() const { return {*core,*detail}; }
+        Iterator& operator++() { ++core;++detail;return *this; }
+        Iterator operator++(int) { auto previous=*this;++*this;return previous; }
         bool operator==(const Iterator&) const = default;
     };
-    Iterator begin() const { return {this,0}; }
-    Iterator end() const { return {this,size()}; }
+    Iterator begin() const { return {cores.data(),details.data()}; }
+    Iterator end() const { return empty() ? begin() : Iterator{cores.data()+size(),details.data()+size()}; }
 };
 struct Teams { std::vector<TeamView> values; int totalPrestige = 0; };
 struct Rules

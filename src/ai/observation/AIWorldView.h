@@ -174,13 +174,20 @@ public:
             return index==SimulationSnapshot::Entities::NoRecord ? std::nullopt : UnitObservation(records[index]);
         }
         struct Iterator {
-            const UnitSlots* owner; std::size_t index;
-            UnitObservation operator*() const { return (*owner)[index]; }
+            using value_type=UnitObservation;
+            using difference_type=std::ptrdiff_t;
+            using iterator_category=std::forward_iterator_tag;
+            SimulationSnapshot::UnitViews records;
+            const Uint32* index=nullptr;
+            UnitObservation operator*() const {
+                return *index==SimulationSnapshot::Entities::NoRecord ? std::nullopt : UnitObservation(records[*index]);
+            }
             Iterator& operator++() { ++index;return *this; }
-            bool operator==(const Iterator&) const = default;
+            Iterator operator++(int) { auto previous=*this;++*this;return previous; }
+            bool operator==(const Iterator& other) const { return index==other.index; }
         };
-        Iterator begin() const { return {this,0}; }
-        Iterator end() const { return {this,size()}; }
+        Iterator begin() const { return {records,indices.data()}; }
+        Iterator end() const { return {records,indices.empty() ? indices.data() : indices.data()+size()}; }
     };
     UnitSlots unitSlots(int team) const {
         if(!lease.unitCores || !lease.unitDetails || team<0 || std::size_t(team)>=lease.unitCores->unitSlotIndices.size()/UnitUtils::MAX_COUNT)return {};

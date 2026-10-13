@@ -949,6 +949,13 @@ TEST_SUITE("CompactUnitSnapshot")
         REQUIRE(full.unitDetails);CHECK(full.unitCores==core.unitCores);
         CHECK(store.metrics.unitStateBytesCopied==2*(sizeof(UnitCoreState)+sizeof(UnitDetailState)));
         CHECK(&full.units()[0].core==&core.unitCores->units[0].core);
+        // Iterators borrow storage, not a temporary range wrapper.
+        auto iterator=full.units().begin();
+        CHECK(&(*iterator).core==&core.unitCores->units[0].core);
+        ++iterator;CHECK(&(*iterator).core==&core.unitCores->units[1].core);
+        AIEngine::AIWorldView observation(full);
+        auto slot=observation.unitSlots(0).begin();
+        REQUIRE(*slot);CHECK((*slot)->identity==Game::refOf(first));
         CHECK(full.units()[0].detail==first->detail);
         const auto again=store.captureBoundary(fixture.game,bit(Component::UnitDetails));
         CHECK(again.unitCores==full.unitCores);CHECK(again.unitDetails==full.unitDetails);CHECK_FALSE(again.entities);
