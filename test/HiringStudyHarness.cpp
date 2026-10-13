@@ -13,6 +13,7 @@
 #include "ComputeExecutor.h"
 #include <chrono>
 #include <ctime>
+#include <cstdlib>
 #include <set>
 #include <span>
 #include <map>
@@ -44,9 +45,9 @@ int main(int argc, char** argv)
 try
 {
     if (argc != 4 || std::string(argv[1]) != "--prepare")
-        throw std::runtime_error("Usage: HiringStudyHarness --prepare sustainable|contention|opportunities|opportunity-save OUTPUT_DIR");
+        throw std::runtime_error("Usage: HiringStudyHarness --prepare sustainable|contention|opportunities|opportunity-save|planner-benchmark OUTPUT_DIR");
     const std::string kind = argv[2];
-    if (kind != "sustainable" && kind != "contention" && kind != "opportunities" && kind != "opportunity-save") throw std::invalid_argument("Unknown fixture kind");
+    if (kind != "sustainable" && kind != "contention" && kind != "opportunities" && kind != "opportunity-save" && kind != "planner-benchmark") throw std::invalid_argument("Unknown fixture kind");
     const fs::path directory = argv[3];
     if (fs::exists(directory)) throw std::runtime_error("Output directory already exists");
     fs::create_directories(directory);
@@ -86,9 +87,13 @@ try
         }
         game.teams[t]->createLists();
     }
-    if(kind=="opportunities" || kind=="opportunity-save") {
+    if(kind=="opportunities" || kind=="opportunity-save" || kind=="planner-benchmark") {
         // Isolated real-engine hiring opportunities. No simulation ticks run:
         // stock/positions remain fixed, and subscription resets are untimed.
+        const bool benchmarkOnly=kind=="planner-benchmark";
+        const auto* execution=std::getenv("GLOB2_HIRING_BENCH_EXECUTION");
+        if(benchmarkOnly && execution && std::string(execution)!="owner" && std::string(execution)!="pool")
+            throw std::invalid_argument("GLOB2_HIRING_BENCH_EXECUTION must be owner or pool");
         nlohmann::json rows=nlohmann::json::array();
         ComputeExecutor executor;executor.configure(4);
         const auto reset=[&](unsigned availableStride) {
@@ -111,16 +116,22 @@ try
             reset(stride);game.snapshotStore().invalidateBoundary();
             auto snapshot=game.captureReadBoundary({},true,SimulationSnapshot::Simulation);
             auto inputs=HiringPlanner::capture(game,snapshot);
-            for(int repetition=-1;repetition<10;++repetition)
-            for(int offset=0;offset<13;++offset) {
-                const int mode=(offset+repetition+14)%13-2;
+            unsigned referencePerPass=0;
+            if(benchmarkOnly) {
+                for(int t=0;t<2;++t)game.teams[t]->updateAllBuildingTasks();
+                for(int t=0;t<2;++t)for(auto* b:std::span(game.teams[t]->myBuildings,Building::MAX_COUNT))if(b)referencePerPass+=b->unitsWorking.size();
+                reset(stride);
+            }
+            for(int repetition=benchmarkOnly?0:-1;repetition<(benchmarkOnly?1:10);++repetition)
+            for(int offset=0;offset<(benchmarkOnly?1:13);++offset) {
+                const int mode=benchmarkOnly?(execution && std::string(execution)=="pool"?10:8):(offset+repetition+14)%13-2;
                 HiringPlanner::Options options;options.pruneFetch=mode<8;
                 if(mode>=0){options.extras=(mode/2)*2;options.availableOnly=mode%2;}
                 if(mode>=6){options.extras=(mode==7?4:2);options.availableOnly=true;options.coordinate=mode!=9;options.pruneFetch=mode<8;}
                 HiringPlanner::Cache caches[2];
                 {
                     std::uint64_t cpu=0,elapsed=0,filled=0,reference=0,queries=0,visits=0,busy=0,pruned=0,reused=0,retained=0,coordinated=0;
-                    for(int iteration=0;iteration<20;++iteration) {
+                    for(int iteration=0;iteration<(benchmarkOnly?128:20);++iteration) {
                         reset(stride);
                         const auto start=std::chrono::steady_clock::now();const auto c=std::clock();
                         if(mode==-2){for(int t=0;t<2;++t)game.teams[t]->updateAllBuildingTasks();}
@@ -161,14 +172,16 @@ try
                             }
                             // Ground truth fills the same persistent opportunities;
                             // comparison includes normal subscription and swaps.
-                            for(int t=0;t<2;++t)game.teams[t]->updateAllBuildingTasks();
+                            if(!benchmarkOnly)for(int t=0;t<2;++t)game.teams[t]->updateAllBuildingTasks();
                         }
                         if(mode==-2){cpu+=std::uint64_t((std::clock()-c)*1000000000.0/CLOCKS_PER_SEC);elapsed+=std::chrono::duration_cast<std::chrono::nanoseconds>(std::chrono::steady_clock::now()-start).count();}
-                        for(int t=0;t<2;++t)for(auto* b:std::span(game.teams[t]->myBuildings,Building::MAX_COUNT))if(b)reference+=b->unitsWorking.size();
+                        if(benchmarkOnly)reference+=referencePerPass;
+                        else for(int t=0;t<2;++t)for(auto* b:std::span(game.teams[t]->myBuildings,Building::MAX_COUNT))if(b)reference+=b->unitsWorking.size();
                     }
-                    rows.push_back({{"availability_stride",stride},{"mode",mode},{"extras",options.extras},{"available_only",options.availableOnly},{"repetition",repetition},{"iterations",20},{"cpu_ns",cpu},{"elapsed_ns",elapsed},{"private_overlay_hires",filled},{"reference_hires",reference},{"building_queries",queries},{"candidate_visits",visits},{"busy_evaluations",busy},{"bound_skips",pruned},{"distance_reuses",reused},{"retained_bytes_sum",retained},{"coordinated_teams",coordinated}});
+                    rows.push_back({{"availability_stride",stride},{"mode",mode},{"extras",options.extras},{"available_only",options.availableOnly},{"repetition",repetition},{"iterations",benchmarkOnly?128:20},{"cpu_ns",cpu},{"elapsed_ns",elapsed},{"private_overlay_hires",filled},{"reference_hires",reference},{"building_queries",queries},{"candidate_visits",visits},{"busy_evaluations",busy},{"bound_skips",pruned},{"distance_reuses",reused},{"retained_bytes_sum",retained},{"coordinated_teams",coordinated}});
                 }
             }
+            if(benchmarkOnly)continue;
             // Controlled scheduling model: assignments remain busy, positions
             // and stock are frozen. Admissions precede same-boundary publication,
             // matching the engine's completed-world read ordering.

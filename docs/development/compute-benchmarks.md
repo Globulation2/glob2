@@ -142,7 +142,12 @@ This is a policy experiment, not proof of equivalent hires or live delay.
 The `hiring-study --prepare opportunities OUTPUT_DIR` harness compares warmed,
 static real-engine opportunities with rotated repeated planner controls and a
 shared-executor control. `--prepare opportunity-save OUTPUT_DIR` emits the
-open-vacancy input for scheduled determinism checks. Direct fill timings include subscriptions and immediate
+open-vacancy input for scheduled determinism checks. For paired planner timing,
+`--prepare planner-benchmark OUTPUT_DIR` runs 128 refreshes per availability
+case, using vacancies plus two backups and distinct primary suggestions. Set
+`GLOB2_HIRING_BENCH_EXECUTION=owner|pool` to compare the identical planner.
+Only the initial reference fill is performed outside timing; external repetition
+and alternating executable order are required for a before/after comparison. Direct fill timings include subscriptions and immediate
 swaps; planner timings exclude commitment and snapshot capture. Its separate
 K4/R4 waiting model freezes positions, stock and medical availability while
 hypothetical hires remain busy. It is not a live gameplay delay measurement.
