@@ -219,7 +219,7 @@ void testBinaryHeaderFormsAndLegacy()
         // shorter tail; player-info-only records never contain them.
         memory->seekFromEnd(0);
         std::string historical(memory->getBuffer(),memory->getPosition());
-        if (form != 1) glob2test::removeUnitCatalogWireSection(historical, original);
+        if (form != 1) glob2test::removeModernHeaderFields(historical, original);
         const std::string current=historical;
         if(form!=1) historical.erase(6,1);
         // Format 145 adds an empty artwork chunk count before resource declarations.
@@ -431,8 +431,8 @@ TEST_CASE("Building gradient delay round trips at both boundaries and rejects in
         auto* memory=new MemoryStreamBackend;
         BinaryOutputStream output(memory);
         if(players) header.save(&output);else header.saveWithoutPlayerInfo(&output);
-        // int32 latency, uint8 order rate, uint8 AI delay, then this byte.
-        output.flush();auto bytes=memory->takeContents();bytes[6]=char(invalid);
+        // int32 latency, order rate, AI delay and statistics delay, then this byte.
+        output.flush();auto bytes=memory->takeContents();bytes[7]=char(invalid);
         BinaryInputStream input(new MemoryStreamBackend(bytes.data(),bytes.size()));input.seekFromStart(0);
         GameHeader restored;
         if(players) CHECK_THROWS_AS(restored.load(&input,VERSION_MINOR),std::runtime_error);
@@ -463,7 +463,7 @@ TEST_CASE("released format 145 header detects empty artwork without consuming th
         output->writeUint32(0x47614265, "sentinel"); output->flush();
         std::unique_ptr<InputStream> input;
         if (text) input = makeInputStream(*memory);
-        else { std::string bytes(memory->getBuffer(), memory->getPosition()); glob2test::removeUnitCatalogWireSection(bytes, original, sizeof(Uint32)); bytes.erase(6,1); auto* copy = new MemoryStreamBackend(bytes.data(),bytes.size()); copy->seekFromStart(0); input = std::make_unique<BinaryInputStream>(copy); }
+        else { std::string bytes(memory->getBuffer(), memory->getPosition()); glob2test::removeModernHeaderFields(bytes, original, sizeof(Uint32)); bytes.erase(6,1); auto* copy = new MemoryStreamBackend(bytes.data(),bytes.size()); copy->seekFromStart(0); input = std::make_unique<BinaryInputStream>(copy); }
         GameHeader restored;
         REQUIRE((players ? restored.load(input.get(), 145) : restored.loadWithoutPlayerInfo(input.get(), 145)));
         CHECK(restored.resourceExperiments() == original.resourceExperiments());
@@ -484,7 +484,7 @@ TEST_CASE("compact-growth format 145 headers preserve definitions and enabled ke
         if (players) original.save(&output); else original.saveWithoutPlayerInfo(&output);
         output.flush();
         std::string historical(memory->getBuffer(), memory->getPosition());
-        glob2test::removeUnitCatalogWireSection(historical, original);
+        glob2test::removeModernHeaderFields(historical, original);
         historical.erase(6,1); // Building gradient delay was introduced after format145.
         auto* tail = new MemoryStreamBackend;
         BinaryOutputStream tailOutput(tail);
@@ -508,5 +508,53 @@ TEST_CASE("compact-growth format 145 headers preserve definitions and enabled ke
             CHECK(input.getPosition() == historical.size());
             if (followed) CHECK(input.readUint32("sentinel") == 0x47614265);
         }
+    }
+}
+
+TEST_CASE("statistics delay round trips rejects invalid bytes and older headers default to zero" *
+          doctest::test_suite("GameHeaderTextSaveLoad"))
+{
+    for (unsigned delay : {0u, 1u, 2u, 8u}) for (bool text : {false, true}) for (bool players : {false, true})
+    {
+        CAPTURE(delay); CAPTURE(text); CAPTURE(players);
+        auto header = makeFixtureHeader();
+        header.setTeamStatsDelay(delay);
+        auto* memory = new MemoryStreamBackend;
+        std::unique_ptr<OutputStream> output(text ? static_cast<OutputStream*>(new TextOutputStream(memory))
+            : static_cast<OutputStream*>(new BinaryOutputStream(memory)));
+        if (players) header.save(output.get()); else header.saveWithoutPlayerInfo(output.get());
+        output->writeUint32(0x5158, "sentinel"); output->flush();
+        std::unique_ptr<InputStream> input;
+        if (text) input = makeInputStream(*memory);
+        else { auto* copy = new MemoryStreamBackend(*memory); copy->seekFromStart(0); input = std::make_unique<BinaryInputStream>(copy); }
+        GameHeader restored;
+        REQUIRE((players ? restored.load(input.get(), VERSION_MINOR) : restored.loadWithoutPlayerInfo(input.get(), VERSION_MINOR)));
+        CHECK(restored.getTeamStatsDelay() == delay);
+        CHECK(input->readUint32("sentinel") == 0x5158);
+        if (!text)
+        {
+            std::string bytes(memory->getBuffer(), memory->getPosition());
+            bytes.erase(6, 1); // Format154 predates only this delay field.
+            BinaryInputStream old(new MemoryStreamBackend(bytes.data(), bytes.size()));
+            old.seekFromStart(0);
+            REQUIRE((players ? restored.load(&old, 154) : restored.loadWithoutPlayerInfo(&old, 154)));
+            CHECK(restored.getTeamStatsDelay() == 0);
+            CHECK(old.readUint32("sentinel") == 0x5158);
+        }
+    }
+    GameHeader header;
+    CHECK(header.getTeamStatsDelay() == 8);
+    header.setTeamStatsDelay(0); header.reset();
+    CHECK(header.getTeamStatsDelay() == 8);
+    CHECK_THROWS_AS(header.setTeamStatsDelay(9), std::invalid_argument);
+    for (unsigned invalid : {9u, 255u}) for (bool players : {false, true})
+    {
+        auto* memory = new MemoryStreamBackend;
+        BinaryOutputStream output(memory);
+        if (players) header.save(&output); else header.saveWithoutPlayerInfo(&output);
+        output.flush(); auto bytes = memory->takeContents(); bytes[6] = char(invalid);
+        BinaryInputStream input(new MemoryStreamBackend(bytes.data(), bytes.size())); input.seekFromStart(0);
+        if (players) CHECK_THROWS_AS(header.load(&input, VERSION_MINOR), std::runtime_error);
+        else CHECK_THROWS_AS(header.loadWithoutPlayerInfo(&input, VERSION_MINOR), std::runtime_error);
     }
 }
