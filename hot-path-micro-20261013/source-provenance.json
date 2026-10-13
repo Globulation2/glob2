@@ -1,0 +1,12 @@
+{
+  "commit": "db1c4f0526b287b7aca11e0dce1a5c142123cffb",
+  "base": "68fd613617818692feb0bb9e99b9019860b147f8",
+  "master": "277510840054b1416f2defd7d86fe1431dd0ddc0",
+  "files": {
+    "src/building/TurretEngineBenchmark.cpp": "a0957083abdc94c1514d5307c9514ffb0c9dc26a8ec768cfdfb57449134ac604",
+    "src/building/TurretTargetingPipeline.cpp": "3060591dbe56e5fce36765610206e46868a11e18b1bb5c9c0d2ce4b0121fb84b",
+    "src/building/TurretTargeting.h": "dd6f20a1151ccce614f00fa209990af3f30afc1d2b361f3eb70ea393de324398",
+    "docs/development/compute-benchmarks.md": "dde7032ba75353021d82b763b5f6159c63a80420248e28ceece090b6555fbc79"
+  },
+  "note": "Callgrind root profiles use the first instrumentation harness; cache combat pair uses the same first harness and ordinary/empty pairs use the owner-only-capable harness. Both binaries are frozen. Full native study uses the latter, whose source implementation matches this commit; banner reflects its uncommitted build state. Source snapshots and exact patches are retained."
+}

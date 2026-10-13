@@ -1,0 +1,16 @@
+{
+  "commit": "db1c4f0526b287b7aca11e0dce1a5c142123cffb",
+  "archive_sha256": "512c66d21f42e95b430f723b2ddac5773121bbf8b9b7300c2732c3bf681d6b15",
+  "parts": [
+    {
+      "name": "micro-evidence.tar.gz.part-00",
+      "bytes": 25165824,
+      "sha256": "63f04be277af138a1cadf19be8f5316deb50fc3c95e2131a057d017f73ccf326"
+    },
+    {
+      "name": "micro-evidence.tar.gz.part-01",
+      "bytes": 22439329,
+      "sha256": "a5237855d2402efb8369d3810c9dd3a9c6282b9af7748f804695a38eb7d798c6"
+    }
+  ]
+}
