@@ -83,3 +83,36 @@ Compare callback duration tails separately from whole-frame timing; fewer jobs
 alone mechanically reduce summed queue time. Interactive benchmarks use their
 external FPS schedule as the sole pacer and retain the ordinary render admission
 boundary, so two independent pacers cannot skip measurement opportunities.
+
+
+## Live match measurements
+
+Use `PROFILE_MODE=interactive`, `PROFILE_SAVE`, `PROFILE_SECONDS` and
+`PROFILE_FPS` to run the native simulation thread alongside drawing and
+presentation. Include a visible window and presentation when measuring displayed
+FPS. Record the backend, framebuffer size, display server, compute participants,
+controller population and render cap. A virtual X11 display can exercise the live
+host, but its presentation cost does not establish GPU or desktop-compositor
+performance.
+
+Measure TPS from authoritative completed simulation ticks on their owner. A
+published Scene can lag or skip ticks, so its tick number measures presentation
+freshness rather than simulation throughput. Hand off counters atomically or
+collect them after joining the simulation thread; never read mutable `Game`
+state concurrently from the drawing thread. For maximum-throughput measurements,
+use equal warmup and measured tick ranges so both binaries simulate the same
+history. Normal-speed FPS/TPS can remain at their caps despite reduced CPU work;
+report CPU use, deadline misses, tail latency and Scene age alongside throughput.
+
+Use one excluded warmup pair and rotated paired release runs, with separate
+checksum/correctness tracing. Keep whole-run samples for confidence intervals.
+Preserve production capture cadence: threaded drawing reuses published Scenes,
+and does not require a fresh world capture for every displayed frame. Account
+for capture and Scene preparation on the simulation owner.
+
+CPU affinity alone does not reserve cores. For an authorized exclusive Linux
+reservation, use the existing [cgroup partition wrapper](resource-benchmarks.md)
+with complete SMT siblings and retain its restoration audit. Verify affinity for
+all owned game threads, since library helpers can widen their inherited masks.
+Record governor and boost settings; an exclusive CPU partition still shares
+memory bandwidth, caches, interrupts and power limits with the rest of the host.
