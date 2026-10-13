@@ -11,6 +11,7 @@
 #include <optional>
 #include <tuple>
 #include <thread>
+#include <mutex>
 
 namespace TurretTargeting
 {
@@ -41,40 +42,72 @@ std::size_t recordBytes(const Source& source,std::size_t capacity)
 struct Pipeline::State
 {
     struct Record { Source source; std::vector<Entry> entries; Uint32 observed=0; };
+    struct Job;
+    struct IndexPreparation {
+        Observation* observation=nullptr;
+        std::shared_ptr<IndexPreparation> previous;
+        std::shared_ptr<const OccupiedIndex> result;
+        std::once_flag indexReady;
+        bool profile=false,preparedOnOwner=false;
+        std::thread::id ownerThread;
+        Uint64 indexNs=0;
+        std::exception_ptr error;
+        void prepare() {
+            std::call_once(indexReady,[&] {
+                try {
+                    // Reuse the previous logical observation, never whichever
+                    // worker happened to finish first. Only its index is needed.
+                    if (previous) previous->prepare();
+                    if (!observation) throw std::logic_error("Turret index input was released before preparation");
+                    const auto start=std::chrono::steady_clock::now();
+                    prepareIndex(*observation,previous ? previous->result : nullptr,profile);
+                    indexNs=std::chrono::duration_cast<std::chrono::nanoseconds>(std::chrono::steady_clock::now()-start).count();
+                    if (profile) preparedOnOwner=std::this_thread::get_id()==ownerThread;
+                    result=observation->index;
+                } catch (...) { error=std::current_exception(); }
+                previous.reset();
+            });
+            if (error) std::rethrow_exception(error);
+        }
+    };
+    static_assert(sizeof(IndexPreparation)+128<=256);
+    struct Generation {
+        Uint64 deadline=0;
+        std::unique_ptr<Observation> observation;
+        std::shared_ptr<IndexPreparation> preparation;
+        std::vector<std::unique_ptr<Job>> jobs;
+        ComputeExecutor::Batch batch;
+        std::exception_ptr error;
+        std::size_t reserved=0;
+    };
     struct Job {
-        const Observation* observation=nullptr;
+        Generation* generation=nullptr;
         unsigned capacity=0,margin=0;
         bool profile=false; Uint64 cpu=0;
-        std::thread::id ownerThread;
         bool ranOnOwner=false;
         std::vector<Source> sources;
         std::vector<Record> output;
         static void run(void* context,std::size_t) {
             auto& job=*static_cast<Job*>(context);
-            if (job.profile) job.ranOnOwner=std::this_thread::get_id()==job.ownerThread;
+            job.generation->preparation->prepare();
+            const auto& observation=*job.generation->observation;
+            if (job.profile) job.ranOnOwner=std::this_thread::get_id()==job.generation->preparation->ownerThread;
             const auto cpuStart=job.profile ? threadCpuNs() : 0;
             job.output.reserve(job.sources.size());
             for (auto& source:job.sources) {
-                auto result=plan(source,*job.observation,job.capacity,job.margin);
-                job.output.push_back({std::move(source),std::move(result.entries),job.observation->world.tick});
+                auto result=plan(source,observation,job.capacity,job.margin);
+                job.output.push_back({std::move(source),std::move(result.entries),observation.world.tick});
             }
             if (job.profile) job.cpu=threadCpuNs()-cpuStart;
             // Moved sources no longer own damage allocations. All outputs are
             // private to this job until its batch is joined.
         }
     };
-    struct Generation {
-        Uint64 deadline=0;
-        std::unique_ptr<Observation> observation;
-        std::vector<std::unique_ptr<Job>> jobs;
-        ComputeExecutor::Batch batch;
-        std::exception_ptr error;
-        std::size_t reserved=0;
-    };
     ComputeExecutor& executor;
     Configuration rules;
     std::optional<Uint32> admitted;
-    Observation indexCache; // Index only; never retains a snapshot or offense.
+    Observation indexCache; // Shared budget only; no snapshot, offense or index.
+    std::shared_ptr<IndexPreparation> lastPreparation;
     std::deque<std::unique_ptr<Generation>> pending;
     // Ordered contiguous records avoid a node allocation and tree walk per
     // turret. References returned by entries are consumed before publication.
@@ -99,6 +132,14 @@ struct Pipeline::State
                 metrics.planningCpu+=job->cpu;
                 if (job->ranOnOwner) metrics.ownerPlanningCpu+=job->cpu;
             }
+            if (!generation.error) {
+                metrics.backgroundIndexCpu+=generation.observation->indexCpu;
+                if (generation.preparation->preparedOnOwner) metrics.ownerBackgroundIndexCpu+=generation.observation->indexCpu;
+                metrics.indexNs+=generation.preparation->indexNs;
+                metrics.rebuiltChunks+=generation.observation->rebuiltChunks;
+                metrics.sharedChunks+=generation.observation->sharedChunks;
+            }
+            generation.preparation->observation=nullptr;
             generation.observation.reset(); // Completed jobs need no world lease.
         }
     }
@@ -106,9 +147,18 @@ struct Pipeline::State
         // recordBytes already reserves 512 bytes per live record for container
         // storage. Charge any excess retained vector capacity after removals too.
         const auto storage=published.capacity()*sizeof(Record), covered=published.size()*512;
-        return publishedBytes+(storage>covered ? storage-covered : 0);
+        // Pending preparation metadata is charged with its generation. One
+        // completed preparation can survive as the reuse baseline.
+        return publishedBytes+(storage>covered ? storage-covered : 0)+256;
     }
     void account() { metrics.shortlistBytes=reservations+publishedStorage(); }
+    void reclaimDead(const Game& game) {
+        std::erase_if(published,[&](const Record& record) {
+            if (game.resolveBuilding(record.source.identity)) return false;
+            publishedBytes-=recordBytes(record.source,record.entries.capacity());
+            return true;
+        });
+    }
 };
 Pipeline::Pipeline(Game& game,Configuration rules):state(std::make_unique<State>(game,rules))
 {
@@ -157,10 +207,10 @@ void Pipeline::admit(const Game& game,const SimulationSnapshot::Handle& captured
         std::sort(selected.begin(),selected.end(),[](const auto* a,const auto* b){return IdentityLess{}(Game::refOf(a),Game::refOf(b));});
         auto job=std::make_unique<State::Job>();
         job->capacity=s.rules.capacity; job->margin=s.rules.margin; job->profile=s.rules.profileCpu;
-        if (job->profile) job->ownerThread=std::this_thread::get_id();
         job->sources.reserve(selected.size());
         if (!generation) {
             generation=std::make_unique<State::Generation>();
+            generation->reserved=sizeof(State::Generation)+sizeof(State::IndexPreparation)+128;
             generation->deadline=Uint64(game.stepCounter)+s.rules.delay;
         }
         for (const auto* turret:selected) {
@@ -181,25 +231,30 @@ void Pipeline::admit(const Game& game,const SimulationSnapshot::Handle& captured
     }
     if (s.rules.profileCpu) s.metrics.sourceCpu+=threadCpuNs()-sourceStart;
     if (!generation) { if (s.rules.profileCpu) s.metrics.admissionCpu+=threadCpuNs()-admissionStart; s.admitted=game.stepCounter; return; }
+    // Dead sources cannot fire. Reclaim their storage only when needed rather
+    // than resolving the entire published table on every simulation tick.
+    if (generation->reserved>ShortlistLimit-s.reservations-s.publishedStorage()) s.reclaimDead(game);
     if (generation->reserved>ShortlistLimit-s.reservations-s.publishedStorage())
         throw std::length_error("Turret shadow shortlist storage bound exceeded");
-    const auto start=std::chrono::steady_clock::now();
-    generation->observation=std::make_unique<Observation>(observe(game,captured,&s.indexCache,s.rules.reusePreparation,s.rules.profileCpu));
-    s.metrics.indexCpu+=generation->observation->indexCpu;
+    generation->observation=std::make_unique<Observation>(observe(game,captured,&s.indexCache,s.rules.reusePreparation,s.rules.profileCpu,true));
+    generation->preparation=std::make_shared<State::IndexPreparation>();
+    generation->preparation->observation=generation->observation.get();
+    generation->preparation->previous=s.lastPreparation;
+    generation->preparation->profile=s.rules.profileCpu;
+    if (s.rules.profileCpu) generation->preparation->ownerThread=std::this_thread::get_id();
     s.metrics.sourceCpu+=generation->observation->factsCpu;
-    s.indexCache.index=generation->observation->index;
     s.indexCache.indexBudget=generation->observation->indexBudget;
-    s.metrics.indexNs+=std::chrono::duration_cast<std::chrono::nanoseconds>(std::chrono::steady_clock::now()-start).count();
     s.metrics.indexBytes=retainedIndexBytes(s.indexCache);
     std::vector<ComputeExecutor::Group> groups;
     for (auto& job:generation->jobs) {
-        job->observation=generation->observation.get();
+        job->generation=generation.get();
         groups.push_back({1,{State::Job::run,job.get()}});
     }
     s.pending.push_back(std::move(generation));
     auto& scheduled=*s.pending.back();
     try { scheduled.batch=s.executor.submit(groups,ComputeExecutor::advanceDue(scheduled.deadline)); }
     catch (...) { s.pending.pop_back(); throw; }
+    s.lastPreparation=scheduled.preparation;
     s.reservations+=scheduled.reserved;
     ++s.metrics.admissions; ++s.metrics.observations; s.metrics.teamJobs+=scheduled.jobs.size();
     s.admitted=game.stepCounter;
@@ -222,8 +277,10 @@ void Pipeline::publish(Game& game)
         for (auto& job:generation.jobs) for (auto& output:job->output) {
             auto* live=game.resolveBuilding(output.source.identity);
             if (!live || !compatible(output.source,*live)) continue;
-            const auto existing=s.findPublished(output.source.identity);
-            const bool replacing=existing!=s.published.end() && existing->source.identity==output.source.identity;
+            // One record per slot. A valid new incarnation replaces any old
+            // incarnation in that slot; old pending outputs still fail resolution.
+            const auto existing=s.findPublished({output.source.identity.gid,0});
+            const bool replacing=existing!=s.published.end() && existing->source.identity.gid==output.source.identity.gid;
             if (replacing) s.publishedBytes-=recordBytes(existing->source,existing->entries.capacity());
             s.publishedBytes+=recordBytes(output.source,output.entries.capacity());
             if (replacing) *existing=std::move(output);
@@ -231,11 +288,6 @@ void Pipeline::publish(Game& game)
         }
         s.reservations-=generation.reserved; s.pending.pop_front(); ++s.metrics.publications; s.account();
     }
-    std::erase_if(s.published,[&](const State::Record& record) {
-        if (game.resolveBuilding(record.source.identity)) return false;
-        s.publishedBytes-=recordBytes(record.source,record.entries.capacity());
-        return true;
-    });
     s.metrics.indexBytes=retainedIndexBytes(s.indexCache); s.account();
     if (s.rules.profileCpu) s.metrics.publicationCpu+=threadCpuNs()-publicationStart-(s.metrics.joinCpu-joinBefore);
 }

@@ -59,10 +59,9 @@ void fillChunk(OccupiedIndex::Chunk& chunk,const MapState::View& view,std::size_
                 if (gid!=0xffff) chunk.teams|=1u<<Unit::GIDtoTeam(gid);
         }
 }
-std::shared_ptr<const OccupiedIndex> buildIndex(Observation& o,const Observation* previous)
+std::shared_ptr<const OccupiedIndex> buildIndex(Observation& o,const std::shared_ptr<const OccupiedIndex>& old)
 {
     const auto& w=o.world;
-    const auto old=previous ? previous->index : nullptr;
     const bool reusable=old && old->worldIdentity==w.worldIdentity && old->width==w.width && old->height==w.height;
     // Identical occupancy already has an immutable index. Scalar entity facts
     // are still captured below; no chunk pointers or stamp arrays need rebuilding.
@@ -369,7 +368,13 @@ Source source(const Building& b,std::shared_ptr<const std::vector<int>> damage)
     }
     return s;
 }
-Observation observe(const Game& game,const SimulationSnapshot::Handle& captured,const Observation* previous,bool capturedFacts,bool profileCpu)
+void prepareIndex(Observation& o,const std::shared_ptr<const OccupiedIndex>& previous,bool profileCpu)
+{
+    const auto start=profileCpu ? threadCpuNs() : 0;
+    o.index=buildIndex(o,previous);
+    if (profileCpu) o.indexCpu=threadCpuNs()-start;
+}
+Observation observe(const Game& game,const SimulationSnapshot::Handle& captured,const Observation* previous,bool capturedFacts,bool profileCpu,bool deferIndex)
 {
     if (captured.tick!=game.stepCounter || captured.worldIdentity!=game.map.identity())
         throw std::invalid_argument("Turret observation is not the completed-world boundary");
@@ -378,9 +383,7 @@ Observation observe(const Game& game,const SimulationSnapshot::Handle& captured,
     o.world=captured.project(capturedFacts ? targetingRequirements : requirements);
     o.blocksProjectiles=game.map.hasProjectileBlockingTerrain();
     o.indexBudget=previous && previous->indexBudget ? previous->indexBudget : std::make_shared<IndexBudget>();
-    const auto indexStart=profileCpu ? threadCpuNs() : 0;
-    o.index=buildIndex(o,previous);
-    if (profileCpu) o.indexCpu=threadCpuNs()-indexStart;
+    if (!deferIndex) prepareIndex(o,previous ? previous->index : nullptr,profileCpu);
     const auto factsStart=profileCpu ? threadCpuNs() : 0;
     o.offense.reserve(o.world.entities->units.size());
     for (const auto& u:o.world.entities->units) {

@@ -661,11 +661,28 @@ pipeline clocks stay disabled; the component fields in `turret_owner` are then
 zero and cannot be used to subtract admission from read-boundary time.
 
 Preparation allocates jobs only for admitted sources and sorts lightweight
-references before constructing them. Unchanged occupancy reuses the immutable
+references before constructing them. Occupied-index preparation runs once per
+generation in the first executing team job; other team jobs read the completed
+index immutably. Preparation shares the previous logical admission's index,
+ensuring that preparation first if necessary; it never chooses a baseline from
+worker readiness. Completed preparation retains only its index, releasing the
+world lease after all team jobs join. In serial fallback this work runs at the join.
+The shared atomic index budget still bounds all retained generations to 32 MiB.
+Unchanged occupancy reuses the immutable
 index itself; entity combat facts remain fresh. Published records are kept in
-identity order in contiguous storage, including accounting for spare capacity
-after removals. These are derived storage choices, not changes to admission,
+identity order in contiguous storage, with at most one incarnation per building
+slot, including accounting for spare capacity after removals. Publication validates
+only incoming sources. Current source validation on consumption rejects obsolete
+records; slot reuse replaces them, and admission reclaims dead records if needed
+to remain within the shortlist budget. There is no per-tick full-table cleanup
+or new lifetime epoch. These are derived storage choices, not changes to admission,
 deadlines, source validation or shortlist order.
+
+Detailed CPU profiling also emits `turret_index` rows: fixture, participants,
+repeat, mode, total background-preparation CPU and its owner-executed portion.
+Subtract the latter for worker index CPU. The owner portion is already enclosed
+by join CPU and must not be added twice. `turret_cpu`'s index field remains
+admission-time owner index CPU; deferred preparation is reported separately.
 
 The planner-only opt-in `[callgrind]` benchmark brackets planning queries with Callgrind
 client requests. Capture, chunk maintenance, fixture setup, warmup, assertions and

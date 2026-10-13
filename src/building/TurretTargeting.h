@@ -63,7 +63,9 @@ constexpr SimulationSnapshot::Requirements requirements =
 // Those modifiers are folded into the boundary-owned offense facts.
 constexpr auto targetingRequirements = requirements & ~SimulationSnapshot::bit(SimulationSnapshot::Component::Effects);
 // Owner adapter: borrow the already captured union; never captures world data.
-Observation observe(const Game&, const SimulationSnapshot::Handle&, const Observation* previous = nullptr, bool capturedFacts = false, bool profileCpu = false);
+Observation observe(const Game&, const SimulationSnapshot::Handle&, const Observation* previous = nullptr, bool capturedFacts = false, bool profileCpu = false, bool deferIndex = false);
+// Uses only captured occupancy and an immutable earlier index; safe in a job.
+void prepareIndex(Observation&, const std::shared_ptr<const OccupiedIndex>& previous = {}, bool profileCpu = false);
 // Research convenience adapter through the shared Store; not used by jobs.
 Observation observe(const Game&, const Observation* previous = nullptr);
 std::size_t retainedIndexBytes(const Observation&);
@@ -123,6 +125,8 @@ public:
         Uint64 indexNs=0, waitNs=0, failedGenerations=0;
         Uint64 sourceCpu=0,indexCpu=0,planningCpu=0,publicationCpu=0,admissionCpu=0,joinCpu=0;
         Uint64 ownerPlanningCpu=0;
+        Uint64 backgroundIndexCpu=0,ownerBackgroundIndexCpu=0;
+        Uint64 rebuiltChunks=0,sharedChunks=0;
         Uint64 sources=0,skipped=0;
         std::size_t pendingPeak=0, indexBytes=0, shortlistBytes=0;
     };

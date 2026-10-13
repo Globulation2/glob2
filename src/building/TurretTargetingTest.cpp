@@ -939,6 +939,65 @@ TEST_SUITE("TurretTargeting")
         CHECK(pipeline->statistics().shortlistBytes<=32u*1024u*1024u);
         changed->runtime=original; changed->scriptIdentity=incarnation;
     }
+    TEST_CASE("overlapping generations reuse the previous logical index before publication")
+    {
+        glob2test::HeadlessGlobals globals;
+        for (unsigned participants : {1,2,4,8}) {
+            glob2test::HeadlessGame world({.wDec=6,.hDec=6,.teams=2,.loadDefaultRace=true,.header=true});
+            world.game.map.computeExecutor().configure(participants);
+            for (int team=0;team<2;++team) {
+                auto* turret=world.addBuilding("defencetower",8+24*team,8,0,team);
+                turret->owner->enemies=1u<<(1-team);
+                turret->owner->addToStaticAbilitiesLists(turret);
+                auto* target=world.addUnit(WARRIOR,turret->posX+3,8,1-team); REQUIRE(target); target->speed=0;
+            }
+            world.game.configureTurretTargetingShadow(4,1,8,1,false,true);
+            auto* pipeline=world.game.turretShadow();
+            std::size_t chunks=0;
+            for (unsigned tick=0;tick<4;++tick) {
+                world.game.stepCounter=tick;
+                const auto captured=world.game.captureReadBoundary({},false);
+                chunks=captured.occupancy->stamps.chunks.size();
+            }
+            pipeline->drain();
+            CHECK(pipeline->statistics().teamJobs==8);
+            CHECK(pipeline->statistics().rebuiltChunks==chunks);
+            CHECK(pipeline->statistics().sharedChunks==3*chunks);
+            CHECK(pipeline->pendingObservation().requirements==0);
+            world.game.stepCounter=7;
+            pipeline->publish(world.game);
+            for (int team=0;team<2;++team) for (auto* turret:world.game.teams[team]->turrets)
+                CHECK(pipeline->entries(*turret)==plan(*turret,8,1).entries);
+        }
+    }
+    TEST_CASE("published slot reuse stays bounded without a per-tick cleanup scan")
+    {
+        glob2test::HeadlessGlobals globals;
+        for (unsigned participants : {1,4}) {
+            glob2test::HeadlessGame world({.wDec=6,.hDec=6,.teams=2,.loadDefaultRace=true,.header=true});
+            world.game.map.computeExecutor().configure(participants);
+            auto* turret=world.addBuilding("defencetower",8,8); turret->owner->enemies=2;
+            turret->owner->addToStaticAbilitiesLists(turret);
+            auto* target=world.addUnit(WARRIOR,11,8,1); REQUIRE(target); target->speed=0;
+            world.game.configureTurretTargetingShadow(1,1,8,1,false,true);
+            auto* pipeline=world.game.turretShadow();
+            const auto identity=turret->scriptIdentity;
+            std::size_t initialBytes=0;
+            for (unsigned reuse=0;reuse<100;++reuse) {
+                turret->scriptIdentity=identity+reuse;
+                if (reuse) CHECK(pipeline->entries(*turret).empty());
+                world.game.captureReadBoundary({},false);
+                pipeline->drain();
+                ++world.game.stepCounter;
+                pipeline->publish(world.game);
+                CHECK(pipeline->entries(*turret)==plan(*turret,8,1).entries);
+                if (!reuse) initialBytes=pipeline->statistics().shortlistBytes;
+                CHECK(pipeline->statistics().shortlistBytes==initialBytes);
+                CHECK(pipeline->statistics().indexBytes<=32u*1024u*1024u);
+            }
+            turret->scriptIdentity=identity;
+        }
+    }
     TEST_CASE("turret admission requires due teams and survives paused repeated boundaries")
     {
         glob2test::HeadlessGlobals globals;
@@ -1003,7 +1062,9 @@ TEST_SUITE("TurretTargeting")
             turret->posX=8; world.game.stepCounter=1;
             CHECK_THROWS_AS(pipeline->publish(world.game),std::invalid_argument);
             CHECK(pipeline->statistics().failedGenerations==1);
-            CHECK(pipeline->statistics().shortlistBytes==0);
+            // Failed outputs/reservations are gone; only the conservatively
+            // charged logical index-preparation descriptor remains cached.
+            CHECK(pipeline->statistics().shortlistBytes==256);
             CHECK(pipeline->entries(*turret).empty());
         }
     }

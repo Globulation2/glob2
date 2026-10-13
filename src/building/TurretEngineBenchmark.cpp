@@ -292,6 +292,9 @@ TEST_SUITE("TurretEngine")
                     (unsigned long long)r.targeting.boundaryCpu,(unsigned long long)r.pipeline.admissionCpu,
                     (unsigned long long)r.pipeline.joinCpu,(unsigned long long)r.pipeline.ownerPlanningCpu,
                     (unsigned long long)(r.pipeline.planningCpu-r.pipeline.ownerPlanningCpu));
+                if (profileCpu) std::printf("turret_index,%s,%u,%u,%s,%llu,%llu\n",
+                    fixture==0 ? "empty100" : fixture==1 ? "combat100" : "ordinary4",participants,repeat,modeName(mode),
+                    (unsigned long long)r.pipeline.backgroundIndexCpu,(unsigned long long)r.pipeline.ownerBackgroundIndexCpu);
             }
         }
     }
