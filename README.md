@@ -36,3 +36,15 @@ in the measurement archive, as established by the verification records.
 Historical timing ratios were not rerun after integrating master.
 `callgrind-original-sources.tar.gz` retains original planner/owner sources from
 the profiling container, before its isolated controls.
+
+## Demand-driven refresh update
+
+`demand-findings.json` records results at implementation commit `10a52665c`: rank
+only buildings with observed staffing vacancies, including route/supplier capture
+skips and defense-only attack capture. `demand-validation.tar.gz` retains exact
+commands, ten paired repetitions in two distinct windows, shadow outputs, build
+logs, 154 passing tests and 42 verification runs. `demand-manifest.json` hashes
+all retained results. Large checksum traces match the historical archives and
+are represented here by their hashes. This optimization reduces immediate
+reference-trajectory coverage to 41–42%; seven-tick controlled wakeup is not a
+live gameplay p95 result. Original hiring remains authoritative.

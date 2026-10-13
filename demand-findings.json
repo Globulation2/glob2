@@ -1,0 +1,339 @@
+{
+  "tested_commit": "10a52665c90906a997334b1770f3172f5e6ad043",
+  "base": "3e2ba6c07450c94ce0f997220479fd309b71e461",
+  "scope": "macOS arm64 ordinary -O3 release; K4 R4 L128 split; four compute participants; original hiring authoritative. Ten rotated paired runs plus one process warmup per variant. CPU covers the last 256 of each 512-tick run; elapsed ratios cover all 512 ticks.",
+  "behavior": "Only alive buildings whose maintained desiredMaxUnitWorking exceeds captured working.count are ranked. Zero-demand/full buildings lease no routes and capture no supplier modes. Teams without active defense demand capture no attack strengths. Published team replacements omit inactive buildings; new vacancies use the next scheduled refresh and fixed deadline.",
+  "first_window": {
+    "sustainable": {
+      "median_measured_cpu_seconds": {
+        "disabled": 0.044422,
+        "previous-pool": 0.15667750000000003,
+        "owner": 0.048266500000000004,
+        "pool": 0.0493735
+      },
+      "paired_pool_ratio": {
+        "disabled": {
+          "median_cpu_ratio": 1.110972837388418,
+          "95_bootstrap_ci": [
+            1.0885740586901367,
+            1.1184977648669163
+          ],
+          "whole_run_elapsed_ratio": 1.1181416975314447
+        },
+        "previous-pool": {
+          "median_cpu_ratio": 0.3128091359203429,
+          "95_bootstrap_ci": [
+            0.30872269986210926,
+            0.31793897458613
+          ],
+          "whole_run_elapsed_ratio": 0.6536540586741466
+        },
+        "owner": {
+          "median_cpu_ratio": 1.0093758535170105,
+          "95_bootstrap_ci": [
+            0.9907620776148622,
+            1.0312381434172253
+          ],
+          "whole_run_elapsed_ratio": 0.9997814073793669
+        }
+      }
+    },
+    "contention": {
+      "median_measured_cpu_seconds": {
+        "disabled": 0.044690499999999994,
+        "previous-pool": 0.155406,
+        "owner": 0.0482135,
+        "pool": 0.0485655
+      },
+      "paired_pool_ratio": {
+        "disabled": {
+          "median_cpu_ratio": 1.0822660509290496,
+          "95_bootstrap_ci": [
+            1.0673819948049657,
+            1.1111523926151872
+          ],
+          "whole_run_elapsed_ratio": 1.1107974578297202
+        },
+        "previous-pool": {
+          "median_cpu_ratio": 0.3135909196944433,
+          "95_bootstrap_ci": [
+            0.30630020205752484,
+            0.31661715655618095
+          ],
+          "whole_run_elapsed_ratio": 0.6573502104777003
+        },
+        "owner": {
+          "median_cpu_ratio": 1.0030875061443423,
+          "95_bootstrap_ci": [
+            0.9852155644557297,
+            1.0287888745203622
+          ],
+          "whole_run_elapsed_ratio": 0.9947804386789505
+        }
+      }
+    }
+  },
+  "checkpoint_window": {
+    "sustainable": {
+      "median_measured_cpu_seconds": {
+        "disabled": 0.08799850000000001,
+        "previous-pool": 0.22108650000000002,
+        "owner": 0.1290455,
+        "pool": 0.132024
+      },
+      "paired_pool_ratio": {
+        "disabled": {
+          "median_cpu_ratio": 1.4983023266586422,
+          "95_bootstrap_ci": [
+            1.4862984395080678,
+            1.513285917496444
+          ],
+          "whole_run_elapsed_ratio": 1.4062454484416742
+        },
+        "previous-pool": {
+          "median_cpu_ratio": 0.5955479732559427,
+          "95_bootstrap_ci": [
+            0.5887486863884888,
+            0.6030262187292249
+          ],
+          "whole_run_elapsed_ratio": 0.942333312674229
+        },
+        "owner": {
+          "median_cpu_ratio": 1.0255864665402705,
+          "95_bootstrap_ci": [
+            0.9974521420068075,
+            1.0362411865296286
+          ],
+          "whole_run_elapsed_ratio": 0.8590099260594636
+        }
+      }
+    },
+    "contention": {
+      "median_measured_cpu_seconds": {
+        "disabled": 0.09342,
+        "previous-pool": 0.2274015,
+        "owner": 0.136214,
+        "pool": 0.1390895
+      },
+      "paired_pool_ratio": {
+        "disabled": {
+          "median_cpu_ratio": 1.4881642140464078,
+          "95_bootstrap_ci": [
+            1.4256735588259901,
+            1.5173114118137119
+          ],
+          "whole_run_elapsed_ratio": 1.4091974452127238
+        },
+        "previous-pool": {
+          "median_cpu_ratio": 0.6111653305858565,
+          "95_bootstrap_ci": [
+            0.6093315435299484,
+            0.6227970627915216
+          ],
+          "whole_run_elapsed_ratio": 0.9502232603465631
+        },
+        "owner": {
+          "median_cpu_ratio": 1.022590703194126,
+          "95_bootstrap_ci": [
+            1.0092267973185078,
+            1.035417063454144
+          ],
+          "whole_run_elapsed_ratio": 0.8685078709378466
+        }
+      }
+    }
+  },
+  "shadow": {
+    "sustainable": {
+      "candidate_visits": 15984000,
+      "previous_all_buildings_candidate_visits": 57254400,
+      "candidate_visit_reduction": 0.7208249496981891,
+      "configuration": {
+        "K": 4,
+        "L": 128,
+        "R": 4,
+        "agreement_given_covered": 0.7705627705627706,
+        "already_used": 3,
+        "busy": 421,
+        "coverage": 0.4074074074074074,
+        "coverage_gate_passed": false,
+        "exact_worker_agreement": 0.31393298059964725,
+        "exact_worker_agreements": 178,
+        "examined": 2714,
+        "hits": 231,
+        "independent_agreement_given_covered": 0.7705627705627706,
+        "independent_coverage": 0.4074074074074074,
+        "independent_exact_worker_agreement": 0.31393298059964725,
+        "independent_exact_worker_agreements": 178,
+        "missing_lists": 517,
+        "opportunities": 567,
+        "policy": "split",
+        "qualification": 2059,
+        "replaced": 0,
+        "startup_agreements": 0,
+        "startup_hits": 0,
+        "startup_opportunities": 192,
+        "trial_age_eligible": true
+      },
+      "planner_metrics": {
+        "airQueries": 0,
+        "buildingOccupancyChanges": 0,
+        "buildingsExamined": 49104,
+        "buildingsNeedingHiring": 13332,
+        "buildingsSkippedNoDemand": 35772,
+        "evaluationNs": 311362128,
+        "evictions": 0,
+        "fieldCells": 0,
+        "fieldHits": 0,
+        "fieldMisses": 0,
+        "forbiddenChanges": 0,
+        "geographyChanges": 0,
+        "geographyNs": 0,
+        "immobileChanges": 0,
+        "jobs": 106656,
+        "missingBuildingFields": 14400,
+        "precheckNs": 30115721,
+        "privateResourceReads": 0,
+        "propagationNs": 0,
+        "publishedResourceReads": 7984800,
+        "rankedCandidates": 7974987,
+        "refreshes": 2046,
+        "resourceBlockingChanges": 0,
+        "seedNs": 0,
+        "setupNs": 908785,
+        "sharedExpansions": 25,
+        "sharedQueries": 8797191,
+        "sharedQueryNs": 31125,
+        "sharedWaitNs": 32859719,
+        "skippedJobs": 80016,
+        "sortOutputNs": 113043363,
+        "terrainChanges": 0
+      },
+      "peak_accounted_bytes": 76889920
+    },
+    "contention": {
+      "candidate_visits": 16821600,
+      "previous_all_buildings_candidate_visits": 57254400,
+      "candidate_visit_reduction": 0.7061955063715627,
+      "configuration": {
+        "K": 4,
+        "L": 128,
+        "R": 4,
+        "agreement_given_covered": 0.8032786885245902,
+        "already_used": 4,
+        "busy": 356,
+        "coverage": 0.4236111111111111,
+        "coverage_gate_passed": false,
+        "exact_worker_agreement": 0.3402777777777778,
+        "exact_worker_agreements": 196,
+        "examined": 2765,
+        "hits": 244,
+        "independent_agreement_given_covered": 0.8114754098360656,
+        "independent_coverage": 0.4236111111111111,
+        "independent_exact_worker_agreement": 0.34375,
+        "independent_exact_worker_agreements": 198,
+        "missing_lists": 515,
+        "opportunities": 576,
+        "policy": "split",
+        "qualification": 2161,
+        "replaced": 0,
+        "startup_agreements": 0,
+        "startup_hits": 0,
+        "startup_opportunities": 192,
+        "trial_age_eligible": true
+      },
+      "planner_metrics": {
+        "airQueries": 0,
+        "buildingOccupancyChanges": 0,
+        "buildingsExamined": 49104,
+        "buildingsNeedingHiring": 14030,
+        "buildingsSkippedNoDemand": 35074,
+        "evaluationNs": 299415241,
+        "evictions": 0,
+        "fieldCells": 0,
+        "fieldHits": 0,
+        "fieldMisses": 0,
+        "forbiddenChanges": 0,
+        "geographyChanges": 0,
+        "geographyNs": 0,
+        "immobileChanges": 0,
+        "jobs": 112240,
+        "missingBuildingFields": 14400,
+        "precheckNs": 29531812,
+        "privateResourceReads": 0,
+        "propagationNs": 0,
+        "publishedResourceReads": 8403600,
+        "rankedCandidates": 8416502,
+        "refreshes": 2046,
+        "resourceBlockingChanges": 0,
+        "seedNs": 0,
+        "setupNs": 788178,
+        "sharedExpansions": 3,
+        "sharedQueries": 9265785,
+        "sharedQueryNs": 3459,
+        "sharedWaitNs": 22409742,
+        "skippedJobs": 84204,
+        "sortOutputNs": 112589534,
+        "terrainChanges": 0
+      },
+      "peak_accounted_bytes": 76755752
+    }
+  },
+  "validation": {
+    "focused_tests": {
+      "passed": 154,
+      "failed": 0,
+      "skipped": 0
+    },
+    "controlled_wakeup": "Vacancy at boundary 1 after a staffed boundary-0 refresh produces a list at boundary 8; seven-tick delay, tested owner and pool. This is not a gameplay p95 claim.",
+    "disabled": {
+      "identical": true,
+      "runs": 18
+    },
+    "scheduled": {
+      "identical": true,
+      "runs": 24
+    },
+    "cross_participant": {
+      "sustainable": {
+        "identical_traces_replays_saves": true,
+        "identical_candidate_digests": true,
+        "runs": 12,
+        "hashes": {
+          "game.replay.checksums": "4805421676d7be432639c0c815e95a351a11c9ab179f69144f67ddcecaf37a34",
+          "game.replay": "1b8814635bbaa12e055dc37c9ac8083761a8f6288696638cfb8e4f51feda05f5",
+          "final.game.gz": "8c27455d36053bd51b53c88da7efcac5a6b8f7bd5f2ad14e8cc2244047894f51",
+          "world.checksums": "27d341fc152c8dac9b4050f0f139369f621b073bbe9ac756de09e5bcaf42d230"
+        }
+      },
+      "contention": {
+        "identical_traces_replays_saves": true,
+        "identical_candidate_digests": true,
+        "runs": 12,
+        "hashes": {
+          "game.replay.checksums": "31bfb975e096441e69b82c89e3cda5c94c2c6e9da3ed1dda8883672d029547e8",
+          "game.replay": "7973a640ab1186b5a966c134868d21e7f483ffab701d630092ad56da5a966196",
+          "final.game.gz": "fc4e90d49048eb278111f3045d8b71911188af0243ade4258b66a16341cc7c4c",
+          "world.checksums": "e58efa0a860b50ccb35b774ffc6b52a6b275ab079e9cdd13be226aef87addad8"
+        }
+      }
+    }
+  },
+  "limitations": [
+    "No live cached-hiring consumer or rollout; existing hiring unchanged in measured fixtures.",
+    "Shadow coverage now measures immediate availability under the original trajectory, where authoritative hiring can fill brief vacancies before a completed boundary observes demand. It does not establish live waiting time.",
+    "The 95% reference-coverage gate fails; do not automatically progress to a live trial or expand the eight-tick budget.",
+    "Final macOS arm64 coverage only; no Linux x86-64/Windows/browser/TSAN proof.",
+    "Host activity uncontrolled; raw repetitions/outliers retained.",
+    "Shadow batch elapsed timers overlapped correctness work and are not standalone CPU measurements.",
+    "Older historical timing tables are not interchangeable with this paired comparison."
+  ],
+  "binary_sha256": "57b887dfdca55eb1eb3384b8a5b7bfdf5e9ad0764f673dfebc2112776ee4a9f0",
+  "source_sha256": {
+    "src/building/HiringPlanner.h": "68e639ca77f723a6d050d7e32b7e907cd4044cb63db15c6a641f254ece55575c",
+    "src/building/HiringPlanner.cpp": "b5fce8f673e4a31c5995eea85c88d93da854366b1827d260ede94474369a7efc",
+    "src/building/HiringStudy.cpp": "c20956008d188eed5b17c2af484191070d5a3ea59a017a3206859c9ccd196cf1",
+    "src/building/HiringPlannerTest.cpp": "8118759e17db41bac2a52d017e3bd74f3e725066557ec6f42855f641104aebef",
+    "docs/development/compute-benchmarks.md": "ed66774bf4fcf261aec032bc55a83dba929137e3b1ae65d757e2d23cbe030789"
+  }
+}
