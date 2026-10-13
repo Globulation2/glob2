@@ -1,0 +1,15 @@
+{
+  "baseline": {
+    "sha256": "6fa02207c048a7919f441d5f9e87d5cee4702afd3a19e85a19fc96e578c0275e",
+    "source": "/home/bradley/.codex/worktrees/software-raster-depth-baseline/glob2/build/linux/client/release/test/SoftwareRenderBenchmark"
+  },
+  "candidate": {
+    "sha256": "c53cbde076d36734881417b39b17cdcbcf633d7825fcf0111b4916f6825b88e7",
+    "source": "/home/bradley/.codex/worktrees/software-raster-depth/glob2/build/linux/client/release/test/SoftwareRenderBenchmark"
+  },
+  "base": "6b95c81c0d438f64e3391ff4785bc95d3436d174",
+  "candidate_revision": "49bddcbeda51d0ecc980b9d8a1e03592d4eabf32",
+  "benchmark_source_sha256": "32d96f0b20f1c546b69325295e1926f0c28cfe733497f5bee8dcadbe1f1bfd99",
+  "build": "GLOB2_SDL3_PREFIX=/home/bradley/glob2/build/sdl3/prefix scons release=1 software-render-benchmark",
+  "baseline_scope": "Only same benchmark camera/profiler/progress/fixedHUD patch; originalrenderer/scheduler6b95."
+}
