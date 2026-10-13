@@ -29,10 +29,36 @@
 #include <windows.h>
 #else
 #include <sys/resource.h>
+#include <csignal>
 #endif
 #include <time.h>
 #include "PerformanceTelemetry.h"
 GlobalContainer *globalContainer = nullptr;
+static bool instrumentedTiming()
+{
+    // Interposition may pause the process or change instruction execution even
+    // when the benchmark's own boundary stops are disabled.
+    return std::getenv("PROFILE_BOUNDARY_STOP") || std::getenv("PROFILE_CALLGRIND") ||
+        std::getenv("GLOB2_PROFILE_PERF_BOUNDARIES") ||
+        std::getenv("GLOB2_PROFILE_CALLGRIND_BOUNDARIES") ||
+        std::getenv("LD_PRELOAD") || std::getenv("LD_AUDIT") ||
+        std::getenv("DYLD_INSERT_LIBRARIES");
+}
+// External profilers attach after warmup and disable counters before reporting.
+// Stopping is opt-in and benchmark-only; no profiler library enters the game.
+static void profileBoundary(const char *phase)
+{
+    if (!std::getenv("PROFILE_BOUNDARY_STOP"))
+        return;
+#ifndef WIN32
+    printf("PROFILE_BOUNDARY phase=%s\n", phase);
+    fflush(stdout);
+    if (raise(SIGSTOP))
+        throw std::runtime_error("Cannot stop at profiling boundary");
+#else
+    throw std::runtime_error("PROFILE_BOUNDARY_STOP requires POSIX signals");
+#endif
+}
 static double cpu()
 {
 #ifdef WIN32
@@ -99,6 +125,7 @@ static void interactiveBenchmark()
     // The schedule below is the sole pacing authority for this probe.
     globalContainer->gfx->setTargetRenderFps(0);
     engine.beginSession(SDL_GetTicks());
+    const auto initialTick = engine.gui.game.stepCounter;
     if (!engine.startSimulationThread(SDL_GetTicks()))
         throw std::runtime_error("Interactive benchmark requires a simulation thread");
     std::vector<double> draw, age, lateness;
@@ -146,6 +173,9 @@ static void interactiveBenchmark()
     }
     const double totalCpu = cpu() - cpuBegan;
     engine.stopSimulationThread();
+    printf("timing_valid=%s\n", instrumentedTiming() ? "false" : "true");
+    printf("interactive_progress initial_tick=%u final_tick=%u\n",
+           initialTick, engine.gui.game.stepCounter);
     printf("interactive frames=%zu opportunities=%u undrawn_opportunities=%zu "
            "missed_render_deadlines=%u period_ns=%llu\n", draw.size(), opportunities,
            opportunities - draw.size(), missed, (unsigned long long)period);
@@ -210,7 +240,21 @@ static void interactiveBenchmark()
 				terrainCache.enabled = atoi(c) != 0;
 			gui.localPlayer = gui.localTeamNo = 0;
 			gui.adjustLocalTeam();
+            // Camera bounds come from the extracted scene. Setting zoom before
+            // that scene exists silently clamps half-scale requests to 1.0.
+            gui.prepareLocalPresentation();
 			gui.adjustInitialViewport();
+            gui.updateCamera();
+            const char *mode = getenv("PROFILE_MODE");
+            if (!mode) mode = "gui";
+            if (std::string(mode) != "gui" && std::string(mode) != "map")
+                throw std::runtime_error("PROFILE_MODE must be gui, map or interactive");
+            if (std::string(mode) == "map")
+            {
+                // Preserve the original map-only benchmark's origin.
+                gui.camera.originX = gui.camera.originY = 0;
+                gui.viewportX = gui.viewportY = 0;
+            }
 			gui.gamePaused = getenv("PROFILE_PAUSED") != nullptr;
 			// PROFILE_SELECT=building|flag|unit selects the local team's first such entity,
 			// so captures include the selection panel and the map-view selection markers.
@@ -251,6 +295,8 @@ static void interactiveBenchmark()
 				if (!std::isfinite(zoom) || zoom <= 0)
 					throw std::runtime_error("Zoom must be finite and positive");
 				gui.camera.setZoom(zoom, 300, 300);
+                if (std::abs(gui.camera.zoom - zoom) > 1e-6)
+                    throw std::runtime_error("Requested PROFILE_ZOOM is outside camera bounds");
 				gui.viewportX = gui.camera.tileX();
 				gui.viewportY = gui.camera.tileY();
 			}
@@ -284,9 +330,6 @@ static void interactiveBenchmark()
 			const int warmup = getenv("PROFILE_WARMUP") ? atoi(getenv("PROFILE_WARMUP")) : 30;
 			if (frames < 1 || warmup < 0)
 				throw std::runtime_error("frames must be positive and warmup nonnegative");
-			const char *mode = getenv("PROFILE_MODE");
-			if (!mode)
-				mode = "gui";
 			const bool clouds = !(getenv("PROFILE_CLOUDS") && atoi(getenv("PROFILE_CLOUDS")) == 0);
 			globalContainer->settings.clouds = clouds;
 			globalContainer->settings.cloudShadows = clouds;
@@ -317,6 +360,7 @@ static void interactiveBenchmark()
 			const double seconds = getenv("PROFILE_SECONDS") ? std::stod(getenv("PROFILE_SECONDS")) : 0;
 			Uint64 measuredStart = 0;
 			std::vector<double> draw, present, frame;
+            draw.reserve(frames); present.reserve(frames); frame.reserve(frames);
 			RenderOperations initialOps{};
             decltype(terrainCache.workMetrics) initialWork{};
             if (const char* mode = getenv("PROFILE_COMPUTE_TELEMETRY"))
@@ -331,7 +375,8 @@ static void interactiveBenchmark()
 				SDL_PumpEvents();
 				if (i == 0)
 				{
-					c0 = cpu(); measuredStart = SDL_GetPerformanceCounter();
+					profileBoundary("begin");
+                    c0 = cpu(); measuredStart = SDL_GetPerformanceCounter();
 					initialOps = gfx->backendOperations();
                     initialWork = terrainCache.workMetrics;
                     initialGraphics = gui.game.map.computeExecutor().graphicsMetrics();
@@ -370,8 +415,12 @@ static void interactiveBenchmark()
                     frame.push_back(1000. * (c - a) / freq);
 				}
 			}
+            // Finish pending owner segments before disabling external counters.
+            gfx->getSDLSurface();
+            const double elapsed = (SDL_GetPerformanceCounter()-measuredStart)/freq;
 			double totalCpu = cpu() - c0;
-			const double elapsed = (SDL_GetPerformanceCounter()-measuredStart)/freq;
+            profileBoundary("end");
+            printf("timing_valid=%s\n", instrumentedTiming() ? "false" : "true");
 			printf("render_fps=%.4f elapsed_seconds=%.4f frames=%zu\n",draw.size()/elapsed,elapsed,draw.size());
 			recorder.stop(); recorder.shutdown();
 			if (const char *record = getenv("PROFILE_RECORD"); record && std::string(record) != "off")

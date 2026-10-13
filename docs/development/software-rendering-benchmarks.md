@@ -41,14 +41,14 @@ Keep the initial save, generated checkpoints and runner metadata together. Fixtu
 population matters more than the tick label; a late game can have fewer surviving units.
 
 For paired measurements, preserve a baseline benchmark executable before rebuilding and
-run at least seven alternating pairs on the same fixtures, resolution and hardware:
+run at least twelve alternating pairs on the same fixtures, resolution and hardware:
 
 ```sh
 python3 tools/software_render_benchmark.py \
   --baseline artifacts/software-renderer/baseline/SoftwareRenderBenchmark \
   --candidate build/darwin/client/release/test/SoftwareRenderBenchmark \
   --save artifacts/software-renderer/initial.game.gz --save artifacts/software-renderer/mid.game.gz \
-  --save artifacts/software-renderer/late.game.gz --repeat 7 \
+  --save artifacts/software-renderer/late.game.gz --repeat 12 \
   --output artifacts/software-renderer/comparison
 ```
 
@@ -83,3 +83,72 @@ Compare callback duration tails separately from whole-frame timing; fewer jobs
 alone mechanically reduce summed queue time. Interactive benchmarks use their
 external FPS schedule as the sole pacer and retain the ordinary render admission
 boundary, so two independent pacers cannot skip measurement opportunities.
+
+## Camera and profiler boundaries
+
+The standalone harness extracts the initial scene before establishing camera bounds.
+`PROFILE_ZOOM` must match the effective zoom; an out-of-range request fails rather
+than silently measuring another workload. GUI mode starts at the local team's initial
+viewport; `PROFILE_MODE=map` starts at map origin zero. Keep that distinction identical
+between revisions. Earlier harnesses could clamp a requested half-scale GUI view to
+1.0 before scene extraction; their scenario labels do not establish the actual zoom.
+Always retain the `CAMERA` and `READY` lines with comparison evidence.
+
+On POSIX builds, `PROFILE_BOUNDARY_STOP=1` prints and flushes
+`PROFILE_BOUNDARY phase=begin` after warmup, then stops the benchmark with `SIGSTOP`.
+An external profiler may attach all existing threads, enable its counters, and resume
+that PID with `SIGCONT`. At `phase=end`, drawing is fenced and the process stops again;
+disable counters before resuming it for reporting and shutdown. The benchmark links
+no profiler library. Use native perf instruction/branch counters for CPU work and
+instruction samples for attribution; require all requested counters to be counted
+without multiplexing. Record user and kernel counts separately. These boundaries
+apply to fixed-scene mode, not the interactive simulation probe.
+
+The harness reports `timing_valid=false` for its stop boundaries, known perf/Callgrind
+boundary flags, and preloaded interposition libraries (`LD_PRELOAD`, `LD_AUDIT` or
+`DYLD_INSERT_LIBRARIES`). The timing runner rejects inherited interposition and
+`GLOB2_PROFILE_*` environments; it clears inherited `PROFILE_*` options before applying
+its explicit workload configuration. Never use their elapsed time,
+FPS, CPU distributions, or frame percentiles as latency evidence. Callgrind serializes
+client threads: its instruction and call-graph evidence cannot establish native
+parallel speedup. Cache simulation is a model, not measured memory bandwidth.
+Run timings separately with ordinary scopes and no profiler stops or CPU-stage scopes.
+
+## Isolated full-pipeline comparisons
+
+`test/run_software_render_comparison.py` collects twelve alternating comparison groups
+for warm static maps, animated maps, actual half-scale GUI, native GUI, streamed terrain,
+and live simulation. Each group runs both baseline modes and the candidate's immediate,
+serial and parallel modes. It retains logs, initial fixed-scene captures, binary/fixture
+hashes, commands and environments. It requires identical reported camera, framebuffer,
+map dimensions, population and completed frame counts across fixed-work variants,
+checks their simulation checksum, and requires exact capture hashes across candidate
+execution modes. Baseline and candidate must both include the corrected
+camera setup; do not compare a mislabeled legacy half-scale workload against a corrected one.
+The interactive case requires displayed frames and positive simulation tick progress.
+Its manifest records live progress and latency observations separately from fixed-work
+comparisons. It exercises admission and live simulation rather than the frozen-scene
+checksum probe; analyze its displayed-scene age and deadline behavior separately.
+
+```sh
+python3 test/run_software_render_comparison.py \
+  --baseline artifacts/renderer/baseline/SoftwareRenderBenchmark \
+  --candidate build/linux/client/release/retain-symbols/test/SoftwareRenderBenchmark \
+  --save artifacts/renderer/fixture.game --assets artifacts/renderer/runtime-assets \
+  --output artifacts/renderer/comparison
+```
+
+The runner invokes the audited `run_with_benchmark_cpuset.py` wrapper. Its current
+host configuration reserves CPUs 0–11 including SMT siblings, places the runner and
+benchmark on CPUs 0,2,4,6,8,10, and leaves CPUs 12–15 for ordinary work on the 16-thread
+measurement host. The wrapper validates topology and complementary CPU ownership,
+records an audit, and restores its temporary partition. It fails on incompatible
+hosts rather than guessing CPU topology. Use the wrapper's documented interface
+for other hosts. Isolation requires authorization to create a temporary cgroup;
+it does not justify changing global CPU settings. Retain the audit with results.
+
+Compare independent paired runs and report confidence intervals. Isolation reduces
+scheduler competition but does not eliminate thermal, frequency or shared-memory
+contention; record those conditions and treat inconclusive timing as inconclusive.
+Render-only instruction counts establish work and coverage, while complete frame
+measurements and live simulation establish whether distributing it is beneficial.
