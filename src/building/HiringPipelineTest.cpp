@@ -473,6 +473,31 @@ TEST_SUITE("HiringInputDigest")
 		}
 		CHECK(reusedAddress);
 	}
+	TEST_CASE("multi-yield stock numbering and unused slots do not change logical input identity")
+	{
+		glob2test::HeadlessGlobals globals;
+		glob2test::HeadlessGame w({.discovered = true, .loadDefaultRace = true});
+		auto compact = observation(w), churned = compact;
+		auto a = std::make_shared<SimulationSnapshot::Resources>(*compact.resources);
+		a->stockIndices.assign(a->cells.size(), 0);
+		a->stockIndices[15] = 1;
+		a->stocks.resize(1);
+		a->stocks[0][WHEAT] = 7;
+		a->stocks[0][WOOD] = 3;
+		auto b = std::make_shared<SimulationSnapshot::Resources>(*a);
+		b->stockIndices[15] = 3;
+		b->stocks.resize(4);
+		b->stocks[2] = a->stocks[0];
+		b->stocks[0][WOOD] = 100;
+		b->stocks[3][WHEAT] = 99;
+		compact.resources = a;
+		churned.resources = b;
+		HiringInputDigests hashes;
+		CHECK(hashes.digest(compact, 0) == hashes.digest(churned, 0));
+		b->stocks[2][WOOD] = 4;
+		++b->fillEpoch;
+		CHECK(hashes.digest(compact, 0) != hashes.digest(churned, 0));
+	}
 	TEST_CASE("frozen logical map inputs change the digest without live queries")
 	{
 		glob2test::HeadlessGlobals globals;

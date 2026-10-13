@@ -69,10 +69,15 @@ Uint32 HiringInputDigests::digest(const SimulationSnapshot::Handle &w, Uint64 ro
 							s.add(c.fertility);
 							s.add(c.mayGrow);
 						}
-						s.values(r.stockIndices);
-						s.add(r.stocks.size());
-						for (const auto &stock : r.stocks)
-							s.values(stock);
+						// Saves reconstruct compact stock slots. Only the stock
+						// referenced by each tile is a logical planner input.
+						for (std::size_t tile = 0; tile < r.cells.size(); ++tile)
+						{
+							const auto slot = r.stockIndices.empty() ? 0 : r.stockIndices.at(tile);
+							s.add(slot != 0);
+							if (slot)
+								s.values(r.stocks.at(slot - 1));
+						}
 						s.values(r.materialSourceCounts);
 						return s.result();
 					}));
