@@ -230,5 +230,5 @@ raster checks compare complete regions and disjoint tiles exactly; software
 recorder cases also check pending source destruction, shared backing views,
 capacity flushes, fallback ordering and failure/discard recovery. Run rendering
 integration with both `GLOB2_RENDER_EXECUTION=serial` and `parallel`; the default
-`auto` keeps admission conservative. Preserve independent base-revision captures
+`immediate` retains direct serial drawing without batching. Preserve independent base-revision captures
 because shared-kernel comparisons alone cannot prove unchanged pixel arithmetic.

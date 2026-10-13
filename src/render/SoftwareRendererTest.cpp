@@ -455,7 +455,7 @@ TEST_CASE("recorded software segments freeze borrowed sources and preserve fallb
           doctest::test_suite("SoftwareRenderer"))
 {
     std::vector<Uint32> expected;
-    for (const char *execution : {"auto", "serial", "parallel"})
+    for (const char *execution : {"immediate", "serial", "parallel"})
     {
         glob2test::ScopedEnvironment mode("GLOB2_RENDER_EXECUTION", execution);
         ComputeExecutor executor;
@@ -494,7 +494,7 @@ TEST_CASE("recorder capacity and overlapping backing views retain immediate draw
           doctest::test_suite("SoftwareRenderer"))
 {
     std::vector<Uint32> expected;
-    for (const char *execution : {"auto", "serial", "parallel"})
+    for (const char *execution : {"immediate", "serial", "parallel"})
     {
         glob2test::ScopedEnvironment mode("GLOB2_RENDER_EXECUTION", execution);
         ComputeExecutor executor;
@@ -629,7 +629,7 @@ TEST_CASE("very wide recorded targets retain bounded scratch and exact painter o
           doctest::test_suite("SoftwareRenderer"))
 {
     std::vector<Uint32> expected;
-    for (const char *execution : {"auto", "serial", "parallel"})
+    for (const char *execution : {"immediate", "serial", "parallel"})
     {
         glob2test::ScopedEnvironment mode("GLOB2_RENDER_EXECUTION", execution);
         auto target = pixels(300000, 1), source = pixels(7, 1);
@@ -671,7 +671,7 @@ TEST_CASE("render reservation rollback and commit preserve prior captures" *
 TEST_CASE("graphics context CPU pixel borrowing fences recorded main and offscreen drawing" *
           doctest::test_suite("SoftwareRenderer"))
 {
-    for (const char *execution : {"auto", "serial", "parallel"})
+    for (const char *execution : {"immediate", "serial", "parallel"})
     {
         glob2test::ScopedEnvironment mode("GLOB2_RENDER_EXECUTION", execution);
         GraphicContext context(64, 48, GraphicContext::NOAUDIO, "CPU pixel observation");
@@ -783,7 +783,7 @@ TEST_CASE("narrow recorded commands preserve painter order on very wide targets"
           doctest::test_suite("SoftwareRenderer"))
 {
     std::vector<Uint32> expected;
-    for (const char *execution : {"auto", "serial", "parallel"})
+    for (const char *execution : {"immediate", "serial", "parallel"})
     {
         glob2test::ScopedEnvironment mode("GLOB2_RENDER_EXECUTION", execution);
         auto target = pixels(300000, 1);
