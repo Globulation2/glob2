@@ -1,0 +1,91 @@
+{
+  "source_revision": "520d0b61280a5aa9d13f5b269770819dcb5b569f",
+  "baseline_revision": "3e2ba6c07450c94ce0f997220479fd309b71e461",
+  "platform": "Linux-7.0.0-38-generic-x86_64-with-glibc2.39",
+  "compiler": "GCC13.3.0",
+  "SDL": "3.4.16",
+  "fixture_sha256": "26cc515a843c418ccc6af6d024398ee5ab1c6d535e6e01d1c53635cd881d3da4",
+  "binaries_sha256": {
+    "candidate32": "3410209d1804b4038ddf65749e608cbde86405f9cd6e8f4c4c7cd98fcc916880",
+    "baseline": "eea8f07d81495388467f8c2d36e598e7cc0794479a343d174eda61f9003f7137",
+    "control32": "e9b7a73fe56e2d2cb69e298d08e3de081c588b409361e4ef57d05e3b5d965729",
+    "candidate": "b66d570cf8717c22943f46c940697ca846b20851ebc30145f0af5eff2bdf5e12"
+  },
+  "native_unit": {
+    "tests": "95",
+    "failures": "0",
+    "errors": "0",
+    "skipped": "0"
+  },
+  "native_engine": {
+    "tests": "97",
+    "failures": "0",
+    "errors": "0",
+    "skipped": "0"
+  },
+  "sanitizer_probe": {
+    "base": "3e2ba6c07450c94ce0f997220479fd309b71e461",
+    "compiler": "g++ (Ubuntu 13.3.0-6ubuntu2~24.04.1) 13.3.0",
+    "platform": "Linux x86_64",
+    "result": "PASS native worker callbacks=420: grouped/clipped regional pixel parity on large source and contained/outside crops; cache revision and20-frame reuse;50 failing batches with destroyed sources, capture rejection, discard recovery and owner reservation release",
+    "scope": "Native production ComputeExecutor with4threads,2presentation slots. Independent immediate/serial/parallel pixel comparisons. Stub unused geometry (throws) and disabled PerformanceTelemetry::Scope implementation; no toolkit/display. ASan+UBSan not ThreadSanitizer. Failure propagation drains all callbacks before owner destruction; per-iteration TLS ledger returns full limit. Not production GraphicContext warmtrim validation.",
+    "sha256": {
+      "libgag/src/SoftwareRenderBackend.cpp": "6573c07d085241329151f2895a75a299bc10526b5f6397a8fb98a1a8e1d8cc94",
+      "libgag/src/SurfaceRaster.cpp": "e7a78b3ac5f309db640145f3fda156f98e60515bd797e77d50119ade0a2b2c7c",
+      "libgag/include/SurfaceRaster.h": "026692af751a22cfdb780ff464d9caa1a9b546db1a513cb633c3eb7a14cc9302",
+      "libgag/include/RenderBackend.h": "710c2d449f87253a83df4daf78af2775031153a73f405f39d7d2a7b0b7d977c0",
+      "libgag/include/PresentationWork.h": "70b5d48445e29c3913128e75353f9d9cfc60ac70ae8b3f9d808fca3e17b9f017",
+      "libgag/include/ThreadSupport.h": "55905779aed9e45793c0afca87c38133f2dd22ef78f99b703d25783a25b313fa",
+      "src/common/ComputeExecutor.h": "8f396d48f94752be58e8ece6f4364c604bb46ad7c92e8ebb51e7cf910d430d7e",
+      "src/common/ComputeTelemetry.h": "a115209aad093832631dc7895bd91700a22baf9c819643e82076c940909fc092",
+      "libgag/src/SoftwareRasterSources.h": "e3c831399dba44abae8972e2f0b170f14af8857cf63113ef07a98da852d63b1a"
+    },
+    "probe_sha256": "4f0edd68712b7a759cd9be67525a894bd784193a9372bb1907a869a4b3da1ea1",
+    "tested_commit": "520d0b61280a5aa9d13f5b269770819dcb5b569f",
+    "regional_coverage": "Large512x1024 coordinate-gradient source,128-byte first region, contained crop reuse,180-byte outside region,140-byte changed revision, clipped negative-origin destinations and varying alpha, source destruction before join. Current capture total448bytes while old queued leases live and140bytes afterjoin. Exact immediate/serial/nativeparallel comparison."
+  },
+  "pixel_captures": {
+    "images": 44,
+    "workloads": 11,
+    "parity": "All four modes/endpoints produce byte-identical BMPs for each one-frame workload, including all stored channel bytes and stride data."
+  },
+  "omitted": [
+    "Other OS/architectures",
+    "Serial and threaded browser builds",
+    "Full hosted development matrix",
+    "Maintainer playtesting",
+    "Isolated interactive gameplay latency and GPU speed measurements"
+  ],
+  "build_flags": {
+    "validation": "python3 tools/dev_build.py -j8 unit-tests engine-tests; -O0 -g1",
+    "performance": "scons release=1 -j8 software-render-benchmark; ordinary stripped -O3 release",
+    "sanitizer": "Standalone native production raster/executor code with -O1 -g -fsanitize=address,undefined"
+  },
+  "assets": "Pinned runtime asset snapshot from prior retained evidence. Both endpoints use byte-identical asset paths; this isolates source-code changes. It is not a claim that current master translations match the old snapshot.",
+  "control32": "Same final source revision plus candidate32-control.patch, changing only terrain group cap64->32",
+  "performance": {
+    "formal_processes": 308,
+    "group_control_processes": 42,
+    "paired_repeats": 7,
+    "no_sampled_external_build_or_game_jobs": true,
+    "max_sampled_one_minute_load": 3.1162109375,
+    "max_sampled_before_cpu_busy_percent": 10.0,
+    "no_thread_cpu_clock_substitution": true,
+    "same_cache_hit_rebuild_work": true
+  },
+  "integration_head": "a36aed67e3ae756c47afd8c398743379191d4ec3",
+  "integration_base": "26715e41b177da04f068f01ca436abad5c1f95d2",
+  "rendering_changed_files_byte_identical_after_rebase": true,
+  "final_integration_unit": {
+    "tests": "97",
+    "failures": "0",
+    "errors": "0",
+    "skipped": "0"
+  },
+  "final_integration_engine": {
+    "tests": "123",
+    "failures": "0",
+    "errors": "0",
+    "skipped": "0"
+  }
+}
