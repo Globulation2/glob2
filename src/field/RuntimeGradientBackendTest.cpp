@@ -704,9 +704,57 @@ TEST_SUITE("RuntimeGradientBackend")
 					CHECK(actual == seeds);
 				}
 	}
-	TEST_CASE("Vulkan mapped transfer storage shares the host admission budget")
+	TEST_CASE("Vulkan retires one pooled work set before reusing buffers across shapes and algorithms")
+    {
+        using namespace gradient_kernel;
+        glob2test::ScopedEnvironment diagnostics("GLOB2_GRADIENT_DIAGNOSTICS", "1");
+        glob2test::ScopedEnvironment transfers("GLOB2_VULKAN_VERIFY_TRANSFERS", "1");
+        shutdownVulkanGradient();
+        if (!initializeVulkanGradient()) {
+            if (std::getenv("GLOB2_REQUIRE_VULKAN")) FAIL(vulkanGradientStatus().error);
+            MESSAGE("Vulkan unavailable: ", vulkanGradientStatus().error); return;
+        }
+        BackendSession session;
+        const auto hostBefore = openCLHostBytes();
+        unsigned iteration = 0;
+        for (const auto& dimensions : {std::pair{128,128}, std::pair{256,256}, std::pair{512,512},
+                std::pair{17,19}, std::pair{1,192}, std::pair{192,1}, std::pair{7,13}}) {
+            field::Grid grid{dimensions.first, dimensions.second};
+            std::vector<EntrySteps> costs(grid.cells());
+            std::vector<std::uint16_t> seeds(grid.cells(), 1);
+            for (std::size_t i=0; i<grid.cells(); ++i) {
+                costs[i] = {unsigned(1+(i+iteration)%97),unsigned(2+(i+iteration)%137)};
+                if (i%11==3) seeds[i]=0;
+            }
+            seeds.front()=65535; seeds.back()=65000;
+            const auto expected=oracle(seeds,grid,costs,2000);
+            for (const auto plan : {Plan::VulkanFrozen8,Plan::VulkanJacobi}) {
+                auto actual=seeds;
+                BackendRequest request{actual.data(),2000,grid,session,&costs,
+                    [](void* p,std::size_t i){return (*static_cast<std::vector<EntrySteps>*>(p))[i];},nullptr};
+                request.diagnostics=true;
+                bool committed=false; request.executedOnDevice=&committed;
+                const auto before=gradientDiagnosticSnapshot(Backend::Vulkan);
+                REQUIRE(executeVulkanGradient(std::span(&request,1),plan));
+                CHECK(committed); CHECK(actual==expected);
+                const auto after=gradientDiagnosticSnapshot(Backend::Vulkan);
+                if (plan==Plan::VulkanJacobi || iteration>=3) {
+                    CHECK(after.counters[unsigned(GradientCounter::ResourceReuses)] - before.counters[unsigned(GradientCounter::ResourceReuses)] == 1);
+                    CHECK(after.counters[unsigned(GradientCounter::BufferAllocations)] == before.counters[unsigned(GradientCounter::BufferAllocations)]);
+                    CHECK(after.counters[unsigned(GradientCounter::CommandAllocations)] == before.counters[unsigned(GradientCounter::CommandAllocations)]);
+                    CHECK(after.counters[unsigned(GradientCounter::BindingAllocations)] == before.counters[unsigned(GradientCounter::BindingAllocations)]);
+                }
+            }
+            ++iteration;
+        }
+        CHECK(openCLHostBytes() >= hostBefore+512*512*sizeof(std::uint32_t));
+        shutdownVulkanGradient();
+        CHECK(openCLHostBytes()==hostBefore);
+    }
+	TEST_CASE("Vulkan retained work storage shares the host admission budget")
 	{
 		using namespace gradient_kernel;
+        shutdownVulkanGradient();
 		if (!initializeVulkanGradient())
 		{
 			if (std::getenv("GLOB2_REQUIRE_VULKAN"))
@@ -741,7 +789,9 @@ TEST_SUITE("RuntimeGradientBackend")
 		REQUIRE(executeVulkanGradient(std::span(&request, 1), Plan::VulkanFrozen8));
 		CHECK(committed);
 		CHECK(observed);
-		CHECK(openCLHostBytes() == before);
+		CHECK(openCLHostBytes() > before);
+        shutdownVulkanGradient();
+        CHECK(openCLHostBytes() == before);
 	}
 	TEST_CASE("Vulkan batch rollback retains execution evidence without claiming commits")
 	{
