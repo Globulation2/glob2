@@ -11,7 +11,7 @@
 // this exact record; owner/type bindings, lists and query scratch live outside it.
 struct BuildingStateRecord
 {
-	enum BuildingState
+	enum BuildingState : Uint8
 	{
 		DEAD=0,
 		ALIVE=1,
@@ -19,7 +19,7 @@ struct BuildingStateRecord
 		WAITING_FOR_CONSTRUCTION=3,
 		WAITING_FOR_CONSTRUCTION_ROOM=4
 	};
-	enum ConstructionResultState
+	enum ConstructionResultState : Uint8
 	{
 		NO_CONSTRUCTION=0,
 		NEW_BUILDING=1,
@@ -33,24 +33,25 @@ struct BuildingStateRecord
 
 	Sint32 typeNum;
 	int shortTypeNum;
-	BuildingState buildingState;
-	ConstructionResultState constructionResultState;
 	Sint32 constructionOriginTypeNum = -1;
 	Sint32 maxUnitWorking, maxUnitWorkingPreferred, maxUnitWorkingFuture;
 	// Maintained desired staffing; zero when the building needs no work.
-	Sint32 desiredMaxUnitWorking, maxUnitInside;
+	Sint32 desiredMaxUnitWorking;
 	// Authoritative order-applied priority (-1/0/+1). Pending GUI values live
 	// in BuildingGuiState, outside simulation state.
 	Sint32 priority;
 	EntityRandom entityRandom;
 	Uint32 scriptIdentity = 0; // Excluded from legacy simulation checksums.
 	Uint16 gid;
+	Uint16 maxUnitInside;
+	BuildingState buildingState;
+	ConstructionResultState constructionResultState;
+	Uint8 minLevelToFlag;
+	Uint8 minWorkerLevelToFlag = 0;
 	Sint32 posX, posY;
 	Uint8 underAttackTimer;
 	Sint32 unitStayRange;
 	bool clearingMaterials[MaterialCount]; // Clears resources yielding this material.
-	Sint32 minLevelToFlag;
-	Sint32 minWorkerLevelToFlag = 0;
 	bool explorersRequireBombing = false;
 	// Canonical private stock. Shared stock is owned by Team; a runtime binding
 	// selects that pool instead, and snapshot queries select the frozen Team pool.

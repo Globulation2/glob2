@@ -82,3 +82,23 @@ replacement: if it fails, the new local file remains available for export while
 the previously persisted browser copy remains intact. A retry creates a new save
 operation; each operation's terminal state is sticky and its success callback
 runs once. Other background string writers still keep the newest queued snapshot.
+
+## Entity storage and serialized values
+
+Entity field compaction does not change explicit stream encodings, field order,
+checksum order or the save compatibility floor. Unit and building loaders read
+narrowed fields into full-width temporaries, apply existing validation and legacy
+migrations, and only then convert to their in-memory storage. In particular,
+invalid values such as 256 must not wrap into valid byte enums or training levels.
+Learning flags retain the historical nonzero-to-boolean loading behavior and are
+written individually in the existing order. Their unsigned mask is reconstructed,
+with unused bits cleared on initialization and loading, rather than serialized.
+`isDead` remains signed 32-bit because loading historically accepts values beyond
+zero and one. Building priority, staffing, failure counters, inventory, demand and
+exchange masks likewise retain their existing full-width accepted values.
+
+Presentation animation clocks still initialize to zero on load rather than
+acquiring new saved fields. The compact terrain-health remainder preserves its
+signed continuation debt; accumulation and division occur before converting the
+remainder. Canonical-save comparisons must use baseline-generated resaves, since
+existing historical migrations can already normalize an input file.

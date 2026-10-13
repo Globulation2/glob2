@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "EngineFixtures.h"
 #include "UnitCatalog.h"
+#include "Version.h"
 #include "gradient/GradientRuntime.h"
 #include "FileFormatVersions.h"
 #include "ai/maxima/AIMaximaWorldHelpers.h"
@@ -2521,8 +2522,8 @@ TEST_SUITE("UnitCustomization")
         static_assert(offsetof(UnitState,configuredVisionRadius)==offsetof(UnitState,underAttackTimer)+1);
         static_assert(offsetof(UnitState,hp)==offsetof(UnitState,underAttackTimer)+4);
         // Native 64-bit layout guards; narrower targets still check the exact padding gap.
-        static_assert(sizeof(void*)!=8 || sizeof(UnitState)==360);
-        static_assert(sizeof(void*)!=8 || sizeof(Unit)==440);
+        static_assert(sizeof(void*)!=8 || sizeof(UnitState)==264);
+        static_assert(sizeof(void*)!=8 || sizeof(Unit)==344);
         glob2test::HeadlessGlobals globals;
         glob2test::HeadlessGame world({.wDec=6,.hDec=6,.clearImmobile=true,.header=true,.seed=4921});
         auto definitions=nlohmann::json::parse(world.game.unitCatalog().serialize());
@@ -3113,4 +3114,75 @@ TEST_SUITE("UnitCustomization")
         CHECK(world.game.syncRandom==random); CHECK(observer->entityRandom.exportState()==entity);
     }
 
+}
+
+TEST_SUITE("UnitCustomization")
+{
+    TEST_CASE("compact unit fields reject wide invalid values before conversion [save-format]")
+    {
+        glob2test::HeadlessGlobals globals;
+        glob2test::HeadlessGame world({.clearImmobile=true,.header=true,.seed=4921});
+        auto* unit=world.addUnit(WORKER,8,8); REQUIRE(unit);
+        struct ReplacingOutput : GAGCore::BinaryOutputStream {
+            std::string field;
+            Uint32 replacement;
+            ReplacingOutput(GAGCore::MemoryStreamBackend* backend, std::string field, Uint32 replacement)
+                : BinaryOutputStream(backend), field(std::move(field)), replacement(replacement) {}
+            void writeSint32(Sint32 value, const std::string name) override {
+                BinaryOutputStream::writeSint32(name==field ? Sint32(replacement) : value,name);
+            }
+            void writeUint32(Uint32 value, const std::string name) override {
+                BinaryOutputStream::writeUint32(name==field ? replacement : value,name);
+            }
+        };
+        for (const auto& [field,value] : std::vector<std::pair<std::string,Uint32>>{
+            {"direction",256},{"direction",9},{"direction",Uint32(-1)},{"level",256},{"level",NB_UNIT_LEVELS},{"level",Uint32(-1)},
+            {"constructionLevel",256},{"constructionLevel",NB_UNIT_LEVELS},{"constructionLevel",Uint32(-1)},
+            {"terrainHealthRemainder",65536},{"terrainHealthRemainder",256},{"terrainHealthRemainder",Uint32(-256)},
+            {"destinationPurpose",255},{"destinationPurpose",256},{"carriedRessource",255},{"carriedRessource",256},
+            {"medical",256},{"activity",256},{"displacement",256},{"displacement",1},
+            {"movement",256},{"movement",10},{"action",256},{"action",NB_ABILITY}}) {
+            CAPTURE(field); CAPTURE(value);
+            auto* backend=new GAGCore::MemoryStreamBackend;
+            ReplacingOutput output(backend,field,value); unit->save(&output);
+            const auto bytes=backend->takeContents();
+            GAGCore::BinaryInputStream input(new GAGCore::MemoryStreamBackend(bytes.data(),bytes.size()));
+            input.seekFromStart(0);
+            CHECK_THROWS_AS(Unit(&input,world.team,VERSION_MINOR),std::runtime_error);
+        }
+        for (int remainder : {-255,0,255}) {
+            unit->terrainHealthRemainder=remainder;
+            unit->direction=UNIT_DIRECTION_NONE; unit->constructionLevel=NB_UNIT_LEVELS-1;
+            unit->isDead=INT_MIN; unit->destinationPurpose=-1; unit->carriedMaterial=-1;
+            for(int ability=0;ability<NB_ABILITY;++ability) {
+                unit->level[ability]=NB_UNIT_LEVELS-1;
+                unit->setCanLearn(ability,ability%2==0);
+            }
+            auto* backend=new GAGCore::MemoryStreamBackend;
+            GAGCore::BinaryOutputStream output(backend); unit->save(&output);
+            const auto bytes=backend->takeContents();
+            GAGCore::BinaryInputStream input(new GAGCore::MemoryStreamBackend(bytes.data(),bytes.size())); input.seekFromStart(0);
+            Unit restored(&input,world.team,VERSION_MINOR);
+            CHECK(restored.terrainHealthRemainder==remainder); CHECK(restored.isDead==INT_MIN);
+            CHECK(restored.direction==UNIT_DIRECTION_NONE); CHECK(restored.constructionLevel==NB_UNIT_LEVELS-1);
+            CHECK(restored.destinationPurpose==-1); CHECK(restored.carriedMaterial==-1);
+            for(int ability=0;ability<NB_ABILITY;++ability) {
+                CHECK(restored.level[ability]==NB_UNIT_LEVELS-1);
+                CHECK(restored.canLearn(ability)==(ability%2==0));
+            }
+        }
+    }
+    TEST_CASE("learning mask updates preserve every neighboring flag")
+    {
+        UnitState state{};
+        for(int ability=0;ability<NB_ABILITY;++ability) {
+            state.setCanLearn(ability,true);
+            for(int other=0;other<NB_ABILITY;++other) CHECK(state.canLearn(other)==(other<=ability));
+        }
+        for(int ability=0;ability<NB_ABILITY;++ability) {
+            state.setCanLearn(ability,false);
+            for(int other=0;other<NB_ABILITY;++other) CHECK(state.canLearn(other)==(other>ability));
+        }
+        CHECK(state.learningFlags==0);
+    }
 }

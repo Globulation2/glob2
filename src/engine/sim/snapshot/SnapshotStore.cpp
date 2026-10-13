@@ -21,11 +21,15 @@ Handle Store::captureBoundary(const Game& game, Requirements required)
 		catalogConfigurationRevision = game.gameHeader.observationRevision();
 	}
 	const auto copiedBefore = storage.bytesCopied;
+	const auto entityBefore = storage.entityBytesCopied;
+	const auto sidecarBefore = storage.entitySidecarBytesCopied;
 	auto next = capture(game, catalog, required, latest ? &*latest : nullptr, &storage);
 	next.observationRevision = observationRevision;
 	// Map arrays report the chunks they actually copied; other components are
 	// accounted by size when not shared with the previous capture.
 	metrics.bytesCopied += storage.bytesCopied - copiedBefore;
+	metrics.entityBytesCopied += storage.entityBytesCopied - entityBefore;
+	metrics.entitySidecarBytesCopied += storage.entitySidecarBytesCopied - sidecarBefore;
 	auto account = [&](const auto& current, const auto& previous, Uint64 bytes) {
 		if (!current) return;
 		if (current == previous) ++metrics.reusedComponents;

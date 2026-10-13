@@ -142,7 +142,11 @@ Handle capture(const Game& game,
 	// arrays directly rather than clearing and growing them one cell at a time.
 	entities->buildings.clear(); entities->units.clear(); entities->relationships.clear(); entities->projects.clear();
     entities->extraProduction.clear();
-    if (needs(requirements, Component::Entities)) entities->unitCargo = game.unitCargo;
+    if (needs(requirements, Component::Entities)) {
+        entities->unitCargo = game.unitCargo;
+        if (storage) for (const auto& [gid, inventory] : game.unitCargo.entries())
+            storage->entitySidecarBytesCopied += sizeof(gid) + inventory.size() * sizeof(UnitCargoEntry);
+    }
 	if (needs(requirements, Component::Entities)) {
 		const auto teams = game.mapHeader.getNumberOfTeams();
 		reserve(entities->buildingSlotIndices, teams * Building::MAX_COUNT);
@@ -353,6 +357,7 @@ Handle capture(const Game& game,
 				slot = Uint32(entities->buildings.size());
 				BuildingView v;
 				std::memcpy(static_cast<BuildingStateRecord*>(&v), static_cast<const BuildingStateRecord*>(b), sizeof(BuildingStateRecord));
+				if (storage) storage->entityBytesCopied += sizeof(BuildingStateRecord);
 				v.identity = Game::refOf(b); v.team = t;
                 for (unsigned id=0; id<BuiltinUnitCount; ++id) v.constructionOriginRatios[id]=b->originProductionRatio(id);
                 v.extraProductionOffset = Uint32(entities->extraProduction.size());
@@ -371,6 +376,9 @@ Handle capture(const Game& game,
 				for (const auto* u : b->unitsWorking) append(entities->relationships, Game::refOf(u));
 				v.inside = {Uint32(entities->relationships.size()), Uint32(b->unitsInside.size())};
 				for (const auto* u : b->unitsInside) append(entities->relationships, Game::refOf(u));
+				if (storage) storage->entitySidecarBytesCopied += sizeof(v.constructionOriginRatios)
+                    + v.extraProductionCount * sizeof(ExtraProductionState)
+                    + (v.working.count + v.inside.count) * sizeof(UnitRef);
 				append(entities->buildings, std::move(v));
 			}
 		}
@@ -383,6 +391,7 @@ Handle capture(const Game& game,
 				slot = Uint32(entities->units.size());
 				UnitView v;
 				std::memcpy(static_cast<UnitState*>(&v), static_cast<const UnitState*>(u), sizeof(UnitState));
+				if (storage) storage->entityBytesCopied += sizeof(UnitState);
 				v.identity = Game::refOf(u); v.team = t;
 				v.attached = Game::refOf(u->attachedBuilding);
 				v.target = Game::refOf(u->targetBuilding);
@@ -588,9 +597,16 @@ void verifyCapture(const Game& game, const Handle& handle)
     if (handle.entities) {
         if (handle.entities->unitCargo.entries()!=game.unitCargo.entries())
             throw std::logic_error("snapshot verification: unit cargo differs from the game");
+        for (const auto& unit : handle.entities->units) {
+            const auto* liveUnit = game.resolveUnit(unit.identity);
+            if (!liveUnit || static_cast<const UnitState&>(unit) != static_cast<const UnitState&>(*liveUnit)
+                || unit.attached != Game::refOf(liveUnit->attachedBuilding) || unit.target != Game::refOf(liveUnit->targetBuilding))
+                throw std::logic_error("snapshot verification: unit state differs from the game");
+        }
         for (const auto& building:handle.entities->buildings) {
             const auto* liveBuilding=game.resolveBuilding(building.identity);
-            if (!liveBuilding || building.extraProductionCount!=liveBuilding->extraProductionRatios.size())
+            if (!liveBuilding || static_cast<const BuildingStateRecord&>(building) != static_cast<const BuildingStateRecord&>(*liveBuilding)
+                || building.extraProductionCount!=liveBuilding->extraProductionRatios.size())
                 throw std::logic_error("snapshot verification: production storage differs from the game");
             for (unsigned id=0;id<BuiltinUnitCount;++id)
                 if (building.constructionOriginRatios[id]!=liveBuilding->originProductionRatio(id))

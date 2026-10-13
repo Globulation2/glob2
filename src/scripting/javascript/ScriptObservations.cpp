@@ -48,6 +48,13 @@ Value numbers(const Sint32 *values, int n)
 		a.items.emplace_back(values[i]);
 	return a;
 }
+Value numbers(const Uint8 *values, int n)
+{
+    Value a = Value::array();
+    for (int i = 0; i < n; ++i)
+        a.items.emplace_back(Sint32(values[i]));
+    return a;
+}
 bool visible(const AIEngine::AIWorldView &world, int team, const AIEngine::UnitView &u)
 {
 	return team < 0 || u.team == team ||

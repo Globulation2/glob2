@@ -45,6 +45,10 @@ struct Storage
 	Uint64 preparationNs = 0;
 	//! Bytes of map arrays actually copied (changed chunks and full fills).
 	Uint64 bytesCopied = 0;
+	//! Bulk authoritative records read from live objects; excludes view metadata.
+	Uint64 entityBytesCopied = 0;
+	//! Logical entity sidecar payload copied, excluding allocator/capacity overhead.
+	Uint64 entitySidecarBytesCopied = 0;
 	//! After each capture, compare every captured map array and entity list
 	//! with the live state and throw on a mismatch (an unmarked write).
 	bool verify = false;

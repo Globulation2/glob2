@@ -54,7 +54,7 @@ void writePre73Team(GAGCore::OutputStream& out, int version, const Unit& cached,
             for(int ability=0;ability<NB_ABILITY;++ability) {
                 out.writeEnterSection(ability);
                 out.writeSint32(ability==WALK?17:cached.performance[ability],"performance");
-                out.writeSint32(cached.level[ability],"level"); out.writeUint32(cached.canLearn[ability],"canLearn");
+                out.writeSint32(cached.level[ability],"level"); out.writeUint32(cached.canLearn(ability),"canLearn");
                 out.writeLeaveSection();
             }
             out.writeLeaveSection();

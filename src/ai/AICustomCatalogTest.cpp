@@ -986,7 +986,7 @@ TEST_CASE("keyed worker courses retain qualification grants and exclude unrelate
     CHECK(labour.workers==3); // worker, keyed builder, courier; defense owns its hybrid.
     CHECK(labour.idle==3);CHECK(labour.trainable==1);
     CHECK(labour.trainingSlots==game.buildingsTypes.get(school)->maxUnitInside);
-    custom->canLearn[ARMOR]=false;
+    custom->setCanLearn(ARMOR,false);
     const auto blocked=maxima.observe_labour(maxima.context);
     CHECK(blocked.trainingSlots==labour.trainingSlots);CHECK(blocked.trainable==0);
     auto* clearing=world.addBuilding("clearingflag",20,4);REQUIRE(clearing);
@@ -1063,7 +1063,7 @@ TEST_CASE("independent nonmonotonic worker clocks retain keyed course eligibilit
     game.buildingsTypes.loadSnapshotJson(buildings.dump());game.configureBuildingCatalog();
     auto* provider=world.addBuilding("school",4,4);REQUIRE(provider);
     auto* custom=world.addUnit(3,11,10);REQUIRE(custom);
-    REQUIRE(custom->canLearn[HARVEST]);
+    REQUIRE(custom->canLearn(HARVEST));
     REQUIRE(custom->performance[BUILD]==9);REQUIRE(custom->performance[HARVEST]==0);
     const auto& apprenticeship=provider->type->semantics.training[HARVEST];
     REQUIRE(custom->needsTraining(apprenticeship,HARVEST));
@@ -1088,7 +1088,7 @@ TEST_CASE("independent nonmonotonic worker clocks retain keyed course eligibilit
     AIMaxima::Maxima maxima(game.players[0]);const auto labour=maxima.observe_labour(maxima.context);
     CHECK(labour.workers==1);CHECK(labour.idle==1);CHECK(labour.trainable==1);
     CHECK(labour.trainingSlots==game.buildingsTypes.get(school)->maxUnitInside);
-    custom->canLearn[WALK]=false;
+    custom->setCanLearn(WALK,false);
     CHECK(maxima.observe_labour(maxima.context).trainable==0);
 }
 
@@ -1135,10 +1135,10 @@ TEST_CASE("always airborne carriers retain keyed flight course planning and inde
     const auto labour=maxima.observe_labour(maxima.context);
     CHECK(labour.workers==1);CHECK(labour.idle==1);CHECK(labour.trainable==1);
     CHECK(labour.trainingSlots==provider->maxUnitInside);
-    carrier->canLearn[FLY]=false;
+    carrier->setCanLearn(FLY,false);
     CHECK_FALSE(carrier->needsTraining(course,FLY));
     CHECK(maxima.observe_labour(maxima.context).trainable==0);
-    carrier->canLearn[FLY]=true;
+    carrier->setCanLearn(FLY,true);
     carrier->applyTraining(course,FLY);
     CHECK(carrier->level[FLY]==1);CHECK(carrier->performance[FLY]==16);
     CHECK(carrier->level[BUILD]==0);CHECK(carrier->level[HARVEST]==0);

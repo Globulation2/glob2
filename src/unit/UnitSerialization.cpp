@@ -43,6 +43,7 @@ void Unit::load(GAGCore::InputStream *stream, Team *owner, Sint32 versionMinor)
 	jobPurpose=UnitJobPurpose::None;
 	regenerationRemainder=0;
 	widePrimaryCargo=false;
+	learningFlags=0;
 
 	// identity
 	gid = stream->readUint16("gid");
@@ -70,11 +71,14 @@ void Unit::load(GAGCore::InputStream *stream, Team *owner, Sint32 versionMinor)
 	delta = stream->readSint32("delta");
 	dx = stream->readSint32("dx");
 	dy = stream->readSint32("dy");
-	direction = stream->readSint32("direction");
+	const Sint32 savedDirection = stream->readSint32("direction");
+	if (savedDirection < 0 || savedDirection > UNIT_DIRECTION_NONE) throw std::runtime_error("Invalid unit action state");
+	direction = Uint8(savedDirection);
 	insideTimeout = stream->readSint32("insideTimeout");
 	speed = stream->readSint32("speed");
-	terrainHealthRemainder = versionMinor >= FILE_FORMAT_VERSION_TERRAIN_PROPERTIES ? stream->readSint32("terrainHealthRemainder") : 0;
-	if (terrainHealthRemainder <= -256 || terrainHealthRemainder >= 256) throw std::runtime_error("Invalid terrain exposure remainder");
+	const Sint32 savedTerrainRemainder = versionMinor >= FILE_FORMAT_VERSION_TERRAIN_PROPERTIES ? stream->readSint32("terrainHealthRemainder") : 0;
+	if (savedTerrainRemainder <= -256 || savedTerrainRemainder >= 256) throw std::runtime_error("Invalid terrain exposure remainder");
+	terrainHealthRemainder = Sint16(savedTerrainRemainder);
 
 	areaServiceRemainders.fill(0);
 	areaLastPulseTick=Uint32(-1);
@@ -101,9 +105,9 @@ void Unit::load(GAGCore::InputStream *stream, Team *owner, Sint32 versionMinor)
 		? readState("serviceResourcesReserved", 1) != 0
 		: activity == ACT_UPGRADING && displacement != DIS_EXITING_BUILDING;
 	movement = static_cast<Movement>(readState("movement", MOV_ATTACKING_TARGET));
-	action = static_cast<Abilities>(readState("action", NB_ABILITY - 1));
+	action = static_cast<Uint8>(readState("action", NB_ABILITY - 1));
 	if ((displacement % 2) != 0 || movement == 10 ||
-		direction < 0 || direction > UNIT_DIRECTION_NONE || dx < -1 || dx > 1 || dy < -1 || dy > 1)
+		dx < -1 || dx > 1 || dy < -1 || dy > 1)
 		throw std::runtime_error("Invalid unit action state");
 	targetX = (Sint32)stream->readSint32("targetX");
 	targetY = (Sint32)stream->readSint32("targetY");
@@ -135,12 +139,13 @@ void Unit::load(GAGCore::InputStream *stream, Team *owner, Sint32 versionMinor)
 	{
 		stream->readEnterSection(i);
 		performance[i] = stream->readSint32("performance");
-		level[i] = stream->readSint32("level");
+		const Sint32 savedLevel = stream->readSint32("level");
 		if (versionMinor>=FILE_FORMAT_VERSION_UNIT_CATALOG && (performance[i]<0 || performance[i]>1000000
             || (i==HP && performance[i]==0 && !hasCapability(UnitRuntimeTraits::LegacyPerformancePolicies))))
 			throw std::runtime_error("Invalid cached unit ability");
-		if (level[i] < 0 || level[i] >= NB_UNIT_LEVELS) throw std::runtime_error("Invalid unit level");
-		canLearn[i] = (bool)stream->readUint32("canLearn");
+		if (savedLevel < 0 || savedLevel >= NB_UNIT_LEVELS) throw std::runtime_error("Invalid unit level");
+		level[i] = Uint8(savedLevel);
+		setCanLearn(i, stream->readUint32("canLearn") != 0);
 		stream->readLeaveSection();
 	}
 	stream->readLeaveSection();
@@ -148,20 +153,21 @@ void Unit::load(GAGCore::InputStream *stream, Team *owner, Sint32 versionMinor)
 	// hold the two apart (the editor used to offer a box for each), so even
 	// such a worker out to the higher of the two.
 	if (versionMinor < FILE_FORMAT_VERSION_ONE_WORKER_LEVEL
-		&& canLearn[BUILD] && level[HARVEST] != level[BUILD])
+		&& canLearn(BUILD) && level[HARVEST] != level[BUILD])
 		setWorkerLevel(std::max(level[HARVEST], level[BUILD]));
 
-	constructionLevel = versionMinor >= FILE_FORMAT_VERSION_BUILDING_CATALOG
+	const Sint32 savedConstructionLevel = versionMinor >= FILE_FORMAT_VERSION_BUILDING_CATALOG
 		? stream->readSint32("constructionLevel") : level[BUILD];
-	if (constructionLevel < 0 || constructionLevel >= NB_UNIT_LEVELS) throw std::runtime_error("Invalid construction qualification");
+	if (savedConstructionLevel < 0 || savedConstructionLevel >= NB_UNIT_LEVELS) throw std::runtime_error("Invalid construction qualification");
+	constructionLevel = Uint8(savedConstructionLevel);
 
 	experience = stream->readSint32("experience");
 	experienceLevel = stream->readSint32("experienceLevel");
 	if (versionMinor>=FILE_FORMAT_VERSION_UNIT_CATALOG && (experience<0 || experienceLevel<0 || speed<0 || delta<0 || fruitCount>3))
 		throw std::runtime_error("Invalid cached unit clock or combat state");
 
-	destinationPurpose = stream->readSint32("destinationPurpose");
-	carriedMaterial = stream->readSint32("carriedRessource");
+	const Sint32 savedDestination = stream->readSint32("destinationPurpose");
+	const Sint32 savedMaterial = stream->readSint32("carriedRessource");
 	carriedPacket={};
 	if (versionMinor>=FILE_FORMAT_VERSION_BUILDING_CATALOG)
 	{
@@ -170,8 +176,10 @@ void Unit::load(GAGCore::InputStream *stream, Team *owner, Sint32 versionMinor)
 		if (!carriedPacket.numerator || !carriedPacket.denominator || carriedPacket.denominator>1000000 || carriedPacket.numerator>carriedPacket.denominator)
 			throw std::runtime_error("Invalid carried material packet");
 	}
-	if (carriedMaterial < -1 || carriedMaterial >= int(MaterialCount) || destinationPurpose < -1 || destinationPurpose > FEED)
+	if (savedMaterial < -1 || savedMaterial >= int(MaterialCount) || savedDestination < -1 || savedDestination > FEED)
 		throw std::runtime_error("Invalid unit material or destination");
+	carriedMaterial = Sint8(savedMaterial);
+	destinationPurpose = Sint8(savedDestination);
 	if ((activity == ACT_FILLING && (destinationPurpose < 0 || destinationPurpose >= MaterialCount)) ||
 		(activity == ACT_UPGRADING && destinationPurpose < 0))
 		throw std::runtime_error("Invalid unit activity destination");
@@ -306,7 +314,7 @@ void Unit::save(GAGCore::OutputStream *stream)
 		stream->writeEnterSection(i);
 		stream->writeUint32(performance[i], "performance");
 		stream->writeUint32(level[i], "level");
-		stream->writeUint32((Uint32)canLearn[i], "canLearn");
+		stream->writeUint32((Uint32)canLearn(i), "canLearn");
 		stream->writeLeaveSection();
 	}
 	stream->writeLeaveSection();
@@ -513,7 +521,7 @@ Uint32 Unit::checkSum(std::vector<Uint32> *checkSumsVector, bool legacy152)
 		cs=rotl1(cs);
 		cs^=level[i];
 		cs=rotl1(cs);
-		cs^=(Uint32)canLearn[i];
+		cs^=(Uint32)canLearn(i);
 		cs=rotl1(cs);
 	}
 	if (checkSumsVector)

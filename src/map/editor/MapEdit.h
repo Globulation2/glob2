@@ -350,6 +350,7 @@ public:
 	void draw();
 	void setValues(Sint32* numerator, Sint32* denominator, EditorValueReader readValue, EditorValueReader readMax);
 	void setValues(Sint32* numerator, EditorValueReader readValue);
+	void setValues(Uint8* numerator, EditorValueReader readValue);
 private:
 	std::string label;
 	Sint32* numerator;
@@ -375,8 +376,12 @@ public:
     int maximumValue() const;
     void setValue(int requested);
 	void setValues(Sint32* value, EditorValueReader readValue);
+	void setValues(Uint8* value, EditorValueReader readValue);
 private:
 	Sint32* value;
+	Uint8* byteValue = nullptr;
+	int liveValue() const { return byteValue ? int(*byteValue) : *value; }
+	void writeLiveValue(int requested) { if (byteValue) *byteValue = Uint8(requested); else *value = requested; }
     EditorValueReader readValue,readMax;
 	Sint32* max;
 	bool isMaxPreset;

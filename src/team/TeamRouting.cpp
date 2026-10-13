@@ -260,7 +260,7 @@ Building *Team::findBestUpgrade(Unit *unit)
 	//to be the last, this code will fail.
 	for (int ability=(int)WALK; ability<NB_ABILITY; ability++)
 	{
-		if (!unit->canLearn[ability])
+		if (!unit->canLearn(ability))
 			continue;
 		if (unit->verbose)
 			printf("guid=(%d) unit->canLearn[ability=%d]\n", unit->gid, ability);

@@ -1013,3 +1013,44 @@ TEST_CASE("ground buildings with attraction radii remain melee targets")
 }
 
 }
+
+TEST_SUITE("BuildingProductionCombat")
+{
+    TEST_CASE("compact building fields retain unsigned capacity and reject wide inputs [save-format]")
+    {
+        glob2test::HeadlessGlobals globals;
+        glob2test::HeadlessGame world({.clearImmobile=true,.header=true});
+        auto* building=world.addBuilding("inn",4,4); REQUIRE(building);
+        struct ReplacingOutput : GAGCore::BinaryOutputStream {
+            std::string field; Uint32 replacement;
+            ReplacingOutput(GAGCore::MemoryStreamBackend* backend, std::string field, Uint32 replacement)
+                : BinaryOutputStream(backend), field(std::move(field)), replacement(replacement) {}
+            void writeSint32(Sint32 value, const std::string name) override {
+                BinaryOutputStream::writeSint32(name==field ? Sint32(replacement) : value,name);
+            }
+            void writeUint32(Uint32 value, const std::string name) override {
+                BinaryOutputStream::writeUint32(name==field ? replacement : value,name);
+            }
+        };
+        for (const auto& [field,value] : std::vector<std::pair<std::string,Uint32>>{
+            {"buildingState",256},{"buildingState",5},{"constructionResultState",256},{"constructionResultState",4},{"minLevelToFlag",256},{"minLevelToFlag",NB_UNIT_LEVELS},
+            {"minLevelToFlag",Uint32(-1)},{"minWorkerLevelToFlag",256},{"minWorkerLevelToFlag",NB_UNIT_LEVELS},{"minWorkerLevelToFlag",Uint32(-1)}}) {
+            CAPTURE(field); CAPTURE(value);
+            auto* backend=new GAGCore::MemoryStreamBackend;
+            ReplacingOutput output(backend,field,value); building->save(&output);
+            const auto bytes=backend->takeContents();
+            GAGCore::BinaryInputStream input(new GAGCore::MemoryStreamBackend(bytes.data(),bytes.size())); input.seekFromStart(0);
+            CHECK_THROWS_AS(Building(&input,&world.game.buildingsTypes,world.team,VERSION_MINOR),std::runtime_error);
+        }
+        for (Uint32 capacity : {0u,32767u,32768u,65535u,65536u,0xffffffffu}) {
+            auto* backend=new GAGCore::MemoryStreamBackend;
+            ReplacingOutput output(backend,"maxUnitInside",capacity); building->saveCrossRef(&output);
+            const auto bytes=backend->takeContents();
+            GAGCore::BinaryInputStream input(new GAGCore::MemoryStreamBackend(bytes.data(),bytes.size())); input.seekFromStart(0);
+            if (capacity<=65535) {
+                CHECK_NOTHROW(building->loadCrossRef(&input,&world.game.buildingsTypes,world.team,VERSION_MINOR));
+                CHECK(building->maxUnitInside==capacity);
+            } else CHECK_THROWS_AS(building->loadCrossRef(&input,&world.game.buildingsTypes,world.team,VERSION_MINOR),std::runtime_error);
+        }
+    }
+}

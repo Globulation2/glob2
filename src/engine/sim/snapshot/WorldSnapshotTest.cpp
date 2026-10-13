@@ -163,7 +163,7 @@ TEST_SUITE("WorldSnapshot")
         CHECK(observed.delta==unit->delta); CHECK(observed.jobTimer==17); CHECK(observed.terrainHealthRemainder==9);
         for(int i=0;i<NB_ABILITY;++i) {
             CHECK(observed.performance[i]==unit->performance[i]); CHECK(observed.level[i]==unit->level[i]);
-            CHECK(observed.canLearn[i]==unit->canLearn[i]);
+            CHECK(observed.canLearn(i)==unit->canLearn(i));
         }
         const int oldLevel=observed.level[WALK]; unit->level[WALK]=oldLevel+1; unit->jobTimer=31;
         CHECK(observed.level[WALK]==oldLevel); CHECK(observed.jobTimer==17);
@@ -911,4 +911,97 @@ TEST_CASE("explicit observation boundaries refresh paused state and retain old l
     CHECK(before.entities->units.front().hp == previousHp);
     CHECK(fixture.game.snapshots().captureBoundary(fixture.game, needed).entities->units.front().hp == previousHp - 1);
 }
+}
+
+TEST_SUITE("WorldSnapshot")
+{
+    TEST_CASE("entity copy accounting is separate from map traffic and logical verification includes presentation")
+    {
+        glob2test::HeadlessGlobals globals;
+        glob2test::HeadlessGame fixture({.wDec=5,.hDec=5,.teams=1,.clearImmobile=true,.loadDefaultRace=true});
+        auto* unit=fixture.addUnit(WORKER,12,12); REQUIRE(unit);
+        auto* building=fixture.addBuilding("inn",4,4,0,0); REQUIRE(building);
+        SimulationSnapshot::Storage storage;
+        const auto requirements=SimulationSnapshot::bit(SimulationSnapshot::Component::Entities);
+        const auto catalog=SimulationSnapshot::captureCatalog(fixture.game);
+        auto first=SimulationSnapshot::capture(fixture.game,catalog,requirements,nullptr,&storage);
+        CHECK(storage.bytesCopied==0);
+        CHECK(storage.entityBytesCopied==sizeof(UnitState)+sizeof(BuildingStateRecord));
+        CHECK(storage.entitySidecarBytesCopied==sizeof(SimulationSnapshot::BuildingView::constructionOriginRatios));
+        CHECK_NOTHROW(SimulationSnapshot::verifyCapture(fixture.game,first));
+        unit->levelUpAnimation=LEVEL_UP_ANIMATION_FRAME_COUNT;
+        CHECK_THROWS_AS(SimulationSnapshot::verifyCapture(fixture.game,first),std::logic_error);
+        CHECK(first.entities->units.front().levelUpAnimation==0);
+        auto second=SimulationSnapshot::capture(fixture.game,catalog,requirements,&first,&storage);
+        CHECK_NOTHROW(SimulationSnapshot::verifyCapture(fixture.game,second));
+        CHECK(second.entities!=first.entities);
+        CHECK(second.entities->units.front().levelUpAnimation==LEVEL_UP_ANIMATION_FRAME_COUNT);
+        building->localMaterials[MaterialSlotCount-1]=65536;
+        CHECK_THROWS_AS(SimulationSnapshot::verifyCapture(fixture.game,second),std::logic_error);
+        CHECK(first.entities->buildings.front().localMaterials[MaterialSlotCount-1]==0);
+    }
+}
+
+#include <fstream>
+#include <filesystem>
+#include <BinaryStream.h>
+#include <StreamBackend.h>
+#include <iostream>
+TEST_SUITE("WorldSnapshot")
+{
+    TEST_CASE("paired entity storage workload [benchmark]")
+    {
+        glob2test::HeadlessGlobals globals;
+        const char* output=std::getenv("GLOB2_ENTITY_EVIDENCE_DIR");
+        for (int scenario=0;scenario<5;++scenario) {
+            glob2test::HeadlessGame fixture({.wDec=7,.hDec=7,.teams=1,.clearImmobile=true,.header=true,.seed=9123});
+            auto& game=fixture.game;
+            game.gameHeader.setHungerDisabled(true); game.gameHeader.setResourceGrowthDisabled(true);
+            const int units=scenario==1 ? 512 : 32;
+            const int buildings=scenario>=2 ? 256 : 16;
+            for(int i=0;i<buildings;++i) {
+                auto* b=fixture.addBuilding("inn",4+(i%16)*6,4+(i/16)*6); REQUIRE(b);
+                for(int material=0;material<MaterialSlotCount;++material) {
+                    b->localMaterials[material]=(scenario==3 || (scenario==4 && i%2)) ? 100000 : 0;
+                    b->wishedMaterials[material]=(scenario==3 || (scenario==4 && i%2)) ? -40000 : 0;
+                }
+            }
+            for(int i=0;i<units;++i) REQUIRE(fixture.addUnit(WORKER,2+(i%63)*2,108+i/63));
+            SimulationSnapshot::Storage storage;
+            const auto catalog=SimulationSnapshot::captureCatalog(game);
+            std::array<SimulationSnapshot::Handle,8> leases;
+            const auto capture=[&](int i) { leases[i%leases.size()]=SimulationSnapshot::capture(game,catalog,SimulationSnapshot::Simulation,nullptr,&storage); };
+            for(int i=0;i<64;++i) capture(i);
+            const auto start=std::chrono::steady_clock::now();
+            for(int i=0;i<512;++i) capture(i);
+            const auto captureNs=std::chrono::duration_cast<std::chrono::nanoseconds>(std::chrono::steady_clock::now()-start).count();
+            const auto memory=storage.memoryMetrics();
+            for(int i=0;i<16;++i) fixture.step();
+            std::vector<Uint32> checksums;
+            Sint64 ownerNs=0, consumerNs=0;
+            for(int i=0;i<64;++i) {
+                auto begin=std::chrono::steady_clock::now(); fixture.step();
+                ownerNs+=std::chrono::duration_cast<std::chrono::nanoseconds>(std::chrono::steady_clock::now()-begin).count();
+                checksums.push_back(game.checkSum());
+                begin=std::chrono::steady_clock::now(); glob2test::sceneOf(game);
+                consumerNs+=std::chrono::duration_cast<std::chrono::nanoseconds>(std::chrono::steady_clock::now()-begin).count();
+            }
+            if(output) {
+                std::filesystem::create_directories(output);
+                const auto base=std::string(output)+"/scenario-"+std::to_string(scenario);
+                std::ofstream trace(base+".trace"); for(auto checksum:checksums) trace<<checksum<<'\n';
+                auto* backend=new GAGCore::MemoryStreamBackend;
+                GAGCore::BinaryOutputStream out(backend); game.save(&out,false,"Entity storage paired workload"); out.flush();
+                const auto bytes=backend->takeContents(); std::ofstream save(base+".game",std::ios::binary); save.write(bytes.data(),bytes.size());
+            }
+            const Uint64 entityPayload=leases[0].entities->units.size()*sizeof(SimulationSnapshot::UnitView)
+                +leases[0].entities->buildings.size()*sizeof(SimulationSnapshot::BuildingView);
+            std::cout<<"ENTITY_BENCH "<<nlohmann::json{{"scenario",scenario},{"units",units},{"buildings",buildings},
+                {"unit_state",sizeof(UnitState)},{"building_state",sizeof(BuildingStateRecord)},
+                {"unit_live",sizeof(Unit)},{"building_live",sizeof(Building)},
+                {"entity_payload",entityPayload},{"retained_bytes",memory.retainedBytes},{"capacity_bytes",memory.capacityBytes},
+                {"leased_bytes",memory.leasedBytes},{"buffers",memory.allocatedBuffers},
+                {"capture_ns",captureNs},{"owner_ns",ownerNs},{"consumer_ns",consumerNs}}.dump()<<'\n';
+        }
+    }
 }

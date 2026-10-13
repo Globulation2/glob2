@@ -197,14 +197,14 @@ void ValueScrollBox::draw()
 
 void ValueScrollBox::handleClick(int relMouseX, int relMouseY)
 {
-    const auto before=*value;
+    const auto before=liveValue();
 	if(relMouseX<10)
-		(*value)=std::max((*value)-1, 0);
+		writeLiveValue(std::max(before-1, 0));
 	else if(relMouseX>102)
-		(*value)=std::min((*value)+1, (*max));
+		writeLiveValue(std::min(before+1, (*max)));
 	else
-		(*value)=int(float(relMouseX-10) * (float(*max)/float(92))+0.5);
-    if (*value!=before) me.game.snapshots().invalidateBoundary();
+		writeLiveValue(int(float(relMouseX-10) * (float(*max)/float(92))+0.5));
+    if (liveValue()!=before) me.game.snapshots().invalidateBoundary();
 	MapEditorWidget::handleClick(relMouseX, relMouseY);
 }
 
@@ -212,9 +212,9 @@ void ValueScrollBox::handleClick(int relMouseX, int relMouseY)
 
 void ValueScrollBox::setValue(int requested)
 {
-    const auto before=*value;
-    *value = std::clamp(requested, 0, std::max(0, int(*max)));
-    if (*value!=before) me.game.snapshots().invalidateBoundary();
+    const auto before=liveValue();
+    writeLiveValue(std::clamp(requested, 0, std::max(0, int(*max))));
+    if (liveValue()!=before) me.game.snapshots().invalidateBoundary();
     me.mapHasBeenModified();
     activate();
 }
@@ -224,6 +224,7 @@ void ValueScrollBox::setValues(Sint32* aValue, Sint32* aMax, EditorValueReader r
 	if (isMaxPreset) delete max;
 	isMaxPreset=false;
 	value=aValue;
+	byteValue=nullptr;
     readValue=std::move(reader);
 	max=aMax;
     readMax=std::move(maxReader);
@@ -234,6 +235,7 @@ void ValueScrollBox::setValues(Sint32* aValue, Sint32* aMax, EditorValueReader r
 void ValueScrollBox::setValues(Sint32* aValue, EditorValueReader reader)
 {
 	value=aValue;
+	byteValue=nullptr;
     readValue=std::move(reader);
 }
 
@@ -246,4 +248,16 @@ int ValueScrollBox::currentValue() const
 int ValueScrollBox::maximumValue() const
 {
     return isMaxPreset ? *max : me.view.scene && readMax ? readMax(*me.view.scene) : 0;
+}
+
+void FractionValueText::setValues(Uint8*, EditorValueReader reader)
+{
+    numerator=nullptr;
+    readValue=std::move(reader);
+}
+void ValueScrollBox::setValues(Uint8* aValue, EditorValueReader reader)
+{
+    value=nullptr;
+    byteValue=aValue;
+    readValue=std::move(reader);
 }

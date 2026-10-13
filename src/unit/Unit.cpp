@@ -62,7 +62,8 @@ void Unit::refreshEffectiveAbilities()
 	}
 	if (!traits.has(UnitRuntimeTraits::Construct) && !traits.has(UnitRuntimeTraits::Transport)) performance[BUILD]=0;
 	if (!traits.has(UnitRuntimeTraits::Clear) && !traits.has(UnitRuntimeTraits::Transport)) performance[HARVEST]=0;
-	for (int ability=0;ability<NB_ABILITY;++ability) canLearn[ability]=(traits.learnableMask&(1u<<ability))!=0;
+	const Uint32 learningMask=(Uint32(1)<<NB_ABILITY)-1;
+	learningFlags=traits.learnableMask & learningMask;
 }
 
 void Unit::rebindDefinitionForSetup()
@@ -76,7 +77,7 @@ void Unit::rebindDefinitionForSetup()
 	const auto& traits=runtimeTraits();
 	bool trainingDefinitionChanged=hasCapability(UnitRuntimeTraits::LearnConstruction)!=traits.has(UnitRuntimeTraits::LearnConstruction);
 	for (int ability=0;ability<NB_ABILITY;++ability)
-		trainingDefinitionChanged|=canLearn[ability]!=((traits.learnableMask&(1u<<ability))!=0);
+		trainingDefinitionChanged|=canLearn(ability)!=((traits.learnableMask&(1u<<ability))!=0);
 	capabilityFlags=traits.flags;
 	configuredFoodCapacity=traits.foodCapacity;
 	configuredVisionRadius=Uint8(traits.visionRadius);
@@ -106,7 +107,7 @@ void Unit::rebindDefinitionForSetup()
 			else if (jobPurpose==UnitJobPurpose::Defend)
 				cancelTask=!traits.has(UnitRuntimeTraits::GuardIdle) && !(traits.has(UnitRuntimeTraits::Melee) && performance[ATTACK_SPEED]);
 		} else if (activity==ACT_UPGRADING && destinationPurpose>=WALK && destinationPurpose<NB_ABILITY)
-			cancelTask=trainingDefinitionChanged || !canLearn[destinationPurpose];
+			cancelTask=trainingDefinitionChanged || !canLearn(destinationPurpose);
 		cancelTask|=(movement==MOV_ATTACKING_TARGET && !performance[ATTACK_SPEED])
 			|| (movement==MOV_HARVESTING && (!performance[HARVEST] || (activity!=ACT_FILLING && !traits.has(UnitRuntimeTraits::Clear))))
 			|| (movement==MOV_FILLING && !performance[BUILD]);
@@ -163,6 +164,7 @@ void Unit::init(int x, int y, Uint16 gid, Sint32 typeNum, Team *team, int level)
 	jobPurpose=UnitJobPurpose::None;
 	regenerationRemainder=0;
 	widePrimaryCargo=false;
+	learningFlags=0;
 
 	// identity
 	this->gid=gid;
@@ -196,7 +198,7 @@ void Unit::init(int x, int y, Uint16 gid, Sint32 typeNum, Team *team, int level)
 		if (i==HP)
 			this->performance[i]=std::max(1, this->performance[i]/hpDivisor);
 		this->level[i]=level;
-		this->canLearn[i]=(bool)race->getUnitType(typeNum, 3)->performance[i]; //TODO: is is a better way to hack this?
+		setCanLearn(i,(bool)race->getUnitType(typeNum, 3)->performance[i]); //TODO: is is a better way to hack this?
 		// This hack prevent units from unlearning. Units level 3 must have all the abilities of all preceding levels
 	}
 
@@ -388,9 +390,9 @@ void Unit::applyTerrainHealthRate(int rate)
 		terrainHealthRemainder = 0;
 		return;
 	}
-	terrainHealthRemainder += rate;
-	const int change = terrainHealthRemainder / 256;
-	terrainHealthRemainder %= 256;
+	const int accumulated = int(terrainHealthRemainder) + rate;
+	const int change = accumulated / 256;
+	terrainHealthRemainder = Sint16(accumulated % 256);
 	if (change < 0) recordLethalDamage(-change, GameplayMeasurements::UNKNOWN);
 	hp = int(std::clamp<Sint64>(Sint64(hp)+change,INT_MIN,performance[HP]));
 	if (hp>=performance[HP] && owner->game->areaEffects.enabled()) areaServiceRemainders[BuildingAreaEffects::Healing]=0;
@@ -625,7 +627,7 @@ void Unit::applyTrainingUnchecked(const BuildingTrainingSpec& training, int abil
 		performance[ability] = race->getUnitType(typeNum, training.targetLevel)->performance[ability];
 		if (ability == HP) performance[ability] = std::max(1, performance[ability] / owner->game->gameHeader.getGlassCannonScale());
 	}
-	if (hasCapability(UnitRuntimeTraits::LearnConstruction)) constructionLevel = std::max(constructionLevel, training.constructionLevel);
+	if (hasCapability(UnitRuntimeTraits::LearnConstruction)) constructionLevel = std::max(int(constructionLevel), training.constructionLevel);
 	refreshEffectiveAbilities();
 }
 

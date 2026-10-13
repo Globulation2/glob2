@@ -15,14 +15,14 @@ enum class UnitJobPurpose : Uint8 { None, Transport, Clear, Explore, Defend };
 // Relationships and query caches remain outside the record.
 struct UnitState
 {
-	enum Medical
+	enum Medical : Uint8
 	{
 		MED_FREE=0,
 		MED_HUNGRY=1,
 		MED_DAMAGED=2
 	};
 
-	enum Activity
+	enum Activity : Uint8
 	{
 		ACT_RANDOM=0,
 		ACT_FILLING=1,
@@ -30,7 +30,7 @@ struct UnitState
 		ACT_UPGRADING=3
 	};
 	
-	enum Displacement
+	enum Displacement : Uint8
 	{
 		DIS_RANDOM=0,
 		
@@ -54,7 +54,7 @@ struct UnitState
 		DIS_EXITING_BUILDING=24
 	};
 	
-	enum Movement
+	enum Movement : Uint8
 	{
 		MOV_RANDOM_GROUND=0,
 		MOV_RANDOM_FLY=1,
@@ -92,8 +92,9 @@ struct UnitState
 	bool serviceResourcesReserved = false;
 	bool widePrimaryCargo = false; // First sidecar packet owns the inline material's amount.
 	Sint32 isDead;
-	Sint32 posX, posY, delta, dx, dy, direction;
-	Sint32 terrainHealthRemainder = 0;
+	Sint32 posX, posY, delta, dx, dy;
+	Uint8 direction;
+	Sint16 terrainHealthRemainder = 0;
 	Sint32 insideTimeout;
 	Sint32 configuredFoodCapacity = HUNGRY_MAX;
 	Sint32 speed;
@@ -102,7 +103,7 @@ struct UnitState
 	Activity activity;
 	Displacement displacement;
 	Movement movement;
-	Abilities action = WALK; // Game::addUnit selects movement; loads restore saved action.
+	Uint8 action = WALK; // Game::addUnit selects movement; loads restore saved action.
 	Sint32 targetX, targetY; // Target lines and movement destination.
 	bool validTarget;
 	Sint32 magicActionTimeout;
@@ -113,19 +114,27 @@ struct UnitState
 	Sint32 hungry, hungriness, trigHungry, trigHungryCarrying;
 	Uint32 fruitMask, fruitCount;
 	Sint32 performance[NB_ABILITY];
-	Sint32 level[NB_ABILITY];
-	Sint32 constructionLevel = 0; // Independent of work/harvest speed.
-	bool canLearn[NB_ABILITY];
+	Uint8 level[NB_ABILITY];
+	Uint8 constructionLevel = 0; // Independent of work/harvest speed.
+	// Explicit unsigned masks avoid implementation-defined bitfield layout.
+	Uint32 learningFlags = 0;
+	bool canLearn(int ability) const { return (learningFlags & (Uint32(1) << ability)) != 0; }
+	void setCanLearn(int ability, bool enabled)
+	{
+		const Uint32 mask = Uint32(1) << ability;
+		learningFlags = enabled ? learningFlags | mask : learningFlags & ~mask;
+	}
 	Sint32 experience, experienceLevel;
-	Sint32 destinationPurpose;
-	int carriedMaterial;
+	Sint8 destinationPurpose;
+	Sint8 carriedMaterial;
 	MaterialPacket carriedPacket{};
 	// Authoritative animation clocks; copied with the rest of unit state.
-	Sint32 levelUpAnimation = 0, magicActionAnimation = 0;
+	Uint8 levelUpAnimation = 0, magicActionAnimation = 0;
 	Sint32 jobTimer; // Waits 32 ticks for a job before seeking training or healing.
 	// Keep optional aura bookkeeping after existing hot simulation fields.
 	std::array<Uint8,3> areaServiceRemainders{};
 	Uint32 areaLastPulseTick = Uint32(-1);
+	bool operator==(const UnitState&) const = default;
 };
 static_assert(std::is_trivially_copyable_v<UnitState>);
 static_assert(std::is_standard_layout_v<UnitState>);

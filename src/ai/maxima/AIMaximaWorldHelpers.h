@@ -47,7 +47,7 @@ namespace WorldHelpers
     inline int unlearned_eligible_damage_rate(const AIEngine::AIWorldView& world,
         const AIEngine::UnitView& unit, int referenceArmour)
     {
-        const int level=std::clamp(std::min(unit.level[ATTACK_SPEED],unit.level[ATTACK_STRENGTH]),0,NB_UNIT_LEVELS-1);
+        const int level=std::clamp(int(std::min(unit.level[ATTACK_SPEED],unit.level[ATTACK_STRENGTH])),0,NB_UNIT_LEVELS-1);
         // Imported historical race tables used this private, fixed strategy
         // calibration even when their cached ability tables differed.
         if (unit.capabilityFlags&UnitRuntimeTraits::LegacyPerformancePolicies) {

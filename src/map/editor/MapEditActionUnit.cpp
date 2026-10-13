@@ -117,32 +117,32 @@ bool MapEdit::performUnitAction(const std::string& action, float relMouseX, floa
 			unitMagicGroundAttackLevelLabel->setValues(&view.selectedUnit->level[MAGIC_ATTACK_GROUND], [](const PresentationFrame& frame) { const auto* value=frame.entities.unit(frame.entities.selectedUnit); return value ? Sint32(value->level[MAGIC_ATTACK_GROUND]) : 0; });
 			unitMagicGroundAttackLevelScrollBox->setValues(&view.selectedUnit->level[MAGIC_ATTACK_GROUND], [](const PresentationFrame& frame) { const auto* value=frame.entities.unit(frame.entities.selectedUnit); return value ? Sint32(value->level[MAGIC_ATTACK_GROUND]) : 0; });
 			enableOnlyGroup("unit editor");
-			if(!view.selectedUnit->canLearn[WALK])
+			if(!view.selectedUnit->canLearn(WALK))
 			{
 				unitWalkLevelLabel->disable();
 				unitWalkLevelScrollBox->disable();
 			}
-			if(!view.selectedUnit->canLearn[SWIM])
+			if(!view.selectedUnit->canLearn(SWIM))
 			{
 				unitSwimLevelLabel->disable();
 				unitSwimLevelScrollBox->disable();
 			}
-			if(!view.selectedUnit->canLearn[BUILD])
+			if(!view.selectedUnit->canLearn(BUILD))
 			{
 				unitBuildLevelLabel->disable();
 				unitBuildLevelScrollBox->disable();
 			}
-			if(!view.selectedUnit->canLearn[ATTACK_SPEED])
+			if(!view.selectedUnit->canLearn(ATTACK_SPEED))
 			{
 				unitAttackSpeedLevelLabel->disable();
 				unitAttackSpeedLevelScrollBox->disable();
 			}
-			if(!view.selectedUnit->canLearn[ATTACK_STRENGTH])
+			if(!view.selectedUnit->canLearn(ATTACK_STRENGTH))
 			{
 				unitAttackStrengthLevelLabel->disable();
 				unitAttackStrengthLevelScrollBox->disable();
 			}
-			if(!view.selectedUnit->canLearn[MAGIC_ATTACK_GROUND])
+			if(!view.selectedUnit->canLearn(MAGIC_ATTACK_GROUND))
 			{
 				unitMagicGroundAttackLevelLabel->disable();
 				unitMagicGroundAttackLevelScrollBox->disable();

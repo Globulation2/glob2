@@ -167,3 +167,37 @@ compare per-tick checksums and measure capture, retention and worker costs. Dela
 retains each controller's strategy and cadence, apart from the explicit pending
 intent, rejection and identity fixes listed in the
 [replay guide](../development/headless-replays.md).
+
+### Compact entity records
+
+The single `UnitState` record retains pointer-free, standard-layout, trivially
+copyable storage. Medical, activity, displacement and movement enums use explicit
+byte backing and retain their historical numeric values and gaps. The action
+selector and direction are bytes; global ability IDs retain their existing enum.
+Training levels and construction qualification are bytes, destination and carried
+material IDs are signed bytes, animation clocks are bytes, and the terrain health
+remainder is signed 16-bit storage. Terrain exposure accumulates in an `int`
+before signed division and remainder. Seventeen learning flags use an unsigned
+mask with value getters and explicit setters that preserve neighboring bits.
+Editor level controls bind the byte fields explicitly and retain wide arithmetic.
+
+Building lifecycle enums and recruitment qualifications use byte storage.
+`maxUnitInside` uses unsigned 16-bit storage, including accepted capacities of
+32768 through 65535. Private stock, cached demand, production counters and ratios,
+staffing, priorities, exchange masks, timers and identifiers remain wide. Ordinary
+and exceptional inventories therefore still share the same inline storage.
+Snapshot views inherit the authoritative records for bulk capture; only those
+base records have a standard-layout guarantee, and views only promise trivial
+copyability. Natural alignment is retained without packed structs.
+
+`Storage::bytesCopied` counts actual map-array copies. Separate cumulative
+`entityBytesCopied` and `entitySidecarBytesCopied` counters count authoritative
+entity records and logical sidecar payload read during capture. Entity sidecars
+include builtin construction-origin preferences, extra production state, cargo
+rows (including their identity keys), and relationship IDs. These counters exclude
+view metadata, slot-index preparation, retained capacity, allocator overhead and
+vector growth copies. `Store::Metrics` exposes their deltas alongside the existing
+aggregate `bytesCopied` estimate, whose meaning is unchanged. Pool memory metrics
+continue to describe retained capacity and leases separately. Verification compares
+all logical scalar fields, including presentation state, and copied cargo and
+production sidecars; it never compares entity padding bytes.
