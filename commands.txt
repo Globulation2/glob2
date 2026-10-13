@@ -1,0 +1,8 @@
+python3 tools/dev_build.py --build=build/merge-1170 engine-tests
+python3 test/run_tests.py --binary engine --build-dir build/merge-1170 --no-display --update-fixtures --filter 'TurnEngineHarness/the committed*' --junit <evidence>/golden-update.xml
+python3 test/run_tests.py --binary engine --build-dir build/merge-1170 --no-display --filter 'AIRecoveryCoverage/*' --filter 'NicowarFarming/*' --filter 'RuntimeContinuation/*' --filter 'AIRules/native controllers exclude disabled work*' --filter 'TeamStatsPipeline/*' --filter 'WorldSnapshot/*' --filter 'MatchSetup/every MatchSetup and SimVersion*' --filter 'TurnEngineHarness/the committed*' --junit <evidence>/integration.xml --artifacts <evidence>/test-artifacts
+python3 test/check_sim_revision.py --base 7556a9ecbc60b324a386e505533497974a811261
+PYTHONPATH="$PWD" python3 tools/dev_build.py --build=build/merge-1170 engine-tests
+PYTHONPATH="$PWD" python3 tools/dev_build.py --build=build/merge-1170 engine-tests build/merge-1170/src/glob2
+build/merge-1170/src/glob2 match verify test/fixtures/multiplayer/FourSquares1.g2mr --map-file maps/FourSquares1.map.gz --output-dir <evidence>/verify-1 --compute-threads 1
+build/merge-1170/src/glob2 match verify test/fixtures/multiplayer/FourSquares1.g2mr --map-file maps/FourSquares1.map.gz --output-dir <evidence>/verify-4 --compute-threads 4

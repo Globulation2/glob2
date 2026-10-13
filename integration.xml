@@ -1,0 +1,84 @@
+<?xml version='1.0' encoding='utf-8'?>
+<testsuites tests="82" failures="0" errors="0" skipped="0"><testsuite name="AIRecoveryCoverage"><testcase classname="AIRecoveryCoverage" name="Cabino defense records create assign deduplicate and retire actual flags" time="0.806394" status="run" />
+  <testcase classname="AIRecoveryCoverage" name="Cabino pending upgrades survive delayed observation and release rejected reservations" time="0.777462" status="run" />
+  <testcase classname="AIRecoveryCoverage" name="Cabino queued target identities survive saves and reject reused building slots" time="1.18809" status="run" />
+  <testcase classname="AIRecoveryCoverage" name="Cabino standard observation preserves decisions from the legacy narrow view" time="0.817325" status="run" />
+  <testcase classname="AIRecoveryCoverage" name="Castor food lock backs off growth and boot projects wait for their cadence" time="0.794982" status="run" />
+  <testcase classname="AIRecoveryCoverage" name="Castor projects deduplicate replace and decline already satisfied requests" time="1.10415" status="run" />
+  <testcase classname="AIRecoveryCoverage" name="Cortex amphibious assessment distinguishes land water and blocked targets" time="0.910536" status="run" />
+  <testcase classname="AIRecoveryCoverage" name="Cortex farm checkerboard retires prototype paint and wheat blitz releases it" time="0.795618" status="run" />
+  <testcase classname="AIRecoveryCoverage" name="Cortex shore harvest differs from inaccessible algae and swimming opens islands" time="0.899255" status="run" />
+  <testcase classname="AIRecoveryCoverage" name="Cortex wheat protection emits real area orders and food burst releases only our paint" time="0.889155" status="run" />
+  <testcase classname="AIRecoveryCoverage" name="Nicowar defense flags materialize once and withdraw when the threat disappears" time="0.844404" status="run" />
+  <testcase classname="AIRecoveryCoverage" name="Nicowar dig-out rejects missing starts without allocating orders" time="0.824799" status="run" />
+  <testcase classname="AIRecoveryCoverage" name="Nicowar dig-out validates frozen routes before committing clearing orders" time="4.43071" status="run" />
+  </testsuite><testsuite name="AIRules"><testcase classname="AIRules" name="native controllers exclude disabled work and continue after reload [slow]" time="199.651" status="run" />
+  </testsuite><testsuite name="MatchSetup"><testcase classname="MatchSetup" name="every MatchSetup and SimVersion contract fixture is accepted or rejected at its stage" time="0.477713" status="run" />
+  </testsuite><testsuite name="NicowarFarming"><testcase classname="NicowarFarming" name="farm areas reuse wheat protection while wood keeps its existing forbidden and clearing rules" time="0.6957" status="run" />
+  <testcase classname="NicowarFarming" name="zone boundaries; eight-way adjacency; wrap seams; discovery; protection and building clearance" time="0.869426" status="run" />
+  </testsuite><testsuite name="RuntimeContinuation"><testcase classname="RuntimeContinuation" name="flat building relationships resolve captured unit incarnations" time="0.724348" status="run" />
+  <testcase classname="RuntimeContinuation" name="gradient manager state survives binary and text round trips [save-format]" time="2.91067" status="run" />
+  <testcase classname="RuntimeContinuation" name="irrigation heuristics require a positive enabled fertility contribution" time="0" status="run" />
+  <testcase classname="RuntimeContinuation" name="position entities retain historical binary and text payloads" time="0.000212" status="run" />
+  <testcase classname="RuntimeContinuation" name="queued orders preserve selection incarnations through save and slot replacement" time="0.947539" status="run" />
+  <testcase classname="RuntimeContinuation" name="recurring input tracking and provider lookup preserve composite membership" time="0.811895" status="run" />
+  <testcase classname="RuntimeContinuation" name="runtime owner helpers and decisions release their full observation leases" time="0.747719" status="run" />
+  <testcase classname="RuntimeContinuation" name="static material fields invalidate on source edits and preserve continuation" time="1.39145" status="run" />
+  <testcase classname="RuntimeContinuation" name="terrain weighted influence retains obstacles and sub-tile trail costs" time="0.000239" status="run" />
+  </testsuite><testsuite name="TeamStatsPipeline"><testcase classname="TeamStatsPipeline" name="complete frames preserve cumulative measurements and retained readers" time="2.28382" status="run" />
+  <testcase classname="TeamStatsPipeline" name="delayed statistics AI and presentation share one capture per boundary" time="1.26894" status="run" />
+  <testcase classname="TeamStatsPipeline" name="direct scalar checksums match canonical binary bytes" time="0" status="run" />
+  <testcase classname="TeamStatsPipeline" name="failed computation or submission remains a failure at later owner barriers" time="0.702405" status="run" />
+  <testcase classname="TeamStatsPipeline" name="format 155 pending digests are discarded without losing samples" time="0.580043" status="run" />
+  <testcase classname="TeamStatsPipeline" name="format 156 raw aggregate samples retain exact smoothing after loading and resaving" time="0.641065" status="run" />
+  <testcase classname="TeamStatsPipeline" name="format 157 pending measurement deltas migrate and resave without early publication" time="0.628116" status="run" />
+  <testcase classname="TeamStatsPipeline" name="full game save preserves statistics across smoothing and history boundaries" time="2.98025" status="run" />
+  <testcase classname="TeamStatsPipeline" name="lagged windows include current samples and never feed approximations into the raw ring" time="1.233" status="run" />
+  <testcase classname="TeamStatsPipeline" name="late workers are joined at the deadline without choosing publication time" time="0.409877" status="run" />
+  <testcase classname="TeamStatsPipeline" name="light checks do not execute jobs and full checks cover computed pending samples" time="0.661156" status="run" />
+  <testcase classname="TeamStatsPipeline" name="periodic snapshot places match live coverage at wrapped footprint boundaries" time="0.375003" status="run" />
+  <testcase classname="TeamStatsPipeline" name="profiling is optional and does not change pending samples" time="0.640616" status="run" />
+  <testcase classname="TeamStatsPipeline" name="publication is fixed to source tick plus delay and boundaries are idempotent" time="1.08253" status="run" />
+  <testcase classname="TeamStatsPipeline" name="pure captures pause and waiting admit no statistics and readers share the generation" time="0.528885" status="run" />
+  <testcase classname="TeamStatsPipeline" name="raw snapshot samples retain synchronous aggregation and smoothing" time="0.630265" status="run" />
+  <testcase classname="TeamStatsPipeline" name="routine statistics coverage excludes diagnostic ledgers and full checks retain them" time="0.630295" status="run" />
+  <testcase classname="TeamStatsPipeline" name="save drains work without moving deadlines and restores pending samples" time="0.513943" status="run" />
+  <testcase classname="TeamStatsPipeline" name="worker counts produce identical publication and pending sample checksums" time="2.66755" status="run" />
+  </testsuite><testsuite name="TurnEngineHarness"><testcase classname="TurnEngineHarness" name="the committed match record verifies to the committed checksum trace [network-sim][golden]" time="3.81811" status="run" />
+  </testsuite><testsuite name="WorldSnapshot"><testcase classname="WorldSnapshot" name="AI boundary validates each captured map array before fast reads" time="0.41321" status="run" />
+  <testcase classname="WorldSnapshot" name="AI fast scalar reads preserve checked values and frozen lease isolation" time="0.584958" status="run" />
+  <testcase classname="WorldSnapshot" name="a retained consumer leaves the newest free buffer to absorb only later changes" time="0.556724" status="run" />
+  <testcase classname="WorldSnapshot" name="building snapshots copy shared scalar records and freeze selected stock" time="0.660665" status="run" />
+  <testcase classname="WorldSnapshot" name="capture verification rejects writes that bypass the change trackers" time="0.513958" status="run" />
+  <testcase classname="WorldSnapshot" name="catalog refresh survives intervening projections and rules reuse independently" time="0.612949" status="run" />
+  <testcase classname="WorldSnapshot" name="component leases and weak control blocks outlive the owning store" time="0.550454" status="run" />
+  <testcase classname="WorldSnapshot" name="component mutation generations preserve isolation and reuse unchanged arrays" time="0.528105" status="run" />
+  <testcase classname="WorldSnapshot" name="coordinate wrapping preserves signed edges for power of two and general dimensions" time="0.000748" status="run" />
+  <testcase classname="WorldSnapshot" name="detailed accounting is optional while exact map bytes remain available" time="0.992388" status="run" />
+  <testcase classname="WorldSnapshot" name="explicit observation boundaries refresh paused state and retain old leases" time="0.590361" status="run" />
+  <testcase classname="WorldSnapshot" name="farm paint queries match frozen growth and resource inputs" time="0.640757" status="run" />
+  <testcase classname="WorldSnapshot" name="flat relationship ranges preserve every building list in order" time="0.615765" status="run" />
+  <testcase classname="WorldSnapshot" name="map snapshots bulk copy authoritative records without translation" time="0.543307" status="run" />
+  <testcase classname="WorldSnapshot" name="memory metrics distinguish held epochs from reusable high water capacity" time="0.586172" status="run" />
+  <testcase classname="WorldSnapshot" name="named views retain only their standard inputs" time="1.07842" status="run" />
+  <testcase classname="WorldSnapshot" name="narrow component queries preserve combined tile values and projection defaults" time="0.573835" status="run" />
+  <testcase classname="WorldSnapshot" name="no-op map writes reuse components while changed values remain isolated" time="0.634946" status="run" />
+  <testcase classname="WorldSnapshot" name="on-demand construction feasibility matches live helpers and remains frozen" time="0.732222" status="run" />
+  <testcase classname="WorldSnapshot" name="ordinary boundaries always contain the complete simulation preset" time="0.568876" status="run" />
+  <testcase classname="WorldSnapshot" name="outcome reasons survive the read boundary without changing simulation state" time="1.12399" status="run" />
+  <testcase classname="WorldSnapshot" name="pooled captures never overwrite a held worker projection" time="0.599902" status="run" />
+  <testcase classname="WorldSnapshot" name="presentation upgrades refresh entities after each owner boundary change" time="1.5215" status="run" />
+  <testcase classname="WorldSnapshot" name="projected terrain lease cannot retain unrelated world components" time="0.550307" status="run" />
+  <testcase classname="WorldSnapshot" name="resource copy metrics include multi-material stock sidecars" time="0.589313" status="run" />
+  <testcase classname="WorldSnapshot" name="reused buffers copy sparse chunks and refresh dense changes contiguously" time="0.571342" status="run" />
+  <testcase classname="WorldSnapshot" name="same boundary entity reuse is excluded from copied byte accounting" time="0.71322" status="run" />
+  <testcase classname="WorldSnapshot" name="same boundary presentation additions reuse maps and remain outside simulation leases" time="0.530268" status="run" />
+  <testcase classname="WorldSnapshot" name="shared entity indices preserve empty slots and canonical record addresses" time="0.804744" status="run" />
+  <testcase classname="WorldSnapshot" name="snapshot capability tables share authoritative immutable catalog data" time="0.542037" status="run" />
+  <testcase classname="WorldSnapshot" name="statistics inputs and entity records reuse buffers without changing held generations" time="0.599202" status="run" />
+  <testcase classname="WorldSnapshot" name="team record ranges preserve canonical addresses and empty teams" time="0.654057" status="run" />
+  <testcase classname="WorldSnapshot" name="unit snapshots share authoritative scalar state and remain frozen" time="0.555089" status="run" />
+  <testcase classname="WorldSnapshot" name="vertex changes preserve retained terrain and reuse unchanged versions" time="0.624368" status="run" />
+  <testcase classname="WorldSnapshot" name="warm component buffers stop allocating at a fixed population" time="0.664745" status="run" />
+  <testcase classname="WorldSnapshot" name="worker final lease release synchronizes owner buffer reuse" time="0.028788" status="run" />
+  </testsuite></testsuites>

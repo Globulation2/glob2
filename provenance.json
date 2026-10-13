@@ -1,0 +1,56 @@
+{
+  "original_head": "e65b48024143f15b6fe683e820f19d961b3c2a4e",
+  "base": "7556a9ecbc60b324a386e505533497974a811261",
+  "platform": "macOS-26.6.2-arm64-arm-64bit-Mach-O",
+  "compiler": "Apple clang version 21.0.0 (clang-2100.3.34.2)\nTarget: arm64-apple-darwin25.6.0\nThread model: posix\nInstalledDir: /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin",
+  "python": "3.14.7",
+  "scons": "SCons by Steven Knight et al.:\n\tSCons: v4.11.1.b97f32b9adab83a96af767ec1d7dc8d7a41c7c74, Wed, 26 Aug 2026 21:18:42 -0700, by bdbaddog on M1Dog2021\n\tSCons path: ['/opt/homebrew/Cellar/scons/4.11.1/libexec/lib/python3.14/site-packages/SCons']\nCopyright (c) 2001 - 2026 The SCons Foundation",
+  "build_command": "PYTHONPATH=\"$PWD\" python3 tools/dev_build.py --build=build/merge-1170 engine-tests",
+  "build_flags": "dev_fast=1 linker=auto -j8; -O0 -g1; full platform feature defaults",
+  "dependency_prefix": "build-dd8d40b0b2e044b88374d32e",
+  "scope": "Refresh integration with master snapshot/statistics changes; no production changes to original Nicowar fix. Prior Linux/macOS evidence retained separately.",
+  "limitations": [
+    "Current integrated execution only on macOS arm64 fast build.",
+    "Windows/browser execution and current integrated ordinary release not performed.",
+    "No performance or manual gameplay claim."
+  ],
+  "resolution_review": {
+    "result": "no issues",
+    "retained_master_changes": [
+      "#1166 standard snapshots",
+      "#1173 same-boundary entity reuse",
+      "#1152 statistics offload",
+      "#1175 shared capture and presentation admission"
+    ],
+    "unchanged_original_files": [
+      "src/ai/nicowar/Attack.cpp",
+      "docs/ai/development.md"
+    ],
+    "test_resolution": "Retain both original Nicowar tests and master Cabino observation test/API."
+  },
+  "build_retry": "First build compiled C++ but failed in runtime asset worker with ModuleNotFoundError: tools. Retried with explicit repository PYTHONPATH; no source change.",
+  "tested_head": "2ffb55941ff0c3226c07828ef33ed0a688613649",
+  "tested_tree": "d48fc3cc60fdc2e076fa2a45ea458391f57da913",
+  "trace_rows": 843,
+  "trace_sha256": "8a6c400f81257178590d4d85d7fe924a156c7b123b42a3c0a6fbbc7744dc638a",
+  "golden_trace_unchanged_from_base": true,
+  "golden_results": {
+    "participants": [
+      1,
+      4
+    ],
+    "verdict": "verified",
+    "rejected_orders": 0,
+    "traces_identical": true
+  },
+  "engine_binary_sha256": "38e9ed436ee457173c03339cebe54d32832e3975eda04b16c335eb47874aeae8",
+  "client_binary_sha256": "02b70c9104e04f82d82f8852629b5299dec9633177e985031678f747e2be4b0d",
+  "focused_tests": {
+    "passed": 82,
+    "failed": 0,
+    "skipped": 0,
+    "junit": "integration.xml"
+  },
+  "final_build_command": "PYTHONPATH=\"$PWD\" python3 tools/dev_build.py --build=build/merge-1170 engine-tests build/merge-1170/src/glob2",
+  "final_status": "passed"
+}
