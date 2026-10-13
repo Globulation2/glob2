@@ -1,5 +1,6 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "EngineFixtures.h"
+#include "HiringPipeline.h"
 #include "render/scene/SceneExtract.h"
 
 #include "FileManager.h"
@@ -182,3 +183,30 @@ namespace glob2test
 		return game.checkSum();
 	}
 }
+
+class HiringPipelineHarness
+{
+  public:
+	static void publish(Game &game)
+	{
+		game.drainHiring();
+		game.snapshotStore().invalidateBoundary();
+		auto input = HiringPipeline::capture(game, game.captureReadBoundary());
+		if (!game.hiringPipeline)
+			game.hiringPipeline = std::make_unique<HiringPipeline>(game.map.computeExecutor());
+		for (unsigned team = 0; team < unsigned(game.teamsCount()); ++team)
+		{
+			HiringPlanner::Cache cache;
+			game.hiringPipeline->publishedBounds[team] = 2048 + input.outputBounds[team];
+			game.hiringPipeline->published[team] =
+				std::make_shared<HiringPlanner::Output>(cache.rank(input, team, 128));
+		}
+	}
+};
+namespace glob2test
+{
+void publishCurrentHiringSuggestions(Game &game)
+{
+	HiringPipelineHarness::publish(game);
+}
+} // namespace glob2test

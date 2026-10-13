@@ -40,6 +40,8 @@ namespace GAGCore
 using namespace GAGCore;
 namespace SimulationSnapshot { class Store; }
 class TeamStatsPipeline;
+class HiringPipeline;
+namespace HiringPlanner { struct BuildingLists; }
 class GameGUI;
 class SceneMap;
 struct PresentationFrame;
@@ -177,6 +179,7 @@ public:
 	}
 	//! Legacy test diagnostics only; production consumers are forbidden.
 	SyncRandScope bindRandom() { return SyncRandScope(syncRandom); }
+friend class HiringPipelineHarness;
 private:
 	std::unique_ptr<const AIPlanning::BuildingCapabilityIndex> buildingCapabilityIndex;
 	std::vector<Uint8> unitAvailability;
@@ -254,6 +257,12 @@ public:
 	void settleAIOrder(const std::shared_ptr<Order>& order, bool accepted);
 	void cancelAI(unsigned player);
 	void drainAI();
+    void drainHiring();
+    void saveHiring(GAGCore::OutputStream*);
+    void loadHiring(GAGCore::InputStream*);
+    Uint32 hiringChecksum() const;
+    std::vector<std::pair<std::string,Uint64>> hiringMetrics() const;
+    const HiringPlanner::BuildingLists* hiringCandidates(const Building&) const;
     void drainTeamStats();
     void saveTeamStats(GAGCore::OutputStream*);
     void loadTeamStats(GAGCore::InputStream*, int versionMinor);
@@ -271,6 +280,7 @@ private:
 	mutable SimulationSnapshot::Store worldSnapshots;
 	std::unique_ptr<AIEngine::Pipeline> aiPipeline;
     std::unique_ptr<TeamStatsPipeline> statsPipeline;
+    std::unique_ptr<HiringPipeline> hiringPipeline;
 public:
 
 	/// Makes a step for building projects that are waiting for the areas to clear of units.

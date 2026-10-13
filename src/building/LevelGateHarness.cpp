@@ -51,7 +51,7 @@ static bool hiringPass(const char* kind, int level, bool site, int carried, int 
 	unit->carriedMaterial = carried;
 	unit->activity = Unit::ACT_RANDOM;
 	unit->medical = Unit::MED_FREE;
-	team->updateAllBuildingTasks();
+	(glob2test::publishCurrentHiringSuggestions(*team->game), team->updateAllBuildingTasks());
 	*tooLowLevel = building->unitsFailingRequirements[Building::UnitTooLowLevel];
 	bool hired = building->unitsWorking.size() == 1;
 	std::printf("%s level %d %s, worker level %d -> %s (too low level: %u)\n",

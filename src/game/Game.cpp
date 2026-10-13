@@ -20,6 +20,7 @@
 #include "DatasetWriter.h"
 #include "Game.h"
 #include "TeamStatsPipeline.h"
+#include "HiringPipeline.h"
 #include "BuildingArtwork.h"
 #include "ai/BuildingCapabilities.h"
 #include "GameUtilities.h"
@@ -196,6 +197,9 @@ void Game::configureBuildingCatalog()
 			for (int i=0; i<Building::MAX_COUNT; ++i)
 				if (Building* building=team->myBuildings[i]; building && building->buildingState==Building::ALIVE)
 				{
+					// Loaded hiring state is installed after catalog reconstruction. A live
+					// reconfiguration supersedes rankings even when type IDs are unchanged.
+					if (hiringPipeline) ++building->hiringEpoch;
 					if (building->type->runtimeSuppliesStock) team->stockSuppliers.push_back(building);
 					if (building->type->runtimeSuppliesDirectStock) team->directStockSuppliers.push_back(building);
 				}

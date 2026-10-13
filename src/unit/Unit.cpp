@@ -655,15 +655,7 @@ bool Unit::hasDeliverableCargo(const Building& building, int material) const
 {
 	if (building.materialDeliveryNeed(material)<=0 || building.materials[material]==std::numeric_limits<Sint32>::max()) return false;
 	const Uint64 multiplier=building.type->materialMultiplier[material];
-	const auto usable=[&](WideMaterialPacket packet) {
-		const Uint64 divisor=std::gcd(packet.numerator,packet.denominator);
-		packet.numerator/=divisor; packet.denominator/=divisor;
-		const Uint64 common=std::gcd(packet.denominator,multiplier);
-		const Uint64 scale=multiplier/common;
-		const Uint64 maximum=std::numeric_limits<Uint64>::max();
-		return packet.numerator<=maximum/scale && packet.denominator<=maximum/scale
-			&& packet.numerator*scale>=packet.denominator/common;
-	};
+	const auto usable=[&](WideMaterialPacket packet) { return packetCanDeliver(packet,multiplier); };
 	if (carriedMaterial==material && !widePrimaryCargo && usable({carriedPacket.numerator,carriedPacket.denominator})) return true;
 	if (const auto* extra=owner->game->unitCargo.find(gid))
 		for (const auto& entry:*extra) if (entry.material==material && usable(entry.packet)) return true;

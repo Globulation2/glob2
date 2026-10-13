@@ -276,3 +276,6 @@ static constexpr int FILE_FORMAT_VERSION_TEAM_STATS_PIPELINE = 155;
 static constexpr int FILE_FORMAT_VERSION_TEAM_STATS_FINALIZED = 157;
 // Completed pending measurement frames replace raw labour deltas.
 static constexpr int FILE_FORMAT_VERSION_TEAM_STATS_FRAMES = 158;
+
+// Production cached hiring continuation and frozen building-route provenance.
+static constexpr int FILE_FORMAT_VERSION_CACHED_HIRING = 159;

@@ -189,7 +189,7 @@ void initialFlagStaffing()
             f.game.map.buildingGradient(flag,0);
             // Even if discovery/management is delayed past a recruitment cycle,
             // the default broad resource selector cannot recruit a worker.
-            for(int tick=0;tick<70;++tick)REQUIRE(!flag->subscribeForFlagingStep());
+            for(int tick=0;tick<70;++tick)REQUIRE(!(glob2test::publishCurrentHiringSuggestions(*flag->owner->game), flag->subscribeForFlagingStep()));
             REQUIRE(flag->unitsWorking.empty());
         }
     }

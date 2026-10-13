@@ -482,7 +482,7 @@ TEST_SUITE("TeamStatsSave")
         // Exercise the public recruitment clock rather than altering its timer.
         auto recruitmentRound=[&] {
             bool hired=false;
-            for(int i=0;i<33;++i) hired=flag->subscribeForFlagingStep() || hired;
+            for(int i=0;i<33;++i) hired=(glob2test::publishCurrentHiringSuggestions(*flag->owner->game), flag->subscribeForFlagingStep()) || hired;
             return hired;
         };
         flag->maxUnitWorking=flag->desiredMaxUnitWorking=1;

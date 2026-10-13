@@ -83,7 +83,10 @@
     "TerrainResources/*",
     "MapSets/*",
     "SoftwareRenderer/*",
-    "MCP/*"
+    "MCP/*",
+    "HiringPipeline/*",
+    "HiringInputDigest/*",
+    "HiringPlanner/*"
   ],
   "unit_filters": [
     "*"

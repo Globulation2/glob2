@@ -623,7 +623,8 @@ BuildingSeedResult seedBuilding(const BuildingSeed& building, const SimulationSn
 BuildingSeedResult buildBuilding(const BuildingSeed& building, const SimulationSnapshot::Handle& snapshot,
     const BuildingGradientSearch::Inputs& inputs, Uint16* out, BuildingGradientSearch& search, int depthTarget)
 {
-    const auto result=seedBuilding(building, snapshot, out);
+    auto result=seedBuilding(building, snapshot, out);
+    result.inputDigest=BuildingGradientSearch::inputDigest(inputs, out, building.swim, snapshot.width, snapshot.height);
     if (result.locked) return result;
     search.begin(inputs, out, building.swim, snapshot.width, snapshot.height);
     // resolveToCost records no owner telemetry; COST_LIMIT drains every queue.

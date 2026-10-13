@@ -41,9 +41,7 @@ struct UnitView : UnitState
 {
     int realAttackStrength = 0;
 	UnitRef identity;
-	Uint16 team = 0;
-    // Team ids fit 16 bits; modifier shares the former 32-bit team word.
-    Uint16 attackFactor = 10000;
+	int team = 0;
 	BuildingRef attached, target;
 };
 

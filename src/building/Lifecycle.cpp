@@ -8,6 +8,7 @@
 #include <stdlib.h>
 
 #include "Building.h"
+#include "HiringPlanner.h"
 #include "BuildingType.h"
 #include "EngineTiming.h"
 #include "FileFormatVersions.h"
@@ -486,6 +487,8 @@ void Building::load(GAGCore::InputStream *stream, BuildingsTypes *types, Team *o
 	freeGradients();
 
 	verbose = false;
+    hiringEpoch=versionMinor>=FILE_FORMAT_VERSION_CACHED_HIRING?stream->readUint32("hiringEpoch"):0;
+    hiringFingerprint=HiringPlanner::configuration(*this,false);
 	stream->readLeaveSection();
 
 	lastShootStep = LAST_SHOOT_STEP_NEVER;
@@ -605,6 +608,7 @@ void Building::save(GAGCore::OutputStream *stream)
     }
 
 
+	stream->writeUint32(hiringEpoch,"hiringEpoch");
 	stream->writeLeaveSection();
 }
 
@@ -828,6 +832,7 @@ std::shared_ptr<SharedBuildingGradient> Building::leaseGradient(int slot)
     if (!lease) {
         lease=std::make_shared<SharedBuildingGradient>();
         lease->values=globalGradient[slot];lease->search=globalGradientSearch[slot].get();
+        lease->inputDigest=gradientInputDigest[slot];
         lease->width=owner->game->map.getW();lease->height=owner->game->map.getH();
     }
     return lease;

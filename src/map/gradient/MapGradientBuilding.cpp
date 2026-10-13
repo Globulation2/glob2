@@ -160,6 +160,9 @@ void Map::updateGlobalGradient(Building *building, int swimClass, BuildingRoute 
 		});
 	}
 
+	const auto routeInputs = BuildingGradientSearch::Inputs::of(*this, swimClass);
+	building->gradientInputDigest[slot] = BuildingGradientSearch::inputDigest(routeInputs, gradient, swimClass, w, h);
+
 	if (route == BuildingRoute::Footprint)
 	{
 		// Spiral around the building footprint corner; start one cell NW of the building origin
@@ -187,5 +190,5 @@ void Map::updateGlobalGradient(Building *building, int swimClass, BuildingRoute 
 
 	auto &search = building->globalGradientSearch[slot];
 	if (!search) search = acquireBuildingGradientSearch();
-	search->begin(*this, gradient, swimClass);
+	search->begin(routeInputs, gradient, swimClass, w, h);
 }

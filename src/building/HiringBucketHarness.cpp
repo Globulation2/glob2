@@ -48,7 +48,7 @@ static void hiringRoundIsFair()
         unit->activity = Unit::ACT_RANDOM;
         unit->medical = Unit::MED_FREE;
     }
-    team->updateAllBuildingTasks();
+    (glob2test::publishCurrentHiringSuggestions(*team->game), team->updateAllBuildingTasks());
     std::printf("Hiring round: first inn %zu workers, second inn %zu workers\n",
         first->unitsWorking.size(), second->unitsWorking.size());
     require(first->unitsWorking.size() == 1 && second->unitsWorking.size() == 1,

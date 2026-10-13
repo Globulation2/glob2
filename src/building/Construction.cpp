@@ -10,6 +10,7 @@
 #include <stdexcept>
 
 #include "Building.h"
+#include "HiringPlanner.h"
 #include "BuildingType.h"
 #include "EngineTiming.h"
 #include "FixedPoint.h"
@@ -408,6 +409,9 @@ void Building::resetServiceListState()
 
 void Building::updateCallLists(void)
 {
+    const auto fingerprint=HiringPlanner::configuration(*this,false);
+    if(hiringFingerprint && fingerprint!=hiringFingerprint)++hiringEpoch;
+    hiringFingerprint=fingerprint;
 	if (buildingState==DEAD)
 		return;
 	desiredMaxUnitWorking = desiredNumberOfWorkers();

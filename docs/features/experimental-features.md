@@ -9,11 +9,10 @@
 
 ## What players see
 
-The cached-hiring study currently provides headless diagnostics only
-(`--telemetry hiring-stats` and `--telemetry hiring-shadow`). It does not register a
-`cached-hiring` match experiment or change recruitment. Advancing to a live experiment
-requires the study gates and the normal simulation, save, replay and network
-compatibility work. See [hiring measurements](../development/performance-telemetry.md#cost-and-sampling).
+Cached hiring is part of normal simulation behavior, not an experiment switch.
+Its fixed four-tick publication delay and four-tick team refresh cadence are
+continuation rules. Local compute participant counts change where jobs run, not
+which suggestions publish or when. See [simulation hiring](../architecture/simulation.md#hiring).
 
 - **Settings → Experiments** lists one switch per experiment in this build, with
   a line explaining what it changes. Building catalogs can declare additional

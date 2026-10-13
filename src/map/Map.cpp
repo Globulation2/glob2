@@ -3,7 +3,6 @@
 
 #include <atomic>
 #include "Map.h"
-#include "HiringStudy.h"
 #include "MapAssetBundle.h"
 #include "TerrainLine.h"
 #include <stdexcept>
@@ -569,7 +568,7 @@ void Map::applyGradientBackendRequest()
     const auto requested=gradient_kernel::requestedBackendConfiguration();
     if(requested==gradient_kernel::configuration())return;
     // Finish privately, preserving the pending queue and original publication ticks.
-    if(game)HiringStudy::drain(*game);
+    if(game)game->drainHiring();
     finishGradientPipeline();
     gradient_kernel::applyBackendConfiguration(requested);
     gradientRuntime->backendSession->failed=false;
@@ -579,7 +578,7 @@ void Map::applyGradientBackendRequest()
 
 void Map::configureCompute(unsigned threads)
 {
-    if(game)game->drainTeamStats();
+    if(game){game->drainTeamStats();game->drainHiring();}
 	finishGradientPipeline({JoinReason::Reconfigure, ComputeTelemetry::NoTick});
 	finishResourceGrowth({JoinReason::Reconfigure, ComputeTelemetry::NoTick});
 	compute.configure(threads);

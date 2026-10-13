@@ -81,7 +81,7 @@ struct Bed
 		unit->activity = Unit::ACT_RANDOM;
 		unit->medical = Unit::MED_FREE;
 	}
-	void hire() { team->updateAllBuildingTasks(); }
+	void hire() { (glob2test::publishCurrentHiringSuggestions(*team->game), team->updateAllBuildingTasks()); }
 	bool marketTile(int x, int y) const { return game.map.getBuilding(x, y) == market->gid; }
 };
 

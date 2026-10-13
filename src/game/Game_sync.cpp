@@ -12,7 +12,6 @@
 #include "BuildingType.h"
 #include "DatasetWriter.h"
 #include "Game.h"
-#include "HiringStudy.h"
 #include "AIJavaScript.h"
 #include "AI.h"
 #include "Player.h"
@@ -235,7 +234,6 @@ void Game::syncStep(Sint32 localTeam, PreparationCompletion completion)
 		if (!map.gradientPipelineEnabled()) map.configureGradientPipeline(2, 8);
 		map.advanceGradientPipeline();
 
-		HiringStudy::advance(*this);
 		areaEffects.beginTick(*this);
 		for (int i=0; i<mapHeader.getNumberOfTeams(); i++)
 			teams[i]->syncStep();
@@ -294,11 +292,7 @@ void Game::syncStep(Sint32 localTeam, PreparationCompletion completion)
 		map.stagePeriodicGradientPreparation();
         map.stageResourceGrowth();
 		if (completion == PreparationCompletion::Complete) {
-            if(HiringStudy::enabled()) {
-                const auto world=captureReadBoundary();
-                HiringStudy::observe(*this,world,false);
-                map.preparePendingWorld(world);
-            } else map.preparePendingWorld();
+            map.preparePendingWorld(prepareReadBoundary(false));
         }
 	}
 }

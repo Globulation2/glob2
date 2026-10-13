@@ -467,11 +467,10 @@ an exact final snapshot. Legacy timeline records keep their existing formats.
 
 AI controller readouts use the same option; see [AI telemetry](../ai/telemetry.md).
 
-Hiring study diagnostics use `--telemetry hiring-stats` or `--telemetry hiring-shadow`;
-see their [measurement and shadow limitations](performance-telemetry.md#cost-and-sampling).
-They retain the authoritative hiring policy and can be combined with checksum,
-replay and final-save exports for behavior verification. Do not use those diagnostic
-runs as representative throughput measurements.
+Hiring admission diagnostics use `--telemetry hiring-stats`; see the
+[measurement contract](performance-telemetry.md#cost-and-sampling). Use separate
+checksum, replay and save exports for verification. Diagnostic runs are not
+representative throughput measurements.
 They identify individual players and controller generations. Replay playback does
 not reconstruct internal AI decisions from recorded orders.
 

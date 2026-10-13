@@ -1,5 +1,4 @@
 #include "SharedBuildingGradient.h"
-#include "HiringStudy.h"
 #include "HiringDiagnostics.h"
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "WorldSnapshot.h"
@@ -26,9 +25,12 @@
 #include <cstring>
 #include <bit>
 #include <utility>
+#include <atomic>
 
 namespace SimulationSnapshot
 {
+namespace { std::atomic<Uint64> nextFillEpoch{1}; }
+static_assert(SWIM_CLASS_COUNT<=8);
 std::shared_ptr<const std::vector<BuildingKindView>> captureCatalog(const Game& game)
 {
 	auto result = std::make_shared<std::vector<BuildingKindView>>();
@@ -119,12 +121,16 @@ Handle capture(const Game& game,
 	};
 	auto acquire = [&]<class T>(BufferPool<T> Storage::* pool, Component component) {
 		if (!needs(requirements, component)) return std::shared_ptr<T>{};
-		return storage ? (storage->*pool).acquire(storage->allocations) : std::make_shared<T>();
+		auto buffer = storage ? (storage->*pool).acquire(storage->allocations) : std::make_shared<T>();
+        if constexpr(requires { buffer->fillEpoch; }) buffer->fillEpoch=nextFillEpoch.fetch_add(1, std::memory_order_relaxed);
+        return buffer;
 	};
 	// Chunk-stamped map arrays reuse the free buffer filled most recently.
 	auto acquireStamped = [&]<class T>(BufferPool<T> Storage::* pool, Component component) {
 		if (!needs(requirements, component)) return std::shared_ptr<T>{};
-		return storage ? (storage->*pool).acquire(storage->allocations, [](const T& buffer) { return buffer.stamps.filledTick; }) : std::make_shared<T>();
+		auto buffer = storage ? (storage->*pool).acquire(storage->allocations, [](const T& buffer) { return buffer.stamps.filledTick; }) : std::make_shared<T>();
+        if constexpr(requires { buffer->fillEpoch; }) buffer->fillEpoch=nextFillEpoch.fetch_add(1, std::memory_order_relaxed);
+        return buffer;
 	};
 	Catalogs unusedCatalogs; auto catalogsOwner = acquire(&Storage::catalogs, Component::Catalogs);
 	auto* catalogs = catalogsOwner ? catalogsOwner.get() : &unusedCatalogs;
@@ -148,7 +154,7 @@ Handle capture(const Game& game,
 	// arrays directly rather than clearing and growing them one cell at a time.
 	entities->funding.clear(); entities->relationships.clear(); entities->projects.clear();
     entities->extraProduction.clear();
-    if (needs(requirements, Component::Entities)) entities->unitCargo = game.unitCargo;
+    if (needs(requirements, Component::Entities)) { entities->unitCargo = game.unitCargo; entities->groundClasses.fill(0); }
 	if (needs(requirements, Component::Entities)) {
 		const auto teams = game.mapHeader.getNumberOfTeams();
 		std::size_t buildings = 0, units = 0;
@@ -401,6 +407,7 @@ Handle capture(const Game& game,
 				std::memcpy(static_cast<UnitState*>(&v), static_cast<const UnitState*>(u), sizeof(UnitState));
 				v.identity = Game::refOf(u); v.team = t;
 				v.realAttackStrength = u->getRealAttackStrength();
+                if(!v.performance[FLY] && !v.isDead)entities->groundClasses[t]|=Uint8(1u<<Map::swimClass(v.performance[WALK],v.performance[SWIM]));
 				v.attached = Game::refOf(u->attachedBuilding);
 				v.target = Game::refOf(u->targetBuilding);
 			}
@@ -425,7 +432,7 @@ Handle capture(const Game& game,
             }
         }
         const auto ns=timed?std::chrono::duration_cast<std::chrono::nanoseconds>(std::chrono::steady_clock::now()-start).count():0;
-        HiringStudy::recordCapture(ns,entities->funding.size()*sizeof(FundingState)+entities->buildings.size()*sizeof(Uint32)+entities->units.size()*sizeof(Uint16)+game.teamsCount()*sizeof(Uint8),growths,entities->funding.size()*sizeof(FundingState));
+        HiringDiagnostics::recordCapture(ns,entities->funding.size()*sizeof(FundingState)+entities->buildings.size()*sizeof(Uint32)+game.teamsCount()*2*sizeof(Uint8),growths,entities->funding.size()*sizeof(FundingState));
     }
 
     if (auto session=acquire(&Storage::session,Component::Session)) {

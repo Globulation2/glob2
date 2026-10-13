@@ -7,7 +7,9 @@
 // This is the version of map and savegame format, and all of the recorded data on the server
 #define VERSION_MAJOR 0
 #define MINIMUM_VERSION_MINOR 58
-#define VERSION_MINOR 158
+#define VERSION_MINOR 159
+// version 159 persists cached hiring and frozen route provenance.
+// version 158 persists completed pending team measurement frames.
 // version 157 persists worker-finalized approximate statistics aggregates.
 // version 156 removes the redundant pending statistics input digest.
 // version 155 schedules team statistics from shared world snapshots.

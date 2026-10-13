@@ -50,42 +50,33 @@ Startup timings include generation attempts performed while preparing the sessio
 ## Cost and sampling
 
 Structured headless runs can add `--telemetry hiring-stats`. This writes
-`hiring-stats.json`, attributed by team and building incarnation: candidate visits,
-qualification attempts, route queries, successful hires, unavailable/rejected units,
-unsuccessful attempts, and exact elapsed timers around scan, selection, subscription,
-immediate swap, and building-field initialization/extension batches. Periodic team
-swaps are reported separately. Timers are inclusive; scan time includes its route
-queries. Counters avoid individual inner-loop timers. Diagnostics have measurable
-overhead and must be disabled for representative throughput comparisons.
+`hiring-stats.json`, with per-building admission, qualification, subscription,
+immediate swap and route-initialization/extension measurements, plus periodic
+team-swap timing. Counters describe examined cached suggestions, not a census of
+all eligible workers. Missing lists or rejected suggestions do not establish a
+population-wide absence of workers.
 
-`--telemetry hiring-shadow` also writes `hiring-shadow.json`. It builds candidate rankings from snapshot entity values and leased engine building-route
-generations and examines 200 delay/refresh/capacity/pool policies (including zero delay)
-while existing hiring remains authoritative. Shadow choices use a private team
-assignment set; current qualification comes from the reference hiring attempt.
-Coverage means a currently qualified cached suggestion exists. Worker-choice
-agreement is reported separately, both under the reference attempt's eligibility
-and with the shadow assignment exclusion set. The comparison fixes the reference
-building/job; it is not full counterfactual job selection. Zero-delay publication
-is a calibration control, not a promise of exact choices. Startup opportunities
-are separate from steady coverage. This measures usefulness
-along the reference trajectory, not recruitment delay or a counterfactual economy.
-Scheduled jobs borrow the normal completed-world records by reference and share
-a single route-handle table. No hiring snapshot or team copy is extracted.
+The production planner borrows normal immutable completed-world records and a
+shared boundary table of safe route-generation handles. No per-team world copy or
+separate hiring snapshot is built. Sparse raw funding and supplier membership
+facts live in the normal records; normal world capture still has a cost. Job,
+output and route-handle allocations remain. Snapshot copied-byte and pooled-buffer
+counters are scoped, not a process-wide heap census.
 
-Scheduled hiring reports separate owner route-handle capture, preparation,
-submission and publication (including deadline join) from worker preparation and
-ranking. `hiring_world_record_copy_bytes` counts copies by the hiring supplement,
-not ordinary world snapshot extraction: it is zero when jobs borrow the shared
-completed-world lease. Route handle storage and job/output allocation remain.
-Snapshot copied-byte and pooled-buffer allocation metrics must be compared with
-an experiment-disabled run on the same inputs; sparse funding records and the
-attack modifier are additional normal entity facts. Buffer allocation metrics
-are not a census of every process heap allocation. Measure isolated live owner
-consumption separately, and keep diagnostic timing separate from release timing.
+Diagnostic exports and saves are separate from throughput timing. Normal engine
+checksums remain enabled in timing runs. Pending-input digests are computed lazily
+on the first checksum or save after admission, using immutable logical snapshot
+values and cached component hashes qualified by private buffer-fill epochs.
+Building-route digests describe frozen seeds and entry costs; checksum reads never
+finish a route search.
+They exclude padding, pointers, cache readiness and incidental generation numbers;
+private digest caches are discarded on load. Saving joins jobs without publishing
+future hiring lists early. Ordinary checksum results are independent of job
+completion order.
 
-It is not a live hiring experiment or a performance benchmark. Neither diagnostic
-mode contributes simulation state or serialized continuation. These modes require
-the default headless simulation owner; the `GLOB2_SIM_THREAD=1` test switch is rejected.
+Hiring diagnostics require the default headless simulation owner;
+`GLOB2_SIM_THREAD=1` is rejected for this export. The retired `hiring-shadow`
+telemetry and `--hiring-*` experiment controls are no longer supported.
 
 `PerformanceScopes.inc` defines stable scope names and sampling strides. Major phases and
 expensive rebuilds are timed on every execution. Hot path-query/direction scopes count every

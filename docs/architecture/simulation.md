@@ -551,9 +551,36 @@ contaminate their timing.
 - A cache or other retained state with no eviction policy needs an explicit bound —
   a count or a byte budget. "It would take an enormous game to reach" is not a bound.
 
-The diagnostic hiring planner leases existing building-route generations. Owner reads
-and proposal expansion share a per-generation mutex; retired generations retain their
-original buffer and search until readers release them. Proposal queries do not alter
-owner refresh-demand history or create missing building fields. This producer remains
-an opt-in measurement path with original hiring authoritative; its leases are not saved
-continuation state.
+### Hiring
+
+`HiringPipeline` belongs to each `Game`. It admits FIFO team jobs from the shared
+completed-tick world snapshot at `t % 4 == teamNumber % 4`, then publishes their
+outputs before team stepping at `t + 4`. Workers derive demand, material
+apportionment, supplier modes, qualifications and integer rankings. The owner
+establishes immutable observations and safe building-route generations, enqueues
+jobs, publishes due results, and validates/commits hires in the existing priority
+buckets and rounds. Task swaps remain serial.
+
+Each supported job receives a bounded list of incarnation-aware unit references.
+Live admission rechecks ownership, activity, medical eligibility, skills, cargo,
+current quotas, reachability, food budgets and destination lookup. Temporary
+unavailability only skips the suggestion for that attempt. Exhaustion or missing
+lists waits for a scheduled refresh; there is no population-wide fallback scan.
+Clearing, exploration, defense, ground and flying transport share this contract.
+
+Building-route expansion and owner reads share the existing per-generation locks.
+Retirement retains the original buffer/search until leases end, without copying
+it. Workers never call live building APIs. Immutable snapshot components and route
+handles are shared by reference, not copied for each team. Private planner caches
+are bounded separately from deterministic pending/published output reservations.
+
+Published lists, fixed rules, last admission state, input identities, output
+reservations and completed pending outputs/deadlines are saved in format 159.
+Saving drains computation without early publication. Older supported saves start
+with empty hiring state and the fixed refresh schedule; the compatibility floor
+remains unchanged. Configuration epochs reject pending results even when a
+building configuration changes away and back. Unit changes are checked live.
+Checksums include ordered published suggestions and logical pending identities,
+independently of worker readiness. This policy change advances the simulation
+revision; older match records and mixed simulation-version network games are
+subject to the normal admission gates.

@@ -108,6 +108,7 @@ ENGINE_TESTS = [
     ('#src/engine/sim/ClientChannelsTest.cpp', dict(cxxflags=['-fno-access-control'])),
     '#src/building/HiringBucketHarness.cpp',
     '#src/building/HiringPlannerTest.cpp',
+    ('#src/building/HiringPipelineTest.cpp', dict(cxxflags=['-fno-access-control'])),
     '#src/unit/HungryDefeatHarness.cpp',
     '#src/map/gradient/ImmobileUnitGradientHarness.cpp',
     '#src/building/InnSwapHarness.cpp',
@@ -505,7 +506,6 @@ UNIT_STUBS = [
 # CI through their own runners; 'tools' are developer utilities and benchmarks. The
 # transport programs the browser tests drive stay in src/SConscript under 'transport-test'.
 PROGRAMS = [
-    ('HiringStudyHarness', 'HiringStudyHarness.cpp', 'hiring-study', 'tools'),
     ('SaveSizeHarness', 'SaveSizeHarness.cpp', 'save-size-harness', 'tools'),
 
     ('recording-multiplayer-peer', '#src/net/turn/RecordingMultiplayerPeer.cpp', 'recording-multiplayer-test', 'tools'),

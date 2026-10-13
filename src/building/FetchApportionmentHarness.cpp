@@ -36,7 +36,7 @@ struct TestBuilding : Building
 	TestBuilding(int x, int y, Uint16 gid, Sint32 typeNum, Team* team, BuildingsTypes* types,
 	             Sint32 unitWorking, Sint32 unitWorkingFuture)
 		: Building(x, y, gid, typeNum, team, types, unitWorking, unitWorkingFuture) {}
-	bool hireOne() { return subscribeToBringMaterialsStep(); }
+	bool hireOne() { glob2test::publishCurrentHiringSuggestions(*owner->game);return subscribeToBringMaterialsStep(); }
 	void refreshCallLists() { updateCallLists(); }
 };
 
