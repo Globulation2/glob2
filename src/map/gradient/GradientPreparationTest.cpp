@@ -1451,6 +1451,10 @@ TEST_CASE("compiled preparation tables preserve rule and catalog interpretation"
         CHECK(bool(compact.accessibility&(1u<<swim))==gradient_kernel::terrainAllowsGround(original.properties,swim));
         CHECK((compact.costs[swim]&65535)==original.ground[swim].cardinal);
         CHECK((compact.costs[swim]>>16)==original.ground[swim].diagonal);
+        const auto& cpu=rules.openTerrainSeeds(swimAccessVariant(swim));
+        REQUIRE(cpu.size()==rules.size());
+        CHECK(cpu[id]==(gradient_kernel::terrainAllowsGround(original.properties,swim)
+            ? GRADIENT_UNREACHABLE : GRADIENT_FORBIDDEN));
     }
     const auto& resources=*snapshot.catalogs->resources;
     REQUIRE(resources.gradientPreparation().size()==resources.size());
@@ -1478,6 +1482,8 @@ TEST_CASE("rejected corner identities preserve all compiled gradient tables" *
 	CHECK(table.gradientPreparation().size() == original.gradientPreparation().size());
 	for (unsigned swim = 0; swim < 8; ++swim)
 	{
+		CHECK(table.openTerrainSeeds(swimAccessVariant(swim)) ==
+			  original.openTerrainSeeds(swimAccessVariant(swim)));
 		const auto &actual = table.movement(swim);
 		const auto &expected = original.movement(swim);
 		CHECK(actual.entries.size() == expected.entries.size());
@@ -1489,6 +1495,8 @@ TEST_CASE("rejected corner identities preserve all compiled gradient tables" *
 	// A subsequent valid insertion still issues the next stable rule identity.
 	CHECK(table.intern(GRASS, GRASS, GRASS, SAND) == original.size());
 	CHECK(table.gradientPreparation().size() == table.size());
+	for (unsigned variant = 0; variant < CellRuleTable::OpenTerrainClasses.size(); ++variant)
+		CHECK(table.openTerrainSeeds(variant).size() == table.size());
 }
 
 TEST_CASE("movement profile rejection rolls back previously appended swim classes" *
@@ -1509,6 +1517,8 @@ TEST_CASE("movement profile rejection rolls back previously appended swim classe
 	CHECK(table.gradientPreparation().size() == original.gradientPreparation().size());
 	for (unsigned swim = 0; swim < 8; ++swim)
 	{
+		CHECK(table.openTerrainSeeds(swimAccessVariant(swim)) ==
+			  original.openTerrainSeeds(swimAccessVariant(swim)));
 		const auto &actual = table.movement(swim);
 		const auto &expected = original.movement(swim);
 		REQUIRE(actual.entries.size() == expected.entries.size());

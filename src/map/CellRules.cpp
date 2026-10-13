@@ -106,12 +106,14 @@ std::uint16_t CellRuleTable::add(const Key &key, bool prepare)
 		rule.corners = key;
 		compile(rule);
 		compiledList = rule.allowedResources;
-		// Reserve both parallel record arrays before appending either. Their logical
+		// Reserve all parallel record arrays before appending any. Their logical
 		// lengths must remain identical even when allocation fails. Use geometric
 		// growth; reserving precisely one extra entry on each intern is quadratic.
 		const auto capacity = std::min(Capacity, std::max(std::size_t(8), rules_.size() * 2));
 		if (rules_.capacity() < rules_.size() + 1) rules_.reserve(capacity);
 		if (gradientPreparation_.capacity() < rules_.size() + 1) gradientPreparation_.reserve(capacity);
+		for (auto &column : openTerrainSeeds_)
+			if (column.capacity() < rules_.size() + 1) column.reserve(capacity);
 		const auto id = std::uint16_t(rules_.size());
 		for (unsigned sw = 0; sw < movement_.size(); ++sw)
 		{
@@ -142,6 +144,10 @@ std::uint16_t CellRuleTable::add(const Key &key, bool prepare)
 		}
 		rules_.push_back(std::move(rule));
 		gradientPreparation_.push_back(preparation);
+		for (unsigned variant = 0; variant < OpenTerrainClasses.size(); ++variant)
+			openTerrainSeeds_[variant].push_back(
+				(preparation.accessibility & (1u << OpenTerrainClasses[variant]))
+					? GRADIENT_UNREACHABLE : GRADIENT_FORBIDDEN);
 		index_.emplace(key, id);
 		return id;
 	}
@@ -166,6 +172,7 @@ std::uint16_t CellRuleTable::add(const Key &key, bool prepare)
 		permissions_.resize(originalPermissions);
 		rules_.resize(originalRules);
 		gradientPreparation_.resize(originalRules);
+		for (auto &column : openTerrainSeeds_) column.resize(originalRules);
 		throw;
 	}
 }
