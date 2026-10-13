@@ -22,6 +22,8 @@ void GlobalContainer::applyCommand(const Cli::Request &request)
 		fileManager->addDir(path);
 	if (r.has("--compute-threads"))
 		computeThreads = parseComputeThreadCount(r.get("--compute-threads"));
+	if (r.has("--compute-telemetry"))
+        computeTelemetry = ComputeTelemetry::parseMode(r.get("--compute-telemetry"));
 	if (r.has("--gpu"))
 		gpuComputeOverride = r.get("--gpu") == "on";
 	if(r.has("--gradient-backend"))gradientBackendOverride=*gradient_kernel::parseBackend(r.get("--gradient-backend"));

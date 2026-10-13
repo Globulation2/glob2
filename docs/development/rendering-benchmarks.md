@@ -142,3 +142,9 @@ simulation checksums before discussing latency. Do not infer smoother gameplay
 from composition throughput alone, or establish thresholds from fast builds.
 The automatic default remains serial until representative hardware results
 justify enabling the bounded paths.
+
+Executor graphics timings are optional. Set `PROFILE_COMPUTE_TELEMETRY=waits`
+for owner barrier measurements or `trace` for worker queue/execution measurements.
+The default is off; `graphics_executor` fields report `na` when uncollected and
+include `mode` and `worker_available`. Compare instrumented and ordinary rendering
+separately. Other renderer performance scopes remain controlled as before.

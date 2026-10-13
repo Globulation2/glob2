@@ -86,10 +86,8 @@ private:
 		auto& job = *static_cast<Job*>(context);
 		job.owner->execute(job);
 	}
-	void wait(Job& job) {
-		const auto start = Clock::now();
-		if (executor) executor->join(job.batch); // Later jobs of the batch hold stale handles.
-		metrics.waitNs += ns(start);
+	void wait(Job& job, JoinContext context) {
+		if (executor) executor->join(job.batch, context); // Later jobs of the batch hold stale handles.
 		if (!job.done) throw std::logic_error("Unprepared building gradient reservation");
 	}
 	unsigned dueCount(std::uint64_t due) const {
@@ -108,12 +106,12 @@ public:
 			dueCount(tick+delay) < MaxJobsPerTick;
 	}
 	// Complete all private work without publishing; rethrows the oldest failure.
-	void finish() { for (auto& job : pending) { wait(*job); if (job->error) std::rethrow_exception(job->error); } }
+	void finish(JoinContext context = {JoinReason::Verification, ComputeTelemetry::NoTick}) { for (auto& job : pending) { wait(*job, context); if (job->error) std::rethrow_exception(job->error); } }
 	void reset() noexcept {
 		// Unsubmitted reservations can be discarded; submitted callbacks must end
 		// before their contexts, destinations or scratch storage are destroyed.
 		for (auto& job : pending) if (!job->batch.empty()) {
-			try { executor->join(job->batch); } catch (...) {}
+			try { executor->join(job->batch, {JoinReason::Teardown, ComputeTelemetry::NoTick}); } catch (...) {}
 		}
 		pending.clear(); spare.clear(); groups.clear();
 		delay = 0; admitted = 0; tick = 0;
@@ -122,7 +120,7 @@ public:
 	// job unpublished, then reset. Worker failures are dropped with their results.
 	void drain() noexcept {
 		for (auto& job : pending) {
-			if (!job->batch.empty()) { try { executor->join(job->batch); } catch (...) {} }
+			if (!job->batch.empty()) { try { executor->join(job->batch, {JoinReason::Teardown, ComputeTelemetry::NoTick}); } catch (...) {} }
 			if (retire) { try { retire(*job); } catch (...) {} }
 		}
 		reset();
@@ -133,12 +131,12 @@ public:
 		executor = &target; shared = sharedExecution; delay = ticks;
 	}
 	// Execution is local configuration, never part of saved simulation state.
-	void setWorkerCount(unsigned count) { finish(); shared = count != 0; }
+	void setWorkerCount(unsigned count) { finish({JoinReason::Reconfigure, ComputeTelemetry::NoTick}); shared = count != 0; }
 	// Publish before the teams step; preparation observes the completed previous tick.
 	void advance() {
 		++tick; admitted = 0;
 		while (!pending.empty() && pending.front()->due <= tick) {
-			auto& job = *pending.front(); wait(job);
+			auto& job = *pending.front(); wait(job, {JoinReason::TickDeadline, deadline ? deadline(1)/2 : tick});
 			if (job.error) std::rethrow_exception(job.error);
 			if (!job.superseded && publish && publish(job)) ++metrics.published;
 			else ++metrics.discarded;
@@ -177,8 +175,8 @@ public:
 			groups.clear();
 			for (auto* job : jobs) groups.push_back({1, {&run, job}, ComputeExecutor::NoLane});
 			const auto due = jobs.front()->due; // every job staged this tick shares it
-			const auto batch = executor->submit(groups,
-				deadline ? deadline(unsigned(due - tick)) : ComputeExecutor::advanceDue(due));
+			const auto key = deadline ? deadline(unsigned(due - tick)) : ComputeExecutor::advanceDue(due);
+			const auto batch = executor->submit(groups, key, {ComputeProducer::BuildingGradient, deadline ? key/2 - (due-tick) + 1 : tick, key/2});
 			for (auto* job : jobs) job->batch = batch;
 			++metrics.batches;
 			metrics.maxBatch = std::max<std::uint64_t>(metrics.maxBatch, jobs.size());
@@ -192,7 +190,7 @@ public:
 	// visitor receives each job in publication order with its remaining ticks and
 	// may finish the job's private state (for example a resumable search).
 	template<class Visitor> void visitPending(Visitor&& visitor) {
-		finish();
+		finish({JoinReason::Save, ComputeTelemetry::NoTick});
 		for (auto& job : pending) visitor(*job, static_cast<unsigned>(job->due-tick));
 	}
 	// Owner-only fields of pending jobs (for example their generation), without

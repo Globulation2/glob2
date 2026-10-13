@@ -111,8 +111,18 @@ private:
 	static std::uint64_t ns(Clock::time_point start) {
 		return std::chrono::duration_cast<std::chrono::nanoseconds>(Clock::now()-start).count();
 	}
+    template<bool Collect> static Clock::time_point clockTime() noexcept {
+        if constexpr (Collect) return Clock::now(); else return {};
+    }
+    template<bool Collect> static std::uint64_t cpuTime() noexcept {
+        if constexpr (Collect) return glob2::threadCpuNs(); else return 0;
+    }
+    template<bool Collect> static std::uint64_t elapsed(Clock::time_point start) noexcept {
+        if constexpr (Collect) return ns(start); else return 0;
+    }
+	template<bool Collect>
 	void execute(Job &job, Workspace &scratch) noexcept {
-		const auto start = Clock::now();
+		const auto start = clockTime<Collect>();
 		job.crowding = &scratch.crowding;
 		try
 		{
@@ -123,51 +133,51 @@ private:
             const auto family=gradient_preparation::backendFamily(job.request.kind);
             const auto decision=backendSession->choose(family,1,captured);
             gradient_kernel::CPUSelectionScope cpuSelection(decision.configuration.backend);
-			const auto preparationStart = Clock::now();
-            const auto preparationCpu = glob2::threadCpuNs();
+			const auto preparationStart = clockTime<Collect>();
+            const auto preparationCpu = cpuTime<Collect>();
 			try { if (job.seed) job.seed(job); }
-			catch (...) { job.preparationNs = ns(preparationStart); throw; }
-			job.preparationNs = ns(preparationStart);
-            const auto preparedCpu=glob2::threadCpuNs();
-            seedCpu.fetch_add(glob2::threadCpuDeltaNs(preparationCpu,preparedCpu),std::memory_order_relaxed);
-            const auto handoffStart=diagnostics ? glob2::threadCpuNs() : 0;
-            if(gradient_kernel::isGPU(choice)) requestedGpu.fetch_add(1,std::memory_order_relaxed);
+			catch (...) { if constexpr (Collect) job.preparationNs = elapsed<Collect>(preparationStart); throw; }
+			if constexpr (Collect) job.preparationNs = elapsed<Collect>(preparationStart);
+            const auto preparedCpu=cpuTime<Collect>();
+            if constexpr (Collect) { seedCpu.fetch_add(glob2::threadCpuDeltaNs(preparationCpu,preparedCpu),std::memory_order_relaxed); }
+            const auto handoffStart=diagnostics ? cpuTime<Collect>() : 0;
+            if constexpr (Collect) { if(gradient_kernel::isGPU(choice)) requestedGpu.fetch_add(1,std::memory_order_relaxed); }
             const bool selectedGPU = decision.plan != gradient_kernel::Plan::CPU;
-            if(selectedGPU) selectedGpu.fetch_add(1,std::memory_order_relaxed);
+            if constexpr (Collect) { if(selectedGPU) selectedGpu.fetch_add(1,std::memory_order_relaxed); }
             if(selectedGPU && deviceService && asyncWork && executor->slot()) {
-                const auto ownedStart=diagnostics ? glob2::threadCpuNs() : 0;
+                const auto ownedStart=diagnostics ? cpuTime<Collect>() : 0;
                 job.deviceField=asyncWork(job,decision);
                 if(!job.deviceField) {
                     // A bounded owned-view admission can decline before seed
                     // ownership moves. Recovery stays on this original worker
                     // and has no deferred ticket or coordinator dependency.
-                    const auto cpuStart=glob2::threadCpuNs();
+                    const auto cpuStart=cpuTime<Collect>();
                     if(diagnostics) {
-                        ownedInputCpu.fetch_add(glob2::threadCpuDeltaNs(ownedStart,cpuStart),std::memory_order_relaxed);
-                        handoffCpu.fetch_add(glob2::threadCpuDeltaNs(handoffStart,ownedStart),std::memory_order_relaxed);
+            if constexpr (Collect) { ownedInputCpu.fetch_add(glob2::threadCpuDeltaNs(ownedStart,cpuStart),std::memory_order_relaxed); }
+            if constexpr (Collect) { handoffCpu.fetch_add(glob2::threadCpuDeltaNs(handoffStart,ownedStart),std::memory_order_relaxed); }
                     }
                     job.cpuOnly=true;
                     work(job,scratch.propagation);
-                    const auto cpuEnd=glob2::threadCpuNs();
-                    propagationCpu.fetch_add(glob2::threadCpuDeltaNs(cpuStart,cpuEnd),std::memory_order_relaxed);
-                    cpuReasons[unsigned(CPUReason::OwnedInputDecline)].fetch_add(1,std::memory_order_relaxed);
-                    cpuFields.fetch_add(1,std::memory_order_relaxed);
+                    const auto cpuEnd=cpuTime<Collect>();
+            if constexpr (Collect) { propagationCpu.fetch_add(glob2::threadCpuDeltaNs(cpuStart,cpuEnd),std::memory_order_relaxed); }
+            if constexpr (Collect) { cpuReasons[unsigned(CPUReason::OwnedInputDecline)].fetch_add(1,std::memory_order_relaxed); }
+            if constexpr (Collect) { cpuFields.fetch_add(1,std::memory_order_relaxed); }
                 }else {
                 std::atomic_store_explicit(&job.requiredControl,job.deviceField->requiredControl,std::memory_order_release);
                 if(job.cancelGPU.load(std::memory_order_acquire) && job.deviceField->requiredControl)job.deviceField->requiredControl->requestCancel();
                 job.deviceField->completion=executor->defer();
-                const auto ownedEnd=diagnostics ? glob2::threadCpuNs() : 0;
+                const auto ownedEnd=diagnostics ? cpuTime<Collect>() : 0;
                 if(!deviceService->submit(job.deviceField)) {
                     // Admission failure still uses the original batch and worker.
                     deviceService->recoverOnWorker(job.deviceField);
                 }
                 if(diagnostics) {
-                    ownedInputCpu.fetch_add(glob2::threadCpuDeltaNs(ownedStart,ownedEnd),std::memory_order_relaxed);
-                    handoffCpu.fetch_add(glob2::threadCpuDeltaNs(handoffStart,ownedStart)+glob2::threadCpuDeltaNs(ownedEnd,glob2::threadCpuNs()),std::memory_order_relaxed);
+            if constexpr (Collect) { ownedInputCpu.fetch_add(glob2::threadCpuDeltaNs(ownedStart,ownedEnd),std::memory_order_relaxed); }
+            if constexpr (Collect) { handoffCpu.fetch_add(glob2::threadCpuDeltaNs(handoffStart,ownedStart)+glob2::threadCpuDeltaNs(ownedEnd,cpuTime<Collect>()),std::memory_order_relaxed); }
                 }
                 }
             } else if (selectedGPU && batchWork && gradient_kernel::canBatch(*backendSession)) {
-                if(diagnostics)handoffCpu.fetch_add(glob2::threadCpuDeltaNs(handoffStart,glob2::threadCpuNs()),std::memory_order_relaxed);
+            if constexpr (Collect) { if(diagnostics)handoffCpu.fetch_add(glob2::threadCpuDeltaNs(handoffStart,cpuTime<Collect>()),std::memory_order_relaxed); }
                 const std::array jobs{&job};
                 batchWork(jobs, std::span(&scratch.propagation, 1));
             } else {
@@ -175,14 +185,14 @@ private:
                     : !executor->slot() ? CPUReason::OwnerExcluded
                     : backendSession->failed.load() ? CPUReason::FailedSession
                     : CPUReason::Unavailable;
-                cpuReasons[unsigned(reason)].fetch_add(1,std::memory_order_relaxed);
-                const auto cpuStart=glob2::threadCpuNs();
-                if(diagnostics)handoffCpu.fetch_add(glob2::threadCpuDeltaNs(handoffStart,cpuStart),std::memory_order_relaxed);
+            if constexpr (Collect) { cpuReasons[unsigned(reason)].fetch_add(1,std::memory_order_relaxed); }
+                const auto cpuStart=cpuTime<Collect>();
+            if constexpr (Collect) { if(diagnostics)handoffCpu.fetch_add(glob2::threadCpuDeltaNs(handoffStart,cpuStart),std::memory_order_relaxed); }
                 if(gradient_kernel::isGPU(choice))gradient_kernel::recordGradientFallback(choice);
                 if(gradient_kernel::isGPU(choice))job.cpuOnly=true;
                 work(job,scratch.propagation);
-                propagationCpu.fetch_add(glob2::threadCpuDeltaNs(cpuStart,glob2::threadCpuNs()),std::memory_order_relaxed);
-                cpuFields.fetch_add(1,std::memory_order_relaxed);
+            if constexpr (Collect) { propagationCpu.fetch_add(glob2::threadCpuDeltaNs(cpuStart,cpuTime<Collect>()),std::memory_order_relaxed); }
+            if constexpr (Collect) { cpuFields.fetch_add(1,std::memory_order_relaxed); }
             }
 		}
 		catch (...)
@@ -190,20 +200,20 @@ private:
 			job.error = std::current_exception();
 		}
 		// Completion releases all borrowed immutable inputs, including failures.
-        const auto cleanupStart=diagnostics ? glob2::threadCpuNs() : 0;
+        const auto cleanupStart=diagnostics ? cpuTime<Collect>() : 0;
 		job.water.reset(); job.terrain.reset(); job.registry.reset(); job.profiles.reset();
 		job.snapshotLease.reset(); job.seed = {}; job.crowding = nullptr;
-		activeNs.fetch_add(ns(start), std::memory_order_relaxed);
+            if constexpr (Collect) { activeNs.fetch_add(elapsed<Collect>(start), std::memory_order_relaxed); }
 		job.done = true;
-        if(diagnostics)cleanupCpu.fetch_add(glob2::threadCpuDeltaNs(cleanupStart,glob2::threadCpuNs()),std::memory_order_relaxed);
+            if constexpr (Collect) { if(diagnostics)cleanupCpu.fetch_add(glob2::threadCpuDeltaNs(cleanupStart,cpuTime<Collect>()),std::memory_order_relaxed); }
 	}
+	template<bool Collect>
 	static void run(void* context, std::size_t) {
 		auto& job = *static_cast<Job*>(context);
 		auto& pipeline = *job.owner;
-		pipeline.execute(job, pipeline.workspaces[pipeline.executor->slot()]);
+		pipeline.execute<Collect>(job, pipeline.workspaces[pipeline.executor->slot()]);
 	}
-	void wait(Job &job, bool publication = false) {
-		const auto start = Clock::now();
+	void wait(Job &job, bool publication = false, JoinContext context = {JoinReason::Verification, ComputeTelemetry::NoTick}) {
         const bool trackStalls=diagnostics;
         const auto waitStart=trackStalls ? gradient_kernel::monotonicNs() : 0;
         const auto joinCpuStart=diagnostics ? glob2::threadCpuNs() : 0;
@@ -214,7 +224,7 @@ private:
             job.cancelGPU.store(true,std::memory_order_release);
             if(auto control=std::atomic_load_explicit(&job.requiredControl,std::memory_order_acquire))control->requestCancel();
         }
-		if (executor) executor->join(job.batch);
+		if (executor) executor->join(job.batch, publication ? JoinContext{JoinReason::TickDeadline, deadline ? deadline(1)/2 : tick} : context);
         const auto joined=diagnostics ? gradient_kernel::monotonicNs() : 0;
         const auto completionCpuStart=diagnostics ? glob2::threadCpuNs() : 0;
         // join may execute required work in serial mode: its CPU is inclusive,
@@ -241,7 +251,7 @@ private:
             job.deviceField.reset();
         }
 		metrics.preparationNs += std::exchange(job.preparationNs, 0);
-        const auto waited=ns(start);
+        const auto waited=diagnostics ? joined-waitStart : 0;
 		metrics.waitNs += waited;
         if(publication) {metrics.publicationWaitNs += waited;metrics.lastPublicationWaitNs+=waited;}
         if(diagnostics)metrics.ownerCompletionCpuNs+=glob2::threadCpuDeltaNs(completionCpuStart,glob2::threadCpuNs());
@@ -253,14 +263,14 @@ public:
 	unsigned workerCount() const { return shared && executor ? executor->threadCount()-1 : 0; }
 	unsigned delayTicks() const { return delay; }
 	std::uint64_t activeElapsedNs() const { return activeNs.load(std::memory_order_relaxed); }
-	void finish() { for (auto &job : pending) { wait(*job); if(job->error) std::rethrow_exception(job->error); } }
+	void finish(JoinContext context = {JoinReason::Verification, ComputeTelemetry::NoTick}) { for (auto &job : pending) { wait(*job, false, context); if(job->error) std::rethrow_exception(job->error); } }
 	void reset() noexcept {
 		// Unsubmitted reservations can be discarded; submitted callbacks must end
 		// before their contexts, destination slots or scratch storage are destroyed.
 		for (auto& job : pending) if (!job->batch.empty()) {
 			job->cancelGPU.store(true,std::memory_order_release);
             if(auto control=std::atomic_load_explicit(&job->requiredControl,std::memory_order_acquire))control->requestCancel();
-			try { executor->join(job->batch); } catch (...) {}
+			try { executor->join(job->batch, {JoinReason::Teardown, ComputeTelemetry::NoTick}); } catch (...) {}
 		}
 		pending.clear(); spare.clear(); workspaces.clear();
         // Saves/publication remain relative to the monotonic local tick;
@@ -277,10 +287,10 @@ public:
 		executor = &target; shared = sharedExecution;
 		resizeWorkspaces(); delay = ticks;
 	}
-    void setBatchWork(BatchWork callback) { finish(); batchWork=std::move(callback); }
-    void setAsyncWork(AsyncWork callback) { finish(); asyncWork=std::move(callback); }
+    void setBatchWork(BatchWork callback) { finish({JoinReason::Reconfigure, ComputeTelemetry::NoTick}); batchWork=std::move(callback); }
+    void setAsyncWork(AsyncWork callback) { finish({JoinReason::Reconfigure, ComputeTelemetry::NoTick}); asyncWork=std::move(callback); }
     void setDeviceService(std::shared_ptr<gradient_kernel::GradientDeviceService> service) {
-        finish(); deviceService=std::move(service);
+        finish({JoinReason::Reconfigure, ComputeTelemetry::NoTick}); deviceService=std::move(service);
     }
     std::shared_ptr<gradient_kernel::BackendSession> session() const { return backendSession; }
     std::uint64_t requiredSeedCpuNs() const { return seedCpu.load(); }
@@ -311,7 +321,7 @@ public:
     }
 	// Saving completes private work without changing publication deadlines.
 	template<class Visitor> void visitPendingSnapshots(Visitor visitor) {
-		finish();
+		finish({JoinReason::Save, ComputeTelemetry::NoTick});
 		for (const auto &job : pending)
 			visitor(PendingSnapshot{job->slot, job->data.get(),
 				static_cast<unsigned>(job->due-tick), job->superseded});
@@ -329,7 +339,7 @@ public:
 		pending.push_back(std::move(job));
 	}
 	// Execution is local configuration, never part of saved simulation state.
-	void setWorkerCount(unsigned count) { finish(); shared = count != 0; }
+	void setWorkerCount(unsigned count) { finish({JoinReason::Reconfigure, ComputeTelemetry::NoTick}); shared = count != 0; }
 	// Publish before the teams step; preparation observes the completed previous tick.
 	void advance() {
 
@@ -372,11 +382,15 @@ public:
 			ptr->seed = std::forward<Seed>(seed);
             ptr->submittedNs=diagnostics ? gradient_kernel::monotonicNs() : 0;
 			// Owner-only execution computes now; publication keeps its deadline.
-			if (!shared) { execute(*ptr, workspaces[0]); return; }
-			const ComputeExecutor::Group group{1, {&run, ptr}, ComputeExecutor::NoLane};
+			const bool collect = diagnostics || executor->telemetryMode() == ComputeTelemetryMode::Trace;
+			if (!shared) {
+                if (collect) execute<true>(*ptr, workspaces[0]); else execute<false>(*ptr, workspaces[0]);
+                return;
+            }
+			const ComputeExecutor::Group group{1, {collect ? &run<true> : &run<false>, ptr}, ComputeExecutor::NoLane};
 			const unsigned remaining = unsigned(ptr->due - tick);
             ptr->executorDue=deadline ? deadline(remaining) : ComputeExecutor::advanceDue(ptr->due);
-			ptr->batch = executor->submit(std::span(&group, 1),ptr->executorDue);
+			ptr->batch = executor->submit(std::span(&group, 1),ptr->executorDue, {ComputeProducer::PeriodicGradient, deadline ? ptr->executorDue/2 - remaining + 1 : tick, ptr->executorDue/2});
 		} catch (...) {
 			ptr->seed = {}; ptr->snapshotLease.reset(); ptr->water.reset();
 			ptr->terrain.reset(); ptr->registry.reset(); ptr->profiles.reset();

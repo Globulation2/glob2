@@ -25,9 +25,10 @@ struct TestScheduler : AIEngine::OrderScheduler
 {
 	ComputeExecutor executor;
 	~TestScheduler() { clear(); }
-	void configure(unsigned delay, unsigned workers)
+	void configure(unsigned delay, unsigned workers, ComputeTelemetryMode mode = ComputeTelemetryMode::Off)
 	{
 		executor.configure(workers ? workers : 1);
+        executor.configureTelemetry(mode);
 		AIEngine::OrderScheduler::configure(delay, executor, workers > 0);
 	}
 };
@@ -37,12 +38,13 @@ TEST_SUITE("AIOrderScheduler")
 {
 	TEST_CASE("all delays preserve every FIFO poll and fixed player ordered deadlines")
 	{
-		for (unsigned delay = 0; delay <= 8; ++delay)
+		for (auto mode : {ComputeTelemetryMode::Off, ComputeTelemetryMode::Waits, ComputeTelemetryMode::Trace})
+        for (unsigned delay = 0; delay <= 8; ++delay)
 			for (unsigned workers : {0u, 1u, 4u})
 			{
-				CAPTURE(delay); CAPTURE(workers);
+				CAPTURE(mode); CAPTURE(delay); CAPTURE(workers);
 				TestScheduler scheduler;
-				scheduler.configure(delay, workers);
+				scheduler.configure(delay, workers, mode);
 				std::array<Uint32, 2> next{};
 				for (Uint32 tick = 0; tick < 20 + delay; ++tick)
 				{
