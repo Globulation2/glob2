@@ -1,0 +1,458 @@
+{
+  "source": "d2ddb6793777eac9e8c62421f2803313e0b83b52",
+  "tree": "35c1ceab56eb99e5a542e22d6364508d70ee9057",
+  "tested_base": "26715e41b177da04f068f01ca436abad5c1f95d2",
+  "platform": "Linux-7.0.0-31-generic-x86_64-with-glibc2.43",
+  "native_cases": 170,
+  "map_requests": 9,
+  "scope": "Current Linux ordinary-release focused correctness. No combined-branch speed measurement, calibrated tiers, current cross-platform orphysical-device acceptance. Compiled goldenassertion passed; its TempDirtrace not retained and not invented inthispack. Prior failedtestfixtures and olderplatform evidence remainlocal/source-qualified; not erased bythiscurrentpass.",
+  "files": [
+    {
+      "path": "artifacts/engine-optimization-conclusion/root-final-master-review.json",
+      "bytes": 818,
+      "sha256": "4cdd2fed24b768d1be338623bee64411a7124b7a1c126cf6db4863954acd9ce6"
+    },
+    {
+      "path": "artifacts/map-tools-resource-contract/native-smoke-master/plan.json",
+      "bytes": 9801,
+      "sha256": "d04233a125691e99bc5750925581c4a4ee496f29bb588639f163a9f9871b2a0e"
+    },
+    {
+      "path": "artifacts/map-tools-resource-contract/native-smoke-master/run.py",
+      "bytes": 10803,
+      "sha256": "f9f98dc3723f4dd43fe76b5d6ed70f8713dc75f0e313ade0a99bf9aecc00f812"
+    },
+    {
+      "path": "artifacts/map-tools-resource-contract/native-smoke-master/runs/complete.json",
+      "bytes": 8046255,
+      "sha256": "6e48141d29905405b51e0e43c148aaf477fe8e26f8e7c9de8b319490a58982c5"
+    },
+    {
+      "path": "artifacts/map-tools-resource-contract/native-smoke-master/runs/current-help/invocation.json",
+      "bytes": 366,
+      "sha256": "5e283100d76821099bb8a5dcda7c5d33da4546232b9190a4abad5f2397092b47"
+    },
+    {
+      "path": "artifacts/map-tools-resource-contract/native-smoke-master/runs/current-help/stderr.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "artifacts/map-tools-resource-contract/native-smoke-master/runs/current-help/stdout.log",
+      "bytes": 212316,
+      "sha256": "641a2c571fb41e358f9d1043dd70332dcbc09ba43ea96358bc23d52c6e9d6753"
+    },
+    {
+      "path": "artifacts/map-tools-resource-contract/native-smoke-master/runs/explicit-auto/invocation.json",
+      "bytes": 935,
+      "sha256": "129209b2f48111f93695295c709c233342b61dc76adb04d8db773e6287ae67be"
+    },
+    {
+      "path": "artifacts/map-tools-resource-contract/native-smoke-master/runs/explicit-auto/report.json",
+      "bytes": 588668,
+      "sha256": "468ebbec1b6c4c29222a9a1f4a0e32548a39f9de97b38855aa3822b13059c5c3"
+    },
+    {
+      "path": "artifacts/map-tools-resource-contract/native-smoke-master/runs/explicit-auto/same.map.gz",
+      "bytes": 64900,
+      "sha256": "78f30016a4fcdbfe36b931680ee63b72d2edb2391185305be59e6435240e7a85"
+    },
+    {
+      "path": "artifacts/map-tools-resource-contract/native-smoke-master/runs/explicit-auto/stderr.log",
+      "bytes": 60,
+      "sha256": "683281f3dc1d8bfd6d39a4a962da6c3b1329e8b8dc9f655a52c9b0e21fd866d9"
+    },
+    {
+      "path": "artifacts/map-tools-resource-contract/native-smoke-master/runs/explicit-auto/stdout.log",
+      "bytes": 364,
+      "sha256": "1c935931eb040488bc6698dcc85955a728e767af6e5a8a816c7c083c2a3d27b4"
+    },
+    {
+      "path": "artifacts/map-tools-resource-contract/native-smoke-master/runs/explicit-balanced/invocation.json",
+      "bytes": 947,
+      "sha256": "34bfee5eaa4d3032325d1dc57c06be501ab6e76ec0950c149e06a599d63b4258"
+    },
+    {
+      "path": "artifacts/map-tools-resource-contract/native-smoke-master/runs/explicit-balanced/report.json",
+      "bytes": 588681,
+      "sha256": "4294ecac5d1e4c7f20020a27c127f5898a88e125d15c4c9b9e95c1af757db000"
+    },
+    {
+      "path": "artifacts/map-tools-resource-contract/native-smoke-master/runs/explicit-balanced/same.map.gz",
+      "bytes": 64900,
+      "sha256": "78f30016a4fcdbfe36b931680ee63b72d2edb2391185305be59e6435240e7a85"
+    },
+    {
+      "path": "artifacts/map-tools-resource-contract/native-smoke-master/runs/explicit-balanced/stderr.log",
+      "bytes": 60,
+      "sha256": "683281f3dc1d8bfd6d39a4a962da6c3b1329e8b8dc9f655a52c9b0e21fd866d9"
+    },
+    {
+      "path": "artifacts/map-tools-resource-contract/native-smoke-master/runs/explicit-balanced/stdout.log",
+      "bytes": 372,
+      "sha256": "da0c99a7dd0c587832753de7f2a290d5155f99f6895ca14ff64825714e592644"
+    },
+    {
+      "path": "artifacts/map-tools-resource-contract/native-smoke-master/runs/explicit-eco/invocation.json",
+      "bytes": 932,
+      "sha256": "04ac50e7a6b4851ea4a1e6c75ee65f10fe9975a7d23335a0cd40ddfcb1a48c82"
+    },
+    {
+      "path": "artifacts/map-tools-resource-contract/native-smoke-master/runs/explicit-eco/report.json",
+      "bytes": 588665,
+      "sha256": "2357909411e2f06ebd22256e39972961d7f0ff296da6899ba118c998dfd8baee"
+    },
+    {
+      "path": "artifacts/map-tools-resource-contract/native-smoke-master/runs/explicit-eco/same.map.gz",
+      "bytes": 64900,
+      "sha256": "78f30016a4fcdbfe36b931680ee63b72d2edb2391185305be59e6435240e7a85"
+    },
+    {
+      "path": "artifacts/map-tools-resource-contract/native-smoke-master/runs/explicit-eco/stderr.log",
+      "bytes": 60,
+      "sha256": "683281f3dc1d8bfd6d39a4a962da6c3b1329e8b8dc9f655a52c9b0e21fd866d9"
+    },
+    {
+      "path": "artifacts/map-tools-resource-contract/native-smoke-master/runs/explicit-eco/stdout.log",
+      "bytes": 362,
+      "sha256": "1e52cc0837ac84a980f890ea6b9af204ee6d136b7558471831c43f1f232e2e49"
+    },
+    {
+      "path": "artifacts/map-tools-resource-contract/native-smoke-master/runs/explicit-luxurious/artifacts.json",
+      "bytes": 255,
+      "sha256": "93ea4128cc5857e51a6763676323c52a11c1922b26c50583c31b19ebfc22e451"
+    },
+    {
+      "path": "artifacts/map-tools-resource-contract/native-smoke-master/runs/explicit-luxurious/invocation.json",
+      "bytes": 787,
+      "sha256": "72e9ce75b71e3beb1ecae2cf3bd281912a75eb5bab504ecbd1013d573f68d1f6"
+    },
+    {
+      "path": "artifacts/map-tools-resource-contract/native-smoke-master/runs/explicit-luxurious/map-r0.map.gz",
+      "bytes": 64909,
+      "sha256": "3a386f477ffc7fc792eeb107d60ca6b4d0478bf52a6fef6eba0004e4203ae3c7"
+    },
+    {
+      "path": "artifacts/map-tools-resource-contract/native-smoke-master/runs/explicit-luxurious/progress.json",
+      "bytes": 42,
+      "sha256": "b5148054b6bf03dd8b863afecd246f9d313c8647eff18dc853487f29c95221f1"
+    },
+    {
+      "path": "artifacts/map-tools-resource-contract/native-smoke-master/runs/explicit-luxurious/result.json",
+      "bytes": 591050,
+      "sha256": "29f1c3baaadb5b7c9dd6e7fec86c53f9701efc742c882b967e189738d7b5fcf5"
+    },
+    {
+      "path": "artifacts/map-tools-resource-contract/native-smoke-master/runs/explicit-luxurious/stderr.log",
+      "bytes": 60,
+      "sha256": "683281f3dc1d8bfd6d39a4a962da6c3b1329e8b8dc9f655a52c9b0e21fd866d9"
+    },
+    {
+      "path": "artifacts/map-tools-resource-contract/native-smoke-master/runs/explicit-luxurious/stdout.log",
+      "bytes": 1032,
+      "sha256": "2651da34fd8c579d92a23d80c7f1a685e54d76a640dc764d62ad1d970b6edc49"
+    },
+    {
+      "path": "artifacts/map-tools-resource-contract/native-smoke-master/runs/legacy-help/invocation.json",
+      "bytes": 352,
+      "sha256": "622623424e5f05d05e8837f3b09e635e156c084b831d43472467c8fcd4e4e425"
+    },
+    {
+      "path": "artifacts/map-tools-resource-contract/native-smoke-master/runs/legacy-help/stderr.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "artifacts/map-tools-resource-contract/native-smoke-master/runs/legacy-help/stdout.log",
+      "bytes": 179310,
+      "sha256": "9fe02fd9c906f880bd372bc7fd0e9f1f9bf1303992a911cd1643e7ad21be08f6"
+    },
+    {
+      "path": "artifacts/map-tools-resource-contract/native-smoke-master/runs/omitted-generate/invocation.json",
+      "bytes": 856,
+      "sha256": "2c8fbf9ccfb9c4806b63bc7c3bdfce3db01d362a04ae05e24f40c6e3c3ca5e46"
+    },
+    {
+      "path": "artifacts/map-tools-resource-contract/native-smoke-master/runs/omitted-generate/report.json",
+      "bytes": 588677,
+      "sha256": "9ae6908170a434a99729a07b12f05bb5428b649880a5c79fd7aca46faae49e49"
+    },
+    {
+      "path": "artifacts/map-tools-resource-contract/native-smoke-master/runs/omitted-generate/same.map.gz",
+      "bytes": 64900,
+      "sha256": "78f30016a4fcdbfe36b931680ee63b72d2edb2391185305be59e6435240e7a85"
+    },
+    {
+      "path": "artifacts/map-tools-resource-contract/native-smoke-master/runs/omitted-generate/stderr.log",
+      "bytes": 60,
+      "sha256": "683281f3dc1d8bfd6d39a4a962da6c3b1329e8b8dc9f655a52c9b0e21fd866d9"
+    },
+    {
+      "path": "artifacts/map-tools-resource-contract/native-smoke-master/runs/omitted-generate/stdout.log",
+      "bytes": 370,
+      "sha256": "6142f8dc89eaeeead9d663f3f129730bd0a2a63d9db2f7fe42e704f39e2ff7a6"
+    },
+    {
+      "path": "artifacts/map-tools-resource-contract/native-smoke-master/runs/omitted-study/artifacts.json",
+      "bytes": 255,
+      "sha256": "e508fa011e15c5ba6a1770077a7a5612d17a9f145583fbad87144b7531b54d26"
+    },
+    {
+      "path": "artifacts/map-tools-resource-contract/native-smoke-master/runs/omitted-study/invocation.json",
+      "bytes": 692,
+      "sha256": "2bd4696412a0977b7897c7f36de1d4baee111b4a080cae525fbebe48f7a4b189"
+    },
+    {
+      "path": "artifacts/map-tools-resource-contract/native-smoke-master/runs/omitted-study/map-r0.map.gz",
+      "bytes": 64909,
+      "sha256": "3a386f477ffc7fc792eeb107d60ca6b4d0478bf52a6fef6eba0004e4203ae3c7"
+    },
+    {
+      "path": "artifacts/map-tools-resource-contract/native-smoke-master/runs/omitted-study/progress.json",
+      "bytes": 42,
+      "sha256": "b5148054b6bf03dd8b863afecd246f9d313c8647eff18dc853487f29c95221f1"
+    },
+    {
+      "path": "artifacts/map-tools-resource-contract/native-smoke-master/runs/omitted-study/result.json",
+      "bytes": 591045,
+      "sha256": "580ab120996bf7fe6a814c6aa44cca4bfcc2910cdaaf8d95a43321102fb51c01"
+    },
+    {
+      "path": "artifacts/map-tools-resource-contract/native-smoke-master/runs/omitted-study/stderr.log",
+      "bytes": 60,
+      "sha256": "683281f3dc1d8bfd6d39a4a962da6c3b1329e8b8dc9f655a52c9b0e21fd866d9"
+    },
+    {
+      "path": "artifacts/map-tools-resource-contract/native-smoke-master/runs/omitted-study/stdout.log",
+      "bytes": 1027,
+      "sha256": "a024c9769c137ba9b55702af8c90450f42491e13d09b88b8a40f3300eda3747d"
+    },
+    {
+      "path": "artifacts/map-tools-resource-contract/native-smoke-master/runs/real-legacy-explicit-rejected/invocation.json",
+      "bytes": 952,
+      "sha256": "7ff9eb751bcfc42f3a36ff4591b6db88c5a79fee7e96978d2124db2e4a3e8344"
+    },
+    {
+      "path": "artifacts/map-tools-resource-contract/native-smoke-master/runs/real-legacy-explicit-rejected/stderr.log",
+      "bytes": 75,
+      "sha256": "79923ecc3d8c00415f7bf490264079028d0b0a97648e579ccee9de7e4ddc8c11"
+    },
+    {
+      "path": "artifacts/map-tools-resource-contract/native-smoke-master/runs/real-legacy-explicit-rejected/stdout.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "artifacts/map-tools-resource-contract/native-smoke-master/runs/refusal-efficient-throughput/artifacts.json",
+      "bytes": 213,
+      "sha256": "7300f5a2efeb89e755c5cda1dfc1df900b8529093f531f54b34aff20d8799643"
+    },
+    {
+      "path": "artifacts/map-tools-resource-contract/native-smoke-master/runs/refusal-efficient-throughput/invocation.json",
+      "bytes": 862,
+      "sha256": "a3622171900ab3308e93f131170b0a0630f5679ef4dd04ee9caccea323d965ec"
+    },
+    {
+      "path": "artifacts/map-tools-resource-contract/native-smoke-master/runs/refusal-efficient-throughput/progress.json",
+      "bytes": 42,
+      "sha256": "b5148054b6bf03dd8b863afecd246f9d313c8647eff18dc853487f29c95221f1"
+    },
+    {
+      "path": "artifacts/map-tools-resource-contract/native-smoke-master/runs/refusal-efficient-throughput/result.json",
+      "bytes": 12150,
+      "sha256": "88b239fad8c59da25b6141fe37ef2eb340237326c5c7c12d998ce2b5e4acea41"
+    },
+    {
+      "path": "artifacts/map-tools-resource-contract/native-smoke-master/runs/refusal-efficient-throughput/stderr.log",
+      "bytes": 147,
+      "sha256": "f78c74f928523d404f0b072b2095127e17f72b0e87285f0c3cdd8439c12a32a7"
+    },
+    {
+      "path": "artifacts/map-tools-resource-contract/native-smoke-master/runs/refusal-efficient-throughput/stdout.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "artifacts/map-tools-resource-contract/native-smoke-master/runs/refusal-fast-simulation/invocation.json",
+      "bytes": 1020,
+      "sha256": "2efce9f368a4e3d6ddf24c6aa96d296e9a557d5c4dff03306af25311d32d3169"
+    },
+    {
+      "path": "artifacts/map-tools-resource-contract/native-smoke-master/runs/refusal-fast-simulation/report.json",
+      "bytes": 11876,
+      "sha256": "a37c3009e5b67d64edd60cdbe07b9c53d29a2393af779adf219b1a72a5b49804"
+    },
+    {
+      "path": "artifacts/map-tools-resource-contract/native-smoke-master/runs/refusal-fast-simulation/stderr.log",
+      "bytes": 160,
+      "sha256": "1f71f4454f96d5cf1017eeda397b58066aad740948cc9b2ef62915c8a8b97f53"
+    },
+    {
+      "path": "artifacts/map-tools-resource-contract/native-smoke-master/runs/refusal-fast-simulation/stdout.log",
+      "bytes": 175,
+      "sha256": "c5de4b789395fedc36c41caa9c4ddc5a81e36bce30c6b42bf761798b8d24a27b"
+    },
+    {
+      "path": "artifacts/profiles-implementation/live-gpu-permission-review/final-focused-master/0-combined-first/compiled-inventory.json",
+      "bytes": 208,
+      "sha256": "6ca79dedf2b301742845b296a46eced4c110f94bfa322a9a7137fd36128393a1"
+    },
+    {
+      "path": "artifacts/profiles-implementation/live-gpu-permission-review/final-focused-master/0-combined-first/junit.xml",
+      "bytes": 332,
+      "sha256": "91d4e84f6ca1fd7f350f6b32e84b5f4f4d85458dd0353401cc46e139cfb62690"
+    },
+    {
+      "path": "artifacts/profiles-implementation/live-gpu-permission-review/final-focused-master/0-combined-first/raw/EngineSession/centrally_admitted_live_gradient_choices_preserve_ordered_sessions_and_saved_continuation_artifacts/checkpoint-1-0.game",
+      "bytes": 1711600,
+      "sha256": "a9ea7f887ed6f8db5a3a6a3a447d04664ebc62b79a780f66cda6d3a51e4a94b9"
+    },
+    {
+      "path": "artifacts/profiles-implementation/live-gpu-permission-review/final-focused-master/0-combined-first/raw/EngineSession/centrally_admitted_live_gradient_choices_preserve_ordered_sessions_and_saved_continuation_artifacts/checkpoint-1-1.game",
+      "bytes": 1711600,
+      "sha256": "a9ea7f887ed6f8db5a3a6a3a447d04664ebc62b79a780f66cda6d3a51e4a94b9"
+    },
+    {
+      "path": "artifacts/profiles-implementation/live-gpu-permission-review/final-focused-master/0-combined-first/raw/EngineSession/centrally_admitted_live_gradient_choices_preserve_ordered_sessions_and_saved_continuation_artifacts/checkpoint-2-0.game",
+      "bytes": 1711600,
+      "sha256": "a9ea7f887ed6f8db5a3a6a3a447d04664ebc62b79a780f66cda6d3a51e4a94b9"
+    },
+    {
+      "path": "artifacts/profiles-implementation/live-gpu-permission-review/final-focused-master/0-combined-first/raw/EngineSession/centrally_admitted_live_gradient_choices_preserve_ordered_sessions_and_saved_continuation_artifacts/checkpoint-2-1.game",
+      "bytes": 1711600,
+      "sha256": "a9ea7f887ed6f8db5a3a6a3a447d04664ebc62b79a780f66cda6d3a51e4a94b9"
+    },
+    {
+      "path": "artifacts/profiles-implementation/live-gpu-permission-review/final-focused-master/0-combined-first/raw/EngineSession/centrally_admitted_live_gradient_choices_preserve_ordered_sessions_and_saved_continuation_artifacts/initial.game",
+      "bytes": 1896903,
+      "sha256": "e25589cf939212ebcfb1138fe83997419ec05167a875b0c2e3e4068beea23512"
+    },
+    {
+      "path": "artifacts/profiles-implementation/live-gpu-permission-review/final-focused-master/0-combined-first/raw/EngineSession/centrally_admitted_live_gradient_choices_preserve_ordered_sessions_and_saved_continuation_artifacts/live-1-0.checksums",
+      "bytes": 1781,
+      "sha256": "d3809e3ef204cd5c9af99c5dc3c4070811cfddd2257db6184c7d3d621cfbfd2a"
+    },
+    {
+      "path": "artifacts/profiles-implementation/live-gpu-permission-review/final-focused-master/0-combined-first/raw/EngineSession/centrally_admitted_live_gradient_choices_preserve_ordered_sessions_and_saved_continuation_artifacts/live-1-0.replay",
+      "bytes": 1643614,
+      "sha256": "9b04975ee24bf844ff99309324e86046144cd7a8a89db32a0ba6c7b1d7ee3747"
+    },
+    {
+      "path": "artifacts/profiles-implementation/live-gpu-permission-review/final-focused-master/0-combined-first/raw/EngineSession/centrally_admitted_live_gradient_choices_preserve_ordered_sessions_and_saved_continuation_artifacts/live-1-1.checksums",
+      "bytes": 1781,
+      "sha256": "d3809e3ef204cd5c9af99c5dc3c4070811cfddd2257db6184c7d3d621cfbfd2a"
+    },
+    {
+      "path": "artifacts/profiles-implementation/live-gpu-permission-review/final-focused-master/0-combined-first/raw/EngineSession/centrally_admitted_live_gradient_choices_preserve_ordered_sessions_and_saved_continuation_artifacts/live-1-1.replay",
+      "bytes": 1643614,
+      "sha256": "9b04975ee24bf844ff99309324e86046144cd7a8a89db32a0ba6c7b1d7ee3747"
+    },
+    {
+      "path": "artifacts/profiles-implementation/live-gpu-permission-review/final-focused-master/0-combined-first/raw/EngineSession/centrally_admitted_live_gradient_choices_preserve_ordered_sessions_and_saved_continuation_artifacts/live-2-0.checksums",
+      "bytes": 1781,
+      "sha256": "d3809e3ef204cd5c9af99c5dc3c4070811cfddd2257db6184c7d3d621cfbfd2a"
+    },
+    {
+      "path": "artifacts/profiles-implementation/live-gpu-permission-review/final-focused-master/0-combined-first/raw/EngineSession/centrally_admitted_live_gradient_choices_preserve_ordered_sessions_and_saved_continuation_artifacts/live-2-0.replay",
+      "bytes": 1643614,
+      "sha256": "9b04975ee24bf844ff99309324e86046144cd7a8a89db32a0ba6c7b1d7ee3747"
+    },
+    {
+      "path": "artifacts/profiles-implementation/live-gpu-permission-review/final-focused-master/0-combined-first/raw/EngineSession/centrally_admitted_live_gradient_choices_preserve_ordered_sessions_and_saved_continuation_artifacts/live-2-1.checksums",
+      "bytes": 1781,
+      "sha256": "d3809e3ef204cd5c9af99c5dc3c4070811cfddd2257db6184c7d3d621cfbfd2a"
+    },
+    {
+      "path": "artifacts/profiles-implementation/live-gpu-permission-review/final-focused-master/0-combined-first/raw/EngineSession/centrally_admitted_live_gradient_choices_preserve_ordered_sessions_and_saved_continuation_artifacts/live-2-1.replay",
+      "bytes": 1643614,
+      "sha256": "9b04975ee24bf844ff99309324e86046144cd7a8a89db32a0ba6c7b1d7ee3747"
+    },
+    {
+      "path": "artifacts/profiles-implementation/live-gpu-permission-review/final-focused-master/0-combined-first/receipt.json",
+      "bytes": 1480,
+      "sha256": "2542ce945a9984b8c7acd70730ea5e7dc2cef67dd41181e0ead99968fa507ef8"
+    },
+    {
+      "path": "artifacts/profiles-implementation/live-gpu-permission-review/final-focused-master/0-combined-first/runner.log",
+      "bytes": 388,
+      "sha256": "f61aca2edcb07dc5c8f012bb4935d7de3d7ad37ea0560998f820fbd2d8d1ca34"
+    },
+    {
+      "path": "artifacts/profiles-implementation/live-gpu-permission-review/final-focused-master/1-pure-policy-replay/compiled-inventory.json",
+      "bytes": 7522,
+      "sha256": "f4b568066a27bfdd63b6c932f56303aaab9b0cad1ad0eb9f73cb23231682164b"
+    },
+    {
+      "path": "artifacts/profiles-implementation/live-gpu-permission-review/final-focused-master/1-pure-policy-replay/junit.xml",
+      "bytes": 12866,
+      "sha256": "ce866a5e36491c49847f5b3952cbd426e2ac811a47d4267f52d0bb361030caf4"
+    },
+    {
+      "path": "artifacts/profiles-implementation/live-gpu-permission-review/final-focused-master/1-pure-policy-replay/raw/build-provenance.json",
+      "bytes": 827,
+      "sha256": "b4a4d25047e6b6b13c241188ee26cbb7800a2deb23267ae74966527f378f65eb"
+    },
+    {
+      "path": "artifacts/profiles-implementation/live-gpu-permission-review/final-focused-master/1-pure-policy-replay/receipt.json",
+      "bytes": 1793,
+      "sha256": "9e90a2d66a3492480a45a9e8aa303629e48b7ddb1d5f5cdc58f4d2437a7c9d2a"
+    },
+    {
+      "path": "artifacts/profiles-implementation/live-gpu-permission-review/final-focused-master/1-pure-policy-replay/runner.log",
+      "bytes": 766,
+      "sha256": "8872831fe7233ad8181a16175dc0810303a95930a9c063ff8fe6a065c08a1cb6"
+    },
+    {
+      "path": "artifacts/profiles-implementation/live-gpu-permission-review/final-focused-master/2-menu-boundary-retained/compiled-inventory.json",
+      "bytes": 8200,
+      "sha256": "6115183dc65f9eba216d977875ae164204a45d047a871001d3cf1840bdb20172"
+    },
+    {
+      "path": "artifacts/profiles-implementation/live-gpu-permission-review/final-focused-master/2-menu-boundary-retained/junit.xml",
+      "bytes": 13508,
+      "sha256": "31383918b5ee340c3a6f7dad9b4cb5d55482e473bee3473f7f5d2a04f1b99663"
+    },
+    {
+      "path": "artifacts/profiles-implementation/live-gpu-permission-review/final-focused-master/2-menu-boundary-retained/raw/RuntimeResources/frozen_seeded_resource_compositions_preserve_invariants_and_exact_simulation_continuation_golden/seeded-compositions.trace",
+      "bytes": 13383,
+      "sha256": "fef68988e6cd31faf9ab7d9402fe89cb2b018422fa3d50a766a646a40bb79da6"
+    },
+    {
+      "path": "artifacts/profiles-implementation/live-gpu-permission-review/final-focused-master/2-menu-boundary-retained/raw/RuntimeResources/landscape_showcase_map_places_every_landscape_resource_artifacts/landscape-showcase.map",
+      "bytes": 402023,
+      "sha256": "0dd93e1746ba6e73def31aeee8fd043e9ed439532f53c972f979d64e9dfd2e76"
+    },
+    {
+      "path": "artifacts/profiles-implementation/live-gpu-permission-review/final-focused-master/2-menu-boundary-retained/receipt.json",
+      "bytes": 2187,
+      "sha256": "c521c0a6df20e068c66c7cfe9ca6d830a292a1de06b53477c2b5bc3171f2fc5e"
+    },
+    {
+      "path": "artifacts/profiles-implementation/live-gpu-permission-review/final-focused-master/2-menu-boundary-retained/runner.log",
+      "bytes": 8800,
+      "sha256": "e1481aa88a281467584be730029d61ff6b4aa899edcd9b6b142cb0f2b3f0c9b8"
+    },
+    {
+      "path": "artifacts/profiles-implementation/live-gpu-permission-review/final-focused-master/complete.json",
+      "bytes": 6220,
+      "sha256": "cf7fefc6b67b19740e69645a25c6249caaf783133cd35c80d0751ebff6170e27"
+    },
+    {
+      "path": "artifacts/profiles-implementation/live-gpu-permission-review/final-focused-master/plan.json",
+      "bytes": 5537,
+      "sha256": "5503e4198e94f5733b2716267789c615019408cebd24d6e0c806601f12e5e736"
+    },
+    {
+      "path": "artifacts/profiles-implementation/live-gpu-permission-review/final-focused-master/run.py",
+      "bytes": 8247,
+      "sha256": "1c31a4e5c788823ce3d639cfaaedddb11b55caca09074fba0b1baec0c7819829"
+    },
+    {
+      "path": "artifacts/resource-profiles/validation/final-master-build/native-release-complete.json",
+      "bytes": 2069,
+      "sha256": "c1dedce36bd45fa9704f67fb751927afad0cdad7276efc78a726d97ebe420ae6"
+    }
+  ],
+  "archive_sha256": "a3283bbc1b6b6f5578dcd28889b945c76b2059eb550dad2c8f8addcd1c936ea0",
+  "archive_bytes": 1535895
+}
