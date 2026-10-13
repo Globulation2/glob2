@@ -669,6 +669,59 @@ TEST_SUITE("RuntimeGradientBackend")
 				}
 		}
 	}
+	TEST_CASE("owned captured Vulkan fields prove exact results when qualified CPU checking is skipped")
+    {
+        using namespace gradient_kernel;
+        glob2test::ScopedEnvironment diagnostics("GLOB2_GRADIENT_DIAGNOSTICS","1");
+        if (!initializeVulkanGradient()) {
+            if (std::getenv("GLOB2_REQUIRE_VULKAN")) FAIL(vulkanGradientStatus().error);
+            MESSAGE("Vulkan unavailable: ",vulkanGradientStatus().error); return;
+        }
+        const auto device=vulkanGradientStatus();
+        bool qualified=false;
+#if defined(__linux__) && defined(__x86_64__) && !defined(__ANDROID__)
+        qualified=device.device=="NVIDIA GeForce RTX 3070 Ti Laptop GPU" &&
+            device.driver=="2435612928" &&
+            device.shaderIdentity=="370b0fb99b45a626bd717f78aa058c1e4992e25ffefcf6356d3617b99758893d";
+#endif
+        BackendSession session;
+        for (const auto dimensions : {std::pair{1,192},std::pair{192,1},std::pair{7,13},
+                std::pair{17,19},std::pair{128,128},std::pair{256,256},std::pair{512,512}}) {
+            const field::Grid grid{dimensions.first,dimensions.second};
+            std::vector<EntrySteps> values(grid.cells());
+            std::vector<std::uint16_t> seeds(grid.cells(),1);
+            for (std::size_t i=0; i<grid.cells(); ++i) {
+                values[i]={unsigned(1+i%37),unsigned(2+i%53)};
+                if (i%11==3) seeds[i]=0;
+                else if (i%19==7) seeds[i]=2;
+            }
+            seeds.front()=65535; seeds.back()=65000;
+            auto costs=std::make_shared<const std::vector<EntrySteps>>(std::move(values));
+            for (const int cap : {0,64,3000}) {
+                const auto expected=oracle(seeds,grid,*costs,cap);
+                for (const auto plan : {Plan::VulkanFrozen8,Plan::VulkanJacobi}) for (bool shadow:{false,true}) {
+                    auto actual=seeds;
+                    BackendRequest request{actual.data(),cap,grid,session,
+                        const_cast<std::vector<EntrySteps>*>(costs.get()),
+                        [](void* p,std::size_t i) {return (*static_cast<const std::vector<EntrySteps>*>(p))[i];},nullptr};
+                    request.identity={costs,17,3,true,sizeof(*costs)+costs->capacity()*sizeof(EntrySteps),0};
+                    request.capturedConfiguration=Configuration{Backend::Vulkan,
+                        plan==Plan::VulkanFrozen8?Algorithm::Frozen8:Algorithm::Jacobi,shadow};
+                    request.capturedGeneration=session.currentGeneration(); request.diagnostics=true;
+                    bool committed=false,observed=false;
+                    request.executedOnDevice=&committed; request.deviceExecutionObserved=&observed;
+                    const auto before=gradientDiagnosticSnapshot(Backend::Vulkan);
+                    REQUIRE(executeVulkanGradient(std::span(&request,1),plan));
+                    REQUIRE(committed); REQUIRE(observed); CHECK(actual==expected);
+                    const auto after=gradientDiagnosticSnapshot(Backend::Vulkan);
+                    const auto delta=[&](GradientCounter c) {return after.counters[unsigned(c)]-before.counters[unsigned(c)];};
+                    CHECK(delta(GradientCounter::GpuValidatedFields)==1);
+                    CHECK(delta(GradientCounter::CpuFixedPointChecksSkipped)==unsigned(qualified && !shadow));
+                    CHECK(delta(GradientCounter::CpuFixedPointChecks)==unsigned(!qualified || shadow));
+                }
+            }
+        }
+    }
 	TEST_CASE("Vulkan fixed-point proof executes independently and rejects corrupted fields and costs")
     {
         using namespace gradient_kernel;

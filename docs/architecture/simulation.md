@@ -448,8 +448,12 @@ captured request; serving fields remain separate from this storage.
 The GLSL sources generate pinned SPIR-V and WGSL with integer-only wrapping.
 Vulkan/WebGPU readback also passes an exact positive-cost fixed-point check against
 original seeds before commit. Vulkan additionally runs an independent integer
-validation shader against immutable GPU seed and cost references, then retains
-the full CPU check while the GPU validator is being qualified. Its control buffer
+validation shader against immutable GPU seed and cost references. An experimental
+CPU-check offload path is restricted to captured immutable inputs on the tested
+Linux x86_64 RTX 3070 Ti Laptop / driver 580.178.04 / exact validator bundle.
+Generic callers, shadow-verification runs and every other combination retain the
+full CPU check. This restriction establishes validator coverage, not preparation
+or CPU-performance platform enablement. Its control buffer
 includes an execution marker, failure flag and first invalid cell. The generated
 WGSL validator is not yet wired into WebGPU; other platforms remain unqualified.
 A convergence flag alone cannot publish fabricated sources or stale data. A proven fixed-point mismatch stops the run through the
