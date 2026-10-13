@@ -1239,7 +1239,10 @@ int GraphicContext::maximumTextureSize() const
 			if (optionFlags & USEGPU)
 				Sprite::checkAllSpritesDrawn();
 #endif
-			if (renderer && nativeSoftware) renderer->flush();
+			// The active transform may already have restored renderer=null.
+            // Complete the owned software backend and trim its warm sources
+            // at every CPU frame boundary, independent of that borrowed pointer.
+            if (softwareRasterizer) softwareRasterizer->present();
 			cacheFrame();
 			if (optionFlags & USEGPU)
 				swapBuffers();
