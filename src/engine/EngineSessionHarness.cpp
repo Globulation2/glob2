@@ -31,6 +31,8 @@
 #include "ChooseMapScreen.h"
 #include "GUIMapPreview.h"
 #include <BinaryStream.h>
+#include <StreamBackend.h>
+#include <ThreadSupport.h>
 #include <FileManager.h>
 #include <Toolkit.h>
 #include "Application.h"
@@ -516,6 +518,114 @@ TEST_SUITE("EngineSession")
             CHECK(engine.gui.game.stepCounter==initialTick+tick+1);
         }
         engine.gui.isRunning=false;engine.finishSession();
+    }
+    TEST_CASE("centrally admitted live gradient choices preserve ordered sessions and saved continuation [artifacts]")
+    {
+        using namespace gradient_kernel;
+        glob2test::ScopedEnvironment serial("GLOB2_SIM_THREAD", "0");
+        glob2test::ScopedEnvironment backendEnvironment("GLOB2_GRADIENT_BACKEND", "");
+        glob2test::ScopedEnvironment algorithmEnvironment("GLOB2_GRADIENT_ALGORITHM", "");
+        glob2test::ScopedEnvironment verifyEnvironment("GLOB2_GRADIENT_VERIFY", "");
+        glob2test::HeadlessGlobals globals({.loadStrings=true});
+        REQUIRE(NET_Init());
+        struct NetworkScope { ~NetworkScope(){NET_Quit();} } network;
+        const auto oldApplied=configuration(),oldRequested=requestedBackendConfiguration();
+        struct Restore { Configuration applied,requested; ~Restore(){applyBackendConfiguration(applied);requestBackendConfiguration(requested);} } restore{oldApplied,oldRequested};
+        globals->automaticEndingGame=false;
+        globals->settings.autosaveGames=false;
+        globals->computeThreads=1;
+        globals->applyCommand(Cli::parse({"play","--gradient-backend=scalar","--gradient-algorithm=buckets","--gradient-verify=off"}));
+        globals->refreshResourcePlan();globals->configureGradientBackend();
+        GameGUI source;
+        GameHeader header;header.setNumberOfPlayers(1);header.setRandomSeed(123456);
+        header.getWinningConditions().clear();
+        header.getBasePlayer(0)=BasePlayer(0,"Test",0,BasePlayer::P_LOCAL);
+        auto mapHeader=Engine::loadMapHeader("maps/balanced.map");
+        REQUIRE(source.loadFromHeaders(mapHeader,header,true,true));
+        source.game.map.getMaterialGradient(0,MaterialId::Food,0);
+        source.game.map.getGuardAreasGradient(0,0);
+        source.game.map.getClearAreasGradient(0,0);
+        source.game.map.configureGradientPipeline(1,3);
+        source.game.map.syncStep(0,false);
+        source.game.map.stagePeriodicGradientPreparation();
+        REQUIRE(source.game.map.hasPendingGradientPreparation());
+        const auto save=[&](GameGUI& gui,const std::filesystem::path& path) {
+            auto* storage=new GAGCore::MemoryStreamBackend;
+            GAGCore::BinaryOutputStream out(storage);gui.save(&out,"live gradient continuation");out.flush();
+            const std::string bytes(storage->getBuffer(),storage->getPosition());
+            std::ofstream file(path,std::ios::binary);file.write(bytes.data(),bytes.size());file.close();REQUIRE(file.good());
+        };
+        const auto initial=glob2test::artifactDir()/"initial.game";
+        save(source,initial); // Current-format input, including real deferred field state.
+        Uint16 gid=NOGBID;int buildingSlot=-1;
+        for(int i=0;i<Building::MAX_COUNT;++i)if(auto* b=source.game.teams[0]->myBuildings[i];b && b->type->semantics.assignmentLimit>=3){gid=b->gid;buildingSlot=i;break;}
+        REQUIRE(gid!=NOGBID);
+        struct State {
+            Uint32 tick,checksum;std::vector<Uint32> main,buildings,units;MersenneTwister random;
+            bool operator==(const State&) const = default;
+        };
+        const auto state=[](Game& game) {
+            State value;value.tick=game.stepCounter;
+            value.checksum=game.checkSum(&value.main,&value.buildings,&value.units,true);
+            value.random=game.syncRandom;return value;
+        };
+        const auto order=[&](Engine& engine,unsigned tick) {
+            if(tick==8 || tick==24 || tick==48 || tick==104)
+                engine.net->addLocalOrder(std::make_shared<OrderModifyBuilding>(gid,Uint16(1+tick%3)));
+        };
+        const auto transition=[&](unsigned tick) {
+            if(tick==1 || tick==32 || tick==96)globals->requestMenuGradientConfiguration({Backend::CPU,Algorithm::Buckets,false});
+            if(tick==64)globals->requestMenuGradientConfiguration({Backend::Scalar,Algorithm::Buckets,true});
+        };
+        std::vector<State> expected;
+        for(unsigned count:{1u,2u})for(bool changes:{false,true}) {
+            if(count==2 && !GAGCore::ThreadSupport::available)continue; // Serial-only platform coverage is owner-only.
+            CAPTURE(count);CAPTURE(changes);
+            globals->applyCommand(Cli::parse({"play","--gradient-backend=scalar","--gradient-algorithm=buckets","--gradient-verify=off"}));
+            globals->computeThreads=count;
+            const auto checkpoint=glob2test::artifactDir()/("checkpoint-"+std::to_string(count)+"-"+std::to_string(changes)+".game");
+            std::vector<State> actual;
+            {
+                Engine engine;REQUIRE(engine.loadGame(initial.string()));engine.finishGameInit();engine.beginSession(1000);
+                REQUIRE(engine.gui.game.map.computeExecutor().threadCount()==count);
+                const auto setup=globals->resourcePlan();const auto setupGradient=*globals->frozenGradientConfiguration;
+                std::ofstream trace(glob2test::artifactDir()/("live-"+std::to_string(count)+"-"+std::to_string(changes)+".checksums"));
+                for(unsigned tick=0;tick<128;++tick) {
+                    if(changes)transition(tick);
+                    order(engine,tick);REQUIRE(engine.stepSession(1000+tick*40,{}));
+                    REQUIRE(engine.gui.game.stepCounter==tick+1);
+                    if(tick==16 || tick==40 || tick==72 || tick==112) {
+                        REQUIRE(engine.gui.game.teams[0]->myBuildings[buildingSlot]);
+                        CHECK(engine.gui.game.teams[0]->myBuildings[buildingSlot]->maxUnitWorking==(tick==16 || tick==112 ? 3 : 1));
+                    }
+                    actual.push_back(state(engine.gui.game));trace<<actual.back().tick<<' '<<actual.back().checksum<<'\n';
+                    CHECK(globals->resourcePlan()==setup);CHECK(*globals->frozenGradientConfiguration==setupGradient);
+                    CHECK(engine.gui.game.map.computeExecutor().threadCount()==count);
+                    if(tick==79)save(engine.gui,checkpoint); // Same diagnostic save boundary for both roles.
+                }
+                REQUIRE(engine.gui.game.map.gradientPipelineStatus().maxPending>0);
+                REQUIRE(globals->replayWriter);CHECK(globals->replayWriter->getOrderCount()==4);
+                REQUIRE(globals->replayWriter->write((glob2test::artifactDir()/("live-"+std::to_string(count)+"-"+std::to_string(changes)+".replay")).string()));
+                engine.gui.isRunning=false;engine.finishSession();
+            }
+            if(expected.empty())expected=actual;else CHECK(actual==expected);
+            // Save bytes may contain different derived backend preparation, so compare
+            // every restored simulation record/RNG, never discard checksum fields.
+            globals->applyCommand(Cli::parse({"play","--gradient-backend=scalar","--gradient-algorithm=buckets","--gradient-verify=off"}));
+            {
+                Engine resumed;REQUIRE(resumed.loadGame(checkpoint.string()));resumed.finishGameInit();resumed.beginSession(1000);
+                CHECK(state(resumed.gui.game)==actual[79]);
+                for(unsigned tick=80;tick<128;++tick) {
+                    if(changes)transition(tick);
+                    order(resumed,tick);REQUIRE(resumed.stepSession(1000+(tick-80)*40,{}));
+                    REQUIRE(resumed.gui.game.stepCounter==tick+1);
+                    CHECK(state(resumed.gui.game)==actual[tick]);
+                    CHECK(resumed.gui.game.map.computeExecutor().threadCount()==count);
+                }
+                REQUIRE(globals->replayWriter);CHECK(globals->replayWriter->getOrderCount()==1);
+                resumed.gui.isRunning=false;resumed.finishSession();
+            }
+        }
     }
     TEST_CASE("render ceilings preserve per tick simulation checksums [display][artifacts]")
     {
