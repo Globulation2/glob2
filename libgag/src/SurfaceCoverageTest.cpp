@@ -572,4 +572,29 @@ TEST_SUITE("SurfaceCoverage")
         CHECK(RenderWorkReservation::available() == available);
     }
 
+    TEST_CASE("large revisioned crops copy only requested pixels without retaining full images")
+    {
+        glob2test::ScopedEnvironment mode("GLOB2_RENDER_EXECUTION", "serial");
+        const auto available = RenderWorkReservation::available();
+        {
+            glob2test::ToolkitScope toolkit;
+            Toolkit::initGraphic(64,64,0,"large source crops");
+            DrawableSurface source(512,1024), target(32,16);
+            source.drawFilledRect(0,0,512,1024,Color(31,77,191));
+            black(target);
+            auto backend = makeSoftwareRenderBackend(target.getSDLSurface());
+            const SDL_Rect crop{127,510,8,4};
+            for (int x : {0,16})
+                REQUIRE(backend->blitPixels(&source,source.getSDLSurface(),source.contentRevision(),
+                                           crop,{x,0,8,4},255));
+            backend->flush();
+            CHECK(backend->operations().rasterSnapshotBytes == 2u*8u*4u*4u);
+            CHECK(backend->operations().rasterSourceReuses == 0);
+            CHECK(backend->operations().rasterSourceRetainedBytes == 0);
+            CHECK(pixel(target,2,2) == std::array<int,3>{31,77,191});
+            CHECK(pixel(target,18,2) == std::array<int,3>{31,77,191});
+        }
+        CHECK(RenderWorkReservation::available() == available);
+    }
+
 }

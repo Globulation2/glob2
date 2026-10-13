@@ -172,11 +172,13 @@ triangle-style blits and rectangle fills. Unsupported geometry, linear sampling,
 keys, mixed formats and legacy large-image cases flush the preceding segment before
 owner execution. Keyed sources follow the existing content-revision and forget contract:
 raw writes require `markPixelsChanged()`, and destruction forgets the source key.
-The first eligible draw copies the complete source into immutable owned pixels;
+Images up to the 1 MiB warm-cache limit can reuse revisions. The first eligible
+draw copies the complete source into immutable owned pixels;
 subsequent draws of the same revision share that snapshot. Queued commands keep old
 revisions alive across mutation or cache eviction. This also supports keyed terrain
-run views, which are forgotten before their backing page changes. Anonymous borrowed
-sources are copied per draw. Overlapping backing ranges, including negative pitches,
+run views, which are forgotten before their backing page changes. Larger images and anonymous borrowed
+sources copy only the requested source region per draw. This avoids repeatedly
+copying offscreen pixels from images that cannot survive warm-cache trimming. Overlapping backing ranges, including negative pitches,
 flush earlier drawing before a fresh snapshot and never use the revision cache. Source mutation or destruction cannot change
 a captured command. Supported fully clipped or zero-opacity commands are discarded
 before recording or allocating source storage. Owned source arrays are allocated without

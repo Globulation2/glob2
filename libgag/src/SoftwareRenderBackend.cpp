@@ -144,7 +144,9 @@ class SoftwareRenderBackend final : public RenderBackend
         const bool aliased = first < targetLast && targetFirst < last;
         if (aliased) { flush(); sourceCache.erase(identity); }
         const bool reusable = identity && !aliased && source->pitch > 0 &&
-            std::size_t(source->w) * source->h * 4 <= detail::RasterSourceCache::MaximumBytes;
+            // Large cropped images cannot survive warm-set trimming. Keep their
+            // regional captures rather than copying offscreen pixels every frame.
+            std::size_t(source->w) * source->h * 4 <= detail::RasterSourceCache::RetainedBytes;
         const auto cacheIdentity = reusable ? identity : nullptr;
         if (!reusable && std::size_t(retained.w) * retained.h * 4 > detail::RasterSourceCache::MaximumBytes)
             return false;
