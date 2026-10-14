@@ -1,0 +1,145 @@
+{
+  "tested_commit": "d8e9541f19d66abafa6aa6f7b0f3eb6afc964716",
+  "base": "48438f1f08a68b24ef0049834d371b9d00d84bae",
+  "platform": "Darwin arm64",
+  "macos": "26.6.2",
+  "compiler": "Apple clang version 21.0.0 (clang-2100.3.34.2)",
+  "build": "PYTHONPATH=$PWD python3 tools/dev_build.py --build=build/menu-colony-fix engine-tests menu-colony-harness",
+  "configuration": {
+    "client_features": {
+      "authoring_links": true,
+      "commander": true,
+      "community_ai": true,
+      "community_generators": true
+    },
+    "client_profile": "full",
+    "dev_fast": true,
+    "distribution": "direct",
+    "linker": "auto",
+    "mode": "debug",
+    "native_wss": true,
+    "role": "client",
+    "target": "native",
+    "toolchain": "darwin"
+  },
+  "flags": [
+    "-std=gnu++20",
+    "-O0",
+    "-g1",
+    "dev_fast=1",
+    "linker=auto"
+  ],
+  "commands": [
+    "python3 test/check_sim_revision.py --base origin/master",
+    "SDL_VIDEODRIVER=dummy SDL_AUDIODRIVER=dummy build/menu-colony-fix/test/MenuColonyHarness isolation data/menu/colony.bin",
+    "SDL_VIDEODRIVER=dummy SDL_AUDIODRIVER=dummy build/menu-colony-fix/test/MenuColonyHarness presentation unused",
+    "MenuColonyHarness capture main and fallback, 1152x720; SDL dummy/software"
+  ],
+  "omissions": [
+    "Linux/Windows/browser/mobile execution and cross-OS per-tick checksum comparisons",
+    "Release packaging/signing and installed-app replacement",
+    "Full engine inventory outside the focused suites"
+  ],
+  "rationale": "No serialized bytes or simulation algorithms changed. Restore the durable save floor and skip the cache section absent before format159. Exercise retained old saves, current cache continuation, worker-count equality, replay/network acceptance, and theme fallback pixels.",
+  "dependency_pins": {
+    "scons/sdl3-versions.json": {
+      "webp": {
+        "version": "1.6.0",
+        "url": "https://storage.googleapis.com/downloads.webmproject.org/releases/webp/libwebp-1.6.0.tar.gz",
+        "sha256": "e4ab7009bf0629fd11982d4c2aa83964cf244cffba7347ecd39019a9e38c4564",
+        "archive": "libwebp-1.6.0.tar.gz"
+      },
+      "SDL": {
+        "version": "3.4.16",
+        "url": "https://github.com/libsdl-org/SDL/releases/download/release-3.4.16/SDL3-3.4.16.tar.gz",
+        "sha256": "7322236cd12090c3eb40b9728be4d49c76f66ad17d04369584d4ecad5cf77c68",
+        "archive": "SDL3-3.4.16.tar.gz"
+      },
+      "SDL_image": {
+        "version": "3.4.6",
+        "url": "https://github.com/libsdl-org/SDL_image/releases/download/release-3.4.6/SDL3_image-3.4.6.tar.gz",
+        "sha256": "d2e4637ae700f72e5196b8fbd749850ed2e5e1e09c5a5be8d06ff55aaccf3b01",
+        "archive": "SDL3_image-3.4.6.tar.gz"
+      },
+      "SDL_ttf": {
+        "version": "3.2.2",
+        "url": "https://github.com/libsdl-org/SDL_ttf/releases/download/release-3.2.2/SDL3_ttf-3.2.2.tar.gz",
+        "sha256": "63547d58d0185c833213885b635a2c0548201cc8f301e6587c0be1a67e1e045d",
+        "archive": "SDL3_ttf-3.2.2.tar.gz"
+      },
+      "SDL_net": {
+        "version": "3.2.0",
+        "url": "https://github.com/libsdl-org/SDL_net/releases/download/release-3.2.0/SDL3_net-3.2.0.tar.gz",
+        "sha256": "098522fc26d4e302ef9348aee6e76e67fe504dfefd7f596236568f8330570c41",
+        "archive": "SDL3_net-3.2.0.tar.gz"
+      }
+    },
+    "scons/opus-versions.json": {
+      "ogg": {
+        "url": "https://downloads.xiph.org/releases/ogg/libogg-1.3.6.tar.gz",
+        "archive": "libogg-1.3.6.tar.gz",
+        "directory": "libogg-1.3.6",
+        "sha256": "83e6704730683d004d20e21b8f7f55dcb3383cdf84c0daedf30bde175f774638"
+      },
+      "opus": {
+        "url": "https://downloads.xiph.org/releases/opus/opus-1.5.2.tar.gz",
+        "archive": "opus-1.5.2.tar.gz",
+        "directory": "opus-1.5.2",
+        "sha256": "65c1d2f78b9f2fb20082c38cbe47c951ad5839345876e46941612ee87f9a7ce1"
+      },
+      "opusfile": {
+        "url": "https://downloads.xiph.org/releases/opus/opusfile-0.12.tar.gz",
+        "archive": "opusfile-0.12.tar.gz",
+        "directory": "opusfile-0.12",
+        "sha256": "118d8601c12dd6a44f52423e68ca9083cc9f2bfe72da7a8c1acb22a80ae3550b"
+      }
+    },
+    "scons/recording-versions.json": {
+      "ffmpeg": {
+        "url": "https://ffmpeg.org/releases/ffmpeg-8.0.tar.xz",
+        "archive": "ffmpeg-8.0.tar.xz",
+        "directory": "ffmpeg-8.0",
+        "sha256": "b2751fccb6cc4c77708113cd78b561059b6fa904b24162fa0be2d60273d27b8e"
+      },
+      "nv-codec-headers": {
+        "url": "https://codeload.github.com/FFmpeg/nv-codec-headers/tar.gz/refs/tags/n13.0.19.0",
+        "archive": "nv-codec-headers-13.0.19.0.tar.gz",
+        "directory": "nv-codec-headers-n13.0.19.0",
+        "sha256": "86d15d1a7c0ac73a0eafdfc57bebfeba7da8264595bf531cf4d8db1c22940116"
+      },
+      "x264": {
+        "url": "https://codeload.github.com/mirror/x264/tar.gz/0480cb05fa188d37ae87e8f4fd8f1aea3711f7ee",
+        "archive": "x264-0480cb05.tar.gz",
+        "directory": "x264-0480cb05fa188d37ae87e8f4fd8f1aea3711f7ee",
+        "sha256": "d0967a1348c85dfde363bb52610403be898171493100561efa0dd05d5fd1ae50"
+      }
+    },
+    "scons/moltenvk.json": {
+      "version": "1.4.2",
+      "license": "Apache-2.0",
+      "source": "https://github.com/KhronosGroup/MoltenVK",
+      "platforms": {
+        "macos": {
+          "url": "https://github.com/KhronosGroup/MoltenVK/releases/download/v1.4.2/MoltenVK-macos.tar",
+          "sha256": "f95765a6229cb7b915990a2890ce12ebe36a730b021545d3d52ae69ce4c4024e"
+        },
+        "ios": {
+          "url": "https://github.com/KhronosGroup/MoltenVK/releases/download/v1.4.2/MoltenVK-ios.tar",
+          "sha256": "b5d947b1660e6e9fed40b9cd2387e160aaab9e80b775c0cef7e14059405178c1"
+        },
+        "ios-simulator": {
+          "url": "https://github.com/KhronosGroup/MoltenVK/releases/download/v1.4.2/MoltenVK-all.tar",
+          "sha256": "562a15a29bc358446a56a4091c5f7e08f604184187c1d34f712148b61ef17276"
+        }
+      }
+    }
+  },
+  "results": {
+    "focused_committed_revision": "36 passed, 0 failed",
+    "broader_suites": "125 passed; one 120s timeout resolved by isolated 600s rerun (passed in 194.6s), 126 distinct cases total",
+    "python": "24 CI policy and 34 runner tests passed",
+    "colony": "startup first/second frame and RNG/replay/dataset isolation passed",
+    "sim_revision": "58; committed match verifies; sim revision contract passes",
+    "fallback": "all shipped colony themes render their exact palette fallback without a veil; Light main/fallback screenshots visually inspected"
+  }
+}
