@@ -1,0 +1,36 @@
+Final extraction review, candidate f7fc764fb.
+
+Independent C++ telemetry/OpenCL reviewer (not author of those modules):
+- No functional blocker in canonical immutable schema ownership, copy/move, capture hints, deferred descriptor retention, byte-budget compatibility or completed-event acquisition.
+- Removed unused public Row/Frame and moved independent legacy wire-layout structs into tests.
+- Removed extra repetitions of the serial material-seeding Cartesian test; kept observed executor count assertion.
+- Clarified polled OpenCL transfer synchronization and playback-readout documentation.
+- OpenCL N=1 oracle test demonstrates fallback routing and original-seed preservation, not production CPU solver math; existing propagation tests cover solver math.
+
+Independent session/resource reviewer (not author of those modules):
+- No blocker in cold session setup, actual-count reporting, rejoin allocation, GPU lifecycle or native/browser registration.
+- Removed redundant stored CPU-source enum; source labels now derive from observation.
+- Documented threadless explicit-count normalization.
+
+Independent tournament reviewer (not author of those modules):
+- Fixed measured retry escaping to unrestricted host; regression reproduced prior failure.
+- Resource14, CLI5, existing tournament43, pipeline13 tests passed (75 total).
+- Documented bounded-queue/prefetch throughput tradeoff; avoided introducing another scheduler.
+
+Scope retains affinity-aware auto sizing, frozen session/allocation receipts, compact lossless replay telemetry and required OpenCL host synchronization. No execution profiles, thermal/memory governors, snapshot census or presentation policy framework.
+
+Mac OpenCL validation diagnosis:
+- Full-fields convergence and weak-control credit accounting both fail identically on clean master441870ef1 and candidatef7fc764fb in isolated processes on AppleM3/libc++.
+- Exact baseline/candidate provenance and logs: macos-final/diagnosis/.
+- Existing accounting issue depends on custom-deleter lifetime: libc++ destroys it when strong count reaches zero, before escaped weak pointers disappear. Do not weaken the test or claim the existing behavior is portable.
+- Candidate forced host-wait failure test passes with exact CPU fallback. Successful device acquisition is not established on AppleM3; use retained Linux hardware results separately.
+
+Final policy review, 8925fdbad:
+- Current-master 5bb measurements reject affinity-limited auto: Playground +10.8% engine CPU/+4.7–5.8% engine wall; Oazis +6.1–9.6% CPU for 0.2–1.9% less engine wall. Keep original hardware auto; explicit budgets remain enforced. Fixed3 compact telemetry saves about36–48MB peakRSS. Full ratios and confidence intervals are retained.
+- Independent reviewer gradients_executor approved rollback, dead sizing helper removal, observed-eligibility provenance and updated policy tests. Generated CLI/man refreshed from rebuilt binary.
+- Final Python suite75/75 and Mac engine23/23 passed; Mac unit78/80 with the same two established baseline failures. Standalone native/browser-policy tests each6cases/73assertions; no actual browser runtime claim.
+
+Completion:
+- User confirmed existing hardware auto plus explicit budgets.
+- Final8925 Linux23 engine+80unit cases passed;12affinity cases andbaseline/candidate counts1/3/6 match842checksums. All task computation moved fromtherig tolocalhost atuserrequest.
+- Local ordinary-release final comparison passed input audit andperformance gate. CPU effectivelyflat; observed wall0.3–1.6%lower; peakRSS8.2–15.9%lower. Report repeat-noise intervals andunreserved-desktop limitation.

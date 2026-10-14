@@ -1,0 +1,67 @@
+{
+  "baseline": "fea49d4fd278fa920df66571c02de1333678a740",
+  "candidate": "8925fdbad",
+  "rebase_reason": "User requested latest master for performance; #1177 changed simulation and version boundaries during validation.",
+  "native_checks": [
+    "ApplicationResourcePlan",
+    "ReplayTelemetry",
+    "ComputeExecutor",
+    "CommandLine",
+    "material seeding oracle",
+    "real turn reload",
+    "OpenCL host acquisition and injected failure",
+    "Linux inherited-affinity tournament launch",
+    "golden match per-tick checksums at counts 1/3/6"
+  ],
+  "platform_limits": "No actual Windows, Android, iOS or browser runtime validation in this extraction. Browser policy macros are tested separately; native checks use macOS arm64 and Linux x86_64. Gameplay feel validation remains maintainer-owned.",
+  "rejected_candidate": "5bb958e735d5e1edfb3e522aa95b115f9f0f8fec",
+  "final_policy": "Hardware-based auto retained; affinity is observation-only. Explicit tournament counts remain enforced.",
+  "final_timing": {
+    "host": "localhost, Apple M3, macOS arm64,8 logical CPUs",
+    "baseline": "fea49d4fd278fa920df66571c02de1333678a740",
+    "candidate": "8925fdbadef4c91563c75ac99a817b376852b19f",
+    "flags": "scons release=1 pch=0 unity=0",
+    "scenarios": "Four auto8 cases (two maps \u00d7 two seeds), plus fixed3 on both maps atseed902381047",
+    "repeats": 4,
+    "discarded_warmup_pairs_per_scenario": 1,
+    "inputs": "Same frozen saves and20000\u201324096tick windows; headless CPU gradients, team-timeline, replay writing",
+    "limits": "No cpuset reservation on macOS; no effective-frequency evidence; no cross-host aggregate. Direct linked-library hashes match; system dyld cache entries cannot be individually hashed."
+  },
+  "original_linux_timing": {
+    "compiler": "GCC 13.4.0, identical compiler and SDL dependency prefix",
+    "flags": "release=1 pch=0 unity=0",
+    "affinity": [
+      12,
+      13,
+      14,
+      28,
+      29,
+      30
+    ],
+    "maps": [
+      "Playground (8 Nicowar)",
+      "Oazis (11 Nicowar)"
+    ],
+    "seeds": [
+      164298751,
+      902381047
+    ],
+    "start_tick": 20000,
+    "end_tick": 24096,
+    "participants": [
+      "3",
+      "auto"
+    ],
+    "repeats": 4,
+    "discarded_warmup_pairs": 1,
+    "replay": true,
+    "team_timeline": true,
+    "gradient_backend": "cpu",
+    "metrics": [
+      "engine wall time",
+      "all-thread process CPU",
+      "peak RSS"
+    ],
+    "limits": "Report explicit-count and auto separately. No GPU speed claim or universal participant-count recommendation. Host activity and repeat noise retained."
+  }
+}

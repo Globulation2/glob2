@@ -1,0 +1,38 @@
+{
+  "README.md": {
+    "bytes": 6299,
+    "sha256": "ead461c25ff69b075f581ccfda2d13e106bc86c20d852b892621eeb31fed496a"
+  },
+  "linux-evidence.tar.gz": {
+    "bytes": 26394424,
+    "sha256": "4bd84dea6c5602bccd2e568883fcfc84461825a05dfdfb01cc9ebc1a4a24485f"
+  },
+  "linux-inputs.tar.gz": {
+    "bytes": 39336892,
+    "sha256": "bd92525133faba3d1b7bb5e23d9bebce826a9585231370808068b4c0b8edc95a"
+  },
+  "linux-original-summary.json": {
+    "bytes": 10252,
+    "sha256": "40bad551c7916c297b4e335edf188dfb50b4088b11e1b7de7edfa2e2f4f31ca1"
+  },
+  "macos-evidence.tar.gz": {
+    "bytes": 291349,
+    "sha256": "b2a83550029b19108fb50b85101e4bc85d371e331c71ea804f20cc76e4b61c7f"
+  },
+  "macos-final-summary.json": {
+    "bytes": 7730,
+    "sha256": "87074a96b2e02dc6d7768b3f616d971698b3ada8a82f4571b99e7987aa6e629d"
+  },
+  "macos-performance.tar.gz": {
+    "bytes": 26124609,
+    "sha256": "91f9ab00e23d38a96d6a931e35d0ebb24d36696223456006e3b98f949dca660d"
+  },
+  "review-resolution.txt": {
+    "bytes": 3630,
+    "sha256": "8a6453d2e4ae6aabe527b1e01cefe848f72988f5c78475bd6aa71888a86938aa"
+  },
+  "validation-plan.json": {
+    "bytes": 2611,
+    "sha256": "a1a8ffda4ec2b25cc7696ccb41cd626432871e49efa21f546d8994fe351aa964"
+  }
+}
