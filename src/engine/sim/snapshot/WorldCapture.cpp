@@ -1,5 +1,3 @@
-#include "SharedBuildingGradient.h"
-#include "HiringDiagnostics.h"
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "WorldSnapshot.h"
 #include "SnapshotStorage.h"
@@ -368,7 +366,14 @@ Handle capture(const Game& game,
 				slot = Uint32(buildingRecordCount);
 				auto& v = entities->buildings[buildingRecordCount++];
 				std::memcpy(static_cast<BuildingStateRecord*>(&v), static_cast<const BuildingStateRecord*>(b), sizeof(BuildingStateRecord));
-				v.identity = Game::refOf(b); v.team = t;v.fundingOffset=Entities::NoRecord;
+				v.identity = Game::refOf(b); v.team = t; v.fundingOffset = Entities::NoRecord;
+                const auto nonzero = [](const auto &values) {
+                    return std::any_of(values.begin(), values.end(), [](auto value) { return value != 0; });
+                };
+                if (nonzero(b->constructionBudget) || nonzero(b->constructionReserved) || nonzero(b->reservedMaterials)) {
+                    v.fundingOffset = Uint32(entities->funding.size());
+                    append(entities->funding, FundingState{b->constructionBudget, b->constructionReserved, b->reservedMaterials});
+                }
                 for (unsigned id=0; id<BuiltinUnitCount; ++id) v.constructionOriginRatios[id]=b->originProductionRatio(id);
                 v.extraProductionOffset = Uint32(entities->extraProduction.size());
                 v.extraProductionCount = Uint32(b->extraProductionRatios.size());
@@ -409,24 +414,6 @@ Handle capture(const Game& game,
 	entities->buildings.resize(buildingRecordCount);
 	entities->units.resize(unitRecordCount);
 
-    if(needs(requirements,Component::Entities)) {
-        static_assert(Team::MAX_COUNT<=std::numeric_limits<Uint16>::max());
-        const bool timed=HiringDiagnostics::enabled();
-        const auto start=timed?std::chrono::steady_clock::now():std::chrono::steady_clock::time_point{};
-        std::uint64_t growths=0;
-        const auto nonzero=[](const auto& values){return std::any_of(values.begin(),values.end(),[](auto value){return value!=0;});};
-        for(auto& v:entities->buildings) {
-            const auto* b=game.resolveBuilding(v.identity);
-            if(!b)throw std::logic_error("snapshot funding lost building");
-            if(nonzero(b->constructionBudget)||nonzero(b->constructionReserved)||nonzero(b->reservedMaterials)) {
-                v.fundingOffset=Uint32(entities->funding.size());
-                growths+=entities->funding.size()==entities->funding.capacity();
-                append(entities->funding,FundingState{b->constructionBudget,b->constructionReserved,b->reservedMaterials});
-            }
-        }
-        const auto ns=timed?std::chrono::duration_cast<std::chrono::nanoseconds>(std::chrono::steady_clock::now()-start).count():0;
-        HiringDiagnostics::recordCapture(ns,entities->funding.size()*sizeof(FundingState)+entities->buildings.size()*sizeof(Uint32)+game.teamsCount()*2*sizeof(Uint8),growths,entities->funding.size()*sizeof(FundingState));
-    }
 
     if (auto session=acquire(&Storage::session,Component::Session)) {
         session->editor=game.edit!=nullptr;

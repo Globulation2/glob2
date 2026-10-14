@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "EngineFixtures.h"
 #include "HiringPipeline.h"
+#include "Order.h"
 #include <BinaryStream.h>
 #include <TextStream.h>
 #include <StreamBackend.h>
@@ -223,6 +224,49 @@ TEST_SUITE("HiringPipeline")
 		CHECK(b->hiringEpoch == epoch + 2);
 		p.publishDue(4);
 		CHECK(p.suggestions(*b) == nullptr);
+	}
+	TEST_CASE("same-tick flag orders invalidate suggestions even when configuration is restored")
+	{
+		glob2test::HeadlessGlobals globals;
+		for (unsigned kind = 0; kind < 3; ++kind)
+		{
+			CAPTURE(kind);
+			glob2test::HeadlessGame w({.discovered = true, .loadDefaultRace = true, .header = true});
+			auto *b = w.addBuilding("clearingflag", 8, 8);
+			w.addUnit(WORKER, 6, 8);
+			b->maxUnitWorking = 1; b->updateCallLists();
+			HiringPipeline pipeline(w.game.map.computeExecutor());
+			pipeline.observe(w.game, observation(w));
+			pipeline.publishDue(4);
+			REQUIRE(pipeline.suggestions(*b));
+			const auto epoch = b->hiringEpoch;
+			const auto execute = [&](std::shared_ptr<Order> order)
+			{
+				order->sender = 0;
+				REQUIRE(w.game.executeOrder(order, 0));
+			};
+			if (kind == 0)
+			{
+				const int range = b->unitStayRange;
+				execute(std::make_shared<OrderModifyFlag>(b->gid, range ? range - 1 : 1));
+				execute(std::make_shared<OrderModifyFlag>(b->gid, range));
+			}
+			else if (kind == 1)
+			{
+				bool before[MaterialCount], changed[MaterialCount];
+				std::copy_n(b->clearingMaterials, MaterialCount, before);
+				std::copy_n(before, MaterialCount, changed); changed[WOOD] = !changed[WOOD];
+				execute(std::make_shared<OrderModifyClearingFlag>(b->gid, changed));
+				execute(std::make_shared<OrderModifyClearingFlag>(b->gid, before));
+			}
+			else
+			{
+				execute(std::make_shared<OrderMoveFlag>(b->gid, 9, 8, false));
+				execute(std::make_shared<OrderMoveFlag>(b->gid, 8, 8, false));
+			}
+			CHECK(b->hiringEpoch == epoch + 2);
+			CHECK(pipeline.suggestions(*b) == nullptr);
+		}
 	}
 	TEST_CASE("catalog changes supersede rankings while identical reconstruction preserves them")
 	{

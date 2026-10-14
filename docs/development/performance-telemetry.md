@@ -59,7 +59,10 @@ population-wide absence of workers.
 The production planner borrows normal immutable completed-world records and a
 shared boundary table of safe route-generation handles. No per-team world copy or
 separate hiring snapshot is built. Sparse raw funding and supplier membership
-facts live in the normal records; normal world capture still has a cost. Job,
+facts live in the normal records and are captured during the existing entity pass;
+their capture time belongs to normal snapshot extraction. `hiring_funding_bytes_copied`
+reports sparse funding payload bytes within the optional detailed snapshot accounting;
+fixed record-size additions must be counted separately. Normal world capture still has a cost. Job,
 output and route-handle allocations remain. Snapshot copied-byte and pooled-buffer
 counters are scoped, not a process-wide heap census.
 

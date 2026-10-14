@@ -134,6 +134,7 @@ std::vector<std::pair<std::string, Uint64>> Game::aiMetrics() const
 		{"map_bytes_copied", capture.mapBytesCopied},
 		{"detailed_captures", capture.detailedCaptures},
 		{"bytes_copied", capture.bytesCopied},
+        {"hiring_funding_bytes_copied", capture.hiringFundingBytesCopied},
 		{"component_reuses", capture.reusedComponents},
 		{"allocations", capture.allocations},
 		{"computation_ns", aiPipeline->computationNs()},

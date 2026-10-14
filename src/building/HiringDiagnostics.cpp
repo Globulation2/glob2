@@ -31,20 +31,6 @@ constexpr const char *counters[] = {
 } // namespace
 thread_local Row *active = nullptr;
 std::atomic<bool> collecting{false};
-thread_local CaptureMetrics facts;
-CaptureMetrics captureMetrics()
-{
-	return facts;
-}
-void recordCapture(std::uint64_t ns, std::uint64_t bytes, std::uint64_t growths,
-				   std::uint64_t copiedBytes)
-{
-	facts.ns += ns;
-	facts.logicalBytes += bytes;
-	facts.copiedBytes += copiedBytes;
-	facts.fundingGrowths += growths;
-	++facts.observations;
-}
 bool enabled()
 {
 	return collecting.load(std::memory_order_relaxed);
@@ -52,7 +38,6 @@ bool enabled()
 void configure(bool value)
 {
 	active = nullptr;
-	facts = {};
 	rows.clear();
 	periodic = {};
 	collecting.store(value, std::memory_order_relaxed);

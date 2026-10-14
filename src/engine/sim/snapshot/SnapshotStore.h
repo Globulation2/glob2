@@ -25,7 +25,7 @@ public:
 	struct Metrics
 	{
 		Uint64 captures = 0, captureNs = 0, bytesCopied = 0, reusedComponents = 0, allocations = 0;
-		Uint64 preparationNs = 0;
+		Uint64 preparationNs = 0, hiringFundingBytesCopied = 0;
 		// Exact map copies are always counted; bytesCopied/reusedComponents cover
 		// only detailedCaptures when optional diagnostics accounting is enabled.
 		Uint64 mapBytesCopied = 0, detailedCaptures = 0;

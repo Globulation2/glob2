@@ -66,7 +66,9 @@ void Store::accountCapture(const Handle& next, const Handle& previous, Uint64 co
 		metrics.bytesCopied += next.entities->buildings.size() * sizeof(BuildingView) + next.entities->units.size() * sizeof(UnitView)
 			+ next.entities->projects.size() * sizeof(BuildProjectView)
             + (next.entities->buildingSlotIndices.size() + next.entities->unitSlotIndices.size()) * sizeof(Uint32);
-		metrics.bytesCopied += next.entities->relationships.size() * sizeof(UnitRef) + next.entities->funding.size()*sizeof(FundingState);
+		const auto fundingBytes = next.entities->funding.size() * sizeof(FundingState);
+        metrics.bytesCopied += next.entities->relationships.size() * sizeof(UnitRef) + fundingBytes;
+        metrics.hiringFundingBytesCopied += fundingBytes;
 	}
 	if (next.teams) {
 		metrics.bytesCopied += next.teams->values.size() * sizeof(TeamView);
