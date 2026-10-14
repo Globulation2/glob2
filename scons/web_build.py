@@ -247,7 +247,7 @@ def _build_variant(directory, identity, arguments, threaded=False, packaged=None
         production = unique([by_source[name] for name in files if name != 'src/app/Glob2.cpp'])
         production += script_objects
         harness = tests.Program(str(output / 'script-tests.js'), production + test_objects)
-        tests.Depends(harness, ['browser/storage.js', 'browser/file-selection.js',
+        tests.Depends(harness, ['browser/gradient-compute.js', 'browser/storage.js', 'browser/file-selection.js',
                                'browser/audio.js', 'browser/runtime.js', 'browser/webgl-shaders.js', 'browser/canvas-size.js'])
         env.Depends(harness, assets)
         tests.Depends(harness, [str(p) for directory in ('data', 'maps', 'campaigns', 'scripts', 'test/fixtures', 'examples/javascript', 'games')
@@ -257,7 +257,7 @@ def _build_variant(directory, identity, arguments, threaded=False, packaged=None
             tests.Depends(harness, 'browser/threaded-egl.js')
         env.Alias('web-tests', harness)
 
-    env.Depends(program, ['browser/storage.js', 'browser/file-selection.js', 'browser/audio.js', 'browser/recording.js', 'browser/runtime.js', 'browser/webgl-shaders.js',
+    env.Depends(program, ['browser/gradient-compute.js', 'browser/storage.js', 'browser/file-selection.js', 'browser/audio.js', 'browser/recording.js', 'browser/runtime.js', 'browser/webgl-shaders.js',
                           'browser/asset-loader.js', 'browser/canvas-size.js', 'browser/toolchain.json', assets])
     if legacy_gl:
         env.Depends(program, 'browser/legacy-gl-runtime.js')

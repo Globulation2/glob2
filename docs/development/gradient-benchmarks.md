@@ -235,7 +235,11 @@ WebGPU cases separately.
 retained NVIDIA inputs on both algorithms with repeated buffer reuse. Set
 `GLOB2_WEBGPU_EXPECT_DEVICE=NVIDIA` (or another device-name pattern) to require a
 matching hardware adapter; software substitution fails the test. Without this
-option the test uses SwiftShader for portable browser coverage.
+option the test uses SwiftShader for portable browser coverage. With the compiled
+threaded test runtime served, `GLOB2_WEBGPU_CPP=1` also exercises the C++ owned
+request, device coordinator, JavaScript bridge and executor recovery. That case
+requires fifteen actual commits across the retained inputs and five canceled
+admissions recovered on their submitting worker.
 
 Production checks input bounds, convergence and driver completion. Cancellation,
 unknown retirement and device loss must preserve original CPU seeds and retain
