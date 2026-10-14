@@ -130,11 +130,13 @@ TEST_CASE("CPU-only lifecycle owns no GPU service or backend session" * doctest:
     applyBackendConfiguration({Backend::CPU,Algorithm::Buckets});
     requestBackendConfiguration(configuration());
     glob2test::HeadlessGlobals globals;
-    glob2test::HeadlessGame world;
-    auto& map=world.game.map;
     CHECK_FALSE(globalContainer->gradientDeviceShutdown);
     for (unsigned threads : {1,2,4,1}) {
+        glob2test::HeadlessGame world;
+        auto& map=world.game.map;
         map.configureCompute(threads);
+        world.addUnit(WORKER,10,10);
+        for (unsigned tick=0;tick<16;++tick) world.game.syncStep(0);
         CHECK_FALSE(map.gradientRuntime->backendSession);
         CHECK_FALSE(map.gradientRuntime->deviceService);
         CHECK(map.gradientExecutionMetrics().empty());
