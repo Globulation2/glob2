@@ -170,10 +170,24 @@ position BuildingOrder::find_location(Runtime& runtime, const AIEngine::AIWorldV
  const auto* type=&runtime.observation().catalog->at(concrete_type).resolvedType;
  const bool check_flag=!type->semantics.occupiesGround;
 
+	// Exact anchors are pure snapshot predicates. Reject impossible origins
+	// before roomForBuilding's flag-occupancy scan; retain the normal constraint
+	// loop below for admissible origins, including conflicting anchors.
+	Constraint* exactAnchor=nullptr;
+	for (const auto& constraint:constraints)
+		if (constraint->applies_to_origin() &&
+			(constraint->get_type()==CTCenterOfBuilding || constraint->get_type()==CTSinglePosition))
+		{
+			exactAnchor=constraint.get();
+			break;
+		}
+
 	for(int x=0; x<world.width; ++x)
 	{
 		for(int y=0; y<world.height; ++y)
 		{
+			if(exactAnchor && !exactAnchor->passes_constraint(runtime,x,y))
+				continue;
 			if(!AIEngine::ObservationQueries::roomForBuilding(world,x,y,*type,runtime.teamNumber()))
 				continue;
 
