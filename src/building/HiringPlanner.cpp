@@ -730,9 +730,11 @@ Output Cache::rank(const Inputs &input, unsigned team, unsigned capacity)
 						(role == 2 && u.movement == Unit::MOV_ATTACKING_TARGET))
 						continue;
 					constexpr unsigned types[3] = {WORKER, EXPLORER, WARRIOR};
-					if (!(traits.recruitmentMask & (1u << role)) ||
-						!type.semantics.attractionUnits[role].matches(
-							u.typeNum, type.zonable[types[role]] ? 1u << types[role] : 0))
+					const auto &selection = type.semantics.attractionUnits[role];
+					const bool selected = selection.resolved.empty()
+						? selection.matches(u.typeNum, type.zonable[types[role]] ? 1u << types[role] : 0)
+						: unsigned(u.typeNum) < selection.resolved.size() && selection.resolved[u.typeNum];
+					if (!(traits.recruitmentMask & (1u << role)) || !selected)
 						continue;
 					if ((role == 0 && u.constructionLevel < b.minWorkerLevelToFlag) ||
 						(role == 1 && b.explorersRequireBombing && !u.level[MAGIC_ATTACK_GROUND]) ||
