@@ -503,8 +503,12 @@ Periodic material, market, guard and clear gradients use the same executor as AI
 Their immutable inputs are captured at the completed-tick boundary; seeding and
 propagation both execute privately and retain the existing publication deadlines.
 `--compute-threads auto|N` controls the shared pool for all sessions; `auto` uses
-reported logical CPU threads (one if unavailable), and N is a positive unsigned
-participant count including the owner. Saving drains
+reported logical CPU threads, or one participant when the hardware count is
+unavailable. Browser automatic sizing remains capped at eight. Linux/Android CPU
+affinity is reported separately and does not resize the pool.
+N is a positive unsigned participant count including the owner. Explicit counts
+remain unchanged unless the platform cannot run threads, when execution uses one
+participant while retaining the requested count in diagnostics. Saving drains
 private work without publishing it early and continues to serialize completed
 fields with their remaining deadlines.
 

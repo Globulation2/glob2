@@ -284,11 +284,13 @@ MatchVerifier::Verdict MatchVerifier::verify(const Turn::MatchRecord& record, co
 	const auto gradient = gradient_kernel::configuration();
 	json compute{
 	    {"compute_requested_threads", globals.computeThreads ? std::to_string(globals.computeThreads) : "auto"},
-	    {"compute_resolved_threads", resolveComputeThreadCount(globals.computeThreads)},
+	    {"compute_resolved_threads", globals.resourcePlan.computeParticipants},
 	    {"compute_threads", game.map.computeExecutor().threadCount()},
 	    {"compute_workers", game.map.computeExecutor().threadCount() - 1}};
-    // Device receipts belong to GPU runs. CPU-only verification keeps its
-    // existing schema and performs no device-status or diagnostic formatting.
+    std::ostringstream resources;
+    writeApplicationResourcePlanJson(resources, globals.resourcePlan);
+    compute["resource_plan"] = json::parse(resources.str());
+    // CPU-only verification performs no device-status or diagnostic formatting.
     if (gradient_kernel::isGPU(gradient.backend)) {
         const auto accelerator = gradient_kernel::acceleratorStatus(gradient.backend);
         compute.update(json{

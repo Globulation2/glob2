@@ -31,6 +31,8 @@ ENGINE_TESTS = [
     '#src/unit/types/UnitCatalogTest.cpp',
     ('#src/unit/UnitCustomizationTest.cpp', dict(cxxflags=['-fno-access-control'])),
     '#src/app/cli/CommandLineTest.cpp',
+    '#src/app/ApplicationResourcePlanTest.cpp',
+    '#src/replay/ReplayTelemetryTest.cpp',
     '#src/unit/EntityRandomLifecycleTest.cpp',
     '#src/map/generator/javascript/ScriptGeneratorTest.cpp',
     '#src/map/generator/javascript/ToolkitBindingTest.cpp',

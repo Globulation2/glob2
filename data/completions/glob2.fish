@@ -140,6 +140,7 @@ complete -c glob2 -n "__glob2_at 'play'" -l data-dir -r -f -a '(__fish_complete_
 complete -c glob2 -n "__glob2_at 'play'" -l generator-package -r
 complete -c glob2 -n "__glob2_at 'play'" -l building-catalog -r
 complete -c glob2 -n "__glob2_at 'play'" -l compute-threads -r
+complete -c glob2 -n "__glob2_at 'play'" -l compute-telemetry -r -f -a 'off waits trace'
 complete -c glob2 -n "__glob2_at 'play'" -l gpu -r -f -a 'on off'
 complete -c glob2 -n "__glob2_at 'play'" -l gradient-backend -r -f -a 'cpu scalar sse2 neon opencl vulkan webgpu'
 complete -c glob2 -n "__glob2_at 'play'" -l gradient-algorithm -r -f -a 'buckets frozen8 jacobi'
@@ -168,6 +169,7 @@ complete -c glob2 -n "__glob2_at 'replay'" -l data-dir -r -f -a '(__fish_complet
 complete -c glob2 -n "__glob2_at 'replay'" -l generator-package -r
 complete -c glob2 -n "__glob2_at 'replay'" -l building-catalog -r
 complete -c glob2 -n "__glob2_at 'replay'" -l compute-threads -r
+complete -c glob2 -n "__glob2_at 'replay'" -l compute-telemetry -r -f -a 'off waits trace'
 complete -c glob2 -n "__glob2_at 'replay'" -l gpu -r -f -a 'on off'
 complete -c glob2 -n "__glob2_at 'replay'" -l gradient-backend -r -f -a 'cpu scalar sse2 neon opencl vulkan webgpu'
 complete -c glob2 -n "__glob2_at 'replay'" -l gradient-algorithm -r -f -a 'buckets frozen8 jacobi'
@@ -257,6 +259,7 @@ complete -c glob2 -n "__glob2_at 'game run'" -l building-catalog -r
 complete -c glob2 -n "__glob2_at 'game run'" -l data-dir -r -f -a '(__fish_complete_directories)'
 complete -c glob2 -n "__glob2_at 'game run'" -l generator-package -r
 complete -c glob2 -n "__glob2_at 'game run'" -l compute-threads -r
+complete -c glob2 -n "__glob2_at 'game run'" -l compute-telemetry -r -f -a 'off waits trace'
 complete -c glob2 -n "__glob2_at 'game run'" -l gpu -r -f -a 'on off'
 complete -c glob2 -n "__glob2_at 'game run'" -l gradient-backend -r -f -a 'cpu scalar sse2 neon opencl vulkan webgpu'
 complete -c glob2 -n "__glob2_at 'game run'" -l gradient-algorithm -r -f -a 'buckets frozen8 jacobi'
@@ -350,6 +353,7 @@ complete -c glob2 -n "__glob2_at 'online join'" -l data-dir -r -f -a '(__fish_co
 complete -c glob2 -n "__glob2_at 'online join'" -l generator-package -r
 complete -c glob2 -n "__glob2_at 'online join'" -l building-catalog -r
 complete -c glob2 -n "__glob2_at 'online join'" -l compute-threads -r
+complete -c glob2 -n "__glob2_at 'online join'" -l compute-telemetry -r -f -a 'off waits trace'
 complete -c glob2 -n "__glob2_at 'online join'" -l gpu -r -f -a 'on off'
 complete -c glob2 -n "__glob2_at 'online join'" -l gradient-backend -r -f -a 'cpu scalar sse2 neon opencl vulkan webgpu'
 complete -c glob2 -n "__glob2_at 'online join'" -l gradient-algorithm -r -f -a 'buckets frozen8 jacobi'
@@ -379,6 +383,7 @@ complete -c glob2 -n "__glob2_at 'online play-map'" -l data-dir -r -f -a '(__fis
 complete -c glob2 -n "__glob2_at 'online play-map'" -l generator-package -r
 complete -c glob2 -n "__glob2_at 'online play-map'" -l building-catalog -r
 complete -c glob2 -n "__glob2_at 'online play-map'" -l compute-threads -r
+complete -c glob2 -n "__glob2_at 'online play-map'" -l compute-telemetry -r -f -a 'off waits trace'
 complete -c glob2 -n "__glob2_at 'online play-map'" -l gpu -r -f -a 'on off'
 complete -c glob2 -n "__glob2_at 'online play-map'" -l gradient-backend -r -f -a 'cpu scalar sse2 neon opencl vulkan webgpu'
 complete -c glob2 -n "__glob2_at 'online play-map'" -l gradient-algorithm -r -f -a 'buckets frozen8 jacobi'
@@ -410,6 +415,7 @@ complete -c glob2 -n "__glob2_at 'online host-map'" -l data-dir -r -f -a '(__fis
 complete -c glob2 -n "__glob2_at 'online host-map'" -l generator-package -r
 complete -c glob2 -n "__glob2_at 'online host-map'" -l building-catalog -r
 complete -c glob2 -n "__glob2_at 'online host-map'" -l compute-threads -r
+complete -c glob2 -n "__glob2_at 'online host-map'" -l compute-telemetry -r -f -a 'off waits trace'
 complete -c glob2 -n "__glob2_at 'online host-map'" -l gpu -r -f -a 'on off'
 complete -c glob2 -n "__glob2_at 'online host-map'" -l gradient-backend -r -f -a 'cpu scalar sse2 neon opencl vulkan webgpu'
 complete -c glob2 -n "__glob2_at 'online host-map'" -l gradient-algorithm -r -f -a 'buckets frozen8 jacobi'
@@ -505,6 +511,7 @@ complete -c glob2 -n "__glob2_at 'dev textshots'" -l data-dir -r -f -a '(__fish_
 complete -c glob2 -n "__glob2_at 'dev textshots'" -l generator-package -r
 complete -c glob2 -n "__glob2_at 'dev textshots'" -l building-catalog -r
 complete -c glob2 -n "__glob2_at 'dev textshots'" -l compute-threads -r
+complete -c glob2 -n "__glob2_at 'dev textshots'" -l compute-telemetry -r -f -a 'off waits trace'
 complete -c glob2 -n "__glob2_at 'dev textshots'" -l gpu -r -f -a 'on off'
 complete -c glob2 -n "__glob2_at 'dev textshots'" -l gradient-backend -r -f -a 'cpu scalar sse2 neon opencl vulkan webgpu'
 complete -c glob2 -n "__glob2_at 'dev textshots'" -l gradient-algorithm -r -f -a 'buckets frozen8 jacobi'

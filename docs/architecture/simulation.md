@@ -500,6 +500,12 @@ recover the exact CPU result from original seeds; partial GPU results are never
 published. Required transfer failures retain unsafe storage until completion can
 be proved. Saves, reconfiguration and shutdown drain required work.
 
+Before consuming a polled/asynchronous OpenCL transfer, the backend synchronizes
+its event after it reports completion. A completed status query alone does not
+establish host synchronization. A failed wait follows the existing permanent
+failure and CPU fallback path. Abandoned transfers retain their covering-proof
+lifetime checks without publishing canceled output.
+
 After games and their executors drain, the application owner joins the process
 coordinator before SDL teardown or process exit handlers run. A driver can
 register exit handlers during asynchronous initialization, so the broker's

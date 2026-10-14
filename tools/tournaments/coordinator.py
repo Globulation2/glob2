@@ -13,6 +13,7 @@ from .bundles import eligible, inspect_bundle, package_identity
 from .common import (atomic_json, canonical, database, digest, file_hash, hash_id, identifier,
                      lock, read_json, transaction)
 from .model import DEFAULTS, validate_experiment
+from .resources import plan_from_record, validate_frozen_attempt, validate_game_participants
 from .transfer import receive_file, send_file
 from .transport import Transport, worker_archive
 
@@ -193,6 +194,19 @@ class Coordinator:
         self.expire(now)
         if self.mode != 'running' or not status['accepting']:
             return []
+        plan = plan_from_record(status['resource_plan']) if status.get('resource_plan') is not None else None
+        if plan is None and self.settings.get('caller_allocation_plan') is not None:
+            raise ValueError('host is missing the frozen caller CPU allocation')
+        frozen_key = 'cpu_allocation:' + host
+        with transaction(self.db):
+            previous_plan = self.db.execute('SELECT value FROM settings WHERE key=?', (frozen_key,)).fetchone()
+            if previous_plan and (plan is None or previous_plan['value'] != canonical(plan.record()).decode()):
+                raise ValueError('host CPU allocation changed within the experiment')
+            if plan is not None:
+                expected = self.settings.get('caller_allocation_plan')
+                if expected is not None and digest(expected) != digest(plan.record()):
+                    raise ValueError('host allocation differs from frozen caller manifest')
+                self.db.execute('INSERT OR IGNORE INTO settings VALUES (?,?)', (frozen_key, canonical(plan.record()).decode()))
         # Finished results retain their leases until verified, but no longer consume
         # compute prefetch capacity. Missing attempts remain counted (input delivery).
         states = {a['id']: a.get('state') for a in status.get('attempts', [])}
@@ -230,7 +244,7 @@ class Coordinator:
                 continue
             # Prefer another eligible, recently connected host for a repeat attempt.
             previous = self.db.execute('SELECT host FROM attempts WHERE job_id=? ORDER BY created DESC LIMIT 1', (job['id'],)).fetchone()
-            if previous and previous['host'] == host:
+            if previous and previous['host'] == host and not (plan and self.settings.get('measured', False)):
                 alternatives = self.db.execute('SELECT name,status FROM hosts WHERE name!=? AND updated>? AND error IS NULL', (host, now - self.settings['lease_seconds'])).fetchall()
                 if any(eligible(bundle, json.loads(other['status']), job['type']) and json.loads(other['status'])['accepting'] for other in alternatives):
                     continue
@@ -245,11 +259,50 @@ class Coordinator:
             with transaction(self.db):
                 if self.mode != 'running':
                     break
+                retry_slot = None
+                if self.settings.get('measured', False) and previous:
+                    old = self.db.execute('SELECT id,host FROM attempts WHERE job_id=? ORDER BY created DESC LIMIT 1', (job['id'],)).fetchone()
+                    saved = self.db.execute('SELECT value FROM settings WHERE key=?', ('cpu_attempt:' + old['id'],)).fetchone()
+                    # A frozen attempt cannot escape its allocation through a
+                    # legacy host that does not advertise a CPU plan.
+                    if plan is not None or saved is not None:
+                        if old['host'] != host:
+                            continue
+                        prior = json.loads(saved['value']) if saved else {}
+                        if plan is None or prior.get('allocation_plan') != plan.record():
+                            raise ValueError('measured retry allocation plan changed')
+                        retry_slot = prior['execution_allocation']['slot']
+                if plan is not None:
+                    # Recheck reservations under SQLite's write lock: another
+                    # transfer lane can have dispatched since the status snapshot.
+                    occupied = set()
+                    for item in status.get('attempts', []):
+                        if item.get('state') in ('queued', 'running'):
+                            allocation = item.get('execution_allocation')
+                            occupied.update(allocation['allocation']['cpu_ids'] if allocation else plan.cpu_ids)
+                    for live in self.db.execute("SELECT id FROM attempts WHERE host=? AND state='leased'", (host,)):
+                        if states.get(live['id']) not in ('executed', 'packing', 'done', 'acknowledged', 'cancelled'):
+                            prior = read_json(self.root / 'transfers' / (live['id'] + '.json'))
+                            allocation = prior.get('execution_allocation')
+                            occupied.update(allocation['allocation']['cpu_ids'] if allocation else plan.cpu_ids)
+                    slots = [i for i, allocation in enumerate(plan.allocations) if not occupied.intersection(allocation.cpu_ids)]
+                    if not slots:
+                        break
+                    slot = retry_slot if retry_slot is not None else slots[0]
+                    if slot not in slots:
+                        continue
+                    attempt['allocation_plan'] = plan.record()
+                    attempt['execution_allocation'] = plan.attempt_record(attempt['id'], slot)
                 changed = self.db.execute("UPDATE jobs SET state='active',active=? WHERE id=? AND state='pending'", (attempt['id'], job['id'])).rowcount
                 if not changed:
                     continue
                 self.db.execute('INSERT INTO attempts VALUES (?,?,?,?,?,\'leased\',NULL,?,NULL)',
                                 (attempt['id'], job['id'], host, attempt['token'], now + self.settings['lease_seconds'], now))
+                if plan is not None:
+                    # Keep allocation receipts in the durable ledger even after
+                    # completed transfer scratch is cleaned up.
+                    self.db.execute('INSERT INTO settings VALUES (?,?)', ('cpu_attempt:' + attempt['id'],
+                        canonical({key: attempt[key] for key in ('allocation_plan', 'execution_allocation')}).decode()))
                 atomic_json(self.root / 'transfers' / (attempt['id'] + '.json'), attempt)
             dispatched.append(attempt)
             buffered_seconds += estimate
@@ -266,6 +319,22 @@ class Coordinator:
         expected_job = json.loads(self.db.execute('SELECT spec FROM jobs WHERE id=?', (row['job_id'],)).fetchone()[0])
         if record['job'] != expected_job or record['package_id'] != self.manifest['package_id']:
             raise ValueError('result configuration/build/package mismatch')
+        saved = self.db.execute('SELECT value FROM settings WHERE key=?', ('cpu_attempt:' + record['id'],)).fetchone()
+        assigned = json.loads(saved['value']) if saved else {}
+        if 'execution_allocation' in assigned:
+            plan = plan_from_record(assigned['allocation_plan'])
+            allocation = validate_frozen_attempt(assigned['execution_allocation'], plan, record['id'])
+            if digest(record.get('execution_allocation')) != digest(assigned['execution_allocation']):
+                raise ValueError('result immutable CPU allocation differs')
+            if record['category'] == 'success':
+                proof = record.get('cpu_affinity_proof')
+                if (type(proof) is not dict or proof.get('verified') is not True
+                        or digest(proof.get('actual_cpu_ids')) != digest(list(allocation.cpu_ids))):
+                    raise ValueError('result lacks assigned CPU affinity proof')
+                if expected_job['type'] == 'game':
+                    validate_game_participants(record.get('result') or {}, allocation)
+        elif 'execution_allocation' in record:
+            raise ValueError('unexpected result CPU allocation')
         for artifact in record['artifacts']:
             path = self.root / 'artifacts' / hash_id(artifact['sha256'])
             if not path.exists() or path.stat().st_size != artifact['bytes'] or file_hash(path) != artifact['sha256']:
@@ -421,6 +490,8 @@ class Coordinator:
             transport.rpc('enqueue', attempt=attempt)
 
     def run(self, hosts, once=False, collect_only=False):
+        from .cli import configure_hosts
+        hosts = configure_hosts(hosts)
         if not once:
             from .pipeline import run
             return run(self, hosts, collect_only)

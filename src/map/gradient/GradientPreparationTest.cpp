@@ -648,6 +648,7 @@ TEST_SUITE("GradientPreparation")
 		for (unsigned threads : {1, 2, 4})
 		{
 			m.configureCompute(threads);
+			REQUIRE(m.computeExecutor().threadCount()==(GAGCore::ThreadSupport::available ? threads : 1u));
 			for (int phase=0; phase<4; ++phase)
 			{
 				world.game.gameHeader.getExperiments().set(ExperimentId::FarmAreas, phase & 1);
@@ -1419,7 +1420,8 @@ TEST_CASE("GradientPreparation/minimal view pressure declines without moving ori
     auto data=std::make_unique<Uint16[]>(world.game.map.size);std::fill_n(data.get(),world.game.map.size,Uint16(77));
     const auto original=data.get();auto session=std::make_shared<BackendSession>();gradient_preparation::Request request;
     const auto current=openCLStatus().hostBytes;
-    REQUIRE(current<=OpenCLHostBudget);const auto pressure=OpenCLHostBudget-current;
+    REQUIRE(current<=OpenCLHostBudget);
+    const std::size_t pressure=OpenCLHostBudget-static_cast<std::size_t>(current);
     REQUIRE(reserveOpenCLHostBytes(pressure));
     {
         struct Release {std::size_t bytes;~Release(){releaseOpenCLHostBytes(bytes);}} release{pressure};

@@ -471,8 +471,9 @@ struct HeadlessRunner
 		}
 		if (!fields.empty()) engine.diagnostics = std::make_shared<GameDiagnostics::Session>(engine.gui.game,(output/"diagnostics").string(),diagnosticInterval,diagnosticPng=="true");
 		const std::string requestedSizing = one(options, "--compute-threads", "auto");
-		const unsigned computeThreads = resolveComputeThreadCount(parseComputeThreadCount(requestedSizing));
-		globals.configureGradientBackend();
+		globals.computeThreads = parseComputeThreadCount(requestedSizing);
+		globals.configureExecutionResources();
+		const unsigned computeThreads = globals.resourcePlan.computeParticipants;
 		engine.gui.game.map.configureCompute(computeThreads);
         const auto computeMode = ComputeTelemetry::parseMode(one(options, "--compute-telemetry", "off"));
         if (engine.gui.game.map.computeExecutor().telemetryMode() != computeMode)
@@ -646,6 +647,8 @@ struct HeadlessRunner
         }
 		result << ",\"compute_telemetry\":";
         ComputeTelemetry::writeJson(result, computeSnapshot);
+        result << ",\"resource_plan\":";
+        writeApplicationResourcePlanJson(result, globals.resourcePlan);
 		result
 			<< ",\"compute_threads\":" << game.map.computeExecutor().threadCount()
 			<< ",\"compute_requested_threads\":" << quote(requestedSizing)

@@ -137,6 +137,7 @@ struct API
                 const std::size_t *, UInt, const Handle *, Handle *);
     CL_FUNCTION(Flush, Int, Handle);
     CL_FUNCTION(GetEventInfo, Int, Handle, UInt, std::size_t, void*, std::size_t*);
+    CL_FUNCTION(WaitForEvents, Int, UInt, const Handle*);
     CL_FUNCTION(ReleaseEvent, Int, Handle);
     CL_FUNCTION(ReleaseMemObject, Int, Handle);
     CL_FUNCTION(ReleaseKernel, Int, Handle);
@@ -183,6 +184,7 @@ struct API
         LOAD(EnqueueNDRangeKernel);
         LOAD(Flush);
         LOAD(GetEventInfo);
+        LOAD(WaitForEvents);
         LOAD(ReleaseEvent);
         LOAD(ReleaseMemObject);
         LOAD(ReleaseKernel);
@@ -331,6 +333,7 @@ struct Device
     API api;
     std::mutex initialization, cacheMutex, lanesMutex, failureMutex;
     bool probed = false;
+    bool waitFailureDiagnostics=false;
     std::atomic<bool> failed{false};
     OpenCLRequiredLifetimePool requiredLifetime;
     bool requiredQueryFailureDiagnostics=false;
@@ -438,6 +441,7 @@ struct Device
         try
         {
             requiredQueryFailureDiagnostics=numericOverride("GLOB2_TEST_OPENCL_REQUIRED_QUERY_FAILURE",0,1)!=0;
+            waitFailureDiagnostics=numericOverride("GLOB2_TEST_OPENCL_WAIT_FAILURE",0,1)!=0;
             api.load();
             const auto requestedDevice=numericOverride("GLOB2_OPENCL_DEVICE",0,std::numeric_limits<unsigned>::max());
             const bool explicitDevice=std::getenv("GLOB2_OPENCL_DEVICE")!=nullptr;
@@ -700,6 +704,7 @@ struct Runtime : std::enable_shared_from_this<Runtime>
         out.fields+=in.fields;out.cpuSelections+=in.cpuSelections;
         out.batches+=in.batches;out.maxBatchFields=std::max(out.maxBatchFields,in.maxBatchFields);
         out.costUploads+=in.costUploads;out.costCacheHits+=in.costCacheHits;out.dispatches+=in.dispatches;
+        out.hostEventWaits+=in.hostEventWaits;
         out.hostChecks+=in.hostChecks;out.costIdentityHits+=in.costIdentityHits;out.retiredFields+=in.retiredFields;
         out.schedulerBatches+=in.schedulerBatches;
         out.budgetDeclines+=in.budgetDeclines;out.threadCPUNs+=in.threadCPUNs;
@@ -847,7 +852,16 @@ struct Runtime : std::enable_shared_from_this<Runtime>
 			{ GradientPhaseScope convergence(GradientPhase::Convergence);
 			check(api.GetEventInfo(event.value, 0x11D3, sizeof state, &state, nullptr)); }
 			if(state<0)check(state);
-            if(!state) {if(required)required->proof.eventCompleted();return;}
+            if(!state) {
+                // CL_COMPLETE is not host acquisition. Synchronize this
+                // completed event before using transfer data; required
+                // cancellation still polls interruptibly before completion.
+                if(shared->waitFailureDiagnostics)throw std::runtime_error("Injected OpenCL host wait failure");
+                check(api.WaitForEvents(1,&event.value));
+                ++status.hostEventWaits;
+                if(required)required->proof.eventCompleted();
+                return;
+            }
             // Polling remains interruptible by required publication/save/stop.
             const auto delay=std::chrono::microseconds(shared->status.pollMicros ? shared->status.pollMicros : 100);
             if(required && required->controls[0])required->controls[0]->waitFor(delay);
