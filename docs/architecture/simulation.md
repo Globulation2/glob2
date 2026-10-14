@@ -585,7 +585,11 @@ AI-enrolled resource planes are excluded: their presence and age can differ with
 local network polling and must not change hiring decisions. Private planner caches
 are bounded separately from deterministic pending/published output reservations.
 Resource-field cache keys use the snapshot's existing map and catalog versions;
-unrelated changes may conservatively rebuild a field. Supplier fields are shared
+where the existing natural-resource seed template applies, its change counter
+replaces resource, occupancy and area versions. Its normal dirty-chunk traversal
+advances that counter only when seed facts change, so moving units and positive
+stock updates avoid propagation. Terrain costs and visibility retain their map
+versions. Other unrelated changes may conservatively rebuild a field. Supplier fields are shared
 within an observation. Unversioned synthetic observations rebuild on each rank.
 Natural resource fields reuse the existing snapshot seed templates when applicable.
 Route leases include only jobs and movement classes required by the observation.

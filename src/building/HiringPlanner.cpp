@@ -37,6 +37,7 @@ struct FieldKey
 	Uint32 terrainCatalog = 0, resourceCatalog = 0, teamMask = 0;
 	int width = 0, height = 0, material = 0, swim = 0;
 	unsigned modes = 0;
+	bool seedVersioned = false;
 	Uint64 consumer = 0, supplierObservation = 0, untrackedObservation = 0;
 	Uint32 supplierTick = 0;
 	auto operator<=>(const FieldKey &) const = default;
@@ -261,7 +262,19 @@ struct Cache::Impl
 	const std::vector<Uint16> &resource(const World &world, const B &b, int material, int swim,
 										unsigned modes, bool consumerSpecific)
 	{
-		const auto key = resourceKey(world, b, material, swim, modes, consumerSpecific, observation);
+		auto key = resourceKey(world, b, material, swim, modes, consumerSpecific, observation);
+		if (cachedSeedTemplates && !key.untrackedObservation && !modes && swim != WATER_ONLY_CLASS)
+		{
+			trim(seedTemplates.world ? 0 : seedTemplates.budget);
+			if (seedTemplates.refresh(world.components()))
+			{
+				// The existing template tracks the actual seed changes. Its version
+				// avoids propagating again for movement or positive stock updates.
+				// Terrain costs and visibility still use their normal map versions.
+				key.mapVersions[1] = key.mapVersions[2] = key.mapVersions[3] = seedTemplates.seedRevision;
+				key.seedVersioned = true;
+			}
+		}
 		return field(world, key,
 					 swim,
 					 [&](std::size_t i) -> Uint16

@@ -42,7 +42,7 @@ struct MaterialSeedCache
 {
     using Bits = std::vector<Uint64>;
     size_t budget = 32 * 1024 * 1024;
-    Uint64 world = 0, refreshedCells = 0;
+    Uint64 world = 0, refreshedCells = 0, seedRevision = 0;
     int width = 0, height = 0;
     std::shared_ptr<const TerrainRegistry> terrainRegistry;
     std::shared_ptr<const ResourceRegistry> resourceRegistry;
@@ -56,6 +56,9 @@ struct MaterialSeedCache
     std::array<std::vector<Uint64>, 4> stamps;
     bool disabled = false;
     std::size_t retainedBytes() const;
+    // Reuses the normal dirty-chunk traversal. Moving units and positive stock
+    // changes advance map stamps but not seedRevision when seed values agree.
+    bool refresh(const SimulationSnapshot::Handle&);
     bool trySeed(const SimulationSnapshot::Handle&, int team, int material, int swim,
         Uint16* output, const Uint16* suppliers);
 };
