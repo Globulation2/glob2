@@ -257,9 +257,7 @@ public:
 		unsigned workers = 0, delay = 0;
 		std::size_t pending = 0;
 		std::uint64_t jobs = 0, published = 0, discarded = 0;
-		std::uint64_t maxPending = 0, waitNs = 0, activeElapsedNs = 0, preparationNs = 0, publicationWaitNs = 0;
-        // Owner-only O(1) last-advance telemetry, no pending-job scan.
-        std::uint64_t lastPublicationWaitNs=0,lastGpuPublicationWaitNs=0,lastGpuDeviceOverlapWaitNs=0;
+		std::uint64_t maxPending = 0;
 	};
 	bool gradientPipelineEnabled() const;
 	GradientPipelineStatus gradientPipelineStatus() const;
@@ -283,6 +281,7 @@ public:
 	void setGradientWorkerCount(unsigned workers);
 	void configureGradientPipeline(unsigned workers, unsigned delay);
     void applyGradientBackendRequest();
+    void configureGradientExecution();
 	// Scheduled building gradients (MapGradientScheduling.cpp). Team stepping
 	// requests refreshes of existing fields and keeps serving the old ones;
 	// after the tick up to MaxJobsPerTick requests are staged, captured at the

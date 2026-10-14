@@ -610,8 +610,6 @@ struct HeadlessRunner
 			<< ",\"gradient_discarded\":" << pipelineResult.discarded
 			<< ",\"gradient_max_pending\":" << pipelineResult.maxPending
 			<< ",\"gradient_wait_ns\":" << joinTotal(ComputeProducer::PeriodicGradient)
-			<< ",\"gradient_preparation_ns\":" << measured(pipelineResult.preparationNs, workerAvailable)
-			<< ",\"gradient_active_elapsed_ns\":" << measured(pipelineResult.activeElapsedNs, workerAvailable)
 			<< ",\"compute_active_elapsed_ns\":" << measured(game.map.computeExecutor().activeNs(), workerAvailable)
 			<< ",\"building_gradient_jobs\":" << buildingResult.jobs
 			<< ",\"building_gradient_published\":" << buildingResult.published

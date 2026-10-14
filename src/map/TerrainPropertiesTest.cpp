@@ -447,7 +447,7 @@ TEST_SUITE("TerrainRuntime")
 			CHECK(lazy == eager);
 			ComputeExecutor executor; executor.configure(2);
 			GradientPipeline pipeline;
-			pipeline.configure(executor, true, 2, 1024,
+			pipeline.configure(executor, 2, 1024,
 							   [](auto &job, auto &scratch)
 							   {
 								   gradient_kernel::propagateTerrainProfiles(

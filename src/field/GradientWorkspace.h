@@ -13,7 +13,7 @@
 // Retained queue capacity belongs to one executor slot, never to a process.
 struct GradientWorkspace
 {
-	std::shared_ptr<gradient_kernel::BackendSession> backendSession = std::make_shared<gradient_kernel::BackendSession>();
+	std::shared_ptr<gradient_kernel::BackendSession> backendSession;
 	gradient_kernel::Family family = gradient_kernel::Family::Generic;
 	std::unique_ptr<TerrainGradientWorkspace> terrain;
 	std::array<GradientBucket, GradientBucket::COUNT> buckets;

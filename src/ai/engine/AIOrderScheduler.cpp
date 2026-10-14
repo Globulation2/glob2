@@ -95,20 +95,20 @@ bool OrderScheduler::liveWork() const
 	}
 	return false;
 }
-void OrderScheduler::configure(unsigned delayTicks, ComputeExecutor& target, bool sharedExecution)
+void OrderScheduler::configure(unsigned delayTicks, ComputeExecutor& target)
 {
 	static_assert(ComputeExecutor::AIHorizon >= 8, "the executor sizes its slots for the AI horizon");
 	if (delayTicks > 8) throw std::invalid_argument("AI order delay must be 0..8 ticks");
 	if (liveWork()) throw std::logic_error("Cannot reconfigure a live AI pipeline");
-	executor = &target; shared = sharedExecution;
+	executor = &target;
 	delay = delayTicks;
 }
-void OrderScheduler::configureExecution(ComputeExecutor& target, bool sharedExecution)
+void OrderScheduler::configureExecution(ComputeExecutor& target)
 {
 	// Placement changes only between batches: finish what the previous executor
 	// configuration was given before switching.
 	joinAll({JoinReason::Reconfigure, ComputeTelemetry::NoTick});
-	executor = &target; shared = sharedExecution;
+	executor = &target;
 }
 std::size_t OrderScheduler::pendingCount() const
 {
@@ -136,7 +136,7 @@ void OrderScheduler::dispatch()
 	if (batch.entries.empty()) return;
 	if (!executor) throw std::logic_error("AI scheduler has no executor");
 	const bool worthSharing = delay > 0 || (batch.entries.size() > 1 && recentWorkNs >= SharedWorkThresholdNs);
-	if (!shared || !worthSharing)
+	if (!worthSharing)
 	{
 		// Not deferred: the owner decides now, as synchronous AI does; the
 		// decisions are still delivered at their deadline.

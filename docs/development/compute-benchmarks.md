@@ -397,3 +397,14 @@ Resource-growth benchmark cases accept `GLOB2_COMPUTE_TELEMETRY=off|waits|trace`
 (default off). Their JSON records include the selected mode and use null for
 uncollected pipeline timing. Direct calculation/publication timing remains measured
 by the benchmark's own clock.
+
+### Lean execution boundaries
+
+AI and gradient producers use the shared executor's serial fallback; they have no
+separate inline/shared mode. CPU-only periodic jobs seed and propagate directly on
+their executor slot. Backend selection is applied at the owner configuration
+boundary, after draining private work without changing publication deadlines.
+GPU services and sessions are created only for GPU configurations with workers;
+CPU-only maps retain neither and register no GPU idle-maintenance predicate.
+Per-pipeline preparation, CPU attribution and active-time measurements have been
+retired. Use process user+system CPU, elapsed time and shared executor diagnostics.

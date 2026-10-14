@@ -373,6 +373,16 @@ void propagateCPU(const Request& request,const SimulationSnapshot::Handle& snaps
 void propagateBatch(std::span<const PropagationField> fields)
 {
     using namespace gradient_kernel;
+    if (!isGPU(backend())) {
+        const auto run=[&](std::size_t i) {
+            const auto& f=fields[i];
+            try { propagateCPU(f.request,*f.snapshot,f.output,*f.scratch); }
+            catch (...) { if (f.error) *f.error=std::current_exception(); else throw; }
+        };
+        if (!fields.empty() && fields.front().executor) fields.front().executor->run(fields.size(),run);
+        else for (std::size_t i=0;i<fields.size();++i) run(i);
+        return;
+    }
     std::vector<BackendRequest> requests;
     requests.reserve(fields.size());
     for (const auto &field : fields)
@@ -380,6 +390,7 @@ void propagateBatch(std::span<const PropagationField> fields)
         try
         {
             validatePropagation(field);
+            if (!field.scratch->backendSession) field.scratch->backendSession=std::make_shared<BackendSession>();
             requests.push_back(
                 {field.output,
                  COST_LIMIT,

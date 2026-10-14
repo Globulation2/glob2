@@ -660,3 +660,8 @@ for scheduling and saved continuation.
 Shared snapshot capture uses local dirty stamps for incremental copies. It does
 not maintain terrain or occupancy protocol hashes after cached turret outputs
 left the game checksum.
+
+CPU-only gradient workspaces have no backend-session allocation. Periodic jobs use
+a CPU callback selected at configuration, preserving the same immutable snapshot,
+slot-local scratch and fixed publication time. GPU ownership and cancellation
+state is allocated only for GPU-configured submissions.

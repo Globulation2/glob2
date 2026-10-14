@@ -255,6 +255,8 @@ void propagatePreparedTerrainField(std::uint16_t* gradient, int maxCost, field::
     const auto cpu = [&](std::uint16_t* out) {
         propagatePreparedTerrainFieldCPU(out, maxCost, grid, workspace, profile, classAt);
     };
+    if (!isGPU(backend())) { cpu(gradient); return; }
+    if (!workspace.backendSession) workspace.backendSession=std::make_shared<BackendSession>();
     if (!tryAcceleratedGradient(gradient, maxCost, grid, *workspace.backendSession, costs, cpu, {}, workspace.family)) cpu(gradient);
 }
 

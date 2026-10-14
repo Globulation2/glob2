@@ -37,7 +37,7 @@ public:
             [](auto f) { return GAGCore::ThreadSupport::launch(std::move(f)); })
     {
         reset(); executor.configureTelemetry(ComputeTelemetryMode::Trace); executor.configure(count+1, factory);
-        GradientPipeline::configure(executor, count!=0, delay, cells, std::move(work));
+        GradientPipeline::configure(executor, delay, cells, std::move(work));
     }
 };
 
@@ -89,7 +89,7 @@ TEST_CASE("fixed publication; supersession; bounded buffers; scheduling stress; 
 			auto data=std::make_unique<std::uint16_t[]>(1); data[0]=snapshot.data[0];
 			restored.restoreCompleted({&field,0,snapshot.remaining,snapshot.superseded,std::move(data)});
 		});
-		original.reset(); restored.setWorkerCount(1);
+		original.reset(); restored.finish();
 		for(unsigned i=1;i<8-phase;++i) { restored.advance(); REQUIRE(field[0]==0); }
 		restored.advance(); REQUIRE(field[0]==(cancelled ? 0 : 42));
 		restored.reset(); delete[] field;
@@ -186,7 +186,7 @@ public:
     void configure(unsigned count, unsigned delay, Work work)
     {
         reset(); executor.configure(count+1);
-        TestBuildingPipelineBase::configure(executor, count!=0, delay, std::move(work));
+        TestBuildingPipelineBase::configure(executor, delay, std::move(work));
     }
 };
 void runTestBuildingJob(TestBuildingPipelineBase::Job& job)
@@ -211,8 +211,8 @@ TEST_CASE("gradient, building and AI batches share the maximum deferred horizon"
         GradientPipeline pipeline;
         TestBuildingPipelineBase buildings;
         auto* field=new std::uint16_t[1]{};
-        pipeline.configure(executor,true,16,1,[](auto& job,auto&) { ++job.data[0]; });
-        buildings.configure(executor,true,BuildingDelay,runTestBuildingJob);
+        pipeline.configure(executor,16,1,[](auto& job,auto&) { ++job.data[0]; });
+        buildings.configure(executor,BuildingDelay,runTestBuildingJob);
         unsigned published=0;
         buildings.publish=[&](auto& job) { CHECK(job.payload.result==job.payload.value+1); ++published; return true; };
         const auto input=std::make_shared<const unsigned>(1);
@@ -417,7 +417,7 @@ TEST_CASE("building pipeline pending results survive a save-style round trip" * 
         });
         CHECK(original.metrics.published==publishedAtSave); // Saving never publishes.
         CHECK(restored.pendingCount()==visited);
-        restored.setWorkerCount(1); // Execution is configuration, not saved state.
+        restored.finish(); // Execution is configuration, not saved state.
         for (afterSave=1; afterSave<=Delay; ++afterSave) { restored.advance(); original.advance(); }
         CHECK(restoredPublished==reference);
         CHECK(continued==reference);
@@ -441,19 +441,19 @@ TEST_CASE("building pipeline pending results survive a save-style round trip" * 
     CHECK_THROWS_AS(disabled.configure(0, TestBuildingPipeline::MaxDelay+1, runTestBuildingJob), std::invalid_argument);
 }
 
-TEST_CASE("owner-only preparation computes at submission and errors surface at the deadline" * doctest::test_suite("GradientPipeline"))
+TEST_CASE("serial preparation computes at join and errors surface at the deadline" * doctest::test_suite("GradientPipeline"))
 {
-    ComputeExecutor executor; executor.configure(2);
+    ComputeExecutor executor; executor.configure(1);
     GradientPipeline pipeline;
     auto* field=new std::uint16_t[1]{};
-    pipeline.configure(executor,false,2,1,[](auto&,auto&) { FAIL("failed seed must not propagate"); });
+    pipeline.configure(executor,2,1,[](auto&,auto&) { FAIL("failed seed must not propagate"); });
     pipeline.advance();
     bool seeded=false;
     pipeline.submit(&field,0,[&](auto&) { seeded=true; throw std::runtime_error("seed failure"); });
-    // Computed inline by the owner; the executor never saw it.
-    CHECK(seeded);
-    CHECK(executor.metrics().deferredBatches==0);
+    CHECK_FALSE(seeded);
+    CHECK(executor.metrics().deferredBatches==1);
     CHECK_THROWS_AS(pipeline.finish(),std::runtime_error);
+    CHECK(seeded);
     pipeline.advance();
     CHECK_THROWS_AS(pipeline.advance(),std::runtime_error);
     pipeline.reset(); delete[] field;
@@ -469,7 +469,7 @@ TEST_CASE("shared preparation executes off the owner and retains its deadline" *
     std::promise<void> started, release;
     auto startedSignal=started.get_future(); auto releaseSignal=release.get_future();
     bool onWorker=false;
-    pipeline.configure(executor,true,2,1,[](auto& job,auto&) { ++job.data[0]; });
+    pipeline.configure(executor,2,1,[](auto& job,auto&) { ++job.data[0]; });
     pipeline.advance();
     pipeline.submit(&field,0,[&](auto& job) {
         onWorker=std::this_thread::get_id()!=owner;
@@ -506,119 +506,7 @@ TEST_CASE("backend selection is shared across owner and resized worker scratch" 
     delete[] field;
 }
 
-TEST_CASE("GradientPipeline/worker GPU submissions finish ahead of deadlines and preserve errors and immutable leases")
-{
-    using namespace gradient_kernel;
-    const auto oldBackend = backend();
-    const auto oldBatch = batchAccelerator;
-    struct Restore
-    {
-        Backend choice;
-        decltype(batchAccelerator) provider;
-        unsigned mask;
-        ~Restore()
-        {
-            setBackend(choice);
-            batchAccelerator = provider;
-            readyPlans.store(mask);
-        }
-    } restore{oldBackend, oldBatch, readyPlans.load()};
-    readyPlans.store(1u<<unsigned(Plan::Frozen8));
-    setBackend(Backend::OpenCL);
-    batchAccelerator = [](std::span<const BackendRequest>, Plan)
-    { return false; }; // Eligibility only; callback below owns the test work.
-    for (unsigned workers : {1, 4})
-    {
-        TestGradientPipeline pipeline;
-        std::array<std::uint16_t *, 4> slots{};
-        for (auto &slot : slots)
-            slot = new std::uint16_t[1]{};
-        std::atomic<unsigned> batches{0}, singleCalls{0};
-        std::mutex completionMutex;
-        std::condition_variable completed;
-        pipeline.configure(workers, 4, 1, [&](auto &, auto &) { ++singleCalls; });
-        pipeline.setBatchWork(
-            [&](std::span<GradientPipeline::Job *const> jobs, std::span<GradientWorkspace> scratch)
-            {
-                CHECK(jobs.size() == 1);
-                CHECK(scratch.size() == jobs.size());
-                for (auto *job : jobs)
-                {
-                    job->data[0] += 100;
-                }
-                { std::lock_guard lock(completionMutex); ++batches; }
-                completed.notify_all();
-            });
-        for (unsigned tick = 0; tick < 4; ++tick)
-        {
-            pipeline.advance();
-            pipeline.submit(&slots[tick], 0,
-                            [tick](auto &job)
-                            {
-                                job.data[0] = tick;
-                            });
-        }
-        for (auto *slot : slots)
-            CHECK(slot[0] == 0);
-        // Completion must happen on workers before the owner reaches a deadline.
-        {
-            std::unique_lock lock(completionMutex);
-            CHECK(completed.wait_for(lock, std::chrono::seconds(2), [&] { return batches == 4; }));
-        }
-        pipeline.advance(); // Publication still waits for each original deadline.
-        CHECK(slots[0][0] == 100);
-        for (unsigned i = 1; i < 4; ++i)
-            CHECK(slots[i][0] == 0);
-        CHECK(batches == 4);
-        CHECK(singleCalls == 0);
-        for (unsigned i = 1; i < 4; ++i)
-        {
-            pipeline.advance();
-            CHECK(slots[i][0] == 100 + i);
-        }
-        pipeline.reset();
-        for (auto *slot : slots)
-            delete[] slot;
-        auto *failed = new std::uint16_t[1]{};
-        pipeline.configure(workers, 2, 1, [](auto &, auto &) {});
-        pipeline.setBatchWork([](auto, auto) { throw std::runtime_error("batch failure"); });
-        pipeline.advance();
-        pipeline.submit(&failed, 0, [](auto &job) { job.data[0] = 42; });
-        CHECK_THROWS_AS(pipeline.finish(), std::runtime_error);
-        CHECK(failed[0] == 0);
-        pipeline.reset();
-        delete[] failed;
-        std::array<std::uint16_t *, 2> delayed{};
-        for (auto &slot : delayed)
-            slot = new std::uint16_t[1]{};
-        pipeline.configure(workers, 3, 1, [](auto &, auto &) {});
-        pipeline.setBatchWork(
-            [](std::span<GradientPipeline::Job *const> jobs, auto)
-            {
-                for (auto *job : jobs)
-                    job->data[0] += 100;
-            });
-        pipeline.advance();
-        pipeline.submit(&delayed[0], 0,
-                        [](auto &job)
-                        {
-                            std::this_thread::sleep_for(std::chrono::milliseconds(3));
-                            job.data[0] = 21;
-                        });
-        pipeline.advance();
-        pipeline.submit(&delayed[1], 0, [](auto &) { throw std::runtime_error("later seed failure"); });
-        pipeline.advance();
-        CHECK(delayed[0][0] == 0);
-        CHECK(delayed[1][0] == 0);
-        CHECK_NOTHROW(pipeline.advance());
-        CHECK(delayed[0][0] == 121);
-        CHECK(delayed[1][0] == 0);
-        CHECK_THROWS_AS(pipeline.advance(), std::runtime_error); // Failure keeps the later field's deadline.
-        pipeline.reset();
-        for (auto *slot : delayed)
-            delete[] slot;
-    }
-}
+
 
 TEST_CASE("GradientPipeline/CPU fields keep their original worker")
 {
@@ -643,7 +531,6 @@ TEST_CASE("GradientPipeline/CPU fields keep their original worker")
         job.data[0] = 123;
         completion.set_value();
     });
-    pipeline.setBatchWork([&](auto, auto) { ++batches; });
     auto session = std::make_shared<BackendSession>();
     pipeline.setBackendSession(session);
     auto* field = new std::uint16_t[1]{};
@@ -725,7 +612,7 @@ TEST_CASE("owned GPU service initializes with two slots and leaves the sole work
     CHECK(visited==1);CHECK(published[0]==0);CHECK(state->gpu==1);CHECK(state->cpu==0);
     CHECK(service->metrics().retainedHostBytes==0);
     pipeline.advance();pipeline.advance();CHECK(published[0]==0);
-    pipeline.advance();CHECK(published[0]==123);CHECK(pipeline.gpuCompleteFields()==1);
+    pipeline.advance();CHECK(published[0]==123);
     pipeline.reset();service->stop();delete[] published;
 }
 
@@ -769,11 +656,11 @@ TEST_CASE("GPU decline recovers original seeds exactly once on a worker and reta
     while(!state->attempted && std::chrono::steady_clock::now()<until)std::this_thread::yield();
     REQUIRE(state->attempted);
     pipeline.finish();CHECK(state->cpu==1);CHECK(state->worker);CHECK(field[0]==0);
-    CHECK(service->metrics().fallbacks==1);CHECK(pipeline.cpuCompleteFields()==1);
+    CHECK(service->metrics().fallbacks==1);
     while(deviceCompleted && service->metrics().deviceCompletedFields!=1 && std::chrono::steady_clock::now()<until)std::this_thread::yield();
     CHECK(service->metrics().deviceCompletedFields==unsigned(deviceCompleted));
     CHECK(service->metrics().fallbackAfterDeviceCompletionFields==unsigned(deviceCompleted));
-    CHECK(service->metrics().executed==0);CHECK(pipeline.gpuCompleteFields()==0);
+    CHECK(service->metrics().executed==0);
     pipeline.advance();pipeline.advance();CHECK(field[0]==88);
     pipeline.setAsyncWork({});inputs.reset();CHECK(retained.expired());
     pipeline.reset();service->stop();delete[] field;
@@ -821,7 +708,7 @@ TEST_CASE("proven gradient mismatch resolves tickets without recovery or publica
     REQUIRE(attempted);
     CHECK_THROWS_AS(pipeline.finish(),GradientProofFailure);
     CHECK(state->cpu==0);CHECK(field[0]==0);CHECK(service->metrics().fallbacks==0);
-    CHECK(service->metrics().executed==0);CHECK(pipeline.cpuCompleteFields()==0);
+    CHECK(service->metrics().executed==0);
     pipeline.reset();service->stop();delete[] field;
 }
 
@@ -859,6 +746,7 @@ TEST_CASE("availability changes during seeding do not reinterpret captured CPU e
     setBackend(Backend::OpenCL);
     TestGradientPipeline pipeline;
     pipeline.configure(1,2,1,[](auto& job,auto&){CHECK(job.cpuOnly);job.data[0]=88;});
+    pipeline.setBackendSession(std::make_shared<BackendSession>());
     pipeline.session()->setExternalInitialization(true);readyPlans=0;
     std::atomic<unsigned> asynchronous{0};
     pipeline.setAsyncWork([&](auto&,PlanDecision)->std::shared_ptr<OwnedGradientField>{++asynchronous;return {};});
@@ -903,9 +791,7 @@ TEST_CASE("nullable GPU preparation recovers once on the original worker without
     while(state->attempted!=2&&std::chrono::steady_clock::now()<attemptedUntil)std::this_thread::yield();
     REQUIRE(state->attempted==2);pipeline.finish();
     CHECK(state->worker);CHECK(state->cpu==2);CHECK(state->gpu==0);
-    CHECK(service->metrics().submitted==0);CHECK(pipeline.cpuCompleteFields()==2);
-    CHECK(pipeline.cpuReason(GradientPipeline::CPUReason::OwnedInputDecline)==2);
-    CHECK(pipeline.cpuReason(GradientPipeline::CPUReason::Unavailable)==0);
+    CHECK(service->metrics().submitted==0);
     CHECK(fields[0][0]==0);CHECK(fields[1][0]==0);
     restored.configure(0,2,1,[](auto&,auto&){FAIL("saved completed CPU recovery recomputed");});restored.advance();restored.advance();
     unsigned index=0;

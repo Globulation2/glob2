@@ -101,6 +101,8 @@ void propagateField(std::uint16_t* gradient, int swimClass, int maxCost,
     const auto cpu = [&](std::uint16_t* out) {
         propagateFieldCPU(out, swimClass, maxCost, grid, workspace, isWater);
     };
+    if (!isGPU(backend())) { cpu(gradient); return; }
+    if (!workspace.backendSession) workspace.backendSession=std::make_shared<BackendSession>();
     if (!tryAcceleratedGradient(gradient, maxCost, grid, *workspace.backendSession, costs, cpu, std::move(identity), workspace.family)) cpu(gradient);
 }
 

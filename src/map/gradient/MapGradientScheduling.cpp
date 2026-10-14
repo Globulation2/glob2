@@ -206,7 +206,7 @@ void Map::ensureBuildingGradientPipeline()
 		rt.buildingDepth = depth->mode;
 		rt.buildingDepthPoint = depth->point;
 	}
-	if (delay) pipeline.configure(compute, rt.buildingShared, delay, buildScheduled);
+	if (delay) pipeline.configure(compute, delay, buildScheduled);
 	else pipeline.drain();
 }
 

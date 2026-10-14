@@ -83,6 +83,8 @@ void propagate(std::uint16_t *gradient, int maxCost, field::Grid grid, GradientW
         const auto cpu = [&](std::uint16_t* out) {
             propagate<Buckets, DirectProfiles, false>(out, maxCost, grid, workspace, terrainAt, movement);
         };
+        if (!isGPU(backend())) { cpu(gradient); return; }
+        if (!workspace.backendSession) workspace.backendSession=std::make_shared<BackendSession>();
         if (tryAcceleratedGradient(gradient, maxCost, grid, *workspace.backendSession, costs, cpu, std::move(identity), workspace.family)) return;
     }
 	if (!workspace.terrain)
