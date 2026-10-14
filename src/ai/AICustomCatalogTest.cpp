@@ -550,6 +550,32 @@ TEST_CASE("six native strategies construct and use separate demanded production 
         }
     }
 }
+TEST_CASE("flag room queries borrow compact team records with sparse and empty teams")
+{
+    glob2test::HeadlessGlobals globals;
+    glob2test::HeadlessGame fixture({.wDec=5,.hDec=5,.teams=3,.discovered=true,.loadDefaultRace=true});
+    auto* flag=fixture.addBuilding("warflag",8,8);
+    REQUIRE(flag);
+    REQUIRE(fixture.addBuilding("inn",12,12));
+    REQUIRE(fixture.addBuilding("clearingflag",16,16,0,2));
+    const AIEngine::AIWorldView world(fixture.game.captureReadBoundary());
+    const auto& type=world.catalog->at(flag->typeNum).resolvedType;
+    REQUIRE_FALSE(type.semantics.occupiesGround);
+    for(int team=-1;team<=3;++team)
+        for(int x=-2;x<world.width+2;++x)
+            for(int y=-2;y<world.height+2;++y)
+            {
+                bool reference=true;
+                for(const auto* building:world.buildingSlots(team))
+                    if(building && !AIEngine::ObservationQueries::buildingType(world,*building).semantics.occupiesGround
+                        && building->posX==world.normalizeX(x) && building->posY==world.normalizeY(y))
+                        reference=false;
+                CHECK(AIEngine::ObservationQueries::roomForBuilding(world,x,y,type,team)==reference);
+            }
+    CHECK_FALSE(AIEngine::ObservationQueries::roomForBuilding(world,40,40,type,0));
+    CHECK(AIEngine::ObservationQueries::roomForBuilding(world,8,8,type,2));
+    CHECK(AIEngine::ObservationQueries::roomForBuilding(world,12,12,type,0));
+}
 TEST_CASE("shared runtime exact anchors support rectangular attractors across the torus")
 {
     glob2test::HeadlessGlobals globals;
