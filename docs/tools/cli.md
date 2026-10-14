@@ -782,7 +782,7 @@ Choose at most one: `--record`, `--videoshot`.
 
 `--record-fps` requires `--record` or `--videoshot`.
 
-Applicable environment variables: `GLOB2_REPLAY_PATH`, `GLOB2_CHECKSUM_SIDECAR`, `GLOB2_TEAM_RESULTS`, `GLOB2_TEAM_TIMELINE`, `GLOB2_GRADIENT_BACKEND`, `GLOB2_GRADIENT_ALGORITHM`, `GLOB2_GRADIENT_VERIFY`, `GLOB2_OPENCL_DEVICE`.
+Applicable environment variables: `GLOB2_REPLAY_PATH`, `GLOB2_CHECKSUM_SIDECAR`, `GLOB2_TEAM_RESULTS`, `GLOB2_TEAM_TIMELINE`, `GLOB2_GRADIENT_BACKEND`, `GLOB2_GRADIENT_ALGORITHM`, `GLOB2_OPENCL_DEVICE`.
 
 ```sh
 glob2 game repeat saved.game.gz --ticks 64 --runs 1
