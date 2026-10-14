@@ -243,15 +243,14 @@ struct Cache::Impl
 		metrics->seedNs += elapsed(seedStart);
 		const auto propagationStart = Clock::now();
 		// Resource seeds have zero cost, just like building seeds. Reuse the
-		// existing resumable search for ordinary walkers; weighted/custom
-		// terrain retains the full kernel and its captured cost contract.
-		if (partialResourceFields && !world.terrainMovementModifiers &&
-			!gradient_kernel::weightedClass(swim) && result.values.size() <= 65536)
+		// existing resumable search with borrowed snapshot cost rules. Limit
+		// frontier allocations; larger fields retain the full kernel.
+		if (partialResourceFields && result.values.size() <= 65536)
 		{
 			result.search = std::make_unique<BuildingGradientSearch>();
-			BuildingGradientSearch::Inputs inputs;
-			inputs.registry = world.terrain;
-			result.search->begin(inputs, result.values.data(), swim, world.width, world.height);
+			BuildingGradientSearch::SnapshotCosts costs{*world.cellRules,
+				world.components().terrain->cellRules, world.terrainMovementModifiers, 256};
+			result.search->beginSnapshot(costs, result.values.data(), swim, world.width, world.height);
 			result.searchBytes = result.search->retainedBytes();
 		}
 		else
@@ -274,7 +273,9 @@ struct Cache::Impl
 			if (field.search && !field.search->resolved(i))
 			{
 				const auto start = Clock::now();
-				field.search->resolveForProposal(i);
+				BuildingGradientSearch::SnapshotCosts costs{*world.cellRules,
+					world.components().terrain->cellRules, world.terrainMovementModifiers, 256};
+				field.search->resolveForProposal(i, costs);
 				metrics->propagationNs += elapsed(start);
 				expanded = true;
 			}

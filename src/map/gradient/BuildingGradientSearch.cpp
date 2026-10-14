@@ -38,6 +38,21 @@ void BuildingGradientSearch::begin(const Map &map, std::uint16_t *seeded, int sw
 	begin(Inputs::of(map, swim), seeded, swim, map.getW(), map.getH());
 }
 
+void BuildingGradientSearch::beginSnapshot(const SnapshotCosts &costs, std::uint16_t *seeded,
+										 int swim, int width, int height)
+{
+	if (width <= 0 || height <= 0 || (width & (width - 1)) || (height & (height - 1)) ||
+		costs.indices.size() != std::size_t(width) * height || swim < 0 || unsigned(swim) >= std::size(WATER_STEP))
+		throw std::invalid_argument("Invalid snapshot gradient cost view");
+	gradient_kernel::runtime_terrain::validateQueueSize(costs.buckets);
+	observedCosts = &costs;
+	struct Reset { const SnapshotCosts *&value; ~Reset() { value = nullptr; } } reset{observedCosts};
+	Inputs inputs;
+	inputs.modifiedCosts = costs.modified;
+	inputs.buckets = costs.buckets;
+	begin(inputs, seeded, swim, width, height);
+}
+
 void BuildingGradientSearch::begin(const Inputs &inputs, std::uint16_t *seeded, int swim,
 								   int width, int height)
 {
@@ -55,13 +70,18 @@ void BuildingGradientSearch::begin(const Inputs &inputs, std::uint16_t *seeded, 
 	for (auto &bucket : buckets)
 		bucket.clear();
 	modifiedCosts = inputs.modifiedCosts;
+	snapshotCosts = observedCosts != nullptr;
+	assert(!snapshotCosts || observedCosts->indices.size() == cells);
 	registry = inputs.registry;
 	terrainBuckets = inputs.buckets;
 	const bool dynamic = modifiedCosts;
-	profiles = dynamic ? inputs.profiles : nullptr;
+	profiles = dynamic && !snapshotCosts ? inputs.profiles : nullptr;
 	if (dynamic)
 	{
-		gradient_kernel::runtime_terrain::validateQueue(profiles->movement, terrainBuckets);
+		if (snapshotCosts)
+			gradient_kernel::runtime_terrain::validateQueueSize(terrainBuckets);
+		else
+			gradient_kernel::runtime_terrain::validateQueue(profiles->movement, terrainBuckets);
 		if (!custom)
 			custom = std::make_unique<TerrainGradientWorkspace>();
 		custom->prepare(terrainBuckets);
@@ -69,13 +89,28 @@ void BuildingGradientSearch::begin(const Inputs &inputs, std::uint16_t *seeded, 
 			b.clear();
 	}
 	auto *queues = dynamic ? custom->buckets.data() : buckets.data();
-	water = !modifiedCosts && weightedClass(swim) ? inputs.water : nullptr;
-	assert(!dynamic || profiles);
-	assert(dynamic || !weightedClass(swim) || water);
+	const auto *observedMovement = dynamic && snapshotCosts ? &observedCosts->rules.movement(swim) : nullptr;
+	const bool checkObservedCells = observedMovement && !std::all_of(
+		observedMovement->profiles.begin(), observedMovement->profiles.end(), [&](auto costs) {
+			return costs.cardinal && costs.diagonal && costs.cardinal < terrainBuckets && costs.diagonal < terrainBuckets;
+		});
+	std::array<bool, 256> checked{};
+	water = !modifiedCosts && weightedClass(swim) && !snapshotCosts ? inputs.water : nullptr;
+	assert(!dynamic || profiles || snapshotCosts);
+	assert(dynamic || !weightedClass(swim) || water || snapshotCosts);
 	// Building fields have only zero-cost seeds, so no deferred seeds are needed.
 	for (std::size_t i = 0; i < cells; ++i)
 	{
 		const auto value = seeded[i];
+		if (checkObservedCells && value != GRADIENT_FORBIDDEN)
+		{
+			const auto profile = observedMovement->profileIds[observedCosts->indices[i]];
+			if (!checked[profile])
+			{
+				gradient_kernel::runtime_terrain::validateQueueEdge(observedMovement->profiles[profile], terrainBuckets);
+				checked[profile] = true;
+			}
+		}
 		// Ordinary cells need one comparison; validate only potential seeds.
 		if (value > GRADIENT_UNREACHABLE)
 		{
@@ -128,6 +163,15 @@ void BuildingGradientSearch::resolveForProposal(std::size_t target)
     if (!complete() && !resolved(target)) advance([&]{return resolved(target);});
 }
 
+void BuildingGradientSearch::resolveForProposal(std::size_t target, const SnapshotCosts &costs)
+{
+	if (!snapshotCosts || costs.indices.size() != cells || costs.modified != modifiedCosts || costs.buckets != terrainBuckets)
+		throw std::invalid_argument("Snapshot gradient cost view changed");
+	observedCosts = &costs;
+	struct Reset { const SnapshotCosts *&value; ~Reset() { value = nullptr; } } reset{observedCosts};
+	resolveForProposal(target);
+}
+
 void BuildingGradientSearch::resolveToCost(int cost)
 {
 	// Owner-free: workers call this, so it records no telemetry scope.
@@ -139,6 +183,8 @@ void BuildingGradientSearch::resolveToCost(int cost)
 // Expands one whole cost layer per iteration until done() or the queues drain.
 template <class Done> void BuildingGradientSearch::advance(Done done)
 {
+	if (snapshotCosts && !observedCosts)
+		throw std::logic_error("Snapshot search resumed without borrowed costs");
 	// A resume may select a different CPU variant from the previous resume,
 	// but every completed layer in this invocation uses one resolved choice.
 	gradient_kernel::CPUSelectionScope cpuSelection(gradient_kernel::cpuBackend());
@@ -157,6 +203,8 @@ template <class Done> void BuildingGradientSearch::advance(Done done)
 	};
 	if (modifiedCosts)
 	{
+		assert(!snapshotCosts || observedCosts);
+		const auto &movement = snapshotCosts ? observedCosts->rules.movement(swimClass) : profiles->movement;
 		auto run = [&]<unsigned N>()
 		{
 			while (pending && !done())
@@ -165,8 +213,8 @@ template <class Done> void BuildingGradientSearch::advance(Done done)
 				poppedAtDepth[depthBin(currentCost)] += custom->buckets[unsigned(currentCost) % N].size;
 				gradient_kernel::runtime_terrain::expandProfileBucket<N>(
 					gradient, custom->buckets.data(), pending, currentCost, COST_LIMIT,
-					{widthMask + 1, heightMask + 1}, profiles->movement,
-					[&](size_t i) { return profiles->cells[i]; });
+					{widthMask + 1, heightMask + 1}, movement,
+					[&](size_t i) { return snapshotCosts ? movement.profileIds[observedCosts->indices[i]] : profiles->cells[i]; });
 				++currentCost;
 			}
 		};
@@ -176,6 +224,12 @@ template <class Done> void BuildingGradientSearch::advance(Done done)
 			run.template operator()<128>();
 		else
 			run.template operator()<256>();
+	}
+	else if (snapshotCosts && weightedClass(swimClass))
+	{
+		assert(observedCosts);
+		sweep(std::true_type(), entrySteps(WATER_STEP[swimClass]),
+			  [&](size_t i) { return observedCosts->rules.swimming(observedCosts->indices[i]); });
 	}
 	else if (water)
 		sweep(std::true_type(), entrySteps(WATER_STEP[swimClass]),
@@ -213,6 +267,8 @@ void BuildingGradientSearch::clearForReuse()
 	registry.reset();
 	profiles.reset();
 	water.reset();
+	snapshotCosts = false;
+	observedCosts = nullptr;
 	if (custom)
 		for (auto &b : custom->buckets)
 			b.clear();

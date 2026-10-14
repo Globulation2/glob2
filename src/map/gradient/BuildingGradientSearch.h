@@ -5,6 +5,7 @@
 #include <cstddef>
 #include <cstdint>
 #include <memory>
+#include <span>
 #include <vector>
 
 #include "field/GradientBucket.h"
@@ -13,6 +14,7 @@
 #include "field/TerrainGradientWorkspace.h"
 
 class Map;
+class CellRuleTable;
 
 // Resumable version of the building field's zero-cost, multi-source Dijkstra.
 // Obstacles/goals are already frozen in the initialized gradient. Weighted swim
@@ -33,6 +35,15 @@ class BuildingGradientSearch
 		unsigned buckets = 64;
 		static Inputs of(const Map &map, int swim);
 	};
+	// Borrowed only during a call. Snapshot-backed searches retain their frontier,
+	// but never keep map-sized observation buffers alive between jobs.
+	struct SnapshotCosts
+	{
+		const CellRuleTable &rules;
+		std::span<const std::uint16_t> indices;
+		bool modified = false;
+		unsigned buckets = 256;
+	};
 
   private:
 	std::array<GradientBucket, GradientBucket::COUNT> buckets;
@@ -42,6 +53,8 @@ class BuildingGradientSearch
 	std::unique_ptr<TerrainGradientWorkspace> custom;
 	unsigned terrainBuckets = 64;
 	bool modifiedCosts = false;
+	bool snapshotCosts = false;
+	const SnapshotCosts *observedCosts = nullptr;
 	std::uint16_t *gradient = nullptr;
 	std::size_t cells = 0, pending = 0;
 	int currentCost = 0, swimClass = 0;
@@ -68,12 +81,16 @@ class BuildingGradientSearch
 	void begin(const Map &map, std::uint16_t *seeded, int swim);
 	// Same search from captured inputs; width and height are powers of two.
 	void begin(const Inputs &inputs, std::uint16_t *seeded, int swim, int width, int height);
+	// Continue this form only through resolveForProposal(target, costs), supplying
+	// equivalent frozen costs on every call. No borrowed view escapes a call.
+	void beginSnapshot(const SnapshotCosts &, std::uint16_t *seeded, int swim, int width, int height);
 	// target == cells finishes the field. A whole cost layer is completed to
 	// preserve equal-distance sidesteps as well as the requested scalar value.
 	void resolve(std::size_t target);
     // Caller holds its generation's lock. Proposal work changes only settled
     // values/frontier, never owner query counters or refresh-demand history.
     void resolveForProposal(std::size_t target);
+	void resolveForProposal(std::size_t target, const SnapshotCosts &);
 
 	void finish() { resolve(cells); }
 	// Settles whole cost layers up to and including cost. Settled values equal
