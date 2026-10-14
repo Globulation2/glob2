@@ -229,7 +229,8 @@ committed raw device outputs with an independent weighted-path oracle and tests
 fixed-point corruption detection separately. The retained NVIDIA cases must
 execute on the device; an unavailable adapter or CPU fallback cannot qualify GPU
 coverage. Set `GLOB2_REQUIRE_VULKAN=1` when requiring the native Vulkan cases.
-Run OpenCL tests on an actual OpenCL device and browser WebGPU cases separately.
+Set `GLOB2_REQUIRE_OPENCL=1` to require OpenCL device execution. Run browser
+WebGPU cases separately.
 `browser/tests/gradient-compute.spec.js` compares 66 fields, including all five
 retained NVIDIA inputs on both algorithms with repeated buffer reuse. Set
 `GLOB2_WEBGPU_EXPECT_DEVICE=NVIDIA` (or another device-name pattern) to require a

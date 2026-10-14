@@ -28,8 +28,9 @@ void initializeForTest()
 {
     using namespace gradient_kernel;
     if constexpr(!GAGCore::ThreadSupport::available) return;
-    if(initializationState.load()==2) return;
-    onWorker([]{gradient_kernel::initializeOpenCL();});
+    if(initializationState.load()!=2) onWorker([]{gradient_kernel::initializeOpenCL();});
+    if(std::getenv("GLOB2_REQUIRE_OPENCL"))
+        REQUIRE_MESSAGE((readyPlans.load() & (1u << unsigned(Plan::Frozen8))) != 0, openCLStatus().error);
 }
 
 struct RestoreBackend
@@ -74,7 +75,7 @@ TEST_SUITE("OpenCLGradient")
         using namespace gradient_kernel;
         RestoreBackend restore;
         const auto initial = openCLStatus();
-        INFO("OpenCL device: " << initial.device << "; fallback reason: " << initial.error);
+        MESSAGE("OpenCL device: " << initial.device << "; available: " << initial.available << "; fallback reason: " << initial.error);
         const bool supported=(readyPlans.load()&(1u<<unsigned(Plan::Frozen8)))!=0;
         setBackend(supported ? Backend::OpenCL : Backend::CPU);
         std::mt19937 random(1729);
