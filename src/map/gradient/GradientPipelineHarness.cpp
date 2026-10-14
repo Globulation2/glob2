@@ -442,7 +442,7 @@ TEST_CASE("building pipeline pending results survive a save-style round trip" * 
 
 TEST_CASE("serial preparation computes at join and errors surface at the deadline" * doctest::test_suite("GradientPipeline"))
 {
-    ComputeExecutor executor; executor.configure(1);
+    ComputeExecutor executor; executor.configureTelemetry(ComputeTelemetryMode::Summary); executor.configure(1);
     GradientPipeline pipeline;
     auto* field=new std::uint16_t[1]{};
     pipeline.configure(executor,2,1,[](auto&,auto&) { FAIL("failed seed must not propagate"); });

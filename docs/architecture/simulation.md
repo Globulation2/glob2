@@ -434,8 +434,8 @@ sequentially: a later decline must not roll back an earlier completed field.
 Each transaction retains its original due tick, ticket, controls and immutable
 inputs. Frozen8 uses four-color integer relaxation
 on 16×16 tiles with frozen halos and eight sweeps; Jacobi uses separate input/output
-buffers for each round. A convergence signal starts complete-field validation;
-it does not by itself establish correct execution.
+buffers for each round. The adapter commits output only after convergence and
+confirmed driver completion. Numerical correctness is established by device tests.
 
 Vulkan retains one adapter-owned work set because its execution is serial. The
 set holds buffers, immutable descriptor bindings, command resources, a fence and
