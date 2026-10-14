@@ -294,7 +294,6 @@ bool Game::executeModifyFlag(const OrderModifyFlag& omf, int localPlayer)
 		int newRange=omf.range;
 		if (newRange < 0 || newRange > b->type->maxUnitStayRange) return false;
 		b->unitStayRange=newRange;
-		b->updateHiringConfiguration();
 
 		if (b->type->zonableForbidden)
 		{
@@ -316,7 +315,6 @@ bool Game::executeModifyClearingFlag(const OrderModifyClearingFlag& omcf, int lo
 		&& b->runtime->attractsRole(0))
 	{
 		memcpy(b->clearingMaterials, omcf.clearingMaterials, sizeof(bool)*MaterialCount);
-		b->updateHiringConfiguration();
 		return true;
 	}
 
@@ -337,7 +335,6 @@ bool Game::executeModifyMinLevelToFlag(const OrderModifyMinLevelToFlag& omwf, in
 			b->explorersRequireBombing = omwf.minLevelToFlag != 0;
 		if (omwf.targetRole == 0) b->minLevelToFlag = omwf.minLevelToFlag;
 		if (omwf.targetRole == 2) b->minWorkerLevelToFlag = omwf.minLevelToFlag;
-		b->updateHiringConfiguration();
 
 		// flush all the actual units
 		int maxUnitWorkingSaved = b->maxUnitWorking;
@@ -371,7 +368,6 @@ bool Game::executeMoveFlag(const OrderMoveFlag& omf, int localPlayer)
 		}
 		b->posX=omf.x;
 		b->posY=omf.y;
-		b->updateHiringConfiguration();
 		areaEffects.changed(b->gid);
 		if (b->type->runtimeSuppliesStock || b->type->runtimeSuppliesDirectStock)
 		{

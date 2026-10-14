@@ -384,7 +384,6 @@ bool Building::tryToBuildingSiteRoom(void)
 
 		// flag useful :
 		unitStayRange=type->defaultUnitStayRange;
-		updateHiringConfiguration();
 
 		// quality parameters
 		// hp=type->hpInit; // (Uint16)

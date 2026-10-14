@@ -21,7 +21,6 @@ void checkPlannerOutput(const HiringPlanner::Output &actual, const HiringPlanner
 		CAPTURE(b);
 		const auto &a = actual.buildings[b], &e = expected.buildings[b];
 		CHECK(a.building == e.building); CHECK(a.type == e.type);
-		CHECK(a.configuration == e.configuration);
 		REQUIRE(a.jobs.size() == e.jobs.size());
 		for (unsigned j = 0; j < a.jobs.size(); ++j)
 		{

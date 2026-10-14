@@ -5,7 +5,8 @@
 namespace Hiring
 {
 inline constexpr unsigned PublicationDelay = 4, RefreshInterval = 4, CandidateExtras = 2;
-// A vacancy just missed by an observation needs at most one refresh plus publication.
+// An attraction round stays open this long while roles are owed: a vacancy just
+// missed by an observation needs at most one refresh plus publication.
 inline constexpr unsigned RecruitmentRetryTicks = PublicationDelay + RefreshInterval;
 // Slot zero is delivery; the remaining slots are clearing, exploration and defense.
 inline std::array<unsigned, 4> roleTargets(unsigned seats, bool delivery, std::array<bool, 3> roles)

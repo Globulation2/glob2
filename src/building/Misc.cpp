@@ -558,7 +558,6 @@ Uint32 Building::checkSum(std::vector<Uint32> *checkSumsVector, bool legacy152)
 	// Rust port should preserve the arithmetic-shift behavior — i.e.
 	// `((cs as i32) >> 1) as u32` — not `cs.rotate_right(1)`.
 	int cs=0;
-	cs ^= hiringEpoch*0x85ebca6bu;
 	if (areaFunded || areaFundingType>=0) cs ^= Uint32(areaFundingType+1)*0x9e3779b9u ^ areaFundingTick ^ (Uint32(areaFundingTeam+1)<<24) ^ (areaFunded ? 0x61757261u : 0);
 
 	cs^=typeNum;
@@ -600,9 +599,6 @@ Uint32 Building::checkSum(std::vector<Uint32> *checkSumsVector, bool legacy152)
 		checkSumsVector->push_back(cs);// [8]
 
 	cs^=subscriptionWorkingTimer;
-	cs^=Uint32(hiringRecruitmentDeadline);
-	cs=(cs<<31)|(cs>>1);
-	cs^=Uint32(hiringRecruitmentDeadline >> 32);
 	if (checkSumsVector)
 		checkSumsVector->push_back(cs);// [9]
 

@@ -205,13 +205,13 @@ bool Building::subscribeWorkStep()
 {
 	const bool attracts=runtime->attractionRoles!=0;
 	if (!attracts) return subscribeToBringMaterialsStep();
-	const bool recruitmentRound=subscriptionWorkingTimer>=32 || hiringRecruitmentDeadline!=0;
+	const bool recruitmentRound=subscriptionWorkingTimer>=32;
 	bool hired=subscribeToBringMaterialsStep();
 	// Fill fair delivery quota before the attraction round can borrow it.
 	if (recruitmentRound) while (subscribeToBringMaterialsStep()) hired=true;
 	hired=subscribeForFlagingStep() || hired;
 	// Attraction exhausted its eligible candidates; unused seats may deliver.
-	if (recruitmentRound && !hiringRecruitmentDeadline) while (subscribeToBringMaterialsStep(true)) hired=true;
+	if (recruitmentRound && !subscriptionWorkingTimer) while (subscribeToBringMaterialsStep(true)) hired=true;
 	return hired;
 }
 
@@ -452,41 +452,34 @@ bool Building::considerUnitForWarriorFlag(Unit* unit, int* dist, int terrainDist
 
 bool Building::subscribeForFlagingStep()
 {
-	if (buildingState == DEAD)
+	if (buildingState==DEAD)
 	{
 		resetFailureTallies();
 		return false;
 	}
 
-	bool hired = false;
-	const Uint64 tick = owner->game->stepCounter;
-	if (hiringRecruitmentDeadline && tick > hiringRecruitmentDeadline)
-		hiringRecruitmentDeadline = 0;
-	++subscriptionWorkingTimer;
-	if (subscriptionWorkingTimer > 32)
+	bool hired=false;
+	subscriptionWorkingTimer++;
+	if (subscriptionWorkingTimer>32)
 	{
-		subscriptionWorkingTimer = 0;
-		if (!hiringRecruitmentDeadline)
-			hiringRecruitmentDeadline = tick + Hiring::RecruitmentRetryTicks;
-	}
-	if (hiringRecruitmentDeadline)
-	{
+		// Reset stale failure counts for the case where the while loop below
+		// doesn't run (building already fully staffed). When the loop does run,
+		// this is overwritten by the per-iteration reset on iteration 1.
 		resetFailureTallies();
 		if (Sint32(unitsWorking.size()) < desiredMaxUnitWorking)
 			hired = hireFlagUnits();
-		bool owed = false;
-		for (int role = 0; role < 3; ++role)
+		// Suggestions may be missing or stale, so an owed round retries briefly
+		// rather than waiting another full clock cycle.
+		bool owed=false;
+		for (int role=0; role<3; ++role)
 		{
-			int assigned = 0;
-			for (const auto *unit : unitsWorking)
-				assigned += unit->activity == Unit::ACT_FLAG &&
-							int(unit->jobPurpose) == int(UnitJobPurpose::Clear) + role;
-			owed |= assigned < workRoleTarget(role);
+			int assigned=0;
+			for (const auto* unit : unitsWorking)
+				assigned += unit->activity==Unit::ACT_FLAG && int(unit->jobPurpose)==int(UnitJobPurpose::Clear)+role;
+			owed |= assigned<workRoleTarget(role);
 		}
-		// Invalidated lists do not cancel an owed round. Current configuration
-		// decides whether there is still a role to staff.
-		if (!owed)
-			hiringRecruitmentDeadline = 0;
+		if (!owed || subscriptionWorkingTimer>32+int(Hiring::RecruitmentRetryTicks))
+			subscriptionWorkingTimer=0;
 		updateCallLists();
 	}
 	return hired;

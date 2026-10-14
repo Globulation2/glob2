@@ -179,7 +179,6 @@ class Building : public BuildingUtils, public BuildingStateRecord
 	///This function updates the call lists that the Building is on. A call list is a list
 	///of buildings in Team that need units for work, or can have units "inside"
 	void updateCallLists(void);
-	void updateHiringConfiguration();
 	/// Synchronize cached membership after Team removes every service-list entry.
 	void resetServiceListState();
 	///When a building is waiting for room, this will make sure that the building is in the
@@ -505,8 +504,6 @@ private:
 
 	bool hireMaterialUnit(const int* targets,const int* served);
 	bool hireFlagUnits();
-    std::array<Sint32, 8> hiringConfiguration{};
-    bool hiringConfigurationObserved=false;
 
 	/// Per-material delivery targets and how many of each are already accounted
 	/// for by deliveries that landed plus units on their way. Counted in

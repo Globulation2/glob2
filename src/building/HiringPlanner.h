@@ -26,7 +26,6 @@ struct BuildingLists
 {
 	BuildingRef building;
 	int type = -1;
-	std::uint64_t configuration = 0;
 	std::vector<List> jobs;
 };
 // Worker-side counters; tests use them to check pruning and plane reuse.
@@ -80,8 +79,6 @@ class Planner
 	Output rank(const Inputs &, unsigned team, unsigned capacity = 128);
 };
 bool needsCandidates(const SimulationSnapshot::BuildingView &);
-std::array<Sint32, 8> configurationFacts(const BuildingStateRecord &);
-std::uint64_t configuration(const BuildingStateRecord &);
 bool better(const Candidate &, const Candidate &, Job);
 List shortlist(Key, std::vector<Candidate>, unsigned capacity);
 } // namespace HiringPlanner

@@ -182,7 +182,6 @@ public:
 friend class HiringPipelineHarness;
 private:
 	std::unique_ptr<const AIPlanning::BuildingCapabilityIndex> buildingCapabilityIndex;
-	std::string hiringCatalogFingerprint; // Reconstruction identity, not continuation state.
 	std::vector<Uint8> unitAvailability;
 	bool waterOnlyUnits=false;
 	friend class HighResolutionIntegrationHarness;

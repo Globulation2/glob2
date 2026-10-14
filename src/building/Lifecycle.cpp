@@ -8,7 +8,6 @@
 #include <stdlib.h>
 
 #include "Building.h"
-#include "HiringPlanner.h"
 #include "BuildingType.h"
 #include "EngineTiming.h"
 #include "FileFormatVersions.h"
@@ -70,7 +69,6 @@ Building::Building(int x, int y, Uint16 gid, Sint32 typeNum, Team *team, Buildin
 	maxUnitWorkingPrevious = 0;
 	desiredMaxUnitWorking = maxUnitWorking;
 	subscriptionWorkingTimer = 0;
-	hiringRecruitmentDeadline = 0;
 	priority = 0;
 	oldPriority = 0;
 
@@ -200,11 +198,11 @@ void Building::resetPathfindGradients(GradientDrop cause)
 			lastGlobalGradientUpdateStepCounter[i] = std::min(lastGlobalGradientUpdateStepCounter[i], due);
 			continue;
 		}
-		auto guard=SharedBuildingGradient::lock(sharedGradient[i]);
-        if (stats) stats->fieldReleased(*this, i, BuildingGradientStats::Event::Drop, owner->game->stepCounter);
+		auto guard = SharedBuildingGradient::lock(sharedGradient[i]);
+		if (stats) stats->fieldReleased(*this, i, BuildingGradientStats::Event::Drop, owner->game->stepCounter);
 		dropGradientSlot(i, cause);
 		retireSharedGradient(i);
-        recycleBuildingGradientSearch(std::move(globalGradientSearch[i]));
+		recycleBuildingGradientSearch(std::move(globalGradientSearch[i]));
 		owner->game->map.recycleBuildingGradientBuffer(globalGradient[i]);
 		globalGradient[i] = NULL;
 		gradientGeneration[i] = 0;
@@ -220,12 +218,12 @@ void Building::freeIdleGradients()
 	{
 		if (globalGradient[c] && globalGradientUsedStep[c]+IDLE_TICKS<now)
 		{
-			auto guard=SharedBuildingGradient::lock(sharedGradient[c]);
-            if (auto *stats = owner->game->map.gradientStats.get())
+			auto guard = SharedBuildingGradient::lock(sharedGradient[c]);
+			if (auto *stats = owner->game->map.gradientStats.get())
 				stats->fieldReleased(*this, c, BuildingGradientStats::Event::Evict, now);
 			dropGradientSlot(c, GradientDrop::Idle);
 			retireSharedGradient(c);
-            recycleBuildingGradientSearch(std::move(globalGradientSearch[c]));
+			recycleBuildingGradientSearch(std::move(globalGradientSearch[c]));
 			owner->game->map.recycleBuildingGradientBuffer(globalGradient[c]);
 			globalGradient[c] = NULL;
 		}
@@ -241,7 +239,7 @@ void Building::freeGradients()
 	{
 		dropGradientSlot(i, GradientDrop::New);
 		retireSharedGradient(i);
-        globalGradientSearch[i].reset();
+		globalGradientSearch[i].reset();
 		delete[] globalGradient[i];
 		globalGradient[i] = NULL;
 		gradientGeneration[i] = 0;
@@ -384,7 +382,6 @@ void Building::load(GAGCore::InputStream *stream, BuildingsTypes *types, Team *o
 	maxUnitWorkingFuture = 1;
 	desiredMaxUnitWorking = maxUnitWorking;
 	subscriptionWorkingTimer = 0;
-	hiringRecruitmentDeadline = 0;
 
 	owner->prestige += type->prestige;
 
@@ -489,9 +486,6 @@ void Building::load(GAGCore::InputStream *stream, BuildingsTypes *types, Team *o
 	freeGradients();
 
 	verbose = false;
-    hiringEpoch=versionMinor>=FILE_FORMAT_VERSION_CACHED_HIRING?stream->readUint32("hiringEpoch"):0;
-    hiringConfiguration=HiringPlanner::configurationFacts(*this);
-    hiringConfigurationObserved=true;
 	stream->readLeaveSection();
 
 	lastShootStep = LAST_SHOOT_STEP_NEVER;
@@ -611,7 +605,6 @@ void Building::save(GAGCore::OutputStream *stream)
     }
 
 
-	stream->writeUint32(hiringEpoch,"hiringEpoch");
 	stream->writeLeaveSection();
 }
 
@@ -640,14 +633,6 @@ void Building::loadCrossRef(GAGCore::InputStream *stream, BuildingsTypes *types,
 	}
 
 	subscriptionWorkingTimer = stream->readSint32("subscriptionWorkingTimer");
-	hiringRecruitmentDeadline = 0;
-	if (versionMinor >= FILE_FORMAT_VERSION_CACHED_HIRING)
-	{
-		hiringRecruitmentDeadline = Uint64(stream->readUint32("hiringRecruitmentDeadlineHigh")) << 32;
-		hiringRecruitmentDeadline |= stream->readUint32("hiringRecruitmentDeadlineLow");
-		if (hiringRecruitmentDeadline > Uint64(owner->game->stepCounter) + Hiring::RecruitmentRetryTicks)
-			throw std::runtime_error("Invalid hiring recruitment deadline");
-	}
 	maxUnitWorking = stream->readSint32("maxUnitWorking");
 	maxUnitWorkingPreferred = stream->readSint32("maxUnitWorkingPreferred");
 	if(versionMinor>=FILE_FORMAT_VERSION_MAX_UNIT_WORKING_PREVIOUS)
@@ -762,8 +747,6 @@ void Building::saveCrossRef(GAGCore::OutputStream *stream)
 	}
 
 	stream->writeSint32(subscriptionWorkingTimer, "subscriptionWorkingTimer");
-	stream->writeUint32(hiringRecruitmentDeadline >> 32, "hiringRecruitmentDeadlineHigh");
-	stream->writeUint32(Uint32(hiringRecruitmentDeadline), "hiringRecruitmentDeadlineLow");
 	stream->writeSint32(maxUnitWorking, "maxUnitWorking");
 	stream->writeSint32(maxUnitWorkingPreferred, "maxUnitWorkingPreferred");
 	stream->writeSint32(maxUnitWorkingPrevious, "maxUnitWorkingPrevious");

@@ -209,79 +209,28 @@ TEST_SUITE("HiringPipeline")
 			}
 		}
 	}
-	TEST_CASE("configuration changes away and back cannot revive a pending ranking")
+	TEST_CASE("configuration changes keep suggestions and admission rechecks live eligibility")
 	{
 		glob2test::HeadlessGlobals globals;
 		glob2test::HeadlessGame w({.discovered = true, .loadDefaultRace = true});
-		auto *b = innWithWorker(w);
-		HiringPipeline p(w.game.map.computeExecutor());
-		p.observe(w.game, observation(w));
-		const auto epoch = b->hiringEpoch;
-		++b->unitStayRange;
+		auto *b = w.addBuilding("warflag", 8, 8);
+		auto *u = w.addUnit(WARRIOR, 6, 8);
+		b->maxUnitWorking = 1;
+		b->subscriptionWorkingTimer = 32;
 		b->updateCallLists();
-		--b->unitStayRange;
-		b->updateCallLists();
-		CHECK(b->hiringEpoch == epoch + 2);
-		p.publishDue(4);
-		CHECK(p.suggestions(*b) == nullptr);
-	}
-	TEST_CASE("same-tick flag orders invalidate suggestions even when configuration is restored")
-	{
-		glob2test::HeadlessGlobals globals;
-		for (unsigned kind = 0; kind < 3; ++kind)
-		{
-			CAPTURE(kind);
-			glob2test::HeadlessGame w({.discovered = true, .loadDefaultRace = true, .header = true});
-			auto *b = w.addBuilding("clearingflag", 8, 8);
-			w.addUnit(WORKER, 6, 8);
-			b->maxUnitWorking = 1; b->updateCallLists();
-			HiringPipeline pipeline(w.game.map.computeExecutor());
-			pipeline.observe(w.game, observation(w));
-			pipeline.publishDue(4);
-			REQUIRE(pipeline.suggestions(*b));
-			const auto epoch = b->hiringEpoch;
-			const auto execute = [&](std::shared_ptr<Order> order)
-			{
-				order->sender = 0;
-				REQUIRE(w.game.executeOrder(order, 0));
-			};
-			if (kind == 0)
-			{
-				const int range = b->unitStayRange;
-				execute(std::make_shared<OrderModifyFlag>(b->gid, range ? range - 1 : 1));
-				execute(std::make_shared<OrderModifyFlag>(b->gid, range));
-			}
-			else if (kind == 1)
-			{
-				bool before[MaterialCount], changed[MaterialCount];
-				std::copy_n(b->clearingMaterials, MaterialCount, before);
-				std::copy_n(before, MaterialCount, changed); changed[WOOD] = !changed[WOOD];
-				execute(std::make_shared<OrderModifyClearingFlag>(b->gid, changed));
-				execute(std::make_shared<OrderModifyClearingFlag>(b->gid, before));
-			}
-			else
-			{
-				execute(std::make_shared<OrderMoveFlag>(b->gid, 9, 8, false));
-				execute(std::make_shared<OrderMoveFlag>(b->gid, 8, 8, false));
-			}
-			CHECK(b->hiringEpoch == epoch + 2);
-			CHECK(pipeline.suggestions(*b) == nullptr);
-		}
-	}
-	TEST_CASE("catalog changes supersede rankings while identical reconstruction preserves them")
-	{
-		glob2test::HeadlessGlobals globals;
-		glob2test::HeadlessGame w({.discovered = true, .loadDefaultRace = true});
-		auto *b = innWithWorker(w);
+		u->activity = Unit::ACT_RANDOM;
+		u->medical = Unit::MED_FREE;
+		u->hungriness = 0;
 		glob2test::publishCurrentHiringSuggestions(w.game);
 		REQUIRE(w.game.hiringCandidates(*b));
-		w.game.configureBuildingCatalog();
-		CHECK(w.game.hiringCandidates(*b) != nullptr);
-		auto catalog = nlohmann::json::parse(w.game.buildingsTypes.snapshotJson());
-		catalog["variants"][b->typeNum]["properties"]["maxMaterial"][WHEAT] = 40;
-		w.game.buildingsTypes.loadSnapshotJson(catalog.dump());
-		w.game.configureBuildingCatalog();
-		CHECK(w.game.hiringCandidates(*b) == nullptr);
+		b->minLevelToFlag = NB_UNIT_LEVELS - 1;
+		b->updateCallLists();
+		REQUIRE(w.game.hiringCandidates(*b));
+		CHECK_FALSE(b->subscribeForFlagingStep());
+		CHECK(b->unitsWorking.empty());
+		b->minLevelToFlag = 0;
+		CHECK(b->subscribeForFlagingStep());
+		CHECK(b->unitsWorking.size() == 1);
 	}
 	TEST_CASE("missing lists do not synchronously scan or assign a worker")
 	{
@@ -368,8 +317,7 @@ TEST_SUITE("HiringPipeline")
 		CHECK(hiredAt >= 4);
 		CHECK(hiredAt - 4 <= 8);
 	}
-	TEST_CASE(
-		"an owed attraction round keeps one deadline through clock wraps and configuration changes")
+	TEST_CASE("an owed attraction round retries for a bounded window")
 	{
 		glob2test::HeadlessGlobals globals;
 		glob2test::HeadlessGame w({.discovered = true, .loadDefaultRace = true});
@@ -377,18 +325,13 @@ TEST_SUITE("HiringPipeline")
 		b->maxUnitWorking = 1;
 		b->subscriptionWorkingTimer = 32;
 		b->updateCallLists();
-		w.game.stepCounter = 100;
-		CHECK_FALSE(b->subscribeForFlagingStep());
-		REQUIRE(b->hiringRecruitmentDeadline == 108);
-		++b->unitStayRange;
-		b->updateCallLists();
-		w.game.stepCounter = 101;
-		for (unsigned i = 0; i < 70; ++i)
+		for (unsigned i = 0; i < Hiring::RecruitmentRetryTicks; ++i)
+		{
 			CHECK_FALSE(b->subscribeForFlagingStep());
-		CHECK(b->hiringRecruitmentDeadline == 108);
-		w.game.stepCounter = 109;
+			CHECK(b->subscriptionWorkingTimer == 33 + int(i));
+		}
 		CHECK_FALSE(b->subscribeForFlagingStep());
-		CHECK(b->hiringRecruitmentDeadline == 0);
+		CHECK(b->subscriptionWorkingTimer == 0);
 	}
 	TEST_CASE("whole-game continuation retains an outstanding attraction request")
 	{
@@ -400,7 +343,7 @@ TEST_SUITE("HiringPipeline")
 		b->subscriptionWorkingTimer = 32;
 		b->updateCallLists();
 		CHECK_FALSE(b->subscribeForFlagingStep());
-		REQUIRE(b->hiringRecruitmentDeadline == 8);
+		REQUIRE(b->subscriptionWorkingTimer == 33);
 		original.game.prepareReadBoundary(false);
 		const auto checksum = original.game.checkSum();
 		auto *storage = new GAGCore::MemoryStreamBackend;
@@ -416,7 +359,7 @@ TEST_SUITE("HiringPipeline")
 		CHECK(restored.game.checkSum() == checksum);
 		auto *loaded = restored.game.teams[0]->myBuildings[Building::GIDtoID(b->gid)];
 		REQUIRE(loaded);
-		CHECK(loaded->hiringRecruitmentDeadline == 8);
+		CHECK(loaded->subscriptionWorkingTimer == 33);
 		for (unsigned tick = 0; tick < 12; ++tick)
 		{
 			original.game.syncStep(0);
@@ -441,15 +384,15 @@ TEST_SUITE("HiringPipeline")
 		extra->medical = Unit::MED_FREE;
 		extra->hungriness = 0;
 		extra->carriedMaterial = WHEAT;
-		b->hiringRecruitmentDeadline = 8;
+		b->subscriptionWorkingTimer = 33;
 		glob2test::publishCurrentHiringSuggestions(w.game);
 		CHECK(b->subscribeWorkStep()); // One fair delivery seat.
 		CHECK(b->unitsWorking.size() == 1);
 		CHECK_FALSE(b->subscribeWorkStep()); // Attraction seat remains owed.
 		CHECK(b->unitsWorking.size() == 1);
-		w.game.stepCounter = 9;
+		b->subscriptionWorkingTimer = 32 + int(Hiring::RecruitmentRetryTicks);
 		CHECK(b->subscribeWorkStep());
-		CHECK(b->hiringRecruitmentDeadline == 0);
+		CHECK(b->subscriptionWorkingTimer == 0);
 		CHECK(b->unitsWorking.size() == 2);
 	}
 	TEST_CASE("imminent attraction peers receive alternatives without inactive peers claiming them")

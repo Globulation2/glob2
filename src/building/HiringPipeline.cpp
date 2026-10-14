@@ -56,7 +56,6 @@ void saveOutput(GAGCore::OutputStream *s, const Output &o)
 		s->writeUint16(b.building.gid, "gid");
 		s->writeUint32(b.building.generation, "generation");
 		s->writeSint32(b.type, "type");
-		write64(s, b.configuration, "configuration");
 		s->writeUint32(b.jobs.size(), "jobs");
 		s->writeEnterSection("jobLists");
 		for (unsigned n = 0; n < b.jobs.size(); ++n)
@@ -112,7 +111,6 @@ std::shared_ptr<const Output> loadOutput(GAGCore::InputStream *s, const Game &ga
 		b.building.gid = s->readUint16("gid");
 		b.building.generation = s->readUint32("generation");
 		b.type = s->readSint32("type");
-		b.configuration = read64(s, "configuration");
 		if (Building::GIDtoTeam(b.building.gid) != int(o->team) || b.type < 0 ||
 			b.type >= int(game.buildingsTypes.size()) || int(b.building.gid) <= previousBuilding ||
 			!b.building.generation)
@@ -295,8 +293,8 @@ const HiringPlanner::BuildingLists *HiringPipeline::suggestions(const Building &
 	const auto it =
 		std::lower_bound(o->buildings.begin(), o->buildings.end(), ref.gid,
 						 [](const auto &lists, unsigned gid) { return lists.building.gid < gid; });
-	if (it != o->buildings.end() && it->building == ref && it->type == b.typeNum &&
-		it->configuration == HiringPlanner::configuration(b))
+	// Configuration changes need no invalidation: admission rechecks live state.
+	if (it != o->buildings.end() && it->building == ref && it->type == b.typeNum)
 		return &*it;
 	return nullptr;
 }

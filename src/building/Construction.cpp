@@ -10,7 +10,6 @@
 #include <stdexcept>
 
 #include "Building.h"
-#include "HiringPlanner.h"
 #include "BuildingType.h"
 #include "EngineTiming.h"
 #include "FixedPoint.h"
@@ -407,16 +406,8 @@ void Building::resetServiceListState()
 	std::fill_n(inUpgrade,NB_ABILITY,LS_OUT);
 }
 
-void Building::updateHiringConfiguration()
-{
-    const auto configuration=HiringPlanner::configurationFacts(*this);
-    if(hiringConfigurationObserved && configuration!=hiringConfiguration)++hiringEpoch;
-    hiringConfiguration=configuration;
-    hiringConfigurationObserved=true;
-}
 void Building::updateCallLists(void)
 {
-    updateHiringConfiguration();
 	if (buildingState==DEAD)
 		return;
 	desiredMaxUnitWorking = desiredNumberOfWorkers();
