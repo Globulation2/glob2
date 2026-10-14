@@ -978,7 +978,7 @@ TEST_CASE("graphics batches finish once, retain failures and release captures" *
             [&, retained](auto context)
             {
                 ++results[context.index];
-                CHECK((ComputeExecutor::workerSlot() != 0 || threads == 1));
+                CHECK((ComputeExecutor::workerSlot() != 0 || executor.threadCount() == 1));
             });
         retained.reset();
         executor.finishPresentationBatch(batch);

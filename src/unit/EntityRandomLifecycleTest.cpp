@@ -320,7 +320,7 @@ TEST_SUITE("EntityRandomLifecycle")
         }
     }
 
-    TEST_CASE("format 150 text area saves are rejected [save-format][artifacts]")
+    TEST_CASE("format 150 text area saves retain funded services through current saves [save-format][artifacts]")
     {
         glob2test::HeadlessGlobals globals;
         glob2test::HeadlessGame world({.header=true, .seed=731});
@@ -387,7 +387,21 @@ TEST_SUITE("EntityRandomLifecycle")
                       "versionMinor = 150");
         std::ofstream(glob2test::artifactDir() / "format-150.game.txt", std::ios::binary) << bytes;
         glob2test::HeadlessGame migrated({.header=true});
-        CHECK_FALSE(load(migrated.game, bytes, true));
+        REQUIRE(load(migrated.game, bytes, true));
+        auto* restoredUnit=migrated.team->myUnits[Unit::GIDtoID(unit->gid)];
+        auto* restoredBuilding=migrated.team->myBuildings[Building::GIDtoID(building->gid)];
+        REQUIRE(restoredUnit); REQUIRE(restoredBuilding);
+        CHECK(restoredUnit->areaServiceRemainders==unit->areaServiceRemainders);
+        CHECK(restoredUnit->areaLastPulseTick==unit->areaLastPulseTick);
+        CHECK(restoredBuilding->areaFunded);
+        CHECK(restoredBuilding->areaFundingTeam==building->areaFundingTeam);
+        CHECK(restoredBuilding->areaFundingType==building->areaFundingType);
+        CHECK(restoredBuilding->areaFundingTick==building->areaFundingTick);
+        const auto current=save(migrated.game,true);
+        glob2test::HeadlessGame continued({.header=true});
+        REQUIRE(load(continued.game,current,true));
+        CHECK(migrated.game.checkSum(nullptr,nullptr,nullptr,true)==
+              continued.game.checkSum(nullptr,nullptr,nullptr,true));
 }
 
     TEST_CASE("truncated binary RNG state and even increments are rejected")
