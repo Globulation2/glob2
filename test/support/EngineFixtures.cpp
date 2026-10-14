@@ -210,7 +210,7 @@ class HiringPipelineHarness
 		game.hiringPipeline->cachedChecksum.reset();
 		for (unsigned team = 0; team < unsigned(game.teamsCount()); ++team)
 		{
-			HiringPlanner::Cache cache;
+			HiringPlanner::Planner cache;
 			game.hiringPipeline->publishedBounds[team] = 2048 + input.outputBounds[team];
 			auto output = std::make_shared<HiringPlanner::Output>(cache.rank(input, team, 128));
 			output->checksum = HiringPipeline::checksumOutput(*output);

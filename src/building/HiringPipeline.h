@@ -21,7 +21,6 @@ class HiringPipeline
 	struct Batch;
 	ComputeExecutor &executor;
 	std::optional<Uint32> lastObserved;
-	std::array<std::unique_ptr<HiringPlanner::Cache>, 16> caches;
 	std::array<std::shared_ptr<const HiringPlanner::Output>, 16> published;
 	std::array<Uint64, 16> publishedBounds{};
 	std::deque<std::unique_ptr<Batch>> pending;

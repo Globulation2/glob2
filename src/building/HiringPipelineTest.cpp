@@ -516,7 +516,7 @@ TEST_SUITE("HiringPlanner")
 			u->hungriness = 1;
 			u->carriedMaterial = WHEAT;
 		}
-		HiringPlanner::Cache cache;
+		HiringPlanner::Planner cache;
 		for (unsigned tick : {0u, 4u, 8u})
 		{
 			w.game.stepCounter = tick;

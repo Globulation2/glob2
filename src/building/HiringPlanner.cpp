@@ -5,9 +5,7 @@
 #include "Unit.h"
 #include "Building.h"
 #include "SharedBuildingGradient.h"
-#include "SnapshotGradient.h"
 #include "ai/observation/AIWorldView.h"
-#include "field/RuntimeTerrainGradient.h"
 #include "field/AirPathfind.h"
 #include <algorithm>
 #include <chrono>
@@ -28,23 +26,6 @@ std::uint64_t elapsed(Clock::time_point start)
 using World = AIEngine::AIWorldView;
 using B = SimulationSnapshot::BuildingView;
 using U = SimulationSnapshot::UnitView;
-// Conservative keys use the snapshot's existing versions. An unrelated dirty
-// change may rebuild a field, but no worker scans the map just to validate it.
-struct FieldKey
-{
-	Uint64 world = 0, configuration = 0, terrainRevision = 0;
-	std::array<Uint64, 5> mapVersions{};
-	Uint32 terrainCatalog = 0, resourceCatalog = 0, teamMask = 0;
-	int width = 0, height = 0, material = 0, swim = 0;
-	unsigned modes = 0;
-	Uint64 consumer = 0, supplierObservation = 0, untrackedObservation = 0;
-	Uint32 supplierTick = 0;
-	auto operator<=>(const FieldKey &) const = default;
-};
-std::uint64_t identity(BuildingRef b)
-{
-	return (std::uint64_t(b.generation) << 16) | b.gid;
-}
 int swimClass(const U &u)
 {
 	return Map::swimClass(u.performance[WALK], u.performance[SWIM]);
@@ -132,276 +113,18 @@ int warped(const World &world, int a, int b, int c, int d)
 	int dx = std::abs(a - c), dy = std::abs(b - d);
 	return std::max(std::min(dx, world.width - dx), std::min(dy, world.height - dy));
 }
-bool naturalMaterialGoal(const World &world, int material, std::size_t i, Uint32 teamMask)
+int resourceDistance(const World &world, std::span<const Uint16> values, int x, int y)
 {
-	const auto resource = world.resourceAt(i).resource;
-	return MapState::hasMaterialSlot(world.state(), i, material) &&
-		   (resource.type == NO_RES_TYPE ||
-			!world.resourceRegistry->properties(static_cast<ResourceId>(resource.type))
-				 .visibleToHarvest ||
-			(world.visibilityAt(i).visible & teamMask));
+	if (values.size() != std::size_t(world.width) * world.height)
+		throw std::invalid_argument("Resource plane dimensions differ from snapshot");
+	auto value = values[world.tileIndex(x, y)];
+	constexpr int neighbors[8][2] = {{0, -1}, {1, 0}, {0, 1}, {-1, 0},
+		{-1, -1}, {1, -1}, {1, 1}, {-1, 1}};
+	for (unsigned d = 0; d < 8 && value <= GRADIENT_UNREACHABLE; ++d)
+		value = values[world.tileIndex(x + neighbors[d][0], y + neighbors[d][1])];
+	return value > GRADIENT_UNREACHABLE ? gradientTiles(value) : INT_MAX;
 }
-bool materialGoal(const World &world, const B &b, int material, std::size_t i, unsigned supplyModes)
-{
-	if (world.areasAt(i).forbidden & world.teams[b.team].mask)
-		return false;
-	if (naturalMaterialGoal(world, material, i, world.teams[b.team].mask))
-		return true;
-	const auto o = world.occupancyAt(i);
-	if (o.building == NOGBID)
-		return false;
-	const auto *supplier = world.buildingAtSlot(o.building);
-	if (!supplier || supplier->team != b.team || supplier->identity == b.identity ||
-		supplier->buildingState != B::ALIVE || (supplier->usesTeamResources && b.usesTeamResources))
-		return false;
-	const auto &st = world.catalog->at(supplier->typeNum).resolvedType;
-	const auto modes = ((supplyModes & 1) ? st.runtimeSuppliesStockMask : 0) |
-					   ((supplyModes & 2) ? st.runtimeSuppliesDirectStockMask : 0);
-	return modes & supplier->availableSupplyMask & (1u << material);
-}
-FieldKey resourceKey(const World &world, const B &b, int material, int swim,
-					 unsigned modes, bool consumerSpecific, Uint64 observation)
-{
-	const auto &s = world.components();
-	FieldKey key;
-	key.world = s.worldIdentity;
-	key.configuration = s.configurationRevision;
-	key.terrainRevision = world.terrainRevision;
-	key.mapVersions = s.mapGenerations;
-	key.terrainCatalog = world.terrain->checksum();
-	key.resourceCatalog = world.resourceRegistry->checksum();
-	key.teamMask = world.teams[b.team].mask;
-	key.width = world.width; key.height = world.height;
-	key.material = material; key.swim = swim; key.modes = modes;
-	key.consumer = consumerSpecific ? identity(b.identity) : Uint64(b.team);
-	// Supplier stock/configuration has no map-array version. Retain sharing
-	// within an observation, and rebuild supplier fields on its next refresh.
-	if (modes)
-	{
-		key.supplierObservation = s.observationRevision;
-		key.supplierTick = s.tick;
-	}
-	const auto chunks = std::size_t((world.width + 15) / 16) * ((world.height + 15) / 16);
-	const std::array<const SimulationSnapshot::ChunkStamps *, 5> stamps = {
-		&s.terrain->stamps, &s.resources->stamps, &s.occupancy->stamps,
-		&s.areas->stamps, &s.visibility->stamps};
-	bool tracked = s.worldIdentity != 0;
-	for (unsigned i = 0; i < stamps.size(); ++i)
-		tracked &= key.mapVersions[i] && stamps[i]->worldIdentity == s.worldIdentity &&
-			stamps[i]->width == world.width && stamps[i]->height == world.height &&
-			stamps[i]->chunks.size() == chunks;
-	// Synthetic observations without trustworthy versions cannot share fields
-	// across rank calls. This discriminator affects computation cost only.
-	if (!tracked) key.untrackedObservation = observation;
-	return key;
-}
-
 } // namespace
-struct Cache::Impl
-{
-	gradient_preparation::MaterialSeedCache seedTemplates;
-	bool cachedSeedTemplates = true, partialResourceFields = true, pruneCandidates = true;
-	Metrics *metrics = nullptr;
-	Uint64 observation = 0;
-	struct Field
-	{
-		std::vector<Uint16> values;
-		std::unique_ptr<BuildingGradientSearch> search;
-		std::size_t searchBytes = 0;
-		std::uint64_t use = 0;
-		std::size_t bytes() const { return values.capacity() * sizeof(Uint16) + searchBytes; }
-	};
-	std::map<FieldKey, Field> fields;
-	std::size_t retained = 0, budget = Cache::MaxBytes;
-	static constexpr std::size_t NodeBytes = sizeof(FieldKey) + sizeof(Field) + 4 * sizeof(void *);
-	std::size_t bytes() const
-	{
-		std::size_t total = sizeof(Impl) + sizeof(gradient_kernel::BackendSession) + 32 + retained +
-							fields.size() * NodeBytes + seedTemplates.retainedBytes();
-		for (const auto &bucket : scratch.buckets)
-			total += bucket.cells.capacity() * sizeof(std::uint32_t);
-		total += scratch.deferredSeeds.capacity() * sizeof(std::pair<int, int>);
-		if (scratch.terrain)
-		{
-			total += sizeof(TerrainGradientWorkspace) +
-					 scratch.terrain->buckets.capacity() * sizeof(GradientBucket);
-			for (const auto &bucket : scratch.terrain->buckets)
-				total += bucket.cells.capacity() * sizeof(std::uint32_t);
-		}
-		return total;
-	}
-	void trim(std::size_t needed)
-	{
-		while (bytes() + needed > budget)
-		{
-			auto victim = fields.end();
-			for (auto it = fields.begin(); it != fields.end(); ++it)
-				if (it->second.use <= protectedAfter &&
-					(victim == fields.end() || it->second.use < victim->second.use))
-					victim = it;
-			if (victim == fields.end())
-				throw std::length_error("Hiring active route working set exceeds cache bound");
-			++metrics->evictions;
-			retained -= victim->second.bytes();
-			fields.erase(victim);
-		}
-	}
-	std::uint64_t clock = 0, protectedAfter = 0;
-	GradientWorkspace scratch;
-	template <class Seed, class CachedSeed>
-	Field &field(const World &world, FieldKey key, int swim, Seed seed, CachedSeed cachedSeed)
-	{
-		if (auto it = fields.find(key); it != fields.end())
-		{
-			++metrics->fieldHits;
-			it->second.use = ++clock;
-			return it->second;
-		}
-		++metrics->fieldMisses;
-		const auto seedStart = Clock::now();
-		const std::size_t bytes = std::size_t(world.width) * world.height * sizeof(Uint16);
-		Field result;
-		// An obsolete version of this query can donate its value/frontier
-		// buffers. Active job references remain protected by their use clock.
-		for (auto it = fields.begin(); it != fields.end(); ++it)
-			if (it->second.use <= protectedAfter &&
-				std::tie(it->first.world, it->first.width, it->first.height, it->first.teamMask,
-						 it->first.material, it->first.swim, it->first.modes, it->first.consumer) ==
-				std::tie(key.world, key.width, key.height, key.teamMask,
-						 key.material, key.swim, key.modes, key.consumer))
-			{
-				retained -= it->second.bytes();
-				result = std::move(it->second);
-				fields.erase(it);
-				++metrics->bufferReuses;
-				break;
-			}
-		trim(std::max(bytes, result.bytes()) + NodeBytes);
-		result.values.resize(std::size_t(world.width) * world.height);
-		if (!cachedSeed(result.values.data()))
-			for (std::size_t i = 0; i < result.values.size(); ++i)
-				result.values[i] = seed(i);
-		metrics->fieldCells += result.values.size();
-		metrics->seedNs += elapsed(seedStart);
-		const auto propagationStart = Clock::now();
-		// Resource seeds have zero cost, just like building seeds. Reuse the
-		// existing resumable search with borrowed snapshot cost rules. Limit
-		// frontier allocations; larger fields retain the full kernel.
-		if (partialResourceFields && result.values.size() <= 65536)
-		{
-			if (!result.search)
-				result.search = std::make_unique<BuildingGradientSearch>();
-			BuildingGradientSearch::SnapshotCosts costs{*world.cellRules,
-				world.components().terrain->cellRules, world.terrainMovementModifiers, 256};
-			result.search->beginSnapshot(costs, result.values.data(), swim, world.width, world.height);
-			result.searchBytes = result.search->retainedBytes();
-		}
-		else
-		{
-			result.search.reset();
-			result.searchBytes = 0;
-			gradient_kernel::propagateTerrainField(
-				result.values.data(), swim, gradient_kernel::COST_LIMIT, {world.width, world.height},
-				scratch, [&](std::size_t i) { return world.cellRuleAt(i); },
-				world.terrainMovementModifiers, *world.cellRules, 256);
-		}
-		metrics->propagationNs += elapsed(propagationStart);
-		trim(result.bytes() + NodeBytes);
-		result.use = ++clock;
-		retained += result.bytes();
-		return fields.emplace(key, std::move(result)).first->second;
-	}
-	int distance(const World &world, Field &field, int x, int y)
-	{
-		bool expanded = false;
-		const auto read = [&](int a, int b)
-		{
-			const auto i = world.tileIndex(a, b);
-			if (field.search && !field.search->resolved(i))
-			{
-				const auto start = Clock::now();
-				BuildingGradientSearch::SnapshotCosts costs{*world.cellRules,
-					world.components().terrain->cellRules, world.terrainMovementModifiers, 256};
-				field.search->resolveForProposal(i, costs);
-				metrics->propagationNs += elapsed(start);
-				expanded = true;
-			}
-			return field.values[i];
-		};
-		Uint16 value = read(x, y);
-		constexpr int neighbors[8][2] = {{0, -1}, {1, 0}, {0, 1}, {-1, 0},
-										 {-1, -1}, {1, -1}, {1, 1}, {-1, 1}};
-		for (int d = 0; d < 8 && value <= GRADIENT_UNREACHABLE; ++d)
-			value = read(x + neighbors[d][0], y + neighbors[d][1]);
-		if (expanded)
-		{
-			const auto bytes = field.search->retainedBytes();
-			retained = retained - field.searchBytes + bytes;
-			field.searchBytes = bytes;
-			trim(0);
-		}
-		return value > GRADIENT_UNREACHABLE ? gradientTiles(value) : INT_MAX;
-	}
-	Field &resource(const World &world, const B &b, int material, int swim,
-										unsigned modes, bool consumerSpecific)
-	{
-		const auto key = resourceKey(world, b, material, swim, modes, consumerSpecific, observation);
-		return field(world, key,
-					 swim,
-					 [&](std::size_t i) -> Uint16
-					 {
-						 const auto o = world.occupancyAt(i);
-						 if ((world.areasAt(i).forbidden & world.teams[b.team].mask) ||
-							 o.immobileUnit != 255)
-							 return GRADIENT_FORBIDDEN;
-						 const bool goal = materialGoal(world, b, material, i, modes);
-						 if (goal)
-							 return GRADIENT_AT_GOAL;
-						 return !MapState::resourceBlocksGround(world.state(), i) &&
-										o.building == NOGBID &&
-										gradient_kernel::terrainAllowsGround(
-											world.terrainPropertiesAt(i), swim)
-									? GRADIENT_UNREACHABLE
-									: GRADIENT_FORBIDDEN;
-					 }, [&](Uint16 *output)
-					 {
-						 // Natural fields share the existing snapshot-backed seed
-						 // templates. Supplier-specific semantics retain scalar seeds.
-						 if (!cachedSeedTemplates || key.untrackedObservation || modes || swim == WATER_ONLY_CLASS)
-							 return false;
-						 trim(seedTemplates.world ? 0 : seedTemplates.budget);
-						 return seedTemplates.trySeed(world.components(), b.team, material, swim, output, nullptr);
-					 });
-	}
-};
-Cache::Cache(std::size_t budget) : Cache(budget, Options{}) {}
-Cache::Cache(std::size_t budget, Options options) : impl(std::make_unique<Impl>())
-{
-	if (!budget || budget > MaxBytes)
-		throw std::invalid_argument("Invalid hiring cache budget");
-	impl->budget = budget;
-	impl->cachedSeedTemplates = options.cachedSeedTemplates;
-	impl->partialResourceFields = options.partialResourceFields;
-	impl->pruneCandidates = options.pruneCandidates;
-	impl->seedTemplates.budget = std::min<std::size_t>(2u * 1024 * 1024, budget / 4);
-}
-Cache::~Cache() = default;
-std::size_t Cache::bytes() const
-{
-	return impl->bytes();
-}
-std::array<Sint32, 8> configurationFacts(const BuildingStateRecord &b)
-{
-	Sint32 clearing = 0;
-	for (unsigned r = 0; r < std::size(b.clearingMaterials); ++r)
-		if (b.clearingMaterials[r]) clearing |= Sint32(1u << r);
-	return {b.typeNum, b.posX, b.posY, b.unitStayRange, b.minLevelToFlag,
-		b.minWorkerLevelToFlag, Sint32(b.explorersRequireBombing), clearing};
-}
-std::uint64_t configuration(const BuildingStateRecord &b)
-{
-	return (Uint64(b.hiringEpoch) << 32) | Uint32(b.typeNum);
-}
 bool needsCandidates(const SimulationSnapshot::BuildingView &b)
 {
 	// Match the owner's maintained staffing demand, without advancing clocks
@@ -559,7 +282,7 @@ List shortlist(Key key, std::vector<Candidate> candidates, unsigned capacity)
 	result.candidates.assign(candidates.begin(), candidates.begin() + count);
 	return result;
 }
-Output Cache::rank(const Inputs &input, unsigned team, unsigned capacity)
+Output Planner::rank(const Inputs &input, unsigned team, unsigned capacity)
 {
 	if (capacity < 1 || capacity > 128)
 		throw std::invalid_argument("Hiring capacity must be 1..128");
@@ -587,17 +310,8 @@ Output Cache::rank(const Inputs &input, unsigned team, unsigned capacity)
 				canCoordinate = false;
 		}
 	canCoordinate &= teamSeats > 0 && teamSeats + 2u <= capacity;
-	impl->metrics = &output.metrics;
-	// Never leave a pointer to stack metrics in the reusable cache, including
-	// exception exits from a bounded working-set failure.
-	struct Reset
-	{
-		Metrics *&value;
-		~Reset() { value = nullptr; }
-	} reset{impl->metrics};
 	++output.metrics.refreshes;
 	output.metrics.setupNs += elapsed(start);
-	++impl->observation;
 	// Qualification/cargo indexes are immutable and shared across this team's
 	// building refreshes. Keep original slot order for deterministic traversal.
 	std::vector<const U *> transport;
@@ -720,11 +434,9 @@ Output Cache::rank(const Inputs &input, unsigned team, unsigned capacity)
 				continue;
 			}
 			std::array<std::shared_ptr<SharedBuildingGradient>, SWIM_CLASS_COUNT> buildings{};
-			std::array<Impl::Field *, SWIM_CLASS_COUNT> resources{};
-			// AI enrollment depends on local polling/network receipt. Its live
-			// resource planes are not canonical simulation inputs. Resource
-			// estimates share private fields keyed by existing snapshot versions,
-			// supplier observation, material and movement class.
+			// Read only shared published resource planes. Missing or consumer-specific
+			// planes use a zero resource-distance estimate; live admission performs
+			// the normal destination/reachability checks and initializes shared fields.
 			const auto route = key.job == Job::Delivery || key.job == Job::Fetch
 								   ? BuildingRoute::Footprint
 							   : key.job == Job::Clear ? BuildingRoute::Clearing
@@ -735,7 +447,6 @@ Output Cache::rank(const Inputs &input, unsigned team, unsigned capacity)
 				if (captured.building == b.identity &&
 					captured.slot / SWIM_CLASS_COUNT == int(resolvedRoute))
 					buildings[captured.slot % SWIM_CLASS_COUNT] = captured.field;
-			impl->protectedAfter = impl->clock;
 			const unsigned vacancies =
 				key.material >= 0 ? supply->vacancies[key.material] : supply->seats;
 			const unsigned limit = std::min(capacity, (canCoordinate ? teamSeats : vacancies) + 2u);
@@ -747,7 +458,7 @@ Output Cache::rank(const Inputs &input, unsigned team, unsigned capacity)
 			const CandidateOrder compare(key.job);
 			const auto couldWin = [&](const Candidate &bound)
 			{
-				return !impl->pruneCandidates || candidates.size() < limit || compare(bound, candidates.front());
+				return !pruneCandidates || candidates.size() < limit || compare(bound, candidates.front());
 			};
 			for (const auto *unit : indexed)
 			{
@@ -904,50 +615,19 @@ Output Cache::rank(const Inputs &input, unsigned team, unsigned capacity)
 							++output.metrics.distanceBoundSkips;
 							continue;
 						}
-						int resourceDistance = INT_MAX;
-						if (!u.performance[FLY])
+						int resourceDistance = 0;
+						const auto modes = supply->modes[key.material];
+						// Ground planes cannot represent air routes or consumer exclusions.
+						const auto plane = !u.performance[FLY] && !(modes & 2) &&
+							!supply->consumerSpecific[key.material]
+							? world.resourceGradient(team, key.material, swim, modes & 1)
+							: std::span<const Uint16>{};
+						if (!plane.empty())
 						{
-							++output.metrics.privateResourceReads;
-							if (!resources[swim])
-								resources[swim] =
-									&impl->resource(world, b, key.material, swim,
-														supply->modes[key.material],
-														supply->consumerSpecific[key.material]);
-							resourceDistance =
-								impl->distance(world, *resources[swim], u.posX, u.posY);
+							++output.metrics.resourcePlaneReads;
+							resourceDistance = HiringPlanner::resourceDistance(world, plane, u.posX, u.posY);
 						}
-						else
-						{
-							++output.metrics.airQueries;
-							field::AirDistanceField air(
-								world.width, world.height, u.posX, u.posY,
-								[&](int x, int y)
-								{
-									return world.terrainPropertiesAt(world.tileIndex(x, y)).flyable;
-								},
-								[&](int x, int y)
-								{
-									return (*world.cellRules)[world.cellRuleAt(
-																  world.tileIndex(x, y))]
-										.airCost;
-								},
-								world.airTerrainConstraints);
-							for (int y = 0; y < world.height; ++y)
-								for (int x = 0; x < world.width; ++x)
-									if (materialGoal(world, b, key.material, world.tileIndex(x, y),
-													 supply->modes[key.material]))
-									{
-										const auto cost =
-											air.enabled()
-												? air.costTo(x, y)
-												: unsigned(warped(world, u.posX, u.posY, x, y)) *
-													  GRADIENT_STEP;
-										if (cost != decltype(air)::unreachable)
-											resourceDistance = std::min(
-												resourceDistance,
-												int((cost + GRADIENT_STEP - 1) / GRADIENT_STEP));
-									}
-						}
+						else ++output.metrics.resourceEstimateFallbacks;
 						if (resourceDistance == INT_MAX || resourceDistance >= budget ||
 							(immobile && resourceDistance > 1))
 							continue;

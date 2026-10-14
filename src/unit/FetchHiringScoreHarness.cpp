@@ -44,7 +44,7 @@ public:
     static Unit* carrying(Building* building)
     {
         auto& game=*building->owner->game;game.snapshotStore().invalidateBoundary();
-        HiringPlanner::Cache cache;
+        HiringPlanner::Planner cache;
         const auto output=cache.rank(HiringPipeline::bindRoutes(game,game.captureReadBoundary()),building->owner->teamNumber,8);
         for(const auto& b:output.buildings)if(b.building==Game::refOf(building))
             for(const auto& list:b.jobs)if(list.key.job==Hiring::Job::Delivery && !list.candidates.empty())return game.resolveUnit(list.candidates.front().unit);

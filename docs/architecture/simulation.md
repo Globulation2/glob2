@@ -579,25 +579,22 @@ Clearing, exploration, defense, ground and flying transport share this contract.
 Building-route expansion and owner reads share the existing per-generation locks.
 Retirement retains the original buffer/search until leases end, without copying
 it. Workers never call live building APIs. Immutable snapshot components and route
-handles are shared by reference, not copied for each team. Resource estimates use
-private fields shared across jobs with identical frozen inputs. Opportunistic
-AI-enrolled resource planes are excluded: their presence and age can differ with
-local network polling and must not change hiring decisions. Private planner caches
-are bounded separately from deterministic pending/published output reservations.
-Resource-field cache keys use the snapshot's existing map and catalog versions;
-unrelated changes may conservatively rebuild a field. Supplier fields are shared
-within an observation. Unversioned synthetic observations rebuild on each rank.
-Natural resource fields reuse the existing snapshot seed templates when applicable.
-Resource fields up to 256 by 256 reuse the existing resumable
-search and settle only the cells queried by candidates. Their settled integer
-distances match full propagation, including weighted and custom terrain. Queries
-borrow cost rules directly from the current immutable observation; searches retain
-no world-data leases between jobs. Larger fields retain the full kernel; pending
-search storage counts toward the private cache budget.
-Obsolete versions of the same resource query reuse value and frontier buffers
-after active references end. Each job maintains a bounded heap of its best
-candidates. Optimistic integer score bounds skip route queries only when the
-candidate cannot enter that heap; ordered output matches exhaustive evaluation.
+handles are shared by reference, not copied for each team. Resource estimates
+read the existing immutable resource planes from that same snapshot. Hiring has
+no private resource fields, terrain fingerprints, seed templates or field builders.
+The common map producer refreshes its published fields on its normal schedule.
+Local AI query fields remain planning caches and cannot enroll authoritative map
+fields or change their refresh order.
+
+Missing planes, flying transport and consumer-specific supplier modes use an
+optimistic zero resource-distance estimate. They remain recruitable; current live
+admission performs the normal destination, reachability and food-budget checks.
+A successful first-use admission may initialize a shared material field through
+that existing query path. No hiring-specific owner preparation is performed.
+This changes rankings relative to freshly rebuilt private fields: published fields
+may be older, and missing-field estimates do not distinguish resource distances.
+Each job keeps a bounded heap of its best candidates; optimistic score bounds skip
+building-route queries only when a candidate cannot enter that heap.
 Route leases include only jobs and movement classes required by the observation.
 
 Published lists, fixed rules, last admission state, output

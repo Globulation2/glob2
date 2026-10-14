@@ -51,19 +51,13 @@ struct BuildingLists
 	X(precheckNs) \
 	X(evaluationNs) \
 	X(sortOutputNs) \
-	X(seedNs) \
-	X(propagationNs) \
-	X(fieldHits) \
-	X(fieldMisses) \
-	X(fieldCells) \
-	X(evictions) \
-	X(bufferReuses) \
 	X(distanceBoundSkips) \
 	X(refreshes) \
 	X(jobs) \
 	X(skippedJobs) \
 	X(rankedCandidates) \
-	X(privateResourceReads) \
+	X(resourcePlaneReads) \
+	X(resourceEstimateFallbacks) \
 	X(airQueries)
 struct Metrics
 {
@@ -109,25 +103,16 @@ struct Supply
 };
 // Worker-only derived bookkeeping, no live entities or copied world records.
 std::vector<Supply> prepare(const Inputs &, unsigned team);
-class Cache
+// Stateless worker planner: world records and derived planes are borrowed from
+// the shared completed-tick snapshot; only job/output vectors are allocated.
+class Planner
 {
-	struct Impl;
-	std::unique_ptr<Impl> impl;
-
+	bool pruneCandidates = true;
   public:
-	static constexpr std::size_t MaxBytes = 32u * 1024 * 1024;
-	// Reference controls change computation cost only; rankings must agree.
-	struct Options
-	{
-		bool cachedSeedTemplates = true, partialResourceFields = true, pruneCandidates = true;
-	};
-	explicit Cache(std::size_t budget = MaxBytes);
-	Cache(std::size_t budget, Options);
-	~Cache();
-	Cache(const Cache &) = delete;
-	Cache &operator=(const Cache &) = delete;
+	struct Options { bool pruneCandidates = true; };
+	Planner() = default;
+	explicit Planner(Options options) : pruneCandidates(options.pruneCandidates) {}
 	Output rank(const Inputs &, unsigned team, unsigned capacity = 128);
-	std::size_t bytes() const;
 };
 bool needsCandidates(const SimulationSnapshot::BuildingView &);
 std::array<Sint32, 8> configurationFacts(const BuildingStateRecord &);

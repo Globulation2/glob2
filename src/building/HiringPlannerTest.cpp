@@ -79,8 +79,7 @@ TEST_SUITE("HiringPlanner")
 			for (unsigned capacity : {1u, 4u, 8u})
 			{
 				CAPTURE(capacity);
-				HiringPlanner::Cache pruned, exhaustive(HiringPlanner::Cache::MaxBytes,
-					{.pruneCandidates = false});
+				HiringPlanner::Planner pruned, exhaustive({.pruneCandidates = false});
 				const auto actual = pruned.rank(input, 0, capacity);
 				const auto expected = exhaustive.rank(input, 0, capacity);
 				checkPlannerOutput(actual, expected);
@@ -101,64 +100,37 @@ TEST_SUITE("HiringPlanner")
 		}
 		CHECK(boundSkips > 0);
 	}
-	TEST_CASE("snapshot seed templates and version keys preserve scalar planner outputs")
+	TEST_CASE("resource estimates borrow the normal snapshot plane without private builds")
 	{
 		glob2test::HeadlessGlobals globals;
 		glob2test::HeadlessGame w({.wDec = 7, .hDec = 7, .discovered = true, .loadDefaultRace = true});
-		auto *building = w.addBuilding("inn", 8, 8);
-		building->maxUnitWorking = 4;
-		building->materials[WHEAT] = 0;
-		building->updateCallLists();
-		for (unsigned i = 0; i < 12; ++i)
-		{
-			auto *u = w.addUnit(WORKER, 5 + i % 4, 14 + i / 4);
-			u->activity = Unit::ACT_RANDOM; u->medical = Unit::MED_FREE; u->hungriness = 0;
-		}
+		auto *b = w.addBuilding("inn", 8, 8);
+		b->maxUnitWorking = 2;
+		b->materials[WHEAT] = 0;
+		b->updateCallLists();
+		auto *u = w.addUnit(WORKER, 12, 12);
+		u->activity = Unit::ACT_RANDOM;
+		u->medical = Unit::MED_FREE;
+		u->hungriness = 0;
 		REQUIRE(w.game.map.incResourceByIndex(24, 12, WHEAT, 0));
-		HiringPlanner::Cache cached, scalar(HiringPlanner::Cache::MaxBytes, {.cachedSeedTemplates = false, .partialResourceFields = false, .pruneCandidates = false});
-		for (unsigned phase = 0; phase < 9; ++phase)
-		{
-			CAPTURE(phase);
-			w.game.stepCounter = phase;
-			if (phase == 1) w.game.map.markImmobileUnit(24, 12, 0);
-			if (phase == 2) w.game.map.clearImmobileUnit(24, 12);
-			if (phase == 3) w.game.map.addForbidden(24, 12, 0);
-			if (phase == 4) w.game.map.removeForbidden(24, 12, 0);
-			if (phase == 6)
-			{
-				REQUIRE(w.game.map.incResourceByIndex(18, 20, WHEAT, 0));
-				// A blocked queried cell must resolve its neighbors in the same
-				// order as the full field, rather than read an unsettled value.
-				w.game.map.addForbidden(5, 14, 0);
-			}
-			if (phase == 8) w.game.map.markImmobileUnit(18, 20, 0);
-			w.game.snapshotStore().invalidateBoundary();
-			auto input = HiringPipeline::bindRoutes(w.game, w.game.captureReadBoundary());
-			if (phase >= 7)
-			{
-				// Synthetic observations have no trustworthy change stamps.
-				auto resources = std::make_shared<SimulationSnapshot::Resources>(*input.world.resources);
-				resources->stamps.worldIdentity = 0;
-				std::fill(resources->stamps.chunks.begin(), resources->stamps.chunks.end(), 0);
-				input.world.resources = std::move(resources);
-			}
-			const auto actual = cached.rank(input, 0), expected = scalar.rank(input, 0);
-			if (phase == 0)
-			{
-				CHECK(actual.metrics.fieldMisses > 0);
-				CHECK(cached.bytes() > scalar.bytes());
-			}
-			if (phase >= 7) CHECK(actual.metrics.fieldMisses > 0);
-			if (phase == 5)
-			{
-				CHECK(actual.metrics.fieldMisses == 0);
-				CHECK(actual.metrics.fieldHits > 0);
-			}
-			checkPlannerOutput(actual, expected);
-			CHECK(cached.bytes() <= HiringPlanner::Cache::MaxBytes);
-		}
+		w.game.map.getMaterialGradientSlot(0, WHEAT, u->swimClass());
+		const auto snapshot = w.game.captureReadBoundary();
+		const auto input = HiringPipeline::bindRoutes(w.game, snapshot);
+		REQUIRE(input.world.resourceFields == snapshot.resourceFields);
+		HiringPlanner::Planner planner;
+		const auto expected = planner.rank(input, 0);
+		CHECK(expected.metrics.resourcePlaneReads > 0);
+		const auto key = MapState::planeKey(0, WHEAT, u->swimClass(), false);
+		const auto plane = input.world.resourceFields->find(key)->values;
+		const auto frozen = *plane;
+		// Normal field publication can replace a generation without changing
+		// a job's immutable lease or requiring a hiring-specific copy.
+		w.game.map.addForbidden(24, 12, 0);
+		w.game.map.updateMaterialGradient(0, WHEAT, u->swimClass());
+		CHECK(*plane == frozen);
+		checkPlannerOutput(planner.rank(input, 0), expected);
 	}
-	TEST_CASE("partial resource queries exhaust an unreachable source exactly like full propagation")
+	TEST_CASE("shared resource planes retain ordered unreachable-neighbor admission estimates")
 	{
 		glob2test::HeadlessGlobals globals;
 		glob2test::HeadlessGame w({.wDec = 7, .hDec = 7, .discovered = true, .loadDefaultRace = true});
@@ -175,11 +147,10 @@ TEST_SUITE("HiringPlanner")
 			for (int x = 22; x <= 26; ++x)
 				if (x == 22 || x == 26 || y == 22 || y == 26)
 					w.game.map.addForbidden(x, y, 0);
+		w.game.map.getMaterialGradientSlot(0, WHEAT, unit->swimClass());
 		const auto input = HiringPipeline::bindRoutes(w.game, w.game.captureReadBoundary());
-		HiringPlanner::Cache partial, full(HiringPlanner::Cache::MaxBytes, {.cachedSeedTemplates = false, .partialResourceFields = false, .pruneCandidates = false});
-		const auto actual = partial.rank(input, 0), expected = full.rank(input, 0);
-		CHECK(actual.metrics.privateResourceReads > 0);
-		checkPlannerOutput(actual, expected);
+		const auto actual = HiringPlanner::Planner{}.rank(input, 0);
+		CHECK(actual.metrics.resourcePlaneReads > 0);
 		for (const auto &b : actual.buildings)
 			for (const auto &list : b.jobs)
 				if (list.key.job == Hiring::Job::Fetch && list.key.material == WHEAT)
@@ -200,7 +171,7 @@ TEST_SUITE("HiringPlanner")
 		const auto after = HiringPipeline::bindRoutes(w.game, snapshot);
 		CHECK(before.routes->size() == after.routes->size());
 	}
-	TEST_CASE("local AI resource-plane enrollment cannot hide sources in the observed world")
+	TEST_CASE("published resource estimates are used and missing planes remain recruitable")
 	{
 		glob2test::HeadlessGlobals globals;
 		glob2test::HeadlessGame w({.discovered = true, .loadDefaultRace = true});
@@ -220,7 +191,7 @@ TEST_SUITE("HiringPlanner")
 			w.game.map.getW() * w.game.map.getH(), GRADIENT_UNREACHABLE);
 		planes->add({MapState::planeKey(0, WHEAT, 0, false), 1, values});
 		local.world.resourceFields = planes;
-		HiringPlanner::Cache a, bCache;
+		HiringPlanner::Planner a, bCache;
 		const auto normal = a.rank(input, 0), enrolled = bCache.rank(local, 0);
 		const auto fetch = [](const auto &output) -> const std::vector<HiringPlanner::Candidate> &
 		{
@@ -231,9 +202,9 @@ TEST_SUITE("HiringPlanner")
 			throw std::runtime_error("missing fetch list");
 		};
 		REQUIRE(fetch(normal).size() == 1);
-		REQUIRE(fetch(enrolled).size() == fetch(normal).size());
-		CHECK(fetch(enrolled)[0].unit == fetch(normal)[0].unit);
-		CHECK(fetch(enrolled)[0].value == fetch(normal)[0].value);
+		CHECK(fetch(enrolled).empty());
+		CHECK(normal.metrics.resourceEstimateFallbacks > 0);
+		CHECK(enrolled.metrics.resourcePlaneReads > 0);
 	}
 	TEST_CASE("warm and fresh resource estimates agree after same-material visibility-rule changes")
 	{
@@ -258,7 +229,7 @@ TEST_SUITE("HiringPlanner")
 		u->activity = Unit::ACT_RANDOM;
 		u->medical = Unit::MED_FREE;
 		u->hungriness = 0;
-		HiringPlanner::Cache warm;
+		HiringPlanner::Planner warm;
 		const auto count = [](const auto &output)
 		{
 			for (const auto &b : output.buildings)
@@ -286,7 +257,7 @@ TEST_SUITE("HiringPlanner")
 			auto hidden = std::make_shared<SimulationSnapshot::Visibility>(*input.world.visibility);
 			std::fill(hidden->visible.begin(), hidden->visible.end(), 0);
 			input.world.visibility = hidden;
-			HiringPlanner::Cache fresh;
+			HiringPlanner::Planner fresh;
 			const auto reused = warm.rank(input, 0), rebuilt = fresh.rank(input, 0);
 			CHECK(count(reused) == count(rebuilt));
 			CHECK(count(reused) == (phase == 1 ? 1u : 0u));
@@ -418,7 +389,7 @@ TEST_SUITE("HiringPlanner")
 		REQUIRE(snapshot.entities->units.size() == 1);
 		CHECK(snapshot.entities->units.front().realAttackStrength ==
 			  warrior->getRealAttackStrength());
-		HiringPlanner::Cache cache;
+		HiringPlanner::Planner cache;
 		const auto output = cache.rank(HiringPipeline::bindRoutes(world.game, snapshot), 0, 8);
 		bool found = false;
 		for (const auto &b : output.buildings)
@@ -479,10 +450,9 @@ TEST_SUITE("HiringPlanner")
 		const auto checksum = world.checksum();
 		const auto snapshot = world.game.captureReadBoundary();
 		auto inputs = HiringPipeline::bindRoutes(world.game, snapshot);
-		HiringPlanner::Cache cache;
+		HiringPlanner::Planner cache;
 		auto result = cache.rank(inputs, 0, 8);
 		CHECK(world.checksum() == checksum);
-		CHECK(cache.bytes() <= HiringPlanner::Cache::MaxBytes);
 		bool found = false;
 		for (const auto &b : result.buildings)
 			if (b.building == Game::refOf(inn))
@@ -497,7 +467,6 @@ TEST_SUITE("HiringPlanner")
 		const auto repeated = cache.rank(inputs, 0, 8);
 		CHECK(repeated.candidateVisits == result.candidateVisits);
 		CHECK(result.metrics.sharedQueries > 0);
-		CHECK(repeated.metrics.fieldMisses == 0);
 		CHECK(repeated.metrics.sharedQueries > 0);
 		CHECK(repeated.metrics.rankedCandidates == result.metrics.rankedCandidates);
 		CHECK(world.checksum() == checksum);
@@ -512,7 +481,7 @@ TEST_SUITE("HiringPlanner")
 		REQUIRE(worker);
 		worker->carriedMaterial = WHEAT;
 		world.game.map.buildingGradient(inn, worker->swimClass());
-		HiringPlanner::Cache cache;
+		HiringPlanner::Planner cache;
 		const auto plan = [&]
 		{
 			world.game.snapshotStore()
@@ -562,7 +531,7 @@ TEST_SUITE("HiringPlanner")
 			u->hungriness = 0;
 			u->carriedMaterial = WHEAT;
 		}
-		HiringPlanner::Cache cache;
+		HiringPlanner::Planner cache;
 		const auto input = HiringPipeline::bindRoutes(world.game, world.game.captureReadBoundary());
 		const auto out = cache.rank(input, 0);
 		REQUIRE(out.buildings.size() == 1);
@@ -594,7 +563,7 @@ TEST_SUITE("HiringPlanner")
 		auto snapshot = world.game.captureReadBoundary();
 		auto inputs = HiringPipeline::bindRoutes(world.game, snapshot);
 		const auto checksum = world.checksum();
-		HiringPlanner::Cache cache;
+		HiringPlanner::Planner cache;
 		auto output = cache.rank(inputs, 0, 128);
 		CHECK(output.metrics.coordinatedTeams == 1);
 		CHECK(world.checksum() == checksum);
@@ -668,13 +637,12 @@ TEST_SUITE("HiringPlanner")
 		REQUIRE(unit);
 		unit->carriedMaterial = WHEAT;
 		auto snapshot = world.game.captureReadBoundary();
-		HiringPlanner::Cache cache;
+		HiringPlanner::Planner cache;
 		auto inputs = HiringPipeline::bindRoutes(world.game, snapshot);
 		inputs.routes = std::make_shared<const std::vector<HiringPlanner::Inputs::Route>>();
 		const auto output = cache.rank(inputs, 0, 8);
 		CHECK(output.metrics.sharedQueries == 0);
 		CHECK(output.metrics.missingBuildingFields > 0);
-		CHECK(output.metrics.fieldMisses == 0);
 	}
 	TEST_CASE("ranking tie break follows unit identity")
 	{
@@ -725,16 +693,14 @@ TEST_SUITE("HiringPlanner")
 		REQUIRE(supplies.size() == 1);
 		CHECK(supplies.front().modes[WHEAT] == 0);
 		CHECK((inn->runtime->fetchesDirectStockMask & (1u << WHEAT)) != 0);
-		HiringPlanner::Cache cache;
+		HiringPlanner::Planner cache;
 		const auto output = cache.rank(inputs, 0, 8);
-		CHECK(output.metrics.privateResourceReads > 0);
-		CHECK(output.metrics.fieldMisses == 1);
+		CHECK(output.metrics.resourcePlaneReads > 0);
 		const auto repeated = cache.rank(inputs, 0, 8);
-		CHECK(repeated.metrics.fieldMisses == 0);
-		CHECK(repeated.metrics.fieldHits > 0);
+		CHECK(repeated.metrics.resourcePlaneReads + repeated.metrics.resourceEstimateFallbacks > 0);
 		CHECK(world.checksum() == checksum);
 	}
-	TEST_CASE("private fetch fields include suppliers without natural material")
+	TEST_CASE("missing supplier planes retain fetch suggestions for live admission")
 	{
 		glob2test::HeadlessGlobals globals;
 		glob2test::GameOptions options;
@@ -763,7 +729,7 @@ TEST_SUITE("HiringPlanner")
 		REQUIRE(supply != supplies.end());
 		CHECK(supply->modes[CHERRY] == world.game.map.materialSupplyModesSlot(inn, CHERRY));
 		CHECK(supply->modes[CHERRY] != 0);
-		HiringPlanner::Cache cache;
+		HiringPlanner::Planner cache;
 		const auto output = cache.rank(inputs, 0, 8);
 		bool found = false;
 		for (const auto &building : output.buildings)
@@ -776,22 +742,19 @@ TEST_SUITE("HiringPlanner")
 						CHECK(list.candidates[0].unit == Game::refOf(worker));
 					}
 		CHECK(found);
-		// The private estimate is reusable across consumers with identical
-		// supplier rules. Local live-field enrollment cannot change its result.
+		// Missing supplier planes use an optimistic estimate and remain recruitable.
 		REQUIRE(supply->modes[CHERRY] == 1);
 		CHECK_FALSE(supply->consumerSpecific[CHERRY]);
 		const auto repeated = cache.rank(inputs, 0, 8);
-		CHECK(repeated.metrics.fieldHits > 0);
-		CHECK(repeated.metrics.fieldMisses == 0);
+		CHECK(repeated.metrics.resourcePlaneReads + repeated.metrics.resourceEstimateFallbacks > 0);
 		checkPlannerOutput(repeated, output);
 		world.game.map.getMaterialGradientSlot(0, CHERRY, worker->swimClass(), false, inn);
 		world.game.snapshotStore()
 			.invalidateBoundary(); // Announce this mid-boundary fixture query.
 		auto published = world.game.captureReadBoundary();
 		const auto shared = cache.rank(HiringPipeline::bindRoutes(world.game, published), 0, 8);
-		CHECK(shared.metrics.privateResourceReads > 0);
-		// A new observation conservatively refreshes supplier facts, even if
-		// only local query enrollment changed. Suggestions remain identical.
-		checkPlannerOutput(shared, output);
+		CHECK(shared.metrics.resourcePlaneReads > 0);
+		// A canonical shared publication now supplies the resource-distance estimate.
+		CHECK(shared.metrics.resourcePlaneReads > 0);
 	}
 }

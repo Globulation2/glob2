@@ -120,10 +120,10 @@ std::vector<std::pair<unsigned,std::shared_ptr<Order>>> Pipeline::prepare(Game& 
    actor.retainedQueryVectorBytes=delivery.command.retainedQueryVectorBytes;
    peakRetainedQueryVectorBytes=std::max(peakRetainedQueryVectorBytes,queryVectorMemory().first);
    if(diagnostics&&delivery.command.fieldDiagnostics) diagnostics->publishCapture(*delivery.command.fieldDiagnostics);
-   for(const auto& e:delivery.command.resourceEnrollments) {
-    if(!e.initialField) throw std::logic_error("AI resource enrollment lacks frozen inputs");
-    game.map.installObservedResourceField(e.team,e.resource,e.swim,*e.initialField);
-   }
+   // AI query fields are local planning caches. Installing them into map
+   // gradients would let local AI polling change authoritative refresh order.
+   // AI, hiring and steering still read canonical published map planes from
+   // the shared snapshot; only simulation queries enroll new map gradients.
    auto order=delivery.command.decode();order->sender=delivery.request.player;
    order->aiGeneration=delivery.request.generation;order->aiPollSequence=delivery.request.pollSequence;
    actor.published=order;

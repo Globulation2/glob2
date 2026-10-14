@@ -194,7 +194,6 @@ std::shared_ptr<const Output> loadOutput(GAGCore::InputStream *s, const Game &ga
 struct HiringPipeline::Work
 {
 	std::shared_ptr<const HiringPlanner::Inputs> input;
-	HiringPlanner::Cache *cache = nullptr;
 	unsigned team = 0;
 	std::size_t bound = 0;
 	std::shared_ptr<const Output> output;
@@ -223,7 +222,7 @@ HiringPipeline::~HiringPipeline()
 void HiringPipeline::compute(void *context, std::size_t)
 {
 	auto &w = *static_cast<Work *>(context);
-	auto output = std::make_shared<Output>(w.cache->rank(*w.input, w.team, Capacity));
+	auto output = std::make_shared<Output>(HiringPlanner::Planner{}.rank(*w.input, w.team, Capacity));
 	output->checksum = outputChecksum(*output);
 	w.output = std::move(output);
 	if (w.output->retainedBytes > w.bound)
@@ -263,10 +262,7 @@ void HiringPipeline::observe(Game &game, const SimulationSnapshot::Handle &snaps
 	for (unsigned t = 0; t < unsigned(game.teamsCount()); ++t)
 		if (tick % Refresh == t % Refresh)
 		{
-			if (!caches[t])
-				caches[t] = std::make_unique<HiringPlanner::Cache>(std::min<std::size_t>(
-					HiringPlanner::Cache::MaxBytes, 64u * 1024 * 1024 / game.teamsCount()));
-			batch->work.push_back({input, caches[t].get(), t, 2048 + input->outputBounds[t], {}});
+			batch->work.push_back({input, t, 2048 + input->outputBounds[t], {}});
 		}
 	if (!batch->work.empty())
 	{
