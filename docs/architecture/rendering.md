@@ -155,7 +155,11 @@ or map-array capture. `Game::drawMap` requires an explicitly supplied frame;
   connections and overlays are derived in resumable preparation chunks. Cached
   display data is keyed by world identity, relevant revisions and view settings.
 - Unit animation and building shooting fields live in the normal pointer-free state
-  records. Selected panels borrow those records and immutable catalogs; presentation
+  records. `UnitState` groups position, targets and movement modes at the front,
+  followed by health, hunger and cached abilities. Live units and captures use
+  the same naturally aligned record; save and checksum encoders visit named
+  fields explicitly, independently of its in-memory declaration order.
+  Selected panels borrow those records and immutable catalogs; presentation
   calculations and formatting belong in frame storage. Catalog definitions are frozen
   once per revision, so a later owner reconfiguration cannot change a retained frame.
   AI telemetry, debug gradients, failure histories, and statistics histories are requested
