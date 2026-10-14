@@ -978,7 +978,13 @@ TEST_CASE("graphics batches finish once, retain failures and release captures" *
             [&, retained](auto context)
             {
                 ++results[context.index];
+                #if defined(__EMSCRIPTEN__)
+                // Browser presentation batches deliberately run on their owner,
+                // including builds with simulation workers.
+                CHECK(ComputeExecutor::workerSlot() == 0);
+#else
                 CHECK((ComputeExecutor::workerSlot() != 0 || executor.threadCount() == 1));
+#endif
             });
         retained.reset();
         executor.finishPresentationBatch(batch);
