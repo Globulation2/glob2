@@ -62,3 +62,27 @@ test('WebGPU compute algorithms match exact weighted fields and preserve cancele
     expect(result.cases).toBe(66);
   }finally{await browser.close();}
 });
+
+// Opt in when the compiled threaded harness is served by the browser test host.
+test('WebGPU C++ worker ownership bridge requires real device commits',async({browserName})=>{
+  test.skip(browserName!=='chromium' || process.env.GLOB2_WEBGPU_CPP!=='1','Requires the compiled threaded harness');
+  test.setTimeout(120000);
+  const {openRuntimeHost}=require('./runtime-host');
+  const args=hardware
+    ? ['--enable-unsafe-webgpu','--use-angle=vulkan','--enable-features=Vulkan','--use-vulkan=native','--disable-vulkan-surface']
+    : ['--enable-unsafe-webgpu','--use-angle=swiftshader','--enable-unsafe-swiftshader'];
+  const browser=await chromium.launch({executablePath:process.env.PLAYWRIGHT_CHROMIUM,args});
+  try{
+    const page=await browser.newPage({baseURL:process.env.GLOB2_TEST_URL || 'http://127.0.0.1:8770'});
+    let output='';
+    page.on('console',message=>{output+=message.text()+'\n';console.log(message.text());});
+    await openRuntimeHost(page,`<canvas id="canvas"></canvas><script>
+      var Module={noInitialRun:true,canvas:document.querySelector('canvas'),
+        locateFile:name=>name.endsWith('.data')?'/'+name:'/threaded/'+name,
+        async onRuntimeInitialized(){window.result=await Module.start(['--test-suite=WebGPUGradient']);}};
+      </script><script src="/threaded/script-tests.js"></script>`);
+    await page.waitForFunction(()=>window.result!==undefined,null,{timeout:110000});
+    expect(await page.evaluate(()=>window.result)).toBe(0);
+    if(hardware) expect(output).toMatch(new RegExp('WebGPU C++ device:.*'+hardware,'i'));
+  }finally{await browser.close();}
+});
