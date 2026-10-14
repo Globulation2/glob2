@@ -113,6 +113,21 @@ int warped(const World &world, int a, int b, int c, int d)
 	int dx = std::abs(a - c), dy = std::abs(b - d);
 	return std::max(std::min(dx, world.width - dx), std::min(dy, world.height - dy));
 }
+// Lower bounds ignore obstacles. They keep missing/stale route estimates
+// recruitable, so normal live admission can establish or refresh shared fields.
+int buildingEstimate(const World &world, const B &b, int x, int y, BuildingRoute route)
+{
+	if (route != BuildingRoute::Footprint)
+		return std::max(0, warped(world, x, y, b.posX, b.posY) - std::max(0, b.unitStayRange));
+	const auto &type = world.catalog->at(b.typeNum).resolvedType;
+	const auto axis = [](int value, int origin, int extent, int size)
+	{
+		const int offset = (value - origin) & (size - 1);
+		return offset < extent ? 0 : std::min(offset - extent + 1, size - offset);
+	};
+	return std::max(0, std::max(axis(x, b.posX, type.width, world.width),
+		axis(y, b.posY, type.height, world.height)) - 1);
+}
 int resourceDistance(const World &world, std::span<const Uint16> values, int x, int y)
 {
 	if (values.size() != std::size_t(world.width) * world.height)
@@ -594,12 +609,15 @@ Output Planner::rank(const Inputs &input, unsigned team, unsigned capacity)
 					if (!buildings[swim])
 					{
 						++output.metrics.missingBuildingFields;
-						continue;
+						distance = buildingEstimate(world, b, u.posX, u.posY, resolvedRoute);
 					}
-					++output.metrics.sharedQueries;
-					distance = buildings[swim]->distance(
-						u.posX, u.posY, output.metrics.sharedWaitNs, output.metrics.sharedQueryNs,
-						output.metrics.sharedExpansions);
+					else
+					{
+						++output.metrics.sharedQueries;
+						distance = buildings[swim]->distance(
+							u.posX, u.posY, output.metrics.sharedWaitNs, output.metrics.sharedQueryNs,
+							output.metrics.sharedExpansions);
+					}
 				}
 				cached = distance;
 				if (distance == INT_MAX)

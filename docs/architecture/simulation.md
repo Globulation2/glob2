@@ -595,7 +595,11 @@ This changes rankings relative to freshly rebuilt private fields: published fiel
 may be older, and missing-field estimates do not distinguish resource distances.
 Each job keeps a bounded heap of its best candidates; optimistic score bounds skip
 building-route queries only when a candidate cannot enter that heap.
-Route leases include only jobs and movement classes required by the observation.
+Route leases include only observed available movement classes. Observation borrows
+existing valid generations and never initializes, enrolls or refreshes a building
+field. Missing/stale fields use obstacle-free distance bounds to the footprint or
+flag region for ranking. Live admission performs normal authoritative route checks
+and establishes the first shared field when needed.
 
 Published lists, fixed rules, last admission state, output
 reservations and completed pending outputs/deadlines are saved in format 159.

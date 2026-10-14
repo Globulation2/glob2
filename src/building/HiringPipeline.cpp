@@ -566,8 +566,8 @@ HiringPlanner::Inputs HiringPipeline::bindRoutes(Game &game, const SimulationSna
 		auto *live = game.resolveBuilding(b.identity);
 		if (!live)
 			throw std::logic_error("Hiring capture lost building incarnation");
-		// The owner creates safe live generations; worker route queries only
-		// expand the leased generations under their existing locks.
+		// The owner borrows existing generations. Workers expand them under
+		// the existing locks; observation never prepares a cold or stale field.
 		const auto &type = inputs.world.catalogs->buildings->at(b.typeNum).resolvedType;
 		const bool footprint =
 			std::any_of(std::begin(type.maxMaterial), std::begin(type.maxMaterial) + MaterialCount,
@@ -589,8 +589,7 @@ HiringPlanner::Inputs HiringPipeline::bindRoutes(Game &game, const SimulationSna
 					if (route == BuildingRoute::Combat && !combat)
 						continue;
 					auto field = game.map.leaseBuildingRoute(live, c, route);
-					if (!field)
-						throw std::logic_error("Hiring route generation missing after preparation");
+					if (!field) continue;
 					routes->push_back({b.identity, live->routeSlot(c, route), std::move(field)});
 				}
 			}

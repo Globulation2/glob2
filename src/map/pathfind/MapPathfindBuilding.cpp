@@ -88,8 +88,15 @@ const Uint16 *Map::buildingGradient(Building *building, int swimClass, BuildingR
 
 std::shared_ptr<SharedBuildingGradient> Map::leaseBuildingRoute(Building *building, int swimClass, BuildingRoute route)
 {
-	prepareBuildingGradient(building, swimClass, route);
-	return building->leaseGradient(building->routeSlot(swimClass, route));
+	const int slot = building->routeSlot(swimClass, route);
+	// Observation borrows a usable generation without enrolling, allocating,
+	// seeding or refreshing a field. Live admission owns normal preparation.
+	if (!building->globalGradient[slot] || building->dirtyGradient[slot] ||
+		building->gradientGeneration[slot] != topologyGeneration ||
+		(building->resolveRoute(route) == BuildingRoute::Clearing &&
+		 building->lastGlobalGradientUpdateStepCounter[slot] + CLEARING_FLAG_REFRESH_TICKS <= game->stepCounter))
+		return {};
+	return building->leaseGradient(slot);
 }
 
 Uint16 Map::buildingGradientValue(Building *building, int swimClass, size_t cell, BuildingRoute route) const

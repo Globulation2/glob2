@@ -174,7 +174,32 @@ TEST_SUITE("HiringPlanner")
 		w.game.snapshotStore().invalidateBoundary();
 		const auto available = w.game.captureReadBoundary();
 		CHECK(available.entities->availableGroundClasses[0] != 0);
+		CHECK(HiringPipeline::bindRoutes(w.game, available).routes->empty());
+		// A normal simulation query establishes the shared generation.
+		w.game.map.buildingGradient(b, u->swimClass());
 		CHECK_FALSE(HiringPipeline::bindRoutes(w.game, available).routes->empty());
+	}
+	TEST_CASE("cold routes are established by live admission rather than observation")
+	{
+		glob2test::HeadlessGlobals globals;
+		glob2test::HeadlessGame w({.discovered = true, .loadDefaultRace = true});
+		auto *b = w.addBuilding("inn", 8, 8);
+		b->maxUnitWorking = 1;
+		b->materials[WHEAT] = 0;
+		b->updateCallLists();
+		auto *u = w.addUnit(WORKER, 6, 8);
+		u->medical = Unit::MED_FREE;
+		u->activity = Unit::ACT_RANDOM;
+		u->hungriness = 0;
+		u->carriedMaterial = WHEAT;
+		const auto slot = b->routeSlot(u->swimClass(), BuildingRoute::Footprint);
+		CHECK(b->globalGradient[slot] == nullptr);
+		glob2test::publishCurrentHiringSuggestions(w.game);
+		CHECK(b->globalGradient[slot] == nullptr);
+		CHECK(b->subscribeToBringMaterialsStep());
+		REQUIRE(b->unitsWorking.size() == 1);
+		CHECK(b->unitsWorking.front() == u);
+		CHECK(b->globalGradient[slot] != nullptr);
 	}
 	TEST_CASE("unrelated live route enrollment cannot change hiring inputs")
 	{
@@ -529,7 +554,7 @@ TEST_SUITE("HiringPlanner")
 		auto [vacancyInputs, vacancy] = plan();
 		REQUIRE(vacancy.buildings.size() == 1);
 		CHECK(vacancy.candidateVisits > 0);
-		CHECK_FALSE(vacancyInputs.routes->empty());
+		CHECK(vacancyInputs.routes->empty());
 		CHECK(vacancy.metrics.buildingsNeedingHiring == 1);
 		inn->desiredMaxUnitWorking = 0;
 		auto [finishedInputs, finished] = plan();
