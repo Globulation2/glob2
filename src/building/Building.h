@@ -32,6 +32,7 @@ class Unit;
 class Team;
 class Map;
 class BuildingGradientSearch;
+struct SharedBuildingGradient;
 struct BuildingType;
 class BuildingsTypes;
 class Order;
@@ -431,9 +432,6 @@ private:
 	/// still cooling it decrements by shootRhythm and returns false.
 	bool tickShootingCooldown();
 
-    /// Read-only diagnostic reference, using the same pure planner as jobs.
-    TurretTarget targetingReference() const;
-
 	/// Phase 5 geometry: compute the bullet spawn origin and velocity aimed at
 	/// the target tile, accounting for toroidal map wrap.
 	TurretFiringSolution computeFiringSolution(int targetX, int targetY) const;
@@ -493,28 +491,6 @@ private:
 	bool considerUnitForWorkerFlag(Unit* unit, int* dist);
 	bool considerUnitForWarriorFlag(Unit* unit, int* dist, int terrainDistance=-1);
 
-	/// One worker that could be hired to carry materials to this building,
-	/// with the metrics the selection passes of
-	/// subscribeToBringMaterialsStep score on. A null `unit` means the slot
-	/// holds no candidate. `distance` is the linear gradient distance to the
-	/// building when the unit already carries the material being staffed, or
-	/// the round distance through a source when it must fetch the material.
-	struct BringMaterialsCandidate
-	{
-		Unit* unit;
-		int distance;
-	};
-
-	/// Running best-candidate state shared, in order, across the three
-	/// selection passes. Later passes run only while `choosen` is still null.
-	/// Candidates are ranked by `maxLevel` first, then by smallest `minValue`.
-	struct BringMaterialsSelection
-	{
-		int maxLevel;
-		int minValue;
-		Unit* choosen;
-	};
-
 	/// Lets src/unit/FetchHiringScoreHarness.cpp reach considerUnitForMaterial
 	/// without exposing it to game callers, as GameGUI does for its own harness.
 	friend class FetchHiringScoreHarness;
@@ -532,16 +508,8 @@ private:
 	/// the HARVEST ability or already filling this building.
 	bool considerUnitForMaterial(Unit* unit, int wantedMaterial, int* dist, int airDistance=-1);
 
-	/// Packs workers hireable to fetch `wantedMaterial` into candidates in unit
-	/// index order and returns their count. The caller supplies Unit::MAX_COUNT
-	/// slots. Rejection reasons are tallied via considerUnitForMaterial. The
-	/// tallies are reset per scan, so they describe one material, never a unit
-	/// counted once per material the building tried.
-	int gatherBringMaterialsCandidates(BringMaterialsCandidate* candidates, int wantedMaterial, const int* airDistances=nullptr);
-	// Keep large scratch arrays off fully staffed/dead/timer-only admission paths.
-	[[gnu::noinline]] bool hireMaterialUnit(const int* targets, const int* served, const int* airDistances);
-	[[gnu::noinline]] bool hireMaterialUnitWithFlyingDistances(const int* targets, const int* served);
-	[[gnu::noinline]] bool hireFlagUnits();
+	bool hireMaterialUnit(const int* targets,const int* served);
+	bool hireFlagUnits();
 
 	/// Per-material delivery targets and how many of each are already accounted
 	/// for by deliveries that landed plus units on their way. Counted in
@@ -553,21 +521,6 @@ private:
 	/// room for one more delivery and the deliveries already subscribed do not
 	/// cover the target.
 	bool wantsAnotherDelivery(int r, const int* targets, const int* served);
-
-	/// Hire a unit that already carries a material this building still wants. It
-	/// delivers without a fetch trip at all, so it is preferred whatever the
-	/// apportionment says; the apportionment only directs units we must send
-	/// out. Assigns destinationPurpose to every carrying candidate it inspects,
-	/// not only the one chosen, and scores on a hunger-discounted distance.
-	/// Both are deliberate and must be preserved.
-	void selectUnitCarryingWantedMaterial(const int* targets, const int* served, BringMaterialsSelection& sel, const int* airDistances=nullptr);
-
-	/// The fetch-out selection pass for one material. Scans all candidates and
-	/// updates `sel` with the best match, assigning destinationPurpose only to
-	/// the unit it chooses. A candidate holding something else is charged
-	/// CARRIED_MATERIAL_PENALTY_TILES of detour rather than excluded, so it is
-	/// hired when it is enough closer to be worth the loss.
-	void selectFetcher(const BringMaterialsCandidate* candidates, int count, int wantedMaterial, BringMaterialsSelection& sel);
 
 	/// Updates the materials pointer to local or team storage, depending on BuildingType.
 	void updateMaterialsPointer();
@@ -607,6 +560,10 @@ public:
 	//! Building owns these buffers; resetPathfindGradients frees them. Refresh and
 	//! stuck-unit retry policy lives in Map::buildingGradient / pathfindBuilding.
 	Uint16 *globalGradient[BUILDING_GRADIENT_COUNT];
+    // Owner creates/replaces leases. Workers touch the leased generation only.
+    std::shared_ptr<SharedBuildingGradient> sharedGradient[BUILDING_GRADIENT_COUNT];
+    std::shared_ptr<SharedBuildingGradient> leaseGradient(int slot);
+    void retireSharedGradient(int slot);
 	//! Retained propagation queues. Never serialized: saving completes
 	//! their fields first. Null for loaded or locked fields; owned with globalGradient.
 	std::unique_ptr<BuildingGradientSearch> globalGradientSearch[BUILDING_GRADIENT_COUNT];
@@ -689,8 +646,6 @@ private:
 
 	// units: scratch counters for subscription / priority diff
 	Sint32 maxUnitWorkingPrevious;
-	///The subscribeToBringMaterialsStep and subscribeForFlagingStep operate every 32 ticks
-	Sint32 subscriptionWorkingTimer;
 	///This stores the old priority, so that if the priority changes, this building will be updated in Teams
 	Sint32 oldPriority;
 

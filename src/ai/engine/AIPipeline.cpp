@@ -58,10 +58,9 @@ std::vector<std::pair<unsigned,std::shared_ptr<Order>>> Pipeline::prepare(Game& 
  }
  // Decisions use the shared executor; the owner joins at the deadline.
  // Without workers, the executor runs deferred work on the owner at its join.
- constexpr bool shared=true;
- if(!configured) {scheduler.configure(game.gameHeader.getAIOrderDelay(),game.map.computeExecutor(),shared);configured=true;}
+ if(!configured) {scheduler.configure(game.gameHeader.getAIOrderDelay(),game.map.computeExecutor());configured=true;}
  else if(scheduler.delayTicks()!=game.gameHeader.getAIOrderDelay()) throw std::logic_error("AI delay cannot change during a match");
- else if(!scheduler.hasExecutor()||scheduler.sharedExecution()!=shared) scheduler.configureExecution(game.map.computeExecutor(),shared);
+ else if(!scheduler.hasExecutor()) scheduler.configureExecution(game.map.computeExecutor());
  if(paused) {
   game.map.preparePendingWorld(captured);
   for(auto p:eligible) result.emplace_back(p,std::make_shared<NullOrder>());
@@ -105,9 +104,10 @@ std::vector<std::pair<unsigned,std::shared_ptr<Order>>> Pipeline::prepare(Game& 
    auto feedback=std::move(actor.feedback); actor.feedback.clear();
    auto fields=diagnostics?diagnostics->reserveCapture(p,game.stepCounter):nullptr;
    scheduler.submit(request,world,[ai,world,request,feedback=std::move(feedback),fields,team=unsigned(player->teamNumber),delay=scheduler.delayTicks()](const AIWorldView& input) {
-    std::vector<ResourceEnrollmentRequest> enrollments;
-    DecisionContext context{input,request.player,team,feedback,world,request.observedTick+delay,request.pollSequence,&enrollments,fields,request.generation};
-    auto output=ai->decide(context); output.resourceEnrollments=std::move(enrollments); return output;
+    // AI query fields are local planning caches: their presence and age depend on
+    // local polling, so they never enroll authoritative map fields.
+    DecisionContext context{input,request.player,team,feedback,world,request.observedTick+delay,request.pollSequence,nullptr,fields,request.generation};
+    return ai->decide(context);
    });
   }
   scheduler.dispatch();
@@ -120,10 +120,6 @@ std::vector<std::pair<unsigned,std::shared_ptr<Order>>> Pipeline::prepare(Game& 
    actor.retainedQueryVectorBytes=delivery.command.retainedQueryVectorBytes;
    peakRetainedQueryVectorBytes=std::max(peakRetainedQueryVectorBytes,queryVectorMemory().first);
    if(diagnostics&&delivery.command.fieldDiagnostics) diagnostics->publishCapture(*delivery.command.fieldDiagnostics);
-   for(const auto& e:delivery.command.resourceEnrollments) {
-    if(!e.initialField) throw std::logic_error("AI resource enrollment lacks frozen inputs");
-    game.map.installObservedResourceField(e.team,e.resource,e.swim,*e.initialField);
-   }
    auto order=delivery.command.decode();order->sender=delivery.request.player;
    order->aiGeneration=delivery.request.generation;order->aiPollSequence=delivery.request.pollSequence;
    actor.published=order;

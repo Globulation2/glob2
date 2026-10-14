@@ -41,6 +41,8 @@ using namespace GAGCore;
 namespace SimulationSnapshot { class Store; }
 namespace TurretTargeting { class Pipeline; }
 class TeamStatsPipeline;
+class HiringPipeline;
+namespace HiringPlanner { struct BuildingLists; }
 class GameGUI;
 class SceneMap;
 struct PresentationFrame;
@@ -178,6 +180,7 @@ public:
 	}
 	//! Legacy test diagnostics only; production consumers are forbidden.
 	SyncRandScope bindRandom() { return SyncRandScope(syncRandom); }
+friend class HiringPipelineHarness;
 private:
 	std::unique_ptr<const AIPlanning::BuildingCapabilityIndex> buildingCapabilityIndex;
 	std::vector<Uint8> unitAvailability;
@@ -255,6 +258,12 @@ public:
 	void settleAIOrder(const std::shared_ptr<Order>& order, bool accepted);
 	void cancelAI(unsigned player);
 	void drainAI();
+    void drainHiring();
+    void saveHiring(GAGCore::OutputStream*);
+    void loadHiring(GAGCore::InputStream*);
+    Uint32 hiringChecksum() const;
+    std::vector<std::pair<std::string,Uint64>> hiringMetrics() const;
+    const HiringPlanner::BuildingLists* hiringCandidates(const Building&) const;
     void drainTeamStats();
     void saveTeamStats(GAGCore::OutputStream*);
     void loadTeamStats(GAGCore::InputStream*, int versionMinor);
@@ -268,7 +277,7 @@ public:
 	void observeUnpolledAI();
 	// Normal-game target lists use the selected three-entry, two-tick cadence.
 	void forgetTurret(BuildingRef);
-	void configureTurretTargeting(unsigned delay=1,unsigned refresh=2,unsigned capacity=3,unsigned margin=1,bool profileCpu=false);
+	void configureTurretTargeting(unsigned delay=1,unsigned refresh=2,unsigned capacity=3,unsigned margin=1);
 	TurretTargeting::Pipeline* turretTargeting() const { ensureTurretTargeting(); return turretTargetingPipeline.get(); }
 	SimulationSnapshot::Store& snapshotStore() { return worldSnapshots; }
 	std::vector<std::pair<std::string, Uint64>> aiMetrics() const;
@@ -278,6 +287,7 @@ private:
     void ensureTurretTargeting() const;
 	std::unique_ptr<AIEngine::Pipeline> aiPipeline;
     std::unique_ptr<TeamStatsPipeline> statsPipeline;
+    std::unique_ptr<HiringPipeline> hiringPipeline;
 public:
 
 	/// Makes a step for building projects that are waiting for the areas to clear of units.

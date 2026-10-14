@@ -14,7 +14,7 @@
 #include "Map.h"
 #include "gradient/GradientRuntime.h"
 #include "BuildingGradientSearch.h"
-#include "BuildingGradientStats.h"
+#include "SharedBuildingGradient.h"
 #include "BuildingType.h"
 #include "Game.h"
 #include "MapInternal.h"
@@ -40,38 +40,6 @@ int slotSwim(int slot) { return slot % SWIM_CLASS_COUNT; }
 BuildingRoute slotRoute(int slot) { return BuildingRoute(slot / SWIM_CLASS_COUNT); }
 
 
-struct DepthSetting
-{
-	GradientRuntime::BuildingDepth mode = GradientRuntime::BuildingDepth::Table;
-	int point = BuildingGradientDepth::DEFAULT_POINT;
-};
-
-std::optional<DepthSetting> parseBuildingDepth(std::string_view mode)
-{
-	if (mode == "full") return DepthSetting{GradientRuntime::BuildingDepth::Full};
-	if (mode == "lazy") return DepthSetting{GradientRuntime::BuildingDepth::Lazy};
-	if (mode == "table") return DepthSetting{};
-	if (const int point = BuildingGradientDepth::pointIndex(mode); point >= 0)
-		return DepthSetting{GradientRuntime::BuildingDepth::Table, point};
-	return std::nullopt;
-}
-
-// GLOB2_BUILDING_DEPTH, read once per process. A timing switch only, so an
-// invalid value is reported and ignored rather than failing a game.
-std::optional<DepthSetting> environmentBuildingDepth()
-{
-	static const auto depth = []() -> std::optional<DepthSetting> {
-		const char* value = std::getenv("GLOB2_BUILDING_DEPTH");
-		if (!value) return std::nullopt;
-		const auto parsed = parseBuildingDepth(value);
-		if (!parsed)
-			std::cerr << "Ignoring GLOB2_BUILDING_DEPTH=" << value
-					  << ": expected full, table, lazy or an operating point name\n";
-		return parsed;
-	}();
-	return depth;
-}
-
 void buildScheduled(PipelineJob& job)
 {
 	auto& p = job.payload;
@@ -93,7 +61,7 @@ Map::BuildingGradientPipelineStatus Map::buildingGradientPipelineStatus() const
 	const auto& metrics = rt.buildings.metrics;
 	return {buildingGradientPipelineActive(), rt.buildings.delayTicks(), rt.buildings.pendingCount(),
 		rt.buildingRequests.size(), metrics.jobs, metrics.published, metrics.discarded,
-		rt.buildingSynchronous, metrics.maxPending, metrics.waitNs, rt.synchronousByReason};
+		rt.buildingSynchronous, metrics.maxPending, rt.synchronousByReason};
 }
 
 const char* Map::buildingSyncReasonName(BuildingSyncReason reason)
@@ -145,19 +113,15 @@ void Map::ensureBuildingGradientPipeline()
 		Building* b = buildingGradientDestination(p.team, p.buildingId, p.scriptIdentity);
 		if (!b || b->refreshEpoch[p.slot] != p.epoch || !b->globalGradient[p.slot]) return false;
 		const int slot = p.slot, swim = p.swim;
-		if (gradientStats)
-		{
-			// The replaced lifetime ends here, as a synchronous rebuild's would.
-			gradientStats->setPendingReason(BuildingGradientStats::Reason::Scheduled);
-			gradientStats->setPendingContext(p.statsContext);
-			gradientStats->fieldRebuilding(*this, *b, slot, b->routeAccess(swim, p.route), game->stepCounter, topologyGeneration);
-		}
+        auto guard=SharedBuildingGradient::lock(b->sharedGradient[slot]);
+
 		// Pointer swap: the transferred search already points at data, so a
 		// partial field resumes from its own buckets with no rescan.
 		auto& search = b->globalGradientSearch[slot];
 		// The depth model reads the replaced lifetime; a locked one leaves the older value.
 		if (search) b->settledCostHint[slot] = Uint16(std::min(search->requiredCost(), 0xFFFE));
-		recycleBuildingGradientSearch(std::move(search));
+		b->retireSharedGradient(slot);
+        recycleBuildingGradientSearch(std::move(search));
 		recycleBuildingGradientBuffer(b->globalGradient[slot]);
 		b->globalGradient[slot] = p.data.release();
 		if (!p.locked) search = std::move(p.search);
@@ -205,13 +169,7 @@ void Map::ensureBuildingGradientPipeline()
 		return ComputeExecutor::advanceDue(std::uint64_t(game ? game->stepCounter : 0) + remaining - 1);
 	};
 	// Statistics record what readers needed, so they default to seeds only.
-	if (const auto depth = environmentBuildingDepth())
-	{
-		rt.buildingDepth = depth->mode;
-		rt.buildingDepthPoint = depth->point;
-	}
-	else if (gradientStats) rt.buildingDepth = GradientRuntime::BuildingDepth::Lazy;
-	if (delay) pipeline.configure(compute, rt.buildingShared, delay, buildScheduled);
+	if (delay) pipeline.configure(compute, delay, buildScheduled);
 	else pipeline.drain();
 }
 
@@ -246,32 +204,18 @@ bool Map::requestBuildingRefresh(Building* building, int slot)
 	return true;
 }
 
-void Map::setBuildingGradientDepth(std::string_view mode)
-{
-	const auto depth = parseBuildingDepth(mode);
-	if (!depth) throw std::invalid_argument("building gradient depth must be full, table, lazy or a point name");
-	gradientRuntime->buildingDepth = depth->mode;
-	gradientRuntime->buildingDepthPoint = depth->point;
-}
-
 int Map::predictBuildingDepth(const Building* building, int slot) const
 {
 	// Clearing and Combat goals move with resources and enemies: full depth.
 	if (slotRoute(slot) != BuildingRoute::Footprint) return COST_LIMIT;
-	switch (gradientRuntime->buildingDepth)
-	{
-	case GradientRuntime::BuildingDepth::Full: return COST_LIMIT;
-	case GradientRuntime::BuildingDepth::Lazy: return 0;
-	case GradientRuntime::BuildingDepth::Table: break;
-	}
-	// The field's own past depths, as BuildingGradientStats records them when a
+	// The field's own past depths when a
 	// job is staged: how deep readers of the serving field have needed it so far, and
 	// the final reader demand of the lifetime it replaced.
 	int serving = -1;
 	if (const auto& search = building->globalGradientSearch[slot]) serving = search->requiredCost();
 	const Uint16 hint = building->settledCostHint[slot];
 	const int previous = hint == Building::UNKNOWN_SETTLED_COST ? -1 : hint;
-	return std::min(BuildingGradientDepth::target(serving, previous, gradientRuntime->buildingDepthPoint), COST_LIMIT);
+	return std::min(BuildingGradientDepth::target(serving, previous), COST_LIMIT);
 }
 
 void Map::stageBuildingGradientPreparation()
@@ -294,11 +238,7 @@ void Map::stageBuildingGradientPreparation()
 		p.data.reset(acquireBuildingGradientBuffer());
 		p.search = acquireBuildingGradientSearch();
 		p.depthTarget = predictBuildingDepth(b, p.slot);
-		if (gradientStats)
-		{
-			p.statsContext = BuildingGradientStats::context(*b, p.slot);
-			p.statsContext.staged = true;
-		}
+
 		// The capture consumes earlier dirty marks; later ones survive publication.
 		b->dirtyGradient[p.slot] = false;
 		rt.stagedBuildings.push_back(job);

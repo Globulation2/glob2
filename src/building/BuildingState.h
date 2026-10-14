@@ -43,7 +43,8 @@ struct BuildingStateRecord
 	// in BuildingGuiState, outside simulation state.
 	Sint32 priority;
 	EntityRandom entityRandom;
-	Uint32 targetingEpoch = 0; // Type transitions supersede old turret lists.
+	// Attraction round clock; past 32 while a round retries owed roles.
+	Sint32 subscriptionWorkingTimer = 0;
 	Uint32 scriptIdentity = 0; // Excluded from legacy simulation checksums.
 	Uint16 gid;
 	Uint16 maxUnitInside;

@@ -53,16 +53,6 @@ inline std::optional<Algorithm> parseAlgorithm(std::string_view name)
 		return Algorithm::Jacobi;
 	return {};
 }
-// Match command-line spelling and conventional environment booleans. Invalid
-// environment values disable verification rather than changing simulation work.
-inline std::optional<bool> parseVerification(std::string_view value)
-{
-	if (value == "1" || value == "on" || value == "true")
-		return true;
-	if (value == "0" || value == "off" || value == "false")
-		return false;
-	return {};
-}
 inline const char *algorithmName(Algorithm value)
 {
 	switch (value)
@@ -95,16 +85,15 @@ struct Configuration
 {
 	Backend backend = Backend::CPU;
 	Algorithm algorithm = Algorithm::Buckets;
-	bool verify = false;
 	friend bool operator==(const Configuration &, const Configuration &) = default;
 };
 inline unsigned encodeConfiguration(Configuration c)
 {
-	return unsigned(c.backend) | (unsigned(c.algorithm) << 8) | (unsigned(c.verify) << 16);
+	return unsigned(c.backend) | (unsigned(c.algorithm) << 8);
 }
 inline Configuration decodeConfiguration(unsigned c)
 {
-	return {Backend(c & 255), Algorithm((c >> 8) & 255), bool(c & (1u << 16))};
+	return {Backend(c & 255), Algorithm((c >> 8) & 255)};
 }
 inline Configuration initialEnvironmentConfiguration()
 {
@@ -116,8 +105,6 @@ inline Configuration initialEnvironmentConfiguration()
 		c.algorithm = parseAlgorithm(name).value_or(c.algorithm);
 	if (!supportsAlgorithm(c.backend, c.algorithm))
 		c.algorithm = isGPU(c.backend) ? Algorithm::Frozen8 : Algorithm::Buckets;
-	if (const auto *verify = std::getenv("GLOB2_GRADIENT_VERIFY"))
-		c.verify = parseVerification(verify).value_or(false);
 	return c;
 }
 inline std::atomic<unsigned> requestedConfiguration{

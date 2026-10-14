@@ -22,6 +22,11 @@
 
 namespace glob2test
 {
+    // Controlled admission fixtures use fresh planner suggestions, independently
+    // of scheduling. Continuation/pipeline tests exercise real tick deadlines.
+    void publishCurrentHiringSuggestions(Game&);
+    // Remove only premature injected buffers before testing normal persistence.
+    void discardPrematureHiringSuggestions(Game&);
     // Isolated weapon fixtures advance observation/publication without stepping units.
     void prepareTurretTargets(Building&);
 	// Deterministic continuation scheduler: collect each unpaused AI decision,

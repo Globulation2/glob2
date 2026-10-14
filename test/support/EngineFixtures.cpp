@@ -1,5 +1,6 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "EngineFixtures.h"
+#include "HiringPipeline.h"
 #include "render/scene/SceneExtract.h"
 
 #include "FileManager.h"
@@ -183,6 +184,44 @@ namespace glob2test
 	}
 }
 
+class HiringPipelineHarness
+{
+  public:
+    static void discardPremature(Game &game)
+    {
+        if(!game.hiringPipeline)return;
+        game.drainHiring();
+        for(unsigned team=0;team<unsigned(game.teamsCount());++team)
+            if(const auto &o=game.hiringPipeline->published[team];o &&
+               (o->tick+HiringPipeline::Delay>game.stepCounter || o->tick%HiringPipeline::Refresh!=team%HiringPipeline::Refresh))
+                game.hiringPipeline->published[team].reset();
+    }
+	static void publish(Game &game)
+	{
+		game.drainHiring();
+		game.snapshotStore().invalidateBoundary();
+		auto input = HiringPipeline::bindRoutes(game, game.captureReadBoundary());
+		if (!game.hiringPipeline)
+			game.hiringPipeline = std::make_unique<HiringPipeline>(game.map.computeExecutor());
+		for (unsigned team = 0; team < unsigned(game.teamsCount()); ++team)
+		{
+			HiringPlanner::Planner cache;
+			auto output = std::make_shared<HiringPlanner::Output>(cache.rank(input, team, 128));
+			game.hiringPipeline->published[team] = std::move(output);
+		}
+	}
+};
+namespace glob2test
+{
+void discardPrematureHiringSuggestions(Game &game)
+{
+    HiringPipelineHarness::discardPremature(game);
+}
+void publishCurrentHiringSuggestions(Game &game)
+{
+	HiringPipelineHarness::publish(game);
+}
+} // namespace glob2test
 #include "TurretTargeting.h"
 namespace glob2test {
 void prepareTurretTargets(Building& turret)

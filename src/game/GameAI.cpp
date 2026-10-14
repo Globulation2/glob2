@@ -2,6 +2,7 @@
 #include "Game.h"
 #include "TurretTargeting.h"
 #include "TeamStatsPipeline.h"
+#include "HiringPipeline.h"
 #include "TeamStatsChecksum.h"
 #include "Team.h"
 #include "GameDiagnostics.h"
@@ -16,6 +17,10 @@ SimulationSnapshot::Handle Game::prepareReadBoundary(bool paused, SimulationSnap
 {
  ensureTurretTargeting();
  const bool statisticsActive = !paused && !anyPlayerWaited;
+ // Hiring observes every completed boundary before matched orders, even while
+ // a replica waits or is paused, so every replica admits the same jobs.
+ if (!hiringPipeline) hiringPipeline = std::make_unique<HiringPipeline>(map.computeExecutor());
+ hiringPipeline->publishDue(stepCounter);
  if (statisticsActive) {
   if (statsPipeline && !statsPipeline->matchesWorld(map.identity())) statsPipeline.reset();
   if (!statsPipeline) statsPipeline = std::make_unique<TeamStatsPipeline>(map.computeExecutor());
@@ -31,6 +36,7 @@ SimulationSnapshot::Handle Game::prepareReadBoundary(bool paused, SimulationSnap
   }
  }
  turretTargetingPipeline->admit(*this,world,paused || anyPlayerWaited);
+ hiringPipeline->observe(*this, world);
  return world;
 }
 std::vector<std::pair<unsigned,std::shared_ptr<Order>>> Game::prepareAIOrders(std::span<const unsigned> players,
@@ -47,19 +53,20 @@ std::shared_ptr<Order> Game::validateAIOrder(std::shared_ptr<Order> order,unsign
 void Game::settleAIOrder(const std::shared_ptr<Order>& order,bool accepted) {if(aiPipeline)aiPipeline->settle(*this,order,accepted);}
 void Game::cancelAI(unsigned player) {if(aiPipeline)aiPipeline->cancel(player);}
 void Game::drainAI() {if(aiPipeline)aiPipeline->drain();if(turretTargetingPipeline)turretTargetingPipeline->drain();}
-void Game::clearAI() { if(turretTargetingPipeline)turretTargetingPipeline->drain(); statsPipeline.reset(); map.finishGradientPipeline({JoinReason::Teardown, ComputeTelemetry::NoTick}); map.finishResourceGrowth({JoinReason::Teardown, ComputeTelemetry::NoTick}); aiPipeline.reset(); worldSnapshots.reset(); }
+void Game::clearAI() { hiringPipeline.reset(); if(turretTargetingPipeline)turretTargetingPipeline->drain(); statsPipeline.reset(); map.finishGradientPipeline({JoinReason::Teardown, ComputeTelemetry::NoTick}); map.finishResourceGrowth({JoinReason::Teardown, ComputeTelemetry::NoTick}); aiPipeline.reset(); worldSnapshots.reset(); }
 void Game::saveAI(GAGCore::OutputStream* stream) {if(!aiPipeline){aiPipeline=std::make_unique<AIEngine::Pipeline>();aiPipeline->prepare(*this,{},true,nullptr,captureReadBoundary());}aiPipeline->save(stream);}
 bool Game::loadAI(GAGCore::InputStream* stream) {auto pipeline=std::make_unique<AIEngine::Pipeline>();if(!pipeline->load(*this,stream))return false;aiPipeline=std::move(pipeline);return true;}
 std::vector<std::pair<std::string,Uint64>> Game::aiMetrics() const {
- if(!aiPipeline)return teamStatsMetrics();
+ auto values=teamStatsMetrics();
+ const auto hiring=hiringMetrics();values.insert(values.end(),hiring.begin(),hiring.end());
+ if(!aiPipeline)return values;
  const auto compute=map.computeExecutor().telemetrySnapshot();
  const auto& waits=compute.summary.joins[unsigned(ComputeProducer::AI)][unsigned(JoinReason::TickDeadline)];
  const auto& capture=worldSnapshots.metrics;const auto& scheduling=aiPipeline->schedulingMetrics();const auto memory=worldSnapshots.memoryMetrics();const auto queryMemory=aiPipeline->queryVectorMemory();
- auto values=teamStatsMetrics();
- const std::vector<std::pair<std::string,Uint64>> aiValues={{"captures",capture.captures},{"extraction_ns",capture.captureNs},{"preparation_ns",capture.preparationNs},
+ const std::vector<std::pair<std::string,Uint64>> aiValues={{"captures",capture.captures},
   {"map_bytes_copied",capture.mapBytesCopied},{"detailed_captures",capture.detailedCaptures},{"bytes_copied",capture.bytesCopied},
   {"entity_bytes_copied",capture.entityBytesCopied},{"entity_sidecar_bytes_copied",capture.entitySidecarBytesCopied},{"component_reuses",capture.reusedComponents},{"allocations",capture.allocations},
-  {"computation_ns",aiPipeline->computationNs()},{"controller_query_vector_bytes",queryMemory.first},
+  {"controller_query_vector_bytes",queryMemory.first},
   {"controller_query_vector_peak_bytes",aiPipeline->peakQueryVectorMemory()},
   {"controller_query_vector_samples",queryMemory.second},{"submitted",scheduling.submitted},{"delivered",scheduling.delivered},
   {"snapshot_allocated_buffers",memory.allocatedBuffers},{"snapshot_reusable_buffers",memory.reusableBuffers},
@@ -88,9 +95,9 @@ void Game::observeUnpolledAI() {
  for(auto* controller:idle)controller->observe(world);
 }
 
-void Game::configureTurretTargeting(unsigned delay,unsigned refresh,unsigned capacity,unsigned margin,bool profileCpu)
+void Game::configureTurretTargeting(unsigned delay,unsigned refresh,unsigned capacity,unsigned margin)
 {
- auto replacement=std::make_unique<TurretTargeting::Pipeline>(*this,TurretTargeting::Configuration{delay,refresh,capacity,margin,profileCpu});
+ auto replacement=std::make_unique<TurretTargeting::Pipeline>(*this,TurretTargeting::Configuration{delay,refresh,capacity,margin});
  turretTargetingPipeline=std::move(replacement);
 }
 
@@ -117,5 +124,16 @@ Uint32 Game::teamStatsChecksum(bool heavy) const {
 std::vector<std::pair<std::string,Uint64>> Game::teamStatsMetrics() const {
  if(!statsPipeline)return {};
  const auto& m=statsPipeline->metrics;
- return {{"stats_submitted",m.submitted},{"stats_published",m.published},{"stats_worker_ns",m.workerNs},{"stats_allocation_ns",m.allocationNs},{"stats_submission_ns",m.submissionNs},{"stats_publication_ns",m.publicationNs},{"stats_deadline_misses",m.deadlineMisses},{"stats_deadline_wait_ns",m.deadlineWaitNs},{"stats_peak_pending",m.peakPending}};
+ return {{"stats_submitted",m.submitted},{"stats_published",m.published},{"stats_peak_pending",m.peakPending}};
+}
+
+void Game::drainHiring(){if(hiringPipeline)hiringPipeline->drain(JoinReason::Reconfigure);}
+void Game::saveHiring(GAGCore::OutputStream* s){if(!hiringPipeline)hiringPipeline=std::make_unique<HiringPipeline>(map.computeExecutor());hiringPipeline->save(s);}
+void Game::loadHiring(GAGCore::InputStream* s){auto p=std::make_unique<HiringPipeline>(map.computeExecutor());p->load(*this,s);hiringPipeline=std::move(p);}
+Uint32 Game::hiringChecksum() const {return hiringPipeline ? hiringPipeline->checkSum() : 0;}
+const HiringPlanner::BuildingLists* Game::hiringCandidates(const Building& b) const {return hiringPipeline ? hiringPipeline->suggestions(b) : nullptr;}
+std::vector<std::pair<std::string,Uint64>> Game::hiringMetrics() const {
+ if(!hiringPipeline)return {};
+ const auto& m=hiringPipeline->metrics;
+ return {{"hiring_submitted",m.submitted},{"hiring_published",m.published}};
 }

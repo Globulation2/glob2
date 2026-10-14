@@ -47,10 +47,7 @@ void BuildingGradientSearch::begin(const Inputs &inputs, std::uint16_t *seeded, 
 	heightMask = height - 1;
 	swimClass = swim;
 	currentCost = readerCost = 0;
-	popped = 0;
 	pending = 0;
-	queries = extensions = 0;
-	poppedAtDepth.fill(0);
 	for (auto &bucket : buckets)
 		bucket.clear();
 	modifiedCosts = inputs.modifiedCosts;
@@ -100,10 +97,8 @@ bool BuildingGradientSearch::resolved(std::size_t target) const
 void BuildingGradientSearch::resolve(std::size_t target)
 {
 	assert(target <= cells);
-	++queries;
 	if (!complete() && !(target < cells && resolved(target)))
 	{
-		++extensions;
 		PERF_SCOPE_TIME(BuildingGradientResume);
 		advance([&] { return target != cells && resolved(target); });
 	}
@@ -118,6 +113,12 @@ void BuildingGradientSearch::resolve(std::size_t target)
 				? GRADIENT_AT_GOAL - value + 1 : 0);
 		readerCost = std::max(readerCost, needed);
 	}
+}
+
+void BuildingGradientSearch::resolveForProposal(std::size_t target)
+{
+    assert(target < cells);
+    if (!complete() && !resolved(target)) advance([&]{return resolved(target);});
 }
 
 void BuildingGradientSearch::resolveToCost(int cost)
@@ -139,8 +140,6 @@ template <class Done> void BuildingGradientSearch::advance(Done done)
 		while (pending && !done())
 		{
 			assert(currentCost <= COST_LIMIT);
-			popped += buckets[currentCost % BUCKETS].size;
-			poppedAtDepth[depthBin(currentCost)] += buckets[currentCost % BUCKETS].size;
 			expandBucket<decltype(weighted)::value>(gradient, buckets.data(), pending, currentCost,
 													COST_LIMIT, {widthMask + 1, heightMask + 1},
 													waterSteps, waterAt);
@@ -153,8 +152,6 @@ template <class Done> void BuildingGradientSearch::advance(Done done)
 		{
 			while (pending && !done())
 			{
-				popped += custom->buckets[unsigned(currentCost) % N].size;
-				poppedAtDepth[depthBin(currentCost)] += custom->buckets[unsigned(currentCost) % N].size;
 				gradient_kernel::runtime_terrain::expandProfileBucket<N>(
 					gradient, custom->buckets.data(), pending, currentCost, COST_LIMIT,
 					{widthMask + 1, heightMask + 1}, profiles->movement,
@@ -200,8 +197,6 @@ void BuildingGradientSearch::clearForReuse()
 	gradient = nullptr;
 	cells = pending = 0;
 	currentCost = readerCost = 0;
-	popped = queries = extensions = 0;
-	poppedAtDepth.fill(0);
 	registry.reset();
 	profiles.reset();
 	water.reset();

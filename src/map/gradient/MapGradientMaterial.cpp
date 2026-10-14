@@ -224,21 +224,6 @@ unsigned Map::materialSupplyModesSlot(const Building* consumer, int resource) co
     return modes;
 }
 
-// Enrollment is an owner-side logical delivery effect. Workers supply the field
-// computed from their observation, so admitting it never reads a newer world.
-void Map::installObservedResourceField(int team, int resource, int swim, std::span<const Uint16> values)
-{
-	if (team < 0 || team >= Team::MAX_COUNT || resource < 0 || resource >= MaterialSlotCount ||
-		swim < 0 || swim >= SWIM_CLASS_COUNT || values.size() != std::size_t(size))
-		throw std::invalid_argument("Invalid observed resource field enrollment");
-	auto& slot = materialGradients[team][resource][swim];
-	if (slot) return;
-	auto data = std::make_unique<Uint16[]>(size);
-	std::copy(values.begin(), values.end(), data.get());
-	slot = data.release();
-	publishPlane(&slot);
-}
-
 std::optional<Uint16> Map::planeKeyForSlot(Uint16* const* slot) const
 {
 	constexpr auto perArray = std::size_t(Team::MAX_COUNT) * MaterialSlotCount * SWIM_CLASS_COUNT;

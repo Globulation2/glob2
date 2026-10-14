@@ -34,6 +34,7 @@ std::string saveProductionGame(Game& game, bool text)
     std::unique_ptr<GAGCore::OutputStream> out(text
         ? static_cast<GAGCore::OutputStream*>(new GAGCore::TextOutputStream(bytes))
         : static_cast<GAGCore::OutputStream*>(new GAGCore::BinaryOutputStream(bytes)));
+    glob2test::discardPrematureHiringSuggestions(game);
     game.save(out.get(), false, "Production capabilities");
     out->flush(); return bytes->takeContents();
 }
@@ -202,6 +203,7 @@ TEST_CASE("hybrid attraction and service routes remain independent across save c
     Unit* worker=world.addUnit(WORKER,6,8);
     Unit* explorer=world.addUnit(EXPLORER,6,9);
     Unit* warrior=world.addUnit(WARRIOR,6,10);
+    glob2test::publishCurrentHiringSuggestions(world.game);
     for (int tick=0; tick<33; ++tick) b->subscribeWorkStep();
     CHECK(b->desiredMaxUnitWorking==3);
     REQUIRE(b->unitsWorking.size()==3);
@@ -674,7 +676,7 @@ TEST_CASE("resource permissions separate storage replenishment and direct withdr
     CHECK_FALSE(world.game.map.materialAvailableSlot(0,WHEAT,0,19,20,&distance,false,receiver));
     Unit* worker=world.addUnit(WORKER,7,8);
     receiver->maxUnitWorking=receiver->desiredMaxUnitWorking=1;
-    REQUIRE(receiver->subscribeToBringMaterialsStep());
+    REQUIRE((glob2test::publishCurrentHiringSuggestions(*receiver->owner->game), receiver->subscribeToBringMaterialsStep()));
     CHECK(worker->attachedBuilding==receiver);
     CHECK(world.game.map.touchedStockedMarketSlot(worker,WOOD)==supplier);
     CHECK(world.game.map.touchedStockedMarketSlot(worker,WHEAT)==nullptr);
@@ -848,6 +850,7 @@ TEST_CASE("mixed attraction borrows quota from an unavailable unit class")
     world.game.buildingsTypes.loadSnapshotJson(json.dump()); world.game.configureBuildingCatalog();
     Building* b=world.addBuilding("inn",8,8); b->maxUnitWorking=3; b->update();
     for (int i=0;i<3;++i) world.addUnit(WARRIOR,6,7+i);
+    glob2test::publishCurrentHiringSuggestions(world.game);
     for (int tick=0;tick<33;++tick) b->subscribeWorkStep();
     CHECK(b->unitsWorking.size()==3);
     for (const Unit* unit : b->unitsWorking) CHECK(unit->typeNum==WARRIOR);

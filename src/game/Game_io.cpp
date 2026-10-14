@@ -314,10 +314,11 @@ GAGCore::CooperativeTask Game::loadTask(GAGCore::InputStream *stream)
     // let ordinary admission/publication populate it without stepping on load.
     if (versionMinor >= FILE_FORMAT_VERSION_TURRET_TARGETING && mapHeader.getIsSavedGame()) {
         ensureTurretTargeting();
-        if (!turretTargetingPipeline->load(*this,stream)) co_return false;
+        if (!turretTargetingPipeline->load(*this,stream,versionMinor)) co_return false;
     }
 
 	if(versionMinor >= FILE_FORMAT_VERSION_TEAM_STATS_PIPELINE && mapHeader.getIsSavedGame()) loadTeamStats(stream,versionMinor);
+    if(versionMinor>=FILE_FORMAT_VERSION_CACHED_HIRING && mapHeader.getIsSavedGame())loadHiring(stream);
 
 	// Legacy saves reconstruct service lists by running building updates. That
 	// changes tie-breaking order and can even advance construction. New saved
@@ -789,7 +790,7 @@ void Game::save(GAGCore::OutputStream *stream, bool fileIsAMap, const std::strin
 	}
 	stream->writeLeaveSection();
 	stream->write(FILE_SIG_GAME_PLAYER, FILE_SIG_LEN, "signatureAfterPlayers");
-	if (!fileIsAMap) {saveAI(stream);turretTargeting()->save(*this,stream);saveTeamStats(stream);}
+	if (!fileIsAMap) {saveAI(stream);turretTargeting()->save(*this,stream);saveTeamStats(stream);saveHiring(stream);}
 
 	// Save the old map script state
 	sgslScript.save(stream, this);
@@ -936,8 +937,6 @@ Uint32 Game::checkSum(std::vector<Uint32> *checkSumsVector, std::vector<Uint32> 
 
 	cs=rotr1(cs);
 
-	cs^=turretTargeting()->checkSum(*this);
-	cs=rotr1(cs);
 	Uint32 scriptCs=sgslScript.checkSum();
 	if(mapscript.getMapScriptMode()==MapScript::JavaScript)
  {

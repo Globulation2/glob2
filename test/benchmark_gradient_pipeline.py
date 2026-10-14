@@ -23,7 +23,7 @@ def summarize(rows, scenarios):
             entry = {key: statistics.median(r[key] for r in subset) for key in ('wall_s', 'cpu_s', 'peak_rss_bytes')}
             entry['wall_min_s'] = min(r['wall_s'] for r in subset)
             entry['wall_max_s'] = max(r['wall_s'] for r in subset)
-            for key in ('run_ns', 'gradient_wait_ns', 'gradient_active_elapsed_ns', 'gradient_jobs', 'gradient_discarded', 'gradient_max_pending', 'gradient_workers'):
+            for key in ('run_ns', 'gradient_wait_ns', 'gradient_jobs', 'gradient_discarded', 'gradient_max_pending', 'gradient_workers'):
                 if all(r['result'].get(key) is not None for r in subset):
                     entry[key] = statistics.median(r['result'][key] for r in subset)
             entry['ticks'] = sorted({r['result']['ticks'] for r in subset})

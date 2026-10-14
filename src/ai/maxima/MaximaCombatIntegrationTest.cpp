@@ -867,7 +867,7 @@ static void warriorEligibility()
     auto flag=materializeFlag(f);
     REQUIRE((flag->maxUnitWorking==a.offense_diagnostics.eligibleWarriors && flag->minLevelToFlag==1));
     flag->updateCallLists();
-    for(int step=0; step<33; ++step) flag->subscribeForFlagingStep();
+    for(int step=0; step<33; ++step) (glob2test::publishCurrentHiringSuggestions(*flag->owner->game), flag->subscribeForFlagingStep());
     REQUIRE(flag->unitsWorking.size()==4);
     for(auto unit:flag->unitsWorking) REQUIRE(unit->performance[SWIM]>0);
 }
@@ -911,7 +911,7 @@ static void loweredFlagLevelSurvivesReview()
     auto flag=materializeFlag(f);
     REQUIRE(flag->minLevelToFlag==0);
     flag->updateCallLists();
-    for(int step=0;step<33;++step) flag->subscribeForFlagingStep();
+    for(int step=0;step<33;++step) (glob2test::publishCurrentHiringSuggestions(*flag->owner->game), flag->subscribeForFlagingStep());
     REQUIRE(!flag->unitsWorking.empty());
     // Even a stale budget must defer to the actual flag after creation.
     a.budget.tactical_flag_level=2;

@@ -3,12 +3,27 @@
 #include "MaterialPacket.h"
 #include <map>
 #include <vector>
+#include <numeric>
+#include <limits>
 
 struct WideMaterialPacket
 {
     Uint64 numerator=1, denominator=1;
     bool operator==(const WideMaterialPacket&) const = default;
 };
+// Whether a packet contains at least one representable unit of this building's
+// stock. Shared by live admission and immutable hiring qualification.
+inline bool packetCanDeliver(WideMaterialPacket packet, Uint64 multiplier)
+{
+    if(!packet.denominator || !multiplier)return false;
+    const Uint64 divisor=std::gcd(packet.numerator,packet.denominator);
+    packet.numerator/=divisor; packet.denominator/=divisor;
+    const Uint64 common=std::gcd(packet.denominator,multiplier);
+    const Uint64 scale=multiplier/common;
+    const Uint64 maximum=std::numeric_limits<Uint64>::max();
+    return packet.numerator<=maximum/scale && packet.denominator<=maximum/scale
+        && packet.numerator*scale>=packet.denominator/common;
+}
 struct WideMaterialDeliveryResult
 {
     Sint32 acceptedStock=0;

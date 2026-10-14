@@ -1,6 +1,5 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #pragma once
-#include "LogicalDigest.h"
 #include "WorldRecords.h"
 #include "ObservationRecords.h"
 #include "MapState.h"
@@ -63,7 +62,6 @@ struct Terrain
 	std::vector<Uint16> cellRules;
 	Uint64 revision = 0;
 	bool movementModifiers = false, airConstraints = false;
-    LogicalChunks logical;
 	ChunkStamps stamps;
 };
 using ResourceCell = MapState::ResourceCell;
@@ -79,7 +77,7 @@ struct Resources
 	ChunkStamps stamps; // cells and stockIndices
 };
 using OccupancyCell = MapState::OccupancyCell;
-struct Occupancy { std::vector<OccupancyCell> cells; ChunkStamps stamps; LogicalChunks logical; };
+struct Occupancy { std::vector<OccupancyCell> cells; ChunkStamps stamps; };
 using AreaCell = MapState::AreaCell;
 struct Areas { std::vector<AreaCell> cells; bool farmEnabled = false; ChunkStamps stamps; };
 struct VisibilityCell { Uint32 discovered = 0, visible = 0; };
@@ -89,8 +87,15 @@ static_assert(std::is_trivially_copyable_v<OccupancyCell>);
 static_assert(std::is_trivially_copyable_v<AreaCell>);
 static_assert(std::is_trivially_copyable_v<VisibilityCell>);
 struct ExtraProductionState { Sint32 ratio=0, used=0, constructionOriginRatio=0; };
+struct FundingState
+{
+    std::array<Sint32, MaterialSlotCount> constructionBudget{}, constructionReserved{}, reservedMaterials{};
+};
 struct Entities
 {
+	std::array<Uint8,16> availableGroundClasses{}; // Available ground movement classes, filled during normal unit extraction.
+    // Sparse raw funding facts: absent means all zero. Shared, pooled storage.
+    std::vector<FundingState> funding;
     UnitCargoStore unitCargo;
     std::vector<ExtraProductionState> extraProduction;
 	static constexpr Uint32 NoRecord = std::numeric_limits<Uint32>::max();

@@ -16,8 +16,6 @@ Handle Store::captureBoundary(const Game& game, CaptureOptions options)
 		unchangedBoundary = true;
 		required |= latest->requirements;
 	}
-	const auto start = storage.profiling ? std::chrono::steady_clock::now() : std::chrono::steady_clock::time_point{};
-	const auto preparedBefore = storage.preparationNs;
 	if (!catalog || catalogConfigurationRevision != game.gameHeader.observationRevision()) {
 		catalog = captureCatalog(game);
 		catalogConfigurationRevision = game.gameHeader.observationRevision();
@@ -36,10 +34,7 @@ Handle Store::captureBoundary(const Game& game, CaptureOptions options)
 		++metrics.detailedCaptures;
 	}
 	metrics.allocations = storage.allocations;
-	const auto preparation = storage.preparationNs-preparedBefore;
-	metrics.preparationNs += preparation;
 	++metrics.captures;
-	if (storage.profiling) metrics.captureNs += std::chrono::duration_cast<std::chrono::nanoseconds>(std::chrono::steady_clock::now() - start).count()-preparation;
 	latest = std::move(next);
 	return *latest;
 }
@@ -70,7 +65,8 @@ void Store::accountCapture(const Handle& next, const Handle& previous, Uint64 co
 		metrics.bytesCopied += next.entities->buildings.size() * sizeof(BuildingView) + next.entities->units.size() * sizeof(UnitView)
 			+ next.entities->projects.size() * sizeof(BuildProjectView)
             + (next.entities->buildingSlotIndices.size() + next.entities->unitSlotIndices.size()) * sizeof(Uint32);
-		metrics.bytesCopied += next.entities->relationships.size() * sizeof(UnitRef);
+		metrics.bytesCopied += next.entities->relationships.size() * sizeof(UnitRef)
+			+ next.entities->funding.size() * sizeof(FundingState);
 	}
 	if (next.teams) {
 		metrics.bytesCopied += next.teams->values.size() * sizeof(TeamView);

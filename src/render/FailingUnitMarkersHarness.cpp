@@ -159,7 +159,7 @@ public:
 		require(!scene.inn->recordFailingUnits, "selection alone does not touch the building");
 		gui.game.applyClientRequests();
 		require(scene.inn->recordFailingUnits, "the tick boundary switches recording on");
-		scene.team->updateAllBuildingTasks();
+		(glob2test::publishCurrentHiringSuggestions(*scene.team->game), scene.team->updateAllBuildingTasks());
 		// Only the right-hand panel: drawAll also wants players, a minimap and
 		// a torus view this bare game does not have.
 		gui.localTeam = gui.game.teams[0];
@@ -204,14 +204,14 @@ public:
 		gui.teamStats = &gui.localTeam->stats;
 		gui.setSelection(GameGUI::BUILDING_SELECTION, static_cast<void*>(scene.inn));
 		gui.game.applyClientRequests(); // the tick boundary turns recording on
-		scene.team->updateAllBuildingTasks();
+		(glob2test::publishCurrentHiringSuggestions(*scene.team->game), scene.team->updateAllBuildingTasks());
 		require(scene.inn->unitsFailingByReason[Building::UnitTooLowLevel].size() == LOW_COUNT,
 			"the scan with an open slot remembers every unschooled worker");
 
 		// The player drags the ratio down to the one worker already hired.
 		scene.inn->maxUnitWorking = 1;
 		scene.inn->updateCallLists();
-		scene.team->updateAllBuildingTasks();
+		(glob2test::publishCurrentHiringSuggestions(*scene.team->game), scene.team->updateAllBuildingTasks());
 		require((int)scene.inn->unitsWorking.size() == scene.inn->desiredMaxUnitWorking,
 			"the inn is now staffed to its reduced ratio");
 		require(scene.inn->unitsFailingByReason[Building::UnitTooLowLevel].size() == LOW_COUNT,
@@ -254,14 +254,14 @@ public:
 	Unit** low = scene.low; const int* lowX = scene.lowX; const int* lowY = scene.lowY;
 
 	// Not recording: nothing is remembered.
-	team->updateAllBuildingTasks();
+	(glob2test::publishCurrentHiringSuggestions(*team->game), team->updateAllBuildingTasks());
 	require(inn->unitsFailingRequirements[Building::UnitTooLowLevel] == LOW_COUNT, "every unschooled worker is counted too low");
 	require(inn->unitsFailingByReason[Building::UnitTooLowLevel].empty(), "nothing remembered while not recording");
 	require(inn->unitsWorking.size() == 1 && inn->unitsWorking.front() == schooled, "the schooled worker is hired");
 
 	// Selected in the GUI: the gids behind the tally are kept.
 	inn->setRecordFailingUnits(true);
-	team->updateAllBuildingTasks();
+	(glob2test::publishCurrentHiringSuggestions(*team->game), team->updateAllBuildingTasks());
 	const std::vector<Uint16>& tooLow = inn->unitsFailingByReason[Building::UnitTooLowLevel];
 	require(tooLow.size() == LOW_COUNT, "every unschooled worker's gid is remembered under too-low-level");
 	for (int i = 0; i < LOW_COUNT; ++i)

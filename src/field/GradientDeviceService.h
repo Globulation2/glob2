@@ -10,7 +10,6 @@ namespace gradient_kernel
 {
 class GradientDeviceService;
 struct GradientDeviceState;
-bool gradientDiagnosticsRequested() noexcept;
 // Application/test owner barrier after games and their executor work drain.
 // Join driver initialization before driver exit handlers can tear it down.
 // Later registrations may start a fresh coordinator; setup and shutdown must
@@ -38,18 +37,14 @@ struct OwnedGradientField
     void (*cpu)(OwnedGradientField&) = nullptr;
     ComputeExecutor::CompletionTicket completion;
     std::exception_ptr error;
-    std::uint64_t fallbackCpuNs = 0;
-    // Published before the completion ticket resolves; owner reads after join.
-    std::uint64_t deviceStartedWallNs=0,deviceCompletedWallNs=0,fallbackCleanupCpuNs=0;
-    bool diagnostics=false;
     bool executedGPU = false;
     // Diagnostic completion proof survives later rollback. Publication
     // still uses executedGPU, which means the GPU result actually committed.
     bool deviceExecutionObserved=false;
     GradientFallbackReason fallbackReason=GradientFallbackReason::None;
     std::size_t reservedHostBytes = 0, retainedInputBytes = 0;
-    std::atomic<bool> admitted{false},resolved{false};
-    std::shared_ptr<std::atomic<std::size_t>> serviceRetained;
+    enum class Phase { Private, Queued, Running, Recovering, Complete };
+    std::atomic<Phase> phase{Phase::Private};
     std::shared_ptr<GradientDeviceState> executionState;
     ~OwnedGradientField();
     std::unique_ptr<std::uint16_t[]> takeData();
@@ -68,18 +63,15 @@ public:
     };
     struct Metrics {
         std::uint64_t submitted=0, completed=0, executed=0, trivial=0, fallbacks=0, declined=0;
-        std::uint64_t batches=0, maxBatch=0, initializationNs=0, hostCpuNs=0;
+        std::uint64_t batches=0, maxBatch=0;
         // Fields with at least one confirmed completed GPU dispatch. This is
         // distinct from a fully converged, successfully committed GPU result.
         std::uint64_t deviceCompletedFields=0,fallbackAfterDeviceCompletionFields=0;
-        std::uint64_t stale=0,budgetDeclines=0,clockInvalidMeasurements=0;
-        std::uint64_t batchPreparationCpuNs=0,batchSubmissionCpuNs=0,batchCompletionCpuNs=0;
+        std::uint64_t stale=0,budgetDeclines=0;
         std::size_t queued=0, retainedHostBytes=0;
         bool running=false, ready=false;
         unsigned configuredMaxBatch=8, deviceConcurrency=1;
         unsigned coordinatorThreads=0;
-        std::uint64_t coordinatorThreadId=0;
-        bool diagnostics=false;
         std::array<std::uint64_t,unsigned(GradientFallbackReason::Count)> fallbackReasons{};
     };
 private:
@@ -87,7 +79,6 @@ private:
     Hooks hooks;
     std::shared_ptr<GradientDeviceState> registration;
     std::shared_ptr<GradientDeviceState> state() const;
-    void fallback(const std::shared_ptr<OwnedGradientField>&) noexcept;
 public:
     explicit GradientDeviceService(Hooks hooks = {}):hooks(std::move(hooks)) {}
     ~GradientDeviceService() {stop();}
@@ -97,7 +88,7 @@ public:
     void configure(unsigned computeThreads,Backend mode);
     void stop() noexcept;
     bool submit(const std::shared_ptr<OwnedGradientField>&) noexcept;
-    void recoverOnWorker(const std::shared_ptr<OwnedGradientField>& field) noexcept {fallback(field);}
+    void recoverOnWorker(const std::shared_ptr<OwnedGradientField>& field) noexcept;
     Metrics metrics() const;
 };
 }

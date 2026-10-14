@@ -105,6 +105,7 @@ ContinuationAudit continuationAudit(Game& game)
 }
 void checkPhaseContinuation(Game& game,int ticks)
 {
+    glob2test::discardPrematureHiringSuggestions(game);
     const auto before=continuationAudit(game);
     const auto random=game.syncRandom;
     auto* storage=new GAGCore::MemoryStreamBackend;
@@ -319,7 +320,7 @@ TEST_SUITE("UnitCustomization")
             unit->handleDisplacement(); CHECK(unit->displacement == Unit::DIS_RANDOM);
             flag->maxUnitWorking = flag->desiredMaxUnitWorking = 1;
             flag->subscriptionWorkingTimer = 32;
-            CHECK(flag->subscribeForFlagingStep() == allowed);
+            CHECK((glob2test::publishCurrentHiringSuggestions(*flag->owner->game), flag->subscribeForFlagingStep()) == allowed);
             if (allowed) {
                 CHECK(unit->attachedBuilding == flag); CHECK(unit->activity == Unit::ACT_FLAG);
                 CHECK(unit->jobPurpose == static_cast<UnitJobPurpose>(int(UnitJobPurpose::Clear)+role));
@@ -464,7 +465,7 @@ TEST_SUITE("UnitCustomization")
             flag->unitStayRange=6; flag->dirtyGradients();
             deposit(world.game.map,20,16,WOOD,3);
             flag->maxUnitWorking=flag->desiredMaxUnitWorking=1; flag->subscriptionWorkingTimer=32;
-            REQUIRE(flag->subscribeForFlagingStep());
+            REQUIRE((glob2test::publishCurrentHiringSuggestions(*flag->owner->game), flag->subscribeForFlagingStep()));
             const auto purpose=static_cast<UnitJobPurpose>(int(UnitJobPurpose::Clear)+role);
             REQUIRE(unit->jobPurpose==purpose); REQUIRE(world.team->integrity());
             const auto clearingMembership=world.team->clearingFlags;
@@ -486,7 +487,7 @@ TEST_SUITE("UnitCustomization")
             CHECK(flag->canUnitWorkHere(unit,true,int(role))); REQUIRE(world.team->integrity());
             auto *idle=world.addUnit(unitTypes[role],10,20); REQUIRE(idle);
             flag->maxUnitWorking=flag->desiredMaxUnitWorking=2; flag->subscriptionWorkingTimer=32;
-            CHECK_FALSE(flag->subscribeForFlagingStep());
+            CHECK_FALSE((glob2test::publishCurrentHiringSuggestions(*flag->owner->game), flag->subscribeForFlagingStep()));
             CHECK(idle->activity==Unit::ACT_RANDOM); CHECK(idle->attachedBuilding==nullptr);
             REQUIRE(world.team->integrity());
             checkPhaseContinuation(world.game,64);
@@ -1840,7 +1841,7 @@ TEST_SUITE("UnitCustomization")
         deposit(world.game.map,7,8,WHEAT,3); world.game.map.setMapDiscovered();
         inn->desiredMaxUnitWorking=2; inn->maxUnitWorking=2;
         CHECK_FALSE(inn->canUnitWorkHere(empty)); CHECK_FALSE(inn->canUnitWorkHere(loaded));
-        CHECK_FALSE(inn->subscribeToBringMaterialsStep());
+        CHECK_FALSE((glob2test::publishCurrentHiringSuggestions(*inn->owner->game), inn->subscribeToBringMaterialsStep()));
         for (int tick=0;tick<96;++tick) {
             world.game.syncStep(0);
             CHECK(empty->activity!=Unit::ACT_FILLING); CHECK(loaded->activity!=Unit::ACT_FILLING);
@@ -1864,7 +1865,7 @@ TEST_SUITE("UnitCustomization")
             for (int packet=0;packet<capacity;++packet) unit->receiveCarriedMaterial(WOOD,{1,2});
             deposit(world.game.map,7,8,WHEAT,3); world.game.map.setMapDiscovered();
             inn->desiredMaxUnitWorking=1; inn->maxUnitWorking=1;
-            CHECK_FALSE(inn->subscribeToBringMaterialsStep());
+            CHECK_FALSE((glob2test::publishCurrentHiringSuggestions(*inn->owner->game), inn->subscribeToBringMaterialsStep()));
             for (int tick=0;tick<96;++tick) world.game.syncStep(0);
             CHECK(unit->activity!=Unit::ACT_FILLING); CHECK(inn->unitsWorking.empty());
             CHECK(unit->carriedPacketCount()==unsigned(capacity)); CHECK_FALSE(unit->hasCarriedMaterial(WHEAT));
@@ -1886,7 +1887,7 @@ TEST_SUITE("UnitCustomization")
         REQUIRE(unit); REQUIRE(inn);
         unit->receiveCarriedMaterial(WOOD,{}); unit->receiveCarriedMaterial(WHEAT,{});
         inn->desiredMaxUnitWorking=1; inn->maxUnitWorking=1;
-        REQUIRE(inn->subscribeToBringMaterialsStep()); CHECK(unit->destinationPurpose==WHEAT);
+        REQUIRE((glob2test::publishCurrentHiringSuggestions(*inn->owner->game), inn->subscribeToBringMaterialsStep())); CHECK(unit->destinationPurpose==WHEAT);
         CHECK(unit->jobPurpose==UnitJobPurpose::Transport);
         for (int tick=0;tick<4096 && inn->material(WHEAT)==0;++tick) world.game.syncStep(0);
         CHECK(inn->material(WHEAT)==1); CHECK(unit->hasCarriedMaterial(WOOD));
@@ -2004,7 +2005,7 @@ TEST_SUITE("UnitCustomization")
         REQUIRE(victim->medical==Unit::MED_FREE);
         attraction->desiredMaxUnitWorking=attraction->maxUnitWorking=1;
         attraction->subscriptionWorkingTimer=32;
-        REQUIRE(attraction->subscribeForFlagingStep());
+        REQUIRE((glob2test::publishCurrentHiringSuggestions(*attraction->owner->game), attraction->subscribeForFlagingStep()));
         CHECK(victim->jobPurpose==UnitJobPurpose::Explore);
         victim->delta=255; victim->syncStep();
         CHECK(victim->isDead); CHECK(attraction->unitsWorking.empty());

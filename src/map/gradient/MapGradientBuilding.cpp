@@ -9,7 +9,7 @@
 #include "MapInternal.h"
 #include "gradient/GradientRuntime.h"
 #include "BuildingGradientSearch.h"
-#include "BuildingGradientStats.h"
+#include "SharedBuildingGradient.h"
 #include <algorithm>
 #include <array>
 #include "Team.h"
@@ -18,7 +18,9 @@
 
 void Map::finishBuildingGradient(Building *building, int swimClass, BuildingRoute route) const
 {
-	if (auto &search = building->globalGradientSearch[building->routeSlot(swimClass, route)]) search->finish();
+	const int slot=building->routeSlot(swimClass,route);
+    auto guard=SharedBuildingGradient::lock(building->sharedGradient[slot]);
+    if (auto &search = building->globalGradientSearch[slot]) search->finish();
 }
 
 // updateGlobalGradient(Building*): the full-map gradient toward a building, a
@@ -29,6 +31,7 @@ void Map::updateGlobalGradient(Building *building, int swimClass, BuildingRoute 
 	PERF_SCOPE_TIME(BuildingGradient);
 	route = building->resolveRoute(route);
 	const int slot = building->routeSlot(swimClass, route);
+    auto guard=SharedBuildingGradient::lock(building->sharedGradient[slot]);
 	const int access = building->routeAccess(swimClass, route);
 	assert(building);
 	assert(building->type);
@@ -42,13 +45,17 @@ void Map::updateGlobalGradient(Building *building, int swimClass, BuildingRoute 
 	Uint16 *gradient=building->globalGradient[slot];
 	assert(gradient);
 	// Diagnostics read the replaced field and its search before reinitialization.
-	if (gradientStats) gradientStats->fieldRebuilding(*this, *building, slot, access, game->stepCounter, topologyGeneration);
 	// A synchronous build supersedes any queued or pending scheduled refresh.
 	building->supersedeGradient(slot);
 	gradientRuntime->countSynchronous();
 	if (const auto &previous = building->globalGradientSearch[slot])
 		building->settledCostHint[slot] = Uint16(std::min(previous->requiredCost(), 0xFFFE));
-	// A rebuild replaces the old search and its frozen terrain snapshot.
+	if (building->sharedGradient[slot])
+	{
+		building->retireSharedGradient(slot);
+		building->globalGradient[slot] = gradient = acquireBuildingGradientBuffer();
+	}
+    // A rebuild replaces the old search and its frozen terrain snapshot.
 	// Keep bucket capacity when possible; a locked field has no pending search.
 	building->dirtyGradient[slot]=false;
 	building->lastGlobalGradientUpdateStepCounter[slot]=game->stepCounter;
@@ -150,6 +157,8 @@ void Map::updateGlobalGradient(Building *building, int swimClass, BuildingRoute 
 		});
 	}
 
+	const auto routeInputs = BuildingGradientSearch::Inputs::of(*this, swimClass);
+
 	if (route == BuildingRoute::Footprint)
 	{
 		// Spiral around the building footprint corner; start one cell NW of the building origin
@@ -177,5 +186,5 @@ void Map::updateGlobalGradient(Building *building, int swimClass, BuildingRoute 
 
 	auto &search = building->globalGradientSearch[slot];
 	if (!search) search = acquireBuildingGradientSearch();
-	search->begin(*this, gradient, swimClass);
+	search->begin(routeInputs, gradient, swimClass, w, h);
 }

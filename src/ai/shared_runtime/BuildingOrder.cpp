@@ -170,10 +170,25 @@ position BuildingOrder::find_location(Runtime& runtime, const AIEngine::AIWorldV
  const auto* type=&runtime.observation().catalog->at(concrete_type).resolvedType;
  const bool check_flag=!type->semantics.occupiesGround;
 
+	// A leading exact anchor is a pure snapshot predicate. Reject impossible
+	// origins before the flag-occupancy scan, retaining the original constraint
+	// loop for admissible origins. Never move it ahead of distance constraints:
+	// their first query can initialize persistent gradient-manager state.
+	Constraint* exactAnchor=nullptr;
+	if (!constraints.empty())
+	{
+		const auto& first=constraints.front();
+		if (first->applies_to_origin() &&
+			(first->get_type()==CTCenterOfBuilding || first->get_type()==CTSinglePosition))
+			exactAnchor=first.get();
+	}
+
 	for(int x=0; x<world.width; ++x)
 	{
 		for(int y=0; y<world.height; ++y)
 		{
+			if(exactAnchor && !exactAnchor->passes_constraint(runtime,x,y))
+				continue;
 			if(!AIEngine::ObservationQueries::roomForBuilding(world,x,y,*type,runtime.teamNumber()))
 				continue;
 

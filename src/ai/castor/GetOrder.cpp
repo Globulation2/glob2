@@ -25,10 +25,8 @@ std::shared_ptr<Order> AICastor::getOrder()
 {
  const auto world=AIEngine::AIWorldView::capture(*game,AIEngine::AIWorldView::captureCatalog(*game));
  const std::vector<AIEngine::ExecutionReceipt> receipts;
- std::vector<AIEngine::ResourceEnrollmentRequest> enrollments;
- AIEngine::DecisionContext context{*world,0,unsigned(teamNumber),receipts};context.resourceEnrollments=&enrollments;
+ AIEngine::DecisionContext context{*world,0,unsigned(teamNumber),receipts};
  auto result=getOrder(context);
- for(const auto& request:enrollments) map->installObservedResourceField(request.team,request.resource,request.swim,*request.initialField);
  return result;
 }
 std::shared_ptr<Order> AICastor::getOrder(const AIEngine::DecisionContext& context)

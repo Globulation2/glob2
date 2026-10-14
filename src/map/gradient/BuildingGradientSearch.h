@@ -46,31 +46,20 @@ class BuildingGradientSearch
 	std::size_t cells = 0, pending = 0;
 	int currentCost = 0, swimClass = 0;
 	int readerCost = 0;
-	std::uint64_t popped = 0;
 	int widthMask = 0, heightMask = 0;
 	template <class Done> void advance(Done done);
 
   public:
-	// Diagnostic depth histogram: popped entries per DEPTH_BIN_COST cost band,
-	// the last bin collecting everything deeper. Never read by the simulation.
-	static constexpr int DEPTH_BINS = 32;
-	static constexpr int DEPTH_BIN_COST = 80; // eight land tiles
-	static constexpr int depthBin(int cost)
-	{
-		return cost / DEPTH_BIN_COST < DEPTH_BINS - 1 ? cost / DEPTH_BIN_COST : DEPTH_BINS - 1;
-	}
-	// Plain diagnostic counters, reset by begin() and clearForReuse():
-	// resolve() calls, calls that expanded at least one layer, and popped
-	// entries by depth band.
-	std::uint64_t queries = 0, extensions = 0;
-	std::array<std::uint64_t, DEPTH_BINS> poppedAtDepth{};
-
 	void begin(const Map &map, std::uint16_t *seeded, int swim);
 	// Same search from captured inputs; width and height are powers of two.
 	void begin(const Inputs &inputs, std::uint16_t *seeded, int swim, int width, int height);
 	// target == cells finishes the field. A whole cost layer is completed to
 	// preserve equal-distance sidesteps as well as the requested scalar value.
 	void resolve(std::size_t target);
+    // Caller holds its generation's lock. Proposal work changes only settled
+    // values/frontier, never owner query counters or refresh-demand history.
+    void resolveForProposal(std::size_t target);
+
 	void finish() { resolve(cells); }
 	// Settles whole cost layers up to and including cost. Settled values equal
 	// a full build's, and later resolve() calls continue from the same queues.
@@ -82,7 +71,6 @@ class BuildingGradientSearch
 	int requiredCost() const { return readerCost; }
 	bool complete() const { return pending == 0; }
 	bool resolved(std::size_t target) const;
-	std::uint64_t poppedEntries() const { return popped; }
 	std::size_t retainedBytes() const;
 	void clearForReuse();
 };

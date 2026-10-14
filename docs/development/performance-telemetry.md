@@ -168,50 +168,9 @@ Periodic pipeline fields propagate on workers and are not included.
 
 ### Building field statistics
 
-`--telemetry gradient-stats` (environment `GLOB2_GRADIENT_STATS=1`) gives the map a
-diagnostic `BuildingGradientStats` (`src/map/gradient/BuildingGradientStats.h`). It only
-reads simulation state: checksums, RNG, saves and replays are identical with it on or
-off, and without it every hook is a null-pointer test. Each building walking-field
-lifetime ends with one row in `gradient-stats.csv` in the output directory: a rebuild
-(`reason` = `null`, `dirty`, `generation`, `clearing`, `stuck`, `scheduled` for a
-scheduled field's publication, or `other`), a `drop` (`Building::resetPathfindGradients`),
-an idle `evict` or the run's `end`. Unless `GLOB2_BUILDING_DEPTH` says otherwise, the
-statistics publish scheduled fields with only their seeds settled (`lazy` depth), so each
-lifetime's settled depth is what its readers needed; the depth moves CPU, never results.
-A row describes the lifetime that just ended (`age`, `prev_complete`, `prev_settled_cost`,
-`prev_settled_tiles`, `prev_popped`, `prev_queries` = resolve calls, `prev_extensions` =
-calls that expanded the search, and `popped_at_depth_0..31`, popped entries per 80-cost
-band of eight land tiles with the last band open-ended) together with how that
-lifetime began (`lifetime_reason`). The final columns are the
-inputs a depth prediction could read in O(1) when that lifetime started: map
-`width` and `height`, the building's `level`, `is_site`, `construction_state`
-(`none`, `new`, `upgrade`, `repair`), `progress` (the delivered/needed material
-quartile 0-3 on construction sites, empty otherwise), and its team's live
-`team_units` and `team_buildings`. The last three columns are the depth model's
-inputs at the moment the lifetime's depth was decided: `staged` is 1 when a
-scheduled refresh was staged for it (the context is then read at staging, not at
-publication), `previous_hint` is the reader-required depth of the lifetime before it
-(`settledCostHint`) and `serving_settled` is how deep readers of the field it
-replaced required it by then, each -1 when unknown. All are empty when the start was not
-seen, for example for a field restored from a save. The historical column names
-`serving_settled` and `previous_hint` now record reader-required depth, excluding
-worker preparation and serialization completion. `prev_settled_cost` still
-records the actual prepared search frontier.
-
-`result.json` then has a `building_gradient` object: `rebuilds` by reason,
-`dirty_with_generation` (dirty rebuilds whose topology generation had also moved),
-`events`, `popped_total`, `popped_unknown_lifetime`, `popped_by_lifetime_reason` and
-`clearing_goal_gone`.
-[The building-field depth model](../ai/architecture/building-gradient-depth-model.md) is fitted
-from these rows.
-
-The statistics stay compiled into release builds and are gated at run time, as
-`team-timeline` is: tournament workers run ordinary release binaries. With the flag
-off, the hooks reduce to null-pointer tests and a few always-on search counters.
-Measure disabled and enabled collection on the same retained fixture when changing instrumentation; publish matching source, toolchain and sampling inputs with the results.
-
-
-See [compute pipeline benchmarks](compute-benchmarks.md) for scheduled work and optimization comparisons.
+Per-search counters, depth histograms and lifetime CSV exports have been retired.
+The production depth predictor retains only reader-demand history. Use external
+profilers and the shared executor diagnostics to measure execution.
 
 ## Optional compute executor diagnostics
 

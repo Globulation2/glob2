@@ -1,3 +1,4 @@
+#include "HiringPipeline.h"
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Real-engine regression for hiring a fetcher: the hunger check that decides
 // whether a unit may be hired for a resource measures the walk to that resource,
@@ -12,6 +13,7 @@
 #include "Unit.h"
 #include "Team.h"
 #include "Building.h"
+#include "HiringPlanner.h"
 #include "BuildingType.h"
 #include "MapInternal.h"
 #include "Race.h"
@@ -29,21 +31,24 @@ class FetchHiringScoreHarness
 public:
     static std::vector<Unit*> candidates(Building* building)
     {
-        Building::BringMaterialsCandidate candidates[Unit::MAX_COUNT];
-        const int count=building->gatherBringMaterialsCandidates(candidates, WHEAT);
+        building->resetFailureTallies();
         std::vector<Unit*> units;
-        for (int i=0; i<count; ++i) units.push_back(candidates[i].unit);
+        for(auto* unit:building->owner->liveUnits.entries()) {
+            int distance=0;
+            if(unit->hasCapability(UnitRuntimeTraits::Transport) && unit->performance[HARVEST] && unit->performance[BUILD] && building->considerUnitForMaterial(unit,WHEAT,&distance))units.push_back(unit);
+        }
         return units;
     }
     static int unavailable(Building* building)
         { return building->unitsFailingRequirements[Building::UnitNotAvailable]; }
     static Unit* carrying(Building* building)
     {
-        int targets[MaterialSlotCount], served[MaterialSlotCount];
-        building->fetchApportionment(targets, served);
-        Building::BringMaterialsSelection selection{-1, 0x7fffffff, nullptr};
-        building->selectUnitCarryingWantedMaterial(targets, served, selection);
-        return selection.choosen;
+        auto& game=*building->owner->game;game.snapshotStore().invalidateBoundary();
+        HiringPlanner::Planner cache;
+        const auto output=cache.rank(HiringPipeline::bindRoutes(game,game.captureReadBoundary()),building->owner->teamNumber,8);
+        for(const auto& b:output.buildings)if(b.building==Game::refOf(building))
+            for(const auto& list:b.jobs)if(list.key.job==Hiring::Job::Delivery && !list.candidates.empty())return game.resolveUnit(list.candidates.front().unit);
+        return nullptr;
     }
 	static bool consider(Building* building, Unit* unit, int resource, int* dist)
 		{ return building->considerUnitForMaterial(unit, resource, dist); }
@@ -237,7 +242,7 @@ TEST_SUITE("FetchHiringScore")
         query(INT_MIN,INT_MAX,-1,true,0);
     }
 
-    TEST_CASE("carrying selection preserves saturated wide hunger ties and purpose writes")
+    TEST_CASE("carrying selection preserves saturated wide hunger ties without purpose writes")
     {
         glob2test::HeadlessGlobals globals;
         glob2test::HeadlessGame world({.teams=1, .discovered=true, .clearImmobile=true,
@@ -254,11 +259,11 @@ TEST_SUITE("FetchHiringScore")
         // Both positive quotients saturate to the same signed32 budget; the
         // lower slot wins the unchanged traversal tie, and both are evaluated.
         CHECK(FetchHiringScoreHarness::carrying(inn)==world.team->myUnits[3]);
-        CHECK(world.team->myUnits[3]->destinationPurpose==WHEAT);
-        CHECK(world.team->myUnits[Unit::MAX_COUNT-1]->destinationPurpose==WHEAT);
+        CHECK(world.team->myUnits[3]->destinationPurpose==-1);
+        CHECK(world.team->myUnits[Unit::MAX_COUNT-1]->destinationPurpose==-1);
     }
 
-    TEST_CASE("carrying candidates preserve sparse slot ties and all purpose writes")
+    TEST_CASE("carrying candidates preserve sparse slot ties without live writes")
     {
         glob2test::HeadlessGlobals globals;
         glob2test::HeadlessGame world({.teams=1, .discovered=true, .clearImmobile=true, .loadDefaultRace=true, .header=true});
@@ -280,8 +285,8 @@ TEST_SUITE("FetchHiringScore")
             unit->destinationPurpose = -1;
         }
         CHECK(FetchHiringScoreHarness::carrying(inn) == team->myUnits[3]);
-        CHECK(team->myUnits[3]->destinationPurpose == WHEAT);
-        CHECK(team->myUnits[Unit::MAX_COUNT-1]->destinationPurpose == WHEAT);
+        CHECK(team->myUnits[3]->destinationPurpose == -1);
+        CHECK(team->myUnits[Unit::MAX_COUNT-1]->destinationPurpose == -1);
         REQUIRE(world.game.map.incResourceByIndex(16, 8, WHEAT, 0));
         CHECK(FetchHiringScoreHarness::candidates(inn) == std::vector<Unit*>{team->myUnits[3], team->myUnits[Unit::MAX_COUNT-1]});
         team->myUnits[Unit::MAX_COUNT-1]->activity = Unit::ACT_FILLING;

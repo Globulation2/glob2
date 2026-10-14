@@ -1,7 +1,6 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include <Environment.h>
 #include "Headless.h"
-#include "field/GradientDiagnostics.h"
 #include "ResourceGrowth.h"
 #include <utility>
 #include "scripting/javascript/ScriptCommand.h"
@@ -23,7 +22,6 @@
 #include "AIMaximaStrategy.h"
 #include "ai/cortex/CortexTuning.h"
 #include "Game.h"
-#include "gradient/BuildingGradientStats.h"
 #include "GameRuleOverrides.h"
 #include "Player.h"
 #include "TeamStat.h"
@@ -303,7 +301,6 @@ struct HeadlessRunner
 		if (options.count("--gpu")) globals.gpuComputeOverride = one(options, "--gpu") == "on";
 		if(options.count("--gradient-backend"))globals.gradientBackendOverride=*gradient_kernel::parseBackend(one(options,"--gradient-backend"));
         if(options.count("--gradient-algorithm"))globals.gradientAlgorithmOverride=*gradient_kernel::parseAlgorithm(one(options,"--gradient-algorithm"));
-        if(options.count("--gradient-verify"))globals.gradientVerifyOverride=one(options,"--gradient-verify")=="on";
         globals.structuredHeadless=true;
 		globals.automaticEndingGame=true;
 		globals.automaticGameGlobalEndConditions=true;
@@ -319,7 +316,6 @@ struct HeadlessRunner
 			if(telemetry=="checksums") setHeadlessEnvironment("GLOB2_CHECKSUM_SIDECAR", "1");
 			else if(telemetry=="team-timeline") setHeadlessEnvironment("GLOB2_TEAM_TIMELINE", "1");
 			else if(telemetry=="maxima") setHeadlessEnvironment("GLOB2_MAXIMA_TELEMETRY", "1");
-			else if(telemetry=="gradient-stats") setHeadlessEnvironment("GLOB2_GRADIENT_STATS", "1");
 			else throw std::invalid_argument("unknown telemetry: " + telemetry);
 		}
 		globals.load();
@@ -530,10 +526,11 @@ struct HeadlessRunner
 			engine.finishSession();
 			engine.gui.game.map.finishGradientPipeline(); engine.gui.game.map.finishResourceGrowth();
 			if(!measureStart || engine.gui.game.stepCounter<=start) throw std::runtime_error("game ended before benchmark measurement");
+			engine.gui.game.drainHiring();
 			runCpu=processCpuNs()-measureStart;
 			measuredTicks=engine.gui.game.stepCounter-start;
 		}
-		else { engine.run(); engine.gui.game.map.finishGradientPipeline(); engine.gui.game.map.finishResourceGrowth(); }
+		else { engine.run(); engine.gui.game.map.finishGradientPipeline(); engine.gui.game.map.finishResourceGrowth(); engine.gui.game.drainHiring(); }
 		if (engine.diagnostics) engine.diagnostics->finish();
 		const auto runEnd = std::chrono::steady_clock::now();
 		const auto saveCpuStart=benchmark?processCpuNs():0;
@@ -595,10 +592,7 @@ struct HeadlessRunner
 			<< ",\"growth_maxProposals\":" << game.map.resourceGrowthMetrics().maxProposals
 			<< ",\"growth_maxPending\":" << game.map.resourceGrowthMetrics().maxPending
 			<< ",\"growth_maxProposalBytes\":" << game.map.resourceGrowthMetrics().maxProposalBytes
-			<< ",\"growth_computeNs\":" << measured(game.map.resourceGrowthMetrics().computeNs, workerAvailable)
-			<< ",\"growth_queueNs\":" << measured(game.map.resourceGrowthMetrics().queueNs, workerAvailable)
 			<< ",\"growth_waitNs\":" << joinTotal(ComputeProducer::ResourceGrowth)
-			<< ",\"growth_publicationNs\":" << measured(game.map.resourceGrowthMetrics().publicationNs, summaryAvailable)
 			<< ",\"growth_delay\":" << game.map.resourceGrowthDelay()
             << ",\"tick_p50_ns\":" << percentile(50)
             << ",\"tick_p95_ns\":" << percentile(95)
@@ -611,8 +605,6 @@ struct HeadlessRunner
 			<< ",\"gradient_discarded\":" << pipelineResult.discarded
 			<< ",\"gradient_max_pending\":" << pipelineResult.maxPending
 			<< ",\"gradient_wait_ns\":" << joinTotal(ComputeProducer::PeriodicGradient)
-			<< ",\"gradient_preparation_ns\":" << measured(pipelineResult.preparationNs, workerAvailable)
-			<< ",\"gradient_active_elapsed_ns\":" << measured(pipelineResult.activeElapsedNs, workerAvailable)
 			<< ",\"compute_active_elapsed_ns\":" << measured(game.map.computeExecutor().activeNs(), workerAvailable)
 			<< ",\"building_gradient_jobs\":" << buildingResult.jobs
 			<< ",\"building_gradient_published\":" << buildingResult.published
@@ -626,25 +618,8 @@ struct HeadlessRunner
 			result << (reason ? "," : "") << quote(Map::buildingSyncReasonName(Map::BuildingSyncReason(reason)))
 				<< ':' << buildingResult.synchronousByReason[reason];
 		result << '}';
-		if (auto *stats = game.map.gradientStats.get())
-		{
-			// Diagnostics only: close the live field lifetimes and export them.
-			stats->finish(game);
-			result << ",\"building_gradient\":";
-			stats->writeJson(result);
-			std::ofstream csv(output/"gradient-stats.csv");
-			stats->writeCsv(csv);
-			if (!csv) throw std::runtime_error("cannot write gradient-stats.csv");
-		}
-        // Disabled diagnostics retain the ordinary result schema and avoid
-        // formatting a full set of empty samples on CPU-only runs.
-        if (gradient_kernel::isGPU(gradient.backend)) {
-            const auto gradientDiagnostics = gradient_kernel::gradientDiagnosticSnapshot(gradient.backend);
-            if (gradientDiagnostics.collected) {
-                result << ",\"gradient_host_diagnostics\":";
-                gradient_kernel::writeGradientDiagnostics(result, gradientDiagnostics);
-            }
-        }
+
+
 		result << ",\"compute_telemetry\":";
         ComputeTelemetry::writeJson(result, computeSnapshot);
         result << ",\"resource_plan\":";
@@ -660,8 +635,6 @@ struct HeadlessRunner
             << ",\"gradient_shader\":" << quote(accelerator.shaderIdentity)
             << ",\"gradient_gpu_fields\":" << accelerator.fields
             << ",\"gradient_cpu_fallbacks\":" << accelerator.fallbacks
-            << ",\"gradient_verified\":" << accelerator.verified
-            << ",\"gradient_verification_ns\":" << accelerator.verificationNs
             << ",\"gpu_requested\":" << globals.gpuComputeEnabled()
 			<< ",\"gpu_device\":" << quote(accelerator.device)
 			<< ",\"gpu_error\":" << quote(accelerator.error)
@@ -844,7 +817,7 @@ int runHeadlessCommand(const Cli::Request &request)
 			GlobalContainer globals("glob2-tournament-catalog");
 			globalContainer=&globals;for(const auto &directory:request.all("--data-dir"))globals.fileManager->addDir(directory);globals.runNoX=true;
 			std::cout << "{\"schema_version\":1,\"save_version\":" << VERSION_MINOR << ",\"protocol_version\":" << NET_PROTOCOL_VERSION
-				<< ",\"building_catalog_hash\":" << quote(globals.buildingsTypes.fingerprint()) << ",\"map_report_version\":2,\"generation_telemetry_version\":1,\"gameplay_telemetry_version\":2,\"ai_telemetry_version\":1,\"performance_telemetry_version\":1,\"commands\":[\"game\",\"generate_map\",\"verify_match\",\"sim_version\",\"compose_buildings\",\"validate_set\"],\"sim_version\":" << Online::currentSimVersion().toJson().dump() << ",\"verify_match_version\":1,\"telemetry\":[\"checksums\",\"team-timeline\",\"maxima\",\"gradient-stats\"],\"ais\":[";
+				<< ",\"building_catalog_hash\":" << quote(globals.buildingsTypes.fingerprint()) << ",\"map_report_version\":2,\"generation_telemetry_version\":1,\"gameplay_telemetry_version\":2,\"ai_telemetry_version\":1,\"performance_telemetry_version\":1,\"commands\":[\"game\",\"generate_map\",\"verify_match\",\"sim_version\",\"compose_buildings\",\"validate_set\"],\"sim_version\":" << Online::currentSimVersion().toJson().dump() << ",\"verify_match_version\":1,\"telemetry\":[\"checksums\",\"team-timeline\",\"maxima\"],\"ais\":[";
 
 			bool comma=false;
 			for(int ai:AINames::selectionOrder())

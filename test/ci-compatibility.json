@@ -87,7 +87,9 @@
     "MapSets/*",
     "SoftwareRenderer/*",
     "MCP/*",
-    "TurretTargeting/*"
+    "TurretTargeting/*",
+    "HiringPipeline/*",
+    "HiringPlanner/*"
   ],
   "unit_filters": [
     "*"

@@ -111,6 +111,8 @@ ENGINE_TESTS = [
     ('#src/team/stats/WinProbabilityTest.cpp', dict(cxxflags=['-fno-access-control'])),
     ('#src/engine/sim/ClientChannelsTest.cpp', dict(cxxflags=['-fno-access-control'])),
     '#src/building/HiringBucketHarness.cpp',
+    '#src/building/HiringPlannerTest.cpp',
+    ('#src/building/HiringPipelineTest.cpp', dict(cxxflags=['-fno-access-control'])),
     '#src/unit/HungryDefeatHarness.cpp',
     '#src/map/gradient/ImmobileUnitGradientHarness.cpp',
     '#src/building/InnSwapHarness.cpp',
@@ -216,6 +218,7 @@ ENGINE_TESTS = [
 
 # glob2-unit-tests: libgag, libusl, the production sources below and stubs.
 UNIT_TESTS = [
+    '#src/building/HiringRankingTest.cpp',
     '#src/map/TerrainRegistryTest.cpp',
     '#libgag/src/TextStreamTest.cpp',
     '#libgag/src/AssetLoaderTest.cpp',
@@ -379,7 +382,7 @@ UNIT_TESTS = [
 # Production sources the unit binary links. Plain entries reuse the client build's
 # object; entries with `defines` are compiled again for the unit binary only.
 UNIT_PRODUCTION_SOURCES = [
-    '#src/field/OpenCLGradient.cpp',
+    ('#src/field/OpenCLGradient.cpp', dict(defines=['GLOB2_TEST_DEVICE_FAILURES'])),
     '#src/field/GradientDeviceService.cpp',
     '#src/field/GradientAccelerators.cpp',
     '#src/field/VulkanGradient.cpp',
@@ -422,7 +425,6 @@ UNIT_PRODUCTION_SOURCES = [
     '#src/map/editor/MapEditKeyActions.cpp',
     '#src/map/generator/shared/Noise.cpp',
     '#src/map/gradient/BuildingGradientSearch.cpp',
-    '#src/map/gradient/BuildingGradientStats.cpp',
     '#src/map/gradient/MapGradientDirection.cpp',
     '#src/map/gradient/MapGradientChamfer.cpp',
     '#src/map/gradient/MapGradientPropagation.cpp',
@@ -607,4 +609,3 @@ def source_path(source):
     return source[1:] if source.startswith('#') else 'test/' + source
 
 # Dedicated whole-engine turret experiment; production objects are otherwise reused.
-TURRET_ENGINE_BENCHMARK = ('#src/building/TurretEngineBenchmark.cpp', dict(cxxflags=['-fno-access-control']))

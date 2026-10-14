@@ -68,11 +68,11 @@ MemoryMetrics Storage::memoryMetrics() const
     account(annotations, [&](const Annotations& value, bool) { auto bytes = vectorBytes(value.scriptAreas) + vectorBytes(value.areaNames);
         for (const auto& name : value.areaNames) bytes += name.capacity();
         return bytes; });
-	account(terrain, [&](const Terrain& value, bool leased) { remember(value.vertices, leased); remember(value.rules, leased); return vectorBytes(value.cellRules)+vectorBytes(value.logical.values); });
+	account(terrain, [&](const Terrain& value, bool leased) { remember(value.vertices, leased); remember(value.rules, leased); return vectorBytes(value.cellRules); });
 	const auto cells = [&](const auto& value, bool) { return vectorBytes(value.cells); };
-	account(resources, cells); account(occupancy, [&](const Occupancy& value,bool){ return vectorBytes(value.cells)+vectorBytes(value.logical.values); }); account(areas, cells); account(visibility, [&](const Visibility& value, bool) { return vectorBytes(value.discovered) + vectorBytes(value.visible); });
+	account(resources, cells); account(occupancy, [&](const Occupancy& value,bool){ return vectorBytes(value.cells); }); account(areas, cells); account(visibility, [&](const Visibility& value, bool) { return vectorBytes(value.discovered) + vectorBytes(value.visible); });
 	account(entities, [&](const Entities& value, bool) {
-		return value.unitCargo.capacityBytes() + vectorBytes(value.extraProduction) + vectorBytes(value.buildings) + vectorBytes(value.units) + vectorBytes(value.buildingSlotIndices) + vectorBytes(value.unitSlotIndices) + vectorBytes(value.relationships) + vectorBytes(value.projects);
+		return value.unitCargo.capacityBytes() + vectorBytes(value.extraProduction) + vectorBytes(value.funding) + vectorBytes(value.buildings) + vectorBytes(value.units) + vectorBytes(value.buildingSlotIndices) + vectorBytes(value.unitSlotIndices) + vectorBytes(value.relationships) + vectorBytes(value.projects);
 	});
 	account(teams, [&](const Teams& value, bool) {
 		Uint64 bytes = vectorBytes(value.values);

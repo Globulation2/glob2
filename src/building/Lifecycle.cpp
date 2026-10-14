@@ -22,7 +22,7 @@
 #include "EntityRandomIO.h"
 #include "Bullet.h"
 #include "BuildingGradientSearch.h"
-#include "BuildingGradientStats.h"
+#include "SharedBuildingGradient.h"
 
 Building::Building(GAGCore::InputStream *stream, BuildingsTypes *types, Team *owner, Sint32 versionMinor)
 {
@@ -188,7 +188,6 @@ void Building::resetPathfindGradients(GradientDrop cause)
 	for (int i=0; i<BUILDING_GRADIENT_COUNT; i++)
 		kept[i] = keep && globalGradient[i] && !isLocked(routeAccess(i % SWIM_CLASS_COUNT, BuildingRoute(i / SWIM_CLASS_COUNT)));
 	dirtyGradients();
-	auto *stats = owner->game->map.gradientStats.get();
 	for (int i=0; i<BUILDING_GRADIENT_COUNT; i++)
 	{
 		if (kept[i])
@@ -197,8 +196,9 @@ void Building::resetPathfindGradients(GradientDrop cause)
 			lastGlobalGradientUpdateStepCounter[i] = std::min(lastGlobalGradientUpdateStepCounter[i], due);
 			continue;
 		}
-		if (stats) stats->fieldReleased(*this, i, BuildingGradientStats::Event::Drop, owner->game->stepCounter);
+		auto guard = SharedBuildingGradient::lock(sharedGradient[i]);
 		dropGradientSlot(i, cause);
+		retireSharedGradient(i);
 		recycleBuildingGradientSearch(std::move(globalGradientSearch[i]));
 		owner->game->map.recycleBuildingGradientBuffer(globalGradient[i]);
 		globalGradient[i] = NULL;
@@ -215,9 +215,9 @@ void Building::freeIdleGradients()
 	{
 		if (globalGradient[c] && globalGradientUsedStep[c]+IDLE_TICKS<now)
 		{
-			if (auto *stats = owner->game->map.gradientStats.get())
-				stats->fieldReleased(*this, c, BuildingGradientStats::Event::Evict, now);
+			auto guard = SharedBuildingGradient::lock(sharedGradient[c]);
 			dropGradientSlot(c, GradientDrop::Idle);
+			retireSharedGradient(c);
 			recycleBuildingGradientSearch(std::move(globalGradientSearch[c]));
 			owner->game->map.recycleBuildingGradientBuffer(globalGradient[c]);
 			globalGradient[c] = NULL;
@@ -233,6 +233,7 @@ void Building::freeGradients()
 	for (int i=0; i<BUILDING_GRADIENT_COUNT; i++)
 	{
 		dropGradientSlot(i, GradientDrop::New);
+		retireSharedGradient(i);
 		globalGradientSearch[i].reset();
 		delete[] globalGradient[i];
 		globalGradient[i] = NULL;
@@ -367,7 +368,7 @@ void Building::load(GAGCore::InputStream *stream, BuildingsTypes *types, Team *o
 	if (savedTypeNum < 0 || static_cast<size_t>(savedTypeNum) >= types->size())
 		throw std::runtime_error("Invalid building type");
 	bindType(savedTypeNum,types);
-    if (versionMinor>=FILE_FORMAT_VERSION_TURRET_TARGETING) targetingEpoch=stream->readUint32("targetingEpoch");
+    if (versionMinor>=FILE_FORMAT_VERSION_TURRET_TARGETING && versionMinor<FILE_FORMAT_VERSION_LEAN_TURRET_TARGETING) stream->readUint32("targetingEpoch");
 	configureProductionState();
 	assert(type);
 	updateMaterialsPointer();
@@ -586,7 +587,6 @@ void Building::save(GAGCore::OutputStream *stream)
 
 	// type
 	stream->writeUint32(typeNum, "typeNum");
-    stream->writeUint32(targetingEpoch,"targetingEpoch");
 	// we drop type
 
 	stream->writeSint32(minWorkerLevelToFlag, "minWorkerLevelToFlag");
@@ -821,7 +821,6 @@ void Building::saveCrossRef(GAGCore::OutputStream *stream)
 void Building::bindType(Sint32 id, BuildingsTypes* catalog)
 {
     if (!catalog) catalog=&owner->game->buildingsTypes;
-    if (++targetingEpoch==0) targetingEpoch=1;
     type=catalog->get(id);
     runtime=catalog->getRuntime(id);
     typeNum=Uint16(id);
@@ -832,4 +831,25 @@ void Building::configureProductionState()
 {
     const auto count=type->semantics.production.recipes.size()-NB_UNIT_TYPE;
     extraProductionRatios.resize(count); extraProductionUsed.resize(count); extraConstructionOriginRatios.resize(count);
+}
+
+std::shared_ptr<SharedBuildingGradient> Building::leaseGradient(int slot)
+{
+    if (!globalGradient[slot]) return {};
+    auto& lease=sharedGradient[slot];
+    if (!lease) {
+        lease=std::make_shared<SharedBuildingGradient>();
+        lease->values=globalGradient[slot];lease->search=globalGradientSearch[slot].get();
+        lease->width=owner->game->map.getW();lease->height=owner->game->map.getH();
+    }
+    return lease;
+}
+void Building::retireSharedGradient(int slot)
+{
+    auto lease=sharedGradient[slot];
+    if (!lease) return;
+    auto guard=SharedBuildingGradient::lock(lease);
+    lease->retiredValues.reset(globalGradient[slot]);
+    lease->retiredSearch=std::move(globalGradientSearch[slot]);
+    globalGradient[slot]=nullptr;sharedGradient[slot].reset();
 }

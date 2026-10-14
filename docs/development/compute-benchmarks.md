@@ -60,6 +60,10 @@ use `--compute-threads auto|N`. The optional area, initialization and hiring com
 paths and their environment selector have also been removed. Structural area
 refreshes and live field initialization retain their serial production order.
 
+Hiring plans on the executor from the shared completed-tick snapshot; see
+[simulation hiring](../architecture/simulation.md#hiring). Use shared executor diagnostics for scheduling waits and external process CPU
+measurements for performance. Separate hiring phase timers are retired.
+
 Structured `game run` accepts `--ai-order-delay D` for a new match (default 8
 ticks). Delays are simulation rules, separate from local thread configuration.
 A loaded match's configured AI delay cannot be overridden.
@@ -106,22 +110,20 @@ of dropping them. `building_gradient_synchronous_by_reason` splits that count:
 (a map without a game, as in the editor) and `other`.
 `setup_ns` ends before `Engine::run`; `run_ns` includes that call's finalization.
 
-The nested `ai_pipeline` object reports session counters. Snapshot clock timings
-are opt-in through `GLOB2_SNAPSHOT_PROFILE=1` or `GLOB2_STATS_PROFILE=1`; extraction
-and preparation nanoseconds remain zero otherwise. Copy counts retain the
-accounting policy below:
+The nested `ai_pipeline` object reports session counters. Separate snapshot,
+statistics, hiring, AI callback and growth phase timings are retired; removed
+measurements are omitted. Use the shared executor's optional diagnostics and
+whole-process CPU measurements. The delay-zero AI placement threshold retains
+its existing work measurement. Copy counts follow the accounting policy below:
 
 | Metric | Meaning |
 | --- | --- |
 | `captures` | Distinct snapshot capture boundaries. |
-| `extraction_ns` | Owner elapsed extraction time, excluding the separately measured preparation subset. |
-| `preparation_ns` | Owner elapsed time deriving building checks and preparing the growth field. |
 | `map_bytes_copied` | Always-on count of bytes copied into map and area-fertility buffers, including dirty 16x16 chunks and full fills. Shared immutable payloads do not count as copies. |
 | `detailed_captures` | Captures with detailed byte/reuse accounting enabled by compute telemetry (`waits` or `trace`), or explicitly by a snapshot harness. |
 | `bytes_copied` | Estimated component payload traffic for `detailed_captures`: exact map copies plus sizes of entity, team and other refreshed payloads. Zero when detailed accounting is disabled. |
 | `component_reuses` | Unchanged component or resource-plane reuse events during `detailed_captures`. Zero when detailed accounting is disabled. |
 | `allocations` | Instrumented component/payload pool-object, vector-growth and resource-plane allocation events. |
-| `computation_ns` | Summed elapsed time executing decision callbacks, across inline or worker execution. |
 | `submitted`, `delivered` | Admitted polls and deadline publications, including null outputs. |
 | `deadline_misses` | Due batches that were not finished when the owner reached their deadline; the owner then executes or waits for the remainder. |
 | `deadline_wait_ns` | Elapsed time the owner spent completing those missed batches, including jobs it ran itself. |
@@ -133,9 +135,8 @@ accounting policy below:
 | `controller_query_vector_bytes`, `controller_query_vector_peak_bytes` | Current sum of published controller query-vector capacities and its session high-water value. |
 | `controller_query_vector_samples` | Controllers with an available published capacity sample; unavailable controllers contribute no value. |
 
-Elapsed work across threads is not process CPU time. Preparation and extraction partition
-owner capture work; decision and deadline-wait durations can overlap other work, so do not
-sum all counters into a total. `bytes_copied` is cumulative estimated traffic for
+Elapsed work across threads is not process CPU time. Deadline-wait durations can
+overlap other work, so do not sum counters into a total. `bytes_copied` is cumulative estimated traffic for
 the measured captures, and `allocations` is
 not an exhaustive allocator trace. Use process user-plus-system CPU and peak RSS alongside
 the explicit metrics. Worker-local implicit scopes are not merged into owner totals.
@@ -253,11 +254,11 @@ threads use the same delayed serial schedule. Routing decisions may use periodic
 fields eight ticks older than before; synchronous refreshes still take effect
 immediately.
 
-`result.json` includes actual worker count, delay, jobs, published/discarded jobs,
-maximum pending buffers, deadline wait nanoseconds, and summed seeding-plus-propagation elapsed
-nanoseconds. `gradient_preparation_ns` records worker seed time collected at joins;
-snapshot capture remains part of the snapshot metrics. The latter is **not CPU time**. Whole-process user+system CPU must be
-measured externally. Timed runs drain outstanding work before stopping the timer;
+`result.json` includes actual worker count, delay, jobs, published/discarded jobs
+and maximum pending buffers. Shared executor diagnostics report deadline waits;
+per-pipeline seeding and propagation timers are retired. Whole-process user+system
+CPU must be measured externally. Timed runs drain outstanding work before stopping
+the timer;
 finishing work does not publish it early.
 
 `test/benchmark_gradient_pipeline.py` accepts the same scenario manifests as
@@ -350,129 +351,24 @@ See [resource benchmarks](resource-benchmarks.md) for corpus preparation, measur
 
 ## Cached turret targeting
 
-Normal games use three-entry shortlists (`L=3`), a two-tick refresh interval
-(`R=2`), one-tick publication delay (`K=1`) and one-tile guard margin. There is
-one pure ranking kernel with live and frozen read-only adapters. The legacy
-selector has been removed; `Building::targetingReference` uses this same kernel
-for immediate diagnostic comparisons. Historical original-selector measurements
-require the frozen binaries and source retained with their review evidence.
+Normal games use three-entry lists, a two-tick refresh interval, one-tick
+publication delay and a one-tile guard margin. One pure ranking kernel has a frozen
+adapter for jobs and a live adapter used by tests as the reference.
 
-The planner preserves the original strict comparisons, canonical encounter order,
-ground/air tile rules, ring termination and conditional building fallback at its
-head. Alternatives are deduplicated and selected with bounded top-L retention.
-The owner starts at entry zero on each ready-and-armed attempt, validates current
-identity, team eligibility, damage, occupancy, footprint, range, clearance and
-arrival, then fires the first valid entry through the normal bullet machinery.
-It computes no ranking scores and performs no fallback search. Units use current
-positions; buildings use saved footprint offsets. New turrets wait for their
-first published list. Invalid source geometry/weapon/incarnation rejects the list.
+At completed boundary t, teams with `t % R == team % R` are admitted once from the
+shared standard snapshot. Cooling turrets skip refresh only when the cooldown
+recurrence proves they cannot become ready through t+K+R-1. One executor job per
+due team ranks its turrets; index preparation reuses the previous observation's
+unchanged occupied chunks. Results publish before team stepping at t+K.
 
-At completed boundary t, teams satisfying `t % R == team % R` are admitted once.
-`Game::prepareReadBoundary` supplies the existing standard simulation snapshot,
-shared with AI, gradients, resource growth and team statistics. Turret jobs retain
-only the named turret view. Ranking reads effective attack strength directly from
-the captured unit records; preparation does not duplicate those facts, resolve
-live units or recompute effects. One job per due team processes source identities
-in order. The existing shared `ComputeExecutor` runs these jobs; no dedicated
-threads or mutable team query caches exist. Results publish before team stepping
-at t+K, joining unfinished work at that deadline. Worker readiness never chooses
-publication order or time. Cooling turrets skip refresh only when the existing
-cooldown recurrence proves they cannot become ready through t+K+R-1; absent
-ammunition never suppresses admission.
-
-Worker index preparation runs once per logical observation and reuses the
-previous logical admission's immutable occupied chunks. Unchanged chunks share
-storage; team masks and canonical occupied encounter order avoid empty-cell
-clearance checks. Completed work releases its world lease. Publication validates
-incoming sources and replaces records by entity slot; consumption still validates
-the current source. Dead records are reclaimed at storage pressure. Derived index
-and protocol digest metadata are bounded within 32 MiB, and published/pending list
-storage within a separate 32 MiB. Published checksums are updated incrementally; entity retirement removes its
-record without a full per-tick sweep. Completed outputs retain no damage tables.
-The occupied index reserves 1 MiB for canonical
-terrain/occupancy digest metadata: each shared snapshot buffer retains at most
-16 KiB of chunk digests per component. Larger maps use a full digest computation
-without retaining chunk arrays. Local stamps select incremental work but never
-enter checksums.
-
-New saves drain computation without publishing early, and retain ordered lists,
-compact source signatures, observation ticks, admission state, completed pending outputs and
-remaining deadlines. Derived snapshots, index chunks, scratch and metrics are not
-saved. Normal checksums include published per-turret order and logical pending inputs
-and deadlines, independently of worker completion. Numeric input fingerprints
-exclude host byte order, padding, local stamps and private caches.
-
-Format 159 adds the persisted turret cache. Earlier saved matches load with an
-empty cache and populate it through normal delayed updates. Maps and saved games
-retain the version-58 compatibility floor. Replay and network version gates remain
-separate from save compatibility; current-format saves retain exact cached lists
-and pending deadlines across continuation.
-
-### Measurement and correctness controls
-
-Use release builds and separate timing from checksums/saves and diagnostic clocks:
-
-```sh
-python3 tools/dev_build.py dev_fast=0 release=1 turret-engine-benchmark engine-tests
-build/linux/client/release/dev-linker-auto/test/glob2-turret-engine-benchmark \
-  --test-suite=TurretEngine --test-case='whole headless ticks*' --no-colors=true
-GLOB2_TEST_ARTIFACTS=artifacts/turret-engine-correctness \
-  build/linux/client/release/dev-linker-auto/test/glob2-turret-engine-benchmark \
-  --test-suite=TurretEngine --test-case-exclude='*benchmark*,*callgrind*' --no-colors=true
-```
-
-The dedicated program links a benchmark-only target hook. Its `reference` mode
-fires the shared kernel's immediate preferred target; `diagnostic` adds cached
-validation to that same reference trajectory; `cached` uses normal first-valid
-firing. The immediate kernel control is not the removed original selector's CPU
-baseline. Normal binaries always use cached firing.
-
-Whole-headless measurements include AI preparation and settlement, normal turn
-checksums, teams/units/buildings and hiring, map work, shared capture and final
-computation drain. They exclude renderer, pacing/transport, setup, saves and trace
-exports. Workloads include100armed empty-range turrets,100turrets in sustained
-ground combat and an ordinary four-turret control, using Numbi/Castor. Cells use
-one warmup and ten paired seeds with rotated mode order. `TURRET_PARTICIPANTS`
-selects1/2/4/8; `TURRET_REPEAT` selects one paired seed. Confine only your own
-processes, preserve host activity/outliers, and distinguish affinity from a quiet
-host. Compare all-worker process CPU, owner thread CPU and elapsed tick time.
-
-The defaults are the selected L3/R2/K1 configuration. Internal research controls
-`TURRET_CAPACITY`, `TURRET_REFRESH` and `TURRET_DELAY` select bounded
-configurations in the benchmark; preparation and cooldown forecasting always use
-the normal implementation, with no runtime ablation switches.
-Normal-game settings do not expose a replacement targeting policy.
-`TURRET_PROFILE_CPU=1` measures component/thread CPU separately; light
-`TURRET_PROFILE_OWNER=1` measures whole owner-thread CPU without per-shot clocks.
-Rows `turret_cpu`, `turret_owner` and `turret_index` distinguish shared capture,
-source preparation, admission, all planner/index workers, publication, joins and
-consumption. Incremental capture is a paired residual against the common snapshot
-union, not all capture cost. Probe overhead means component totals cannot replace
-uninstrumented process CPU measurements.
-
-The stock Numbi/Castor corpus compares diagnostics on the current cached
-trajectory. Historical shadow results on original bullets remain in the archived
-pre-consolidation evidence. Pure-kernel tests compare live/frozen inputs and bounded
-prefixes, blockers, custom footprints/ranges, wraps, ground/air occupancy,
-incarnation reuse, death/conversion, source changes, cooldown boundaries, overlapping
-generations, pause/resume, worker failure and serial fallback. Cached traces must
-agree at1/2/4/8participants, and save continuation must pass every tested cut.
-
-For instruction attribution use the region excluding setup/warmup/report/teardown:
-
-```sh
-TURRET_PARTICIPANTS=4 TURRET_PROFILE_CASE=1 \
-  valgrind --tool=callgrind --instr-atstart=no --collect-atstart=yes \
-  --separate-threads=yes --callgrind-out-file=artifacts/turret-targeting/producer.callgrind \
-  build/linux/client/release/dev-linker-auto/test/glob2-turret-engine-benchmark \
-  --test-suite=TurretEngine --test-case='turret producer callgrind regions*' --no-colors=true
-```
-
-`TURRET_PROFILE_REFERENCE=1` profiles the immediate shared-kernel control.
-Inclusive child costs overlap; sum worker-thread costs without counting them again
-in owner join scopes. Callgrind instruction counts are not native elapsed timings.
-Unsupported platform coverage and unmeasured performance configurations must stay
-explicit in review evidence.
+The owner starts at entry zero on each ready attempt, revalidates identity, team,
+damage, occupancy, footprint, range, clearance and arrival against live state, and
+fires the first valid entry through the normal bullet machinery. Because of this
+recheck, lists are matched only by turret incarnation: type changes and edits need
+no invalidation, and lists stay out of the game checksum. Saves drain computation
+without publishing early and keep published and pending lists with their deadlines.
+Format 163 stores only identities and entries; formats 159–162 load by discarding
+their source signatures and digests.
 
 ## Executor wait diagnostics and tracing
 
@@ -496,3 +392,14 @@ Resource-growth benchmark cases accept `GLOB2_COMPUTE_TELEMETRY=off|waits|trace`
 (default off). Their JSON records include the selected mode and use null for
 uncollected pipeline timing. Direct calculation/publication timing remains measured
 by the benchmark's own clock.
+
+### Lean execution boundaries
+
+AI and gradient producers use the shared executor's serial fallback; they have no
+separate inline/shared mode. CPU-only periodic jobs seed and propagate directly on
+their executor slot. Backend selection is applied at the owner configuration
+boundary, after draining private work without changing publication deadlines.
+GPU services and sessions are created only for GPU configurations with workers;
+CPU-only maps retain neither and register no GPU idle-maintenance predicate.
+Per-pipeline preparation, CPU attribution and active-time measurements have been
+retired. Use process user+system CPU, elapsed time and shared executor diagnostics.

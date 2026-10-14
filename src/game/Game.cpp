@@ -21,6 +21,7 @@
 #include "Game.h"
 #include "TurretTargeting.h"
 #include "TeamStatsPipeline.h"
+#include "HiringPipeline.h"
 #include "BuildingArtwork.h"
 #include "ai/BuildingCapabilities.h"
 #include "GameUtilities.h"
@@ -207,7 +208,6 @@ void Game::configureBuildingCatalog()
 				for (int resource=0; resource<MaterialCount; ++resource) map.dirtyMarketGradientsSlot(team->teamNumber,resource);
 			}
 		}
-    if (turretTargetingPipeline) turretTargetingPipeline->invalidateChangedSources(*this);
 }
 
 

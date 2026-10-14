@@ -125,7 +125,7 @@ GlobalContainer::~GlobalContainer(void)
 	// Games have already drained their executors. Native drivers may register
 	// process exit handlers during background initialization, after the broker's
 	// static destructor; join here before those handlers or SDL teardown run.
-	gradient_kernel::shutdownGradientDeviceCoordinator();
+	if (gradientDeviceShutdown) gradientDeviceShutdown();
 	GAGCore::Recording::recorder().shutdown();
 	// Commands and interrupted loading can finish before a heap-owned style exists.
 	if (!runNoX && Style::style != &defaultStyle)

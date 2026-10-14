@@ -558,9 +558,9 @@ TEST_CASE("a lane keeps submission order: a lane job due before a live earlier o
 TEST_CASE("the slot count covers every producer's horizon")
 {
 	static_assert(ComputeExecutor::Slots >= (ComputeExecutor::AIHorizon + 1) + (ComputeExecutor::GradientHorizon + 1)
-		+ (ComputeExecutor::BuildingHorizon + 1) + (ComputeExecutor::GrowthHorizon + 1) + (ComputeExecutor::StatisticsHorizon + 1) + (ComputeExecutor::TurretHorizon + 1));
+		+ (ComputeExecutor::BuildingHorizon + 1) + (ComputeExecutor::GrowthHorizon + 1) + (ComputeExecutor::StatisticsHorizon + 1) + (ComputeExecutor::TurretHorizon + 1) + (ComputeExecutor::HiringHorizon + 1));
 	static_assert(ComputeExecutor::boundaryDue(7) < ComputeExecutor::advanceDue(7) && ComputeExecutor::advanceDue(7) < ComputeExecutor::boundaryDue(8));
-	CHECK(ComputeExecutor::Slots == 79);
+	CHECK(ComputeExecutor::Slots == 84);
 }
 }
 
@@ -978,7 +978,13 @@ TEST_CASE("graphics batches finish once, retain failures and release captures" *
             [&, retained](auto context)
             {
                 ++results[context.index];
-                CHECK((ComputeExecutor::workerSlot() != 0 || threads == 1));
+                #if defined(__EMSCRIPTEN__)
+                // Browser presentation batches deliberately run on their owner,
+                // including builds with simulation workers.
+                CHECK(ComputeExecutor::workerSlot() == 0);
+#else
+                CHECK((ComputeExecutor::workerSlot() != 0 || executor.threadCount() == 1));
+#endif
             });
         retained.reset();
         executor.finishPresentationBatch(batch);

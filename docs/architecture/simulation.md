@@ -325,7 +325,8 @@ For timing and scheduling, start with `src/game/Game_sync.cpp` and `src/engine/E
   compact statistics), with explicit history, telemetry, entity-diagnostic and
   annotation options. Consumers do not contribute arbitrary capture masks.
   Complete snapshots still share unchanged components and refresh dirty map
-  chunks in reusable buffers. Paused edits, configuration changes and world
+  chunks in reusable buffers. Capture constructs only components that need filling;
+  reused and unrequested components require no placeholder records. Paused edits, configuration changes and world
   replacement retain their explicit invalidation boundaries. A cold option may
   widen the cached capture within a boundary, reusing its immutable entity records
   and sidecars without another extraction. A changed tick, observation revision,
@@ -352,11 +353,10 @@ For timing and scheduling, start with `src/game/Game_sync.cpp` and `src/engine/E
   pre-edit field for up to the delay. Fields a building has never had (or lost to
   idle eviction or its own move, type or range change), queue overflow (more than
   64 waiting requests) and maps without a game build synchronously.
-  `Map::predictBuildingDepth` reads the generated
+  `Map::predictBuildingDepth` reads the production
   [depth model](../ai/architecture/building-gradient-depth-model.md) from the field's own past
   reader demand (its serving search's required cost and `settledCostHint`). It only moves
-  search work between worker and owner; `GLOB2_BUILDING_DEPTH=full|table|lazy`
-  or an operating point name overrides it for timing.
+  search work between worker and owner. Experimental depth overrides are retired.
 - The executor ring holds 79 batches: each deferred producer holds at most its
   horizon plus one (AI decisions 8, periodic gradients 16, building gradients 8, resource growth 16,
   team statistics 8, turret shortlist jobs 4),
@@ -434,8 +434,8 @@ sequentially: a later decline must not roll back an earlier completed field.
 Each transaction retains its original due tick, ticket, controls and immutable
 inputs. Frozen8 uses four-color integer relaxation
 on 16×16 tiles with frozen halos and eight sweeps; Jacobi uses separate input/output
-buffers for each round. A convergence signal starts complete-field validation;
-it does not by itself establish correct execution.
+buffers for each round. The adapter commits output only after convergence and
+confirmed driver completion. Numerical correctness is established by device tests.
 
 Vulkan retains one adapter-owned work set because its execution is serial. The
 set holds buffers, immutable descriptor bindings, command resources, a fence and
@@ -448,38 +448,17 @@ explicit shutdown releases it after retirement. Inputs are overwritten for each
 captured request; serving fields remain separate from this storage.
 
 The GLSL sources generate pinned SPIR-V and WGSL with integer-only wrapping.
-Before commit, Vulkan and WebGPU require an exact positive-cost fixed-point proof
-against original seeds. Vulkan runs an independent integer validation shader
-against separately uploaded immutable seed and cost references. Its control buffer
-contains an execution marker, failure flag and first invalid cell. A missing marker
-cannot count as successful validation. WebGPU retains its CPU proof; the generated
-WGSL validator is not wired into that adapter.
-
-Vulkan can omit the CPU proof only for captured immutable inputs with shadow
-verification disabled and an exact device, driver and shader identity admitted by
-its validation policy. Generic callers and other combinations retain the CPU
-proof. This policy establishes validator coverage; it does not qualify CPU savings,
-resident preparation or a new backend default. A convergence flag alone cannot
-publish fabricated sources or stale data. A proven fixed-point mismatch stops the
-run through the original completion ticket and writes original seeds, costs and the full 32-bit
-readback to `artifacts/gradient-proof-*.bin` (or `GLOB2_TEST_ARTIFACTS`). The binary
-uses little-endian records, with a text sidecar identifying the device, driver,
-shader and job generation. It does not count as a committed GPU field or a
-successful CPU fallback.
-
-A confirmed GPU validation failure stays fatal even when subsequent readback is
-lost or canceled. That case writes `gradient-control-vulkan-*.bin` (GPCF v1) with
-the confirmed control result and original seeds/costs, and explicitly omits the
-unavailable field. It is not a successful recovery or an inferred readback.
+GPU numerical verification lives in tests. The runtime checks input bounds,
+convergence, driver completion and safe storage retirement, but does not run
+scalar comparisons, fixed-point validators or duplicate reference uploads.
+Independent heap and fixed-point test oracles compare actual committed device
+outputs, including retained NVIDIA failures, weighted costs and wrapped geometry.
+This deliberately removes per-field numerical fault detection in ordinary games.
 
 Direct Vulkan adapter batches remain atomic: batch commit flags publish only after
 every member succeeds. A completed private field followed by cancellation retains
 its dispatch observation,
 but reports no GPU commit and leaves all caller seed arrays unchanged.
-Opt-in Vulkan upload roundtrip failures also stop execution and retain original
-seeds plus expected and actual transfer words in a separate little-endian `GTRF`
-v1 payload. Packed costs and control words must not be interpreted as field output.
-
 Vulkan uses device-local compute storage and maps only coherent transfer/control
 buffers, preferring host-cached memory. Mapped allocations also charge the shared
 host budget; their leases remain charged during quarantine. Preserve whole-game
@@ -520,32 +499,26 @@ only coordinator workers wait for its completion. Serial browsers stay on CPU.
 Original inputs and callback storage survive cancellation until completion proves
 safe retirement; late results never publish into an expired job.
 
-Diagnostics distinguish requested/selected execution, committed GPU fields and CPU
-fallbacks. Adapter phase totals include canceled browser work when its retained
-callback retires, exactly once. Per-field execution observations include only
-completion proof seen before the worker resolves its ticket; a later callback
-cannot mutate a released field. Optional **Verify gradient results** /
-`--gradient-verify on` computes a
-scalar reference from original seeds before publication. A mismatch stops the run
-and writes `gradient-mismatch-*.bin` in the artifact directory with geometry, cap,
-family, seeds, expected/actual fields and packed costs. Verification has separate
-CPU timing and should be disabled for performance comparisons. There is no
-automatic policy, calibration or tuning.
+Backend status reports actual committed fields, dispatches and CPU fallbacks.
+The coordinator owns initialization and bounded ready-work batching. One request
+owns its immutable inputs, private output, cancellation and completion through
+queued, running, recovering and complete states. Declines recover on an executor
+worker; each ticket resolves once. Pending publication deadlines survive saves
+and backend changes.
 
-Opt-in native GPU host diagnostics partition CPU and elapsed time into exclusive
-phases and retain the admitted diagnostic decision through recovery. Device
-completion and publication remain separate counters. Missing CPU clocks remain
-unavailable, including in browsers. Result-file snapshots precede teardown;
-complete process CPU measurement must include final drain and exit. See
-[gradient benchmarks](../development/gradient-benchmarks.md) for attribution
-windows and counter semantics.
+CPU configurations have no GPU service or session, register no GPU worker-only
+predicate, and select CPU job/join callbacks at configuration. The application
+installs its GPU shutdown callback only when GPU state is created, retaining it
+across later backend switches; a CPU-only application never calls that barrier. An existing idle
+coordinator parks without polling when its registrations are gone. GPU fences and
+quarantined storage remain adapter-owned until safe retirement.
 
-`GLOB2_GRADIENT_VERIFY` accepts `1/on/true` and `0/off/false`; explicit CLI choices
-take precedence. Unknown values disable verification. Standalone CPU benchmarks
-force verification off and bucket propagation so inherited game settings cannot
-contaminate their timing.
+The verification preference, CLI/environment switches, detailed GPU profiling and
+runtime proof artifacts have been retired. Existing settings files may contain
+an ignored `gradientVerify` key. Use external profilers and separate correctness
+runs; backend defaults and algorithm choices are unchanged.
 
-## Shared field primitives
+## Shared field primitives## Shared field primitives
 
 - Choose the smallest field operation that preserves the caller's contract:
 
@@ -610,6 +583,42 @@ contaminate their timing.
 - A cache or other retained state with no eviction policy needs an explicit bound —
   a count or a byte budget. "It would take an enormous game to reach" is not a bound.
 
+### Hiring
+
+`HiringPipeline` belongs to each `Game`. At every read boundary, before matched
+orders and including on paused or waiting replicas, it publishes due results and
+then admits one job per team with `t % 4 == teamNumber % 4` from the shared
+completed-tick snapshot. Results publish before team stepping at `t + 4`; early
+completion cannot publish early, so participant counts never change outcomes.
+
+Workers derive demand, material apportionment, supplier modes, qualifications and
+integer rankings from immutable snapshot records. Each job keeps a bounded heap of
+its best candidates, at most the observed vacancies plus two; optimistic score
+bounds skip route queries only for candidates that cannot enter the heap. When a
+team's total vacancies fit one list, a greedy pass in priority order gives each
+building distinct candidates first; imminent attraction rounds likewise spread
+offers between peer flags. Lists are suggestions, not reservations.
+
+The owner keeps priority buckets, rounds, material quotas and task swaps. Admission
+rechecks ownership, activity, medical state, skills, cargo, quotas, reachability,
+food budget and destination for every suggestion, so flag edits need no list
+invalidation. Missing or exhausted lists wait for a refresh; there is no
+population-wide fallback scan. An attraction round with owed roles stays open for
+up to eight ticks (one refresh plus publication) by running its clock past 32.
+
+Resource distances read the snapshot's published resource planes. AI query fields
+are local planning caches, whose presence depends on local polling, so they never
+enroll map fields. Missing planes, flying transport and consumer-specific supplier
+modes use an optimistic zero estimate. Building routes borrow existing valid
+generations through `SharedBuildingGradient` leases; workers settle only queried
+cells under the generation's lock, and retirement hands the buffer and search to
+the lease instead of copying them. Observation never initializes or refreshes a
+field: missing ones use an obstacle-free bound, and live admission establishes them.
+
+Published lists and pending outputs with their deadlines are saved; saving drains
+jobs without publishing early. Older saves start with empty hiring state. Lists are
+a pure function of the snapshot, so game checksums omit them.
+
 ## Turret targeting
 
 Turrets consume ordered three-entry lists refreshed per team every two ticks and
@@ -617,6 +626,15 @@ published one tick after observation. The first currently valid entry fires;
 owner-side ranking and fallback scans are absent. One pure background kernel
 preserves the original preferred target at the head and ranks alternatives.
 Capture joins the shared completed-tick snapshot union and existing compute pool.
-See [targeting lifecycle and measurement](../development/compute-benchmarks.md#cached-turret-targeting)
-for scheduling, memory bounds, checksums and saved continuation. Format 159 and
-simulation revision 55 deliberately replace earlier save/replay targeting behavior.
+Firing revalidates every entry against live state, so lists need no invalidation.
+See [targeting lifecycle](../development/compute-benchmarks.md#cached-turret-targeting)
+for scheduling and saved continuation.
+
+Shared snapshot capture uses local dirty stamps for incremental copies. It does
+not maintain terrain or occupancy protocol hashes after cached turret outputs
+left the game checksum.
+
+CPU-only gradient workspaces have no backend-session allocation. Periodic jobs use
+a CPU callback selected at configuration, preserving the same immutable snapshot,
+slot-local scratch and fixed publication time. GPU ownership and cancellation
+state is allocated only for GPU-configured submissions.
