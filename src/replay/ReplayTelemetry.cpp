@@ -1,5 +1,6 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "ReplayTelemetry.h"
+#include "AITelemetry.h"
 #include "Game.h"
 #include "Team.h"
 #include <Stream.h>

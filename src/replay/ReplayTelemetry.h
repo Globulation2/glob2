@@ -1,26 +1,17 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #pragma once
-#include "AITelemetry.h"
+#include <SDL3/SDL_stdinc.h>
+#include <memory>
+#include <string>
+#include <vector>
 #include <map>
 #include <set>
 #include <string_view>
 #include <tuple>
+namespace GAGCore { class InputStream; class OutputStream; }
 class Game;
 namespace ReplayTelemetry
 {
-struct Row
-{
-	int team = 0, player = 0;
-	std::string name;
-	bool available = false;
-	std::vector<AITelemetry::NamedValue> values;
-	bool operator==(const Row &) const = default;
-};
-struct Frame
-{
-	Uint32 step = 0;
-	std::vector<Row> changes;
-};
 // Diagnostic data is bounded independently of the gameplay order stream.
 class Stream
 {

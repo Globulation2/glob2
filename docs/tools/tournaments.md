@@ -294,6 +294,10 @@ SSH aliases name the same machine or reserve CPUs from unrelated processes.
 Allocation receipts persist in the results database. CPU plans cannot change
 mid-cohort. With experiment `settings.measured=true`, retries retain their
 original host and slot; ordinary retries may select another allocation.
+A share is reserved while its job is queued or running. This bounds outstanding
+work without another scheduling queue, but the next job waits for a coordinator
+poll and transfer after the share is released. For very short jobs that gap can
+reduce throughput; explicit allocation is not a universal speedup claim.
 
 For hosts without explicit CPU allocations, worker `slots`, `collect_slots`,
 backlog and storage limits reload on every daemon tick; reconfiguration does not

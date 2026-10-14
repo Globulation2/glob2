@@ -125,6 +125,18 @@ class FrozenAdmission(unittest.TestCase):
         self.assertEqual([a['job']['id'] for a in retries], [a['job']['id'] for a in attempts])
         self.assertEqual([a['execution_allocation']['slot'] for a in retries], [0, 1])
 
+    def test_measured_retry_cannot_move_to_an_unbudgeted_host(self):
+        attempts = self.coordinator.dispatch('host', self.worker.status(), now=1)
+        self.coordinator.expire(now=12)
+        unbudgeted = self.worker.status() | {'resource_plan': None}
+        other = self.coordinator.dispatch('legacy', unbudgeted, now=12)
+        self.assertEqual(len(other), 1)  # The previously untried job remains eligible.
+        self.assertNotIn('execution_allocation', other[0])
+        self.assertFalse({a['job']['id'] for a in other}.intersection(a['job']['id'] for a in attempts))
+        retries = self.coordinator.dispatch('host', self.worker.status(), now=12)
+        self.assertEqual([a['job']['id'] for a in retries], [a['job']['id'] for a in attempts])
+        self.assertEqual([a['execution_allocation']['slot'] for a in retries], [0, 1])
+
     def test_success_requires_unchanged_allocation_affinity_and_actual_participants(self):
         attempt = self.coordinator.dispatch('host', self.worker.status(), now=1)[0]
         record = {'schema_version': 1, 'id': attempt['id'], 'token': attempt['token'], 'host': 'host',

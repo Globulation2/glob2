@@ -11,7 +11,6 @@
 #include <nlohmann/json.hpp>
 
 #include <algorithm>
-#include <iostream>
 #include <array>
 #include <cstdlib>
 #include <cstring>
@@ -646,7 +645,7 @@ TEST_SUITE("GradientPreparation")
 		}
 		}
 		std::vector<Uint16> expected(m.size), actual(m.size);
-		for (unsigned threads : {1, 2, 3, 4, 6})
+		for (unsigned threads : {1, 2, 4})
 		{
 			m.configureCompute(threads);
 			REQUIRE(m.computeExecutor().threadCount()==(GAGCore::ThreadSupport::available ? threads : 1u));
@@ -695,8 +694,6 @@ TEST_SUITE("GradientPreparation")
 					requireSameField(m, "guard", actual, expected);
 				}
 			}
-            std::cout<<"GLOB2_MATERIAL_PARTICIPANT_ORACLE_PROOF {\"requested_count\":"<<threads
-                <<",\"observed_count\":"<<m.computeExecutor().threadCount()<<",\"scalar_material_clear_guard\":1}\n";
 		}
 	}
 

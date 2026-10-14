@@ -259,6 +259,19 @@ class Coordinator:
             with transaction(self.db):
                 if self.mode != 'running':
                     break
+                retry_slot = None
+                if self.settings.get('measured', False) and previous:
+                    old = self.db.execute('SELECT id,host FROM attempts WHERE job_id=? ORDER BY created DESC LIMIT 1', (job['id'],)).fetchone()
+                    saved = self.db.execute('SELECT value FROM settings WHERE key=?', ('cpu_attempt:' + old['id'],)).fetchone()
+                    # A frozen attempt cannot escape its allocation through a
+                    # legacy host that does not advertise a CPU plan.
+                    if plan is not None or saved is not None:
+                        if old['host'] != host:
+                            continue
+                        prior = json.loads(saved['value']) if saved else {}
+                        if plan is None or prior.get('allocation_plan') != plan.record():
+                            raise ValueError('measured retry allocation plan changed')
+                        retry_slot = prior['execution_allocation']['slot']
                 if plan is not None:
                     # Recheck reservations under SQLite's write lock: another
                     # transfer lane can have dispatched since the status snapshot.
@@ -275,18 +288,9 @@ class Coordinator:
                     slots = [i for i, allocation in enumerate(plan.allocations) if not occupied.intersection(allocation.cpu_ids)]
                     if not slots:
                         break
-                    slot = slots[0]
-                    if self.settings.get('measured', False) and previous:
-                        old = self.db.execute('SELECT id,host FROM attempts WHERE job_id=? ORDER BY created DESC LIMIT 1', (job['id'],)).fetchone()
-                        if old['host'] != host:
-                            continue
-                        saved = self.db.execute('SELECT value FROM settings WHERE key=?', ('cpu_attempt:' + old['id'],)).fetchone()
-                        prior = json.loads(saved['value']) if saved else {}
-                        if prior.get('allocation_plan') != plan.record():
-                            raise ValueError('measured retry allocation plan changed')
-                        slot = prior['execution_allocation']['slot']
-                        if slot not in slots:
-                            continue
+                    slot = retry_slot if retry_slot is not None else slots[0]
+                    if slot not in slots:
+                        continue
                     attempt['allocation_plan'] = plan.record()
                     attempt['execution_allocation'] = plan.attempt_record(attempt['id'], slot)
                 changed = self.db.execute("UPDATE jobs SET state='active',active=? WHERE id=? AND state='pending'", (attempt['id'], job['id'])).rowcount

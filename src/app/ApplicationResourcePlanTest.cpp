@@ -96,7 +96,7 @@ TEST_CASE("platform discovery produces a usable setup with the platform threadin
     if (plan.cpuAvailability.eligibleLogicalCpuCount)
     {
         CHECK(*plan.cpuAvailability.eligibleLogicalCpuCount > 0);
-        CHECK(plan.cpuAvailability.source == CpuAvailabilitySource::AffinityMask);
+        CHECK(std::string(cpuAvailabilitySourceName(plan.cpuAvailability)) == "affinity-mask");
     }
 }
 }

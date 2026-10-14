@@ -38,7 +38,7 @@ void writeApplicationResourcePlanJson(std::ostream& out, const ApplicationResour
     out << "{\"requested_threads\":" << plan.requestedComputeThreads
         << ",\"compute_participants\":" << plan.computeParticipants
         << ",\"participant_source\":\"" << computeParticipantSourceName(plan)
-        << "\",\"cpu_availability_source\":\"" << cpuAvailabilitySourceName(plan.cpuAvailability.source)
+        << "\",\"cpu_availability_source\":\"" << cpuAvailabilitySourceName(plan.cpuAvailability)
         << "\",\"hardware_threads\":" << plan.cpuAvailability.hardwareHint
         << ",\"eligible_threads\":";
     if (plan.cpuAvailability.eligibleLogicalCpuCount) out << *plan.cpuAvailability.eligibleLogicalCpuCount;

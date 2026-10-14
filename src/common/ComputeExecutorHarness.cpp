@@ -39,11 +39,11 @@ TEST_CASE("CPU eligibility bounds hints and retains portable fallback when disco
     CHECK(availableComputeCpuCount(0, 6) == 6);
     CHECK(availableComputeCpuCount(32, 0) == 32);
     CHECK(availableComputeCpuCount(0, 0) == 1);
-    CHECK(cpuAvailabilityObservation(32, 6).source == CpuAvailabilitySource::AffinityMask);
+    CHECK(std::string(cpuAvailabilitySourceName(cpuAvailabilityObservation(32, 6))) == "affinity-mask");
     const auto hinted = cpuAvailabilityObservation(32);
-    CHECK(hinted.source == CpuAvailabilitySource::HardwareHint);
+    CHECK(std::string(cpuAvailabilitySourceName(hinted)) == "hardware-hint-only");
     CHECK_FALSE(hinted.eligibleLogicalCpuCount.has_value());
-    CHECK(cpuAvailabilityObservation(0).source == CpuAvailabilitySource::Unknown);
+    CHECK(std::string(cpuAvailabilitySourceName(cpuAvailabilityObservation(0))) == "unknown");
 }
 TEST_CASE("thread configuration accepts auto and rejects malformed or overflowing overrides")
 {

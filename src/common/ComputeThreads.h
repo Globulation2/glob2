@@ -43,23 +43,17 @@ inline unsigned availableComputeCpuCount(unsigned hardware, unsigned eligible)
     return eligible ? (hardware ? std::min(hardware, eligible) : eligible) : (hardware ? hardware : 1);
 }
 
-enum class CpuAvailabilitySource { AffinityMask, HardwareHint, Unknown };
 struct CpuAvailabilityObservation {
     std::optional<unsigned> eligibleLogicalCpuCount;
     unsigned hardwareHint = 0;
-    CpuAvailabilitySource source = CpuAvailabilitySource::Unknown;
 };
 // Pure status mapping. A hardware hint is never promoted to observed allocation.
 inline CpuAvailabilityObservation cpuAvailabilityObservation(unsigned hardware, unsigned eligible = 0) {
-    return {eligible ? std::optional<unsigned>(eligible) : std::nullopt, hardware,
-        eligible ? CpuAvailabilitySource::AffinityMask : hardware ? CpuAvailabilitySource::HardwareHint : CpuAvailabilitySource::Unknown};
+    return {eligible ? std::optional<unsigned>(eligible) : std::nullopt, hardware};
 }
-inline const char* cpuAvailabilitySourceName(CpuAvailabilitySource source) {
-    switch(source) {
-    case CpuAvailabilitySource::AffinityMask: return "affinity-mask";
-    case CpuAvailabilitySource::HardwareHint: return "hardware-hint-only";
-    default: return "unknown";
-    }
+inline const char* cpuAvailabilitySourceName(const CpuAvailabilityObservation& observation) {
+    if (observation.eligibleLogicalCpuCount) return "affinity-mask";
+    return observation.hardwareHint ? "hardware-hint-only" : "unknown";
 }
 // One query of the creating thread's eligible logical mask when supported.
 // Neither the mask nor hardware hint measures CPU-time quota or reserved cores.

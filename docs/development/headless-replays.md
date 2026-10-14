@@ -506,8 +506,9 @@ propagation both execute privately and retain the existing publication deadlines
 reported logical CPU threads bounded by known Linux/Android CPU affinity, with
 a portable hardware fallback when affinity is unknown and one participant when
 neither count is available. Browser automatic sizing remains capped at eight.
-N is a positive unsigned participant count including the owner; explicit counts
-remain unchanged. Saving drains
+N is a positive unsigned participant count including the owner. Explicit counts
+remain unchanged unless the platform cannot run threads, when execution uses one
+participant while retaining the requested count in diagnostics. Saving drains
 private work without publishing it early and continues to serialize completed
 fields with their remaining deadlines.
 

@@ -141,7 +141,7 @@ allocator memory or process RSS. Retained rows share immutable ordered descripto
 lists internally and keep their own value text and update ticks. This preserves
 duplicate fields, embedded NULs, schema changes and unavailable rows; it does not
 replace recorded history with deltas. The AIT1 bytes, logical admission budget,
-truncation point, expanded readout API and save representation remain unchanged.
+truncation point, playback readouts and save representation remain unchanged.
 
 ## Offense target team
 

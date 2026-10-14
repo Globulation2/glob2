@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "EngineFixtures.h"
 #include "ReplayTelemetry.h"
+#include "AITelemetry.h"
 #include "Version.h"
 #include <BinaryStream.h>
 #include <StreamBackend.h>
@@ -10,8 +11,19 @@
 namespace
 {
 using namespace GAGCore;
-using ReplayTelemetry::Frame;
-using ReplayTelemetry::Row;
+// Test-local legacy layout keeps the wire oracle independent of compact storage.
+struct Row
+{
+	int team = 0, player = 0;
+	std::string name;
+	bool available = false;
+	std::vector<AITelemetry::NamedValue> values;
+};
+struct Frame
+{
+	Uint32 step = 0;
+	std::vector<Row> changes;
+};
 using TelemetryStream = ReplayTelemetry::Stream;
 
 void text(OutputStream &out, const std::string &value)
@@ -41,7 +53,7 @@ void frame(OutputStream &out, const Frame &value)
 		}
 	}
 }
-// Independent encoder of the existing AIT1 contract, using public legacy rows.
+// Independent encoder of the existing AIT1 contract, using the legacy row layout.
 std::string legacyBytes(const std::vector<Frame> &frames, Uint32 until, bool truncated = false)
 {
 	auto *memory = new MemoryStreamBackend;

@@ -500,8 +500,8 @@ recover the exact CPU result from original seeds; partial GPU results are never
 published. Required transfer failures retain unsafe storage until completion can
 be proved. Saves, reconfiguration and shutdown drain required work.
 
-Before consuming OpenCL transfer data, the backend synchronizes an event that
-has already reported completion. A completed status query alone does not
+Before consuming a polled/asynchronous OpenCL transfer, the backend synchronizes
+its event after it reports completion. A completed status query alone does not
 establish host synchronization. A failed wait follows the existing permanent
 failure and CPU fallback path. Abandoned transfers retain their covering-proof
 lifetime checks without publishing canceled output.
