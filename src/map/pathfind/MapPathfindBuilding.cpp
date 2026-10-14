@@ -11,7 +11,6 @@
 #include "MapInternal.h"
 #include "BuildingGradientSearch.h"
 #include "SharedBuildingGradient.h"
-#include "gradient/BuildingGradientStats.h"
 
 
 
@@ -35,25 +34,20 @@ bool Map::prepareBuildingGradient(Building *building, int swimClass, BuildingRou
 	Uint32 now=game->stepCounter;
 	building->globalGradientUsedStep[slot]=now;
 	bool rebuild=false, cold=false;
-	using Reason = BuildingGradientStats::Reason;
-	Reason reason = Reason::Other;
 	if (gradient==NULL)
 	{
 		gradient=acquireBuildingGradientBuffer();
 		rebuild=cold=true;
-		reason=Reason::Null;
 	}
 	else if ((building->dirtyGradient[slot] || building->gradientGeneration[slot]!=topologyGeneration)
 		&& lastUpdate+GRADIENT_DIRTY_REBUILD_TICKS<=now)
 	{
 		rebuild=true;
-		reason=building->dirtyGradient[slot] ? Reason::Dirty : Reason::Generation;
 	}
 	// A clearing flag's goals are resources, which grow and get cleared.
 	else if (building->resolveRoute(route) == BuildingRoute::Clearing && lastUpdate+CLEARING_FLAG_REFRESH_TICKS<=now)
 	{
 		rebuild=true;
-		reason=Reason::Clearing;
 	}
 	// With scheduled building gradients a refresh is requested and the old
 	// field keeps serving until its publication; a cold field has none.
@@ -70,7 +64,6 @@ bool Map::prepareBuildingGradient(Building *building, int swimClass, BuildingRou
 			case Building::GradientDrop::Area: noteBuildingSyncReason(Sync::ColdArea); break;
 			}
 		else noteBuildingSyncReason(Sync::Other);
-		if (gradientStats) gradientStats->setPendingReason(reason);
 		updateGlobalGradient(building, swimClass, route);
 	}
 	return !building->isLocked(building->routeAccess(swimClass, route));
@@ -163,7 +156,6 @@ bool Map::pathfindBuilding(EntityRandom& random, Building *building, int swimCla
 	{
 		// Standing where one of the flag's resources was: it is gone, the gradient is stale.
 		building->dirtyGradient[slot]=true;
-		if (gradientStats) gradientStats->clearingGoalGone();
 		return false;
 	}
 	if (buildingGradientDirection(random, building, swimClass, x, y, dx, dy, true, route))
@@ -176,7 +168,6 @@ bool Map::pathfindBuilding(EntityRandom& random, Building *building, int swimCla
 	if (requestBuildingRefresh(building, slot))
 		return buildingGradientDirection(random, building, swimClass, x, y, dx, dy, false, route);
 	noteBuildingSyncReason(BuildingSyncReason::Other);
-	if (gradientStats) gradientStats->setPendingReason(BuildingGradientStats::Reason::Stuck);
 	updateGlobalGradient(building, swimClass, route);
 	if (building->isLocked(building->routeAccess(swimClass, route)))
 		return false;

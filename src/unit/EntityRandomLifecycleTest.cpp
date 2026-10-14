@@ -320,7 +320,7 @@ TEST_SUITE("EntityRandomLifecycle")
         }
     }
 
-    TEST_CASE("format 150 text area saves are rejected [save-format][artifacts]")
+    TEST_CASE("format 150 text area saves retain funded services through current saves [save-format][artifacts]")
     {
         glob2test::HeadlessGlobals globals;
         glob2test::HeadlessGame world({.header=true, .seed=731});
@@ -387,7 +387,30 @@ TEST_SUITE("EntityRandomLifecycle")
                       "versionMinor = 150");
         std::ofstream(glob2test::artifactDir() / "format-150.game.txt", std::ios::binary) << bytes;
         glob2test::HeadlessGame migrated({.header=true});
-        CHECK_FALSE(load(migrated.game, bytes, true));
+        REQUIRE(load(migrated.game, bytes, true));
+        auto* restoredUnit=migrated.game.teams[0]->myUnits[Unit::GIDtoID(unit->gid)];
+        auto* restoredBuilding=migrated.game.teams[0]->myBuildings[Building::GIDtoID(building->gid)];
+        REQUIRE(restoredUnit); REQUIRE(restoredBuilding);
+        CHECK(restoredUnit->areaServiceRemainders==unit->areaServiceRemainders);
+        CHECK(restoredUnit->areaLastPulseTick==unit->areaLastPulseTick);
+        CHECK(restoredBuilding->areaFunded);
+        CHECK(restoredBuilding->areaFundingTeam==building->areaFundingTeam);
+        CHECK(restoredBuilding->areaFundingType==building->areaFundingType);
+        CHECK(restoredBuilding->areaFundingTick==building->areaFundingTick);
+        const auto current=save(migrated.game,true);
+        glob2test::HeadlessGame continued({.header=true});
+        REQUIRE(load(continued.game,current,true));
+        // The header checksum includes the loaded format number, which the
+        // new save upgrades. Every simulation component after that header must
+        // still agree, including pending work and private random streams.
+        CHECK(migrated.game.mapHeader.getVersionMinor()==150);
+        CHECK(continued.game.mapHeader.getVersionMinor()==VERSION_MINOR);
+        std::vector<Uint32> before,after;
+        migrated.game.checkSum(&before,nullptr,nullptr,true);
+        continued.game.checkSum(&after,nullptr,nullptr,true);
+        REQUIRE(before.size()==after.size());
+        REQUIRE(before.size()>1);
+        CHECK(std::equal(before.begin()+1,before.end(),after.begin()+1));
 }
 
     TEST_CASE("truncated binary RNG state and even increments are rejected")

@@ -192,7 +192,6 @@ class BenchmarkProtocolTest(unittest.TestCase):
             self.assertEqual((args.output / 'samples.jsonl').read_text(), raw + raw)
             for call, layout in zip(run.call_args_list, ('shared', 'separate')):
                 self.assertEqual(call.kwargs['env']['GLOB2_GRADIENT_BACKEND'], 'sse2')
-                self.assertEqual(call.kwargs['env']['GLOB2_GRADIENT_VERIFY'], 'off')
                 self.assertEqual(call.kwargs['env']['GLOB2_GRADIENT_ALGORITHM'], 'buckets')
                 self.assertEqual(call.args[0], [
                     '/unused/benchmark', '--repeats', '2', '--layout', layout, '--size', '32',

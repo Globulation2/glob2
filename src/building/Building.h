@@ -432,9 +432,6 @@ private:
 	/// still cooling it decrements by shootRhythm and returns false.
 	bool tickShootingCooldown();
 
-    /// Read-only diagnostic reference, using the same pure planner as jobs.
-    TurretTarget targetingReference() const;
-
 	/// Phase 5 geometry: compute the bullet spawn origin and velocity aimed at
 	/// the target tile, accounting for toroidal map wrap.
 	TurretFiringSolution computeFiringSolution(int targetX, int targetY) const;

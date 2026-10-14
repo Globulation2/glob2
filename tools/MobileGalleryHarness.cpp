@@ -981,7 +981,7 @@ class MobileGalleryGameplay
 				gui.localTeam, &gui.game.buildingsTypes, 1, 1);
 			if (std::string(family) == "clearingflag")
 				for (int material = 0; material < MaterialCount; ++material)
-					fixture->clearingMaterials[material] = material % 2 == 0;
+					fixture->setClearsMaterial(material, material % 2 == 0);
 			gui.localTeam->myBuildings[inspectorSlot] = fixture.get();
 			gui.localTeam->attachBuilding(inspectorSlot);
 			inspect(std::string("game-inspector-") + family, fixture.get());

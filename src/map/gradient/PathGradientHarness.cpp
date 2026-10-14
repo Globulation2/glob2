@@ -319,11 +319,11 @@ TEST_CASE("building depth history follows readers rather than preparation [pathf
 		const int depth = BuildingGradientDepth::target(serving, previous);
 		search.resolveToCost(depth);
 		CHECK(search.requiredCost() == 0);
-		const auto prepared = search.poppedEntries();
+		const auto prepared = search.settledCost();
 		const int cell = lifetime < 10 ? 30 : 5;
 		search.resolve(cell);
 		CHECK(field[cell] == Goal - cell * GRADIENT_STEP);
-		CHECK(search.poppedEntries() == prepared);
+		CHECK(search.settledCost() == prepared);
 		CHECK(search.requiredCost() == cell * GRADIENT_STEP + 1);
 		CHECK(depth == (lifetime < 12 ? 509 : 224));
 		previous = serving;
@@ -667,7 +667,7 @@ TEST_CASE("production lazy gradient phases [benchmark][pathfinding]")
                 std::printf("lazy_gradient,%d,%d,%d,%d,%d,%lld,%lld,%lld,%lld,%llu,%zu,%zu,%llu\n",
                     width,layout,swim,query,repeat,static_cast<long long>(captureNs),
                     static_cast<long long>(beginNs),static_cast<long long>(resolveNs),
-                    static_cast<long long>(cpuNs),static_cast<unsigned long long>(search.poppedEntries()),
+                    static_cast<long long>(cpuNs),static_cast<unsigned long long>(search.settledCost()),
                     search.retainedBytes(),snapshot->size()*sizeof(TerrainType),
                     static_cast<unsigned long long>(hash));
             }
@@ -698,17 +698,21 @@ TEST_CASE("queued mixed gradients retain terrain costs until fixed publication [
         auto *published = new Uint16[count]{};
         ComputeExecutor executor; executor.configure(workers+1);
         GradientPipeline pipeline;
-        pipeline.configure(executor,workers!=0, 2, count, [](auto &job, auto &workspace) {
-            const auto *types = job.terrain->data();
+        pipeline.configure(executor, 2, count, [](auto &job, auto &workspace) {
+            const auto *types = job.snapshotLease->terrain->vertices->data();
             gradient_kernel::propagateTerrainField(job.data.get(), job.swim,
                 CostLimit, {width, width}, workspace,
-                [types](std::size_t i) { return types[i]; }, job.modifiedCosts);
+                [types](std::size_t i) { return types[i]; }, true);
         });
         pipeline.advance();
-        pipeline.submit(&published, swim, [seeds,snapshot](auto &job) {
+        auto terrain=std::make_shared<SimulationSnapshot::Terrain>();
+        terrain->vertices=snapshot;
+        SimulationSnapshot::Handle captured; captured.terrain=terrain;
+        pipeline.submit(&published, swim, [seeds,captured](auto &job) {
             std::copy(seeds.begin(), seeds.end(), job.data.get());
-            job.terrain = snapshot; job.modifiedCosts = true;
+            job.snapshotLease=captured;
         });
+        captured={}; terrain.reset();
         for (unsigned i = 0; i < count; ++i) map.paintCell(i, GRASS);
         snapshot.reset();
         pipeline.finish();

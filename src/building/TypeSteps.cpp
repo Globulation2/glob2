@@ -198,7 +198,6 @@ bool Building::tickShootingCooldown()
 void Building::turretStep(Uint32 stepCounter)
 {
 	convertStoneToBullet();
-	TurretTargeting::observeAttempt(*this);
 
 	// compute cooldown
 	if (!tickShootingCooldown())
@@ -210,18 +209,12 @@ void Building::turretStep(Uint32 stepCounter)
 
 	shootingStep = (shootingStep+1) & (SHOOTING_ANIMATION_FRAMES - 1);
 
-#ifdef GLOB2_TURRET_ENGINE_BENCHMARK
-    // Linked only into the dedicated research binary, never the game or tests.
-    extern TurretTarget turretEngineBenchmarkTarget(const Building&);
-    TurretTarget target = turretEngineBenchmarkTarget(*this);
-#else
     const auto chosen=TurretTargeting::firstValid(*this,owner->game->turretTargeting()->entries(*this));
     TurretTarget target;
     if (chosen.found()) {
         target.type=chosen.entry.kind==TurretTargeting::Kind::Building ? TARGETTYPE_BUILDING : TARGETTYPE_GENERAL;
         target.x=chosen.x; target.y=chosen.y; target.ticks=chosen.ticks;
     }
-#endif
 
 	if (target.found())
 	{
@@ -238,18 +231,6 @@ bool Building::hasClearShotTo(int targetX, int targetY) const
     const auto shot = computeFiringSolution(targetX,targetY);
     return map->projectilePathClear(shot.originX,shot.originY,
         shot.originX+shot.speedX*shot.ticksLeft,shot.originY+shot.speedY*shot.ticksLeft);
-}
-
-// A read-only immediate reference for diagnostics uses the same pure kernel.
-Building::TurretTarget Building::targetingReference() const
-{
-    const auto chosen=TurretTargeting::plan(*this,0,0).preferred;
-    TurretTarget target;
-    if (chosen.found()) {
-        target.type=static_cast<TurretTargetType>(chosen.priority);
-        target.score=chosen.score; target.ticks=chosen.ticks; target.x=chosen.x; target.y=chosen.y;
-    }
-    return target;
 }
 
 Building::TurretFiringSolution Building::computeFiringSolution(int targetX, int targetY) const

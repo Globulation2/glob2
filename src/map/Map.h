@@ -54,7 +54,6 @@ class Game;
 class SessionGame;
 class MapHeader;
 struct GradientRuntime;
-class BuildingGradientStats;
 struct SharedBuildingGradient;
 namespace ResourceGrowth { struct Metrics; }
 
@@ -258,9 +257,7 @@ public:
 		unsigned workers = 0, delay = 0;
 		std::size_t pending = 0;
 		std::uint64_t jobs = 0, published = 0, discarded = 0;
-		std::uint64_t maxPending = 0, waitNs = 0, activeElapsedNs = 0, preparationNs = 0, publicationWaitNs = 0;
-        // Owner-only O(1) last-advance telemetry, no pending-job scan.
-        std::uint64_t lastPublicationWaitNs=0,lastGpuPublicationWaitNs=0,lastGpuDeviceOverlapWaitNs=0;
+		std::uint64_t maxPending = 0;
 	};
 	bool gradientPipelineEnabled() const;
 	GradientPipelineStatus gradientPipelineStatus() const;
@@ -284,6 +281,7 @@ public:
 	void setGradientWorkerCount(unsigned workers);
 	void configureGradientPipeline(unsigned workers, unsigned delay);
     void applyGradientBackendRequest();
+    void configureGradientExecution();
 	// Scheduled building gradients (MapGradientScheduling.cpp). Team stepping
 	// requests refreshes of existing fields and keeps serving the old ones;
 	// after the tick up to MaxJobsPerTick requests are staged, captured at the
@@ -304,7 +302,7 @@ public:
 		bool enabled = false;
 		unsigned delay = 0;
 		std::size_t pending = 0, queued = 0;
-		std::uint64_t jobs = 0, published = 0, discarded = 0, synchronous = 0, maxPending = 0, waitNs = 0;
+		std::uint64_t jobs = 0, published = 0, discarded = 0, synchronous = 0, maxPending = 0;
 		std::array<std::uint64_t, std::size_t(BuildingSyncReason::Count)> synchronousByReason{};
 	};
 	//! Tags the next synchronous building build for the counters above.
@@ -323,10 +321,6 @@ public:
 	//! Worker depth for a scheduled walking field: every reader still resolves
 	//! its cell first, so the prediction moves CPU, never values.
 	int predictBuildingDepth(const Building *building, int slot) const;
-	//! "table" (the model's default point), a point name such as "l0300",
-	//! "full" or "lazy" (seeds only): CPU placement for timing comparisons,
-	//! never results. GLOB2_BUILDING_DEPTH sets it too.
-	void setBuildingGradientDepth(std::string_view mode);
 	void updateTeamAreaGradients(int teamNumber);
 	void seedMaterialGradient(int team, Uint8 resource, int swim, Uint16 *gradient, bool withMarkets = false, const Building* consumer = nullptr, unsigned modes = 0);
 	void seedGuardAreasGradient(int team, int swim, Uint16 *gradient);
@@ -1188,8 +1182,6 @@ public:
 	//! and a unit blocked by one forces its own rebuild in pathfindBuilding.
 	Uint32 topologyGeneration;
 	void bumpTopologyGeneration() { topologyGeneration++; }
-	//! Diagnostics only (--telemetry gradient-stats); null otherwise.
-	std::unique_ptr<BuildingGradientStats> gradientStats;
 	bool pathfindForbidden(const Uint16 *optionGradient, int teamNumber, int swimClass, int x, int y, int *dx, int *dy);
 	enum class AreaKind { Guard, Clear };
 	//! Find the best direction toward a guard or clear area; return true if one has been found.

@@ -60,8 +60,7 @@ private:
 		std::optional<Command> completed;
 		std::exception_ptr failure;
 		Uint64 computationNs = 0;
-		OrderScheduler* owner = nullptr;
-		template<bool Measure, bool Collect> static void run(void* context, std::size_t);
+		template<bool Measure> static void run(void* context, std::size_t);
 	};
 	// The decisions admitted at one observation tick, dispatched to the executor
 	// as one batch (one group per controller on that controller's lane) once the
@@ -76,12 +75,10 @@ private:
 	};
 	std::deque<TickBatch> batches;
 	ComputeExecutor* executor = nullptr;
-	bool shared = false;
 	// Smoothed decision work of recent batches. A delay-zero batch is handed to
 	// the workers only when it carries enough work to repay waking them;
 	// otherwise the owner decides it inline. Neither changes a decision.
 	Uint64 recentWorkNs = SharedWorkThresholdNs;
-	std::atomic<Uint64> computationNs{0};
 	std::map<unsigned, RequestId> lastSubmitted;
 	unsigned delay = 0;
 	std::optional<Uint32> submissionTick;
@@ -102,12 +99,10 @@ public:
 	// Shared execution hands batches to the executor's workers and the
 	// submitter waits for them at the deadline; otherwise the submitter decides
 	// when it dispatches. Either way decisions are delivered at the deadline.
-	void configure(unsigned delayTicks, ComputeExecutor& executor, bool sharedExecution);
-	void configureExecution(ComputeExecutor& executor, bool sharedExecution);
+	void configure(unsigned delayTicks, ComputeExecutor& executor);
+	void configureExecution(ComputeExecutor& executor);
 	unsigned delayTicks() const { return delay; }
-	bool sharedExecution() const { return shared; }
 	bool hasExecutor() const { return executor != nullptr; }
-	Uint64 activeNs() const { return computationNs.load(std::memory_order_relaxed); }
 	std::size_t pendingCount() const;
 	bool wasSubmitted(unsigned player, Uint32 generation, Uint32 tick) const {
 		const auto it=lastSubmitted.find(player);

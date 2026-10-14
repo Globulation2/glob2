@@ -6,25 +6,13 @@
 #include "Team.h"
 #include "Unit.h"
 #include "TerrainLine.h"
-#include "sim/snapshot/BufferPool.h"
 #include <algorithm>
 #include <map>
 #include <tuple>
 #include <stdexcept>
-#include <atomic>
-#include <ctime>
 
 namespace TurretTargeting
 {
-namespace { thread_local AttemptObserver attemptObserver=nullptr; thread_local void* attemptContext=nullptr; }
-ScopedAttemptObserver::ScopedAttemptObserver(AttemptObserver observer,void* context)
-    : previous(attemptObserver),previousContext(attemptContext)
-{ attemptObserver=observer; attemptContext=context; }
-ScopedAttemptObserver::~ScopedAttemptObserver()
-{ attemptObserver=previous; attemptContext=previousContext; }
-void observeAttempt(const Building& turret)
-{ if (attemptObserver) attemptObserver(attemptContext,turret); }
-struct IndexBudget { std::atomic<std::size_t> bytes{0}; };
 struct OccupiedIndex
 {
     struct Cell { int x,y; };
@@ -38,18 +26,6 @@ struct OccupiedIndex
 };
 namespace
 {
-// Reserve 1 MiB of the 32 MiB index budget for canonical chunk digests:
-// two components, at most 22 shared buffers, 16 KiB each plus metadata.
-constexpr std::size_t DigestReservation=1024u*1024u;
-static_assert(2*SimulationSnapshot::BufferPool<SimulationSnapshot::Terrain>::Limit*(SimulationSnapshot::LogicalChunks::MaxBytes+128)<=DigestReservation);
-constexpr std::size_t IndexLimit=32u*1024u*1024u-DigestReservation;
-template<class T> std::shared_ptr<T> retain(std::unique_ptr<T> value,std::size_t bytes,const std::shared_ptr<IndexBudget>& budget)
-{
-    auto used=budget->bytes.load();
-    do { if (bytes>IndexLimit-used) return {}; }
-    while (!budget->bytes.compare_exchange_weak(used,used+bytes));
-    return {value.release(),[budget,bytes](T* p){delete p; budget->bytes.fetch_sub(bytes);}};
-}
 void fillChunk(OccupiedIndex::Chunk& chunk,const MapState::View& view,std::size_t index)
 {
     chunk.teams=0; chunk.cells.clear();
@@ -76,27 +52,20 @@ std::shared_ptr<const OccupiedIndex> buildIndex(Observation& o,const std::shared
     }
     MapState::ChunkGeometry geometry;
     geometry.reset(w.width,w.height,std::countr_zero(unsigned(w.width)),w.width-1);
-    const auto estimate=sizeof(OccupiedIndex)+geometry.count()*(sizeof(std::shared_ptr<const OccupiedIndex::Chunk>)+sizeof(Uint64))+128;
-    if (estimate>IndexLimit-o.indexBudget->bytes.load()) return {};
-    auto pending=std::make_unique<OccupiedIndex>();
-    pending->worldIdentity=w.worldIdentity; pending->width=w.width; pending->height=w.height;
-    pending->stamps=w.occupancy->stamps.chunks;
-    pending->chunks.resize(geometry.count());
-    const auto bytes=sizeof(OccupiedIndex)+pending->chunks.capacity()*sizeof(pending->chunks[0])+pending->stamps.capacity()*sizeof(Uint64)+128;
-    auto index=retain(std::move(pending),bytes,o.indexBudget);
-    if (!index) return {};
+    auto index=std::make_shared<OccupiedIndex>();
+    index->worldIdentity=w.worldIdentity; index->width=w.width; index->height=w.height;
+    index->stamps=w.occupancy->stamps.chunks;
+    index->chunks.resize(geometry.count());
     for (std::size_t i=0;i<geometry.count();++i) {
         if (reusable && i<old->stamps.size() && old->chunks[i] && old->stamps[i]==index->stamps[i]) {
             index->chunks[i]=old->chunks[i]; index->teams|=old->chunks[i]->teams; ++index->retainedChunks; ++o.sharedChunks; continue;
         }
         ++o.rebuiltChunks;
-        auto chunk=std::make_unique<OccupiedIndex::Chunk>();
+        auto chunk=std::make_shared<OccupiedIndex::Chunk>();
         fillChunk(*chunk,w.view(),i);
         index->teams|=chunk->teams;
-        const auto bytes=sizeof(OccupiedIndex::Chunk)+chunk->cells.capacity()*sizeof(OccupiedIndex::Cell)+128;
-        index->chunks[i]=retain(std::move(chunk),bytes,o.indexBudget);
-        if (index->chunks[i]) ++index->retainedChunks;
-        // Unretained chunks are rebuilt temporarily by the same indexed traversal.
+        index->chunks[i]=std::move(chunk);
+        ++index->retainedChunks;
     }
     return index;
 }
@@ -360,69 +329,31 @@ template<class World> Plan run(const Source& s,const World& world,unsigned capac
 }
 }
 
-Source source(const Building& b,std::shared_ptr<const std::vector<int>> damage,Uint64 damageDigest)
+Source source(const Building& b,std::shared_ptr<const std::vector<int>> damage)
 {
     Source s{Game::refOf(&b),b.posX,b.posY,b.runtime->width,b.runtime->height,
         b.runtime->shootingRange,b.runtime->shootSpeed,
         b.owner->attackableTeams() & ~b.owner->sharedVisionExchange,
         b.owner->attackableTeams(),b.runtime->projectileBuildingDamage,{}};
-    s.epoch=b.targetingEpoch; s.rhythm=b.runtime->shootRhythm;
     s.sharedDamage=std::move(damage);
     if (!s.sharedDamage) {
         s.damage.reserve(b.runtime->unitCount);
         for (unsigned id=0;id<b.runtime->unitCount;++id) s.damage.push_back(b.runtime->damage(id));
     }
-    s.damageDigest=damageDigest;
-    if (!damageDigest) {
-        s.damageDigest=SimulationSnapshot::DigestSeed;
-        for (unsigned i=0;i<s.damageCount();++i) s.damageDigest=SimulationSnapshot::digestWord(s.damageDigest,Uint32(s.damageAt(i)));
-    }
     return s;
 }
-void prepareIndex(Observation& o,const std::shared_ptr<const OccupiedIndex>& previous,bool profileCpu)
+void prepareIndex(Observation& o,const std::shared_ptr<const OccupiedIndex>& previous)
 {
-    const auto start=profileCpu ? threadCpuNs() : 0;
     o.index=buildIndex(o,previous);
-    if (profileCpu) o.indexCpu=threadCpuNs()-start;
 }
-Observation observe(const Game& game,const SimulationSnapshot::Handle& captured,const Observation* previous,bool profileCpu,bool deferIndex)
+Observation observe(const Game& game,const SimulationSnapshot::Handle& captured,const Observation* previous,bool deferIndex)
 {
     if (captured.tick!=game.stepCounter || captured.worldIdentity!=game.map.identity())
         throw std::invalid_argument("Turret observation is not the completed-world boundary");
     Observation o;
     o.world=captured.turretView();
     o.blocksProjectiles=game.map.hasProjectileBlockingTerrain();
-    o.indexBudget=previous && previous->indexBudget ? previous->indexBudget : std::make_shared<IndexBudget>();
-    if (!deferIndex) prepareIndex(o,previous ? previous->index : nullptr,profileCpu);
-    const auto factsStart=profileCpu ? threadCpuNs() : 0;
-    using SimulationSnapshot::digestWord;
-    o.logicalDigest=digestWord(SimulationSnapshot::DigestSeed,o.world.width);
-    o.logicalDigest=digestWord(o.logicalDigest,o.world.height);
-    o.logicalDigest=digestWord(o.logicalDigest,o.blocksProjectiles);
-    o.logicalDigest=digestWord(o.logicalDigest,o.world.terrain->logical.digest);
-    o.logicalDigest=digestWord(o.logicalDigest,o.world.occupancy->logical.digest);
-    o.logicalDigest=digestWord(o.logicalDigest,o.world.catalogs->units->checksum());
-    for (const auto& u:o.world.entities->units) {
-        // Independent entity fingerprints avoid a long owner-thread hash chain.
-        // Slot/identity resolution makes compact record order irrelevant.
-        Uint64 hash=SimulationSnapshot::DigestSeed^0x554e4954u;
-        hash=digestWord(hash,Uint64(u.identity.gid)|(Uint64(u.identity.generation)<<16)|(Uint64(u.performance[FLY]!=0)<<48)|(Uint64(u.isDead!=0)<<49));
-        hash=digestWord(hash,Uint32(u.posX)|(Uint64(Uint32(u.posY))<<32));
-        hash=digestWord(hash,Uint32(u.hp)|(Uint64(Uint32(u.typeNum))<<32));
-        hash=digestWord(hash,Uint32(u.delta)|(Uint64(Uint32(u.speed))<<32));
-        hash=digestWord(hash,Uint32(u.realAttackStrength)|(Uint64(Uint32(u.performance[ATTACK_SPEED]))<<32));
-        o.logicalDigest^=hash;
-    }
-    for (const auto& b:o.world.entities->buildings) {
-        const auto& type=o.world.catalogs->typeDefinitions->at(b.typeNum);
-        Uint64 hash=SimulationSnapshot::DigestSeed^0x4255494cu;
-        hash=digestWord(hash,Uint64(b.identity.gid)|(Uint64(b.identity.generation)<<16));
-        hash=digestWord(hash,Uint32(b.posX)|(Uint64(Uint32(b.posY))<<32));
-        hash=digestWord(hash,Uint32(b.hp)|(Uint64(Uint32(b.buildingState))<<32));
-        hash=digestWord(hash,Uint32(type.width)|(Uint64(Uint32(type.height))<<32));
-        o.logicalDigest^=hash;
-    }
-    if (profileCpu) o.factsCpu=threadCpuNs()-factsStart;
+    if (!deferIndex) prepareIndex(o,previous ? previous->index : nullptr);
     return o;
 }
 Observation observe(const Game& game,const Observation* previous)
@@ -432,7 +363,6 @@ Observation observe(const Game& game,const Observation* previous)
     game.snapshots().invalidateBoundary();
     return observe(game,game.captureReadBoundary(),previous);
 }
-std::size_t retainedIndexBytes(const Observation& o) { return o.indexBudget ? o.indexBudget->bytes.load()+DigestReservation : 0; }
 Plan plan(const Building& b,unsigned capacity,unsigned margin) { return run(source(b),Live{b},capacity,margin); }
 Plan plan(const Source& s,const Observation& o,unsigned capacity,unsigned margin)
 {
@@ -440,7 +370,7 @@ Plan plan(const Source& s,const Observation& o,unsigned capacity,unsigned margin
         throw std::invalid_argument("Incomplete turret observation");
     return run(s,Frozen{o,o.world.view()},capacity,margin);
 }
-Target firstValid(const Building& b,const std::vector<Entry>& entries,Metrics* metrics)
+Target firstValid(const Building& b,const std::vector<Entry>& entries)
 {
     if (b.runtime->shootSpeed<256) return {};
     const Source s{Game::refOf(&b),b.posX,b.posY,b.runtime->width,b.runtime->height,
@@ -449,33 +379,28 @@ Target firstValid(const Building& b,const std::vector<Entry>& entries,Metrics* m
         b.owner->attackableTeams(),b.runtime->projectileBuildingDamage,{}};
     const Live world{b};
     for (const auto& e:entries) {
-        if (metrics) ++metrics->examined;
-        const auto reject=[&](Rejection reason) -> Target {
-            if (metrics) ++metrics->rejectionReasons[unsigned(reason)];
-            return {};
-        };
         const auto tryEntry=[&]() -> Target {
             int x,y,ticks=256;
             if (e.kind==Kind::Building) {
-                if (e.gid>=Building::MAX_COUNT*Team::MAX_COUNT) return reject(Rejection::Identity);
+                if (e.gid>=Building::MAX_COUNT*Team::MAX_COUNT) return {};
                 const auto* target=b.owner->game->resolveBuilding({e.gid,e.incarnation});
-                if (!target || target->buildingState==Building::DEAD || target->hp<=0) return reject(Rejection::Identity);
-                if (!eligible(e.gid,s.buildingTeams)) return reject(Rejection::Team);
-                if (s.buildingDamage<=0) return reject(Rejection::Damage);
-                if (e.offsetX<0 || e.offsetY<0 || e.offsetX>=target->runtime->width || e.offsetY>=target->runtime->height) return reject(Rejection::Aim);
+                if (!target || target->buildingState==Building::DEAD || target->hp<=0) return {};
+                if (!eligible(e.gid,s.buildingTeams)) return {};
+                if (s.buildingDamage<=0) return {};
+                if (e.offsetX<0 || e.offsetY<0 || e.offsetX>=target->runtime->width || e.offsetY>=target->runtime->height) return {};
                 x=target->posX+e.offsetX; y=target->posY+e.offsetY;
-                if (world.occupancy(x,y).building!=e.gid) return reject(Rejection::Occupancy);
+                if (world.occupancy(x,y).building!=e.gid) return {};
             } else if (e.kind==Kind::Unit) {
-                if (e.gid>=Unit::MAX_COUNT*Team::MAX_COUNT) return reject(Rejection::Identity);
+                if (e.gid>=Unit::MAX_COUNT*Team::MAX_COUNT) return {};
                 const auto* target=b.owner->game->resolveUnit({e.gid,e.incarnation});
-                if (!target || target->isDead || target->hp<=0) return reject(Rejection::Identity);
-                if (!eligible(e.gid,s.unitTeams)) return reject(Rejection::Team);
-                if (b.runtime->damage(target->typeNum)<=0) return reject(Rejection::Damage);
+                if (!target || target->isDead || target->hp<=0) return {};
+                if (!eligible(e.gid,s.unitTeams)) return {};
+                if (b.runtime->damage(target->typeNum)<=0) return {};
                 x=target->posX; y=target->posY;
                 const auto cell=world.occupancy(x,y);
-                if ((target->performance[FLY] ? cell.airUnit : cell.groundUnit)!=e.gid) return reject(Rejection::Occupancy);
+                if ((target->performance[FLY] ? cell.airUnit : cell.groundUnit)!=e.gid) return {};
                 ticks=target->speed>0 ? (256-target->delta)/target->speed : INT_MAX;
-            } else return reject(Rejection::Kind);
+            } else return {};
             const auto distance=[](int tile,int start,int size,int period) {
                 int best=INT_MAX;
                 for (int shift : {-period,0,period}) {
@@ -484,27 +409,16 @@ Target firstValid(const Building& b,const std::vector<Entry>& entries,Metrics* m
                 }
                 return best;
             };
-            if (std::max(distance(x,s.x,s.width,world.width()),distance(y,s.y,s.height,world.height()))>s.range) return reject(Rejection::Range);
+            if (std::max(distance(x,s.x,s.width,world.width()),distance(y,s.y,s.height,world.height()))>s.range) return {};
             const auto geometry=shot(s,world,x,y);
-            if (geometry.ticks>=ticks) return reject(Rejection::Arrival);
-            if (!b.hasClearShotTo(x,y)) return reject(Rejection::Clearance);
+            if (geometry.ticks>=ticks) return {};
+            if (!b.hasClearShotTo(x,y)) return {};
             return {e,x,y,ticks,INT_MIN,0};
         };
         auto target=tryEntry();
         if (target.found()) return target;
-        if (metrics) ++metrics->rejected;
     }
     return {};
-}
-Uint64 threadCpuNs()
-{
-#if defined(CLOCK_THREAD_CPUTIME_ID)
-    timespec value{};
-    if (clock_gettime(CLOCK_THREAD_CPUTIME_ID,&value)!=0) throw std::runtime_error("Thread CPU clock unavailable");
-    return Uint64(value.tv_sec)*1000000000u+value.tv_nsec;
-#else
-    throw std::runtime_error("Turret CPU profiling requires a thread CPU clock on this platform");
-#endif
 }
 bool refreshNeeded(int cooldown,unsigned rhythm,unsigned delay,unsigned refresh)
 {

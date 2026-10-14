@@ -23,7 +23,6 @@
 #include "Bullet.h"
 #include "BuildingGradientSearch.h"
 #include "SharedBuildingGradient.h"
-#include "BuildingGradientStats.h"
 
 Building::Building(GAGCore::InputStream *stream, BuildingsTypes *types, Team *owner, Sint32 versionMinor)
 {
@@ -189,7 +188,6 @@ void Building::resetPathfindGradients(GradientDrop cause)
 	for (int i=0; i<BUILDING_GRADIENT_COUNT; i++)
 		kept[i] = keep && globalGradient[i] && !isLocked(routeAccess(i % SWIM_CLASS_COUNT, BuildingRoute(i / SWIM_CLASS_COUNT)));
 	dirtyGradients();
-	auto *stats = owner->game->map.gradientStats.get();
 	for (int i=0; i<BUILDING_GRADIENT_COUNT; i++)
 	{
 		if (kept[i])
@@ -199,7 +197,6 @@ void Building::resetPathfindGradients(GradientDrop cause)
 			continue;
 		}
 		auto guard = SharedBuildingGradient::lock(sharedGradient[i]);
-		if (stats) stats->fieldReleased(*this, i, BuildingGradientStats::Event::Drop, owner->game->stepCounter);
 		dropGradientSlot(i, cause);
 		retireSharedGradient(i);
 		recycleBuildingGradientSearch(std::move(globalGradientSearch[i]));
@@ -219,8 +216,6 @@ void Building::freeIdleGradients()
 		if (globalGradient[c] && globalGradientUsedStep[c]+IDLE_TICKS<now)
 		{
 			auto guard = SharedBuildingGradient::lock(sharedGradient[c]);
-			if (auto *stats = owner->game->map.gradientStats.get())
-				stats->fieldReleased(*this, c, BuildingGradientStats::Event::Evict, now);
 			dropGradientSlot(c, GradientDrop::Idle);
 			retireSharedGradient(c);
 			recycleBuildingGradientSearch(std::move(globalGradientSearch[c]));
@@ -373,7 +368,7 @@ void Building::load(GAGCore::InputStream *stream, BuildingsTypes *types, Team *o
 	if (savedTypeNum < 0 || static_cast<size_t>(savedTypeNum) >= types->size())
 		throw std::runtime_error("Invalid building type");
 	bindType(savedTypeNum,types);
-    if (versionMinor>=FILE_FORMAT_VERSION_TURRET_TARGETING) targetingEpoch=stream->readUint32("targetingEpoch");
+    if (versionMinor>=FILE_FORMAT_VERSION_TURRET_TARGETING && versionMinor<FILE_FORMAT_VERSION_LEAN_TURRET_TARGETING) stream->readUint32("targetingEpoch");
 	configureProductionState();
 	assert(type);
 	updateMaterialsPointer();
@@ -592,7 +587,6 @@ void Building::save(GAGCore::OutputStream *stream)
 
 	// type
 	stream->writeUint32(typeNum, "typeNum");
-    stream->writeUint32(targetingEpoch,"targetingEpoch");
 	// we drop type
 
 	stream->writeSint32(minWorkerLevelToFlag, "minWorkerLevelToFlag");
@@ -827,7 +821,6 @@ void Building::saveCrossRef(GAGCore::OutputStream *stream)
 void Building::bindType(Sint32 id, BuildingsTypes* catalog)
 {
     if (!catalog) catalog=&owner->game->buildingsTypes;
-    if (++targetingEpoch==0) targetingEpoch=1;
     type=catalog->get(id);
     runtime=catalog->getRuntime(id);
     typeNum=Uint16(id);

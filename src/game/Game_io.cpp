@@ -314,7 +314,7 @@ GAGCore::CooperativeTask Game::loadTask(GAGCore::InputStream *stream)
     // let ordinary admission/publication populate it without stepping on load.
     if (versionMinor >= FILE_FORMAT_VERSION_TURRET_TARGETING && mapHeader.getIsSavedGame()) {
         ensureTurretTargeting();
-        if (!turretTargetingPipeline->load(*this,stream)) co_return false;
+        if (!turretTargetingPipeline->load(*this,stream,versionMinor)) co_return false;
     }
 
 	if(versionMinor >= FILE_FORMAT_VERSION_TEAM_STATS_PIPELINE && mapHeader.getIsSavedGame()) loadTeamStats(stream,versionMinor);
@@ -937,8 +937,6 @@ Uint32 Game::checkSum(std::vector<Uint32> *checkSumsVector, std::vector<Uint32> 
 
 	cs=rotr1(cs);
 
-	cs^=turretTargeting()->checkSum(*this);
-	cs=rotr1(cs);
 	Uint32 scriptCs=sgslScript.checkSum();
 	if(mapscript.getMapScriptMode()==MapScript::JavaScript)
  {

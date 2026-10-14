@@ -5,7 +5,6 @@
 #include "Building.h"
 #include "Unit.h"
 #include "SharedBuildingGradient.h"
-#include <chrono>
 #include <bit>
 #include <BinaryStream.h>
 #include <ChecksumStream.h>
@@ -16,11 +15,6 @@
 namespace
 {
 using Output = HiringPlanner::Output;
-using Clock = std::chrono::steady_clock;
-Uint64 elapsed(Clock::time_point start)
-{
-	return std::chrono::duration_cast<std::chrono::nanoseconds>(Clock::now() - start).count();
-}
 void write64(GAGCore::OutputStream *s, Uint64 value, const char *name)
 {
 	s->writeEnterSection(name);
@@ -216,7 +210,6 @@ void HiringPipeline::observe(Game &game, const SimulationSnapshot::Handle &snaps
 		return;
 	if (pending.size() >= Delay)
 		throw std::logic_error("Hiring publication horizon exceeded");
-	const auto start = Clock::now();
 	auto input = std::make_shared<HiringPlanner::Inputs>(bindRoutes(game, snapshot, teamMask));
 	auto batch = std::make_unique<Batch>();
 	batch->tick = tick;
@@ -229,7 +222,6 @@ void HiringPipeline::observe(Game &game, const SimulationSnapshot::Handle &snaps
 		groups[i] = {1, {compute, &b.work[i]}, ComputeExecutor::HiringLaneBase + b.work[i].team};
 	b.ticket = executor.submit(std::span(groups).first(b.work.size()), ComputeExecutor::boundaryDue(b.due),
 							   {ComputeProducer::Other, b.tick, b.due});
-	metrics.submissionNs += elapsed(start);
 	metrics.submitted += b.work.size();
 }
 void HiringPipeline::drain(JoinReason reason)
@@ -257,22 +249,17 @@ void HiringPipeline::publishDue(Uint32 tick)
 	while (!pending.empty() && pending.front()->due <= tick)
 	{
 		auto &b = *pending.front();
-		const auto waitStart = Clock::now();
 		if (!b.ticket.empty())
 			executor.join(b.ticket, {JoinReason::TickDeadline, tick});
 		b.ticket = {};
-		const auto publishStart = Clock::now();
-		metrics.deadlineWaitNs += std::chrono::duration_cast<std::chrono::nanoseconds>(publishStart - waitStart).count();
 		for (const auto &w : b.work)
 		{
 			if (!w.output)
 				throw std::logic_error("Missing hiring result");
 			published[w.team] = w.output;
-			metrics.workerNs += w.output->ns;
 			++metrics.published;
 		}
 		pending.pop_front();
-		metrics.publicationNs += elapsed(publishStart);
 	}
 }
 const HiringPlanner::BuildingLists *HiringPipeline::suggestions(const Building &b) const

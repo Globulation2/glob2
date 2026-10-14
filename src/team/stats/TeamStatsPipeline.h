@@ -21,11 +21,8 @@ class TeamStatsPipeline
 		std::vector<std::shared_ptr<GameplayMeasurements>> *previousFrames = nullptr;
 		std::vector<std::vector<TeamSmoothedStat>> smoothingWindows;
 		ComputeExecutor::Batch ticket;
-		bool profile = false;
-		std::vector<Uint64> workerNs;
 	};
 	ComputeExecutor &executor;
-	const bool profiling;
 	std::exception_ptr failure;
 	std::deque<std::unique_ptr<Pending>> pending;
 	// A joined batch can be reused at the next submission; at most horizon + 1 live.
@@ -41,11 +38,10 @@ class TeamStatsPipeline
   public:
 	struct Metrics
 	{
-		Uint64 submitted = 0, published = 0, workerNs = 0, publicationNs = 0, deadlineMisses = 0,
-			   deadlineWaitNs = 0, submissionNs = 0, allocationNs = 0;
+		Uint64 submitted = 0, published = 0;
 		Uint64 peakPending = 0;
 	} metrics;
-	explicit TeamStatsPipeline(ComputeExecutor &, bool profile = false);
+	explicit TeamStatsPipeline(ComputeExecutor &);
 	~TeamStatsPipeline();
 	bool publishDue(Game &);
 	bool matchesWorld(Uint64 identity) const { return !worldIdentity || identity == worldIdentity; }

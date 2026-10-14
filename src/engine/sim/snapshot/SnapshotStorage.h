@@ -43,7 +43,6 @@ struct Storage
 	// Every live plane of every retained capture may be distinct.
 	BufferPool<std::vector<Uint16>, std::size_t(17) * MapState::PlaneCount> resourcePlanes;
 	Uint64 allocations = 0;
-	Uint64 preparationNs = 0;
 	//! Bytes of map arrays actually copied (changed chunks and full fills).
 	Uint64 bytesCopied = 0;
 	//! Bulk authoritative records read from live objects; excludes view metadata.
@@ -53,7 +52,6 @@ struct Storage
 	//! After each capture, compare every captured map array and entity list
 	//! with the live state and throw on a mismatch (an unmarked write).
 	bool verify = false;
-	bool profiling = false;
 	MemoryMetrics memoryMetrics() const;
 };
 

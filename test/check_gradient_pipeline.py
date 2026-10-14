@@ -121,20 +121,6 @@ def building_pass(binary, initial, output):
                 ticks = detailed_tick_hashes(dest/'game.replay.checksums')
                 assert ticks and all(expected[t] == value for t, value in ticks.items()), (delay, phase, workers)
     assert len(pending_saves) == sum(BUILDING_DELAYS), 'saves must catch scheduled building fields in flight at every phase'
-    # The worker depth moves CPU between worker and owner, never results, at
-    # every operating point of the model.
-    points = [p['name'] for p in json.loads((ROOT/'tools/gradient_depth_model.json').read_text())['points']]
-    traces = {}
-    for mode in ('table', 'full', 'lazy', *points):
-        os.environ['GLOB2_BUILDING_DEPTH'] = mode
-        try:
-            dest = output/f'depth-{mode}'
-            execute(binary, ['--load-game', str(initial), *fork(4), '--ticks', '1024', '--compute-threads', '3',
-                             '--telemetry', 'checksums'], dest)
-        finally:
-            del os.environ['GLOB2_BUILDING_DEPTH']
-        traces[mode] = digest(dest/'game.replay.checksums')
-    assert len(set(traces.values())) == 1, 'building depth changed the simulation'
     generated = ['--generator', '26', '--map-seed', '4242', '--game-seed', '19', '--set', 'width=7', '--set', 'height=7',
                  '--set', 'teams=4', '--set', 'pattern=1', '--player', 'maxima', '--player', 'cortex', '--player', 'nicowar',
                  '--player', 'maxima', '--ticks', '2']

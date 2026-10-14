@@ -277,7 +277,7 @@ public:
 	void observeUnpolledAI();
 	// Normal-game target lists use the selected three-entry, two-tick cadence.
 	void forgetTurret(BuildingRef);
-	void configureTurretTargeting(unsigned delay=1,unsigned refresh=2,unsigned capacity=3,unsigned margin=1,bool profileCpu=false);
+	void configureTurretTargeting(unsigned delay=1,unsigned refresh=2,unsigned capacity=3,unsigned margin=1);
 	TurretTargeting::Pipeline* turretTargeting() const { ensureTurretTargeting(); return turretTargetingPipeline.get(); }
 	SimulationSnapshot::Store& snapshotStore() { return worldSnapshots; }
 	std::vector<std::pair<std::string, Uint64>> aiMetrics() const;

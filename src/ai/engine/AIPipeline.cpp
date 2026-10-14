@@ -58,10 +58,9 @@ std::vector<std::pair<unsigned,std::shared_ptr<Order>>> Pipeline::prepare(Game& 
  }
  // Decisions use the shared executor; the owner joins at the deadline.
  // Without workers, the executor runs deferred work on the owner at its join.
- constexpr bool shared=true;
- if(!configured) {scheduler.configure(game.gameHeader.getAIOrderDelay(),game.map.computeExecutor(),shared);configured=true;}
+ if(!configured) {scheduler.configure(game.gameHeader.getAIOrderDelay(),game.map.computeExecutor());configured=true;}
  else if(scheduler.delayTicks()!=game.gameHeader.getAIOrderDelay()) throw std::logic_error("AI delay cannot change during a match");
- else if(!scheduler.hasExecutor()||scheduler.sharedExecution()!=shared) scheduler.configureExecution(game.map.computeExecutor(),shared);
+ else if(!scheduler.hasExecutor()) scheduler.configureExecution(game.map.computeExecutor());
  if(paused) {
   game.map.preparePendingWorld(captured);
   for(auto p:eligible) result.emplace_back(p,std::make_shared<NullOrder>());
