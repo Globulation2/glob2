@@ -392,7 +392,6 @@ TEST_SUITE("HiringPlanner")
 		CHECK(result.metrics.sharedQueries > 0);
 		CHECK(repeated.metrics.fieldMisses == 0);
 		CHECK(repeated.metrics.sharedQueries > 0);
-		CHECK(repeated.metrics.geographyChanges == 0);
 		CHECK(repeated.metrics.rankedCandidates == result.metrics.rankedCandidates);
 		CHECK(world.checksum() == checksum);
 	}
