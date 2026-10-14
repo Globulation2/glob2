@@ -400,8 +400,17 @@ TEST_SUITE("EntityRandomLifecycle")
         const auto current=save(migrated.game,true);
         glob2test::HeadlessGame continued({.header=true});
         REQUIRE(load(continued.game,current,true));
-        CHECK(migrated.game.checkSum(nullptr,nullptr,nullptr,true)==
-              continued.game.checkSum(nullptr,nullptr,nullptr,true));
+        // The header checksum includes the loaded format number, which the
+        // new save upgrades. Every simulation component after that header must
+        // still agree, including pending work and private random streams.
+        CHECK(migrated.game.mapHeader.getVersionMinor()==150);
+        CHECK(continued.game.mapHeader.getVersionMinor()==VERSION_MINOR);
+        std::vector<Uint32> before,after;
+        migrated.game.checkSum(&before,nullptr,nullptr,true);
+        continued.game.checkSum(&after,nullptr,nullptr,true);
+        REQUIRE(before.size()==after.size());
+        REQUIRE(before.size()>1);
+        CHECK(std::equal(before.begin()+1,before.end(),after.begin()+1));
 }
 
     TEST_CASE("truncated binary RNG state and even increments are rejected")
