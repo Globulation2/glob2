@@ -6,6 +6,7 @@
 #include "Building.h"
 #include "SharedBuildingGradient.h"
 #include "SnapshotGradient.h"
+#include "MapChangeTracking.h"
 #include "ai/observation/AIWorldView.h"
 #include "field/RuntimeTerrainGradient.h"
 #include "field/AirPathfind.h"
@@ -125,40 +126,107 @@ bool materialGoal(const World &world, const B &b, int material, std::size_t i, u
 					   ((supplyModes & 2) ? st.runtimeSuppliesDirectStockMask : 0);
 	return modes & supplier->availableSupplyMask & (1u << material);
 }
-std::uint64_t geography(const World &world, int team, std::array<std::uint64_t, 5> &parts)
-{
-	std::uint64_t hash = 1469598103934665603ull;
-	mix(hash, world.width);
-	mix(hash, world.height);
-	mix(hash, world.terrainRevision);
-	mix(hash, world.terrain->checksum());
-	mix(hash, world.resourceRegistry->checksum());
-	for (const auto &kind : *world.catalog)
-	{
-		mix(hash, kind.resolvedType.runtimeSuppliesStockMask);
-		mix(hash, kind.resolvedType.runtimeSuppliesDirectStockMask);
-	}
-	parts.fill(1469598103934665603ull);
-	mix(parts[0], world.terrainRevision);
-	for (std::size_t i = 0; i < std::size_t(world.width) * world.height; ++i)
-	{
-		const auto o = world.occupancyAt(i);
-		mix(hash, world.cellRuleAt(i));
-		mix(hash, o.building);
-		mix(hash, o.immobileUnit);
-		mix(hash, world.areasAt(i).forbidden & world.teams[team].mask);
-		mix(hash, MapState::resourceBlocksGround(world.state(), i));
-		mix(parts[0], world.cellRuleAt(i));
-		mix(parts[1], o.building);
-		mix(parts[2], o.immobileUnit);
-		mix(parts[3], world.areasAt(i).forbidden & world.teams[team].mask);
-		mix(parts[4], MapState::resourceBlocksGround(world.state(), i));
-	}
-	return hash;
-}
+
 } // namespace
 struct Cache::Impl
 {
+	// These signatures belong to the worker lane. Snapshot stamps are used only
+	// to avoid re-reading unchanged regions; field keys hash logical contents.
+	struct Region
+	{
+		std::array<Uint64, 4> stamps{};
+		std::array<Uint64, 5> values{};
+		bool valid = false;
+	};
+	std::array<std::vector<Region>, MaterialCount + 1> regions;
+	bool cachedChunkDigests = true;
+	Uint64 regionWorld = 0, regionRules = 0;
+	int regionTeam = -1, regionWidth = 0, regionHeight = 0;
+	MapState::ChunkGeometry regionGeometry;
+	void prepareRegions(const World &world, int team)
+	{
+		const auto &s = world.components();
+		Uint64 rules = world.resourceRegistry->checksum();
+		mix(rules, world.terrain->checksum());
+		mix(rules, world.terrainRevision);
+		mix(rules, world.teams[team].mask);
+		if (regionWorld != s.worldIdentity || regionRules != rules || regionTeam != team ||
+			regionWidth != world.width || regionHeight != world.height)
+		{
+			for (auto &r : regions) std::vector<Region>().swap(r);
+			regionWorld = s.worldIdentity; regionRules = rules; regionTeam = team;
+			regionWidth = world.width; regionHeight = world.height;
+		}
+		regionGeometry.reset(world.width, world.height, world.state().wDec, world.state().wMask);
+	}
+	template<class Visit>
+	std::array<Uint64, 5> regionDigest(const World &world, unsigned kind,
+		std::array<const SimulationSnapshot::ChunkStamps *, 4> dependencies, Visit visit)
+	{
+		const auto &s = world.components();
+		const auto count = regionGeometry.count();
+		bool reusable = cachedChunkDigests && s.worldIdentity;
+		for (const auto *d : dependencies)
+			if (d) reusable &= d->worldIdentity == s.worldIdentity && d->width == world.width &&
+				d->height == world.height && d->chunks.size() == count;
+		auto &stored = regions[kind];
+		if (stored.size() != count)
+		{
+			trim(count > stored.capacity() ? (count - stored.capacity()) * sizeof(Region) : 0);
+			stored.resize(count);
+			trim(0); // Account actual allocator capacity, including vector growth.
+		}
+		std::array<Uint64, 5> result;
+		result.fill(1469598103934665603ull);
+		for (std::size_t c = 0; c < count; ++c)
+		{
+			auto &r = stored[c];
+			std::array<Uint64, 4> stamps{};
+			bool valid = reusable;
+			for (unsigned d = 0; d < dependencies.size(); ++d)
+				if (dependencies[d])
+				{
+					stamps[d] = dependencies[d]->chunks.size() == count ? dependencies[d]->chunks[c] : 0;
+					valid &= stamps[d] != 0;
+				}
+			if (!valid || !r.valid || r.stamps != stamps)
+			{
+				r.values.fill(1469598103934665603ull);
+				regionGeometry.forEachRow(c, [&](std::size_t first, std::size_t length)
+				{ metrics->fingerprintCells += length;
+				  for (std::size_t i = first; i < first + length; ++i) visit(r.values, i); });
+				r.stamps = stamps; r.valid = valid;
+			}
+			else ++metrics->fingerprintRegionsReused;
+			for (unsigned i = 0; i < result.size(); ++i) mix(result[i], r.values[i]);
+		}
+		return result;
+	}
+	Uint64 geography(const World &world, int team, std::array<Uint64, 5> &parts)
+	{
+		prepareRegions(world, team);
+		const auto &s = world.components();
+		parts = regionDigest(world, 0, {&s.terrain->stamps, &s.occupancy->stamps,
+			&s.areas->stamps, &s.resources->stamps}, [&](auto &v, std::size_t i)
+		{
+			const auto o = world.occupancyAt(i);
+			mix(v[0], world.cellRuleAt(i)); mix(v[1], o.building);
+			mix(v[2], o.immobileUnit);
+			mix(v[3], world.areasAt(i).forbidden & world.teams[team].mask);
+			mix(v[4], MapState::resourceBlocksGround(world.state(), i));
+		});
+		mix(parts[0], world.terrainRevision);
+		Uint64 hash = regionRules;
+		mix(hash, world.width); mix(hash, world.height);
+		for (const auto &kind : *world.catalog)
+		{
+			mix(hash, kind.resolvedType.runtimeSuppliesStockMask);
+			mix(hash, kind.resolvedType.runtimeSuppliesDirectStockMask);
+		}
+		for (auto part : parts) mix(hash, part);
+		return hash;
+	}
+
 	gradient_preparation::MaterialSeedCache seedTemplates;
 	bool cachedSeedTemplates = true;
 	Metrics *metrics = nullptr;
@@ -177,6 +245,7 @@ struct Cache::Impl
 	{
 		std::size_t total = sizeof(Impl) + sizeof(gradient_kernel::BackendSession) + 32 + retained +
 							fields.size() * NodeBytes + seedTemplates.retainedBytes();
+		for (const auto &r : regions) total += r.capacity() * sizeof(Region);
 		for (const auto &bucket : scratch.buckets)
 			total += bucket.cells.capacity() * sizeof(std::uint32_t);
 		total += scratch.deferredSeeds.capacity() * sizeof(std::pair<int, int>);
@@ -257,10 +326,12 @@ struct Cache::Impl
 		{
 			auto &value = sourceStamps[material];
 			value = geo;
-			for (std::size_t i = 0; i < std::size_t(world.width) * world.height; ++i)
-			{
-				mix(value, naturalMaterialGoal(world, material, i, world.teams[b.team].mask));
-			}
+			const auto &s = world.components();
+			const auto goals = regionDigest(world, material + 1,
+				{&s.resources->stamps, &s.visibility->stamps, nullptr, nullptr},
+				[&](auto &v, std::size_t i)
+				{ mix(v[0], naturalMaterialGoal(world, material, i, world.teams[b.team].mask)); });
+			mix(value, goals[0]);
 			stamped[material] = true;
 		}
 		std::uint64_t stamp = sourceStamps[material];
@@ -308,12 +379,13 @@ struct Cache::Impl
 					 });
 	}
 };
-Cache::Cache(std::size_t budget, bool cachedSeedTemplates) : impl(std::make_unique<Impl>())
+Cache::Cache(std::size_t budget, bool cachedSeedTemplates, bool cachedChunkDigests) : impl(std::make_unique<Impl>())
 {
 	if (!budget || budget > MaxBytes)
 		throw std::invalid_argument("Invalid hiring cache budget");
 	impl->budget = budget;
 	impl->cachedSeedTemplates = cachedSeedTemplates;
+	impl->cachedChunkDigests = cachedChunkDigests;
 	impl->seedTemplates.budget = std::min<std::size_t>(2u * 1024 * 1024, budget / 4);
 }
 Cache::~Cache() = default;
@@ -537,7 +609,7 @@ Output Cache::rank(const Inputs &input, unsigned team, unsigned capacity)
 			return geo;
 		const auto geographyStart = Clock::now();
 		std::array<std::uint64_t, 5> parts;
-		geo = geography(world, team, parts);
+		geo = impl->geography(world, team, parts);
 		hasGeo = true;
 		output.metrics.geographyNs += elapsed(geographyStart);
 		if (impl->hasPreviousGeo)

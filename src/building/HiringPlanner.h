@@ -49,6 +49,8 @@ struct BuildingLists
 	X(preparationNs) \
 	X(setupNs) \
 	X(geographyNs) \
+	X(fingerprintCells) \
+	X(fingerprintRegionsReused) \
 	X(precheckNs) \
 	X(evaluationNs) \
 	X(sortOutputNs) \
@@ -121,9 +123,10 @@ class Cache
 
   public:
 	static constexpr std::size_t MaxBytes = 32u * 1024 * 1024;
-	// The scalar control verifies the seed-template optimization against its
-	// uncached implementation. It changes computation cost only.
-	explicit Cache(std::size_t budget = MaxBytes, bool cachedSeedTemplates = true);
+	// Scalar controls verify seed templates and region fingerprints against
+	// uncached computation. They change computation cost only.
+	explicit Cache(std::size_t budget = MaxBytes, bool cachedSeedTemplates = true,
+				   bool cachedChunkDigests = true);
 	~Cache();
 	Cache(const Cache &) = delete;
 	Cache &operator=(const Cache &) = delete;
