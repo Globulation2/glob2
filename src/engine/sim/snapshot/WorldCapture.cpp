@@ -1,4 +1,5 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
+#include "SharedBuildingGradient.h"
 #include "WorldSnapshot.h"
 #include "SnapshotStorage.h"
 #include "Building.h"
