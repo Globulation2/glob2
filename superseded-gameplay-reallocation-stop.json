@@ -1,0 +1,14 @@
+{
+  "time": 1791984192.1178265,
+  "dispatcher": 683735,
+  "action": "SIGSTOP dispatcher only; active games continue",
+  "reason": "User requested wider map coverage and approximately four-hour finish; retain original cohort as separate interrupted pilot, not silently change fixed study",
+  "progress": {
+    "attempted": 69,
+    "total": 5760,
+    "completed": 69,
+    "failures": 0,
+    "elapsed_seconds": 931.0760378837585,
+    "updated_at": 1791984184.8000674
+  }
+}

@@ -1,0 +1,33 @@
+{
+  "time": 1791984384.462782,
+  "completed_attempt_records": 69,
+  "started": 73,
+  "unfinalized": [
+    {
+      "id": "swamp-128-teams4v4-nicowar-003",
+      "result_status": "completed",
+      "exit_code_unavailable": true,
+      "note": "Game finished after administrative dispatcher stop; retained separately, excluded from new cohort"
+    },
+    {
+      "id": "islands-256-ffa8-legacy-mixed-027",
+      "result_status": "completed",
+      "exit_code_unavailable": true,
+      "note": "Game finished after administrative dispatcher stop; retained separately, excluded from new cohort"
+    },
+    {
+      "id": "river-128-teams4v4-nicowar-025",
+      "result_status": "completed",
+      "exit_code_unavailable": true,
+      "note": "Game finished after administrative dispatcher stop; retained separately, excluded from new cohort"
+    },
+    {
+      "id": "islands-64-duel-modern-mixed-021",
+      "result_status": "completed",
+      "exit_code_unavailable": true,
+      "note": "Game finished after administrative dispatcher stop; retained separately, excluded from new cohort"
+    }
+  ],
+  "reason": "User requested wider map coverage and approximately four-hour finish; retain original cohort as separate interrupted pilot, not silently change fixed study",
+  "outcomes_inspected": false
+}
