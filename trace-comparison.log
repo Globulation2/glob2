@@ -1,0 +1,8 @@
+One/four-worker traces equal the committed golden: c39f9a976de2b59529dc3a081809657f4276625139cf9ebb3965784cdeefc7df
+verify-1 verified final tick 841
+verify-4 verified final tick 841
+All twelve saved-continuation traces match across workers1/2/4/8 and diagnostics off/waits/trace.
+Source and binary sim versions match: 161-71-6e4fa7c0cb9bfbc20cd8bc0f701ce7b316bf9e61a5823bafa02f4f726741885c
+focused.xml passed 167 skipped 1
+fixtures.xml passed 2 skipped 0
+final-relay.log passed 20 skipped 0

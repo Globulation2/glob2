@@ -1,0 +1,31 @@
+{
+  "tested_commit": "589a8408aa14a17ff27c3f711a42fa5b8d43c3e7",
+  "base": "441870ef12bcc96337e65f1fbfe036a13d5eefb1",
+  "sim_version": "161-71-6e4fa7c0cb9bfbc20cd8bc0f701ce7b316bf9e61a5823bafa02f4f726741885c",
+  "match_trace_sha256": "c39f9a976de2b59529dc3a081809657f4276625139cf9ebb3965784cdeefc7df",
+  "match_trace_rows": 842,
+  "match_final_tick": 841,
+  "match_result_hash": "e222686421c346f0b5c59e63fd3bbcf04dec86e37dde24c5d82f1cbb8d3bdbb4",
+  "worker_traces": {
+    "tests/SharedWorkerLifecycle/no-AI_completed_ticks_and_saved_continuation_agree_across_diagnostic_modes_and_worker_counts_artifacts/compute-trace-2.trace": "9373c267a0de3aa68e59f56eeb536f42d7c13f4b00eb5592f94d69091adc9c59",
+    "tests/SharedWorkerLifecycle/no-AI_completed_ticks_and_saved_continuation_agree_across_diagnostic_modes_and_worker_counts_artifacts/compute-waits-1.trace": "9373c267a0de3aa68e59f56eeb536f42d7c13f4b00eb5592f94d69091adc9c59",
+    "tests/SharedWorkerLifecycle/no-AI_completed_ticks_and_saved_continuation_agree_across_diagnostic_modes_and_worker_counts_artifacts/compute-trace-4.trace": "9373c267a0de3aa68e59f56eeb536f42d7c13f4b00eb5592f94d69091adc9c59",
+    "tests/SharedWorkerLifecycle/no-AI_completed_ticks_and_saved_continuation_agree_across_diagnostic_modes_and_worker_counts_artifacts/compute-trace-1.trace": "9373c267a0de3aa68e59f56eeb536f42d7c13f4b00eb5592f94d69091adc9c59",
+    "tests/SharedWorkerLifecycle/no-AI_completed_ticks_and_saved_continuation_agree_across_diagnostic_modes_and_worker_counts_artifacts/compute-waits-2.trace": "9373c267a0de3aa68e59f56eeb536f42d7c13f4b00eb5592f94d69091adc9c59",
+    "tests/SharedWorkerLifecycle/no-AI_completed_ticks_and_saved_continuation_agree_across_diagnostic_modes_and_worker_counts_artifacts/compute-waits-4.trace": "9373c267a0de3aa68e59f56eeb536f42d7c13f4b00eb5592f94d69091adc9c59",
+    "tests/SharedWorkerLifecycle/no-AI_completed_ticks_and_saved_continuation_agree_across_diagnostic_modes_and_worker_counts_artifacts/compute-off-8.trace": "9373c267a0de3aa68e59f56eeb536f42d7c13f4b00eb5592f94d69091adc9c59",
+    "tests/SharedWorkerLifecycle/no-AI_completed_ticks_and_saved_continuation_agree_across_diagnostic_modes_and_worker_counts_artifacts/compute-off-4.trace": "9373c267a0de3aa68e59f56eeb536f42d7c13f4b00eb5592f94d69091adc9c59",
+    "tests/SharedWorkerLifecycle/no-AI_completed_ticks_and_saved_continuation_agree_across_diagnostic_modes_and_worker_counts_artifacts/compute-waits-8.trace": "9373c267a0de3aa68e59f56eeb536f42d7c13f4b00eb5592f94d69091adc9c59",
+    "tests/SharedWorkerLifecycle/no-AI_completed_ticks_and_saved_continuation_agree_across_diagnostic_modes_and_worker_counts_artifacts/compute-off-2.trace": "9373c267a0de3aa68e59f56eeb536f42d7c13f4b00eb5592f94d69091adc9c59",
+    "tests/SharedWorkerLifecycle/no-AI_completed_ticks_and_saved_continuation_agree_across_diagnostic_modes_and_worker_counts_artifacts/compute-trace-8.trace": "9373c267a0de3aa68e59f56eeb536f42d7c13f4b00eb5592f94d69091adc9c59",
+    "tests/SharedWorkerLifecycle/no-AI_completed_ticks_and_saved_continuation_agree_across_diagnostic_modes_and_worker_counts_artifacts/compute-off-1.trace": "9373c267a0de3aa68e59f56eeb536f42d7c13f4b00eb5592f94d69091adc9c59"
+  },
+  "native_passed": 189,
+  "native_skipped": 1,
+  "python_contract_tests_passed": 9,
+  "limitations": [
+    "macOS ARM64 fast-development build only; no cross-platform determinism result",
+    "one display-only measurement screenshot test skipped; no manual playtest",
+    "no release/package or hosted matrix verification"
+  ]
+}

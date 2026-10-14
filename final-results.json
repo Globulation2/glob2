@@ -1,0 +1,147 @@
+[
+  {
+    "name": "build-current-source",
+    "command": [
+      "python3",
+      "tools/dev_build.py",
+      "tests",
+      "build/darwin/client/debug/dev-dev_fast-true-linker-auto/src/glob2"
+    ],
+    "exit_code": 0,
+    "elapsed_seconds": 35.661
+  },
+  {
+    "name": "relay-build",
+    "command": [
+      "python3",
+      "tools/dev_build.py",
+      "role=relay",
+      "relay-tests"
+    ],
+    "exit_code": 0,
+    "elapsed_seconds": 2.524
+  },
+  {
+    "name": "relay",
+    "command": [
+      "build/darwin/relay/debug/dev-dev_fast-true-linker-auto/src/glob2-relay-tests",
+      "--reporters=junit"
+    ],
+    "exit_code": 0,
+    "elapsed_seconds": 1.303
+  },
+  {
+    "name": "focused",
+    "command": [
+      "python3",
+      "test/run_tests.py",
+      "--build-dir",
+      "build/darwin/client/debug/dev-dev_fast-true-linker-auto",
+      "--binary",
+      "all",
+      "--no-display",
+      "--junit",
+      "/Users/bradley/.codex/worktrees/review-pr-1168/glob2/artifacts/service-restoration/focused.xml",
+      "--artifacts",
+      "/Users/bradley/.codex/worktrees/review-pr-1168/glob2/artifacts/service-restoration/tests",
+      "--write-inventory",
+      "/Users/bradley/.codex/worktrees/review-pr-1168/glob2/artifacts/service-restoration/inventory.json",
+      "--filter",
+      "BuildingStock/*",
+      "--filter",
+      "BuildingServices/*",
+      "--filter",
+      "BuildingExpel/*",
+      "--filter",
+      "EnteringUnitSave/*",
+      "--filter",
+      "UnitContinuation/*",
+      "--filter",
+      "UnitCustomization/*",
+      "--filter",
+      "BuildingAreaEffects/*",
+      "--filter",
+      "SharedWorkerLifecycle/*",
+      "--filter",
+      "SimulationReadPhase/*",
+      "--filter",
+      "JavaScriptCompatibility/*",
+      "--filter",
+      "TeamStatsSave/*",
+      "--filter",
+      "MatchSetup/the simulation data hash*",
+      "--filter",
+      "PlatformProtocol/the local sim version*",
+      "--filter",
+      "PlatformClient/an unsupported sim version*"
+    ],
+    "exit_code": 0,
+    "elapsed_seconds": 115.591
+  },
+  {
+    "name": "check-fixtures",
+    "command": [
+      "python3",
+      "test/run_tests.py",
+      "--build-dir",
+      "build/darwin/client/debug/dev-dev_fast-true-linker-auto",
+      "--binary",
+      "engine",
+      "--filter",
+      "TurnEngineHarness/the committed*",
+      "--filter",
+      "RuntimeResources/frozen seeded resource compositions preserve invariants and exact simulation continuation*",
+      "--junit",
+      "/Users/bradley/.codex/worktrees/review-pr-1168/glob2/artifacts/service-restoration/fixtures.xml",
+      "--artifacts",
+      "/Users/bradley/.codex/worktrees/review-pr-1168/glob2/artifacts/service-restoration/fixture-check"
+    ],
+    "exit_code": 0,
+    "elapsed_seconds": 3.143
+  },
+  {
+    "name": "sim-revision",
+    "command": [
+      "python3",
+      "test/check_sim_revision.py",
+      "--base",
+      "441870ef12bcc96337e65f1fbfe036a13d5eefb1"
+    ],
+    "exit_code": 0,
+    "elapsed_seconds": 0.566
+  },
+  {
+    "name": "verify-1",
+    "command": [
+      "build/darwin/client/debug/dev-dev_fast-true-linker-auto/src/glob2",
+      "match",
+      "verify",
+      "test/fixtures/multiplayer/FourSquares1.g2mr",
+      "--map-file",
+      "maps/FourSquares1.map.gz",
+      "--output-dir",
+      "/Users/bradley/.codex/worktrees/review-pr-1168/glob2/artifacts/service-restoration/verify-1",
+      "--compute-threads",
+      "1"
+    ],
+    "exit_code": 0,
+    "elapsed_seconds": 4.663
+  },
+  {
+    "name": "verify-4",
+    "command": [
+      "build/darwin/client/debug/dev-dev_fast-true-linker-auto/src/glob2",
+      "match",
+      "verify",
+      "test/fixtures/multiplayer/FourSquares1.g2mr",
+      "--map-file",
+      "maps/FourSquares1.map.gz",
+      "--output-dir",
+      "/Users/bradley/.codex/worktrees/review-pr-1168/glob2/artifacts/service-restoration/verify-4",
+      "--compute-threads",
+      "4"
+    ],
+    "exit_code": 0,
+    "elapsed_seconds": 1.584
+  }
+]

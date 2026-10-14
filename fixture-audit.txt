@@ -1,0 +1,79 @@
+Regenerated fixture audit
+=========================
+
+Read-only comparison of working-tree fixtures with HEAD (baseline 441870ef1),
+performed on 2026-10-13. No builds, simulation tests, or fixture edits were run
+as part of this audit. Binary records were decoded with the repository's
+test/relay_service/relay_wire.py parse_record function, including its CRC32 and
+trailing-byte assertions. Both old and regenerated records passed those checks.
+
+FourSquares1.g2mr
+----------------
+File size: 3679 -> 3774 bytes (+95).
+Preserved fields:
+  formatVersion: 1
+  flags: 2
+  matchId: ci-fixture-foursquares1
+  tickRateMilliHz: 30000
+  bundleInterval: 1
+  checksumInterval: 25
+  humanSeatMask: 3
+  endTick: 841
+  mapHash: 5b470a3432a21d483be12f3fc63116f4a86c25e89a549a0fe71d753257e89c98
+  setup seed: 2026
+  seats: two humans, Nicowar AI, Warrush AI
+  rules, experiments, map source, team alliances, and seat definitions
+
+The setup JSON differs only in simVersion. The top-level simVersion changes:
+  old: 160-71-aa0605a8116a51a5da21a14f81d0c9499d252523aac469b68467d7afa982b25e
+  new: 161-71-6e4fa7c0cb9bfbc20cd8bc0f701ce7b316bf9e61a5823bafa02f4f726741885c
+
+Both records contain 64 human turns, 68 checksum reports, and 2 events.
+The events are identical: (tick 1, seat 0, kind 1), (tick 6, seat 1, kind 1).
+All checksum-report tick/seat pairs are identical; 66 of 68 checksum values differ.
+
+The human orders were regenerated and are not preserved: none of the 64
+(tick, seat, payload) tuples is identical between records.
+  Old order types: 36 create (20), 19 chat (71), 9 modify (22).
+  New order types: 45 create (20), 8 chat (71), 11 modify (22).
+  Old total payload bytes: 1393.
+  New total payload bytes: 1488.
+The +95 payload bytes account for the entire record-size increase.
+
+FourSquares1.verify-trace.txt
+----------------------------
+Both traces contain one header and 842 tick rows (ticks 0 through 841).
+The header and ticks 0 through 10 are identical.
+Only checksum values differ at ticks 11 through 841: 831 changed tick rows.
+This begins immediately after the first differing human order at tick 10.
+
+seeded-compositions-units.trace
+------------------------------
+Both traces contain 150 rows: three seeds, each with ticks 0 through 49.
+Seeds are 410362371, 1274675741, and 2956435871.
+Every seed, tick, and RNG-state SHA256 digest is unchanged.
+Only the full simulation checksum column changes, in all 150 rows.
+For every row, old_checksum XOR new_checksum == 4194304 == 0x00400000.
+
+The XOR matches the header-only change exactly. MapHeader::checkSum mixes
+VERSION_MINOR; changing 160 to 161 changes its least significant input bit,
+which the header rotation moves to bit 31. This fixture has one team and one
+player. Game::checkSum applies nine subsequent one-bit right rotations to the
+header contribution, moving that difference to bit 22 (0x00400000).
+The checksum function's other XOR inputs do not amplify the header delta.
+
+Interpretation and limitation
+-----------------------------
+The regenerated G2MR is a fresh current-version golden with the same scenario
+and seed, but a different human order stream. It must not be presented as
+same-orders before/after evidence for the service-restoration fix.
+
+The unchanged TurnEngineHarness uses std::uniform_real_distribution and
+std::uniform_int_distribution, and has multiple RNG calls among function
+arguments. A seed alone therefore does not guarantee the same fixture order
+stream across toolchains. The old fixture's regeneration toolchain and the
+specific cause of these order differences were not established by this audit.
+
+The intended compute-thread comparison uses the exact same new G2MR record
+for both CLI runs (one and four workers). That comparison is separate from
+this structural fixture audit; its results are recorded in the CLI evidence.

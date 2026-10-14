@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuites>
+  <testsuite name="build/darwin/relay/debug/dev-dev_fast-true-linker-auto/src/glob2-relay-tests" errors="0" failures="0" tests="363" time="0.053651" timestamp="2026-10-14T01:00:10Z" doctest_version="2.4.11">
+    <testcase classname="src/relay/RelayAdmissionTest.cpp" name="the first valid ticket creates a match; agreeing tickets join it" time="0.000328" status="run"/>
+    <testcase classname="src/relay/RelayAdmissionTest.cpp" name="tickets of one match must agree on simVersion and humanSeats" time="0" status="run"/>
+    <testcase classname="src/relay/RelayAdmissionTest.cpp" name="an ended match cannot be restarted by a late ticket until every ticket has expired" time="0" status="run"/>
+    <testcase classname="src/relay/RelayAdmissionTest.cpp" name="draining admits reconnects to running matches only; capacity limits new matches" time="0" status="run"/>
+    <testcase classname="src/relay/RelayAdmissionTest.cpp" name="RelayMatchEnded summarises seats, desync and the record" time="0.002719" status="run"/>
+    <testcase classname="src/relay/RelayAdmissionTest.cpp" name="RelayMatchEnded carries the relay's network summary, and /metrics its totals" time="0.001508" status="run"/>
+    <testcase classname="src/relay/RelayAdmissionTest.cpp" name="registration and heartbeat bodies carry the protocol's fields" time="0.000337" status="run"/>
+    <testcase classname="src/relay/RelayAdmissionTest.cpp" name="the map hash comes from MatchSetup.map.hash" time="0" status="run"/>
+    <testcase classname="src/relay/RelayAdmissionTest.cpp" name="configuration validates its environment" time="0.00073" status="run"/>
+    <testcase classname="src/relay/RelayTicketTest.cpp" name="every protocol fixture verifies or fails with the manifest's reason" time="0.006499" status="run"/>
+    <testcase classname="src/relay/RelayTicketTest.cpp" name="the valid fixture yields the expected claims" time="0.000961" status="run"/>
+    <testcase classname="src/relay/RelayTicketTest.cpp" name="the TEST-ONLY seed reproduces the fixture JWKS key" time="0.000816" status="run"/>
+    <testcase classname="src/relay/RelayTicketTest.cpp" name="expiry and not-before honour the 30 second leeway exactly" time="0.004343" status="run"/>
+    <testcase classname="src/relay/RelayTicketTest.cpp" name="access tokens and other JWT types are refused" time="0.00212" status="run"/>
+    <testcase classname="src/relay/RelayTicketTest.cpp" name="claim shape is checked after the signature" time="0.030408" status="run"/>
+    <testcase classname="src/relay/RelayTicketTest.cpp" name="an issuer can be required" time="0.000684" status="run"/>
+    <testcase classname="src/relay/RelayTicketTest.cpp" name="malformed tokens fail closed" time="0.00019" status="run"/>
+    <testcase classname="src/relay/RelayTicketTest.cpp" name="key rotation: a JWKS with old and new keys accepts both; unknown kids are named" time="0.001511" status="run"/>
+    <testcase classname="src/relay/RelayTicketTest.cpp" name="JWKS parsing skips foreign keys and rejects broken Ed25519 keys" time="0.000221" status="run"/>
+    <testcase classname="src/relay/RelayTicketTest.cpp" name="base64url is strict and round-trips" time="0.000276" status="run"/>
+  </testsuite>
+</testsuites>

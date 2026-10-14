@@ -1,0 +1,45 @@
+{
+  "os": "macOS-26.6.2-arm64-arm-64bit-Mach-O",
+  "architecture": "arm64",
+  "base": "441870ef12bcc96337e65f1fbfe036a13d5eefb1",
+  "build_flags": "dev_fast=1 -O0 -g1; all native features; pch=0 unity=0; compiler cache; PYTHONPATH=$PWD",
+  "macos": {
+    "command": [
+      "sw_vers"
+    ],
+    "exit_code": 0,
+    "output": "ProductName:\t\tmacOS\nProductVersion:\t\t26.6.2\nBuildVersion:\t\t25G83\n"
+  },
+  "compiler": {
+    "command": [
+      "clang++",
+      "--version"
+    ],
+    "exit_code": 0,
+    "output": "Apple clang version 21.0.0 (clang-2100.3.34.2)\nTarget: arm64-apple-darwin25.6.0\nThread model: posix\nInstalledDir: /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin\n"
+  },
+  "python": {
+    "command": [
+      "python3",
+      "--version"
+    ],
+    "exit_code": 0,
+    "output": "Python 3.14.7\n"
+  },
+  "scons": {
+    "command": [
+      "scons",
+      "--version"
+    ],
+    "exit_code": 0,
+    "output": "SCons by Steven Knight et al.:\n\tSCons: v4.11.1.b97f32b9adab83a96af767ec1d7dc8d7a41c7c74, Wed, 26 Aug 2026 21:18:42 -0700, by bdbaddog on M1Dog2021\n\tSCons path: ['/opt/homebrew/Cellar/scons/4.11.1/libexec/lib/python3.14/site-packages/SCons']\nCopyright (c) 2001 - 2026 The SCons Foundation\n"
+  },
+  "ccache": {
+    "command": [
+      "ccache",
+      "--version"
+    ],
+    "exit_code": 0,
+    "output": "ccache version 4.14\nFeatures: crsh-storage file-storage http-storage redis+unix-storage redis-storage remote-storage\n\nCopyright (C) 2002-2007 Andrew Tridgell\nCopyright (C) 2009-2026 Joel Rosdahl and other contributors\n\nSee <https://ccache.dev/credits.html> for a complete list of contributors.\n\nThis program is free software; you can redistribute it and/or modify it under\nthe terms of the GNU General Public License as published by the Free Software\nFoundation; either version 3 of the License, or (at your option) any later\nversion.\n"
+  }
+}

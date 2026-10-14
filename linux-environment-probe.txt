@@ -1,0 +1,96 @@
+Linux validation environment probe
+==================================
+
+Captured from the completed inspection on 2026-10-13.
+Working directory: /Users/bradley/.codex/worktrees/review-pr-1168/glob2
+No source mounts, package installation, image pulls, or builds were performed.
+The container used --rm and --network none. The host command timeout was 55 seconds.
+The probe completed successfully in less than one second.
+This evidence records environment availability only; no Linux simulation tests ran.
+
+Exact command
+-------------
+python3 - <<'PY'
+import subprocess
+script = r'''
+printf 'OS\n'
+cat /etc/os-release
+uname -m
+printf '\nTOOLS\n'
+for tool in c++ g++ clang++ python3 scons pkg-config; do
+  if command -v "$tool" >/dev/null 2>&1; then
+    printf '%s: ' "$tool"
+    "$tool" --version 2>&1 | head -n 3
+  else
+    printf '%s: unavailable\n' "$tool"
+  fi
+done
+printf '\nPYTHON SCONS\n'
+python3 -c 'import SCons; print(SCons.__version__)' 2>&1 || true
+printf '\nSDL PKG-CONFIG\n'
+for dep in sdl3 SDL3 SDL3_image SDL3_ttf SDL3_net; do
+  printf '%s: ' "$dep"
+  pkg-config --modversion "$dep" 2>&1 || true
+done
+printf '\nSDL PKG-CONFIG FILES\n'
+for dir in /usr/lib/pkgconfig /usr/lib/aarch64-linux-gnu/pkgconfig /usr/local/lib/pkgconfig /opt; do
+  if [ -d "$dir" ]; then
+    find "$dir" -name '*[Ss][Dd][Ll]*.pc' -print 2>/dev/null
+  fi
+done
+'''
+args=['docker','run','--rm','--network','none','--entrypoint','/bin/sh','glob2-teamstats-callgrind:ubuntu22-arm64','-c',script]
+try:
+    p=subprocess.run(args,capture_output=True,text=True,timeout=55)
+    print('exit:',p.returncode)
+    print(p.stdout[:18000])
+    print(p.stderr[:4000])
+except subprocess.TimeoutExpired as exc:
+    print('TIMEOUT after 55 seconds')
+    if exc.stdout: print(exc.stdout.decode(errors='replace')[:18000])
+    if exc.stderr: print(exc.stderr.decode(errors='replace')[:4000])
+PY
+
+Captured output
+---------------
+exit: 0
+OS
+PRETTY_NAME="Ubuntu 22.04.5 LTS"
+NAME="Ubuntu"
+VERSION_ID="22.04"
+VERSION="22.04.5 LTS (Jammy Jellyfish)"
+VERSION_CODENAME=jammy
+ID=ubuntu
+ID_LIKE=debian
+HOME_URL="https://www.ubuntu.com/"
+SUPPORT_URL="https://help.ubuntu.com/"
+BUG_REPORT_URL="https://bugs.launchpad.net/ubuntu/"
+PRIVACY_POLICY_URL="https://www.ubuntu.com/legal/terms-and-policies/privacy-policy"
+UBUNTU_CODENAME=jammy
+aarch64
+
+TOOLS
+c++: c++ (Ubuntu 11.4.0-1ubuntu1~22.04.3) 11.4.0
+Copyright (C) 2021 Free Software Foundation, Inc.
+This is free software; see the source for copying conditions.  There is NO
+g++: g++ (Ubuntu 11.4.0-1ubuntu1~22.04.3) 11.4.0
+Copyright (C) 2021 Free Software Foundation, Inc.
+This is free software; see the source for copying conditions.  There is NO
+clang++: unavailable
+python3: unavailable
+scons: unavailable
+pkg-config: unavailable
+
+PYTHON SCONS
+/bin/sh: 15: python3: not found
+
+SDL PKG-CONFIG
+sdl3: /bin/sh: 19: pkg-config: not found
+SDL3: /bin/sh: 19: pkg-config: not found
+SDL3_image: /bin/sh: 19: pkg-config: not found
+SDL3_ttf: /bin/sh: 19: pkg-config: not found
+SDL3_net: /bin/sh: 19: pkg-config: not found
+
+SDL PKG-CONFIG FILES
+
+
