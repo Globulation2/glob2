@@ -1109,8 +1109,7 @@ TEST_CASE("published plane registry matches a sweep of live material fields" * d
 	m.updateMaterialGradient(0, WHEAT, 0, false); check();
 	CHECK(m.publishedResourceFields()[0].generation > first);
 	m.getMaterialGradientSlot(1, WOOD, 2); check();
-	std::vector<Uint16> observed(m.getW() * m.getH(), 5);
-	m.installObservedResourceField(1, STONE, 1, observed); check();
+	m.getMaterialGradientSlot(1, STONE, 1); check();
 	CHECK(m.publishedResourceFields().size() == 3);
 	// Bulk slot changes re-register every live plane with a newer generation.
 	std::map<Uint16, Uint64> before;

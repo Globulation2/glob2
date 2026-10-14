@@ -105,9 +105,10 @@ std::vector<std::pair<unsigned,std::shared_ptr<Order>>> Pipeline::prepare(Game& 
    auto feedback=std::move(actor.feedback); actor.feedback.clear();
    auto fields=diagnostics?diagnostics->reserveCapture(p,game.stepCounter):nullptr;
    scheduler.submit(request,world,[ai,world,request,feedback=std::move(feedback),fields,team=unsigned(player->teamNumber),delay=scheduler.delayTicks()](const AIWorldView& input) {
-    std::vector<ResourceEnrollmentRequest> enrollments;
-    DecisionContext context{input,request.player,team,feedback,world,request.observedTick+delay,request.pollSequence,&enrollments,fields,request.generation};
-    auto output=ai->decide(context); output.resourceEnrollments=std::move(enrollments); return output;
+    // AI query fields are local planning caches: their presence and age depend on
+    // local polling, so they never enroll authoritative map fields.
+    DecisionContext context{input,request.player,team,feedback,world,request.observedTick+delay,request.pollSequence,nullptr,fields,request.generation};
+    return ai->decide(context);
    });
   }
   scheduler.dispatch();
@@ -120,10 +121,6 @@ std::vector<std::pair<unsigned,std::shared_ptr<Order>>> Pipeline::prepare(Game& 
    actor.retainedQueryVectorBytes=delivery.command.retainedQueryVectorBytes;
    peakRetainedQueryVectorBytes=std::max(peakRetainedQueryVectorBytes,queryVectorMemory().first);
    if(diagnostics&&delivery.command.fieldDiagnostics) diagnostics->publishCapture(*delivery.command.fieldDiagnostics);
-   // AI query fields are local planning caches. Installing them into map
-   // gradients would let local AI polling change authoritative refresh order.
-   // AI, hiring and steering still read canonical published map planes from
-   // the shared snapshot; only simulation queries enroll new map gradients.
    auto order=delivery.command.decode();order->sender=delivery.request.player;
    order->aiGeneration=delivery.request.generation;order->aiPollSequence=delivery.request.pollSequence;
    actor.published=order;

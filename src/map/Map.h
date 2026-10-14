@@ -1318,7 +1318,6 @@ protected:
 	Uint16 *clearAreasGradient[Team::MAX_COUNT][SWIM_CLASS_COUNT];
 	
 public:
-	void installObservedResourceField(int team, int resource, int swim, std::span<const Uint16> values);
 	//! Live published material planes in publication order; every plane has size cells.
 	std::span<const MapState::PublishedPlane> publishedResourceFields() const { return publishedPlanes; }
 	// Used to guide explorers
