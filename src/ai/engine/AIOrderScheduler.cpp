@@ -148,7 +148,7 @@ void OrderScheduler::dispatch()
 	batch.groups.clear();
 	const auto callback = !delay ? &Pending::run<true> : &Pending::run<false>;
 	for (auto& entry : batch.entries) batch.groups.push_back({1, {callback, &entry}, entry.request.player});
-	++metrics.sharedBatches;
+	metrics.sharedBatches += executor->threadCount() > 1;
 	// Joined at the observation boundary of its due tick (takeDue).
 	batch.batch = executor->submit(batch.groups, ComputeExecutor::boundaryDue(batch.dueTick), {ComputeProducer::AI, batch.observedTick, batch.dueTick});
 }
