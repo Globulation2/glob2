@@ -30,7 +30,7 @@ struct BuildingLists
 	std::vector<List> jobs;
 };
 // Batch timers are elapsed nanoseconds, not CPU time. Candidate evaluation
-// includes route work; seed/propagation timers are nested within it.
+// includes shared route queries and any air-query scratch work.
 #define HIRING_PLANNER_METRICS(X) \
 	X(coordinationNs) \
 	X(coordinatedTeams) \
@@ -104,7 +104,8 @@ struct Supply
 // Worker-only derived bookkeeping, no live entities or copied world records.
 std::vector<Supply> prepare(const Inputs &, unsigned team);
 // Stateless worker planner: world records and derived planes are borrowed from
-// the shared completed-tick snapshot; only job/output vectors are allocated.
+// the shared completed-tick snapshot. Allocations hold job/output bookkeeping
+// and query scratch, never a separate world copy or retained resource cache.
 class Planner
 {
 	bool pruneCandidates = true;

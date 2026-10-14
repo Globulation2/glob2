@@ -537,6 +537,38 @@ Output Planner::rank(const Inputs &input, unsigned team, unsigned capacity)
 					continue;
 				}
 				const int swim = swimClass(u);
+				const int budget = food(u);
+				const bool immobile =
+					!u.performance[FLY] && !u.performance[WALK] && !u.performance[SWIM];
+				int resourceDistance = 0;
+				if (key.job == Job::Fetch)
+				{
+					const auto modes = supply->modes[key.material];
+					// Reject and bound with the existing immutable resource plane before
+					// asking a shared building route to expand. Special supplier/air
+					// modes keep the optimistic estimate used by live admission.
+					const auto plane = !u.performance[FLY] && !(modes & 2) &&
+						!supply->consumerSpecific[key.material]
+						? world.resourceGradient(team, key.material, swim, modes & 1)
+						: std::span<const Uint16>{};
+					if (!plane.empty())
+					{
+						++output.metrics.resourcePlaneReads;
+						resourceDistance = HiringPlanner::resourceDistance(world, plane, u.posX, u.posY);
+					}
+					else ++output.metrics.resourceEstimateFallbacks;
+					if (resourceDistance == INT_MAX || resourceDistance >= budget ||
+						(immobile && resourceDistance > 1))
+						continue;
+					Candidate bound = candidate;
+					// R + max(B, R) >= 2R for every nonnegative building distance.
+					bound.value += std::int64_t(resourceDistance) * 512;
+					if (!couldWin(bound))
+					{
+						++output.metrics.distanceBoundSkips;
+						continue;
+					}
+				}
 				int distance;
 
 				auto &memo = distances[int(resolvedRoute)];
@@ -622,9 +654,7 @@ Output Planner::rank(const Inputs &input, unsigned team, unsigned capacity)
 				cached = distance;
 				if (distance == INT_MAX)
 					continue;
-				const int budget = food(u);
-				const bool immobile =
-					!u.performance[FLY] && !u.performance[WALK] && !u.performance[SWIM];
+
 				const bool tooFar =
 					key.job == Job::Explore && u.performance[FLY] && !world.airTerrainConstraints
 						? budget < 0 || world.distanceSquared(u.posX, u.posY, b.posX, b.posY) >
@@ -645,22 +675,6 @@ Output Planner::rank(const Inputs &input, unsigned team, unsigned capacity)
 							++output.metrics.distanceBoundSkips;
 							continue;
 						}
-						int resourceDistance = 0;
-						const auto modes = supply->modes[key.material];
-						// Ground planes cannot represent air routes or consumer exclusions.
-						const auto plane = !u.performance[FLY] && !(modes & 2) &&
-							!supply->consumerSpecific[key.material]
-							? world.resourceGradient(team, key.material, swim, modes & 1)
-							: std::span<const Uint16>{};
-						if (!plane.empty())
-						{
-							++output.metrics.resourcePlaneReads;
-							resourceDistance = HiringPlanner::resourceDistance(world, plane, u.posX, u.posY);
-						}
-						else ++output.metrics.resourceEstimateFallbacks;
-						if (resourceDistance == INT_MAX || resourceDistance >= budget ||
-							(immobile && resourceDistance > 1))
-							continue;
 						candidate.value += (std::int64_t(resourceDistance) + std::max(distance, resourceDistance)) * 256;
 					}
 				}
