@@ -89,16 +89,16 @@ void recoverField(void *context, std::size_t) noexcept
 	field.identity = {};
 	field.phase = OwnedGradientField::Phase::Complete;
 }
-void fallbackField(const std::shared_ptr<OwnedGradientField> &field) noexcept
+bool beginRecovery(const std::shared_ptr<OwnedGradientField> &field) noexcept
 {
 	if (!field || !field->completion)
-		return;
+		return false;
 	auto phase = field->phase.load(std::memory_order_acquire);
 	do
 	{
 		if (phase == OwnedGradientField::Phase::Recovering ||
 			phase == OwnedGradientField::Phase::Complete)
-			return;
+			return false;
 	} while (!field->phase.compare_exchange_weak(phase, OwnedGradientField::Phase::Recovering));
 	if (auto state = field->executionState)
 	{
@@ -106,7 +106,12 @@ void fallbackField(const std::shared_ptr<OwnedGradientField> &field) noexcept
 		++state->totals.fallbacks;
 		++state->totals.fallbackReasons[unsigned(field->fallbackReason)];
 	}
-	field->completion->resume({&recoverField, field.get()});
+	return true;
+}
+void fallbackField(const std::shared_ptr<OwnedGradientField> &field) noexcept
+{
+	if (beginRecovery(field))
+		field->completion->resume({&recoverField, field.get()});
 }
 class DeviceBroker
 {
@@ -686,9 +691,15 @@ bool GradientDeviceService::submit(const std::shared_ptr<OwnedGradientField> &fi
 		return false;
 	}
 }
-void GradientDeviceService::fallback(const std::shared_ptr<OwnedGradientField> &field) noexcept
+void GradientDeviceService::recoverOnWorker(const std::shared_ptr<OwnedGradientField> &field) noexcept
 {
-	fallbackField(field);
+	// Admission has not transferred execution. Recover on the submitting worker
+	// and settle its existing ticket without another executor dispatch.
+	if (beginRecovery(field))
+	{
+		recoverField(field.get(), 0);
+		field->completion->complete();
+	}
 }
 GradientDeviceService::Metrics GradientDeviceService::metrics() const
 {

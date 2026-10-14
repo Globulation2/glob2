@@ -80,7 +80,6 @@ private:
     Hooks hooks;
     std::shared_ptr<GradientDeviceState> registration;
     std::shared_ptr<GradientDeviceState> state() const;
-    void fallback(const std::shared_ptr<OwnedGradientField>&) noexcept;
 public:
     explicit GradientDeviceService(Hooks hooks = {}):hooks(std::move(hooks)) {}
     ~GradientDeviceService() {stop();}
@@ -90,7 +89,7 @@ public:
     void configure(unsigned computeThreads,Backend mode);
     void stop() noexcept;
     bool submit(const std::shared_ptr<OwnedGradientField>&) noexcept;
-    void recoverOnWorker(const std::shared_ptr<OwnedGradientField>& field) noexcept {fallback(field);}
+    void recoverOnWorker(const std::shared_ptr<OwnedGradientField>& field) noexcept;
     Metrics metrics() const;
 };
 }

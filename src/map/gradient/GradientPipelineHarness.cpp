@@ -1232,7 +1232,10 @@ TEST_CASE("malformed captured configurations decline and recover once" * doctest
         CHECK_FALSE(c.service->submit(c.field));
         CHECK(c.field->fallbackReason==GradientFallbackReason::InvalidRequest);
         CHECK(c.field->phase.load()==OwnedGradientField::Phase::Private);
-        c.service->recoverOnWorker(c.field);c.service->recoverOnWorker(c.field);
+        c.service->recoverOnWorker(c.field);
+        CHECK(c.field->phase.load()==OwnedGradientField::Phase::Complete);
+        CHECK(c.field->data[0]==177);
+        c.service->recoverOnWorker(c.field);
     },contexts.data()},ComputeExecutor::NoLane};
     auto ticket=executor.submit(std::span(&group,1),0);executor.join(ticket);
     CHECK(dispatched==0);CHECK(recovered==contexts.size());
