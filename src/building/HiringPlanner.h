@@ -57,6 +57,8 @@ struct BuildingLists
 	X(fieldMisses) \
 	X(fieldCells) \
 	X(evictions) \
+	X(bufferReuses) \
+	X(distanceBoundSkips) \
 	X(refreshes) \
 	X(jobs) \
 	X(skippedJobs) \
@@ -114,9 +116,13 @@ class Cache
 
   public:
 	static constexpr std::size_t MaxBytes = 32u * 1024 * 1024;
-	// The scalar control verifies seed templates against uncached seeding.
-	// It changes computation cost only.
-	explicit Cache(std::size_t budget = MaxBytes, bool cachedSeedTemplates = true, bool partialResourceFields = true);
+	// Reference controls change computation cost only; rankings must agree.
+	struct Options
+	{
+		bool cachedSeedTemplates = true, partialResourceFields = true, pruneCandidates = true;
+	};
+	explicit Cache(std::size_t budget = MaxBytes);
+	Cache(std::size_t budget, Options);
 	~Cache();
 	Cache(const Cache &) = delete;
 	Cache &operator=(const Cache &) = delete;

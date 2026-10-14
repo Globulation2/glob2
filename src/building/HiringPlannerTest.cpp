@@ -43,6 +43,51 @@ void checkPlannerOutput(const HiringPlanner::Output &actual, const HiringPlanner
 
 TEST_SUITE("HiringPlanner")
 {
+	TEST_CASE("distance bounds preserve exhaustive rankings for every job")
+	{
+		glob2test::HeadlessGlobals globals;
+		const char *names[] = {"inn", "clearingflag", "explorationflag", "warflag"};
+		const int types[] = {WORKER, WORKER, EXPLORER, WARRIOR};
+		for (unsigned role = 0; role < 4; ++role)
+		{
+			CAPTURE(role);
+			glob2test::HeadlessGame w({.wDec = 7, .hDec = 7, .discovered = true, .loadDefaultRace = true});
+			auto *b = w.addBuilding(names[role], 8, 8);
+			b->maxUnitWorking = 2;
+			b->subscriptionWorkingTimer = 32;
+			b->materials[WHEAT] = 0;
+			b->clearingMaterials[WOOD] = true;
+			b->updateCallLists();
+			REQUIRE(w.game.map.incResourceByIndex(7, 8, WOOD, 0));
+			REQUIRE(w.game.map.incResourceByIndex(24, 12, WHEAT, 0));
+			for (unsigned i = 0; i < 24; ++i)
+			{
+				auto *u = w.addUnit(types[role], 5 + i % 4, 14 + i / 4);
+				u->activity = Unit::ACT_RANDOM;
+				u->medical = Unit::MED_FREE;
+				u->hungriness = 1;
+				// Include equal scores, negative food budgets and later candidates
+				// with better levels, which must survive the optimistic bound.
+				u->hungry = i % 3 == 0 ? 0 : 10000;
+				u->trigHungry = 100;
+				u->constructionLevel = i % 4;
+				u->level[MAGIC_ATTACK_GROUND] = i % 4;
+				if (role == 0 && i % 2) u->carriedMaterial = WHEAT;
+			}
+			const auto input = HiringPipeline::bindRoutes(w.game, w.game.captureReadBoundary());
+			for (unsigned capacity : {1u, 4u, 8u})
+			{
+				CAPTURE(capacity);
+				HiringPlanner::Cache pruned, exhaustive(HiringPlanner::Cache::MaxBytes,
+					{.pruneCandidates = false});
+				const auto actual = pruned.rank(input, 0, capacity);
+				const auto expected = exhaustive.rank(input, 0, capacity);
+				checkPlannerOutput(actual, expected);
+				CHECK(actual.metrics.rankedCandidates <= expected.metrics.rankedCandidates);
+				REQUIRE_FALSE(actual.buildings.empty());
+			}
+		}
+	}
 	TEST_CASE("snapshot seed templates and version keys preserve scalar planner outputs")
 	{
 		glob2test::HeadlessGlobals globals;
@@ -57,7 +102,7 @@ TEST_SUITE("HiringPlanner")
 			u->activity = Unit::ACT_RANDOM; u->medical = Unit::MED_FREE; u->hungriness = 0;
 		}
 		REQUIRE(w.game.map.incResourceByIndex(24, 12, WHEAT, 0));
-		HiringPlanner::Cache cached, scalar(HiringPlanner::Cache::MaxBytes, false, false);
+		HiringPlanner::Cache cached, scalar(HiringPlanner::Cache::MaxBytes, {.cachedSeedTemplates = false, .partialResourceFields = false, .pruneCandidates = false});
 		for (unsigned phase = 0; phase < 9; ++phase)
 		{
 			CAPTURE(phase);
@@ -118,7 +163,7 @@ TEST_SUITE("HiringPlanner")
 				if (x == 22 || x == 26 || y == 22 || y == 26)
 					w.game.map.addForbidden(x, y, 0);
 		const auto input = HiringPipeline::bindRoutes(w.game, w.game.captureReadBoundary());
-		HiringPlanner::Cache partial, full(HiringPlanner::Cache::MaxBytes, false, false);
+		HiringPlanner::Cache partial, full(HiringPlanner::Cache::MaxBytes, {.cachedSeedTemplates = false, .partialResourceFields = false, .pruneCandidates = false});
 		const auto actual = partial.rank(input, 0), expected = full.rank(input, 0);
 		CHECK(actual.metrics.privateResourceReads > 0);
 		checkPlannerOutput(actual, expected);

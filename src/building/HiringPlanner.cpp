@@ -56,6 +56,33 @@ int food(const U &u)
 	return int(std::clamp<std::int64_t>((std::int64_t(u.hungry) - u.trigHungry) / u.hungriness,
 										INT_MIN, INT_MAX));
 }
+// Distance zero is an optimistic score: every actual route adds nonnegative
+// cost. A bounded shortlist can reject a candidate only if this cannot win.
+Candidate rankingBase(Job job, const U &u, const UnitRuntimeTraits &traits)
+{
+	Candidate candidate{u.identity, 0, 0};
+	if (job == Job::Delivery || job == Job::Fetch)
+	{
+		candidate.level = HiringRanking::materialLevel(u.constructionLevel, u.level[WALK]);
+		candidate.value = job == Job::Delivery ? -(food(u) >> 1) : (u.carriedMaterial >= 0 ? 5 * 256 : 0);
+		return candidate;
+	}
+	const unsigned role = unsigned(job) - unsigned(Job::Clear);
+	std::int64_t time = u.hungriness > 0
+		? (std::int64_t(u.hungry) - (role == 0 ? u.trigHungry : 0)) / u.hungriness : INT_MAX;
+	std::int64_t hp = std::int64_t(u.hp) * 16 / std::max(1, traits.flagRankingHealth);
+	if (role == 1)
+	{
+		time = std::clamp<std::int64_t>(time, -1000000000, 1000000000);
+		time *= time;
+		hp = std::clamp<std::int64_t>(hp, -1000000000, 1000000000);
+		hp *= hp;
+	}
+	candidate.level = role == 0 ? u.constructionLevel : role == 1 ? u.level[MAGIC_ATTACK_GROUND]
+		: std::int64_t(u.performance[ATTACK_SPEED]) * u.realAttackStrength;
+	candidate.value = -(role == 0 ? 1 : 2) * (time + hp);
+	return candidate;
+}
 bool hasCargo(const Inputs &input, const U &u, int material)
 {
 	if (u.carriedMaterial == material)
@@ -173,7 +200,7 @@ FieldKey resourceKey(const World &world, const B &b, int material, int swim,
 struct Cache::Impl
 {
 	gradient_preparation::MaterialSeedCache seedTemplates;
-	bool cachedSeedTemplates = true, partialResourceFields = true;
+	bool cachedSeedTemplates = true, partialResourceFields = true, pruneCandidates = true;
 	Metrics *metrics = nullptr;
 	Uint64 observation = 0;
 	struct Field
@@ -233,8 +260,23 @@ struct Cache::Impl
 		++metrics->fieldMisses;
 		const auto seedStart = Clock::now();
 		const std::size_t bytes = std::size_t(world.width) * world.height * sizeof(Uint16);
-		trim(bytes + NodeBytes);
 		Field result;
+		// An obsolete version of this query can donate its value/frontier
+		// buffers. Active job references remain protected by their use clock.
+		for (auto it = fields.begin(); it != fields.end(); ++it)
+			if (it->second.use <= protectedAfter &&
+				std::tie(it->first.world, it->first.width, it->first.height, it->first.teamMask,
+						 it->first.material, it->first.swim, it->first.modes, it->first.consumer) ==
+				std::tie(key.world, key.width, key.height, key.teamMask,
+						 key.material, key.swim, key.modes, key.consumer))
+			{
+				retained -= it->second.bytes();
+				result = std::move(it->second);
+				fields.erase(it);
+				++metrics->bufferReuses;
+				break;
+			}
+		trim(std::max(bytes, result.bytes()) + NodeBytes);
 		result.values.resize(std::size_t(world.width) * world.height);
 		if (!cachedSeed(result.values.data()))
 			for (std::size_t i = 0; i < result.values.size(); ++i)
@@ -247,17 +289,22 @@ struct Cache::Impl
 		// frontier allocations; larger fields retain the full kernel.
 		if (partialResourceFields && result.values.size() <= 65536)
 		{
-			result.search = std::make_unique<BuildingGradientSearch>();
+			if (!result.search)
+				result.search = std::make_unique<BuildingGradientSearch>();
 			BuildingGradientSearch::SnapshotCosts costs{*world.cellRules,
 				world.components().terrain->cellRules, world.terrainMovementModifiers, 256};
 			result.search->beginSnapshot(costs, result.values.data(), swim, world.width, world.height);
 			result.searchBytes = result.search->retainedBytes();
 		}
 		else
+		{
+			result.search.reset();
+			result.searchBytes = 0;
 			gradient_kernel::propagateTerrainField(
 				result.values.data(), swim, gradient_kernel::COST_LIMIT, {world.width, world.height},
 				scratch, [&](std::size_t i) { return world.cellRuleAt(i); },
 				world.terrainMovementModifiers, *world.cellRules, 256);
+		}
 		metrics->propagationNs += elapsed(propagationStart);
 		trim(result.bytes() + NodeBytes);
 		result.use = ++clock;
@@ -327,13 +374,15 @@ struct Cache::Impl
 					 });
 	}
 };
-Cache::Cache(std::size_t budget, bool cachedSeedTemplates, bool partialResourceFields) : impl(std::make_unique<Impl>())
+Cache::Cache(std::size_t budget) : Cache(budget, Options{}) {}
+Cache::Cache(std::size_t budget, Options options) : impl(std::make_unique<Impl>())
 {
 	if (!budget || budget > MaxBytes)
 		throw std::invalid_argument("Invalid hiring cache budget");
 	impl->budget = budget;
-	impl->cachedSeedTemplates = cachedSeedTemplates;
-	impl->partialResourceFields = partialResourceFields;
+	impl->cachedSeedTemplates = options.cachedSeedTemplates;
+	impl->partialResourceFields = options.partialResourceFields;
+	impl->pruneCandidates = options.pruneCandidates;
 	impl->seedTemplates.budget = std::min<std::size_t>(2u * 1024 * 1024, budget / 4);
 }
 Cache::~Cache() = default;
@@ -694,7 +743,12 @@ Output Cache::rank(const Inputs &input, unsigned team, unsigned capacity)
 			const auto &indexed = (key.job == Job::Delivery || key.job == Job::Fetch)
 									  ? transport
 									  : roles[unsigned(key.job) - unsigned(Job::Clear)];
-			candidates.reserve(indexed.size());
+			candidates.reserve(std::min<std::size_t>(limit, indexed.size()));
+			const CandidateOrder compare(key.job);
+			const auto couldWin = [&](const Candidate &bound)
+			{
+				return !impl->pruneCandidates || candidates.size() < limit || compare(bound, candidates.front());
+			};
 			for (const auto *unit : indexed)
 			{
 				++output.candidateVisits;
@@ -738,6 +792,12 @@ Output Cache::rank(const Inputs &input, unsigned team, unsigned capacity)
 						continue;
 				}
 				++output.metrics.availableEvaluations;
+				Candidate candidate = rankingBase(key.job, u, traits);
+				if (!couldWin(candidate))
+				{
+					++output.metrics.distanceBoundSkips;
+					continue;
+				}
 				const int swim = swimClass(u);
 				int distance;
 
@@ -831,15 +891,19 @@ Output Cache::rank(const Inputs &input, unsigned team, unsigned capacity)
 						: (key.job == Job::Explore ? distance > budget : distance >= budget);
 				if ((immobile && distance > (transport ? 1 : 0)) || tooFar)
 					continue;
-				Candidate candidate{u.identity, 0, 0};
 				if (transport)
 				{
-					candidate.level =
-						HiringRanking::materialLevel(u.constructionLevel, u.level[WALK]);
 					if (key.job == Job::Delivery)
-						candidate.value = std::int64_t(distance) - (food(u) >> 1);
+						candidate.value += distance;
 					else
 					{
+						Candidate bound = candidate;
+						bound.value += std::int64_t(distance) * 256;
+						if (!couldWin(bound))
+						{
+							++output.metrics.distanceBoundSkips;
+							continue;
+						}
 						int resourceDistance = INT_MAX;
 						if (!u.performance[FLY])
 						{
@@ -887,43 +951,35 @@ Output Cache::rank(const Inputs &input, unsigned team, unsigned capacity)
 						if (resourceDistance == INT_MAX || resourceDistance >= budget ||
 							(immobile && resourceDistance > 1))
 							continue;
-						candidate.value = (std::int64_t(resourceDistance) +
-										   std::max(distance, resourceDistance)) *
-											  256 +
-										  (u.carriedMaterial >= 0 ? 5 * 256 : 0);
+						candidate.value += (std::int64_t(resourceDistance) + std::max(distance, resourceDistance)) * 256;
 					}
 				}
 				else
 				{
 					const unsigned role = unsigned(key.job) - unsigned(Job::Clear);
-					std::int64_t time =
-						u.hungriness > 0
-							? (std::int64_t(u.hungry) - (role == 0 ? u.trigHungry : 0)) /
-								  u.hungriness
-							: INT_MAX;
-					std::int64_t hp =
-						std::int64_t(u.hp) * 16 / std::max(1, traits.flagRankingHealth);
 					if (role == 1)
 					{
-						time = std::clamp<std::int64_t>(time, -1000000000, 1000000000);
-						time *= time;
-						hp = std::clamp<std::int64_t>(hp, -1000000000, 1000000000);
-						hp *= hp;
 						distance = u.performance[FLY] && !world.airTerrainConstraints
 									   ? world.distanceSquared(u.posX, u.posY, b.posX, b.posY)
 									   : int(std::min<std::int64_t>(
 											 INT_MAX, std::int64_t(distance) * distance));
 					}
-					candidate.level = role == 0   ? u.constructionLevel
-									  : role == 1 ? u.level[MAGIC_ATTACK_GROUND]
-												  : std::int64_t(u.performance[ATTACK_SPEED]) *
-														u.realAttackStrength;
-					candidate.value = distance - (role == 0 ? 1 : 2) * (time + hp);
+					candidate.value += distance;
 				}
-				candidates.push_back(candidate);
+				++output.metrics.rankedCandidates;
+				if (candidates.size() < limit)
+				{
+					candidates.push_back(candidate);
+					std::push_heap(candidates.begin(), candidates.end(), compare);
+				}
+				else if (compare(candidate, candidates.front()))
+				{
+					std::pop_heap(candidates.begin(), candidates.end(), compare);
+					candidates.back() = candidate;
+					std::push_heap(candidates.begin(), candidates.end(), compare);
+				}
 			}
 			output.metrics.evaluationNs += elapsed(evaluationStart);
-			output.metrics.rankedCandidates += candidates.size();
 			const auto sortStart = Clock::now();
 			list = shortlist(key, std::move(candidates), limit);
 			output.metrics.sortOutputNs += elapsed(sortStart);

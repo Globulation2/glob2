@@ -594,6 +594,10 @@ distances match full propagation, including weighted and custom terrain. Queries
 borrow cost rules directly from the current immutable observation; searches retain
 no world-data leases between jobs. Larger fields retain the full kernel; pending
 search storage counts toward the private cache budget.
+Obsolete versions of the same resource query reuse value and frontier buffers
+after active references end. Each job maintains a bounded heap of its best
+candidates. Optimistic integer score bounds skip route queries only when the
+candidate cannot enter that heap; ordered output matches exhaustive evaluation.
 Route leases include only jobs and movement classes required by the observation.
 
 Published lists, fixed rules, last admission state, output
