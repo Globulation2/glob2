@@ -56,7 +56,7 @@ public:
 	std::function<std::uint64_t(unsigned remaining)> deadline;
 	std::function<void(Job&)> retire;
 	struct Metrics {
-		std::uint64_t jobs=0, batches=0, published=0, discarded=0, waitNs=0, maxPending=0, maxBatch=0;
+		std::uint64_t jobs=0, batches=0, published=0, discarded=0, maxPending=0, maxBatch=0;
 	} metrics;
 private:
 	std::deque<std::unique_ptr<Job>> pending;

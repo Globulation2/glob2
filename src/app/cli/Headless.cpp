@@ -592,10 +592,7 @@ struct HeadlessRunner
 			<< ",\"growth_maxProposals\":" << game.map.resourceGrowthMetrics().maxProposals
 			<< ",\"growth_maxPending\":" << game.map.resourceGrowthMetrics().maxPending
 			<< ",\"growth_maxProposalBytes\":" << game.map.resourceGrowthMetrics().maxProposalBytes
-			<< ",\"growth_computeNs\":" << measured(game.map.resourceGrowthMetrics().computeNs, workerAvailable)
-			<< ",\"growth_queueNs\":" << measured(game.map.resourceGrowthMetrics().queueNs, workerAvailable)
 			<< ",\"growth_waitNs\":" << joinTotal(ComputeProducer::ResourceGrowth)
-			<< ",\"growth_publicationNs\":" << measured(game.map.resourceGrowthMetrics().publicationNs, summaryAvailable)
 			<< ",\"growth_delay\":" << game.map.resourceGrowthDelay()
             << ",\"tick_p50_ns\":" << percentile(50)
             << ",\"tick_p95_ns\":" << percentile(95)

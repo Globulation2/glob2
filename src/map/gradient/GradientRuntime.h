@@ -78,14 +78,6 @@ struct GradientRuntime
 		++buildingSynchronous;
 		++synchronousByReason[std::size_t(std::exchange(syncReason, Map::BuildingSyncReason::Other))];
 	}
-	// Worker depth for scheduled walking fields (Map::predictBuildingDepth):
-	// the generated model at one of its operating points, everything, or
-	// nothing beyond the seeds. Results never depend on it;
-	// GLOB2_BUILDING_DEPTH=full|table|lazy|<point name> selects it for timing
-	// comparisons. Local configuration, never saved.
-	enum class BuildingDepth { Table, Full, Lazy };
-	BuildingDepth buildingDepth = BuildingDepth::Table;
-	int buildingDepthPoint = BuildingGradientDepth::DEFAULT_POINT;
     ResourceGrowth::Pipeline growth;
 	// One simulation-owned reservation, consumed once during the observation phase.
 	// Scalar identities survive the scheduling barrier without borrowing stack lambdas.

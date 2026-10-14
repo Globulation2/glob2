@@ -69,26 +69,6 @@ TEST_SUITE("TeamStatsPipeline")
 		CHECK(direct.getPosition() == binary.getPosition());
 	}
 
-    TEST_CASE("profiling is optional and does not change pending samples")
-    {
-        glob2test::ScopedEnvironment profile("GLOB2_STATS_PROFILE","0");
-        glob2test::HeadlessGlobals globals;
-        glob2test::HeadlessGame w(glob2test::GameOptions{.loadDefaultRace=true});
-        w.addUnit(WORKER,10,10);
-        TeamStatsPipeline normal(w.game.map.computeExecutor()), measured(w.game.map.computeExecutor(),true);
-        auto snapshot=input(w);
-        normal.prepareBoundary(w.game,snapshot);
-        measured.prepareBoundary(w.game,snapshot);
-        CHECK(normal.checkSum(true)==measured.checkSum(true));
-        w.game.stepCounter=8;
-        CHECK(normal.publishDue(w.game));
-        CHECK(normal.metrics.workerNs==0);
-        CHECK(normal.metrics.publicationNs==0);
-        CHECK(normal.metrics.submissionNs==0);
-        CHECK(normal.metrics.allocationNs==0);
-        CHECK(normal.metrics.deadlineWaitNs==0);
-        CHECK(normal.metrics.deadlineMisses==0);
-    }
 	TEST_CASE("routine statistics coverage excludes diagnostic ledgers and full checks retain them")
 	{
 		glob2test::HeadlessGlobals globals;
@@ -625,7 +605,7 @@ TEST_SUITE("TeamStatsPipeline")
 									   ComputeExecutor::NoLane};
 		auto ticket = w.game.map.computeExecutor().submit(std::span(&blocker, 1), 0);
 		gate.started.wait(false);
-		TeamStatsPipeline p(w.game.map.computeExecutor(), true);
+		TeamStatsPipeline p(w.game.map.computeExecutor());
 		p.prepareBoundary(w.game, input(w));
 		w.game.stepCounter = 1;
 		CHECK_FALSE(p.publishDue(w.game));
@@ -644,7 +624,6 @@ TEST_SUITE("TeamStatsPipeline")
 		CHECK(p.publishDue(w.game));
 		CHECK(w.team->stats.sourceTick == 0);
 		CHECK(w.team->stats.publishedTick == 2);
-		CHECK(p.metrics.deadlineMisses == 1);
 		w.game.map.computeExecutor().join(ticket);
 	}
 	TEST_CASE("pipeline versus synchronous snapshot boundary timing [benchmark]" *
@@ -709,20 +688,12 @@ TEST_SUITE("TeamStatsPipeline")
 			pipeline.drain();
 			for (int t = 0; t < 2; ++t)
 				CHECK(w.game.teams[t]->stats.getLatestStat()->totalUnit == 128);
-			const auto &capture = w.game.snapshots().metrics;
 			std::cout << "STATS_BENCH mode="
 					  << (mode == 0   ? "synchronous"
 						  : mode == 1 ? "snapshot_immediate"
 									  : "snapshot_delayed")
 					  << " delay=" << w.game.gameHeader.getTeamStatsDelay() << " seed=1234567 ticks=" << ticks << " units=256 owner_ns=" << ownerNs
-					  << " capture_ns=" << capture.captureNs
-                      << " capture_preparation_ns=" << capture.preparationNs
-					  << " calculation_ns=" << pipeline.metrics.workerNs
-					  << " allocation_ns=" << pipeline.metrics.allocationNs
-                      << " submission_ns=" << pipeline.metrics.submissionNs
-                      << " publication_ns=" << pipeline.metrics.publicationNs
 					  << " checksum_ns=" << checksumNs << " checksum=" << checksum
-					  << " deadline_wait_ns=" << pipeline.metrics.deadlineWaitNs
 					  << " peak_pending=" << pipeline.metrics.peakPending
 					  << " peak_leased_bytes=" << w.game.snapshots().memoryMetrics().peakLeasedBytes
 					  << '\n';
@@ -770,7 +741,7 @@ TEST_SUITE("TeamStatsPipeline")
                 if(verifyTrace) trace.push_back(w.game.checkSum(nullptr,nullptr,nullptr,true));
             }
             const auto owner=std::chrono::duration_cast<std::chrono::nanoseconds>(std::chrono::steady_clock::now()-start).count();
-            std::cout<<"STATS_ADVANCING teams="<<teams<<" workers="<<workers<<" delay="<<delay<<" ticks="<<ticks<<" seed=1234567 ai="<<(ai ? "numbi-castor" : "none")<<" orders="<<orders<<" owner_ns="<<owner<<" capture_ns="<<w.game.snapshots().metrics.captureNs<<" capture_preparation_ns="<<w.game.snapshots().metrics.preparationNs;
+            std::cout<<"STATS_ADVANCING teams="<<teams<<" workers="<<workers<<" delay="<<delay<<" ticks="<<ticks<<" seed=1234567 ai="<<(ai ? "numbi-castor" : "none")<<" orders="<<orders<<" owner_ns="<<owner;
             for(const auto& [name,value]:w.game.teamStatsMetrics()) std::cout<<' '<<name<<'='<<value;
             const auto memory=w.game.snapshots().memoryMetrics();
             std::cout<<" peak_leased_bytes="<<memory.peakLeasedBytes<<" checksum="<<w.checksum()<<'\n';

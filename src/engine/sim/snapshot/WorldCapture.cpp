@@ -515,9 +515,7 @@ Handle capture(const Game& game,
 	if (needs(requirements, Component::Teams)) result->teams = std::move(teamsOwner);
 	if (needs(requirements, Component::Rules)) result->rules = std::move(rulesOwner);
 	if (needs(requirements, Component::Growth)) {
-		const auto start=storage && storage->profiling ? std::chrono::steady_clock::now() : std::chrono::steady_clock::time_point{};
 		const auto& source=game.map.resourceGrowthField();
-		if (storage && storage->profiling) storage->preparationNs += std::chrono::duration_cast<std::chrono::nanoseconds>(std::chrono::steady_clock::now()-start).count();
 		auto frozen=storage ? storage->growth.acquire(storage->allocations) : std::make_shared<Fertility::GrowthCache>();
 		const auto oldCap=frozen->storageCapacities(), required=source.storageSizes();
 		if (storage) for(unsigned i=0;i<oldCap.size();++i) if(oldCap[i]<required[i]) ++storage->allocations;

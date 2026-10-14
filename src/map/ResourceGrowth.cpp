@@ -16,12 +16,6 @@ namespace ResourceGrowth
 static_assert(ComputeExecutor::GrowthHorizon >= 16);
 namespace
 {
-Uint64 now()
-{
-	return std::chrono::duration_cast<std::chrono::nanoseconds>(
-			   std::chrono::steady_clock::now().time_since_epoch())
-		.count();
-}
 bool emptyAllowed(const MapState::OccupancyCell &o, const ResourceProperties &p)
 {
 	return (!p.blocksBuilding || o.building == 0xffff) &&
@@ -141,14 +135,12 @@ void calculate(const MapState::View &v, MersenneTwister &rng, Batch &out)
 	out.capacityGrew = out.proposals.capacity() != initialCapacity;
 }
 
-void apply(Map &map, const Batch &batch, Metrics &metrics, bool measure)
+void apply(Map &map, const Batch &batch, Metrics &metrics)
 {
-	const auto start = measure ? now() : 0;
 	metrics.publishedProposals += batch.proposals.size();
 	if (map.game->gameHeader.isResourceGrowthDisabled())
 	{
 		metrics.rejected += batch.proposals.size();
-		if (measure) metrics.publicationNs += now() - start;
 		return;
 	}
 	if (batch.proposals.empty()) return;
@@ -233,7 +225,6 @@ void apply(Map &map, const Batch &batch, Metrics &metrics, bool measure)
 			metrics.clamped += attempted && op.delta > 0;
 		}
 	}
-	if (measure) metrics.publicationNs += now() - start;
 }
 
 void Pipeline::stage(Uint32 tick, Uint32 seed)
@@ -244,12 +235,9 @@ void Pipeline::stage(Uint32 tick, Uint32 seed)
 		throw std::logic_error("Resource growth tick did not advance");
 	reservation = std::pair{tick, seed};
 }
-template<bool Measure>
 void Pipeline::run(void *context, std::size_t)
 {
 	auto &j = *static_cast<Job *>(context);
-	const auto start = [] { if constexpr (Measure) return now(); else return Uint64(0); }();
-	if constexpr (Measure) j.queueNs = start - j.submittedNs;
 	try
 	{
 		MersenneTwister rng(j.seed);
@@ -260,7 +248,6 @@ void Pipeline::run(void *context, std::size_t)
 		j.error = std::current_exception();
 	}
 	j.snapshot.reset();
-	if constexpr (Measure) j.computeNs = now() - start;
 }
 void Pipeline::prepare(const SimulationSnapshot::Handle &snapshot, ComputeExecutor &target)
 {
@@ -300,8 +287,6 @@ void Pipeline::prepare(const SimulationSnapshot::Handle &snapshot, ComputeExecut
 	j->error = {};
 	j->collected = false;
 	j->work = {};
-	j->submittedNs = executor->telemetryMode() == ComputeTelemetryMode::Trace ? now() : 0;
-    j->computeNs = j->queueNs = 0;
 	auto *job = j.get();
 	pending.push_back(std::move(j));
 	Uint64 bytes = 0;
@@ -311,7 +296,7 @@ void Pipeline::prepare(const SimulationSnapshot::Handle &snapshot, ComputeExecut
 		bytes += p->reservedCapacity * sizeof(Proposal);
 	metrics.maxProposalBytes = std::max(metrics.maxProposalBytes, bytes);
 	reservation.reset();
-	const auto callback = executor->telemetryMode() == ComputeTelemetryMode::Trace ? &run<true> : &run<false>;
+	const auto callback = &run;
 	const ComputeExecutor::Group group{1, {callback, job}, ComputeExecutor::NoLane};
 	try
 	{
@@ -338,8 +323,6 @@ void Pipeline::join(Job &j, JoinContext context)
 		std::rethrow_exception(j.error);
 	if (!j.collected)
 	{
-		metrics.computeNs += j.computeNs;
-		metrics.queueNs += j.queueNs;
 		metrics.sampled += j.output.sampled;
 		metrics.capacityGrowthBatches += j.output.capacityGrew;
 		metrics.maxProposals = std::max<Uint64>(metrics.maxProposals, j.output.proposals.size());
@@ -363,7 +346,7 @@ void Pipeline::publish(Map &map, Uint32 tick)
 		auto &j = *pending.front();
 		join(j, {JoinReason::TickDeadline, tick});
 		if (j.world == map.identity() && j.catalog == map.resourceRegistry().checksum())
-			apply(map, j.output, metrics, executor && executor->telemetryEnabled());
+			apply(map, j.output, metrics);
 		else
 		{
 			metrics.publishedProposals += j.output.proposals.size();
