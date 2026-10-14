@@ -1353,6 +1353,10 @@ TEST_SUITE("TeamStatsSave")
             return state;
         };
         REQUIRE(components(restored->game)==components(world.game));
+        // Establish the initial completed boundary before counting future samples.
+        world.game.prepareReadBoundary(false);
+        restored->game.prepareReadBoundary(false);
+        REQUIRE(components(restored->game)==components(world.game));
         const auto phase=stats.smoothedIndex;
         const auto index=stats.statsIndex;
         for(int tick=1;tick<=32;++tick) {
