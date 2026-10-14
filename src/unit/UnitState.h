@@ -84,45 +84,63 @@ struct UnitState
 		HUNGRY_MAX=150000
 	};
 
-	// Naturally aligned wide arithmetic state precedes the compact byte fields.
+	// Keep position, targets and movement modes together at the front of the record.
+	// Use natural alignment: capture copies this state, but saves/checksums write
+	// named fields explicitly and do not depend on the C++ declaration order.
 	Uint16 typeNum;
 	Uint16 gid;
+	Uint32 capabilityFlags = 0;
+	Uint32 stateFlags = 0; // Learning and independent flags; unused bits stay zero.
+	Sint32 posX;
+	Sint32 posY;
+	Sint32 delta;
+	Sint32 speed; // Keep arithmetic and surplus movement wide.
+	Sint32 targetX;
+	Sint32 targetY;
+	Sint8 dx;
+	Sint8 dy;
+	Uint8 direction;
+	Movement movement;
+	Medical medical;
+	Activity activity;
+	Displacement displacement;
+	Uint8 action = WALK; // Game::addUnit chooses movement; loading restores action.
+
+	// Health, hunger and cached abilities follow the movement group.
+	Sint32 hp;
+	Sint32 trigHP;
+	Sint32 hungry;
+	Sint32 hungriness;
+	Sint32 trigHungry;
+	Sint32 trigHungryCarrying;
+	Sint32 insideTimeout;
+	UnitPerformanceStorage performance[NB_ABILITY];
+	Uint8 level[NB_ABILITY];
+	Uint8 constructionLevel = 0;
+
+	// Identity, random streams and continuation state retain their existing types.
 	Uint32 scriptIdentity = 0; // Stable identity, excluded from legacy checksums.
 	EntityRandom entityRandom;
-	Uint32 capabilityFlags = 0;
 	Sint32 isDead;
-	Sint32 posX, posY, delta;
-	Sint32 insideTimeout;
 	Sint32 configuredFoodCapacity = HUNGRY_MAX;
-	Sint32 speed; // Keep arithmetic and surplus movement wide.
-	Sint32 targetX, targetY;
 	Sint32 magicActionTimeout;
-	Sint32 hp, trigHP;
-	Sint32 hungry, hungriness, trigHungry, trigHungryCarrying;
-	Uint32 fruitMask, fruitCount;
-	UnitPerformanceStorage performance[NB_ABILITY];
-	Uint32 stateFlags = 0; // Learning and independent flags; unused bits stay zero.
-	Sint32 experience, experienceLevel;
+	Uint32 fruitMask;
+	Uint32 fruitCount;
+	Sint32 experience;
+	Sint32 experienceLevel;
 	MaterialPacket carriedPacket{};
 	Sint32 jobTimer;
 	Uint32 areaLastPulseTick = Uint32(-1);
 	Sint16 terrainHealthRemainder = 0; // Signed continuation debt; arithmetic is wide.
 	UnitJobPurpose jobPurpose = UnitJobPurpose::None;
 	Uint8 regenerationRemainder = 0;
-	Sint8 dx, dy;
-	Uint8 direction;
-	Medical medical;
-	Activity activity;
-	Displacement displacement;
-	Movement movement;
-	Uint8 action = WALK; // Game::addUnit chooses movement; loading restores action.
 	Uint8 underAttackTimer;
 	Uint8 configuredVisionRadius = 1;
-	Uint8 level[NB_ABILITY];
-	Uint8 constructionLevel = 0;
 	Sint8 destinationPurpose;
 	Sint8 carriedMaterial;
-	Uint8 levelUpAnimation = 0, magicActionAnimation = 0; // Presentation clocks are captured.
+	// Presentation clocks are part of the captured state.
+	Uint8 levelUpAnimation = 0;
+	Uint8 magicActionAnimation = 0;
 	std::array<Uint8,3> areaServiceRemainders{};
 
     // Cached abilities have a deliberate runtime cap; catalog tables stay wide.
