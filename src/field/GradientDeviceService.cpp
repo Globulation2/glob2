@@ -4,10 +4,6 @@
 #include <algorithm>
 #include <array>
 #include <condition_variable>
-#include <cstdlib>
-#include <cstring>
-#include <filesystem>
-#include <fstream>
 
 namespace gradient_kernel
 {
@@ -486,8 +482,7 @@ DeviceBroker &broker()
 } // namespace
 void shutdownGradientDeviceCoordinator() noexcept
 {
-	// No coordinator means no profiled device-service work. Preserve the CPU
-	// drain without environment lookups, TLS sessions or diagnostic output.
+	// An application that never enabled the GPU has no coordinator to stop.
 	auto *coordinator = existingBroker.load(std::memory_order_acquire);
 	if (!coordinator)
 		return;
@@ -503,16 +498,16 @@ OwnedGradientField::~OwnedGradientField()
 	inputs.reset();
 	identity = {};
 	session.reset();
-	executionState.reset();
 	releaseReservation();
+	executionState.reset();
 }
 void OwnedGradientField::releaseReservation() noexcept
 {
 	if (reservedHostBytes)
 	{
 		releaseOpenCLHostBytes(reservedHostBytes);
-		if (serviceRetained)
-			serviceRetained->fetch_sub(reservedHostBytes);
+		if (executionState)
+			executionState->retained.fetch_sub(reservedHostBytes);
 		reservedHostBytes = 0;
 	}
 }
@@ -675,8 +670,6 @@ bool GradientDeviceService::submit(const std::shared_ptr<OwnedGradientField> &fi
 		if (!reserveOpenCLHostBytes(bytes))
 			return decline();
 		field->reservedHostBytes = bytes;
-		field->serviceRetained =
-			std::shared_ptr<std::atomic<std::size_t>>(current, &current->retained);
 		current->retained.fetch_add(bytes);
 		current->queue.push_back({field, ++current->nextSerial});
 		++current->totals.submitted;

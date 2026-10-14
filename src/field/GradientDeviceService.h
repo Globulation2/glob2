@@ -45,7 +45,6 @@ struct OwnedGradientField
     std::size_t reservedHostBytes = 0, retainedInputBytes = 0;
     enum class Phase { Private, Queued, Running, Recovering, Complete };
     std::atomic<Phase> phase{Phase::Private};
-    std::shared_ptr<std::atomic<std::size_t>> serviceRetained;
     std::shared_ptr<GradientDeviceState> executionState;
     ~OwnedGradientField();
     std::unique_ptr<std::uint16_t[]> takeData();
