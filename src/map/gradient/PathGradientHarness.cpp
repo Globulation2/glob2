@@ -319,11 +319,11 @@ TEST_CASE("building depth history follows readers rather than preparation [pathf
 		const int depth = BuildingGradientDepth::target(serving, previous);
 		search.resolveToCost(depth);
 		CHECK(search.requiredCost() == 0);
-		const auto prepared = search.poppedEntries();
+		const auto prepared = search.settledCost();
 		const int cell = lifetime < 10 ? 30 : 5;
 		search.resolve(cell);
 		CHECK(field[cell] == Goal - cell * GRADIENT_STEP);
-		CHECK(search.poppedEntries() == prepared);
+		CHECK(search.settledCost() == prepared);
 		CHECK(search.requiredCost() == cell * GRADIENT_STEP + 1);
 		CHECK(depth == (lifetime < 12 ? 509 : 224));
 		previous = serving;
@@ -667,7 +667,7 @@ TEST_CASE("production lazy gradient phases [benchmark][pathfinding]")
                 std::printf("lazy_gradient,%d,%d,%d,%d,%d,%lld,%lld,%lld,%lld,%llu,%zu,%zu,%llu\n",
                     width,layout,swim,query,repeat,static_cast<long long>(captureNs),
                     static_cast<long long>(beginNs),static_cast<long long>(resolveNs),
-                    static_cast<long long>(cpuNs),static_cast<unsigned long long>(search.poppedEntries()),
+                    static_cast<long long>(cpuNs),static_cast<unsigned long long>(search.settledCost()),
                     search.retainedBytes(),snapshot->size()*sizeof(TerrainType),
                     static_cast<unsigned long long>(hash));
             }

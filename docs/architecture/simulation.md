@@ -656,3 +656,7 @@ Capture joins the shared completed-tick snapshot union and existing compute pool
 Firing revalidates every entry against live state, so lists need no invalidation.
 See [targeting lifecycle](../development/compute-benchmarks.md#cached-turret-targeting)
 for scheduling and saved continuation.
+
+Shared snapshot capture uses local dirty stamps for incremental copies. It does
+not maintain terrain or occupancy protocol hashes after cached turret outputs
+left the game checksum.

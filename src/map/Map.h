@@ -54,7 +54,6 @@ class Game;
 class SessionGame;
 class MapHeader;
 struct GradientRuntime;
-class BuildingGradientStats;
 struct SharedBuildingGradient;
 namespace ResourceGrowth { struct Metrics; }
 
@@ -1188,8 +1187,6 @@ public:
 	//! and a unit blocked by one forces its own rebuild in pathfindBuilding.
 	Uint32 topologyGeneration;
 	void bumpTopologyGeneration() { topologyGeneration++; }
-	//! Diagnostics only (--telemetry gradient-stats); null otherwise.
-	std::unique_ptr<BuildingGradientStats> gradientStats;
 	bool pathfindForbidden(const Uint16 *optionGradient, int teamNumber, int swimClass, int x, int y, int *dx, int *dy);
 	enum class AreaKind { Guard, Clear };
 	//! Find the best direction toward a guard or clear area; return true if one has been found.

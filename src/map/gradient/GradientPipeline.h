@@ -37,12 +37,6 @@ public:
 		std::optional<SimulationSnapshot::Handle> snapshotLease;
 		std::uint16_t **slot = nullptr;
 		std::unique_ptr<std::uint16_t[]> data;
-		std::shared_ptr<const std::vector<std::uint8_t>> water; // Test callback compatibility.
-		std::shared_ptr<const std::vector<TerrainType>> terrain;
-		std::shared_ptr<const TerrainRegistry> registry;
-		std::shared_ptr<const TerrainMovementSnapshot> profiles;
-		unsigned terrainBuckets = 64;
-		bool modifiedCosts = false;
 		int swim = 0;
 		std::uint64_t due = 0;
 		bool superseded = false, done = false;
@@ -235,7 +229,7 @@ private:
 		// Completion releases all borrowed immutable inputs, including failures.
         phase.setPhase(gradient_kernel::GradientPhase::Retirement);
         const auto cleanupStart=diagnostics ? cpuTime<Collect>() : 0;
-		job.water.reset(); job.terrain.reset(); job.registry.reset(); job.profiles.reset();
+
 		job.snapshotLease.reset(); job.seed = {}; job.crowding = nullptr;
             if constexpr (Collect) { activeNs.fetch_add(elapsed<Collect>(start), std::memory_order_relaxed); }
 		job.done = true;
@@ -430,8 +424,8 @@ public:
             ptr->executorDue=deadline ? deadline(remaining) : ComputeExecutor::advanceDue(ptr->due);
 			ptr->batch = executor->submit(std::span(&group, 1),ptr->executorDue, {ComputeProducer::PeriodicGradient, deadline ? ptr->executorDue/2 - remaining + 1 : tick, ptr->executorDue/2});
 		} catch (...) {
-			ptr->seed = {}; ptr->snapshotLease.reset(); ptr->water.reset();
-			ptr->terrain.reset(); ptr->registry.reset(); ptr->profiles.reset();
+			ptr->seed = {}; ptr->snapshotLease.reset();
+
 			ptr->error = std::current_exception(); ptr->done = true;
 			throw;
 		}

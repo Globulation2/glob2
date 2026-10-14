@@ -23,7 +23,6 @@
 #include "AIMaximaStrategy.h"
 #include "ai/cortex/CortexTuning.h"
 #include "Game.h"
-#include "gradient/BuildingGradientStats.h"
 #include "GameRuleOverrides.h"
 #include "Player.h"
 #include "TeamStat.h"
@@ -319,7 +318,6 @@ struct HeadlessRunner
 			if(telemetry=="checksums") setHeadlessEnvironment("GLOB2_CHECKSUM_SIDECAR", "1");
 			else if(telemetry=="team-timeline") setHeadlessEnvironment("GLOB2_TEAM_TIMELINE", "1");
 			else if(telemetry=="maxima") setHeadlessEnvironment("GLOB2_MAXIMA_TELEMETRY", "1");
-			else if(telemetry=="gradient-stats") setHeadlessEnvironment("GLOB2_GRADIENT_STATS", "1");
 			else throw std::invalid_argument("unknown telemetry: " + telemetry);
 		}
 		globals.load();
@@ -627,16 +625,7 @@ struct HeadlessRunner
 			result << (reason ? "," : "") << quote(Map::buildingSyncReasonName(Map::BuildingSyncReason(reason)))
 				<< ':' << buildingResult.synchronousByReason[reason];
 		result << '}';
-		if (auto *stats = game.map.gradientStats.get())
-		{
-			// Diagnostics only: close the live field lifetimes and export them.
-			stats->finish(game);
-			result << ",\"building_gradient\":";
-			stats->writeJson(result);
-			std::ofstream csv(output/"gradient-stats.csv");
-			stats->writeCsv(csv);
-			if (!csv) throw std::runtime_error("cannot write gradient-stats.csv");
-		}
+
         // Disabled diagnostics retain the ordinary result schema and avoid
         // formatting a full set of empty samples on CPU-only runs.
         if (gradient_kernel::isGPU(gradient.backend)) {
@@ -845,7 +834,7 @@ int runHeadlessCommand(const Cli::Request &request)
 			GlobalContainer globals("glob2-tournament-catalog");
 			globalContainer=&globals;for(const auto &directory:request.all("--data-dir"))globals.fileManager->addDir(directory);globals.runNoX=true;
 			std::cout << "{\"schema_version\":1,\"save_version\":" << VERSION_MINOR << ",\"protocol_version\":" << NET_PROTOCOL_VERSION
-				<< ",\"building_catalog_hash\":" << quote(globals.buildingsTypes.fingerprint()) << ",\"map_report_version\":2,\"generation_telemetry_version\":1,\"gameplay_telemetry_version\":2,\"ai_telemetry_version\":1,\"performance_telemetry_version\":1,\"commands\":[\"game\",\"generate_map\",\"verify_match\",\"sim_version\",\"compose_buildings\",\"validate_set\"],\"sim_version\":" << Online::currentSimVersion().toJson().dump() << ",\"verify_match_version\":1,\"telemetry\":[\"checksums\",\"team-timeline\",\"maxima\",\"gradient-stats\"],\"ais\":[";
+				<< ",\"building_catalog_hash\":" << quote(globals.buildingsTypes.fingerprint()) << ",\"map_report_version\":2,\"generation_telemetry_version\":1,\"gameplay_telemetry_version\":2,\"ai_telemetry_version\":1,\"performance_telemetry_version\":1,\"commands\":[\"game\",\"generate_map\",\"verify_match\",\"sim_version\",\"compose_buildings\",\"validate_set\"],\"sim_version\":" << Online::currentSimVersion().toJson().dump() << ",\"verify_match_version\":1,\"telemetry\":[\"checksums\",\"team-timeline\",\"maxima\"],\"ais\":[";
 
 			bool comma=false;
 			for(int ai:AINames::selectionOrder())

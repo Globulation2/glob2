@@ -425,7 +425,6 @@ UNIT_PRODUCTION_SOURCES = [
     '#src/map/editor/MapEditKeyActions.cpp',
     '#src/map/generator/shared/Noise.cpp',
     '#src/map/gradient/BuildingGradientSearch.cpp',
-    '#src/map/gradient/BuildingGradientStats.cpp',
     '#src/map/gradient/MapGradientDirection.cpp',
     '#src/map/gradient/MapGradientChamfer.cpp',
     '#src/map/gradient/MapGradientPropagation.cpp',

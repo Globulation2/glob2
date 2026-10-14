@@ -476,7 +476,7 @@ const std::vector<Command> &commands()
 			 integer("--ai-order-delay", "AI order delay in ticks", 0, 8),
 			 value("--save", "string", "Snapshot: initial, final, or every:N", "", true),
 			 choice("--telemetry", "Additional telemetry",
-					{"checksums", "team-timeline", "maxima", "gradient-stats"}, "", true),
+					{"checksums", "team-timeline", "maxima"}, "", true),
 			 flag("--write-replay", "Write game.replay"),
 			 integer("--benchmark-warmup", "Ticks excluded from benchmark counters", 0, 2147483647),
 			 choice("--diagnostic-fields", "Diagnostic field selection", {"maxima"}),

@@ -51,20 +51,6 @@ class BuildingGradientSearch
 	template <class Done> void advance(Done done);
 
   public:
-	// Diagnostic depth histogram: popped entries per DEPTH_BIN_COST cost band,
-	// the last bin collecting everything deeper. Never read by the simulation.
-	static constexpr int DEPTH_BINS = 32;
-	static constexpr int DEPTH_BIN_COST = 80; // eight land tiles
-	static constexpr int depthBin(int cost)
-	{
-		return cost / DEPTH_BIN_COST < DEPTH_BINS - 1 ? cost / DEPTH_BIN_COST : DEPTH_BINS - 1;
-	}
-	// Plain diagnostic counters, reset by begin() and clearForReuse():
-	// resolve() calls, calls that expanded at least one layer, and popped
-	// entries by depth band.
-	std::uint64_t queries = 0, extensions = 0;
-	std::array<std::uint64_t, DEPTH_BINS> poppedAtDepth{};
-
 	void begin(const Map &map, std::uint16_t *seeded, int swim);
 	// Same search from captured inputs; width and height are powers of two.
 	void begin(const Inputs &inputs, std::uint16_t *seeded, int swim, int width, int height);
@@ -86,7 +72,6 @@ class BuildingGradientSearch
 	int requiredCost() const { return readerCost; }
 	bool complete() const { return pending == 0; }
 	bool resolved(std::size_t target) const;
-	std::uint64_t poppedEntries() const { return popped; }
 	std::size_t retainedBytes() const;
 	void clearForReuse();
 };

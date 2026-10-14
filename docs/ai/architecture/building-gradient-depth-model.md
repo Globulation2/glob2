@@ -131,13 +131,13 @@ from those that generated at that size and colony count in a preflight: 25
 generators at 64, 49 at 128 and 66 at 256. The campaign planned 2,400 games and
 was stopped once the fit was stable; the remaining jobs were never run.
 
-`--telemetry gradient-stats` writes one row per lifetime (see
+The retired `gradient-stats` telemetry wrote one row per lifetime (see
 [building field statistics](../../development/performance-telemetry.md#building-field-statistics)).
-With the statistics on, scheduled fields are published with only their seeds
+With the statistics on, scheduled fields were published with only their seeds
 settled, so the depth a lifetime settled is the depth its readers needed. The
 rows record the model's inputs as they stood when each lifetime's job was
 staged (`staged`, `previous_hint`, `serving_settled`), which is exactly what the
-engine reads; only staged footprint lifetimes are fitted.
+engine reads; only staged footprint lifetimes were fitted.
 
 Fit 2 keyed on the depth the previous lifetime finally settled, which the
 engine never has when it stages a job: by then that lifetime is still serving,
@@ -193,29 +193,11 @@ scheduling. Refitting moves only CPU, so it needs no `SIM_REVISION` bump.
 | 2 | round-trip removal (greedy fetching) | quantile table: previous, units, type | p80 |
 | **3** | **staged inputs, larger campaign; reader-demand history** | **a + k · max(serving, previous)** | **λ 0.1** |
 
-## Running it
+## Measurement tooling
 
-```sh
-# Data: a gradient_depth tournament (see docs/tools/tournaments.md), plus any
-# directories of plain game run outputs that hold gradient-stats.csv.
-python3 -m tools.tournaments.gradient_depth plan depth.json --bundle BUNDLE --output planned.json
-python3 -m tools.tournaments submit planned.json RESULTS --bundle BUNDLE
-python3 -m tools.tournaments run RESULTS --hosts hosts.json
-
-python3 tools/gradient_depth_fit.py dataset RESULTS RUNS --output dataset.npz --jobs 16
-# Fit the operating points and regenerate the summary and the header.
-python3 tools/gradient_depth_fit.py fit dataset.npz --operating-point 0.1 --points 0.2 0.3 0.5
-# The default's metrics, overall and per map size; and the held-out curve.
-python3 tools/gradient_depth_fit.py evaluate dataset.npz
-python3 tools/gradient_depth_fit.py evaluate dataset.npz --curve [--share busy_oazis=0.026]
-```
-
-The dataset, fit and evaluate commands need numpy; on the fit-3 data each takes
-about a minute or less (`dataset` with `--jobs 16`) on one machine. Regenerating
-the header from the committed summary needs only the standard library.
-`test/test_gradient_depth_fit.py` checks that doing so is a no-op and that the
-C++ expression agrees with the fitter on random inputs; its fitting cases skip
-without numpy.
+The completed training campaign and its scripts remain in Git history. Runtime
+search histograms, lifetime exports and model-training commands have been retired;
+the fitted production policy and reader-demand history remain unchanged.
 
 ## Limits
 
@@ -235,7 +217,6 @@ without numpy.
 
 - [Building field statistics](../../development/performance-telemetry.md#building-field-statistics)
   are the rows this is fitted on.
-- [Distributed tournaments](../../tools/tournaments.md) describe the `gradient_depth`
-  campaign.
+- [Distributed tournaments](../../tools/tournaments.md) describe current experiment support.
 
 Related: [AI documentation](../README.md).

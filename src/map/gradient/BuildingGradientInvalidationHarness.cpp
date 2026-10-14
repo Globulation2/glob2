@@ -15,7 +15,6 @@
 #include "Building.h"
 #include "BuildingGradientSearch.h"
 #include "BuildingGradientDepthPolicy.h"
-#include "BuildingGradientStats.h"
 #include "BuildingType.h"
 #include "IntBuildingType.h"
 #include "Race.h"
@@ -505,7 +504,7 @@ void scheduledKernelsMatchSynchronous(KernelTerrain config)
 				}
 				resumed.finish();
 				requireSameCells(partial, expected, what + " resumed");
-				REQUIRE(resumed.poppedEntries() == search.poppedEntries());
+				REQUIRE(resumed.settledCost() == search.settledCost());
 			}
 	REQUIRE(locked > 0);
 	REQUIRE(clearing > 0);
@@ -699,19 +698,19 @@ void scheduledPartialResume()
 		const bool partial = !search || !search->complete();
 		require(search && (mode == Depth::Full ? !partial : mode == Depth::Lazy ? partial : true)
 			&& (!partial || search->settledCost() > depth), "the published field carries its frontier");
-		const auto workerPopped = search->poppedEntries();
+		const auto workerCost = search->settledCost();
 		require(s.map.buildingAvailable(b, 0, 230, 230, &dist), "far query resolves on the owner");
-		require(!partial || search->poppedEntries() > workerPopped, "the owner continues the transferred search");
+		require(!partial || search->settledCost() > workerCost, "the owner continues the transferred search");
 		const auto resumed = s.finished(b, 0);
-		const auto resumedPopped = b->globalGradientSearch[0]->poppedEntries();
+		const auto resumedCost = b->globalGradientSearch[0]->settledCost();
 		s.map.updateGlobalGradient(b, 0);
 		const auto full = s.finished(b, 0);
 		require(resumed == full, "resumed values equal a full build");
-		require(resumedPopped == b->globalGradientSearch[0]->poppedEntries(), "no rescan: the same entries as one full build");
+		require(resumedCost == b->globalGradientSearch[0]->settledCost(), "the finished frontier matches a full build");
 		if (reference.empty()) reference = resumed;
 		require(resumed == reference, "every depth setting publishes the same values");
-		std::printf("PASS scheduled field depth mode %d (depth %d, worker popped %llu of %llu) resumes from transferred buckets\n",
-			int(mode), depth, (unsigned long long)workerPopped, (unsigned long long)resumedPopped);
+		std::printf("PASS scheduled field depth mode %d (depth %d, worker frontier %llu of %llu) resumes from transferred buckets\n",
+			int(mode), depth, (unsigned long long)workerCost, (unsigned long long)resumedCost);
 	}
 }
 
@@ -1282,48 +1281,6 @@ TEST_SUITE("BuildingGradientInvalidation")
         }
     }
 
-    TEST_CASE("released water-only footprint diagnostics export the locked water-only access row")
-    {
-        glob2test::HeadlessGlobals globals;
-        glob2test::HeadlessGame world;
-        auto* inn=world.addBuilding("inn",8,8);
-        REQUIRE(inn!=nullptr);
-        auto& map=world.game.map;
-        const auto route=BuildingRoute::Footprint;
-        constexpr int waterOnly=7;
-        const int waterSlot=inn->routeSlot(waterOnly,route);
-        for(int swim:{1,waterOnly}) {
-            const int slot=inn->routeSlot(swim,route);
-            inn->globalGradient[slot]=map.acquireBuildingGradientBuffer();
-            map.updateGlobalGradient(inn,swim,route);
-            map.finishBuildingGradient(inn,swim,route);
-        }
-        REQUIRE_FALSE(inn->isLocked(inn->routeAccess(1,route)));
-        REQUIRE(inn->isLocked(inn->routeAccess(waterOnly,route)));
-        REQUIRE(inn->globalGradient[waterSlot]!=nullptr);
-        REQUIRE_FALSE(bool(inn->globalGradientSearch[waterSlot]));
-        BuildingGradientStats stats;
-        stats.fieldReleased(*inn,waterSlot,BuildingGradientStats::Event::End,world.game.stepCounter);
-        REQUIRE(stats.rows().size()==1);
-        const auto& row=stats.rows().front();
-        CHECK(row.route==0); CHECK(row.swim==waterOnly);
-        CHECK(row.prevLocked); CHECK_FALSE(row.prevComplete);
-        std::ostringstream exported; stats.writeCsv(exported);
-        std::istringstream csv(exported.str());
-        std::string headerLine,rowLine; REQUIRE(bool(std::getline(csv,headerLine)));
-        REQUIRE(bool(std::getline(csv,rowLine)));
-        std::istringstream headers(headerLine),values(rowLine);
-        std::string header,value;
-        bool lockedSeen=false,completeSeen=false,routeSeen=false,swimSeen=false;
-        while(std::getline(headers,header,',')) {
-            REQUIRE(bool(std::getline(values,value,',')));
-            if(header=="prev_locked") {CHECK(value=="1");lockedSeen=true;}
-            if(header=="prev_complete") {CHECK(value=="0");completeSeen=true;}
-            if(header=="route") {CHECK(value=="footprint");routeSeen=true;}
-            if(header=="swim") {CHECK(value=="7");swimSeen=true;}
-            if(lockedSeen && completeSeen && routeSeen && swimSeen) break;
-        }
-        CHECK(lockedSeen); CHECK(completeSeen); CHECK(routeSeen); CHECK(swimSeen);
-    }
+
 
 }

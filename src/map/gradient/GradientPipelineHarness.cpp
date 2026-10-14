@@ -51,7 +51,7 @@ TEST_CASE("fixed publication; supersession; bounded buffers; scheduling stress; 
 		TestGradientPipeline pipeline;
 		pipeline.configure(workers, delay, 16, [](auto &job, auto &) {
 			if (job.data[0] % 3 == 0) std::this_thread::sleep_for(std::chrono::microseconds(40));
-			for (int i=1; i<16; ++i) job.data[i] = job.data[0] + (*job.water)[i];
+			for (int i=1; i<16; ++i) job.data[i] = job.data[0] + 2;
 		});
 		std::array<unsigned, 7> expected{};
 		std::array<bool, 1001> cancelled{};
@@ -60,7 +60,7 @@ TEST_CASE("fixed publication; supersession; bounded buffers; scheduling stress; 
 			if (tick>delay && !cancelled[tick-delay]) expected[(tick-delay)%7] = tick-delay;
 			for (unsigned s=0; s<slots.size(); ++s) REQUIRE(slots[s][0] == expected[s]);
 			pipeline.submit(&slots[tick%7], 0, [tick](auto &job) {
-				job.data[0] = tick; job.water = std::make_shared<const std::vector<std::uint8_t>>(16,2);
+				job.data[0] = tick;
 			});
 			if (tick%5 == 0) {
 				pipeline.invalidate(&slots[tick%7]);
@@ -544,7 +544,6 @@ TEST_CASE("GradientPipeline/worker GPU submissions finish ahead of deadlines and
                 CHECK(scratch.size() == jobs.size());
                 for (auto *job : jobs)
                 {
-                    REQUIRE(job->water);
                     job->data[0] += 100;
                 }
                 { std::lock_guard lock(completionMutex); ++batches; }
@@ -557,7 +556,6 @@ TEST_CASE("GradientPipeline/worker GPU submissions finish ahead of deadlines and
                             [tick](auto &job)
                             {
                                 job.data[0] = tick;
-                                job.water = std::make_shared<const std::vector<std::uint8_t>>(1, 1);
                             });
         }
         for (auto *slot : slots)

@@ -23,7 +23,6 @@
 #include "Bullet.h"
 #include "BuildingGradientSearch.h"
 #include "SharedBuildingGradient.h"
-#include "BuildingGradientStats.h"
 
 Building::Building(GAGCore::InputStream *stream, BuildingsTypes *types, Team *owner, Sint32 versionMinor)
 {
@@ -189,7 +188,6 @@ void Building::resetPathfindGradients(GradientDrop cause)
 	for (int i=0; i<BUILDING_GRADIENT_COUNT; i++)
 		kept[i] = keep && globalGradient[i] && !isLocked(routeAccess(i % SWIM_CLASS_COUNT, BuildingRoute(i / SWIM_CLASS_COUNT)));
 	dirtyGradients();
-	auto *stats = owner->game->map.gradientStats.get();
 	for (int i=0; i<BUILDING_GRADIENT_COUNT; i++)
 	{
 		if (kept[i])
@@ -199,7 +197,6 @@ void Building::resetPathfindGradients(GradientDrop cause)
 			continue;
 		}
 		auto guard = SharedBuildingGradient::lock(sharedGradient[i]);
-		if (stats) stats->fieldReleased(*this, i, BuildingGradientStats::Event::Drop, owner->game->stepCounter);
 		dropGradientSlot(i, cause);
 		retireSharedGradient(i);
 		recycleBuildingGradientSearch(std::move(globalGradientSearch[i]));
@@ -219,8 +216,6 @@ void Building::freeIdleGradients()
 		if (globalGradient[c] && globalGradientUsedStep[c]+IDLE_TICKS<now)
 		{
 			auto guard = SharedBuildingGradient::lock(sharedGradient[c]);
-			if (auto *stats = owner->game->map.gradientStats.get())
-				stats->fieldReleased(*this, c, BuildingGradientStats::Event::Evict, now);
 			dropGradientSlot(c, GradientDrop::Idle);
 			retireSharedGradient(c);
 			recycleBuildingGradientSearch(std::move(globalGradientSearch[c]));
