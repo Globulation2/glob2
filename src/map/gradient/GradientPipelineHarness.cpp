@@ -483,7 +483,7 @@ TEST_CASE("shared preparation executes off the owner and retains its deadline" *
     pipeline.reset(); delete[] field;
 }
 
-TEST_CASE("backend selection is shared across owner and resized worker scratch" * doctest::test_suite("GradientPipeline"))
+TEST_CASE("backend selection survives worker scratch resizing" * doctest::test_suite("GradientPipeline"))
 {
     auto session=std::make_shared<gradient_kernel::BackendSession>();
     TestGradientPipeline pipeline;
@@ -491,12 +491,8 @@ TEST_CASE("backend selection is shared across owner and resized worker scratch" 
     auto* field=new std::uint16_t[1]{};
     for (unsigned workers : {0,2,4,0})
     {
-        pipeline.configure(workers,1,1,[session](auto& job,auto& scratch) {
-            if (scratch.backendSession!=session ||
-                !scratch.backendSession->currentGeneration())
-                throw std::logic_error("gradient workspace lost game backend selection");
-            job.data[0]=42;
-        });
+        pipeline.configure(workers,1,1,[](auto& job,auto&) { job.data[0]=42; });
+        CHECK(pipeline.session()==session);
         pipeline.advance(); pipeline.submit(&field,0,[](auto&){});
         pipeline.finish(); pipeline.advance();
         CHECK(field[0]==42);
@@ -512,19 +508,13 @@ TEST_CASE("GradientPipeline/CPU fields keep their original worker")
     using namespace gradient_kernel;
     for (const auto choice : {Backend::CPU}) {
     const auto previous = backend();
-    const auto provider = batchAccelerator;
-    struct Restore {
-        Backend previous; decltype(batchAccelerator) provider;
-        ~Restore() { setBackend(previous); batchAccelerator = provider; }
-    } restore{previous, provider};
+    struct Restore {Backend previous;~Restore(){setBackend(previous);}} restore{previous};
     setBackend(choice);
-    batchAccelerator = [](std::span<const BackendRequest>, Plan) { return false; };
     TestGradientPipeline pipeline;
     std::promise<void> completion;
     auto finished = completion.get_future();
     const auto owner = std::this_thread::get_id();
     std::thread::id worker, seeded;
-    unsigned batches = 0;
     pipeline.configure(1, 4, 1, [&](auto& job, auto&) {
         worker = std::this_thread::get_id();
         job.data[0] = 123;
@@ -540,7 +530,6 @@ TEST_CASE("GradientPipeline/CPU fields keep their original worker")
     pipeline.finish();
     CHECK(worker != owner);
     CHECK(worker == seeded);
-    CHECK(batches == 0);
     CHECK(field[0] == 0);
     for (unsigned tick = 0; tick < 4; ++tick) pipeline.advance();
     CHECK(field[0] == 123);

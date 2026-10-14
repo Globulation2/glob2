@@ -76,6 +76,14 @@ def summarize(rows):
             variants[variant] = {key: statistics.median(row[key] for row in samples) for key in ('wall_s', 'cpu_s', 'peak_rss_bytes')}
             if all('run_ns' in row['result'] for row in samples):
                 variants[variant]['run_s'] = statistics.median(row['result']['run_ns'] / 1e9 for row in samples)
+            # The engine's process CPU clock separates startup and save I/O
+            # from the measured tick window, including all worker threads.
+            if all(row['result'].get('benchmark_measured_ticks', 0) > 0 for row in samples):
+                for phase in ('setup', 'run', 'save'):
+                    key = f'benchmark_{phase}_cpu_ns'
+                    variants[variant][f'{phase}_cpu_s'] = statistics.median(row['result'][key] / 1e9 for row in samples)
+                variants[variant]['cpu_ns_per_tick'] = statistics.median(
+                    row['result']['benchmark_run_cpu_ns'] / row['result']['benchmark_measured_ticks'] for row in samples)
             variants[variant]['ticks'] = sorted({row['result']['ticks'] for row in samples})
             variants[variant]['termination'] = sorted({row['result']['termination'] for row in samples})
         baseline = variants.get('baseline')
@@ -90,6 +98,8 @@ def summarize(rows):
                 if paired:
                     value['wall_speedup_over_base_same_threads'] = paired['wall_s'] / value['wall_s']
                     value['cpu_ratio_over_base_same_threads'] = value['cpu_s'] / paired['cpu_s']
+                    if 'cpu_ns_per_tick' in value and 'cpu_ns_per_tick' in paired:
+                        value['cpu_per_tick_ratio_over_base_same_threads'] = value['cpu_ns_per_tick'] / paired['cpu_ns_per_tick']
             if name != 'baseline':
                 serial = variants.get(name.rsplit('-', 1)[0] + '-1')
                 if serial:

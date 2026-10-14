@@ -302,7 +302,7 @@ public:
 		bool enabled = false;
 		unsigned delay = 0;
 		std::size_t pending = 0, queued = 0;
-		std::uint64_t jobs = 0, published = 0, discarded = 0, synchronous = 0, maxPending = 0, waitNs = 0;
+		std::uint64_t jobs = 0, published = 0, discarded = 0, synchronous = 0, maxPending = 0;
 		std::array<std::uint64_t, std::size_t(BuildingSyncReason::Count)> synchronousByReason{};
 	};
 	//! Tags the next synchronous building build for the counters above.
@@ -321,10 +321,6 @@ public:
 	//! Worker depth for a scheduled walking field: every reader still resolves
 	//! its cell first, so the prediction moves CPU, never values.
 	int predictBuildingDepth(const Building *building, int slot) const;
-	//! "table" (the model's default point), a point name such as "l0300",
-	//! "full" or "lazy" (seeds only): CPU placement for timing comparisons,
-	//! never results. GLOB2_BUILDING_DEPTH sets it too.
-	void setBuildingGradientDepth(std::string_view mode);
 	void updateTeamAreaGradients(int teamNumber);
 	void seedMaterialGradient(int team, Uint8 resource, int swim, Uint16 *gradient, bool withMarkets = false, const Building* consumer = nullptr, unsigned modes = 0);
 	void seedGuardAreasGradient(int team, int swim, Uint16 *gradient);

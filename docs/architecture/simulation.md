@@ -325,7 +325,8 @@ For timing and scheduling, start with `src/game/Game_sync.cpp` and `src/engine/E
   compact statistics), with explicit history, telemetry, entity-diagnostic and
   annotation options. Consumers do not contribute arbitrary capture masks.
   Complete snapshots still share unchanged components and refresh dirty map
-  chunks in reusable buffers. Paused edits, configuration changes and world
+  chunks in reusable buffers. Capture constructs only components that need filling;
+  reused and unrequested components require no placeholder records. Paused edits, configuration changes and world
   replacement retain their explicit invalidation boundaries. A cold option may
   widen the cached capture within a boundary, reusing its immutable entity records
   and sidecars without another extraction. A changed tick, observation revision,
@@ -352,11 +353,10 @@ For timing and scheduling, start with `src/game/Game_sync.cpp` and `src/engine/E
   pre-edit field for up to the delay. Fields a building has never had (or lost to
   idle eviction or its own move, type or range change), queue overflow (more than
   64 waiting requests) and maps without a game build synchronously.
-  `Map::predictBuildingDepth` reads the generated
+  `Map::predictBuildingDepth` reads the production
   [depth model](../ai/architecture/building-gradient-depth-model.md) from the field's own past
   reader demand (its serving search's required cost and `settledCostHint`). It only moves
-  search work between worker and owner; `GLOB2_BUILDING_DEPTH=full|table|lazy`
-  or an operating point name overrides it for timing.
+  search work between worker and owner. Experimental depth overrides are retired.
 - The executor ring holds 79 batches: each deferred producer holds at most its
   horizon plus one (AI decisions 8, periodic gradients 16, building gradients 8, resource growth 16,
   team statistics 8, turret shortlist jobs 4),
@@ -507,7 +507,9 @@ worker; each ticket resolves once. Pending publication deadlines survive saves
 and backend changes.
 
 CPU configurations have no GPU service or session, register no GPU worker-only
-predicate, and select CPU job/join callbacks at configuration. An existing idle
+predicate, and select CPU job/join callbacks at configuration. The application
+installs its GPU shutdown callback only when GPU state is created, retaining it
+across later backend switches; a CPU-only application never calls that barrier. An existing idle
 coordinator parks without polling when its registrations are gone. GPU fences and
 quarantined storage remain adapter-owned until safe retirement.
 

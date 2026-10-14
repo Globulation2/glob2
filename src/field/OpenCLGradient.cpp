@@ -107,7 +107,6 @@ struct API
     SDL_SharedObject *library = nullptr;
 #define CL_FUNCTION(name, result, ...) result(CL_CALL *name)(__VA_ARGS__) = nullptr
     CL_FUNCTION(GetPlatformIDs, Int, UInt, Handle *, UInt *);
-    CL_FUNCTION(GetPlatformInfo, Int, Handle, UInt, std::size_t, void *, std::size_t *);
     CL_FUNCTION(GetDeviceIDs, Int, Handle, Bits, UInt, Handle *, UInt *);
     CL_FUNCTION(GetDeviceInfo, Int, Handle, UInt, std::size_t, void *, std::size_t *);
     CL_FUNCTION(CreateContext, Handle, const std::intptr_t *, UInt, const Handle *,
@@ -160,7 +159,6 @@ struct API
     if (!name)                                                                                               \
     throw std::runtime_error("Missing OpenCL function: cl" #name)
         LOAD(GetPlatformIDs);
-        LOAD(GetPlatformInfo);
         LOAD(GetDeviceIDs);
         LOAD(GetDeviceInfo);
         LOAD(CreateContext);
@@ -327,10 +325,11 @@ struct Device
     API api;
     std::mutex initialization, cacheMutex, lanesMutex, failureMutex;
     bool probed = false;
-    bool waitFailureDiagnostics=false;
+#ifdef GLOB2_TEST_DEVICE_FAILURES
+    bool waitFailureDiagnostics=false, requiredQueryFailureDiagnostics=false;
+#endif
     std::atomic<bool> failed{false};
     OpenCLRequiredLifetimePool requiredLifetime;
-    bool requiredQueryFailureDiagnostics=false;
     MemoryBudget& deviceBudget=globalDeviceBudget;
     Handle device = nullptr, context = nullptr;
     OpenCLStatus status;
@@ -430,8 +429,10 @@ struct Device
         probed = true;
         try
         {
+#ifdef GLOB2_TEST_DEVICE_FAILURES
             requiredQueryFailureDiagnostics=numericOverride("GLOB2_TEST_OPENCL_REQUIRED_QUERY_FAILURE",0,1)!=0;
             waitFailureDiagnostics=numericOverride("GLOB2_TEST_OPENCL_WAIT_FAILURE",0,1)!=0;
+#endif
             api.load();
             const auto requestedDevice=numericOverride("GLOB2_OPENCL_DEVICE",0,std::numeric_limits<unsigned>::max());
             const bool explicitDevice=std::getenv("GLOB2_OPENCL_DEVICE")!=nullptr;
@@ -462,7 +463,6 @@ struct Device
                     if (available && compiler && group >= 256)
                     {
                         device = candidate;
-                        status.deviceOrdinal=candidateOrdinal;status.deviceOrdinalKnown=true;
                         break;
                     }
                 }
@@ -478,9 +478,7 @@ struct Device
             check(api.GetDeviceInfo(device, 0x102B, bytes, name.data(), nullptr));
             if(name[bytes-1]!=0)throw std::runtime_error("Unterminated OpenCL device name");
             status.device.assign(name.data(),bytes-1);
-            // Fingerprints are captured once on the initialization coordinator.
-            // A malformed/unsupported optional query leaves metadata empty and
-            // is diagnostic only; it never changes execution or admission.
+            // Operational driver identity; optional malformed metadata is ignored.
             const auto infoString=[](auto query,Handle object,UInt key) {
                 std::size_t size=0;
                 if(query(object,key,0,nullptr,&size) || !size || size>2048)return std::string{};
@@ -488,25 +486,7 @@ struct Device
                 if(query(object,key,size,value.data(),nullptr) || value[size-1]!=0)return std::string{};
                 return std::string(value.data(),size-1);
             };
-            Handle platform=nullptr;
-            if(!api.GetDeviceInfo(device,0x1031 /* CL_DEVICE_PLATFORM */,sizeof platform,&platform,nullptr) && platform) {
-                status.platform=infoString(api.GetPlatformInfo,platform,0x0902);
-                status.platformVendor=infoString(api.GetPlatformInfo,platform,0x0903);
-                status.platformVersion=infoString(api.GetPlatformInfo,platform,0x0901);
-            }
-            status.deviceVendor=infoString(api.GetDeviceInfo,device,0x102C);
             status.driverVersion=infoString(api.GetDeviceInfo,device,0x102D);
-            status.deviceVersion=infoString(api.GetDeviceInfo,device,0x102F);
-            status.openCLCVersion=infoString(api.GetDeviceInfo,device,0x103D);
-            // cl_khr_device_uuid defines a 16-byte CL_DEVICE_UUID_KHR query.
-            // Unsupported/error results leave this diagnostic identity empty.
-            std::array<unsigned char,16> uuid{};std::size_t uuidBytes=0;
-            if(!api.GetDeviceInfo(device,0x106A,sizeof uuid,uuid.data(),&uuidBytes) && uuidBytes==uuid.size() &&
-                std::any_of(uuid.begin(),uuid.end(),[](auto byte){return byte!=0;})) {
-                constexpr char hex[]="0123456789abcdef";
-                status.deviceUUIDHex.reserve(uuid.size()*2);
-                for(const auto byte:uuid){status.deviceUUIDHex.push_back(hex[byte>>4]);status.deviceUUIDHex.push_back(hex[byte&15]);}
-            }
             Int error = 0;
             context = api.CreateContext(nullptr, 1, &device, nullptr, nullptr, &error);
             check(error);
@@ -637,10 +617,14 @@ struct Runtime : std::enable_shared_from_this<Runtime>
         std::shared_ptr<Device::Plane> preparing;
         Handle event=nullptr;
         OpenCLTransferProof proof;
+#ifdef GLOB2_TEST_DEVICE_FAILURES
         unsigned diagnosticQueryFailures=0;
+#endif
         RequiredTransaction(std::shared_ptr<Runtime> owner,BudgetLease& reserved,OpenCLRequiredLifetimePool::Slot& slot):lane(std::move(owner)) {
             admission.parent=lane->shared;admission.slot=&slot;reserved.transferTo(objectLease);
+#ifdef GLOB2_TEST_DEVICE_FAILURES
             diagnosticQueryFailures=lane->shared->requiredQueryFailureDiagnostics ? 2 : 0;
+#endif
         }
         ~RequiredTransaction(){if(event)lane->api.ReleaseEvent(event);}
         void remember(Handle next) noexcept {
@@ -656,7 +640,9 @@ struct Runtime : std::enable_shared_from_this<Runtime>
         static bool terminalProof(void* value) noexcept {
             auto& transaction=*static_cast<RequiredTransaction*>(value);
             if(!transaction.event || !transaction.proof.canPollEvent())return false;
+#ifdef GLOB2_TEST_DEVICE_FAILURES
             if(transaction.diagnosticQueryFailures){--transaction.diagnosticQueryFailures;return false;}
+#endif
             Int state=1;
             if(transaction.lane->api.GetEventInfo(transaction.event,0x11D3,sizeof state,&state,nullptr) || state!=0)return false;
             transaction.proof.eventCompleted();return !transaction.proof.needsProof();
@@ -826,11 +812,13 @@ struct Runtime : std::enable_shared_from_this<Runtime>
 			if (required && required->canceled())
 				throw RequiredCanceled();
 			Int state = 1;
+#ifdef GLOB2_TEST_DEVICE_FAILURES
 			if (required && required->diagnosticQueryFailures)
 			{
 				--required->diagnosticQueryFailures;
 				throw std::runtime_error("Injected required event query failure");
 			}
+#endif
 			{
 			check(api.GetEventInfo(event.value, 0x11D3, sizeof state, &state, nullptr)); }
 			if(state<0)check(state);
@@ -838,7 +826,9 @@ struct Runtime : std::enable_shared_from_this<Runtime>
                 // CL_COMPLETE is not host acquisition. Synchronize this
                 // completed event before using transfer data; required
                 // cancellation still polls interruptibly before completion.
+#ifdef GLOB2_TEST_DEVICE_FAILURES
                 if(shared->waitFailureDiagnostics)throw std::runtime_error("Injected OpenCL host wait failure");
+#endif
                 check(api.WaitForEvents(1,&event.value));
                 ++status.hostEventWaits;
                 if(required)required->proof.eventCompleted();

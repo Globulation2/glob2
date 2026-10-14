@@ -40,7 +40,7 @@ struct Output
 {
 	unsigned tick = 0, team = 0;
 	Metrics metrics;
-	std::uint64_t ns = 0, candidateVisits = 0;
+	std::uint64_t candidateVisits = 0;
 	std::vector<BuildingLists> buildings;
 };
 struct Inputs

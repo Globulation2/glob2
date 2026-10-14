@@ -220,11 +220,10 @@ refreshes statistics-bearing observations after immediate calculation. Older
 saves migrate with delay zero and adopt the between-tick observation phase.
 See [gameplay statistics](../ai/gameplay-statistics.md#sampling-and-saves).
 
-Statistics and snapshot clock measurements are opt-in: set `GLOB2_STATS_PROFILE=1`
-for capture, worker, allocation, submission, publication and deadline timing, or
-`GLOB2_SNAPSHOT_PROFILE=1` for capture timing alone. Normal statistics jobs retain
-only executor completion synchronization needed to release their snapshot. Timed jobs
-write independent per-team durations, summed after the owner joins the batch.
+Statistics and snapshot capture use shared executor diagnostics and external
+profilers. Separate subsystem timing controls and per-team timing buffers are
+retired. Statistics jobs retain the completion synchronization needed to release
+their snapshot.
 Cumulative events alone cross the statistics read boundary; instantaneous and
 labour measurements are initialized by the calculation. The live calculation
 remains an independent equivalence reference and supports older-save rebuilding.

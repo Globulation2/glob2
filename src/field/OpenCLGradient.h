@@ -30,10 +30,7 @@ struct OpenCLStatus
     std::uint64_t budgetDeclines=0;
     std::uint64_t noopFields=0;
     std::uint64_t deviceObservedFields=0,committedFields=0;
-    std::string platform,platformVendor,platformVersion;
-    std::string deviceVendor,driverVersion,deviceVersion,openCLCVersion,deviceUUIDHex;
-    unsigned deviceOrdinal=0;
-    bool deviceOrdinalKnown=false;
+    std::string driverVersion;
     std::uint64_t requiredQuarantines=0,requiredProofFailures=0,requiredCancellations=0;
     bool requiredQuarantinePending=false;
 };

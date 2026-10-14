@@ -401,7 +401,6 @@ TEST_SUITE("ResourceGrowth")
 		CHECK_THROWS(map.setResourceGrowthDelay(3));
 		CHECK(pipeline.count() == 1);
 		CHECK_FALSE(map.computeExecutor().finished(pipeline.pending.front()->work));
-		CHECK(pipeline.metrics.computeNs == 0);
 		pipeline.finish();
 		CHECK(pipeline.metrics.sampled > 0);
 	}
@@ -464,9 +463,7 @@ TEST_SUITE("ResourceGrowth")
 		m.setResourceGrowthDelay(8);
 		world.step();
 		REQUIRE(m.gradientRuntime->growth.count() == 1);
-		CHECK(m.resourceGrowthMetrics().computeNs == 0);
 		m.checkSum(false);
-		CHECK(m.resourceGrowthMetrics().computeNs == 0);
 		m.finishResourceGrowth();
 		CHECK(m.resourceGrowthMetrics().sampled > 0);
 		CHECK(m.resourceGrowthMetrics().published == 0);

@@ -125,29 +125,29 @@ Handle capture(const Game& game,
 		if (!needs(requirements, component)) return std::shared_ptr<T>{};
 		return storage ? (storage->*pool).acquire(storage->allocations, [](const T& buffer) { return buffer.stamps.filledTick; }) : std::make_shared<T>();
 	};
-	Catalogs unusedCatalogs; auto catalogsOwner = acquire(&Storage::catalogs, Component::Catalogs);
-	auto* catalogs = catalogsOwner ? catalogsOwner.get() : &unusedCatalogs;
-	Terrain unusedTerrain; auto terrainOwner = acquireStamped(&Storage::terrain, Component::Terrain);
-	auto* terrain = terrainOwner ? terrainOwner.get() : &unusedTerrain;
-	Resources unusedResources; auto resourcesOwner = acquireStamped(&Storage::resources, Component::Resources);
-	auto* resources = resourcesOwner ? resourcesOwner.get() : &unusedResources;
-	Occupancy unusedOccupancy; auto occupancyOwner = acquireStamped(&Storage::occupancy, Component::Occupancy);
-	auto* occupancy = occupancyOwner ? occupancyOwner.get() : &unusedOccupancy;
-	Areas unusedAreas; auto areasOwner = acquireStamped(&Storage::areas, Component::Areas);
-	auto* areas = areasOwner ? areasOwner.get() : &unusedAreas;
-	Visibility unusedVisibility; auto visibilityOwner = acquireStamped(&Storage::visibility, Component::Visibility);
-	auto* visibility = visibilityOwner ? visibilityOwner.get() : &unusedVisibility;
-	Entities unusedEntities; auto entitiesOwner = acquire(&Storage::entities, Component::Entities);
-	auto* entities = entitiesOwner ? entitiesOwner.get() : &unusedEntities;
-	Teams unusedTeams; auto teamsOwner = acquire(&Storage::teams, Component::Teams);
-	auto* teams = teamsOwner ? teamsOwner.get() : &unusedTeams;
-	Rules unusedRules; auto rulesOwner = acquire(&Storage::rules, Component::Rules);
-	auto* rules = rulesOwner ? rulesOwner.get() : &unusedRules;
+	auto catalogsOwner = acquire(&Storage::catalogs, Component::Catalogs);
+	auto* catalogs = catalogsOwner.get();
+	auto terrainOwner = acquireStamped(&Storage::terrain, Component::Terrain);
+	auto* terrain = terrainOwner.get();
+	auto resourcesOwner = acquireStamped(&Storage::resources, Component::Resources);
+	auto* resources = resourcesOwner.get();
+	auto occupancyOwner = acquireStamped(&Storage::occupancy, Component::Occupancy);
+	auto* occupancy = occupancyOwner.get();
+	auto areasOwner = acquireStamped(&Storage::areas, Component::Areas);
+	auto* areas = areasOwner.get();
+	auto visibilityOwner = acquireStamped(&Storage::visibility, Component::Visibility);
+	auto* visibility = visibilityOwner.get();
+	auto entitiesOwner = acquire(&Storage::entities, Component::Entities);
+	auto* entities = entitiesOwner.get();
+	auto teamsOwner = acquire(&Storage::teams, Component::Teams);
+	auto* teams = teamsOwner.get();
+	auto rulesOwner = acquire(&Storage::rules, Component::Rules);
+	auto* rules = rulesOwner.get();
 	// Map buffers keep their constructed range when reused. Overwrite selected
 	// arrays directly rather than clearing and growing them one cell at a time.
-	entities->funding.clear(); entities->relationships.clear(); entities->projects.clear();
-    entities->extraProduction.clear();
     if (needs(requirements, Component::Entities)) {
+        entities->funding.clear(); entities->relationships.clear(); entities->projects.clear();
+        entities->extraProduction.clear();
         entities->unitCargo = game.unitCargo; entities->availableGroundClasses.fill(0);
         if (storage) for (const auto& [gid, inventory] : game.unitCargo.entries())
             storage->entitySidecarBytesCopied += sizeof(gid) + inventory.size() * sizeof(UnitCargoEntry);
@@ -173,10 +173,10 @@ Handle capture(const Game& game,
 	if (needs(requirements, Component::Terrain))
 	{ terrain->registry = game.map.frozenTerrainRegistry();
 	terrain->rules = game.map.frozenCellRules();
-	terrain->vertices = game.map.frozenVertexSnapshot(); }
+	terrain->vertices = game.map.frozenVertexSnapshot();
 	terrain->revision = game.map.terrainGeneration();
 	terrain->movementModifiers = game.map.hasTerrainMovementModifiers();
-	terrain->airConstraints = game.map.hasAirTerrainConstraints();
+	terrain->airConstraints = game.map.hasAirTerrainConstraints(); }
 	const auto& header = game.gameHeader;
 	if (needs(requirements, Component::Catalogs)) {
 		// Preference identity is needed by session consumers, not standalone AI
@@ -422,8 +422,10 @@ Handle capture(const Game& game,
 			}
 		}
 	}
-	entities->buildings.resize(buildingRecordCount);
-	entities->units.resize(unitRecordCount);
+	if (needs(requirements, Component::Entities)) {
+		entities->buildings.resize(buildingRecordCount);
+		entities->units.resize(unitRecordCount);
+	}
 
     if (auto session=acquire(&Storage::session,Component::Session)) {
         session->editor=game.edit!=nullptr;
@@ -504,7 +506,7 @@ Handle capture(const Game& game,
     }
 	if (needs(requirements, Component::Entities))
 		for (const auto& p : game.buildProjects) append(entities->projects, {p.posX,p.posY,p.teamNumber,p.typeNum,p.unitWorking,p.unitWorkingFuture});
-	teams->totalPrestige = game.totalPrestige;
+	if (needs(requirements, Component::Teams)) teams->totalPrestige = game.totalPrestige;
 	if (needs(requirements, Component::Catalogs)) result->catalogs = std::move(catalogsOwner);
 	if (needs(requirements, Component::Terrain)) result->terrain = std::move(terrainOwner);
 	if (needs(requirements, Component::Resources)) result->resources = std::move(resourcesOwner);
@@ -515,9 +517,7 @@ Handle capture(const Game& game,
 	if (needs(requirements, Component::Teams)) result->teams = std::move(teamsOwner);
 	if (needs(requirements, Component::Rules)) result->rules = std::move(rulesOwner);
 	if (needs(requirements, Component::Growth)) {
-		const auto start=storage && storage->profiling ? std::chrono::steady_clock::now() : std::chrono::steady_clock::time_point{};
 		const auto& source=game.map.resourceGrowthField();
-		if (storage && storage->profiling) storage->preparationNs += std::chrono::duration_cast<std::chrono::nanoseconds>(std::chrono::steady_clock::now()-start).count();
 		auto frozen=storage ? storage->growth.acquire(storage->allocations) : std::make_shared<Fertility::GrowthCache>();
 		const auto oldCap=frozen->storageCapacities(), required=source.storageSizes();
 		if (storage) for(unsigned i=0;i<oldCap.size();++i) if(oldCap[i]<required[i]) ++storage->allocations;

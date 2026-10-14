@@ -298,6 +298,12 @@ void propagate(const Request& request, const SimulationSnapshot::Handle& snapsho
 
 namespace
 {
+struct PropagationField {
+    Request request;
+    const SimulationSnapshot::Handle* snapshot;
+    Uint16* output;
+    GradientWorkspace* scratch;
+};
 gradient_kernel::EntrySteps batchCosts(const PropagationField &field, std::size_t cell)
 {
     using namespace gradient_kernel;
@@ -331,7 +337,9 @@ void validatePropagation(const PropagationField& field)
                                                        field.request.terrainBuckets);
     }
 }
-void batchCPU(const PropagationField &field, Uint16 *out)
+// Keep the large CPU solver separate from validation and the trivial-field path.
+// Removing the batch adapter must not pull all solver variants into that wrapper.
+[[gnu::noinline]] void batchCPU(const PropagationField &field, Uint16 *out)
 {
     using namespace gradient_kernel;
     const auto &terrain = *field.snapshot->terrain;
@@ -351,15 +359,6 @@ void batchCPU(const PropagationField &field, Uint16 *out)
     else
         runtime_terrain::propagate<256, false, false>(out, COST_LIMIT, grid, *field.scratch, at, movement);
 }
-void batchCPUGroup(std::span<const gradient_kernel::BackendRequest* const> requests,
-                   std::span<Uint16* const> destinations)
-{
-    const auto& first = *static_cast<const PropagationField*>(requests.front()->context);
-    first.executor->run(requests.size(), [&](std::size_t i) {
-        try { requests[i]->cpu(requests[i]->context, destinations[i]); }
-        catch(...) { if(requests[i]->failure) requests[i]->failure(requests[i]->context,std::current_exception()); else throw; }
-    }, {ComputeProducer::PeriodicGradient, 0, 0});
-}
 } // namespace
 void propagateCPU(const Request& request,const SimulationSnapshot::Handle& snapshot,Uint16* output,GradientWorkspace& scratch)
 {
@@ -369,55 +368,6 @@ void propagateCPU(const Request& request,const SimulationSnapshot::Handle& snaps
     // constructing an accelerator request or rereading its configuration.
     if (!gradient_kernel::alreadyFixedGradient({output, std::size_t(snapshot.width)*snapshot.height}))
         batchCPU(field,output);
-}
-void propagateBatch(std::span<const PropagationField> fields)
-{
-    using namespace gradient_kernel;
-    if (!isGPU(backend())) {
-        const auto run=[&](std::size_t i) {
-            const auto& f=fields[i];
-            try { propagateCPU(f.request,*f.snapshot,f.output,*f.scratch); }
-            catch (...) { if (f.error) *f.error=std::current_exception(); else throw; }
-        };
-        if (!fields.empty() && fields.front().executor) fields.front().executor->run(fields.size(),run);
-        else for (std::size_t i=0;i<fields.size();++i) run(i);
-        return;
-    }
-    std::vector<BackendRequest> requests;
-    requests.reserve(fields.size());
-    for (const auto &field : fields)
-    {
-        try
-        {
-            validatePropagation(field);
-            if (!field.scratch->backendSession) field.scratch->backendSession=std::make_shared<BackendSession>();
-            requests.push_back(
-                {field.output,
-                 COST_LIMIT,
-                 {field.snapshot->width, field.snapshot->height},
-                 *field.scratch->backendSession,
-                 const_cast<PropagationField *>(&field),
-                 [](void *context, std::size_t cell)
-                 { return batchCosts(*static_cast<PropagationField *>(context), cell); },
-                 [](void *context, Uint16 *out) { batchCPU(*static_cast<PropagationField *>(context), out); },
-                 snapshotCostIdentity(field.request, *field.snapshot),
-                 backendFamily(field.request.kind), field.executor ? batchCPUGroup : nullptr});
-            requests.back().cpuBuckets=field.request.terrainBuckets;
-            requests.back().failure=[](void* context,std::exception_ptr error) {
-                const auto& field=*static_cast<const PropagationField*>(context);
-                if(field.error) *field.error=error; else std::rethrow_exception(error);
-            };
-        }
-        catch (...)
-        {
-            if (field.error)
-                *field.error = std::current_exception();
-            else
-                throw;
-        }
-    }
-    executeGradientBatch(requests,backend());
-
 }
 
 namespace {
