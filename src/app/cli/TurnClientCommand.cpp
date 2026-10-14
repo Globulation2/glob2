@@ -274,13 +274,16 @@ static int play(const Options& options, const fs::path& output)
 	       << ",\"executed_ticks\":" << finalTick << ",\"game_ended\":" << (game.isGameEnded ? "true" : "false")
 	       << ",\"timed_out\":" << (timedOut ? "true" : "false") << ",\"desync_flagged\":" << (desync ? "true" : "false")
 	       << ",\"compute_requested_threads\":" << Headless::quote(options.computeThreads ? std::to_string(options.computeThreads) : "auto")
-	       << ",\"compute_resolved_threads\":" << resolveComputeThreadCount(options.computeThreads)
+	       << ",\"compute_resolved_threads\":" << globals.resourcePlan.computeParticipants
 	       << ",\"compute_threads\":" << game.map.computeExecutor().threadCount()
 	       << ",\"compute_workers\":" << game.map.computeExecutor().threadCount() - 1
 	       << ",\"reloads\":" << reloads << ",\"orders_queued\":" << ordersQueued
 	       << ",\"rtt_ms\":" << rtt / 1000 << ",\"jitter_ms\":" << jitter / 1000
 	       << ",\"wall_seconds\":" << elapsed() << ",\"first_tick_seconds\":" << firstTickAt
 	       << ",\"relay_error\":" << Headless::quote(transport->error()) << ",";
+    result << "\"resource_plan\":";
+    writeApplicationResourcePlanJson(result, globals.resourcePlan);
+    result << ',';
 	Headless::playersAndTeamsJson(result, game, engine.teamEliminatedTick);
 	result << ",\"compute_telemetry\":";
     ComputeTelemetry::writeJson(result, game.map.computeExecutor().telemetrySnapshot());

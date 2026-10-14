@@ -248,6 +248,8 @@ CLIENT_SOURCES = (
     'ui/Glob2Style.cpp',
     'ui/FrontendTheme.cpp',
     'ui/MenuColony.cpp',
+    'common/ComputeThreads.cpp',
+    'app/ApplicationResourcePlan.cpp',
     'app/GlobalContainer.cpp',
     'app/GlobalContainerArgs.cpp',
     'map/preview/GUIMapPreview.cpp',

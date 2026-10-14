@@ -147,7 +147,7 @@ Game options:
 | `--experiment KEY` | Repeatable [experimental feature](../features/experimental-features.md) baked into a new game, e.g. `guard-area-balancing`; the profile's settings never apply to structured runs; forbidden when loading a save. Listed in `result.json` under `resolved.experiments` |
 | `--rule name=value` | Repeatable custom rules, using the names and ranges in [headless rules](../development/headless-replays.md#glob2_test_rules). New games only; effective values are recorded in `resolved.rules`. Tournament game configurations accept the equivalent `rules` object, e.g. `{"noUpgrades": 1, "peaceful": 1}` |
 | `--ticks N` | Absolute tick limit, default 90000; must exceed saved tick |
-| `--compute-threads auto\|N` | Shared executor participants including the owner; default `auto` uses reported logical CPUs; explicit N is a positive unsigned integer |
+| `--compute-threads auto\|N` | Shared executor participants including the owner; default `auto` uses reported logical CPUs bounded by known Linux/Android affinity, with a hardware fallback; explicit N is a positive unsigned integer |
 | `--write-replay` | Boolean switch; absent by default; writes `game.replay` when present |
 | `--save initial/final/every:N` | Repeatable opt-in saves; checkpoints are diagnostics, not automatic recovery |
 | `--telemetry NAME` | Repeatable checksums, team-timeline, maxima, gradient-stats ([building field statistics](../development/performance-telemetry.md#building-field-statistics)); default none |
@@ -273,9 +273,31 @@ Each host has `name`, `directory`, optional `transport` (ssh default, or local),
 | spool_budget_bytes | 10 GiB |
 | cache_budget_bytes | 20 GiB |
 | memory_mb | null (optional process address-space limit) |
+| cpu_ids | absent: inherit the host CPU affinity; otherwise a nonempty list of caller-owned logical CPU IDs |
+| participants_per_game | absent: use every CPU in each allocated share; optional positive owner-inclusive count |
 
-Worker `slots`, `collect_slots`, backlog and storage limits reload on every daemon
-tick; reconfiguration no longer requires restarting the daemon. Packaging compresses
+With `cpu_ids`, specify `slots` explicitly. The coordinator partitions those CPU
+IDs into disjoint shares and freezes each attempt's share and compute-participant
+count. The worker validates the plan, pins the dedicated job supervisor before
+launch, and passes the existing `--compute-threads` flag to game jobs. An explicit
+participant count cannot exceed the smallest share. Completed game results must
+report the assigned resolved and actual counts; silent serial fallback is rejected.
+Map jobs inherit the share without a compute-thread override. Explicit affinity
+requires Linux-style `sched_getaffinity`/`sched_setaffinity` support.
+
+For one host, `run --cpu-ids 2,3,6,7 --jobs 2 --compute-participants 1` supplies the
+same fields. `collect` and `doctor` accept the same options; repeat the frozen
+budget on later calls or store it in host JSON. Use per-host JSON for multiple
+hosts. The budget is caller-supplied;
+the coordinator checks overlap among known local hosts but cannot infer that two
+SSH aliases name the same machine or reserve CPUs from unrelated processes.
+Allocation receipts persist in the results database. CPU plans cannot change
+mid-cohort. With experiment `settings.measured=true`, retries retain their
+original host and slot; ordinary retries may select another allocation.
+
+For hosts without explicit CPU allocations, worker `slots`, `collect_slots`,
+backlog and storage limits reload on every daemon tick; reconfiguration does not
+require restarting the daemon. Packaging compresses
 into private attempt staging in parallel. A short shared lock publishes objects and
 the record atomically with respect to acknowledgement cleanup, preserving shared
 artifacts needed by other attempts. `collect_slots` therefore controls actual
@@ -342,7 +364,9 @@ reduces stale-PID risk; the check and signal are not atomic. It leaves files and
 running game supervisors intact. Only reap installs whose work should stop.
 
 A `configure` RPC updates `host.json`; the daemon reads it on every tick, so
-slot/build/budget changes take effect without restarting the worker.
+ordinary slot/build/storage-budget changes take effect without restarting the
+worker. A frozen CPU plan cannot change while work is live or within the same
+coordinator cohort.
 
 Continue `run` or invoke `collect` after changing controls so connected workers
 receive them. Disconnected workers may finish before learning cancellation; those

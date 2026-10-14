@@ -22,6 +22,7 @@
 
 #include "EngineFixtures.h"
 #include "GeneratorPackage.h"
+#include <ThreadSupport.h>
 #include "GenerationService.h"
 
 #include <chrono>
@@ -1117,7 +1118,17 @@ TEST_SUITE("TurnEngineHarness")
 	                "[network-sim][artifacts]")
 	{
 		glob2test::HeadlessGlobals globals(harnessGlobals());
+        globals->computeThreads = 2;
 		EngineMatch m("FourSquares1", {{20 * MS}, {40 * MS, 20 * MS}, {30 * MS, 10 * MS, 0.01}}, {"castor"});
+        const auto setupParticipants = globals->resourcePlan.computeParticipants;
+        REQUIRE(globals->resourcePlan.requestedComputeThreads == 2);
+        REQUIRE(setupParticipants == (GAGCore::ThreadSupport::available ? 2u : 1u));
+        REQUIRE(m.clients[1]->engine->gui.game.map.computeExecutor().threadCount() == setupParticipants);
+        std::ostringstream setupProvenance;
+        writeApplicationResourcePlanJson(setupProvenance, globals->resourcePlan);
+        // A preference for the next session must not resize the current session
+        // when rejoin reloads its map and reconstructs the compute executor.
+        globals->computeThreads = 1;
         // Model a verified view-owned color already installed before rejoin.
         m.clients[1]->engine->gui.view.render.skinPreview().colors[1] = 0x123456;
 		m.clients[1]->tamperAtTick = 400;
@@ -1125,6 +1136,11 @@ TEST_SUITE("TurnEngineHarness")
 		const std::uint32_t end = m.finish();
 		CHECK(m.clients[1]->tampered);
 		CHECK(m.clients[1]->reloads == 1);
+        CHECK(globals->computeThreads == 1);
+        CHECK(m.clients[1]->engine->gui.game.map.computeExecutor().threadCount() == setupParticipants);
+        std::ostringstream reloadedProvenance;
+        writeApplicationResourcePlanJson(reloadedProvenance, globals->resourcePlan);
+        CHECK(reloadedProvenance.str() == setupProvenance.str());
         CHECK(m.clients[1]->engine->gui.view.render.skinPreview().buildingColor(1)==0x123456);
 		REQUIRE(m.clients[1]->lives.size() == 2);
 		// The first run diverged right after the tampered tick and was replaced.

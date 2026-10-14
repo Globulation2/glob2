@@ -7,6 +7,8 @@
 #include <sstream>
 #include <iomanip>
 #include <cmath>
+#include <algorithm>
+#include <functional>
 namespace ReplayTelemetry
 {
 namespace
@@ -44,40 +46,91 @@ void writeText(GAGCore::OutputStream *s, const std::string &v)
 		s->write(v.data(), v.size(), "text");
 }
 } // namespace
+bool Stream::SchemaLess::operator()(const SchemaPtr &a, const SchemaPtr &b) const
+{
+	if (a == b)
+		return false;
+	return std::lexicographical_compare(a->begin(), a->end(), b->begin(), b->end(),
+		[](const Metadata &x, const Metadata &y) { return x.view() < y.view(); });
+}
+bool Stream::SchemaLess::operator()(const SchemaPtr &a, const SchemaView &b) const
+{
+	return std::ranges::lexicographical_compare(*a, b, {}, &Metadata::view);
+}
+bool Stream::SchemaLess::operator()(const SchemaView &a, const SchemaPtr &b) const
+{
+	return std::ranges::lexicographical_compare(a, *b, {}, std::identity{}, &Metadata::view);
+}
+Stream::SchemaPtr Stream::schemaFor(const SchemaView &view, const SchemaPtr *hint) const
+{
+	if (hint && std::ranges::equal(**hint, view, {}, &Metadata::view))
+		return *hint;
+	if (const auto found = schemas.find(view); found != schemas.end())
+		return *found;
+	auto schema = std::make_shared<Schema>();
+	schema->reserve(view.size());
+	for (const auto &[name, unit, meaning] : view)
+		schema->push_back({std::string(name), std::string(unit), std::string(meaning)});
+	return schema;
+}
+void Stream::retainSchemas(StoredFrame &frame, std::map<int, StoredRow> *latest)
+{
+	// A rejected capture or incomplete decoded frame must not retain descriptors.
+	auto retain = [&](StoredRow &row) { row.schema = *schemas.insert(row.schema).first; };
+	for (auto &row : frame.changes)
+		retain(row);
+	if (latest)
+		for (auto &[player, row] : *latest)
+			retain(row);
+}
 void Stream::capture(const Game &game, Uint32 step)
 {
 	if (truncated)
 		return;
 	present = true;
 	until = step;
-	Frame frame;
+	StoredFrame frame;
 	frame.step = step;
-	std::map<int, Row> latest;
+	std::map<int, StoredRow> latest;
 	for (int t = 0; t < game.mapHeader.getNumberOfTeams(); ++t)
 		if (game.teams[t])
 			for (const auto &s : game.teams[t]->stats.aiTelemetry)
 				if (s->active)
 				{
-					Row row;
+					StoredRow row;
+					SchemaView descriptors;
 					row.team = t;
 					row.player = s->player;
 					row.name = s->playerName;
 					row.available = s->current.available;
 					if (row.available)
 					{
-						for (size_t f = 0; f < s->fields.size() && f < s->current.values.size();
-							 ++f)
+						const auto fieldCount = std::min(s->fields.size(), s->current.values.size());
+						size_t count = s->named.size();
+						for (size_t f = 0; f < fieldCount; ++f)
+							count += s->current.values[f].valid;
+						row.values.reserve(count);
+						descriptors.reserve(count);
+						for (size_t f = 0; f < fieldCount; ++f)
 						{
 							const auto &v = s->current.values[f];
 							const auto &d = s->fields[f];
 							if (v.valid)
-								row.values.push_back(
-									{d.name, display(d, v), d.unit, d.meaning, v.updated});
+							{
+								descriptors.emplace_back(d.name, d.unit, d.meaning);
+								row.values.push_back({display(d, v), v.updated});
+							}
 						}
-						row.values.insert(row.values.end(), s->named.begin(), s->named.end());
+						for (const auto &v : s->named)
+						{
+							descriptors.emplace_back(v.name, v.unit, v.meaning);
+							row.values.push_back({v.value, v.updated});
+						}
 					}
+					const auto prior = current.find(row.player);
+					row.schema = schemaFor(descriptors, prior == current.end() ? nullptr : &prior->second.schema);
 					latest[row.player] = row;
-					if (!current.count(row.player) || !(current.at(row.player) == row))
+					if (prior == current.end() || !(prior->second == row))
 						frame.changes.push_back(std::move(row));
 				}
 	for (const auto &[id, row] : current)
@@ -86,6 +139,7 @@ void Stream::capture(const Game &game, Uint32 step)
 			auto gone = row;
 			gone.available = false;
 			gone.values.clear();
+			gone.schema = schemaFor({});
 			frame.changes.push_back(std::move(gone));
 		}
 	if (frame.changes.empty())
@@ -94,8 +148,11 @@ void Stream::capture(const Game &game, Uint32 step)
 	for (const auto &r : frame.changes)
 	{
 		cost += 32 + r.name.size();
-		for (const auto &v : r.values)
-			cost += 24 + v.name.size() + v.value.size() + v.unit.size() + v.meaning.size();
+		for (size_t f = 0; f < r.values.size(); ++f)
+		{
+			const auto &d = (*r.schema)[f];
+			cost += 24 + d.name.size() + r.values[f].value.size() + d.unit.size() + d.meaning.size();
+		}
 	}
 	if (cost > Limit - bytes || frames.size() >= 65536)
 	{
@@ -104,6 +161,7 @@ void Stream::capture(const Game &game, Uint32 step)
 		return;
 	}
 	bytes += cost;
+	retainSchemas(frame, &latest);
 	current = std::move(latest);
 	frames.push_back(std::move(frame));
 }
@@ -125,12 +183,14 @@ void Stream::write(GAGCore::OutputStream *s) const
 			writeText(s, r.name);
 			s->writeUint8(r.available, "available");
 			s->writeUint32(r.values.size(), "fields");
-			for (const auto &v : r.values)
+			for (size_t f = 0; f < r.values.size(); ++f)
 			{
-				writeText(s, v.name);
+				const auto &v = r.values[f];
+				const auto &d = (*r.schema)[f];
+				writeText(s, d.name);
 				writeText(s, v.value);
-				writeText(s, v.unit);
-				writeText(s, v.meaning);
+				writeText(s, d.unit);
+				writeText(s, d.meaning);
 				s->writeUint32(v.updated, "updated");
 			}
 		}
@@ -151,7 +211,7 @@ void Stream::read(GAGCore::InputStream *s)
 		if (budget < 8)
 			throw std::runtime_error("Oversized replay telemetry frames");
 		budget -= 8;
-		Frame frame;
+		StoredFrame frame;
 		frame.step = s->readUint32("step");
 		auto rows = s->readUint32("changes");
 		if (frame.step > until || (i && frame.step <= frames.back().step) ||
@@ -162,7 +222,9 @@ void Stream::read(GAGCore::InputStream *s)
 			if (budget < 32)
 				throw std::runtime_error("Oversized replay telemetry rows");
 			budget -= 32;
-			Row row;
+			StoredRow row;
+			SchemaView descriptors;
+			Schema decoded;
 			row.team = s->readUint32("team");
 			row.player = s->readUint32("player");
 			row.name = readText(s, budget);
@@ -174,18 +236,30 @@ void Stream::read(GAGCore::InputStream *s)
 			if (fields > AITelemetry::MaximumPresentationValues || size_t(fields) * 24 > budget)
 				throw std::runtime_error("Oversized telemetry fields");
 			budget -= size_t(fields) * 24;
+			row.values.reserve(fields);
+			decoded.reserve(fields);
+			descriptors.reserve(fields);
 			for (unsigned f = 0; f < fields; ++f)
 			{
-				AITelemetry::NamedValue v;
-				v.name = readText(s, budget);
+				Metadata d;
+				StoredValue v;
+				d.name = readText(s, budget);
 				v.value = readText(s, budget);
-				v.unit = readText(s, budget);
-				v.meaning = readText(s, budget);
+				d.unit = readText(s, budget);
+				d.meaning = readText(s, budget);
 				v.updated = s->readUint32("updated");
+				decoded.push_back(std::move(d));
 				row.values.push_back(std::move(v));
 			}
+			for (const auto &d : decoded)
+				descriptors.push_back(d.view());
+			if (const auto found = schemas.find(descriptors); found != schemas.end())
+				row.schema = *found;
+			else
+				row.schema = std::make_shared<Schema>(std::move(decoded));
 			frame.changes.push_back(std::move(row));
 		}
+		retainSchemas(frame);
 		frames.push_back(std::move(frame));
 	}
 	current.clear();
@@ -221,7 +295,15 @@ void Stream::apply(Game &game, Uint32 step)
 					s->current.tick = game.stepCounter;
 					s->current.available = row.available && !(truncated && step > until);
 					if (s->current.available)
-						s->named = row.values;
+					{
+						s->named.reserve(row.values.size());
+						for (size_t f = 0; f < row.values.size(); ++f)
+						{
+							const auto &d = (*row.schema)[f];
+							const auto &v = row.values[f];
+							s->named.push_back({d.name, v.value, d.unit, d.meaning, v.updated});
+						}
+					}
 					series.push_back(std::move(s));
 				}
 		}

@@ -3,6 +3,7 @@
 #include "Glob2Test.h"
 #include "GradientPropagation.h"
 #include "TerrainGradient.h"
+#include <iostream>
 #include <barrier>
 #include <cstdlib>
 #include <cstring>
@@ -882,4 +883,107 @@ TEST_CASE("isolated required host admission pressure preserves seeds and device 
     });
     CHECK(openCLStatus().budgetDeclines>before.budgetDeclines);
     CHECK(openCLStatus().hostBytes<=OpenCLHostBudget);
+}
+
+TEST_CASE("isolated host event acquisition commits exact output or fails closed" * doctest::test_suite("OpenCLGradient"))
+{
+    const auto* enabled=std::getenv("GLOB2_TEST_OPENCL_HOST_ACQUIRE");
+    if(!enabled || std::strcmp(enabled,"1"))return;
+    if constexpr(!GAGCore::ThreadSupport::available)return;
+    using namespace gradient_kernel;
+    REQUIRE(initializeOpenCL());REQUIRE(openCLStatus().available);
+    const auto* injected=std::getenv("GLOB2_TEST_OPENCL_WAIT_FAILURE");
+    const bool failure=injected && !std::strcmp(injected,"1");
+    onWorker([&]{
+        BackendSession session;const field::Grid grid(31,17);
+        auto costs=std::make_shared<std::vector<EntrySteps>>(grid.cells(),LAND_STEPS);
+        std::vector<std::uint16_t> seeds(grid.cells(),1);seeds[0]=65535;seeds[17]=65300;seeds[13]=0;
+        const auto original=seeds,expected=oracle(seeds,grid,*costs,700);
+        struct Context {const std::vector<EntrySteps>* costs;const std::vector<std::uint16_t>* original;
+            const std::vector<std::uint16_t>* expected;unsigned cpu=0;} context{costs.get(),&original,&expected};
+        bool executed=false;
+        BackendRequest request{seeds.data(),700,grid,session,&context,
+            [](void* value,std::size_t cell){return (*static_cast<Context*>(value)->costs)[cell];},
+            [](void* value,std::uint16_t* out){auto& c=*static_cast<Context*>(value);++c.cpu;
+                CHECK(std::equal(c.original->begin(),c.original->end(),out));
+                std::copy(c.expected->begin(),c.expected->end(),out);},
+            {costs,71981823,1,false,sizeof(*costs)+costs->capacity()*sizeof(EntrySteps)}};
+        request.executedOnDevice=&executed;request.requiredControl=makeOpenCLRequiredControl();
+        REQUIRE(request.requiredControl);
+        const auto before=openCLStatus();
+        executeGradientGroup(std::span(&request,1),Backend::OpenCL);
+        CHECK(seeds==expected);
+        const auto after=openCLStatus();
+        if(failure){
+            REQUIRE_FALSE(executed);CHECK(context.cpu==1);CHECK(session.failed.load());
+            CHECK_FALSE(after.available);CHECK(readyPlans.load()==0);
+            CHECK(after.committedFields==before.committedFields);
+            CHECK(after.hostEventWaits==before.hostEventWaits);
+        }else{
+            REQUIRE(executed);CHECK(context.cpu==0);CHECK_FALSE(session.failed.load());
+            REQUIRE(after.hostEventWaits>before.hostEventWaits);
+            REQUIRE(after.committedFields>before.committedFields);
+        }
+        std::cout<<"GLOB2_OPENCL_HOST_ACQUIRE_PROOF {\"injected_wait_failure\":"<<failure
+            <<",\"cpu_fallbacks\":"<<context.cpu<<",\"gpu_executed\":"<<executed
+            <<",\"gpu_commits\":"<<(after.committedFields-before.committedFields)
+            <<",\"host_waits\":"<<(after.hostEventWaits-before.hostEventWaits)
+            <<",\"session_failed\":"<<session.failed.load()
+            <<",\"ready_plans\":"<<readyPlans.load()<<"}\n";
+    });
+}
+
+TEST_CASE("isolated configured participant fields match independent weighted blocked oracle" * doctest::test_suite("OpenCLGradient"))
+{
+    const auto* enabled=std::getenv("GLOB2_TEST_OPENCL_PARTICIPANT_ORACLE");
+    if(!enabled || std::strcmp(enabled,"1"))return;
+    if constexpr(!GAGCore::ThreadSupport::available)return;
+    using namespace gradient_kernel;
+    initializeForTest();REQUIRE(openCLStatus().available);
+    for(unsigned count : {1u,3u,6u}) {
+        ComputeExecutor executor;executor.configure(count);
+        REQUIRE(executor.threadCount()==count);
+        unsigned cpuFields=0,gpuFields=0,cases=0;bool sawWorker=false;
+        std::function<void()> work=[&]{
+            sawWorker=ComputeExecutor::workerSlot()!=0;
+            CHECK(sawWorker==(count>1));
+            for(auto dimensions : {std::pair{31,17},std::pair{128,128},std::pair{256,256}})
+            for(int cap : {60,700}) {
+                const field::Grid grid(dimensions.first,dimensions.second);
+                auto costs=std::make_shared<std::vector<EntrySteps>>(grid.cells(),LAND_STEPS);
+                std::vector<std::uint16_t> seeds(grid.cells(),1);
+                for(std::size_t i=0;i<grid.cells();++i) {
+                    const auto x=i%grid.width(),y=i/grid.width();
+                    if((x*17+y*13)%19==0)seeds[i]=0;
+                    if((x+3*y)%7<3)(*costs)[i]=entrySteps(WATER_STEP[6]);
+                }
+                // Unequal goals on both wrapped edges plus forbidden cells.
+                seeds[0]=65535;seeds[grid.cells()-1]=65300;
+                const auto original=seeds,expected=oracle(seeds,grid,*costs,cap);
+                BackendSession session;bool executed=false;
+                struct Context {const std::vector<EntrySteps>* costs;const std::vector<std::uint16_t>* original;
+                    const std::vector<std::uint16_t>* expected;unsigned* cpu;} context{costs.get(),&original,&expected,&cpuFields};
+                BackendRequest request{seeds.data(),cap,grid,session,&context,
+                    [](void* value,std::size_t cell){return (*static_cast<Context*>(value)->costs)[cell];},
+                    [](void* value,std::uint16_t* out){auto& c=*static_cast<Context*>(value);++*c.cpu;
+                        CHECK(std::equal(c.original->begin(),c.original->end(),out));
+                        std::copy(c.expected->begin(),c.expected->end(),out);},
+                    {costs,90817823,1,false,sizeof(*costs)+costs->capacity()*sizeof(EntrySteps)}};
+                request.executedOnDevice=&executed;request.requiredControl=makeOpenCLRequiredControl();
+                REQUIRE(request.requiredControl);
+                executeGradientGroup(std::span(&request,1),Backend::OpenCL);
+                REQUIRE(seeds==expected);CHECK_FALSE(session.failed.load());
+                REQUIRE(executed==(count>1));gpuFields+=executed;++cases;
+            }
+        };
+        if(count==1)work();
+        else {
+            const ComputeExecutor::Group group{1,{[](void* p,std::size_t){(*static_cast<std::function<void()>*>(p))();},&work}};
+            auto ticket=executor.submit(std::span(&group,1));executor.join(ticket);
+        }
+        REQUIRE(cases==6);CHECK(cpuFields==(count==1?6:0));CHECK(gpuFields==(count==1?0:6));
+        std::cout<<"GLOB2_OPENCL_PARTICIPANT_ORACLE_PROOF {\"requested_count\":"<<count
+            <<",\"observed_count\":"<<executor.threadCount()<<",\"worker_slot_observed\":"<<sawWorker
+            <<",\"oracle_cases\":"<<cases<<",\"cpu_fields\":"<<cpuFields<<",\"gpu_fields\":"<<gpuFields<<"}\n";
+    }
 }

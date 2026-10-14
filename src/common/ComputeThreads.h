@@ -6,11 +6,12 @@
 #include <stdexcept>
 #include <string_view>
 #include <thread>
+#include <optional>
 
 // Total executor participants, including the simulation owner. Hardware discovery
 // may return zero; one participant is the portable serial fallback. Work placement
 // and match deadlines are independent of this local execution setting.
-inline unsigned defaultComputeThreadCount(unsigned hardware = std::thread::hardware_concurrency())
+inline unsigned defaultComputeThreadCount(unsigned hardware)
 {
 #ifdef __EMSCRIPTEN__
     // Browser workers share a bounded Wasm heap with artwork and encoders;
@@ -35,9 +36,54 @@ inline unsigned parseComputeThreadCount(std::string_view value)
     return count;
 }
 
-inline unsigned resolveComputeThreadCount(unsigned requested, unsigned hardware = std::thread::hardware_concurrency())
+// A nonzero eligible count bounds a known hardware hint. Zero means that
+// discovery failed, so retain the portable hint and its one-participant fallback.
+inline unsigned availableComputeCpuCount(unsigned hardware, unsigned eligible)
+{
+    return eligible ? (hardware ? std::min(hardware, eligible) : eligible) : (hardware ? hardware : 1);
+}
+
+enum class CpuAvailabilitySource { AffinityMask, HardwareHint, Unknown };
+struct CpuAvailabilityObservation {
+    std::optional<unsigned> eligibleLogicalCpuCount;
+    unsigned hardwareHint = 0;
+    CpuAvailabilitySource source = CpuAvailabilitySource::Unknown;
+};
+// Pure status mapping. A hardware hint is never promoted to observed allocation.
+inline CpuAvailabilityObservation cpuAvailabilityObservation(unsigned hardware, unsigned eligible = 0) {
+    return {eligible ? std::optional<unsigned>(eligible) : std::nullopt, hardware,
+        eligible ? CpuAvailabilitySource::AffinityMask : hardware ? CpuAvailabilitySource::HardwareHint : CpuAvailabilitySource::Unknown};
+}
+inline const char* cpuAvailabilitySourceName(CpuAvailabilitySource source) {
+    switch(source) {
+    case CpuAvailabilitySource::AffinityMask: return "affinity-mask";
+    case CpuAvailabilitySource::HardwareHint: return "hardware-hint-only";
+    default: return "unknown";
+    }
+}
+// One query of the creating thread's eligible logical mask when supported.
+// Neither the mask nor hardware hint measures CPU-time quota or reserved cores.
+CpuAvailabilityObservation discoverComputeCpuAvailability(unsigned hardware = std::thread::hardware_concurrency()) noexcept;
+
+// Platform discovery is isolated from the pure policy above. Unknown eligibility
+// retains the hardware hint; this does not infer CPU-time quotas or SMT capacity.
+unsigned availableComputeCpuCount(unsigned hardware = std::thread::hardware_concurrency()) noexcept;
+
+inline unsigned defaultComputeThreadCount()
+{
+    return defaultComputeThreadCount(availableComputeCpuCount());
+}
+
+// Explicit hardware injection stays pure; normal application calls discover the
+// current CPU eligibility. Explicit counts are not clamped by either path.
+inline unsigned resolveComputeThreadCount(unsigned requested, unsigned hardware)
 {
     return requested ? requested : defaultComputeThreadCount(hardware);
+}
+
+inline unsigned resolveComputeThreadCount(unsigned requested)
+{
+    return requested ? requested : defaultComputeThreadCount();
 }
 
 inline bool isRemovedComputeOption(std::string_view option)

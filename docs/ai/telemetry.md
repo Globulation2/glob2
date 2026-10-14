@@ -136,6 +136,13 @@ replays show telemetry as unavailable. Replay presentation schemas also survive 
 headless final-state save. This telemetry is local diagnostic state, not network
 traffic, and is excluded from gameplay checksums.
 
+The replay limit uses the original logical record budget, rather than measuring
+allocator memory or process RSS. Retained rows share immutable ordered descriptor
+lists internally and keep their own value text and update ticks. This preserves
+duplicate fields, embedded NULs, schema changes and unavailable rows; it does not
+replace recorded history with deltas. The AIT1 bytes, logical admission budget,
+truncation point, expanded readout API and save representation remain unchanged.
+
 ## Offense target team
 
 To study how much a free-for-all or 2v2 result depends on who was attacked first,

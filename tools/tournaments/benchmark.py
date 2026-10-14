@@ -8,6 +8,7 @@ import tempfile
 
 from ..build_paths import native_binary
 from .common import digest, store_artifact
+from .cli import configure_hosts, parse_cpu_ids, positive_integer
 from .local import execute_jobs, supplied_binary
 from .model import job
 from .fairness_statistics import wilson
@@ -17,11 +18,20 @@ def main():
     parser=argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--map',required=True);parser.add_argument('--matchup',required=True)
     parser.add_argument('--games',type=int,default=40);parser.add_argument('--swap-sides',action='store_true')
-    parser.add_argument('--jobs',type=int,default=max(1,(os.cpu_count() or 1)-2))
+    parser.add_argument('--jobs',type=positive_integer,help='concurrent games; required with --cpu-ids')
+    parser.add_argument('--cpu-ids',help='caller-owned logical CPU IDs, comma-separated')
+    parser.add_argument('--compute-participants',type=positive_integer,help='participants per game including simulation owner')
     parser.add_argument('--seed-base',type=int,default=1);parser.add_argument('--bin',default=str(native_binary()))
     parser.add_argument('--out');parser.add_argument('--keep',action='store_true')
     parser.add_argument('--ticks',type=int,default=int(os.environ.get('GLOB2_TEST_MAX_TICKS','90000')))
     args=parser.parse_args()
+    try:
+        cpu_ids=parse_cpu_ids(args.cpu_ids) if args.cpu_ids is not None else None
+        if cpu_ids is not None and args.jobs is None:
+            raise ValueError('--cpu-ids requires explicit --jobs')
+        if args.jobs is None: args.jobs=max(1,(os.cpu_count() or 1)-2)
+        configure_hosts([{'slots':args.jobs}],cpu_ids=cpu_ids,participants_per_game=args.compute_participants)
+    except ValueError as error: parser.error(str(error))
     root=Path(__file__).resolve().parents[2]
     output=Path(args.out).resolve() if args.out else Path(tempfile.mkdtemp(prefix='glob2-benchmark-'))
     output.mkdir(parents=True,exist_ok=True)
@@ -50,7 +60,7 @@ def main():
             jobs.append(job('game',bundle.name,inputs={'map':artifact},seeds={'game':args.seed_base+index},
                             config={'players':roster,'ticks':args.ticks,'ai_params':{str(i):tuning for i,ai in enumerate(roster) if ai=='cortex'}},
                             outputs={'replay':args.keep},labels={'tag':tag,'format':'1v1' if len(players)==2 else 'ffa','block':args.seed_base+index}))
-    source=execute_jobs(directory,jobs,bundle,args.jobs)
+    source=execute_jobs(directory,jobs,bundle,args.jobs,cpu_ids=cpu_ids,participants_per_game=args.compute_participants)
     wins=Counter();completed=0;draws=0
     for record in source:
         tag=record['job']['labels']['tag']

@@ -9,6 +9,7 @@
     "*Replay*/*",
     "*Gradient*/*",
     "ComputeExecutor/*",
+    "ApplicationResourcePlan/*",
     "EntityRandomLifecycle/*",
     "UnitCatalog/*",
     "UnitCustomization/*",
