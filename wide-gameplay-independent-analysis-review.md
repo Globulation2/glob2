@@ -1,0 +1,11 @@
+Independent analysis review of frozen candidate983b482e52c5db80c36024aa5b2624f579ccac07 and the 1512-game study; read-only review, no cohort reruns or replacements.
+
+The reviewer reproduced all four point estimates from all1512 compact match summaries, independently reaggregated starvation/construction/food counters from every archived full summary, and independently repeated fine-cell policy permutations with a new seed. Raw primary p-values approximately0.478,0.310,0.348,0.245 agree with the published no-primary-significance conclusion.
+
+Conclusions: zero technical failures, small aggregate primary point estimates and no detected significant primary differences are supported. Proven no gameplay impact, equivalence, and passage of the predefined practical bounds are not supported. Intervals allow11.6%more starvation,7.7%less construction per worker-time,+0.75percentage points food time or+3.25points declared colony loss.
+
+The declared-colony-loss endpoint is not survival in all formats. The runner passes only allies for4v4; Headless.cpp401–402 clears default conditions and WinningConditionAllies::hasTeamLost always returnsfalse (WinningConditions.cpp262). All288team games therefore recordzero declared losses, despite only521/1152original and549/1152cached colonies having units at the last population sample. Preserve the fixed primary result; qualify its semantics and add clearly posthoc descriptive zero-population/FFA-only sensitivity. A future full-match study should specify the intended combined death/allies/opponents conditions before admission.
+
+Observed descriptive worker-use changes must remain visible: filling52.887%→52.029%, idle13.576%→14.190%; 4v4idle11.284%→13.263%. An exploratory filling permutationp≈.027 is unadjusted, outside the confirmatory family, and is not a confirmed discovery. There is no basis for claiming every telemetry metric unchanged.
+
+AllCLI outcomes are unresolved;1478reach cap,34endearly, no winning teams. No victory-rate or full-match-equivalence conclusion. The frozen generator-pooled bootstrap admits composition variation; fine-cell sensitivity is narrower, but tiny-cell resampling can underestimate variance. Do not substitute a favorable posthoc method or claim the broader bootstrap is universally conservative.

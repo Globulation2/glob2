@@ -1,0 +1,105 @@
+{
+  "scope": "Posthoc descriptive sensitivity prompted by independent review; not replacement primary inference, no new significance claims. Last sampled zero-unit state is not permanent elimination; sample lags actual final tick. Declared loss uses selected rule semantics; allies-only 4v4 never declares loss.",
+  "by_format": {
+    "duel": {
+      "original": {
+        "games": 240,
+        "colonies": 480,
+        "declared_losses": 211,
+        "zero_units_at_last_population_sample": 203,
+        "zero_unit_fraction": 0.42291666666666666,
+        "idle_worker_fraction": 0.16525460448772206,
+        "filling_worker_fraction": 0.5099510395818043
+      },
+      "cached": {
+        "games": 240,
+        "colonies": 480,
+        "declared_losses": 217,
+        "zero_units_at_last_population_sample": 197,
+        "zero_unit_fraction": 0.41041666666666665,
+        "idle_worker_fraction": 0.17020879808618514,
+        "filling_worker_fraction": 0.4956277185565672
+      }
+    },
+    "ffa4": {
+      "original": {
+        "games": 228,
+        "colonies": 912,
+        "declared_losses": 549,
+        "zero_units_at_last_population_sample": 521,
+        "zero_unit_fraction": 0.5712719298245614,
+        "idle_worker_fraction": 0.14878464186825893,
+        "filling_worker_fraction": 0.5138537921610443
+      },
+      "cached": {
+        "games": 228,
+        "colonies": 912,
+        "declared_losses": 547,
+        "zero_units_at_last_population_sample": 515,
+        "zero_unit_fraction": 0.5646929824561403,
+        "idle_worker_fraction": 0.1438472903973049,
+        "filling_worker_fraction": 0.5204795180726998
+      }
+    },
+    "ffa8": {
+      "original": {
+        "games": 144,
+        "colonies": 1152,
+        "declared_losses": 821,
+        "zero_units_at_last_population_sample": 780,
+        "zero_unit_fraction": 0.6770833333333334,
+        "idle_worker_fraction": 0.12228139110550491,
+        "filling_worker_fraction": 0.5498363517562723
+      },
+      "cached": {
+        "games": 144,
+        "colonies": 1152,
+        "declared_losses": 786,
+        "zero_units_at_last_population_sample": 747,
+        "zero_unit_fraction": 0.6484375,
+        "idle_worker_fraction": 0.12808173908462514,
+        "filling_worker_fraction": 0.5374776321202994
+      }
+    },
+    "teams4v4": {
+      "original": {
+        "games": 144,
+        "colonies": 1152,
+        "declared_losses": 0,
+        "zero_units_at_last_population_sample": 631,
+        "zero_unit_fraction": 0.5477430555555556,
+        "idle_worker_fraction": 0.11283783102789274,
+        "filling_worker_fraction": 0.5408194342137086
+      },
+      "cached": {
+        "games": 144,
+        "colonies": 1152,
+        "declared_losses": 0,
+        "zero_units_at_last_population_sample": 603,
+        "zero_unit_fraction": 0.5234375,
+        "idle_worker_fraction": 0.1326309457402274,
+        "filling_worker_fraction": 0.522213982220023
+      }
+    }
+  },
+  "ffa_only": {
+    "original": {
+      "games": 612,
+      "colonies": 2544,
+      "declared_losses": 1581,
+      "zero_units_at_last_population_sample": 1504,
+      "zero_unit_fraction": 0.5911949685534591,
+      "idle_worker_fraction": 0.1446044557217753,
+      "filling_worker_fraction": 0.524260053166065
+    },
+    "cached": {
+      "games": 612,
+      "colonies": 2544,
+      "declared_losses": 1550,
+      "zero_units_at_last_population_sample": 1459,
+      "zero_unit_fraction": 0.5735062893081762,
+      "idle_worker_fraction": 0.14560129646971062,
+      "filling_worker_fraction": 0.5195204876339204
+    }
+  }
+}
