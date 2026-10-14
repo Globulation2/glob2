@@ -48,6 +48,7 @@ TEST_SUITE("HiringPlanner")
 		glob2test::HeadlessGlobals globals;
 		const char *names[] = {"inn", "clearingflag", "explorationflag", "warflag"};
 		const int types[] = {WORKER, WORKER, EXPLORER, WARRIOR};
+		Uint64 boundSkips = 0;
 		for (unsigned role = 0; role < 4; ++role)
 		{
 			CAPTURE(role);
@@ -85,8 +86,20 @@ TEST_SUITE("HiringPlanner")
 				checkPlannerOutput(actual, expected);
 				CHECK(actual.metrics.rankedCandidates <= expected.metrics.rankedCandidates);
 				REQUIRE_FALSE(actual.buildings.empty());
+				boundSkips += actual.metrics.distanceBoundSkips;
+				std::set<Hiring::Job> populated;
+				for (const auto &building : actual.buildings)
+					for (const auto &list : building.jobs)
+						if (!list.candidates.empty()) populated.insert(list.key.job);
+				if (role == 0)
+				{
+					CHECK(populated.count(Hiring::Job::Delivery) == 1);
+					CHECK(populated.count(Hiring::Job::Fetch) == 1);
+				}
+				else CHECK(populated.count(Hiring::Job(unsigned(Hiring::Job::Clear) + role - 1)) == 1);
 			}
 		}
+		CHECK(boundSkips > 0);
 	}
 	TEST_CASE("snapshot seed templates and version keys preserve scalar planner outputs")
 	{
