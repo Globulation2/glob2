@@ -554,7 +554,7 @@ TEST_SUITE("HiringPlanner")
 		auto [vacancyInputs, vacancy] = plan();
 		REQUIRE(vacancy.buildings.size() == 1);
 		CHECK(vacancy.candidateVisits > 0);
-		CHECK(vacancyInputs.routes->empty());
+		CHECK_FALSE(vacancyInputs.routes->empty());
 		CHECK(vacancy.metrics.buildingsNeedingHiring == 1);
 		inn->desiredMaxUnitWorking = 0;
 		auto [finishedInputs, finished] = plan();
