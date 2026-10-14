@@ -388,8 +388,8 @@ TEST_SUITE("EntityRandomLifecycle")
         std::ofstream(glob2test::artifactDir() / "format-150.game.txt", std::ios::binary) << bytes;
         glob2test::HeadlessGame migrated({.header=true});
         REQUIRE(load(migrated.game, bytes, true));
-        auto* restoredUnit=migrated.team->myUnits[Unit::GIDtoID(unit->gid)];
-        auto* restoredBuilding=migrated.team->myBuildings[Building::GIDtoID(building->gid)];
+        auto* restoredUnit=migrated.game.teams[0]->myUnits[Unit::GIDtoID(unit->gid)];
+        auto* restoredBuilding=migrated.game.teams[0]->myBuildings[Building::GIDtoID(building->gid)];
         REQUIRE(restoredUnit); REQUIRE(restoredBuilding);
         CHECK(restoredUnit->areaServiceRemainders==unit->areaServiceRemainders);
         CHECK(restoredUnit->areaLastPulseTick==unit->areaLastPulseTick);
