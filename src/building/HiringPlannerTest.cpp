@@ -26,7 +26,7 @@ TEST_SUITE("HiringPlanner")
 		}
 		REQUIRE(w.game.map.incResourceByIndex(24, 12, WHEAT, 0));
 		HiringPlanner::Cache cached, scalar(HiringPlanner::Cache::MaxBytes, false, false);
-		for (unsigned phase = 0; phase < 7; ++phase)
+		for (unsigned phase = 0; phase < 8; ++phase)
 		{
 			CAPTURE(phase);
 			w.game.stepCounter = phase;
@@ -36,13 +36,21 @@ TEST_SUITE("HiringPlanner")
 			if (phase == 4) w.game.map.removeForbidden(24, 12, 0);
 			if (phase == 6) REQUIRE(w.game.map.incResourceByIndex(18, 20, WHEAT, 0));
 			w.game.snapshotStore().invalidateBoundary();
-			const auto input = HiringPipeline::bindRoutes(w.game, w.game.captureReadBoundary());
+			auto input = HiringPipeline::bindRoutes(w.game, w.game.captureReadBoundary());
+			if (phase == 7)
+			{
+				// Synthetic observations have no trustworthy change stamps.
+				auto resources = std::make_shared<SimulationSnapshot::Resources>(*input.world.resources);
+				resources->stamps = {};
+				input.world.resources = std::move(resources);
+			}
 			const auto actual = cached.rank(input, 0), expected = scalar.rank(input, 0);
 			if (phase == 0)
 			{
 				CHECK(actual.metrics.fieldMisses > 0);
 				CHECK(cached.bytes() > scalar.bytes());
 			}
+			if (phase == 7) CHECK(actual.metrics.fingerprintCells > 0);
 			if (phase == 5)
 			{
 				CHECK(actual.metrics.fingerprintCells == 0);
