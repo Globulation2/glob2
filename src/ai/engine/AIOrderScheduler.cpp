@@ -208,9 +208,11 @@ std::vector<Delivery> OrderScheduler::takeDue(Uint32 tick)
 		if (front.dueTick == tick)
 		{
 			joinBatch(front, {JoinReason::TickDeadline, tick});
-			Uint64 work = 0;
-			for (const auto& entry : front.entries) work += entry.computationNs;
-			if (!delay) recentWorkNs = (recentWorkNs * 3 + work) / 4;
+			if (!delay) {
+				Uint64 work = 0;
+				for (const auto& entry : front.entries) work += entry.computationNs;
+				recentWorkNs = (recentWorkNs * 3 + work) / 4;
+			}
 			// The whole batch finished; a failure anywhere publishes nothing.
 			for (auto& entry : front.entries) complete(entry);
 			for (auto& entry : front.entries) deliveries.push_back({entry.request, entry.dueTick, std::move(*entry.completed)});
