@@ -180,7 +180,7 @@ void Unit::handleMagic(void)
 void Unit::handleMedical(void)
 {
 	/* Make sure explorers try to immediately feed after healing to increase their range. */
-	if (hasCapability(UnitRuntimeTraits::ServiceRebound) && displacement == DIS_EXITING_BUILDING)
+	if (hasCapability(UnitRuntimeTraits::ServiceRebound) && displacement == DIS_EXITING_BUILDING && !attachedBuilding)
 	{
 		medical=MED_FREE;
 		if (!owner->game->gameHeader.isHungerDisabled() && hungriness > 0 && (destinationPurpose == HEAL) && (hungry < ((Sint64(foodCapacity()) * runtimeTraits().reboundNumerator) / runtimeTraits().reboundDenominator)))

@@ -19,10 +19,10 @@ class Order;
 //! Malformed or truncated replay bodies are rejected, including partial recordings.
 
 //! Oldest replay format (the VERSION_MINOR the replay was written with) that
-//! the reader still accepts. Version 160 adds private-stock and cached-performance caps
-//! to persisted turret targeting, changing earlier replay trajectories.
+//! the reader still accepts. Version 161 defers explorer service rebound until exit,
+//! changing earlier replay trajectories when a building's exits are blocked.
 //! Save compatibility has a separate floor in Version.h.
-static constexpr Uint16 REPLAY_MINIMUM_VERSION_MINOR = 160;
+static constexpr Uint16 REPLAY_MINIMUM_VERSION_MINOR = 161;
 
 /// This class is used for reading replays.
 /// The replay stream is kept open and read every time you do retrieveOrder.

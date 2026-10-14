@@ -18,10 +18,10 @@ void Unit::handleActivity(void)
 		&& destinationPurpose!=FEED && destinationPurpose!=HEAL
 		&& displacement==DIS_GOING_TO_BUILDING && attachedBuilding)
 		stopAttachedForBuilding(true);
-	// freeze unit health when inside a building
+	// Finish finding an exit before a rebound visit can replace the attachment.
 	if ((displacement==DIS_ENTERING_BUILDING) || (displacement==DIS_INSIDE)
             || ((displacement==DIS_EXITING_BUILDING)
-                && ! (hasCapability(UnitRuntimeTraits::ServiceRebound) && (medical != MED_FREE))))
+                && (attachedBuilding || ! (hasCapability(UnitRuntimeTraits::ServiceRebound) && (medical != MED_FREE)))))
 		return;
 
 	if (verbose)

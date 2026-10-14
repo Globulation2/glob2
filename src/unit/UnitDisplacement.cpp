@@ -310,6 +310,17 @@ void Unit::handleDisplacement(void)
 				displacement=DIS_INSIDE;
 				setValidTarget(false);
 
+				// Loading can cancel a visit whose stock was normalized below
+				// its cost. Finish removing the entry occupancy, then leave
+				// without starting its timer or granting any service benefit.
+				if (!serviceResourcesReserved())
+				{
+					insideTimeout=0;
+					displacement=DIS_EXITING_BUILDING;
+					setNeedToRecheckMedical(true);
+					break;
+				}
+
 				if (destinationPurpose==FEED)
 				{
 					insideTimeout=-attachedBuilding->type->semantics.feeding.duration;
