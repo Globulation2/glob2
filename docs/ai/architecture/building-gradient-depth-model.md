@@ -8,7 +8,7 @@
 - [Where the numbers come from](#where-the-numbers-come-from)
 - [Operating points](#operating-points)
 - [When to refit](#when-to-refit)
-- [Running it](#running-it)
+- [Measurement tooling](#measurement-tooling)
 - [Limits](#limits)
 - [Related](#related)
 
