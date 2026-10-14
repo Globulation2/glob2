@@ -422,8 +422,10 @@ Handle capture(const Game& game,
 			}
 		}
 	}
-	entities->buildings.resize(buildingRecordCount);
-	entities->units.resize(unitRecordCount);
+	if (needs(requirements, Component::Entities)) {
+		entities->buildings.resize(buildingRecordCount);
+		entities->units.resize(unitRecordCount);
+	}
 
     if (auto session=acquire(&Storage::session,Component::Session)) {
         session->editor=game.edit!=nullptr;
@@ -504,7 +506,7 @@ Handle capture(const Game& game,
     }
 	if (needs(requirements, Component::Entities))
 		for (const auto& p : game.buildProjects) append(entities->projects, {p.posX,p.posY,p.teamNumber,p.typeNum,p.unitWorking,p.unitWorkingFuture});
-	teams->totalPrestige = game.totalPrestige;
+	if (needs(requirements, Component::Teams)) teams->totalPrestige = game.totalPrestige;
 	if (needs(requirements, Component::Catalogs)) result->catalogs = std::move(catalogsOwner);
 	if (needs(requirements, Component::Terrain)) result->terrain = std::move(terrainOwner);
 	if (needs(requirements, Component::Resources)) result->resources = std::move(resourcesOwner);
