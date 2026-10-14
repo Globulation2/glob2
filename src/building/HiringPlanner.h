@@ -39,7 +39,6 @@ struct Metrics
 struct Output
 {
 	unsigned tick = 0, team = 0;
-	Uint32 checksum = 0; // Immutable output content; prepared once by its producer.
 	Metrics metrics;
 	std::uint64_t ns = 0, candidateVisits = 0;
 	std::vector<BuildingLists> buildings;

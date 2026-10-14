@@ -207,7 +207,6 @@ class HiringPipelineHarness
 		{
 			HiringPlanner::Planner cache;
 			auto output = std::make_shared<HiringPlanner::Output>(cache.rank(input, team, 128));
-			output->checksum = HiringPipeline::checksumOutput(*output);
 			game.hiringPipeline->published[team] = std::move(output);
 		}
 	}

@@ -167,7 +167,6 @@ std::shared_ptr<const Output> loadOutput(GAGCore::InputStream *s, const Game &ga
 		o->buildings.push_back(std::move(b));
 	}
 	s->readLeaveSection();
-	o->checksum = outputChecksum(*o);
 	return o;
 }
 } // namespace
@@ -184,10 +183,6 @@ struct HiringPipeline::Batch
 	std::vector<Work> work;
 };
 HiringPipeline::HiringPipeline(ComputeExecutor &e) : executor(e) {}
-Uint32 HiringPipeline::checksumOutput(const HiringPlanner::Output &output)
-{
-	return outputChecksum(output);
-}
 HiringPipeline::~HiringPipeline()
 {
 	try
@@ -201,9 +196,7 @@ HiringPipeline::~HiringPipeline()
 void HiringPipeline::compute(void *context, std::size_t)
 {
 	auto &w = *static_cast<Work *>(context);
-	auto output = std::make_shared<Output>(HiringPlanner::Planner{}.rank(*w.input, w.team, Capacity));
-	output->checksum = outputChecksum(*output);
-	w.output = std::move(output);
+	w.output = std::make_shared<Output>(HiringPlanner::Planner{}.rank(*w.input, w.team, Capacity));
 	w.input.reset();
 }
 void HiringPipeline::observe(Game &game, const SimulationSnapshot::Handle &snapshot)
@@ -405,7 +398,9 @@ void HiringPipeline::load(Game &game, GAGCore::InputStream *s)
 	}
 	s->readLeaveSection(2);
 }
-// Published contents and the logical pending schedule; never worker readiness.
+// Diagnostic digest of published contents and the logical pending schedule,
+// never worker readiness. Not part of the game checksum: outputs are a pure
+// function of the snapshot, and divergence reaches world state within ticks.
 Uint32 HiringPipeline::checkSum() const
 {
 	if (!lastObserved && pending.empty() &&
@@ -423,7 +418,7 @@ Uint32 HiringPipeline::checkSum() const
 	{
 		s.writeUint8(bool(o), "present");
 		if (o)
-			s.writeUint32(o->checksum, "output");
+			s.writeUint32(outputChecksum(*o), "output");
 	}
 	for (const auto &b : pending)
 	{

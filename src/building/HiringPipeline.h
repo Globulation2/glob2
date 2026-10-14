@@ -24,7 +24,6 @@ class HiringPipeline
 	std::array<std::shared_ptr<const HiringPlanner::Output>, 16> published;
 	std::deque<std::unique_ptr<Batch>> pending;
 	static void compute(void *, std::size_t);
-	static Uint32 checksumOutput(const HiringPlanner::Output &);
 
   public:
 	// Owner work (submission, publication), owner wait and worker planning time.
