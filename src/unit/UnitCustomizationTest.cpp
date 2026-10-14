@@ -760,9 +760,10 @@ TEST_SUITE("UnitCustomization")
         auto* hospital=world.addBuilding("hospital",9,9); auto* patient=world.addUnit(3,8,8);
         REQUIRE(hospital); REQUIRE(patient);
         patient->hp=UnitPerformanceLimit-1;
-        patient->subscriptionSuccess(hospital,true,false);
-        hospital->unitsInside.push_back(patient);
-        patient->activity=Unit::ACT_UPGRADING; patient->destinationPurpose=HEAL;
+        patient->destinationPurpose=HEAL;
+        REQUIRE(hospital->canOfferService(patient,HEAL));
+        hospital->subscribeUnitForInside(patient);
+        REQUIRE(patient->serviceResourcesReserved());
         patient->displacement=Unit::DIS_ENTERING_BUILDING;
         patient->posX=9; patient->posY=9; patient->dx=1; patient->dy=1;
         patient->action=WALK;

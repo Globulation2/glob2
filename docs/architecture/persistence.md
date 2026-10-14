@@ -164,7 +164,12 @@ turret targeting; the map floor stays 58.
 Only buildings whose private stock was normalized reconcile commitments made
 unaffordable by the cap. Affordable service visits survive; unfunded visits exit
 without receiving food, healing or training. Unfunded committed production is
-canceled. Construction retains its wide budget and progress, while funding is
+canceled. A canceled entrant completes its entry phase before exiting, preserving
+the saved entrance occupancy until the normal entry action clears it. Canceled
+visits clear their service timer so terrain and area effects resume after exit.
+Format 161 also defers explorer service rebound until a free exit is found. Its
+replay floor is 161; saved games from formats 159 and 160 remain loadable.
+Construction retains its wide budget and progress, while funding is
 limited to remaining backed stock and premature completion is cleared. Existing
 service/production/construction restoration priority and shared-stock validation
 remain intact. Cached demand is preserved rather than recomputed on load.

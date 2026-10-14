@@ -134,10 +134,10 @@ TEST_CASE("Current simulation rejects earlier replays and enforces acceptance bo
 	glob2test::GlobalsOptions options;
 	options.loadStrings = true;
 	glob2test::HeadlessGlobals globals(options);
-	// Private-stock and cached-performance caps change continuation in format 160.
+	// Format 161 corrects canceled service restoration after private-stock clamping.
 	// Script save-format milestones remain independent of these current gates.
-	CHECK(REPLAY_MINIMUM_VERSION_MINOR == 160);
-	CHECK(VERSION_MINOR == 160);
+	CHECK(REPLAY_MINIMUM_VERSION_MINOR == 161);
+	CHECK(VERSION_MINOR == 161);
 	CHECK(NET_PROTOCOL_VERSION == 71);
 	CHECK(FILE_FORMAT_VERSION_JAVASCRIPT == 125);
 	CHECK(FILE_FORMAT_VERSION_EXPERIMENTS == 124);

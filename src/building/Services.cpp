@@ -192,7 +192,14 @@ void Building::restoreServiceReservations()
         // different visitor's reservation. Cancel without granting a benefit.
         unit->setServiceResourcesReserved(false);
         unit->setNeedToRecheckMedical(true);
-        if(unit->displacement==Unit::DIS_ENTERING_BUILDING || unit->displacement==Unit::DIS_INSIDE) {
+        unit->insideTimeout=0;
+        if(unit->displacement==Unit::DIS_ENTERING_BUILDING) {
+            // The map has not loaded yet. Keep the entry phase so its saved
+            // outside occupancy remains valid until entry clears that slot.
+            // With no reservation, entry then exits without starting a service.
+            continue;
+        }
+        if(unit->displacement==Unit::DIS_INSIDE) {
             unit->displacement=Unit::DIS_EXITING_BUILDING;
         } else {
             unitsInside.erase(current);
