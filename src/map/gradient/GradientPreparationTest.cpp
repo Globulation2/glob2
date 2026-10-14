@@ -1254,35 +1254,6 @@ TEST_CASE("snapshot material templates refresh changed chunks and accept older s
     check(other);
 }
 
-TEST_CASE("GradientPreparation/explicit snapshot batches isolate invalid fields and retain exact output")
-{
-    using namespace gradient_kernel;
-    const auto previous=backend();struct Restore {Backend value;~Restore(){setBackend(value);}} restore{previous};
-    glob2test::HeadlessGlobals globals;
-    glob2test::HeadlessGame fixture({.wDec=6,.hDec=6,.teams=1,.discovered=true,.clearImmobile=true,.header=true});
-    auto& game=fixture.game;auto& map=game.map;
-    map.setVertexTerrain(5,5,WATER);
-    auto snapshot=SimulationSnapshot::capture(game,SimulationSnapshot::captureCatalog(game),SimulationSnapshot::Simulation);
-    std::array<std::vector<Uint16>,3> outputs,expected;
-    std::array<std::exception_ptr,3> errors{};
-    std::array<GradientWorkspace,3> scratch;
-    std::vector<gradient_preparation::PropagationField> fields;
-    setBackend(Backend::CPU);
-    for(unsigned i=0;i<3;++i){
-        outputs[i].assign(map.getW()*map.getH(),1);outputs[i][i]=65535;outputs[i][13]=0;
-        outputs[i][21]=65000;expected[i]=outputs[i];
-        map.propagateGradient(expected[i].data(),i==2?6:0);
-        gradient_preparation::Request request;request.swim=i==2?6:0;request.terrainBuckets=i==1?65:64;
-        fields.push_back({request,&snapshot,outputs[i].data(),&scratch[i],&errors[i]});
-    }
-    setBackend(Backend::OpenCL);gradient_preparation::propagateBatch(fields);
-    CHECK(outputs[0]==expected[0]);CHECK(outputs[2]==expected[2]);
-    CHECK_FALSE(errors[0]);CHECK_FALSE(errors[2]);REQUIRE(errors[1]);
-    CHECK_THROWS_AS(std::rethrow_exception(errors[1]),std::invalid_argument);
-    CHECK(outputs[1][1]==65535);CHECK(outputs[1][21]==65000); // Invalid field was never propagated.
-
-}
-
 TEST_CASE("GradientPreparation/modified terrain costs remain exact when field obstacles change")
 {
     using namespace gradient_kernel;
@@ -1306,7 +1277,7 @@ TEST_CASE("GradientPreparation/modified terrain costs remain exact when field ob
         REQUIRE(initializationState.load()==2);
     }
 
-    for (unsigned entry=0;entry<3;++entry) {
+    for (unsigned entry=0;entry<2;++entry) {
         for(unsigned phase=0;phase<2;++phase) {
             std::vector<Uint16> output(map.size,1);output[0]=65535;output[phase?37:13]=0;
             auto expected=output;
@@ -1316,10 +1287,7 @@ TEST_CASE("GradientPreparation/modified terrain costs remain exact when field ob
             const bool deviceReady=readyPlans.load()&(1u<<unsigned(Plan::Frozen8));
             std::function<void()> work=[&] {
                 if(entry==0) gradient_preparation::propagate(request,snapshot,output.data(),scratch);
-                else if(entry==1) {
-                    const gradient_preparation::PropagationField field{request,&snapshot,output.data(),&scratch};
-                    gradient_preparation::propagateBatch(std::span(&field,1));
-                } else map.propagateGradient(output.data(),0);
+                else map.propagateGradient(output.data(),0);
             };
             const ComputeExecutor::Group group{1,{[](void* p,std::size_t){(*static_cast<std::function<void()>*>(p))();},&work}};
             auto batch=map.computeExecutor().submit(std::span(&group,1)); map.computeExecutor().join(batch);

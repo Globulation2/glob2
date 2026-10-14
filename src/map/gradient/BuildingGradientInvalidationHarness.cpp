@@ -668,17 +668,14 @@ void scheduledCaptureAtBoundary()
 }
 
 // 3. Partial fields resume on the owner from transferred buckets. The depth
-// setting moves work between worker and owner, never values.
+// predictor moves work between worker and owner, never values.
 void scheduledPartialResume()
 {
-	enum class Depth { Table, Full, Lazy };
 	std::vector<Uint16> reference;
 	for (unsigned workers : {0u, 2u})
-	for (Depth mode : {Depth::Table, Depth::Full, Depth::Lazy})
 	{
 		World world(8);
 		Scheduler s(world, workers, 4);
-		s.map.setBuildingGradientDepth(mode == Depth::Full ? "full" : mode == Depth::Lazy ? "lazy" : "table");
 		const int pool = globalContainer->buildingsTypes.getTypeNum("swimmingpool", 0, true);
 		require(pool >= 0, "swimming pool site type");
 		Building* b = s.game.addBuilding(100, 100, pool, 0, 1, 1);
@@ -686,7 +683,6 @@ void scheduledPartialResume()
 		int dist = 0;
 		require(s.map.buildingAvailable(b, 0, 98, 98, &dist), "cold field");
 		const int depth = s.map.predictBuildingDepth(b, 0);
-		require((mode == Depth::Full) == (depth == gradient_kernel::COST_LIMIT), "only full depth settles everything");
 		s.game.stepCounter = DIRTY_GRACE_TICKS + 1;
 		s.map.addForbidden(10, 10, 0);
 		s.tick([&] { s.map.buildingAvailable(b, 0, 98, 98, &dist); });
@@ -694,10 +690,9 @@ void scheduledPartialResume()
 		s.map.advanceGradientPipeline();
 		require(s.status().published == 1, "published");
 		auto* search = b->globalGradientSearch[0].get();
-		// The table may settle a small map entirely; lazy publishes seeds only.
+		// The production predictor may settle a small map entirely.
 		const bool partial = !search || !search->complete();
-		require(search && (mode == Depth::Full ? !partial : mode == Depth::Lazy ? partial : true)
-			&& (!partial || search->settledCost() > depth), "the published field carries its frontier");
+		require(search && (!partial || search->settledCost() > depth), "the published field carries its frontier");
 		const auto workerCost = search->settledCost();
 		require(s.map.buildingAvailable(b, 0, 230, 230, &dist), "far query resolves on the owner");
 		require(!partial || search->settledCost() > workerCost, "the owner continues the transferred search");
@@ -708,9 +703,9 @@ void scheduledPartialResume()
 		require(resumed == full, "resumed values equal a full build");
 		require(resumedCost == b->globalGradientSearch[0]->settledCost(), "the finished frontier matches a full build");
 		if (reference.empty()) reference = resumed;
-		require(resumed == reference, "every depth setting publishes the same values");
-		std::printf("PASS scheduled field depth mode %d (depth %d, worker frontier %llu of %llu) resumes from transferred buckets\n",
-			int(mode), depth, (unsigned long long)workerCost, (unsigned long long)resumedCost);
+		require(resumed == reference, "serial and parallel refreshes publish the same values");
+		std::printf("PASS scheduled field (depth %d, worker frontier %llu of %llu) resumes from transferred buckets\n",
+			depth, (unsigned long long)workerCost, (unsigned long long)resumedCost);
 	}
 }
 
@@ -1086,7 +1081,6 @@ TEST_SUITE("BuildingGradientInvalidation")
 		World world;
 		Scheduler scheduler(world, 2, 1);
 		auto& map = world.game.map;
-		map.setBuildingGradientDepth("table");
 		Building* building = world.place(24, 24);
 		REQUIRE(world.available(building, 2, 2));
 		const int demand = building->globalGradientSearch[0]->requiredCost();

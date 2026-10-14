@@ -274,7 +274,6 @@ Platform: all.
 | `--gpu` | on, off | Legacy gradient selection: on=OpenCL, off=CPU automatic; explicit backend takes precedence. |
 | `--gradient-backend` | cpu, scalar, sse2, neon, opencl, vulkan, webgpu | Gradient computation backend. |
 | `--gradient-algorithm` | buckets, frozen8, jacobi | Gradient computation algorithm. |
-| `--gradient-verify` | on, off | Compare accelerated fields with scalar CPU output. |
 | `--help` | flag; default false | Show this command's help (also -h). |
 
 Unspecified display, audio and editor settings inherit saved preferences.
@@ -342,7 +341,6 @@ Platform: all.
 | `--gpu` | on, off | Legacy gradient selection: on=OpenCL, off=CPU automatic; explicit backend takes precedence. |
 | `--gradient-backend` | cpu, scalar, sse2, neon, opencl, vulkan, webgpu | Gradient computation backend. |
 | `--gradient-algorithm` | buckets, frozen8, jacobi | Gradient computation algorithm. |
-| `--gradient-verify` | on, off | Compare accelerated fields with scalar CPU output. |
 | `--help` | flag; default false | Show this command's help (also -h). |
 
 Unspecified display, audio and editor settings inherit saved preferences.
@@ -658,7 +656,6 @@ Platform: all.
 | `--gpu` | on, off | Legacy gradient selection: on=OpenCL, off=CPU automatic; explicit backend takes precedence. |
 | `--gradient-backend` | cpu, scalar, sse2, neon, opencl, vulkan, webgpu | Gradient computation backend. |
 | `--gradient-algorithm` | buckets, frozen8, jacobi | Gradient computation algorithm. |
-| `--gradient-verify` | on, off | Compare accelerated fields with scalar CPU output. |
 | `--map-file` | file | Map input for a new game. |
 | `--load-game` | file | Saved-game input for continuation. |
 | `--generator` | string | Generate a map before starting. |
@@ -758,7 +755,6 @@ Platform: all.
 | `--gpu` | on, off | Legacy gradient selection: on=OpenCL, off=CPU automatic; explicit backend takes precedence. |
 | `--gradient-backend` | cpu, scalar, sse2, neon, opencl, vulkan, webgpu | Gradient computation backend. |
 | `--gradient-algorithm` | buckets, frozen8, jacobi | Gradient computation algorithm. |
-| `--gradient-verify` | on, off | Compare accelerated fields with scalar CPU output. |
 | `--ticks` | integer; default 0; ticks; 0..2147483647 | Steps per run; 0 runs until the game ends. |
 | `--runs` | integer; default 1; 1..2147483647 | Number of saved-game runs. |
 | `--building-catalog` | file | Building catalog. |
@@ -786,7 +782,7 @@ Choose at most one: `--record`, `--videoshot`.
 
 `--record-fps` requires `--record` or `--videoshot`.
 
-Applicable environment variables: `GLOB2_REPLAY_PATH`, `GLOB2_CHECKSUM_SIDECAR`, `GLOB2_TEAM_RESULTS`, `GLOB2_TEAM_TIMELINE`, `GLOB2_GRADIENT_BACKEND`, `GLOB2_GRADIENT_ALGORITHM`, `GLOB2_GRADIENT_VERIFY`, `GLOB2_OPENCL_DEVICE`.
+Applicable environment variables: `GLOB2_REPLAY_PATH`, `GLOB2_CHECKSUM_SIDECAR`, `GLOB2_TEAM_RESULTS`, `GLOB2_TEAM_TIMELINE`, `GLOB2_GRADIENT_BACKEND`, `GLOB2_GRADIENT_ALGORITHM`, `GLOB2_OPENCL_DEVICE`.
 
 ```sh
 glob2 game repeat saved.game.gz --ticks 64 --runs 1
@@ -857,7 +853,6 @@ Platform: all.
 | `--gpu` | on, off | Legacy gradient selection: on=OpenCL, off=CPU automatic; explicit backend takes precedence. |
 | `--gradient-backend` | cpu, scalar, sse2, neon, opencl, vulkan, webgpu | Gradient computation backend. |
 | `--gradient-algorithm` | buckets, frozen8, jacobi | Gradient computation algorithm. |
-| `--gradient-verify` | on, off | Compare accelerated fields with scalar CPU output. |
 | `--instance` | string | Online instance origin. |
 | `--help` | flag; default false | Show this command's help (also -h). |
 
@@ -926,7 +921,6 @@ Platform: all.
 | `--gpu` | on, off | Legacy gradient selection: on=OpenCL, off=CPU automatic; explicit backend takes precedence. |
 | `--gradient-backend` | cpu, scalar, sse2, neon, opencl, vulkan, webgpu | Gradient computation backend. |
 | `--gradient-algorithm` | buckets, frozen8, jacobi | Gradient computation algorithm. |
-| `--gradient-verify` | on, off | Compare accelerated fields with scalar CPU output. |
 | `--instance` | string | Online instance origin. |
 | `--hash` | string | Catalog map SHA-256. Required. |
 | `--title` | string | Catalog map title. Required. |
@@ -997,7 +991,6 @@ Platform: all.
 | `--gpu` | on, off | Legacy gradient selection: on=OpenCL, off=CPU automatic; explicit backend takes precedence. |
 | `--gradient-backend` | cpu, scalar, sse2, neon, opencl, vulkan, webgpu | Gradient computation backend. |
 | `--gradient-algorithm` | buckets, frozen8, jacobi | Gradient computation algorithm. |
-| `--gradient-verify` | on, off | Compare accelerated fields with scalar CPU output. |
 | `--instance` | string | Online instance origin. |
 | `--hash` | string | Catalog map SHA-256. Required. |
 | `--title` | string | Catalog map title. Required. |
@@ -1225,7 +1218,6 @@ Platform: all.
 | `--gpu` | on, off | Legacy gradient selection: on=OpenCL, off=CPU automatic; explicit backend takes precedence. |
 | `--gradient-backend` | cpu, scalar, sse2, neon, opencl, vulkan, webgpu | Gradient computation backend. |
 | `--gradient-algorithm` | buckets, frozen8, jacobi | Gradient computation algorithm. |
-| `--gradient-verify` | on, off | Compare accelerated fields with scalar CPU output. |
 | `--display` | flag; default false | Show test games graphically. |
 | `--runs` | integer; default 0; 0..2147483647 | Game count; 0 repeats forever. |
 | `--ticks` | integer; default 90000; ticks; 0..2147483647 | Tick cap per random game; 0 runs until game end; overrides GLOB2_TEST_MAX_TICKS. |
@@ -1331,7 +1323,6 @@ Platform: all.
 | `--gpu` | on, off | Legacy gradient selection: on=OpenCL, off=CPU automatic; explicit backend takes precedence. |
 | `--gradient-backend` | cpu, scalar, sse2, neon, opencl, vulkan, webgpu | Gradient computation backend. |
 | `--gradient-algorithm` | buckets, frozen8, jacobi | Gradient computation algorithm. |
-| `--gradient-verify` | on, off | Compare accelerated fields with scalar CPU output. |
 | `--output-dir` | directory; default . | Translation screenshot directory. |
 | `--help` | flag; default false | Show this command's help (also -h). |
 

@@ -95,9 +95,6 @@ Gradient computation backend Allowed: cpu, scalar, sse2, neon, opencl, vulkan, w
 .B \-\-gradient\-algorithm
 Gradient computation algorithm Allowed: buckets, frozen8, jacobi. Type: enum.
 .TP
-.B \-\-gradient\-verify
-Compare accelerated fields with scalar CPU output Allowed: on, off. Type: enum.
-.TP
 .B \-\-help
 Show this command's help (also \-h) Default: false.
 .PP
@@ -213,9 +210,6 @@ Gradient computation backend Allowed: cpu, scalar, sse2, neon, opencl, vulkan, w
 .TP
 .B \-\-gradient\-algorithm
 Gradient computation algorithm Allowed: buckets, frozen8, jacobi. Type: enum.
-.TP
-.B \-\-gradient\-verify
-Compare accelerated fields with scalar CPU output Allowed: on, off. Type: enum.
 .TP
 .B \-\-help
 Show this command's help (also \-h) Default: false.
@@ -640,9 +634,6 @@ Gradient computation backend Allowed: cpu, scalar, sse2, neon, opencl, vulkan, w
 .B \-\-gradient\-algorithm
 Gradient computation algorithm Allowed: buckets, frozen8, jacobi. Type: enum.
 .TP
-.B \-\-gradient\-verify
-Compare accelerated fields with scalar CPU output Allowed: on, off. Type: enum.
-.TP
 .B \-\-map\-file
 Map input for a new game Type: file.
 .TP
@@ -710,7 +701,7 @@ AI order delay in ticks Type: integer. Units: ticks. Range: 0..8.
 Snapshot: initial, final, or every:N Type: string. Repeatable.
 .TP
 .B \-\-telemetry
-Additional telemetry Allowed: checksums, team\-timeline, maxima, gradient\-stats. Type: enum. Repeatable.
+Additional telemetry Allowed: checksums, team\-timeline, maxima. Type: enum. Repeatable.
 .TP
 .B \-\-write\-replay
 Write game.replay Default: false.
@@ -847,9 +838,6 @@ Gradient computation backend Allowed: cpu, scalar, sse2, neon, opencl, vulkan, w
 .B \-\-gradient\-algorithm
 Gradient computation algorithm Allowed: buckets, frozen8, jacobi. Type: enum.
 .TP
-.B \-\-gradient\-verify
-Compare accelerated fields with scalar CPU output Allowed: on, off. Type: enum.
-.TP
 .B \-\-ticks
 Steps per run; 0 runs until the game ends Default: 0. Type: integer. Units: ticks. Range: 0..2147483647.
 .TP
@@ -884,7 +872,7 @@ Choose at most one: \-\-record, \-\-videoshot
 .PP
 \-\-record\-fps requires \-\-record or \-\-videoshot
 .PP
-Environment: GLOB2_REPLAY_PATH, GLOB2_CHECKSUM_SIDECAR, GLOB2_TEAM_RESULTS, GLOB2_TEAM_TIMELINE, GLOB2_GRADIENT_BACKEND, GLOB2_GRADIENT_ALGORITHM, GLOB2_GRADIENT_VERIFY, GLOB2_OPENCL_DEVICE
+Environment: GLOB2_REPLAY_PATH, GLOB2_CHECKSUM_SIDECAR, GLOB2_TEAM_RESULTS, GLOB2_TEAM_TIMELINE, GLOB2_GRADIENT_BACKEND, GLOB2_GRADIENT_ALGORITHM, GLOB2_OPENCL_DEVICE
 .PP
 .nf
 glob2 game repeat saved.game.gz \-\-ticks 64 \-\-runs 1
@@ -1006,9 +994,6 @@ Gradient computation backend Allowed: cpu, scalar, sse2, neon, opencl, vulkan, w
 .B \-\-gradient\-algorithm
 Gradient computation algorithm Allowed: buckets, frozen8, jacobi. Type: enum.
 .TP
-.B \-\-gradient\-verify
-Compare accelerated fields with scalar CPU output Allowed: on, off. Type: enum.
-.TP
 .B \-\-instance
 Online instance origin Type: string.
 .TP
@@ -1127,9 +1112,6 @@ Gradient computation backend Allowed: cpu, scalar, sse2, neon, opencl, vulkan, w
 .TP
 .B \-\-gradient\-algorithm
 Gradient computation algorithm Allowed: buckets, frozen8, jacobi. Type: enum.
-.TP
-.B \-\-gradient\-verify
-Compare accelerated fields with scalar CPU output Allowed: on, off. Type: enum.
 .TP
 .B \-\-instance
 Online instance origin Type: string.
@@ -1255,9 +1237,6 @@ Gradient computation backend Allowed: cpu, scalar, sse2, neon, opencl, vulkan, w
 .TP
 .B \-\-gradient\-algorithm
 Gradient computation algorithm Allowed: buckets, frozen8, jacobi. Type: enum.
-.TP
-.B \-\-gradient\-verify
-Compare accelerated fields with scalar CPU output Allowed: on, off. Type: enum.
 .TP
 .B \-\-instance
 Online instance origin Type: string.
@@ -1540,9 +1519,6 @@ Gradient computation backend Allowed: cpu, scalar, sse2, neon, opencl, vulkan, w
 .B \-\-gradient\-algorithm
 Gradient computation algorithm Allowed: buckets, frozen8, jacobi. Type: enum.
 .TP
-.B \-\-gradient\-verify
-Compare accelerated fields with scalar CPU output Allowed: on, off. Type: enum.
-.TP
 .B \-\-display
 Show test games graphically Default: false.
 .TP
@@ -1711,9 +1687,6 @@ Gradient computation backend Allowed: cpu, scalar, sse2, neon, opencl, vulkan, w
 .TP
 .B \-\-gradient\-algorithm
 Gradient computation algorithm Allowed: buckets, frozen8, jacobi. Type: enum.
-.TP
-.B \-\-gradient\-verify
-Compare accelerated fields with scalar CPU output Allowed: on, off. Type: enum.
 .TP
 .B \-\-output\-dir
 Translation screenshot directory Default: .. Type: directory.

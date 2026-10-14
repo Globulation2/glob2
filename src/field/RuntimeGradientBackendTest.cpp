@@ -3,8 +3,7 @@
 #include "ScopedEnvironment.h"
 #include "GradientAccelerators.h"
 #include "OpenCLGradient.h"
-#include "GradientGpuValidation.h"
-#include "GradientDiagnostics.h"
+#include "GradientOracle.h"
 #include "test/fixtures/gradients/WrappedMaterialSeeds.h"
 #include "test/fixtures/gradients/RetainedVulkanSeeds.h"
 #include "GradientPropagation.h"
@@ -15,9 +14,6 @@
 
 namespace
 {
-thread_local std::uint64_t profileElapsed = 1, profileCpu = 1, profileProbes = 0;
-std::uint64_t testElapsed() noexcept { ++profileProbes; return profileElapsed; }
-std::uint64_t testCpu() noexcept { ++profileProbes; return profileCpu; }
 struct ConfigurationGuard
 {
 	gradient_kernel::Configuration applied = gradient_kernel::configuration(),
@@ -62,60 +58,7 @@ std::vector<std::uint16_t> oracle(std::vector<std::uint16_t> values, field::Grid
 } // namespace
 TEST_SUITE("RuntimeGradientBackend")
 {
-	TEST_CASE("diagnostic phases partition nested work across captured sessions")
-	{
-		using namespace gradient_kernel;
-		GradientDiagnosticTotals totals;
-		profileElapsed = profileCpu = 100;
-		{
-			GradientProfileSession session(Backend::Vulkan, true, testElapsed, testCpu, &totals);
-			GradientPhaseScope outer(GradientPhase::Recording);
-			profileElapsed += 10; profileCpu += 3;
-			{
-				GradientProfileSession nested(Backend::Vulkan, true, testElapsed, testCpu, &totals);
-				GradientPhaseScope wait(GradientPhase::Waiting);
-				profileElapsed += 40; profileCpu += 2;
-				countGradientWork(GradientCounter::Submissions, 2);
-			}
-			profileElapsed += 20; profileCpu += 7;
-		}
-		const auto result = totals.snapshot();
-		CHECK(result.phases[unsigned(GradientPhase::Recording)].elapsedNs == 30);
-		CHECK(result.phases[unsigned(GradientPhase::Recording)].cpuNs == 10);
-		CHECK(result.phases[unsigned(GradientPhase::Waiting)].elapsedNs == 40);
-		CHECK(result.phases[unsigned(GradientPhase::Waiting)].cpuNs == 2);
-		CHECK(result.counters[unsigned(GradientCounter::Submissions)] == 2);
-		CHECK(activeGradientProfile == nullptr);
-	}
-	TEST_CASE("disabled diagnostics perform no probes and missing CPU remains unavailable")
-	{
-		using namespace gradient_kernel;
-		GradientDiagnosticTotals totals;
-		profileProbes = 0;
-		{
-			GradientProfileSession session(Backend::Vulkan, false, testElapsed, testCpu, &totals);
-			GradientPhaseScope wait(GradientPhase::Waiting);
-			countGradientWork(GradientCounter::Dispatches);
-		}
-		CHECK(profileProbes == 0);
-		CHECK_FALSE(totals.snapshot().collected);
-		profileElapsed = 100; profileCpu = 0;
-		try {
-			GradientProfileSession session(Backend::Vulkan, true, testElapsed, testCpu, &totals);
-			GradientPhaseScope wait(GradientPhase::Waiting);
-			profileElapsed += 50;
-			throw std::runtime_error("test cleanup");
-		} catch (const std::runtime_error&) {}
-		const auto result = totals.snapshot();
-		const auto& wait = result.phases[unsigned(GradientPhase::Waiting)];
-		CHECK(wait.elapsedNs == 50);
-		CHECK(wait.cpuNs == 0);
-		CHECK(wait.cpuInvalid == 1);
-		CHECK(activeGradientProfile == nullptr);
-		std::ostringstream json;
-		writeGradientDiagnostics(json, result);
-		CHECK(json.str().find("\"cpu_ns\":null") != std::string::npos);
-	}
+
 	TEST_CASE("stable selection IDs and unsupported algorithm normalization")
 	{
 		using namespace gradient_kernel;
@@ -124,31 +67,11 @@ TEST_SUITE("RuntimeGradientBackend")
 			CHECK(parseBackend(backendName(Backend(i))) == Backend(i));
 		CHECK_FALSE(parseBackend("unknown"));
 		CHECK_FALSE(supportsAlgorithm(Backend::OpenCL, Algorithm::Jacobi));
-		requestBackendConfiguration({Backend::Scalar, Algorithm::Jacobi, true});
+		requestBackendConfiguration({Backend::Scalar, Algorithm::Jacobi});
 		CHECK(requestedBackendConfiguration().algorithm == Algorithm::Buckets);
 		CHECK(configuration() == guard.applied);
 	}
-	TEST_CASE("verification environment accepts CLI and boolean spellings")
-	{
-		using namespace gradient_kernel;
-		for (const char *value : {"1", "on", "true"})
-		{
-			CHECK(parseVerification(value) == true);
-			glob2test::ScopedEnvironment env("GLOB2_GRADIENT_VERIFY", value);
-			CHECK(initialEnvironmentConfiguration().verify);
-		}
-		for (const char *value : {"0", "off", "false", "", "unknown", "TRUE"})
-		{
-			const auto parsed = parseVerification(value);
-			if (std::string_view(value) == "0" || std::string_view(value) == "off" ||
-				std::string_view(value) == "false")
-				CHECK(parsed == false);
-			else
-				CHECK_FALSE(parsed.has_value());
-			glob2test::ScopedEnvironment env("GLOB2_GRADIENT_VERIFY", value);
-			CHECK_FALSE(initialEnvironmentConfiguration().verify);
-		}
-	}
+
 	TEST_CASE("invalid preferences normalize before indexed dispatch")
 	{
 		using namespace gradient_kernel;
@@ -160,19 +83,18 @@ TEST_SUITE("RuntimeGradientBackend")
 			const auto recovered = acceleratorStatus(Backend::CPU).fallbacks;
 			recordGradientFallback(invalid);
 			CHECK(acceleratorStatus(Backend::CPU).fallbacks == recovered + 1);
-			requestBackendConfiguration({invalid, Algorithm(255), true});
+			requestBackendConfiguration({invalid, Algorithm(255)});
 			CHECK(requestedBackendConfiguration() ==
-				  Configuration{Backend::CPU, Algorithm::Buckets, true});
-			applyBackendConfiguration({invalid, Algorithm::Jacobi, false});
-			CHECK(configuration() == Configuration{Backend::CPU, Algorithm::Buckets, false});
+				  Configuration{Backend::CPU, Algorithm::Buckets});
+			applyBackendConfiguration({invalid, Algorithm::Jacobi});
+			CHECK(configuration() == Configuration{Backend::CPU, Algorithm::Buckets});
 		}
 		for (const auto b : {Backend::CPU, Backend::Scalar, Backend::SSE2, Backend::NEON,
 							 Backend::OpenCL, Backend::Vulkan, Backend::WebGPU})
 		{
-			const auto c = normalizedConfiguration({b, Algorithm(255), true});
+			const auto c = normalizedConfiguration({b, Algorithm(255)});
 			CHECK(c.backend == b);
 			CHECK(supportsAlgorithm(b, c.algorithm));
-			CHECK(c.verify);
 		}
 	}
 	TEST_CASE("CPU scopes have one restoration owner and restore after exceptions")
@@ -223,8 +145,8 @@ TEST_SUITE("RuntimeGradientBackend")
 		using namespace gradient_kernel;
 		ConfigurationGuard guard;
 		BackendSession session;
-		const Configuration captured{Backend::Vulkan, Algorithm::Jacobi, true};
-		applyBackendConfiguration({Backend::Scalar, Algorithm::Buckets, false});
+		const Configuration captured{Backend::Vulkan, Algorithm::Jacobi};
+		applyBackendConfiguration({Backend::Scalar, Algorithm::Buckets});
 		const auto decision = session.choose(Family::Materials, 1, captured);
 		CHECK(decision.configuration == captured);
 		CHECK(decision.generation == session.currentGeneration());
@@ -238,65 +160,7 @@ TEST_SUITE("RuntimeGradientBackend")
 		CHECK(decision.generation == oldGeneration);
 		CHECK(decision.configuration == captured);
 	}
-	TEST_CASE("shadow verification rejects mismatches with original-input evidence")
-	{
-		using namespace gradient_kernel;
-		ConfigurationGuard guard;
-		setBackend(Backend::Scalar);
-		const auto directory = std::filesystem::path("artifacts") /
-							   ("shadow-verification-" + std::to_string(monotonicNs()));
-		std::filesystem::create_directories(directory);
-		glob2test::ScopedEnvironment artifacts("GLOB2_TEST_ARTIFACTS", directory.string().c_str());
-		BackendSession session;
-		std::array<std::uint16_t, 2> seeds{65535, 1}, actual{65535, 123};
-		BackendRequest request{actual.data(),
-							   COST_LIMIT,
-							   {2, 1},
-							   session,
-							   nullptr,
-							   [](void *, std::size_t) { return LAND_STEPS; },
-							   [](void *, std::uint16_t *out)
-							   {
-								   out[0] = 65535;
-								   out[1] = 65525;
-							   }};
-		CHECK_THROWS_AS(verifyGradientResult(request, seeds), std::runtime_error);
-		std::size_t files = 0;
-		for (const auto &entry : std::filesystem::directory_iterator(directory))
-		{
-			CHECK(entry.file_size() == 40);
-			++files;
-		}
-		CHECK(files == 1);
-		actual[1] = 65525;
-		CHECK_NOTHROW(verifyGradientResult(request, seeds));
-		std::filesystem::remove_all(directory);
-	}
-	TEST_CASE("shadow telemetry follows admitted configuration after preferences change")
-	{
-		using namespace gradient_kernel;
-		ConfigurationGuard guard;
-		BackendSession session;
-		std::array<std::uint16_t, 2> seeds{65535, 1}, actual{65535, 65525};
-		BackendRequest request{actual.data(),
-							   COST_LIMIT,
-							   {2, 1},
-							   session,
-							   nullptr,
-							   [](void *, std::size_t) { return LAND_STEPS; },
-							   [](void *, std::uint16_t *out)
-							   {
-								   out[0] = 65535;
-								   out[1] = 65525;
-							   }};
-		request.capturedConfiguration = Configuration{Backend::Scalar, Algorithm::Buckets, true};
-		setBackend(Backend::CPU);
-		const auto scalarBefore = acceleratorStatus(Backend::Scalar).verified;
-		const auto automaticBefore = acceleratorStatus(Backend::CPU).verified;
-		verifyGradientResult(request, seeds);
-		CHECK(acceleratorStatus(Backend::Scalar).verified == scalarBefore + 1);
-		CHECK(acceleratorStatus(Backend::CPU).verified == automaticBefore);
-	}
+
 	TEST_CASE("direct CPU recovery honors explicit variant rather than process preference")
 	{
 		using namespace gradient_kernel;
@@ -397,52 +261,7 @@ TEST_SUITE("RuntimeGradientBackend")
 			CHECK(values == oracle(seeds, grid, costs, 300));
 		}
 	}
-	TEST_CASE("Vulkan diagnostic admission is captured and counts confirmed work")
-	{
-		using namespace gradient_kernel;
-		glob2test::ScopedEnvironment enabled("GLOB2_GRADIENT_DIAGNOSTICS", "1");
-		if (!initializeVulkanGradient()) {
-			if (std::getenv("GLOB2_REQUIRE_VULKAN")) FAIL(vulkanGradientStatus().error);
-			MESSAGE("Vulkan unavailable: ", vulkanGradientStatus().error);
-			return;
-		}
-		BackendSession session;
-		const field::Grid grid{17, 19};
-		std::vector<std::uint16_t> seeds(grid.cells(), 1);
-		seeds[0] = 65535;
-		std::vector<EntrySteps> costs(grid.cells(), LAND_STEPS);
-		for (bool diagnostics : {false, true}) {
-			auto actual = seeds;
-			BackendRequest request{actual.data(), COST_LIMIT, grid, session, &costs,
-				[](void* p, std::size_t i) { return (*static_cast<std::vector<EntrySteps>*>(p))[i]; }, nullptr};
-			request.diagnostics = diagnostics;
-			bool committed = false, observed = false;
-			request.executedOnDevice = &committed;
-			request.deviceExecutionObserved = &observed;
-			const auto before = gradientDiagnosticSnapshot(Backend::Vulkan);
-			REQUIRE(executeVulkanGradient(std::span(&request, 1), Plan::VulkanFrozen8));
-			const auto after = gradientDiagnosticSnapshot(Backend::Vulkan);
-			CHECK(actual == oracle(seeds, grid, costs, COST_LIMIT));
-			CHECK(committed);
-			CHECK(observed);
-			const auto delta = [&](GradientCounter c) { return after.counters[unsigned(c)] - before.counters[unsigned(c)]; };
-			CHECK(delta(GradientCounter::AttemptedFields) == unsigned(diagnostics));
-			CHECK(delta(GradientCounter::ExecutedFields) == unsigned(diagnostics));
-			CHECK(delta(GradientCounter::CommittedFields) == unsigned(diagnostics));
-            CHECK(delta(GradientCounter::ConvergedFields) == unsigned(diagnostics));
-            CHECK(delta(GradientCounter::ValidatedFields) == unsigned(diagnostics));
-			if (diagnostics) {
-				CHECK(delta(GradientCounter::Dispatches) > 0);
-				CHECK(delta(GradientCounter::Submissions) > delta(GradientCounter::Dispatches));
-				CHECK(delta(GradientCounter::ConvergenceChecks)+delta(GradientCounter::GpuValidationDispatches) == delta(GradientCounter::Dispatches));
-				CHECK(delta(GradientCounter::ReferenceUploadBytes)==grid.cells()*8);
-                CHECK(delta(GradientCounter::GpuValidationDispatches)==1);
-                CHECK(delta(GradientCounter::GpuValidatedFields)==1);
-				CHECK(delta(GradientCounter::UploadBytes) > 0);
-				CHECK(delta(GradientCounter::ReadbackBytes) == grid.cells() * sizeof(std::uint32_t));
-			}
-		}
-	}
+
 	TEST_CASE("Vulkan algorithms agree with oracle for weighted capped wrapped fields")
 	{
 		using namespace gradient_kernel;
@@ -643,12 +462,9 @@ TEST_SUITE("RuntimeGradientBackend")
 			const std::vector<EntrySteps> costs(grid.cells(), LAND_STEPS);
 			const auto expected = oracle(seeds, grid, costs, cap);
 			for (const auto plan : {Plan::VulkanFrozen8, Plan::VulkanJacobi})
-				for (const char *transfers : std::array<const char *, 2>{"0", "1"})
 				{
 					const auto planID = int(plan);
 					CAPTURE(planID);
-					CAPTURE(transfers);
-					glob2test::ScopedEnvironment verify("GLOB2_VULKAN_VERIFY_TRANSFERS", transfers);
 					for (int repeat = 0; repeat < 3; ++repeat)
 					{
 						CAPTURE(repeat);
@@ -669,168 +485,8 @@ TEST_SUITE("RuntimeGradientBackend")
 				}
 		}
 	}
-	TEST_CASE("owned captured Vulkan fields prove exact results when qualified CPU checking is skipped")
-    {
-        using namespace gradient_kernel;
-        glob2test::ScopedEnvironment diagnostics("GLOB2_GRADIENT_DIAGNOSTICS","1");
-        if (!initializeVulkanGradient()) {
-            if (std::getenv("GLOB2_REQUIRE_VULKAN")) FAIL(vulkanGradientStatus().error);
-            MESSAGE("Vulkan unavailable: ",vulkanGradientStatus().error); return;
-        }
-        const auto device=vulkanGradientStatus();
-        bool qualified=false;
-#if defined(__linux__) && defined(__x86_64__) && !defined(__ANDROID__)
-        qualified=device.device=="NVIDIA GeForce RTX 3070 Ti Laptop GPU" &&
-            device.driver=="2435612928" &&
-            device.shaderIdentity=="370b0fb99b45a626bd717f78aa058c1e4992e25ffefcf6356d3617b99758893d";
-#endif
-        BackendSession session;
-        for (const auto dimensions : {std::pair{1,192},std::pair{192,1},std::pair{7,13},
-                std::pair{17,19},std::pair{128,128},std::pair{256,256},std::pair{512,512}}) {
-            const field::Grid grid{dimensions.first,dimensions.second};
-            std::vector<EntrySteps> values(grid.cells());
-            std::vector<std::uint16_t> seeds(grid.cells(),1);
-            for (std::size_t i=0; i<grid.cells(); ++i) {
-                values[i]={unsigned(1+i%37),unsigned(2+i%53)};
-                if (i%11==3) seeds[i]=0;
-                else if (i%19==7) seeds[i]=2;
-            }
-            seeds.front()=65535; seeds.back()=65000;
-            auto costs=std::make_shared<const std::vector<EntrySteps>>(std::move(values));
-            for (const int cap : {0,64,3000}) {
-                const auto expected=oracle(seeds,grid,*costs,cap);
-                for (const auto plan : {Plan::VulkanFrozen8,Plan::VulkanJacobi}) for (bool shadow:{false,true}) {
-                    auto actual=seeds;
-                    BackendRequest request{actual.data(),cap,grid,session,
-                        const_cast<std::vector<EntrySteps>*>(costs.get()),
-                        [](void* p,std::size_t i) {return (*static_cast<const std::vector<EntrySteps>*>(p))[i];},nullptr};
-                    request.identity={costs,17,3,true,sizeof(*costs)+costs->capacity()*sizeof(EntrySteps),0};
-                    request.capturedConfiguration=Configuration{Backend::Vulkan,
-                        plan==Plan::VulkanFrozen8?Algorithm::Frozen8:Algorithm::Jacobi,shadow};
-                    request.capturedGeneration=session.currentGeneration(); request.diagnostics=true;
-                    bool committed=false,observed=false;
-                    request.executedOnDevice=&committed; request.deviceExecutionObserved=&observed;
-                    const auto before=gradientDiagnosticSnapshot(Backend::Vulkan);
-                    REQUIRE(executeVulkanGradient(std::span(&request,1),plan));
-                    REQUIRE(committed); REQUIRE(observed); CHECK(actual==expected);
-                    const auto after=gradientDiagnosticSnapshot(Backend::Vulkan);
-                    const auto delta=[&](GradientCounter c) {return after.counters[unsigned(c)]-before.counters[unsigned(c)];};
-                    CHECK(delta(GradientCounter::GpuValidatedFields)==1);
-                    CHECK(delta(GradientCounter::CpuFixedPointChecksSkipped)==unsigned(qualified && !shadow));
-                    CHECK(delta(GradientCounter::CpuFixedPointChecks)==unsigned(!qualified || shadow));
-                }
-            }
-        }
-    }
-    TEST_CASE("confirmed proof failures survive evidence exceptions")
-    {
-        using namespace gradient_kernel;
-        const std::vector<std::uint16_t> seeds{65535,1};
-        const std::vector<std::uint32_t> output{65535,65536};
-        const auto failedCosts=[](std::size_t)->EntrySteps { throw 42; };
-        // Nonstandard exceptions bypass the writers' best-effort I/O catch.
-        // The public helper must still preserve the already-proven mismatch.
-        CHECK_THROWS_AS(failGradientProof("test",std::span<const std::uint16_t>(seeds),
-            std::span<const std::uint32_t>(output),{2,1},70,failedCosts),GradientProofFailure);
-        CHECK_THROWS_AS(failGradientControlProof(std::span<const std::uint16_t>(seeds),
-            {2,1},70,failedCosts,{true,false,1},{}),GradientProofFailure);
-        CHECK_THROWS_AS(failGradientTransfer(2,std::span<const std::uint16_t>(seeds),
-            std::span<const std::uint32_t>(output),{2,1},70,
-            [](std::size_t)->std::uint32_t {throw 42;},{}),GradientProofFailure);
-        CHECK_THROWS_AS(preserveGradientProofFailure([] { throw std::bad_alloc(); }),
-            GradientProofFailure);
-        CHECK_THROWS_AS(preserveGradientProofFailure([] {
-            throw std::runtime_error("injected cost callback failure");
-        }), GradientProofFailure);
-        CHECK_THROWS_AS(preserveGradientProofFailure([] {}), GradientProofFailure);
-    }
-	TEST_CASE("Vulkan fixed-point proof executes independently and rejects corrupted fields and costs")
-    {
-        using namespace gradient_kernel;
-        glob2test::ScopedEnvironment diagnostics("GLOB2_GRADIENT_DIAGNOSTICS","1");
-        if (!initializeVulkanGradient()) {
-            if (std::getenv("GLOB2_REQUIRE_VULKAN")) FAIL(vulkanGradientStatus().error);
-            MESSAGE("Vulkan unavailable: ",vulkanGradientStatus().error); return;
-        }
-        for (const auto dimensions : {std::pair{1,192},std::pair{192,1},std::pair{7,13},
-                std::pair{17,19},std::pair{128,128},std::pair{256,256},std::pair{512,512}}) {
-            const field::Grid grid{dimensions.first,dimensions.second};
-            std::vector<std::uint16_t> seeds(grid.cells(),1);
-            std::vector<EntrySteps> costs(grid.cells());
-            std::vector<std::uint32_t> packed(grid.cells());
-            for (std::size_t i=0; i<grid.cells(); ++i) {
-                costs[i]={unsigned(1+i%37),unsigned(2+i%53)};
-                packed[i]=costs[i].cardinal|(costs[i].diagonal<<16);
-                if (i%11==3) seeds[i]=0;
-                else if (i%19==7) seeds[i]=2;
-            }
-            seeds.front()=65535; seeds.back()=65000;
-            for (const int cap : {0,64,3000}) {
-                const auto reference=oracle(seeds,grid,costs,cap);
-                std::vector<std::uint32_t> output(reference.begin(),reference.end());
-                REQUIRE(exactGradientFixedPoint(std::span<const std::uint16_t>(seeds),
-                    std::span<const std::uint32_t>(output),grid,cap,[&](auto i){return costs[i];}));
-                const auto before=gradientDiagnosticSnapshot(Backend::Vulkan);
-                const auto valid=proveVulkanGradientFixedPoint(seeds,output,packed,grid,cap);
-                REQUIRE(valid.has_value()); REQUIRE(valid->deviceExecuted);
-                CHECK(valid->valid); CHECK(valid->firstInvalid==UINT32_MAX);
-                const auto after=gradientDiagnosticSnapshot(Backend::Vulkan);
-                CHECK(after.counters[unsigned(GradientCounter::GpuValidationDispatches)]-
-                    before.counters[unsigned(GradientCounter::GpuValidationDispatches)]==1);
-                CHECK(after.counters[unsigned(GradientCounter::CommittedFields)]==
-                    before.counters[unsigned(GradientCounter::CommittedFields)]);
-                for (const auto corrupted : {0u,65534u,65536u,UINT32_MAX}) {
-                    auto broken=output; broken.front()=corrupted;
-                    CHECK_FALSE(exactGradientFixedPoint(std::span<const std::uint16_t>(seeds),
-                        std::span<const std::uint32_t>(broken),grid,cap,[&](auto i){return costs[i];}));
-                    const auto proof=proveVulkanGradientFixedPoint(seeds,broken,packed,grid,cap);
-                    REQUIRE(proof.has_value()); REQUIRE(proof->deviceExecuted);
-                    CHECK_FALSE(proof->valid); CHECK(proof->firstInvalid<grid.cells());
-                    if (dimensions==std::pair{7,13} && cap==0 && corrupted==65536u) {
-                        // The device has actually rejected this field. A later
-                        // callback/allocation failure must remain a fatal proof.
-                        CHECK_THROWS_AS(preserveGradientProofFailure([&] {
-                            failGradientControlProof(std::span<const std::uint16_t>(seeds),
-                                grid,cap,[](std::size_t)->EntrySteps { throw std::bad_alloc(); },
-                                *proof,{"test device","test driver","test shader",123});
-                        }),GradientProofFailure);
-                        CHECK_THROWS_AS(failGradientControlProof(std::span<const std::uint16_t>(seeds),
-                            grid,cap,[&](auto i){return costs[i];},*proof,
-                            {vulkanGradientStatus().device,vulkanGradientStatus().driver,
-                             vulkanGradientStatus().shaderIdentity,123}),GradientProofFailure);
-                    }
-                }
-                auto invented=output; invented[7]=65535;
-                CHECK_FALSE(exactGradientFixedPoint(std::span<const std::uint16_t>(seeds),
-                    std::span<const std::uint32_t>(invented),grid,cap,[&](auto i){return costs[i];}));
-                const auto fixedPoint=proveVulkanGradientFixedPoint(seeds,invented,packed,grid,cap);
-                REQUIRE(fixedPoint.has_value()); REQUIRE(fixedPoint->deviceExecuted);
-                CHECK_FALSE(fixedPoint->valid); CHECK(fixedPoint->firstInvalid<grid.cells());
-                if (output[1]>seeds[1]) {
-                    auto lowered=output; lowered[1]=seeds[1];
-                    const auto incomplete=proveVulkanGradientFixedPoint(seeds,lowered,packed,grid,cap);
-                    REQUIRE(incomplete.has_value()); REQUIRE(incomplete->deviceExecuted);
-                    CHECK_FALSE(incomplete->valid); CHECK(incomplete->firstInvalid<grid.cells());
-                }
-                auto fabricated=output; fabricated[3]=65535;
-                const auto obstacle=proveVulkanGradientFixedPoint(seeds,fabricated,packed,grid,cap);
-                REQUIRE(obstacle.has_value()); REQUIRE(obstacle->deviceExecuted);
-                CHECK_FALSE(obstacle->valid); CHECK(obstacle->firstInvalid==3);
-                auto actualCosts=packed; actualCosts[3]^=1u;
-                const auto changed=proveVulkanGradientFixedPoint(seeds,output,packed,grid,cap,actualCosts);
-                REQUIRE(changed.has_value()); REQUIRE(changed->deviceExecuted);
-                CHECK_FALSE(changed->valid); CHECK(changed->firstInvalid==3);
-                // A valid field cannot hide corrupted costs at a forbidden cell.
-                CHECK(exactGradientFixedPoint(std::span<const std::uint16_t>(seeds),
-                    std::span<const std::uint32_t>(output),grid,cap,[&](auto i){return costs[i];}));
-                auto brokenSeeds=seeds; brokenSeeds.front()=0;
-                const auto input=proveVulkanGradientFixedPoint(brokenSeeds,output,packed,grid,cap);
-                REQUIRE(input.has_value()); REQUIRE(input->deviceExecuted);
-                CHECK_FALSE(input->valid); CHECK(input->firstInvalid==0);
-            }
-        }
-    }
-	TEST_CASE("Vulkan upload roundtrips retire before staging reuse at cohort sizes")
+
+	TEST_CASE("Vulkan storage reuse preserves raw outputs at cohort sizes")
 	{
 		using namespace gradient_kernel;
 		if (!initializeVulkanGradient())
@@ -840,7 +496,6 @@ TEST_SUITE("RuntimeGradientBackend")
 			MESSAGE("Vulkan unavailable: ", vulkanGradientStatus().error);
 			return;
 		}
-		glob2test::ScopedEnvironment verify("GLOB2_VULKAN_VERIFY_TRANSFERS", "1");
 		BackendSession session;
 		for (const int side : {128, 256, 512})
 			for (unsigned repeat = 0; repeat < 8; ++repeat)
@@ -896,18 +551,9 @@ TEST_SUITE("RuntimeGradientBackend")
                 auto actual=seeds;
                 BackendRequest request{actual.data(),2000,grid,session,&costs,
                     [](void* p,std::size_t i){return (*static_cast<std::vector<EntrySteps>*>(p))[i];},nullptr};
-                request.diagnostics=true;
                 bool committed=false; request.executedOnDevice=&committed;
-                const auto before=gradientDiagnosticSnapshot(Backend::Vulkan);
                 REQUIRE(executeVulkanGradient(std::span(&request,1),plan));
                 CHECK(committed); CHECK(actual==expected);
-                const auto after=gradientDiagnosticSnapshot(Backend::Vulkan);
-                if (plan==Plan::VulkanJacobi || iteration>=3) {
-                    CHECK(after.counters[unsigned(GradientCounter::ResourceReuses)] - before.counters[unsigned(GradientCounter::ResourceReuses)] == 1);
-                    CHECK(after.counters[unsigned(GradientCounter::BufferAllocations)] == before.counters[unsigned(GradientCounter::BufferAllocations)]);
-                    CHECK(after.counters[unsigned(GradientCounter::CommandAllocations)] == before.counters[unsigned(GradientCounter::CommandAllocations)]);
-                    CHECK(after.counters[unsigned(GradientCounter::BindingAllocations)] == before.counters[unsigned(GradientCounter::BindingAllocations)]);
-                }
             }
             ++iteration;
         }
@@ -984,18 +630,11 @@ TEST_SUITE("RuntimeGradientBackend")
 			std::array<bool, 2> committed{true, true}, observed{true, true};
 			for (unsigned i = 0; i < 2; ++i)
 			{
-				requests[i].diagnostics = true;
                 requests[i].executedOnDevice = &committed[i];
 				requests[i].deviceExecutionObserved = &observed[i];
 			}
 			const auto before = vulkanGradientStatus();
-            const auto profileBefore = gradientDiagnosticSnapshot(Backend::Vulkan);
 			CHECK_FALSE(executeVulkanGradient(requests, plan));
-            const auto profileAfter = gradientDiagnosticSnapshot(Backend::Vulkan);
-            CHECK(profileAfter.counters[unsigned(GradientCounter::ValidatedFields)] -
-                profileBefore.counters[unsigned(GradientCounter::ValidatedFields)] == 1);
-            CHECK(profileAfter.counters[unsigned(GradientCounter::CommittedFields)] ==
-                profileBefore.counters[unsigned(GradientCounter::CommittedFields)]);
 			CHECK(observed[0]);
 			CHECK_FALSE(observed[1]);
 			CHECK_FALSE(committed[0]);
@@ -1022,51 +661,6 @@ TEST_SUITE("RuntimeGradientBackend")
 		request.requiredControl->requestCancel();
 		CHECK_FALSE(executeVulkanGradient(std::span(&request, 1), Plan::VulkanJacobi));
 		CHECK(values == seeds);
-	}
-
-	TEST_CASE("transfer mismatch preserves original seeds expected words and actual readback")
-	{
-		using namespace gradient_kernel;
-		const auto directory = std::filesystem::path("artifacts") /
-			("transfer-validation-" + std::to_string(monotonicNs()));
-		std::filesystem::create_directories(directory);
-		glob2test::ScopedEnvironment artifacts("GLOB2_TEST_ARTIFACTS", directory.string().c_str());
-		const std::array<std::uint16_t, 2> seeds{65535, 1};
-		const std::array<std::uint32_t, 2> actual{917514, 1};
-		try
-		{
-			failGradientTransfer(2, seeds, actual, {2, 1}, 70,
-				[](auto) { return 917514u; }, {"device", "driver", "shader", 123});
-			FAIL("transfer mismatch must stop execution");
-		}
-		catch (const GradientProofFailure &error)
-		{
-			CHECK(std::string(error.what()).find("expected 917514, actual 1") != std::string::npos);
-		}
-		std::size_t payloads = 0;
-		for (const auto &entry : std::filesystem::directory_iterator(directory))
-			if (entry.path().extension() == ".bin")
-			{
-				++payloads;
-				std::ifstream input(entry.path(), std::ios::binary);
-				const std::vector<unsigned char> bytes{std::istreambuf_iterator<char>(input), {}};
-				REQUIRE(bytes.size() == 48);
-				const auto word = [&](std::size_t i) {
-					return unsigned(bytes[i]) | (unsigned(bytes[i+1]) << 8) |
-						(unsigned(bytes[i+2]) << 16) | (unsigned(bytes[i+3]) << 24);
-				};
-				CHECK(word(0) == 0x47545246u);
-				CHECK(word(8) == 2);
-				CHECK(bytes[28] == 255);
-				CHECK(bytes[29] == 255);
-				CHECK(bytes[30] == 1);
-				CHECK(word(32) == 917514);
-				CHECK(word(36) == 917514);
-				CHECK(word(40) == 917514);
-				CHECK(word(44) == 1);
-			}
-		CHECK(payloads == 1);
-		std::filesystem::remove_all(directory);
 	}
 
 	TEST_CASE("fixed-point proof agrees with independent weighted oracle on narrow tori")
@@ -1128,47 +722,7 @@ TEST_SUITE("RuntimeGradientBackend")
 												std::span<const std::uint32_t>(bad), grid,
 												COST_LIMIT, valid));
 	}
-	TEST_CASE("proof evidence preserves original seeds and out-of-range readback portably")
-	{
-		using namespace gradient_kernel;
-		const auto directory = std::filesystem::path("artifacts") /
-							   ("proof-validation-" + std::to_string(monotonicNs()));
-		glob2test::ScopedEnvironment artifacts("GLOB2_TEST_ARTIFACTS", directory.string().c_str());
-		const std::array<std::uint16_t, 2> seeds{65535, 1};
-		const std::array<std::uint32_t, 2> output{0, 70000};
-		CHECK_THROWS_AS(failGradientProof("test", std::span<const std::uint16_t>(seeds),
-										  std::span<const std::uint32_t>(output), {2, 1}, 37,
-										  [](std::size_t) { return LAND_STEPS; },
-										  {"device", "driver", "shader", 42}),
-						GradientProofFailure);
-		std::filesystem::path binary, metadata;
-		for (const auto &file : std::filesystem::directory_iterator(directory))
-			if (file.path().extension() == ".bin")
-				binary = file.path();
-			else
-				metadata = file.path();
-		REQUIRE_FALSE(binary.empty());
-		REQUIRE_FALSE(metadata.empty());
-		std::ifstream fixture(binary, std::ios::binary);
-		std::vector<unsigned char> bytes((std::istreambuf_iterator<char>(fixture)), {});
-		REQUIRE(bytes.size() == 40);
-		CHECK(bytes[0] == 0x46);
-		CHECK(bytes[1] == 0x52);
-		CHECK(bytes[20] == 255);
-		CHECK(bytes[21] == 255);
-		const auto read32 = [&](std::size_t i)
-		{
-			return unsigned(bytes[i]) | (unsigned(bytes[i + 1]) << 8) |
-				   (unsigned(bytes[i + 2]) << 16) | (unsigned(bytes[i + 3]) << 24);
-		};
-		CHECK(read32(24) == 0);
-		CHECK(read32(28) == 70000);
-		CHECK(read32(32) == (10u | (14u << 16)));
-		std::ifstream info(metadata);
-		const std::string text((std::istreambuf_iterator<char>(info)), {});
-		CHECK(text.find("generation 42") != std::string::npos);
-		CHECK(text.find("shader \"shader\"") != std::string::npos);
-	}
+
 }
 
 TEST_SUITE("RuntimeGradientBackend")
@@ -1253,64 +807,17 @@ TEST_SUITE("RuntimeGradientBackend")
 		executeGradientGroup(std::span(&request, 1), Backend::Scalar);
 		CHECK(calls == 1);
 		CHECK(values[1] == 65525);
-		const std::array<std::uint16_t, 2> original{65535, 1};
-		request.capturedConfiguration = Configuration{Backend::Scalar, Algorithm::Buckets, true};
-		CHECK_NOTHROW(verifyGradientResult(request, original));
-		CHECK(calls == 2);
-		CHECK_THROWS_AS(verifyGradientResult(request, std::span(original).first(1)),
-						std::invalid_argument);
-		CHECK(calls == 2);
 		values[1] = 1;
 		auto other = request;
 		other.cpuBatch = nullptr;
 		std::array group{request, other};
 		CHECK_THROWS_AS(executeGradientGroup(group, Backend::Scalar), std::invalid_argument);
-		CHECK(calls == 2);
+		CHECK(calls == 1);
 		CHECK(values[1] == 1);
 	}
 }
 
 TEST_SUITE("RuntimeGradientBackend")
 {
-	TEST_CASE("shadow mismatch reports evidence failure without losing the primary error")
-	{
-		using namespace gradient_kernel;
-		const auto directory = std::filesystem::temp_directory_path() /
-							   ("gradient-evidence-file-" + std::to_string(monotonicNs()));
-		struct Cleanup
-		{
-			std::filesystem::path path;
-			~Cleanup()
-			{
-				std::error_code error;
-				std::filesystem::remove(path, error);
-			}
-		} cleanup{directory};
-		{
-			std::ofstream file(directory);
-			file << "this is a file, not an artifact directory";
-		}
-		glob2test::ScopedEnvironment artifacts("GLOB2_TEST_ARTIFACTS", directory.string().c_str());
-		BackendSession session;
-		std::array<std::uint16_t, 2> actual{65535, 1}, original = actual;
-		BackendRequest request{actual.data(),
-							   COST_LIMIT,
-							   {2, 1},
-							   session,
-							   nullptr,
-							   [](void *, std::size_t) { return LAND_STEPS; },
-							   [](void *, std::uint16_t *output) { output[1] = 65525; }};
-		try
-		{
-			verifyGradientResult(request, original);
-			FAIL("mismatch must stop execution");
-		}
-		catch (const std::runtime_error &error)
-		{
-			CHECK(std::string(error.what()).find("mismatch at cell 1") != std::string::npos);
-			CHECK(std::string(error.what()).find("unable to preserve fixture") !=
-				  std::string::npos);
-		}
-		CHECK(actual[1] == 1);
-	}
+
 }

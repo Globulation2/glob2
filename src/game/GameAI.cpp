@@ -63,10 +63,10 @@ std::vector<std::pair<std::string,Uint64>> Game::aiMetrics() const {
  const auto compute=map.computeExecutor().telemetrySnapshot();
  const auto& waits=compute.summary.joins[unsigned(ComputeProducer::AI)][unsigned(JoinReason::TickDeadline)];
  const auto& capture=worldSnapshots.metrics;const auto& scheduling=aiPipeline->schedulingMetrics();const auto memory=worldSnapshots.memoryMetrics();const auto queryMemory=aiPipeline->queryVectorMemory();
- const std::vector<std::pair<std::string,Uint64>> aiValues={{"captures",capture.captures},{"extraction_ns",capture.captureNs},{"preparation_ns",capture.preparationNs},
+ const std::vector<std::pair<std::string,Uint64>> aiValues={{"captures",capture.captures},
   {"map_bytes_copied",capture.mapBytesCopied},{"detailed_captures",capture.detailedCaptures},{"bytes_copied",capture.bytesCopied},
   {"entity_bytes_copied",capture.entityBytesCopied},{"entity_sidecar_bytes_copied",capture.entitySidecarBytesCopied},{"component_reuses",capture.reusedComponents},{"allocations",capture.allocations},
-  {"computation_ns",aiPipeline->computationNs()},{"controller_query_vector_bytes",queryMemory.first},
+  {"controller_query_vector_bytes",queryMemory.first},
   {"controller_query_vector_peak_bytes",aiPipeline->peakQueryVectorMemory()},
   {"controller_query_vector_samples",queryMemory.second},{"submitted",scheduling.submitted},{"delivered",scheduling.delivered},
   {"snapshot_allocated_buffers",memory.allocatedBuffers},{"snapshot_reusable_buffers",memory.reusableBuffers},
@@ -124,7 +124,7 @@ Uint32 Game::teamStatsChecksum(bool heavy) const {
 std::vector<std::pair<std::string,Uint64>> Game::teamStatsMetrics() const {
  if(!statsPipeline)return {};
  const auto& m=statsPipeline->metrics;
- return {{"stats_submitted",m.submitted},{"stats_published",m.published},{"stats_worker_ns",m.workerNs},{"stats_allocation_ns",m.allocationNs},{"stats_submission_ns",m.submissionNs},{"stats_publication_ns",m.publicationNs},{"stats_deadline_misses",m.deadlineMisses},{"stats_deadline_wait_ns",m.deadlineWaitNs},{"stats_peak_pending",m.peakPending}};
+ return {{"stats_submitted",m.submitted},{"stats_published",m.published},{"stats_peak_pending",m.peakPending}};
 }
 
 void Game::drainHiring(){if(hiringPipeline)hiringPipeline->drain(JoinReason::Reconfigure);}
@@ -135,5 +135,5 @@ const HiringPlanner::BuildingLists* Game::hiringCandidates(const Building& b) co
 std::vector<std::pair<std::string,Uint64>> Game::hiringMetrics() const {
  if(!hiringPipeline)return {};
  const auto& m=hiringPipeline->metrics;
- return {{"hiring_submitted",m.submitted},{"hiring_published",m.published},{"hiring_worker_ns",m.workerNs},{"hiring_submission_ns",m.submissionNs},{"hiring_publication_ns",m.publicationNs},{"hiring_deadline_wait_ns",m.deadlineWaitNs}};
+ return {{"hiring_submitted",m.submitted},{"hiring_published",m.published}};
 }

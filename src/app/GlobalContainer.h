@@ -59,6 +59,8 @@ public:
 	bool gpuComputeEnabled() const;
     gradient_kernel::Configuration gradientConfiguration() const;
 	void configureExecutionResources();
+    // Installed only when a map creates GPU execution state; retained across switches.
+    void (*gradientDeviceShutdown)() noexcept = nullptr;
     void configureGradientBackend() const;
     std::optional<GAGCore::RendererBackend> rendererLaunchOverride;
 	void loadClient(void);
@@ -141,7 +143,6 @@ public:
 	std::optional<bool> gpuComputeOverride;
     std::optional<gradient_kernel::Backend> gradientBackendOverride;
     std::optional<gradient_kernel::Algorithm> gradientAlgorithmOverride;
-    std::optional<bool> gradientVerifyOverride;
 	std::string runNoXGameName;
 	int runNoXCountRuns; //!< The number of runs you want to repeat the no X run
 	bool automaticEndingGame;

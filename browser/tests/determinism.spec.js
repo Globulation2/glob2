@@ -6,7 +6,7 @@ const {openRuntimeHost} = require('./runtime-host');
 
 // Run the compiled engine with the same fixture and orders as the native CI
 // lanes. A minimal host supplies CLI arguments without changing the game shell.
-for (const [variant, threads] of [['serial',1], ['threaded',1], ['threaded',2], ['threaded',4], ['threaded','auto']]) {
+for (const [variant, threads] of [['serial',1], ['threaded',1], ['threaded',2], ['threaded',4], ['threaded',8], ['threaded','auto']]) {
 test(`WebAssembly produces a complete per-tick simulation trace (${variant}/${threads})`, async ({page}, info) => {
   const root = path.resolve(__dirname, '../..');
   const fixture = fs.readFileSync(path.join(root, 'games/cross-replay.game.gz'));
@@ -24,7 +24,7 @@ test(`WebAssembly produces a complete per-tick simulation trace (${variant}/${th
           FS.writeFile('/tmp/initial.game.gz', Uint8Array.from(atob('${fixture.toString('base64')}'), c => c.charCodeAt(0)));
         }],
         async onRuntimeInitialized() {
-          const code = await Module.start(['game', 'repeat', '/tmp/initial.game.gz', '--ticks', '1500', '--runs', '1', '--compute-threads', '${threads}']);
+          const code = await Module.start(['game', 'repeat', '/tmp/initial.game.gz', '--ticks', '1500', '--runs', '1', '--compute-threads', '${threads}', '--gradient-backend', 'cpu']);
           if (code !== 0) throw new Error('Engine exited: ' + code);
           // Avoid millions of individually serialized Playwright values.
           // Chunk the conversion so large traces do not overflow the call stack.

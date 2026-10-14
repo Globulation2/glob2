@@ -72,11 +72,9 @@ checkpoint from a run started with `--rule buildingGradientDelay=N`. Other
 overrides of a saved game, including `--experiment`, `--rule` and
 `--ai-order-delay`, are still rejected.
 
-`GLOB2_BUILDING_DEPTH=full|table|lazy` chooses how far a worker settles a scheduled
-building field before publication: the generated depth model (`table`, the
-default), the whole field, or only its seeds. Readers resolve unsettled cells on the
-owner either way, so the setting moves CPU between workers and the simulation thread
-and never changes a result; use it only for timing comparisons.
+Scheduled building fields use the production depth predictor. Experimental
+full/lazy and operating-point overrides are retired; readers still resolve
+unsettled cells on the owner before using them.
 
 Format 143 saves the AI engine's completed pending orders, logical deadlines and
 execution feedback. Saving finishes outstanding decisions without executing

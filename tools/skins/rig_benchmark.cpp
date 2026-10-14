@@ -193,7 +193,15 @@ int main(int argc, char **argv)
 		gfx->prepareSkinMeshes(all);
 		glFinish();
 		result["fillAtlasMs"] = milliseconds() - fillStart;
-		const bool timers = SDL_GL_ExtensionSupported("GL_ARB_timer_query");
+#ifdef __APPLE__
+        const bool timers = SDL_GL_ExtensionSupported("GL_EXT_timer_query");
+        constexpr GLenum elapsedQuery = GL_TIME_ELAPSED_EXT;
+        const auto queryResult = &glGetQueryObjectui64vEXT;
+#else
+        const bool timers = SDL_GL_ExtensionSupported("GL_ARB_timer_query");
+        constexpr GLenum elapsedQuery = GL_TIME_ELAPSED;
+        const auto queryResult = glGetQueryObjectui64v;
+#endif
 		result["gpuTimers"] = timers;
 		std::vector<GLuint> queries(timers ? frames : 0);
 		if (timers)
@@ -221,7 +229,7 @@ int main(int argc, char **argv)
 			const bool measured = frame >= warmup;
 			const double start = milliseconds();
 			if (timers && measured)
-				glBeginQuery(GL_TIME_ELAPSED, queries[frame - warmup]);
+				glBeginQuery(elapsedQuery, queries[frame - warmup]);
 			gfx->beginFrame(GraphicContext::FrameMode::FullRedraw);
 			gfx->drawFilledRect(0, 0, 1280, 960, Color(45, 50, 60));
 			gfx->resetDrawCallCount();
@@ -243,7 +251,7 @@ int main(int argc, char **argv)
 			Sprite::flushBatches(gfx);
 			const double p2 = milliseconds();
 			if (timers && measured)
-				glEndQuery(GL_TIME_ELAPSED);
+				glEndQuery(elapsedQuery);
 			gfx->nextFrame();
 			const double end = milliseconds();
 			if (measured)
@@ -271,7 +279,7 @@ int main(int argc, char **argv)
 			for (auto query : queries)
 			{
 				GLuint64 ns = 0;
-				glGetQueryObjectui64v(query, GL_QUERY_RESULT, &ns);
+				queryResult(query, GL_QUERY_RESULT, &ns);
 				gpu.push_back(ns / 1e6);
 			}
 			glDeleteQueries(queries.size(), queries.data());

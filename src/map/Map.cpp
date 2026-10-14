@@ -8,6 +8,7 @@
 #include <stdexcept>
 #include "gradient/GradientRuntime.h"
 #include "Game.h"
+#include "GlobalContainer.h"
 #include "render/SoftwareTerrainCache.h"
 #include "Utilities.h"
 #include "Unit.h"
@@ -520,44 +521,32 @@ void Map::clearGradientBufferPool()
 
 std::vector<std::pair<std::string,Uint64>> Map::gradientExecutionMetrics() const
 {
+    if (!gradientRuntime->deviceService) return {};
     const auto device=gradientRuntime->deviceService->metrics();
-    const auto opencl=gradient_kernel::openCLStatus();
-    const auto accelerator=gradient_kernel::acceleratorStatus(gradient_kernel::backend());
-    const auto& pipeline=gradientRuntime->pipeline;
-    return {
-        {"gpu_requested_fields",pipeline.gpuRequestedFields()},
-        {"gpu_selected_fields",pipeline.gpuSelectedFields()},
-        {"gpu_complete_fields",pipeline.gpuCompleteFields()},
-        {"cpu_complete_fields",pipeline.cpuCompleteFields()},
-        {"cpu_reason_explicit",pipeline.cpuReason(GradientPipeline::CPUReason::ExplicitCPU)},
-        {"cpu_reason_owner_excluded",pipeline.cpuReason(GradientPipeline::CPUReason::OwnerExcluded)},
-        {"cpu_reason_unavailable",pipeline.cpuReason(GradientPipeline::CPUReason::Unavailable)},
-        {"cpu_reason_owned_input_decline",pipeline.cpuReason(GradientPipeline::CPUReason::OwnedInputDecline)},
-        {"cpu_reason_failed_session",pipeline.cpuReason(GradientPipeline::CPUReason::FailedSession)},
-        {"required_seed_cpu_ns",pipeline.requiredSeedCpuNs()},
-        {"required_propagation_cpu_ns",pipeline.requiredPropagationCpuNs()},
-        {"required_owned_input_cpu_ns",pipeline.requiredOwnedInputCpuNs()},
-        {"required_handoff_cpu_ns",pipeline.requiredHandoffCpuNs()},
-        {"required_cleanup_cpu_ns",pipeline.requiredCleanupCpuNs()},
-        {"gpu_publication_wait_count",pipeline.metrics.gpuPublicationWaitCount},
-        {"gpu_publication_wait_ns",pipeline.metrics.gpuPublicationWaitNs},
-        {"coordinator_threads",device.coordinatorThreads},
-        {"coordinator_running",device.running},{"coordinator_ready",device.ready},
-        {"coordinator_cpu_ns",device.hostCpuNs},{"coordinator_initialization_ns",device.initializationNs},
-        {"coordinator_submitted",device.submitted},{"coordinator_completed",device.completed},
+    return {{"coordinator_submitted",device.submitted},{"coordinator_completed",device.completed},
         {"coordinator_executed",device.executed},{"coordinator_fallbacks",device.fallbacks},
-        {"coordinator_declined",device.declined},{"coordinator_batches",device.batches},
-        {"coordinator_max_batch",device.maxBatch},{"coordinator_queued",device.queued},
-        {"fallback_reason_unavailable",device.fallbackReasons[unsigned(gradient_kernel::GradientFallbackReason::Unavailable)]},
-        {"fallback_reason_memory",device.fallbackReasons[unsigned(gradient_kernel::GradientFallbackReason::MemoryBudget)]},
-        {"fallback_reason_backend_decline",device.fallbackReasons[unsigned(gradient_kernel::GradientFallbackReason::BackendDecline)]},
-        {"fallback_reason_driver",device.fallbackReasons[unsigned(gradient_kernel::GradientFallbackReason::DriverFailure)]},
-        {"fallback_reason_cancellation",device.fallbackReasons[unsigned(gradient_kernel::GradientFallbackReason::Cancellation)]},
-        {"device_dispatches",accelerator.dispatches},{"device_observed_fields",device.deviceCompletedFields},
-        {"device_committed_fields",accelerator.fields},{"device_cpu_ns",opencl.threadCPUNs},
-        {"accelerator_host_bytes",opencl.hostBytes},{"accelerator_peak_host_bytes",opencl.peakHostBytes},
-        {"accelerator_device_bytes",opencl.deviceBytes},{"accelerator_peak_device_bytes",opencl.peakDeviceBytes}
-    };
+        {"coordinator_queued",device.queued}};
+}
+
+void Map::configureGradientExecution()
+{
+    auto& rt=*gradientRuntime;
+    const auto selected=gradient_kernel::configuration();
+    const bool gpu=gradient_kernel::isGPU(selected.backend) && compute.threadCount()>1;
+    // No worker-only GPU predicate is registered on the simulation executor.
+    if (gpu) {
+        if (globalContainer) globalContainer->gradientDeviceShutdown = &gradient_kernel::shutdownGradientDeviceCoordinator;
+        if (!rt.backendSession) rt.backendSession=std::make_shared<gradient_kernel::BackendSession>();
+        rt.backendSession->failed=false;
+        rt.backendSession->invalidateConfiguration();
+        if (!rt.deviceService) rt.deviceService=std::make_shared<gradient_kernel::GradientDeviceService>();
+        rt.deviceService->configure(compute.threadCount(),selected.backend);
+    } else {
+        rt.deviceService.reset(); rt.backendSession.reset();
+    }
+    rt.shareBackendSession();
+    rt.pipeline.setDeviceService(rt.deviceService);
+    rt.pipeline.setExecutionBackend(selected);
 }
 
 void Map::applyGradientBackendRequest()
@@ -568,9 +557,7 @@ void Map::applyGradientBackendRequest()
     if(game)game->drainHiring();
     finishGradientPipeline();
     gradient_kernel::applyBackendConfiguration(requested);
-    gradientRuntime->backendSession->failed=false;
-    gradientRuntime->backendSession->configure(compute.threadCount());
-    gradientRuntime->deviceService->configure(compute.threadCount(),requested.backend);
+    configureGradientExecution();
 }
 
 void Map::configureCompute(unsigned threads)
@@ -582,10 +569,7 @@ void Map::configureCompute(unsigned threads)
 	gradientRuntime->pipeline.resizeWorkspaces();
 	gradientRuntime->workspaces.resize(compute.threadCount());
 	gradientRuntime->shareBackendSession();
-    gradientRuntime->backendSession->setExternalInitialization(true);
-    gradientRuntime->backendSession->configure(compute.threadCount());
-    compute.setWorkerOnly(gradientRuntime->backendSession);
-    gradientRuntime->deviceService->configure(compute.threadCount(),gradient_kernel::backend());
+    configureGradientExecution();
 }
 
 void Map::clear()
@@ -606,9 +590,7 @@ void Map::clear()
 	// Retires into the buffer pool, so before the pool is cleared below.
 	resetBuildingGradientPipeline();
 	gradientRuntime->resetBackendSession();
-    gradientRuntime->backendSession->setExternalInitialization(true);
-    gradientRuntime->backendSession->configure(compute.threadCount());
-    compute.setWorkerOnly(gradientRuntime->backendSession);
+    configureGradientExecution();
 	gradientRuntime->buildingSynchronous=0;
 	gradientRuntime->synchronousByReason={};
 	gradientRuntime->overlaySupplierLocations.clear();

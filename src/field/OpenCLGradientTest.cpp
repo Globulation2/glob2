@@ -28,8 +28,9 @@ void initializeForTest()
 {
     using namespace gradient_kernel;
     if constexpr(!GAGCore::ThreadSupport::available) return;
-    if(initializationState.load()==2) return;
-    onWorker([]{gradient_kernel::initializeOpenCL();});
+    if(initializationState.load()!=2) onWorker([]{gradient_kernel::initializeOpenCL();});
+    if(std::getenv("GLOB2_REQUIRE_OPENCL"))
+        REQUIRE_MESSAGE((readyPlans.load() & (1u << unsigned(Plan::Frozen8))) != 0, openCLStatus().error);
 }
 
 struct RestoreBackend
@@ -74,7 +75,7 @@ TEST_SUITE("OpenCLGradient")
         using namespace gradient_kernel;
         RestoreBackend restore;
         const auto initial = openCLStatus();
-        INFO("OpenCL device: " << initial.device << "; fallback reason: " << initial.error);
+        MESSAGE("OpenCL device: " << initial.device << "; available: " << initial.available << "; fallback reason: " << initial.error);
         const bool supported=(readyPlans.load()&(1u<<unsigned(Plan::Frozen8)))!=0;
         setBackend(supported ? Backend::OpenCL : Backend::CPU);
         std::mt19937 random(1729);
@@ -208,7 +209,7 @@ TEST_SUITE("OpenCLGradient")
         std::vector<std::uint16_t> seeds(grid.cells(), 1);
         seeds[0] = 65535;
         seeds[1] = 0;
-        GradientWorkspace scratch;
+        BackendSession session;
         unsigned calls = 0;
         auto run = [&](CostIdentity identity, EntrySteps step)
         {
@@ -220,7 +221,7 @@ TEST_SUITE("OpenCLGradient")
                 return step;
             };
             auto cpu = [&](std::uint16_t *out) { std::copy(expected.begin(), expected.end(), out); };
-            REQUIRE(tryAcceleratedGradient(actual.data(), COST_LIMIT, grid, *scratch.backendSession, costs,
+            REQUIRE(tryAcceleratedGradient(actual.data(), COST_LIMIT, grid, session, costs,
                                            cpu, identity));
             CHECK(actual == expected);
         };
@@ -266,7 +267,7 @@ TEST_SUITE("OpenCLGradient")
             oracle(seeds, reshaped, std::vector<EntrySteps>(reshaped.cells(), entrySteps(WATER_STEP[6])),
                    COST_LIMIT);
         REQUIRE(tryAcceleratedGradient(
-            shaped.data(), COST_LIMIT, reshaped, *scratch.backendSession,
+            shaped.data(), COST_LIMIT, reshaped, session,
             [&](std::size_t)
             {
                 ++calls;

@@ -1,7 +1,6 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include <Environment.h>
 #include "Headless.h"
-#include "field/GradientDiagnostics.h"
 #include "ResourceGrowth.h"
 #include <utility>
 #include "scripting/javascript/ScriptCommand.h"
@@ -302,7 +301,6 @@ struct HeadlessRunner
 		if (options.count("--gpu")) globals.gpuComputeOverride = one(options, "--gpu") == "on";
 		if(options.count("--gradient-backend"))globals.gradientBackendOverride=*gradient_kernel::parseBackend(one(options,"--gradient-backend"));
         if(options.count("--gradient-algorithm"))globals.gradientAlgorithmOverride=*gradient_kernel::parseAlgorithm(one(options,"--gradient-algorithm"));
-        if(options.count("--gradient-verify"))globals.gradientVerifyOverride=one(options,"--gradient-verify")=="on";
         globals.structuredHeadless=true;
 		globals.automaticEndingGame=true;
 		globals.automaticGameGlobalEndConditions=true;
@@ -594,10 +592,7 @@ struct HeadlessRunner
 			<< ",\"growth_maxProposals\":" << game.map.resourceGrowthMetrics().maxProposals
 			<< ",\"growth_maxPending\":" << game.map.resourceGrowthMetrics().maxPending
 			<< ",\"growth_maxProposalBytes\":" << game.map.resourceGrowthMetrics().maxProposalBytes
-			<< ",\"growth_computeNs\":" << measured(game.map.resourceGrowthMetrics().computeNs, workerAvailable)
-			<< ",\"growth_queueNs\":" << measured(game.map.resourceGrowthMetrics().queueNs, workerAvailable)
 			<< ",\"growth_waitNs\":" << joinTotal(ComputeProducer::ResourceGrowth)
-			<< ",\"growth_publicationNs\":" << measured(game.map.resourceGrowthMetrics().publicationNs, summaryAvailable)
 			<< ",\"growth_delay\":" << game.map.resourceGrowthDelay()
             << ",\"tick_p50_ns\":" << percentile(50)
             << ",\"tick_p95_ns\":" << percentile(95)
@@ -610,8 +605,6 @@ struct HeadlessRunner
 			<< ",\"gradient_discarded\":" << pipelineResult.discarded
 			<< ",\"gradient_max_pending\":" << pipelineResult.maxPending
 			<< ",\"gradient_wait_ns\":" << joinTotal(ComputeProducer::PeriodicGradient)
-			<< ",\"gradient_preparation_ns\":" << measured(pipelineResult.preparationNs, workerAvailable)
-			<< ",\"gradient_active_elapsed_ns\":" << measured(pipelineResult.activeElapsedNs, workerAvailable)
 			<< ",\"compute_active_elapsed_ns\":" << measured(game.map.computeExecutor().activeNs(), workerAvailable)
 			<< ",\"building_gradient_jobs\":" << buildingResult.jobs
 			<< ",\"building_gradient_published\":" << buildingResult.published
@@ -626,15 +619,7 @@ struct HeadlessRunner
 				<< ':' << buildingResult.synchronousByReason[reason];
 		result << '}';
 
-        // Disabled diagnostics retain the ordinary result schema and avoid
-        // formatting a full set of empty samples on CPU-only runs.
-        if (gradient_kernel::isGPU(gradient.backend)) {
-            const auto gradientDiagnostics = gradient_kernel::gradientDiagnosticSnapshot(gradient.backend);
-            if (gradientDiagnostics.collected) {
-                result << ",\"gradient_host_diagnostics\":";
-                gradient_kernel::writeGradientDiagnostics(result, gradientDiagnostics);
-            }
-        }
+
 		result << ",\"compute_telemetry\":";
         ComputeTelemetry::writeJson(result, computeSnapshot);
         result << ",\"resource_plan\":";
@@ -650,8 +635,6 @@ struct HeadlessRunner
             << ",\"gradient_shader\":" << quote(accelerator.shaderIdentity)
             << ",\"gradient_gpu_fields\":" << accelerator.fields
             << ",\"gradient_cpu_fallbacks\":" << accelerator.fallbacks
-            << ",\"gradient_verified\":" << accelerator.verified
-            << ",\"gradient_verification_ns\":" << accelerator.verificationNs
             << ",\"gpu_requested\":" << globals.gpuComputeEnabled()
 			<< ",\"gpu_device\":" << quote(accelerator.device)
 			<< ",\"gpu_error\":" << quote(accelerator.error)

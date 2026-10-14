@@ -67,16 +67,6 @@ struct CrowdingScratch
 };
 void boxSum(Uint16* grid, int width, int height, CrowdingScratch& scratch);
 void seed(const Request& request, const SimulationSnapshot::Handle& snapshot, Uint16* output, CrowdingScratch& scratch);
-struct PropagationField {
-    Request request;
-    const SimulationSnapshot::Handle* snapshot;
-    Uint16* output;
-    GradientWorkspace* scratch;
-    std::exception_ptr* error = nullptr;
-    ComputeExecutor* executor = nullptr;
-};
-// Independent immutable fields; completes synchronously with original-seed CPU recovery.
-void propagateBatch(std::span<const PropagationField> fields);
 void propagate(const Request& request, const SimulationSnapshot::Handle& snapshot, Uint16* output, GradientWorkspace& scratch);
 void propagateCPU(const Request& request,const SimulationSnapshot::Handle& snapshot,Uint16* output,GradientWorkspace& scratch);
 

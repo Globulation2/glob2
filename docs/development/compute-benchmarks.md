@@ -61,10 +61,8 @@ paths and their environment selector have also been removed. Structural area
 refreshes and live field initialization retain their serial production order.
 
 Hiring plans on the executor from the shared completed-tick snapshot; see
-[simulation hiring](../architecture/simulation.md#hiring). Benchmark output reports
-owner submission and publication time (`hiring_submission_ns`,
-`hiring_publication_ns`), owner deadline wait (`hiring_deadline_wait_ns`) and
-worker planning time (`hiring_worker_ns`) separately.
+[simulation hiring](../architecture/simulation.md#hiring). Use shared executor diagnostics for scheduling waits and external process CPU
+measurements for performance. Separate hiring phase timers are retired.
 
 Structured `game run` accepts `--ai-order-delay D` for a new match (default 8
 ticks). Delays are simulation rules, separate from local thread configuration.
@@ -112,22 +110,20 @@ of dropping them. `building_gradient_synchronous_by_reason` splits that count:
 (a map without a game, as in the editor) and `other`.
 `setup_ns` ends before `Engine::run`; `run_ns` includes that call's finalization.
 
-The nested `ai_pipeline` object reports session counters. Snapshot clock timings
-are opt-in through `GLOB2_SNAPSHOT_PROFILE=1` or `GLOB2_STATS_PROFILE=1`; extraction
-and preparation nanoseconds remain zero otherwise. Copy counts retain the
-accounting policy below:
+The nested `ai_pipeline` object reports session counters. Separate snapshot,
+statistics, hiring, AI callback and growth phase timings are retired; removed
+measurements are omitted. Use the shared executor's optional diagnostics and
+whole-process CPU measurements. The delay-zero AI placement threshold retains
+its existing work measurement. Copy counts follow the accounting policy below:
 
 | Metric | Meaning |
 | --- | --- |
 | `captures` | Distinct snapshot capture boundaries. |
-| `extraction_ns` | Owner elapsed extraction time, excluding the separately measured preparation subset. |
-| `preparation_ns` | Owner elapsed time deriving building checks and preparing the growth field. |
 | `map_bytes_copied` | Always-on count of bytes copied into map and area-fertility buffers, including dirty 16x16 chunks and full fills. Shared immutable payloads do not count as copies. |
 | `detailed_captures` | Captures with detailed byte/reuse accounting enabled by compute telemetry (`waits` or `trace`), or explicitly by a snapshot harness. |
 | `bytes_copied` | Estimated component payload traffic for `detailed_captures`: exact map copies plus sizes of entity, team and other refreshed payloads. Zero when detailed accounting is disabled. |
 | `component_reuses` | Unchanged component or resource-plane reuse events during `detailed_captures`. Zero when detailed accounting is disabled. |
 | `allocations` | Instrumented component/payload pool-object, vector-growth and resource-plane allocation events. |
-| `computation_ns` | Summed elapsed time executing decision callbacks, across inline or worker execution. |
 | `submitted`, `delivered` | Admitted polls and deadline publications, including null outputs. |
 | `deadline_misses` | Due batches that were not finished when the owner reached their deadline; the owner then executes or waits for the remainder. |
 | `deadline_wait_ns` | Elapsed time the owner spent completing those missed batches, including jobs it ran itself. |
@@ -139,9 +135,8 @@ accounting policy below:
 | `controller_query_vector_bytes`, `controller_query_vector_peak_bytes` | Current sum of published controller query-vector capacities and its session high-water value. |
 | `controller_query_vector_samples` | Controllers with an available published capacity sample; unavailable controllers contribute no value. |
 
-Elapsed work across threads is not process CPU time. Preparation and extraction partition
-owner capture work; decision and deadline-wait durations can overlap other work, so do not
-sum all counters into a total. `bytes_copied` is cumulative estimated traffic for
+Elapsed work across threads is not process CPU time. Deadline-wait durations can
+overlap other work, so do not sum counters into a total. `bytes_copied` is cumulative estimated traffic for
 the measured captures, and `allocations` is
 not an exhaustive allocator trace. Use process user-plus-system CPU and peak RSS alongside
 the explicit metrics. Worker-local implicit scopes are not merged into owner totals.
@@ -259,11 +254,11 @@ threads use the same delayed serial schedule. Routing decisions may use periodic
 fields eight ticks older than before; synchronous refreshes still take effect
 immediately.
 
-`result.json` includes actual worker count, delay, jobs, published/discarded jobs,
-maximum pending buffers, deadline wait nanoseconds, and summed seeding-plus-propagation elapsed
-nanoseconds. `gradient_preparation_ns` records worker seed time collected at joins;
-snapshot capture remains part of the snapshot metrics. The latter is **not CPU time**. Whole-process user+system CPU must be
-measured externally. Timed runs drain outstanding work before stopping the timer;
+`result.json` includes actual worker count, delay, jobs, published/discarded jobs
+and maximum pending buffers. Shared executor diagnostics report deadline waits;
+per-pipeline seeding and propagation timers are retired. Whole-process user+system
+CPU must be measured externally. Timed runs drain outstanding work before stopping
+the timer;
 finishing work does not publish it early.
 
 `test/benchmark_gradient_pipeline.py` accepts the same scenario manifests as
@@ -397,3 +392,14 @@ Resource-growth benchmark cases accept `GLOB2_COMPUTE_TELEMETRY=off|waits|trace`
 (default off). Their JSON records include the selected mode and use null for
 uncollected pipeline timing. Direct calculation/publication timing remains measured
 by the benchmark's own clock.
+
+### Lean execution boundaries
+
+AI and gradient producers use the shared executor's serial fallback; they have no
+separate inline/shared mode. CPU-only periodic jobs seed and propagate directly on
+their executor slot. Backend selection is applied at the owner configuration
+boundary, after draining private work without changing publication deadlines.
+GPU services and sessions are created only for GPU configurations with workers;
+CPU-only maps retain neither and register no GPU idle-maintenance predicate.
+Per-pipeline preparation, CPU attribution and active-time measurements have been
+retired. Use process user+system CPU, elapsed time and shared executor diagnostics.
