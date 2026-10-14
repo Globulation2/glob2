@@ -206,7 +206,7 @@ TEST_SUITE("HiringPlanner")
 		CHECK(normal.metrics.resourceEstimateFallbacks > 0);
 		CHECK(enrolled.metrics.resourcePlaneReads > 0);
 	}
-	TEST_CASE("warm and fresh resource estimates agree after same-material visibility-rule changes")
+	TEST_CASE("missing shared planes do not suppress suggestions after visibility-rule changes")
 	{
 		glob2test::HeadlessGlobals globals;
 		glob2test::HeadlessGame w({.discovered = true, .loadDefaultRace = true});
@@ -260,7 +260,8 @@ TEST_SUITE("HiringPlanner")
 			HiringPlanner::Planner fresh;
 			const auto reused = warm.rank(input, 0), rebuilt = fresh.rank(input, 0);
 			CHECK(count(reused) == count(rebuilt));
-			CHECK(count(reused) == (phase == 1 ? 1u : 0u));
+			CHECK(count(reused) == 1);
+			CHECK(reused.metrics.resourceEstimateFallbacks > 0);
 		}
 	}
 	TEST_CASE("worker demand uses immutable shared funding and staffing facts")

@@ -485,7 +485,7 @@ void HiringPipeline::load(Game &game, GAGCore::InputStream *s)
 				throw std::runtime_error("Invalid hiring admission");
 			reserved += bound;
 			expectedTeam += Refresh;
-			b->work.push_back({{}, nullptr, o->team, std::size_t(bound), o});
+			b->work.push_back({{}, o->team, std::size_t(bound), o});
 			s->readLeaveSection();
 		}
 		s->readLeaveSection(2);

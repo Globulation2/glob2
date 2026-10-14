@@ -258,12 +258,9 @@ std::shared_ptr<Order> AINumbi::getOrder()
 {
  const auto world=AIEngine::AIWorldView::capture(*game,AIEngine::AIWorldView::captureCatalog(*game));
  const std::vector<AIEngine::ExecutionReceipt> receipts;
- std::vector<AIEngine::ResourceEnrollmentRequest> enrollments;
  AIEngine::DecisionContext context{*world,0,unsigned(teamNumber),receipts};
- context.resourceEnrollments=&enrollments;
+ 
  auto order=getOrder(context);
- for(const auto& request:enrollments)
-  map->installObservedResourceField(request.team,request.resource,request.swim,*request.initialField);
  return order;
 }
 
