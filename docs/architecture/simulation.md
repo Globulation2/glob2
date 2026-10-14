@@ -553,61 +553,36 @@ contaminate their timing.
 
 ### Hiring
 
-`HiringPipeline` belongs to each `Game`. It admits FIFO team jobs from the shared
-completed-tick world snapshot at `t % 4 == teamNumber % 4`, then publishes their
-outputs before team stepping at `t + 4`. Admission occurs once at the read boundary
-before matched orders, including on paused or waiting replicas; local readiness
-cannot choose a different observation for the same tick. Workers derive demand, material
-apportionment, supplier modes, qualifications and integer rankings. The owner
-establishes immutable observations and safe building-route generations, enqueues
-jobs, publishes due results, and validates/commits hires in the existing priority
-buckets and rounds. Task swaps remain serial. Attraction clocks retain their normal progression;
-when a round cannot obtain fresh suggestions, its outstanding recruitment request
-may retry for eight ticks without extending the deadline. Delivery cannot borrow
-that round's attraction seats while the request is outstanding. This bounded
-retry changes recruitment timing and prevents a cache miss from adding another
-33-tick clock cycle. Requests survive save/load and configuration changes; live
-role demand determines whether they are still owed.
+`HiringPipeline` belongs to each `Game`. At every read boundary, before matched
+orders and including on paused or waiting replicas, it publishes due results and
+then admits one job per team with `t % 4 == teamNumber % 4` from the shared
+completed-tick snapshot. Results publish before team stepping at `t + 4`; early
+completion cannot publish early, so participant counts never change outcomes.
 
-Each supported job receives a bounded list of incarnation-aware unit references.
-Live admission rechecks ownership, activity, medical eligibility, skills, cargo,
-current quotas, reachability, food budgets and destination lookup. Temporary
-unavailability only skips the suggestion for that attempt. Exhaustion or missing
-lists waits for a scheduled refresh; there is no population-wide fallback scan.
-Clearing, exploration, defense, ground and flying transport share this contract.
+Workers derive demand, material apportionment, supplier modes, qualifications and
+integer rankings from immutable snapshot records. Each job keeps a bounded heap of
+its best candidates, at most the observed vacancies plus two; optimistic score
+bounds skip route queries only for candidates that cannot enter the heap. When a
+team's total vacancies fit one list, a greedy pass in priority order gives each
+building distinct candidates first; imminent attraction rounds likewise spread
+offers between peer flags. Lists are suggestions, not reservations.
 
-Building-route expansion and owner reads share the existing per-generation locks.
-Retirement retains the original buffer/search until leases end, without copying
-it. Workers never call live building APIs. Immutable snapshot components and route
-handles are shared by reference, not copied for each team. Resource estimates
-read the existing immutable resource planes from that same snapshot. Hiring has
-no private resource fields, terrain fingerprints, seed templates or field builders.
-The common map producer refreshes its published fields on its normal schedule.
-Local AI query fields remain planning caches and cannot enroll authoritative map
-fields or change their refresh order.
+The owner keeps priority buckets, rounds, material quotas and task swaps. Admission
+rechecks ownership, activity, medical state, skills, cargo, quotas, reachability,
+food budget and destination for every suggestion, so flag edits need no list
+invalidation. Missing or exhausted lists wait for a refresh; there is no
+population-wide fallback scan. An attraction round with owed roles stays open for
+up to eight ticks (one refresh plus publication) by running its clock past 32.
 
-Missing planes, flying transport and consumer-specific supplier modes use an
-optimistic zero resource-distance estimate. They remain recruitable; current live
-admission performs the normal destination, reachability and food-budget checks.
-A successful first-use admission may initialize a shared material field through
-that existing query path. No hiring-specific owner preparation is performed.
-This changes rankings relative to freshly rebuilt private fields: published fields
-may be older, and missing-field estimates do not distinguish resource distances.
-Each job keeps a bounded heap of its best candidates; optimistic score bounds skip
-building-route queries only when a candidate cannot enter that heap.
-Route leases include only observed available movement classes. Observation borrows
-existing valid generations and never initializes, enrolls or refreshes a building
-field. Missing/stale fields use obstacle-free distance bounds to the footprint or
-flag region for ranking. Live admission performs normal authoritative route checks
-and establishes the first shared field when needed.
+Resource distances read the snapshot's published resource planes. AI query fields
+are local planning caches, whose presence depends on local polling, so they never
+enroll map fields. Missing planes, flying transport and consumer-specific supplier
+modes use an optimistic zero estimate. Building routes borrow existing valid
+generations through `SharedBuildingGradient` leases; workers settle only queried
+cells under the generation's lock, and retirement hands the buffer and search to
+the lease instead of copying them. Observation never initializes or refreshes a
+field: missing ones use an obstacle-free bound, and live admission establishes them.
 
-Published lists, fixed rules, last admission state, output
-reservations and completed pending outputs/deadlines are saved in format 159.
-Saving drains computation without early publication. Older supported saves start
-with empty hiring state and the fixed refresh schedule; the compatibility floor
-remains unchanged. Configuration epochs reject pending results even when a
-building configuration changes away and back. Unit changes are checked live.
-Checksums include ordered published suggestions and logical pending schedules,
-independently of worker readiness. This policy change advances the simulation
-revision; older match records and mixed simulation-version network games are
-subject to the normal admission gates.
+Published lists and pending outputs with their deadlines are saved; saving drains
+jobs without publishing early. Older saves start with empty hiring state. Game
+checksums include published list contents and the logical pending schedule.
