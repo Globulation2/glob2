@@ -5,6 +5,7 @@
 #include "Unit.h"
 #include "Building.h"
 #include "SharedBuildingGradient.h"
+#include "SnapshotGradient.h"
 #include "ai/observation/AIWorldView.h"
 #include "field/RuntimeTerrainGradient.h"
 #include "field/AirPathfind.h"
@@ -132,8 +133,6 @@ std::uint64_t geography(const World &world, int team, std::array<std::uint64_t, 
 	mix(hash, world.terrainRevision);
 	mix(hash, world.terrain->checksum());
 	mix(hash, world.resourceRegistry->checksum());
-	for (unsigned char value : world.components().catalogs->buildingFingerprint)
-		mix(hash, value);
 	for (const auto &kind : *world.catalog)
 	{
 		mix(hash, kind.resolvedType.runtimeSuppliesStockMask);
@@ -160,6 +159,8 @@ std::uint64_t geography(const World &world, int team, std::array<std::uint64_t, 
 } // namespace
 struct Cache::Impl
 {
+	gradient_preparation::MaterialSeedCache seedTemplates;
+	bool cachedSeedTemplates = true;
 	Metrics *metrics = nullptr;
 	std::uint64_t previousGeo = 0;
 	std::array<std::uint64_t, 5> previousParts{};
@@ -175,7 +176,7 @@ struct Cache::Impl
 	std::size_t bytes() const
 	{
 		std::size_t total = sizeof(Impl) + sizeof(gradient_kernel::BackendSession) + 32 + retained +
-							fields.size() * NodeBytes;
+							fields.size() * NodeBytes + seedTemplates.retainedBytes();
 		for (const auto &bucket : scratch.buckets)
 			total += bucket.cells.capacity() * sizeof(std::uint32_t);
 		total += scratch.deferredSeeds.capacity() * sizeof(std::pair<int, int>);
@@ -208,8 +209,8 @@ struct Cache::Impl
 	std::array<std::uint64_t, MaterialCount> sourceStamps{};
 	std::array<bool, MaterialCount> stamped{};
 	GradientWorkspace scratch;
-	template <class Seed>
-	const std::vector<Uint16> &field(const World &world, FieldKey key, int swim, Seed seed)
+	template <class Seed, class CachedSeed>
+	const std::vector<Uint16> &field(const World &world, FieldKey key, int swim, Seed seed, CachedSeed cachedSeed)
 	{
 		if (auto it = fields.find(key); it != fields.end())
 		{
@@ -223,8 +224,9 @@ struct Cache::Impl
 		trim(bytes + NodeBytes);
 		Field result;
 		result.values.resize(std::size_t(world.width) * world.height);
-		for (std::size_t i = 0; i < result.values.size(); ++i)
-			result.values[i] = seed(i);
+		if (!cachedSeed(result.values.data()))
+			for (std::size_t i = 0; i < result.values.size(); ++i)
+				result.values[i] = seed(i);
 		metrics->fieldCells += result.values.size();
 		metrics->seedNs += elapsed(seedStart);
 		const auto propagationStart = Clock::now();
@@ -295,30 +297,41 @@ struct Cache::Impl
 											world.terrainPropertiesAt(i), swim)
 									? GRADIENT_UNREACHABLE
 									: GRADIENT_FORBIDDEN;
+					 }, [&](Uint16 *output)
+					 {
+						 // Natural fields share the existing snapshot-backed seed
+						 // templates. Supplier-specific semantics retain scalar seeds.
+						 if (!cachedSeedTemplates || modes || swim == WATER_ONLY_CLASS)
+							 return false;
+						 trim(seedTemplates.world ? 0 : seedTemplates.budget);
+						 return seedTemplates.trySeed(world.components(), b.team, material, swim, output, nullptr);
 					 });
 	}
 };
-Cache::Cache(std::size_t budget) : impl(std::make_unique<Impl>())
+Cache::Cache(std::size_t budget, bool cachedSeedTemplates) : impl(std::make_unique<Impl>())
 {
 	if (!budget || budget > MaxBytes)
 		throw std::invalid_argument("Invalid hiring cache budget");
 	impl->budget = budget;
+	impl->cachedSeedTemplates = cachedSeedTemplates;
+	impl->seedTemplates.budget = std::min<std::size_t>(2u * 1024 * 1024, budget / 4);
 }
 Cache::~Cache() = default;
 std::size_t Cache::bytes() const
 {
 	return impl->bytes();
 }
-std::uint64_t configuration(const BuildingStateRecord &b, bool includeEpoch)
+std::array<Sint32, 8> configurationFacts(const BuildingStateRecord &b)
 {
-	std::uint64_t h = 1469598103934665603ull;
-	for (auto value : {b.typeNum, b.posX, b.posY, b.unitStayRange, b.minLevelToFlag,
-					   b.minWorkerLevelToFlag, int(b.explorersRequireBombing)})
-		mix(h, std::uint64_t(value));
-	for (bool selected : b.clearingMaterials)
-		mix(h, selected);
-	mix(h, includeEpoch ? b.hiringEpoch : 0);
-	return h;
+	Sint32 clearing = 0;
+	for (unsigned r = 0; r < std::size(b.clearingMaterials); ++r)
+		if (b.clearingMaterials[r]) clearing |= Sint32(1u << r);
+	return {b.typeNum, b.posX, b.posY, b.unitStayRange, b.minLevelToFlag,
+		b.minWorkerLevelToFlag, Sint32(b.explorersRequireBombing), clearing};
+}
+std::uint64_t configuration(const BuildingStateRecord &b)
+{
+	return (Uint64(b.hiringEpoch) << 32) | Uint32(b.typeNum);
 }
 bool needsCandidates(const SimulationSnapshot::BuildingView &b)
 {
@@ -486,11 +499,11 @@ Output Cache::rank(const Inputs &input, unsigned team, unsigned capacity)
 	if (team >= world.teams.size())
 		throw std::invalid_argument("Hiring team outside snapshot");
 	Output output;
-	output.buildings.reserve(input.teamBuildings[team]);
 	output.tick = world.tick;
 	output.team = team;
 	const auto prepareStart = Clock::now();
 	const auto supplies = prepare(input, team);
+	output.buildings.reserve(supplies.size());
 	output.metrics.preparationNs += elapsed(prepareStart);
 	unsigned teamSeats = 0;
 	bool canCoordinate = true;

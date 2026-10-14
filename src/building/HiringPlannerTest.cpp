@@ -11,6 +11,57 @@
 
 TEST_SUITE("HiringPlanner")
 {
+	TEST_CASE("snapshot seed templates preserve scalar planner outputs")
+	{
+		glob2test::HeadlessGlobals globals;
+		glob2test::HeadlessGame w({.wDec = 7, .hDec = 7, .discovered = true, .loadDefaultRace = true});
+		auto *building = w.addBuilding("inn", 8, 8);
+		building->maxUnitWorking = 4;
+		building->materials[WHEAT] = 0;
+		building->updateCallLists();
+		for (unsigned i = 0; i < 12; ++i)
+		{
+			auto *u = w.addUnit(WORKER, 5 + i % 4, 14 + i / 4);
+			u->activity = Unit::ACT_RANDOM; u->medical = Unit::MED_FREE; u->hungriness = 0;
+		}
+		REQUIRE(w.game.map.incResourceByIndex(24, 12, WHEAT, 0));
+		HiringPlanner::Cache cached, scalar(HiringPlanner::Cache::MaxBytes, false);
+		for (unsigned phase = 0; phase < 5; ++phase)
+		{
+			CAPTURE(phase);
+			w.game.stepCounter = phase;
+			if (phase == 1) w.game.map.markImmobileUnit(24, 12, 0);
+			if (phase == 2) w.game.map.clearImmobileUnit(24, 12);
+			if (phase == 3) w.game.map.addForbidden(24, 12, 0);
+			if (phase == 4) w.game.map.removeForbidden(24, 12, 0);
+			w.game.snapshotStore().invalidateBoundary();
+			const auto input = HiringPipeline::bindRoutes(w.game, w.game.captureReadBoundary());
+			const auto actual = cached.rank(input, 0), expected = scalar.rank(input, 0);
+			if (phase == 0)
+			{
+				CHECK(actual.metrics.fieldMisses > 0);
+				CHECK(cached.bytes() > scalar.bytes());
+			}
+			REQUIRE(actual.buildings.size() == expected.buildings.size());
+			for (unsigned b = 0; b < actual.buildings.size(); ++b)
+			{
+				REQUIRE(actual.buildings[b].jobs.size() == expected.buildings[b].jobs.size());
+				for (unsigned j = 0; j < actual.buildings[b].jobs.size(); ++j)
+				{
+					const auto &a = actual.buildings[b].jobs[j], &e = expected.buildings[b].jobs[j];
+					CHECK(a.key == e.key);
+					REQUIRE(a.candidates.size() == e.candidates.size());
+					for (unsigned c = 0; c < a.candidates.size(); ++c)
+					{
+						CHECK(a.candidates[c].unit == e.candidates[c].unit);
+						CHECK(a.candidates[c].level == e.candidates[c].level);
+						CHECK(a.candidates[c].value == e.candidates[c].value);
+					}
+				}
+			}
+			CHECK(cached.bytes() <= HiringPlanner::Cache::MaxBytes);
+		}
+	}
 	TEST_CASE("unrelated live route enrollment cannot change hiring inputs")
 	{
 		glob2test::HeadlessGlobals globals;
@@ -25,7 +76,6 @@ TEST_SUITE("HiringPlanner")
 		w.game.map.buildingGradient(building, SWIM_CLASS_COUNT - 1, BuildingRoute::Combat);
 		const auto after = HiringPipeline::bindRoutes(w.game, snapshot);
 		CHECK(before.routes->size() == after.routes->size());
-		CHECK(before.routeIdentity == after.routeIdentity);
 	}
 	TEST_CASE("local AI resource-plane enrollment cannot hide sources in the observed world")
 	{

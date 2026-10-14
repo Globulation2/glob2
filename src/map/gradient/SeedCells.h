@@ -135,7 +135,6 @@ struct BuildingSeedResult
     bool locked=false;
     // Clearing routes only: 1 with a resource to clear in range, 2 without.
     Uint8 resourceState=0;
-    Uint32 inputDigest=0;
 };
 // Mirrors Map::updateGlobalGradient's seeding for every route. Run supplies the
 // owner's chunk barrier or one worker's range, as for the other seeders.

@@ -191,6 +191,7 @@ class HiringPipelineHarness
     {
         if(!game.hiringPipeline)return;
         game.drainHiring();
+        game.hiringPipeline->cachedChecksum.reset();
         for(unsigned team=0;team<unsigned(game.teamsCount());++team)
             if(const auto &o=game.hiringPipeline->published[team];o &&
                (o->tick+HiringPipeline::Delay>game.stepCounter || o->tick%HiringPipeline::Refresh!=team%HiringPipeline::Refresh))
@@ -206,12 +207,14 @@ class HiringPipelineHarness
 		auto input = HiringPipeline::bindRoutes(game, game.captureReadBoundary());
 		if (!game.hiringPipeline)
 			game.hiringPipeline = std::make_unique<HiringPipeline>(game.map.computeExecutor());
+		game.hiringPipeline->cachedChecksum.reset();
 		for (unsigned team = 0; team < unsigned(game.teamsCount()); ++team)
 		{
 			HiringPlanner::Cache cache;
 			game.hiringPipeline->publishedBounds[team] = 2048 + input.outputBounds[team];
-			game.hiringPipeline->published[team] =
-				std::make_shared<HiringPlanner::Output>(cache.rank(input, team, 128));
+			auto output = std::make_shared<HiringPlanner::Output>(cache.rank(input, team, 128));
+			output->checksum = HiringPipeline::checksumOutput(*output);
+			game.hiringPipeline->published[team] = std::move(output);
 		}
 	}
 };

@@ -32,8 +32,10 @@ static_assert(sizeof(Output) <= 2048 && sizeof(HiringPlanner::BuildingLists) <= 
 			  sizeof(HiringPlanner::List) <= 128 && sizeof(HiringPlanner::Candidate) <= 32);
 void write64(GAGCore::OutputStream *s, Uint64 value, const char *name)
 {
-	s->writeUint32(value >> 32, name);
-	s->writeUint32(Uint32(value), name);
+	s->writeEnterSection(name);
+	s->writeUint32(value >> 32, "high");
+	s->writeUint32(Uint32(value), "low");
+	s->writeLeaveSection();
 }
 bool readFlag(GAGCore::InputStream *s, const char *name)
 {
@@ -44,35 +46,59 @@ bool readFlag(GAGCore::InputStream *s, const char *name)
 }
 Uint64 read64(GAGCore::InputStream *s, const char *name)
 {
-	const auto high = s->readUint32(name);
-	return (Uint64(high) << 32) | s->readUint32(name);
+	s->readEnterSection(name);
+	const auto high = s->readUint32("high");
+	const auto value = (Uint64(high) << 32) | s->readUint32("low");
+	s->readLeaveSection();
+	return value;
 }
 void saveOutput(GAGCore::OutputStream *s, const Output &o)
 {
 	s->writeUint32(o.tick, "tick");
 	s->writeUint32(o.team, "team");
 	s->writeUint32(o.buildings.size(), "buildings");
-	for (const auto &b : o.buildings)
+	s->writeEnterSection("buildingLists");
+	for (unsigned i = 0; i < o.buildings.size(); ++i)
 	{
+		s->writeEnterSection(i);
+		const auto &b = o.buildings[i];
 		s->writeUint16(b.building.gid, "gid");
 		s->writeUint32(b.building.generation, "generation");
 		s->writeSint32(b.type, "type");
 		write64(s, b.configuration, "configuration");
 		s->writeUint32(b.jobs.size(), "jobs");
-		for (const auto &j : b.jobs)
+		s->writeEnterSection("jobLists");
+		for (unsigned n = 0; n < b.jobs.size(); ++n)
 		{
+			s->writeEnterSection(n);
+			const auto &j = b.jobs[n];
 			s->writeUint8(unsigned(j.key.job), "job");
 			s->writeSint32(j.key.material, "material");
 			s->writeUint32(j.candidates.size(), "candidates");
-			for (const auto &c : j.candidates)
+			s->writeEnterSection("suggestions");
+			for (unsigned k = 0; k < j.candidates.size(); ++k)
 			{
+				s->writeEnterSection(k);
+				const auto &c = j.candidates[k];
 				s->writeUint16(c.unit.gid, "gid");
 				s->writeUint32(c.unit.generation, "generation");
 				write64(s, Uint64(c.level), "level");
 				write64(s, Uint64(c.value), "value");
+				s->writeLeaveSection();
 			}
+			s->writeLeaveSection();
+			s->writeLeaveSection();
 		}
+		s->writeLeaveSection();
+		s->writeLeaveSection();
 	}
+	s->writeLeaveSection();
+}
+Uint32 outputChecksum(const Output &output)
+{
+	GAGCore::ChecksumStream stream;
+	saveOutput(&stream, output);
+	return stream.value;
 }
 std::shared_ptr<const Output> loadOutput(GAGCore::InputStream *s, const Game &game,
 										 std::size_t budget = HiringPipeline::MaxOutputBytes)
@@ -90,8 +116,10 @@ std::shared_ptr<const Output> loadOutput(GAGCore::InputStream *s, const Game &ga
 		throw std::runtime_error("Hiring output memory limit");
 	o->buildings.reserve(count);
 	int previousBuilding = -1;
+	s->readEnterSection("buildingLists");
 	for (unsigned i = 0; i < count; ++i)
 	{
+		s->readEnterSection(i);
 		HiringPlanner::BuildingLists b;
 		b.building.gid = s->readUint16("gid");
 		b.building.generation = s->readUint32("generation");
@@ -110,8 +138,10 @@ std::shared_ptr<const Output> loadOutput(GAGCore::InputStream *s, const Game &ga
 			throw std::runtime_error("Hiring output memory limit");
 		b.jobs.reserve(jobs);
 		int previousJob = -1;
+		s->readEnterSection("jobLists");
 		for (unsigned n = 0; n < jobs; ++n)
 		{
+			s->readEnterSection(n);
 			HiringPlanner::List j;
 			j.key.job = Hiring::Job(s->readUint8("job"));
 			j.key.material = s->readSint32("material");
@@ -134,8 +164,10 @@ std::shared_ptr<const Output> loadOutput(GAGCore::InputStream *s, const Game &ga
 				throw std::runtime_error("Hiring output memory limit");
 			j.candidates.reserve(candidates);
 			std::set<Uint16> units;
+			s->readEnterSection("suggestions");
 			for (unsigned k = 0; k < candidates; ++k)
 			{
+				s->readEnterSection(k);
 				HiringPlanner::Candidate c;
 				c.unit.gid = s->readUint16("gid");
 				c.unit.generation = s->readUint32("generation");
@@ -146,11 +178,16 @@ std::shared_ptr<const Output> loadOutput(GAGCore::InputStream *s, const Game &ga
 					!units.insert(c.unit.gid).second)
 					throw std::runtime_error("Invalid hiring unit");
 				j.candidates.push_back(c);
+				s->readLeaveSection();
 			}
+			s->readLeaveSection(2);
 			b.jobs.push_back(std::move(j));
 		}
+		s->readLeaveSection(2);
 		o->buildings.push_back(std::move(b));
 	}
+	s->readLeaveSection();
+	o->checksum = outputChecksum(*o);
 	return o;
 }
 } // namespace
@@ -165,13 +202,14 @@ struct HiringPipeline::Work
 struct HiringPipeline::Batch
 {
 	Uint32 tick = 0, due = 0;
-	mutable std::optional<Uint32> digest;
-	mutable SimulationSnapshot::Handle observation;
-	Uint64 routeIdentity = 0;
 	ComputeExecutor::Batch ticket;
 	std::vector<Work> work;
 };
 HiringPipeline::HiringPipeline(ComputeExecutor &e) : executor(e) {}
+Uint32 HiringPipeline::checksumOutput(const HiringPlanner::Output &output)
+{
+	return outputChecksum(output);
+}
 HiringPipeline::~HiringPipeline()
 {
 	try
@@ -185,7 +223,9 @@ HiringPipeline::~HiringPipeline()
 void HiringPipeline::compute(void *context, std::size_t)
 {
 	auto &w = *static_cast<Work *>(context);
-	w.output = std::make_shared<Output>(w.cache->rank(*w.input, w.team, Capacity));
+	auto output = std::make_shared<Output>(w.cache->rank(*w.input, w.team, Capacity));
+	output->checksum = outputChecksum(*output);
+	w.output = std::move(output);
 	if (w.output->retainedBytes > w.bound)
 		throw std::length_error("Hiring output exceeds reservation");
 	w.input.reset();
@@ -197,6 +237,7 @@ void HiringPipeline::observe(Game &game, const SimulationSnapshot::Handle &snaps
 	const auto tick = game.stepCounter;
 	if (lastObserved && *lastObserved == tick)
 		return;
+	cachedChecksum.reset();
 	if (snapshot.tick != tick)
 		throw std::logic_error("Hiring boundary mismatch");
 	if (tick > std::numeric_limits<Uint32>::max() - Delay)
@@ -218,8 +259,6 @@ void HiringPipeline::observe(Game &game, const SimulationSnapshot::Handle &snaps
 	auto batch = std::make_unique<Batch>();
 	batch->tick = tick;
 	batch->due = tick + Delay;
-	batch->observation = input->world;
-	batch->routeIdentity = input->routeIdentity;
 	batch->work.reserve(game.teamsCount());
 	for (unsigned t = 0; t < unsigned(game.teamsCount()); ++t)
 		if (tick % Refresh == t % Refresh)
@@ -286,6 +325,7 @@ void HiringPipeline::publishDue(Uint32 tick)
 		std::rethrow_exception(failure);
 	while (!pending.empty() && pending.front()->due <= tick)
 	{
+		cachedChecksum.reset();
 		const auto publishStart = startTiming();
 		auto &b = *pending.front();
 		const auto waitStart = startTiming();
@@ -309,6 +349,7 @@ void HiringPipeline::publishDue(Uint32 tick)
 			published[w.team] = w.output;
 			publishedBounds[w.team] = w.bound;
 			metrics.plannerNs += w.output->ns;
+			metrics.planner.add(w.output->metrics);
 			++metrics.published;
 		}
 		pending.pop_front();
@@ -342,8 +383,10 @@ void HiringPipeline::save(GAGCore::OutputStream *s)
 	s->writeUint32(Refresh, "refresh");
 	s->writeUint32(Extras, "extras");
 	s->writeUint32(Capacity, "capacity");
+	s->writeEnterSection("published");
 	for (unsigned t = 0; t < published.size(); ++t)
 	{
+		s->writeEnterSection(t);
 		const auto &o = published[t];
 		s->writeUint8(bool(o), "present");
 		if (o)
@@ -351,24 +394,36 @@ void HiringPipeline::save(GAGCore::OutputStream *s)
 			write64(s, publishedBounds[t], "bound");
 			saveOutput(s, *o);
 		}
+		s->writeLeaveSection();
 	}
+	s->writeLeaveSection();
 	s->writeUint32(pending.size(), "pending");
-	for (const auto &b : pending)
+	s->writeEnterSection("admissions");
+	for (unsigned i = 0; i < pending.size(); ++i)
 	{
+		s->writeEnterSection(i);
+		const auto &b = pending[i];
 		s->writeUint32(b->tick, "tick");
 		s->writeUint32(b->due, "due");
-		s->writeUint32(inputDigest(*b), "inputDigest");
 		s->writeUint32(b->work.size(), "teams");
-		for (const auto &w : b->work)
+		s->writeEnterSection("work");
+		for (unsigned t = 0; t < b->work.size(); ++t)
 		{
+			s->writeEnterSection(t);
+			const auto &w = b->work[t];
 			write64(s, w.bound, "bound");
 			saveOutput(s, *w.output);
+			s->writeLeaveSection();
 		}
+		s->writeLeaveSection();
+		s->writeLeaveSection();
 	}
+	s->writeLeaveSection();
 	s->writeLeaveSection();
 }
 void HiringPipeline::load(Game &game, GAGCore::InputStream *s)
 {
+	cachedChecksum.reset();
 	GAGCore::BinaryInputStream::CheckedReads checked(s);
 	s->readEnterSection("HiringPipeline");
 	if (readFlag(s, "hasLast"))
@@ -377,7 +432,10 @@ void HiringPipeline::load(Game &game, GAGCore::InputStream *s)
 		s->readUint32("refresh") != Refresh || s->readUint32("extras") != Extras ||
 		s->readUint32("capacity") != Capacity)
 		throw std::runtime_error("Invalid hiring rules");
+	s->readEnterSection("published");
 	for (unsigned t = 0; t < published.size(); ++t)
+	{
+		s->readEnterSection(t);
 		if (readFlag(s, "present"))
 		{
 			const auto bound = read64(s, "bound");
@@ -391,15 +449,19 @@ void HiringPipeline::load(Game &game, GAGCore::InputStream *s)
 			published[t] = std::move(o);
 			publishedBounds[t] = bound;
 		}
+		s->readLeaveSection();
+	}
+	s->readLeaveSection();
 	const auto count = s->readCount("pending");
 	if (count > Delay)
 		throw std::runtime_error("Invalid hiring queue");
+	s->readEnterSection("admissions");
 	for (unsigned i = 0; i < count; ++i)
 	{
+		s->readEnterSection(i);
 		auto b = std::make_unique<Batch>();
 		b->tick = s->readUint32("tick");
 		b->due = s->readUint32("due");
-		b->digest = s->readUint32("inputDigest");
 		if (b->tick > std::numeric_limits<Uint32>::max() - Delay || b->due != b->tick + Delay ||
 			b->due < game.stepCounter || !lastObserved || b->tick > *lastObserved ||
 			(!pending.empty() && b->tick <= pending.back()->tick))
@@ -412,8 +474,10 @@ void HiringPipeline::load(Game &game, GAGCore::InputStream *s)
 			throw std::runtime_error("Invalid hiring team count");
 		unsigned expectedTeam = b->tick % Refresh;
 		std::size_t reserved = outputReservation();
+		s->readEnterSection("work");
 		for (unsigned t = 0; t < teams; ++t)
 		{
+			s->readEnterSection(t);
 			const auto bound = read64(s, "bound");
 			if (bound < 2048 || bound > MaxOutputBytes - reserved)
 				throw std::runtime_error("Invalid hiring pending bound");
@@ -423,13 +487,17 @@ void HiringPipeline::load(Game &game, GAGCore::InputStream *s)
 			reserved += bound;
 			expectedTeam += Refresh;
 			b->work.push_back({{}, nullptr, o->team, std::size_t(bound), o});
+			s->readLeaveSection();
 		}
+		s->readLeaveSection(2);
 		pending.push_back(std::move(b));
 	}
-	s->readLeaveSection();
+	s->readLeaveSection(2);
 }
 Uint32 HiringPipeline::checkSum() const
 {
+	if (cachedChecksum)
+		return *cachedChecksum;
 	if (!lastObserved && pending.empty() &&
 		std::none_of(published.begin(), published.end(), [](const auto &o) { return bool(o); }))
 		return 0;
@@ -448,7 +516,7 @@ Uint32 HiringPipeline::checkSum() const
 		if (o)
 		{
 			write64(&s, publishedBounds[t], "bound");
-			saveOutput(&s, *o);
+			s.writeUint32(o->checksum, "output");
 		}
 	}
 	// Pending identity is independent of hardware readiness. Outputs enter the
@@ -457,14 +525,14 @@ Uint32 HiringPipeline::checkSum() const
 	{
 		s.writeUint32(b->tick, "tick");
 		s.writeUint32(b->due, "due");
-		s.writeUint32(inputDigest(*b), "inputDigest");
 		for (const auto &w : b->work)
 		{
 			s.writeUint32(w.team, "team");
 			write64(&s, w.bound, "bound");
 		}
 	}
-	return s.value;
+	cachedChecksum = s.value;
+	return *cachedChecksum;
 }
 
 std::size_t HiringPipeline::outputReservation() const
@@ -478,28 +546,6 @@ std::size_t HiringPipeline::outputReservation() const
 	return bytes;
 }
 
-Uint32 HiringPipeline::inputDigest(const Batch &batch) const
-{
-	// Verification/save work, never admission preparation. The immutable lease
-	// supplies the same content whether the worker is ready or still queued.
-	if (!batch.digest)
-	{
-		const auto start = startTiming();
-		batch.digest = inputDigests.digest(batch.observation, batch.routeIdentity);
-		batch.observation = {};
-		metrics.inputDigestNs += elapsed(start);
-	}
-	return *batch.digest;
-}
-
-namespace
-{
-void mixRoute(Uint64 &hash, Uint64 value)
-{
-	hash ^= value;
-	hash *= 1099511628211ull;
-}
-} // namespace
 HiringPlanner::Inputs HiringPipeline::bindRoutes(Game &game, SimulationSnapshot::Handle world,
 												 unsigned teamMask)
 {
@@ -512,7 +558,6 @@ HiringPlanner::Inputs HiringPipeline::bindRoutes(Game &game, SimulationSnapshot:
 	{
 		if (!HiringPlanner::needsCandidates(b))
 			continue;
-		++inputs.teamBuildings[b.team];
 		if (!(teamMask & (1u << b.team)))
 			continue;
 		// Reservation uses the maintained maximum, not worker-computed vacancy
@@ -525,11 +570,9 @@ HiringPlanner::Inputs HiringPipeline::bindRoutes(Game &game, SimulationSnapshot:
 		// The owner creates safe live generations; worker route queries only
 		// expand the leased generations under their existing locks.
 		const auto &type = inputs.world.catalogs->buildings->at(b.typeNum).resolvedType;
-		std::bitset<BUILDING_GRADIENT_COUNT> requiredRoutes;
 		for (unsigned c = 0; c < SWIM_CLASS_COUNT; ++c)
 			if (inputs.world.entities->groundClasses[b.team] & (1u << c))
 			{
-				int distance = 0;
 				for (auto route :
 					 {BuildingRoute::Footprint, BuildingRoute::Clearing, BuildingRoute::Combat})
 				{
@@ -546,30 +589,11 @@ HiringPlanner::Inputs HiringPipeline::bindRoutes(Game &game, SimulationSnapshot:
 					if (route == BuildingRoute::Combat &&
 						!(type.attractsRole(1) || type.attractsRole(2)))
 						continue;
-					game.map.buildingAvailable(live, c, b.posX, b.posY, &distance, route);
-					requiredRoutes.set(live->routeSlot(c, route));
+					auto field = game.map.leaseBuildingRoute(live, c, route);
+					if (!field)
+						throw std::logic_error("Hiring route generation missing after preparation");
+					routes->push_back({b.identity, live->routeSlot(c, route), std::move(field)});
 				}
-			}
-		// Lease only the routes established from this observation. Unrelated
-		// live queries can enroll additional slots independently on each client.
-		for (int slot = 0; slot < BUILDING_GRADIENT_COUNT; ++slot)
-			if (requiredRoutes.test(slot))
-			{
-				auto field = live->leaseGradient(slot);
-				if (!field)
-					throw std::logic_error("Hiring route generation missing after preparation");
-				auto guard = SharedBuildingGradient::lock(field);
-				auto bytes = std::size_t(field->width) * field->height * sizeof(Uint16) +
-							 sizeof(SharedBuildingGradient);
-				if (field->search)
-					bytes += field->search->retainedBytes();
-				inputs.routeBytes += bytes;
-				inputs.routeAllocations += routes->size() == routes->capacity();
-				routes->push_back({b.identity, slot, std::move(field), bytes});
-				mixRoute(inputs.routeIdentity, b.identity.gid);
-				mixRoute(inputs.routeIdentity, b.identity.generation);
-				mixRoute(inputs.routeIdentity, slot);
-				mixRoute(inputs.routeIdentity, routes->back().field->inputDigest);
 			}
 	}
 	inputs.routes = std::move(routes);

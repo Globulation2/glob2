@@ -78,7 +78,6 @@ void buildScheduled(PipelineJob& job)
 	auto& p = job.payload;
 	if (building_gradient::workHook) building_gradient::workHook(p);
 	const auto result = gradient_preparation::buildBuilding(p.seed, *job.snapshotLease, p.inputs, p.data.get(), *p.search, p.depthTarget);
-	p.inputDigest = result.inputDigest;
 	p.locked = result.locked;
 	p.resourceState = result.resourceState;
 }
@@ -167,7 +166,6 @@ void Map::ensureBuildingGradientPipeline()
 		if (!p.locked) search = std::move(p.search);
 		b->lastGlobalGradientUpdateStepCounter[slot] = p.captureTick;
 		b->gradientGeneration[slot] = p.generation;
-		b->gradientInputDigest[slot] = p.inputDigest;
 		// Access metadata is shared by the swim classes of one variant: the
 		// newest capture wins. A synchronous build stamped with the capture's
 		// tick ran during that tick's team stepping, after the capture. A

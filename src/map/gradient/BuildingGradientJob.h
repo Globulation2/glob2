@@ -38,7 +38,6 @@ struct Job
 	// retirement recycles whatever was not published.
 	std::unique_ptr<std::uint16_t[]> data;
 	std::unique_ptr<BuildingGradientSearch> search;
-	std::uint32_t inputDigest = 0;
 	bool locked = false;
 	int resourceState = 0;
 	// The pipeline drops the snapshot lease itself.

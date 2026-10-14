@@ -584,16 +584,15 @@ private fields shared across jobs with identical frozen inputs. Opportunistic
 AI-enrolled resource planes are excluded: their presence and age can differ with
 local network polling and must not change hiring decisions. Private planner caches
 are bounded separately from deterministic pending/published output reservations.
-Route leases likewise include only jobs and movement classes required by the
-observation; unrelated live queries cannot add slots to pending hiring identity.
+Route leases include only jobs and movement classes required by the observation.
 
-Published lists, fixed rules, last admission state, input identities, output
+Published lists, fixed rules, last admission state, output
 reservations and completed pending outputs/deadlines are saved in format 159.
 Saving drains computation without early publication. Older supported saves start
 with empty hiring state and the fixed refresh schedule; the compatibility floor
 remains unchanged. Configuration epochs reject pending results even when a
 building configuration changes away and back. Unit changes are checked live.
-Checksums include ordered published suggestions and logical pending identities,
+Checksums include ordered published suggestions and logical pending schedules,
 independently of worker readiness. This policy change advances the simulation
 revision; older match records and mixed simulation-version network games are
 subject to the normal admission gates.

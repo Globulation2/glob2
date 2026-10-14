@@ -85,7 +85,6 @@
     "SoftwareRenderer/*",
     "MCP/*",
     "HiringPipeline/*",
-    "HiringInputDigest/*",
     "HiringPlanner/*"
   ],
   "unit_filters": [

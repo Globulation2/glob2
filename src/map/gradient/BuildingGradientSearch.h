@@ -65,8 +65,6 @@ class BuildingGradientSearch
 	std::uint64_t queries = 0, extensions = 0;
 	std::array<std::uint64_t, DEPTH_BINS> poppedAtDepth{};
 
-	// Canonical frozen seeds and entry costs, independent of frontier progress.
-	static std::uint32_t inputDigest(const Inputs &, const std::uint16_t *, int swim, int width, int height);
 	void begin(const Map &map, std::uint16_t *seeded, int swim);
 	// Same search from captured inputs; width and height are powers of two.
 	void begin(const Inputs &inputs, std::uint16_t *seeded, int swim, int width, int height);

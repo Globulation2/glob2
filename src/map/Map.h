@@ -55,6 +55,7 @@ class SessionGame;
 class MapHeader;
 struct GradientRuntime;
 class BuildingGradientStats;
+struct SharedBuildingGradient;
 namespace ResourceGrowth { struct Metrics; }
 
 //! 2D grid offset returned by Map's 3x3-neighborhood "doesTouch" queries.
@@ -1173,6 +1174,8 @@ public:
 	//! Complete field, refreshed as needed; NULL when locked. Point queries use
 	//! buildingAvailable/pathfindBuilding so partial arrays never escape this API.
 	const Uint16 *buildingGradient(Building *building, int swimClass, BuildingRoute route = BuildingRoute::Automatic);
+	// Owner-only: establish a safe generation without querying or finishing it.
+	std::shared_ptr<SharedBuildingGradient> leaseBuildingRoute(Building *building, int swimClass, BuildingRoute route);
 	//! Finish a cached field without refreshing its age or last-use timestamp.
 	void finishBuildingGradient(Building *building, int swimClass, BuildingRoute route = BuildingRoute::Automatic) const;
 	bool buildingAvailable(Building *building, int swimClass, int x, int y, int *dist, BuildingRoute route = BuildingRoute::Automatic);

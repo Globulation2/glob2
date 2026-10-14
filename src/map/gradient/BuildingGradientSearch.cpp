@@ -33,25 +33,6 @@ BuildingGradientSearch::Inputs BuildingGradientSearch::Inputs::of(const Map &map
 	return inputs;
 }
 
-std::uint32_t BuildingGradientSearch::inputDigest(const Inputs &inputs,
-    const std::uint16_t *seeds, int swim, int width, int height)
-{
-    std::uint32_t hash = 2166136261u;
-    const auto add = [&](std::uint32_t value) { hash = (hash ^ value) * 16777619u; };
-    add(width); add(height); add(swim);
-    for (std::size_t i = 0; i < std::size_t(width) * height; ++i)
-    {
-        add(seeds[i]);
-        auto costs = LAND_STEPS;
-        if (inputs.modifiedCosts)
-            costs = inputs.profiles->movement.profiles.at(inputs.profiles->cells[i]);
-        else if (inputs.water && (*inputs.water)[i])
-            costs = entrySteps(WATER_STEP[swim]);
-        add(costs.cardinal); add(costs.diagonal);
-    }
-    return hash;
-}
-
 void BuildingGradientSearch::begin(const Map &map, std::uint16_t *seeded, int swim)
 {
 	begin(Inputs::of(map, swim), seeded, swim, map.getW(), map.getH());

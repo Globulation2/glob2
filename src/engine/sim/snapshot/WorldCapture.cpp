@@ -25,11 +25,9 @@
 #include <cstring>
 #include <bit>
 #include <utility>
-#include <atomic>
 
 namespace SimulationSnapshot
 {
-namespace { std::atomic<Uint64> nextFillEpoch{1}; }
 static_assert(SWIM_CLASS_COUNT<=8);
 std::shared_ptr<const std::vector<BuildingKindView>> captureCatalog(const Game& game)
 {
@@ -122,14 +120,12 @@ Handle capture(const Game& game,
 	auto acquire = [&]<class T>(BufferPool<T> Storage::* pool, Component component) {
 		if (!needs(requirements, component)) return std::shared_ptr<T>{};
 		auto buffer = storage ? (storage->*pool).acquire(storage->allocations) : std::make_shared<T>();
-        if constexpr(requires { buffer->fillEpoch; }) buffer->fillEpoch=nextFillEpoch.fetch_add(1, std::memory_order_relaxed);
         return buffer;
 	};
 	// Chunk-stamped map arrays reuse the free buffer filled most recently.
 	auto acquireStamped = [&]<class T>(BufferPool<T> Storage::* pool, Component component) {
 		if (!needs(requirements, component)) return std::shared_ptr<T>{};
 		auto buffer = storage ? (storage->*pool).acquire(storage->allocations, [](const T& buffer) { return buffer.stamps.filledTick; }) : std::make_shared<T>();
-        if constexpr(requires { buffer->fillEpoch; }) buffer->fillEpoch=nextFillEpoch.fetch_add(1, std::memory_order_relaxed);
         return buffer;
 	};
 	Catalogs unusedCatalogs; auto catalogsOwner = acquire(&Storage::catalogs, Component::Catalogs);
@@ -182,10 +178,8 @@ Handle capture(const Game& game,
 	terrain->airConstraints = game.map.hasAirTerrainConstraints();
 	const auto& header = game.gameHeader;
 	if (needs(requirements, Component::Catalogs)) {
-        // Canonical catalog identity is also a pending hiring input. Presentation
-        // widening must not change it. Catalog components are reused until catalog
-        // invalidation, so serialization happens once per admitted catalog.
-        catalogs->buildingFingerprint = game.buildingsTypes.fingerprint();
+        catalogs->buildingFingerprint = needs(requirements, Component::Session)
+            ? game.buildingsTypes.fingerprint() : std::string();
 		catalogs->buildings = std::move(catalog);
 		catalogs->capabilities = game.buildingCapabilities().frozenTables();
 		catalogs->units = header.getUnitCatalog();

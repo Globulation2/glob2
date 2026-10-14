@@ -409,9 +409,10 @@ void Building::resetServiceListState()
 
 void Building::updateCallLists(void)
 {
-    const auto fingerprint=HiringPlanner::configuration(*this,false);
-    if(hiringFingerprint && fingerprint!=hiringFingerprint)++hiringEpoch;
-    hiringFingerprint=fingerprint;
+    const auto configuration=HiringPlanner::configurationFacts(*this);
+    if(hiringConfigurationObserved && configuration!=hiringConfiguration)++hiringEpoch;
+    hiringConfiguration=configuration;
+    hiringConfigurationObserved=true;
 	if (buildingState==DEAD)
 		return;
 	desiredMaxUnitWorking = desiredNumberOfWorkers();

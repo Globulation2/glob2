@@ -490,7 +490,8 @@ void Building::load(GAGCore::InputStream *stream, BuildingsTypes *types, Team *o
 
 	verbose = false;
     hiringEpoch=versionMinor>=FILE_FORMAT_VERSION_CACHED_HIRING?stream->readUint32("hiringEpoch"):0;
-    hiringFingerprint=HiringPlanner::configuration(*this,false);
+    hiringConfiguration=HiringPlanner::configurationFacts(*this);
+    hiringConfigurationObserved=true;
 	stream->readLeaveSection();
 
 	lastShootStep = LAST_SHOOT_STEP_NEVER;
@@ -844,7 +845,6 @@ std::shared_ptr<SharedBuildingGradient> Building::leaseGradient(int slot)
     if (!lease) {
         lease=std::make_shared<SharedBuildingGradient>();
         lease->values=globalGradient[slot];lease->search=globalGradientSearch[slot].get();
-        lease->inputDigest=gradientInputDigest[slot];
         lease->width=owner->game->map.getW();lease->height=owner->game->map.getH();
     }
     return lease;

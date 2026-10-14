@@ -504,7 +504,8 @@ private:
 
 	bool hireMaterialUnit(const int* targets,const int* served);
 	bool hireFlagUnits();
-    Uint64 hiringFingerprint=0;
+    std::array<Sint32, 8> hiringConfiguration{};
+    bool hiringConfigurationObserved=false;
 
 	/// Per-material delivery targets and how many of each are already accounted
 	/// for by deliveries that landed plus units on their way. Counted in
@@ -552,7 +553,6 @@ public:
 	//! Building owns these buffers; resetPathfindGradients frees them. Refresh and
 	//! stuck-unit retry policy lives in Map::buildingGradient / pathfindBuilding.
 	Uint16 *globalGradient[BUILDING_GRADIENT_COUNT];
-	Uint32 gradientInputDigest[BUILDING_GRADIENT_COUNT]{};
     // Owner creates/replaces leases. Workers touch the leased generation only.
     std::shared_ptr<SharedBuildingGradient> sharedGradient[BUILDING_GRADIENT_COUNT];
     std::shared_ptr<SharedBuildingGradient> leaseGradient(int slot);

@@ -64,17 +64,12 @@ output and route-handle allocations remain. Snapshot copied-byte and pooled-buff
 counters are scoped, not a process-wide heap census.
 
 Diagnostic exports and saves are separate from throughput timing. Normal engine
-checksums remain enabled in timing runs. Pending-input digests are computed lazily
-on the first checksum or save after admission, using immutable logical snapshot
-values and cached component hashes qualified by private buffer-fill epochs.
-Resource estimates are derived from those logical inputs; local AI-enrolled
-resource planes are excluded from both rankings and pending identities.
-Building-route digests describe frozen seeds and entry costs; checksum reads never
-finish a route search.
-They exclude padding, pointers, cache readiness and incidental generation numbers;
-private digest caches are discarded on load. Saving joins jobs without publishing
-future hiring lists early. Ordinary checksum results are independent of job
-completion order.
+checksums remain enabled in timing runs. Hiring does not rehash observed world data
+or route inputs. Workers calculate immutable candidate-output checksums once;
+ordinary checksums include those published contents and the logical pending schedule,
+never worker readiness. Saving joins jobs without publishing future lists early.
+Resource estimates use immutable observed facts; local AI-enrolled resource planes
+are excluded from rankings.
 
 Hiring diagnostics require the default headless simulation owner;
 `GLOB2_SIM_THREAD=1` is rejected for this export. The retired `hiring-shadow`

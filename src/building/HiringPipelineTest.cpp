@@ -2,6 +2,7 @@
 #include "EngineFixtures.h"
 #include "HiringPipeline.h"
 #include <BinaryStream.h>
+#include <TextStream.h>
 #include <StreamBackend.h>
 #include <set>
 #include <nlohmann/json.hpp>
@@ -165,12 +166,14 @@ TEST_SUITE("HiringPipeline")
 			}
 		}
 	}
-	TEST_CASE("whole game save and resume preserves every publication phase")
+	TEST_CASE("whole game save and resume preserves every publication phase [save-format][artifacts]")
 	{
 		glob2test::HeadlessGlobals globals;
+		for (bool text : {false, true})
 		for (unsigned phase = 0; phase < 8; ++phase)
 		{
 			CAPTURE(phase);
+			CAPTURE(text);
 			glob2test::HeadlessGame original(
 				{.discovered = true, .loadDefaultRace = true, .header = true});
 			innWithWorker(original);
@@ -179,15 +182,22 @@ TEST_SUITE("HiringPipeline")
 			original.game.prepareReadBoundary(false);
 			const auto checksum = original.game.checkSum();
 			auto *storage = new GAGCore::MemoryStreamBackend;
-			GAGCore::BinaryOutputStream out(storage);
-			original.game.save(&out, false, "Hiring continuation");
-			out.flush();
+			std::unique_ptr<GAGCore::OutputStream> out;
+			if (text) out = std::make_unique<GAGCore::TextOutputStream>(storage);
+			else out = std::make_unique<GAGCore::BinaryOutputStream>(storage);
+			original.game.save(out.get(), false, "Hiring continuation");
+			out->flush();
+			glob2test::writeFile(glob2test::artifactDir() /
+				("phase-" + std::to_string(phase) + (text ? ".game.txt" : ".game")),
+				std::string(storage->getBuffer(), storage->getPosition()));
 			glob2test::HeadlessGame restored(
 				{.discovered = true, .loadDefaultRace = true, .header = true});
-			GAGCore::BinaryInputStream in(
-				new GAGCore::MemoryStreamBackend(storage->getBuffer(), storage->getPosition()));
-			in.seekFromStart(0);
-			REQUIRE(restored.game.load(&in));
+			auto *input = new GAGCore::MemoryStreamBackend(storage->getBuffer(), storage->getPosition());
+			input->seekFromStart(0);
+			std::unique_ptr<GAGCore::InputStream> in;
+			if (text) in = std::make_unique<GAGCore::TextInputStream>(input);
+			else in = std::make_unique<GAGCore::BinaryInputStream>(input);
+			REQUIRE(restored.game.load(in.get()));
 			CHECK(original.game.checkSum() == checksum);
 			CHECK(restored.game.checkSum() == checksum);
 			for (unsigned tick = 0; tick < 12; ++tick)
@@ -443,7 +453,7 @@ TEST_SUITE("HiringPipeline")
 	}
 }
 
-TEST_SUITE("HiringInputDigest")
+TEST_SUITE("HiringPlanner")
 {
 	TEST_CASE("food-unsafe high-skill workers cannot crowd a viable worker out")
 	{
@@ -479,88 +489,5 @@ TEST_SUITE("HiringInputDigest")
 			CHECK(found);
 		}
 		(void)b;
-	}
-	TEST_CASE("refilled snapshot buffers hash like fresh verification state")
-	{
-		glob2test::HeadlessGlobals globals;
-		glob2test::HeadlessGame w({.discovered = true, .loadDefaultRace = true});
-		auto *b = innWithWorker(w);
-		HiringInputDigests reused;
-		std::set<const void *> addresses;
-		bool reusedAddress = false;
-		for (unsigned tick = 0; tick < 16; ++tick)
-		{
-			w.game.stepCounter = tick;
-			b->priority = tick;
-			auto world = observation(w);
-			reusedAddress |= !addresses.insert(world.entities.get()).second;
-			HiringInputDigests fresh;
-			CHECK(reused.digest(world, 0) == fresh.digest(world, 0));
-		}
-		CHECK(reusedAddress);
-	}
-	TEST_CASE("presentation widening cannot change logical hiring input identity")
-	{
-		glob2test::HeadlessGlobals globals;
-		glob2test::HeadlessGame w({.discovered = true, .loadDefaultRace = true});
-		innWithWorker(w);
-		const auto catalog = SimulationSnapshot::captureCatalog(w.game);
-		const auto normal =
-			SimulationSnapshot::capture(w.game, catalog, SimulationSnapshot::Simulation);
-		const auto widened = SimulationSnapshot::capture(w.game, catalog, SimulationSnapshot::All);
-		CHECK(normal.catalogs->buildingFingerprint == widened.catalogs->buildingFingerprint);
-		HiringInputDigests hashes;
-		CHECK(hashes.digest(normal, 0) == hashes.digest(widened, 0));
-	}
-	TEST_CASE("local resource-plane enrollment does not change pending input identity")
-	{
-		glob2test::HeadlessGlobals globals;
-		glob2test::HeadlessGame w({.discovered = true, .loadDefaultRace = true});
-		auto normal = observation(w), local = normal;
-		auto planes = std::make_shared<SimulationSnapshot::ResourceFields>();
-		auto values = std::make_shared<const std::vector<Uint16>>(
-			w.game.map.getW() * w.game.map.getH(), GRADIENT_UNREACHABLE);
-		planes->add({MapState::planeKey(0, WHEAT, 0, false), 1, values});
-		local.resourceFields = planes;
-		HiringInputDigests hashes;
-		CHECK(hashes.digest(normal, 0) == hashes.digest(local, 0));
-	}
-	TEST_CASE("multi-yield stock numbering and unused slots do not change logical input identity")
-	{
-		glob2test::HeadlessGlobals globals;
-		glob2test::HeadlessGame w({.discovered = true, .loadDefaultRace = true});
-		auto compact = observation(w), churned = compact;
-		auto a = std::make_shared<SimulationSnapshot::Resources>(*compact.resources);
-		a->stockIndices.assign(a->cells.size(), 0);
-		a->stockIndices[15] = 1;
-		a->stocks.resize(1);
-		a->stocks[0][WHEAT] = 7;
-		a->stocks[0][WOOD] = 3;
-		auto b = std::make_shared<SimulationSnapshot::Resources>(*a);
-		b->stockIndices[15] = 3;
-		b->stocks.resize(4);
-		b->stocks[2] = a->stocks[0];
-		b->stocks[0][WOOD] = 100;
-		b->stocks[3][WHEAT] = 99;
-		compact.resources = a;
-		churned.resources = b;
-		HiringInputDigests hashes;
-		CHECK(hashes.digest(compact, 0) == hashes.digest(churned, 0));
-		b->stocks[2][WOOD] = 4;
-		++b->fillEpoch;
-		CHECK(hashes.digest(compact, 0) != hashes.digest(churned, 0));
-	}
-	TEST_CASE("frozen logical map inputs change the digest without live queries")
-	{
-		glob2test::HeadlessGlobals globals;
-		glob2test::HeadlessGame w({.discovered = true, .loadDefaultRace = true});
-		auto before = observation(w);
-		HiringInputDigests hashes;
-		const auto initial = hashes.digest(before, 0);
-		REQUIRE(w.game.map.incResourceByIndex(15, 15, WHEAT, 0));
-		const auto after = observation(w);
-		CHECK(hashes.digest(before, 0) == initial);
-		CHECK(hashes.digest(after, 0) != initial);
-		CHECK(hashes.digest(before, 1) != initial);
 	}
 }

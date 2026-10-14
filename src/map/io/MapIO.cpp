@@ -778,7 +778,6 @@ void Map::saveBuildingGradientPipeline(GAGCore::OutputStream *stream) const
 		stream->writeUint8(p.slot, "slot");
 		stream->writeUint32(p.captureTick, "captured");
 		stream->writeUint32(p.generation, "generation");
-		stream->writeUint32(p.inputDigest, "inputDigest");
 		stream->writeUint8(remaining, "remaining");
 		stream->writeUint8(superseded, "superseded");
 		stream->writeUint8(p.locked, "locked");
@@ -856,7 +855,6 @@ void Map::loadBuildingGradientPipeline(GAGCore::InputStream *stream, bool packed
 		p.route=BuildingRoute(p.slot/SWIM_CLASS_COUNT);
 		p.captureTick=stream->readUint32("captured");
 		p.generation=stream->readUint32("generation");
-		p.inputDigest=versionMinor>=FILE_FORMAT_VERSION_CACHED_HIRING?stream->readUint32("inputDigest"):0;
 		const unsigned remaining=stream->readUint8("remaining");
 		bool superseded=loadFlag(stream, "superseded");
 		p.locked=loadFlag(stream, "locked");
@@ -865,7 +863,6 @@ void Map::loadBuildingGradientPipeline(GAGCore::InputStream *stream, bool packed
 		Uint16 *field=nullptr;
 		loadGradient(stream, field, size, packed);
 		p.data.reset(field);
-		if(versionMinor<FILE_FORMAT_VERSION_CACHED_HIRING && field) p.inputDigest=BuildingGradientSearch::inputDigest({}, field, p.swim, w, h);
 		stream->readLeaveSection();
 		if (!superseded && !p.data) throw std::runtime_error("Missing saved building gradient result");
 		Building *b=buildingGradientDestination(p.team, p.buildingId, p.scriptIdentity);
@@ -971,7 +968,6 @@ void Map::saveRuntimeState(GAGCore::OutputStream *stream) const
 				stream->writeUint8(building->dirtyGradient[sw], "dirty");
 				stream->writeUint32(building->lastGlobalGradientUpdateStepCounter[sw], "lastUpdate");
 				stream->writeUint32(building->gradientGeneration[sw], "generation");
-				stream->writeUint32(building->gradientInputDigest[sw], "inputDigest");
 				stream->writeLeaveSection();
 			}
 			stream->writeEnterSection("gradientUse");
@@ -1004,7 +1000,6 @@ void Map::saveRuntimeState(GAGCore::OutputStream *stream) const
 					stream->writeUint8(building->dirtyGradient[slot], "dirty");
 					stream->writeUint32(building->lastGlobalGradientUpdateStepCounter[slot], "lastUpdate");
 					stream->writeUint32(building->gradientGeneration[slot], "generation");
-					stream->writeUint32(building->gradientInputDigest[slot], "inputDigest");
 					stream->writeUint32(building->globalGradientUsedStep[slot], "usedStep");
 					stream->writeLeaveSection();
 				}
@@ -1153,9 +1148,6 @@ void Map::loadRuntimeState(GAGCore::InputStream *stream, Sint32 versionMinor)
 				// An older save restored its fields as current; keep them so.
 				building->gradientGeneration[building->routeSlot(sw, savedRoute)]=versionMinor>=FILE_FORMAT_VERSION_TOPOLOGY_GENERATION
 					? stream->readUint32("generation") : topologyGeneration;
-				const auto slot=building->routeSlot(sw, savedRoute);
-				building->gradientInputDigest[slot]=versionMinor>=FILE_FORMAT_VERSION_CACHED_HIRING?stream->readUint32("inputDigest"):
-					(building->globalGradient[slot]?BuildingGradientSearch::inputDigest({}, building->globalGradient[slot], sw, w, h):0);
 				stream->readLeaveSection();
 			}
 			if (versionMinor >= FILE_FORMAT_VERSION_GREEDY_FETCHING)
@@ -1221,8 +1213,6 @@ void Map::loadRuntimeState(GAGCore::InputStream *stream, Sint32 versionMinor)
 						building->dirtyGradient[slot]=loadFlag(stream,"dirty");
 						building->lastGlobalGradientUpdateStepCounter[slot]=stream->readUint32("lastUpdate");
 						building->gradientGeneration[slot]=stream->readUint32("generation");
-						building->gradientInputDigest[slot]=versionMinor>=FILE_FORMAT_VERSION_CACHED_HIRING?stream->readUint32("inputDigest"):
-							(building->globalGradient[slot]?BuildingGradientSearch::inputDigest({}, building->globalGradient[slot], sw, w, h):0);
 						building->globalGradientUsedStep[slot]=stream->readUint32("usedStep");
 						stream->readLeaveSection();
 					}

@@ -86,6 +86,12 @@ const Uint16 *Map::buildingGradient(Building *building, int swimClass, BuildingR
 	return building->globalGradient[slot];
 }
 
+std::shared_ptr<SharedBuildingGradient> Map::leaseBuildingRoute(Building *building, int swimClass, BuildingRoute route)
+{
+	prepareBuildingGradient(building, swimClass, route);
+	return building->leaseGradient(building->routeSlot(swimClass, route));
+}
+
 Uint16 Map::buildingGradientValue(Building *building, int swimClass, size_t cell, BuildingRoute route) const
 {
 	const int slot = building->routeSlot(swimClass, route);

@@ -260,10 +260,14 @@ std::vector<std::pair<std::string, Uint64>> Game::hiringMetrics() const
 	if (!hiringPipeline)
 		return {};
 	const auto &m = hiringPipeline->metrics;
-	return {
+	auto values = std::vector<std::pair<std::string, Uint64>>{
 		{"hiring_observations", m.observations},    {"hiring_submitted", m.submitted},
 		{"hiring_published", m.published},          {"hiring_route_handles_ns", m.routeHandlesNs},
 		{"hiring_preparation_ns", m.preparationNs}, {"hiring_submission_ns", m.submissionNs},
 		{"hiring_publication_ns", m.publicationNs}, {"hiring_deadline_wait_ns", m.deadlineWaitNs},
-		{"hiring_planner_ns", m.plannerNs},         {"hiring_input_digest_ns", m.inputDigestNs}};
+		{"hiring_planner_ns", m.plannerNs}};
+#define HIRING_REPORT_METRIC(name) values.emplace_back("hiring_planner_" #name, m.planner.name);
+	HIRING_PLANNER_METRICS(HIRING_REPORT_METRIC)
+#undef HIRING_REPORT_METRIC
+	return values;
 }

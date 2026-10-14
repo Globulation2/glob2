@@ -19,7 +19,6 @@ struct SharedBuildingGradient
     std::uint16_t* values = nullptr;
     BuildingGradientSearch* search = nullptr;
     int width = 0, height = 0;
-    std::uint32_t inputDigest = 0;
     std::unique_ptr<std::uint16_t[]> retiredValues;
     std::unique_ptr<BuildingGradientSearch> retiredSearch;
     void accountRetired()

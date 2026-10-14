@@ -1,7 +1,6 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #pragma once
 #include "HiringPlanner.h"
-#include "HiringInputDigest.h"
 #include "ComputeExecutor.h"
 #include <deque>
 #include <optional>
@@ -25,18 +24,19 @@ class HiringPipeline
 	std::array<std::unique_ptr<HiringPlanner::Cache>, 16> caches;
 	std::array<std::shared_ptr<const HiringPlanner::Output>, 16> published;
 	std::array<Uint64, 16> publishedBounds{};
-	mutable HiringInputDigests inputDigests;
-	Uint32 inputDigest(const Batch &) const;
 	std::deque<std::unique_ptr<Batch>> pending;
+	mutable std::optional<Uint32> cachedChecksum;
 	std::exception_ptr failure;
 	static void compute(void *, std::size_t);
+	static Uint32 checksumOutput(const HiringPlanner::Output &);
 
   public:
 	struct Metrics
 	{
 		Uint64 observations = 0, submitted = 0, published = 0, routeHandlesNs = 0,
 			   preparationNs = 0, submissionNs = 0, publicationNs = 0, deadlineWaitNs = 0,
-			   plannerNs = 0, inputDigestNs = 0;
+			   plannerNs = 0;
+		HiringPlanner::Metrics planner;
 	};
 	mutable Metrics metrics;
 	static constexpr unsigned Delay = Hiring::PublicationDelay, Refresh = Hiring::RefreshInterval,

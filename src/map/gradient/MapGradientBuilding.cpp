@@ -161,7 +161,6 @@ void Map::updateGlobalGradient(Building *building, int swimClass, BuildingRoute 
 	}
 
 	const auto routeInputs = BuildingGradientSearch::Inputs::of(*this, swimClass);
-	building->gradientInputDigest[slot] = BuildingGradientSearch::inputDigest(routeInputs, gradient, swimClass, w, h);
 
 	if (route == BuildingRoute::Footprint)
 	{

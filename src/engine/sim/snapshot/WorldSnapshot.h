@@ -55,7 +55,6 @@ struct ChunkStamps
 struct Annotations { std::vector<Uint16> scriptAreas; std::vector<std::string> areaNames; ChunkStamps stamps; };
 struct Terrain
 {
-	Uint64 fillEpoch = 0; // Private pooled-buffer incarnation; never simulation state.
 	std::shared_ptr<const TerrainRegistry> registry;
 	// The rules every captured cell rule indexes; later captures may share it.
 	std::shared_ptr<const CellRuleTable> rules;
@@ -70,7 +69,6 @@ using ResourceCell = MapState::ResourceCell;
 // stock sidecar. Both are covered by the one Resources generation.
 struct Resources
 {
-	Uint64 fillEpoch = 0; // Private pooled-buffer incarnation; never simulation state.
 	std::vector<ResourceCell> cells;
 	std::vector<Uint32> stockIndices;
 	std::vector<std::array<Uint16, MaterialCount>> stocks;
@@ -79,11 +77,11 @@ struct Resources
 	ChunkStamps stamps; // cells and stockIndices
 };
 using OccupancyCell = MapState::OccupancyCell;
-struct Occupancy { Uint64 fillEpoch = 0; std::vector<OccupancyCell> cells; ChunkStamps stamps; };
+struct Occupancy { std::vector<OccupancyCell> cells; ChunkStamps stamps; };
 using AreaCell = MapState::AreaCell;
-struct Areas { Uint64 fillEpoch = 0; std::vector<AreaCell> cells; bool farmEnabled = false; ChunkStamps stamps; };
+struct Areas { std::vector<AreaCell> cells; bool farmEnabled = false; ChunkStamps stamps; };
 struct VisibilityCell { Uint32 discovered = 0, visible = 0; };
-struct Visibility { Uint64 fillEpoch = 0; std::vector<Uint32> discovered, visible; ChunkStamps stamps; };
+struct Visibility { std::vector<Uint32> discovered, visible; ChunkStamps stamps; };
 static_assert(std::is_trivially_copyable_v<ResourceCell>);
 static_assert(std::is_trivially_copyable_v<OccupancyCell>);
 static_assert(std::is_trivially_copyable_v<AreaCell>);
@@ -95,7 +93,6 @@ struct FundingState
 };
 struct Entities
 {
-	Uint64 fillEpoch = 0; // Private pooled-buffer incarnation; never simulation state.
 	std::array<Uint8,16> groundClasses{}; // Packed movement classes, filled with unit extraction.
     // Sparse raw funding facts: absent means all zero. Shared, pooled storage.
     std::vector<FundingState> funding;
@@ -110,7 +107,7 @@ struct Entities
 	std::vector<UnitRef> relationships;
 	std::vector<BuildProjectView> projects;
 };
-struct Teams { Uint64 fillEpoch = 0; std::vector<TeamView> values; int totalPrestige = 0; };
+struct Teams { std::vector<TeamView> values; int totalPrestige = 0; };
 struct Rules
 {
 	RuleView values;
