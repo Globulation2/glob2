@@ -382,7 +382,7 @@ UNIT_TESTS = [
 # Production sources the unit binary links. Plain entries reuse the client build's
 # object; entries with `defines` are compiled again for the unit binary only.
 UNIT_PRODUCTION_SOURCES = [
-    '#src/field/OpenCLGradient.cpp',
+    ('#src/field/OpenCLGradient.cpp', dict(defines=['GLOB2_TEST_DEVICE_FAILURES'])),
     '#src/field/GradientDeviceService.cpp',
     '#src/field/GradientAccelerators.cpp',
     '#src/field/VulkanGradient.cpp',
@@ -425,7 +425,6 @@ UNIT_PRODUCTION_SOURCES = [
     '#src/map/editor/MapEditKeyActions.cpp',
     '#src/map/generator/shared/Noise.cpp',
     '#src/map/gradient/BuildingGradientSearch.cpp',
-    '#src/map/gradient/BuildingGradientStats.cpp',
     '#src/map/gradient/MapGradientDirection.cpp',
     '#src/map/gradient/MapGradientChamfer.cpp',
     '#src/map/gradient/MapGradientPropagation.cpp',

@@ -5,28 +5,17 @@
 #include <ChecksumStream.h>
 #include <BinaryStream.h>
 #include <cstdlib>
-#include <chrono>
 #include <limits>
 namespace
 {
 // Format 159 isolates each team in text saves; binary section markers have no bytes.
 constexpr int TeamSectionsVersion=159;
-using Clock = std::chrono::steady_clock;
 static_assert(ComputeExecutor::StatisticsHorizon >= 8);
 static_assert(ComputeExecutor::StatisticsLaneBase >= Team::MAX_COUNT);
 static_assert(ComputeExecutor::StatisticsLaneBase < ComputeExecutor::Lanes);
-bool profilingEnabled()
-{
-	const auto *value = std::getenv("GLOB2_STATS_PROFILE");
-	return value && *value && *value != '0';
-}
-Uint64 elapsed(Clock::time_point start)
-{
-	return std::chrono::duration_cast<std::chrono::nanoseconds>(Clock::now() - start).count();
-}
 } // namespace
-TeamStatsPipeline::TeamStatsPipeline(ComputeExecutor &e, bool profile)
-	: executor(e), profiling(profile || profilingEnabled())
+TeamStatsPipeline::TeamStatsPipeline(ComputeExecutor &e)
+	: executor(e)
 {
 }
 TeamStatsPipeline::~TeamStatsPipeline()
@@ -45,7 +34,6 @@ void TeamStatsPipeline::compute(void *context, size_t)
 	const auto snapshot = batch.snapshot;
 	for (unsigned team = 0; team < batch.samples.size(); ++team)
 	{
-		const auto start = batch.profile ? Clock::now() : Clock::time_point{};
 		auto storage = std::move(batch.samples[team].frame);
 		auto sample = computeTeamStatsSample(snapshot, team, batch.phases[team] == 31,
 											 batch.smoothingWindows[team], true);
@@ -71,8 +59,6 @@ void TeamStatsPipeline::compute(void *context, size_t)
 		}
 		result.coverage = std::move(sample.coverage);
 		result.frame = std::move(sample.frame);
-		if (batch.profile)
-			batch.workerNs[team] = elapsed(start);
 	}
 	batch.snapshot = {};
 }
@@ -86,9 +72,7 @@ bool TeamStatsPipeline::publishDue(Game &game)
 		auto &batch = *pending.front();
 		if (batch.due != game.stepCounter)
 			throw std::logic_error("Statistics deadline was skipped");
-		const auto wait = profiling ? Clock::now() : Clock::time_point{};
 		// join() also executes the required serial fallback on zero-worker hosts.
-		const bool late = profiling && !batch.ticket.empty() && !executor.finished(batch.ticket);
 		if (!batch.ticket.empty())
 		{
 			try
@@ -102,16 +86,7 @@ bool TeamStatsPipeline::publishDue(Game &game)
 			}
 			batch.ticket = {};
 		}
-		if (late)
-		{
-			++metrics.deadlineMisses;
-			metrics.deadlineWaitNs += elapsed(wait);
-		}
 		batch.snapshot = {};
-		if (profiling)
-			for (auto ns : batch.workerNs)
-				metrics.workerNs += ns;
-		const auto start = profiling ? Clock::now() : Clock::time_point{};
 		for (unsigned t = 0; t < batch.samples.size(); ++t)
 		{
 			if (batch.samples[t].periodic)
@@ -121,8 +96,6 @@ bool TeamStatsPipeline::publishDue(Game &game)
 			if (batch.samples[t].periodic && getenv("GLOB2_TEAM_TIMELINE"))
 				game.teams[t]->stats.printMeasurements(t);
 		}
-		if (profiling)
-			metrics.publicationNs += elapsed(start);
 		++metrics.published;
 		spare = std::move(pending.front());
 		pending.pop_front();
@@ -157,7 +130,6 @@ void TeamStatsPipeline::prepareBoundary(Game &game, const SimulationSnapshot::Ha
 	const auto delay = game.gameHeader.getTeamStatsDelay();
 	if (game.stepCounter > std::numeric_limits<Uint32>::max() - delay)
 		throw std::overflow_error("Statistics deadline overflow");
-	const auto allocationStart = profiling ? Clock::now() : Clock::time_point{};
 	auto batch = spare ? std::move(spare) : std::make_unique<Pending>();
 	batch->tick = game.stepCounter;
 	batch->due = batch->tick + delay;
@@ -173,11 +145,6 @@ void TeamStatsPipeline::prepareBoundary(Game &game, const SimulationSnapshot::Ha
 		else
 			batch->smoothingWindows[t].clear();
 	}
-	batch->profile = profiling;
-	if (profiling)
-		batch->workerNs.resize(phases.size());
-	if (profiling)
-		metrics.allocationNs += elapsed(allocationStart);
 	// Retain the callback context before submitting: deque allocation must not
 	// fail after a worker has started using the batch.
 	pending.push_back(std::move(batch));
@@ -190,12 +157,9 @@ void TeamStatsPipeline::prepareBoundary(Game &game, const SimulationSnapshot::Ha
 		{
 			const ComputeExecutor::Group group{
 				1, {compute, &submitted}, ComputeExecutor::StatisticsLaneBase};
-			const auto submissionStart = profiling ? Clock::now() : Clock::time_point{};
 			submitted.ticket =
 				executor.submit(std::span(&group, 1), ComputeExecutor::boundaryDue(submitted.due),
 								{ComputeProducer::Other, submitted.tick, submitted.due});
-			if (profiling)
-				metrics.submissionNs += elapsed(submissionStart);
 		}
 	}
 	catch (...)

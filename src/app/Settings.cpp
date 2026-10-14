@@ -116,7 +116,7 @@ void Settings::setTextSizePercent(int percent)
 void Settings::load(std::string filename)
 {
     gpuCompute.reset();
-    gradientBackend.reset();gradientAlgorithm=gradient_kernel::Algorithm::Frozen8;gradientVerify=false;
+    gradientBackend.reset();gradientAlgorithm=gradient_kernel::Algorithm::Frozen8;
     thumbSideChosen = false;
     rendererBackend = GAGCore::RendererBackend::Auto;
     targetRenderFps = 60;
@@ -167,7 +167,6 @@ void Settings::load(std::string filename)
 		}
         if(const auto value=parsed.find("gradientBackend");value!=parsed.end())gradientBackend=gradient_kernel::parseBackend(value->second);
         if(const auto value=parsed.find("gradientAlgorithm");value!=parsed.end())gradientAlgorithm=gradient_kernel::parseAlgorithm(value->second).value_or(gradient_kernel::Algorithm::Frozen8);
-        if(const auto value=parsed.find("gradientVerify");value!=parsed.end())gradientVerify=value->second=="1";
         if (const auto backend = parsed.find("rendererBackend"); backend != parsed.end())
             rendererBackend = GAGCore::parseRendererBackend(backend->second).value_or(GAGCore::RendererBackend::Auto);
         else if (parsed.count("screenFlags"))
@@ -398,7 +397,6 @@ bool Settings::save(std::string filename)
 			Utilities::streamprintf(stream, "gpuCompute=%d\n", *gpuCompute);
         if(gradientBackend)Utilities::streamprintf(stream,"gradientBackend=%s\n",gradient_kernel::backendName(*gradientBackend));
         Utilities::streamprintf(stream,"gradientAlgorithm=%s\n",gradient_kernel::algorithmName(gradientAlgorithm));
-        Utilities::streamprintf(stream,"gradientVerify=%d\n",gradientVerify);
 		Utilities::streamprintf(stream, "experiments=%s\n", experiments.toText().c_str());
 		Utilities::streamprintf(stream, "gameSpeed=%d\n", gameSpeed);
         Utilities::streamprintf(stream,"textSizePercent=%d\n",textSizePercent);

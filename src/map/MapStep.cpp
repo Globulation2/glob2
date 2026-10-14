@@ -233,8 +233,7 @@ Map::GradientPipelineStatus Map::gradientPipelineStatus() const
 	const auto &metrics = pipeline.metrics;
 	return {pipeline.enabled(), pipeline.workerCount(), pipeline.delayTicks(),
 		pipeline.pendingCount(), metrics.jobs, metrics.published, metrics.discarded,
-		metrics.maxPending, metrics.waitNs, pipeline.activeElapsedNs(), metrics.preparationNs, metrics.publicationWaitNs,
-        metrics.lastPublicationWaitNs,metrics.lastGpuPublicationWaitNs,metrics.lastGpuDeviceOverlapWaitNs};
+		metrics.maxPending};
 }
 
 bool Map::hasPendingGradientPreparation() const
@@ -304,17 +303,14 @@ void Map::resetGradientPipeline() noexcept
 void Map::setGradientWorkerCount(unsigned workers)
 {
 	preparePendingGradient();
-	gradientRuntime->pipeline.setWorkerCount(workers);
-	gradientRuntime->buildingShared = workers != 0;
-	gradientRuntime->buildings.setWorkerCount(workers);
+	gradientRuntime->pipeline.finish({JoinReason::Reconfigure, ComputeTelemetry::NoTick});
+	gradientRuntime->buildings.finish({JoinReason::Reconfigure, ComputeTelemetry::NoTick});
 }
 
 void Map::configureGradientPipeline(unsigned workers, unsigned delay)
 {
 	if (workers>16 || delay<1 || delay>16) throw std::invalid_argument("Invalid gradient pipeline configuration");
 	preparePendingGradient();
-	gradientRuntime->buildingShared = workers != 0;
-	if (gradientRuntime->buildings.enabled()) gradientRuntime->buildings.setWorkerCount(workers);
 	ensureBuildingGradientPipeline();
 	gradientRuntime->pipeline.onPublished = [this](Uint16** slot) { publishPlane(slot); };
 	// Staged after tick c-1's step counter advanced to c, a job published
@@ -322,21 +318,13 @@ void Map::configureGradientPipeline(unsigned workers, unsigned delay)
 	gradientRuntime->pipeline.deadline = [this](unsigned remaining) {
 		return ComputeExecutor::advanceDue(std::uint64_t(game ? game->stepCounter : 0) + remaining - 1);
 	};
-	gradientRuntime->pipeline.configure(compute, workers != 0, delay, size,
+	gradientRuntime->pipeline.configure(compute, delay, size,
         [](GradientPipeline::Job &job, GradientWorkspace &scratch) {
-            if(job.cpuOnly)gradient_preparation::propagateCPU(job.request,*job.snapshotLease,job.data.get(),scratch);
-            else gradient_preparation::propagate(job.request, *job.snapshotLease, job.data.get(), scratch);
+            gradient_preparation::propagateCPU(job.request,*job.snapshotLease,job.data.get(),scratch);
         });
     gradientRuntime->pipeline.setAsyncWork([](GradientPipeline::Job& job,gradient_kernel::PlanDecision decision) {
         return gradient_preparation::ownPropagation(job.request,*job.snapshotLease,job.data,
             job.owner->session(),decision,job.executorDue);
-    });
-    gradientRuntime->pipeline.setBatchWork([this](std::span<GradientPipeline::Job* const> jobs,
-        std::span<GradientWorkspace> scratch) {
-        std::vector<gradient_preparation::PropagationField> fields;fields.reserve(jobs.size());
-        for(std::size_t i=0;i<jobs.size();++i)
-            fields.push_back({jobs[i]->request,&*jobs[i]->snapshotLease,jobs[i]->data.get(),&scratch[i],&jobs[i]->error,nullptr});
-        gradient_preparation::propagateBatch(fields);
     });
 }
 

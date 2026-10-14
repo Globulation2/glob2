@@ -3,7 +3,6 @@
 #include "sim/snapshot/WorldSnapshot.h"
 #include "ComputeExecutor.h"
 #include <algorithm>
-#include <chrono>
 #include <cstdint>
 #include <deque>
 #include <exception>
@@ -57,21 +56,16 @@ public:
 	std::function<std::uint64_t(unsigned remaining)> deadline;
 	std::function<void(Job&)> retire;
 	struct Metrics {
-		std::uint64_t jobs=0, batches=0, published=0, discarded=0, waitNs=0, maxPending=0, maxBatch=0;
+		std::uint64_t jobs=0, batches=0, published=0, discarded=0, maxPending=0, maxBatch=0;
 	} metrics;
 private:
 	std::deque<std::unique_ptr<Job>> pending;
 	std::vector<std::unique_ptr<Job>> spare;
 	ComputeExecutor* executor = nullptr;
-	bool shared = true;
 	std::vector<ComputeExecutor::Group> groups;
 	unsigned delay = 0, admitted = 0;
 	std::uint64_t tick = 0;
 	Work work;
-	using Clock = std::chrono::steady_clock;
-	static std::uint64_t ns(Clock::time_point start) {
-		return std::chrono::duration_cast<std::chrono::nanoseconds>(Clock::now()-start).count();
-	}
 	static void releaseInputs(Job& job) noexcept {
 		job.snapshotLease.reset();
 		if constexpr (requires(Payload& p) { p.releaseInputs(); }) job.payload.releaseInputs();
@@ -125,13 +119,12 @@ public:
 		}
 		reset();
 	}
-	void configure(ComputeExecutor& target, bool sharedExecution, unsigned ticks, Work callback) {
+	void configure(ComputeExecutor& target, unsigned ticks, Work callback) {
 		if (ticks > MaxDelay) throw std::invalid_argument("building gradient delay exceeds its horizon");
 		reset(); metrics = {}; work = std::move(callback);
-		executor = &target; shared = sharedExecution; delay = ticks;
+		executor = &target; delay = ticks;
 	}
 	// Execution is local configuration, never part of saved simulation state.
-	void setWorkerCount(unsigned count) { finish({JoinReason::Reconfigure, ComputeTelemetry::NoTick}); shared = count != 0; }
 	// Publish before the teams step; preparation observes the completed previous tick.
 	void advance() {
 		++tick; admitted = 0;
@@ -171,7 +164,6 @@ public:
 		if (jobs.empty()) return;
 		try {
 			// Owner-only execution computes now; publication keeps its deadline.
-			if (!shared) { for (auto* job : jobs) execute(*job); return; }
 			groups.clear();
 			for (auto* job : jobs) groups.push_back({1, {&run, job}, ComputeExecutor::NoLane});
 			const auto due = jobs.front()->due; // every job staged this tick shares it

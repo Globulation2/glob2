@@ -67,7 +67,7 @@ Command& OrderScheduler::complete(Pending& entry)
 	if (!entry.completed) throw std::logic_error("AI decision was never executed");
 	return *entry.completed;
 }
-template<bool Measure, bool Collect>
+template<bool Measure>
 void OrderScheduler::Pending::run(void* context, std::size_t)
 {
 	auto& entry = *static_cast<Pending*>(context);
@@ -76,7 +76,6 @@ void OrderScheduler::Pending::run(void* context, std::size_t)
 	catch (...) { entry.failure = std::current_exception(); }
 	if constexpr (Measure) {
         entry.computationNs = std::chrono::duration_cast<std::chrono::nanoseconds>(std::chrono::steady_clock::now() - start).count();
-        if constexpr (Collect) entry.owner->computationNs.fetch_add(entry.computationNs, std::memory_order_relaxed);
     }
 	// The observation lease and the decision closure end with the computation.
 	entry.world.reset(); entry.decide = nullptr;
@@ -95,20 +94,20 @@ bool OrderScheduler::liveWork() const
 	}
 	return false;
 }
-void OrderScheduler::configure(unsigned delayTicks, ComputeExecutor& target, bool sharedExecution)
+void OrderScheduler::configure(unsigned delayTicks, ComputeExecutor& target)
 {
 	static_assert(ComputeExecutor::AIHorizon >= 8, "the executor sizes its slots for the AI horizon");
 	if (delayTicks > 8) throw std::invalid_argument("AI order delay must be 0..8 ticks");
 	if (liveWork()) throw std::logic_error("Cannot reconfigure a live AI pipeline");
-	executor = &target; shared = sharedExecution;
+	executor = &target;
 	delay = delayTicks;
 }
-void OrderScheduler::configureExecution(ComputeExecutor& target, bool sharedExecution)
+void OrderScheduler::configureExecution(ComputeExecutor& target)
 {
 	// Placement changes only between batches: finish what the previous executor
 	// configuration was given before switching.
 	joinAll({JoinReason::Reconfigure, ComputeTelemetry::NoTick});
-	executor = &target; shared = sharedExecution;
+	executor = &target;
 }
 std::size_t OrderScheduler::pendingCount() const
 {
@@ -136,22 +135,20 @@ void OrderScheduler::dispatch()
 	if (batch.entries.empty()) return;
 	if (!executor) throw std::logic_error("AI scheduler has no executor");
 	const bool worthSharing = delay > 0 || (batch.entries.size() > 1 && recentWorkNs >= SharedWorkThresholdNs);
-	if (!shared || !worthSharing)
+	if (!worthSharing)
 	{
 		// Not deferred: the owner decides now, as synchronous AI does; the
 		// decisions are still delivered at their deadline.
 		for (auto& entry : batch.entries) {
-            if (executor->telemetryMode() == ComputeTelemetryMode::Trace) Pending::run<true, true>(&entry, 0);
-            else if (!delay) Pending::run<true, false>(&entry, 0);
-            else Pending::run<false, false>(&entry, 0);
+            if (!delay) Pending::run<true>(&entry, 0);
+            else Pending::run<false>(&entry, 0);
         }
 		return;
 	}
 	batch.groups.clear();
-	const auto callback = executor->telemetryMode() == ComputeTelemetryMode::Trace ? &Pending::run<true, true>
-        : !delay ? &Pending::run<true, false> : &Pending::run<false, false>;
+	const auto callback = !delay ? &Pending::run<true> : &Pending::run<false>;
 	for (auto& entry : batch.entries) batch.groups.push_back({1, {callback, &entry}, entry.request.player});
-	++metrics.sharedBatches;
+	metrics.sharedBatches += executor->threadCount() > 1;
 	// Joined at the observation boundary of its due tick (takeDue).
 	batch.batch = executor->submit(batch.groups, ComputeExecutor::boundaryDue(batch.dueTick), {ComputeProducer::AI, batch.observedTick, batch.dueTick});
 }
@@ -191,7 +188,7 @@ void OrderScheduler::submit(RequestId request, std::shared_ptr<const AIWorldView
 	try
 	{
 		auto& batch = batchFor(request.observedTick);
-		batch.entries.push_back({request, request.observedTick + delay, std::move(world), std::move(decide), {}, {}, 0, this});
+		batch.entries.push_back({request, request.observedTick + delay, std::move(world), std::move(decide), {}, {}, 0});
 	}
 	catch (...) { if (inserted) lastSubmitted.erase(controller); throw; }
 	controller->second = request;
@@ -211,9 +208,11 @@ std::vector<Delivery> OrderScheduler::takeDue(Uint32 tick)
 		if (front.dueTick == tick)
 		{
 			joinBatch(front, {JoinReason::TickDeadline, tick});
-			Uint64 work = 0;
-			for (const auto& entry : front.entries) work += entry.computationNs;
-			if (!delay) recentWorkNs = (recentWorkNs * 3 + work) / 4;
+			if (!delay) {
+				Uint64 work = 0;
+				for (const auto& entry : front.entries) work += entry.computationNs;
+				recentWorkNs = (recentWorkNs * 3 + work) / 4;
+			}
 			// The whole batch finished; a failure anywhere publishes nothing.
 			for (auto& entry : front.entries) complete(entry);
 			for (auto& entry : front.entries) deliveries.push_back({entry.request, entry.dueTick, std::move(*entry.completed)});
@@ -506,7 +505,6 @@ bool OrderScheduler::load(GAGCore::InputStream* stream)
 				|| (gid && *gid != command.target->gid)) return false;
 		} catch (const std::exception&) { return false; }
 		entry.completed = std::move(command);
-		entry.owner = this;
 		// Restored decisions are complete: their batch has nothing left to run.
 		if (batches.empty() || batches.back().observedTick != entry.request.observedTick)
 		{

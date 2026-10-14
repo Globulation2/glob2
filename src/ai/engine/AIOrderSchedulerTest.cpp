@@ -29,7 +29,7 @@ struct TestScheduler : AIEngine::OrderScheduler
 	{
 		executor.configure(workers ? workers : 1);
         executor.configureTelemetry(mode);
-		AIEngine::OrderScheduler::configure(delay, executor, workers > 0);
+		AIEngine::OrderScheduler::configure(delay, executor);
 	}
 };
 }

@@ -11,6 +11,7 @@
 #define DOCTEST_CONFIG_IMPLEMENT
 #include "Glob2Test.h"
 #include "field/GradientDeviceService.h"
+#include "field/GradientAccelerators.h"
 #include <glob2/TestBuildProvenance.h>
 
 #include <cstdio>
@@ -122,6 +123,9 @@ int main(int argc, char **argv)
 	// Direct backend tests can start a coordinator without a GlobalContainer.
 	// Join it before driver exit handlers run, after every fixture has drained.
 	gradient_kernel::shutdownGradientDeviceCoordinator();
+	// Direct adapter fixtures need no service registration. Retire their device
+	// resources while SDL still owns the dynamically loaded drivers.
+	gradient_kernel::shutdownGradientAccelerators();
 	teardown();
 	return result;
 }

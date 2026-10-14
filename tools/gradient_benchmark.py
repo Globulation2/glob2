@@ -283,8 +283,7 @@ def run_cases(args, binary, matrix):
                     # Timing inputs must not inherit an unrelated game's GPU
                     # algorithm or opt-in shadow verification environment.
                     environment = {**os.environ, 'GLOB2_GRADIENT_BACKEND': args.backend,
-                                   'GLOB2_GRADIENT_ALGORITHM': 'buckets',
-                                   'GLOB2_GRADIENT_VERIFY': 'off'}
+                                   'GLOB2_GRADIENT_ALGORITHM': 'buckets'}
                     result = subprocess.run(command, check=True, text=True, capture_output=True, env=environment)
                 except subprocess.CalledProcessError as error:
                     # Preserve rows already produced by a failing case, while

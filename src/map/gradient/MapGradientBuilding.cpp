@@ -10,7 +10,6 @@
 #include "gradient/GradientRuntime.h"
 #include "BuildingGradientSearch.h"
 #include "SharedBuildingGradient.h"
-#include "BuildingGradientStats.h"
 #include <algorithm>
 #include <array>
 #include "Team.h"
@@ -46,7 +45,6 @@ void Map::updateGlobalGradient(Building *building, int swimClass, BuildingRoute 
 	Uint16 *gradient=building->globalGradient[slot];
 	assert(gradient);
 	// Diagnostics read the replaced field and its search before reinitialization.
-	if (gradientStats) gradientStats->fieldRebuilding(*this, *building, slot, access, game->stepCounter, topologyGeneration);
 	// A synchronous build supersedes any queued or pending scheduled refresh.
 	building->supersedeGradient(slot);
 	gradientRuntime->countSynchronous();

@@ -2,7 +2,6 @@
 #include "HiringPipeline.h"
 #include "EngineFixtures.h"
 #include "HiringPlanner.h"
-#include "HiringDiagnostics.h"
 #include <sstream>
 #include "SharedBuildingGradient.h"
 #include <thread>
@@ -55,7 +54,7 @@ TEST_SUITE("HiringPlanner")
 			auto *b = w.addBuilding(names[role], 8, 8);
 			b->maxUnitWorking = 2;
 			b->subscriptionWorkingTimer = 32;
-			b->materials[WHEAT] = 0;
+			b->setMaterial(WHEAT, 0);
 			b->setClearsMaterial(WOOD, true);
 			b->updateCallLists();
 			REQUIRE(w.game.map.incResourceByIndex(7, 8, WOOD, 0));
@@ -105,7 +104,7 @@ TEST_SUITE("HiringPlanner")
 		glob2test::HeadlessGame w({.wDec = 7, .hDec = 7, .discovered = true, .loadDefaultRace = true});
 		auto *b = w.addBuilding("inn", 8, 8);
 		b->maxUnitWorking = 2;
-		b->materials[WHEAT] = 0;
+		b->setMaterial(WHEAT, 0);
 		b->updateCallLists();
 		auto *u = w.addUnit(WORKER, 12, 12);
 		u->activity = Unit::ACT_RANDOM;
@@ -135,7 +134,7 @@ TEST_SUITE("HiringPlanner")
 		glob2test::HeadlessGame w({.wDec = 7, .hDec = 7, .discovered = true, .loadDefaultRace = true});
 		auto *building = w.addBuilding("inn", 8, 8);
 		building->maxUnitWorking = 2;
-		building->materials[WHEAT] = 0;
+		building->setMaterial(WHEAT, 0);
 		building->updateCallLists();
 		auto *unit = w.addUnit(WORKER, 12, 12);
 		unit->activity = Unit::ACT_RANDOM;
@@ -161,7 +160,7 @@ TEST_SUITE("HiringPlanner")
 		glob2test::HeadlessGame w({.discovered = true, .loadDefaultRace = true});
 		auto *b = w.addBuilding("inn", 8, 8);
 		b->maxUnitWorking = 1;
-		b->materials[WHEAT] = 0;
+		b->setMaterial(WHEAT, 0);
 		b->updateCallLists();
 		auto *u = w.addUnit(WORKER, 6, 8);
 		u->medical = Unit::MED_FREE;
@@ -184,7 +183,7 @@ TEST_SUITE("HiringPlanner")
 		glob2test::HeadlessGame w({.discovered = true, .loadDefaultRace = true});
 		auto *b = w.addBuilding("inn", 8, 8);
 		b->maxUnitWorking = 1;
-		b->materials[WHEAT] = 0;
+		b->setMaterial(WHEAT, 0);
 		b->updateCallLists();
 		auto *u = w.addUnit(WORKER, 6, 8);
 		u->medical = Unit::MED_FREE;
@@ -221,7 +220,7 @@ TEST_SUITE("HiringPlanner")
 		glob2test::HeadlessGame w({.discovered = true, .loadDefaultRace = true});
 		auto *b = w.addBuilding("inn", 8, 8);
 		b->maxUnitWorking = 1;
-		b->materials[WHEAT] = 0;
+		b->setMaterial(WHEAT, 0);
 		b->updateCallLists();
 		auto *u = w.addUnit(WORKER, 6, 8);
 		u->activity = Unit::ACT_RANDOM;
@@ -267,7 +266,7 @@ TEST_SUITE("HiringPlanner")
 			nlohmann::json{{"schemaVersion", 1}, {"resources", {a, b}}}.dump());
 		auto *building = w.addBuilding("inn", 8, 8);
 		building->maxUnitWorking = 1;
-		building->materials[WHEAT] = 0;
+		building->setMaterial(WHEAT, 0);
 		building->updateCallLists();
 		auto *u = w.addUnit(WORKER, 6, 8);
 		u->activity = Unit::ACT_RANDOM;
@@ -327,7 +326,7 @@ TEST_SUITE("HiringPlanner")
 		// Demand is frozen even if owner staffing and stock subsequently change.
 		inn->desiredMaxUnitWorking = 0;
 		inn->unitsWorking.clear();
-		inn->materials[WHEAT] = 100;
+		inn->setMaterial(WHEAT, 100);
 		const auto after = HiringPlanner::prepare(inputs, 0);
 		REQUIRE(after.size() == 1);
 		CHECK(after.front().seats == before.front().seats);
@@ -350,7 +349,7 @@ TEST_SUITE("HiringPlanner")
 		unit->destinationPurpose = WHEAT;
 		for (const int stock : {0, 1, 5, 20})
 		{
-			inn->materials[WHEAT] = stock;
+			inn->setMaterial(WHEAT, stock);
 			inn->reservedMaterials[WHEAT] = 1;
 			world.game.snapshotStore().invalidateBoundary();
 			const auto snapshot = world.game.captureReadBoundary();
@@ -388,7 +387,7 @@ TEST_SUITE("HiringPlanner")
 		REQUIRE(inn->tryToBuildingSiteRoom());
 		inn->desiredMaxUnitWorking = 2;
 		for (int r = 0; r < MaterialCount; ++r)
-			inn->materials[r] = 3;
+			inn->setMaterial(r, 3);
 		const auto snapshot = world.game.captureReadBoundary();
 		const auto input = HiringPipeline::bindRoutes(world.game, snapshot);
 		const auto supplies = HiringPlanner::prepare(input, 0);
@@ -761,7 +760,7 @@ TEST_SUITE("HiringPlanner")
 		REQUIRE(market);
 		REQUIRE(worker);
 		inn->desiredMaxUnitWorking = 1;
-		market->materials[CHERRY] = 10;
+		market->setMaterial(CHERRY, 10);
 		for (int swim = 0; swim < SWIM_CLASS_COUNT; ++swim)
 			world.game.map.buildingGradient(inn, swim);
 		worker->activity = Unit::ACT_RANDOM;

@@ -26,11 +26,10 @@ class HiringPipeline
 	static void compute(void *, std::size_t);
 
   public:
-	// Owner work (submission, publication), owner wait and worker planning time.
+	// Minimal submission/publication status.
 	struct Metrics
 	{
-		Uint64 submitted = 0, published = 0, submissionNs = 0, publicationNs = 0,
-			   deadlineWaitNs = 0, workerNs = 0;
+		Uint64 submitted = 0, published = 0;
 	};
 	Metrics metrics;
 	static constexpr unsigned Delay = Hiring::PublicationDelay, Refresh = Hiring::RefreshInterval,
