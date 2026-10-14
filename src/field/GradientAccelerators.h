@@ -20,7 +20,7 @@ struct AcceleratorStatus
 	std::string device, error;
 	std::string driver, shaderIdentity;
 	std::uint64_t fallbacks = 0;
-	std::uint64_t fields = 0, dispatches = 0, uploadNs = 0, computeNs = 0, readbackNs = 0;
+	std::uint64_t fields = 0, dispatches = 0;
 };
 struct BackendDescriptor
 {

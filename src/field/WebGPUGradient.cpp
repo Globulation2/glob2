@@ -25,7 +25,7 @@ struct Task
 	// JS writes done last with Atomics.store, then notifies the coordinator.
 	alignas(4) std::array<
 		int,
-		7> signal{}; // completion, cancellation, observed dispatch, upload/compute/readback us, dispatches
+		4> signal{}; // completion, cancellation, observed dispatch, dispatches
 	std::array<char, 512> metadata{};
 	std::vector<std::uint32_t> seeds, costs, output;
 	std::size_t hostBytes = 0, deviceBytes = 0;
@@ -82,10 +82,7 @@ void accountCompletedTask(State &state, Task &task)
 	if (task.accounted)
 		return;
 	task.accounted = true;
-	state.status.uploadNs += std::uint64_t(std::max(task.signal[3], 0)) * 1000;
-	state.status.computeNs += std::uint64_t(std::max(task.signal[4], 0)) * 1000;
-	state.status.readbackNs += std::uint64_t(std::max(task.signal[5], 0)) * 1000;
-	state.status.dispatches += std::max(task.signal[6], 0);
+	state.status.dispatches += std::max(task.signal[3], 0);
 }
 bool wait(std::unique_ptr<Task> &task, const BackendRequest *request = nullptr)
 {

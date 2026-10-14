@@ -337,7 +337,7 @@ void SettingsScreen::buildGeneral()
             [this,algorithms](int v){if(v<0 || v>=int(algorithms.size()))return;globalContainer->settings.gradientAlgorithm=algorithms[v];globalContainer->gradientAlgorithmOverride=algorithms[v];requestBackendConfiguration(globalContainer->gradientConfiguration());commit();});
         const auto active=configuration();const auto status=acceleratorStatus(active.backend);
         const std::string actual=isGPU(active.backend)?status.availability==Availability::Ready?status.device:std::string(backendName(automaticCPU()))+" ("+tr("CPU fallback")+")":backendName(cpuBackend());
-        info(std::string(tr("Gradient computation"))+": "+backendName(active.backend)+" / "+algorithmName(active.algorithm)+"; "+actual+"; "+std::to_string(status.fields)+" "+tr("GPU fields")+"; "+std::to_string(status.fallbacks)+" "+tr("CPU fallbacks")+"; upload/compute/readback "+std::to_string(status.uploadNs/1000000)+"/"+std::to_string(status.computeNs/1000000)+"/"+std::to_string(status.readbackNs/1000000)+" ms"+(status.error.empty()?"":"; "+status.error));
+        info(std::string(tr("Gradient computation"))+": "+backendName(active.backend)+" / "+algorithmName(active.algorithm)+"; "+actual+"; "+std::to_string(status.fields)+" "+tr("GPU fields")+"; "+std::to_string(status.fallbacks)+" "+tr("CPU fallbacks")+(status.error.empty()?"":"; "+status.error));
 		std::vector<std::string> labels;
 		Settings copy = s;
 		for (int i = Settings::GAME_SPEED_MINIMUM; i <= Settings::GAME_SPEED_MAXIMUM; ++i)

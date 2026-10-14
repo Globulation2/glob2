@@ -576,7 +576,6 @@ struct Runtime
 		ReturnRetired returnRetired{*this, work};
 		const auto &sets = work->sets;
 
-		const auto upload = monotonicNs();
 		// Only staging/readback is written by the host. Compute inputs and
 		// convergence/tile controls are populated through explicit GPU copies
 		// and fills, with a retirement proof before reusing staging storage.
@@ -631,10 +630,8 @@ struct Runtime
 		std::memcpy(staging, params.data(), 16);
 		if (!copyInput(Params, 16))
 			return false;
-		status.uploadNs += monotonicNs() - upload;
 
 		unsigned current = InputA, active = ActiveA;
-		const auto computeStart = monotonicNs();
 		// Positive integer edges bound any useful simple path by the field range.
 		// A final no-change round proves convergence, independently of hardware speed.
 		for (unsigned round = 0; round <= unsigned(COST_LIMIT) + 1; ++round)
@@ -683,8 +680,6 @@ struct Runtime
 			active = otherActive(active);
 			if (!*static_cast<std::uint32_t *>(work->buffers[Changed].mapped))
 			{
-				status.computeNs += monotonicNs() - computeStart;
-				const auto readback = monotonicNs();
 
 					beginCommands(*work);
 					barrier.srcAccessMask = VK_ACCESS_SHADER_WRITE_BIT;
@@ -713,7 +708,6 @@ struct Runtime
 
 				for (std::size_t i = 0; i < cells; ++i)
 					request.gradient[i] = std::uint16_t(out[i]);
-				status.readbackNs += monotonicNs() - readback;
 				if (request.executedOnDevice)
 					*request.executedOnDevice = true;
 				// The readback fence has retired every command and transfer using this set.
