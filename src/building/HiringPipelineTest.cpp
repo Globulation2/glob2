@@ -22,7 +22,7 @@ Building *innWithWorker(glob2test::HeadlessGame &w)
 	if (!b || !u)
 		throw std::runtime_error("Hiring fixture");
 	b->maxUnitWorking = 1;
-	b->materials[WHEAT] = 0;
+	b->setMaterial(WHEAT, 0);
 	b->updateCallLists();
 	u->activity = Unit::ACT_RANDOM;
 	u->medical = Unit::MED_FREE;
