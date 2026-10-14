@@ -288,7 +288,7 @@ class DeviceBroker
 		for (std::size_t i = 0; i < count; ++i)
 		{
 			auto &field = *held[i];
-			if (handled)
+			if (handled || field.executedGPU)
 			{
 				field.inputs.reset();
 				field.identity = {};
@@ -313,10 +313,10 @@ class DeviceBroker
 				if (held[i]->deviceExecutionObserved)
 				{
 					++state->totals.deviceCompletedFields;
-					if (!handled)
+					if (!handled && !held[i]->executedGPU)
 						++state->totals.fallbackAfterDeviceCompletionFields;
 				}
-				if (handled && !held[i]->error)
+				if ((handled || held[i]->executedGPU) && !held[i]->error)
 				{
 					++state->totals.completed;
 					held[i]->executedGPU ? ++state->totals.executed : ++state->totals.trivial;
@@ -325,7 +325,7 @@ class DeviceBroker
 		}
 		for (std::size_t i = 0; i < count; ++i)
 		{
-			if (handled)
+			if (handled || held[i]->executedGPU)
 			{
 				auto phase = OwnedGradientField::Phase::Running;
 				if (held[i]->phase.compare_exchange_strong(phase,
