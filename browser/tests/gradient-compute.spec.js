@@ -83,6 +83,7 @@ test('WebGPU C++ worker ownership bridge requires real device commits',async({br
       </script><script src="/threaded/script-tests.js"></script>`);
     await page.waitForFunction(()=>window.result!==undefined,null,{timeout:110000});
     expect(await page.evaluate(()=>window.result)).toBe(0);
-    if(hardware) expect(output).toMatch(new RegExp('WebGPU C++ device:.*'+hardware,'i'));
+    const deviceLine=output.split('\n').find(line=>line.includes('WebGPU C++ device:')) || '';
+    if(hardware) expect(deviceLine).toMatch(new RegExp(hardware,'i'));
   }finally{await browser.close();}
 });
