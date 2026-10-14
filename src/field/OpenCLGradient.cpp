@@ -4,7 +4,6 @@
 #include "OpenCLTransferProof.h"
 #include "OpenCLLaneRegistry.h"
 #include "GradientBackend.h"
-#include "ThreadCpuClock.h"
 #include <SDL3/SDL_loadso.h>
 #include <SDL3/SDL_platform_defines.h>
 #include <array>
@@ -80,10 +79,6 @@ template<class T> void resizeStaging(std::vector<T>& values,std::size_t count,Bu
         lease.resize(values.capacity()*sizeof(T));
     } else values.resize(count);
 }
-std::uint64_t threadCPUClock() noexcept {
-    return glob2::threadCpuNs();
-}
-thread_local unsigned backendCPUDepth=0;
 unsigned numericOverride(const char* name,unsigned fallback,unsigned maximum) {
     const auto* value=std::getenv(name);
     if(!value) return fallback;
@@ -409,9 +404,8 @@ struct Device
     OpenCLStatus retired;
     std::uint64_t retiredSequence = 0;
     std::atomic<std::uint64_t> sequence{0}, active{0}, maximumActive{0};
-    std::atomic<std::uint64_t> noopFields{0}, threadCPUNs{0},threadCPUInvalidMeasurements{0},laneBudgetDeclines{0};
+    std::atomic<std::uint64_t> noopFields{0}, laneBudgetDeclines{0};
     std::atomic<std::uint64_t> requiredQuarantines{0},requiredProofFailures{0};
-    std::atomic<bool> threadCPUAvailable{false};
     void reapExpiredLanes() noexcept {std::lock_guard lock(lanesMutex);lanes.clearExpired();}
     void evictUnusedPlanes() {
         std::lock_guard lock(cacheMutex);
@@ -427,10 +421,7 @@ struct Device
     void initialize() {
         std::scoped_lock lock(initialization, failureMutex);
         if(probed) return;
-        const auto started=threadCPUClock();probe();
-        const auto end=threadCPUClock();
-        if(started && end>=started){status.threadCPUAvailable=true;status.initializationThreadCPUNs+=end-started;}
-        else ++status.threadCPUInvalidMeasurements;
+        probe();
     }
     void probe()
     {
@@ -706,13 +697,8 @@ struct Runtime : std::enable_shared_from_this<Runtime>
         out.hostEventWaits+=in.hostEventWaits;
         out.hostChecks+=in.hostChecks;out.costIdentityHits+=in.costIdentityHits;out.retiredFields+=in.retiredFields;
         out.schedulerBatches+=in.schedulerBatches;
-        out.budgetDeclines+=in.budgetDeclines;out.threadCPUNs+=in.threadCPUNs;
-        out.threadCPUAvailable=out.threadCPUAvailable||in.threadCPUAvailable;
-        out.tileMaskInitializations+=in.tileMaskInitializations;out.tileMaskClears+=in.tileMaskClears;
-        out.kernelArgumentUpdates+=in.kernelArgumentUpdates;
+        out.budgetDeclines+=in.budgetDeclines;
         out.deviceObservedFields+=in.deviceObservedFields;out.committedFields+=in.committedFields;
-        out.seedCopiedBytes+=in.seedCopiedBytes;out.seedUploadedBytes+=in.seedUploadedBytes;
-        out.outputCopiedBytes+=in.outputCopiedBytes;
         out.requiredCancellations+=in.requiredCancellations;
     }
     static std::shared_ptr<Runtime> registeredLane(const std::shared_ptr<Device>& device,
@@ -755,9 +741,7 @@ struct Runtime : std::enable_shared_from_this<Runtime>
         out.requiredQuarantinePending=shared->requiredLifetime.quarantined();
         out.hostBytes=hostBudget.current.load();out.peakHostBytes=hostBudget.peak.load();
         out.deviceBytes=shared->deviceBudget.current.load();out.peakDeviceBytes=shared->deviceBudget.peak.load();
-        out.noopFields=shared->noopFields.load();out.threadCPUNs=shared->threadCPUNs.load();
-        out.threadCPUInvalidMeasurements+=shared->threadCPUInvalidMeasurements.load();
-        out.threadCPUAvailable=out.threadCPUAvailable || shared->threadCPUAvailable.load();
+        out.noopFields=shared->noopFields.load();
         out.executionLanes=std::count_if(live.begin(),live.end(),[](const auto& lane){return bool(lane);});out.maxConcurrentBatches=shared->maximumActive.load();
         return out;
     }
@@ -815,7 +799,6 @@ struct Runtime : std::enable_shared_from_this<Runtime>
 	{
 
 		check(api.SetKernelArg(target, index, sizeof(T), &value));
-		++status.kernelArgumentUpdates;
 	}
 	template <class T> void argument(UInt index, T value) { argumentTo(kernel, index, value); }
 	struct Event
@@ -1036,7 +1019,6 @@ struct Runtime : std::enable_shared_from_this<Runtime>
         for(auto* r:requests) {
             const auto n=r->grid.cells();
             std::copy(r->gradient,r->gradient+n,staging.begin()+offset);
-            status.seedCopiedBytes+=n*sizeof(std::uint16_t);
             blocked.clear();
             if(!r->identity.allCells) {
                 resizeStaging(blocked,n,blockedLease);
@@ -1056,7 +1038,6 @@ struct Runtime : std::enable_shared_from_this<Runtime>
         // untouched and unborrowed until commit, including failed drain paths.
         const auto seedBytes=total*sizeof(std::uint16_t);
         write(first,staging.data(),seedBytes);
-        status.seedUploadedBytes+=seedBytes;
         write(descriptors, desc.data(), requests.size()*8*sizeof(UInt));
         Handle a = first, b = second;
         const auto &variant = variants[selectedVariant];
@@ -1087,7 +1068,6 @@ struct Runtime : std::enable_shared_from_this<Runtime>
         UInt one = 1;
         check(fill(queue, tilesFirst, &one, sizeof one, 0, tileCount * sizeof(UInt), 0,
                                     nullptr, nullptr));
-        ++status.tileMaskInitializations;
         Handle active = tilesFirst, nextActive = tilesSecond;
         const std::size_t global[]{std::size_t(pitch) * variant.threads, std::size_t(rows),
                                    requests.size()},
@@ -1121,7 +1101,6 @@ struct Runtime : std::enable_shared_from_this<Runtime>
                                                 requests.size() * sizeof(UInt), 0, nullptr, nullptr));
                 check(fill(queue,nextActive,zero.data(),sizeof(UInt),0,
                            tileCount*sizeof(UInt),0,nullptr,nullptr));
-                ++status.tileMaskClears;
                 argument(0,a);argument(1,b);
                 argument(12,active);argument(13,nextActive);
                 check(
@@ -1182,16 +1161,6 @@ struct Runtime : std::enable_shared_from_this<Runtime>
     bool batch(std::span<const BackendRequest> input, Plan plan)
     {
 
-        struct CPUTimer {
-            Device& device;bool outer;std::uint64_t start;
-            explicit CPUTimer(Device& device):device(device),outer(backendCPUDepth++==0),start(outer ? threadCPUClock() : 0) {}
-            ~CPUTimer(){
-                --backendCPUDepth;
-                if(outer){const auto end=threadCPUClock();
-                    if(start && end>=start){device.threadCPUAvailable.store(true);device.threadCPUNs+=end-start;}
-                    else ++device.threadCPUInvalidMeasurements;}
-            }
-        } cpuTimer{*shared};
         for(const auto& request:input) {
             if(request.executedOnDevice)*request.executedOnDevice=false;
             if(request.deviceExecutionObserved)*request.deviceExecutionObserved=false;
@@ -1267,7 +1236,6 @@ struct Runtime : std::enable_shared_from_this<Runtime>
             outputOffset=0;
             for(const auto& r:input) {
                 std::copy_n(values.data()+outputOffset,r.grid.cells(),r.gradient);
-                status.outputCopiedBytes+=r.grid.cells()*sizeof(std::uint16_t);
                 if(r.executedOnDevice) *r.executedOnDevice=true;
                 ++status.committedFields;
 

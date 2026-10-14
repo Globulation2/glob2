@@ -27,12 +27,9 @@ struct OpenCLStatus
     bool colored=true;
     unsigned tileWidth=16,tileHeight=16,localSteps=8,checkInterval=8,pollMicros=100;
     std::uint64_t hostBytes=0,peakHostBytes=0,deviceBytes=0,peakDeviceBytes=0;
-    std::uint64_t budgetDeclines=0,threadCPUNs=0,initializationThreadCPUNs=0;
-    bool threadCPUAvailable=false;
-    std::uint64_t threadCPUInvalidMeasurements=0,noopFields=0;
-    std::uint64_t tileMaskInitializations=0,tileMaskClears=0,kernelArgumentUpdates=0;
+    std::uint64_t budgetDeclines=0;
+    std::uint64_t noopFields=0;
     std::uint64_t deviceObservedFields=0,committedFields=0;
-    std::uint64_t seedCopiedBytes=0,seedUploadedBytes=0,outputCopiedBytes=0;
     std::string platform,platformVendor,platformVersion;
     std::string deviceVendor,driverVersion,deviceVersion,openCLCVersion,deviceUUIDHex;
     unsigned deviceOrdinal=0;

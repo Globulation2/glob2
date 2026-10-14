@@ -1,7 +1,6 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "GradientDeviceService.h"
 #include "GradientAccelerators.h"
-#include "common/ThreadCpuClock.h"
 #include <algorithm>
 #include <array>
 #include <condition_variable>
@@ -143,7 +142,6 @@ class DeviceBroker
 	}
 	void initialize(const std::shared_ptr<GradientDeviceState> &state) noexcept
 	{
-		const auto start = monotonicNs();
 		bool ready = false;
 		try
 		{
@@ -168,7 +166,6 @@ class DeviceBroker
 		std::lock_guard lock(state->mutex);
 		state->initialized = true;
 		state->started = ready && !state->canceled;
-		state->totals.initializationNs = monotonicNs() - start;
 	}
 	static bool compatible(const OwnedGradientField &a, const OwnedGradientField &b) noexcept
 	{
