@@ -16,8 +16,6 @@ Handle Store::captureBoundary(const Game& game, CaptureOptions options)
 		unchangedBoundary = true;
 		required |= latest->requirements;
 	}
-	const auto start = storage.profiling ? std::chrono::steady_clock::now() : std::chrono::steady_clock::time_point{};
-	const auto preparedBefore = storage.preparationNs;
 	if (!catalog || catalogConfigurationRevision != game.gameHeader.observationRevision()) {
 		catalog = captureCatalog(game);
 		catalogConfigurationRevision = game.gameHeader.observationRevision();
@@ -36,10 +34,7 @@ Handle Store::captureBoundary(const Game& game, CaptureOptions options)
 		++metrics.detailedCaptures;
 	}
 	metrics.allocations = storage.allocations;
-	const auto preparation = storage.preparationNs-preparedBefore;
-	metrics.preparationNs += preparation;
 	++metrics.captures;
-	if (storage.profiling) metrics.captureNs += std::chrono::duration_cast<std::chrono::nanoseconds>(std::chrono::steady_clock::now() - start).count()-preparation;
 	latest = std::move(next);
 	return *latest;
 }

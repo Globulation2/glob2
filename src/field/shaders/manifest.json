@@ -4,13 +4,11 @@
   "naga": "27.0.0",
   "target": "vulkan1.0",
   "files": {
-    "src/field/GradientComputeShaders.h": "2eb41012ad7d14daa077bcb8db507a0ce0d768d2034a577570db8f78e55c1fc5",
-    "tools/shaders/gradient_compute.py": "7b52ea10386673b6b34f032079c095296485ad6f13be544524d50f880f4af407",
+    "src/field/GradientComputeShaders.h": "ba22243a438adb8a18e42013e786b1e80fdb6df094dd14d3f668073b36ecbbc7",
+    "tools/shaders/gradient_compute.py": "1c6a20a3a8bb7e9e92766a829d16d62903c987b203a8f6d13cb9762dcddbe3f5",
     "src/field/shaders/frozen8.comp": "7d1fcfa92c7d64571f64759ff4d7efcacf35d6e65ac73ee9b3fff5974e22529c",
     "src/field/shaders/frozen8.wgsl": "fc052030fa865fa7c4810128479f88dff0317d07f3da5d9082146eae4c767f13",
     "src/field/shaders/jacobi.comp": "79a6f5bb11eada98c4581281f94bfc032e10edf31ff3582cc7eceddfa2a83913",
-    "src/field/shaders/jacobi.wgsl": "524fb0e87baef48fc47462ab9ae9641e32398b0c7c0669bb860a4e688bbe5e10",
-    "src/field/shaders/validate.comp": "49a6993ce20da03e5fdcfcba77df5fd1b0771a70dc735348b44c241f5af99af5",
-    "src/field/shaders/validate.wgsl": "bbf03923034b923bdb5e059d3f35fcd44d16be5373096f6af20ec44f900f01c1"
+    "src/field/shaders/jacobi.wgsl": "524fb0e87baef48fc47462ab9ae9641e32398b0c7c0669bb860a4e688bbe5e10"
   }
 }

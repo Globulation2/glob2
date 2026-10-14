@@ -46,7 +46,6 @@ class BuildingGradientSearch
 	std::size_t cells = 0, pending = 0;
 	int currentCost = 0, swimClass = 0;
 	int readerCost = 0;
-	std::uint64_t popped = 0;
 	int widthMask = 0, heightMask = 0;
 	template <class Done> void advance(Done done);
 

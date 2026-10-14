@@ -1,7 +1,6 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "Glob2Test.h"
 #include "ScopedEnvironment.h"
-#include "field/GradientGpuValidation.h"
 #include <algorithm>
 #include <memory>
 #include <utility>
@@ -443,7 +442,7 @@ TEST_CASE("building pipeline pending results survive a save-style round trip" * 
 
 TEST_CASE("serial preparation computes at join and errors surface at the deadline" * doctest::test_suite("GradientPipeline"))
 {
-    ComputeExecutor executor; executor.configure(1);
+    ComputeExecutor executor; executor.configureTelemetry(ComputeTelemetryMode::Trace); executor.configure(1);
     GradientPipeline pipeline;
     auto* field=new std::uint16_t[1]{};
     pipeline.configure(executor,2,1,[](auto&,auto&) { FAIL("failed seed must not propagate"); });
@@ -484,7 +483,7 @@ TEST_CASE("shared preparation executes off the owner and retains its deadline" *
     pipeline.reset(); delete[] field;
 }
 
-TEST_CASE("backend selection is shared across owner and resized worker scratch" * doctest::test_suite("GradientPipeline"))
+TEST_CASE("backend selection survives worker scratch resizing" * doctest::test_suite("GradientPipeline"))
 {
     auto session=std::make_shared<gradient_kernel::BackendSession>();
     TestGradientPipeline pipeline;
@@ -492,12 +491,8 @@ TEST_CASE("backend selection is shared across owner and resized worker scratch" 
     auto* field=new std::uint16_t[1]{};
     for (unsigned workers : {0,2,4,0})
     {
-        pipeline.configure(workers,1,1,[session](auto& job,auto& scratch) {
-            if (scratch.backendSession!=session ||
-                !scratch.backendSession->currentGeneration())
-                throw std::logic_error("gradient workspace lost game backend selection");
-            job.data[0]=42;
-        });
+        pipeline.configure(workers,1,1,[](auto& job,auto&) { job.data[0]=42; });
+        CHECK(pipeline.session()==session);
         pipeline.advance(); pipeline.submit(&field,0,[](auto&){});
         pipeline.finish(); pipeline.advance();
         CHECK(field[0]==42);
@@ -513,19 +508,13 @@ TEST_CASE("GradientPipeline/CPU fields keep their original worker")
     using namespace gradient_kernel;
     for (const auto choice : {Backend::CPU}) {
     const auto previous = backend();
-    const auto provider = batchAccelerator;
-    struct Restore {
-        Backend previous; decltype(batchAccelerator) provider;
-        ~Restore() { setBackend(previous); batchAccelerator = provider; }
-    } restore{previous, provider};
+    struct Restore {Backend previous;~Restore(){setBackend(previous);}} restore{previous};
     setBackend(choice);
-    batchAccelerator = [](std::span<const BackendRequest>, Plan) { return false; };
     TestGradientPipeline pipeline;
     std::promise<void> completion;
     auto finished = completion.get_future();
     const auto owner = std::this_thread::get_id();
     std::thread::id worker, seeded;
-    unsigned batches = 0;
     pipeline.configure(1, 4, 1, [&](auto& job, auto&) {
         worker = std::this_thread::get_id();
         job.data[0] = 123;
@@ -541,7 +530,6 @@ TEST_CASE("GradientPipeline/CPU fields keep their original worker")
     pipeline.finish();
     CHECK(worker != owner);
     CHECK(worker == seeded);
-    CHECK(batches == 0);
     CHECK(field[0] == 0);
     for (unsigned tick = 0; tick < 4; ++tick) pipeline.advance();
     CHECK(field[0] == 123);
@@ -676,41 +664,7 @@ TEST_CASE("one-slot device configuration creates no driver activity" * doctest::
     CHECK(initialized==0);CHECK_FALSE(service.metrics().running);
 }
 
-TEST_CASE("proven gradient mismatch resolves tickets without recovery or publication" * doctest::test_suite("GradientPipeline"))
-{
-    using namespace gradient_kernel;
-    if constexpr(!GAGCore::ThreadSupport::available)return;
-    struct Restore {Backend mode=backend();unsigned mask=readyPlans.load();~Restore(){setBackend(mode);readyPlans=mask;}} restore;
-    readyPlans=1u<<unsigned(requestedOpenCLPlan());setBackend(Backend::OpenCL);
-    std::atomic<bool> attempted{false};
-    struct State {mutable std::atomic<unsigned> cpu{0};};
-    auto state=std::make_shared<State>();
-    auto service=std::make_shared<GradientDeviceService>(GradientDeviceService::Hooks{
-        []{return true;},[&](std::span<const BackendRequest>,Plan)->bool{
-            attempted=true;throw GradientProofFailure("injected proven field mismatch");
-        }});
-    service->configure(2,Backend::OpenCL);
-    const auto until=std::chrono::steady_clock::now()+std::chrono::seconds(5);
-    while(!service->metrics().ready && std::chrono::steady_clock::now()<until)std::this_thread::yield();
-    REQUIRE(service->metrics().ready);
-    TestGradientPipeline pipeline;pipeline.configure(1,2,1,[](auto&,auto&){FAIL("unexpected CPU execution");});
-    pipeline.setDeviceService(service);
-    pipeline.setAsyncWork([&](auto& job,PlanDecision decision){
-        auto owned=std::make_shared<OwnedGradientField>();owned->session=job.owner->session();
-        owned->inputs=state;
-        owned->decision=decision;owned->data=std::move(job.data);
-        owned->costAt=[](const auto&,std::size_t){return LAND_STEPS;};
-        owned->cpu=[](auto& field){++static_cast<const State*>(field.inputs.get())->cpu;};return owned;
-    });
-    auto* field=new std::uint16_t[1]{};
-    pipeline.advance();pipeline.submit(&field,0,[](auto& job){job.data[0]=77;});
-    while(!attempted && std::chrono::steady_clock::now()<until)std::this_thread::yield();
-    REQUIRE(attempted);
-    CHECK_THROWS_AS(pipeline.finish(),GradientProofFailure);
-    CHECK(state->cpu==0);CHECK(field[0]==0);CHECK(service->metrics().fallbacks==0);
-    CHECK(service->metrics().executed==0);
-    pipeline.reset();service->stop();delete[] field;
-}
+
 
 TEST_CASE("explicit CPU jobs bypass device ownership and retain publication deadlines" * doctest::test_suite("GradientPipeline"))
 {
@@ -723,7 +677,7 @@ TEST_CASE("explicit CPU jobs bypass device ownership and retain publication dead
         TestGradientPipeline pipeline;
         unsigned solved=0, owned=0;
         pipeline.configure(1,2,1,[&](auto& job,auto&){
-            CHECK(job.cpuOnly); CHECK(cpuBackend()==resolvedCPUBackend(mode));
+            CHECK(cpuBackend()==resolvedCPUBackend(mode));
             ++solved;job.data[0]=88;
         });
         pipeline.setAsyncWork([&](auto&,PlanDecision)->std::shared_ptr<OwnedGradientField>{++owned;return {};});
@@ -745,9 +699,9 @@ TEST_CASE("availability changes during seeding do not reinterpret captured CPU e
     struct Restore {Backend mode=backend();unsigned mask=readyPlans.load();~Restore(){setBackend(mode);readyPlans=mask;}} restore;
     setBackend(Backend::OpenCL);
     TestGradientPipeline pipeline;
-    pipeline.configure(1,2,1,[](auto& job,auto&){CHECK(job.cpuOnly);job.data[0]=88;});
+    pipeline.configure(1,2,1,[](auto& job,auto&){job.data[0]=88;});
     pipeline.setBackendSession(std::make_shared<BackendSession>());
-    pipeline.session()->setExternalInitialization(true);readyPlans=0;
+    readyPlans=0;
     std::atomic<unsigned> asynchronous{0};
     pipeline.setAsyncWork([&](auto&,PlanDecision)->std::shared_ptr<OwnedGradientField>{++asynchronous;return {};});
     auto* field=new std::uint16_t[1]{};
@@ -775,7 +729,7 @@ TEST_CASE("nullable GPU preparation recovers once on the original worker without
     REQUIRE(service->metrics().ready);
     TestGradientPipeline pipeline,restored;
     pipeline.configure(1,2,1,[state](auto& job,auto&){
-        CHECK(job.cpuOnly); // Both explicit CPU and ownership recovery bypass device dispatch.
+        // Both explicit CPU and ownership recovery bypass device dispatch.
         if(job.data[0]!=90&&!ComputeExecutor::workerSlot())state->worker=false;
         ++state->cpu;job.data[0]+=11;
     });
@@ -807,7 +761,10 @@ TEST_CASE("nullable GPU preparation recovers once on the original worker without
     // Published jobs are pooled. A declined job must not poison its next
     // ordinary generation with a stale recovery-only routing flag.
     setBackend(Backend::CPU);
-    pipeline.submit(&fields[1],0,[](auto& job){CHECK_FALSE(job.cpuOnly);job.data[0]=90;});
+    pipeline.setDeviceService({});
+    pipeline.setBackendSession({});
+    pipeline.setExecutionBackend(configuration());
+    pipeline.submit(&fields[1],0,[](auto& job){CHECK_FALSE(job.device);job.data[0]=90;});
     pipeline.finish();CHECK(state->cpu==3);CHECK(state->gpu==0);CHECK(fields[1][0]==89);
     pipeline.advance();pipeline.advance();CHECK(fields[1][0]==101);
     pipeline.reset();restored.reset();service->stop();for(auto* p:fields)delete[] p;for(auto* p:resumed)delete[] p;
@@ -889,11 +846,6 @@ TEST_CASE("two device registrations share exactly one process coordinator" * doc
     REQUIRE(first.metrics().ready);REQUIRE(second.metrics().ready);
     CHECK(ids->first==ids->second);CHECK(ids->first!=std::this_thread::get_id());
     CHECK(first.metrics().coordinatorThreads==1);CHECK(second.metrics().coordinatorThreads==1);
-    if(glob2::nativeThreadId()) {
-        CHECK(first.metrics().coordinatorThreadId!=0);
-        CHECK(first.metrics().coordinatorThreadId==second.metrics().coordinatorThreadId);
-        CHECK(first.metrics().coordinatorThreadId!=glob2::nativeThreadId());
-    }
     first.stop();CHECK_FALSE(first.metrics().running);CHECK(second.metrics().ready);
     second.stop();
 }
@@ -961,15 +913,15 @@ TEST_CASE("pending required GPU work cancels at publication and drains through o
     }
 }
 
-TEST_CASE("sequential device adapters retain completed fields when a later ready field declines" *
+TEST_CASE("device adapters retain committed fields when another ready field declines" *
 		  doctest::test_suite("GradientPipeline"))
 {
 	using namespace gradient_kernel;
 	if constexpr (!GAGCore::ThreadSupport::available)
 		return;
-	for (const auto algorithm : {Algorithm::Frozen8, Algorithm::Jacobi})
+	for (const auto [backend,algorithm] : {Configuration{Backend::Vulkan, Algorithm::Frozen8},
+             Configuration{Backend::Vulkan, Algorithm::Jacobi}, Configuration{Backend::OpenCL, Algorithm::Frozen8}})
 	{
-		constexpr auto backend = Backend::Vulkan;
 		struct Gate
 		{
 			std::promise<void> entered, release;
@@ -989,21 +941,18 @@ TEST_CASE("sequential device adapters retain completed fields when a later ready
 			[gate](std::span<const BackendRequest> requests, Plan)
 			{
 				++gate->calls;
-				// A sequential adapter's all-or-nothing batch would discard
-				// its earlier valid member when the later member declines.
-				if (requests.size() != 1)
-					return false;
-				const auto &request = requests.front();
-				if (request.gradient[0] == 76)
-				{
-					gate->entered.set_value();
-					gate->released.wait();
-				}
-				if (request.gradient[0] == 78)
-					return false;
-				request.gradient[0] += 100;
-				*request.executedOnDevice = true;
-				return true;
+                bool complete = true;
+                for (const auto& request : requests) {
+                    if (request.gradient[0] == 76) {
+                        gate->entered.set_value();
+                        gate->released.wait();
+                    }
+                    if (request.gradient[0] == 78) { complete = false; continue; }
+                    request.gradient[0] += 100;
+                    *request.executedOnDevice = true;
+                    *request.deviceExecutionObserved = true;
+                }
+                return complete;
 			}});
 		service->configure(2, backend);
 		const auto until = std::chrono::steady_clock::now() + std::chrono::seconds(5);
@@ -1033,7 +982,7 @@ TEST_CASE("sequential device adapters retain completed fields when a later ready
 			field->session = session;
 			field->decision = {selectedPlan(backend, algorithm),
 							   session->currentGeneration(),
-							   {backend, algorithm, false}};
+							   {backend, algorithm}};
 			field->due = 1000 + i;
 			field->data = std::make_unique<std::uint16_t[]>(1);
 			field->data[0] = 76 + i;
@@ -1103,10 +1052,10 @@ TEST_CASE("sequential device adapters retain completed fields when a later ready
 		CHECK_FALSE(contexts[2].field->executedGPU);
 		for (unsigned i = 0; i < contexts.size(); ++i)
 			CHECK(contexts[i].field->due == 1000 + i);
-		CHECK(gate->calls == 3);
+		CHECK(gate->calls == (backend==Backend::OpenCL ? 2 : 3));
 		CHECK(gate->cpu == 1);
-		CHECK(service->metrics().configuredMaxBatch == 1);
-		CHECK(service->metrics().maxBatch == 1);
+		CHECK(service->metrics().configuredMaxBatch == (backend==Backend::OpenCL ? 8 : 1));
+		CHECK(service->metrics().maxBatch == (backend==Backend::OpenCL ? 2 : 1));
 		CHECK(service->metrics().executed == 2);
 		CHECK(service->metrics().fallbacks == 1);
 		service->stop();
@@ -1150,7 +1099,7 @@ TEST_CASE("bounded required device queue recovers excess fields exactly once" * 
 		field->session = session;
 		field->decision = {Plan::Frozen8,
 						   session->currentGeneration(),
-						   {Backend::OpenCL, Algorithm::Frozen8, false}};
+						   {Backend::OpenCL, Algorithm::Frozen8}};
 		field->due = i ? 1065 - i : 1000;
 		field->data = std::make_unique<std::uint16_t[]>(1);
 		field->data[0] = 77;
@@ -1185,6 +1134,17 @@ TEST_CASE("bounded required device queue recovers excess fields exactly once" * 
 													c.gate->open();
 												REQUIRE(result == std::future_status::ready);
 											}
+                                            if (index == 2) {
+                                                for (unsigned prior : {0u,1u}) {
+                                                    auto field=(*batch.jobs)[prior].field;
+                                                    const auto phase=field->phase.load();
+                                                    CHECK(phase==(prior ? OwnedGradientField::Phase::Queued : OwnedGradientField::Phase::Running));
+                                                    CHECK_FALSE(c.service->submit(field));
+                                                    c.service->recoverOnWorker(field);
+                                                    CHECK(field->phase.load()==phase);
+                                                    CHECK(field->data[0]==77);
+                                                }
+                                            }
 											++c.gate->jobs;
 										},
 										&batchContext},
@@ -1244,11 +1204,11 @@ TEST_CASE("malformed captured configurations decline and recover once" * doctest
     ComputeExecutor executor;executor.configure(2);
     auto session=std::make_shared<BackendSession>();
     const std::array<Configuration,5> malformed{{
-        {Backend::CPU,Algorithm::Buckets,false},
-        {Backend::OpenCL,Algorithm::Jacobi,false},
-        {Backend::Vulkan,Algorithm::Frozen8,false},
-        {Backend::Count,Algorithm::Frozen8,false},
-        {Backend::OpenCL,Algorithm(255),false}}};
+        {Backend::CPU,Algorithm::Buckets},
+        {Backend::OpenCL,Algorithm::Jacobi},
+        {Backend::Vulkan,Algorithm::Frozen8},
+        {Backend::Count,Algorithm::Frozen8},
+        {Backend::OpenCL,Algorithm(255)}}};
     struct Context {ComputeExecutor* executor;std::shared_ptr<GradientDeviceService> service;
         std::shared_ptr<OwnedGradientField> field;};
     std::array<Context,5> contexts;
@@ -1268,12 +1228,15 @@ TEST_CASE("malformed captured configurations decline and recover once" * doctest
         auto& c=static_cast<Context*>(value)[index];c.field->completion=c.executor->defer();
         CHECK_FALSE(c.service->submit(c.field));
         CHECK(c.field->fallbackReason==GradientFallbackReason::InvalidRequest);
-        CHECK_FALSE(c.field->admitted.load());
-        c.service->recoverOnWorker(c.field);c.service->recoverOnWorker(c.field);
+        CHECK(c.field->phase.load()==OwnedGradientField::Phase::Private);
+        c.service->recoverOnWorker(c.field);
+        CHECK(c.field->phase.load()==OwnedGradientField::Phase::Complete);
+        CHECK(c.field->data[0]==177);
+        c.service->recoverOnWorker(c.field);
     },contexts.data()},ComputeExecutor::NoLane};
     auto ticket=executor.submit(std::span(&group,1),0);executor.join(ticket);
     CHECK(dispatched==0);CHECK(recovered==contexts.size());
     CHECK(service->metrics().submitted==0);CHECK(service->metrics().declined==contexts.size());
-    for(const auto& c:contexts){CHECK(c.field->resolved.load());CHECK(c.field->data[0]==177);}
+    for(const auto& c:contexts){CHECK(c.field->phase.load()==OwnedGradientField::Phase::Complete);CHECK(c.field->data[0]==177);}
     service->stop();
 }

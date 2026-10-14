@@ -8,6 +8,7 @@
 #include <stdexcept>
 #include "gradient/GradientRuntime.h"
 #include "Game.h"
+#include "GlobalContainer.h"
 #include "render/SoftwareTerrainCache.h"
 #include "Utilities.h"
 #include "Unit.h"
@@ -534,10 +535,10 @@ void Map::configureGradientExecution()
     const bool gpu=gradient_kernel::isGPU(selected.backend) && compute.threadCount()>1;
     // No worker-only GPU predicate is registered on the simulation executor.
     if (gpu) {
+        if (globalContainer) globalContainer->gradientDeviceShutdown = &gradient_kernel::shutdownGradientDeviceCoordinator;
         if (!rt.backendSession) rt.backendSession=std::make_shared<gradient_kernel::BackendSession>();
         rt.backendSession->failed=false;
-        rt.backendSession->setExternalInitialization(true);
-        rt.backendSession->configure(compute.threadCount());
+        rt.backendSession->invalidateConfiguration();
         if (!rt.deviceService) rt.deviceService=std::make_shared<gradient_kernel::GradientDeviceService>();
         rt.deviceService->configure(compute.threadCount(),selected.backend);
     } else {

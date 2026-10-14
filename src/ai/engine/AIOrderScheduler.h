@@ -60,8 +60,7 @@ private:
 		std::optional<Command> completed;
 		std::exception_ptr failure;
 		Uint64 computationNs = 0;
-		OrderScheduler* owner = nullptr;
-		template<bool Measure, bool Collect> static void run(void* context, std::size_t);
+		template<bool Measure> static void run(void* context, std::size_t);
 	};
 	// The decisions admitted at one observation tick, dispatched to the executor
 	// as one batch (one group per controller on that controller's lane) once the
@@ -80,7 +79,6 @@ private:
 	// the workers only when it carries enough work to repay waking them;
 	// otherwise the owner decides it inline. Neither changes a decision.
 	Uint64 recentWorkNs = SharedWorkThresholdNs;
-	std::atomic<Uint64> computationNs{0};
 	std::map<unsigned, RequestId> lastSubmitted;
 	unsigned delay = 0;
 	std::optional<Uint32> submissionTick;
@@ -105,7 +103,6 @@ public:
 	void configureExecution(ComputeExecutor& executor);
 	unsigned delayTicks() const { return delay; }
 	bool hasExecutor() const { return executor != nullptr; }
-	Uint64 activeNs() const { return computationNs.load(std::memory_order_relaxed); }
 	std::size_t pendingCount() const;
 	bool wasSubmitted(unsigned player, Uint32 generation, Uint32 tick) const {
 		const auto it=lastSubmitted.find(player);

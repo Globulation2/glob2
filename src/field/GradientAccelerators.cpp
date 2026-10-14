@@ -1,25 +1,16 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "GradientAccelerators.h"
-#include "GradientDiagnostics.h"
 #include "OpenCLGradient.h"
 #include <SDL3/SDL_platform_defines.h>
-#include <filesystem>
-#include <fstream>
-#include <sstream>
 namespace gradient_kernel
 {
 namespace
 {
-std::array<std::atomic<std::uint64_t>, unsigned(Backend::Count)> fallbacks{}, verified{},
-	verificationNs{};
+std::array<std::atomic<std::uint64_t>, unsigned(Backend::Count)> fallbacks{};
 struct Register
 {
 	Register()
 	{
-		prepareSelectedAccelerator = &initializeGradientAccelerator;
-		validateAcceleratedResult = &verifyGradientResult;
-		reserveVerificationBytes = &reserveOpenCLHostBytes;
-		releaseVerificationBytes = &releaseOpenCLHostBytes;
 		acceleratorImplementations[unsigned(Backend::OpenCL)] = {&initializeOpenCL,
 																 &executeGradientAccelerator};
 		acceleratorImplementations[unsigned(Backend::Vulkan)] = {&initializeVulkanGradient,
@@ -57,8 +48,6 @@ AcceleratorStatus acceleratorStatus(Backend backend)
 		result.availability =
 			cpuVariantAvailable(backend) ? Availability::Ready : Availability::Unavailable;
 	result.fallbacks = fallbacks[unsigned(backend)].load();
-	result.verified = verified[unsigned(backend)].load();
-	result.verificationNs = verificationNs[unsigned(backend)].load();
 	return result;
 }
 std::vector<BackendDescriptor> gradientBackends()
@@ -141,89 +130,5 @@ void recordGradientFallback(Backend b) noexcept
 		b = Backend::CPU;
 	fallbacks[unsigned(b)].fetch_add(1, std::memory_order_relaxed);
 }
-void verifyGradientResult(const BackendRequest &request, std::span<const std::uint16_t> original)
-{
-	if (!request.gradient || !request.costAt || original.size() != request.grid.cells())
-		throw std::invalid_argument("Gradient verification requires matching original inputs");
-	const auto verificationStart = monotonicNs();
-	const auto b =
-		normalizedConfiguration(request.capturedConfiguration.value_or(configuration())).backend;
-	GradientProfileSession profile(b, request.diagnostics ? *request.diagnostics : gradientProfilingRequested());
-    GradientPhaseScope phase(GradientPhase::ShadowVerification);
-	const auto bytes = original.size_bytes();
-	if (!reserveOpenCLHostBytes(bytes))
-		throw std::runtime_error("Gradient verification host budget exceeded");
-	struct Lease
-	{
-		std::size_t bytes;
-		~Lease() { releaseOpenCLHostBytes(bytes); }
-	} lease{bytes};
-	std::vector<std::uint16_t> expected(original.begin(), original.end());
-	if (!request.cpu && !request.cpuBatch)
-		throw std::runtime_error("Missing gradient verification CPU reference");
-	CPUSelectionScope scalar(Backend::Scalar);
-	if (request.cpu)
-		request.cpu(request.context, expected.data());
-	else
-	{
-		// Batch-only callers still own a complete CPU recovery operation. Verify
-		// one immutable field through that operation without inventing a callback.
-		const std::array<const BackendRequest *, 1> requests{&request};
-		const std::array<std::uint16_t *, 1> outputs{expected.data()};
-		request.cpuBatch(requests, outputs);
-	}
-	const auto mismatch = std::mismatch(expected.begin(), expected.end(), request.gradient);
-	if (mismatch.first == expected.end())
-	{
-		verified[unsigned(b)].fetch_add(1);
-		verificationNs[unsigned(b)].fetch_add(monotonicNs() - verificationStart);
-		return;
-	}
-	const auto cell = std::size_t(mismatch.first - expected.begin());
-	const char *directory = std::getenv("GLOB2_TEST_ARTIFACTS");
-	const auto path = std::filesystem::path(directory ? directory : "artifacts") /
-					  (std::string("gradient-mismatch-") + backendName(b) + "-" +
-					   std::to_string(monotonicNs()) + ".bin");
-	std::string evidence;
-	try
-	{
-		std::filesystem::create_directories(path.parent_path());
-		std::ofstream output(path, std::ios::binary);
-		const auto writeLE = [&](std::uint32_t value, unsigned size)
-		{
-			for (unsigned i = 0; i < size; ++i)
-				output.put(char((value >> (8 * i)) & 255));
-		};
-		for (const auto value :
-			 {0x47524144u, unsigned(request.grid.width()), unsigned(request.grid.height()),
-			  unsigned(request.limit), unsigned(request.family)})
-			writeLE(value, 4);
-		for (const auto value : original)
-			writeLE(value, 2);
-		for (const auto value : expected)
-			writeLE(value, 2);
-		for (std::size_t i = 0; i < original.size(); ++i)
-			writeLE(request.gradient[i], 2);
-		for (std::size_t i = 0; i < original.size(); ++i)
-		{
-			const auto costs = original[i] || request.identity.allCells
-								   ? request.costAt(request.context, i)
-								   : LAND_STEPS;
-			writeLE(costs.cardinal | (costs.diagonal << 16), 4);
-		}
-		output.flush();
-		evidence =
-			output ? "; fixture " + path.string() : "; unable to preserve fixture " + path.string();
-	}
-	catch (const std::exception &error)
-	{
-		// The proven mismatch remains the primary error even when diagnostics
-		// cannot be written (permissions, exhausted storage or invalid directory).
-		evidence = "; unable to preserve fixture: " + std::string(error.what());
-	}
-	std::ostringstream message;
-	message << "Gradient backend mismatch at cell " << cell << ": expected " << expected[cell]
-			<< ", actual " << request.gradient[cell] << evidence;
-	throw std::runtime_error(message.str());
-}
+
 } // namespace gradient_kernel

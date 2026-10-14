@@ -605,6 +605,7 @@ TEST_SUITE("ResourceGrowthBenchmark")
 						const auto before = stocks(map);
 						const auto start = Clock::now();
 						ResourceGrowth::Metrics immediate;
+                        Uint64 immediateComputeNs = 0;
 						ResourceGrowth::Batch immediateBatch;
 						for (unsigned tick = 0; tick < 64; ++tick)
 						{
@@ -643,7 +644,7 @@ TEST_SUITE("ResourceGrowthBenchmark")
 								MersenneTwister random(syncRand());
 								const auto computing = Clock::now();
 								ResourceGrowth::calculate(snapshot.view(), random, immediateBatch);
-								immediate.computeNs += ns(computing);
+								immediateComputeNs += ns(computing);
 								immediate.sampled += immediateBatch.sampled;
 								immediate.proposals += immediateBatch.proposals.size();
 								ResourceGrowth::apply(map, immediateBatch, immediate);
@@ -671,11 +672,9 @@ TEST_SUITE("ResourceGrowthBenchmark")
 							{"initial_food", before},
 							{"final_food", stocks(map)},
 							{"cold_capture_ns", coldCaptureNs},
-							{"capture_ns", world.game.snapshotStore().metrics.captureNs},
 							{"copied_bytes", world.game.snapshotStore().metrics.bytesCopied},
                             {"compute_telemetry_mode", ComputeTelemetry::ModeNames[unsigned(map.computeExecutor().telemetryMode())]},
-                            {"compute_ns", variant == 1 || map.computeExecutor().telemetryMode() == ComputeTelemetryMode::Trace ? Json(m.computeNs) : Json(nullptr)},
-							{"publication_ns", variant == 1 || map.computeExecutor().telemetryEnabled() ? Json(m.publicationNs) : Json(nullptr)},
+                            {"compute_ns", variant == 1 ? Json(immediateComputeNs) : Json(nullptr)},
 							{"wait_ns", [&]() -> Json {
                                 if (!map.computeExecutor().telemetryEnabled()) return nullptr;
                                 const auto snapshot = map.computeExecutor().telemetrySnapshot();

@@ -8,7 +8,6 @@
 #include "ai/observation/AIWorldView.h"
 #include "field/AirPathfind.h"
 #include <algorithm>
-#include <chrono>
 #include <climits>
 #include <map>
 #include <queue>
@@ -296,7 +295,6 @@ Output Planner::rank(const Inputs &input, unsigned team, unsigned capacity)
 {
 	if (capacity < 1 || capacity > 128)
 		throw std::invalid_argument("Hiring capacity must be 1..128");
-	const auto start = std::chrono::steady_clock::now();
 	World world(input.world);
 	if (team >= world.teams.size())
 		throw std::invalid_argument("Hiring team outside snapshot");
@@ -865,9 +863,6 @@ Output Planner::rank(const Inputs &input, unsigned team, unsigned capacity)
 				list.candidates = std::move(published);
 			}
 	}
-	output.ns = std::chrono::duration_cast<std::chrono::nanoseconds>(
-					std::chrono::steady_clock::now() - start)
-					.count();
 	return output;
 }
 } // namespace HiringPlanner

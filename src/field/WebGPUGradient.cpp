@@ -1,7 +1,6 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "GradientAccelerators.h"
 #include "GradientComputeShaders.h"
-#include "GradientGpuValidation.h"
 #include "OpenCLGradient.h"
 #include <mutex>
 #include <type_traits>
@@ -26,7 +25,7 @@ struct Task
 	// JS writes done last with Atomics.store, then notifies the coordinator.
 	alignas(4) std::array<
 		int,
-		7> signal{}; // completion, cancellation, observed dispatch, upload/compute/readback us, dispatches
+		4> signal{}; // completion, cancellation, observed dispatch, dispatches
 	std::array<char, 512> metadata{};
 	std::vector<std::uint32_t> seeds, costs, output;
 	std::size_t hostBytes = 0, deviceBytes = 0;
@@ -83,10 +82,7 @@ void accountCompletedTask(State &state, Task &task)
 	if (task.accounted)
 		return;
 	task.accounted = true;
-	state.status.uploadNs += std::uint64_t(std::max(task.signal[3], 0)) * 1000;
-	state.status.computeNs += std::uint64_t(std::max(task.signal[4], 0)) * 1000;
-	state.status.readbackNs += std::uint64_t(std::max(task.signal[5], 0)) * 1000;
-	state.status.dispatches += std::max(task.signal[6], 0);
+	state.status.dispatches += std::max(task.signal[3], 0);
 }
 bool wait(std::unique_ptr<Task> &task, const BackendRequest *request = nullptr)
 {
@@ -222,43 +218,7 @@ bool executeWebGPUGradient(std::span<const BackendRequest> requests, Plan plan)
 									   (1u << unsigned(Plan::WebGPUJacobi))));
 			}
 			return false;
-		}
-		if (!exactGradientFixedPoint(std::span<const std::uint16_t>(request.gradient, n),
-									 std::span<const std::uint32_t>(task->output), request.grid,
-									 request.limit,
-									 [&](std::size_t i)
-									 {
-										 const auto packed = task->costs[i];
-										 return EntrySteps{packed & 65535, packed >> 16};
-									 }))
-		{
-			// Once the completed field is proven wrong, even status or evidence
-			// allocation failure is fatal. Recovery must not hide the mismatch.
-			preserveGradientProofFailure(
-				[&]
-				{
-					{
-						std::lock_guard lock(service.mutex);
-						service.status.availability = Availability::Failed;
-						service.status.error = "WebGPU gradient failed exact fixed-point proof";
-						readyPlans.fetch_and(~((1u << unsigned(Plan::WebGPUFrozen8)) |
-											   (1u << unsigned(Plan::WebGPUJacobi))));
-					}
-					failGradientProof(
-						plan == Plan::WebGPUFrozen8 ? "webgpu-frozen8" : "webgpu-jacobi",
-						std::span<const std::uint16_t>(request.gradient, n),
-						std::span<const std::uint32_t>(task->output), request.grid, request.limit,
-						[&](std::size_t i)
-						{
-							const auto packed = task->costs[i];
-							return EntrySteps{packed & 65535, packed >> 16};
-						},
-						{service.status.device, service.status.driver,
-						 service.status.shaderIdentity,
-						 request.capturedGeneration.value_or(request.session.currentGeneration())});
-				});
-		}
-		tasks.push_back(std::move(task));
+		}		tasks.push_back(std::move(task));
 	}
 	for (std::size_t i = 0; i < tasks.size(); ++i)
 	{

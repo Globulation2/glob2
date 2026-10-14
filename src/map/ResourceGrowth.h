@@ -44,11 +44,10 @@ struct Metrics
 	Uint64 publishedProposals = 0;
 	Uint64 clamped = 0, stockAdded = 0, tilesAdded = 0, maxPending = 0, maxProposalBytes = 0;
 	Uint64 capacityGrowthBatches = 0, maxProposals = 0;
-	Uint64 computeNs = 0, queueNs = 0, waitNs = 0, publicationNs = 0;
 };
 // Pure calculation: all attempts see the same immutable input, including stocks.
 void calculate(const MapState::View &view, MersenneTwister &random, Batch &output);
-void apply(Map &map, const Batch &batch, Metrics &metrics, bool measure = true);
+void apply(Map &map, const Batch &batch, Metrics &metrics);
 
 // Lifecycle: stage -> prepare -> run -> join -> publish. Calculation uses the
 // shared executor, with its zero-worker fallback. The simulation owner manages
@@ -58,14 +57,14 @@ class Pipeline
 {
 	struct Job
 	{
-		// run exclusively writes output, snapshot, error and timing fields until join.
+		// run exclusively writes output, snapshot, error fields until join.
 		// Other fields are owner-managed and remain stable while work is running.
 		Batch output;
 		std::size_t reservedCapacity = 0; // Owner-side accounting; workers may grow the vector.
 		std::optional<SimulationSnapshot::Handle> snapshot;
 		ComputeExecutor::Batch work;
 		Uint32 seed = 0, catalog = 0;
-		Uint64 world = 0, submittedNs = 0, computeNs = 0, queueNs = 0;
+		Uint64 world = 0;
 		bool collected = false; // Metrics collected, not a worker-completion flag.
 		std::exception_ptr error;
 	};
@@ -74,7 +73,7 @@ class Pipeline
 	ComputeExecutor *executor = nullptr;
 	std::size_t proposalReserve = 0;
 	std::optional<std::pair<Uint32, Uint32>> reservation;
-	template<bool Measure> static void run(void *, std::size_t);
+	static void run(void *, std::size_t);
 	void join(Job &, JoinContext);
 
   public:

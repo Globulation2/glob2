@@ -183,3 +183,7 @@ settles existing reservations. Team stock keeps signed 32-bit storage. The stock
 and cached-performance policies change simulation revision and replay/network
 acceptance; format 159 saves
 remain readable, while earlier replay trajectories are not promised.
+
+GPU execution services and numerical test oracles are not saved. Simplifying
+their lifecycle does not change the version-163 encoding or version-58 save
+compatibility floor; completed pending fields retain their publication deadlines.
