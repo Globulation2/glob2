@@ -448,12 +448,12 @@ TEST_SUITE("TerrainRuntime")
 			ComputeExecutor executor; executor.configure(2);
 			GradientPipeline pipeline;
 			pipeline.configure(executor, 2, 1024,
-							   [](auto &job, auto &scratch)
+                               [profiles=map.frozenTerrainMovementSnapshot(swim), buckets=map.terrainQueueBuckets()](auto &job, auto &scratch)
 							   {
 								   gradient_kernel::propagateTerrainProfiles(
 									   job.data.get(), job.swim, gradient_kernel::COST_LIMIT,
-									   {32, 32}, scratch, job.profiles->data(),
-									   job.profiles->movement, job.terrainBuckets);
+									   {32, 32}, scratch, profiles->data(),
+									   profiles->movement, buckets);
 							   });
 			auto owned = std::make_unique<Uint16[]>(1024);
 			std::copy(pipelined.begin(), pipelined.end(), owned.get());
@@ -463,10 +463,6 @@ TEST_SUITE("TerrainRuntime")
 							[&](auto &job)
 							{
 								std::copy(pipelined.begin(), pipelined.end(), job.data.get());
-								job.registry = map.frozenTerrainRegistry();
-								job.profiles = map.frozenTerrainMovementSnapshot(swim);
-								job.terrainBuckets = map.terrainQueueBuckets();
-								job.modifiedCosts = true;
 							});
 			pipeline.advance();
 			pipeline.advance();

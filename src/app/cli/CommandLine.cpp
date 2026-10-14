@@ -504,7 +504,7 @@ const std::vector<Command> &commands()
 		add("game repeat", "Repeat a saved game, optionally with normal presentation", {"FILE"}, 1, repeat,
 			"Existing game summaries and opt-in environment telemetry")
 			.environment = {"GLOB2_REPLAY_PATH", "GLOB2_CHECKSUM_SIDECAR", "GLOB2_TEAM_RESULTS",
-							"GLOB2_TEAM_TIMELINE", "GLOB2_GRADIENT_BACKEND", "GLOB2_GRADIENT_ALGORITHM", "GLOB2_GRADIENT_VERIFY", "GLOB2_OPENCL_DEVICE"};
+							"GLOB2_TEAM_TIMELINE", "GLOB2_GRADIENT_BACKEND", "GLOB2_GRADIENT_ALGORITHM", "GLOB2_OPENCL_DEVICE"};
 		auto verify = profile();
 		verify.pop_back();
 		verify[1].defaultValue = "glob2-verify";

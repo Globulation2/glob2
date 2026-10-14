@@ -698,17 +698,21 @@ TEST_CASE("queued mixed gradients retain terrain costs until fixed publication [
         auto *published = new Uint16[count]{};
         ComputeExecutor executor; executor.configure(workers+1);
         GradientPipeline pipeline;
-        pipeline.configure(executor,workers!=0, 2, count, [](auto &job, auto &workspace) {
-            const auto *types = job.terrain->data();
+        pipeline.configure(executor, 2, count, [](auto &job, auto &workspace) {
+            const auto *types = job.snapshotLease->terrain->vertices->data();
             gradient_kernel::propagateTerrainField(job.data.get(), job.swim,
                 CostLimit, {width, width}, workspace,
-                [types](std::size_t i) { return types[i]; }, job.modifiedCosts);
+                [types](std::size_t i) { return types[i]; }, true);
         });
         pipeline.advance();
-        pipeline.submit(&published, swim, [seeds,snapshot](auto &job) {
+        auto terrain=std::make_shared<SimulationSnapshot::Terrain>();
+        terrain->vertices=snapshot;
+        SimulationSnapshot::Handle captured; captured.terrain=terrain;
+        pipeline.submit(&published, swim, [seeds,captured](auto &job) {
             std::copy(seeds.begin(), seeds.end(), job.data.get());
-            job.terrain = snapshot; job.modifiedCosts = true;
+            job.snapshotLease=captured;
         });
+        captured={}; terrain.reset();
         for (unsigned i = 0; i < count; ++i) map.paintCell(i, GRASS);
         snapshot.reset();
         pipeline.finish();
