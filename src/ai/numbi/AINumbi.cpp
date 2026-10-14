@@ -259,7 +259,6 @@ std::shared_ptr<Order> AINumbi::getOrder()
  const auto world=AIEngine::AIWorldView::capture(*game,AIEngine::AIWorldView::captureCatalog(*game));
  const std::vector<AIEngine::ExecutionReceipt> receipts;
  AIEngine::DecisionContext context{*world,0,unsigned(teamNumber),receipts};
- 
  auto order=getOrder(context);
  return order;
 }

@@ -125,6 +125,18 @@ int resourceDistance(const World &world, std::span<const Uint16> values, int x, 
 	return value > GRADIENT_UNREACHABLE ? gradientTiles(value) : INT_MAX;
 }
 } // namespace
+std::array<Sint32, 8> configurationFacts(const BuildingStateRecord &b)
+{
+	Sint32 clearing = 0;
+	for (unsigned r = 0; r < std::size(b.clearingMaterials); ++r)
+		if (b.clearingMaterials[r]) clearing |= Sint32(1u << r);
+	return {b.typeNum, b.posX, b.posY, b.unitStayRange, b.minLevelToFlag,
+		b.minWorkerLevelToFlag, Sint32(b.explorersRequireBombing), clearing};
+}
+std::uint64_t configuration(const BuildingStateRecord &b)
+{
+	return (Uint64(b.hiringEpoch) << 32) | Uint32(b.typeNum);
+}
 bool needsCandidates(const SimulationSnapshot::BuildingView &b)
 {
 	// Match the owner's maintained staffing demand, without advancing clocks
