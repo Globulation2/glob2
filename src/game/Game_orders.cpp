@@ -314,7 +314,8 @@ bool Game::executeModifyClearingFlag(const OrderModifyClearingFlag& omcf, int lo
 		&& b->buildingState==Building::ALIVE
 		&& b->runtime->attractsRole(0))
 	{
-		memcpy(b->clearingMaterials, omcf.clearingMaterials, sizeof(bool)*MaterialCount);
+		for (unsigned material=0; material<MaterialCount; ++material)
+			b->setClearsMaterial(material,omcf.clearingMaterials[material]);
 		return true;
 	}
 
@@ -366,6 +367,7 @@ bool Game::executeMoveFlag(const OrderMoveFlag& omf, int localPlayer)
 			map.setBuilding(omf.x, omf.y, b->type->width, b->type->height, b->gid);
 			b->owner->dirtyGlobalGradient();
 		}
+		if (b->posX!=omf.x || b->posY!=omf.y) if (++b->targetingEpoch==0) b->targetingEpoch=1;
 		b->posX=omf.x;
 		b->posY=omf.y;
 		areaEffects.changed(b->gid);
@@ -530,7 +532,7 @@ bool Game::executeModifySwarm(const OrderModifySwarm& oms, int localPlayer)
 			if (!b->runtime->produces(j) && oms.ratio[j]) return false;
 		for (int j=0; j<NB_UNIT_TYPE; j++)
 		{
-			b->ratio[j]=oms.ratio[j];
+			b->setProductionRatio(j,oms.ratio[j]);
 		}
 		b->update();
 		return true;

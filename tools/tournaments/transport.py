@@ -75,7 +75,7 @@ os.replace(tmp,p)
         self.call([self.python, '-c', script, self.remote_package, file_hash(self.package_path)], self.package_path.read_bytes())
         self.deployed = True
         config = {k: v for k, v in self.config.items() if k in
-                  ('slots', 'collect_slots', 'result_backlog_limit', 'disk_reserve_bytes', 'spool_budget_bytes', 'cache_budget_bytes', 'builds', 'memory_mb')}
+                  ('slots', 'collect_slots', 'result_backlog_limit', 'disk_reserve_bytes', 'spool_budget_bytes', 'cache_budget_bytes', 'builds', 'memory_mb', 'cpu_ids', 'participants_per_game')}
         self.rpc('configure', values=config)
         self.rpc('start')
 

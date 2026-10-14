@@ -3,6 +3,7 @@
 
 #pragma once
 #include "ComputeTelemetry.h"
+#include "ApplicationResourcePlan.h"
 #include <atomic>
 
 #include <memory>
@@ -57,7 +58,8 @@ public:
 	void applyCommand(const Cli::Request &request);
 	bool gpuComputeEnabled() const;
     gradient_kernel::Configuration gradientConfiguration() const;
-	void configureGradientBackend() const;
+	void configureExecutionResources();
+    void configureGradientBackend() const;
     std::optional<GAGCore::RendererBackend> rendererLaunchOverride;
 	void loadClient(void);
     bool deferAssetLoading = false;
@@ -131,9 +133,10 @@ public:
 	bool networkInitialized = false;
 	bool structuredHeadless = false;
 	bool headlessReplay = false;
-	// Zero selects the reported logical CPU count (one if unavailable). Structured
-	// --run-game configures its own compute executor instead.
+	// Zero selects the reported logical CPU count (one if unavailable).
+	// Counts include the simulation owner; affinity is reported separately.
 	unsigned computeThreads = 0;
+    ApplicationResourcePlan resourcePlan; // Frozen setup provenance for this session.
     ComputeTelemetryMode computeTelemetry = ComputeTelemetryMode::Off;
 	std::optional<bool> gpuComputeOverride;
     std::optional<gradient_kernel::Backend> gradientBackendOverride;

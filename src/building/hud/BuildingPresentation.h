@@ -1,5 +1,6 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #pragma once
+#include "BuildingStock.h"
 #include "Material.h"
 #include "BuildingType.h"
 #include <Toolkit.h>
@@ -61,7 +62,7 @@ inline int buildingProjectileStatsHeight(const BuildingType& type)
 
 // Map status uses the actual recipes. A free meal is never resource-starved;
 // optional fruit is deliberately excluded from the readiness indication.
-inline bool buildingFeedingUnfunded(const BuildingType& type, const Sint32* stock)
+inline bool buildingFeedingUnfunded(const BuildingType& type, BuildingStockView stock)
 {
     if (!type.semantics.feeding.enabled) return false;
     for (int resource=0; resource<MaterialCount; ++resource)
@@ -71,7 +72,7 @@ inline bool buildingFeedingUnfunded(const BuildingType& type, const Sint32* stoc
 
 // The existing single stock bar shows the scarcest configured input, measured
 // in recipe batches. Stock definitions have one wheat input, retaining that bar.
-inline int buildingResourceBarResource(const BuildingType& type, const Sint32* stock)
+inline int buildingResourceBarResource(const BuildingType& type, BuildingStockView stock)
 {
     int selected=-1, selectedCost=1;
     const auto consider=[&](const BuildingMaterialCost& cost) {

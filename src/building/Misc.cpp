@@ -139,7 +139,7 @@ void Building::kill(int diagnosticRemoval)
 	if (type->runtimeSuppliesStock || type->runtimeSuppliesDirectStock) owner->map->invalidateSupplierLocations();
 	if (type->runtimeSuppliesStock || type->runtimeSuppliesDirectStock)
 		for (int r=0; r<MaterialSlotCount; r++)
-			if (materials[r]>0)
+			if (material(r)>0)
 				owner->map->dirtyMarketGradientsSlot(owner->teamNumber, r);
 	
 	updateUnitsHarvesting();
@@ -210,11 +210,11 @@ void Building::updateMaterialsPointer()
 			owner->map->dirtyMarketGradientsSlot(owner->teamNumber, r);
 	if(!type->useTeamMaterials)
 	{
-		materials=localMaterials;
+		sharedMaterials=nullptr;
 	}
 	else
 	{
-		materials=owner->teamMaterials;
+		sharedMaterials=owner->teamMaterials;
 	}
 }
 
@@ -231,13 +231,13 @@ MaterialDeliveryResult Building::deliverMaterialPacket(int resourceType, Materia
 		throw std::runtime_error("Invalid material packet");
 	const Uint64 multiplier=type->materialMultiplier[resourceType];
 	const Sint32 converted=Uint64(packet.numerator)*multiplier/packet.denominator;
-	const int before = materials[resourceType];
+	const int before = material(resourceType);
 	if ((type->runtimeSuppliesStock || type->runtimeSuppliesDirectStock || type->useTeamMaterials) && availableMaterial(resourceType)<=0)
 		owner->map->dirtyMarketGradientsSlot(owner->teamNumber, resourceType);
 	// A shared pool may already exceed this recipient's own acceptance limit.
 	// Reject excess delivery without deleting inventory owned by other consumers.
-	materials[resourceType] += std::min({materialDeliveryNeed(resourceType),converted,std::numeric_limits<Sint32>::max()-before});
-	const int accepted = std::max(0, materials[resourceType] - before);
+	changeMaterial(resourceType, std::min(materialDeliveryNeed(resourceType),converted));
+	const int accepted = std::max(0, material(resourceType) - before);
 	int funded=0;
 	if (type->isBuildingSite)
 	{
@@ -279,7 +279,7 @@ WideMaterialDeliveryResult Building::deliverCargoPacket(int resourceType, WideMa
     const Uint64 scaled=packet.numerator*scale;
     const Sint32 accepted=Sint32(std::min({scaled/stockDenominator,Uint64(multiplier),
         Uint64(std::max(0,materialDeliveryNeed(resourceType))),
-        Uint64(std::numeric_limits<Sint32>::max()-materials[resourceType])}));
+        Uint64(std::max<Sint64>(0,Sint64(materialStockLimit())-material(resourceType)))}));
     if (!accepted) return result;
     // This denomination is exact and has no discarded fraction. Cargo retains
     // everything the recipient did not accept, without a spillage event.
@@ -302,16 +302,16 @@ void Building::removeMaterialFromBuilding(int resourceType)
 
 MaterialPacket Building::withdrawMaterialPacket(int resourceType)
 {
-	const int before = materials[resourceType];
-	materials[resourceType]-=std::min(availableMaterial(resourceType), type->materialMultiplier[resourceType]);
-	materials[resourceType]= std::max(materials[resourceType], 0);
-	owner->stats.events().withdrawn[resourceType] += before - materials[resourceType];
+	const int before = material(resourceType);
+	changeMaterial(resourceType, -(std::min(availableMaterial(resourceType), type->materialMultiplier[resourceType])));
+	setMaterial(resourceType, std::max(material(resourceType), 0));
+	owner->stats.events().withdrawn[resourceType] += before - material(resourceType);
 	if (type->canExchange)
-		owner->stats.events().transferredOut[resourceType] += before - materials[resourceType];
+		owner->stats.events().transferredOut[resourceType] += before - material(resourceType);
 	if ((type->runtimeSuppliesStock || type->runtimeSuppliesDirectStock || type->useTeamMaterials) && availableMaterial(resourceType)<=0)
 		owner->map->dirtyMarketGradientsSlot(owner->teamNumber, resourceType);
 	updateCallLists();
-	const Uint32 amount=before-materials[resourceType], denomination=type->materialMultiplier[resourceType];
+	const Uint32 amount=before-material(resourceType), denomination=type->materialMultiplier[resourceType];
 	const Uint32 divisor=std::gcd(amount,denomination);
 	return {amount/divisor,denomination/divisor};
 }
@@ -491,7 +491,7 @@ Uint32 Building::eatOnce(Uint32 *mask, Unit* visitor)
 		int resId=i+HAPPINESS_BASE;
 		if ((type->semantics.feeding.optionalFruitMask & (1u << i)) && availableMaterial(resId) > 0)
 		{
-			materials[resId]--;
+			changeMaterial(resId, -1);
 			if ((type->useTeamMaterials || type->runtimeSuppliesStock || type->runtimeSuppliesDirectStock) && availableMaterial(resId)==0)
 				owner->map->dirtyMarketGradientsSlot(owner->teamNumber,resId);
 			++owner->stats.events().consumed[GameplayMeasurements::MEAL][resId];
@@ -560,6 +560,7 @@ Uint32 Building::checkSum(std::vector<Uint32> *checkSumsVector, bool legacy152)
 	int cs=0;
 	if (areaFunded || areaFundingType>=0) cs ^= Uint32(areaFundingType+1)*0x9e3779b9u ^ areaFundingTick ^ (Uint32(areaFundingTeam+1)<<24) ^ (areaFunded ? 0x61757261u : 0);
 
+	if (!legacy152) cs^=targetingEpoch*0x9e3779b9u;
 	cs^=typeNum;
 	if (checkSumsVector)
 		checkSumsVector->push_back(cs);// [0]

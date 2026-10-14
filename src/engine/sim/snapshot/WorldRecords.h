@@ -28,7 +28,7 @@ struct BuildingView : BuildingStateRecord
 	// Raw funding facts omitted from BuildingStateRecord; shared by snapshot readers.
     Uint32 fundingOffset = std::numeric_limits<Uint32>::max();
 	Uint32 extraProductionOffset=0, extraProductionCount=0;
-    std::array<Sint32, 3> constructionOriginRatios{};
+    std::array<Uint16, 3> constructionOriginRatios{};
 	BuildingRef identity;
 	int team = 0;
 	int maxHp = 0;

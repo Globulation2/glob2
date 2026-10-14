@@ -270,6 +270,8 @@ static constexpr int FILE_FORMAT_VERSION_PRIVATE_RANDOM = 152;
 //! Immutable unit catalogs, counted race tables and composable unit state.
 static constexpr int FILE_FORMAT_VERSION_UNIT_CATALOG = 153;
 
+// Cached turret lists, admission state and delayed completed outputs.
+static constexpr int FILE_FORMAT_VERSION_TURRET_TARGETING = 159;
 static constexpr int FILE_FORMAT_VERSION_TEAM_STATS_PIPELINE = 155;
 
 // Worker-finalized aggregate flags retain raw pending aggregates from older saves.
@@ -277,5 +279,5 @@ static constexpr int FILE_FORMAT_VERSION_TEAM_STATS_FINALIZED = 157;
 // Completed pending measurement frames replace raw labour deltas.
 static constexpr int FILE_FORMAT_VERSION_TEAM_STATS_FRAMES = 158;
 
-// Production cached hiring continuation and configuration epochs.
-static constexpr int FILE_FORMAT_VERSION_CACHED_HIRING = 159;
+// Cached hiring suggestions and their pending deadlines.
+static constexpr int FILE_FORMAT_VERSION_CACHED_HIRING = 162;

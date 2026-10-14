@@ -31,6 +31,8 @@ ENGINE_TESTS = [
     '#src/unit/types/UnitCatalogTest.cpp',
     ('#src/unit/UnitCustomizationTest.cpp', dict(cxxflags=['-fno-access-control'])),
     '#src/app/cli/CommandLineTest.cpp',
+    '#src/app/ApplicationResourcePlanTest.cpp',
+    '#src/replay/ReplayTelemetryTest.cpp',
     '#src/unit/EntityRandomLifecycleTest.cpp',
     '#src/map/generator/javascript/ScriptGeneratorTest.cpp',
     '#src/map/generator/javascript/ToolkitBindingTest.cpp',
@@ -54,9 +56,11 @@ ENGINE_TESTS = [
     ('#src/ai/AICustomCatalogTest.cpp', dict(cxxflags=['-fno-access-control'])),
     '#src/building/types/BuildingCatalogTest.cpp',
     '#src/building/BuildingProductionCombatTest.cpp',
+    '#src/building/BuildingStockTest.cpp',
     '#src/building/BuildingCatalogFixtureHarness.cpp',
     '#src/building/BuildingCatalogBenchmark.cpp',
     '#src/building/AreaEffectsTest.cpp',
+    ('#src/building/TurretTargetingTest.cpp', dict(cxxflags=['-fno-access-control'])),
     '#src/building/AreaEffectsBenchmark.cpp',
     ('#src/map/ResourceGrowthBenchmark.cpp', dict(cxxflags=['-fno-access-control'])),
     ('#src/map/ResourceGrowthFixtures.cpp', dict(cxxflags=['-fno-access-control'])),
@@ -194,6 +198,7 @@ ENGINE_TESTS = [
     '#src/render/RendererSwitchIntegrationTest.cpp',
     '#src/ui/settings/SettingsGraphicsTest.cpp',
     '#src/ui/ThemeCatalogTest.cpp',
+    '#src/ui/MenuColonyTest.cpp',
     '#src/ui/settings/SettingsExperimentsTest.cpp',
     '#src/ui/settings/SettingsBuildingsTest.cpp',
     '#src/app/SystemLanguageTest.cpp',
@@ -603,3 +608,6 @@ def scripting_entries():
 def source_path(source):
     """Repository-relative path of a registry entry."""
     return source[1:] if source.startswith('#') else 'test/' + source
+
+# Dedicated whole-engine turret experiment; production objects are otherwise reused.
+TURRET_ENGINE_BENCHMARK = ('#src/building/TurretEngineBenchmark.cpp', dict(cxxflags=['-fno-access-control']))

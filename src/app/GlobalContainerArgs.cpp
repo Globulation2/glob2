@@ -149,7 +149,16 @@ gradient_kernel::Configuration GlobalContainer::gradientConfiguration() const
     return c;
 }
 bool GlobalContainer::gpuComputeEnabled() const {return gradient_kernel::isGPU(gradientConfiguration().backend);}
+void GlobalContainer::configureExecutionResources()
+{
+    resourcePlan = discoverApplicationResourcePlan(computeThreads, gradientConfiguration());
+    gradient_kernel::requestBackendConfiguration(resourcePlan.gradient);
+    gradient_kernel::applyBackendConfiguration(resourcePlan.gradient);
+}
+
 void GlobalContainer::configureGradientBackend() const
 {
-    const auto c=gradientConfiguration();gradient_kernel::requestBackendConfiguration(c);gradient_kernel::applyBackendConfiguration(c);
+    const auto c = gradientConfiguration();
+    gradient_kernel::requestBackendConfiguration(c);
+    gradient_kernel::applyBackendConfiguration(c);
 }

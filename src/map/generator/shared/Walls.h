@@ -164,7 +164,7 @@ std::array<int, 2> colonyLeak(const Map &, const Torus &, int teams,
 
 /// The size of a defence tower's footprint, and the range of each of its three levels
 /// (BuildingTypesDefence.cpp). A tower scans square rings round its footprint's top-left tile with
-/// no line of sight (Building::findBestTarget, BuildingUtils::turretScanTile), reaching its range in
+/// no line of sight (TurretTargeting::plan, BuildingUtils::turretScanTile), reaching its range in
 /// tiles beyond every side of its footprint, so a wall stops walking but not shooting.
 constexpr int kTowerFootprint = 2;
 constexpr int kTowerRange[3] = {5, 7, 9};

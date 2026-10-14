@@ -197,7 +197,7 @@ TEST_CASE("terrain strokes clear incompatible resources; buildings and units")
         {
             World world(swarm, swarmW, swarmH, offset[0], offset[1]);
             Unit* worker = world.game.getUnit(world.workerGid);
-            worker->performance[SWIM] = swimming ? worker->race->getUnitType(WORKER, 1)->performance[SWIM] : 0;
+            worker->setPerformance(SWIM,swimming ? worker->race->getUnitType(WORKER, 1)->performance[SWIM] : 0);
             Unit* explorer = world.game.getUnit(world.explorerGid);
             world.game.map.setAirUnit(explorer->posX, explorer->posY, NOGUID);
             explorer->posX = world.workerX;
@@ -490,7 +490,7 @@ TEST_CASE("workers carry food from camp-sites to an inn and leave their other yi
     auto* inn=world.addBuilding("inn",6,6,1);
     REQUIRE(inn);
     inn->maxUnitWorking=3;
-    inn->materials[WHEAT]=0;
+    inn->setMaterial(WHEAT, 0);
     const int sites[][2]={{16,8},{16,10},{16,12}};
     for (const auto& site : sites) REQUIRE(g.map.incResourceByIndex(site[0],site[1],resourceIndex(*camp),0));
     const auto stock=[&](MaterialId material) {
@@ -501,7 +501,7 @@ TEST_CASE("workers carry food from camp-sites to an inn and leave their other yi
     REQUIRE(stock(MaterialId::Food)==6);
     for (int i=0;i<3;++i) world.addUnit(WORKER,4+i,16,0,1);
     inn->updateCallLists();
-    for (int tick=0;tick<3000 && inn->materials[WHEAT]<3;++tick)
+    for (int tick=0;tick<3000 && inn->material(WHEAT)<3;++tick)
     {
         for (int i=0;i<3;++i)
         {
@@ -512,8 +512,8 @@ TEST_CASE("workers carry food from camp-sites to an inn and leave their other yi
         world.step();
     }
     // Every meal in the inn came out of a camp-site; wood and fabric stay for later.
-    CHECK(inn->materials[WHEAT]>=3);
-    CHECK(stock(MaterialId::Food)==6-inn->materials[WHEAT]);
+    CHECK(inn->material(WHEAT)>=3);
+    CHECK(stock(MaterialId::Food)==6-inn->material(WHEAT));
     CHECK(stock(MaterialId::Wood)==6);
     CHECK(stock(MaterialId::Fabric)==3);
 }
@@ -1072,7 +1072,7 @@ TEST_CASE("embedded resource save starts with an invalid installed catalog" * do
     CHECK_THROWS(ResourceRegistry::builtins());
     // Old files carry numeric IDs only. Their adapter must be frozen too, not
     // fall back to the missing or invalid default catalog at process startup.
-    const auto legacyBytes=glob2test::readFile(glob2test::inflated("javascript/profile1-initial.game.gz"));
+    const auto legacyBytes=glob2test::readFile(glob2test::inflated("javascript/profile1-initial159.game.gz"));
     GAGCore::BinaryInputStream oldInput(new GAGCore::MemoryStreamBackend(legacyBytes.data(),legacyBytes.size()));
     oldInput.seekFromStart(0);
     GameGUI oldGame(false);
@@ -1339,7 +1339,7 @@ TEST_CASE("frozen seeded resource compositions preserve invariants and exact sim
     glob2test::expectGolden("resources/seeded-compositions-units.trace",trace.str());
 }
 
-TEST_CASE("legacy resource saves ignore reordered modified installed defaults in a fresh process" * doctest::test_suite("RuntimeResources"))
+TEST_CASE("frozen resource saves ignore reordered modified installed defaults in a fresh process" * doctest::test_suite("RuntimeResources"))
 {
     using Json=nlohmann::json;
     auto installed=Json::parse(ResourceRegistry::loadFile((glob2test::sourceRoot()/"data/resources/registry.json").string())->serialize());
@@ -1355,7 +1355,7 @@ TEST_CASE("legacy resource saves ignore reordered modified installed defaults in
     const auto defaults=ResourceRegistry::builtins();
     REQUIRE(defaults->properties(*defaults->find("trees")).growthRate==0);
     REQUIRE(resourceIndex(*defaults->find("trees"))==0);
-    const auto bytes=glob2test::readFile(glob2test::inflated("javascript/profile1-initial.game.gz"));
+    const auto bytes=glob2test::readFile(glob2test::inflated("javascript/profile1-initial159.game.gz"));
     GAGCore::BinaryInputStream input(new GAGCore::MemoryStreamBackend(bytes.data(),bytes.size()));
     input.seekFromStart(0);
     GameGUI restored(false);
@@ -1467,8 +1467,8 @@ TEST_CASE("released terrain-seed format 138 retains legacy resource and material
                 REQUIRE(oldBuilding != nullptr);
                 for (unsigned material = 0; material < MaterialCount; ++material)
                 {
-                    CHECK(building->materials[material] == oldBuilding->materials[material]);
-                    if (material >= 8) CHECK(building->materials[material] == 0);
+                    CHECK(building->material(material) == oldBuilding->material(material));
+                    if (material >= 8) CHECK(building->material(material) == 0);
                 }
             }
     }
@@ -1514,7 +1514,7 @@ TEST_CASE("released observation format 139 imports legacy stocks and preserves c
         for(unsigned b=0;b<Building::MAX_COUNT;++b)
             if(const auto* building=original.game.teams[team]->myBuildings[b])
                 for(unsigned material=8;material<MaterialCount;++material)
-                    CHECK(building->materials[material]==0);
+                    CHECK(building->material(material)==0);
     }
     REQUIRE(pendingHarvests>0);
     auto* memory=new GAGCore::MemoryStreamBackend;

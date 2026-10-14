@@ -23,7 +23,7 @@ struct OpenCLStatus
     std::uint64_t fields=0,cpuSelections=0,batches=0,maxBatchFields=0;
     std::uint64_t costUploads=0,costCacheHits=0,costIdentityHits=0;
     std::uint64_t dispatches=0,hostChecks=0,retiredFields=0,schedulerBatches=0;
-    std::uint64_t executionLanes=0,maxConcurrentBatches=0;
+    std::uint64_t executionLanes=0,maxConcurrentBatches=0,hostEventWaits=0;
     bool colored=true;
     unsigned tileWidth=16,tileHeight=16,localSteps=8,checkInterval=8,pollMicros=100;
     std::uint64_t hostBytes=0,peakHostBytes=0,deviceBytes=0,peakDeviceBytes=0;

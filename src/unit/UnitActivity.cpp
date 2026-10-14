@@ -18,15 +18,15 @@ void Unit::handleActivity(void)
 		&& destinationPurpose!=FEED && destinationPurpose!=HEAL
 		&& displacement==DIS_GOING_TO_BUILDING && attachedBuilding)
 		stopAttachedForBuilding(true);
-	// freeze unit health when inside a building
+	// Finish finding an exit before a rebound visit can replace the attachment.
 	if ((displacement==DIS_ENTERING_BUILDING) || (displacement==DIS_INSIDE)
             || ((displacement==DIS_EXITING_BUILDING)
-                && ! (hasCapability(UnitRuntimeTraits::ServiceRebound) && (medical != MED_FREE))))
+                && (attachedBuilding || ! (hasCapability(UnitRuntimeTraits::ServiceRebound) && (medical != MED_FREE)))))
 		return;
 
 	if (verbose)
 		printf("guid=(%d) handleActivity (medical=%d, activity=%d) (needToRecheckMedical=%d) (attachedBuilding=%p)...\n",
-			gid, medical, activity, needToRecheckMedical, attachedBuilding);
+			gid, medical, activity, needToRecheckMedical(), attachedBuilding);
 
 	if(activity!=ACT_RANDOM)
 		jobTimer=0;
@@ -67,12 +67,12 @@ void Unit::handleActivity(void)
 						activity=ACT_UPGRADING;
 						attachedBuilding=b;
 						setTargetBuilding(b);
-						needToRecheckMedical=false;
+						setNeedToRecheckMedical(false);
 						if (verbose)
 							printf("guid=(%d) Going to heal building\n", gid);
 						targetX=attachedBuilding->getMidX();
 						targetY=attachedBuilding->getMidY();
-						validTarget=true;
+						setValidTarget(true);
 						b->subscribeUnitForInside(this);
 					}
 					else
@@ -81,7 +81,7 @@ void Unit::handleActivity(void)
 			}
 		}
 	}
-	else if (needToRecheckMedical)
+	else if (needToRecheckMedical())
 	{
 		// disconnect from building
 		if (attachedBuilding)
@@ -172,7 +172,7 @@ void Unit::handleActivity(void)
 				activity=ACT_UPGRADING;
 				attachedBuilding=b;
 				setTargetBuilding(b);
-				needToRecheckMedical=false;
+				setNeedToRecheckMedical(false);
 				if (verbose)
 					printf("guid=(%d) Subscribed to food at building gbid=(%d)\n", gid, b->gid);
 				b->subscribeUnitForInside(this);
@@ -191,7 +191,7 @@ void Unit::handleActivity(void)
 				activity=ACT_UPGRADING;
 				attachedBuilding=b;
 				setTargetBuilding(b);
-				needToRecheckMedical=false;
+				setNeedToRecheckMedical(false);
 				if (verbose)
 					printf("guid=(%d) Subscribed to heal at building gbid=(%d)\n", gid, b->gid);
 				b->subscribeUnitForInside(this);

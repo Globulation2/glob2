@@ -982,7 +982,7 @@ void Map::saveRuntimeState(GAGCore::OutputStream *stream) const
 			for (int sw=0; sw<SWIM_VARIANT_COUNT; ++sw)
 			{
 				stream->writeEnterSection(sw);
-				stream->writeUint8(building->locked[sw], "locked");
+				stream->writeUint8(building->isLocked(sw), "locked");
 				stream->writeUint8(building->anyResourceToClear[sw], "resourceState");
 				stream->writeLeaveSection();
 			}
@@ -1004,7 +1004,7 @@ void Map::saveRuntimeState(GAGCore::OutputStream *stream) const
 					stream->writeLeaveSection();
 				}
 				for (int sw=0; sw<SWIM_VARIANT_COUNT; ++sw)
-					stream->writeUint8(building->locked[profile*SWIM_VARIANT_COUNT+sw], sw==2?"waterOnlyLocked":sw ? "swimLocked" : "walkLocked");
+					stream->writeUint8(building->isLocked(profile*SWIM_VARIANT_COUNT+sw), sw==2?"waterOnlyLocked":sw ? "swimLocked" : "walkLocked");
 				stream->writeLeaveSection();
 			}
 			stream->writeLeaveSection();
@@ -1192,7 +1192,7 @@ void Map::loadRuntimeState(GAGCore::InputStream *stream, Sint32 versionMinor)
 			for (int sw=0; sw<savedAccessVariants; ++sw)
 			{
 				stream->readEnterSection(sw);
-				building->locked[savedAccessBase+sw]=loadFlag(stream,"locked");
+				building->setLocked(savedAccessBase+sw,loadFlag(stream,"locked"));
 				building->anyResourceToClear[sw]=stream->readUint8("resourceState");
 				if (building->anyResourceToClear[sw]>2) throw std::runtime_error("Invalid saved resource state");
 				stream->readLeaveSection();
@@ -1217,7 +1217,7 @@ void Map::loadRuntimeState(GAGCore::InputStream *stream, Sint32 versionMinor)
 						stream->readLeaveSection();
 					}
 					for (int sw=0; sw<savedAccessVariants; ++sw)
-						building->locked[profile*SWIM_VARIANT_COUNT+sw]=loadFlag(stream, sw==2?"waterOnlyLocked":sw ? "swimLocked" : "walkLocked");
+						building->setLocked(profile*SWIM_VARIANT_COUNT+sw,loadFlag(stream, sw==2?"waterOnlyLocked":sw ? "swimLocked" : "walkLocked"));
 					stream->readLeaveSection();
 				}
 				stream->readLeaveSection();

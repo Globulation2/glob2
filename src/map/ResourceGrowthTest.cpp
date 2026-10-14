@@ -818,20 +818,16 @@ TEST_CASE("finishing the last deferred tick computes without publishing early" *
     CHECK(map.gradientRuntime->growth.count() == 1);
 }
 
-TEST_CASE("engine preflight opens both historical growth and released vertex saves" * doctest::test_suite("ResourceGrowth"))
+TEST_CASE("historical growth payloads are rejected after header preflight" * doctest::test_suite("ResourceGrowth"))
 {
-    glob2test::GlobalsOptions options; options.loadStrings=true;
-    glob2test::HeadlessGlobals globals(options);
-    for (const char *name : {"growth146.game.gz","growth148.game.gz","vertex148.game.gz"}) {
-        CAPTURE(std::string(name));
+    glob2test::HeadlessGlobals globals({.loadStrings=true});
+    for (const char* name : {"growth146.game.gz", "growth148.game.gz", "vertex148.game.gz"}) {
+        CAPTURE(name);
         Engine engine;
         const auto path=glob2test::inflated(std::string("resources/growth-save-layout/")+name);
-        // These simulation fixtures omit the optional GameGUI tail. Exercise the
-        // production header preflight, then load the complete simulation payload.
         MapHeader header; GameHeader players;
         auto input=engine.openGameInput(path.string(),header,players);
         REQUIRE(input != nullptr);
-        REQUIRE(engine.gui.game.load(input.get()));
-        CHECK(engine.gui.game.map.resourceGrowthDelay()==8);
+        CHECK_FALSE(engine.gui.game.load(input.get()));
     }
 }

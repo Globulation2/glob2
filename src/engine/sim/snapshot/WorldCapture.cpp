@@ -147,7 +147,11 @@ Handle capture(const Game& game,
 	// arrays directly rather than clearing and growing them one cell at a time.
 	entities->funding.clear(); entities->relationships.clear(); entities->projects.clear();
     entities->extraProduction.clear();
-    if (needs(requirements, Component::Entities)) { entities->unitCargo = game.unitCargo; entities->availableGroundClasses.fill(0); }
+    if (needs(requirements, Component::Entities)) {
+        entities->unitCargo = game.unitCargo; entities->availableGroundClasses.fill(0);
+        if (storage) for (const auto& [gid, inventory] : game.unitCargo.entries())
+            storage->entitySidecarBytesCopied += sizeof(gid) + inventory.size() * sizeof(UnitCargoEntry);
+    }
 	if (needs(requirements, Component::Entities)) {
 		const auto teams = game.mapHeader.getNumberOfTeams();
 		std::size_t buildings = 0, units = 0;
@@ -230,6 +234,30 @@ Handle capture(const Game& game,
 		if (length) std::memcpy(destination.data() + start, source.data() + start, length * sizeof(Element));
 		if (storage) storage->bytesCopied += length * sizeof(Element);
 	};
+    const auto logicalView=game.map.cellView();
+    // Only changed chunks need new protocol fingerprints. Local stamps select
+    // the work but are never mixed into the canonical digest.
+    const auto logicalChunks = [&](auto& component, const auto& live, bool resized, auto cellWord) {
+        auto& logical=component.logical;
+        const bool retained=live.chunks.size()<=LogicalChunks::MaxBytes/sizeof(Uint64);
+        const bool all=!retained || resized || component.stamps.worldIdentity!=identity
+            || component.stamps.width!=geometry.width || component.stamps.height!=geometry.height
+            || logical.values.size()!=live.chunks.size() || component.stamps.chunks.size()!=live.chunks.size();
+        if (all) {
+            if (retained) { logical.values.reserve(live.chunks.size()); logical.values.assign(live.chunks.size(),0); }
+            else std::vector<Uint64>().swap(logical.values);
+            logical.digest=0;
+        }
+        for (std::size_t chunk=0;chunk<live.chunks.size();++chunk) {
+            if (!all && component.stamps.chunks[chunk]==live.chunks[chunk]) continue;
+            Uint64 hash=digestWord(DigestSeed,chunk);
+            geometry.forEachRow(chunk,[&](std::size_t start,std::size_t length) {
+                for (std::size_t i=start;i<start+length;++i) hash=digestWord(hash,cellWord(i));
+            });
+            if (retained) { logical.digest^=logical.values[chunk]^hash; logical.values[chunk]=hash; }
+            else logical.digest^=hash;
+        }
+    };
 	const auto refresh = [&](ChunkStamps& stamps, const MapState::ChangeTracker& live, bool resized, auto copyRange) {
 		const bool everything = resized || stamps.worldIdentity != identity || stamps.width != geometry.width
 			|| stamps.height != geometry.height || stamps.chunks.size() != live.chunks.size();
@@ -267,6 +295,8 @@ Handle capture(const Game& game,
 		// table marks every terrain chunk changed, so no stale index survives.
 		const auto source = game.map.cellRuleState();
 		const bool resized = prepare(terrain->cellRules, source.size());
+        logicalChunks(*terrain,game.map.changes(MapState::TrackedArray::Terrain),resized,
+            [&](std::size_t i){ return Uint64(logicalView.terrainProperties(i).projectileBlocks); });
 		refresh(terrain->stamps, game.map.changes(MapState::TrackedArray::Terrain), resized,
 			[&](std::size_t start, std::size_t length) { copyCells(terrain->cellRules, source, start, length); });
 	}
@@ -288,6 +318,8 @@ Handle capture(const Game& game,
 	{
 		const auto source = game.map.occupancyState();
 		const bool resized = prepare(occupancy->cells, source.size());
+        logicalChunks(*occupancy,game.map.changes(MapState::TrackedArray::Occupancy),resized,
+            [&](std::size_t i){ const auto& c=source[i]; return Uint64(c.groundUnit)|(Uint64(c.airUnit)<<16)|(Uint64(c.building)<<32); });
 		refresh(occupancy->stamps, game.map.changes(MapState::TrackedArray::Occupancy), resized,
 			[&](std::size_t start, std::size_t length) { copyCells(occupancy->cells, source, start, length); });
 	}
@@ -368,6 +400,7 @@ Handle capture(const Game& game,
 				slot = Uint32(buildingRecordCount);
 				auto& v = entities->buildings[buildingRecordCount++];
 				std::memcpy(static_cast<BuildingStateRecord*>(&v), static_cast<const BuildingStateRecord*>(b), sizeof(BuildingStateRecord));
+				if (storage) storage->entityBytesCopied += sizeof(BuildingStateRecord);
 				v.identity = Game::refOf(b); v.team = t; v.fundingOffset = Entities::NoRecord;
                 const auto nonzero = [](const auto &values) {
                     return std::any_of(values.begin(), values.end(), [](auto value) { return value != 0; });
@@ -384,7 +417,7 @@ Handle capture(const Game& game,
                     append(entities->extraProduction, ExtraProductionState{b->productionRatio(id),b->productionUsed(id),b->originProductionRatio(id)});
                 }
 				v.maxHp = b->getEffectiveMaxHp();
-				v.usesTeamResources = b->materials == team->teamMaterials;
+				v.usesTeamResources = b->usesTeamMaterials();
 				v.availableSupplyMask = 0;
 				for (unsigned supplied=b->runtime->suppliesStockMask|b->runtime->suppliesDirectStockMask; supplied; supplied &= supplied-1) {
 					const unsigned material=std::countr_zero(supplied);
@@ -394,6 +427,9 @@ Handle capture(const Game& game,
 				for (const auto* u : b->unitsWorking) append(entities->relationships, Game::refOf(u));
 				v.inside = {Uint32(entities->relationships.size()), Uint32(b->unitsInside.size())};
 				for (const auto* u : b->unitsInside) append(entities->relationships, Game::refOf(u));
+				if (storage) storage->entitySidecarBytesCopied += sizeof(v.constructionOriginRatios)
+                    + v.extraProductionCount * sizeof(ExtraProductionState)
+                    + (v.working.count + v.inside.count) * sizeof(UnitRef);
 			}
 		}
 		for (std::size_t n = 0; n < team->liveUnits.size(); ++n)
@@ -405,6 +441,7 @@ Handle capture(const Game& game,
 				slot = Uint32(unitRecordCount);
 				auto& v = entities->units[unitRecordCount++];
 				std::memcpy(static_cast<UnitState*>(&v), static_cast<const UnitState*>(u), sizeof(UnitState));
+				if (storage) storage->entityBytesCopied += sizeof(UnitState);
 				v.identity = Game::refOf(u); v.team = t;
 				v.realAttackStrength = u->getRealAttackStrength();
                 if(!v.performance[FLY] && !v.isDead && v.activity==Unit::ACT_RANDOM && v.medical==Unit::MED_FREE)entities->availableGroundClasses[t]|=Uint8(1u<<Map::swimClass(v.performance[WALK],v.performance[SWIM]));
@@ -629,32 +666,112 @@ void verifyCapture(const Game& game, const Handle& handle)
     if (handle.catalogs && handle.catalogs->units!=game.gameHeader.getUnitCatalog())
         throw std::logic_error("snapshot verification: unit catalog differs from the game");
     if (handle.entities) {
-        if (handle.entities->unitCargo.entries()!=game.unitCargo.entries())
+        const auto& entities = *handle.entities;
+        const int teams = game.mapHeader.getNumberOfTeams();
+        if (entities.unitSlotIndices.size() != std::size_t(teams) * Unit::MAX_COUNT
+            || entities.buildingSlotIndices.size() != std::size_t(teams) * Building::MAX_COUNT)
+            throw std::logic_error("snapshot verification: entity lookup sizes differ from the game");
+        if (entities.unitCargo.entries() != game.unitCargo.entries())
             throw std::logic_error("snapshot verification: unit cargo differs from the game");
-        for (const auto& building:handle.entities->buildings) {
-            const auto* liveBuilding=game.resolveBuilding(building.identity);
-            if (!liveBuilding || building.extraProductionCount!=liveBuilding->extraProductionRatios.size())
-                throw std::logic_error("snapshot verification: production storage differs from the game");
-            static const FundingState emptyFunding{};
-            const auto& funding=building.fundingOffset==Entities::NoRecord?emptyFunding:handle.entities->funding.at(building.fundingOffset);
-            if(funding.constructionBudget!=liveBuilding->constructionBudget || funding.constructionReserved!=liveBuilding->constructionReserved || funding.reservedMaterials!=liveBuilding->reservedMaterials)
-                throw std::logic_error("snapshot verification: funding differs from the game");
-            for (unsigned id=0;id<BuiltinUnitCount;++id)
-                if (building.constructionOriginRatios[id]!=liveBuilding->originProductionRatio(id))
-                    throw std::logic_error("snapshot verification: production origin differs from the game");
-            for (unsigned extra=0;extra<building.extraProductionCount;++extra) {
-                const auto& value=handle.entities->extraProduction.at(building.extraProductionOffset+extra);
-                const unsigned id=BuiltinUnitCount+extra;
-                if (value.ratio!=liveBuilding->productionRatio(id) || value.used!=liveBuilding->productionUsed(id)
-                    || value.constructionOriginRatio!=liveBuilding->originProductionRatio(id))
-                    throw std::logic_error("snapshot verification: additional production differs from the game");
+
+        // Walk the same team/slot order as capture, checking completeness as well
+        // as values. Resolving only captured identities would miss omitted rows.
+        std::size_t unitIndex = 0, buildingIndex = 0, relationshipIndex = 0, productionIndex = 0;
+        const auto compareRelationships = [&](UnitRange range, const auto& live) {
+            if (range.offset != relationshipIndex || range.count != live.size()
+                || relationshipIndex > entities.relationships.size()
+                || live.size() > entities.relationships.size() - relationshipIndex)
+                throw std::logic_error("snapshot verification: building relationship range differs from the game");
+            for (const auto* unit : live)
+                if (entities.relationships[relationshipIndex++] != Game::refOf(unit))
+                    throw std::logic_error("snapshot verification: building relationship differs from the game");
+        };
+        for (int t = 0; t < teams; ++t) {
+            const auto* team = game.teams[t];
+            if (!team) continue;
+            if (!team->liveUnits.matches(team->myUnits, Unit::MAX_COUNT)
+                || !team->liveBuildings.matches(team->myBuildings, Building::MAX_COUNT))
+                throw std::logic_error("snapshot verification: team " + std::to_string(t) + " live entity lists differ from its slots");
+            for (int slot = 0; slot < Unit::MAX_COUNT; ++slot) {
+                const auto* live = team->myUnits[slot];
+                const auto lookup = entities.unitSlotIndices[t * Unit::MAX_COUNT + slot];
+                if (!live) {
+                    if (lookup != Entities::NoRecord)
+                        throw std::logic_error("snapshot verification: empty unit lookup differs from the game");
+                    continue;
+                }
+                if (unitIndex >= entities.units.size() || lookup != unitIndex)
+                    throw std::logic_error("snapshot verification: unit count or lookup differs from the game");
+                const auto& unit = entities.units[unitIndex++];
+                if (unit.identity != Game::refOf(live) || unit.team != t)
+                    throw std::logic_error("snapshot verification: unit identity or order differs from the game");
+                if (static_cast<const UnitState&>(unit) != static_cast<const UnitState&>(*live))
+                    throw std::logic_error("snapshot verification: unit state differs from the game");
+                if (unit.realAttackStrength != live->getRealAttackStrength())
+                    throw std::logic_error("snapshot verification: unit attack strength differs from the game");
+                if (unit.attached != Game::refOf(live->attachedBuilding) || unit.target != Game::refOf(live->targetBuilding))
+                    throw std::logic_error("snapshot verification: unit building references differ from the game");
+            }
+            for (int slot = 0; slot < Building::MAX_COUNT; ++slot) {
+                const auto* live = team->myBuildings[slot];
+                const auto lookup = entities.buildingSlotIndices[t * Building::MAX_COUNT + slot];
+                if (!live) {
+                    if (lookup != Entities::NoRecord)
+                        throw std::logic_error("snapshot verification: empty building lookup differs from the game");
+                    continue;
+                }
+                if (buildingIndex >= entities.buildings.size() || lookup != buildingIndex)
+                    throw std::logic_error("snapshot verification: building count or lookup differs from the game");
+                const auto& building = entities.buildings[buildingIndex++];
+                if (building.identity != Game::refOf(live) || building.team != t)
+                    throw std::logic_error("snapshot verification: building identity or order differs from the game");
+                if (static_cast<const BuildingStateRecord&>(building) != static_cast<const BuildingStateRecord&>(*live))
+                    throw std::logic_error("snapshot verification: building state differs from the game");
+                MaterialMask supplyMask = 0;
+                for (unsigned supplied = live->runtime->suppliesStockMask | live->runtime->suppliesDirectStockMask; supplied; supplied &= supplied - 1) {
+                    const unsigned material = std::countr_zero(supplied);
+                    if (live->availableMaterial(material) > 0) supplyMask |= MaterialMask(1u << material);
+                }
+                if (building.maxHp != live->getEffectiveMaxHp()
+                    || building.usesTeamResources != (live->usesTeamMaterials())
+                    || building.availableSupplyMask != supplyMask)
+                    throw std::logic_error("snapshot verification: building query values differ from the game");
+                static const FundingState noFunding{};
+                const auto& funding = building.fundingOffset == Entities::NoRecord ? noFunding : entities.funding.at(building.fundingOffset);
+                if (funding.constructionBudget != live->constructionBudget || funding.constructionReserved != live->constructionReserved
+                    || funding.reservedMaterials != live->reservedMaterials)
+                    throw std::logic_error("snapshot verification: funding differs from the game");
+                compareRelationships(building.working, live->unitsWorking);
+                compareRelationships(building.inside, live->unitsInside);
+                if (building.extraProductionOffset != productionIndex
+                    || building.extraProductionCount != live->extraProductionRatios.size()
+                    || productionIndex > entities.extraProduction.size()
+                    || building.extraProductionCount > entities.extraProduction.size() - productionIndex)
+                    throw std::logic_error("snapshot verification: production range differs from the game");
+                for (unsigned id = 0; id < BuiltinUnitCount; ++id)
+                    if (building.constructionOriginRatios[id] != live->originProductionRatio(id))
+                        throw std::logic_error("snapshot verification: production origin differs from the game");
+                for (unsigned extra = 0; extra < building.extraProductionCount; ++extra) {
+                    const auto& value = entities.extraProduction[productionIndex++];
+                    const unsigned id = BuiltinUnitCount + extra;
+                    if (value.ratio != live->productionRatio(id) || value.used != live->productionUsed(id)
+                        || value.constructionOriginRatio != live->originProductionRatio(id))
+                        throw std::logic_error("snapshot verification: additional production differs from the game");
+                }
             }
         }
+        if (unitIndex != entities.units.size() || buildingIndex != entities.buildings.size()
+            || relationshipIndex != entities.relationships.size() || productionIndex != entities.extraProduction.size())
+            throw std::logic_error("snapshot verification: entity or sidecar counts differ from the game");
+        if (entities.projects.size() != game.buildProjects.size())
+            throw std::logic_error("snapshot verification: building project count differs from the game");
+        std::size_t projectIndex = 0;
+        for (const auto& live : game.buildProjects) {
+            const auto& project = entities.projects[projectIndex++];
+            if (project.posX != live.posX || project.posY != live.posY || project.teamNumber != live.teamNumber
+                || project.typeNum != live.typeNum || project.unitWorking != live.unitWorking || project.unitWorkingFuture != live.unitWorkingFuture)
+                throw std::logic_error("snapshot verification: building project differs from the game");
+        }
     }
-	if (handle.entities)
-		for (int t = 0; t < game.mapHeader.getNumberOfTeams(); ++t)
-			if (const auto* team = game.teams[t])
-				if (!team->liveUnits.matches(team->myUnits, Unit::MAX_COUNT) || !team->liveBuildings.matches(team->myBuildings, Building::MAX_COUNT))
-					throw std::logic_error("snapshot verification: team " + std::to_string(t) + " live entity lists differ from its slots");
 }
 } // namespace SimulationSnapshot

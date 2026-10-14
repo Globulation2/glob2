@@ -5,6 +5,7 @@
 
 #include "Material.h"
 #include <bitset>
+#include <cassert>
 #include <climits>
 #include <list>
 #include <memory>
@@ -62,7 +63,7 @@ enum class BuildingRoute : unsigned char { Footprint, Clearing, Combat, Automati
 inline constexpr int BUILDING_ROUTE_COUNT = 3;
 inline constexpr int BUILDING_GRADIENT_COUNT = BUILDING_ROUTE_COUNT * SWIM_CLASS_COUNT;
 inline constexpr int BUILDING_ACCESS_COUNT = BUILDING_ROUTE_COUNT * SWIM_VARIANT_COUNT;
-static_assert(BUILDING_ACCESS_COUNT == std::extent_v<decltype(BuildingStateRecord::locked)>);
+static_assert(BUILDING_ACCESS_COUNT == BuildingStateRecord::LockCount);
 
 class Building : public BuildingUtils, public BuildingStateRecord
 {
@@ -72,6 +73,7 @@ class Building : public BuildingUtils, public BuildingStateRecord
 	static const int MAX_COUNT=1024;
 	const BuildingRuntimeTraits* runtime=nullptr;
 	void bindType(Sint32 id, BuildingsTypes* catalog=nullptr);
+    int shootingCooldownRemaining() const { return shootingCooldown; }
 
 	/// `lastShootStep = LAST_SHOOT_STEP_NEVER` means this turret has
 	/// not fired yet this game; the field is `Uint32` step counter.
@@ -234,6 +236,20 @@ class Building : public BuildingUtils, public BuildingStateRecord
 	void subscribeUnitForInside(Unit* unit);
 	// Reservations protect shared stock from other services and production.
 	BuildingMaterialCost reservedMaterials{};
+	Sint32 material(int resource) const { return sharedMaterials ? sharedMaterials[resource] : privateMaterial(resource); }
+	bool usesTeamMaterials() const { return sharedMaterials != nullptr; }
+	bool sharesMaterialPool(const Building& other) const { return this == &other || (sharedMaterials && sharedMaterials == other.sharedMaterials); }
+	Sint32 materialStockLimit() const { return sharedMaterials ? INT_MAX : PrivateBuildingStockLimit; }
+	void setMaterial(int resource, Sint64 value)
+	{
+		if (sharedMaterials)
+		{
+			assert(value >= INT_MIN && value <= INT_MAX);
+			sharedMaterials[resource] = Sint32(value);
+		}
+		else setPrivateMaterial(resource, value);
+	}
+	void changeMaterial(int resource, Sint32 change) { setMaterial(resource, Sint64(material(resource)) + change); }
 	Sint32 availableMaterial(int resource) const;
 	bool reserveMaterials(const BuildingMaterialCost& cost);
 	bool restoreMaterialsReservation(const BuildingMaterialCost& cost);
@@ -299,15 +315,25 @@ class Building : public BuildingUtils, public BuildingStateRecord
 	bool canTransferMaterialsTo(const BuildingType* destination) const;
 	void transferMaterialsPointer(bool wasShared);
 	BuildingMaterialCost constructionBudget{}, constructionReserved{};
-	std::array<Sint32,NB_UNIT_TYPE> constructionOriginRatios{};
+	std::array<Uint16,NB_UNIT_TYPE> constructionOriginRatios{};
 	// Optional additional types do not enlarge the pointer-free hot state record.
 	std::vector<Sint32> extraProductionRatios, extraProductionUsed, extraConstructionOriginRatios;
-	Sint32& productionRatio(unsigned id) { return id<NB_UNIT_TYPE ? ratio[id] : extraProductionRatios.at(id-NB_UNIT_TYPE); }
+	// Preferences are assigned from validated 0..32767 inputs, never incremented.
+	// Keep production counters wide: committed jobs can outlive preference changes.
 	Sint32 productionRatio(unsigned id) const { return id<NB_UNIT_TYPE ? ratio[id] : extraProductionRatios.at(id-NB_UNIT_TYPE); }
+	void setProductionRatio(unsigned id, Sint32 value)
+	{
+		assert(value >= 0 && value <= 32767);
+		if (id<NB_UNIT_TYPE) ratio[id]=Uint16(value); else extraProductionRatios.at(id-NB_UNIT_TYPE)=value;
+	}
 	Sint32& productionUsed(unsigned id) { return id<NB_UNIT_TYPE ? percentUsed[id] : extraProductionUsed.at(id-NB_UNIT_TYPE); }
 	Sint32 productionUsed(unsigned id) const { return id<NB_UNIT_TYPE ? percentUsed[id] : extraProductionUsed.at(id-NB_UNIT_TYPE); }
-	Sint32& originProductionRatio(unsigned id) { return id<NB_UNIT_TYPE ? constructionOriginRatios[id] : extraConstructionOriginRatios.at(id-NB_UNIT_TYPE); }
 	Sint32 originProductionRatio(unsigned id) const { return id<NB_UNIT_TYPE ? constructionOriginRatios[id] : extraConstructionOriginRatios.at(id-NB_UNIT_TYPE); }
+	void setOriginProductionRatio(unsigned id, Sint32 value)
+	{
+		assert(value >= 0 && value <= 32767);
+		if (id<NB_UNIT_TYPE) constructionOriginRatios[id]=Uint16(value); else extraConstructionOriginRatios.at(id-NB_UNIT_TYPE)=value;
+	}
 	void configureProductionState();
 	std::size_t productionTypeCount() const { return NB_UNIT_TYPE+extraProductionRatios.size(); }
 	void transitionProductionPreferences(const BuildingType* previous, const BuildingType* origin = nullptr, bool restoring = false);
@@ -406,25 +432,8 @@ private:
 	/// still cooling it decrements by shootRhythm and returns false.
 	bool tickShootingCooldown();
 
-	/// Scan outward ring-by-ring for the best enemy target in range. Pure query
-	/// over map/units/buildings; mutates nothing on the turret.
-	TurretTarget findBestTarget() const;
-
-	/// Evaluate the single tile (targetX,targetY) on ring `ring` and update
-	/// `best` if it holds a higher-priority/higher-scoring target. `ticksToHit`
-	/// is how long a bullet would take to reach this ring; targets that will
-	/// move away before then are skipped (and, matching the original, skipping a
-	/// ground unit also skips the air/building checks at the same tile).
-	void considerScanTile(int targetX, int targetY, int ring, int ticksToHit,
-	                      Uint32 enemies, Map* map, TurretTarget& best) const;
-
-	/// Score a warrior target (offense + weakness + proximity); higher is more
-	/// urgent. `ring` is the scan ring distance used for the proximity term.
-	int scoreWarriorTarget(const Unit* target, int ring) const;
-
-	/// Overwrite `best` with this candidate when its score beats the incumbent.
-	static void applyCandidate(TurretTarget& best, int score, int ticks,
-	                           int x, int y, TurretTargetType type);
+    /// Read-only diagnostic reference, using the same pure planner as jobs.
+    TurretTarget targetingReference() const;
 
 	/// Phase 5 geometry: compute the bullet spawn origin and velocity aimed at
 	/// the target tile, accounting for toroidal map wrap.
@@ -535,13 +544,16 @@ public:
 	// ─── Public data ────────────────────────────────────────────────
 
 	int verbose;
+	// Load-only reconciliation marker uses the existing pointer-alignment gap.
+	// Cleared after cross-reference restoration; never serialized.
+	bool privateStockClampedOnLoad = false;
 
 	// Pointer-free authoritative values are inherited from BuildingStateRecord.
 	BuildingType *type;
 	Team *owner;
-	/// Runtime alias selecting localMaterials or owner->teamMaterials. Snapshot
-	/// records retain the local stock and a selector for the frozen team stock.
-	Sint32* materials;
+	/// Borrowed shared pool, or null when the compact private stock is active.
+	/// Changing the binding does not overwrite inactive private inventory.
+	Sint32* sharedMaterials = nullptr;
 	/// Units actively working for and occupying the building, respectively.
 	std::list<Unit *> unitsWorking;
 	std::list<Unit *> unitsInside;

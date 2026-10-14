@@ -45,7 +45,7 @@ struct Palette
 	// Tint over a pressed control.
 	GAGCore::Color pressed{92, 130, 71, 55};
 	// Behind everything when no artwork covers the window.
-	GAGCore::Color backdrop{17, 35, 32};
+	GAGCore::Color backdrop{240, 241, 223};
 	// Data placeholders: an unassigned swatch, an image still loading.
 	GAGCore::Color neutral{160, 172, 149};
 	GAGCore::Color placeholder{211, 223, 197};
@@ -73,7 +73,7 @@ struct Backdrop
 {
 	enum class Kind
 	{
-		// The live colony, or its still image while it loads.
+		// The live colony, or the palette's backdrop colour if unavailable.
 		Colony,
 		// One image, cropped to cover the window.
 		Image,

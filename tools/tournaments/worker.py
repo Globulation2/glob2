@@ -21,10 +21,12 @@ from .jobs import get_job_type
 from .diagnostics import postmortem
 from .model import PROTOCOL_VERSION, validate_job
 from .transfer import get_chunk, offset, put_chunk
+from .resources import plan_allocations, plan_from_record, validate_frozen_attempt, validate_game_participants
 
 HOST_DEFAULTS = {'slots': max(1, (os.cpu_count() or 1) - 1), 'collect_slots': 2, 'result_backlog_limit': 128,
                  'disk_reserve_bytes': 1024**3, 'spool_budget_bytes': 10 * 1024**3,
-                 'cache_budget_bytes': 20 * 1024**3, 'builds': [], 'memory_mb': None}
+                 'cache_budget_bytes': 20 * 1024**3, 'builds': [], 'memory_mb': None,
+                 'cpu_ids': None, 'participants_per_game': None}
 
 
 def launcher():
@@ -77,6 +79,8 @@ def outcome_only(result):
             if key in result} | {
         'teams': [{key: team[key] for key in team_fields if key in team} for team in result.get('teams', [])],
         'players': [{key: player[key] for key in player_fields if key in player} for player in result.get('players', [])],
+        **{key: result[key] for key in ('compute_threads', 'compute_resolved_threads',
+                                       'compute_requested_threads', 'gpu_requested', 'resource_plan') if key in result},
     }
 
 
@@ -118,17 +122,54 @@ class Worker:
                 raise ValueError(key + ' must be a positive integer')
         if config['disk_reserve_bytes'] < 0:
             raise ValueError('disk reserve must be nonnegative')
+        plan = self.resource_plan(config)
+        for row in self.db.execute("SELECT job FROM queue WHERE state IN ('queued','running')"):
+            attempt = json.loads(row['job'])
+            if attempt.get('allocation_plan') != (plan.record() if plan else None):
+                raise ValueError('live work prevents changing the CPU allocation')
         self.config = config
         atomic_json(self.root / 'host.json', config)
         return self.status()
+
+    def resource_plan(self, config=None):
+        config = self.config if config is None else config
+        if config['cpu_ids'] is None:
+            if config['participants_per_game'] is not None:
+                raise ValueError('participants per game requires an explicit CPU budget')
+            return None
+        if not hasattr(os, 'sched_setaffinity') or not hasattr(os, 'sched_getaffinity'):
+            raise ValueError('explicit CPU allocation requires affinity enforcement support')
+        plan = plan_allocations(config['cpu_ids'], config['slots'],
+                                participants_per_game=config['participants_per_game'])
+        if not set(plan.cpu_ids).issubset(os.sched_getaffinity(0)):
+            raise ValueError('configured CPU budget is outside worker eligible CPUs')
+        return plan
+
+    def validate_assignment(self, attempt):
+        current = self.resource_plan()
+        if 'execution_allocation' not in attempt:
+            if current is not None or 'allocation_plan' in attempt:
+                raise ValueError('attempt is missing its assigned CPU allocation')
+            return None
+        plan = plan_from_record(attempt.get('allocation_plan'))
+        allocation = validate_frozen_attempt(attempt['execution_allocation'], plan, attempt['id'])
+        if plan != current:
+            raise ValueError('assigned allocation differs from explicit worker budget')
+        return allocation
 
     def status(self):
         counts = dict(self.db.execute('SELECT state,count(*) FROM queue GROUP BY state').fetchall())
         spool = usage(self.root / 'attempts') + usage(self.root / 'spool')
         free = shutil.disk_usage(self.root).free
         pending = [dict(row) for row in self.db.execute(
-            "SELECT id,token,experiment,state,started FROM queue WHERE state NOT IN ('acknowledged','cancelled') ORDER BY updated")]
-        return {'protocol_version': PROTOCOL_VERSION, 'package_id': package_identity(),
+            "SELECT id,token,experiment,state,started,job FROM queue WHERE state NOT IN ('acknowledged','cancelled') ORDER BY updated")]
+        for item in pending:
+            attempt = json.loads(item.pop('job'))
+            if 'execution_allocation' in attempt:
+                item['execution_allocation'] = attempt['execution_allocation']
+        plan = self.resource_plan()
+        return {'resource_plan': plan.record() if plan else None,
+                'protocol_version': PROTOCOL_VERSION, 'package_id': package_identity(),
                 'platform': platform_identity(), 'slots': self.config['slots'],
                 'collect_slots': self.config['collect_slots'], 'result_backlog_limit': self.config['result_backlog_limit'], 'builds': self.config['builds'],
                 'counts': counts, 'attempts': pending, 'free_bytes': free, 'spool_bytes': spool, 'cache_bytes': usage(self.root / 'objects') + usage(self.root / 'bundles'),
@@ -147,6 +188,7 @@ class Worker:
         bundle = installed_bundle(self.root / 'bundles' / attempt['job']['build'])
         if bundle['platform'] != platform_identity() or (self.config['builds'] and bundle['id'] not in self.config['builds']):
             raise ValueError('ineligible build')
+        allocation = self.validate_assignment(attempt)
         with transaction(self.db):
             control = self.db.execute('SELECT mode FROM controls WHERE experiment=?',
                                       (attempt['experiment'],)).fetchone()
@@ -157,6 +199,11 @@ class Worker:
                 if old['token'] != attempt['token'] or json.loads(old['job']) != attempt:
                     raise ValueError('attempt identity collision')
                 return {'enqueued': True}
+            for row in self.db.execute("SELECT job FROM queue WHERE state IN ('queued','running')"):
+                other = json.loads(row['job']).get('execution_allocation')
+                if ((allocation is None) != (other is None)
+                        or allocation is not None and set(allocation.cpu_ids).intersection(other['allocation']['cpu_ids'])):
+                    return {'enqueued': False, 'reason': 'resource_busy'}
             if not self.status()['accepting']:
                 return {'enqueued': False, 'reason': 'disk_pressure'}
             for source in attempt['resolved_inputs'].values():
@@ -316,6 +363,8 @@ def execute(root, identity):
         started = time.time()
         record = {'started': started, 'finished': None, 'exit_code': None, 'category': 'interrupted', 'result': None,
                   'diagnostics': {'core_requested': bool(job['outputs'].get('core')), 'stack_available': False}}
+        if 'execution_allocation' in attempt:
+            record['execution_allocation'] = attempt['execution_allocation']
         process = None
         try:
             bundle = installed_bundle(worker.root / 'bundles' / job['build'])
@@ -329,7 +378,20 @@ def execute(root, identity):
                 inputs[name] = str(target)
             out = directory / 'output'
             out.mkdir(exist_ok=True)
-            args = get_job_type(job['type']).command(job, bundle, directory, inputs)
+            allocation = worker.validate_assignment(attempt)
+            if allocation is not None:
+                # This dedicated supervisor has no other game. Narrow before
+                # spawning so the engine inherits its mask without a launch race.
+                os.sched_setaffinity(0, allocation.cpu_ids)
+                actual = sorted(os.sched_getaffinity(0))
+                if actual != list(allocation.cpu_ids):
+                    raise ValueError('CPU affinity enforcement failed before game launch')
+                record['cpu_affinity_proof'] = {'verified': True, 'actual_cpu_ids': actual,
+                    'method': 'dedicated supervisor verified before inherited child launch'}
+            adapter = get_job_type(job['type'])
+            args = adapter.command(job, bundle, directory, inputs)
+            if allocation is not None and job['type'] == 'game':
+                args += ['--compute-threads', str(allocation.participants)]
             record['command'] = args
             # HOME is child-only. Each attempt also gets an explicit engine profile.
             env = {k: v for k, v in os.environ.items() if not k.startswith('GLOB2_')}
@@ -368,7 +430,9 @@ def execute(root, identity):
                 code = record['exit_code']
                 record['category'] = 'crash' if code < 0 else 'invalid_request' if code == 2 else 'process_failure' if code else 'success'
                 try:
-                    record['result'] = get_job_type(job['type']).collect(job, directory)
+                    record['result'] = adapter.collect(job, directory)
+                    if code == 0 and record['result']['status'] == 'completed' and allocation is not None and job['type'] == 'game':
+                        validate_game_participants(record['result'], allocation)
                     status = record['result']['status']
                     if code >= 0 and status in ('invalid_request', 'generation_failed', 'artifact_failure'):
                         record['category'] = status

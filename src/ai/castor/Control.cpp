@@ -459,7 +459,7 @@ std::shared_ptr<Order>AICastor::controlStrikes()
 			for (int bi=0; bi<Building::MAX_COUNT; bi++)
 			{
 				const AIEngine::BuildingView *b=enemyBuildings[bi];
-				if (b==NULL || ((b->seenByMask&me)==0) || b->locked[canSwim])
+				if (b==NULL || ((b->seenByMask&me)==0) || b->isLocked(canSwim))
 					continue;
 				int level=strategicStage(*observation,*b);
 				if (bestLevel<level)
@@ -479,7 +479,7 @@ std::shared_ptr<Order>AICastor::controlStrikes()
 			for (int bi=0; bi<Building::MAX_COUNT; bi++)
 			{
 				const AIEngine::BuildingView *b=enemyBuildings[bi];
-				if (b==NULL || ((b->seenByMask&me)==0) || b->locked[canSwim] || strategicStage(*observation,*b)<bestLevel)
+				if (b==NULL || ((b->seenByMask&me)==0) || b->isLocked(canSwim) || strategicStage(*observation,*b)<bestLevel)
 					continue;
 				if (provides(*b, TrainAttack) || provides(*b, TrainConstruction))
 					score+=AI_CASTOR_STRIKE_TEAM_SCORE_HIGH;
@@ -510,7 +510,7 @@ std::shared_ptr<Order>AICastor::controlStrikes()
 	for (int bi=0; bi<Building::MAX_COUNT; bi++)
 	{
 		const AIEngine::BuildingView *b=enemyBuildings[bi];
-		if (b==NULL || ((b->seenByMask&me)==0) || b->locked[canSwim])
+		if (b==NULL || ((b->seenByMask&me)==0) || b->isLocked(canSwim))
 			continue;
 		int x=b->posX;
 		int y=b->posY;
@@ -606,6 +606,5 @@ std::shared_ptr<Order>AICastor::controlStrikes()
 	return telemetry.returnedOrder(AITrace::AI2::AICastor_controlStrikes_result,
 								   shared_ptr<Order>());
 }
-
 
 

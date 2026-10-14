@@ -10,7 +10,6 @@
 #include <FormatableString.h>
 
 #include "AINames.h"
-#include "ComputeThreads.h"
 #include "ChecksumSidecar.h"
 #include "ConnectionOverlay.h"
 #include "DatasetWriter.h"
@@ -961,7 +960,7 @@ void Engine::reloadTurnInitialState()
 	}
 	if (!globalContainer->structuredHeadless || turn)
 		{
-            gui.game.map.configureCompute(resolveComputeThreadCount(globalContainer->computeThreads));
+            gui.game.map.configureCompute(globalContainer->resourcePlan.computeParticipants);
             if (gui.game.map.computeExecutor().telemetryMode() != globalContainer->computeTelemetry)
                 gui.game.map.computeExecutor().configureTelemetry(globalContainer->computeTelemetry);
         }
@@ -998,13 +997,17 @@ void Engine::beginSession(Uint64 now)
 {
     if (session) throw std::logic_error("Engine session is already active");
     if (!net) throw std::logic_error("Engine session requires an initialized game");
-    globalContainer->configureGradientBackend();
 	if (!globalContainer->structuredHeadless || turn)
 		{
-            gui.game.map.configureCompute(resolveComputeThreadCount(globalContainer->computeThreads));
+            globalContainer->configureExecutionResources();
+            gui.game.map.configureCompute(globalContainer->resourcePlan.computeParticipants);
             if (gui.game.map.computeExecutor().telemetryMode() != globalContainer->computeTelemetry)
                 gui.game.map.computeExecutor().configureTelemetry(globalContainer->computeTelemetry);
         }
+    else
+        // Structured runners configure their executor before session entry.
+        // Preserve the existing backend setup for those runners and harnesses.
+        globalContainer->configureGradientBackend();
     sessionEndingTarget = globalContainer->automaticEndingSteps;
     MainLoopState st{};
     st.adjustableGameSpeed = gui.canChangeGameSpeed();

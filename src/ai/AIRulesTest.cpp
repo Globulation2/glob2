@@ -42,7 +42,7 @@ void populate(glob2test::HeadlessGame& w)
         auto* swarm=w.addBuilding("swarm",x+3,3,0,team);
         auto* inn=w.addBuilding("inn",x+10,3,0,team);
         for(auto* b:{swarm,inn})
-        { b->materials[WHEAT]=b->type->maxMaterial[WHEAT]; b->update(); }
+        { b->setMaterial(WHEAT, b->type->maxMaterial[WHEAT]); b->update(); }
         for(int i=0;i<32;++i) w.addUnit(WORKER,x+2+i%20,12+i/20,team);
         for(int i=0;i<10;++i) w.addUnit(WARRIOR,x+3+i,15,team);
         w.game.teams[team]->startPosX=x+3; w.game.teams[team]->startPosY=3;
@@ -267,18 +267,18 @@ TEST_CASE("Cabino strategy roles require effective clocks and mobile labor")
     world.game.gameHeader.setUnitCatalog(UnitCatalog::deserialize(catalog.dump()));
     world.game.configureBuildingCatalog();
     auto* worker=world.addUnit(WORKER,4,10); REQUIRE(worker);
-    auto* noBuild=world.addUnit(WORKER,5,10); REQUIRE(noBuild); noBuild->performance[BUILD]=0;
-    auto* noHarvest=world.addUnit(WORKER,6,10); REQUIRE(noHarvest); noHarvest->performance[HARVEST]=0;
+    auto* noBuild=world.addUnit(WORKER,5,10); REQUIRE(noBuild); noBuild->setPerformance(BUILD,0);
+    auto* noHarvest=world.addUnit(WORKER,6,10); REQUIRE(noHarvest); noHarvest->setPerformance(HARVEST,0);
     auto* immobileWorker=world.addUnit(WORKER,7,10); REQUIRE(immobileWorker);
-    immobileWorker->performance[WALK]=immobileWorker->performance[SWIM]=immobileWorker->performance[FLY]=0;
+    immobileWorker->setPerformance(WALK,0); immobileWorker->setPerformance(SWIM,0); immobileWorker->setPerformance(FLY,0);
     auto* noCapacity=world.addUnit(3,8,10); REQUIRE(noCapacity);
     auto* explorer=world.addUnit(EXPLORER,9,10); REQUIRE(explorer);
     auto* immobileExplorer=world.addUnit(EXPLORER,10,10); REQUIRE(immobileExplorer);
-    immobileExplorer->performance[WALK]=immobileExplorer->performance[SWIM]=immobileExplorer->performance[FLY]=0;
+    immobileExplorer->setPerformance(WALK,0); immobileExplorer->setPerformance(SWIM,0); immobileExplorer->setPerformance(FLY,0);
     auto* stationaryFighter=world.addUnit(WARRIOR,11,10); REQUIRE(stationaryFighter);
-    stationaryFighter->performance[WALK]=stationaryFighter->performance[SWIM]=stationaryFighter->performance[FLY]=0;
-    auto* noAttackClock=world.addUnit(WARRIOR,12,10); REQUIRE(noAttackClock); noAttackClock->performance[ATTACK_SPEED]=0;
-    auto* noAttackDamage=world.addUnit(WARRIOR,13,10); REQUIRE(noAttackDamage); noAttackDamage->performance[ATTACK_STRENGTH]=0;
+    stationaryFighter->setPerformance(WALK,0); stationaryFighter->setPerformance(SWIM,0); stationaryFighter->setPerformance(FLY,0);
+    auto* noAttackClock=world.addUnit(WARRIOR,12,10); REQUIRE(noAttackClock); noAttackClock->setPerformance(ATTACK_SPEED,0);
+    auto* noAttackDamage=world.addUnit(WARRIOR,13,10); REQUIRE(noAttackDamage); noAttackDamage->setPerformance(ATTACK_STRENGTH,0);
     const auto counts=[&] {
         const auto view=AIEngine::AIWorldView::capture(world.game,AIEngine::AIWorldView::captureCatalog(world.game));
         auto capacityProbe=*view->unitSlots(0)[Unit::GIDtoID(noCapacity->gid)];
@@ -292,7 +292,7 @@ TEST_CASE("Cabino strategy roles require effective clocks and mobile labor")
         CHECK(stats.getUnits(WARRIOR,Unit::MED_FREE,Unit::ACT_RANDOM,ATTACK_STRENGTH,1,true)==0);
     };
     counts();
-    noCapacity->performance[WALK]=0;
+    noCapacity->setPerformance(WALK,0);
     const auto view=AIEngine::AIWorldView::capture(world.game,AIEngine::AIWorldView::captureCatalog(world.game));
     Cabino::TeamStatsGenerator stats(view.get(),&view->teams[0]);
     CHECK(stats.getUnits(EXPLORER,FLY,1,true)==1);
@@ -338,7 +338,7 @@ TEST_CASE("Cabino reservations match unit class and qualification instead of bui
     custom->jobPurpose=UnitJobPurpose::Defend;
     CHECK(glob2test::withCabinoObservation(ai,world.game,[&]{return reservations.getNeededUnits(WORKER,BUILD,1,false);})==3);
     custom->jobPurpose=UnitJobPurpose::Transport;
-    worker->performance[HARVEST]=0;
+    worker->setPerformance(HARVEST,0);
     CHECK(glob2test::withCabinoObservation(ai,world.game,[&]{return reservations.getNeededUnits(WORKER,BUILD,1,false);})==3);
     building->unitsWorking.clear();
 }
@@ -354,11 +354,11 @@ TEST_CASE("effective melee threats remain local while reserves require movement"
     auto* active=world.addUnit(WARRIOR,10,10);
     auto* nonRecruitable=world.addUnit(3,13,10);
     auto* stationary=world.addUnit(WARRIOR,11,10);
-    stationary->performance[WALK]=stationary->performance[SWIM]=stationary->performance[FLY]=0;
-    auto* inactive=world.addUnit(WARRIOR,12,10);inactive->performance[ATTACK_SPEED]=0;
+    stationary->setPerformance(WALK,0); stationary->setPerformance(SWIM,0); stationary->setPerformance(FLY,0);
+    auto* inactive=world.addUnit(WARRIOR,12,10);inactive->setPerformance(ATTACK_SPEED,0);
     auto* enemyStationary=world.addUnit(WARRIOR,20,10,1);
-    enemyStationary->performance[WALK]=enemyStationary->performance[SWIM]=enemyStationary->performance[FLY]=0;
-    auto* enemyInactive=world.addUnit(WARRIOR,21,10,1);enemyInactive->performance[ATTACK_SPEED]=0;
+    enemyStationary->setPerformance(WALK,0); enemyStationary->setPerformance(SWIM,0); enemyStationary->setPerformance(FLY,0);
+    auto* enemyInactive=world.addUnit(WARRIOR,21,10,1);enemyInactive->setPerformance(ATTACK_SPEED,0);
     Player player;player.setTeam(world.game.teams[0]);Cabino::AICabino ai(&player);
     CHECK(glob2test::withCabinoObservation(ai,world.game,[&]{
         Cabino::GridPollingSystem poll(ai);
@@ -378,12 +378,12 @@ TEST_CASE("loaded Population counts effective own roles once per hybrid")
     glob2test::HeadlessGame world({.teams=2,.clearImmobile=true,.loadDefaultRace=true,.header=true});
     auto* hybrid=world.addUnit(WORKER,10,10);
     hybrid->capabilityFlags|=UnitRuntimeTraits::Melee;
-    hybrid->performance[ATTACK_SPEED]=4;hybrid->performance[ATTACK_STRENGTH]=19;
-    auto* inactive=world.addUnit(WORKER,11,10);inactive->performance[BUILD]=0;
+    hybrid->setPerformance(ATTACK_SPEED,4);hybrid->setPerformance(ATTACK_STRENGTH,19);
+    auto* inactive=world.addUnit(WORKER,11,10);inactive->setPerformance(BUILD,0);
     auto* stationary=world.addUnit(WARRIOR,12,10);
-    stationary->performance[WALK]=stationary->performance[SWIM]=stationary->performance[FLY]=0;
+    stationary->setPerformance(WALK,0); stationary->setPerformance(SWIM,0); stationary->setPerformance(FLY,0);
     auto* scout=world.addUnit(EXPLORER,13,10);
-    scout->performance[WALK]=scout->performance[SWIM]=scout->performance[FLY]=0;
+    scout->setPerformance(WALK,0); scout->setPerformance(SWIM,0); scout->setPerformance(FLY,0);
     world.addUnit(WARRIOR,20,10,1); // Another team never enters our predicate.
     AISharedRuntime::Runtime runtime(new AISharedRuntime::Econo,world.game.players[0]);
     struct Probe:AISharedRuntime::Conditions::Population {
@@ -455,7 +455,7 @@ TEST_CASE("native controllers exclude disabled work and continue after reload [s
         auto* school=w.addBuilding("school",3,35,1);school->maxUnitWorking=5;w.addBuilding("racetrack",10,35);
         w.addBuilding("hospital",17,35);w.addUnit(WARRIOR,25,12,0,2);
         if(variant==2) {
-            for(int slot=0;slot<Building::MAX_COUNT;++slot) if(auto* b=g.teams[0]->myBuildings[slot]) {b->materials[WHEAT]=0;b->update();}
+            for(int slot=0;slot<Building::MAX_COUNT;++slot) if(auto* b=g.teams[0]->myBuildings[slot]) {b->setMaterial(WHEAT, 0);b->update();}
             for(int y=20;y<28;++y) for(int x=3;x<29;++x) g.map.setNoResource(x,y,0);
         }
         g.teams[0]->stats.step(g.teams[0]);g.players[0]->makeItAI(id);g.setWaitingOnMask(0);

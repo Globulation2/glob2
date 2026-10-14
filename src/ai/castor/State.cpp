@@ -201,7 +201,7 @@ void AICastor::computeWarLevel()
 		if (u && u->medical==Unit::MED_FREE && (u->capabilityFlags&UnitRuntimeTraits::Melee))
         {
             const auto strength=std::clamp<Sint64>(Sint64(u->performance[ATTACK_STRENGTH])*glassCannonScale,0,INT_MAX);
-            const auto power=Sint64(std::max(0,u->performance[ATTACK_SPEED]))*strength;
+            const auto power=Sint64(std::max(0,int(u->performance[ATTACK_SPEED])))*strength;
             warPowerSum=int(std::min<Sint64>(INT_MAX,Sint64(warPowerSum)+power));
         }
 	}

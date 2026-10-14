@@ -33,7 +33,7 @@ void Unit::handleDisplacement(void)
 			}
 			else
 				displacement=DIS_RANDOM;
-			validTarget=false;
+			setValidTarget(false);
 		}
 		break;
 
@@ -52,7 +52,7 @@ void Unit::handleDisplacement(void)
 					dx = off->dx;
 					dy = off->dy;
 					displacement=DIS_HARVESTING;
-					validTarget=false;
+					setValidTarget(false);
 				}
 				else if ((attachedBuilding->runtime->fetchesStockMask | attachedBuilding->runtime->fetchesDirectStockMask)&(1u<<destinationPurpose))
 				{
@@ -65,7 +65,7 @@ void Unit::handleDisplacement(void)
 						if (continueCargoCollection()) break;
 						setTargetBuilding(attachedBuilding);
 						displacement=DIS_GOING_TO_BUILDING;
-						validTarget=true;
+						setValidTarget(true);
 						if (verbose)
 							printf("guid=(%d) took material (%d) out of market gbid=(%d)\n", gid, destinationPurpose, market->gid);
 					}
@@ -96,7 +96,7 @@ void Unit::handleDisplacement(void)
 					// resource, so this either harvests again next step or
 					// resumes the gradient walk.
 					displacement=DIS_GOING_TO_RESOURCE;
-					validTarget=false;
+					setValidTarget(false);
 				}
 				else
 				{
@@ -112,14 +112,14 @@ void Unit::handleDisplacement(void)
 						dx = off->dx;
 						dy = off->dy;
 						displacement=DIS_FILLING_BUILDING;
-						validTarget=false;
+						setValidTarget(false);
 					}
 					else
 					{
 						displacement=DIS_GOING_TO_BUILDING;
 						targetX=targetBuilding->getMidX();
 						targetY=targetBuilding->getMidY();
-						validTarget=true;
+						setValidTarget(true);
 					}
 				}
 			}
@@ -131,7 +131,7 @@ void Unit::handleDisplacement(void)
 					dx = off->dx;
 					dy = off->dy;
 					displacement=DIS_FILLING_BUILDING;
-					validTarget=false;
+					setValidTarget(false);
 				}
 			}
 			else if (displacement==DIS_FILLING_BUILDING)
@@ -145,7 +145,7 @@ void Unit::handleDisplacement(void)
 					assert(targetBuilding);
 					assert(ownExchangeBuilding);
 					if (!(targetBuilding->runtime->suppliesDirectStockMask&(1u<<destinationPurpose)) || !(attachedBuilding->runtime->fetchesDirectStockMask&(1u<<destinationPurpose))
-						|| targetBuilding->buildingState != Building::ALIVE || targetBuilding->materials == attachedBuilding->materials)
+						|| targetBuilding->buildingState != Building::ALIVE || targetBuilding->sharesMaterialPool(*attachedBuilding))
 					{
 						stopAttachedForBuilding(false);
 						break;
@@ -171,7 +171,7 @@ void Unit::handleDisplacement(void)
 						displacement=DIS_GOING_TO_BUILDING;
 						targetX=targetBuilding->getMidX();
 						targetY=targetBuilding->getMidY();
-						validTarget=true;
+						setValidTarget(true);
 						exchangeReady=true;
 						if (verbose)
 							printf("guid=(%d) took a foreign fruit in our exhange building to food\n", gid);
@@ -180,7 +180,7 @@ void Unit::handleDisplacement(void)
 				else if (carriedMaterial>=0 && (hasCapability(UnitRuntimeTraits::ExtendedCargo) || targetBuilding->materialDeliveryNeed(carriedMaterial)>0))
 				{
 					if (verbose)
-						printf("guid=(%d) Giving material (%d) to building gbid=(%d) old-amount=(%d)\n", gid, destinationPurpose, targetBuilding->gid, targetBuilding->materials[carriedMaterial]);
+						printf("guid=(%d) Giving material (%d) to building gbid=(%d) old-amount=(%d)\n", gid, destinationPurpose, targetBuilding->gid, targetBuilding->material(carriedMaterial));
 					cargoDeliveryProgress=deliverCargo(*targetBuilding);
 				}
 
@@ -194,8 +194,8 @@ void Unit::handleDisplacement(void)
 						jobPurpose=UnitJobPurpose::None;
 						activity=ACT_RANDOM;
 						displacement=DIS_RANDOM;
-						validTarget=false;
-						assert(needToRecheckMedical);
+						setValidTarget(false);
+						assert(needToRecheckMedical());
 					}
 					else
 					{
@@ -246,12 +246,12 @@ void Unit::handleDisplacement(void)
 										dx = off->dx;
 										dy = off->dy;
 										displacement=DIS_HARVESTING;
-										validTarget=false;
+										setValidTarget(false);
 									}
 									else if (findMaterialDestination(destinationPurpose,&targetX,&targetY,&dummyDist,attachedBuilding->fetchesFromMarkets(),attachedBuilding))
 									{
 										displacement=DIS_GOING_TO_RESOURCE;
-										validTarget=true;
+										setValidTarget(true);
 									}
 									else
 									{
@@ -279,7 +279,7 @@ void Unit::handleDisplacement(void)
 			else
 			{
 				displacement=DIS_RANDOM;
-				validTarget=false;
+				setValidTarget(false);
 			}
 		}
 		break;
@@ -295,7 +295,7 @@ void Unit::handleDisplacement(void)
 					dx = off->dx;
 					dy = off->dy;
 					displacement=DIS_ENTERING_BUILDING;
-					validTarget=false;
+					setValidTarget(false);
 				}
 			}
 			else if (displacement==DIS_ENTERING_BUILDING)
@@ -308,7 +308,18 @@ void Unit::handleDisplacement(void)
 				else
 					owner->map->setGroundUnit(posX-dx, posY-dy, NOGUID);
 				displacement=DIS_INSIDE;
-				validTarget=false;
+				setValidTarget(false);
+
+				// Loading can cancel a visit whose stock was normalized below
+				// its cost. Finish removing the entry occupancy, then leave
+				// without starting its timer or granting any service benefit.
+				if (!serviceResourcesReserved())
+				{
+					insideTimeout=0;
+					displacement=DIS_EXITING_BUILDING;
+					setNeedToRecheckMedical(true);
+					break;
+				}
 
 				if (destinationPurpose==FEED)
 				{
@@ -367,7 +378,7 @@ void Unit::handleDisplacement(void)
 					&& destinationPurpose!=FEED && destinationPurpose!=HEAL))
 				{
 					displacement=DIS_EXITING_BUILDING;
-					validTarget=false;
+					setValidTarget(false);
 					// A restored or reconfigured visit may now offer an unsafe
 					// course. Release its original reservation before changing any
 					// levels, then exit using the existing movement clocks.
@@ -382,7 +393,7 @@ void Unit::handleDisplacement(void)
 						hungry=foodCapacity();
 						if (owner->game->areaEffects.enabled()) areaServiceRemainders[BuildingAreaEffects::Feeding]=0;
 						fruitCount=attachedBuilding->eatOnce(&fruitMask, this);
-						needToRecheckMedical=true;
+						setNeedToRecheckMedical(true);
 					}
 					else if (destinationPurpose==HEAL)
 					{
@@ -392,13 +403,13 @@ void Unit::handleDisplacement(void)
 							std::max<Sint64>(0, Sint64(performance[HP]) - hp);
 						hp=performance[HP];
 						if (owner->game->areaEffects.enabled()) areaServiceRemainders[BuildingAreaEffects::Healing]=0;
-						needToRecheckMedical=true;
+						setNeedToRecheckMedical(true);
 					}
 					// Restored units already inside exit safely without gaining a level.
 					// New training visits are rejected by Team::findBestUpgrade.
 					else if (!owner->game->gameHeader.isUnitUpgradesDisabled())
 					{
-						if(!courses) { attachedBuilding->releaseService(this); needToRecheckMedical=true; break; }
+						if(!courses) { attachedBuilding->releaseService(this); setNeedToRecheckMedical(true); break; }
 						attachedBuilding->settleService(this);
 						Sint32 previousLevels[NB_ABILITY];
 						std::copy(level, level + NB_ABILITY, previousLevels);
@@ -433,7 +444,7 @@ void Unit::handleDisplacement(void)
 			else
 			{
 				displacement=DIS_RANDOM;
-				validTarget=false;
+				setValidTarget(false);
 			}
 		}
 		break;
@@ -444,7 +455,7 @@ void Unit::handleDisplacement(void)
 			displacement=DIS_GOING_TO_FLAG;
 			targetX=attachedBuilding->posX;
 			targetY=attachedBuilding->posY;
-			validTarget=true;
+			setValidTarget(true);
 			int distance=owner->map->warpDistSquare(targetX, targetY, posX, posY);
 			int usr=attachedBuilding->unitStayRange;
 			int usr2=usr*usr;
@@ -453,7 +464,7 @@ void Unit::handleDisplacement(void)
 
 			if (distance<=usr2)
 			{
-				validTarget=false;
+				setValidTarget(false);
 				if (jobPurpose==UnitJobPurpose::Clear)
 					displacement=DIS_CLEARING_RESOURCES;
 				else if (jobPurpose==UnitJobPurpose::Explore)
@@ -475,11 +486,11 @@ void Unit::handleDisplacement(void)
 							int x=posX+tdx;
 							int y=posY+tdy;
 							if (map->warpDistSquare(x, y, targetX, targetY)<=usr2
-								&& map->isClearableResourceForMaterials(x, y, attachedBuilding->clearingMaterials))
+								&& map->isClearableResourceForMaterials(x, y, attachedBuilding->clearingMaterialMask))
 							{
 								dx=tdx;
 								dy=tdy;
-								validTarget=false;
+								setValidTarget(false);
 								displacement=DIS_CLEARING_RESOURCES;
 								//movement=MOV_HARVESTING;
 								return;

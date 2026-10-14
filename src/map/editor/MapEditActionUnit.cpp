@@ -10,7 +10,7 @@ void MapEdit::refreshSelectedUnitPerformance(int stat)
 {
 	Unit* u=game.teams[Unit::GIDtoTeam(selectedUnitGID)]->myUnits[Unit::GIDtoID(selectedUnitGID)];
 	const UnitType *ut = u->race->getUnitType(u->typeNum, u->level[stat]);
-	u->performance[stat] = ut->performance[stat];
+	u->setPerformance(stat,ut->performance[stat]);
 	game.snapshots().invalidateBoundary();
 		hasMapBeenModified = true;
 }
@@ -102,47 +102,47 @@ bool MapEdit::performUnitAction(const std::string& action, float relMouseX, floa
 			view.selectedUnit=game.teams[Unit::GIDtoTeam(selectedUnitGID)]->myUnits[Unit::GIDtoID(selectedUnitGID)];
 			selectionMode=EditingUnit;
 			panelMode=UnitEditor;
-			unitHPLabel->setValues(&view.selectedUnit->hp, &view.selectedUnit->performance[HP], [](const PresentationFrame& frame) { const auto* value=frame.entities.unit(frame.entities.selectedUnit); return value ? Sint32(value->hp) : 0; }, [](const PresentationFrame& frame) { const auto* value=frame.entities.unit(frame.entities.selectedUnit); return value ? Sint32(value->performance[HP]) : 0; });
+			unitHPLabel->setValues([](const PresentationFrame& frame) { const auto* value=frame.entities.unit(frame.entities.selectedUnit); return value ? Sint32(value->hp) : 0; }, [](const PresentationFrame& frame) { const auto* value=frame.entities.unit(frame.entities.selectedUnit); return value ? Sint32(value->performance[HP]) : 0; });
 			unitHPScrollBox ->setValues(&view.selectedUnit->hp, &view.selectedUnit->performance[HP], [](const PresentationFrame& frame) { const auto* value=frame.entities.unit(frame.entities.selectedUnit); return value ? Sint32(value->hp) : 0; }, [](const PresentationFrame& frame) { const auto* value=frame.entities.unit(frame.entities.selectedUnit); return value ? Sint32(value->performance[HP]) : 0; });
-			unitWalkLevelLabel->setValues(&view.selectedUnit->level[WALK], [](const PresentationFrame& frame) { const auto* value=frame.entities.unit(frame.entities.selectedUnit); return value ? Sint32(value->level[WALK]) : 0; });
+			unitWalkLevelLabel->setValues([](const PresentationFrame& frame) { const auto* value=frame.entities.unit(frame.entities.selectedUnit); return value ? Sint32(value->level[WALK]) : 0; });
 			unitWalkLevelScrollBox->setValues(&view.selectedUnit->level[WALK], [](const PresentationFrame& frame) { const auto* value=frame.entities.unit(frame.entities.selectedUnit); return value ? Sint32(value->level[WALK]) : 0; });
-			unitSwimLevelLabel->setValues(&view.selectedUnit->level[SWIM], [](const PresentationFrame& frame) { const auto* value=frame.entities.unit(frame.entities.selectedUnit); return value ? Sint32(value->level[SWIM]) : 0; });
+			unitSwimLevelLabel->setValues([](const PresentationFrame& frame) { const auto* value=frame.entities.unit(frame.entities.selectedUnit); return value ? Sint32(value->level[SWIM]) : 0; });
 			unitSwimLevelScrollBox->setValues(&view.selectedUnit->level[SWIM], [](const PresentationFrame& frame) { const auto* value=frame.entities.unit(frame.entities.selectedUnit); return value ? Sint32(value->level[SWIM]) : 0; });
-			unitBuildLevelLabel->setValues(&view.selectedUnit->level[BUILD], [](const PresentationFrame& frame) { const auto* value=frame.entities.unit(frame.entities.selectedUnit); return value ? Sint32(value->level[BUILD]) : 0; });
+			unitBuildLevelLabel->setValues([](const PresentationFrame& frame) { const auto* value=frame.entities.unit(frame.entities.selectedUnit); return value ? Sint32(value->level[BUILD]) : 0; });
 			unitBuildLevelScrollBox->setValues(&view.selectedUnit->level[BUILD], [](const PresentationFrame& frame) { const auto* value=frame.entities.unit(frame.entities.selectedUnit); return value ? Sint32(value->level[BUILD]) : 0; });
-			unitAttackSpeedLevelLabel->setValues(&view.selectedUnit->level[ATTACK_SPEED], [](const PresentationFrame& frame) { const auto* value=frame.entities.unit(frame.entities.selectedUnit); return value ? Sint32(value->level[ATTACK_SPEED]) : 0; });
+			unitAttackSpeedLevelLabel->setValues([](const PresentationFrame& frame) { const auto* value=frame.entities.unit(frame.entities.selectedUnit); return value ? Sint32(value->level[ATTACK_SPEED]) : 0; });
 			unitAttackSpeedLevelScrollBox->setValues(&view.selectedUnit->level[ATTACK_SPEED], [](const PresentationFrame& frame) { const auto* value=frame.entities.unit(frame.entities.selectedUnit); return value ? Sint32(value->level[ATTACK_SPEED]) : 0; });
-			unitAttackStrengthLevelLabel->setValues(&view.selectedUnit->level[ATTACK_STRENGTH], [](const PresentationFrame& frame) { const auto* value=frame.entities.unit(frame.entities.selectedUnit); return value ? Sint32(value->level[ATTACK_STRENGTH]) : 0; });
+			unitAttackStrengthLevelLabel->setValues([](const PresentationFrame& frame) { const auto* value=frame.entities.unit(frame.entities.selectedUnit); return value ? Sint32(value->level[ATTACK_STRENGTH]) : 0; });
 			unitAttackStrengthLevelScrollBox->setValues(&view.selectedUnit->level[ATTACK_STRENGTH], [](const PresentationFrame& frame) { const auto* value=frame.entities.unit(frame.entities.selectedUnit); return value ? Sint32(value->level[ATTACK_STRENGTH]) : 0; });
-			unitMagicGroundAttackLevelLabel->setValues(&view.selectedUnit->level[MAGIC_ATTACK_GROUND], [](const PresentationFrame& frame) { const auto* value=frame.entities.unit(frame.entities.selectedUnit); return value ? Sint32(value->level[MAGIC_ATTACK_GROUND]) : 0; });
+			unitMagicGroundAttackLevelLabel->setValues([](const PresentationFrame& frame) { const auto* value=frame.entities.unit(frame.entities.selectedUnit); return value ? Sint32(value->level[MAGIC_ATTACK_GROUND]) : 0; });
 			unitMagicGroundAttackLevelScrollBox->setValues(&view.selectedUnit->level[MAGIC_ATTACK_GROUND], [](const PresentationFrame& frame) { const auto* value=frame.entities.unit(frame.entities.selectedUnit); return value ? Sint32(value->level[MAGIC_ATTACK_GROUND]) : 0; });
 			enableOnlyGroup("unit editor");
-			if(!view.selectedUnit->canLearn[WALK])
+			if(!view.selectedUnit->canLearn(WALK))
 			{
 				unitWalkLevelLabel->disable();
 				unitWalkLevelScrollBox->disable();
 			}
-			if(!view.selectedUnit->canLearn[SWIM])
+			if(!view.selectedUnit->canLearn(SWIM))
 			{
 				unitSwimLevelLabel->disable();
 				unitSwimLevelScrollBox->disable();
 			}
-			if(!view.selectedUnit->canLearn[BUILD])
+			if(!view.selectedUnit->canLearn(BUILD))
 			{
 				unitBuildLevelLabel->disable();
 				unitBuildLevelScrollBox->disable();
 			}
-			if(!view.selectedUnit->canLearn[ATTACK_SPEED])
+			if(!view.selectedUnit->canLearn(ATTACK_SPEED))
 			{
 				unitAttackSpeedLevelLabel->disable();
 				unitAttackSpeedLevelScrollBox->disable();
 			}
-			if(!view.selectedUnit->canLearn[ATTACK_STRENGTH])
+			if(!view.selectedUnit->canLearn(ATTACK_STRENGTH))
 			{
 				unitAttackStrengthLevelLabel->disable();
 				unitAttackStrengthLevelScrollBox->disable();
 			}
-			if(!view.selectedUnit->canLearn[MAGIC_ATTACK_GROUND])
+			if(!view.selectedUnit->canLearn(MAGIC_ATTACK_GROUND))
 			{
 				unitMagicGroundAttackLevelLabel->disable();
 				unitMagicGroundAttackLevelScrollBox->disable();

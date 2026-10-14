@@ -78,7 +78,7 @@ TEST_SUITE("BuildingAreaEffectsBenchmark")
 					{
 						const int x = 4 + (n % 32) * 4, y = 4 + (n / 32) * 4;
 						auto *b = world.addBuilding("stonewall", x, y, 0, n % teamCount);
-						b->materials[WHEAT] = 100000;
+						b->setMaterial(WHEAT, 100000);
 						buildings.push_back(b);
 					}
 					for (int t = 0; t < teamCount; ++t)

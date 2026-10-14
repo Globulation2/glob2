@@ -19,6 +19,7 @@
 
 #include "DatasetWriter.h"
 #include "Game.h"
+#include "TurretTargeting.h"
 #include "TeamStatsPipeline.h"
 #include "HiringPipeline.h"
 #include "BuildingArtwork.h"
@@ -42,6 +43,7 @@
 #include "render/GameAnimations.h"
 #include "render/SoftwareTerrainCache.h"
 #include "ai/engine/AIPipeline.h"
+#include "TurretTargeting.h"
 
 #define BULLET_IMGID 0
 
@@ -206,6 +208,7 @@ void Game::configureBuildingCatalog()
 				for (int resource=0; resource<MaterialCount; ++resource) map.dirtyMarketGradientsSlot(team->teamNumber,resource);
 			}
 		}
+    if (turretTargetingPipeline) turretTargetingPipeline->invalidateChangedSources(*this);
 }
 
 
@@ -251,6 +254,7 @@ void Game::init(GameGUI *gui, MapEdit* edit)
 void Game::clearGame()
 {
     unitCargo.clear();
+    turretTargetingPipeline.reset();
 	map.resetGradientPipeline(); // Discard reservations and drain callbacks before team destruction.
 	clearAI(); // Join all controller work before deleting teams or players.
     map.computeExecutor().cancelPresentationAndWait();
@@ -499,7 +503,7 @@ void Game::applyStartingRules(void)
 				continue;
 			if (hpDivisor != 1)
 			{
-				unit->performance[HP] = std::max(1, unit->performance[HP] / hpDivisor);
+				unit->setPerformance(HP,std::max(1,int(unit->performance[HP])/hpDivisor));
 				unit->hp = std::max(1, unit->hp / hpDivisor);
 				unit->trigHP /= hpDivisor;
 			}

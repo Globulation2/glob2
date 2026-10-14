@@ -24,11 +24,12 @@ namespace
 		bool explorersRequireBombing;
 		Uint32 receiveMaterialMask, sendMaterialMask;
 		Sint32 materials[MaterialSlotCount];
+		PrivateBuildingStock privateMaterials[MaterialSlotCount];
 		Sint32 ratio[NB_UNIT_TYPE];
 		bool clearingMaterials[MaterialCount];
 		Building::ConstructionResultState constructionResultState;
 		int constructionOriginTypeNum;
-		std::array<Sint32,NB_UNIT_TYPE> constructionOriginRatios;
+		std::array<Uint16,NB_UNIT_TYPE> constructionOriginRatios;
 		int repairInitialDeficit, repairHealthGranted;
 		BuildingMaterialCost constructionBudget, constructionReserved;
         std::vector<Sint32> extraRatios, extraOriginRatios;
@@ -42,7 +43,7 @@ namespace
 		Sint32 level[NB_ABILITY];
         int carriedMaterial=-1;
         MaterialPacket carriedPacket{};
-        bool widePrimaryCargo=false;
+        bool wideCargoPrimary=false;
         UnitCargoStore::Inventory extraCargo;
 	};
 
@@ -132,11 +133,11 @@ bool Game::tileForPlay(int rx, int ry, int teamCount, int coloniesPerTeam)
             bt.extraRatios=b->extraProductionRatios;
             bt.extraOriginRatios=b->extraConstructionOriginRatios;
 			for (int r = 0; r < MaterialSlotCount; r++)
-				bt.materials[r] = b->materials[r];
+				{ bt.materials[r] = b->material(r); bt.privateMaterials[r] = b->privateMaterial(r); }
 			for (int u = 0; u < NB_UNIT_TYPE; u++)
 				bt.ratio[u] = b->ratio[u];
 			for (int r = 0; r < MaterialCount; r++)
-				bt.clearingMaterials[r] = b->clearingMaterials[r];
+				bt.clearingMaterials[r] = b->clearsMaterial(r);
 			colonies[t].buildings.push_back(bt);
 		}
 		for (int i = 0; i < Unit::MAX_COUNT; i++)
@@ -152,7 +153,7 @@ bool Game::tileForPlay(int rx, int ry, int teamCount, int coloniesPerTeam)
 				u->fruitMask, u->fruitCount, u->medical, {}};
 			for (int a = 0; a < NB_ABILITY; a++)
 				ut.level[a] = u->level[a];
-			ut.carriedMaterial=u->carriedMaterial; ut.carriedPacket=u->carriedPacket; ut.widePrimaryCargo=u->widePrimaryCargo;
+			ut.carriedMaterial=u->carriedMaterial; ut.carriedPacket=u->carriedPacket; ut.wideCargoPrimary=u->widePrimaryCargo();
             if (const auto* cargo=unitCargo.find(u->gid)) ut.extraCargo=*cargo;
             colonies[t].units.push_back(ut);
 		}
@@ -260,7 +261,7 @@ bool Game::tileForPlay(int rx, int ry, int teamCount, int coloniesPerTeam)
 					b->priority = bt.priority;
 					b->unitStayRange = bt.unitStayRange;
 					for (int r = 0; r < MaterialSlotCount; r++)
-						b->materials[r] = bt.materials[r];
+						{ b->setMaterial(r, bt.materials[r]); b->setPrivateMaterial(r, bt.privateMaterials[r]); }
 					b->constructionResultState=bt.constructionResultState;
 					b->constructionOriginTypeNum=bt.constructionOriginTypeNum;
 					b->constructionOriginRatios=bt.constructionOriginRatios;
@@ -271,9 +272,9 @@ bool Game::tileForPlay(int rx, int ry, int teamCount, int coloniesPerTeam)
                     b->extraConstructionOriginRatios=bt.extraOriginRatios;
 					b->restoreConstructionReservations();
 					for (int u = 0; u < NB_UNIT_TYPE; u++)
-						b->ratio[u] = bt.ratio[u];
+						b->setProductionRatio(u,bt.ratio[u]);
 					for (int r = 0; r < MaterialCount; r++)
-						b->clearingMaterials[r] = bt.clearingMaterials[r];
+						b->setClearsMaterial(r,bt.clearingMaterials[r]);
 					if (!teams[k]->startPosSet && !b->type->semantics.production.enabledUnits.empty())
 					{
 						teams[k]->startPosX = b->posX;
@@ -301,7 +302,7 @@ bool Game::tileForPlay(int rx, int ry, int teamCount, int coloniesPerTeam)
 					for (int a = 0; a < NB_ABILITY; a++)
 					{
 						u->level[a] = ut.level[a];
-						u->performance[a] = teams[k]->race.getUnitType(ut.typeNum, ut.level[a])->performance[a];
+						u->setPerformance(a,teams[k]->race.getUnitType(ut.typeNum,ut.level[a])->performance[a]);
 					}
 					u->hp = ut.hp;
 					u->hungry = ut.hungry;
@@ -312,7 +313,7 @@ bool Game::tileForPlay(int rx, int ry, int teamCount, int coloniesPerTeam)
 					u->fruitMask = ut.fruitMask;
 					u->fruitCount = ut.fruitCount;
 					u->medical = ut.medical;
-                    u->carriedMaterial=ut.carriedMaterial; u->carriedPacket=ut.carriedPacket; u->widePrimaryCargo=ut.widePrimaryCargo;
+                    u->carriedMaterial=ut.carriedMaterial; u->carriedPacket=ut.carriedPacket; u->setWidePrimaryCargo(ut.wideCargoPrimary);
                     if (!ut.extraCargo.empty()) unitCargo.overflow(u->gid)=ut.extraCargo;
 				}
 			}

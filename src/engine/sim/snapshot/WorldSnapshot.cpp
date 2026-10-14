@@ -17,6 +17,9 @@ Requirements presentationRequirements(CaptureOptions options)
 }
 }
 Handle Handle::simulationView() const { return project(Simulation); }
+Handle Handle::turretView() const
+{ return project(bit(Component::Occupancy)|bit(Component::Terrain)|bit(Component::Entities)|bit(Component::Teams)|bit(Component::Catalogs)); }
+
 Handle Handle::statisticsView() const
 {
     auto requested = bit(Component::Catalogs) | bit(Component::Entities) | bit(Component::Teams)

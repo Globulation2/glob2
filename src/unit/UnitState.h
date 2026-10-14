@@ -8,6 +8,9 @@
 #include "UnitConsts.h"
 #include <type_traits>
 
+using UnitPerformanceStorage = Uint16;
+inline constexpr Sint32 UnitPerformanceLimit = 65535;
+
 enum class UnitJobPurpose : Uint8 { None, Transport, Clear, Explore, Defend };
 
 // Authoritative pointer-free unit state. Both live units and captured units use
@@ -15,14 +18,14 @@ enum class UnitJobPurpose : Uint8 { None, Transport, Clear, Explore, Defend };
 // Relationships and query caches remain outside the record.
 struct UnitState
 {
-	enum Medical
+	enum Medical : Uint8
 	{
 		MED_FREE=0,
 		MED_HUNGRY=1,
 		MED_DAMAGED=2
 	};
 
-	enum Activity
+	enum Activity : Uint8
 	{
 		ACT_RANDOM=0,
 		ACT_FILLING=1,
@@ -30,7 +33,7 @@ struct UnitState
 		ACT_UPGRADING=3
 	};
 	
-	enum Displacement
+	enum Displacement : Uint8
 	{
 		DIS_RANDOM=0,
 		
@@ -54,7 +57,7 @@ struct UnitState
 		DIS_EXITING_BUILDING=24
 	};
 	
-	enum Movement
+	enum Movement : Uint8
 	{
 		MOV_RANDOM_GROUND=0,
 		MOV_RANDOM_FLY=1,
@@ -81,51 +84,97 @@ struct UnitState
 		HUNGRY_MAX=150000
 	};
 
+	// Keep position, targets and movement modes together at the front of the record.
+	// Use natural alignment: capture copies this state, but saves/checksums write
+	// named fields explicitly and do not depend on the C++ declaration order.
 	Uint16 typeNum;
-	UnitJobPurpose jobPurpose = UnitJobPurpose::None;
-	Uint8 regenerationRemainder = 0;
-	// Keep frequently queried capabilities beside the identity in existing padding.
-	Uint32 capabilityFlags = 0;
-	EntityRandom entityRandom;
-	Uint32 scriptIdentity = 0; // Stable identity, excluded from legacy checksums.
 	Uint16 gid;
-	bool serviceResourcesReserved = false;
-	bool widePrimaryCargo = false; // First sidecar packet owns the inline material's amount.
-	Sint32 isDead;
-	Sint32 posX, posY, delta, dx, dy, direction;
-	Sint32 terrainHealthRemainder = 0;
-	Sint32 insideTimeout;
-	Sint32 configuredFoodCapacity = HUNGRY_MAX;
-	Sint32 speed;
-	bool needToRecheckMedical;
+	Uint32 capabilityFlags = 0;
+	Uint32 stateFlags = 0; // Learning and independent flags; unused bits stay zero.
+	Sint32 posX;
+	Sint32 posY;
+	Sint32 delta;
+	Sint32 speed; // Keep arithmetic and surplus movement wide.
+	Sint32 targetX;
+	Sint32 targetY;
+	Sint8 dx;
+	Sint8 dy;
+	Uint8 direction;
+	Movement movement;
 	Medical medical;
 	Activity activity;
 	Displacement displacement;
-	Movement movement;
-	Abilities action = WALK; // Game::addUnit selects movement; loads restore saved action.
-	Sint32 targetX, targetY; // Target lines and movement destination.
-	bool validTarget;
+	Uint8 action = WALK; // Game::addUnit chooses movement; loading restores action.
+
+	// Health, hunger and cached abilities follow the movement group.
+	Sint32 hp;
+	Sint32 trigHP;
+	Sint32 hungry;
+	Sint32 hungriness;
+	Sint32 trigHungry;
+	Sint32 trigHungryCarrying;
+	Sint32 insideTimeout;
+	UnitPerformanceStorage performance[NB_ABILITY];
+	Uint8 level[NB_ABILITY];
+	Uint8 constructionLevel = 0;
+
+	// Identity, random streams and continuation state retain their existing types.
+	Uint32 scriptIdentity = 0; // Stable identity, excluded from legacy checksums.
+	EntityRandom entityRandom;
+	Sint32 isDead;
+	Sint32 configuredFoodCapacity = HUNGRY_MAX;
 	Sint32 magicActionTimeout;
-	Uint8 underAttackTimer; // Counts down 240 frames after being attacked.
-	// Catalog-derived visibility cache occupies existing alignment padding.
-	Uint8 configuredVisionRadius = 1;
-	Sint32 hp, trigHP;
-	Sint32 hungry, hungriness, trigHungry, trigHungryCarrying;
-	Uint32 fruitMask, fruitCount;
-	Sint32 performance[NB_ABILITY];
-	Sint32 level[NB_ABILITY];
-	Sint32 constructionLevel = 0; // Independent of work/harvest speed.
-	bool canLearn[NB_ABILITY];
-	Sint32 experience, experienceLevel;
-	Sint32 destinationPurpose;
-	int carriedMaterial;
+	Uint32 fruitMask;
+	Uint32 fruitCount;
+	Sint32 experience;
+	Sint32 experienceLevel;
 	MaterialPacket carriedPacket{};
-	// Authoritative animation clocks; copied with the rest of unit state.
-	Sint32 levelUpAnimation = 0, magicActionAnimation = 0;
-	Sint32 jobTimer; // Waits 32 ticks for a job before seeking training or healing.
-	// Keep optional aura bookkeeping after existing hot simulation fields.
-	std::array<Uint8,3> areaServiceRemainders{};
+	Sint32 jobTimer;
 	Uint32 areaLastPulseTick = Uint32(-1);
+	Sint16 terrainHealthRemainder = 0; // Signed continuation debt; arithmetic is wide.
+	UnitJobPurpose jobPurpose = UnitJobPurpose::None;
+	Uint8 regenerationRemainder = 0;
+	Uint8 underAttackTimer;
+	Uint8 configuredVisionRadius = 1;
+	Sint8 destinationPurpose;
+	Sint8 carriedMaterial;
+	// Presentation clocks are part of the captured state.
+	Uint8 levelUpAnimation = 0;
+	Uint8 magicActionAnimation = 0;
+	std::array<Uint8,3> areaServiceRemainders{};
+
+    // Cached abilities have a deliberate runtime cap; catalog tables stay wide.
+    // Apply rule arithmetic (notably HP division) before committing the cache.
+    void setPerformance(int ability,Sint64 value) {
+        assert(ability>=0 && ability<NB_ABILITY);
+        performance[ability]=UnitPerformanceStorage(value<0 ? 0 : value>UnitPerformanceLimit ? UnitPerformanceLimit : value);
+    }
+	static constexpr Uint32 LearningMask = (Uint32(1) << NB_ABILITY) - 1;
+	static_assert(NB_ABILITY<=28);
+	enum Flag : Uint32 {
+		ServiceReserved = Uint32(1)<<NB_ABILITY,
+		WidePrimaryCargo = Uint32(1)<<(NB_ABILITY+1),
+		MedicalRecheck = Uint32(1)<<(NB_ABILITY+2),
+		ValidTarget = Uint32(1)<<(NB_ABILITY+3)
+	};
+	Uint32 learningFlags() const { return stateFlags & LearningMask; }
+	void setLearningFlags(Uint32 mask) { stateFlags=(stateFlags & ~LearningMask) | (mask & LearningMask); }
+	bool canLearn(int ability) const { return (stateFlags & (Uint32(1) << ability)) != 0; }
+	void setCanLearn(int ability, bool enabled)
+	{
+		const Uint32 mask = Uint32(1) << ability;
+		stateFlags = enabled ? stateFlags | mask : stateFlags & ~mask;
+	}
+	void setFlag(Flag mask, bool enabled) { stateFlags=enabled ? stateFlags | mask : stateFlags & ~Uint32(mask); }
+	bool serviceResourcesReserved() const { return (stateFlags & ServiceReserved)!=0; }
+	void setServiceResourcesReserved(bool enabled) { setFlag(ServiceReserved,enabled); }
+	bool widePrimaryCargo() const { return (stateFlags & WidePrimaryCargo)!=0; }
+	void setWidePrimaryCargo(bool enabled) { setFlag(WidePrimaryCargo,enabled); }
+	bool needToRecheckMedical() const { return (stateFlags & MedicalRecheck)!=0; }
+	void setNeedToRecheckMedical(bool enabled) { setFlag(MedicalRecheck,enabled); }
+	bool validTarget() const { return (stateFlags & ValidTarget)!=0; }
+	void setValidTarget(bool enabled) { setFlag(ValidTarget,enabled); }
+	bool operator==(const UnitState&) const = default;
 };
 static_assert(std::is_trivially_copyable_v<UnitState>);
 static_assert(std::is_standard_layout_v<UnitState>);

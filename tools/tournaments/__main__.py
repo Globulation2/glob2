@@ -8,6 +8,7 @@ import sys
 from .bundles import inspect_bundle, register_bundle
 from .common import atomic_json, read_json, store_artifact
 from .coordinator import Coordinator
+from .cli import add_budget_arguments, configure_hosts, parse_cpu_ids
 from .model import validate_experiment
 from .results import Results
 from .transport import Transport, worker_archive
@@ -29,6 +30,7 @@ def main():
     for name in ('run', 'collect', 'doctor'):
         p = sub.add_parser(name)
         p.add_argument('directory'); p.add_argument('--hosts', required=True); p.add_argument('--once', action='store_true')
+        add_budget_arguments(p)
     p = sub.add_parser('audit', help='discover every worker install on each host (not just --hosts targets) and flag stale ones; read-only')
     p.add_argument('--hosts', required=True); p.add_argument('--stale-hours', type=float, default=24.0)
     p = sub.add_parser('reap', help='stop one stale install found by audit, by exact PID; never deletes files')
@@ -73,10 +75,17 @@ def main():
             try:
                 if args.command == 'status': value = coordinator.status()
                 elif args.command in ('run', 'collect'):
-                    value = coordinator.run(read_json(args.hosts), args.once or args.command == 'collect', args.command == 'collect')
+                    hosts = read_json(args.hosts)
+                    hosts = configure_hosts(hosts,
+                        cpu_ids=parse_cpu_ids(args.cpu_ids) if args.cpu_ids is not None else None,
+                        slots=args.jobs, participants_per_game=args.compute_participants)
+                    value = coordinator.run(hosts, args.once or args.command == 'collect', args.command == 'collect')
                 elif args.command == 'doctor':
                     value = []
-                    for config in read_json(args.hosts):
+                    hosts = configure_hosts(read_json(args.hosts),
+                        cpu_ids=parse_cpu_ids(args.cpu_ids) if args.cpu_ids is not None else None,
+                        slots=args.jobs, participants_per_game=args.compute_participants)
+                    for config in hosts:
                         try:
                             transport = Transport(config, coordinator.root / 'worker.pyz')
                             value.append({'host': config['name'], **transport.rpc('status')})

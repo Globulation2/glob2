@@ -32,6 +32,14 @@ TEST_CASE("automatic sizing respects platform limits and supports unknown CPU co
     CHECK(defaultComputeThreadCount(128) == 128);
 #endif
 }
+TEST_CASE("CPU availability provenance distinguishes affinity from hardware hints")
+{
+    CHECK(std::string(cpuAvailabilitySourceName(cpuAvailabilityObservation(32, 6))) == "affinity-mask");
+    const auto hinted = cpuAvailabilityObservation(32);
+    CHECK(std::string(cpuAvailabilitySourceName(hinted)) == "hardware-hint-only");
+    CHECK_FALSE(hinted.eligibleLogicalCpuCount.has_value());
+    CHECK(std::string(cpuAvailabilitySourceName(cpuAvailabilityObservation(0))) == "unknown");
+}
 TEST_CASE("thread configuration accepts auto and rejects malformed or overflowing overrides")
 {
     CHECK(parseComputeThreadCount("auto") == 0);
@@ -550,9 +558,9 @@ TEST_CASE("a lane keeps submission order: a lane job due before a live earlier o
 TEST_CASE("the slot count covers every producer's horizon")
 {
 	static_assert(ComputeExecutor::Slots >= (ComputeExecutor::AIHorizon + 1) + (ComputeExecutor::GradientHorizon + 1)
-		+ (ComputeExecutor::BuildingHorizon + 1) + (ComputeExecutor::GrowthHorizon + 1) + (ComputeExecutor::StatisticsHorizon + 1) + (ComputeExecutor::HiringHorizon + 1));
+		+ (ComputeExecutor::BuildingHorizon + 1) + (ComputeExecutor::GrowthHorizon + 1) + (ComputeExecutor::StatisticsHorizon + 1) + (ComputeExecutor::TurretHorizon + 1) + (ComputeExecutor::HiringHorizon + 1));
 	static_assert(ComputeExecutor::boundaryDue(7) < ComputeExecutor::advanceDue(7) && ComputeExecutor::advanceDue(7) < ComputeExecutor::boundaryDue(8));
-	CHECK(ComputeExecutor::Slots == 83);
+	CHECK(ComputeExecutor::Slots == 84);
 }
 }
 

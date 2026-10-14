@@ -29,7 +29,7 @@ void populate(glob2test::HeadlessGame& fixture, unsigned delay, unsigned threads
         auto* swarm = fixture.addBuilding("swarm", x+3,y+3,0,player);
         auto* inn = fixture.addBuilding("inn", x+10,y+3,0,player);
         for (auto* building : {swarm, inn}) {
-            building->materials[WHEAT] = building->type->maxMaterial[WHEAT];
+            building->setMaterial(WHEAT, building->type->maxMaterial[WHEAT]);
             building->update();
         }
         for (int i=0; i<16; ++i) fixture.addUnit(WORKER,x+3+i%12,y+12+i/12,player);

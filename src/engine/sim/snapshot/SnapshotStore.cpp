@@ -23,7 +23,11 @@ Handle Store::captureBoundary(const Game& game, CaptureOptions options)
 		catalogConfigurationRevision = game.gameHeader.observationRevision();
 	}
 	const auto copiedBefore = storage.bytesCopied;
+	const auto entityBefore = storage.entityBytesCopied;
+	const auto sidecarBefore = storage.entitySidecarBytesCopied;
 	auto next = capture(game, catalog, required, latest ? &*latest : nullptr, &storage, unchangedBoundary);
+	metrics.entityBytesCopied += storage.entityBytesCopied - entityBefore;
+	metrics.entitySidecarBytesCopied += storage.entitySidecarBytesCopied - sidecarBefore;
 	next.observationRevision = observationRevision;
 	metrics.mapBytesCopied += storage.bytesCopied - copiedBefore;
 	if (detailedMetrics || game.map.computeExecutor().telemetryEnabled()) {

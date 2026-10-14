@@ -252,13 +252,13 @@ void run(const Scenario &scenario, const std::filesystem::path &output, unsigned
 		Building *inn = game.addBuilding(x, siteY + 2, type, team);
 		require(inn != nullptr, "inn fits generated clearing");
 		game.map.setBuilding(x, siteY + 2, inn->type->width, inn->type->height, inn->gid);
-		inn->materials[WHEAT] = wheat ? std::min(10, inn->type->maxMaterial[WHEAT]) : 0;
+		inn->setMaterial(WHEAT, wheat ? std::min(10, inn->type->maxMaterial[WHEAT]) : 0);
 		const int kinds[] = {CHERRY, ORANGE, PRUNE};
 		for (int i = 0; i < 3; ++i)
-			inn->materials[kinds[i]] =
-				i < varieties ? std::min(10, inn->type->maxMaterial[kinds[i]]) : 0;
+			inn->setMaterial(kinds[i],
+				i < varieties ? std::min(10, inn->type->maxMaterial[kinds[i]]) : 0);
 		for (int r = 0; r < MaterialCount; ++r)
-			require(inn->materials[r] <= inn->type->maxMaterial[r], "stock fits inn capacity");
+			require(inn->material(r) <= inn->type->maxMaterial[r], "stock fits inn capacity");
 		// Public building ticks honor its normal conversion cooldown.
 		for (int i = 0; i < 256; ++i)
 			inn->step();
@@ -273,7 +273,7 @@ void run(const Scenario &scenario, const std::filesystem::path &output, unsigned
 	require(worker != nullptr, "hungry worker fits between inns");
 	worker->hungry = worker->trigHungry;
 	worker->medical = Unit::MED_HUNGRY;
-	worker->needToRecheckMedical = true;
+	worker->setNeedToRecheckMedical(true);
 	Building *chosen = game.teams[0]->findNearestFood(worker);
 	require(chosen == (scenario.converts ? rival : friendly),
 			"normal food routing selects expected inn");

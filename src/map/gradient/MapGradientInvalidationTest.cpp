@@ -89,7 +89,7 @@ TEST_SUITE("MapGradientInvalidation")
 	 for(int swim=0;swim<SWIM_CLASS_COUNT;++swim)for(int resource:{WHEAT,WOOD,NO_RES_TYPE})for(bool selected:{false,true})for(bool mixed:{false,true})for(bool add:{false,true}) {
 	  Fixture f(1);player(f);auto& m=f.game.map;int n=m.getW()*m.getH();std::vector<Building*> bs;
 	  for(int team=0;team<2;++team)for(const char* kind:{"inn","warflag","explorationflag","clearingflag"}){
-	   int x=team?42:8,y=8+int(bs.size()%4)*10;auto* b=f.game.addBuilding(x,y,globals->buildingsTypes.getTypeNum(kind,0,false),team);REQUIRE(b);b->unitStayRange=32;b->clearingMaterials[WHEAT]=b->clearingMaterials[WOOD]=true;bs.push_back(b);
+	   int x=team?42:8,y=8+int(bs.size()%4)*10;auto* b=f.game.addBuilding(x,y,globals->buildingsTypes.getTypeNum(kind,0,false),team);REQUIRE(b);b->unitStayRange=32;b->setClearsMaterial(WHEAT,true); b->setClearsMaterial(WOOD,true);bs.push_back(b);
 	  }
 	  prepareMovementTerrain(m,swim);
 	  if(resource!=NO_RES_TYPE)m.setResourceByIndex(20,20,resource,1);

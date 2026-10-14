@@ -46,7 +46,7 @@ struct World
 			for (auto *b : {world.addBuilding("swarm", 4 + ox, 4 + oy, 0, team),
 							world.addBuilding("inn", 10 + ox, 4 + oy, 0, team)})
 			{
-				b->materials[WHEAT] = b->type->maxMaterial[WHEAT];
+				b->setMaterial(WHEAT, b->type->maxMaterial[WHEAT]);
 				b->update();
 				// Seen by everyone, so Cortex may rank enemy buildings as targets.
 				b->seenByMask = ~0u;

@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include <Environment.h>
 #include "Headless.h"
+#include "field/GradientDiagnostics.h"
 #include "ResourceGrowth.h"
 #include <utility>
 #include "scripting/javascript/ScriptCommand.h"
@@ -470,8 +471,9 @@ struct HeadlessRunner
 		}
 		if (!fields.empty()) engine.diagnostics = std::make_shared<GameDiagnostics::Session>(engine.gui.game,(output/"diagnostics").string(),diagnosticInterval,diagnosticPng=="true");
 		const std::string requestedSizing = one(options, "--compute-threads", "auto");
-		const unsigned computeThreads = resolveComputeThreadCount(parseComputeThreadCount(requestedSizing));
-		globals.configureGradientBackend();
+		globals.computeThreads = parseComputeThreadCount(requestedSizing);
+		globals.configureExecutionResources();
+		const unsigned computeThreads = globals.resourcePlan.computeParticipants;
 		engine.gui.game.map.configureCompute(computeThreads);
         const auto computeMode = ComputeTelemetry::parseMode(one(options, "--compute-telemetry", "off"));
         if (engine.gui.game.map.computeExecutor().telemetryMode() != computeMode)
@@ -635,8 +637,19 @@ struct HeadlessRunner
 			stats->writeCsv(csv);
 			if (!csv) throw std::runtime_error("cannot write gradient-stats.csv");
 		}
+        // Disabled diagnostics retain the ordinary result schema and avoid
+        // formatting a full set of empty samples on CPU-only runs.
+        if (gradient_kernel::isGPU(gradient.backend)) {
+            const auto gradientDiagnostics = gradient_kernel::gradientDiagnosticSnapshot(gradient.backend);
+            if (gradientDiagnostics.collected) {
+                result << ",\"gradient_host_diagnostics\":";
+                gradient_kernel::writeGradientDiagnostics(result, gradientDiagnostics);
+            }
+        }
 		result << ",\"compute_telemetry\":";
         ComputeTelemetry::writeJson(result, computeSnapshot);
+        result << ",\"resource_plan\":";
+        writeApplicationResourcePlanJson(result, globals.resourcePlan);
 		result
 			<< ",\"compute_threads\":" << game.map.computeExecutor().threadCount()
 			<< ",\"compute_requested_threads\":" << quote(requestedSizing)

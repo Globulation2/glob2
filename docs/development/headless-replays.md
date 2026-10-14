@@ -40,10 +40,11 @@ recover their saved race tables through format-gated loading, preserving cached
 effective values;
 current saves validate redundant tables against the embedded catalog.
 
-Version 154 restores mature resource stock oscillation and uses simulation revision
-48. The replay floor is 154 because earlier recordings have different growth
-trajectories. The save floor remains 58; existing saves adopt the restored growth
-rule without changing resource stocks or pending queue layouts on load.
+Version 159 adopts cached turret targeting (L3/R2/K1) and simulation revision 55.
+The replay and saved-match floors are 159: earlier recordings and saved matches
+are deliberately rejected. The map-format floor remains 58 so existing maps can
+start new matches. New saves retain published lists, pending completed outputs,
+admissions and remaining publication deadlines for deterministic continuation.
 
 Structured `game run` accepts `--ai-order-delay N`, where `N` is an integer
 from 0 through 8 and defaults to 8 for a new match. It is one match-wide engine
@@ -260,7 +261,12 @@ glob2 info sim-version --format json
 
 `match verify` accepts the same compute sizing as game sessions. Its `compute.json`
 records requested, resolved and actual sizing separately from deterministic
-verification results. Headless `online turn-client` also accepts this setting and
+verification results. It also records gradient backend/algorithm, device, driver,
+shader identity, committed GPU fields, dispatches, CPU fallbacks and shadow-verified
+fields. A matching trace with zero GPU commits is CPU recovery evidence, not GPU
+correctness evidence. These counters describe execution before session teardown;
+whole-process CPU measurements must also include teardown and final drain.
+Headless `online turn-client` also accepts this setting and
 reports sizing in its result telemetry.
 
 `match verify` replays a relay match record (the format is in the
@@ -478,8 +484,8 @@ Performance records describe this execution session and are not stored in saves.
 Version 120 makes periodic resource, guard and clear fields publish eight ticks
 after their observation boundary. Current execution uses the shared compute pool. Saves retain
 completed pending fields and their remaining deadlines without publishing them early;
-older saves remain loadable and start with an empty queue. The save compatibility
-floor remains 58. Version 123 narrows forbidden-zone invalidations to affected
+older formats originally started with an empty queue. Current saved-match
+compatibility starts at 159; existing map compatibility remains 58. Version 123 narrows forbidden-zone invalidations to affected
 fields and gives escape fields an independent bounded refresh schedule. Replay
 versions before 123 used a different routing schedule. The replay floor introduced in format
 127 reflected the sixteen-team capacity changing Warrush's opening window from 24 to 32 ticks.
@@ -497,8 +503,12 @@ Periodic material, market, guard and clear gradients use the same executor as AI
 Their immutable inputs are captured at the completed-tick boundary; seeding and
 propagation both execute privately and retain the existing publication deadlines.
 `--compute-threads auto|N` controls the shared pool for all sessions; `auto` uses
-reported logical CPU threads (one if unavailable), and N is a positive unsigned
-participant count including the owner. Saving drains
+reported logical CPU threads, or one participant when the hardware count is
+unavailable. Browser automatic sizing remains capped at eight. Linux/Android CPU
+affinity is reported separately and does not resize the pool.
+N is a positive unsigned participant count including the owner. Explicit counts
+remain unchanged unless the platform cannot run threads, when execution uses one
+participant while retaining the requested count in diagnostics. Saving drains
 private work without publishing it early and continues to serialize completed
 fields with their remaining deadlines.
 

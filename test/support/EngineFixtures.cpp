@@ -222,3 +222,20 @@ void publishCurrentHiringSuggestions(Game &game)
 	HiringPipelineHarness::publish(game);
 }
 } // namespace glob2test
+#include "TurretTargeting.h"
+namespace glob2test {
+void prepareTurretTargets(Building& turret)
+{
+    auto& game=*turret.owner->game;
+    if (std::find(turret.owner->turrets.begin(),turret.owner->turrets.end(),&turret)==turret.owner->turrets.end())
+        turret.owner->addToStaticAbilitiesLists(&turret);
+    game.snapshots().invalidateBoundary();
+    for (unsigned phase=0;phase<4;++phase) {
+        const auto observed=game.captureReadBoundary();
+        game.turretTargeting()->admit(game,observed,false);
+        ++game.stepCounter;
+        game.turretTargeting()->publish(game);
+        if (!game.turretTargeting()->entries(turret).empty()) return;
+    }
+}
+}

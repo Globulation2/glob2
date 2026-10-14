@@ -206,7 +206,7 @@ void applyFlagOrders(Context& c,Building* flag)
             if(move->gid==flag->gid){flag->posX=move->x;flag->posY=move->y;}
         if(auto selector=std::dynamic_pointer_cast<OrderModifyClearingFlag>(order))
             if(selector->gid==flag->gid)
-                for(int r=0;r<BASIC_COUNT;++r)flag->clearingMaterials[r]=selector->clearingMaterials[r];
+                for(int r=0;r<BASIC_COUNT;++r)flag->setClearsMaterial(r,selector->clearingMaterials[r]);
     }
     c.orders.clear();
 }

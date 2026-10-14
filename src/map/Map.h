@@ -828,7 +828,7 @@ public:
 		return getResource(x, y).type != NO_RES_TYPE;
 	}
 
-    bool isClearableResourceForMaterials(int x,int y,const bool materials[MaterialCount]) const
+    bool isClearableResourceForMaterials(int x,int y,MaterialMask materials) const
     {
         const auto index=coordToIndex(x,y);
         const auto& r=resourceCells[index].resource;
@@ -836,8 +836,7 @@ public:
         // Clearing targets the configured deposit, including empty persistent
         // obstacles; harvested-stock availability is irrelevant to removal.
         const auto mask=resourcePropertiesByIndex(r.type).materialMask;
-        for (unsigned m=0;m<MaterialCount;++m) if (materials[m] && (mask&(1u<<m))) return true;
-        return false;
+        return (materials & mask & AllMaterials) != 0;
     }
 
 	bool isResource(int x, int y, int *resourceType) const

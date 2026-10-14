@@ -1,5 +1,6 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #pragma once
+#include "LogicalDigest.h"
 #include "WorldRecords.h"
 #include "ObservationRecords.h"
 #include "MapState.h"
@@ -62,6 +63,7 @@ struct Terrain
 	std::vector<Uint16> cellRules;
 	Uint64 revision = 0;
 	bool movementModifiers = false, airConstraints = false;
+    LogicalChunks logical;
 	ChunkStamps stamps;
 };
 using ResourceCell = MapState::ResourceCell;
@@ -77,7 +79,7 @@ struct Resources
 	ChunkStamps stamps; // cells and stockIndices
 };
 using OccupancyCell = MapState::OccupancyCell;
-struct Occupancy { std::vector<OccupancyCell> cells; ChunkStamps stamps; };
+struct Occupancy { std::vector<OccupancyCell> cells; ChunkStamps stamps; LogicalChunks logical; };
 using AreaCell = MapState::AreaCell;
 struct Areas { std::vector<AreaCell> cells; bool farmEnabled = false; ChunkStamps stamps; };
 struct VisibilityCell { Uint32 discovered = 0, visible = 0; };
@@ -166,6 +168,7 @@ struct Handle
 	std::array<Uint64, 5> mapGenerations{};
 	//! Named views share existing buffers and retain only their consumer's inputs.
 	Handle simulationView() const;
+    Handle turretView() const;
     // Retain map inputs only on spatial-diagnostic sample ticks.
     Handle statisticsView() const;
 	Handle gradientView() const;

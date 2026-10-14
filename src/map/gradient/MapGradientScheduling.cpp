@@ -191,7 +191,7 @@ void Map::ensureBuildingGradientPipeline()
 		sameTick.push_back({p.team, p.buildingId, slot, p.captureTick, game->stepCounter});
 		if (newest)
 		{
-			b->locked[b->routeAccess(swim, p.route)] = p.locked;
+			b->setLocked(b->routeAccess(swim, p.route),p.locked);
 			if (p.route == BuildingRoute::Clearing) b->anyResourceToClear[swimAccessVariant(swim)] = p.resourceState;
 		}
 		b->refreshRequested.reset(slot);

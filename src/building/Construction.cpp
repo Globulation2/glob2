@@ -32,12 +32,13 @@ int Building::materialDeliveryTarget(int r) const
 
 int Building::materialDeliveryNeed(int r) const
 {
+	const Sint64 room = std::max<Sint64>(0, Sint64(materialStockLimit()) - material(r));
 	if (type->isBuildingSite && (constructionBudget[r] || type->semantics.constructionCost[r]))
 	{
 		const int uncommitted = constructionResultState == REPAIR ? 0 : availableMaterial(r);
-		return std::max(0, constructionMaterialNeed(r)-uncommitted);
+		return Sint32(std::min<Sint64>(room, std::max(0, constructionMaterialNeed(r)-uncommitted)));
 	}
-	return (runtime->replenishMaterialMask & (1u<<r)) ? std::max(0, type->maxMaterial[r]-materials[r]) : 0;
+	return (runtime->replenishMaterialMask & (1u<<r)) ? Sint32(std::min<Sint64>(room, std::max(0, type->maxMaterial[r]-material(r)))) : 0;
 }
 
 void Building::fundConstructionFromInventory()
@@ -218,7 +219,7 @@ bool Building::launchConstruction(Sint32 unitWorking, Sint32 unitWorkingFuture)
 
 		cancelProduction();
 		constructionOriginTypeNum = typeNum;
-		for (unsigned unit=0;unit<productionTypeCount();++unit) originProductionRatio(unit)=productionRatio(unit);
+		for (unsigned unit=0;unit<productionTypeCount();++unit) setOriginProductionRatio(unit,productionRatio(unit));
 		owner->removeFromAbilitiesLists(this);
 
 		// We remove all units who are going to the building:

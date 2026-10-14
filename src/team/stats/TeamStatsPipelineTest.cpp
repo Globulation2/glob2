@@ -742,7 +742,7 @@ TEST_SUITE("TeamStatsPipeline")
                 const int x=16+(t%2)*128, y=16+(t/2)*128;
                 auto* inn=w.addBuilding("inn",x,y,0,t);
                 auto* swarm=w.addBuilding("swarm",x+16,y,0,t);
-                for(auto* building : {inn,swarm}) { building->materials[WHEAT]=building->type->maxMaterial[WHEAT]; building->update(); }
+                for(auto* building : {inn,swarm}) { building->setMaterial(WHEAT, building->type->maxMaterial[WHEAT]); building->update(); }
                 for(int row=0;row<8;++row) for(int col=0;col<24;++col) {
                     const int rx=x+col, ry=y+48+row;
                     w.game.map.setResourceByIndex(rx,ry,row<6 ? WHEAT : row==6 ? WOOD : STONE,0);

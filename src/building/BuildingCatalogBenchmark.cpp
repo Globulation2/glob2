@@ -50,7 +50,7 @@ TEST_CASE("unused definitions do not enlarge simulation work [benchmark]")
             for (int n=0;n<8;++n)
             {
                 auto* inn=world.addBuilding("inn",4+n*12,4);
-                inn->materials[WHEAT]=inn->type->maxMaterial[WHEAT];
+                inn->setMaterial(WHEAT, inn->type->maxMaterial[WHEAT]);
             }
             for (int n=0;n<64;++n) world.addUnit(WORKER,4+n%32,12+n/32);
             world.team->createLists(); world.game.setWaitingOnMask(0); world.step(128);
@@ -92,7 +92,7 @@ TEST_CASE("private stock routing measures warm fields invalidation and working s
         for (int n=0;n<fields;++n)
         {
             auto* b=world.addBuilding("inn",(n*7)%map.getW(),(n*13)%map.getH());
-            b->materials[WOOD]=10; consumers.push_back(b);
+            b->setMaterial(WOOD, 10); consumers.push_back(b);
         }
         world.team->createLists();
         for (int repeat=0;repeat<3;++repeat) for (int phase=0;phase<3;++phase)
@@ -100,7 +100,7 @@ TEST_CASE("private stock routing measures warm fields invalidation and working s
             // A revision models depletion/replenishment. Warm passes use the
             // same tick so age expiry does not obscure working-set effects.
             if(phase==0 || phase==2) map.dirtyMarketGradientsSlot(0,WOOD);
-            if(phase==2) consumers.front()->materials[WOOD]=0;
+            if(phase==2) consumers.front()->setMaterial(WOOD, 0);
             Uint64 digest=0; const auto start=Clock::now();
             for(auto* consumer : consumers)
             {
@@ -111,7 +111,7 @@ TEST_CASE("private stock routing measures warm fields invalidation and working s
             CHECK(map.materialRoutingCacheBytes()<=fieldBytes*budgetFields);
             std::printf("catalog_routes,%d,%d,%d,%d,%d,%lld,%llu,%llu\n",map.getW(),budgetFields,fields,repeat,phase,duration,
                 static_cast<unsigned long long>(map.materialRoutingCacheBytes()),static_cast<unsigned long long>(digest));
-            if(phase==2) consumers.front()->materials[WOOD]=10;
+            if(phase==2) consumers.front()->setMaterial(WOOD, 10);
         }
     }
 }

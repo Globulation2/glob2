@@ -442,14 +442,14 @@ void scheduledKernelsMatchSynchronous(KernelTerrain config)
 	auto add = [&](const char* type, int x, int y, int team = 0) {
 		Building* b = world.addBuilding(type, x, y, 0, team);
 		b->unitStayRange = 5;
-		std::fill_n(b->clearingMaterials, MaterialCount, false);
-		b->clearingMaterials[WOOD] = b->clearingMaterials[ALGA] = true;
+		b->clearingMaterialMask=0;
+		b->setClearsMaterial(WOOD,true); b->setClearsMaterial(ALGA,true);
 		buildings.push_back(b);
 		return b;
 	};
 	add("inn", 4, 4); add("hospital", 14, 4); add("racetrack", 24, 4); add("swimmingpool", 36, 4);
 	add("school", 4, 20); add("explorationflag", 20, 20); add("warflag", 30, 22); add("clearingflag", 40, 24);
-	add("clearingflag", 50, 50)->clearingMaterials[ALGA] = false;
+	add("clearingflag", 50, 50)->setClearsMaterial(ALGA,false);
 	add("warflag", 10, 40)->unitStayRange = 0;
 	// A footprint fenced in by forbidden paint is locked for its owner.
 	Building* fenced = add("inn", 50, 34);
@@ -480,7 +480,7 @@ void scheduledKernelsMatchSynchronous(KernelTerrain config)
 				BuildingGradientSearch search;
 				const auto result = buildBuilding(seed, snapshot, inputs, actual.data(), search, gradient_kernel::COST_LIMIT);
 				INFO(what);
-				REQUIRE(result.locked == b->locked[access]);
+				REQUIRE(result.locked == b->isLocked(access));
 				if (route == BuildingRoute::Clearing) { REQUIRE(int(result.resourceState) == b->anyResourceToClear[swimAccessVariant(swim)]); ++clearing; }
 				requireSameCells(actual, expected, what + " full");
 				if (result.locked) { ++locked; continue; }
@@ -867,20 +867,20 @@ void scheduledAccessMetadata()
 	s.tick([&] {
 		paint(false);
 		s.map.updateGlobalGradient(b, 3); // stamped with the capture's tick, but newer
-		require(!b->locked[access], "synchronous build sees the open fence");
+		require(!b->isLocked(access), "synchronous build sees the open fence");
 	});
 	for (int i = 2; i < 4; ++i) s.tick();
 	s.map.advanceGradientPipeline();
-	require(s.status().published == 1 && !b->locked[access], "an older capture cannot overwrite newer access metadata");
+	require(s.status().published == 1 && !b->isLocked(access), "an older capture cannot overwrite newer access metadata");
 	s.game.stepCounter += DIRTY_GRACE_TICKS;
 	paint(true);
 	s.tick([&] { s.map.buildingAvailable(b, 1, 2, 2, &dist); });
 	for (int i = 1; i < 4; ++i) s.tick();
 	s.map.advanceGradientPipeline();
-	require(s.status().published == 2 && b->locked[access], "the newest capture writes access metadata");
+	require(s.status().published == 2 && b->isLocked(access), "the newest capture writes access metadata");
 	const auto bytes = saveRuntime(s.map);
 	loadRuntime(s.map, bytes);
-	require(b->locked[access], "saves keep the published metadata");
+	require(b->isLocked(access), "saves keep the published metadata");
 	std::puts("PASS access metadata follows the newest capture across swim classes and saves");
 }
 
@@ -1049,10 +1049,10 @@ void scheduledSameTickSwimClassesKeepRequestOrder()
 		world.game.stepCounter = DIRTY_GRACE_TICKS + 1;
 		paint(true);
 		world.game.map.buildingAvailable(b, 1, 2, 2, &dist);
-		require(b->locked[access], "synchronous: the fenced build locks");
+		require(b->isLocked(access), "synchronous: the fenced build locks");
 		paint(false);
 		world.game.map.buildingAvailable(b, 3, 2, 2, &dist);
-		require(!b->locked[access], "synchronous: the later build of the same tick wins");
+		require(!b->isLocked(access), "synchronous: the later build of the same tick wins");
 	}
 	World world;
 	Scheduler s(world, 2, 4);
@@ -1073,7 +1073,7 @@ void scheduledSameTickSwimClassesKeepRequestOrder()
 	for (int i = 1; i < 4; ++i) s.tick();
 	s.map.advanceGradientPipeline();
 	require(s.status().published == 2, "both published at one deadline");
-	require(!b->locked[access], "scheduled: the later capture of the same tick wins, like the synchronous build");
+	require(!b->isLocked(access), "scheduled: the later capture of the same tick wins, like the synchronous build");
 	std::puts("PASS same-tick swim classes write access metadata in request order");
 }
 
@@ -1259,7 +1259,7 @@ TEST_SUITE("BuildingGradientInvalidation")
                 // Concrete row zero is independent of the Automatic sentinel's
                 // numeric value. Other routes and the new water-only row remain clear.
                 for(int index=0;index<BUILDING_ACCESS_COUNT;++index)
-                    REQUIRE(building->locked[index]==(index<2 && bool((pattern>>index)&1u)));
+                    REQUIRE(building->isLocked(index)==(index<2 && bool((pattern>>index)&1u)));
             }
             GameGUI current,repeated;
             REQUIRE(load(current.game,save(legacy.game)));
@@ -1268,7 +1268,7 @@ TEST_SUITE("BuildingGradientInvalidation")
             for(const auto& flag:tracker.flags) {
                 const auto* a=legacy.game.teams[flag.team]->myBuildings[flag.building];
                 const auto* b=current.game.teams[flag.team]->myBuildings[flag.building];
-                for(int index=0;index<BUILDING_ACCESS_COUNT;++index) REQUIRE(a->locked[index]==b->locked[index]);
+                for(int index=0;index<BUILDING_ACCESS_COUNT;++index) REQUIRE(a->isLocked(index)==b->isLocked(index));
             }
             REQUIRE(load(repeated.game,save(current.game)));
             current.game.setWaitingOnMask(0); repeated.game.setWaitingOnMask(0);
@@ -1298,8 +1298,8 @@ TEST_SUITE("BuildingGradientInvalidation")
             map.updateGlobalGradient(inn,swim,route);
             map.finishBuildingGradient(inn,swim,route);
         }
-        REQUIRE_FALSE(inn->locked[inn->routeAccess(1,route)]);
-        REQUIRE(inn->locked[inn->routeAccess(waterOnly,route)]);
+        REQUIRE_FALSE(inn->isLocked(inn->routeAccess(1,route)));
+        REQUIRE(inn->isLocked(inn->routeAccess(waterOnly,route)));
         REQUIRE(inn->globalGradient[waterSlot]!=nullptr);
         REQUIRE_FALSE(bool(inn->globalGradientSearch[waterSlot]));
         BuildingGradientStats stats;

@@ -87,15 +87,15 @@ void prepareConversion(Engine &engine, const std::filesystem::path &directory)
 			inn = building;
 	}
 	REQUIRE(inn);
-	inn->materials[WHEAT] = 10;
-	inn->materials[CHERRY] = 10;
+	inn->setMaterial(WHEAT, 10);
+	inn->setMaterial(CHERRY, 10);
 	inn->updateCallLists();
 	inn->canNotConvertUnitTimer = 0;
 	game.teams[1]->sharedVisionFood |= game.teams[0]->me;
 	game.teams[1]->allies &= ~game.teams[0]->me;
 	unit->hungry = unit->trigHungry;
 	unit->medical = Unit::MED_HUNGRY;
-	unit->needToRecheckMedical = true;
+	unit->setNeedToRecheckMedical(true);
 	REQUIRE(game.teams[0]->findNearestFood(unit) == inn);
 	unit->handleActivity();
 	REQUIRE(unit->owner == game.teams[1]);
@@ -199,7 +199,7 @@ void samePayload(std::string actual, std::string expected)
 void fixture(const std::string &name)
 {
 	const auto initial =
-		glob2test::inflated("test/fixtures/javascript/" + name + "-initial.game.gz");
+		glob2test::inflated("test/fixtures/javascript/" + name + "-initial159.game.gz");
 	const auto released = glob2test::readFile(
 		glob2test::inflated("test/fixtures/javascript/" + name + "-256.checksums.gz"));
 	const auto expanded = glob2test::readFile(
@@ -219,7 +219,7 @@ void fixture(const std::string &name)
 	const auto serial = execute(initial, directory / "workers1", 1, false, true);
 	// Configurable units have their own trace; retain released traces above and
 	// the terrain/resource traces as historical migration evidence.
-	const auto unitFixture = "test/fixtures/javascript/" + name + "-256-units.checksums.gz";
+	const auto unitFixture = "test/fixtures/javascript/" + name + "-256-cached159.checksums.gz";
 	if (glob2test::updatingFixtures())
 	{
 		gzFile output = gzopen((glob2test::sourceRoot() / unitFixture).string().c_str(), "wb9");

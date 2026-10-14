@@ -34,6 +34,7 @@
 #include "ReplayWriter.h"
 #include "ReplayReader.h"
 #include "AITelemetry.h"
+#include "TurretTargeting.h"
 
 #define BULLET_IMGID 0
 
@@ -216,6 +217,7 @@ void Game::prestigeSyncStep()
 
 void Game::syncStep(Sint32 localTeam, PreparationCompletion completion)
 {
+	ensureTurretTargeting();
 	map.applyGradientBackendRequest();
     // Also serves standalone/headless callers without an Engine read boundary.
     const auto observed=prepareReadBoundary(anyPlayerWaited);
@@ -234,6 +236,7 @@ void Game::syncStep(Sint32 localTeam, PreparationCompletion completion)
 		if (!map.gradientPipelineEnabled()) map.configureGradientPipeline(2, 8);
 		map.advanceGradientPipeline();
 
+		if (turretTargetingPipeline) turretTargetingPipeline->publish(*this);
 		areaEffects.beginTick(*this);
 		for (int i=0; i<mapHeader.getNumberOfTeams(); i++)
 			teams[i]->syncStep();

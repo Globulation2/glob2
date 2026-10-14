@@ -98,7 +98,7 @@ TEST_CASE("JavaScript current text saves validate unused generation counters" *
 	GameGUI original;
 	GAGCore::BinaryInputStream initial(glob2OpenMapOrSaveInputStreamBackend(
 		*GAGCore::Toolkit::getFileManager(),
-		glob2test::inflated("javascript/profile1-initial.game.gz").string()));
+		glob2test::inflated("javascript/profile1-initial159.game.gz").string()));
 	REQUIRE(original.game.load(&initial));
 	auto *storage = new GAGCore::MemoryStreamBackend;
 	GAGCore::TextOutputStream output(storage);
@@ -128,21 +128,23 @@ TEST_CASE("JavaScript current text saves validate unused generation counters" *
 	CHECK_THROWS_AS(load(missing), std::runtime_error);
 }
 
-TEST_CASE("Resource oscillation rejects earlier replays and enforces acceptance boundaries" *
+TEST_CASE("Current simulation rejects earlier replays and enforces acceptance boundaries" *
 		  doctest::test_suite("JavaScriptCompatibility"))
 {
 	glob2test::GlobalsOptions options;
 	options.loadStrings = true;
 	glob2test::HeadlessGlobals globals(options);
-	CHECK(REPLAY_MINIMUM_VERSION_MINOR == FILE_FORMAT_VERSION_CACHED_HIRING);
-	CHECK(VERSION_MINOR >= FILE_FORMAT_VERSION_CACHED_HIRING);
-	CHECK(NET_PROTOCOL_VERSION >= 69);
+	// Format 162 caches hiring suggestions.
+	// Script save-format milestones remain independent of these current gates.
+	CHECK(REPLAY_MINIMUM_VERSION_MINOR == 162);
+	CHECK(VERSION_MINOR == 162);
+	CHECK(NET_PROTOCOL_VERSION == 71);
 	CHECK(FILE_FORMAT_VERSION_JAVASCRIPT == 125);
 	CHECK(FILE_FORMAT_VERSION_EXPERIMENTS == 124);
 	ReplayReader released;
 	CHECK_FALSE(
 		released.loadReplay(glob2test::inflated("javascript/released-v123.replay.gz").string()));
-	const Uint16 versions[] = {122, 123, 124, 125, 126, 127, 128, FILE_FORMAT_VERSION_CUSTOM_AI, FILE_FORMAT_VERSION_FARM_AREA, 133, 134, 135, FILE_FORMAT_VERSION_RUNTIME_TERRAIN, FILE_FORMAT_VERSION_BUILDING_CATALOG, FILE_FORMAT_VERSION_TERRAIN_SEED, 139, FILE_FORMAT_VERSION_RUNTIME_RESOURCES, FILE_FORMAT_VERSION_TERRAIN_CATALOGUE, FILE_FORMAT_VERSION_HAZARD_ROUTING, FILE_FORMAT_VERSION_AI_PIPELINE, FILE_FORMAT_VERSION_MAP_ASSETS, FILE_FORMAT_VERSION_BUILDING_ARTWORK, FILE_FORMAT_VERSION_VERTEX_TERRAIN, FILE_FORMAT_VERSION_GREEDY_FETCHING, FILE_FORMAT_VERSION_PRIVATE_RANDOM - 1, FILE_FORMAT_VERSION_PRIVATE_RANDOM, FILE_FORMAT_VERSION_UNIT_CATALOG, VERSION_MINOR, VERSION_MINOR + 1};
+	const Uint16 versions[] = {122, 123, 124, 125, 126, 127, 128, FILE_FORMAT_VERSION_CUSTOM_AI, FILE_FORMAT_VERSION_FARM_AREA, 133, 134, 135, FILE_FORMAT_VERSION_RUNTIME_TERRAIN, FILE_FORMAT_VERSION_BUILDING_CATALOG, FILE_FORMAT_VERSION_TERRAIN_SEED, 139, FILE_FORMAT_VERSION_RUNTIME_RESOURCES, FILE_FORMAT_VERSION_TERRAIN_CATALOGUE, FILE_FORMAT_VERSION_HAZARD_ROUTING, FILE_FORMAT_VERSION_AI_PIPELINE, FILE_FORMAT_VERSION_MAP_ASSETS, FILE_FORMAT_VERSION_BUILDING_ARTWORK, FILE_FORMAT_VERSION_VERTEX_TERRAIN, FILE_FORMAT_VERSION_GREEDY_FETCHING, FILE_FORMAT_VERSION_PRIVATE_RANDOM - 1, FILE_FORMAT_VERSION_PRIVATE_RANDOM, FILE_FORMAT_VERSION_UNIT_CATALOG, REPLAY_MINIMUM_VERSION_MINOR - 1, VERSION_MINOR, VERSION_MINOR + 1};
 	for (Uint16 version : versions)
 	{
 		CAPTURE(version);
@@ -296,7 +298,7 @@ TEST_CASE("JavaScript current saves reject truncated generation tables" *
 {
 	glob2test::HeadlessGlobals globals;
 	const auto bytes = glob2test::readFile(
-		glob2test::inflated("javascript/profile1-initial.game.gz"));
+		glob2test::inflated("javascript/profile1-initial159.game.gz"));
 	GAGCore::BinaryInputStream complete(
 		new GAGCore::MemoryStreamBackend(bytes.data(), bytes.size()));
 	complete.seekFromStart(0);

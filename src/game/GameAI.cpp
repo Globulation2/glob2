@@ -1,5 +1,6 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "Game.h"
+#include "TurretTargeting.h"
 #include "TeamStatsPipeline.h"
 #include "HiringPipeline.h"
 #include "TeamStatsChecksum.h"
@@ -14,6 +15,7 @@ SimulationSnapshot::Handle Game::captureReadBoundary(SimulationSnapshot::Capture
 }
 SimulationSnapshot::Handle Game::prepareReadBoundary(bool paused, SimulationSnapshot::CaptureOptions options)
 {
+ ensureTurretTargeting();
  const bool statisticsActive = !paused && !anyPlayerWaited;
  // Hiring observes every completed boundary before matched orders, even while
  // a replica waits or is paused, so every replica admits the same jobs.
@@ -33,6 +35,7 @@ SimulationSnapshot::Handle Game::prepareReadBoundary(bool paused, SimulationSnap
    world = worldSnapshots.captureBoundary(*this, options);
   }
  }
+ turretTargetingPipeline->admit(*this,world,paused || anyPlayerWaited);
  hiringPipeline->observe(*this, world);
  return world;
 }
@@ -49,8 +52,8 @@ std::vector<std::pair<unsigned,std::shared_ptr<Order>>> Game::prepareAIOrders(st
 std::shared_ptr<Order> Game::validateAIOrder(std::shared_ptr<Order> order,unsigned player) {return aiPipeline?aiPipeline->validate(*this,std::move(order),player):order;}
 void Game::settleAIOrder(const std::shared_ptr<Order>& order,bool accepted) {if(aiPipeline)aiPipeline->settle(*this,order,accepted);}
 void Game::cancelAI(unsigned player) {if(aiPipeline)aiPipeline->cancel(player);}
-void Game::drainAI() {if(aiPipeline)aiPipeline->drain();}
-void Game::clearAI() { hiringPipeline.reset(); statsPipeline.reset(); map.finishGradientPipeline({JoinReason::Teardown, ComputeTelemetry::NoTick}); map.finishResourceGrowth({JoinReason::Teardown, ComputeTelemetry::NoTick}); aiPipeline.reset(); worldSnapshots.reset(); }
+void Game::drainAI() {if(aiPipeline)aiPipeline->drain();if(turretTargetingPipeline)turretTargetingPipeline->drain();}
+void Game::clearAI() { hiringPipeline.reset(); if(turretTargetingPipeline)turretTargetingPipeline->drain(); statsPipeline.reset(); map.finishGradientPipeline({JoinReason::Teardown, ComputeTelemetry::NoTick}); map.finishResourceGrowth({JoinReason::Teardown, ComputeTelemetry::NoTick}); aiPipeline.reset(); worldSnapshots.reset(); }
 void Game::saveAI(GAGCore::OutputStream* stream) {if(!aiPipeline){aiPipeline=std::make_unique<AIEngine::Pipeline>();aiPipeline->prepare(*this,{},true,nullptr,captureReadBoundary());}aiPipeline->save(stream);}
 bool Game::loadAI(GAGCore::InputStream* stream) {auto pipeline=std::make_unique<AIEngine::Pipeline>();if(!pipeline->load(*this,stream))return false;aiPipeline=std::move(pipeline);return true;}
 std::vector<std::pair<std::string,Uint64>> Game::aiMetrics() const {
@@ -61,7 +64,8 @@ std::vector<std::pair<std::string,Uint64>> Game::aiMetrics() const {
  const auto& waits=compute.summary.joins[unsigned(ComputeProducer::AI)][unsigned(JoinReason::TickDeadline)];
  const auto& capture=worldSnapshots.metrics;const auto& scheduling=aiPipeline->schedulingMetrics();const auto memory=worldSnapshots.memoryMetrics();const auto queryMemory=aiPipeline->queryVectorMemory();
  const std::vector<std::pair<std::string,Uint64>> aiValues={{"captures",capture.captures},{"extraction_ns",capture.captureNs},{"preparation_ns",capture.preparationNs},
-  {"map_bytes_copied",capture.mapBytesCopied},{"detailed_captures",capture.detailedCaptures},{"bytes_copied",capture.bytesCopied},{"component_reuses",capture.reusedComponents},{"allocations",capture.allocations},
+  {"map_bytes_copied",capture.mapBytesCopied},{"detailed_captures",capture.detailedCaptures},{"bytes_copied",capture.bytesCopied},
+  {"entity_bytes_copied",capture.entityBytesCopied},{"entity_sidecar_bytes_copied",capture.entitySidecarBytesCopied},{"component_reuses",capture.reusedComponents},{"allocations",capture.allocations},
   {"computation_ns",aiPipeline->computationNs()},{"controller_query_vector_bytes",queryMemory.first},
   {"controller_query_vector_peak_bytes",aiPipeline->peakQueryVectorMemory()},
   {"controller_query_vector_samples",queryMemory.second},{"submitted",scheduling.submitted},{"delivered",scheduling.delivered},
@@ -91,6 +95,18 @@ void Game::observeUnpolledAI() {
  for(auto* controller:idle)controller->observe(world);
 }
 
+void Game::configureTurretTargeting(unsigned delay,unsigned refresh,unsigned capacity,unsigned margin,bool profileCpu)
+{
+ auto replacement=std::make_unique<TurretTargeting::Pipeline>(*this,TurretTargeting::Configuration{delay,refresh,capacity,margin,profileCpu});
+ turretTargetingPipeline=std::move(replacement);
+}
+
+void Game::ensureTurretTargeting() const
+{
+ if (!turretTargetingPipeline) turretTargetingPipeline=std::make_unique<TurretTargeting::Pipeline>(const_cast<Game&>(*this),TurretTargeting::Configuration{});
+}
+
+void Game::forgetTurret(BuildingRef identity) { if (turretTargetingPipeline) turretTargetingPipeline->forget(identity); }
 void Game::drainTeamStats(){if(statsPipeline)statsPipeline->drain(JoinReason::Reconfigure);}
 void Game::saveTeamStats(GAGCore::OutputStream* s){if(!statsPipeline)statsPipeline=std::make_unique<TeamStatsPipeline>(map.computeExecutor());statsPipeline->save(s);}
 void Game::loadTeamStats(GAGCore::InputStream* s, int versionMinor){auto p=std::make_unique<TeamStatsPipeline>(map.computeExecutor());p->load(*this,s,versionMinor);statsPipeline=std::move(p);}

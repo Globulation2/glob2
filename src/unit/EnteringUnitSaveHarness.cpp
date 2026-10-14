@@ -67,7 +67,7 @@ TEST_SUITE("EnteringUnitSave")
 	                unit->activity = Unit::ACT_UPGRADING;
 	                unit->destinationPurpose = FEED;
 	                const auto& meal=inn->type->semantics.feeding.cost;
-	                for (int resource=0;resource<MaterialSlotCount;++resource) inn->materials[resource]=meal[resource];
+	                for (int resource=0;resource<MaterialSlotCount;++resource) inn->setMaterial(resource, meal[resource]);
 	                inn->reserveService(unit);
 	                inn->unitsInside.push_back(unit);
 	                unit->displacement = Unit::DIS_ENTERING_BUILDING;
@@ -125,7 +125,7 @@ TEST_SUITE("EnteringUnitSave")
 		unit->attachedBuilding=inn;
 		unit->activity=Unit::ACT_RANDOM;
 		unit->destinationPurpose=-1;
-		unit->serviceResourcesReserved=false;
+		unit->setServiceResourcesReserved(false);
 		unit->displacement=Unit::DIS_ENTERING_BUILDING;
 		unit->movement=Unit::MOV_ENTERING_BUILDING;
 		unit->action=FLY;
@@ -164,7 +164,7 @@ TEST_SUITE("EnteringUnitSave")
 	        REQUIRE(unit->hasCapability(UnitRuntimeTraits::LegacyPerformancePolicies));
 	        REQUIRE(unit->activity==Unit::ACT_RANDOM);
 	        REQUIRE(unit->destinationPurpose==-1);
-	        REQUIRE_FALSE(unit->serviceResourcesReserved);
+	        REQUIRE_FALSE(unit->serviceResourcesReserved());
 	        const auto originalUnit=static_cast<const UnitState&>(*unit);
 	        auto* currentBytes=new GAGCore::MemoryStreamBackend;
 	        GAGCore::BinaryOutputStream currentWriter(currentBytes);

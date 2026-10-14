@@ -58,8 +58,8 @@ void Unit::standardRandomActivity()
 	jobPurpose=UnitJobPurpose::None;
 	activity=Unit::ACT_RANDOM;
 	displacement=Unit::DIS_RANDOM;
-	validTarget=false;
-	needToRecheckMedical=true;
+	setValidTarget(false);
+	setNeedToRecheckMedical(true);
 }
 
 void Unit::stopAttachedForBuilding(bool goingInside)
@@ -75,7 +75,7 @@ void Unit::stopAttachedForBuilding(bool goingInside)
 		{
 			assert(displacement==DIS_GOING_TO_BUILDING);
 			if (destinationPurpose==HEAL || destinationPurpose==FEED)
-				needToRecheckMedical=true;
+				setNeedToRecheckMedical(true);
 		}
 	}
 	else
@@ -87,13 +87,13 @@ void Unit::stopAttachedForBuilding(bool goingInside)
 	jobPurpose=UnitJobPurpose::None;
 	activity=ACT_RANDOM;
 	displacement=DIS_RANDOM;
-	validTarget=false;
+	setValidTarget(false);
 
 	attachedBuilding->removeUnitFromWorking(this);
 	attachedBuilding=NULL;
 	setTargetBuilding(NULL);
 	ownExchangeBuilding=NULL;
-	assert(needToRecheckMedical);
+	assert(needToRecheckMedical());
 }
 
 void Unit::handleMagic(void)
@@ -180,18 +180,18 @@ void Unit::handleMagic(void)
 void Unit::handleMedical(void)
 {
 	/* Make sure explorers try to immediately feed after healing to increase their range. */
-	if (hasCapability(UnitRuntimeTraits::ServiceRebound) && displacement == DIS_EXITING_BUILDING)
+	if (hasCapability(UnitRuntimeTraits::ServiceRebound) && displacement == DIS_EXITING_BUILDING && !attachedBuilding)
 	{
 		medical=MED_FREE;
 		if (!owner->game->gameHeader.isHungerDisabled() && hungriness > 0 && (destinationPurpose == HEAL) && (hungry < ((Sint64(foodCapacity()) * runtimeTraits().reboundNumerator) / runtimeTraits().reboundDenominator)))
 		{
-			needToRecheckMedical = 1;
+			setNeedToRecheckMedical(1);
 			medical = MED_HUNGRY;
 			return;
 		}
 		else if ((destinationPurpose == FEED) && (hp < ((Sint64(performance[HP]) * runtimeTraits().reboundNumerator) / runtimeTraits().reboundDenominator)))
 		{
-			needToRecheckMedical = 1;
+			setNeedToRecheckMedical(1);
 			medical = MED_DAMAGED;
 			return;
 		}
@@ -250,7 +250,7 @@ void Unit::resolveDeath()
 
 			jobPurpose=UnitJobPurpose::None;
 			activity=ACT_RANDOM;
-			validTarget=false;
+			setValidTarget(false);
 
 			// remove from map
 			if (performance[FLY])

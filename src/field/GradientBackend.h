@@ -65,6 +65,9 @@ struct BackendRequest
     // Legacy direct callers may omit it; group/coordinator dispatch supplies it.
     std::optional<Configuration> capturedConfiguration;
     std::optional<std::uint64_t> capturedGeneration;
+    // Owned jobs capture diagnostics with their admission. Direct test/tool
+    // callers may omit it and use the process's opt-in diagnostic environment.
+    std::optional<bool> diagnostics;
 };
 inline bool alreadyFixedGradient(std::span<const std::uint16_t> seeds) {
     const auto source=std::find_if(seeds.begin(),seeds.end(),[](auto value){return value>1;});
