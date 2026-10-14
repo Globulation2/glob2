@@ -1,0 +1,58 @@
+{
+  "scope": "Secondary descriptive estimates, no additional hypothesis tests or multiplicity-controlled discovery claims; unequal emergent exposure is reported explicitly.",
+  "totals": {
+    "new_buildings": {
+      "original": 104244,
+      "cached": 104617,
+      "relative_percent": 0.35781435862016764
+    },
+    "births": {
+      "original": 383329,
+      "cached": 388288,
+      "relative_percent": 1.2936667979724925
+    },
+    "delivered": {
+      "original": 6686389,
+      "cached": 6694615,
+      "relative_percent": 0.12302604589711219
+    },
+    "harvested": {
+      "original": 5077013,
+      "cached": 5140611,
+      "relative_percent": 1.2526656914213063
+    },
+    "upgrades": {
+      "original": 33695,
+      "cached": 34449,
+      "relative_percent": 2.2377207300786406
+    },
+    "meals": {
+      "original": 1164138,
+      "cached": 1172410,
+      "relative_percent": 0.7105686782838516
+    },
+    "worker_ticks": {
+      "original": 6148268552,
+      "cached": 6274673474,
+      "relative_percent": 2.055943407984051
+    },
+    "sampled_unit_ticks": {
+      "original": 9316907764,
+      "cached": 9427892558,
+      "relative_percent": 1.1912191985933296
+    }
+  },
+  "worker_time_fractions": {
+    "original": {
+      "idle_worker_ticks": 0.13575576797608954,
+      "filling_worker_ticks": 0.528872717985335,
+      "food_worker_ticks": 0.1986987028409165
+    },
+    "cached": {
+      "idle_worker_ticks": 0.14189690916815348,
+      "filling_worker_ticks": 0.5202897611369793,
+      "food_worker_ticks": 0.20058601825501143
+    }
+  },
+  "full_match_outcomes": "All 1512 CLI results report unresolved, including 34 early engine endings. No winning teams were recorded; this study provides no victory-rate comparison."
+}

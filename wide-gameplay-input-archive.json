@@ -1,0 +1,17 @@
+{
+  "file": "frozen-inputs.tar.gz",
+  "bytes": 92023697,
+  "sha256": "abccb21360602724f9161a00bf8a86a647e56b6bbaa3f621a8db7b37d5706935",
+  "parts": [
+    {
+      "file": "wide-gameplay-frozen-inputs.tar.gz.part01",
+      "bytes": 52428800,
+      "sha256": "0877e49a74cd968f05e851894dd5b638b275fd51c50c5805a718c13269b99992"
+    },
+    {
+      "file": "wide-gameplay-frozen-inputs.tar.gz.part02",
+      "bytes": 39594897,
+      "sha256": "3d6af823fec61165f553246e6543e47d930f412a95fd38b32ca00914f7247682"
+    }
+  ]
+}

@@ -1,0 +1,18 @@
+{
+  "file": "results-evidence.tar.gz",
+  "bytes": 94360691,
+  "sha256": "3e2c70c875fb77a71237aeff9a26fed3d9297e221775dc2b6df8f8bb9d0210c5",
+  "scope": "All 1512 per-game parsed telemetry summaries, raw CLI results, commands, attempt records, hashes, inputs manifest, frozen tools, final analysis and audit. Full stdout logs total 43.78GB compressed and remain on devlaptop.local, excluded from this review archive; compressed/raw log hashes are public for every run. Input maps/reports separately archived.",
+  "parts": [
+    {
+      "file": "wide-gameplay-results-evidence.tar.gz.part01",
+      "bytes": 52428800,
+      "sha256": "7d3dd8b613e709a5bf447745dbf3f8375b2ad7981f8051434acf3ffcadb28086"
+    },
+    {
+      "file": "wide-gameplay-results-evidence.tar.gz.part02",
+      "bytes": 41931891,
+      "sha256": "b336e538c07e218876f75cc864f7c8b31dcfb75d262a7fe5ea3f4604183e8bca"
+    }
+  ]
+}
