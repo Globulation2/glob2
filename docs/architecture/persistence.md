@@ -114,7 +114,9 @@ completed pending frame, or published measurements when the queue is empty.
 Resaving stores complete frames; no historical snapshots are required.
 
 Format 159 persists cached turret targeting lists and delayed outputs. Older saves
-load with an empty turret cache, which the normal delayed update path populates.
+load with an empty turret cache, which the normal delayed update path populates. Format 163
+stores only turret identities and entries; formats 159–162 load by discarding their
+source signatures, digests and building targeting epochs.
 Maps and saves retain the version-58 compatibility floor; replay acceptance remains
 a separate boundary.
 Text statistics saves isolate pending teams, sampling phases and coverage anchors

@@ -103,21 +103,11 @@ if env['PLATFORM'] == 'darwin':
 engine = test_env.Program('glob2-engine-tests',
     objects(native_support + registry.ENGINE_SUPPORT + registry.ENGINE_TESTS, 'engine-')
     + client_objects + client_libs)
-# Only this research program substitutes selection inside the normal firing path.
-# The shipping game and glob2-engine-tests retain the original production object.
-turret_env = test_env.Clone()
-turret_env.Append(CPPDEFINES=['GLOB2_TURRET_ENGINE_BENCHMARK'])
-turret_step = turret_env.Object('turretbench-TypeSteps.o', File('#src/building/TypeSteps.cpp'))
-turret_objects = [obj for obj in client_objects if obj != client_object_by_source['building/TypeSteps.cpp']]
-turret_benchmark = test_env.Program('glob2-turret-engine-benchmark',
-    objects(native_support + registry.ENGINE_SUPPORT + [registry.TURRET_ENGINE_BENCHMARK], 'turretbench-')
-    + turret_step + turret_objects + client_libs)
-test_env.Alias('turret-engine-benchmark', turret_benchmark)
 unit = test_env.Program('glob2-unit-tests',
     objects(native_support + registry.UNIT_STUBS + registry.UNIT_TESTS, 'unit-')
     + production_objects(registry.UNIT_PRODUCTION_SOURCES) + client_libs)
 if env.get('RUNTIME_ASSET_STAMP'):
-    test_env.Depends([engine, unit, turret_benchmark], env['RUNTIME_ASSET_STAMP'])
+    test_env.Depends([engine, unit], env['RUNTIME_ASSET_STAMP'])
 test_env.Alias('engine-tests', engine)
 test_env.Alias('unit-tests', unit)
 test_env.Alias('tests', [engine, unit])

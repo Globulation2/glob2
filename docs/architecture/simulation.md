@@ -653,6 +653,6 @@ published one tick after observation. The first currently valid entry fires;
 owner-side ranking and fallback scans are absent. One pure background kernel
 preserves the original preferred target at the head and ranks alternatives.
 Capture joins the shared completed-tick snapshot union and existing compute pool.
-See [targeting lifecycle and measurement](../development/compute-benchmarks.md#cached-turret-targeting)
-for scheduling, memory bounds, checksums and saved continuation. Format 159 and
-simulation revision 55 deliberately replace earlier save/replay targeting behavior.
+Firing revalidates every entry against live state, so lists need no invalidation.
+See [targeting lifecycle](../development/compute-benchmarks.md#cached-turret-targeting)
+for scheduling and saved continuation.

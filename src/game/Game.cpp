@@ -208,7 +208,6 @@ void Game::configureBuildingCatalog()
 				for (int resource=0; resource<MaterialCount; ++resource) map.dirtyMarketGradientsSlot(team->teamNumber,resource);
 			}
 		}
-    if (turretTargetingPipeline) turretTargetingPipeline->invalidateChangedSources(*this);
 }
 
 

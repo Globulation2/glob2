@@ -610,4 +610,3 @@ def source_path(source):
     return source[1:] if source.startswith('#') else 'test/' + source
 
 # Dedicated whole-engine turret experiment; production objects are otherwise reused.
-TURRET_ENGINE_BENCHMARK = ('#src/building/TurretEngineBenchmark.cpp', dict(cxxflags=['-fno-access-control']))

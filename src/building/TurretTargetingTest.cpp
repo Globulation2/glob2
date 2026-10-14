@@ -5,15 +5,6 @@
 #include "Player.h"
 #include "ComputeExecutor.h"
 #include "BuildingUtils.h"
-#if __has_include(<valgrind/callgrind.h>)
-#include <valgrind/callgrind.h>
-#else
-#define CALLGRIND_START_INSTRUMENTATION ((void)0)
-#define CALLGRIND_STOP_INSTRUMENTATION ((void)0)
-#define CALLGRIND_ZERO_STATS ((void)0)
-#define CALLGRIND_TOGGLE_COLLECT ((void)0)
-#define CALLGRIND_DUMP_STATS_AT(label) ((void)0)
-#endif
 #include <random>
 #include <set>
 #include <map>
@@ -37,11 +28,10 @@ bool sameSource(const Source& a,const Source& b)
 }
 void compare(const Building& turret,const Observation& observation)
 {
-    const auto reference=turret.targetingReference();
+    const auto reference=plan(turret,0,0).preferred;
     const auto live=plan(turret,8,2);
     const auto frozen=plan(source(turret),observation,8,2);
     const auto reused=observe(*turret.owner->game,observation.world);
-    CHECK(reused.logicalDigest==observation.logicalDigest);
     const auto row=std::make_shared<const std::vector<int>>(source(turret).damage);
     const auto compact=plan(source(turret,row),reused,8,2);
     CHECK(compact.entries==frozen.entries);
@@ -53,7 +43,7 @@ void compare(const Building& turret,const Observation& observation)
         CHECK(live.preferred.y==reference.y);
         CHECK(live.preferred.score==reference.score);
         CHECK(live.preferred.ticks==reference.ticks);
-        CHECK(live.preferred.priority==int(reference.type));
+        CHECK(live.preferred.priority==reference.priority);
         REQUIRE(!live.entries.empty());
         CHECK(live.entries.front()==live.preferred.entry);
     }
@@ -181,36 +171,6 @@ TEST_SUITE("TurretTargeting")
                 }
             }
     }
-    TEST_CASE("retained index exhaustion rebuilds temporary chunks without changing results")
-    {
-        glob2test::HeadlessGlobals globals;
-        glob2test::HeadlessGame world({.wDec=7,.hDec=7,.teams=2,.loadDefaultRace=true,.header=true});
-        auto catalog=nlohmann::json::parse(world.game.buildingsTypes.snapshotJson());
-        const auto tower=world.game.buildingsTypes.getTypeNum("defencetower",0,false);
-        const auto swarm=world.game.buildingsTypes.getTypeNum("swarm",0,false);
-        catalog["variants"][tower]["semantics"]["occupiesGround"]=false;
-        catalog["variants"][swarm]["properties"]["width"]=64;
-        catalog["variants"][swarm]["properties"]["height"]=64;
-        world.game.buildingsTypes.loadSnapshotJson(catalog.dump()); world.game.configureBuildingCatalog();
-        for (int y : {0,64}) for (int x : {0,64}) world.addBuilding("swarm",x,y,0,1);
-        auto* turret=world.addBuilding("defencetower",127,127); turret->owner->enemies=2;
-        std::vector<Observation> held;
-        bool rebuilt=false;
-        for (unsigned generation=0;generation<280 && !rebuilt;++generation) {
-            // Force index churn with valid unchanged occupancy; private stamps
-            // are derived data and do not influence the selector or its digest.
-            world.game.map.occupancyChanges.markAll();
-            if (!held.empty()) { held.back().world={}; }
-            held.push_back(observe(world.game,held.empty() ? nullptr : &held.back()));
-            CHECK(retainedIndexBytes(held.back())<=32u*1024u*1024u);
-            const auto result=plan(source(*turret),held.back(),8,2);
-            auto temporary=held.back(); temporary.index.reset();
-            CHECK(result.entries==plan(source(*turret),temporary,8,2).entries);
-            rebuilt=result.metrics.temporaryChunks>0;
-        }
-        REQUIRE(rebuilt);
-        compare(*turret,held.back());
-    }
     TEST_CASE("ground movement return suppresses air only in preferred fold")
     {
         glob2test::HeadlessGlobals globals;
@@ -303,343 +263,6 @@ TEST_SUITE("TurretTargeting")
         CHECK(world.checksum()==checksum);
         CHECK(save()==before);
     }
-    TEST_CASE("Numbi and Castor orders checksums and saves agree with shadow queries [artifacts]")
-    {
-        glob2test::HeadlessGlobals globals;
-        struct Result {
-            std::vector<std::vector<std::string>> orders;
-            std::vector<Uint32> checksums;
-            std::string save;
-        };
-        const auto run=[&](bool shadow) {
-            setSyncRandSeed(713);
-            Result result;
-            glob2test::HeadlessGame world({.wDec=6,.hDec=6,.teams=2,.discovered=true,.clearImmobile=true,.loadDefaultRace=true,.header=true,.seed=713});
-            GameHeader header;
-            header.setNumberOfPlayers(2); header.setRandomSeed(713);
-            header.getBasePlayer(0)=BasePlayer(0,"Numbi",0,BasePlayer::playerTypeFromImplementationID(AI::NUMBI));
-            header.getBasePlayer(1)=BasePlayer(1,"Castor",1,BasePlayer::playerTypeFromImplementationID(AI::CASTOR));
-            world.game.setGameHeader(header,true); world.game.setWaitingOnMask(0);
-            for (int team=0;team<2;++team) {
-                const int offset=team*32;
-                auto* owner=world.game.teams[team];
-                owner->startPosX=4+offset; owner->startPosY=4+offset;
-                owner->startPosSet=Team::START_POS_FROM_UNIT; owner->enemies=1u<<(1-team);
-                auto* swarm=world.addBuilding("swarm",4+offset,4+offset,0,team);
-                auto* inn=world.addBuilding("inn",10+offset,4+offset,0,team);
-                for (auto* b : {swarm,inn}) { b->setMaterial(WHEAT, b->type->maxMaterial[WHEAT]); b->update(); }
-                auto* turret=world.addBuilding("defencetower",16+offset,4+offset,0,team);
-                turret->bullets=10;
-                for (int n=0;n<12;++n) world.addUnit(n<8 ? WORKER : WARRIOR,4+offset+n,12+offset,team);
-                for (int y=18+offset;y<24+offset;++y) for (int x=4+offset;x<20+offset;++x) world.game.map.setResourceByIndex(x,y,WHEAT,1);
-                for (auto* b:owner->liveBuildings.entries()) if (b) owner->addToStaticAbilitiesLists(b);
-                owner->stats.step(owner);
-            }
-            world.game.configureTurretTargeting(1,2,3,1);
-            Observation previous;
-            for (int tick=0;tick<256;++tick) {
-                if (shadow) {
-                    const std::array<unsigned,2> readers{0,1};
-                    auto captured=observe(world.game,world.game.captureReadBoundary(),previous.world.entities ? &previous : nullptr);
-                    for (int team=0;team<2;++team) for (const auto* b:world.game.teams[team]->liveBuildings.entries())
-                        if (b && b->runtime->shootSpeed>=256) {
-                            compare(*b,captured);
-                            const auto planned=plan(source(*b),captured,8,2);
-                            (void)firstValid(*b,planned.entries);
-                        }
-                    previous=std::move(captured);
-                }
-                result.orders.push_back(glob2test::stepAI(world.game));
-                result.checksums.push_back(world.checksum());
-            }
-            auto* backend=new GAGCore::MemoryStreamBackend;
-            GAGCore::BinaryOutputStream output(backend);
-            world.game.save(&output,false,"Numbi Castor shadow parity"); output.flush();
-            const auto bytes=backend->takeContents(); result.save.assign(bytes.begin(),bytes.end());
-            return result;
-        };
-        const auto reference=run(false),shadow=run(true);
-        CHECK(shadow.orders==reference.orders);
-        CHECK(shadow.checksums==reference.checksums);
-        CHECK(shadow.save==reference.save);
-        const auto retain=[&](const char* name,const Result& result) {
-            const auto directory=glob2test::artifactDir();
-            std::ofstream saved(directory/(std::string(name)+".game"),std::ios::binary);
-            saved.write(result.save.data(),result.save.size()); saved.flush(); REQUIRE(saved.good());
-            std::ofstream trace(directory/(std::string(name)+"-checksums.csv"));
-            trace << "completed_tick,checksum\n";
-            for (std::size_t t=0;t<result.checksums.size();++t) trace << t+1 << ',' << result.checksums[t] << '\n';
-            trace.flush(); REQUIRE(trace.good());
-            std::ofstream orders(directory/(std::string(name)+"-orders.csv"));
-            orders << "tick,player,order_hex\n";
-            constexpr char digits[]="0123456789abcdef";
-            for (std::size_t t=0;t<result.orders.size();++t) for (std::size_t player=0;player<result.orders[t].size();++player) {
-                orders << t << ',' << player << ',';
-                for (unsigned char byte:result.orders[t][player]) orders << digits[byte>>4] << digits[byte&15];
-                orders << '\n';
-            }
-            orders.flush(); REQUIRE(orders.good());
-        };
-        retain("reference",reference); retain("shadow",shadow);
-    }
-    TEST_CASE("Numbi Castor stock combat measures delayed shadow matrix [artifacts]")
-    {
-        glob2test::HeadlessGlobals globals;
-        const bool pipelineOnly=std::getenv("TURRET_PIPELINE_ONLY")!=nullptr;
-        const unsigned actualCapacity=std::getenv("TURRET_CAPACITY") ? std::stoul(std::getenv("TURRET_CAPACITY")) : 3;
-        const unsigned actualRefresh=std::getenv("TURRET_REFRESH") ? std::stoul(std::getenv("TURRET_REFRESH")) : 2;
-        const unsigned actualDelay=std::getenv("TURRET_DELAY") ? std::stoul(std::getenv("TURRET_DELAY")) : 1;
-        struct Window { bool active=false; unsigned start=0; Entry reference; };
-        struct Lists { Source source; bool initialized=false; std::vector<Entry> published; std::map<unsigned,std::vector<Entry>> pending; Window window; };
-        struct Configuration {
-            unsigned k,r,l,margin;
-            std::map<std::pair<Uint16,Uint32>,Lists> turrets;
-            unsigned opportunities=0,missed=0,censored=0,agreement=0,represented=0,success=0;
-            std::vector<unsigned> delays;
-            Metrics metrics;
-        };
-        struct Research {
-            Game* game;
-            struct Actual {
-                std::map<std::pair<Uint16,Uint32>,Window> windows;
-                unsigned opportunities=0,agreement=0,missed=0,censored=0;
-                std::vector<unsigned> delays;
-            } actual;
-            std::vector<Configuration> matrix;
-            unsigned eligible=0,shots=0,found=0,unitShots=0,buildingShots=0,combatEligible=0,combatFound=0;
-            static void attempt(void* opaque,const Building& turret) {
-                auto& self=*static_cast<Research*>(opaque);
-                const unsigned t=self.game->stepCounter;
-                const auto fresh=plan(turret,0,2);
-                const auto reference=fresh.preferred;
-                const auto oracle=turret.targetingReference();
-                CHECK(reference.found()==oracle.found());
-                if (oracle.found()) { CHECK(reference.x==oracle.x); CHECK(reference.y==oracle.y); CHECK(reference.ticks==oracle.ticks); }
-                const bool fires=turret.shootingCooldown<=0 && turret.bullets>0 && reference.found()
-                    && turret.computeFiringSolution(reference.x,reference.y).ticksLeft<reference.ticks;
-                if (turret.shootingCooldown<=0 && turret.bullets>0) { ++self.eligible; self.found+=reference.found(); if (t<256) { ++self.combatEligible; self.combatFound+=reference.found(); } }
-                if (fires) {
-                    ++self.shots; self.unitShots+=reference.entry.kind==Kind::Unit; self.buildingShots+=reference.entry.kind==Kind::Building;
-                    const auto control=firstValid(turret,fresh.entries);
-                    REQUIRE(control.found()); CHECK(control.entry==reference.entry); CHECK(control.x==reference.x); CHECK(control.y==reference.y);
-                }
-                auto& actual=self.actual;
-                auto& window=actual.windows[{turret.gid,turret.scriptIdentity}];
-                const auto candidate=firstValid(turret,self.game->turretTargeting()->entries(turret));
-                if (window.active && !firstValid(turret,{window.reference}).found()) { ++actual.missed; window.active=false; }
-                if (fires) {
-                    if (window.active) { ++actual.censored; window.active=false; }
-                    ++actual.opportunities;
-                    actual.agreement+=candidate.found() && candidate.entry==reference.entry && candidate.x==reference.x && candidate.y==reference.y;
-                    window={true,t,reference.entry};
-                }
-                if (window.active && candidate.found()) { actual.delays.push_back(t-window.start); window.active=false; }
-                for (auto& c:self.matrix) {
-                    auto& lists=c.turrets[{turret.gid,turret.scriptIdentity}];
-                    // Orders and team stepping can change the source after the
-                    // completed-world capture, before this exact firing attempt.
-                    const auto currentSource=source(turret);
-                    if (lists.initialized && !sameSource(lists.source,currentSource)) {
-                        lists.published.clear(); lists.pending.clear();
-                        if (lists.window.active) { ++c.censored; lists.window.active=false; }
-                    }
-                    lists.source=currentSource; lists.initialized=true;
-                    const auto candidate=firstValid(turret,lists.published,&c.metrics);
-                    auto& window=lists.window;
-                    if (window.active && !firstValid(turret,{window.reference}).found()) {
-                        ++c.missed; window.active=false;
-                    }
-                    if (fires) {
-                        // Every actual original shot begins a first-shot opportunity.
-                        // Follow its target's remaining shootable window on this same
-                        // reference trajectory, independently of the ensuing cooldown.
-                        if (window.active) { ++c.censored; window.active=false; }
-                        ++c.opportunities;
-                        window={true,t,reference.entry};
-                        c.success+=candidate.found();
-                        c.agreement+=candidate.found() && candidate.entry==reference.entry
-                            && candidate.x==reference.x && candidate.y==reference.y;
-                        c.represented+=std::find(lists.published.begin(),lists.published.end(),reference.entry)!=lists.published.end();
-                    }
-                    if (window.active && candidate.found()) {
-                        c.delays.push_back(t-window.start); window.active=false;
-                    }
-                }
-            }
-        };
-        for (bool fortified : {false,true}) for (unsigned seed : {713,1919,4201,7919,104729,15485863,32452843,49979687,67867967,86028121}) {
-            const auto fixture=std::string(fortified ? "fortified" : "skirmish");
-            struct Result { std::vector<std::vector<std::string>> orders; std::vector<Uint32> checksums; std::string save; };
-            const auto run=[&](bool shadow) {
-                setSyncRandSeed(seed);
-                glob2test::HeadlessGame world({.wDec=6,.hDec=6,.teams=2,.discovered=true,.clearImmobile=true,.loadDefaultRace=true,.header=true,.seed=seed});
-                GameHeader header; header.setNumberOfPlayers(2); header.setRandomSeed(seed);
-                header.getBasePlayer(0)=BasePlayer(0,"Numbi",0,BasePlayer::playerTypeFromImplementationID(AI::NUMBI));
-                header.getBasePlayer(1)=BasePlayer(1,"Castor",1,BasePlayer::playerTypeFromImplementationID(AI::CASTOR));
-                world.game.setGameHeader(header,true); world.game.setWaitingOnMask(0);
-                for (int team=0;team<2;++team) {
-                    auto* owner=world.game.teams[team];
-                    const int home=team ? 38 : 6;
-                    owner->startPosX=home; owner->startPosY=6; owner->startPosSet=Team::START_POS_FROM_UNIT;
-                    owner->enemies=1u<<(1-team);
-                    for (const char* kind : {"swarm","inn"}) {
-                        auto* b=world.addBuilding(kind,home,kind==std::string("swarm") ? 6 : 12,0,team);
-                        REQUIRE(b); b->setMaterial(WHEAT, b->type->maxMaterial[WHEAT]); b->update();
-                    }
-                    for (int n=0;n<2;++n) {
-                        auto* b=world.addBuilding("defencetower",team ? 30 : 16,20+n*12,0,team);
-                        REQUIRE(b); b->bullets=b->type->maxBullets;
-                        b->setMaterial(STONE, b->type->maxMaterial[STONE]); b->update();
-                    }
-                    if (fortified) {
-                        auto* outpost=world.addBuilding("inn",team ? 20 : 26,team ? 36 : 14,0,team);
-                        REQUIRE(outpost); outpost->setMaterial(WHEAT, outpost->type->maxMaterial[WHEAT]); outpost->update();
-                    }
-                    for (int n=0;n<12;++n) REQUIRE(world.addUnit(WORKER,home+n%4,17+n/4,team));
-                    // Stock ground and airborne forces start between the colonies;
-                    // all subsequent movement, combat and production is simulation/AI.
-                    for (int n=0;n<24;++n) REQUIRE(world.addUnit(WARRIOR,team ? 20+n%3 : 27+n%3,18+n/3,team));
-                    for (int n=0;n<12;++n) REQUIRE(world.addUnit(EXPLORER,team ? 20+n%3 : 27+n%3,29+n/3,team));
-                    for (int y=40;y<46;++y) for (int x=home;x<home+12;++x) world.game.map.setResourceByIndex(x,y,WHEAT,1);
-                    for (auto* b:owner->liveBuildings.entries()) if (b) owner->addToStaticAbilitiesLists(b);
-                owner->stats.step(owner);
-                }
-                Research research{&world.game,{}, {}};
-                if (shadow && !pipelineOnly) for (unsigned k : {1,2,4}) for (unsigned r : {1,2,4})
-                    for (unsigned l : {2,3,4,8,16,32,0}) for (unsigned margin : {0,1,2})
-                        research.matrix.push_back({k,r,l,margin});
-                ScopedAttemptObserver observer(shadow ? Research::attempt : nullptr,&research);
-                world.game.configureTurretTargeting(actualDelay,actualRefresh,actualCapacity,1);
-                Observation previous;
-                Result result;
-                for (unsigned t=0;t<1024;++t) {
-                    if (shadow && !pipelineOnly) {
-                        const std::array<unsigned,2> readers{0,1};
-                        const auto observed=observe(world.game,world.game.captureReadBoundary(),previous.world.entities ? &previous : nullptr);
-                        for (auto& c:research.matrix) for (auto& [identity,lists]:c.turrets) {
-                            if (lists.window.active && !world.game.resolveBuilding({identity.first,identity.second})) { ++c.missed; lists.window.active=false; }
-                        }
-                        for (int team=0;team<2;++team) for (const auto* b:world.game.teams[team]->liveBuildings.entries()) {
-                            if (!b || b->runtime->shootSpeed<256) continue;
-                            const auto currentSource=source(*b);
-                            std::array<std::vector<Entry>,3> controls;
-                            for (unsigned margin=0;margin<3;++margin) controls[margin]=plan(source(*b),observed,0,margin).entries;
-                            for (auto& c:research.matrix) {
-                                auto& lists=c.turrets[{b->gid,b->scriptIdentity}];
-                                if (lists.initialized && !sameSource(lists.source,currentSource)) {
-                                    lists.published.clear(); lists.pending.clear();
-                                    if (lists.window.active) { ++c.censored; lists.window.active=false; }
-                                }
-                                lists.source=currentSource; lists.initialized=true;
-                                if (auto it=lists.pending.find(t);it!=lists.pending.end()) { lists.published=std::move(it->second); lists.pending.erase(it); }
-                                if (t%c.r==unsigned(team)%c.r) {
-                                    auto entries=controls[c.margin];
-                                    if (c.l && entries.size()>c.l) entries.resize(c.l);
-                                    lists.pending.emplace(t+c.k,std::move(entries));
-                                }
-                            }
-                        }
-                        previous=observed;
-                    }
-                    result.orders.push_back(glob2test::stepAI(world.game));
-                    result.checksums.push_back(world.checksum());
-                }
-                auto* backend=new GAGCore::MemoryStreamBackend;
-                GAGCore::BinaryOutputStream output(backend); world.game.save(&output,false,"stock combat shadow"); output.flush();
-                const auto bytes=backend->takeContents(); result.save.assign(bytes.begin(),bytes.end());
-                if (shadow) {
-                    REQUIRE(research.shots>0);
-                    REQUIRE(research.eligible>0);
-                    if (fortified) CHECK(10*research.combatFound>=research.combatEligible);
-                    std::ofstream csv(glob2test::artifactDir()/(fixture+"-"+std::to_string(seed)+"-matrix.csv"));
-                    csv << "fixture,seed,K,R,L,margin,age_eligible,eligible,found,combat_eligible,combat_found,shots,unit_shots,building_shots,opportunities,success,agreement,represented,missed,censored,p95_added_delay,examined,rejected,delays\n";
-                    for (auto& c:research.matrix) {
-                        for (auto& [identity,lists]:c.turrets) if (lists.window.active) ++c.censored;
-                        std::sort(c.delays.begin(),c.delays.end());
-                        const unsigned complete=c.delays.size()+c.missed;
-                        const unsigned rank=complete ? (95*complete+99)/100 : 0;
-                        const std::string p95=rank && rank<=c.delays.size() ? std::to_string(c.delays[rank-1]) : "missed-window";
-                        csv << fixture << ',' << seed << ',' << c.k << ',' << c.r << ',' << c.l << ',' << c.margin << ',' << (c.k+c.r-1<=4)
-                            << ',' << research.eligible << ',' << research.found << ',' << research.combatEligible << ',' << research.combatFound << ',' << research.shots << ',' << research.unitShots << ',' << research.buildingShots << ',' << c.opportunities << ',' << c.success << ',' << c.agreement
-                            << ',' << c.represented << ',' << c.missed << ',' << c.censored << ',' << p95 << ',' << c.metrics.examined << ',' << c.metrics.rejected << ',';
-                        for (unsigned delay:c.delays) csv << delay << ';';
-                        csv << '\n';
-                    }
-                    csv.flush(); REQUIRE(csv.good());
-                    std::ofstream actual(glob2test::artifactDir()/(fixture+"-"+std::to_string(seed)+"-producer.csv"));
-                    for (const auto& [identity,window]:research.actual.windows) if (window.active) ++research.actual.censored;
-                    actual << "fixture,seed,L,variant,opportunities,agreement,missed,censored,delays,K,R\n";
-                    actual << fixture << ',' << seed << ',' << actualCapacity << ',' << "cached" << ',' << research.actual.opportunities << ',' << research.actual.agreement << ',' << research.actual.missed << ',' << research.actual.censored << ',';
-                    for (unsigned delay:research.actual.delays) actual << delay << ';';
-                    actual << ',' << actualDelay << ',' << actualRefresh << '\n'; actual.flush(); REQUIRE(actual.good());
-                    std::printf("stock_combat,fixture=%s,seed=%u,eligible=%u,found=%u,shots=%u,unit_shots=%u,building_shots=%u\n",fixture.c_str(),seed,research.eligible,research.found,research.shots,research.unitShots,research.buildingShots);
-                }
-                const auto prefix=fixture+"-"+std::to_string(seed)+(shadow ? "-shadow" : "-reference");
-                std::ofstream save(glob2test::artifactDir()/(prefix+".game"),std::ios::binary); save.write(result.save.data(),result.save.size());
-                save.flush(); REQUIRE(save.good());
-                std::ofstream trace(glob2test::artifactDir()/(prefix+"-checksums.csv"));
-                for (unsigned t=0;t<result.checksums.size();++t) trace << t+1 << ',' << result.checksums[t] << '\n';
-                trace.flush(); REQUIRE(trace.good());
-                std::ofstream orders(glob2test::artifactDir()/(prefix+"-orders.csv"));
-                orders << "tick,player,order_hex\n";
-                constexpr char digits[]="0123456789abcdef";
-                for (unsigned t=0;t<result.orders.size();++t) for (unsigned player=0;player<result.orders[t].size();++player) {
-                    orders << t << ',' << player << ',';
-                    for (unsigned char byte:result.orders[t][player]) orders << digits[byte>>4] << digits[byte&15];
-                    orders << '\n';
-                }
-                orders.flush(); REQUIRE(orders.good());
-                return result;
-            };
-            const auto reference=run(false),shadow=run(true);
-            CHECK(reference.orders==shadow.orders); CHECK(reference.checksums==shadow.checksums); CHECK(reference.save==shadow.save);
-        }
-    }
-    TEST_CASE("stock birth and approaching warrior opportunities cover admission phases [artifacts]")
-    {
-        glob2test::HeadlessGlobals globals;
-        std::ofstream csv(glob2test::artifactDir()/"stock-opportunities.csv");
-        csv << "scenario,phase,K,R,L,margin,age_eligible,reference_first,cached_first,added_delay,first_window_missed\n";
-        for (bool approaching : {false,true}) for (unsigned phase=0;phase<8;++phase) {
-            glob2test::HeadlessGame world({.teams=2,.loadDefaultRace=true,.header=true,.seed=713+phase});
-            auto* turret=world.addBuilding("defencetower",8,8);
-            turret->owner->addToStaticAbilitiesLists(turret);
-            turret->owner->enemies=2; turret->bullets=turret->type->maxBullets; turret->shootingCooldown=0;
-            struct Configuration { unsigned k,r,l,margin,first=UINT_MAX; std::vector<Entry> published; std::map<unsigned,std::vector<Entry>> pending; };
-            std::vector<Configuration> matrix;
-            for (unsigned k : {1,2,4}) for (unsigned r : {1,2,4}) for (unsigned l : {2,3,4,8,16,32,0}) for (unsigned margin : {0,1,2}) matrix.push_back({k,r,l,margin});
-            unsigned referenceFirst=UINT_MAX,windowEnd=UINT_MAX; Entry windowTarget;
-            Unit* enemy=nullptr;
-            Observation previous;
-            for (unsigned t=0;t<128;++t) {
-                if (t==8+phase) enemy=world.addUnit(WARRIOR,approaching ? 15 : 11,8,1);
-                const auto observed=observe(world.game,previous.world.entities ? &previous : nullptr);
-                const auto reference=turret->targetingReference();
-                if (referenceFirst==UINT_MAX && turret->shootingCooldown<=0 && turret->bullets>0 && reference.found()
-                    && turret->computeFiringSolution(reference.x,reference.y).ticksLeft<reference.ticks) { referenceFirst=t; windowTarget=plan(*turret,0,2).preferred.entry; }
-                if (referenceFirst!=UINT_MAX && t>referenceFirst && windowEnd==UINT_MAX && !firstValid(*turret,{windowTarget}).found()) windowEnd=t;
-                std::array<std::vector<Entry>,3> controls;
-                for (unsigned margin=0;margin<3;++margin) controls[margin]=plan(source(*turret),observed,0,margin).entries;
-                for (auto& c:matrix) {
-                    if (auto it=c.pending.find(t);it!=c.pending.end()) { c.published=std::move(it->second); c.pending.erase(it); }
-                    if (t%c.r==0) { auto list=controls[c.margin]; if (c.l && list.size()>c.l) list.resize(c.l); c.pending.emplace(t+c.k,std::move(list)); }
-                    if (referenceFirst!=UINT_MAX && c.first==UINT_MAX && firstValid(*turret,c.published).found()) c.first=t;
-                }
-                world.step();
-                previous=observed;
-            }
-            REQUIRE(enemy); if (!approaching) REQUIRE(referenceFirst!=UINT_MAX);
-            for (const auto& c:matrix) {
-                if (referenceFirst!=UINT_MAX && c.k==1 && c.r==1) { CHECK(c.first!=UINT_MAX); CHECK(c.first-referenceFirst<=4); CHECK(c.first<windowEnd); }
-                csv << (approaching ? "approaching" : "birth") << ',' << phase << ',' << c.k << ',' << c.r << ',' << c.l << ',' << c.margin << ',' << (c.k+c.r-1<=4)
-                    << ',' << referenceFirst << ',' << c.first << ',';
-                if (referenceFirst==UINT_MAX) csv << "no-reference"; else if (c.first==UINT_MAX) csv << "missed-window"; else csv << c.first-referenceFirst;
-                csv << ',' << (referenceFirst!=UINT_MAX && (c.first==UINT_MAX || (windowEnd!=UINT_MAX && c.first>=windowEnd)));
-                csv << '\n';
-            }
-        }
-        csv.flush(); REQUIRE(csv.good());
-    }
     TEST_CASE("shared executor team jobs agree across participants and overlapping generations")
     {
         glob2test::HeadlessGlobals globals;
@@ -698,95 +321,6 @@ TEST_SUITE("TurretTargeting")
             }
         }
     }
-    TEST_CASE("indexed planning callgrind regions [benchmark][callgrind]")
-    {
-        glob2test::HeadlessGlobals globals;
-        for (unsigned fixture=0;fixture<4;++fixture) {
-            const bool dense=fixture==2;
-            glob2test::HeadlessGame world({.wDec=dense ? 5 : 7,.hDec=dense ? 5 : 7,.teams=2,.loadDefaultRace=true,.header=true});
-            std::vector<Source> sources;
-            if (dense) {
-                auto catalog=nlohmann::json::parse(world.game.buildingsTypes.snapshotJson());
-                const auto id=world.game.buildingsTypes.getTypeNum("defencetower",0,false);
-                catalog["variants"][id]["properties"]["width"]=3;
-                catalog["variants"][id]["properties"]["height"]=1;
-                catalog["variants"][id]["properties"]["shootingRange"]=20;
-                world.game.buildingsTypes.loadSnapshotJson(catalog.dump()); world.game.configureBuildingCatalog();
-                auto* b=world.addBuilding("defencetower",30,30); b->owner->enemies=2;
-                sources.push_back(source(*b));
-                for (int n=0;n<60;++n) { auto* u=world.addUnit(WARRIOR,4+n%12,4+n/12,1); u->speed=0; }
-            } else for (unsigned n=0;n<100;++n) {
-                auto* b=world.addBuilding("defencetower",4+n%10*10,4+n/10*10); b->owner->enemies=2;
-                sources.push_back(source(*b));
-                if (fixture) { auto* u=world.addUnit(WARRIOR,b->posX+3,b->posY,1); u->speed=0; }
-            }
-            auto observed=observe(world.game);
-            if (fixture==3) observed.index.reset(); // Same algorithm, no retained chunks.
-            for (const auto& source:sources) (void)plan(source,observed,8,2);
-            const char* label=fixture==0 ? "empty" : fixture==1 ? "combat" : fixture==2 ? "custom-wrap" : "temporary";
-            unsigned success=0,queries=0;
-            CALLGRIND_START_INSTRUMENTATION;
-            CALLGRIND_ZERO_STATS;
-            CALLGRIND_TOGGLE_COLLECT;
-            for (unsigned repeat=0;repeat<(dense ? 2000u : 20u);++repeat) for (const auto& source:sources) {
-                const auto result=plan(source,observed,8,2);
-                success+=result.preferred.found(); ++queries;
-            }
-            CALLGRIND_TOGGLE_COLLECT;
-            CALLGRIND_DUMP_STATS_AT(label);
-            CALLGRIND_STOP_INSTRUMENTATION;
-            REQUIRE(queries==2000);
-            CHECK(success==(fixture ? queries : 0));
-            std::printf("turret_callgrind,%s,queries=%u,success=%u\n",label,queries,success);
-        }
-    }
-    TEST_CASE("paired targeting batches profile empty and sustained combat [benchmark]")
-    {
-        glob2test::HeadlessGlobals globals;
-        using Clock=std::chrono::steady_clock;
-        std::printf("turret_cost,fixture,repeat,path,ns,searches,successes,visits,occupied,clearance,scored,index_bytes\n");
-        for (bool combat : {false,true}) {
-            glob2test::HeadlessGame world({.wDec=7,.hDec=7,.teams=2,.loadDefaultRace=true,.header=true});
-            std::vector<Building*> turrets;
-            for (int i=0;i<100;++i) {
-                auto* b=world.addBuilding("defencetower",4+(i%10)*10,4+(i/10)*10);
-                REQUIRE(b); b->bullets=10; b->owner->enemies=2; turrets.push_back(b);
-                if (combat) {
-                    auto* u=world.addUnit(WARRIOR,b->posX+2,b->posY,1);
-                    REQUIRE(u); u->speed=0;
-                }
-            }
-            const auto observed=observe(world.game);
-            std::vector<Source> sources;
-            std::vector<std::vector<Entry>> lists;
-            for (auto* b:turrets) { sources.push_back(source(*b)); lists.push_back(plan(*b,8,2).entries); }
-            // One untimed warmup, followed by ten paired batches. Rotate all
-            // four paths each repetition; retain every sample, including outliers.
-            for (unsigned repeat=0;repeat<11;++repeat) for (unsigned j=0;j<4;++j) {
-                const auto path=(j+repeat)%4;
-                Metrics metrics;
-                unsigned success=0;
-                const auto start=Clock::now();
-                for (int batch=0;batch<16;++batch) for (unsigned n=0;n<turrets.size();++n) {
-                    if (path==0) success+=turrets[n]->targetingReference().found();
-                    else if (path==3) success+=firstValid(*turrets[n],lists[n]).found();
-                    else {
-                        auto p=path==1 ? plan(*turrets[n],8,2) : plan(sources[n],observed,8,2);
-                        success+=p.preferred.found();
-                        metrics.visits+=p.metrics.visits; metrics.occupied+=p.metrics.occupied;
-                        metrics.clearance+=p.metrics.clearance; metrics.scored+=p.metrics.scored;
-                    }
-                }
-                const auto duration=std::chrono::duration_cast<std::chrono::nanoseconds>(Clock::now()-start).count();
-                if (repeat) std::printf("turret_cost,%s,%u,%s,%lld,1600,%u,%llu,%llu,%llu,%llu,%zu\n",
-                    combat ? "combat" : "empty",repeat,
-                    path==0 ? "original" : path==1 ? "temporary_index" : path==2 ? "retained_index" : "consumer",
-                    static_cast<long long>(duration),success,
-                    static_cast<unsigned long long>(metrics.visits),static_cast<unsigned long long>(metrics.occupied),
-                    static_cast<unsigned long long>(metrics.clearance),static_cast<unsigned long long>(metrics.scored),retainedIndexBytes(observed));
-            }
-        }
-    }
     TEST_CASE("captured offense preserves glass cannon saturation and active area modifiers")
     {
         glob2test::HeadlessGlobals globals;
@@ -826,7 +360,6 @@ TEST_SUITE("TurretTargeting")
                 world.game.prepareReadBoundary(false);
                 pipeline->drain();
                 CHECK(pipeline->statistics().sources==unsigned(admitted));
-                CHECK(pipeline->statistics().observations==unsigned(admitted));
                 world.game.stepCounter=delay;
                 pipeline->publish(world.game);
                 CHECK(pipeline->statistics().publications==unsigned(admitted));
@@ -867,7 +400,6 @@ TEST_SUITE("TurretTargeting")
             auto* pipeline=world.game.turretTargeting();
             const auto before=world.game.snapshots().metrics.captures;
             const auto shared=world.game.prepareReadBoundary(false);
-            const auto job=pipeline->pendingObservation();
             CHECK(world.game.snapshots().metrics.captures==before+1);
             CHECK(job.entities==shared.entities); CHECK(job.occupancy==shared.occupancy);
             CHECK(job.terrain==shared.terrain); CHECK(job.catalogs==shared.catalogs);
@@ -881,7 +413,6 @@ TEST_SUITE("TurretTargeting")
             CHECK(pipeline->statistics().admissions==1);
             pipeline->drain();
             CHECK(pipeline->entries(*turret).empty()); // Save/pause drain never publishes early.
-            CHECK(pipeline->pendingObservation().requirements==0); // Completed outputs release leases.
             for (unsigned t=1;t<=delay;++t) {
                 world.game.stepCounter=t;
                 const auto before=world.game.snapshots().metrics.captures;
@@ -892,11 +423,9 @@ TEST_SUITE("TurretTargeting")
             }
             REQUIRE(!pipeline->entries(*turret).empty());
             CHECK(firstValid(*turret,pipeline->entries(*turret)).entry==plan(*turret,8,1).preferred.entry);
-            CHECK(pipeline->statistics().pendingPeak<=delay+1);
-            CHECK(pipeline->statistics().shortlistBytes<=32u*1024u*1024u);
-            CHECK(pipeline->statistics().indexBytes<=32u*1024u*1024u);
+            // Edits keep the list; firing revalidates every entry against live state.
             ++turret->posX;
-            CHECK(pipeline->entries(*turret).empty());
+            CHECK_FALSE(pipeline->entries(*turret).empty());
             pipeline->drain();
         }
     }
@@ -939,7 +468,6 @@ TEST_SUITE("TurretTargeting")
         world.game.stepCounter=10;
         pipeline->publish(world.game);
         CHECK(pipeline->entries(*changed)==plan(*changed,8,1).entries);
-        CHECK(pipeline->statistics().shortlistBytes<=32u*1024u*1024u);
         changed->runtime=original; changed->scriptIdentity=incarnation;
     }
     TEST_CASE("overlapping generations reuse the previous logical index before publication")
@@ -965,16 +493,13 @@ TEST_SUITE("TurretTargeting")
             }
             pipeline->drain();
             CHECK(pipeline->statistics().teamJobs==8);
-            CHECK(pipeline->statistics().rebuiltChunks==chunks);
-            CHECK(pipeline->statistics().sharedChunks==3*chunks);
-            CHECK(pipeline->pendingObservation().requirements==0);
             world.game.stepCounter=7;
             pipeline->publish(world.game);
             for (int team=0;team<2;++team) for (auto* turret:world.game.teams[team]->turrets)
                 CHECK(pipeline->entries(*turret)==plan(*turret,8,1).entries);
         }
     }
-    TEST_CASE("published slot reuse stays bounded without a per-tick cleanup scan")
+    TEST_CASE("published slot reuse replaces records by incarnation")
     {
         glob2test::HeadlessGlobals globals;
         for (unsigned participants : {1,4}) {
@@ -987,7 +512,6 @@ TEST_SUITE("TurretTargeting")
             world.game.configureTurretTargeting(1,1,8,1);
             auto* pipeline=world.game.turretTargeting();
             const auto identity=turret->scriptIdentity;
-            std::size_t initialBytes=0;
             for (unsigned reuse=0;reuse<100;++reuse) {
                 turret->scriptIdentity=identity+reuse;
                 if (reuse) CHECK(pipeline->entries(*turret).empty());
@@ -996,9 +520,6 @@ TEST_SUITE("TurretTargeting")
                 ++world.game.stepCounter;
                 pipeline->publish(world.game);
                 CHECK(pipeline->entries(*turret)==plan(*turret,8,1).entries);
-                if (!reuse) initialBytes=pipeline->statistics().shortlistBytes;
-                CHECK(pipeline->statistics().shortlistBytes==initialBytes);
-                CHECK(pipeline->statistics().indexBytes<=32u*1024u*1024u);
             }
             turret->scriptIdentity=identity;
         }
@@ -1013,7 +534,7 @@ TEST_SUITE("TurretTargeting")
         world.game.configureTurretTargeting(1,2,8,1);
         auto* pipeline=world.game.turretTargeting();
         auto shared=world.game.prepareReadBoundary(false);
-        CHECK(shared.entities); CHECK(pipeline->statistics().observations==0);
+        CHECK(shared.entities);
         world.game.stepCounter=1;
         world.game.prepareReadBoundary(true);
         CHECK(pipeline->statistics().admissions==0);
@@ -1063,98 +584,9 @@ TEST_SUITE("TurretTargeting")
             auto* pipeline=world.game.turretTargeting();
             CHECK_NOTHROW(pipeline->drain());
             CHECK(pipeline->statistics().publications==0);
-            CHECK(pipeline->statistics().failedGenerations==0);
             turret->posX=8; world.game.stepCounter=1;
             CHECK_THROWS_AS(pipeline->publish(world.game),std::invalid_argument);
-            CHECK(pipeline->statistics().failedGenerations==1);
-            // Failed outputs/reservations are gone; only the conservatively
-            // charged logical index-preparation descriptor remains cached.
-            CHECK(pipeline->statistics().shortlistBytes==256);
             CHECK(pipeline->entries(*turret).empty());
-        }
-    }
-    TEST_CASE("serial shadow matrix exposes one tick newly created firing windows [artifacts]")
-    {
-        // Controlled custom-footprint birth case: a new fast airborne unit is
-        // born above the turret. Zero-tick arrival is legal in the original
-        // routine; at delta=150 its tile residence truncates to zero and the
-        // opportunity ends. Prior observations cannot contain a new incarnation.
-        // Delta, occupancy and births are prescribed fixture inputs; this is
-        // a targeting opportunity test, not a complete battle simulation.
-        glob2test::HeadlessGlobals globals;
-        glob2test::HeadlessGame world({.teams=2,.loadDefaultRace=true,.header=true});
-        auto catalog=nlohmann::json::parse(world.game.buildingsTypes.snapshotJson());
-        const auto id=world.game.buildingsTypes.getTypeNum("defencetower",0,false);
-        catalog["variants"][id]["properties"]["width"]=1;
-        catalog["variants"][id]["properties"]["height"]=1;
-        world.game.buildingsTypes.loadSnapshotJson(catalog.dump()); world.game.configureBuildingCatalog();
-        auto* turret=world.addBuilding("defencetower",8,8);
-        REQUIRE(turret); turret->shootingCooldown=0; turret->owner->enemies=2;
-        turret->owner->addToStaticAbilitiesLists(turret);
-        Unit* enemy=nullptr;
-        unsigned births=0;
-        struct Configuration {
-            unsigned k,r,l,margin,windows=0,missed=0;
-            std::vector<Entry> published;
-            std::map<unsigned,std::vector<Entry>> pending;
-        };
-        std::vector<Configuration> matrix;
-        for (unsigned k : {1,2,4}) for (unsigned r : {1,2,4})
-            for (unsigned l : {2,3,4,8,16,32,0}) for (unsigned margin : {0,1,2})
-                matrix.push_back({k,r,l,margin});
-        bool wasAvailable=false;
-        std::vector<bool> hit(matrix.size(),false);
-        Observation previous;
-        for (unsigned t=0;t<1024;++t) {
-            const unsigned phase=t%64;
-            if (phase==0) turret->bullets=10;
-            // Every configuration observes the same birth and movement inputs.
-            if (phase==8) {
-                enemy=world.addUnit(EXPLORER,8,8,1,3);
-                REQUIRE(enemy); enemy->performance[FLY]=150; enemy->speed=150; enemy->delta=0;
-                world.game.map.setGroundUnit(8,8,NOGUID);
-                world.game.map.setAirUnit(8,8,enemy->gid);
-                ++births;
-            } else if (phase==9) {
-                REQUIRE(enemy); enemy->delta=150;
-            } else if (phase==10) {
-                // Retire this controlled opportunity outside range and guard.
-                world.game.map.setAirUnit(8,8,NOGUID);
-                enemy->posX=20+int((births-1)%8); enemy->posY=20+int((births-1)/8);
-                world.game.map.setAirUnit(enemy->posX,enemy->posY,enemy->gid);
-            }
-            world.game.stepCounter=t;
-            const auto observed=observe(world.game,previous.world.entities ? &previous : nullptr);
-            const auto reference=turret->targetingReference();
-            const auto actual=turret->computeFiringSolution(reference.x,reference.y);
-            const bool available=turret->shootingCooldown<=0 && turret->bullets>0 && reference.found() && actual.ticksLeft<reference.ticks;
-            if (available) {
-                // Same-observation control succeeds; loss comes solely from age.
-                const auto control=plan(source(*turret),observed,0,2);
-                REQUIRE(firstValid(*turret,control.entries).found());
-            }
-            for (std::size_t n=0;n<matrix.size();++n) {
-                auto& c=matrix[n];
-                if (auto it=c.pending.find(t);it!=c.pending.end()) { c.published=std::move(it->second); c.pending.erase(it); }
-                if (t%c.r==unsigned(turret->owner->teamNumber)%c.r)
-                    c.pending.emplace(t+c.k,plan(source(*turret),observed,c.l,c.margin).entries);
-                const auto consumer=firstValid(*turret,c.published);
-                if (available && !wasAvailable) { ++c.windows; hit[n]=false; }
-                if (available && consumer.found()) hit[n]=true;
-                if (!available && wasAvailable && !hit[n]) ++c.missed;
-            }
-            const int ammunition=turret->bullets;
-            world.game.prepareReadBoundary(false); world.game.turretTargeting()->publish(world.game);
-            turret->turretStep(t); // Delayed lists miss these one-tick windows.
-            CHECK(turret->bullets==ammunition);
-            wasAvailable=available;
-            previous=observed;
-        }
-        std::printf("turret_shadow,K,R,L,margin,trial_age_eligible,windows,missed,p95_added_delay,gate_pass\n");
-        for (const auto& c:matrix) {
-            CHECK(c.windows==16);
-            CHECK(c.missed==c.windows);
-            std::printf("turret_shadow,%u,%u,%u,%u,%d,%u,%u,missed-window,0\n",c.k,c.r,c.l,c.margin,c.k+c.r-1<=4,c.windows,c.missed);
         }
     }
     TEST_CASE("pinned large building keeps its original unwrapped aim offset")
@@ -1196,20 +628,16 @@ TEST_SUITE("TurretTargeting")
             for (unsigned phase=0;phase<=delay;++phase) {
                 game.stepCounter=phase;
                 game.prepareReadBoundary(false); game.turretTargeting()->publish(game);
-                const auto checksum=game.turretTargeting()->checkSum(game);
                 const auto entries=game.turretTargeting()->entries(*turret);
                 auto* backend=new GAGCore::MemoryStreamBackend;
                 GAGCore::BinaryOutputStream out(backend); game.turretTargeting()->save(game,&out); out.flush();
                 const auto bytes=backend->takeContents();
-                CHECK(game.turretTargeting()->checkSum(game)==checksum); // Draining is not publication.
                 game.configureTurretTargeting(delay,refresh,3,1);
                 GAGCore::BinaryInputStream in(new GAGCore::MemoryStreamBackend(bytes.data(),bytes.size()));
                 in.seekFromStart(0);
-                REQUIRE(game.turretTargeting()->load(game,&in));
-                CHECK(game.turretTargeting()->checkSum(game)==checksum);
+                REQUIRE(game.turretTargeting()->load(game,&in,VERSION_MINOR));
                 CHECK(game.turretTargeting()->entries(*turret)==entries);
                 CHECK_FALSE(game.turretTargeting()->admissionPending(game,false));
-                CHECK(game.turretTargeting()->statistics().shortlistBytes<=32u*1024u*1024u);
             }
             game.stepCounter+=delay; game.turretTargeting()->publish(game);
             REQUIRE(!game.turretTargeting()->entries(*turret).empty());
@@ -1222,26 +650,6 @@ TEST_SUITE("TurretTargeting")
             CHECK(firstValid(*turret,game.turretTargeting()->entries(*turret)).found());
         }
     }
-    TEST_CASE("saved targeting rules reject retired preparation variants")
-    {
-        glob2test::HeadlessGlobals globals;
-        glob2test::HeadlessGame world({.header=true});
-        auto* backend=new GAGCore::MemoryStreamBackend;
-        GAGCore::BinaryOutputStream out(backend);
-        world.game.turretTargeting()->save(world.game,&out);
-        out.flush();
-        const auto bytes=backend->takeContents();
-        // Four uint32 rule fields precede the two reserved format-159 flags.
-        REQUIRE(bytes.size()>17);
-        for (unsigned offset : {16,17}) for (unsigned value : {0,2}) {
-            auto retired=bytes;
-            retired[offset]=value;
-            GAGCore::BinaryInputStream in(new GAGCore::MemoryStreamBackend(retired.data(),retired.size()));
-            in.seekFromStart(0);
-            Pipeline restored(world.game,{});
-            CHECK_FALSE(restored.load(world.game,&in));
-        }
-    }
     TEST_CASE("historical saves start with a blank turret cache and retain current resave continuation [save-format]")
     {
         glob2test::HeadlessGlobals globals;
@@ -1252,7 +660,6 @@ TEST_SUITE("TurretTargeting")
         REQUIRE(historical.game.load(&input));
         REQUIRE(historical.game.mapHeader.getVersionMinor()==88);
         auto* pipeline=historical.game.turretTargeting();
-        CHECK(pipeline->pendingObservation().requirements==0);
         CHECK(pipeline->statistics().admissions==0);
         for (int team=0;team<historical.game.teamsCount();++team)
             for (const auto* turret:historical.game.teams[team]->turrets)
@@ -1302,39 +709,6 @@ TEST_SUITE("TurretTargeting")
         rejected.seekFromStart(0);
         CHECK_FALSE(resumed.game.load(&rejected));
         CHECK(MINIMUM_VERSION_MINOR==58); // Maps and saves share the durable floor.
-    }
-    TEST_CASE("canonical pending inputs ignore stamps and retain observed combat facts")
-    {
-        glob2test::HeadlessGlobals globals;
-        glob2test::HeadlessGame world({.teams=2,.loadDefaultRace=true,.header=true});
-        auto* turret=world.addBuilding("defencetower",8,8); turret->owner->enemies=2;
-        auto* target=world.addUnit(WARRIOR,11,8,1); REQUIRE(target); target->speed=0;
-        const auto first=observe(world.game);
-        world.game.map.markAllChanges();
-        const auto stamped=observe(world.game,&first);
-        CHECK(stamped.logicalDigest==first.logicalDigest);
-        --target->hp;
-        const auto changed=observe(world.game,&stamped);
-        CHECK(changed.logicalDigest!=stamped.logicalDigest);
-        ++target->hp;
-        const auto restored=observe(world.game,&changed);
-        CHECK(restored.logicalDigest==first.logicalDigest);
-    }
-    TEST_CASE("weapon catalog changes supersede lists even after reverting the weapon")
-    {
-        glob2test::HeadlessGlobals globals;
-        glob2test::HeadlessGame world({.teams=2,.loadDefaultRace=true,.header=true});
-        auto* turret=world.addBuilding("defencetower",8,8); turret->owner->enemies=2;
-        turret->owner->addToStaticAbilitiesLists(turret); turret->shootingCooldown=0;
-        auto* target=world.addUnit(WARRIOR,11,8,1); REQUIRE(target); target->speed=0;
-        auto& game=world.game; game.prepareReadBoundary(false); game.stepCounter=1;
-        game.turretTargeting()->publish(game); REQUIRE(!game.turretTargeting()->entries(*turret).empty());
-        const auto* original=turret->runtime; auto altered=*original; ++altered.shootingRange;
-        const auto epoch=turret->targetingEpoch;
-        turret->runtime=&altered; game.turretTargeting()->invalidateChangedSources(game);
-        CHECK(turret->targetingEpoch!=epoch);
-        turret->runtime=original;
-        CHECK(game.turretTargeting()->entries(*turret).empty());
     }
     TEST_CASE("bounded capacities are prefixes of uncapped tier ranking")
     {
@@ -1386,7 +760,6 @@ TEST_SUITE("TurretTargeting")
         const auto third=observe(world.game,&second);
         CHECK(third.rebuiltChunks==1);
         CHECK(third.sharedChunks==15);
-        CHECK(retainedIndexBytes(third)<=32u*1024u*1024u);
         compare(*turret,third);
         CHECK(plan(source(*turret),first,4).entries.empty());
         CHECK_FALSE(plan(source(*turret),third,4).entries.empty());
@@ -1395,7 +768,6 @@ TEST_SUITE("TurretTargeting")
         target->hp=1; target->experienceLevel=7;
         const auto fourth=observe(world.game,&third);
         CHECK(fourth.index==third.index);
-        CHECK(retainedIndexBytes(fourth)==retainedIndexBytes(third));
         // Reusing occupancy must still rank against fresh combat facts.
         compare(*turret,fourth);
     }

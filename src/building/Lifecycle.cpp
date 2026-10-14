@@ -373,7 +373,7 @@ void Building::load(GAGCore::InputStream *stream, BuildingsTypes *types, Team *o
 	if (savedTypeNum < 0 || static_cast<size_t>(savedTypeNum) >= types->size())
 		throw std::runtime_error("Invalid building type");
 	bindType(savedTypeNum,types);
-    if (versionMinor>=FILE_FORMAT_VERSION_TURRET_TARGETING) targetingEpoch=stream->readUint32("targetingEpoch");
+    if (versionMinor>=FILE_FORMAT_VERSION_TURRET_TARGETING && versionMinor<FILE_FORMAT_VERSION_LEAN_TURRET_TARGETING) stream->readUint32("targetingEpoch");
 	configureProductionState();
 	assert(type);
 	updateMaterialsPointer();
@@ -592,7 +592,6 @@ void Building::save(GAGCore::OutputStream *stream)
 
 	// type
 	stream->writeUint32(typeNum, "typeNum");
-    stream->writeUint32(targetingEpoch,"targetingEpoch");
 	// we drop type
 
 	stream->writeSint32(minWorkerLevelToFlag, "minWorkerLevelToFlag");
@@ -827,7 +826,6 @@ void Building::saveCrossRef(GAGCore::OutputStream *stream)
 void Building::bindType(Sint32 id, BuildingsTypes* catalog)
 {
     if (!catalog) catalog=&owner->game->buildingsTypes;
-    if (++targetingEpoch==0) targetingEpoch=1;
     type=catalog->get(id);
     runtime=catalog->getRuntime(id);
     typeNum=Uint16(id);

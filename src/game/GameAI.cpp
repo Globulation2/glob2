@@ -95,9 +95,9 @@ void Game::observeUnpolledAI() {
  for(auto* controller:idle)controller->observe(world);
 }
 
-void Game::configureTurretTargeting(unsigned delay,unsigned refresh,unsigned capacity,unsigned margin,bool profileCpu)
+void Game::configureTurretTargeting(unsigned delay,unsigned refresh,unsigned capacity,unsigned margin)
 {
- auto replacement=std::make_unique<TurretTargeting::Pipeline>(*this,TurretTargeting::Configuration{delay,refresh,capacity,margin,profileCpu});
+ auto replacement=std::make_unique<TurretTargeting::Pipeline>(*this,TurretTargeting::Configuration{delay,refresh,capacity,margin});
  turretTargetingPipeline=std::move(replacement);
 }
 
