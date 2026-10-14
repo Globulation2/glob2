@@ -401,6 +401,7 @@ TEST_SUITE("TurretTargeting")
             const auto before=world.game.snapshots().metrics.captures;
             const auto shared=world.game.prepareReadBoundary(false);
             CHECK(world.game.snapshots().metrics.captures==before+1);
+            const auto job=shared.turretView();
             CHECK(job.entities==shared.entities); CHECK(job.occupancy==shared.occupancy);
             CHECK(job.terrain==shared.terrain); CHECK(job.catalogs==shared.catalogs);
             CHECK(job.teams==shared.teams); CHECK(job.effects==shared.effects);
