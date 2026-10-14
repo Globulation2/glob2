@@ -259,7 +259,7 @@ void HiringPipeline::observe(Game &game, const SimulationSnapshot::Handle &snaps
 	auto batch = std::make_unique<Batch>();
 	batch->tick = tick;
 	batch->due = tick + Delay;
-	batch->work.reserve(game.teamsCount());
+	batch->work.reserve(std::popcount(teamMask));
 	for (unsigned t = 0; t < unsigned(game.teamsCount()); ++t)
 		if (tick % Refresh == t % Refresh)
 		{
@@ -279,14 +279,17 @@ void HiringPipeline::observe(Game &game, const SimulationSnapshot::Handle &snaps
 			throw std::logic_error("Hiring publication horizon exceeded");
 		pending.push_back(std::move(batch));
 		auto &b = *pending.back();
-		std::vector<ComputeExecutor::Group> groups;
-		for (auto &w : b.work)
-			groups.push_back({1, {compute, &w}, ComputeExecutor::HiringLaneBase + w.team});
+		std::array<ComputeExecutor::Group, Team::MAX_COUNT> groups;
+		for (unsigned i = 0; i < b.work.size(); ++i)
+		{
+			auto &w = b.work[i];
+			groups[i] = {1, {compute, &w}, ComputeExecutor::HiringLaneBase + w.team};
+		}
 		metrics.preparationNs += elapsed(prepareStart) - routeNs;
 		const auto submitStart = startTiming();
 		try
 		{
-			b.ticket = executor.submit(groups, ComputeExecutor::boundaryDue(b.due),
+			b.ticket = executor.submit(std::span(groups).first(b.work.size()), ComputeExecutor::boundaryDue(b.due),
 									   {ComputeProducer::Other, b.tick, b.due});
 		}
 		catch (...)
@@ -546,7 +549,7 @@ std::size_t HiringPipeline::outputReservation() const
 	return bytes;
 }
 
-HiringPlanner::Inputs HiringPipeline::bindRoutes(Game &game, SimulationSnapshot::Handle world,
+HiringPlanner::Inputs HiringPipeline::bindRoutes(Game &game, const SimulationSnapshot::Handle &world,
 												 unsigned teamMask)
 {
 	if (world.tick != game.stepCounter)
@@ -570,24 +573,24 @@ HiringPlanner::Inputs HiringPipeline::bindRoutes(Game &game, SimulationSnapshot:
 		// The owner creates safe live generations; worker route queries only
 		// expand the leased generations under their existing locks.
 		const auto &type = inputs.world.catalogs->buildings->at(b.typeNum).resolvedType;
+		const bool footprint =
+			std::any_of(std::begin(type.maxMaterial), std::begin(type.maxMaterial) + MaterialCount,
+						[](int value) { return value > 0; }) ||
+			std::any_of(std::begin(b.wishedMaterials), std::begin(b.wishedMaterials) + MaterialCount,
+						[](int value) { return value > 0; });
+		const bool clearing = type.attractsRole(0);
+		const bool combat = type.attractsRole(1) || type.attractsRole(2);
 		for (unsigned c = 0; c < SWIM_CLASS_COUNT; ++c)
 			if (inputs.world.entities->groundClasses[b.team] & (1u << c))
 			{
 				for (auto route :
 					 {BuildingRoute::Footprint, BuildingRoute::Clearing, BuildingRoute::Combat})
 				{
-					if (route == BuildingRoute::Footprint &&
-						!std::any_of(std::begin(type.maxMaterial),
-									 std::begin(type.maxMaterial) + MaterialCount,
-									 [](int value) { return value > 0; }) &&
-						!std::any_of(std::begin(b.wishedMaterials),
-									 std::begin(b.wishedMaterials) + MaterialCount,
-									 [](int value) { return value > 0; }))
+					if (route == BuildingRoute::Footprint && !footprint)
 						continue;
-					if (route == BuildingRoute::Clearing && !type.attractsRole(0))
+					if (route == BuildingRoute::Clearing && !clearing)
 						continue;
-					if (route == BuildingRoute::Combat &&
-						!(type.attractsRole(1) || type.attractsRole(2)))
+					if (route == BuildingRoute::Combat && !combat)
 						continue;
 					auto field = game.map.leaseBuildingRoute(live, c, route);
 					if (!field)

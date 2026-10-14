@@ -43,7 +43,7 @@ class HiringPipeline
 							  Extras = Hiring::CandidateExtras, Capacity = 128;
 	static constexpr std::size_t MaxOutputBytes = 96u * 1024 * 1024;
 	std::size_t outputReservation() const;
-	static HiringPlanner::Inputs bindRoutes(Game &, SimulationSnapshot::Handle,
+	static HiringPlanner::Inputs bindRoutes(Game &, const SimulationSnapshot::Handle &,
 											unsigned teamMask = ~0u);
 	explicit HiringPipeline(ComputeExecutor &);
 	~HiringPipeline();
