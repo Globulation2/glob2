@@ -913,15 +913,15 @@ TEST_CASE("pending required GPU work cancels at publication and drains through o
     }
 }
 
-TEST_CASE("sequential device adapters retain completed fields when a later ready field declines" *
+TEST_CASE("device adapters retain committed fields when another ready field declines" *
 		  doctest::test_suite("GradientPipeline"))
 {
 	using namespace gradient_kernel;
 	if constexpr (!GAGCore::ThreadSupport::available)
 		return;
-	for (const auto algorithm : {Algorithm::Frozen8, Algorithm::Jacobi})
+	for (const auto [backend,algorithm] : {Configuration{Backend::Vulkan, Algorithm::Frozen8},
+             Configuration{Backend::Vulkan, Algorithm::Jacobi}, Configuration{Backend::OpenCL, Algorithm::Frozen8}})
 	{
-		constexpr auto backend = Backend::Vulkan;
 		struct Gate
 		{
 			std::promise<void> entered, release;
@@ -941,21 +941,18 @@ TEST_CASE("sequential device adapters retain completed fields when a later ready
 			[gate](std::span<const BackendRequest> requests, Plan)
 			{
 				++gate->calls;
-				// A sequential adapter's all-or-nothing batch would discard
-				// its earlier valid member when the later member declines.
-				if (requests.size() != 1)
-					return false;
-				const auto &request = requests.front();
-				if (request.gradient[0] == 76)
-				{
-					gate->entered.set_value();
-					gate->released.wait();
-				}
-				if (request.gradient[0] == 78)
-					return false;
-				request.gradient[0] += 100;
-				*request.executedOnDevice = true;
-				return true;
+                bool complete = true;
+                for (const auto& request : requests) {
+                    if (request.gradient[0] == 76) {
+                        gate->entered.set_value();
+                        gate->released.wait();
+                    }
+                    if (request.gradient[0] == 78) { complete = false; continue; }
+                    request.gradient[0] += 100;
+                    *request.executedOnDevice = true;
+                    *request.deviceExecutionObserved = true;
+                }
+                return complete;
 			}});
 		service->configure(2, backend);
 		const auto until = std::chrono::steady_clock::now() + std::chrono::seconds(5);
@@ -1055,10 +1052,10 @@ TEST_CASE("sequential device adapters retain completed fields when a later ready
 		CHECK_FALSE(contexts[2].field->executedGPU);
 		for (unsigned i = 0; i < contexts.size(); ++i)
 			CHECK(contexts[i].field->due == 1000 + i);
-		CHECK(gate->calls == 3);
+		CHECK(gate->calls == (backend==Backend::OpenCL ? 2 : 3));
 		CHECK(gate->cpu == 1);
-		CHECK(service->metrics().configuredMaxBatch == 1);
-		CHECK(service->metrics().maxBatch == 1);
+		CHECK(service->metrics().configuredMaxBatch == (backend==Backend::OpenCL ? 8 : 1));
+		CHECK(service->metrics().maxBatch == (backend==Backend::OpenCL ? 2 : 1));
 		CHECK(service->metrics().executed == 2);
 		CHECK(service->metrics().fallbacks == 1);
 		service->stop();
