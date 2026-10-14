@@ -1,0 +1,137 @@
+{
+  "metadata": {
+    "sources": {
+      "regions": "b27cf7553b115b5d54de9e6b6ddfd25eefb2fa3f",
+      "versions": "fb2b6174c72213016af7f4e9f4b03a638f62a7bd"
+    },
+    "binary_sha256": {
+      "regions": "f11e77afccffd6f6122ed9998f64c3d7ce181c5a256b68f38ad0b7eae29fb10f",
+      "versions": "ecd02a9a80d0a37ff69cdfea0fdcc00c2a1edc79eb3b9eab684bc7abc1e59882"
+    },
+    "host": "Linux-7.0.0-38-generic-x86_64-with-glibc2.39",
+    "protocol": {
+      "participants": 4,
+      "repetitions": 10,
+      "rotated_order": true,
+      "windows": {
+        "initial": 4096,
+        "colony": [
+          4096,
+          6144
+        ]
+      },
+      "exports": "none; result.json only",
+      "warmup": "one untimed process per arm/window",
+      "benchmark_warmup": 0,
+      "comparison": "same cached policy, custom fingerprints versus existing version keys"
+    }
+  },
+  "timing": [
+    {
+      "window": "initial",
+      "metric": "run_ns",
+      "pairs": 10,
+      "median_control_ns": 1529020738.0,
+      "median_current_ns": 1346252630.0,
+      "geomean_delta_percent": -12.024579723693058,
+      "paired_bootstrap_95_percent": [
+        -12.255846381946096,
+        -11.793619651925082
+      ]
+    },
+    {
+      "window": "initial",
+      "metric": "benchmark_run_cpu_ns",
+      "pairs": 10,
+      "median_control_ns": 5247662257.0,
+      "median_current_ns": 4681690151.5,
+      "geomean_delta_percent": -10.836267727345748,
+      "paired_bootstrap_95_percent": [
+        -11.066703160941103,
+        -10.630693991620504
+      ]
+    },
+    {
+      "window": "initial",
+      "metric": "tick_p95_ns",
+      "pairs": 10,
+      "median_control_ns": 1177416.0,
+      "median_current_ns": 934102.0,
+      "geomean_delta_percent": -20.042037655644002,
+      "paired_bootstrap_95_percent": [
+        -21.281517046053633,
+        -18.7946427072832
+      ]
+    },
+    {
+      "window": "colony",
+      "metric": "run_ns",
+      "pairs": 10,
+      "median_control_ns": 941169400.0,
+      "median_current_ns": 827855255.5,
+      "geomean_delta_percent": -11.962422590323563,
+      "paired_bootstrap_95_percent": [
+        -12.733742510728993,
+        -11.169979722574826
+      ]
+    },
+    {
+      "window": "colony",
+      "metric": "benchmark_run_cpu_ns",
+      "pairs": 10,
+      "median_control_ns": 3166068888.0,
+      "median_current_ns": 2781324996.5,
+      "geomean_delta_percent": -11.998174885368865,
+      "paired_bootstrap_95_percent": [
+        -12.647993166718773,
+        -11.28763461166894
+      ]
+    },
+    {
+      "window": "colony",
+      "metric": "tick_p95_ns",
+      "pairs": 10,
+      "median_control_ns": 1275779.5,
+      "median_current_ns": 1045695.5,
+      "geomean_delta_percent": -18.102940366902263,
+      "paired_bootstrap_95_percent": [
+        -19.238511976757426,
+        -17.069185384172982
+      ]
+    }
+  ],
+  "correctness": {
+    "focused_cases": 41,
+    "failures": 0,
+    "trace_window": "common4096 checkpoint through5120",
+    "participants": [
+      1,
+      2,
+      4,
+      8
+    ],
+    "control_and_current_compact_sha256": "a357e126c006c962591b5c3ed452f51af10e9a958fe0e11ac16a618739d842b1",
+    "control_and_current_verbose_sha256": "0dfab7273cde5f4adfa9b86a8c18ad3fc8092bed2f411e38d0d8bc31873a8bd3"
+  },
+  "limitations": [
+    "One Linux x86-64 host and one river map; two time windows; no broad workload claim",
+    "Comparison of same cached policy implementations, not current production hiring versus original engine",
+    "Desktop activity retained in raw logs; no competing build or benchmark was scheduled",
+    "Callgrind includes setup/load/drain and uses one participant; timings use four participants",
+    "Current small owner-allocation cleanup691ae7670 was not included in these frozen-binary measurements"
+  ],
+  "callgrind": {
+    "initial": {
+      "control_instructions": 6610216489,
+      "current_instructions": 6535466111,
+      "control_planner_inclusive": 536012588,
+      "current_planner_inclusive": 461583082
+    },
+    "colony": {
+      "control_instructions": 8531483791,
+      "current_instructions": 8111020646,
+      "control_planner_inclusive": 1577924034,
+      "current_planner_inclusive": 1157842959
+    }
+  }
+}
