@@ -337,7 +337,9 @@ void validatePropagation(const PropagationField& field)
                                                        field.request.terrainBuckets);
     }
 }
-void batchCPU(const PropagationField &field, Uint16 *out)
+// Keep the large CPU solver separate from validation and the trivial-field path.
+// Removing the batch adapter must not pull all solver variants into that wrapper.
+[[gnu::noinline]] void batchCPU(const PropagationField &field, Uint16 *out)
 {
     using namespace gradient_kernel;
     const auto &terrain = *field.snapshot->terrain;
