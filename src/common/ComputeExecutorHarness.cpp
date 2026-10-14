@@ -32,13 +32,8 @@ TEST_CASE("automatic sizing respects platform limits and supports unknown CPU co
     CHECK(defaultComputeThreadCount(128) == 128);
 #endif
 }
-TEST_CASE("CPU eligibility bounds hints and retains portable fallback when discovery is unknown")
+TEST_CASE("CPU availability provenance distinguishes affinity from hardware hints")
 {
-    CHECK(availableComputeCpuCount(32, 6) == 6);
-    CHECK(availableComputeCpuCount(4, 6) == 4);
-    CHECK(availableComputeCpuCount(0, 6) == 6);
-    CHECK(availableComputeCpuCount(32, 0) == 32);
-    CHECK(availableComputeCpuCount(0, 0) == 1);
     CHECK(std::string(cpuAvailabilitySourceName(cpuAvailabilityObservation(32, 6))) == "affinity-mask");
     const auto hinted = cpuAvailabilityObservation(32);
     CHECK(std::string(cpuAvailabilitySourceName(hinted)) == "hardware-hint-only");

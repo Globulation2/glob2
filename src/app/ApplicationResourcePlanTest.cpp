@@ -8,13 +8,13 @@
 
 TEST_SUITE("ApplicationResourcePlan")
 {
-TEST_CASE("auto respects eligible CPUs without promoting hardware hints to allocations")
+TEST_CASE("auto preserves hardware sizing while reporting CPU eligibility")
 {
-    const auto bounded = resolveApplicationResourcePlan(0, cpuAvailabilityObservation(32, 6), true, {});
-    CHECK(bounded.computeParticipants == 6);
-    CHECK(bounded.cpuAvailability.eligibleLogicalCpuCount == 6);
-    CHECK(std::string(computeParticipantSourceName(bounded)) == "affinity-mask");
-    CHECK_FALSE(bounded.exceedsCpuAllocation);
+    const auto observed = resolveApplicationResourcePlan(0, cpuAvailabilityObservation(32, 6), true, {});
+    CHECK(observed.computeParticipants == defaultComputeThreadCount(32));
+    CHECK(observed.cpuAvailability.eligibleLogicalCpuCount == 6);
+    CHECK(std::string(computeParticipantSourceName(observed)) == "hardware-hint");
+    CHECK(observed.exceedsCpuAllocation);
 
     const auto hinted = resolveApplicationResourcePlan(0, cpuAvailabilityObservation(32), true, {});
     CHECK(hinted.computeParticipants == defaultComputeThreadCount(32));
@@ -23,7 +23,9 @@ TEST_CASE("auto respects eligible CPUs without promoting hardware hints to alloc
     CHECK_FALSE(hinted.exceedsCpuAllocation);
 
     const auto maskOnly = resolveApplicationResourcePlan(0, cpuAvailabilityObservation(0, 4), true, {});
-    CHECK(maskOnly.computeParticipants == 4);
+    CHECK(maskOnly.computeParticipants == 1);
+    CHECK(maskOnly.cpuAvailability.eligibleLogicalCpuCount == 4);
+    CHECK(std::string(computeParticipantSourceName(maskOnly)) == "serial-fallback");
     const auto unknown = resolveApplicationResourcePlan(0, cpuAvailabilityObservation(0), true, {});
     CHECK(unknown.computeParticipants == 1);
     CHECK(std::string(computeParticipantSourceName(unknown)) == "serial-fallback");
@@ -73,14 +75,15 @@ TEST_CASE("resource setup preserves every resolved gradient configuration withou
     CHECK(unthreaded.gradient == jacobi);
     CHECK_FALSE(unthreaded.computeGpuPermitted());
 }
-TEST_CASE("setup provenance distinguishes unknown eligibility and explicit allocation excess")
+TEST_CASE("setup provenance records automatic sizing separately from CPU eligibility")
 {
-    auto plan = resolveApplicationResourcePlan(12, cpuAvailabilityObservation(32, 6), true, {});
+    auto plan = resolveApplicationResourcePlan(0, cpuAvailabilityObservation(32, 6), true, {});
     std::ostringstream allocated;
     writeApplicationResourcePlanJson(allocated, plan);
     CHECK(allocated.str().find("\"eligible_threads\":6") != std::string::npos);
     CHECK(allocated.str().find("\"exceeds_cpu_allocation\":true") != std::string::npos);
-    CHECK(allocated.str().find("\"participant_source\":\"explicit-override\"") != std::string::npos);
+    CHECK(allocated.str().find("\"participant_source\":\"hardware-hint\"") != std::string::npos);
+    CHECK(allocated.str().find("\"cpu_availability_source\":\"affinity-mask\"") != std::string::npos);
     plan = resolveApplicationResourcePlan(0, cpuAvailabilityObservation(32), true, {});
     std::ostringstream unknown;
     writeApplicationResourcePlanJson(unknown, plan);

@@ -40,9 +40,3 @@ CpuAvailabilityObservation discoverComputeCpuAvailability(unsigned hardware) noe
 #endif
     return cpuAvailabilityObservation(hardware);
 }
-// Callers that only need a count retain the same portable fallback policy.
-unsigned availableComputeCpuCount(unsigned hardware) noexcept {
-    const auto observation=discoverComputeCpuAvailability(hardware);
-    return availableComputeCpuCount(hardware,observation.eligibleLogicalCpuCount.value_or(0));
-}
-

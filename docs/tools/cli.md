@@ -269,7 +269,7 @@ Platform: all.
 | `--data-dir` | directory | Add an asset search directory (in order). Repeatable. |
 | `--generator-package` | file | Load a custom generator package or directory. Repeatable. |
 | `--building-catalog` | file | Building catalog manifest. |
-| `--compute-threads` | compute; default auto | Shared compute pool; auto respects available logical CPUs. |
+| `--compute-threads` | compute; default auto | Shared compute pool; auto uses reported logical CPUs. |
 | `--compute-telemetry` | off, waits, trace; default off | Compute wait attribution and scheduler tracing. |
 | `--gpu` | on, off | Legacy gradient selection: on=OpenCL, off=CPU automatic; explicit backend takes precedence. |
 | `--gradient-backend` | cpu, scalar, sse2, neon, opencl, vulkan, webgpu | Gradient computation backend. |
@@ -337,7 +337,7 @@ Platform: all.
 | `--data-dir` | directory | Add an asset search directory (in order). Repeatable. |
 | `--generator-package` | file | Load a custom generator package or directory. Repeatable. |
 | `--building-catalog` | file | Building catalog manifest. |
-| `--compute-threads` | compute; default auto | Shared compute pool; auto respects available logical CPUs. |
+| `--compute-threads` | compute; default auto | Shared compute pool; auto uses reported logical CPUs. |
 | `--compute-telemetry` | off, waits, trace; default off | Compute wait attribution and scheduler tracing. |
 | `--gpu` | on, off | Legacy gradient selection: on=OpenCL, off=CPU automatic; explicit backend takes precedence. |
 | `--gradient-backend` | cpu, scalar, sse2, neon, opencl, vulkan, webgpu | Gradient computation backend. |
@@ -653,7 +653,7 @@ Platform: all.
 | `--building-catalog` | file | Building catalog manifest. |
 | `--data-dir` | directory | Add an asset search directory (in order). Repeatable. |
 | `--generator-package` | file | Load a custom generator package or directory. Repeatable. |
-| `--compute-threads` | compute; default auto | Shared compute pool; auto respects available logical CPUs. |
+| `--compute-threads` | compute; default auto | Shared compute pool; auto uses reported logical CPUs. |
 | `--compute-telemetry` | off, waits, trace; default off | Compute wait attribution and scheduler tracing. |
 | `--gpu` | on, off | Legacy gradient selection: on=OpenCL, off=CPU automatic; explicit backend takes precedence. |
 | `--gradient-backend` | cpu, scalar, sse2, neon, opencl, vulkan, webgpu | Gradient computation backend. |
@@ -754,7 +754,7 @@ Platform: all.
 | `--record-crf` | integer; default 23; 0..51 | Software H.264 quality; lower means higher quality. |
 | `--record-chapter-ticks` | integer; default 10000; ticks; 1..1000000000 | Simulation ticks per chapter. |
 | `--display` | flag; default false | Render the saved game through the normal presentation loop. |
-| `--compute-threads` | compute; default auto | Shared compute pool; auto respects available logical CPUs. |
+| `--compute-threads` | compute; default auto | Shared compute pool; auto uses reported logical CPUs. |
 | `--gpu` | on, off | Legacy gradient selection: on=OpenCL, off=CPU automatic; explicit backend takes precedence. |
 | `--gradient-backend` | cpu, scalar, sse2, neon, opencl, vulkan, webgpu | Gradient computation backend. |
 | `--gradient-algorithm` | buckets, frozen8, jacobi | Gradient computation algorithm. |
@@ -808,7 +808,7 @@ Platform: all.
 | --- | --- | --- |
 | `--output-dir` | directory | Structured job directory; must not already contain result.json. Required. |
 | `--profile` | string; default glob2-verify | Isolated profile label. |
-| `--compute-threads` | compute; default auto | Shared compute pool; auto respects available logical CPUs. |
+| `--compute-threads` | compute; default auto | Shared compute pool; auto uses reported logical CPUs. |
 | `--map-file` | file | Recorded match's map. Required. |
 | `--help` | flag; default false | Show this command's help (also -h). |
 
@@ -852,7 +852,7 @@ Platform: all.
 | `--data-dir` | directory | Add an asset search directory (in order). Repeatable. |
 | `--generator-package` | file | Load a custom generator package or directory. Repeatable. |
 | `--building-catalog` | file | Building catalog manifest. |
-| `--compute-threads` | compute; default auto | Shared compute pool; auto respects available logical CPUs. |
+| `--compute-threads` | compute; default auto | Shared compute pool; auto uses reported logical CPUs. |
 | `--compute-telemetry` | off, waits, trace; default off | Compute wait attribution and scheduler tracing. |
 | `--gpu` | on, off | Legacy gradient selection: on=OpenCL, off=CPU automatic; explicit backend takes precedence. |
 | `--gradient-backend` | cpu, scalar, sse2, neon, opencl, vulkan, webgpu | Gradient computation backend. |
@@ -921,7 +921,7 @@ Platform: all.
 | `--data-dir` | directory | Add an asset search directory (in order). Repeatable. |
 | `--generator-package` | file | Load a custom generator package or directory. Repeatable. |
 | `--building-catalog` | file | Building catalog manifest. |
-| `--compute-threads` | compute; default auto | Shared compute pool; auto respects available logical CPUs. |
+| `--compute-threads` | compute; default auto | Shared compute pool; auto uses reported logical CPUs. |
 | `--compute-telemetry` | off, waits, trace; default off | Compute wait attribution and scheduler tracing. |
 | `--gpu` | on, off | Legacy gradient selection: on=OpenCL, off=CPU automatic; explicit backend takes precedence. |
 | `--gradient-backend` | cpu, scalar, sse2, neon, opencl, vulkan, webgpu | Gradient computation backend. |
@@ -992,7 +992,7 @@ Platform: all.
 | `--data-dir` | directory | Add an asset search directory (in order). Repeatable. |
 | `--generator-package` | file | Load a custom generator package or directory. Repeatable. |
 | `--building-catalog` | file | Building catalog manifest. |
-| `--compute-threads` | compute; default auto | Shared compute pool; auto respects available logical CPUs. |
+| `--compute-threads` | compute; default auto | Shared compute pool; auto uses reported logical CPUs. |
 | `--compute-telemetry` | off, waits, trace; default off | Compute wait attribution and scheduler tracing. |
 | `--gpu` | on, off | Legacy gradient selection: on=OpenCL, off=CPU automatic; explicit backend takes precedence. |
 | `--gradient-backend` | cpu, scalar, sse2, neon, opencl, vulkan, webgpu | Gradient computation backend. |
@@ -1043,7 +1043,7 @@ Platform: all.
 | --- | --- | --- |
 | `--output-dir` | directory | Structured job directory; must not already contain result.json. Required. |
 | `--profile` | string; default glob2-turn-client | Isolated profile label. |
-| `--compute-threads` | compute; default auto | Shared compute pool; auto respects available logical CPUs. |
+| `--compute-threads` | compute; default auto | Shared compute pool; auto uses reported logical CPUs. |
 | `--map-file` | file | Recorded match's map. Required. |
 | `--orders-per-second` | real; default 0.5; 0..2147483647 | Synthetic order rate. |
 | `--max-seconds` | real; default 1800; seconds; 0..2147483647 | Maximum runtime in seconds. |
@@ -1221,7 +1221,7 @@ Platform: all.
 | `--record-encoder` | auto, software; default auto | Embedded encoder selection. |
 | `--record-crf` | integer; default 23; 0..51 | Software H.264 quality; lower means higher quality. |
 | `--record-chapter-ticks` | integer; default 10000; ticks; 1..1000000000 | Simulation ticks per chapter. |
-| `--compute-threads` | compute; default auto | Shared compute pool; auto respects available logical CPUs. |
+| `--compute-threads` | compute; default auto | Shared compute pool; auto uses reported logical CPUs. |
 | `--gpu` | on, off | Legacy gradient selection: on=OpenCL, off=CPU automatic; explicit backend takes precedence. |
 | `--gradient-backend` | cpu, scalar, sse2, neon, opencl, vulkan, webgpu | Gradient computation backend. |
 | `--gradient-algorithm` | buckets, frozen8, jacobi | Gradient computation algorithm. |
@@ -1326,7 +1326,7 @@ Platform: all.
 | `--data-dir` | directory | Add an asset search directory (in order). Repeatable. |
 | `--generator-package` | file | Load a custom generator package or directory. Repeatable. |
 | `--building-catalog` | file | Building catalog manifest. |
-| `--compute-threads` | compute; default auto | Shared compute pool; auto respects available logical CPUs. |
+| `--compute-threads` | compute; default auto | Shared compute pool; auto uses reported logical CPUs. |
 | `--compute-telemetry` | off, waits, trace; default off | Compute wait attribution and scheduler tracing. |
 | `--gpu` | on, off | Legacy gradient selection: on=OpenCL, off=CPU automatic; explicit backend takes precedence. |
 | `--gradient-backend` | cpu, scalar, sse2, neon, opencl, vulkan, webgpu | Gradient computation backend. |

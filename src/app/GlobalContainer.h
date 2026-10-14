@@ -133,8 +133,8 @@ public:
 	bool networkInitialized = false;
 	bool structuredHeadless = false;
 	bool headlessReplay = false;
-	// Zero selects automatic sizing within observed eligibility, with a portable
-	// hardware hint fallback. Counts include the simulation owner.
+	// Zero selects the reported logical CPU count (one if unavailable).
+	// Counts include the simulation owner; affinity is reported separately.
 	unsigned computeThreads = 0;
     ApplicationResourcePlan resourcePlan; // Frozen setup provenance for this session.
     ComputeTelemetryMode computeTelemetry = ComputeTelemetryMode::Off;

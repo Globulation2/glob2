@@ -11,8 +11,7 @@ ApplicationResourcePlan resolveApplicationResourcePlan(unsigned requested,
     plan.requestedComputeThreads = requested;
     plan.threadsSupported = threadsSupported;
     plan.gradient = gradient;
-    const unsigned available = availableComputeCpuCount(cpu.hardwareHint, cpu.eligibleLogicalCpuCount.value_or(0));
-    plan.computeParticipants = threadsSupported ? resolveComputeThreadCount(requested, available) : 1;
+    plan.computeParticipants = threadsSupported ? resolveComputeThreadCount(requested, cpu.hardwareHint) : 1;
     plan.exceedsCpuAllocation = cpu.eligibleLogicalCpuCount &&
         plan.computeParticipants > *cpu.eligibleLogicalCpuCount;
     return plan;
@@ -28,7 +27,6 @@ const char* computeParticipantSourceName(const ApplicationResourcePlan& plan)
 {
     if (!plan.threadsSupported) return "threads-unavailable";
     if (plan.requestedComputeThreads) return "explicit-override";
-    if (plan.cpuAvailability.eligibleLogicalCpuCount) return "affinity-mask";
     if (plan.cpuAvailability.hardwareHint) return "hardware-hint";
     return "serial-fallback";
 }

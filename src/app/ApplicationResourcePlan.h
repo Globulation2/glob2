@@ -22,8 +22,8 @@ struct ApplicationResourcePlan
     }
 };
 
-// Pure injected policy: affinity bounds auto, hardware is the portable fallback,
-// and explicit counts remain unchanged unless the platform cannot run threads.
+// Pure injected policy: auto uses the hardware hint; affinity is observation-only.
+// Explicit counts remain unchanged unless the platform cannot run threads.
 ApplicationResourcePlan resolveApplicationResourcePlan(unsigned requested,
     const CpuAvailabilityObservation&, bool threadsSupported, gradient_kernel::Configuration);
 // Sample eligibility once on the executor-creating thread; no GPU probing.

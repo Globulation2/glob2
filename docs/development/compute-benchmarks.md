@@ -44,12 +44,12 @@ changing only worker count must preserve execution at the same delay.
 
 All sessions use `--compute-threads auto|N`, where N is a positive unsigned
 integer counting total executor participants, including the simulation owner.
-`auto` (the default) uses reported logical CPU threads, bounded on Linux and
-Android by the calling thread's CPU affinity. Unknown affinity retains the
-hardware-count fallback; only missing CPU-count hints fall back to one. Browser
-automatic sizing remains capped at eight. Affinity reflects cpuset restrictions,
-not CPU-time quotas or physical-core throughput. Explicit counts are preserved,
-including values above a discovered allocation; there is no separate limit of 64.
+`auto` (the default) uses reported logical CPU threads, falling back to one if
+the hardware count is unavailable. Browser automatic sizing remains capped at
+eight. Linux/Android CPU affinity is reported separately and does not resize the
+pool; it reflects cpuset restrictions, not CPU-time quotas or physical-core
+throughput. Explicit counts are preserved, including values above the observed
+CPU eligibility; there is no separate limit of 64.
 The background pool has N−1 workers. AI, periodic/building gradients, resource
 growth and presentation share this pool. `--compute-threads 1` is the serial
 compute control. Thread creation failure and platforms without threads also leave
@@ -71,9 +71,9 @@ explicit count), `compute_resolved_threads` records the resolved participant cou
 measured separately from fixed counts; using every logical CPU is not a speedup claim.
 
 `resource_plan` records the session's setup decision: requested/resolved participant
-counts, the eligibility observation or hardware fallback, explicit oversubscription,
-thread support and initial compute-GPU permission/backend. It does not rediscover
-CPU availability when writing results. `compute_threads` and `compute_workers`
+counts, CPU eligibility and hardware hints, whether resolved participants exceed
+observed eligibility, thread support and initial compute-GPU permission/backend.
+It does not rediscover CPU availability when writing results. `compute_threads` and `compute_workers`
 still report actual execution after thread-creation fallback; GPU permission does
 not mean a device accepted or executed work. Reload keeps the setup allocation,
 and live gradient-menu changes retain their existing tick-boundary lifecycle.

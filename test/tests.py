@@ -393,7 +393,6 @@ UNIT_PRODUCTION_SOURCES = [
     '#src/scripting/javascript/ScriptRuntime.cpp',
     '#src/hive/HiveWorker.cpp',
     '#src/common/BitArray.cpp',
-    '#src/common/ComputeThreads.cpp',
     '#src/map/Brush.cpp',
     '#src/map/BrushCoverage.cpp',
     '#src/render/overlay/OverlayFill.cpp',
