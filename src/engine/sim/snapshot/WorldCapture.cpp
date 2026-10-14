@@ -149,7 +149,7 @@ Handle capture(const Game& game,
 	// arrays directly rather than clearing and growing them one cell at a time.
 	entities->funding.clear(); entities->relationships.clear(); entities->projects.clear();
     entities->extraProduction.clear();
-    if (needs(requirements, Component::Entities)) { entities->unitCargo = game.unitCargo; entities->groundClasses.fill(0); }
+    if (needs(requirements, Component::Entities)) { entities->unitCargo = game.unitCargo; entities->availableGroundClasses.fill(0); }
 	if (needs(requirements, Component::Entities)) {
 		const auto teams = game.mapHeader.getNumberOfTeams();
 		std::size_t buildings = 0, units = 0;
@@ -406,7 +406,7 @@ Handle capture(const Game& game,
 				std::memcpy(static_cast<UnitState*>(&v), static_cast<const UnitState*>(u), sizeof(UnitState));
 				v.identity = Game::refOf(u); v.team = t;
 				v.realAttackStrength = u->getRealAttackStrength();
-                if(!v.performance[FLY] && !v.isDead)entities->groundClasses[t]|=Uint8(1u<<Map::swimClass(v.performance[WALK],v.performance[SWIM]));
+                if(!v.performance[FLY] && !v.isDead && v.activity==Unit::ACT_RANDOM && v.medical==Unit::MED_FREE)entities->availableGroundClasses[t]|=Uint8(1u<<Map::swimClass(v.performance[WALK],v.performance[SWIM]));
 				v.attached = Game::refOf(u->attachedBuilding);
 				v.target = Game::refOf(u->targetBuilding);
 			}

@@ -577,7 +577,7 @@ HiringPlanner::Inputs HiringPipeline::bindRoutes(Game &game, const SimulationSna
 		const bool clearing = type.attractsRole(0);
 		const bool combat = type.attractsRole(1) || type.attractsRole(2);
 		for (unsigned c = 0; c < SWIM_CLASS_COUNT; ++c)
-			if (inputs.world.entities->groundClasses[b.team] & (1u << c))
+			if (inputs.world.entities->availableGroundClasses[b.team] & (1u << c))
 			{
 				for (auto route :
 					 {BuildingRoute::Footprint, BuildingRoute::Clearing, BuildingRoute::Combat})

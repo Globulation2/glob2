@@ -156,6 +156,26 @@ TEST_SUITE("HiringPlanner")
 				if (list.key.job == Hiring::Job::Fetch && list.key.material == WHEAT)
 					CHECK(list.candidates.empty());
 	}
+	TEST_CASE("busy ground classes do not initialize unused hiring routes")
+	{
+		glob2test::HeadlessGlobals globals;
+		glob2test::HeadlessGame w({.discovered = true, .loadDefaultRace = true});
+		auto *b = w.addBuilding("inn", 8, 8);
+		b->maxUnitWorking = 1;
+		b->materials[WHEAT] = 0;
+		b->updateCallLists();
+		auto *u = w.addUnit(WORKER, 6, 8);
+		u->medical = Unit::MED_FREE;
+		u->activity = Unit::ACT_FILLING;
+		const auto busy = w.game.captureReadBoundary();
+		CHECK(busy.entities->availableGroundClasses[0] == 0);
+		CHECK(HiringPipeline::bindRoutes(w.game, busy).routes->empty());
+		u->activity = Unit::ACT_RANDOM;
+		w.game.snapshotStore().invalidateBoundary();
+		const auto available = w.game.captureReadBoundary();
+		CHECK(available.entities->availableGroundClasses[0] != 0);
+		CHECK_FALSE(HiringPipeline::bindRoutes(w.game, available).routes->empty());
+	}
 	TEST_CASE("unrelated live route enrollment cannot change hiring inputs")
 	{
 		glob2test::HeadlessGlobals globals;

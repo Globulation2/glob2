@@ -93,7 +93,7 @@ struct FundingState
 };
 struct Entities
 {
-	std::array<Uint8,16> groundClasses{}; // Packed movement classes, filled with unit extraction.
+	std::array<Uint8,16> availableGroundClasses{}; // Available ground movement classes, filled during normal unit extraction.
     // Sparse raw funding facts: absent means all zero. Shared, pooled storage.
     std::vector<FundingState> funding;
     UnitCargoStore unitCargo;
