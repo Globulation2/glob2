@@ -325,7 +325,8 @@ For timing and scheduling, start with `src/game/Game_sync.cpp` and `src/engine/E
   compact statistics), with explicit history, telemetry, entity-diagnostic and
   annotation options. Consumers do not contribute arbitrary capture masks.
   Complete snapshots still share unchanged components and refresh dirty map
-  chunks in reusable buffers. Paused edits, configuration changes and world
+  chunks in reusable buffers. Capture constructs only components that need filling;
+  reused and unrequested components require no placeholder records. Paused edits, configuration changes and world
   replacement retain their explicit invalidation boundaries. A cold option may
   widen the cached capture within a boundary, reusing its immutable entity records
   and sidecars without another extraction. A changed tick, observation revision,
