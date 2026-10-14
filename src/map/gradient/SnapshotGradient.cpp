@@ -40,8 +40,10 @@ std::size_t MaterialSeedCache::retainedBytes() const
     for (const auto &values : stamps) add(values);
     return bytes;
 }
-bool MaterialSeedCache::refresh(const SimulationSnapshot::Handle& snapshot)
+bool MaterialSeedCache::trySeed(const SimulationSnapshot::Handle& snapshot, int team, int material,
+    int swim, Uint16* output, const Uint16* suppliers)
 {
+    if (swim==WATER_ONLY_CLASS) return false;
     const auto view=snapshot.view();
     const size_t cells=size_t(view.width)*view.height, words=(cells+63)/64;
     const size_t required=cells*(2*sizeof(Uint16)+sizeof(Uint16)+sizeof(Uint32))
@@ -51,19 +53,16 @@ bool MaterialSeedCache::refresh(const SimulationSnapshot::Handle& snapshot)
     if (disabled || cells<=4096 || required>budget) return false;
     const bool rebuild=world!=snapshot.worldIdentity || width!=view.width || height!=view.height
         || terrainRegistry!=snapshot.terrain->registry || resourceRegistry!=snapshot.catalogs->resources;
-    bool seedsChanged=rebuild;
     try {
         if (rebuild) {
             const auto limit=budget;
             const auto refreshed=refreshedCells;
-            const auto revision=seedRevision;
-            *this=MaterialSeedCache{}; budget=limit; refreshedCells=refreshed; seedRevision=revision;
+            *this=MaterialSeedCache{}; budget=limit; refreshedCells=refreshed;
             resourceTraits.resize(view.resourceRegistry->size());
             for (size_t id=0; id<resourceTraits.size(); ++id) {
                 const auto& p=view.resourceProperties(id);
                 resourceTraits[id]=p.materialMask | (p.blocksGround?0x10000:0)
-                    | (std::has_single_bit(p.materialMask)?0:0x20000)
-                    | (p.visibleToHarvest?0x40000:0);
+                    | (std::has_single_bit(p.materialMask)?0:0x20000);
             }
             for (auto& values:base) values.resize(cells);
             signatures.assign(cells,0);
@@ -79,12 +78,6 @@ bool MaterialSeedCache::refresh(const SimulationSnapshot::Handle& snapshot)
         geometry.reset(view.width,view.height,view.wDec,view.wMask);
         const std::array<const std::vector<Uint64>*,4> current={&snapshot.terrain->stamps.chunks,
             &snapshot.resources->stamps.chunks,&snapshot.occupancy->stamps.chunks,&snapshot.areas->stamps.chunks};
-        if (!rebuild && std::equal(stamps.begin(), stamps.end(), current.begin(),
-            [&](const auto& previous, const auto* observed) {
-                return previous.size()==geometry.count() && observed->size()==geometry.count()
-                    && previous==*observed;
-            }))
-            return true;
         for (size_t chunk=0; chunk<geometry.count(); ++chunk) {
             const auto changed=[&](size_t component) {
                 return rebuild || stamps[component].size()!=geometry.count()
@@ -111,11 +104,9 @@ bool MaterialSeedCache::refresh(const SimulationSnapshot::Handle& snapshot)
                         static_assert(MaterialCount==12);
                         const Uint16 signature=mask | ((open && cell.building==NOGBID && (terrain&1))?0x1000:0)
                             | ((open && cell.building==NOGBID && (terrain&2))?0x2000:0)
-                            | ((open && cell.building!=NOGBID)?0x4000:0)
-                            | ((traits&0x40000)?0x8000:0);
+                            | ((open && cell.building!=NOGBID)?0x4000:0);
                         const Uint16 old=signatures[i];
                         if (rebuild || old!=signature) {
-                            seedsChanged=true;
                             base[0][i]=(signature&0x1000)?GRADIENT_UNREACHABLE:GRADIENT_FORBIDDEN;
                             base[1][i]=(signature&0x2000)?GRADIENT_UNREACHABLE:GRADIENT_FORBIDDEN;
                             for (unsigned changed=(old^signature)&AllMaterials; changed; changed&=changed-1) {
@@ -128,7 +119,6 @@ bool MaterialSeedCache::refresh(const SimulationSnapshot::Handle& snapshot)
                     }
                     if (areasChanged) {
                         const Uint32 mask=view.areas[i].forbidden;
-                        seedsChanged |= forbiddenMasks[i]!=mask;
                         for (Uint32 changed=forbiddenMasks[i]^mask; changed; changed&=changed-1) {
                             const unsigned bit=std::countr_zero(changed);
                             if (bit<Team::MAX_COUNT) setSeedBit(forbidden[bit],i,mask&(Uint32(1)<<bit));
@@ -144,15 +134,6 @@ bool MaterialSeedCache::refresh(const SimulationSnapshot::Handle& snapshot)
         const size_t limit=budget; *this=MaterialSeedCache{}; budget=limit; disabled=true;
         return false;
     }
-    if (seedsChanged) ++seedRevision;
-    return true;
-}
-bool MaterialSeedCache::trySeed(const SimulationSnapshot::Handle& snapshot, int team, int material,
-    int swim, Uint16* output, const Uint16* suppliers)
-{
-    if (swim==WATER_ONLY_CLASS || !refresh(snapshot)) return false;
-    const auto view=snapshot.view();
-    const size_t cells=size_t(view.width)*view.height;
     std::memcpy(output,base[swim>0].data(),cells*sizeof(*output));
     if (suppliers) visitSeedBits(buildings,[&](size_t i) {
         const unsigned id=unsigned(view.occupancy[i].building)-unsigned(team)*Building::MAX_COUNT;

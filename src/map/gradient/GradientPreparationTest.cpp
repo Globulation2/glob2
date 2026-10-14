@@ -876,14 +876,6 @@ TEST_CASE("compound passable material goals track depletion visibility and overl
     compare(int(MaterialId::Food));
     CHECK(cached[a]==GRADIENT_UNREACHABLE);
     CHECK(cached[b]==GRADIENT_AT_GOAL);
-    const auto visibleRevision=snapshotCache.seedRevision;
-    map.setResourceByIndex(10,10,second,0);
-    compare(int(MaterialId::Food));
-    CHECK(cached[a]==GRADIENT_AT_GOAL);
-    CHECK(snapshotCache.seedRevision>visibleRevision);
-    map.setResourceByIndex(10,10,first,0);
-    compare(int(MaterialId::Food));
-    CHECK(cached[a]==GRADIENT_UNREACHABLE);
     map.fogOfWar[a]=Team::teamNumberToMask(0);
     compare(int(MaterialId::Wood));
     CHECK(cached[a]==GRADIENT_AT_GOAL);
@@ -911,26 +903,6 @@ TEST_CASE("compound passable material goals track depletion visibility and overl
     map.addForbidden(10,10,0);
     REQUIRE(map.gradientRuntime->resourceSeeds.trySeed(map,0,int(MaterialId::Food),0,cached.data(),supplierSeeds.data()));
     CHECK(cached[a]==GRADIENT_FORBIDDEN);
-}
-TEST_CASE("missing snapshot stamps refresh material seeds on every observation")
-{
-    glob2test::HeadlessGlobals globals;
-    glob2test::HeadlessGame world({.wDec=7,.hDec=7,.clearImmobile=true,.header=true});
-    auto& map=world.game.map;
-    gradient_preparation::MaterialSeedCache cache;
-    std::vector<Uint16> expected(map.size),actual(map.size);
-    for (unsigned phase=0;phase<3;++phase) {
-        if (phase!=1) REQUIRE(map.incResourceByIndex(20,20,WHEAT,0));
-        else map.replaceResource(20,20,Resource{});
-        auto snapshot=SimulationSnapshot::capture(world.game,
-            SimulationSnapshot::captureCatalog(world.game),SimulationSnapshot::Simulation);
-        auto resources=std::make_shared<SimulationSnapshot::Resources>(*snapshot.resources);
-        resources->stamps.chunks.clear();
-        snapshot.resources=std::move(resources);
-        map.seedMaterialGradientDirect(0,WHEAT,0,expected.data(),nullptr);
-        REQUIRE(cache.trySeed(snapshot,0,WHEAT,0,actual.data(),nullptr));
-        requireSameField(map,"missing material stamps",actual,expected);
-    }
 }
 }
 

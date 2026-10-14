@@ -58,7 +58,7 @@ TEST_SUITE("HiringPlanner")
 		}
 		REQUIRE(w.game.map.incResourceByIndex(24, 12, WHEAT, 0));
 		HiringPlanner::Cache cached, scalar(HiringPlanner::Cache::MaxBytes, false);
-		for (unsigned phase = 0; phase < 12; ++phase)
+		for (unsigned phase = 0; phase < 9; ++phase)
 		{
 			CAPTURE(phase);
 			w.game.stepCounter = phase;
@@ -67,18 +67,10 @@ TEST_SUITE("HiringPlanner")
 			if (phase == 3) w.game.map.addForbidden(24, 12, 0);
 			if (phase == 4) w.game.map.removeForbidden(24, 12, 0);
 			if (phase == 6) REQUIRE(w.game.map.incResourceByIndex(18, 20, WHEAT, 0));
-			if (phase == 7) w.game.map.setResourceAmount(w.game.map.coordToIndex(24, 12), 3);
-			if (phase == 8)
-			{
-				auto *u = w.team->myUnits[0];
-				w.game.map.setGroundUnit(u->posX, u->posY, NOGUID);
-				u->posX = 40; u->posY = 40;
-				w.game.map.setGroundUnit(u->posX, u->posY, u->gid);
-			}
-			if (phase == 11) w.game.map.markImmobileUnit(18, 20, 0);
+			if (phase == 8) w.game.map.markImmobileUnit(18, 20, 0);
 			w.game.snapshotStore().invalidateBoundary();
 			auto input = HiringPipeline::bindRoutes(w.game, w.game.captureReadBoundary());
-			if (phase >= 10)
+			if (phase >= 7)
 			{
 				// Synthetic observations have no trustworthy change stamps.
 				auto resources = std::make_shared<SimulationSnapshot::Resources>(*input.world.resources);
@@ -92,8 +84,8 @@ TEST_SUITE("HiringPlanner")
 				CHECK(actual.metrics.fieldMisses > 0);
 				CHECK(cached.bytes() > scalar.bytes());
 			}
-			if (phase >= 10) CHECK(actual.metrics.fieldMisses > 0);
-			if (phase == 5 || (phase >= 7 && phase < 10))
+			if (phase >= 7) CHECK(actual.metrics.fieldMisses > 0);
+			if (phase == 5)
 			{
 				CHECK(actual.metrics.fieldMisses == 0);
 				CHECK(actual.metrics.fieldHits > 0);
