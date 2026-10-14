@@ -506,7 +506,9 @@ worker; each ticket resolves once. Pending publication deadlines survive saves
 and backend changes.
 
 CPU configurations have no GPU service or session, register no GPU worker-only
-predicate, and select CPU job/join callbacks at configuration. An existing idle
+predicate, and select CPU job/join callbacks at configuration. The application
+installs its GPU shutdown callback only when GPU state is created, retaining it
+across later backend switches; a CPU-only application never calls that barrier. An existing idle
 coordinator parks without polling when its registrations are gone. GPU fences and
 quarantined storage remain adapter-owned until safe retirement.
 

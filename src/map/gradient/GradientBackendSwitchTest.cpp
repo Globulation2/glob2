@@ -132,6 +132,7 @@ TEST_CASE("CPU-only lifecycle owns no GPU service or backend session" * doctest:
     glob2test::HeadlessGlobals globals;
     glob2test::HeadlessGame world;
     auto& map=world.game.map;
+    CHECK_FALSE(globalContainer->gradientDeviceShutdown);
     for (unsigned threads : {1,2,4,1}) {
         map.configureCompute(threads);
         CHECK_FALSE(map.gradientRuntime->backendSession);
@@ -142,5 +143,6 @@ TEST_CASE("CPU-only lifecycle owns no GPU service or backend session" * doctest:
         map.clear();
         CHECK_FALSE(map.gradientRuntime->backendSession);
         CHECK_FALSE(map.gradientRuntime->deviceService);
+        CHECK_FALSE(globalContainer->gradientDeviceShutdown);
     }
 }

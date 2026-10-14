@@ -59,6 +59,8 @@ public:
 	bool gpuComputeEnabled() const;
     gradient_kernel::Configuration gradientConfiguration() const;
 	void configureExecutionResources();
+    // Installed only when a map creates GPU execution state; retained across switches.
+    void (*gradientDeviceShutdown)() noexcept = nullptr;
     void configureGradientBackend() const;
     std::optional<GAGCore::RendererBackend> rendererLaunchOverride;
 	void loadClient(void);
