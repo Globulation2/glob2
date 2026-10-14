@@ -584,9 +584,9 @@ private fields shared across jobs with identical frozen inputs. Opportunistic
 AI-enrolled resource planes are excluded: their presence and age can differ with
 local network polling and must not change hiring decisions. Private planner caches
 are bounded separately from deterministic pending/published output reservations.
-Worker-private geography and natural-resource fingerprints reuse unchanged 16×16
-snapshot regions. Their keys hash logical contents; validated dirty stamps only
-avoid rereading unchanged regions. Unstamped observations recompute from contents.
+Resource-field cache keys use the snapshot's existing map and catalog versions;
+unrelated changes may conservatively rebuild a field. Supplier fields are shared
+within an observation. Unversioned synthetic observations rebuild on each rank.
 Natural resource fields reuse the existing snapshot seed templates when applicable.
 Route leases include only jobs and movement classes required by the observation.
 

@@ -6,7 +6,6 @@
 #include "Building.h"
 #include "SharedBuildingGradient.h"
 #include "SnapshotGradient.h"
-#include "MapChangeTracking.h"
 #include "ai/observation/AIWorldView.h"
 #include "field/RuntimeTerrainGradient.h"
 #include "field/AirPathfind.h"
@@ -29,12 +28,19 @@ std::uint64_t elapsed(Clock::time_point start)
 using World = AIEngine::AIWorldView;
 using B = SimulationSnapshot::BuildingView;
 using U = SimulationSnapshot::UnitView;
-using FieldKey = std::tuple<std::uint64_t, std::uint64_t, int, int>;
-void mix(std::uint64_t &hash, std::uint64_t value)
+// Conservative keys use the snapshot's existing versions. An unrelated dirty
+// change may rebuild a field, but no worker scans the map just to validate it.
+struct FieldKey
 {
-	hash ^= value;
-	hash *= 1099511628211ull;
-}
+	Uint64 world = 0, configuration = 0, terrainRevision = 0;
+	std::array<Uint64, 5> mapVersions{};
+	Uint32 terrainCatalog = 0, resourceCatalog = 0, teamMask = 0;
+	int width = 0, height = 0, material = 0, swim = 0;
+	unsigned modes = 0;
+	Uint64 consumer = 0, supplierObservation = 0, untrackedObservation = 0;
+	Uint32 supplierTick = 0;
+	auto operator<=>(const FieldKey &) const = default;
+};
 std::uint64_t identity(BuildingRef b)
 {
 	return (std::uint64_t(b.generation) << 16) | b.gid;
@@ -126,113 +132,50 @@ bool materialGoal(const World &world, const B &b, int material, std::size_t i, u
 					   ((supplyModes & 2) ? st.runtimeSuppliesDirectStockMask : 0);
 	return modes & supplier->availableSupplyMask & (1u << material);
 }
+FieldKey resourceKey(const World &world, const B &b, int material, int swim,
+					 unsigned modes, bool consumerSpecific, Uint64 observation)
+{
+	const auto &s = world.components();
+	FieldKey key;
+	key.world = s.worldIdentity;
+	key.configuration = s.configurationRevision;
+	key.terrainRevision = world.terrainRevision;
+	key.mapVersions = s.mapGenerations;
+	key.terrainCatalog = world.terrain->checksum();
+	key.resourceCatalog = world.resourceRegistry->checksum();
+	key.teamMask = world.teams[b.team].mask;
+	key.width = world.width; key.height = world.height;
+	key.material = material; key.swim = swim; key.modes = modes;
+	key.consumer = consumerSpecific ? identity(b.identity) : Uint64(b.team);
+	// Supplier stock/configuration has no map-array version. Retain sharing
+	// within an observation, and rebuild supplier fields on its next refresh.
+	if (modes)
+	{
+		key.supplierObservation = s.observationRevision;
+		key.supplierTick = s.tick;
+	}
+	const auto chunks = std::size_t((world.width + 15) / 16) * ((world.height + 15) / 16);
+	const std::array<const SimulationSnapshot::ChunkStamps *, 5> stamps = {
+		&s.terrain->stamps, &s.resources->stamps, &s.occupancy->stamps,
+		&s.areas->stamps, &s.visibility->stamps};
+	bool tracked = s.worldIdentity != 0;
+	for (unsigned i = 0; i < stamps.size(); ++i)
+		tracked &= key.mapVersions[i] && stamps[i]->worldIdentity == s.worldIdentity &&
+			stamps[i]->width == world.width && stamps[i]->height == world.height &&
+			stamps[i]->chunks.size() == chunks;
+	// Synthetic observations without trustworthy versions cannot share fields
+	// across rank calls. This discriminator affects computation cost only.
+	if (!tracked) key.untrackedObservation = observation;
+	return key;
+}
 
 } // namespace
 struct Cache::Impl
 {
-	// These signatures belong to the worker lane. Snapshot stamps are used only
-	// to avoid re-reading unchanged regions; field keys hash logical contents.
-	struct Region
-	{
-		std::array<Uint64, 4> stamps{};
-		std::array<Uint64, 5> values{};
-		bool valid = false;
-	};
-	std::array<std::vector<Region>, MaterialCount + 1> regions;
-	bool cachedChunkDigests = true;
-	Uint64 regionWorld = 0, regionRules = 0;
-	int regionTeam = -1, regionWidth = 0, regionHeight = 0;
-	MapState::ChunkGeometry regionGeometry;
-	void prepareRegions(const World &world, int team)
-	{
-		const auto &s = world.components();
-		Uint64 rules = world.resourceRegistry->checksum();
-		mix(rules, world.terrain->checksum());
-		mix(rules, world.terrainRevision);
-		mix(rules, world.teams[team].mask);
-		if (regionWorld != s.worldIdentity || regionRules != rules || regionTeam != team ||
-			regionWidth != world.width || regionHeight != world.height)
-		{
-			for (auto &r : regions) std::vector<Region>().swap(r);
-			regionWorld = s.worldIdentity; regionRules = rules; regionTeam = team;
-			regionWidth = world.width; regionHeight = world.height;
-		}
-		regionGeometry.reset(world.width, world.height, world.state().wDec, world.state().wMask);
-	}
-	template<class Visit>
-	std::array<Uint64, 5> regionDigest(const World &world, unsigned kind,
-		std::array<const SimulationSnapshot::ChunkStamps *, 4> dependencies, Visit visit)
-	{
-		const auto &s = world.components();
-		const auto count = regionGeometry.count();
-		bool reusable = cachedChunkDigests && s.worldIdentity;
-		for (const auto *d : dependencies)
-			if (d) reusable &= d->worldIdentity == s.worldIdentity && d->width == world.width &&
-				d->height == world.height && d->chunks.size() == count;
-		auto &stored = regions[kind];
-		if (stored.size() != count)
-		{
-			trim(count > stored.capacity() ? (count - stored.capacity()) * sizeof(Region) : 0);
-			stored.resize(count);
-			trim(0); // Account actual allocator capacity, including vector growth.
-		}
-		std::array<Uint64, 5> result;
-		result.fill(1469598103934665603ull);
-		for (std::size_t c = 0; c < count; ++c)
-		{
-			auto &r = stored[c];
-			std::array<Uint64, 4> stamps{};
-			bool valid = reusable;
-			for (unsigned d = 0; d < dependencies.size(); ++d)
-				if (dependencies[d])
-				{
-					stamps[d] = dependencies[d]->chunks.size() == count ? dependencies[d]->chunks[c] : 0;
-					valid &= stamps[d] != 0;
-				}
-			if (!valid || !r.valid || r.stamps != stamps)
-			{
-				r.values.fill(1469598103934665603ull);
-				regionGeometry.forEachRow(c, [&](std::size_t first, std::size_t length)
-				{ metrics->fingerprintCells += length;
-				  for (std::size_t i = first; i < first + length; ++i) visit(r.values, i); });
-				r.stamps = stamps; r.valid = valid;
-			}
-			else ++metrics->fingerprintRegionsReused;
-			for (unsigned i = 0; i < result.size(); ++i) mix(result[i], r.values[i]);
-		}
-		return result;
-	}
-	Uint64 geography(const World &world, int team, std::array<Uint64, 5> &parts)
-	{
-		prepareRegions(world, team);
-		const auto &s = world.components();
-		parts = regionDigest(world, 0, {&s.terrain->stamps, &s.occupancy->stamps,
-			&s.areas->stamps, &s.resources->stamps}, [&](auto &v, std::size_t i)
-		{
-			const auto o = world.occupancyAt(i);
-			mix(v[0], world.cellRuleAt(i)); mix(v[1], o.building);
-			mix(v[2], o.immobileUnit);
-			mix(v[3], world.areasAt(i).forbidden & world.teams[team].mask);
-			mix(v[4], MapState::resourceBlocksGround(world.state(), i));
-		});
-		mix(parts[0], world.terrainRevision);
-		Uint64 hash = regionRules;
-		mix(hash, world.width); mix(hash, world.height);
-		for (const auto &kind : *world.catalog)
-		{
-			mix(hash, kind.resolvedType.runtimeSuppliesStockMask);
-			mix(hash, kind.resolvedType.runtimeSuppliesDirectStockMask);
-		}
-		for (auto part : parts) mix(hash, part);
-		return hash;
-	}
-
 	gradient_preparation::MaterialSeedCache seedTemplates;
 	bool cachedSeedTemplates = true;
 	Metrics *metrics = nullptr;
-	std::uint64_t previousGeo = 0;
-	std::array<std::uint64_t, 5> previousParts{};
-	bool hasPreviousGeo = false;
+	Uint64 observation = 0;
 	struct Field
 	{
 		std::vector<Uint16> values;
@@ -245,7 +188,6 @@ struct Cache::Impl
 	{
 		std::size_t total = sizeof(Impl) + sizeof(gradient_kernel::BackendSession) + 32 + retained +
 							fields.size() * NodeBytes + seedTemplates.retainedBytes();
-		for (const auto &r : regions) total += r.capacity() * sizeof(Region);
 		for (const auto &bucket : scratch.buckets)
 			total += bucket.cells.capacity() * sizeof(std::uint32_t);
 		total += scratch.deferredSeeds.capacity() * sizeof(std::pair<int, int>);
@@ -275,8 +217,6 @@ struct Cache::Impl
 		}
 	}
 	std::uint64_t clock = 0, protectedAfter = 0;
-	std::array<std::uint64_t, MaterialCount> sourceStamps{};
-	std::array<bool, MaterialCount> stamped{};
 	GradientWorkspace scratch;
 	template <class Seed, class CachedSeed>
 	const std::vector<Uint16> &field(const World &world, FieldKey key, int swim, Seed seed, CachedSeed cachedSeed)
@@ -319,39 +259,10 @@ struct Cache::Impl
 		return value > GRADIENT_UNREACHABLE ? gradientTiles(value) : INT_MAX;
 	}
 	const std::vector<Uint16> &resource(const World &world, const B &b, int material, int swim,
-										std::uint64_t geo, unsigned modes, bool consumerSpecific)
+										unsigned modes, bool consumerSpecific)
 	{
-		const bool markets = modes != 0;
-		if (!stamped[material])
-		{
-			auto &value = sourceStamps[material];
-			value = geo;
-			const auto &s = world.components();
-			const auto goals = regionDigest(world, material + 1,
-				{&s.resources->stamps, &s.visibility->stamps, nullptr, nullptr},
-				[&](auto &v, std::size_t i)
-				{ mix(v[0], naturalMaterialGoal(world, material, i, world.teams[b.team].mask)); });
-			mix(value, goals[0]);
-			stamped[material] = true;
-		}
-		std::uint64_t stamp = sourceStamps[material];
-		mix(stamp, modes);
-		if (consumerSpecific)
-			mix(stamp, configuration(b));
-		if (markets)
-			for (const auto &supplier : world.buildings)
-				if (supplier.team == b.team)
-				{
-					mix(stamp, identity(supplier.identity));
-					mix(stamp, supplier.typeNum);
-					mix(stamp, supplier.hiringEpoch);
-					mix(stamp, supplier.buildingState);
-					mix(stamp, supplier.usesTeamResources);
-					mix(stamp, supplier.availableSupplyMask);
-				}
 		return field(world,
-					 {stamp, consumerSpecific ? identity(b.identity) : std::uint64_t(b.team),
-					  100 + material, swim},
+					 resourceKey(world, b, material, swim, modes, consumerSpecific, observation),
 					 swim,
 					 [&](std::size_t i) -> Uint16
 					 {
@@ -379,13 +290,12 @@ struct Cache::Impl
 					 });
 	}
 };
-Cache::Cache(std::size_t budget, bool cachedSeedTemplates, bool cachedChunkDigests) : impl(std::make_unique<Impl>())
+Cache::Cache(std::size_t budget, bool cachedSeedTemplates) : impl(std::make_unique<Impl>())
 {
 	if (!budget || budget > MaxBytes)
 		throw std::invalid_argument("Invalid hiring cache budget");
 	impl->budget = budget;
 	impl->cachedSeedTemplates = cachedSeedTemplates;
-	impl->cachedChunkDigests = cachedChunkDigests;
 	impl->seedTemplates.budget = std::min<std::size_t>(2u * 1024 * 1024, budget / 4);
 }
 Cache::~Cache() = default;
@@ -600,32 +510,7 @@ Output Cache::rank(const Inputs &input, unsigned team, unsigned capacity)
 	} reset{impl->metrics};
 	++output.metrics.refreshes;
 	output.metrics.setupNs += elapsed(start);
-	impl->stamped.fill(false);
-	std::uint64_t geo = 0;
-	bool hasGeo = false;
-	const auto ensureGeography = [&]()
-	{
-		if (hasGeo)
-			return geo;
-		const auto geographyStart = Clock::now();
-		std::array<std::uint64_t, 5> parts;
-		geo = impl->geography(world, team, parts);
-		hasGeo = true;
-		output.metrics.geographyNs += elapsed(geographyStart);
-		if (impl->hasPreviousGeo)
-		{
-			output.metrics.geographyChanges += impl->previousGeo != geo;
-			output.metrics.terrainChanges += parts[0] != impl->previousParts[0];
-			output.metrics.buildingOccupancyChanges += parts[1] != impl->previousParts[1];
-			output.metrics.immobileChanges += parts[2] != impl->previousParts[2];
-			output.metrics.forbiddenChanges += parts[3] != impl->previousParts[3];
-			output.metrics.resourceBlockingChanges += parts[4] != impl->previousParts[4];
-		}
-		impl->previousParts = parts;
-		impl->previousGeo = geo;
-		impl->hasPreviousGeo = true;
-		return geo;
-	};
+	++impl->observation;
 	// Qualification/cargo indexes are immutable and shared across this team's
 	// building refreshes. Keep original slot order for deterministic traversal.
 	std::vector<const U *> transport;
@@ -751,8 +636,8 @@ Output Cache::rank(const Inputs &input, unsigned team, unsigned capacity)
 			std::array<const std::vector<Uint16> *, SWIM_CLASS_COUNT> resources{};
 			// AI enrollment depends on local polling/network receipt. Its live
 			// resource planes are not canonical simulation inputs. Resource
-			// estimates instead share private fields keyed by frozen geography,
-			// supplier mode, material and movement class.
+			// estimates share private fields keyed by existing snapshot versions,
+			// supplier observation, material and movement class.
 			const auto route = key.job == Job::Delivery || key.job == Job::Fetch
 								   ? BuildingRoute::Footprint
 							   : key.job == Job::Clear ? BuildingRoute::Clearing
@@ -923,9 +808,9 @@ Output Cache::rank(const Inputs &input, unsigned team, unsigned capacity)
 							++output.metrics.privateResourceReads;
 							if (!resources[swim])
 								resources[swim] =
-									&impl->resource(world, b, key.material, swim, ensureGeography(),
-													supply->modes[key.material],
-													supply->consumerSpecific[key.material]);
+									&impl->resource(world, b, key.material, swim,
+														supply->modes[key.material],
+														supply->consumerSpecific[key.material]);
 							resourceDistance =
 								impl->distance(world, *resources[swim], u.posX, u.posY);
 						}

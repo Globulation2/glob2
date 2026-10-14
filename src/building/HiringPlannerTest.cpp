@@ -11,7 +11,7 @@
 
 TEST_SUITE("HiringPlanner")
 {
-	TEST_CASE("snapshot seed and region caches preserve scalar planner outputs")
+	TEST_CASE("snapshot seed templates and version keys preserve scalar planner outputs")
 	{
 		glob2test::HeadlessGlobals globals;
 		glob2test::HeadlessGame w({.wDec = 7, .hDec = 7, .discovered = true, .loadDefaultRace = true});
@@ -25,7 +25,7 @@ TEST_SUITE("HiringPlanner")
 			u->activity = Unit::ACT_RANDOM; u->medical = Unit::MED_FREE; u->hungriness = 0;
 		}
 		REQUIRE(w.game.map.incResourceByIndex(24, 12, WHEAT, 0));
-		HiringPlanner::Cache cached, scalar(HiringPlanner::Cache::MaxBytes, false, false);
+		HiringPlanner::Cache cached, scalar(HiringPlanner::Cache::MaxBytes, false);
 		for (unsigned phase = 0; phase < 8; ++phase)
 		{
 			CAPTURE(phase);
@@ -50,12 +50,11 @@ TEST_SUITE("HiringPlanner")
 				CHECK(actual.metrics.fieldMisses > 0);
 				CHECK(cached.bytes() > scalar.bytes());
 			}
-			if (phase == 7) CHECK(actual.metrics.fingerprintCells > 0);
+			if (phase == 7) CHECK(actual.metrics.fieldMisses > 0);
 			if (phase == 5)
 			{
-				CHECK(actual.metrics.fingerprintCells == 0);
-				CHECK(actual.metrics.fingerprintRegionsReused > 0);
-				CHECK(expected.metrics.fingerprintCells > 0);
+				CHECK(actual.metrics.fieldMisses == 0);
+				CHECK(actual.metrics.fieldHits > 0);
 			}
 			REQUIRE(actual.buildings.size() == expected.buildings.size());
 			for (unsigned b = 0; b < actual.buildings.size(); ++b)
