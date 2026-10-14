@@ -103,13 +103,22 @@ TEST_SUITE("BuildingFootprint")
 	        }
 	    }
 	}
-	TEST_CASE("the obsolete wrapped-building/reproducer.game.gz save is rejected [save-format]")
+	TEST_CASE("the retained fixture loads [save-format]")
 	{
-    glob2test::HeadlessGlobals globals;
-    const auto bytes = glob2test::readFile(glob2test::inflated("wrapped-building/reproducer.game.gz"));
-    GAGCore::BinaryInputStream input(new GAGCore::MemoryStreamBackend(bytes.data(), bytes.size()));
-    input.seekFromStart(0);
-    GameGUI restored;
-    CHECK_FALSE(restored.game.load(&input));
-}
+		glob2test::HeadlessGlobals globals;
+	        FILE* file = std::fopen(glob2test::inflated("wrapped-building/reproducer.game.gz").string().c_str(), "rb");
+	        require(file != nullptr, "open fixture");
+	        GAGCore::BinaryInputStream reader(new GAGCore::FileStreamBackend(file));
+	        GameGUI restoredGUI;
+	        Game& loaded = restoredGUI.game;
+	        require(loaded.load(&reader), "load wrapped-building fixture");
+	        require(loaded.map.getW() == 32 && loaded.map.getH() == 32, "fixture dimensions");
+	        require(loaded.mapHeader.getNumberOfTeams() == 1 && loaded.teams[0], "fixture team exists");
+	        auto* building = loaded.teams[0]->myBuildings[0];
+	        require(building != nullptr, "fixture building exists");
+	        checkFootprint(loaded, *building);
+	        int x, y, dx, dy;
+	        require(building->findGroundExit(&x, &y, &dx, &dy, false), "fixture building exit");
+	        require(loaded.map.getBuilding(x - dx, y - dy) == building->gid, "fixture exit adjacency");
+	}
 }

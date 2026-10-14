@@ -8,13 +8,11 @@
 #define VERSION_MAJOR 0
 #define MINIMUM_VERSION_MINOR 58
 #define VERSION_MINOR 161
-#define SAVE_MINIMUM_VERSION_MINOR 159
 // version 161 safely cancels unfunded service visits and defers explorer rebound until exit.
 // Save encodings are unchanged; earlier replay trajectories are no longer accepted.
 // version 160 caps private building stock at 255 and cached unit performance at 65535.
 // Existing wide save encodings remain; format-159 saves load with normalization.
-// version 159 uses persisted cached turret targeting; earlier saved games are rejected.
-// MINIMUM_VERSION_MINOR remains the map-format floor so existing maps stay usable.
+// version 159 uses persisted cached turret targeting; older saves start with an empty cache.
 // version 158 persists completed pending statistics frames.
 // version 157 persists worker-finalized approximate statistics aggregates.
 // version 156 removes the redundant pending statistics input digest.

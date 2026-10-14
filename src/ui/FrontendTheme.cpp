@@ -164,10 +164,17 @@ void FrontendTheme::background(DrawableSurface *s, bool panel, const SDL_Rect *c
 	const auto &palette = theme.palette;
 	using Kind = GAGGUI::ui::Backdrop::Kind;
 	s->drawFilledRect(0, 0, w, h, palette.backdrop);
+	bool artwork = false;
 	if (theme.backdrop.kind == Kind::Terrain)
+	{
 		terrain(s);
+		artwork = bool(globalContainer->terrain);
+	}
 	else if (theme.backdrop.kind == Kind::Colony && colony->ready())
+	{
 		colony->draw(w, h);
+		artwork = true;
+	}
 	else if (theme.backdrop.kind == Kind::Image && backdropImage())
 	{
 		// Cache the cropped image at the logical viewport size.
@@ -185,9 +192,12 @@ void FrontendTheme::background(DrawableSurface *s, bool panel, const SDL_Rect *c
 			SDL_DestroySurface(fitted);
 		}
 		if (fittedFallback)
+		{
 			s->drawSurface(0, 0, fittedFallback.get());
+			artwork = true;
+		}
 	}
-	if (theme.backdrop.veil.a)
+	if (artwork && theme.backdrop.veil.a)
 		s->drawFilledRect(0, 0, w, h, theme.backdrop.veil);
 	if (panel)
 	{

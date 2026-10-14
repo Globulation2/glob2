@@ -230,14 +230,91 @@ TEST_CASE("sixteen team saves continue identically and preserve entity generatio
     glob2test::writeFile(glob2test::artifactDir() / "checksums.csv", trace.str());
 }
 
-TEST_CASE("the obsolete team-limit/pre-v127-maxima.game.gz save is rejected [save-format]")
+TEST_CASE("retained format126 Maxima save preserves identities and subsequent AI decisions [save-format][artifacts]")
 {
     glob2test::HeadlessGlobals globals;
-    const auto bytes = glob2test::readFile(glob2test::inflated("team-limit/pre-v127-maxima.game.gz"));
-    GAGCore::BinaryInputStream input(new GAGCore::MemoryStreamBackend(bytes.data(), bytes.size()));
-    input.seekFromStart(0);
+    GameGUI legacy;
+    GAGCore::BinaryInputStream input(glob2OpenMapOrSaveInputStreamBackend(
+        *GAGCore::Toolkit::getFileManager(), glob2test::fixture("team-limit/pre-v127-maxima.game.gz").string()));
+    REQUIRE(legacy.game.load(&input));
+    CHECK(legacy.game.mapHeader.getVersionMinor() == 126);
+    CHECK(legacy.game.teamsCount() == 4);
+    for (int t = 0; t < legacy.game.teamsCount(); ++t)
+        for (int slot = 0; slot < Game::SCRIPT_ENTITY_SLOTS_PER_TEAM; ++slot)
+        {
+            if (auto *unit = legacy.game.teams[t]->myUnits[slot])
+                CHECK(unit->scriptIdentity == legacy.game.scriptGenerations[Game::scriptGenerationIndex(false, t, slot)]);
+            if (auto *building = legacy.game.teams[t]->myBuildings[slot])
+                CHECK(building->scriptIdentity == legacy.game.scriptGenerations[Game::scriptGenerationIndex(true, t, slot)]);
+        }
+    for (int t = 12; t < Team::MAX_COUNT; ++t)
+        for (int slot = 0; slot < Game::SCRIPT_ENTITY_SLOTS_PER_TEAM; ++slot)
+        {
+            CHECK(legacy.game.scriptGenerations[Game::scriptGenerationIndex(false, t, slot)] == 0);
+            CHECK(legacy.game.scriptGenerations[Game::scriptGenerationIndex(true, t, slot)] == 0);
+        }
+    auto *storage = new GAGCore::MemoryStreamBackend;
+    GAGCore::BinaryOutputStream output(storage);
+    legacy.game.save(&output, false, "migrated team capacity");
+    const auto bytes = storage->takeContents();
+    const auto generations = legacy.game.scriptGenerations;
     GameGUI restored;
-    CHECK_FALSE(restored.game.load(&input));
+    GAGCore::BinaryInputStream newInput(new GAGCore::MemoryStreamBackend(bytes.data(), bytes.size()));
+    newInput.seekFromStart(0);
+    REQUIRE(restored.game.load(&newInput));
+    CHECK(restored.game.scriptGenerations == generations);
+    std::vector<Uint32> before, after, beforeBuildings, afterBuildings, beforeUnits, afterUnits;
+    legacy.game.checkSum(&before, &beforeBuildings, &beforeUnits);
+    restored.game.checkSum(&after, &afterBuildings, &afterUnits);
+    // Saving upgrades the MapHeader format field. These checks cover the
+    // simulation/entity checksums; AI director state is checked separately below.
+    before.erase(before.begin());
+    after.erase(after.begin());
+    CHECK(after == before);
+    CHECK(afterBuildings == beforeBuildings);
+    CHECK(afterUnits == beforeUnits);
+    const auto directors = [](Game &game) {
+        std::vector<std::string> states;
+        for (int p = 0; p < game.gameHeader.getNumberOfPlayers(); ++p)
+        {
+            REQUIRE(game.players[p]->ai != nullptr);
+            auto *memory = new GAGCore::MemoryStreamBackend;
+            GAGCore::BinaryOutputStream out(memory);
+            game.players[p]->ai->save(&out);
+            states.push_back(memory->takeContents());
+        }
+        return states;
+    };
+    CHECK(directors(restored.game) == directors(legacy.game));
+    CHECK(restored.game.syncRandom == legacy.game.syncRandom);
+    std::ostringstream trace;
+    for (int tick = 0; tick < 128; ++tick)
+    {
+        CAPTURE(tick);
+        const auto expectedOrders = glob2test::stepAI(legacy.game);
+        CHECK(glob2test::stepAI(restored.game) == expectedOrders);
+        CHECK(restored.game.syncRandom == legacy.game.syncRandom);
+        before.clear(); beforeBuildings.clear(); beforeUnits.clear();
+        after.clear(); afterBuildings.clear(); afterUnits.clear();
+        legacy.game.checkSum(&before, &beforeBuildings, &beforeUnits, true);
+        restored.game.checkSum(&after, &afterBuildings, &afterUnits, true);
+        before.erase(before.begin()); after.erase(after.begin());
+        CHECK(after == before);
+        CHECK(afterBuildings == beforeBuildings);
+        CHECK(afterUnits == beforeUnits);
+        // The header format intentionally differs; hash the compared vectors.
+        const auto digest = [](const auto &state, const auto &buildings, const auto &units) {
+            Uint32 hash = 2166136261u;
+            for (const auto *values : {&state, &buildings, &units})
+                for (Uint32 value : *values) hash = (hash ^ value) * 16777619u;
+            return hash;
+        };
+        trace << tick + 1 << ',' << digest(before, beforeBuildings, beforeUnits)
+              << ',' << digest(after, afterBuildings, afterUnits) << '\n';
+    }
+    CHECK(directors(restored.game) == directors(legacy.game));
+    glob2test::writeFile(glob2test::artifactDir() / "migration-ai-checksums.csv", trace.str());
+
 }
 
 TEST_CASE("script generation slot counts reject missing capacity and truncated planes [save-format]")

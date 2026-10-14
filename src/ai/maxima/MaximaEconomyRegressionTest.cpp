@@ -1372,14 +1372,41 @@ TEST_CASE("legacy planner rebuild replaces feeding providers without duplicating
     });
 }
 
-TEST_CASE("the obsolete team-limit/pre-v127-maxima.game.gz save is rejected [save-format]" * doctest::test_suite("Maxima.Economy"))
+TEST_CASE("retained Maxima save compiles each feeding admission row once [save-format]" * doctest::test_suite("Maxima.Economy"))
 {
     glob2test::HeadlessGlobals globals;
-    const auto bytes = glob2test::readFile(glob2test::inflated("team-limit/pre-v127-maxima.game.gz"));
-    GAGCore::BinaryInputStream input(new GAGCore::MemoryStreamBackend(bytes.data(), bytes.size()));
+    const auto bytes=glob2test::readFile(glob2test::inflated("team-limit/pre-v127-maxima.game.gz"));
+    GameGUI legacy;
+    GAGCore::BinaryInputStream input(new GAGCore::MemoryStreamBackend(bytes.data(),bytes.size()));
     input.seekFromStart(0);
-    GameGUI restored;
-    CHECK_FALSE(restored.game.load(&input));
+    REQUIRE(legacy.game.load(&input));
+    REQUIRE(legacy.game.mapHeader.getVersionMinor()==126);
+    int maximaPlayers=0;
+    for(int player=0;player<legacy.game.gameHeader.getNumberOfPlayers();++player) {
+        auto* controller=legacy.game.players[player]->ai;
+        if(!controller || controller->implementationID!=AI::MAXIMA)continue;
+        ++maximaPlayers;
+        auto& ai=*static_cast<AIMaxima::Maxima*>(controller->aiImplementation);
+        glob2test::withMaximaObservation(ai.context,[&] {
+            ai.collect_building_profiles();
+            const auto& world=ai.context.observation();
+            std::vector<unsigned> expectedTypes;
+            for(unsigned type=0;type<world.catalog->size();++type)
+                if(world.catalog->at(type).resolvedType.semantics.feeding.enabled)expectedTypes.push_back(type);
+            REQUIRE_FALSE(expectedTypes.empty());
+            REQUIRE(ai.development_feeding_provider_types==expectedTypes);
+            REQUIRE(ai.development_feeding_providers.size()==expectedTypes.size());
+            for(unsigned row=0;row<expectedTypes.size();++row) {
+                const auto& semantics=world.catalog->at(expectedTypes[row]).resolvedType.semantics;
+                REQUIRE(ai.development_feeding_providers[row].admitted.size()==world.unitTypeCount());
+                for(unsigned type=0;type<world.unitTypeCount();++type)
+                    CHECK(bool(ai.development_feeding_providers[row].admitted[type])==
+                        (semantics.feeding.units.matches(type,semantics.feeding.unitMask)
+                            && semantics.admittedUnits.matches(type,semantics.admittedUnitMask)));
+            }
+        });
+    }
+    REQUIRE(maximaPlayers>0);
 }
 
 TEST_CASE("feeding budget scaling handles maximum seats without overflowing intermediate products" * doctest::test_suite("Maxima.Economy"))

@@ -1242,7 +1242,41 @@ TEST_SUITE("TurretTargeting")
             CHECK_FALSE(restored.load(world.game,&in));
         }
     }
-    TEST_CASE("new cached saves roundtrip and earlier saved matches are rejected")
+    TEST_CASE("historical saves start with a blank turret cache and retain current resave continuation [save-format]")
+    {
+        glob2test::HeadlessGlobals globals;
+        const auto bytes=glob2test::readFile(glob2test::inflated("team-stats/version88.game.gz"));
+        GameGUI historical;
+        GAGCore::BinaryInputStream input(new GAGCore::MemoryStreamBackend(bytes.data(),bytes.size()));
+        input.seekFromStart(0);
+        REQUIRE(historical.game.load(&input));
+        REQUIRE(historical.game.mapHeader.getVersionMinor()==88);
+        auto* pipeline=historical.game.turretTargeting();
+        CHECK(pipeline->pendingObservation().requirements==0);
+        CHECK(pipeline->statistics().admissions==0);
+        for (int team=0;team<historical.game.teamsCount();++team)
+            for (const auto* turret:historical.game.teams[team]->turrets)
+                CHECK(pipeline->entries(*turret).empty());
+        auto* checkpoint=new GAGCore::MemoryStreamBackend;
+        GAGCore::BinaryOutputStream out(checkpoint);
+        historical.game.save(&out,false,"historical empty turret cache");
+        out.flush();
+        GameGUI resumed;
+        GAGCore::BinaryInputStream saved(new GAGCore::MemoryStreamBackend(*checkpoint));
+        saved.seekFromStart(0);
+        REQUIRE(resumed.game.load(&saved));
+        const auto state=[](Game& game) {
+            std::vector<Uint32> fields,buildings,units;
+            game.checkSum(&fields,&buildings,&units,true);
+            fields.erase(fields.begin()); // Historical versus current header format.
+            return std::tuple(fields,buildings,units);
+        };
+        for (int tick=0;tick<32;++tick) {
+            REQUIRE(state(historical.game)==state(resumed.game));
+            CHECK(glob2test::stepAI(historical.game)==glob2test::stepAI(resumed.game));
+        }
+    }
+    TEST_CASE("new cached saves roundtrip and unsupported formats are rejected")
     {
         glob2test::HeadlessGlobals globals;
         glob2test::HeadlessGame world({.teams=2,.loadDefaultRace=true,.header=true});
@@ -1261,13 +1295,13 @@ TEST_SUITE("TurretTargeting")
         prefix.readText("mapName"); prefix.readSint32("versionMajor"); const auto minorOffset=prefix.getPosition();
         REQUIRE(prefix.readSint32("versionMinor")==VERSION_MINOR);
         auto* patchBackend=new GAGCore::MemoryStreamBackend;
-        GAGCore::BinaryOutputStream patch(patchBackend); patch.writeSint32(SAVE_MINIMUM_VERSION_MINOR-1,"versionMinor"); patch.flush();
+        GAGCore::BinaryOutputStream patch(patchBackend); patch.writeSint32(MINIMUM_VERSION_MINOR-1,"versionMinor"); patch.flush();
         const auto encoded=patchBackend->takeContents(); auto older=bytes;
         std::copy(encoded.begin(),encoded.end(),older.begin()+minorOffset);
         GAGCore::BinaryInputStream rejected(new GAGCore::MemoryStreamBackend(older.data(),older.size()));
         rejected.seekFromStart(0);
         CHECK_FALSE(resumed.game.load(&rejected));
-        CHECK(MINIMUM_VERSION_MINOR==58); // Existing maps keep their separate floor.
+        CHECK(MINIMUM_VERSION_MINOR==58); // Maps and saves share the durable floor.
     }
     TEST_CASE("canonical pending inputs ignore stamps and retain observed combat facts")
     {

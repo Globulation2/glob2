@@ -484,12 +484,24 @@ TEST_CASE("zero cost roots and upgrade stages complete without a delivery event"
     CHECK(b->hp==b->getEffectiveInitHp());
 }
 
-TEST_CASE("version135 saved repair is rejected by the cached save floor")
+TEST_CASE("version135 partial repair imports remaining work without material credits")
 {
     glob2test::HeadlessGlobals globals;
     glob2test::HeadlessGame world({.loadDefaultRace=true});
     const auto bytes=glob2test::readFile(glob2test::inflated("building-catalog/partial-repair135.game.gz"));
-    CHECK_FALSE(loadProductionGame(world.game,bytes,false));
+    REQUIRE(loadProductionGame(world.game,bytes,false));
+    Building* b=world.game.teams[0]->myBuildings[0];
+    REQUIRE(b);
+    CHECK(b->type->key=="inn.0.site"); CHECK(b->hp==166);
+    CHECK(b->constructionBudget[WOOD]==1); CHECK(b->constructionReserved[WOOD]==0);
+    CHECK(b->material(WOOD)==0); CHECK(b->materialDeliveryNeed(WOOD)==1);
+    glob2test::HeadlessGame resumed({.loadDefaultRace=true});
+    REQUIRE(loadProductionGame(resumed.game,saveProductionGame(world.game,false),false));
+    Building* copy=resumed.game.teams[0]->myBuildings[0];
+    REQUIRE(copy);
+    b->addMaterialIntoBuilding(WOOD); copy->addMaterialIntoBuilding(WOOD);
+    CHECK(b->type->key=="inn.0.finished"); CHECK(copy->type->key==b->type->key);
+    CHECK(b->hp==200); CHECK(copy->hp==b->hp); CHECK(copy->material(WOOD)==0);
 }
 
 TEST_CASE("partial supplier packets preserve raw equivalents and save continuation")

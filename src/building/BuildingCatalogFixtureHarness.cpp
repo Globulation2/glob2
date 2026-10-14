@@ -129,14 +129,37 @@ TEST_CASE("retained seeded compositions preserve full simulation continuation [g
         glob2test::expectGolden("building-catalog/composition/seed-" + std::to_string(seed) + ".trace", golden.str());
     }
 }
-TEST_CASE("the obsolete building-catalog/terrain136.game.gz save is rejected [save-format]")
+TEST_CASE("format136 terrain snapshot imports frozen buildings and continues after resave")
 {
     glob2test::HeadlessGlobals globals;
-    const auto bytes = glob2test::readFile(glob2test::inflated("building-catalog/terrain136.game.gz"));
-    GAGCore::BinaryInputStream input(new GAGCore::MemoryStreamBackend(bytes.data(), bytes.size()));
+    const auto bytes=glob2test::readFile(glob2test::inflated("building-catalog/terrain136.game.gz"));
+    GameGUI imported(false);
+    GAGCore::BinaryInputStream oldInput(new GAGCore::MemoryStreamBackend(bytes.data(),bytes.size()));
+    oldInput.seekFromStart(0);
+    REQUIRE(imported.game.load(&oldInput)); imported.game.setWaitingOnMask(0);
+    CHECK(imported.game.mapHeader.getVersionMinor()==136);
+    CHECK(imported.game.buildingsTypes.size()==55);
+    CHECK(imported.game.map.terrainRegistry().size()>=7);
+    auto* memory=new GAGCore::MemoryStreamBackend;
+    GAGCore::BinaryOutputStream output(memory);
+    imported.game.save(&output,false,"imported format136"); output.flush();
+    const auto migrated=memory->takeContents();
+    std::vector<std::vector<Uint32>> states;
+    std::vector<std::vector<std::string>> orders;
+    for(int tick=0;tick<64;++tick)
+    {
+        orders.push_back(glob2test::stepAI(imported.game));
+        states.push_back(components(imported.game));
+    }
+    GameGUI restored(false);
+    GAGCore::BinaryInputStream input(new GAGCore::MemoryStreamBackend(migrated.data(),migrated.size()));
     input.seekFromStart(0);
-    GameGUI restored;
-    CHECK_FALSE(restored.game.load(&input));
+    REQUIRE(restored.game.load(&input)); restored.game.setWaitingOnMask(0);
+    for(int tick=0;tick<64;++tick)
+    {
+        CHECK(glob2test::stepAI(restored.game)==orders[tick]);
+        CHECK(components(restored.game)==states[tick]);
+    }
 }
 TEST_CASE("retained split recipes conserve every charged resource through cancellation")
 {

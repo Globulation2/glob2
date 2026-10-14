@@ -1427,24 +1427,80 @@ TEST_SUITE("TeamStatsSave")
 			malformedStats(game);
 			textRoundTrip();
 	}
-	TEST_CASE("the obsolete team-stats/version88.game.gz save is rejected [save-format]")
+	TEST_CASE("legacy version 88 fixture replays the golden trace [save-format][golden]")
 	{
-    glob2test::HeadlessGlobals globals;
-    const auto bytes = glob2test::readFile(glob2test::inflated("team-stats/version88.game.gz"));
-    GAGCore::BinaryInputStream input(new GAGCore::MemoryStreamBackend(bytes.data(), bytes.size()));
-    input.seekFromStart(0);
-    GameGUI restored;
-    CHECK_FALSE(restored.game.load(&input));
-}
-	TEST_CASE("the obsolete games/gd-small-2ai.game.gz save is rejected [save-format]")
+		glob2test::HeadlessGlobals globals;
+		glob2test::CapturedStdout trace;
+		const std::string legacyPath = glob2test::inflated("team-stats/version88.game.gz").string();
+		        FILE* file = std::fopen(legacyPath.c_str(), "rb");
+		        require(file != nullptr, "open legacy fixture");
+		        GAGCore::BinaryInputStream reader(new GAGCore::FileStreamBackend(file));
+		        GameGUI restored;
+		        require(restored.game.load(&reader), "legacy save loads");
+		        Game& game = restored.game;
+				for (int t = 0; t < game.mapHeader.getNumberOfTeams(); ++t)
+				{
+					require(game.teams[t]->stats.coverageStartTick == game.stepCounter,
+							"old measurements start at loaded tick");
+					require(game.teams[t]->stats.measurementHistory.empty(),
+							"old new-history is unavailable, not zero samples");
+					require(birthsCounted(game.teams[t]->stats.measurements()) == 0,
+							"loading does not count births");
+				}
+				require(game.mapHeader.getVersionMinor() <= 88, "fixture is a genuine legacy format");
+				std::printf("LEGACY version=%d teams=%d\n", game.mapHeader.getVersionMinor(), game.mapHeader.getNumberOfTeams());
+		        for (unsigned step = 0; step < 65; ++step)
+		        {
+		            for (int t = 0; t < game.mapHeader.getNumberOfTeams(); ++t)
+		            {
+		                auto& stats = game.teams[t]->stats;
+		                const auto& stat = *stats.getLatestStat();
+		                std::printf("%u %d %d %d %d %d %d %d %d %zu\n", step, t,
+		                    stat.totalUnit, stat.totalHP, stat.needFood, stat.needFoodCritical,
+		                    stat.needHeal, stat.totalFree, stat.totalNeeded, stats.getEndOfGameStats().size());
+		                stats.step(game.teams[t]);
+		            }
+		            ++game.stepCounter;
+		        }
+		glob2test::expectGolden("team-stats/version88.expected.txt", trace.text());
+	}
+	TEST_CASE("legacy version 84 fixture replays the golden trace [save-format][golden]")
 	{
-    glob2test::HeadlessGlobals globals;
-    const auto bytes = glob2test::readFile(glob2test::inflated("games/gd-small-2ai.game.gz"));
-    GAGCore::BinaryInputStream input(new GAGCore::MemoryStreamBackend(bytes.data(), bytes.size()));
-    input.seekFromStart(0);
-    GameGUI restored;
-    CHECK_FALSE(restored.game.load(&input));
-}
+		glob2test::HeadlessGlobals globals;
+		glob2test::CapturedStdout trace;
+		const std::string legacyPath = glob2test::inflated("games/gd-small-2ai.game.gz").string();
+		        FILE* file = std::fopen(legacyPath.c_str(), "rb");
+		        require(file != nullptr, "open legacy fixture");
+		        GAGCore::BinaryInputStream reader(new GAGCore::FileStreamBackend(file));
+		        GameGUI restored;
+		        require(restored.game.load(&reader), "legacy save loads");
+		        Game& game = restored.game;
+				for (int t = 0; t < game.mapHeader.getNumberOfTeams(); ++t)
+				{
+					require(game.teams[t]->stats.coverageStartTick == game.stepCounter,
+							"old measurements start at loaded tick");
+					require(game.teams[t]->stats.measurementHistory.empty(),
+							"old new-history is unavailable, not zero samples");
+					require(birthsCounted(game.teams[t]->stats.measurements()) == 0,
+							"loading does not count births");
+				}
+				require(game.mapHeader.getVersionMinor() <= 88, "fixture is a genuine legacy format");
+				std::printf("LEGACY version=%d teams=%d\n", game.mapHeader.getVersionMinor(), game.mapHeader.getNumberOfTeams());
+		        for (unsigned step = 0; step < 65; ++step)
+		        {
+		            for (int t = 0; t < game.mapHeader.getNumberOfTeams(); ++t)
+		            {
+		                auto& stats = game.teams[t]->stats;
+		                const auto& stat = *stats.getLatestStat();
+		                std::printf("%u %d %d %d %d %d %d %d %d %zu\n", step, t,
+		                    stat.totalUnit, stat.totalHP, stat.needFood, stat.needFoodCritical,
+		                    stat.needHeal, stat.totalFree, stat.totalNeeded, stats.getEndOfGameStats().size());
+		                stats.step(game.teams[t]);
+		            }
+		            ++game.stepCounter;
+		        }
+		glob2test::expectGolden("team-stats/version84.expected.txt", trace.text());
+	}
 	TEST_CASE("measurement screenshots [display][artifacts]")
 	{
 		glob2test::HeadlessGlobals globals(glob2test::GlobalsOptions{.display = true, .loadStrings = true, .width = 640, .height = 480});

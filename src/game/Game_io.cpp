@@ -182,7 +182,6 @@ GAGCore::CooperativeTask Game::loadTask(GAGCore::InputStream *stream)
 	mapHeader=tempMapHeader;
 	mapHeader.resolveGrowthLayout(stream);
 	Sint32 versionMinor=mapHeader.loadingVersion();
-    if (mapHeader.getIsSavedGame() && versionMinor<SAVE_MINIMUM_VERSION_MINOR) co_return false;
 
 
 	// We load the game header
@@ -311,7 +310,9 @@ GAGCore::CooperativeTask Game::loadTask(GAGCore::InputStream *stream)
 		co_return false;
 	if (versionMinor >= FILE_FORMAT_VERSION_AI_PIPELINE && mapHeader.getIsSavedGame())
 		if (!loadAI(stream)) co_return false;
-    if (mapHeader.getIsSavedGame()) {
+    // Earlier saves have no cache record. Leave the new pipeline empty and
+    // let ordinary admission/publication populate it without stepping on load.
+    if (versionMinor >= FILE_FORMAT_VERSION_TURRET_TARGETING && mapHeader.getIsSavedGame()) {
         ensureTurretTargeting();
         if (!turretTargetingPipeline->load(*this,stream)) co_return false;
     }

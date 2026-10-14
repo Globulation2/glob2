@@ -379,15 +379,33 @@ TEST_SUITE("TeamStatsSave")
 						 &stats.measurements().filling[0][0]));
 	}
 
-	TEST_CASE("the obsolete team-stats/version129-muka-1100.game.gz save is rejected [save-format]")
+	TEST_CASE("older saves load with labour coverage starting at the loaded tick [save-format]")
 	{
-    glob2test::HeadlessGlobals globals;
-    const auto bytes = glob2test::readFile(glob2test::inflated("team-stats/version129-muka-1100.game.gz"));
-    GAGCore::BinaryInputStream input(new GAGCore::MemoryStreamBackend(bytes.data(), bytes.size()));
-    input.seekFromStart(0);
-    GameGUI restored;
-    CHECK_FALSE(restored.game.load(&input));
-}
+		glob2test::HeadlessGlobals globals;
+		const std::string bytes = glob2test::readFile(glob2test::inflated("team-stats/version129-muka-1100.game.gz"));
+		GameGUI gui(false);
+		GAGCore::BinaryInputStream input(new GAGCore::MemoryStreamBackend(bytes.data(), bytes.size()));
+		input.seekFromStart(0);
+		REQUIRE(gui.game.load(&input));
+		REQUIRE(gui.game.mapHeader.getVersionMinor() == 129);
+		for (int t = 0; t < gui.game.teamsCount(); ++t)
+		{
+			CAPTURE(t);
+			const auto &stats = gui.game.teams[t]->stats;
+			// Packed history rows of the old, shorter record size read back intact.
+			REQUIRE(stats.measurementHistory.size() == 3);
+			for (unsigned i = 0; i < 3; ++i)
+			{
+				CHECK(stats.measurementHistory[i].tick == 512 * i);
+				CHECK(workerTicks(stats.measurementHistory[i]) == 0);
+			}
+			CHECK(stats.measurementHistory[2].harvested[WHEAT] > 0);
+			CHECK(stats.labourCoverageStartTick == stats.measurements().tick);
+			CHECK(workerTicks(stats.measurements()) == 0);
+			// No defence snapshot yet: it is taken at the next sample.
+			CHECK(stats.measurements().defenceTick < stats.labourCoverageStartTick);
+		}
+	}
 
 	TEST_CASE("place lookup cost against a scan of every building slot [benchmark]")
 	{

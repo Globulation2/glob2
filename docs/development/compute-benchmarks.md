@@ -402,11 +402,11 @@ saved. Normal checksums include published per-turret order and logical pending i
 and deadlines, independently of worker completion. Numeric input fingerprints
 exclude host byte order, padding, local stamps and private caches.
 
-Format 159 deliberately rejects earlier saved matches and replays. Existing maps
-remain loadable through the map-format floor 58. Simulation revision 55 partitions
-network matches from earlier targeting behavior. This compatibility break was an
-explicit maintainer decision; it is separate from deterministic continuation of
-newly saved matches.
+Format 159 adds the persisted turret cache. Earlier saved matches load with an
+empty cache and populate it through normal delayed updates. Maps and saved games
+retain the version-58 compatibility floor. Replay and network version gates remain
+separate from save compatibility; current-format saves retain exact cached lists
+and pending deadlines across continuation.
 
 ### Measurement and correctness controls
 
