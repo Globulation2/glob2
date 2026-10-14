@@ -370,4 +370,4 @@ required ticket/lane ordering, publication deadlines and cancellation. Settings
 and CLI tests cover GUI/headless defaults, local persistence and binary overrides.
 Run the affected unit and engine suites through `test/run_tests.py`, then compare
 real saved-game and replay checksums with GPU off/on. See
-[GPU verification](../gradient-benchmarks.md#gpu-onoff-verification).
+[GPU verification](../gradient-benchmarks.md#gpu-correctness-and-performance).
