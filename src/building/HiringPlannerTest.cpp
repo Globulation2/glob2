@@ -9,6 +9,38 @@
 #include <set>
 #include <nlohmann/json.hpp>
 
+namespace
+{
+void checkPlannerOutput(const HiringPlanner::Output &actual, const HiringPlanner::Output &expected)
+{
+	CHECK(actual.tick == expected.tick);
+	CHECK(actual.team == expected.team);
+	REQUIRE(actual.buildings.size() == expected.buildings.size());
+	for (unsigned b = 0; b < actual.buildings.size(); ++b)
+	{
+		CAPTURE(b);
+		const auto &a = actual.buildings[b], &e = expected.buildings[b];
+		CHECK(a.building == e.building); CHECK(a.type == e.type);
+		CHECK(a.configuration == e.configuration);
+		REQUIRE(a.jobs.size() == e.jobs.size());
+		for (unsigned j = 0; j < a.jobs.size(); ++j)
+		{
+			CAPTURE(j);
+			const auto &aj = a.jobs[j], &ej = e.jobs[j];
+			CHECK(aj.key == ej.key);
+			REQUIRE(aj.candidates.size() == ej.candidates.size());
+			for (unsigned c = 0; c < aj.candidates.size(); ++c)
+			{
+				CAPTURE(c);
+				CHECK(aj.candidates[c].unit == ej.candidates[c].unit);
+				CHECK(aj.candidates[c].level == ej.candidates[c].level);
+				CHECK(aj.candidates[c].value == ej.candidates[c].value);
+			}
+		}
+	}
+}
+} // namespace
+
 TEST_SUITE("HiringPlanner")
 {
 	TEST_CASE("snapshot seed templates and version keys preserve scalar planner outputs")
@@ -58,23 +90,7 @@ TEST_SUITE("HiringPlanner")
 				CHECK(actual.metrics.fieldMisses == 0);
 				CHECK(actual.metrics.fieldHits > 0);
 			}
-			REQUIRE(actual.buildings.size() == expected.buildings.size());
-			for (unsigned b = 0; b < actual.buildings.size(); ++b)
-			{
-				REQUIRE(actual.buildings[b].jobs.size() == expected.buildings[b].jobs.size());
-				for (unsigned j = 0; j < actual.buildings[b].jobs.size(); ++j)
-				{
-					const auto &a = actual.buildings[b].jobs[j], &e = expected.buildings[b].jobs[j];
-					CHECK(a.key == e.key);
-					REQUIRE(a.candidates.size() == e.candidates.size());
-					for (unsigned c = 0; c < a.candidates.size(); ++c)
-					{
-						CHECK(a.candidates[c].unit == e.candidates[c].unit);
-						CHECK(a.candidates[c].level == e.candidates[c].level);
-						CHECK(a.candidates[c].value == e.candidates[c].value);
-					}
-				}
-			}
+			checkPlannerOutput(actual, expected);
 			CHECK(cached.bytes() <= HiringPlanner::Cache::MaxBytes);
 		}
 	}
@@ -673,13 +689,18 @@ TEST_SUITE("HiringPlanner")
 		// supplier rules. Local live-field enrollment cannot change its result.
 		REQUIRE(supply->modes[CHERRY] == 1);
 		CHECK_FALSE(supply->consumerSpecific[CHERRY]);
+		const auto repeated = cache.rank(inputs, 0, 8);
+		CHECK(repeated.metrics.fieldHits > 0);
+		CHECK(repeated.metrics.fieldMisses == 0);
+		checkPlannerOutput(repeated, output);
 		world.game.map.getMaterialGradientSlot(0, CHERRY, worker->swimClass(), false, inn);
 		world.game.snapshotStore()
 			.invalidateBoundary(); // Announce this mid-boundary fixture query.
 		auto published = world.game.captureReadBoundary();
 		const auto shared = cache.rank(HiringPipeline::bindRoutes(world.game, published), 0, 8);
 		CHECK(shared.metrics.privateResourceReads > 0);
-		CHECK(shared.metrics.fieldHits > 0);
-		CHECK(shared.metrics.fieldMisses == 0);
+		// A new observation conservatively refreshes supplier facts, even if
+		// only local query enrollment changed. Suggestions remain identical.
+		checkPlannerOutput(shared, output);
 	}
 }
