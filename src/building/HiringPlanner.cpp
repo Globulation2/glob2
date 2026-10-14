@@ -71,7 +71,7 @@ bool hasCargo(const Inputs &input, const U &u, int material)
 }
 bool hasDeliverableCargo(const Inputs &input, const U &u, int material, Uint64 multiplier)
 {
-	if (u.carriedMaterial == material && !u.widePrimaryCargo &&
+	if (u.carriedMaterial == material && !u.widePrimaryCargo() &&
 		packetCanDeliver({u.carriedPacket.numerator, u.carriedPacket.denominator}, multiplier))
 		return true;
 	if (const auto *cargo = input.world.entities->unitCargo.find(u.gid))
@@ -87,7 +87,7 @@ bool canCarry(const Inputs &input, const World &world, const U &u, int material)
 		return true;
 	const auto *cargo = input.world.entities->unitCargo.find(u.gid);
 	const unsigned count =
-		(u.carriedMaterial >= 0) + (cargo ? cargo->size() : 0) - (u.widePrimaryCargo ? 1 : 0);
+		(u.carriedMaterial >= 0) + (cargo ? cargo->size() : 0) - (u.widePrimaryCargo() ? 1 : 0);
 	if (count >= unsigned(traits.cargoCapacity))
 		return false;
 	if (u.carriedMaterial < 0 || hasCargo(input, u, material))
@@ -113,7 +113,7 @@ int warped(const World &world, int a, int b, int c, int d)
 int buildingEstimate(const World &world, const B &b, int x, int y, BuildingRoute route)
 {
 	if (route != BuildingRoute::Footprint)
-		return std::max(0, warped(world, x, y, b.posX, b.posY) - std::max(0, b.unitStayRange));
+		return std::max(0, warped(world, x, y, b.posX, b.posY) - int(b.unitStayRange));
 	const auto &type = world.catalog->at(b.typeNum).resolvedType;
 	const auto axis = [](int value, int origin, int extent, int size)
 	{
@@ -575,10 +575,7 @@ Output Planner::rank(const Inputs &input, unsigned team, unsigned capacity)
 							},
 							world.airTerrainConstraints);
 						distance = INT_MAX;
-						MaterialMask selected = 0;
-						for (unsigned r = 0; r < MaterialCount; ++r)
-							if (b.clearingMaterials[r])
-								selected |= MaterialMask(1u << r);
+						const MaterialMask selected = b.clearingMaterialMask;
 						for (int y = 0; y < world.height; ++y)
 							for (int x = 0; x < world.width; ++x)
 							{

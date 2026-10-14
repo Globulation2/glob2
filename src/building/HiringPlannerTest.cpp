@@ -56,7 +56,7 @@ TEST_SUITE("HiringPlanner")
 			b->maxUnitWorking = 2;
 			b->subscriptionWorkingTimer = 32;
 			b->materials[WHEAT] = 0;
-			b->clearingMaterials[WOOD] = true;
+			b->setClearsMaterial(WOOD, true);
 			b->updateCallLists();
 			REQUIRE(w.game.map.incResourceByIndex(7, 8, WOOD, 0));
 			REQUIRE(w.game.map.incResourceByIndex(24, 12, WHEAT, 0));

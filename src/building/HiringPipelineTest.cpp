@@ -272,7 +272,7 @@ TEST_SUITE("HiringPipeline")
 			auto *u = w.addUnit(units[role], 6, 8);
 			b->maxUnitWorking = 1;
 			b->subscriptionWorkingTimer = 32;
-			b->clearingMaterials[WOOD] = true;
+			b->setClearsMaterial(WOOD, true);
 			if (role == 0)
 				REQUIRE(w.game.map.incResourceByIndex(7, 8, WOOD, 0));
 			b->updateCallLists();
