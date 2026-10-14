@@ -1,0 +1,56 @@
+[
+  {
+    "case": "islands-713",
+    "metric": "run_ns",
+    "pairs": 3,
+    "geomean_delta_percent": 20.894119316156083
+  },
+  {
+    "case": "islands-713",
+    "metric": "benchmark_run_cpu_ns",
+    "pairs": 3,
+    "geomean_delta_percent": 57.350049222418754
+  },
+  {
+    "case": "islands-713",
+    "metric": "tick_p95_ns",
+    "pairs": 3,
+    "geomean_delta_percent": 17.248997241874815
+  },
+  {
+    "case": "river-713",
+    "metric": "run_ns",
+    "pairs": 3,
+    "geomean_delta_percent": 10.716206385451372
+  },
+  {
+    "case": "river-713",
+    "metric": "benchmark_run_cpu_ns",
+    "pairs": 3,
+    "geomean_delta_percent": 39.33431538931924
+  },
+  {
+    "case": "river-713",
+    "metric": "tick_p95_ns",
+    "pairs": 3,
+    "geomean_delta_percent": 32.82384689582584
+  },
+  {
+    "case": "swamp-713",
+    "metric": "run_ns",
+    "pairs": 3,
+    "geomean_delta_percent": 37.713138687708366
+  },
+  {
+    "case": "swamp-713",
+    "metric": "benchmark_run_cpu_ns",
+    "pairs": 3,
+    "geomean_delta_percent": 65.85093083777383
+  },
+  {
+    "case": "swamp-713",
+    "metric": "tick_p95_ns",
+    "pairs": 3,
+    "geomean_delta_percent": 57.19559941407344
+  }
+]
