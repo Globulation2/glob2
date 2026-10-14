@@ -1148,6 +1148,17 @@ TEST_CASE("bounded required device queue recovers excess fields exactly once" * 
 													c.gate->open();
 												REQUIRE(result == std::future_status::ready);
 											}
+                                            if (index == 2) {
+                                                for (unsigned prior : {0u,1u}) {
+                                                    auto field=(*batch.jobs)[prior].field;
+                                                    const auto phase=field->phase.load();
+                                                    CHECK(phase==(prior ? OwnedGradientField::Phase::Queued : OwnedGradientField::Phase::Running));
+                                                    CHECK_FALSE(c.service->submit(field));
+                                                    c.service->recoverOnWorker(field);
+                                                    CHECK(field->phase.load()==phase);
+                                                    CHECK(field->data[0]==77);
+                                                }
+                                            }
 											++c.gate->jobs;
 										},
 										&batchContext},
