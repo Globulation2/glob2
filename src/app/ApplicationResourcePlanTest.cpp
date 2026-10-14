@@ -61,13 +61,13 @@ TEST_CASE("resource setup preserves every resolved gradient configuration withou
     for (const auto backend : {Backend::CPU, Backend::Scalar, Backend::SSE2, Backend::NEON,
                                Backend::OpenCL, Backend::Vulkan, Backend::WebGPU})
     {
-        const Configuration config{backend, isGPU(backend) ? Algorithm::Frozen8 : Algorithm::Buckets, true};
+        const Configuration config{backend, isGPU(backend) ? Algorithm::Frozen8 : Algorithm::Buckets};
         const auto plan = resolveApplicationResourcePlan(2, cpuAvailabilityObservation(8), true, config);
         CHECK(plan.gradient == config);
         CHECK(plan.computeGpuPermitted() == isGPU(backend));
         CHECK(plan.computeParticipants == 2);
     }
-    const Configuration jacobi{Backend::Vulkan, Algorithm::Jacobi, false};
+    const Configuration jacobi{Backend::Vulkan, Algorithm::Jacobi};
     const auto serial = resolveApplicationResourcePlan(1, {}, true, jacobi);
     CHECK(serial.gradient == jacobi);
     CHECK_FALSE(serial.computeGpuPermitted());

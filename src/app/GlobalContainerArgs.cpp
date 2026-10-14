@@ -28,7 +28,6 @@ void GlobalContainer::applyCommand(const Cli::Request &request)
 		gpuComputeOverride = r.get("--gpu") == "on";
 	if(r.has("--gradient-backend"))gradientBackendOverride=*gradient_kernel::parseBackend(r.get("--gradient-backend"));
     if(r.has("--gradient-algorithm"))gradientAlgorithmOverride=*gradient_kernel::parseAlgorithm(r.get("--gradient-algorithm"));
-    if(r.has("--gradient-verify"))gradientVerifyOverride=r.get("--gradient-verify")=="on";
     auto toggle = [&](const char *name, unsigned bit)
 	{
 		if (r.has(std::string("--") + name))
@@ -140,8 +139,6 @@ gradient_kernel::Configuration GlobalContainer::gradientConfiguration() const
     if(gradientBackendOverride)c.backend=*gradientBackendOverride;
     if(const auto* value=std::getenv("GLOB2_GRADIENT_ALGORITHM");value && *value)c.algorithm=parseAlgorithm(value).value_or(Algorithm::Frozen8);
     if(gradientAlgorithmOverride)c.algorithm=*gradientAlgorithmOverride;
-    if(const auto* value=std::getenv("GLOB2_GRADIENT_VERIFY");value && *value)c.verify=parseVerification(value).value_or(false);
-    if(gradientVerifyOverride)c.verify=*gradientVerifyOverride;
     if(!supportsAlgorithm(c.backend,c.algorithm)){
         if(gradientAlgorithmOverride)throw std::invalid_argument("Gradient algorithm is unsupported by selected backend");
         c.algorithm=isGPU(c.backend)?Algorithm::Frozen8:Algorithm::Buckets;

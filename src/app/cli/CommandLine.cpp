@@ -106,7 +106,6 @@ Option gpu()
 }
 Option gradientBackend() {return choice("--gradient-backend","Gradient computation backend",{"cpu","scalar","sse2","neon","opencl","vulkan","webgpu"});}
 Option gradientAlgorithm() {return choice("--gradient-algorithm","Gradient computation algorithm",{"buckets","frozen8","jacobi"});}
-Option gradientVerify() {return choice("--gradient-verify","Compare accelerated fields with scalar CPU output",{"on","off"});}
 std::vector<Option> mapSettings()
 {
 	return {
@@ -360,7 +359,7 @@ const std::vector<Command> &commands()
 		launch.push_back(value("--building-catalog", "file", "Building catalog manifest"));
 		launch.push_back(compute());
         launch.push_back(choice("--compute-telemetry", "Compute wait attribution and scheduler tracing", {"off", "waits", "trace"}, "off"));
-		launch.push_back(gpu());launch.push_back(gradientBackend());launch.push_back(gradientAlgorithm());launch.push_back(gradientVerify());
+		launch.push_back(gpu());launch.push_back(gradientBackend());launch.push_back(gradientAlgorithm());
 		add("play", "Launch the graphical game", {}, 0, launch, "Interactive game",
 			{"glob2 play --window-size 1280x720 --no-fullscreen"});
 		add("replay", "Watch a recorded replay", {"FILE"}, 1, launch, "Interactive replay",
@@ -446,7 +445,7 @@ const std::vector<Command> &commands()
 		append(game, assets());
 		game.push_back(compute());
         game.push_back(choice("--compute-telemetry", "Compute wait attribution and scheduler tracing", {"off", "waits", "trace"}, "off"));
-		game.push_back(gpu());game.push_back(gradientBackend());game.push_back(gradientAlgorithm());game.push_back(gradientVerify());
+		game.push_back(gpu());game.push_back(gradientBackend());game.push_back(gradientAlgorithm());
 		append(
 			game,
 			{value("--map-file", "file", "Map input for a new game"),
@@ -498,7 +497,7 @@ const std::vector<Command> &commands()
 		append(repeat, display());
 		repeat.push_back(flag("--display", "Render the saved game through the normal presentation loop"));
 		append(repeat,
-			   {compute(), gpu(), gradientBackend(), gradientAlgorithm(), gradientVerify(),
+			   {compute(), gpu(), gradientBackend(), gradientAlgorithm(),
 				integer("--ticks", "Steps per run; 0 runs until the game ends", 0, 2147483647, "0"),
 				integer("--runs", "Number of saved-game runs", 1, 2147483647, "1"),
 				value("--building-catalog", "file", "Building catalog")});
@@ -554,7 +553,7 @@ const std::vector<Command> &commands()
 		append(random, display());
 		append(
 			random,
-			{compute(), gpu(), gradientBackend(), gradientAlgorithm(), gradientVerify(), flag("--display", "Show test games graphically"),
+			{compute(), gpu(), gradientBackend(), gradientAlgorithm(), flag("--display", "Show test games graphically"),
 			 integer("--runs", "Game count; 0 repeats forever", 0, 2147483647, "0"),
 			 integer(
 				 "--ticks",

@@ -19,9 +19,8 @@ struct AcceleratorStatus
 	Availability availability = Availability::Uninitialized;
 	std::string device, error;
 	std::string driver, shaderIdentity;
-	std::uint64_t fallbacks = 0, verificationNs = 0;
-	std::uint64_t fields = 0, dispatches = 0, uploadNs = 0, computeNs = 0, readbackNs = 0,
-				  verified = 0;
+	std::uint64_t fallbacks = 0;
+	std::uint64_t fields = 0, dispatches = 0, uploadNs = 0, computeNs = 0, readbackNs = 0;
 };
 struct BackendDescriptor
 {
@@ -63,7 +62,5 @@ void shutdownWebGPUGradient() noexcept;
 void maintainWebGPUGradient() noexcept;
 bool reserveGradientDeviceBytes(std::size_t) noexcept;
 void releaseGradientDeviceBytes(std::size_t) noexcept;
-// Throws on mismatch, with a reproducible binary fixture in the diagnostics directory.
 void recordGradientFallback(Backend) noexcept;
-void verifyGradientResult(const BackendRequest &, std::span<const std::uint16_t> original);
 } // namespace gradient_kernel

@@ -39,7 +39,7 @@ TEST_CASE("backend switch drains privately and preserves pending publication" *
 	auto *slot = new std::uint16_t[1]{};
 	pipeline.advance();
 	pipeline.submit(&slot, 0, [](auto &job) { job.data[0] = 41; });
-	requestBackendConfiguration({Backend::CPU, Algorithm::Buckets, false});
+	requestBackendConfiguration({Backend::CPU, Algorithm::Buckets});
 	CHECK(backend() == Backend::Scalar);
 	map.applyGradientBackendRequest();
 	CHECK(observed.load() == Backend::Scalar);
@@ -56,7 +56,7 @@ TEST_CASE("backend switch drains privately and preserves pending publication" *
 	pipeline.submit(&slot, 0, [](auto &job) { job.data[0] = 99; });
 	pipeline.finish();
 	CHECK(observed.load() == Backend::CPU);
-	requestBackendConfiguration({Backend::Scalar, Algorithm::Buckets, false});
+	requestBackendConfiguration({Backend::Scalar, Algorithm::Buckets});
 	map.applyGradientBackendRequest();
 	CHECK(slot[0] == 42);
 	CHECK(pipeline.pendingCount() == 1);
@@ -99,12 +99,12 @@ TEST_CASE("repeated backend requests coalesce without moving publication ticks" 
 	auto *serving = new std::uint16_t[1]{7};
 	pipeline.advance();
 	pipeline.submit(&serving, 0, [](auto &job) { job.data[0] = 20; });
-	requestBackendConfiguration({Backend::CPU, Algorithm::Buckets, false});
-	requestBackendConfiguration({Backend::Scalar, Algorithm::Buckets, false});
+	requestBackendConfiguration({Backend::CPU, Algorithm::Buckets});
+	requestBackendConfiguration({Backend::Scalar, Algorithm::Buckets});
 	map.applyGradientBackendRequest(); // Last request cancels the earlier change.
 	CHECK(serving[0] == 7);
 	CHECK(pipeline.pendingCount() == 1);
-	requestBackendConfiguration({Backend::CPU, Algorithm::Buckets, false});
+	requestBackendConfiguration({Backend::CPU, Algorithm::Buckets});
 	map.applyGradientBackendRequest();
 	CHECK(serving[0] == 7);
 	CHECK(pipeline.pendingCount() == 1);
@@ -127,7 +127,7 @@ TEST_CASE("CPU-only lifecycle owns no GPU service or backend session" * doctest:
     using namespace gradient_kernel;
     const auto old=configuration(), requested=requestedBackendConfiguration();
     struct Restore { Configuration applied, requested; ~Restore() {applyBackendConfiguration(applied);requestBackendConfiguration(requested);} } restore{old,requested};
-    applyBackendConfiguration({Backend::CPU,Algorithm::Buckets,false});
+    applyBackendConfiguration({Backend::CPU,Algorithm::Buckets});
     requestBackendConfiguration(configuration());
     glob2test::HeadlessGlobals globals;
     glob2test::HeadlessGame world;

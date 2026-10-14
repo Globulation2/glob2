@@ -65,9 +65,6 @@ struct BackendRequest
     // Legacy direct callers may omit it; group/coordinator dispatch supplies it.
     std::optional<Configuration> capturedConfiguration;
     std::optional<std::uint64_t> capturedGeneration;
-    // Owned jobs capture diagnostics with their admission. Direct test/tool
-    // callers may omit it and use the process's opt-in diagnostic environment.
-    std::optional<bool> diagnostics;
 };
 inline bool alreadyFixedGradient(std::span<const std::uint16_t> seeds) {
     const auto source=std::find_if(seeds.begin(),seeds.end(),[](auto value){return value>1;});
@@ -85,9 +82,6 @@ struct AcceleratorImplementation {
     bool (*execute)(std::span<const BackendRequest>,Plan)=nullptr;
 };
 inline std::array<AcceleratorImplementation,unsigned(Backend::Count)> acceleratorImplementations{};
-inline bool (*reserveVerificationBytes)(std::size_t)=nullptr;
-inline void (*releaseVerificationBytes)(std::size_t)=nullptr;
-inline void (*validateAcceleratedResult)(const BackendRequest&,std::span<const std::uint16_t>)=nullptr;
 inline bool canBatch(const BackendSession &session)
 {
     const auto choice = backend();
@@ -136,20 +130,8 @@ inline void executeGradientGroup(std::span<const BackendRequest> requests, Backe
     // caller selected a variant different from the process preference.
     CPUSelectionScope cpuSelection(eligible ? chosen.configuration.backend : mode);
     bool handled=false;
-    struct VerificationLease {std::size_t bytes=0;~VerificationLease(){if(bytes && releaseVerificationBytes)releaseVerificationBytes(bytes);}} verification;
-    std::vector<std::vector<std::uint16_t>> originals;
-    if(chosen.plan!=Plan::CPU && chosen.configuration.verify && validateAcceleratedResult){
-        std::size_t bytes=0;
-        for(const auto& request:requests)bytes+=request.grid.cells()*sizeof(std::uint16_t);
-        if(!reserveVerificationBytes || !releaseVerificationBytes || !reserveVerificationBytes(bytes))
-            throw std::runtime_error("Gradient verification host budget exceeded");
-        verification.bytes=bytes;
-        for(const auto& request:requests)
-            originals.emplace_back(request.gradient,request.gradient+request.grid.cells());
-    }
     if(chosen.plan!=Plan::CPU) {
-        // Adapter diagnostics and proof evidence must carry the same admission
-        // identity as dispatch, even for legacy synchronous callers.
+        // Direct dispatch captures the selected execution identity once.
         std::vector<BackendRequest> capturedRequests(requests.begin(),requests.end());
         for(auto& request:capturedRequests){
             request.capturedConfiguration=chosen.configuration;
@@ -163,12 +145,6 @@ inline void executeGradientGroup(std::span<const BackendRequest> requests, Backe
             handled=accelerator(capturedRequests.front(),chosen.plan);
         else if(batchAccelerator)
             handled=batchAccelerator(capturedRequests,chosen.plan);
-    }
-    if(handled && !originals.empty())for(std::size_t i=0;i<requests.size();++i){
-        auto capturedRequest=requests[i];
-        capturedRequest.capturedConfiguration=chosen.configuration;
-        capturedRequest.capturedGeneration=chosen.generation;
-        validateAcceleratedResult(capturedRequest,originals[i]);
     }
     if(!handled) {
         if(batchRecovery) {

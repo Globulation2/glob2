@@ -141,7 +141,6 @@ public:
 	std::optional<bool> gpuComputeOverride;
     std::optional<gradient_kernel::Backend> gradientBackendOverride;
     std::optional<gradient_kernel::Algorithm> gradientAlgorithmOverride;
-    std::optional<bool> gradientVerifyOverride;
 	std::string runNoXGameName;
 	int runNoXCountRuns; //!< The number of runs you want to repeat the no X run
 	bool automaticEndingGame;

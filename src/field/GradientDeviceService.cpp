@@ -1,8 +1,6 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "GradientDeviceService.h"
-#include "GradientGpuValidation.h"
 #include "GradientAccelerators.h"
-#include "GradientDiagnostics.h"
 #include "common/ThreadCpuClock.h"
 #include <algorithm>
 #include <array>
@@ -14,10 +12,7 @@
 
 namespace gradient_kernel
 {
-bool gradientDiagnosticsRequested() noexcept
-{
-	return gradientProfilingRequested();
-}
+
 template <class T, std::size_t N> class BoundedEntries
 {
 	std::array<T, N> entries{};
@@ -70,21 +65,14 @@ struct GradientDeviceState
 };
 namespace
 {
-std::atomic<std::uint64_t> brokerCpuNs{0}, brokerThreadId{0};
 std::atomic<unsigned> brokerThreads{0};
 class DeviceBroker;
 std::atomic<DeviceBroker *> existingBroker{nullptr};
-bool validCpu(std::uint64_t start, std::uint64_t end) noexcept
-{
-	return start && end >= start;
-}
+
 void recoverField(void *context, std::size_t) noexcept
 {
 	auto &field = *static_cast<OwnedGradientField *>(context);
-	GradientProfileSession profile(field.decision.configuration.backend, field.diagnostics);
-	GradientPhaseScope phase(GradientPhase::Recovery);
-	profile.count(GradientCounter::RecoveredFields);
-	const auto start = glob2::threadCpuNs();
+
 	CPUSelectionScope selection(field.decision.configuration.backend);
 	recordGradientFallback(field.decision.configuration.backend);
 	try
@@ -97,21 +85,22 @@ void recoverField(void *context, std::size_t) noexcept
 	{
 		field.error = std::current_exception();
 	}
-	field.fallbackCpuNs = glob2::threadCpuDeltaNs(start, glob2::threadCpuNs());
-	const auto cleanup = field.diagnostics ? glob2::threadCpuNs() : 0;
-	phase.setPhase(GradientPhase::Retirement);
+
 	field.inputs.reset();
 	field.identity = {};
-	if (field.diagnostics)
-		field.fallbackCleanupCpuNs = glob2::threadCpuDeltaNs(cleanup, glob2::threadCpuNs());
+	field.phase = OwnedGradientField::Phase::Complete;
 }
 void fallbackField(const std::shared_ptr<OwnedGradientField> &field) noexcept
 {
 	if (!field || !field->completion)
 		return;
-	bool unused = false;
-	if (!field->resolved.compare_exchange_strong(unused, true))
-		return;
+	auto phase = field->phase.load(std::memory_order_acquire);
+	do
+	{
+		if (phase == OwnedGradientField::Phase::Recovering ||
+			phase == OwnedGradientField::Phase::Complete)
+			return;
+	} while (!field->phase.compare_exchange_weak(phase, OwnedGradientField::Phase::Recovering));
 	if (auto state = field->executionState)
 	{
 		std::lock_guard lock(state->mutex);
@@ -196,7 +185,6 @@ class DeviceBroker
 	}
 	void execute(const std::shared_ptr<GradientDeviceState> &state) noexcept
 	{
-		const auto cpuStart = glob2::threadCpuNs();
 		std::array<std::shared_ptr<OwnedGradientField>, 8> held{};
 		std::size_t count = 0;
 		bool canceled = false;
@@ -232,7 +220,10 @@ class DeviceBroker
 				state->queue.erase(next);
 			}
 			for (std::size_t i = 0; i < count; ++i)
+			{
+				held[i]->phase = OwnedGradientField::Phase::Running;
 				state->activeControls[i] = held[i]->requiredControl;
+			}
 			++state->totals.batches;
 			state->totals.maxBatch = std::max<std::uint64_t>(state->totals.maxBatch, count);
 		}
@@ -244,7 +235,6 @@ class DeviceBroker
 												  field->session->failed.load();
 									   });
 		bool handled = false;
-		auto prepared = cpuStart, submitted = cpuStart;
 		if (!canceled && !stale)
 			try
 			{
@@ -285,102 +275,22 @@ class DeviceBroker
 					requests[i].executedOnDevice = &field.executedGPU;
 					requests[i].deviceExecutionObserved = &field.deviceExecutionObserved;
 					requests[i].requiredControl = field.requiredControl;
-					requests[i].diagnostics = field.diagnostics;
 				}
-				prepared = glob2::threadCpuNs();
-				if (state->totals.diagnostics)
-				{
-					const auto stamp = monotonicNs();
-					for (std::size_t i = 0; i < count; ++i)
-						held[i]->deviceStartedWallNs = stamp;
-				}
+
 				const std::span batch(requests.data(), count);
-				std::vector<std::vector<std::uint16_t>> originals;
-				std::size_t verificationBytes = 0;
-				if (held.front()->decision.configuration.verify)
-					for (const auto &q : batch)
-						verificationBytes += q.grid.cells() * 2;
-				struct VerifyLease
-				{
-					std::size_t bytes = 0;
-					~VerifyLease()
-					{
-						if (bytes)
-							releaseOpenCLHostBytes(bytes);
-					}
-				} verification;
-				if (verificationBytes)
-				{
-					if (!reserveOpenCLHostBytes(verificationBytes))
-						throw std::runtime_error("Gradient verification host budget exceeded");
-					verification.bytes = verificationBytes;
-					for (const auto &q : batch)
-						originals.emplace_back(q.gradient, q.gradient + q.grid.cells());
-				}
 				handled = state->hooks.execute
 							  ? state->hooks.execute(batch, held.front()->decision.plan)
 							  : executeGradientAccelerator(batch, held.front()->decision.plan);
-				if (handled && verificationBytes)
-					for (std::size_t i = 0; i < count; ++i)
-					{
-						auto &field = *held[i];
-						requests[i].cpu = [](void *context, std::uint16_t *output)
-						{
-							auto &source = *static_cast<OwnedGradientField *>(context);
-							const auto bytes = source.grid.cells() * 2;
-							if (!reserveOpenCLHostBytes(bytes))
-								throw std::runtime_error(
-									"Gradient verification host budget exceeded");
-							struct Lease
-							{
-								std::size_t bytes;
-								~Lease() { releaseOpenCLHostBytes(bytes); }
-							} lease{bytes};
-							OwnedGradientField reference;
-							reference.data.reset(new std::uint16_t[source.grid.cells()]);
-							std::copy_n(output, source.grid.cells(), reference.data.get());
-							reference.inputs = source.inputs;
-							reference.session = source.session;
-							reference.grid = source.grid;
-							reference.cpuBuckets = source.cpuBuckets;
-							reference.limit = source.limit;
-							source.cpu(reference);
-							std::copy_n(reference.data.get(), source.grid.cells(), output);
-						};
-						try
-						{
-							verifyGradientResult(requests[i], originals[i]);
-						}
-						catch (...)
-						{
-							field.error = std::current_exception();
-						}
-					}
-				submitted = glob2::threadCpuNs();
 			}
-			catch (const GradientProofFailure &)
-			{
-				// Fatal proof errors resolve the admitted tickets with errors. CPU
-				// recovery would hide a proven mismatch and let the run continue.
-				const auto error = std::current_exception();
-				for (std::size_t i = 0; i < count; ++i)
-					held[i]->error = error;
-				submitted = glob2::threadCpuNs();
-				handled = true;
-			}
+
 			catch (...)
 			{
-				submitted = glob2::threadCpuNs();
 				handled = false;
 			}
-		const auto ended = glob2::threadCpuNs(), finished = monotonicNs();
-		const bool measured = validCpu(cpuStart, prepared) && validCpu(prepared, submitted) &&
-							  validCpu(submitted, ended);
+		const auto finished = monotonicNs();
 		for (std::size_t i = 0; i < count; ++i)
 		{
 			auto &field = *held[i];
-			if (state->totals.diagnostics)
-				field.deviceCompletedWallNs = finished;
 			if (handled)
 			{
 				field.inputs.reset();
@@ -398,16 +308,9 @@ class DeviceBroker
 		{
 			std::lock_guard lock(state->mutex);
 			state->activeControls.fill({});
-			if (!measured)
-				++state->totals.clockInvalidMeasurements;
 			if (stale)
 				state->totals.stale += count;
-			if (state->totals.diagnostics)
-			{
-				state->totals.batchPreparationCpuNs += glob2::threadCpuDeltaNs(cpuStart, prepared);
-				state->totals.batchSubmissionCpuNs += glob2::threadCpuDeltaNs(prepared, submitted);
-				state->totals.batchCompletionCpuNs += glob2::threadCpuDeltaNs(submitted, ended);
-			}
+
 			for (std::size_t i = 0; i < count; ++i)
 			{
 				if (held[i]->deviceExecutionObserved)
@@ -427,8 +330,9 @@ class DeviceBroker
 		{
 			if (handled)
 			{
-				bool unused = false;
-				if (held[i]->resolved.compare_exchange_strong(unused, true))
+				auto phase = OwnedGradientField::Phase::Running;
+				if (held[i]->phase.compare_exchange_strong(phase,
+														   OwnedGradientField::Phase::Complete))
 					held[i]->completion->complete();
 			}
 			else
@@ -437,9 +341,7 @@ class DeviceBroker
 	}
 	void run() noexcept
 	{
-		brokerThreadId = glob2::nativeThreadId();
 		brokerThreads = 1;
-		const auto start = glob2::threadCpuNs();
 		for (;;)
 		{
 			std::shared_ptr<GradientDeviceState> selected;
@@ -448,8 +350,10 @@ class DeviceBroker
 				std::unique_lock lock(mutex);
 				// Browser initialization/completion callbacks do not notify this
 				// native condition variable; bounded maintenance observes them.
-				wake.wait_for(lock, std::chrono::milliseconds(100),
-							  [&] { return stopping || pending(); });
+                if (registrations.empty())
+                    wake.wait(lock,[&] {return stopping || !registrations.empty();});
+                else
+                    wake.wait_for(lock,std::chrono::milliseconds(100),[&] {return stopping || pending();});
 				for (auto at = registrations.begin(); at != registrations.end();)
 				{
 					auto current = *at;
@@ -515,9 +419,7 @@ class DeviceBroker
 							state->started = ready;
 					}
 			}
-			brokerCpuNs = glob2::threadCpuDeltaNs(start, glob2::threadCpuNs());
 		}
-		brokerCpuNs = glob2::threadCpuDeltaNs(start, glob2::threadCpuNs());
 		brokerThreads = 0;
 	}
 
@@ -590,35 +492,13 @@ void shutdownGradientDeviceCoordinator() noexcept
 	// No coordinator means no profiled device-service work. Preserve the CPU
 	// drain without environment lookups, TLS sessions or diagnostic output.
 	auto *coordinator = existingBroker.load(std::memory_order_acquire);
-	if (!coordinator) {
-		shutdownGradientAccelerators();
+	if (!coordinator)
 		return;
-	}
 	{
-		GradientProfileSession profile(configuration().backend, gradientProfilingRequested());
-		GradientPhaseScope phase(GradientPhase::Shutdown);
 		// CPU-only applications must not initialize an otherwise unused backend.
 		coordinator->shutdown();
 		shutdownGradientAccelerators();
 	}
-	// Result files precede application teardown. Preserve a separate cumulative
-	// diagnostic snapshot after the explicit coordinator/adapter drain instead
-	// of presenting that earlier window as complete process CPU consumption.
-	if (gradientProfilingRequested())
-		if (const auto *directory = std::getenv("GLOB2_TEST_ARTIFACTS"))
-			try
-			{
-				std::filesystem::create_directories(directory);
-				std::ofstream out(std::filesystem::path(directory) / "gradient-host-final.json");
-				out << "{\"window\":\"through_explicit_adapter_drain\",\"backends\":{";
-				for (unsigned i = 0; i < unsigned(Backend::Count); ++i)
-				{
-					out << (i ? "," : "") << '"' << backendName(Backend(i)) << "\":";
-					writeGradientDiagnostics(out, gradientDiagnosticSnapshot(Backend(i)));
-				}
-				out << "}}\n";
-			}
-			catch (...) {} // Diagnostics cannot turn successful shutdown into failure.
 }
 OwnedGradientField::~OwnedGradientField()
 {
@@ -659,7 +539,7 @@ void GradientDeviceService::configure(unsigned computeThreads, Backend mode)
 	if constexpr (!GAGCore::ThreadSupport::available)
 		return;
 	if (computeThreads < 2 || !isGPU(mode) ||
-		(!prepareAccelerator && !hooks.initialize &&
+		(!hooks.initialize &&
 		 !acceleratorImplementations[unsigned(mode)].initialize))
 		return;
 	constexpr auto bytes = sizeof(GradientDeviceState) + 128;
@@ -679,7 +559,6 @@ void GradientDeviceService::configure(unsigned computeThreads, Backend mode)
 	next->hooks = hooks;
 	next->backend = mode;
 	next->totals.configuredMaxBatch = mode == Backend::OpenCL ? 8 : 1;
-	next->totals.diagnostics = gradientDiagnosticsRequested();
 	next->started = true;
 	{
 		std::lock_guard lock(mutex);
@@ -724,7 +603,6 @@ bool GradientDeviceService::submit(const std::shared_ptr<OwnedGradientField> &fi
 		if (field)
 		{
 			field->executionState = current;
-			field->diagnostics = current->totals.diagnostics;
 		}
 		if (!field || !field->session || !field->data || !field->completion || !field->cpu ||
 			!field->costAt)
@@ -769,8 +647,8 @@ bool GradientDeviceService::submit(const std::shared_ptr<OwnedGradientField> &fi
 		// the browser owner. Every admitted request therefore needs a control.
 		if (!field->requiredControl)
 			field->requiredControl = std::make_shared<OpenCLRequiredControl>();
-		bool unused = false;
-		if (!field->admitted.compare_exchange_strong(unused, true))
+		auto phase = OwnedGradientField::Phase::Private;
+		if (!field->phase.compare_exchange_strong(phase, OwnedGradientField::Phase::Queued))
 		{
 			field->fallbackReason = GradientFallbackReason::Duplicate;
 			++current->totals.declined;
@@ -778,14 +656,14 @@ bool GradientDeviceService::submit(const std::shared_ptr<OwnedGradientField> &fi
 		}
 		const auto decline = [&]
 		{
-			field->admitted = false;
+			field->phase = OwnedGradientField::Phase::Private;
 			field->fallbackReason = GradientFallbackReason::MemoryBudget;
 			++current->totals.budgetDeclines;
 			++current->totals.declined;
 			return false;
 		};
 		const auto cells = field->grid.cells(),
-				   sessionBytes = field->session->metrics().retainedBytes + 128;
+				   sessionBytes = sizeof(BackendSession) + 128;
 		if (current->queue.full() ||
 			cells > (OpenCLHostBudget - sizeof(OwnedGradientField) - sessionBytes) /
 						sizeof(std::uint16_t))
@@ -827,9 +705,7 @@ GradientDeviceService::Metrics GradientDeviceService::metrics() const
 		result.ready = result.running && current->initialized;
 		result.retainedHostBytes = current->retained.load();
 	}
-	result.hostCpuNs = brokerCpuNs.load();
 	result.coordinatorThreads = brokerThreads.load();
-	result.coordinatorThreadId = brokerThreadId.load();
 	return result;
 }
 } // namespace gradient_kernel

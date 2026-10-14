@@ -536,8 +536,7 @@ void Map::configureGradientExecution()
     if (gpu) {
         if (!rt.backendSession) rt.backendSession=std::make_shared<gradient_kernel::BackendSession>();
         rt.backendSession->failed=false;
-        rt.backendSession->setExternalInitialization(true);
-        rt.backendSession->configure(compute.threadCount());
+        rt.backendSession->invalidateConfiguration();
         if (!rt.deviceService) rt.deviceService=std::make_shared<gradient_kernel::GradientDeviceService>();
         rt.deviceService->configure(compute.threadCount(),selected.backend);
     } else {
