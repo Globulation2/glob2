@@ -66,7 +66,13 @@ TEST_SUITE("HiringPlanner")
 			if (phase == 2) w.game.map.clearImmobileUnit(24, 12);
 			if (phase == 3) w.game.map.addForbidden(24, 12, 0);
 			if (phase == 4) w.game.map.removeForbidden(24, 12, 0);
-			if (phase == 6) REQUIRE(w.game.map.incResourceByIndex(18, 20, WHEAT, 0));
+			if (phase == 6)
+			{
+				REQUIRE(w.game.map.incResourceByIndex(18, 20, WHEAT, 0));
+				// A blocked queried cell must resolve its neighbors in the same
+				// order as the full field, rather than read an unsettled value.
+				w.game.map.addForbidden(5, 14, 0);
+			}
 			if (phase == 8) w.game.map.markImmobileUnit(18, 20, 0);
 			w.game.snapshotStore().invalidateBoundary();
 			auto input = HiringPipeline::bindRoutes(w.game, w.game.captureReadBoundary());
@@ -93,6 +99,33 @@ TEST_SUITE("HiringPlanner")
 			checkPlannerOutput(actual, expected);
 			CHECK(cached.bytes() <= HiringPlanner::Cache::MaxBytes);
 		}
+	}
+	TEST_CASE("partial resource queries exhaust an unreachable source exactly like full propagation")
+	{
+		glob2test::HeadlessGlobals globals;
+		glob2test::HeadlessGame w({.wDec = 7, .hDec = 7, .discovered = true, .loadDefaultRace = true});
+		auto *building = w.addBuilding("inn", 8, 8);
+		building->maxUnitWorking = 2;
+		building->materials[WHEAT] = 0;
+		building->updateCallLists();
+		auto *unit = w.addUnit(WORKER, 12, 12);
+		unit->activity = Unit::ACT_RANDOM;
+		unit->medical = Unit::MED_FREE;
+		unit->hungriness = 0;
+		REQUIRE(w.game.map.incResourceByIndex(24, 24, WHEAT, 0));
+		for (int y = 22; y <= 26; ++y)
+			for (int x = 22; x <= 26; ++x)
+				if (x == 22 || x == 26 || y == 22 || y == 26)
+					w.game.map.addForbidden(x, y, 0);
+		const auto input = HiringPipeline::bindRoutes(w.game, w.game.captureReadBoundary());
+		HiringPlanner::Cache partial, full(HiringPlanner::Cache::MaxBytes, false, false);
+		const auto actual = partial.rank(input, 0), expected = full.rank(input, 0);
+		CHECK(actual.metrics.privateResourceReads > 0);
+		checkPlannerOutput(actual, expected);
+		for (const auto &b : actual.buildings)
+			for (const auto &list : b.jobs)
+				if (list.key.job == Hiring::Job::Fetch && list.key.material == WHEAT)
+					CHECK(list.candidates.empty());
 	}
 	TEST_CASE("unrelated live route enrollment cannot change hiring inputs")
 	{
