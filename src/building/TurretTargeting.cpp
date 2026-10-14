@@ -14,7 +14,6 @@
 namespace TurretTargeting
 {
 struct OccupiedIndex
-struct OccupiedIndex
 {
     struct Cell { int x,y; };
     struct Chunk { Uint32 teams=0; std::vector<Cell> cells; };
