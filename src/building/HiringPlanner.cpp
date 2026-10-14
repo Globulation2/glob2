@@ -261,8 +261,8 @@ struct Cache::Impl
 	const std::vector<Uint16> &resource(const World &world, const B &b, int material, int swim,
 										unsigned modes, bool consumerSpecific)
 	{
-		return field(world,
-					 resourceKey(world, b, material, swim, modes, consumerSpecific, observation),
+		const auto key = resourceKey(world, b, material, swim, modes, consumerSpecific, observation);
+		return field(world, key,
 					 swim,
 					 [&](std::size_t i) -> Uint16
 					 {
@@ -283,7 +283,7 @@ struct Cache::Impl
 					 {
 						 // Natural fields share the existing snapshot-backed seed
 						 // templates. Supplier-specific semantics retain scalar seeds.
-						 if (!cachedSeedTemplates || modes || swim == WATER_ONLY_CLASS)
+						 if (!cachedSeedTemplates || key.untrackedObservation || modes || swim == WATER_ONLY_CLASS)
 							 return false;
 						 trim(seedTemplates.world ? 0 : seedTemplates.budget);
 						 return seedTemplates.trySeed(world.components(), b.team, material, swim, output, nullptr);
