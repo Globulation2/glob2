@@ -196,6 +196,7 @@ ENGINE_TESTS = [
     '#src/render/RendererSwitchIntegrationTest.cpp',
     '#src/ui/settings/SettingsGraphicsTest.cpp',
     '#src/ui/ThemeCatalogTest.cpp',
+    '#src/ui/MenuColonyTest.cpp',
     '#src/ui/settings/SettingsExperimentsTest.cpp',
     '#src/ui/settings/SettingsBuildingsTest.cpp',
     '#src/app/SystemLanguageTest.cpp',

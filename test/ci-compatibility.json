@@ -12,6 +12,7 @@
     "ApplicationResourcePlan/*",
     "EntityRandomLifecycle/*",
     "UnitCatalog/*",
+    "MenuColony/*",
     "UnitCustomization/*",
     "ReadOnlyPhase/*",
     "SimulationReadPhase/*",

@@ -61,7 +61,9 @@ bool MenuColony::load(const std::string& path)
 		if (input.isEndOfStream()) throw std::runtime_error("missing menu snapshot");
 		if (input.readText("format") != "glob2-menu-colony-1") throw std::runtime_error("invalid menu snapshot");
 		auto loaded = std::make_unique<Game>(nullptr);
-		if (!loaded->load(&input) || loaded->mapHeader.getNumberOfTeams() != 1 ||
+		if (!loaded->load(&input))
+			throw std::runtime_error("menu snapshot game failed to load");
+		if (loaded->mapHeader.getNumberOfTeams() != 1 ||
 			loaded->gameHeader.getNumberOfPlayers() != 1 || !loaded->players[0] ||
 			!loaded->players[0]->ai || loaded->players[0]->ai->implementationID != AI::ECONO)
 			throw std::runtime_error("incompatible menu colony");

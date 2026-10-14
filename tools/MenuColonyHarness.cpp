@@ -109,6 +109,24 @@ void checkMenuPainting()
 		StaticBackdrop() { FrontendTheme::current->colony = std::make_unique<MenuColony>(); }
 		~StaticBackdrop() { FrontendTheme::current->colony = std::move(live); }
 	} staticBackdrop;
+	const auto menuTheme = Glob2UI::menuTheme().id;
+	const auto gameTheme = Glob2UI::gameTheme().id;
+	for (const auto &theme : Glob2UI::ThemeCatalog::shared().themes())
+	{
+		if (theme.backdrop.kind != GAGGUI::ui::Backdrop::Kind::Colony)
+			continue;
+		Glob2UI::applyThemes(theme.id, gameTheme);
+		DrawableSurface fallback(4, 4);
+		FrontendTheme::current->background(&fallback, false);
+		auto *surface = fallback.getSDLSurface();
+		Uint8 r, g, b, a;
+		SDL_GetRGBA(*static_cast<Uint32 *>(surface->pixels), SDL_GetPixelFormatDetails(surface->format),
+					SDL_GetSurfacePalette(surface), &r, &g, &b, &a);
+		require(r == theme.palette.backdrop.r && g == theme.palette.backdrop.g &&
+				b == theme.palette.backdrop.b && a == 255,
+				"missing colony uses its theme's exact fallback without the artwork veil");
+	}
+	Glob2UI::applyThemes(menuTheme, gameTheme);
 	struct Menu : Glob2UI::Screen
 	{
 		Glob2UI::Element build(const Glob2UI::Presentation &) override { return Glob2UI::label("menu"); }

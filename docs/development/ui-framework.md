@@ -343,7 +343,10 @@ compiled `light` and `dark` themes (`ThemeCatalog::builtinLight()` and
   theme starts from `light`. Colours are `#rrggbb` or `#rrggbbaa`.
 - `backdrop.kind` is `colony` (the live colony), `image` (`backdrop.image`,
   cropped to cover), `terrain` (the original tiled grass) or `solid`
-  (`palette.backdrop` only). `veil` washes over it. `wordmark` replaces the main
+  (`palette.backdrop` only). Missing colony or image artwork uses that theme's
+  `palette.backdrop` unchanged: light paper for Light, sand for Dune, and dark
+  colours for Dark and Ocean. `veil` washes over available artwork only.
+  `wordmark` replaces the main
   menu wordmark with an image shown as drawn. Backdrop and wordmark overrides
   must name `.webp` artwork under `data/`; lookup retains user-directory priority.
   Without an override the shipped wordmark is

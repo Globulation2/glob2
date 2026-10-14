@@ -113,9 +113,10 @@ older pending exact smoothing. Worker continuation is seeded from the last
 completed pending frame, or published measurements when the queue is empty.
 Resaving stores complete frames; no historical snapshots are required.
 
-Format 159 persists cached turret targeting lists and delayed outputs. The saved-match
-floor deliberately advances to 159; format 160 advances the replay floor to 160.
-Existing maps retain floor 58.
+Format 159 persists cached turret targeting lists and delayed outputs. Older saves
+load with an empty turret cache, which the normal delayed update path populates.
+Maps and saves retain the version-58 compatibility floor; replay acceptance remains
+a separate boundary.
 Text statistics saves isolate pending teams, sampling phases and coverage anchors
 in indexed sections so distinct records survive loading. Binary section markers
 carry no bytes. See [turret targeting](../development/compute-benchmarks.md#cached-turret-targeting)
@@ -158,8 +159,8 @@ Private building stock deliberately changes continuation in format 160: every
 loaded slot is clamped to 0–255 before byte storage. Historical negative stock
 normalizes to zero. Pre-catalog repair credits retain their wide migration before
 actual stock is selected. Serialized stock remains fifteen signed 32-bit values
-in its original order. The saved-game floor remains 159, inherited from persisted
-turret targeting; the map floor stays 58.
+in its original order. Maps and saved games retain the version-58 compatibility
+floor, including these normalization rules for older saves.
 
 Only buildings whose private stock was normalized reconcile commitments made
 unaffordable by the cap. Affordable service visits survive; unfunded visits exit
