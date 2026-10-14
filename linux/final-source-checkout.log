@@ -1,0 +1,2 @@
+Previous HEAD position was d6372abb48 Guard final component writes when the capture reuses or omits them
+HEAD is now at 4fc5877da7 Merge branch 'codex/lean-gpu-lifecycle' into codex/lean-engine-integration

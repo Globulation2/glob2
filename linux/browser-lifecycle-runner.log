@@ -1,0 +1,3 @@
+serial {"code":1,"heartbeats":0}
+Error: Failed serial lifecycle: /home/bradley/glob2-lean-candidate/artifacts/lean-compute/evidence/browser-serial-lifecycle.log
+    at /tmp/glob2-browser-corpus.cjs:24:78

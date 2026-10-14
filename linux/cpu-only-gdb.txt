@@ -1,0 +1,64 @@
+set pagination off
+set confirm off
+set breakpoint pending off
+break gradient_kernel::GradientDeviceService::configure
+commands
+silent
+printf "UNEXPECTED_GPU_CALL GradientDeviceService::configure\n"
+quit 90
+end
+break gradient_kernel::GradientDeviceService::submit
+commands
+silent
+printf "UNEXPECTED_GPU_CALL GradientDeviceService::submit\n"
+quit 90
+end
+break gradient_kernel::makeOpenCLRequiredControl
+commands
+silent
+printf "UNEXPECTED_GPU_CALL makeOpenCLRequiredControl\n"
+quit 90
+end
+break gradient_kernel::retainOpenCLLifetime
+commands
+silent
+printf "UNEXPECTED_GPU_CALL retainOpenCLLifetime\n"
+quit 90
+end
+break gradient_kernel::initializeOpenCL
+commands
+silent
+printf "UNEXPECTED_GPU_CALL initializeOpenCL\n"
+quit 90
+end
+break gradient_kernel::executeOpenCLDevice
+commands
+silent
+printf "UNEXPECTED_GPU_CALL executeOpenCLDevice\n"
+quit 90
+end
+break gradient_kernel::initializeVulkanGradient
+commands
+silent
+printf "UNEXPECTED_GPU_CALL initializeVulkanGradient\n"
+quit 90
+end
+break gradient_kernel::executeVulkanGradient
+commands
+silent
+printf "UNEXPECTED_GPU_CALL executeVulkanGradient\n"
+quit 90
+end
+break gradient_kernel::initializeWebGPUGradient
+commands
+silent
+printf "UNEXPECTED_GPU_CALL initializeWebGPUGradient\n"
+quit 90
+end
+break gradient_kernel::executeWebGPUGradient
+commands
+silent
+printf "UNEXPECTED_GPU_CALL executeWebGPUGradient\n"
+quit 90
+end
+run

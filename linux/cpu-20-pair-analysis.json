@@ -1,0 +1,82 @@
+[
+  {
+    "scenario": "small",
+    "participants": 1,
+    "pairs": 20,
+    "median_ratio": 1.0390838707843457,
+    "bootstrap95": [
+      1.0251981862971362,
+      1.0474252272676776
+    ]
+  },
+  {
+    "scenario": "small",
+    "participants": 2,
+    "pairs": 20,
+    "median_ratio": 1.0335381900540974,
+    "bootstrap95": [
+      1.028752235707695,
+      1.0385746469682797
+    ]
+  },
+  {
+    "scenario": "small",
+    "participants": 4,
+    "pairs": 20,
+    "median_ratio": 1.0562667705213888,
+    "bootstrap95": [
+      1.0440700830114644,
+      1.061199068236535
+    ]
+  },
+  {
+    "scenario": "small",
+    "participants": 8,
+    "pairs": 20,
+    "median_ratio": 1.0215504855484334,
+    "bootstrap95": [
+      1.010208879057295,
+      1.0409317010762908
+    ]
+  },
+  {
+    "scenario": "ordinary",
+    "participants": 1,
+    "pairs": 20,
+    "median_ratio": 1.0024042977701266,
+    "bootstrap95": [
+      0.9962647386305084,
+      1.0104655118392105
+    ]
+  },
+  {
+    "scenario": "ordinary",
+    "participants": 2,
+    "pairs": 20,
+    "median_ratio": 1.0078234912876458,
+    "bootstrap95": [
+      1.0055648700476225,
+      1.0129686067259736
+    ]
+  },
+  {
+    "scenario": "ordinary",
+    "participants": 4,
+    "pairs": 20,
+    "median_ratio": 1.0034297936126844,
+    "bootstrap95": [
+      0.9905925575827024,
+      1.0297012678859372
+    ]
+  },
+  {
+    "scenario": "ordinary",
+    "participants": 8,
+    "pairs": 20,
+    "median_ratio": 1.0064335572484593,
+    "bootstrap95": [
+      0.999796666939062,
+      1.0114551928378048
+    ]
+  }
+]

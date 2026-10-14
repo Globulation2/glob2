@@ -1,0 +1,22 @@
+GLOB2_TEST_BUILD compiler=Apple LLVM 21.0.0 (clang-2100.3.34.2) platform=macOS pointer_bits=64
+GLOB2_TEST_PROVENANCE {"compiler": "g++", "dirty": false, "flags": {"CCFLAGS": "", "CPPDEFINES": "GLOB2_OFFICIAL_INSTANCE_ORIGIN \\\"https://app.glob2online.com\\\" GLOB2_OFFICIAL_INSTANCE_FORMER_ORIGINS \\\"https://glob2online.com\\\" HAVE_CONFIG_H GL_SILENCE_DEPRECATION GLOB2_RENDER_SHADER_DIR \\\"/Users/bradley/.codex/worktrees/lean-engine/glob2/artifacts/lean-compute/build/shaders\\\" SDL_MAIN_HANDLED", "CXXFLAGS": "-g -std=gnu++20 -Wall -fPIC -O3", "LINKFLAGS": "-g -Wall -O3 -Wl,-rpath,/opt/homebrew/lib"}, "revision": "e51052af05c6b84449b6cb1674940275406ea53d", "sourceStatus": [], "sourceTreeSha256": "e9c6aa03b04b8b7c63c019c2b21abfcb01212f584bbe9e969f931bf0ee200135"}
+[doctest] doctest version is "2.4.11"
+[doctest] run with "--help" for options
+===============================================================================
+src/common/ComputeExecutorHarness.cpp:84:
+TEST SUITE: ComputeExecutor
+TEST CASE:  exclusive slots; nested batches; reuse; errors; barriers and reconfiguration
+
+src/common/ComputeExecutorHarness.cpp:122: MESSAGE: PASS executor: exclusive slots, nested batches, reuse, errors, barriers, reconfiguration
+
+===============================================================================
+src/map/gradient/GradientPipelineHarness.cpp:45:
+TEST SUITE: GradientPipeline
+TEST CASE:  fixed publication; supersession; bounded buffers; scheduling stress; fallback; exceptions and teardown
+
+src/map/gradient/GradientPipelineHarness.cpp:111: MESSAGE: PASS fixed publication, supersession, bounded buffers, scheduling stress, fallback, exceptions and teardown
+
+===============================================================================
+[doctest] test cases:     71 |     71 passed | 0 failed | 1112 skipped
+[doctest] assertions: 349597 | 349597 passed | 0 failed |
+[doctest] Status: SUCCESS!

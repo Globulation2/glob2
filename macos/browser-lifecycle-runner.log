@@ -1,0 +1,4 @@
+serial {"code":0,"heartbeats":0}
+threaded {"code":1,"heartbeats":2631}
+Error: Failed threaded lifecycle: /Users/bradley/.codex/worktrees/lean-engine/glob2/artifacts/lean-compute/evidence/browser-threaded-lifecycle.log
+    at /private/tmp/glob2-browser-corpus-mac.cjs:24:78

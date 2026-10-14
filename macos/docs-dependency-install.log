@@ -1,0 +1,9 @@
+Collecting markdown-it-py==4.0.0 (from -r tools/docs/requirements.txt (line 2))
+  Using cached markdown_it_py-4.0.0-py3-none-any.whl.metadata (7.3 kB)
+Collecting mdurl==0.1.2 (from -r tools/docs/requirements.txt (line 3))
+  Using cached mdurl-0.1.2-py3-none-any.whl.metadata (1.6 kB)
+Using cached markdown_it_py-4.0.0-py3-none-any.whl (87 kB)
+Using cached mdurl-0.1.2-py3-none-any.whl (10.0 kB)
+Installing collected packages: mdurl, markdown-it-py
+
+Successfully installed markdown-it-py-4.0.0 mdurl-0.1.2

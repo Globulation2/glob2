@@ -1,0 +1,65 @@
+[
+  {
+    "workload": "small",
+    "file": "game.replay.checksums",
+    "mac": "47b64a63afac111ea977afc6ec91160a6b5e1973919355bf81723a8e7b10d037",
+    "linux": "47b64a63afac111ea977afc6ec91160a6b5e1973919355bf81723a8e7b10d037",
+    "equal": true
+  },
+  {
+    "workload": "small",
+    "file": "game.replay",
+    "mac": "5246fad4544015afcdd2bc97feb6c30d69646fbb5fd0723f73bf7d57f0f632f6",
+    "linux": "5246fad4544015afcdd2bc97feb6c30d69646fbb5fd0723f73bf7d57f0f632f6",
+    "equal": true
+  },
+  {
+    "workload": "small",
+    "file": "final.game.gz",
+    "mac": "9c23c8d736dedf72944a6db599c0f5f211842c867a4619797fd232ada59c00bf",
+    "linux": "9c23c8d736dedf72944a6db599c0f5f211842c867a4619797fd232ada59c00bf",
+    "equal": true
+  },
+  {
+    "workload": "ordinary",
+    "file": "game.replay.checksums",
+    "mac": "be905831ff7d8468306f656eb93100b5c68d33767d9429425b9fd48486a0cbd0",
+    "linux": "be905831ff7d8468306f656eb93100b5c68d33767d9429425b9fd48486a0cbd0",
+    "equal": true
+  },
+  {
+    "workload": "ordinary",
+    "file": "game.replay",
+    "mac": "5a46c4ee87e77a1d5dd6e648722ff2bb77bf3218c855f8f9fb65be55a103fde1",
+    "linux": "5a46c4ee87e77a1d5dd6e648722ff2bb77bf3218c855f8f9fb65be55a103fde1",
+    "equal": true
+  },
+  {
+    "workload": "ordinary",
+    "file": "final.game.gz",
+    "mac": "2d622e48b9f364906fa9e4c56e332c809687c51d572ce3d1201f692d94c1ace3",
+    "linux": "2d622e48b9f364906fa9e4c56e332c809687c51d572ce3d1201f692d94c1ace3",
+    "equal": true
+  },
+  {
+    "workload": "large",
+    "file": "game.replay.checksums",
+    "mac": "de67fdc7afb43f90ece41a8cfd7cc4de37251fec4da22c80fdd17f50a11e9aab",
+    "linux": "de67fdc7afb43f90ece41a8cfd7cc4de37251fec4da22c80fdd17f50a11e9aab",
+    "equal": true
+  },
+  {
+    "workload": "large",
+    "file": "game.replay",
+    "mac": "65d4f767ef8af96c4f14544bc1bece2efc50c3bd282f5514e78dc83dd2d47720",
+    "linux": "65d4f767ef8af96c4f14544bc1bece2efc50c3bd282f5514e78dc83dd2d47720",
+    "equal": true
+  },
+  {
+    "workload": "large",
+    "file": "final.game.gz",
+    "mac": "96599a6e98cff07449712d3047ae4c96926e9f0d80fcbec4c2d27c44af2ed034",
+    "linux": "96599a6e98cff07449712d3047ae4c96926e9f0d80fcbec4c2d27c44af2ed034",
+    "equal": true
+  }
+]

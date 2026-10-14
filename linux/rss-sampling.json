@@ -1,0 +1,472 @@
+[
+  {
+    "variant": "baseline",
+    "command": [
+      "/home/bradley/glob2-lean-baseline/artifacts/lean-compute/native/src/glob2-frozen",
+      "game",
+      "run",
+      "--load-game",
+      "/home/bradley/glob2-lean-baseline/artifacts/lean-compute/corpus/small/final.game.gz",
+      "--ticks",
+      "100000",
+      "--gradient-backend",
+      "cpu",
+      "--compute-threads",
+      "1",
+      "--output-dir",
+      "/home/bradley/glob2-lean-candidate/artifacts/lean-compute/evidence/rss-sample2-baseline"
+    ],
+    "kib": {
+      "engine": {
+        "Rss:": 14528,
+        "Private_Dirty:": 556,
+        "Anonymous:": 556
+      },
+      "[anonymous]": {
+        "Rss:": 696,
+        "Private_Dirty:": 696,
+        "Anonymous:": 696
+      },
+      "[heap]": {
+        "Rss:": 29296,
+        "Private_Dirty:": 29296,
+        "Anonymous:": 29296
+      },
+      "libbrotlicommon.so.1.1.0": {
+        "Rss:": 16,
+        "Private_Dirty:": 8,
+        "Anonymous:": 8
+      },
+      "libLerc.so.4": {
+        "Rss:": 92,
+        "Private_Dirty:": 8,
+        "Anonymous:": 8
+      },
+      "libc.so.6": {
+        "Rss:": 1476,
+        "Private_Dirty:": 24,
+        "Anonymous:": 24
+      },
+      "libjpeg.so.8.2.2": {
+        "Rss:": 88,
+        "Private_Dirty:": 8,
+        "Anonymous:": 8
+      },
+      "liblzma.so.5.4.5": {
+        "Rss:": 88,
+        "Private_Dirty:": 8,
+        "Anonymous:": 8
+      },
+      "libzstd.so.1.5.5": {
+        "Rss:": 88,
+        "Private_Dirty:": 8,
+        "Anonymous:": 8
+      },
+      "libwebp.so.7.1.8": {
+        "Rss:": 72,
+        "Private_Dirty:": 8,
+        "Anonymous:": 8
+      },
+      "libstdc++.so.6.0.33": {
+        "Rss:": 2092,
+        "Private_Dirty:": 56,
+        "Anonymous:": 56
+      },
+      "libdeflate.so.0": {
+        "Rss:": 56,
+        "Private_Dirty:": 8,
+        "Anonymous:": 8
+      },
+      "libtiff.so.6.0.1": {
+        "Rss:": 120,
+        "Private_Dirty:": 24,
+        "Anonymous:": 24
+      },
+      "libfreetype.so.6.20.1": {
+        "Rss:": 148,
+        "Private_Dirty:": 32,
+        "Anonymous:": 32
+      },
+      "libSDL3.so.0.4.16": {
+        "Rss:": 1468,
+        "Private_Dirty:": 108,
+        "Anonymous:": 108
+      },
+      "libsharpyuv.so.0.0.1": {
+        "Rss:": 24,
+        "Private_Dirty:": 8,
+        "Anonymous:": 8
+      },
+      "libjbig.so.0": {
+        "Rss:": 56,
+        "Private_Dirty:": 12,
+        "Anonymous:": 12
+      },
+      "libbrotlidec.so.1.1.0": {
+        "Rss:": 40,
+        "Private_Dirty:": 8,
+        "Anonymous:": 8
+      },
+      "libbz2.so.1.0.4": {
+        "Rss:": 72,
+        "Private_Dirty:": 8,
+        "Anonymous:": 8
+      },
+      "libpng16.so.16.43.0": {
+        "Rss:": 92,
+        "Private_Dirty:": 8,
+        "Anonymous:": 8
+      },
+      "libopus.so.0.9.0": {
+        "Rss:": 88,
+        "Private_Dirty:": 8,
+        "Anonymous:": 8
+      },
+      "libogg.so.0.8.5": {
+        "Rss:": 28,
+        "Private_Dirty:": 8,
+        "Anonymous:": 8
+      },
+      "libdrm.so.2.125.0": {
+        "Rss:": 76,
+        "Private_Dirty:": 8,
+        "Anonymous:": 8
+      },
+      "libm.so.6": {
+        "Rss:": 308,
+        "Private_Dirty:": 8,
+        "Anonymous:": 8
+      },
+      "libSDL3_image.so.0.4.6": {
+        "Rss:": 128,
+        "Private_Dirty:": 20,
+        "Anonymous:": 20
+      },
+      "libepoxy.so.0.0.0": {
+        "Rss:": 508,
+        "Private_Dirty:": 60,
+        "Anonymous:": 60
+      },
+      "libcrypto.so.3": {
+        "Rss:": 1468,
+        "Private_Dirty:": 380,
+        "Anonymous:": 380
+      },
+      "libgcc_s.so.1": {
+        "Rss:": 184,
+        "Private_Dirty:": 8,
+        "Anonymous:": 8
+      },
+      "libspeex.so.1.5.2": {
+        "Rss:": 72,
+        "Private_Dirty:": 8,
+        "Anonymous:": 8
+      },
+      "libSDL3_ttf.so.0.2.2": {
+        "Rss:": 92,
+        "Private_Dirty:": 8,
+        "Anonymous:": 8
+      },
+      "libopusfile.so.0.4.5": {
+        "Rss:": 52,
+        "Private_Dirty:": 8,
+        "Anonymous:": 8
+      },
+      "libSDL3_net.so.0.2.0": {
+        "Rss:": 44,
+        "Private_Dirty:": 8,
+        "Anonymous:": 8
+      },
+      "libva-drm.so.2.2000.0": {
+        "Rss:": 16,
+        "Private_Dirty:": 8,
+        "Anonymous:": 8
+      },
+      "libva.so.2.2000.0": {
+        "Rss:": 84,
+        "Private_Dirty:": 8,
+        "Anonymous:": 8
+      },
+      "libfribidi.so.0.4.0": {
+        "Rss:": 32,
+        "Private_Dirty:": 8,
+        "Anonymous:": 8
+      },
+      "libssl.so.3": {
+        "Rss:": 248,
+        "Private_Dirty:": 56,
+        "Anonymous:": 56
+      },
+      "libz.so.1.3": {
+        "Rss:": 108,
+        "Private_Dirty:": 8,
+        "Anonymous:": 8
+      },
+      "[vvar]": {
+        "Rss:": 0,
+        "Private_Dirty:": 0,
+        "Anonymous:": 0
+      },
+      "[vvar_vclock]": {
+        "Rss:": 0,
+        "Private_Dirty:": 0,
+        "Anonymous:": 0
+      },
+      "[vdso]": {
+        "Rss:": 8,
+        "Private_Dirty:": 0,
+        "Anonymous:": 0
+      },
+      "ld-linux-x86-64.so.2": {
+        "Rss:": 232,
+        "Private_Dirty:": 16,
+        "Anonymous:": 16
+      },
+      "[stack]": {
+        "Rss:": 464,
+        "Private_Dirty:": 464,
+        "Anonymous:": 464
+      },
+      "[vsyscall]": {
+        "Rss:": 0,
+        "Private_Dirty:": 0,
+        "Anonymous:": 0
+      }
+    }
+  },
+  {
+    "variant": "candidate",
+    "command": [
+      "/home/bradley/glob2-lean-candidate/artifacts/lean-compute/native/src/glob2-frozen-v3",
+      "game",
+      "run",
+      "--load-game",
+      "/home/bradley/glob2-lean-baseline/artifacts/lean-compute/corpus/small/final.game.gz",
+      "--ticks",
+      "100000",
+      "--gradient-backend",
+      "cpu",
+      "--compute-threads",
+      "1",
+      "--output-dir",
+      "/home/bradley/glob2-lean-candidate/artifacts/lean-compute/evidence/rss-sample2-candidate"
+    ],
+    "kib": {
+      "engine": {
+        "Rss:": 16788,
+        "Private_Dirty:": 556,
+        "Anonymous:": 556
+      },
+      "[anonymous]": {
+        "Rss:": 688,
+        "Private_Dirty:": 688,
+        "Anonymous:": 688
+      },
+      "[heap]": {
+        "Rss:": 29292,
+        "Private_Dirty:": 29292,
+        "Anonymous:": 29292
+      },
+      "libbrotlicommon.so.1.1.0": {
+        "Rss:": 16,
+        "Private_Dirty:": 8,
+        "Anonymous:": 8
+      },
+      "libdeflate.so.0": {
+        "Rss:": 44,
+        "Private_Dirty:": 8,
+        "Anonymous:": 8
+      },
+      "libjpeg.so.8.2.2": {
+        "Rss:": 88,
+        "Private_Dirty:": 8,
+        "Anonymous:": 8
+      },
+      "libLerc.so.4": {
+        "Rss:": 92,
+        "Private_Dirty:": 8,
+        "Anonymous:": 8
+      },
+      "liblzma.so.5.4.5": {
+        "Rss:": 88,
+        "Private_Dirty:": 8,
+        "Anonymous:": 8
+      },
+      "libzstd.so.1.5.5": {
+        "Rss:": 88,
+        "Private_Dirty:": 8,
+        "Anonymous:": 8
+      },
+      "libc.so.6": {
+        "Rss:": 1476,
+        "Private_Dirty:": 24,
+        "Anonymous:": 24
+      },
+      "libsharpyuv.so.0.0.1": {
+        "Rss:": 24,
+        "Private_Dirty:": 8,
+        "Anonymous:": 8
+      },
+      "libjbig.so.0": {
+        "Rss:": 56,
+        "Private_Dirty:": 12,
+        "Anonymous:": 12
+      },
+      "libwebp.so.7.1.8": {
+        "Rss:": 72,
+        "Private_Dirty:": 8,
+        "Anonymous:": 8
+      },
+      "libtiff.so.6.0.1": {
+        "Rss:": 120,
+        "Private_Dirty:": 24,
+        "Anonymous:": 24
+      },
+      "libfreetype.so.6.20.1": {
+        "Rss:": 148,
+        "Private_Dirty:": 32,
+        "Anonymous:": 32
+      },
+      "libstdc++.so.6.0.33": {
+        "Rss:": 2092,
+        "Private_Dirty:": 56,
+        "Anonymous:": 56
+      },
+      "libpng16.so.16.43.0": {
+        "Rss:": 92,
+        "Private_Dirty:": 8,
+        "Anonymous:": 8
+      },
+      "libopus.so.0.9.0": {
+        "Rss:": 88,
+        "Private_Dirty:": 8,
+        "Anonymous:": 8
+      },
+      "libm.so.6": {
+        "Rss:": 344,
+        "Private_Dirty:": 8,
+        "Anonymous:": 8
+      },
+      "libSDL3.so.0.4.16": {
+        "Rss:": 1468,
+        "Private_Dirty:": 108,
+        "Anonymous:": 108
+      },
+      "libbrotlidec.so.1.1.0": {
+        "Rss:": 40,
+        "Private_Dirty:": 8,
+        "Anonymous:": 8
+      },
+      "libbz2.so.1.0.4": {
+        "Rss:": 72,
+        "Private_Dirty:": 8,
+        "Anonymous:": 8
+      },
+      "libogg.so.0.8.5": {
+        "Rss:": 28,
+        "Private_Dirty:": 8,
+        "Anonymous:": 8
+      },
+      "libdrm.so.2.125.0": {
+        "Rss:": 76,
+        "Private_Dirty:": 8,
+        "Anonymous:": 8
+      },
+      "libgcc_s.so.1": {
+        "Rss:": 164,
+        "Private_Dirty:": 8,
+        "Anonymous:": 8
+      },
+      "libspeex.so.1.5.2": {
+        "Rss:": 72,
+        "Private_Dirty:": 8,
+        "Anonymous:": 8
+      },
+      "libSDL3_image.so.0.4.6": {
+        "Rss:": 128,
+        "Private_Dirty:": 20,
+        "Anonymous:": 20
+      },
+      "libSDL3_ttf.so.0.2.2": {
+        "Rss:": 92,
+        "Private_Dirty:": 8,
+        "Anonymous:": 8
+      },
+      "libopusfile.so.0.4.5": {
+        "Rss:": 52,
+        "Private_Dirty:": 8,
+        "Anonymous:": 8
+      },
+      "libva.so.2.2000.0": {
+        "Rss:": 84,
+        "Private_Dirty:": 8,
+        "Anonymous:": 8
+      },
+      "libcrypto.so.3": {
+        "Rss:": 1468,
+        "Private_Dirty:": 380,
+        "Anonymous:": 380
+      },
+      "libSDL3_net.so.0.2.0": {
+        "Rss:": 44,
+        "Private_Dirty:": 8,
+        "Anonymous:": 8
+      },
+      "libva-drm.so.2.2000.0": {
+        "Rss:": 16,
+        "Private_Dirty:": 8,
+        "Anonymous:": 8
+      },
+      "libfribidi.so.0.4.0": {
+        "Rss:": 32,
+        "Private_Dirty:": 8,
+        "Anonymous:": 8
+      },
+      "libepoxy.so.0.0.0": {
+        "Rss:": 508,
+        "Private_Dirty:": 60,
+        "Anonymous:": 60
+      },
+      "libssl.so.3": {
+        "Rss:": 248,
+        "Private_Dirty:": 56,
+        "Anonymous:": 56
+      },
+      "libz.so.1.3": {
+        "Rss:": 112,
+        "Private_Dirty:": 8,
+        "Anonymous:": 8
+      },
+      "[vvar]": {
+        "Rss:": 0,
+        "Private_Dirty:": 0,
+        "Anonymous:": 0
+      },
+      "[vvar_vclock]": {
+        "Rss:": 0,
+        "Private_Dirty:": 0,
+        "Anonymous:": 0
+      },
+      "[vdso]": {
+        "Rss:": 8,
+        "Private_Dirty:": 0,
+        "Anonymous:": 0
+      },
+      "ld-linux-x86-64.so.2": {
+        "Rss:": 232,
+        "Private_Dirty:": 16,
+        "Anonymous:": 16
+      },
+      "[stack]": {
+        "Rss:": 468,
+        "Private_Dirty:": 468,
+        "Anonymous:": 468
+      },
+      "[vsyscall]": {
+        "Rss:": 0,
+        "Private_Dirty:": 0,
+        "Anonymous:": 0
+      }
+    }
+  }
+]

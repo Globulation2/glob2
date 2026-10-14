@@ -1,0 +1,1 @@
+Final builds, focused native/browser/device tests, CPU service guard, replay/save continuation and three-backend corpus comparisons passed. One retained NVIDIA Chrome Xid32 initialization failure passed isolated and combined fresh-process retries; it was never counted as GPU correctness.

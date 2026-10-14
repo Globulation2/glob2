@@ -1,0 +1,9 @@
+{
+  "candidate_binary_revision": "48829dc7ea1ac613ebca40908c88ac562ba4842e",
+  "latest_fixture_revision": "3a7fecf38",
+  "master": "21f432e0c0d10751e7189af37b0acfe2c19eeff6",
+  "native_release": "GLOB2_SDL3_PREFIX=/home/bradley/glob2/build/sdl3/prefix python3 tools/dev_build.py dev_fast=0 release=1 --build=artifacts/lean-compute/native artifacts/lean-compute/native/src/glob2 engine-tests unit-tests -j8",
+  "macos_release": "PYTHONPATH=. python3 tools/dev_build.py dev_fast=0 release=1 --build=artifacts/lean-compute/build artifacts/lean-compute/build/src/glob2 engine-tests unit-tests -j6",
+  "web_release": "PATH=/home/bradley/.nvm/versions/node/v20.19.4/bin:$PATH scons target=web release=1 --build=artifacts/lean-compute/web web-tests web-serial web-threaded -j8",
+  "hardware_tests": "GLOB2_TEST_URL=http://127.0.0.1:8791 GLOB2_TEST_BUILD_DIR=/home/bradley/glob2-lean-candidate/artifacts/lean-compute/web GLOB2_WEBGPU_EXPECT_DEVICE=NVIDIA GLOB2_WEBGPU_CPP=1 browser/node_modules/.bin/playwright test browser/tests/gradient-compute.spec.js --config browser/playwright.config.js --project chromium"
+}

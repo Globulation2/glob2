@@ -1,0 +1,79 @@
+diff --git a/src/field/GradientDeviceService.cpp b/src/field/GradientDeviceService.cpp
+index 5cad10143..d04b10653 100644
+--- a/src/field/GradientDeviceService.cpp
++++ b/src/field/GradientDeviceService.cpp
+@@ -4,10 +4,6 @@
+ #include <algorithm>
+ #include <array>
+ #include <condition_variable>
+-#include <cstdlib>
+-#include <cstring>
+-#include <filesystem>
+-#include <fstream>
+ 
+ namespace gradient_kernel
+ {
+@@ -486,8 +482,7 @@ DeviceBroker &broker()
+ } // namespace
+ void shutdownGradientDeviceCoordinator() noexcept
+ {
+-	// No coordinator means no profiled device-service work. Preserve the CPU
+-	// drain without environment lookups, TLS sessions or diagnostic output.
++	// An application that never enabled the GPU has no coordinator to stop.
+ 	auto *coordinator = existingBroker.load(std::memory_order_acquire);
+ 	if (!coordinator)
+ 		return;
+@@ -503,16 +498,16 @@ OwnedGradientField::~OwnedGradientField()
+ 	inputs.reset();
+ 	identity = {};
+ 	session.reset();
+-	executionState.reset();
+ 	releaseReservation();
++	executionState.reset();
+ }
+ void OwnedGradientField::releaseReservation() noexcept
+ {
+ 	if (reservedHostBytes)
+ 	{
+ 		releaseOpenCLHostBytes(reservedHostBytes);
+-		if (serviceRetained)
+-			serviceRetained->fetch_sub(reservedHostBytes);
++		if (executionState)
++			executionState->retained.fetch_sub(reservedHostBytes);
+ 		reservedHostBytes = 0;
+ 	}
+ }
+@@ -675,8 +670,6 @@ bool GradientDeviceService::submit(const std::shared_ptr<OwnedGradientField> &fi
+ 		if (!reserveOpenCLHostBytes(bytes))
+ 			return decline();
+ 		field->reservedHostBytes = bytes;
+-		field->serviceRetained =
+-			std::shared_ptr<std::atomic<std::size_t>>(current, &current->retained);
+ 		current->retained.fetch_add(bytes);
+ 		current->queue.push_back({field, ++current->nextSerial});
+ 		++current->totals.submitted;
+diff --git a/src/field/GradientDeviceService.h b/src/field/GradientDeviceService.h
+index be0ed638c..c74284f02 100644
+--- a/src/field/GradientDeviceService.h
++++ b/src/field/GradientDeviceService.h
+@@ -45,7 +45,6 @@ struct OwnedGradientField
+     std::size_t reservedHostBytes = 0, retainedInputBytes = 0;
+     enum class Phase { Private, Queued, Running, Recovering, Complete };
+     std::atomic<Phase> phase{Phase::Private};
+-    std::shared_ptr<std::atomic<std::size_t>> serviceRetained;
+     std::shared_ptr<GradientDeviceState> executionState;
+     ~OwnedGradientField();
+     std::unique_ptr<std::uint16_t[]> takeData();
+diff --git a/src/map/gradient/GradientRuntime.h b/src/map/gradient/GradientRuntime.h
+index be0c9a80c..1e1a6b38a 100644
+--- a/src/map/gradient/GradientRuntime.h
++++ b/src/map/gradient/GradientRuntime.h
+@@ -50,8 +50,6 @@ struct GradientRuntime
+ 	// Scheduled building fields share the executor with the periodic pipeline.
+ 	// Drain it before teams and the gradient buffer pool are destroyed.
+ 	BuildingGradientJobPipeline buildings;
+-	// Execution placement for building jobs, following the periodic pipeline's
+-	// worker setting. Local configuration, never saved.
+ 	// A refresh asked for during team stepping, admitted FIFO after the tick.
+ 	// stale requests were superseded while queued; they stay in place so queue
+ 	// length (and with it the overflow fallback) survives save and load.

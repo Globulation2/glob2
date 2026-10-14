@@ -1,0 +1,7 @@
+
+Running 1 test using 1 worker
+
+WebGPU adapter: {"vendor":"nvidia","architecture":"ampere","device":"","description":""}
+  ✓  1 [chromium] › browser/tests/gradient-compute.spec.js:11:1 › WebGPU compute algorithms match exact weighted fields and preserve canceled output (3.3s)
+
+  1 passed (4.6s)

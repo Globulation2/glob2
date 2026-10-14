@@ -1,0 +1,20 @@
+Traceback (most recent call last):
+  File "/tmp/glob2-final-validation.py", line 28, in <module>
+    for f in futures:f.result()
+                     ^^^^^^^^^^
+  File "/usr/lib/python3.12/concurrent/futures/_base.py", line 449, in result
+    return self.__get_result()
+           ^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/concurrent/futures/_base.py", line 401, in __get_result
+    raise self._exception
+  File "/usr/lib/python3.12/concurrent/futures/thread.py", line 58, in run
+    result = self.fn(*self.args, **self.kwargs)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/tmp/glob2-final-validation.py", line 25, in web
+    run(['browser/node_modules/.bin/playwright','test','browser/tests/gradient-compute.spec.js','--config','browser/playwright.config.js','--project','chromium'],'final-webgpu-hardware.log',env)
+  File "/tmp/glob2-final-validation.py", line 9, in run
+    with (e/log).open('w') as out:subprocess.run(command,cwd=root,env=dict(os.environ,**(env or {})),stdout=out,stderr=subprocess.STDOUT,check=True)
+                                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/subprocess.py", line 571, in run
+    raise CalledProcessError(retcode, process.args,
+subprocess.CalledProcessError: Command '['browser/node_modules/.bin/playwright', 'test', 'browser/tests/gradient-compute.spec.js', '--config', 'browser/playwright.config.js', '--project', 'chromium']' returned non-zero exit status 1.

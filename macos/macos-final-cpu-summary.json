@@ -1,0 +1,158 @@
+[
+  {
+    "workload": "small",
+    "participants": 1,
+    "pairs": 10,
+    "warm_cpu_ratio": 0.9937705204981915,
+    "bootstrap95": [
+      0.9435961023570206,
+      1.0161757836197844
+    ],
+    "process_cpu_ratio": 0.9804271090591417,
+    "wall_ratio": 0.9356991668850945,
+    "peak_rss_ratio": 0.9928717631017131
+  },
+  {
+    "workload": "small",
+    "participants": 2,
+    "pairs": 10,
+    "warm_cpu_ratio": 0.9904736310240225,
+    "bootstrap95": [
+      0.9818381480624705,
+      1.0098889820089567
+    ],
+    "process_cpu_ratio": 0.9907347732623215,
+    "wall_ratio": 0.9678210142228945,
+    "peak_rss_ratio": 0.9857059149557775
+  },
+  {
+    "workload": "small",
+    "participants": 4,
+    "pairs": 20,
+    "warm_cpu_ratio": 0.9888429638786839,
+    "bootstrap95": [
+      0.9838401202885783,
+      1.0157466291741417
+    ],
+    "process_cpu_ratio": 1.0054863366562965,
+    "wall_ratio": 0.9922766444103588,
+    "peak_rss_ratio": 0.9895694652888031
+  },
+  {
+    "workload": "small",
+    "participants": 8,
+    "pairs": 20,
+    "warm_cpu_ratio": 1.00376616329094,
+    "bootstrap95": [
+      0.9822059169932525,
+      1.014006542026557
+    ],
+    "process_cpu_ratio": 0.9904051134963348,
+    "wall_ratio": 0.9460360159783012,
+    "peak_rss_ratio": 0.9972130016650014
+  },
+  {
+    "workload": "ordinary",
+    "participants": 1,
+    "pairs": 10,
+    "warm_cpu_ratio": 0.9692566862860126,
+    "bootstrap95": [
+      0.9329924247694041,
+      1.0045539540176889
+    ],
+    "process_cpu_ratio": 0.975284658520503,
+    "wall_ratio": 1.006538104165247,
+    "peak_rss_ratio": 0.9663303280537692
+  },
+  {
+    "workload": "ordinary",
+    "participants": 2,
+    "pairs": 10,
+    "warm_cpu_ratio": 0.9886695280897446,
+    "bootstrap95": [
+      0.9620827490962106,
+      0.9981243878146875
+    ],
+    "process_cpu_ratio": 1.0018842314475433,
+    "wall_ratio": 0.9976078852145225,
+    "peak_rss_ratio": 0.9824160168540228
+  },
+  {
+    "workload": "ordinary",
+    "participants": 4,
+    "pairs": 20,
+    "warm_cpu_ratio": 0.9775078315818999,
+    "bootstrap95": [
+      0.9658815909081069,
+      0.9973974711098064
+    ],
+    "process_cpu_ratio": 0.9924357635379567,
+    "wall_ratio": 0.9745583429686202,
+    "peak_rss_ratio": 0.9981549335280275
+  },
+  {
+    "workload": "ordinary",
+    "participants": 8,
+    "pairs": 20,
+    "warm_cpu_ratio": 1.0029191252658696,
+    "bootstrap95": [
+      0.9832912197069567,
+      1.0149678624668748
+    ],
+    "process_cpu_ratio": 0.9973539383076704,
+    "wall_ratio": 0.9894556630584272,
+    "peak_rss_ratio": 1.0125341530054646
+  },
+  {
+    "workload": "large",
+    "participants": 1,
+    "pairs": 10,
+    "warm_cpu_ratio": 0.9785653686078063,
+    "bootstrap95": [
+      0.9708330428137684,
+      1.009387834377574
+    ],
+    "process_cpu_ratio": 0.9807078458134355,
+    "wall_ratio": 0.99062018646498,
+    "peak_rss_ratio": 0.9956653770568409
+  },
+  {
+    "workload": "large",
+    "participants": 2,
+    "pairs": 10,
+    "warm_cpu_ratio": 0.9971431414774896,
+    "bootstrap95": [
+      0.9737126662271203,
+      1.0151794325243668
+    ],
+    "process_cpu_ratio": 0.9945032729214149,
+    "wall_ratio": 1.0155510309412712,
+    "peak_rss_ratio": 0.9984998588526908
+  },
+  {
+    "workload": "large",
+    "participants": 4,
+    "pairs": 10,
+    "warm_cpu_ratio": 0.9908023078479019,
+    "bootstrap95": [
+      0.9780468814341421,
+      0.9965958638244932
+    ],
+    "process_cpu_ratio": 0.9902085087418806,
+    "wall_ratio": 0.9853195027359927,
+    "peak_rss_ratio": 0.9897401507407766
+  },
+  {
+    "workload": "large",
+    "participants": 8,
+    "pairs": 10,
+    "warm_cpu_ratio": 0.9986257755381004,
+    "bootstrap95": [
+      0.9800624399632951,
+      1.0185082699175623
+    ],
+    "process_cpu_ratio": 0.9959950896755008,
+    "wall_ratio": 0.9799035398955761,
+    "peak_rss_ratio": 0.987592541156269
+  }
+]

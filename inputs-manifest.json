@@ -1,0 +1,202 @@
+[
+  {
+    "path": "corpus/large/artifacts.json",
+    "bytes": 345,
+    "sha256": "ae17e33748c53f37256108ccb4c3415ab619fd3826e300e9e6b274cfb49e88a5"
+  },
+  {
+    "path": "corpus/large/final.game.gz",
+    "bytes": 1410381,
+    "sha256": "0b7ebce58de659c01de6ec54a7baac2dc08e9f302fc3f85c5bca259365f0d078"
+  },
+  {
+    "path": "corpus/large/generated/artifacts.json",
+    "bytes": 148,
+    "sha256": "273d3895e7e5701bf35592f0902b83fbb8c069dbf06766321f9e6482ca0f1622"
+  },
+  {
+    "path": "corpus/large/generated/map-r0.map.gz",
+    "bytes": 27539,
+    "sha256": "3f800f2a0d705e45aa37f98376a035cb3ab422410e3776246cb7d82491f67e1d"
+  },
+  {
+    "path": "corpus/large/generated/progress.json",
+    "bytes": 42,
+    "sha256": "b5148054b6bf03dd8b863afecd246f9d313c8647eff18dc853487f29c95221f1"
+  },
+  {
+    "path": "corpus/large/generated/result.json",
+    "bytes": 915126,
+    "sha256": "c57cb080fc398a30a321000a037eb17533bef94e7731c46f954a26518de3b1ae"
+  },
+  {
+    "path": "corpus/large/profile/keyboard-gui.txt",
+    "bytes": 1811,
+    "sha256": "af43f1cb9fe42f9ded2a91aeead00fbb4276c18ce610afa2bc502ee127dbe1a6"
+  },
+  {
+    "path": "corpus/large/profile/keyboard-mapedit.txt",
+    "bytes": 708,
+    "sha256": "d0d81f9dbbba069ef0364ac3cad74da54c614d7bf3c40e8b6f0460d94a96c7db"
+  },
+  {
+    "path": "corpus/large/profile/preferences.txt",
+    "bytes": 1055,
+    "sha256": "789fc092fed4bba2e764881aa1fd87d0c827de544b7c71ba6f3e6bf4d6076a21"
+  },
+  {
+    "path": "corpus/large/progress.jsonl",
+    "bytes": 1053,
+    "sha256": "a40d561bc423ea4399a73bddbcdef0d9c9de0eac18ed3701c51bb7b3349ff206"
+  },
+  {
+    "path": "corpus/large/result.json",
+    "bytes": 1034953,
+    "sha256": "f1b27797c02355e320d5b0aaa8875d466927f634876ae119a771a287484fe383"
+  },
+  {
+    "path": "corpus/large-command.json",
+    "bytes": 708,
+    "sha256": "6553c7f64dc907445cbafc5ebe4118ea1d007584dd205e0dc1dda4cdc8a2143d"
+  },
+  {
+    "path": "corpus/large.log",
+    "bytes": 93609,
+    "sha256": "b1dfe1efab0c3e1e888bfcbb42d4da9bc7b4e9647a877bfe68ade0971ce9243a"
+  },
+  {
+    "path": "corpus/ordinary/artifacts.json",
+    "bytes": 343,
+    "sha256": "5c16aea42ea4e9fd80922e12cbf6dd2a15c78505c5638591e5d3d02bc395de3d"
+  },
+  {
+    "path": "corpus/ordinary/final.game.gz",
+    "bytes": 427404,
+    "sha256": "b94e354ef26656c6658c7738371b020ee13f1dd1207fdcbff6f4d1909dd95f9b"
+  },
+  {
+    "path": "corpus/ordinary/generated/artifacts.json",
+    "bytes": 148,
+    "sha256": "db3b7699c05123ad557dccf49ecbe6fd29c47022ae8ab929a1f8e9d904635a2d"
+  },
+  {
+    "path": "corpus/ordinary/generated/map-r0.map.gz",
+    "bytes": 21110,
+    "sha256": "5edeb0da07d4a022cb4bf0fccc9b971c65eb98be59cab56fb5102c481799c8d7"
+  },
+  {
+    "path": "corpus/ordinary/generated/progress.json",
+    "bytes": 42,
+    "sha256": "b5148054b6bf03dd8b863afecd246f9d313c8647eff18dc853487f29c95221f1"
+  },
+  {
+    "path": "corpus/ordinary/generated/result.json",
+    "bytes": 567382,
+    "sha256": "77f641e5031aac7d2cdd72bfd5da444fe2a60381fc49e6367f8f3d964fd64d8a"
+  },
+  {
+    "path": "corpus/ordinary/profile/keyboard-gui.txt",
+    "bytes": 1811,
+    "sha256": "af43f1cb9fe42f9ded2a91aeead00fbb4276c18ce610afa2bc502ee127dbe1a6"
+  },
+  {
+    "path": "corpus/ordinary/profile/keyboard-mapedit.txt",
+    "bytes": 708,
+    "sha256": "d0d81f9dbbba069ef0364ac3cad74da54c614d7bf3c40e8b6f0460d94a96c7db"
+  },
+  {
+    "path": "corpus/ordinary/profile/preferences.txt",
+    "bytes": 1055,
+    "sha256": "789fc092fed4bba2e764881aa1fd87d0c827de544b7c71ba6f3e6bf4d6076a21"
+  },
+  {
+    "path": "corpus/ordinary/progress.jsonl",
+    "bytes": 1053,
+    "sha256": "a40d561bc423ea4399a73bddbcdef0d9c9de0eac18ed3701c51bb7b3349ff206"
+  },
+  {
+    "path": "corpus/ordinary/result.json",
+    "bytes": 631462,
+    "sha256": "403cadd2d926747e73d81b89e2bfc106261509ecac545a2f6164991171bd2343"
+  },
+  {
+    "path": "corpus/ordinary-command.json",
+    "bytes": 606,
+    "sha256": "f8533e72d99fecaad9693804cd3b001d198bb8c6690aa5c3376b4a681c28d813"
+  },
+  {
+    "path": "corpus/ordinary.log",
+    "bytes": 47338,
+    "sha256": "1da323e83b3fa59ab53ed615881c295c407138d6ea622dfb55edf6cea63e5aa4"
+  },
+  {
+    "path": "corpus/small/artifacts.json",
+    "bytes": 343,
+    "sha256": "25ac2169b245ab8b276814986cc8a5fb725b1c18c42378b1e321c617a35f4183"
+  },
+  {
+    "path": "corpus/small/final.game.gz",
+    "bytes": 157900,
+    "sha256": "bfde112b492b5b7f7ddf7533af6d430d9d2952499988b7192e63b96ca254b472"
+  },
+  {
+    "path": "corpus/small/generated/artifacts.json",
+    "bytes": 148,
+    "sha256": "8b60fe91b006e88f28b72b1e05281fe1002cd540ea82b66bc84c17b4f56039cd"
+  },
+  {
+    "path": "corpus/small/generated/map-r0.map.gz",
+    "bytes": 15920,
+    "sha256": "ad72b100be68b8bdec40ceb64359d749410ab2cdf0896ab39421e6b7c16b0015"
+  },
+  {
+    "path": "corpus/small/generated/progress.json",
+    "bytes": 42,
+    "sha256": "b5148054b6bf03dd8b863afecd246f9d313c8647eff18dc853487f29c95221f1"
+  },
+  {
+    "path": "corpus/small/generated/result.json",
+    "bytes": 394348,
+    "sha256": "9c0dc80fa9cc43a48fbb2935ac5d0393ca2be92c665d8b8aa14b0f5b4d430b45"
+  },
+  {
+    "path": "corpus/small/profile/keyboard-gui.txt",
+    "bytes": 1811,
+    "sha256": "af43f1cb9fe42f9ded2a91aeead00fbb4276c18ce610afa2bc502ee127dbe1a6"
+  },
+  {
+    "path": "corpus/small/profile/keyboard-mapedit.txt",
+    "bytes": 708,
+    "sha256": "d0d81f9dbbba069ef0364ac3cad74da54c614d7bf3c40e8b6f0460d94a96c7db"
+  },
+  {
+    "path": "corpus/small/profile/preferences.txt",
+    "bytes": 1055,
+    "sha256": "789fc092fed4bba2e764881aa1fd87d0c827de544b7c71ba6f3e6bf4d6076a21"
+  },
+  {
+    "path": "corpus/small/progress.jsonl",
+    "bytes": 1053,
+    "sha256": "a40d561bc423ea4399a73bddbcdef0d9c9de0eac18ed3701c51bb7b3349ff206"
+  },
+  {
+    "path": "corpus/small/result.json",
+    "bytes": 430824,
+    "sha256": "af73e7de15fb2cfa3533a3a261ba36bcff2a635dcdeef97af20ef8eaac6c4475"
+  },
+  {
+    "path": "corpus/small-command.json",
+    "bytes": 550,
+    "sha256": "33fc9464ca594d9613ef939a2022d50673cbca5f77733b82b0fb1c86898edef9"
+  },
+  {
+    "path": "corpus/small.log",
+    "bytes": 24198,
+    "sha256": "57a605ea28662f7f768079bc3ffc917163542c9dc882bff2507c7a76502b7a0a"
+  },
+  {
+    "path": "corpus/windows.json",
+    "bytes": 1747,
+    "sha256": "2a5a0c1416b1e19003cd704b842c233cced766f3c440c284d93c11313eac0775"
+  }
+]

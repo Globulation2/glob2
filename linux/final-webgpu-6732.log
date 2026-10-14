@@ -1,0 +1,57 @@
+
+Running 2 tests using 1 worker
+
+WebGPU adapter: {"vendor":"nvidia","architecture":"ampere","device":"","description":""}
+  ✓  1 [chromium] › browser/tests/gradient-compute.spec.js:11:1 › WebGPU compute algorithms match exact weighted fields and preserve canceled output (1.7s)
+WARNING: using emscripten GL emulation. This is a collection of limited workarounds, do not expect it to work.
+WARNING: using emscripten GL emulation unsafe opts. If weirdness happens, try -sGL_UNSAFE_OPTS=0
+WARNING: using emscripten GL emulation. This is a collection of limited workarounds, do not expect it to work.
+WARNING: using emscripten GL emulation unsafe opts. If weirdness happens, try -sGL_UNSAFE_OPTS=0
+WARNING: using emscripten GL emulation. This is a collection of limited workarounds, do not expect it to work.
+WARNING: using emscripten GL emulation. This is a collection of limited workarounds, do not expect it to work.
+WARNING: using emscripten GL emulation unsafe opts. If weirdness happens, try -sGL_UNSAFE_OPTS=0
+WARNING: using emscripten GL emulation unsafe opts. If weirdness happens, try -sGL_UNSAFE_OPTS=0
+WARNING: using emscripten GL emulation. This is a collection of limited workarounds, do not expect it to work.
+WARNING: using emscripten GL emulation unsafe opts. If weirdness happens, try -sGL_UNSAFE_OPTS=0
+WARNING: using emscripten GL emulation. This is a collection of limited workarounds, do not expect it to work.
+WARNING: using emscripten GL emulation. This is a collection of limited workarounds, do not expect it to work.
+WARNING: using emscripten GL emulation unsafe opts. If weirdness happens, try -sGL_UNSAFE_OPTS=0
+WARNING: using emscripten GL emulation unsafe opts. If weirdness happens, try -sGL_UNSAFE_OPTS=0
+WARNING: using emscripten GL emulation. This is a collection of limited workarounds, do not expect it to work.
+WARNING: using emscripten GL emulation unsafe opts. If weirdness happens, try -sGL_UNSAFE_OPTS=0
+WARNING: using emscripten GL emulation. This is a collection of limited workarounds, do not expect it to work.
+WARNING: using emscripten GL emulation unsafe opts. If weirdness happens, try -sGL_UNSAFE_OPTS=0
+WARNING: using emscripten GL emulation. This is a collection of limited workarounds, do not expect it to work.
+WARNING: using emscripten GL emulation unsafe opts. If weirdness happens, try -sGL_UNSAFE_OPTS=0
+WARNING: using emscripten GL emulation. This is a collection of limited workarounds, do not expect it to work.
+WARNING: using emscripten GL emulation. This is a collection of limited workarounds, do not expect it to work.
+WARNING: using emscripten GL emulation. This is a collection of limited workarounds, do not expect it to work.
+WARNING: using emscripten GL emulation. This is a collection of limited workarounds, do not expect it to work.
+WARNING: using emscripten GL emulation unsafe opts. If weirdness happens, try -sGL_UNSAFE_OPTS=0
+WARNING: using emscripten GL emulation unsafe opts. If weirdness happens, try -sGL_UNSAFE_OPTS=0
+WARNING: using emscripten GL emulation unsafe opts. If weirdness happens, try -sGL_UNSAFE_OPTS=0
+WARNING: using emscripten GL emulation unsafe opts. If weirdness happens, try -sGL_UNSAFE_OPTS=0
+WARNING: using emscripten GL emulation. This is a collection of limited workarounds, do not expect it to work.
+WARNING: using emscripten GL emulation unsafe opts. If weirdness happens, try -sGL_UNSAFE_OPTS=0
+WARNING: using emscripten GL emulation. This is a collection of limited workarounds, do not expect it to work.
+WARNING: using emscripten GL emulation unsafe opts. If weirdness happens, try -sGL_UNSAFE_OPTS=0
+WARNING: using emscripten GL emulation. This is a collection of limited workarounds, do not expect it to work.
+WARNING: using emscripten GL emulation unsafe opts. If weirdness happens, try -sGL_UNSAFE_OPTS=0
+GLOB2_TEST_BUILD compiler=Clang 22.0.0git (https:/github.com/llvm/llvm-project 3388d40684742e950b3c5d1d2dafe5a40695cfc1) platform=Emscripten pointer_bits=32
+GLOB2_TEST_PROVENANCE {"compiler": "/home/bradley/.local/share/glob2/development/toolchains/emscripten/Linux-x86_64-88a621bc131cd4954413aa39/upstream/emscripten/em++", "dirty": false, "flags": {"CCFLAGS": "-pthread", "CPPDEFINES": "GLOB2_RENDER_SHADER_DIR \\\"/shaders\\\" HAVE_CONFIG_H GLOB2_OFFICIAL_INSTANCE_ORIGIN \\\"https://app.glob2online.com\\\" GLOB2_OFFICIAL_INSTANCE_FORMER_ORIGINS \\\"https://glob2online.com\\\"", "CXXFLAGS": "-std=gnu++20 -fwasm-exceptions -g2 -O2 --use-port=zlib", "LINKFLAGS": "--js-library browser/canvas-size.js --js-library browser/webgpu-device.js --js-library browser/gradient-compute.js -pthread -sOFFSCREENCANVAS_SUPPORT=1 -sDEFAULT_PTHREAD_STACK_SIZE=8388608 -sPTHREAD_POOL_SIZE_STRICT=0 '-sPTHREAD_POOL_SIZE=Math.min(2*Math.max(navigator.hardwareConcurrency||1,1),16)' -sALLOW_BLOCKING_ON_MAIN_THREAD=0 --js-library browser/threaded-egl.js --preload-file /home/bradley/glob2-lean-candidate/artifacts/lean-compute/web/threaded/shaders/webgl2@/shaders/webgl2 -fwasm-exceptions -O2 -sLEGACY_GL_EMULATION=1 -sFETCH=1 -sMIN_WEBGL_VERSION=2 -sMAX_WEBGL_VERSION=2 -sALLOW_MEMORY_GROWTH -sINITIAL_MEMORY=134217728 -sSTACK_SIZE=8388608 -sASSERTIONS=1 -sFORCE_FILESYSTEM -lidbfs.js -lwebsocket.js '-sEXPORTED_FUNCTIONS=[\"_main\",\"_malloc\",\"_free\"]' '-sEXPORTED_RUNTIME_METHODS=[\"callMain\",\"FS\"]' --pre-js browser/storage.js --pre-js browser/file-selection.js --pre-js browser/audio.js --pre-js browser/recording.js --pre-js browser/runtime.js --use-port=zlib --pre-js browser/legacy-gl-runtime.js --post-js browser/webgl-shaders.js --pre-js /home/bradley/glob2-lean-candidate/artifacts/lean-compute/web/asset-manifest.js --pre-js browser/asset-loader.js"}, "revision": "6732ed008263d3abe4d223fe58b56911948eb816", "sourceStatus": [], "sourceTreeSha256": "27211542200b0a9d7b309a78f9a0b9858cf197a4629fc8cfe1dde2b603300429"}
+[doctest] doctest version is "2.4.11"
+[doctest] run with "--help" for options
+===============================================================================
+src/field/WebGPUGradientTest.cpp:14:
+TEST SUITE: WebGPUGradient
+TEST CASE:  owned worker bridge commits exact retained fields and recovers canceled admission
+
+src/field/WebGPUGradientTest.cpp:24: MESSAGE: WebGPU C++ device: nvidia / ampere
+
+===============================================================================
+[doctest] test cases:   1 |   1 passed | 0 failed | 727 skipped
+[doctest] assertions: 149 | 149 passed | 0 failed |
+[doctest] Status: SUCCESS!
+  ✓  2 [chromium] › browser/tests/gradient-compute.spec.js:67:1 › WebGPU C++ worker ownership bridge requires real device commits (1.6s)
+
+  2 passed (3.7s)

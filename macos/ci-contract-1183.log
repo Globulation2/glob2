@@ -1,0 +1,155 @@
+Select relevant checks	Check documentation links and navigation	﻿2026-10-14T20:36:47.5987501Z ##[group]Run python3 -m venv artifacts/docs-venv
+Select relevant checks	Check documentation links and navigation	2026-10-14T20:36:47.5988024Z ^[[36;1mpython3 -m venv artifacts/docs-venv^[[0m
+Select relevant checks	Check documentation links and navigation	2026-10-14T20:36:47.5988568Z ^[[36;1martifacts/docs-venv/bin/python -m pip install -r tools/docs/requirements.txt^[[0m
+Select relevant checks	Check documentation links and navigation	2026-10-14T20:36:47.5989340Z ^[[36;1martifacts/docs-venv/bin/python -m unittest discover -s test -p test_check_docs.py -v^[[0m
+Select relevant checks	Check documentation links and navigation	2026-10-14T20:36:47.5989999Z ^[[36;1martifacts/docs-venv/bin/python tools/check_docs.py^[[0m
+Select relevant checks	Check documentation links and navigation	2026-10-14T20:36:47.6063462Z shell: /usr/bin/bash -e {0}
+Select relevant checks	Check documentation links and navigation	2026-10-14T20:36:47.6063710Z env:
+Select relevant checks	Check documentation links and navigation	2026-10-14T20:36:47.6063893Z   GLOB2_DEV_MODE: isolated
+Select relevant checks	Check documentation links and navigation	2026-10-14T20:36:47.6064106Z ##[endgroup]
+Select relevant checks	Check documentation links and navigation	2026-10-14T20:36:50.2628259Z Collecting markdown-it-py==4.0.0 (from -r tools/docs/requirements.txt (line 2))
+Select relevant checks	Check documentation links and navigation	2026-10-14T20:36:50.3159656Z   Downloading markdown_it_py-4.0.0-py3-none-any.whl.metadata (7.3 kB)
+Select relevant checks	Check documentation links and navigation	2026-10-14T20:36:50.8461574Z Collecting mdurl==0.1.2 (from -r tools/docs/requirements.txt (line 3))
+Select relevant checks	Check documentation links and navigation	2026-10-14T20:36:50.8565038Z   Downloading mdurl-0.1.2-py3-none-any.whl.metadata (1.6 kB)
+Select relevant checks	Check documentation links and navigation	2026-10-14T20:36:50.9133568Z Downloading markdown_it_py-4.0.0-py3-none-any.whl (87 kB)
+Select relevant checks	Check documentation links and navigation	2026-10-14T20:36:50.9401174Z    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 87.3/87.3 kB 3.2 MB/s eta 0:00:00
+Select relevant checks	Check documentation links and navigation	2026-10-14T20:36:50.9502978Z Downloading mdurl-0.1.2-py3-none-any.whl (10.0 kB)
+Select relevant checks	Check documentation links and navigation	2026-10-14T20:36:50.9704043Z Installing collected packages: mdurl, markdown-it-py
+Select relevant checks	Check documentation links and navigation	2026-10-14T20:36:51.0973405Z Successfully installed markdown-it-py-4.0.0 mdurl-0.1.2
+Select relevant checks	Check documentation links and navigation	2026-10-14T20:36:51.2279667Z test_duplicate_heading_suffixes_and_unicode (test_check_docs.DocumentationCheckTest.test_duplicate_heading_suffixes_and_unicode) ... ok
+Select relevant checks	Check documentation links and navigation	2026-10-14T20:36:51.2289506Z test_exemptions_are_narrow_and_links_still_checked (test_check_docs.DocumentationCheckTest.test_exemptions_are_narrow_and_links_still_checked) ... ok
+Select relevant checks	Check documentation links and navigation	2026-10-14T20:36:51.2298325Z test_explicit_html_anchors_and_image_targets (test_check_docs.DocumentationCheckTest.test_explicit_html_anchors_and_image_targets) ... ok
+Select relevant checks	Check documentation links and navigation	2026-10-14T20:36:51.2303908Z test_external_links_are_collected_without_network_requests (test_check_docs.DocumentationCheckTest.test_external_links_are_collected_without_network_requests) ... ok
+Select relevant checks	Check documentation links and navigation	2026-10-14T20:36:51.2308729Z test_ignored_example_is_explicit (test_check_docs.DocumentationCheckTest.test_ignored_example_is_explicit) ... ok
+Select relevant checks	Check documentation links and navigation	2026-10-14T20:36:51.2314804Z test_missing_anchor_and_repository_escape (test_check_docs.DocumentationCheckTest.test_missing_anchor_and_repository_escape) ... ok
+Select relevant checks	Check documentation links and navigation	2026-10-14T20:36:51.2322134Z test_missing_or_excluded_main_index_cannot_disable_navigation_checks (test_check_docs.DocumentationCheckTest.test_missing_or_excluded_main_index_cannot_disable_navigation_checks) ... ok
+Select relevant checks	Check documentation links and navigation	2026-10-14T20:36:51.2327769Z test_missing_reference_destination_is_reported (test_check_docs.DocumentationCheckTest.test_missing_reference_destination_is_reported) ... ok
+Select relevant checks	Check documentation links and navigation	2026-10-14T20:36:51.2338969Z test_navigation_order_and_unreachable_pages (test_check_docs.DocumentationCheckTest.test_navigation_order_and_unreachable_pages) ... ok
+Select relevant checks	Check documentation links and navigation	2026-10-14T20:36:51.2349599Z test_reference_links_images_encoded_paths_and_fences (test_check_docs.DocumentationCheckTest.test_reference_links_images_encoded_paths_and_fences) ... ok
+Select relevant checks	Check documentation links and navigation	2026-10-14T20:36:51.2350330Z 
+Select relevant checks	Check documentation links and navigation	2026-10-14T20:36:51.2350461Z ----------------------------------------------------------------------
+Select relevant checks	Check documentation links and navigation	2026-10-14T20:36:51.2350746Z Ran 10 tests in 0.008s
+Select relevant checks	Check documentation links and navigation	2026-10-14T20:36:51.2350860Z 
+Select relevant checks	Check documentation links and navigation	2026-10-14T20:36:51.2350933Z OK
+Select relevant checks	Check documentation links and navigation	2026-10-14T20:36:52.8054197Z docs/ai/architecture/building-gradient-depth-model.md: missing anchor: #running-it
+Select relevant checks	Check documentation links and navigation	2026-10-14T20:36:52.8054875Z Checked 309 Markdown documents; 2 errors; 77 external links.
+Select relevant checks	Check documentation links and navigation	2026-10-14T20:36:52.8058151Z docs/development/testing/simulation.md: missing anchor: ../gradient-benchmarks.md#gpu-onoff-verification
+Select relevant checks	Check documentation links and navigation	2026-10-14T20:36:52.8185328Z ##[error]Process completed with exit code 1.
+Relevant checks passed	Verify all selected jobs completed successfully	﻿2026-10-14T20:37:00.4048362Z ##[group]Run python3 - <<'PY'
+Relevant checks passed	Verify all selected jobs completed successfully	2026-10-14T20:37:00.4049361Z ^[[36;1mpython3 - <<'PY'^[[0m
+Relevant checks passed	Verify all selected jobs completed successfully	2026-10-14T20:37:00.4049989Z ^[[36;1mimport json^[[0m
+Relevant checks passed	Verify all selected jobs completed successfully	2026-10-14T20:37:00.4050928Z ^[[36;1mimport os^[[0m
+Relevant checks passed	Verify all selected jobs completed successfully	2026-10-14T20:37:00.4051626Z ^[[36;1m^[[0m
+Relevant checks passed	Verify all selected jobs completed successfully	2026-10-14T20:37:00.4052504Z ^[[36;1mneeds = json.loads(os.environ['NEEDS_JSON'])^[[0m
+Relevant checks passed	Verify all selected jobs completed successfully	2026-10-14T20:37:00.4053418Z ^[[36;1mmode = os.environ.get('VERIFICATION_MODE', 'unknown')^[[0m
+Relevant checks passed	Verify all selected jobs completed successfully	2026-10-14T20:37:00.4054287Z ^[[36;1msummary = os.environ.get('GITHUB_STEP_SUMMARY')^[[0m
+Relevant checks passed	Verify all selected jobs completed successfully	2026-10-14T20:37:00.4129177Z ^[[36;1mif summary:^[[0m
+Relevant checks passed	Verify all selected jobs completed successfully	2026-10-14T20:37:00.4130483Z ^[[36;1m    with open(summary, 'a') as target:^[[0m
+Relevant checks passed	Verify all selected jobs completed successfully	2026-10-14T20:37:00.4131746Z ^[[36;1m        target.write(f'Verification mode: **{mode}**.\n')^[[0m
+Relevant checks passed	Verify all selected jobs completed successfully	2026-10-14T20:37:00.4133119Z ^[[36;1m        if mode in ('cheap-contracts', 'nightly-reused'):^[[0m
+Relevant checks passed	Verify all selected jobs completed successfully	2026-10-14T20:37:00.4135120Z ^[[36;1m            target.write('This run checked cheap contracts only; success does not establish engine verification or acceptance of PR evidence.\n')^[[0m
+Relevant checks passed	Verify all selected jobs completed successfully	2026-10-14T20:37:00.4136597Z ^[[36;1massert needs['changes']['result'] == 'success', 'Change detection failed'^[[0m
+Relevant checks passed	Verify all selected jobs completed successfully	2026-10-14T20:37:00.4137415Z ^[[36;1mselected = needs['changes']['outputs']^[[0m
+Relevant checks passed	Verify all selected jobs completed successfully	2026-10-14T20:37:00.4138000Z ^[[36;1mexpected = {^[[0m
+Relevant checks passed	Verify all selected jobs completed successfully	2026-10-14T20:37:00.4138536Z ^[[36;1m    'android': selected['android'] == 'true',^[[0m
+Relevant checks passed	Verify all selected jobs completed successfully	2026-10-14T20:37:00.4139192Z ^[[36;1m    'macos': selected['macos'] == 'true',^[[0m
+Relevant checks passed	Verify all selected jobs completed successfully	2026-10-14T20:37:00.4139815Z ^[[36;1m    'tsan': selected['tsan'] == 'true',^[[0m
+Relevant checks passed	Verify all selected jobs completed successfully	2026-10-14T20:37:00.4141150Z ^[[36;1m    'native-coverage': selected['coverage'] == 'true',^[[0m
+Relevant checks passed	Verify all selected jobs completed successfully	2026-10-14T20:37:00.4141855Z ^[[36;1m    'linux': selected['native'] == 'true',^[[0m
+Relevant checks passed	Verify all selected jobs completed successfully	2026-10-14T20:37:00.4142706Z ^[[36;1m    'linux-variants': selected['native'] == 'true' and selected['variants'] == 'true',^[[0m
+Relevant checks passed	Verify all selected jobs completed successfully	2026-10-14T20:37:00.4143667Z ^[[36;1m    'linux-map-generators': selected['map_generators'] == 'true',^[[0m
+Relevant checks passed	Verify all selected jobs completed successfully	2026-10-14T20:37:00.4144434Z ^[[36;1m    'windows': selected['windows'] == 'true',^[[0m
+Relevant checks passed	Verify all selected jobs completed successfully	2026-10-14T20:37:00.4145100Z ^[[36;1m    'web-build': selected['browser'] == 'true',^[[0m
+Relevant checks passed	Verify all selected jobs completed successfully	2026-10-14T20:37:00.4145789Z ^[[36;1m    'web-native': selected['browser'] == 'true',^[[0m
+Relevant checks passed	Verify all selected jobs completed successfully	2026-10-14T20:37:00.4146485Z ^[[36;1m    'web-deploy': selected['deployment'] == 'true',^[[0m
+Relevant checks passed	Verify all selected jobs completed successfully	2026-10-14T20:37:00.4147167Z ^[[36;1m    'web-test': selected['browser'] == 'true',^[[0m
+Relevant checks passed	Verify all selected jobs completed successfully	2026-10-14T20:37:00.4147927Z ^[[36;1m    'browser-determinism': selected['cross_platform'] == 'true',^[[0m
+Relevant checks passed	Verify all selected jobs completed successfully	2026-10-14T20:37:00.4148700Z ^[[36;1m    'platform': selected['platform'] == 'true',^[[0m
+Relevant checks passed	Verify all selected jobs completed successfully	2026-10-14T20:37:00.4149438Z ^[[36;1m    'platform-stack': selected['platform_stack'] == 'true',^[[0m
+Relevant checks passed	Verify all selected jobs completed successfully	2026-10-14T20:37:00.4150148Z ^[[36;1m    'music': selected['music'] == 'true',^[[0m
+Relevant checks passed	Verify all selected jobs completed successfully	2026-10-14T20:37:00.4150974Z ^[[36;1m}^[[0m
+Relevant checks passed	Verify all selected jobs completed successfully	2026-10-14T20:37:00.4151454Z ^[[36;1mfor job, should_run in expected.items():^[[0m
+Relevant checks passed	Verify all selected jobs completed successfully	2026-10-14T20:37:00.4152158Z ^[[36;1m    required = 'success' if should_run else 'skipped'^[[0m
+Relevant checks passed	Verify all selected jobs completed successfully	2026-10-14T20:37:00.4152823Z ^[[36;1m    actual = needs[job]['result']^[[0m
+Relevant checks passed	Verify all selected jobs completed successfully	2026-10-14T20:37:00.4153464Z ^[[36;1m    print(f'{job}: {actual} (expected {required})')^[[0m
+Relevant checks passed	Verify all selected jobs completed successfully	2026-10-14T20:37:00.4154264Z ^[[36;1m    assert actual == required, f'{job}: {actual}, expected {required}'^[[0m
+Relevant checks passed	Verify all selected jobs completed successfully	2026-10-14T20:37:00.4154992Z ^[[36;1mPY^[[0m
+Relevant checks passed	Verify all selected jobs completed successfully	2026-10-14T20:37:00.5003714Z shell: /usr/bin/bash -e {0}
+Relevant checks passed	Verify all selected jobs completed successfully	2026-10-14T20:37:00.5004684Z env:
+Relevant checks passed	Verify all selected jobs completed successfully	2026-10-14T20:37:00.5005203Z   GLOB2_DEV_MODE: isolated
+Relevant checks passed	Verify all selected jobs completed successfully	2026-10-14T20:37:00.5011572Z   NEEDS_JSON: {
+Relevant checks passed	Verify all selected jobs completed successfully	  "changes": {
+Relevant checks passed	Verify all selected jobs completed successfully	    "result": "failure",
+Relevant checks passed	Verify all selected jobs completed successfully	    "outputs": {}
+Relevant checks passed	Verify all selected jobs completed successfully	  },
+Relevant checks passed	Verify all selected jobs completed successfully	  "android": {
+Relevant checks passed	Verify all selected jobs completed successfully	    "result": "skipped",
+Relevant checks passed	Verify all selected jobs completed successfully	    "outputs": {}
+Relevant checks passed	Verify all selected jobs completed successfully	  },
+Relevant checks passed	Verify all selected jobs completed successfully	  "macos": {
+Relevant checks passed	Verify all selected jobs completed successfully	    "result": "skipped",
+Relevant checks passed	Verify all selected jobs completed successfully	    "outputs": {}
+Relevant checks passed	Verify all selected jobs completed successfully	  },
+Relevant checks passed	Verify all selected jobs completed successfully	  "tsan": {
+Relevant checks passed	Verify all selected jobs completed successfully	    "result": "skipped",
+Relevant checks passed	Verify all selected jobs completed successfully	    "outputs": {}
+Relevant checks passed	Verify all selected jobs completed successfully	  },
+Relevant checks passed	Verify all selected jobs completed successfully	  "native-coverage": {
+Relevant checks passed	Verify all selected jobs completed successfully	    "result": "skipped",
+Relevant checks passed	Verify all selected jobs completed successfully	    "outputs": {}
+Relevant checks passed	Verify all selected jobs completed successfully	  },
+Relevant checks passed	Verify all selected jobs completed successfully	  "linux": {
+Relevant checks passed	Verify all selected jobs completed successfully	    "result": "skipped",
+Relevant checks passed	Verify all selected jobs completed successfully	    "outputs": {}
+Relevant checks passed	Verify all selected jobs completed successfully	  },
+Relevant checks passed	Verify all selected jobs completed successfully	  "linux-variants": {
+Relevant checks passed	Verify all selected jobs completed successfully	    "result": "skipped",
+Relevant checks passed	Verify all selected jobs completed successfully	    "outputs": {}
+Relevant checks passed	Verify all selected jobs completed successfully	  },
+Relevant checks passed	Verify all selected jobs completed successfully	  "linux-map-generators": {
+Relevant checks passed	Verify all selected jobs completed successfully	    "result": "skipped",
+Relevant checks passed	Verify all selected jobs completed successfully	    "outputs": {}
+Relevant checks passed	Verify all selected jobs completed successfully	  },
+Relevant checks passed	Verify all selected jobs completed successfully	  "windows": {
+Relevant checks passed	Verify all selected jobs completed successfully	    "result": "skipped",
+Relevant checks passed	Verify all selected jobs completed successfully	    "outputs": {}
+Relevant checks passed	Verify all selected jobs completed successfully	  },
+Relevant checks passed	Verify all selected jobs completed successfully	  "web-build": {
+Relevant checks passed	Verify all selected jobs completed successfully	    "result": "skipped",
+Relevant checks passed	Verify all selected jobs completed successfully	    "outputs": {}
+Relevant checks passed	Verify all selected jobs completed successfully	  },
+Relevant checks passed	Verify all selected jobs completed successfully	  "web-native": {
+Relevant checks passed	Verify all selected jobs completed successfully	    "result": "skipped",
+Relevant checks passed	Verify all selected jobs completed successfully	    "outputs": {}
+Relevant checks passed	Verify all selected jobs completed successfully	  },
+Relevant checks passed	Verify all selected jobs completed successfully	  "web-deploy": {
+Relevant checks passed	Verify all selected jobs completed successfully	    "result": "skipped",
+Relevant checks passed	Verify all selected jobs completed successfully	    "outputs": {}
+Relevant checks passed	Verify all selected jobs completed successfully	  },
+Relevant checks passed	Verify all selected jobs completed successfully	  "web-test": {
+Relevant checks passed	Verify all selected jobs completed successfully	    "result": "skipped",
+Relevant checks passed	Verify all selected jobs completed successfully	    "outputs": {}
+Relevant checks passed	Verify all selected jobs completed successfully	  },
+Relevant checks passed	Verify all selected jobs completed successfully	  "browser-determinism": {
+Relevant checks passed	Verify all selected jobs completed successfully	    "result": "skipped",
+Relevant checks passed	Verify all selected jobs completed successfully	    "outputs": {}
+Relevant checks passed	Verify all selected jobs completed successfully	  },
+Relevant checks passed	Verify all selected jobs completed successfully	  "platform": {
+Relevant checks passed	Verify all selected jobs completed successfully	    "result": "skipped",
+Relevant checks passed	Verify all selected jobs completed successfully	    "outputs": {}
+Relevant checks passed	Verify all selected jobs completed successfully	  },
+Relevant checks passed	Verify all selected jobs completed successfully	  "platform-stack": {
+Relevant checks passed	Verify all selected jobs completed successfully	    "result": "skipped",
+Relevant checks passed	Verify all selected jobs completed successfully	    "outputs": {}
+Relevant checks passed	Verify all selected jobs completed successfully	  },
+Relevant checks passed	Verify all selected jobs completed successfully	  "music": {
+Relevant checks passed	Verify all selected jobs completed successfully	    "result": "skipped",
+Relevant checks passed	Verify all selected jobs completed successfully	    "outputs": {}
+Relevant checks passed	Verify all selected jobs completed successfully	  }
+Relevant checks passed	Verify all selected jobs completed successfully	}
+Relevant checks passed	Verify all selected jobs completed successfully	2026-10-14T20:37:00.5017189Z   VERIFICATION_MODE: 
+Relevant checks passed	Verify all selected jobs completed successfully	2026-10-14T20:37:00.5017651Z ##[endgroup]
+Relevant checks passed	Verify all selected jobs completed successfully	2026-10-14T20:37:00.6622402Z Traceback (most recent call last):
+Relevant checks passed	Verify all selected jobs completed successfully	2026-10-14T20:37:00.6623223Z   File "<stdin>", line 12, in <module>
+Relevant checks passed	Verify all selected jobs completed successfully	2026-10-14T20:37:00.6623840Z AssertionError: Change detection failed
+Relevant checks passed	Verify all selected jobs completed successfully	2026-10-14T20:37:00.6754800Z ##[error]Process completed with exit code 1.

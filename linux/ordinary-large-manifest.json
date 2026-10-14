@@ -1,0 +1,42 @@
+{
+  "scenarios": [
+    {
+      "id": "ordinary",
+      "group": "ordinary",
+      "control": false,
+      "start_tick": 8192,
+      "args": [
+        "--load-game",
+        "/home/bradley/glob2-lean-baseline/artifacts/lean-compute/corpus/ordinary/final.game.gz",
+        "--ticks",
+        "10240",
+        "--benchmark-warmup",
+        "64",
+        "--gradient-backend",
+        "cpu"
+      ],
+      "fixture_sha256": {
+        "/home/bradley/glob2-lean-baseline/artifacts/lean-compute/corpus/ordinary/final.game.gz": "b94e354ef26656c6658c7738371b020ee13f1dd1207fdcbff6f4d1909dd95f9b"
+      }
+    },
+    {
+      "id": "large",
+      "group": "large",
+      "control": false,
+      "start_tick": 8192,
+      "args": [
+        "--load-game",
+        "/home/bradley/glob2-lean-baseline/artifacts/lean-compute/corpus/large/final.game.gz",
+        "--ticks",
+        "10240",
+        "--benchmark-warmup",
+        "64",
+        "--gradient-backend",
+        "cpu"
+      ],
+      "fixture_sha256": {
+        "/home/bradley/glob2-lean-baseline/artifacts/lean-compute/corpus/large/final.game.gz": "0b7ebce58de659c01de6ec54a7baac2dc08e9f302fc3f85c5bca259365f0d078"
+      }
+    }
+  ]
+}

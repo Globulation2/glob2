@@ -1,0 +1,3 @@
+Oct 14 17:11:20 devlaptop kernel: NVRM: GPU at PCI:0000:01:00: GPU-4d4b3ddd-5c88-6c13-a8f5-fc29b72cc3e9
+Oct 14 17:11:20 devlaptop kernel: NVRM: Xid (PCI:0000:01:00): 32, pid=880082, name=chrome-headless, channel 0x00000030 intr0 00040000
+Oct 14 17:11:20 devlaptop kernel: NVRM: Xid (PCI:0000:01:00): 32, pid=880082, name=chrome-headless, channel 0x00000030 intr0 00040000
