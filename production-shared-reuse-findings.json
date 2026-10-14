@@ -1,0 +1,105 @@
+{
+  "status": "diagnosis confirmed; regression screen completed; not final merge evidence",
+  "source": "983b482e52c5db80c36024aa5b2624f579ccac07",
+  "original_base": "35b84d4ffd774742ada41d33c39ab1a50551f113",
+  "PR_source_head": "db0e4b064344e4f6aa88c998093944240f668a3d",
+  "working_production_source_unpushed": true,
+  "root_causes": [
+    "Earlier private hiring resource fields duplicated normal map work; removed before this study.",
+    "Shared executor joins charge other producers to hiring in serial profiles; inclusive publication cost is not planner work.",
+    "Changed hiring trajectory exercises expensive Nicowar flag placement more often. Every candidate tile scanned 1024 building slots even for a one-position request.",
+    "Safe leading-anchor rejection plus compact snapshot team traversal remove redundant placement work without new world capture/storage. Both original and cached controls received identical AI optimizations."
+  ],
+  "full_window_after_leading_anchor_callgrind": {
+    "ticks": [
+      12288,
+      14336
+    ],
+    "participants": 1,
+    "collection": "Engine::advanceSession only; load and final drain excluded",
+    "different_policy_trajectories": true,
+    "original": {
+      "AI_decisions": 16384,
+      "placement_calls": 58,
+      "placement_Ir": 2523278793,
+      "AI_runtime_Ir": 7648175404,
+      "AI_gradient_rebuilds": 211,
+      "AI_gradient_Ir": 4453071036,
+      "engine_collected_Ir": 34205991977
+    },
+    "cached": {
+      "AI_decisions": 16384,
+      "placement_calls": 66,
+      "placement_Ir": 3896223921,
+      "AI_runtime_Ir": 8967172953,
+      "AI_gradient_rebuilds": 207,
+      "AI_gradient_Ir": 4315893179,
+      "engine_collected_Ir": 31974415652
+    }
+  },
+  "whole_game_screen": {
+    "islands-713": {
+      "paired_repetitions": 3,
+      "percent_delta": {
+        "run_ns": -1.1480697175740295,
+        "benchmark_run_cpu_ns": -3.09193969155912,
+        "tick_p95_ns": -9.022556002613335
+      }
+    },
+    "river-713": {
+      "paired_repetitions": 3,
+      "percent_delta": {
+        "run_ns": -0.8946149427948691,
+        "benchmark_run_cpu_ns": -1.4433828108129432,
+        "tick_p95_ns": -3.114482915495753
+      }
+    },
+    "swamp-713": {
+      "paired_repetitions": 3,
+      "percent_delta": {
+        "run_ns": 2.1818775839497873,
+        "benchmark_run_cpu_ns": 0.1088028876560676,
+        "tick_p95_ns": 2.45608795558383
+      }
+    }
+  },
+  "validation": {
+    "focused_tests": 133,
+    "failed": 0,
+    "skipped": 0,
+    "participant_trace_sha256": "e8c553217e444e6a6f92822a447d4fad93ef14985f62e77c18896084e3afe929",
+    "participants": [
+      1,
+      2,
+      4,
+      8
+    ],
+    "late_original_before_after_trace": "acfa2c90c7abd9f75d396d976d55eb2c03b7daa0c8dee6119a0c79646cf45eb2",
+    "late_cached_before_after_trace": "82871011286974733c55d8366bff011345a74417dde44916a069d676f2ef7843"
+  },
+  "limitations": [
+    "Three paired repetitions per generated 256x256 map, eight Nicowar players, not the authoritative ten-pair twelve-map benchmark. No significance/equivalence or universal workload gain claim.",
+    "Original and cached policies have different world trajectories. Within-policy AI before/after controls preserve complete per-tick traces.",
+    "Current validation Linux x86-64 GCC13 ordinary release only. No fresh macOS/Windows/browser validation.",
+    "Earlier broad anchor hoist discarded after review exposed gradient cache initialization ordering risk, despite selected traces matching.",
+    "First late-window timing invocation rejected before measured attempts because warmup is relative to advanced ticks; original failed logs retained.",
+    "First trace export rejected undrained required work; retry used save final for drainage. Trace buffers overflowed; aggregate timers complete but event distributions partial.",
+    "Production source remains local while cleanup/integration/merge gates continue; PR implementation head is still the historical prototype."
+  ],
+  "timed_diagnostic_after_leading_anchor": {
+    "original": {
+      "owner_capture_ns": 266921542,
+      "AI_compute_ns": 544883111,
+      "AI_wait_ns": 117913833,
+      "planner_ns": null,
+      "engine_elapsed_ns": 1084757321
+    },
+    "cached": {
+      "owner_capture_ns": 264019308,
+      "AI_compute_ns": 720662598,
+      "AI_wait_ns": 289717049,
+      "planner_ns": 42706389,
+      "engine_elapsed_ns": 1218701984
+    }
+  }
+}

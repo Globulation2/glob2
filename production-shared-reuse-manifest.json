@@ -1,0 +1,19 @@
+{
+  "source": "983b482e52c5db80c36024aa5b2624f579ccac07",
+  "files": {
+    "production-shared-reuse-commands.tar.gz": "24063ec940e7a4143fec4426b9af39cda8e44fefbe287e71785101b4c6e8d6b5",
+    "production-shared-reuse-findings.json": "5f5c4bafd8aa0a45e196bdd100a328d8f63eb09bdb4da94de247516f30dcc9d2",
+    "production-shared-reuse-full-manifest.json": "01d10c97f4aecb6695295d843b68db5b2c97c742a13d5d860aecf229a0a7bd37",
+    "production-shared-reuse-full.tar.gz.part01": "6f18cb3702b29ada9dda3091870e6554347e21838b7b83c039b77e6ebbc94c3a",
+    "production-shared-reuse-full.tar.gz.part02": "da7f71f89200404c3cc13c9c7f92b05fa4de0b12528a66aea226298c9b3d6735",
+    "production-shared-reuse-full.tar.gz.part03": "5bb1df7bfc10f75535c8a1d3218ad142d613058b0bcdd1ffec7727d599672722",
+    "production-shared-reuse-primary-manifest.json": "693abc00d106cde6ddd3e857b873ebcffac14481c4ab5815cf6a8edea4eb0cb6",
+    "production-shared-reuse-primary.tar.gz": "ee9456bb4d1dc311e20c09cf79aa3140b548b8a70733d26eaf078ecb0f62ddac",
+    "production-shared-reuse-source.patch": "465de8d54ab14ff587c19ff787ae05dee95bf97161d76d5b6ed89d6a97ac7c53",
+    "production-planner-experiments.tar.gz": "dee5f6bf84fdc2fa6b6a44bf48575bb68fd6498b68a12aa6b3a0668636419c65",
+    "production-gradient-duplication-audit.tar.gz": "65844156cc36f476131d947360712cb03084bd7637fed0ddf9654f3b3111ba48"
+  },
+  "full_archive_sha256": "47f58807a0d164a16f303a6d24b112e3d301e917d2d05d23d62af12ee356a8ce",
+  "full_archive_reconstruction": "concatenate .part01, .part02, .part03 in order; verify SHA256; extract tar.gz; identical files are tar hardlinks",
+  "preserves_historical_evidence": true
+}
