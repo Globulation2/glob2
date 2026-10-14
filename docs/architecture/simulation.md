@@ -588,6 +588,10 @@ Resource-field cache keys use the snapshot's existing map and catalog versions;
 unrelated changes may conservatively rebuild a field. Supplier fields are shared
 within an observation. Unversioned synthetic observations rebuild on each rank.
 Natural resource fields reuse the existing snapshot seed templates when applicable.
+Ordinary unweighted resource fields up to 256 by 256 reuse the existing resumable
+search and settle only the cells queried by candidates. Their settled integer
+distances match full propagation. Weighted, custom-cost and larger fields retain
+the full kernel; pending search storage counts toward the private cache budget.
 Route leases include only jobs and movement classes required by the observation.
 
 Published lists, fixed rules, last admission state, output

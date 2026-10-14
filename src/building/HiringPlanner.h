@@ -116,7 +116,7 @@ class Cache
 	static constexpr std::size_t MaxBytes = 32u * 1024 * 1024;
 	// The scalar control verifies seed templates against uncached seeding.
 	// It changes computation cost only.
-	explicit Cache(std::size_t budget = MaxBytes, bool cachedSeedTemplates = true);
+	explicit Cache(std::size_t budget = MaxBytes, bool cachedSeedTemplates = true, bool partialResourceFields = true);
 	~Cache();
 	Cache(const Cache &) = delete;
 	Cache &operator=(const Cache &) = delete;

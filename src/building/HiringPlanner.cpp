@@ -173,13 +173,16 @@ FieldKey resourceKey(const World &world, const B &b, int material, int swim,
 struct Cache::Impl
 {
 	gradient_preparation::MaterialSeedCache seedTemplates;
-	bool cachedSeedTemplates = true;
+	bool cachedSeedTemplates = true, partialResourceFields = true;
 	Metrics *metrics = nullptr;
 	Uint64 observation = 0;
 	struct Field
 	{
 		std::vector<Uint16> values;
+		std::unique_ptr<BuildingGradientSearch> search;
+		std::size_t searchBytes = 0;
 		std::uint64_t use = 0;
+		std::size_t bytes() const { return values.capacity() * sizeof(Uint16) + searchBytes; }
 	};
 	std::map<FieldKey, Field> fields;
 	std::size_t retained = 0, budget = Cache::MaxBytes;
@@ -212,20 +215,20 @@ struct Cache::Impl
 			if (victim == fields.end())
 				throw std::length_error("Hiring active route working set exceeds cache bound");
 			++metrics->evictions;
-			retained -= victim->second.values.capacity() * sizeof(Uint16);
+			retained -= victim->second.bytes();
 			fields.erase(victim);
 		}
 	}
 	std::uint64_t clock = 0, protectedAfter = 0;
 	GradientWorkspace scratch;
 	template <class Seed, class CachedSeed>
-	const std::vector<Uint16> &field(const World &world, FieldKey key, int swim, Seed seed, CachedSeed cachedSeed)
+	Field &field(const World &world, FieldKey key, int swim, Seed seed, CachedSeed cachedSeed)
 	{
 		if (auto it = fields.find(key); it != fields.end())
 		{
 			++metrics->fieldHits;
 			it->second.use = ++clock;
-			return it->second.values;
+			return it->second;
 		}
 		++metrics->fieldMisses;
 		const auto seedStart = Clock::now();
@@ -239,26 +242,59 @@ struct Cache::Impl
 		metrics->fieldCells += result.values.size();
 		metrics->seedNs += elapsed(seedStart);
 		const auto propagationStart = Clock::now();
-		gradient_kernel::propagateTerrainField(
-			result.values.data(), swim, gradient_kernel::COST_LIMIT, {world.width, world.height},
-			scratch, [&](std::size_t i) { return world.cellRuleAt(i); },
-			world.terrainMovementModifiers, *world.cellRules, 256);
+		// Resource seeds have zero cost, just like building seeds. Reuse the
+		// existing resumable search for ordinary walkers; weighted/custom
+		// terrain retains the full kernel and its captured cost contract.
+		if (partialResourceFields && !world.terrainMovementModifiers &&
+			!gradient_kernel::weightedClass(swim) && result.values.size() <= 65536)
+		{
+			result.search = std::make_unique<BuildingGradientSearch>();
+			BuildingGradientSearch::Inputs inputs;
+			inputs.registry = world.terrain;
+			result.search->begin(inputs, result.values.data(), swim, world.width, world.height);
+			result.searchBytes = result.search->retainedBytes();
+		}
+		else
+			gradient_kernel::propagateTerrainField(
+				result.values.data(), swim, gradient_kernel::COST_LIMIT, {world.width, world.height},
+				scratch, [&](std::size_t i) { return world.cellRuleAt(i); },
+				world.terrainMovementModifiers, *world.cellRules, 256);
 		metrics->propagationNs += elapsed(propagationStart);
-		trim(result.values.capacity() * sizeof(Uint16) + NodeBytes);
+		trim(result.bytes() + NodeBytes);
 		result.use = ++clock;
-		retained += result.values.capacity() * sizeof(Uint16);
-		return fields.emplace(key, std::move(result)).first->second.values;
+		retained += result.bytes();
+		return fields.emplace(key, std::move(result)).first->second;
 	}
-	int distance(const World &world, const std::vector<Uint16> &values, int x, int y)
+	int distance(const World &world, Field &field, int x, int y)
 	{
-		Uint16 value = values[world.tileIndex(x, y)];
-		constexpr int neighbors[8][2] = {{0, -1},  {1, 0},  {0, 1}, {-1, 0},
+		bool expanded = false;
+		const auto read = [&](int a, int b)
+		{
+			const auto i = world.tileIndex(a, b);
+			if (field.search && !field.search->resolved(i))
+			{
+				const auto start = Clock::now();
+				field.search->resolveForProposal(i);
+				metrics->propagationNs += elapsed(start);
+				expanded = true;
+			}
+			return field.values[i];
+		};
+		Uint16 value = read(x, y);
+		constexpr int neighbors[8][2] = {{0, -1}, {1, 0}, {0, 1}, {-1, 0},
 										 {-1, -1}, {1, -1}, {1, 1}, {-1, 1}};
 		for (int d = 0; d < 8 && value <= GRADIENT_UNREACHABLE; ++d)
-			value = values[world.tileIndex(x + neighbors[d][0], y + neighbors[d][1])];
+			value = read(x + neighbors[d][0], y + neighbors[d][1]);
+		if (expanded)
+		{
+			const auto bytes = field.search->retainedBytes();
+			retained = retained - field.searchBytes + bytes;
+			field.searchBytes = bytes;
+			trim(0);
+		}
 		return value > GRADIENT_UNREACHABLE ? gradientTiles(value) : INT_MAX;
 	}
-	const std::vector<Uint16> &resource(const World &world, const B &b, int material, int swim,
+	Field &resource(const World &world, const B &b, int material, int swim,
 										unsigned modes, bool consumerSpecific)
 	{
 		const auto key = resourceKey(world, b, material, swim, modes, consumerSpecific, observation);
@@ -290,12 +326,13 @@ struct Cache::Impl
 					 });
 	}
 };
-Cache::Cache(std::size_t budget, bool cachedSeedTemplates) : impl(std::make_unique<Impl>())
+Cache::Cache(std::size_t budget, bool cachedSeedTemplates, bool partialResourceFields) : impl(std::make_unique<Impl>())
 {
 	if (!budget || budget > MaxBytes)
 		throw std::invalid_argument("Invalid hiring cache budget");
 	impl->budget = budget;
 	impl->cachedSeedTemplates = cachedSeedTemplates;
+	impl->partialResourceFields = partialResourceFields;
 	impl->seedTemplates.budget = std::min<std::size_t>(2u * 1024 * 1024, budget / 4);
 }
 Cache::~Cache() = default;
@@ -633,7 +670,7 @@ Output Cache::rank(const Inputs &input, unsigned team, unsigned capacity)
 				continue;
 			}
 			std::array<std::shared_ptr<SharedBuildingGradient>, SWIM_CLASS_COUNT> buildings{};
-			std::array<const std::vector<Uint16> *, SWIM_CLASS_COUNT> resources{};
+			std::array<Impl::Field *, SWIM_CLASS_COUNT> resources{};
 			// AI enrollment depends on local polling/network receipt. Its live
 			// resource planes are not canonical simulation inputs. Resource
 			// estimates share private fields keyed by existing snapshot versions,

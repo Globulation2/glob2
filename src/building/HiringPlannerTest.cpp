@@ -57,7 +57,7 @@ TEST_SUITE("HiringPlanner")
 			u->activity = Unit::ACT_RANDOM; u->medical = Unit::MED_FREE; u->hungriness = 0;
 		}
 		REQUIRE(w.game.map.incResourceByIndex(24, 12, WHEAT, 0));
-		HiringPlanner::Cache cached, scalar(HiringPlanner::Cache::MaxBytes, false);
+		HiringPlanner::Cache cached, scalar(HiringPlanner::Cache::MaxBytes, false, false);
 		for (unsigned phase = 0; phase < 9; ++phase)
 		{
 			CAPTURE(phase);
