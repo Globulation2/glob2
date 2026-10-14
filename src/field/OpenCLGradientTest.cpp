@@ -208,7 +208,7 @@ TEST_SUITE("OpenCLGradient")
         std::vector<std::uint16_t> seeds(grid.cells(), 1);
         seeds[0] = 65535;
         seeds[1] = 0;
-        GradientWorkspace scratch;
+        BackendSession session;
         unsigned calls = 0;
         auto run = [&](CostIdentity identity, EntrySteps step)
         {
@@ -220,7 +220,7 @@ TEST_SUITE("OpenCLGradient")
                 return step;
             };
             auto cpu = [&](std::uint16_t *out) { std::copy(expected.begin(), expected.end(), out); };
-            REQUIRE(tryAcceleratedGradient(actual.data(), COST_LIMIT, grid, *scratch.backendSession, costs,
+            REQUIRE(tryAcceleratedGradient(actual.data(), COST_LIMIT, grid, session, costs,
                                            cpu, identity));
             CHECK(actual == expected);
         };
@@ -266,7 +266,7 @@ TEST_SUITE("OpenCLGradient")
             oracle(seeds, reshaped, std::vector<EntrySteps>(reshaped.cells(), entrySteps(WATER_STEP[6])),
                    COST_LIMIT);
         REQUIRE(tryAcceleratedGradient(
-            shaped.data(), COST_LIMIT, reshaped, *scratch.backendSession,
+            shaped.data(), COST_LIMIT, reshaped, session,
             [&](std::size_t)
             {
                 ++calls;
