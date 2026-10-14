@@ -9,11 +9,6 @@
 
 ## What players see
 
-Cached hiring is part of normal simulation behavior, not an experiment switch.
-Its fixed four-tick publication delay and four-tick team refresh cadence are
-continuation rules. Local compute participant counts change where jobs run, not
-which suggestions publish or when. See [simulation hiring](../architecture/simulation.md#hiring).
-
 - **Settings → Experiments** lists one switch per experiment in this build, with
   a line explaining what it changes. Building catalogs can declare additional
   switches with their own stable keys and English labels and help. Translations

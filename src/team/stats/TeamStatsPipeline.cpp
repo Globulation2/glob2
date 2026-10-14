@@ -239,14 +239,8 @@ void TeamStatsPipeline::save(GAGCore::OutputStream *s)
 	if (lastSubmitted)
 		s->writeUint32(*lastSubmitted, "last");
 	s->writeUint32(phases.size(), "teams");
-	s->writeEnterSection("phases");
-	for (unsigned t = 0; t < phases.size(); ++t)
-	{
-		s->writeEnterSection(t);
-		s->writeUint32(phases[t], "phase");
-		s->writeLeaveSection();
-	}
-	s->writeLeaveSection();
+	for (auto phase : phases)
+		s->writeUint32(phase, "phase");
 	s->writeUint32(pending.size(), "pending");
 	for (unsigned i = 0; i < pending.size(); ++i)
 	{
@@ -254,14 +248,8 @@ void TeamStatsPipeline::save(GAGCore::OutputStream *s)
 		const auto &b = *pending[i];
 		s->writeUint32(b.tick, "tick");
 		s->writeUint32(b.due, "due");
-		s->writeEnterSection("samples");
-		for (unsigned t = 0; t < b.samples.size(); ++t)
-		{
-			s->writeEnterSection(t);
-			TeamStats::saveSample(s, b.samples[t]);
-			s->writeLeaveSection();
-		}
-		s->writeLeaveSection();
+		for (const auto &sample : b.samples)
+			TeamStats::saveSample(s, sample);
 		s->writeLeaveSection();
 	}
 	s->writeLeaveSection();
@@ -276,18 +264,13 @@ void TeamStatsPipeline::load(Game &game, GAGCore::InputStream *s, int versionMin
 	const auto teams = s->readCount("teams");
 	if (teams && teams != unsigned(game.teamsCount()))
 		throw std::runtime_error("Invalid statistics team count");
-	const bool indexed = versionMinor >= FILE_FORMAT_VERSION_INDEXED_TEAM_STATS;
-	if (indexed) s->readEnterSection("phases");
 	for (unsigned t = 0; t < teams; ++t)
 	{
-		if (indexed) s->readEnterSection(t);
 		auto phase = s->readUint32("phase");
 		if (phase >= 32)
 			throw std::runtime_error("Invalid statistics phase");
 		phases.push_back(phase);
-		if (indexed) s->readLeaveSection();
 	}
-	if (indexed) s->readLeaveSection();
 	for (unsigned t = 0; t < teams; ++t)
 		previousFrames.push_back(
 			std::make_shared<GameplayMeasurements>(game.teams[t]->stats.measurements()));
@@ -307,10 +290,8 @@ void TeamStatsPipeline::load(Game &game, GAGCore::InputStream *s, int versionMin
 			b->due < game.stepCounter || b->tick > *lastSubmitted ||
 			(!pending.empty() && b->tick != pending.back()->tick + 1))
 			throw std::runtime_error("Invalid statistics deadline");
-		if (indexed) s->readEnterSection("samples");
 		for (unsigned t = 0; t < teams; ++t)
 		{
-			if (indexed) s->readEnterSection(t);
 			auto sample = TeamStats::loadSample(s, versionMinor);
 			if (sample.tick != b->tick ||
 				sample.measurementFrame().births.size() != game.unitCatalog().size() ||
@@ -324,9 +305,7 @@ void TeamStatsPipeline::load(Game &game, GAGCore::InputStream *s, int versionMin
 			}
 			previousFrames[t] = sample.frame;
 			b->samples.push_back(std::move(sample));
-			if (indexed) s->readLeaveSection();
 		}
-		if (indexed) s->readLeaveSection();
 		pending.push_back(std::move(b));
 		s->readLeaveSection();
 	}

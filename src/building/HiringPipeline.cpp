@@ -4,7 +4,6 @@
 #include "Team.h"
 #include "Building.h"
 #include "Unit.h"
-#include "HiringDiagnostics.h"
 #include "SharedBuildingGradient.h"
 #include <chrono>
 #include <bit>
@@ -20,16 +19,8 @@ using Output = HiringPlanner::Output;
 using Clock = std::chrono::steady_clock;
 Uint64 elapsed(Clock::time_point start)
 {
-	return start == Clock::time_point{}
-			   ? 0
-			   : std::chrono::duration_cast<std::chrono::nanoseconds>(Clock::now() - start).count();
+	return std::chrono::duration_cast<std::chrono::nanoseconds>(Clock::now() - start).count();
 }
-Clock::time_point startTiming()
-{
-	return HiringDiagnostics::enabled() ? Clock::now() : Clock::time_point{};
-}
-static_assert(sizeof(Output) <= 2048 && sizeof(HiringPlanner::BuildingLists) <= 64 &&
-			  sizeof(HiringPlanner::List) <= 128 && sizeof(HiringPlanner::Candidate) <= 32);
 void write64(GAGCore::OutputStream *s, Uint64 value, const char *name)
 {
 	s->writeEnterSection(name);
@@ -100,8 +91,8 @@ Uint32 outputChecksum(const Output &output)
 	saveOutput(&stream, output);
 	return stream.value;
 }
-std::shared_ptr<const Output> loadOutput(GAGCore::InputStream *s, const Game &game,
-										 std::size_t budget = HiringPipeline::MaxOutputBytes)
+// Counts are bounded by entity, job and shortlist limits before allocation.
+std::shared_ptr<const Output> loadOutput(GAGCore::InputStream *s, const Game &game)
 {
 	auto o = std::make_shared<Output>();
 	o->tick = s->readUint32("tick");
@@ -111,9 +102,6 @@ std::shared_ptr<const Output> loadOutput(GAGCore::InputStream *s, const Game &ga
 	auto count = s->readCount("buildings");
 	if (count > Building::MAX_COUNT)
 		throw std::runtime_error("Invalid hiring building count");
-	o->retainedBytes = 2048 + 2 * count * 64;
-	if (o->retainedBytes > budget)
-		throw std::runtime_error("Hiring output memory limit");
 	o->buildings.reserve(count);
 	int previousBuilding = -1;
 	s->readEnterSection("buildingLists");
@@ -133,9 +121,6 @@ std::shared_ptr<const Output> loadOutput(GAGCore::InputStream *s, const Game &ga
 		const auto jobs = s->readCount("jobs");
 		if (jobs > 2 * MaterialCount + 3)
 			throw std::runtime_error("Invalid hiring jobs");
-		o->retainedBytes += 2 * jobs * 128;
-		if (o->retainedBytes > budget)
-			throw std::runtime_error("Hiring output memory limit");
 		b.jobs.reserve(jobs);
 		int previousJob = -1;
 		s->readEnterSection("jobLists");
@@ -159,9 +144,6 @@ std::shared_ptr<const Output> loadOutput(GAGCore::InputStream *s, const Game &ga
 			const auto candidates = s->readCount("candidates");
 			if (candidates > HiringPipeline::Capacity)
 				throw std::runtime_error("Invalid hiring shortlist");
-			o->retainedBytes += candidates * 32;
-			if (o->retainedBytes > budget)
-				throw std::runtime_error("Hiring output memory limit");
 			j.candidates.reserve(candidates);
 			std::set<Uint16> units;
 			s->readEnterSection("suggestions");
@@ -195,7 +177,6 @@ struct HiringPipeline::Work
 {
 	std::shared_ptr<const HiringPlanner::Inputs> input;
 	unsigned team = 0;
-	std::size_t bound = 0;
 	std::shared_ptr<const Output> output;
 };
 struct HiringPipeline::Batch
@@ -225,82 +206,44 @@ void HiringPipeline::compute(void *context, std::size_t)
 	auto output = std::make_shared<Output>(HiringPlanner::Planner{}.rank(*w.input, w.team, Capacity));
 	output->checksum = outputChecksum(*output);
 	w.output = std::move(output);
-	if (w.output->retainedBytes > w.bound)
-		throw std::length_error("Hiring output exceeds reservation");
 	w.input.reset();
 }
 void HiringPipeline::observe(Game &game, const SimulationSnapshot::Handle &snapshot)
 {
-	if (failure)
-		std::rethrow_exception(failure);
 	const auto tick = game.stepCounter;
 	if (lastObserved && *lastObserved == tick)
 		return;
-	cachedChecksum.reset();
 	if (snapshot.tick != tick)
 		throw std::logic_error("Hiring boundary mismatch");
 	if (tick > std::numeric_limits<Uint32>::max() - Delay)
 		throw std::overflow_error("Hiring deadline overflow");
-	const auto prepareStart = startTiming();
+	lastObserved = tick;
 	unsigned teamMask = 0;
-	for (unsigned t = 0; t < unsigned(game.teamsCount()); ++t)
-		if (tick % Refresh == t % Refresh)
-			teamMask |= 1u << t;
+	for (unsigned t = tick % Refresh; t < unsigned(game.teamsCount()); t += Refresh)
+		teamMask |= 1u << t;
 	if (!teamMask)
-	{
-		lastObserved = tick;
 		return;
-	}
-	const auto routeStart = startTiming();
+	if (pending.size() >= Delay)
+		throw std::logic_error("Hiring publication horizon exceeded");
+	const auto start = Clock::now();
 	auto input = std::make_shared<HiringPlanner::Inputs>(bindRoutes(game, snapshot, teamMask));
-	const auto routeNs = elapsed(routeStart);
-	metrics.routeHandlesNs += routeNs;
 	auto batch = std::make_unique<Batch>();
 	batch->tick = tick;
 	batch->due = tick + Delay;
-	batch->work.reserve(std::popcount(teamMask));
-	for (unsigned t = 0; t < unsigned(game.teamsCount()); ++t)
-		if (tick % Refresh == t % Refresh)
-		{
-			batch->work.push_back({input, t, 2048 + input->outputBounds[t], {}});
-		}
-	if (!batch->work.empty())
-	{
-		std::size_t reserve = outputReservation();
-		for (const auto &w : batch->work)
-			reserve += w.bound;
-		if (reserve > MaxOutputBytes)
-			throw std::length_error("Hiring pending output reservations exceed match bound");
-		if (pending.size() >= Delay)
-			throw std::logic_error("Hiring publication horizon exceeded");
-		pending.push_back(std::move(batch));
-		auto &b = *pending.back();
-		std::array<ComputeExecutor::Group, Team::MAX_COUNT> groups;
-		for (unsigned i = 0; i < b.work.size(); ++i)
-		{
-			auto &w = b.work[i];
-			groups[i] = {1, {compute, &w}, ComputeExecutor::HiringLaneBase + w.team};
-		}
-		metrics.preparationNs += elapsed(prepareStart) - routeNs;
-		const auto submitStart = startTiming();
-		try
-		{
-			b.ticket = executor.submit(std::span(groups).first(b.work.size()), ComputeExecutor::boundaryDue(b.due),
-									   {ComputeProducer::Other, b.tick, b.due});
-		}
-		catch (...)
-		{
-			failure = std::current_exception();
-			throw;
-		}
-		metrics.submissionNs += elapsed(submitStart);
-		metrics.submitted += b.work.size();
-	}
-	++metrics.observations;
-	lastObserved = tick;
+	for (unsigned t = tick % Refresh; t < unsigned(game.teamsCount()); t += Refresh)
+		batch->work.push_back({input, t, {}});
+	auto &b = *pending.emplace_back(std::move(batch));
+	std::array<ComputeExecutor::Group, Team::MAX_COUNT> groups;
+	for (unsigned i = 0; i < b.work.size(); ++i)
+		groups[i] = {1, {compute, &b.work[i]}, ComputeExecutor::HiringLaneBase + b.work[i].team};
+	b.ticket = executor.submit(std::span(groups).first(b.work.size()), ComputeExecutor::boundaryDue(b.due),
+							   {ComputeProducer::Other, b.tick, b.due});
+	metrics.submissionNs += elapsed(start);
+	metrics.submitted += b.work.size();
 }
 void HiringPipeline::drain(JoinReason reason)
 {
+	std::exception_ptr failure;
 	for (auto &b : pending)
 		if (!b->ticket.empty())
 		{
@@ -320,35 +263,21 @@ void HiringPipeline::drain(JoinReason reason)
 }
 void HiringPipeline::publishDue(Uint32 tick)
 {
-	if (failure)
-		std::rethrow_exception(failure);
 	while (!pending.empty() && pending.front()->due <= tick)
 	{
-		cachedChecksum.reset();
-		const auto publishStart = startTiming();
 		auto &b = *pending.front();
-		const auto waitStart = startTiming();
-		try
-		{
-			if (!b.ticket.empty())
-				executor.join(b.ticket, {JoinReason::TickDeadline, tick});
-		}
-		catch (...)
-		{
-			failure = std::current_exception();
-			throw;
-		}
+		const auto waitStart = Clock::now();
+		if (!b.ticket.empty())
+			executor.join(b.ticket, {JoinReason::TickDeadline, tick});
 		b.ticket = {};
-		metrics.deadlineWaitNs += elapsed(waitStart);
+		const auto publishStart = Clock::now();
+		metrics.deadlineWaitNs += std::chrono::duration_cast<std::chrono::nanoseconds>(publishStart - waitStart).count();
 		for (const auto &w : b.work)
+		{
 			if (!w.output)
 				throw std::logic_error("Missing hiring result");
-		for (const auto &w : b.work)
-		{
 			published[w.team] = w.output;
-			publishedBounds[w.team] = w.bound;
-			metrics.plannerNs += w.output->ns;
-			metrics.planner.add(w.output->metrics);
+			metrics.workerNs += w.output->ns;
 			++metrics.published;
 		}
 		pending.pop_front();
@@ -389,10 +318,7 @@ void HiringPipeline::save(GAGCore::OutputStream *s)
 		const auto &o = published[t];
 		s->writeUint8(bool(o), "present");
 		if (o)
-		{
-			write64(s, publishedBounds[t], "bound");
 			saveOutput(s, *o);
-		}
 		s->writeLeaveSection();
 	}
 	s->writeLeaveSection();
@@ -409,9 +335,7 @@ void HiringPipeline::save(GAGCore::OutputStream *s)
 		for (unsigned t = 0; t < b->work.size(); ++t)
 		{
 			s->writeEnterSection(t);
-			const auto &w = b->work[t];
-			write64(s, w.bound, "bound");
-			saveOutput(s, *w.output);
+			saveOutput(s, *b->work[t].output);
 			s->writeLeaveSection();
 		}
 		s->writeLeaveSection();
@@ -422,7 +346,6 @@ void HiringPipeline::save(GAGCore::OutputStream *s)
 }
 void HiringPipeline::load(Game &game, GAGCore::InputStream *s)
 {
-	cachedChecksum.reset();
 	GAGCore::BinaryInputStream::CheckedReads checked(s);
 	s->readEnterSection("HiringPipeline");
 	if (readFlag(s, "hasLast"))
@@ -437,16 +360,12 @@ void HiringPipeline::load(Game &game, GAGCore::InputStream *s)
 		s->readEnterSection(t);
 		if (readFlag(s, "present"))
 		{
-			const auto bound = read64(s, "bound");
-			if (bound < 2048 || bound > MaxOutputBytes - outputReservation())
-				throw std::runtime_error("Invalid hiring output bound");
-			auto o = loadOutput(s, game, bound);
+			auto o = loadOutput(s, game);
 			if (o->team != t || o->tick % Refresh != t % Refresh ||
 				o->tick > std::numeric_limits<Uint32>::max() - Delay ||
 				o->tick + Delay > game.stepCounter)
 				throw std::runtime_error("Invalid published hiring team or deadline");
 			published[t] = std::move(o);
-			publishedBounds[t] = bound;
 		}
 		s->readLeaveSection();
 	}
@@ -472,20 +391,15 @@ void HiringPipeline::load(Game &game, GAGCore::InputStream *s)
 		if (teams != expected)
 			throw std::runtime_error("Invalid hiring team count");
 		unsigned expectedTeam = b->tick % Refresh;
-		std::size_t reserved = outputReservation();
 		s->readEnterSection("work");
 		for (unsigned t = 0; t < teams; ++t)
 		{
 			s->readEnterSection(t);
-			const auto bound = read64(s, "bound");
-			if (bound < 2048 || bound > MaxOutputBytes - reserved)
-				throw std::runtime_error("Invalid hiring pending bound");
-			auto o = loadOutput(s, game, bound);
+			auto o = loadOutput(s, game);
 			if (o->tick != b->tick || o->team != expectedTeam)
 				throw std::runtime_error("Invalid hiring admission");
-			reserved += bound;
 			expectedTeam += Refresh;
-			b->work.push_back({{}, o->team, std::size_t(bound), o});
+			b->work.push_back({{}, o->team, o});
 			s->readLeaveSection();
 		}
 		s->readLeaveSection(2);
@@ -493,10 +407,9 @@ void HiringPipeline::load(Game &game, GAGCore::InputStream *s)
 	}
 	s->readLeaveSection(2);
 }
+// Published contents and the logical pending schedule; never worker readiness.
 Uint32 HiringPipeline::checkSum() const
 {
-	if (cachedChecksum)
-		return *cachedChecksum;
 	if (!lastObserved && pending.empty() &&
 		std::none_of(published.begin(), published.end(), [](const auto &o) { return bool(o); }))
 		return 0;
@@ -508,41 +421,20 @@ Uint32 HiringPipeline::checkSum() const
 	s.writeUint8(lastObserved.has_value(), "hasLast");
 	if (lastObserved)
 		s.writeUint32(*lastObserved, "last");
-	for (unsigned t = 0; t < published.size(); ++t)
+	for (const auto &o : published)
 	{
-		const auto &o = published[t];
 		s.writeUint8(bool(o), "present");
 		if (o)
-		{
-			write64(&s, publishedBounds[t], "bound");
 			s.writeUint32(o->checksum, "output");
-		}
 	}
-	// Pending identity is independent of hardware readiness. Outputs enter the
-	// checksum only at the fixed publication boundary, including after loading.
 	for (const auto &b : pending)
 	{
 		s.writeUint32(b->tick, "tick");
 		s.writeUint32(b->due, "due");
 		for (const auto &w : b->work)
-		{
 			s.writeUint32(w.team, "team");
-			write64(&s, w.bound, "bound");
-		}
 	}
-	cachedChecksum = s.value;
-	return *cachedChecksum;
-}
-
-std::size_t HiringPipeline::outputReservation() const
-{
-	std::size_t bytes = 0;
-	for (auto bound : publishedBounds)
-		bytes += bound;
-	for (const auto &b : pending)
-		for (const auto &w : b->work)
-			bytes += w.bound;
-	return bytes;
+	return s.value;
 }
 
 HiringPlanner::Inputs HiringPipeline::bindRoutes(Game &game, const SimulationSnapshot::Handle &world,
@@ -555,14 +447,8 @@ HiringPlanner::Inputs HiringPipeline::bindRoutes(Game &game, const SimulationSna
 	auto routes = std::make_shared<std::vector<HiringPlanner::Inputs::Route>>();
 	for (const auto &b : inputs.world.entities->buildings)
 	{
-		if (!HiringPlanner::needsCandidates(b))
+		if (!(teamMask & (1u << b.team)) || !HiringPlanner::needsCandidates(b))
 			continue;
-		if (!(teamMask & (1u << b.team)))
-			continue;
-		// Reservation uses the maintained maximum, not worker-computed vacancy
-		// or material apportionment. Final lists are at most vacancies + two.
-		const auto limit = std::min(128u, unsigned(b.desiredMaxUnitWorking) + 2);
-		inputs.outputBounds[b.team] += 2 * 64 + (2 * MaterialCount + 3) * (2 * 128 + limit * 32);
 		auto *live = game.resolveBuilding(b.identity);
 		if (!live)
 			throw std::logic_error("Hiring capture lost building incarnation");
@@ -578,21 +464,15 @@ HiringPlanner::Inputs HiringPipeline::bindRoutes(Game &game, const SimulationSna
 		const bool combat = type.attractsRole(1) || type.attractsRole(2);
 		for (unsigned c = 0; c < SWIM_CLASS_COUNT; ++c)
 			if (inputs.world.entities->availableGroundClasses[b.team] & (1u << c))
-			{
-				for (auto route :
-					 {BuildingRoute::Footprint, BuildingRoute::Clearing, BuildingRoute::Combat})
+				for (auto route : {BuildingRoute::Footprint, BuildingRoute::Clearing, BuildingRoute::Combat})
 				{
-					if (route == BuildingRoute::Footprint && !footprint)
+					if ((route == BuildingRoute::Footprint && !footprint) ||
+						(route == BuildingRoute::Clearing && !clearing) ||
+						(route == BuildingRoute::Combat && !combat))
 						continue;
-					if (route == BuildingRoute::Clearing && !clearing)
-						continue;
-					if (route == BuildingRoute::Combat && !combat)
-						continue;
-					auto field = game.map.leaseBuildingRoute(live, c, route);
-					if (!field) continue;
-					routes->push_back({b.identity, live->routeSlot(c, route), std::move(field)});
+					if (auto field = game.map.leaseBuildingRoute(live, c, route))
+						routes->push_back({b.identity, live->routeSlot(c, route), std::move(field)});
 				}
-			}
 	}
 	inputs.routes = std::move(routes);
 	return inputs;

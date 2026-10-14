@@ -652,16 +652,16 @@ TEST_SUITE("HiringPlanner")
 		REQUIRE(lease);
 		REQUIRE(lease->search);
 		const int required = lease->search->requiredCost();
-		std::uint64_t wait = 0, query = 0, expansions = 0;
-		const auto oldDistance = lease->distance(20, 20, wait, query, expansions);
+		REQUIRE_FALSE(lease->search->resolved(world.game.map.coordToIndex(20, 20)));
+		const auto oldDistance = lease->distance(20, 20);
 		CHECK(oldDistance != INT_MAX);
 		CHECK(lease->search->requiredCost() == required);
-		CHECK(expansions > 0);
+		CHECK(lease->search->resolved(world.game.map.coordToIndex(20, 20)));
 		std::thread worker(
 			[&]
 			{
 				for (int i = 0; i < 1000; ++i)
-					lease->distance(24 + i % 4, 24, wait, query, expansions);
+					lease->distance(24 + i % 4, 24);
 			});
 		for (int i = 0; i < 1000; ++i)
 			CHECK(world.game.map.buildingAvailable(inn, 0, 12 + i % 4, 12, &distance));
@@ -670,7 +670,7 @@ TEST_SUITE("HiringPlanner")
 		worker.join();
 		CHECK(distance == oldDistance);
 		CHECK(lease->values != inn->globalGradient[0]);
-		CHECK(lease->distance(20, 20, wait, query, expansions) == oldDistance);
+		CHECK(lease->distance(20, 20) == oldDistance);
 	}
 	TEST_CASE("missing building fields never trigger private construction")
 	{

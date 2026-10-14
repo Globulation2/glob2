@@ -2,7 +2,6 @@
 // Copyright (C) 2001-2004 Stephane Magnenat & Luc-Olivier de Charrière
 
 #include <PerformanceTelemetry.h>
-#include "HiringDiagnostics.h"
 #include "Map.h"
 #include "BuildingType.h"
 #include "Game.h"
@@ -31,7 +30,6 @@ void Map::finishBuildingGradient(Building *building, int swimClass, BuildingRout
 void Map::updateGlobalGradient(Building *building, int swimClass, BuildingRoute route)
 {
 	PERF_SCOPE_TIME(BuildingGradient);
-		HiringDiagnostics::Scope diagnostic(HiringDiagnostics::Phase::FieldInitialization);
 	route = building->resolveRoute(route);
 	const int slot = building->routeSlot(swimClass, route);
     auto guard=SharedBuildingGradient::lock(building->sharedGradient[slot]);
@@ -54,10 +52,11 @@ void Map::updateGlobalGradient(Building *building, int swimClass, BuildingRoute 
 	gradientRuntime->countSynchronous();
 	if (const auto &previous = building->globalGradientSearch[slot])
 		building->settledCostHint[slot] = Uint16(std::min(previous->requiredCost(), 0xFFFE));
-	if (building->sharedGradient[slot]) {
-        building->retireSharedGradient(slot);
-        building->globalGradient[slot]=gradient=acquireBuildingGradientBuffer();
-    }
+	if (building->sharedGradient[slot])
+	{
+		building->retireSharedGradient(slot);
+		building->globalGradient[slot] = gradient = acquireBuildingGradientBuffer();
+	}
     // A rebuild replaces the old search and its frozen terrain snapshot.
 	// Keep bucket capacity when possible; a locked field has no pending search.
 	building->dirtyGradient[slot]=false;

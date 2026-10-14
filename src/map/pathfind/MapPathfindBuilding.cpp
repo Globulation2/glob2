@@ -2,7 +2,6 @@
 // Copyright (C) 2001-2004 Stephane Magnenat & Luc-Olivier de Charrière
 
 #include <PerformanceTelemetry.h>
-#include "HiringDiagnostics.h"
 #include "Map.h"
 #include "BuildingType.h"
 #include "EngineTiming.h"
@@ -126,7 +125,6 @@ bool Map::buildingAvailable(Building *building, int swimClass, int x, int y, int
 	const int slot = building->routeSlot(swimClass, route);
     auto guard=SharedBuildingGradient::lock(building->sharedGradient[slot]);
 	PERF_SCOPE_TIME(PathBuilding);
-	HiringDiagnostics::add(HiringDiagnostics::Counter::BuildingQueries);
 	if (!prepareBuildingGradient(building, swimClass, route))
 		return false;
 	// The unit's own cell can be an obstacle in this building's field - it may be
@@ -147,7 +145,6 @@ bool Map::pathfindBuilding(EntityRandom& random, Building *building, int swimCla
 	const int slot = building->routeSlot(swimClass, route);
     auto guard=SharedBuildingGradient::lock(building->sharedGradient[slot]);
 	PERF_SCOPE_TIME(PathBuilding);
-	HiringDiagnostics::add(HiringDiagnostics::Counter::BuildingQueries);
 	assert(building);
 	assert(x>=0);
 	assert(y>=0);

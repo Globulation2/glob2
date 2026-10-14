@@ -107,7 +107,6 @@ CLIENT_SOURCES = (
     'building/Construction.cpp',
     'building/Update.cpp',
     'building/Step.cpp',
-    'building/HiringDiagnostics.cpp',
     'building/HiringPlanner.cpp',
     'building/HiringPipeline.cpp',
     'building/TypeSteps.cpp',

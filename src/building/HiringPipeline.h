@@ -22,26 +22,20 @@ class HiringPipeline
 	ComputeExecutor &executor;
 	std::optional<Uint32> lastObserved;
 	std::array<std::shared_ptr<const HiringPlanner::Output>, 16> published;
-	std::array<Uint64, 16> publishedBounds{};
 	std::deque<std::unique_ptr<Batch>> pending;
-	mutable std::optional<Uint32> cachedChecksum;
-	std::exception_ptr failure;
 	static void compute(void *, std::size_t);
 	static Uint32 checksumOutput(const HiringPlanner::Output &);
 
   public:
+	// Owner work (submission, publication), owner wait and worker planning time.
 	struct Metrics
 	{
-		Uint64 observations = 0, submitted = 0, published = 0, routeHandlesNs = 0,
-			   preparationNs = 0, submissionNs = 0, publicationNs = 0, deadlineWaitNs = 0,
-			   plannerNs = 0;
-		HiringPlanner::Metrics planner;
+		Uint64 submitted = 0, published = 0, submissionNs = 0, publicationNs = 0,
+			   deadlineWaitNs = 0, workerNs = 0;
 	};
-	mutable Metrics metrics;
+	Metrics metrics;
 	static constexpr unsigned Delay = Hiring::PublicationDelay, Refresh = Hiring::RefreshInterval,
 							  Extras = Hiring::CandidateExtras, Capacity = 128;
-	static constexpr std::size_t MaxOutputBytes = 96u * 1024 * 1024;
-	std::size_t outputReservation() const;
 	static HiringPlanner::Inputs bindRoutes(Game &, const SimulationSnapshot::Handle &,
 											unsigned teamMask = ~0u);
 	explicit HiringPipeline(ComputeExecutor &);

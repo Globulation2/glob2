@@ -1957,18 +1957,13 @@ void TeamStats::saveSample(GAGCore::OutputStream *stream, const TeamStatsSample 
     if (sample.aggregate) stream->writeUint8(sample.finalized, "finalized");
 	sampleFields(stream, sample);
 	stream->writeUint32(sample.coverage.size(), "coverage");
-	stream->writeEnterSection("coverageBuildings");
-	for (unsigned i = 0; i < sample.coverage.size(); ++i)
+	for (const auto &b : sample.coverage)
 	{
-		stream->writeEnterSection(i);
-		const auto &b = sample.coverage[i];
 		stream->writeSint32(b.x, "x");
 		stream->writeSint32(b.y, "y");
 		stream->writeSint32(b.width, "width");
 		stream->writeSint32(b.height, "height");
-		stream->writeLeaveSection();
 	}
-	stream->writeLeaveSection();
 }
 TeamStatsSample TeamStats::loadSample(GAGCore::InputStream *stream, int versionMinor)
 {
@@ -1989,20 +1984,15 @@ TeamStatsSample TeamStats::loadSample(GAGCore::InputStream *stream, int versionM
 	const auto count = stream->readCount("coverage");
 	if (count > Building::MAX_COUNT)
 		throw std::runtime_error("Invalid pending statistics coverage");
-	const bool indexed = versionMinor >= FILE_FORMAT_VERSION_INDEXED_TEAM_STATS;
-	if (indexed) stream->readEnterSection("coverageBuildings");
 	for (unsigned i = 0; i < count; ++i)
 	{
-		if (indexed) stream->readEnterSection(i);
 		CoverageBuilding b{stream->readSint32("x"), stream->readSint32("y"),
 						   stream->readSint32("width"), stream->readSint32("height")};
 		if (b.width <= 0 || b.height <= 0 || b.width > 32 || b.height > 32 || b.x < -(1 << 20) ||
 			b.x > (1 << 20) || b.y < -(1 << 20) || b.y > (1 << 20))
 			throw std::runtime_error("Invalid statistics footprint");
 		sample.coverage.push_back(b);
-		if (indexed) stream->readLeaveSection();
 	}
-	if (indexed) stream->readLeaveSection();
 	if (sample.tick != sample.measurements.tick || sample.periodic != ((sample.tick & 511) == 0))
 		throw std::runtime_error("Invalid pending statistics tick");
     if (complete) sample.frame=std::make_shared<GameplayMeasurements>(std::move(sample.measurements));

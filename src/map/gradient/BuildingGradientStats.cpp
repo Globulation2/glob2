@@ -1,6 +1,6 @@
-#include "SharedBuildingGradient.h"
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "BuildingGradientStats.h"
+#include "SharedBuildingGradient.h"
 
 #include <algorithm>
 #include <cstdlib>

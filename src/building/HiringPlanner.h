@@ -29,54 +29,20 @@ struct BuildingLists
 	std::uint64_t configuration = 0;
 	std::vector<List> jobs;
 };
-// Batch timers are elapsed nanoseconds, not CPU time. Candidate evaluation
-// includes shared route queries and any air-query scratch work.
-#define HIRING_PLANNER_METRICS(X) \
-	X(coordinationNs) \
-	X(coordinatedTeams) \
-	X(coordinationSkipped) \
-	X(distanceReuses) \
-	X(availableEvaluations) \
-	X(jobsSkippedNoQuota) \
-	X(sharedQueries) \
-	X(sharedExpansions) \
-	X(sharedWaitNs) \
-	X(sharedQueryNs) \
-	X(missingBuildingFields) \
-	X(buildingsExamined) \
-	X(buildingsNeedingHiring) \
-	X(buildingsSkippedNoDemand) \
-	X(preparationNs) \
-	X(setupNs) \
-	X(precheckNs) \
-	X(evaluationNs) \
-	X(sortOutputNs) \
-	X(distanceBoundSkips) \
-	X(refreshes) \
-	X(jobs) \
-	X(skippedJobs) \
-	X(rankedCandidates) \
-	X(resourcePlaneReads) \
-	X(resourceEstimateFallbacks) \
-	X(airQueries)
+// Worker-side counters; tests use them to check pruning and plane reuse.
 struct Metrics
 {
-#define HIRING_DECLARE_METRIC(name) std::uint64_t name = 0;
-	HIRING_PLANNER_METRICS(HIRING_DECLARE_METRIC)
-#undef HIRING_DECLARE_METRIC
-	void add(const Metrics &other)
-	{
-#define HIRING_ADD_METRIC(name) name += other.name;
-		HIRING_PLANNER_METRICS(HIRING_ADD_METRIC)
-#undef HIRING_ADD_METRIC
-	}
+	std::uint64_t coordinatedTeams = 0, coordinationSkipped = 0, buildingsNeedingHiring = 0,
+				  buildingsSkippedNoDemand = 0, sharedQueries = 0, missingBuildingFields = 0,
+				  distanceBoundSkips = 0, rankedCandidates = 0, resourcePlaneReads = 0,
+				  resourceEstimateFallbacks = 0;
 };
 struct Output
 {
 	unsigned tick = 0, team = 0;
 	Uint32 checksum = 0; // Immutable output content; prepared once by its producer.
 	Metrics metrics;
-	std::uint64_t ns = 0, candidateVisits = 0, retainedBytes = 0;
+	std::uint64_t ns = 0, candidateVisits = 0;
 	std::vector<BuildingLists> buildings;
 };
 struct Inputs
@@ -90,8 +56,6 @@ struct Inputs
 	};
 	// One immutable table per boundary, shared by every admitted team job.
 	std::shared_ptr<const std::vector<Route>> routes;
-	// Scalar memory bounds accumulated during the required generation lease walk.
-	std::array<std::size_t, 16> outputBounds{};
 };
 struct Supply
 {

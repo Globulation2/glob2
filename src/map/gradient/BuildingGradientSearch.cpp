@@ -2,7 +2,6 @@
 // Copyright (C) 2026 glob2 contributors
 
 #include <PerformanceTelemetry.h>
-#include "HiringDiagnostics.h"
 #include "BuildingGradientSearch.h"
 #include <mutex>
 #include "Map.h"
@@ -106,7 +105,6 @@ void BuildingGradientSearch::resolve(std::size_t target)
 	{
 		++extensions;
 		PERF_SCOPE_TIME(BuildingGradientResume);
-		HiringDiagnostics::Scope diagnostic(HiringDiagnostics::Phase::FieldExtension);
 		advance([&] { return target != cells && resolved(target); });
 	}
 	if (target < cells)

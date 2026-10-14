@@ -466,11 +466,6 @@ The existing `GLOB2_TEAM_TIMELINE` option also exports timestamped
 an exact final snapshot. Legacy timeline records keep their existing formats.
 
 AI controller readouts use the same option; see [AI telemetry](../ai/telemetry.md).
-
-Hiring admission diagnostics use `--telemetry hiring-stats`; see the
-[measurement contract](performance-telemetry.md#cost-and-sampling). Use separate
-checksum, replay and save exports for verification. Diagnostic runs are not
-representative throughput measurements.
 They identify individual players and controller generations. Replay playback does
 not reconstruct internal AI decisions from recorded orders.
 

@@ -118,14 +118,12 @@ Handle capture(const Game& game,
 	};
 	auto acquire = [&]<class T>(BufferPool<T> Storage::* pool, Component component) {
 		if (!needs(requirements, component)) return std::shared_ptr<T>{};
-		auto buffer = storage ? (storage->*pool).acquire(storage->allocations) : std::make_shared<T>();
-        return buffer;
+		return storage ? (storage->*pool).acquire(storage->allocations) : std::make_shared<T>();
 	};
 	// Chunk-stamped map arrays reuse the free buffer filled most recently.
 	auto acquireStamped = [&]<class T>(BufferPool<T> Storage::* pool, Component component) {
 		if (!needs(requirements, component)) return std::shared_ptr<T>{};
-		auto buffer = storage ? (storage->*pool).acquire(storage->allocations, [](const T& buffer) { return buffer.stamps.filledTick; }) : std::make_shared<T>();
-        return buffer;
+		return storage ? (storage->*pool).acquire(storage->allocations, [](const T& buffer) { return buffer.stamps.filledTick; }) : std::make_shared<T>();
 	};
 	Catalogs unusedCatalogs; auto catalogsOwner = acquire(&Storage::catalogs, Component::Catalogs);
 	auto* catalogs = catalogsOwner ? catalogsOwner.get() : &unusedCatalogs;
@@ -177,6 +175,9 @@ Handle capture(const Game& game,
 	terrain->airConstraints = game.map.hasAirTerrainConstraints();
 	const auto& header = game.gameHeader;
 	if (needs(requirements, Component::Catalogs)) {
+		// Preference identity is needed by session consumers, not standalone AI
+        // observations. Computing it serializes the authored catalog; do that
+        // once when a shared session catalog is admitted, never per AI poll.
         catalogs->buildingFingerprint = needs(requirements, Component::Session)
             ? game.buildingsTypes.fingerprint() : std::string();
 		catalogs->buildings = std::move(catalog);
@@ -415,7 +416,6 @@ Handle capture(const Game& game,
 	entities->buildings.resize(buildingRecordCount);
 	entities->units.resize(unitRecordCount);
 
-
     if (auto session=acquire(&Storage::session,Component::Session)) {
         session->editor=game.edit!=nullptr;
         session->fixedAlliances=game.gameHeader.areAllyTeamsFixed();
@@ -556,9 +556,8 @@ Handle capture(const Game& game,
 			if (kept) if (const auto* same = kept->find(plane.key); same && same->generation == plane.generation) { fields->add(*same); continue; }
 			auto values = storage ? storage->resourcePlanes.acquire(storage->allocations) : std::make_shared<std::vector<Uint16>>();
 			if (storage && values->capacity() < planeCells) ++storage->allocations;
-			values->resize(planeCells);
-            std::copy_n(*plane.slot,planeCells,values->begin());
-            fields->add(ResourceField{plane.key,plane.generation,std::move(values)});
+			values->resize(planeCells); std::copy_n(*plane.slot, planeCells, values->begin());
+			fields->add(ResourceField{plane.key, plane.generation, std::move(values)});
 		}
 		result->resourceFields = std::move(fields);
 	}

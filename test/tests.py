@@ -495,7 +495,6 @@ UNIT_PRODUCTION_SOURCES = [
 UNIT_STUBS = [
     'unit/stubs/MapSectorStubs.cpp',
     'unit/stubs/SnapshotGradientStubs.cpp',
-    'unit/stubs/HiringDiagnosticsStubs.cpp',
     'unit/stubs/MapHeaderStubs.cpp',
     'unit/stubs/OrderStubs.cpp',
     'unit/stubs/GameGUIStubs.cpp',

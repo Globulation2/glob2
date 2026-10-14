@@ -1,4 +1,3 @@
-#include "HiringDiagnostics.h"
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Copyright (C) 2001-2004 Stephane Magnenat & Luc-Olivier de Charrière
 
@@ -300,14 +299,12 @@ void Map::setAreaName(int n, std::string name)
 
 bool Map::materialAvailableSlot(int teamNumber, int resourceType, int swimClass, int x, int y, bool withMarkets, const Building* consumer)
 {
-	HiringDiagnostics::add(HiringDiagnostics::Counter::ResourceQueries);
 	Uint16 g = getGradient(teamNumber, resourceType, swimClass, x, y, withMarkets, consumer);
 	return g>GRADIENT_UNREACHABLE; //Because 0==obstacle, 1==no obstacle, but you don't know if there is anything around.
 }
 
 bool Map::materialAvailableSlot(int teamNumber, int resourceType, int swimClass, int x, int y, int *dist, bool withMarkets, const Building* consumer)
 {
-	HiringDiagnostics::add(HiringDiagnostics::Counter::ResourceQueries);
 	Uint16 g = getGradient(teamNumber, resourceType, swimClass, x, y, withMarkets, consumer);
 	if (g>GRADIENT_UNREACHABLE)
 	{

@@ -56,26 +56,11 @@ use `--compute-threads auto|N`. The optional area, initialization and hiring com
 paths and their environment selector have also been removed. Structural area
 refreshes and live field initialization retain their serial production order.
 
-Hiring uses the shared completed-tick snapshot and executor in normal games.
-Each team refreshes at `t % 4 == teamNumber % 4`; the owner publishes at `t + 4`
-before team stepping. Early completion cannot publish early. Lists contain at
-most the observed vacancies plus two alternatives, with a 128-entry safety ceiling
-for authored capacities. Current live eligibility, reachability, cargo and demand
-are validated before assignment. Missing or exhausted lists wait for a refresh;
-there is no synchronous population scan. Priority buckets, hiring rounds, material
-apportionment, recruitment clocks and serial task swaps remain owner-side.
-
-`--compute-threads 1` uses the same planner and deadlines with owner-only execution.
-Use repeated ordinary release runs without diagnostic exports, traces or saves for
-performance comparisons. Keep map/game seeds, player mix, warmup, tick window and
-participant count fixed; rotate pair order, retain outliers and report intervals.
-Use `--telemetry hiring-stats` separately for admission and route measurements.
-Owner consumption is inclusive of subscription and immediate swaps; those nested
-timers must not be added to consumption when computing totals. Missing/exhausted
-lists count cached-search failures, not absence of eligible workers in the colony.
-The former shadow matrix, schedule/pool selectors and standalone opportunity study
-have been removed. Their historical evidence applies to the recorded prototype
-revisions, not automatically to production hiring.
+Hiring plans on the executor from the shared completed-tick snapshot; see
+[simulation hiring](../architecture/simulation.md#hiring). Benchmark output reports
+owner submission and publication time (`hiring_submission_ns`,
+`hiring_publication_ns`), owner deadline wait (`hiring_deadline_wait_ns`) and
+worker planning time (`hiring_worker_ns`) separately.
 
 Structured `game run` accepts `--ai-order-delay D` for a new match (default 8
 ticks). Delays are simulation rules, separate from local thread configuration.

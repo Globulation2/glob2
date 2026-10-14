@@ -55,7 +55,6 @@ struct MaterialSeedCache
     Bits buildings;
     std::array<std::vector<Uint64>, 4> stamps;
     bool disabled = false;
-    std::size_t retainedBytes() const;
     bool trySeed(const SimulationSnapshot::Handle&, int team, int material, int swim,
         Uint16* output, const Uint16* suppliers);
 };

@@ -18,11 +18,6 @@ namespace HiringPlanner
 {
 namespace
 {
-using Clock = std::chrono::steady_clock;
-std::uint64_t elapsed(Clock::time_point start)
-{
-	return std::chrono::duration_cast<std::chrono::nanoseconds>(Clock::now() - start).count();
-}
 using World = AIEngine::AIWorldView;
 using B = SimulationSnapshot::BuildingView;
 using U = SimulationSnapshot::UnitView;
@@ -320,10 +315,8 @@ Output Planner::rank(const Inputs &input, unsigned team, unsigned capacity)
 	Output output;
 	output.tick = world.tick;
 	output.team = team;
-	const auto prepareStart = Clock::now();
 	const auto supplies = prepare(input, team);
 	output.buildings.reserve(supplies.size());
-	output.metrics.preparationNs += elapsed(prepareStart);
 	unsigned teamSeats = 0;
 	bool canCoordinate = true;
 	for (const auto &supply : supplies)
@@ -337,8 +330,6 @@ Output Planner::rank(const Inputs &input, unsigned team, unsigned capacity)
 				canCoordinate = false;
 		}
 	canCoordinate &= teamSeats > 0 && teamSeats + 2u <= capacity;
-	++output.metrics.refreshes;
-	output.metrics.setupNs += elapsed(start);
 	// Qualification/cargo indexes are immutable and shared across this team's
 	// building refreshes. Keep original slot order for deterministic traversal.
 	std::vector<const U *> transport;
@@ -371,7 +362,6 @@ Output Planner::rank(const Inputs &input, unsigned team, unsigned capacity)
 	for (const auto *building : world.buildingSlots(team))
 		if (building)
 		{
-			++output.metrics.buildingsExamined;
 			if (needsCandidates(*building))
 				orderedBuildings.push_back(building);
 			else
@@ -402,10 +392,7 @@ Output Planner::rank(const Inputs &input, unsigned team, unsigned capacity)
 			if (type.maxMaterial[r] > 0 || b.wishedMaterials[r] > 0)
 			{
 				if (!supply->vacancies[r])
-				{
-					output.metrics.jobsSkippedNoQuota += 2;
 					continue;
-				}
 				jobs.push_back({Job::Delivery, int(r)});
 				jobs.push_back({Job::Fetch, int(r)});
 			}
@@ -423,8 +410,6 @@ Output Planner::rank(const Inputs &input, unsigned team, unsigned capacity)
 			indexTeam();
 		for (auto key : jobs)
 		{
-			++output.metrics.jobs;
-			const auto precheckStart = Clock::now();
 			List list{key, {}};
 			std::vector<Candidate> candidates;
 			bool any = true;
@@ -453,10 +438,8 @@ Output Planner::rank(const Inputs &input, unsigned team, unsigned capacity)
 						}
 					}
 			}
-			output.metrics.precheckNs += elapsed(precheckStart);
 			if (!any)
 			{
-				++output.metrics.skippedJobs;
 				result.jobs.push_back(std::move(list));
 				continue;
 			}
@@ -477,7 +460,6 @@ Output Planner::rank(const Inputs &input, unsigned team, unsigned capacity)
 			const unsigned vacancies =
 				key.material >= 0 ? supply->vacancies[key.material] : supply->seats;
 			const unsigned limit = std::min(capacity, (canCoordinate ? teamSeats : vacancies) + 2u);
-			const auto evaluationStart = Clock::now();
 			const auto &indexed = (key.job == Job::Delivery || key.job == Job::Fetch)
 									  ? transport
 									  : roles[unsigned(key.job) - unsigned(Job::Clear)];
@@ -529,7 +511,6 @@ Output Planner::rank(const Inputs &input, unsigned team, unsigned capacity)
 										  b.minLevelToFlag))
 						continue;
 				}
-				++output.metrics.availableEvaluations;
 				Candidate candidate = rankingBase(key.job, u, traits);
 				if (!couldWin(candidate))
 				{
@@ -578,11 +559,9 @@ Output Planner::rank(const Inputs &input, unsigned team, unsigned capacity)
 				if (cached != -1)
 				{
 					distance = cached;
-					++output.metrics.distanceReuses;
 				}
 				else if (u.performance[FLY])
 				{
-					++output.metrics.airQueries;
 					if (!airToBuilding)
 						airToBuilding = std::make_unique<AirField>(
 							world.width, world.height, b.posX, b.posY, flyable, airCost,
@@ -646,9 +625,7 @@ Output Planner::rank(const Inputs &input, unsigned team, unsigned capacity)
 					else
 					{
 						++output.metrics.sharedQueries;
-						distance = buildings[swim]->distance(
-							u.posX, u.posY, output.metrics.sharedWaitNs, output.metrics.sharedQueryNs,
-							output.metrics.sharedExpansions);
+						distance = buildings[swim]->distance(u.posX, u.posY);
 					}
 				}
 				cached = distance;
@@ -703,12 +680,7 @@ Output Planner::rank(const Inputs &input, unsigned team, unsigned capacity)
 					std::push_heap(candidates.begin(), candidates.end(), compare);
 				}
 			}
-			output.metrics.evaluationNs += elapsed(evaluationStart);
-			const auto sortStart = Clock::now();
-			list = shortlist(key, std::move(candidates), limit);
-			output.metrics.sortOutputNs += elapsed(sortStart);
-			output.retainedBytes += list.candidates.capacity() * sizeof(Candidate);
-			result.jobs.push_back(std::move(list));
+			result.jobs.push_back(shortlist(key, std::move(candidates), limit));
 		}
 		// Only an outstanding or imminent attraction round makes private offers.
 		// These reduce repeated shortlist exclusion between peers; they reserve
@@ -788,7 +760,6 @@ Output Planner::rank(const Inputs &input, unsigned team, unsigned capacity)
 	if (!canCoordinate)
 	{
 		++output.metrics.coordinationSkipped;
-		output.retainedBytes = 0;
 		for (auto &building : output.buildings)
 		{
 			const auto &need = *std::find_if(supplies.begin(), supplies.end(), [&](const auto &x)
@@ -801,13 +772,11 @@ Output Planner::rank(const Inputs &input, unsigned team, unsigned capacity)
 				if (list.candidates.size() > n)
 					std::vector<Candidate>(list.candidates.begin(), list.candidates.begin() + n)
 						.swap(list.candidates);
-				output.retainedBytes += list.candidates.capacity() * sizeof(Candidate);
 			}
 		}
 	}
 	if (canCoordinate)
 	{
-		const auto coordinationStart = Clock::now();
 		++output.metrics.coordinatedTeams;
 		std::vector<unsigned> order;
 		std::vector<const Supply *> needs;
@@ -894,7 +863,6 @@ Output Planner::rank(const Inputs &input, unsigned team, unsigned capacity)
 			}
 			begin = end;
 		}
-		output.retainedBytes = 0;
 		for (unsigned bi = 0; bi < output.buildings.size(); ++bi)
 			for (unsigned j = 0; j < output.buildings[bi].jobs.size(); ++j)
 			{
@@ -913,13 +881,8 @@ Output Planner::rank(const Inputs &input, unsigned team, unsigned capacity)
 					if (published.size() < limit && !chosen[Unit::GIDtoID(c.unit.gid)])
 						published.push_back(c);
 				list.candidates = std::move(published);
-				output.retainedBytes += list.candidates.capacity() * sizeof(Candidate);
 			}
-		output.metrics.coordinationNs += elapsed(coordinationStart);
 	}
-	output.retainedBytes += sizeof(Output) + output.buildings.capacity() * sizeof(BuildingLists);
-	for (const auto &building : output.buildings)
-		output.retainedBytes += building.jobs.capacity() * sizeof(List);
 	output.ns = std::chrono::duration_cast<std::chrono::nanoseconds>(
 					std::chrono::steady_clock::now() - start)
 					.count();

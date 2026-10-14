@@ -29,17 +29,6 @@ template<class Fn> void visitSeedBits(const MaterialSeedCache::Bits& bits, Fn fn
             fn(word*64+std::countr_zero(remaining));
 }
 }
-std::size_t MaterialSeedCache::retainedBytes() const
-{
-    std::size_t bytes = 0;
-    const auto add = [&](const auto &values) { bytes += values.capacity() * sizeof(typename std::decay_t<decltype(values)>::value_type); };
-    for (const auto &values : base) add(values);
-    add(signatures); add(resourceTraits); add(forbiddenMasks); add(buildings);
-    for (const auto &values : goals) add(values);
-    for (const auto &values : forbidden) add(values);
-    for (const auto &values : stamps) add(values);
-    return bytes;
-}
 bool MaterialSeedCache::trySeed(const SimulationSnapshot::Handle& snapshot, int team, int material,
     int swim, Uint16* output, const Uint16* suppliers)
 {
@@ -634,7 +623,7 @@ BuildingSeedResult seedBuilding(const BuildingSeed& building, const SimulationSn
 BuildingSeedResult buildBuilding(const BuildingSeed& building, const SimulationSnapshot::Handle& snapshot,
     const BuildingGradientSearch::Inputs& inputs, Uint16* out, BuildingGradientSearch& search, int depthTarget)
 {
-    auto result=seedBuilding(building, snapshot, out);
+    const auto result=seedBuilding(building, snapshot, out);
     if (result.locked) return result;
     search.begin(inputs, out, building.swim, snapshot.width, snapshot.height);
     // resolveToCost records no owner telemetry; COST_LIMIT drains every queue.

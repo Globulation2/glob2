@@ -481,20 +481,6 @@ TEST_SUITE("HiringPipeline")
 		}
 		CHECK(flags[0]->unitsWorking.empty());
 	}
-	TEST_CASE("reservation saturation rejects admission before launching work")
-	{
-		glob2test::HeadlessGlobals globals;
-		glob2test::HeadlessGame w({.discovered = true, .loadDefaultRace = true});
-		innWithWorker(w);
-		HiringPipeline p(w.game.map.computeExecutor());
-		auto full = std::make_shared<HiringPlanner::Output>();
-		full->retainedBytes = HiringPipeline::MaxOutputBytes;
-		p.publishedBounds[0] = HiringPipeline::MaxOutputBytes;
-		p.published[0] = full;
-		CHECK_THROWS_AS(p.observe(w.game, observation(w)), std::length_error);
-		CHECK(p.pending.empty());
-		CHECK_NOTHROW(p.drain());
-	}
 }
 
 TEST_SUITE("HiringPlanner")

@@ -49,35 +49,6 @@ Startup timings include generation attempts performed while preparing the sessio
 
 ## Cost and sampling
 
-Structured headless runs can add `--telemetry hiring-stats`. This writes
-`hiring-stats.json`, with per-building admission, qualification, subscription,
-immediate swap and route-initialization/extension measurements, plus periodic
-team-swap timing. Counters describe examined cached suggestions, not a census of
-all eligible workers. Missing lists or rejected suggestions do not establish a
-population-wide absence of workers.
-
-The production planner borrows normal immutable completed-world records and a
-shared boundary table of safe route-generation handles. No per-team world copy or
-separate hiring snapshot is built. Sparse raw funding and supplier membership
-facts live in the normal records and are captured during the existing entity pass;
-their capture time belongs to normal snapshot extraction. `hiring_funding_bytes_copied`
-reports sparse funding payload bytes within the optional detailed snapshot accounting;
-fixed record-size additions must be counted separately. Normal world capture still has a cost. Job,
-output and route-handle allocations remain. Snapshot copied-byte and pooled-buffer
-counters are scoped, not a process-wide heap census.
-
-Diagnostic exports and saves are separate from throughput timing. Normal engine
-checksums remain enabled in timing runs. Hiring does not rehash observed world data
-or route inputs. Workers calculate immutable candidate-output checksums once;
-ordinary checksums include those published contents and the logical pending schedule,
-never worker readiness. Saving joins jobs without publishing future lists early.
-Resource estimates use immutable observed facts; local AI-enrolled resource planes
-are excluded from rankings.
-
-Hiring diagnostics require the default headless simulation owner;
-`GLOB2_SIM_THREAD=1` is rejected for this export. The retired `hiring-shadow`
-telemetry and `--hiring-*` experiment controls are no longer supported.
-
 `PerformanceScopes.inc` defines stable scope names and sampling strides. Major phases and
 expensive rebuilds are timed on every execution. Hot path-query/direction scopes count every
 call and time one in 64 calls. The selected residue rotates between capture windows without

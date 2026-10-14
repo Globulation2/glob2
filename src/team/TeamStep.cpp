@@ -6,7 +6,6 @@
 #include <cmath>
 
 #include "BuildingType.h"
-#include "HiringDiagnostics.h"
 #include "Game.h"
 #include "Map.h"
 #include "Team.h"
@@ -462,11 +461,8 @@ void Team::syncStep(void)
 	}
 
 	updateAllBuildingTasks();
-	{
-	HiringDiagnostics::PeriodicSwapScope periodic(*this);
 	for (int k = 0; k < SWAP_CHECKS_PER_TICK; k++)
 		swapTask(myUnits[(game->stepCounter * SWAP_CHECKS_PER_TICK + k) % Unit::MAX_COUNT]);
-	}
 
 	bool isEnoughFoodInSwarm=false;
 

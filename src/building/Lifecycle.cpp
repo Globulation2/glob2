@@ -856,6 +856,5 @@ void Building::retireSharedGradient(int slot)
     auto guard=SharedBuildingGradient::lock(lease);
     lease->retiredValues.reset(globalGradient[slot]);
     lease->retiredSearch=std::move(globalGradientSearch[slot]);
-    lease->accountRetired();
     globalGradient[slot]=nullptr;sharedGradient[slot].reset();
 }
