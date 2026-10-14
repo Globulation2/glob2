@@ -265,8 +265,6 @@ class GradientPipeline
 	void setBackendSession(std::shared_ptr<gradient_kernel::BackendSession> value)
 	{
 		backendSession = std::move(value);
-		for (auto &scratch : workspaces)
-			scratch.propagation.backendSession = backendSession;
 		selectExecution();
 	}
 	std::shared_ptr<gradient_kernel::BackendSession> session() const { return backendSession; }
@@ -275,7 +273,6 @@ class GradientPipeline
 		workspaces.resize(executor ? executor->threadCount() : 1);
 		for (auto &scratch : workspaces)
 		{
-			scratch.propagation.backendSession = backendSession;
 			scratch.crowding.materials = {};
 			scratch.crowding.materials.budget = 64 * 1024 * 1024 / workspaces.size();
 		}
