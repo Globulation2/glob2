@@ -144,7 +144,7 @@ TEST_SUITE("TeamStatsPipeline")
         REQUIRE_FALSE(sample.finalized);
         struct OldOutput : GAGCore::BinaryOutputStream {
             using BinaryOutputStream::BinaryOutputStream;
-            void writeUint8(Uint8 value,const std::string name) override { if(name!="finalized" && name!="completeFrame") BinaryOutputStream::writeUint8(value,name); }
+            void writeUint8(Uint8 value,std::string_view name) override { if(name!="finalized" && name!="completeFrame") BinaryOutputStream::writeUint8(value,name); }
         };
         auto* bytes=new GAGCore::MemoryStreamBackend;
         OldOutput old(bytes); TeamStats::saveSample(&old,sample);
@@ -175,7 +175,7 @@ TEST_SUITE("TeamStatsPipeline")
         }
         struct Format157Output : GAGCore::BinaryOutputStream {
             using BinaryOutputStream::BinaryOutputStream;
-            void writeUint8(Uint8 value,const std::string name) override {
+            void writeUint8(Uint8 value,std::string_view name) override {
                 if(name!="completeFrame") BinaryOutputStream::writeUint8(value,name);
             }
         };
@@ -456,10 +456,10 @@ TEST_SUITE("TeamStatsPipeline")
         original.prepareBoundary(w.game,input(w));
         struct LegacyOutput : GAGCore::BinaryOutputStream {
             using BinaryOutputStream::BinaryOutputStream;
-            void writeUint8(Uint8 value,const std::string name) override {
+            void writeUint8(Uint8 value,std::string_view name) override {
                 if(name!="completeFrame" && name!="finalized") BinaryOutputStream::writeUint8(value,name);
             }
-            void writeUint32(Uint32 value, const std::string name) override {
+            void writeUint32(Uint32 value, std::string_view name) override {
                 BinaryOutputStream::writeUint32(value,name);
                 if(name=="due") BinaryOutputStream::writeUint32(0xdeadbeef,"inputChecksum");
             }

@@ -54,7 +54,7 @@ public:
     struct Section { std::string name; size_t start,end; };
     std::vector<Section> sections;
     explicit MeasuredStream(GAGCore::StreamBackend* b):BinaryOutputStream(b) {}
-    void writeEnterSection(const std::string name) override { stack.push_back({name,getPosition()}); }
+    void writeEnterSection(std::string_view name) override { stack.push_back({std::string(name),getPosition()}); }
     void writeEnterSection(unsigned id) override { writeEnterSection(std::to_string(id)); }
     void writeLeaveSection(size_t count=1) override
     {

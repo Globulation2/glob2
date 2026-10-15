@@ -685,13 +685,13 @@ TEST_SUITE("BuildingAreaEffects")
 		{
 			std::size_t team = 0, fraction = 0;
 			explicit LocatedOutput(GAGCore::StreamBackend *backend) : BinaryOutputStream(backend) {}
-			void writeSint32(Sint32 value, const std::string name) override
+			void writeSint32(Sint32 value, std::string_view name) override
 			{
 				if (name == "areaFundingTeam")
 					team = getPosition();
 				BinaryOutputStream::writeSint32(value, name);
 			}
-			void writeUint16(Uint16 value, const std::string name) override
+			void writeUint16(Uint16 value, std::string_view name) override
 			{
 				if (name == "areaServiceRemainder0")
 					fraction = getPosition();

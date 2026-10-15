@@ -1312,7 +1312,7 @@ TEST_CASE("Explicit noncanonical neighborhood tables survive compact saves" * do
     {
     public:
         using BinaryOutputStream::BinaryOutputStream;
-        void writeUint32(const Uint32 value,const std::string name) override
+        void writeUint32(const Uint32 value,std::string_view name) override
         {
             BinaryOutputStream::writeUint32(name=="neighborhoodEncoding"?2:value,name);
             if(name=="neighborhoodEncoding")

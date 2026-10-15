@@ -200,7 +200,7 @@ class LocatedOutput : public GAGCore::BinaryOutputStream
 public:
   size_t statsPosition = 0, smoothingPosition = 0, coveragePosition = 0,
 		 measurementCountPosition = 0;
-  void writeUint32(Uint32 value, const std::string name) override
+  void writeUint32(Uint32 value, std::string_view name) override
   {
 	  if (name == "coverageStartTick")
 		  coveragePosition = getPosition();
@@ -209,7 +209,7 @@ public:
 	  BinaryOutputStream::writeUint32(value, name);
   }
   explicit LocatedOutput(GAGCore::StreamBackend *backend) : BinaryOutputStream(backend) {}
-  void writeSint32(Sint32 value, const std::string name) override
+  void writeSint32(Sint32 value, std::string_view name) override
   {
 	  if (name == "statsIndex")
 		  statsPosition = getPosition();
@@ -1799,7 +1799,7 @@ TEST_CASE("Compact identity tables preserve unused slots and reject invalid entr
         using BinaryOutputStream::BinaryOutputStream;
         std::vector<size_t> indices,values;
         bool identities=false;
-        void writeUint32(const Uint32 v,const std::string name) override
+        void writeUint32(const Uint32 v,std::string_view name) override
         {
             if(name=="nonzero") identities=true;
             if(identities && name=="index") indices.push_back(getPosition());

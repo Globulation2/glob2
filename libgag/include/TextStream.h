@@ -24,7 +24,7 @@ namespace GAGCore
 		//! print levels of tabs
 		void printLevel(void);
 		//! print string to backend
-		void printString(const std::string &string);
+		void printString(std::string_view string);
 		//! print a given type using ostringstream
 		template <class T>
 		void print(T v)
@@ -38,20 +38,20 @@ namespace GAGCore
 		TextOutputStream(StreamBackend *backend) { this->backend = backend; level=0; };
 		virtual ~TextOutputStream() { delete backend; }
 	
-		virtual void write(const void *data, const size_t size, const std::string name);
+		virtual void write(const void *data, const size_t size, std::string_view name);
 	
-		virtual void writeSint8(const Sint8 v, const std::string name) { printLevel(); printString(name); printString(" = "); print<signed>(v); print(";\n"); }
-		virtual void writeUint8(const Uint8 v, const std::string name) { printLevel(); printString(name); printString(" = "); print<unsigned>(v); print(";\n"); }
-		virtual void writeSint16(const Sint16 v, const std::string name) { printLevel(); printString(name); printString(" = "); print<signed>(v); print(";\n"); }
-		virtual void writeUint16(const Uint16 v, const std::string name) { printLevel(); printString(name); printString(" = "); print<unsigned>(v); print(";\n"); }
-		virtual void writeSint32(const Sint32 v, const std::string name) { printLevel(); printString(name); printString(" = "); print(v); print(";\n"); }
-		virtual void writeUint32(const Uint32 v, const std::string name) { printLevel(); printString(name); printString(" = "); print(v); print(";\n"); }
-		virtual void writeFloat(const float v, const std::string name) { printLevel(); printString(name); printString(" = "); print(v); print(";\n"); }
-		virtual void writeDouble(const double v, const std::string name) { printLevel(); printString(name); printString(" = "); print(v); print(";\n"); }
-		virtual void writeText(const std::string &v, const std::string name);
+		virtual void writeSint8(const Sint8 v, std::string_view name) { printLevel(); printString(name); printString(" = "); print<signed>(v); print(";\n"); }
+		virtual void writeUint8(const Uint8 v, std::string_view name) { printLevel(); printString(name); printString(" = "); print<unsigned>(v); print(";\n"); }
+		virtual void writeSint16(const Sint16 v, std::string_view name) { printLevel(); printString(name); printString(" = "); print<signed>(v); print(";\n"); }
+		virtual void writeUint16(const Uint16 v, std::string_view name) { printLevel(); printString(name); printString(" = "); print<unsigned>(v); print(";\n"); }
+		virtual void writeSint32(const Sint32 v, std::string_view name) { printLevel(); printString(name); printString(" = "); print(v); print(";\n"); }
+		virtual void writeUint32(const Uint32 v, std::string_view name) { printLevel(); printString(name); printString(" = "); print(v); print(";\n"); }
+		virtual void writeFloat(const float v, std::string_view name) { printLevel(); printString(name); printString(" = "); print(v); print(";\n"); }
+		virtual void writeDouble(const double v, std::string_view name) { printLevel(); printString(name); printString(" = "); print(v); print(";\n"); }
+		virtual void writeText(const std::string &v, std::string_view name);
 		virtual void flush(void) { backend->flush(); }
 		
-		virtual void writeEnterSection(const std::string name);
+		virtual void writeEnterSection(std::string_view name);
 		virtual void writeEnterSection(unsigned id);
 		virtual void writeLeaveSection(size_t count = 1);
 		

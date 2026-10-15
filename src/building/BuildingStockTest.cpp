@@ -21,7 +21,7 @@ struct HistoricalStockOutput : GAGCore::BinaryOutputStream {
     int version;
     HistoricalStockOutput(GAGCore::MemoryStreamBackend* bytes,int slot,Sint32 stock,int version=VERSION_MINOR)
         : BinaryOutputStream(bytes),slot(slot),stock(stock),version(version) {}
-    void writeSint32(Sint32 value,const std::string name) override {
+    void writeSint32(Sint32 value,std::string_view name) override {
         if(name=="versionMinor") value=version;
         if(name=="localRessource["+std::to_string(slot)+"]") value=stock;
         BinaryOutputStream::writeSint32(value,name);
