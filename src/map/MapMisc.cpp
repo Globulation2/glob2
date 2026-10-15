@@ -16,7 +16,7 @@
 
 // Miscellaneous helpers: checkSum, warpDist*, dumpGradient
 
-Uint32 Map::checkSum(bool heavy, bool includePending)
+Uint32 Map::checkSum(bool heavy, bool includePending, bool legacy152)
 {
 	preparePendingWorld();
     Uint32 cs = size ^ terrainRegistry().checksum() ^ resourceRegistry().checksum() ^ gradientRuntime->growth.checksum(heavy && includePending);
@@ -104,7 +104,7 @@ Uint32 Map::checkSum(bool heavy, bool includePending)
     cs=gradientRuntime->air.checksum(cs,heavy);
 	privateRandom(RandomDomain::GrowthJobs); // Initialize without advancing.
 	for (const auto& random : worldRandom.streams)
-		cs = rotr1(cs) ^ random.checksum();
+		cs = rotr1(cs) ^ (legacy152 ? random.legacyChecksum() : random.checksum());
 	return cs;
 }
 

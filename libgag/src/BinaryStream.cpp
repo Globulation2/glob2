@@ -15,14 +15,14 @@
 
 namespace GAGCore
 {
-	void BinaryOutputStream::write(const void *data, const size_t size, const std::string name)
+	void BinaryOutputStream::write(const void *data, const size_t size, std::string_view name)
 	{
 		if(doingSHA1)
 			SHA1Update(&sha1Context, (const Uint8*)data, size);
 		backend->write(data, size);
 	}
 	
-	void BinaryOutputStream::writeEndianIndependent(const void *v, const size_t size, const std::string name)
+	void BinaryOutputStream::writeEndianIndependent(const void *v, const size_t size, std::string_view name)
 	{
 		if (size==2)
 		{
@@ -45,7 +45,7 @@ namespace GAGCore
 	}
 
 	// Same bytes and hash as writeUint16 per value: sections are not stored.
-	void BinaryOutputStream::writeUint16Sections(const Uint16 *values, size_t count, const std::string name)
+	void BinaryOutputStream::writeUint16Sections(const Uint16 *values, size_t count, std::string_view name)
 	{
 		Uint8 bytes[16384];
 		while (count > 0)
@@ -64,7 +64,7 @@ namespace GAGCore
 		}
 	}
 	
-	void BinaryOutputStream::writeText(const std::string &v, const std::string name)
+	void BinaryOutputStream::writeText(const std::string &v, std::string_view name)
 	{
 		writeUint32(v.size(), "");
 		write(v.c_str(), v.size(), "");

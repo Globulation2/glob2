@@ -8,6 +8,7 @@
 #include "Glob2Test.h"
 
 #include "BitArray.h"
+#include <vector>
 
 class BitArrayTest
 {
@@ -69,4 +70,32 @@ TEST_SUITE("BitArray")
 		CHECK_EQ(populated.getBitLength(), 0);
 		populated.serialize(nullptr);
 	}
+}
+
+TEST_CASE("BitArray/inlined access preserves every wire bit across byte boundaries")
+{
+    for (size_t length : {1u, 7u, 8u, 9u, 13u, 63u, 64u, 65u, 1025u})
+    {
+        CAPTURE(length);
+        Utilities::BitArray bits(length);
+        std::vector<unsigned char> expected((length + 7) / 8, 0);
+        std::vector<unsigned char> actual(expected.size());
+        for (size_t i = 0; i < length; ++i)
+        {
+            bits.set(i, true);
+            expected[i / 8] |= 1u << (i % 8);
+            CHECK(bits.get(i));
+        }
+        for (size_t i = 0; i < length; i += 3)
+        {
+            bits.set(i, false);
+            expected[i / 8] &= ~(1u << (i % 8));
+        }
+        bits.serialize(actual.data());
+        CHECK(actual == expected);
+        Utilities::BitArray restored;
+        restored.deserialize(actual.data(), length);
+        for (size_t i = 0; i < length; ++i)
+            CHECK(restored.get(i) == (i % 3 != 0));
+    }
 }

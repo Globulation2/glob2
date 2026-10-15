@@ -9,6 +9,7 @@
 #define MINIMUM_VERSION_MINOR 58
 #define VERSION_MINOR 166
 // version 166 delays all simulation-owned gradient publication, including cold fields.
+// version 165 changes routine checksum coverage/mixing, not save encodings.
 // version 164 publishes hiring after one tick; four-tick hiring saves are no longer accepted.
 // version 163 drops turret source signatures and epochs; live firing revalidates lists.
 // version 162 persists cached hiring suggestions; older saves start with none.

@@ -1083,7 +1083,7 @@ TEST_SUITE("BuildingProductionCombat")
             std::string field; Sint32 replacement;
             ReplacingOutput(GAGCore::MemoryStreamBackend* backend, std::string field, Sint32 replacement)
                 : BinaryOutputStream(backend),field(std::move(field)),replacement(replacement) {}
-            void writeSint32(Sint32 value, const std::string name) override {
+            void writeSint32(Sint32 value, std::string_view name) override {
                 BinaryOutputStream::writeSint32(name==field ? replacement : value,name);
             }
         };
@@ -1119,10 +1119,10 @@ TEST_SUITE("BuildingProductionCombat")
             std::string field; Uint32 replacement;
             ReplacingOutput(GAGCore::MemoryStreamBackend* backend, std::string field, Uint32 replacement)
                 : BinaryOutputStream(backend), field(std::move(field)), replacement(replacement) {}
-            void writeSint32(Sint32 value, const std::string name) override {
+            void writeSint32(Sint32 value, std::string_view name) override {
                 BinaryOutputStream::writeSint32(name==field ? Sint32(replacement) : value,name);
             }
-            void writeUint32(Uint32 value, const std::string name) override {
+            void writeUint32(Uint32 value, std::string_view name) override {
                 BinaryOutputStream::writeUint32(name==field ? replacement : value,name);
             }
         };

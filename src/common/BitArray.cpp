@@ -12,17 +12,13 @@ namespace Utilities
 	{
 		resize(size, defaultValue);
 	}
-	
-	void BitArray::assertPos(size_t pos) const
+
+	void BitArray::reportInvalidPos(size_t pos) const
 	{
-		size_t wordPos = pos / BITS_PER_BYTE;
-		if (wordPos >= values.size())
-		{
-			std::cerr << "BitArray::assertPos(" << pos << ") : index out of bounds. Max size is " << bitLength << std::endl;
-			assert(false);
-		}
+		std::cerr << "BitArray::assertPos(" << pos << ") : index out of bounds. Max size is " << bitLength << std::endl;
+		assert(false);
 	}
-	
+
 	void BitArray::resize(size_t size, bool defaultValue)
 	{
 		bitLength = size;
@@ -40,31 +36,6 @@ namespace Utilities
 			return v / BITS_PER_BYTE;
 	}
 
-	//! Sets bit `pos` to `value`. See the class comment for bit ordering.
-	void BitArray::set(size_t pos, bool value)
-	{
-		assertPos(pos);
-
-		size_t wordPos = pos / BITS_PER_BYTE;
-		size_t bitPos = pos % BITS_PER_BYTE;
-
-		if (value)
-			values[wordPos] |= (1<<bitPos);
-		else
-			values[wordPos] &= ~(1<<bitPos);
-	}
-
-	//! Returns bit `pos`. See the class comment for bit ordering.
-	bool BitArray::get(size_t pos) const
-	{
-		assertPos(pos);
-
-		size_t wordPos = pos / BITS_PER_BYTE;
-		size_t bitPos = pos % BITS_PER_BYTE;
-
-		return (values[wordPos] & (1<<bitPos)) != 0;
-	}
-	
 	void BitArray::serialize(unsigned char *stream) const
 	{
 		const size_t l = values.size();

@@ -410,110 +410,111 @@ bool Unit::integrity()
 	return true;
 }
 
-Uint32 Unit::checkSum(std::vector<Uint32> *checkSumsVector, bool legacy152)
+template<bool Diagnostic>
+Uint32 Unit::checkSumImpl(std::vector<Uint32> *checkSumsVector, bool legacy152)
 {
 	Uint32 cs=(serviceResourcesReserved() ? 0x73657276u : 0) ^ (Uint32(constructionLevel) << 20);
 
 	if(areaLastPulseTick!=Uint32(-1)) cs ^= areaLastPulseTick ^ 0x70756c73u;
 	cs ^= Uint32(areaServiceRemainders[0]) | (Uint32(areaServiceRemainders[1])<<8) | (Uint32(areaServiceRemainders[2])<<16);
 	cs^=typeNum;
-	if (checkSumsVector)
+	if constexpr (Diagnostic)
 		checkSumsVector->push_back(typeNum);// [0]
 	cs=rotl1(cs);
 
 	cs^=isDead;
-	if (checkSumsVector)
+	if constexpr (Diagnostic)
 		checkSumsVector->push_back(isDead);// [1]
 	cs=rotl1(cs);
 	cs^=gid;
-	if (checkSumsVector)
+	if constexpr (Diagnostic)
 		checkSumsVector->push_back(gid);// [2]
 	cs=rotl1(cs);
 
 	cs^=posX;
-	if (checkSumsVector)
+	if constexpr (Diagnostic)
 		checkSumsVector->push_back(posX);// [3]
 	cs=rotl1(cs);
 	cs^=posY;
-	if (checkSumsVector)
+	if constexpr (Diagnostic)
 		checkSumsVector->push_back(posY);// [4]
 	cs=rotl1(cs);
 	cs^=delta;
-	if (checkSumsVector)
+	if constexpr (Diagnostic)
 		checkSumsVector->push_back(delta);// [5]
 	cs=rotl1(cs);
 	cs^=dx;
-	if (checkSumsVector)
+	if constexpr (Diagnostic)
 		checkSumsVector->push_back(dx);// [6]
 	cs^=dy;
-	if (checkSumsVector)
+	if constexpr (Diagnostic)
 		checkSumsVector->push_back(dy);// [7]
 	cs^=direction;
-	if (checkSumsVector)
+	if constexpr (Diagnostic)
 		checkSumsVector->push_back(direction);// [8]
 	cs=rotl1(cs);
 	cs^=insideTimeout;
-	if (checkSumsVector)
+	if constexpr (Diagnostic)
 		checkSumsVector->push_back(insideTimeout);// [9]
 	cs=rotl1(cs);
 	cs^=speed;
 	cs ^= static_cast<Uint32>(terrainHealthRemainder) * 0x9e3779b9u;
-	if (checkSumsVector)
+	if constexpr (Diagnostic)
 		checkSumsVector->push_back(speed);// [10]
 	cs=rotl1(cs);
 
 	cs^=(int)needToRecheckMedical();
-	if (checkSumsVector)
+	if constexpr (Diagnostic)
 		checkSumsVector->push_back(needToRecheckMedical());// [11]
 	cs=rotl1(cs);
 	cs^=medical;
-	if (checkSumsVector)
+	if constexpr (Diagnostic)
 		checkSumsVector->push_back(medical);// [12]
 	cs^=activity;
-	if (checkSumsVector)
+	if constexpr (Diagnostic)
 		checkSumsVector->push_back(activity);// [13]
 	cs^=displacement;
-	if (checkSumsVector)
+	if constexpr (Diagnostic)
 		checkSumsVector->push_back(displacement);// [14]
 	cs^=movement;
-	if (checkSumsVector)
+	if constexpr (Diagnostic)
 		checkSumsVector->push_back(movement);// [15]
 	cs^=action;
-	if (checkSumsVector)
+	if constexpr (Diagnostic)
 		checkSumsVector->push_back(action);// [16]
 	cs=rotl1(cs);
 	cs^=targetX;
-	if (checkSumsVector)
+	if constexpr (Diagnostic)
 		checkSumsVector->push_back(targetX);// [17]
 	cs^=targetY;
-	if (checkSumsVector)
+	if constexpr (Diagnostic)
 		checkSumsVector->push_back(targetY);// [18]
 	cs=rotl1(cs);
 
 	cs^=hp;
-	if (checkSumsVector)
+	if constexpr (Diagnostic)
 		checkSumsVector->push_back(hp);// [19]
 	cs^=trigHP;
-	if (checkSumsVector)
+	if constexpr (Diagnostic)
 		checkSumsVector->push_back(trigHP);// [20]
 	cs=rotl1(cs);
 
 	cs^=hungry;
-	if (checkSumsVector)
+	if constexpr (Diagnostic)
 		checkSumsVector->push_back(hungry);// [21]
 	cs^=trigHungry;
-	if (checkSumsVector)
+	if constexpr (Diagnostic)
 		checkSumsVector->push_back(trigHungry);// [22]
 	cs^=trigHungryCarrying;
-	if (checkSumsVector)
+	if constexpr (Diagnostic)
 		checkSumsVector->push_back(trigHungryCarrying);// [23]
 	cs=rotl1(cs);
 
 	cs^=fruitMask;
-	if (checkSumsVector)
+	if constexpr (Diagnostic)
 		checkSumsVector->push_back(fruitMask);// [24]
 	cs^=fruitCount;
-	if (checkSumsVector)
+	if constexpr (Diagnostic)
 		checkSumsVector->push_back(fruitCount);// [25]
 	cs=rotl1(cs);
 
@@ -526,45 +527,45 @@ Uint32 Unit::checkSum(std::vector<Uint32> *checkSumsVector, bool legacy152)
 		cs^=(Uint32)canLearn(i);
 		cs=rotl1(cs);
 	}
-	if (checkSumsVector)
+	if constexpr (Diagnostic)
 		checkSumsVector->push_back(cs);// [26]
 	cs=rotl1(cs);
 
 	cs^=(attachedBuilding!=NULL ? 1:0);
-	if (checkSumsVector)
+	if constexpr (Diagnostic)
 		checkSumsVector->push_back((attachedBuilding!=NULL ? 1:0));// [27]
 	cs=rotl1(cs);
 	cs^=(targetBuilding!=NULL ? 1:0);
-	if (checkSumsVector)
+	if constexpr (Diagnostic)
 		checkSumsVector->push_back((targetBuilding!=NULL ? 1:0));// [28]
 	cs^=(ownExchangeBuilding!=NULL ? 2:0);
-	if (checkSumsVector)
+	if constexpr (Diagnostic)
 		checkSumsVector->push_back((ownExchangeBuilding!=NULL ? 1:0));// [29]
 	cs=rotl1(cs);
 
 	cs^=destinationPurpose;
-	if (checkSumsVector)
+	if constexpr (Diagnostic)
 		checkSumsVector->push_back(destinationPurpose);// [31]
 	cs^=carriedMaterial;
 	cs=rotl1(cs); cs^=carriedPacket.numerator;
 	cs=rotl1(cs); cs^=carriedPacket.denominator;
-	if (checkSumsVector)
+	if constexpr (Diagnostic)
 		checkSumsVector->push_back(carriedMaterial);// [33]
 
-	if (checkSumsVector)
+	if constexpr (Diagnostic)
 		checkSumsVector->push_back(0);// [34]
-	if (checkSumsVector)
+	if constexpr (Diagnostic)
 		checkSumsVector->push_back(0);// [35]
-	if (checkSumsVector)
+	if constexpr (Diagnostic)
 		checkSumsVector->push_back(0);// [36]
-	if (checkSumsVector)
+	if constexpr (Diagnostic)
 		checkSumsVector->push_back(0);// [37]
-	if (checkSumsVector)
+	if constexpr (Diagnostic)
 		checkSumsVector->push_back(0);// [38]
-	if (checkSumsVector)
+	if constexpr (Diagnostic)
 		checkSumsVector->push_back(0);// [39]
 
-	if (checkSumsVector)
+	if constexpr (Diagnostic)
 	{
 		const auto random = entityRandom.exportState();
 		checkSumsVector->push_back(Uint32(random.value >> 32));
@@ -574,7 +575,7 @@ Uint32 Unit::checkSum(std::vector<Uint32> *checkSumsVector, bool legacy152)
 	}
 
 	if (!legacy152) {
-		const auto append=[&](Uint32 value) { cs=rotl1(cs)^value; if (checkSumsVector) checkSumsVector->push_back(value); };
+		const auto append=[&](Uint32 value) { cs=rotl1(cs)^value; if constexpr (Diagnostic) checkSumsVector->push_back(value); };
 		append(Uint8(jobPurpose)|(Uint32(regenerationRemainder)<<8)|(Uint32(widePrimaryCargo())<<16));
 		append(configuredFoodCapacity); append(capabilityFlags);
 		if (hasCapability(UnitRuntimeTraits::ExtendedCargo) || widePrimaryCargo()) {
@@ -585,6 +586,11 @@ Uint32 Unit::checkSum(std::vector<Uint32> *checkSumsVector, bool legacy152)
 			}
 		}
 	}
-	cs ^= entityRandom.checksum();
+	cs ^= (legacy152 ? entityRandom.legacyChecksum() : entityRandom.checksum());
 	return cs;
+}
+
+Uint32 Unit::checkSum(std::vector<Uint32> *fields, bool legacy152)
+{
+    return fields ? checkSumImpl<true>(fields, legacy152) : checkSumImpl<false>(nullptr, legacy152);
 }

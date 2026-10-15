@@ -1421,7 +1421,7 @@ protected:
 	std::vector<int> aStarExaminedPoints;
 
 public:
-	Uint32 checkSum(bool heavy, bool includePending = true);
+	Uint32 checkSum(bool heavy, bool includePending = true, bool legacy152 = false);
 	Sint32 warpDist1d(int p, int q, int l);///distance of coordinates p and q on a loop of length l
 	Sint32 warpDistSquare(int px, int py, int qx, int qy); //!< The distance^2 between (px, py) and (qx, qy), warp-safe.
 	Sint32 warpDistMax(int px, int py, int qx, int qy); //!< The max distance on x or y axis, between (px, py) and (qx, qy), warp-safe.
