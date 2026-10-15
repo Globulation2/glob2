@@ -1,0 +1,42 @@
+Command: clang++ -std=c++20 -O2 -pthread -Itest/third_party -Itest/support -Isrc/common -Isrc/game -Ilibgag/include artifacts/checksum-draft/TestMain.cpp src/common/WordChecksumTest.cpp src/common/EntityRandomTest.cpp src/common/ComputeExecutorHarness.cpp src/common/ComputeThreads.cpp -o artifacts/checksum-draft/merge-integration-tests -I/opt/homebrew/include -L/opt/homebrew/lib -Wl,-rpath,/opt/homebrew/lib -lSDL3
+src/common/ComputeExecutorHarness.cpp:397:26: warning: operator '?:' has lower precedence than '<<'; '<<' will be evaluated first [-Wparentheses]
+  397 |             CHECK(resume ? ticket->resume({bump, &continued}) : ticket->complete());
+      |             ~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+test/support/../third_party/doctest.h:2969:34: note: expanded from macro 'CHECK'
+ 2969 | #define CHECK(...) DOCTEST_CHECK(__VA_ARGS__)
+      |                    ~~~~~~~~~~~~~~^~~~~~~~~~~~
+test/support/../third_party/doctest.h:2440:65: note: expanded from macro 'DOCTEST_CHECK'
+ 2440 | #define DOCTEST_CHECK(...) DOCTEST_ASSERT_IMPLEMENT_1(DT_CHECK, __VA_ARGS__)
+      |                            ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~
+test/support/../third_party/doctest.h:2427:24: note: expanded from macro 'DOCTEST_ASSERT_IMPLEMENT_1'
+ 2426 |             doctest::detail::ExpressionDecomposer(doctest::assertType::assert_type)                \
+      |             ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+ 2427 |                     << __VA_ARGS__) DOCTEST_CLANG_SUPPRESS_WARNING_POP
+      |                     ~~~^~~~~~~~~~~
+src/common/ComputeExecutorHarness.cpp:397:26: note: place parentheses around the '<<' expression to silence this warning
+  397 |             CHECK(resume ? ticket->resume({bump, &continued}) : ticket->complete());
+      |             ~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+test/support/../third_party/doctest.h:2969:34: note: expanded from macro 'CHECK'
+ 2969 | #define CHECK(...) DOCTEST_CHECK(__VA_ARGS__)
+      |                    ~~~~~~~~~~~~~~^~~~~~~~~~~~
+test/support/../third_party/doctest.h:2440:65: note: expanded from macro 'DOCTEST_CHECK'
+ 2440 | #define DOCTEST_CHECK(...) DOCTEST_ASSERT_IMPLEMENT_1(DT_CHECK, __VA_ARGS__)
+      |                            ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~
+test/support/../third_party/doctest.h:2427:24: note: expanded from macro 'DOCTEST_ASSERT_IMPLEMENT_1'
+ 2426 |             doctest::detail::ExpressionDecomposer(doctest::assertType::assert_type)                \
+      |             ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+ 2427 |                     << __VA_ARGS__) DOCTEST_CLANG_SUPPRESS_WARNING_POP
+      |                     ~~~^~~~~~~~~~~
+src/common/ComputeExecutorHarness.cpp:397:26: note: place parentheses around the '?:' expression to evaluate it first
+  397 |             CHECK(resume ? ticket->resume({bump, &continued}) : ticket->complete());
+      |                   ~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+test/support/../third_party/doctest.h:2969:34: note: expanded from macro 'CHECK'
+ 2969 | #define CHECK(...) DOCTEST_CHECK(__VA_ARGS__)
+      |                                  ^~~~~~~~~~~
+test/support/../third_party/doctest.h:2440:65: note: expanded from macro 'DOCTEST_CHECK'
+ 2440 | #define DOCTEST_CHECK(...) DOCTEST_ASSERT_IMPLEMENT_1(DT_CHECK, __VA_ARGS__)
+      |                                                                 ^~~~~~~~~~~
+test/support/../third_party/doctest.h:2427:24: note: expanded from macro 'DOCTEST_ASSERT_IMPLEMENT_1'
+ 2427 |                     << __VA_ARGS__) DOCTEST_CLANG_SUPPRESS_WARNING_POP
+      |                        ^~~~~~~~~~~
+1 warning generated.

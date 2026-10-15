@@ -1,0 +1,14 @@
+Checking src/team/stats/TeamStat.cpp
+OK
+Checking src/team/stats/TeamStatsPipelineTest.cpp
+OK
+Checking src/game/GameAI.cpp
+OK
+Checking src/game/Game_io.cpp
+OK
+Checking src/map/MapMisc.cpp
+OK
+Checking src/unit/UnitSerialization.cpp
+OK
+Checking src/building/Misc.cpp
+OK
