@@ -411,8 +411,12 @@ checksum adapter retains its historical entity/RNG representation for fixtures.
   simulation rules. Immediate air A* steering and hazardous-terrain escape routing
   retain owner execution, with separate audit categories from field initialization,
   air traversal construction, goal enumeration and propagation.
-  Air cache reservations account for runtime-owned published, admitted and
-  boundary-retired generations. Current readers scope their leases to an owner
+  Air cold requests occupy bounded metadata only; the FIFO head reserves plane
+  capacity and a deadline at admission. Cache pressure can evict a warm allocation
+  while retaining its stable metadata and queued refresh. Resource, area, visibility,
+  supplier-stock and clearing-claim revisions coalesce prompt refreshes without
+  restarting admitted jobs. Air cache reservations account for runtime-owned
+  published, admitted and boundary-retired generations. Current readers scope their leases to an owner
   decision; jobs capture primitive snapshots rather than published air fields.
   Keeping arbitrary external leases across boundaries remains memory-safe but is
   outside that logical byte budget. A future long-lived worker consumer needs an
