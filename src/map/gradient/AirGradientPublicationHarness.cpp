@@ -42,6 +42,15 @@ std::vector<Uint32> airState(Game& game)
     state.insert(state.end(),units.begin(),units.end());
     return state;
 }
+Uint64 airStateHash(const std::vector<Uint32>& state)
+{
+    Uint64 hash=14695981039346656037ull;
+    for (Uint32 value:state) for (unsigned shift=0;shift<32;shift+=8) {
+        hash^=(value>>shift)&255;
+        hash*=1099511628211ull;
+    }
+    return hash;
+}
 std::string saveAir(Game& game,bool text)
 {
     auto* backend=new GAGCore::MemoryStreamBackend;
@@ -552,12 +561,13 @@ TEST_CASE("air publication and binary text continuations agree with one two four
         GradientExecutionAudit audit;
         std::vector<std::vector<Uint32>> trajectory;
         std::ostringstream trace;
-        trace<<"boundary\tmaterial_ready\tguard_ready\n";
+        trace<<"boundary\tmaterial_ready\tguard_ready\tchecksum_hash\n";
         for (unsigned boundary=0;boundary<16;++boundary) {
             advanceAir(game);
             trajectory.push_back(airState(game));
             trace<<game.stepCounter<<'\t'<<(map.lookupAirField(material).readiness==FieldReadiness::Ready)
-                <<'\t'<<(map.lookupAirField(guard).readiness==FieldReadiness::Ready)<<'\n';
+                <<'\t'<<(map.lookupAirField(guard).readiness==FieldReadiness::Ready)
+                <<'\t'<<airStateHash(trajectory.back())<<'\n';
             if (boundary<3) CHECK(map.lookupAirField(material).readiness==FieldReadiness::Pending);
             if (boundary==3) CHECK(map.lookupAirField(material).readiness==FieldReadiness::Ready);
         }
@@ -576,6 +586,22 @@ TEST_CASE("air publication and binary text continuations agree with one two four
             resumed.game.map.finishGradientPipeline();
         }
         map.finishGradientPipeline();
+        using AuditKind=GradientExecutionAudit::Kind;
+        const std::array categories{
+            std::pair{"AirFieldInitialization",AuditKind::AirFieldInitialization},
+            std::pair{"AirFieldExpansion",AuditKind::AirFieldExpansion},
+            std::pair{"AirTraversalPlane",AuditKind::AirTraversalPlane},
+            std::pair{"AirGoalEnumeration",AuditKind::AirGoalEnumeration},
+            std::pair{"ImmediateAirSearch",AuditKind::ImmediateAirSearch},
+            std::pair{"TerrainSafety",AuditKind::TerrainSafety},
+            std::pair{"LegacyAirDistanceField",AuditKind::AirSearch}};
+        std::ostringstream kernelTrace;
+        kernelTrace<<"category\towner\tother\n";
+        for (const auto [name,kind]:categories) {
+            const auto counts=audit.counts(kind);
+            kernelTrace<<name<<'\t'<<counts.owner<<'\t'<<counts.other<<'\n';
+        }
+        glob2test::writeFile(glob2test::artifactDir()/("air-participants-"+std::to_string(participants)+"-kernel-entries.tsv"),kernelTrace.str());
         const auto owner=audit.counts(GradientExecutionAudit::Kind::AirFieldInitialization).owner
             +audit.counts(GradientExecutionAudit::Kind::AirFieldExpansion).owner
             +audit.counts(GradientExecutionAudit::Kind::AirTraversalPlane).owner
