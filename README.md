@@ -9,3 +9,6 @@ Local / VM verification (draft; final revision checks still running)
 - Iterative failures are retained: malformed historical fixture adapter corrected; failed-load scenario reduced to a reused fixture and then passed; slow selected correctness cases passed with a local300-second timeout; Maxima observation scope in the new regression corrected. An overly broad unit selector matched unrelated TerrainRegistry stress and an unchanged Maxima.Farming CPU timing gate (fails O0 timing threshold); these are excluded from correctness claims. Broad full unit and long AI checkpoint campaigns were stopped to avoid unnecessary work; they did not produce an aggregate passing result.
 - Omitted: performance tests/Callgrind (explicit user instruction); full engine sanitizers; full Windows/Linux/Web/platform checksum matrix; full AI checkpoint campaign and unrelated stress/timing cases; release packaging; maintainer play review of scheduling/tie-breaking changes. Keep draft.
 - Maintainer acceptance: pending; no acceptance claimed.
+
+
+Local work was stopped at the author's request before the integrated build completed. See HANDOFF.md for the exact remaining work and known outstanding golden regeneration. No final integrated-head pass is claimed.
