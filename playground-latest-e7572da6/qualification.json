@@ -1,0 +1,76 @@
+{
+  "state": "passed",
+  "commands": [
+    {
+      "name": "golden",
+      "command": [
+        "/home/bradley/.codex/worktrees/a630/glob2/artifacts/playground-latest-master-e7572da6/glob2",
+        "match",
+        "verify",
+        "test/fixtures/multiplayer/FourSquares1.g2mr",
+        "--map-file",
+        "maps/FourSquares1.map.gz",
+        "--output-dir",
+        "/home/bradley/.codex/worktrees/a630/glob2/artifacts/playground-latest-master-e7572da6/qualification/golden",
+        "--compute-threads",
+        "4"
+      ],
+      "env": {
+        "SDL_VIDEODRIVER": "dummy",
+        "SDL_AUDIODRIVER": "dummy",
+        "GLOB2_USER_DIR": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/playground-latest-master-e7572da6/qualification/profile",
+        "GLOB2_USER_DATA_DIR": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/playground-latest-master-e7572da6/qualification/profile",
+        "GLOB2_ASSET_DIR": "/home/bradley/.codex/worktrees/engine-optimization/glob2"
+      },
+      "returncode": 0
+    },
+    {
+      "name": "auto",
+      "command": [
+        "/home/bradley/.codex/worktrees/a630/glob2/artifacts/playground-latest-master-e7572da6/glob2",
+        "game",
+        "run",
+        "--map-file",
+        "/home/bradley/.codex/worktrees/engine-optimization/glob2/maps/Playground.map",
+        "--game-seed",
+        "1056243202",
+        "--ticks",
+        "64",
+        "--compute-threads",
+        "auto",
+        "--gradient-backend",
+        "cpu",
+        "--player",
+        "nicowar",
+        "--player",
+        "nicowar",
+        "--player",
+        "nicowar",
+        "--player",
+        "nicowar",
+        "--player",
+        "nicowar",
+        "--player",
+        "nicowar",
+        "--player",
+        "nicowar",
+        "--player",
+        "nicowar",
+        "--output-dir",
+        "/home/bradley/.codex/worktrees/a630/glob2/artifacts/playground-latest-master-e7572da6/qualification/auto"
+      ],
+      "env": {
+        "SDL_VIDEODRIVER": "dummy",
+        "SDL_AUDIODRIVER": "dummy",
+        "GLOB2_USER_DIR": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/playground-latest-master-e7572da6/qualification/profile",
+        "GLOB2_USER_DATA_DIR": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/playground-latest-master-e7572da6/qualification/profile",
+        "GLOB2_ASSET_DIR": "/home/bradley/.codex/worktrees/engine-optimization/glob2"
+      },
+      "returncode": 0
+    }
+  ],
+  "auto_participants": 32,
+  "golden_trace_sha256": "f246ed1abf349f435ee4b79654c989c661f62447502cb8d25c047e146056d88a",
+  "native_result_sha256": "b83522e07af217f72f0e9f5ee5a8c913f8e0742b69b856c18cdeea4c95aa4c90",
+  "utc": "2026-10-15T21:38:44.682396+00:00"
+}
