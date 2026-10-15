@@ -37,6 +37,7 @@ class BuildingGradientSearch;
 struct SharedBuildingGradient;
 class BuildingsTypes;
 class Order;
+struct BuildingMaterialDemand;
 
 /// Sentinel for `BuildingType::prevLevel` / `nextLevel` meaning
 /// "no upgrade/downgrade exists in this chain" (signed int).
@@ -323,13 +324,22 @@ class Building : public BuildingUtils, public BuildingStateRecord
 	}
 	int materialDeliveryNeed(int r) const
 	{
-		const Sint64 room = std::max<Sint64>(0, Sint64(materialStockLimit()) - material(r));
-		if (type->isBuildingSite && (constructionBudget[r] || type->semantics.constructionCost[r]))
+		const bool construction = type->isBuildingSite && (constructionBudget[r] || type->semantics.constructionCost[r]);
+		// A slot outside the replenishment policy cannot request a delivery. Sites
+		// still use their live budget, even when the catalog does not replenish it.
+		if (!construction && (!(runtime->replenishMaterialMask & (1u<<r)) || !type->maxMaterial[r]))
+			return 0;
+		const int stock = material(r);
+		const Sint64 room = std::max<Sint64>(0, Sint64(materialStockLimit()) - stock);
+		if (construction)
 		{
-			const int uncommitted = constructionResultState == REPAIR ? 0 : availableMaterial(r);
+			// Construction can use unreserved stock already here. Repairs consume
+			// new deliveries directly, so existing inventory cannot satisfy them.
+			const int reserved = type->useTeamMaterials ? owner->reservedTeamMaterials[r] : reservedMaterials[r];
+			const int uncommitted = constructionResultState == REPAIR ? 0 : std::max(0, stock-reserved);
 			return Sint32(std::min<Sint64>(room, std::max(0, constructionMaterialNeed(r)-uncommitted)));
 		}
-		return (runtime->replenishMaterialMask & (1u<<r)) ? Sint32(std::min<Sint64>(room, std::max(0, type->maxMaterial[r]-material(r)))) : 0;
+		return Sint32(std::min<Sint64>(room, std::max(0, type->maxMaterial[r]-stock)));
 	}
 	int materialDeliveryTarget(int r) const
 	{
@@ -668,6 +678,14 @@ public:
 	void resetFailureTallies();
 
 private:
+	// These overloads share a temporary calculation within one building update;
+	// the original entry points always calculate fresh demand from live stock.
+	BuildingMaterialDemand materialDemand() const;
+	void computeWishedMaterials(int needs[MaterialSlotCount], const BuildingMaterialDemand& demand);
+	int desiredNumberOfWorkers(const BuildingMaterialDemand& demand) const;
+	void updateCallLists(const BuildingMaterialDemand& demand);
+	void updateCallLists(int desiredWorkers, bool resourceFull);
+
 	// ─── Private data ───────────────────────────────────────────────
 
 	// pending player orders (consumed by step())

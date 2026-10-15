@@ -229,6 +229,7 @@ def _build_variant(directory, identity, arguments, threaded=False, packaged=None
                 ('#src/unit/UnitCustomizationTest.cpp', dict(cxxflags=['-fno-access-control'])),
                 '#src/building/types/BuildingCatalogTest.cpp', '#src/building/BuildingCatalogFixtureHarness.cpp',
                 '#src/building/BuildingServicesTest.cpp', '#src/building/BuildingProductionCombatTest.cpp',
+                ('#src/building/MaterialDemandTest.cpp', dict(cxxflags=['-fno-access-control'])),
                 '#src/ai/shared_runtime/RuntimeContinuationTest.cpp',
                 ('#src/ai/AICustomCatalogTest.cpp', dict(cxxflags=['-fno-access-control'])),
                 ('#src/unit/MarketsV2Test.cpp', dict(cxxflags=['-fno-access-control']))]:

@@ -217,6 +217,23 @@ fields live. The loader discards those fields; the game plays 1,000 more ticks
 against a golden per-tick trace and continues identically after a binary or text
 save in the current format.
 
+## Building material demand
+
+`BuildingMaterialDemand/*` compares the live scalar calculation with an independent,
+dense reference, including shared inventories, construction/repair reservations,
+all 15 output slots, authored multiplier bounds, rounding, staffing, negative
+wishes and recruitment order. Run it with `BuildingStock`, `BuildingServices`,
+`BuildingProductionCombat`, `FetchApportionment` and `HiringBucket` when changing
+demand calculations. The temporary demand summary is not saved or captured; it
+must be discarded before inventory, reservation, worker or type mutations.
+
+The dense reference covers generated inventory states, construction and repair,
+shared reservations, capacity and multiplier bounds, and reserved output slots.
+Caller tests exercise `step`, `update`, recruitment ordering, construction completion
+and destruction. The same cases run in the browser catalog regression suite for
+both serial and threaded builds. These are correctness checks; measurements belong in
+PR evidence rather than the regression suite.
+
 ## Hiring bucket iteration
 
 `HiringBucketHarness` uses the real engine to check that two competing inns

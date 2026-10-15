@@ -10,6 +10,7 @@
 #include <stdexcept>
 
 #include "Building.h"
+#include "MaterialDemand.h"
 #include "BuildingType.h"
 #include "EngineTiming.h"
 #include "FixedPoint.h"
@@ -19,6 +20,31 @@
 #include "Unit.h"
 #include "Utilities.h"
 #include "Order.h"
+#include <bit>
+
+BuildingMaterialDemand Building::materialDemand() const
+{
+	BuildingMaterialDemand demand;
+	// Sites can demand dynamic budgets, independently of replenishment semantics.
+	// Ordinary buildings need only the catalog's replenishment slots. Visit them
+	// in ascending order, preserving the dense calculation's integer arithmetic.
+	unsigned candidates = type->isBuildingSite ? (1u<<MaterialSlotCount)-1 : runtime->replenishMaterialMask;
+	while (candidates)
+	{
+		const unsigned r = std::countr_zero(candidates);
+		candidates &= candidates-1;
+		const int missing = materialDeliveryNeed(r);
+		if (!missing) continue;
+		demand.full = false;
+		// Catalogs and loaded construction budgets cap both inputs at 1,000,000.
+		// Keep the original 32-bit ceiling division; even the 12-material 4/3
+		// staffing sum fits int. Capacity subtraction above still needs Sint64.
+		demand.deliveries[r] = (missing+type->materialMultiplier[r]-1)/type->materialMultiplier[r];
+		if (r < MaterialCount) demand.totalDeliveries += demand.deliveries[r];
+	}
+	return demand;
+}
+
 
 void Building::fundConstructionFromInventory()
 {
@@ -130,13 +156,15 @@ void Building::neededMaterials(int needs[MaterialSlotCount])
 
 void Building::computeWishedMaterials(int needs[MaterialSlotCount])
 {
-	 // we balance the system with Units working on it:
+	computeWishedMaterials(needs, materialDemand());
+}
+
+void Building::computeWishedMaterials(int needs[MaterialSlotCount], const BuildingMaterialDemand& demand)
+{
+	// The 4/3 staffing margin rounds per material here, before subtracting workers.
+	// Overstaffing deliberately leaves negative wishes, including otherwise empty slots.
 	for (int ri = 0; ri < MaterialSlotCount; ri++)
-	{
-		const int missing=materialDeliveryNeed(ri);
-		const int deliveries=(missing+type->materialMultiplier[ri]-1)/type->materialMultiplier[ri];
-		needs[ri]=(WISHED_MATERIAL_NUM*deliveries)/WISHED_MATERIAL_DEN;
-	}
+		needs[ri]=(WISHED_MATERIAL_NUM*demand.deliveries[ri])/WISHED_MATERIAL_DEN;
 	for (std::list<Unit *>::iterator ui = unitsWorking.begin(); ui != unitsWorking.end(); ++ui)
 		if ((*ui)->destinationPurpose >= 0)
 		{
@@ -390,8 +418,21 @@ void Building::updateCallLists(void)
 {
 	if (buildingState==DEAD)
 		return;
-	desiredMaxUnitWorking = desiredNumberOfWorkers();
-	bool resourceFull=isMaterialFull();
+	if (runtime->attractionRoles)
+		updateCallLists(desiredNumberOfWorkers(), isMaterialFull());
+	else
+		updateCallLists(materialDemand());
+}
+
+void Building::updateCallLists(const BuildingMaterialDemand& demand)
+{
+	if (buildingState==DEAD) return;
+	updateCallLists(desiredNumberOfWorkers(demand), demand.full);
+}
+
+void Building::updateCallLists(int desiredWorkers, bool resourceFull)
+{
+	desiredMaxUnitWorking = desiredWorkers;
 	if (resourceFull && !(type->canExchange && owner->openMarket()))
 	{
 		// Then we don't need anyone more to fill me, if I'm still in the call list for units,
