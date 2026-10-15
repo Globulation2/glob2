@@ -409,7 +409,7 @@ void AirGradientRuntime::load(Map& map,GAGCore::InputStream* s,bool) {
         if (flag(s,"published")) {
             if (!entry.charged) throw std::runtime_error("Uncharged published air field");
             checkPayload(*payload,map.size,true);
-            auto data=std::make_shared_for_overwrite<Uint16[]>(map.size);
+            std::shared_ptr<Uint16[]> data(new Uint16[map.size]);
             for (std::size_t cell=0;cell<map.size;++cell) { s->readEnterSection(cell); data[cell]=s->readUint16("value"); s->readLeaveSection(); }
             for (std::size_t cell=0;cell<map.size;++cell) {
                 const auto value=data[cell]; if (value>GRADIENT_UNREACHABLE && !field::air::decode(value)) throw std::runtime_error("Invalid bounded air value");
