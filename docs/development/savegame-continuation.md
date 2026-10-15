@@ -61,3 +61,24 @@ for snapshot ownership and offset relocation rules.
 Size comparisons must use final gzip files, not only the size of the intermediate
 serialization. Use `save-size-harness` and `test/measure_save_sizes.py` as described
 in the test guide.
+
+## Ordered entity populations
+
+Format 166 stores each team's counted unit/building records in authoritative
+append order and persists the live task-swapping cursor. Formats below 166 retain
+the slot-based decoder and start their populations in ascending slot order.
+Current loads reject duplicate/out-of-range slots, inconsistent ownership and
+invalid task cursors. Service queue continuation remains independent of population
+membership. Replay acceptance starts at 166 because update and task scheduling
+order intentionally changed.
+
+`TeamLiveLists/*` exercises intrusive membership, mutation-safe walks, conversions,
+slot reuse and lifecycle removal. `IntrusivePopulationSave/*` checks binary/text
+non-slot-ordered populations, cursor restoration, subsequent per-tick checksums
+and rejected malformed/truncated loads. These complement the existing legacy-save
+continuation and serial/parallel simulation tests.
+
+Format 166 also retains Maxima's executable tactical quarantine duration. An
+initialized director may use it before planning again; older saves reconstruct
+it from their restored canonical strategy. The focused `Maxima.Director`
+quarantine regression checks current persistence and legacy field alignment.

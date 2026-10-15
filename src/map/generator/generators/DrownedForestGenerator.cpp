@@ -1407,9 +1407,8 @@ std::vector<int> colonyEntrances(const Game &game, int team, const Torus &t,
 								const std::vector<int> &reached)
 {
 	std::vector<int> result;
-	for (int slot = 0; slot < Building::MAX_COUNT; ++slot)
+	for (const auto *b : game.teams[team]->liveBuildings.entries())
 	{
-		const auto *b = game.teams[team]->myBuildings[slot];
 		if (!b || b->typeNum != game.buildingsTypes.getStartingBuildingTypeNum())
 			continue;
 		const auto add = [&](int x, int y)

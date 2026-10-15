@@ -133,9 +133,8 @@ namespace Cortex
 		// nothing to anchor on (and the reach signal is meaningless), so leave both
 		// counts at 0 (the policy's reach-expansion gate then never fires).
 		int anchorX = -1, anchorY = -1;
-		for (int i = 0; i < ::Building::MAX_COUNT; i++)
+		for (const AIEngine::BuildingView* b : game->buildingsForTeam(team->number))
 		{
-			const AIEngine::BuildingView* b = game->buildingSlots(team->number)[i];
 			if (b == NULL || b->buildingState == ::Building::DEAD)
 				continue;
 			if (buildingType(*game,*b) != NULL && buildingType(*game,*b)->isVirtual)
@@ -239,9 +238,8 @@ namespace Cortex
 		bool rallyTile(const AIEngine::AIWorldView* game, const AIEngine::TeamView* team, const PlanningIntent& intents, int& rx, int& ry)
 		{
 			const AIEngine::BuildingView* fallback = NULL;
-			for (int i = 0; i < ::Building::MAX_COUNT; i++)
+			for (const AIEngine::BuildingView* b : game->buildingsForTeam(team->number))
 			{
-				const AIEngine::BuildingView* b = game->buildingSlots(team->number)[i];
 				if (b == NULL || b->buildingState == ::Building::DEAD)
 					continue;
 				if (fallback == NULL)

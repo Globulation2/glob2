@@ -206,13 +206,12 @@ std::shared_ptr<Order>AINumbi::adjustBuildings(const int numbers, const int numb
 	telemetry.set(AITrace::AI1::AINumbi_adjustBuildings_input_numbersInc, numbersInc);
 	telemetry.set(AITrace::AI1::AINumbi_adjustBuildings_input_numbers, numbers);
 	telemetry.count(AITrace::AI1::AINumbi_adjustBuildings_calls);
-	const auto myBuildings=observation->buildingSlots(teamNumber);
+	const auto myBuildings=observation->buildingsForTeam(teamNumber);
 	//Unit **myUnits=player->team->myUnits;
 	int fb=0;
 
-	for (int i=0; i<Building::MAX_COUNT; i++)
+	for (const AIEngine::BuildingView *b : myBuildings)
 	{
-		const AIEngine::BuildingView *b=myBuildings[i];
 		if ((b)&&provides(*b, intent))
 		{
 			fb++;
@@ -264,11 +263,10 @@ std::shared_ptr<Order>AINumbi::checkoutExpands(const int numbers, const int work
 	telemetry.set(AITrace::AI1::AINumbi_checkoutExpands_input_numbers, numbers);
 	telemetry.count(AITrace::AI1::AINumbi_checkoutExpands_calls);
 
-	const auto myBuildings=observation->buildingSlots(teamNumber);
+	const auto myBuildings=observation->buildingsForTeam(teamNumber);
 	int ss=0;
-	for (int i=0; i<Building::MAX_COUNT; i++)
+	for (const AIEngine::BuildingView *b : myBuildings)
 	{
-		const AIEngine::BuildingView *b=myBuildings[i];
 		if ((b)&&provides(*b, Intent::ProduceWorker))
 			ss++;
 	}

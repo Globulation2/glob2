@@ -112,9 +112,8 @@ struct World
 		game.executeOrder(order, 0);
 		require(game.map.getBuilding(x, y) == NOGBID, "a flag is not written into the building tile grid");
 		Team* owner = game.teams[teamNumber];
-		for (int id = 0; id < Building::MAX_COUNT; ++id)
+		for (Building* b : owner->liveBuildings.entries())
 		{
-			Building* b = owner->myBuildings[id];
 			if (b && b->type->isVirtual && b->posX == x && b->posY == y)
 				return b;
 		}

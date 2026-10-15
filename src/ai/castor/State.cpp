@@ -48,12 +48,11 @@ void AICastor::computeCanSwim()
 	//printf("computeCanSwim()...\n");
 	// If our population has more healthy-working-units able to swim than healthy-working-units
 	// unable to swim then we choose to be able to go through water:
-	const auto myUnits=observation->unitSlots(observedTeam->number);
+	const auto myUnits=observation->unitsForTeam(observedTeam->number);
 	int sumCanSwim=0;
 	int sumCantSwim=0;
-	for (int i=0; i<Unit::MAX_COUNT; i++)
+	for (const AIEngine::UnitView *u : myUnits)
 	{
-		const AIEngine::UnitView *u=myUnits[i];
 		if (u && AIEngine::ObservationQueries::matchesStrategyUnitRole(*observation,*u,WORKER) && u->medical==0)
 		{
 			if (u->performance[SWIM]>0)
@@ -106,10 +105,9 @@ void AICastor::computeBuildingSum()
 				buildingLevels[bi][si][li]=0;
 	
 	const auto& capabilities=*queries;
-	const auto myBuildings=observation->buildingSlots(observedTeam->number);
-	for (int i=0; i<Building::MAX_COUNT; i++)
+	const auto myBuildings=observation->buildingsForTeam(observedTeam->number);
+	for (const AIEngine::BuildingView *b : myBuildings)
 	{
-		const AIEngine::BuildingView *b=myBuildings[i];
 		if (b)
 		{
    const bool upgrading = b->buildingState==Building::WAITING_FOR_CONSTRUCTION && b->constructionResultState==Building::UPGRADE;
@@ -187,7 +185,7 @@ void AICastor::computeWarLevel()
 		return;
 
 	int warPowerSum=0;
-	const auto myUnits=observation->unitSlots(observedTeam->number);
+	const auto myUnits=observation->unitsForTeam(observedTeam->number);
 	// Custom-game "glass cannon" rule: scale the same way
 	// Unit::getRealAttackStrength() does, so this self-assessment of army
 	// strength doesn't ignore a rule that's actively changing how hard these
@@ -195,9 +193,8 @@ void AICastor::computeWarLevel()
 	// getRealAttackStrength() -- this is scoped to the new rule, not a
 	// broader change to how this heuristic already approximates strength.)
 	const int glassCannonScale = observation->configuration->getGlassCannonScale();
-	for (int i=0; i<Unit::MAX_COUNT; i++)
+	for (const AIEngine::UnitView *u : myUnits)
 	{
-		const AIEngine::UnitView *u=myUnits[i];
 		if (u && u->medical==Unit::MED_FREE && (u->capabilityFlags&UnitRuntimeTraits::Melee))
         {
             const auto strength=std::clamp<Sint64>(Sint64(u->performance[ATTACK_STRENGTH])*glassCannonScale,0,INT_MAX);

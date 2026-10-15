@@ -40,8 +40,8 @@ stock sidecar, which is copied whole when resources are refreshed. Writes that
 bypass the marked setters are caught by `GLOB2_SNAPSHOT_VERIFY=1`, which
 compares captured map bytes and logical entity values with the live game. Published material gradient planes
 sit in a dense registry keyed like the snapshot's plane table
-(`src/map/ResourcePlaneKey.h`); teams keep sorted live entity lists
-(`src/team/LiveSlotList.h`) so extraction visits occupied slots only. The old
+(`src/map/ResourcePlaneKey.h`); teams keep authoritative intrusive entity lists in append order
+(`src/team/IntrusiveEntityList.h`) so extraction visits existing entities only. The old
 `Tile` value is assembled only for compatibility consumers such as editor undo.
 Growth flags retain their original byte values; growth predicates test nonzero.
 
@@ -291,7 +291,7 @@ view metadata, slot-index preparation, retained capacity, allocator overhead and
 vector growth copies. `Store::Metrics` exposes their deltas alongside the existing
 aggregate `bytesCopied` estimate, whose meaning is unchanged. Pool memory metrics
 continue to describe retained capacity and leases separately. Verification compares
-entity completeness, team/slot ordering, identities, lookup tables and logical
+entity completeness, team/population ordering, identities, lookup tables and logical
 scalar fields, including presentation state. It also checks ordered working/inside
 relationships, cargo, production and building-project sidecars, without comparing
 entity padding bytes.

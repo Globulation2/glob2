@@ -16,6 +16,47 @@
 class GameGUISelectionHarness
 {
 public:
+    static void cyclingUsesIdsAfterSlotReuse()
+    {
+        glob2test::HeadlessGame world;
+        auto& gui = world.gui;
+        gui.localTeamNo = 0;
+        Unit* first = world.addUnit(WORKER, 10, 10);
+        Unit* middle = world.addUnit(WORKER, 12, 10);
+        Unit* last = world.addUnit(WORKER, 14, 10);
+        const auto firstGid = first->gid;
+        REQUIRE(world.game.removeUnitAndBuildingAndFlags(10, 10, Game::DEL_UNIT));
+        first = world.addUnit(WORKER, 10, 10);
+        REQUIRE(first->gid == firstGid);
+        REQUIRE(world.game.teams[0]->liveUnits.back() == first);
+        gui.setSelection(GameGUI::UNIT_SELECTION, middle);
+        gui.prepareLocalPresentation(gui.frameScene);
+        gui.iterateSelection();
+        REQUIRE(gui.selectionUnit() == last);
+        gui.iterateSelection();
+        REQUIRE(gui.selectionUnit() == first);
+        gui.iterateSelection();
+        REQUIRE(gui.selectionUnit() == middle);
+
+        Building* a = world.addBuilding("stonewall", 20, 20);
+        Building* b = world.addBuilding("stonewall", 24, 20);
+        Building* c = world.addBuilding("stonewall", 28, 20);
+        REQUIRE(a); REQUIRE(b); REQUIRE(c);
+        const auto aGid = a->gid;
+        REQUIRE(world.game.removeUnitAndBuildingAndFlags(20, 20, Game::DEL_BUILDING));
+        a = world.addBuilding("stonewall", 20, 20);
+        REQUIRE(a->gid == aGid);
+        REQUIRE(world.game.teams[0]->liveBuildings.back() == a);
+        gui.setSelection(GameGUI::BUILDING_SELECTION, b);
+        gui.prepareLocalPresentation(gui.frameScene);
+        gui.iterateSelection();
+        REQUIRE(gui.selectionBuilding() == c);
+        gui.iterateSelection();
+        REQUIRE(gui.selectionBuilding() == a);
+        gui.iterateSelection();
+        REQUIRE(gui.selectionBuilding() == b);
+    }
+
     static void frozenInputAdmission(bool threaded)
     {
         glob2test::HeadlessGame world;
@@ -197,12 +238,12 @@ public:
 		const Uint16 targetGid = Unit::GIDfrom(5, 1);
 		const Uint32 identity = world.game.allocateScriptIdentity(false, targetGid);
 		world.game.publishClientEvent(ClientEvent::UnitConverted{before, UnitRef{targetGid, identity}});
-		world.game.teams[0]->myUnits[Unit::GIDtoID(unit->gid)] = nullptr;
-		target->myUnits[5] = unit;
+		world.game.teams[0]->detachUnit(Unit::GIDtoID(unit->gid));
 		world.game.map.setGroundUnit(10, 10, targetGid);
 		unit->scriptIdentity = identity;
 		unit->gid = targetGid;
 		unit->owner = target;
+		target->attachUnit(5, unit);
 		REQUIRE(!gui.selectionUnit());
 		gui.consumeClientEvents();
 		REQUIRE(gui.selectionUnit() == unit);
@@ -225,6 +266,12 @@ public:
 
 TEST_SUITE("GameGUISelection")
 {
+    TEST_CASE("selection cycles by ID after reused slots append out of ID order")
+    {
+        glob2test::HeadlessGlobals globals;
+        GameGUISelectionHarness::cyclingUsesIdsAfterSlotReuse();
+    }
+
     TEST_CASE("displayed actions cannot target a reused entity or replaced world")
     {
         glob2test::HeadlessGlobals globals;

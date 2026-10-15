@@ -3,7 +3,7 @@
 namespace Cortex {
 int maxBuildLevel(const AIEngine::AIWorldView& world,const AIEngine::TeamView& team)
 {
- int level=0;for(const auto* unit:world.unitSlots(team.number))if(unit&&unit->performance[BUILD])level=std::max(level,int(unit->constructionLevel));return level;
+ int level=0;for(const auto* unit:world.unitsForTeam(team.number))if(unit&&unit->performance[BUILD])level=std::max(level,int(unit->constructionLevel));return level;
 }
 int finishedType(const AIEngine::AIWorldView& world,const std::string& key)
 {

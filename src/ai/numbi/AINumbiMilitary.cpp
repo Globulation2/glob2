@@ -39,10 +39,10 @@ std::shared_ptr<Order>AINumbi::mayAttack(int criticalMass, int criticalTimeout, 
 	telemetry.set(AITrace::AI1::AINumbi_mayAttack_input_criticalTimeout, criticalTimeout);
 	telemetry.set(AITrace::AI1::AINumbi_mayAttack_input_criticalMass, criticalMass);
 	telemetry.count(AITrace::AI1::AINumbi_mayAttack_calls);
-	const auto myUnits=observation->unitSlots(teamNumber);
+	const auto myUnits=observation->unitsForTeam(teamNumber);
 	int ft=0;
-	for (int i=0; i<Unit::MAX_COUNT; i++)
-		if ((myUnits[i])&&(myUnits[i]->performance[ATTACK_SPEED])&&(myUnits[i]->medical==0))
+	for (const auto* u : myUnits)
+		if (u->performance[ATTACK_SPEED] && u->medical==0)
 			ft++;
 
 	if (attackPhase==0)
@@ -74,7 +74,7 @@ std::shared_ptr<Order>AINumbi::mayAttack(int criticalMass, int criticalTimeout, 
 
 
 
-		for (const AIEngine::BuildingView* rally : observation->buildingSlots(teamNumber))
+		for (const AIEngine::BuildingView* rally : observation->buildingsForTeam(teamNumber))
 			if (rally && provides(*rally, Intent::AttractWarriors))
 			{
 				const AIEngine::BuildingView *b=rally;
@@ -108,9 +108,8 @@ std::shared_ptr<Order>AINumbi::mayAttack(int criticalMass, int criticalTimeout, 
 		int ex=-1, ey=-1;
 		int count=pendingBuildings(Intent::AttractWarriors);
 		bool found=false;
-		for (int i=0; i<Building::MAX_COUNT; i++)
+		for (const auto* b : observation->buildingsForTeam(e))
 		{
-			const AIEngine::BuildingView *b=observation->buildingAtSlot(e*::Building::MAX_COUNT+i);
 			if (b)
 			{
 				ex=b->posX;
@@ -122,7 +121,7 @@ std::shared_ptr<Order>AINumbi::mayAttack(int criticalMass, int criticalTimeout, 
      for(const auto& pending:pendingRequests) if(const auto* flag=dynamic_cast<const OrderCreate*>(pending.order.get()))
       if(queries->matches(flag->typeNum,Intent::AttractWarriors) && observation->normalizeX(flag->posX)==ex && observation->normalizeY(flag->posY)==ey) already=true;
 					count=pendingBuildings(Intent::AttractWarriors);
-					for (const AIEngine::BuildingView* rally : observation->buildingSlots(teamNumber))
+					for (const AIEngine::BuildingView* rally : observation->buildingsForTeam(teamNumber))
 						if (rally && provides(*rally, Intent::AttractWarriors))
 						{
 							count++;
@@ -171,7 +170,7 @@ std::shared_ptr<Order>AINumbi::mayAttack(int criticalMass, int criticalTimeout, 
 	}
 	else if (attackPhase==3)
 	{
-		for (const AIEngine::BuildingView* rally : observation->buildingSlots(teamNumber))
+		for (const AIEngine::BuildingView* rally : observation->buildingsForTeam(teamNumber))
 			if (rally && provides(*rally, Intent::AttractWarriors) && disposableRally(*rally,*queries))
 				return telemetry.returnedOrder(AITrace::AI1::AINumbi_mayAttack_result,
 											   shared_ptr<Order>(new OrderDelete(rally->identity.gid)));
@@ -204,11 +203,11 @@ std::shared_ptr<Order> AINumbi::mayUpgrade(const int ptrigger, const int ntrigge
 	std::array<int, NB_UNIT_LEVELS> workers{}, idle{}, training{};
     const auto workerTraining=AIEngine::ObservationQueries::workerTrainingProjection(*observation,false);
 	std::array<std::array<int, NB_UNIT_LEVELS>, std::size(priorities)> ready{}, underway{};
-	for (const AIEngine::UnitView* u : observation->unitSlots(teamNumber))
+	for (const AIEngine::UnitView* u : observation->unitsForTeam(teamNumber))
 		if (u && AIEngine::ObservationQueries::matchesConstructionRole(*observation,*u))
 			for (int level = 0; level <= u->constructionLevel && level < NB_UNIT_LEVELS; ++level)
 			{ ++workers[level]; if (u->activity == Unit::ACT_RANDOM) ++idle[level]; }
-	for (const AIEngine::BuildingView* b : observation->buildingSlots(teamNumber))
+	for (const AIEngine::BuildingView* b : observation->buildingsForTeam(teamNumber))
 	{
 		if (!b) continue;
 		if (!queries->kind(*b).site && provides(*b, Intent::TrainConstruction))
@@ -232,7 +231,7 @@ std::shared_ptr<Order> AINumbi::mayUpgrade(const int ptrigger, const int ntrigge
 		const Intent intent = priorities[demand];
 		if (!queries->allowed(intent)) continue;
 		std::vector<const AIEngine::BuildingView*> choices;
-		for (const AIEngine::BuildingView* b : observation->buildingSlots(teamNumber))
+		for (const AIEngine::BuildingView* b : observation->buildingsForTeam(teamNumber))
 		{
 			if (!b || hasPending(*b) || queries->kind(*b).site || !provides(*b, intent) || !observation->isUpgradeAvailable(*b) || queries->kind(*b).next < 0) continue;
 			const auto* next = &queries->kind(queries->kind(*b).next);

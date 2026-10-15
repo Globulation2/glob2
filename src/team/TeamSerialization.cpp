@@ -10,6 +10,7 @@
 #include <BinaryStream.h>
 #include <stdexcept>
 #include <algorithm>
+#include <memory>
 
 bool Team::load(GAGCore::InputStream *stream, BuildingsTypes *buildingstypes, Sint32 versionMinor)
 {
@@ -34,93 +35,81 @@ GAGCore::CooperativeTask Team::loadTask(GAGCore::InputStream *stream, BuildingsT
 		race.setCatalog(game->gameHeader.getUnitCatalog());
 	stats.configureUnits(race.unitTypeCount());
 
-	// normal load
+	// Current saves enumerate exact append order. Legacy formats encode the
+	// allocation table; decoding those slots bootstraps their historical order.
+	clearLists();
+	clearMem();
+	const bool ordered = versionMinor >= FILE_FORMAT_VERSION_INTRUSIVE_POPULATION;
 	stream->readEnterSection("myUnits");
-	for (int i=0; i<Unit::MAX_COUNT; i++)
+	const Uint32 unitRecords = ordered ? stream->readUint32("count") : Unit::MAX_COUNT;
+	if (unitRecords > Unit::MAX_COUNT) throw std::runtime_error("Invalid unit population count");
+	for (Uint32 record=0; record<unitRecords; ++record)
 	{
-        if ((i & 31) == 0) co_await GAGCore::CooperativeTask::checkpoint("[Loading units]");
-		if (myUnits[i])
-			delete myUnits[i];
-        myUnits[i] = NULL;
-
-		stream->readEnterSection(i);
-		Uint32 isUsed = stream->readUint32("isUsed");
-		if (isUsed)
-			{
-			myUnits[i] = new Unit(stream, this, versionMinor);
-			if (Unit::GIDtoID(myUnits[i]->gid) != i) throw std::runtime_error("Unit identity does not match slot");
+		if ((record & 31)==0) co_await GAGCore::CooperativeTask::checkpoint("[Loading units]");
+		stream->readEnterSection(record);
+		const Uint32 slot = ordered ? stream->readUint16("slot") : record;
+		const bool used = ordered || stream->readUint32("isUsed");
+		if (slot >= Unit::MAX_COUNT || myUnits[slot]) throw std::runtime_error("Invalid or duplicate unit slot");
+		if (used) {
+			auto unit=std::make_unique<Unit>(stream,this,versionMinor);
+			if (Unit::GIDtoID(unit->gid)!=slot || Unit::GIDtoTeam(unit->gid)!=teamNumber || unit->owner!=this)
+				throw std::runtime_error("Unit identity does not match owner and slot");
+			attachUnit(slot,unit.release());
 		}
-		else
-			myUnits[i] = NULL;
+		stream->readLeaveSection();
+	}
+	stream->readLeaveSection();
+	prestige=0;
+	stream->readEnterSection("myBuildings");
+	const Uint32 buildingRecords = ordered ? stream->readUint32("count") : Building::MAX_COUNT;
+	if (buildingRecords > Building::MAX_COUNT) throw std::runtime_error("Invalid building population count");
+	for (Uint32 record=0; record<buildingRecords; ++record)
+	{
+		if ((record & 31)==0) co_await GAGCore::CooperativeTask::checkpoint("[Loading buildings]");
+		stream->readEnterSection(record);
+		const Uint32 slot = ordered ? stream->readUint16("slot") : record;
+		const bool used = ordered || stream->readUint32("isUsed");
+		if (slot >= Building::MAX_COUNT || myBuildings[slot]) throw std::runtime_error("Invalid or duplicate building slot");
+		if (used) {
+			auto building=std::make_unique<Building>(stream,buildingstypes,this,versionMinor);
+			if (Building::GIDtoID(building->gid)!=slot || Building::GIDtoTeam(building->gid)!=teamNumber || building->owner!=this)
+				throw std::runtime_error("Building identity does not match owner and slot");
+			auto* b=building.get();
+			attachBuilding(slot,building.release());
+			if (!b->type->semantics.production.enabledUnits.empty()) swarms.push_back(b);
+			if (b->type->shootingRange) turrets.push_back(b);
+			if (b->type->canExchange) canExchange.push_back(b);
+			if (b->type->isVirtual) virtualBuildings.push_back(b);
+			if (b->runtime->attractsRole(0)) clearingFlags.push_back(b);
+		}
 		stream->readLeaveSection();
 	}
 	stream->readLeaveSection();
 
-	swarms.clear();
-	turrets.clear();
-	canExchange.clear();
-	virtualBuildings.clear();
-	clearingFlags.clear();
-
-	prestige = 0;
-	stream->readEnterSection("myBuildings");
-	for (int i=0; i<Building::MAX_COUNT; i++)
-	{
-        if ((i & 31) == 0) co_await GAGCore::CooperativeTask::checkpoint("[Loading buildings]");
-		if (myBuildings[i])
-			delete myBuildings[i];
-        myBuildings[i] = NULL;
-
-		stream->readEnterSection(i);
-		Uint32 isUsed = stream->readUint32("isUsed");
-		if (isUsed)
-		{
-			myBuildings[i] = new Building(stream, buildingstypes, this, versionMinor);
-			if (Building::GIDtoID(myBuildings[i]->gid) != i) throw std::runtime_error("Building identity does not match slot");
-			if (!myBuildings[i]->type->semantics.production.enabledUnits.empty())
-				swarms.push_back(myBuildings[i]);
-			if (myBuildings[i]->type->shootingRange)
-				turrets.push_back(myBuildings[i]);
-			if (myBuildings[i]->type->canExchange)
-				canExchange.push_back(myBuildings[i]);
-			if (myBuildings[i]->type->isVirtual)
-				virtualBuildings.push_back(myBuildings[i]);
-			if (myBuildings[i]->runtime->attractsRole(0))
-				clearingFlags.push_back(myBuildings[i]);
-		}
-		else
-			myBuildings[i] = NULL;
+	// Cross references are encoded after both populations exist. Old slot
+	// formats bootstrap ascending order, so the same walk reads both lineages.
+	stream->readEnterSection("myUnits");
+	for (Unit* unit : liveUnits.entries()) {
+		co_await GAGCore::CooperativeTask::checkpoint("[Resolving team links]");
+		stream->readEnterSection(Unit::GIDtoID(unit->gid));
+		unit->loadCrossRef(stream,this,versionMinor);
 		stream->readLeaveSection();
 	}
 	stream->readLeaveSection();
-	rebuildLiveLists();
-
-	// resolve cross reference
-	stream->readEnterSection("myUnits");
-	for (int i=0; i<Unit::MAX_COUNT; i++)
-	{
-        if ((i & 31) == 0) co_await GAGCore::CooperativeTask::checkpoint("[Resolving team links]");
-		if (myUnits[i])
-		{
-			stream->readEnterSection(i);
-			myUnits[i]->loadCrossRef(stream, this, versionMinor);
-			stream->readLeaveSection();
-		}
-	}
-	stream->readLeaveSection();
-
 	stream->readEnterSection("myBuildings");
-	for (int i=0; i<Building::MAX_COUNT; i++)
-	{
-        if ((i & 31) == 0) co_await GAGCore::CooperativeTask::checkpoint("[Resolving team links]");
-		if (myBuildings[i])
-		{
-			stream->readEnterSection(i);
-			myBuildings[i]->loadCrossRef(stream, buildingstypes, this, versionMinor);
-			stream->readLeaveSection();
-		}
+	for (Building* building : liveBuildings.entries()) {
+		co_await GAGCore::CooperativeTask::checkpoint("[Resolving team links]");
+		stream->readEnterSection(Building::GIDtoID(building->gid));
+		building->loadCrossRef(stream,buildingstypes,this,versionMinor);
+		stream->readLeaveSection();
 	}
 	stream->readLeaveSection();
+	if (ordered) {
+		const auto next=stream->readUint16("taskSwapNext");
+		if (next!=0xffff && (next>=Unit::MAX_COUNT || !myUnits[next]))
+			throw std::runtime_error("Invalid population task cursor");
+		taskSwapNext=next;
+	}
 
 	allies = stream->readUint32("allies");
 	enemies = stream->readUint32("enemies");
@@ -228,8 +217,7 @@ GAGCore::CooperativeTask Team::loadTask(GAGCore::InputStream *stream, BuildingsT
 	if (versionMinor >= FILE_FORMAT_VERSION_BUILDING_CATALOG)
 	{
 		std::array<bool,Unit::MAX_COUNT> visits{};
-		for (int slot=0; slot<Building::MAX_COUNT; ++slot)
-			if (Building* building=myBuildings[slot])
+		for (Building* building : liveBuildings.entries())
 				for (Unit* unit : building->unitsInside)
 				{
 					const int id=Unit::GIDtoID(unit->gid);
@@ -251,8 +239,8 @@ GAGCore::CooperativeTask Team::loadTask(GAGCore::InputStream *stream, BuildingsT
 						throw std::runtime_error("Invalid saved building service membership");
 					visits[id]=true;
 				}
-		for (int id=0; id<Unit::MAX_COUNT; ++id)
-			if (myUnits[id] && myUnits[id]->serviceResourcesReserved() && !visits[id])
+		for (Unit* unit : liveUnits.entries())
+			if (unit->serviceResourcesReserved() && !visits[Unit::GIDtoID(unit->gid)])
 				throw std::runtime_error("Saved unit reservation has no building service visit");
 	}
 
@@ -260,8 +248,7 @@ GAGCore::CooperativeTask Team::loadTask(GAGCore::InputStream *stream, BuildingsT
 	stockSuppliers.clear();
 	directStockSuppliers.clear();
 	combatFlags.clear();
-	for (int i=0; i<Building::MAX_COUNT; ++i)
-		if (Building* b = myBuildings[i])
+	for (Building* b : liveBuildings.entries())
 		{
 			if (b->type->runtimeSuppliesStock && b->buildingState == Building::ALIVE) stockSuppliers.push_back(b);
 			if (b->type->runtimeSuppliesDirectStock && b->buildingState == Building::ALIVE) directStockSuppliers.push_back(b);
@@ -295,65 +282,42 @@ void Team::save(GAGCore::OutputStream *stream)
 
 	stream->writeEnterSection("Team");
 
-	// saving team
+	// Entity record order is simulation state; never derive it from free IDs.
 	stream->writeEnterSection("myUnits");
-	for (int i=0; i<Unit::MAX_COUNT; i++)
-	{
-		stream->writeEnterSection(i);
-		if (myUnits[i])
-		{
-			stream->writeUint32(true, "isUsed");
-			myUnits[i]->save(stream);
-		}
-		else
-		{
-			stream->writeUint32(false, "isUsed");
-		}
+	stream->writeUint32(liveUnits.size(),"count");
+	unsigned record=0;
+	for (Unit* unit : liveUnits.entries()) {
+		stream->writeEnterSection(record++);
+		stream->writeUint16(Unit::GIDtoID(unit->gid),"slot");
+		unit->save(stream);
 		stream->writeLeaveSection();
 	}
 	stream->writeLeaveSection();
-
 	stream->writeEnterSection("myBuildings");
-	for (int i=0; i<Building::MAX_COUNT; i++)
-	{
-		stream->writeEnterSection(i);
-		if (myBuildings[i])
-		{
-			stream->writeUint32(true, "isUsed");
-			myBuildings[i]->save(stream);
-		}
-		else
-		{
-			stream->writeUint32(false, "isUsed");
-		}
+	stream->writeUint32(liveBuildings.size(),"count");
+	record=0;
+	for (Building* building : liveBuildings.entries()) {
+		stream->writeEnterSection(record++);
+		stream->writeUint16(Building::GIDtoID(building->gid),"slot");
+		building->save(stream);
 		stream->writeLeaveSection();
 	}
 	stream->writeLeaveSection();
-
-	// save cross reference
 	stream->writeEnterSection("myUnits");
-	for (int i=0; i<Unit::MAX_COUNT; i++)
-	{
-		if (myUnits[i])
-		{
-			stream->writeEnterSection(i);
-			myUnits[i]->saveCrossRef(stream);
-			stream->writeLeaveSection();
-		}
+	for (Unit* unit : liveUnits.entries()) {
+		stream->writeEnterSection(Unit::GIDtoID(unit->gid));
+		unit->saveCrossRef(stream);
+		stream->writeLeaveSection();
 	}
 	stream->writeLeaveSection();
-
 	stream->writeEnterSection("myBuildings");
-	for (int i=0; i<Building::MAX_COUNT; i++)
-	{
-		if (myBuildings[i])
-		{
-			stream->writeEnterSection(i);
-			myBuildings[i]->saveCrossRef(stream);
-			stream->writeLeaveSection();
-		}
+	for (Building* building : liveBuildings.entries()) {
+		stream->writeEnterSection(Building::GIDtoID(building->gid));
+		building->saveCrossRef(stream);
+		stream->writeLeaveSection();
 	}
 	stream->writeLeaveSection();
+	stream->writeUint16(taskSwapNext,"taskSwapNext");
 
 	stream->writeUint32(allies, "allies");
 	stream->writeUint32(enemies, "enemies");
@@ -431,6 +395,7 @@ Uint32 Team::checkSum(std::vector<Uint32> *checkSumsVector, std::vector<Uint32> 
 	Uint32 cs=0;
 
 	cs^=BaseTeam::checkSum();
+	if (!legacy152) { cs=rotr1(cs)^taskSwapNext; cs=rotr1(cs)^liveUnits.size(); cs=rotr1(cs)^liveBuildings.size(); }
 	cs=rotr1(cs);
 	if (checkSumsVector)
 		checkSumsVector->push_back(cs); // [1+t*20]

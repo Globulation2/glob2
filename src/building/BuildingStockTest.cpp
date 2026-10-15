@@ -1,5 +1,6 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "EngineFixtures.h"
+#include "LegacyPopulationOutput.h"
 #include "Building.h"
 #include "BuildingType.h"
 #include "Team.h"
@@ -11,57 +12,16 @@
 #include <algorithm>
 #include <memory>
 #include <fstream>
-#include <vector>
-#include <string_view>
 #include <nlohmann/json.hpp>
 
 namespace {
 // Emit historical wide stock without bypassing the bounded runtime setters.
-struct HistoricalStockOutput : GAGCore::BinaryOutputStream {
+struct HistoricalStockOutput : glob2test::LegacyPopulationOutput {
     int slot;
     Sint32 stock;
     int version;
-    std::vector<std::string> sections;
-    HistoricalStockOutput(GAGCore::MemoryStreamBackend* bytes,int slot,Sint32 stock,int version=VERSION_MINOR)
-        : BinaryOutputStream(bytes),slot(slot),stock(stock),version(version) {}
-    bool legacyTargeting() const {
-        return version>=FILE_FORMAT_VERSION_TURRET_TARGETING && version<FILE_FORMAT_VERSION_LEAN_TURRET_TARGETING;
-    }
-    void writeEnterSection(std::string_view name) override { sections.emplace_back(name); }
-    void writeEnterSection(unsigned) override { sections.emplace_back(); }
-    void writeLeaveSection(size_t count=1) override {
-        REQUIRE(count<=sections.size());
-        sections.resize(sections.size()-count);
-    }
-    bool omitHiring() const {
-        return version<FILE_FORMAT_VERSION_CACHED_HIRING &&
-            std::find(sections.begin(),sections.end(),"HiringPipeline")!=sections.end();
-    }
-    void write(const void* data,size_t size,std::string_view name) override {
-        // Relabeling today's header alone is insufficient: old saves precede
-        // cached hiring and still contain the removed turret epoch and flags.
-        if(omitHiring()) return;
-        BinaryOutputStream::write(data,size,name);
-    }
-    void writeEndianIndependent(const void* data,size_t size,std::string_view name) override {
-        if(omitHiring()) return;
-        BinaryOutputStream::writeEndianIndependent(data,size,name);
-    }
-    void writeUint32(Uint32 value,std::string_view name) override {
-        if(legacyTargeting() && !sections.empty() && sections.back()=="turretTargeting" &&
-           (name=="publishedCount" || name=="pendingCount"))
-            REQUIRE(value==0); // These migration fixtures have never stepped a turret pipeline.
-        BinaryOutputStream::writeUint32(value,name);
-        if(legacyTargeting() && name=="typeNum" && !sections.empty() && sections.back()=="Building")
-            BinaryOutputStream::writeUint32(1,"targetingEpoch");
-    }
-    void writeUint8(Uint8 value,std::string_view name) override {
-        if(legacyTargeting() && name=="admitted" && !sections.empty() && sections.back()=="turretTargeting") {
-            BinaryOutputStream::writeUint8(1,"forecast");
-            BinaryOutputStream::writeUint8(1,"reusePreparation");
-        }
-        BinaryOutputStream::writeUint8(value,name);
-    }
+    HistoricalStockOutput(GAGCore::MemoryStreamBackend* bytes,int slot,Sint32 stock,int version=VERSION_MINOR,Game* game=nullptr)
+        : LegacyPopulationOutput(bytes,game,version),slot(slot),stock(stock),version(version) {}
     void writeSint32(Sint32 value,std::string_view name) override {
         if(name=="versionMinor") value=version;
         if(name=="localRessource["+std::to_string(slot)+"]") value=stock;
@@ -70,7 +30,7 @@ struct HistoricalStockOutput : GAGCore::BinaryOutputStream {
 };
 std::string historicalGame(Game& game,int slot,Sint32 stock,int version=VERSION_MINOR) {
     auto* bytes=new GAGCore::MemoryStreamBackend;
-    HistoricalStockOutput out(bytes,slot,stock,version);
+    HistoricalStockOutput out(bytes,slot,stock,version,&game);
     game.save(&out,false,"Private stock cap migration");out.flush();
     return bytes->takeContents();
 }
@@ -192,7 +152,7 @@ TEST_SUITE("BuildingStock")
     }
     TEST_CASE("canceled entering services preserve ground and air occupancy across resave [save-format][artifacts]") {
         glob2test::HeadlessGlobals globals;
-        // The historical writer restores the old layout; only 159 predates bounded stock.
+        // The adapter restores the pre-165 population encoding; only 159 predates bounded stock.
         for(int version:{FILE_FORMAT_VERSION_TURRET_TARGETING,160,VERSION_MINOR})
             for(int unitType:{WORKER,EXPLORER}) {
                 CAPTURE(version);CAPTURE(unitType);

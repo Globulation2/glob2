@@ -1120,9 +1120,8 @@ std::string validateWorld(const Game &game, const GenerationContext &context)
 	for (int k = 0; k < teams; ++k)
 	{
 		int towers = 0;
-		for (int slot = 0; slot < Building::MAX_COUNT; ++slot)
-			if (const Building *b = game.teams[k]->myBuildings[slot];
-				b && b->type->shootingRange && !b->type->isBuildingSite)
+		for (const Building *b : game.teams[k]->liveBuildings.entries())
+			if (b && b->type->shootingRange && !b->type->isBuildingSite)
 				++towers;
 		fewest = std::min(fewest, towers);
 		most = std::max(most, towers);

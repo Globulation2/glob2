@@ -45,9 +45,8 @@ void invariants(Game& game)
 {
     REQUIRE(game.integrity());
     for (int team=0; team<game.mapHeader.getNumberOfTeams(); ++team)
-        for (int id=0; id<Building::MAX_COUNT; ++id)
+        for (auto* building : game.teams[team]->liveBuildings.entries())
         {
-            auto* building=game.teams[team]->myBuildings[id];
             if (!building) continue;
             CHECK(building->unitsInside.size() <= std::size_t(building->maxUnitInside));
             for (int resource=0; resource<MaterialCount; ++resource)

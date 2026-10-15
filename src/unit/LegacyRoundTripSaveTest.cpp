@@ -11,6 +11,7 @@
 #include <TextStream.h>
 #include <StreamBackend.h>
 #include <memory>
+#include <algorithm>
 #include <sstream>
 
 namespace
@@ -28,8 +29,9 @@ std::vector<Uint32> simulation(Game &game, bool legacy152=false)
 Uint32 digest(Game &game)
 {
 	Uint32 hash=2166136261u;
-	// Retain the released representation as an independent default-behavior oracle.
-	// Save/resume comparisons below still cover the complete current state.
+	// Keep the historical checksum representation for this regression trace.
+	// Intentional simulation revisions update its trajectory; save/resume
+	// comparisons below still cover the complete current state.
 	for (Uint32 value : simulation(game, true)) hash=(hash ^ value)*16777619u;
 	return hash;
 }
@@ -75,6 +77,16 @@ TEST_CASE("a format-143 save with live round-trip fields plays on greedily [gold
 	REQUIRE(g.stepCounter == 1200);
 	// Older save state becomes a deterministic PCG stream once, never a fallback.
 	for (int t=0; t<g.teamsCount(); ++t) {
+		// Historical slot-based saves bootstrap authoritative population order
+		// in ascending ID order rather than guessing former creation history.
+		std::vector<Uint16> unitOrder,buildingOrder;
+		for (const auto* unit : g.teams[t]->liveUnits) unitOrder.push_back(unit->gid);
+		for (const auto* building : g.teams[t]->liveBuildings) buildingOrder.push_back(building->gid);
+		CHECK(std::is_sorted(unitOrder.begin(),unitOrder.end()));
+		CHECK(std::is_sorted(buildingOrder.begin(),buildingOrder.end()));
+		CHECK(g.teams[t]->liveUnits.matches(g.teams[t]->myUnits,Unit::MAX_COUNT));
+		CHECK(g.teams[t]->liveBuildings.matches(g.teams[t]->myBuildings,Building::MAX_COUNT));
+		if (!unitOrder.empty()) CHECK(g.teams[t]->taskSwapNext==Unit::GIDtoID(unitOrder.front()));
 		for (auto* unit : g.teams[t]->liveUnits.entries()) {
 			EntityRandom expected;
 			expected.initialize(g.gameHeader.getRandomSeed(), EntityRandom::Kind::Unit, unit->gid, unit->scriptIdentity);

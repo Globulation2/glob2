@@ -725,8 +725,7 @@ bool CustomGameScreen::generateMap()
 		// before it is saved, so the snapshot every client loads carries them.
 		if (setup.startingUnitLevel != 0)
 			for (int team = 0; team < game->teamsCount(); ++team)
-				for (int i = 0; i < Unit::MAX_COUNT; ++i)
-					if (Unit *unit = game->teams[team]->myUnits[i])
+				for (Unit *unit : game->teams[team]->liveUnits.entries())
 						unit->resetAtLevel(setup.startingUnitLevel);
 		GameHeader initial;
 		initial.setBuildingCatalogSnapshot(game->gameHeader.getBuildingCatalogSnapshot());

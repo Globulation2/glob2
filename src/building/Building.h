@@ -71,6 +71,11 @@ class Building : public BuildingUtils, public BuildingStateRecord
 	friend struct TeamStatsMeasurementFixture;
 
   public:
+	// Owner-thread hooks; excluded from immutable state record copies.
+	Building* populationPrevious=nullptr;
+	Building* populationNext=nullptr;
+	const void* populationMembership=nullptr;
+
 	static const int MAX_COUNT=1024;
 	const BuildingRuntimeTraits* runtime=nullptr;
 	void bindType(Sint32 id, BuildingsTypes* catalog=nullptr);

@@ -113,7 +113,7 @@ void BuildingDestroyed::save(GAGCore::OutputStream *stream)
 
 EnemyBuildingDestroyed::EnemyBuildingDestroyed(Runtime& runtime, int gbid) : gbid(gbid)
 {
-	const AIEngine::BuildingView* b=runtime.observation().buildingSlots(Building::GIDtoTeam(gbid))[Building::GIDtoID(gbid)];
+	const AIEngine::BuildingView* b=runtime.observation().buildingAtSlot(Building::GIDfrom(Building::GIDtoID(gbid), Building::GIDtoTeam(gbid)));
 	type=b->typeNum;
 	level=AIEngine::ObservationQueries::buildingType(runtime.observation(),*b).level;
 	location=position(b->posX, b->posY);
@@ -123,7 +123,7 @@ EnemyBuildingDestroyed::EnemyBuildingDestroyed(Runtime& runtime, int gbid) : gbi
 
 tribool EnemyBuildingDestroyed::passes(Runtime& runtime)
 {
-	const AIEngine::BuildingView* b=runtime.observation().buildingSlots(Building::GIDtoTeam(gbid))[Building::GIDtoID(gbid)];
+	const AIEngine::BuildingView* b=runtime.observation().buildingAtSlot(Building::GIDfrom(Building::GIDtoID(gbid), Building::GIDtoTeam(gbid)));
 	if(b==NULL)
 	{
 		return true;

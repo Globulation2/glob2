@@ -145,6 +145,7 @@ Building::Building(int x, int y, Uint16 gid, Sint32 typeNum, Team *team, Buildin
 
 Building::~Building()
 {
+	assert(!populationMembership && !populationPrevious && !populationNext);
     owner->game->forgetTurret(Game::refOf(this));
 	owner->game->areaEffects.changed(gid);
 	freeGradients();
