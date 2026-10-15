@@ -142,15 +142,18 @@ TEST_CASE("invalid population records fail without leaving broken membership") {
 	GAGCore::TextOutputStream teamOutput(teamBackend);
 	world.game.teams[0]->save(&teamOutput); teamOutput.flush();
 	const auto original=teamBackend->takeContents();
+	// Reuse one initialized destination: every failed partial load must be safe
+	// to clear and retry. This also avoids rebuilding complete game catalogs
+	// for each independent small Team record corruption.
+	glob2test::HeadlessGame restored({.header=true});
 	// Ensure the small fixture is independently loadable before corrupting it.
 	{
-		glob2test::HeadlessGame control({.header=true});
 		GAGCore::MemoryStreamBackend backend(original.data(),original.size());
 		backend.seekFromStart(0);
 		GAGCore::TextInputStream input(&backend);
-		REQUIRE(control.game.teams[0]->load(&input,&control.game.buildingsTypes,VERSION_MINOR));
-		CHECK(populationOrder(control.game.teams[0]->liveUnits)==populationOrder(world.game.teams[0]->liveUnits));
-		CHECK(populationOrder(control.game.teams[0]->liveBuildings)==populationOrder(world.game.teams[0]->liveBuildings));
+		REQUIRE(restored.game.teams[0]->load(&input,&restored.game.buildingsTypes,VERSION_MINOR));
+		CHECK(populationOrder(restored.game.teams[0]->liveUnits)==populationOrder(world.game.teams[0]->liveUnits));
+		CHECK(populationOrder(restored.game.teams[0]->liveBuildings)==populationOrder(world.game.teams[0]->liveBuildings));
 	}
 	const auto replaceField=[](std::string& bytes,const std::string& section,const std::string& field,unsigned occurrence,unsigned value) {
 		std::size_t position=bytes.find(section);
@@ -178,7 +181,6 @@ TEST_CASE("invalid population records fail without leaving broken membership") {
 		if (invalid==9) replaceField(bytes,"myBuildings","gid",0,1);
 		if (invalid==10) replaceField(bytes,"myBuildings","count",0,Building::MAX_COUNT+1);
 		CAPTURE(invalid);
-		glob2test::HeadlessGame restored({.header=true});
 		bool rejected=false;
 		try {
 			GAGCore::MemoryStreamBackend backend(bytes.data(),bytes.size());
@@ -194,6 +196,16 @@ TEST_CASE("invalid population records fail without leaving broken membership") {
 			CHECK(team->liveBuildings.matches(team->myBuildings,Building::MAX_COUNT));
 			CHECK((team->taskSwapNext==0xffff || (team->taskSwapNext<Unit::MAX_COUNT && team->myUnits[team->taskSwapNext])));
 		}
+	}
+	// A valid record must still succeed after the final failed partial load.
+	{
+		GAGCore::MemoryStreamBackend backend(original.data(),original.size());
+		backend.seekFromStart(0);
+		GAGCore::TextInputStream input(&backend);
+		REQUIRE(restored.game.teams[0]->load(&input,&restored.game.buildingsTypes,VERSION_MINOR));
+		CHECK(populationOrder(restored.game.teams[0]->liveUnits)==populationOrder(world.game.teams[0]->liveUnits));
+		CHECK(populationOrder(restored.game.teams[0]->liveBuildings)==populationOrder(world.game.teams[0]->liveBuildings));
+		CHECK(restored.game.teams[0]->taskSwapNext==world.game.teams[0]->taskSwapNext);
 	}
 	const auto binary=savePopulation(world.game,false);
 	glob2test::HeadlessGame truncated({.header=true});
