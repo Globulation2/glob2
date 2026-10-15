@@ -4,10 +4,9 @@
 #include <array>
 namespace Hiring
 {
-inline constexpr unsigned PublicationDelay = 4, RefreshInterval = 4, CandidateExtras = 2;
-// An attraction round stays open this long while roles are owed: a vacancy just
-// missed by an observation needs at most one refresh plus publication.
-inline constexpr unsigned RecruitmentRetryTicks = PublicationDelay + RefreshInterval;
+inline constexpr unsigned PublicationDelay = 1, RefreshInterval = 4, CandidateExtras = 2;
+// Keep the tested eight-tick attraction retry window independent of scheduling.
+inline constexpr unsigned RecruitmentRetryTicks = 8;
 // Slot zero is delivery; the remaining slots are clearing, exploration and defense.
 inline std::array<unsigned, 4> roleTargets(unsigned seats, bool delivery, std::array<bool, 3> roles)
 {
