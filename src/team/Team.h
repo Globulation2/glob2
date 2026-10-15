@@ -3,7 +3,7 @@
 
 #pragma once
 
-#include "LiveSlotList.h"
+#include "IntrusiveEntityList.h"
 #include "TeamCapacity.h"
 #include <SDL3/SDL_iostream.h>
 #include <CooperativeTask.h>
@@ -156,15 +156,17 @@ public:
 
 	Building **myBuildings;
 
-	//! The occupied slots of myUnits/myBuildings in slot order. Assign a slot,
-	//! then attach; detach before (or when) clearing it. Bulk loaders rebuild.
-	LiveSlotList<Unit> liveUnits;
-	LiveSlotList<Building> liveBuildings;
-	void attachUnit(int id) { liveUnits.attach(Uint16(id), myUnits[id]); }
-	void detachUnit(int id) { liveUnits.detach(Uint16(id)); }
-	void attachBuilding(int id) { liveBuildings.attach(Uint16(id), myBuildings[id]); }
-	void detachBuilding(int id) { liveBuildings.detach(Uint16(id)); }
-	void rebuildLiveLists();
+	//! Authoritative population order: append on arrival, unlink before destruction.
+	IntrusiveEntityList<Unit> liveUnits;
+	IntrusiveEntityList<Building> liveBuildings;
+	void attachUnit(int id);
+	void attachUnit(int id, Unit* unit);
+	Unit* detachUnit(int id);
+	void attachBuilding(int id);
+	void attachBuilding(int id, Building* building);
+	Building* detachBuilding(int id);
+	// Local slot of the next live round-robin task candidate; 0xffff when empty.
+	Uint16 taskSwapNext = 0xffff;
 
 	//! Buildings that want units, keyed by priority, highest first.
 	std::map<int, std::vector<Building*>, std::greater<int> > buildingsNeedingUnits;

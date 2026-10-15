@@ -231,7 +231,7 @@ int CenterOfBuilding::calculate_constraint(Runtime& runtime, int x, int y)
 
 bool CenterOfBuilding::passes_constraint(Runtime& runtime, int x, int y)
 {
-	const AIEngine::BuildingView* b=runtime.observation().buildingSlots(Building::GIDtoTeam(gbid))[Building::GIDtoID(gbid)];
+	const AIEngine::BuildingView* b=runtime.observation().buildingAtSlot(Building::GIDfrom(Building::GIDtoID(gbid), Building::GIDtoTeam(gbid)));
 	if(b)
 	{
 		if(runtime.observation().normalizeX(b->posX+AIEngine::ObservationQueries::buildingType(runtime.observation(),*b).width/2)==x &&

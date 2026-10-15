@@ -101,11 +101,22 @@ struct Entities
 	static constexpr Uint32 NoRecord = std::numeric_limits<Uint32>::max();
 	std::vector<BuildingView> buildings;
 	std::vector<UnitView> units;
+	std::vector<UnitRange> buildingRanges, unitRanges;
 	// Global entity slots index the compact records directly. Captured once in
 	// the entity extraction pass and shared by all readers; no controller table.
 	std::vector<Uint32> buildingSlotIndices, unitSlotIndices;
 	std::vector<UnitRef> relationships;
 	std::vector<BuildProjectView> projects;
+	std::span<const UnitView> unitsForTeam(int team) const {
+		if (team<0 || std::size_t(team)>=unitRanges.size()) return {};
+		const auto range=unitRanges[team];
+		return std::span<const UnitView>(units).subspan(range.offset,range.count);
+	}
+	std::span<const BuildingView> buildingsForTeam(int team) const {
+		if (team<0 || std::size_t(team)>=buildingRanges.size()) return {};
+		const auto range=buildingRanges[team];
+		return std::span<const BuildingView>(buildings).subspan(range.offset,range.count);
+	}
 };
 struct Teams { std::vector<TeamView> values; int totalPrestige = 0; };
 struct Rules

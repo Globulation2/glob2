@@ -154,17 +154,15 @@ void Game::regenerateDiscoveryMap(void)
 	map.unsetMapDiscovered();
 	for (int t=0; t<mapHeader.getNumberOfTeams(); t++)
 	{
-		for (int i=0; i<Unit::MAX_COUNT; i++)
+		for (Unit* u : teams[t]->liveUnits)
 		{
-			Unit *u=teams[t]->myUnits[i];
 			if (u)
 			{
 				map.setMapDiscovered(u->posX-1, u->posY-1, 3, 3, teams[t]->sharedVisionOther);
 			}
 		}
-		for (int i=0; i<Building::MAX_COUNT; i++)
+		for (Building* b : teams[t]->liveBuildings)
 		{
-			Building *b=teams[t]->myBuildings[i];
 			if (b)
 			{
 				b->setMapDiscovered();
@@ -215,8 +213,7 @@ Unit *Game::addUnit(int x, int y, int team, Sint32 typeNum, int level, int delta
 	else
 		map.setGroundUnit(x, y, gid);
 
-	teams[team]->myUnits[id]= new Unit(x, y, gid, typeNum, teams[team], level);
-	teams[team]->attachUnit(id);
+	teams[team]->attachUnit(id, new Unit(x, y, gid, typeNum, teams[team], level));
 	teams[team]->myUnits[id]->dx=dx;
 	teams[team]->myUnits[id]->dy=dy;
 	teams[team]->myUnits[id]->directionFromDxDy();
@@ -277,9 +274,8 @@ Building *Game::addBuilding(int x, int y, int typeNum, int teamNumber, Sint32 un
 		team->virtualBuildings.push_front(b);
 	else
 		map.setBuilding(x, y, w, h, gid);
-	team->myBuildings[id]=b;
+	team->attachBuilding(id,b);
 	areaEffects.changed(gid);
-	team->attachBuilding(id);
 	snapshots().invalidateBoundary();
 	return b;
 }
@@ -295,9 +291,7 @@ bool Game::removeUnitAndBuildingAndFlags(int x, int y, unsigned flags)
 			int id=Unit::GIDtoID(gauid);
 			int team=Unit::GIDtoTeam(gauid);
 			map.setAirUnit(x, y, NOGUID);
-			delete (teams[team]->myUnits[id]);
-			teams[team]->myUnits[id]=NULL;
-			teams[team]->detachUnit(id);
+			delete teams[team]->detachUnit(id);
 			found=true;
 		}
 	}
@@ -309,9 +303,7 @@ bool Game::removeUnitAndBuildingAndFlags(int x, int y, unsigned flags)
 			int id=Unit::GIDtoID(gguid);
 			int team=Unit::GIDtoTeam(gguid);
 			map.setGroundUnit(x, y, NOGUID);
-			delete (teams[team]->myUnits[id]);
-			teams[team]->myUnits[id]=NULL;
-			teams[team]->detachUnit(id);
+			delete teams[team]->detachUnit(id);
 			found=true;
 		}
 	}
@@ -331,9 +323,7 @@ bool Game::removeUnitAndBuildingAndFlags(int x, int y, unsigned flags)
 			teams[team]->buildingsTryToBuildingSiteRoom.remove(b);
 			teams[team]->buildingsWaitingForDestruction.remove(b);
 			teams[team]->buildingsToBeDestroyed.remove(b);
-			delete b;
-			teams[team]->myBuildings[id]=NULL;
-			teams[team]->detachBuilding(id);
+			delete teams[team]->detachBuilding(id);
 			found=true;
 		}
 	}
@@ -344,7 +334,6 @@ bool Game::removeUnitAndBuildingAndFlags(int x, int y, unsigned flags)
 				if ((*bi)->posX==x && (*bi)->posY==y)
 				{
 					Building *b = *bi;
-					teams[ti]->myBuildings[Building::GIDtoID(b->gid)]=NULL;
 					teams[ti]->detachBuilding(Building::GIDtoID(b->gid));
 					// This also removes the virtual-building list entry; do not
 					// use its iterator after removing the ability references.

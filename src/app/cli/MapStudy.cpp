@@ -251,16 +251,14 @@ std::uint64_t colonySignature(const Game &game, int team)
 	for (std::int64_t v : {std::int64_t(colony->startPosX), std::int64_t(colony->startPosY),
 						   std::int64_t(colony->startPosSet)})
 		hash = fnv(hash, std::uint64_t(v));
-	for (int i = 0; i < Unit::MAX_COUNT; ++i)
-		if (const Unit *u = colony->myUnits[i])
+	for (const Unit *u : colony->liveUnits.entries())
 			for (std::int64_t v :
-				 {std::int64_t(i), std::int64_t(Unit::GIDtoID(u->gid)), std::int64_t(u->typeNum),
+				 {std::int64_t(Unit::GIDtoID(u->gid)), std::int64_t(Unit::GIDtoID(u->gid)), std::int64_t(u->typeNum),
 				  std::int64_t(u->posX), std::int64_t(u->posY), std::int64_t(u->hp),
 				  std::int64_t(u->hungry), std::int64_t(u->direction)})
 				hash = fnv(hash, std::uint64_t(v));
-	for (int i = 0; i < Building::MAX_COUNT; ++i)
-		if (const Building *b = colony->myBuildings[i])
-			for (std::int64_t v : {std::int64_t(i), std::int64_t(Building::GIDtoID(b->gid)),
+	for (const Building *b : colony->liveBuildings.entries())
+			for (std::int64_t v : {std::int64_t(Building::GIDtoID(b->gid)), std::int64_t(Building::GIDtoID(b->gid)),
 								   std::int64_t(b->typeNum), std::int64_t(b->posX),
 								   std::int64_t(b->posY), std::int64_t(b->hp)})
 				hash = fnv(hash, std::uint64_t(v));
@@ -361,11 +359,9 @@ void shiftTeams(Game &game, int shift)
 		for (Uint32 *bits : {&team.me, &team.allies, &team.enemies, &team.sharedVisionExchange,
 							 &team.sharedVisionFood, &team.sharedVisionOther})
 			*bits = mask(*bits);
-		for (int i = 0; i < Unit::MAX_COUNT; ++i)
-			if (Unit *unit = team.myUnits[i])
+		for (Unit *unit : team.liveUnits.entries())
 				unit->gid = unitGid(unit->gid);
-		for (int i = 0; i < Building::MAX_COUNT; ++i)
-			if (Building *building = team.myBuildings[i])
+		for (Building *building : team.liveBuildings.entries())
 			{
 				building->gid = buildingGid(building->gid);
 				building->seenByMask = mask(building->seenByMask);

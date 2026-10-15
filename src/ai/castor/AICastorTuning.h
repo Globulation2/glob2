@@ -155,11 +155,6 @@ static constexpr int AI_CASTOR_WORKER_GOAL_HIGH = 4;
 // controlFood — wheat-care thresholds and INN worker assignments
 // ---------------------------------------------------------------------------
 
-// Up to 8 retries to find a non-NULL building when the rotation slot lands
-// on an empty Building::myBuildings cell.
-// C++: Control.cpp:181.
-static constexpr int AI_CASTOR_CONTROL_FOOD_RETRIES = 8;
-
 // "Stop workers" wheat-care threshold: care above this means the field is
 // being neglected, drop maxUnitWorking to zero.
 // C++: Control.cpp:219.

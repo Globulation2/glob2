@@ -65,9 +65,8 @@ const AIEngine::BuildingView* AICortex::findFlagByGid(Uint16 gid) const
 	if (gid == NOGBID)
 		return NULL;
 	const AIEngine::TeamView* team = observedTeam;
-	for (int index=0;index<::Building::MAX_COUNT;++index)
+	for (const AIEngine::BuildingView* b : observedWorld->buildingsForTeam(team->number))
 	{
-		const AIEngine::BuildingView* b=observedWorld->buildingSlots(team->number)[index];
 		if (b
 		    && b->gid == gid
 		    && Cortex::servesRole(*observedWorld, *Cortex::buildingType(*observedWorld,*b), Cortex::CORTEX_BUILD_WAR)
@@ -100,9 +99,8 @@ const AIEngine::BuildingView* AICortex::rediscoverFlag(Uint16& gid, int tx, int 
 	const AIEngine::TeamView* team = observedTeam;
 	const AIEngine::BuildingView* best = NULL;
 	int bestDist = 0;
-	for (int index=0;index<::Building::MAX_COUNT;++index)
+	for (const AIEngine::BuildingView* b : observedWorld->buildingsForTeam(team->number))
 	{
-		const AIEngine::BuildingView* b=observedWorld->buildingSlots(team->number)[index];
 		if (!b
 		    || !Cortex::servesRole(*observedWorld, *Cortex::buildingType(*observedWorld,*b), Cortex::CORTEX_BUILD_WAR)
 		    || b->buildingState != ::Building::ALIVE)
@@ -282,9 +280,8 @@ bool AICortex::computeRallyPoint(int& rx, int& ry) const
 	// only when we have no buildings at all (caller then plants straight on the enemy).
 	const AIEngine::TeamView* team = observedTeam;
 	const AIEngine::BuildingView* fallback = NULL;
-	for (int i = 0; i < ::Building::MAX_COUNT; i++)
+	for (const AIEngine::BuildingView* b : observedWorld->buildingsForTeam(team->number))
 	{
-		const AIEngine::BuildingView* b = observedWorld->buildingSlots(team->number)[i];
 		if (b == NULL || b->buildingState == ::Building::DEAD)
 			continue;
 		if (fallback == NULL)
@@ -337,9 +334,8 @@ void AICortex::sweepOrphanWarFlags(const Cortex::CortexObservation& obs)
 	// forward. A flag can appear more than once when walking virtualBuildings; keying by
 	// gid dedups the bookkeeping so a duplicate entry cannot reset (or advance) the window.
 	std::map<Uint16, Sint32> seenNow;
-	for (int index=0;index<::Building::MAX_COUNT;++index)
+	for (const AIEngine::BuildingView* b : observedWorld->buildingsForTeam(team->number))
 	{
-		const AIEngine::BuildingView* b=observedWorld->buildingSlots(team->number)[index];
 		if (!b
 		    || !Cortex::servesRole(*observedWorld, *Cortex::buildingType(*observedWorld,*b), Cortex::CORTEX_BUILD_WAR)
 		    || b->buildingState != ::Building::ALIVE
@@ -353,9 +349,8 @@ void AICortex::sweepOrphanWarFlags(const Cortex::CortexObservation& obs)
 	// cycle). Iterate virtualBuildings in insertion order (deterministic — never a set) to
 	// emit the OrderDeletes; erase each swept gid from seenNow so a duplicate list entry
 	// neither re-deletes it nor keeps it armed for next cycle.
-	for (int index=0;index<::Building::MAX_COUNT;++index)
+	for (const AIEngine::BuildingView* b : observedWorld->buildingsForTeam(team->number))
 	{
-		const AIEngine::BuildingView* b=observedWorld->buildingSlots(team->number)[index];
 		if (!b
 		    || !Cortex::servesRole(*observedWorld, *Cortex::buildingType(*observedWorld,*b), Cortex::CORTEX_BUILD_WAR)
 		    || b->buildingState != ::Building::ALIVE

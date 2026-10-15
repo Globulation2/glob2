@@ -47,16 +47,16 @@ bool load(Game& game, const char* file)
 int buildingsOf(const Team* team)
 {
 	int n = 0;
-	for (int i = 0; i < Building::MAX_COUNT; i++)
-		n += team->myBuildings[i] && team->myBuildings[i]->buildingState == Building::ALIVE;
+	for (const Building* b : team->liveBuildings.entries())
+		n += b->buildingState == Building::ALIVE;
 	return n;
 }
 
 int unitsOf(const Team* team)
 {
 	int n = 0;
-	for (int i = 0; i < Unit::MAX_COUNT; i++)
-		n += team->myUnits[i] && !team->myUnits[i]->isDead;
+	for (const Unit* u : team->liveUnits.entries())
+		n += !u->isDead;
 	return n;
 }
 
@@ -105,14 +105,14 @@ TEST_CASE("copies colonies, painted areas and clearing settings [save-format]")
 	require(flag != nullptr, "place a clearing flag");
 	flag->setClearsMaterial(WOOD,false);
 	flag->minWorkerLevelToFlag=2;
-	for (int i=0; i<Unit::MAX_COUNT; ++i)
-		if (auto* unit=game.teams[0]->myUnits[i]; unit && unit->typeNum==WORKER)
+	for (auto* unit : game.teams[0]->liveUnits.entries())
+			if (unit && unit->typeNum==WORKER)
 			unit->constructionLevel=2;
 
 	int anchorX[2], anchorY[2];
 	for (int t = 0; t < mapTeams; ++t)
-		for (int i = 0; i < Building::MAX_COUNT; ++i)
-			if (const auto *b = game.teams[t]->myBuildings[i]; b && b->type->unitProductionTime)
+		for (const auto *b : game.teams[t]->liveBuildings.entries())
+			if (b && b->type->unitProductionTime)
 			{
 				anchorX[t] = b->posX;
 				anchorY[t] = b->posY;
@@ -162,9 +162,8 @@ TEST_CASE("copies colonies, painted areas and clearing settings [save-format]")
 				if (t == 0)
 				{
 					int flags = 0;
-					for (int b = 0; b < Building::MAX_COUNT; b++)
+					for (const Building* copy : game.teams[k]->liveBuildings.entries())
 					{
-						const Building* copy = game.teams[k]->myBuildings[b];
 						if (copy && copy->typeNum == flagType)
 						{
 							flags++;
@@ -173,8 +172,8 @@ TEST_CASE("copies colonies, painted areas and clearing settings [save-format]")
 						}
 					}
 					require(flags == 1, "the copy has its clearing flag");
-					for (int u=0; u<Unit::MAX_COUNT; ++u)
-						if (const auto* unit=game.teams[k]->myUnits[u]; unit && unit->typeNum==WORKER)
+					for (const auto* unit : game.teams[k]->liveUnits.entries())
+			if (unit && unit->typeNum==WORKER)
 							require(unit->constructionLevel==2,"workers keep independent construction qualification");
 				}
 			}

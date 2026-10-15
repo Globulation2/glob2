@@ -47,9 +47,8 @@ namespace
 			if(!((runtime.observedTeam().allies|runtime.observedTeam().mask)&(Uint32(1)<<team)))continue;
 			const auto* ally=std::size_t(team)<runtime.observation().teams.size() ? &runtime.observation().teams[team] : nullptr;
 			if(!ally)continue;
-			for(int b=0;b<Building::MAX_COUNT;++b)
+			for (const AIEngine::BuildingView* building : runtime.observation().buildingsForTeam(team))
 			{
-				const AIEngine::BuildingView* building=runtime.observation().buildingSlots(team)[b];
 				if(!building || !AIEngine::ObservationQueries::buildingType(runtime.observation(),*building).semantics.occupiesGround)continue;
 				for(int dy=-radius;dy<=radius;++dy)for(int dx=-radius;dx<=radius;++dx)
 					if(dx*dx+dy*dy<=radius*radius)
@@ -539,9 +538,8 @@ std::vector<Uint8> Maxima::worker_reachable_circulation(Context& runtime, bool a
 	{
 		std::vector<Uint8> visited(size,0);
 		std::vector<int> queue;
-		for(int id=0;id<Unit::MAX_COUNT;++id)
+		for (const AIEngine::UnitView* worker : runtime.observation().unitsForTeam(runtime.teamNumber()))
 		{
-			const AIEngine::UnitView* worker=runtime.observation().unitSlots(runtime.teamNumber())[id];
 			if(!worker||!AIEngine::ObservationQueries::matchesStrategyUnitRole(runtime.observation(),*worker,WORKER)
 			   ||int(worker->performance[SWIM]>0)!=swimming)continue;
 			const int index=(*map).normalizeY(worker->posY)*w+(*map).normalizeX(worker->posX);

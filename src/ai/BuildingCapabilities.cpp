@@ -52,9 +52,8 @@ std::shared_ptr<Order> missingProductionOrder(Game& game, Team& team,
         if (descriptor->isBuildingSite) type = descriptor->nextLevel;
         provided |= unsigned(index.intentMask(type)) & ProductionIntentMask;
     };
-    for (int id = 0; id < Building::MAX_COUNT; ++id)
+    for (auto* building : team.liveBuildings.entries())
     {
-        auto* building = team.myBuildings[id];
         if (!building || building->buildingState != Building::ALIVE) continue;
         includeProvider(building->type->isBuildingSite
             ? building->getConstructionCompletionTypeNum() : building->typeNum);

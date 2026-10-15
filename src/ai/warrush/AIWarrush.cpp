@@ -32,9 +32,8 @@ namespace {
 	int countUnitsIf(const AIEngine::AIWorldView& world, const auto *team, Pred p)
 	{
 		int n = 0;
-		for (int i = 0; i < Unit::MAX_COUNT; i++)
+		for (const AIEngine::UnitView *u : world.unitsForTeam(team->number))
 		{
-			const AIEngine::UnitView *u = world.unitSlots(team->number)[i];
 			if (u && p(u)) n++;
 		}
 		return n;
@@ -43,9 +42,8 @@ namespace {
 	template<typename Pred>
 	const AIEngine::UnitView *findUnitIf(const AIEngine::AIWorldView& world, const auto *team, Pred p)
 	{
-		for (int i = 0; i < Unit::MAX_COUNT; i++)
+		for (const AIEngine::UnitView *u : world.unitsForTeam(team->number))
 		{
-			const AIEngine::UnitView *u = world.unitSlots(team->number)[i];
 			if (u && p(u)) return u;
 		}
 		return nullptr;
@@ -55,9 +53,8 @@ namespace {
 	int countBuildingsIf(const AIEngine::AIWorldView& world, const auto *team, Pred p)
 	{
 		int n = 0;
-		for (int i = 0; i < Building::MAX_COUNT; i++)
+		for (const AIEngine::BuildingView *b : world.buildingsForTeam(team->number))
 		{
-			const AIEngine::BuildingView *b = world.buildingSlots(team->number)[i];
 			if (b && p(b)) n++;
 		}
 		return n;
@@ -66,9 +63,8 @@ namespace {
 	template<typename Pred>
 	const AIEngine::BuildingView *findBuildingIf(const AIEngine::AIWorldView& world, const auto *team, Pred p)
 	{
-		for (int i = 0; i < Building::MAX_COUNT; i++)
+		for (const AIEngine::BuildingView *b : world.buildingsForTeam(team->number))
 		{
-			const AIEngine::BuildingView *b = world.buildingSlots(team->number)[i];
 			if (b && p(b)) return b;
 		}
 		return nullptr;
@@ -308,9 +304,8 @@ std::shared_ptr<Order> AIWarrush::staffingOrder() const
 		| (std::uint64_t{1} << unsigned(Intent::Feed));
 	std::array<const AIEngine::BuildingView*, intents.size()> candidates{};
 	const auto& index = *queries;
-	for (int slot = 0; slot < Building::MAX_COUNT; ++slot)
+	for (const AIEngine::BuildingView* building : observation->buildingsForTeam(observedTeam->number))
 	{
-		const AIEngine::BuildingView* building = observation->buildingSlots(observedTeam->number)[slot];
 		if (!building || hasPending(*building) || building->maxUnitWorking >= queries->kind(*building).resolvedType.semantics.assignmentLimit)
 			continue;
 		const int completed = queries->kind(*building).site ? queries->kind(*building).next : building->typeNum;
@@ -321,7 +316,7 @@ std::shared_ptr<Order> AIWarrush::staffingOrder() const
 			if (!candidates[intent] && (mask & (std::uint64_t{1} << unsigned(intents[intent])))
 				&& building->maxUnitWorking < requests[intent])
 				candidates[intent] = building;
-		// Intent priority precedes slot order: a later worker producer wins over
+		// Intent priority precedes population order: a later worker producer wins over
 		// an earlier explorer producer. Only the first worker candidate ends the scan.
 		if (candidates.front()) break;
 	}
@@ -334,12 +329,11 @@ std::shared_ptr<Order> AIWarrush::staffingOrder() const
 
 const AIEngine::BuildingView *AIWarrush::getSwarmAtRandom()const
 {
-	const auto myBuildings=observation->buildingSlots(observedTeam->number);
+	const auto myBuildings=observation->buildingsForTeam(observedTeam->number);
 	int swarmsfound = 0;
 	const AIEngine::BuildingView *chosen_swarm = NULL;
-	for (int i=0; i<Building::MAX_COUNT; i++)
+	for (const AIEngine::BuildingView *b : myBuildings)
 	{
-		const AIEngine::BuildingView *b=myBuildings[i];
 		if ((b) && (provides(*b, Intent::ProduceWorker)))
 		{
 			++swarmsfound;
@@ -432,12 +426,11 @@ bool AIWarrush::percentageOfBuildingsAreFullyWorked(int percentage)const
 	telemetry.set(AITrace::AI3::AIWarrush_percentageOfBuildingsAreFullyWorked_input_percentage,
 				  percentage);
 	telemetry.count(AITrace::AI3::AIWarrush_percentageOfBuildingsAreFullyWorked_calls);
-	const auto myBuildings=observation->buildingSlots(observedTeam->number);
+	const auto myBuildings=observation->buildingsForTeam(observedTeam->number);
 	int num_buildings = 0;
 	int num_worked_buildings = 0;
-	for (int i=0; i<Building::MAX_COUNT; i++)
+	for (const AIEngine::BuildingView *b : myBuildings)
 	{
-		const AIEngine::BuildingView *b=myBuildings[i];
 		if (b && queries->kind(*b).resolvedType.semantics.occupiesGround && queries->kind(*b).resolvedType.maxUnitWorking > 0)
 		{
 			++num_buildings;
@@ -645,9 +638,8 @@ std::shared_ptr<Order> AIWarrush::placeGuardAreas()
 		const AIEngine::TeamView *t = teamAt(i);
 		if((t)&&(observedTeam->enemies & t->mask))
 		{
-			for(int j=0;j<Building::MAX_COUNT;j++)
+			for (const AIEngine::BuildingView *b : observation->buildingsForTeam(t->number))
 			{
-				const AIEngine::BuildingView *b = observation->buildingSlots(t->number)[j];
 				if ((b)&&(b->buildingState != Building::DEAD)&&(b->hp != 1 || b->constructionResultState == Building::NO_CONSTRUCTION)&&queries->kind(*b).resolvedType.semantics.occupiesGround)
 				{
 					const BuildingType *bt = &queries->kind(*b).resolvedType;
@@ -893,9 +885,8 @@ std::shared_ptr<Order> AIWarrush::setupExploreFlagForTeam(const AIEngine::TeamVi
   return std::make_shared<NullOrder>();
  };
 	if(verbose)bufferedDiagnostics.push_back({"", "", [&] { std::ostringstream text; text << "looking for swarms:\n"; return text.str(); }()});
-	for(int j=0;j<Building::MAX_COUNT;j++)
+	for (const AIEngine::BuildingView *b : observation->buildingsForTeam(enemy_team->number))
 	{
-		const AIEngine::BuildingView *b = observation->buildingSlots(enemy_team->number)[j];
 		if((b)&&(provides(*b, Intent::ProduceWorker))&&(b->constructionResultState == Building::NO_CONSTRUCTION))
 		{
 			return telemetry.returnedOrder(AITrace::AI3::AIWarrush_setupExploreFlagForTeam_result,
@@ -904,9 +895,8 @@ std::shared_ptr<Order> AIWarrush::setupExploreFlagForTeam(const AIEngine::TeamVi
 	}
 	if(verbose)bufferedDiagnostics.push_back({"", "", [&] { std::ostringstream text; text << "No swarms found\n"; return text.str(); }()});
 	//what, they have no swarm? o_O Find any building:
-	for(int j=0;j<Building::MAX_COUNT;j++)
+	for (const AIEngine::BuildingView *b : observation->buildingsForTeam(enemy_team->number))
 	{
-		const AIEngine::BuildingView *b = observation->buildingSlots(enemy_team->number)[j];
 		if(b)
 		{
 			return telemetry.returnedOrder(AITrace::AI3::AIWarrush_setupExploreFlagForTeam_result,
@@ -915,9 +905,8 @@ std::shared_ptr<Order> AIWarrush::setupExploreFlagForTeam(const AIEngine::TeamVi
 	}
 	if(verbose)bufferedDiagnostics.push_back({"", "", [&] { std::ostringstream text; text << "No buildings found\n"; return text.str(); }()});
 	//what, they have no buildings? o_O Find any unit:
-	for(int j=0;j<Unit::MAX_COUNT;j++)
+	for (const AIEngine::UnitView *u : observation->unitsForTeam(enemy_team->number))
 	{
-		const AIEngine::UnitView *u = observation->unitSlots(enemy_team->number)[j];
 		if(u)
 		{
 			return telemetry.returnedOrder(AITrace::AI3::AIWarrush_setupExploreFlagForTeam_result,

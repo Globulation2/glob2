@@ -248,6 +248,8 @@ void Maxima::saveExecutionState(GAGCore::OutputStream* stream)
     context.saveExecutionState(stream);
     archive("wave_delivery",wave_delivery);
     archive("failed_waves",failed_waves);
+    // An initialized director can execute this budget before its next plan.
+    stream->writeSint32(budget.tactical_quarantine_ticks,"tacticalQuarantineTicks");
     stream->writeLeaveSection();
 }
 void Maxima::loadExecutionState(GAGCore::InputStream* stream, Sint32 versionMinor)
@@ -302,6 +304,14 @@ void Maxima::loadExecutionState(GAGCore::InputStream* stream, Sint32 versionMino
         archive("wheat_maturity_cursor",discardedCursor);
         archive("wheat_maturity_pending",discardedPending);
     }
+    if(versionMinor>=FILE_FORMAT_VERSION_INTRUSIVE_POPULATION)
+        budget.tactical_quarantine_ticks=stream->readSint32("tacticalQuarantineTicks");
+    else
+        // Older formats omitted this budget. The restored canonical strategy
+        // is its sole source when planning; optional telemetry may be stale.
+        budget.tactical_quarantine_ticks=strategy.tactics.failed_target_quarantine_ticks;
+    if(budget.tactical_quarantine_ticks<0 || budget.tactical_quarantine_ticks>1000000)
+        throw std::runtime_error("Invalid saved Maxima tactical quarantine duration");
     stream->readLeaveSection();
 
 }

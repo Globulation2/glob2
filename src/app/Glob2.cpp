@@ -304,9 +304,8 @@ static int dumpWheatPlan(const std::string& mapName, int team)
 	std::vector<int> seeds;
 	std::vector<bool> seedBit(static_cast<size_t>(w) * h, false);
 	int bbMinX = w, bbMinY = h, bbMaxX = -1, bbMaxY = -1;
-	for (int i = 0; i < Building::MAX_COUNT; i++)
+	for (const Building* b : tm->liveBuildings.entries())
 	{
-		Building* b = tm->myBuildings[i];
 		if (b == NULL || b->buildingState == Building::DEAD)
 			continue;
 		if (b->posX < bbMinX) bbMinX = b->posX;
@@ -407,14 +406,13 @@ static void dumpTeams(const Game& game)
 		Team* team = game.teams[t];
 		int units = 0, buildings = 0, swarmCount = 0;
 		std::string where;
-		for (int i = 0; i < Unit::MAX_COUNT; i++)
-			if (team->myUnits[i] && !team->myUnits[i]->isDead)
+		for (const Unit* u : team->liveUnits.entries())
+			if (!u->isDead)
 			{
 				units++;
-				where += FormattableString(" u%0,%1").arg(team->myUnits[i]->posX).arg(team->myUnits[i]->posY);
+				where += FormattableString(" u%0,%1").arg(u->posX).arg(u->posY);
 			}
-		for (int i = 0; i < Building::MAX_COUNT; i++)
-			if (Building* b = team->myBuildings[i])
+		for (const Building* b : team->liveBuildings.entries())
 			{
 				buildings++;
 				if (!b->type->semantics.production.enabledUnits.empty())

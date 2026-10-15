@@ -176,9 +176,8 @@ void AICortex::translateActionSetProduction(const Cortex::CortexAction& action, 
 	// current ratio differs from the target; getOrder() drains orderQueue
 	// one order per tick, so this naturally retargets one swarm per tick.
 	const AIEngine::TeamView* team = observedTeam;
-	for (int i = 0; i < ::Building::MAX_COUNT; i++)
+	for (const AIEngine::BuildingView* b : observedWorld->buildingsForTeam(team->number))
 	{
-		const AIEngine::BuildingView* b = observedWorld->buildingSlots(team->number)[i];
 		if (!b)
 			continue;
 		if (!Cortex::servesRole(*observedWorld, *Cortex::buildingType(*observedWorld,*b), Cortex::CORTEX_BUILD_SWARM))
@@ -453,9 +452,9 @@ void AICortex::applyWorkerCounts(const Tracked* tracked, int count, const Sint32
 		// array-index lookup — not a linear scan — so it is both deterministic
 		// and cheap. GIDtoID returns the per-team array slot; GIDtoTeam is not
 		// needed here because the tracked sets only contain our own buildings
-		// (filled from observedWorld->buildingSlots(team->number) in CortexTypes.h observe()).
+		// (filled from observedWorld->buildingsForTeam(team->number) in CortexTypes.h observe()).
 		const int bid = ::Building::GIDtoID(static_cast<Uint16>(tb.gid));
-		const AIEngine::BuildingView* b = observedWorld->buildingSlots(team->number)[bid];
+		const AIEngine::BuildingView* b = observedWorld->buildingAtSlot(Building::GIDfrom(bid, team->number));
 		if (!b)
 			continue;
 		// Per-set guard: confirm the decoded building is still the kind we
@@ -496,7 +495,7 @@ void AICortex::applyPriorities(const Tracked* tracked, int count, const Sint32* 
 			continue; // DEDUP: current state already matches; don't re-emit.
 
 		const int bid = ::Building::GIDtoID(static_cast<Uint16>(tb.gid));
-		const AIEngine::BuildingView* b = observedWorld->buildingSlots(team->number)[bid];
+		const AIEngine::BuildingView* b = observedWorld->buildingAtSlot(Building::GIDfrom(bid, team->number));
 		if (!b)
 			continue;
 		if (!accept(b))
@@ -598,7 +597,7 @@ void AICortex::translateActionSetPriority(const Cortex::CortexAction& action, co
 			continue; // DEDUP: already at the target priority.
 
 		const int bid = ::Building::GIDtoID(static_cast<Uint16>(tb.gid));
-		const AIEngine::BuildingView* b = observedWorld->buildingSlots(team->number)[bid];
+		const AIEngine::BuildingView* b = observedWorld->buildingAtSlot(Building::GIDfrom(bid, team->number));
 		if (!b)
 			continue;
 		if (b->buildingState != ::Building::ALIVE || Cortex::buildingType(*observedWorld,*b)->isBuildingSite)
