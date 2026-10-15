@@ -396,7 +396,7 @@ checksum adapter retains its historical entity/RNG representation for fixtures.
   | Statistics | Shared statistics inputs of T | max(1, configured 0–8) | T+delay before capture; statistics and presentation |
   | Targeting | Shared targeting view of T | configured positive delay, default 1 | T+delay before capture; live turret firing |
   | Periodic gradients | Shared gradient view of T | configured 1–16, default 8 | T+delay before capture; live routing |
-  | Building gradients | Shared building-gradient view of T | configured 1–8; 0 selects synchronous live queries | T+delay before capture; live routing |
+  | Building gradients | Shared building-gradient view of T | configured 1–8 in matches; standalone maps use synchronous live queries | T+delay before capture; live routing |
   | Resource growth | Shared growth view of T | configured 1–16, default 8 | T+delay before capture; live resources |
 
 - Initial setup and restore establish an observation before admission. Initial AI
