@@ -35,12 +35,16 @@ int Building::materialDeliveryTarget(int r) const
 int Building::materialDeliveryNeed(int r) const
 {
 	const bool construction = type->isBuildingSite && (constructionBudget[r] || type->semantics.constructionCost[r]);
+	// A slot outside the replenishment policy cannot request a delivery. Sites
+	// still use their live budget, even when the catalog does not replenish it.
 	if (!construction && (!(runtime->replenishMaterialMask & (1u<<r)) || !type->maxMaterial[r]))
 		return 0;
 	const int stock = material(r);
 	const Sint64 room = std::max<Sint64>(0, Sint64(materialStockLimit()) - stock);
 	if (construction)
 	{
+		// Construction can use unreserved stock already here. Repairs consume
+		// new deliveries directly, so existing inventory cannot satisfy them.
 		const int reserved = type->useTeamMaterials ? owner->reservedTeamMaterials[r] : reservedMaterials[r];
 		const int uncommitted = constructionResultState == REPAIR ? 0 : std::max(0, stock-reserved);
 		return Sint32(std::min<Sint64>(room, std::max(0, constructionMaterialNeed(r)-uncommitted)));
@@ -52,7 +56,8 @@ BuildingMaterialDemand Building::materialDemand() const
 {
 	BuildingMaterialDemand demand;
 	// Sites can demand dynamic budgets, independently of replenishment semantics.
-	// Ordinary buildings need only the catalog's replenishment slots.
+	// Ordinary buildings need only the catalog's replenishment slots. Visit them
+	// in ascending order, preserving the dense calculation's integer arithmetic.
 	unsigned candidates = type->isBuildingSite ? (1u<<MaterialSlotCount)-1 : runtime->replenishMaterialMask;
 	while (candidates)
 	{

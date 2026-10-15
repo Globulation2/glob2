@@ -227,41 +227,11 @@ wishes and recruitment order. Run it with `BuildingStock`, `BuildingServices`,
 demand calculations. The temporary demand summary is not saved or captured; it
 must be discarded before inventory, reservation, worker or type mutations.
 
-The measurement fixture defaults to correctness checks without reading a clock:
-
-```sh
-python3 tools/material_demand_benchmark.py \
-  --engine-tests build/material-demand/test/glob2-engine-tests \
-  --output artifacts/material-demand/check
-```
-
-It checks full idle, sparse depleted, dense authored, capacity-limited,
-construction, repair, shared-stock, assigned-worker and mixed-population cases.
-Rows cover single-material queries, complete calculations and production
-`step`, `update` and recruitment-list callers. The summary row additionally
-reports its stack footprint. Inputs and recruitment buffers are prepared outside
-samples; compiler barriers and consumed digests keep the calculation observable.
-
-On an isolated machine, build with `release=1 retain_symbols=1 dev_fast=0`, then
-pass `--measure` to collect seven repetitions. The runner rejects a test binary
-without release `-O3` provenance before entering timed samples. Compare the same
-production-operation rows across baseline, early-exit, local-reuse and sparse
-revisions; frozen reference rows are correctness oracles, not equally optimized
-compiler contexts. Inspect optimized assembly/vectorization reports before
-considering a second SIMD implementation. Record variability and code size with
-the measurements; there is no timing threshold in CI.
-
-Add `--game-binary PATH --baseline-game BASELINE_PATH` for the saved simulation
-fixture. It generates an eight-Nicowar, 128×128 Playground game at seed 713,
-saves at tick 24,000, and compares the continuation to tick 25,153 through full
-per-tick checksums and replay bytes. It also checks another 128 ticks across a
-save/load split. `--save FILE --start-tick N --ticks M` accepts an existing save.
-The starting checkpoint is rewritten in the current format, using the baseline
-when supplied, so header versions match across save/load comparisons. Both
-original and rewritten save hashes are retained with traces, commands and build
-provenance. Only explicit
-`--measure` requests benchmark counters; ordinary CLI result files still contain
-their standard diagnostic duration fields, which correctness mode does not use.
+The dense reference covers generated inventory states, construction and repair,
+shared reservations, capacity and multiplier bounds, and reserved output slots.
+Caller tests exercise `step`, `update`, recruitment ordering, construction completion
+and destruction. These are correctness checks; performance measurements belong in
+PR evidence rather than the regression suite.
 
 ## Hiring bucket iteration
 

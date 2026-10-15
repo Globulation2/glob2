@@ -25,6 +25,8 @@ void Building::step(void)
 {
 	if (type->isBuildingSite && (siteCompletionPending || type->useTeamMaterials)) updateBuildingSite();
 	{
+		// Site completion above can change the type and stock. Reuse demand only
+		// for this operation, before the later production and worker updates.
 		const auto demand = materialDemand();
 		computeWishedMaterials(wishedMaterials, demand);
 		if (((owner->game->stepCounter + gid) & 255) == 0)

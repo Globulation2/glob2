@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #pragma once
 #include "Material.h"
+#include <array>
 
 // Operation-local results, never part of BuildingStateRecord or a snapshot.
 // Discard before inventory, reservations, workers, or building type can change.

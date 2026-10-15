@@ -643,6 +643,8 @@ public:
 	void resetFailureTallies();
 
 private:
+	// These overloads share a temporary calculation within one owner operation;
+	// the public entry points always calculate fresh demand from live stock.
 	BuildingMaterialDemand materialDemand() const;
 	void computeWishedMaterials(int needs[MaterialSlotCount], const BuildingMaterialDemand& demand);
 	int desiredNumberOfWorkers(const BuildingMaterialDemand& demand) const;

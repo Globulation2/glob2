@@ -245,6 +245,8 @@ void Building::updateUnitsHarvesting(void)
 void Building::update(void)
 {
 	{
+		// Wishes, staffing and fullness observe the same inventory. End the
+		// summary's lifetime before worker or construction updates can change it.
 		const auto demand = materialDemand();
 		computeWishedMaterials(wishedMaterials, demand);
 		if (buildingState==DEAD)
@@ -499,5 +501,4 @@ int Building::desiredNumberOfWorkers(const BuildingMaterialDemand& demand) const
 	int max_considering_materials = (WISHED_MATERIAL_NUM * demand.totalDeliveries) / WISHED_MATERIAL_DEN;
 	return std::min(user_num, max_considering_materials);
 }
-
 
