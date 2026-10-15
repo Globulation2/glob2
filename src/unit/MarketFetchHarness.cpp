@@ -171,7 +171,8 @@ TEST_CASE("MarketFetch/stocked markets are resource goals, depleted markets are 
 		CHECK(bed.game.map.getMaterialGradientSlot(0,CHERRY,bed.unit->swimClass(),true)==oldField);
 		glob2test::awaitGradient(bed.game, [&] {
 			const auto* field=bed.game.map.getMaterialGradientSlot(0,CHERRY,bed.unit->swimClass(),true);
-			return field!=oldField ? field : nullptr;
+			// An already admitted old-stock output may publish before this refresh.
+			return field && !bed.game.map.materialAvailableSlot(0,CHERRY,bed.unit->swimClass(),36,36,true) ? field : nullptr;
 		});
 		glob2test::awaitGradient(bed.game, [&] { return bed.game.map.getMaterialGradientSlot(0,CHERRY,bed.unit->swimClass(),true); });
 		require(!bed.game.map.materialAvailableSlot(0, CHERRY, bed.unit->swimClass(), 36, 36, &dist, true), "an empty market is no goal");
@@ -197,7 +198,7 @@ TEST_CASE("MarketFetch/stocked markets are resource goals, depleted markets are 
 		CHECK(bed.game.map.getMaterialGradientSlot(0,WOOD,bed.unit->swimClass(),true)==oldField);
 		glob2test::awaitGradient(bed.game, [&] {
 			const auto* field=bed.game.map.getMaterialGradientSlot(0,WOOD,bed.unit->swimClass(),true);
-			return field!=oldField ? field : nullptr;
+			return field && bed.game.map.materialAvailableSlot(0,WOOD,bed.unit->swimClass(),36,36,true) ? field : nullptr;
 		});
 		glob2test::awaitGradient(bed.game, [&] { return bed.game.map.getMaterialGradientSlot(0,WOOD,bed.unit->swimClass(),true); });
 		require(bed.game.map.materialAvailableSlot(0, WOOD, bed.unit->swimClass(), 36, 36, &dist, true), "a level-3 market hands out wood");

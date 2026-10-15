@@ -47,7 +47,7 @@ TEST_SUITE("HiringPlanner")
         glob2test::HeadlessGlobals globals;
         glob2test::HeadlessGame world({.wDec=12,.hDec=3,.clearImmobile=true,.header=true,.seed=4921});
         auto& map=world.game.map;
-        map.importTerrainDefinitions(R"({"schemaVersion":1,"terrains":[{"key":"fixture:slow-air-hiring","name":"Slow air","base":"grass","properties":{"airSpeedQ8":64},"appearance":"grass"}]})");
+        glob2test::importTerrainBeforeMatch(world.game,R"({"schemaVersion":1,"terrains":[{"key":"fixture:slow-air-hiring","name":"Slow air","base":"grass","properties":{"airSpeedQ8":64},"appearance":"grass"}]})");
         const auto slow=*map.terrainRegistry().find("fixture:slow-air-hiring");
         {
             auto edit=map.editTerrain();

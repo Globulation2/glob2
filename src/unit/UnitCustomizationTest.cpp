@@ -16,6 +16,7 @@
 #include <sstream>
 #include <climits>
 #include <cstddef>
+#include <functional>
 
 namespace {
 Uint32 trace(Game& game)
@@ -40,6 +41,20 @@ void configure(glob2test::HeadlessGame& world)
     world.game.gameHeader.setUnitCatalog(catalog);
     world.game.configureBuildingCatalog();
     for (int t=0;t<world.game.teamsCount();++t) world.game.teams[t]->race.setCatalog(catalog);
+}
+
+// After normal ticks have admitted statistics and other deferred jobs, route
+// preparation must advance the complete world, not only the gradient counters.
+// Call this before adding the unit whose exact position/clocks a test controls.
+void awaitLiveBuildingGradient(Game& game,Building* building,int type,int team)
+{
+    const auto* definition=game.teams[team]->race.getUnitType(type,0);
+    const int swim=Map::swimClass(definition->performance[WALK],definition->performance[SWIM]);
+    for(unsigned tick=0;tick<64;++tick) {
+        if(game.map.requestBuildingField(building,swim,BuildingRoute::Footprint)==FieldReadiness::Ready) return;
+        game.syncStep(0);
+    }
+    FAIL("expected complete service route within the fixture publication horizon");
 }
 
 // The steering fixtures combine existing guard/exploration policies with
@@ -104,8 +119,9 @@ ContinuationAudit continuationAudit(Game& game)
     }
     return result;
 }
-void checkPhaseContinuation(Game& game,int ticks)
+void checkPhaseContinuation(Game& game,int ticks,const std::function<void()>& observe={})
 {
+    if(observe) observe();
     glob2test::discardPrematureHiringSuggestions(game);
     const auto before=continuationAudit(game);
     const auto random=game.syncRandom;
@@ -123,6 +139,7 @@ void checkPhaseContinuation(Game& game,int ticks)
     for(int tick=0;tick<ticks;++tick) {
         CAPTURE(tick);
         game.syncStep(0); resumed.game.syncStep(0);
+        if(observe) observe();
         REQUIRE(continuationAudit(resumed.game)==continuationAudit(game));
         REQUIRE(resumed.game.syncRandom==game.syncRandom);
         REQUIRE(resumed.game.unitCargo.entries()==game.unitCargo.entries());
@@ -1081,10 +1098,10 @@ TEST_SUITE("UnitCustomization")
             inn->setMaterial(WHEAT, 10); inn->setMaterial(CHERRY, 10); inn->updateCallLists();
             world.addUnit(WORKER,24,20,0); world.addUnit(WORKER,24,22,1);
             for (int tick=0;tick<160;++tick) world.game.syncStep(0);
+            awaitLiveBuildingGradient(world.game,inn,WORKER,0);
             auto* unit=world.addUnit(WORKER,6,8); REQUIRE(unit); REQUIRE(inn->canConvertUnit());
             world.game.teams[1]->sharedVisionFood|=world.team->me;
             world.game.teams[1]->allies&=~world.team->me;
-            glob2test::awaitBuildingGradient(world.game,inn,unit->swimClass(),BuildingRoute::Footprint);
             const auto oldGid=unit->gid;
             unit->previousClearingArea=Unit::ClearingAreaClaim{7,7}; unit->previousClearingAreaDistance=1;
             world.game.map.setClearingAreaClaimed(7,7,0,oldGid);
@@ -1395,11 +1412,11 @@ TEST_SUITE("UnitCustomization")
             enemyInn->setMaterial(WHEAT, 10); enemyInn->setMaterial(CHERRY, 10);
             enemyInn->updateCallLists();
             for (int tick=0;tick<160;++tick) world.game.syncStep(0);
+            awaitLiveBuildingGradient(world.game,enemyInn,*world.game.unitCatalog().find("ablation-0"),sourceTeam);
             auto* unit=world.addUnit(*world.game.unitCatalog().find("ablation-0"),6,8,sourceTeam);
             REQUIRE(unit); REQUIRE(enemyInn->canConvertUnit());
             destination->sharedVisionFood |= source->me;
             destination->allies &= ~source->me;
-            glob2test::awaitBuildingGradient(world.game,enemyInn,unit->swimClass(),BuildingRoute::Footprint);
             unit->receiveCarriedMaterial(WOOD,{}); unit->receiveCarriedMaterial(STONE,{1,2});
             unit->destinationPurpose=WHEAT;
             deposit(world.game.map,19,7,WHEAT,3);
@@ -2399,7 +2416,8 @@ TEST_SUITE("UnitCustomization")
             REQUIRE(resumedStatus.pending==statusAtSave.pending); REQUIRE(resumedStatus.queued==statusAtSave.queued);
             const auto originalPublished=statusAtSave.published, originalDiscarded=statusAtSave.discarded;
             const auto restoredPublished=resumedStatus.published, restoredDiscarded=resumedStatus.discarded;
-            for (int tick=0;tick<512;++tick) {
+            int continuationTicks=512;
+            for (int tick=0;tick<continuationTicks;++tick) {
                 CAPTURE(tick);
                 game.syncStep(0); restored.syncStep(0);
                 REQUIRE(authoritativeAudit(restored)==authoritativeAudit(game));
@@ -2420,6 +2438,16 @@ TEST_SUITE("UnitCustomization")
                 REQUIRE(lhs.pending==rhs.pending); REQUIRE(lhs.queued==rhs.queued);
                 REQUIRE(lhs.published-originalPublished==rhs.published-restoredPublished);
                 REQUIRE(lhs.discarded-originalDiscarded==rhs.discarded-restoredDiscarded);
+                if(tick==511 && inn->material(ALGA)<3) {
+                    // One packet is delivered per completed action. Delayed
+                    // routing can leave the final delivery in progress at the
+                    // checkpoint; one positive-speed action takes <=256 ticks.
+                    REQUIRE(unit->displacement==Unit::DIS_FILLING_BUILDING);
+                    REQUIRE(unit->targetBuilding==inn); REQUIRE(unit->speed>0);
+                    REQUIRE(unit->hasCarriedMaterial(ALGA));
+                    REQUIRE(inn->material(ALGA)==2);
+                    continuationTicks+=256;
+                }
             }
             CAPTURE(unit->activity); CAPTURE(unit->displacement); CAPTURE(unit->jobPurpose);
             CAPTURE(unit->posX); CAPTURE(unit->posY); CAPTURE(unit->carriedPacketCount());
@@ -2490,6 +2518,15 @@ TEST_SUITE("UnitCustomization")
                 REQUIRE(unit->jobPurpose==UnitJobPurpose::Transport);
                 if(phase==Unit::DIS_FILLING_BUILDING) REQUIRE(unit->hasCarriedMaterial(material));
                 checkPhaseContinuation(world.game,512);
+                if(inn->material(material)<3) {
+                    REQUIRE(unit->displacement==Unit::DIS_FILLING_BUILDING);
+                    REQUIRE(unit->targetBuilding==inn); REQUIRE(unit->speed>0);
+                    REQUIRE(unit->hasCarriedMaterial(material));
+                    REQUIRE(inn->material(material)==2);
+                    // Audit another save boundary and at most one action,
+                    // retaining the original 512 per-tick comparisons above.
+                    checkPhaseContinuation(world.game,256);
+                }
                 CAPTURE(unit->activity); CAPTURE(unit->displacement); CAPTURE(unit->jobPurpose);
                 CAPTURE(unit->posX); CAPTURE(unit->posY); CAPTURE(unit->carriedPacketCount());
                 CAPTURE(unit->hasCarriedMaterial(material)); CAPTURE(inn->material(material));
@@ -2512,7 +2549,9 @@ TEST_SUITE("UnitCustomization")
             for(auto phase:{Unit::DIS_ENTERING_BUILDING,Unit::DIS_INSIDE,Unit::DIS_EXITING_BUILDING}) {
                 CAPTURE(purpose); CAPTURE(int(phase));
                 glob2test::HeadlessGame world({.clearImmobile=true,.header=true,.seed=4921}); configure(world);
-                world.game.gameHeader.setHungerDisabled(true);
+                // A hungry unit must remain eligible for its requested meal.
+                // Disabling hunger would let medical reevaluation cancel FEED.
+                world.game.gameHeader.setHungerDisabled(purpose!=FEED);
                 auto buildings=nlohmann::json::parse(world.game.buildingsTypes.snapshotJson());
                 auto& semantics=buildings["variants"][3]["semantics"];
                 semantics["admittedUnits"]={"fast-service"};
@@ -2535,7 +2574,10 @@ TEST_SUITE("UnitCustomization")
                 for(int tick=0;tick<4096 && unit->displacement!=phase;++tick) world.game.syncStep(0);
                 REQUIRE(unit->displacement==phase);
                 REQUIRE(unit->jobPurpose==UnitJobPurpose::None);
-                checkPhaseContinuation(world.game,256);
+                bool completeMeal=false;
+                checkPhaseContinuation(world.game,256,[&] {
+                    if(purpose==FEED && unit->hungry==unit->foodCapacity()) completeMeal=true;
+                });
                 CAPTURE(unit->activity); CAPTURE(unit->displacement); CAPTURE(unit->jobPurpose);
                 CAPTURE(unit->medical); CAPTURE(unit->destinationPurpose); CAPTURE(unit->insideTimeout);
                 CAPTURE(unit->posX); CAPTURE(unit->posY); CAPTURE(unit->hungry);
@@ -2544,7 +2586,9 @@ TEST_SUITE("UnitCustomization")
                 CHECK_FALSE(unit->serviceResourcesReserved());
                 CHECK(inn->reservedMaterials[WHEAT]==0); CHECK(inn->material(WHEAT)==0);
                 CHECK(inn->unitsInside.empty()); CHECK(unit->integrity());
-                if(purpose==FEED) CHECK(unit->hungry==unit->foodCapacity());
+                // Hunger can resume after exit; require the full meal at its
+                // completion boundary rather than a later unchanged balance.
+                if(purpose==FEED) CHECK(completeMeal);
                 else if(purpose==HEAL) CHECK(unit->hp==unit->performance[HP]);
                 else { CHECK(unit->level[WALK]==1); CHECK(world.team->stats.events().trainingVisits[unit->typeNum]==1); }
             }
@@ -2590,9 +2634,9 @@ TEST_SUITE("UnitCustomization")
             REQUIRE(ownInn); REQUIRE(enemyInn);
             enemyInn->setMaterial(WHEAT, 10); enemyInn->setMaterial(CHERRY, 10); enemyInn->updateCallLists();
             for(int tick=0;tick<160;++tick) world.game.syncStep(0);
+            awaitLiveBuildingGradient(world.game,enemyInn,*world.game.unitCatalog().find("ablation-0"),0);
             auto* unit=world.addUnit(*world.game.unitCatalog().find("ablation-0"),6,8); REQUIRE(unit);
             world.game.teams[1]->sharedVisionFood|=world.team->me; world.game.teams[1]->allies&=~world.team->me;
-            glob2test::awaitBuildingGradient(world.game,enemyInn,unit->swimClass(),BuildingRoute::Footprint);
             unit->receiveCarriedMaterial(WOOD,{}); unit->receiveCarriedMaterial(STONE,{1,2});
             unit->destinationPurpose=WHEAT; deposit(world.game.map,19,7,WHEAT,3);
             unit->subscriptionSuccess(ownInn,false,false,UnitJobPurpose::Transport); ownInn->unitsWorking.push_back(unit);

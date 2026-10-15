@@ -425,10 +425,13 @@ checksum adapter retains its historical entity/RNG representation for fixtures.
   Explicit one-participant execution runs the same jobs with the same publication
   boundaries; maps without a simulation retain explicit editor/reference builders.
   Format 167 persists cold FIFO requests and complete unpublished outputs without
-  publishing early during save. Older supported saves still load. The historical
+  publishing early during save. Queued demand has its own named stream section,
+  separate from pending jobs, so text saves retain both inventories independently.
+  Older supported saves still load. The historical
   [building depth model](../ai/architecture/building-gradient-depth-model.md) no
   longer selects partial fields for publication.
-  Air destination ranking uses the same admission and publication timeline.
+- Air destination ranking joins the periodic/demand FIFO and uses that pipeline's
+  configured delay, executor and publication boundary.
   Building destinations share complete destination-rooted air fields. Material,
   guard and clearing-zone fields also carry stable goal labels; equal-cost ties
   follow the original row-major candidate order. Painted clearing claims require
@@ -446,7 +449,7 @@ checksum adapter retains its historical entity/RNG representation for fixtures.
   simulation rules. Immediate air A* steering and hazardous-terrain escape routing
   retain owner execution, with separate audit categories from field initialization,
   air traversal construction, goal enumeration and propagation.
-  Air cold requests occupy bounded metadata only; the FIFO head reserves plane
+- Air cold requests occupy bounded metadata only; the FIFO head reserves plane
   capacity and a deadline at admission. Cache pressure can evict a warm allocation
   while retaining its stable metadata and queued refresh. Resource, area, visibility,
   supplier-stock and clearing-claim revisions coalesce prompt refreshes without
@@ -468,6 +471,9 @@ checksum adapter retains its historical entity/RNG representation for fixtures.
   checksummed; physical completion and reference counts never select admission.
   Reducing the requested budget preserves enough effective capacity for retained
   destinations, so every state produced by the runtime remains loadable.
+  Consumer entries capture identity, type, position and shared-pool membership;
+  changing that eligibility hard-supersedes the old ticket even when its slot
+  and script identity are unchanged.
   Material and area getters return borrowed const arrays for the current owner
   decision, not leases across publication or cache admission. Snapshot consumers
   retain snapshot-owned planes; building worker consumers use

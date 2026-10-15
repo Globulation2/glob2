@@ -4,6 +4,26 @@
 
 namespace glob2test
 {
+// Build custom terrain before match entities exist. The editor authoring API
+// accepts a detached map; always restore its Game even if definitions reject.
+inline void importTerrainBeforeMatch(Game& game,std::string_view definitions)
+{
+    for (int team=0;team<game.teamsCount();++team) {
+        REQUIRE(game.teams[team]->liveUnits.empty());
+        REQUIRE(game.teams[team]->liveBuildings.empty());
+    }
+    auto& map=game.map;
+    {
+        struct RestoreGame {
+            Map& map; Game* previous;
+            ~RestoreGame() { map.game=previous; }
+        } restore{map,map.game};
+        map.game=nullptr;
+        map.importTerrainDefinitions(definitions);
+    }
+    map.setGame(&game);
+}
+
 // Field-specific fixtures can advance completed-world publication boundaries
 // without moving units. The read must enroll demand and return a field pointer.
 // Real game/continuation tests should advance normal simulation ticks instead.

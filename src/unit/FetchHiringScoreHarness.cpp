@@ -203,7 +203,7 @@ TEST_SUITE("FetchHiringScore")
         glob2test::HeadlessGame world({.clearImmobile=true,.header=true,.seed=4921});
         auto& game=world.game;
         auto& map=game.map;
-        map.importTerrainDefinitions(R"({"schemaVersion":1,"terrains":[{"key":"fixture:air-recruitment-barrier","name":"Barrier","base":"grass","properties":{"flyable":false},"appearance":"grass"}]})");
+        glob2test::importTerrainBeforeMatch(game,R"({"schemaVersion":1,"terrains":[{"key":"fixture:air-recruitment-barrier","name":"Barrier","base":"grass","properties":{"flyable":false},"appearance":"grass"}]})");
         map.paintCell(24,24,*map.terrainRegistry().find("fixture:air-recruitment-barrier"));
         map.configureCompute(2);
         map.configureGradientPipeline(1,3);
@@ -334,6 +334,7 @@ TEST_SUITE("FetchHiringScore")
         glob2test::awaitGradient(world.game,[&] {
             return world.game.map.getMaterialGradientSlot(0,WHEAT,team->myUnits[3]->swimClass());
         });
+        glob2test::awaitBuildingGradient(world.game,inn,team->myUnits[3]->swimClass(),BuildingRoute::Footprint);
         // Eligibility scans retain population order; the ranked delivery
         // choice above independently proves that equal scores prefer low gid.
         CHECK(FetchHiringScoreHarness::candidates(inn) == std::vector<Unit*>{team->myUnits[Unit::MAX_COUNT-1], team->myUnits[3]});
