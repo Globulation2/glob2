@@ -20,13 +20,13 @@ namespace GAGCore
 			backend->putc('\t');
 	}
 	
-	void TextOutputStream::printString(const std::string &string)
+	void TextOutputStream::printString(std::string_view string)
 	{
 		assert(string.size());
-		backend->write(string.c_str(), string.size());
+		backend->write(string.data(), string.size());
 	}
 	
-	void TextOutputStream::write(const void *data, const size_t size, const std::string name)
+	void TextOutputStream::write(const void *data, const size_t size, std::string_view name)
 	{
 		printLevel();
 		if (name.size())
@@ -45,7 +45,7 @@ namespace GAGCore
 		printString(";\n");
 	}
 	
-	void TextOutputStream::writeText(const std::string &v, const std::string name)
+	void TextOutputStream::writeText(const std::string &v, std::string_view name)
 	{
 		printLevel();
 		if (name.size())
@@ -61,7 +61,7 @@ namespace GAGCore
 		printString("\";\n");
 	}
 	
-	void TextOutputStream::writeEnterSection(const std::string name)
+	void TextOutputStream::writeEnterSection(std::string_view name)
 	{
 		printLevel();
 		printString(name);
