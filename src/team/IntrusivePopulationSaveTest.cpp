@@ -173,6 +173,7 @@ TEST_CASE("invalid population records fail without leaving broken membership") {
 			auto* team=restored.game.teams[0];
 			CHECK(team->liveUnits.matches(team->myUnits,Unit::MAX_COUNT));
 			CHECK(team->liveBuildings.matches(team->myBuildings,Building::MAX_COUNT));
+			CHECK((team->taskSwapNext==0xffff || (team->taskSwapNext<Unit::MAX_COUNT && team->myUnits[team->taskSwapNext])));
 		}
 	}
 	const auto binary=savePopulation(world.game,false);

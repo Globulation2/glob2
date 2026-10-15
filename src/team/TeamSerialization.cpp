@@ -105,9 +105,10 @@ GAGCore::CooperativeTask Team::loadTask(GAGCore::InputStream *stream, BuildingsT
 	}
 	stream->readLeaveSection();
 	if (ordered) {
-		taskSwapNext=stream->readUint16("taskSwapNext");
-		if (taskSwapNext!=0xffff && (taskSwapNext>=Unit::MAX_COUNT || !myUnits[taskSwapNext]))
+		const auto next=stream->readUint16("taskSwapNext");
+		if (next!=0xffff && (next>=Unit::MAX_COUNT || !myUnits[next]))
 			throw std::runtime_error("Invalid population task cursor");
+		taskSwapNext=next;
 	}
 
 	allies = stream->readUint32("allies");

@@ -16,6 +16,7 @@ template<class T> constexpr bool hasPopulationHooks = requires(T& entity) {
 static_assert(!hasPopulationHooks<UnitState>);
 static_assert(!hasPopulationHooks<BuildingStateRecord>);
 static_assert(!std::is_copy_constructible_v<Unit>);
+static_assert(!std::is_copy_constructible_v<Building>);
 struct PopulationNode {
 	PopulationNode* populationPrevious=nullptr;
 	PopulationNode* populationNext=nullptr;

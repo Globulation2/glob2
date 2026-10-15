@@ -73,7 +73,7 @@ void Team::clearMem(void)
 {
 	while (Unit* unit=liveUnits.front()) delete detachUnit(Unit::GIDtoID(unit->gid));
 	while (Building* building=liveBuildings.front()) delete detachBuilding(Building::GIDtoID(building->gid));
-
+	taskSwapNext=0xffff;
 }
 
 
