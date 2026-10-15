@@ -43,6 +43,28 @@ public:
 
 TEST_SUITE("GradientPipeline")
 {
+TEST_CASE("kernel audit can retire safely before observation workers drain")
+{
+    if constexpr (!GAGCore::ThreadSupport::available) return;
+    for (unsigned attempt=0;attempt<32;++attempt)
+    {
+        auto audit=std::make_unique<GradientExecutionAudit>();
+        std::atomic<bool> entered{false},finished{false};
+        auto worker=GAGCore::ThreadSupport::launch([&] {
+            GradientExecutionAudit::record(GradientExecutionAudit::Kind::Seed);
+            entered.store(true,std::memory_order_release);
+            for (unsigned i=0;i<4096;++i)
+                GradientExecutionAudit::record(GradientExecutionAudit::Kind::Propagation);
+            finished.store(true,std::memory_order_release);
+        });
+        while (!entered.load(std::memory_order_acquire)) std::this_thread::yield();
+        CHECK(audit->totals().other>0);
+        audit.reset(); // Mirrors fatal test unwinding before executor teardown.
+        worker.join();
+        CHECK(finished.load(std::memory_order_acquire));
+    }
+}
+
 TEST_CASE("kernel audit distinguishes owner preparation from deferred worker work")
 {
     for (unsigned workers : {0u, 1u, 3u, 7u})

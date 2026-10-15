@@ -85,9 +85,10 @@ TEST_CASE("cold queued and privately completed fields continue through binary an
         const auto evidenceName=std::string(text ? "text" : "binary")+"-checkpoint-"+std::to_string(checkpoint);
         glob2test::writeFile(glob2test::artifactDir()/(evidenceName+(text ? ".txt" : ".g2s")),bytes);
         GameGUI resumed;
+        auto inputBackend=std::make_unique<GAGCore::MemoryStreamBackend>(bytes.data(),bytes.size());
         std::unique_ptr<GAGCore::InputStream> input(text
-            ? static_cast<GAGCore::InputStream*>(new GAGCore::TextInputStream(new GAGCore::MemoryStreamBackend(bytes.data(),bytes.size())))
-            : static_cast<GAGCore::InputStream*>(new GAGCore::BinaryInputStream(new GAGCore::MemoryStreamBackend(bytes.data(),bytes.size()))));
+            ? static_cast<GAGCore::InputStream*>(new GAGCore::TextInputStream(inputBackend.get()))
+            : static_cast<GAGCore::InputStream*>(new GAGCore::BinaryInputStream(inputBackend.release())));
         input->seekFromStart(0);
         REQUIRE(resumed.game.load(input.get()));
         // Saving can finish private work; loading restores it without kernels.
