@@ -269,7 +269,7 @@ TEST_CASE("JavaScript upgrade retains genuine master124 experiments and continua
 				for (auto value : *fields) records << ' ' << value;
 			}
 			records << '\n';
-			game.syncStep(-1);
+			game.step(-1);
 		}
 		CHECK(game.stepCounter == initialTick + 64);
 		const auto result = records.str();

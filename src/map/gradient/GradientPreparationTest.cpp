@@ -943,8 +943,8 @@ TEST_CASE("unused catalog definitions allocate no material gradients and schedul
     expanded.game.syncRandom=base.game.syncRandom;
     for (unsigned tick=0;tick<64;++tick)
     {
-        { auto random=base.game.bindRandom(); base.game.syncStep(0); }
-        { auto random=expanded.game.bindRandom(); expanded.game.syncStep(0); }
+        { auto random=base.game.bindRandom(); base.game.step(0); }
+        { auto random=expanded.game.bindRandom(); expanded.game.step(0); }
         CHECK(base.game.syncRandom==expanded.game.syncRandom);
         CHECK(original.gradientPipelineStatus().jobs==candidate.gradientPipelineStatus().jobs);
         CHECK(original.gradientPipelineStatus().pending==candidate.gradientPipelineStatus().pending);

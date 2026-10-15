@@ -1,5 +1,6 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "EngineFixtures.h"
+#include <algorithm>
 #include "ScopedEnvironment.h"
 #include "Engine.h"
 #include "Player.h"
@@ -23,6 +24,12 @@
 
 namespace
 {
+auto prepareAIOrders(Game& game, std::span<const unsigned> eligible, bool paused) {
+    const auto world=game.observeCompletedWorld();
+    game.admitAIOrders(eligible,paused,{},world);
+    return game.deliverAIOrders(eligible,paused);
+}
+
 SimulationSnapshot::Handle input(glob2test::HeadlessGame &w)
 {
 	w.team->stats.enableCollection();
@@ -168,9 +175,9 @@ TEST_SUITE("TeamStatsPipeline")
                 pipeline.prepareBoundary(w.game,input(w));
                 pipeline.drain(); // Finished early; publication must still use the captured window.
                 pipeline.publishDue(w.game);
-                if(tick==31+delay) CHECK(w.team->stats.getLatestStat()->totalFree==(delay<=1 ? 1 : 0));
-                if(tick==63+delay) CHECK(w.team->stats.getLatestStat()->totalFree==(delay==8 ? 1 : 0));
-                if(tick==95+delay) CHECK(w.team->stats.getLatestStat()->totalFree==0);
+                if(tick==31+std::max(1u,delay)) CHECK(w.team->stats.getLatestStat()->totalFree==(delay<=1 ? 1 : 0));
+                if(tick==63+std::max(1u,delay)) CHECK(w.team->stats.getLatestStat()->totalFree==(delay==8 ? 1 : 0));
+                if(tick==95+std::max(1u,delay)) CHECK(w.team->stats.getLatestStat()->totalFree==0);
             }
         }
     }
@@ -278,8 +285,8 @@ TEST_SUITE("TeamStatsPipeline")
                 expected.push_back(reference.measurements());
                 pipeline.prepareBoundary(w.game,snapshot);
                 pipeline.publishDue(w.game);
-                if (tick>=delay) {
-                    CHECK(w.team->stats.measurements()==expected[tick-delay]);
+                if (tick>=std::max(1u,delay)) {
+                    CHECK(w.team->stats.measurements()==expected[tick-std::max(1u,delay)]);
                     if (!retained) {
                         retained=w.team->stats.publishedMeasurementFrame();
                         REQUIRE(retained);
@@ -316,17 +323,17 @@ TEST_SUITE("TeamStatsPipeline")
 				pipeline.prepareBoundary(w.game, world);
 				pipeline.prepareBoundary(w.game, world);
 				pipeline.drain(); // Early completion cannot publish.
-				if (delay && tick < delay)
+				if (tick < std::max(1u,delay))
 					CHECK(w.team->stats.measurements().tick == 0);
 				pipeline.publishDue(w.game);
-				if (tick >= delay)
+				if (tick >= std::max(1u,delay))
 				{
-					CHECK(w.team->stats.sourceTick == tick - delay);
+					CHECK(w.team->stats.sourceTick == tick - std::max(1u,delay));
 					CHECK(w.team->stats.publishedTick == tick);
 				}
 				CHECK(pipeline.metrics.submitted == tick + 1);
-				CHECK(pipeline.metrics.published == (tick >= delay ? tick - delay + 1 : 0));
-				CHECK(pipeline.metrics.peakPending <= delay + 1);
+				CHECK(pipeline.metrics.published == (tick >= std::max(1u,delay) ? tick - std::max(1u,delay) + 1 : 0));
+				CHECK(pipeline.metrics.peakPending <= std::max(1u,delay) + 1);
 			}
 		}
 	}
@@ -356,9 +363,9 @@ TEST_SUITE("TeamStatsPipeline")
 				CAPTURE(tick);
 				w.game.stepCounter = tick;
 				const auto captures = w.game.snapshots().metrics.captures;
-				const auto world = w.game.prepareReadBoundary(false, {.presentation = true});
+				const auto world = w.game.observeCompletedWorld({.presentation = true});
 				REQUIRE(w.game.snapshots().metrics.captures == captures + 1);
-				REQUIRE(w.game.prepareAIOrders(players, false, {}, &world).size() == players.size());
+				REQUIRE((w.game.admitAIOrders(players,false,{},world), w.game.deliverAIOrders(players,false)).size() == players.size());
 				w.game.drainAI();
 				REQUIRE(observers[0]->observation);
 				CHECK(observers[1]->observation == observers[0]->observation);
@@ -378,7 +385,7 @@ TEST_SUITE("TeamStatsPipeline")
 				CHECK_FALSE(statistics.resourceFields);
 				if (tick)
 					CHECK_FALSE(statistics.terrain);
-				const auto repeated = w.game.prepareReadBoundary(false, {.presentation = true});
+				const auto repeated = w.game.observeCompletedWorld({.presentation = true});
 				CHECK(repeated.entities == world.entities);
 				CHECK(repeated.teams == world.teams);
 				CHECK(w.game.snapshots().metrics.captures == captures + 1);
@@ -516,43 +523,48 @@ TEST_SUITE("TeamStatsPipeline")
         CHECK(restored.checkSum(true)==original.checkSum(true));
         CHECK(in.getPosition()==memory->getPosition());
     }
-	TEST_CASE("pure captures pause and waiting admit no statistics and readers share the generation")
+	TEST_CASE("inspection admits no work and paused or waiting frames reuse the initial observation")
 	{
 		glob2test::HeadlessGlobals globals;
 		glob2test::HeadlessGame w(glob2test::GameOptions{.loadDefaultRace = true});
 		w.addUnit(WORKER, 10, 10);
 		w.game.gameHeader.setTeamStatsDelay(0);
-		const auto before = w.team->stats.checkSum();
 		w.game.captureReadBoundary({.presentation = true});
 		CHECK(w.game.teamStatsMetrics().empty());
-		w.game.prepareReadBoundary(true, {.presentation = true});
-		CHECK(w.game.teamStatsMetrics().empty());
-		w.game.anyPlayerWaited = true;
-		w.game.snapshots().invalidateBoundary();
-		w.game.prepareReadBoundary(false, {.presentation = true});
-		CHECK(w.game.teamStatsMetrics().empty());
-		w.game.anyPlayerWaited = false;
-		w.game.snapshots().invalidateBoundary();
+		const auto initial=w.game.observeCompletedWorld({.presentation = true});
+        const auto admitted=w.game.teamStatsMetrics();
+        const auto captures=w.game.snapshots().metrics.captures;
+        const auto copied=w.game.snapshots().metrics.entityBytesCopied;
+        const auto before=w.team->stats.checkSum();
+        for(unsigned frame=0;frame<3;++frame) {
+            w.game.anyPlayerWaited=frame==1;
+            const auto retained=w.game.observeCompletedWorld({.presentation = true});
+            CHECK(retained.entities==initial.entities);
+            CHECK(w.game.teamStatsMetrics()==admitted);
+            CHECK(w.game.snapshots().metrics.captures==captures);
+            CHECK(w.game.snapshots().metrics.entityBytesCopied==copied);
+        }
+        w.game.anyPlayerWaited=false;
 		CHECK(w.team->stats.checkSum() == before);
-		for (unsigned tick = 0; tick < 32; ++tick)
+		for (unsigned tick = 0; tick < 33; ++tick)
 		{
 			w.game.stepCounter = tick;
-			w.game.prepareReadBoundary(false, {.presentation = true});
+			w.game.observeCompletedWorld({.presentation = true});
 		}
-		const auto world = w.game.prepareReadBoundary(false, {.presentation = true});
+		const auto world = w.game.observeCompletedWorld({.presentation = true});
 		CHECK(world.teams->values[0].statistics.totalUnit == 1);
 		CHECK(world.statistics->teams[0]->getLatestStat()->totalUnit == 1);
 		CHECK(w.team->stats.sourceTick == 31);
-		CHECK(w.team->stats.publishedTick == 31);
+		CHECK(w.team->stats.publishedTick == 32);
 	}
 	TEST_CASE("failed computation or submission remains a failure at later owner barriers")
 	{
 		glob2test::HeadlessGlobals globals;
-		enum class Failure { ImmediateCalculation, DeferredCalculation, Submission };
-		for (auto failure : {Failure::ImmediateCalculation, Failure::DeferredCalculation, Failure::Submission})
+		enum class Failure { NextBoundaryCalculation, DeferredCalculation, Submission };
+		for (auto failure : {Failure::NextBoundaryCalculation, Failure::DeferredCalculation, Failure::Submission})
 		{
 			CAPTURE(failure);
-			const unsigned delay = failure == Failure::ImmediateCalculation ? 0 : 2;
+			const unsigned delay = failure == Failure::NextBoundaryCalculation ? 0 : 2;
 			glob2test::HeadlessGame w(glob2test::GameOptions{.loadDefaultRace = true});
 			auto *unit = w.addUnit(WORKER, 10, 10);
 			w.game.map.configureCompute(1);
@@ -570,12 +582,12 @@ TEST_SUITE("TeamStatsPipeline")
 					w.game.map.computeExecutor().submit(std::span(&group, 1), 1000);
 			}
 			const auto captured = input(w);
-			if (!delay || failure == Failure::Submission)
+			if (failure == Failure::Submission)
 				CHECK_THROWS(p.prepareBoundary(w.game, captured));
 			else
 				p.prepareBoundary(w.game, captured);
 			unit->typeNum = id;
-			w.game.stepCounter = delay;
+			w.game.stepCounter = std::max(1u,delay);
 			CHECK_THROWS(p.publishDue(w.game));
 			CHECK_THROWS(p.prepareBoundary(w.game, captured));
 			CHECK_THROWS(p.drain());
@@ -598,7 +610,7 @@ TEST_SUITE("TeamStatsPipeline")
 			REQUIRE(source.loadFromHeaders(map, header, true, true));
 			source.game.map.configureCompute(1);
 			for (unsigned tick = 0; tick < checkpoint; ++tick)
-				source.game.syncStep(0);
+				source.game.step(0);
 			auto *memory = new GAGCore::MemoryStreamBackend;
 			GAGCore::BinaryOutputStream out(memory);
 			source.save(&out, "statistics continuation");
@@ -612,8 +624,8 @@ TEST_SUITE("TeamStatsPipeline")
 			CHECK(source.game.teamStatsChecksum() == restored.game.teamStatsChecksum());
 			for (unsigned tick = 0; tick < 20; ++tick)
 			{
-				source.game.syncStep(0);
-				restored.game.syncStep(0);
+				source.game.step(0);
+				restored.game.step(0);
 				CHECK(source.game.teamStatsChecksum() == restored.game.teamStatsChecksum());
 				CHECK(source.game.teams[0]->stats.measurements() ==
 					  restored.game.teams[0]->stats.measurements());
@@ -775,7 +787,7 @@ TEST_SUITE("TeamStatsPipeline")
             std::vector<Uint32> trace;
             const auto start=std::chrono::steady_clock::now();
             for(unsigned tick=0;tick<ticks;++tick) {
-                if(ai) for(const auto& [player,candidate] : w.game.prepareAIOrders(actors,false)) {
+                if(ai) for(const auto& [player,candidate] : prepareAIOrders(w.game,actors,false)) {
                     auto order=w.game.validateAIOrder(candidate,player); REQUIRE(order); order->sender=player;
                     orders+=order->getOrderType()!=ORDER_NULL; w.game.executeOrder(order,0);
                 }

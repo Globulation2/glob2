@@ -43,10 +43,11 @@ TEST_SUITE("AIOrderScheduler")
 			for (unsigned workers : {0u, 1u, 4u})
 			{
 				CAPTURE(mode); CAPTURE(delay); CAPTURE(workers);
+                const auto effective = std::max(1u,delay);
 				TestScheduler scheduler;
 				scheduler.configure(delay, workers, mode);
 				std::array<Uint32, 2> next{};
-				for (Uint32 tick = 0; tick < 20 + delay; ++tick)
+				for (Uint32 tick = 0; tick < 20 + effective; ++tick)
 				{
 					if (tick < 20) for (unsigned player : {1u, 0u})
 						scheduler.submit({player, 1, tick, tick, 0}, observation(tick), [&, player](const auto& world) {
@@ -55,17 +56,17 @@ TEST_SUITE("AIOrderScheduler")
 							return nullCommand();
 						});
 					const auto due = scheduler.takeDue(tick);
-					if (tick < delay) CHECK(due.empty());
+					if (tick < effective) CHECK(due.empty());
 					else {
 						REQUIRE(due.size() == 2);
 						CHECK(due[0].request.player == 0); CHECK(due[1].request.player == 1);
-						CHECK(due[0].request.observedTick == tick - delay);
+						CHECK(due[0].request.observedTick == tick - effective);
 						CHECK(due[1].dueTick == tick);
 					}
-					CHECK(scheduler.pendingCount() <= 2 * delay);
+					CHECK(scheduler.pendingCount() <= 2 * effective);
 				}
 				CHECK(next[0] == 20); CHECK(next[1] == 20);
-				CHECK(scheduler.metrics.maximumPending <= 2 * (delay + 1));
+				CHECK(scheduler.metrics.maximumPending <= 2 * (effective + 1));
 			}
 	}
 	TEST_CASE("save drains computation and retains future outputs without recomputing")
@@ -168,10 +169,32 @@ TEST_SUITE("AIOrderScheduler")
 		std::atomic<bool> completed{false};
 		scheduler.submit({0, 1, 0}, observation(0), [](const auto&) -> AIEngine::Command { throw std::runtime_error("decision failed"); });
 		scheduler.submit({1, 1, 0}, observation(0), [&](const auto&) { completed = true; return nullCommand(); });
-		CHECK_THROWS_WITH(scheduler.takeDue(0), "decision failed");
+		CHECK_THROWS_WITH(scheduler.takeDue(1), "decision failed");
 		CHECK(completed); CHECK(scheduler.pendingCount() == 2);
-		CHECK_THROWS_WITH(scheduler.takeDue(0), "decision failed");
+		CHECK_THROWS_WITH(scheduler.takeDue(1), "decision failed");
 	}
+    TEST_CASE("legacy zero-delay pending output keeps its saved deadline")
+    {
+        TestScheduler scheduler; scheduler.configure(0,0);
+        unsigned calls=0;
+        scheduler.submit({0,1,0,0,0},observation(0),[&](const auto&){++calls;return nullCommand();});
+        auto* backend=new GAGCore::MemoryStreamBackend;
+        GAGCore::BinaryOutputStream output(backend); scheduler.save(&output); output.flush();
+        auto bytes=backend->takeContents();
+        REQUIRE(calls==1);
+        // Existing format: 10-byte clocks, controller count + six words,
+        // pending count, then player/generation/observation and the due tick.
+        constexpr unsigned dueOffset=54;
+        for(unsigned i=0;i<4;++i) bytes.at(dueOffset+i)=0;
+        AIEngine::OrderScheduler restored;
+        GAGCore::BinaryInputStream input(new GAGCore::MemoryStreamBackend(bytes.data(),bytes.size()));
+        input.seekFromStart(0); REQUIRE(restored.load(&input));
+        const auto due=restored.takeDue(0);
+        REQUIRE(due.size()==1);
+        CHECK(due[0].dueTick==0);
+        CHECK(due[0].command.bytes==std::vector<Uint8>{ORDER_NULL});
+        CHECK(calls==1);
+    }
 	TEST_CASE("cancellation joins the old controller generation before replacement")
 	{
 		TestScheduler scheduler;
@@ -184,51 +207,29 @@ TEST_SUITE("AIOrderScheduler")
 		for (unsigned tick = 0; tick < 4; ++tick) CHECK(scheduler.takeDue(tick).empty());
 		REQUIRE(scheduler.takeDue(4).size() == 1);
 	}
-	TEST_CASE("sharing follows the delay and the measured decision work")
-	{
-		const auto poll = [](TestScheduler& scheduler, Uint32 tick, unsigned players, std::chrono::microseconds work) {
-			for (unsigned player = 0; player < players; ++player)
-				scheduler.submit({player, 1, tick, tick, 0}, observation(tick), [work](const auto&) {
-					// Sub-millisecond sleep_for can round down on Windows.
-					// Measure actual work so the placement threshold is exercised.
-					const auto until = std::chrono::steady_clock::now() + work;
-					while (std::chrono::steady_clock::now() < until)
-						std::this_thread::yield();
-					return nullCommand();
-				});
-			scheduler.takeDue(tick);
-		};
-		{
-			// A delayed batch is always shared: the owner is not waiting for it.
-			TestScheduler scheduler; scheduler.configure(2, 2);
-			for (Uint32 tick = 0; tick < 6; ++tick) poll(scheduler, tick, 2, std::chrono::microseconds(0));
-			CHECK(scheduler.metrics.sharedBatches == 6);
-		}
-		{
-			// One decision per tick never repays a worker wake-up.
-			TestScheduler scheduler; scheduler.configure(0, 2);
-			for (Uint32 tick = 0; tick < 6; ++tick) poll(scheduler, tick, 1, std::chrono::microseconds(0));
-			CHECK(scheduler.metrics.sharedBatches == 0);
-		}
-		{
-			// Cheap decisions start shared and settle on the owner once measured.
-			TestScheduler scheduler; scheduler.configure(0, 2);
-			for (Uint32 tick = 0; tick < 40; ++tick) poll(scheduler, tick, 2, std::chrono::microseconds(0));
-			CHECK(scheduler.metrics.sharedBatches >= 1); CHECK(scheduler.metrics.sharedBatches < 40);
-		}
-		{
-			// Decisions worth more than the threshold stay shared.
-			TestScheduler scheduler; scheduler.configure(0, 2);
-			for (Uint32 tick = 0; tick < 12; ++tick) poll(scheduler, tick, 2, std::chrono::microseconds(150));
-			CHECK(scheduler.metrics.sharedBatches == 12);
-		}
-		{
-			// Without shared execution nothing is shared, whatever the work.
-			TestScheduler scheduler; scheduler.configure(0, 0);
-			for (Uint32 tick = 0; tick < 4; ++tick) poll(scheduler, tick, 2, std::chrono::microseconds(150));
-			CHECK(scheduler.metrics.sharedBatches == 0);
-		}
-	}
+	TEST_CASE("all admitted work uses the executor and zero delay delivers at the next boundary")
+    {
+        for(unsigned delay : {0u,1u,2u}) for(unsigned workers : {0u,2u}) {
+            TestScheduler scheduler; scheduler.configure(delay,workers);
+            scheduler.submit({0,1,0,0,0},observation(0),[](const auto&){return nullCommand();});
+            CHECK(scheduler.takeDue(0).empty());
+            const auto due=std::max(1u,delay);
+            for(unsigned tick=1;tick<due;++tick) CHECK(scheduler.takeDue(tick).empty());
+            REQUIRE(scheduler.takeDue(due).size()==1);
+            CHECK(scheduler.metrics.sharedBatches==(workers>1 ? 1 : 0));
+        }
+    }
+    TEST_CASE("a same-boundary first admission after delivery keeps its next-boundary deadline")
+    {
+        TestScheduler scheduler; scheduler.configure(0,0);
+        CHECK(scheduler.takeDue(0).empty());
+        scheduler.submit({0,1,0,0,0},observation(0),[](const auto&){return nullCommand();});
+        const auto due=scheduler.takeDue(1);
+        REQUIRE(due.size()==1);
+        CHECK(due[0].request.observedTick==0);
+        CHECK(due[0].dueTick==1);
+        CHECK_THROWS_AS(scheduler.submit({1,1,0,0,0},observation(0),[](const auto&){return nullCommand();}),std::logic_error);
+    }
 	TEST_CASE("configuration rejects live work and submissions after a tick was dispatched")
 	{
 		TestScheduler scheduler; scheduler.configure(4, 1);

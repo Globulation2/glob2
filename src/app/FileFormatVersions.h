@@ -284,3 +284,6 @@ static constexpr int FILE_FORMAT_VERSION_CACHED_HIRING = 162;
 
 // Turret lists keep only building identity and entries; buildings drop targeting epochs.
 static constexpr int FILE_FORMAT_VERSION_LEAN_TURRET_TARGETING = 163;
+
+// One immutable world observation per owner boundary; persisted admission phase.
+static constexpr int FILE_FORMAT_VERSION_SINGLE_OBSERVATION = 166;

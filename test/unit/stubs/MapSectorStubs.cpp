@@ -47,11 +47,8 @@ bool Map::stockSupplierEligibleSlot(const Building*, const Building*, int, unsig
 // completed-job draining for terrain import, and fail if an engine reservation
 // reaches this test double; that lifecycle is covered by engine harnesses.
 #include "gradient/GradientRuntime.h"
-void Map::preparePendingGradient() {
-    if (gradientRuntime->preparation.job) std::abort();
-}
 void Map::finishGradientPipeline(JoinContext) {
-    preparePendingGradient();
+    if (gradientRuntime->preparation.job) std::abort();
     gradientRuntime->pipeline.finish();
 }
 // Unit fixtures never schedule building fields; clearing only drops storage.

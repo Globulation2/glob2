@@ -14,48 +14,70 @@ SimulationSnapshot::Handle Game::captureReadBoundary(SimulationSnapshot::Capture
 {
  return worldSnapshots.captureBoundary(*this, options);
 }
-SimulationSnapshot::Handle Game::prepareReadBoundary(bool paused, SimulationSnapshot::CaptureOptions options)
+const SimulationSnapshot::Handle& Game::observation() const
 {
- ensureTurretTargeting();
- const bool statisticsActive = !paused && !anyPlayerWaited;
- // Hiring observes every completed boundary before matched orders, even while
- // a replica waits or is paused, so every replica admits the same jobs.
- if (!hiringPipeline) hiringPipeline = std::make_unique<HiringPipeline>(map.computeExecutor());
- hiringPipeline->publishDue(stepCounter);
- if (statisticsActive) {
-  if (statsPipeline && !statsPipeline->matchesWorld(map.identity())) statsPipeline.reset();
+ if (!completedObservation) throw std::logic_error("No completed simulation observation");
+ return *completedObservation;
+}
+void Game::invalidateObservation() { worldSnapshots.invalidateBoundary(); }
+void Game::finishOrderPhase(bool advancing)
+{
+ if (!advancing && orderEditedWorld) invalidateObservation();
+ orderEditedWorld = false;
+}
+const SimulationSnapshot::Handle& Game::observeCompletedWorld(SimulationSnapshot::CaptureOptions options)
+{
+ const bool fresh = !completedObservation || completedObservation->worldIdentity != map.identity()
+  || completedObservation->tick != stepCounter
+  || completedObservation->observationRevision != worldSnapshots.revision();
+ if (fresh) {
+  ensureTurretTargeting();
+  if (!hiringPipeline) hiringPipeline = std::make_unique<HiringPipeline>(map.computeExecutor());
   if (!statsPipeline) statsPipeline = std::make_unique<TeamStatsPipeline>(map.computeExecutor());
   for (int t = 0; t < teamsCount(); ++t) teams[t]->stats.enableCollection();
-  if (statsPipeline->publishDue(*this)) worldSnapshots.invalidateBoundary();
+  // A normal observation must not reuse an earlier standalone inspection.
+  worldSnapshots.invalidateBoundary();
+  // Publication precedes the only capture. Newly admitted jobs cannot publish here.
+  map.publishWorldResultsDue();
+  hiringPipeline->publishDue(stepCounter);
+  statsPipeline->publishDue(*this);
+  turretTargetingPipeline->publish(*this);
+  completedObservation = worldSnapshots.captureBoundary(*this, options);
  }
- auto world = worldSnapshots.captureBoundary(*this, options);
- if (statisticsActive && statsPipeline->needsSample(stepCounter)) {
+ if (submittedObservation != stepCounter) {
+  const auto& world = *completedObservation;
+  map.submitWorldWork(world);
   statsPipeline->prepareBoundary(*this, world);
-  if (statsPipeline->publishDue(*this)) {
-   worldSnapshots.invalidateBoundary();
-   world = worldSnapshots.captureBoundary(*this, options);
-  }
+  turretTargetingPipeline->admit(*this, world, false);
+  hiringPipeline->observe(*this, world);
+  submittedObservation = stepCounter;
  }
- turretTargetingPipeline->admit(*this,world,paused || anyPlayerWaited);
- hiringPipeline->observe(*this, world);
- return world;
+ return *completedObservation;
 }
-std::vector<std::pair<unsigned,std::shared_ptr<Order>>> Game::prepareAIOrders(std::span<const unsigned> players,
- bool paused,const std::shared_ptr<GameDiagnostics::Session>& diagnostics,const SimulationSnapshot::Handle* captured)
+void Game::step(Sint32 localTeam)
 {
- if(!aiPipeline) aiPipeline=std::make_unique<AIEngine::Pipeline>();
- // Standalone simulation callers use the same boundary service; engine callers
- // supply the standard snapshot already published at this boundary.
- if (captured) return aiPipeline->prepare(*this,players,paused,diagnostics,*captured);
- const auto world=prepareReadBoundary(paused, diagnostics ? diagnostics->captureOptions(stepCounter) : SimulationSnapshot::CaptureOptions{});
- return aiPipeline->prepare(*this,players,paused,diagnostics,world);
+ const auto& world = observeCompletedWorld();
+ observeUnpolledAI(world);
+ advanceLiveSimulation(localTeam);
+}
+void Game::admitAIOrders(std::span<const unsigned> players, bool paused,
+ const std::shared_ptr<GameDiagnostics::Session>& diagnostics, const SimulationSnapshot::Handle& world)
+{
+ if (!aiPipeline) aiPipeline = std::make_unique<AIEngine::Pipeline>();
+ aiPipeline->admit(*this, players, paused, diagnostics, world);
+ observeUnpolledAI(world);
+}
+std::vector<std::pair<unsigned,std::shared_ptr<Order>>> Game::deliverAIOrders(std::span<const unsigned> players, bool paused)
+{
+ if (!aiPipeline) return {};
+ return aiPipeline->deliverDue(*this, players, paused);
 }
 std::shared_ptr<Order> Game::validateAIOrder(std::shared_ptr<Order> order,unsigned player) {return aiPipeline?aiPipeline->validate(*this,std::move(order),player):order;}
 void Game::settleAIOrder(const std::shared_ptr<Order>& order,bool accepted) {if(aiPipeline)aiPipeline->settle(*this,order,accepted);}
 void Game::cancelAI(unsigned player) {if(aiPipeline)aiPipeline->cancel(player);}
 void Game::drainAI() {if(aiPipeline)aiPipeline->drain();if(turretTargetingPipeline)turretTargetingPipeline->drain();}
-void Game::clearAI() { hiringPipeline.reset(); if(turretTargetingPipeline)turretTargetingPipeline->drain(); statsPipeline.reset(); map.finishGradientPipeline({JoinReason::Teardown, ComputeTelemetry::NoTick}); map.finishResourceGrowth({JoinReason::Teardown, ComputeTelemetry::NoTick}); aiPipeline.reset(); worldSnapshots.reset(); }
-void Game::saveAI(GAGCore::OutputStream* stream) {if(!aiPipeline){aiPipeline=std::make_unique<AIEngine::Pipeline>();aiPipeline->prepare(*this,{},true,nullptr,captureReadBoundary());}aiPipeline->save(stream);}
+void Game::clearAI() { completedObservation.reset(); submittedObservation.reset(); orderEditedWorld=false; hiringPipeline.reset(); if(turretTargetingPipeline)turretTargetingPipeline->drain(); statsPipeline.reset(); map.finishGradientPipeline({JoinReason::Teardown, ComputeTelemetry::NoTick}); map.finishResourceGrowth({JoinReason::Teardown, ComputeTelemetry::NoTick}); aiPipeline.reset(); worldSnapshots.reset(); }
+void Game::saveAI(GAGCore::OutputStream* stream) {if(!aiPipeline){aiPipeline=std::make_unique<AIEngine::Pipeline>();aiPipeline->admit(*this,{},true,nullptr,{});}aiPipeline->save(stream);}
 bool Game::loadAI(GAGCore::InputStream* stream) {auto pipeline=std::make_unique<AIEngine::Pipeline>();if(!pipeline->load(*this,stream))return false;aiPipeline=std::move(pipeline);return true;}
 std::vector<std::pair<std::string,Uint64>> Game::aiMetrics() const {
  auto values=teamStatsMetrics();
@@ -64,7 +86,7 @@ std::vector<std::pair<std::string,Uint64>> Game::aiMetrics() const {
  const auto compute=map.computeExecutor().telemetrySnapshot();
  const auto& waits=compute.summary.joins[unsigned(ComputeProducer::AI)][unsigned(JoinReason::TickDeadline)];
  const auto& capture=worldSnapshots.metrics;const auto& scheduling=aiPipeline->schedulingMetrics();const auto memory=worldSnapshots.memoryMetrics();const auto queryMemory=aiPipeline->queryVectorMemory();
- const std::vector<std::pair<std::string,Uint64>> aiValues={{"captures",capture.captures},
+ const std::vector<std::pair<std::string,Uint64>> aiValues={{"captures",capture.captures},{"core_materializations",capture.coreMaterializations},
   {"map_bytes_copied",capture.mapBytesCopied},{"detailed_captures",capture.detailedCaptures},{"bytes_copied",capture.bytesCopied},
   {"entity_bytes_copied",capture.entityBytesCopied},{"entity_sidecar_bytes_copied",capture.entitySidecarBytesCopied},{"component_reuses",capture.reusedComponents},{"allocations",capture.allocations},
   {"controller_query_vector_bytes",queryMemory.first},
@@ -80,19 +102,17 @@ std::vector<std::pair<std::string,Uint64>> Game::aiMetrics() const {
   {"shared_batches",scheduling.sharedBatches}};
  values.insert(values.end(),aiValues.begin(),aiValues.end());return values;
 }
-void Game::observeUnpolledAI() {
+void Game::observeUnpolledAI(const SimulationSnapshot::Handle& captured) {
  std::vector<AIJavaScript*> idle;
  for(unsigned p=0;p<unsigned(gameHeader.getNumberOfPlayers());++p)
   if(players[p]&&players[p]->ai&&players[p]->ai->implementationID==AI::JAVASCRIPT
     &&(!aiPipeline||!aiPipeline->wasPolled(p,stepCounter)))
    idle.push_back(static_cast<AIJavaScript*>(players[p]->ai->aiImplementation));
  if(idle.empty())return;
- // Replay/inactive replicas still update their historical visibility at the
- // legacy phase. Serialize this exceptional observation against private jobs.
+ // Replay/inactive replicas observe the same completed world. Serialize their
+ // visibility-history update against private jobs.
  drainAI();
- // Replica-only observations historically capture fresh inputs at this mid-tick phase.
- if(!aiPipeline) worldSnapshots.invalidateBoundary();
- const AIEngine::AIWorldView world(worldSnapshots.captureBoundary(*this).simulationView());
+ const AIEngine::AIWorldView world(captured.simulationView());
  for(auto* controller:idle)controller->observe(world);
 }
 

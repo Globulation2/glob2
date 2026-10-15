@@ -377,7 +377,7 @@ void MapQueryTest::testLocalTeam_SentinelValueIsMinusOne()
 {
 	// Pinned: sim sites that consult getDisplayedTeam() compare against teamNumber (>=0),
 	// so the sentinel must never collide with a real team index. -1 is the convention
-	// used elsewhere for "no team" (see Game::syncStep's localTeam parameter).
+	// used elsewhere for "no team" (see Game::step's localTeam parameter).
 	CHECK_EQ(static_cast<Sint32>(-1), Map::NO_DISPLAYED_TEAM);
 }
 

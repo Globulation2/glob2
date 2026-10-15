@@ -136,7 +136,7 @@ TEST_CASE("CPU-only lifecycle owns no GPU service or backend session" * doctest:
         auto& map=world.game.map;
         map.configureCompute(threads);
         world.addUnit(WORKER,10,10);
-        for (unsigned tick=0;tick<16;++tick) world.game.syncStep(0);
+        for (unsigned tick=0;tick<16;++tick) world.game.step(0);
         CHECK_FALSE(map.gradientRuntime->backendSession);
         CHECK_FALSE(map.gradientRuntime->deviceService);
         CHECK(map.gradientExecutionMetrics().empty());

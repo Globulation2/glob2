@@ -46,6 +46,9 @@ struct GradientRuntime
 	std::array<std::array<Uint64,MaterialCount>,Team::MAX_COUNT> stockRevision{};
 	Uint64 materialCacheClock=0, materialCacheBudget=64ull*1024*1024;
 	std::vector<Workspace> workspaces{1};
+	// Publication is idempotent during pause, inspection and restored boundaries.
+	std::optional<Uint32> worldResultsPublishedTick;
+	std::optional<Uint32> worldWorkSubmittedTick;
 	GradientPipeline pipeline;
 	// Scheduled building fields share the executor with the periodic pipeline.
 	// Drain it before teams and the gradient buffer pool are destroyed.

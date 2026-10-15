@@ -75,7 +75,7 @@ advancing tick computes all teams in team order on one dedicated executor lane.
 The simulation owner publishes each sample at `sourceTick + teamStatsDelay` in
 source-tick/team order, joining late work at that deadline. Worker completion
 order never selects visible statistics. Zero workers use the same calculation
-at the deadline; delay zero calculates and publishes at the observation boundary.
+at the deadline; configured delay zero uses the next observation boundary for new samples.
 AI, scripts, victory calculations and presentation all read published values.
 
 The match-wide `teamStatsDelay` rule accepts 0 through 8 ticks, defaulting to 8.

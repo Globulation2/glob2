@@ -48,10 +48,10 @@ Building* Game::lookupBuilding(Uint16 gid) const
 
 bool Game::executeOrder(std::shared_ptr<Order> order, int localPlayer)
 {
-	const bool wasWaiting=anyPlayerWaited;
 	const auto finish = [&](bool accepted) {
-        if (wasWaiting!=anyPlayerWaited || (accepted && order && order->getOrderType()!=ORDER_NULL && order->getOrderType()!=ORDER_TEXT_MESSAGE))
-            snapshots().invalidateBoundary();
+        if (accepted && order && order->getOrderType()!=ORDER_NULL
+            && order->getOrderType()!=ORDER_TEXT_MESSAGE && order->getOrderType()!=ORDER_PAUSE_GAME)
+            orderEditedWorld = true;
 		settleAIOrder(order, accepted);
 		return accepted;
 	};

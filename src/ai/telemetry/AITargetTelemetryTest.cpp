@@ -71,7 +71,7 @@ void tick(Game &game)
 	REQUIRE(order != nullptr);
 	order->sender = 0;
 	game.executeOrder(order, 0);
-	game.syncStep(0);
+	game.step(0);
 }
 
 std::vector<Uint32> state(Game &game)

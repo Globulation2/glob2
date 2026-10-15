@@ -83,7 +83,7 @@ namespace
 				for (int i = 0; i < Unit::MAX_COUNT; ++i)
 					if (Unit* u = team->myUnits[i])
 						before[i] = game.map.coordToIndex(u->posX, u->posY);
-			game.syncStep(0);
+			game.step(0);
 			for (int i = 0; i < Unit::MAX_COUNT; ++i)
 				if (Unit* u = team->myUnits[i])
 					u->hungry = Unit::HUNGRY_MAX;

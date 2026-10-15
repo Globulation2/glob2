@@ -691,7 +691,7 @@ static void checkRandomContinuation(bool text, bool ai)
 			order->sender=0;
 			game.executeOrder(order,0);
 		}
-		game.syncStep(0);
+		game.step(0);
 	};
 	for (int i=0; i<100; ++i) step(gui.game);
 	const auto savedRandom = gui.game.syncRandom;

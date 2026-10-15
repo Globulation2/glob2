@@ -232,10 +232,12 @@ creating the simulation thread fails, run the same session serially (`Engine::st
 also remains the headless default and the equivalence reference.
 
 - The simulation thread paces itself with the speed presets and runs ticks
-  (`Engine::simulationStep`: orders, network, `Game::syncStep`). Before pacing,
+  (`Engine::simulationStep`: orders, network, `Game::advanceLiveSimulation`). Before pacing,
   the engine publishes the completed world's standard simulation snapshot,
-  adding presentation payloads only when preparation is admitted (or diagnostics
-  require them). Presentation preparation
+  freezing optional graphical inputs even when preparation is busy. Paused
+  camera, selection and panel changes project from that retained observation
+  without copying entities or consulting a newer live world. Headless observation
+  options remain minimal. Presentation preparation
   borrows that publication and runs on the compute executor. A worker publishes
   the completed `PresentationFrame` into a `SceneBuffer` (lock-free triple buffer);
   only one preparation is in flight, and a newer complete frame can supersede an

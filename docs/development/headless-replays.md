@@ -479,6 +479,16 @@ Performance records describe this execution session and are not stored in saves.
 
 ### Gradient scheduling compatibility
 
+Format 166 uses one completed observation for every background consumer. The owner
+publishes due results, captures once, then admits work before applying orders and
+advancing. Newly admitted AI/statistics work configured with delay zero is due at
+the next boundary. Paused frames and stalled turns reuse their observation.
+Saved publication/admission phases and pending outputs preserve continuation;
+old pending results keep their original deadlines. Replay floor 166 and the sim
+revision gate distinguish the changed timing. See the
+[owner timing contract](../architecture/simulation.md#scheduled-gradient-work).
+
+
 Version 120 makes periodic resource, guard and clear fields publish eight ticks
 after their observation boundary. Current execution uses the shared compute pool. Saves retain
 completed pending fields and their remaining deadlines without publishing them early;

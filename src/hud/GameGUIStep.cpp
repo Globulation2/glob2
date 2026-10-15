@@ -349,7 +349,7 @@ void GameGUI::step(const std::vector<SDL_Event>& events, Uint64 now)
 	// do we have won or lost conditions
 	checkWonConditions();
 
-	if (drawnScene().panels.hud.state().anyPlayerWaited)
+	if (clientEvents.waitingMask())
 		anyPlayerWaitedTimeFor++;
 	else
 		anyPlayerWaitedTimeFor = 0;

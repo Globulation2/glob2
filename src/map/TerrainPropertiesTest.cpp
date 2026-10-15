@@ -130,7 +130,7 @@ TEST_CASE("terrain edits refresh escape costs and supersede queued route snapsho
     map.advanceGradientPipeline();
     auto& pipeline = map.gradientRuntime->pipeline;
     map.stagePeriodicGradientPreparation();
-    map.preparePendingGradient();
+    map.game->snapshotStore().invalidateBoundary(); map.preparePendingGradient(map.game->snapshotStore().captureBoundary(*map.game));
     map.paintCell(9,8,ICE);
     map.advanceGradientPipeline();
     map.advanceGradientPipeline();
@@ -514,6 +514,8 @@ TEST_SUITE("TerrainRuntime")
 				map.configureGradientPipeline(workers, 2);
 				map.advanceGradientPipeline();
 				map.syncStep(0);
+				map.stagePeriodicGradientPreparation();
+				map.preparePendingGradient(world.game.snapshotStore().captureBoundary(world.game));
 				REQUIRE(map.gradientRuntime->pipeline.pendingCount() == 1);
 				map.gradientRuntime->pipeline.visitPendingSnapshots(
 					[&](const auto &pending)
@@ -630,7 +632,7 @@ TEST_SUITE("TerrainRuntime")
 		map.configureGradientPipeline(1, 2);
 		map.advanceGradientPipeline();
 		map.stagePeriodicGradientPreparation();
-		map.preparePendingGradient();
+		map.game->snapshotStore().invalidateBoundary(); map.preparePendingGradient(map.game->snapshotStore().captureBoundary(*map.game));
 		auto *bytes = new GAGCore::MemoryStreamBackend;
 		GAGCore::BinaryOutputStream output(bytes);
 		world.game.save(&output, false, "custom-continuation");
@@ -656,8 +658,8 @@ TEST_SUITE("TerrainRuntime")
 						 resumed.game.map.materialGradients[0][WHEAT][6]));
 		for (int i = 0; i < 100; ++i)
 		{
-			world.game.syncStep(0);
-			resumed.game.syncStep(0);
+			world.game.step(0);
+			resumed.game.step(0);
 			CHECK(world.game.checkSum() == resumed.game.checkSum());
 		}
 	}

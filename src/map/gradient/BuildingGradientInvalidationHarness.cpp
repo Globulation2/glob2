@@ -35,6 +35,7 @@
 #include <thread>
 #include "BuildingGradientJob.h"
 #include "Version.h"
+#include "ResourceGrowth.h"
 #include <BinaryStream.h>
 #include <TextStream.h>
 #include <StreamBackend.h>
@@ -323,6 +324,13 @@ static void publicReadsResolveTheirInputs()
 	std::puts("PASS public distance, movement and full-field lazy API boundaries");
 }
 
+static void preparePeriodic(Map& map)
+{
+    map.stagePeriodicGradientPreparation();
+    map.game->snapshotStore().invalidateBoundary();
+    map.preparePendingGradient(map.game->snapshotStore().captureBoundary(*map.game));
+}
+
 static void delayedFields()
 {
 	for (unsigned workers : {0, 1, 2, 4, 8}) for (int kind=0; kind<3; ++kind)
@@ -341,7 +349,7 @@ static void delayedFields()
 		const auto cells=map.getW()*map.getH();
 		field();
 		map.configureGradientPipeline(workers, 3);
-		map.advanceGradientPipeline(); map.syncStep(0); // Seed the only allocated periodic slot.
+		map.advanceGradientPipeline(); map.syncStep(0); preparePeriodic(map); // Seed the only allocated periodic slot.
 		require(map.gradientPipelineStatus().jobs==1, "pipeline scheduled a real field");
 		map.addForbidden(41, 40, 0);
 		refresh();
@@ -350,12 +358,12 @@ static void delayedFields()
 		require(map.gradientPipelineStatus().discarded==1, "synchronous refresh supersedes queued snapshot");
 		require(std::vector<Uint16>(field(),field()+cells)==expected, "old field cannot overwrite fresh synchronous field");
 		// A subsequent periodic snapshot publishes normally at its fixed deadline.
-		map.syncStep(1);
+		map.syncStep(1); preparePeriodic(map);
 		map.advanceGradientPipeline(); map.advanceGradientPipeline();
 		require(map.gradientPipelineStatus().published==0, "no early publication");
 		map.advanceGradientPipeline();
 		require(map.gradientPipelineStatus().published==1, "publication at deadline");
-		map.syncStep(2);
+		map.syncStep(2); preparePeriodic(map);
 		std::vector<Uint16> frozen(cells);
 		if(kind==0) map.seedMaterialGradient(0, 0, swim, frozen.data());
 		else if(kind==1) map.seedGuardAreasGradient(0, swim, frozen.data());
@@ -364,7 +372,7 @@ static void delayedFields()
 		map.paintCell(55, 55, GRASS); // Workers must use captured water, not this live edit.
 		map.advanceGradientPipeline(); map.advanceGradientPipeline(); map.advanceGradientPipeline();
 		require(std::vector<Uint16>(field(),field()+cells)==frozen, "terrain changes do not alter a pending snapshot");
-		map.syncStep(3); // Destruction must safely drain a job in flight.
+		map.syncStep(3); preparePeriodic(map); // Destruction must safely drain a job in flight.
 	}
 	std::puts("PASS delayed resource/guard/clear publication, synchronous supersession, teardown");
 }
@@ -534,7 +542,7 @@ struct Scheduler
 		teams();
 		++game.stepCounter;
 		map.stagePeriodicGradientPreparation();
-		map.preparePendingGradient();
+		map.game->snapshotStore().invalidateBoundary(); map.preparePendingGradient(map.game->snapshotStore().captureBoundary(*map.game));
 	}
 	void tick() { tick([] {}); }
 	Map::BuildingGradientPipelineStatus status() const { return map.buildingGradientPipelineStatus(); }
@@ -1061,7 +1069,7 @@ void scheduledSameTickSwimClassesKeepRequestOrder()
 	paint(false);
 	s.map.buildingAvailable(b, 3, 2, 2, &dist); // same tick, open fence
 	s.map.stagePeriodicGradientPreparation();
-	s.map.preparePendingGradient();
+	s.map.game->snapshotStore().invalidateBoundary(); s.map.preparePendingGradient(s.map.game->snapshotStore().captureBoundary(*s.map.game));
 	require(s.status().pending == 2, "both swim classes are pending with one capture tick");
 	require(b->lastGlobalGradientUpdateStepCounter[b->routeSlot(1, BuildingRoute::Footprint)] < s.game.stepCounter, "nothing published yet");
 	for (int i = 1; i < 4; ++i) s.tick();
@@ -1075,6 +1083,113 @@ void scheduledSameTickSwimClassesKeepRequestOrder()
 
 TEST_SUITE("BuildingGradientInvalidation")
 {
+    TEST_CASE("observation phase is covered by both current checksum tiers")
+    {
+        glob2test::HeadlessGlobals globals;
+        for (bool heavy : {false,true}) {
+            CAPTURE(heavy);
+            World world;
+            auto& map = world.game.map;
+            const auto current = map.checkSum(heavy,false,false);
+            const auto legacy = map.checkSum(heavy,false,true);
+            // This empty world's publication changes only the owner phase.
+            map.publishWorldResultsDue();
+            CHECK(map.checkSum(heavy,false,false) != current);
+            CHECK(map.checkSum(heavy,false,true) == legacy);
+        }
+    }
+
+    TEST_CASE("initial legacy saves bootstrap only when their observation was not admitted")
+    {
+        glob2test::HeadlessGlobals globals;
+        for (int legacyVersion : {164,165})
+        for (bool admitted : {false,true}) {
+            CAPTURE(legacyVersion); CAPTURE(admitted);
+            World source, restored;
+            source.game.map.setResourceByIndex(20,20,WHEAT,1);
+            restored.game.map.setResourceByIndex(20,20,WHEAT,1);
+            REQUIRE(source.game.stepCounter == 0);
+            if (admitted) {
+                source.game.map.publishWorldResultsDue();
+                source.game.map.submitWorldWork(source.game.snapshotStore().captureBoundary(source.game));
+            }
+            const auto bytes = saveRuntime(source.game.map);
+            GAGCore::BinaryInputStream input(new GAGCore::MemoryStreamBackend(bytes.data(),bytes.size()));
+            input.seekFromStart(0);
+            restored.game.map.loadRuntimeState(&input,legacyVersion);
+            restored.game.map.publishWorldResultsDue();
+            restored.game.map.submitWorldWork(restored.game.snapshotStore().captureBoundary(restored.game));
+            CHECK(restored.game.map.resourceGrowthMetrics().submitted == (admitted ? 0 : 1));
+            REQUIRE(restored.game.map.resourceGrowthMetrics().published == 0);
+            if (admitted) {
+                CHECK(saveRuntime(restored.game.map) == saveRuntime(source.game.map));
+            }
+        }
+    }
+
+    TEST_CASE("world observation publication and admission survive save boundaries")
+    {
+        glob2test::HeadlessGlobals globals;
+        for (int legacyVersion : {164,165}) {
+            CAPTURE(legacyVersion);
+            World original, restored, legacy;
+            for (World* world : {&original, &restored, &legacy}) {
+                world->game.stepCounter = 37;
+                world->game.map.setResourceByIndex(20, 20, WHEAT, 1);
+                world->game.map.getMaterialGradientSlot(0, WHEAT, 0);
+                world->game.map.configureGradientPipeline(0, 2);
+            }
+            auto& map = original.game.map;
+            map.publishWorldResultsDue();
+            auto observation = original.game.snapshotStore().captureBoundary(original.game);
+            map.submitWorldWork(observation);
+            const auto pending = map.gradientPipelineStatus().pending;
+            REQUIRE(pending == 1);
+            map.publishWorldResultsDue();
+            map.submitWorldWork(observation);
+            CHECK(map.gradientPipelineStatus().pending == pending);
+            CHECK(map.gradientPipelineStatus().jobs == 1);
+            const auto bytes = saveRuntime(map);
+            loadRuntime(restored.game.map, bytes);
+            restored.game.map.publishWorldResultsDue();
+            restored.game.map.submitWorldWork(restored.game.snapshotStore().captureBoundary(restored.game));
+            CHECK(restored.game.map.gradientPipelineStatus().pending == pending);
+            CHECK(restored.game.map.gradientPipelineStatus().published == 0);
+            CHECK(restored.game.map.resourceGrowthMetrics().submitted == 0);
+            // Versions 164 and 165 end before the format-166 publication/submission
+            // markers. Reading that prefix exercises unchanged old pending outputs.
+            auto backend = std::make_unique<GAGCore::MemoryStreamBackend>();
+            backend->write(bytes.data(), bytes.size()); backend->seekFromStart(0);
+            GAGCore::BinaryInputStream input(backend.release());
+            legacy.game.map.loadRuntimeState(&input, legacyVersion);
+            // A migration may be saved again before its first owner observation.
+            const auto migratedBytes = saveRuntime(legacy.game.map);
+            loadRuntime(legacy.game.map, migratedBytes);
+            legacy.game.map.publishWorldResultsDue();
+            legacy.game.map.submitWorldWork(legacy.game.snapshotStore().captureBoundary(legacy.game));
+            CHECK(legacy.game.map.resourceGrowthMetrics().submitted == 0);
+            CHECK(legacy.game.map.gradientPipelineStatus().published == 0);
+            ++original.game.stepCounter;
+            ++restored.game.stepCounter;
+            ++legacy.game.stepCounter;
+            map.publishWorldResultsDue();
+            restored.game.map.publishWorldResultsDue();
+            legacy.game.map.publishWorldResultsDue();
+            CHECK(map.gradientPipelineStatus().published == 0);
+            CHECK(restored.game.map.gradientPipelineStatus().published == 0);
+            CHECK(legacy.game.map.gradientPipelineStatus().published == 1);
+            ++original.game.stepCounter;
+            ++restored.game.stepCounter;
+            map.publishWorldResultsDue();
+            restored.game.map.publishWorldResultsDue();
+            CHECK(map.gradientPipelineStatus().published == 1);
+            CHECK(restored.game.map.gradientPipelineStatus().published == 1);
+            const auto* a = map.getMaterialGradientSlot(0,WHEAT,0);
+            const auto* b = restored.game.map.getMaterialGradientSlot(0,WHEAT,0);
+            CHECK(std::equal(a, a + map.getW() * map.getH(), b));
+        }
+    }
+
 	TEST_CASE("prediction retains reader demand across rebuilds and save completion")
 	{
 		glob2test::HeadlessGlobals globals;
@@ -1267,7 +1382,7 @@ TEST_SUITE("BuildingGradientInvalidation")
             current.game.setWaitingOnMask(0); repeated.game.setWaitingOnMask(0);
             REQUIRE(state(current.game)==state(repeated.game));
             for(int tick=0;tick<16;++tick) {
-                current.game.syncStep(0); repeated.game.syncStep(0);
+                current.game.step(0); repeated.game.step(0);
                 REQUIRE(state(current.game)==state(repeated.game));
                 REQUIRE(current.game.syncRandom==repeated.game.syncRandom);
                 REQUIRE(saveRuntime(current.game.map)==saveRuntime(repeated.game.map));

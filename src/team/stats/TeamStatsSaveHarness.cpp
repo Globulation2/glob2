@@ -1312,7 +1312,7 @@ TEST_SUITE("TeamStatsSave")
         GAGCore::BinaryInputStream legacy(new GAGCore::FileStreamBackend(file));
         auto& stats=world.team->stats;
         REQUIRE(stats.load(&legacy,152));
-        world.game.gameHeader.setTeamStatsDelay(0); // The enclosing legacy game migrates with immediate publication.
+        world.game.gameHeader.setTeamStatsDelay(0); // New samples publish at the next boundary; historical pending samples keep their deadlines.
         REQUIRE(legacy.getPosition()==345648);
         // This retained game's explorer has positive air damage at all levels.
         // Its one ground-trained explorer is already in the air histogram.
@@ -1339,7 +1339,7 @@ TEST_SUITE("TeamStatsSave")
         REQUIRE(stats.aiTelemetry.size()==1);
         REQUIRE(stats.aiTelemetry[0]->active);
         // Admit the initial completed boundary before counting subsequent ticks.
-        world.game.prepareReadBoundary();
+        world.game.observeCompletedWorld();
         auto restored=roundTrip(world.game);
         CHECK(stats.aiTelemetry.size()==1);
         CHECK_FALSE(stats.aiTelemetry[0]->active);
@@ -1358,13 +1358,14 @@ TEST_SUITE("TeamStatsSave")
         };
         REQUIRE(components(restored->game)==components(world.game));
         // Establish the initial completed boundary before counting future samples.
-        world.game.prepareReadBoundary(false);
-        restored->game.prepareReadBoundary(false);
+        world.game.observeCompletedWorld();
+        restored->game.observeCompletedWorld();
         REQUIRE(components(restored->game)==components(world.game));
         const auto phase=stats.smoothedIndex;
         const auto index=stats.statsIndex;
         for(int tick=1;tick<=32;++tick) {
-            world.game.syncStep(0); restored->game.syncStep(0);
+            world.game.step(0); restored->game.step(0);
+            world.game.observeCompletedWorld(); restored->game.observeCompletedWorld();
             CHECK(components(restored->game)==components(world.game));
             CHECK(wire(restored->game.teams[0]->stats)==wire(stats));
             CHECK(restored->game.syncRandom==world.game.syncRandom);

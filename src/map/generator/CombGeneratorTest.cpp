@@ -267,7 +267,7 @@ void firing(const std::filesystem::path &output, bool buildingTarget)
 	game.anyPlayerWaited = false;
 	const auto beforeStep = game.stepCounter;
 	for (int tick = 0; tick < 32; ++tick)
-		game.syncStep(0);
+		game.step(0);
 	require(game.stepCounter == beforeStep + 32, "controlled combat simulation advances");
 	require((buildingTarget ? enemyTower->hp : worker->hp) < before,
 			"cross-channel projectile damages target");
@@ -296,7 +296,7 @@ void firing(const std::filesystem::path &output, bool buildingTarget)
 		for (; ticks < 12000 &&
 			   (m.delivered[STONE] == 0 || m.shots[GameplayMeasurements::TOWER] == shots);
 			 ++ticks)
-			game.syncStep(0);
+			game.step(0);
 		std::printf("SUPPLY ticks=%d harvested=%llu delivered=%llu new-shots=%llu\n", ticks,
 					(unsigned long long)m.harvested[STONE], (unsigned long long)m.delivered[STONE],
 					(unsigned long long)(m.shots[GameplayMeasurements::TOWER] - shots));

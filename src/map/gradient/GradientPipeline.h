@@ -305,7 +305,7 @@ class GradientPipeline
 		while (!pending.empty() && pending.front()->due <= tick)
 		{
 			auto &job = *pending.front();
-			(this->*waitJob)(job, {JoinReason::TickDeadline, deadline ? deadline(1) / 2 : tick});
+			(this->*waitJob)(job, {JoinReason::TickDeadline, deadline ? deadline(0) / 2 : tick});
 			if (job.error)
 				std::rethrow_exception(job.error);
 			if (!job.superseded)
@@ -374,7 +374,7 @@ class GradientPipeline
 			const ComputeExecutor::Group group{1, fn, ComputeExecutor::NoLane};
 			job->batch = executor->submit(std::span(&group, 1), job->executorDue,
 										  {ComputeProducer::PeriodicGradient,
-										   deadline ? job->executorDue / 2 - remaining + 1 : tick,
+										   deadline ? job->executorDue / 2 - remaining : tick,
 										   job->executorDue / 2});
 		}
 		catch (...)

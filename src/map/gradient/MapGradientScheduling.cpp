@@ -3,11 +3,9 @@
 // observation boundary, publication and supersession of building walking
 // fields; save/load lives in MapIO.cpp with the other runtime state.
 //
-// Tick placement (Game::syncStep):
-//   advanceGradientPipeline  publishes jobs due this tick, before teams step;
-//   team stepping            requests refreshes and keeps serving old fields;
-//   after stepCounter++      stageBuildingGradientPreparation admits requests;
-//   observation boundary     prepareStagedBuildingGradients captures and submits.
+// Boundary placement: publish due fields, capture one immutable observation,
+// then stage and submit requests using that observation. Team stepping requests
+// refreshes while serving existing fields until a later boundary publishes them.
 // Every owner-side step is O(1) per job; seeding and the search run on workers.
 
 #include <PerformanceTelemetry.h>
@@ -164,9 +162,9 @@ void Map::ensureBuildingGradientPipeline()
 		recycleBuildingGradientBuffer(p.data.release());
 		recycleBuildingGradientSearch(std::move(p.search));
 	};
-	// Staged after tick c-1's step counter advanced to c, as periodic jobs are.
+	// Work observed at c publishes at boundary c + remaining.
 	pipeline.deadline = [this](unsigned remaining) {
-		return ComputeExecutor::advanceDue(std::uint64_t(game ? game->stepCounter : 0) + remaining - 1);
+		return ComputeExecutor::advanceDue(std::uint64_t(game ? game->stepCounter : 0) + remaining);
 	};
 	// Statistics record what readers needed, so they default to seeds only.
 	if (delay) pipeline.configure(compute, delay, buildScheduled);

@@ -177,8 +177,7 @@ void Engine::gatherAndAdvanceOrders(bool wasReadyLastTick)
     const bool paused=gui.gamePaused || globalContainer->replaying;
     // After startup, the completed world's snapshot was published before pacing.
     // AI polling and delivery remain at their original logical deadline.
-    const auto world=openReadBoundary(!readBoundaryOpened);
-    const auto scheduled=gui.game.prepareAIOrders(eligible,paused,diagnostics,&world);
+    const auto scheduled=gui.game.deliverAIOrders(eligible,paused);
     for(const auto& [actor,order]:scheduled) {
         if(localAI && actor==unsigned(orderPlayer)) localOrder=order;
         else net->pushOrder(order,actor,true);
@@ -212,13 +211,12 @@ void Engine::gatherAndAdvanceOrders(bool wasReadyLastTick)
 
 // Once tickReady() is true for this tick, commit the tick: validate
 // checksums (assert on desync), execute the matched orders, pump the replay
-// reader if we're in playback, and run game.syncStep. Called only from inside
-// the !hardPause branch, so the original !gui.hardPause guard on syncStep is
+// reader if we're in playback, and advance live simulation. Called only from inside
+// the !hardPause branch, so the original !gui.hardPause guard on advancement is
 // implicit here.
 void Engine::executeOrdersAndStep(bool readyNow)
 {
-	// Defensive drain for paused/stalled/no-controller paths and direct callers.
-	gui.game.map.preparePendingWorld();
+    const bool wasPaused = gui.gamePaused;
 	if (readyNow)
 	{
 		// A turn session never reports a mismatch here: the relay arbitrates the
@@ -282,8 +280,12 @@ void Engine::executeOrdersAndStep(bool readyNow)
 		}
 	}
 
+	// A resume order opens the following delivery phase at this same tick.
+    // Restored AI outputs due now must be delivered before the clock advances.
+    const bool advancing = readyNow && !gui.gamePaused && !wasPaused;
+    gui.game.finishOrderPhase(advancing);
 	// here we do the real work
-	if (readyNow && !gui.gamePaused)
+	if (advancing)
 	{
 		if (globalContainer->replaying)
 		{
@@ -291,7 +293,7 @@ void Engine::executeOrdersAndStep(bool readyNow)
 			globalContainer->replayReader->advanceStep();
 		}
 
-		gui.game.syncStep(gui.localTeamNo, Game::PreparationCompletion::Deferred);
+		gui.game.advanceLiveSimulation(gui.localTeamNo);
 		// Hand the tick's notices to the GUI now, also under --nox where
 		// gui.step never runs, so the event queue cannot grow unbounded. With a
 		// simulation thread the GUI consumes them while the simulation is parked.
@@ -351,15 +353,26 @@ std::vector<unsigned> Engine::observationPlayers(bool wasReadyLastTick) const
     return eligible;
 }
 
-SimulationSnapshot::Handle Engine::openReadBoundary(bool present)
+SimulationSnapshot::Handle Engine::establishObservation(bool present)
 {
-    const bool worldAdvanced=!retainedPresentation || retainedPresentation->world.tick!=gui.game.stepCounter;
+    const bool worldAdvanced=!retainedPresentation || retainedPresentation->world.tick!=gui.game.stepCounter
+        || retainedPresentation->world.observationRevision!=gui.game.snapshots().revision();
     const auto presentation=present ? admitPresentation(worldAdvanced) : std::optional<SceneRequest>{};
     SimulationSnapshot::CaptureOptions options;
+    // Capture the requested graphical payload even while scene preparation is
+    // busy. A later extraction must use this frozen observation, never live state.
+    if (!globalContainer->runNoX) {
+        // A paused camera/panel toggle must never consult a newer live world.
+        // Frozen history/display storage shares its immutable backing buffers.
+        options = {.presentation=true, .history=true, .telemetry=true,
+            .entityDiagnostics=true, .annotations=true};
+    }
     if (presentation) options.include(SceneExtractor::captureOptions(*presentation));
     if (diagnostics) options.include(diagnostics->captureOptions(gui.game.stepCounter));
-    const auto world=gui.game.prepareReadBoundary(gui.gamePaused || gui.hardPause, options);
-    readBoundaryOpened=true;
+    const bool paused=gui.gamePaused || gui.hardPause;
+    const auto world=gui.game.observeCompletedWorld(options);
+    gui.game.admitAIOrders(observationPlayers(session ? session->wasReadyLastTick : true),
+        paused || globalContainer->replaying, diagnostics, world);
     if (presentation) publishPresentation(world,*presentation);
     return world;
 }
@@ -395,8 +408,10 @@ void Engine::refreshRetainedPresentation()
     request->tickTime=retainedPresentation->request.tickTime;
     request->tickInterval=retainedPresentation->request.tickInterval;
     if (*request==retainedPresentation->request) return;
-    if (!retainedPresentation->world.supportsPresentation(SceneExtractor::captureOptions(*request))) return;
-    const auto world=retainedPresentation->world;
+    const auto& world=gui.game.observation();
+    if (world.tick!=retainedPresentation->world.tick
+        || world.observationRevision!=retainedPresentation->world.observationRevision) return;
+    if (!world.supportsPresentation(SceneExtractor::captureOptions(*request))) return;
     publishPresentation(world,*request);
 }
 
@@ -923,6 +938,7 @@ void Engine::pumpTurnSession(Uint64 now)
 void Engine::reloadTurnInitialState()
 {
     serialPresentation.reset();
+    retainedPresentation.reset();
     gui.setPublishedScene(nullptr);
 	assert(turn && turnMatch);
 	TurnMatchState& state = *turnMatch;
@@ -971,6 +987,9 @@ void Engine::reloadTurnInitialState()
 	turn->turn().telemetry().reloadLoad(static_cast<std::uint64_t>(
 		std::chrono::duration_cast<std::chrono::microseconds>(std::chrono::steady_clock::now() - started).count()));
 	turn->turn().reloadDone();
+    // Reload clears the old observation. Reset the turn queues first so AI
+    // eligibility belongs to the restored tick before admitting its work.
+    establishObservation(!globalContainer->runNoX);
 	std::cerr << "Turn session: reloaded the initial state in "
 		<< std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::steady_clock::now() - started).count()
 		<< " ms; fast-forwarding" << std::endl;
@@ -987,7 +1006,7 @@ void Engine::reloadTurnInitialState()
 //   3. gui.step                   - GUI input (skipped under --nox / off-cadence)
 //   4. gatherAndAdvanceOrders     - push local+AI orders, advance net (if prev tick committed)
 //   5. (gate flip) readyNow = net->tickReady()
-//   6. executeOrdersAndStep       - run matched orders, replay reader, sim syncStep
+//   6. executeOrdersAndStep       - run matched orders, replay reader, advance live simulation
 //   7. automatic-ending step-count check
 //   8. drawSession / sessionDelay  - draw, gameplay capture, host pacing
 //   9. handleExitRequest           - drain on exit request
@@ -1018,7 +1037,6 @@ void Engine::beginSession(Uint64 now)
     st.startTime = now;
     teamEliminatedTick.clear();
     session = st;
-    readBoundaryOpened = false;
     automaticGameStartTick = now;
 	if (!globalContainer->runNoX)
 		GAGCore::Recording::recorder().beginMatch(
@@ -1049,6 +1067,7 @@ void Engine::beginSession(Uint64 now)
 		perf.describe(metadata.str());
 	}
 	printTurnTelemetrySession();
+    establishObservation(!globalContainer->runNoX);
 
 }
 
@@ -1214,7 +1233,7 @@ void Engine::absorbSimulationTelemetry()
     const auto frameBudget=globalContainer->runNoX || fps==0 ? 0ULL : (1000000000ULL+fps-1)/fps;
     perf.configure(tick, globalContainer->runNoX ? 0ULL : std::uint64_t(scene.tickInterval)*1000000ULL, frameBudget,
         gui.gamePaused || gui.hardPause ? "paused" : globalContainer->runNoX ? "headless" :
-        globalContainer->replaying ? "replay" : scene.panels.hud.state().anyPlayerWaited ? "waiting" : "live");
+        globalContainer->replaying ? "replay" : gui.clientEvents.waitingMask() ? "waiting" : "live");
     runner->absorbTelemetry(perf);
     perf.capture(tick);
 }
@@ -1283,13 +1302,13 @@ bool Engine::advanceSession(Uint64 now, const std::function<void()>& clientWork,
     // waiting for the relay poll quickly instead of sleeping a whole tick.
     if (turn ? readyNow : !globalContainer->runNoX) st.needToBeTime += st.speedNs;
     if (handleExit) handleExitRequest();
-    if (gui.isRunning && !globalContainer->runNoX)
+    if (gui.isRunning)
     {
-        // Open the next shared read phase now, before the host's pacing wait.
+        // Establish the next completed observation before pacing.
         // Its AI/gradient projections are consumed at the next gather without
         // another world copy. Presentation can prepare this completed tick
         // immediately, with the timestamp and receipts belonging to that tick.
-        openReadBoundary(true);
+        establishObservation(!globalContainer->runNoX);
     }
     workTime.stop();
     loopTime.stop();

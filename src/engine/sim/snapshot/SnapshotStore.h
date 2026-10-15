@@ -26,6 +26,7 @@ public:
 	{
 		Uint64 captures = 0, bytesCopied = 0, reusedComponents = 0, allocations = 0;
 		Uint64 entityBytesCopied = 0, entitySidecarBytesCopied = 0;
+		Uint64 coreMaterializations = 0;
 		// Exact map copies are always counted; bytesCopied/reusedComponents cover
 		// only detailedCaptures when optional diagnostics accounting is enabled.
 		Uint64 mapBytesCopied = 0, detailedCaptures = 0;
@@ -45,6 +46,7 @@ public:
     //! Catalog installation/reconfiguration is an explicit owner mutation.
     //! Existing leases retain their definitions; only the next publication rebuilds.
     void invalidateCatalog() { invalidateBoundary(); catalog.reset(); }
+	Uint64 revision() const { return observationRevision; }
 	void setVerification(bool on) { storage.verify = on; }
 	//! Detailed byte/reuse accounting is opt-in (also enabled by compute telemetry).
 	void setDetailedMetrics(bool on) { detailedMetrics = on; }

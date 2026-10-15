@@ -120,7 +120,7 @@ struct World
 	void step(int steps)
 	{
 		for (int i = 0; i < steps; ++i)
-			game.syncStep(0);
+			game.step(0);
 		require(game.integrity(), "integrity after simulation steps");
 	}
 };

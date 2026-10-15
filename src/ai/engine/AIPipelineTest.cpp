@@ -13,6 +13,12 @@
 
 namespace
 {
+auto prepareAIOrders(Game& game, std::span<const unsigned> eligible, bool paused) {
+    const auto world=game.observeCompletedWorld();
+    game.admitAIOrders(eligible,paused,{},world);
+    return game.deliverAIOrders(eligible,paused);
+}
+
 constexpr std::array controllers{AI::NUMBI, AI::CASTOR, AI::WARRUSH,
     AI::ECONO, AI::NICOWAR, AI::CORTEX, AI::CABINO, AI::MAXIMA, AI::JAVASCRIPT};
 constexpr std::array<unsigned, 9> actors{0,1,2,3,4,5,6,7,8};
@@ -95,7 +101,7 @@ void compare(const Tick& actual, const Tick& expected)
 }
 Tick advance(Game& game)
 {
-    const auto outputs = game.prepareAIOrders(actors,false);
+    const auto outputs = prepareAIOrders(game,actors,false);
     REQUIRE(outputs.size()==actors.size());
     Tick result;
     for (unsigned index=0; index<outputs.size(); ++index) {
@@ -106,7 +112,7 @@ Tick advance(Game& game)
         result.orders.push_back(wire(*order));
         game.executeOrder(order,0);
     }
-    game.syncStep(0);
+    game.advanceLiveSimulation(0);
     result.checksums=state(game);
     return result;
 }
@@ -194,40 +200,91 @@ TEST_CASE("pause and repeated boundary calls cannot execute a published command 
         game.players[0]->makeItAI(AI::JAVASCRIPT);
         game.map.configureCompute(4);
         constexpr std::array<unsigned,1> player{0};
-        for (unsigned tick=0; tick<=delay; ++tick) {
-            auto first=game.prepareAIOrders(player,false)[0].second;
-            auto repeated=game.prepareAIOrders(player,false)[0].second;
+        for (unsigned tick=0; tick<=std::max(1u,delay); ++tick) {
+            auto first=prepareAIOrders(game,player,false)[0].second;
+            auto repeated=prepareAIOrders(game,player,false)[0].second;
             CHECK(wire(*first)==wire(*repeated));
-            if (tick==delay) {
+            if (tick==std::max(1u,delay)) {
                 REQUIRE(first->getOrderType()==ORDER_MODIFY_BUILDING);
                 // This checkpoint is after publication but before admission:
                 // reload must return the same command, without another poll.
                 const auto checkpoint=save(game);
                 GameGUI restored(false);
                 load(restored.game,checkpoint,4);
-                auto savedOrder=restored.game.prepareAIOrders(player,false)[0].second;
+                auto savedOrder=prepareAIOrders(restored.game,player,false)[0].second;
                 CHECK(wire(*savedOrder)==wire(*first));
                 savedOrder=restored.game.validateAIOrder(savedOrder,0);
                 savedOrder->sender=0;restored.game.executeOrder(savedOrder,0);
                 first=game.validateAIOrder(first,0);first->sender=0;game.executeOrder(first,0);
                 CHECK(state(restored.game)==state(game));
-                CHECK(restored.game.prepareAIOrders(player,false)[0].second->getOrderType()==ORDER_NULL);
-                CHECK(game.prepareAIOrders(player,true)[0].second->getOrderType()==ORDER_NULL);
-                CHECK(game.prepareAIOrders(player,false)[0].second->getOrderType()==ORDER_NULL);
+                CHECK(prepareAIOrders(restored.game,player,false)[0].second->getOrderType()==ORDER_NULL);
+                CHECK(prepareAIOrders(game,player,true)[0].second->getOrderType()==ORDER_NULL);
+                CHECK(prepareAIOrders(game,player,false)[0].second->getOrderType()==ORDER_NULL);
                 break;
             }
             CHECK(first->getOrderType()==ORDER_NULL);
-            game.syncStep(0);
+            game.step(0);
         }
         game.drainAI();
     }
+}
+TEST_CASE("paused startup can resume on a stalled boundary after an empty delivery phase")
+{
+    glob2test::HeadlessGlobals globals;
+    glob2test::HeadlessGame fixture(glob2test::GameOptions{.loadDefaultRace=true,.header=true});
+    auto& game=fixture.game;
+    fixture.addBuilding("swarm",4,4);
+    fixture.addUnit(WORKER,12,12);
+    game.gameHeader.setAIOrderDelay(0);
+    game.gameHeader.setAIConfig(0,Script::config(
+        "function step(c){return {type:'workers',building:c.game.buildings({team:c.myTeam})[0],workers:3};}"));
+    game.players[0]->makeItAI(AI::JAVASCRIPT);
+    constexpr std::array<unsigned,1> player{0};
+    const auto world=game.observeCompletedWorld();
+    game.admitAIOrders(player,true,{},world);
+    CHECK(game.deliverAIOrders(player,true)[0].second->getOrderType()==ORDER_NULL);
+    game.anyPlayerWaited=true;
+    CHECK(game.deliverAIOrders(player,false)[0].second->getOrderType()==ORDER_NULL);
+    game.admitAIOrders(player,false,{},world);
+    CHECK(game.deliverAIOrders(player,false)[0].second->getOrderType()==ORDER_NULL);
+    game.anyPlayerWaited=false;
+    game.advanceLiveSimulation(0);
+    const auto next=game.observeCompletedWorld();
+    game.admitAIOrders(player,false,{},next);
+    REQUIRE(game.deliverAIOrders(player,false)[0].second->getOrderType()==ORDER_MODIFY_BUILDING);
+}
+TEST_CASE("save between AI admission and delivery retains the original pending output")
+{
+    glob2test::HeadlessGlobals globals;
+    glob2test::HeadlessGame fixture(glob2test::GameOptions{.loadDefaultRace=true,.header=true});
+    auto& game=fixture.game;
+    fixture.addBuilding("swarm",4,4);
+    fixture.addUnit(WORKER,12,12);
+    game.gameHeader.setAIOrderDelay(0);
+    game.gameHeader.setAIConfig(0,Script::config(
+        "function step(c){return {type:'workers',building:c.game.buildings({team:c.myTeam})[0],workers:3};}"));
+    game.players[0]->makeItAI(AI::JAVASCRIPT);
+    constexpr std::array<unsigned,1> player{0};
+    CHECK(prepareAIOrders(game,player,false)[0].second->getOrderType()==ORDER_NULL);
+    game.advanceLiveSimulation(0);
+    const auto world=game.observeCompletedWorld();
+    game.admitAIOrders(player,false,{},world);
+    const auto checkpoint=save(game);
+    glob2test::HeadlessGame restored(glob2test::GameOptions{});
+    load(restored.game,checkpoint,2);
+    const auto due=game.deliverAIOrders(player,false)[0].second;
+    const auto resumed=prepareAIOrders(restored.game,player,false)[0].second;
+    REQUIRE(due->getOrderType()==ORDER_MODIFY_BUILDING);
+    CHECK(wire(*due)==wire(*resumed));
+    CHECK(due->aiPollSequence==resumed->aiPollSequence);
+    CHECK(state(game)==state(restored.game));
 }
 TEST_CASE("replacement cancels an old output without rejecting identical new wire bytes")
 {
     glob2test::HeadlessGlobals globals;
     glob2test::HeadlessGame fixture(glob2test::GameOptions{.loadDefaultRace=true,.header=true});
     auto& game=fixture.game;
-    // This identity test intentionally consumes decisions in the same tick.
+    // Controller replacement cancels outputs admitted from an earlier observation.
     game.gameHeader.setAIOrderDelay(0);
     fixture.addBuilding("swarm",4,4);
     fixture.addUnit(WORKER,12,12);
@@ -236,12 +293,16 @@ TEST_CASE("replacement cancels an old output without rejecting identical new wir
     game.players[0]->makeItAI(AI::JAVASCRIPT);
     game.map.configureCompute(4);
     constexpr std::array<unsigned,1> player{0};
-    auto old=game.prepareAIOrders(player,false)[0].second;
+    CHECK(prepareAIOrders(game,player,false)[0].second->getOrderType()==ORDER_NULL);
+    game.step(0);
+    auto old=prepareAIOrders(game,player,false)[0].second;
     REQUIRE(old->getOrderType()==ORDER_MODIFY_BUILDING);
     game.players[0]->makeItAI(AI::JAVASCRIPT);
     CHECK(game.validateAIOrder(old,0)->getOrderType()==ORDER_NULL);
-    game.syncStep(0);
-    auto replacement=game.prepareAIOrders(player,false)[0].second;
+    game.step(0);
+    CHECK(prepareAIOrders(game,player,false)[0].second->getOrderType()==ORDER_NULL);
+    game.step(0);
+    auto replacement=prepareAIOrders(game,player,false)[0].second;
     REQUIRE(replacement->getOrderType()==ORDER_MODIFY_BUILDING);
     CHECK(wire(*replacement)==wire(*old));
     CHECK(replacement->aiGeneration!=old->aiGeneration);
@@ -261,19 +322,19 @@ TEST_CASE("team death cancels submitted work and saves receipts for a revived co
         "function step(c){return {type:'workers',building:c.game.buildings({team:c.myTeam})[0],workers:3};}"));
     game.players[0]->makeItAI(AI::JAVASCRIPT);
     constexpr std::array<unsigned,1> player{0};
-    CHECK(game.prepareAIOrders(player,false)[0].second->getOrderType()==ORDER_NULL);
+    CHECK(prepareAIOrders(game,player,false)[0].second->getOrderType()==ORDER_NULL);
     game.teams[0]->isAlive=false;
-    CHECK(game.prepareAIOrders({},false).empty());
+    CHECK(prepareAIOrders(game,{},false).empty());
     const auto checkpoint=save(game);
     glob2test::HeadlessGame restored(glob2test::GameOptions{});
     load(restored.game,checkpoint,1);
     game.teams[0]->isAlive=true;restored.game.teams[0]->isAlive=true;
-    game.syncStep(0);restored.game.syncStep(0);
-    CHECK(game.prepareAIOrders(player,false)[0].second->getOrderType()==ORDER_NULL);
-    CHECK(restored.game.prepareAIOrders(player,false)[0].second->getOrderType()==ORDER_NULL);
-    game.syncStep(0);restored.game.syncStep(0);
-    const auto due=game.prepareAIOrders(player,false)[0].second;
-    const auto resumed=restored.game.prepareAIOrders(player,false)[0].second;
+    game.step(0);restored.game.step(0);
+    CHECK(prepareAIOrders(game,player,false)[0].second->getOrderType()==ORDER_NULL);
+    CHECK(prepareAIOrders(restored.game,player,false)[0].second->getOrderType()==ORDER_NULL);
+    game.step(0);restored.game.step(0);
+    const auto due=prepareAIOrders(game,player,false)[0].second;
+    const auto resumed=prepareAIOrders(restored.game,player,false)[0].second;
     REQUIRE(due->getOrderType()==ORDER_MODIFY_BUILDING);
     CHECK(wire(*due)==wire(*resumed));
     CHECK(state(game)==state(restored.game));
@@ -292,16 +353,16 @@ TEST_CASE("a submitted deadline is delivered even when no new poll is eligible")
         "function step(c){return {type:'workers',building:c.game.buildings({team:c.myTeam})[0],workers:3};}"));
     game.players[0]->makeItAI(AI::JAVASCRIPT);
     constexpr std::array<unsigned,1> player{0};
-    CHECK(game.prepareAIOrders(player,false)[0].second->getOrderType()==ORDER_NULL);
-    game.syncStep(0);
-    const auto due=game.prepareAIOrders({},false);
+    CHECK(prepareAIOrders(game,player,false)[0].second->getOrderType()==ORDER_NULL);
+    game.step(0);
+    const auto due=prepareAIOrders(game,{},false);
     REQUIRE(due.size()==1);
     CHECK(due[0].first==0);
     REQUIRE(due[0].second->getOrderType()==ORDER_MODIFY_BUILDING);
-    CHECK(game.prepareAIOrders({},false).empty());
+    CHECK(prepareAIOrders(game,{},false).empty());
     auto order=game.validateAIOrder(due[0].second,0);order->sender=0;game.executeOrder(order,0);
-    game.syncStep(0);
-    CHECK(game.prepareAIOrders({},false).empty());
+    game.step(0);
+    CHECK(prepareAIOrders(game,{},false).empty());
     game.drainAI();
 }
 }

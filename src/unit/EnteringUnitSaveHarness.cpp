@@ -195,7 +195,7 @@ TEST_SUITE("EnteringUnitSave")
 	        };
 	        CHECK(state(loaded)==state(continued));
 	        for(int tick=0;tick<64;++tick) {
-	            loaded.syncStep(0); continued.syncStep(0);
+	            loaded.step(0); continued.step(0);
 	            CHECK(state(loaded)==state(continued));
 	        }
 	        // This synthetic fixture has zero FLY/WALK/SWIM caches despite its

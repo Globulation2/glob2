@@ -557,7 +557,7 @@ TEST_CASE("Shared generated worlds continue identically without installed genera
 		first.setGameHeader(header, true);
 		first.setWaitingOnMask(0);
 		for (int tick = 0; tick < 64; ++tick)
-			first.syncStep(0);
+			first.step(0);
 		auto *memory = new GAGCore::MemoryStreamBackend;
 		GAGCore::BinaryOutputStream output(memory);
 		first.save(&output, false, "Shared generated world");
@@ -583,8 +583,8 @@ TEST_CASE("Shared generated worlds continue identically without installed genera
 		for (int tick = 0; tick < 256; ++tick)
 		{
 			CAPTURE(seed); CAPTURE(tick);
-			first.syncStep(0);
-			restored.syncStep(0);
+			first.step(0);
+			restored.step(0);
 			REQUIRE(components(first) == components(restored));
 			REQUIRE(first.syncRandom == restored.syncRandom);
 			trace += std::to_string(seed) + " " + std::to_string(tick + 65);

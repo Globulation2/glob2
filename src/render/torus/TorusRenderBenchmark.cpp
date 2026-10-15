@@ -111,11 +111,13 @@ class TorusRenderBenchmark
         std::vector<unsigned> actors;
         for(int player=0;player<game.gameHeader.getNumberOfPlayers();++player)
             if(game.players[player]->ai)actors.push_back(unsigned(player));
-        for(const auto& [actor,scheduled]:game.prepareAIOrders(actors,false)) {
+        const auto& world=game.observeCompletedWorld();
+        game.admitAIOrders(actors,false,{},world);
+        for(const auto& [actor,scheduled]:game.deliverAIOrders(actors,false)) {
             scheduled->sender=actor;
             gui.executeOrder(game.validateAIOrder(scheduled,actor));
         }
-        game.syncStep(gui.localTeamNo);
+        game.advanceLiveSimulation(gui.localTeamNo);
     }
 
     static void warmupCheckpoint(GameGUI &gui)

@@ -352,7 +352,17 @@ public:
 		REQUIRE(lockstep);
 		lockstep->onChecksum = [this](std::uint32_t tick, Uint32 checksum) {
 			if (tick == 0 && !lives.back().empty())
+			{
+				// Reload must establish its observation before the first checksum,
+				// order delivery and advancement of the replacement run.
+				const auto& game = engine->gui.game;
+				const auto& world = game.observation();
+				CHECK(world.tick == game.stepCounter);
+				CHECK(world.worldIdentity == game.map.identity());
+				CHECK(world.observationRevision == game.snapshots().revision());
+				++observedReloads;
 				lives.emplace_back(); // reloaded in place: a new run from tick 0
+			}
 			lives.back()[tick] = checksum;
 		};
 		lockstep->turn().onSubmitted = [this](std::uint32_t sequence) {
@@ -523,6 +533,7 @@ public:
 	std::uint32_t tamperAtTick = UINT32_MAX;
 	bool tampered = false;
 	int reloads = 0;
+	int observedReloads = 0;
 	int ordersQueued = 0;
 	std::int64_t catchUpNs = 0;
 	std::uint32_t catchUpTicks = 0;
@@ -1136,6 +1147,7 @@ TEST_SUITE("TurnEngineHarness")
 		const std::uint32_t end = m.finish();
 		CHECK(m.clients[1]->tampered);
 		CHECK(m.clients[1]->reloads == 1);
+		CHECK(m.clients[1]->observedReloads == 1);
         CHECK(globals->computeThreads == 1);
         CHECK(m.clients[1]->engine->gui.game.map.computeExecutor().threadCount() == setupParticipants);
         std::ostringstream reloadedProvenance;

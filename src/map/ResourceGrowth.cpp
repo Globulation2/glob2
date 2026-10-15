@@ -556,20 +556,25 @@ bool Map::hasPendingWorldPreparation() const
 {
 	return hasPendingGradientPreparation() || gradientRuntime->growth.needsPreparation();
 }
-void Map::preparePendingWorld()
+void Map::publishWorldResultsDue()
 {
-	if (hasPendingWorldPreparation())
-	{
-		auto &store = game->snapshotStore();
-		store.invalidateBoundary();
-		preparePendingWorld(store.captureBoundary(*game));
-	}
+    const auto tick = game->stepCounter;
+    if (gradientRuntime->worldResultsPublishedTick == tick) return;
+    if (!gradientPipelineEnabled()) configureGradientPipeline(2, 8);
+    advanceGradientPipeline();
+    gradientRuntime->growth.publish(*this, tick);
+    gradientRuntime->worldResultsPublishedTick = tick;
 }
-void Map::preparePendingWorld(const SimulationSnapshot::Handle &snapshot)
+void Map::submitWorldWork(const SimulationSnapshot::Handle &snapshot)
 {
-	if (hasPendingGradientPreparation())
-		preparePendingGradient(snapshot);
-	gradientRuntime->growth.prepare(snapshot, compute);
+    if (snapshot.tick != game->stepCounter || snapshot.worldIdentity != identity())
+        throw std::invalid_argument("World work requires the current observation");
+    if (gradientRuntime->worldWorkSubmittedTick == snapshot.tick) return;
+    stagePeriodicGradientPreparation();
+    stageResourceGrowth();
+    preparePendingGradient(snapshot);
+    gradientRuntime->growth.prepare(snapshot, compute);
+    gradientRuntime->worldWorkSubmittedTick = snapshot.tick;
 }
 void Map::stageResourceGrowth()
 {
@@ -578,7 +583,6 @@ void Map::stageResourceGrowth()
 }
 void Map::finishResourceGrowth(JoinContext context)
 {
-	preparePendingWorld();
 	gradientRuntime->growth.finish(context);
 }
 void Map::setResourceGrowthDelay(unsigned delay)

@@ -441,7 +441,7 @@ TEST_SUITE("ResourceGrowthBenchmark")
 							const auto random = game.bindRandom();
 							map.growResources();
 						}
-						else game.syncStep(-1);
+						else game.step(-1);
 						const auto counts = scan();
 						statistics = Json::array();
 						const auto &a = game.teams[0]->stats.events();
@@ -655,9 +655,11 @@ TEST_SUITE("ResourceGrowthBenchmark")
 									map.gradientRuntime->growth.publish(map, tick);
 								map.stageResourceGrowth();
 								if (sharedCapture)
-									map.preparePendingWorld(existing);
-								else
-									map.preparePendingWorld();
+									map.gradientRuntime->growth.prepare(existing, map.computeExecutor());
+								else {
+                                    world.game.snapshotStore().invalidateBoundary();
+									map.gradientRuntime->growth.prepare(world.game.snapshotStore().captureBoundary(world.game), map.computeExecutor());
+                                }
 							}
 						}
 						map.finishResourceGrowth();
@@ -742,7 +744,8 @@ TEST_SUITE("ResourceGrowthBenchmark")
 						{
 							map.gradientRuntime->growth.publish(map, tick);
 							map.stageResourceGrowth();
-							map.preparePendingWorld();
+                            world.game.snapshotStore().invalidateBoundary();
+							map.gradientRuntime->growth.prepare(world.game.snapshotStore().captureBoundary(world.game), map.computeExecutor());
 						}
 					}
 					map.finishResourceGrowth();

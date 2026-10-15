@@ -557,7 +557,7 @@ void armyBirthsMatchPlatformChecksums()
     else expected.open(path);
     REQUIRE((record?output.good():expected.good()));
     for(int tick=1;tick<=512;++tick) {
-        f.game.syncStep(0);REQUIRE(f.game.stepCounter==unsigned(tick));
+        f.game.step(0);REQUIRE(f.game.stepCounter==unsigned(tick));
         // Normalize the header to 115; the fixture uses eight-tick publication. With one
         // team and no players, the header version is rotated six times.
         // Keep the released stock trace; the adapter removes only catalog-era representation.

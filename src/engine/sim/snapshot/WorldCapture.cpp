@@ -90,6 +90,16 @@ Handle capture(const Game& game,
 		// The store certifies the complete owner boundary before widening its
 		// optional payload. Entity records and their sidecars remain immutable.
 		reuse(Component::Entities, result->entities, previous->entities, unchangedBoundary);
+        reuse(Component::Teams, result->teams, previous->teams, unchangedBoundary);
+        reuse(Component::StatisticsInputs, result->statisticsInputs, previous->statisticsInputs, unchangedBoundary);
+        reuse(Component::ResourceFields, result->resourceFields, previous->resourceFields, unchangedBoundary);
+        reuse(Component::Session, result->session, previous->session, unchangedBoundary);
+        reuse(Component::Effects, result->effects, previous->effects, unchangedBoundary);
+        reuse(Component::Statistics, result->statistics, previous->statistics, unchangedBoundary);
+        reuse(Component::History, result->history, previous->history, unchangedBoundary);
+        reuse(Component::Telemetry, result->telemetry, previous->telemetry, unchangedBoundary);
+        reuse(Component::EntityDiagnostics, result->entityDiagnostics, previous->entityDiagnostics, unchangedBoundary);
+        if (unchangedBoundary && needs(requirements, Component::Growth)) result->areaFertility = previous->areaFertility;
 		const bool sameCatalog = previous->catalogs && previous->catalogs->buildings == catalog && previous->configurationRevision == result->configurationRevision
 			&& (!needs(requirements, Component::Session) || !previous->catalogs->buildingFingerprint.empty())
             && previous->catalogs->assets == game.map.frozenAssetBundle()
@@ -146,6 +156,7 @@ Handle capture(const Game& game,
 	// Map buffers keep their constructed range when reused. Overwrite selected
 	// arrays directly rather than clearing and growing them one cell at a time.
     if (needs(requirements, Component::Entities)) {
+        if (storage) ++storage->coreMaterializations;
         entities->funding.clear(); entities->relationships.clear(); entities->projects.clear();
         entities->extraProduction.clear();
         entities->unitCargo = game.unitCargo; entities->availableGroundClasses.fill(0);
@@ -439,7 +450,6 @@ Handle capture(const Game& game,
         session->totalPrestigeReached=game.totalPrestigeReached;
         session->prestigeWinCondition=const_cast<Game&>(game).isPrestigeWinCondition();
         session->prestigeToReach=game.prestigeToReach;
-        session->anyPlayerWaited=game.anyPlayerWaited; session->maskAwayPlayer=game.maskAwayPlayer;
         session->legacyScriptTextShown=game.legacyScriptActive() && game.sgslScript.isTextShown;
         session->legacyScriptText=session->legacyScriptTextShown ? game.sgslScript.textShown : std::string();
         session->legacyScriptTimer=game.legacyScriptTimer();
@@ -525,7 +535,7 @@ Handle capture(const Game& game,
 
 	}
 	// Natural ecology can be reused while building coverage changes independently.
-	if (needs(result->requirements, Component::Growth) &&
+	if (needs(result->requirements, Component::Growth) && !result->areaFertility &&
 		!game.areaEffects.fertilityValues().empty())
 	{
 		if (previous && previous->areaFertility &&

@@ -82,7 +82,7 @@ bool MenuColony::load(const std::string& path)
 			presentation = std::make_unique<ScenePreparation>(game->map.computeExecutor());
 			const auto request = colonyRequest(worldTickTime);
 			const auto options = SceneExtractor::captureOptions(request);
-			const auto world = game->captureReadBoundary(options);
+			const auto world = game->observeCompletedWorld(options);
 			// Build the first frame before exposing the menu. Later frames retain
 			// asynchronous preparation, with this scene available until they arrive.
 			initialScene = std::make_unique<PresentationFrame>();
@@ -122,14 +122,15 @@ void MenuColony::update(Uint64 now, bool visible)
         const bool admitted = presentation && presentation->readyToCapture();
         const auto request = colonyRequest(worldTickTime);
         const auto options = presentation ? SceneExtractor::captureOptions(request) : SimulationSnapshot::CaptureOptions{};
-        const auto world = game->captureReadBoundary(options);
+        const auto world = game->observeCompletedWorld(options);
         if (admitted) presentation->submit(SceneExtractor::inputs(world, request));
-        for(const auto& [actor,scheduled]:game->prepareAIOrders(actors,false,nullptr,&world)) {
+        game->admitAIOrders(actors,false,{},world);
+        for(const auto& [actor,scheduled]:game->deliverAIOrders(actors,false)) {
             scheduled->sender=actor;
             auto order=game->validateAIOrder(scheduled,actor);
             game->executeOrder(order,0);
         }
-		game->syncStep(0);
+		game->advanceLiveSimulation(0);
 		worldTickTime = SDL_GetTicks();
 		pending -= GAME_TICK_NS;
 	}

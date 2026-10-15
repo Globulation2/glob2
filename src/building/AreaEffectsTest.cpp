@@ -783,7 +783,7 @@ TEST_SUITE("BuildingAreaEffects")
 			};
 			for (int i = 0; i < 48; ++i)
 			{
-				restored.game.syncStep(0);
+				restored.game.step(0);
 				const auto actual = components(restored.game);
 				CHECK(actual == expected[i]);
 				trace << restored.game.stepCounter << ',' << digest(expected[i]) << ','

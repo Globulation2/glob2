@@ -309,7 +309,7 @@ void run(const Scenario &scenario, const std::filesystem::path &output, unsigned
 	restored.game.anyPlayerWaited = false;
 	const auto firstStep = restored.game.stepCounter;
 	for (int tick = 0; tick < 64; ++tick)
-		restored.game.syncStep(0);
+		restored.game.step(0);
 	require(restored.game.stepCounter == firstStep + 64, "conversion fixture advances game ticks");
 	require(worker->owner->teamNumber == (scenario.converts ? 1 : 0),
 			"normal game ticks realize expected ownership");

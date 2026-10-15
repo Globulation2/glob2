@@ -84,7 +84,7 @@ std::string tick(Game& g)
     auto o=g.players[0]->ai->getOrder(false);checkOrder(g,*o);
     std::string wire(1,char(o->getOrderType()));
     if(o->getDataLength()) wire.append(reinterpret_cast<const char*>(o->getData()),o->getDataLength());
-    o->sender=0;g.executeOrder(o,0);g.syncStep(0);return wire;
+    o->sender=0;g.executeOrder(o,0);g.step(0);return wire;
 }
 }
 TEST_SUITE("AIRules")
@@ -429,7 +429,7 @@ TEST_CASE("retained tournament replay contains no unavailable orders")
                 CHECK(AIRules::permittedQueuedOrder(g,*order));
             g.executeOrder(order,0);
         }
-        g.syncStep(0);reader.advanceStep();
+        g.step(0);reader.advanceStep();
     }
     for(int team=0;team<g.mapHeader.getNumberOfTeams();++team)
         if(g.gameHeader.isUnitUpgradesDisabled()) {

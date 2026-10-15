@@ -6,7 +6,7 @@ How immutable observations, compute ownership and delayed AI orders interact. Re
 
 All shipped AI controllers decide from an immutable engine snapshot through
 `AIEngine::AIWorldView`. The simulation owner captures the standard simulation
-preset through `Game::prepareReadBoundary()`, with `CaptureOptions` for ordinary
+preset through `Game::observeCompletedWorld()`, with `CaptureOptions` for ordinary
 presentation and explicit cold UI/diagnostic payloads. AI controllers and map jobs
 do not declare capture masks. `Game::snapshots()` owns the shared Store; the AI
 pipeline constructs one `simulationView()` adapter shared by all polled controllers
@@ -123,14 +123,14 @@ worker also runs presentation, which that worker interleaves with simulation job
 (so a join may wait out one presentation chunk). Only an executor with no workers
 runs deferred jobs on the owner, at the join, because nothing else can. This keeps
 owner time split cleanly into owner work and owner wait (`compute_owner_jobs` is
-zero whenever workers exist). A cheap AI batch at delay 0 computes
-inline when it submits, outside the executor, and still publishes at the deadline.
+zero whenever workers exist). AI work uses that same deferred path for every
+configured delay, including zero; zero now means next-boundary delivery.
 AI controller lanes preserve decision order;
 gradient and growth jobs need no lane.
 `AIEngine::Pipeline` submits one batch per tick with one job per controller on
 that controller's lane, and joins it at the deadline. The
 match-wide `GameHeader::aiOrderDelay` is an integer from 0 through 8, defaulting
-to 8 for new games. An order observed at logical tick `t` is delivered at `t + delay`. Thread
+to 8 for new games. An order observed at logical tick `t` is delivered at `t + max(1, delay)`. Thread
 count and completion time never choose that deadline or which decision a
 controller makes; the owner publishes in stable request order. Human orders and
 scenario map scripts retain their existing scheduling.
@@ -164,9 +164,9 @@ requests, including at zero delay; strategy thresholds and selection cadence sta
 unchanged.
 
 JavaScript memory updates run in the same ordered stream as decisions, once per
-logical observation tick. Unpolled replica and replay controllers retain the old
-post-step visibility-history boundary through an explicit owner barrier and a
-fresh frozen observation. Never mutate their remembered terrain concurrently with
+logical observation tick. Unpolled replica and replay controllers update their
+visibility history from that same completed observation through an explicit owner
+barrier. Never mutate their remembered terrain concurrently with
 a decision. Worker diagnostics are buffered values; file output, field publication
 and shared telemetry updates belong to the owner at the delivery boundary.
 Diagnostic field reservations count outstanding captures and publication-copy
@@ -195,8 +195,9 @@ submit one ordered batch of team samples from that same immutable world. The
 standard simulation view includes cumulative statistics inputs; statistics do not
 contribute capture masks. `statisticsView()` leases only calculation inputs and
 retains map buffers on spatial-diagnostic ticks. `captureReadBoundary()` remains a
-pure capture for UI, saves and reference tests. Publication
-invalidates statistics observations before AI and presentation capture them.
+explicit inspection capture for UI, saves and reference tests. The common owner
+coordinator publishes due statistics before its single capture; publication never
+reconstructs an observation already handed to consumers.
 The owner retains consecutive raw smoothing samples and histories. At aggregation
 boundaries only, it freezes the latest 31 published samples; the worker includes
 its current raw sample and finalizes the aggregate before publication. This is
@@ -216,8 +217,9 @@ Canonical scalar hashing uses `GAGCore::ChecksumStream`, which produces the same
 hash bytes as `BinaryOutputStream` without a backend allocation or endian scratch
 writes. The statistics field visitors also omit ignored field-name construction.
 `teamStatsDelay` is a saved 0–8 tick rule (new games default to eight). Delay zero
-refreshes statistics-bearing observations after immediate calculation. Older
-saves migrate with delay zero and adopt the between-tick observation phase.
+uses a one-tick effective delay for new work. Older pending samples retain their
+computed outputs and original publication deadlines, including historical zero-delay
+outputs; subsequent samples follow the new observation rule.
 See [gameplay statistics](../ai/gameplay-statistics.md#sampling-and-saves).
 
 Statistics and snapshot capture use shared executor diagnostics and external

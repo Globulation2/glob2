@@ -799,14 +799,14 @@ TEST_CASE("typed proposal loading validates fields and preserves old queued unit
     }
 }
 
-TEST_CASE("finishing the last deferred tick computes without publishing early" * doctest::test_suite("ResourceGrowth"))
+TEST_CASE("finishing admitted world work does not publish early" * doctest::test_suite("ResourceGrowth"))
 {
     glob2test::HeadlessGlobals globals;
     glob2test::HeadlessGame world({.header = true});
     auto &map = world.game.map;
     map.setResourceGrowthDelay(8);
-    world.game.syncStep(-1, Game::PreparationCompletion::Deferred);
-    REQUIRE(map.gradientRuntime->growth.needsPreparation());
+    world.game.step(-1);
+    REQUIRE_FALSE(map.gradientRuntime->growth.needsPreparation());
     const auto published = map.resourceGrowthMetrics().published;
     map.finishResourceGrowth();
     CHECK_FALSE(map.gradientRuntime->growth.needsPreparation());

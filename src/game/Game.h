@@ -246,14 +246,19 @@ public:
 	/// Executes an Order with respect to the localPlayer of the GUI. All Orders get processed here.
 	// Returns whether the existing executor admitted the command, including queued construction.
 	bool executeOrder(std::shared_ptr<Order> order, int localPlayer);
-	std::vector<std::pair<unsigned, std::shared_ptr<Order>>> prepareAIOrders(
-		std::span<const unsigned> eligiblePlayers, bool paused, const std::shared_ptr<GameDiagnostics::Session>& diagnostics = {},
-		const SimulationSnapshot::Handle* captured = nullptr);
-	//! Capture the standard view without admitting simulation work (UI, saves, tests).
+	//! One owner-controlled observation: publish due state, capture, admit world work.
+	const SimulationSnapshot::Handle& observeCompletedWorld(SimulationSnapshot::CaptureOptions options = {});
+	const SimulationSnapshot::Handle& observation() const;
+	//! Exceptional owner edit at a fixed simulation tick; old handles remain frozen.
+	void invalidateObservation();
+	//! Finish an order batch; publish an edited revision if it will not advance.
+	void finishOrderPhase(bool advancing);
+	//! Standalone inspection only: captures without admitting simulation work.
 	SimulationSnapshot::Handle captureReadBoundary(SimulationSnapshot::CaptureOptions options = {}) const;
-	//! Publish due statistics and admit statistics/turret work once per owner boundary.
-	SimulationSnapshot::Handle prepareReadBoundary(bool paused = false,
-		SimulationSnapshot::CaptureOptions options = {});
+	void admitAIOrders(std::span<const unsigned> eligiblePlayers, bool paused,
+		const std::shared_ptr<GameDiagnostics::Session>& diagnostics, const SimulationSnapshot::Handle& world);
+	std::vector<std::pair<unsigned, std::shared_ptr<Order>>> deliverAIOrders(
+		std::span<const unsigned> eligiblePlayers, bool paused);
 	std::shared_ptr<Order> validateAIOrder(std::shared_ptr<Order> order, unsigned player);
 	void settleAIOrder(const std::shared_ptr<Order>& order, bool accepted);
 	void cancelAI(unsigned player);
@@ -274,7 +279,7 @@ public:
 	void clearAI();
 	void saveAI(GAGCore::OutputStream* stream);
 	bool loadAI(GAGCore::InputStream* stream);
-	void observeUnpolledAI();
+	void observeUnpolledAI(const SimulationSnapshot::Handle&);
 	// Normal-game target lists use the selected three-entry, two-tick cadence.
 	void forgetTurret(BuildingRef);
 	void configureTurretTargeting(unsigned delay=1,unsigned refresh=2,unsigned capacity=3,unsigned margin=1);
@@ -283,6 +288,9 @@ public:
 	std::vector<std::pair<std::string, Uint64>> aiMetrics() const;
 private:
 	mutable SimulationSnapshot::Store worldSnapshots;
+	std::optional<SimulationSnapshot::Handle> completedObservation;
+	std::optional<Uint32> submittedObservation;
+	bool orderEditedWorld = false;
 	mutable std::unique_ptr<TurretTargeting::Pipeline> turretTargetingPipeline;
     void ensureTurretTargeting() const;
 	std::unique_ptr<AIEngine::Pipeline> aiPipeline;
@@ -309,12 +317,10 @@ public:
 	/// Updates total prestige stats
 	void prestigeSyncStep();
 
-	/// Advances the Game by one tick, in reference to localTeam being the localTeam. This does all
-	/// internal processing.
-	// Complete is safe for direct stepping followed by arbitrary orders/saves.
-	// Engine alone defers into its next read-only batch, before applying orders.
-	enum class PreparationCompletion { Complete, Deferred };
-	void syncStep(Sint32 localTeam, PreparationCompletion completion = PreparationCompletion::Complete);
+	//! Direct stepping entry point shares the engine's observation coordinator.
+	void step(Sint32 localTeam);
+	//! Advance live state after observing and applying due orders; never captures.
+	void advanceLiveSimulation(Sint32 localTeam);
 
 	void dirtyWarFlagGradient();
 
@@ -447,7 +453,6 @@ private:
 
 public:
 	bool anyPlayerWaited;
-	Uint32 maskAwayPlayer;
 
 public:
 

@@ -45,6 +45,8 @@ struct Storage
 	Uint64 allocations = 0;
 	//! Bytes of map arrays actually copied (changed chunks and full fills).
 	Uint64 bytesCopied = 0;
+	//! Actual entity extraction passes, including passes over an empty world.
+	Uint64 coreMaterializations = 0;
 	//! Bulk authoritative records read from live objects; excludes view metadata.
 	Uint64 entityBytesCopied = 0;
 	//! Logical entity sidecar payload copied, excluding allocator/capacity overhead.
