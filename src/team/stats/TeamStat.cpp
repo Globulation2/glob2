@@ -2037,7 +2037,7 @@ Uint32 teamStatsCoreChecksum(const TeamStats &stats, std::span<const TeamSmoothe
 		stream.addUint32(Uint32(b.x)); stream.addUint32(Uint32(b.y));
 		stream.addUint32(Uint32(b.width)); stream.addUint32(Uint32(b.height));
 	}
-	return stream.value;
+	return stream.value();
 }
 Uint32 TeamStats::checkSum() const
 {

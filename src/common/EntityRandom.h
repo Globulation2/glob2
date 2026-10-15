@@ -69,7 +69,7 @@ public:
         GAGCore::WordChecksum hash;
         hash.addUint64(state.value);
         hash.addUint64(state.increment);
-        return hash.value;
+        return hash.value();
     }
 
     std::uint32_t legacyChecksum() const

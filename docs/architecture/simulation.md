@@ -12,8 +12,11 @@ For timing and scheduling, start with `src/game/Game_sync.cpp` and `src/engine/E
 Routine checks cover live units/buildings, both RNG state words, team/player state,
 and deterministic scheduling metadata every tick. Entity traversal uses the live
 lists; its normal path omits diagnostic field-vector branches. RNG fingerprints
-and periodic statistics use an ordered unsigned 32-bit word mixer, avoiding
-byte extraction and serializer names. This is a non-cryptographic error detector.
+and periodic statistics use MurmurHash3 x86_32 with seed zero over explicit
+little-endian words (64-bit scalars feed the low half first), avoiding byte
+extraction and serializer names. Its rotations and final avalanche avoid the
+paired high-bit cancellation of a word-wise XOR/multiply mixer. This remains a
+non-cryptographic error detector; collisions are possible.
 
 Secondary coverage runs when the absolute simulation tick is divisible by 32:
 AI-relevant aggregate statistics, all 32 smoothing entries and coverage-building
