@@ -1,0 +1,23 @@
+PR1193 handoff — intentionally unfinished local validation
+
+PR: https://github.com/Globulation2/glob2/pull/1193 (draft; do not treat as merge-ready)
+Latest pushed commit: 09833a6685dc12e6b530f93b19fba27c21bffde3
+Base tested by completed compiler/API checks: e7572da6be15566bf20086f40a73a0f4b7c2a83d
+
+Implemented all three header-visibility changes: building material queries, exact Game::refOf overloads, and unit/building GID conversions. Shared TeamCapacity.h preserves capacity16. Exhaustive GID test added; obsolete availableMaterial stub and empty UnitUtils.cpp removed, both source manifests updated. Comments explain header visibility; existing map-testing guide updated. No intended simulation, save-format or gameplay change; no SIM_REVISION bump.
+
+Independent subagent reviewed original change and each cleanup, including final09833a668: no outstanding findings. Complete-type includes, ODR, assertions, API/null behavior, manifests and documentation were checked. Its separate protocol audit found no instruction/checksum comparison error; pre-strip versus retained binary hashes are now labeled separately.
+
+COMPLETED on latest revision: Apple Clang21.0.0 ARM64 optimized probes; 32768 valid GID round trips in each of debug/NDEBUG modes, ten expected assertion aborts, two historical accepted negative BuildingUtils cases; three header inclusion orders; exact refOf function pointer types and null runtime defaults; no moved-helper calls in optimized wrappers. Sources, assembly, exact commands and JSON result included. Eight build-layout and four client-feature Python tests passed (unittest discover commands).
+
+PENDING: Linux release client and affected engine/unit harness builds, all focused engine/unit runtime tests, golden match verification, saved-game checksum continuation, and all before/after Callgrind measurements. No Linux runtime pass, performance improvement, or cross-platform simulation-equivalence claim is supported yet. Full macOS integration was stopped earlier for disk constraints. Windows/x86/browser/mobile integration omitted. Hosted cheap contracts do not substitute for engine checks.
+
+The local baseline release build was still compiling when the user explicitly requested stopping local work and handing off to another machine. Our dedicated Docker container glob2-inline-hot-helpers was stopped; unrelated containers were untouched. No merge performed.
+
+Planned release flags: PYTHONPATH=/work GLOB2_SDL3_PREFIX=/opt/glob2-sdl scons release=1 retain_symbols=1 linker=auto -j2. Ubuntu22.04 ARM64, GCC11.4, Valgrind3.18.1, SDL3 prefix; -O3 -g, no LTO/PCH/unity/dev_fast. One earlier -j3 compiler job was killed by memory pressure, then build resumed at-j2. Completed cold UI/generator object debug sections were stripped to save disk; all allocated runtime sections were verified byte-identical. This postprocessing script is included; it is optional on a better-provisioned machine.
+
+Workload included: stock Playground128x128, seed713, eight Nicowar FFA; save at tick24000 (seven alive,225units,67completed buildings,24sites). Save SHA256 93cc6159f7b7e9c160b8eabb8f4dd64ec499719afd7e8086ac7affbb170f1046. Continue to25153; profile [24128,25152),1024ticks, --compute-threads8 --gpuoff, three runs each revision. Use Callgrind per-thread-01 main/owner terminal totals: Ir, not broken summary counters or unreliable optimized function labels. Compare all per-tick world.checksums, initial/final checksums and ticks. Native timing on the busy shared host was never intended as a speed claim.
+
+Included scripts are evidence-only working scripts with local/container paths, not drop-in tooling. Adapt paths and provision dependencies on the next machine. linux-pipeline.sh assumes baseline source/build log already prepared; it injects temporary EngineRun START/ZERO/STOP probes, overlays candidate files, builds focused harnesses and profiles. post-validation.sh waits for profiles, restores pristine EngineRun, relinks, reruns continuation, focused suites and golden match trace at1/8threads. Temporary test/SConscript filtering is not in the PR. focused-source-inventory.json gives selected translation units; emitted runner inventories will be authoritative case counts. analyze-results.py expects nine run results including pristine candidate. No such results exist yet. count-helper-calls.py is optional static disassembly evidence and has not run.
+
+Next agent: fetch current master and PR, review actual overlap/conflicts, finish appropriately scoped release/harness/checksum verification and attach accessible evidence before marking ready/merging. User previously authorized merge after cleanup/review, but most recent instruction is to hand off this draft; do not infer local validation finished.
