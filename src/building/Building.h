@@ -251,6 +251,7 @@ class Building : public BuildingUtils, public BuildingStateRecord
 		else setPrivateMaterial(resource, value);
 	}
 	void changeMaterial(int resource, Sint32 change) { setMaterial(resource, Sint64(material(resource)) + change); }
+	// Keep stock and demand queries header-defined for the per-material hot loops.
 	Sint32 availableMaterial(int resource) const
 	{
 		const auto reserved = type->useTeamMaterials ? owner->reservedTeamMaterials[resource] : reservedMaterials[resource];

@@ -352,6 +352,7 @@ public:
 	Unit* getUnit(int guid);
 	///Client handles (see sim/EntityRef.h). resolve* returns null when the
 	///entity is gone or its slot now holds a different entity.
+	// Keep these factories visible to snapshot loops in builds without LTO.
 	static BuildingRef refOf(const Building *b)
 	{
 		BuildingRef ref;

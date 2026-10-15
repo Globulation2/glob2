@@ -11,6 +11,7 @@
 class BuildingUtils
 {
  public:
+	// Header definitions let hot entity/map loops fold GID arithmetic into callers.
 	static Sint32 GIDtoID(Uint16 gid)
 	{
 		assert(gid < MAX_COUNT * TEAM_MAX_COUNT);
