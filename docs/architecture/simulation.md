@@ -333,7 +333,8 @@ checksum adapter retains its historical entity/RNG representation for fixtures.
   are rebuilt from the registry and cells, never serialized. Registry factories
   publish `shared_ptr<const TerrainRegistry>`; copying a registry is private because
   authoring presentation strings borrow its owned key/name storage.
-## Scheduled gradient work
+
+## Completed world observations
 
 - `Game::observeCompletedWorld` is the common owner coordinator for graphical,
   headless, replay and direct stepping. At a new completed boundary it publishes
@@ -343,8 +344,9 @@ checksum adapter retains its historical entity/RNG representation for fixtures.
   into the ordered command schedule, validated against live state, then executed.
   `Game::advanceLiveSimulation` only mutates live state and advances the tick; it
   neither captures nor submits preparation. `Game::step` is the direct caller's
-  explicit observe-then-advance entry point. There is no deferred-step variant or
-  runtime optional-snapshot fallback.
+  observe-then-advance entry point: it also updates unpolled JavaScript visibility
+  history, but leaves AI polling and order execution to its caller. There is no
+  deferred-step variant or runtime optional-snapshot fallback.
 - Observation T represents the completed world after publication and before the
   orders for its next advancement. Orders and simulation mutations first appear
   in observation T+1. A published observation is never reconstructed to reflect
@@ -386,16 +388,23 @@ checksum adapter retains its historical entity/RNG representation for fixtures.
   annotation options. Consumers do not contribute arbitrary capture masks.
   Complete snapshots still share unchanged components and refresh dirty map
   chunks in reusable buffers. Capture constructs only components that need filling;
-  reused and unrequested components require no placeholder records. Paused edits, configuration changes and world
-  replacement retain their explicit invalidation boundaries. A cold option may
-  widen an explicit inspection capture at an unchanged boundary, reusing all
+  reused and unrequested components require no placeholder records. Paused edits,
+  configuration changes and world replacement retain explicit invalidation
+  boundaries. A cold option may widen an explicit inspection capture at an
+  unchanged boundary, reusing all
   existing components without another entity extraction. Normal runtime options
-  are selected before capture, even when presentation preparation is busy. Camera
+  are fixed by the first observation request, even when presentation preparation
+  is busy. Repeated requests reuse that handle; requesting an omitted payload is
+  an error rather than permission to enrich it from live state. Camera
   extraction uses the retained full observation. Graphical sessions freeze the
   optional view inputs before capture so paused panel/debug toggles can project
-  from that observation; headless consumers retain only their requested inputs. A changed tick, observation revision,
-  configuration revision or map generation refreshes entities; named views drop
-  unwanted extras.
+  from that observation; headless consumers retain only their requested inputs.
+  Store caching tracks tick, observation and configuration revisions, and map
+  generations. Runtime callers establish a new observation only at the next tick
+  or an explicit invalidation; an order does not refresh the retained handle.
+  Named views drop unwanted extras.
+## Scheduled gradient work
+
 - Gradient selection, round-robin flags, invalidation and publication stay on the
   simulation owner. Jobs own their output and use worker-private scratch; they never read live map
   arrays or mutable seed caches. Publication remains after the configured delay

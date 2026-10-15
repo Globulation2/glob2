@@ -246,12 +246,15 @@ public:
 	/// Executes an Order with respect to the localPlayer of the GUI. All Orders get processed here.
 	// Returns whether the existing executor admitted the command, including queued construction.
 	bool executeOrder(std::shared_ptr<Order> order, int localPlayer);
-	//! One owner-controlled observation: publish due state, capture, admit world work.
+	//! Owner sequence: publish due state, capture, admit world work.
+	//! The first call fixes this observation's optional payload; later calls may
+	//! request only components already captured. Copy the handle to retain it.
 	const SimulationSnapshot::Handle& observeCompletedWorld(SimulationSnapshot::CaptureOptions options = {});
+	//! Borrowed until the next observation or session reset; copy to retain.
 	const SimulationSnapshot::Handle& observation() const;
 	//! Exceptional owner edit at a fixed simulation tick; old handles remain frozen.
 	void invalidateObservation();
-	//! Finish an order batch; publish an edited revision if it will not advance.
+	//! Finish an order batch; invalidate actual edits if advancement will not follow.
 	void finishOrderPhase(bool advancing);
 	//! Standalone inspection only: captures without admitting simulation work.
 	SimulationSnapshot::Handle captureReadBoundary(SimulationSnapshot::CaptureOptions options = {}) const;
@@ -317,7 +320,8 @@ public:
 	/// Updates total prestige stats
 	void prestigeSyncStep();
 
-	//! Direct stepping entry point shares the engine's observation coordinator.
+	//! Observe and advance for direct callers, including replica visibility history.
+	//! Callers owning AI/order scheduling must admit and deliver commands explicitly.
 	void step(Sint32 localTeam);
 	//! Advance live state after observing and applying due orders; never captures.
 	void advanceLiveSimulation(Sint32 localTeam);

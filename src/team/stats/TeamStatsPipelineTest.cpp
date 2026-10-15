@@ -497,6 +497,50 @@ TEST_SUITE("TeamStatsPipeline")
 		CHECK(w.team->stats.sourceTick == 1);
 	}
 
+    TEST_CASE("legacy zero-delay pending samples publish their original output before new delayed samples")
+    {
+        glob2test::HeadlessGlobals globals;
+        glob2test::HeadlessGame w({.loadDefaultRace=true});
+        w.addUnit(WORKER,10,10);
+        w.game.gameHeader.setTeamStatsDelay(0);
+        w.team->stats.enableCollection();
+        w.team->stats.events().births[WORKER]=42;
+        TeamStatsPipeline original(w.game.map.computeExecutor());
+        original.prepareBoundary(w.game,input(w));
+        // Write the historical zero-delay deadline through the named field,
+        // preserving the actual computed sample and the rest of its save layout.
+        struct LegacyOutput : GAGCore::BinaryOutputStream {
+            using BinaryOutputStream::BinaryOutputStream;
+            void writeUint32(Uint32 value,std::string_view name) override {
+                BinaryOutputStream::writeUint32(name=="due" ? 0 : value,name);
+            }
+        };
+        auto* memory=new GAGCore::MemoryStreamBackend;
+        LegacyOutput output(memory); original.save(&output); output.flush();
+        const auto bytes=memory->takeContents();
+        TeamStatsPipeline restored(w.game.map.computeExecutor());
+        GAGCore::BinaryInputStream inputStream(new GAGCore::MemoryStreamBackend(bytes.data(),bytes.size()));
+        inputStream.seekFromStart(0); restored.load(w.game,&inputStream,165);
+        // Changing the live world must not regenerate the saved sample.
+        w.addUnit(WORKER,12,10);
+        w.team->stats.events().births[WORKER]=99;
+        REQUIRE(restored.publishDue(w.game));
+        CHECK(w.team->stats.sourceTick==0);
+        CHECK(w.team->stats.publishedTick==0);
+        CHECK(w.team->stats.measurements().births[WORKER]==42);
+        CHECK_FALSE(restored.publishDue(w.game));
+        CHECK_FALSE(restored.needsSample(0));
+        w.game.stepCounter=1;
+        restored.prepareBoundary(w.game,input(w));
+        CHECK_FALSE(restored.publishDue(w.game));
+        w.game.stepCounter=2;
+        REQUIRE(restored.publishDue(w.game));
+        CHECK(w.team->stats.sourceTick==1);
+        CHECK(w.team->stats.publishedTick==2);
+        CHECK(w.team->stats.measurements().births[WORKER]==99);
+        CHECK(restored.metrics.published==2);
+    }
+
     TEST_CASE("format 155 pending digests are discarded without losing samples")
     {
         glob2test::HeadlessGlobals globals;

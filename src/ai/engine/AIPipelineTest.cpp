@@ -6,6 +6,7 @@
 #include "Version.h"
 #include "Player.h"
 #include "Order.h"
+#include "ResourceGrowth.h"
 #include "Marshaling.h"
 #include <BinaryStream.h>
 #include <StreamBackend.h>
@@ -185,6 +186,53 @@ TEST_CASE("save continuation retains controller caches receipts and future comma
         }
     }
 }
+TEST_CASE("saving before the first observation initializes AI without admitting work")
+{
+    glob2test::HeadlessGlobals globals;
+    glob2test::HeadlessGame fixture({.loadDefaultRace=true,.header=true});
+    auto& game=fixture.game;
+    auto* building=fixture.addBuilding("swarm",4,4); REQUIRE(building);
+    fixture.addUnit(WORKER,12,12);
+    constexpr unsigned delay=3; // Deliberately different from zero and the match default.
+    game.gameHeader.setAIOrderDelay(delay);
+    game.gameHeader.setAIConfig(0,Script::config(
+        "function step(c){return {type:'workers',building:c.game.buildings({team:c.myTeam})[0],workers:3};}"));
+    game.players[0]->makeItAI(AI::JAVASCRIPT);
+    const auto expectUnobserved=[](Game& candidate) {
+        CHECK_THROWS_AS(candidate.observation(),std::logic_error);
+        CHECK(candidate.snapshots().metrics.coreMaterializations==0);
+        CHECK(candidate.map.gradientPipelineStatus().jobs==0);
+        CHECK(candidate.map.resourceGrowthMetrics().submitted==0);
+        for(const auto& [name,value]:candidate.aiMetrics())
+            if(name=="submitted" || name=="delivered" || name=="stats_submitted" || name=="hiring_submitted") {
+                CAPTURE(name); CHECK(value==0);
+            }
+    };
+    expectUnobserved(game);
+    const auto checkpoint=save(game);
+    expectUnobserved(game);
+    glob2test::HeadlessGame restored(glob2test::GameOptions{});
+    load(restored.game,checkpoint,2);
+    expectUnobserved(restored.game);
+    REQUIRE(restored.game.gameHeader.getAIOrderDelay()==delay);
+    constexpr std::array<unsigned,1> player{0};
+    for(unsigned tick=0; tick<=delay; ++tick) {
+        CAPTURE(tick);
+        const auto orders=prepareAIOrders(restored.game,player,false);
+        REQUIRE(orders.size()==1);
+        if(tick<delay) {
+            CHECK(orders[0].second->getOrderType()==ORDER_NULL);
+            restored.game.advanceLiveSimulation(0);
+        } else {
+            auto order=orders[0].second;
+            REQUIRE(order->getOrderType()==ORDER_MODIFY_BUILDING);
+            CHECK(restored.game.stepCounter==delay);
+            order=restored.game.validateAIOrder(order,0); order->sender=0;
+            REQUIRE(restored.game.executeOrder(order,0));
+        }
+    }
+}
+
 TEST_CASE("pause and repeated boundary calls cannot execute a published command twice")
 {
     glob2test::HeadlessGlobals globals;
@@ -279,6 +327,56 @@ TEST_CASE("save between AI admission and delivery retains the original pending o
     CHECK(due->aiPollSequence==resumed->aiPollSequence);
     CHECK(state(game)==state(restored.game));
 }
+TEST_CASE("legacy zero-delay real output and its execution receipt survive pipeline saves")
+{
+    glob2test::HeadlessGlobals globals;
+    glob2test::HeadlessGame fixture({.loadDefaultRace=true,.header=true});
+    auto& game=fixture.game;
+    auto* building=fixture.addBuilding("swarm",4,4); REQUIRE(building);
+    fixture.addUnit(WORKER,12,12);
+    game.gameHeader.setAIOrderDelay(0);
+    game.gameHeader.setAIConfig(0,Script::config(
+        "function step(c){return {type:'workers',building:c.game.buildings({team:c.myTeam})[0],workers:3};}"));
+    game.players[0]->makeItAI(AI::JAVASCRIPT);
+    constexpr std::array<unsigned,1> player{0};
+    const auto world=game.observeCompletedWorld();
+    game.admitAIOrders(player,false,{},world);
+    struct LegacyOutput : GAGCore::BinaryOutputStream {
+        using BinaryOutputStream::BinaryOutputStream;
+        void writeUint32(Uint32 value,std::string_view name) override {
+            // There is one pending scheduler output and no delivered receipts.
+            // Use its field name rather than depending on binary offsets.
+            BinaryOutputStream::writeUint32(name=="dueTick" ? 0 : value,name);
+        }
+    };
+    auto* memory=new GAGCore::MemoryStreamBackend;
+    LegacyOutput output(memory); game.saveAI(&output); output.flush();
+    const auto bytes=memory->takeContents();
+    GAGCore::BinaryInputStream input(new GAGCore::MemoryStreamBackend(bytes.data(),bytes.size()));
+    input.seekFromStart(0); REQUIRE(game.loadAI(&input));
+    const auto orders=game.deliverAIOrders(player,false);
+    REQUIRE(orders.size()==1);
+    auto order=orders[0].second;
+    REQUIRE(order->getOrderType()==ORDER_MODIFY_BUILDING);
+    CHECK(game.stepCounter==0);
+    order=game.validateAIOrder(order,0); order->sender=0;
+    REQUIRE(game.executeOrder(order,0));
+    CHECK(building->maxUnitWorking==3);
+    // This full save now carries a real accepted receipt whose historical
+    // scheduled and execution ticks are both zero. Reload must retain it.
+    const auto checkpoint=save(game);
+    glob2test::HeadlessGame restored({}); load(restored.game,checkpoint,2);
+    CHECK(state(restored.game)==state(game));
+    CHECK(restored.game.deliverAIOrders(player,false)[0].second->getOrderType()==ORDER_NULL);
+    restored.game.observeCompletedWorld();
+    game.advanceLiveSimulation(0); restored.game.advanceLiveSimulation(0);
+    const auto next=prepareAIOrders(game,player,false)[0].second;
+    const auto nextRestored=prepareAIOrders(restored.game,player,false)[0].second;
+    CHECK(next->getOrderType()==ORDER_NULL);
+    CHECK(wire(*nextRestored)==wire(*next));
+    CHECK(state(restored.game)==state(game));
+}
+
 TEST_CASE("replacement cancels an old output without rejecting identical new wire bytes")
 {
     glob2test::HeadlessGlobals globals;

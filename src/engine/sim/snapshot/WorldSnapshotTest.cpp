@@ -1299,6 +1299,33 @@ TEST_SUITE("WorldSnapshot")
         CHECK(game.snapshots().metrics.coreMaterializations == materializations + 1);
     }
 
+    TEST_CASE("an established owner observation rejects uncaptured optional components")
+    {
+        glob2test::HeadlessGlobals globals;
+        glob2test::HeadlessGame fixture({.wDec=5,.hDec=5,.teams=1,.clearImmobile=true,.loadDefaultRace=true});
+        auto& game = fixture.game;
+        auto* unit = fixture.addUnit(WORKER,12,12); REQUIRE(unit);
+        const auto first = game.observeCompletedWorld();
+        const auto captures = game.snapshots().metrics.captures;
+        const auto materializations = game.snapshots().metrics.coreMaterializations;
+        const auto entityBytes = game.snapshots().metrics.entityBytesCopied;
+        const auto hp = unit->hp;
+
+        // A later request cannot enrich frozen entities using a newer live world.
+        --unit->hp;
+        CHECK_THROWS_AS(game.observeCompletedWorld(allOptions), std::invalid_argument);
+        const auto& retained = game.observation();
+        CHECK(retained.entities == first.entities);
+        CHECK(retained.observationRevision == first.observationRevision);
+        CHECK(retained.requirements == first.requirements);
+        CHECK(retained.entities->units.front().hp == hp);
+        CHECK_FALSE(retained.session);
+        CHECK(game.snapshots().metrics.captures == captures);
+        CHECK(game.snapshots().metrics.coreMaterializations == materializations);
+        CHECK(game.snapshots().metrics.entityBytesCopied == entityBytes);
+        CHECK(game.observeCompletedWorld().entities == first.entities);
+    }
+
     TEST_CASE("explicit paused edit establishes another owner observation at the same tick")
     {
         glob2test::HeadlessGlobals globals;

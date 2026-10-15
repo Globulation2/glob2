@@ -552,10 +552,6 @@ Uint32 Pipeline::checksum(bool heavy)
 } // namespace ResourceGrowth
 
 
-bool Map::hasPendingWorldPreparation() const
-{
-	return hasPendingGradientPreparation() || gradientRuntime->growth.needsPreparation();
-}
 void Map::publishWorldResultsDue()
 {
     const auto tick = game->stepCounter;

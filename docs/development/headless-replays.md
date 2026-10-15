@@ -79,8 +79,9 @@ unsettled cells on the owner before using them.
 Format 143 saves the AI engine's completed pending orders, logical deadlines and
 execution feedback. Saving finishes outstanding decisions without executing
 future commands early. Older supported saves load with delay 0 and an empty
-scheduling queue. Delay 0 preserves strategy and polling cadence, with explicit correctness fixes:
-Castor uses private intent instead of direct world mutation and reconciles upgrade
+scheduling queue. From format 166, newly admitted delay-zero decisions are
+delivered at the next boundary. Strategy and polling cadence remain unchanged,
+with explicit correctness fixes: Castor uses private intent instead of direct world mutation and reconciles upgrade
 execution; Runtime and Cabino retain unexecuted upgrades and release rejected
 reservations; Cortex releases matching rejected action latches. Runtime, Maxima,
 Cabino and Cortex discard queued commands whose selected target incarnation has
@@ -485,9 +486,10 @@ advancing. Newly admitted AI/statistics work configured with delay zero is due a
 the next boundary. Paused frames and stalled turns reuse their observation.
 Saved publication/admission phases and pending outputs preserve continuation;
 old pending results keep their original deadlines. Replay floor 166 and the sim
-revision gate distinguish the changed timing. See the
-[owner timing contract](../architecture/simulation.md#scheduled-gradient-work).
-
+revision gate distinguish the changed timing. Runtime world publication and
+AI-order delivery remain separate: world results publish before capture, while
+due AI orders enter the command schedule and undergo live order validation. See the
+[owner timing contract](../architecture/simulation.md#completed-world-observations).
 
 Version 120 makes periodic resource, guard and clear fields publish eight ticks
 after their observation boundary. Current execution uses the shared compute pool. Saves retain

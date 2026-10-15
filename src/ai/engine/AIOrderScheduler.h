@@ -92,8 +92,8 @@ public:
 	// Joins every admitted decision; the executor must outlive the scheduler.
 	~OrderScheduler();
 	// Shared execution hands batches to the executor's workers and the
-	// submitter waits for them at the deadline; otherwise the submitter decides
-	// when it dispatches. Either way decisions are delivered at the deadline.
+	// submitter waits for them at the deadline. Without workers, the executor
+	// runs the decisions on the owner at that same join.
 	void configure(unsigned delayTicks, ComputeExecutor& executor);
 	void configureExecution(ComputeExecutor& executor);
 	unsigned delayTicks() const { return delay; }

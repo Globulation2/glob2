@@ -217,7 +217,6 @@ void Game::prestigeSyncStep()
 
 void Game::advanceLiveSimulation(Sint32 localTeam)
 {
-	ensureTurretTargeting();
 	map.applyGradientBackendRequest();
     assert(completedObservation && completedObservation->tick == stepCounter);
 	applyClientRequests();

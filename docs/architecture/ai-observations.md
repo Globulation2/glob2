@@ -10,9 +10,10 @@ preset through `Game::observeCompletedWorld()`, with `CaptureOptions` for ordina
 presentation and explicit cold UI/diagnostic payloads. AI controllers and map jobs
 do not declare capture masks. `Game::snapshots()` owns the shared Store; the AI
 pipeline constructs one `simulationView()` adapter shared by all polled controllers
-at that boundary and does not initiate another capture. Explicit
-`Store::invalidateBoundary()` revisions allow an owner to publish same-tick edits
-without advancing game time; existing leases stay immutable. Engine snapshot records live under
+at that boundary and does not initiate another capture. The first request fixes
+the observation's optional payloads; later requests must fit that retained payload.
+`Game::invalidateObservation()` marks an actual paused edit for a new same-tick
+revision at the next observation; existing leases stay immutable. Engine snapshot records live under
 `src/engine/sim/snapshot/`; the AI adapter and shared queries live under
 `src/ai/observation/`. Records contain values and stable entity identities;
 rendering pointers and live `Game`, `Map`, `Team`, `Unit` or `Building` objects
@@ -183,8 +184,9 @@ order queue. Maps and saved games remain readable from version 58. Lifecycle cha
 requests by controller generation. Verify delay 0 and 8, rejection and identity
 reuse, serial/threaded execution, and save/load with outstanding work. A snapshot
 migration alone does not establish identical AI trajectories or performance;
-compare per-tick checksums and measure capture, retention and worker costs. Delay 0
-retains each controller's strategy and cadence, apart from the explicit pending
+compare per-tick checksums and measure capture, retention and worker costs. From
+format 166, delay 0 delivers newly admitted decisions one boundary later. Controller
+strategy and polling cadence remain unchanged, apart from the explicit pending
 intent, rejection and identity fixes listed in the
 [replay guide](../development/headless-replays.md).
 
@@ -194,8 +196,9 @@ Team statistics join due results before the shared read-boundary capture, then
 submit one ordered batch of team samples from that same immutable world. The
 standard simulation view includes cumulative statistics inputs; statistics do not
 contribute capture masks. `statisticsView()` leases only calculation inputs and
-retains map buffers on spatial-diagnostic ticks. `captureReadBoundary()` remains a
-explicit inspection capture for UI, saves and reference tests. The common owner
+retains map buffers on spatial-diagnostic ticks. `captureReadBoundary()` remains an
+explicit standalone inspection entry point and never admits normal simulation
+work. Runtime UI views use the retained observation. The common owner
 coordinator publishes due statistics before its single capture; publication never
 reconstructs an observation already handed to consumers.
 The owner retains consecutive raw smoothing samples and histories. At aggregation

@@ -125,12 +125,12 @@ borrowed from standard snapshot components. There is no second entity extraction
 or map-array capture. `Game::drawMap` requires an explicitly supplied frame;
 `Game::drawSceneMap` accepts it directly.
 
-- Interactive engines capture the standard simulation preset at each read
-  boundary. When the bounded producer admits presentation preparation, capture
-  also includes its session, effects and statistics payloads and any requested
-  history, telemetry, entity diagnostics or annotations. Diagnostic requests can
-  independently add the payloads they need. AI, map jobs and presentation
-  borrow the same captured data through standard views.
+- Interactive engines capture the standard simulation preset and all graphical
+  payloads at each completed observation: session, effects, statistics, history,
+  telemetry, entity diagnostics and annotations. These inputs are frozen even
+  while presentation preparation is busy. Camera movement and opening a panel
+  derive another view from that observation; they never add live data to it. AI,
+  map jobs and presentation borrow the same captured data through standard views.
   `SceneExtractor::prepare` accepts an immutable handle and request, never live
   simulation objects. Preparation runs on the shared compute executor. A complete
   frame is published through `SceneBuffer`; drawing keeps the previous complete
@@ -162,8 +162,9 @@ or map-array capture. `Game::drawMap` requires an explicitly supplied frame;
   Selected panels borrow those records and immutable catalogs; presentation
   calculations and formatting belong in frame storage. Catalog definitions are frozen
   once per revision, so a later owner reconfiguration cannot change a retained frame.
-  AI telemetry, debug gradients, failure histories, and statistics histories are requested
-  separately from ordinary frames. Statistics histories share immutable samples
+  AI telemetry, debug gradients, failure histories and statistics histories use
+  optional snapshot components retained at the boundary. A frame selects the
+  components its view needs. Statistics histories share immutable samples
   between observations until the next history revision; the compact HUD sample
   ring remains independent. Alliance controls read session player identities and
   team masks; objective and hint dialogs retain immutable narrative payloads that

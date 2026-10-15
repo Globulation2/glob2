@@ -11,6 +11,8 @@
 #include <fstream>
 #include <thread>
 #include <nlohmann/json.hpp>
+#include "Brush.h"
+#include <algorithm>
 
 TEST_SUITE("SharedWorkerLifecycle") {
 TEST_CASE("background saves finish on a worker and remain readable after teardown") {
@@ -157,14 +159,14 @@ TEST_CASE("direct steps and explicit owner phases agree across worker counts") {
             CHECK(&game.observeCompletedWorld() == &world);
             game.advanceLiveSimulation(0);
             CHECK(game.snapshots().metrics.coreMaterializations == captures + 1);
-            CHECK_FALSE(game.map.hasPendingWorldPreparation());
+            CHECK_FALSE(game.map.hasPendingGradientPreparation());
             CHECK(direct.game.checkSum(nullptr, nullptr, nullptr, true) == game.checkSum(nullptr, nullptr, nullptr, true));
         }
     }
     auto& game = explicitPhases.game;
     game.map.configureCompute(1);
     game.map.setGradientWorkerCount(2);
-    CHECK_FALSE(game.map.hasPendingWorldPreparation());
+    CHECK_FALSE(game.map.hasPendingGradientPreparation());
     const auto waitingTick = game.stepCounter;
     game.anyPlayerWaited = true;
     game.step(0);
@@ -175,7 +177,7 @@ TEST_CASE("direct steps and explicit owner phases agree across worker counts") {
     game.anyPlayerWaited = false;
     game.step(0);
     game.map.clear();
-    CHECK_FALSE(game.map.hasPendingWorldPreparation());
+    CHECK_FALSE(game.map.hasPendingGradientPreparation());
 }
 }
 
@@ -368,11 +370,16 @@ TEST_CASE("real AI commands and presentation extensions materialize entities onc
     }
     constexpr std::array<unsigned,2> seats{0,1};
     SceneRequest request;
-    const auto presentation = SceneExtractor::captureOptions(request);
+    const SimulationSnapshot::CaptureOptions presentation{.presentation=true,.history=true,
+        .telemetry=true,.entityDiagnostics=true,.annotations=true};
     const auto baseline = game.snapshots().metrics.coreMaterializations;
     unsigned realOrders = 0;
     for (unsigned tick=0; tick<8; ++tick) {
-        const auto world = game.observeCompletedWorld();
+        const auto world = game.observeCompletedWorld(presentation);
+        REQUIRE(world.annotations); REQUIRE(world.statistics); REQUIRE(world.history);
+        const auto frozenNames = world.annotations->areaNames;
+        const auto frozenUnits = world.statistics->teams[0]->getLatestStat()->totalUnit;
+        const auto frozenWorkers = world.entities->buildings.front().maxUnitWorking;
         CHECK(world.tick == tick);
         game.admitAIOrders(seats,false,{},world);
         for (auto& [seat,order] : game.deliverAIOrders(seats,false)) {
@@ -386,8 +393,17 @@ TEST_CASE("real AI commands and presentation extensions materialize entities onc
         }
         const auto core = game.snapshots().metrics.coreMaterializations;
         CHECK(core == baseline + tick + 1);
-        const auto rich = game.captureReadBoundary(presentation);
+        // Optional components were frozen before orders, just as in the engine.
+        // Later camera/panel requests must retain those exact components.
+        const auto rich = game.observeCompletedWorld(presentation);
         CHECK(rich.entities == world.entities);
+        CHECK(rich.annotations == world.annotations);
+        CHECK(rich.statistics == world.statistics);
+        CHECK(rich.history == world.history);
+        CHECK(rich.effects == world.effects);
+        CHECK(world.annotations->areaNames == frozenNames);
+        CHECK(world.statistics->teams[0]->getLatestStat()->totalUnit == frozenUnits);
+        CHECK(world.entities->buildings.front().maxUnitWorking == frozenWorkers);
         PresentationFrame frame;
         SceneExtractor extractor;
         extractor.prepare(rich.presentationView(presentation),request,frame);
@@ -397,10 +413,68 @@ TEST_CASE("real AI commands and presentation extensions materialize entities onc
         CHECK(game.snapshots().metrics.coreMaterializations == core);
         game.advanceLiveSimulation(0);
         CHECK(game.snapshots().metrics.coreMaterializations == core);
+        const auto next = game.observeCompletedWorld(presentation);
+        CHECK(next.tick == tick + 1);
+        CHECK(next.entities->buildings.front().maxUnitWorking == first->maxUnitWorking);
+        CHECK(world.entities->buildings.front().maxUnitWorking == frozenWorkers);
     }
     CHECK(realOrders == 14);
 }
 
+
+TEST_CASE("placement demolition and map edits first appear in the next completed observation" * doctest::test_suite("SimulationReadPhase"))
+{
+    glob2test::HeadlessGlobals globals;
+    glob2test::HeadlessGame fixture({.clearImmobile=true,.loadDefaultRace=true,.header=true});
+    auto& game=fixture.game;
+    auto* oldFlag=fixture.addBuilding("warflag",4,4); REQUIRE(oldFlag);
+    fixture.addUnit(WORKER,12,12);
+    const auto removed=Game::refOf(oldFlag);
+    const SimulationSnapshot::CaptureOptions options{.presentation=true,.history=true,
+        .telemetry=true,.entityDiagnostics=true,.annotations=true};
+    const auto before=game.observeCompletedWorld(options);
+    const auto captures=game.snapshots().metrics.coreMaterializations;
+    const auto resourceCell=game.map.coordToIndex(25,25);
+    const auto areaCell=game.map.coordToIndex(24,24);
+    const auto oldAreaName=before.annotations->areaNames.at(0);
+    const auto oldResource=before.resourceAt(resourceCell).resource.type;
+    const auto oldGuard=before.areasAt(areaCell).guard;
+    const auto execute=[&](std::shared_ptr<Order> order) {
+        order->sender=0; REQUIRE(game.executeOrder(order,0));
+    };
+    execute(std::make_shared<OrderDelete>(removed.gid));
+    execute(std::make_shared<OrderCreate>(0,20,20,game.buildingsTypes.getTypeNum("warflag",0,false),0,0));
+    Utilities::BitArray mask(1); mask.set(0,true);
+    execute(std::make_shared<OrderAlterGuardArea>(0,BrushTool::MODE_ADD,24,24,1,1,mask));
+    // Resource and script edits exercise owner mutations without an order codec.
+    game.map.setResourceByIndex(25,25,WHEAT,1);
+    game.map.setAreaName(0,"new observation");
+    game.finishOrderPhase(true);
+    const auto retained=game.observeCompletedWorld(options);
+    CHECK(retained.entities==before.entities);
+    CHECK(retained.annotations==before.annotations);
+    CHECK(retained.annotations->areaNames.at(0)==oldAreaName);
+    CHECK(retained.resourceAt(resourceCell).resource.type==oldResource);
+    CHECK(retained.areasAt(areaCell).guard==oldGuard);
+    REQUIRE(retained.entities->buildings.size()==1);
+    CHECK(retained.entities->buildings.front().gid==removed.gid);
+    game.advanceLiveSimulation(0);
+    CHECK(game.snapshots().metrics.coreMaterializations==captures);
+    const auto after=game.observeCompletedWorld(options);
+    CHECK(after.tick==before.tick+1);
+    CHECK(game.snapshots().metrics.coreMaterializations==captures+1);
+    CHECK(after.annotations->areaNames.at(0)=="new observation");
+    CHECK(after.resourceAt(resourceCell).resource.type==WHEAT);
+    CHECK((after.areasAt(areaCell).guard & Team::teamNumberToMask(0))!=0);
+    REQUIRE(after.entities->buildings.size()==1);
+    CHECK(after.entities->buildings.front().posX==20);
+    CHECK(after.entities->buildings.front().posY==20);
+    CHECK_FALSE(game.resolveBuilding(removed));
+    // Held consumers still own the pre-order version after publication at T+1.
+    CHECK(before.annotations->areaNames.at(0)==oldAreaName);
+    CHECK(before.resourceAt(resourceCell).resource.type==oldResource);
+    CHECK(before.entities->buildings.front().gid==removed.gid);
+}
 
 TEST_CASE("reduced saved AI rosters retire trailing controllers and preserve continuation" * doctest::test_suite("SharedWorkerLifecycle"))
 {

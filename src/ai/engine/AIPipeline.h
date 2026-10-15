@@ -31,6 +31,8 @@ class Pipeline
  Uint64 peakRetainedQueryVectorBytes = 0;
  std::weak_ptr<GameDiagnostics::Session> diagnosticsSession;
 public:
+ //! Configure or attach execution without observing, submitting or delivering work.
+ void initialize(Game& game);
  void admit(Game& game,
   std::span<const unsigned> eligible, bool paused, const std::shared_ptr<GameDiagnostics::Session>& diagnostics,
   const SimulationSnapshot::Handle& captured);

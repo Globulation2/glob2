@@ -44,6 +44,21 @@ void Pipeline::cancel(unsigned player) {
 bool Pipeline::wasPolled(unsigned player, Uint32 tick) const {
  return scheduler.wasSubmitted(player,actors.at(player).generation,tick);
 }
+void Pipeline::initialize(Game& game)
+{
+    // Session setup and saving configure execution without pretending to admit
+    // work. Restored schedulers attach to this world's executor on first use.
+    if (!configured)
+    {
+        scheduler.configure(game.gameHeader.getAIOrderDelay(), game.map.computeExecutor());
+        configured = true;
+    }
+    else if (scheduler.delayTicks() != game.gameHeader.getAIOrderDelay())
+        throw std::logic_error("AI delay cannot change during a match");
+    else if (!scheduler.hasExecutor())
+        scheduler.configureExecution(game.map.computeExecutor());
+}
+
 void Pipeline::admit(Game& game,
  std::span<const unsigned> eligible,bool paused,const std::shared_ptr<GameDiagnostics::Session>& diagnostics,
  const SimulationSnapshot::Handle& captured) {
@@ -55,11 +70,7 @@ void Pipeline::admit(Game& game,
   if(requested[p])throw std::invalid_argument("Duplicate AI poll player");
   requested[p]=true;
  }
- // Decisions use the shared executor; the owner joins at the deadline.
- // Without workers, the executor runs deferred work on the owner at its join.
- if(!configured) {scheduler.configure(game.gameHeader.getAIOrderDelay(),game.map.computeExecutor());configured=true;}
- else if(scheduler.delayTicks()!=game.gameHeader.getAIOrderDelay()) throw std::logic_error("AI delay cannot change during a match");
- else if(!scheduler.hasExecutor()) scheduler.configureExecution(game.map.computeExecutor());
+ initialize(game);
  if(paused) return;
  if(!captured.entities || captured.tick!=game.stepCounter) throw std::invalid_argument("AI admission requires the completed observation");
  for(unsigned p=0;p<actors.size();++p) {

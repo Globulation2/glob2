@@ -264,7 +264,6 @@ public:
 	// Owner selects/reserves and captures inputs before dispatch. Deferred jobs
 	// seed and propagate private data from immutable leases; join before save/reconfigure.
 	void stagePeriodicGradientPreparation();
-    bool hasPendingWorldPreparation() const;
     void publishWorldResultsDue();
     void submitWorldWork(const SimulationSnapshot::Handle&);
     void stageResourceGrowth();
