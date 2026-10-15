@@ -36,6 +36,7 @@ struct SharedBuildingGradient;
 struct BuildingType;
 class BuildingsTypes;
 class Order;
+struct BuildingMaterialDemand;
 
 /// Sentinel for `BuildingType::prevLevel` / `nextLevel` meaning
 /// "no upgrade/downgrade exists in this chain" (signed int).
@@ -642,6 +643,12 @@ public:
 	void resetFailureTallies();
 
 private:
+	BuildingMaterialDemand materialDemand() const;
+	void computeWishedMaterials(int needs[MaterialSlotCount], const BuildingMaterialDemand& demand);
+	int desiredNumberOfWorkers(const BuildingMaterialDemand& demand) const;
+	void updateCallLists(const BuildingMaterialDemand& demand);
+	void updateCallLists(int desiredWorkers, bool resourceFull);
+
 	// ─── Private data ───────────────────────────────────────────────
 
 	// pending player orders (consumed by step())

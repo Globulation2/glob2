@@ -9,6 +9,7 @@
 #include <climits>
 
 #include "Building.h"
+#include "MaterialDemand.h"
 #include "FetchApportionment.h"
 #include "HiringPlanner.h"
 #include "BuildingType.h"
@@ -23,11 +24,13 @@
 void Building::step(void)
 {
 	if (type->isBuildingSite && (siteCompletionPending || type->useTeamMaterials)) updateBuildingSite();
-	computeWishedMaterials(wishedMaterials);
-	if (((owner->game->stepCounter + gid) & 255) == 0)
-		freeIdleGradients();
-
-	updateCallLists();
+	{
+		const auto demand = materialDemand();
+		computeWishedMaterials(wishedMaterials, demand);
+		if (((owner->game->stepCounter + gid) & 255) == 0)
+			freeIdleGradients();
+		updateCallLists(demand);
+	}
 	if(underAttackTimer>0)
 		underAttackTimer--;
 	if(canNotConvertUnitTimer>0)
