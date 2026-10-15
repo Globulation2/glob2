@@ -383,6 +383,9 @@ class Building : public BuildingUtils, public BuildingStateRecord
 
 	bool integrity();
 	Uint32 checkSum(std::vector<Uint32> *checkSumsVector, bool legacy152=false);
+private:
+	template<bool Diagnostic> Uint32 checkSumImpl(std::vector<Uint32> *checkSumsVector, bool legacy152);
+public:
 
 private:
 	// ─── Turret targeting (turretStep helpers) ──────────────────────

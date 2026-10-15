@@ -2,6 +2,7 @@
 #pragma once
 
 #include <cstdint>
+#include <WordChecksum.h>
 #include <stdexcept>
 
 /// Private simulation stream. PCG32 XSH-RR, based on Melissa E. O'Neill's
@@ -64,6 +65,14 @@ public:
     bool operator==(const EntityRandom&) const = default;
 
     std::uint32_t checksum() const
+    {
+        GAGCore::WordChecksum hash;
+        hash.addUint64(state.value);
+        hash.addUint64(state.increment);
+        return hash.value;
+    }
+
+    std::uint32_t legacyChecksum() const
     {
         const auto hash = mix(state.value ^ mix(state.increment));
         return std::uint32_t(hash) ^ std::uint32_t(hash >> 32);
