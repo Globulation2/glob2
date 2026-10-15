@@ -441,8 +441,8 @@ namespace Cortex
 		Sint32 swarmsProducingWorker;
 
 		// --- closed-loop food economy (v6) ---
-		// Our own FINISHED swarms and inns, one TrackedBuilding each (index-scan
-		// order over team->myBuildings, capped at the array bounds). The pure policy
+		// Our own FINISHED swarms and inns, one TrackedBuilding each (population
+		// order, capped at the tracked-record bounds). The pure policy
 		// reads each building's Food buffer + maxUnitWorking to nudge worker counts
 		// (ACTION_TUNE_WORKERS) and its nearestFoodSourceDistance to decide expansion. Reading
 		// our OWN buildings is not a fog cheat. *Count is the number of valid entries.

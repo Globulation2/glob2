@@ -1,5 +1,6 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "EngineFixtures.h"
+#include "LegacyPopulationOutput.h"
 #include "Building.h"
 #include "BuildingType.h"
 #include "Team.h"
@@ -15,12 +16,12 @@
 
 namespace {
 // Emit historical wide stock without bypassing the bounded runtime setters.
-struct HistoricalStockOutput : GAGCore::BinaryOutputStream {
+struct HistoricalStockOutput : glob2test::LegacyPopulationOutput {
     int slot;
     Sint32 stock;
     int version;
-    HistoricalStockOutput(GAGCore::MemoryStreamBackend* bytes,int slot,Sint32 stock,int version=VERSION_MINOR)
-        : BinaryOutputStream(bytes),slot(slot),stock(stock),version(version) {}
+    HistoricalStockOutput(GAGCore::MemoryStreamBackend* bytes,int slot,Sint32 stock,int version=VERSION_MINOR,Game* game=nullptr)
+        : LegacyPopulationOutput(bytes,game,version),slot(slot),stock(stock),version(version) {}
     void writeSint32(Sint32 value,std::string_view name) override {
         if(name=="versionMinor") value=version;
         if(name=="localRessource["+std::to_string(slot)+"]") value=stock;
@@ -29,7 +30,7 @@ struct HistoricalStockOutput : GAGCore::BinaryOutputStream {
 };
 std::string historicalGame(Game& game,int slot,Sint32 stock,int version=VERSION_MINOR) {
     auto* bytes=new GAGCore::MemoryStreamBackend;
-    HistoricalStockOutput out(bytes,slot,stock,version);
+    HistoricalStockOutput out(bytes,slot,stock,version,&game);
     game.save(&out,false,"Private stock cap migration");out.flush();
     return bytes->takeContents();
 }
@@ -151,7 +152,7 @@ TEST_SUITE("BuildingStock")
     }
     TEST_CASE("canceled entering services preserve ground and air occupancy across resave [save-format][artifacts]") {
         glob2test::HeadlessGlobals globals;
-        // Formats 159, 160 and 161 share stream fields; only 159 predates bounded stock.
+        // The adapter restores the pre-165 population encoding; only 159 predates bounded stock.
         for(int version:{FILE_FORMAT_VERSION_TURRET_TARGETING,160,VERSION_MINOR})
             for(int unitType:{WORKER,EXPLORER}) {
                 CAPTURE(version);CAPTURE(unitType);

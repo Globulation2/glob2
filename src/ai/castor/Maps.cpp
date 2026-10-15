@@ -260,10 +260,9 @@ void AICastor::computeBuildingNeighbourMap(int dw, int dh)
 		assert(neighbourTeam);
 		if (!neighbourTeam)
 			continue;
-		const auto myBuildings=observation->buildingSlots(neighbourTeam->number);
-		for (int i=0; i<Building::MAX_COUNT; i++)
+		const auto myBuildings=observation->buildingsForTeam(neighbourTeam->number);
+		for (const AIEngine::BuildingView *b : myBuildings)
 		{
-			const AIEngine::BuildingView *b=myBuildings[i];
 			if (b && !queries->kind(*b).resolvedType.isVirtual)
 			{
 				int bx=b->posX;
@@ -305,10 +304,9 @@ void AICastor::computeWorkPowerMap()
 	
 	memset(gradient, 0, size);
 	
-	const auto myUnits=observation->unitSlots(observedTeam->number);
-	for (int i=0; i<Unit::MAX_COUNT; i++)
+	const auto myUnits=observation->unitsForTeam(observedTeam->number);
+	for (const AIEngine::UnitView *u : myUnits)
 	{
-		const AIEngine::UnitView *u=myUnits[i];
 		if (u && AIEngine::ObservationQueries::matchesStrategyUnitRole(*observation,*u,WORKER) && u->medical==0 && u->activity!=Unit::ACT_UPGRADING)
 		{
 			int range=u->hungriness>0 ? ((u->hungry-u->trigHungry)>>AI_CASTOR_HUNGER_RANGE_SHIFT)/u->hungriness : AI_CASTOR_GRADIENT_WALL;
@@ -379,10 +377,9 @@ void AICastor::computeWorkRangeMap()
 	
 	memcpy(gradient, obstacleUnitMap, size);
 	
-	const auto myUnits=observation->unitSlots(observedTeam->number);
-	for (int i=0; i<Unit::MAX_COUNT; i++)
+	const auto myUnits=observation->unitsForTeam(observedTeam->number);
+	for (const AIEngine::UnitView *u : myUnits)
 	{
-		const AIEngine::UnitView *u=myUnits[i];
 		if (u && AIEngine::ObservationQueries::matchesStrategyUnitRole(*observation,*u,WORKER) && u->medical==0 && u->activity!=Unit::ACT_UPGRADING)
 		{
 			int range=u->hungriness>0 ? ((u->hungry-u->trigHungry)>>AI_CASTOR_HUNGER_RANGE_SHIFT)/u->hungriness : AI_CASTOR_GRADIENT_WALL;
@@ -603,10 +600,9 @@ void AICastor::computeEnemyPowerMap()
 		Uint32 me=observedTeam->mask;
 		if ((observedTeam->enemies&enemyTeam->mask)==0)
 			continue;
-		const auto enemyBuildings=observation->buildingSlots(enemyTeam->number);
-		for (int bi=0; bi<Building::MAX_COUNT; bi++)
+		const auto enemyBuildings=observation->buildingsForTeam(enemyTeam->number);
+		for (const AIEngine::BuildingView *b : enemyBuildings)
 		{
-			const AIEngine::BuildingView *b=enemyBuildings[bi];
 			if (b==NULL || ((b->seenByMask&me)==0))
 				continue;
 			int bx=b->posX;
@@ -683,10 +679,9 @@ void AICastor::computeEnemyRangeMap()
 		
 		if ((observedTeam->enemies & enemyTeam->mask)==0)
 			continue;
-		const auto enemyBuildings=observation->buildingSlots(enemyTeam->number);
-		for (int bi=0; bi<Building::MAX_COUNT; bi++)
+		const auto enemyBuildings=observation->buildingsForTeam(enemyTeam->number);
+		for (const AIEngine::BuildingView *b : enemyBuildings)
 		{
-			const AIEngine::BuildingView *b=enemyBuildings[bi];
 			if (b==NULL || ((b->seenByMask&me)==0) || queries->kind(*b).resolvedType.isBuildingSite)
 				continue;
 			int bx=b->posX;

@@ -1450,20 +1450,18 @@ TEST_CASE("released terrain-seed format 138 retains legacy resource and material
     REQUIRE(deposits > 0);
     for (int t = 0; t < restored.game.mapHeader.getNumberOfTeams(); ++t)
     {
-        for (unsigned u = 0; u < Unit::MAX_COUNT; ++u)
-            if (const auto *unit = restored.game.teams[t]->myUnits[u])
+        for (const auto* unit : restored.game.teams[t]->liveUnits.entries())
             {
-                const auto *oldUnit = legacy.game.teams[t]->myUnits[u];
+                const auto *oldUnit = legacy.game.teams[t]->myUnits[Unit::GIDtoID(unit->gid)];
                 REQUIRE(oldUnit != nullptr);
                 CHECK(unit->movement == oldUnit->movement);
                 CHECK(unit->destinationPurpose == oldUnit->destinationPurpose);
                 CHECK(unit->carriedMaterial == oldUnit->carriedMaterial);
                 pendingHarvests += unit->movement == Unit::MOV_HARVESTING;
             }
-        for (unsigned b = 0; b < Building::MAX_COUNT; ++b)
-            if (const auto *building = restored.game.teams[t]->myBuildings[b])
+        for (const auto* building : restored.game.teams[t]->liveBuildings.entries())
             {
-                const auto *oldBuilding = legacy.game.teams[t]->myBuildings[b];
+                const auto *oldBuilding = legacy.game.teams[t]->myBuildings[Building::GIDtoID(building->gid)];
                 REQUIRE(oldBuilding != nullptr);
                 for (unsigned material = 0; material < MaterialCount; ++material)
                 {
@@ -1508,11 +1506,9 @@ TEST_CASE("released observation format 139 imports legacy stocks and preserves c
     unsigned pendingHarvests=0;
     for(int team=0;team<original.game.mapHeader.getNumberOfTeams();++team)
     {
-        for(unsigned u=0;u<Unit::MAX_COUNT;++u)
-            if(const auto* unit=original.game.teams[team]->myUnits[u])
+        for (const auto* unit : original.game.teams[team]->liveUnits.entries())
                 pendingHarvests+=unit->movement==Unit::MOV_HARVESTING;
-        for(unsigned b=0;b<Building::MAX_COUNT;++b)
-            if(const auto* building=original.game.teams[team]->myBuildings[b])
+        for (const auto* building : original.game.teams[team]->liveBuildings.entries())
                 for(unsigned material=8;material<MaterialCount;++material)
                     CHECK(building->material(material)==0);
     }

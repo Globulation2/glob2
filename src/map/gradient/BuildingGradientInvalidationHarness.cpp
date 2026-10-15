@@ -8,6 +8,7 @@
 // footprint structurally could not reach - another team's buildings, and a virtual
 // flag, which is never written into the building tile grid.
 #include "EngineFixtures.h"
+#include "LegacyPopulationOutput.h"
 #include "GlobalContainer.h"
 #include "EngineTiming.h"
 #include "Game.h"
@@ -113,9 +114,8 @@ struct World
 		game.executeOrder(order, 0);
 		require(game.map.getBuilding(x, y) == NOGBID, "a flag is not written into the building tile grid");
 		Team* owner = game.teams[teamNumber];
-		for (int id = 0; id < Building::MAX_COUNT; ++id)
+		for (Building* b : owner->liveBuildings.entries())
 		{
-			Building* b = owner->myBuildings[id];
 			if (b && b->type->isVirtual && b->posX == x && b->posY == y)
 				return b;
 		}
@@ -599,6 +599,19 @@ std::string saveRuntime(Map& map, bool text = false)
 	map.saveRuntimeState(out.get());
 	out->flush();
 	return backend->takeContents();
+}
+
+// A following field makes historical-layout tests detect unread observation
+// markers, rather than silently accepting a current stream's legacy prefix.
+constexpr Uint32 RuntimeSentinel = 0x51a7c0de;
+std::string saveLegacyRuntime(Map& map, int version)
+{
+    auto* backend = new GAGCore::MemoryStreamBackend;
+    glob2test::LegacyPopulationOutput output(backend, nullptr, version);
+    map.saveRuntimeState(&output);
+    output.writeUint32(RuntimeSentinel, "followingSection");
+    output.flush();
+    return backend->takeContents();
 }
 
 void loadRuntime(Map& map, const std::string& bytes, bool text = false)
@@ -1102,7 +1115,7 @@ TEST_SUITE("BuildingGradientInvalidation")
     TEST_CASE("initial legacy saves bootstrap only when their observation was not admitted")
     {
         glob2test::HeadlessGlobals globals;
-        for (int legacyVersion : {164,165})
+        for (int legacyVersion : {164,165,166})
         for (bool admitted : {false,true}) {
             CAPTURE(legacyVersion); CAPTURE(admitted);
             World source, restored;
@@ -1113,10 +1126,11 @@ TEST_SUITE("BuildingGradientInvalidation")
                 source.game.map.publishWorldResultsDue();
                 source.game.map.submitWorldWork(source.game.snapshotStore().captureBoundary(source.game));
             }
-            const auto bytes = saveRuntime(source.game.map);
+            const auto bytes = saveLegacyRuntime(source.game.map, legacyVersion);
             GAGCore::BinaryInputStream input(new GAGCore::MemoryStreamBackend(bytes.data(),bytes.size()));
             input.seekFromStart(0);
             restored.game.map.loadRuntimeState(&input,legacyVersion);
+            CHECK(input.readUint32("followingSection") == RuntimeSentinel);
             restored.game.map.publishWorldResultsDue();
             restored.game.map.submitWorldWork(restored.game.snapshotStore().captureBoundary(restored.game));
             CHECK(restored.game.map.resourceGrowthMetrics().submitted == (admitted ? 0 : 1));
@@ -1130,7 +1144,7 @@ TEST_SUITE("BuildingGradientInvalidation")
     TEST_CASE("world observation publication and admission survive save boundaries")
     {
         glob2test::HeadlessGlobals globals;
-        for (int legacyVersion : {164,165}) {
+        for (int legacyVersion : {164,165,166}) {
             CAPTURE(legacyVersion);
             World original, restored, legacy;
             for (World* world : {&original, &restored, &legacy}) {
@@ -1156,12 +1170,14 @@ TEST_SUITE("BuildingGradientInvalidation")
             CHECK(restored.game.map.gradientPipelineStatus().pending == pending);
             CHECK(restored.game.map.gradientPipelineStatus().published == 0);
             CHECK(restored.game.map.resourceGrowthMetrics().submitted == 0);
-            // Versions 164 and 165 end before the format-166 publication/submission
-            // markers. Reading that prefix exercises unchanged old pending outputs.
+            // Formats 164–166 have no publication/submission markers. Retain
+            // their original outputs and verify that the next section aligns.
+            const auto historicalBytes = saveLegacyRuntime(map, legacyVersion);
             auto backend = std::make_unique<GAGCore::MemoryStreamBackend>();
-            backend->write(bytes.data(), bytes.size()); backend->seekFromStart(0);
+            backend->write(historicalBytes.data(), historicalBytes.size()); backend->seekFromStart(0);
             GAGCore::BinaryInputStream input(backend.release());
             legacy.game.map.loadRuntimeState(&input, legacyVersion);
+            CHECK(input.readUint32("followingSection") == RuntimeSentinel);
             // A migration may be saved again before its first owner observation.
             const auto migratedBytes = saveRuntime(legacy.game.map);
             loadRuntime(legacy.game.map, migratedBytes);

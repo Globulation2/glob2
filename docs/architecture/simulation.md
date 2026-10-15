@@ -7,6 +7,41 @@ Current simulation state, deterministic randomness, terrain rules and scheduled 
 A `Team` is a colony; a `Player` controls a team, and several players can share one.
 For timing and scheduling, start with `src/game/Game_sync.cpp` and `src/engine/EngineRun.cpp`.
 
+## Entity population order
+
+Each team owns append-ordered intrusive unit and building lists. The hooks live
+outside `UnitState` and `BuildingStateRecord`; immutable worker records never
+contain owner-thread links. `myUnits` and `myBuildings` remain allocation and GID
+lookup tables. They are not population iteration APIs. Creation appends, removal
+unlinks before destruction, and conversion unlinks from the source before
+appending to the destination. Surviving entities keep their position, including
+in-place building upgrades. Capability and service lists remain independent.
+
+Read-only population queries use `liveUnits.entries()` and
+`liveBuildings.entries()`. A walk that can change membership uses the scoped
+`mutableWalk()` cursor. Membership removal repairs all active cursors, including
+removal of a pending item or the original tail. Arrivals after a cursor starts
+wait for its next traversal. Team phases remain sequential: a converted arrival
+can participate if its destination has not yet started its walk. Dead marking
+retains the existing destruction phase.
+
+Worker observations expose compact immutable `unitsForTeam(team)` and
+`buildingsForTeam(team)` ranges plus direct GID lookup indexes. Record order
+follows population order; consumers must not assume ascending slot IDs. Operations
+whose public contract requires ID ordering implement that ordering locally.
+
+Save format 166 writes counted entity records in population order with their
+existing IDs, followed by cross-reference payloads. Older slot formats bootstrap
+ascending slot order; current loads restore the exact saved order. Team checksums
+include ordered entity hashes and the persisted live round-robin task cursor.
+Task swapping visits at most four distinct live candidates per team tick, rather
+than probing potentially empty slot IDs. This intentionally changes scheduling
+and replay trajectories; the save support floor is unchanged.
+
+Deep list/table consistency sweeps belong to explicit diagnostics and tests,
+not normal ticks. Rebuilding building capability lists never reconstructs or
+reorders population membership.
+
 ## Routine desynchronization checksums
 
 Routine checks cover live units/buildings, both RNG state words, team/player state,
@@ -374,11 +409,11 @@ checksum adapter retains its historical entity/RNG representation for fixtures.
   Actual paused edits explicitly invalidate its observation revision, so
   the same tick can have a new immutable identity. Order acknowledgements and
   waiting-mask changes only update client/command state.
-- Format 166 saves map publication/submission phase markers. Restoring an already
+- Format 167 saves map publication/submission phase markers. Restoring an already
   observed boundary neither advances its queues again nor resubmits its jobs.
   Earlier supported saves retain their completed pending outputs and historical
   deadlines, including zero-delay outputs; they are never regenerated from the
-  loaded world. New admissions use the new timing rule. Replay floor 166 and the
+  loaded world. New admissions use the new timing rule. Replay floor 167 and the
   simulation revision separate the changed trajectory from earlier executions.
 - The simulation preset always includes catalogs, terrain, resources, occupancy,
   areas, visibility, entities, teams, rules, published resource fields, growth and

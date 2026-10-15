@@ -539,7 +539,7 @@ TEST_SUITE("UnitCustomization")
                 loaded=new Unit(&input,restored.team,FILE_FORMAT_VERSION_UNIT_CATALOG);
                 REQUIRE(input.getPosition()==bytes.size());
             }
-            restored.team->myUnits[0]=loaded; restored.team->rebuildLiveLists();
+            restored.team->attachUnit(0, loaded);
             restored.game.map.setGroundUnit(loaded->posX,loaded->posY,loaded->gid);
             REQUIRE(loaded->widePrimaryCargo()); CHECK(loaded->carriedPacketCount()==1);
             CHECK(saveUnit(*loaded,text)==bytes); CHECK(restored.game.unitCargo.entries()==original);
@@ -721,11 +721,11 @@ TEST_SUITE("UnitCustomization")
         REQUIRE(attacker); REQUIRE(victim);
         attacker->hp=500000;
         auto snapshot=AIEngine::AIWorldView::capture(world.game,AIEngine::AIWorldView::captureCatalog(world.game));
-        const auto* observed=snapshot->unitSlots(0)[Unit::GIDtoID(attacker->gid)]; REQUIRE(observed);
+        const auto* observed=snapshot->unitAtSlot(attacker->gid); REQUIRE(observed);
         CHECK(AIMaxima::WorldHelpers::warrior_power(*snapshot,observed)==127500000);
         attacker->experienceLevel=INT_MAX;
         snapshot=AIEngine::AIWorldView::capture(world.game,snapshot->catalog);
-        observed=snapshot->unitSlots(0)[Unit::GIDtoID(attacker->gid)]; REQUIRE(observed);
+        observed=snapshot->unitAtSlot(attacker->gid); REQUIRE(observed);
         CHECK(AIEngine::ObservationQueries::realAttackStrength(*snapshot,*observed)==INT_MAX);
         CHECK(AIMaxima::WorldHelpers::warrior_power(*snapshot,observed)==INT_MAX);
         CHECK(attacker->getRealAttackStrength()==INT_MAX);
@@ -1360,41 +1360,65 @@ TEST_SUITE("UnitCustomization")
     TEST_CASE("conversion cancels pending transport and transfers the complete cargo identity")
     {
         glob2test::HeadlessGlobals globals;
-        glob2test::HeadlessGame world({.teams=2,.discovered=true,.clearImmobile=true,.header=true,.seed=4921});
-        configure(world);
-        auto* ownInn=world.addBuilding("inn",18,8,0,0);
-        auto* enemyInn=world.addBuilding("inn",8,8,0,1);
-        world.addUnit(WORKER,24,20,0); world.addUnit(WORKER,24,22,1);
-        REQUIRE(ownInn); REQUIRE(enemyInn);
-        enemyInn->setMaterial(WHEAT, 10); enemyInn->setMaterial(CHERRY, 10);
-        enemyInn->updateCallLists();
-        for (int tick=0;tick<160;++tick) world.game.step(0);
-        auto* unit=world.addUnit(*world.game.unitCatalog().find("ablation-0"),6,8);
-        REQUIRE(unit); REQUIRE(enemyInn->canConvertUnit());
-        world.game.teams[1]->sharedVisionFood |= world.team->me;
-        world.game.teams[1]->allies &= ~world.team->me;
-        unit->receiveCarriedMaterial(WOOD,{}); unit->receiveCarriedMaterial(STONE,{1,2});
-        unit->destinationPurpose=WHEAT;
-        deposit(world.game.map,19,7,WHEAT,3);
-        unit->subscriptionSuccess(ownInn,false,false,UnitJobPurpose::Transport);
-        ownInn->unitsWorking.push_back(unit);
-        const Uint16 oldGid=unit->gid;
-        unit->previousClearingArea=Unit::ClearingAreaClaim{7,7}; unit->previousClearingAreaDistance=1;
-        world.game.map.setClearingAreaClaimed(7,7,world.team->teamNumber,oldGid);
-        unit->hungry=unit->trigHungryCarrying; unit->medical=Unit::MED_HUNGRY;
-        unit->setNeedToRecheckMedical(true); unit->delta=255;
-        REQUIRE(world.team->findNearestFood(unit)==enemyInn);
-        world.game.step(0);
-        CHECK(unit->owner==world.game.teams[1]);
-        CHECK(unit->gid!=oldGid);
-        CHECK(world.game.map.isClearingAreaClaimed(7,7,world.team->teamNumber)==NOGUID);
-        CHECK_FALSE(unit->previousClearingArea);
-        CHECK(unit->jobPurpose==UnitJobPurpose::None);
-        CHECK(unit->carriedPacketCount()==2);
-        CHECK_FALSE(world.game.unitCargo.find(oldGid));
-        REQUIRE(world.game.unitCargo.find(unit->gid));
-        CHECK(world.game.unitCargo.find(unit->gid)->front().material==STONE);
-        CHECK(std::find(ownInn->unitsWorking.begin(),ownInn->unitsWorking.end(),unit)==ownInn->unitsWorking.end());
+        for (int sourceTeam : {0,1}) {
+            CAPTURE(sourceTeam);
+            const int destinationTeam=1-sourceTeam;
+            glob2test::HeadlessGame world({.teams=2,.discovered=true,.clearImmobile=true,.header=true,.seed=4921});
+            configure(world);
+            auto* source=world.game.teams[sourceTeam];
+            auto* destination=world.game.teams[destinationTeam];
+            auto* ownInn=world.addBuilding("inn",18,8,0,sourceTeam);
+            auto* enemyInn=world.addBuilding("inn",8,8,0,destinationTeam);
+            auto* survivor=world.addUnit(WORKER,24,20,sourceTeam);
+            auto* resident=world.addUnit(WORKER,24,22,destinationTeam);
+            REQUIRE(survivor); REQUIRE(resident);
+            REQUIRE(ownInn); REQUIRE(enemyInn);
+            enemyInn->setMaterial(WHEAT, 10); enemyInn->setMaterial(CHERRY, 10);
+            enemyInn->updateCallLists();
+            for (int tick=0;tick<160;++tick) world.game.step(0);
+            auto* unit=world.addUnit(*world.game.unitCatalog().find("ablation-0"),6,8,sourceTeam);
+            REQUIRE(unit); REQUIRE(enemyInn->canConvertUnit());
+            destination->sharedVisionFood |= source->me;
+            destination->allies &= ~source->me;
+            unit->receiveCarriedMaterial(WOOD,{}); unit->receiveCarriedMaterial(STONE,{1,2});
+            unit->destinationPurpose=WHEAT;
+            deposit(world.game.map,19,7,WHEAT,3);
+            unit->subscriptionSuccess(ownInn,false,false,UnitJobPurpose::Transport);
+            ownInn->unitsWorking.push_back(unit);
+            const Uint16 oldGid=unit->gid;
+            unit->previousClearingArea=Unit::ClearingAreaClaim{7,7}; unit->previousClearingAreaDistance=1;
+            world.game.map.setClearingAreaClaimed(7,7,sourceTeam,oldGid);
+            unit->hungry=unit->trigHungryCarrying; unit->medical=Unit::MED_HUNGRY;
+            unit->setNeedToRecheckMedical(true); unit->delta=255;
+            REQUIRE(source->findNearestFood(unit)==enemyInn);
+            REQUIRE(source->liveUnits.size()==2);
+            REQUIRE(destination->liveUnits.size()==1);
+            source->taskSwapNext=Unit::GIDtoID(oldGid);
+            // Conversion happens inside the source unit walk. A later destination
+            // starts a fresh walk and updates the arrival; an earlier one waits.
+            unit->underAttackTimer=100;
+            world.game.step(0);
+            CHECK(unit->underAttackTimer==(sourceTeam<destinationTeam ? 98 : 99));
+            CHECK(unit->owner==destination);
+            CHECK(Unit::GIDtoTeam(unit->gid)==destinationTeam);
+            CHECK(source->myUnits[Unit::GIDtoID(oldGid)]==nullptr);
+            CHECK(destination->myUnits[Unit::GIDtoID(unit->gid)]==unit);
+            CHECK(destination->liveUnits.back()==unit);
+            CHECK(unit->populationPrevious==resident);
+            CHECK(source->taskSwapNext==Unit::GIDtoID(survivor->gid));
+            CHECK(source->liveUnits.matches(source->myUnits,Unit::MAX_COUNT));
+            CHECK(destination->liveUnits.matches(destination->myUnits,Unit::MAX_COUNT));
+            CHECK(world.game.map.getGroundUnit(unit->posX,unit->posY)==unit->gid);
+            CHECK(unit->gid!=oldGid);
+            CHECK(world.game.map.isClearingAreaClaimed(7,7,sourceTeam)==NOGUID);
+            CHECK_FALSE(unit->previousClearingArea);
+            CHECK(unit->jobPurpose==UnitJobPurpose::None);
+            CHECK(unit->carriedPacketCount()==2);
+            CHECK_FALSE(world.game.unitCargo.find(oldGid));
+            REQUIRE(world.game.unitCargo.find(unit->gid));
+            CHECK(world.game.unitCargo.find(unit->gid)->front().material==STONE);
+            CHECK(std::find(ownInn->unitsWorking.begin(),ownInn->unitsWorking.end(),unit)==ownInn->unitsWorking.end());
+        }
     }
 
     TEST_CASE("retained single packets and kind limits do not withdraw incompatible resources")
@@ -2587,7 +2611,7 @@ TEST_SUITE("UnitCustomization")
                 REQUIRE(restored.configuredVisionRadius==radius);
             }
             auto frozen=AIEngine::AIWorldView::capture(world.game,AIEngine::AIWorldView::captureCatalog(world.game));
-            const auto* observed=frozen->unitSlots(0)[Unit::GIDtoID(unit->gid)]; REQUIRE(observed);
+            const auto* observed=frozen->unitAtSlot(unit->gid); REQUIRE(observed);
             CHECK(observed->configuredVisionRadius==radius);
             unit->configuredVisionRadius=Uint8((radius+1)%33);
             CHECK(observed->configuredVisionRadius==radius);
@@ -3040,7 +3064,8 @@ TEST_SUITE("UnitCustomization")
             const auto random=candidate.syncRandom; const auto entity=unit.entityRandom.exportState();
             for(int team=0;team<candidate.teamsCount();++team) {
                 REQUIRE(candidate.teams[team]->liveBuildings.matches(candidate.teams[team]->myBuildings,Building::MAX_COUNT));
-                REQUIRE(std::is_sorted(candidate.teams[team]->liveBuildings.slots().begin(),candidate.teams[team]->liveBuildings.slots().end()));
+                for (const auto* building : candidate.teams[team]->liveBuildings)
+                    REQUIRE(candidate.teams[team]->myBuildings[Building::GIDtoID(building->gid)]==building);
             }
             std::vector<Uint8> truth;
             for(int y=0;y<candidate.map.getH();++y)for(int x=0;x<candidate.map.getW();++x) {

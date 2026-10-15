@@ -79,7 +79,7 @@ unsettled cells on the owner before using them.
 Format 143 saves the AI engine's completed pending orders, logical deadlines and
 execution feedback. Saving finishes outstanding decisions without executing
 future commands early. Older supported saves load with delay 0 and an empty
-scheduling queue. From format 166, newly admitted delay-zero decisions are
+scheduling queue. From format 167, newly admitted delay-zero decisions are
 delivered at the next boundary. Strategy and polling cadence remain unchanged,
 with explicit correctness fixes: Castor uses private intent instead of direct world mutation and reconciles upgrade
 execution; Runtime and Cabino retain unexecuted upgrades and release rejected
@@ -480,12 +480,12 @@ Performance records describe this execution session and are not stored in saves.
 
 ### Gradient scheduling compatibility
 
-Format 166 uses one completed observation for every background consumer. The owner
+Format 167 uses one completed observation for every background consumer. The owner
 publishes due results, captures once, then admits work before applying orders and
 advancing. Newly admitted AI/statistics work configured with delay zero is due at
 the next boundary. Paused frames and stalled turns reuse their observation.
 Saved publication/admission phases and pending outputs preserve continuation;
-old pending results keep their original deadlines. Replay floor 166 and the sim
+old pending results keep their original deadlines. Replay floor 167 and the sim
 revision gate distinguish the changed timing. Runtime world publication and
 AI-order delivery remain separate: world results publish before capture, while
 due AI orders enter the command schedule and undergo live order validation. See the

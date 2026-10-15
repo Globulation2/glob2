@@ -542,11 +542,9 @@ TEST_CASE("reduced saved AI rosters retire trailing controllers and preserve con
         return bytes([&](auto& out) {
             for(int team=0;team<game.mapHeader.getNumberOfTeams();++team)
             {
-                for(int slot=0;slot<Unit::MAX_COUNT;++slot)
-                    if(auto* unit=game.teams[team]->myUnits[slot])
+                for (auto* unit : game.teams[team]->liveUnits.entries())
                     {unit->save(&out);unit->saveCrossRef(&out);}
-                for(int slot=0;slot<Building::MAX_COUNT;++slot)
-                    if(auto* building=game.teams[team]->myBuildings[slot])
+                for (auto* building : game.teams[team]->liveBuildings.entries())
                     {building->save(&out);building->saveCrossRef(&out);}
             }
         });

@@ -120,17 +120,11 @@ void ChecksumSidecarWriter::writeTick(Uint32 tick, Uint32 totalChecksum, Game& g
 		writeU32(teamCs);
 
 		// Units
-		Uint32 unitCount = 0;
-		for (int i = 0; i < Unit::MAX_COUNT; i++)
-			if (team->myUnits[i])
-				unitCount++;
-		writeU32(unitCount);
+		writeU32(Uint32(team->liveUnits.size()));
 
-		for (int i = 0; i < Unit::MAX_COUNT; i++)
+		// Each record carries its GID; enumeration order is the saved population order.
+		for (Unit* u : team->liveUnits.entries())
 		{
-			if (!team->myUnits[i])
-				continue;
-			Unit* u = team->myUnits[i];
 			vec.clear();
 			Uint32 uCs = u->checkSum(&vec,legacy152);
 			writeU16((Uint16)u->gid);
@@ -141,17 +135,10 @@ void ChecksumSidecarWriter::writeTick(Uint32 tick, Uint32 totalChecksum, Game& g
 		}
 
 		// Buildings
-		Uint32 bldgCount = 0;
-		for (int i = 0; i < Building::MAX_COUNT; i++)
-			if (team->myBuildings[i])
-				bldgCount++;
-		writeU32(bldgCount);
+		writeU32(Uint32(team->liveBuildings.size()));
 
-		for (int i = 0; i < Building::MAX_COUNT; i++)
+		for (Building* b : team->liveBuildings.entries())
 		{
-			if (!team->myBuildings[i])
-				continue;
-			Building* b = team->myBuildings[i];
 			vec.clear();
 			Uint32 bCs = b->checkSum(&vec,legacy152);
 			writeU16((Uint16)b->gid);

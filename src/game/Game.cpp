@@ -97,8 +97,8 @@ void Game::configureUnitCatalog()
     // Setup may replace definitions for units already present in a map. Check
     // occupancy before rebinding so a changed flight mode cannot overwrite a unit.
     for (Team* team : teams) if (team) {
-        for (int slot=0;slot<Unit::MAX_COUNT;++slot) {
-            Unit* unit=team->myUnits[slot];
+        for (Unit* unit : team->liveUnits.entries())
+        {
             if (!unit) continue;
             if (!catalog.valid(unit->typeNum)) throw std::runtime_error("Unit catalog removes a live unit definition");
             if (!availability[unit->typeNum])
@@ -153,8 +153,8 @@ void Game::configureUnitCatalog()
     for (Team* team : teams) if (team && team->race.getCatalog()!=gameHeader.getUnitCatalog()) {
         team->race.setCatalog(gameHeader.getUnitCatalog());
         team->stats.configureUnits(catalog.size());
-        for (int slot=0;slot<Unit::MAX_COUNT;++slot) {
-            Unit* unit=team->myUnits[slot];
+        for (Unit* unit : team->liveUnits.entries())
+        {
             if (!unit) continue;
             const bool oldFlight=unit->performance[FLY]!=0;
             const auto& traits=catalog.runtime(unit->typeNum);
@@ -196,8 +196,8 @@ void Game::configureBuildingCatalog()
 		{
 			team->stockSuppliers.clear();
 			team->directStockSuppliers.clear();
-			for (int i=0; i<Building::MAX_COUNT; ++i)
-				if (Building* building=team->myBuildings[i]; building && building->buildingState==Building::ALIVE)
+			for (Building* building : team->liveBuildings.entries())
+			if (building && building->buildingState==Building::ALIVE)
 				{
 					if (building->type->runtimeSuppliesStock) team->stockSuppliers.push_back(building);
 					if (building->type->runtimeSuppliesDirectStock) team->directStockSuppliers.push_back(building);
@@ -389,11 +389,9 @@ void Game::setGameHeader(const GameHeader& newGameHeader, bool saveAI)
 	if (!mapHeader.getIsSavedGame())
 		for (int t = 0; t < mapHeader.getNumberOfTeams(); ++t)
 		{
-			for (int slot = 0; slot < Unit::MAX_COUNT; ++slot)
-				if (Unit* unit = teams[t]->myUnits[slot])
+			for (Unit* unit : teams[t]->liveUnits.entries())
 					unit->entityRandom.initialize(newGameHeader.getRandomSeed(), EntityRandom::Kind::Unit, unit->gid, unit->scriptIdentity);
-			for (int slot = 0; slot < Building::MAX_COUNT; ++slot)
-				if (Building* building = teams[t]->myBuildings[slot])
+			for (Building* building : teams[t]->liveBuildings.entries())
 					building->entityRandom.initialize(newGameHeader.getRandomSeed(), EntityRandom::Kind::Building, building->gid, building->scriptIdentity);
 		}
 	if (gameSeedChanged)
@@ -494,9 +492,8 @@ void Game::applyStartingRules(void)
 	const int buildingHpMultiplier = gameHeader.getBuildingHpMultiplier();
 	for (int t=0; t<mapHeader.getNumberOfTeams(); ++t)
 	{
-		for (int i=0; i<Unit::MAX_COUNT; ++i)
+		for (Unit *unit : teams[t]->liveUnits.entries())
 		{
-			Unit *unit = teams[t]->myUnits[i];
 			if (!unit)
 				continue;
 			if (hpDivisor != 1)
@@ -509,9 +506,8 @@ void Game::applyStartingRules(void)
 				unit->trigHP = 0;
 		}
 		if (buildingHpMultiplier != 1)
-			for (int i=0; i<Building::MAX_COUNT; ++i)
-				if (teams[t]->myBuildings[i])
-					teams[t]->myBuildings[i]->hp *= buildingHpMultiplier;
+			for (Building* building : teams[t]->liveBuildings.entries())
+				building->hp *= buildingHpMultiplier;
 	}
 }
 

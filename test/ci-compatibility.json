@@ -11,6 +11,8 @@
     "ComputeExecutor/*",
     "ApplicationResourcePlan/*",
     "EntityRandomLifecycle/*",
+    "TeamLiveLists/*",
+    "IntrusivePopulationSave/*",
     "UnitCatalog/*",
     "MenuColony/*",
     "UnitCustomization/*",

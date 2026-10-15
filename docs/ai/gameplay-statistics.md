@@ -119,7 +119,7 @@ original exact publication reduction, including after resaving. Format **158**
 persists complete measurement frames; loading formats 155–157 completes their
 measurement deltas in source order without publishing early. Saved aggregate
 modes and deadlines are preserved. Saving joins private computation without
-publishing future samples. Format **166** gives new delay-zero samples a one-tick
+publishing future samples. Format **167** gives new delay-zero samples a one-tick
 effective delay. Already pending samples keep their computed outputs and saved
 deadlines, including historical zero-delay deadlines.
 Older saves migrate to the shared snapshot boundary with delay zero, preserving

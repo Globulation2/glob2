@@ -110,8 +110,7 @@ static std::shared_ptr<Order> botOrder(Engine& engine, std::mt19937& bot)
 	default:
 	{
 		std::vector<Uint16> gids;
-		for (int i = 0; i < Building::MAX_COUNT; ++i)
-			if (const Building* b = team->myBuildings[i])
+		for (const Building* b : team->liveBuildings.entries())
 				if (!b->type->isVirtual && b->type->maxUnitWorking > 0)
 					gids.push_back(b->gid);
 		if (gids.empty())

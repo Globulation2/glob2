@@ -94,7 +94,9 @@ Omitting `team` includes all permitted teams; use `ctx.myTeam` to select your ow
 Passing `null` for a filter field also uses its default. Omit the field instead
 of passing `undefined`, which is not supported boundary data.
 
-Lists have stable ascending team/slot order. Offset skips **visible results**,
+Lists have stable ascending team/slot order. Each query orders its visible compact
+records locally; simulation population order does not change this public ordering.
+Offset skips **visible results**,
 not hidden slots; a zero limit returns an empty array. Each list call has a
 fixed work charge as well as charges for its returned records. Read small pages
 and distribute large scans across callbacks using persistent top-level variables.

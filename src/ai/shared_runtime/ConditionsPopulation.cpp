@@ -75,7 +75,7 @@ tribool Population::passes(Runtime& runtime)
 {
 	int amount=0;
     const auto& world=runtime.observation();
-    for (const auto* unit:world.unitSlots(runtime.teamNumber())) {
+    for (const auto* unit:world.unitsForTeam(runtime.teamNumber())) {
         if (unit && ((workers && AIEngine::ObservationQueries::matchesStrategyUnitRole(world,*unit,WORKER))
             || (explorers && AIEngine::ObservationQueries::matchesStrategyUnitRole(world,*unit,EXPLORER))
             || (warriors && AIEngine::ObservationQueries::matchesStrategyUnitRole(world,*unit,WARRIOR))))

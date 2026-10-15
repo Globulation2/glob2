@@ -305,10 +305,9 @@ TEST_SUITE("EditorActionCoverage")
         CHECK_FALSE(editor.hasMapBeenModified);
         MapEdit restored;
         REQUIRE(restored.load(filename));
-        for (int id=0; id<Building::MAX_COUNT; ++id)
+        for (const auto* expected : editor.game.teams[0]->liveBuildings.entries())
         {
-            const auto* expected=editor.game.teams[0]->myBuildings[id];
-            const auto* actual=restored.game.teams[0]->myBuildings[id];
+            const auto* actual=restored.game.teams[0]->myBuildings[Building::GIDtoID(expected->gid)];
             REQUIRE(bool(actual)==bool(expected));
             if (actual) { CHECK(actual->typeNum==expected->typeNum); CHECK(actual->hp==expected->hp); }
         }

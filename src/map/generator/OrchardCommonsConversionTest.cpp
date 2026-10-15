@@ -298,8 +298,7 @@ void run(const Scenario &scenario, const std::filesystem::path &output, unsigned
 	// Loading rebuilds service lists and restarts the normal feeding cooldown.
 	// Mature those public building ticks before comparing eligible choices.
 	for (int team = 0; team < restored.game.teamsCount(); ++team)
-		for (int b = 0; b < Building::MAX_COUNT; ++b)
-			if (auto *inn = restored.game.teams[team]->myBuildings[b])
+		for (auto *inn : restored.game.teams[team]->liveBuildings.entries())
 				for (int tick = 0; tick < 256; ++tick)
 					inn->step();
 	chosen = restored.game.teams[0]->findNearestFood(worker);

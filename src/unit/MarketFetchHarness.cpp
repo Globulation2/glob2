@@ -75,8 +75,7 @@ struct Bed
 		require(market != nullptr, "market placed");
 		game.map.setBuilding(40, 40, market->type->width, market->type->height, market->gid);
 		unit = new TestUnit(unitX, unitY, Unit::GIDfrom(0, 0), WORKER, team, 1);
-		team->myUnits[0] = unit;
-		team->rebuildLiveLists();
+		team->attachUnit(0, unit);
 		game.map.setGroundUnit(unitX, unitY, unit->gid);
 		unit->activity = Unit::ACT_RANDOM;
 		unit->medical = Unit::MED_FREE;

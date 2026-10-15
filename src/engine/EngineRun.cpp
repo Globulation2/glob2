@@ -746,20 +746,16 @@ void Engine::printTeamResults()
 		if (!team)
 			continue;
 		int units = 0, workers = 0, explorers = 0, warriors = 0, buildings = 0, sites = 0;
-		for (int i = 0; i < Unit::MAX_COUNT; i++)
+		for (const Unit* unit : team->liveUnits.entries())
 		{
-			const Unit* unit = team->myUnits[i];
-			if (!unit)
-				continue;
 			units++;
 			workers += unit->typeNum == WORKER;
 			explorers += unit->typeNum == EXPLORER;
 			warriors += unit->typeNum == WARRIOR;
 		}
-		for (int i = 0; i < Building::MAX_COUNT; i++)
+		for (const Building* building : team->liveBuildings.entries())
 		{
-			const Building* building = team->myBuildings[i];
-			if (!building || building->type->isVirtual)
+			if (building->type->isVirtual)
 				continue;
 			if (building->type->isBuildingSite)
 				sites++;

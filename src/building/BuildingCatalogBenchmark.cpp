@@ -62,7 +62,7 @@ TEST_CASE("unused definitions do not enlarge simulation work [benchmark]")
             buildings.insert(buildings.end(),unitState.begin(),unitState.end());
             if(referenceInstances.empty()) referenceInstances=buildings;
             CHECK(buildings==referenceInstances);
-            int units=0; for(int unit=0;unit<Unit::MAX_COUNT;++unit) units+=world.team->myUnits[unit]!=nullptr;
+            const int units=world.team->liveUnits.size();
             std::printf("catalog_scale,%d,%d,%lld,2048,%lld,%d\n",count,repeat,setup,duration,units);
         }
     }

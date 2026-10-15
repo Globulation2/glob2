@@ -268,10 +268,9 @@ int countBuildings(const Game &game, int team, const char *typeName)
 	if (team < 0 || team >= game.teamsCount() || !game.teams[team])
 		return 0;
 	int count = 0;
-	for (int i = 0; i < Building::MAX_COUNT; ++i)
+	for (const Building *b : game.teams[team]->liveBuildings.entries())
 	{
 		::MapGeneration::generationCheckpoint();
-		if (const Building *b = game.teams[team]->myBuildings[i])
 			if (b->type && b->type->type == typeName && !b->type->isBuildingSite)
 				++count;
 	}

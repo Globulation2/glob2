@@ -95,9 +95,8 @@ void Map::rebuildGrowthCoverage()
 		if (stats.coverageBuildings.empty() && stats.coverageBuildingTick == 0 &&
 			stats.extendedCoverageStartTick > 0 && game->stepCounter >= stats.extendedCoverageStartTick)
 		{
-			for (int i = 0; i < Building::MAX_COUNT; ++i)
+			for (Building *b : team->liveBuildings.entries())
 			{
-				Building *b = team->myBuildings[i];
 				if (b && !b->type->isVirtual && b->buildingState != Building::DEAD)
 					stats.coverageBuildings.push_back({b->posX,b->posY,b->type->width,b->type->height});
 			}

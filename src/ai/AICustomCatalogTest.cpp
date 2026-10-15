@@ -566,7 +566,7 @@ TEST_CASE("flag room queries borrow compact team records with sparse and empty t
             for(int y=-2;y<world.height+2;++y)
             {
                 bool reference=true;
-                for(const auto* building:world.buildingSlots(team))
+                for(const auto* building:world.buildingsForTeam(team))
                     if(building && !AIEngine::ObservationQueries::buildingType(world,*building).semantics.occupiesGround
                         && building->posX==world.normalizeX(x) && building->posY==world.normalizeY(y))
                         reference=false;
@@ -746,7 +746,7 @@ TEST_CASE("Castor projects only its strategic demands and preserves mixed staffi
         }
     }
 }
-TEST_CASE("Warrush staffing preserves intent priority slot order and current stage limits")
+TEST_CASE("Warrush staffing preserves intent priority population order and current stage limits")
 {
     glob2test::HeadlessGlobals globals;
     CatalogWorld fixture(AI::WARRUSH,false,false,true,[](nlohmann::json& snapshot) {
@@ -1097,7 +1097,7 @@ TEST_CASE("independent nonmonotonic worker clocks retain keyed course eligibilit
     CHECK(custom->level[BUILD]==0);CHECK(custom->level[HARVEST]==1);
     CHECK(custom->performance[BUILD]==9);CHECK(custom->performance[HARVEST]==11);
     const auto view=AIEngine::AIWorldView::capture(game,AIEngine::AIWorldView::captureCatalog(game));
-    const auto* captured=view->unitSlots(0)[Unit::GIDtoID(custom->gid)];REQUIRE(captured);
+    const auto* captured=view->unitAtSlot(Unit::GIDfrom(Unit::GIDtoID(custom->gid), 0));REQUIRE(captured);
     CHECK(AIEngine::ObservationQueries::matchesStrategyUnitRole(*view,*captured,WORKER));
     // No equal-level probe can represent this effective, independently trained unit.
     for(const auto& level:game.unitCatalog().levels(3)) {
