@@ -284,7 +284,7 @@ TEST_CASE("published air inventory rejects incomplete metadata malformed goals a
         case 2: output->goals.front().x=map.getW(); break;
         case 3: output->goals.front().supplier={NOGBID,1}; break;
         case 4: {
-            auto values=std::make_shared<Uint16[]>(map.cellCount());
+            std::shared_ptr<Uint16[]> values(new Uint16[map.cellCount()]);
             std::copy_n(entry->second.values.get(),map.cellCount(),values.get());
             values[0]=2; // A representable integer whose cost exceeds COST_LIMIT.
             entry->second.values=std::move(values);
