@@ -29,8 +29,9 @@ std::vector<Uint32> simulation(Game &game, bool legacy152=false)
 Uint32 digest(Game &game)
 {
 	Uint32 hash=2166136261u;
-	// Retain the released representation as an independent default-behavior oracle.
-	// Save/resume comparisons below still cover the complete current state.
+	// Keep the historical checksum representation for this regression trace.
+	// Intentional simulation revisions update its trajectory; save/resume
+	// comparisons below still cover the complete current state.
 	for (Uint32 value : simulation(game, true)) hash=(hash ^ value)*16777619u;
 	return hash;
 }

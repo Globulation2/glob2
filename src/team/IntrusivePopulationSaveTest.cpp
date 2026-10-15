@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "EngineFixtures.h"
 #include "LegacyPopulationOutput.h"
+#include "Version.h"
 #include <BinaryStream.h>
 #include <TextStream.h>
 #include <StreamBackend.h>
@@ -137,7 +138,20 @@ TEST_CASE("invalid population records fail without leaving broken membership") {
 	REQUIRE(world.addUnit(WORKER,8,12,0)); REQUIRE(world.addUnit(WORKER,9,12,0));
 	REQUIRE(world.addBuilding("inn",4,4,0,0));
 	REQUIRE(world.addBuilding("inn",14,4,0,0));
-	const auto original=savePopulation(world.game,true);
+	auto* teamBackend=new GAGCore::MemoryStreamBackend;
+	GAGCore::TextOutputStream teamOutput(teamBackend);
+	world.game.teams[0]->save(&teamOutput); teamOutput.flush();
+	const auto original=teamBackend->takeContents();
+	// Ensure the small fixture is independently loadable before corrupting it.
+	{
+		glob2test::HeadlessGame control({.header=true});
+		GAGCore::MemoryStreamBackend backend(original.data(),original.size());
+		backend.seekFromStart(0);
+		GAGCore::TextInputStream input(&backend);
+		REQUIRE(control.game.teams[0]->load(&input,&control.game.buildingsTypes,VERSION_MINOR));
+		CHECK(populationOrder(control.game.teams[0]->liveUnits)==populationOrder(world.game.teams[0]->liveUnits));
+		CHECK(populationOrder(control.game.teams[0]->liveBuildings)==populationOrder(world.game.teams[0]->liveBuildings));
+	}
 	const auto replaceField=[](std::string& bytes,const std::string& section,const std::string& field,unsigned occurrence,unsigned value) {
 		std::size_t position=bytes.find(section);
 		REQUIRE(position!=std::string::npos);
@@ -166,7 +180,12 @@ TEST_CASE("invalid population records fail without leaving broken membership") {
 		CAPTURE(invalid);
 		glob2test::HeadlessGame restored({.header=true});
 		bool rejected=false;
-		try { rejected=!loadPopulation(restored.game,bytes,true); }
+		try {
+			GAGCore::MemoryStreamBackend backend(bytes.data(),bytes.size());
+			backend.seekFromStart(0);
+			GAGCore::TextInputStream input(&backend);
+			rejected=!restored.game.teams[0]->load(&input,&restored.game.buildingsTypes,VERSION_MINOR);
+		}
 		catch (const std::exception&) { rejected=true; }
 		CHECK(rejected);
 		if (restored.game.teams[0]) {

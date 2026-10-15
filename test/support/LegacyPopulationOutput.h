@@ -21,6 +21,7 @@ class LegacyPopulationOutput : public GAGCore::BinaryOutputStream
 {
     Game* game;
     bool legacy;
+    int formatVersion;
     bool injecting = false;
     std::vector<std::string> sections;
     std::size_t suppressedAt = 0;
@@ -59,13 +60,17 @@ class LegacyPopulationOutput : public GAGCore::BinaryOutputStream
     }
 public:
     LegacyPopulationOutput(GAGCore::MemoryStreamBackend* backend, Game* game, int version)
-        : BinaryOutputStream(backend), game(game), legacy(version<FILE_FORMAT_VERSION_INTRUSIVE_POPULATION) {}
+        : BinaryOutputStream(backend), game(game), legacy(version<FILE_FORMAT_VERSION_INTRUSIVE_POPULATION), formatVersion(version) {}
     void writeEnterSection(const std::string name) override
     {
         if (injecting || !legacy) return;
         const bool teamChild = !sections.empty() && sections.back()=="Team";
         sections.push_back(name);
         if (suppressed()) return;
+        if (name=="HiringPipeline" && formatVersion<FILE_FORMAT_VERSION_CACHED_HIRING) {
+            suppressedAt=sections.size();
+            return;
+        }
         if (name=="Team") {
             if (!game || nextTeam>=game->teamsCount())
                 throw std::logic_error("Unexpected synthetic historical team");
@@ -94,6 +99,33 @@ public:
     { if (!suppressed()) BinaryOutputStream::write(data,size,name); }
     void writeEndianIndependent(const void* data, std::size_t size, const std::string name) override
     { if (!suppressed()) BinaryOutputStream::writeEndianIndependent(data,size,name); }
+    void writeUint32(Uint32 value, const std::string name) override
+    {
+        if (suppressed()) return;
+        BinaryOutputStream::writeUint32(value,name);
+        if (formatVersion>=FILE_FORMAT_VERSION_TURRET_TARGETING
+            && formatVersion<FILE_FORMAT_VERSION_LEAN_TURRET_TARGETING) {
+            if (injecting && populationSection==1 && name=="typeNum")
+                BinaryOutputStream::writeUint32(0,"targetingEpoch");
+            if (!injecting && !sections.empty() && sections.back()=="turretTargeting" && name=="margin") {
+                BinaryOutputStream::writeUint8(1,"forecast");
+                BinaryOutputStream::writeUint8(1,"reusePreparation");
+            }
+            if (!injecting && !sections.empty() && sections.back()=="record" && name=="generation"
+                && std::find(sections.begin(),sections.end(),"turretTargeting")!=sections.end()) {
+                BinaryOutputStream::writeUint32(0,"epoch");
+                for (const char* field : {"x","y","width","height","range","speed","rhythm"})
+                    BinaryOutputStream::writeSint32(0,field);
+                BinaryOutputStream::writeUint32(0,"unitTeams");
+                BinaryOutputStream::writeUint32(0,"buildingTeams");
+                BinaryOutputStream::writeSint32(0,"buildingDamage");
+                BinaryOutputStream::writeUint32(0,"damageCount");
+                BinaryOutputStream::writeUint32(0,"low");
+                BinaryOutputStream::writeUint32(0,"high");
+                BinaryOutputStream::writeUint32(0,"observed");
+            }
+        }
+    }
     void writeUint16(Uint16 value, const std::string name) override
     {
         if (legacy && !injecting && !sections.empty() && sections.back()=="Team" && name=="taskSwapNext") return;
