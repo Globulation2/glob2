@@ -144,7 +144,7 @@ static void quarantineBudgetContinuation()
     a.director.dirty=false;
     auto* backend=new GAGCore::MemoryStreamBackend;
     GAGCore::BinaryOutputStream output(backend);
-    a.saveExecutionState(&output);
+    glob2test::withMaximaObservation(a.context,[&] { a.saveExecutionState(&output); });
     output.flush();
     const std::string current(backend->getBuffer(),backend->getPosition());
     REQUIRE(current.size()>4);
@@ -157,7 +157,9 @@ static void quarantineBudgetContinuation()
         Fixture restored;
         GAGCore::BinaryInputStream input(new GAGCore::MemoryStreamBackend(bytes.data(),bytes.size()));
         input.seekFromStart(0);
-        restored.ai->loadExecutionState(&input,legacy ? FILE_FORMAT_VERSION_INTRUSIVE_POPULATION-1 : VERSION_MINOR);
+        glob2test::withMaximaObservation(restored.ai->context,[&] {
+            restored.ai->loadExecutionState(&input,legacy ? FILE_FORMAT_VERSION_INTRUSIVE_POPULATION-1 : VERSION_MINOR);
+        });
         CHECK(input.readUint32("sentinel")==0x12345678u);
         CHECK(restored.ai->director.initialized);
         CHECK_FALSE(restored.ai->director.dirty);
@@ -171,7 +173,9 @@ static void quarantineBudgetContinuation()
             bytes[bytes.size()-4+i]=char(bits>>(24-8*i));
         GAGCore::BinaryInputStream input(new GAGCore::MemoryStreamBackend(bytes.data(),bytes.size()));
         input.seekFromStart(0);
-        CHECK_THROWS_AS(a.loadExecutionState(&input,VERSION_MINOR),std::runtime_error);
+        CHECK_THROWS_AS(glob2test::withMaximaObservation(a.context,[&] {
+            a.loadExecutionState(&input,VERSION_MINOR);
+        }),std::runtime_error);
     }
 }
 
