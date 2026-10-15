@@ -7,6 +7,34 @@ Current simulation state, deterministic randomness, terrain rules and scheduled 
 A `Team` is a colony; a `Player` controls a team, and several players can share one.
 For timing and scheduling, start with `src/game/Game_sync.cpp` and `src/engine/EngineRun.cpp`.
 
+## Routine desynchronization checksums
+
+Routine checks cover live units/buildings, both RNG state words, team/player state,
+and deterministic scheduling metadata every tick. Entity traversal uses the live
+lists; its normal path omits diagnostic field-vector branches. RNG fingerprints
+and periodic statistics use MurmurHash3 x86_32 with seed zero over explicit
+little-endian words (64-bit scalars feed the low half first), avoiding byte
+extraction and serializer names. Its rotations and final avalanche avoid the
+paired high-bit cancellation of a word-wise XOR/multiply mixer. This remains a
+non-cryptographic error detector; collisions are possible.
+
+Secondary coverage runs when the absolute simulation tick is divisible by 32:
+AI-relevant aggregate statistics, all 32 smoothing entries and coverage-building
+records; remote games also sweep map cells and material-field contents on that
+boundary. Queue timing remains covered every tick. Persistent secondary-only
+divergence is detected at the next boundary (up to 31 additional ticks); transient
+differences that disappear between samples may escape unless they affect core
+state. Diagnostic statistics ledgers stay outside routine coverage. Full
+verification (`heavy=true`) retains
+exhaustive map/statistics and pending-result coverage on every invocation.
+Immutable behavior fingerprints remain cached by their catalogs and contribute
+without reserializing definitions. No cadence counter is stored in saves.
+
+Format 165 changes checksum values and replay acceptance without changing save
+encodings or the minimum supported save version. Its simulation-version key
+separates peers using the earlier checksum scheme. The explicit pre-refactor
+checksum adapter retains its historical entity/RNG representation for fixtures.
+
 ## Deterministic randomness
 
 - Units and buildings own saved private `EntityRandom` PCG32 streams (format 151).

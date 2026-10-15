@@ -81,6 +81,48 @@ TEST_SUITE("TeamStatsPipeline")
 		++w.team->stats.getLatestStat()->totalUnit;
 		CHECK(w.game.teamStatsChecksum()!=light);
 	}
+    TEST_CASE("secondary statistics are periodic while verification and entity checks stay immediate")
+    {
+        glob2test::HeadlessGlobals globals;
+        glob2test::HeadlessGame w(glob2test::GameOptions{.loadDefaultRace=true, .header=true});
+        auto* unit=w.addUnit(WORKER,30,30);
+        auto* building=w.addBuilding("swarm",10,10);
+        w.game.stepCounter=1;
+        const auto light=w.game.teamStatsChecksum(), full=w.game.teamStatsChecksum(true);
+        ++w.team->stats.getLatestStat()->totalUnit;
+        CHECK(w.game.teamStatsChecksum()==light);
+        CHECK(w.game.teamStatsChecksum(true)!=full);
+        w.game.stepCounter=32;
+        const auto periodic=w.game.teamStatsChecksum();
+        ++w.team->stats.getLatestStat()->totalUnit;
+        CHECK(w.game.teamStatsChecksum()!=periodic);
+        w.game.stepCounter=33;
+        const auto before=w.game.checkSum();
+        --unit->hp;
+        CHECK(w.game.checkSum()!=before);
+        const auto beforeRandom=w.game.checkSum(); unit->entityRandom.nextU32();
+        CHECK(w.game.checkSum()!=beforeRandom);
+        std::vector<Uint32> fields;
+        CHECK(unit->checkSum(nullptr)==unit->checkSum(&fields));
+        CHECK_FALSE(fields.empty()); fields.clear();
+        CHECK(building->checkSum(nullptr)==building->checkSum(&fields));
+        CHECK_FALSE(fields.empty());
+    }
+    TEST_CASE("remote map sweeps are periodic and explicit verification remains exhaustive")
+    {
+        glob2test::HeadlessGlobals globals;
+        glob2test::HeadlessGame w(glob2test::GameOptions{.loadDefaultRace=true, .header=true});
+        w.game.players[0]->type=BasePlayer::P_IP;
+        w.game.stepCounter=1;
+        const auto routine=w.game.checkSum(), full=w.game.checkSum(nullptr,nullptr,nullptr,true);
+        w.game.map.addForbidden(40,40,0);
+        CHECK(w.game.checkSum()==routine);
+        CHECK(w.game.checkSum(nullptr,nullptr,nullptr,true)!=full);
+        w.game.stepCounter=32;
+        const auto periodic=w.game.checkSum();
+        w.game.map.removeForbidden(40,40,0);
+        CHECK(w.game.checkSum()!=periodic);
+    }
 	TEST_CASE("raw snapshot samples retain synchronous aggregation and smoothing")
 	{
 		glob2test::HeadlessGlobals globals;

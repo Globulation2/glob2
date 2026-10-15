@@ -548,7 +548,8 @@ bool Building::integrity()
 	return true;
 }
 
-Uint32 Building::checkSum(std::vector<Uint32> *checkSumsVector, bool legacy152)
+template<bool Diagnostic>
+Uint32 Building::checkSumImpl(std::vector<Uint32> *checkSumsVector, bool legacy152)
 {
 	// `cs` is signed `int` so the open-coded `(cs<<31)|(cs>>1)` rotates
 	// use arithmetic right-shift (sign-extending). Do NOT replace these
@@ -561,73 +562,73 @@ Uint32 Building::checkSum(std::vector<Uint32> *checkSumsVector, bool legacy152)
 	if (areaFunded || areaFundingType>=0) cs ^= Uint32(areaFundingType+1)*0x9e3779b9u ^ areaFundingTick ^ (Uint32(areaFundingTeam+1)<<24) ^ (areaFunded ? 0x61757261u : 0);
 
 	cs^=typeNum;
-	if (checkSumsVector)
+	if constexpr (Diagnostic)
 		checkSumsVector->push_back(cs);// [0]
 
 	cs^=buildingState;
-	if (checkSumsVector)
+	if constexpr (Diagnostic)
 		checkSumsVector->push_back(cs);// [1]
 	cs=(cs<<31)|(cs>>1);
 
 	cs^=constructionResultState;
-	if (checkSumsVector)
+	if constexpr (Diagnostic)
 		checkSumsVector->push_back(cs);// [2]
 	cs=(cs<<31)|(cs>>1);
 
 	cs^=maxUnitWorking;
-	if (checkSumsVector)
+	if constexpr (Diagnostic)
 		checkSumsVector->push_back(cs);// [3]
 
 	cs^=maxUnitWorkingFuture;
-	if (checkSumsVector)
+	if constexpr (Diagnostic)
 		checkSumsVector->push_back(cs);// [4]
 
 	cs^=maxUnitWorkingPreferred;
-	if (checkSumsVector)
+	if constexpr (Diagnostic)
 		checkSumsVector->push_back(cs);// [5]
 
 	cs^=maxUnitWorkingPrevious;
-	if (checkSumsVector)
+	if constexpr (Diagnostic)
 		checkSumsVector->push_back(cs);// [6]
 
 	cs^=desiredMaxUnitWorking;
-	if (checkSumsVector)
+	if constexpr (Diagnostic)
 		checkSumsVector->push_back(cs);// [7]
 
 	cs^=unitsWorking.size();
-	if (checkSumsVector)
+	if constexpr (Diagnostic)
 		checkSumsVector->push_back(cs);// [8]
 
 	cs^=subscriptionWorkingTimer;
-	if (checkSumsVector)
+	if constexpr (Diagnostic)
 		checkSumsVector->push_back(cs);// [9]
 
 	cs^=unitsInside.size();
-	if (checkSumsVector)
+	if constexpr (Diagnostic)
 		checkSumsVector->push_back(cs);// [10]
 	cs=(cs<<31)|(cs>>1);
 
 	cs^=posX;
-	if (checkSumsVector)
+	if constexpr (Diagnostic)
 		checkSumsVector->push_back(cs);// [11]
 
 	cs^=posY;
-	if (checkSumsVector)
+	if constexpr (Diagnostic)
 		checkSumsVector->push_back(cs);// [12]
 	cs=(cs<<31)|(cs>>1);
 
 	cs^=unitStayRange;
-	if (checkSumsVector)
+	if constexpr (Diagnostic)
 		checkSumsVector->push_back(cs);// [13]
 
 	for (int i=0; i<MaterialCount; i++)
 		cs^=localMaterials[i];
-	if (checkSumsVector)
+	if constexpr (Diagnostic)
 		checkSumsVector->push_back(cs);// [14]
 	cs=(cs<<31)|(cs>>1);
 
 	cs^=hp;
-	if (checkSumsVector)
+	if constexpr (Diagnostic)
 		checkSumsVector->push_back(cs);// [15]
 
 	cs^=productionTimeout;
@@ -643,12 +644,12 @@ Uint32 Building::checkSum(std::vector<Uint32> *checkSumsVector, bool legacy152)
 	cs^=siteCompletionPending ? 0x73697465 : 0;
 	cs^=explorersRequireBombing ? 0x626f6d62 : 0;
 	cs^=Uint32(minWorkerLevelToFlag)<<24;
-	if (checkSumsVector)
+	if constexpr (Diagnostic)
 		checkSumsVector->push_back(cs);// [16]
 
 
 	cs^=totalRatio;
-	if (checkSumsVector)
+	if constexpr (Diagnostic)
 		checkSumsVector->push_back(cs);// [17]
 
 
@@ -658,39 +659,39 @@ Uint32 Building::checkSum(std::vector<Uint32> *checkSumsVector, bool legacy152)
 		cs^=productionUsed(i);
 		cs=(cs<<31)|(cs>>1);
 	}
-	if (checkSumsVector)
+	if constexpr (Diagnostic)
 		checkSumsVector->push_back(cs);// [18]
 
 	if (!legacy152) for (const auto preference:extraConstructionOriginRatios) { cs=(cs<<1)|(cs>>31); cs^=preference; }
 	cs^=shootingStep;
-	if (checkSumsVector)
+	if constexpr (Diagnostic)
 		checkSumsVector->push_back(cs);// [19]
 
 
 	cs^=shootingCooldown;
-	if (checkSumsVector)
+	if constexpr (Diagnostic)
 		checkSumsVector->push_back(cs);// [20]
 
 
 	cs^=bullets;
-	if (checkSumsVector)
+	if constexpr (Diagnostic)
 		checkSumsVector->push_back(cs);// [21]
 	cs=(cs<<31)|(cs>>1);
 
 	cs^=seenByMask;
-	if (checkSumsVector)
+	if constexpr (Diagnostic)
 		checkSumsVector->push_back(cs);// [22]
 
 	cs^=gid;
-	if (checkSumsVector)
+	if constexpr (Diagnostic)
 		checkSumsVector->push_back(cs);// [23]
 
 	
 	cs^=unitsHarvesting.size();
-	if (checkSumsVector)
+	if constexpr (Diagnostic)
 		checkSumsVector->push_back(cs);// [24]
 	
-	if (checkSumsVector)
+	if constexpr (Diagnostic)
 	{
 		const auto random = entityRandom.exportState();
 		checkSumsVector->push_back(Uint32(random.value >> 32));
@@ -700,7 +701,12 @@ Uint32 Building::checkSum(std::vector<Uint32> *checkSumsVector, bool legacy152)
 	}
 
 	// Mix private RNG after the historical signed checksum rotations.
-	return Uint32(cs) ^ entityRandom.checksum();
+	return Uint32(cs) ^ (legacy152 ? entityRandom.legacyChecksum() : entityRandom.checksum());
+}
+
+Uint32 Building::checkSum(std::vector<Uint32> *fields, bool legacy152)
+{
+    return fields ? checkSumImpl<true>(fields, legacy152) : checkSumImpl<false>(nullptr, legacy152);
 }
 
 int Building::getEffectiveArmor() const
