@@ -857,9 +857,7 @@ static void run(bool gpu, int width, int height)
             // over the map has to be on the ring too.
             {
                 const float windowScale = globalContainer->gfx->getRasterScale();
-                Building *selected = nullptr;
-                for (int i = 0; i < 1024 && !selected; ++i)
-                    selected = gui.game.teams[0]->myBuildings[i];
+                Building *selected = gui.game.teams[0]->liveBuildings.front();
                 REQUIRE(selected);
                 gui.showUnitWorkingToBuilding = true;
                 gui.setSelection(GameGUI::BUILDING_SELECTION, selected);

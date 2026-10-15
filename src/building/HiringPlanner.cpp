@@ -201,7 +201,7 @@ std::vector<Supply> prepare(const Inputs &inputs, unsigned team)
 	hasDirect = world.teams[team].supplierPresence & 2;
 	std::vector<Supply> supplies;
 	std::vector<const B *> ordered;
-	for (const auto *b : world.buildingSlots(team))
+	for (const auto *b : world.buildingsForTeam(team))
 		if (b && needsCandidates(*b))
 		{
 			const auto &type = world.catalog->at(b->typeNum).resolvedType;
@@ -362,7 +362,7 @@ Output Planner::rank(const Inputs &input, unsigned team, unsigned capacity)
 		}
 	canCoordinate &= teamSeats > 0 && teamSeats + 2u <= capacity;
 	// Qualification/cargo indexes are immutable and shared across this team's
-	// building refreshes. Keep original slot order for deterministic traversal.
+	// building refreshes. Retain captured population order for deterministic traversal.
 	std::vector<const U *> transport;
 	std::array<std::vector<const U *>, 3> roles;
 	std::array<bool, MaterialCount> carrying{};
@@ -372,7 +372,7 @@ Output Planner::rank(const Inputs &input, unsigned team, unsigned capacity)
 		if (indexedTeam)
 			return;
 		indexedTeam = true;
-		for (const auto *unit : world.unitSlots(team))
+		for (const auto *unit : world.unitsForTeam(team))
 			if (unit && !unit->isDead && unit->activity == U::ACT_RANDOM &&
 				unit->medical == U::MED_FREE)
 			{
@@ -390,7 +390,7 @@ Output Planner::rank(const Inputs &input, unsigned team, unsigned capacity)
 			}
 	};
 	std::vector<const B *> orderedBuildings;
-	for (const auto *building : world.buildingSlots(team))
+	for (const auto *building : world.buildingsForTeam(team))
 		if (building)
 		{
 			if (needsCandidates(*building))

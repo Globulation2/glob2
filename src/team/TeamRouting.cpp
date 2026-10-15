@@ -296,10 +296,9 @@ Building *Team::findBestUpgrade(Unit *unit)
 int Team::maxBuildLevel(void)
 {
 	int maxLevel=0;
-	for (int i=0; i<Unit::MAX_COUNT; i++)
+	for (const Unit *u : liveUnits.entries())
 	{
-		Unit *u=myUnits[i];
-		if (u && u->hasCapability(UnitRuntimeTraits::Construct)
+		if (u->hasCapability(UnitRuntimeTraits::Construct)
             && u->hasCapability(UnitRuntimeTraits::Transport)
             && (u->performance[FLY]>0 || u->performance[WALK]>0 || u->performance[SWIM]>0)
             && u->performance[BUILD]>0 && u->performance[HARVEST]>0

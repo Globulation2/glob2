@@ -39,9 +39,16 @@ class Unit : public UnitUtils, public UnitState
 	friend struct TeamStatsMeasurementFixture;
 	void init(int x, int y, Uint16 gid, Sint32 typeNum, Team *team, int level);
 public:
+	// Owner-thread hooks; excluded from immutable state record copies.
+	Unit* populationPrevious=nullptr;
+	Unit* populationNext=nullptr;
+	const void* populationMembership=nullptr;
+
 	Unit(GAGCore::InputStream *stream, Team *owner, Sint32 versionMinor);
 	Unit(int x, int y, Uint16 gid, Sint32 typeNum, Team *team, int level);
 	virtual ~Unit(void);
+	Unit(const Unit&) = delete;
+	Unit& operator=(const Unit&) = delete;
 	
 	void load(GAGCore::InputStream *stream, Team *owner, Sint32 versionMinor);
 	void save(GAGCore::OutputStream *stream);

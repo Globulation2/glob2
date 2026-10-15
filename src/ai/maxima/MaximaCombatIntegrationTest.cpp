@@ -1518,7 +1518,7 @@ TEST_SUITE("Maxima.Combat")
             world.game.configureBuildingCatalog();
             auto* live=world.addUnit(WARRIOR,10,10); REQUIRE(live);
             const auto view=AIEngine::AIWorldView::capture(world.game,AIEngine::AIWorldView::captureCatalog(world.game));
-            auto unit=*view->unitSlots(0)[Unit::GIDtoID(live->gid)];
+            auto unit=*view->unitAtSlot(Unit::GIDfrom(Unit::GIDtoID(live->gid), 0));
             const auto& levels=view->unitCatalog().levels(WARRIOR);
             const int armour=AIMaxima::WorldHelpers::unlearned_reference_armour(*view);
             CHECK(armour==(variant==2?0:variant==1?5:10));
@@ -1690,7 +1690,7 @@ TEST_SUITE("Maxima.Combat")
         world.game.configureBuildingCatalog();
         auto* live=world.addUnit(WARRIOR,10,10); REQUIRE(live);
         const auto view=AIEngine::AIWorldView::capture(world.game,AIEngine::AIWorldView::captureCatalog(world.game));
-        auto unit=*view->unitSlots(0)[Unit::GIDtoID(live->gid)];
+        auto unit=*view->unitAtSlot(Unit::GIDfrom(Unit::GIDtoID(live->gid), 0));
         REQUIRE((unit.capabilityFlags&UnitRuntimeTraits::LegacyPerformancePolicies)!=0);
         constexpr int oldRates[]={36,64,110,168};
         for (int level=0;level<4;++level) {

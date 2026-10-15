@@ -12,7 +12,6 @@ void Team::createLists(void)
 	// Setup helpers can register buildings before requesting a complete rebuild.
 	// Rebuild only static capability lists; active service and staffing queues
 	// retain their scheduling state.
-	rebuildLiveLists();
 	stockSuppliers.clear();
 	directStockSuppliers.clear();
 	combatFlags.clear();
@@ -21,8 +20,7 @@ void Team::createLists(void)
 	virtualBuildings.clear();
 	clearingFlags.clear();
 	canExchange.clear();
-	for (int i=0; i<Building::MAX_COUNT; ++i)
-		if (Building* building=myBuildings[i])
+	for (Building* building : liveBuildings)
 		{
 			addToStaticAbilitiesLists(building);
 			building->update();
@@ -59,31 +57,12 @@ void Team::clearMap(void)
 {
 	assert(map);
 
-	for (int i=0; i<Unit::MAX_COUNT; ++i)
-	{
-		if (myUnits[i])
-		{
-			if (myUnits[i]->performance[FLY])
-			{
-				map->setAirUnit(myUnits[i]->posX, myUnits[i]->posY, NOGUID);
-			}
-			else
-			{
-				map->setGroundUnit(myUnits[i]->posX, myUnits[i]->posY, NOGUID);
-			}
-		}
-	}
-
-	for (int i=0; i<Building::MAX_COUNT; ++i)
-	{
-		if (myBuildings[i])
-		{
-			if (!myBuildings[i]->type->isVirtual)
-			{
-				map->setBuilding(myBuildings[i]->posX, myBuildings[i]->posY, myBuildings[i]->type->width, myBuildings[i]->type->height, NOGBID);
-			}
-		}
-	}
+	for (Unit* unit : liveUnits)
+		if (unit->performance[FLY]) map->setAirUnit(unit->posX,unit->posY,NOGUID);
+		else map->setGroundUnit(unit->posX,unit->posY,NOGUID);
+	for (Building* building : liveBuildings)
+		if (!building->type->isVirtual)
+			map->setBuilding(building->posX,building->posY,building->type->width,building->type->height,NOGBID);
 
 }
 
@@ -92,24 +71,9 @@ void Team::clearMap(void)
 
 void Team::clearMem(void)
 {
-	for (int i=0; i<Unit::MAX_COUNT; ++i)
-	{
-		if (myUnits[i])
-		{
-			delete myUnits[i];
-			myUnits[i] = NULL;
-		}
-	}
-	for (int i=0; i<Building::MAX_COUNT; ++i)
-	{
-		if (myBuildings[i])
-		{
-			delete myBuildings[i];
-			myBuildings[i] = NULL;
-		}
-	}
-	liveUnits.clear();
-	liveBuildings.clear();
+	while (Unit* unit=liveUnits.front()) delete detachUnit(Unit::GIDtoID(unit->gid));
+	while (Building* building=liveBuildings.front()) delete detachBuilding(Building::GIDtoID(building->gid));
+	taskSwapNext=0xffff;
 }
 
 

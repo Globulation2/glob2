@@ -140,10 +140,7 @@ void Unit::handleActivity(void)
 						++targetTeam->stats.events().conversionsIn[typeNum];
 						Sint32 currentID=Unit::GIDtoID(gid);
 						assert(currentTeam->myUnits[currentID]);
-						currentTeam->myUnits[currentID]=NULL;
 						currentTeam->detachUnit(currentID);
-						targetTeam->myUnits[targetID]=this;
-						targetTeam->attachUnit(targetID);
 
 						if (verbose)
 							printf("Unit guid=%d (%d) switched to guid=%d (%d)\n", gid, Unit::GIDtoTeam(gid), targetGID, Unit::GIDtoTeam(targetGID));
@@ -164,6 +161,7 @@ void Unit::handleActivity(void)
 						owner->game->unitCargo.transfer(gid,targetGID);
 						gid=targetGID;
 						owner=targetTeam;
+						targetTeam->attachUnit(targetID, this);
 						race=&targetTeam->race;
 					}
 				}

@@ -97,28 +97,28 @@ bool Game::tileForPlay(int rx, int ry, int teamCount, int coloniesPerTeam)
 	for (int t = 0; t < mapTeams; t++)
 	{
 		ColonyTemplate& colony = colonies[t];
-		// the anchor is the first swarm, else the first building, else the first unit
-		for (int pass = 0; pass < 2 && colony.anchorX < 0; pass++)
-			for (int i = 0; i < Building::MAX_COUNT && colony.anchorX < 0; i++)
-			{
-				const Building* b = teams[t]->myBuildings[i];
-				if (b && b->buildingState == Building::ALIVE && (pass == 1 || !b->type->semantics.production.enabledUnits.empty()))
+		// The anchor is the first live swarm, then building, then unit in population order.
+		for (int pass = 0; pass < 2 && colony.anchorX < 0; ++pass)
+			for (const Building* b : teams[t]->liveBuildings.entries())
+				if (b->buildingState == Building::ALIVE &&
+					(pass == 1 || !b->type->semantics.production.enabledUnits.empty()))
 				{
 					colony.anchorX = b->posX;
 					colony.anchorY = b->posY;
+					break;
 				}
-			}
-		for (int i = 0; i < Unit::MAX_COUNT && colony.anchorX < 0; i++)
-			if (teams[t]->myUnits[i] && !teams[t]->myUnits[i]->isDead)
-			{
-				colony.anchorX = teams[t]->myUnits[i]->posX;
-				colony.anchorY = teams[t]->myUnits[i]->posY;
-			}
+		if (colony.anchorX < 0)
+			for (const Unit* u : teams[t]->liveUnits.entries())
+				if (!u->isDead)
+				{
+					colony.anchorX = u->posX;
+					colony.anchorY = u->posY;
+					break;
+				}
 		if (colony.anchorX < 0)
 			continue;
-		for (int i = 0; i < Building::MAX_COUNT; i++)
+		for (const Building* b : teams[t]->liveBuildings.entries())
 		{
-			const Building* b = teams[t]->myBuildings[i];
 			if (!b || b->buildingState != Building::ALIVE)
 				continue;
 			BuildingTemplate bt = {wrapOffset(b->posX, colony.anchorX, w0), wrapOffset(b->posY, colony.anchorY, h0),
@@ -140,9 +140,8 @@ bool Game::tileForPlay(int rx, int ry, int teamCount, int coloniesPerTeam)
 				bt.clearingMaterials[r] = b->clearsMaterial(r);
 			colonies[t].buildings.push_back(bt);
 		}
-		for (int i = 0; i < Unit::MAX_COUNT; i++)
+		for (const Unit* u : teams[t]->liveUnits.entries())
 		{
-			const Unit* u = teams[t]->myUnits[i];
 			if (!u || u->isDead)
 				continue;
 			// units inside a building are not on the map and are not carried over

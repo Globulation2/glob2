@@ -1,6 +1,6 @@
 # Historical building-field depth model
 
-Simulation format 166 publishes complete building fields. The depth predictor no
+Simulation format 167 publishes complete building fields. The depth predictor no
 longer controls live scheduled fields, and readers never extend a published
 frontier. This guide records the earlier policy and its retained scalar predictor;
 it does not describe current publication behavior.

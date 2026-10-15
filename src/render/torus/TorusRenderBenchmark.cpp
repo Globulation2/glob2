@@ -64,8 +64,7 @@ class TorusRenderBenchmark
     {
         int total = 0;
         for (int team = 0; team < game.mapHeader.getNumberOfTeams(); ++team)
-            for (int slot = 0; slot < Unit::MAX_COUNT; ++slot)
-                if (game.teams[team]->myUnits[slot]) ++total;
+            total += game.teams[team]->liveUnits.size();
         return total;
     }
 

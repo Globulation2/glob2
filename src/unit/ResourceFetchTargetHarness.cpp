@@ -67,8 +67,7 @@ static void staleTargetIsRefreshedAfterGradientRebuild(int expectedClass, int sw
 	require(game.map.incResourceByIndex(farX, farY, source, 0), "seed the far wheat tile");
 
 	TestUnit* unit = new TestUnit(unitX, unitY, 0, WORKER, team, 0);
-	team->myUnits[0] = unit;
-	team->rebuildLiveLists();
+	team->attachUnit(0, unit);
 	game.map.setGroundUnit(unitX, unitY, unit->gid);
 	unit->destinationPurpose = WHEAT;
 	unit->activity = Unit::ACT_FILLING;
@@ -160,8 +159,7 @@ static void targetTracksTheGradientTheUnitActuallyFollows()
 	require(game.map.incResourceByIndex(nearBuildingX, nearBuildingY, WHEAT, 0), "seed the tile near the building");
 
 	TestUnit* unit = new TestUnit(unitX, unitY, 0, WORKER, team, 0);
-	team->myUnits[0] = unit;
-	team->rebuildLiveLists();
+	team->attachUnit(0, unit);
 	game.map.setGroundUnit(unitX, unitY, unit->gid);
 	unit->attachedBuilding = inn;
 	unit->destinationPurpose = WHEAT;

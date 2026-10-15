@@ -45,8 +45,8 @@
 // small bonus when the footprint borders a resource tile (the cheap stand-in
 // for Runtime's resource gradients). Higher score == better.
 //
-// Determinism (this runs inside lockstep): we iterate the team building array by
-// index (never an std::set), scan map tiles in fixed (x, y) order, break ties
+// Determinism (this runs inside lockstep): we iterate buildings in team population
+// order, scan map tiles in fixed (x, y) order, break ties
 // strictly by scan order (first-seen wins on equal score), and use random()
 // only as a final, fully-deterministic tie-break when even the score AND the
 // distance-to-colony are identical, so two equally good far-apart spots do not
@@ -147,7 +147,7 @@ namespace Cortex
 	// gets a well-defined, equal score and ranking degrades to scan order.
 	//
 	// DETERMINISM: teams are iterated by index over game->teams[], buildings by
-	// index over game->buildingSlots(other->number)[] (never an std::set); ties break first by scan
+	// authoritative population order; ties break first by scan
 	// order (strict-greater insert) and finally by random() — never rand(), never
 	// wall-clock — exactly as placeCandidates does.
 	int placeFlagTargetsWorld(MersenneTwister& random, const AIEngine::AIWorldView* game, const AIEngine::TeamView* team, const PlanningIntent& intents, BuildCandidate out[CORTEX_FLAG_TARGETS], Sint32 outTeam[CORTEX_FLAG_TARGETS])
@@ -178,10 +178,9 @@ namespace Cortex
 			if (!isEnemy || !other->alive)
 				continue;
 
-			// Scan this enemy's buildings by index (never an std::set).
-			for (int j = 0; j < ::Building::MAX_COUNT; j++)
+			// Scan this enemy's buildings in population order.
+			for (const AIEngine::BuildingView* b : game->buildingsForTeam(other->number))
 			{
-				const AIEngine::BuildingView* b = game->buildingSlots(other->number)[j];
 				if (b == NULL || b->buildingState == ::Building::DEAD)
 					continue;
 

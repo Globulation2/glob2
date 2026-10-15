@@ -81,29 +81,54 @@ void Team::init(void)
 
 
 
-void Team::rebuildLiveLists()
+void Team::attachUnit(int id) { attachUnit(id, myUnits[id]); }
+void Team::attachUnit(int id, Unit* unit)
 {
-	liveUnits.rebuild(myUnits, Unit::MAX_COUNT);
-	liveBuildings.rebuild(myBuildings, Building::MAX_COUNT);
+	assert(id>=0 && id<Unit::MAX_COUNT && unit && unit->owner==this);
+	assert(Unit::GIDtoID(unit->gid)==id && Unit::GIDtoTeam(unit->gid)==teamNumber);
+	assert(!myUnits[id] || myUnits[id]==unit);
+	liveUnits.append(*unit);
+	myUnits[id]=unit;
+	if (taskSwapNext==0xffff) taskSwapNext=id;
+}
+Unit* Team::detachUnit(int id)
+{
+	assert(id>=0 && id<Unit::MAX_COUNT && myUnits[id]);
+	Unit* unit=myUnits[id];
+	assert(unit->owner==this);
+	Unit* next=unit->populationNext;
+	liveUnits.remove(*unit);
+	myUnits[id]=nullptr;
+	if (taskSwapNext==id) taskSwapNext=next ? Unit::GIDtoID(next->gid)
+		: liveUnits.empty() ? 0xffff : Unit::GIDtoID(liveUnits.front()->gid);
+	return unit;
+}
+void Team::attachBuilding(int id) { attachBuilding(id, myBuildings[id]); }
+void Team::attachBuilding(int id, Building* building)
+{
+	assert(id>=0 && id<Building::MAX_COUNT && building && building->owner==this);
+	assert(Building::GIDtoID(building->gid)==id && Building::GIDtoTeam(building->gid)==teamNumber);
+	assert(!myBuildings[id] || myBuildings[id]==building);
+	liveBuildings.append(*building);
+	myBuildings[id]=building;
+}
+Building* Team::detachBuilding(int id)
+{
+	assert(id>=0 && id<Building::MAX_COUNT && myBuildings[id]);
+	Building* building=myBuildings[id];
+	assert(building->owner==this);
+	liveBuildings.remove(*building);
+	myBuildings[id]=nullptr;
+	return building;
 }
 
 bool Team::integrity(void)
 {
 	checkInvariant(noMoreBuildingSitesCountdown<=noMoreBuildingSitesCountdownMax);
-	// The live lists must name exactly the occupied slots, in slot order. This
-	// runs every tick, so it rides along the existing slot sweeps.
-	std::size_t liveBuilding = 0;
-	for (int id=0; id<Building::MAX_COUNT; id++)
-	{
-		Building *b=myBuildings[id];
-		if (b)
-		{
-			checkInvariant(liveBuilding < liveBuildings.size() && liveBuildings.slots()[liveBuilding] == id && liveBuildings.entries()[liveBuilding] == b);
-			++liveBuilding;
-			checkInvariant(b->integrity());
-		}
-	}
-	checkInvariant(liveBuilding == liveBuildings.size());
+	// Explicit diagnostic only: normal ticks never sweep ID capacity.
+	checkInvariant(liveUnits.matches(myUnits,Unit::MAX_COUNT));
+	checkInvariant(liveBuildings.matches(myBuildings,Building::MAX_COUNT));
+	for (Building* building : liveBuildings) checkInvariant(building->integrity());
 	for (std::list<Building *>::iterator it=virtualBuildings.begin(); it!=virtualBuildings.end(); ++it)
 	{
 		checkInvariant(*it);
@@ -119,18 +144,7 @@ bool Team::integrity(void)
 		checkInvariant(myBuildings[Building::GIDtoID((*it)->gid)]);
 	}
 
-	std::size_t liveUnit = 0;
-	for (int i=0; i<Unit::MAX_COUNT; i++)
-	{
-		Unit *u=myUnits[i];
-		if (u)
-		{
-			checkInvariant(liveUnit < liveUnits.size() && liveUnits.slots()[liveUnit] == i && liveUnits.entries()[liveUnit] == u);
-			++liveUnit;
-			checkInvariant(u->integrity());
-		}
-	}
-	checkInvariant(liveUnit == liveUnits.size());
+	for (Unit* unit : liveUnits) checkInvariant(unit->integrity());
 	return true;
 }
 
@@ -167,9 +181,7 @@ void Team::setCorrectColor(float value)
 
 void Team::update()
 {
-	for (int i=0; i<Building::MAX_COUNT; i++)
-		if (myBuildings[i])
-			myBuildings[i]->update();
+	for (Building* building : liveBuildings) building->update();
 }
 
 

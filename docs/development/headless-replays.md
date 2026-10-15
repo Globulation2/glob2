@@ -74,9 +74,9 @@ overrides of a saved game, including `--experiment`, `--rule` and
 
 Scheduled building fields are complete at publication. Cold reads and refreshes
 use the same FIFO pipeline; readers return Pending rather than seeding or
-extending a field on the simulation owner. Format 166 persists cold requests and
+extending a field on the simulation owner. Format 167 persists cold requests and
 completed unpublished outputs, air destination labels and unit-specific choices,
-and raises the replay floor to 166. Air destination costs use the common bounded
+and raises the replay floor to 167. Air destination costs use the common bounded
 16-bit range; immediate air steering stays independent. Supported older saves
 remain readable; `MINIMUM_VERSION_MINOR` is unchanged.
 

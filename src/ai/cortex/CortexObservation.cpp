@@ -96,9 +96,8 @@ namespace Cortex
             support=extendedSupport.data();
         }
 		obs.hasModelProjection = 1;
-		for (int i = 0; i < ::Building::MAX_COUNT; i++)
+		for (const AIEngine::BuildingView* b : game->buildingsForTeam(team->number))
 		{
-			const AIEngine::BuildingView* b = game->buildingSlots(team->number)[i];
 			if (b == NULL)
 				continue;
 			const BuildingType* bt = buildingType(*game,*b);

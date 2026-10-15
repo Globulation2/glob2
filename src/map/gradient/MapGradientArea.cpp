@@ -129,9 +129,8 @@ bool Map::computeWarriorCrowding(int teamNumber, Uint16 *out) const
 	auto &crowdPositions = gradientRuntime->workspaces[compute.slot()].crowding.positions;
 	crowdPositions.clear();
 	const Team *team = game->teams[teamNumber];
-	for (int i = 0; i < Unit::MAX_COUNT; i++)
+	for (const Unit *u : team->liveUnits.entries())
 	{
-		const Unit *u = team->myUnits[i];
 		if (!u || u->isDead || !u->hasCapability(UnitRuntimeTraits::GuardIdle) || u->displacement == Unit::DIS_INSIDE)
 			continue;
 		crowdPositions.push_back(coordToIndex(u->posX, u->posY));

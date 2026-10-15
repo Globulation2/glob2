@@ -132,8 +132,7 @@ namespace
 		for (int t = 0; t < ticks; t++)
 		{
 			world.step();
-			for (int i = 0; i < Unit::MAX_COUNT; ++i)
-				if (Unit* u = world.team->myUnits[i])
+			for (Unit* u : world.team->liveUnits.entries())
 					u->hungry = Unit::HUNGRY_MAX;
 		}
 		FieldRun run;
@@ -190,8 +189,7 @@ namespace
 		for (int t = 1; t <= 3000; t++)
 		{
 			world.step();
-			for (int i = 0; i < Unit::MAX_COUNT; ++i)
-				if (Unit* u = world.team->myUnits[i])
+			for (Unit* u : world.team->liveUnits.entries())
 					u->hungry = Unit::HUNGRY_MAX;
 			if (t % 100 == 0)
 				trace << t << ' ' << std::hex << simulationChecksum(world.game) << std::dec
@@ -236,8 +234,7 @@ TEST_SUITE("FarmAreas")
 			for (int t = 0; t < 1500; t++)
 			{
 				world.step();
-				for (int i = 0; i < Unit::MAX_COUNT; ++i)
-					if (Unit* u = world.team->myUnits[i])
+				for (Unit* u : world.team->liveUnits.entries())
 					{
 						u->hungry = Unit::HUNGRY_MAX;
 						carrying += u->carriedMaterial == WHEAT;

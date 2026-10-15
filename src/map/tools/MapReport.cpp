@@ -754,11 +754,10 @@ std::string describeMap(Game &game, const GenerationRequest *request,
 		const Team &team = *game.teams[i];
 		std::array<int, 3> units{};
 		int buildings = 0;
-		for (int u = 0; u < Unit::MAX_COUNT; ++u)
-			if (team.myUnits[u] && team.myUnits[u]->typeNum >= 0 && team.myUnits[u]->typeNum < 3)
-				++units[team.myUnits[u]->typeNum];
-		for (int b = 0; b < Building::MAX_COUNT; ++b)
-			buildings += team.myBuildings[b] != nullptr;
+		for (const Unit* unit : team.liveUnits.entries())
+			if (unit->typeNum >= 0 && unit->typeNum < 3)
+				++units[unit->typeNum];
+		buildings = team.liveBuildings.size();
 		colonies.push_back(
 			J::object({{"team", i},
 					   {"alive", team.isAlive},
@@ -893,7 +892,7 @@ std::string describeMap(Game &game, const GenerationRequest *request,
             {"hash",game.unitCatalog().digest()}};
         std::set<std::string> required;
         for(int team=0;team<game.teamsCount();++team)
-            for(int slot=0;slot<Unit::MAX_COUNT;++slot)if(const auto* unit=game.teams[team]->myUnits[slot])
+            for (const auto* unit : game.teams[team]->liveUnits.entries())
             {
                 const auto& gate=game.unitCatalog().definition(unit->typeNum).requiredExperiment;
                 if(!gate.empty())required.insert(gate);

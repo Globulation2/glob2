@@ -87,8 +87,7 @@ static void aUnitIsJudgedOnTheWalkToTheResource()
 	const int siteX = 8, siteY = 8;
 	Building* site = new Building(siteX, siteY, Building::GIDfrom(0, 0), siteType, team,
 	                              &globalContainer->buildingsTypes, 4, 4);
-	team->myBuildings[0] = site;
-	team->rebuildLiveLists();
+	team->attachBuilding(0, site);
 	game.map.setBuilding(siteX, siteY, type->width, type->height, site->gid);
 	require(site->neededMaterial(WOOD) > 0, "the site still wants wood");
 
@@ -97,8 +96,7 @@ static void aUnitIsJudgedOnTheWalkToTheResource()
 	require(game.map.incResourceByIndex(woodX, woodY, WOOD, 0), "seed the wood tile");
 
 	Unit* unit = new Unit(siteX - 2, siteY, 0, WORKER, team, 0);
-	team->myUnits[0] = unit;
-	team->rebuildLiveLists();
+	team->attachUnit(0, unit);
 	unit->setPerformance(WALK,10);
 	unit->setPerformance(HARVEST,10);
 	unit->activity = Unit::ACT_RANDOM;
@@ -156,8 +154,7 @@ static void theScoreEstimatesTheWholeTrip()
 	const int siteX = 8, siteY = 8;
 	Building* site = new Building(siteX, siteY, Building::GIDfrom(0, 0), siteType, team,
 	                              &globalContainer->buildingsTypes, 4, 4);
-	team->myBuildings[0] = site;
-	team->rebuildLiveLists();
+	team->attachBuilding(0, site);
 	game.map.setBuilding(siteX, siteY, type->width, type->height, site->gid);
 
 	require(game.map.incResourceByIndex(siteX + 9, siteY, WOOD, 0), "seed the wood tile");
@@ -165,8 +162,7 @@ static void theScoreEstimatesTheWholeTrip()
 	// Standing at the building, so the walk out and the carry home are close to
 	// the same length and the whole job is close to twice the walk.
 	Unit* unit = new Unit(siteX - 2, siteY, 0, WORKER, team, 0);
-	team->myUnits[0] = unit;
-	team->rebuildLiveLists();
+	team->attachUnit(0, unit);
 	unit->setPerformance(WALK,10);
 	unit->setPerformance(HARVEST,10);
 	unit->activity = Unit::ACT_RANDOM;
@@ -301,7 +297,7 @@ TEST_SUITE("FetchHiringScore")
         REQUIRE(inn); inn->setMaterial(WHEAT, 0);
         for(int slot : {Unit::MAX_COUNT-1,3}) {
             auto* unit=new Unit(6,8,Unit::GIDfrom(slot,world.team->teamNumber),WORKER,world.team,0);
-            world.team->myUnits[slot]=unit; world.team->attachUnit(slot);
+            world.team->attachUnit(slot,unit);
             unit->activity=Unit::ACT_RANDOM; unit->medical=Unit::MED_FREE;
             unit->carriedMaterial=WHEAT; unit->destinationPurpose=-1;
             unit->hungry=INT_MAX; unit->trigHungry=slot==3 ? -1 : -2; unit->hungriness=1;
@@ -322,12 +318,11 @@ TEST_SUITE("FetchHiringScore")
         REQUIRE(inn);
         inn->setMaterial(WHEAT, 0);
         // Identical positions and hunger deliberately tie the candidates.
-        // Attach in reverse order to exercise sorted traversal rather than insertion order.
+        // Attach in reverse slot order to verify local hiring tie ordering independently of population order.
         for (int slot : {Unit::MAX_COUNT-1, 3})
         {
             auto* unit = new Unit(6, 8, slot, WORKER, team, 0);
-            team->myUnits[slot] = unit;
-            team->attachUnit(slot);
+            team->attachUnit(slot,unit);
             unit->setPerformance(HARVEST,10);
             unit->activity = Unit::ACT_RANDOM;
             unit->medical = Unit::MED_FREE;

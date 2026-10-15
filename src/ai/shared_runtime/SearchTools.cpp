@@ -211,10 +211,9 @@ void enemy_team_iterator::set_to_next()
 
 int SearchTools::is_flag(Runtime& runtime, int x, int y)
 {
-	const auto& buildings=runtime.observation().buildingSlots(runtime.teamNumber());
-	for(int n=0; n<Building::MAX_COUNT; ++n)
+	const auto& buildings=runtime.observation().buildingsForTeam(runtime.teamNumber());
+	for (const auto* b : buildings)
 	{
-		const AIEngine::BuildingView* b=buildings[n];
 		if(b)
 		{
 			if(b->posX==x && b->posY==y)
@@ -288,9 +287,9 @@ void enemy_building_iterator::set_to_next()
 	else
 		current_index++;
 
-	while(current_index<Building::MAX_COUNT)
+	while(current_index < int(runtime->observation().buildingsForTeam(team).size()))
 	{
-		const AIEngine::BuildingView* b=runtime->observation().buildingSlots(team)[current_index];
+		const AIEngine::BuildingView* b=runtime->observation().buildingsForTeam(team)[current_index];
 		if(b)
 		{
 			if( (b->seenByMask&runtime->observedTeam().mask
@@ -326,6 +325,6 @@ void enemy_building_iterator::set_to_next()
 		current_index++;
 	}
 
-	if(current_index==Building::MAX_COUNT)
+	if(current_index == int(runtime->observation().buildingsForTeam(team).size()))
 		is_end=true;
 }

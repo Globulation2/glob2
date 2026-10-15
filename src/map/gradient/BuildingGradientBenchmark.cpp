@@ -123,10 +123,8 @@ TEST_CASE("fixed stock simulation without AI decisions [benchmark]")
         int units=0,buildings=0;std::int64_t health=0,stored=0;
         for(int team=0;team<2;++team)
         {
-            for(int id=0;id<Unit::MAX_COUNT;++id)
-                if(auto* unit=world.game.teams[team]->myUnits[id]) {++units;health+=unit->hp;}
-            for(int id=0;id<Building::MAX_COUNT;++id)
-                if(auto* building=world.game.teams[team]->myBuildings[id])
+            for (auto* unit : world.game.teams[team]->liveUnits.entries()) {++units;health+=unit->hp;}
+            for (auto* building : world.game.teams[team]->liveBuildings.entries())
                 {
                     ++buildings;health+=building->hp;
                     for(int resource=0;resource<MaterialCount;++resource) stored+=building->material(resource);

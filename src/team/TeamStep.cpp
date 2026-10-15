@@ -24,11 +24,9 @@ bool hasExit(Building* building, bool fly, bool canSwim, bool canWalk)
 bool allRemainingUnitsTrapped(Team& team)
 {
 	bool foundUnit = false;
-	bool freeUnitSlot = false;
-	for (int i = 0; i < Unit::MAX_COUNT; ++i)
+	const bool freeUnitSlot = team.liveUnits.size()<Unit::MAX_COUNT;
+	for (Unit* unit : team.liveUnits)
 	{
-		Unit* unit = team.myUnits[i];
-		if (!unit) { freeUnitSlot = true; continue; }
 		foundUnit = true;
 		// Active service and normal entry/exit are not a loss of agency.
 		if (unit->displacement != Unit::DIS_EXITING_BUILDING
@@ -262,9 +260,8 @@ void Team::swapTask(Unit *unit)
 	int timeLeft = unit->foodStepsLeft(unit->trigHungry);
 	Unit *best = NULL;
 	int bestGain = SWAP_MIN_GAIN;
-	for (int i = 0; i < Unit::MAX_COUNT; i++)
+	for (Unit* mate : liveUnits)
 	{
-		Unit *mate = myUnits[i];
 		if (mate == unit || !isFetching(mate))
 			continue;
 		Building *b = mate->attachedBuilding;
@@ -301,9 +298,8 @@ void Team::swapInn(Unit *unit)
 		return;
 	Unit *best = NULL;
 	int bestGain = SWAP_MIN_GAIN;
-	for (int i = 0; i < Unit::MAX_COUNT; i++)
+	for (Unit* mate : liveUnits)
 	{
-		Unit *mate = myUnits[i];
 		if (mate == unit || !isWalkingToInn(mate) || mate->attachedBuilding == a || mate->attachedBuilding->owner != this)
 			continue;
 		Building *b = mate->attachedBuilding;
@@ -336,7 +332,6 @@ void Team::swapInn(Unit *unit)
 
 void Team::syncStep(void)
 {
-	integrity();
 
 	if (noMoreBuildingSitesCountdown>0)
 		noMoreBuildingSitesCountdown--;
@@ -348,10 +343,9 @@ void Team::syncStep(void)
 	// Select once per team. The usual loop has no aura branch per unit;
 	// pulse services still run immediately before that unit's normal update.
 	const auto stepUnits = [&]<bool areaPulse>() {
-	for (int i = 0; i < Unit::MAX_COUNT; i++)
+	auto walk=liveUnits.mutableWalk();
+	while (Unit* u=walk.next())
 	{
-		Unit *u = myUnits[i];
-		if (u)
 		{
 			if (u->hasCapability(UnitRuntimeTraits::CountsForSurvival))
 			{
@@ -374,9 +368,7 @@ void Team::syncStep(void)
 			{
 				// Client selections hold a UnitRef and notice the death when
 				// it no longer resolves; nothing to notify here.
-				delete u;
-				myUnits[i] = NULL;
-				detachUnit(i);
+				delete u->owner->detachUnit(Unit::GIDtoID(u->gid));
 			}
 		}
 	}
@@ -441,7 +433,6 @@ void Team::syncStep(void)
 		// the client still needs the gid to drop its pending per-gid shadow.
 		game->publishClientEvent(ClientEvent::BuildingRemoved{building->gid});
 
-		myBuildings[Building::GIDtoID(building->gid)]=NULL;
 		detachBuilding(Building::GIDtoID(building->gid));
 		delete building;
 	}
@@ -461,19 +452,22 @@ void Team::syncStep(void)
 	}
 
 	updateAllBuildingTasks();
-	for (int k = 0; k < SWAP_CHECKS_PER_TICK; k++)
-		swapTask(myUnits[(game->stepCounter * SWAP_CHECKS_PER_TICK + k) % Unit::MAX_COUNT]);
+	// Round robin visits at most four existing units, independent of empty IDs.
+	const auto candidates=std::min<std::size_t>(SWAP_CHECKS_PER_TICK,liveUnits.size());
+	for (std::size_t k=0; k<candidates; ++k) {
+		Unit* unit=taskSwapNext==0xffff ? liveUnits.front() : myUnits[taskSwapNext];
+		assert(unit);
+		Unit* next=unit->populationNext ? unit->populationNext : liveUnits.front();
+		taskSwapNext=Unit::GIDtoID(next->gid);
+		swapTask(unit);
+	}
 
 	bool isEnoughFoodInSwarm=false;
 
-	for (int i=0; i<Building::MAX_COUNT; ++i)
-	{
-		if(myBuildings[i])
-		{
-			//Step in myBuildings does virtually nothing
-			myBuildings[i]->step();
-			myBuildings[i]->regenerationStep();
-		}
+	auto buildingWalk=liveBuildings.mutableWalk();
+	while (Building* building=buildingWalk.next()) {
+		building->step();
+		building->regenerationStep();
 	}
 
 	for (std::list<Building *>::iterator it=swarms.begin(); it!=swarms.end(); ++it)
@@ -506,12 +500,8 @@ void Team::syncStep(void)
 void Team::dirtyGlobalGradient()
 {
 	game->dirtyWarFlagGradient();
-	for (int id=0; id<Building::MAX_COUNT; id++)
-	{
-		Building *b=myBuildings[id];
-		if (b)
-			b->resetPathfindGradients(Building::GradientDrop::Team);
-	}
+	for (Building* building : liveBuildings)
+		building->resetPathfindGradients(Building::GradientDrop::Team);
 }
 
 void Team::dirtyWarFlagGradient()

@@ -50,18 +50,16 @@ void NewNicowar::compute_defense_flag_positioning(AISharedRuntime::Runtime& runt
 	
 	//For every unit thats under attack, increment in the squares surrounding it.
 	//Use the 'locations' list to keep track of non-zero squares
-	for(int i=0; i<Unit::MAX_COUNT; ++i)
+	for (const AIEngine::UnitView* unit : runtime.observation().unitsForTeam(runtime.teamNumber()))
 	{
-		const AIEngine::UnitView* unit = runtime.observation().unitSlots(runtime.teamNumber())[i];
 		if(unit && unit->underAttackTimer && unit->movement != Unit::MOV_ATTACKING_TARGET && unit->performance[FLY]==0 && unitGID[powerOfTwoRemainder(unit->posX+w, w) * h + powerOfTwoRemainder(unit->posY+h, h)] == NOGUID)
 		{
 			unitGID[powerOfTwoRemainder(unit->posX+w, w) * h + powerOfTwoRemainder(unit->posY+h, h)] = unit->gid;
 			modify_points(counts, w, h, powerOfTwoRemainder(unit->posX+w, w), powerOfTwoRemainder(unit->posY+h, h), RADIUS, 1, locations);
 		}
 	}
-	for(int i=0; i<Building::MAX_COUNT; ++i)
+	for (const AIEngine::BuildingView* building : runtime.observation().buildingsForTeam(runtime.teamNumber()))
 	{
-		const AIEngine::BuildingView* building = runtime.observation().buildingSlots(runtime.teamNumber())[i];
 		// Wrap the building corner (posX/posY can be negative when a building
 		// straddles the map seam) before indexing buildingGID, exactly as the unit
 		// loop above does. Without the wrap a negative coord aliases the GID marker
@@ -124,13 +122,13 @@ void NewNicowar::compute_defense_flag_positioning(AISharedRuntime::Runtime& runt
 				int ny = powerOfTwoRemainder(max_y + py + h, h);
 				if(unitGID[nx * h + ny] != NOGUID)
 				{
-					const AIEngine::UnitView* unit = runtime.observation().unitSlots(runtime.teamNumber())[Unit::GIDtoID(unitGID[nx * h + ny])];
+					const AIEngine::UnitView* unit = runtime.observation().unitAtSlot(Unit::GIDfrom(Unit::GIDtoID(unitGID[nx * h + ny]), runtime.teamNumber()));
 					modify_points(counts, w, h, powerOfTwoRemainder(unit->posX+w, w), powerOfTwoRemainder(unit->posY+h, h), RADIUS, -1, locations);
 					unitGID[nx * h + ny] = NOGUID;
 				}
 				if(buildingGID[nx * h + ny] != NOGBID)
 				{
-					const AIEngine::BuildingView* building = runtime.observation().buildingSlots(runtime.teamNumber())[Building::GIDtoID(buildingGID[nx * h + ny])];
+					const AIEngine::BuildingView* building = runtime.observation().buildingAtSlot(Building::GIDfrom(Building::GIDtoID(buildingGID[nx * h + ny]), runtime.teamNumber()));
 					int nx2 = powerOfTwoRemainder(building->posX - AIEngine::ObservationQueries::buildingType(runtime.observation(),*building).decLeft + w, w);
 					int ny2 = powerOfTwoRemainder(building->posY - AIEngine::ObservationQueries::buildingType(runtime.observation(),*building).decTop + h, h);
 					modify_points(counts, w, h, nx2, ny2, RADIUS, -1, locations);
@@ -144,7 +142,7 @@ void NewNicowar::compute_defense_flag_positioning(AISharedRuntime::Runtime& runt
 					Uint16 guid = runtime.observation().occupancyAt(runtime.observation().tileIndex(nx,ny)).groundUnit;
 					if(guid != NOGUID && (1<<Unit::GIDtoTeam(guid)) & runtime.observedTeam().enemies)
 					{
-						const AIEngine::UnitView* unit = runtime.observation().unitSlots(Unit::GIDtoTeam(guid))[Unit::GIDtoID(guid)];
+						const AIEngine::UnitView* unit = runtime.observation().unitAtSlot(Unit::GIDfrom(Unit::GIDtoID(guid), Unit::GIDtoTeam(guid)));
 						if(AIEngine::ObservationQueries::matchesStrategyUnitRole(runtime.observation(),*unit,WARRIOR))
 						{
 							enemy_count += 1;
@@ -245,7 +243,7 @@ void NewNicowar::compute_defense_flag_positioning(AISharedRuntime::Runtime& runt
 						Uint16 guid = runtime.observation().occupancyAt(runtime.observation().tileIndex(nx,ny)).groundUnit;
 						if(guid != NOGUID && (1<<Unit::GIDtoTeam(guid)) & runtime.observedTeam().enemies)
 						{
-								const AIEngine::UnitView* unit = runtime.observation().unitSlots(Unit::GIDtoTeam(guid))[Unit::GIDtoID(guid)];
+								const AIEngine::UnitView* unit = runtime.observation().unitAtSlot(Unit::GIDfrom(Unit::GIDtoID(guid), Unit::GIDtoTeam(guid)));
 								if(AIEngine::ObservationQueries::matchesStrategyUnitRole(runtime.observation(),*unit,WARRIOR))
 								{
 										enemy_count += 1;
@@ -340,9 +338,9 @@ void NewNicowar::compute_explorer_flag_attack_positioning(AISharedRuntime::Runti
 	{
 		std::vector<const AIEngine::UnitView*> units(Unit::MAX_COUNT, nullptr);
 		const AIEngine::UnitView* first = NULL;
-		for(int i=0; i<Unit::MAX_COUNT; ++i)
+		for (const AIEngine::UnitView* unit : runtime.observation().unitsForTeam(target))
 		{
-			const AIEngine::UnitView* unit = runtime.observation().unitSlots(target)[i];
+			const int i = Unit::GIDtoID(unit->gid);
 			if(unit && mi.is_discovered(unit->posX, unit->posY) && unit->performance[FLY]==0 && unit->activity != Unit::ACT_UPGRADING)
 			{
 				if(!first)
@@ -364,8 +362,9 @@ void NewNicowar::compute_explorer_flag_attack_positioning(AISharedRuntime::Runti
 			std::queue<const AIEngine::UnitView*> proccess;
 			std::queue<int> xposs;
 			std::queue<int> yposs;
-			for(int i=0; i<Unit::MAX_COUNT; ++i)
+			for(const auto* candidate : runtime.observation().unitsForTeam(target))
 			{
+				const int i = Unit::GIDtoID(candidate->gid);
 				if(units[i])
 				{
 					group_x += units[i]->posX;

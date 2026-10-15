@@ -72,7 +72,7 @@ MemoryMetrics Storage::memoryMetrics() const
 	const auto cells = [&](const auto& value, bool) { return vectorBytes(value.cells); };
 	account(resources, cells); account(occupancy, [&](const Occupancy& value,bool){ return vectorBytes(value.cells); }); account(areas, cells); account(visibility, [&](const Visibility& value, bool) { return vectorBytes(value.discovered) + vectorBytes(value.visible); });
 	account(entities, [&](const Entities& value, bool) {
-		return value.unitCargo.capacityBytes() + vectorBytes(value.extraProduction) + vectorBytes(value.funding) + vectorBytes(value.buildings) + vectorBytes(value.units) + vectorBytes(value.buildingSlotIndices) + vectorBytes(value.unitSlotIndices) + vectorBytes(value.relationships) + vectorBytes(value.projects);
+		return value.unitCargo.capacityBytes() + vectorBytes(value.extraProduction) + vectorBytes(value.funding) + vectorBytes(value.buildings) + vectorBytes(value.units) + vectorBytes(value.buildingRanges) + vectorBytes(value.unitRanges) + vectorBytes(value.buildingSlotIndices) + vectorBytes(value.unitSlotIndices) + vectorBytes(value.relationships) + vectorBytes(value.projects);
 	});
 	account(teams, [&](const Teams& value, bool) {
 		Uint64 bytes = vectorBytes(value.values);

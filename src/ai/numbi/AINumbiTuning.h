@@ -235,14 +235,6 @@ static constexpr int AI_NUMBI_LOW_FOOD_PER_UNIT  = 3;
 static constexpr int AI_NUMBI_HIGH_FOOD_PER_UNIT = 5;
 
 // ----------------------------------------------------------------------------
-// nextMainBuilding: building-index round-robin mask
-// ----------------------------------------------------------------------------
-
-// Mask applied to (i+id) when scanning team->myBuildings[]. [POSSIBLE BUG H1]:
-// the mask is 0xFF (256) but Building::MAX_COUNT is 1024; preserved verbatim.
-static constexpr int AI_NUMBI_BUILDING_INDEX_MASK = 0xFF;
-
-// ----------------------------------------------------------------------------
 // nbFreeAround: placement-score knobs
 // ----------------------------------------------------------------------------
 

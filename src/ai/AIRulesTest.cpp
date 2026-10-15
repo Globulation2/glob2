@@ -281,7 +281,7 @@ TEST_CASE("Cabino strategy roles require effective clocks and mobile labor")
     auto* noAttackDamage=world.addUnit(WARRIOR,13,10); REQUIRE(noAttackDamage); noAttackDamage->setPerformance(ATTACK_STRENGTH,0);
     const auto counts=[&] {
         const auto view=AIEngine::AIWorldView::capture(world.game,AIEngine::AIWorldView::captureCatalog(world.game));
-        auto capacityProbe=*view->unitSlots(0)[Unit::GIDtoID(noCapacity->gid)];
+        auto capacityProbe=*view->unitAtSlot(Unit::GIDfrom(Unit::GIDtoID(noCapacity->gid), 0));
         capacityProbe.capabilityFlags|=UnitRuntimeTraits::Transport;
         CHECK_FALSE(AIEngine::ObservationQueries::matchesStrategyUnitRole(*view,capacityProbe,WORKER));
         Cabino::TeamStatsGenerator stats(view.get(),&view->teams[0]);
@@ -368,8 +368,8 @@ TEST_CASE("effective melee threats remain local while reserves require movement"
     Cortex::QueryScratch scratch;Cortex::PlanningIntent intents;MersenneTwister random(713);
     const auto observed=Cortex::observeWorld(random,view.get(),&view->teams[0],scratch,intents,nullptr,0,NOGBID);
     CHECK(observed.freeWarriors==1);
-    CHECK(AIEngine::ObservationQueries::matchesStrategyUnitRole(*view,*view->unitSlots(0)[Unit::GIDtoID(nonRecruitable->gid)],WARRIOR));
-    CHECK(AIEngine::ObservationQueries::matchesStrategyUnitRole(*view,*view->unitSlots(0)[Unit::GIDtoID(stationary->gid)],WARRIOR));
+    CHECK(AIEngine::ObservationQueries::matchesStrategyUnitRole(*view,*view->unitAtSlot(Unit::GIDfrom(Unit::GIDtoID(nonRecruitable->gid), 0)),WARRIOR));
+    CHECK(AIEngine::ObservationQueries::matchesStrategyUnitRole(*view,*view->unitAtSlot(Unit::GIDfrom(Unit::GIDtoID(stationary->gid), 0)),WARRIOR));
     (void)active;
 }
 TEST_CASE("loaded Population counts effective own roles once per hybrid")

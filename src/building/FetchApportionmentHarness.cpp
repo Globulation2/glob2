@@ -60,8 +60,7 @@ static void siteSpreadsItsFetchersAcrossBothResources()
 	const int siteX = 16, siteY = 16;
 	TestBuilding* site = new TestBuilding(siteX, siteY, Building::GIDfrom(0, 0), siteType, team,
 	                                      &globalContainer->buildingsTypes, 8, 8);
-	team->myBuildings[0] = site;
-	team->rebuildLiveLists();
+	team->attachBuilding(0, site);
 	game.map.setBuilding(siteX, siteY, type->width, type->height, site->gid);
 
 	// Wood right beside the site, stone across the map: the layout that made the
@@ -79,8 +78,7 @@ static void siteSpreadsItsFetchersAcrossBothResources()
 		// Spread candidates through the array, including its final slot.
 		const int slot = n * (Unit::MAX_COUNT - 1) / (workers - 1);
 		Unit* unit = new Unit(siteX - 2, siteY - 2 + (n % 5), slot, WORKER, team, 0);
-		team->myUnits[slot] = unit;
-		team->rebuildLiveLists();
+		team->attachUnit(slot, unit);
 		unit->setPerformance(WALK,10);
 		unit->setPerformance(HARVEST,10);
 		unit->activity = Unit::ACT_RANDOM;
@@ -139,8 +137,7 @@ static int hireOneOfTwo(int emptyX, int emptyY, int loadedX, int loadedY, int* e
 	const int siteX = 8, siteY = 8;
 	TestBuilding* site = new TestBuilding(siteX, siteY, Building::GIDfrom(0, 0), siteType, team,
 	                                      &globalContainer->buildingsTypes, 1, 1);
-	team->myBuildings[0] = site;
-	team->rebuildLiveLists();
+	team->attachBuilding(0, site);
 	game.map.setBuilding(siteX, siteY, type->width, type->height, site->gid);
 
 	// Stone only, so the apportionment has exactly one job to staff.
@@ -153,8 +150,7 @@ static int hireOneOfTwo(int emptyX, int emptyY, int loadedX, int loadedY, int* e
 	for (int n = 0; n < 2; ++n)
 	{
 		Unit* unit = new Unit(positions[n][0], positions[n][1], n, WORKER, team, 0);
-		team->myUnits[n] = unit;
-		team->rebuildLiveLists();
+		team->attachUnit(n, unit);
 		unit->setPerformance(WALK,10);
 		unit->setPerformance(HARVEST,10);
 		unit->activity = Unit::ACT_RANDOM;

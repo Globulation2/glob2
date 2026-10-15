@@ -600,12 +600,10 @@ TEST_SUITE("BuildingAreaEffects")
 		auto *next = world.game.teams[1];
 		const int id = Building::GIDtoID(previous);
 		old->removeFromAbilitiesLists(b);
-		old->myBuildings[id] = nullptr;
 		old->detachBuilding(id);
 		b->owner = next;
 		b->gid = Building::GIDfrom(id, 1);
-		next->myBuildings[id] = b;
-		next->attachBuilding(id);
+		next->attachBuilding(id, b);
 		next->addToStaticAbilitiesLists(b);
 		world.game.map.setBuilding(4, 4, b->type->width, b->type->height, b->gid);
 		world.game.areaEffects.changed(previous);

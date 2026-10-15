@@ -137,11 +137,17 @@ void GameGUI::iterateSelection(void)
             if (selectionMode == BUILDING_SELECTION && (!selected || selected->team != localTeamNo)) return;
             const int type = selected ? selected->typeNum : BuildingCatalogView(*drawnScene().buildingTypes).getFinishedTypeNum(toolManager.getBuildingName());
             const int start = selected ? Building::GIDtoID(selected->gid) : -1;
-            for (int n = 1; n <= Building::MAX_COUNT; ++n)
+            // Selection cycling explicitly uses slot-ID order, independently of population order.
+            const SnapshotBuilding* next = nullptr;
+            int bestDistance = Building::MAX_COUNT + 1;
+            for (const auto& b : entities.buildings)
             {
-                const auto* b = entities.building(Building::GIDfrom((start+n)%Building::MAX_COUNT, localTeamNo));
-                if (b && b->typeNum == type) { setSelection(BUILDING_SELECTION, unsigned(b->gid)); centerViewportOnSelection(); break; }
+                if (b.team != localTeamNo || b.typeNum != type) continue;
+                int distance = (Building::GIDtoID(b.gid) - start + Building::MAX_COUNT) % Building::MAX_COUNT;
+                if (!distance) distance = Building::MAX_COUNT;
+                if (distance < bestDistance) { next = &b; bestDistance = distance; }
             }
+            if (next) { setSelection(BUILDING_SELECTION, unsigned(next->gid)); centerViewportOnSelection(); }
         }
         else if (selectionMode == UNIT_SELECTION)
         {
@@ -149,11 +155,15 @@ void GameGUI::iterateSelection(void)
             const auto* selected = ref ? entities.unit(ref->gid) : nullptr;
             if (!selected) return;
             const int start = selected->team == localTeamNo ? Unit::GIDtoID(selected->gid) : 0;
-            for (int n = 1; n < Unit::MAX_COUNT; ++n)
+            const SnapshotUnit* next = nullptr;
+            int bestDistance = Unit::MAX_COUNT;
+            for (const auto& u : entities.units)
             {
-                const auto* u = entities.unit(Unit::GIDfrom((start+n)%Unit::MAX_COUNT, localTeamNo));
-                if (u && u->typeNum == selected->typeNum) { setSelection(UNIT_SELECTION, unsigned(u->gid)); centerViewportOnSelection(); break; }
+                if (u.team != localTeamNo || u.typeNum != selected->typeNum) continue;
+                const int distance = (Unit::GIDtoID(u.gid) - start + Unit::MAX_COUNT) % Unit::MAX_COUNT;
+                if (distance && distance < bestDistance) { next = &u; bestDistance = distance; }
             }
+            if (next) { setSelection(UNIT_SELECTION, unsigned(next->gid)); centerViewportOnSelection(); }
         }
 }
 

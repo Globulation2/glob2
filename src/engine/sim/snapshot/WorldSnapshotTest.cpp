@@ -127,36 +127,45 @@ TEST_SUITE("WorldSnapshot")
         game.gameHeader.getWinningConditions().push_back(std::make_shared<WinningConditionAllies>());
         CHECK(std::string(outcomeReasonKey(game,0))=="[outcome reason ally won]");
     }
-    TEST_CASE("shared entity indices preserve empty slots and canonical record addresses")
+    TEST_CASE("compact population ranges preserve append order and canonical ID lookup")
     {
         glob2test::HeadlessGlobals globals;
-        glob2test::HeadlessGame fixture{glob2test::GameOptions{.wDec=5, .hDec=5, .teams=2, .discovered=true, .clearImmobile=true, .loadDefaultRace=true}};
-        REQUIRE(fixture.addBuilding("inn",4,4,0,0));
-        REQUIRE(fixture.addUnit(WORKER,12,12,0));
-        REQUIRE(fixture.addUnit(WORKER,14,14,1));
+        glob2test::HeadlessGame fixture{glob2test::GameOptions{.wDec=5, .hDec=5, .teams=3, .discovered=true, .clearImmobile=true, .loadDefaultRace=true}};
+        auto* first=fixture.addUnit(WORKER,12,12,0);
+        auto* second=fixture.addUnit(WORKER,13,12,0);
+        REQUIRE(first); REQUIRE(second);
+        const auto reused=first->gid;
+        REQUIRE(fixture.game.removeUnitAndBuildingAndFlags(12,12,unsigned(Game::DEL_UNIT)));
+        auto* appended=fixture.addUnit(WORKER,14,12,0); REQUIRE(appended);
+        REQUIRE(appended->gid==reused); REQUIRE(second->gid>appended->gid);
+        auto* removed=fixture.addBuilding("inn",4,4,0,0);
+        auto* surviving=fixture.addBuilding("inn",8,4,0,0);
+        REQUIRE(removed); REQUIRE(surviving);
+        const auto reusedBuilding=removed->gid;
+        REQUIRE(fixture.game.removeUnitAndBuildingAndFlags(4,4,unsigned(Game::DEL_BUILDING)));
+        auto* last=fixture.addBuilding("inn",4,4,0,0); REQUIRE(last);
+        REQUIRE(last->gid==reusedBuilding);
+        REQUIRE(fixture.addUnit(WORKER,14,14,2));
         const auto captured=SimulationSnapshot::capture(fixture.game,SimulationSnapshot::captureCatalog(fixture.game));
+        CHECK_NOTHROW(SimulationSnapshot::verifyCapture(fixture.game,captured));
         AIEngine::AIWorldView world(captured);
-        for(int team=0;team<2;++team) {
-            const auto buildings=world.buildingSlots(team), invalidBuildings=world.buildingSlots(-1);
-            const auto units=world.unitSlots(team);
-            CHECK(buildings.size()==std::size_t(Building::MAX_COUNT)); CHECK(units.size()==std::size_t(Unit::MAX_COUNT));
-            CHECK(invalidBuildings.size()==0); CHECK(world.unitSlots(2).size()==0);
-            std::size_t slot=0;
-            for(const auto* unit:units) {
-                CHECK(unit==world.unitAtSlot(Uint16(team*Unit::MAX_COUNT+slot)));
-                CHECK(bool(unit)==bool(fixture.game.teams[team]->myUnits[slot]));
-                if(unit) {
-                    CHECK(unit==world.unit(unit->identity));
-                    CHECK(world.unit({unit->identity.gid,unit->identity.generation+1})==nullptr);
-                }
-                ++slot;
+        REQUIRE(world.unitsForTeam(0).size()==2);
+        CHECK(world.unitsForTeam(0)[0]->gid==second->gid);
+        CHECK(world.unitsForTeam(0)[1]->gid==appended->gid);
+        REQUIRE(world.buildingsForTeam(0).size()==2);
+        CHECK(world.buildingsForTeam(0)[0]->gid==surviving->gid);
+        CHECK(world.buildingsForTeam(0)[1]->gid==last->gid);
+        CHECK(world.unitsForTeam(1).empty()); CHECK(world.buildingsForTeam(1).empty());
+        CHECK(world.unitsForTeam(-1).empty()); CHECK(world.buildingsForTeam(3).empty());
+        for(int team=0;team<3;++team) {
+            for(const auto* unit:world.unitsForTeam(team)) {
+                CHECK(unit==world.unitAtSlot(unit->gid));
+                CHECK(unit==world.unit(unit->identity));
+                CHECK(world.unit({unit->identity.gid,unit->identity.generation+1})==nullptr);
             }
-            CHECK(slot==std::size_t(Unit::MAX_COUNT));
-            for(std::size_t i=0;i<buildings.size();++i) {
-                const auto* building=buildings[i];
-                CHECK(building==world.buildingAtSlot(Uint16(team*Building::MAX_COUNT+i)));
-                CHECK(bool(building)==bool(fixture.game.teams[team]->myBuildings[i]));
-                if(building) CHECK(building==world.building(building->identity));
+            for(const auto* building:world.buildingsForTeam(team)) {
+                CHECK(building==world.buildingAtSlot(building->gid));
+                CHECK(building==world.building(building->identity));
             }
         }
         CHECK(world.buildingAtSlot(0xffff)==nullptr); CHECK(world.unitAtSlot(0xffff)==nullptr);
@@ -1067,7 +1076,8 @@ TEST_SUITE("WorldSnapshot")
 			+ entities.units.size() * sizeof(SimulationSnapshot::UnitView)
 			+ entities.projects.size() * sizeof(SimulationSnapshot::BuildProjectView)
 			+ (entities.buildingSlotIndices.size() + entities.unitSlotIndices.size()) * sizeof(Uint32)
-			+ entities.relationships.size() * sizeof(UnitRef);
+			+ entities.relationships.size() * sizeof(UnitRef)
+            + (entities.buildingRanges.size() + entities.unitRanges.size()) * sizeof(SimulationSnapshot::UnitRange);
 		CHECK((freshStore.metrics.bytesCopied - freshBytes)
 			- (reusedStore.metrics.bytesCopied - reusedBytes) == entityBytes);
 		CHECK(reusedStore.metrics.reusedComponents == freshStore.metrics.reusedComponents + 1);
@@ -1167,8 +1177,11 @@ TEST_SUITE("WorldSnapshot")
         check("duplicate unit", [&](auto& entities) { entities.units[1]=entities.units[0]; });
         check("duplicate building", [&](auto& entities) { entities.buildings[1]=entities.buildings[0]; });
         check("unit order", [&](auto& entities) { std::swap(entities.units[0],entities.units[1]); });
+        check("unit team range", [&](auto& entities) { ++entities.unitRanges[0].count; });
+        check("building team range", [&](auto& entities) { entities.buildingRanges.clear(); });
         check("unit lookup", [&](auto& entities) { entities.unitSlotIndices[worker->gid]=SimulationSnapshot::Entities::NoRecord; });
         check("unit team", [&](auto& entities) { entities.units[0].team=1; });
+        check("building team", [&](auto& entities) { entities.buildings[0].team=1; });
         check("unit attack strength", [&](auto& entities) { ++entities.units[0].realAttackStrength; });
         check("working reference", [&](auto& entities) { entities.relationships[entities.buildings[0].working.offset]=Game::refOf(occupant); });
         check("inside reference", [&](auto& entities) { entities.relationships[entities.buildings[0].inside.offset]=Game::refOf(worker); });

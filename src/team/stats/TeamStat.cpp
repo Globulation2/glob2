@@ -1541,9 +1541,8 @@ void TeamStats::sampleDefence(Team *team)
 	std::fill(std::begin(m.warriorLevels), std::end(m.warriorLevels), 0);
 	m.warriorsHurt = m.warriorsFlagged = m.warriorsInside = m.intruders = m.intruderLevels = 0;
 	auto attackLevels = [](const Unit *u) { return Uint64(u->level[ATTACK_SPEED] + u->level[ATTACK_STRENGTH]); };
-	for (int i = 0; i < Unit::MAX_COUNT; ++i)
+	for (Unit *u : team->liveUnits.entries())
 	{
-		Unit *u = team->myUnits[i];
 		if (!u || u->isDead || !u->hasCapability(UnitRuntimeTraits::Melee))
 			continue;
 		const auto place = placeOf(team, u->posX, u->posY);
@@ -1559,9 +1558,8 @@ void TeamStats::sampleDefence(Team *team)
 		const Team *other = team->game->teams[t];
 		if (!other || !(team->enemies & other->me))
 			continue;
-		for (int i = 0; i < Unit::MAX_COUNT; ++i)
+		for (const Unit *u : other->liveUnits.entries())
 		{
-			const Unit *u = other->myUnits[i];
 			if (u && !u->isDead && u->hasCapability(UnitRuntimeTraits::Melee) &&
 				placeOf(team, u->posX, u->posY) == GameplayMeasurements::HOME)
 			{
@@ -1577,10 +1575,10 @@ void TeamStats::refreshMeasurements(Team *team)
 	// Explicit cold refresh also accepts caller-supplied diagnostic counts.
 	rebuildMeasurementCountReset();
 	beginMeasurementSnapshot(team);
-	for (int i = 0; i < Unit::MAX_COUNT; ++i)
-		observeMeasurementUnit(team->myUnits[i]);
-	for (int i = 0; i < Building::MAX_COUNT; ++i)
-		observeMeasurementBuilding(team->myBuildings[i]);
+	for (Unit* unit : team->liveUnits.entries())
+		observeMeasurementUnit(unit);
+	for (Building* building : team->liveBuildings.entries())
+		observeMeasurementBuilding(building);
 	sampleTraps(team);
 	sampleDefence(team);
 }
@@ -1599,9 +1597,8 @@ void TeamStats::sampleTraps(Team *team)
 	static constexpr int offsets[8][2] = {{-1,-1},{0,-1},{1,-1},{-1,0},
 		{1,0},{-1,1},{0,1},{1,1}};
 	Map *map = team->map;
-	for (int i = 0; i < Unit::MAX_COUNT; ++i)
+	for (Unit *u : team->liveUnits.entries())
 	{
-		Unit *u = team->myUnits[i];
 		if (!u || u->isDead) continue;
 		for (int band = 0; band < 3; ++band)
 		{
@@ -1660,9 +1657,8 @@ void TeamStats::sampleTraps(Team *team)
 		if (structural) ++m.trappedUnits[0][u->typeNum];
 		if (current) ++m.trappedUnits[1][u->typeNum];
 	}
-	for (int i = 0; i < Building::MAX_COUNT; ++i)
+	for (Building *b : team->liveBuildings.entries())
 	{
-		Building *b = team->myBuildings[i];
 		if (!b || b->type->isVirtual || b->buildingState == Building::DEAD) continue;
 		for (int swim = 0; swim < 2; ++swim)
 		{
@@ -1687,9 +1683,8 @@ void TeamStats::sampleTraps(Team *team)
 		(coverageBuildingTick != m.tick || (m.tick == 0 && coverageBuildings.empty())))
 	{
 		std::vector<CoverageBuilding> latest;
-		for (int i = 0; i < Building::MAX_COUNT; ++i)
+		for (Building *b : team->liveBuildings.entries())
 		{
-			Building *b = team->myBuildings[i];
 			if (b && !b->type->isVirtual && b->buildingState != Building::DEAD)
 				latest.push_back({b->posX,b->posY,b->type->width,b->type->height});
 		}
