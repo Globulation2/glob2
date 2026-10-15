@@ -25,7 +25,12 @@ namespace Utilities
 
 		//! Number of whole bytes needed to hold `v` bits, i.e. ceil(v/8).
 		size_t bitToByte(size_t v) const;
-		void assertPos(size_t pos) const;
+		void reportInvalidPos(size_t pos) const;
+		void assertPos(size_t pos) const
+		{
+			if (pos / BITS_PER_BYTE >= values.size())
+				reportInvalidPos(pos);
+		}
 
 	public:
 		BitArray() { bitLength = 0; }
@@ -33,8 +38,29 @@ namespace Utilities
 		void resize(size_t size, bool defaultValue = false);
 		size_t getBitLength(void) const { return bitLength; }
 		size_t getByteLength(void) const { return values.size(); }
-		void set(size_t pos, bool value);
-		bool get(size_t pos) const;
+		//! Sets bit `pos` to `value`. See the class comment for bit ordering.
+		void set(size_t pos, bool value)
+		{
+			assertPos(pos);
+
+			size_t wordPos = pos / BITS_PER_BYTE;
+			size_t bitPos = pos % BITS_PER_BYTE;
+
+			if (value)
+				values[wordPos] |= (1<<bitPos);
+			else
+				values[wordPos] &= ~(1<<bitPos);
+		}
+		//! Returns bit `pos`. See the class comment for bit ordering.
+		bool get(size_t pos) const
+		{
+			assertPos(pos);
+
+			size_t wordPos = pos / BITS_PER_BYTE;
+			size_t bitPos = pos % BITS_PER_BYTE;
+
+			return (values[wordPos] & (1<<bitPos)) != 0;
+		}
 		//! Writes getByteLength() == ceil(getBitLength()/8) BYTES to `stream`.
 		//! The bit length itself is not written — the caller must transmit it
 		//! out-of-band and pass it back to deserialize() as `bitCount`.
