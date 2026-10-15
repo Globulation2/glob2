@@ -4,6 +4,7 @@
 #pragma once
 
 #include "IntrusiveEntityList.h"
+#include "TeamCapacity.h"
 #include <SDL3/SDL_iostream.h>
 #include <CooperativeTask.h>
 
@@ -38,7 +39,7 @@ public:
 	//! Live team and controller capacity. This is independent of historical save
 	//! layouts and generator density limits. Verify changes using
 	//! docs/development/headless-replays.md, including save continuation.
-	static const int MAX_COUNT=16;
+	static const int MAX_COUNT=TEAM_MAX_COUNT;
 
 	//! Slot count of the GameHeader player/ally arrays. Only the first
 	//! MAX_COUNT are populated; the rest are padding that keeps the file

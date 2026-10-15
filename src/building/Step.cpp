@@ -9,6 +9,7 @@
 #include <climits>
 
 #include "Building.h"
+#include "MaterialDemand.h"
 #include "FetchApportionment.h"
 #include "HiringPlanner.h"
 #include "BuildingType.h"
@@ -21,11 +22,15 @@
 void Building::step(void)
 {
 	if (type->isBuildingSite && (siteCompletionPending || type->useTeamMaterials)) updateBuildingSite();
-	computeWishedMaterials(wishedMaterials);
-	if (((owner->game->stepCounter + gid) & 255) == 0)
-		freeIdleGradients();
-
-	updateCallLists();
+	{
+		// Site completion above can change the type and stock. Reuse demand only
+		// for this operation, before the later production and worker updates.
+		const auto demand = materialDemand();
+		computeWishedMaterials(wishedMaterials, demand);
+		if (((owner->game->stepCounter + gid) & 255) == 0)
+			freeIdleGradients();
+		updateCallLists(demand);
+	}
 	if(underAttackTimer>0)
 		underAttackTimer--;
 	if(canNotConvertUnitTimer>0)
@@ -198,7 +203,7 @@ int Building::workRoleTarget(int role) const
 {
 	bool delivery = false;
 	for (int material = 0; material < MaterialCount; ++material)
-		delivery |= materialDeliveryNeed(material) > 0;
+		if (materialDeliveryNeed(material) > 0) { delivery = true; break; }
 	const auto targets = Hiring::roleTargets(
 		unsigned(std::max(0, desiredMaxUnitWorking)), delivery,
 		{runtime->attractsRole(0), runtime->attractsRole(1), runtime->attractsRole(2)});

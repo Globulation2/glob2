@@ -9,6 +9,7 @@
 #include <climits>
 
 #include "Building.h"
+#include "MaterialDemand.h"
 #include "BuildingType.h"
 #include "FixedPoint.h"
 #include "Game.h"
@@ -243,11 +244,15 @@ void Building::updateUnitsHarvesting(void)
 
 void Building::update(void)
 {
-	computeWishedMaterials(wishedMaterials);
-	if (buildingState==DEAD)
-		return;
-	desiredMaxUnitWorking = desiredNumberOfWorkers();
-	updateCallLists();
+	{
+		// Wishes, staffing and fullness observe the same inventory. End the
+		// summary's lifetime before worker or construction updates can change it.
+		const auto demand = materialDemand();
+		computeWishedMaterials(wishedMaterials, demand);
+		if (buildingState==DEAD)
+			return;
+		updateCallLists(demand);
+	}
 	updateUnitsWorking();
 	updateUnitsHarvesting();
 	updateConstructionState();
@@ -485,16 +490,15 @@ int Building::desiredNumberOfWorkers(void)
 	}
 	//Otherwise, this building gets what the user desires, up to a limit derived from the needed material deliveries,
 	//thus if no materials are needed, then no units will be working here.
-	int neededMaterialsSum = 0;
-	for (size_t ri = 0; ri < MaterialCount; ri++)
-	{
-		int neededMaterials = (materialDeliveryNeed(ri) + type->materialMultiplier[ri] - 1) / type->materialMultiplier[ri];
-		if (neededMaterials > 0)
-			neededMaterialsSum += neededMaterials;
-	}
-	int user_num = std::min(maxUnitWorking, type->semantics.assignmentLimit);
-	int max_considering_materials = (WISHED_MATERIAL_NUM * neededMaterialsSum) / WISHED_MATERIAL_DEN;
-	return std::min(user_num, max_considering_materials);
+	return desiredNumberOfWorkers(materialDemand());
 }
 
+int Building::desiredNumberOfWorkers(const BuildingMaterialDemand& demand) const
+{
+	int user_num = std::min(maxUnitWorking, type->semantics.assignmentLimit);
+	if (runtime->attractionRoles) return user_num;
+	// Unlike wishes, staffing rounds once after summing real-material deliveries.
+	int max_considering_materials = (WISHED_MATERIAL_NUM * demand.totalDeliveries) / WISHED_MATERIAL_DEN;
+	return std::min(user_num, max_considering_materials);
+}
 

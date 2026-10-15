@@ -2,30 +2,6 @@
 // Copyright (C) 2001-2004 Stephane Magnenat & Luc-Olivier de Charrière
 
 #include "BuildingUtils.h"
-#include "Team.h"
-
-// 0xffff is the map's empty-entity sentinel; valid GIDs must remain below it.
-static_assert(BuildingUtils::MAX_COUNT * Team::MAX_COUNT <= UINT16_MAX);
-
-
-Sint32 BuildingUtils::GIDtoID(Uint16 gid)
-{
-	assert(gid < BuildingUtils::MAX_COUNT * Team::MAX_COUNT);
-	return gid % BuildingUtils::MAX_COUNT;
-}
-
-Sint32 BuildingUtils::GIDtoTeam(Uint16 gid)
-{
-	assert(gid < BuildingUtils::MAX_COUNT * Team::MAX_COUNT);
-	return gid / BuildingUtils::MAX_COUNT;
-}
-
-Uint16 BuildingUtils::GIDfrom(Sint32 id, Sint32 team)
-{
-	assert(id < BuildingUtils::MAX_COUNT);
-	assert(team < Team::MAX_COUNT);
-	return id + team * BuildingUtils::MAX_COUNT;
-}
 
 void BuildingUtils::turretScanTile(int posX, int posY, int ring, int offset,
                                    int octant, int& outX, int& outY)

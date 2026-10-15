@@ -578,7 +578,6 @@ CLIENT_SOURCES = (
     'unit/render/ColonySkinPreview.cpp',
     'unit/UnitStats.cpp',
     'unit/types/UnitType.cpp',
-    'unit/UnitUtils.cpp',
     'common/Utilities.cpp',
     'audio/VoiceRecorder.cpp',
     'team/stats/WinProbability.cpp',

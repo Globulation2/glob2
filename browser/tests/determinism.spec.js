@@ -285,7 +285,7 @@ for (const variant of ['serial', 'threaded']) {
           ENV.GLOB2_USER_DATA_DIR='/evidence/profile';ENV.GLOB2_TEST_ARTIFACTS_ROOT='/evidence/cases';}],
         async onRuntimeInitialized(){
           try {window.result={exit:(await Module.start([
-            '--test-suite=BuildingCatalog,BuildingCatalogFixtures,BuildingServices,BuildingProductionCombat,AICustomCatalog',
+            '--test-suite=BuildingCatalog,BuildingCatalogFixtures,BuildingServices,BuildingProductionCombat,BuildingMaterialDemand,AICustomCatalog',
             '--test-case-exclude=*display*,*benchmark*','--reporters=junit','--out=/evidence/tests.xml']))??0};}
           catch(error){window.result={error:String(error)};}
           window.result.xml=FS.readFile('/evidence/tests.xml',{encoding:'utf8'});
@@ -307,6 +307,7 @@ for (const variant of ['serial', 'threaded']) {
     expect(result.error).toBeUndefined(); expect(result.exit).toBe(0);
     expect(result.xml).toMatch(/failures="0"/); expect(result.xml).toMatch(/errors="0"/);
     expect(result.xml).toContain('retained seeded compositions preserve full simulation continuation');
+    expect(result.xml).toContain('per material rounding differs from aggregate staffing and wishes can be negative');
   });
 }
 

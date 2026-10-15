@@ -4,13 +4,32 @@
 #pragma once
 
 #include <SDL3_net/SDL_net.h>
+#include "TeamCapacity.h"
+#include <cassert>
+#include <cstdint>
 
 class BuildingUtils
 {
  public:
-	static Sint32 GIDtoID(Uint16 gid);
-	static Sint32 GIDtoTeam(Uint16 gid);
-	static Uint16 GIDfrom(Sint32 id, Sint32 team);
+	// Header definitions let hot entity/map loops fold GID arithmetic into callers.
+	static Sint32 GIDtoID(Uint16 gid)
+	{
+		assert(gid < MAX_COUNT * TEAM_MAX_COUNT);
+		return gid % MAX_COUNT;
+	}
+
+	static Sint32 GIDtoTeam(Uint16 gid)
+	{
+		assert(gid < MAX_COUNT * TEAM_MAX_COUNT);
+		return gid / MAX_COUNT;
+	}
+
+	static Uint16 GIDfrom(Sint32 id, Sint32 team)
+	{
+		assert(id < MAX_COUNT);
+		assert(team < TEAM_MAX_COUNT);
+		return id + team * MAX_COUNT;
+	}
 
 	/// Map an octant index (0..7) plus a (ring, offset) pair to the tile
 	/// coordinate it addresses around a turret at (posX, posY). Pure integer
@@ -23,4 +42,5 @@ class BuildingUtils
 	static const int MAX_COUNT = 1024;
 };
 
-
+// 0xffff is the map's empty-entity sentinel; valid GIDs must remain below it.
+static_assert(BuildingUtils::MAX_COUNT * TEAM_MAX_COUNT <= UINT16_MAX);
