@@ -1,0 +1,7 @@
+PASS glob2-unit-tests HiringRanking (2 cases) (0.0s)
+PASS glob2-unit-tests TurnMatchRecord (3 cases) (0.0s)
+PASS glob2-unit-tests ReplayStepCounter (7 cases) (0.0s)
+PASS glob2-unit-tests PlatformProtocol (8 cases) (0.0s)
+
+4 passed, 0 failed, 0 skipped (0.1s of test time)
+[run_tests] JUnit report: artifacts/hiring-k1r4/pr-unit.xml (20 cases)

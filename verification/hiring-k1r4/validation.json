@@ -1,0 +1,45 @@
+{
+  "base": "054804590ee1dd109f09642fc05654c324f08344",
+  "platform": "Linux-7.0.0-38-generic-x86_64-with-glibc2.39",
+  "compiler": "g++ (Ubuntu 13.3.0-6ubuntu2~24.04.1) 13.3.0",
+  "settings": {
+    "K": 1,
+    "R": 4,
+    "shortlist_extras": 2,
+    "retry_ticks": 8
+  },
+  "patch_sha256": "d22105cb067dc80487a621799cab1566a451c451eb0669f9e400d43a2daf595e",
+  "build": {
+    "command": "python3 tools/dev_build.py --build=artifacts/hiring-k1r4/build engine-tests unit-tests -j12",
+    "flags": "dev_fast=1 linker=auto; focused correctness validation only",
+    "SDL_prefix": "/home/bradley/glob2/build/sdl3/prefix",
+    "dependency_store": "Existing pinned dependencies reused read-only through local dev-store links",
+    "asset_encoder": "/home/bradley/.local/share/glob2/development/caches/asset-encoder-runtime-assets-v1-py3.12/venv/bin/python"
+  },
+  "validation": {
+    "engine_cases": 39,
+    "unit_cases": 20,
+    "failures": 0,
+    "golden_record_regenerated_and_verified": true,
+    "sim_revision_check": true,
+    "diff_check": true
+  },
+  "coverage": [
+    "Publication deadline and no early publication",
+    "Per-tick game/hiring checksum equality across 1/2/4/8 participants on Linux",
+    "Save/load round trips at every tested phase",
+    "Vacancies plus two shortlist and ranking",
+    "Replay floor/ceiling and sim-version protocols",
+    "Golden match verification"
+  ],
+  "limits": [
+    "Linux x86_64 only; other native and browser platforms not tested",
+    "Prior four-tick hiring save compatibility intentionally not retained, as authorized"
+  ],
+  "tested_commit": "edec427347a69a42f8a190354b70b414f2c6d876",
+  "review": "Independent subagent found no actionable findings; committed diff matches reviewed eight files. Parent confirmed PR head SHA.",
+  "binary_sha256": {
+    "glob2-engine-tests": "63d8504fd434839fc509f34dbc1ab5c5818592d16cdbf908632c2a520472958e",
+    "glob2-unit-tests": "274f2d505e827bf396447ba040cea8bcaf507ab2f2ec588a34ca7d9b1fa2cb2e"
+  }
+}
