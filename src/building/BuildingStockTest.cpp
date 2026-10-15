@@ -11,6 +11,8 @@
 #include <algorithm>
 #include <memory>
 #include <fstream>
+#include <vector>
+#include <string_view>
 #include <nlohmann/json.hpp>
 
 namespace {
@@ -19,8 +21,47 @@ struct HistoricalStockOutput : GAGCore::BinaryOutputStream {
     int slot;
     Sint32 stock;
     int version;
+    std::vector<std::string> sections;
     HistoricalStockOutput(GAGCore::MemoryStreamBackend* bytes,int slot,Sint32 stock,int version=VERSION_MINOR)
         : BinaryOutputStream(bytes),slot(slot),stock(stock),version(version) {}
+    bool legacyTargeting() const {
+        return version>=FILE_FORMAT_VERSION_TURRET_TARGETING && version<FILE_FORMAT_VERSION_LEAN_TURRET_TARGETING;
+    }
+    void writeEnterSection(std::string_view name) override { sections.emplace_back(name); }
+    void writeEnterSection(unsigned) override { sections.emplace_back(); }
+    void writeLeaveSection(size_t count=1) override {
+        REQUIRE(count<=sections.size());
+        sections.resize(sections.size()-count);
+    }
+    bool omitHiring() const {
+        return version<FILE_FORMAT_VERSION_CACHED_HIRING &&
+            std::find(sections.begin(),sections.end(),"HiringPipeline")!=sections.end();
+    }
+    void write(const void* data,size_t size,std::string_view name) override {
+        // Relabeling today's header alone is insufficient: old saves precede
+        // cached hiring and still contain the removed turret epoch and flags.
+        if(omitHiring()) return;
+        BinaryOutputStream::write(data,size,name);
+    }
+    void writeEndianIndependent(const void* data,size_t size,std::string_view name) override {
+        if(omitHiring()) return;
+        BinaryOutputStream::writeEndianIndependent(data,size,name);
+    }
+    void writeUint32(Uint32 value,std::string_view name) override {
+        if(legacyTargeting() && !sections.empty() && sections.back()=="turretTargeting" &&
+           (name=="publishedCount" || name=="pendingCount"))
+            REQUIRE(value==0); // These migration fixtures have never stepped a turret pipeline.
+        BinaryOutputStream::writeUint32(value,name);
+        if(legacyTargeting() && name=="typeNum" && !sections.empty() && sections.back()=="Building")
+            BinaryOutputStream::writeUint32(1,"targetingEpoch");
+    }
+    void writeUint8(Uint8 value,std::string_view name) override {
+        if(legacyTargeting() && name=="admitted" && !sections.empty() && sections.back()=="turretTargeting") {
+            BinaryOutputStream::writeUint8(1,"forecast");
+            BinaryOutputStream::writeUint8(1,"reusePreparation");
+        }
+        BinaryOutputStream::writeUint8(value,name);
+    }
     void writeSint32(Sint32 value,std::string_view name) override {
         if(name=="versionMinor") value=version;
         if(name=="localRessource["+std::to_string(slot)+"]") value=stock;
@@ -151,7 +192,7 @@ TEST_SUITE("BuildingStock")
     }
     TEST_CASE("canceled entering services preserve ground and air occupancy across resave [save-format][artifacts]") {
         glob2test::HeadlessGlobals globals;
-        // Formats 159, 160 and 161 share stream fields; only 159 predates bounded stock.
+        // The historical writer restores the old layout; only 159 predates bounded stock.
         for(int version:{FILE_FORMAT_VERSION_TURRET_TARGETING,160,VERSION_MINOR})
             for(int unitType:{WORKER,EXPLORER}) {
                 CAPTURE(version);CAPTURE(unitType);
