@@ -1323,7 +1323,7 @@ TEST_CASE("GradientPreparation/modified terrain costs remain exact when field ob
             CHECK(output==expected);
             if(deviceReady) {
                 INFO("OpenCL readiness can change on failure: " << openCLStatus().error);
-                CAPTURE(openCLStatus().available,openCLStatus().budgetDeclines,openCLStatus().requiredCancellations);
+                CAPTURE(openCLStatus().available); CAPTURE(openCLStatus().budgetDeclines); CAPTURE(openCLStatus().requiredCancellations);
                 CHECK(openCLStatus().committedFields==completed+1);
             }
         }
