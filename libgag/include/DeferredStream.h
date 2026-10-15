@@ -116,7 +116,7 @@ class DeferredStream : public BinaryOutputStream
 	}
 	// Backpatches may rewrite the same offset. Keep its latest captured target;
 	// ordinary integers, even ones with the same field name, are not relocated.
-	void writeOffset32(Uint32 value, const std::string name) override
+	void writeOffset32(Uint32 value, std::string_view name) override
 	{
 		pointers[getPosition()] = value;
 		BinaryOutputStream::writeUint32(value, name);

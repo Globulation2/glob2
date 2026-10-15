@@ -6,6 +6,7 @@
 // For U/SintNN
 #include "Types.h"
 #include <string>
+#include <string_view>
 #include <stdexcept>
 
 namespace GAGCore
@@ -29,34 +30,37 @@ namespace GAGCore
 	{
 	public:
 		virtual ~OutputStream() { }
+
+		// Field names are borrowed for the call. Implementations that retain a
+		// name must copy it; binary/checksum streams do not encode names.
 		
-		virtual void write(const void *data, const size_t size, const std::string name) = 0;
-		virtual void writeSint8(const Sint8 v, const std::string name) = 0;
-		virtual void writeUint8(const Uint8 v, const std::string name) = 0;
-		virtual void writeSint16(const Sint16 v, const std::string name) = 0;
-		virtual void writeUint16(const Uint16 v, const std::string name) = 0;
-		virtual void writeSint32(const Sint32 v, const std::string name) = 0;
-		virtual void writeUint32(const Uint32 v, const std::string name) = 0;
+		virtual void write(const void *data, const size_t size, std::string_view name) = 0;
+		virtual void writeSint8(const Sint8 v, std::string_view name) = 0;
+		virtual void writeUint8(const Uint8 v, std::string_view name) = 0;
+		virtual void writeSint16(const Sint16 v, std::string_view name) = 0;
+		virtual void writeUint16(const Uint16 v, std::string_view name) = 0;
+		virtual void writeSint32(const Sint32 v, std::string_view name) = 0;
+		virtual void writeUint32(const Uint32 v, std::string_view name) = 0;
 		//! A byte offset into this stream. Deferred encoders relocate the target
 		//! after expanding placeholders; ordinary binary/text streams write it
 		//! exactly as a uint32. Field names never determine relocation behavior.
-		virtual void writeOffset32(const Uint32 value, const std::string name)
+		virtual void writeOffset32(const Uint32 value, std::string_view name)
 		{
 			writeUint32(value, name);
 		}
-		virtual void writeFloat(const float v, const std::string name) = 0;
-		virtual void writeDouble(const double v, const std::string name) = 0;
-		virtual void writeText(const std::string &v, const std::string name) = 0;
+		virtual void writeFloat(const float v, std::string_view name) = 0;
+		virtual void writeDouble(const double v, std::string_view name) = 0;
+		virtual void writeText(const std::string &v, std::string_view name) = 0;
 		
 		virtual void flush(void) = 0;
 		
-		virtual void writeEnterSection(const std::string name) = 0;
+		virtual void writeEnterSection(std::string_view name) = 0;
 		virtual void writeEnterSection(unsigned id) = 0;
 		virtual void writeLeaveSection(size_t count = 1) = 0;
 
 		//! Writes count values, each in its own numbered section, as
 		//! writeUint16 would. Streams that store no sections may batch them.
-		virtual void writeUint16Sections(const Uint16 *values, size_t count, const std::string name)
+		virtual void writeUint16Sections(const Uint16 *values, size_t count, std::string_view name)
 		{
 			for (size_t i = 0; i < count; ++i)
 			{

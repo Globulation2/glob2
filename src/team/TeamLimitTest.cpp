@@ -330,7 +330,7 @@ TEST_CASE("script generation slot counts reject missing capacity and truncated p
     {
         using BinaryOutputStream::BinaryOutputStream;
         size_t slotsOffset = 0;
-        void writeUint32(Uint32 value, const std::string name) override
+        void writeUint32(Uint32 value, std::string_view name) override
         {
             if (name == "teamSlots") slotsOffset = getPosition();
             BinaryOutputStream::writeUint32(value, name);

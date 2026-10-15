@@ -22,26 +22,26 @@ namespace GAGCore
 		BinaryOutputStream(StreamBackend *backend) { this->backend = backend; doingSHA1 = false;}
 		virtual ~BinaryOutputStream() { delete backend; }
 	
-		virtual void write(const void *data, const size_t size, const std::string name);
+		virtual void write(const void *data, const size_t size, std::string_view name);
 	
-		virtual void writeEndianIndependent(const void *v, const size_t size, const std::string name);
+		virtual void writeEndianIndependent(const void *v, const size_t size, std::string_view name);
 	
-		virtual void writeSint8(const Sint8 v, const std::string name) { this->write(&v, 1, name); }
-		virtual void writeUint8(const Uint8 v, const std::string name) { this->write(&v, 1, name); }
-		virtual void writeSint16(const Sint16 v, const std::string name) { this->writeEndianIndependent(&v, 2, name); }
-		virtual void writeUint16(const Uint16 v, const std::string name) { this->writeEndianIndependent(&v, 2, name); }
-		virtual void writeSint32(const Sint32 v, const std::string name) { this->writeEndianIndependent(&v, 4, name); }
-		virtual void writeUint32(const Uint32 v, const std::string name) { this->writeEndianIndependent(&v, 4, name); }
-		virtual void writeFloat(const float v, const std::string name) { this->writeEndianIndependent(&v, 4, name); }
-		virtual void writeDouble(const double v, const std::string name) { this->writeEndianIndependent(&v, 8, name); }
-		virtual void writeText(const std::string &v, const std::string name);
+		virtual void writeSint8(const Sint8 v, std::string_view name) { this->write(&v, 1, name); }
+		virtual void writeUint8(const Uint8 v, std::string_view name) { this->write(&v, 1, name); }
+		virtual void writeSint16(const Sint16 v, std::string_view name) { this->writeEndianIndependent(&v, 2, name); }
+		virtual void writeUint16(const Uint16 v, std::string_view name) { this->writeEndianIndependent(&v, 2, name); }
+		virtual void writeSint32(const Sint32 v, std::string_view name) { this->writeEndianIndependent(&v, 4, name); }
+		virtual void writeUint32(const Uint32 v, std::string_view name) { this->writeEndianIndependent(&v, 4, name); }
+		virtual void writeFloat(const float v, std::string_view name) { this->writeEndianIndependent(&v, 4, name); }
+		virtual void writeDouble(const double v, std::string_view name) { this->writeEndianIndependent(&v, 8, name); }
+		virtual void writeText(const std::string &v, std::string_view name);
 		
 		virtual void flush(void) { backend->flush(); }
 		
-		virtual void writeEnterSection(const std::string name) { }
+		virtual void writeEnterSection(std::string_view name) { }
 		virtual void writeEnterSection(unsigned id) { }
 		virtual void writeLeaveSection(size_t count = 1) { }
-		virtual void writeUint16Sections(const Uint16 *values, size_t count, const std::string name);
+		virtual void writeUint16Sections(const Uint16 *values, size_t count, std::string_view name);
 		
 		void enableSHA1();
 		void finishSHA1(Uint8 sha1[20]);
