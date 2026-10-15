@@ -20,6 +20,7 @@
 #include "Unit.h"
 #include "Utilities.h"
 #include "Order.h"
+#include <bit>
 
 int Building::constructionMaterialNeed(int r) const
 {
@@ -50,8 +51,13 @@ int Building::materialDeliveryNeed(int r) const
 BuildingMaterialDemand Building::materialDemand() const
 {
 	BuildingMaterialDemand demand;
-	for (unsigned r=0; r<MaterialSlotCount; ++r)
+	// Sites can demand dynamic budgets, independently of replenishment semantics.
+	// Ordinary buildings need only the catalog's replenishment slots.
+	unsigned candidates = type->isBuildingSite ? (1u<<MaterialSlotCount)-1 : runtime->replenishMaterialMask;
+	while (candidates)
 	{
+		const unsigned r = std::countr_zero(candidates);
+		candidates &= candidates-1;
 		const int missing = materialDeliveryNeed(r);
 		if (!missing) continue;
 		demand.missingMaterials |= MaterialMask(1u<<r);
