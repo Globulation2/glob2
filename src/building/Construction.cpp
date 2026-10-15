@@ -22,36 +22,6 @@
 #include "Order.h"
 #include <bit>
 
-int Building::constructionMaterialNeed(int r) const
-{
-	return type->isBuildingSite ? std::max(0, constructionBudget[r]-constructionReserved[r]) : 0;
-}
-
-int Building::materialDeliveryTarget(int r) const
-{
-	return type->isBuildingSite && (constructionBudget[r] || type->semantics.constructionCost[r]) ? constructionBudget[r] : (runtime->replenishMaterialMask & (1u<<r)) ? type->maxMaterial[r] : 0;
-}
-
-int Building::materialDeliveryNeed(int r) const
-{
-	const bool construction = type->isBuildingSite && (constructionBudget[r] || type->semantics.constructionCost[r]);
-	// A slot outside the replenishment policy cannot request a delivery. Sites
-	// still use their live budget, even when the catalog does not replenish it.
-	if (!construction && (!(runtime->replenishMaterialMask & (1u<<r)) || !type->maxMaterial[r]))
-		return 0;
-	const int stock = material(r);
-	const Sint64 room = std::max<Sint64>(0, Sint64(materialStockLimit()) - stock);
-	if (construction)
-	{
-		// Construction can use unreserved stock already here. Repairs consume
-		// new deliveries directly, so existing inventory cannot satisfy them.
-		const int reserved = type->useTeamMaterials ? owner->reservedTeamMaterials[r] : reservedMaterials[r];
-		const int uncommitted = constructionResultState == REPAIR ? 0 : std::max(0, stock-reserved);
-		return Sint32(std::min<Sint64>(room, std::max(0, constructionMaterialNeed(r)-uncommitted)));
-	}
-	return Sint32(std::min<Sint64>(room, std::max(0, type->maxMaterial[r]-stock)));
-}
-
 BuildingMaterialDemand Building::materialDemand() const
 {
 	BuildingMaterialDemand demand;
@@ -74,6 +44,7 @@ BuildingMaterialDemand Building::materialDemand() const
 	}
 	return demand;
 }
+
 
 void Building::fundConstructionFromInventory()
 {

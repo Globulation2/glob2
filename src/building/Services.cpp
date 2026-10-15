@@ -4,15 +4,8 @@
 #include "Game.h"
 #include "Team.h"
 #include "Unit.h"
-#include <algorithm>
 #include <bit>
 #include <stdexcept>
-
-Sint32 Building::availableMaterial(int resource) const
-{
-	const auto reserved = type->useTeamMaterials ? owner->reservedTeamMaterials[resource] : reservedMaterials[resource];
-	return std::max(0, material(resource) - reserved);
-}
 
 bool Building::restoreMaterialsReservation(const BuildingMaterialCost& cost)
 {

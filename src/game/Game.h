@@ -10,6 +10,8 @@
 #include <span>
 
 #include "Map.h"
+#include "Building.h"
+#include "Unit.h"
 #include "UnitCatalog.h"
 #include "UnitCargo.h"
 #include "sim/snapshot/SnapshotStore.h"
@@ -350,8 +352,27 @@ public:
 	Unit* getUnit(int guid);
 	///Client handles (see sim/EntityRef.h). resolve* returns null when the
 	///entity is gone or its slot now holds a different entity.
-	static BuildingRef refOf(const Building *b);
-	static UnitRef refOf(const Unit *u);
+	// Keep these factories visible to snapshot loops in builds without LTO.
+	static BuildingRef refOf(const Building *b)
+	{
+		BuildingRef ref;
+		if (b)
+		{
+			ref.gid = b->gid;
+			ref.generation = b->scriptIdentity;
+		}
+		return ref;
+	}
+	static UnitRef refOf(const Unit *u)
+	{
+		UnitRef ref;
+		if (u)
+		{
+			ref.gid = u->gid;
+			ref.generation = u->scriptIdentity;
+		}
+		return ref;
+	}
 	Building *resolveBuilding(BuildingRef ref) const;
 	Unit *resolveUnit(UnitRef ref) const;
 
