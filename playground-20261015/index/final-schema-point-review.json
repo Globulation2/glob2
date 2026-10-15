@@ -1,0 +1,153 @@
+{
+  "approved": true,
+  "state": "final_PG448_schema_points_source_metadata_verified",
+  "report_sha256": "92d9c13d233f7ad17a562bdbc05170ae8c835f22bb1270d92f156fb7e883a18c",
+  "result_receipt_sha256": "7e28fce94ea149ae5ac2b19c74bdec01737de471b4cf13bc40374ad453471bf3",
+  "publication_summary_sha256": "f5110cefcef5811ad330403836c485c29dd22c323901df88a80f0474c8cbca3d",
+  "runs": 448,
+  "roles": [
+    "baseline",
+    "wake-only",
+    "first-steal",
+    "local-completion-round-robin",
+    "local-completion-steal",
+    "local-priority-steal",
+    "weighted-fixed-no-steal",
+    "weighted-fixed-steal",
+    "weighted-two-choice",
+    "weighted-last",
+    "weighted-ewma",
+    "weighted-clock-only",
+    "weighted-observe-only",
+    "weighted-bare-steal"
+  ],
+  "all_winners": 448,
+  "caps": 0,
+  "matched_outcome_seed_sets": 32,
+  "metric_point_and_adverse_checks": 126,
+  "current_source_files_verified": [
+    {
+      "label": "first-steal-source",
+      "file": "src/app/Glob2.cpp",
+      "sha256": "06e6919eae114d35bce6e77b517283d1e41659afc8e45002cbcade532c55cdf0"
+    },
+    {
+      "label": "first-steal-source",
+      "file": "src/common/ComputeExecutor.h",
+      "sha256": "fdd475c70671a5d81ae2bba4630bd790d9aec9bcd2beab71bf5be784c1f9a6a4"
+    },
+    {
+      "label": "first-steal-source",
+      "file": "src/common/ComputeExecutorHarness.cpp",
+      "sha256": "0db3068a2c3efa0b9a794602fe5c2b914e185b8d7d466d5ff344f8fd6bee6a17"
+    },
+    {
+      "label": "first-steal-source",
+      "file": "src/engine/EngineRun.cpp",
+      "sha256": "e77d2120514f8397a5cb88313bc466d23174ed4eff82338797b2dc81020a8d2b"
+    },
+    {
+      "label": "local-source",
+      "file": "src/app/Glob2.cpp",
+      "sha256": "06e6919eae114d35bce6e77b517283d1e41659afc8e45002cbcade532c55cdf0"
+    },
+    {
+      "label": "local-source",
+      "file": "src/common/ComputeExecutor.h",
+      "sha256": "cb66dfda4c3e7644e5200eac2615ed3763ede617e497f9532be9bf593ba0b06f"
+    },
+    {
+      "label": "local-source",
+      "file": "src/common/ComputeExecutorHarness.cpp",
+      "sha256": "700d72f5d6accb439107e52de0eefa7a2d6cc42067d54d94feff673b696c9c87"
+    },
+    {
+      "label": "local-source",
+      "file": "src/engine/EngineRun.cpp",
+      "sha256": "e77d2120514f8397a5cb88313bc466d23174ed4eff82338797b2dc81020a8d2b"
+    },
+    {
+      "label": "priority-source",
+      "file": "src/app/Glob2.cpp",
+      "sha256": "06e6919eae114d35bce6e77b517283d1e41659afc8e45002cbcade532c55cdf0"
+    },
+    {
+      "label": "priority-source",
+      "file": "src/common/ComputeExecutor.h",
+      "sha256": "9f53e57b7f70ca140245a6d03e024cf610b08c95734ce79296b4feafbb2591d7"
+    },
+    {
+      "label": "priority-source",
+      "file": "src/common/ComputeExecutorHarness.cpp",
+      "sha256": "700d72f5d6accb439107e52de0eefa7a2d6cc42067d54d94feff673b696c9c87"
+    },
+    {
+      "label": "priority-source",
+      "file": "src/engine/EngineRun.cpp",
+      "sha256": "e77d2120514f8397a5cb88313bc466d23174ed4eff82338797b2dc81020a8d2b"
+    },
+    {
+      "label": "weighted-source",
+      "file": "src/ai/engine/AIOrderScheduler.cpp",
+      "sha256": "2e95bf7ded131d390001f9937497d32aa81fee16409340f764149949dc657c57"
+    },
+    {
+      "label": "weighted-source",
+      "file": "src/app/Glob2.cpp",
+      "sha256": "06e6919eae114d35bce6e77b517283d1e41659afc8e45002cbcade532c55cdf0"
+    },
+    {
+      "label": "weighted-source",
+      "file": "src/building/HiringPipeline.cpp",
+      "sha256": "9c3d56954b5db3bece8294ab746773c3ec57f40487451859f00608146ef59c2a"
+    },
+    {
+      "label": "weighted-source",
+      "file": "src/building/TurretTargetingPipeline.cpp",
+      "sha256": "e99c591f96ddf6cc1721225a2f336a42feba9992fd8e41f33f19b5718f8e2bf3"
+    },
+    {
+      "label": "weighted-source",
+      "file": "src/common/ComputeExecutor.h",
+      "sha256": "935d73b61290da1d96c865cd11e5bba947e34fe7dc4de5c88d4af7dc3bbf111a"
+    },
+    {
+      "label": "weighted-source",
+      "file": "src/common/ComputeExecutorHarness.cpp",
+      "sha256": "9c7d80e59522ac546110598c7fba3ecddeda4b21039eab445cf3e05feaf22add"
+    },
+    {
+      "label": "weighted-source",
+      "file": "src/engine/EngineRun.cpp",
+      "sha256": "e77d2120514f8397a5cb88313bc466d23174ed4eff82338797b2dc81020a8d2b"
+    },
+    {
+      "label": "weighted-source",
+      "file": "src/map/ResourceGrowth.cpp",
+      "sha256": "42ca1369d49d9b9929c10978ff67be6e9b2a49cffbaa152535650225b92bf101"
+    },
+    {
+      "label": "weighted-source",
+      "file": "src/map/gradient/BuildingGradientPipeline.h",
+      "sha256": "768ed98b2020662174e26e87a8d5091d7f602b23ca982660621a7dbbd7f828b1"
+    },
+    {
+      "label": "weighted-source",
+      "file": "src/map/gradient/GradientPipeline.h",
+      "sha256": "026e99bd221427c452716516ec33ea843607710ab2a6a759d5ec772e7b9743cd"
+    },
+    {
+      "label": "weighted-source",
+      "file": "src/team/stats/TeamStatsPipeline.cpp",
+      "sha256": "93eb0b85cd99711edb853db46acb63ee170a75dbfdd0ca778fae2b522bfae0a5"
+    }
+  ],
+  "direct_contrast_point_checks": 40,
+  "summary_claim_review": "Roundedbaseline/directW claims correct. WminimumCPU andclockminimumwall are pointestimates; clockdirectW95crosses0. LASTdistinctfromEWMA; noclock-onlycrossfamilycausalclaim/globaloptimum/platform/throughputclaim.",
+  "limits": [
+    "No newbootstrap performed; retainedcanonicalCIs sourcepreviouslyreviewed, independentlinearCIs separatelylabelled.",
+    "448telemetryOffgames give winner/tick agreement only;280boundedqualification separate,56notrun.",
+    "Matplotlib recovery wasreportenvironment failure only; sameapprovedsource/raw-audit unchanged, nobenchmarkrerun.",
+    "Onehost/PGCPU/auto32 and32pairedseedunits, exploratorymultiplecomparisons."
+  ]
+}

@@ -39169,10 +39169,20 @@
       "source_aliases": [
         "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/playground-stop/materialization-receipt.json"
       ]
+    },
+    {
+      "source": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/playground-stop/final-schema-point-review.json",
+      "portable": "index/final-schema-point-review.json",
+      "bytes": 5710,
+      "sha256": "a567275230f5df59960e82a7b3d8bdb6eeb3a73712b4f85704879f186d64106c",
+      "category": "Second independent final source/schema/point audit",
+      "source_aliases": [
+        "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/playground-stop/final-schema-point-review.json"
+      ]
     }
   ],
-  "file_count": 3558,
-  "bytes": 38725708,
+  "file_count": 3559,
+  "bytes": 38731418,
   "limits": [
     "448telemetryOffgames provide winner/tick agreement, not full checksum proof.280boundedcontexts separate; massive bodies deliberately omitted with provenance.",
     "Known2baselinefailures and unexplained180sbaretimeout retained; no allgreen/universaloptimality/platform claim.",
