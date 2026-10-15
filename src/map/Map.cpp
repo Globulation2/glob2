@@ -593,7 +593,7 @@ void Map::clear()
 	gradientRuntime->preparation={};
     gradientRuntime->fieldRequests.clear();
 	gradientRuntime->pipeline.reset();
-    gradientRuntime->air.entries.clear(); gradientRuntime->air.nextId=1; gradientRuntime->air.retireBoundary();
+    gradientRuntime->air.clear();
 	// Retires into the buffer pool, so before the pool is cleared below.
 	resetBuildingGradientPipeline();
 	gradientRuntime->resetBackendSession();

@@ -8,6 +8,7 @@
 #include <TextStream.h>
 #include <StreamBackend.h>
 #include <array>
+#include <algorithm>
 #include <memory>
 #include <sstream>
 
@@ -82,6 +83,95 @@ void loadAirInventory(AirGradientRuntime& runtime,Map& map,const std::string& by
 
 TEST_SUITE("AirGradientPublication")
 {
+TEST_CASE("cold demand beyond the plane budget remains uncharged FIFO metadata and completes on workers")
+{
+    glob2test::HeadlessGlobals globals;
+    glob2test::HeadlessGame world({.discovered=true,.clearImmobile=true,.header=true});
+    auto& game=world.game; auto& map=game.map;
+    configureAir(game,2); map.addGuardArea(20,20,0);
+    std::vector<Key> keys;
+    GradientExecutionAudit audit;
+    for (unsigned i=0;i<200;++i) {
+        Key key; key.family=Family::Guard; key.epoch=i;
+        keys.push_back(key);
+        CHECK(map.requestAirField(key)==FieldReadiness::Pending);
+    }
+    auto& runtime=map.gradientRuntime->air;
+    REQUIRE(runtime.entries.size()==keys.size());
+    REQUIRE(map.gradientRuntime->fieldRequests.size()==keys.size());
+    for (const auto& [id,entry]:runtime.entries) { CHECK_FALSE(entry.charged); CHECK_FALSE(entry.values); }
+    CHECK(map.gradientPipelineStatus().pending==0);
+    CHECK(audit.totals().owner==0); CHECK(audit.totals().other==0);
+    std::vector<bool> seen(keys.size());
+    unsigned next=0;
+    for (unsigned boundary=0;next<keys.size() && boundary<512;++boundary) {
+        advanceAir(game);
+        for (unsigned i=0;i<keys.size();++i) {
+            if (map.lookupAirField(keys[i]).readiness!=FieldReadiness::Ready) continue;
+            if (!seen[i]) { CHECK(i==next); ++next; seen[i]=true; }
+            // Give every publication its consumer opportunity, so later cold
+            // demand can reuse its plane charge without evicting unread work.
+            CHECK(map.queryAirDestination(keys[i],8,8,nullptr)==RouteResult::Reachable);
+        }
+    }
+    CHECK(next==keys.size());
+    map.finishGradientPipeline();
+    if (GAGCore::ThreadSupport::available) CHECK(audit.totals().owner==0);
+}
+
+TEST_CASE("a cold FIFO head defers without a deadline then evicts queued warm allocations without moving their entries")
+{
+    glob2test::HeadlessGlobals globals;
+    glob2test::HeadlessGame world({.discovered=true,.clearImmobile=true,.header=true});
+    auto& game=world.game; auto& map=game.map;
+    configureAir(game,2); map.addGuardArea(20,20,0);
+    Key first; first.family=Family::Guard;
+    awaitAir(game,first);
+    auto& runtime=map.gradientRuntime->air;
+    const auto prototype=runtime.entries.begin()->second;
+    Uint16** coldSlot=nullptr;
+    Key cold;
+    // Fill logical charges using one immutable fixture generation. Sharing its
+    // physical storage keeps this a small correctness test; admission still
+    // charges every distinct field exactly as it would after real publication.
+    for (unsigned i=0;i<200;++i) {
+        Key key=first; key.epoch=1000+i;
+        map.requestAirField(key);
+        auto found=std::find_if(runtime.entries.begin(),runtime.entries.end(),[&](const auto& item) { return item.second.key==key; });
+        REQUIRE(found!=runtime.entries.end());
+        auto& entry=found->second;
+        if (!runtime.tryAdmit(map,&entry.slot)) { coldSlot=&entry.slot; cold=key; break; }
+        entry.values=prototype.values; entry.output=prototype.output; entry.slot=const_cast<Uint16*>(entry.values.get());
+        entry.unread=true; entry.publishedTick=game.stepCounter;
+        std::erase_if(map.gradientRuntime->fieldRequests,[&](const auto& request) { return request.slot==&entry.slot; });
+    }
+    REQUIRE(coldSlot!=nullptr);
+    REQUIRE(map.gradientRuntime->fieldRequests.size()==1);
+    CHECK(map.gradientRuntime->fieldRequests.front().slot==coldSlot);
+    CHECK_FALSE(runtime.tryAdmit(map,coldSlot));
+    unsigned assigned=0;
+    map.gradientRuntime->pipeline.visitLogical([&](auto* slot,unsigned,bool) { assigned+=slot==coldSlot; });
+    CHECK(assigned==0); // Budget waiting has not reserved a publication deadline.
+    std::vector<Uint16**> warmSlots;
+    for (auto& [id,entry]:runtime.entries) if (entry.values) {
+        entry.unread=false;
+        warmSlots.push_back(&entry.slot);
+        map.requestAirField(entry.key,true);
+    }
+    advanceAir(game);
+    CHECK(runtime.entries.size()==warmSlots.size()+1);
+    assigned=0;
+    map.gradientRuntime->pipeline.visitLogical([&](auto* slot,unsigned remaining,bool) {
+        if (slot==coldSlot) { ++assigned; CHECK(remaining==3); }
+    });
+    CHECK(assigned==1);
+    CHECK(map.gradientRuntime->fieldRequests.front().slot==warmSlots.front());
+    CHECK(*warmSlots.front()==nullptr); // Allocation evicted; stable metadata survives.
+    for (int advance=0;advance<3;++advance) { map.advanceGradientPipeline(); ++game.stepCounter; }
+    CHECK(map.lookupAirField(cold).readiness==FieldReadiness::Ready);
+    map.finishGradientPipeline();
+}
+
 TEST_CASE("published air inventory rejects incomplete metadata malformed goals and invalid bounded values in binary and text")
 {
     glob2test::HeadlessGlobals globals;
@@ -173,9 +263,9 @@ TEST_CASE("retired generation budget attribution survives saves before the next 
         REQUIRE(restoredRetired.size()==originalRetired.size());
         CHECK(restoredRetired.front().entry==originalRetired.front().entry);
         CHECK(restoredRetired.front().bytes==originalRetired.front().bytes);
-        // Add demand before retiring that boundary. Logical budget pressure
-        // must make the same decisions, even though only the original run has
-        // an external lease to the replaced generation.
+        // Add demand before retiring that boundary. Metadata enrollment and
+        // retirement accounting must agree even though only the original run
+        // has an external lease to the replaced generation.
         for (unsigned request=0;request<160;++request) {
             Key demand=key; demand.epoch=1000+request;
             CHECK(map.requestAirField(demand)==restored.requestAirField(demand));

@@ -386,6 +386,7 @@ void Map::syncStep(Uint32 stepCounter, bool preparePeriodic)
 void Map::stagePeriodicGradientPreparation()
 {
     gradientRuntime->air.retireBoundary();
+    gradientRuntime->air.prune(*this);
 	preparePendingGradient();
 	// Building requests are admitted first; the periodic job below may return early.
 	stageBuildingGradientPreparation();
@@ -465,6 +466,7 @@ void Map::stagePeriodicGradientPreparation()
     enqueuePeriodic();
     if (!gradientRuntime->fieldRequests.empty()) {
         auto request=gradientRuntime->fieldRequests.front();
+        if (!gradientRuntime->air.tryAdmit(*this,request.slot)) return;
         gradientRuntime->fieldRequests.pop_front();
         auto* job=gradientRuntime->pipeline.reserve(request.slot, request.request.swim);
         job->request=request.request;

@@ -1029,7 +1029,7 @@ void Map::saveRuntimeState(GAGCore::OutputStream *stream) const
         saveGradient(stream,snapshot.data,size);
         if (gradientRuntime->air.idForSlot(snapshot.slot)) {
             if (!snapshot.job->payload) throw std::runtime_error("Missing air payload");
-            gradientRuntime->air.savePayload(stream,*std::static_pointer_cast<AirGradientRuntime::Payload>(snapshot.job->payload),size);
+            gradientRuntime->air.savePayload(*this,stream,*std::static_pointer_cast<AirGradientRuntime::Payload>(snapshot.job->payload),size);
         }
         stream->writeLeaveSection();
 	});
@@ -1059,7 +1059,7 @@ void Map::loadRuntimeState(GAGCore::InputStream *stream, Sint32 versionMinor)
 	gradientRuntime->preparation={};
     gradientRuntime->fieldRequests.clear();
     gradientRuntime->pipeline.reset();
-    gradientRuntime->air.entries.clear(); gradientRuntime->air.nextId=1; gradientRuntime->air.retireBoundary();
+    gradientRuntime->air.clear();
     resetBuildingGradientPipeline();
 	for (int t=0; t<game->teamsCount(); ++t)
 		for (int b=0; b<Building::MAX_COUNT; ++b)
@@ -1265,8 +1265,9 @@ void Map::loadRuntimeState(GAGCore::InputStream *stream, Sint32 versionMinor)
 			loadGradient(stream, field, size, packed);
             GradientPipeline::RestoredSnapshot restored{slot,static_cast<int>(sw),remaining,superseded,std::unique_ptr<Uint16[]>(field)};
             if (versionMinor>=FILE_FORMAT_VERSION_DELAYED_GRADIENTS && gradientRuntime->air.idForSlot(slot)) {
-                auto payload=gradientRuntime->air.loadPayload(stream,size);
+                auto payload=gradientRuntime->air.loadPayload(*this,stream,size);
                 gradientRuntime->air.checkPayload(*payload,size,true,field);
+                if (!gradientRuntime->air.entries.at(gradientRuntime->air.idForSlot(slot)).charged) throw std::runtime_error("Uncharged saved air job");
                 if (!(payload->key==gradientRuntime->air.entries.at(gradientRuntime->air.idForSlot(slot)).key)) throw std::runtime_error("Air pending key mismatch");
                 GradientPipeline::Job adapter; adapter.slot=slot;
                 gradientRuntime->air.restoreJob(*this,adapter,payload);

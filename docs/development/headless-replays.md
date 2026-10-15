@@ -75,8 +75,10 @@ overrides of a saved game, including `--experiment`, `--rule` and
 Scheduled building fields are complete at publication. Cold reads and refreshes
 use the same FIFO pipeline; readers return Pending rather than seeding or
 extending a field on the simulation owner. Format 166 persists cold requests and
-completed unpublished outputs and raises the replay floor to 166. Supported older
-saves remain readable; `MINIMUM_VERSION_MINOR` is unchanged.
+completed unpublished outputs, air destination labels and unit-specific choices,
+and raises the replay floor to 166. Air destination costs use the common bounded
+16-bit range; immediate air steering stays independent. Supported older saves
+remain readable; `MINIMUM_VERSION_MINOR` is unchanged.
 
 Format 143 saves the AI engine's completed pending orders, logical deadlines and
 execution feedback. Saving finishes outstanding decisions without executing

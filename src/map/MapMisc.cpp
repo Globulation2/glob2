@@ -68,45 +68,46 @@ Uint32 Map::checkSum(bool heavy, bool includePending, bool legacy152)
     // The explicit historical representation predates delayed publication.
     // Keep its checksum layout stable even when the new queues are empty.
     if (!legacy152) {
-    cs=rotl1(cs)^Uint32(gradientRuntime->fieldRequests.size());
-    for (const auto& queued:gradientRuntime->fieldRequests) {
-        const auto& request=queued.request;
-        cs=rotl1(cs)^gradientDestination(queued.slot);
-        cs=rotl1(cs)^unsigned(request.kind)^unsigned(request.team<<8)^unsigned(request.material<<16)^unsigned(request.swim<<24);
-        cs=rotl1(cs)^Uint32(request.consumer)^request.modes^Uint32(request.excludesShared);
+        cs=rotl1(cs)^Uint32(gradientRuntime->fieldRequests.size());
+        for (const auto& queued:gradientRuntime->fieldRequests) {
+            const auto& request=queued.request;
+            cs=rotl1(cs)^gradientDestination(queued.slot);
+            cs=rotl1(cs)^unsigned(request.kind)^unsigned(request.team<<8)^unsigned(request.material<<16)^unsigned(request.swim<<24);
+            cs=rotl1(cs)^Uint32(request.consumer)^request.modes^Uint32(request.excludesShared);
+        }
+        if (includePending) gradientRuntime->pipeline.visitLogical([&](auto* slot, unsigned remaining, bool superseded) {
+            cs=rotl1(cs)^gradientDestination(slot)^remaining^Uint32(superseded);
+        });
+
+        // Requests and deadlines change future routes. Hash normalized validity rather
+        // than epoch counters, which are deliberately normalized when loading saves.
+        mix64(gradientRuntime->buildingRequests.size());
+        for (const auto& request : gradientRuntime->buildingRequests)
+        {
+            const auto* b = buildingGradientDestination(request.team, request.building, request.identity);
+            mix64(request.team); mix64(request.building); mix64(request.identity); mix64(request.slot);
+            mix64(request.stale || !b || b->refreshEpoch[request.slot] != request.epoch);
+        }
+        gradientRuntime->buildings.visitLogical([&](const building_gradient::Job& p, unsigned remaining, bool superseded) {
+            const auto* b = buildingGradientDestination(p.team, p.buildingId, p.scriptIdentity);
+            mix64(p.team); mix64(p.buildingId); mix64(p.scriptIdentity); mix64(p.slot);
+            mix64(p.captureTick); mix64(p.generation); mix64(remaining);
+            mix64(superseded || !b || b->refreshEpoch[p.slot] != p.epoch);
+        });
+        if (heavy && game)
+            for (int t = 0; t < game->teamsCount(); ++t)
+                for (int id = 0; id < Building::MAX_COUNT; ++id)
+                    if (const auto* b = game->teams[t]->myBuildings[id])
+                        for (int slot = 0; slot < BUILDING_GRADIENT_COUNT; ++slot)
+                        {
+                            mix64(b->globalGradient[slot] != nullptr);
+                            mix64(b->dirtyGradient[slot]); mix64(b->gradientGeneration[slot]);
+                            mix64(b->lastGlobalGradientUpdateStepCounter[slot]); mix64(b->globalGradientUsedStep[slot]);
+                            if (b->globalGradient[slot]) for (size_t i = 0; i < size; ++i) mix64(b->globalGradient[slot][i]);
+                        }
+
+        cs=gradientRuntime->air.checksum(*this,cs,heavy);
     }
-    if (includePending) gradientRuntime->pipeline.visitLogical([&](auto* slot, unsigned remaining, bool superseded) {
-        cs=rotl1(cs)^gradientDestination(slot)^remaining^Uint32(superseded);
-    });
-
-	// Requests and deadlines change future routes. Hash normalized validity rather
-	// than epoch counters, which are deliberately normalized when loading saves.
-	mix64(gradientRuntime->buildingRequests.size());
-	for (const auto& request : gradientRuntime->buildingRequests)
-	{
-		const auto* b = buildingGradientDestination(request.team, request.building, request.identity);
-		mix64(request.team); mix64(request.building); mix64(request.identity); mix64(request.slot);
-		mix64(request.stale || !b || b->refreshEpoch[request.slot] != request.epoch);
-	}
-	gradientRuntime->buildings.visitLogical([&](const building_gradient::Job& p, unsigned remaining, bool superseded) {
-		const auto* b = buildingGradientDestination(p.team, p.buildingId, p.scriptIdentity);
-		mix64(p.team); mix64(p.buildingId); mix64(p.scriptIdentity); mix64(p.slot);
-		mix64(p.captureTick); mix64(p.generation); mix64(remaining);
-		mix64(superseded || !b || b->refreshEpoch[p.slot] != p.epoch);
-	});
-	if (heavy && game)
-		for (int t = 0; t < game->teamsCount(); ++t)
-			for (int id = 0; id < Building::MAX_COUNT; ++id)
-				if (const auto* b = game->teams[t]->myBuildings[id])
-					for (int slot = 0; slot < BUILDING_GRADIENT_COUNT; ++slot)
-					{
-						mix64(b->globalGradient[slot] != nullptr);
-						mix64(b->dirtyGradient[slot]); mix64(b->gradientGeneration[slot]);
-						mix64(b->lastGlobalGradientUpdateStepCounter[slot]); mix64(b->globalGradientUsedStep[slot]);
-						if (b->globalGradient[slot]) for (size_t i = 0; i < size; ++i) mix64(b->globalGradient[slot][i]);
-					}
-
-    cs=gradientRuntime->air.checksum(cs,heavy);    }
 
 	privateRandom(RandomDomain::GrowthJobs); // Initialize without advancing.
 	for (const auto& random : worldRandom.streams)

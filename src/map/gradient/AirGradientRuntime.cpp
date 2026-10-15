@@ -47,13 +47,24 @@ Uint64 charge(const Key& key,std::size_t cells) {
 }
 bool retained(const Map& map,const AirGradientRuntime::Entry& entry,const GradientRuntime& runtime)
 {
-    for (const auto& request:runtime.fieldRequests) if (request.slot==&entry.slot) return true;
     bool pending=false;
     runtime.pipeline.visitLogical([&](auto* slot,unsigned,bool) { if (slot==&entry.slot) pending=true; });
     return pending || (entry.unread && Uint32(map.game->stepCounter-entry.publishedTick)<256);
 }
 }
 
+AirGradientRuntime::Dependencies AirGradientRuntime::dependencies(const Map& map,const Key& key) const
+{
+    const auto generations=map.snapshotGenerations();
+    switch (key.family) {
+    case Family::Material: return {generations[1],generations[3],generations[4],map.gradientRuntime->stockRevision[key.team][key.material]};
+    case Family::Guard: return {0,generations[3],0,0};
+    case Family::ClearZone: return {generations[1],generations[3],0,0,0};
+    case Family::ClearChoice: return {generations[1],generations[3],0,0,claimRevision[key.team]};
+    case Family::Building: return {};
+    }
+    throw std::logic_error("Unknown air dependency family");
+}
 bool AirGradientRuntime::valid(const Map& map,const Key& key) const
 {
     if (unsigned(key.family)>unsigned(Family::ClearChoice) || !map.game || key.team<0 || key.team>=map.game->teamsCount() || key.material<0 || key.material>=int(MaterialCount)) return false;
@@ -90,46 +101,82 @@ void AirGradientRuntime::invalidate(Map& map)
 }
 unsigned AirGradientRuntime::idForSlot(Uint16* const* slot) const
 {
-    for (const auto& [id,entry]:entries) if (&entry.slot==slot) return id;
-    return 0;
+    const auto found=slotIndex.find(slot);
+    return found==slotIndex.end()?0:found->second;
 }
 FieldReadiness AirGradientRuntime::request(Map& map,const Key& key,bool refresh)
 {
     if (!map.compute.insideJob()) { width=map.getW(); height=map.getH(); }
     if (!valid(map,key)) return FieldReadiness::Pending;
     if (!map.compute.insideJob() && !map.gradientRuntime->pipeline.enabled()) map.configureGradientPipeline(0,8);
-    auto found=std::find_if(entries.begin(),entries.end(),[&](const auto& item){return item.second.key==key;});
+    const auto indexed=keyIndex.find(key);
+    auto found=indexed==keyIndex.end()?entries.end():entries.find(indexed->second);
     if (map.compute.insideJob()) return found!=entries.end() && found->second.values ? FieldReadiness::Ready : FieldReadiness::Pending;
     if (found==entries.end()) {
         if (charge(key,map.size)>Budget) throw std::runtime_error("Air destination field exceeds the deterministic session budget");
-        const auto total=[&] { Uint64 bytes=retiredBytes; for (const auto& [id,entry]:entries) bytes+=charge(entry.key,map.size); return bytes; };
-        while (entries.size()>=MaxEntries || total()+charge(key,map.size)>Budget) {
-            auto victim=std::find_if(entries.begin(),entries.end(),[&](const auto& item){
-                return !retained(map,item.second,*map.gradientRuntime);
-            });
-            if (victim==entries.end()) return FieldReadiness::Pending;
-            const auto id=victim->first;
-            for (auto& old:retired) if (old.entry==id) { old.entry=0; retiredBytes+=old.bytes; }
-            if (victim->second.values) {
-                const auto bytes=charge(victim->second.key,map.size)/3;
-                retired.push_back({0,bytes,victim->second.values,victim->second.output}); retiredBytes+=bytes;
-            }
-            entries.erase(victim);
-        }
-        unsigned id=1; while (entries.contains(id)) ++id;
-        nextId=std::max(nextId,id+1);
-        found=entries.try_emplace(id).first; found->second.key=key;
+        if (entries.size()>=MaxEntries) return FieldReadiness::Pending;
+        unsigned id;
+        if (freeIds.empty()) id=nextId++;
+        else { id=*freeIds.begin(); freeIds.erase(freeIds.begin()); }
+        found=entries.try_emplace(id).first; found->second.key=key; keyIndex.emplace(key,id); slotIndex.emplace(&found->second.slot,id);
     }
     auto& entry=found->second;
-    if (!entry.values || refresh || entry.topology!=map.topologyGeneration || Uint32(map.game->stepCounter-entry.capturedTick)>=128)
+    if (!entry.values || refresh || entry.dependencies!=dependencies(map,key) || entry.topology!=map.topologyGeneration || Uint32(map.game->stepCounter-entry.capturedTick)>=128)
         map.requestGradientField(&entry.slot,int(gradient_preparation::Kind::Materials),key.team,key.material,0);
     return entry.values ? FieldReadiness::Ready : FieldReadiness::Pending;
 }
+void AirGradientRuntime::dropPublished(Map& map,unsigned id,Entry& entry)
+{
+    // Transfer logical retirement attribution before releasing the charged slot.
+    for (auto& old:retired) if (old.entry==id) { old.entry=0; retiredBytes+=old.bytes; }
+    if (entry.values) {
+        const auto bytes=charge(entry.key,map.size)/3;
+        retired.push_back({0,bytes,entry.values,entry.output}); retiredBytes+=bytes;
+    }
+    entry.values.reset(); entry.output.reset(); entry.slot=nullptr; entry.unread=false; entry.charged=false;
+}
+bool AirGradientRuntime::tryAdmit(Map& map,Uint16** slot)
+{
+    const auto id=idForSlot(slot);
+    if (!id) return true;
+    auto& entry=entries.at(id);
+    if (entry.charged) return true;
+    const auto needed=charge(entry.key,map.size);
+    if (needed>Budget) throw std::runtime_error("Air destination field exceeds the deterministic session budget");
+    const auto total=[&] { Uint64 bytes=retiredBytes; for (const auto& [number,current]:entries) if (current.charged) bytes+=charge(current.key,map.size); return bytes; };
+    while (total()+needed>Budget) {
+        auto victim=std::find_if(entries.begin(),entries.end(),[&](const auto& item) {
+            return item.first!=id && item.second.charged && !retained(map,item.second,*map.gradientRuntime);
+        });
+        if (victim==entries.end()) return false;
+        // A queued warm refresh retains its FIFO metadata, not the old buffer.
+        dropPublished(map,victim->first,victim->second);
+    }
+    entry.charged=true;
+    return true;
+}
+void AirGradientRuntime::prune(Map& map)
+{
+    for (auto entry=entries.begin();entry!=entries.end();) {
+        if (valid(map,entry->second.key)) { ++entry; continue; }
+        auto* slot=&entry->second.slot;
+        map.gradientRuntime->pipeline.invalidate(slot);
+        std::erase_if(map.gradientRuntime->fieldRequests,[&](const auto& request){return request.slot==slot;});
+        bool pending=false;
+        map.gradientRuntime->pipeline.visitLogical([&](auto* destination,unsigned,bool){if (destination==slot) pending=true;});
+        if (pending) { ++entry; continue; }
+        dropPublished(map,entry->first,entry->second);
+        keyIndex.erase(entry->second.key); slotIndex.erase(&entry->second.slot); freeIds.insert(entry->first);
+        entry=entries.erase(entry);
+    }
+}
 Published AirGradientRuntime::lookup(const Key& key) const
 {
-    for (const auto& [id,entry]:entries) if (entry.key==key && entry.values)
-        return {FieldReadiness::Ready,entry.values,entry.output,entry.captureRevision};
-    return {};
+    const auto indexed=keyIndex.find(key);
+    if (indexed==keyIndex.end()) return {};
+    const auto& entry=entries.at(indexed->second);
+    if (!entry.values) return {};
+    return {FieldReadiness::Ready,entry.values,entry.output,entry.captureRevision};
 }
 void AirGradientRuntime::restoreJob(Map& map,GradientPipeline::Job& job,std::shared_ptr<Payload> payload)
 {
@@ -142,15 +189,17 @@ void AirGradientRuntime::restoreJob(Map& map,GradientPipeline::Job& job,std::sha
         if (entry.values) retired.push_back({id,charge(entry.key,map.size)/3,entry.values,entry.output});
         entry.values=std::shared_ptr<const Uint16[]>(completed.data.release());
         entry.slot=const_cast<Uint16*>(entry.values.get()); entry.output=payload->output;
-        entry.captureRevision=payload->captureRevision; entry.capturedTick=payload->capturedTick;
+        entry.captureRevision=payload->captureRevision; entry.capturedTick=payload->capturedTick; entry.dependencies=payload->dependencies;
         entry.topology=payload->topology; entry.publishedTick=map.game->stepCounter; entry.unread=true;
     };
 }
 void AirGradientRuntime::prepare(Map& map,GradientPipeline::Job& job,const SimulationSnapshot::Handle& snapshot)
 {
     const auto id=idForSlot(job.slot); auto& entry=entries.at(id);
+    if (!entry.charged) throw std::logic_error("Uncharged air field admission");
     auto payload=std::make_shared<Payload>(); payload->key=entry.key;
     payload->captureRevision=snapshot.observationRevision; payload->capturedTick=snapshot.tick; payload->topology=map.topologyGeneration;
+    payload->dependencies=dependencies(map,entry.key);
     restoreJob(map,job,payload);
     job.snapshotLease=snapshot.gradientView();
     job.customWork=[payload](auto& work,auto& scratch) {
@@ -167,7 +216,8 @@ RouteResult AirGradientRuntime::query(Map& map,const Key& key,int x,int y,Sample
 {
     if (request(map,key)==FieldReadiness::Pending) return RouteResult::Pending;
     const auto published=lookup(key);
-    auto found=std::find_if(entries.begin(),entries.end(),[&](const auto& item){return item.second.key==key;});
+    const auto indexed=keyIndex.find(key);
+    auto found=indexed==keyIndex.end()?entries.end():entries.find(indexed->second);
     if (!map.compute.insideJob() && found!=entries.end()) found->second.unread=false;
     if (key.family==Family::ClearChoice) {
         if (!published.output->choice.available) return RouteResult::Unreachable;
@@ -293,12 +343,27 @@ void AirGradientRuntime::checkPayload(const Payload& payload,std::size_t cells,b
         } else if (output.labels.size()!=cells) throw std::runtime_error("Incomplete air goal labels");
     }
 }
-void AirGradientRuntime::savePayload(GAGCore::OutputStream* s,const Payload& payload,std::size_t) const {
+void AirGradientRuntime::savePayload(const Map& map,GAGCore::OutputStream* s,const Payload& payload,std::size_t) const {
+    const auto current=dependencies(map,payload.key);
+    s->writeEnterSection("dependencies");
+    for (unsigned i=0;i<3;++i) { s->writeEnterSection(i); s->writeUint8(payload.dependencies[i]==current[i],"current"); s->writeLeaveSection(); }
+    s->writeUint32(payload.dependencies[3]>>32,"stockHigh"); s->writeUint32(payload.dependencies[3],"stockLow");
+    s->writeUint32(payload.dependencies[4]>>32,"claimsHigh"); s->writeUint32(payload.dependencies[4],"claimsLow");
+    s->writeLeaveSection();
     writeKey(s,payload.key); s->writeUint32(payload.capturedTick,"capturedTick"); s->writeUint32(payload.topology,"topology");
     s->writeUint32(payload.captureRevision>>32,"revisionHigh"); s->writeUint32(payload.captureRevision,"revisionLow"); writeOutput(s,*payload.output);
 }
-std::shared_ptr<AirGradientRuntime::Payload> AirGradientRuntime::loadPayload(GAGCore::InputStream* s,std::size_t cells) {
-    auto payload=std::make_shared<Payload>(); payload->key=readKey(s); payload->capturedTick=s->readUint32("capturedTick"); payload->topology=s->readUint32("topology");
+std::shared_ptr<AirGradientRuntime::Payload> AirGradientRuntime::loadPayload(const Map& map,GAGCore::InputStream* s,std::size_t cells) {
+    std::array<bool,3> current;
+    s->readEnterSection("dependencies");
+    for (unsigned i=0;i<3;++i) { s->readEnterSection(i); current[i]=flag(s,"current"); s->readLeaveSection(); }
+    Uint64 stock=Uint64(s->readUint32("stockHigh"))<<32; stock|=s->readUint32("stockLow");
+    Uint64 claims=Uint64(s->readUint32("claimsHigh"))<<32; claims|=s->readUint32("claimsLow"); s->readLeaveSection();
+    auto payload=std::make_shared<Payload>(); payload->key=readKey(s);
+    if (payload->key.team>=map.game->teamsCount()) throw std::runtime_error("Invalid air dependency team");
+    payload->dependencies=dependencies(map,payload->key);
+    for (unsigned i=0;i<3;++i) if (!current[i]) payload->dependencies[i]=0;
+    payload->dependencies[3]=stock; payload->dependencies[4]=claims; payload->capturedTick=s->readUint32("capturedTick"); payload->topology=s->readUint32("topology");
     payload->captureRevision=Uint64(s->readUint32("revisionHigh"))<<32; payload->captureRevision|=s->readUint32("revisionLow"); payload->output=readOutput(s,cells); return payload;
 }
 void AirGradientRuntime::save(Map& map,GAGCore::OutputStream* s) const {
@@ -306,11 +371,14 @@ void AirGradientRuntime::save(Map& map,GAGCore::OutputStream* s) const {
     s->writeUint32(retired.size(),"retiredCount"); s->writeEnterSection("retired");
     for (unsigned i=0;i<retired.size();++i) { s->writeEnterSection(i); s->writeUint32(retired[i].entry,"entry"); s->writeUint32(retired[i].bytes,"bytes"); s->writeLeaveSection(); }
     s->writeLeaveSection();
+    s->writeEnterSection("claimRevisions");
+    for (unsigned i=0;i<claimRevision.size();++i) { s->writeEnterSection(i); s->writeUint32(claimRevision[i]>>32,"high"); s->writeUint32(claimRevision[i],"low"); s->writeLeaveSection(); }
+    s->writeLeaveSection();
     unsigned index=0; for (const auto& [id,entry]:entries) {
         s->writeEnterSection(index++); s->writeUint32(id,"id");
-        Payload payload; payload.key=entry.key; payload.capturedTick=entry.capturedTick; payload.topology=entry.topology; payload.captureRevision=entry.captureRevision;
+        Payload payload; payload.key=entry.key; payload.capturedTick=entry.capturedTick; payload.topology=entry.topology; payload.captureRevision=entry.captureRevision; payload.dependencies=entry.dependencies;
         if (entry.output) payload.output=std::const_pointer_cast<Output>(entry.output);
-        savePayload(s,payload,map.size); s->writeUint32(entry.publishedTick,"publishedTick"); s->writeUint8(entry.unread,"unread");
+        savePayload(map,s,payload,map.size); s->writeUint32(entry.publishedTick,"publishedTick"); s->writeUint8(entry.unread,"unread"); s->writeUint8(entry.charged,"charged");
         s->writeUint8(bool(entry.values),"published");
         if (entry.values) s->writeUint16Sections(entry.values.get(),map.size,"value");
         s->writeLeaveSection();
@@ -319,20 +387,24 @@ void AirGradientRuntime::save(Map& map,GAGCore::OutputStream* s) const {
 }
 void AirGradientRuntime::load(Map& map,GAGCore::InputStream* s,bool) {
     width=map.getW(); height=map.getH();
-    entries.clear(); s->readEnterSection("airFields"); nextId=s->readUint32("nextId"); const auto count=s->readUint32("count"); retired.clear(); retiredBytes=s->readUint32("retiredBytes");
-    if (retiredBytes>Budget || !nextId || nextId>MaxEntries+1 || count>MaxEntries || Uint64(count)*map.size*2>Budget) throw std::runtime_error("Invalid air field inventory");
+    entries.clear(); keyIndex.clear(); freeIds.clear(); slotIndex.clear(); s->readEnterSection("airFields"); nextId=s->readUint32("nextId"); const auto count=s->readUint32("count"); retired.clear(); retiredBytes=s->readUint32("retiredBytes");
+    if (retiredBytes>Budget || !nextId || nextId>MaxEntries+1 || count>MaxEntries) throw std::runtime_error("Invalid air field inventory");
     const auto retiredCount=s->readUint32("retiredCount"); if (retiredCount>MaxEntries*3) throw std::runtime_error("Invalid air retirement count");
     s->readEnterSection("retired"); for (unsigned i=0;i<retiredCount;++i) { s->readEnterSection(i); Retired item; item.entry=s->readUint32("entry"); item.bytes=s->readUint32("bytes"); if (!item.bytes || item.bytes>Budget) throw std::runtime_error("Invalid air retirement charge"); retired.push_back(item); s->readLeaveSection(); } s->readLeaveSection();
+    s->readEnterSection("claimRevisions");
+    for (unsigned i=0;i<claimRevision.size();++i) { s->readEnterSection(i); claimRevision[i]=Uint64(s->readUint32("high"))<<32; claimRevision[i]|=s->readUint32("low"); s->readLeaveSection(); }
+    s->readLeaveSection();
     std::map<Key,bool> keys;
     for (unsigned i=0;i<count;++i) {
-        s->readEnterSection(i); const auto id=s->readUint32("id"); auto payload=loadPayload(s,map.size);
+        s->readEnterSection(i); const auto id=s->readUint32("id"); auto payload=loadPayload(map,s,map.size);
         if (!id || id>MaxEntries || id>=nextId || entries.contains(id) || keys.contains(payload->key)) throw std::runtime_error("Invalid air field identity");
         const auto& key=payload->key;
         if (key.team>=map.game->teamsCount() || key.x<0 || key.x>=map.w || key.y<0 || key.y>=map.h || key.sourceX<0 || key.sourceX>=map.w || key.sourceY<0 || key.sourceY>=map.h)
             throw std::runtime_error("Invalid air field coordinates");
-        keys.emplace(key,true); auto& entry=entries[id]; entry.key=key; entry.capturedTick=payload->capturedTick; entry.topology=payload->topology; entry.captureRevision=payload->captureRevision;
-        entry.publishedTick=s->readUint32("publishedTick"); entry.unread=flag(s,"unread");
+        keys.emplace(key,true); keyIndex.emplace(key,id); auto& entry=entries[id]; slotIndex.emplace(&entry.slot,id); entry.key=key; entry.capturedTick=payload->capturedTick; entry.topology=payload->topology; entry.captureRevision=payload->captureRevision; entry.dependencies=payload->dependencies;
+        entry.publishedTick=s->readUint32("publishedTick"); entry.unread=flag(s,"unread"); entry.charged=flag(s,"charged");
         if (flag(s,"published")) {
+            if (!entry.charged) throw std::runtime_error("Uncharged published air field");
             checkPayload(*payload,map.size,true);
             auto data=std::make_shared_for_overwrite<Uint16[]>(map.size);
             for (std::size_t cell=0;cell<map.size;++cell) { s->readEnterSection(cell); data[cell]=s->readUint16("value"); s->readLeaveSection(); }
@@ -345,24 +417,29 @@ void AirGradientRuntime::load(Map& map,GAGCore::InputStream* s,bool) {
         s->readLeaveSection();
     }
     s->readLeaveSection();
+    for (unsigned id=1;id<nextId;++id) if (!entries.contains(id)) freeIds.insert(id);
     Uint64 orphanBytes=0;
     for (const auto& old:retired) {
-        if (old.entry) { const auto entry=entries.find(old.entry); if (entry==entries.end() || old.bytes!=charge(entry->second.key,map.size)/3) throw std::runtime_error("Invalid attributed air retirement"); }
+        if (old.entry) { const auto entry=entries.find(old.entry); if (entry==entries.end() || !entry->second.charged || old.bytes!=charge(entry->second.key,map.size)/3) throw std::runtime_error("Invalid attributed air retirement"); }
         else orphanBytes+=old.bytes;
     }
     if (orphanBytes!=retiredBytes) throw std::runtime_error("Air retirement budget mismatch");
-    Uint64 total=retiredBytes; for (const auto& [id,entry]:entries) total+=charge(entry.key,map.size);
+    Uint64 total=retiredBytes; for (const auto& [id,entry]:entries) if (entry.charged) total+=charge(entry.key,map.size);
     if (total>Budget) throw std::runtime_error("Air field budget exceeded");
 }
-std::uint32_t AirGradientRuntime::checksum(std::uint32_t checksum,bool heavy) const {
+std::uint32_t AirGradientRuntime::checksum(const Map& map,std::uint32_t checksum,bool heavy) const {
     const auto mix=[&](Uint32 value) { checksum=(checksum<<1|checksum>>31)^value; };
     mix(nextId); mix(entries.size()); mix(retiredBytes);
+    for (const auto revision:claimRevision) { mix(revision); mix(revision>>32); }
     mix(retired.size()); for (const auto& old:retired) { mix(old.entry); mix(old.bytes); }
     for (const auto& [id,entry]:entries) {
         mix(id); mix(unsigned(entry.key.family)); mix(entry.key.team); mix(entry.key.material); mix(entry.key.modes); mix(entry.key.withMarkets);
         for (const auto ref:{entry.key.building,entry.key.consumer,BuildingRef{entry.key.unit.gid,entry.key.unit.generation}}) { mix(ref.gid); mix(ref.generation); }
         mix(entry.key.x); mix(entry.key.y); mix(entry.key.range); mix(entry.key.materialMask); mix(entry.key.sourceX); mix(entry.key.sourceY); mix(entry.key.epoch);
-        mix(entry.capturedTick); mix(entry.publishedTick); mix(entry.topology); mix(entry.unread); mix(bool(entry.values));
+        const auto current=dependencies(map,entry.key);
+        for (unsigned i=0;i<3;++i) mix(entry.dependencies[i]==current[i]);
+        mix(entry.dependencies[3]); mix(entry.dependencies[3]>>32); mix(entry.dependencies[4]); mix(entry.dependencies[4]>>32);
+        mix(entry.capturedTick); mix(entry.publishedTick); mix(entry.topology); mix(entry.unread); mix(entry.charged); mix(bool(entry.values));
         if (entry.output) {
             mix(entry.output->choice.available); mix(entry.output->choice.sample.x); mix(entry.output->choice.sample.y); mix(entry.output->choice.sample.cost);
             mix(entry.output->choice.sample.supplier.gid); mix(entry.output->choice.sample.supplier.generation);
