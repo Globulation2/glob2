@@ -16,7 +16,7 @@
 namespace glob2test
 {
 // Test-only adapter for synthetic historical files. Header overrides alone do
-// not turn current counted population records into the pre-165 slot encoding.
+// not turn current counted population records into the pre-166 slot encoding.
 // Other historical field differences remain the fixture author's responsibility.
 class LegacyPopulationOutput : public GAGCore::BinaryOutputStream
 {
