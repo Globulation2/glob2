@@ -242,8 +242,8 @@ void Game::init(GameGUI *gui, MapEdit* edit)
 	for (int i=0; i<TICK_PROFILE_BUF_LEN; i++)
 		ticksGameSum[i]=0;
 
-	// Only setGameHeader and setWaitingOnMask assigned this before; a Game that never
-	// receives a header (headless tests) otherwise gates every syncStep on garbage.
+	// Games created without a header (headless tests) may advance until an
+	// explicit network wait state says otherwise.
 	anyPlayerWaited = false;
 }
 

@@ -65,8 +65,7 @@ bool Game::executeOrder(std::shared_ptr<Order> order, int localPlayer)
 
 	// Mirror the order into the AI-trainer dataset if requested via
 	// GLOB2_DATASET_PATH. One record per executed order, tagged with
-	// the firing tick (the live stepCounter is correct here because
-	// executeOrder runs after Game::syncStep advances it).
+	// the current order boundary, before its live simulation advancement.
 	if (globalContainer->datasetWriter && globalContainer->datasetWriter->isValid())
 	{
 		globalContainer->datasetWriter->writeRecord((Uint32)stepCounter, *order, *this);
