@@ -25,6 +25,29 @@
 
 TEST_SUITE("TeamLimit")
 {
+TEST_CASE("entity GIDs round trip every slot in every live team")
+{
+    for (int team = 0; team < Team::MAX_COUNT; ++team)
+    {
+        for (int id = 0; id < UnitUtils::MAX_COUNT; ++id)
+        {
+            const auto gid = UnitUtils::GIDfrom(id, team);
+            CHECK(gid != UINT16_MAX);
+            CHECK(gid == team * UnitUtils::MAX_COUNT + id);
+            CHECK(UnitUtils::GIDtoID(gid) == id);
+            CHECK(UnitUtils::GIDtoTeam(gid) == team);
+        }
+        for (int id = 0; id < BuildingUtils::MAX_COUNT; ++id)
+        {
+            const auto gid = BuildingUtils::GIDfrom(id, team);
+            CHECK(gid != UINT16_MAX);
+            CHECK(gid == team * BuildingUtils::MAX_COUNT + id);
+            CHECK(BuildingUtils::GIDtoID(gid) == id);
+            CHECK(BuildingUtils::GIDtoTeam(gid) == team);
+        }
+    }
+}
+
 TEST_CASE("sixteen controller slots survive binary and text headers [save-format]")
 {
     CHECK(Team::MAX_COUNT == 16);

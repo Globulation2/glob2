@@ -4,6 +4,7 @@
 #pragma once
 
 #include "Material.h"
+#include <algorithm>
 #include <bitset>
 #include <cassert>
 #include <climits>
@@ -18,6 +19,8 @@
 #include "MaterialPacket.h"
 #include "UnitConsts.h"
 #include "BuildingCatalog.h"
+#include "BuildingType.h"
+#include "Team.h"
 
 namespace GAGCore
 {
@@ -29,11 +32,9 @@ namespace GAGCore
 struct WideMaterialPacket;
 struct WideMaterialDeliveryResult;
 class Unit;
-class Team;
 class Map;
 class BuildingGradientSearch;
 struct SharedBuildingGradient;
-struct BuildingType;
 class BuildingsTypes;
 class Order;
 
@@ -250,7 +251,11 @@ class Building : public BuildingUtils, public BuildingStateRecord
 		else setPrivateMaterial(resource, value);
 	}
 	void changeMaterial(int resource, Sint32 change) { setMaterial(resource, Sint64(material(resource)) + change); }
-	Sint32 availableMaterial(int resource) const;
+	Sint32 availableMaterial(int resource) const
+	{
+		const auto reserved = type->useTeamMaterials ? owner->reservedTeamMaterials[resource] : reservedMaterials[resource];
+		return std::max(0, material(resource) - reserved);
+	}
 	bool reserveMaterials(const BuildingMaterialCost& cost);
 	bool restoreMaterialsReservation(const BuildingMaterialCost& cost);
 	void releaseMaterials(const BuildingMaterialCost& cost);
@@ -306,9 +311,24 @@ class Building : public BuildingUtils, public BuildingStateRecord
 	MaterialPacket withdrawMaterialPacket(int resourceType);
 	int getConstructionOriginTypeNum() const { return constructionOriginTypeNum; }
 	int getConstructionCompletionTypeNum() const;
-	int constructionMaterialNeed(int resource) const;
-	int materialDeliveryNeed(int resource) const;
-	int materialDeliveryTarget(int resource) const;
+	int constructionMaterialNeed(int r) const
+	{
+		return type->isBuildingSite ? std::max(0, constructionBudget[r]-constructionReserved[r]) : 0;
+	}
+	int materialDeliveryNeed(int r) const
+	{
+		const Sint64 room = std::max<Sint64>(0, Sint64(materialStockLimit()) - material(r));
+		if (type->isBuildingSite && (constructionBudget[r] || type->semantics.constructionCost[r]))
+		{
+			const int uncommitted = constructionResultState == REPAIR ? 0 : availableMaterial(r);
+			return Sint32(std::min<Sint64>(room, std::max(0, constructionMaterialNeed(r)-uncommitted)));
+		}
+		return (runtime->replenishMaterialMask & (1u<<r)) ? Sint32(std::min<Sint64>(room, std::max(0, type->maxMaterial[r]-material(r)))) : 0;
+	}
+	int materialDeliveryTarget(int r) const
+	{
+		return type->isBuildingSite && (constructionBudget[r] || type->semantics.constructionCost[r]) ? constructionBudget[r] : (runtime->replenishMaterialMask & (1u<<r)) ? type->maxMaterial[r] : 0;
+	}
 	void fundConstructionFromInventory();
 	void restoreConstructionReservations();
 	void releaseConstructionReservations();

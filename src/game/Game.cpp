@@ -570,28 +570,6 @@ bool Game::isPrestigeWinCondition(void)
 
 static_assert(ClientEvents::MaxTeams >= Team::MAX_COUNT, "ClientEvents pulse must cover every team");
 
-BuildingRef Game::refOf(const Building *b)
-{
-	BuildingRef ref;
-	if (b)
-	{
-		ref.gid = b->gid;
-		ref.generation = b->scriptIdentity;
-	}
-	return ref;
-}
-
-UnitRef Game::refOf(const Unit *u)
-{
-	UnitRef ref;
-	if (u)
-	{
-		ref.gid = u->gid;
-		ref.generation = u->scriptIdentity;
-	}
-	return ref;
-}
-
 Building *Game::resolveBuilding(BuildingRef ref) const
 {
 	if (ref.empty())
