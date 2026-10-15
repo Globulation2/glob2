@@ -13,6 +13,15 @@
 
 namespace {
 using namespace air_guidance;
+Uint32 computeGoalDigest(const Output& output)
+{
+    Uint32 digest=2166136261u;
+    const auto word=[&](Uint32 value) {
+        for (unsigned shift=0;shift<32;shift+=8) { digest^=(value>>shift)&255; digest*=16777619u; }
+    };
+    for (const auto& goal:output.goals) { word(goal.x); word(goal.y); word(goal.supplier.gid); word(goal.supplier.generation); }
+    return digest;
+}
 void buildBuilding(const Key& key,const SimulationSnapshot::Handle& snapshot,Uint16* values,Output& output,GradientWorkspace& scratch)
 {
     GradientExecutionAudit::record(GradientExecutionAudit::Kind::AirTraversalPlane);
@@ -150,6 +159,7 @@ void AirGradientRuntime::prepare(Map& map,GradientPipeline::Job& job,const Simul
             if (payload->key.family==Family::ClearChoice) std::fill_n(work.data.get(),std::size_t(work.snapshotLease->width)*work.snapshotLease->height,GRADIENT_UNREACHABLE);
             buildSelection(payload->key,*work.snapshotLease,work.data.get(),*payload->output,scratch);
         }
+        payload->output->goalDigest=computeGoalDigest(*payload->output);
     };
     map.gradientRuntime->pipeline.prepare(&job,[](auto&){});
 }
@@ -231,6 +241,7 @@ Key readKey(GAGCore::InputStream* s) {
     return key;
 }
 void writeOutput(GAGCore::OutputStream* s,const Output& output) {
+    s->writeUint32(output.goalDigest,"goalDigest");
     s->writeUint32(output.entryCosts.size(),"entryCosts");
     s->writeEnterSection("entryCosts"); for (unsigned i=0;i<output.entryCosts.size();++i) { s->writeEnterSection(i); s->writeUint8(output.entryCosts[i],"value"); s->writeLeaveSection(); } s->writeLeaveSection();
     s->writeUint32(output.labels.size(),"labels");
@@ -241,7 +252,8 @@ void writeOutput(GAGCore::OutputStream* s,const Output& output) {
     s->writeUint32(output.choice.sample.cost,"choiceCost"); s->writeEnterSection("choiceSupplier"); writeRef(s,output.choice.sample.supplier); s->writeLeaveSection();
 }
 std::shared_ptr<Output> readOutput(GAGCore::InputStream* s,std::size_t cells) {
-    auto output=std::make_shared<Output>(); const auto costs=s->readUint32("entryCosts");
+    auto output=std::make_shared<Output>(); output->goalDigest=s->readUint32("goalDigest");
+    const auto costs=s->readUint32("entryCosts");
     if (costs && costs!=cells) throw std::runtime_error("Invalid air entry-cost count");
     output->entryCosts.resize(costs); s->readEnterSection("entryCosts"); for (unsigned i=0;i<costs;++i) { s->readEnterSection(i); const auto value=s->readUint8("value"); field::air::compileSteps(value); output->entryCosts[i]=value; s->readLeaveSection(); } s->readLeaveSection();
     const auto labels=s->readUint32("labels");
@@ -253,6 +265,9 @@ std::shared_ptr<Output> readOutput(GAGCore::InputStream* s,std::size_t cells) {
     output->choice.available=flag(s,"choice"); output->choice.sample.x=s->readSint32("choiceX"); output->choice.sample.y=s->readSint32("choiceY"); output->choice.sample.cost=s->readUint32("choiceCost");
     s->readEnterSection("choiceSupplier"); output->choice.sample.supplier=readRef(s); s->readLeaveSection();
     if (output->choice.sample.cost>unsigned(gradient_kernel::COST_LIMIT)) throw std::runtime_error("Invalid air choice cost");
+    // Loading is an explicit full-state verification boundary. Normal live
+    // checksums consume this worker-produced digest without enumerating goals.
+    if (output->goalDigest!=computeGoalDigest(*output)) throw std::runtime_error("Invalid air goal digest");
     return output;
 }
 }
@@ -351,8 +366,12 @@ std::uint32_t AirGradientRuntime::checksum(std::uint32_t checksum,bool heavy) co
         if (entry.output) {
             mix(entry.output->choice.available); mix(entry.output->choice.sample.x); mix(entry.output->choice.sample.y); mix(entry.output->choice.sample.cost);
             mix(entry.output->choice.sample.supplier.gid); mix(entry.output->choice.sample.supplier.generation);
-            for (const auto& goal:entry.output->goals) { mix(goal.x); mix(goal.y); mix(goal.supplier.gid); mix(goal.supplier.generation); }
-            if (heavy) { for (const auto label:entry.output->labels) mix(label); for (const auto cost:entry.output->entryCosts) mix(cost); }
+            mix(entry.output->goalDigest); mix(entry.output->goals.size());
+            if (heavy) {
+                for (const auto& goal:entry.output->goals) { mix(goal.x); mix(goal.y); mix(goal.supplier.gid); mix(goal.supplier.generation); }
+                for (const auto label:entry.output->labels) mix(label);
+                for (const auto cost:entry.output->entryCosts) mix(cost);
+            }
         }
         if (heavy && entry.values) for (std::size_t i=0;i<entry.output->entryCosts.size();++i) mix(entry.values[i]);
     }

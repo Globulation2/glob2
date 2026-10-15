@@ -2,6 +2,8 @@
 #include "EngineFixtures.h"
 #include "GradientExecutionAudit.h"
 #include "AirGradientTypes.h"
+#include "GradientRuntime.h"
+#include "field/AirGradient.h"
 #include <BinaryStream.h>
 #include <TextStream.h>
 #include <StreamBackend.h>
@@ -61,10 +63,132 @@ void configureAir(Game& game,unsigned participants)
     game.map.configureGradientPipeline(participants-1,3);
     game.gameHeader.setResourceGrowthDisabled(true);
 }
+std::string saveAirInventory(const AirGradientRuntime& runtime,Map& map,bool text)
+{
+    auto* backend=new GAGCore::MemoryStreamBackend;
+    std::unique_ptr<GAGCore::OutputStream> output(text
+        ? static_cast<GAGCore::OutputStream*>(new GAGCore::TextOutputStream(backend))
+        : static_cast<GAGCore::OutputStream*>(new GAGCore::BinaryOutputStream(backend)));
+    runtime.save(map,output.get()); output->flush(); return backend->takeContents();
+}
+void loadAirInventory(AirGradientRuntime& runtime,Map& map,const std::string& bytes,bool text)
+{
+    auto backend=std::make_unique<GAGCore::MemoryStreamBackend>();
+    backend->write(bytes.data(),bytes.size()); backend->seekFromStart(0);
+    if (text) { GAGCore::TextInputStream input(backend.get()); runtime.load(map,&input,false); }
+    else { GAGCore::BinaryInputStream input(backend.release()); runtime.load(map,&input,false); }
+}
 }
 
 TEST_SUITE("AirGradientPublication")
 {
+TEST_CASE("published air inventory rejects incomplete metadata malformed goals and invalid bounded values in binary and text")
+{
+    glob2test::HeadlessGlobals globals;
+    glob2test::HeadlessGame world({.discovered=true,.clearImmobile=true,.header=true});
+    auto& game=world.game; auto& map=game.map;
+    configureAir(game,2);
+    auto* building=world.addBuilding("inn",4,4); REQUIRE(building);
+    Key destination; destination.building=Game::refOf(building); destination.x=4; destination.y=4;
+    awaitAir(game,destination);
+    map.addGuardArea(20,20,0);
+    Key guard; guard.family=Family::Guard;
+    awaitAir(game,guard);
+    const auto& original=map.gradientRuntime->air;
+    for (bool text:{false,true}) for (unsigned malformed=0;malformed<9;++malformed) {
+        CAPTURE(text); CAPTURE(malformed);
+        // Emit a grammatically complete stream with one semantically invalid
+        // component, rather than corrupting array counts and shifting its bytes.
+        auto corrupt=original;
+        auto entry=std::find_if(corrupt.entries.begin(),corrupt.entries.end(),[&](const auto& item) {
+            return item.second.key.family==(malformed==0 || malformed==7 ? Family::Building : Family::Guard);
+        });
+        REQUIRE(entry!=corrupt.entries.end());
+        auto output=std::make_shared<air_guidance::Output>(*entry->second.output);
+        entry->second.output=output;
+        switch (malformed) {
+        case 0: output->entryCosts.clear(); break;
+        case 1: output->labels.clear(); break;
+        case 2: output->goals.front().x=map.getW(); break;
+        case 3: output->goals.front().supplier={NOGBID,1}; break;
+        case 4: {
+            auto values=std::make_shared<Uint16[]>(map.cellCount());
+            std::copy_n(entry->second.values.get(),map.cellCount(),values.get());
+            values[0]=2; // A representable integer whose cost exceeds COST_LIMIT.
+            entry->second.values=std::move(values);
+            break;
+        }
+        case 5: output->labels[0]=field::air::NoGoal; break;
+        case 6: entry->second.key.sourceX=map.getW(); break;
+        case 7: entry->second.key.building={}; break;
+        case 8: corrupt.retired.push_back({0,1,{},{}}); break; // Missing orphan charge.
+        }
+        const auto bytes=saveAirInventory(corrupt,map,text);
+        AirGradientRuntime loaded;
+        CHECK_THROWS_AS(loadAirInventory(loaded,map,bytes,text),std::runtime_error);
+    }
+    // Empty output metadata is legal for a cold entry, and remains Pending.
+    Key cold=guard; cold.epoch=123;
+    map.requestAirField(cold);
+    for (bool text:{false,true}) {
+        AirGradientRuntime loaded;
+        CHECK_NOTHROW(loadAirInventory(loaded,map,saveAirInventory(map.gradientRuntime->air,map,text),text));
+        CHECK(loaded.lookup(cold).readiness==FieldReadiness::Pending);
+    }
+    // Exercise the scalar admission guard without allocating an enormous map.
+    // Request validation must fail before touching any traversal/output plane.
+    const auto actualCells=map.size;
+    map.size=AirGradientRuntime::Budget;
+    cold.epoch=124;
+    CHECK_THROWS_AS(map.requestAirField(cold),std::runtime_error);
+    map.size=actualCells;
+}
+
+TEST_CASE("retired generation budget attribution survives saves before the next boundary and ignores retained leases")
+{
+    glob2test::HeadlessGlobals globals;
+    for (bool text:{false,true}) {
+        CAPTURE(text);
+        glob2test::HeadlessGame world({.discovered=true,.clearImmobile=true,.header=true});
+        auto& game=world.game; auto& map=game.map;
+        configureAir(game,2);
+        map.addGuardArea(20,20,0);
+        Key key; key.family=Family::Guard;
+        const auto oldLease=awaitAir(game,key);
+        const auto frozen=std::vector<Uint16>(oldLease.values.get(),oldLease.values.get()+map.cellCount());
+        map.requestAirField(key,true);
+        for (unsigned boundary=0;boundary<32 && map.lookupAirField(key).values==oldLease.values;++boundary) advanceAir(game);
+        REQUIRE(map.lookupAirField(key).values!=oldLease.values);
+        REQUIRE_FALSE(map.gradientRuntime->air.retired.empty());
+        REQUIRE(map.gradientRuntime->air.retired.front().entry!=0);
+        air_guidance::Sample selected;
+        REQUIRE(map.queryAirDestination(key,8,8,&selected)==RouteResult::Reachable); // Release unread retention.
+        const auto bytes=saveAir(game,text);
+        GameGUI resumed;
+        REQUIRE(loadAir(resumed.game,bytes,text));
+        auto& restored=resumed.game.map;
+        CHECK(airState(game)==airState(resumed.game));
+        const auto& originalRetired=map.gradientRuntime->air.retired;
+        const auto& restoredRetired=restored.gradientRuntime->air.retired;
+        REQUIRE(restoredRetired.size()==originalRetired.size());
+        CHECK(restoredRetired.front().entry==originalRetired.front().entry);
+        CHECK(restoredRetired.front().bytes==originalRetired.front().bytes);
+        // Add demand before retiring that boundary. Logical budget pressure
+        // must make the same decisions, even though only the original run has
+        // an external lease to the replaced generation.
+        for (unsigned request=0;request<160;++request) {
+            Key demand=key; demand.epoch=1000+request;
+            CHECK(map.requestAirField(demand)==restored.requestAirField(demand));
+        }
+        CHECK(airState(game)==airState(resumed.game));
+        CHECK(map.gradientRuntime->air.retiredBytes==restored.gradientRuntime->air.retiredBytes);
+        CHECK(std::equal(frozen.begin(),frozen.end(),oldLease.values.get()));
+        advanceAir(game); advanceAir(resumed.game);
+        CHECK(airState(game)==airState(resumed.game));
+        map.finishGradientPipeline(); restored.finishGradientPipeline();
+    }
+}
+
 TEST_CASE("queued private and published air outputs preserve binary text continuation at every worker count [artifacts]")
 {
     glob2test::HeadlessGlobals globals;
@@ -205,7 +329,10 @@ TEST_CASE("guard labels retain scan order and clearing-zone goals honor range ma
     CHECK(chosen.x==8); CHECK(chosen.y==4);
     map.setResourceByIndex(8,8,WOOD,1); map.setResourceByIndex(10,8,WOOD,1); map.setResourceByIndex(20,20,WOOD,1);
     map.addForbidden(8,8,0);
-    Key clear; clear.family=Family::ClearZone; clear.x=8; clear.y=8; clear.range=3; clear.materialMask=1u<<WOOD;
+    auto* flag=world.addBuilding("clearingflag",8,8); REQUIRE(flag);
+    flag->unitStayRange=3; flag->clearingMaterialMask=1u<<WOOD;
+    Key clear; clear.family=Family::ClearZone; clear.building=Game::refOf(flag);
+    clear.x=8; clear.y=8; clear.range=3; clear.materialMask=1u<<WOOD;
     const auto field=awaitAir(game,clear);
     REQUIRE(field.output); REQUIRE(field.output->goals.size()==1);
     CHECK(field.output->goals.front().x==10); CHECK(field.output->goals.front().y==8);

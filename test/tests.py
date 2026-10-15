@@ -141,7 +141,7 @@ ENGINE_TESTS = [
     '#src/unit/EnteringUnitSaveHarness.cpp',
     '#src/map/gradient/MapGradientInvalidationTest.cpp',
     '#src/map/gradient/DelayedGradientPublicationHarness.cpp',
-    '#src/map/gradient/AirGradientPublicationHarness.cpp',
+    ('#src/map/gradient/AirGradientPublicationHarness.cpp', dict(cxxflags=['-fno-access-control'])),
     ('#src/map/gradient/GradientPreparationTest.cpp', dict(cxxflags=['-fno-access-control'])),
     ('#src/ai/nicowar/NicowarFarmingHarness.cpp', dict(cxxflags=['-fno-access-control'])),
     '#src/ai/shared_runtime/RuntimeContinuationTest.cpp',

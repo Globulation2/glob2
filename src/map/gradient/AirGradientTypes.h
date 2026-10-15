@@ -29,6 +29,8 @@ struct Goal { int x=0,y=0; BuildingRef supplier; };
 struct Sample { int x=0,y=0; unsigned cost=0; BuildingRef supplier; };
 struct Choice { bool available=false; Sample sample; };
 struct Output {
+    // Computed with the private output, so routine checksums never walk goals.
+    std::uint32_t goalDigest=2166136261u;
     std::vector<std::uint8_t> entryCosts;
     std::vector<std::uint32_t> labels;
     std::vector<Goal> goals;

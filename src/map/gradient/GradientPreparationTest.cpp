@@ -1828,3 +1828,19 @@ TEST_CASE("a locally blocked consumer field refreshes its stable supplier-cache 
     CHECK(request.request.consumer==entry.consumer);
     CHECK(audit.totals().owner==0);
 }
+
+TEST_CASE("the version-152 checksum adapter excludes newly introduced publication state" * doctest::test_suite("GradientPreparation"))
+{
+    glob2test::HeadlessGlobals globals;
+    glob2test::HeadlessGame world({.wDec=5,.hDec=5,.teams=1,.discovered=true,.clearImmobile=true,.header=true});
+    auto& map=world.game.map;
+    const auto legacy=map.checkSum(true,false,true);
+    const auto current=map.checkSum(true,false,false);
+    REQUIRE(map.requestMaterialField(0,WHEAT,0)==FieldReadiness::Pending);
+    CHECK(map.checkSum(true,false,true)==legacy);
+    CHECK(map.checkSum(true,false,false)!=current);
+    air_guidance::Key guard; guard.family=air_guidance::Family::Guard;
+    REQUIRE(map.requestAirField(guard)==FieldReadiness::Pending);
+    CHECK(map.checkSum(true,false,true)==legacy);
+    CHECK(map.checkSum(true,false,false)!=current);
+}
