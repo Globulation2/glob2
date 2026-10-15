@@ -438,7 +438,6 @@ UNIT_PRODUCTION_SOURCES = [
     '#src/team/stats/MetricCatalog.cpp',
     '#src/team/stats/MetricSeries.cpp',
     '#src/game/rules/TeamLayout.cpp',
-    '#src/unit/UnitUtils.cpp',
     '#src/game/player/BasePlayer.cpp',
     '#src/team/BaseTeam.cpp',
     '#src/game/Bullet.cpp',

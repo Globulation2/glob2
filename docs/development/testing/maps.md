@@ -118,7 +118,7 @@ struct GrassMap : Map {
 
 ### Build wiring
 
-Add the translation unit to `UNIT_TESTS` in `test/tests.py`. The production sources the unit binary links (`Map.cpp`, `MapQuery.cpp`, `MapTerrain.cpp`, `BitArray.cpp`, `Utilities.cpp`, `building/BuildingUtils.cpp`, `unit/UnitUtils.cpp`, ...) are listed once in `UNIT_PRODUCTION_SOURCES`; the include paths come from the client build environment, so nothing per-test is needed.
+Add the translation unit to `UNIT_TESTS` in `test/tests.py`. The production sources the unit binary links (`Map.cpp`, `MapQuery.cpp`, `MapTerrain.cpp`, `BitArray.cpp`, `Utilities.cpp`, `building/BuildingUtils.cpp`, ...) are listed once in `UNIT_PRODUCTION_SOURCES`; the include paths come from the client build environment, so nothing per-test is needed. The unit and building GID conversions are defined in their headers so hot callers can inline them without LTO.
 
 ### Terrain encoding for tests
 

@@ -20,27 +20,6 @@
 #include "Utilities.h"
 #include "Order.h"
 
-int Building::constructionMaterialNeed(int r) const
-{
-	return type->isBuildingSite ? std::max(0, constructionBudget[r]-constructionReserved[r]) : 0;
-}
-
-int Building::materialDeliveryTarget(int r) const
-{
-	return type->isBuildingSite && (constructionBudget[r] || type->semantics.constructionCost[r]) ? constructionBudget[r] : (runtime->replenishMaterialMask & (1u<<r)) ? type->maxMaterial[r] : 0;
-}
-
-int Building::materialDeliveryNeed(int r) const
-{
-	const Sint64 room = std::max<Sint64>(0, Sint64(materialStockLimit()) - material(r));
-	if (type->isBuildingSite && (constructionBudget[r] || type->semantics.constructionCost[r]))
-	{
-		const int uncommitted = constructionResultState == REPAIR ? 0 : availableMaterial(r);
-		return Sint32(std::min<Sint64>(room, std::max(0, constructionMaterialNeed(r)-uncommitted)));
-	}
-	return (runtime->replenishMaterialMask & (1u<<r)) ? Sint32(std::min<Sint64>(room, std::max(0, type->maxMaterial[r]-material(r)))) : 0;
-}
-
 void Building::fundConstructionFromInventory()
 {
 	if (!type->isBuildingSite || constructionResultState == REPAIR) return;
