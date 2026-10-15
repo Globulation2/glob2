@@ -49,6 +49,9 @@ bool Map::stockSupplierEligibleSlot(const Building*, const Building*, int, unsig
 // completed-job draining for terrain import, and fail if an engine reservation
 // reaches this test double; that lifecycle is covered by engine harnesses.
 #include "gradient/GradientRuntime.h"
+void AirGradientRuntime::invalidate(Map&) {
+    if (!entries.empty() || !retired.empty()) std::abort();
+}
 void Map::preparePendingGradient() {
     if (gradientRuntime->preparation.job) std::abort();
 }
