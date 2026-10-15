@@ -417,7 +417,7 @@ TEST_CASE("building pipeline admits several jobs per tick, publishes in reservat
             }
             pipeline.prepare(staged);
             for (unsigned i=1; i<delay; ++i) { pipeline.advance(); CHECK(published.empty()); }
-            std::thread opener([&] { std::this_thread::sleep_for(std::chrono::milliseconds(20)); release.set_value(); });
+            std::jthread opener([&] { std::this_thread::sleep_for(std::chrono::milliseconds(20)); release.set_value(); });
             pipeline.advance(); // Waits for the gated job, then publishes all four.
             opener.join();
             CHECK(published==std::vector<unsigned>{0,1,2,3});

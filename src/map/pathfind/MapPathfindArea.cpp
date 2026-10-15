@@ -89,7 +89,7 @@ bool Map::pathfindArea(EntityRandom& random, AreaKind kind, int teamNumber, int 
 	if (directionByGradient(random, teamMask, swimClass, x, y, gradient, dx, dy, false))
 		return true;
 
-	// we are in a blocked situation, so we have to regenerate the gradient
+	// Local blockage enrolls a delayed refresh and keeps the published field.
 	switch (kind)
 	{
 		case AreaKind::Guard: updateGuardAreasGradient(teamNumber, swimClass); break;
@@ -100,6 +100,7 @@ bool Map::pathfindArea(EntityRandom& random, AreaKind kind, int teamNumber, int 
 
 StepResult Map::queryForbiddenStep(const Uint16* option, int team, int swim, int x, int y, int* dx, int* dy)
 {
+    // Check readiness before any movement decision; absence is not blockage.
     if (!getForbiddenGradient(team,swim)) return StepResult::Pending;
     return pathfindForbidden(option,team,swim,x,y,dx,dy) ? StepResult::Step : StepResult::Blocked;
 }

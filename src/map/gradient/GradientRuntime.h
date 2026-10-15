@@ -40,6 +40,9 @@ struct GradientRuntime
 	{
 		std::unique_ptr<Uint16[]> cells;
         Uint16* published = nullptr;
+        // Consumer pool membership changes which otherwise eligible suppliers
+        // must be excluded, even when script identity/type/position are stable.
+        bool excludesShared = false;
         bool awaitingFirstRead = false;
         Uint32 publishedStep = 0;
 		Uint64 sourceRevision=0, recency=0;

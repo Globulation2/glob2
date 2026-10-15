@@ -1844,3 +1844,63 @@ TEST_CASE("the version-152 checksum adapter excludes newly introduced publicatio
     CHECK(map.checkSum(true,false,true)==legacy);
     CHECK(map.checkSum(true,false,false)!=current);
 }
+
+TEST_CASE("consumer pool changes hard-supersede ground supplier fields at a stable identity" * doctest::test_suite("GradientPreparation"))
+{
+    glob2test::HeadlessGlobals globals;
+    for (bool publishFirst : {false,true}) {
+        CAPTURE(publishFirst);
+        glob2test::HeadlessGame world({.wDec=5,.hDec=5,.teams=1,.discovered=true,.clearImmobile=true,.loadDefaultRace=true,.header=true});
+        auto& game=world.game; auto& map=game.map;
+        auto catalog=nlohmann::json::parse(game.buildingsTypes.snapshotJson());
+        for (const auto* name : {"inn","hospital"}) {
+            auto& variant=catalog["variants"][game.buildingsTypes.getFinishedTypeNum(name)];
+            variant["properties"]["maxMaterial"][WHEAT]=20;
+            auto& market=variant["semantics"]["market"];
+            market["suppliesStock"]=false;
+            market["suppliesDirectStock"]=true;
+            market["suppliesDirectStockMaterials"]={"food"};
+            market["fetchesDirectStock"]=true;
+            market["fetchesDirectStockMaterials"]={"food"};
+        }
+        game.buildingsTypes.loadSnapshotJson(catalog.dump()); game.configureBuildingCatalog();
+        map.configureCompute(2); map.configureGradientPipeline(1,3);
+        auto* consumer=world.addBuilding("inn",4,4);
+        auto* supplier=world.addBuilding("hospital",20,20);
+        REQUIRE(consumer); REQUIRE(supplier);
+        // Exercise pool membership independently of slot/type/script identity.
+        // Both configurations have the same supply modes and private cache key.
+        consumer->sharedMaterials=nullptr;
+        supplier->sharedMaterials=world.team->teamMaterials;
+        supplier->setMaterial(WHEAT,10);
+        const auto identity=consumer->scriptIdentity;
+        const auto type=consumer->typeNum;
+        const auto boundary=[&] {
+            map.advanceGradientPipeline(); ++game.stepCounter;
+            map.stagePeriodicGradientPreparation(); map.preparePendingGradient();
+        };
+        REQUIRE(map.getMaterialGradientSlot(0,WHEAT,0,false,consumer)==nullptr);
+        if (publishFirst) {
+            for (unsigned i=0;i<16 && !map.lookupMaterialGradientSlot(0,WHEAT,0,false,consumer);++i) boundary();
+            const auto* field=map.lookupMaterialGradientSlot(0,WHEAT,0,false,consumer);
+            REQUIRE(field!=nullptr);
+            REQUIRE(field[map.coordToIndex(12,12)]>GRADIENT_UNREACHABLE);
+        } else {
+            boundary(); // An admitted private output holds the old pool policy.
+            map.finishGradientPipeline(); // Completion must not publish it early.
+        }
+        consumer->sharedMaterials=world.team->teamMaterials;
+        REQUIRE(consumer->scriptIdentity==identity); REQUIRE(consumer->typeNum==type);
+        CHECK(map.lookupMaterialGradientSlot(0,WHEAT,0,false,consumer)==nullptr);
+        CHECK(map.getMaterialGradientSlot(0,WHEAT,0,false,consumer)==nullptr);
+        REQUIRE(map.gradientRuntime->materialFields.size()==1);
+        CHECK(map.gradientRuntime->materialFields.begin()->second.excludesShared);
+        for (unsigned i=0;i<16 && !map.lookupMaterialGradientSlot(0,WHEAT,0,false,consumer);++i) boundary();
+        const auto* field=map.lookupMaterialGradientSlot(0,WHEAT,0,false,consumer);
+        REQUIRE(field!=nullptr);
+        CHECK(field[map.coordToIndex(12,12)]==GRADIENT_UNREACHABLE);
+        // The shared supplier remains stocked: exclusion, not depletion, removed it.
+        CHECK(supplier->material(WHEAT)==10);
+        map.finishGradientPipeline();
+    }
+}

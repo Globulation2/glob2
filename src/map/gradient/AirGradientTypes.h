@@ -20,6 +20,8 @@ struct Key {
     int x=0,y=0,range=0;
     std::uint32_t materialMask=0;
     int sourceX=0,sourceY=0;
+    // Consumer configuration, or private choice assignment/medical state.
+    // A private choice also keys the source; shared fields do not key a flyer.
     std::uint32_t epoch=0;
     auto order() const { return std::tie(family,team,material,modes,withMarkets,building.gid,building.generation,consumer.gid,consumer.generation,unit.gid,unit.generation,x,y,range,materialMask,sourceX,sourceY,epoch); }
     bool operator<(const Key& other) const { return order()<other.order(); }
@@ -37,6 +39,8 @@ struct Output {
     Choice choice;
 };
 struct Published {
+    // Immutable owner-decision lease. Shared workers capture primitive inputs,
+    // rather than extending this lease across publication/retirement boundaries.
     FieldReadiness readiness=FieldReadiness::Pending;
     std::shared_ptr<const std::uint16_t[]> values;
     std::shared_ptr<const Output> output;

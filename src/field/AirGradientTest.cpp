@@ -131,6 +131,48 @@ TEST_CASE("caller ranks break multi-source ties independent of enrollment order"
     CHECK(tie.labels[0]==3);
 }
 
+TEST_CASE("weighted seeds across bucket rotations match independent wide searches in both directions")
+{
+    using namespace field::air;
+    AirFixture fixture(32,8);
+    for (unsigned cell=0;cell<fixture.grid.cells();++cell) {
+        fixture.passable[cell]=cell%13!=5;
+        fixture.costs[cell]=compileSteps(std::array{1u,31u,91u,182u}[cell%4]);
+    }
+    // The cheap seed can improve a deferred seed before its original layer is
+    // enrolled. Duplicate positions also exercise cost-before-rank ordering.
+    std::array goals{Goal{0,8,900},Goal{1,9,0},Goal{1,2,700},
+        Goal{23,4,256},Goal{160,1,64},Goal{30,3,unsigned(gradient_kernel::COST_LIMIT)}};
+    for (const auto direction:{Direction::ToDestination,Direction::FromSource}) {
+        CAPTURE(int(direction));
+        fixture.build(goals,GoalPolicy::Exact,direction);
+        const auto originalValues=fixture.values;
+        const auto originalLabels=fixture.labels;
+        std::reverse(goals.begin(),goals.end());
+        fixture.build(goals,GoalPolicy::Exact,direction);
+        CHECK(fixture.values==originalValues);
+        CHECK(fixture.labels==originalLabels);
+        for (unsigned cell=0;cell<fixture.grid.cells();++cell) {
+            CAPTURE(cell);
+            unsigned best=unsigned(gradient_kernel::COST_LIMIT)+1,rank=NoGoal;
+            for (const auto goal:goals) {
+                const auto searchDirection=direction==Direction::ToDestination
+                    ? field::AirDistanceDirection::ToDestination : field::AirDistanceDirection::FromSource;
+                field::AirDistanceField reference(32,8,goal.cell%32,goal.cell/32,
+                    fixture.access(),fixture.entry(),true,searchDirection);
+                const auto distance=reference.costTo(cell%32,cell/32);
+                if (!fixture.passable[cell] || distance==decltype(reference)::unreachable
+                    || distance>unsigned(gradient_kernel::COST_LIMIT)-goal.cost) continue;
+                const auto candidate=distance+goal.cost;
+                if (candidate<best || (candidate==best && goal.rank<rank)) { best=candidate; rank=goal.rank; }
+            }
+            CHECK(decode(fixture.values[cell])==(best<=unsigned(gradient_kernel::COST_LIMIT)
+                ? std::optional<unsigned>(best) : std::nullopt));
+            CHECK(fixture.labels[cell]==rank);
+        }
+    }
+}
+
 TEST_CASE("bounded encoding keeps the exact shared limit and rejects overrange arithmetic")
 {
     using namespace field::air;

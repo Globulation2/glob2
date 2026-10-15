@@ -1378,6 +1378,7 @@ void Map::saveMaterialRoutingCache(GAGCore::OutputStream* stream) const
         stream->writeUint32(entry.builtStep,"builtStep"); write64(entry.sourceRevision,"sourceRevision"); write64(entry.recency,"recency");
         stream->writeUint8(entry.team,"team"); stream->writeUint8(entry.resource,"resource");
         stream->writeUint8(entry.swim,"swim"); stream->writeUint8(entry.modes,"modes");
+        stream->writeUint8(entry.excludesShared,"excludesShared");
         stream->writeUint8(entry.awaitingFirstRead,"awaitingFirstRead");
         stream->writeUint32(entry.publishedStep,"publishedStep");
         saveGradient(stream,entry.published,size);
@@ -1428,6 +1429,13 @@ void Map::loadMaterialRoutingCache(GAGCore::InputStream* stream, bool packed, in
         prior=entry.recency;
         const Uint64 key=MapState::materialFieldKey(entry.consumer,entry.team,entry.resource,entry.swim,entry.modes);
         if (cache.materialFields.contains(key)) throw std::runtime_error("Duplicate resource routing cache entry");
+        if (versionMinor>=FILE_FORMAT_VERSION_DELAYED_GRADIENTS) entry.excludesShared=loadFlag(stream,"excludesShared");
+        else if (entry.consumer>=0) {
+            // Old synchronous entries describe the loaded consumer configuration.
+            const auto* consumer=game->teams[entry.team]->myBuildings[Building::GIDtoID(entry.consumer)];
+            entry.excludesShared=consumer && consumer->usesTeamMaterials();
+        }
+        if (entry.consumer<0 && entry.excludesShared) throw std::runtime_error("Shared resource routing field excludes a consumer pool");
         entry.awaitingFirstRead=versionMinor>=FILE_FORMAT_VERSION_DELAYED_GRADIENTS ? loadFlag(stream,"awaitingFirstRead") : false;
         entry.publishedStep=versionMinor>=FILE_FORMAT_VERSION_DELAYED_GRADIENTS ? stream->readUint32("publishedStep") : 0;
         Uint16* field=nullptr; loadGradient(stream,field,size,packed); entry.cells.reset(field);

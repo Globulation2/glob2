@@ -327,7 +327,8 @@ void Map::configureGradientPipeline(unsigned workers, unsigned delay)
         for (const auto& [key,entry]:gradientRuntime->materialFields) if (&entry.published==slot && entry.consumer>=0) {
             const auto* building=game->teams[entry.team]->myBuildings[Building::GIDtoID(entry.consumer)];
             return building && building->scriptIdentity==entry.identity && building->typeNum==entry.type
-                && building->posX==entry.x && building->posY==entry.y;
+                && building->posX==entry.x && building->posY==entry.y
+                && building->usesTeamMaterials()==entry.excludesShared;
         }
         return true;
     };

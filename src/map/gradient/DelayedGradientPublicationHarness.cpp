@@ -264,9 +264,11 @@ TEST_CASE("ordinary terrain edits with markets disabled round-trip binary and te
         game.save(output.get(),false,"terrain edit without markets"); output->flush();
         const auto bytes=storage->takeContents();
         GameGUI resumed;
+        // TextInputStream borrows its backend; BinaryInputStream owns it.
+        auto inputBackend=std::make_unique<GAGCore::MemoryStreamBackend>(bytes.data(),bytes.size());
         std::unique_ptr<GAGCore::InputStream> input(text
-            ? static_cast<GAGCore::InputStream*>(new GAGCore::TextInputStream(new GAGCore::MemoryStreamBackend(bytes.data(),bytes.size())))
-            : static_cast<GAGCore::InputStream*>(new GAGCore::BinaryInputStream(new GAGCore::MemoryStreamBackend(bytes.data(),bytes.size()))));
+            ? static_cast<GAGCore::InputStream*>(new GAGCore::TextInputStream(inputBackend.get()))
+            : static_cast<GAGCore::InputStream*>(new GAGCore::BinaryInputStream(inputBackend.release())));
         input->seekFromStart(0);
         REQUIRE(resumed.game.load(input.get()));
         REQUIRE_FALSE(resumed.game.map.marketsV2Enabled());

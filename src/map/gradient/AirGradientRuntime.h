@@ -8,10 +8,17 @@
 #include "UnitUtils.h"
 class Map;
 namespace GAGCore { class OutputStream; class InputStream; }
+// Map-owned adapter for the existing GradientPipeline, not another executor.
+// Only the owner mutates entries: request creates stable FIFO metadata, admission
+// reserves output capacity, and the pipeline publishes a complete generation at
+// its fixed deadline. Jobs capture Payload plus primitive snapshot leases; they
+// never borrow an Entry or mutate a live field.
 struct AirGradientRuntime {
     static constexpr unsigned DestinationBase=0x80000000u;
     static constexpr std::size_t MaxEntries=Team::MAX_COUNT*(Building::MAX_COUNT*(3+MaterialCount*8)
         + UnitUtils::MAX_COUNT + MaterialCount*8+1) + 2*GradientPipeline::MaxDelay;
+    // Published, admitted and boundary-retired output allocations. Pipeline
+    // spare buffers, worker scratch and snapshots have separate bounded owners.
     static constexpr std::uint64_t Budget=64ull*1024*1024;
     // Tracker stamps are serialized and hashed as current/stale because load
     // reconstructs their counters. Stock and claim counters are persisted raw.
@@ -19,6 +26,8 @@ struct AirGradientRuntime {
     Dependencies dependencies(const Map&,const air_guidance::Key&) const;
     struct Entry {
         air_guidance::Key key;
+        // Stable destination address used by pipeline tickets. Eviction drops
+        // allocations, while prune waits for logical retirement to erase this.
         std::uint16_t* slot=nullptr;
         std::shared_ptr<const std::uint16_t[]> values;
         std::shared_ptr<const air_guidance::Output> output;
@@ -29,6 +38,7 @@ struct AirGradientRuntime {
     };
     struct Payload {
         air_guidance::Key key;
+        // The worker owns mutation until publication converts this to const.
         std::shared_ptr<air_guidance::Output> output=std::make_shared<air_guidance::Output>();
         std::uint64_t captureRevision=0;
         Dependencies dependencies{};

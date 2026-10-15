@@ -8,7 +8,8 @@
 //   team stepping            requests refreshes and keeps serving old fields;
 //   after stepCounter++      stageBuildingGradientPreparation admits requests;
 //   observation boundary     prepareStagedBuildingGradients captures and submits.
-// Every owner-side step is O(1) per job; seeding and the search run on workers.
+// The owner manages bounded request metadata and scalar captures. Map-sized
+// input construction, seeding and the complete search run inside executor jobs.
 
 #include <PerformanceTelemetry.h>
 #include "Map.h"
@@ -106,8 +107,8 @@ void Map::ensureBuildingGradientPipeline()
 	if (pipeline.delayTicks() == delay) return;
 	if (pipeline.pendingCount() || !rt.buildingRequests.empty() || !rt.stagedBuildings.empty())
 		throw std::logic_error("Scheduled building gradients cannot change with pending work");
-	// Captures of one tick publish together, in request order; the synchronous
-	// path built them in that order, so a later one overwrites an earlier one.
+	// Captures of one tick publish together in reservation order. Swim classes
+	// sharing access metadata must resolve equal-capture ties in that same order.
 	struct Published { int team; Uint16 building; int slot; Uint32 captureTick, publishTick; };
 	pipeline.publish = [this, sameTick = std::vector<Published>{}](PipelineJob& job) mutable {
 		auto& p = job.payload;
@@ -243,8 +244,8 @@ void Map::prepareStagedBuildingGradients(const SimulationSnapshot::Handle& found
 		Building* b = buildingGradientDestination(p.team, p.buildingId, p.scriptIdentity);
 		if (!b) throw std::logic_error("Staged building gradient lost its destination");
 		p.seed = gradient_preparation::captureBuildingSeed(*b, p.swim, p.route);
-		// Owner cost planes from the same boundary as the lease the seeder reads.
-		// Cost planes are materialized from the immutable lease by the worker.
+		// The worker materializes cost planes from the same immutable boundary
+		// that supplies its seeds; the owner must not construct a cold plane here.
 		p.inputs = {};
 		job->snapshotLease = foundation.buildingGradientView();
 	}

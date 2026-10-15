@@ -415,9 +415,12 @@ checksum adapter retains its historical entity/RNG representation for fixtures.
   capacity and a deadline at admission. Cache pressure can evict a warm allocation
   while retaining its stable metadata and queued refresh. Resource, area, visibility,
   supplier-stock and clearing-claim revisions coalesce prompt refreshes without
-  restarting admitted jobs. Air cache reservations account for runtime-owned
-  published, admitted and boundary-retired generations. Current readers scope their leases to an owner
-  decision; jobs capture primitive snapshots rather than published air fields.
+  restarting admitted jobs. The 64 MiB air output reservation budget accounts
+  for runtime-owned published, admitted and boundary-retired generations. It is
+  not a total-memory ceiling: pipeline free buffers, executor scratch and immutable
+  snapshots have separate lifetimes and are outside that reservation. Current
+  readers scope their leases to an owner decision; jobs capture primitive snapshots
+  rather than published air fields.
   Keeping arbitrary external leases across boundaries remains memory-safe but is
   outside that logical byte budget. A future long-lived worker consumer needs an
   explicit logical retirement protocol before those bytes can be budgeted.
@@ -430,6 +433,13 @@ checksum adapter retains its historical entity/RNG representation for fixtures.
   checksummed; physical completion and reference counts never select admission.
   Reducing the requested budget preserves enough effective capacity for retained
   destinations, so every state produced by the runtime remains loadable.
+  Material and area getters return borrowed const arrays for the current owner
+  decision, not leases across publication or cache admission. Snapshot consumers
+  retain snapshot-owned planes; building worker consumers use
+  `SharedBuildingGradient` leases, and air queries hold their published output
+  lease through local selection. Workers never enqueue live requests: owner
+  admission fixes request order and captures primitive inputs, executor jobs own
+  private outputs, and only owner publication replaces a live generation.
 - The executor ring holds 79 batches: each deferred producer holds at most its
   horizon plus one (AI decisions 8, periodic gradients 16, building gradients 8, resource growth 16,
   team statistics 8, turret shortlist jobs 4),

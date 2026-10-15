@@ -452,6 +452,57 @@ TEST_CASE("supplier modes exclude the consumer and foreign stock without inventi
     CHECK(map.queryAirDestination(key,8,8,&chosen)==RouteResult::Unreachable);
 }
 
+TEST_CASE("deleted air building tickets cannot publish into a reused gid through binary and text checkpoints")
+{
+    glob2test::HeadlessGlobals globals;
+    for (unsigned phase:{0u,1u,2u}) for (bool text:{false,true}) {
+        CAPTURE(phase); CAPTURE(text);
+        glob2test::HeadlessGame world({.discovered=true,.clearImmobile=true,.header=true});
+        auto& game=world.game;
+        configureAir(game,2);
+        auto* old=world.addBuilding("inn",4,4); REQUIRE(old);
+        Key oldKey; oldKey.building=Game::refOf(old); oldKey.x=4; oldKey.y=4;
+        REQUIRE(game.map.requestAirField(oldKey)==FieldReadiness::Pending);
+        if (phase) advanceAir(game); // Admitted, but its fixed deadline is still three advances away.
+        if (phase==2) game.map.finishGradientPipeline(); // Complete private output, still unpublished.
+        CHECK(game.map.lookupAirField(oldKey).readiness==FieldReadiness::Pending);
+        const auto bytes=saveAir(game,text);
+        GameGUI restored; REQUIRE(loadAir(restored.game,bytes,text));
+        CHECK(airState(game)==airState(restored.game));
+        Key newKey;
+        for (Game* current:{&game,&restored.game}) {
+            REQUIRE(current->resolveBuilding(oldKey.building)!=nullptr);
+            REQUIRE(current->removeUnitAndBuildingAndFlags(4,4,unsigned(Game::DEL_BUILDING)));
+            const auto type=current->buildingsTypes.getTypeNum("inn",0,false);
+            auto* replacement=current->addBuilding(20,20,type,0); REQUIRE(replacement);
+            current->map.setBuilding(20,20,replacement->type->width,replacement->type->height,replacement->gid);
+            REQUIRE(replacement->gid==oldKey.building.gid);
+            REQUIRE(Game::refOf(replacement)!=oldKey.building);
+            Key requested; requested.building=Game::refOf(replacement); requested.x=20; requested.y=20;
+            if (current==&game) newKey=requested; else CHECK(requested==newKey);
+            REQUIRE(current->map.requestAirField(requested)==FieldReadiness::Pending);
+            const auto& queue=current->map.gradientRuntime->fieldRequests;
+            REQUIRE_FALSE(queue.empty());
+            const auto id=current->map.gradientRuntime->air.idForSlot(queue.back().slot);
+            REQUIRE(id!=0);
+            CHECK(current->map.gradientRuntime->air.entries.at(id).key==requested);
+        }
+        for (unsigned boundary=0;boundary<4;++boundary) {
+            advanceAir(game); advanceAir(restored.game);
+            CHECK(airState(game)==airState(restored.game));
+            CHECK(game.map.lookupAirField(oldKey).readiness==FieldReadiness::Pending);
+            CHECK(restored.game.map.lookupAirField(oldKey).readiness==FieldReadiness::Pending);
+            const auto field=game.map.lookupAirField(newKey);
+            CHECK(field.readiness==(boundary<3 ? FieldReadiness::Pending : FieldReadiness::Ready));
+            if (field.readiness==FieldReadiness::Ready) {
+                CHECK(field.values[game.map.coordToIndex(20,20)]==GRADIENT_AT_GOAL);
+                CHECK(field.values[game.map.coordToIndex(4,4)]!=GRADIENT_AT_GOAL);
+            }
+        }
+        game.map.finishGradientPipeline(); restored.game.map.finishGradientPipeline();
+    }
+}
+
 TEST_CASE("consumer configuration changes invalidate both published and pending supplier fields without slot reuse")
 {
     glob2test::HeadlessGlobals globals;
@@ -528,11 +579,19 @@ TEST_CASE("private clearing choice searches beyond six claimed nearest goals and
             map.setClearingAreaClaimed(10+i,8,0,claimant->gid);
         }
     }
+    // A dense eligible band is farther away than the seventh nearby goal.
+    // Enumeration scratch must not survive in this single-choice publication.
+    for (int y=18;y<=22;++y) for (int x=0;x<map.getW();++x) {
+        map.setResourceByIndex(x,y,WOOD,1); map.addClearArea(x,y,0);
+    }
     Key key; key.family=Family::ClearChoice; key.unit=Game::refOf(unit); key.sourceX=8; key.sourceY=8;
     key.epoch=unsigned(unit->activity)|(unsigned(unit->displacement)<<8)|(unsigned(unit->medical)<<16);
     CHECK(map.queryAirDestination(key,8,8,nullptr)==RouteResult::Pending);
     const auto field=awaitAir(game,key);
     REQUIRE(field.output); REQUIRE(field.output->choice.available);
+    CHECK(field.output->goals.empty()); CHECK(field.output->goals.capacity()==0);
+    CHECK(field.output->labels.empty()); CHECK(field.output->labels.capacity()==0);
+    CHECK(field.output->entryCosts.empty()); CHECK(field.output->entryCosts.capacity()==0);
     CHECK(field.output->choice.sample.x==16); CHECK(field.output->choice.sample.y==8);
     CHECK(field.output->choice.sample.cost==80);
     unit->posX=9;
@@ -556,8 +615,15 @@ TEST_CASE("air publication and binary text continuations agree with one two four
         map.setResourceByIndex(12,12,WHEAT,1); map.addGuardArea(20,20,0);
         Key material; material.family=Family::Material; material.material=WHEAT;
         Key guard; guard.family=Family::Guard;
+        const auto requestsBefore=map.gradientRuntime->fieldRequests.size();
+        const auto entriesBefore=map.gradientRuntime->air.entries.size();
+        CHECK(map.lookupAirField(material).readiness==FieldReadiness::Pending);
+        CHECK(map.gradientRuntime->fieldRequests.size()==requestsBefore);
+        CHECK(map.gradientRuntime->air.entries.size()==entriesBefore);
         for (unsigned i=0;i<16;++i) CHECK(map.requestAirField(material)==FieldReadiness::Pending);
         map.requestAirField(guard);
+        CHECK(map.gradientRuntime->fieldRequests.size()==requestsBefore+2);
+        CHECK(map.gradientRuntime->air.entries.size()==entriesBefore+2);
         GradientExecutionAudit audit;
         std::vector<std::vector<Uint32>> trajectory;
         std::ostringstream trace;

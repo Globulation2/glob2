@@ -38,6 +38,7 @@ void buildSelection(const Key& key,const SimulationSnapshot::Handle& snapshot,Ui
     const auto count=grid.cells();
     const Uint32 teamMask=Uint32(1)<<key.team;
     const bool constrained=snapshot.terrain->airConstraints;
+    const bool privateChoice=key.family==Family::ClearChoice;
     GradientExecutionAudit::record(GradientExecutionAudit::Kind::AirTraversalPlane);
     std::vector<std::uint8_t> passable(count);
     std::vector<gradient_kernel::EntrySteps> costs(count);
@@ -49,12 +50,18 @@ void buildSelection(const Key& key,const SimulationSnapshot::Handle& snapshot,Ui
     }
     const field::air::Traversal traversal{grid,passable,costs};
     output={};
-    if (key.family!=Family::ClearChoice) {
+    if (!privateChoice) {
         output.entryCosts.resize(count);
         for (size_t i=0;i<count;++i) output.entryCosts[i]=std::uint8_t(costs[i].cardinal);
     }
     GradientExecutionAudit::record(GradientExecutionAudit::Kind::AirGoalEnumeration);
     std::vector<field::air::Goal> seeds;
+    // A private choice publishes only its result, never its candidate storage.
+    // Shared fields retain at most one goal per cell. Reserve that bound once
+    // so vector growth cannot exceed the output-plane reservation budget.
+    std::vector<Goal> candidates;
+    auto& goals=privateChoice ? candidates : output.goals;
+    goals.reserve(count);
     // The original selectors visit y then x, replacing only for a strictly
     // cheaper cost. Goal ranks preserve that order, including supplier cells.
     for (int y=0;y<snapshot.height;++y) for (int x=0;x<snapshot.width;++x) {
@@ -98,11 +105,11 @@ void buildSelection(const Key& key,const SimulationSnapshot::Handle& snapshot,Ui
         case Family::Building: throw std::logic_error("Building air job sent to destination selector");
         }
         if (eligible) {
-            seeds.push_back({unsigned(cell),unsigned(output.goals.size()),0});
-            output.goals.push_back({x,y,supplier});
+            if (!privateChoice) seeds.push_back({unsigned(cell),unsigned(goals.size()),0});
+            goals.push_back({x,y,supplier});
         }
     }
-    if (key.family!=Family::ClearChoice) {
+    if (!privateChoice) {
         output.labels.resize(count);
         field::air::build(traversal,seeds,std::span(values,count),scratch,output.labels,field::air::GoalPolicy::ApproachBlocked);
         return;
@@ -115,7 +122,7 @@ void buildSelection(const Key& key,const SimulationSnapshot::Handle& snapshot,Ui
     for (const auto& unit:snapshot.entities->units) if (unit.team==key.team && unit.hasClearingClaim)
         claims[grid.index(unit.clearingClaimX,unit.clearingClaimY)]=&unit;
     unsigned best=std::numeric_limits<unsigned>::max();
-    for (const auto& goal:output.goals) {
+    for (const auto& goal:goals) {
         const auto cell=grid.index(goal.x,goal.y);
         std::optional<unsigned> cost;
         if (passable[cell]) cost=field::air::decode(values[cell]);
@@ -130,7 +137,5 @@ void buildSelection(const Key& key,const SimulationSnapshot::Handle& snapshot,Ui
         best=*cost;
         output.choice={true,{goal.x,goal.y,*cost,{}}};
     }
-    // Candidate enumeration is private scratch for a choice, not retained cache.
-    output.goals.clear();
 }
 }

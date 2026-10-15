@@ -40,9 +40,12 @@ void buildBuilding(const Key& key,const SimulationSnapshot::Handle& snapshot,Uin
     field::air::build({grid,passable,costs},std::span(&goal,1),{values,cells},scratch,{},field::air::GoalPolicy::ApproachBlocked);
 }
 Uint64 charge(const Key& key,std::size_t cells) {
-    const Uint64 output=key.family==Family::Building ? cells*3
-        : key.family==Family::ClearChoice ? cells*2+sizeof(Choice)
-        : cells*(3+sizeof(Uint32)+sizeof(Goal))+Team::MAX_COUNT*Building::MAX_COUNT*sizeof(Goal);
+    // Output allocations only: traversal, candidates and queues are private
+    // worker scratch. Shared selectors retain no more than one goal per cell.
+    const Uint64 distances=cells*sizeof(Uint16);
+    const Uint64 output=key.family==Family::Building ? distances+cells*sizeof(Uint8)
+        : key.family==Family::ClearChoice ? distances+sizeof(Choice)
+        : distances+cells*(sizeof(Uint8)+sizeof(Uint32)+sizeof(Goal));
     return 3*output; // Published, private, and one logically retired generation.
 }
 bool retained(const Map& map,const AirGradientRuntime::Entry& entry,const GradientRuntime& runtime)
@@ -309,7 +312,7 @@ std::shared_ptr<Output> readOutput(GAGCore::InputStream* s,std::size_t cells) {
     const auto labels=s->readUint32("labels");
     if (labels && labels!=cells) throw std::runtime_error("Invalid air label count");
     output->labels.resize(labels); s->readEnterSection("labels"); for (unsigned i=0;i<labels;++i) { s->readEnterSection(i); output->labels[i]=s->readUint32("value"); s->readLeaveSection(); } s->readLeaveSection();
-    const auto goals=s->readUint32("goals"); if (goals>cells+Team::MAX_COUNT*Building::MAX_COUNT) throw std::runtime_error("Invalid air goal count");
+    const auto goals=s->readUint32("goals"); if (goals>cells) throw std::runtime_error("Invalid air goal count");
     output->goals.resize(goals); s->readEnterSection("goals"); for (unsigned i=0;i<goals;++i) { s->readEnterSection(i); auto& goal=output->goals[i]; goal.x=s->readSint32("x"); goal.y=s->readSint32("y"); goal.supplier=readRef(s); s->readLeaveSection(); } s->readLeaveSection();
     for (const auto rank:output->labels) if (rank!=field::air::NoGoal && rank>=goals) throw std::runtime_error("Invalid air goal label");
     output->choice.available=flag(s,"choice"); output->choice.sample.x=s->readSint32("choiceX"); output->choice.sample.y=s->readSint32("choiceY"); output->choice.sample.cost=s->readUint32("choiceCost");

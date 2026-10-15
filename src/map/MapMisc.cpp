@@ -59,7 +59,7 @@ Uint32 Map::checkSum(bool heavy, bool includePending, bool legacy152)
 		cs=rotl1(cs)^Uint32(key)^Uint32(key>>32)^entry.topology^entry.builtStep;
 		cs=rotl1(cs)^Uint32(entry.recency)^Uint32(entry.recency>>32)^Uint32(entry.sourceRevision)^Uint32(entry.sourceRevision>>32);
         if (!legacy152) {
-            cs=rotl1(cs)^Uint32(entry.published!=nullptr)^Uint32(entry.awaitingFirstRead<<1);
+            cs=rotl1(cs)^Uint32(entry.published!=nullptr)^Uint32(entry.awaitingFirstRead<<1)^Uint32(entry.excludesShared<<2);
             cs=rotl1(cs)^entry.publishedStep;
         }
         if (heavy && entry.published) for (size_t i=0; i<size; ++i) cs=rotl1(cs)^entry.published[i];

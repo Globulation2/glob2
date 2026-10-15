@@ -1,6 +1,6 @@
 # Historical building-field depth model
 
-Simulation format 165 publishes complete building fields. The depth predictor no
+Simulation format 166 publishes complete building fields. The depth predictor no
 longer controls live scheduled fields, and readers never extend a published
 frontier. This guide records the earlier policy and its retained fitting tools;
 it does not describe current publication behavior.
@@ -12,7 +12,7 @@ frozen field's mathematical result.
 
 ## Reader demand
 
-`Map::predictBuildingDepth` uses two observations from the same field:
+The earlier `Map::predictBuildingDepth` used two observations from the same field:
 
 - `serving`: the current search's `requiredCost()`, or -1 when unknown.
 - `previous`: the replaced search's final reader demand, retained in
@@ -33,8 +33,9 @@ caller. Clearing and combat fields still prepare their full depth.
 
 The coefficients and reader-demand semantics are unchanged by the engine cleanup.
 Experimental operating points, full/lazy overrides, search histograms, lifetime
-exports and training commands have been retired. There is one production policy
-in `src/map/gradient/BuildingGradientDepthPolicy.h`.
+exports and training commands have been retired. The retained historical policy is in
+`src/map/gradient/BuildingGradientDepthPolicy.h`; live scheduled jobs always use
+`COST_LIMIT`.
 
 ## Current verification
 
