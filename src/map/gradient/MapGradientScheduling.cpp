@@ -44,7 +44,8 @@ void buildScheduled(PipelineJob& job)
 {
 	auto& p = job.payload;
 	if (building_gradient::workHook) building_gradient::workHook(p);
-	const auto result = gradient_preparation::buildBuilding(p.seed, *job.snapshotLease, p.inputs, p.data.get(), *p.search, p.depthTarget);
+	p.inputs = BuildingGradientSearch::Inputs::ofSnapshot(*job.snapshotLease, p.swim);
+	const auto result = gradient_preparation::buildBuilding(p.seed, *job.snapshotLease, p.inputs, p.data.get(), *p.search, COST_LIMIT);
 	p.locked = result.locked;
 	p.resourceState = result.resourceState;
 }
@@ -111,20 +112,19 @@ void Map::ensureBuildingGradientPipeline()
 	pipeline.publish = [this, sameTick = std::vector<Published>{}](PipelineJob& job) mutable {
 		auto& p = job.payload;
 		Building* b = buildingGradientDestination(p.team, p.buildingId, p.scriptIdentity);
-		if (!b || b->refreshEpoch[p.slot] != p.epoch || !b->globalGradient[p.slot]) return false;
+		if (!b || b->refreshEpoch[p.slot] != p.epoch) return false;
 		const int slot = p.slot, swim = p.swim;
         auto guard=SharedBuildingGradient::lock(b->sharedGradient[slot]);
 
-		// Pointer swap: the transferred search already points at data, so a
-		// partial field resumes from its own buckets with no rescan.
+		// Pointer swap publishes a complete immutable generation.
 		auto& search = b->globalGradientSearch[slot];
-		// The depth model reads the replaced lifetime; a locked one leaves the older value.
+		// Retain legacy diagnostic history for explicitly prepared editor fields.
 		if (search) b->settledCostHint[slot] = Uint16(std::min(search->requiredCost(), 0xFFFE));
 		b->retireSharedGradient(slot);
         recycleBuildingGradientSearch(std::move(search));
 		recycleBuildingGradientBuffer(b->globalGradient[slot]);
 		b->globalGradient[slot] = p.data.release();
-		if (!p.locked) search = std::move(p.search);
+		// Published data is complete; frontier storage remains private to the job.
 		b->lastGlobalGradientUpdateStepCounter[slot] = p.captureTick;
 		b->gradientGeneration[slot] = p.generation;
 		// Access metadata is shared by the swim classes of one variant: the
@@ -168,7 +168,7 @@ void Map::ensureBuildingGradientPipeline()
 	pipeline.deadline = [this](unsigned remaining) {
 		return ComputeExecutor::advanceDue(std::uint64_t(game ? game->stepCounter : 0) + remaining - 1);
 	};
-	// Statistics record what readers needed, so they default to seeds only.
+	// Both serial and worker execution publish only at the configured deadline.
 	if (delay) pipeline.configure(compute, delay, buildScheduled);
 	else pipeline.drain();
 }
@@ -184,38 +184,24 @@ void Map::resetBuildingGradientPipeline() noexcept
 bool Map::requestBuildingRefresh(Building* building, int slot)
 {
 	auto& rt = *gradientRuntime;
-	if (!buildingGradientPipelineActive() || !building->globalGradient[slot]) return false;
+	if (!buildingGradientPipelineActive()) return false;
 	if (building->refreshRequested.test(slot)) return true; // Already queued or in flight.
 	building->refreshRequested.set(slot);
 	rt.buildingRequests.push_back({building->owner->teamNumber, Uint16(Building::GIDtoID(building->gid)),
 		building->scriptIdentity, building->refreshEpoch[slot], slot, false});
-	if (rt.buildingRequests.size() > GradientRuntime::BuildingRequestLimit)
-	{
-		// Deterministic overflow: the oldest request is served synchronously now.
-		const auto oldest = rt.buildingRequests.front();
-		rt.buildingRequests.pop_front();
-		Building* b = buildingGradientDestination(oldest.team, oldest.building, oldest.identity);
-		if (b && !oldest.stale && b->refreshEpoch[oldest.slot] == oldest.epoch && b->globalGradient[oldest.slot])
-		{
-			noteBuildingSyncReason(BuildingSyncReason::Overflow);
-			updateGlobalGradient(b, slotSwim(oldest.slot), slotRoute(oldest.slot)); // Supersedes and clears the request.
-		}
-	}
+	// Remove superseded metadata without disturbing FIFO order of live requests.
+	std::erase_if(rt.buildingRequests, [this](const auto& r) {
+		const auto* b = buildingGradientDestination(r.team, r.building, r.identity);
+		return r.stale || !b || b->refreshEpoch[r.slot] != r.epoch;
+	});
 	return true;
 }
 
 int Map::predictBuildingDepth(const Building* building, int slot) const
 {
-	// Clearing and Combat goals move with resources and enemies: full depth.
-	if (slotRoute(slot) != BuildingRoute::Footprint) return COST_LIMIT;
-	// The field's own past depths when a
-	// job is staged: how deep readers of the serving field have needed it so far, and
-	// the final reader demand of the lifetime it replaced.
-	int serving = -1;
-	if (const auto& search = building->globalGradientSearch[slot]) serving = search->requiredCost();
-	const Uint16 hint = building->settledCostHint[slot];
-	const int previous = hint == Building::UNKNOWN_SETTLED_COST ? -1 : hint;
-	return std::min(BuildingGradientDepth::target(serving, previous), COST_LIMIT);
+	(void)building;
+	(void)slot;
+	return COST_LIMIT;
 }
 
 void Map::stageBuildingGradientPreparation()
@@ -228,7 +214,7 @@ void Map::stageBuildingGradientPreparation()
 		const auto request = rt.buildingRequests.front();
 		rt.buildingRequests.pop_front();
 		Building* b = buildingGradientDestination(request.team, request.building, request.identity);
-		if (!b || request.stale || b->refreshEpoch[request.slot] != request.epoch || !b->globalGradient[request.slot]) continue;
+		if (!b || request.stale || b->refreshEpoch[request.slot] != request.epoch) continue;
 		auto* job = pipeline.reserve();
 		job->payload = {};
 		auto& p = job->payload;
@@ -258,7 +244,8 @@ void Map::prepareStagedBuildingGradients(const SimulationSnapshot::Handle& found
 		if (!b) throw std::logic_error("Staged building gradient lost its destination");
 		p.seed = gradient_preparation::captureBuildingSeed(*b, p.swim, p.route);
 		// Owner cost planes from the same boundary as the lease the seeder reads.
-		p.inputs = BuildingGradientSearch::Inputs::of(*this, p.swim);
+		// Cost planes are materialized from the immutable lease by the worker.
+		p.inputs = {};
 		job->snapshotLease = foundation.buildingGradientView();
 	}
 	rt.buildings.prepare(staged);

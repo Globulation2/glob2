@@ -340,23 +340,58 @@ For timing and scheduling, start with `src/game/Game_sync.cpp` and `src/engine/E
   the existing field/deadline representation. Reconfiguration drains work before
   resizing scratch; teardown drains callbacks and discards reservations. Job-owned
   errors survive executor batch retirement and surface at save/publication.
-- Stale building walking fields are refreshed by `BuildingGradientPipeline`
-  (`src/map/gradient/`, `MapGradientScheduling.cpp`). Team stepping requests a
-  refresh and keeps serving the old field; after the tick up to four requests are
-  staged, captured at the observation boundary with the periodic job, built on
-  workers and published `buildingGradientDelay` ticks later (the match rule, 1–8,
-  default 8), before team stepping. Publication swaps the field and its search on
-  the owner; it is discarded if a synchronous rebuild or a reset superseded it.
-  Access metadata (`locked`, and a clearing flag's `anyResourceToClear`) follows
-  the newest capture, so it, and the AI's view of it, may lag up to the delay. Team-wide resets and forbidden-area paints keep the old
-  walking fields serving until the refresh publishes, so units may follow a
-  pre-edit field for up to the delay. Fields a building has never had (or lost to
-  idle eviction or its own move, type or range change), queue overflow (more than
-  64 waiting requests) and maps without a game build synchronously.
-  `Map::predictBuildingDepth` reads the production
-  [depth model](../ai/architecture/building-gradient-depth-model.md) from the field's own past
-  reader demand (its serving search's required cost and `settledCostHint`). It only moves
-  search work between worker and owner. Experimental depth overrides are retired.
+- Building, material/market (including consumer-specific supply), guard/clear and
+  forbidden fields publish complete immutable generations through the existing
+  gradient pipelines. A cold read enrolls one deterministic request and returns
+  `Pending`; absence never proves a destination inaccessible. The owner keeps
+  serving an older complete field while a refresh waits. It validates proposed
+  steps against current occupancy, forbidden paint and movement capabilities.
+- Building requests use stable FIFO admission, up to four per tick, and publish
+  after the match's `buildingGradientDelay` (1–8, default 8). Periodic/demand fields
+  share one FIFO admission per tick and their existing configured delay. Queue
+  waiting precedes the fixed capture-to-publication delay. Overflow never builds
+  synchronously. Workers seed and fully propagate private outputs, including
+  footprint routes; live readers never extend a search. Soft dirtiness coalesces
+  a later refresh without cancelling an admitted result; destination identity and
+  hard epochs reject deleted, replaced, moved or reconfigured goals.
+- Units retain targets, activities and reservations through Pending and wait with
+  the existing zero-displacement movement state on their normal decision cadence.
+  Hunger, health and local combat/adjacent interactions continue. This introduces
+  deliberate first-use latency (about 267 ms after admission at delay 8), changing
+  emergency feeding, construction staffing and new restrictions' guidance.
+  Explicit one-participant execution runs the same jobs with the same publication
+  boundaries; maps without a simulation retain explicit editor/reference builders.
+  Format 166 persists cold FIFO requests and complete unpublished outputs without
+  publishing early during save. Older supported saves still load. The historical
+  [building depth model](../ai/architecture/building-gradient-depth-model.md) no
+  longer selects partial fields for publication.
+  Air destination ranking uses the same admission and publication timeline.
+  Building destinations share complete destination-rooted air fields. Material,
+  guard and clearing-zone fields also carry stable goal labels; equal-cost ties
+  follow the original row-major candidate order. Painted clearing claims require
+  a complete private choice job captured for the unit identity, source and task.
+  Workers enumerate all candidates, including alternatives excluded by claims.
+  Readers revalidate current visibility, stock, restrictions and claims before
+  accepting a destination; an invalid stale choice requests a refresh and waits.
+  Unrestricted point-distance formulas remain constant-time; unrestricted resource
+  and painted-area enumeration still runs on workers and preserves Chebyshev
+  ranking. Weighted reverse propagation charges the forward destination's entry
+  cost and preserves each caller's distance rounding.
+  Air costs now use the shared 16-bit encoding and exact kernel `COST_LIMIT`.
+  Longer routes become unavailable to destination selection even if the former
+  32-bit search could reach them. This finite range and delayed choices change
+  simulation rules. Immediate air A* steering and hazardous-terrain escape routing
+  retain owner execution, with separate audit categories from field initialization,
+  air traversal construction, goal enumeration and propagation.
+- Consumer-specific material caches use deterministic LRU admission. Queued and
+  admitted destinations cannot be evicted. A newly published result also keeps a
+  first-read opportunity for at most 256 simulation ticks (the ordinary action
+  cadence bound), released earlier by its owner reader. This bounded logical hold
+  prevents an earlier reader from continually evicting a later reader's result,
+  while allowing abandoned demand to retire. Its publication tick is saved and
+  checksummed; physical completion and reference counts never select admission.
+  Reducing the requested budget preserves enough effective capacity for retained
+  destinations, so every state produced by the runtime remains loadable.
 - The executor ring holds 79 batches: each deferred producer holds at most its
   horizon plus one (AI decisions 8, periodic gradients 16, building gradients 8, resource growth 16,
   team statistics 8, turret shortlist jobs 4),
@@ -368,8 +403,8 @@ For timing and scheduling, start with `src/game/Game_sync.cpp` and `src/engine/E
   predicates. Each executor slot owns derived seed templates, maintained using
   exact immutable chunk versions, with direct-kernel fallbacks. Material caches
   retain compact base fields and goal bitsets. No cached template retains snapshot
-  buffers or reads the live mutable material cache. Immediate building seeding
-  remains in its domain source files.
+  buffers or reads the live mutable material cache. Building jobs derive cold
+  terrain/water movement planes privately from immutable snapshot components.
   Material and clearing precedence comes from the restricted unsigned-integer
   source `src/field/shaders/preparation-rules.json`; regenerate its C++, OpenCL
   and GLSL predicates with `tools/shaders/gradient_preparation_rules.py --generate`.
@@ -611,9 +646,8 @@ Resource distances read the snapshot's published resource planes. AI query field
 are local planning caches, whose presence depends on local polling, so they never
 enroll map fields. Missing planes, flying transport and consumer-specific supplier
 modes use an optimistic zero estimate. Building routes borrow existing valid
-generations through `SharedBuildingGradient` leases; workers settle only queried
-cells under the generation's lock, and retirement hands the buffer and search to
-the lease instead of copying them. Observation never initializes or refreshes a
+generations through `SharedBuildingGradient` leases. Published fields are complete
+and immutable; retirement hands the buffer to the lease instead of copying it. Observation never initializes or refreshes a
 field: missing ones use an obstacle-free bound, and live admission establishes them.
 
 Published lists and pending outputs with their deadlines are saved; saving drains

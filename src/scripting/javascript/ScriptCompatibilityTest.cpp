@@ -134,10 +134,10 @@ TEST_CASE("Current simulation rejects earlier replays and enforces acceptance bo
 	glob2test::GlobalsOptions options;
 	options.loadStrings = true;
 	glob2test::HeadlessGlobals globals(options);
-	// Format 163 slims turret lists.
+	// Format 166 delays all shared simulation gradient publication.
 	// Script save-format milestones remain independent of these current gates.
-	CHECK(REPLAY_MINIMUM_VERSION_MINOR == 163);
-	CHECK(VERSION_MINOR == 163);
+	CHECK(REPLAY_MINIMUM_VERSION_MINOR == 166);
+	CHECK(VERSION_MINOR == 166);
 	CHECK(NET_PROTOCOL_VERSION == 71);
 	CHECK(FILE_FORMAT_VERSION_JAVASCRIPT == 125);
 	CHECK(FILE_FORMAT_VERSION_EXPERIMENTS == 124);

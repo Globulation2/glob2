@@ -190,6 +190,11 @@ public:
 	template<class Visitor> void visitOwnerFields(Visitor&& visitor) {
 		for (auto& job : pending) visitor(job->payload);
 	}
+	// Logical metadata is independent of physical completion and never joins.
+	template<class Visitor> void visitLogical(Visitor&& visitor) const {
+		for (const auto& job : pending)
+			visitor(std::as_const(job->payload), static_cast<unsigned>(job->due-tick), job->superseded);
+	}
 	// Loading re-creates a completed job with its saved remaining ticks, validated
 	// against the same admission bounds a live reservation obeys.
 	Job& restoreCompleted(unsigned remaining, bool superseded, Payload payload) {

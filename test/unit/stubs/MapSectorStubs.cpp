@@ -39,6 +39,8 @@ Sint32 Building::availableMaterial(int) const { std::abort(); }
 // Real automatic building routes belong to engine fixtures. Diagnostic calls
 // in the lightweight map harness only use already-concrete route slots.
 BuildingRoute Building::resolveRoute(BuildingRoute) const { std::abort(); }
+// Catalog replacement resets live building goals only in engine fixtures.
+void Building::resetPathfindGradients(GradientDrop) { std::abort(); }
 
 unsigned Map::materialSupplyModesSlot(const Building*, int) const { std::abort(); }
 bool Map::stockSupplierEligibleSlot(const Building*, const Building*, int, unsigned) const { std::abort(); }

@@ -284,3 +284,6 @@ static constexpr int FILE_FORMAT_VERSION_CACHED_HIRING = 162;
 
 // Turret lists keep only building identity and entries; buildings drop targeting epochs.
 static constexpr int FILE_FORMAT_VERSION_LEAN_TURRET_TARGETING = 163;
+
+// Cold gradient demand, stable cache destinations and unpublished complete fields.
+static constexpr int FILE_FORMAT_VERSION_DELAYED_GRADIENTS = 166;

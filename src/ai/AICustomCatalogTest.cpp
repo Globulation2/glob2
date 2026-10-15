@@ -23,6 +23,7 @@
 #include <StreamBackend.h>
 #include <nlohmann/json.hpp>
 #include <functional>
+#include <memory>
 
 namespace
 {
@@ -853,8 +854,17 @@ TEST_CASE("Castor bulk wheat reads preserve weighted distance rounding and senti
     for(bool swimming:{false,true}) {
         CAPTURE(swimming);
         ai.canSwim=swimming;
-        auto* gradient=game.map.getMaterialGradientSlot(0,WHEAT,swimming ? Map::SWIM_CLASS_EVEN : 0);
+        // Synthetic complete publication for the conversion-only fixture.
+        // Drain and discard tickets before replacing storage; readers never
+        // mutate an existing published generation.
+        game.map.resetGradientPipeline();
+        auto gradient=std::make_unique<Uint16[]>(copied.size());
         for(std::size_t i=0;i<copied.size();++i)gradient[i]=raw[i%raw.size()];
+        auto& slot=game.map.materialGradients[0][WHEAT][swimming ? Map::SWIM_CLASS_EVEN : 0];
+        delete[] slot;
+        slot=gradient.release(); // The map owns and eventually frees this array.
+        game.map.publishPlane(&slot);
+        game.snapshotStore().invalidateBoundary();
         withCastorObservation(ai,game,[&] {
             ai.copyWheatGradient(copied.data());
             for(std::size_t i=0;i<copied.size();++i) {

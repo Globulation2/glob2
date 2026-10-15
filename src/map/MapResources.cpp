@@ -297,38 +297,31 @@ void Map::setAreaName(int n, std::string name)
 }
 
 
-bool Map::materialAvailableSlot(int teamNumber, int resourceType, int swimClass, int x, int y, bool withMarkets, const Building* consumer)
+RouteResult Map::queryMaterialDistance(int team, int material, int swim, int x, int y, int* distance, bool markets, const Building* consumer)
 {
-	Uint16 g = getGradient(teamNumber, resourceType, swimClass, x, y, withMarkets, consumer);
-	return g>GRADIENT_UNREACHABLE; //Because 0==obstacle, 1==no obstacle, but you don't know if there is anything around.
+	const auto* field=getMaterialGradientSlot(team,material,swim,markets,consumer);
+	if (!field) return RouteResult::Pending;
+	const auto value=field[coordToIndex(x,y)];
+	if (value<=GRADIENT_UNREACHABLE) return RouteResult::Unreachable;
+	if (distance) *distance=gradientTiles(value);
+	return RouteResult::Reachable;
 }
 
-bool Map::materialAvailableSlot(int teamNumber, int resourceType, int swimClass, int x, int y, int *dist, bool withMarkets, const Building* consumer)
+bool Map::materialAvailableSlot(int team, int material, int swim, int x, int y, bool markets, const Building* consumer)
 {
-	Uint16 g = getGradient(teamNumber, resourceType, swimClass, x, y, withMarkets, consumer);
-	if (g>GRADIENT_UNREACHABLE)
-	{
-		*dist = gradientTiles(g);
-		return true;
-	}
-	else
-		return false;
+	return queryMaterialDistance(team,material,swim,x,y,nullptr,markets,consumer)==RouteResult::Reachable;
 }
 
-bool Map::materialAvailableUpdateSlot(int teamNumber, int resourceType, int swimClass, int x, int y, Sint32 *targetX, Sint32 *targetY, int *dist, bool withMarkets, const Building* consumer)
+bool Map::materialAvailableSlot(int team, int material, int swim, int x, int y, int* distance, bool markets, const Building* consumer)
 {
-	// distance and availability
-	bool result;
-	if (dist)
-		result = materialAvailableSlot(teamNumber, resourceType, swimClass, x, y, dist, withMarkets, consumer);
-	else
-		result = materialAvailableSlot(teamNumber, resourceType, swimClass, x, y, withMarkets, consumer);
-		
-	// target position
-	const Uint16 *gradient = getMaterialGradientSlot(teamNumber, resourceType, swimClass, withMarkets, consumer);
-	getGlobalGradientDestination(gradient, x, y, targetX, targetY);
+	return queryMaterialDistance(team,material,swim,x,y,distance,markets,consumer)==RouteResult::Reachable;
+}
 
-	return result;
+bool Map::materialAvailableUpdateSlot(int team, int material, int swim, int x, int y, Sint32* targetX, Sint32* targetY, int* distance, bool markets, const Building* consumer)
+{
+	if (queryMaterialDistance(team,material,swim,x,y,distance,markets,consumer)!=RouteResult::Reachable) return false;
+	const auto* field=getMaterialGradientSlot(team,material,swim,markets,consumer);
+	return getGlobalGradientDestination(field,x,y,targetX,targetY);
 }
 
 template<typename T>

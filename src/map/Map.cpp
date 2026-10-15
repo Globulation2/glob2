@@ -7,6 +7,7 @@
 #include "TerrainLine.h"
 #include <stdexcept>
 #include "gradient/GradientRuntime.h"
+#include "gradient/GradientExecutionAudit.h"
 #include "Game.h"
 #include "GlobalContainer.h"
 #include "render/SoftwareTerrainCache.h"
@@ -108,6 +109,7 @@ std::shared_ptr<const std::vector<Uint8>> Map::frozenWaterSnapshot() const
 	std::lock_guard<std::mutex> lock(waterSnapshotMutex);
 	if (!waterSnapshot)
 	{
+		GradientExecutionAudit::record(GradientExecutionAudit::Kind::TerrainPlane);
 		auto snapshot = std::make_shared<std::vector<Uint8>>(size);
 		// Called by independent executor jobs too; do not dispatch while holding
 		// this lock. All readers share this one initialization pass.
@@ -132,6 +134,7 @@ Map::frozenTerrainMovementSnapshot(unsigned swim) const
 	auto &cached = terrainMovementSnapshots[swim];
 	if (!cached)
 	{
+		GradientExecutionAudit::record(GradientExecutionAudit::Kind::TerrainPlane);
 		auto snapshot = std::make_shared<TerrainMovementSnapshot>();
 		snapshot->cells.resize(size);
 		auto &movement = snapshot->movement;
@@ -451,18 +454,20 @@ void Map::finishTerrainEdit()
 		for (int team = 0; team < Team::MAX_COUNT; ++team)
 			for (int swim = 0; swim < SWIM_CLASS_COUNT; ++swim)
 			{
-				// A queued field owns an immutable snapshot of the old terrain.
-				// Prevent its delayed publication from undoing this invalidation.
-				gradientRuntime->pipeline.invalidate(&guardAreasGradient[team][swim]);
-				gradientRuntime->pipeline.invalidate(&clearAreasGradient[team][swim]);
+                // Cell edits are soft changes: publish the captured complete
+                // field at its original deadline, then refresh the dirty plane.
+                // Repeated painting must not starve all visible generations.
 				guardGradientUpdated[team][swim] = clearGradientUpdated[team][swim] = false;
 				for (int resource = 0; resource < MaterialCount; ++resource)
 				{
-					gradientRuntime->pipeline.invalidate(&materialGradients[team][resource][swim]);
-					gradientUpdated[team][resource][swim] = false;
+                    gradientUpdated[team][resource][swim] = false;
+                    if (marketsV2Enabled()) {
+                        marketGradientUpdated[team][resource][swim] = false;
+                        marketGradientDirty[team][resource][swim] = true;
+                    }
 				}
-				// Escape fields have no dirty flag. Their scheduled seed comparison
-				// cannot detect a cost-only change such as grass becoming trail.
+                // Escape fields use the same delayed refresh contract, including
+                // cost-only terrain changes such as grass becoming trail.
 				if (forbiddenGradient[team][swim]) updateForbiddenGradient(team, swim);
 			}
 	}
@@ -586,7 +591,9 @@ void Map::clear()
 	identityValue = nextIdentity.fetch_add(1);
 	terrainSeedValue = 0;
 	gradientRuntime->preparation={};
+    gradientRuntime->fieldRequests.clear();
 	gradientRuntime->pipeline.reset();
+    gradientRuntime->air.entries.clear(); gradientRuntime->air.nextId=1; gradientRuntime->air.retireBoundary();
 	// Retires into the buffer pool, so before the pool is cleared below.
 	resetBuildingGradientPipeline();
 	gradientRuntime->resetBackendSession();

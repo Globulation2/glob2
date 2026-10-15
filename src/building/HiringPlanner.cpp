@@ -6,7 +6,7 @@
 #include "Building.h"
 #include "SharedBuildingGradient.h"
 #include "ai/observation/AIWorldView.h"
-#include "field/AirPathfind.h"
+#include "field/AirGradient.h"
 #include <algorithm>
 #include <climits>
 #include <map>
@@ -20,6 +20,50 @@ namespace
 using World = AIEngine::AIWorldView;
 using B = SimulationSnapshot::BuildingView;
 using U = SimulationSnapshot::UnitView;
+// Hiring computations are private executor jobs. Reuse complete bounded air
+// fields here without enrolling requests into the owner's publication queues.
+class PrivateAirFields
+{
+    const World& world;
+    std::vector<std::uint8_t> passable;
+    std::vector<gradient_kernel::EntrySteps> costs;
+    GradientWorkspace workspace;
+public:
+    explicit PrivateAirFields(const World& value):world(value) {}
+    field::air::Traversal traversal()
+    {
+        if(passable.empty()) {
+            GradientExecutionAudit::record(GradientExecutionAudit::Kind::AirTraversalPlane);
+            const auto cells=std::size_t(world.width)*world.height;
+            passable.resize(cells); costs.resize(cells);
+            for(std::size_t cell=0;cell<cells;++cell) {
+                passable[cell]=world.terrainPropertiesAt(cell).flyable;
+                costs[cell]=field::air::compileSteps((*world.cellRules)[world.cellRuleAt(cell)].airCost);
+            }
+        }
+        return {field::Grid(world.width,world.height),passable,costs};
+    }
+    std::vector<Uint16> build(int x,int y,field::air::Direction direction)
+    {
+        auto inputs=traversal();
+        std::vector<Uint16> values(inputs.grid.cells());
+        const field::air::Goal seed{Uint32(inputs.grid.index(x,y)),0,0};
+        field::air::build(inputs,std::span(&seed,1),values,workspace,{},
+            field::air::GoalPolicy::ApproachBlocked,direction);
+        return values;
+    }
+    int tiles(std::span<const Uint16> values,int x,int y,bool approachBlocked)
+    {
+        auto inputs=traversal();
+        const auto cell=inputs.grid.index(x,y);
+        auto best=inputs.passable[cell] ? field::air::decode(values[cell]) : std::nullopt;
+        if(!inputs.passable[cell] && approachBlocked)
+            inputs.grid.neighborIndices(cell,field::Surrounding,[&](int neighbor) {
+                if(const auto cost=field::air::decode(values[neighbor]);cost && (!best || *cost<*best)) best=cost;
+            });
+        return best ? int(field::air::ceilTiles(*best)) : INT_MAX;
+    }
+};
 int swimClass(const U &u)
 {
 	return Map::swimClass(u.performance[WALK], u.performance[SWIM]);
@@ -296,6 +340,7 @@ Output Planner::rank(const Inputs &input, unsigned team, unsigned capacity)
 	if (capacity < 1 || capacity > 128)
 		throw std::invalid_argument("Hiring capacity must be 1..128");
 	World world(input.world);
+    PrivateAirFields airFields(world);
 	if (team >= world.teams.size())
 		throw std::invalid_argument("Hiring team outside snapshot");
 	Output output;
@@ -383,12 +428,7 @@ Output Planner::rank(const Inputs &input, unsigned team, unsigned capacity)
 				jobs.push_back({Job::Fetch, int(r)});
 			}
 		std::array<std::vector<int>, 3> distances;
-		const auto flyable = [&](int x, int y)
-		{ return world.terrainPropertiesAt(world.tileIndex(x, y)).flyable; };
-		const auto airCost = [&](int x, int y)
-		{ return (*world.cellRules)[world.cellRuleAt(world.tileIndex(x, y))].airCost; };
-		using AirField = field::AirDistanceField<decltype(flyable), decltype(airCost)>;
-		std::unique_ptr<AirField> airToBuilding;
+		std::vector<Uint16> airToBuilding;
 		for (unsigned role = 0; role < 3; ++role)
 			if (type.attractsRole(role))
 				jobs.push_back({Job(unsigned(Job::Clear) + role), -1});
@@ -512,7 +552,7 @@ Output Planner::rank(const Inputs &input, unsigned team, unsigned capacity)
 				{
 					const auto modes = supply->modes[key.material];
 					// Reject and bound with the existing immutable resource plane before
-					// asking a shared building route to expand. Special supplier/air
+					// reading a shared building route. Special supplier/air
 					// modes keep the optimistic estimate used by live admission.
 					const auto plane = !u.performance[FLY] && !(modes & 2) &&
 						!supply->consumerSpecific[key.material]
@@ -548,30 +588,17 @@ Output Planner::rank(const Inputs &input, unsigned team, unsigned capacity)
 				}
 				else if (u.performance[FLY])
 				{
-					if (!airToBuilding)
-						airToBuilding = std::make_unique<AirField>(
-							world.width, world.height, b.posX, b.posY, flyable, airCost,
-							world.airTerrainConstraints,
-							field::AirDistanceDirection::ToDestination);
-					const auto cost =
-						airToBuilding->enabled()
-							? airToBuilding->costTo(u.posX, u.posY)
-							: unsigned(warped(world, u.posX, u.posY, b.posX, b.posY)) *
-								  GRADIENT_STEP;
-					distance = cost == AirField::unreachable
-								   ? INT_MAX
-								   : int((cost + GRADIENT_STEP - 1) / GRADIENT_STEP);
+                    if(world.airTerrainConstraints) {
+                        if(airToBuilding.empty())
+                            airToBuilding=airFields.build(b.posX,b.posY,field::air::Direction::ToDestination);
+                        distance=airFields.tiles(airToBuilding,u.posX,u.posY,false);
+                    } else distance=warped(world,u.posX,u.posY,b.posX,b.posY);
 					if (key.job == Job::Clear)
 					{
-						field::AirDistanceField clearing(
-							world.width, world.height, u.posX, u.posY, [&](int x, int y)
-							{ return world.terrainPropertiesAt(world.tileIndex(x, y)).flyable; },
-							[&](int x, int y)
-							{
-								return (*world.cellRules)[world.cellRuleAt(world.tileIndex(x, y))]
-									.airCost;
-							},
-							world.airTerrainConstraints);
+                        std::vector<Uint16> clearing;
+                        if(world.airTerrainConstraints)
+                            clearing=airFields.build(u.posX,u.posY,field::air::Direction::FromSource);
+                        GradientExecutionAudit::record(GradientExecutionAudit::Kind::AirGoalEnumeration);
 						distance = INT_MAX;
 						const MaterialMask selected = b.clearingMaterialMask;
 						for (int y = 0; y < world.height; ++y)
@@ -588,13 +615,9 @@ Output Planner::rank(const Inputs &input, unsigned team, unsigned capacity)
 										 .clearable ||
 									!(MapState::materialMaskAt(world.state(), i) & selected))
 									continue;
-								const auto c = clearing.enabled()
-												   ? clearing.costTo(x, y)
-												   : unsigned(warped(world, u.posX, u.posY, x, y)) *
-														 GRADIENT_STEP;
-								if (c != decltype(clearing)::unreachable)
-									distance = std::min(
-										distance, int((c + GRADIENT_STEP - 1) / GRADIENT_STEP));
+                                const int candidate=world.airTerrainConstraints
+                                    ? airFields.tiles(clearing,x,y,true) : warped(world,u.posX,u.posY,x,y);
+                                distance=std::min(distance,candidate);
 							}
 					}
 				}

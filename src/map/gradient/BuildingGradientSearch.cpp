@@ -3,8 +3,10 @@
 
 #include <PerformanceTelemetry.h>
 #include "BuildingGradientSearch.h"
+#include "GradientExecutionAudit.h"
 #include <mutex>
 #include "Map.h"
+#include "sim/snapshot/WorldSnapshot.h"
 #include "MapInternal.h"
 #include "field/RuntimeTerrainGradient.h"
 
@@ -32,6 +34,55 @@ BuildingGradientSearch::Inputs BuildingGradientSearch::Inputs::of(const Map &map
 	return inputs;
 }
 
+BuildingGradientSearch::Inputs BuildingGradientSearch::Inputs::ofSnapshot(const SimulationSnapshot::Handle &snapshot, int swim)
+{
+	Inputs inputs;
+	inputs.modifiedCosts = snapshot.terrain && snapshot.terrain->movementModifiers;
+	inputs.registry = snapshot.terrain ? snapshot.terrain->registry : nullptr;
+	const auto count = std::size_t(snapshot.width) * snapshot.height;
+	if (inputs.modifiedCosts)
+	{
+		GradientExecutionAudit::record(GradientExecutionAudit::Kind::TerrainPlane);
+		auto profiles = std::make_shared<TerrainMovementSnapshot>();
+		profiles->cells.resize(count);
+		std::vector<unsigned> remap(snapshot.terrain->rules->size(), 256);
+		std::array<bool, 256> usedSteps{};
+		for (std::size_t i = 0; i < count; ++i)
+		{
+			auto &profile = remap[snapshot.terrain->cellRules[i]];
+			if (profile == 256)
+			{
+				const auto costs = (*snapshot.terrain->rules)[snapshot.terrain->cellRules[i]].ground[swim];
+				profile = 0;
+				while (profile < profiles->movement.profiles.size() &&
+					(profiles->movement.profiles[profile].cardinal != costs.cardinal || profiles->movement.profiles[profile].diagonal != costs.diagonal)) ++profile;
+				if (profile == profiles->movement.profiles.size())
+				{
+					if (profile == 256) throw std::logic_error("Too many terrain movement profiles");
+					profiles->movement.profiles.push_back(costs);
+					for (const auto step : {costs.cardinal, costs.diagonal}) if (!usedSteps[step])
+					{ usedSteps[step] = true; profiles->movement.steps.push_back(step); }
+				}
+			}
+			profiles->cells[i] = std::uint8_t(profile);
+		}
+		if (profiles->movement.profiles.empty()) profiles->movement.profiles.push_back(gradient_kernel::LAND_STEPS);
+		profiles->movement.prepare();
+		inputs.buckets = 64;
+		for (const auto costs : profiles->movement.profiles)
+			while (costs.cardinal >= inputs.buckets || costs.diagonal >= inputs.buckets) inputs.buckets *= 2;
+		inputs.profiles = std::move(profiles);
+	}
+	else if (gradient_kernel::weightedClass(swim))
+	{
+		GradientExecutionAudit::record(GradientExecutionAudit::Kind::TerrainPlane);
+		auto water = std::make_shared<std::vector<std::uint8_t>>(count);
+		for (std::size_t i = 0; i < count; ++i) (*water)[i] = snapshot.terrainPropertiesAt(i).swimmable;
+		inputs.water = std::move(water);
+	}
+	return inputs;
+}
+
 void BuildingGradientSearch::begin(const Map &map, std::uint16_t *seeded, int swim)
 {
 	begin(Inputs::of(map, swim), seeded, swim, map.getW(), map.getH());
@@ -40,6 +91,7 @@ void BuildingGradientSearch::begin(const Map &map, std::uint16_t *seeded, int sw
 void BuildingGradientSearch::begin(const Inputs &inputs, std::uint16_t *seeded, int swim,
 								   int width, int height)
 {
+	GradientExecutionAudit::record(GradientExecutionAudit::Kind::Seed);
 	assert(width > 0 && height > 0 && !(width & (width - 1)) && !(height & (height - 1)));
 	gradient = seeded;
 	cells = std::size_t(width) * height;
@@ -132,6 +184,7 @@ void BuildingGradientSearch::resolveToCost(int cost)
 // Expands one whole cost layer per iteration until done() or the queues drain.
 template <class Done> void BuildingGradientSearch::advance(Done done)
 {
+	GradientExecutionAudit::record(GradientExecutionAudit::Kind::BuildingResolve);
 	// A resume may select a different CPU variant from the previous resume,
 	// but every completed layer in this invocation uses one resolved choice.
 	gradient_kernel::CPUSelectionScope cpuSelection(gradient_kernel::cpuBackend());

@@ -171,12 +171,28 @@ void Building::dirtyGradients()
 // With scheduled building gradients, an edit elsewhere (a team-wide reset or a
 // forbidden-area paint) leaves this building's goals in place: its walking
 // fields keep serving, stale, and the next use requests a scheduled refresh at
-// once (the dirty throttle counts as spent). Only a field without a usable old
-// value (none, or locked) is dropped and rebuilt cold. The building's own
+// once (the dirty throttle counts as spent). Cold requests retain their
+// deadlines too. The building's own
 // changes (moves, types, ranges) still drop everything.
 bool Building::keepsStaleGradients(GradientDrop cause) const
 {
 	return (cause == GradientDrop::Area || cause == GradientDrop::Team) && owner->game->map.buildingGradientPipelineActive();
+}
+
+void Building::prewarmPathfindGradients()
+{
+	auto& map = owner->game->map;
+	// Loading reconstructs persisted queues separately; editor setup has no
+	// running publication pipeline. Never turn either path into a cold build.
+	if (!map.buildingGradientPipelineActive() || buildingState != ALIVE ||
+		owner->myBuildings[GIDtoID(gid)] != this) return;
+	std::bitset<SWIM_CLASS_COUNT> classes;
+	classes.set(0); // Ordinary ground workers are the common first consumers.
+	for (const Unit* unit : owner->liveUnits.entries())
+		if (!unit->performance[FLY]) classes.set(unit->swimClass());
+	const auto route = resolveRoute(BuildingRoute::Automatic);
+	for (int swim = 0; swim < SWIM_CLASS_COUNT; ++swim)
+		if (classes.test(swim)) map.requestBuildingField(this, swim, route);
 }
 
 void Building::resetPathfindGradients(GradientDrop cause)
@@ -186,13 +202,13 @@ void Building::resetPathfindGradients(GradientDrop cause)
 	const Uint32 due = now >= GRADIENT_DIRTY_REBUILD_TICKS ? now - GRADIENT_DIRTY_REBUILD_TICKS : 0;
 	std::bitset<BUILDING_GRADIENT_COUNT> kept;
 	for (int i=0; i<BUILDING_GRADIENT_COUNT; i++)
-		kept[i] = keep && globalGradient[i] && !isLocked(routeAccess(i % SWIM_CLASS_COUNT, BuildingRoute(i / SWIM_CLASS_COUNT)));
+		kept[i] = keep;
 	dirtyGradients();
 	for (int i=0; i<BUILDING_GRADIENT_COUNT; i++)
 	{
 		if (kept[i])
 		{
-			supersedeGradient(i);
+			// Soft invalidation preserves the in-flight deadline and dirty mark.
 			lastGlobalGradientUpdateStepCounter[i] = std::min(lastGlobalGradientUpdateStepCounter[i], due);
 			continue;
 		}
@@ -204,6 +220,7 @@ void Building::resetPathfindGradients(GradientDrop cause)
 		globalGradient[i] = NULL;
 		gradientGeneration[i] = 0;
 	}
+	if (cause == GradientDrop::Own) prewarmPathfindGradients();
 }
 
 void Building::freeIdleGradients()

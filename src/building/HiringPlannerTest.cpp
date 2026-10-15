@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "HiringPipeline.h"
 #include "EngineFixtures.h"
+#include "GradientFixture.h"
 #include "HiringPlanner.h"
 #include <sstream>
 #include "SharedBuildingGradient.h"
@@ -41,6 +42,41 @@ void checkPlannerOutput(const HiringPlanner::Output &actual, const HiringPlanner
 
 TEST_SUITE("HiringPlanner")
 {
+    TEST_CASE("private flying recruitment uses the common bounded air range")
+    {
+        glob2test::HeadlessGlobals globals;
+        glob2test::HeadlessGame world({.wDec=12,.hDec=3,.clearImmobile=true,.header=true,.seed=4921});
+        auto& map=world.game.map;
+        map.setGame(nullptr);
+        map.importTerrainDefinitions(R"({"schemaVersion":1,"terrains":[{"key":"fixture:slow-air-hiring","name":"Slow air","base":"grass","properties":{"airSpeedQ8":64},"appearance":"grass"}]})");
+        map.setGame(&world.game);
+        const auto slow=*map.terrainRegistry().find("fixture:slow-air-hiring");
+        {
+            auto edit=map.editTerrain();
+            for(int y=0;y<map.getH();++y) for(int x=0;x<map.getW();++x) map.paintCell(x,y,slow);
+        }
+        auto* flag=world.addBuilding("explorationflag",8,4);
+        auto* near=world.addUnit(EXPLORER,12,4);
+        auto* far=world.addUnit(EXPLORER,2048,4);
+        REQUIRE(flag); REQUIRE(near); REQUIRE(far);
+        flag->explorersRequireBombing=false;
+        flag->maxUnitWorking=2;
+        flag->subscriptionWorkingTimer=32;
+        flag->updateCallLists();
+        near->hungriness=0; far->hungriness=0;
+        const auto input=HiringPipeline::bindRoutes(world.game,world.game.captureReadBoundary());
+        HiringPlanner::Planner planner;
+        const auto result=planner.rank(input,0,8);
+        bool found=false;
+        for(const auto& building:result.buildings) if(building.building==Game::refOf(flag))
+            for(const auto& list:building.jobs) if(list.key.job==Hiring::Job::Explore) {
+                found=true;
+                REQUIRE(list.candidates.size()==1);
+                CHECK(list.candidates.front().unit==Game::refOf(near));
+            }
+        CHECK(found);
+    }
+
 	TEST_CASE("distance bounds preserve exhaustive rankings for every job")
 	{
 		glob2test::HeadlessGlobals globals;
@@ -111,7 +147,7 @@ TEST_SUITE("HiringPlanner")
 		u->medical = Unit::MED_FREE;
 		u->hungriness = 0;
 		REQUIRE(w.game.map.incResourceByIndex(24, 12, WHEAT, 0));
-		w.game.map.getMaterialGradientSlot(0, WHEAT, u->swimClass());
+		glob2test::awaitGradient(w.game,[&] { return w.game.map.getMaterialGradientSlot(0, WHEAT, u->swimClass()); });
 		const auto snapshot = w.game.captureReadBoundary();
 		const auto input = HiringPipeline::bindRoutes(w.game, snapshot);
 		REQUIRE(input.world.resourceFields == snapshot.resourceFields);
@@ -145,7 +181,7 @@ TEST_SUITE("HiringPlanner")
 			for (int x = 22; x <= 26; ++x)
 				if (x == 22 || x == 26 || y == 22 || y == 26)
 					w.game.map.addForbidden(x, y, 0);
-		w.game.map.getMaterialGradientSlot(0, WHEAT, unit->swimClass());
+		glob2test::awaitGradient(w.game,[&] { return w.game.map.getMaterialGradientSlot(0, WHEAT, unit->swimClass()); });
 		const auto input = HiringPipeline::bindRoutes(w.game, w.game.captureReadBoundary());
 		const auto actual = HiringPlanner::Planner{}.rank(input, 0);
 		CHECK(actual.metrics.resourcePlaneReads > 0);
@@ -174,7 +210,7 @@ TEST_SUITE("HiringPlanner")
 		CHECK(available.entities->availableGroundClasses[0] != 0);
 		CHECK(HiringPipeline::bindRoutes(w.game, available).routes->empty());
 		// A normal simulation query establishes the shared generation.
-		w.game.map.buildingGradient(b, u->swimClass());
+		glob2test::awaitBuildingGradient(w.game,b, u->swimClass());
 		CHECK_FALSE(HiringPipeline::bindRoutes(w.game, available).routes->empty());
 	}
 	TEST_CASE("cold routes are established by live admission rather than observation")
@@ -210,7 +246,7 @@ TEST_SUITE("HiringPlanner")
 		const auto snapshot = w.game.captureReadBoundary();
 		const auto before = HiringPipeline::bindRoutes(w.game, snapshot);
 		// Other query consumers may enroll unused movement classes or routes.
-		w.game.map.buildingGradient(building, SWIM_CLASS_COUNT - 1, BuildingRoute::Combat);
+		glob2test::awaitBuildingGradient(w.game,building, SWIM_CLASS_COUNT - 1, BuildingRoute::Combat);
 		const auto after = HiringPipeline::bindRoutes(w.game, snapshot);
 		CHECK(before.routes->size() == after.routes->size());
 	}
@@ -426,7 +462,7 @@ TEST_SUITE("HiringPlanner")
 		warrior->experienceLevel = INT_MAX;
 		world.game.gameHeader.setGlassCannonLevel(2);
 		world.game.areaEffects.beginTick(world.game);
-		world.game.map.buildingGradient(flag, warrior->swimClass(), BuildingRoute::Combat);
+		glob2test::awaitBuildingGradient(world.game,flag, warrior->swimClass(), BuildingRoute::Combat);
 		const auto expected =
 			std::int64_t(warrior->performance[ATTACK_SPEED]) * warrior->getRealAttackStrength();
 		const auto snapshot = world.game.captureReadBoundary();
@@ -490,7 +526,7 @@ TEST_SUITE("HiringPlanner")
 		free->activity = Unit::ACT_RANDOM;
 		busy->activity = Unit::ACT_FILLING;
 		for (int swim = 0; swim < SWIM_CLASS_COUNT; ++swim)
-			world.game.map.buildingGradient(inn, swim);
+			glob2test::awaitBuildingGradient(world.game,inn, swim);
 		const auto checksum = world.checksum();
 		const auto snapshot = world.game.captureReadBoundary();
 		auto inputs = HiringPipeline::bindRoutes(world.game, snapshot);
@@ -524,7 +560,7 @@ TEST_SUITE("HiringPlanner")
 		REQUIRE(inn);
 		REQUIRE(worker);
 		worker->carriedMaterial = WHEAT;
-		world.game.map.buildingGradient(inn, worker->swimClass());
+		glob2test::awaitBuildingGradient(world.game,inn, worker->swimClass());
 		HiringPlanner::Planner cache;
 		const auto plan = [&]
 		{
@@ -601,9 +637,9 @@ TEST_SUITE("HiringPlanner")
 		world.game.map.incResourceByIndex(24, 24, WHEAT, 0);
 		for (auto *building : {a, b})
 			for (int swim = 0; swim < SWIM_CLASS_COUNT; ++swim)
-				world.game.map.buildingGradient(building, swim);
+				glob2test::awaitBuildingGradient(world.game,building, swim);
 		for (int swim = 0; swim < SWIM_CLASS_COUNT; ++swim)
-			world.game.map.getMaterialGradientSlot(0, WHEAT, swim);
+			glob2test::awaitGradient(world.game,[&] { return world.game.map.getMaterialGradientSlot(0, WHEAT, swim); });
 		auto snapshot = world.game.captureReadBoundary();
 		auto inputs = HiringPipeline::bindRoutes(world.game, snapshot);
 		const auto checksum = world.checksum();
@@ -638,24 +674,23 @@ TEST_SUITE("HiringPlanner")
 												list.key.job));
 			}
 	}
-	TEST_CASE("shared field survives replacement and proposals preserve owner demand")
+	TEST_CASE("complete shared field survives replacement and proposals cannot mutate it")
 	{
 		glob2test::HeadlessGlobals globals;
 		glob2test::HeadlessGame world({.discovered = true, .loadDefaultRace = true});
 		auto *inn = world.addBuilding("inn", 8, 8);
 		REQUIRE(inn);
 		int distance = 0;
+		glob2test::awaitBuildingGradient(world.game,inn,0);
 		REQUIRE(world.game.map.buildingAvailable(inn, 0, 12, 12, &distance));
 		auto lease = inn->leaseGradient(inn->routeSlot(0, BuildingRoute::Automatic));
 		REQUIRE(lease);
-		REQUIRE(lease->search);
-		const int required = lease->search->requiredCost();
-		REQUIRE_FALSE(lease->search->resolved(world.game.map.coordToIndex(20, 20)));
+		CHECK_FALSE(lease->search);
+		const std::vector<Uint16> frozen(lease->values,lease->values+world.game.map.cellCount());
 		const auto oldDistance = lease->distance(20, 20);
 		CHECK(oldDistance != INT_MAX);
-		CHECK(lease->search->requiredCost() == required);
-		CHECK(lease->search->resolved(world.game.map.coordToIndex(20, 20)));
-		std::thread worker(
+		CHECK(std::equal(frozen.begin(),frozen.end(),lease->values));
+		std::jthread worker(
 			[&]
 			{
 				for (int i = 0; i < 1000; ++i)
@@ -664,6 +699,7 @@ TEST_SUITE("HiringPlanner")
 		for (int i = 0; i < 1000; ++i)
 			CHECK(world.game.map.buildingAvailable(inn, 0, 12 + i % 4, 12, &distance));
 		inn->resetPathfindGradients();
+		glob2test::awaitBuildingGradient(world.game,inn,0);
 		REQUIRE(world.game.map.buildingAvailable(inn, 0, 20, 20, &distance));
 		worker.join();
 		CHECK(distance == oldDistance);
@@ -728,8 +764,8 @@ TEST_SUITE("HiringPlanner")
 		inn->desiredMaxUnitWorking = 1;
 		world.game.map.incResourceByIndex(16, 16, WHEAT, 0);
 		const int swim = worker->swimClass();
-		world.game.map.buildingGradient(inn, swim);
-		world.game.map.getMaterialGradientSlot(0, WHEAT, swim, false, inn);
+		glob2test::awaitBuildingGradient(world.game,inn, swim);
+		glob2test::awaitGradient(world.game,[&] { return world.game.map.getMaterialGradientSlot(0, WHEAT, swim, false, inn); });
 		const auto checksum = world.checksum();
 		auto snapshot = world.game.captureReadBoundary();
 		auto inputs = HiringPipeline::bindRoutes(world.game, snapshot);
@@ -762,7 +798,7 @@ TEST_SUITE("HiringPlanner")
 		inn->desiredMaxUnitWorking = 1;
 		market->setMaterial(CHERRY, 10);
 		for (int swim = 0; swim < SWIM_CLASS_COUNT; ++swim)
-			world.game.map.buildingGradient(inn, swim);
+			glob2test::awaitBuildingGradient(world.game,inn, swim);
 		worker->activity = Unit::ACT_RANDOM;
 		worker->medical = Unit::MED_FREE;
 		auto snapshot = world.game.captureReadBoundary();
@@ -792,7 +828,7 @@ TEST_SUITE("HiringPlanner")
 		const auto repeated = cache.rank(inputs, 0, 8);
 		CHECK(repeated.metrics.resourcePlaneReads + repeated.metrics.resourceEstimateFallbacks > 0);
 		checkPlannerOutput(repeated, output);
-		world.game.map.getMaterialGradientSlot(0, CHERRY, worker->swimClass(), false, inn);
+		glob2test::awaitGradient(world.game,[&] { return world.game.map.getMaterialGradientSlot(0, CHERRY, worker->swimClass(), false, inn); });
 		world.game.snapshotStore()
 			.invalidateBoundary(); // Announce this mid-boundary fixture query.
 		auto published = world.game.captureReadBoundary();

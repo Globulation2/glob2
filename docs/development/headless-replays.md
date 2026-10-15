@@ -72,9 +72,11 @@ checkpoint from a run started with `--rule buildingGradientDelay=N`. Other
 overrides of a saved game, including `--experiment`, `--rule` and
 `--ai-order-delay`, are still rejected.
 
-Scheduled building fields use the production depth predictor. Experimental
-full/lazy and operating-point overrides are retired; readers still resolve
-unsettled cells on the owner before using them.
+Scheduled building fields are complete at publication. Cold reads and refreshes
+use the same FIFO pipeline; readers return Pending rather than seeding or
+extending a field on the simulation owner. Format 166 persists cold requests and
+completed unpublished outputs and raises the replay floor to 166. Supported older
+saves remain readable; `MINIMUM_VERSION_MINOR` is unchanged.
 
 Format 143 saves the AI engine's completed pending orders, logical deadlines and
 execution feedback. Saving finishes outstanding decisions without executing
@@ -497,7 +499,7 @@ the serial fallback publishes on the same ticks. `--compute-threads 1` is the
 owner-only control; all deferred producers submit to the same executor and the
 owner computes their jobs at joins when there are no workers.
 
-Periodic material, market, guard and clear gradients use the same executor as AI.
+Material, market, consumer-specific supplier, guard, clear and forbidden gradients use the same executor as AI.
 Their immutable inputs are captured at the completed-tick boundary; seeding and
 propagation both execute privately and retain the existing publication deadlines.
 `--compute-threads auto|N` controls the shared pool for all sessions; `auto` uses

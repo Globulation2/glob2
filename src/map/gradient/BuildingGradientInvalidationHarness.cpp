@@ -8,6 +8,7 @@
 // footprint structurally could not reach - another team's buildings, and a virtual
 // flag, which is never written into the building tile grid.
 #include "EngineFixtures.h"
+#include "GradientFixture.h"
 #include "GlobalContainer.h"
 #include "EngineTiming.h"
 #include "Game.h"
@@ -34,6 +35,7 @@
 #include <stdexcept>
 #include <thread>
 #include "BuildingGradientJob.h"
+#include "GradientExecutionAudit.h"
 #include "Version.h"
 #include <BinaryStream.h>
 #include <TextStream.h>
@@ -65,6 +67,7 @@ struct World
 	// Two teams, so a ring can be built by someone other than the field's owner.
 	// One player per team; the player index doubles as the team number.
 	Team* team = nullptr;
+	bool scheduled = false;
 	int siteType = -1;
 	int flagType = -1;
 	int siteW = 0, siteH = 0;
@@ -145,9 +148,29 @@ struct World
 		return ring;
 	}
 
+	// Explicit reference setup for warm-refresh tests. Cold-publication tests use
+	// requestBuildingField directly and never call this synchronous helper.
+	void warm(Building* b, int swim = 0)
+	{
+		const int slot = b->routeSlot(swim, BuildingRoute::Automatic);
+		if (!b->globalGradient[slot]) b->globalGradient[slot] = game.map.acquireBuildingGradientBuffer();
+		game.map.updateGlobalGradient(b, swim);
+		game.map.finishBuildingGradient(b, swim);
+	}
+
 	bool available(Building* b, int x, int y)
 	{
 		int dist = -1;
+		if (!scheduled)
+		{
+			const auto captured=b->lastGlobalGradientUpdateStepCounter[0];
+			const bool refresh=(b->dirtyGradient[0] || b->gradientGeneration[0]!=game.map.topologyGeneration)
+				&& captured+DIRTY_GRACE_TICKS<=game.stepCounter;
+			glob2test::awaitGradient(game,[&] {
+				game.map.requestBuildingField(b,0);
+				return refresh && b->lastGlobalGradientUpdateStepCounter[0]==captured ? nullptr : b->globalGradient[0];
+			});
+		}
 		return game.map.buildingAvailable(b, 0, x, y, &dist);
 	}
 
@@ -161,6 +184,7 @@ static void idleFieldStorageIsReusedWithoutStaleRoutes()
 	Building* second = world.place(44, 44);
 	require(second->globalGradient[0] == nullptr, "second building starts without a field");
 	const size_t cells = static_cast<size_t>(world.game.map.getW()) * world.game.map.getH();
+	world.warm(first);
 	const Uint16* firstField = world.game.map.buildingGradient(first, 0);
 	require(firstField != nullptr, "first building field exists");
 	BuildingGradientSearch* firstSearch = first->globalGradientSearch[0].get();
@@ -170,12 +194,14 @@ static void idleFieldStorageIsReusedWithoutStaleRoutes()
 	world.tick(768);
 	first->freeIdleGradients();
 	require(first->globalGradient[0] == nullptr, "idle building drops its field");
+	world.warm(second);
 	const Uint16* secondField = world.game.map.buildingGradient(second, 0);
 	require(secondField == firstField, "another building reuses the idle field storage");
 	require(second->globalGradientSearch[0].get() == firstSearch,
 		"another building reuses the idle search queues");
 	require(std::vector<Uint16>(secondField, secondField + cells) != expected,
 		"reused storage contains the second building's field");
+	world.warm(first);
 	const Uint16* rebuilt = world.game.map.buildingGradient(first, 0);
 	require(std::vector<Uint16>(rebuilt, rebuilt + cells) == expected,
 		"reactivated building rebuilds the same route values");
@@ -183,6 +209,7 @@ static void idleFieldStorageIsReusedWithoutStaleRoutes()
 	BuildingGradientSearch* secondSearch = second->globalGradientSearch[0].get();
 	second->resetPathfindGradients();
 	require(second->globalGradient[0] == nullptr, "invalidation drops the old field");
+	world.warm(second);
 	const Uint16* invalidated = world.game.map.buildingGradient(second, 0);
 	require(invalidated == secondField && second->globalGradientSearch[0].get() == secondSearch,
 		"invalidation reuses field storage and search queues");
@@ -273,8 +300,8 @@ static void aPausedFieldKeepsItsOriginalObstacles()
 	World world;
 	Building *centre = world.place(20, 20);
 	require(world.available(centre, 18, 20), "nearby query succeeds on a lazy field");
-	require(centre->globalGradientSearch[0] && !centre->globalGradientSearch[0]->complete(),
-		"nearby query leaves a retained frontier");
+	require((!centre->globalGradientSearch[0] || centre->globalGradientSearch[0]->complete()),
+		"published reference is complete before nearby reads");
 	world.placeRing(20, 20, 1);
 	// Cached gradients retain their pre-edit obstacle snapshot until the
 	// normal refresh deadline, including while their search is paused.
@@ -301,6 +328,7 @@ static void publicReadsResolveTheirInputs()
             for(int y=0;y<map.getH();++y)
                 for(int x=0;x<map.getW();++x)
                     if(map.getBuilding(x,y)==NOGBID) map.paintCell(x,y,WATER);
+		world.warm(centre,swim);
 		const Uint16 *full = map.buildingGradient(centre, swim);
 		require(full != nullptr, "public field is reachable");
 		std::vector<Uint16> expected(full, full + map.getW() * map.getH());
@@ -311,11 +339,11 @@ static void publicReadsResolveTheirInputs()
 		int dist, dx, dy;
 		require(map.buildingAvailable(centre, swim, 18, 20, &dist) && dist == expectedDist,
 			"point API resolves its own distance");
-		require(!centre->globalGradientSearch[swim]->complete(), "point read does not finish the field");
+		require(centre->globalGradientSearch[swim]->complete(), "point read observes a complete field");
 		map.updateGlobalGradient(centre, swim);
 		require(map.pathfindBuilding(random, centre, swim, 18, 20, &dx, &dy) && dx == expectedDx && dy == expectedDy,
 			"movement API resolves its own input layer");
-		require(!centre->globalGradientSearch[swim]->complete(), "movement does not finish the field");
+		require(centre->globalGradientSearch[swim]->complete(), "movement observes a complete field");
 		full = map.buildingGradient(centre, swim);
 		require(centre->globalGradientSearch[swim]->complete(), "public array API completes the field");
 		require(std::vector<Uint16>(full, full + expected.size()) == expected, "public array is fully resolved");
@@ -475,7 +503,7 @@ void scheduledKernelsMatchSynchronous(KernelTerrain config)
 				m.finishBuildingGradient(b, swim, route);
 				const Uint16* expected = b->globalGradient[slot];
 				const auto seed = captureBuildingSeed(*b, swim, route);
-				const auto inputs = BuildingGradientSearch::Inputs::of(m, swim);
+				const auto inputs = BuildingGradientSearch::Inputs::ofSnapshot(snapshot, swim);
 				BuildingGradientSearch search;
 				const auto result = buildBuilding(seed, snapshot, inputs, actual.data(), search, gradient_kernel::COST_LIMIT);
 				INFO(what);
@@ -524,6 +552,7 @@ struct Scheduler
 	Map& map;
 	Scheduler(World& world, unsigned workers, unsigned delay) : game(world.game), map(world.game.map)
 	{
+		world.scheduled = true;
 		game.gameHeader.setBuildingGradientDelay(delay);
 		map.configureCompute(workers + 1);
 		map.configureGradientPipeline(workers, 8);
@@ -615,7 +644,8 @@ void scheduledFixedDeadlines()
 			Scheduler s(world, workers, delay);
 			Building* b = world.place(24, 24);
 			int dist = 0;
-			require(world.available(b, 2, 2), "cold field is built synchronously");
+			world.warm(b);
+			require(world.available(b, 2, 2), "reference warm field");
 			const auto synchronous = s.status().synchronous;
 			s.game.stepCounter = DIRTY_GRACE_TICKS + 1;
 			s.map.addForbidden(10, 10, 0);
@@ -649,7 +679,8 @@ void scheduledCaptureAtBoundary()
 	World world;
 	Scheduler s(world, 2, 4);
 	Building* b = world.place(24, 24);
-	require(world.available(b, 2, 2), "cold field");
+	world.warm(b);
+	require(world.available(b, 2, 2), "reference warm field");
 	s.game.stepCounter = DIRTY_GRACE_TICKS + 1;
 	s.map.addForbidden(10, 10, 0);
 	s.tick([&] {
@@ -672,40 +703,32 @@ void scheduledCaptureAtBoundary()
 void scheduledPartialResume()
 {
 	std::vector<Uint16> reference;
-	for (unsigned workers : {0u, 2u})
+	for (unsigned workers : {0u, 1u, 3u, 7u})
 	{
-		World world(8);
-		Scheduler s(world, workers, 4);
-		const int pool = globalContainer->buildingsTypes.getTypeNum("swimmingpool", 0, true);
-		require(pool >= 0, "swimming pool site type");
-		Building* b = s.game.addBuilding(100, 100, pool, 0, 1, 1);
-		require(b != nullptr, "pool site placed");
-		int dist = 0;
-		require(s.map.buildingAvailable(b, 0, 98, 98, &dist), "cold field");
-		const int depth = s.map.predictBuildingDepth(b, 0);
-		s.game.stepCounter = DIRTY_GRACE_TICKS + 1;
-		s.map.addForbidden(10, 10, 0);
-		s.tick([&] { s.map.buildingAvailable(b, 0, 98, 98, &dist); });
-		for (int i = 1; i < 4; ++i) s.tick();
-		s.map.advanceGradientPipeline();
-		require(s.status().published == 1, "published");
-		auto* search = b->globalGradientSearch[0].get();
-		// The production predictor may settle a small map entirely.
-		const bool partial = !search || !search->complete();
-		require(search && (!partial || search->settledCost() > depth), "the published field carries its frontier");
-		const auto workerCost = search->settledCost();
-		require(s.map.buildingAvailable(b, 0, 230, 230, &dist), "far query resolves on the owner");
-		require(!partial || search->settledCost() > workerCost, "the owner continues the transferred search");
-		const auto resumed = s.finished(b, 0);
-		const auto resumedCost = b->globalGradientSearch[0]->settledCost();
-		s.map.updateGlobalGradient(b, 0);
-		const auto full = s.finished(b, 0);
-		require(resumed == full, "resumed values equal a full build");
-		require(resumedCost == b->globalGradientSearch[0]->settledCost(), "the finished frontier matches a full build");
-		if (reference.empty()) reference = resumed;
-		require(resumed == reference, "serial and parallel refreshes publish the same values");
-		std::printf("PASS scheduled field (depth %d, worker frontier %llu of %llu) resumes from transferred buckets\n",
-			depth, (unsigned long long)workerCost, (unsigned long long)resumedCost);
+		World world;
+		Scheduler scheduler(world, workers, 4);
+		Building* b = world.place(24, 24);
+		GradientExecutionAudit audit;
+		int distance = -1;
+		for (int i = 0; i < 10; ++i)
+			REQUIRE(world.game.map.queryBuildingDistance(b, 0, 2, 2, &distance) == RouteResult::Pending);
+		REQUIRE(scheduler.status().queued == 1);
+		REQUIRE(!b->globalGradient[0]);
+		scheduler.tick();
+		REQUIRE(scheduler.status().pending == 1);
+		for (int i = 1; i < 4; ++i)
+		{
+			scheduler.tick();
+			REQUIRE(!b->globalGradient[0]);
+		}
+		world.game.map.advanceGradientPipeline();
+		REQUIRE(b->globalGradient[0]);
+		REQUIRE(!b->globalGradientSearch[0]);
+		REQUIRE(world.game.map.queryBuildingDistance(b, 0, 2, 2, &distance) == RouteResult::Reachable);
+		if (workers) REQUIRE(audit.totals().owner == 0);
+		const auto values = scheduler.field(b->globalGradient[0]);
+		if (reference.empty()) reference = values;
+		REQUIRE(reference == values);
 	}
 }
 
@@ -718,7 +741,7 @@ void scheduledSupersession()
 	Building* b = world.place(40, 40);
 	Building* c = world.place(8, 40);
 	Building* d = world.place(40, 8);
-	for (Building* x : {a, b, c, d}) require(world.available(x, 2, 2), "cold field");
+	for (Building* x : {a, b, c, d}) { world.warm(x); require(world.available(x, 2, 2), "reference warm field"); }
 	s.game.stepCounter = 600; // Past the idle eviction age as well.
 	s.map.addForbidden(10, 10, 0);
 	s.tick([&] { for (Building* x : {a, b, c, d}) world.available(x, 2, 2); });
@@ -759,7 +782,7 @@ void scheduledSaveBoundaries()
 					World& w = x == &s ? source : restored;
 					auto& list = buildings[x == &s ? 0 : 1];
 					list = {w.place(24, 24), w.place(40, 40)};
-					for (Building* b : list) require(w.available(b, 2, 2), "cold field");
+					for (Building* b : list) { w.warm(b); require(w.available(b, 2, 2), "reference warm field"); }
 					x->game.stepCounter = 600;
 					x->map.addForbidden(10, 10, 0);
 					x->tick([&] { for (Building* b : list) w.available(b, 2, 2); });
@@ -820,7 +843,8 @@ void scheduledReusedDestination()
 		World world;
 		Scheduler s(world, workers, 4);
 		Building* old = world.place(24, 24);
-		require(world.available(old, 2, 2), "cold field");
+		world.warm(old);
+		require(world.available(old, 2, 2), "reference warm field");
 		const auto gid = old->gid;
 		const auto identity = old->scriptIdentity;
 		s.game.stepCounter = 200;
@@ -831,7 +855,8 @@ void scheduledReusedDestination()
 		s.map.setMapDiscovered();
 		Building* replacement = s.game.addBuilding(40, 40, world.siteType, 0, 1, 1);
 		require(replacement && replacement->gid == gid && replacement->scriptIdentity != identity, "destination reused with a new lifetime");
-		require(world.available(replacement, 2, 2), "replacement's cold field");
+		world.warm(replacement);
+		require(world.available(replacement, 2, 2), "replacement reference warm field");
 		const auto field = s.finished(replacement, 0);
 		for (int i = 1; i < 4; ++i) s.tick();
 		s.map.advanceGradientPipeline();
@@ -847,7 +872,7 @@ void scheduledAccessMetadata()
 	Scheduler s(world, 2, 4);
 	Building* b = world.place(24, 24);
 	int dist = 0;
-	for (int swim : {1, 3}) require(s.map.buildingAvailable(b, swim, 2, 2, &dist), "cold field");
+	for (int swim : {1, 3}) { world.warm(b, swim); require(s.map.buildingAvailable(b, swim, 2, 2, &dist), "reference warm field"); }
 	const int access = b->routeAccess(1, BuildingRoute::Footprint);
 	require(access == b->routeAccess(3, BuildingRoute::Footprint), "classes 1 and 3 share one access variant");
 	std::vector<std::pair<int, int>> fence;
@@ -890,7 +915,8 @@ void scheduledResetsKeepStaleFields()
 		World world;
 		Scheduler s(world, workers, 4);
 		Building* b = world.place(24, 24);
-		require(world.available(b, 2, 2), "cold walking field");
+		world.warm(b);
+		require(world.available(b, 2, 2), "reference warm walking field");
 		s.tick(); // Configures the pipeline.
 		s.game.stepCounter += 300;
 		s.map.updateGlobalGradient(b, 0);
@@ -918,14 +944,14 @@ void scheduledResetsKeepStaleFields()
 		require(published == s.finished(b, 0), "the published field equals a synchronous build");
 		b->resetPathfindGradients(Building::GradientDrop::Own);
 		require(!b->globalGradient[0], "an own reset drops the field");
-		require(world.available(b, 2, 2), "rebuilt cold");
-		const auto reasons = s.status().synchronousByReason;
-		require(reasons[size_t(Map::BuildingSyncReason::ColdOwn)] == 1, "the cold rebuild is counted by its drop cause");
+		require(s.map.requestBuildingField(b, 0) == FieldReadiness::Pending, "hard reset enrolls a cold delayed field");
+		require(s.status().synchronous == after.synchronous + 1, "only the explicit reference build ran synchronously");
 	}
 	{
 		World world;
 		Building* b = world.place(24, 24);
-		require(world.available(b, 2, 2), "cold field");
+		world.warm(b);
+	require(world.available(b, 2, 2), "reference warm field");
 		b->resetPathfindGradients(Building::GradientDrop::Area);
 		require(!b->globalGradient[0], "with the pipeline off an area reset drops the field");
 	}
@@ -946,7 +972,8 @@ void scheduledSlowAndFailingWorkers()
 			World world;
 			Scheduler s(world, workers, 4);
 			Building* b = world.place(24, 24);
-			require(world.available(b, 2, 2), "cold field");
+			world.warm(b);
+	require(world.available(b, 2, 2), "reference warm field");
 			s.game.stepCounter = DIRTY_GRACE_TICKS + 1;
 			s.map.addForbidden(10, 10, 0);
 			s.tick([&] { world.available(b, 2, 2); });
@@ -964,7 +991,8 @@ void scheduledSlowAndFailingWorkers()
 			World world;
 			Scheduler s(world, workers, 4);
 			Building* b = world.place(24, 24);
-			require(world.available(b, 2, 2), "cold field");
+			world.warm(b);
+	require(world.available(b, 2, 2), "reference warm field");
 			s.game.stepCounter = DIRTY_GRACE_TICKS + 1;
 			s.map.addForbidden(10, 10, 0);
 			s.tick([&] { world.available(b, 2, 2); });
@@ -995,7 +1023,8 @@ void scheduledForbiddenEditCarriesPendingGeneration()
 	{
 		World world; // synchronous reference
 		Building* rival = world.place(40, 40, 1);
-		require(world.available(rival, 2, 2), "cold field");
+		world.warm(rival);
+		require(world.available(rival, 2, 2), "reference warm field");
 		world.game.stepCounter = DIRTY_GRACE_TICKS + 1;
 		world.game.map.addForbidden(10, 10, 0);
 		require(world.available(rival, 2, 2), "synchronous refresh");
@@ -1006,7 +1035,8 @@ void scheduledForbiddenEditCarriesPendingGeneration()
 	World world;
 	Scheduler s(world, 2, 4);
 	Building* rival = world.place(40, 40, 1);
-	require(world.available(rival, 2, 2), "cold field");
+	world.warm(rival);
+		require(world.available(rival, 2, 2), "reference warm field");
 	s.game.stepCounter = DIRTY_GRACE_TICKS + 1;
 	s.map.addForbidden(10, 10, 0);
 	s.tick([&] { world.available(rival, 2, 2); });
@@ -1037,21 +1067,23 @@ void scheduledSameTickSwimClassesKeepRequestOrder()
 	{
 		World world; // synchronous reference
 		Building* b = world.place(24, 24);
-		for (int swim : {1, 3}) require(world.game.map.buildingAvailable(b, swim, 2, 2, &dist), "cold field");
+		for (int swim : {1, 3}) { world.warm(b, swim); require(world.game.map.buildingAvailable(b, swim, 2, 2, &dist), "reference warm field"); }
 		const int access = b->routeAccess(1, BuildingRoute::Footprint);
 		auto paint = [&](bool on) { fence(world, on); };
 		world.game.stepCounter = DIRTY_GRACE_TICKS + 1;
 		paint(true);
+		world.warm(b,1);
 		world.game.map.buildingAvailable(b, 1, 2, 2, &dist);
 		require(b->isLocked(access), "synchronous: the fenced build locks");
 		paint(false);
+		world.warm(b,3);
 		world.game.map.buildingAvailable(b, 3, 2, 2, &dist);
 		require(!b->isLocked(access), "synchronous: the later build of the same tick wins");
 	}
 	World world;
 	Scheduler s(world, 2, 4);
 	Building* b = world.place(24, 24);
-	for (int swim : {1, 3}) require(s.map.buildingAvailable(b, swim, 2, 2, &dist), "cold field");
+	for (int swim : {1, 3}) { world.warm(b, swim); require(s.map.buildingAvailable(b, swim, 2, 2, &dist), "reference warm field"); }
 	const int access = b->routeAccess(1, BuildingRoute::Footprint);
 	require(access == b->routeAccess(3, BuildingRoute::Footprint), "classes 1 and 3 share one access variant");
 	auto paint = [&](bool on) { fence(world, on); };
@@ -1075,31 +1107,10 @@ void scheduledSameTickSwimClassesKeepRequestOrder()
 
 TEST_SUITE("BuildingGradientInvalidation")
 {
-	TEST_CASE("prediction retains reader demand across rebuilds and save completion")
+	TEST_CASE("cold building fields publish complete without owner demand expansion")
 	{
 		glob2test::HeadlessGlobals globals;
-		World world;
-		Scheduler scheduler(world, 2, 1);
-		auto& map = world.game.map;
-		Building* building = world.place(24, 24);
-		REQUIRE(world.available(building, 2, 2));
-		const int demand = building->globalGradientSearch[0]->requiredCost();
-		REQUIRE(demand > 0);
-		const int predicted = map.predictBuildingDepth(building, 0);
-		map.finishBuildingGradient(building, 0);
-		CHECK(map.predictBuildingDepth(building, 0) == predicted);
-		CHECK(building->globalGradientSearch[0]->requiredCost() == demand);
-		world.game.stepCounter = DIRTY_GRACE_TICKS + 1;
-		map.addForbidden(10, 10, 0);
-		scheduler.tick([&] { REQUIRE(world.available(building, 2, 2)); });
-		map.advanceGradientPipeline();
-		REQUIRE(scheduler.status().published == 1);
-		CHECK(building->settledCostHint[0] == demand);
-		CHECK(building->globalGradientSearch[0]->requiredCost() == 0);
-		CHECK(map.predictBuildingDepth(building, 0) == BuildingGradientDepth::target(0, demand));
-		map.updateGlobalGradient(building, 0);
-		CHECK(building->settledCostHint[0] == 0);
-		CHECK(map.predictBuildingDepth(building, 0) == BuildingGradientDepth::target(0, 0));
+		scheduledPartialResume();
 	}
 
 	TEST_CASE("centre placed inside an existing ring")

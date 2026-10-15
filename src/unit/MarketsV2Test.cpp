@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "Material.h"
 #include "EngineFixtures.h"
+#include "GradientFixture.h"
 #include "MapInternal.h"
 #include "Order.h"
 #include "OrderValidation.h"
@@ -222,6 +223,7 @@ TEST_CASE("disabled gate blocks explicit fetch APIs and upgrade execution")
 	CHECK_FALSE(market->isUpgradeAvailable());
 	for (int sw=0; sw<SWIM_CLASS_COUNT; ++sw)
 	{
+		glob2test::awaitGradient(g,[&] { return g.map.getMaterialGradientSlot(0,CHERRY,sw); });
 		CHECK(g.map.getMaterialGradientSlot(0,CHERRY,sw,true)==g.map.getMaterialGradientSlot(0,CHERRY,sw));
 		CHECK(g.map.marketMaterialGradients[0][CHERRY][sw]==nullptr);
 		g.map.dirtyMarketGradientsSlot(0,CHERRY);
@@ -267,6 +269,9 @@ TEST_CASE("each market level accepts only its resources across all swim classes"
 				bool accepts=market->type->maxMaterial[r]>0;
 				CHECK(g.map.isStockedMarketTile(market->gid,0,r)==accepts);
 				CHECK_FALSE(g.map.isStockedMarketTile(market->gid,1,r));
+				glob2test::awaitGradient(g,[&] { return g.map.getMaterialGradientSlot(1,r,sw,true); });
+				glob2test::awaitGradient(g,[&] { return g.map.getMaterialGradientSlot(0,r,sw,true); });
+				glob2test::awaitGradient(g,[&] { return g.map.getMaterialGradientSlot(0,r,sw,false); });
 				CHECK_FALSE(g.map.materialAvailableSlot(1,r,sw,6,6,true));
 				CHECK(g.map.materialAvailableSlot(0,r,sw,6,6,true)==accepts);
 				CHECK_FALSE(g.map.materialAvailableSlot(0,r,sw,6,6));
@@ -287,13 +292,21 @@ TEST_CASE("market routes respect forbidden ground and water across swim classes"
         for(int y=0;y<world.game.map.getH();++y)for(int x=0;x<world.game.map.getW();++x)
             if(world.game.map.getBuilding(x,y)==NOGBID)world.game.map.paintCell(x,y,WATER);
 	for (int y=7;y<=8+market->type->height;++y) for (int x=7;x<=8+market->type->width;++x) world.game.map.addForbidden(x,y,0);
-	for (int sw=waterOnly?SWIM_CLASS_COUNT-1:0;sw<(waterOnly?SWIM_CLASS_COUNT:SWIM_CLASS_COUNT-1);++sw) CHECK_FALSE(world.game.map.materialAvailableSlot(0,CHERRY,sw,5,5,true));
+	for (int sw=waterOnly?SWIM_CLASS_COUNT-1:0;sw<(waterOnly?SWIM_CLASS_COUNT:SWIM_CLASS_COUNT-1);++sw) {
+        glob2test::awaitGradient(world.game,[&] { return world.game.map.getMaterialGradientSlot(0,CHERRY,sw,true); });
+        CHECK_FALSE(world.game.map.materialAvailableSlot(0,CHERRY,sw,5,5,true));
+    }
 	for (int y=7;y<=8+market->type->height;++y) for (int x=7;x<=8+market->type->width;++x)
 	{ world.game.map.removeForbidden(x,y,0); world.game.map.paintCell(x, y, WATER); }
 	world.game.map.bumpTopologyGeneration();
 	for (int sw=waterOnly?SWIM_CLASS_COUNT-1:0;sw<(waterOnly?SWIM_CLASS_COUNT:SWIM_CLASS_COUNT-1);++sw)
 	{
+		const auto* previous=world.game.map.getMaterialGradientSlot(0,CHERRY,sw,true);
 		world.game.map.updateMaterialGradient(0,CHERRY,sw,true);
+		glob2test::awaitGradient(world.game,[&] {
+			const auto* field=world.game.map.getMaterialGradientSlot(0,CHERRY,sw,true);
+			return field!=previous ? field : nullptr;
+		});
 		CHECK(world.game.map.materialAvailableSlot(0,CHERRY,sw,5,5,true)==(sw>0));
 	}
     }

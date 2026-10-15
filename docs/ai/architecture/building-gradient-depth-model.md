@@ -1,10 +1,14 @@
-# The building-field depth model
+# Historical building-field depth model
 
-Scheduled footprint fields prepare part of a search on a worker and transfer its
-frontier to the simulation owner at the fixed publication deadline. Readers
-resolve their requested cells before using them. Preparation depth changes where
-CPU work happens, while the frozen input, resulting values and deadline remain
-the same.
+Simulation format 165 publishes complete building fields. The depth predictor no
+longer controls live scheduled fields, and readers never extend a published
+frontier. This guide records the earlier policy and its retained fitting tools;
+it does not describe current publication behavior.
+
+The earlier implementation prepared part of a footprint search on a worker and
+transferred its frontier at the fixed deadline. Readers then resolved requested
+cells. The policy below moved work between worker and owner without changing the
+frozen field's mathematical result.
 
 ## Reader demand
 
@@ -20,7 +24,7 @@ the worker already prepared the answer. Unreachable queries require exhaustion;
 seeded goals and blocked cells require no propagation. Demand resets with each
 new search, allowing preparation to shrink after lower-demand lifetimes.
 
-## Production policy
+## Previous production policy
 
 Let `m = max(serving, previous)`. The retained fitted l0100 policy returns 32 when
 both observations are unknown; otherwise it returns
@@ -32,11 +36,11 @@ Experimental operating points, full/lazy overrides, search histograms, lifetime
 exports and training commands have been retired. There is one production policy
 in `src/map/gradient/BuildingGradientDepthPolicy.h`.
 
-## Verification and limits
+## Current verification
 
-`BuildingGradientInvalidation` checks publication deadlines, transferred-frontier
-continuation, exact full-field equivalence, and reader-demand retention across
-rebuilds and save completion. `test/check_gradient_pipeline.py` checks real games
-and continuation with pending work. Preparation cannot change simulation values,
-but a poor prediction can move excessive work onto the owner or waste worker CPU.
-Use retained paired whole-process benchmarks to assess changes to the policy.
+`BuildingGradientInvalidation` and `DelayedGradientPublication` check complete
+field equivalence, cold Pending reads, fixed publication deadlines, save
+continuation and identical trajectories across compute participant counts.
+`GradientExecutionAudit` checks that simulation-owned shared field preparation
+executes no owner kernels when workers are available. The serial configuration
+keeps identical publication semantics.

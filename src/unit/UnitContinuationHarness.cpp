@@ -17,6 +17,7 @@ namespace
 struct UnitActivityAccess : Unit
 {
     static void run(Unit& unit) { const auto activity=&UnitActivityAccess::handleActivity; (unit.*activity)(); }
+    static void route(Unit& unit) { const auto movement=&UnitActivityAccess::handleMovementGoingToFlagOrBuilding; (unit.*movement)(); }
 };
 static std::vector<Uint32> state(Game& game)
 {
@@ -148,6 +149,111 @@ static void checkContinuation(int checkpoint, bool hazards = false)
 
 TEST_SUITE("UnitContinuation")
 {
+    TEST_CASE("hungry and injured flyers defer cold service guidance and reserve only after publication")
+    {
+        glob2test::HeadlessGlobals globals;
+        for(unsigned participants : {1u,2u,4u,8u})
+            for(auto medical : {Unit::MED_HUNGRY,Unit::MED_DAMAGED})
+        {
+            CAPTURE(participants); CAPTURE(int(medical));
+            glob2test::HeadlessGame world({.clearImmobile=true,.header=true,.seed=4921});
+            auto& game=world.game;
+            auto& map=game.map;
+            map.setGame(nullptr);
+            map.importTerrainDefinitions(R"({"schemaVersion":1,"terrains":[{"key":"fixture:air-service-barrier","name":"Barrier","base":"grass","properties":{"flyable":false},"appearance":"grass"}]})");
+            map.setGame(&game);
+            map.paintCell(24,24,*map.terrainRegistry().find("fixture:air-service-barrier"));
+            REQUIRE(map.hasAirTerrainConstraints());
+            map.configureCompute(participants);
+            map.configureGradientPipeline(participants-1,3);
+            auto* unit=world.addUnit(EXPLORER,16,16);
+            auto* service=world.addBuilding(medical==Unit::MED_HUNGRY?"inn":"hospital",4,4);
+            REQUIRE(unit); REQUIRE(service);
+            if(medical==Unit::MED_HUNGRY) service->setMaterial(WHEAT,20);
+            world.team->addToStaticAbilitiesLists(service);
+            service->update();
+            const auto choose=[&] { return medical==Unit::MED_HUNGRY
+                ? world.team->findNearestFood(unit) : world.team->findNearestHeal(unit); };
+            REQUIRE(choose()==nullptr);
+            unit->medical=medical;
+            unit->setNeedToRecheckMedical(true);
+            const auto random=unit->entityRandom;
+            UnitActivityAccess::run(*unit);
+            CHECK(unit->medical==medical);
+            CHECK(unit->needToRecheckMedical());
+            CHECK(unit->attachedBuilding==nullptr);
+            CHECK(service->unitsInside.empty());
+            CHECK(unit->entityRandom==random);
+            // Completing private work cannot make a candidate visible early.
+            map.stagePeriodicGradientPreparation();
+            map.preparePendingGradient();
+            map.finishGradientPipeline();
+            CHECK(choose()==nullptr);
+            for(unsigned boundary=0;boundary<512 && !choose();++boundary) {
+                map.advanceGradientPipeline();
+                ++game.stepCounter;
+                map.stagePeriodicGradientPreparation();
+                map.preparePendingGradient();
+            }
+            REQUIRE(choose()==service);
+            UnitActivityAccess::run(*unit);
+            CHECK(unit->attachedBuilding==service);
+            CHECK(unit->activity==Unit::ACT_UPGRADING);
+            CHECK(unit->destinationPurpose==(medical==Unit::MED_HUNGRY?FEED:HEAL));
+            CHECK(unit->entityRandom==random);
+            CHECK(std::count(service->unitsInside.begin(),service->unitsInside.end(),unit)==1);
+            UnitActivityAccess::run(*unit);
+            CHECK(std::count(service->unitsInside.begin(),service->unitsInside.end(),unit)==1);
+            map.finishGradientPipeline();
+        }
+    }
+
+    TEST_CASE("a pending building route retains assignment and random state until publication")
+    {
+        glob2test::HeadlessGlobals globals;
+        for (unsigned participants : {1u,2u,4u,8u})
+        {
+            CAPTURE(participants);
+            glob2test::HeadlessGame world({.clearImmobile=true,.header=true,.seed=4921});
+            auto& game=world.game;
+            game.gameHeader.setBuildingGradientDelay(3);
+            game.map.configureCompute(participants);
+            game.map.configureGradientPipeline(participants-1,3);
+            auto* unit=world.addUnit(WORKER,16,16);
+            auto* building=world.addBuilding("inn",4,4);
+            REQUIRE(unit); REQUIRE(building);
+            unit->destinationPurpose=FEED;
+            building->unitsInside.push_back(unit);
+            unit->subscriptionSuccess(building,true,false,UnitJobPurpose::None);
+            const auto activity=unit->activity;
+            const auto random=unit->entityRandom;
+            const auto assertWaiting=[&] {
+                UnitActivityAccess::route(*unit);
+                CHECK(unit->targetBuilding==building);
+                CHECK(unit->attachedBuilding==building);
+                CHECK(unit->activity==activity);
+                CHECK(unit->jobPurpose==UnitJobPurpose::None);
+                CHECK(unit->entityRandom==random);
+                CHECK(unit->posX==16); CHECK(unit->posY==16);
+                CHECK(unit->dx==0); CHECK(unit->dy==0);
+                CHECK(std::find(building->unitsInside.begin(),building->unitsInside.end(),unit)!=building->unitsInside.end());
+            };
+            assertWaiting();
+            for (int tick=0;tick<3;++tick) {
+                game.map.advanceGradientPipeline();
+                assertWaiting();
+                ++game.stepCounter;
+                game.map.stagePeriodicGradientPreparation();
+                game.map.preparePendingGradient();
+            }
+            game.map.advanceGradientPipeline();
+            UnitActivityAccess::route(*unit);
+            CHECK(unit->attachedBuilding==building);
+            CHECK((unit->dx!=0 || unit->dy!=0));
+            game.map.finishGradientPipeline();
+        }
+    }
+
     TEST_CASE("medical abort clears every working purpose before idle or service continuation")
     {
         glob2test::HeadlessGlobals globals;

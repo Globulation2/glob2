@@ -18,11 +18,13 @@
 // golden, so any change to the default path through this code shows up.
 
 #include "EngineFixtures.h"
+#include "GradientFixture.h"
 #include "Brush.h"
 #include "ExperimentalFeatures.h"
 #include "MapInternal.h"
 #include "Order.h"
 #include "UnitConsts.h"
+#include "map/gradient/SnapshotGradient.h"
 #include <BinaryStream.h>
 #include <StreamBackend.h>
 #include <algorithm>
@@ -122,7 +124,7 @@ namespace
 		{
 			if (options.resourceGradients)
 				for (int r = 0; r < MaterialCount; ++r)
-					game.map.getMaterialGradientSlot(0, r, 0);
+					glob2test::awaitGradient(game,[&] { return game.map.getMaterialGradientSlot(0,r,0); });
 			if (options.slowCadence)
 			{
 				// Two more teams with every resource field allocated: the round-robin
@@ -132,7 +134,7 @@ namespace
 				for (int t = 0; t < 3; ++t)
 					for (int r = 0; r < MaterialCount; ++r)
 						for (int c = 0; c < SWIM_CLASS_COUNT; ++c)
-							game.map.getMaterialGradientSlot(t, r, c);
+							glob2test::awaitGradient(game,[&] { return game.map.getMaterialGradientSlot(t,r,c); });
 			}
 		}
 
@@ -596,9 +598,26 @@ namespace
 			w, w, warriors, label, samples[repeats / 2], mean, samples[(repeats * 9) / 10]);
 	}
 
-	// Wall time of one guard-gradient rebuild, with warriors on the map, for the
-	// scenario map and for a large map; the crowding pass alone; and the rebuild
-	// with no warriors, which is the legacy seeding. Timing evidence, not pass/fail.
+	void timeGuardReference(World& world, const char* label, int warriors)
+	{
+		const auto snapshot=world.game.captureReadBoundary().gradientView();
+		gradient_preparation::Request request;
+		request.kind=gradient_preparation::Kind::Guard;
+		request.allies=world.team->allies;
+		request.crowding=world.game.gameHeader.hasExperiment(ExperimentId::GuardAreaBalancing);
+		request.terrainBuckets=world.game.map.terrainQueueBuckets();
+		std::vector<Uint16> field(world.game.map.cellCount());
+		gradient_preparation::CrowdingScratch crowding;
+		GradientWorkspace propagation;
+		timeIt(label,world.game.map.getW(),warriors,[&] {
+			gradient_preparation::seed(request,snapshot,field.data(),crowding);
+			gradient_preparation::propagateCPU(request,snapshot,field.data(),propagation);
+		});
+	}
+
+	// Explicit full seed + CPU propagation reference workloads. Immutable inputs
+	// are captured before measuring; publication queues and waits are excluded.
+	// Timing evidence, not pass/fail, and only run through the benchmark tag.
 	void rebuildTiming(const Options& options)
 	{
 		for (int shift : {6, 8})
@@ -610,17 +629,15 @@ namespace
 				World world(options, shift);
 				world.paint(a);
 				world.paint(b);
-				world.game.map.getGuardAreasGradient(0, 0);
-				timeIt("rebuild without warriors", w, 0, [&] { world.game.map.updateGuardAreasGradient(0, 0); });
+				timeGuardReference(world,"reference guard kernel without warriors",0);
 			}
 			World world(options, shift);
 			world.paint(a);
 			world.paint(b);
 			world.spawnWarriors(w / 4, w / 4, options.warriors);
-			world.game.map.getGuardAreasGradient(0, 0);
 			std::vector<Uint16> crowd(w * w);
 			timeIt("crowding pass", w, options.warriors, [&] { world.game.map.computeWarriorCrowding(0, crowd.data()); });
-			timeIt("guard gradient rebuild", w, options.warriors, [&] { world.game.map.updateGuardAreasGradient(0, 0); });
+			timeGuardReference(world,"reference guard kernel",options.warriors);
 		}
 	}
 }

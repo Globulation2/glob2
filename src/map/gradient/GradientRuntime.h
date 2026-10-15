@@ -4,6 +4,7 @@
 // Private Map-owned execution state. Keeping this behind a pointer in Map.h
 // prevents queue, thread and scratch-storage details from entering Map's API.
 #include "GradientPipeline.h"
+#include "AirGradientRuntime.h"
 #include "BuildingGradientJob.h"
 #include "ResourceGrowth.h"
 #include "BuildingGradientDepthPolicy.h"
@@ -31,9 +32,16 @@ struct GradientRuntime
 		gradient_preparation::CrowdingScratch crowding;
 	};
     TerrainSafetyCache safety;
+	// A positive-speed action completes within 256 simulation ticks. Keep a
+    // new result for that first read opportunity, then permit deterministic
+    // reclamation when the original request has been abandoned.
+    static constexpr Uint32 MaterialReadHoldTicks = 256;
 	struct MaterialField
 	{
 		std::unique_ptr<Uint16[]> cells;
+        Uint16* published = nullptr;
+        bool awaitingFirstRead = false;
+        Uint32 publishedStep = 0;
 		Uint64 sourceRevision=0, recency=0;
 		Uint32 topology=0, builtStep=0, identity=0;
 		Sint32 consumer=-1, type=-1, x=0, y=0;
@@ -47,12 +55,14 @@ struct GradientRuntime
 	Uint64 materialCacheClock=0, materialCacheBudget=64ull*1024*1024;
 	std::vector<Workspace> workspaces{1};
 	GradientPipeline pipeline;
+    AirGradientRuntime air;
+    struct FieldRequest { Uint16** slot; gradient_preparation::Request request; };
+    std::deque<FieldRequest> fieldRequests;
 	// Scheduled building fields share the executor with the periodic pipeline.
 	// Drain it before teams and the gradient buffer pool are destroyed.
 	BuildingGradientJobPipeline buildings;
 	// A refresh asked for during team stepping, admitted FIFO after the tick.
-	// stale requests were superseded while queued; they stay in place so queue
-	// length (and with it the overflow fallback) survives save and load.
+	// Superseded requests are pruned without reordering valid requests.
 	struct BuildingRequest
 	{
 		int team = 0;
@@ -61,13 +71,11 @@ struct GradientRuntime
 		int slot = 0;
 		bool stale = false;
 	};
-	static constexpr std::size_t BuildingRequestLimit = 64;
+	static constexpr std::size_t BuildingRequestLimit = Team::MAX_COUNT * Building::MAX_COUNT * BUILDING_GRADIENT_COUNT;
 	std::deque<BuildingRequest> buildingRequests;
 	// Reserved this tick, prepared together at the observation boundary.
 	std::vector<BuildingGradientJobPipeline::Job*> stagedBuildings;
-	// Owner-side building walking field builds (cold fields, own-building
-	// changes and queue overflow; every build on a map without a game), split
-	// by reason.
+	// Explicit synchronous/editor field builds, split by diagnostic reason.
 	Uint64 buildingSynchronous = 0;
 	std::array<Uint64, std::size_t(Map::BuildingSyncReason::Count)> synchronousByReason{};
 	Map::BuildingSyncReason syncReason = Map::BuildingSyncReason::Other;
@@ -88,8 +96,6 @@ struct GradientRuntime
 	bool supplierLocationsDirty = true;
 	std::unordered_map<std::size_t, std::vector<std::uint16_t>> overlaySupplierLocations;
 	ResourceSeedCache resourceSeeds;
-	// Shared inert field for materials with no natural or supplier source.
-	std::vector<Uint16> absentMaterialField;
     std::shared_ptr<gradient_kernel::GradientDeviceService> deviceService;
     std::shared_ptr<gradient_kernel::BackendSession> backendSession;
     void shareBackendSession()

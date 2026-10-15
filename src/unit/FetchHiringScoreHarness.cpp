@@ -4,6 +4,7 @@
 // whether a unit may be hired for a resource measures the walk to that resource,
 // not the whole fetch-and-carry trip, and the score estimates that whole trip.
 #include "EngineFixtures.h"
+#include "GradientFixture.h"
 #include "GlobalContainer.h"
 #include "FileManager.h"
 #include <SDL3/SDL.h>
@@ -21,6 +22,7 @@
 #include "IntBuildingType.h"
 #include "FixedPoint.h"
 #include <algorithm>
+#include <array>
 #include <cstdio>
 #include <cstdlib>
 #include <climits>
@@ -29,6 +31,8 @@
 class FetchHiringScoreHarness
 {
 public:
+    static bool considerExplorer(Building* building, Unit* unit, int* distance)
+        { return building->considerUnitForExplorerFlag(unit,distance); }
     static std::vector<Unit*> candidates(Building* building)
     {
         building->resetFailureTallies();
@@ -103,6 +107,8 @@ static void aUnitIsJudgedOnTheWalkToTheResource()
 	unit->attachedBuilding = NULL;
 	const int swimClass = unit->swimClass();
 
+	glob2test::awaitGradient(game, [&] { return game.map.buildingGradient(site,swimClass); });
+	glob2test::awaitGradient(game, [&] { return game.map.getMaterialGradientSlot(0,WOOD,swimClass); });
 	int distBuilding = 0, distResource = 0;
 	require(game.map.buildingAvailable(site, swimClass, unit->posX, unit->posY, &distBuilding),
 		"the site is reachable");
@@ -171,6 +177,8 @@ static void theScoreEstimatesTheWholeTrip()
 	unit->hungry = unit->trigHungry + 1000 * unit->race->hungriness;
 
 	const int swimClass = unit->swimClass();
+	glob2test::awaitGradient(game, [&] { return game.map.buildingGradient(site,swimClass); });
+	glob2test::awaitGradient(game, [&] { return game.map.getMaterialGradientSlot(0,WOOD,swimClass); });
 	int distBuilding = 0, distResource = 0;
 	require(game.map.buildingAvailable(site, swimClass, unit->posX, unit->posY, &distBuilding),
 		"the site is reachable");
@@ -193,6 +201,46 @@ static void theScoreEstimatesTheWholeTrip()
 
 TEST_SUITE("FetchHiringScore")
 {
+    TEST_CASE("flying flag recruitment defers cold guidance without recording an access failure")
+    {
+        glob2test::HeadlessGlobals globals;
+        glob2test::HeadlessGame world({.clearImmobile=true,.header=true,.seed=4921});
+        auto& game=world.game;
+        auto& map=game.map;
+        map.setGame(nullptr);
+        map.importTerrainDefinitions(R"({"schemaVersion":1,"terrains":[{"key":"fixture:air-recruitment-barrier","name":"Barrier","base":"grass","properties":{"flyable":false},"appearance":"grass"}]})");
+        map.setGame(&game);
+        map.paintCell(24,24,*map.terrainRegistry().find("fixture:air-recruitment-barrier"));
+        map.configureCompute(2);
+        map.configureGradientPipeline(1,3);
+        auto* unit=world.addUnit(EXPLORER,12,12);
+        auto* flag=world.addBuilding("explorationflag",8,8);
+        REQUIRE(unit); REQUIRE(flag);
+        flag->explorersRequireBombing=false;
+        int distance=-1;
+        const auto random=unit->entityRandom;
+        std::array<Uint32,Building::UnitCantWorkReasonSize> failures{};
+        std::copy(std::begin(flag->unitsFailingRequirements),std::end(flag->unitsFailingRequirements),failures.begin());
+        for(unsigned repeat=0;repeat<16;++repeat) {
+            CHECK_FALSE(FetchHiringScoreHarness::considerExplorer(flag,unit,&distance));
+            CHECK(std::equal(failures.begin(),failures.end(),std::begin(flag->unitsFailingRequirements)));
+            CHECK(unit->entityRandom==random);
+        }
+        bool accepted=false;
+        for(unsigned boundary=0;boundary<512 && !accepted;++boundary) {
+            map.advanceGradientPipeline();
+            ++game.stepCounter;
+            map.stagePeriodicGradientPreparation();
+            map.preparePendingGradient();
+            accepted=FetchHiringScoreHarness::considerExplorer(flag,unit,&distance);
+        }
+        REQUIRE(accepted);
+        CHECK(distance>0);
+        CHECK(unit->attachedBuilding==nullptr);
+        CHECK(flag->unitsWorking.empty());
+        map.finishGradientPipeline();
+    }
+
     TEST_CASE("recruitment retains exact hunger boundaries and widened cached extremes")
     {
         glob2test::HeadlessGlobals globals;
@@ -205,6 +253,8 @@ TEST_SUITE("FetchHiringScore")
         auto* unit=world.addUnit(WORKER,6,8);
         REQUIRE(unit);
         unit->activity=Unit::ACT_RANDOM; unit->medical=Unit::MED_FREE;
+        glob2test::awaitGradient(world.game, [&] { return world.game.map.buildingGradient(inn,unit->swimClass()); });
+        glob2test::awaitGradient(world.game, [&] { return world.game.map.getMaterialGradientSlot(0,WHEAT,unit->swimClass()); });
         int buildingDistance=0,resourceDistance=0;
         REQUIRE(world.game.map.buildingAvailable(inn,unit->swimClass(),unit->posX,unit->posY,&buildingDistance));
         REQUIRE(world.game.map.materialAvailableSlot(0,WHEAT,unit->swimClass(),unit->posX,unit->posY,&resourceDistance));

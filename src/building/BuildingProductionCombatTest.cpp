@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "Material.h"
 #include "EngineFixtures.h"
+#include "GradientFixture.h"
 #include "BuildingType.h"
 #include "Bullet.h"
 #include "Sector.h"
@@ -15,6 +16,14 @@
 
 namespace
 {
+const Uint16* materialFixture(Game& game, int resource, const Building* consumer=nullptr, bool replacement=false)
+{
+    const auto* old = replacement ? game.map.getMaterialGradientSlot(0,resource,0,false,consumer) : nullptr;
+    return glob2test::awaitGradient(game,[&] {
+        const auto* field=game.map.getMaterialGradientSlot(0,resource,0,false,consumer);
+        return replacement && field==old ? nullptr : field;
+    });
+}
 void productionCatalog(Game& game, bool instant = false)
 {
     auto json = nlohmann::json::parse(game.buildingsTypes.snapshotJson());
@@ -211,9 +220,9 @@ TEST_CASE("hybrid attraction and service routes remain independent across save c
     CHECK(explorer->activity==Unit::ACT_FLAG);
     CHECK(warrior->activity==Unit::ACT_FLAG);
     auto& map=world.game.map;
-    const Uint16* services=map.buildingGradient(b,0,BuildingRoute::Footprint);
-    const Uint16* clearing=map.buildingGradient(b,0,BuildingRoute::Clearing);
-    const Uint16* combat=map.buildingGradient(b,0,BuildingRoute::Combat);
+    const Uint16* services=glob2test::awaitGradient(world.game,[&] { return map.buildingGradient(b,0,BuildingRoute::Footprint); });
+    const Uint16* clearing=glob2test::awaitGradient(world.game,[&] { return map.buildingGradient(b,0,BuildingRoute::Clearing); });
+    const Uint16* combat=glob2test::awaitGradient(world.game,[&] { return map.buildingGradient(b,0,BuildingRoute::Combat); });
     REQUIRE(services); REQUIRE(clearing); REQUIRE(combat);
     CHECK(services!=clearing); CHECK(clearing!=combat);
     CHECK(services[map.coordToIndex(12,8)]==GRADIENT_FORBIDDEN);
@@ -249,7 +258,7 @@ TEST_CASE("stock suppliers route independently of fruit exchange with configured
     b->setMaterial(WHEAT, 5);
     CHECK_FALSE(b->type->canExchange);
     REQUIRE(world.team->stockSuppliers.size()==1);
-    const Uint16* field=world.game.map.getMaterialGradientSlot(0,WHEAT,0,true);
+    const Uint16* field=glob2test::awaitGradient(world.game,[&] { return world.game.map.getMaterialGradientSlot(0,WHEAT,0,true); });
     CHECK(field[world.game.map.coordToIndex(8,8)]==GRADIENT_AT_GOAL-11*GRADIENT_STEP);
 }
 
@@ -270,7 +279,7 @@ TEST_CASE("overlay services and suppliers share a footprint without occupying gr
     CHECK(world.game.map.getBuilding(8,8)==NOGBID);
     CHECK(world.game.map.doesPosTouchBuilding(7,8,b->gid).has_value());
     CHECK_FALSE(world.game.map.doesPosTouchBuilding(3,3,b->gid).has_value());
-    const Uint16* field=world.game.map.getMaterialGradientSlot(0,WHEAT,0,true);
+    const Uint16* field=glob2test::awaitGradient(world.game,[&] { return world.game.map.getMaterialGradientSlot(0,WHEAT,0,true); });
     CHECK(field[world.game.map.coordToIndex(8,8)]==GRADIENT_AT_GOAL-7*GRADIENT_STEP);
     Unit* worker=world.addUnit(WORKER,7,8);
     CHECK(world.game.map.touchedStockedMarketSlot(worker,WHEAT)==b);
@@ -315,10 +324,10 @@ TEST_CASE("physical combat attraction invalidates on enemy changes and mixed rel
     world.game.buildingsTypes.loadSnapshotJson(json.dump()); world.game.configureBuildingCatalog();
     Building* b=world.addBuilding("inn",8,8);
     world.team->addToStaticAbilitiesLists(b);
-    REQUIRE(world.game.map.buildingGradient(b,0,BuildingRoute::Combat));
+    glob2test::awaitGradient(world.game,[&] { return world.game.map.buildingGradient(b,0,BuildingRoute::Combat); });
     world.team->dirtyWarFlagGradient();
     CHECK(b->globalGradient[b->routeSlot(0,BuildingRoute::Combat)]==nullptr);
-    REQUIRE(world.game.map.buildingGradient(b,0,BuildingRoute::Footprint));
+    glob2test::awaitGradient(world.game,[&] { return world.game.map.buildingGradient(b,0,BuildingRoute::Footprint); });
     auto move=std::make_shared<OrderMoveFlag>(b->gid,16,16,false);
     move->sender=0; world.game.executeOrder(move,0);
     CHECK(b->posX==16);
@@ -672,7 +681,9 @@ TEST_CASE("resource permissions separate storage replenishment and direct withdr
     CHECK(receiver->deliverMaterialPacket(WHEAT,{}).acceptedStock==0);
     CHECK(receiver->materialDeliveryNeed(WOOD)==20);
     int distance=0;
+    materialFixture(world.game,WOOD,receiver);
     CHECK(world.game.map.materialAvailableSlot(0,WOOD,0,19,20,&distance,false,receiver));
+    materialFixture(world.game,WHEAT,receiver);
     CHECK_FALSE(world.game.map.materialAvailableSlot(0,WHEAT,0,19,20,&distance,false,receiver));
     Unit* worker=world.addUnit(WORKER,7,8);
     receiver->maxUnitWorking=receiver->desiredMaxUnitWorking=1;
@@ -702,6 +713,7 @@ TEST_CASE("bounded supply cache excludes the recipient and its shared inventory 
     Building* shared=world.addBuilding("hospital",20,20);
     receiver->setMaterial(WOOD, 10); receiver->setMaterial(WHEAT, 10);
     int distance=0;
+    materialFixture(world.game,WOOD,receiver);
     CHECK_FALSE(world.game.map.materialAvailableSlot(0,WOOD,0,7,8,&distance,false,receiver));
     CHECK(receiver->sharesMaterialPool(*shared));
     Building* local=world.addBuilding("swarm",30,30);
@@ -709,7 +721,9 @@ TEST_CASE("bounded supply cache excludes the recipient and its shared inventory 
     world.game.map.dirtyMarketGradientsSlot(0,WOOD); world.game.map.dirtyMarketGradientsSlot(0,WHEAT);
     const Uint64 oneField=Uint64(world.game.map.getW())*world.game.map.getH()*sizeof(Uint16);
     world.game.map.setMaterialRoutingCacheBudget(oneField);
+    materialFixture(world.game,WOOD,receiver,true);
     CHECK(world.game.map.materialAvailableSlot(0,WOOD,0,7,8,&distance,false,receiver));
+    materialFixture(world.game,WHEAT,receiver);
     CHECK(world.game.map.materialAvailableSlot(0,WHEAT,0,7,8,&distance,false,receiver));
     CHECK(world.game.map.materialRoutingCacheBytes()==oneField);
     glob2test::HeadlessGame copy({.loadDefaultRace=true});
@@ -718,8 +732,8 @@ TEST_CASE("bounded supply cache excludes the recipient and its shared inventory 
     REQUIRE(copied);
     CHECK(copy.game.map.materialRoutingCacheBytes()==oneField);
     for (int resource : {WOOD,WHEAT,WOOD}) {
-        const Uint16* expected=world.game.map.getMaterialGradientSlot(0,resource,0,false,receiver);
-        const Uint16* actual=copy.game.map.getMaterialGradientSlot(0,resource,0,false,copied);
+        const Uint16* expected=materialFixture(world.game,resource,receiver);
+        const Uint16* actual=materialFixture(copy.game,resource,copied);
         CHECK(std::equal(expected,expected+world.game.map.getW()*world.game.map.getH(),actual));
         CHECK(world.game.map.checkSum(true)==copy.game.map.checkSum(true));
         CHECK(copy.game.map.materialRoutingCacheBytes()==oneField);
@@ -746,7 +760,7 @@ TEST_CASE("combined stock routes include both provider modes and track direct ov
     Building* sink=world.addBuilding("swarm",30,30); a->setMaterial(WOOD, 5); b->setMaterial(WOOD, 5);
     auto& map=world.game.map;
     CHECK(map.materialSupplyModesSlot(sink,WOOD)==3);
-    const Uint16* field=map.getMaterialGradientSlot(0,WOOD,0,false,sink);
+    const Uint16* field=materialFixture(world.game,WOOD,sink);
     const Uint16 aGoal=GRADIENT_AT_GOAL-a->type->semantics.market.pickupPenalty*GRADIENT_STEP;
     const Uint16 bGoal=GRADIENT_AT_GOAL-b->type->semantics.market.pickupPenalty*GRADIENT_STEP;
     CHECK(field[map.coordToIndex(8,8)]==aGoal); CHECK(field[map.coordToIndex(20,20)]==bGoal);
@@ -755,7 +769,7 @@ TEST_CASE("combined stock routes include both provider modes and track direct ov
     auto move=std::make_shared<OrderMoveFlag>(b->gid,24,24,false); move->sender=0;
     world.game.executeOrder(move,0);
     CHECK(b->posX==24); CHECK(map.touchedStockedMarketSlot(worker,WOOD)==nullptr);
-    field=map.getMaterialGradientSlot(0,WOOD,0,false,sink);
+    field=materialFixture(world.game,WOOD,sink,true);
     CHECK(field[map.coordToIndex(24,24)]==bGoal); CHECK(field[map.coordToIndex(20,20)]<bGoal);
     worker->attachedBuilding=nullptr;
 }
@@ -777,9 +791,11 @@ TEST_CASE("shared ammunition consumption invalidates stock advertised by another
     Building* source=world.addBuilding("inn",8,8); Building* gun=world.addBuilding("hospital",20,20);
     Building* receiver=world.addBuilding("swarm",30,30); source->setMaterial(STONE, 1);
     int distance=0;
+    materialFixture(world.game,STONE,receiver);
     REQUIRE(world.game.map.materialAvailableSlot(0,STONE,0,29,30,&distance,false,receiver));
     gun->turretStep(0);
     CHECK(source->material(STONE)==0);
+    materialFixture(world.game,STONE,receiver,true);
     CHECK_FALSE(world.game.map.materialAvailableSlot(0,STONE,0,29,30,&distance,false,receiver));
 }
 
@@ -825,15 +841,15 @@ TEST_CASE("overlay transition and cancellation discard cached footprint routes")
     json["variants"][4]["properties"]["decLeft"]=2;
     world.game.buildingsTypes.loadSnapshotJson(json.dump()); world.game.configureBuildingCatalog();
     Building* b=world.addBuilding("inn",8,8); auto& map=world.game.map;
-    REQUIRE(map.buildingGradient(b,0,BuildingRoute::Footprint));
+    glob2test::awaitGradient(world.game,[&] { return map.buildingGradient(b,0,BuildingRoute::Footprint); });
     b->launchConstruction(1,1); REQUIRE(b->tryToBuildingSiteRoom());
     CHECK(b->globalGradient[b->routeSlot(0,BuildingRoute::Footprint)]==nullptr);
     CHECK(b->runtime->width==4);
-    const Uint16* site=map.buildingGradient(b,0,BuildingRoute::Footprint); REQUIRE(site);
+    const Uint16* site=glob2test::awaitGradient(world.game,[&] { return map.buildingGradient(b,0,BuildingRoute::Footprint); }); REQUIRE(site);
     CHECK(site[map.coordToIndex(b->posX+3,b->posY)]==GRADIENT_AT_GOAL);
     b->cancelConstruction(1);
     CHECK(b->globalGradient[b->routeSlot(0,BuildingRoute::Footprint)]==nullptr);
-    const Uint16* restored=map.buildingGradient(b,0,BuildingRoute::Footprint); REQUIRE(restored);
+    const Uint16* restored=glob2test::awaitGradient(world.game,[&] { return map.buildingGradient(b,0,BuildingRoute::Footprint); }); REQUIRE(restored);
     CHECK(b->runtime->width==2);
     CHECK(b->posX==8); CHECK(restored[map.coordToIndex(8,8)]==GRADIENT_AT_GOAL);
     CHECK(restored[map.coordToIndex(14,8)]<GRADIENT_AT_GOAL);
@@ -903,11 +919,13 @@ TEST_CASE("sole supplier demolition and cancellation preserve routing across sav
         supplier->setMaterial(WOOD, 10);
         const unsigned mode=direct ? 2 : 1;
         CHECK(world.game.map.materialSupplyModesSlot(receiver,WOOD)==mode);
+        materialFixture(world.game,WOOD,receiver);
         REQUIRE(world.game.map.materialAvailableSlot(0,WOOD,0,19,20,false,receiver));
         supplier->launchDelete();
         REQUIRE(supplier->buildingState==Building::WAITING_FOR_DESTRUCTION);
         CHECK(world.team->stockSuppliers.empty()); CHECK(world.team->directStockSuppliers.empty());
         CHECK(world.game.map.materialSupplyModesSlot(receiver,WOOD)==0);
+        materialFixture(world.game,WOOD,receiver);
         CHECK_FALSE(world.game.map.materialAvailableSlot(0,WOOD,0,19,20,false,receiver));
         glob2test::HeadlessGame restored({.loadDefaultRace=true});
         REQUIRE(loadProductionGame(restored.game,saveProductionGame(world.game,false),false));
@@ -921,6 +939,8 @@ TEST_CASE("sole supplier demolition and cancellation preserve routing across sav
         supplier->cancelDelete(); copiedSupplier->cancelDelete();
         CHECK(world.game.map.materialSupplyModesSlot(receiver,WOOD)==mode);
         CHECK(restored.game.map.materialSupplyModesSlot(copiedReceiver,WOOD)==mode);
+        materialFixture(world.game,WOOD,receiver,true);
+        materialFixture(restored.game,WOOD,copiedReceiver,true);
         CHECK(world.game.map.materialAvailableSlot(0,WOOD,0,19,20,false,receiver));
         CHECK(restored.game.map.materialAvailableSlot(0,WOOD,0,19,20,false,copiedReceiver));
         CHECK(restored.game.map.checkSum(true)==world.game.map.checkSum(true));

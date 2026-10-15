@@ -127,6 +127,8 @@ class Building : public BuildingUtils, public BuildingStateRecord
 	// Why a field was last dropped; diagnostics only (synchronous rebuild reasons).
 	enum class GradientDrop : Uint8 { New, Idle, Own, Team, Area };
 	void resetPathfindGradients(GradientDrop cause = GradientDrop::Own);
+	//! Owner-only bounded enrollment after live creation or goal changes.
+	void prewarmPathfindGradients();
 	bool keepsStaleGradients(GradientDrop cause) const;
 	// Request a rebuild on use once the refresh throttle permits (map changed nearby).
 	void dirtyGradients();

@@ -1,5 +1,6 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "EngineFixtures.h"
+#include "GradientFixture.h"
 #include "Engine.h"
 #include "sim/presentation/SceneInputs.h"
 #include "field/GradientConstants.h"
@@ -80,7 +81,7 @@ TEST_CASE("resource catalog import drains deferred material preparation before r
     // Finish respects publication deadlines; advancing safely publishes the
     // prepared goal after the immutable definition snapshot was replaced.
     for (int tick = 0; tick < 3; ++tick) map.advanceGradientPipeline();
-    CHECK(map.getMaterialGradient(0, MaterialId::Gold, 0)[index] == GRADIENT_AT_GOAL);
+    CHECK(glob2test::awaitGradient(source.game,[&] { return map.getMaterialGradient(0, MaterialId::Gold, 0); })[index] == GRADIENT_AT_GOAL);
 }
 TEST_CASE("pending gradient work survives a save and continues at the same deadlines") {
     glob2test::HeadlessGlobals globals;

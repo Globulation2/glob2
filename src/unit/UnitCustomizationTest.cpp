@@ -1,5 +1,6 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "EngineFixtures.h"
+#include "GradientFixture.h"
 #include "UnitCatalog.h"
 #include "Version.h"
 #include "gradient/GradientRuntime.h"
@@ -1150,7 +1151,10 @@ TEST_SUITE("UnitCustomization")
             unit->receiveCarriedMaterial(WOOD,{}); unit->destinationPurpose=WOOD;
             unit->subscriptionSuccess(inn,false,false,UnitJobPurpose::Transport);
             inn->unitsWorking.push_back(unit);
-            if(warm) REQUIRE(world.game.map.materialAvailableSlot(world.team->teamNumber,WHEAT,unit->swimClass(),6,8,false,inn));
+            if(warm) {
+                glob2test::awaitGradient(world.game,[&] { return world.game.map.getMaterialGradientSlot(world.team->teamNumber,WHEAT,unit->swimClass(),false,inn); });
+                REQUIRE(world.game.map.materialAvailableSlot(world.team->teamNumber,WHEAT,unit->swimClass(),6,8,false,inn));
+            }
             world.game.map.markImmobileUnit(6,8,world.team->teamNumber);
             REQUIRE(world.game.map.isImmobileUnit(6,8));
             const auto entityRandom=unit->entityRandom;
@@ -2266,6 +2270,8 @@ TEST_SUITE("UnitCustomization")
             unit->destinationPurpose=ALGA;
             unit->subscriptionSuccess(inn,false,false,UnitJobPurpose::Transport);
             inn->unitsWorking.push_back(unit); inn->updateCallLists();
+            glob2test::awaitGradient(game,[&] { return map.getMaterialGradient(0,MaterialId::Algae,WATER_ONLY_CLASS); });
+            glob2test::awaitBuildingGradient(game,inn,WATER_ONLY_CLASS);
             REQUIRE(map.materialAvailable(0,MaterialId::Algae,WATER_ONLY_CLASS,5,y));
             REQUIRE(map.buildingGradient(inn,WATER_ONLY_CLASS));
             const int slot=inn->routeSlot(WATER_ONLY_CLASS,BuildingRoute::Footprint);
@@ -2423,6 +2429,8 @@ TEST_SUITE("UnitCustomization")
                 unit->destinationPurpose=material;
                 unit->subscriptionSuccess(inn,false,false,UnitJobPurpose::Transport);
                 inn->unitsWorking.push_back(unit); inn->updateCallLists();
+                glob2test::awaitGradient(world.game,[&] { return world.game.map.getMaterialGradientSlot(world.team->teamNumber,material,unit->swimClass()); });
+                glob2test::awaitBuildingGradient(world.game,inn,unit->swimClass());
                 REQUIRE(world.game.map.materialAvailable(world.team->teamNumber,static_cast<MaterialId>(material),unit->swimClass(),unit->posX,unit->posY));
                 REQUIRE(world.game.map.buildingGradient(inn,unit->swimClass()));
                 if(waterOnly) REQUIRE(unit->swimClass()==WATER_ONLY_CLASS);
