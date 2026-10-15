@@ -256,7 +256,10 @@ fixture. It generates an eight-Nicowar, 128×128 Playground game at seed 713,
 saves at tick 24,000, and compares the continuation to tick 25,153 through full
 per-tick checksums and replay bytes. It also checks another 128 ticks across a
 save/load split. `--save FILE --start-tick N --ticks M` accepts an existing save.
-This mode retains saves, traces, commands and build provenance. Only explicit
+The starting checkpoint is rewritten in the current format, using the baseline
+when supplied, so header versions match across save/load comparisons. Both
+original and rewritten save hashes are retained with traces, commands and build
+provenance. Only explicit
 `--measure` requests benchmark counters; ordinary CLI result files still contain
 their standard diagnostic duration fields, which correctness mode does not use.
 

@@ -69,16 +69,21 @@ class MaterialDemandBenchmarkTests(unittest.TestCase):
 
 
     def test_historical_headers_are_canonicalized_in_both_split_branches(self):
-        args = SimpleNamespace(game_binary=Path('game'), save=Path('old.game'),
-                               measure=False, ticks=25153, baseline_game=None)
-        with tempfile.TemporaryDirectory() as directory:
-            with patch.object(bench, 'game_run', return_value={'ticks': 25153, 'finalChecksum': 7}) as run, \
-                 patch.object(bench, 'compare_traces'), patch.object(bench, 'sha', return_value='hash'):
-                proof = bench.simulation_fixture(args, Path(directory))
-        self.assertTrue(proof['save_load_equal'])
-        self.assertEqual(run.call_count, 3)
-        for call in run.call_args_list:
-            self.assertIn('--write-replay', call.args[1])
+        for baseline in (None, Path('baseline')):
+            with self.subTest(baseline=baseline), tempfile.TemporaryDirectory() as directory:
+                args = SimpleNamespace(game_binary=Path('game'), save=Path('old.game'),
+                                       measure=False, start_tick=24000, ticks=25153, baseline_game=baseline)
+                with patch.object(bench, 'game_run', return_value={'ticks': 25153, 'finalChecksum': 7}) as run, \
+                     patch.object(bench, 'compare_traces'), patch.object(bench, 'sha', return_value='hash'):
+                    proof = bench.simulation_fixture(args, Path(directory))
+                self.assertTrue(proof['save_load_equal'])
+                self.assertEqual(run.call_count, 5 if baseline else 4)
+                self.assertEqual(run.call_args_list[0].args[0], (baseline or args.game_binary).resolve())
+                self.assertIn('initial', run.call_args_list[0].args[1])
+                normalized = str(Path(directory) / 'normalized/initial.game.gz')
+                for call in run.call_args_list[1:]:
+                    self.assertIn('--write-replay', call.args[1])
+                self.assertIn(normalized, run.call_args_list[1].args[1])
 
 
 if __name__ == '__main__':

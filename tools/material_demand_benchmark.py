@@ -130,12 +130,21 @@ def simulation_fixture(args, output):
         seed_args += ['--player', 'nicowar'] * 8
         game_run(binary, seed_args, output / 'initial')
         save = output / 'initial/final.game.gz'
+    source_save_hash = sha(save)
+    # MapHeader::save writes today's format without changing the live version.
+    # Start every branch from the same current-format checkpoint, captured before
+    # the normalizer's first tick. Prefer the unoptimized baseline as its author.
+    normalizer = args.baseline_game.resolve() if args.baseline_game else binary
+    game_run(normalizer, ['--load-game', str(save), '--ticks', str(args.start_tick + 1),
+                          '--save', 'initial'], output / 'normalized')
+    save = output / 'normalized/initial.game.gz'
     common = ['--load-game', str(save), '--ticks', str(args.ticks), '--save', 'final',
               '--telemetry', 'checksums', '--write-replay']
     if args.measure:
         common += ['--benchmark-warmup', '128']
     current = game_run(binary, common, output / 'candidate')
-    proof = {'game_launcher_sha256': sha(binary), 'save_sha256': sha(save), 'ticks': current['ticks'],
+    proof = {'game_launcher_sha256': sha(binary), 'source_save_sha256': source_save_hash,
+             'save_sha256': sha(save), 'ticks': current['ticks'],
              'final_checksum': current['finalChecksum'], 'baseline_equal': None}
     if args.baseline_game:
         base = game_run(args.baseline_game.resolve(), common, output / 'baseline')
@@ -147,8 +156,6 @@ def simulation_fixture(args, output):
             raise ValueError('Baseline replay orders differ')
         proof['baseline_equal'] = True
         proof['baseline_launcher_sha256'] = sha(args.baseline_game.resolve())
-    # Recording canonicalizes historical save headers before checksumming, just
-    # as it does in the candidate/baseline runs above. Keep both split branches equal.
     full = game_run(binary, ['--load-game', str(save), '--ticks', str(args.ticks + 128),
                             '--telemetry', 'checksums', '--write-replay'], output / 'continuous')
     split = game_run(binary, ['--load-game', str(output / 'candidate/final.game.gz'),
