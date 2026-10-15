@@ -609,9 +609,8 @@ bool Cabino::buildingStillExists(const AIEngine::AIWorldView* game, const AIEngi
 		const AIEngine::TeamView* t = teamAt(*game,i);
 		if(t)
 		{
-			for(int i=0; i<1024; i++)
+			for (const AIEngine::BuildingView* b : game->buildingsForTeam(t->number))
 			{
-				const AIEngine::BuildingView* b = game->buildingSlots(t->number)[i];
 				if (b)
 				{
 					if(b == building)
@@ -1045,11 +1044,10 @@ unsigned int TeamStatsGenerator::getUnits(unsigned int type, Unit::Medical medic
 	//would be more appropriette.
 	level-=1;
 	unsigned int free_workers=0;
-	const auto myUnits=world->unitSlots(team->number);
+	const auto myUnits=world->unitsForTeam(team->number);
 
-	for (int i=0; i<1024; i++)
+	for (const AIEngine::UnitView* u : myUnits)
 	{
-		const AIEngine::UnitView* u = myUnits[i];
 		if (u)
 		{
 			// This overload supplies recruitable free units; stationary combat
@@ -1074,11 +1072,10 @@ unsigned int TeamStatsGenerator::getUnits(unsigned int type, unsigned int abilit
 {
 	level-=1;
 	unsigned int free_workers=0;
-	const auto myUnits=world->unitSlots(team->number);
+	const auto myUnits=world->unitsForTeam(team->number);
 
-	for (int i=0; i<1024; i++)
+	for (const AIEngine::UnitView* u : myUnits)
 	{
-		const AIEngine::UnitView* u = myUnits[i];
 		if (u)
 		{
 			if (AIEngine::ObservationQueries::matchesStrategyUnitRole(*world,*u,type) && 	((!isMinimum && (ability==BUILD ? u->constructionLevel : u->level[ability])==static_cast<int>(level)) ||
@@ -1434,9 +1431,8 @@ bool SimpleBuildingDefense::findDefense()
 		}
 	}
 
-	for(unsigned int i=0; i<1024; ++i)
+	for (const AIEngine::BuildingView* b : ai.game->buildingsForTeam(ai.team->number))
 	{
-		const AIEngine::BuildingView* b = ai.game->buildingSlots(ai.team->number)[i];
 		if(b)
 		{
 			if(AIEngine::ObservationQueries::buildingType(*ai.game,*b).semantics.occupiesGround)
@@ -1501,9 +1497,8 @@ bool SimpleBuildingDefense::updateFlags()
 bool SimpleBuildingDefense::findCreatedDefenseFlags()
 {
 	ai.telemetry.count(AITrace::AI8::SimpleBuildingDefense_findCreatedDefenseFlags_calls);
-	for(unsigned int i=0; i<1024; ++i)
+	for (const AIEngine::BuildingView* b : ai.game->buildingsForTeam(ai.team->number))
 	{
-		const AIEngine::BuildingView* b = ai.game->buildingSlots(ai.team->number)[i];
 		if(b)
 		{
 			if(provides(*ai.game,*b,AttractWarriors))
@@ -1636,9 +1631,8 @@ bool GeneralsDefense::findEnemyFlags()
 		{
 			if(team->mask & ai.team->enemies)
 			{
-				for(unsigned int n=0; n<1024; ++n)
+				for (const AIEngine::BuildingView* b : ai.game->buildingsForTeam(team->number))
 				{
-					const AIEngine::BuildingView* b = ai.game->buildingSlots(team->number)[n];
 					if(b)
 					{
 						if(provides(*ai.game,*b,AttractWarriors))
@@ -1701,9 +1695,8 @@ bool GeneralsDefense::updateDefenseFlags()
 
 		{
 			const AIEngine::BuildingView* eb = getBuildingFromGid(ai.game, i->enemy_flag);
-			for(unsigned int n=0; n<1024; ++n)
+			for (const AIEngine::BuildingView* b : ai.game->buildingsForTeam(ai.team->number))
 			{
-				const AIEngine::BuildingView* b = ai.game->buildingSlots(ai.team->number)[n];
 				if(b)
 				{
 					if(provides(*ai.game,*b,AttractWarriors) && b->posX==i->x && b->posY==i->y)
@@ -1916,9 +1909,8 @@ bool PrioritizedBuildingAttack::attack()
 	//The following gets the highest barracks level the player has
 	unsigned int max_barracks_level=0;
 	unsigned int found_barracks=0;
-	for(int i=0; i<1024; ++i)
+	for (const AIEngine::BuildingView* b : ai.game->buildingsForTeam(ai.team->number))
 	{
-		const AIEngine::BuildingView* b = ai.game->buildingSlots(ai.team->number)[i];
 		if(b)
 		{
 			if(provides(*ai.game,*b,TrainAttack))
@@ -1998,9 +1990,8 @@ bool PrioritizedBuildingAttack::attack()
 	//The following goes through each of the buildings in the enemies foothold, and adds them to the appropriette list based on their position in the
 	//ATTACK_PRIORITY variable.
 	std::vector<std::vector<const AIEngine::BuildingView*> > buildings(std::size(ATTACK_PRIORITY)+1);
-	for(int i=0; i<1024; ++i)
+	for (const AIEngine::BuildingView* b : ai.game->buildingsForTeam(enemy()->number))
 	{
-		const AIEngine::BuildingView* b = ai.game->buildingSlots(enemy()->number)[i];
 		if(b)
 		{
 			if(!b->isLocked(1))
@@ -2103,9 +2094,8 @@ bool PrioritizedBuildingAttack::updateAttackFlags()
 	//are missing, then it must be our flag. Merge it into the records, and
 	//change it to match up with our records in size, assigned units, and
 	//assigned level
-	for(int i=0; i<1024; ++i)
+	for (const AIEngine::BuildingView* b : ai.game->buildingsForTeam(ai.team->number))
 	{
-		const AIEngine::BuildingView* b = ai.game->buildingSlots(ai.team->number)[i];
 		if(b)
 		{
 			if(provides(*ai.game,*b,AttractWarriors))
@@ -2156,9 +2146,8 @@ bool PrioritizedBuildingAttack::updateAttackFlags()
 	//The following gets the highest barracks level the player has
 	unsigned int max_barracks_level=0;
 	unsigned int found_barracks=0;
-	for(int i=0; i<1024; ++i)
+	for (const AIEngine::BuildingView* b : ai.game->buildingsForTeam(ai.team->number))
 	{
-		const AIEngine::BuildingView* b = ai.game->buildingSlots(ai.team->number)[i];
 		if(b)
 		{
 			if(provides(*ai.game,*b,TrainAttack))
@@ -2585,7 +2574,7 @@ bool DistributedNewConstructionManager::constructBuildings()
 	for(unsigned i = 0; i<DemandCount; ++i)
 	{
 		counts[i]=0;
-  for(auto* building:ai.game->buildingSlots(ai.team->number))
+  for(auto* building:ai.game->buildingsForTeam(ai.team->number))
    if(building && !AIEngine::ObservationQueries::buildingType(*ai.game,*building).isBuildingSite && provides(*ai.game,*building,i)) ++counts[i];
 		under_construction_counts[i]=0;
 	}
@@ -2786,9 +2775,8 @@ bool DistributedNewConstructionManager::updateBuildings()
 	}
 
 	//Update buildings that have just been created.
-	for(int i=0; i<1024; ++i)
+	for (const AIEngine::BuildingView*b : ai.game->buildingsForTeam(ai.team->number))
 	{
-		const AIEngine::BuildingView*b = ai.game->buildingSlots(ai.team->number)[i];
 		if(b)
 		{
 			for(std::vector<newConstructionRecord>::iterator i = new_buildings.begin(); i != new_buildings.end(); ++i)
@@ -3315,7 +3303,7 @@ bool RandomUpgradeRepairModule::startNewConstruction(void)
    }
  struct Candidate { const AIEngine::BuildingView* building; bool repair; unsigned level; unsigned score; };
  std::vector<Candidate> candidates;
- for(auto* building:ai.game->buildingSlots(ai.team->number)) {
+ for(auto* building:ai.game->buildingsForTeam(ai.team->number)) {
   if(!building || building->constructionResultState!=Building::NO_CONSTRUCTION || building->buildingState!=Building::ALIVE) continue;
   if(std::any_of(pending_construction.begin(),pending_construction.end(),[&](const auto& pending){return pending.building==building->identity.gid;})) continue;
   const bool repair=AIEngine::ObservationQueries::buildingType(*ai.game,*building).semantics.repairable && building->hp<building->maxHp;
@@ -4105,9 +4093,8 @@ InnManager::innRecord::innRecord() : pos(0), records() {}
 
 bool InnManager::recordInns()
 {
-	for(int i=0; i<1024; ++i)
+	for (const AIEngine::BuildingView* b : ai.game->buildingsForTeam(ai.team->number))
 	{
-		const AIEngine::BuildingView* b=ai.game->buildingSlots(ai.team->number)[i];
 		if (b)
 		{
 			if(provides(*ai.game,*b,FeedUnits) && b->constructionResultState==Building::NO_CONSTRUCTION)
@@ -4245,9 +4232,8 @@ bool TowerController::controlTowers()
 	ai.telemetry.count(AITrace::AI8::TowerController_controlTowers_calls);
 
 	int count=0;
-	for(int i=0; i<1024; i++)
+	for (const AIEngine::BuildingView* b : ai.game->buildingsForTeam(ai.team->number))
 	{
-		const AIEngine::BuildingView* b = ai.game->buildingSlots(ai.team->number)[i];
 		if (b)
 		{
 			if(provides(*ai.game,*b,DefendWithProjectiles) &&
@@ -4409,9 +4395,8 @@ bool BuildingClearer::removeOldPadding()
 bool BuildingClearer::updateClearingAreas()
 {
 	ai.telemetry.count(AITrace::AI8::BuildingClearer_updateClearingAreas_calls);
-	for(unsigned int i=0; i<1024; ++i)
+	for (const AIEngine::BuildingView* b : ai.game->buildingsForTeam(ai.team->number))
 	{
-		const AIEngine::BuildingView* b = ai.game->buildingSlots(ai.team->number)[i];
 		if(b)
 		{
 			if( AIEngine::ObservationQueries::buildingType(*ai.game,*b).semantics.occupiesGround &&
@@ -4702,9 +4687,8 @@ bool HappinessHandler::searchFruitTrees()
 	{
 		if(i->flag==NOGBID)
 		{
-			for(unsigned int n=0; n<1024; ++n)
+			for (const AIEngine::BuildingView* b : ai.game->buildingsForTeam(ai.team->number))
 			{
-				const AIEngine::BuildingView* b = ai.game->buildingSlots(ai.team->number)[n];
 				if(b)
 				{
 					if(b->posX == i->pos_x && b->posY == i->pos_y && provides(*ai.game,*b,AttractExplorers))

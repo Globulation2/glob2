@@ -5,7 +5,7 @@
 
 namespace SimulationSnapshot
 {
-// Entity capture preserves team/slot order. Select a team once, then scan its
+// Entity capture groups teams and preserves their population order. Select a team once, then scan its
 // contiguous records without a team branch per entity or another index table.
 template<class Record>
 std::span<const Record> teamRecords(std::span<const Record> records, int team)

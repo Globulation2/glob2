@@ -17,12 +17,15 @@ using std::shared_ptr;
 void AINumbi::nextMainBuilding(Intent intent)
 {
 	int& anchor = mainBuilding[static_cast<unsigned>(intent)];
-	for (int offset = 1; offset <= Building::MAX_COUNT; ++offset)
-	{
-		const int id = (anchor + offset) % Building::MAX_COUNT;
-		if (observation->buildingSlots(teamNumber)[id]) { anchor = id; return; }
-	}
-	anchor = 0;
+	// The saved anchor remains a slot ID. Advance in authoritative population
+	// order without probing empty IDs, including after its entity is removed.
+	const auto buildings = observation->buildingsForTeam(teamNumber);
+	if (buildings.empty()) { anchor = 0; return; }
+	for (std::size_t i = 0; i < buildings.size(); ++i)
+		if (Building::GIDtoID(buildings[i]->gid) == anchor) {
+			anchor = Building::GIDtoID(buildings[(i + 1) % buildings.size()]->gid); return;
+		}
+	anchor = Building::GIDtoID(buildings[0]->gid);
 }
 
 int AINumbi::nbFreeAround(int posX, int posY, int width, int height)
@@ -200,8 +203,8 @@ bool AINumbi::findNewEmplacement(Intent intent, int typeNum, int *posX, int *pos
 			AITrace::AI1::AINumbi_findNewEmplacement_true, found);
 	};
 	int& anchor = mainBuilding[static_cast<unsigned>(intent)];
-	const AIEngine::BuildingView* origin = observation->buildingSlots(teamNumber)[anchor];
-	if (!origin) { nextMainBuilding(intent); origin = observation->buildingSlots(teamNumber)[anchor]; }
+	const AIEngine::BuildingView* origin = observation->buildingAtSlot(Building::GIDfrom(anchor, teamNumber));
+	if (!origin) { nextMainBuilding(intent); origin = observation->buildingAtSlot(Building::GIDfrom(anchor, teamNumber)); }
 	if (!origin) return result(false);
 	const auto* placement = &queries->kind(typeNum);
 	const auto* completed = placement->site

@@ -21,11 +21,10 @@ MaterialMask editorMaterialPresence(const Game& game, MaterialMask requested)
         if (!team || (present&requested)==requested) continue;
         for (unsigned m=0;m<MaterialCount;++m)
             if (team->teamMaterials[m] || team->reservedTeamMaterials[m]) present|=MaterialMask(1u<<m);
-        for (int id=0;id<Unit::MAX_COUNT;++id)
-            if (const Unit* unit=team->myUnits[id];unit && validMaterial(unit->carriedMaterial))
+        for (const Unit* unit : team->liveUnits.entries())
+			if (unit && validMaterial(unit->carriedMaterial))
                 present|=MaterialMask(1u<<unit->carriedMaterial);
-        for (int id=0;id<Building::MAX_COUNT;++id)
-            if (const Building* building=team->myBuildings[id])
+        for (const Building* building : team->liveBuildings.entries())
                 for (unsigned m=0;m<MaterialCount;++m)
                     if (building->material(m)) present|=MaterialMask(1u<<m);
     }

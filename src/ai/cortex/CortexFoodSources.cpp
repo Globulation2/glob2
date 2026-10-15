@@ -327,9 +327,8 @@ inline auto canPaintFarmArea(const ::Map& m,int x,int y){return m.canPaintFarmAr
 		// Iterate by array index, never a std::set, for lockstep determinism.
 		std::vector<int> seeds;
 		int bbMinX = w, bbMinY = h, bbMaxX = -1, bbMaxY = -1;
-		for (int i = 0; i < ::Building::MAX_COUNT; i++)
+		for (const AIEngine::BuildingView* b : game->buildingsForTeam(team->number))
 		{
-			const AIEngine::BuildingView* b = game->buildingSlots(team->number)[i];
 			if (b == NULL || b->buildingState == ::Building::DEAD)
 				continue;
 			if (buildingType(*game,*b) && buildingType(*game,*b)->isVirtual)

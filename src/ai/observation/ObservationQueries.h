@@ -365,9 +365,7 @@ inline bool roomForBuilding(const AIEngine::AIWorldView& world,int x,int y,const
         const int normalizedX=world.normalizeX(x), normalizedY=world.normalizeY(y);
         // Snapshot records are already compact and grouped by team. Borrow that
         // range instead of sweeping every empty legacy slot for each map tile.
-        const auto first=std::lower_bound(world.buildings.begin(),world.buildings.end(),team,
-            [](const auto& building,int owner){return building.team<owner;});
-        for(auto building=first;building!=world.buildings.end() && building->team==team;++building)
+        for(const auto* building:world.buildingsForTeam(team))
             if(building->posX==normalizedX && building->posY==normalizedY
                 && !buildingType(world,*building).semantics.occupiesGround) return false;
         return true;
@@ -400,7 +398,7 @@ inline std::shared_ptr<Order> missingProductionOrder(const AIEngine::AIWorldView
         if(descriptor.site) type=descriptor.next;
         provided|=unsigned(index.intentMask(type))&((1u<<NB_UNIT_TYPE)-1);
     };
-    for(const auto* building:world.buildingSlots(team)) {
+    for(const auto* building:world.buildingsForTeam(team)) {
         if(!building || building->buildingState!=::Building::ALIVE) continue;
         includeProvider(buildingType(world,*building).isBuildingSite ? constructionCompletionType(world,*building) : building->typeNum);
         if(!anchor || (index.intentMask(building->typeNum)&((1u<<NB_UNIT_TYPE)-1))) anchor=building;

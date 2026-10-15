@@ -30,7 +30,7 @@ namespace Cortex
 	/// offense front, which is what the retire/retreat decisions reason about.
 	CortexObservation observeWorld(MersenneTwister& random, const AIEngine::AIWorldView* game, const AIEngine::TeamView* team, QueryScratch& scratch, const PlanningIntent& intents, std::ostream* diagnostics, int openMargin, Uint16 offenseFlagGid);
 
-	/// Internal observe() helper: the single index pass over game->buildingSlots(team->number)
+	/// Internal observe() helper: the single population pass over game->buildingsForTeam(team->number)
 	/// that fills the building-derived signals (feedCapacity, swarm/inn tracking,
 	/// upgradable counts, construction sites) and captures the OFFENSE war flag's
 	/// footprint into warFlag* (the flag whose gid == offenseFlagGid) for the later

@@ -37,6 +37,7 @@ Unit::Unit(int x, int y, Uint16 gid, Sint32 typeNum, Team *team, int level)
 
 Unit::~Unit()
 {
+	assert(!populationMembership && !populationPrevious && !populationNext);
 	if (owner && owner->game) {
 		if (hasCapability(UnitRuntimeTraits::ReleaseClearingClaims) && previousClearingArea && owner->map->getW()>0 && owner->map->isClearingAreaClaimed(previousClearingArea->x,previousClearingArea->y,owner->teamNumber)==gid)
 			owner->map->setClearingAreaUnclaimed(previousClearingArea->x,previousClearingArea->y,owner->teamNumber);

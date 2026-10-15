@@ -85,9 +85,8 @@ void BuildingRegister::initiate()
 {
     Runtime::OwnerObservationScope observation(runtime);
     runtime.refreshOwnerObservation();
-	for(int i=0; i<Building::MAX_COUNT; ++i)
+	for (auto* b : runtime.observation().buildingsForTeam(runtime.teamNumber()))
 	{
-		auto* b=runtime.observation().buildingSlots(runtime.teamNumber())[i];
 		if(b!=NULL)
 		{
 			const auto id=building_id++;

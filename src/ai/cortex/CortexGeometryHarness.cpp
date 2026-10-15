@@ -128,11 +128,9 @@ TEST_SUITE("CortexGeometry")
         // An absent entity is omitted by both the live oracle and extraction.
         // A null type pointer is not a valid serialized simulation state.
         const auto slot = Building::GIDtoID(pool->gid);
-        game.teams[0]->myBuildings[slot] = nullptr;
-        game.teams[0]->rebuildLiveLists();
+        game.teams[0]->detachBuilding(slot);
         checks += compare(game);
-        game.teams[0]->myBuildings[slot] = pool;
-        game.teams[0]->rebuildLiveLists();
+        game.teams[0]->attachBuilding(slot, pool);
         pool->typeNum = game.buildingsTypes.getTypeNum(
             IntBuildingType::reverseConversionMap[IntBuildingType::SWARM_BUILDING], 0, false);
         pool->type = game.buildingsTypes.get(pool->typeNum);

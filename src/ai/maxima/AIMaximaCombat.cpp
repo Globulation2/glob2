@@ -152,9 +152,8 @@ namespace
 		{
 			std::vector<int> powers;
 			const int target=(*map).normalizeY(y)*(*map).width+(*map).normalizeX(x);
-			for(int id=0; id<Unit::MAX_COUNT; ++id)
+			for (const AIEngine::UnitView* warrior : map->unitsForTeam(team->number))
 			{
-				const AIEngine::UnitView* warrior=map->unitSlots(team->number)[id];
 				if(diagnostics && warrior && AIEngine::ObservationQueries::matchesStrategyUnitRole(*map,*warrior,WARRIOR) && !warrior->isDead)
 				{
 					if(std::min(warrior->level[ATTACK_SPEED],warrior->level[ATTACK_STRENGTH])<minimumLevel-1)
@@ -408,9 +407,8 @@ void Maxima::plan_offense(Context& runtime)
 	std::vector<const AIEngine::UnitView*> trainees;
 	const auto muster=[&](int level) {
 		eligible=0;eligible_damage_rate=0;recovering=0;trainees.clear();
-		for(int id=0; id<Unit::MAX_COUNT; ++id)
+		for (const AIEngine::UnitView* warrior : runtime.observation().unitsForTeam(runtime.teamNumber()))
 		{
-			const AIEngine::UnitView* warrior=runtime.observation().unitSlots(runtime.teamNumber())[id];
 			if(tactical_warrior_available(runtime.observation(),warrior, flag, level, &offenseFlags,recruitmentType)
                 && tactical_mobile_or_local(*map,*warrior,flag))
 			{
@@ -455,9 +453,8 @@ void Maxima::plan_offense(Context& runtime)
 	// same soldier twice or hold fully trained soldiers back indefinitely.
 	std::vector<const AIEngine::BuildingView*> barracks;
 	std::vector<int> capacities;
-	for(int id=0; id<Building::MAX_COUNT; ++id)
+	for (const AIEngine::BuildingView* b : runtime.observation().buildingsForTeam(runtime.teamNumber()))
 	{
-		const AIEngine::BuildingView* b=runtime.observation().buildingSlots(runtime.teamNumber())[id];
 		if(runtime.observation().configuration->isUnitUpgradesDisabled()
 		   || !b || !AIMaximaBuildings::serves(runtime.observation(),AIEngine::ObservationQueries::buildingType(runtime.observation(),*b),AIMaximaBuildings::CombatTraining)
 		   || AIEngine::ObservationQueries::buildingType(runtime.observation(),*b).isBuildingSite)continue;
@@ -829,9 +826,8 @@ bool Maxima::control_offense_waves(Context& runtime)
 	// Search connected ground around each food building, rather than using its
 	// occupied origin. Prefer room for two cohorts' worth of standing tiles so
 	// arrivals and workers can pass one another, then proximity to the objective.
-	for(int id=0;id<Building::MAX_COUNT;++id)
+	for (const AIEngine::BuildingView* home : runtime.observation().buildingsForTeam(runtime.teamNumber()))
 	{
-		const AIEngine::BuildingView* home=runtime.observation().buildingSlots(runtime.teamNumber())[id];
 		if(!home || AIEngine::ObservationQueries::buildingType(runtime.observation(),*home).isBuildingSite
 		   || (!AIMaximaBuildings::serves(runtime.observation(),AIEngine::ObservationQueries::buildingType(runtime.observation(),*home),AIMaximaBuildings::Production)
 			&& !AIMaximaBuildings::serves(runtime.observation(),AIEngine::ObservationQueries::buildingType(runtime.observation(),*home),AIMaximaBuildings::Feeding)))continue;
@@ -1034,7 +1030,7 @@ bool Maxima::control_offense_waves(Context& runtime)
 		const int local=Building::GIDtoID(tactical_mission.targetGid);
 		const AIEngine::BuildingView* objective=team>=0 && team<Team::MAX_COUNT
             && teamAt(runtime.observation(),team) && local>=0 && local<Building::MAX_COUNT
-            ? runtime.observation().buildingSlots(team)[local] : NULL;
+            ? runtime.observation().buildingAtSlot(Building::GIDfrom(local, team)) : NULL;
 		if(objective && building_currently_visible(runtime.observation(),runtime.observedTeam().mask,objective))
 		{
 			if(tactical_mission.lastTargetHp<0 || objective->hp<tactical_mission.lastTargetHp)
@@ -1191,7 +1187,7 @@ void Maxima::control_offense(Context& runtime)
 			const int local=Building::GIDtoID(tactical_mission.targetGid);
 			const AIEngine::BuildingView* building=team>=0 && team<Team::MAX_COUNT
 				&& teamAt(runtime.observation(),team) && local>=0 && local<Building::MAX_COUNT
-				? runtime.observation().buildingSlots(team)[local] : NULL;
+				? runtime.observation().buildingAtSlot(Building::GIDfrom(local, team)) : NULL;
 			if(building && building->identity.gid==tactical_mission.targetGid
 			   && building_currently_visible(runtime.observation(),runtime.observedTeam().mask, building)
 			   && (tactical_mission.lastTargetHp<0
@@ -1338,7 +1334,7 @@ bool Maxima::dig_out_enemy(Context& runtime)
 
 	for(enemy_building_iterator ebi(runtime, target, -1, -1, AnyConstruction); ebi!=enemy_building_iterator(); ++ebi)
 	{
-		const AIEngine::BuildingView* b=runtime.observation().buildingSlots(target)[Building::GIDtoID(*ebi)];
+		const AIEngine::BuildingView* b=runtime.observation().buildingAtSlot(Building::GIDfrom(Building::GIDtoID(*ebi), target));
 		int bx = powerOfTwoRemainder(b->posX + mi.get_width(), mi.get_width());
 		int by = powerOfTwoRemainder(b->posY + mi.get_height(), mi.get_height());
 		if(gradient.get_height(bx, by) == -2)
@@ -1352,8 +1348,8 @@ bool Maxima::dig_out_enemy(Context& runtime)
 
 
 	int building=buildings_to_attack[num];
-	const int bx=powerOfTwoRemainder(runtime.observation().buildingSlots(target)[Building::GIDtoID(building)]->posX, mi.get_width());
-	const int by=powerOfTwoRemainder(runtime.observation().buildingSlots(target)[Building::GIDtoID(building)]->posY, mi.get_height());
+	const int bx=powerOfTwoRemainder(runtime.observation().buildingAtSlot(Building::GIDfrom(Building::GIDtoID(building), target))->posX, mi.get_width());
+	const int by=powerOfTwoRemainder(runtime.observation().buildingAtSlot(Building::GIDfrom(Building::GIDtoID(building), target))->posY, mi.get_height());
 
 	AIMaximaRuntime::Gradients::GradientInfo gi_pathfind;
     gi_pathfind.terrainTravel=field::TerrainTravel::Swim;
@@ -1521,9 +1517,8 @@ Uint32 Maxima::compute_preemptive_building_signature(Context& runtime) const
 {
     auto ownerObservation=runtime.scopeOwnerObservation();
 	Uint32 signature=2166136261u;
-	for(int id=0; id<Building::MAX_COUNT; ++id)
+	for (const AIEngine::BuildingView* building : runtime.observation().buildingsForTeam(runtime.teamNumber()))
 	{
-		const AIEngine::BuildingView* building=runtime.observation().buildingSlots(runtime.teamNumber())[id];
 		if(!building || !AIEngine::ObservationQueries::buildingType(runtime.observation(),*building).semantics.occupiesGround
 		   || AIEngine::ObservationQueries::buildingType(runtime.observation(),*building).isBuildingSite)
 			continue;
@@ -1543,7 +1538,7 @@ Uint32 Maxima::compute_preemptive_building_signature(Context& runtime) const
 			item!=enemy_building_iterator(); ++item)
 		{
 			const AIEngine::BuildingView* building=
-				runtime.observation().buildingSlots(enemy_team->number)[Building::GIDtoID(*item)];
+				runtime.observation().buildingAtSlot(Building::GIDfrom(Building::GIDtoID(*item), enemy_team->number));
 			if(!building || !AIEngine::ObservationQueries::buildingType(runtime.observation(),*building).semantics.occupiesGround
 			   || AIEngine::ObservationQueries::buildingType(runtime.observation(),*building).isBuildingSite)
 				continue;
@@ -1637,9 +1632,8 @@ void Maxima::update_preemptive_defense(Context& runtime)
 
 	std::vector<PreemptiveBuilding> own_buildings;
 	std::map<int, std::vector<PreemptiveBuilding> > enemy_buildings;
-	for(int id=0; id<Building::MAX_COUNT; ++id)
+	for (const AIEngine::BuildingView* building : runtime.observation().buildingsForTeam(runtime.teamNumber()))
 	{
-		const AIEngine::BuildingView* building=runtime.observation().buildingSlots(runtime.teamNumber())[id];
 		if(building && AIEngine::ObservationQueries::buildingType(runtime.observation(),*building).semantics.occupiesGround
 		   && !AIEngine::ObservationQueries::buildingType(runtime.observation(),*building).isBuildingSite)
 			own_buildings.push_back(PreemptiveBuilding(
@@ -1654,7 +1648,7 @@ void Maxima::update_preemptive_defense(Context& runtime)
 			item!=enemy_building_iterator(); ++item)
 		{
 			const AIEngine::BuildingView* building=
-				runtime.observation().buildingSlots(enemy_team->number)[Building::GIDtoID(*item)];
+				runtime.observation().buildingAtSlot(Building::GIDfrom(Building::GIDtoID(*item), enemy_team->number));
 			if(building && AIEngine::ObservationQueries::buildingType(runtime.observation(),*building).semantics.occupiesGround
 			   && !AIEngine::ObservationQueries::buildingType(runtime.observation(),*building).isBuildingSite)
 				enemy_buildings[*enemy].push_back(
@@ -1829,18 +1823,16 @@ void Maxima::compute_defense_flag_positioning(AIMaximaRuntime::Context& runtime)
 
 	//For every unit thats under attack, increment in the squares surrounding it.
 	//Use the 'locations' list to keep track of non-zero squares
-	for(int i=0; i<Unit::MAX_COUNT; ++i)
+	for (const AIEngine::UnitView* unit : runtime.observation().unitsForTeam(runtime.teamNumber()))
 	{
-		const AIEngine::UnitView* unit = runtime.observation().unitSlots(runtime.teamNumber())[i];
 		if(unit && unit->underAttackTimer && unit->movement != Unit::MOV_ATTACKING_TARGET && unit->performance[FLY]==0 && unitGID[powerOfTwoRemainder(unit->posX+w, w) * h + powerOfTwoRemainder(unit->posY+h, h)] == NOGUID)
 		{
 			unitGID[powerOfTwoRemainder(unit->posX+w, w) * h + powerOfTwoRemainder(unit->posY+h, h)] = unit->gid;
 			modify_points(counts, w, h, powerOfTwoRemainder(unit->posX+w, w), powerOfTwoRemainder(unit->posY+h, h), RADIUS, 1, locations);
 		}
 	}
-	for(int i=0; i<Building::MAX_COUNT; ++i)
+	for (const AIEngine::BuildingView* building : runtime.observation().buildingsForTeam(runtime.teamNumber()))
 	{
-		const AIEngine::BuildingView* building = runtime.observation().buildingSlots(runtime.teamNumber())[i];
 		if(building && building->underAttackTimer
 		   && buildingGID[runtime.observation().normalizeX(building->posX) * h
 		       + runtime.observation().normalizeY(building->posY)] == NOGBID)
@@ -1867,17 +1859,15 @@ void Maxima::compute_defense_flag_positioning(AIMaximaRuntime::Context& runtime)
 		const AIEngine::TeamView* enemy_team=teamAt(runtime.observation(),*enemy);
 		if(!enemy_team || !enemy_team->alive)
 			continue;
-		for(int i=0; i<Unit::MAX_COUNT; ++i)
+		for (const AIEngine::UnitView* unit : runtime.observation().unitsForTeam(enemy_team->number))
 		{
-			const AIEngine::UnitView* unit=runtime.observation().unitSlots(enemy_team->number)[i];
 			if(!unit || !AIEngine::ObservationQueries::matchesStrategyUnitRole(runtime.observation(),*unit,WARRIOR)
 			   || !AIEngine::ObservationQueries::visible(runtime.observation(),
 				unit->posX, unit->posY, runtime.observedTeam().mask))
 				continue;
 			bool near_colony=false;
-			for(int b=0; b<Building::MAX_COUNT; ++b)
+			for (const AIEngine::BuildingView* own : runtime.observation().buildingsForTeam(runtime.teamNumber()))
 			{
-				const AIEngine::BuildingView* own=runtime.observation().buildingSlots(runtime.teamNumber())[b];
 				if(own && AIEngine::ObservationQueries::buildingType(runtime.observation(),*own).semantics.occupiesGround
 				   && runtime.observation().distanceSquared(unit->posX, unit->posY,
 					own->posX, own->posY)<=144)
@@ -1958,14 +1948,14 @@ void Maxima::compute_defense_flag_positioning(AIMaximaRuntime::Context& runtime)
 					max_x, max_y, nx, ny)<=RADIUS*RADIUS;
 				if(covered && unitGID[nx * h + ny] != NOGUID)
 				{
-					const AIEngine::UnitView* unit = runtime.observation().unitSlots(runtime.teamNumber())[Unit::GIDtoID(unitGID[nx * h + ny])];
+					const AIEngine::UnitView* unit = runtime.observation().unitAtSlot(Unit::GIDfrom(Unit::GIDtoID(unitGID[nx * h + ny]), runtime.teamNumber()));
 					covered_points.push_back(position(nx, ny));
 					modify_points(counts, w, h, powerOfTwoRemainder(unit->posX+w, w), powerOfTwoRemainder(unit->posY+h, h), RADIUS, -1, locations);
 					unitGID[nx * h + ny] = NOGUID;
 				}
 				if(buildingGID[nx * h + ny] != NOGBID)
 				{
-					const AIEngine::BuildingView* building = runtime.observation().buildingSlots(runtime.teamNumber())[Building::GIDtoID(buildingGID[nx * h + ny])];
+					const AIEngine::BuildingView* building = runtime.observation().buildingAtSlot(Building::GIDfrom(Building::GIDtoID(buildingGID[nx * h + ny]), runtime.teamNumber()));
 					int nx2 = powerOfTwoRemainder(building->posX - AIEngine::ObservationQueries::buildingType(runtime.observation(),*building).decLeft + w, w);
 					int ny2 = powerOfTwoRemainder(building->posY - AIEngine::ObservationQueries::buildingType(runtime.observation(),*building).decTop + h, h);
 					if(runtime.observation().distanceSquared(max_x, max_y, nx2, ny2)
@@ -1994,7 +1984,7 @@ void Maxima::compute_defense_flag_positioning(AIMaximaRuntime::Context& runtime)
 					Uint16 guid = runtime.observation().occupancyAt(runtime.observation().tileIndex(nx, ny)).groundUnit;
 					if(guid != NOGUID && (1<<Unit::GIDtoTeam(guid)) & runtime.observedTeam().enemies)
 					{
-						const AIEngine::UnitView* unit = runtime.observation().unitSlots(Unit::GIDtoTeam(guid))[Unit::GIDtoID(guid)];
+						const AIEngine::UnitView* unit = runtime.observation().unitAtSlot(Unit::GIDfrom(Unit::GIDtoID(guid), Unit::GIDtoTeam(guid)));
 						if(unit && AIEngine::ObservationQueries::matchesStrategyUnitRole(runtime.observation(),*unit,WARRIOR))
 						{
 							covered_points.push_back(position(nx, ny));
@@ -2261,11 +2251,11 @@ void Maxima::compute_explorer_flag_attack_positioning(AIMaximaRuntime::Context& 
 	   && teamAt(runtime.observation(),strike_target)->alive
 	   && (runtime.observedTeam().enemies&teamAt(runtime.observation(),strike_target)->mask))
 	{
-		const AIEngine::UnitView** units = new const AIEngine::UnitView*[Unit::MAX_COUNT];
+		std::vector<const AIEngine::UnitView*> units(Unit::MAX_COUNT, nullptr);
 		const AIEngine::UnitView* first = NULL;
-		for(int i=0; i<Unit::MAX_COUNT; ++i)
+		for (const AIEngine::UnitView* unit : runtime.observation().unitsForTeam(strike_target))
 		{
-			const AIEngine::UnitView* unit = runtime.observation().unitSlots(strike_target)[i];
+			const int i = Unit::GIDtoID(unit->gid);
 			if(unit && AIEngine::ObservationQueries::visible(runtime.observation(),unit->posX, unit->posY,
 				runtime.observedTeam().mask) && AIEngine::ObservationQueries::matchesStrategyUnitRole(runtime.observation(),*unit,WARRIOR)
 			   && unit->activity != Unit::ACT_UPGRADING)
@@ -2289,8 +2279,9 @@ void Maxima::compute_explorer_flag_attack_positioning(AIMaximaRuntime::Context& 
 			std::queue<const AIEngine::UnitView*> proccess;
 			std::queue<int> xposs;
 			std::queue<int> yposs;
-			for(int i=0; i<Unit::MAX_COUNT; ++i)
+			for(const auto* candidate : runtime.observation().unitsForTeam(strike_target))
 			{
+				const int i = Unit::GIDtoID(candidate->gid);
 				if(units[i])
 				{
 					group_x += units[i]->posX;
@@ -2347,7 +2338,6 @@ void Maxima::compute_explorer_flag_attack_positioning(AIMaximaRuntime::Context& 
 
 			groups.push_back(std::make_tuple(group_size, group_x, group_y));
 		}
-		delete[] units;
 
 	}
 

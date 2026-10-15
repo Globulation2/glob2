@@ -263,15 +263,15 @@ static void interactiveBenchmark()
 				const std::string kind = select;
 				Team *team = gui.game.teams[0];
 				bool selected = false;
-				for (int i = 0; i < Building::MAX_COUNT && !selected && kind != "unit"; i++)
-					if (Building *b = team->myBuildings[i])
+				for (Building *b : team->liveBuildings.entries())
+					if (!selected && kind != "unit")
 						if (kind == "flag" ? b->type->isVirtual : (!b->type->isVirtual && b->type->maxUnitWorking))
 						{
 							gui.setSelection(GameGUI::BUILDING_SELECTION, b);
 							selected = true;
 						}
-				for (int i = 0; i < Unit::MAX_COUNT && !selected && kind == "unit"; i++)
-					if (Unit *u = team->myUnits[i])
+				for (Unit *u : team->liveUnits.entries())
+					if (!selected && kind == "unit")
 					{
 						gui.setSelection(GameGUI::UNIT_SELECTION, u);
 						selected = true;
@@ -303,10 +303,8 @@ static void interactiveBenchmark()
 			int units = 0, buildings = 0;
 			for (int t = 0; t < gui.game.mapHeader.getNumberOfTeams(); t++)
 			{
-				for (int i = 0; i < Unit::MAX_COUNT; i++)
-					units += gui.game.teams[t]->myUnits[i] != nullptr;
-				for (int i = 0; i < Building::MAX_COUNT; i++)
-					buildings += gui.game.teams[t]->myBuildings[i] != nullptr;
+				units += gui.game.teams[t]->liveUnits.size();
+				buildings += gui.game.teams[t]->liveBuildings.size();
 			}
 			if (getenv("PROFILE_FRACTION"))
 			{

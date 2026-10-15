@@ -955,9 +955,9 @@ void Map::saveRuntimeState(GAGCore::OutputStream *stream) const
 		}
 		stream->writeLeaveSection();
 		stream->writeEnterSection("buildings");
-		for (int b=0; b<Building::MAX_COUNT; ++b) if (auto *building=game->teams[t]->myBuildings[b])
+		for (auto *building : game->teams[t]->liveBuildings.entries())
 		{
-			stream->writeEnterSection(b);
+			stream->writeEnterSection(Building::GIDtoID(building->gid));
 			for (int sw=0; sw<SWIM_CLASS_COUNT; ++sw)
 			{
 				stream->writeEnterSection(sw);
@@ -1056,8 +1056,7 @@ void Map::loadRuntimeState(GAGCore::InputStream *stream, Sint32 versionMinor)
 	gradientRuntime->pipeline.reset();
 	resetBuildingGradientPipeline();
 	for (int t=0; t<game->teamsCount(); ++t)
-		for (int b=0; b<Building::MAX_COUNT; ++b)
-			if (auto *building=game->teams[t]->myBuildings[b]) building->refreshRequested.reset();
+		for (auto *building : game->teams[t]->liveBuildings.entries()) building->refreshRequested.reset();
 	stream->readEnterSection("mapRuntime");
 	const bool fogIsA=loadFlag(stream,"fogIsA");
 	if (versionMinor>=FILE_FORMAT_VERSION_TOPOLOGY_GENERATION)
@@ -1132,9 +1131,9 @@ void Map::loadRuntimeState(GAGCore::InputStream *stream, Sint32 versionMinor)
 		}
 		stream->readLeaveSection();
 		stream->readEnterSection("buildings");
-		for (int b=0; b<Building::MAX_COUNT; ++b) if (auto *building=game->teams[t]->myBuildings[b])
+		for (auto *building : game->teams[t]->liveBuildings.entries())
 		{
-			stream->readEnterSection(b);
+			stream->readEnterSection(Building::GIDtoID(building->gid));
 			const BuildingRoute savedRoute = versionMinor >= FILE_FORMAT_VERSION_BUILDING_CATALOG ? BuildingRoute::Footprint : BuildingRoute::Automatic;
 			for (int sw=0; sw<savedSwimClasses; ++sw)
 			{
@@ -1285,8 +1284,7 @@ void Map::loadRuntimeState(GAGCore::InputStream *stream, Sint32 versionMinor)
                 delete[] clearAreasGradient[t][sw]; clearAreasGradient[t][sw]=nullptr;
                 guardGradientUpdated[t][sw]=clearGradientUpdated[t][sw]=false;
             }
-            for (int b=0; b<Building::MAX_COUNT; ++b)
-                if (auto* building=game->teams[t]->myBuildings[b]) building->freeGradients();
+            for (auto* building : game->teams[t]->liveBuildings.entries()) building->freeGradients();
         }
     }
     // Loaded and discarded slots bypassed publishPlane.
