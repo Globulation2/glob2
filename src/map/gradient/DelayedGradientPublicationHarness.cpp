@@ -74,6 +74,13 @@ TEST_CASE("cold queued and privately completed fields continue through binary an
         map.getGuardAreasGradient(0,0);
         map.getClearAreasGradient(0,0);
         for (unsigned i=0;i<checkpoint;++i) advanceFields(game);
+        if (checkpoint==2) {
+            // Two distinct destinations are admitted; two others still wait.
+            // Their numeric save entries must not overwrite each other's
+            // paths in text streams (binary streams are positional).
+            REQUIRE(map.gradientPipelineStatus().jobs==2);
+            REQUIRE(map.gradientPipelineStatus().pending==2);
+        }
         GradientExecutionAudit audit;
         auto* storage=new GAGCore::MemoryStreamBackend;
         std::unique_ptr<GAGCore::OutputStream> output(text
@@ -98,7 +105,10 @@ TEST_CASE("cold queued and privately completed fields continue through binary an
         const auto record=[&] {
             const auto original=normalizedChecksums(game), restored=normalizedChecksums(resumed.game);
             trace<<game.stepCounter<<'\t'<<evidenceHash(original)<<'\t'<<evidenceHash(restored)<<'\n';
-            CHECK(original==restored);
+            REQUIRE(original.size()==restored.size());
+            for (size_t component=0;component<original.size();++component)
+                CHECK_MESSAGE(original[component]==restored[component],
+                    "simulation checksum component ",component," at boundary ",game.stepCounter);
         };
         record();
         for (int tick=0;tick<32;++tick) {

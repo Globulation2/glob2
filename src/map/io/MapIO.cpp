@@ -1034,6 +1034,9 @@ void Map::saveRuntimeState(GAGCore::OutputStream *stream) const
         stream->writeLeaveSection();
 	});
     stream->writeUint32(gradientRuntime->fieldRequests.size(),"requests");
+    // Pending jobs above also use numeric sections. Keep demand entries in a
+    // distinct namespace: text streams address fields by their complete path.
+    stream->writeEnterSection("queuedRequests");
     unsigned queuedIndex=0;
     for (const auto& queued:gradientRuntime->fieldRequests) {
         stream->writeEnterSection(queuedIndex++);
@@ -1043,6 +1046,7 @@ void Map::saveRuntimeState(GAGCore::OutputStream *stream) const
         stream->writeUint8(queued.request.swim,"swim"); stream->writeSint32(queued.request.consumer,"consumer");
         stream->writeUint8(queued.request.modes,"modes"); stream->writeUint8(queued.request.excludesShared,"excludesShared"); stream->writeLeaveSection();
     }
+	stream->writeLeaveSection();
 	stream->writeLeaveSection();
 	// Last, so streams of older layouts (and tests replaying them) read unchanged.
 	saveBuildingGradientPipeline(stream);
@@ -1278,6 +1282,7 @@ void Map::loadRuntimeState(GAGCore::InputStream *stream, Sint32 versionMinor)
         if (versionMinor>=FILE_FORMAT_VERSION_DELAYED_GRADIENTS) {
             const auto count=stream->readUint32("requests");
             if (count>Team::MAX_COUNT*(2*MaterialSlotCount+3)*SWIM_CLASS_COUNT+gradientRuntime->materialFields.size()+gradientRuntime->air.entries.size()) throw std::runtime_error("Invalid gradient request count");
+            stream->readEnterSection("queuedRequests");
             for (unsigned i=0;i<count;++i) {
                 stream->readEnterSection(i);
                 auto* slot=gradientDestination(stream->readUint32("destination"));
@@ -1308,6 +1313,7 @@ void Map::loadRuntimeState(GAGCore::InputStream *stream, Sint32 versionMinor)
                 for (const auto& existing:gradientRuntime->fieldRequests) if (existing.slot==slot) throw std::runtime_error("Duplicate gradient request");
                 gradientRuntime->fieldRequests.push_back({slot,request}); stream->readLeaveSection();
             }
+            stream->readLeaveSection();
         }
 		stream->readLeaveSection();
 	}

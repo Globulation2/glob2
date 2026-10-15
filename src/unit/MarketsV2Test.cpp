@@ -115,7 +115,7 @@ std::string marketTrace(bool enabled, bool report=false)
 			if (tick==749)
 			{
 				const auto state=simulation(g);
-                const auto checkCheckpoint=[&](const char* phase) {
+                const auto checkCheckpoint=[&](const std::string& phase) {
                     const auto actual=simulation(g);
                     CAPTURE(phase); CAPTURE(pipeline);
                     REQUIRE(actual.size()==state.size());
