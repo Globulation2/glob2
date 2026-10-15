@@ -1,0 +1,112 @@
+{
+  "os": {
+    "command": [
+      "cat",
+      "/etc/os-release"
+    ],
+    "status": 0,
+    "stdout": "PRETTY_NAME=\"Ubuntu 24.04.5 LTS\"\nNAME=\"Ubuntu\"\nVERSION_ID=\"24.04\"\nVERSION=\"24.04.5 LTS (Noble Numbat)\"\nVERSION_CODENAME=noble\nID=ubuntu\nID_LIKE=debian\nHOME_URL=\"https://www.ubuntu.com/\"\nSUPPORT_URL=\"https://help.ubuntu.com/\"\nBUG_REPORT_URL=\"https://bugs.launchpad.net/ubuntu/\"\nPRIVACY_POLICY_URL=\"https://www.ubuntu.com/legal/terms-and-policies/privacy-policy\"\nUBUNTU_CODENAME=noble\nLOGO=ubuntu-logo\n",
+    "stderr": ""
+  },
+  "uname": {
+    "command": [
+      "uname",
+      "-a"
+    ],
+    "status": 0,
+    "stdout": "Linux devlaptop 7.0.0-38-generic #38~24.04.4-Ubuntu SMP PREEMPT_DYNAMIC Mon Sep 14 16:37:11 UTC 2 x86_64 x86_64 x86_64 GNU/Linux\n",
+    "stderr": ""
+  },
+  "cpu": {
+    "command": [
+      "lscpu"
+    ],
+    "status": 0,
+    "stdout": "Architecture:                            x86_64\nCPU op-mode(s):                          32-bit, 64-bit\nAddress sizes:                           48 bits physical, 48 bits virtual\nByte Order:                              Little Endian\nCPU(s):                                  16\nOn-line CPU(s) list:                     0-15\nVendor ID:                               AuthenticAMD\nModel name:                              AMD Ryzen 7 6800H with Radeon Graphics\nCPU family:                              25\nModel:                                   68\nThread(s) per core:                      2\nCore(s) per socket:                      8\nSocket(s):                               1\nStepping:                                1\nFrequency boost:                         enabled\nCPU(s) scaling MHz:                      76%\nCPU max MHz:                             4787.0820\nCPU min MHz:                             403.7300\nBogoMIPS:                                6388.15\nFlags:                                   fpu vme de pse tsc msr pae mce cx8 apic sep mtrr pge mca cmov pat pse36 clflush mmx fxsr sse sse2 ht syscall nx mmxext fxsr_opt pdpe1gb rdtscp lm constant_tsc rep_good nopl xtopology nonstop_tsc cpuid extd_apicid aperfmperf rapl pni pclmulqdq monitor ssse3 fma cx16 sse4_1 sse4_2 x2apic movbe popcnt aes xsave avx f16c rdrand lahf_lm cmp_legacy svm extapic cr8_legacy abm sse4a misalignsse 3dnowprefetch osvw ibs skinit wdt tce topoext perfctr_core perfctr_nb bpext perfctr_llc mwaitx cpb cat_l3 cdp_l3 hw_pstate ssbd mba ibrs ibpb stibp vmmcall fsgsbase bmi1 avx2 smep bmi2 erms invpcid cqm rdt_a rdseed adx smap clflushopt clwb sha_ni xsaveopt xsavec xgetbv1 xsaves cqm_llc cqm_occup_llc cqm_mbm_total cqm_mbm_local user_shstk clzero irperf xsaveerptr rdpru wbnoinvd cppc arat npt lbrv svm_lock nrip_save tsc_scale vmcb_clean flushbyasid decodeassists pausefilter pfthreshold avic v_vmsave_vmload vgif v_spec_ctrl umip pku ospke vaes vpclmulqdq rdpid overflow_recov succor smca fsrm debug_swap\nVirtualization:                          AMD-V\nL1d cache:                               256 KiB (8 instances)\nL1i cache:                               256 KiB (8 instances)\nL2 cache:                                4 MiB (8 instances)\nL3 cache:                                16 MiB (1 instance)\nNUMA node(s):                            1\nNUMA node0 CPU(s):                       0-15\nVulnerability Gather data sampling:      Not affected\nVulnerability Ghostwrite:                Not affected\nVulnerability Indirect target selection: Not affected\nVulnerability Itlb multihit:             Not affected\nVulnerability L1tf:                      Not affected\nVulnerability Mds:                       Not affected\nVulnerability Meltdown:                  Not affected\nVulnerability Mmio stale data:           Not affected\nVulnerability Old microcode:             Not affected\nVulnerability Reg file data sampling:    Not affected\nVulnerability Retbleed:                  Not affected\nVulnerability Spec rstack overflow:      Mitigation; Safe RET\nVulnerability Spec store bypass:         Mitigation; Speculative Store Bypass disabled via prctl\nVulnerability Spectre v1:                Mitigation; usercopy/swapgs barriers and __user pointer sanitization\nVulnerability Spectre v2:                Mitigation; Retpolines; IBPB conditional; IBRS_FW; STIBP always-on; RSB filling; PBRSB-eIBRS Not affected; BHI Not affected\nVulnerability Srbds:                     Not affected\nVulnerability Tsa:                       Mitigation; Clear CPU buffers\nVulnerability Tsx async abort:           Not affected\nVulnerability Vmscape:                   Mitigation; IBPB before exit to userspace\n",
+    "stderr": ""
+  },
+  "compiler": {
+    "command": [
+      "g++",
+      "--version"
+    ],
+    "status": 0,
+    "stdout": "g++ (Ubuntu 13.3.0-6ubuntu2~24.04.1) 13.3.0\nCopyright (C) 2023 Free Software Foundation, Inc.\nThis is free software; see the source for copying conditions.  There is NO\nwarranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.\n\n",
+    "stderr": ""
+  },
+  "scons": {
+    "command": [
+      "scons",
+      "--version"
+    ],
+    "status": 0,
+    "stdout": "SCons by Steven Knight et al.:\n\tSCons: v4.5.2.120fd4f633e9ef3cafbc0fec35306d7555ffd1db, Tue, 21 Mar 2023 12:11:27 -0400, by bdbaddog on M1DOG2021\n\tSCons path: ['/usr/lib/python3/dist-packages/SCons']\nCopyright (c) 2001 - 2023 The SCons Foundation\n",
+    "stderr": ""
+  },
+  "valgrind": {
+    "command": [
+      "valgrind",
+      "--version"
+    ],
+    "status": 0,
+    "stdout": "valgrind-3.22.0\n",
+    "stderr": ""
+  },
+  "linker": {
+    "error": "[Errno 2] No such file or directory: 'ld.lld'"
+  },
+  "sdl3": {
+    "error": "[Errno 2] No such file or directory: 'build/sdl3/prefix/bin/sdl3-config'"
+  },
+  "git": {
+    "command": [
+      "git",
+      "rev-parse",
+      "HEAD"
+    ],
+    "status": 0,
+    "stdout": "09833a6685dc12e6b530f93b19fba27c21bffde3\n",
+    "stderr": ""
+  },
+  "base": {
+    "command": [
+      "git",
+      "rev-parse",
+      "origin/master"
+    ],
+    "status": 0,
+    "stdout": "e7572da6be15566bf20086f40a73a0f4b7c2a83d\n",
+    "stderr": ""
+  },
+  "sdl_prefix": "/home/bradley/glob2/build/sdl3/prefix",
+  "sdl_libraries_sha256": {
+    "build/sdl3/prefix/lib/libSDL3_ttf.so.0.2.2": "fddaedd0e8d4a7439bb6fa49e4401fb3100b79b79cc4b0d2b331ccc2655d9516",
+    "build/sdl3/prefix/lib/libSDL3_image.so": "8a322f5d23bf4ef4336bc9d874efd7c6ec35c36b9577d94f60f1a0580a460eff",
+    "build/sdl3/prefix/lib/libSDL3_net.so.0": "230fa540cecbf9271323385d6fd497b5f9c5794039ac4f2e0f5082954fe4f326",
+    "build/sdl3/prefix/lib/libSDL3_net.so": "230fa540cecbf9271323385d6fd497b5f9c5794039ac4f2e0f5082954fe4f326",
+    "build/sdl3/prefix/lib/libSDL3_image.so.0": "8a322f5d23bf4ef4336bc9d874efd7c6ec35c36b9577d94f60f1a0580a460eff",
+    "build/sdl3/prefix/lib/libSDL3_ttf.so.0": "fddaedd0e8d4a7439bb6fa49e4401fb3100b79b79cc4b0d2b331ccc2655d9516",
+    "build/sdl3/prefix/lib/libSDL3_image.so.0.4.6": "8a322f5d23bf4ef4336bc9d874efd7c6ec35c36b9577d94f60f1a0580a460eff",
+    "build/sdl3/prefix/lib/libSDL3.so.0.4.16": "219b3a951d2a28a8448ebb045d75af33f621a5dfb4d0d361a22a3d923f62391c",
+    "build/sdl3/prefix/lib/libSDL3.so": "219b3a951d2a28a8448ebb045d75af33f621a5dfb4d0d361a22a3d923f62391c",
+    "build/sdl3/prefix/lib/libSDL3_net.so.0.2.0": "230fa540cecbf9271323385d6fd497b5f9c5794039ac4f2e0f5082954fe4f326",
+    "build/sdl3/prefix/lib/libSDL3_ttf.so": "fddaedd0e8d4a7439bb6fa49e4401fb3100b79b79cc4b0d2b331ccc2655d9516",
+    "build/sdl3/prefix/lib/libSDL3.so.0": "219b3a951d2a28a8448ebb045d75af33f621a5dfb4d0d361a22a3d923f62391c"
+  },
+  "sdl_component_versions": {
+    "order": [
+      "SDL3",
+      "SDL3_net",
+      "SDL3_image",
+      "SDL3_ttf"
+    ],
+    "versions": [
+      "3.4.16",
+      "3.2.0",
+      "3.4.6",
+      "3.2.2"
+    ],
+    "status": 0
+  },
+  "mingw_compiler": "x86_64-w64-mingw32-g++ (GCC) 13-win32"
+}

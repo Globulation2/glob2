@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuites>
+  <testsuite name="build/linux/client/release/retain-symbols/dev-linker-auto/test/glob2-engine-tests" errors="0" failures="1" tests="2045027" time="0.479764" timestamp="2026-10-15T23:14:51Z" doctest_version="2.4.11">
+    <testcase classname="src/map/TerrainResourcesHarness.cpp" name="frozen seeded resource compositions preserve invariants and exact simulation continuation [golden]" time="0.479764" status="run">
+      <failure message="golden mismatch against resources/seeded-compositions-units.trace at line 1
+  expected: 410362371 0 620422042 b84bf391a9f0665bf93d6a35c0f3079ce5e59e1808239055817c84592b90e9e1
+  actual:   410362371 0 957286669 b84bf391a9f0665bf93d6a35c0f3079ce5e59e1808239055817c84592b90e9e1" type="FAIL">
+test/support/Glob2Test.cpp:205:
+golden mismatch against resources/seeded-compositions-units.trace at line 1
+  expected: 410362371 0 620422042 b84bf391a9f0665bf93d6a35c0f3079ce5e59e1808239055817c84592b90e9e1
+  actual:   410362371 0 957286669 b84bf391a9f0665bf93d6a35c0f3079ce5e59e1808239055817c84592b90e9e1
+
+      </failure>
+    </testcase>
+  </testsuite>
+</testsuites>

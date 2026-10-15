@@ -1,0 +1,56 @@
+{
+  "base": "9ea290745afb3f6c6fb23f6dabfc52ea20b3d444",
+  "candidate": "05d9027bfe4ea1114cceab6f073d29b94cd03761",
+  "result": "PASS",
+  "normalization": "Whitespace and equivalent MAX_COUNT qualifiers only",
+  "methods": [
+    {
+      "method": "Building::availableMaterial",
+      "normalized_body_sha256": "41ff782175ed1263fff27d5a5949b48bf5eab70a7072d2f255659e751c041559"
+    },
+    {
+      "method": "Building::constructionMaterialNeed",
+      "normalized_body_sha256": "fbbfc6380304f7ae025ea551a6a346a5720bfcd1eb5c52a090825641ab20611e"
+    },
+    {
+      "method": "Building::materialDeliveryNeed",
+      "normalized_body_sha256": "33bb4208e754ac31ab5619b1a081e3ad1caf5b8cd9b032222e8572bb5da77141"
+    },
+    {
+      "method": "Building::materialDeliveryTarget",
+      "normalized_body_sha256": "685fc666786fd02abf6333e3c0707220f6b9703b5bb9ee7c4afb11285417df3e"
+    },
+    {
+      "method": "Game::refOf(const Building *b)",
+      "normalized_body_sha256": "15d7551411cda77523aad950cf6ce09c82fc6ccf92cfcb586720d9fbad9e681d"
+    },
+    {
+      "method": "Game::refOf(const Unit *u)",
+      "normalized_body_sha256": "3db9ff76481fbe87b2aca324c3276c03d3e2d2dc8011d7fba9b3c9bfd01d760f"
+    },
+    {
+      "method": "UnitUtils::GIDfrom",
+      "normalized_body_sha256": "02e89d7db20afabc5d710f86cf3c7b87d0ecb1599316e85aba299c97b4af2c7c"
+    },
+    {
+      "method": "UnitUtils::GIDtoID",
+      "normalized_body_sha256": "e7e049da861aced15643f76dc319fabe7943a406f17786a2bad8456bb11e8e6c"
+    },
+    {
+      "method": "UnitUtils::GIDtoTeam",
+      "normalized_body_sha256": "1aa9e266a11b337d794e1c8df4f965abdae7d444ee9d6dc68333ac8ca904f893"
+    },
+    {
+      "method": "BuildingUtils::GIDfrom",
+      "normalized_body_sha256": "3647d9bcb8b1e55478df9b872105980a23fd7a3334a18eda30c176cab623b596"
+    },
+    {
+      "method": "BuildingUtils::GIDtoID",
+      "normalized_body_sha256": "856a11d7e9a0b9c3132e65e55da12286894baefd76afadb1d009a595e5086b3f"
+    },
+    {
+      "method": "BuildingUtils::GIDtoTeam",
+      "normalized_body_sha256": "9b19a30fd59839d3ee137dd00e556b979c58663234d6e5da0c4d3d0e78f7430a"
+    }
+  ]
+}

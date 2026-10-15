@@ -1,0 +1,17 @@
+<?xml version='1.0' encoding='utf-8'?>
+<testsuites tests="3" failures="0" errors="3" skipped="0"><testsuite name="BuildingStock"><testcase classname="BuildingStock" name="canceled entering explorers wait for a free exit before medical rebound [save-format]" time="0.141826" status="run">
+      <error message="exception">
+        Invalid saved construction production preference
+      </error>
+    </testcase>
+  <testcase classname="BuildingStock" name="canceled entering services preserve ground and air occupancy across resave [save-format][artifacts]" time="0.142841" status="run">
+      <error message="exception">
+        Invalid saved construction production preference
+      </error>
+    </testcase>
+  <testcase classname="BuildingStock" name="canceled inside services reset their timer and resume terrain and area effects [save-format][artifacts]" time="0.143108" status="run">
+      <error message="exception">
+        Invalid saved construction production preference
+      </error>
+    </testcase>
+  </testsuite></testsuites>

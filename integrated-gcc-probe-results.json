@@ -1,0 +1,9 @@
+{
+  "result": "PASS",
+  "compiler": "g++ (Ubuntu 13.3.0-6ubuntu2~24.04.1) 13.3.0",
+  "round_trips_per_mode": 32768,
+  "expected_assertion_aborts": 10,
+  "historical_accepted_negative_building_cases": 2,
+  "header_orders": 3,
+  "moved_helper_calls_in_optimized_wrappers": 0
+}
