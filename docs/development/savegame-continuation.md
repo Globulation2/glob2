@@ -77,3 +77,8 @@ slot reuse and lifecycle removal. `IntrusivePopulationSave/*` checks binary/text
 non-slot-ordered populations, cursor restoration, subsequent per-tick checksums
 and rejected malformed/truncated loads. These complement the existing legacy-save
 continuation and serial/parallel simulation tests.
+
+Format 165 also retains Maxima's executable tactical quarantine duration. An
+initialized director may use it before planning again; older saves reconstruct
+it from their restored canonical strategy. The focused `Maxima.Director`
+quarantine regression checks current persistence and legacy field alignment.

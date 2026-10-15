@@ -2,6 +2,7 @@
 // Link with the game objects (excluding Glob2.cpp) to exercise the real runtime.
 #include "EngineFixtures.h"
 #include "Version.h"
+#include "FileFormatVersions.h"
 #include "GlobalContainer.h"
 #include "Game.h"
 #include "../../src/team/Team.h"
@@ -130,6 +131,49 @@ struct Fixture
 };
 
 
+
+static void quarantineBudgetContinuation()
+{
+    Fixture original;
+    auto& a=*original.ai;
+    a.strategy.tactics.failed_target_quarantine_ticks=2468;
+    // Deliberately differ from both the constructor and canonical strategy:
+    // current saves must preserve the executable budget, not reconstruct it.
+    a.budget.tactical_quarantine_ticks=1234;
+    a.director.initialized=true;
+    a.director.dirty=false;
+    auto* backend=new GAGCore::MemoryStreamBackend;
+    GAGCore::BinaryOutputStream output(backend);
+    a.saveExecutionState(&output);
+    output.flush();
+    const std::string current(backend->getBuffer(),backend->getPosition());
+    REQUIRE(current.size()>4);
+    for (bool legacy : {false,true}) {
+        auto bytes=current;
+        // Format 164 has the identical preceding execution payload, but no
+        // appended quarantine word. The sentinel catches accidental overreads.
+        if (legacy) bytes.resize(bytes.size()-4);
+        bytes.append("\x12\x34\x56\x78",4);
+        Fixture restored;
+        GAGCore::BinaryInputStream input(new GAGCore::MemoryStreamBackend(bytes.data(),bytes.size()));
+        input.seekFromStart(0);
+        restored.ai->loadExecutionState(&input,legacy ? FILE_FORMAT_VERSION_INTRUSIVE_POPULATION-1 : VERSION_MINOR);
+        CHECK(input.readUint32("sentinel")==0x12345678u);
+        CHECK(restored.ai->director.initialized);
+        CHECK_FALSE(restored.ai->director.dirty);
+        CHECK(restored.ai->strategy.tactics.failed_target_quarantine_ticks==2468);
+        CHECK(restored.ai->budget.tactical_quarantine_ticks==(legacy ? 2468 : 1234));
+    }
+    for (int invalid : {-1,1000001}) {
+        auto bytes=current;
+        const Uint32 bits=Uint32(invalid);
+        for (unsigned i=0;i<4;++i)
+            bytes[bytes.size()-4+i]=char(bits>>(24-8*i));
+        GAGCore::BinaryInputStream input(new GAGCore::MemoryStreamBackend(bytes.data(),bytes.size()));
+        input.seekFromStart(0);
+        CHECK_THROWS_AS(a.loadExecutionState(&input,VERSION_MINOR),std::runtime_error);
+    }
+}
 
 static void reconnaissanceWaitsForEightyPercent()
 {
@@ -425,6 +469,7 @@ static void proactiveProtection() {
 
 TEST_SUITE("Maxima.Director")
 {
+    TEST_CASE("tactical quarantine budget survives current and legacy execution loads") { glob2test::HeadlessGlobals globals; director_regressions::quarantineBudgetContinuation(); }
 	TEST_CASE("reconnaissance waits for eighty percent") { glob2test::HeadlessGlobals globals; director_regressions::reconnaissanceWaitsForEightyPercent(); }
 	TEST_CASE("fortification uses only spare labour") { glob2test::HeadlessGlobals globals; director_regressions::fortificationUsesOnlySpareLabour(); }
 	TEST_CASE("unified hospital capacity") { glob2test::HeadlessGlobals globals; director_regressions::unifiedHospitalCapacity(); }
