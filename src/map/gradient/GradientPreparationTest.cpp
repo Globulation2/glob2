@@ -1309,7 +1309,18 @@ TEST_CASE("GradientPreparation/modified terrain costs remain exact when field ob
             if constexpr(GAGCore::ThreadSupport::available)
                 REQUIRE(executionSlot != 0);
             CHECK(output==expected);
-            if(deviceReady) CHECK(after.committedFields==completed+1);
+            if (deviceReady) {
+                if (after.error.empty()) {
+                    CHECK(after.committedFields == completed + 1);
+                } else {
+                    // Readiness permits a device attempt, not a successful
+                    // execution. A reported failure must retire the backend and
+                    // recover this exact field on CPU without a false GPU commit.
+                    REQUIRE_FALSE(after.available);
+                    CHECK(after.committedFields == completed);
+                    CHECK(after.cpuSelections == before.cpuSelections + 1);
+                }
+            }
         }
     }
 }
