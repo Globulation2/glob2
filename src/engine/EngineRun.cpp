@@ -355,9 +355,6 @@ std::vector<unsigned> Engine::observationPlayers(bool wasReadyLastTick) const
 
 SimulationSnapshot::Handle Engine::establishObservation(bool present)
 {
-    const bool worldAdvanced=!retainedPresentation || retainedPresentation->world.tick!=gui.game.stepCounter
-        || retainedPresentation->world.observationRevision!=gui.game.snapshots().revision();
-    const auto presentation=present ? admitPresentation(worldAdvanced) : std::optional<SceneRequest>{};
     SimulationSnapshot::CaptureOptions options;
     // Capture the requested graphical payload even while scene preparation is
     // busy. A later extraction must use this frozen observation, never live state.
@@ -367,10 +364,14 @@ SimulationSnapshot::Handle Engine::establishObservation(bool present)
         options = {.presentation=true, .history=true, .telemetry=true,
             .entityDiagnostics=true, .annotations=true};
     }
-    if (presentation) options.include(SceneExtractor::captureOptions(*presentation));
     if (diagnostics) options.include(diagnostics->captureOptions(gui.game.stepCounter));
     const bool paused=gui.gamePaused || gui.hardPause;
     const auto world=gui.game.observeCompletedWorld(options);
+    // Presentation follows the retained owner's identity, not the inspection
+    // cache revision that live entity helpers may invalidate during orders.
+    const bool worldAdvanced=!retainedPresentation || retainedPresentation->world.tick!=world.tick
+        || retainedPresentation->world.observationRevision!=world.observationRevision;
+    const auto presentation=present ? admitPresentation(worldAdvanced) : std::optional<SceneRequest>{};
     gui.game.admitAIOrders(observationPlayers(session ? session->wasReadyLastTick : true),
         paused || globalContainer->replaying, diagnostics, world);
     if (presentation) publishPresentation(world,*presentation);

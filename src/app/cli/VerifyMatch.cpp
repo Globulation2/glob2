@@ -175,7 +175,14 @@ MatchVerifier::Verdict MatchVerifier::verify(const Turn::MatchRecord& record, co
 	{
 		engine.stepSession(++now);
 		engine.trackTeamEliminations();
-		engine.gui.isRunning = true;
+		if (!engine.gui.isRunning)
+		{
+			// A recorded quit may stop the GUI's viewpoint seat. The verifier
+			// continues the match, so establish the completed boundary that a
+			// normally stopping owner intentionally leaves unobserved.
+			engine.gui.isRunning = true;
+			engine.establishObservation(false);
+		}
 		if (lockstep.turn().executedTick() != lastProgress)
 		{
 			lastProgress = lockstep.turn().executedTick();

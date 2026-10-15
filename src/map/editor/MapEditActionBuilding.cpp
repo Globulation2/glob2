@@ -141,7 +141,7 @@ bool MapEdit::performBuildingAction(const std::string& action, float relMouseX, 
 		if (selectionMode==EditingBuilding)
 			if (auto* b=game.teams[Building::GIDtoTeam(selectedBuildingGID)]->myBuildings[Building::GIDtoID(selectedBuildingGID)])
 				b->explorersRequireBombing=buildingBombingRequirement!=0;
-		game.snapshots().invalidateBoundary();
+		game.invalidateObservation();
 		hasMapBeenModified = true;
 	}
 	else

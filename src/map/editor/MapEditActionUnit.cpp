@@ -11,7 +11,7 @@ void MapEdit::refreshSelectedUnitPerformance(int stat)
 	Unit* u=game.teams[Unit::GIDtoTeam(selectedUnitGID)]->myUnits[Unit::GIDtoID(selectedUnitGID)];
 	const UnitType *ut = u->race->getUnitType(u->typeNum, u->level[stat]);
 	u->setPerformance(stat,ut->performance[stat]);
-	game.snapshots().invalidateBoundary();
+	game.invalidateObservation();
 		hasMapBeenModified = true;
 }
 
@@ -77,7 +77,7 @@ bool MapEdit::performUnitAction(const std::string& action, float relMouseX, floa
 				game.teams[team]->startPosSet=Team::START_POS_FROM_UNIT;
 			}
 			game.regenerateDiscoveryMap();
-			game.snapshots().invalidateBoundary();
+			game.invalidateObservation();
 		hasMapBeenModified = true;
 		}
 	}
@@ -162,7 +162,7 @@ bool MapEdit::performUnitAction(const std::string& action, float relMouseX, floa
 		// One worker level: the build box drives harvest as well.
 		Unit* u=game.teams[Unit::GIDtoTeam(selectedUnitGID)]->myUnits[Unit::GIDtoID(selectedUnitGID)];
 		u->setWorkerLevel(u->level[BUILD]);
-		game.snapshots().invalidateBoundary();
+		game.invalidateObservation();
 		hasMapBeenModified = true;
 	}
 	else if(action=="update unit attack speed level")
@@ -179,7 +179,7 @@ bool MapEdit::performUnitAction(const std::string& action, float relMouseX, floa
 	}
 	else if(action=="update unit")
 	{
-		game.snapshots().invalidateBoundary();
+		game.invalidateObservation();
 		hasMapBeenModified = true;
 	}
 	else

@@ -418,11 +418,28 @@ TEST_SUITE("ResourceGrowth")
 		CHECK(world.game.stepCounter == 1);
 		CHECK(m.resourceGrowthMetrics().published == 0);
 		world.game.anyPlayerWaited = false;
-		world.step(3);
-		CHECK(world.game.stepCounter == 4);
+		world.step(2);
+		REQUIRE(world.game.stepCounter == 3);
 		CHECK(m.resourceGrowthMetrics().published == 0);
-		world.step();
-		CHECK(m.resourceGrowthMetrics().published == 1);
+
+        // Observation zero admitted the first batch with a three-tick delay.
+        // Publication occurs at observation three, before advancing live state.
+        const auto due = world.game.observeCompletedWorld();
+        CHECK(due.tick == 3);
+        CHECK(m.resourceGrowthMetrics().published == 1);
+        const auto submitted = m.resourceGrowthMetrics().submitted;
+        world.game.anyPlayerWaited = true;
+        world.step(5);
+        CHECK(world.game.stepCounter == 3);
+        CHECK(m.resourceGrowthMetrics().published == 1);
+        CHECK(m.resourceGrowthMetrics().submitted == submitted);
+        CHECK(world.game.observeCompletedWorld().entities == due.entities);
+        world.game.anyPlayerWaited = false;
+        world.step();
+        REQUIRE(world.game.stepCounter == 4);
+        CHECK(m.resourceGrowthMetrics().published == 1);
+        world.game.observeCompletedWorld();
+        CHECK(m.resourceGrowthMetrics().published == 2);
 	}
 	TEST_CASE("frozen input outlives terrain and resource edits and wrapping remains valid")
 	{
@@ -815,7 +832,7 @@ TEST_CASE("finishing admitted world work does not publish early" * doctest::test
     CHECK(map.gradientRuntime->growth.count() == 1);
 }
 
-TEST_CASE("historical growth payloads are rejected after header preflight" * doctest::test_suite("ResourceGrowth"))
+TEST_CASE("historical growth payloads retain pending work after header preflight" * doctest::test_suite("ResourceGrowth"))
 {
     glob2test::HeadlessGlobals globals({.loadStrings=true});
     for (const char* name : {"growth146.game.gz", "growth148.game.gz", "vertex148.game.gz"}) {
@@ -825,6 +842,11 @@ TEST_CASE("historical growth payloads are rejected after header preflight" * doc
         MapHeader header; GameHeader players;
         auto input=engine.openGameInput(path.string(),header,players);
         REQUIRE(input != nullptr);
-        CHECK_FALSE(engine.gui.game.load(input.get()));
+        REQUIRE(engine.gui.game.load(input.get()));
+        const bool growth = std::string_view(name).starts_with("growth");
+        // Header inspection must leave the original payload available, including
+        // computed growth outputs that must not be regenerated from live state.
+        CHECK((engine.gui.game.map.gradientRuntime->growth.count() != 0) == growth);
+        CHECK(engine.gui.game.mapHeader.getNumberOfTeams() == header.getNumberOfTeams());
     }
 }

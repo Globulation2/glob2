@@ -24,6 +24,7 @@ const SimulationSnapshot::Handle& Game::observation() const
 
 void Game::invalidateObservation()
 {
+    completedObservation.reset();
     worldSnapshots.invalidateBoundary();
 }
 
@@ -36,9 +37,10 @@ void Game::finishOrderPhase(bool advancing)
 
 const SimulationSnapshot::Handle& Game::observeCompletedWorld(SimulationSnapshot::CaptureOptions options)
 {
+    // Inspection-cache invalidations from live mutations cannot revoke the
+    // owner observation. Only advancement or an explicit owner edit replaces it.
     const bool fresh = !completedObservation || completedObservation->worldIdentity != map.identity()
-        || completedObservation->tick != stepCounter
-        || completedObservation->observationRevision != worldSnapshots.revision();
+        || completedObservation->tick != stepCounter;
     if (fresh)
     {
         ensureTurretTargeting();

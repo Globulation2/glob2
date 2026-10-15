@@ -1804,13 +1804,15 @@ TEST_SUITE("TurnEngineHarness")
 		m.run(2 * SECOND);
 		const std::uint32_t end = m.finish();
 		CHECK(m.requireIdenticalChecksums() == end + 1);
-		// The game skipped exactly the paused ticks, the same on both clients.
+		// Each resume holds its boundary for due AI delivery before the next
+		// advancement: one manual resume and two pause-budget forced resumes.
+		constexpr std::uint32_t resumeBoundaries = 3;
 		const std::uint32_t pausedTicks = lock0.pauseTicksUsed(0) + lock0.pauseTicksUsed(1);
 		for (auto& c : m.clients)
 		{
 			INFO("client " << c->index);
 			CHECK(c->engine->turnLockstep()->pauseTicksUsed(0) == lock0.pauseTicksUsed(0));
-			CHECK(c->engine->gui.game.stepCounter + pausedTicks == end);
+			CHECK(c->engine->gui.game.stepCounter + pausedTicks + resumeBoundaries == end);
 			requireSameAudit(c->engine->turnLockstep()->orderAudit(), lock0.orderAudit());
 		}
 		std::sort(notices.begin(), notices.end());

@@ -446,16 +446,25 @@ TEST_SUITE("TurretTargeting")
         }
         world.game.configureTurretTargeting(4,1,8,1);
         auto* pipeline=world.game.turretTargeting();
-        world.game.observeCompletedWorld();
         auto* changed=turrets[7]; const auto* original=changed->runtime;
+        const auto originalEntries=plan(*changed,8,1).entries;
+        REQUIRE_FALSE(originalEntries.empty());
+        world.game.observeCompletedWorld();
         auto upgraded=*original; ++upgraded.shootingRange; changed->runtime=&upgraded;
         for (unsigned tick=1;tick<=5;++tick) {
             world.game.stepCounter=tick;
             world.game.observeCompletedWorld();
             pipeline->publish(world.game);
             if (tick==4) {
-                CHECK(pipeline->entries(*changed).empty()); // The old source output is incompatible.
-                for (auto* turret:turrets) if (turret!=changed) CHECK_FALSE(pipeline->entries(*turret).empty());
+                // The T0 result belongs to this incarnation even after an
+                // upgrade. Firing revalidates it against the live weapon;
+                // increasing range leaves the original preferred target valid.
+                CHECK(pipeline->entries(*changed)==originalEntries);
+                CHECK(firstValid(*changed,pipeline->entries(*changed)).entry==plan(*changed,8,1).preferred.entry);
+                for (auto* turret:turrets) if (turret!=changed) {
+                    CHECK(pipeline->entries(*turret)==plan(*turret,8,1).entries);
+                    CHECK(firstValid(*turret,pipeline->entries(*turret)).entry==plan(*turret,8,1).preferred.entry);
+                }
             }
         }
         for (auto* turret:turrets) CHECK(pipeline->entries(*turret)==plan(*turret,8,1).entries);
@@ -538,11 +547,13 @@ TEST_SUITE("TurretTargeting")
         auto shared=world.game.observeCompletedWorld();
         CHECK(shared.entities);
         world.game.stepCounter=1;
-        world.game.observeCompletedWorld();
-        CHECK(pipeline->statistics().admissions==0);
+        // Team 1 is due at T1. Authoritative world work is admitted once even
+        // on a paused replica; pausing AI polling is a separate responsibility.
         world.game.observeCompletedWorld();
         CHECK(pipeline->statistics().admissions==1);
-        world.game.snapshots().invalidateBoundary(); // A paused edit does not readmit this logical tick.
+        world.game.observeCompletedWorld();
+        CHECK(pipeline->statistics().admissions==1);
+        world.game.invalidateObservation(); // A paused edit does not readmit this logical tick.
         world.game.observeCompletedWorld();
         CHECK(pipeline->statistics().admissions==1);
         world.game.stepCounter=2;

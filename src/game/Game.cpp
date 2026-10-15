@@ -171,6 +171,7 @@ void Game::configureUnitCatalog()
         }
     }
     worldSnapshots.invalidateCatalog();
+    completedObservation.reset(); // Setup/catalog replacement is an explicit owner edit.
 }
 
 void Game::configureBuildingCatalog()

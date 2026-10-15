@@ -436,7 +436,9 @@ checksum adapter retains its historical entity/RNG representation for fixtures.
   from that observation; headless consumers retain only their requested inputs.
   Store caching tracks tick, observation and configuration revisions, and map
   generations. Runtime callers establish a new observation only at the next tick
-  or an explicit invalidation; an order does not refresh the retained handle.
+  or `Game::invalidateObservation()` for an explicit owner edit. Invalidating the
+  standalone inspection cache does not revoke an established owner observation;
+  live entity helpers and orders cannot refresh that retained handle.
   Named views drop unwanted extras.
 ## Scheduled gradient work
 

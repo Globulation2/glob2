@@ -192,7 +192,7 @@ void ValueScrollBox::handleClick(int relMouseX, int relMouseY)
 		writeLiveValue(std::min(before+1, liveMaximum()));
 	else
 		writeLiveValue(int(float(relMouseX-10) * (float(liveMaximum())/float(92))+0.5));
-    if (liveValue()!=before) me.game.snapshots().invalidateBoundary();
+    if (liveValue()!=before) me.game.invalidateObservation();
 	MapEditorWidget::handleClick(relMouseX, relMouseY);
 }
 
@@ -202,7 +202,7 @@ void ValueScrollBox::setValue(int requested)
 {
     const auto before=liveValue();
     writeLiveValue(std::clamp(requested, 0, std::max(0, liveMaximum())));
-    if (liveValue()!=before) me.game.snapshots().invalidateBoundary();
+    if (liveValue()!=before) me.game.invalidateObservation();
     me.mapHasBeenModified();
     activate();
 }
