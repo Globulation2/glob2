@@ -1,0 +1,61 @@
+{
+  "tested_candidate_source_commit": "29f83b87353e39176a5e4b9482b86d9d1fc12ab0",
+  "base_revision": "dd493d7e71d21e5ab6cbaee0fe168a37e076860a",
+  "change": "Cache stable spans in Team::integrity; retain all scans and invariant checks.",
+  "native_environment": {
+    "os": "macOS-26.6.2-arm64-arm-64bit-Mach-O",
+    "compiler": "Apple clang version 21.0.0 (clang-2100.3.34.2)"
+  },
+  "completed_checks": [
+    {
+      "check": "GCC11 ARM64 -O3 assembly-only comparison",
+      "result": "Both baseline and candidate Team.cpp compiled; live-list metadata moved outside both loops, removing two loads per empty slot.",
+      "command": "python3 artifacts/integrity-live-views/check_gcc_assembly.py",
+      "limit": "Cached Linux include environment; same Team/Unit/Building/LiveSlotList definitions for both variants. This is code-generation evidence, not a full Linux build or execution."
+    },
+    {
+      "check": "Extracted integrity-method runtime harness",
+      "result": "13 scenarios passed for each baseline and candidate. Uses actual method source and real LiveSlotList with minimal Unit/Building doubles. Covers empty/sparse/full tables, eight membership corruptions, and two failing child checks.",
+      "command": "python3 artifacts/integrity-live-views/run_integrity_harness.py",
+      "limit": "Standalone algorithm checks, not integrated game/engine execution."
+    },
+    {
+      "check": "Native engine regression translation-unit compilation",
+      "result": "The new LiveSlotListTest.cpp compiled successfully with Apple Clang21 -O0 -g1 in the focused engine build.",
+      "limit": "Full engine link/execution was not completed."
+    },
+    {
+      "check": "Simulation-version contract",
+      "result": "Passed",
+      "command": "python3 test/check_sim_revision.py --base origin/master"
+    },
+    {
+      "check": "Patch whitespace",
+      "result": "Passed",
+      "command": "git diff --check origin/master...HEAD"
+    }
+  ],
+  "outstanding_checks": [
+    "Linked engine TeamLiveLists test execution",
+    "Baseline/candidate per-tick simulation checksum comparisons and save/resume continuation",
+    "Linux runtime/Callgrind remeasurement (Docker filesystem became read-only)",
+    "Windows/browser coverage"
+  ],
+  "build_interruption": "Local full engine rebuild stopped under resource contention to avoid competing with other work; partial logs retained. No introduced compiler error was identified before stopping.",
+  "performance_limit": "No runtime speedup claim. ~1.6% is the motivating profile instruction budget of removed metadata loads, not a measured improvement.",
+  "maintainer_acceptance": "Pending review; PR remains draft.",
+  "evidence_sha256": {
+    "baseline-integrity.s": "34f0a64ff53dffe350644faef9c555fa1152025605167f052afa5ece0118a65b",
+    "candidate-integrity.s": "c88fe3d27e037441dfb2566388780b9488fe431b68cbe1ddab9de45268efbe09",
+    "gcc-assembly-command.json": "50434ffee3f95e63158a5d9b849cbde72fef8c4ec458b8b4cd139980b7dc9d18",
+    "check_gcc_assembly.py": "1b579f1b85688d91d0935e3afe07d66df3cbb1cc07f80e0e48e8510bf0025a3c",
+    "run_integrity_harness.py": "eaf550dca71417f22d0b88590e6f0c12ac294e9fedbfea7a7b2fc19c270be057",
+    "baseline-harness.log": "d2142ed36974e7925dd4d47ea34ba7567a522499b6897c1def371908f5e0ab0a",
+    "candidate-harness.log": "096a9a0b2b73fc270f330ed7d1564fab0f5ac6a8bb10d95c016b6d155c9c7802",
+    "baseline-harness.cpp": "fc825ecaa97d3a00aa6dde4e4bbbf377d7fd83e87abe08c5182e1877cfa56757",
+    "candidate-harness.cpp": "686b1eb9f2fea7e29d1878dcbf6d15973c0a6ad1a245636b3a752859b42c1892",
+    "finish_native_validation.sh": "3e206eae77027f3c8bcd999df9e313886a4e2d7852eb0cb1a6e072472fe51751",
+    "native-build.log.gz": "e20f3104aa94631558085e0a535de8ae95eccac6d239a6d8a043acccc26928f9",
+    "native-build.initial.log.gz": "2a7296d2c2d36b58f870143c7c94f6a61ae41afb11580ee3304f440c19162fc2"
+  }
+}

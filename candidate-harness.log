@@ -1,0 +1,11 @@
+13 focused integrity scenarios passed
+Invariant failed: liveUnit < unitSlots.size() && unitSlots[liveUnit] == i && unitEntries[liveUnit] == u
+Invariant failed: liveUnit < unitSlots.size() && unitSlots[liveUnit] == i && unitEntries[liveUnit] == u
+Invariant failed: liveUnit < unitSlots.size() && unitSlots[liveUnit] == i && unitEntries[liveUnit] == u
+Invariant failed: liveUnit == unitSlots.size()
+Invariant failed: liveBuilding < buildingSlots.size() && buildingSlots[liveBuilding] == id && buildingEntries[liveBuilding] == b
+Invariant failed: liveBuilding < buildingSlots.size() && buildingSlots[liveBuilding] == id && buildingEntries[liveBuilding] == b
+Invariant failed: liveBuilding < buildingSlots.size() && buildingSlots[liveBuilding] == id && buildingEntries[liveBuilding] == b
+Invariant failed: liveBuilding == buildingSlots.size()
+Invariant failed: u->integrity()
+Invariant failed: b->integrity()
