@@ -56,7 +56,7 @@ ENGINE_TESTS = [
     ('#src/ai/AICustomCatalogTest.cpp', dict(cxxflags=['-fno-access-control'])),
     '#src/building/types/BuildingCatalogTest.cpp',
     '#src/building/BuildingProductionCombatTest.cpp',
-    '#src/building/BuildingStockTest.cpp',
+    ('#src/building/BuildingStockTest.cpp', dict(cxxflags=['-fno-access-control'])),
     '#src/building/BuildingCatalogFixtureHarness.cpp',
     '#src/building/BuildingCatalogBenchmark.cpp',
     '#src/building/AreaEffectsTest.cpp',

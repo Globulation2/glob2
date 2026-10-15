@@ -78,7 +78,7 @@ TEST_CASE("binary and text saves restore nonslot order scheduler and continuatio
 		}
 	}
 }
-TEST_CASE("formats164 and165 slot encoding bootstrap ascending population order") {
+TEST_CASE("formats164 through166 preserve population encoding and scheduler boundaries") {
 	glob2test::HeadlessGlobals globals;
 	glob2test::HeadlessGame world({.teams=2,.discovered=true,.clearImmobile=true,.loadDefaultRace=true,.header=true});
 	auto& game=world.game; auto* team=game.teams[0];
@@ -113,10 +113,10 @@ TEST_CASE("formats164 and165 slot encoding bootstrap ascending population order"
 		HistoricalOutput(GAGCore::MemoryStreamBackend* backend,Game& game,int version)
 			: LegacyPopulationOutput(backend,&game,version),version(version) {}
 		void writeSint32(Sint32 value,std::string_view name) override {
-			BinaryOutputStream::writeSint32(name=="versionMinor" ? version : value,name);
+			LegacyPopulationOutput::writeSint32(name=="versionMinor" ? version : value,name);
 		}
 	};
-	for (int version : {164,165}) {
+	for (int version : {164,165,166}) {
 		CAPTURE(version);
 		auto* backend=new GAGCore::MemoryStreamBackend;
 		HistoricalOutput output(backend,game,version);
@@ -128,7 +128,7 @@ TEST_CASE("formats164 and165 slot encoding bootstrap ascending population order"
 		auto* loaded=restored.game.teams[0];
 		CHECK(populationOrder(loaded->liveUnits)==expectedUnits);
 		CHECK(populationOrder(loaded->liveBuildings)==expectedBuildings);
-		CHECK(loaded->taskSwapNext==Unit::GIDtoID(expectedUnits.front()));
+		CHECK(loaded->taskSwapNext==Unit::GIDtoID(version<166 ? expectedUnits.front() : expectedUnits.back()));
 		CHECK(loaded->liveUnits.matches(loaded->myUnits,Unit::MAX_COUNT));
 		CHECK(loaded->liveBuildings.matches(loaded->myBuildings,Building::MAX_COUNT));
 		CHECK(restored.game.teams[1]->liveUnits.empty());

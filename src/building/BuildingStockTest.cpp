@@ -25,7 +25,7 @@ struct HistoricalStockOutput : glob2test::LegacyPopulationOutput {
     void writeSint32(Sint32 value,std::string_view name) override {
         if(name=="versionMinor") value=version;
         if(name=="localRessource["+std::to_string(slot)+"]") value=stock;
-        BinaryOutputStream::writeSint32(value,name);
+        LegacyPopulationOutput::writeSint32(value,name);
     }
 };
 std::string historicalGame(Game& game,int slot,Sint32 stock,int version=VERSION_MINOR) {

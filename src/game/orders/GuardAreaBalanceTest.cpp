@@ -72,13 +72,12 @@ namespace
 	}
 
 	// Steps a game, keeping every warrior fed so the scenarios stay about
-	// guarding rather than eating. Returns the mean wall time of a step in
-	// microseconds; movedTiles, if given, accumulates the number of tile changes.
-	double stepGame(Game& game, Team* team, int ticks, int* movedTiles = nullptr)
+	// guarding rather than eating. Optional movement counts are simulation data;
+	// wall-clock measurements belong only to the dedicated benchmark below.
+	void stepGame(Game& game, Team* team, int ticks, int* movedTiles = nullptr)
 	{
 		std::vector<int> before(Unit::MAX_COUNT, -1);
 		int moved = 0;
-		const auto start = std::chrono::steady_clock::now();
 		for (int t = 0; t < ticks; ++t)
 		{
 			if (movedTiles)
@@ -91,10 +90,8 @@ namespace
 				for (Unit* u : team->liveUnits.entries())
 						moved += (int)game.map.coordToIndex(u->posX, u->posY) != before[Unit::GIDtoID(u->gid)];
 		}
-		const auto end = std::chrono::steady_clock::now();
 		if (movedTiles)
 			*movedTiles = moved;
-		return std::chrono::duration<double, std::micro>(end - start).count() / std::max(1, ticks);
 	}
 
 	glob2test::GameOptions worldOptions(const Options& options, int sizeShift)
@@ -192,9 +189,9 @@ namespace
 			return n;
 		}
 
-		double run(int ticks, int* movedTiles = nullptr)
+		void run(int ticks, int* movedTiles = nullptr)
 		{
-			return stepGame(game, team, ticks, movedTiles);
+			stepGame(game, team, ticks, movedTiles);
 		}
 	};
 
@@ -241,20 +238,19 @@ namespace
 
 		printHeader("spawn", NEAR_AREA, FAR_AREA);
 		const int sample = 250;
-		double stepMicros = 0;
 		int arrived = -1;
 		for (int tick = 0; tick < options.ticks; tick += sample)
 		{
 			printRow(world, "spawn", tick, NEAR_AREA, FAR_AREA, options.warriors);
 			if (arrived < 0 && world.countNear(NEAR_AREA) + world.countNear(FAR_AREA) >= options.warriors * 9 / 10)
 				arrived = tick;
-			stepMicros += world.run(std::min(sample, options.ticks - tick)) * std::min(sample, options.ticks - tick);
+			world.run(std::min(sample, options.ticks - tick));
 		}
 		int moved = 0;
-		stepMicros += world.run(500, &moved) * 500;
+		world.run(500, &moved);
 		printRow(world, "spawn", options.ticks + 500, NEAR_AREA, FAR_AREA, options.warriors);
-		std::printf("[spawn] average step %.1f us, tile moves per warrior over the last 500 ticks %.2f, 90%% arrived by tick %d\n",
-			stepMicros / (options.ticks + 500), (double)moved / options.warriors, arrived);
+		std::printf("[spawn] tile moves per warrior over the last 500 ticks %.2f, 90%% arrived by tick %d\n",
+			(double)moved / options.warriors, arrived);
 		REQUIRE(world.game.integrity());
 
 		const int na = world.countNear(NEAR_AREA), nb = world.countNear(FAR_AREA);
