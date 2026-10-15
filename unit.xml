@@ -1,0 +1,24 @@
+<?xml version='1.0' encoding='utf-8'?>
+<testsuites tests="22" failures="0" errors="0" skipped="0"><testsuite name="EntityRandom"><testcase classname="EntityRandom" name="owner domain seed vectors and namespace separation" time="0.000393" status="run" />
+    <testcase classname="EntityRandom" name="PCG32 reference seed 42 stream 54" time="0" status="run" />
+    <testcase classname="EntityRandom" name="salted initialization vectors lock seed kind gid and generation" time="0" status="run" />
+    <testcase classname="EntityRandom" name="interleaving and extra draws cannot change another stream" time="0.000688" status="run" />
+    <testcase classname="EntityRandom" name="state import resumes exactly and rejects invalid increments atomically" time="0.000458" status="run" />
+  </testsuite><testsuite name="PlatformClient"><testcase classname="PlatformClient" name="an unsupported sim version says which side is out of date" time="0.004158" status="run" />
+  </testsuite><testsuite name="PlatformProtocol"><testcase classname="PlatformProtocol" name="the local sim version carries this build's versions" time="0" status="run" />
+  </testsuite><testsuite name="ReplayStepCounter"><testcase classname="ReplayStepCounter" name="truncated replay bodies never become zero-filled orders" time="0.00172" status="run" />
+    <testcase classname="ReplayStepCounter" name="step totals cannot wrap" time="0" status="run" />
+    <testcase classname="ReplayStepCounter" name="checksum mismatch closes playback safely" time="0" status="run" />
+    <testcase classname="ReplayStepCounter" name="legacy create decoder respects both historical payload lengths" time="0" status="run" />
+    <testcase classname="ReplayStepCounter" name="WideRoundTrip" time="0.004006" status="run" />
+    <testcase classname="ReplayStepCounter" name="VersionBounds" time="0.000187" status="run" />
+    <testcase classname="ReplayStepCounter" name="DecodeVersionPlumbing" time="0" status="run" />
+  </testsuite><testsuite name="TurnMatchRecord"><testcase classname="TurnMatchRecord" name="round-trips through bytes and files" time="0.001116" status="run" />
+    <testcase classname="TurnMatchRecord" name="rejects corruption, truncation, newer versions and disorder" time="0.00123" status="run" />
+    <testcase classname="TurnMatchRecord" name="CRC-32 matches the IEEE check value" time="0" status="run" />
+  </testsuite><testsuite name="TurnSequencer"><testcase classname="TurnSequencer" name="admission: tickets, versions, first message and seat takeover" time="0.001121" status="run" />
+  </testsuite><testsuite name="WordChecksum"><testcase classname="WordChecksum" name="fixed word vectors use unsigned arithmetic and explicit half ordering" time="0" status="run" />
+    <testcase classname="WordChecksum" name="word positions and individual bit changes are visible" time="0" status="run" />
+    <testcase classname="WordChecksum" name="paired bit changes do not cancel as in the XOR multiply mixer" time="0.00017" status="run" />
+    <testcase classname="WordChecksum" name="secondary coverage follows absolute ticks across save boundaries and wrap" time="0" status="run" />
+  </testsuite></testsuites>

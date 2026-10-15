@@ -1,0 +1,98 @@
+<?xml version='1.0' encoding='utf-8'?>
+<testsuites tests="96" failures="0" errors="0" skipped="0"><testsuite name="EntityRandomLifecycle" errors="0" failures="0"><testcase classname="EntityRandomLifecycle" name="binary and text saves preserve exact private state and subsequent draws" time="12.5611" status="run" />
+  <testcase classname="EntityRandomLifecycle" name="entity operations consume only their own streams outside a tick" time="1.73328" status="run" />
+  <testcase classname="EntityRandomLifecycle" name="format 150 text area saves retain funded services through current saves [save-format][artifacts]" time="16.3615" status="run" />
+  <testcase classname="EntityRandomLifecycle" name="fresh header reseeds starting entities but resume header preserves progress" time="5.01393" status="run" />
+  <testcase classname="EntityRandomLifecycle" name="gradient sidesteps draw from the moving unit rather than the target building" time="1.45287" status="run" />
+  <testcase classname="EntityRandomLifecycle" name="malformed new world RNG records fail rather than migrating" time="4.69197" status="run" />
+  <testcase classname="EntityRandomLifecycle" name="missing malformed and even text RNG fields are rejected" time="0.002367" status="run" />
+  <testcase classname="EntityRandomLifecycle" name="snapshots freeze both unit and building RNG state" time="1.82023" status="run" />
+  <testcase classname="EntityRandomLifecycle" name="story identities isolate extra draws and fixed domains differ" time="0" status="run" />
+  <testcase classname="EntityRandomLifecycle" name="team steps consume entity streams without consuming world randomness" time="1.52173" status="run" />
+  <testcase classname="EntityRandomLifecycle" name="truncated binary RNG state and even increments are rejected" time="0.000588" status="run" />
+  <testcase classname="EntityRandomLifecycle" name="upgrades preserve streams and reused slots receive a fresh salt" time="1.67608" status="run" />
+  <testcase classname="EntityRandomLifecycle" name="world owners are isolated and their progress changes lockstep checksums" time="2.03706" status="run" />
+  <testcase classname="EntityRandomLifecycle" name="world streams continue through binary and text saves without resume reseeding" time="15.7695" status="run" />
+  </testsuite><testsuite name="MatchSetup" errors="0" failures="0"><testcase classname="MatchSetup" name="AI order delay is optional bounded integer data and round trips through headers" time="1.79244" status="run" />
+  <testcase classname="MatchSetup" name="Building gradient delay is optional bounded integer data and round trips through headers" time="1.91625" status="run" />
+  <testcase classname="MatchSetup" name="New match rules default to eight tick AI decisions" time="0" status="run" />
+  <testcase classname="MatchSetup" name="SHA-256 matches the FIPS 180-4 test vectors" time="0.092012" status="run" />
+  <testcase classname="MatchSetup" name="Scripted map sources preserve exact provenance and enforce team count" time="0.001937" status="run" />
+  <testcase classname="MatchSetup" name="a map file is found and checked by the hash of its decompressed bytes" time="1.05007" status="run" />
+  <testcase classname="MatchSetup" name="catalog rules identity partitions ratings without changing the executable identity" time="0.000317" status="run" />
+  <testcase classname="MatchSetup" name="closed seats close their team and follow every player seat" time="0.895854" status="run" />
+  <testcase classname="MatchSetup" name="current files bind embedded migration catalogs as explicit authority [save-format]" time="9.49785" status="run" />
+  <testcase classname="MatchSetup" name="embedded catalogs carry dynamic experiments independently of installed definitions" time="6.04674" status="run" />
+  <testcase classname="MatchSetup" name="every MatchSetup and SimVersion contract fixture is accepted or rejected at its stage" time="0.954344" status="run" />
+  <testcase classname="MatchSetup" name="legacy resolved setup catalogs retain zero health privately and reject authoring escapes" time="1.19551" status="run" />
+  <testcase classname="MatchSetup" name="legacy turn setup validates recovered body catalogs before accepting the session [save-format]" time="13.5106" status="run" />
+  <testcase classname="MatchSetup" name="map-required terrain experiments propagate to setup and cannot be omitted" time="0.733702" status="run" />
+  <testcase classname="MatchSetup" name="the simulation data hash covers every data file the simulation loads" time="1.12581" status="run" />
+  <testcase classname="MatchSetup" name="the vendored fixtures match the protocol package when it is present" time="0.022736" status="run" />
+  <testcase classname="MatchSetup" name="unit catalogs survive setup conversion and reject tampered identity" time="1.07202" status="run" />
+  <testcase classname="MatchSetup" name="unknown experiments, JavaScript AIs and unexpressible headers are refused" time="1.11491" status="run" />
+  <testcase classname="MatchSetup" name="valid setups become the GameHeader every client and the verifier run" time="0.926366" status="run" />
+  </testsuite><testsuite name="RuntimeContinuation" errors="0" failures="0"><testcase classname="RuntimeContinuation" name="flat building relationships resolve captured unit incarnations" time="3.59239" status="run" />
+  <testcase classname="RuntimeContinuation" name="gradient manager state survives binary and text round trips [save-format]" time="9.75759" status="run" />
+  <testcase classname="RuntimeContinuation" name="irrigation heuristics require a positive enabled fertility contribution" time="0" status="run" />
+  <testcase classname="RuntimeContinuation" name="position entities retain historical binary and text payloads" time="0.000626" status="run" />
+  <testcase classname="RuntimeContinuation" name="queued orders preserve selection incarnations through save and slot replacement" time="2.99414" status="run" />
+  <testcase classname="RuntimeContinuation" name="recurring input tracking and provider lookup preserve composite membership" time="4.7696" status="run" />
+  <testcase classname="RuntimeContinuation" name="runtime owner helpers and decisions release their full observation leases" time="3.6095" status="run" />
+  <testcase classname="RuntimeContinuation" name="static material fields invalidate on source edits and preserve continuation" time="3.14941" status="run" />
+  <testcase classname="RuntimeContinuation" name="terrain weighted influence retains obstacles and sub-tile trail costs" time="0.000762" status="run" />
+  </testsuite><testsuite name="SharedWorkerLifecycle" errors="0" failures="0"><testcase classname="SharedWorkerLifecycle" name="background saves finish on a worker and remain readable after teardown" time="1.18329" status="run" />
+  <testcase classname="SharedWorkerLifecycle" name="no-AI completed ticks and saved continuation agree across diagnostic modes and worker counts [artifacts]" time="145.179" status="run" />
+  <testcase classname="SharedWorkerLifecycle" name="pending gradient work survives a save and continues at the same deadlines" time="7.69215" status="run" />
+  <testcase classname="SharedWorkerLifecycle" name="reduced saved AI rosters retire trailing controllers and preserve continuation" time="103.386" status="run" />
+  <testcase classname="SharedWorkerLifecycle" name="resource catalog import drains deferred material preparation before replacing stocks" time="3.4534" status="run" />
+  </testsuite><testsuite name="SimulationReadPhase" errors="0" failures="0"><testcase classname="SimulationReadPhase" name="AI and pending gradients share the standard boundary with presentation" time="2.0733" status="run" />
+  <testcase classname="SimulationReadPhase" name="direct completed steps match deferred preparation across worker counts" time="12.7491" status="run" />
+  <testcase classname="SimulationReadPhase" name="presentation borrows the published no-AI read boundary without recapture" time="1.59198" status="run" />
+  </testsuite><testsuite name="TeamStatsPipeline" errors="0" failures="0"><testcase classname="TeamStatsPipeline" name="complete frames preserve cumulative measurements and retained readers" time="4.47184" status="run" />
+  <testcase classname="TeamStatsPipeline" name="delayed statistics AI and presentation share one capture per boundary" time="2.73433" status="run" />
+  <testcase classname="TeamStatsPipeline" name="direct scalar checksums match canonical binary bytes" time="0" status="run" />
+  <testcase classname="TeamStatsPipeline" name="failed computation or submission remains a failure at later owner barriers" time="2.01817" status="run" />
+  <testcase classname="TeamStatsPipeline" name="format 155 pending digests are discarded without losing samples" time="1.13229" status="run" />
+  <testcase classname="TeamStatsPipeline" name="format 156 raw aggregate samples retain exact smoothing after loading and resaving" time="1.02045" status="run" />
+  <testcase classname="TeamStatsPipeline" name="format 157 pending measurement deltas migrate and resave without early publication" time="1.14963" status="run" />
+  <testcase classname="TeamStatsPipeline" name="full game save preserves statistics across smoothing and history boundaries" time="15.4152" status="run" />
+  <testcase classname="TeamStatsPipeline" name="lagged windows include current samples and never feed approximations into the raw ring" time="2.27039" status="run" />
+  <testcase classname="TeamStatsPipeline" name="late workers are joined at the deadline without choosing publication time" time="1.02815" status="run" />
+  <testcase classname="TeamStatsPipeline" name="light checks do not execute jobs and full checks cover computed pending samples" time="1.63765" status="run" />
+  <testcase classname="TeamStatsPipeline" name="periodic snapshot places match live coverage at wrapped footprint boundaries" time="1.16393" status="run" />
+  <testcase classname="TeamStatsPipeline" name="publication is fixed to source tick plus delay and boundaries are idempotent" time="2.1024" status="run" />
+  <testcase classname="TeamStatsPipeline" name="pure captures pause and waiting admit no statistics and readers share the generation" time="1.13714" status="run" />
+  <testcase classname="TeamStatsPipeline" name="raw snapshot samples retain synchronous aggregation and smoothing" time="1.20848" status="run" />
+  <testcase classname="TeamStatsPipeline" name="remote map sweeps are periodic and explicit verification remains exhaustive" time="1.71776" status="run" />
+  <testcase classname="TeamStatsPipeline" name="routine statistics coverage excludes diagnostic ledgers and full checks retain them" time="1.25773" status="run" />
+  <testcase classname="TeamStatsPipeline" name="save drains work without moving deadlines and restores pending samples" time="1.28406" status="run" />
+  <testcase classname="TeamStatsPipeline" name="secondary statistics are periodic while verification and entity checks stay immediate" time="1.53556" status="run" />
+  <testcase classname="TeamStatsPipeline" name="worker counts produce identical publication and pending sample checksums" time="6.69261" status="run" />
+  </testsuite><testsuite name="TurnEngineHarness" errors="0" failures="0"><testcase classname="TurnEngineHarness" name="a client that executes a tampered order is repaired by an in-place reload and named by the verifier [network-sim][artifacts]" time="98.5404" status="run" />
+  <testcase classname="TurnEngineHarness" name="four engines survive a stall and a restart: the restarted client reloads and fast-forwards [network-sim][artifacts]" time="50.5278" status="run" />
+  <testcase classname="TurnEngineHarness" name="the committed match record verifies to the committed checksum trace [network-sim][golden]" time="10.8389" status="run" />
+  <testcase classname="TurnEngineHarness" name="two engines with AI seats under latency, jitter and loss agree at every tick and the record verifies [network-sim][artifacts]" time="80.578" status="run" />
+  </testsuite><testsuite name="EntityRandom"><testcase classname="EntityRandom" name="owner domain seed vectors and namespace separation" time="0.000393" status="run" />
+    <testcase classname="EntityRandom" name="PCG32 reference seed 42 stream 54" time="0" status="run" />
+    <testcase classname="EntityRandom" name="salted initialization vectors lock seed kind gid and generation" time="0" status="run" />
+    <testcase classname="EntityRandom" name="interleaving and extra draws cannot change another stream" time="0.000688" status="run" />
+    <testcase classname="EntityRandom" name="state import resumes exactly and rejects invalid increments atomically" time="0.000458" status="run" />
+  </testsuite><testsuite name="PlatformClient"><testcase classname="PlatformClient" name="an unsupported sim version says which side is out of date" time="0.004158" status="run" />
+  </testsuite><testsuite name="PlatformProtocol"><testcase classname="PlatformProtocol" name="the local sim version carries this build's versions" time="0" status="run" />
+  </testsuite><testsuite name="ReplayStepCounter"><testcase classname="ReplayStepCounter" name="truncated replay bodies never become zero-filled orders" time="0.00172" status="run" />
+    <testcase classname="ReplayStepCounter" name="step totals cannot wrap" time="0" status="run" />
+    <testcase classname="ReplayStepCounter" name="checksum mismatch closes playback safely" time="0" status="run" />
+    <testcase classname="ReplayStepCounter" name="legacy create decoder respects both historical payload lengths" time="0" status="run" />
+    <testcase classname="ReplayStepCounter" name="WideRoundTrip" time="0.004006" status="run" />
+    <testcase classname="ReplayStepCounter" name="VersionBounds" time="0.000187" status="run" />
+    <testcase classname="ReplayStepCounter" name="DecodeVersionPlumbing" time="0" status="run" />
+  </testsuite><testsuite name="TurnMatchRecord"><testcase classname="TurnMatchRecord" name="round-trips through bytes and files" time="0.001116" status="run" />
+    <testcase classname="TurnMatchRecord" name="rejects corruption, truncation, newer versions and disorder" time="0.00123" status="run" />
+    <testcase classname="TurnMatchRecord" name="CRC-32 matches the IEEE check value" time="0" status="run" />
+  </testsuite><testsuite name="TurnSequencer"><testcase classname="TurnSequencer" name="admission: tickets, versions, first message and seat takeover" time="0.001121" status="run" />
+  </testsuite><testsuite name="WordChecksum"><testcase classname="WordChecksum" name="fixed word vectors use unsigned arithmetic and explicit half ordering" time="0" status="run" />
+    <testcase classname="WordChecksum" name="word positions and individual bit changes are visible" time="0" status="run" />
+    <testcase classname="WordChecksum" name="paired bit changes do not cancel as in the XOR multiply mixer" time="0.00017" status="run" />
+    <testcase classname="WordChecksum" name="secondary coverage follows absolute ticks across save boundaries and wrap" time="0" status="run" />
+  </testsuite></testsuites>

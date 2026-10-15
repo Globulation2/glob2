@@ -1,0 +1,50 @@
+{
+  "revision": "6808e584c721dc2ca78afc7d6dd6f0eca72b0b36",
+  "native_unit": {
+    "cases": 22,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0
+  },
+  "initial_native_engine": {
+    "cases": 74,
+    "passed": 72,
+    "assertion_failures": 0,
+    "timeout_errors": 2,
+    "jobs": 4,
+    "timeout_seconds": 120
+  },
+  "engine_retry": {
+    "selected_cases": 2,
+    "jobs": 1,
+    "timeout_seconds": 600,
+    "status": "passed",
+    "passed": 2,
+    "failures": 0,
+    "errors": 0
+  },
+  "scalar_suites": {
+    "arm64_ubsan": {
+      "cases": 9,
+      "assertions": 3393
+    },
+    "x86_64_on_arm64_host": {
+      "cases": 9,
+      "assertions": 3393
+    }
+  },
+  "sim_version_checker_self_tests": 9,
+  "golden_fixture": {
+    "regenerated": true,
+    "checked_again_without_update": true,
+    "sim_revision_guard_passed": true
+  },
+  "limits": [
+    "No full test suite",
+    "No Linux/Windows/browser engine execution",
+    "No full cross-platform per-tick checksum comparison",
+    "No live mixed-version LAN peer integration test",
+    "No end-to-end optimized engine performance measurement"
+  ],
+  "final_native_cases_passed": 96
+}

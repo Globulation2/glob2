@@ -1,0 +1,16 @@
+# Temporary focused native harness; production objects and flags are unchanged.
+import sys
+from pathlib import Path
+sys.path.insert(0, str(Path.cwd()))
+sys.path.insert(0, str(Path('test').resolve()))
+import tests as checksum_registry
+engine_names={'TeamStatsPipelineTest.cpp','EntityRandomLifecycleTest.cpp','SharedWorkerLifecycleTest.cpp','MatchSetupTest.cpp','RuntimeContinuationTest.cpp','TurnEngineHarness.cpp'}
+unit_names={'WordChecksumTest.cpp','EntityRandomTest.cpp','ReplayStepCounterTest.cpp','PlatformProtocolTest.cpp','PlatformClientTest.cpp','TurnProtocolTest.cpp','MobileCertificateHarness.cpp','MobileDocumentsHarness.cpp'}
+def selected(entries,names):
+    result=[entry for entry in entries if Path(entry if isinstance(entry,str) else entry[0]).name in names]
+    found={Path(entry if isinstance(entry,str) else entry[0]).name for entry in result}
+    assert found==names,(names-found)
+    return result
+checksum_registry.ENGINE_TESTS=selected(checksum_registry.ENGINE_TESTS,engine_names)
+checksum_registry.UNIT_TESTS=selected(checksum_registry.UNIT_TESTS,unit_names)
+exec(compile(Path('SConstruct').read_text(),'SConstruct','exec'))

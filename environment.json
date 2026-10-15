@@ -1,0 +1,38 @@
+{
+  "tested_head": "6808e584c721dc2ca78afc7d6dd6f0eca72b0b36",
+  "base": "dd493d7e71d21e5ab6cbaee0fe168a37e076860a",
+  "platform": "macOS-26.6.2-arm64-arm-64bit-Mach-O",
+  "compiler": "Apple clang version 21.0.0 (clang-2100.3.34.2)\nTarget: arm64-apple-darwin25.6.0\nThread model: posix\nInstalledDir: /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin\n",
+  "build_identity": {
+    "client_features": {
+      "authoring_links": true,
+      "commander": true,
+      "community_ai": true,
+      "community_generators": true
+    },
+    "client_profile": "full",
+    "dev_fast": true,
+    "distribution": "direct",
+    "linker": "auto",
+    "mode": "debug",
+    "native_wss": true,
+    "role": "client",
+    "target": "native",
+    "toolchain": "darwin"
+  },
+  "dependencies": {
+    "sdl3": "3.4.18",
+    "sdl3-image": "3.4.8",
+    "sdl3-net": "3.2.0",
+    "sdl3-ttf": "3.2.2",
+    "speex": "1.2.1",
+    "opusfile": "0.12",
+    "opus": "1.6.1",
+    "ogg": "1.3.6",
+    "openssl": "3.6.4",
+    "zlib": "1.2.12"
+  },
+  "latest_master": "ec1a0adfb6c0f84e3ab60058cf7513441d62ab23",
+  "merge_conflict_check_tree": "bc9fa9b8df2ff0f3b27d5f651a51514d3b285c7d",
+  "integration_note": "Tested the PR branch based on dd493d7e7. Fetched ec1a0adfb; its BitArray-only change is unrelated to the checksum code. merge-tree reports no conflicts; the combined tree was not executed."
+}

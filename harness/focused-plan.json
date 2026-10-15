@@ -1,0 +1,24 @@
+{
+  "build_dir": "build/darwin/client/debug/dev-dev_fast-true-linker-auto",
+  "engine_filters": [
+    "TeamStatsPipeline/*",
+    "EntityRandomLifecycle/*",
+    "SharedWorkerLifecycle/*",
+    "SimulationReadPhase/*",
+    "MatchSetup/*",
+    "RuntimeContinuation/*",
+    "TurnEngineHarness/two engines with AI seats*",
+    "TurnEngineHarness/a client that executes a tampered order*",
+    "TurnEngineHarness/four engines survive a stall*",
+    "TurnEngineHarness/the committed match record*"
+  ],
+  "unit_filters": [
+    "WordChecksum/*",
+    "EntityRandom/*",
+    "ReplayStepCounter/*",
+    "PlatformProtocol/the local sim version*",
+    "PlatformClient/an unsupported sim version*",
+    "TurnMatchRecord/*",
+    "TurnSequencer/admission:*"
+  ]
+}

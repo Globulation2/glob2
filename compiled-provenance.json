@@ -1,0 +1,13 @@
+{
+  "compiler": "g++",
+  "dirty": false,
+  "flags": {
+    "CCFLAGS": "-O0 -g1 -fdebug-prefix-map=/Users/bradley/.codex/worktrees/efficient-checksums/glob2=.",
+    "CPPDEFINES": "GLOB2_OFFICIAL_INSTANCE_ORIGIN \\\"https://app.glob2online.com\\\" GLOB2_OFFICIAL_INSTANCE_FORMER_ORIGINS \\\"https://glob2online.com\\\" HAVE_CONFIG_H GL_SILENCE_DEPRECATION GLOB2_RENDER_SHADER_DIR \\\"/Users/bradley/.codex/worktrees/efficient-checksums/glob2/build/darwin/client/debug/dev-dev_fast-true-linker-auto/shaders\\\" SDL_MAIN_HANDLED",
+    "CXXFLAGS": "-std=gnu++20 -Wall -fPIC",
+    "LINKFLAGS": "-Wall -Wl,-rpath,/opt/homebrew/lib"
+  },
+  "revision": "6808e584c721dc2ca78afc7d6dd6f0eca72b0b36",
+  "sourceStatus": [],
+  "sourceTreeSha256": "754ac915af96b2ce749c1b4f9166f40d4fae19e67a054902abac7eed1eef568f"
+}
