@@ -168,7 +168,7 @@ TEST_CASE("resource visibility supplier and claim revisions refresh unavailable 
 TEST_CASE("cold demand beyond the plane budget remains uncharged FIFO metadata and completes on workers")
 {
     glob2test::HeadlessGlobals globals;
-    glob2test::HeadlessGame world({.discovered=true,.clearImmobile=true,.header=true});
+    glob2test::HeadlessGame world({.wDec=7,.hDec=7,.discovered=true,.clearImmobile=true,.header=true});
     auto& game=world.game; auto& map=game.map;
     configureAir(game,2); map.addGuardArea(20,20,0);
     std::vector<Key> keys;
@@ -185,11 +185,15 @@ TEST_CASE("cold demand beyond the plane budget remains uncharged FIFO metadata a
     CHECK(map.gradientPipelineStatus().pending==0);
     CHECK(audit.totals().owner==0); CHECK(audit.totals().other==0);
     std::vector<bool> seen(keys.size());
+    bool observedEviction=false;
     unsigned next=0;
     for (unsigned boundary=0;next<keys.size() && boundary<512;++boundary) {
         advanceAir(game);
         for (unsigned i=0;i<keys.size();++i) {
-            if (map.lookupAirField(keys[i]).readiness!=FieldReadiness::Ready) continue;
+            if (map.lookupAirField(keys[i]).readiness!=FieldReadiness::Ready) {
+                observedEviction|=seen[i];
+                continue;
+            }
             if (!seen[i]) { CHECK(i==next); ++next; seen[i]=true; }
             // Give every publication its consumer opportunity, so later cold
             // demand can reuse its plane charge without evicting unread work.
@@ -197,6 +201,7 @@ TEST_CASE("cold demand beyond the plane budget remains uncharged FIFO metadata a
         }
     }
     CHECK(next==keys.size());
+    CHECK(observedEviction); // The enrolled inventory actually exceeded the allocation budget.
     map.finishGradientPipeline();
     if (GAGCore::ThreadSupport::available) CHECK(audit.totals().owner==0);
 }
@@ -204,7 +209,7 @@ TEST_CASE("cold demand beyond the plane budget remains uncharged FIFO metadata a
 TEST_CASE("a cold FIFO head defers without a deadline then evicts queued warm allocations without moving their entries")
 {
     glob2test::HeadlessGlobals globals;
-    glob2test::HeadlessGame world({.discovered=true,.clearImmobile=true,.header=true});
+    glob2test::HeadlessGame world({.wDec=7,.hDec=7,.discovered=true,.clearImmobile=true,.header=true});
     auto& game=world.game; auto& map=game.map;
     configureAir(game,2); map.addGuardArea(20,20,0);
     Key first; first.family=Family::Guard;
@@ -216,7 +221,10 @@ TEST_CASE("a cold FIFO head defers without a deadline then evicts queued warm al
     // Fill logical charges using one immutable fixture generation. Sharing its
     // physical storage keeps this a small correctness test; admission still
     // charges every distinct field exactly as it would after real publication.
-    for (unsigned i=0;i<200;++i) {
+    // Distances alone give a conservative upper bound on how many distinct
+    // allocations can fit, without duplicating runtime metadata accounting.
+    const auto maxReservations=AirGradientRuntime::Budget/(map.cellCount()*sizeof(Uint16))+1;
+    for (unsigned i=0;i<maxReservations;++i) {
         Key key=first; key.epoch=1000+i;
         map.requestAirField(key);
         auto found=std::find_if(runtime.entries.begin(),runtime.entries.end(),[&](const auto& item) { return item.second.key==key; });

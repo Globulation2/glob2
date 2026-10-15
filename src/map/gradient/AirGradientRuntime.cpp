@@ -42,10 +42,13 @@ void buildBuilding(const Key& key,const SimulationSnapshot::Handle& snapshot,Uin
 Uint64 charge(const Key& key,std::size_t cells) {
     // Output allocations only: traversal, candidates and queues are private
     // worker scratch. Shared selectors retain no more than one goal per cell.
+    // Fixed record allowances keep admission independent of the platform ABI.
+    constexpr Uint64 GoalBytes=16, ChoiceBytes=24;
+    static_assert(sizeof(Goal)<=GoalBytes && sizeof(Choice)<=ChoiceBytes);
     const Uint64 distances=cells*sizeof(Uint16);
     const Uint64 output=key.family==Family::Building ? distances+cells*sizeof(Uint8)
-        : key.family==Family::ClearChoice ? distances+sizeof(Choice)
-        : distances+cells*(sizeof(Uint8)+sizeof(Uint32)+sizeof(Goal));
+        : key.family==Family::ClearChoice ? distances+ChoiceBytes
+        : distances+cells*(sizeof(Uint8)+sizeof(Uint32)+GoalBytes);
     return 3*output; // Published, private, and one logically retired generation.
 }
 bool retained(const Map& map,const AirGradientRuntime::Entry& entry,const GradientRuntime& runtime)
