@@ -65,7 +65,7 @@ BuildingMaterialDemand Building::materialDemand() const
 		candidates &= candidates-1;
 		const int missing = materialDeliveryNeed(r);
 		if (!missing) continue;
-		demand.missingMaterials |= MaterialMask(1u<<r);
+		demand.full = false;
 		// Catalogs and loaded construction budgets cap both inputs at 1,000,000.
 		// Keep the original 32-bit ceiling division; even the 12-material 4/3
 		// staffing sum fits int. Capacity subtraction above still needs Sint64.
@@ -456,7 +456,7 @@ void Building::updateCallLists(void)
 void Building::updateCallLists(const BuildingMaterialDemand& demand)
 {
 	if (buildingState==DEAD) return;
-	updateCallLists(desiredNumberOfWorkers(demand), demand.missingMaterials==0);
+	updateCallLists(desiredNumberOfWorkers(demand), demand.full);
 }
 
 void Building::updateCallLists(int desiredWorkers, bool resourceFull)

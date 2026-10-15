@@ -9,5 +9,5 @@ struct BuildingMaterialDemand
 {
     std::array<int, MaterialSlotCount> deliveries{};
     int totalDeliveries = 0; // Staffing historically counts only the 12 real materials.
-    MaterialMask missingMaterials = 0; // Fullness observes all 15 storage slots.
+    bool full = true; // Fullness observes all 15 storage slots.
 };
