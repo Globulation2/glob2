@@ -194,7 +194,7 @@ int Building::workRoleTarget(int role) const
 {
 	bool delivery = false;
 	for (int material = 0; material < MaterialCount; ++material)
-		delivery |= materialDeliveryNeed(material) > 0;
+		if (materialDeliveryNeed(material) > 0) { delivery = true; break; }
 	const auto targets = Hiring::roleTargets(
 		unsigned(std::max(0, desiredMaxUnitWorking)), delivery,
 		{runtime->attractsRole(0), runtime->attractsRole(1), runtime->attractsRole(2)});

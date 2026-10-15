@@ -32,13 +32,18 @@ int Building::materialDeliveryTarget(int r) const
 
 int Building::materialDeliveryNeed(int r) const
 {
-	const Sint64 room = std::max<Sint64>(0, Sint64(materialStockLimit()) - material(r));
-	if (type->isBuildingSite && (constructionBudget[r] || type->semantics.constructionCost[r]))
+	const bool construction = type->isBuildingSite && (constructionBudget[r] || type->semantics.constructionCost[r]);
+	if (!construction && (!(runtime->replenishMaterialMask & (1u<<r)) || !type->maxMaterial[r]))
+		return 0;
+	const int stock = material(r);
+	const Sint64 room = std::max<Sint64>(0, Sint64(materialStockLimit()) - stock);
+	if (construction)
 	{
-		const int uncommitted = constructionResultState == REPAIR ? 0 : availableMaterial(r);
+		const int reserved = type->useTeamMaterials ? owner->reservedTeamMaterials[r] : reservedMaterials[r];
+		const int uncommitted = constructionResultState == REPAIR ? 0 : std::max(0, stock-reserved);
 		return Sint32(std::min<Sint64>(room, std::max(0, constructionMaterialNeed(r)-uncommitted)));
 	}
-	return (runtime->replenishMaterialMask & (1u<<r)) ? Sint32(std::min<Sint64>(room, std::max(0, type->maxMaterial[r]-material(r)))) : 0;
+	return Sint32(std::min<Sint64>(room, std::max(0, type->maxMaterial[r]-stock)));
 }
 
 void Building::fundConstructionFromInventory()
