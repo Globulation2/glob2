@@ -1,0 +1,32 @@
+{
+  "role": "baseline",
+  "case": "parity-Playground-n4-cpu-mixed",
+  "initialChecksum": 941441255,
+  "finalChecksum": 1815523812,
+  "checksums": {
+    "GCS1": "afa30ffe19849163c75f59ade5764d77c2291f45ca4d44af93b2375e4eb70d0a",
+    "native": "dbbf13d1c15adbe3dc76910b161fa09ca47f62ef235cdf4c5c041c90ec34b5f6"
+  },
+  "details": {
+    "GCS1": {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/bounded-wakeups-latest-master/baseline/parity/parity-Playground-n4-cpu-mixed/native/game.replay.checksums",
+      "rows": 4096,
+      "first_tick": 0,
+      "last_tick": 4095,
+      "teams": 8,
+      "players": 8,
+      "bytes": 66676894
+    },
+    "native": {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/bounded-wakeups-latest-master/baseline/parity/parity-Playground-n4-cpu-mixed/native/world.checksums",
+      "rows": 4096,
+      "first_tick": 0,
+      "last_tick": 4095,
+      "bytes": 63325
+    }
+  },
+  "compute_threads": 4,
+  "gradient_gpu_fields": 0,
+  "gradient_device": "",
+  "result_sha256": "6f2d7a79b61887ad84b5dfc896992340546c09efd25432d88e93cf2d93769cb3"
+}

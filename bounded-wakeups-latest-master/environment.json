@@ -1,0 +1,62 @@
+{
+  "utc": "2026-10-15T20:18:23.569076+00:00",
+  "os": "Linux-7.0.0-31-generic-x86_64-with-glibc2.43",
+  "affinity": [
+    0,
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11,
+    12,
+    13,
+    14,
+    15,
+    16,
+    17,
+    18,
+    19,
+    20,
+    21,
+    22,
+    23,
+    24,
+    25,
+    26,
+    27,
+    28,
+    29,
+    30,
+    31
+  ],
+  "versions": {
+    "compiler": [
+      "g++-13 (Ubuntu 13.4.0-10ubuntu1) 13.4.0",
+      "Copyright (C) 2023 Free Software Foundation, Inc."
+    ],
+    "scons": [
+      "SCons by Steven Knight et al.:",
+      "\tSCons: v4.8.1.08661ed4c552323ef3a7f0ff1af38868cbabb05e, Tue, 03 Sep 2024 17:46:32 -0700, by bdbaddog on M1Dog2021"
+    ],
+    "linker": [
+      "GNU ld (GNU Binutils for Ubuntu) 2.46",
+      "Copyright (C) 2026 Free Software Foundation, Inc."
+    ]
+  },
+  "inputs": {
+    "vcpkg.json": "5c04cd735f6bff4219a13df18554310c18449bd27aee9828985cf336b515604f",
+    "scons/sdl3-versions.json": "a3a1b8abb7980edb71ca9d42733eb5d8e6fd92ac2b26caf9fb22b3526b315c60",
+    "scons/sdl3-vendored.json": "98dbcf0823dcc0c059a331f8edcb04a3dff06d8943f8bdf58c68531a9ed6f8bc",
+    "scons/opus-versions.json": "f66e4ab6c795dcaec89c269ca4e06a3394ec9f0ecf5184a5d91902948bc252e0",
+    "src/game/SimRevision.h": "0d47c6b4bb19ffc743d9050db52d27a5d4f561335dfc4bce1caf613725094220",
+    "test/fixtures/multiplayer/FourSquares1.g2mr": "929e7146fb7d99720b1a3d84272df59af9239fceffa842a0ce87aff89417bfae",
+    "test/fixtures/multiplayer/FourSquares1.verify-trace.txt": "305d3315248672cb24a64253657a6667fcc8767ddda61a0044a7e49a9932e970"
+  },
+  "note": "Fresh release validation against latest master; historical performance evidence is separate."
+}

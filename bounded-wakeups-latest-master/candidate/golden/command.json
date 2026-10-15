@@ -1,0 +1,26 @@
+{
+  "command": [
+    "/home/bradley/.codex/worktrees/a630/glob2/artifacts/bounded-wakeups-latest-master/candidate/glob2",
+    "match",
+    "verify",
+    "test/fixtures/multiplayer/FourSquares1.g2mr",
+    "--map-file",
+    "maps/FourSquares1.map.gz",
+    "--output-dir",
+    "/home/bradley/.codex/worktrees/a630/glob2/artifacts/bounded-wakeups-latest-master/candidate/golden",
+    "--compute-threads",
+    "4"
+  ],
+  "cwd": "/home/bradley/.codex/worktrees/engine-optimization/glob2",
+  "env": {
+    "SDL_VIDEODRIVER": "dummy",
+    "SDL_AUDIODRIVER": "dummy",
+    "GLOB2_ASSET_DIR": "/home/bradley/.codex/worktrees/engine-optimization/glob2",
+    "GLOB2_USER_DATA_DIR": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/bounded-wakeups-latest-master/candidate/golden/profile",
+    "GLOB2_USER_DIR": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/bounded-wakeups-latest-master/candidate/golden/profile",
+    "GLOB2_OPENCL_DEVICE": "0"
+  },
+  "rc": 0,
+  "stdout_sha256": "6197a2d0edfb883e6fb5baca7e7b54d2a4241ace47b89127b02b67ad8cf5382f",
+  "utc": "2026-10-15T20:36:34.198754+00:00"
+}

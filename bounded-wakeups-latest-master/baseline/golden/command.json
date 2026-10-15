@@ -1,0 +1,26 @@
+{
+  "command": [
+    "/home/bradley/.codex/worktrees/a630/glob2/artifacts/bounded-wakeups-latest-master/baseline/glob2",
+    "match",
+    "verify",
+    "test/fixtures/multiplayer/FourSquares1.g2mr",
+    "--map-file",
+    "maps/FourSquares1.map.gz",
+    "--output-dir",
+    "/home/bradley/.codex/worktrees/a630/glob2/artifacts/bounded-wakeups-latest-master/baseline/golden",
+    "--compute-threads",
+    "4"
+  ],
+  "cwd": "/home/bradley/.codex/worktrees/engine-optimization/glob2",
+  "env": {
+    "SDL_VIDEODRIVER": "dummy",
+    "SDL_AUDIODRIVER": "dummy",
+    "GLOB2_ASSET_DIR": "/home/bradley/.codex/worktrees/engine-optimization/glob2",
+    "GLOB2_USER_DATA_DIR": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/bounded-wakeups-latest-master/baseline/golden/profile",
+    "GLOB2_USER_DIR": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/bounded-wakeups-latest-master/baseline/golden/profile",
+    "GLOB2_OPENCL_DEVICE": "0"
+  },
+  "rc": 0,
+  "stdout_sha256": "ef7112cf445e00750fd42331572f72863eca1039e3dcafd650a873d43c7a24b8",
+  "utc": "2026-10-15T20:36:33.482992+00:00"
+}

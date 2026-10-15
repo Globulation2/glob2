@@ -1,0 +1,32 @@
+{
+  "command": [
+    "/home/bradley/.codex/worktrees/a630/glob2/artifacts/bounded-wakeups-latest-master/baseline/glob2",
+    "game",
+    "run",
+    "--load-game",
+    "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/mature-instruction-census/oazis-initial-state/native/final.game.gz",
+    "--ticks",
+    "60512",
+    "--compute-threads",
+    "4",
+    "--gradient-backend",
+    "cpu",
+    "--write-replay",
+    "--telemetry",
+    "checksums",
+    "--output-dir",
+    "/home/bradley/.codex/worktrees/a630/glob2/artifacts/bounded-wakeups-latest-master/baseline/parity/continuation-Oazis-n4/native"
+  ],
+  "cwd": "/home/bradley/.codex/worktrees/engine-optimization/glob2",
+  "env": {
+    "SDL_VIDEODRIVER": "dummy",
+    "SDL_AUDIODRIVER": "dummy",
+    "GLOB2_ASSET_DIR": "/home/bradley/.codex/worktrees/engine-optimization/glob2",
+    "GLOB2_USER_DATA_DIR": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/bounded-wakeups-latest-master/baseline/parity/continuation-Oazis-n4/profile",
+    "GLOB2_USER_DIR": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/bounded-wakeups-latest-master/baseline/parity/continuation-Oazis-n4/profile",
+    "GLOB2_OPENCL_DEVICE": "0"
+  },
+  "rc": 0,
+  "stdout_sha256": "b2238a8a7fcbe99589733e797e4bd3a770903515a9d677ca54fc73de3c74b5f0",
+  "utc": "2026-10-15T20:35:28.361098+00:00"
+}

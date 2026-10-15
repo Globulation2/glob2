@@ -1,0 +1,28 @@
+{
+  "destination_branch": "evidence/executor-playground-20261015",
+  "destination_folder": "bounded-wakeups-latest-master",
+  "include": [
+    "build.py",
+    "validate.py",
+    "environment.json",
+    "builds-complete.json",
+    "validation-complete.json",
+    "cases.json",
+    "baseline/build.json",
+    "candidate/build.json",
+    "baseline/build.log",
+    "candidate/build.log",
+    "focused JUnit, summaries and command/stdout receipts",
+    "per-tick native plaintext sidecars plus GCS digests and framing metadata",
+    "current golden record, map and expected trace",
+    "exact source patch and file contents",
+    "fixed map and legacy mature-save fixture bytes"
+  ],
+  "omit": [
+    "native executables",
+    "object/cache files",
+    "large GCS entity dumps and generated replay bodies",
+    "temporary profiles"
+  ],
+  "purpose": "Fresh latest-master correctness evidence; historical performance remains separately linked"
+}

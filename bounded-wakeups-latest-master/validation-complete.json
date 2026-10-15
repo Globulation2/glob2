@@ -1,0 +1,2002 @@
+{
+  "state": "passed",
+  "utc": "2026-10-15T20:36:34.411080+00:00",
+  "builds": {
+    "state": "passed",
+    "results": [
+      {
+        "role": "baseline",
+        "revision": "dd493d7e71d21e5ab6cbaee0fe168a37e076860a",
+        "base": "dd493d7e71d21e5ab6cbaee0fe168a37e076860a",
+        "cwd": "/home/bradley/.codex/worktrees/engine-optimization/glob2",
+        "command": [
+          "scons",
+          "--build=build/wake-control",
+          "release=1",
+          "CC=gcc-13",
+          "CXX=g++-13",
+          "LINKFLAGS=-L/usr/lib/gcc/x86_64-linux-gnu/15",
+          "-j32",
+          "unit-tests",
+          "engine-tests",
+          "build/wake-control/src/glob2"
+        ],
+        "env": {
+          "CCACHE": "1",
+          "CCACHE_MAXSIZE": "12G",
+          "GLOB2_SDL3_PREFIX": "/home/bradley/.codex/worktrees/repair-tls-rejection-fixture/glob2/build/sdl3-ci/prefix",
+          "GLOB2_RENDER_SHADER_INPUT": "/home/bradley/.codex/worktrees/execution-resource-profiles/glob2/artifacts/resource-profiles/validation/renderer-bundle-v2/shaders"
+        },
+        "started": "2026-10-15T20:15:47.902335+00:00",
+        "source_hashes": {
+          "src/common/ComputeExecutor.h": "2053e76c927db8ceeb6e83cd2a70edb77e1fc02275b14a3ff998eafd7f6933af",
+          "src/common/ComputeExecutorHarness.cpp": "90e6ccc3e7f91bfbeedd51f3b26dedfb5916652d10b8dca3f61cc7ba6127dcbd",
+          "SConstruct": "18fd48b343345988e365dba1fc3124c3e2d5e314c2e377f132b6164160c22ff2",
+          "test/tests.py": "a1112d0a267578bd0958a3b623e92d27c2b530068481e85896b806545884f00d",
+          "src/game/SimRevision.h": "0d47c6b4bb19ffc743d9050db52d27a5d4f561335dfc4bce1caf613725094220"
+        },
+        "rc": 0,
+        "finished": "2026-10-15T20:23:09.178212+00:00",
+        "binaries": {
+          "src/glob2": {
+            "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/bounded-wakeups-latest-master/baseline/glob2",
+            "sha256": "39b041ad761c333562964e4b141ac3e7f86500c927f2d9e2c4904ea21874623e"
+          },
+          "test/glob2-unit-tests": {
+            "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/bounded-wakeups-latest-master/baseline/glob2-unit-tests",
+            "sha256": "4cc4c1e4679fd8606908d40b6596e56e856708394e13b71a22302e9d56bd23ea"
+          },
+          "test/glob2-engine-tests": {
+            "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/bounded-wakeups-latest-master/baseline/glob2-engine-tests",
+            "sha256": "15027c09714ec27508eb5ffb096c3062fe0487a02906bf08a321a46b44f0adc0"
+          }
+        }
+      },
+      {
+        "role": "candidate",
+        "revision": "56356481d1a9d51870403b9e47fd5136902a3061",
+        "base": "dd493d7e71d21e5ab6cbaee0fe168a37e076860a",
+        "cwd": "/home/bradley/.codex/worktrees/engine-optimization/glob2",
+        "command": [
+          "scons",
+          "--build=build/wake-control",
+          "release=1",
+          "CC=gcc-13",
+          "CXX=g++-13",
+          "LINKFLAGS=-L/usr/lib/gcc/x86_64-linux-gnu/15",
+          "-j32",
+          "unit-tests",
+          "engine-tests",
+          "build/wake-control/src/glob2"
+        ],
+        "env": {
+          "CCACHE": "1",
+          "CCACHE_MAXSIZE": "12G",
+          "GLOB2_SDL3_PREFIX": "/home/bradley/.codex/worktrees/repair-tls-rejection-fixture/glob2/build/sdl3-ci/prefix",
+          "GLOB2_RENDER_SHADER_INPUT": "/home/bradley/.codex/worktrees/execution-resource-profiles/glob2/artifacts/resource-profiles/validation/renderer-bundle-v2/shaders"
+        },
+        "started": "2026-10-15T20:23:09.444802+00:00",
+        "source_hashes": {
+          "src/common/ComputeExecutor.h": "ba083a15ebb1a3079c821a4a453c2df67d8b73d0d4a473b2796da94bcc4ce9f5",
+          "src/common/ComputeExecutorHarness.cpp": "6ae602481e2f0079aa1668f9aa34f0d91b7c3f4818779e8078e84622737e659d",
+          "SConstruct": "18fd48b343345988e365dba1fc3124c3e2d5e314c2e377f132b6164160c22ff2",
+          "test/tests.py": "a1112d0a267578bd0958a3b623e92d27c2b530068481e85896b806545884f00d",
+          "src/game/SimRevision.h": "0d47c6b4bb19ffc743d9050db52d27a5d4f561335dfc4bce1caf613725094220"
+        },
+        "rc": 0,
+        "finished": "2026-10-15T20:29:48.032149+00:00",
+        "binaries": {
+          "src/glob2": {
+            "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/bounded-wakeups-latest-master/candidate/glob2",
+            "sha256": "ad1662f3685c532a184d1553ef746902dce9dda08317f826ac28ab29ab8d921e"
+          },
+          "test/glob2-unit-tests": {
+            "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/bounded-wakeups-latest-master/candidate/glob2-unit-tests",
+            "sha256": "f96783d6f0838372c89947fe4dc92ab46a59c39f7b1b8c607be84331b7bd27a3"
+          },
+          "test/glob2-engine-tests": {
+            "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/bounded-wakeups-latest-master/candidate/glob2-engine-tests",
+            "sha256": "b03bade4d6a71eac0e3fd62fb329ab87ded9e2dfb0baf7c1f927ed3e43dafe7e"
+          }
+        }
+      }
+    ],
+    "finished": "2026-10-15T20:29:48.210363+00:00"
+  },
+  "focused": [
+    {
+      "role": "baseline",
+      "kind": "unit",
+      "rc": 0,
+      "cases": 60,
+      "bad": [],
+      "inventory": {
+        "ComputeExecutor/*": [
+          "ComputeExecutor/automatic sizing respects platform limits and supports unknown CPU counts",
+          "ComputeExecutor/CPU availability provenance distinguishes affinity from hardware hints",
+          "ComputeExecutor/thread configuration accepts auto and rejects malformed or overflowing overrides",
+          "ComputeExecutor/supported platforms execute jobs concurrently on distinct threads",
+          "ComputeExecutor/exclusive slots; nested batches; reuse; errors; barriers and reconfiguration",
+          "ComputeExecutor/deferred batches complete with lanes and isolated errors",
+          "ComputeExecutor/idle workers retain parallelism for independent and mixed lane groups",
+          "ComputeExecutor/repeated lane groups and empty groups preserve ordering and independent work",
+          "ComputeExecutor/external completion and continuation wake parked lane successors",
+          "ComputeExecutor/lane groups run in index order and the horizon is bounded",
+          "ComputeExecutor/workers run deferred batches earliest due first and the owner only waits",
+          "ComputeExecutor/without workers the owner runs the jobs due no later than the join",
+          "ComputeExecutor/a lane keeps submission order: a lane job due before a live earlier one is rejected",
+          "ComputeExecutor/the slot count covers every producer's horizon",
+          "ComputeExecutor/presentation cannot delay simulation barriers with spare workers or run on the simulation owner",
+          "ComputeExecutor/with one worker the owner waits through its presentation chunk and never runs the join itself",
+          "ComputeExecutor/presentation progresses before a continuous simulation backlog drains",
+          "ComputeExecutor/presentation replacement, chunk pumping, cancellation and errors retain no captures",
+          "ComputeExecutor/resumable presentation yields without advancing or retaining canceled inputs",
+          "ComputeExecutor/worker only maintenance never uses the owner including creation failure",
+          "ComputeExecutor/worker only maintenance yields to required jobs and cannot delay their completed join",
+          "ComputeExecutor/suspended device work releases the only worker and preserves lane completion",
+          "ComputeExecutor/early device failure resumes exactly once on the worker at its original lane position",
+          "ComputeExecutor/early asynchronous completion cannot release an invoking callback's inputs",
+          "ComputeExecutor/continuation of a nonzero lane-group index keeps its original sequence",
+          "ComputeExecutor/retained completion tickets can be resolved after executor destruction",
+          "ComputeExecutor/graphics batches finish once, retain failures and release captures",
+          "ComputeExecutor/serial graphics finish never pumps scene or required work and abandonment releases captures",
+          "ComputeExecutor/graphics cancellation drains claimed work and reconfiguration releases inputs",
+          "ComputeExecutor/both presentation classes progress during required lane backlog",
+          "ComputeExecutor/graphics callback barriers are rejected and completed tickets do not pump newer work",
+          "ComputeExecutor/empty graphics submissions bypass occupied admission and concurrency metrics respect ceilings",
+          "ComputeExecutor/graphics capture destruction can inspect scheduler metrics before completion",
+          "ComputeExecutor/disabled diagnostics do not read the injected clock or collect counters",
+          "ComputeExecutor/owner execution, stale handles, reuse and lifecycle attribution use one locked inspection",
+          "ComputeExecutor/worker waits aggregate distinct ticks globally and per producer without worker timing",
+          "ComputeExecutor/complete joins and trace overflow remain valid and snapshots require drain",
+          "ComputeExecutor/trace preserves early external resolution and continuation callback ordering",
+          "ComputeExecutor/trace storage allocation failure downgrades without losing required work",
+          "ComputeExecutor/blocking fork join failures and presentation remain traced without entering tick waits",
+          "ComputeExecutor/graphics diagnostics are optional and waits mode attributes the owner barrier",
+          "ComputeExecutor/yielded presentation chunks keep callback indices paired",
+          "ComputeExecutor/worker-only maintenance is traced as other work without a required join",
+          "ComputeExecutor/session reset suppresses a returning maintenance interval from the previous epoch",
+          "ComputeExecutor/synchronous graphics adapter keeps empty calls idle and guards owner callbacks",
+          "ComputeExecutor/graphics adapter restores callback state on failure and never pumps other work",
+          "ComputeExecutor/synchronous graphics cancellation rejects incomplete output after draining",
+          "ComputeExecutor/graphics adapter preserves occupied admission and serial finish shares the scene cap",
+          "ComputeExecutor/canceling a slot-blocked graphics batch wakes its owner before scene completion"
+        ],
+        "ReplayStepCounter/*": [
+          "ReplayStepCounter/truncated replay bodies never become zero-filled orders",
+          "ReplayStepCounter/step totals cannot wrap",
+          "ReplayStepCounter/checksum mismatch closes playback safely",
+          "ReplayStepCounter/legacy create decoder respects both historical payload lengths",
+          "ReplayStepCounter/WideRoundTrip",
+          "ReplayStepCounter/VersionBounds",
+          "ReplayStepCounter/DecodeVersionPlumbing"
+        ],
+        "HiringRanking/*": [
+          "HiringRanking/material ranking keeps skill preference and stable ties",
+          "HiringRanking/attraction roles preserve opposite skill preferences"
+        ],
+        "TurnHarness/two clients on clean links execute identical turns*": [
+          "TurnHarness/two clients on clean links execute identical turns [network-sim]"
+        ],
+        "TurnHarness/a restarted client reloads, replays the full log and rejoins*": [
+          "TurnHarness/a restarted client reloads, replays the full log and rejoins [network-sim]"
+        ]
+      }
+    },
+    {
+      "role": "baseline",
+      "kind": "engine",
+      "rc": 0,
+      "cases": 116,
+      "bad": [],
+      "inventory": {
+        "AIPipeline/*": [
+          "AIPipeline/a submitted deadline is delivered even when no new poll is eligible",
+          "AIPipeline/every shipped controller preserves orders and state across worker counts and all delays",
+          "AIPipeline/pause and repeated boundary calls cannot execute a published command twice",
+          "AIPipeline/replacement cancels an old output without rejecting identical new wire bytes",
+          "AIPipeline/save continuation retains controller caches receipts and future commands at pipeline boundaries",
+          "AIPipeline/team death cancels submitted work and saves receipts for a revived controller",
+          "AIPipeline/wrapper preemption preserves controller rejection feedback and pending release identity across save"
+        ],
+        "SharedWorkerLifecycle/*": [
+          "SharedWorkerLifecycle/background saves finish on a worker and remain readable after teardown",
+          "SharedWorkerLifecycle/no-AI completed ticks and saved continuation agree across diagnostic modes and worker counts [artifacts]",
+          "SharedWorkerLifecycle/pending gradient work survives a save and continues at the same deadlines",
+          "SharedWorkerLifecycle/reduced saved AI rosters retire trailing controllers and preserve continuation",
+          "SharedWorkerLifecycle/resource catalog import drains deferred material preparation before replacing stocks"
+        ],
+        "SimulationReadPhase/*": [
+          "SimulationReadPhase/AI and pending gradients share the standard boundary with presentation",
+          "SimulationReadPhase/direct completed steps match deferred preparation across worker counts",
+          "SimulationReadPhase/presentation borrows the published no-AI read boundary without recapture"
+        ],
+        "TeamStatsPipeline/*": [
+          "TeamStatsPipeline/complete frames preserve cumulative measurements and retained readers",
+          "TeamStatsPipeline/delayed statistics AI and presentation share one capture per boundary",
+          "TeamStatsPipeline/direct scalar checksums match canonical binary bytes",
+          "TeamStatsPipeline/failed computation or submission remains a failure at later owner barriers",
+          "TeamStatsPipeline/format 155 pending digests are discarded without losing samples",
+          "TeamStatsPipeline/format 156 raw aggregate samples retain exact smoothing after loading and resaving",
+          "TeamStatsPipeline/format 157 pending measurement deltas migrate and resave without early publication",
+          "TeamStatsPipeline/full game save preserves statistics across smoothing and history boundaries",
+          "TeamStatsPipeline/lagged windows include current samples and never feed approximations into the raw ring",
+          "TeamStatsPipeline/late workers are joined at the deadline without choosing publication time",
+          "TeamStatsPipeline/light checks do not execute jobs and full checks cover computed pending samples",
+          "TeamStatsPipeline/periodic snapshot places match live coverage at wrapped footprint boundaries",
+          "TeamStatsPipeline/publication is fixed to source tick plus delay and boundaries are idempotent",
+          "TeamStatsPipeline/pure captures pause and waiting admit no statistics and readers share the generation",
+          "TeamStatsPipeline/raw snapshot samples retain synchronous aggregation and smoothing",
+          "TeamStatsPipeline/routine statistics coverage excludes diagnostic ledgers and full checks retain them",
+          "TeamStatsPipeline/save drains work without moving deadlines and restores pending samples",
+          "TeamStatsPipeline/worker counts produce identical publication and pending sample checksums"
+        ],
+        "HiringPipeline/*": [
+          "HiringPipeline/a returning attraction worker does not wait another recruitment-clock cycle",
+          "HiringPipeline/all attraction jobs admit through the production candidate consumer",
+          "HiringPipeline/an expired hybrid attraction request releases unused delivery seats",
+          "HiringPipeline/an owed attraction round retries for a bounded window",
+          "HiringPipeline/cold route generations publish only at the fixed deadline",
+          "HiringPipeline/configuration changes keep suggestions and admission rechecks live eligibility",
+          "HiringPipeline/imminent attraction peers receive alternatives without inactive peers claiming them",
+          "HiringPipeline/missing lists do not synchronously scan or assign a worker",
+          "HiringPipeline/paused and waiting replicas retain the same pre-order hiring observation",
+          "HiringPipeline/production traces and published candidates match across participant counts",
+          "HiringPipeline/saving every delay phase retains outputs and pending identity without early publication",
+          "HiringPipeline/transient unavailability and changed cargo are validated on every attempt",
+          "HiringPipeline/whole game save and resume preserves every publication phase [save-format][artifacts]",
+          "HiringPipeline/whole-game continuation retains an outstanding attraction request"
+        ],
+        "HiringPlanner/*": [
+          "HiringPlanner/bounded shortlists match sorted prefixes for every job",
+          "HiringPlanner/busy ground classes do not initialize unused hiring routes",
+          "HiringPlanner/cold routes are established by live admission rather than observation",
+          "HiringPlanner/defense score uses frozen attack modifiers and saturated integer strength",
+          "HiringPlanner/distance bounds preserve exhaustive rankings for every job",
+          "HiringPlanner/diverse material offers cover peers without reserving live workers",
+          "HiringPlanner/fetch jobs reuse canonical resource estimates independently of live planes",
+          "HiringPlanner/food-unsafe high-skill workers cannot crowd a viable worker out",
+          "HiringPlanner/job quotas bound each list to vacancies plus two",
+          "HiringPlanner/missing building fields never trigger private construction",
+          "HiringPlanner/missing shared planes do not suppress suggestions after visibility-rule changes",
+          "HiringPlanner/missing supplier planes retain fetch suggestions for live admission",
+          "HiringPlanner/observed funding reproduces live material apportionment",
+          "HiringPlanner/planning skips zero-demand and staffed buildings and resumes on vacancies",
+          "HiringPlanner/published resource estimates are used and missing planes remain recruitable",
+          "HiringPlanner/ranking tie break follows unit identity",
+          "HiringPlanner/resource estimates borrow the normal snapshot plane without private builds",
+          "HiringPlanner/shared field survives replacement and proposals preserve owner demand",
+          "HiringPlanner/shared resource planes retain ordered unreachable-neighbor admission estimates",
+          "HiringPlanner/snapshot planning skips busy workers without changing live units",
+          "HiringPlanner/supplier membership survives waiting-for-construction observations",
+          "HiringPlanner/unrelated live route enrollment cannot change hiring inputs",
+          "HiringPlanner/worker construction quotas match repair funding",
+          "HiringPlanner/worker demand uses immutable shared funding and staffing facts"
+        ],
+        "AIStateContinuation/*": [
+          "AIStateContinuation/Cabino specialist modules survive save-load",
+          "AIStateContinuation/Castor and Maxima active full games preserve decisions and RNG [slow]",
+          "AIStateContinuation/Cortex economy and food shortage survive save-load",
+          "AIStateContinuation/Econo shared runtime survives save-load",
+          "AIStateContinuation/Nicowar shared runtime survives save-load",
+          "AIStateContinuation/Numbi growth and attack preparation survive save-load",
+          "AIStateContinuation/Warrush growth and attack preparation survive save-load",
+          "AIStateContinuation/all controllers continue alongside another AI and a shared-team controller [slow]"
+        ],
+        "LegacyAIState/*": [
+          "LegacyAIState/Cabino construction polls preserve high material and combined source masks",
+          "LegacyAIState/Cabino material mask placement resumes without changing RNG",
+          "LegacyAIState/Cabino preserves stale gradients module latches and fruit memories",
+          "LegacyAIState/Cabino saving leaves its pending FIFO intact",
+          "LegacyAIState/Cortex saved policy and model supersede the current process selection",
+          "LegacyAIState/Nicowar explorer phases and full construction counts survive",
+          "LegacyAIState/Numbi phase clock survives and advances on the original poll",
+          "LegacyAIState/Numbi wrapper preserves an active phase clock and the next decision",
+          "LegacyAIState/Warrush timers and constructors round-trip at boundaries",
+          "LegacyAIState/Warrush wrapper preserves the next decision and its random stream",
+          "LegacyAIState/new timer records reject out-of-range missing and malformed values",
+          "LegacyAIState/old layouts default omitted clocks without consuming the following field",
+          "LegacyAIState/pre-fix format 127 writers remain aligned for Cabino Nicowar and Cortex",
+          "LegacyAIState/shared runtime reload replaces queues and registrations in binary and text"
+        ],
+        "BuildingGradientInvalidation/*": [
+          "BuildingGradientInvalidation/a deleted building's pending result cannot replace a reused destination",
+          "BuildingGradientInvalidation/a paused field keeps its original obstacles",
+          "BuildingGradientInvalidation/a pending result keeps the generation a team-local edit carries forward",
+          "BuildingGradientInvalidation/a ring cuts off a virtual flags field",
+          "BuildingGradientInvalidation/a rival teams ring cuts off a cached field",
+          "BuildingGradientInvalidation/access metadata follows the newest capture across swim classes and saves",
+          "BuildingGradientInvalidation/an empty building pipeline follows a changed header delay through save and load",
+          "BuildingGradientInvalidation/area and team-wide resets keep stale walking fields serving with the pipeline on",
+          "BuildingGradientInvalidation/centre placed inside an existing ring",
+          "BuildingGradientInvalidation/delayed fields",
+          "BuildingGradientInvalidation/idle field storage is reused without stale routes",
+          "BuildingGradientInvalidation/partial scheduled fields resume on the owner from transferred buckets",
+          "BuildingGradientInvalidation/pending building results survive save boundaries and cannot resurrect evicted fields",
+          "BuildingGradientInvalidation/prediction retains reader demand across rebuilds and save completion",
+          "BuildingGradientInvalidation/public reads resolve their inputs",
+          "BuildingGradientInvalidation/requests during team stepping are captured at the observation boundary",
+          "BuildingGradientInvalidation/retained format126 access flags restore walking and swimming locks into the footprint route and survive current saves [save-format]",
+          "BuildingGradientInvalidation/ring placed around an existing field",
+          "BuildingGradientInvalidation/same-tick swim classes write access metadata in request order",
+          "BuildingGradientInvalidation/scheduled building fields publish at fixed deadlines across worker counts and delays",
+          "BuildingGradientInvalidation/slow and failing workers never change the publication tick",
+          "BuildingGradientInvalidation/snapshot building seeds and captured-input searches match the synchronous kernels for every route and swim class",
+          "BuildingGradientInvalidation/synchronous rebuilds and lifecycle hooks supersede pending jobs that share a deadline"
+        ]
+      }
+    },
+    {
+      "role": "baseline",
+      "kind": "partial-verbose",
+      "assertions": 24,
+      "warnings": false
+    },
+    {
+      "role": "candidate",
+      "kind": "unit",
+      "rc": 0,
+      "cases": 60,
+      "bad": [],
+      "inventory": {
+        "ComputeExecutor/*": [
+          "ComputeExecutor/automatic sizing respects platform limits and supports unknown CPU counts",
+          "ComputeExecutor/CPU availability provenance distinguishes affinity from hardware hints",
+          "ComputeExecutor/thread configuration accepts auto and rejects malformed or overflowing overrides",
+          "ComputeExecutor/supported platforms execute jobs concurrently on distinct threads",
+          "ComputeExecutor/exclusive slots; nested batches; reuse; errors; barriers and reconfiguration",
+          "ComputeExecutor/deferred batches complete with lanes and isolated errors",
+          "ComputeExecutor/idle workers retain parallelism for independent and mixed lane groups",
+          "ComputeExecutor/repeated lane groups and empty groups preserve ordering and independent work",
+          "ComputeExecutor/external completion and continuation wake parked lane successors",
+          "ComputeExecutor/lane groups run in index order and the horizon is bounded",
+          "ComputeExecutor/workers run deferred batches earliest due first and the owner only waits",
+          "ComputeExecutor/without workers the owner runs the jobs due no later than the join",
+          "ComputeExecutor/a lane keeps submission order: a lane job due before a live earlier one is rejected",
+          "ComputeExecutor/the slot count covers every producer's horizon",
+          "ComputeExecutor/presentation cannot delay simulation barriers with spare workers or run on the simulation owner",
+          "ComputeExecutor/with one worker the owner waits through its presentation chunk and never runs the join itself",
+          "ComputeExecutor/presentation progresses before a continuous simulation backlog drains",
+          "ComputeExecutor/presentation replacement, chunk pumping, cancellation and errors retain no captures",
+          "ComputeExecutor/resumable presentation yields without advancing or retaining canceled inputs",
+          "ComputeExecutor/worker only maintenance never uses the owner including creation failure",
+          "ComputeExecutor/worker only maintenance yields to required jobs and cannot delay their completed join",
+          "ComputeExecutor/suspended device work releases the only worker and preserves lane completion",
+          "ComputeExecutor/early device failure resumes exactly once on the worker at its original lane position",
+          "ComputeExecutor/early asynchronous completion cannot release an invoking callback's inputs",
+          "ComputeExecutor/continuation of a nonzero lane-group index keeps its original sequence",
+          "ComputeExecutor/retained completion tickets can be resolved after executor destruction",
+          "ComputeExecutor/graphics batches finish once, retain failures and release captures",
+          "ComputeExecutor/serial graphics finish never pumps scene or required work and abandonment releases captures",
+          "ComputeExecutor/graphics cancellation drains claimed work and reconfiguration releases inputs",
+          "ComputeExecutor/both presentation classes progress during required lane backlog",
+          "ComputeExecutor/graphics callback barriers are rejected and completed tickets do not pump newer work",
+          "ComputeExecutor/empty graphics submissions bypass occupied admission and concurrency metrics respect ceilings",
+          "ComputeExecutor/graphics capture destruction can inspect scheduler metrics before completion",
+          "ComputeExecutor/disabled diagnostics do not read the injected clock or collect counters",
+          "ComputeExecutor/owner execution, stale handles, reuse and lifecycle attribution use one locked inspection",
+          "ComputeExecutor/worker waits aggregate distinct ticks globally and per producer without worker timing",
+          "ComputeExecutor/complete joins and trace overflow remain valid and snapshots require drain",
+          "ComputeExecutor/trace preserves early external resolution and continuation callback ordering",
+          "ComputeExecutor/trace storage allocation failure downgrades without losing required work",
+          "ComputeExecutor/blocking fork join failures and presentation remain traced without entering tick waits",
+          "ComputeExecutor/graphics diagnostics are optional and waits mode attributes the owner barrier",
+          "ComputeExecutor/yielded presentation chunks keep callback indices paired",
+          "ComputeExecutor/worker-only maintenance is traced as other work without a required join",
+          "ComputeExecutor/session reset suppresses a returning maintenance interval from the previous epoch",
+          "ComputeExecutor/synchronous graphics adapter keeps empty calls idle and guards owner callbacks",
+          "ComputeExecutor/graphics adapter restores callback state on failure and never pumps other work",
+          "ComputeExecutor/synchronous graphics cancellation rejects incomplete output after draining",
+          "ComputeExecutor/graphics adapter preserves occupied admission and serial finish shares the scene cap",
+          "ComputeExecutor/canceling a slot-blocked graphics batch wakes its owner before scene completion"
+        ],
+        "ReplayStepCounter/*": [
+          "ReplayStepCounter/truncated replay bodies never become zero-filled orders",
+          "ReplayStepCounter/step totals cannot wrap",
+          "ReplayStepCounter/checksum mismatch closes playback safely",
+          "ReplayStepCounter/legacy create decoder respects both historical payload lengths",
+          "ReplayStepCounter/WideRoundTrip",
+          "ReplayStepCounter/VersionBounds",
+          "ReplayStepCounter/DecodeVersionPlumbing"
+        ],
+        "HiringRanking/*": [
+          "HiringRanking/material ranking keeps skill preference and stable ties",
+          "HiringRanking/attraction roles preserve opposite skill preferences"
+        ],
+        "TurnHarness/two clients on clean links execute identical turns*": [
+          "TurnHarness/two clients on clean links execute identical turns [network-sim]"
+        ],
+        "TurnHarness/a restarted client reloads, replays the full log and rejoins*": [
+          "TurnHarness/a restarted client reloads, replays the full log and rejoins [network-sim]"
+        ]
+      }
+    },
+    {
+      "role": "candidate",
+      "kind": "engine",
+      "rc": 0,
+      "cases": 116,
+      "bad": [],
+      "inventory": {
+        "AIPipeline/*": [
+          "AIPipeline/a submitted deadline is delivered even when no new poll is eligible",
+          "AIPipeline/every shipped controller preserves orders and state across worker counts and all delays",
+          "AIPipeline/pause and repeated boundary calls cannot execute a published command twice",
+          "AIPipeline/replacement cancels an old output without rejecting identical new wire bytes",
+          "AIPipeline/save continuation retains controller caches receipts and future commands at pipeline boundaries",
+          "AIPipeline/team death cancels submitted work and saves receipts for a revived controller",
+          "AIPipeline/wrapper preemption preserves controller rejection feedback and pending release identity across save"
+        ],
+        "SharedWorkerLifecycle/*": [
+          "SharedWorkerLifecycle/background saves finish on a worker and remain readable after teardown",
+          "SharedWorkerLifecycle/no-AI completed ticks and saved continuation agree across diagnostic modes and worker counts [artifacts]",
+          "SharedWorkerLifecycle/pending gradient work survives a save and continues at the same deadlines",
+          "SharedWorkerLifecycle/reduced saved AI rosters retire trailing controllers and preserve continuation",
+          "SharedWorkerLifecycle/resource catalog import drains deferred material preparation before replacing stocks"
+        ],
+        "SimulationReadPhase/*": [
+          "SimulationReadPhase/AI and pending gradients share the standard boundary with presentation",
+          "SimulationReadPhase/direct completed steps match deferred preparation across worker counts",
+          "SimulationReadPhase/presentation borrows the published no-AI read boundary without recapture"
+        ],
+        "TeamStatsPipeline/*": [
+          "TeamStatsPipeline/complete frames preserve cumulative measurements and retained readers",
+          "TeamStatsPipeline/delayed statistics AI and presentation share one capture per boundary",
+          "TeamStatsPipeline/direct scalar checksums match canonical binary bytes",
+          "TeamStatsPipeline/failed computation or submission remains a failure at later owner barriers",
+          "TeamStatsPipeline/format 155 pending digests are discarded without losing samples",
+          "TeamStatsPipeline/format 156 raw aggregate samples retain exact smoothing after loading and resaving",
+          "TeamStatsPipeline/format 157 pending measurement deltas migrate and resave without early publication",
+          "TeamStatsPipeline/full game save preserves statistics across smoothing and history boundaries",
+          "TeamStatsPipeline/lagged windows include current samples and never feed approximations into the raw ring",
+          "TeamStatsPipeline/late workers are joined at the deadline without choosing publication time",
+          "TeamStatsPipeline/light checks do not execute jobs and full checks cover computed pending samples",
+          "TeamStatsPipeline/periodic snapshot places match live coverage at wrapped footprint boundaries",
+          "TeamStatsPipeline/publication is fixed to source tick plus delay and boundaries are idempotent",
+          "TeamStatsPipeline/pure captures pause and waiting admit no statistics and readers share the generation",
+          "TeamStatsPipeline/raw snapshot samples retain synchronous aggregation and smoothing",
+          "TeamStatsPipeline/routine statistics coverage excludes diagnostic ledgers and full checks retain them",
+          "TeamStatsPipeline/save drains work without moving deadlines and restores pending samples",
+          "TeamStatsPipeline/worker counts produce identical publication and pending sample checksums"
+        ],
+        "HiringPipeline/*": [
+          "HiringPipeline/a returning attraction worker does not wait another recruitment-clock cycle",
+          "HiringPipeline/all attraction jobs admit through the production candidate consumer",
+          "HiringPipeline/an expired hybrid attraction request releases unused delivery seats",
+          "HiringPipeline/an owed attraction round retries for a bounded window",
+          "HiringPipeline/cold route generations publish only at the fixed deadline",
+          "HiringPipeline/configuration changes keep suggestions and admission rechecks live eligibility",
+          "HiringPipeline/imminent attraction peers receive alternatives without inactive peers claiming them",
+          "HiringPipeline/missing lists do not synchronously scan or assign a worker",
+          "HiringPipeline/paused and waiting replicas retain the same pre-order hiring observation",
+          "HiringPipeline/production traces and published candidates match across participant counts",
+          "HiringPipeline/saving every delay phase retains outputs and pending identity without early publication",
+          "HiringPipeline/transient unavailability and changed cargo are validated on every attempt",
+          "HiringPipeline/whole game save and resume preserves every publication phase [save-format][artifacts]",
+          "HiringPipeline/whole-game continuation retains an outstanding attraction request"
+        ],
+        "HiringPlanner/*": [
+          "HiringPlanner/bounded shortlists match sorted prefixes for every job",
+          "HiringPlanner/busy ground classes do not initialize unused hiring routes",
+          "HiringPlanner/cold routes are established by live admission rather than observation",
+          "HiringPlanner/defense score uses frozen attack modifiers and saturated integer strength",
+          "HiringPlanner/distance bounds preserve exhaustive rankings for every job",
+          "HiringPlanner/diverse material offers cover peers without reserving live workers",
+          "HiringPlanner/fetch jobs reuse canonical resource estimates independently of live planes",
+          "HiringPlanner/food-unsafe high-skill workers cannot crowd a viable worker out",
+          "HiringPlanner/job quotas bound each list to vacancies plus two",
+          "HiringPlanner/missing building fields never trigger private construction",
+          "HiringPlanner/missing shared planes do not suppress suggestions after visibility-rule changes",
+          "HiringPlanner/missing supplier planes retain fetch suggestions for live admission",
+          "HiringPlanner/observed funding reproduces live material apportionment",
+          "HiringPlanner/planning skips zero-demand and staffed buildings and resumes on vacancies",
+          "HiringPlanner/published resource estimates are used and missing planes remain recruitable",
+          "HiringPlanner/ranking tie break follows unit identity",
+          "HiringPlanner/resource estimates borrow the normal snapshot plane without private builds",
+          "HiringPlanner/shared field survives replacement and proposals preserve owner demand",
+          "HiringPlanner/shared resource planes retain ordered unreachable-neighbor admission estimates",
+          "HiringPlanner/snapshot planning skips busy workers without changing live units",
+          "HiringPlanner/supplier membership survives waiting-for-construction observations",
+          "HiringPlanner/unrelated live route enrollment cannot change hiring inputs",
+          "HiringPlanner/worker construction quotas match repair funding",
+          "HiringPlanner/worker demand uses immutable shared funding and staffing facts"
+        ],
+        "AIStateContinuation/*": [
+          "AIStateContinuation/Cabino specialist modules survive save-load",
+          "AIStateContinuation/Castor and Maxima active full games preserve decisions and RNG [slow]",
+          "AIStateContinuation/Cortex economy and food shortage survive save-load",
+          "AIStateContinuation/Econo shared runtime survives save-load",
+          "AIStateContinuation/Nicowar shared runtime survives save-load",
+          "AIStateContinuation/Numbi growth and attack preparation survive save-load",
+          "AIStateContinuation/Warrush growth and attack preparation survive save-load",
+          "AIStateContinuation/all controllers continue alongside another AI and a shared-team controller [slow]"
+        ],
+        "LegacyAIState/*": [
+          "LegacyAIState/Cabino construction polls preserve high material and combined source masks",
+          "LegacyAIState/Cabino material mask placement resumes without changing RNG",
+          "LegacyAIState/Cabino preserves stale gradients module latches and fruit memories",
+          "LegacyAIState/Cabino saving leaves its pending FIFO intact",
+          "LegacyAIState/Cortex saved policy and model supersede the current process selection",
+          "LegacyAIState/Nicowar explorer phases and full construction counts survive",
+          "LegacyAIState/Numbi phase clock survives and advances on the original poll",
+          "LegacyAIState/Numbi wrapper preserves an active phase clock and the next decision",
+          "LegacyAIState/Warrush timers and constructors round-trip at boundaries",
+          "LegacyAIState/Warrush wrapper preserves the next decision and its random stream",
+          "LegacyAIState/new timer records reject out-of-range missing and malformed values",
+          "LegacyAIState/old layouts default omitted clocks without consuming the following field",
+          "LegacyAIState/pre-fix format 127 writers remain aligned for Cabino Nicowar and Cortex",
+          "LegacyAIState/shared runtime reload replaces queues and registrations in binary and text"
+        ],
+        "BuildingGradientInvalidation/*": [
+          "BuildingGradientInvalidation/a deleted building's pending result cannot replace a reused destination",
+          "BuildingGradientInvalidation/a paused field keeps its original obstacles",
+          "BuildingGradientInvalidation/a pending result keeps the generation a team-local edit carries forward",
+          "BuildingGradientInvalidation/a ring cuts off a virtual flags field",
+          "BuildingGradientInvalidation/a rival teams ring cuts off a cached field",
+          "BuildingGradientInvalidation/access metadata follows the newest capture across swim classes and saves",
+          "BuildingGradientInvalidation/an empty building pipeline follows a changed header delay through save and load",
+          "BuildingGradientInvalidation/area and team-wide resets keep stale walking fields serving with the pipeline on",
+          "BuildingGradientInvalidation/centre placed inside an existing ring",
+          "BuildingGradientInvalidation/delayed fields",
+          "BuildingGradientInvalidation/idle field storage is reused without stale routes",
+          "BuildingGradientInvalidation/partial scheduled fields resume on the owner from transferred buckets",
+          "BuildingGradientInvalidation/pending building results survive save boundaries and cannot resurrect evicted fields",
+          "BuildingGradientInvalidation/prediction retains reader demand across rebuilds and save completion",
+          "BuildingGradientInvalidation/public reads resolve their inputs",
+          "BuildingGradientInvalidation/requests during team stepping are captured at the observation boundary",
+          "BuildingGradientInvalidation/retained format126 access flags restore walking and swimming locks into the footprint route and survive current saves [save-format]",
+          "BuildingGradientInvalidation/ring placed around an existing field",
+          "BuildingGradientInvalidation/same-tick swim classes write access metadata in request order",
+          "BuildingGradientInvalidation/scheduled building fields publish at fixed deadlines across worker counts and delays",
+          "BuildingGradientInvalidation/slow and failing workers never change the publication tick",
+          "BuildingGradientInvalidation/snapshot building seeds and captured-input searches match the synchronous kernels for every route and swim class",
+          "BuildingGradientInvalidation/synchronous rebuilds and lifecycle hooks supersede pending jobs that share a deadline"
+        ]
+      }
+    },
+    {
+      "role": "candidate",
+      "kind": "partial-verbose",
+      "assertions": 54,
+      "warnings": false
+    }
+  ],
+  "parity": [
+    {
+      "case": "parity-Playground-n1-cpu-nicowar",
+      "matched": true,
+      "rows": 4096,
+      "results": [
+        {
+          "role": "baseline",
+          "case": "parity-Playground-n1-cpu-nicowar",
+          "initialChecksum": 955072743,
+          "finalChecksum": 3475821397,
+          "checksums": {
+            "GCS1": "1b9ac81e8c353410eae916e927463ba3c36c559dac21d80587c149be3de9f3a7",
+            "native": "7fb6b22459ce586effa5c6d87e724e2a5ee06d9dce7d3a433fa863c27d324f61"
+          },
+          "details": {
+            "GCS1": {
+              "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/bounded-wakeups-latest-master/baseline/parity/parity-Playground-n1-cpu-nicowar/native/game.replay.checksums",
+              "rows": 4096,
+              "first_tick": 0,
+              "last_tick": 4095,
+              "teams": 8,
+              "players": 8,
+              "bytes": 63204594
+            },
+            "native": {
+              "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/bounded-wakeups-latest-master/baseline/parity/parity-Playground-n1-cpu-nicowar/native/world.checksums",
+              "rows": 4096,
+              "first_tick": 0,
+              "last_tick": 4095,
+              "bytes": 63399
+            }
+          },
+          "compute_threads": 1,
+          "gradient_gpu_fields": 0,
+          "gradient_device": "",
+          "result_sha256": "b68f3691e15ecd4b83860c1125861e54dd2b69fe0273cf20f3301f3f8e94b2fe"
+        },
+        {
+          "role": "candidate",
+          "case": "parity-Playground-n1-cpu-nicowar",
+          "initialChecksum": 955072743,
+          "finalChecksum": 3475821397,
+          "checksums": {
+            "GCS1": "1b9ac81e8c353410eae916e927463ba3c36c559dac21d80587c149be3de9f3a7",
+            "native": "7fb6b22459ce586effa5c6d87e724e2a5ee06d9dce7d3a433fa863c27d324f61"
+          },
+          "details": {
+            "GCS1": {
+              "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/bounded-wakeups-latest-master/candidate/parity/parity-Playground-n1-cpu-nicowar/native/game.replay.checksums",
+              "rows": 4096,
+              "first_tick": 0,
+              "last_tick": 4095,
+              "teams": 8,
+              "players": 8,
+              "bytes": 63204594
+            },
+            "native": {
+              "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/bounded-wakeups-latest-master/candidate/parity/parity-Playground-n1-cpu-nicowar/native/world.checksums",
+              "rows": 4096,
+              "first_tick": 0,
+              "last_tick": 4095,
+              "bytes": 63399
+            }
+          },
+          "compute_threads": 1,
+          "gradient_gpu_fields": 0,
+          "gradient_device": "",
+          "result_sha256": "5dc891c3be4650f850f0ba6e456d0dfb88347261b8a657693cb035acfb3649f1"
+        }
+      ]
+    },
+    {
+      "case": "parity-Playground-n4-cpu-nicowar",
+      "matched": true,
+      "rows": 4096,
+      "results": [
+        {
+          "role": "baseline",
+          "case": "parity-Playground-n4-cpu-nicowar",
+          "initialChecksum": 955072743,
+          "finalChecksum": 3475821397,
+          "checksums": {
+            "GCS1": "1b9ac81e8c353410eae916e927463ba3c36c559dac21d80587c149be3de9f3a7",
+            "native": "7fb6b22459ce586effa5c6d87e724e2a5ee06d9dce7d3a433fa863c27d324f61"
+          },
+          "details": {
+            "GCS1": {
+              "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/bounded-wakeups-latest-master/baseline/parity/parity-Playground-n4-cpu-nicowar/native/game.replay.checksums",
+              "rows": 4096,
+              "first_tick": 0,
+              "last_tick": 4095,
+              "teams": 8,
+              "players": 8,
+              "bytes": 63204594
+            },
+            "native": {
+              "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/bounded-wakeups-latest-master/baseline/parity/parity-Playground-n4-cpu-nicowar/native/world.checksums",
+              "rows": 4096,
+              "first_tick": 0,
+              "last_tick": 4095,
+              "bytes": 63399
+            }
+          },
+          "compute_threads": 4,
+          "gradient_gpu_fields": 0,
+          "gradient_device": "",
+          "result_sha256": "f7d9126edb6ee632b2faa37ef6936e3e8fd22127377d9d3c61e210c00ea2cd73"
+        },
+        {
+          "role": "candidate",
+          "case": "parity-Playground-n4-cpu-nicowar",
+          "initialChecksum": 955072743,
+          "finalChecksum": 3475821397,
+          "checksums": {
+            "GCS1": "1b9ac81e8c353410eae916e927463ba3c36c559dac21d80587c149be3de9f3a7",
+            "native": "7fb6b22459ce586effa5c6d87e724e2a5ee06d9dce7d3a433fa863c27d324f61"
+          },
+          "details": {
+            "GCS1": {
+              "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/bounded-wakeups-latest-master/candidate/parity/parity-Playground-n4-cpu-nicowar/native/game.replay.checksums",
+              "rows": 4096,
+              "first_tick": 0,
+              "last_tick": 4095,
+              "teams": 8,
+              "players": 8,
+              "bytes": 63204594
+            },
+            "native": {
+              "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/bounded-wakeups-latest-master/candidate/parity/parity-Playground-n4-cpu-nicowar/native/world.checksums",
+              "rows": 4096,
+              "first_tick": 0,
+              "last_tick": 4095,
+              "bytes": 63399
+            }
+          },
+          "compute_threads": 4,
+          "gradient_gpu_fields": 0,
+          "gradient_device": "",
+          "result_sha256": "285ce67a76f6380525904299f8ae8295619cf71ddca360674a4c97862d8ade91"
+        }
+      ]
+    },
+    {
+      "case": "parity-Playground-nauto-cpu-nicowar",
+      "matched": true,
+      "rows": 4096,
+      "results": [
+        {
+          "role": "baseline",
+          "case": "parity-Playground-nauto-cpu-nicowar",
+          "initialChecksum": 955072743,
+          "finalChecksum": 3475821397,
+          "checksums": {
+            "GCS1": "1b9ac81e8c353410eae916e927463ba3c36c559dac21d80587c149be3de9f3a7",
+            "native": "7fb6b22459ce586effa5c6d87e724e2a5ee06d9dce7d3a433fa863c27d324f61"
+          },
+          "details": {
+            "GCS1": {
+              "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/bounded-wakeups-latest-master/baseline/parity/parity-Playground-nauto-cpu-nicowar/native/game.replay.checksums",
+              "rows": 4096,
+              "first_tick": 0,
+              "last_tick": 4095,
+              "teams": 8,
+              "players": 8,
+              "bytes": 63204594
+            },
+            "native": {
+              "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/bounded-wakeups-latest-master/baseline/parity/parity-Playground-nauto-cpu-nicowar/native/world.checksums",
+              "rows": 4096,
+              "first_tick": 0,
+              "last_tick": 4095,
+              "bytes": 63399
+            }
+          },
+          "compute_threads": 32,
+          "gradient_gpu_fields": 0,
+          "gradient_device": "",
+          "result_sha256": "217ed81f8da8b9b6c3f3ce5380e3e18007fdaa2c83f039c9083551ad038fbdf6"
+        },
+        {
+          "role": "candidate",
+          "case": "parity-Playground-nauto-cpu-nicowar",
+          "initialChecksum": 955072743,
+          "finalChecksum": 3475821397,
+          "checksums": {
+            "GCS1": "1b9ac81e8c353410eae916e927463ba3c36c559dac21d80587c149be3de9f3a7",
+            "native": "7fb6b22459ce586effa5c6d87e724e2a5ee06d9dce7d3a433fa863c27d324f61"
+          },
+          "details": {
+            "GCS1": {
+              "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/bounded-wakeups-latest-master/candidate/parity/parity-Playground-nauto-cpu-nicowar/native/game.replay.checksums",
+              "rows": 4096,
+              "first_tick": 0,
+              "last_tick": 4095,
+              "teams": 8,
+              "players": 8,
+              "bytes": 63204594
+            },
+            "native": {
+              "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/bounded-wakeups-latest-master/candidate/parity/parity-Playground-nauto-cpu-nicowar/native/world.checksums",
+              "rows": 4096,
+              "first_tick": 0,
+              "last_tick": 4095,
+              "bytes": 63399
+            }
+          },
+          "compute_threads": 32,
+          "gradient_gpu_fields": 0,
+          "gradient_device": "",
+          "result_sha256": "3fecc730b800c8df4be528adb61b4e18e05a88b20cd703ffb117e83f6b7115e9"
+        }
+      ]
+    },
+    {
+      "case": "parity-Playground-n4-opencl-nicowar",
+      "matched": true,
+      "rows": 4096,
+      "results": [
+        {
+          "role": "baseline",
+          "case": "parity-Playground-n4-opencl-nicowar",
+          "initialChecksum": 955072743,
+          "finalChecksum": 3475821397,
+          "checksums": {
+            "GCS1": "1b9ac81e8c353410eae916e927463ba3c36c559dac21d80587c149be3de9f3a7",
+            "native": "7fb6b22459ce586effa5c6d87e724e2a5ee06d9dce7d3a433fa863c27d324f61"
+          },
+          "details": {
+            "GCS1": {
+              "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/bounded-wakeups-latest-master/baseline/parity/parity-Playground-n4-opencl-nicowar/native/game.replay.checksums",
+              "rows": 4096,
+              "first_tick": 0,
+              "last_tick": 4095,
+              "teams": 8,
+              "players": 8,
+              "bytes": 63204594
+            },
+            "native": {
+              "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/bounded-wakeups-latest-master/baseline/parity/parity-Playground-n4-opencl-nicowar/native/world.checksums",
+              "rows": 4096,
+              "first_tick": 0,
+              "last_tick": 4095,
+              "bytes": 63399
+            }
+          },
+          "compute_threads": 4,
+          "gradient_gpu_fields": 2120,
+          "gradient_device": "NVIDIA GeForce RTX 2070 SUPER",
+          "result_sha256": "345d81a77d2c1d35925d3db772c598fa0dcc06814433c53df3bbd845f8237472"
+        },
+        {
+          "role": "candidate",
+          "case": "parity-Playground-n4-opencl-nicowar",
+          "initialChecksum": 955072743,
+          "finalChecksum": 3475821397,
+          "checksums": {
+            "GCS1": "1b9ac81e8c353410eae916e927463ba3c36c559dac21d80587c149be3de9f3a7",
+            "native": "7fb6b22459ce586effa5c6d87e724e2a5ee06d9dce7d3a433fa863c27d324f61"
+          },
+          "details": {
+            "GCS1": {
+              "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/bounded-wakeups-latest-master/candidate/parity/parity-Playground-n4-opencl-nicowar/native/game.replay.checksums",
+              "rows": 4096,
+              "first_tick": 0,
+              "last_tick": 4095,
+              "teams": 8,
+              "players": 8,
+              "bytes": 63204594
+            },
+            "native": {
+              "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/bounded-wakeups-latest-master/candidate/parity/parity-Playground-n4-opencl-nicowar/native/world.checksums",
+              "rows": 4096,
+              "first_tick": 0,
+              "last_tick": 4095,
+              "bytes": 63399
+            }
+          },
+          "compute_threads": 4,
+          "gradient_gpu_fields": 2120,
+          "gradient_device": "NVIDIA GeForce RTX 2070 SUPER",
+          "result_sha256": "573112a1ab97c7b35ecfe719c9b5574e0e4b6fcf72c924f1d461c8d6cfe556cf"
+        }
+      ]
+    },
+    {
+      "case": "parity-Playground-nauto-opencl-nicowar",
+      "matched": true,
+      "rows": 4096,
+      "results": [
+        {
+          "role": "baseline",
+          "case": "parity-Playground-nauto-opencl-nicowar",
+          "initialChecksum": 955072743,
+          "finalChecksum": 3475821397,
+          "checksums": {
+            "GCS1": "1b9ac81e8c353410eae916e927463ba3c36c559dac21d80587c149be3de9f3a7",
+            "native": "7fb6b22459ce586effa5c6d87e724e2a5ee06d9dce7d3a433fa863c27d324f61"
+          },
+          "details": {
+            "GCS1": {
+              "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/bounded-wakeups-latest-master/baseline/parity/parity-Playground-nauto-opencl-nicowar/native/game.replay.checksums",
+              "rows": 4096,
+              "first_tick": 0,
+              "last_tick": 4095,
+              "teams": 8,
+              "players": 8,
+              "bytes": 63204594
+            },
+            "native": {
+              "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/bounded-wakeups-latest-master/baseline/parity/parity-Playground-nauto-opencl-nicowar/native/world.checksums",
+              "rows": 4096,
+              "first_tick": 0,
+              "last_tick": 4095,
+              "bytes": 63399
+            }
+          },
+          "compute_threads": 32,
+          "gradient_gpu_fields": 2120,
+          "gradient_device": "NVIDIA GeForce RTX 2070 SUPER",
+          "result_sha256": "36535cae011d5f7e52b735e0476f49a9f20d726c7206f9dc0439dd4beefa64c8"
+        },
+        {
+          "role": "candidate",
+          "case": "parity-Playground-nauto-opencl-nicowar",
+          "initialChecksum": 955072743,
+          "finalChecksum": 3475821397,
+          "checksums": {
+            "GCS1": "1b9ac81e8c353410eae916e927463ba3c36c559dac21d80587c149be3de9f3a7",
+            "native": "7fb6b22459ce586effa5c6d87e724e2a5ee06d9dce7d3a433fa863c27d324f61"
+          },
+          "details": {
+            "GCS1": {
+              "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/bounded-wakeups-latest-master/candidate/parity/parity-Playground-nauto-opencl-nicowar/native/game.replay.checksums",
+              "rows": 4096,
+              "first_tick": 0,
+              "last_tick": 4095,
+              "teams": 8,
+              "players": 8,
+              "bytes": 63204594
+            },
+            "native": {
+              "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/bounded-wakeups-latest-master/candidate/parity/parity-Playground-nauto-opencl-nicowar/native/world.checksums",
+              "rows": 4096,
+              "first_tick": 0,
+              "last_tick": 4095,
+              "bytes": 63399
+            }
+          },
+          "compute_threads": 32,
+          "gradient_gpu_fields": 2120,
+          "gradient_device": "NVIDIA GeForce RTX 2070 SUPER",
+          "result_sha256": "3df32a242a060650fb40136de6a61237e9f8b9c8f6fb7f5b62d26ab1b557f5c2"
+        }
+      ]
+    },
+    {
+      "case": "parity-Playground-n4-cpu-mixed",
+      "matched": true,
+      "rows": 4096,
+      "results": [
+        {
+          "role": "baseline",
+          "case": "parity-Playground-n4-cpu-mixed",
+          "initialChecksum": 941441255,
+          "finalChecksum": 1815523812,
+          "checksums": {
+            "GCS1": "afa30ffe19849163c75f59ade5764d77c2291f45ca4d44af93b2375e4eb70d0a",
+            "native": "dbbf13d1c15adbe3dc76910b161fa09ca47f62ef235cdf4c5c041c90ec34b5f6"
+          },
+          "details": {
+            "GCS1": {
+              "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/bounded-wakeups-latest-master/baseline/parity/parity-Playground-n4-cpu-mixed/native/game.replay.checksums",
+              "rows": 4096,
+              "first_tick": 0,
+              "last_tick": 4095,
+              "teams": 8,
+              "players": 8,
+              "bytes": 66676894
+            },
+            "native": {
+              "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/bounded-wakeups-latest-master/baseline/parity/parity-Playground-n4-cpu-mixed/native/world.checksums",
+              "rows": 4096,
+              "first_tick": 0,
+              "last_tick": 4095,
+              "bytes": 63325
+            }
+          },
+          "compute_threads": 4,
+          "gradient_gpu_fields": 0,
+          "gradient_device": "",
+          "result_sha256": "6f2d7a79b61887ad84b5dfc896992340546c09efd25432d88e93cf2d93769cb3"
+        },
+        {
+          "role": "candidate",
+          "case": "parity-Playground-n4-cpu-mixed",
+          "initialChecksum": 941441255,
+          "finalChecksum": 1815523812,
+          "checksums": {
+            "GCS1": "afa30ffe19849163c75f59ade5764d77c2291f45ca4d44af93b2375e4eb70d0a",
+            "native": "dbbf13d1c15adbe3dc76910b161fa09ca47f62ef235cdf4c5c041c90ec34b5f6"
+          },
+          "details": {
+            "GCS1": {
+              "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/bounded-wakeups-latest-master/candidate/parity/parity-Playground-n4-cpu-mixed/native/game.replay.checksums",
+              "rows": 4096,
+              "first_tick": 0,
+              "last_tick": 4095,
+              "teams": 8,
+              "players": 8,
+              "bytes": 66676894
+            },
+            "native": {
+              "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/bounded-wakeups-latest-master/candidate/parity/parity-Playground-n4-cpu-mixed/native/world.checksums",
+              "rows": 4096,
+              "first_tick": 0,
+              "last_tick": 4095,
+              "bytes": 63325
+            }
+          },
+          "compute_threads": 4,
+          "gradient_gpu_fields": 0,
+          "gradient_device": "",
+          "result_sha256": "4de064ab4569b92ba3c0c06d92e66e43730569d2c7e2aaf1e42e7fcbcb90e81e"
+        }
+      ]
+    },
+    {
+      "case": "continuation-Playground-n4",
+      "matched": true,
+      "rows": 512,
+      "results": [
+        {
+          "role": "baseline",
+          "case": "continuation-Playground-n4",
+          "initialChecksum": 1881005449,
+          "finalChecksum": 820919753,
+          "checksums": {
+            "GCS1": "ab3f57229f65c09c6ac3ce9e9d99c5febcb718b441871503b87125330d206894",
+            "native": "fabb747997585b2272fdb405eb165d8ed3b98d499d4f598dbc1ceb9dedc0c189"
+          },
+          "details": {
+            "GCS1": {
+              "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/bounded-wakeups-latest-master/baseline/parity/continuation-Playground-n4/native/game.replay.checksums",
+              "rows": 512,
+              "first_tick": 20000,
+              "last_tick": 20511,
+              "teams": 8,
+              "players": 8,
+              "bytes": 23240526
+            },
+            "native": {
+              "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/bounded-wakeups-latest-master/baseline/parity/continuation-Playground-n4/native/world.checksums",
+              "rows": 512,
+              "first_tick": 20000,
+              "last_tick": 20511,
+              "bytes": 8574
+            }
+          },
+          "compute_threads": 4,
+          "gradient_gpu_fields": 0,
+          "gradient_device": "",
+          "result_sha256": "3bb27fa3a7d21789473d7f5678c674bab30f1c37ea54621cef8f06aaa955574e"
+        },
+        {
+          "role": "candidate",
+          "case": "continuation-Playground-n4",
+          "initialChecksum": 1881005449,
+          "finalChecksum": 820919753,
+          "checksums": {
+            "GCS1": "ab3f57229f65c09c6ac3ce9e9d99c5febcb718b441871503b87125330d206894",
+            "native": "fabb747997585b2272fdb405eb165d8ed3b98d499d4f598dbc1ceb9dedc0c189"
+          },
+          "details": {
+            "GCS1": {
+              "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/bounded-wakeups-latest-master/candidate/parity/continuation-Playground-n4/native/game.replay.checksums",
+              "rows": 512,
+              "first_tick": 20000,
+              "last_tick": 20511,
+              "teams": 8,
+              "players": 8,
+              "bytes": 23240526
+            },
+            "native": {
+              "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/bounded-wakeups-latest-master/candidate/parity/continuation-Playground-n4/native/world.checksums",
+              "rows": 512,
+              "first_tick": 20000,
+              "last_tick": 20511,
+              "bytes": 8574
+            }
+          },
+          "compute_threads": 4,
+          "gradient_gpu_fields": 0,
+          "gradient_device": "",
+          "result_sha256": "02dbce9c6eea2dbfd19599e72dcd8547f710d686ccdf3419a8bcf2aebf343957"
+        }
+      ]
+    },
+    {
+      "case": "continuation-Playground-nauto",
+      "matched": true,
+      "rows": 512,
+      "results": [
+        {
+          "role": "baseline",
+          "case": "continuation-Playground-nauto",
+          "initialChecksum": 1881005449,
+          "finalChecksum": 820919753,
+          "checksums": {
+            "GCS1": "ab3f57229f65c09c6ac3ce9e9d99c5febcb718b441871503b87125330d206894",
+            "native": "fabb747997585b2272fdb405eb165d8ed3b98d499d4f598dbc1ceb9dedc0c189"
+          },
+          "details": {
+            "GCS1": {
+              "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/bounded-wakeups-latest-master/baseline/parity/continuation-Playground-nauto/native/game.replay.checksums",
+              "rows": 512,
+              "first_tick": 20000,
+              "last_tick": 20511,
+              "teams": 8,
+              "players": 8,
+              "bytes": 23240526
+            },
+            "native": {
+              "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/bounded-wakeups-latest-master/baseline/parity/continuation-Playground-nauto/native/world.checksums",
+              "rows": 512,
+              "first_tick": 20000,
+              "last_tick": 20511,
+              "bytes": 8574
+            }
+          },
+          "compute_threads": 32,
+          "gradient_gpu_fields": 0,
+          "gradient_device": "",
+          "result_sha256": "a1edbc0ccd9365eaa14916a6138d0dfe60b09f9151766e5f5d3b3a332c007a4c"
+        },
+        {
+          "role": "candidate",
+          "case": "continuation-Playground-nauto",
+          "initialChecksum": 1881005449,
+          "finalChecksum": 820919753,
+          "checksums": {
+            "GCS1": "ab3f57229f65c09c6ac3ce9e9d99c5febcb718b441871503b87125330d206894",
+            "native": "fabb747997585b2272fdb405eb165d8ed3b98d499d4f598dbc1ceb9dedc0c189"
+          },
+          "details": {
+            "GCS1": {
+              "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/bounded-wakeups-latest-master/candidate/parity/continuation-Playground-nauto/native/game.replay.checksums",
+              "rows": 512,
+              "first_tick": 20000,
+              "last_tick": 20511,
+              "teams": 8,
+              "players": 8,
+              "bytes": 23240526
+            },
+            "native": {
+              "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/bounded-wakeups-latest-master/candidate/parity/continuation-Playground-nauto/native/world.checksums",
+              "rows": 512,
+              "first_tick": 20000,
+              "last_tick": 20511,
+              "bytes": 8574
+            }
+          },
+          "compute_threads": 32,
+          "gradient_gpu_fields": 0,
+          "gradient_device": "",
+          "result_sha256": "66c081b05850b0b0b322f83351eed2938b3217107e2d1345ee48f581cf2c5e99"
+        }
+      ]
+    },
+    {
+      "case": "parity-Oazis-n1-cpu-nicowar",
+      "matched": true,
+      "rows": 4096,
+      "results": [
+        {
+          "role": "baseline",
+          "case": "parity-Oazis-n1-cpu-nicowar",
+          "initialChecksum": 3148121990,
+          "finalChecksum": 1685288297,
+          "checksums": {
+            "GCS1": "dab823decf0806794d3a748e463e489544280958c1a625233070e01cc5de4181",
+            "native": "8e697e2eb80a8e0f0e1d676c23b4a3a32cfc146768a32e45f36ee295acb75ef0"
+          },
+          "details": {
+            "GCS1": {
+              "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/bounded-wakeups-latest-master/baseline/parity/parity-Oazis-n1-cpu-nicowar/native/game.replay.checksums",
+              "rows": 4096,
+              "first_tick": 0,
+              "last_tick": 4095,
+              "teams": 11,
+              "players": 11,
+              "bytes": 55186322
+            },
+            "native": {
+              "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/bounded-wakeups-latest-master/baseline/parity/parity-Oazis-n1-cpu-nicowar/native/world.checksums",
+              "rows": 4096,
+              "first_tick": 0,
+              "last_tick": 4095,
+              "bytes": 63336
+            }
+          },
+          "compute_threads": 1,
+          "gradient_gpu_fields": 0,
+          "gradient_device": "",
+          "result_sha256": "72159dbdf34eb73bc9bb6fed5be2b5f45a72666871f0c7fc9681423a0c9078ce"
+        },
+        {
+          "role": "candidate",
+          "case": "parity-Oazis-n1-cpu-nicowar",
+          "initialChecksum": 3148121990,
+          "finalChecksum": 1685288297,
+          "checksums": {
+            "GCS1": "dab823decf0806794d3a748e463e489544280958c1a625233070e01cc5de4181",
+            "native": "8e697e2eb80a8e0f0e1d676c23b4a3a32cfc146768a32e45f36ee295acb75ef0"
+          },
+          "details": {
+            "GCS1": {
+              "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/bounded-wakeups-latest-master/candidate/parity/parity-Oazis-n1-cpu-nicowar/native/game.replay.checksums",
+              "rows": 4096,
+              "first_tick": 0,
+              "last_tick": 4095,
+              "teams": 11,
+              "players": 11,
+              "bytes": 55186322
+            },
+            "native": {
+              "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/bounded-wakeups-latest-master/candidate/parity/parity-Oazis-n1-cpu-nicowar/native/world.checksums",
+              "rows": 4096,
+              "first_tick": 0,
+              "last_tick": 4095,
+              "bytes": 63336
+            }
+          },
+          "compute_threads": 1,
+          "gradient_gpu_fields": 0,
+          "gradient_device": "",
+          "result_sha256": "e008f08d77a77598b5b8edea10d13ad4c1d19fe1f0b1c6e6ff09becd47d41713"
+        }
+      ]
+    },
+    {
+      "case": "parity-Oazis-n4-cpu-nicowar",
+      "matched": true,
+      "rows": 4096,
+      "results": [
+        {
+          "role": "baseline",
+          "case": "parity-Oazis-n4-cpu-nicowar",
+          "initialChecksum": 3148121990,
+          "finalChecksum": 1685288297,
+          "checksums": {
+            "GCS1": "dab823decf0806794d3a748e463e489544280958c1a625233070e01cc5de4181",
+            "native": "8e697e2eb80a8e0f0e1d676c23b4a3a32cfc146768a32e45f36ee295acb75ef0"
+          },
+          "details": {
+            "GCS1": {
+              "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/bounded-wakeups-latest-master/baseline/parity/parity-Oazis-n4-cpu-nicowar/native/game.replay.checksums",
+              "rows": 4096,
+              "first_tick": 0,
+              "last_tick": 4095,
+              "teams": 11,
+              "players": 11,
+              "bytes": 55186322
+            },
+            "native": {
+              "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/bounded-wakeups-latest-master/baseline/parity/parity-Oazis-n4-cpu-nicowar/native/world.checksums",
+              "rows": 4096,
+              "first_tick": 0,
+              "last_tick": 4095,
+              "bytes": 63336
+            }
+          },
+          "compute_threads": 4,
+          "gradient_gpu_fields": 0,
+          "gradient_device": "",
+          "result_sha256": "3d95ba091ba34e9f3b24c7cda0d0da6c46d0cd75de227174244de51341242d4c"
+        },
+        {
+          "role": "candidate",
+          "case": "parity-Oazis-n4-cpu-nicowar",
+          "initialChecksum": 3148121990,
+          "finalChecksum": 1685288297,
+          "checksums": {
+            "GCS1": "dab823decf0806794d3a748e463e489544280958c1a625233070e01cc5de4181",
+            "native": "8e697e2eb80a8e0f0e1d676c23b4a3a32cfc146768a32e45f36ee295acb75ef0"
+          },
+          "details": {
+            "GCS1": {
+              "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/bounded-wakeups-latest-master/candidate/parity/parity-Oazis-n4-cpu-nicowar/native/game.replay.checksums",
+              "rows": 4096,
+              "first_tick": 0,
+              "last_tick": 4095,
+              "teams": 11,
+              "players": 11,
+              "bytes": 55186322
+            },
+            "native": {
+              "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/bounded-wakeups-latest-master/candidate/parity/parity-Oazis-n4-cpu-nicowar/native/world.checksums",
+              "rows": 4096,
+              "first_tick": 0,
+              "last_tick": 4095,
+              "bytes": 63336
+            }
+          },
+          "compute_threads": 4,
+          "gradient_gpu_fields": 0,
+          "gradient_device": "",
+          "result_sha256": "a6bdf615372bf26de8dad43938083944eb526e8196c642020869c62cf24cc9f5"
+        }
+      ]
+    },
+    {
+      "case": "parity-Oazis-nauto-cpu-nicowar",
+      "matched": true,
+      "rows": 4096,
+      "results": [
+        {
+          "role": "baseline",
+          "case": "parity-Oazis-nauto-cpu-nicowar",
+          "initialChecksum": 3148121990,
+          "finalChecksum": 1685288297,
+          "checksums": {
+            "GCS1": "dab823decf0806794d3a748e463e489544280958c1a625233070e01cc5de4181",
+            "native": "8e697e2eb80a8e0f0e1d676c23b4a3a32cfc146768a32e45f36ee295acb75ef0"
+          },
+          "details": {
+            "GCS1": {
+              "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/bounded-wakeups-latest-master/baseline/parity/parity-Oazis-nauto-cpu-nicowar/native/game.replay.checksums",
+              "rows": 4096,
+              "first_tick": 0,
+              "last_tick": 4095,
+              "teams": 11,
+              "players": 11,
+              "bytes": 55186322
+            },
+            "native": {
+              "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/bounded-wakeups-latest-master/baseline/parity/parity-Oazis-nauto-cpu-nicowar/native/world.checksums",
+              "rows": 4096,
+              "first_tick": 0,
+              "last_tick": 4095,
+              "bytes": 63336
+            }
+          },
+          "compute_threads": 32,
+          "gradient_gpu_fields": 0,
+          "gradient_device": "",
+          "result_sha256": "7740b157f9a7db66330fdf1540bd8aa27ae25df47e50a37c7d20145004c0b0f5"
+        },
+        {
+          "role": "candidate",
+          "case": "parity-Oazis-nauto-cpu-nicowar",
+          "initialChecksum": 3148121990,
+          "finalChecksum": 1685288297,
+          "checksums": {
+            "GCS1": "dab823decf0806794d3a748e463e489544280958c1a625233070e01cc5de4181",
+            "native": "8e697e2eb80a8e0f0e1d676c23b4a3a32cfc146768a32e45f36ee295acb75ef0"
+          },
+          "details": {
+            "GCS1": {
+              "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/bounded-wakeups-latest-master/candidate/parity/parity-Oazis-nauto-cpu-nicowar/native/game.replay.checksums",
+              "rows": 4096,
+              "first_tick": 0,
+              "last_tick": 4095,
+              "teams": 11,
+              "players": 11,
+              "bytes": 55186322
+            },
+            "native": {
+              "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/bounded-wakeups-latest-master/candidate/parity/parity-Oazis-nauto-cpu-nicowar/native/world.checksums",
+              "rows": 4096,
+              "first_tick": 0,
+              "last_tick": 4095,
+              "bytes": 63336
+            }
+          },
+          "compute_threads": 32,
+          "gradient_gpu_fields": 0,
+          "gradient_device": "",
+          "result_sha256": "f525c05374a7caf07f17c9f4479ea871e15599dc6cb22dff830a3aaeb5e0a498"
+        }
+      ]
+    },
+    {
+      "case": "parity-Oazis-n4-opencl-nicowar",
+      "matched": true,
+      "rows": 4096,
+      "results": [
+        {
+          "role": "baseline",
+          "case": "parity-Oazis-n4-opencl-nicowar",
+          "initialChecksum": 3148121990,
+          "finalChecksum": 1685288297,
+          "checksums": {
+            "GCS1": "dab823decf0806794d3a748e463e489544280958c1a625233070e01cc5de4181",
+            "native": "8e697e2eb80a8e0f0e1d676c23b4a3a32cfc146768a32e45f36ee295acb75ef0"
+          },
+          "details": {
+            "GCS1": {
+              "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/bounded-wakeups-latest-master/baseline/parity/parity-Oazis-n4-opencl-nicowar/native/game.replay.checksums",
+              "rows": 4096,
+              "first_tick": 0,
+              "last_tick": 4095,
+              "teams": 11,
+              "players": 11,
+              "bytes": 55186322
+            },
+            "native": {
+              "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/bounded-wakeups-latest-master/baseline/parity/parity-Oazis-n4-opencl-nicowar/native/world.checksums",
+              "rows": 4096,
+              "first_tick": 0,
+              "last_tick": 4095,
+              "bytes": 63336
+            }
+          },
+          "compute_threads": 4,
+          "gradient_gpu_fields": 2019,
+          "gradient_device": "NVIDIA GeForce RTX 2070 SUPER",
+          "result_sha256": "187332715370af5aaec2132b0090ec17bc8557c8ce9836b59e49bc246d24e6c2"
+        },
+        {
+          "role": "candidate",
+          "case": "parity-Oazis-n4-opencl-nicowar",
+          "initialChecksum": 3148121990,
+          "finalChecksum": 1685288297,
+          "checksums": {
+            "GCS1": "dab823decf0806794d3a748e463e489544280958c1a625233070e01cc5de4181",
+            "native": "8e697e2eb80a8e0f0e1d676c23b4a3a32cfc146768a32e45f36ee295acb75ef0"
+          },
+          "details": {
+            "GCS1": {
+              "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/bounded-wakeups-latest-master/candidate/parity/parity-Oazis-n4-opencl-nicowar/native/game.replay.checksums",
+              "rows": 4096,
+              "first_tick": 0,
+              "last_tick": 4095,
+              "teams": 11,
+              "players": 11,
+              "bytes": 55186322
+            },
+            "native": {
+              "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/bounded-wakeups-latest-master/candidate/parity/parity-Oazis-n4-opencl-nicowar/native/world.checksums",
+              "rows": 4096,
+              "first_tick": 0,
+              "last_tick": 4095,
+              "bytes": 63336
+            }
+          },
+          "compute_threads": 4,
+          "gradient_gpu_fields": 2019,
+          "gradient_device": "NVIDIA GeForce RTX 2070 SUPER",
+          "result_sha256": "bd480e903cba98e934be923cf6690252efd07530f4fe830699ba723d656d16e1"
+        }
+      ]
+    },
+    {
+      "case": "parity-Oazis-nauto-opencl-nicowar",
+      "matched": true,
+      "rows": 4096,
+      "results": [
+        {
+          "role": "baseline",
+          "case": "parity-Oazis-nauto-opencl-nicowar",
+          "initialChecksum": 3148121990,
+          "finalChecksum": 1685288297,
+          "checksums": {
+            "GCS1": "dab823decf0806794d3a748e463e489544280958c1a625233070e01cc5de4181",
+            "native": "8e697e2eb80a8e0f0e1d676c23b4a3a32cfc146768a32e45f36ee295acb75ef0"
+          },
+          "details": {
+            "GCS1": {
+              "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/bounded-wakeups-latest-master/baseline/parity/parity-Oazis-nauto-opencl-nicowar/native/game.replay.checksums",
+              "rows": 4096,
+              "first_tick": 0,
+              "last_tick": 4095,
+              "teams": 11,
+              "players": 11,
+              "bytes": 55186322
+            },
+            "native": {
+              "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/bounded-wakeups-latest-master/baseline/parity/parity-Oazis-nauto-opencl-nicowar/native/world.checksums",
+              "rows": 4096,
+              "first_tick": 0,
+              "last_tick": 4095,
+              "bytes": 63336
+            }
+          },
+          "compute_threads": 32,
+          "gradient_gpu_fields": 2019,
+          "gradient_device": "NVIDIA GeForce RTX 2070 SUPER",
+          "result_sha256": "5f6bdad05a56f479e721d5ea28e57494f2e54aac970654a13827b7cff446179a"
+        },
+        {
+          "role": "candidate",
+          "case": "parity-Oazis-nauto-opencl-nicowar",
+          "initialChecksum": 3148121990,
+          "finalChecksum": 1685288297,
+          "checksums": {
+            "GCS1": "dab823decf0806794d3a748e463e489544280958c1a625233070e01cc5de4181",
+            "native": "8e697e2eb80a8e0f0e1d676c23b4a3a32cfc146768a32e45f36ee295acb75ef0"
+          },
+          "details": {
+            "GCS1": {
+              "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/bounded-wakeups-latest-master/candidate/parity/parity-Oazis-nauto-opencl-nicowar/native/game.replay.checksums",
+              "rows": 4096,
+              "first_tick": 0,
+              "last_tick": 4095,
+              "teams": 11,
+              "players": 11,
+              "bytes": 55186322
+            },
+            "native": {
+              "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/bounded-wakeups-latest-master/candidate/parity/parity-Oazis-nauto-opencl-nicowar/native/world.checksums",
+              "rows": 4096,
+              "first_tick": 0,
+              "last_tick": 4095,
+              "bytes": 63336
+            }
+          },
+          "compute_threads": 32,
+          "gradient_gpu_fields": 2019,
+          "gradient_device": "NVIDIA GeForce RTX 2070 SUPER",
+          "result_sha256": "358139026fb1210e8285015f984d770f7b90cf04a35993d4ed971c93d8cbe868"
+        }
+      ]
+    },
+    {
+      "case": "parity-Oazis-n4-cpu-mixed",
+      "matched": true,
+      "rows": 4096,
+      "results": [
+        {
+          "role": "baseline",
+          "case": "parity-Oazis-n4-cpu-mixed",
+          "initialChecksum": 3149563782,
+          "finalChecksum": 1873435602,
+          "checksums": {
+            "GCS1": "50520632c256c64350d9ac96de2b243ade5d32b77157bae2ddb765b639d4af6b",
+            "native": "f0f3aadf2a205112888fc55dc0eaf66723cd8a2b0de8229755d282d0e31f49aa"
+          },
+          "details": {
+            "GCS1": {
+              "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/bounded-wakeups-latest-master/baseline/parity/parity-Oazis-n4-cpu-mixed/native/game.replay.checksums",
+              "rows": 4096,
+              "first_tick": 0,
+              "last_tick": 4095,
+              "teams": 11,
+              "players": 11,
+              "bytes": 68949182
+            },
+            "native": {
+              "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/bounded-wakeups-latest-master/baseline/parity/parity-Oazis-n4-cpu-mixed/native/world.checksums",
+              "rows": 4096,
+              "first_tick": 0,
+              "last_tick": 4095,
+              "bytes": 63384
+            }
+          },
+          "compute_threads": 4,
+          "gradient_gpu_fields": 0,
+          "gradient_device": "",
+          "result_sha256": "3ff6ddaacd7aa59292bb01fc5873638d387ba0224ea7e1575e6d738ef2bb6dad"
+        },
+        {
+          "role": "candidate",
+          "case": "parity-Oazis-n4-cpu-mixed",
+          "initialChecksum": 3149563782,
+          "finalChecksum": 1873435602,
+          "checksums": {
+            "GCS1": "50520632c256c64350d9ac96de2b243ade5d32b77157bae2ddb765b639d4af6b",
+            "native": "f0f3aadf2a205112888fc55dc0eaf66723cd8a2b0de8229755d282d0e31f49aa"
+          },
+          "details": {
+            "GCS1": {
+              "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/bounded-wakeups-latest-master/candidate/parity/parity-Oazis-n4-cpu-mixed/native/game.replay.checksums",
+              "rows": 4096,
+              "first_tick": 0,
+              "last_tick": 4095,
+              "teams": 11,
+              "players": 11,
+              "bytes": 68949182
+            },
+            "native": {
+              "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/bounded-wakeups-latest-master/candidate/parity/parity-Oazis-n4-cpu-mixed/native/world.checksums",
+              "rows": 4096,
+              "first_tick": 0,
+              "last_tick": 4095,
+              "bytes": 63384
+            }
+          },
+          "compute_threads": 4,
+          "gradient_gpu_fields": 0,
+          "gradient_device": "",
+          "result_sha256": "e44dc97c98af50b58d2005d4eb162af2f8d457cfc0a99be24cd899784b66825c"
+        }
+      ]
+    },
+    {
+      "case": "continuation-Oazis-n4",
+      "matched": true,
+      "rows": 512,
+      "results": [
+        {
+          "role": "baseline",
+          "case": "continuation-Oazis-n4",
+          "initialChecksum": 2377477703,
+          "finalChecksum": 636338371,
+          "checksums": {
+            "GCS1": "08cec2a2c28fced0d4a74d4ffdb6d6473ae88c376ea7cbef85408f72af453813",
+            "native": "f1daa17816e3781d57418b894a5fc705950f2e5b160b2cb6ca0fb3db7acf9075"
+          },
+          "details": {
+            "GCS1": {
+              "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/bounded-wakeups-latest-master/baseline/parity/continuation-Oazis-n4/native/game.replay.checksums",
+              "rows": 512,
+              "first_tick": 60000,
+              "last_tick": 60511,
+              "teams": 11,
+              "players": 11,
+              "bytes": 44784388
+            },
+            "native": {
+              "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/bounded-wakeups-latest-master/baseline/parity/continuation-Oazis-n4/native/world.checksums",
+              "rows": 512,
+              "first_tick": 60000,
+              "last_tick": 60511,
+              "bytes": 8560
+            }
+          },
+          "compute_threads": 4,
+          "gradient_gpu_fields": 0,
+          "gradient_device": "",
+          "result_sha256": "24c50019f2cfc93bf127f51aa073a05b3de3e06495762d75d90cf6219829007c"
+        },
+        {
+          "role": "candidate",
+          "case": "continuation-Oazis-n4",
+          "initialChecksum": 2377477703,
+          "finalChecksum": 636338371,
+          "checksums": {
+            "GCS1": "08cec2a2c28fced0d4a74d4ffdb6d6473ae88c376ea7cbef85408f72af453813",
+            "native": "f1daa17816e3781d57418b894a5fc705950f2e5b160b2cb6ca0fb3db7acf9075"
+          },
+          "details": {
+            "GCS1": {
+              "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/bounded-wakeups-latest-master/candidate/parity/continuation-Oazis-n4/native/game.replay.checksums",
+              "rows": 512,
+              "first_tick": 60000,
+              "last_tick": 60511,
+              "teams": 11,
+              "players": 11,
+              "bytes": 44784388
+            },
+            "native": {
+              "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/bounded-wakeups-latest-master/candidate/parity/continuation-Oazis-n4/native/world.checksums",
+              "rows": 512,
+              "first_tick": 60000,
+              "last_tick": 60511,
+              "bytes": 8560
+            }
+          },
+          "compute_threads": 4,
+          "gradient_gpu_fields": 0,
+          "gradient_device": "",
+          "result_sha256": "331110a65f5ea577d10751a5474b25b78a334e0a1fb567989a5b83fcac521d45"
+        }
+      ]
+    },
+    {
+      "case": "continuation-Oazis-nauto",
+      "matched": true,
+      "rows": 512,
+      "results": [
+        {
+          "role": "baseline",
+          "case": "continuation-Oazis-nauto",
+          "initialChecksum": 2377477703,
+          "finalChecksum": 636338371,
+          "checksums": {
+            "GCS1": "08cec2a2c28fced0d4a74d4ffdb6d6473ae88c376ea7cbef85408f72af453813",
+            "native": "f1daa17816e3781d57418b894a5fc705950f2e5b160b2cb6ca0fb3db7acf9075"
+          },
+          "details": {
+            "GCS1": {
+              "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/bounded-wakeups-latest-master/baseline/parity/continuation-Oazis-nauto/native/game.replay.checksums",
+              "rows": 512,
+              "first_tick": 60000,
+              "last_tick": 60511,
+              "teams": 11,
+              "players": 11,
+              "bytes": 44784388
+            },
+            "native": {
+              "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/bounded-wakeups-latest-master/baseline/parity/continuation-Oazis-nauto/native/world.checksums",
+              "rows": 512,
+              "first_tick": 60000,
+              "last_tick": 60511,
+              "bytes": 8560
+            }
+          },
+          "compute_threads": 32,
+          "gradient_gpu_fields": 0,
+          "gradient_device": "",
+          "result_sha256": "4a3f1dfb6eccde3b9d59b8dfc6202f37812971f57a7311f81dcfa030d24368bb"
+        },
+        {
+          "role": "candidate",
+          "case": "continuation-Oazis-nauto",
+          "initialChecksum": 2377477703,
+          "finalChecksum": 636338371,
+          "checksums": {
+            "GCS1": "08cec2a2c28fced0d4a74d4ffdb6d6473ae88c376ea7cbef85408f72af453813",
+            "native": "f1daa17816e3781d57418b894a5fc705950f2e5b160b2cb6ca0fb3db7acf9075"
+          },
+          "details": {
+            "GCS1": {
+              "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/bounded-wakeups-latest-master/candidate/parity/continuation-Oazis-nauto/native/game.replay.checksums",
+              "rows": 512,
+              "first_tick": 60000,
+              "last_tick": 60511,
+              "teams": 11,
+              "players": 11,
+              "bytes": 44784388
+            },
+            "native": {
+              "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/bounded-wakeups-latest-master/candidate/parity/continuation-Oazis-nauto/native/world.checksums",
+              "rows": 512,
+              "first_tick": 60000,
+              "last_tick": 60511,
+              "bytes": 8560
+            }
+          },
+          "compute_threads": 32,
+          "gradient_gpu_fields": 0,
+          "gradient_device": "",
+          "result_sha256": "07619665d5e2ba33f874028aec78ad10408444d4f038d7e81d63e6a6b2d16653"
+        }
+      ]
+    },
+    {
+      "case": "parity-small64-602-n1-nicowar",
+      "matched": true,
+      "rows": 4096,
+      "results": [
+        {
+          "role": "baseline",
+          "case": "parity-small64-602-n1-nicowar",
+          "initialChecksum": 1368633184,
+          "finalChecksum": 547334213,
+          "checksums": {
+            "GCS1": "7ca37816c253e4aa2a668a92c2a2340621282857977a4806099007f95b0925f2",
+            "native": "4afcb3b36027460d0f3f60bd4fe6125bfbe559e1e61eb33c22793b1e7ec10333"
+          },
+          "details": {
+            "GCS1": {
+              "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/bounded-wakeups-latest-master/baseline/parity/parity-small64-602-n1-nicowar/native/game.replay.checksums",
+              "rows": 4096,
+              "first_tick": 0,
+              "last_tick": 4095,
+              "teams": 2,
+              "players": 2,
+              "bytes": 18979978
+            },
+            "native": {
+              "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/bounded-wakeups-latest-master/baseline/parity/parity-small64-602-n1-nicowar/native/world.checksums",
+              "rows": 4096,
+              "first_tick": 0,
+              "last_tick": 4095,
+              "bytes": 63375
+            }
+          },
+          "compute_threads": 1,
+          "gradient_gpu_fields": 0,
+          "gradient_device": "",
+          "result_sha256": "6c571c873d1b6f5daace36db785e761b1ef0710708e91d41876e20a2e7b8d5f1"
+        },
+        {
+          "role": "candidate",
+          "case": "parity-small64-602-n1-nicowar",
+          "initialChecksum": 1368633184,
+          "finalChecksum": 547334213,
+          "checksums": {
+            "GCS1": "7ca37816c253e4aa2a668a92c2a2340621282857977a4806099007f95b0925f2",
+            "native": "4afcb3b36027460d0f3f60bd4fe6125bfbe559e1e61eb33c22793b1e7ec10333"
+          },
+          "details": {
+            "GCS1": {
+              "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/bounded-wakeups-latest-master/candidate/parity/parity-small64-602-n1-nicowar/native/game.replay.checksums",
+              "rows": 4096,
+              "first_tick": 0,
+              "last_tick": 4095,
+              "teams": 2,
+              "players": 2,
+              "bytes": 18979978
+            },
+            "native": {
+              "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/bounded-wakeups-latest-master/candidate/parity/parity-small64-602-n1-nicowar/native/world.checksums",
+              "rows": 4096,
+              "first_tick": 0,
+              "last_tick": 4095,
+              "bytes": 63375
+            }
+          },
+          "compute_threads": 1,
+          "gradient_gpu_fields": 0,
+          "gradient_device": "",
+          "result_sha256": "85d519e5c17b3cd6a43804ad0693950712e011418bb2588a33e3ca8228e499a7"
+        }
+      ]
+    },
+    {
+      "case": "parity-small64-602-n4-nicowar",
+      "matched": true,
+      "rows": 4096,
+      "results": [
+        {
+          "role": "baseline",
+          "case": "parity-small64-602-n4-nicowar",
+          "initialChecksum": 1368633184,
+          "finalChecksum": 547334213,
+          "checksums": {
+            "GCS1": "7ca37816c253e4aa2a668a92c2a2340621282857977a4806099007f95b0925f2",
+            "native": "4afcb3b36027460d0f3f60bd4fe6125bfbe559e1e61eb33c22793b1e7ec10333"
+          },
+          "details": {
+            "GCS1": {
+              "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/bounded-wakeups-latest-master/baseline/parity/parity-small64-602-n4-nicowar/native/game.replay.checksums",
+              "rows": 4096,
+              "first_tick": 0,
+              "last_tick": 4095,
+              "teams": 2,
+              "players": 2,
+              "bytes": 18979978
+            },
+            "native": {
+              "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/bounded-wakeups-latest-master/baseline/parity/parity-small64-602-n4-nicowar/native/world.checksums",
+              "rows": 4096,
+              "first_tick": 0,
+              "last_tick": 4095,
+              "bytes": 63375
+            }
+          },
+          "compute_threads": 4,
+          "gradient_gpu_fields": 0,
+          "gradient_device": "",
+          "result_sha256": "31b8215c5781009c657fce4a1f56a2f43ec5718cceb9ec4df9f61f132e613245"
+        },
+        {
+          "role": "candidate",
+          "case": "parity-small64-602-n4-nicowar",
+          "initialChecksum": 1368633184,
+          "finalChecksum": 547334213,
+          "checksums": {
+            "GCS1": "7ca37816c253e4aa2a668a92c2a2340621282857977a4806099007f95b0925f2",
+            "native": "4afcb3b36027460d0f3f60bd4fe6125bfbe559e1e61eb33c22793b1e7ec10333"
+          },
+          "details": {
+            "GCS1": {
+              "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/bounded-wakeups-latest-master/candidate/parity/parity-small64-602-n4-nicowar/native/game.replay.checksums",
+              "rows": 4096,
+              "first_tick": 0,
+              "last_tick": 4095,
+              "teams": 2,
+              "players": 2,
+              "bytes": 18979978
+            },
+            "native": {
+              "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/bounded-wakeups-latest-master/candidate/parity/parity-small64-602-n4-nicowar/native/world.checksums",
+              "rows": 4096,
+              "first_tick": 0,
+              "last_tick": 4095,
+              "bytes": 63375
+            }
+          },
+          "compute_threads": 4,
+          "gradient_gpu_fields": 0,
+          "gradient_device": "",
+          "result_sha256": "fd6d7ad8b8f1603303e7944b42e6a8442ae8d85b79c1082a330f2c635bca8ea8"
+        }
+      ]
+    },
+    {
+      "case": "parity-small64-602-nauto-nicowar",
+      "matched": true,
+      "rows": 4096,
+      "results": [
+        {
+          "role": "baseline",
+          "case": "parity-small64-602-nauto-nicowar",
+          "initialChecksum": 1368633184,
+          "finalChecksum": 547334213,
+          "checksums": {
+            "GCS1": "7ca37816c253e4aa2a668a92c2a2340621282857977a4806099007f95b0925f2",
+            "native": "4afcb3b36027460d0f3f60bd4fe6125bfbe559e1e61eb33c22793b1e7ec10333"
+          },
+          "details": {
+            "GCS1": {
+              "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/bounded-wakeups-latest-master/baseline/parity/parity-small64-602-nauto-nicowar/native/game.replay.checksums",
+              "rows": 4096,
+              "first_tick": 0,
+              "last_tick": 4095,
+              "teams": 2,
+              "players": 2,
+              "bytes": 18979978
+            },
+            "native": {
+              "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/bounded-wakeups-latest-master/baseline/parity/parity-small64-602-nauto-nicowar/native/world.checksums",
+              "rows": 4096,
+              "first_tick": 0,
+              "last_tick": 4095,
+              "bytes": 63375
+            }
+          },
+          "compute_threads": 32,
+          "gradient_gpu_fields": 0,
+          "gradient_device": "",
+          "result_sha256": "d78f8c49c817c0e0c489c7f7e33d75c64a1e2634874ca44a1e0c85436aaea1ce"
+        },
+        {
+          "role": "candidate",
+          "case": "parity-small64-602-nauto-nicowar",
+          "initialChecksum": 1368633184,
+          "finalChecksum": 547334213,
+          "checksums": {
+            "GCS1": "7ca37816c253e4aa2a668a92c2a2340621282857977a4806099007f95b0925f2",
+            "native": "4afcb3b36027460d0f3f60bd4fe6125bfbe559e1e61eb33c22793b1e7ec10333"
+          },
+          "details": {
+            "GCS1": {
+              "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/bounded-wakeups-latest-master/candidate/parity/parity-small64-602-nauto-nicowar/native/game.replay.checksums",
+              "rows": 4096,
+              "first_tick": 0,
+              "last_tick": 4095,
+              "teams": 2,
+              "players": 2,
+              "bytes": 18979978
+            },
+            "native": {
+              "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/bounded-wakeups-latest-master/candidate/parity/parity-small64-602-nauto-nicowar/native/world.checksums",
+              "rows": 4096,
+              "first_tick": 0,
+              "last_tick": 4095,
+              "bytes": 63375
+            }
+          },
+          "compute_threads": 32,
+          "gradient_gpu_fields": 0,
+          "gradient_device": "",
+          "result_sha256": "85ccbf4ad128185e2820bb599f6f7b99f8b54e2faf7f52fcf6acf1c60c99885a"
+        }
+      ]
+    },
+    {
+      "case": "parity-small64-602-n4-mixed",
+      "matched": true,
+      "rows": 4096,
+      "results": [
+        {
+          "role": "baseline",
+          "case": "parity-small64-602-n4-mixed",
+          "initialChecksum": 2375266145,
+          "finalChecksum": 3532293826,
+          "checksums": {
+            "GCS1": "f1684cab05902fbdce64c86117889b281e0fcd2d4af76bb2a258eaa364e364aa",
+            "native": "91e19e6cf86b3610132de56ce0d173cb8f775a8fdc981da57637abf992d103b0"
+          },
+          "details": {
+            "GCS1": {
+              "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/bounded-wakeups-latest-master/baseline/parity/parity-small64-602-n4-mixed/native/game.replay.checksums",
+              "rows": 4096,
+              "first_tick": 0,
+              "last_tick": 4095,
+              "teams": 2,
+              "players": 2,
+              "bytes": 18685758
+            },
+            "native": {
+              "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/bounded-wakeups-latest-master/baseline/parity/parity-small64-602-n4-mixed/native/world.checksums",
+              "rows": 4096,
+              "first_tick": 0,
+              "last_tick": 4095,
+              "bytes": 63371
+            }
+          },
+          "compute_threads": 4,
+          "gradient_gpu_fields": 0,
+          "gradient_device": "",
+          "result_sha256": "8cae1e3b58cc3da10161f17f043062fa4baeadfb9b515d4d38472e8affae30bb"
+        },
+        {
+          "role": "candidate",
+          "case": "parity-small64-602-n4-mixed",
+          "initialChecksum": 2375266145,
+          "finalChecksum": 3532293826,
+          "checksums": {
+            "GCS1": "f1684cab05902fbdce64c86117889b281e0fcd2d4af76bb2a258eaa364e364aa",
+            "native": "91e19e6cf86b3610132de56ce0d173cb8f775a8fdc981da57637abf992d103b0"
+          },
+          "details": {
+            "GCS1": {
+              "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/bounded-wakeups-latest-master/candidate/parity/parity-small64-602-n4-mixed/native/game.replay.checksums",
+              "rows": 4096,
+              "first_tick": 0,
+              "last_tick": 4095,
+              "teams": 2,
+              "players": 2,
+              "bytes": 18685758
+            },
+            "native": {
+              "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/bounded-wakeups-latest-master/candidate/parity/parity-small64-602-n4-mixed/native/world.checksums",
+              "rows": 4096,
+              "first_tick": 0,
+              "last_tick": 4095,
+              "bytes": 63371
+            }
+          },
+          "compute_threads": 4,
+          "gradient_gpu_fields": 0,
+          "gradient_device": "",
+          "result_sha256": "7bea339d128093d754965a922308471f122ba665e9e0039d016653d7b89febf7"
+        }
+      ]
+    }
+  ],
+  "golden": [
+    {
+      "role": "baseline",
+      "sha256": "305d3315248672cb24a64253657a6667fcc8767ddda61a0044a7e49a9932e970",
+      "rows": 842
+    },
+    {
+      "role": "candidate",
+      "sha256": "305d3315248672cb24a64253657a6667fcc8767ddda61a0044a7e49a9932e970",
+      "rows": 842
+    }
+  ],
+  "limits": [
+    "Linux x86-64 and one NVIDIA OpenCL device only; fresh browser/mobile/Windows/macOS runtime not exercised",
+    "No new wall-time benchmark; prior timing remains historical on its recorded engine base"
+  ]
+}

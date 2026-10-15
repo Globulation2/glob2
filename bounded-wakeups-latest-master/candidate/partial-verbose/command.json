@@ -1,0 +1,21 @@
+{
+  "command": [
+    "/home/bradley/.codex/worktrees/a630/glob2/artifacts/bounded-wakeups-latest-master/candidate/glob2-unit-tests",
+    "--test-suite=ComputeExecutor",
+    "--test-case=idle workers retain parallelism*",
+    "--success=true",
+    "--no-colors=true"
+  ],
+  "cwd": "/home/bradley/.codex/worktrees/engine-optimization/glob2",
+  "env": {
+    "SDL_VIDEODRIVER": "dummy",
+    "SDL_AUDIODRIVER": "dummy",
+    "GLOB2_ASSET_DIR": "/home/bradley/.codex/worktrees/engine-optimization/glob2",
+    "GLOB2_USER_DATA_DIR": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/bounded-wakeups-latest-master/candidate/partial-verbose/profile",
+    "GLOB2_USER_DIR": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/bounded-wakeups-latest-master/candidate/partial-verbose/profile",
+    "GLOB2_OPENCL_DEVICE": "0"
+  },
+  "rc": 0,
+  "stdout_sha256": "2f7da3bd8b31d27b974fcd11c0e65eaf55d4b1030a279cb5e368d2a92168539e",
+  "utc": "2026-10-15T20:32:19.504843+00:00"
+}

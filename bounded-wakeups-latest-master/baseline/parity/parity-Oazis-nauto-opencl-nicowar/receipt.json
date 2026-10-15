@@ -1,0 +1,32 @@
+{
+  "role": "baseline",
+  "case": "parity-Oazis-nauto-opencl-nicowar",
+  "initialChecksum": 3148121990,
+  "finalChecksum": 1685288297,
+  "checksums": {
+    "GCS1": "dab823decf0806794d3a748e463e489544280958c1a625233070e01cc5de4181",
+    "native": "8e697e2eb80a8e0f0e1d676c23b4a3a32cfc146768a32e45f36ee295acb75ef0"
+  },
+  "details": {
+    "GCS1": {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/bounded-wakeups-latest-master/baseline/parity/parity-Oazis-nauto-opencl-nicowar/native/game.replay.checksums",
+      "rows": 4096,
+      "first_tick": 0,
+      "last_tick": 4095,
+      "teams": 11,
+      "players": 11,
+      "bytes": 55186322
+    },
+    "native": {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/bounded-wakeups-latest-master/baseline/parity/parity-Oazis-nauto-opencl-nicowar/native/world.checksums",
+      "rows": 4096,
+      "first_tick": 0,
+      "last_tick": 4095,
+      "bytes": 63336
+    }
+  },
+  "compute_threads": 32,
+  "gradient_gpu_fields": 2019,
+  "gradient_device": "NVIDIA GeForce RTX 2070 SUPER",
+  "result_sha256": "5f6bdad05a56f479e721d5ea28e57494f2e54aac970654a13827b7cff446179a"
+}

@@ -1,0 +1,41 @@
+{
+  "command": [
+    "python3",
+    "test/run_tests.py",
+    "--build-dir",
+    "/home/bradley/.codex/worktrees/a630/glob2/artifacts/bounded-wakeups-latest-master/candidate",
+    "--binary",
+    "unit",
+    "--no-display",
+    "--timeout",
+    "180",
+    "-j",
+    "4",
+    "--artifacts",
+    "/home/bradley/.codex/worktrees/a630/glob2/artifacts/bounded-wakeups-latest-master/candidate/focused-unit/cases",
+    "--junit",
+    "/home/bradley/.codex/worktrees/a630/glob2/artifacts/bounded-wakeups-latest-master/candidate/focused-unit/junit.xml",
+    "--filter",
+    "ComputeExecutor/*",
+    "--filter",
+    "ReplayStepCounter/*",
+    "--filter",
+    "HiringRanking/*",
+    "--filter",
+    "TurnHarness/two clients on clean links execute identical turns*",
+    "--filter",
+    "TurnHarness/a restarted client reloads, replays the full log and rejoins*"
+  ],
+  "cwd": "/home/bradley/.codex/worktrees/engine-optimization/glob2",
+  "env": {
+    "SDL_VIDEODRIVER": "dummy",
+    "SDL_AUDIODRIVER": "dummy",
+    "GLOB2_ASSET_DIR": "/home/bradley/.codex/worktrees/engine-optimization/glob2",
+    "GLOB2_USER_DATA_DIR": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/bounded-wakeups-latest-master/candidate/focused-unit/profile",
+    "GLOB2_USER_DIR": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/bounded-wakeups-latest-master/candidate/focused-unit/profile",
+    "GLOB2_OPENCL_DEVICE": "0"
+  },
+  "rc": 0,
+  "stdout_sha256": "d34ce11bdfa1bda75b4bd6f35985ae65bb8e0083a417f65f05c11631cb8bfa4d",
+  "utc": "2026-10-15T20:31:08.740833+00:00"
+}

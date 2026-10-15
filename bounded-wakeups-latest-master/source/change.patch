@@ -1,0 +1,119 @@
+diff --git a/src/common/ComputeExecutor.h b/src/common/ComputeExecutor.h
+index 9a953e7b0..442cae29c 100644
+--- a/src/common/ComputeExecutor.h
++++ b/src/common/ComputeExecutor.h
+@@ -1555,7 +1555,12 @@ private:
+ 		lock.unlock();
+ 		if (!ownerRunsDeferred()) {
+ 			if (runnable == 1) ready.notify_one();
+-			else if (runnable) ready.notify_all();
++			else if (runnable >= workers.size()) ready.notify_all();
++			else {
++				// Deferred jobs can run on any simulation worker. Wake only
++				// enough workers for the newly runnable work.
++				for (std::size_t wake = 0; wake < runnable; ++wake) ready.notify_one();
++			}
+ 		}
+ 		return batch;
+ 	}
+diff --git a/src/common/ComputeExecutorHarness.cpp b/src/common/ComputeExecutorHarness.cpp
+index ccdfe10b4..9cd2be0c1 100644
+--- a/src/common/ComputeExecutorHarness.cpp
++++ b/src/common/ComputeExecutorHarness.cpp
+@@ -229,40 +229,65 @@ TEST_CASE("idle workers retain parallelism for independent and mixed lane groups
+     {
+         ComputeExecutor executor;
+         executor.configureTelemetry(mode);
+-        executor.configure(3);
+-        for (unsigned shape = 0; shape < 4; ++shape)
++        for (unsigned participants : {3u, 5u})
+         {
+-            CAPTURE(mode); CAPTURE(shape);
+-            struct Gate {
+-                std::atomic<unsigned> entered{0};
+-                std::atomic<bool> release{false};
+-                static void run(void* value, std::size_t) {
+-                    auto& gate = *static_cast<Gate*>(value);
+-                    ++gate.entered;
+-                    const auto deadline = std::chrono::steady_clock::now() + std::chrono::seconds(5);
+-                    while (!gate.release && std::chrono::steady_clock::now() < deadline)
+-                        std::this_thread::yield();
++            CAPTURE(participants);
++            executor.configure(participants);
++            // Browser pools and failed worker creation can provide fewer workers.
++            // Keep the two-worker coverage, but do not claim the partial branch
++            // was exercised unless all four requested workers are available.
++            if (executor.threadCount() != participants) {
++                WARN("Requested worker pool unavailable; partial wake coverage skipped");
++                continue;
++            }
++            for (unsigned shape = 0; shape < 5; ++shape)
++            {
++                CAPTURE(mode); CAPTURE(shape);
++                struct Gate {
++                    std::atomic<unsigned> entered{0};
++                    std::atomic<bool> release{false};
++                    static void run(void* value, std::size_t) {
++                        auto& gate = *static_cast<Gate*>(value);
++                        ++gate.entered;
++                        const auto deadline = std::chrono::steady_clock::now() + std::chrono::seconds(10);
++                        while (!gate.release && std::chrono::steady_clock::now() < deadline)
++                            std::this_thread::yield();
++                    }
++                } gate;
++                // Let workers park between bursts. Held callbacks must enter in
++                // parallel before release: with four workers, two or three ready
++                // heads exercise partial wakeups rather than the broadcast path.
++                std::this_thread::sleep_for(std::chrono::milliseconds(2));
++                const ComputeExecutor::Job job{Gate::run, &gate};
++                std::array<ComputeExecutor::Group, 2> groups;
++                switch (shape) {
++                    case 0: groups = {{{2, job}, {0, job}}}; break;
++                    case 1: groups = {{{1, job, 4}, {1, job, 5}}}; break;
++                    case 2: groups = {{{2, job, 4}, {1, job, 5}}}; break;
++                    case 3: groups = {{{1, job, 4}, {1, job}}}; break;
++                    default: groups = {{{3, job}, {0, job}}}; break;
+                 }
+-            } gate;
+-            // Let both workers park between bursts. A lone notification must
+-            // not serialize a batch that has two independent runnable heads.
+-            std::this_thread::sleep_for(std::chrono::milliseconds(2));
+-            const ComputeExecutor::Job job{Gate::run, &gate};
+-            std::array<ComputeExecutor::Group, 2> groups;
+-            switch (shape) {
+-                case 0: groups = {{{2, job}, {0, job}}}; break;
+-                case 1: groups = {{{1, job, 4}, {1, job, 5}}}; break;
+-                case 2: groups = {{{2, job, 4}, {1, job, 5}}}; break;
+-                default: groups = {{{1, job, 4}, {1, job}}}; break;
++                const unsigned runnable = shape == 4 ? 3u : 2u;
++                // The two-worker configuration cannot start three held jobs.
++                if (runnable >= executor.threadCount()) continue;
++                auto batch = executor.submit(groups, shape);
++                struct ReleaseAndJoin {
++                    Gate& gate;
++                    ComputeExecutor& executor;
++                    ComputeExecutor::Batch& batch;
++                    ~ReleaseAndJoin() {
++                        gate.release = true;
++                        try { executor.join(batch); } catch (...) {}
++                    }
++                } cleanup{gate, executor, batch};
++                const auto deadline = std::chrono::steady_clock::now() + std::chrono::seconds(5);
++                while (gate.entered < runnable && std::chrono::steady_clock::now() < deadline)
++                    std::this_thread::yield();
++                CHECK(gate.entered >= runnable);
++                gate.release = true;
++                executor.join(batch);
++                CHECK(gate.entered == (shape == 2 || shape == 4 ? 3u : 2u));
+             }
+-            auto batch = executor.submit(groups, shape);
+-            const auto deadline = std::chrono::steady_clock::now() + std::chrono::seconds(5);
+-            while (gate.entered < 2 && std::chrono::steady_clock::now() < deadline)
+-                std::this_thread::yield();
+-            CHECK(gate.entered >= 2);
+-            gate.release = true;
+-            executor.join(batch);
+-            CHECK(gate.entered == (shape == 2 ? 3u : 2u));
+         }
+     }
+ }
