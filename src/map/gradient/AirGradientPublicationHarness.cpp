@@ -83,6 +83,79 @@ void loadAirInventory(AirGradientRuntime& runtime,Map& map,const std::string& by
 
 TEST_SUITE("AirGradientPublication")
 {
+TEST_CASE("resource visibility supplier and claim revisions refresh unavailable air guidance before its age limit")
+{
+    glob2test::HeadlessGlobals globals;
+    for (unsigned scenario=0;scenario<4;++scenario) {
+        CAPTURE(scenario);
+        glob2test::HeadlessGame world({.clearImmobile=true,.header=true});
+        auto& game=world.game; auto& map=game.map;
+        game.gameHeader.getExperiments().set(ExperimentId::MarketsV2); game.configureBuildingCatalog();
+        configureAir(game,2);
+        Key key; key.family=Family::Material; key.material=CHERRY;
+        Building* supplier=nullptr;
+        Unit* claimant=nullptr;
+        const auto goal=map.coordToIndex(12,12);
+        if (scenario<2) {
+            // Empty cherry trees persist, so changing harvest availability
+            // changes resource stamps without changing movement topology.
+            map.setResourceByIndex(12,12,CHERRY,1);
+            if (scenario==0) { map.setMaterialAmountSlot(goal,CHERRY,0); map.setMapDiscovered(12,12,world.team->me); }
+        } else if (scenario==2) {
+            supplier=world.addBuilding("market",12,12); REQUIRE(supplier);
+            key.withMarkets=true; key.modes=3;
+        } else {
+            map.setResourceByIndex(12,12,WOOD,1); map.addClearArea(12,12,0);
+            auto* unit=world.addUnit(EXPLORER,8,8); claimant=world.addUnit(WORKER,24,24);
+            REQUIRE(unit); REQUIRE(claimant);
+            claimant->previousClearingArea=Unit::ClearingAreaClaim{12,12}; claimant->previousClearingAreaDistance=1;
+            map.setClearingAreaClaimed(12,12,0,claimant->gid);
+            key.family=Family::ClearChoice; key.unit=Game::refOf(unit); key.sourceX=8; key.sourceY=8;
+            key.epoch=unsigned(unit->activity)|(unsigned(unit->displacement)<<8)|(unsigned(unit->medical)<<16);
+        }
+        const auto roundTrip=[&] {
+            for (bool text:{false,true}) {
+                const auto bytes=saveAir(game,text);
+                GameGUI resumed; REQUIRE(loadAir(resumed.game,bytes,text));
+                CHECK(airState(game)==airState(resumed.game));
+                resumed.game.map.finishGradientPipeline();
+            }
+        };
+        map.requestAirField(key);
+        roundTrip(); // Cold metadata with normalized current/stale tracker bits.
+        const auto old=awaitAir(game,key);
+        CHECK(map.queryAirDestination(key,8,8,nullptr)==RouteResult::Unreachable);
+        const auto topology=map.topologyGeneration;
+        if (scenario==0) map.setMaterialAmountSlot(goal,CHERRY,1);
+        else if (scenario==1) map.setMapDiscovered(12,12,world.team->me);
+        else if (scenario==2) { supplier->setMaterial(CHERRY,20); supplier->updateCallLists(); }
+        else { map.setClearingAreaUnclaimed(12,12,0); claimant->previousClearingArea.reset(); }
+        CHECK(map.topologyGeneration==topology);
+        roundTrip(); // Published guidance now has stale dependency stamps.
+        const auto id=map.gradientRuntime->air.keyIndex.at(key);
+        auto& entry=map.gradientRuntime->air.entries.at(id);
+        REQUIRE(game.stepCounter-entry.capturedTick<128);
+        CHECK(map.queryAirDestination(key,8,8,nullptr)==RouteResult::Unreachable);
+        CHECK(std::any_of(map.gradientRuntime->fieldRequests.begin(),map.gradientRuntime->fieldRequests.end(),
+            [&](const auto& request) { return request.slot==&entry.slot; }));
+        advanceAir(game); // Admission, not the original query, starts K=3.
+        roundTrip(); // Save may finish the private result but cannot publish it.
+        CHECK(map.lookupAirField(key).values==old.values);
+        for (int advance=0;advance<2;++advance) {
+            advanceAir(game);
+            CHECK(map.lookupAirField(key).values==old.values);
+        }
+        advanceAir(game);
+        CHECK(map.lookupAirField(key).values!=old.values);
+        air_guidance::Sample selected;
+        REQUIRE(map.queryAirDestination(key,8,8,&selected)==RouteResult::Reachable);
+        CHECK(selected.x==12); CHECK(selected.y==12);
+        if (supplier) CHECK(selected.supplier==Game::refOf(supplier));
+        roundTrip();
+        map.finishGradientPipeline();
+    }
+}
+
 TEST_CASE("cold demand beyond the plane budget remains uncharged FIFO metadata and completes on workers")
 {
     glob2test::HeadlessGlobals globals;
