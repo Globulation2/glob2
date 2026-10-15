@@ -115,11 +115,21 @@ std::string marketTrace(bool enabled, bool report=false)
 			if (tick==749)
 			{
 				const auto state=simulation(g);
+                const auto checkCheckpoint=[&](const char* phase) {
+                    const auto actual=simulation(g);
+                    CAPTURE(phase); CAPTURE(pipeline);
+                    REQUIRE(actual.size()==state.size());
+                    for (size_t component=0;component<state.size();++component) {
+                        CAPTURE(component);
+                        CHECK(actual[component]==state[component]);
+                    }
+                };
 				const auto bytes=save(g,pipeline);
+                checkCheckpoint("save"); // Finishing private jobs cannot publish them.
 				if (!glob2test::artifactDir().empty()) glob2test::writeFile(glob2test::artifactDir()/(pipeline ? "midgame.txt" : "midgame.bin"),bytes);
 				const auto marketId=market->gid, secondId=second->gid, innId=inn->gid;
 				REQUIRE(load(g,bytes,pipeline));
-				CHECK(simulation(g)==state);
+                checkCheckpoint("load");
 				world.team=g.teams[0];
 				market=world.team->myBuildings[Building::GIDtoID(marketId)];
                 inn=world.team->myBuildings[Building::GIDtoID(innId)];
@@ -301,11 +311,15 @@ TEST_CASE("market routes respect forbidden ground and water across swim classes"
 	world.game.map.bumpTopologyGeneration();
 	for (int sw=waterOnly?SWIM_CLASS_COUNT-1:0;sw<(waterOnly?SWIM_CLASS_COUNT:SWIM_CLASS_COUNT-1);++sw)
 	{
-		const auto* previous=world.game.map.getMaterialGradientSlot(0,CHERRY,sw,true);
+		std::vector<Uint16> expected(world.game.map.cellCount());
+		world.game.map.seedMaterialGradient(0,CHERRY,sw,expected.data(),true);
+		world.game.map.propagateGradient(expected.data(),sw);
 		world.game.map.updateMaterialGradient(0,CHERRY,sw,true);
+		// An older in-flight refresh may publish first. Wait for the generation
+		// captured after painting rather than treating any pointer swap as fresh.
 		glob2test::awaitGradient(world.game,[&] {
 			const auto* field=world.game.map.getMaterialGradientSlot(0,CHERRY,sw,true);
-			return field!=previous ? field : nullptr;
+			return field && std::equal(expected.begin(),expected.end(),field) ? field : nullptr;
 		});
 		CHECK(world.game.map.materialAvailableSlot(0,CHERRY,sw,5,5,true)==(sw>0));
 	}

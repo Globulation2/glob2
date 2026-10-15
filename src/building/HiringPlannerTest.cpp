@@ -47,9 +47,7 @@ TEST_SUITE("HiringPlanner")
         glob2test::HeadlessGlobals globals;
         glob2test::HeadlessGame world({.wDec=12,.hDec=3,.clearImmobile=true,.header=true,.seed=4921});
         auto& map=world.game.map;
-        map.setGame(nullptr);
         map.importTerrainDefinitions(R"({"schemaVersion":1,"terrains":[{"key":"fixture:slow-air-hiring","name":"Slow air","base":"grass","properties":{"airSpeedQ8":64},"appearance":"grass"}]})");
-        map.setGame(&world.game);
         const auto slow=*map.terrainRegistry().find("fixture:slow-air-hiring");
         {
             auto edit=map.editTerrain();
@@ -211,9 +209,9 @@ TEST_SUITE("HiringPlanner")
 		CHECK(HiringPipeline::bindRoutes(w.game, available).routes->empty());
 		// A normal simulation query establishes the shared generation.
 		glob2test::awaitBuildingGradient(w.game,b, u->swimClass());
-		CHECK_FALSE(HiringPipeline::bindRoutes(w.game, available).routes->empty());
+		CHECK_FALSE(HiringPipeline::bindRoutes(w.game, w.game.captureReadBoundary()).routes->empty());
 	}
-	TEST_CASE("cold routes are established by live admission rather than observation")
+	TEST_CASE("cold route observation suggests candidates while live admission remains Pending")
 	{
 		glob2test::HeadlessGlobals globals;
 		glob2test::HeadlessGame w({.discovered = true, .loadDefaultRace = true});
@@ -228,12 +226,23 @@ TEST_SUITE("HiringPlanner")
 		u->carriedMaterial = WHEAT;
 		const auto slot = b->routeSlot(u->swimClass(), BuildingRoute::Footprint);
 		CHECK(b->globalGradient[slot] == nullptr);
-		glob2test::publishCurrentHiringSuggestions(w.game);
+		const auto input=HiringPipeline::bindRoutes(w.game,w.game.captureReadBoundary());
+		CHECK(input.routes->empty());
+		const auto output=HiringPlanner::Planner{}.rank(input,0);
+		bool suggested=false;
+		for (const auto& building:output.buildings) if (building.building==Game::refOf(b))
+			for (const auto& job:building.jobs)
+				if (job.key==Hiring::Key{Hiring::Job::Delivery,WHEAT})
+					for (const auto& candidate:job.candidates) suggested|=candidate.unit==Game::refOf(u);
+		CHECK(suggested);
 		CHECK(b->globalGradient[slot] == nullptr);
-		CHECK(b->subscribeToBringMaterialsStep());
-		REQUIRE(b->unitsWorking.size() == 1);
-		CHECK(b->unitsWorking.front() == u);
-		CHECK(b->globalGradient[slot] != nullptr);
+		int distance=-1;
+		CHECK(w.game.map.queryBuildingDistance(b,u->swimClass(),u->posX,u->posY,&distance,BuildingRoute::Footprint)==RouteResult::Pending);
+		CHECK(distance==-1);
+		CHECK(b->unitsWorking.empty());
+		CHECK(b->globalGradient[slot] == nullptr);
+		glob2test::awaitBuildingGradient(w.game,b,u->swimClass(),BuildingRoute::Footprint);
+		CHECK(w.game.map.queryBuildingDistance(b,u->swimClass(),u->posX,u->posY,&distance,BuildingRoute::Footprint)==RouteResult::Reachable);
 	}
 	TEST_CASE("unrelated live route enrollment cannot change hiring inputs")
 	{
@@ -242,13 +251,19 @@ TEST_SUITE("HiringPlanner")
 		auto *building = w.addBuilding("inn", 8, 8);
 		building->maxUnitWorking = 1;
 		building->updateCallLists();
-		w.addUnit(WORKER, 6, 8);
-		const auto snapshot = w.game.captureReadBoundary();
-		const auto before = HiringPipeline::bindRoutes(w.game, snapshot);
+		auto* worker=w.addUnit(WORKER, 6, 8);
+		// Creation prewarms plausible routes. Establish that normal generation
+		// before isolating enrollment of an unrelated route/class below.
+		glob2test::awaitBuildingGradient(w.game,building,worker->swimClass(),BuildingRoute::Footprint);
+		const auto before = HiringPipeline::bindRoutes(w.game,w.game.captureReadBoundary());
+		REQUIRE(before.routes->size()==1);
 		// Other query consumers may enroll unused movement classes or routes.
 		glob2test::awaitBuildingGradient(w.game,building, SWIM_CLASS_COUNT - 1, BuildingRoute::Combat);
-		const auto after = HiringPipeline::bindRoutes(w.game, snapshot);
-		CHECK(before.routes->size() == after.routes->size());
+		const auto after = HiringPipeline::bindRoutes(w.game,w.game.captureReadBoundary());
+		REQUIRE(before.routes->size() == after.routes->size());
+		CHECK(before.routes->front().building==after.routes->front().building);
+		CHECK(before.routes->front().slot==after.routes->front().slot);
+		CHECK(before.routes->front().field==after.routes->front().field);
 	}
 	TEST_CASE("published resource estimates are used and missing planes remain recruitable")
 	{

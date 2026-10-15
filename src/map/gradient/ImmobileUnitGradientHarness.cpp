@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Real-engine regression for immobile bookkeeping and weighted building routes.
 #include "EngineFixtures.h"
+#include "GradientFixture.h"
 #include "GlobalContainer.h"
 #include "Game.h"
 #include "GameGUI.h"
@@ -18,6 +19,7 @@
 #include <cstdio>
 #include <cstdlib>
 #include <cstring>
+#include <array>
 
 namespace
 {
@@ -58,9 +60,19 @@ struct World
 
 	Uint16 value(int swimClass, int x, int y)
 	{
-		const Uint16* gradient = game.map.buildingGradient(inn, swimClass);
-		require(gradient != nullptr, "inn has an accessible entrance");
+		const auto* gradient = glob2test::awaitBuildingGradient(game,inn,swimClass);
 		return gradient[game.map.coordToIndex(x, y)];
+	}
+
+	void refresh(int swimClass)
+	{
+		const int slot=inn->routeSlot(swimClass,BuildingRoute::Automatic);
+		const auto captured=inn->lastGlobalGradientUpdateStepCounter[slot];
+		require(game.map.requestBuildingRefresh(inn,slot), "simulation refresh is queued");
+		glob2test::awaitGradient(game,[&]() {
+			return inn->lastGlobalGradientUpdateStepCounter[slot]!=captured
+				? game.map.lookupBuildingField(inn,swimClass) : nullptr;
+		});
 	}
 };
 
@@ -139,8 +151,11 @@ static void paintingForbiddenAreaRefreshesGradients()
 	forbidRow(world, 55, -1);
 	require(world.game.map.isForbidden(19, 23, team->me) && !world.game.map.isForbidden(20, 23, team->me), "painted rows leave one gap");
 	int dist = -1, dx = 0, dy = 0;
+	std::array<const Uint16*,SWIM_CLASS_COUNT> published{};
 	for (int c = waterOnly ? SWIM_CLASS_COUNT-1 : 0; c < (waterOnly ? SWIM_CLASS_COUNT : SWIM_CLASS_COUNT-1); ++c)
 	{
+		world.value(c,20,26); // Cold demand publishes before reachability is judged.
+		published[c]=world.game.map.lookupBuildingField(world.inn,c);
 		require(world.game.map.buildingAvailable(world.inn, c, 20, 26, &dist), "near route uses the gap");
 		require(world.game.map.buildingAvailable(world.inn, c, 40, 45, &dist), "distant route uses the gap");
 		require(world.game.map.pathfindBuilding(random, world.inn, c, 40, 45, &dx, &dy), "distant unit can advance");
@@ -148,7 +163,12 @@ static void paintingForbiddenAreaRefreshesGradients()
 	forbidRow(world, 23, -1);
 	for (int c = waterOnly ? SWIM_CLASS_COUNT-1 : 0; c < (waterOnly ? SWIM_CLASS_COUNT : SWIM_CLASS_COUNT-1); ++c)
 	{
-		require(world.inn->globalGradient[c] == nullptr, "painting invalidates every cached swim class immediately");
+		require(world.game.map.lookupBuildingField(world.inn,c)==published[c], "painting retains the published swim-class generation");
+		const auto step=world.game.map.queryBuildingStep(random,world.inn,c,20,24,&dx,&dy);
+		require(step!=StepResult::Pending, "a soft edit retains Ready guidance");
+		if (step==StepResult::Step)
+			require(!world.game.map.isForbidden(20+dx,24+dy,team->me), "stale guidance cannot step onto freshly forbidden paint");
+		world.refresh(c);
 		require(!world.game.map.buildingAvailable(world.inn, c, 20, 26, &dist), "closing the gap cuts off the near route");
 		require(!world.game.map.buildingAvailable(world.inn, c, 40, 45, &dist), "closing the gap cuts off the distant route");
 		require(!world.game.map.pathfindBuilding(random, world.inn, c, 40, 45, &dx, &dy), "distant unit has no route left");
@@ -158,7 +178,8 @@ static void paintingForbiddenAreaRefreshesGradients()
 	alterForbidden(world, BrushTool::MODE_DEL, gap);
 	for (int c = waterOnly ? SWIM_CLASS_COUNT-1 : 0; c < (waterOnly ? SWIM_CLASS_COUNT : SWIM_CLASS_COUNT-1); ++c)
 	{
-		require(world.inn->globalGradient[c] == nullptr, "erasing invalidates every cached swim class immediately");
+		require(world.game.map.lookupBuildingField(world.inn,c)!=nullptr, "erasing retains a complete published generation");
+		world.refresh(c);
 		require(world.game.map.buildingAvailable(world.inn, c, 20, 26, &dist), "erasing restores the near route");
 		require(world.game.map.buildingAvailable(world.inn, c, 40, 45, &dist), "erasing restores the distant route");
 	}

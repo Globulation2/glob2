@@ -149,12 +149,15 @@ TEST_CASE("direct completed steps match deferred preparation across worker count
         game->map.configureGradientPipeline(0, 8);
     }
     for (unsigned threads : {1, 4}) {
+        unsigned stagedBoundaries=0;
         deferred.game.map.configureCompute(threads);
         for (unsigned tick = 0; tick < 64; ++tick) {
             direct.game.syncStep(0);
             CHECK_FALSE(direct.game.map.hasPendingGradientPreparation());
             deferred.game.syncStep(0, Game::PreparationCompletion::Deferred);
-            REQUIRE(deferred.game.map.hasPendingGradientPreparation());
+            // Cold tickets can be in flight with no new admission this tick.
+            // A completed boundary still compares identically in either case.
+            stagedBoundaries+=deferred.game.map.hasPendingGradientPreparation();
             ReadOnlyPhase phase;
             // Submission belongs to the owner; the deferred seed job is itself read-only work.
             deferred.game.map.preparePendingWorld(deferred.game.prepareReadBoundary(false));
@@ -164,22 +167,32 @@ TEST_CASE("direct completed steps match deferred preparation across worker count
             CHECK_FALSE(deferred.game.map.hasPendingGradientPreparation());
             CHECK(direct.game.checkSum(nullptr, nullptr, nullptr, true) == deferred.game.checkSum(nullptr, nullptr, nullptr, true));
         }
+        CHECK(stagedBoundaries>0);
     }
-    deferred.game.syncStep(0, Game::PreparationCompletion::Deferred);
-    REQUIRE(deferred.game.map.hasPendingGradientPreparation());
+    // Lifecycle checks need an actually staged job, rather than assuming that
+    // every tick admits work while cold fields wait for publication.
+    const auto stageDeferredWork=[&] {
+        for (unsigned boundary=0;boundary<32;++boundary) {
+            deferred.game.map.getGuardAreasGradient(0,SWIM_CLASS_COUNT-1);
+            deferred.game.syncStep(0,Game::PreparationCompletion::Deferred);
+            if (deferred.game.map.hasPendingGradientPreparation()) return;
+        }
+        FAIL("expected deferred work within the bounded publication horizon");
+    };
+    stageDeferredWork();
     deferred.game.map.configureCompute(1);
     CHECK_FALSE(deferred.game.map.hasPendingGradientPreparation());
-    deferred.game.syncStep(0, Game::PreparationCompletion::Deferred);
+    stageDeferredWork();
     deferred.game.map.setGradientWorkerCount(2);
     CHECK_FALSE(deferred.game.map.hasPendingGradientPreparation());
-    deferred.game.syncStep(0, Game::PreparationCompletion::Deferred);
+    stageDeferredWork();
     const auto waitingTick = deferred.game.stepCounter;
     deferred.game.anyPlayerWaited = true;
     deferred.game.syncStep(0);
     CHECK(deferred.game.stepCounter == waitingTick);
     CHECK_FALSE(deferred.game.map.hasPendingGradientPreparation());
     deferred.game.anyPlayerWaited = false;
-    deferred.game.syncStep(0, Game::PreparationCompletion::Deferred);
+    stageDeferredWork();
     deferred.game.map.clear(); // Reserved jobs must not outlive their destination.
     CHECK_FALSE(deferred.game.map.hasPendingGradientPreparation());
 }

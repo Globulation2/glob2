@@ -86,10 +86,10 @@ TEST_CASE("cold queued and privately completed fields continue through binary an
         glob2test::writeFile(glob2test::artifactDir()/(evidenceName+(text ? ".txt" : ".g2s")),bytes);
         GameGUI resumed;
         auto inputBackend=std::make_unique<GAGCore::MemoryStreamBackend>(bytes.data(),bytes.size());
+        inputBackend->seekFromStart(0); // TextInputStream parses in its constructor.
         std::unique_ptr<GAGCore::InputStream> input(text
             ? static_cast<GAGCore::InputStream*>(new GAGCore::TextInputStream(inputBackend.get()))
             : static_cast<GAGCore::InputStream*>(new GAGCore::BinaryInputStream(inputBackend.release())));
-        input->seekFromStart(0);
         REQUIRE(resumed.game.load(input.get()));
         // Saving can finish private work; loading restores it without kernels.
         if (GAGCore::ThreadSupport::available) CHECK(audit.totals().owner==0);
@@ -266,10 +266,10 @@ TEST_CASE("ordinary terrain edits with markets disabled round-trip binary and te
         GameGUI resumed;
         // TextInputStream borrows its backend; BinaryInputStream owns it.
         auto inputBackend=std::make_unique<GAGCore::MemoryStreamBackend>(bytes.data(),bytes.size());
+        inputBackend->seekFromStart(0);
         std::unique_ptr<GAGCore::InputStream> input(text
             ? static_cast<GAGCore::InputStream*>(new GAGCore::TextInputStream(inputBackend.get()))
             : static_cast<GAGCore::InputStream*>(new GAGCore::BinaryInputStream(inputBackend.release())));
-        input->seekFromStart(0);
         REQUIRE(resumed.game.load(input.get()));
         REQUIRE_FALSE(resumed.game.map.marketsV2Enabled());
         CHECK(normalizedChecksums(game)==normalizedChecksums(resumed.game));

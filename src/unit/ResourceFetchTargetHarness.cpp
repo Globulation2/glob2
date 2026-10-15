@@ -105,7 +105,7 @@ static void staleTargetIsRefreshedAfterGradientRebuild(int expectedClass, int sw
 	require(game.map.getMaterialGradientSlot(teamNumber,WHEAT,swimClass)==previous,"refresh keeps the published generation");
 	glob2test::awaitGradient(game, [&] {
 		const auto* field=game.map.getMaterialGradientSlot(teamNumber,WHEAT,swimClass);
-		return field!=previous ? field : nullptr;
+		return field && field[game.map.coordToIndex(nearX,nearY)]!=GRADIENT_AT_GOAL ? field : nullptr;
 	});
 	require(game.map.getGradient(teamNumber, WHEAT, swimClass, nearX, nearY) != GRADIENT_AT_GOAL,
 		"the rebuilt gradient no longer marks the depleted tile as the goal");
@@ -193,7 +193,7 @@ static void targetTracksTheGradientTheUnitActuallyFollows()
 	require(game.map.getMaterialGradientSlot(teamNumber,WHEAT,swimClass)==previous,"refresh keeps the published generation");
 	glob2test::awaitGradient(game, [&] {
 		const auto* field=game.map.getMaterialGradientSlot(teamNumber,WHEAT,swimClass);
-		return field!=previous ? field : nullptr;
+		return field && field[game.map.coordToIndex(nearUnitX,nearUnitY)]!=GRADIENT_AT_GOAL ? field : nullptr;
 	});
 
 	// Next action: only the near-building tile is left on the gradient: the

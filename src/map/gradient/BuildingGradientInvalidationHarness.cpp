@@ -246,7 +246,8 @@ static void centrePlacedInsideAnExistingRing()
 	require(!world.available(centre, 10, 10), "a site placed inside a ring is never offered to a unit outside");
 
 	world.remove(ring);
-	require(world.available(centre, 10, 10), "clearing the ring makes the site available at once");
+	world.tick(DIRTY_GRACE_TICKS);
+	require(world.available(centre, 10, 10), "clearing the ring makes the site available after refresh publication");
 	std::puts("PASS a site placed inside a ring is unreachable until the ring is cleared");
 }
 
@@ -366,34 +367,41 @@ static void delayedFields()
 		auto refresh=[&]() { if(kind==0) map.updateMaterialGradient(0, 0, swim);
 			else if(kind==1) map.updateGuardAreasGradient(0, swim); else map.updateClearAreasGradient(0, swim); };
 		const auto cells=map.getW()*map.getH();
-		field();
+		const auto reference=[&]() {
+			std::vector<Uint16> values(cells);
+			if(kind==0) map.seedMaterialGradient(0, 0, swim, values.data());
+			else if(kind==1) map.seedGuardAreasGradient(0, swim, values.data());
+			else map.seedClearAreasGradient(0, swim, values.data());
+			map.propagateGradient(values.data(), swim);
+			return values;
+		};
+		const auto original=reference();
+		map.configureCompute(workers+1);
 		map.configureGradientPipeline(workers, 3);
-		map.advanceGradientPipeline(); map.syncStep(0); // Seed the only allocated periodic slot.
+		const auto publish=[&]() { map.advanceGradientPipeline(); ++world.game.stepCounter; };
+		const auto capture=[&]() { map.stagePeriodicGradientPreparation(); map.preparePendingGradient(); };
+		require(!field(), "cold read enrolls without publishing a placeholder");
+		publish(); capture(); // Admission at advance 1, publication at advance 4.
 		require(map.gradientPipelineStatus().jobs==1, "pipeline scheduled a real field");
 		map.addForbidden(41, 40, 0);
 		refresh();
-		const std::vector<Uint16> expected(field(),field()+cells);
-		map.advanceGradientPipeline(); map.advanceGradientPipeline(); map.advanceGradientPipeline();
-		require(map.gradientPipelineStatus().discarded==1, "synchronous refresh supersedes queued snapshot");
-		require(std::vector<Uint16>(field(),field()+cells)==expected, "old field cannot overwrite fresh synchronous field");
-		// A subsequent periodic snapshot publishes normally at its fixed deadline.
-		map.syncStep(1);
-		map.advanceGradientPipeline(); map.advanceGradientPipeline();
-		require(map.gradientPipelineStatus().published==0, "no early publication");
-		map.advanceGradientPipeline();
-		require(map.gradientPipelineStatus().published==1, "publication at deadline");
-		map.syncStep(2);
-		std::vector<Uint16> frozen(cells);
-		if(kind==0) map.seedMaterialGradient(0, 0, swim, frozen.data());
-		else if(kind==1) map.seedGuardAreasGradient(0, swim, frozen.data());
-		else map.seedClearAreasGradient(0, swim, frozen.data());
-		map.propagateGradient(frozen.data(), swim);
+		publish(); require(!field(), "first captured field remains pending at advance 2");
+		publish(); require(!field(), "first captured field remains pending at advance 3");
+		publish();
+		require(field()!=nullptr, "cold field publishes at its original deadline despite a soft edit");
+		require(map.gradientPipelineStatus().discarded==0, "soft changes do not supersede private work");
+		require(std::vector<Uint16>(field(),field()+cells)==original, "first publication uses its original capture");
+		const auto frozen=reference();
+		require(frozen!=original, "the changed world requires a different field");
+		refresh(); capture();
 		map.paintCell(55, 55, GRASS); // Workers must use captured water, not this live edit.
-		map.advanceGradientPipeline(); map.advanceGradientPipeline(); map.advanceGradientPipeline();
+		publish(); publish();
+		require(std::vector<Uint16>(field(),field()+cells)==original, "refresh cannot publish before its deadline");
+		publish();
 		require(std::vector<Uint16>(field(),field()+cells)==frozen, "terrain changes do not alter a pending snapshot");
-		map.syncStep(3); // Destruction must safely drain a job in flight.
+		refresh(); capture(); // Destruction must safely drain private work.
 	}
-	std::puts("PASS delayed resource/guard/clear publication, synchronous supersession, teardown");
+	std::puts("PASS cold and soft-stale resource/guard/clear deadlines, captured terrain, teardown");
 }
 
 // Scheduled kernel equivalence: the worker's building seeder and captured-input
@@ -870,6 +878,7 @@ void scheduledAccessMetadata()
 	World world;
 	Scheduler s(world, 2, 4);
 	Building* b = world.place(24, 24);
+	world.warm(b); // Settle creation's walking prewarm before isolating the two access variants.
 	int dist = 0;
 	for (int swim : {1, 3}) { world.warm(b, swim); require(s.map.buildingAvailable(b, swim, 2, 2, &dist), "reference warm field"); }
 	const int access = b->routeAccess(1, BuildingRoute::Footprint);
@@ -904,8 +913,8 @@ void scheduledAccessMetadata()
 
 // 8. With the pipeline on, a team-wide reset or a forbidden-area paint keeps
 // the building's walking field serving and refreshes it on schedule, at once
-// and with no owner build. A building's own change still drops it, and with
-// the pipeline off every reset drops it.
+// and with no owner build. A building's own change still drops it. Creation
+// itself enables delayed publication even without an explicit Scheduler.
 void scheduledResetsKeepStaleFields()
 {
 	for (auto cause : {Building::GradientDrop::Area, Building::GradientDrop::Team})
@@ -950,9 +959,11 @@ void scheduledResetsKeepStaleFields()
 		World world;
 		Building* b = world.place(24, 24);
 		world.warm(b);
-	require(world.available(b, 2, 2), "reference warm field");
+		require(world.available(b, 2, 2), "reference warm field");
+		require(world.game.map.buildingGradientPipelineActive(), "creation enables delayed simulation publication");
+		const auto* walking=b->globalGradient[0];
 		b->resetPathfindGradients(Building::GradientDrop::Area);
-		require(!b->globalGradient[0], "with the pipeline off an area reset drops the field");
+		require(b->globalGradient[0]==walking && b->dirtyGradient[0], "a simulation area edit retains dirty published guidance");
 	}
 	std::puts("PASS area and team-wide resets keep stale walking fields serving and refresh them on schedule");
 }
@@ -1082,6 +1093,7 @@ void scheduledSameTickSwimClassesKeepRequestOrder()
 	World world;
 	Scheduler s(world, 2, 4);
 	Building* b = world.place(24, 24);
+	world.warm(b); // Creation prewarms walking; this case isolates classes 1 and 3.
 	for (int swim : {1, 3}) { world.warm(b, swim); require(s.map.buildingAvailable(b, swim, 2, 2, &dist), "reference warm field"); }
 	const int access = b->routeAccess(1, BuildingRoute::Footprint);
 	require(access == b->routeAccess(3, BuildingRoute::Footprint), "classes 1 and 3 share one access variant");

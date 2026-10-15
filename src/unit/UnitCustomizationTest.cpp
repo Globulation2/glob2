@@ -1084,6 +1084,7 @@ TEST_SUITE("UnitCustomization")
             auto* unit=world.addUnit(WORKER,6,8); REQUIRE(unit); REQUIRE(inn->canConvertUnit());
             world.game.teams[1]->sharedVisionFood|=world.team->me;
             world.game.teams[1]->allies&=~world.team->me;
+            glob2test::awaitBuildingGradient(world.game,inn,unit->swimClass(),BuildingRoute::Footprint);
             const auto oldGid=unit->gid;
             unit->previousClearingArea=Unit::ClearingAreaClaim{7,7}; unit->previousClearingAreaDistance=1;
             world.game.map.setClearingAreaClaimed(7,7,0,oldGid);
@@ -1168,6 +1169,20 @@ TEST_SUITE("UnitCustomization")
             CHECK(unit->jobPurpose==UnitJobPurpose::Transport);
             if(batched) {
                 CHECK_FALSE(world.game.map.isImmobileUnit(6,8));
+                if(!warm) {
+                    // Cold planning retains the cargo job while waiting for a
+                    // complete field; publication does not advance unit clocks.
+                    CHECK(unit->destinationPurpose==WHEAT);
+                    CHECK(unit->displacement==Unit::DIS_GOING_TO_RESOURCE);
+                    CHECK_FALSE(unit->validTarget());
+                    glob2test::awaitGradient(world.game,[&] {
+                        return world.game.map.getMaterialGradientSlot(world.team->teamNumber,WHEAT,unit->swimClass(),false,inn);
+                    });
+                    REQUIRE(unit->continueCargoCollection());
+                    CHECK(unit->entityRandom==entityRandom); CHECK(world.game.syncRandom==gameRandom);
+                    CHECK(unit->action==action); CHECK(unit->delta==delta); CHECK(unit->speed==speed);
+                    CHECK(unit->posX==6); CHECK(unit->posY==8); CHECK(unit->carriedPacketCount()==1);
+                }
                 CHECK(unit->destinationPurpose==WHEAT); CHECK(unit->targetX==7); CHECK(unit->targetY==9);
                 CHECK(unit->displacement==Unit::DIS_GOING_TO_RESOURCE); CHECK(unit->validTarget());
                 const auto cleared=world.game.map.snapshotGenerations();
@@ -1384,6 +1399,7 @@ TEST_SUITE("UnitCustomization")
             REQUIRE(unit); REQUIRE(enemyInn->canConvertUnit());
             destination->sharedVisionFood |= source->me;
             destination->allies &= ~source->me;
+            glob2test::awaitBuildingGradient(world.game,enemyInn,unit->swimClass(),BuildingRoute::Footprint);
             unit->receiveCarriedMaterial(WOOD,{}); unit->receiveCarriedMaterial(STONE,{1,2});
             unit->destinationPurpose=WHEAT;
             deposit(world.game.map,19,7,WHEAT,3);
@@ -1658,6 +1674,9 @@ TEST_SUITE("UnitCustomization")
         for (int tick=0;tick<32;++tick) world.game.syncStep(0);
         // The first aggregate is still pending at its fixed publication deadline.
         for (int id:{35,275,1023}) CHECK(world.team->stats.getLatestStat()->numberUnitPerType[id]==0);
+        std::vector<UnitJobPurpose> savedPurposes;
+        for(Uint16 gid:gids) savedPurposes.push_back(world.team->myUnits[Unit::GIDtoID(gid)]->jobPurpose);
+        REQUIRE(std::count(savedPurposes.begin(),savedPurposes.end(),UnitJobPurpose::Transport)>0);
         auto* storage=new GAGCore::MemoryStreamBackend; GAGCore::BinaryOutputStream output(storage);
         world.game.save(&output,false,"high unit identity continuation");
         const std::string bytes(storage->getBuffer(),storage->getPosition());
@@ -1667,9 +1686,11 @@ TEST_SUITE("UnitCustomization")
         GAGCore::BinaryInputStream input(new GAGCore::MemoryStreamBackend(bytes.data(),bytes.size())); input.seekFromStart(0);
         REQUIRE(resumed.game.load(&input)); resumed.game.setWaitingOnMask(0);
         CHECK(resumed.game.unitTypeCount()==1024);
-        for (Uint16 gid:gids) {
-            auto* unit=resumed.game.teams[0]->myUnits[Unit::GIDtoID(gid)]; REQUIRE(unit);
-            CHECK(unit->typeNum>31); CHECK(unit->jobPurpose==UnitJobPurpose::Transport);
+        for (std::size_t index=0;index<gids.size();++index) {
+            auto* unit=resumed.game.teams[0]->myUnits[Unit::GIDtoID(gids[index])]; REQUIRE(unit);
+            // Route publication can change which carrier is still assigned at
+            // this checkpoint. Loading must preserve each exact saved purpose.
+            CHECK(unit->typeNum>31); CHECK(unit->jobPurpose==savedPurposes[index]);
             CHECK(unit->carriedPacketCount()==2); CHECK(unit->hasCarriedMaterial(STONE));
             CHECK(resumed.game.teams[0]->stats.getLatestStat()->numberUnitPerType[unit->typeNum]==0);
         }
@@ -2400,6 +2421,12 @@ TEST_SUITE("UnitCustomization")
                 REQUIRE(lhs.published-originalPublished==rhs.published-restoredPublished);
                 REQUIRE(lhs.discarded-originalDiscarded==rhs.discarded-restoredDiscarded);
             }
+            CAPTURE(unit->activity); CAPTURE(unit->displacement); CAPTURE(unit->jobPurpose);
+            CAPTURE(unit->posX); CAPTURE(unit->posY); CAPTURE(unit->carriedPacketCount());
+            CAPTURE(unit->hasCarriedMaterial(ALGA)); CAPTURE(inn->material(ALGA));
+            CAPTURE(inn->materialDeliveryNeed(ALGA)); CAPTURE(map.getResource(7,y).amount);
+            CAPTURE(world.team->stats.events().harvested[ALGA]);
+            CAPTURE(world.team->stats.events().materialSpillageEvents);
             REQUIRE(inn->material(ALGA)==3); REQUIRE(restoredInn->material(ALGA)==3);
             REQUIRE(unit->hasCarriedMaterial(STONE)); REQUIRE(restoredUnit->hasCarriedMaterial(STONE));
             REQUIRE(world.team->stats.events().harvested[ALGA]==3);
@@ -2463,6 +2490,12 @@ TEST_SUITE("UnitCustomization")
                 REQUIRE(unit->jobPurpose==UnitJobPurpose::Transport);
                 if(phase==Unit::DIS_FILLING_BUILDING) REQUIRE(unit->hasCarriedMaterial(material));
                 checkPhaseContinuation(world.game,512);
+                CAPTURE(unit->activity); CAPTURE(unit->displacement); CAPTURE(unit->jobPurpose);
+                CAPTURE(unit->posX); CAPTURE(unit->posY); CAPTURE(unit->carriedPacketCount());
+                CAPTURE(unit->hasCarriedMaterial(material)); CAPTURE(inn->material(material));
+                CAPTURE(inn->materialDeliveryNeed(material)); CAPTURE(world.game.map.getResource(7,y).amount);
+                CAPTURE(world.team->stats.events().harvested[material]);
+                CAPTURE(world.team->stats.events().materialSpillageEvents);
                 CHECK(inn->material(material)==3);
                 CHECK(unit->hasCarriedMaterial(STONE));
                 CHECK(world.team->stats.events().harvested[material]==3);
@@ -2503,6 +2536,11 @@ TEST_SUITE("UnitCustomization")
                 REQUIRE(unit->displacement==phase);
                 REQUIRE(unit->jobPurpose==UnitJobPurpose::None);
                 checkPhaseContinuation(world.game,256);
+                CAPTURE(unit->activity); CAPTURE(unit->displacement); CAPTURE(unit->jobPurpose);
+                CAPTURE(unit->medical); CAPTURE(unit->destinationPurpose); CAPTURE(unit->insideTimeout);
+                CAPTURE(unit->posX); CAPTURE(unit->posY); CAPTURE(unit->hungry);
+                CAPTURE(unit->serviceResourcesReserved()); CAPTURE(inn->material(WHEAT));
+                CAPTURE(inn->reservedMaterials[WHEAT]);
                 CHECK_FALSE(unit->serviceResourcesReserved());
                 CHECK(inn->reservedMaterials[WHEAT]==0); CHECK(inn->material(WHEAT)==0);
                 CHECK(inn->unitsInside.empty()); CHECK(unit->integrity());
@@ -2554,6 +2592,7 @@ TEST_SUITE("UnitCustomization")
             for(int tick=0;tick<160;++tick) world.game.syncStep(0);
             auto* unit=world.addUnit(*world.game.unitCatalog().find("ablation-0"),6,8); REQUIRE(unit);
             world.game.teams[1]->sharedVisionFood|=world.team->me; world.game.teams[1]->allies&=~world.team->me;
+            glob2test::awaitBuildingGradient(world.game,enemyInn,unit->swimClass(),BuildingRoute::Footprint);
             unit->receiveCarriedMaterial(WOOD,{}); unit->receiveCarriedMaterial(STONE,{1,2});
             unit->destinationPurpose=WHEAT; deposit(world.game.map,19,7,WHEAT,3);
             unit->subscriptionSuccess(ownInn,false,false,UnitJobPurpose::Transport); ownInn->unitsWorking.push_back(unit);

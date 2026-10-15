@@ -144,11 +144,13 @@ TEST_CASE("terrain edits refresh escape costs after captured routes publish at t
         captured.assign(pending.data,pending.data+map.cellCount());
     });
     REQUIRE(captured.size()==map.cellCount());
-    map.paintCell(9,8,ICE);
+    // Edit passable cells near the material source: the earlier escape fixture's
+    // forbidden pocket masks terrain costs and cannot distinguish generations.
+    map.paintCell(14,15,ICE);
     map.advanceGradientPipeline();
     CHECK(map.getMaterialGradientSlot(0,WHEAT,0)==nullptr);
     // Another soft edit before the very next advance cannot move the deadline.
-    map.paintCell(10,8,TRAIL);
+    map.paintCell(13,15,TRAIL);
     std::vector<Uint16> replacement(map.cellCount());
     map.seedMaterialGradient(0,WHEAT,0,replacement.data());
     map.propagateGradient(replacement.data(),0);
@@ -563,8 +565,12 @@ TEST_SUITE("TerrainRuntime")
 				map.advanceGradientPipeline();
 				CHECK(map.gradientRuntime->pipeline.metrics.discarded == 1);
 				CHECK(map.gradientRuntime->pipeline.pendingCount() == 0);
-				CHECK(std::equal(replacement.begin(), replacement.end(),
-								 map.materialGradients[0][WHEAT][6]));
+				CHECK(map.materialGradients[0][WHEAT][6]==nullptr);
+				// The replacement is queued, not synchronously built by update. Admit
+				// it at a completed-world boundary and await its own fixed deadline.
+				const auto* published=glob2test::awaitGradient(world.game,[&] { return map.getMaterialGradientSlot(0,WHEAT,6); });
+				CHECK(map.gradientRuntime->pipeline.metrics.published==1);
+				CHECK(std::equal(replacement.begin(),replacement.end(),published));
 			}
 	}
 	TEST_CASE("unused distinct costs do not expand map movement setup")

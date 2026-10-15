@@ -29,8 +29,14 @@ TEST_SUITE("NumbiObservation")
     int snapshotX=-1,snapshotY=-1,snapshotDistance=-1,liveX=-1,liveY=-1,liveDistance=-1;
     const bool captured=query.resourceAvailableUpdate(0,resource,swim,x,y,&snapshotX,&snapshotY,&snapshotDistance);
     const bool live=map.materialAvailableUpdateSlot(0,resource,swim,x,y,&liveX,&liveY,&liveDistance);
-    CHECK(captured==live);CHECK(snapshotX==liveX);CHECK(snapshotY==liveY);
-    if(live) CHECK(snapshotDistance==liveDistance);
+    CHECK(captured==live);
+    // Destination outputs are meaningful only on success. The live Pending /
+    // Unreachable adapter leaves them untouched; the private oracle may write
+    // its search origin on failure. Reachable routes must still match exactly.
+    if(live) {
+     CHECK(snapshotX==liveX);CHECK(snapshotY==liveY);
+     CHECK(snapshotDistance==liveDistance);
+    }
    }
   }
   CHECK(enrollments.size()==9);

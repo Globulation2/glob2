@@ -3,6 +3,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "sim/snapshot/SnapshotStore.h"
 #include "EngineFixtures.h"
+#include "GradientFixture.h"
 #include "MapInternal.h"
 #include "gradient/GradientRuntime.h"
 #include "gradient/GradientExecutionAudit.h"
@@ -819,6 +820,9 @@ TEST_SUITE("GradientPreparation")
 		for (unsigned workers : {0, 1, 2})
 		{
 			CAPTURE(workers);
+			// Isolate this request's capture-to-publication delay from warm FIFO
+			// refreshes left queued by the previous parameter iteration.
+			m.resetGradientPipeline();
 			// Use an unallocated field for every worker count.
 			const int resource = workers;
 			REQUIRE(m.materialGradients[0][resource][0] == nullptr);
@@ -832,9 +836,11 @@ TEST_SUITE("GradientPreparation")
 				requests[j] = m.getMaterialGradientSlot(0, resource, 0);
 			});
             for (const auto* field:requests) REQUIRE(field==nullptr);
+            REQUIRE(m.gradientRuntime->fieldRequests.empty());
             // Private worker reads cannot enroll owner requests. Demand enters at
             // the completed-world boundary and remains absent through K-1 advances.
             REQUIRE(m.getMaterialGradientSlot(0,resource,0)==nullptr);
+            REQUIRE(m.gradientRuntime->fieldRequests.size()==1);
             m.advanceGradientPipeline();
             m.stagePeriodicGradientPreparation(); m.preparePendingGradient();
             for (unsigned i=1;i<8;++i) {
@@ -1074,9 +1080,13 @@ TEST_CASE("compact clearing traits preserve custom high-ID property combinations
             scalarGuard(map,0,swim,expected.data());
             map.seedGuardAreasGradient(0,swim,actual.data());
             CHECK(actual==expected);
-            map.getForbiddenGradient(0,swim);
+            const auto* previous=map.forbiddenGradient[0][swim];
             map.updateForbiddenGradient(0,swim);
-            CHECK(map.forbiddenGradient[0][swim][index]==((n&1) || swim==WATER_ONLY_CLASS ? GRADIENT_FORBIDDEN : GRADIENT_AT_GOAL));
+            const auto* forbidden=glob2test::awaitGradient(world.game,[&] {
+                const auto* field=map.getForbiddenGradient(0,swim);
+                return field!=previous ? field : nullptr;
+            });
+            CHECK(forbidden[index]==((n&1) || swim==WATER_ONLY_CLASS ? GRADIENT_FORBIDDEN : GRADIENT_AT_GOAL));
         }
     }
 }
@@ -1115,13 +1125,20 @@ TEST_CASE("published plane registry matches a sweep of live material fields" * d
 	for (int resource=0; resource<3; ++resource) m.setResourceByIndex(10 + resource, 10, resource, 0);
 	m.setMapDiscovered();
 	check(); CHECK(m.publishedResourceFields().empty());
-	m.getMaterialGradientSlot(0, WHEAT, 0); check();
+	CHECK(m.getMaterialGradientSlot(0,WHEAT,0)==nullptr); check();
+	CHECK(m.publishedResourceFields().empty()); // Enrollment does not publish a placeholder.
+	glob2test::awaitGradient(world.game,[&] { return m.getMaterialGradientSlot(0,WHEAT,0); }); check();
 	REQUIRE(m.publishedResourceFields().size() == 1);
 	const auto first = m.publishedResourceFields()[0].generation;
 	m.updateMaterialGradient(0, WHEAT, 0, false); check();
+	CHECK(m.publishedResourceFields()[0].generation==first);
+	glob2test::awaitGradient(world.game,[&] {
+		const auto* field=m.getMaterialGradientSlot(0,WHEAT,0);
+		return m.publishedResourceFields()[0].generation>first ? field : nullptr;
+	}); check();
 	CHECK(m.publishedResourceFields()[0].generation > first);
-	m.getMaterialGradientSlot(1, WOOD, 2); check();
-	m.getMaterialGradientSlot(1, STONE, 1); check();
+	glob2test::awaitGradient(world.game,[&] { return m.getMaterialGradientSlot(1,WOOD,2); }); check();
+	glob2test::awaitGradient(world.game,[&] { return m.getMaterialGradientSlot(1,STONE,1); }); check();
 	CHECK(m.publishedResourceFields().size() == 3);
 	// Bulk slot changes re-register every live plane with a newer generation.
 	std::map<Uint16, Uint64> before;
@@ -1133,7 +1150,8 @@ TEST_CASE("published plane registry matches a sweep of live material fields" * d
 	REQUIRE(handle.resourceFields);
 	CHECK(handle.resourceFields->planes.size() == 3);
 	const auto* stone = handle.resourceFields->find(MapState::planeKey(1, STONE, 1, false));
-	REQUIRE(stone); CHECK(stone->values->at(7) == 5);
+	REQUIRE(stone);
+	CHECK(*stone->values==std::vector<Uint16>(m.materialGradients[1][STONE][1],m.materialGradients[1][STONE][1]+m.size));
 	CHECK_FALSE(handle.resourceFields->find(MapState::planeKey(0, WOOD, 0, false)));
 }
 
@@ -1303,7 +1321,11 @@ TEST_CASE("GradientPreparation/modified terrain costs remain exact when field ob
             const ComputeExecutor::Group group{1,{[](void* p,std::size_t){(*static_cast<std::function<void()>*>(p))();},&work}};
             auto batch=map.computeExecutor().submit(std::span(&group,1)); map.computeExecutor().join(batch);
             CHECK(output==expected);
-            if(deviceReady) CHECK(openCLStatus().committedFields==completed+1);
+            if(deviceReady) {
+                INFO("OpenCL readiness can change on failure: " << openCLStatus().error);
+                CAPTURE(openCLStatus().available,openCLStatus().budgetDeclines,openCLStatus().requiredCancellations);
+                CHECK(openCLStatus().committedFields==completed+1);
+            }
         }
     }
 }
@@ -1601,38 +1623,40 @@ TEST_CASE("pending escape guidance preserves a material assignment without consu
 TEST_CASE("material LRU retains a published result until its waiting reader observes it" * doctest::test_suite("GradientPreparation"))
 {
     glob2test::HeadlessGlobals globals;
-    glob2test::HeadlessGame world({.wDec=5,.hDec=5,.teams=1,.discovered=true,.clearImmobile=true,.loadDefaultRace=true,.header=true});
-    auto& map=world.game.map;
-    auto* consumer=world.addBuilding("inn",8,8);
-    REQUIRE(consumer);
-    map.configureGradientPipeline(0,3);
-    map.setMaterialRoutingCacheBudget(map.size*sizeof(Uint16));
-    const auto publish=[&] {
-        map.advanceGradientPipeline();
-        map.stagePeriodicGradientPreparation(); map.preparePendingGradient();
-        for (unsigned i=0;i<3;++i) map.advanceGradientPipeline();
-    };
-    CHECK(map.cachedMaterialGradientSlot(consumer,WHEAT,0,2)==nullptr);
-    publish();
-    REQUIRE(map.cachedMaterialGradientSlot(consumer,WHEAT,0,2)!=nullptr);
-    CHECK(map.cachedMaterialGradientSlot(consumer,WOOD,0,2)==nullptr);
-    publish();
-    SUBCASE("a waiting reader can observe its result before an older reader evicts it") {
+    for (bool abandoned : {false,true}) {
+        CAPTURE(abandoned);
+        glob2test::HeadlessGame world({.wDec=5,.hDec=5,.teams=1,.discovered=true,.clearImmobile=true,.loadDefaultRace=true,.header=true});
+        auto& map=world.game.map;
+        auto* consumer=world.addBuilding("inn",8,8);
+        REQUIRE(consumer);
+        map.configureGradientPipeline(0,3);
+        map.setMaterialRoutingCacheBudget(map.size*sizeof(Uint16));
+        const auto publish=[&] {
+            map.advanceGradientPipeline();
+            map.stagePeriodicGradientPreparation(); map.preparePendingGradient();
+            for (unsigned i=0;i<3;++i) map.advanceGradientPipeline();
+        };
         CHECK(map.cachedMaterialGradientSlot(consumer,WHEAT,0,2)==nullptr);
-        REQUIRE(map.cachedMaterialGradientSlot(consumer,WOOD,0,2)!=nullptr);
-        CHECK(map.cachedMaterialGradientSlot(consumer,WHEAT,0,2)==nullptr);
-        CHECK(map.gradientRuntime->fieldRequests.size()==1);
-    }
-    SUBCASE("an abandoned unread result releases its logical hold after one action window") {
-        world.game.stepCounter+=GradientRuntime::MaterialReadHoldTicks-1;
-        CHECK(map.cachedMaterialGradientSlot(consumer,WHEAT,0,2)==nullptr);
-        CHECK(map.gradientRuntime->fieldRequests.empty());
-        ++world.game.stepCounter;
-        CHECK(map.cachedMaterialGradientSlot(consumer,WHEAT,0,2)==nullptr);
-        // A live building whose task changed no longer pins its old result.
-        // The replacement request can now enter, even though no reader consumed Wood.
-        REQUIRE(map.gradientRuntime->fieldRequests.size()==1);
-        CHECK(map.gradientRuntime->fieldRequests.front().request.material==WHEAT);
+        publish();
+        REQUIRE(map.cachedMaterialGradientSlot(consumer,WHEAT,0,2)!=nullptr);
+        CHECK(map.cachedMaterialGradientSlot(consumer,WOOD,0,2)==nullptr);
+        publish();
+        if (!abandoned) {
+            CHECK(map.cachedMaterialGradientSlot(consumer,WHEAT,0,2)==nullptr);
+            REQUIRE(map.cachedMaterialGradientSlot(consumer,WOOD,0,2)!=nullptr);
+            CHECK(map.cachedMaterialGradientSlot(consumer,WHEAT,0,2)==nullptr);
+            CHECK(map.gradientRuntime->fieldRequests.size()==1);
+        } else {
+            world.game.stepCounter+=GradientRuntime::MaterialReadHoldTicks-1;
+            CHECK(map.cachedMaterialGradientSlot(consumer,WHEAT,0,2)==nullptr);
+            CHECK(map.gradientRuntime->fieldRequests.empty());
+            ++world.game.stepCounter;
+            CHECK(map.cachedMaterialGradientSlot(consumer,WHEAT,0,2)==nullptr);
+            // A live building whose task changed no longer pins its old result.
+            // The replacement request can now enter, even though no reader consumed Wood.
+            REQUIRE(map.gradientRuntime->fieldRequests.size()==1);
+            CHECK(map.gradientRuntime->fieldRequests.front().request.material==WHEAT);
+        }
     }
 }
 
@@ -1725,59 +1749,62 @@ TEST_CASE("stock changes during shared market work retain dirty demand through i
 TEST_CASE("blocked live guidance and removed material goals deduplicate delayed refresh demand" * doctest::test_suite("GradientPreparation"))
 {
     glob2test::HeadlessGlobals globals;
-    glob2test::HeadlessGame world({.wDec=5,.hDec=5,.teams=1,.discovered=true,.clearImmobile=true,.header=true});
-    auto& map=world.game.map;
-    map.configureCompute(2); map.configureGradientPipeline(1,3);
-    EntityRandom random; random.seed(42,54);
-    int dx=0,dy=0; bool stopWork=false;
-    const auto blockNeighbors=[&] {
-        for (int direction=0;direction<8;++direction)
-            map.setResourceByIndex(8+tabClose[direction][0],8+tabClose[direction][1],WHEAT,1);
-    };
-    SUBCASE("a removed material goal requests a refresh without consuming RNG") {
-        map.materialGradients[0][WHEAT][0]=new Uint16[map.size];
-        std::fill_n(map.materialGradients[0][WHEAT][0],map.size,GRADIENT_AT_GOAL);
-        const auto before=random.exportState();
-        GradientExecutionAudit audit;
-        for (unsigned i=0;i<16;++i)
-            CHECK(map.queryMaterialStep(random,0,WHEAT,0,8,8,&dx,&dy,&stopWork,nullptr)==StepResult::AtGoal);
-        CHECK(random.exportState()==before);
-        CHECK_FALSE(stopWork);
-        REQUIRE(map.gradientRuntime->fieldRequests.size()==1);
-        CHECK(map.gradientRuntime->fieldRequests.front().slot==&map.materialGradients[0][WHEAT][0]);
-        CHECK(audit.totals().owner==0);
-    }
-    SUBCASE("a locally blocked material route requests its own field") {
-        map.materialGradients[0][WHEAT][0]=new Uint16[map.size];
-        std::fill_n(map.materialGradients[0][WHEAT][0],map.size,GRADIENT_AT_GOAL-32);
-        blockNeighbors();
-        GradientExecutionAudit audit;
-        for (unsigned i=0;i<16;++i)
+    for (unsigned scenario=0;scenario<4;++scenario) {
+        CAPTURE(scenario);
+        glob2test::HeadlessGame world({.wDec=5,.hDec=5,.teams=1,.discovered=true,.clearImmobile=true,.header=true});
+        auto& map=world.game.map;
+        map.configureCompute(2); map.configureGradientPipeline(1,3);
+        EntityRandom random; random.seed(42,54);
+        int dx=0,dy=0; bool stopWork=false;
+        const auto blockNeighbors=[&] {
+            for (int direction=0;direction<8;++direction)
+                map.setResourceByIndex(8+tabClose[direction][0],8+tabClose[direction][1],WHEAT,1);
+        };
+        if (scenario==0) { // a removed material goal requests a refresh without consuming RNG.
+            map.materialGradients[0][WHEAT][0]=new Uint16[map.size];
+            std::fill_n(map.materialGradients[0][WHEAT][0],map.size,GRADIENT_AT_GOAL);
+            const auto before=random.exportState();
+            GradientExecutionAudit audit;
+            for (unsigned i=0;i<16;++i)
+                CHECK(map.queryMaterialStep(random,0,WHEAT,0,8,8,&dx,&dy,&stopWork,nullptr)==StepResult::AtGoal);
+            CHECK(random.exportState()==before);
+            CHECK_FALSE(stopWork);
+            REQUIRE(map.gradientRuntime->fieldRequests.size()==1);
+            CHECK(map.gradientRuntime->fieldRequests.front().slot==&map.materialGradients[0][WHEAT][0]);
+            CHECK(audit.totals().owner==0);
+        }
+        if (scenario==1) { // a locally blocked material route requests its own field.
+            map.materialGradients[0][WHEAT][0]=new Uint16[map.size];
+            std::fill_n(map.materialGradients[0][WHEAT][0],map.size,GRADIENT_AT_GOAL-32);
+            blockNeighbors();
+            GradientExecutionAudit audit;
+            for (unsigned i=0;i<16;++i)
+                CHECK(map.queryMaterialStep(random,0,WHEAT,0,8,8,&dx,&dy,&stopWork,nullptr)==StepResult::Blocked);
+            REQUIRE(map.gradientRuntime->fieldRequests.size()==1);
+            CHECK(map.gradientRuntime->fieldRequests.front().slot==&map.materialGradients[0][WHEAT][0]);
+            CHECK(audit.totals().owner==0);
+        }
+        if (scenario==2) { // local escape blockage requests an earlier forbidden field.
+            map.forbiddenGradient[0][0]=new Uint16[map.size];
+            std::fill_n(map.forbiddenGradient[0][0],map.size,GRADIENT_AT_GOAL);
+            blockNeighbors();
+            GradientExecutionAudit audit;
+            for (unsigned i=0;i<16;++i)
+                CHECK(map.queryForbiddenStep(nullptr,0,0,8,8,&dx,&dy)==StepResult::Blocked);
+            REQUIRE(map.gradientRuntime->fieldRequests.size()==1);
+            CHECK(map.gradientRuntime->fieldRequests.front().slot==&map.forbiddenGradient[0][0]);
+            CHECK(audit.totals().owner==0);
+        }
+        if (scenario==3) { // complete unreachable material and escape fields do not create urgent requests.
+            map.materialGradients[0][WHEAT][0]=new Uint16[map.size];
+            map.forbiddenGradient[0][0]=new Uint16[map.size];
+            std::fill_n(map.materialGradients[0][WHEAT][0],map.size,GRADIENT_UNREACHABLE);
+            std::fill_n(map.forbiddenGradient[0][0],map.size,GRADIENT_UNREACHABLE);
             CHECK(map.queryMaterialStep(random,0,WHEAT,0,8,8,&dx,&dy,&stopWork,nullptr)==StepResult::Blocked);
-        REQUIRE(map.gradientRuntime->fieldRequests.size()==1);
-        CHECK(map.gradientRuntime->fieldRequests.front().slot==&map.materialGradients[0][WHEAT][0]);
-        CHECK(audit.totals().owner==0);
-    }
-    SUBCASE("local escape blockage requests an earlier forbidden field") {
-        map.forbiddenGradient[0][0]=new Uint16[map.size];
-        std::fill_n(map.forbiddenGradient[0][0],map.size,GRADIENT_AT_GOAL);
-        blockNeighbors();
-        GradientExecutionAudit audit;
-        for (unsigned i=0;i<16;++i)
+            CHECK(stopWork);
             CHECK(map.queryForbiddenStep(nullptr,0,0,8,8,&dx,&dy)==StepResult::Blocked);
-        REQUIRE(map.gradientRuntime->fieldRequests.size()==1);
-        CHECK(map.gradientRuntime->fieldRequests.front().slot==&map.forbiddenGradient[0][0]);
-        CHECK(audit.totals().owner==0);
-    }
-    SUBCASE("complete unreachable material and escape fields do not create urgent requests") {
-        map.materialGradients[0][WHEAT][0]=new Uint16[map.size];
-        map.forbiddenGradient[0][0]=new Uint16[map.size];
-        std::fill_n(map.materialGradients[0][WHEAT][0],map.size,GRADIENT_UNREACHABLE);
-        std::fill_n(map.forbiddenGradient[0][0],map.size,GRADIENT_UNREACHABLE);
-        CHECK(map.queryMaterialStep(random,0,WHEAT,0,8,8,&dx,&dy,&stopWork,nullptr)==StepResult::Blocked);
-        CHECK(stopWork);
-        CHECK(map.queryForbiddenStep(nullptr,0,0,8,8,&dx,&dy)==StepResult::Blocked);
-        CHECK(map.gradientRuntime->fieldRequests.empty());
+            CHECK(map.gradientRuntime->fieldRequests.empty());
+        }
     }
 }
 

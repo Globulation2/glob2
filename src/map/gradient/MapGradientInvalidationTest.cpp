@@ -110,7 +110,8 @@ TEST_CASE("forbidden painting delays complete routes across passable resources")
         await(f,[&]{return map.buildingGradient(building,swim)!=nullptr;});
         const auto* published=map.buildingGradient(building,swim);
         const std::vector<Uint16> old(published,published+map.cellCount());
-        edit(f,20,20,true); map.updateGlobalGradient(building,swim);
+        edit(f,20,20,true);
+        REQUIRE(map.requestBuildingRefresh(building,building->routeSlot(swim,BuildingRoute::Automatic)));
         REQUIRE(std::equal(old.begin(),old.end(),map.buildingGradient(building,swim)));
         // A cold or warm request cannot publish during the first K-1
         // advances, including when the serial executor has already finished it.
@@ -163,7 +164,7 @@ TEST_CASE("forbidden edits preserve published generations until delayed refresh"
         // Repeating the exact brush is a no-op even while a refresh is pending.
         const auto generation=map.topologyGeneration; edit(f,20,20,add,mixed);
         CHECK(map.topologyGeneration==generation);
-        for (auto* b:buildings) map.updateGlobalGradient(b,swim);
+        for (auto* b:buildings) REQUIRE(map.requestBuildingRefresh(b,b->routeSlot(swim,BuildingRoute::Automatic)));
         map.updateTeamAreaGradients(0);
         std::vector<std::vector<Uint16>> expected;
         for (auto* b:buildings) expected.push_back(referenceBuilding(f,b,swim));

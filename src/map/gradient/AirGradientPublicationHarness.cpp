@@ -137,7 +137,12 @@ TEST_CASE("resource visibility supplier and claim revisions refresh unavailable 
         const auto topology=map.topologyGeneration;
         if (scenario==0) map.setMaterialAmountSlot(goal,CHERRY,1);
         else if (scenario==1) map.setMapDiscovered(12,12,world.team->me);
-        else if (scenario==2) { supplier->setMaterial(CHERRY,20); supplier->updateCallLists(); }
+        else if (scenario==2) {
+            // Exercise the live stock transition, including its invalidation.
+            // setMaterial is a raw fixture setter and does not notify routing.
+            supplier->addMaterialIntoBuilding(CHERRY);
+            REQUIRE(supplier->availableMaterial(CHERRY)>0);
+        }
         else { map.setClearingAreaUnclaimed(12,12,0); claimant->previousClearingArea.reset(); }
         CHECK(map.topologyGeneration==topology);
         roundTrip(); // Published guidance now has stale dependency stamps.
@@ -337,7 +342,11 @@ TEST_CASE("retired generation budget attribution survives saves before the next 
         const auto oldLease=awaitAir(game,key);
         const auto frozen=std::vector<Uint16>(oldLease.values.get(),oldLease.values.get()+map.cellCount());
         map.requestAirField(key,true);
-        for (unsigned boundary=0;boundary<32 && map.lookupAirField(key).values==oldLease.values;++boundary) advanceAir(game);
+        for (unsigned boundary=0;boundary<32;++boundary) {
+            map.advanceGradientPipeline(); ++game.stepCounter;
+            if (map.lookupAirField(key).values!=oldLease.values) break;
+            map.stagePeriodicGradientPreparation(); map.preparePendingGradient();
+        }
         REQUIRE(map.lookupAirField(key).values!=oldLease.values);
         REQUIRE_FALSE(map.gradientRuntime->air.retired.empty());
         REQUIRE(map.gradientRuntime->air.retired.front().entry!=0);

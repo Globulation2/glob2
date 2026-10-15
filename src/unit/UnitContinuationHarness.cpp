@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Exercise clearing arbitration and idle activity across a real game save/load.
 #include "EngineFixtures.h"
+#include "GradientFixture.h"
 #include <string>
 #include "GlobalContainer.h"
 #include "GameGUI.h"
@@ -159,9 +160,7 @@ TEST_SUITE("UnitContinuation")
             glob2test::HeadlessGame world({.clearImmobile=true,.header=true,.seed=4921});
             auto& game=world.game;
             auto& map=game.map;
-            map.setGame(nullptr);
             map.importTerrainDefinitions(R"({"schemaVersion":1,"terrains":[{"key":"fixture:air-service-barrier","name":"Barrier","base":"grass","properties":{"flyable":false},"appearance":"grass"}]})");
-            map.setGame(&game);
             map.paintCell(24,24,*map.terrainRegistry().find("fixture:air-service-barrier"));
             REQUIRE(map.hasAirTerrainConstraints());
             map.configureCompute(participants);
@@ -279,6 +278,10 @@ TEST_SUITE("UnitContinuation")
                 if (medical==Unit::MED_HUNGRY) service->setMaterial(WHEAT, 20);
                 world.team->addToStaticAbilitiesLists(service);
                 service->update();
+                // This case tests aborting an existing task into an available
+                // service. Cold Pending/resume behavior is covered separately.
+                if (!unit->performance[FLY])
+                    glob2test::awaitBuildingGradient(world.game,service,unit->swimClass());
                 REQUIRE((medical==Unit::MED_HUNGRY?world.team->findNearestFood(unit):world.team->findNearestHeal(unit))==service);
             }
             unit->medical=Unit::Medical(medical);

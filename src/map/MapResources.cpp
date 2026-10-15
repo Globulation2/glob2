@@ -321,7 +321,11 @@ bool Map::materialAvailableUpdateSlot(int team, int material, int swim, int x, i
 {
 	if (queryMaterialDistance(team,material,swim,x,y,distance,markets,consumer)!=RouteResult::Reachable) return false;
 	const auto* field=getMaterialGradientSlot(team,material,swim,markets,consumer);
-	return getGlobalGradientDestination(field,x,y,targetX,targetY);
+	// Supplier seeds include a pickup penalty, so their valid local peak can
+	// sit below GRADIENT_AT_GOAL. Availability comes from the complete field;
+	// ascent selects its pickup coordinate without redefining reachability.
+	getGlobalGradientDestination(field,x,y,targetX,targetY);
+	return true;
 }
 
 template<typename T>

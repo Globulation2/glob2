@@ -670,6 +670,7 @@ TEST_CASE("resource permissions separate storage replenishment and direct withdr
     }
     source["semantics"]["market"]["suppliesDirectStock"]=true;
     source["semantics"]["market"]["suppliesDirectStockMaterials"]={"wood"};
+    source["semantics"]["market"]["pickupPenalty"]=7;
     sink["semantics"]["market"]["fetchesDirectStock"]=true;
     sink["semantics"]["market"]["fetchesDirectStockMaterials"]={"wood","food"};
     sink["semantics"]["market"]["fetchesStock"]=false;
@@ -686,6 +687,15 @@ TEST_CASE("resource permissions separate storage replenishment and direct withdr
     materialFixture(world.game,WHEAT,receiver);
     CHECK_FALSE(world.game.map.materialAvailableSlot(0,WHEAT,0,19,20,&distance,false,receiver));
     Unit* worker=world.addUnit(WORKER,7,8);
+    REQUIRE(worker);
+    const auto* supplierField=glob2test::awaitGradient(world.game,[&] {
+        return world.game.map.getMaterialGradientSlot(0,WOOD,worker->swimClass(),false,receiver);
+    });
+    Sint32 pickupX=-1,pickupY=-1;
+    REQUIRE(worker->queryMaterialDestination(WOOD,&pickupX,&pickupY,&distance,false,receiver)==RouteResult::Reachable);
+    CHECK(world.game.map.doesPosTouchBuilding(pickupX,pickupY,supplier->gid).has_value());
+    CHECK(world.game.map.isGradientPeak(supplierField,pickupX,pickupY));
+    CHECK(supplierField[world.game.map.coordToIndex(pickupX,pickupY)]<GRADIENT_AT_GOAL);
     receiver->maxUnitWorking=receiver->desiredMaxUnitWorking=1;
     REQUIRE((glob2test::publishCurrentHiringSuggestions(*receiver->owner->game), receiver->subscribeToBringMaterialsStep()));
     CHECK(worker->attachedBuilding==receiver);
@@ -939,8 +949,17 @@ TEST_CASE("sole supplier demolition and cancellation preserve routing across sav
         supplier->cancelDelete(); copiedSupplier->cancelDelete();
         CHECK(world.game.map.materialSupplyModesSlot(receiver,WOOD)==mode);
         CHECK(restored.game.map.materialSupplyModesSlot(copiedReceiver,WOOD)==mode);
-        materialFixture(world.game,WOOD,receiver,true);
-        materialFixture(restored.game,WOOD,copiedReceiver,true);
+        // Cancellation can leave a ready no-source generation while the
+        // supplier's new stock revision is pending. A pointer swap alone does
+        // not prove the latest stock was captured; wait for the usable result.
+        const auto awaitSupplier=[&](Game& game,const Building* consumer) {
+            glob2test::awaitGradient(game,[&] {
+                const auto* field=game.map.getMaterialGradientSlot(0,WOOD,0,false,consumer);
+                return game.map.materialAvailableSlot(0,WOOD,0,19,20,false,consumer) ? field : nullptr;
+            });
+        };
+        awaitSupplier(world.game,receiver);
+        awaitSupplier(restored.game,copiedReceiver);
         CHECK(world.game.map.materialAvailableSlot(0,WOOD,0,19,20,false,receiver));
         CHECK(restored.game.map.materialAvailableSlot(0,WOOD,0,19,20,false,copiedReceiver));
         CHECK(restored.game.map.checkSum(true)==world.game.map.checkSum(true));
