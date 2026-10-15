@@ -2,6 +2,7 @@
 // Copyright (C) 2001-2004 Stephane Magnenat & Luc-Olivier de Charrière
 
 #include "BuildingUtils.h"
+
 void BuildingUtils::turretScanTile(int posX, int posY, int ring, int offset,
                                    int octant, int& outX, int& outY)
 {
