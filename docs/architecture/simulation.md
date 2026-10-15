@@ -588,7 +588,7 @@ runs; backend defaults and algorithm choices are unchanged.
 `HiringPipeline` belongs to each `Game`. At every read boundary, before matched
 orders and including on paused or waiting replicas, it publishes due results and
 then admits one job per team with `t % 4 == teamNumber % 4` from the shared
-completed-tick snapshot. Results publish before team stepping at `t + 4`; early
+completed-tick snapshot. Results publish before team stepping at `t + 1`; early
 completion cannot publish early, so participant counts never change outcomes.
 
 Workers derive demand, material apportionment, supplier modes, qualifications and
@@ -604,7 +604,8 @@ rechecks ownership, activity, medical state, skills, cargo, quotas, reachability
 food budget and destination for every suggestion, so flag edits need no list
 invalidation. Missing or exhausted lists wait for a refresh; there is no
 population-wide fallback scan. An attraction round with owed roles stays open for
-up to eight ticks (one refresh plus publication) by running its clock past 32.
+up to eight ticks by running its clock past 32, independently of the refresh and
+publication intervals.
 
 Resource distances read the snapshot's published resource planes. AI query fields
 are local planning caches, whose presence depends on local polling, so they never
@@ -616,8 +617,9 @@ the lease instead of copying them. Observation never initializes or refreshes a
 field: missing ones use an obstacle-free bound, and live admission establishes them.
 
 Published lists and pending outputs with their deadlines are saved; saving drains
-jobs without publishing early. Older saves start with empty hiring state. Lists are
-a pure function of the snapshot, so game checksums omit them.
+jobs without publishing early. Saves predating cached hiring start with empty
+state. Lists are a pure function of the snapshot, so game checksums omit them.
+Saves containing the previous four-tick hiring policy are no longer accepted.
 
 ## Turret targeting
 

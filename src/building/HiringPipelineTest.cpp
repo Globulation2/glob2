@@ -74,9 +74,9 @@ TEST_SUITE("HiringPipeline")
 			p.drain();
 			CHECK(p.checkSum() == admitted);
 			CHECK(p.suggestions(*b) == nullptr);
-			p.publishDue(3);
+			p.publishDue(Hiring::PublicationDelay - 1);
 			CHECK(p.suggestions(*b) == nullptr);
-			p.publishDue(4);
+			p.publishDue(Hiring::PublicationDelay);
 			REQUIRE(p.suggestions(*b));
 			bool found = false;
 			for (const auto &j : p.suggestions(*b)->jobs)
@@ -148,7 +148,7 @@ TEST_SUITE("HiringPipeline")
 			GAGCore::BinaryOutputStream out(bytes);
 			original.save(&out);
 			CHECK(original.checkSum() == checksum);
-			CHECK(bool(original.suggestions(*b)) == (phase >= 4));
+			CHECK(bool(original.suggestions(*b)) == (phase >= Hiring::PublicationDelay));
 			GAGCore::BinaryInputStream in(
 				new GAGCore::MemoryStreamBackend(bytes->getBuffer(), bytes->getPosition()));
 			in.seekFromStart(0);
