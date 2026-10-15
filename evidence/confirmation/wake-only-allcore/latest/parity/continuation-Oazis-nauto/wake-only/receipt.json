@@ -1,0 +1,71 @@
+{
+  "command": [
+    "taskset",
+    "-c",
+    "0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31",
+    "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/confirmation/latest-wake/wake-only/build/linux/client/release/src/glob2",
+    "game",
+    "run",
+    "--load-game",
+    "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/mature-instruction-census/oazis-initial-state/native/final.game.gz",
+    "--ticks",
+    "60512",
+    "--compute-threads",
+    "auto",
+    "--gradient-backend",
+    "cpu",
+    "--write-replay",
+    "--telemetry",
+    "checksums",
+    "--output-dir",
+    "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/confirmation/wake-only-allcore/latest/parity/continuation-Oazis-nauto/wake-only/native"
+  ],
+  "binary_sha256": "99fbc82a526f0e15035bc675e50ac604a056574e931e077b3de955d19ce273a2",
+  "case": {
+    "id": "continuation-Oazis-nauto",
+    "args": [
+      "--load-game",
+      "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/mature-instruction-census/oazis-initial-state/native/final.game.gz",
+      "--ticks",
+      "60512",
+      "--compute-threads",
+      "auto",
+      "--gradient-backend",
+      "cpu"
+    ],
+    "env": {
+      "GLOB2_ASSET_DIR": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/confirmation/latest-wake/baseline",
+      "GLOB2_OPENCL_DEVICE": "0"
+    },
+    "fixture_sha256": {
+      "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/mature-instruction-census/oazis-initial-state/native/final.game.gz": "7f057ca174d9003e89e95d14220b4f731104937ef3d0993d5acbd5a9fa1a36b6"
+    },
+    "initial_tick": 60000,
+    "measured_ticks": 512
+  },
+  "role": "wake-only",
+  "initial": 2377477703,
+  "final": 2153299056,
+  "checksums": {
+    "GCS1": "152cdd6e07b884390d2d640401c0da281ddb2fea395e15d45bec51b5a25a2ecd",
+    "native": "eb780c10a36bf2872e8f42d7c39cce5b891f50b68108ba06b5f75fd99ce45dbf"
+  },
+  "sidecar_details": {
+    "GCS1": {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/confirmation/wake-only-allcore/latest/parity/continuation-Oazis-nauto/wake-only/native/game.replay.checksums",
+      "rows": 512,
+      "first_tick": 60000,
+      "last_tick": 60511,
+      "teams": 11,
+      "players": 11,
+      "bytes": 44948350
+    },
+    "native": {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/confirmation/wake-only-allcore/latest/parity/continuation-Oazis-nauto/wake-only/native/world.checksums",
+      "rows": 512,
+      "first_tick": 60000,
+      "last_tick": 60511,
+      "bytes": 8558
+    }
+  }
+}

@@ -1,0 +1,125 @@
+{
+  "state": "verified",
+  "runs": 40,
+  "groups": [
+    {
+      "case": "parity-Playground-n4-opencl-nicowar",
+      "matched_roles": 2
+    },
+    {
+      "case": "parity-Playground-n4-cpu-nicowar",
+      "matched_roles": 2
+    },
+    {
+      "case": "parity-Playground-n1-cpu-nicowar",
+      "matched_roles": 2
+    },
+    {
+      "case": "parity-Playground-nauto-cpu-nicowar",
+      "matched_roles": 2
+    },
+    {
+      "case": "continuation-Playground-n4",
+      "matched_roles": 2
+    },
+    {
+      "case": "continuation-Playground-nauto",
+      "matched_roles": 2
+    },
+    {
+      "case": "parity-Playground-nauto-opencl-nicowar",
+      "matched_roles": 2
+    },
+    {
+      "case": "parity-Playground-n4-cpu-mixed",
+      "matched_roles": 2
+    },
+    {
+      "case": "parity-Oazis-n4-cpu-nicowar",
+      "matched_roles": 2
+    },
+    {
+      "case": "parity-Oazis-n1-cpu-nicowar",
+      "matched_roles": 2
+    },
+    {
+      "case": "parity-Oazis-nauto-cpu-nicowar",
+      "matched_roles": 2
+    },
+    {
+      "case": "parity-Oazis-n4-opencl-nicowar",
+      "matched_roles": 2
+    },
+    {
+      "case": "continuation-Oazis-n4",
+      "matched_roles": 2
+    },
+    {
+      "case": "continuation-Oazis-nauto",
+      "matched_roles": 2
+    },
+    {
+      "case": "parity-small64-602-n1-nicowar",
+      "matched_roles": 2
+    },
+    {
+      "case": "parity-small64-602-n4-nicowar",
+      "matched_roles": 2
+    },
+    {
+      "case": "parity-Oazis-n4-cpu-mixed",
+      "matched_roles": 2
+    },
+    {
+      "case": "parity-small64-602-nauto-nicowar",
+      "matched_roles": 2
+    },
+    {
+      "case": "parity-small64-602-n4-mixed",
+      "matched_roles": 2
+    },
+    {
+      "case": "parity-Oazis-nauto-opencl-nicowar",
+      "matched_roles": 2
+    }
+  ],
+  "allocation": [
+    0,
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11,
+    12,
+    13,
+    14,
+    15,
+    16,
+    17,
+    18,
+    19,
+    20,
+    21,
+    22,
+    23,
+    24,
+    25,
+    26,
+    27,
+    28,
+    29,
+    30,
+    31
+  ],
+  "correctness_only": true,
+  "binary_hashes": {
+    "baseline": "4a90fb41dbd1ac1bc674930a29cc4581d9fa87a638f04b57137df8eea5e8d0e9",
+    "wake-only": "99fbc82a526f0e15035bc675e50ac604a056574e931e077b3de955d19ce273a2"
+  }
+}

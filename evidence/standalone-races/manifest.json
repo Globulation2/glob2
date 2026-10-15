@@ -1,0 +1,26 @@
+{
+  "status": "Prepared only; never compiled/executed. Root next-cohort gate required before commands.",
+  "source_sha256": "dbc68838dfc13d52110dfd6df0b9bb168203a033d5f452638ecb110d9ac212c2",
+  "build_commands": {
+    "asan_ubsan": "g++-13 -std=c++20 -O1 -g -fno-omit-frame-pointer -pthread -Iartifacts/october-regression/coordination-redesign/local-completion-source/src/common -Iartifacts/october-regression/coordination-redesign/local-completion-source/libgag/include artifacts/october-regression/coordination-redesign/standalone-races/races.cpp -fsanitize=address,undefined -o artifacts/october-regression/coordination-redesign/standalone-races/races-asan",
+    "tsan": "g++-13 -std=c++20 -O1 -g -fno-omit-frame-pointer -pthread -Iartifacts/october-regression/coordination-redesign/local-completion-source/src/common -Iartifacts/october-regression/coordination-redesign/local-completion-source/libgag/include artifacts/october-regression/coordination-redesign/standalone-races/races.cpp -fsanitize=thread -o artifacts/october-regression/coordination-redesign/standalone-races/races-tsan"
+  },
+  "run_commands": [
+    "GLOB2_DEFERRED_DISPATCH=steal ASAN_OPTIONS=detect_leaks=1:halt_on_error=1 UBSAN_OPTIONS=halt_on_error=1 timeout 60s artifacts/october-regression/coordination-redesign/standalone-races/races-asan all",
+    "GLOB2_DEFERRED_DISPATCH=steal TSAN_OPTIONS=halt_on_error=1 timeout 60s artifacts/october-regression/coordination-redesign/standalone-races/races-tsan all"
+  ],
+  "cases": {
+    "presentation": "64 late ready jobs while designated worker holds optional presentation; gate5s rejects delayed barrier.",
+    "early": "Continuation resolved before original callback returns; callback gate verifies no continuation/tail overlap.",
+    "reuse": "512 batches,17 distinct result slots, immediateownerjoin/storage reuse; lastnotifier lifetime/publication stress.",
+    "lane": "256 two-batch rounds withconcurrent owneradmission/completion; same-lane overlap/count checks.",
+    "waking": "512 tinyjoins withintermittent idle pauses target wake-beforeparking."
+  },
+  "limits": [
+    "These are standalone integration stresses using only executor headers; no fullengine dependent suite. Existing detailed tinyreuse/laneerror/async harness remainsprimary broad coverage, notduplicated here.",
+    "40s processwatchdog,5s gates andouter60s timeout prevent hangs; TSAN instrumentation may needlargertimebudget, report timeout separately.",
+    "TSAN environment may failunexpectedmemorymapping or runtimeunsupported; do nottreat environmenterror aspass. ASAN/UBSAN passingdoesnotprove absenceofraces.",
+    "No internal hook forces exactlostwake interleaving; waking stressprobabilistic. Deterministic waiterhook requires explicitlyinstrumentedartifact, notproduction checking.",
+    "Current successor header remainscandidate-under-repair; bind headerhash immediatelybeforebuild andfreeze receipt. No timings fromsanitized jobs."
+  ]
+}

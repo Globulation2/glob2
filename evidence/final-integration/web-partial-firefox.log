@@ -1,0 +1,337 @@
+GLOB2_TEST_BUILD compiler=Clang 22.0.0git (https:/github.com/llvm/llvm-project 3388d40684742e950b3c5d1d2dafe5a40695cfc1) platform=Emscripten pointer_bits=32
+GLOB2_TEST_PROVENANCE {"compiler": "/home/bradley/.local/share/glob2/development/toolchains/emscripten/Linux-x86_64-88a621bc131cd4954413aa39/upstream/emscripten/em++", "dirty": false, "flags": {"CCFLAGS": "-pthread", "CPPDEFINES": "GLOB2_RENDER_SHADER_DIR \\\"/shaders\\\" HAVE_CONFIG_H GLOB2_OFFICIAL_INSTANCE_ORIGIN \\\"https://app.glob2online.com\\\" GLOB2_OFFICIAL_INSTANCE_FORMER_ORIGINS \\\"https://glob2online.com\\\"", "CXXFLAGS": "-std=gnu++20 -fwasm-exceptions -g2 -O2 --use-port=zlib", "LINKFLAGS": "--js-library browser/canvas-size.js --js-library browser/webgpu-device.js --js-library browser/gradient-compute.js -pthread -sOFFSCREENCANVAS_SUPPORT=1 -sDEFAULT_PTHREAD_STACK_SIZE=8388608 -sPTHREAD_POOL_SIZE_STRICT=0 '-sPTHREAD_POOL_SIZE=Math.min(2*Math.max(navigator.hardwareConcurrency||1,1),16)' -sALLOW_BLOCKING_ON_MAIN_THREAD=0 --js-library browser/threaded-egl.js --preload-file /home/bradley/.codex/worktrees/engine-optimization/glob2/build/emscripten/client/release/threaded/shaders/webgl2@/shaders/webgl2 -fwasm-exceptions -O2 -sLEGACY_GL_EMULATION=1 -sFETCH=1 -sMIN_WEBGL_VERSION=2 -sMAX_WEBGL_VERSION=2 -sALLOW_MEMORY_GROWTH -sINITIAL_MEMORY=134217728 -sSTACK_SIZE=8388608 -sASSERTIONS=1 -sFORCE_FILESYSTEM -lidbfs.js -lwebsocket.js '-sEXPORTED_FUNCTIONS=[\"_main\",\"_malloc\",\"_free\"]' '-sEXPORTED_RUNTIME_METHODS=[\"callMain\",\"FS\"]' --pre-js browser/storage.js --pre-js browser/file-selection.js --pre-js browser/audio.js --pre-js browser/recording.js --pre-js browser/runtime.js --use-port=zlib --pre-js browser/legacy-gl-runtime.js --post-js browser/webgl-shaders.js --pre-js /home/bradley/.codex/worktrees/engine-optimization/glob2/build/emscripten/client/release/asset-manifest.js --pre-js browser/asset-loader.js"}, "revision": "efb843d8047bba6f546c031614a31c917513ad54", "sourceStatus": [], "sourceTreeSha256": "0fcb8f6d0a1f6a45f0ad5ae0b4dc1d65ace3ec56b7eaa825f2833118bfbf5524"}
+[0;36m[doctest] [0mdoctest version is "2.4.11"
+[0;36m[doctest] [0mrun with "--help" for options
+[0;33m===============================================================================
+[0;37msrc/common/ComputeExecutorHarness.cpp:224:
+[0;33mTEST SUITE: [0mComputeExecutor
+[0;33mTEST CASE:  [0midle workers retain parallelism for independent and mixed lane groups
+
+[0;37msrc/common/ComputeExecutorHarness.cpp:286: [1;32mSUCCESS: [0;36mCHECK( gate.entered >= runnable ) [0mis correct!
+  values: CHECK( {?} >= 2 )
+[0m  logged: participants := 3
+          mode := 0
+          shape := 0
+
+[0;37msrc/common/ComputeExecutorHarness.cpp:289: [1;32mSUCCESS: [0;36mCHECK( gate.entered == (shape == 2 || shape == 4 ? 3u : 2u) ) [0mis correct!
+  values: CHECK( {?} == 2 )
+[0m  logged: participants := 3
+          mode := 0
+          shape := 0
+
+[0;37msrc/common/ComputeExecutorHarness.cpp:286: [1;32mSUCCESS: [0;36mCHECK( gate.entered >= runnable ) [0mis correct!
+  values: CHECK( {?} >= 2 )
+[0m  logged: participants := 3
+          mode := 0
+          shape := 1
+
+[0;37msrc/common/ComputeExecutorHarness.cpp:289: [1;32mSUCCESS: [0;36mCHECK( gate.entered == (shape == 2 || shape == 4 ? 3u : 2u) ) [0mis correct!
+  values: CHECK( {?} == 2 )
+[0m  logged: participants := 3
+          mode := 0
+          shape := 1
+
+[0;37msrc/common/ComputeExecutorHarness.cpp:286: [1;32mSUCCESS: [0;36mCHECK( gate.entered >= runnable ) [0mis correct!
+  values: CHECK( {?} >= 2 )
+[0m  logged: participants := 3
+          mode := 0
+          shape := 2
+
+[0;37msrc/common/ComputeExecutorHarness.cpp:289: [1;32mSUCCESS: [0;36mCHECK( gate.entered == (shape == 2 || shape == 4 ? 3u : 2u) ) [0mis correct!
+  values: CHECK( {?} == 3 )
+[0m  logged: participants := 3
+          mode := 0
+          shape := 2
+
+[0;37msrc/common/ComputeExecutorHarness.cpp:286: [1;32mSUCCESS: [0;36mCHECK( gate.entered >= runnable ) [0mis correct!
+  values: CHECK( {?} >= 2 )
+[0m  logged: participants := 3
+          mode := 0
+          shape := 3
+
+[0;37msrc/common/ComputeExecutorHarness.cpp:289: [1;32mSUCCESS: [0;36mCHECK( gate.entered == (shape == 2 || shape == 4 ? 3u : 2u) ) [0mis correct!
+  values: CHECK( {?} == 2 )
+[0m  logged: participants := 3
+          mode := 0
+          shape := 3
+
+[0;37msrc/common/ComputeExecutorHarness.cpp:286: [1;32mSUCCESS: [0;36mCHECK( gate.entered >= runnable ) [0mis correct!
+  values: CHECK( {?} >= 2 )
+[0m  logged: participants := 5
+          mode := 0
+          shape := 0
+
+[0;37msrc/common/ComputeExecutorHarness.cpp:289: [1;32mSUCCESS: [0;36mCHECK( gate.entered == (shape == 2 || shape == 4 ? 3u : 2u) ) [0mis correct!
+  values: CHECK( {?} == 2 )
+[0m  logged: participants := 5
+          mode := 0
+          shape := 0
+
+[0;37msrc/common/ComputeExecutorHarness.cpp:286: [1;32mSUCCESS: [0;36mCHECK( gate.entered >= runnable ) [0mis correct!
+  values: CHECK( {?} >= 2 )
+[0m  logged: participants := 5
+          mode := 0
+          shape := 1
+
+[0;37msrc/common/ComputeExecutorHarness.cpp:289: [1;32mSUCCESS: [0;36mCHECK( gate.entered == (shape == 2 || shape == 4 ? 3u : 2u) ) [0mis correct!
+  values: CHECK( {?} == 2 )
+[0m  logged: participants := 5
+          mode := 0
+          shape := 1
+
+[0;37msrc/common/ComputeExecutorHarness.cpp:286: [1;32mSUCCESS: [0;36mCHECK( gate.entered >= runnable ) [0mis correct!
+  values: CHECK( {?} >= 2 )
+[0m  logged: participants := 5
+          mode := 0
+          shape := 2
+
+[0;37msrc/common/ComputeExecutorHarness.cpp:289: [1;32mSUCCESS: [0;36mCHECK( gate.entered == (shape == 2 || shape == 4 ? 3u : 2u) ) [0mis correct!
+  values: CHECK( {?} == 3 )
+[0m  logged: participants := 5
+          mode := 0
+          shape := 2
+
+[0;37msrc/common/ComputeExecutorHarness.cpp:286: [1;32mSUCCESS: [0;36mCHECK( gate.entered >= runnable ) [0mis correct!
+  values: CHECK( {?} >= 2 )
+[0m  logged: participants := 5
+          mode := 0
+          shape := 3
+
+[0;37msrc/common/ComputeExecutorHarness.cpp:289: [1;32mSUCCESS: [0;36mCHECK( gate.entered == (shape == 2 || shape == 4 ? 3u : 2u) ) [0mis correct!
+  values: CHECK( {?} == 2 )
+[0m  logged: participants := 5
+          mode := 0
+          shape := 3
+
+[0;37msrc/common/ComputeExecutorHarness.cpp:286: [1;32mSUCCESS: [0;36mCHECK( gate.entered >= runnable ) [0mis correct!
+  values: CHECK( {?} >= 3 )
+[0m  logged: participants := 5
+          mode := 0
+          shape := 4
+
+[0;37msrc/common/ComputeExecutorHarness.cpp:289: [1;32mSUCCESS: [0;36mCHECK( gate.entered == (shape == 2 || shape == 4 ? 3u : 2u) ) [0mis correct!
+  values: CHECK( {?} == 3 )
+[0m  logged: participants := 5
+          mode := 0
+          shape := 4
+
+[0;37msrc/common/ComputeExecutorHarness.cpp:286: [1;32mSUCCESS: [0;36mCHECK( gate.entered >= runnable ) [0mis correct!
+  values: CHECK( {?} >= 2 )
+[0m  logged: participants := 3
+          mode := 1
+          shape := 0
+
+[0;37msrc/common/ComputeExecutorHarness.cpp:289: [1;32mSUCCESS: [0;36mCHECK( gate.entered == (shape == 2 || shape == 4 ? 3u : 2u) ) [0mis correct!
+  values: CHECK( {?} == 2 )
+[0m  logged: participants := 3
+          mode := 1
+          shape := 0
+
+[0;37msrc/common/ComputeExecutorHarness.cpp:286: [1;32mSUCCESS: [0;36mCHECK( gate.entered >= runnable ) [0mis correct!
+  values: CHECK( {?} >= 2 )
+[0m  logged: participants := 3
+          mode := 1
+          shape := 1
+
+[0;37msrc/common/ComputeExecutorHarness.cpp:289: [1;32mSUCCESS: [0;36mCHECK( gate.entered == (shape == 2 || shape == 4 ? 3u : 2u) ) [0mis correct!
+  values: CHECK( {?} == 2 )
+[0m  logged: participants := 3
+          mode := 1
+          shape := 1
+
+[0;37msrc/common/ComputeExecutorHarness.cpp:286: [1;32mSUCCESS: [0;36mCHECK( gate.entered >= runnable ) [0mis correct!
+  values: CHECK( {?} >= 2 )
+[0m  logged: participants := 3
+          mode := 1
+          shape := 2
+
+[0;37msrc/common/ComputeExecutorHarness.cpp:289: [1;32mSUCCESS: [0;36mCHECK( gate.entered == (shape == 2 || shape == 4 ? 3u : 2u) ) [0mis correct!
+  values: CHECK( {?} == 3 )
+[0m  logged: participants := 3
+          mode := 1
+          shape := 2
+
+[0;37msrc/common/ComputeExecutorHarness.cpp:286: [1;32mSUCCESS: [0;36mCHECK( gate.entered >= runnable ) [0mis correct!
+  values: CHECK( {?} >= 2 )
+[0m  logged: participants := 3
+          mode := 1
+          shape := 3
+
+[0;37msrc/common/ComputeExecutorHarness.cpp:289: [1;32mSUCCESS: [0;36mCHECK( gate.entered == (shape == 2 || shape == 4 ? 3u : 2u) ) [0mis correct!
+  values: CHECK( {?} == 2 )
+[0m  logged: participants := 3
+          mode := 1
+          shape := 3
+
+[0;37msrc/common/ComputeExecutorHarness.cpp:286: [1;32mSUCCESS: [0;36mCHECK( gate.entered >= runnable ) [0mis correct!
+  values: CHECK( {?} >= 2 )
+[0m  logged: participants := 5
+          mode := 1
+          shape := 0
+
+[0;37msrc/common/ComputeExecutorHarness.cpp:289: [1;32mSUCCESS: [0;36mCHECK( gate.entered == (shape == 2 || shape == 4 ? 3u : 2u) ) [0mis correct!
+  values: CHECK( {?} == 2 )
+[0m  logged: participants := 5
+          mode := 1
+          shape := 0
+
+[0;37msrc/common/ComputeExecutorHarness.cpp:286: [1;32mSUCCESS: [0;36mCHECK( gate.entered >= runnable ) [0mis correct!
+  values: CHECK( {?} >= 2 )
+[0m  logged: participants := 5
+          mode := 1
+          shape := 1
+
+[0;37msrc/common/ComputeExecutorHarness.cpp:289: [1;32mSUCCESS: [0;36mCHECK( gate.entered == (shape == 2 || shape == 4 ? 3u : 2u) ) [0mis correct!
+  values: CHECK( {?} == 2 )
+[0m  logged: participants := 5
+          mode := 1
+          shape := 1
+
+[0;37msrc/common/ComputeExecutorHarness.cpp:286: [1;32mSUCCESS: [0;36mCHECK( gate.entered >= runnable ) [0mis correct!
+  values: CHECK( {?} >= 2 )
+[0m  logged: participants := 5
+          mode := 1
+          shape := 2
+
+[0;37msrc/common/ComputeExecutorHarness.cpp:289: [1;32mSUCCESS: [0;36mCHECK( gate.entered == (shape == 2 || shape == 4 ? 3u : 2u) ) [0mis correct!
+  values: CHECK( {?} == 3 )
+[0m  logged: participants := 5
+          mode := 1
+          shape := 2
+
+[0;37msrc/common/ComputeExecutorHarness.cpp:286: [1;32mSUCCESS: [0;36mCHECK( gate.entered >= runnable ) [0mis correct!
+  values: CHECK( {?} >= 2 )
+[0m  logged: participants := 5
+          mode := 1
+          shape := 3
+
+[0;37msrc/common/ComputeExecutorHarness.cpp:289: [1;32mSUCCESS: [0;36mCHECK( gate.entered == (shape == 2 || shape == 4 ? 3u : 2u) ) [0mis correct!
+  values: CHECK( {?} == 2 )
+[0m  logged: participants := 5
+          mode := 1
+          shape := 3
+
+[0;37msrc/common/ComputeExecutorHarness.cpp:286: [1;32mSUCCESS: [0;36mCHECK( gate.entered >= runnable ) [0mis correct!
+  values: CHECK( {?} >= 3 )
+[0m  logged: participants := 5
+          mode := 1
+          shape := 4
+
+[0;37msrc/common/ComputeExecutorHarness.cpp:289: [1;32mSUCCESS: [0;36mCHECK( gate.entered == (shape == 2 || shape == 4 ? 3u : 2u) ) [0mis correct!
+  values: CHECK( {?} == 3 )
+[0m  logged: participants := 5
+          mode := 1
+          shape := 4
+
+[0;37msrc/common/ComputeExecutorHarness.cpp:286: [1;32mSUCCESS: [0;36mCHECK( gate.entered >= runnable ) [0mis correct!
+  values: CHECK( {?} >= 2 )
+[0m  logged: participants := 3
+          mode := 2
+          shape := 0
+
+[0;37msrc/common/ComputeExecutorHarness.cpp:289: [1;32mSUCCESS: [0;36mCHECK( gate.entered == (shape == 2 || shape == 4 ? 3u : 2u) ) [0mis correct!
+  values: CHECK( {?} == 2 )
+[0m  logged: participants := 3
+          mode := 2
+          shape := 0
+
+[0;37msrc/common/ComputeExecutorHarness.cpp:286: [1;32mSUCCESS: [0;36mCHECK( gate.entered >= runnable ) [0mis correct!
+  values: CHECK( {?} >= 2 )
+[0m  logged: participants := 3
+          mode := 2
+          shape := 1
+
+[0;37msrc/common/ComputeExecutorHarness.cpp:289: [1;32mSUCCESS: [0;36mCHECK( gate.entered == (shape == 2 || shape == 4 ? 3u : 2u) ) [0mis correct!
+  values: CHECK( {?} == 2 )
+[0m  logged: participants := 3
+          mode := 2
+          shape := 1
+
+[0;37msrc/common/ComputeExecutorHarness.cpp:286: [1;32mSUCCESS: [0;36mCHECK( gate.entered >= runnable ) [0mis correct!
+  values: CHECK( {?} >= 2 )
+[0m  logged: participants := 3
+          mode := 2
+          shape := 2
+
+[0;37msrc/common/ComputeExecutorHarness.cpp:289: [1;32mSUCCESS: [0;36mCHECK( gate.entered == (shape == 2 || shape == 4 ? 3u : 2u) ) [0mis correct!
+  values: CHECK( {?} == 3 )
+[0m  logged: participants := 3
+          mode := 2
+          shape := 2
+
+[0;37msrc/common/ComputeExecutorHarness.cpp:286: [1;32mSUCCESS: [0;36mCHECK( gate.entered >= runnable ) [0mis correct!
+  values: CHECK( {?} >= 2 )
+[0m  logged: participants := 3
+          mode := 2
+          shape := 3
+
+[0;37msrc/common/ComputeExecutorHarness.cpp:289: [1;32mSUCCESS: [0;36mCHECK( gate.entered == (shape == 2 || shape == 4 ? 3u : 2u) ) [0mis correct!
+  values: CHECK( {?} == 2 )
+[0m  logged: participants := 3
+          mode := 2
+          shape := 3
+
+[0;37msrc/common/ComputeExecutorHarness.cpp:286: [1;32mSUCCESS: [0;36mCHECK( gate.entered >= runnable ) [0mis correct!
+  values: CHECK( {?} >= 2 )
+[0m  logged: participants := 5
+          mode := 2
+          shape := 0
+
+[0;37msrc/common/ComputeExecutorHarness.cpp:289: [1;32mSUCCESS: [0;36mCHECK( gate.entered == (shape == 2 || shape == 4 ? 3u : 2u) ) [0mis correct!
+  values: CHECK( {?} == 2 )
+[0m  logged: participants := 5
+          mode := 2
+          shape := 0
+
+[0;37msrc/common/ComputeExecutorHarness.cpp:286: [1;32mSUCCESS: [0;36mCHECK( gate.entered >= runnable ) [0mis correct!
+  values: CHECK( {?} >= 2 )
+[0m  logged: participants := 5
+          mode := 2
+          shape := 1
+
+[0;37msrc/common/ComputeExecutorHarness.cpp:289: [1;32mSUCCESS: [0;36mCHECK( gate.entered == (shape == 2 || shape == 4 ? 3u : 2u) ) [0mis correct!
+  values: CHECK( {?} == 2 )
+[0m  logged: participants := 5
+          mode := 2
+          shape := 1
+
+[0;37msrc/common/ComputeExecutorHarness.cpp:286: [1;32mSUCCESS: [0;36mCHECK( gate.entered >= runnable ) [0mis correct!
+  values: CHECK( {?} >= 2 )
+[0m  logged: participants := 5
+          mode := 2
+          shape := 2
+
+[0;37msrc/common/ComputeExecutorHarness.cpp:289: [1;32mSUCCESS: [0;36mCHECK( gate.entered == (shape == 2 || shape == 4 ? 3u : 2u) ) [0mis correct!
+  values: CHECK( {?} == 3 )
+[0m  logged: participants := 5
+          mode := 2
+          shape := 2
+
+[0;37msrc/common/ComputeExecutorHarness.cpp:286: [1;32mSUCCESS: [0;36mCHECK( gate.entered >= runnable ) [0mis correct!
+  values: CHECK( {?} >= 2 )
+[0m  logged: participants := 5
+          mode := 2
+          shape := 3
+
+[0;37msrc/common/ComputeExecutorHarness.cpp:289: [1;32mSUCCESS: [0;36mCHECK( gate.entered == (shape == 2 || shape == 4 ? 3u : 2u) ) [0mis correct!
+  values: CHECK( {?} == 2 )
+[0m  logged: participants := 5
+          mode := 2
+          shape := 3
+
+[0;37msrc/common/ComputeExecutorHarness.cpp:286: [1;32mSUCCESS: [0;36mCHECK( gate.entered >= runnable ) [0mis correct!
+  values: CHECK( {?} >= 3 )
+[0m  logged: participants := 5
+          mode := 2
+          shape := 4
+
+[0;37msrc/common/ComputeExecutorHarness.cpp:289: [1;32mSUCCESS: [0;36mCHECK( gate.entered == (shape == 2 || shape == 4 ? 3u : 2u) ) [0mis correct!
+  values: CHECK( {?} == 3 )
+[0m  logged: participants := 5
+          mode := 2
+          shape := 4
+
+[0m[0;33m===============================================================================
+[0;36m[doctest] [0mtest cases:  1 | [0;32m 1 passed[0m | [0m0 failed[0m | [0;33m727 skipped[0m
+[0;36m[doctest] [0massertions: 54 | [0;32m54 passed[0m | [0m0 failed[0m |
+[0;36m[doctest] [0mStatus: [0;32mSUCCESS![0m

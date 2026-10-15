@@ -1,0 +1,8 @@
+{
+  "state": "verified",
+  "binary_sha256": "edb0edf53ac7b7e2574e6b772249cef24435e4526a762fe24defdf7033d8a328",
+  "source_sha256": "6a2e357c339b31b74c167d7384beed965b8c0c6b0369724e849fe059f4c7024f",
+  "cases": 540,
+  "distinct_payload_digests": 10,
+  "phase": "correctness"
+}

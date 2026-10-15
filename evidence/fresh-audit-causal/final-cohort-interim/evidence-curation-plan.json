@@ -1,0 +1,36 @@
+{
+  "utc": "2026-10-15T03:37:55.443503+00:00",
+  "objective": "Prepare readable reconstruction evidence without measuring/profiling or editing frozeninputs duringtimings.",
+  "prepare_now": [
+    "Draftclaim/evidence map withserial/wavevalidation slots; keepinterimprefix explicitlyprovisional, do notsumwithcompletedcohorts asnewvalidatedwholecohort.",
+    "Collectlinks+smallJSONmanifesthashes forlatestrecipe/fullsourceinventoryverification/Wpatch/benchmarkadapters,rawmapfixturehashes,seedsource,approvedcommandinventory/orderaudit,buildflags/toolchain/environment andpriorperTick/guard/partialwake/sanitizerqualification.",
+    "Plancompactfullcohortscalar CSV/JSON projections onlyaftercompleteanalysesvalidate128inventory/rawloghash/endpoints/configs;retainallcaps andfailed/infrastructure receipts separately.",
+    "Curationindex shouldkeeppastbadBfirsttimings/failedcontrols/rejectedweightedandFIFO evidence, plusABBA8seedreplication; nevercherrypickonlyWbenefits.",
+    "Preparefinalreportlayout role serialsingle-game versus4gamewaves distinct; paired8-waveintervalprimaryforhostthroughput, seedintervalsecondaryqualified, sourceversions separate."
+  ],
+  "defer_until_all_complete": [
+    "No naturalper-tickclaim fromwinner/ticks equality; priorlatest40sidecarsseparate, optionalendpointchecksumavailability explicit.",
+    "No finalCPUefficiency/globalparticipant/backendpolicy/productionadoptiontext frominterimprefix.",
+    "No extra tests/builds/profiles orCPUintensiveplotswhilecurrentmeasurementruns."
+  ],
+  "suggested_archive_groups": {
+    "source_provenance": [
+      "confirmation/latest-wake/ready.json",
+      "confirmation/latest-wake/candidate.patch",
+      "confirmation/latest-wake/*benchmark-adapter.patch",
+      "confirmation/wake-only-allcore/latest-source-verified.json"
+    ],
+    "command_and_outcome": [
+      "confirmation/final-cohort/plan.json",
+      "confirmation/final-cohort/order-audit.json",
+      "confirmation/final-cohort/serial/complete.json (whenready)",
+      "confirmation/final-cohort/waves/complete.json (whenready)",
+      "bothanalysis.json onlystatevalidated"
+    ],
+    "reviews": [
+      "final-cohort/*independent-review.json",
+      "final-controller/*review*.json"
+    ],
+    "limits": "Do notcopylargebinaries/rawprofiles/gianttelemetrytrees duringtiming; referenceexacthashes/paths andpreserveneededreconstructionfixturesforlatercuration."
+  }
+}

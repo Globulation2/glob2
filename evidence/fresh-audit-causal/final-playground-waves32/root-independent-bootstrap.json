@@ -1,0 +1,1 @@
+{"method":"root independent paired8-wave bootstrap20000 xorshift32 seed761432 control-isolate; linear quantiles","throughput_change_percent":0.8264803577580304,"ci95_percent":[-1.5021989925812496,3.237129800732763],"baseline_span":323.59086103364825,"wake_span":320.93836845783517,"not_established":true}

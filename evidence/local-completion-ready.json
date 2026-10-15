@@ -1,0 +1,247 @@
+{
+  "state": "local_completion_source_ready_for_root_gated_compile",
+  "base": "48438f1f08a68b24ef0049834d371b9d00d84bae",
+  "cwd": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/local-completion-source",
+  "source": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/local-completion-source",
+  "env": {
+    "CCACHE": "1",
+    "CCACHE_MAXSIZE": "12G",
+    "GLOB2_SDL3_PREFIX": "/home/bradley/.codex/worktrees/repair-tls-rejection-fixture/glob2/build/sdl3-ci/prefix",
+    "GLOB2_RENDER_SHADER_INPUT": "/home/bradley/.codex/worktrees/execution-resource-profiles/glob2/artifacts/resource-profiles/validation/renderer-bundle-v2/shaders"
+  },
+  "build_command": [
+    "taskset",
+    "-c",
+    "0-31",
+    "scons",
+    "release=1",
+    "CC=gcc-13",
+    "CXX=g++-13",
+    "LINKFLAGS=-L/usr/lib/gcc/x86_64-linux-gnu/15",
+    "-j32",
+    "build/linux/client/release/src/glob2",
+    "unit-tests",
+    "engine-tests"
+  ],
+  "commands": [
+    {
+      "stage": "native_unit_engine",
+      "cwd": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/local-completion-source",
+      "env": {
+        "CCACHE": "1",
+        "CCACHE_MAXSIZE": "12G",
+        "GLOB2_SDL3_PREFIX": "/home/bradley/.codex/worktrees/repair-tls-rejection-fixture/glob2/build/sdl3-ci/prefix",
+        "GLOB2_RENDER_SHADER_INPUT": "/home/bradley/.codex/worktrees/execution-resource-profiles/glob2/artifacts/resource-profiles/validation/renderer-bundle-v2/shaders"
+      },
+      "command": [
+        "taskset",
+        "-c",
+        "0-31",
+        "scons",
+        "release=1",
+        "CC=gcc-13",
+        "CXX=g++-13",
+        "LINKFLAGS=-L/usr/lib/gcc/x86_64-linux-gnu/15",
+        "-j32",
+        "build/linux/client/release/src/glob2",
+        "unit-tests",
+        "engine-tests"
+      ]
+    },
+    {
+      "stage": "synthetic_optional",
+      "cwd": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/local-completion-source",
+      "env": {},
+      "command": [
+        "g++-13",
+        "-std=gnu++20",
+        "-O3",
+        "-pthread",
+        "-I/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/local-completion-source/src/common",
+        "-I/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/local-completion-source/libgag/include",
+        "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/synthetic.cpp",
+        "-L/usr/lib/gcc/x86_64-linux-gnu/15",
+        "-o",
+        "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/local-completion-synthetic"
+      ]
+    }
+  ],
+  "expected_outputs": {
+    "native": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/local-completion-source/build/linux/client/release/src/glob2",
+    "unit": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/local-completion-source/build/linux/client/release/test/glob2-unit-tests",
+    "engine": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/local-completion-source/build/linux/client/release/test/glob2-engine-tests",
+    "synthetic": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/local-completion-synthetic"
+  },
+  "expected_native": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/local-completion-source/build/linux/client/release/src/glob2",
+  "expected_unit": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/local-completion-source/build/linux/client/release/test/glob2-unit-tests",
+  "expected_engine": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/local-completion-source/build/linux/client/release/test/glob2-engine-tests",
+  "alternatives": {
+    "selector": "GLOB2_DEFERRED_DISPATCH, read once by configure after draining",
+    "primary": "steal",
+    "controls": [
+      "round-robin",
+      "lane-affine"
+    ],
+    "same_binary": true,
+    "default": "round-robin",
+    "semantics": "Per-ready-job static RR assignment; primary mode additionally try-locks other worker queues and wakes one local peer; lane-affine maps ordered lane modulo worker count while independent jobs RR. No worker global dispatch lock or Off callback prologue lock. Ordinary deferred completion is batch atomic fan-in plus lane-local promotion/ticket-local settlement; original immediate run completion and control inspection remain shared. All modes additionally rescue ready required records from workers executing optional scene/graphics/maintenance callbacks, including prequeued and late work. Optional callbacks themselves remain assigned."
+  },
+  "focused_checks": [
+    {
+      "mode": "steal",
+      "cwd": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/local-completion-source",
+      "env": {
+        "GLOB2_DEFERRED_DISPATCH": "steal"
+      },
+      "command": [
+        "taskset",
+        "-c",
+        "0-31",
+        "python3",
+        "test/run_tests.py",
+        "--build-dir",
+        "build/linux/client/release",
+        "--binary",
+        "all",
+        "--no-display",
+        "-j",
+        "8",
+        "--filter",
+        "ComputeExecutor/*",
+        "--junit",
+        "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/local-junit-steal.xml",
+        "--artifacts",
+        "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/local-validation-steal"
+      ]
+    },
+    {
+      "mode": "round-robin",
+      "cwd": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/local-completion-source",
+      "env": {
+        "GLOB2_DEFERRED_DISPATCH": "round-robin"
+      },
+      "command": [
+        "taskset",
+        "-c",
+        "0-31",
+        "python3",
+        "test/run_tests.py",
+        "--build-dir",
+        "build/linux/client/release",
+        "--binary",
+        "all",
+        "--no-display",
+        "-j",
+        "8",
+        "--filter",
+        "ComputeExecutor/*",
+        "--junit",
+        "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/local-junit-round-robin.xml",
+        "--artifacts",
+        "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/local-validation-round-robin"
+      ]
+    },
+    {
+      "mode": "lane-affine",
+      "cwd": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/local-completion-source",
+      "env": {
+        "GLOB2_DEFERRED_DISPATCH": "lane-affine"
+      },
+      "command": [
+        "taskset",
+        "-c",
+        "0-31",
+        "python3",
+        "test/run_tests.py",
+        "--build-dir",
+        "build/linux/client/release",
+        "--binary",
+        "all",
+        "--no-display",
+        "-j",
+        "8",
+        "--filter",
+        "ComputeExecutor/*",
+        "--junit",
+        "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/local-junit-lane-affine.xml",
+        "--artifacts",
+        "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/local-validation-lane-affine"
+      ]
+    }
+  ],
+  "synthetic_schema": {
+    "version": 1,
+    "arguments": "participants batches jobs_per_batch lanes iterations [uniform|skewed]",
+    "command_example": [
+      "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/local-completion-synthetic",
+      "4",
+      "32",
+      "64",
+      "16",
+      "1000",
+      "skewed"
+    ],
+    "env_example": {
+      "GLOB2_DEFERRED_DISPATCH": "steal"
+    },
+    "output_fields": [
+      "schema",
+      "policy",
+      "participants",
+      "batches",
+      "jobs_per_batch",
+      "lanes",
+      "shape",
+      "iterations",
+      "jobs",
+      "digest",
+      "wall_seconds"
+    ],
+    "correctness": "Compare identical digest for identical workload across baseline/sharded policies/thread counts. Synthetic pure compute does not establish game performance. Build/run only at root gate."
+  },
+  "patch": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/local-completion-candidate.patch",
+  "review": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/local-completion-review.json",
+  "shared_reference": {
+    "patch": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/shared-ready-reference.patch",
+    "scope": "Shared-lock RR/EDF prototype preserved as design/control only, superseded by user distributed-queue requirement; NOT active source or default build.",
+    "edf_macro": "GLOB2_DEFERRED_DEADLINE_QUEUE"
+  },
+  "source_hashes": {
+    "src/common/ComputeExecutor.h": "cfdde45e73d0789c2eec88991fd45f8558dbfc6a76a9d0d82b1d509b48a0e786",
+    "src/common/ComputeExecutorHarness.cpp": "4ee385c3f7ced338beb4af34aaaf50525d852d4aafabe40314ac84ae36b454b0",
+    "src/app/Glob2.cpp": "06e6919eae114d35bce6e77b517283d1e41659afc8e45002cbcade532c55cdf0",
+    "src/engine/EngineRun.cpp": "e77d2120514f8397a5cb88313bc466d23174ed4eff82338797b2dc81020a8d2b",
+    "maps/Playground.map": "2a323a2d02475fb1ddd2ddfac99c51890aa7b2a2f3537ad7bee93aba85d84eaf",
+    "maps/Oazis.map": "cd80d8c9a72643a95bb0bd3c22deb594aeed125d12cb3294859e7fffbc131448"
+  },
+  "patch_sha256": "0189434a16ec30d3298a58d34471940a22f9df3879a21ddb7ff7c49fd5b5b3a4",
+  "independent_review": "Feature auditor statically cleared local completion, optional-busy rescue, external resolver teardown acknowledgment, and focused prequeued rescue test cleanup/determinism. No builds/runtime proof; clear for root gated compilation and correctness qualification.",
+  "gate": "Root decides separate build gate after first isolation control and no active native games; do not automatically build alongside running campaign. Agents ran no builds/workloads.",
+  "limits": [
+    "Not compiled or tested yet.",
+    "Changing header requires complete affected build; no baseline object substitution.",
+    "Exact sequential controller contract preserved by lane FIFO; independent cross-AI callbacks remain parallel. Cross-lane EDF execution priority relaxed explicitly; publication ticks unchanged.",
+    "Full per-tick checksums/replays/save/load and meaningful producer harnesses required before acceptance.",
+    "Trace instrumentation locks/counters differ from Off; performance measurement must use Off.",
+    "Build script source preparation sketches are historical; frozen source + candidate.patch are authoritative.",
+    "Original immediate run()/invoke() completion accounting still uses shared control mutex; this successor removes global deferred completion only.",
+    "NoLane success requires no mutex except last batch notifier; ordered heads use lane-local mutex. Error and async paths use batch/ticket-local mutexes.",
+    "Source preparation sketch superseded by frozen source/patch and hashes; no first prototype source/manifest edits."
+  ],
+  "incremental_patch": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/local-completion-incremental.patch",
+  "predecessor_source_hashes": {
+    "src/common/ComputeExecutor.h": "ff6550ddf5a6b28d1b884f2432a42eb9dea59913908061c6136c1a65218a12d6",
+    "src/common/ComputeExecutorHarness.cpp": "ac39d39241d0cdd310e5d03503b53d707d89a32ca09a15c404d28ea7fb2138d4",
+    "src/app/Glob2.cpp": "06e6919eae114d35bce6e77b517283d1e41659afc8e45002cbcade532c55cdf0",
+    "src/engine/EngineRun.cpp": "e77d2120514f8397a5cb88313bc466d23174ed4eff82338797b2dc81020a8d2b",
+    "maps/Playground.map": "2a323a2d02475fb1ddd2ddfac99c51890aa7b2a2f3537ad7bee93aba85d84eaf",
+    "maps/Oazis.map": "cd80d8c9a72643a95bb0bd3c22deb594aeed125d12cb3294859e7fffbc131448"
+  },
+  "predecessor_manifest": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/candidate-ready.json",
+  "incremental_patch_sha256": "6176a8705c4ffdf860cb08de8270819390d40ed76a4e3a099d6d6464a4e53da9",
+  "first_control_exclusions": {
+    "round-robin": "Frozen first source fails presentation spare-worker latency contract; excluded from native pilot.",
+    "lane-affine": "Same inaccessible optional queue design; excluded pending repaired successor.",
+    "evidence": "contracts-round-robin.log"
+  }
+}

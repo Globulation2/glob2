@@ -1,0 +1,35 @@
+{
+  "status": "followup_design_only_no_frozen_source_edits_or_workloads",
+  "condition": "Consider only if FIFO urgency measurement shows material required-barrier delay. Do not add metadata or change current qualified source before evidence.",
+  "minimal_candidate": "Within each existing worker queue, insert existing intrusive Dispatch node ordered lexicographically by immutable(due,serial,index). Head pop remains O(1). Tail monotonic fast append avoids scanning normal monotonic admissions. Out-of-order insert scans queue under only its local mutex; no allocation.",
+  "algorithm": [
+    "Define less(a,b) from slots[a.claim.slot].due then claim.serial then claim.index. Due immutable while any job queued or executing; serial unique admission order. Existing serial rollover assumptions unchanged.",
+    "Under target queue mutex: if empty set head=tail=node; else if !less(node,*tail), append tail in O(1); else if less(node,*head), insert head; else walk predecessor until next greater, splice. Preserve tail when inserting at end.",
+    "Own pop, victim steal and optional rescue already remove head; no dispatch/completion allocation or heap buffer. Queue links remain manipulated under same local mutex.",
+    "Lane readiness unchanged: only head of ordered lane is enqueued. Sorted policy cannot make blocked successor ready or move optional callback context. Continuation retains original due/serial/index and may insert ahead of later due work."
+  ],
+  "ownership_proof": "Every queued node prevents its batch terminal count: job cannot complete while still queued, and each lane promotion happens before predecessor terminal count. Fixed node vectors are freed only after all jobs terminal. Thus reading due/serial from live slot under local queue ownership is safe without owner mutex, provided no unrelated mutation of due until free/reuse. Due+serial initialized before queue publication; queue mutex synchronizes readers. Comparator must never retain a pointer after releasing queue ownership unless node is popped into local copy.",
+  "limitations": [
+    "Local ordering is not global EDF: ownqueue-first worker can execute later-due head while another queue has earlier due. Stealer chooses first nonempty victim by rotation, not earliest among victims.",
+    "Tail fast append is common only for monotonic due admissions; async continuation and old lane successor can insert near head. Long queues can make promotion hold local mutex O(queue length), so compare actual queue depths and enqueue contention.",
+    "Sorting earlier due ready jobs changes internal execution order but preserves logical publication/lane contract. Still qualify required barriers, presentation fairness and per-tick simulation.",
+    "Do not add atomic global minimum or head metadata merely to claim restored EDF; it creates new consistency/wakeup machinery."
+  ],
+  "only_if_needed_later": [
+    {
+      "option": "Bounded local choice",
+      "cost": "Peek own and one victim head under separate local locks then validate/pop selected queue; stale choice acceptable for heuristic. This improves urgency sampling, not global EDF guarantee; avoid nested queue locks."
+    },
+    {
+      "option": "Owner barrier urgency signal/help",
+      "cost": "Would require explicit due limit plus worker awareness or owner-context eligibility and an urgent wake protocol. Owner cannot blindly run job due to contexts/optional overlap and current no-assistance contract; not a small transparent change."
+    }
+  ],
+  "tests_if_built": [
+    "Same-queue opposite due insertion, equal due serial/index stable order, tail append and head/middle insertion, queue empty/tail restoration.",
+    "Old deferred continuation/lane promotion ahead of younger jobs, no duplicate/missing jobs, serial slot reuse.",
+    "Actual cross-queue counterexample demonstrates local priority does not promise global EDF; retain urgency probe separate from correctness tests.",
+    "Held optional presentation rescue and bounded completion/error/async/teardown contracts remain unchanged."
+  ],
+  "acceptance": "Retain only if measured barrier/game benefit outweighs local insertion scan and added comparator code. Default remain simplest measured winner; no production recommendation or timing claim."
+}

@@ -1,0 +1,20 @@
+{
+  "state": "generated_claims_and_new_paths_checked",
+  "scope": "JSON/HTML only,pinned15,31; no bootstrap/native/build/frozenfilechange. Fresh externalreview requested separately.",
+  "serial_validated_runs": 128,
+  "Playground_wave_completed_map_games": 64,
+  "Oazis_wave_status": "pending",
+  "wave_throughput_recomputed_percent": 0.8264803577580304,
+  "per_seed_adverse_inner": 20,
+  "narrow_overhead": "SystemCPU/voluntaryswitches lowerall32; totalCPUsmall, throughputCIincludeszero.",
+  "new_report_links_all_exist": [
+    "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/fresh-audit-causal/final-serial128/Playground-raw-audit.json",
+    "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/fresh-audit-causal/final-serial128/Oazis-raw-audit.json",
+    "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/fresh-audit-causal/final-playground-waves32/review.json",
+    "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/fresh-audit-causal/final-serial128/review.json",
+    "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/fresh-audit-causal/final-playground-waves32/root-independent-bootstrap.json",
+    "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/confirmation/post-campaign-coverage/audit.json"
+  ],
+  "no_double_count": "PGwaves64 completedsubset separatelyreported, notaddedtocanonicalvalidated128 untilwholewavesregimevalidates.",
+  "source_sha256": "03cd3be60b146ac850e9ff8db4e3be1528325fc18ef2a15171daf99d9a7a5641"
+}

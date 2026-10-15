@@ -1,0 +1,855 @@
+{
+  "base_revision": "48438f1f08a68b24ef0049834d371b9d00d84bae",
+  "variants": [
+    {
+      "role": "baseline",
+      "binary": "/home/bradley/.codex/worktrees/engine-history-latest-master/glob2/build/linux/client/release/src/glob2",
+      "cwd": "/home/bradley/.codex/worktrees/engine-history-latest-master/glob2",
+      "env": {},
+      "sha256": "5d64de6dcd91777354851015cf1b9584b529504ed67b64459b4c77cb487f2333"
+    },
+    {
+      "role": "wake-only",
+      "binary": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/wake-prototype/source/build/linux/client/release/src/glob2",
+      "cwd": "/home/bradley/.codex/worktrees/engine-history-latest-master/glob2",
+      "env": {},
+      "sha256": "eca1d73a704171dc185f844daccbaa9db74e35d6eb6f244776f4bf0cd08d9675"
+    },
+    {
+      "role": "steal",
+      "binary": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/source/build/linux/client/release/src/glob2",
+      "cwd": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/source",
+      "env": {
+        "GLOB2_DEFERRED_DISPATCH": "steal"
+      },
+      "sha256": "482d5b383fc9e13a8fc213e517b3d9b523554af37d63056a7bc3750a99758b2a"
+    },
+    {
+      "role": "local-completion-round-robin",
+      "binary": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/local-completion-source/build/linux/client/release/src/glob2",
+      "cwd": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/local-completion-source",
+      "env": {
+        "GLOB2_DEFERRED_DISPATCH": "round-robin"
+      },
+      "sha256": "1dce23504801e914734b124b076b66313537061c76eb6872d594ce69782f1501"
+    },
+    {
+      "role": "local-completion-steal",
+      "binary": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/local-completion-source/build/linux/client/release/src/glob2",
+      "cwd": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/local-completion-source",
+      "env": {
+        "GLOB2_DEFERRED_DISPATCH": "steal"
+      },
+      "sha256": "1dce23504801e914734b124b076b66313537061c76eb6872d594ce69782f1501"
+    }
+  ],
+  "scenarios": [
+    {
+      "id": "fresh-Playground-1056243202-n4",
+      "kind": "game",
+      "args": [
+        "--map-file",
+        "/home/bradley/.codex/worktrees/engine-history-latest-master/glob2/maps/Playground.map",
+        "--game-seed",
+        "1056243202",
+        "--ticks",
+        "4096",
+        "--compute-threads",
+        "4",
+        "--gradient-backend",
+        "cpu",
+        "--player",
+        "castor",
+        "--player",
+        "numbi",
+        "--player",
+        "warrush",
+        "--player",
+        "nicowar",
+        "--player",
+        "nicowar",
+        "--player",
+        "nicowar",
+        "--player",
+        "nicowar",
+        "--player",
+        "nicowar",
+        "--write-replay"
+      ],
+      "env": {
+        "GLOB2_ASSET_DIR": "/home/bradley/.codex/worktrees/engine-history-latest-master/glob2",
+        "GLOB2_OPENCL_DEVICE": "0"
+      },
+      "fixture_sha256": {
+        "/home/bradley/.codex/worktrees/engine-history-latest-master/glob2/maps/Playground.map": "2a323a2d02475fb1ddd2ddfac99c51890aa7b2a2f3537ad7bee93aba85d84eaf"
+      },
+      "budget": 4,
+      "allocation": [
+        12,
+        13,
+        14,
+        28,
+        29,
+        30
+      ],
+      "repeats": 2,
+      "timeout_seconds": 300,
+      "initial_tick": 0
+    },
+    {
+      "id": "fresh-Playground-1056243202-nauto",
+      "kind": "game",
+      "args": [
+        "--map-file",
+        "/home/bradley/.codex/worktrees/engine-history-latest-master/glob2/maps/Playground.map",
+        "--game-seed",
+        "1056243202",
+        "--ticks",
+        "4096",
+        "--compute-threads",
+        "auto",
+        "--gradient-backend",
+        "cpu",
+        "--player",
+        "castor",
+        "--player",
+        "numbi",
+        "--player",
+        "warrush",
+        "--player",
+        "nicowar",
+        "--player",
+        "nicowar",
+        "--player",
+        "nicowar",
+        "--player",
+        "nicowar",
+        "--player",
+        "nicowar",
+        "--write-replay"
+      ],
+      "env": {
+        "GLOB2_ASSET_DIR": "/home/bradley/.codex/worktrees/engine-history-latest-master/glob2",
+        "GLOB2_OPENCL_DEVICE": "0"
+      },
+      "fixture_sha256": {
+        "/home/bradley/.codex/worktrees/engine-history-latest-master/glob2/maps/Playground.map": "2a323a2d02475fb1ddd2ddfac99c51890aa7b2a2f3537ad7bee93aba85d84eaf"
+      },
+      "budget": "auto",
+      "allocation": [
+        12,
+        13,
+        14,
+        28,
+        29,
+        30
+      ],
+      "repeats": 2,
+      "timeout_seconds": 300,
+      "initial_tick": 0
+    },
+    {
+      "id": "fresh-Playground-744345666-n4",
+      "kind": "game",
+      "args": [
+        "--map-file",
+        "/home/bradley/.codex/worktrees/engine-history-latest-master/glob2/maps/Playground.map",
+        "--game-seed",
+        "744345666",
+        "--ticks",
+        "4096",
+        "--compute-threads",
+        "4",
+        "--gradient-backend",
+        "cpu",
+        "--player",
+        "castor",
+        "--player",
+        "numbi",
+        "--player",
+        "warrush",
+        "--player",
+        "nicowar",
+        "--player",
+        "nicowar",
+        "--player",
+        "nicowar",
+        "--player",
+        "nicowar",
+        "--player",
+        "nicowar",
+        "--write-replay"
+      ],
+      "env": {
+        "GLOB2_ASSET_DIR": "/home/bradley/.codex/worktrees/engine-history-latest-master/glob2",
+        "GLOB2_OPENCL_DEVICE": "0"
+      },
+      "fixture_sha256": {
+        "/home/bradley/.codex/worktrees/engine-history-latest-master/glob2/maps/Playground.map": "2a323a2d02475fb1ddd2ddfac99c51890aa7b2a2f3537ad7bee93aba85d84eaf"
+      },
+      "budget": 4,
+      "allocation": [
+        12,
+        13,
+        14,
+        28,
+        29,
+        30
+      ],
+      "repeats": 2,
+      "timeout_seconds": 300,
+      "initial_tick": 0
+    },
+    {
+      "id": "fresh-Playground-744345666-nauto",
+      "kind": "game",
+      "args": [
+        "--map-file",
+        "/home/bradley/.codex/worktrees/engine-history-latest-master/glob2/maps/Playground.map",
+        "--game-seed",
+        "744345666",
+        "--ticks",
+        "4096",
+        "--compute-threads",
+        "auto",
+        "--gradient-backend",
+        "cpu",
+        "--player",
+        "castor",
+        "--player",
+        "numbi",
+        "--player",
+        "warrush",
+        "--player",
+        "nicowar",
+        "--player",
+        "nicowar",
+        "--player",
+        "nicowar",
+        "--player",
+        "nicowar",
+        "--player",
+        "nicowar",
+        "--write-replay"
+      ],
+      "env": {
+        "GLOB2_ASSET_DIR": "/home/bradley/.codex/worktrees/engine-history-latest-master/glob2",
+        "GLOB2_OPENCL_DEVICE": "0"
+      },
+      "fixture_sha256": {
+        "/home/bradley/.codex/worktrees/engine-history-latest-master/glob2/maps/Playground.map": "2a323a2d02475fb1ddd2ddfac99c51890aa7b2a2f3537ad7bee93aba85d84eaf"
+      },
+      "budget": "auto",
+      "allocation": [
+        12,
+        13,
+        14,
+        28,
+        29,
+        30
+      ],
+      "repeats": 2,
+      "timeout_seconds": 300,
+      "initial_tick": 0
+    },
+    {
+      "id": "serial-guard-Playground",
+      "kind": "game",
+      "args": [
+        "--map-file",
+        "/home/bradley/.codex/worktrees/engine-history-latest-master/glob2/maps/Playground.map",
+        "--game-seed",
+        "1056243202",
+        "--ticks",
+        "4096",
+        "--compute-threads",
+        "1",
+        "--gradient-backend",
+        "cpu",
+        "--player",
+        "castor",
+        "--player",
+        "numbi",
+        "--player",
+        "warrush",
+        "--player",
+        "nicowar",
+        "--player",
+        "nicowar",
+        "--player",
+        "nicowar",
+        "--player",
+        "nicowar",
+        "--player",
+        "nicowar",
+        "--write-replay"
+      ],
+      "env": {
+        "GLOB2_ASSET_DIR": "/home/bradley/.codex/worktrees/engine-history-latest-master/glob2",
+        "GLOB2_OPENCL_DEVICE": "0"
+      },
+      "fixture_sha256": {
+        "/home/bradley/.codex/worktrees/engine-history-latest-master/glob2/maps/Playground.map": "2a323a2d02475fb1ddd2ddfac99c51890aa7b2a2f3537ad7bee93aba85d84eaf"
+      },
+      "budget": 1,
+      "allocation": [
+        12,
+        13,
+        14,
+        28,
+        29,
+        30
+      ],
+      "repeats": 1,
+      "timeout_seconds": 300,
+      "initial_tick": 0
+    },
+    {
+      "id": "mature-Playground-n4",
+      "kind": "game",
+      "args": [
+        "--load-game",
+        "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/mature-instruction-census/playground-initial-state/native/final.game.gz",
+        "--ticks",
+        "25000",
+        "--compute-threads",
+        "4",
+        "--gradient-backend",
+        "cpu",
+        "--write-replay"
+      ],
+      "env": {
+        "GLOB2_ASSET_DIR": "/home/bradley/.codex/worktrees/engine-history-latest-master/glob2",
+        "GLOB2_OPENCL_DEVICE": "0"
+      },
+      "fixture_sha256": {
+        "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/mature-instruction-census/playground-initial-state/native/final.game.gz": "374ea4b9876c52121d560093452952cba4c50f16b9daef43154dc39fc7a8f5d3"
+      },
+      "budget": 4,
+      "allocation": [
+        12,
+        13,
+        14,
+        28,
+        29,
+        30
+      ],
+      "repeats": 2,
+      "timeout_seconds": 300,
+      "initial_tick": 20000
+    },
+    {
+      "id": "mature-Playground-nauto",
+      "kind": "game",
+      "args": [
+        "--load-game",
+        "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/mature-instruction-census/playground-initial-state/native/final.game.gz",
+        "--ticks",
+        "25000",
+        "--compute-threads",
+        "auto",
+        "--gradient-backend",
+        "cpu",
+        "--write-replay"
+      ],
+      "env": {
+        "GLOB2_ASSET_DIR": "/home/bradley/.codex/worktrees/engine-history-latest-master/glob2",
+        "GLOB2_OPENCL_DEVICE": "0"
+      },
+      "fixture_sha256": {
+        "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/mature-instruction-census/playground-initial-state/native/final.game.gz": "374ea4b9876c52121d560093452952cba4c50f16b9daef43154dc39fc7a8f5d3"
+      },
+      "budget": "auto",
+      "allocation": [
+        12,
+        13,
+        14,
+        28,
+        29,
+        30
+      ],
+      "repeats": 2,
+      "timeout_seconds": 300,
+      "initial_tick": 20000
+    },
+    {
+      "id": "fresh-Oazis-1056243202-n4",
+      "kind": "game",
+      "args": [
+        "--map-file",
+        "/home/bradley/.codex/worktrees/engine-history-latest-master/glob2/maps/Oazis.map",
+        "--game-seed",
+        "1056243202",
+        "--ticks",
+        "4096",
+        "--compute-threads",
+        "4",
+        "--gradient-backend",
+        "cpu",
+        "--player",
+        "castor",
+        "--player",
+        "numbi",
+        "--player",
+        "warrush",
+        "--player",
+        "nicowar",
+        "--player",
+        "nicowar",
+        "--player",
+        "nicowar",
+        "--player",
+        "nicowar",
+        "--player",
+        "nicowar",
+        "--player",
+        "nicowar",
+        "--player",
+        "nicowar",
+        "--player",
+        "nicowar",
+        "--write-replay"
+      ],
+      "env": {
+        "GLOB2_ASSET_DIR": "/home/bradley/.codex/worktrees/engine-history-latest-master/glob2",
+        "GLOB2_OPENCL_DEVICE": "0"
+      },
+      "fixture_sha256": {
+        "/home/bradley/.codex/worktrees/engine-history-latest-master/glob2/maps/Oazis.map": "cd80d8c9a72643a95bb0bd3c22deb594aeed125d12cb3294859e7fffbc131448"
+      },
+      "budget": 4,
+      "allocation": [
+        12,
+        13,
+        14,
+        28,
+        29,
+        30
+      ],
+      "repeats": 2,
+      "timeout_seconds": 300,
+      "initial_tick": 0
+    },
+    {
+      "id": "fresh-Oazis-1056243202-nauto",
+      "kind": "game",
+      "args": [
+        "--map-file",
+        "/home/bradley/.codex/worktrees/engine-history-latest-master/glob2/maps/Oazis.map",
+        "--game-seed",
+        "1056243202",
+        "--ticks",
+        "4096",
+        "--compute-threads",
+        "auto",
+        "--gradient-backend",
+        "cpu",
+        "--player",
+        "castor",
+        "--player",
+        "numbi",
+        "--player",
+        "warrush",
+        "--player",
+        "nicowar",
+        "--player",
+        "nicowar",
+        "--player",
+        "nicowar",
+        "--player",
+        "nicowar",
+        "--player",
+        "nicowar",
+        "--player",
+        "nicowar",
+        "--player",
+        "nicowar",
+        "--player",
+        "nicowar",
+        "--write-replay"
+      ],
+      "env": {
+        "GLOB2_ASSET_DIR": "/home/bradley/.codex/worktrees/engine-history-latest-master/glob2",
+        "GLOB2_OPENCL_DEVICE": "0"
+      },
+      "fixture_sha256": {
+        "/home/bradley/.codex/worktrees/engine-history-latest-master/glob2/maps/Oazis.map": "cd80d8c9a72643a95bb0bd3c22deb594aeed125d12cb3294859e7fffbc131448"
+      },
+      "budget": "auto",
+      "allocation": [
+        12,
+        13,
+        14,
+        28,
+        29,
+        30
+      ],
+      "repeats": 2,
+      "timeout_seconds": 300,
+      "initial_tick": 0
+    },
+    {
+      "id": "fresh-Oazis-744345666-n4",
+      "kind": "game",
+      "args": [
+        "--map-file",
+        "/home/bradley/.codex/worktrees/engine-history-latest-master/glob2/maps/Oazis.map",
+        "--game-seed",
+        "744345666",
+        "--ticks",
+        "4096",
+        "--compute-threads",
+        "4",
+        "--gradient-backend",
+        "cpu",
+        "--player",
+        "castor",
+        "--player",
+        "numbi",
+        "--player",
+        "warrush",
+        "--player",
+        "nicowar",
+        "--player",
+        "nicowar",
+        "--player",
+        "nicowar",
+        "--player",
+        "nicowar",
+        "--player",
+        "nicowar",
+        "--player",
+        "nicowar",
+        "--player",
+        "nicowar",
+        "--player",
+        "nicowar",
+        "--write-replay"
+      ],
+      "env": {
+        "GLOB2_ASSET_DIR": "/home/bradley/.codex/worktrees/engine-history-latest-master/glob2",
+        "GLOB2_OPENCL_DEVICE": "0"
+      },
+      "fixture_sha256": {
+        "/home/bradley/.codex/worktrees/engine-history-latest-master/glob2/maps/Oazis.map": "cd80d8c9a72643a95bb0bd3c22deb594aeed125d12cb3294859e7fffbc131448"
+      },
+      "budget": 4,
+      "allocation": [
+        12,
+        13,
+        14,
+        28,
+        29,
+        30
+      ],
+      "repeats": 2,
+      "timeout_seconds": 300,
+      "initial_tick": 0
+    },
+    {
+      "id": "fresh-Oazis-744345666-nauto",
+      "kind": "game",
+      "args": [
+        "--map-file",
+        "/home/bradley/.codex/worktrees/engine-history-latest-master/glob2/maps/Oazis.map",
+        "--game-seed",
+        "744345666",
+        "--ticks",
+        "4096",
+        "--compute-threads",
+        "auto",
+        "--gradient-backend",
+        "cpu",
+        "--player",
+        "castor",
+        "--player",
+        "numbi",
+        "--player",
+        "warrush",
+        "--player",
+        "nicowar",
+        "--player",
+        "nicowar",
+        "--player",
+        "nicowar",
+        "--player",
+        "nicowar",
+        "--player",
+        "nicowar",
+        "--player",
+        "nicowar",
+        "--player",
+        "nicowar",
+        "--player",
+        "nicowar",
+        "--write-replay"
+      ],
+      "env": {
+        "GLOB2_ASSET_DIR": "/home/bradley/.codex/worktrees/engine-history-latest-master/glob2",
+        "GLOB2_OPENCL_DEVICE": "0"
+      },
+      "fixture_sha256": {
+        "/home/bradley/.codex/worktrees/engine-history-latest-master/glob2/maps/Oazis.map": "cd80d8c9a72643a95bb0bd3c22deb594aeed125d12cb3294859e7fffbc131448"
+      },
+      "budget": "auto",
+      "allocation": [
+        12,
+        13,
+        14,
+        28,
+        29,
+        30
+      ],
+      "repeats": 2,
+      "timeout_seconds": 300,
+      "initial_tick": 0
+    },
+    {
+      "id": "serial-guard-Oazis",
+      "kind": "game",
+      "args": [
+        "--map-file",
+        "/home/bradley/.codex/worktrees/engine-history-latest-master/glob2/maps/Oazis.map",
+        "--game-seed",
+        "1056243202",
+        "--ticks",
+        "4096",
+        "--compute-threads",
+        "1",
+        "--gradient-backend",
+        "cpu",
+        "--player",
+        "castor",
+        "--player",
+        "numbi",
+        "--player",
+        "warrush",
+        "--player",
+        "nicowar",
+        "--player",
+        "nicowar",
+        "--player",
+        "nicowar",
+        "--player",
+        "nicowar",
+        "--player",
+        "nicowar",
+        "--player",
+        "nicowar",
+        "--player",
+        "nicowar",
+        "--player",
+        "nicowar",
+        "--write-replay"
+      ],
+      "env": {
+        "GLOB2_ASSET_DIR": "/home/bradley/.codex/worktrees/engine-history-latest-master/glob2",
+        "GLOB2_OPENCL_DEVICE": "0"
+      },
+      "fixture_sha256": {
+        "/home/bradley/.codex/worktrees/engine-history-latest-master/glob2/maps/Oazis.map": "cd80d8c9a72643a95bb0bd3c22deb594aeed125d12cb3294859e7fffbc131448"
+      },
+      "budget": 1,
+      "allocation": [
+        12,
+        13,
+        14,
+        28,
+        29,
+        30
+      ],
+      "repeats": 1,
+      "timeout_seconds": 300,
+      "initial_tick": 0
+    },
+    {
+      "id": "mature-Oazis-n4",
+      "kind": "game",
+      "args": [
+        "--load-game",
+        "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/mature-instruction-census/oazis-initial-state/native/final.game.gz",
+        "--ticks",
+        "65000",
+        "--compute-threads",
+        "4",
+        "--gradient-backend",
+        "cpu",
+        "--write-replay"
+      ],
+      "env": {
+        "GLOB2_ASSET_DIR": "/home/bradley/.codex/worktrees/engine-history-latest-master/glob2",
+        "GLOB2_OPENCL_DEVICE": "0"
+      },
+      "fixture_sha256": {
+        "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/mature-instruction-census/oazis-initial-state/native/final.game.gz": "7f057ca174d9003e89e95d14220b4f731104937ef3d0993d5acbd5a9fa1a36b6"
+      },
+      "budget": 4,
+      "allocation": [
+        12,
+        13,
+        14,
+        28,
+        29,
+        30
+      ],
+      "repeats": 2,
+      "timeout_seconds": 300,
+      "initial_tick": 60000
+    },
+    {
+      "id": "mature-Oazis-nauto",
+      "kind": "game",
+      "args": [
+        "--load-game",
+        "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/mature-instruction-census/oazis-initial-state/native/final.game.gz",
+        "--ticks",
+        "65000",
+        "--compute-threads",
+        "auto",
+        "--gradient-backend",
+        "cpu",
+        "--write-replay"
+      ],
+      "env": {
+        "GLOB2_ASSET_DIR": "/home/bradley/.codex/worktrees/engine-history-latest-master/glob2",
+        "GLOB2_OPENCL_DEVICE": "0"
+      },
+      "fixture_sha256": {
+        "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/mature-instruction-census/oazis-initial-state/native/final.game.gz": "7f057ca174d9003e89e95d14220b4f731104937ef3d0993d5acbd5a9fa1a36b6"
+      },
+      "budget": "auto",
+      "allocation": [
+        12,
+        13,
+        14,
+        28,
+        29,
+        30
+      ],
+      "repeats": 2,
+      "timeout_seconds": 300,
+      "initial_tick": 60000
+    },
+    {
+      "id": "small64-602-n1",
+      "kind": "game",
+      "args": [
+        "--map-file",
+        "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/fixtures/small-ni.map.gz",
+        "--game-seed",
+        "602",
+        "--ticks",
+        "4096",
+        "--compute-threads",
+        "1",
+        "--gradient-backend",
+        "cpu",
+        "--player",
+        "nicowar",
+        "--player",
+        "nicowar",
+        "--write-replay"
+      ],
+      "env": {
+        "GLOB2_ASSET_DIR": "/home/bradley/.codex/worktrees/engine-history-latest-master/glob2",
+        "GLOB2_OPENCL_DEVICE": "0"
+      },
+      "fixture_sha256": {
+        "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/fixtures/small-ni.map.gz": "d51b3f0c492c843d74d2b7379e46eca5ae27ed9af0e47ed468852801ecade95c"
+      },
+      "budget": 1,
+      "allocation": [
+        12,
+        13,
+        14,
+        28,
+        29,
+        30
+      ],
+      "repeats": 2,
+      "timeout_seconds": 300,
+      "initial_tick": 0
+    },
+    {
+      "id": "small64-602-n4",
+      "kind": "game",
+      "args": [
+        "--map-file",
+        "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/fixtures/small-ni.map.gz",
+        "--game-seed",
+        "602",
+        "--ticks",
+        "4096",
+        "--compute-threads",
+        "4",
+        "--gradient-backend",
+        "cpu",
+        "--player",
+        "nicowar",
+        "--player",
+        "nicowar",
+        "--write-replay"
+      ],
+      "env": {
+        "GLOB2_ASSET_DIR": "/home/bradley/.codex/worktrees/engine-history-latest-master/glob2",
+        "GLOB2_OPENCL_DEVICE": "0"
+      },
+      "fixture_sha256": {
+        "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/fixtures/small-ni.map.gz": "d51b3f0c492c843d74d2b7379e46eca5ae27ed9af0e47ed468852801ecade95c"
+      },
+      "budget": 4,
+      "allocation": [
+        12,
+        13,
+        14,
+        28,
+        29,
+        30
+      ],
+      "repeats": 2,
+      "timeout_seconds": 300,
+      "initial_tick": 0
+    },
+    {
+      "id": "small64-602-nauto",
+      "kind": "game",
+      "args": [
+        "--map-file",
+        "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/fixtures/small-ni.map.gz",
+        "--game-seed",
+        "602",
+        "--ticks",
+        "4096",
+        "--compute-threads",
+        "auto",
+        "--gradient-backend",
+        "cpu",
+        "--player",
+        "nicowar",
+        "--player",
+        "nicowar",
+        "--write-replay"
+      ],
+      "env": {
+        "GLOB2_ASSET_DIR": "/home/bradley/.codex/worktrees/engine-history-latest-master/glob2",
+        "GLOB2_OPENCL_DEVICE": "0"
+      },
+      "fixture_sha256": {
+        "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/fixtures/small-ni.map.gz": "d51b3f0c492c843d74d2b7379e46eca5ae27ed9af0e47ed468852801ecade95c"
+      },
+      "budget": "auto",
+      "allocation": [
+        12,
+        13,
+        14,
+        28,
+        29,
+        30
+      ],
+      "repeats": 2,
+      "timeout_seconds": 300,
+      "initial_tick": 0
+    }
+  ],
+  "scope": "Freshmixed4096/N4auto twoindependentseeds\u00d72reps plusserialguards andmatureoneactualsave/map\u00d72reps. Nativechecksumtelemetryoff. Immutableold64\u00b22teamfixture freshloaded atseed602; currentloader baseline smoke required; no generationchange."
+}

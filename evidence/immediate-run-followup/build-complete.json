@@ -1,0 +1,40 @@
+{
+  "builds": {
+    "frozen-local": {
+      "command": [
+        "g++-13",
+        "-std=c++20",
+        "-O3",
+        "-pthread",
+        "-I/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/local-completion-source/src/common",
+        "-I/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/local-completion-source/src/common",
+        "-I/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/local-completion-source/libgag/include",
+        "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/immediate-run-followup/probe.cpp",
+        "-L/usr/lib/gcc/x86_64-linux-gnu/15",
+        "-o",
+        "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/immediate-run-followup/probe-frozen-local"
+      ],
+      "returncode": 0,
+      "binary_sha256": "29e4be0ed7b38a0f582d785be35ee9a6cfc5de0a248dc285762e66de2955c079"
+    },
+    "without-runDone": {
+      "command": [
+        "g++-13",
+        "-std=c++20",
+        "-O3",
+        "-pthread",
+        "-I/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/immediate-run-followup/include",
+        "-I/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/local-completion-source/src/common",
+        "-I/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/local-completion-source/libgag/include",
+        "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/immediate-run-followup/probe.cpp",
+        "-L/usr/lib/gcc/x86_64-linux-gnu/15",
+        "-o",
+        "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/immediate-run-followup/probe-without-runDone"
+      ],
+      "returncode": 0,
+      "binary_sha256": "4e8b3a055e2f8b709de1cddb3438e65ddb80318464aefc2cffe824fd3c5c8a52"
+    }
+  },
+  "source_manifest_sha256": "334b45e8b9968d40015a17699db552a975499c3c3dded7905c8ed96bc4655a6d",
+  "timing_excluded": true
+}

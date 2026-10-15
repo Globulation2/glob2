@@ -1,0 +1,18 @@
+{
+  "command": [
+    "g++-13",
+    "-std=gnu++20",
+    "-O3",
+    "-pthread",
+    "-I/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/wake-prototype/source/src/common",
+    "-I/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/wake-prototype/source/libgag/include",
+    "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/CoordinationBenchmark.cpp",
+    "-L/usr/lib/gcc/x86_64-linux-gnu/15",
+    "-o",
+    "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/micro-wake"
+  ],
+  "cwd": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign",
+  "returncode": 0,
+  "elapsed_seconds": 3.9695719871670008,
+  "updated_utc": "2026-10-14T22:37:04.078376+00:00"
+}

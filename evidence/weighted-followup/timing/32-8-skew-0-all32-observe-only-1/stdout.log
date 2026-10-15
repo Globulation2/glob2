@@ -1,0 +1,1 @@
+WEIGHTED_RESULT {"workers":32,"threads_including_submitter":33,"submitter_executes_callbacks":false,"jobs":4096,"iterations":64,"lanes":8,"policy":"observe-only","shape":"skew","wall_ns":6991074,"digest":17479353127341579749,"warmup_per_class":0,"warm_digest":0,"samples":[1670,490,4430,9250]}

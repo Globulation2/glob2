@@ -1,0 +1,86 @@
+{
+  "validation_errors": [],
+  "case": {
+    "id": "three-local-n8-balanced-wake-only-r1",
+    "scenario": {
+      "id": "three-local-n8-balanced",
+      "kind": "harness",
+      "args": [
+        "{participants}",
+        "{dispatch_policy}",
+        "balanced",
+        "128",
+        "64",
+        "256"
+      ],
+      "env": {},
+      "fixture_sha256": {},
+      "budget": 8,
+      "resolved_participants": 8,
+      "allocation": [
+        12,
+        13,
+        14,
+        28,
+        29,
+        30
+      ],
+      "repeats": 2,
+      "timeout_seconds": 120
+    },
+    "variant": {
+      "role": "wake-only",
+      "binary": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/micro-wake",
+      "sha256": "76b1276b47d08ca21757d56290b17c087d34d65f20b5ca60aeaeab21779e374c",
+      "cwd": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign",
+      "dispatch_policy": "round-robin",
+      "env": {
+        "GLOB2_DEFERRED_DISPATCH": "round-robin"
+      }
+    },
+    "repeat": 1
+  },
+  "command": [
+    "taskset",
+    "-c",
+    "12,13,14,28,29,30",
+    "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/micro-wake",
+    "8",
+    "round-robin",
+    "balanced",
+    "128",
+    "64",
+    "256"
+  ],
+  "binary_sha256": "76b1276b47d08ca21757d56290b17c087d34d65f20b5ca60aeaeab21779e374c",
+  "status": "completed",
+  "returncode": 0,
+  "process_wall_seconds": 0.02088426286354661,
+  "user_cpu_seconds": 0.014265,
+  "system_cpu_seconds": 0.016167,
+  "total_cpu_seconds": 0.030432,
+  "voluntary_context_switches": 1816,
+  "involuntary_context_switches": 57,
+  "peak_rss_kib": 24216,
+  "native": null,
+  "harness": [
+    {
+      "participants": 8,
+      "requested_policy": "round-robin",
+      "pattern": "balanced",
+      "rounds": 128,
+      "jobs_per_round": 64,
+      "iterations": 256,
+      "wall_ns": 5380244,
+      "digest": 1946156145118738286,
+      "jobs_checked": 8192
+    }
+  ],
+  "variant_env": {
+    "GLOB2_DEFERRED_DISPATCH": "round-robin"
+  },
+  "scenario_env": {},
+  "fixture_sha256": {},
+  "design_claims": {},
+  "mutex_accounting_scope": "Record queue pop/callback-start global dispatch mutex absence separately from remaining shared completion/dependency mutex; do not infer this from throughput."
+}

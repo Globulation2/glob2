@@ -1,0 +1,54 @@
+{
+  "state": "curation_plan_only_do_not_compress_during_measurements",
+  "utc": "2026-10-15T03:38:20.514851+00:00",
+  "purpose": "Allowanotherreviewertoreconstructaccepted/rejectedexecutortrialswithoutrepeatingallpreviouswork. Finalizeafter256gamecohortandfinalcandidatevalidation.",
+  "source_provenance": [
+    "source-manifest.json",
+    "candidate-ready.json",
+    "local-completion-ready.json",
+    "weighted-followup/probe-ready.json",
+    "confirmation/latest-wake/ready.json",
+    "confirmation/wake-only-allcore/latest-resolve-complete.json"
+  ],
+  "design_and_negative_results": [
+    "executor-experiment-index.json",
+    "policy-eligibility.json",
+    "lane-affine-failure-diagnosis.json",
+    "lane-affine-failure-independent.json",
+    "local-completion-simplicity-audit.json",
+    "micro-independent-conclusions.json",
+    "local-priority-followup-design.json",
+    "immediate-run-followup/qualified-standalone.json",
+    "confirmation/near-full-wake/rationale.json"
+  ],
+  "measurement_recipes": [
+    "native-pilot-manifest.json",
+    "harness-pilot-manifest.json",
+    "timing-runner.py",
+    "analyze-pilot.py",
+    "run-latency-probe.py",
+    "run-weighted-probe.py",
+    "weighted-followup",
+    "confirmation/balanced-n4",
+    "confirmation/final-cohort",
+    "confirmation/final-controller"
+  ],
+  "required_retained_data": [
+    "Allnative/scheduler timingreceipts andrawcompactstdoutresults usedbyfinaltables,includingadversecells andunsafequalifieddiagnosticsclearlymarked",
+    "Allfullwinner256receipts+stdoutlogs+pairs+waves+censoredoutcomes,exact32seedlist/maphashes/commands/allocation/actualbudgets",
+    "Buildcommands/toolchain/flags/sourceandbinarySHA256,focusedJUnit/sanitizerlogs,per-tickparityverdictsandchecksumfilehashes;selectedactualfixture/replay/checksumfiles forrepresentativecasepersupportedboundary",
+    "Balanced32andbaseline-first120 rawreceipts as distinctcohorts,explicitordercaveatsandoriginalfailures",
+    "Independentrawrecomputations,compactsummary+detailedreports,plots andanalysis/reproductioncode"
+  ],
+  "excluded_large_material": [
+    "Object/buildtrees,compiler/runtimebinarycopies,sourcecheckoutcopies/.git,generatedshaderbundles",
+    "Massivediagnostictraces/Callgrindheaps withnoeffectonreviewconclusion; insteadincludeprobecommands,summaries,hashesandselectedtraceexcerpts",
+    "Per-gameemptyfreshuserprofiles andunrelateddesktop/OSprocess inventories"
+  ],
+  "packaging_rules": [
+    "Choosefilesfromdeclaredmanifest/receiptlinks; includehashmanifest+relativepathmappingandonecommandtorecomputeallfinaltables. Do notoverwriteoldmeasurements.",
+    "Do notincludeunfinishedreportsascompletedresults. Allpathreferencesmustbeportablewithinbundle ormappedtopinnedsource/buildrecipe.",
+    "Compress/packageatcleanboundary afterperformancecampaign. UploadtoaccessiblePRevidencebranch/attachment; localpaths alonearenotfinalreviewevidence."
+  ],
+  "acceptance_status": "Noenginechangeacceptedhere;Wselectionremainsconditionalfullwinner/throughput/correctnesscoverage."
+}

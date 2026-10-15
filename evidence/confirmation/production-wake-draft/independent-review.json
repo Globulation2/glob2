@@ -1,0 +1,27 @@
+{
+  "approved_static_only": true,
+  "unbuilt_untested_draft": true,
+  "patch_sha256": "1e9add8904ba876ec9c464810b520789d23e632cf1717500a689c9287357b9f0",
+  "ready_sha256": "9540007ef57d942de2e412b75a368d10bc682f76a3a9f9d6bd86b83d5fd39ba2",
+  "files": {
+    "src/common/ComputeExecutor.h": "8e59b8816e147ffa72adc5b11d869483dbefe4663a3aca28a39ccc106b9663c1",
+    "src/common/ComputeExecutorHarness.cpp": "6ae602481e2f0079aa1668f9aa34f0d91b7c3f4818779e8078e84622737e659d"
+  },
+  "checks": [
+    "Exact alreadymeasuredlatestW header; no nearfullpolicy, gameplay, serialization or publication changes.",
+    "Participants3 retains2workerbroadcast baseline branch;5 yields4workers where2or3heads exercise changedpartialnotify. Mixedorderedlane2jobs hasonly1eligiblehead, independentlyjoinedsecondlane/NoLane provides2requiredcallbacks.",
+    "Heldcallback10s watchdog exceedsowner5s observation, preventing serializedwatchdogtimeout from satisfyingconcurrency requirement. Ownerreleasesbeforejoin on nonfatalCHECKfailure.",
+    "Immediate postbatchRAII cleanup references gate/executor/batch; destructorrelease+join occursbeforegate destruction duringunwind. Normalexplicitjoin invalidatesbatch so cleanupjoin harmless.",
+    "ExactactualthreadCount checked; browserpool mismatch warns/skips configuration, not falsely claimingpartialbranch coverage. Serial/no-thread skips explicit.",
+    "Correctedmetadata: slotstate published under schedulingmutex, unlockedbeforenotifies; repeatednotify_one notguaranteeddistinctsleepers. Heldcallbacktest fixes that duringobservation."
+  ],
+  "required_before_commit": [
+    "Build andexecute editedComputeExecutorHarness on finalintegratedsource; currentstandalone144bursts doesnot establish this newfixturecompiled.",
+    "Record requested/actualpool counts andskipwarnings; at leastoneactual4worker run isneeded toclaim partialbranch covered.",
+    "Browserthreaded runtime test needed ifclaimingbrowsercoverage; unavailablepool warning remains omission."
+  ],
+  "limits": [
+    "2msidle is a practical parkingopportunity, notproofallworkersparked; repeated standaloneevidence supportsnotmathematicalwakecount proof.",
+    "Staticreviewonly, no build/test/nativeexecution. Exactsource acceptance remainsconditional on finalcampaign and postcampaign focusedchecks."
+  ]
+}

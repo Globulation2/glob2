@@ -1,0 +1,15 @@
+{
+  "source_sha256": "6a2e357c339b31b74c167d7384beed965b8c0c6b0369724e849fe059f4c7024f",
+  "binary_sha256": "edb0edf53ac7b7e2574e6b772249cef24435e4526a762fe24defdf7033d8a328",
+  "binary": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/weighted-followup/weighted-micro",
+  "compiler_command": [
+    "g++-13",
+    "-std=c++20",
+    "-O3",
+    "-pthread",
+    "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/weighted-followup/WeightedCoordinationBenchmark.cpp",
+    "-L/usr/lib/gcc/x86_64-linux-gnu/15",
+    "-o",
+    "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/weighted-followup/weighted-micro"
+  ]
+}

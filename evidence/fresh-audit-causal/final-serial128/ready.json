@@ -1,0 +1,29 @@
+{
+  "state": "executed_independently_validated",
+  "commands": [
+    [
+      "taskset",
+      "-c",
+      "15,31",
+      "python3",
+      "artifacts/october-regression/fresh-audit-causal/final-serial128/audit-map.py",
+      "Playground"
+    ],
+    [
+      "taskset",
+      "-c",
+      "15,31",
+      "python3",
+      "artifacts/october-regression/fresh-audit-causal/final-serial128/audit-map.py",
+      "Oazis"
+    ]
+  ],
+  "bootstrap": "Copy compact *-bootstrap-input.json to control-isolate V8; same bootstrap.mjs algorithm xorshift32 seed20261015 and independent Mulberry32 seed1729,10000 paired seed draws; no bench-host bootstrap while waves active.",
+  "scope": "Requires full serial complete receipt128 and all receipt hashes; separately audits32 canonical winner pairs/map. Caps cause explicit assertion rather than silently excluding: use frozen validated analyzer for censoring if encountered. No workload launches.",
+  "source_sha256": "3ae8b1d657cd8f4cc3da68337e367d63fbfc28378c6f5481cb9a923ad172aa0f",
+  "bootstrap_sha256": "102ee640a0c9f4d6cdb6acb7c51ece1fbc6866401345bfe40b4cedc06c39c838",
+  "runs": 128,
+  "matching_winner_pairs": 64,
+  "review": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/fresh-audit-causal/final-serial128/review.json",
+  "review_sha256": "b54d919e14b5815748b93f74a590aca573a7a8a6ad48ec24e5abb8b5a238f3b6"
+}

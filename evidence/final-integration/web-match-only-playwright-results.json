@@ -1,0 +1,190 @@
+{
+  "config": {
+    "argv": [
+      "/usr/bin/node",
+      "/home/bradley/.codex/worktrees/engine-optimization/glob2/browser/node_modules/.bin/playwright",
+      "test",
+      "tests/threading.spec.js",
+      "tests/determinism.spec.js",
+      "--project=chromium",
+      "--project=firefox",
+      "--grep",
+      "^threaded runtime executes shared compute|committed match record \\(threaded\\)",
+      "--reporter=json"
+    ],
+    "configFile": "/home/bradley/.codex/worktrees/engine-optimization/glob2/browser/playwright.config.js",
+    "rootDir": "/home/bradley/.codex/worktrees/engine-optimization/glob2/browser/tests",
+    "failOnFlakyTests": false,
+    "forbidOnly": false,
+    "fullyParallel": false,
+    "globalSetup": null,
+    "globalTeardown": null,
+    "globalTimeout": 0,
+    "grep": {},
+    "grepInvert": null,
+    "maxFailures": 0,
+    "metadata": {
+      "actualWorkers": 1
+    },
+    "preserveOutput": "always",
+    "projects": [
+      {
+        "outputDir": "/home/bradley/.codex/worktrees/engine-optimization/glob2/build/browser-test-results",
+        "repeatEach": 1,
+        "retries": 0,
+        "metadata": {
+          "actualWorkers": 1
+        },
+        "id": "chromium",
+        "name": "chromium",
+        "testDir": "/home/bradley/.codex/worktrees/engine-optimization/glob2/browser/tests",
+        "testIgnore": [],
+        "testMatch": [
+          "**/*.@(spec|test).?(c|m)[jt]s?(x)"
+        ],
+        "timeout": 90000
+      },
+      {
+        "outputDir": "/home/bradley/.codex/worktrees/engine-optimization/glob2/build/browser-test-results",
+        "repeatEach": 1,
+        "retries": 0,
+        "metadata": {
+          "actualWorkers": 1
+        },
+        "id": "firefox",
+        "name": "firefox",
+        "testDir": "/home/bradley/.codex/worktrees/engine-optimization/glob2/browser/tests",
+        "testIgnore": [],
+        "testMatch": [
+          "**/*.@(spec|test).?(c|m)[jt]s?(x)"
+        ],
+        "timeout": 90000
+      },
+      {
+        "outputDir": "/home/bradley/.codex/worktrees/engine-optimization/glob2/build/browser-test-results",
+        "repeatEach": 1,
+        "retries": 0,
+        "metadata": {
+          "actualWorkers": 1
+        },
+        "id": "webkit",
+        "name": "webkit",
+        "testDir": "/home/bradley/.codex/worktrees/engine-optimization/glob2/browser/tests",
+        "testIgnore": [],
+        "testMatch": [
+          "**/*.@(spec|test).?(c|m)[jt]s?(x)"
+        ],
+        "timeout": 90000
+      }
+    ],
+    "quiet": false,
+    "reporter": [
+      [
+        "json"
+      ]
+    ],
+    "reportSlowTests": {
+      "max": 5,
+      "threshold": 300000
+    },
+    "shard": null,
+    "tags": [],
+    "updateSnapshots": "missing",
+    "updateSourceMethod": "patch",
+    "version": "1.63.0",
+    "workers": 1,
+    "webServer": {
+      "command": "python3 browser/serve.py 8770 --bind 127.0.0.1 --directory build/emscripten/client/release",
+      "cwd": "/home/bradley/.codex/worktrees/engine-optimization/glob2",
+      "url": "http://127.0.0.1:8770",
+      "reuseExistingServer": false
+    }
+  },
+  "suites": [
+    {
+      "title": "determinism.spec.js",
+      "file": "determinism.spec.js",
+      "column": 0,
+      "line": 0,
+      "specs": [
+        {
+          "title": "WebAssembly verifies the committed match record (threaded)",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 300000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "chromium",
+              "projectName": "chromium",
+              "results": [
+                {
+                  "workerIndex": 0,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 4077,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-15T09:19:14.921Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "8ef022de9050935cafec-732b50c9a679ad5832ca",
+          "file": "determinism.spec.js",
+          "line": 64,
+          "column": 1
+        },
+        {
+          "title": "WebAssembly verifies the committed match record (threaded)",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 300000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "firefox",
+              "projectName": "firefox",
+              "results": [
+                {
+                  "workerIndex": 1,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 3680,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-15T09:19:20.126Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "8ef022de9050935cafec-b29c988ca7cae96b510d",
+          "file": "determinism.spec.js",
+          "line": 64,
+          "column": 1
+        }
+      ]
+    }
+  ],
+  "errors": [],
+  "stats": {
+    "startTime": "2026-10-15T09:19:13.780Z",
+    "duration": 11227.763,
+    "expected": 2,
+    "skipped": 0,
+    "unexpected": 0,
+    "flaky": 0
+  }
+}

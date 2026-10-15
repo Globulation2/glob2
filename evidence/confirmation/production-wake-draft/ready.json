@@ -1,0 +1,46 @@
+{
+  "state": "SOURCE_ONLY_UNBUILT_UNTESTED_ADOPTION_CONDITIONAL",
+  "base_revision": "054804590ee1dd109f09642fc05654c324f08344",
+  "patch_sha256": "1e9add8904ba876ec9c464810b520789d23e632cf1717500a689c9287357b9f0",
+  "files": {
+    "src/common/ComputeExecutor.h": "8e59b8816e147ffa72adc5b11d869483dbefe4663a3aca28a39ccc106b9663c1",
+    "src/common/ComputeExecutorHarness.cpp": "6ae602481e2f0079aa1668f9aa34f0d91b7c3f4818779e8078e84622737e659d"
+  },
+  "scope": "Exact selected W production wake behavior; extend existing ComputeExecutor held-callback parallel progress test at participants3/5 across Off/Waits/Trace; no near-full heuristic.",
+  "test_expected": "Four actual workers, two ready heads from independent/mixed/ordered lanes and three NoLane heads must enter before release. Two-worker existing paths retained. Unavailable requested pool warns and skips that configuration.",
+  "limitations": [
+    "No build or native execution of this draft; existing standalone partial-wake evidence does not qualify this edited harness",
+    "Browser and other platform replay/checksum coverage remains outstanding",
+    "Adoption conditional on full winner and throughput evidence"
+  ],
+  "reasoning": [
+    "Scheduler mutex publishes complete slot state before notifications; worker predicate remains unchanged and rechecks readiness under that mutex.",
+    "State is published under the scheduler mutex, then lock.unlock() precedes notification. Repeated notify_one calls can wake available sleepers, but need not select distinct workers if a quick callback finishes and re-waits between notifications. The unchanged readiness predicate rechecks published work under the mutex; held callbacks in this test prevent an awakened worker from consuming another job before the parallel-progress observation.",
+    "Full-pool readiness retains broadcast. No lanes, deadlines, callbacks, continuations, contexts, serialization, random state or publication ticks changed.",
+    "std::condition_variable is portable C++; no OS topology, affinity, magic thread threshold or new scheduling state.",
+    "Test callbacks are bounded and released before join, including failure of CHECK; Gate lifetime extends through join.",
+    "Held callback10s timeout exceeds5s observation window, so serialized timeout releases cannot satisfy the parallel-progress assertion.",
+    "RAII release-and-join constructed immediately after submit retires callbacks before Gate destruction even on assertion unwinding; normal explicit join empties handle so cleanup join is harmless. Worker callbacks contain no test assertions."
+  ],
+  "apply_recipe": {
+    "target": "Fresh isolated checkout at054804590ee1dd109f09642fc05654c324f08344, or revalidated integration on current master",
+    "check_argv": [
+      "git",
+      "apply",
+      "--check",
+      "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/confirmation/production-wake-draft/candidate.patch"
+    ],
+    "apply_argv": [
+      "git",
+      "apply",
+      "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/confirmation/production-wake-draft/candidate.patch"
+    ],
+    "not_executed": true
+  },
+  "future_validation": [
+    "Build changed unit harness against final integrated revision; run ComputeExecutor suite and record exactactual pool sizes/skip warnings.",
+    "Use existing576-burst standalone partial-wake results as supporting branch evidence, not edited-harness build proof.",
+    "Complete declared winner/throughput evidence before adoption; retain caps and mismatches.",
+    "No save/network/SIMrevision change expected from notification cardinality alone; preserve gameplay checksum/replay/livegraphical and platform coverage limits in review."
+  ]
+}

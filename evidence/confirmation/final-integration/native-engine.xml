@@ -1,0 +1,4 @@
+<?xml version='1.0' encoding='utf-8'?>
+<testsuites tests="2" failures="0" errors="0" skipped="0"><testsuite name="HiringPipeline"><testcase classname="HiringPipeline" name="whole game save and resume preserves every publication phase [save-format][artifacts]" time="5.41708" status="run" />
+  </testsuite><testsuite name="SharedWorkerLifecycle"><testcase classname="SharedWorkerLifecycle" name="pending gradient work survives a save and continues at the same deadlines" time="0.405756" status="run" />
+  </testsuite></testsuites>

@@ -1,0 +1,37 @@
+{
+  "command": [
+    "taskset",
+    "-c",
+    "0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31",
+    "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/confirmation/wake-only-allcore/guard-old-wake-only",
+    "off",
+    "optional"
+  ],
+  "returncode": 0,
+  "wall_seconds": 0.0714769889600575,
+  "user_cpu_seconds": 0.080286,
+  "system_cpu_seconds": 0.0030099999999999997,
+  "total_cpu_seconds": 0.083296,
+  "peak_rss_kib": 23464,
+  "utc": "2026-10-15T02:33:14.191093+00:00",
+  "wrapper_sha256": "2ed5e6b9908d88f461a52ee44432355045ecb1be15949c9985c36fbdfd651b46",
+  "manifest_sha256": "154ed016dd56e52af6f0f8877592990f319512d1aeaf6141127f005311ed3ef9",
+  "harness_sha256": "4affbeca486235bed52cec56db0bf154ef20eda03f10cd478e2ab15cb592d78a",
+  "correctness_or_conditional_micro_only": true,
+  "version": "old",
+  "role": "wake-only",
+  "allocation": "all32",
+  "kind": "optional",
+  "repeat": 3,
+  "latency": {
+    "trace": false,
+    "urgent_join_ns": 344687,
+    "later_started_before_urgent": 0,
+    "presentation_start_delay_ns": 2201895,
+    "later_total": 128,
+    "digest": 6568891044718746485,
+    "result_bytes": 1032
+  },
+  "binary_sha256": "c965c71f9d217af6c36e88fd71e8474a47f1f222476102d322447c697bff621c",
+  "header_sha256": "204fd6064bb4b6074a1d95ca905d700735e41ba7eaabb49720e44b3423f229c7"
+}

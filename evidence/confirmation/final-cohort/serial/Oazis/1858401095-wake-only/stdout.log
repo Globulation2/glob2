@@ -1,0 +1,21 @@
+Settings::load("preferences.txt") : error, can't open file.
+Random Seed initial: 1858401095
+Randomly Chosen Map: Oazis
+Random Seed gameheader: 1858401095    Player: bradley for team 0
+    Player: Nicowar 0 for team 1
+    Player: Nicowar 1 for team 2
+    Player: Nicowar 2 for team 3
+    Player: Nicowar 3 for team 4
+    Player: Nicowar 4 for team 5
+    Player: Nicowar 5 for team 6
+    Player: Nicowar 6 for team 7
+    Player: Nicowar 7 for team 8
+    Player: Nicowar 8 for team 9
+    Player: Nicowar 9 for team 10
+    Player: Nicowar 10 for team 0
+nox::game started
+nox::gui.game.isGameEnded
+HISTORY_RESULT ticks=95970 ended=1 winner=0 width=256 height=256 teams=11 controllers=12 compute_participants=32 compute_requested=0 eligible_cpus=32 gradient_backend=cpu
+automaticEndingGame ended: 95970 ticks, 53 minutes, 19 seconds
+GLOB2_GAME_END ticks=95970 winner_team=0 seed=1858401095 map="Oazis" orders=65509 players=team0:local,team1:Nicowar,team2:Nicowar,team3:Nicowar,team4:Nicowar,team5:Nicowar,team6:Nicowar,team7:Nicowar,team8:Nicowar,team9:Nicowar,team10:Nicowar,team0:Nicowar
+HISTORY_TIMING run_wall_seconds=178.223

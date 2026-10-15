@@ -1,0 +1,23 @@
+{
+  "state": "passed",
+  "command": [
+    "scons",
+    "target=web",
+    "web_variant=both",
+    "release=1",
+    "emsdk=/home/bradley/.local/share/glob2/development/toolchains/emscripten/Linux-x86_64-88a621bc131cd4954413aa39",
+    "web-tests",
+    "build/emscripten/client/release/index.html",
+    "-j32"
+  ],
+  "cwd": "/home/bradley/.codex/worktrees/engine-optimization/glob2",
+  "env_overrides": {
+    "CCACHE": "1",
+    "GLOB2_RENDER_SHADER_INPUT": "/home/bradley/.codex/worktrees/execution-resource-profiles/glob2/artifacts/resource-profiles/validation/renderer-bundle-v2/shaders"
+  },
+  "removed_env_keys": [],
+  "commit": "efb843d8047bba6f546c031614a31c917513ad54",
+  "started_utc": "2026-10-15T09:08:08.056834+00:00",
+  "returncode": 0,
+  "finished_utc": "2026-10-15T09:19:09.436292+00:00"
+}

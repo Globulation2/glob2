@@ -1,0 +1,1 @@
+COORDINATION_RESULT {"participants":2,"requested_policy":"round-robin","pattern":"lanes","rounds":64,"jobs_per_round":128,"iterations":256,"wall_ns":13196074,"digest":12026144827922376579,"jobs_checked":8192}

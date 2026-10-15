@@ -1,0 +1,38 @@
+{
+  "command": [
+    "taskset",
+    "-c",
+    "12,13,14,28,29,30",
+    "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/deadline-latency/probe-baseline",
+    "off",
+    "optional"
+  ],
+  "returncode": 0,
+  "status": "completed",
+  "process_wall_seconds": 0.07177765900269151,
+  "user_cpu_seconds": 0.081593,
+  "system_cpu_seconds": 0.00199,
+  "total_cpu_seconds": 0.083583,
+  "peak_rss_kib": 23168,
+  "voluntary_context_switches": 19,
+  "involuntary_context_switches": 2,
+  "harness_sha256": "4affbeca486235bed52cec56db0bf154ef20eda03f10cd478e2ab15cb592d78a",
+  "utc": "2026-10-15T00:40:47.566925+00:00",
+  "role": "baseline",
+  "policy": "steal",
+  "kind": "optional",
+  "repeat": 3,
+  "allocation": "3physical6SMT",
+  "binary_sha256": "d293a630a5fcc30426069625f19338022c0c0afa28b55303e16f44c7f0a2db9e",
+  "header_sha256": "fa37bd1b3b3f1027aedda6858af0a2f574c0a2c9499f250fb4dee6d9659e19ea",
+  "validation_errors": [],
+  "latency": {
+    "trace": false,
+    "urgent_join_ns": 372238,
+    "later_started_before_urgent": 0,
+    "presentation_start_delay_ns": 2298955,
+    "later_total": 128,
+    "digest": 6568891044718746485,
+    "result_bytes": 1032
+  }
+}

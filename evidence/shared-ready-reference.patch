@@ -1,0 +1,332 @@
+--- a/src/common/ComputeExecutor.h
++++ b/src/common/ComputeExecutor.h
+@@ -33,7 +33,8 @@
+ //    state may escape the barrier.
+ //  * submit()/join(): deferred batches (AI decisions, gradients). The owner
+ //    thread submits each batch tagged with the tick it is due. Workers run
+-//    deferred jobs earliest due first, in submission order within a lane. At a
++//    deferred jobs in ordered lanes. Deadline-queue builds select earliest due;
++//    round-robin artifact builds rotate ready batches without changing publication ticks. At a
+ //    join the owner only waits: it never runs deferred work while any worker
+ //    exists, even when the only worker also runs presentation, which it
+ //    interleaves with these jobs. With no workers the owner runs the jobs due
+@@ -321,6 +322,7 @@
+ 	inline static thread_local std::size_t activeSlot = 0;
+ 	inline static thread_local std::size_t deferredSlot = 0, deferredIndex = 0;
+ 	inline static thread_local std::uint64_t deferredSerial = 0;
++	struct Claim { std::size_t slot = 0, index = 0; bool valid = false; std::uint64_t serial = 0; };
+ 	struct Slot
+ 	{
+ 		std::uint64_t serial = 0; // zero: free
+@@ -328,13 +330,15 @@
+ 		std::vector<Group> groups;
+ 		std::vector<std::size_t> starts; // first job index of each group
+ 		std::vector<std::uint64_t> laneBases; // lane sequence of each group's first job
+-		std::vector<char> claimed;
++        std::vector<std::size_t> jobGroups;
++        std::vector<Claim> laneNext;
++        std::vector<std::size_t> readyJobs; // Minheap: preserve ascending ready index.
++        std::size_t readyNext = Slots, readyPosition = Slots;
+ 		std::vector<CompletionTicket> completions;
+ 		std::vector<Job> continuations;
+-		std::size_t total = 0, unclaimed = 0, completed = 0, firstUnclaimed = 0;
++		std::size_t total = 0, completed = 0;
+ 		std::exception_ptr error;
+ 	};
+-	struct Claim { std::size_t slot = 0, index = 0; bool valid = false; };
+ 	std::shared_ptr<CompletionLifetime> completionLifetime = std::make_shared<CompletionLifetime>(this);
+ 	std::vector<std::thread> workers;
+ 	mutable std::mutex mutex;
+@@ -351,17 +355,17 @@
+ 	std::exception_ptr error;
+ 	// submit()/join(): live batches, each held from submission to its join.
+ 	std::array<Slot, Slots> slots;
+-	// Under mutex. Pick visits only batches with unclaimed work, rather than
+-	// branching over the entire horizon (including completed retained tickets).
+-	std::array<std::uint64_t, (Slots + 63) / 64> unclaimedSlots{};
+-	std::size_t unclaimedBatches = 0;
+-	void markUnclaimed(std::size_t index, bool value)
+-	{
+-		const auto bit = std::uint64_t(1) << (index % 64);
+-		if (value) unclaimedSlots[index / 64] |= bit;
+-		else unclaimedSlots[index / 64] &= ~bit;
+-		unclaimedBatches += value ? 1 : std::size_t(-1);
+-	}
++    // Only ready batches are represented. Both policies use the same lane
++    // promotion, per-batch ready jobs and wake policy. Artifact comparison only:
++    // GLOB2_DEFERRED_DEADLINE_QUEUE preserves deadline/submission priority;
++    // otherwise workers rotate ready batches, one job per dispatch.
++    std::size_t readyCount = 0;
++#ifdef GLOB2_DEFERRED_DEADLINE_QUEUE
++    std::array<std::size_t, Slots> readyHeap{};
++#else
++    std::size_t readyHead = Slots, readyTail = Slots;
++#endif
++    std::array<Claim, Lanes> laneHead{}, laneTail{};
+ 	std::size_t live = 0;
+ 	std::uint64_t nextSerial = 1;
+ 	std::array<std::uint64_t, Lanes> laneIssued{}, laneCompleted{}, laneDue{};
+@@ -699,86 +703,110 @@
+ 		activeSlot = previousSlot;
+         return executed;
+ 	}
+-	// Under mutex: the earliest due, then earliest submitted, live batch with a
+-	// claimable job. Only workers claim, unless there are none: then the owner
+-	// claims the jobs due no later than limit. claimable() has no side effect.
+-	static bool before(const Slot& a, const Slot& b) { return a.due != b.due ? a.due < b.due : a.serial < b.serial; }
+-	std::size_t group(const Slot& slot, std::size_t index) const
+-	{
+-		if (slot.groups.size() == 1) return 0;
+-		return std::size_t(std::upper_bound(slot.starts.begin(), slot.starts.end(), index) - slot.starts.begin()) - 1;
+-	}
+-	// A job is ready when its lane predecessor has completed.
+-	bool laneReady(const Slot& slot, std::size_t index) const
+-	{
+-		const auto g = group(slot, index);
+-		const auto lane = slot.groups[g].lane;
+-		return lane == NoLane || laneCompleted[lane] >= slot.laneBases[g] + (index - slot.starts[g]);
+-	}
+-	// The first unclaimed job of the slot this thread may claim, or total. An
+-	// inline owner runs every lane predecessor first (due no later, submitted
+-	// earlier), so it needs no readiness check.
+-	std::size_t firstClaimable(const Slot& slot, bool owner) const
+-	{
+-		for (std::size_t i = slot.firstUnclaimed; i < slot.total; ++i)
+-			if (!slot.claimed[i] && (owner || laneReady(slot, i))) return i;
+-		return slot.total;
+-	}
+-	Claim pick(bool owner, const Slot* limit) const
+-	{
+-		Claim best;
+-		const auto consider = [&](std::size_t i) {
+-			const auto& slot = slots[i];
+-			if (owner && limit && before(*limit, slot)) return;
+-			if (best.valid && !before(slot, slots[best.slot])) return;
+-			const auto index = firstClaimable(slot, owner);
+-			if (index != slot.total) best = {i, index, true};
+-		};
+-		// A dense scan avoids a bit-scan per slot at sustained full occupancy.
+-		if (unclaimedBatches > Slots / 2)
+-		{
+-			for (std::size_t i = 0; i < Slots; ++i)
+-			{
+-				const auto& slot = slots[i];
+-				if (!slot.serial || !slot.unclaimed) continue;
+-				if (owner && limit && before(*limit, slot)) continue;
+-				if (best.valid && !before(slot, slots[best.slot])) continue;
+-				const auto index = firstClaimable(slot, owner);
+-				if (index != slot.total) best = {i, index, true};
+-			}
+-			return best;
+-		}
+-		for (std::size_t word = 0; word < unclaimedSlots.size(); ++word)
+-		{
+-			for (auto bits = unclaimedSlots[word]; bits; bits &= bits - 1)
+-			{
+-				const auto i = word * 64 + std::countr_zero(bits);
+-				consider(i);
+-			}
+-		}
+-		return best;
+-	}
+-	bool claimable(bool owner, const Slot* limit = nullptr) const { return pick(owner, limit).valid; }
+-	template<ComputeTelemetryMode Mode>
+-	Claim claim(bool owner, const Slot* limit = nullptr, unsigned thread = 0)
+-	{
+-		assert(owner == ownerRunsDeferred());
+-		const auto best = pick(owner, limit);
+-		if (!best.valid) return best;
+-		auto& slot = slots[best.slot];
+-		slot.claimed[best.index] = 1; --slot.unclaimed;
+-		if (!slot.unclaimed) markUnclaimed(best.slot, false);
+-		while (slot.firstUnclaimed < slot.total && slot.claimed[slot.firstUnclaimed]) ++slot.firstUnclaimed;
+-		event<Mode>(ComputeTelemetry::EventKind::Claim, best.slot, best.index, thread);
+-		return best;
+-	}
++    static bool before(const Slot& a, const Slot& b) { return a.due != b.due ? a.due < b.due : a.serial < b.serial; }
++    std::size_t group(const Slot& slot, std::size_t index) const { return slot.jobGroups[index]; }
++#ifdef GLOB2_DEFERRED_DEADLINE_QUEUE
++    void heapSwap(std::size_t a, std::size_t b) {
++        std::swap(readyHeap[a], readyHeap[b]);
++        slots[readyHeap[a]].readyPosition=a; slots[readyHeap[b]].readyPosition=b;
++    }
++    void heapUp(std::size_t i) {
++        while(i && before(slots[readyHeap[i]],slots[readyHeap[(i-1)/2]])) { heapSwap(i,(i-1)/2); i=(i-1)/2; }
++    }
++    void heapDown(std::size_t i) {
++        for (;;) {
++            auto next=i, left=2*i+1, right=left+1;
++            if(left<readyCount && before(slots[readyHeap[left]],slots[readyHeap[next]])) next=left;
++            if(right<readyCount && before(slots[readyHeap[right]],slots[readyHeap[next]])) next=right;
++            if(next==i) return;
++            heapSwap(i,next); i=next;
++        }
++    }
++#endif
++    void addReadyBatch(std::size_t index) {
++        auto& slot=slots[index];
++        assert(slot.serial && !slot.readyJobs.empty() && slot.readyPosition==Slots);
++#ifdef GLOB2_DEFERRED_DEADLINE_QUEUE
++        slot.readyPosition=readyCount; readyHeap[readyCount++]=index; heapUp(slot.readyPosition);
++#else
++        slot.readyPosition=0; slot.readyNext=Slots;
++        if(readyTail!=Slots) slots[readyTail].readyNext=index; else readyHead=index;
++        readyTail=index; ++readyCount;
++#endif
++    }
++    void removeReadyBatch(std::size_t index) {
++        auto& slot=slots[index];
++        assert(slot.readyPosition!=Slots && readyCount);
++#ifdef GLOB2_DEFERRED_DEADLINE_QUEUE
++        const auto position=slot.readyPosition;
++        --readyCount;
++        if(position!=readyCount) {
++            readyHeap[position]=readyHeap[readyCount]; slots[readyHeap[position]].readyPosition=position;
++            if(position && before(slots[readyHeap[position]],slots[readyHeap[(position-1)/2]])) heapUp(position);
++            else heapDown(position);
++        }
++#else
++        if(readyHead==index) readyHead=slot.readyNext;
++        else {
++            auto previous=readyHead;
++            while(slots[previous].readyNext!=index) previous=slots[previous].readyNext;
++            slots[previous].readyNext=slot.readyNext;
++            if(readyTail==index) readyTail=previous;
++        }
++        if(readyHead==Slots) readyTail=Slots;
++        --readyCount;
++#endif
++        slot.readyPosition=Slots; slot.readyNext=Slots;
++    }
++    void enqueueReady(Claim job) {
++        auto& slot=slots[job.slot];
++        assert(job.valid && slot.serial==job.serial && job.index<slot.total);
++        const bool wasEmpty=slot.readyJobs.empty();
++        // Submission reserves every job: completion/continuation never allocates.
++        slot.readyJobs.push_back(job.index);
++        std::push_heap(slot.readyJobs.begin(),slot.readyJobs.end(),std::greater<std::size_t>());
++        if(wasEmpty) addReadyBatch(job.slot);
++    }
++    Claim pick(bool owner, const Slot* limit) const {
++        if(!readyCount) return {};
++#ifdef GLOB2_DEFERRED_DEADLINE_QUEUE
++        const auto index=readyHeap[0];
++        if(owner && limit && before(*limit,slots[index])) return {};
++#else
++        auto index=readyHead;
++        if(owner) {
++            // Serial barriers retain due-limited execution. Scan only bounded
++            // ready batches, never blocked jobs; lane heads remain authoritative.
++            index=Slots;
++            for(auto i=readyHead;i!=Slots;i=slots[i].readyNext)
++                if((!limit || !before(*limit,slots[i])) && (index==Slots || before(slots[i],slots[index]))) index=i;
++            if(index==Slots) return {};
++        }
++#endif
++        const auto& slot=slots[index];
++        return {index,slot.readyJobs.front(),true,slot.serial};
++    }
++    bool claimable(bool owner, const Slot* limit = nullptr) const { return pick(owner,limit).valid; }
++    template<ComputeTelemetryMode Mode>
++    Claim claim(bool owner, const Slot* limit = nullptr, unsigned thread = 0) {
++        assert(owner==ownerRunsDeferred());
++        const auto best=pick(owner,limit);
++        if(!best.valid) return best;
++        auto& slot=slots[best.slot];
++        removeReadyBatch(best.slot);
++        std::pop_heap(slot.readyJobs.begin(),slot.readyJobs.end(),std::greater<std::size_t>());
++        slot.readyJobs.pop_back();
++        if(!slot.readyJobs.empty()) addReadyBatch(best.slot);
++        event<Mode>(ComputeTelemetry::EventKind::Claim,best.slot,best.index,thread);
++        return best;
++    }
+ 	template<ComputeTelemetryMode Mode>
+ 	void freeSlot(Slot& slot)
+ 	{
+-		assert(slot.unclaimed == 0);
++		assert(slot.readyJobs.empty() && slot.readyPosition==Slots && slot.completed==slot.total);
+ 		event<Mode>(ComputeTelemetry::EventKind::Retire, std::size_t(&slot - slots.data()));
+-		slot.serial = 0; slot.groups.clear(); slot.starts.clear(); slot.laneBases.clear(); slot.claimed.clear(); slot.completions.clear(); slot.continuations.clear();
+-		slot.total = slot.unclaimed = slot.completed = slot.firstUnclaimed = 0; slot.error = nullptr;
++		slot.serial = 0; slot.groups.clear(); slot.starts.clear(); slot.laneBases.clear(); slot.jobGroups.clear(); slot.laneNext.clear(); slot.readyJobs.clear(); slot.completions.clear(); slot.continuations.clear();
++		slot.total = slot.completed = 0; slot.error = nullptr;
+ 		--live;
+ 	}
+ 	// Under mutex: settle a synchronous or externally completed job.
+@@ -791,7 +819,12 @@
+ 		slot.completions[index].reset();
+ 		const auto lane = slot.groups[group(slot, index)].lane;
+ 		if (lane != NoLane) {
+-			++laneCompleted[lane];
++            const auto head=laneHead[lane];
++            assert(head.valid && head.slot==std::size_t(&slot-slots.data()) && head.index==index && head.serial==slot.serial);
++            laneHead[lane]=slot.laneNext[index];
++            ++laneCompleted[lane];
++            if(laneHead[lane].valid) enqueueReady(laneHead[lane]);
++            else laneTail[lane]={};
+ 			// A returning worker claims the newly runnable successor itself.
+ 			// External resolution has no returning worker, so wake one.
+ 			if (thread == ~0u && !ownerRunsDeferred()) ready.notify_one();
+@@ -804,9 +837,7 @@
+ 		auto& slot = slots[ticket.slot];
+ 		if (ticket.continuation.invoke && !ticket.error) {
+ 			slot.continuations[ticket.index] = ticket.continuation;
+-			slot.claimed[ticket.index] = 0;
+-			if (++slot.unclaimed == 1) markUnclaimed(ticket.slot, true);
+-			slot.firstUnclaimed = std::min(slot.firstUnclaimed, ticket.index);
++            enqueueReady({ticket.slot,ticket.index,true,ticket.serial});
+ 			ticket.owner.store(nullptr, std::memory_order_release);
+ 			slot.completions[ticket.index].reset();
+ 			event<Mode>(ComputeTelemetry::EventKind::Runnable, ticket.slot, ticket.index, thread);
+@@ -1525,26 +1556,31 @@
+ 		std::size_t index = 0;
+ 		while (slots[index].serial) ++index;
+ 		auto& slot = slots[index];
+-		slot.serial = nextSerial++;
+-		slot.due = due;
+-		slot.groups.assign(groups.begin(), groups.end());
+-		slot.starts.clear(); slot.laneBases.clear();
+-		std::size_t start = 0, runnable = 0;
+-		for (const auto& group : slot.groups)
+-		{
+-			slot.starts.push_back(start); start += group.count;
+-			slot.laneBases.push_back(group.lane == NoLane ? 0 : laneIssued[group.lane]);
+-			if (group.lane != NoLane) {
+-				// Only the head of an idle lane can run; queued successors do
+-				// not need a wakeup until their predecessor completes.
+-				if (group.count && laneCompleted[group.lane] == laneIssued[group.lane]) ++runnable;
+-				laneIssued[group.lane] += group.count; laneDue[group.lane] = due;
+-			} else runnable += group.count;
+-		}
+-		slot.total = slot.unclaimed = total; slot.completed = slot.firstUnclaimed = 0; slot.error = nullptr;
+-		slot.claimed.assign(total, 0);
+-		slot.completions.assign(total, {}); slot.continuations.assign(total, {});
+-		markUnclaimed(index, true);
++        slot.groups.assign(groups.begin(),groups.end());
++        slot.starts.resize(groups.size()); slot.laneBases.resize(groups.size());
++        slot.jobGroups.resize(total); slot.laneNext.assign(total,{});
++        slot.readyJobs.clear(); slot.readyJobs.reserve(total);
++        slot.completions.assign(total,{}); slot.continuations.assign(total,{});
++        slot.serial=nextSerial++; slot.due=due; slot.total=total; slot.completed=0; slot.error=nullptr;
++        std::size_t start=0, runnable=0;
++        for(std::size_t g=0;g<slot.groups.size();++g) {
++            const auto& work=slot.groups[g];
++            slot.starts[g]=start;
++            slot.laneBases[g]=work.lane==NoLane ? 0 : laneIssued[work.lane];
++            for(std::size_t offset=0;offset<work.count;++offset) {
++                const auto job=start+offset; slot.jobGroups[job]=g;
++                Claim node{index,job,true,slot.serial};
++                if(work.lane==NoLane) { enqueueReady(node); ++runnable; }
++                else {
++                    auto& tail=laneTail[work.lane];
++                    if(tail.valid) slots[tail.slot].laneNext[tail.index]=node;
++                    else { laneHead[work.lane]=node; enqueueReady(node); ++runnable; }
++                    tail=node;
++                }
++            }
++            if(work.lane!=NoLane) { laneIssued[work.lane]+=work.count; laneDue[work.lane]=due; }
++            start+=work.count;
++        }
+ 		++live;
+ 		if constexpr (Mode != ComputeTelemetryMode::Off) { ++totals.deferredBatches; totals.deferredJobs += total; }
+ 

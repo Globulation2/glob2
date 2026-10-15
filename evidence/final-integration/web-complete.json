@@ -1,0 +1,14 @@
+{
+  "state": "qualified_with_explicit_UI_limitation",
+  "commit": "efb843d8047bba6f546c031614a31c917513ad54",
+  "review": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/final-integration/web-review.json",
+  "review_sha256": "86c8e1ecf293714b0f5047aee721b30e110468f48cbac46b63382eb77456c6d2",
+  "browser_engine_direct_both_pass": true,
+  "threaded_partial5participants4workers_both_pass": true,
+  "committed843trace_both_exact": true,
+  "Chromium_original_UI_lifecycle_pass": true,
+  "Firefox_original_UI_case": "failedtwicecandidate;failedmatchedoriginalheadercontrol; remainsfailed",
+  "source_and_candidate_served_bytes_restored": true,
+  "restoration_receipt": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/final-integration/web-control-restoration.json",
+  "no_commit_or_PR_code_changes": true
+}

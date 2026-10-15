@@ -1,0 +1,37 @@
+{
+  "command": [
+    "taskset",
+    "-c",
+    "12,13,14,28,29,30",
+    "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/confirmation/wake-only-allcore/guard-latest-wake-only",
+    "off",
+    "optional"
+  ],
+  "returncode": 0,
+  "wall_seconds": 0.0715713887475431,
+  "user_cpu_seconds": 0.08377699999999999,
+  "system_cpu_seconds": 0.001994,
+  "total_cpu_seconds": 0.08577099999999999,
+  "peak_rss_kib": 23464,
+  "utc": "2026-10-15T02:33:15.662035+00:00",
+  "wrapper_sha256": "2ed5e6b9908d88f461a52ee44432355045ecb1be15949c9985c36fbdfd651b46",
+  "manifest_sha256": "154ed016dd56e52af6f0f8877592990f319512d1aeaf6141127f005311ed3ef9",
+  "harness_sha256": "4affbeca486235bed52cec56db0bf154ef20eda03f10cd478e2ab15cb592d78a",
+  "correctness_or_conditional_micro_only": true,
+  "version": "latest",
+  "role": "wake-only",
+  "allocation": "3physical6SMT",
+  "kind": "optional",
+  "repeat": 0,
+  "latency": {
+    "trace": false,
+    "urgent_join_ns": 338257,
+    "later_started_before_urgent": 0,
+    "presentation_start_delay_ns": 2173325,
+    "later_total": 128,
+    "digest": 6568891044718746485,
+    "result_bytes": 1032
+  },
+  "binary_sha256": "d0368e40d9c3befa0152eca6898ff59e5e8c1e76df9b41452e8231e6978c7204",
+  "header_sha256": "8e59b8816e147ffa72adc5b11d869483dbefe4663a3aca28a39ccc106b9663c1"
+}

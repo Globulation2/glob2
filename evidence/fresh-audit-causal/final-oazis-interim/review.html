@@ -1,0 +1,47 @@
+<!doctype html><meta charset=utf-8><title>Oazis completed-pair interim audit</title><style>body{font:16px system-ui;margin:30px}td,th{border:1px solid #bbb;padding:6px}table{border-collapse:collapse}</style><h1>Oazis11 completed-pair prefix</h1><p>22winnerreceipts;endpoints/ticks/configvalidated;6baseline-first/5W-first. NoCI/earlystop/adoption. RestOA+wavespending.</p><table><tr><th>Metric<th>Bmean<th>Wmean<th>Ratiochange<th>Positive/negative seeds
+<tr><td>e2e_seconds<td>185.107<td>179.784<td>-2.876%<td>1/10
+<tr><td>inner_seconds<td>184.314<td>178.986<td>-2.890%<td>1/10
+<tr><td>total_cpu_seconds<td>744.201<td>612.844<td>-17.651%<td>0/11
+<tr><td>user_cpu_seconds<td>615.255<td>585.07<td>-4.906%<td>0/11
+<tr><td>system_cpu_seconds<td>128.946<td>27.7736<td>-78.461%<td>0/11
+<tr><td>peak_rss_kib<td>481613<td>481016<td>-0.124%<td>4/7
+<tr><td>voluntary_context_switches<td>8.34753e+06<td>2.11598e+06<td>-74.651%<td>0/11
+<tr><td>involuntary_context_switches<td>8758.64<td>834.909<td>-90.468%<td>0/11
+<tr><td>inner_tps<td>578.939<td>596.065<td>+2.958%<td>10/1
+<tr><td>cpu_per_tick<td>0.00705337<td>0.00580795<td>-17.657%<td>0/11
+<tr><td>ticks<td>105916<td>105916<td>+0.000%<td>0/0
+</table><p>Positivewall/CPU meansloss; positiveTPSgain. Perseedadversewall retained:</p><pre>[
+  {
+    &quot;seed&quot;: 1030656205,
+    &quot;change_percent&quot;: 0.10821105484135618,
+    &quot;e2e_percent&quot;: 0.12590528620151087,
+    &quot;CPU_percent&quot;: -16.5021457315346
+  }
+]</pre><h2>CPUdecomposition andmechanismevidence</h2><pre>{
+  &quot;decomposition&quot;: {
+    &quot;wholeprocess_CPU_seconds_saved&quot;: 1444.9297620000007,
+    &quot;user_CPU_seconds_saved&quot;: 332.031993,
+    &quot;system_CPU_seconds_saved&quot;: 1112.897769,
+    &quot;system_fraction_of_total_CPU_seconds_saved&quot;: 0.7702089044519241,
+    &quot;scope&quot;: &quot;wait4wholeprocessnotpuregamecallbacktime;categoriesaddexactly,notmechanismprofile.&quot;
+  },
+  &quot;mechanism&quot;: {
+    &quot;strongest_conditional_evidence&quot;: [
+      &quot;Treatment latest054B/W differsbyboundedwakepolicywithsamefullfeatures/binaryflags/assets/seeds/rosters; source/fixture/binarybindingsretained.&quot;,
+      &quot;PG32allseeds wall/CPUlower,order16/16; OA11allCPU/user/syslower,wall10/11lower,order6/5. Endpoint/tick/winnerchecksagree.&quot;,
+      &quot;PGsystemCPU\u221283.94%,OAprefix\u221278.46%;voluntarycontextswitches\u221278.66%/\u221274.65%. Thisisconsistentwithlesskernelwake/schedulingoverhead, notdirectfutex/callbackprofile.&quot;,
+      &quot;Priorlatest40per-tickchecks,focused202cases,Wurgent/presentationguardandpartialwake576controlledburstsareseparatecorrectness/contractevidence.&quot;
+    ],
+    &quot;CPU_saving_fraction_from_system_time&quot;: {
+      &quot;PG_completed32&quot;: 0.8197382529006971,
+      &quot;OA_prefix11&quot;: 0.7702089044519241
+    },
+    &quot;map_dependence&quot;: &quot;PGcompleted32wall\u221211.32%/CPU\u221239.90% vsOAprefix11wall\u22122.88%/CPU\u221217.65%;differentmap/trajectory/workmix, donotpoolorinterpretdifferenceasanisolatedmap-sizeeffect.&quot;,
+    &quot;uncertainty_and_nonclaims&quot;: [
+      &quot;OAunfinished; late-seed/cap/lossoutcomesnotknown. Wavesmaychangecontention/throughput.&quot;,
+      &quot;No universalCPUfreegain,globalparticipantpolicy,UIlatency/allplatform/render/GPUbenefit claim.&quot;,
+      &quot;SystemCPUcategory isnotproofallcostisfutexwake; reducedcontextswitching/otherkernelwork correlatedwithtreatment.&quot;,
+      &quot;OneadverseOAseed1030656205 innerwall+0.1082%,e2e+0.1259%,CPU\u221216.5021% retained; nosingle-seedexceptionrule.&quot;
+    ]
+  }
+}</pre>

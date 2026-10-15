@@ -1,0 +1,30 @@
+{
+  "command": [
+    "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/confirmation/final-integration/control-glob2",
+    "match",
+    "verify",
+    "test/fixtures/multiplayer/FourSquares1.g2mr",
+    "--map-file",
+    "maps/FourSquares1.map.gz",
+    "--output-dir",
+    "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/confirmation/final-integration/golden-control",
+    "--compute-threads",
+    "4"
+  ],
+  "cwd": "/home/bradley/.codex/worktrees/engine-optimization/glob2",
+  "env_overrides": {
+    "SDL_VIDEODRIVER": "dummy",
+    "SDL_AUDIODRIVER": "dummy",
+    "GLOB2_USER_DIR": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/confirmation/final-integration/profile-control-golden",
+    "GLOB2_USER_DATA_DIR": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/confirmation/final-integration/profile-control-golden",
+    "GLOB2_ASSET_DIR": "/home/bradley/.codex/worktrees/engine-optimization/glob2"
+  },
+  "source_base": "054804590ee1dd109f09642fc05654c324f08344",
+  "binary_sha256": "eabbfcf1b073d0cf823d958be5c5d32221c73cb2598d47c9a6d29b835cd0af95",
+  "returncode": 0,
+  "verdict": "verified",
+  "checksums_match_committed": true,
+  "tick_lines": 843,
+  "checksums_sha256": "3b91be7eee296dd1c8bc5406b6aadfe50965fbe22cc1fb3bc504558c859395f8",
+  "state": "passed"
+}

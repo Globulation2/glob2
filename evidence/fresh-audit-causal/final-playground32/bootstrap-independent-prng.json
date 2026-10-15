@@ -1,0 +1,77 @@
+{
+  "implementation": "Mulberry32 independent algorithm, seed1729;10000paired32seed draws;linearquantiles",
+  "metrics": {
+    "e2e_seconds": {
+      "paired_seed_MC10000_percentile95_percent": [
+        -11.636101512224332,
+        -11.036632776959356
+      ]
+    },
+    "inner_seconds": {
+      "paired_seed_MC10000_percentile95_percent": [
+        -11.860419649225426,
+        -11.235040386180282
+      ]
+    },
+    "total_cpu_seconds": {
+      "paired_seed_MC10000_percentile95_percent": [
+        -41.28681581547972,
+        -38.880620540026484
+      ]
+    },
+    "user_cpu_seconds": {
+      "paired_seed_MC10000_percentile95_percent": [
+        -12.324165266207967,
+        -11.250565854141342
+      ]
+    },
+    "system_cpu_seconds": {
+      "paired_seed_MC10000_percentile95_percent": [
+        -84.77888822342415,
+        -83.31762685059226
+      ]
+    },
+    "peak_rss_kib": {
+      "paired_seed_MC10000_percentile95_percent": [
+        -0.7500346085704473,
+        -0.3110117916082755
+      ]
+    },
+    "voluntary_context_switches": {
+      "paired_seed_MC10000_percentile95_percent": [
+        -79.03045216991582,
+        -78.25775669817726
+      ]
+    },
+    "involuntary_context_switches": {
+      "paired_seed_MC10000_percentile95_percent": [
+        -96.13028628701417,
+        -95.34712129522676
+      ]
+    },
+    "inner_tps": {
+      "paired_seed_MC10000_percentile95_percent": [
+        12.797811500623313,
+        13.620258223434485
+      ]
+    },
+    "e2e_tps": {
+      "paired_seed_MC10000_percentile95_percent": [
+        12.523320082194328,
+        13.289495942026178
+      ]
+    },
+    "cpu_per_tick": {
+      "paired_seed_MC10000_percentile95_percent": [
+        -41.36031374306521,
+        -39.1039302343925
+      ]
+    },
+    "ticks": {
+      "paired_seed_MC10000_percentile95_percent": [
+        0,
+        0
+      ]
+    }
+  }
+}

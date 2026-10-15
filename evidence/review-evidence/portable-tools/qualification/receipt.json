@@ -1,0 +1,59 @@
+{
+  "state": "passed",
+  "source_sha256": "056f9635d75f7a8ca697c4e0a0e760868a9eb1dfc49510df81ebdc896c37d031",
+  "original_comparison": {
+    "path": "artifacts/october-regression/coordination-redesign/review-evidence/portable-tools/qualification/both-original.json",
+    "sha256": "addba7f1707b77b9d6053336dd9d70fc63dbfb048bbd114e613d569fc012ba7f",
+    "regimes": [
+      "serial",
+      "waves"
+    ],
+    "runs_per_regime": 128,
+    "matched_retained_tolerance": 1e-12
+  },
+  "relocation": {
+    "path": "artifacts/october-regression/coordination-redesign/review-evidence/portable-tools/qualification/relocated-bundle/relocated-result.json",
+    "sha256": "f8992cc8f8b8825d1a46053d35f300ade518d8a5b0553d0350a0750faaffdef0",
+    "auto_root": true,
+    "original_worktree_content_opens_forbidden_by_audit_hook": true,
+    "optional_root_approval_omitted": true,
+    "numerical_results_equal_original": true
+  },
+  "edge_cases": {
+    "state": "passed",
+    "scope": "Parser and estimator edge cases use copied real rows; no invented game runs. Cap/no-winner pairs excluded from conditional metrics. Hash corruption rejected before bootstrap.",
+    "checks": [
+      {
+        "case": "cap",
+        "result": "passed",
+        "eligible": 31
+      },
+      {
+        "case": "no_winner",
+        "result": "passed",
+        "eligible": 31
+      },
+      {
+        "case": "zero reference",
+        "result": "passed"
+      },
+      {
+        "case": "cap overrides terminal winner",
+        "result": "passed"
+      },
+      {
+        "case": "tampered receipt hash",
+        "result": "rejected as required"
+      },
+      {
+        "case": "both-winner failed endpoint pair",
+        "result": "rejected as required before statistics"
+      }
+    ]
+  },
+  "limits": [
+    "Copied explicit compact receipts/logs/metadata only, not evidence packaging. No native/build/archive/signals.",
+    "Relocation audit prohibits original worktree content opens, not OS namespace access. Optional binary/fixture bytes are not verified by this recomputation.",
+    "Edge fixtures mutate copied rows/parser inputs; no synthetic result represents an actual game. Full per-tick compatibility and production acceptance remain separate."
+  ]
+}

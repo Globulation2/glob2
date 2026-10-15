@@ -1,0 +1,350 @@
+{
+  "scope": "Independent recomputation from432 weighted Off timing receipts and80 latency Off receipts. No workload/Trace timing included. Cell medians descriptive across fixed designs, not population estimates.",
+  "input_hash_receipt": {
+    "raw_receipts": 512,
+    "ordered_path_and_sha256_digest": "678ef40b8f0c7837ba551db7d513feafdbfb3f6d94020dd264fcc955dad7fa0e",
+    "weighted_analysis_sha256": "9f481e5f9f33501b5a99861c54eef24b530ebbbcf24c53ac9117487338d9f3d2",
+    "latency_analysis_sha256": "0e7f9f35eb62a46d0a2ea363ef99c4e936cc160c3bd97d58528cc6bbad157133"
+  },
+  "raw_validation": "512 receipts parsed, zero validation_errors; recorded payloads match within comparator groups. Existing qualification complete receipts providefullchecks.",
+  "weighted_comparisons": [
+    {
+      "reference": "bare-steal",
+      "candidate": "steal",
+      "cells": 24,
+      "median_cell_wall_change_percent": 3.0819005537450206,
+      "median_cell_CPU_change_percent": 1.8873527170574,
+      "wall_faster_cells": 4,
+      "wall_range_percent": [
+        -5.570211920369383,
+        37.28272256615275
+      ],
+      "cold_wall_median_percent": 2.976173521258041,
+      "warm_wall_median_percent": 3.0819005537450206
+    },
+    {
+      "reference": "bare-steal",
+      "candidate": "static",
+      "cells": 24,
+      "median_cell_wall_change_percent": 32.71940547299567,
+      "median_cell_CPU_change_percent": -11.292632622973631,
+      "wall_faster_cells": 6,
+      "wall_range_percent": [
+        -12.781613446688645,
+        99.98195137078079
+      ],
+      "cold_wall_median_percent": 27.41198079919157,
+      "warm_wall_median_percent": 35.699116611983186
+    },
+    {
+      "reference": "bare-steal",
+      "candidate": "last",
+      "cells": 24,
+      "median_cell_wall_change_percent": 9.445739657729668,
+      "median_cell_CPU_change_percent": 5.280512966406503,
+      "wall_faster_cells": 5,
+      "wall_range_percent": [
+        -5.324002298581265,
+        49.42586994358393
+      ],
+      "cold_wall_median_percent": 10.364436322432779,
+      "warm_wall_median_percent": 7.322090979242479
+    },
+    {
+      "reference": "bare-steal",
+      "candidate": "ewma",
+      "cells": 24,
+      "median_cell_wall_change_percent": 10.59157120600014,
+      "median_cell_CPU_change_percent": 3.49405369155803,
+      "wall_faster_cells": 6,
+      "wall_range_percent": [
+        -8.18433706422712,
+        57.91590211833824
+      ],
+      "cold_wall_median_percent": 6.22427562351916,
+      "warm_wall_median_percent": 11.700805433570839
+    },
+    {
+      "reference": "static-steal",
+      "candidate": "last",
+      "cells": 24,
+      "median_cell_wall_change_percent": -1.4137592179354175,
+      "median_cell_CPU_change_percent": 0.41700678166562977,
+      "wall_faster_cells": 14,
+      "wall_range_percent": [
+        -21.38907547487041,
+        19.653055023237044
+      ],
+      "cold_wall_median_percent": 1.3501906061018087,
+      "warm_wall_median_percent": -4.849832746554511
+    },
+    {
+      "reference": "static-steal",
+      "candidate": "ewma",
+      "cells": 24,
+      "median_cell_wall_change_percent": -1.2187368421483713,
+      "median_cell_CPU_change_percent": 1.1239285155293044,
+      "wall_faster_cells": 13,
+      "wall_range_percent": [
+        -18.484218098603854,
+        19.274122427395636
+      ],
+      "cold_wall_median_percent": -1.2187368421483713,
+      "warm_wall_median_percent": -1.090597432511553
+    },
+    {
+      "reference": "observe-only",
+      "candidate": "last",
+      "cells": 24,
+      "median_cell_wall_change_percent": 3.353436178113156,
+      "median_cell_CPU_change_percent": 0.525279602129558,
+      "wall_faster_cells": 7,
+      "wall_range_percent": [
+        -10.829413102131669,
+        32.24461984045763
+      ],
+      "cold_wall_median_percent": 3.353436178113156,
+      "warm_wall_median_percent": 2.8784261550172663
+    },
+    {
+      "reference": "observe-only",
+      "candidate": "ewma",
+      "cells": 24,
+      "median_cell_wall_change_percent": 6.233972695102441,
+      "median_cell_CPU_change_percent": 0.49582222453674607,
+      "wall_faster_cells": 7,
+      "wall_range_percent": [
+        -16.686268112826063,
+        26.96112325287534
+      ],
+      "cold_wall_median_percent": 2.87947053561024,
+      "warm_wall_median_percent": 6.994995544893445
+    },
+    {
+      "reference": "static-steal",
+      "candidate": "clock-only",
+      "cells": 24,
+      "median_cell_wall_change_percent": -0.6442005416760765,
+      "median_cell_CPU_change_percent": -1.1065132940468125,
+      "wall_faster_cells": 14,
+      "wall_range_percent": [
+        -41.89876616535805,
+        15.284891174308335
+      ],
+      "cold_wall_median_percent": 1.1222549036872809,
+      "warm_wall_median_percent": -1.0675368553631326
+    },
+    {
+      "reference": "steal",
+      "candidate": "observe-only",
+      "cells": 24,
+      "median_cell_wall_change_percent": 0.4611883948279716,
+      "median_cell_CPU_change_percent": 1.7641822842291877,
+      "wall_faster_cells": 10,
+      "wall_range_percent": [
+        -9.378999833684098,
+        29.34227452494762
+      ],
+      "cold_wall_median_percent": 3.181666722264942,
+      "warm_wall_median_percent": 0.28769707417343193
+    }
+  ],
+  "latency_cells": [
+    {
+      "allocation": "3physical6SMT",
+      "kind": "optional",
+      "role": "baseline",
+      "samples": 4,
+      "urgent_join_median_ms": 0.3420425,
+      "later_started_median": 0.5,
+      "presentation_start_median_ms": 2.29747
+    },
+    {
+      "allocation": "3physical6SMT",
+      "kind": "optional",
+      "role": "first-steal",
+      "samples": 4,
+      "urgent_join_median_ms": 13.3080675,
+      "later_started_median": 125.0,
+      "presentation_start_median_ms": 2.1886155
+    },
+    {
+      "allocation": "3physical6SMT",
+      "kind": "optional",
+      "role": "local-priority-steal",
+      "samples": 4,
+      "urgent_join_median_ms": 0.3236075,
+      "later_started_median": 2.0,
+      "presentation_start_median_ms": 2.123561
+    },
+    {
+      "allocation": "3physical6SMT",
+      "kind": "optional",
+      "role": "local-round-robin",
+      "samples": 4,
+      "urgent_join_median_ms": 13.4820865,
+      "later_started_median": 125.0,
+      "presentation_start_median_ms": 2.1979455
+    },
+    {
+      "allocation": "3physical6SMT",
+      "kind": "optional",
+      "role": "local-steal",
+      "samples": 4,
+      "urgent_join_median_ms": 13.3264025,
+      "later_started_median": 124.0,
+      "presentation_start_median_ms": 2.1852605
+    },
+    {
+      "allocation": "3physical6SMT",
+      "kind": "required",
+      "role": "baseline",
+      "samples": 4,
+      "urgent_join_median_ms": 0.340298,
+      "later_started_median": 0.5,
+      "presentation_start_median_ms": -1e-06
+    },
+    {
+      "allocation": "3physical6SMT",
+      "kind": "required",
+      "role": "first-steal",
+      "samples": 4,
+      "urgent_join_median_ms": 13.63028,
+      "later_started_median": 127.5,
+      "presentation_start_median_ms": -1e-06
+    },
+    {
+      "allocation": "3physical6SMT",
+      "kind": "required",
+      "role": "local-priority-steal",
+      "samples": 4,
+      "urgent_join_median_ms": 0.318308,
+      "later_started_median": 1.0,
+      "presentation_start_median_ms": -1e-06
+    },
+    {
+      "allocation": "3physical6SMT",
+      "kind": "required",
+      "role": "local-round-robin",
+      "samples": 4,
+      "urgent_join_median_ms": 13.449352,
+      "later_started_median": 125.0,
+      "presentation_start_median_ms": -1e-06
+    },
+    {
+      "allocation": "3physical6SMT",
+      "kind": "required",
+      "role": "local-steal",
+      "samples": 4,
+      "urgent_join_median_ms": 13.6201455,
+      "later_started_median": 128.0,
+      "presentation_start_median_ms": -1e-06
+    },
+    {
+      "allocation": "all32",
+      "kind": "optional",
+      "role": "baseline",
+      "samples": 4,
+      "urgent_join_median_ms": 0.3604125,
+      "later_started_median": 0.0,
+      "presentation_start_median_ms": 2.3343295
+    },
+    {
+      "allocation": "all32",
+      "kind": "optional",
+      "role": "first-steal",
+      "samples": 4,
+      "urgent_join_median_ms": 13.3027175,
+      "later_started_median": 109.0,
+      "presentation_start_median_ms": 2.166681
+    },
+    {
+      "allocation": "all32",
+      "kind": "optional",
+      "role": "local-priority-steal",
+      "samples": 4,
+      "urgent_join_median_ms": 0.4467825,
+      "later_started_median": 0.5,
+      "presentation_start_median_ms": 2.8008815
+    },
+    {
+      "allocation": "all32",
+      "kind": "optional",
+      "role": "local-round-robin",
+      "samples": 4,
+      "urgent_join_median_ms": 13.202883,
+      "later_started_median": 108.0,
+      "presentation_start_median_ms": 2.1512455
+    },
+    {
+      "allocation": "all32",
+      "kind": "optional",
+      "role": "local-steal",
+      "samples": 4,
+      "urgent_join_median_ms": 13.388112,
+      "later_started_median": 121.0,
+      "presentation_start_median_ms": 2.175376
+    },
+    {
+      "allocation": "all32",
+      "kind": "required",
+      "role": "baseline",
+      "samples": 4,
+      "urgent_join_median_ms": 0.3431275,
+      "later_started_median": 0.0,
+      "presentation_start_median_ms": -1e-06
+    },
+    {
+      "allocation": "all32",
+      "kind": "required",
+      "role": "first-steal",
+      "samples": 4,
+      "urgent_join_median_ms": 13.7932045,
+      "later_started_median": 121.0,
+      "presentation_start_median_ms": -1e-06
+    },
+    {
+      "allocation": "all32",
+      "kind": "required",
+      "role": "local-priority-steal",
+      "samples": 4,
+      "urgent_join_median_ms": 0.591666,
+      "later_started_median": 1.0,
+      "presentation_start_median_ms": -1e-06
+    },
+    {
+      "allocation": "all32",
+      "kind": "required",
+      "role": "local-round-robin",
+      "samples": 4,
+      "urgent_join_median_ms": 13.5886755,
+      "later_started_median": 116.5,
+      "presentation_start_median_ms": -1e-06
+    },
+    {
+      "allocation": "all32",
+      "kind": "required",
+      "role": "local-steal",
+      "samples": 4,
+      "urgent_join_median_ms": 14.869208,
+      "later_started_median": 110.5,
+      "presentation_start_median_ms": -1e-06
+    }
+  ],
+  "conclusions": [
+    "Bare stealing is the simplest supported reference inthismicro. Adding reservation accounting withsameRR placement costsmedian3.08%wall/1.89%CPU over24cells; thisisconditional notenginegain.",
+    "LAST/EWMA do not demonstrate broad advantage overbaresteal: medianwall+9.45/+10.59%; vsobserve-only adaptiveplacement median+3.35/+6.23%, faster7/24cells each. Staticfixedhint+steal comparison gives smallmixed~1%medianwins, notprooflearning isworthstate.",
+    "Cold/warm anddrift mustremainseparate. WarmingLAST improvesmedianvsstatic-steal from+1.35cold to-4.85warm, butLAST andEWMA remainmixed andusuallyworse thanbaresteal; no universallyreliableestimator established.",
+    "clock-only sharesfixedhintplacement, so comparestatic-steal to isolateclock; observe-only retainsRR buttimedlastsampleaccounting; no singlecontrol fullyisolates everyinstruction. Narrow negativeclock-only median~0.64%wall iswithinexploratorynoise, notclockfreeproof.",
+    "FIFO urgency is an adoptionconcern despitechecksumparity:80Offcases show~13\u201315msmedianurgentwait withmanylaterjobsstarted versusbaseline~0.34ms. Sortedlocalpriority recovers~0.32ms on6SMTmask but~0.45\u20130.59ms onall32; ownqueuefirst isnotglobalEDF.",
+    "Optionalservice medians vary; sortedpriorityall32~2.80ms versusbaseline~2.33ms inthisfixture,6SMT~2.12versus~2.30. Do notclaimuniversalframeimprovement."
+  ],
+  "recommendation": "Keep required stealing andminimalstate; do notaddLAST/EWMA productionmodels. Do notpromoteFIFOenginecandidate onthroughput/checksumalone untilownerdeadlinewaitandinteractivepresentationtradeoff isresolved. Conditionalminimalnexttest ispriorityenqueue+steal atactualproducerdue-mix, recordingenqueueCPU/ownerjoinwait andoptionalservice atfixedinputs, plusalreadyavailablemixednativeevidence. No priorityheap/fullrewrite/newfeatures beforethisevidence.",
+  "limits": [
+    "Onlytwo weightedrepeats/fixedpayload; fourlatencyrepeats/fixedbacklog. No populationCI orarbitraryacceptancethreshold.",
+    "Micro worker count excludesowner, engineparticipantsincludesowner.",
+    "ProcessCPU includeswarmup/startup/validation; innerwall excludesdifferentphases.",
+    "Memorypayloadresultbytes identical; RSSallocator effectsseparate.",
+    "Clockmodelsuseclasshistory only; withindrift/withinclass variabilitymaydefeatclassmodel. All32allocationononehost, nostoreplatform/GPU/asyncproof."
+  ]
+}

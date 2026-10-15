@@ -1,0 +1,11 @@
+{
+  "approved": true,
+  "script_sha256": "2f579afa6259bd15b704531e17d7dc0dfe4a326013485750595e34a3bd5988fc",
+  "selection_sha256": "34ae6d426466260acf19207c0ac6d280b8971e7807a122b3fad4e5c8eeb4d112",
+  "checks": [
+    "Reproducibleendpointmetadata mutation now saved; load_regime assertions reject inconsistentbothwinner eligibility beforestatistics; finallyrestores copiedcomplete bytes.",
+    "This check is inconsistentmetadata rejection, not a newengine execution or mutatedsimulationtrajectory proof.",
+    "Updatedselection includes explicit narrow integrationevidence rules andREADMEalias; no binary/fullcheckout/Trace glob promotion."
+  ],
+  "activity": "Source/read-onlyreview; scriptnotexecutedbyreviewer."
+}

@@ -1,0 +1,32 @@
+{
+  "state": "passed",
+  "scope": "Parser and estimator edge cases use copied real rows; no invented game runs. Cap/no-winner pairs excluded from conditional metrics. Hash corruption rejected before bootstrap.",
+  "checks": [
+    {
+      "case": "cap",
+      "result": "passed",
+      "eligible": 31
+    },
+    {
+      "case": "no_winner",
+      "result": "passed",
+      "eligible": 31
+    },
+    {
+      "case": "zero reference",
+      "result": "passed"
+    },
+    {
+      "case": "cap overrides terminal winner",
+      "result": "passed"
+    },
+    {
+      "case": "tampered receipt hash",
+      "result": "rejected as required"
+    },
+    {
+      "case": "both-winner failed endpoint pair",
+      "result": "rejected as required before statistics"
+    }
+  ]
+}

@@ -1,0 +1,337 @@
+GLOB2_TEST_BUILD compiler=13.4.0 platform=Linux pointer_bits=64
+GLOB2_TEST_PROVENANCE {"compiler": "g++-13", "dirty": false, "flags": {"CCFLAGS": "", "CPPDEFINES": "GLOB2_OFFICIAL_INSTANCE_ORIGIN \\\"https://app.glob2online.com\\\" GLOB2_OFFICIAL_INSTANCE_FORMER_ORIGINS \\\"https://glob2online.com\\\" HAVE_CONFIG_H GLOB2_RENDER_SHADER_DIR \\\"/home/bradley/.codex/worktrees/engine-optimization/glob2/build/wake-control/shaders\\\" SDL_MAIN_HANDLED", "CXXFLAGS": "-std=gnu++20 -Wall -fPIC -O3 -s", "LINKFLAGS": "-L/usr/lib/gcc/x86_64-linux-gnu/15 -Wl,-rpath,$ORIGIN/../lib/glob2 -Wall -O3 -fwhole-program -Wl,-rpath,/home/bradley/.codex/worktrees/repair-tls-rejection-fixture/glob2/build/sdl3-ci/prefix/lib -Wl,--enable-new-dtags"}, "revision": "efb843d8047bba6f546c031614a31c917513ad54", "sourceStatus": [], "sourceTreeSha256": "0fcb8f6d0a1f6a45f0ad5ae0b4dc1d65ace3ec56b7eaa825f2833118bfbf5524"}
+[doctest] doctest version is "2.4.11"
+[doctest] run with "--help" for options
+===============================================================================
+src/common/ComputeExecutorHarness.cpp:224:
+TEST SUITE: ComputeExecutor
+TEST CASE:  idle workers retain parallelism for independent and mixed lane groups
+
+src/common/ComputeExecutorHarness.cpp:286: SUCCESS: CHECK( gate.entered >= runnable ) is correct!
+  values: CHECK( {?} >= 2 )
+  logged: participants := 3
+          mode := 0
+          shape := 0
+
+src/common/ComputeExecutorHarness.cpp:289: SUCCESS: CHECK( gate.entered == (shape == 2 || shape == 4 ? 3u : 2u) ) is correct!
+  values: CHECK( {?} == 2 )
+  logged: participants := 3
+          mode := 0
+          shape := 0
+
+src/common/ComputeExecutorHarness.cpp:286: SUCCESS: CHECK( gate.entered >= runnable ) is correct!
+  values: CHECK( {?} >= 2 )
+  logged: participants := 3
+          mode := 0
+          shape := 1
+
+src/common/ComputeExecutorHarness.cpp:289: SUCCESS: CHECK( gate.entered == (shape == 2 || shape == 4 ? 3u : 2u) ) is correct!
+  values: CHECK( {?} == 2 )
+  logged: participants := 3
+          mode := 0
+          shape := 1
+
+src/common/ComputeExecutorHarness.cpp:286: SUCCESS: CHECK( gate.entered >= runnable ) is correct!
+  values: CHECK( {?} >= 2 )
+  logged: participants := 3
+          mode := 0
+          shape := 2
+
+src/common/ComputeExecutorHarness.cpp:289: SUCCESS: CHECK( gate.entered == (shape == 2 || shape == 4 ? 3u : 2u) ) is correct!
+  values: CHECK( {?} == 3 )
+  logged: participants := 3
+          mode := 0
+          shape := 2
+
+src/common/ComputeExecutorHarness.cpp:286: SUCCESS: CHECK( gate.entered >= runnable ) is correct!
+  values: CHECK( {?} >= 2 )
+  logged: participants := 3
+          mode := 0
+          shape := 3
+
+src/common/ComputeExecutorHarness.cpp:289: SUCCESS: CHECK( gate.entered == (shape == 2 || shape == 4 ? 3u : 2u) ) is correct!
+  values: CHECK( {?} == 2 )
+  logged: participants := 3
+          mode := 0
+          shape := 3
+
+src/common/ComputeExecutorHarness.cpp:286: SUCCESS: CHECK( gate.entered >= runnable ) is correct!
+  values: CHECK( {?} >= 2 )
+  logged: participants := 5
+          mode := 0
+          shape := 0
+
+src/common/ComputeExecutorHarness.cpp:289: SUCCESS: CHECK( gate.entered == (shape == 2 || shape == 4 ? 3u : 2u) ) is correct!
+  values: CHECK( {?} == 2 )
+  logged: participants := 5
+          mode := 0
+          shape := 0
+
+src/common/ComputeExecutorHarness.cpp:286: SUCCESS: CHECK( gate.entered >= runnable ) is correct!
+  values: CHECK( {?} >= 2 )
+  logged: participants := 5
+          mode := 0
+          shape := 1
+
+src/common/ComputeExecutorHarness.cpp:289: SUCCESS: CHECK( gate.entered == (shape == 2 || shape == 4 ? 3u : 2u) ) is correct!
+  values: CHECK( {?} == 2 )
+  logged: participants := 5
+          mode := 0
+          shape := 1
+
+src/common/ComputeExecutorHarness.cpp:286: SUCCESS: CHECK( gate.entered >= runnable ) is correct!
+  values: CHECK( {?} >= 2 )
+  logged: participants := 5
+          mode := 0
+          shape := 2
+
+src/common/ComputeExecutorHarness.cpp:289: SUCCESS: CHECK( gate.entered == (shape == 2 || shape == 4 ? 3u : 2u) ) is correct!
+  values: CHECK( {?} == 3 )
+  logged: participants := 5
+          mode := 0
+          shape := 2
+
+src/common/ComputeExecutorHarness.cpp:286: SUCCESS: CHECK( gate.entered >= runnable ) is correct!
+  values: CHECK( {?} >= 2 )
+  logged: participants := 5
+          mode := 0
+          shape := 3
+
+src/common/ComputeExecutorHarness.cpp:289: SUCCESS: CHECK( gate.entered == (shape == 2 || shape == 4 ? 3u : 2u) ) is correct!
+  values: CHECK( {?} == 2 )
+  logged: participants := 5
+          mode := 0
+          shape := 3
+
+src/common/ComputeExecutorHarness.cpp:286: SUCCESS: CHECK( gate.entered >= runnable ) is correct!
+  values: CHECK( {?} >= 3 )
+  logged: participants := 5
+          mode := 0
+          shape := 4
+
+src/common/ComputeExecutorHarness.cpp:289: SUCCESS: CHECK( gate.entered == (shape == 2 || shape == 4 ? 3u : 2u) ) is correct!
+  values: CHECK( {?} == 3 )
+  logged: participants := 5
+          mode := 0
+          shape := 4
+
+src/common/ComputeExecutorHarness.cpp:286: SUCCESS: CHECK( gate.entered >= runnable ) is correct!
+  values: CHECK( {?} >= 2 )
+  logged: participants := 3
+          mode := 1
+          shape := 0
+
+src/common/ComputeExecutorHarness.cpp:289: SUCCESS: CHECK( gate.entered == (shape == 2 || shape == 4 ? 3u : 2u) ) is correct!
+  values: CHECK( {?} == 2 )
+  logged: participants := 3
+          mode := 1
+          shape := 0
+
+src/common/ComputeExecutorHarness.cpp:286: SUCCESS: CHECK( gate.entered >= runnable ) is correct!
+  values: CHECK( {?} >= 2 )
+  logged: participants := 3
+          mode := 1
+          shape := 1
+
+src/common/ComputeExecutorHarness.cpp:289: SUCCESS: CHECK( gate.entered == (shape == 2 || shape == 4 ? 3u : 2u) ) is correct!
+  values: CHECK( {?} == 2 )
+  logged: participants := 3
+          mode := 1
+          shape := 1
+
+src/common/ComputeExecutorHarness.cpp:286: SUCCESS: CHECK( gate.entered >= runnable ) is correct!
+  values: CHECK( {?} >= 2 )
+  logged: participants := 3
+          mode := 1
+          shape := 2
+
+src/common/ComputeExecutorHarness.cpp:289: SUCCESS: CHECK( gate.entered == (shape == 2 || shape == 4 ? 3u : 2u) ) is correct!
+  values: CHECK( {?} == 3 )
+  logged: participants := 3
+          mode := 1
+          shape := 2
+
+src/common/ComputeExecutorHarness.cpp:286: SUCCESS: CHECK( gate.entered >= runnable ) is correct!
+  values: CHECK( {?} >= 2 )
+  logged: participants := 3
+          mode := 1
+          shape := 3
+
+src/common/ComputeExecutorHarness.cpp:289: SUCCESS: CHECK( gate.entered == (shape == 2 || shape == 4 ? 3u : 2u) ) is correct!
+  values: CHECK( {?} == 2 )
+  logged: participants := 3
+          mode := 1
+          shape := 3
+
+src/common/ComputeExecutorHarness.cpp:286: SUCCESS: CHECK( gate.entered >= runnable ) is correct!
+  values: CHECK( {?} >= 2 )
+  logged: participants := 5
+          mode := 1
+          shape := 0
+
+src/common/ComputeExecutorHarness.cpp:289: SUCCESS: CHECK( gate.entered == (shape == 2 || shape == 4 ? 3u : 2u) ) is correct!
+  values: CHECK( {?} == 2 )
+  logged: participants := 5
+          mode := 1
+          shape := 0
+
+src/common/ComputeExecutorHarness.cpp:286: SUCCESS: CHECK( gate.entered >= runnable ) is correct!
+  values: CHECK( {?} >= 2 )
+  logged: participants := 5
+          mode := 1
+          shape := 1
+
+src/common/ComputeExecutorHarness.cpp:289: SUCCESS: CHECK( gate.entered == (shape == 2 || shape == 4 ? 3u : 2u) ) is correct!
+  values: CHECK( {?} == 2 )
+  logged: participants := 5
+          mode := 1
+          shape := 1
+
+src/common/ComputeExecutorHarness.cpp:286: SUCCESS: CHECK( gate.entered >= runnable ) is correct!
+  values: CHECK( {?} >= 2 )
+  logged: participants := 5
+          mode := 1
+          shape := 2
+
+src/common/ComputeExecutorHarness.cpp:289: SUCCESS: CHECK( gate.entered == (shape == 2 || shape == 4 ? 3u : 2u) ) is correct!
+  values: CHECK( {?} == 3 )
+  logged: participants := 5
+          mode := 1
+          shape := 2
+
+src/common/ComputeExecutorHarness.cpp:286: SUCCESS: CHECK( gate.entered >= runnable ) is correct!
+  values: CHECK( {?} >= 2 )
+  logged: participants := 5
+          mode := 1
+          shape := 3
+
+src/common/ComputeExecutorHarness.cpp:289: SUCCESS: CHECK( gate.entered == (shape == 2 || shape == 4 ? 3u : 2u) ) is correct!
+  values: CHECK( {?} == 2 )
+  logged: participants := 5
+          mode := 1
+          shape := 3
+
+src/common/ComputeExecutorHarness.cpp:286: SUCCESS: CHECK( gate.entered >= runnable ) is correct!
+  values: CHECK( {?} >= 3 )
+  logged: participants := 5
+          mode := 1
+          shape := 4
+
+src/common/ComputeExecutorHarness.cpp:289: SUCCESS: CHECK( gate.entered == (shape == 2 || shape == 4 ? 3u : 2u) ) is correct!
+  values: CHECK( {?} == 3 )
+  logged: participants := 5
+          mode := 1
+          shape := 4
+
+src/common/ComputeExecutorHarness.cpp:286: SUCCESS: CHECK( gate.entered >= runnable ) is correct!
+  values: CHECK( {?} >= 2 )
+  logged: participants := 3
+          mode := 2
+          shape := 0
+
+src/common/ComputeExecutorHarness.cpp:289: SUCCESS: CHECK( gate.entered == (shape == 2 || shape == 4 ? 3u : 2u) ) is correct!
+  values: CHECK( {?} == 2 )
+  logged: participants := 3
+          mode := 2
+          shape := 0
+
+src/common/ComputeExecutorHarness.cpp:286: SUCCESS: CHECK( gate.entered >= runnable ) is correct!
+  values: CHECK( {?} >= 2 )
+  logged: participants := 3
+          mode := 2
+          shape := 1
+
+src/common/ComputeExecutorHarness.cpp:289: SUCCESS: CHECK( gate.entered == (shape == 2 || shape == 4 ? 3u : 2u) ) is correct!
+  values: CHECK( {?} == 2 )
+  logged: participants := 3
+          mode := 2
+          shape := 1
+
+src/common/ComputeExecutorHarness.cpp:286: SUCCESS: CHECK( gate.entered >= runnable ) is correct!
+  values: CHECK( {?} >= 2 )
+  logged: participants := 3
+          mode := 2
+          shape := 2
+
+src/common/ComputeExecutorHarness.cpp:289: SUCCESS: CHECK( gate.entered == (shape == 2 || shape == 4 ? 3u : 2u) ) is correct!
+  values: CHECK( {?} == 3 )
+  logged: participants := 3
+          mode := 2
+          shape := 2
+
+src/common/ComputeExecutorHarness.cpp:286: SUCCESS: CHECK( gate.entered >= runnable ) is correct!
+  values: CHECK( {?} >= 2 )
+  logged: participants := 3
+          mode := 2
+          shape := 3
+
+src/common/ComputeExecutorHarness.cpp:289: SUCCESS: CHECK( gate.entered == (shape == 2 || shape == 4 ? 3u : 2u) ) is correct!
+  values: CHECK( {?} == 2 )
+  logged: participants := 3
+          mode := 2
+          shape := 3
+
+src/common/ComputeExecutorHarness.cpp:286: SUCCESS: CHECK( gate.entered >= runnable ) is correct!
+  values: CHECK( {?} >= 2 )
+  logged: participants := 5
+          mode := 2
+          shape := 0
+
+src/common/ComputeExecutorHarness.cpp:289: SUCCESS: CHECK( gate.entered == (shape == 2 || shape == 4 ? 3u : 2u) ) is correct!
+  values: CHECK( {?} == 2 )
+  logged: participants := 5
+          mode := 2
+          shape := 0
+
+src/common/ComputeExecutorHarness.cpp:286: SUCCESS: CHECK( gate.entered >= runnable ) is correct!
+  values: CHECK( {?} >= 2 )
+  logged: participants := 5
+          mode := 2
+          shape := 1
+
+src/common/ComputeExecutorHarness.cpp:289: SUCCESS: CHECK( gate.entered == (shape == 2 || shape == 4 ? 3u : 2u) ) is correct!
+  values: CHECK( {?} == 2 )
+  logged: participants := 5
+          mode := 2
+          shape := 1
+
+src/common/ComputeExecutorHarness.cpp:286: SUCCESS: CHECK( gate.entered >= runnable ) is correct!
+  values: CHECK( {?} >= 2 )
+  logged: participants := 5
+          mode := 2
+          shape := 2
+
+src/common/ComputeExecutorHarness.cpp:289: SUCCESS: CHECK( gate.entered == (shape == 2 || shape == 4 ? 3u : 2u) ) is correct!
+  values: CHECK( {?} == 3 )
+  logged: participants := 5
+          mode := 2
+          shape := 2
+
+src/common/ComputeExecutorHarness.cpp:286: SUCCESS: CHECK( gate.entered >= runnable ) is correct!
+  values: CHECK( {?} >= 2 )
+  logged: participants := 5
+          mode := 2
+          shape := 3
+
+src/common/ComputeExecutorHarness.cpp:289: SUCCESS: CHECK( gate.entered == (shape == 2 || shape == 4 ? 3u : 2u) ) is correct!
+  values: CHECK( {?} == 2 )
+  logged: participants := 5
+          mode := 2
+          shape := 3
+
+src/common/ComputeExecutorHarness.cpp:286: SUCCESS: CHECK( gate.entered >= runnable ) is correct!
+  values: CHECK( {?} >= 3 )
+  logged: participants := 5
+          mode := 2
+          shape := 4
+
+src/common/ComputeExecutorHarness.cpp:289: SUCCESS: CHECK( gate.entered == (shape == 2 || shape == 4 ? 3u : 2u) ) is correct!
+  values: CHECK( {?} == 3 )
+  logged: participants := 5
+          mode := 2
+          shape := 4
+
+===============================================================================
+[doctest] test cases:  1 |  1 passed | 0 failed | 1182 skipped
+[doctest] assertions: 54 | 54 passed | 0 failed |
+[doctest] Status: SUCCESS!

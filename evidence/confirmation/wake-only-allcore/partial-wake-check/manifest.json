@@ -1,0 +1,135 @@
+{
+  "state": "prepared_for_independent_static_review_no_compiles_or_runs",
+  "source": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/confirmation/wake-only-allcore/partial-wake-check/PartialWakeHarness.cpp",
+  "source_sha256": "e80bcc59f524a912aba43f199a630bd5a4f0505d49f617997a359a8c1e2b3d9e",
+  "builds": [
+    {
+      "role": "latest-baseline",
+      "source_root": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/confirmation/latest-wake/baseline",
+      "include_hashes": {
+        "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/confirmation/latest-wake/baseline/src/common/ComputeExecutor.h": "2053e76c927db8ceeb6e83cd2a70edb77e1fc02275b14a3ff998eafd7f6933af",
+        "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/confirmation/latest-wake/baseline/src/common/ComputeTelemetry.h": "a115209aad093832631dc7895bd91700a22baf9c819643e82076c940909fc092",
+        "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/confirmation/latest-wake/baseline/libgag/include/ThreadSupport.h": "55905779aed9e45793c0afca87c38133f2dd22ef78f99b703d25783a25b313fa",
+        "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/confirmation/latest-wake/baseline/libgag/include/PresentationWork.h": "70b5d48445e29c3913128e75353f9d9cfc60ac70ae8b3f9d808fca3e17b9f017"
+      },
+      "compile_command": [
+        "g++-13",
+        "-std=c++20",
+        "-O3",
+        "-pthread",
+        "-I/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/confirmation/latest-wake/baseline/src/common",
+        "-I/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/confirmation/latest-wake/baseline/libgag/include",
+        "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/confirmation/wake-only-allcore/partial-wake-check/PartialWakeHarness.cpp",
+        "-L/usr/lib/gcc/x86_64-linux-gnu/15",
+        "-o",
+        "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/confirmation/wake-only-allcore/partial-wake-check/partial-wake-latest-baseline"
+      ],
+      "expected_binary": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/confirmation/wake-only-allcore/partial-wake-check/partial-wake-latest-baseline",
+      "run_command": [
+        "timeout",
+        "75s",
+        "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/confirmation/wake-only-allcore/partial-wake-check/partial-wake-latest-baseline"
+      ]
+    },
+    {
+      "role": "latest-wake-only",
+      "source_root": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/confirmation/latest-wake/wake-only",
+      "include_hashes": {
+        "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/confirmation/latest-wake/wake-only/src/common/ComputeExecutor.h": "8e59b8816e147ffa72adc5b11d869483dbefe4663a3aca28a39ccc106b9663c1",
+        "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/confirmation/latest-wake/wake-only/src/common/ComputeTelemetry.h": "a115209aad093832631dc7895bd91700a22baf9c819643e82076c940909fc092",
+        "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/confirmation/latest-wake/wake-only/libgag/include/ThreadSupport.h": "55905779aed9e45793c0afca87c38133f2dd22ef78f99b703d25783a25b313fa",
+        "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/confirmation/latest-wake/wake-only/libgag/include/PresentationWork.h": "70b5d48445e29c3913128e75353f9d9cfc60ac70ae8b3f9d808fca3e17b9f017"
+      },
+      "compile_command": [
+        "g++-13",
+        "-std=c++20",
+        "-O3",
+        "-pthread",
+        "-I/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/confirmation/latest-wake/wake-only/src/common",
+        "-I/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/confirmation/latest-wake/wake-only/libgag/include",
+        "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/confirmation/wake-only-allcore/partial-wake-check/PartialWakeHarness.cpp",
+        "-L/usr/lib/gcc/x86_64-linux-gnu/15",
+        "-o",
+        "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/confirmation/wake-only-allcore/partial-wake-check/partial-wake-latest-wake-only"
+      ],
+      "expected_binary": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/confirmation/wake-only-allcore/partial-wake-check/partial-wake-latest-wake-only",
+      "run_command": [
+        "timeout",
+        "75s",
+        "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/confirmation/wake-only-allcore/partial-wake-check/partial-wake-latest-wake-only"
+      ]
+    },
+    {
+      "role": "old-baseline",
+      "source_root": "/home/bradley/.codex/worktrees/engine-history-latest-master/glob2",
+      "include_hashes": {
+        "/home/bradley/.codex/worktrees/engine-history-latest-master/glob2/src/common/ComputeExecutor.h": "fa37bd1b3b3f1027aedda6858af0a2f574c0a2c9499f250fb4dee6d9659e19ea",
+        "/home/bradley/.codex/worktrees/engine-history-latest-master/glob2/src/common/ComputeTelemetry.h": "a115209aad093832631dc7895bd91700a22baf9c819643e82076c940909fc092",
+        "/home/bradley/.codex/worktrees/engine-history-latest-master/glob2/libgag/include/ThreadSupport.h": "55905779aed9e45793c0afca87c38133f2dd22ef78f99b703d25783a25b313fa",
+        "/home/bradley/.codex/worktrees/engine-history-latest-master/glob2/libgag/include/PresentationWork.h": "70b5d48445e29c3913128e75353f9d9cfc60ac70ae8b3f9d808fca3e17b9f017"
+      },
+      "compile_command": [
+        "g++-13",
+        "-std=c++20",
+        "-O3",
+        "-pthread",
+        "-I/home/bradley/.codex/worktrees/engine-history-latest-master/glob2/src/common",
+        "-I/home/bradley/.codex/worktrees/engine-history-latest-master/glob2/libgag/include",
+        "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/confirmation/wake-only-allcore/partial-wake-check/PartialWakeHarness.cpp",
+        "-L/usr/lib/gcc/x86_64-linux-gnu/15",
+        "-o",
+        "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/confirmation/wake-only-allcore/partial-wake-check/partial-wake-old-baseline"
+      ],
+      "expected_binary": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/confirmation/wake-only-allcore/partial-wake-check/partial-wake-old-baseline",
+      "run_command": [
+        "timeout",
+        "75s",
+        "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/confirmation/wake-only-allcore/partial-wake-check/partial-wake-old-baseline"
+      ]
+    },
+    {
+      "role": "old-wake-only",
+      "source_root": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/wake-prototype/source",
+      "include_hashes": {
+        "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/wake-prototype/source/src/common/ComputeExecutor.h": "204fd6064bb4b6074a1d95ca905d700735e41ba7eaabb49720e44b3423f229c7",
+        "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/wake-prototype/source/src/common/ComputeTelemetry.h": "a115209aad093832631dc7895bd91700a22baf9c819643e82076c940909fc092",
+        "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/wake-prototype/source/libgag/include/ThreadSupport.h": "55905779aed9e45793c0afca87c38133f2dd22ef78f99b703d25783a25b313fa",
+        "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/wake-prototype/source/libgag/include/PresentationWork.h": "70b5d48445e29c3913128e75353f9d9cfc60ac70ae8b3f9d808fca3e17b9f017"
+      },
+      "compile_command": [
+        "g++-13",
+        "-std=c++20",
+        "-O3",
+        "-pthread",
+        "-I/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/wake-prototype/source/src/common",
+        "-I/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/wake-prototype/source/libgag/include",
+        "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/confirmation/wake-only-allcore/partial-wake-check/PartialWakeHarness.cpp",
+        "-L/usr/lib/gcc/x86_64-linux-gnu/15",
+        "-o",
+        "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/confirmation/wake-only-allcore/partial-wake-check/partial-wake-old-wake-only"
+      ],
+      "expected_binary": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/confirmation/wake-only-allcore/partial-wake-check/partial-wake-old-wake-only",
+      "run_command": [
+        "timeout",
+        "75s",
+        "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/confirmation/wake-only-allcore/partial-wake-check/partial-wake-old-wake-only"
+      ]
+    }
+  ],
+  "gate": "Rootonlycompile/runatcleanheldboundary whiletimingsheld; no frozenheaders/controllers/wrappers/rootapprovals modified.",
+  "expected_stdout_marker": "PARTIAL_WAKE_PASS bursts=144 modes=3 participants=5,9 shapes=2,3,mixed timing_excluded=true",
+  "scope": "144 correctnessbursts perbinary;2/3readyheads<4/8workers directlyexerciseschangedrepeatednotify_one branch. Mixed orderedgroup2jobs+independenthead has2readyheads,not3; followerblockeduntilpredecessorterminates.",
+  "contracts": [
+    "Everyburstallworkersidle2ms beforeadmission;headcallbacks holduntilparentseesexpectedparallelheads.",
+    "Exactlyonce IDs,totalcount,peakconcurrency,orderedlane offset/nooverlap,liveBatches0.",
+    "State+Workcontexts beforeexecutor;Releaseafterexecutor ensuresreleasebeforeexecutordestruction onexceptions.",
+    "5scallbackgates,5sparentwait,60sprocesswatchdog,75soutertimeout.",
+    "Off/Waits/Trace eightbursts eachshape,participants5/9. No timingmeasurement norprototypeprioritychanges."
+  ],
+  "limits": [
+    "2msidleallowsparking butcannotprovekernelwaitstate; heldcallbackoverlap providesactualconcurrencycheck.",
+    "Thisdoesnotreplacefullproducer save/replay/platformcoverage; no externalasync/renderer/GPU testsduplicated.",
+    "Usepartialwakeresultonlycorrectness; ignoreprocesswallunderbuildload."
+  ],
+  "activity": "Sourceandmanifestpreparedonly."
+}

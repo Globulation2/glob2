@@ -1,0 +1,38 @@
+{
+  "command": [
+    "taskset",
+    "-c",
+    "0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31",
+    "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/deadline-latency/probe-local",
+    "off",
+    "required"
+  ],
+  "returncode": 0,
+  "status": "completed",
+  "process_wall_seconds": 0.07164170034229755,
+  "user_cpu_seconds": 0.081631,
+  "system_cpu_seconds": 0.002015,
+  "total_cpu_seconds": 0.083646,
+  "peak_rss_kib": 23168,
+  "voluntary_context_switches": 19,
+  "involuntary_context_switches": 0,
+  "harness_sha256": "4affbeca486235bed52cec56db0bf154ef20eda03f10cd478e2ab15cb592d78a",
+  "utc": "2026-10-15T00:40:48.404113+00:00",
+  "role": "local-round-robin",
+  "policy": "round-robin",
+  "kind": "required",
+  "repeat": 1,
+  "allocation": "all32",
+  "binary_sha256": "c3719e448c71948a5c2224444a8eba2bbfa88752bfb26308fdabc65726921cc4",
+  "header_sha256": "cfdde45e73d0789c2eec88991fd45f8558dbfc6a76a9d0d82b1d509b48a0e786",
+  "validation_errors": [],
+  "latency": {
+    "trace": false,
+    "urgent_join_ns": 13386592,
+    "later_started_before_urgent": 125,
+    "presentation_start_delay_ns": -1,
+    "later_total": 128,
+    "digest": 6568891044718746485,
+    "result_bytes": 1032
+  }
+}

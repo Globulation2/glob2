@@ -1,0 +1,160 @@
+{
+  "state": "source_and_receipt_audit_only_during_frozen_final_campaign",
+  "scope": "No tests/builds/native jobs/signals; no bound final packages modified. Execute any recipe only after outer controller completes or root explicitly establishes a separate clean gate; current controller has no inserted validation stage.",
+  "selected_source": {
+    "base": "054804590ee1dd109f09642fc05654c324f08344",
+    "W_header_sha256": "8e59b8816e147ffa72adc5b11d869483dbefe4663a3aca28a39ccc106b9663c1",
+    "change": "Only deferred submit wake cardinality; deadlines/lanes/async callbacks/publication ticks/serialized state unchanged."
+  },
+  "actual_evidence": {
+    "latest_per_tick": {
+      "total_runs": 40,
+      "contexts": 20,
+      "selected_W_runs": 20,
+      "coverage": "PG/Oazis N1/N4/auto CPU, N4/auto OpenCL, mixed/nicowar, small64 and loaded continuation. Whole sidecar hashes plus initial/final matched B/W per parity.py.",
+      "actual_backend_counts": {
+        "cpu": 32,
+        "opencl": 8
+      },
+      "opencl_gpu_fields_min_max": [
+        2012,
+        2116
+      ],
+      "limit": "One Linux GCC13 host and one NVIDIA device/driver; not crossplatform or allGPU proof."
+    },
+    "focused": {
+      "total_BW_cases": 202,
+      "per_role": {
+        "unit": 51,
+        "engine": 50
+      },
+      "selected_W_cases": 101,
+      "failures": 0,
+      "skips": 0,
+      "covered_saves": [
+        "Hiring save every delay phase; whole game resume every publication phase; outstanding attraction request.",
+        "AI caches/receipts/futurecommands pipeline boundary, teamdeath/revive, rejectionfeedback/pendingreleaseidentity.",
+        "SharedWorker backgroundsave teardown readability, noAI savedcontinuation diagnosticmode/workercount parity, pendinggradient same deadlines, reducedAIroster retirement."
+      ],
+      "covered_presentation": [
+        "Spare workers prevent optionalpresentation blocking requiredbarriers; one-worker join waits, owner neverexecutes optionalchunk.",
+        "Presentation progress during continuousrequiredbacklog, replacement/cancellation/errors capture retirement, resumableyield/index pairing and bothpresentationclasses.",
+        "Externalcompletion and continuation parkedlane wake; earlyresolution Traceordering, nonzero-group lane sequence."
+      ]
+    },
+    "partial_wake": {
+      "total_bursts_four_headers": 576,
+      "bursts_each_header": 144,
+      "selected_latestW_bursts": 144,
+      "coverage": "4/8workers,2/3independentheads,mixedorderedlane followernotcounted,Off/Waits/Trace8bursts each. Tests logical progress/overlap, not timing."
+    },
+    "Off_guard": {
+      "total_old_latest_BW": 64,
+      "latest_BW": 32,
+      "selected_latestW": 16,
+      "coverage": "2allocations \u00d7 required/optional \u00d74repeats; actualBWWBBWWB order eachcell. Conditionalfixedpayload latency only; actualclaimorder not proven bycallbackstartcounter."
+    }
+  },
+  "remaining_gaps": [
+    {
+      "risk": "Production PR test integration",
+      "status": "Exact W header exercised extensively, but prospective edited Harness.cpp is source-only unbuilt.",
+      "smallest_check": "After campaign, isolated integration on recorded finalbase; build affected unit target using repository release/development policy and run ComputeExecutor/*; actualpartialcase poolsize/skips retained. No need repeat unchanged202cases just because test fixture was extended."
+    },
+    {
+      "risk": "Replay acceptance/execution and real match record",
+      "status": "Parity wrote replay/checksum files; generation and matching game sidecars do not establish loading/replay acceptance. Latest202 filters did not include ReplayStepCounter or match verify.",
+      "smallest_check": "Run unit ReplayStepCounter/* (includes VersionBounds, DecodeVersionPlumbing, mismatchclosure) and one committed FourSquares1 match verify B/W at N4; require result verification verdict and byte-identical checksums.txt to committedgolden, not merely rc0. Oldformats expectedrejected remain rejected; no fixtureupdate or SIMbump to hide discrepancy."
+    },
+    {
+      "risk": "Network scheduling versus transport protocol",
+      "status": "No newwire/order/publication contract intended. Existing unitTurnHarness is protocolsimulation; it does not itself execute this deferred engine scheduler.",
+      "smallest_check": "Committed real match verify supplies actualengine deterministic order execution. If interactive multiplayeruse is acceptancepriority, one two-client sameversion live game/rejoin smoke at differentN confirms integration, rather than rerunning everynetworkframingunit. Document if omitted."
+    },
+    {
+      "risk": "Uncovered producer suites",
+      "status": "Exactlatest hiring/AI/gradient pendingload continuation already covered; no blanket savegap. Latest202 omitted TeamStatsPipeline/TurretTargeting/WorldSnapshot fullsuites but W changes no serialized bytes.",
+      "smallest_check": "Do not mechanically rerun all producer/snapshot suites. Add targeted published/pending savecase only if finalintegration changes those files, fixture/sourceprovenance differs, or finalcampaign exposes mismatch. Savefloor58/replayfloor163 remain unchanged by selectedpatch."
+    },
+    {
+      "risk": "Graphical feel and context lifetime in actual UI",
+      "status": "Extensive synthetic presentationprogress/unique-context contracts and Offoptional latency, but allnativegame evidence headless.",
+      "smallest_check": "One short real renderer session on finalintegratedW: loadbusy save, pan/zoom while AI runs, presentation replacement, save/load, exit/reconfigure. Retainvideo or observations+exactbackend; framepacing quantitative claim requires actualframe evidence. Headlesswinnerthroughput does notprove smoothness."
+    },
+    {
+      "risk": "Condition-variable portability",
+      "status": "LinuxGCC13 release only. Windows/macOS/libc++/mobile and threadedbrowser selectedW runtime absent.",
+      "smallest_check": "Prefer one available alternate native CVruntime plus threadedbrowser sharedcompute/lifecycle test. Copy same initialstate/seed/orders and compare per-tick trace with Linux; use committedmatchverify golden plus focusedComputeExecutor/partialbranch test. No claim serialbrowserfallback covers threaded wakeups.",
+      "explicit_omissions": [
+        "Windows",
+        "macOS",
+        "Android",
+        "iOS",
+        "threaded browser engines",
+        "additionalGPUvendors/driverstacks"
+      ]
+    }
+  ],
+  "deferred_recipe": {
+    "cwd": "Final isolated selected source checkout, after campaign/root clean gate; never edit or run inside active frozen package.",
+    "unit_command": [
+      "python3",
+      "test/run_tests.py",
+      "--build-dir",
+      "build/linux/client/release",
+      "--binary",
+      "unit",
+      "--no-display",
+      "--timeout",
+      "120",
+      "-j",
+      "1",
+      "--filter",
+      "ComputeExecutor/*",
+      "--filter",
+      "ReplayStepCounter/*",
+      "--filter",
+      "TurnHarness/two clients on clean links execute identical turns",
+      "--filter",
+      "TurnHarness/a restarted client reloads, replays the full log and rejoins",
+      "--artifacts",
+      "<new-post-campaign-artifacts>",
+      "--junit",
+      "<new-post-campaign-junit.xml>"
+    ],
+    "match_verify_each_role": [
+      "<exact-role-binary>",
+      "match",
+      "verify",
+      "test/fixtures/multiplayer/FourSquares1.g2mr",
+      "--map-file",
+      "maps/FourSquares1.map.gz",
+      "--output-dir",
+      "<new-role-verify-dir>",
+      "--compute-threads",
+      "4"
+    ],
+    "match_verify_assertions": [
+      "Check result.json status and verification verdict; CLI returns0 for anyverdict per documentation, so rc0 insufficient.",
+      "Compare checksums.txt byte-for-byte B/W and committed test/fixtures/multiplayer/FourSquares1.verify-trace.txt. Preserve originalrecord/map/hash; never --update-fixtures."
+    ],
+    "browser": "Existing browser/tests/threading.spec.js sharedcompute/gradient/save-lifecycle case and browser/tests/determinism.spec.js committedmatchverify after appropriate threadedbuild; retain workerCount>0 and actualexecutionmode. Command depends on existing browser package/server configuration, no invented runner flags.",
+    "network_scope": "Two targeted unit protocol/rejoin cases complement committed real-engine matchverify. They are not prooflive graphicalmultiplayer or threaded-engine execution; nofullnetworkmatrix required for notification-only change."
+  },
+  "acceptance_limits": [
+    "Freeze currenttiming inputs; do not insert unplanned work between serial/waves.",
+    "No universal optimality or freeCPU claim: balancedN4 CI crosseszero, earlierB-first observations remain confounded, finalnaturalwinner/caps/throughput still running.",
+    "Prior exactsource evidence can be reused if compiler/flags/dependencies/source unchanged; refreshedPRintegration may require changedHarnessbuild and conflict-specific checks. Fetchcurrentmaster before finalvalidation, preserve allnewfeatures.",
+    "PR durable compatibility evidence must be accessible toreviewers, not only local artifactpaths. No newruntime dependency or SIM/save/replay gate change needed for notification-only intendedbehavior."
+  ],
+  "bound_receipts_sha256": {
+    "artifacts/october-regression/coordination-redesign/confirmation/wake-only-allcore/latest-focused/baseline/unit/junit.xml": "ec3d7f9822ddbd305664764844c7e38342899bf35239630d9415497c54ae000e",
+    "artifacts/october-regression/coordination-redesign/confirmation/wake-only-allcore/latest-focused/baseline/engine/junit.xml": "9a3027e0ef2d57147f3fbb09f0ff4aa3bc24295d9b3732bc11befb66ea5db940",
+    "artifacts/october-regression/coordination-redesign/confirmation/wake-only-allcore/latest-focused/wake-only/unit/junit.xml": "c52c77f55ac01ec72885f577a78d3a6673c095e55ae1c576f7659972af820fee",
+    "artifacts/october-regression/coordination-redesign/confirmation/wake-only-allcore/latest-focused/wake-only/engine/junit.xml": "b2fc4845be38159c1e5d37292a48172a5d605d2c2143bb27b57298f1248369fe",
+    "artifacts/october-regression/coordination-redesign/confirmation/wake-only-allcore/latest-focused-complete.json": "ee90bcfadf43012cdfcaba15f5ab04802142310a3de98e2a5acb737ca81cb01b",
+    "artifacts/october-regression/coordination-redesign/confirmation/wake-only-allcore/latest/parity-complete.json": "ba030647c1a656a22b42dc45658eb7b9f958b974aed9e429f62b5786bcfc9c64",
+    "artifacts/october-regression/coordination-redesign/confirmation/wake-only-allcore/partial-wake-check/results.json": "2f5cce1c8f6d3fe3988d17a03a32feec5905cc96fce7213e5b800fcbf16729c1",
+    "artifacts/october-regression/coordination-redesign/confirmation/wake-only-allcore/guard-timing-complete.json": "19da3a9cac6c68055f7c85080612f9038feb34e9f6fee86e154e16dcc11b9391"
+  }
+}

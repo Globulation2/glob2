@@ -1,0 +1,17 @@
+{
+  "state": "qualified_original_and_relocated_both_regimes_with_edge_checks",
+  "source_sha256": "056f9635d75f7a8ca697c4e0a0e760868a9eb1dfc49510df81ebdc896c37d031",
+  "canonical_analyzer_sha256": "d666ec60e13e71e8866ddfb97de76d82930676503c911810c8a18de407b00afd",
+  "canonical_parser_launcher_sha256": "8e53b4b9cb35a6c1189c6e0ccb09da0cec89dc7ec5965854fb54de477fad4f16",
+  "files": {
+    "recompute-final.py": "056f9635d75f7a8ca697c4e0a0e760868a9eb1dfc49510df81ebdc896c37d031",
+    "README.json": "c7210758e95296f5a53f9e194a27f78b2ec3559bf161d22558c61401194f2840",
+    "README.html": "b01fffb8dc730f49d7d7988f8999f903a6cf66d09c0560efa82b4c1566556952"
+  },
+  "no_real_execution": true,
+  "independent_review_sha256": "e9a6a255a0a86dd66b3a17bc09010c502f8d430c6bfbcd45559f1bcb44e763cb",
+  "qualification_receipt": {
+    "path": "artifacts/october-regression/coordination-redesign/review-evidence/portable-tools/qualification/receipt.json",
+    "sha256": "95b33402aa12f513183ec9c456c4d8decda63becf246f1132e8032345b9a2fea"
+  }
+}

@@ -1,0 +1,23 @@
+{
+  "approved": true,
+  "scope": "Combined independent static approval: feature agent launcher/lifecycle and causal agent analyzer/statistics. No builds, engines, timing or signals executed by reviewers. Separate root approval required.",
+  "source_sha256": "8e53b4b9cb35a6c1189c6e0ccb09da0cec89dc7ec5965854fb54de477fad4f16",
+  "analyzer_sha256": "d666ec60e13e71e8866ddfb97de76d82930676503c911810c8a18de407b00afd",
+  "plan_sha256": "a912c2a77fe6d07ad0eaea8b7ed4ada7af17844c98bb674780a36c77ee9e7090",
+  "reviews": {
+    "artifacts/october-regression/coordination-redesign/confirmation/final-cohort/launcher-independent-review.json": "10d5abe747fa64cd843e341a6f7841bbe87e5b596877b8fd2f3b37babe5f4d49",
+    "artifacts/october-regression/coordination-redesign/confirmation/final-cohort/statistics-independent-review.json": "9da9be09073ecd44a2b85f092bb9c7b8679ff2016befe2bd08c57256ffb209bb"
+  },
+  "checks": [
+    "Exact source-bound outerparent PID/starttime allowance; per-child campaignT/starttime and owned process admission; Python/script-only foreign-controller scan.",
+    "B/W roleorder rotates16/16 pairedseedserial,4/4pairedwavepermap; fourgame homogeneous disjoint6SMT waves, actualspan independent from sumgamewall.",
+    "Signals/sibling failures clean tracked owned descendants; onehour cap censors and retains partialCPU/logs; no silent reuse.",
+    "Bothsuccessfulwinner endpoint mismatch fails only after allpaired/wavechildrencomplete, saves receipts/pairs and holds campaign; analyzer independently fails closed.",
+    "128unique receipts/regime, binary/config/env/command/log/pair/wave hashes/order andmonotonic checks. Paired10000seed bootstrap and8wavecluster/bootstrap metrics; conditionalwinnerselection andcaps separated."
+  ],
+  "limitations": [
+    "No production acceptance or crossplatform result implied. Prior exact-source40perTick parity/focusedcontracts separate from optional natural sidecar endpoints.",
+    "Optional GCS rows/first/last is not fullstream equality; absent sidecars not checksum proof. Analyzer wholefile optional checksum SHA may use memory proportional to sidecar size; no checksum telemetry enabled in planned cohort.",
+    "Finite32seeds and8waves/map limit inference; wavecluster interval and actualmakespan lead waves conclusions; retaincensored outcomes/losses."
+  ]
+}

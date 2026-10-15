@@ -1,0 +1,28 @@
+{
+  "state": "independently_validated",
+  "runs": 128,
+  "matching_winner_pairs": 64,
+  "caps": 0,
+  "maps": {
+    "Playground": {
+      "games": 64,
+      "matching_pairs": 32,
+      "wave_pairs": 8,
+      "throughput_change_percent": 0.8264803577580304,
+      "numeric_agreement_with_frozen_analysis_max_tolerance_percentage_points": 1e-09
+    },
+    "Oazis": {
+      "games": 64,
+      "matching_pairs": 32,
+      "wave_pairs": 8,
+      "throughput_change_percent": -0.6069666765169512,
+      "numeric_agreement_with_frozen_analysis_max_tolerance_percentage_points": 1e-09
+    }
+  },
+  "OA_review": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/fresh-audit-causal/final-oazis-waves32/review.json",
+  "PG_review": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/fresh-audit-causal/final-playground-waves32/review.json",
+  "complete_sha256": "b4549ecb095948efb0e6444c482d4b3ca5dee5c7618f95df2b246768d604c7f3",
+  "analysis_sha256": "450e0b7f117ecac3e722c473ee586ac1293d27f87be5c996be97311714f89a28",
+  "all128_receipt_hashes_verified": true,
+  "no_native_or_frozen_changes": true
+}

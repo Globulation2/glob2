@@ -1,0 +1,5 @@
+PASS HiringPipeline/whole game save and resume preserves every publication phase [save-format][artifacts] (5.5s)
+PASS SharedWorkerLifecycle/pending gradient work survives a save and continues at the same deadlines (0.5s)
+
+2 passed, 0 failed, 0 skipped (5.9s of test time)
+[run_tests] JUnit report: /home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/confirmation/final-integration/native-engine.xml (2 cases)

@@ -1,0 +1,15 @@
+{
+  "state": "passed",
+  "command": [
+    "scons",
+    "target=web",
+    "web_variant=both",
+    "release=1",
+    "emsdk=/home/bradley/.local/share/glob2/development/toolchains/emscripten/Linux-x86_64-88a621bc131cd4954413aa39",
+    "web-tests",
+    "build/emscripten/client/release/index.html",
+    "-j32"
+  ],
+  "started_utc": "2026-10-15T09:28:07.547141+00:00",
+  "returncode": 0
+}

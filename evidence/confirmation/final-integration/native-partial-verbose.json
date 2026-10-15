@@ -1,0 +1,14 @@
+{
+  "state": "passed",
+  "command": [
+    "build/wake-control/test/glob2-unit-tests",
+    "--test-suite=ComputeExecutor",
+    "--test-case=idle workers retain parallelism for independent and mixed lane groups",
+    "--no-breaks=true",
+    "--success=true"
+  ],
+  "returncode": 0,
+  "actual_five_participant_context_present": true,
+  "pool_warning": false,
+  "log_sha256": "a0347a15b66ca738004e04beaa4ad81f334231eea77db9d8eade318eea2f88a9"
+}

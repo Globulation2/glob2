@@ -1,0 +1,10 @@
+scons: Reading SConscript files ...
+ValueError: single web_variant requires a browser development build:
+  File "/home/bradley/.codex/worktrees/engine-optimization/glob2/SConstruct", line 656:
+    main()
+  File "/home/bradley/.codex/worktrees/engine-optimization/glob2/SConstruct", line 305:
+    identity = build_identity(ARGUMENTS)
+  File "/home/bradley/.codex/worktrees/engine-optimization/glob2/scons/build_layout.py", line 24:
+    development = development_identity(arguments, target, enabled(arguments.get('release', 0)), enabled(arguments.get('profile', 0)))
+  File "/home/bradley/.codex/worktrees/engine-optimization/glob2/scons/dev_build.py", line 29:
+    raise ValueError('single web_variant requires a browser development build')

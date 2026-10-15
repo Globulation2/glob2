@@ -1,0 +1,35 @@
+{
+  "state": "complete",
+  "base": "48438f1f08a68b24ef0049834d371b9d00d84bae",
+  "patch_sha256": "c9dde7b9f54586b807309b468066d99a4f02f7667add782094827b9ef4d373bf",
+  "outputs": {
+    "native": {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/source/build/linux/client/release/src/glob2",
+      "sha256": "482d5b383fc9e13a8fc213e517b3d9b523554af37d63056a7bc3750a99758b2a"
+    },
+    "unit": {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/source/build/linux/client/release/test/glob2-unit-tests",
+      "sha256": "c503cc6ac4a5659434a9a9aeec88604014c5e8ff2b29e67eb43cd1a6b23c77ae"
+    },
+    "engine": {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/source/build/linux/client/release/test/glob2-engine-tests",
+      "sha256": "972ac321203bcc8bbeb7afa21a1cf05ed8db478a66689f9cf0a122d90efc74c8"
+    },
+    "micro-baseline": {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/micro-baseline",
+      "sha256": "3aec229c2fe2acfa797575d5324af4dcc3545d23ead2fea0d3667c706ba3a11a",
+      "header_sha256": "fa37bd1b3b3f1027aedda6858af0a2f574c0a2c9499f250fb4dee6d9659e19ea"
+    },
+    "micro-wake": {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/micro-wake",
+      "sha256": "76b1276b47d08ca21757d56290b17c087d34d65f20b5ca60aeaeab21779e374c",
+      "header_sha256": "204fd6064bb4b6074a1d95ca905d700735e41ba7eaabb49720e44b3423f229c7"
+    },
+    "micro-sharded": {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/micro-sharded",
+      "sha256": "accaac9e290879b5bb39a595e5dc304a0d8e0c6f3d5cde9381a92f9611b7aa5c",
+      "header_sha256": "ff6550ddf5a6b28d1b884f2432a42eb9dea59913908061c6136c1a65218a12d6"
+    }
+  },
+  "updated_utc": "2026-10-14T22:37:08.348272+00:00"
+}

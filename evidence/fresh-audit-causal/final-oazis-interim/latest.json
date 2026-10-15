@@ -1,0 +1,982 @@
+{
+  "utc": "2026-10-15T05:06:42.780873+00:00",
+  "state": "incomplete_map_completed_pair_prefix_validated",
+  "matched_pairs": 11,
+  "winner_receipts_audited": 22,
+  "caps_or_failures_in_pairs": 0,
+  "first_role_counts": {
+    "baseline": 6,
+    "wake-only": 5
+  },
+  "metrics": {
+    "e2e_seconds": {
+      "baseline_mean": 185.10733919658443,
+      "wake_mean": 179.7840124830519,
+      "ratio_of_paired_prefix_means_change_percent": -2.875805322812819,
+      "positive_change_seeds": 1,
+      "negative_change_seeds": 10,
+      "per_seed_changes_percent": [
+        -3.62976981321782,
+        -4.427982875951431,
+        -2.9692471167572343,
+        -2.950008874077681,
+        -3.068229623330221,
+        -3.2108767420005346,
+        -3.1542339127109242,
+        -2.618671822978813,
+        0.12590528620151087,
+        -3.1983741520950626,
+        -1.8409044739110536
+      ],
+      "first_role_strata_change_percent": {
+        "baseline": -2.5480998638446883,
+        "wake-only": -3.2635726980460023
+      }
+    },
+    "inner_seconds": {
+      "baseline_mean": 184.31363636363636,
+      "wake_mean": 178.9860909090909,
+      "ratio_of_paired_prefix_means_change_percent": -2.890478186885004,
+      "positive_change_seeds": 1,
+      "negative_change_seeds": 10,
+      "per_seed_changes_percent": [
+        -3.6515730132751334,
+        -4.461596385542165,
+        -2.978541337546081,
+        -2.9802763055000514,
+        -3.056297679209441,
+        -3.2254549087155526,
+        -3.1679751163756764,
+        -2.6520621279892964,
+        0.10821105484135618,
+        -3.2203427275338314,
+        -1.8268628315503688
+      ],
+      "first_role_strata_change_percent": {
+        "baseline": -2.5544183574474744,
+        "wake-only": -3.2881134724890515
+      }
+    },
+    "total_cpu_seconds": {
+      "baseline_mean": 744.2012548181818,
+      "wake_mean": 612.8440037272727,
+      "ratio_of_paired_prefix_means_change_percent": -17.650769901348994,
+      "positive_change_seeds": 0,
+      "negative_change_seeds": 11,
+      "per_seed_changes_percent": [
+        -18.23825002708488,
+        -19.00943764121554,
+        -18.091820985102704,
+        -18.356759303697658,
+        -19.241135151786594,
+        -16.37781039846873,
+        -18.358982836218463,
+        -16.095758790002847,
+        -16.5021457315346,
+        -17.858279014809717,
+        -16.63616772976637
+      ],
+      "first_role_strata_change_percent": {
+        "baseline": -17.946293841507867,
+        "wake-only": -17.296390262372817
+      }
+    },
+    "user_cpu_seconds": {
+      "baseline_mean": 615.2551383636363,
+      "wake_mean": 585.0704117272727,
+      "ratio_of_paired_prefix_means_change_percent": -4.906050312175269,
+      "positive_change_seeds": 0,
+      "negative_change_seeds": 11,
+      "per_seed_changes_percent": [
+        -5.280034283813451,
+        -5.868265759768276,
+        -5.504486272291431,
+        -5.238154701365971,
+        -5.272142755048992,
+        -4.323383445111562,
+        -5.704204042805627,
+        -3.420970989361871,
+        -3.8083495049716087,
+        -4.882915581072389,
+        -4.62338174394934
+      ],
+      "first_role_strata_change_percent": {
+        "baseline": -5.129927220966291,
+        "wake-only": -4.638567353655388
+      }
+    },
+    "system_cpu_seconds": {
+      "baseline_mean": 128.94611645454546,
+      "wake_mean": 27.773592,
+      "ratio_of_paired_prefix_means_change_percent": -78.46108687593518,
+      "positive_change_seeds": 0,
+      "negative_change_seeds": 11,
+      "per_seed_changes_percent": [
+        -77.55499773210627,
+        -79.60008534613766,
+        -78.57211565317385,
+        -77.70606919276797,
+        -79.81928827322297,
+        -78.7982372157942,
+        -80.01623046801589,
+        -78.06747135233645,
+        -77.82060608570714,
+        -77.26885186213977,
+        -75.80747635981966
+      ],
+      "first_role_strata_change_percent": {
+        "baseline": -78.51570899096075,
+        "wake-only": -78.39443150603128
+      }
+    },
+    "peak_rss_kib": {
+      "baseline_mean": 481612.7272727273,
+      "wake_mean": 481016.36363636365,
+      "ratio_of_paired_prefix_means_change_percent": -0.12382638634587106,
+      "positive_change_seeds": 4,
+      "negative_change_seeds": 7,
+      "per_seed_changes_percent": [
+        0.26069581771874795,
+        0.12580718948498326,
+        0.44824775876119993,
+        -0.6784226039231678,
+        -0.25623147986753025,
+        -0.06414276754661552,
+        -0.38663571468186,
+        0.27820414428243456,
+        -0.4261313299549929,
+        -0.12503035809053875,
+        -0.5238795233478255
+      ],
+      "first_role_strata_change_percent": {
+        "baseline": -0.1537434648554492,
+        "wake-only": -0.08860657529833338
+      }
+    },
+    "voluntary_context_switches": {
+      "baseline_mean": 8347533.363636363,
+      "wake_mean": 2115975.8181818184,
+      "ratio_of_paired_prefix_means_change_percent": -74.65148414501151,
+      "positive_change_seeds": 0,
+      "negative_change_seeds": 11,
+      "per_seed_changes_percent": [
+        -72.67453263400657,
+        -76.42023296509807,
+        -75.56791230069393,
+        -73.01834820299666,
+        -75.3607008902215,
+        -74.15911280707448,
+        -77.00805209318705,
+        -74.71928186721983,
+        -74.10353636252873,
+        -73.43065006908715,
+        -71.95134013424783
+      ],
+      "first_role_strata_change_percent": {
+        "baseline": -74.85453282080276,
+        "wake-only": -74.40173666507101
+      }
+    },
+    "involuntary_context_switches": {
+      "baseline_mean": 8758.636363636364,
+      "wake_mean": 834.9090909090909,
+      "ratio_of_paired_prefix_means_change_percent": -90.4675904302247,
+      "positive_change_seeds": 0,
+      "negative_change_seeds": 11,
+      "per_seed_changes_percent": [
+        -90.29688631426502,
+        -90.98924088463838,
+        -90.45668152789492,
+        -90.87183834958316,
+        -89.76489663558979,
+        -89.53078383509629,
+        -89.84415584415585,
+        -89.94855559952512,
+        -91.71306487116405,
+        -92.06873760740251,
+        -91.0759265922994
+      ],
+      "first_role_strata_change_percent": {
+        "baseline": -90.45404502486618,
+        "wake-only": -90.48393376543069
+      }
+    },
+    "inner_tps": {
+      "baseline_mean": 578.9389207816222,
+      "wake_mean": 596.0648171958554,
+      "ratio_of_paired_prefix_means_change_percent": 2.9581525441598755,
+      "positive_change_seeds": 10,
+      "negative_change_seeds": 1,
+      "per_seed_changes_percent": [
+        3.789966403684275,
+        4.669950738916251,
+        3.0699820210997597,
+        3.0718251835930355,
+        3.152652112559151,
+        3.3329579650031693,
+        3.2716191984862864,
+        2.7243125904486076,
+        -0.10809408509165896,
+        3.3274996195404416,
+        1.8608581575790595
+      ],
+      "first_role_strata_change_percent": {
+        "baseline": 2.544875261319479,
+        "wake-only": 3.4627982848660643
+      }
+    },
+    "cpu_per_tick": {
+      "baseline_mean": 0.007053367372892954,
+      "wake_mean": 0.0058079544616229765,
+      "ratio_of_paired_prefix_means_change_percent": -17.656997649892283,
+      "positive_change_seeds": 0,
+      "negative_change_seeds": 11,
+      "per_seed_changes_percent": [
+        -18.23825002708488,
+        -19.009437641215555,
+        -18.091820985102704,
+        -18.356759303697643,
+        -19.241135151786594,
+        -16.37781039846873,
+        -18.358982836218463,
+        -16.095758790002833,
+        -16.5021457315346,
+        -17.858279014809717,
+        -16.63616772976637
+      ],
+      "first_role_strata_change_percent": {
+        "baseline": -17.79202547248677,
+        "wake-only": -17.496711764295803
+      }
+    },
+    "ticks": {
+      "baseline_mean": 105916.18181818182,
+      "wake_mean": 105916.18181818182,
+      "ratio_of_paired_prefix_means_change_percent": 0.0,
+      "positive_change_seeds": 0,
+      "negative_change_seeds": 0,
+      "per_seed_changes_percent": [
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "first_role_strata_change_percent": {
+        "baseline": 0.0,
+        "wake-only": 0.0
+      }
+    }
+  },
+  "adverse_inner_wall_seeds": [
+    {
+      "seed": 1030656205,
+      "change_percent": 0.10821105484135618,
+      "e2e_percent": 0.12590528620151087,
+      "CPU_percent": -16.5021457315346
+    }
+  ],
+  "adverse_e2e_wall_seeds": [
+    {
+      "seed": 1030656205,
+      "change_percent": 0.12590528620151087
+    }
+  ],
+  "CPU_saving_decomposition": {
+    "wholeprocess_CPU_seconds_saved": 1444.9297620000007,
+    "user_CPU_seconds_saved": 332.031993,
+    "system_CPU_seconds_saved": 1112.897769,
+    "system_fraction_of_total_CPU_seconds_saved": 0.7702089044519241,
+    "scope": "wait4wholeprocessnotpuregamecallbacktime;categoriesaddexactly,notmechanismprofile."
+  },
+  "pairs": [
+    {
+      "seed": 1056243202,
+      "index": 0,
+      "first_role": "baseline",
+      "baseline": {
+        "e2e_seconds": 138.2895433115773,
+        "inner_seconds": 137.475,
+        "total_cpu_seconds": 564.494131,
+        "user_cpu_seconds": 463.285685,
+        "system_cpu_seconds": 101.208446,
+        "peak_rss_kib": 466444,
+        "voluntary_context_switches": 6169362,
+        "involuntary_context_switches": 6905,
+        "inner_tps": 561.2220403709765,
+        "cpu_per_tick": 0.007316459691007596,
+        "ticks": 77154,
+        "seed": 1056243202,
+        "role": "baseline",
+        "start": 3303810.663734352,
+        "end": 3303948.953277664,
+        "receipt": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/confirmation/final-cohort/serial/Oazis/1056243202-baseline/receipt.json"
+      },
+      "wake-only": {
+        "e2e_seconds": 133.26995121361688,
+        "inner_seconds": 132.455,
+        "total_cpu_seconds": 461.54028,
+        "user_cpu_seconds": 438.824042,
+        "system_cpu_seconds": 22.716238,
+        "peak_rss_kib": 467660,
+        "voluntary_context_switches": 1685807,
+        "involuntary_context_switches": 670,
+        "inner_tps": 582.4921671511079,
+        "cpu_per_tick": 0.0059820654794307485,
+        "ticks": 77154,
+        "seed": 1056243202,
+        "role": "wake-only",
+        "start": 3303949.204507537,
+        "end": 3304082.474458751,
+        "receipt": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/confirmation/final-cohort/serial/Oazis/1056243202-wake-only/receipt.json"
+      },
+      "change_percent": {
+        "e2e_seconds": -3.62976981321782,
+        "inner_seconds": -3.6515730132751334,
+        "total_cpu_seconds": -18.23825002708488,
+        "user_cpu_seconds": -5.280034283813451,
+        "system_cpu_seconds": -77.55499773210627,
+        "peak_rss_kib": 0.26069581771874795,
+        "voluntary_context_switches": -72.67453263400657,
+        "involuntary_context_switches": -90.29688631426502,
+        "inner_tps": 3.789966403684275,
+        "cpu_per_tick": -18.23825002708488,
+        "ticks": 0.0
+      }
+    },
+    {
+      "seed": 744345666,
+      "index": 1,
+      "first_role": "wake-only",
+      "baseline": {
+        "e2e_seconds": 154.83114658296108,
+        "inner_seconds": 154.048,
+        "total_cpu_seconds": 637.820178,
+        "user_cpu_seconds": 524.141923,
+        "system_cpu_seconds": 113.678255,
+        "peak_rss_kib": 454664,
+        "voluntary_context_switches": 7658057,
+        "involuntary_context_switches": 6692,
+        "inner_tps": 653.5235770668883,
+        "cpu_per_tick": 0.006335500506585614,
+        "ticks": 100674,
+        "seed": 744345666,
+        "role": "baseline",
+        "start": 3304230.987209809,
+        "end": 3304385.818356392,
+        "receipt": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/confirmation/final-cohort/serial/Oazis/744345666-baseline/receipt.json"
+      },
+      "wake-only": {
+        "e2e_seconds": 147.9752499256283,
+        "inner_seconds": 147.175,
+        "total_cpu_seconds": 516.574149,
+        "user_cpu_seconds": 493.383882,
+        "system_cpu_seconds": 23.190267,
+        "peak_rss_kib": 455236,
+        "voluntary_context_switches": 1805752,
+        "involuntary_context_switches": 603,
+        "inner_tps": 684.0428061831153,
+        "cpu_per_tick": 0.005131157488527326,
+        "ticks": 100674,
+        "seed": 744345666,
+        "role": "wake-only",
+        "start": 3304082.741668437,
+        "end": 3304230.716918363,
+        "receipt": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/confirmation/final-cohort/serial/Oazis/744345666-wake-only/receipt.json"
+      },
+      "change_percent": {
+        "e2e_seconds": -4.427982875951431,
+        "inner_seconds": -4.461596385542165,
+        "total_cpu_seconds": -19.00943764121554,
+        "user_cpu_seconds": -5.868265759768276,
+        "system_cpu_seconds": -79.60008534613766,
+        "peak_rss_kib": 0.12580718948498326,
+        "voluntary_context_switches": -76.42023296509807,
+        "involuntary_context_switches": -90.98924088463838,
+        "inner_tps": 4.669950738916251,
+        "cpu_per_tick": -19.009437641215555,
+        "ticks": 0.0
+      }
+    },
+    {
+      "seed": 1064623205,
+      "index": 2,
+      "first_role": "baseline",
+      "baseline": {
+        "e2e_seconds": 183.08403313485906,
+        "inner_seconds": 182.304,
+        "total_cpu_seconds": 742.3872650000001,
+        "user_cpu_seconds": 614.496473,
+        "system_cpu_seconds": 127.890792,
+        "peak_rss_kib": 471168,
+        "voluntary_context_switches": 8634960,
+        "involuntary_context_switches": 8299,
+        "inner_tps": 621.5661751799192,
+        "cpu_per_tick": 0.006551593492419296,
+        "ticks": 113314,
+        "seed": 1064623205,
+        "role": "baseline",
+        "start": 3304386.079657147,
+        "end": 3304569.163690282,
+        "receipt": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/confirmation/final-cohort/serial/Oazis/1064623205-baseline/receipt.json"
+      },
+      "wake-only": {
+        "e2e_seconds": 177.6478157597594,
+        "inner_seconds": 176.874,
+        "total_cpu_seconds": 608.0758900000001,
+        "user_cpu_seconds": 580.671599,
+        "system_cpu_seconds": 27.404291,
+        "peak_rss_kib": 473280,
+        "voluntary_context_switches": 2109701,
+        "involuntary_context_switches": 792,
+        "inner_tps": 640.6481450071802,
+        "cpu_per_tick": 0.005366290926099158,
+        "ticks": 113314,
+        "seed": 1064623205,
+        "role": "wake-only",
+        "start": 3304569.428105236,
+        "end": 3304747.075920996,
+        "receipt": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/confirmation/final-cohort/serial/Oazis/1064623205-wake-only/receipt.json"
+      },
+      "change_percent": {
+        "e2e_seconds": -2.9692471167572343,
+        "inner_seconds": -2.978541337546081,
+        "total_cpu_seconds": -18.091820985102704,
+        "user_cpu_seconds": -5.504486272291431,
+        "system_cpu_seconds": -78.57211565317385,
+        "peak_rss_kib": 0.44824775876119993,
+        "voluntary_context_switches": -75.56791230069393,
+        "involuntary_context_switches": -90.45668152789492,
+        "inner_tps": 3.0699820210997597,
+        "cpu_per_tick": -18.091820985102704,
+        "ticks": 0.0
+      }
+    },
+    {
+      "seed": 725864695,
+      "index": 3,
+      "first_role": "wake-only",
+      "baseline": {
+        "e2e_seconds": 138.89224909991026,
+        "inner_seconds": 138.108,
+        "total_cpu_seconds": 557.107125,
+        "user_cpu_seconds": 456.256036,
+        "system_cpu_seconds": 100.851089,
+        "peak_rss_kib": 472272,
+        "voluntary_context_switches": 6125559,
+        "involuntary_context_switches": 7077,
+        "inner_tps": 547.2963188229502,
+        "cpu_per_tick": 0.007370506773741169,
+        "ticks": 75586,
+        "seed": 725864695,
+        "role": "baseline",
+        "start": 3304882.429972356,
+        "end": 3305021.322221456,
+        "receipt": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/confirmation/final-cohort/serial/Oazis/725864695-baseline/receipt.json"
+      },
+      "wake-only": {
+        "e2e_seconds": 134.79491542605683,
+        "inner_seconds": 133.992,
+        "total_cpu_seconds": 454.840311,
+        "user_cpu_seconds": 432.356639,
+        "system_cpu_seconds": 22.483672,
+        "peak_rss_kib": 469068,
+        "voluntary_context_switches": 1652777,
+        "involuntary_context_switches": 646,
+        "inner_tps": 564.1083049734312,
+        "cpu_per_tick": 0.0060175205858227715,
+        "ticks": 75586,
+        "seed": 725864695,
+        "role": "wake-only",
+        "start": 3304747.354366321,
+        "end": 3304882.149281747,
+        "receipt": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/confirmation/final-cohort/serial/Oazis/725864695-wake-only/receipt.json"
+      },
+      "change_percent": {
+        "e2e_seconds": -2.950008874077681,
+        "inner_seconds": -2.9802763055000514,
+        "total_cpu_seconds": -18.356759303697658,
+        "user_cpu_seconds": -5.238154701365971,
+        "system_cpu_seconds": -77.70606919276797,
+        "peak_rss_kib": -0.6784226039231678,
+        "voluntary_context_switches": -73.01834820299666,
+        "involuntary_context_switches": -90.87183834958316,
+        "inner_tps": 3.0718251835930355,
+        "cpu_per_tick": -18.356759303697643,
+        "ticks": 0.0
+      }
+    },
+    {
+      "seed": 599004658,
+      "index": 4,
+      "first_role": "baseline",
+      "baseline": {
+        "e2e_seconds": 187.1844950048253,
+        "inner_seconds": 186.402,
+        "total_cpu_seconds": 774.424117,
+        "user_cpu_seconds": 629.308908,
+        "system_cpu_seconds": 145.115209,
+        "peak_rss_kib": 458960,
+        "voluntary_context_switches": 9178727,
+        "involuntary_context_switches": 9868,
+        "inner_tps": 628.5018401090117,
+        "cpu_per_tick": 0.006610308798675248,
+        "ticks": 117154,
+        "seed": 599004658,
+        "role": "baseline",
+        "start": 3305021.569080228,
+        "end": 3305208.753575233,
+        "receipt": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/confirmation/final-cohort/serial/Oazis/599004658-baseline/receipt.json"
+      },
+      "wake-only": {
+        "e2e_seconds": 181.44124487880617,
+        "inner_seconds": 180.705,
+        "total_cpu_seconds": 625.4161260000001,
+        "user_cpu_seconds": 596.130844,
+        "system_cpu_seconds": 29.285282,
+        "peak_rss_kib": 457784,
+        "voluntary_context_switches": 2261574,
+        "involuntary_context_switches": 1010,
+        "inner_tps": 648.3163166486815,
+        "cpu_per_tick": 0.0053384103487717025,
+        "ticks": 117154,
+        "seed": 599004658,
+        "role": "wake-only",
+        "start": 3305209.026160708,
+        "end": 3305390.467405587,
+        "receipt": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/confirmation/final-cohort/serial/Oazis/599004658-wake-only/receipt.json"
+      },
+      "change_percent": {
+        "e2e_seconds": -3.068229623330221,
+        "inner_seconds": -3.056297679209441,
+        "total_cpu_seconds": -19.241135151786594,
+        "user_cpu_seconds": -5.272142755048992,
+        "system_cpu_seconds": -79.81928827322297,
+        "peak_rss_kib": -0.25623147986753025,
+        "voluntary_context_switches": -75.3607008902215,
+        "involuntary_context_switches": -89.76489663558979,
+        "inner_tps": 3.152652112559151,
+        "cpu_per_tick": -19.241135151786594,
+        "ticks": 0.0
+      }
+    },
+    {
+      "seed": 117787757,
+      "index": 5,
+      "first_role": "wake-only",
+      "baseline": {
+        "e2e_seconds": 331.15569162229076,
+        "inner_seconds": 330.341,
+        "total_cpu_seconds": 1280.880288,
+        "user_cpu_seconds": 1073.558258,
+        "system_cpu_seconds": 207.32203,
+        "peak_rss_kib": 561248,
+        "voluntary_context_switches": 13271251,
+        "involuntary_context_switches": 14748,
+        "inner_tps": 492.49109253771104,
+        "cpu_per_tick": 0.007873134722478333,
+        "ticks": 162690,
+        "seed": 117787757,
+        "role": "baseline",
+        "start": 3305711.543724823,
+        "end": 3306042.699416445,
+        "receipt": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/confirmation/final-cohort/serial/Oazis/117787757-baseline/receipt.json"
+      },
+      "wake-only": {
+        "e2e_seconds": 320.5226905401796,
+        "inner_seconds": 319.686,
+        "total_cpu_seconds": 1071.100143,
+        "user_cpu_seconds": 1027.144218,
+        "system_cpu_seconds": 43.955925,
+        "peak_rss_kib": 560888,
+        "voluntary_context_switches": 3429409,
+        "involuntary_context_switches": 1544,
+        "inner_tps": 508.9056136333778,
+        "cpu_per_tick": 0.006583687645214825,
+        "ticks": 162690,
+        "seed": 117787757,
+        "role": "wake-only",
+        "start": 3305390.744429602,
+        "end": 3305711.267120142,
+        "receipt": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/confirmation/final-cohort/serial/Oazis/117787757-wake-only/receipt.json"
+      },
+      "change_percent": {
+        "e2e_seconds": -3.2108767420005346,
+        "inner_seconds": -3.2254549087155526,
+        "total_cpu_seconds": -16.37781039846873,
+        "user_cpu_seconds": -4.323383445111562,
+        "system_cpu_seconds": -78.7982372157942,
+        "peak_rss_kib": -0.06414276754661552,
+        "voluntary_context_switches": -74.15911280707448,
+        "involuntary_context_switches": -89.53078383509629,
+        "inner_tps": 3.3329579650031693,
+        "cpu_per_tick": -16.37781039846873,
+        "ticks": 0.0
+      }
+    },
+    {
+      "seed": 85910194,
+      "index": 6,
+      "first_role": "baseline",
+      "baseline": {
+        "e2e_seconds": 282.40586718311533,
+        "inner_seconds": 281.631,
+        "total_cpu_seconds": 1116.122281,
+        "user_cpu_seconds": 926.055057,
+        "system_cpu_seconds": 190.067224,
+        "peak_rss_kib": 504868,
+        "voluntary_context_switches": 13130623,
+        "involuntary_context_switches": 11550,
+        "inner_tps": 610.6217000259205,
+        "cpu_per_tick": 0.006490215043321509,
+        "ticks": 171970,
+        "seed": 85910194,
+        "role": "baseline",
+        "start": 3306042.961034836,
+        "end": 3306325.366902019,
+        "receipt": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/confirmation/final-cohort/serial/Oazis/85910194-baseline/receipt.json"
+      },
+      "wake-only": {
+        "e2e_seconds": 273.49812554894015,
+        "inner_seconds": 272.709,
+        "total_cpu_seconds": 911.213583,
+        "user_cpu_seconds": 873.230987,
+        "system_cpu_seconds": 37.982596,
+        "peak_rss_kib": 502916,
+        "voluntary_context_switches": 3018986,
+        "involuntary_context_switches": 1173,
+        "inner_tps": 630.5989167940919,
+        "cpu_per_tick": 0.005298677577484445,
+        "ticks": 171970,
+        "seed": 85910194,
+        "role": "wake-only",
+        "start": 3306325.634069999,
+        "end": 3306599.132195548,
+        "receipt": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/confirmation/final-cohort/serial/Oazis/85910194-wake-only/receipt.json"
+      },
+      "change_percent": {
+        "e2e_seconds": -3.1542339127109242,
+        "inner_seconds": -3.1679751163756764,
+        "total_cpu_seconds": -18.358982836218463,
+        "user_cpu_seconds": -5.704204042805627,
+        "system_cpu_seconds": -80.01623046801589,
+        "peak_rss_kib": -0.38663571468186,
+        "voluntary_context_switches": -77.00805209318705,
+        "involuntary_context_switches": -89.84415584415585,
+        "inner_tps": 3.2716191984862864,
+        "cpu_per_tick": -18.358982836218463,
+        "ticks": 0.0
+      }
+    },
+    {
+      "seed": 769116511,
+      "index": 7,
+      "first_role": "wake-only",
+      "baseline": {
+        "e2e_seconds": 171.157246991992,
+        "inner_seconds": 170.358,
+        "total_cpu_seconds": 684.944745,
+        "user_cpu_seconds": 568.642852,
+        "system_cpu_seconds": 116.301893,
+        "peak_rss_kib": 500352,
+        "voluntary_context_switches": 7720912,
+        "involuntary_context_switches": 7581,
+        "inner_tps": 583.8176076262929,
+        "cpu_per_tick": 0.006886773763799795,
+        "ticks": 99458,
+        "seed": 769116511,
+        "role": "baseline",
+        "start": 3306766.36158153,
+        "end": 3306937.518828522,
+        "receipt": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/confirmation/final-cohort/serial/Oazis/769116511-baseline/receipt.json"
+      },
+      "wake-only": {
+        "e2e_seconds": 166.67520039202645,
+        "inner_seconds": 165.84,
+        "total_cpu_seconds": 574.697691,
+        "user_cpu_seconds": 549.189745,
+        "system_cpu_seconds": 25.507946,
+        "peak_rss_kib": 501744,
+        "voluntary_context_switches": 1951902,
+        "involuntary_context_switches": 762,
+        "inner_tps": 599.7226242161119,
+        "cpu_per_tick": 0.00577829527036538,
+        "ticks": 99458,
+        "seed": 769116511,
+        "role": "wake-only",
+        "start": 3306599.408978308,
+        "end": 3306766.0841787,
+        "receipt": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/confirmation/final-cohort/serial/Oazis/769116511-wake-only/receipt.json"
+      },
+      "change_percent": {
+        "e2e_seconds": -2.618671822978813,
+        "inner_seconds": -2.6520621279892964,
+        "total_cpu_seconds": -16.095758790002847,
+        "user_cpu_seconds": -3.420970989361871,
+        "system_cpu_seconds": -78.06747135233645,
+        "peak_rss_kib": 0.27820414428243456,
+        "voluntary_context_switches": -74.71928186721983,
+        "involuntary_context_switches": -89.94855559952512,
+        "inner_tps": 2.7243125904486076,
+        "cpu_per_tick": -16.095758790002833,
+        "ticks": 0.0
+      }
+    },
+    {
+      "seed": 1030656205,
+      "index": 8,
+      "first_role": "baseline",
+      "baseline": {
+        "e2e_seconds": 139.3938766149804,
+        "inner_seconds": 138.618,
+        "total_cpu_seconds": 575.501632,
+        "user_cpu_seconds": 476.797704,
+        "system_cpu_seconds": 98.703928,
+        "peak_rss_kib": 451504,
+        "voluntary_context_switches": 6344457,
+        "involuntary_context_switches": 7723,
+        "inner_tps": 565.1358409441775,
+        "cpu_per_tick": 0.007346391687303735,
+        "ticks": 78338,
+        "seed": 1030656205,
+        "role": "baseline",
+        "start": 3306937.781551928,
+        "end": 3307077.175428543,
+        "receipt": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/confirmation/final-cohort/serial/Oazis/1030656205-baseline/receipt.json"
+      },
+      "wake-only": {
+        "e2e_seconds": 139.5693808742799,
+        "inner_seconds": 138.768,
+        "total_cpu_seconds": 480.531514,
+        "user_cpu_seconds": 458.639581,
+        "system_cpu_seconds": 21.891933,
+        "peak_rss_kib": 449580,
+        "voluntary_context_switches": 1642990,
+        "involuntary_context_switches": 640,
+        "inner_tps": 564.5249625273839,
+        "cpu_per_tick": 0.006134079425055529,
+        "ticks": 78338,
+        "seed": 1030656205,
+        "role": "wake-only",
+        "start": 3307077.437632572,
+        "end": 3307217.007013446,
+        "receipt": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/confirmation/final-cohort/serial/Oazis/1030656205-wake-only/receipt.json"
+      },
+      "change_percent": {
+        "e2e_seconds": 0.12590528620151087,
+        "inner_seconds": 0.10821105484135618,
+        "total_cpu_seconds": -16.5021457315346,
+        "user_cpu_seconds": -3.8083495049716087,
+        "system_cpu_seconds": -77.82060608570714,
+        "peak_rss_kib": -0.4261313299549929,
+        "voluntary_context_switches": -74.10353636252873,
+        "involuntary_context_switches": -91.71306487116405,
+        "inner_tps": -0.10809408509165896,
+        "cpu_per_tick": -16.5021457315346,
+        "ticks": 0.0
+      }
+    },
+    {
+      "seed": 79851807,
+      "index": 9,
+      "first_role": "wake-only",
+      "baseline": {
+        "e2e_seconds": 136.58823109604418,
+        "inner_seconds": 135.793,
+        "total_cpu_seconds": 561.680092,
+        "user_cpu_seconds": 460.997505,
+        "system_cpu_seconds": 100.682587,
+        "peak_rss_kib": 444692,
+        "voluntary_context_switches": 6400612,
+        "involuntary_context_switches": 7565,
+        "inner_tps": 590.0893271376285,
+        "cpu_per_tick": 0.007009610532884063,
+        "ticks": 80130,
+        "seed": 79851807,
+        "role": "baseline",
+        "start": 3307349.757755915,
+        "end": 3307486.345987011,
+        "receipt": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/confirmation/final-cohort/serial/Oazis/79851807-baseline/receipt.json"
+      },
+      "wake-only": {
+        "e2e_seconds": 132.21962841786444,
+        "inner_seconds": 131.42,
+        "total_cpu_seconds": 461.373694,
+        "user_cpu_seconds": 438.487386,
+        "system_cpu_seconds": 22.886308,
+        "peak_rss_kib": 444136,
+        "voluntary_context_switches": 1700601,
+        "involuntary_context_switches": 600,
+        "inner_tps": 609.7245472530818,
+        "cpu_per_tick": 0.005757814726070136,
+        "ticks": 80130,
+        "seed": 79851807,
+        "role": "wake-only",
+        "start": 3307217.282898827,
+        "end": 3307349.502527245,
+        "receipt": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/confirmation/final-cohort/serial/Oazis/79851807-wake-only/receipt.json"
+      },
+      "change_percent": {
+        "e2e_seconds": -3.1983741520950626,
+        "inner_seconds": -3.2203427275338314,
+        "total_cpu_seconds": -17.858279014809717,
+        "user_cpu_seconds": -4.882915581072389,
+        "system_cpu_seconds": -77.26885186213977,
+        "peak_rss_kib": -0.12503035809053875,
+        "voluntary_context_switches": -73.43065006908715,
+        "involuntary_context_switches": -92.06873760740251,
+        "inner_tps": 3.3274996195404416,
+        "cpu_per_tick": -17.858279014809717,
+        "ticks": 0.0
+      }
+    },
+    {
+      "seed": 1480527227,
+      "index": 10,
+      "first_role": "baseline",
+      "baseline": {
+        "e2e_seconds": 173.1983505198732,
+        "inner_seconds": 172.372,
+        "total_cpu_seconds": 690.851949,
+        "user_cpu_seconds": 574.266121,
+        "system_cpu_seconds": 116.585828,
+        "peak_rss_kib": 511568,
+        "voluntary_context_switches": 7188347,
+        "involuntary_context_switches": 8337,
+        "inner_tps": 514.0626087763674,
+        "cpu_per_tick": 0.007796546089606139,
+        "ticks": 88610,
+        "seed": 1480527227,
+        "role": "baseline",
+        "start": 3307486.624488853,
+        "end": 3307659.822839373,
+        "receipt": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/confirmation/final-cohort/serial/Oazis/1480527227-baseline/receipt.json"
+      },
+      "wake-only": {
+        "e2e_seconds": 170.0099343364127,
+        "inner_seconds": 169.223,
+        "total_cpu_seconds": 575.92066,
+        "user_cpu_seconds": 547.715606,
+        "system_cpu_seconds": 28.205054,
+        "peak_rss_kib": 508888,
+        "voluntary_context_switches": 2016235,
+        "involuntary_context_switches": 744,
+        "inner_tps": 523.6285847668461,
+        "cpu_per_tick": 0.006499499605010721,
+        "ticks": 88610,
+        "seed": 1480527227,
+        "role": "wake-only",
+        "start": 3307660.0702726,
+        "end": 3307830.080206936,
+        "receipt": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/confirmation/final-cohort/serial/Oazis/1480527227-wake-only/receipt.json"
+      },
+      "change_percent": {
+        "e2e_seconds": -1.8409044739110536,
+        "inner_seconds": -1.8268628315503688,
+        "total_cpu_seconds": -16.63616772976637,
+        "user_cpu_seconds": -4.62338174394934,
+        "system_cpu_seconds": -75.80747635981966,
+        "peak_rss_kib": -0.5238795233478255,
+        "voluntary_context_switches": -71.95134013424783,
+        "involuntary_context_switches": -91.0759265922994,
+        "inner_tps": 1.8608581575790595,
+        "cpu_per_tick": -16.63616772976637,
+        "ticks": 0.0
+      }
+    }
+  ],
+  "provenance": {
+    "base_revision": "054804590ee1dd109f09642fc05654c324f08344",
+    "plan_sha256": "a912c2a77fe6d07ad0eaea8b7ed4ada7af17844c98bb674780a36c77ee9e7090",
+    "launcher_sha256": "8e53b4b9cb35a6c1189c6e0ccb09da0cec89dc7ec5965854fb54de477fad4f16",
+    "binary_inputs": [
+      {
+        "role": "baseline",
+        "binary": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/confirmation/latest-wake/baseline/build/linux/client/release/src/glob2",
+        "cwd": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/confirmation/latest-wake/baseline",
+        "env": {},
+        "base_revision": "054804590ee1dd109f09642fc05654c324f08344",
+        "sha256": "4a90fb41dbd1ac1bc674930a29cc4581d9fa87a638f04b57137df8eea5e8d0e9"
+      },
+      {
+        "role": "wake-only",
+        "binary": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/confirmation/latest-wake/wake-only/build/linux/client/release/src/glob2",
+        "cwd": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/confirmation/latest-wake/wake-only",
+        "env": {},
+        "base_revision": "054804590ee1dd109f09642fc05654c324f08344",
+        "sha256": "99fbc82a526f0e15035bc675e50ac604a056574e931e077b3de955d19ce273a2"
+      }
+    ],
+    "fixtures": {
+      "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/confirmation/latest-wake/baseline/maps/Playground.map": "2a323a2d02475fb1ddd2ddfac99c51890aa7b2a2f3537ad7bee93aba85d84eaf",
+      "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/confirmation/latest-wake/baseline/maps/Oazis.map": "cd80d8c9a72643a95bb0bd3c22deb594aeed125d12cb3294859e7fffbc131448"
+    },
+    "actual_resource_configuration": "Everycompletedwinner CPUauto32/eligible32,256x256,11Ni+observer12,all32mask"
+  },
+  "runtime_snapshot": {
+    "outer": {
+      "pid": 109088,
+      "state": "S",
+      "parent": 8420,
+      "starttime": "330122782",
+      "argv": [
+        "python3",
+        "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/confirmation/final-controller/final-controller.py"
+      ]
+    },
+    "launcher": {
+      "pid": 111285,
+      "state": "S",
+      "parent": 109088,
+      "starttime": "330164822",
+      "argv": [
+        "python3",
+        "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/confirmation/final-cohort/launcher.py",
+        "serial",
+        "--execute"
+      ]
+    },
+    "old_campaign": {
+      "pid": 4072783,
+      "state": "T",
+      "parent": 4072780,
+      "starttime": "327146496",
+      "argv": [
+        "python3",
+        "artifacts/october-regression/expanded-runner.py"
+      ]
+    }
+  },
+  "limits": [
+    "DeterministiccompletedOAseedprefixonly; nocohortwideOAorwaveacceptance.",
+    "No bootstrap,confidenceinterval,sequentialp-values,earlystoporadoptioninference. FullPG32isaseparatemap/completedcohort.",
+    "SystemCPU/contextfallsareconsistentwithlesswaking/schedulingoverhead; no directfutex/wake/callback attributionprofile oruniversalCPUclaim.",
+    "Endpoints/winner/ticksagree; no newnaturalper-tickchecksumproof.",
+    "Allfrozeninputs/approvals/reviews/scriptsuntouched. No native/build/profile/signals."
+  ],
+  "mechanism_inventory": {
+    "strongest_conditional_evidence": [
+      "Treatment latest054B/W differsbyboundedwakepolicywithsamefullfeatures/binaryflags/assets/seeds/rosters; source/fixture/binarybindingsretained.",
+      "PG32allseeds wall/CPUlower,order16/16; OA11allCPU/user/syslower,wall10/11lower,order6/5. Endpoint/tick/winnerchecksagree.",
+      "PGsystemCPU\u221283.94%,OAprefix\u221278.46%;voluntarycontextswitches\u221278.66%/\u221274.65%. Thisisconsistentwithlesskernelwake/schedulingoverhead, notdirectfutex/callbackprofile.",
+      "Priorlatest40per-tickchecks,focused202cases,Wurgent/presentationguardandpartialwake576controlledburstsareseparatecorrectness/contractevidence."
+    ],
+    "CPU_saving_fraction_from_system_time": {
+      "PG_completed32": 0.8197382529006971,
+      "OA_prefix11": 0.7702089044519241
+    },
+    "map_dependence": "PGcompleted32wall\u221211.32%/CPU\u221239.90% vsOAprefix11wall\u22122.88%/CPU\u221217.65%;differentmap/trajectory/workmix, donotpoolorinterpretdifferenceasanisolatedmap-sizeeffect.",
+    "uncertainty_and_nonclaims": [
+      "OAunfinished; late-seed/cap/lossoutcomesnotknown. Wavesmaychangecontention/throughput.",
+      "No universalCPUfreegain,globalparticipantpolicy,UIlatency/allplatform/render/GPUbenefit claim.",
+      "SystemCPUcategory isnotproofallcostisfutexwake; reducedcontextswitching/otherkernelwork correlatedwithtreatment.",
+      "OneadverseOAseed1030656205 innerwall+0.1082%,e2e+0.1259%,CPU\u221216.5021% retained; nosingle-seedexceptionrule."
+    ]
+  }
+}

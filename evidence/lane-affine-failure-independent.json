@@ -1,0 +1,14 @@
+{
+  "verdict": "Lane-affine policy violates retained independent-head parallelism contract. Exclude failed policy; do not relax test or mask failure.",
+  "evidence": "local-contracts-lane-affine.log lines7\u201324: shape3 gate.entered>=2 fails Off/Waits/Trace. RR andsteal logs pass58cases each.",
+  "mechanism": "Harnessshape3 submits {onejoblane4,oneNoLanejob}. Affinedindex lane4%2=0 cancollide withnextNoLane RRindex0. GlobalRRcursor advances foraffinedjobs too. Affinemode disablesgeneralsteal, leavingidleworkerwhileotherblockedcallback ownssecondreadyjob.",
+  "recommendation": "Safestfreeze-preserving action exclude lane-affine fromselectedqualification/timing/sourcepromotion. Retainfailurelogs. RR+steal cancontinue sanitized/producers/parity independently underexactsamefrozenbinary withexplicitpolicyenv; aggregateclaims mustnameonlypassedselectedmodes.",
+  "future_repair": "Softpreferredlaneplacement plusidleborrowing/steal restoresworkconservation; strictlane-affinity test expectingfixedworker mustbeclarified asplacementoptimization. Merelynotadvancingcursorforaffinejobs doesnotguaranteeindependentjobavoidsbusyfixedqueue.",
+  "required_gate": [
+    "Update root-approved role/mode matrices andreceipts explicitly, no silentfilter.",
+    "Sanitizer scripts/parity manifests mustnotexecuteexcludedaffine bydefault.",
+    "Producerchecks understealprimary plus RRifretained,per-ticksave/replaychecks.",
+    "Ifrepairlater, rerunshape3alltelemetry modes,unevenjobs,orderedlanecontinuations andoptionalrescue."
+  ],
+  "activity": "No builds/workloads/source edits."
+}

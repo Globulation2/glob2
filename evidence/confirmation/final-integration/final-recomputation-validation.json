@@ -1,0 +1,31 @@
+{
+  "state": "validated",
+  "utc": "2026-10-15T09:32:01.253399+00:00",
+  "scope": "Final256 game outcomes and raw-statistic recomputation; not source/platform acceptance. Independent raw audit and sensitivity calculations plus portable exact canonical reanalysis.",
+  "runs": 256,
+  "matching_endpoint_pairs": 128,
+  "caps": 0,
+  "records": [
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/fresh-audit-causal/final-serial128/review.json",
+      "sha256": "b54d919e14b5815748b93f74a590aca573a7a8a6ad48ec24e5abb8b5a238f3b6",
+      "state": "independently_validated"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/fresh-audit-causal/final-waves128/review.json",
+      "sha256": "b1428a548a0f97c65e94140f7451f8aaa52bb60aebc5c662d36974a7c6ce1aed",
+      "state": "independently_validated"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/review-evidence/portable-tools/qualification/receipt.json",
+      "sha256": "95b33402aa12f513183ec9c456c4d8decda63becf246f1132e8032345b9a2fea",
+      "state": "passed"
+    }
+  ],
+  "independence": "32 seeds per map,64 map-seed combinations; baseline/treatment and serial/concurrent regimes reuse these states. Concurrent throughput uses8 paired four-game wave clusters permap.",
+  "limits": [
+    "Matching winner/tick endpoints alone do not prove per-tick simulation parity; separate exact-source parity corpus retained.",
+    "Single Linux benchmark host,CPU timing backend, two fixed maps. Browser and GPU correctness evidence is separate from performance generalization.",
+    "Historical baseline-first pilots remain confounded; do not pool them with final counterbalanced cohort."
+  ]
+}

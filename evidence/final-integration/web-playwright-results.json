@@ -1,0 +1,306 @@
+{
+  "config": {
+    "argv": [
+      "/usr/bin/node",
+      "/home/bradley/.codex/worktrees/engine-optimization/glob2/browser/node_modules/.bin/playwright",
+      "test",
+      "tests/threading.spec.js",
+      "tests/determinism.spec.js",
+      "--project=chromium",
+      "--project=firefox",
+      "--grep",
+      "threaded runtime executes shared compute|committed match record \\(threaded\\)",
+      "--reporter=json"
+    ],
+    "configFile": "/home/bradley/.codex/worktrees/engine-optimization/glob2/browser/playwright.config.js",
+    "rootDir": "/home/bradley/.codex/worktrees/engine-optimization/glob2/browser/tests",
+    "failOnFlakyTests": false,
+    "forbidOnly": false,
+    "fullyParallel": false,
+    "globalSetup": null,
+    "globalTeardown": null,
+    "globalTimeout": 0,
+    "grep": {},
+    "grepInvert": null,
+    "maxFailures": 0,
+    "metadata": {
+      "actualWorkers": 1
+    },
+    "preserveOutput": "always",
+    "projects": [
+      {
+        "outputDir": "/home/bradley/.codex/worktrees/engine-optimization/glob2/build/browser-test-results",
+        "repeatEach": 1,
+        "retries": 0,
+        "metadata": {
+          "actualWorkers": 1
+        },
+        "id": "chromium",
+        "name": "chromium",
+        "testDir": "/home/bradley/.codex/worktrees/engine-optimization/glob2/browser/tests",
+        "testIgnore": [],
+        "testMatch": [
+          "**/*.@(spec|test).?(c|m)[jt]s?(x)"
+        ],
+        "timeout": 90000
+      },
+      {
+        "outputDir": "/home/bradley/.codex/worktrees/engine-optimization/glob2/build/browser-test-results",
+        "repeatEach": 1,
+        "retries": 0,
+        "metadata": {
+          "actualWorkers": 1
+        },
+        "id": "firefox",
+        "name": "firefox",
+        "testDir": "/home/bradley/.codex/worktrees/engine-optimization/glob2/browser/tests",
+        "testIgnore": [],
+        "testMatch": [
+          "**/*.@(spec|test).?(c|m)[jt]s?(x)"
+        ],
+        "timeout": 90000
+      },
+      {
+        "outputDir": "/home/bradley/.codex/worktrees/engine-optimization/glob2/build/browser-test-results",
+        "repeatEach": 1,
+        "retries": 0,
+        "metadata": {
+          "actualWorkers": 1
+        },
+        "id": "webkit",
+        "name": "webkit",
+        "testDir": "/home/bradley/.codex/worktrees/engine-optimization/glob2/browser/tests",
+        "testIgnore": [],
+        "testMatch": [
+          "**/*.@(spec|test).?(c|m)[jt]s?(x)"
+        ],
+        "timeout": 90000
+      }
+    ],
+    "quiet": false,
+    "reporter": [
+      [
+        "json"
+      ]
+    ],
+    "reportSlowTests": {
+      "max": 5,
+      "threshold": 300000
+    },
+    "shard": null,
+    "tags": [],
+    "updateSnapshots": "missing",
+    "updateSourceMethod": "patch",
+    "version": "1.63.0",
+    "workers": 1,
+    "webServer": {
+      "command": "python3 browser/serve.py 8770 --bind 127.0.0.1 --directory build/emscripten/client/release",
+      "cwd": "/home/bradley/.codex/worktrees/engine-optimization/glob2",
+      "url": "http://127.0.0.1:8770",
+      "reuseExistingServer": false
+    }
+  },
+  "suites": [
+    {
+      "title": "determinism.spec.js",
+      "file": "determinism.spec.js",
+      "column": 0,
+      "line": 0,
+      "specs": [
+        {
+          "title": "WebAssembly verifies the committed match record (threaded)",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 300000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "chromium",
+              "projectName": "chromium",
+              "results": [
+                {
+                  "workerIndex": 0,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 4112,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-15T09:19:57.266Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "8ef022de9050935cafec-732b50c9a679ad5832ca",
+          "file": "determinism.spec.js",
+          "line": 64,
+          "column": 1
+        },
+        {
+          "title": "WebAssembly verifies the committed match record (threaded)",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 300000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "firefox",
+              "projectName": "firefox",
+              "results": [
+                {
+                  "workerIndex": 1,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 3648,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-15T09:21:11.794Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "8ef022de9050935cafec-b29c988ca7cae96b510d",
+          "file": "determinism.spec.js",
+          "line": 64,
+          "column": 1
+        }
+      ]
+    },
+    {
+      "title": "threading.spec.js",
+      "file": "threading.spec.js",
+      "column": 0,
+      "line": 0,
+      "specs": [
+        {
+          "title": "threaded runtime executes shared compute, gradients and save lifecycle tests",
+          "ok": true,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 300000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "chromium",
+              "projectName": "chromium",
+              "results": [
+                {
+                  "workerIndex": 0,
+                  "parallelIndex": 0,
+                  "status": "passed",
+                  "duration": 69322,
+                  "errors": [],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-15T09:20:01.548Z",
+                  "annotations": [],
+                  "attachments": []
+                }
+              ],
+              "status": "expected"
+            }
+          ],
+          "id": "cef16a391f62e935ced7-4d263d81064a06010655",
+          "file": "threading.spec.js",
+          "line": 8,
+          "column": 1
+        },
+        {
+          "title": "threaded runtime executes shared compute, gradients and save lifecycle tests",
+          "ok": false,
+          "tags": [],
+          "tests": [
+            {
+              "timeout": 300000,
+              "annotations": [],
+              "expectedStatus": "passed",
+              "projectId": "firefox",
+              "projectName": "firefox",
+              "results": [
+                {
+                  "workerIndex": 1,
+                  "parallelIndex": 0,
+                  "status": "failed",
+                  "duration": 30983,
+                  "error": {
+                    "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoContain\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // indexOf\u001b[22m\n\nExpected substring: \u001b[32m\"MainMenuScreen\"\u001b[39m\nReceived string:    \u001b[31m\"loading\"\u001b[39m\n\nCall Log:\n- Timeout 30000ms exceeded while waiting on the predicate",
+                    "stack": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoContain\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // indexOf\u001b[22m\n\nExpected substring: \u001b[32m\"MainMenuScreen\"\u001b[39m\nReceived string:    \u001b[31m\"loading\"\u001b[39m\n\nCall Log:\n- Timeout 30000ms exceeded while waiting on the predicate\n    at screen (/home/bradley/.codex/worktrees/engine-optimization/glob2/browser/tests/threading.spec.js:6:98)\n    at /home/bradley/.codex/worktrees/engine-optimization/glob2/browser/tests/threading.spec.js:20:9",
+                    "location": {
+                      "file": "/home/bradley/.codex/worktrees/engine-optimization/glob2/browser/tests/threading.spec.js",
+                      "column": 98,
+                      "line": 6
+                    },
+                    "snippet": "  4 | const {gameURL,clickMainMenu,clickControl} = require('./main-menu');\n  5 | const {openRuntimeHost} = require('./runtime-host');\n> 6 | const screen=(page,name)=>expect.poll(()=>page.evaluate(()=>glob2Diagnostics.snapshot().screen)).toContain(name);\n    |                                                                                                  ^\n  7 | for (const variant of ['threaded','serial']) {\n  8 | test(`${variant} runtime executes shared compute, gradients and save lifecycle tests`,async({page},info)=>{\n  9 |   // This compiled corpus includes millions of assertions and save/load cycles."
+                  },
+                  "errors": [
+                    {
+                      "location": {
+                        "file": "/home/bradley/.codex/worktrees/engine-optimization/glob2/browser/tests/threading.spec.js",
+                        "column": 98,
+                        "line": 6
+                      },
+                      "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoContain\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // indexOf\u001b[22m\n\nExpected substring: \u001b[32m\"MainMenuScreen\"\u001b[39m\nReceived string:    \u001b[31m\"loading\"\u001b[39m\n\nCall Log:\n- Timeout 30000ms exceeded while waiting on the predicate\n\n  4 | const {gameURL,clickMainMenu,clickControl} = require('./main-menu');\n  5 | const {openRuntimeHost} = require('./runtime-host');\n> 6 | const screen=(page,name)=>expect.poll(()=>page.evaluate(()=>glob2Diagnostics.snapshot().screen)).toContain(name);\n    |                                                                                                  ^\n  7 | for (const variant of ['threaded','serial']) {\n  8 | test(`${variant} runtime executes shared compute, gradients and save lifecycle tests`,async({page},info)=>{\n  9 |   // This compiled corpus includes millions of assertions and save/load cycles.\n    at screen (/home/bradley/.codex/worktrees/engine-optimization/glob2/browser/tests/threading.spec.js:6:98)\n    at /home/bradley/.codex/worktrees/engine-optimization/glob2/browser/tests/threading.spec.js:20:9"
+                    }
+                  ],
+                  "stdout": [],
+                  "stderr": [],
+                  "retry": 0,
+                  "startTime": "2026-10-15T09:21:15.960Z",
+                  "annotations": [],
+                  "attachments": [
+                    {
+                      "name": "screenshot",
+                      "contentType": "image/png",
+                      "path": "/home/bradley/.codex/worktrees/engine-optimization/glob2/build/browser-test-results/threading-threaded-runtime-330b7-ts-and-save-lifecycle-tests-firefox/test-failed-1.png"
+                    },
+                    {
+                      "name": "error-context",
+                      "contentType": "text/markdown",
+                      "path": "/home/bradley/.codex/worktrees/engine-optimization/glob2/build/browser-test-results/threading-threaded-runtime-330b7-ts-and-save-lifecycle-tests-firefox/error-context.md"
+                    },
+                    {
+                      "name": "trace",
+                      "contentType": "application/zip",
+                      "path": "/home/bradley/.codex/worktrees/engine-optimization/glob2/build/browser-test-results/threading-threaded-runtime-330b7-ts-and-save-lifecycle-tests-firefox/trace.zip"
+                    }
+                  ],
+                  "errorLocation": {
+                    "file": "/home/bradley/.codex/worktrees/engine-optimization/glob2/browser/tests/threading.spec.js",
+                    "column": 98,
+                    "line": 6
+                  }
+                }
+              ],
+              "status": "unexpected"
+            }
+          ],
+          "id": "cef16a391f62e935ced7-752d607e75afb9003524",
+          "file": "threading.spec.js",
+          "line": 8,
+          "column": 1
+        }
+      ]
+    }
+  ],
+  "errors": [],
+  "stats": {
+    "startTime": "2026-10-15T09:19:56.346Z",
+    "duration": 112110.511,
+    "expected": 3,
+    "skipped": 0,
+    "unexpected": 1,
+    "flaky": 0
+  }
+}

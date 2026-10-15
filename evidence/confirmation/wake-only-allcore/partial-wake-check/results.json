@@ -1,0 +1,128 @@
+{
+  "source_sha256": "e80bcc59f524a912aba43f199a630bd5a4f0505d49f617997a359a8c1e2b3d9e",
+  "manifest_sha256": "18089237b37d6cc593153f5ed87cfb91f89e26eb905538ff97e13849eebda077",
+  "builds": [
+    {
+      "role": "latest-baseline",
+      "command": [
+        "g++-13",
+        "-std=c++20",
+        "-O3",
+        "-pthread",
+        "-I/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/confirmation/latest-wake/baseline/src/common",
+        "-I/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/confirmation/latest-wake/baseline/libgag/include",
+        "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/confirmation/wake-only-allcore/partial-wake-check/PartialWakeHarness.cpp",
+        "-L/usr/lib/gcc/x86_64-linux-gnu/15",
+        "-o",
+        "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/confirmation/wake-only-allcore/partial-wake-check/partial-wake-latest-baseline"
+      ],
+      "returncode": 0,
+      "binary_sha256": "f63959eee86609ad5f7dcc7aff34ed5081aa1807c4a0073a5578c68f248989d1"
+    },
+    {
+      "role": "latest-wake-only",
+      "command": [
+        "g++-13",
+        "-std=c++20",
+        "-O3",
+        "-pthread",
+        "-I/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/confirmation/latest-wake/wake-only/src/common",
+        "-I/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/confirmation/latest-wake/wake-only/libgag/include",
+        "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/confirmation/wake-only-allcore/partial-wake-check/PartialWakeHarness.cpp",
+        "-L/usr/lib/gcc/x86_64-linux-gnu/15",
+        "-o",
+        "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/confirmation/wake-only-allcore/partial-wake-check/partial-wake-latest-wake-only"
+      ],
+      "returncode": 0,
+      "binary_sha256": "fe1efb38bc4ecefd936551d16f7e1716a08b5fe0aae661d681cb0f6648ecb7b5"
+    },
+    {
+      "role": "old-baseline",
+      "command": [
+        "g++-13",
+        "-std=c++20",
+        "-O3",
+        "-pthread",
+        "-I/home/bradley/.codex/worktrees/engine-history-latest-master/glob2/src/common",
+        "-I/home/bradley/.codex/worktrees/engine-history-latest-master/glob2/libgag/include",
+        "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/confirmation/wake-only-allcore/partial-wake-check/PartialWakeHarness.cpp",
+        "-L/usr/lib/gcc/x86_64-linux-gnu/15",
+        "-o",
+        "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/confirmation/wake-only-allcore/partial-wake-check/partial-wake-old-baseline"
+      ],
+      "returncode": 0,
+      "binary_sha256": "9a7ecc3652031636d89e0929a7a415308d462b02678d6af677f4b3cfd2660b37"
+    },
+    {
+      "role": "old-wake-only",
+      "command": [
+        "g++-13",
+        "-std=c++20",
+        "-O3",
+        "-pthread",
+        "-I/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/wake-prototype/source/src/common",
+        "-I/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/wake-prototype/source/libgag/include",
+        "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/confirmation/wake-only-allcore/partial-wake-check/PartialWakeHarness.cpp",
+        "-L/usr/lib/gcc/x86_64-linux-gnu/15",
+        "-o",
+        "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/confirmation/wake-only-allcore/partial-wake-check/partial-wake-old-wake-only"
+      ],
+      "returncode": 0,
+      "binary_sha256": "8b493e6d95f4a28123be0afbebce391fe46b1e7cd8690aebd7b7f323b111a622"
+    }
+  ],
+  "runs": [
+    {
+      "role": "latest-baseline",
+      "command": [
+        "timeout",
+        "75s",
+        "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/confirmation/wake-only-allcore/partial-wake-check/partial-wake-latest-baseline"
+      ],
+      "returncode": 0,
+      "log_sha256": "36fb9d6befe4084ba84d44fe02b6b307b6e737b011184e1ec1c522c68c079bc2",
+      "binary_sha256": "f63959eee86609ad5f7dcc7aff34ed5081aa1807c4a0073a5578c68f248989d1",
+      "passed": true
+    },
+    {
+      "role": "latest-wake-only",
+      "command": [
+        "timeout",
+        "75s",
+        "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/confirmation/wake-only-allcore/partial-wake-check/partial-wake-latest-wake-only"
+      ],
+      "returncode": 0,
+      "log_sha256": "36fb9d6befe4084ba84d44fe02b6b307b6e737b011184e1ec1c522c68c079bc2",
+      "binary_sha256": "fe1efb38bc4ecefd936551d16f7e1716a08b5fe0aae661d681cb0f6648ecb7b5",
+      "passed": true
+    },
+    {
+      "role": "old-baseline",
+      "command": [
+        "timeout",
+        "75s",
+        "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/confirmation/wake-only-allcore/partial-wake-check/partial-wake-old-baseline"
+      ],
+      "returncode": 0,
+      "log_sha256": "36fb9d6befe4084ba84d44fe02b6b307b6e737b011184e1ec1c522c68c079bc2",
+      "binary_sha256": "9a7ecc3652031636d89e0929a7a415308d462b02678d6af677f4b3cfd2660b37",
+      "passed": true
+    },
+    {
+      "role": "old-wake-only",
+      "command": [
+        "timeout",
+        "75s",
+        "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/confirmation/wake-only-allcore/partial-wake-check/partial-wake-old-wake-only"
+      ],
+      "returncode": 0,
+      "log_sha256": "36fb9d6befe4084ba84d44fe02b6b307b6e737b011184e1ec1c522c68c079bc2",
+      "binary_sha256": "8b493e6d95f4a28123be0afbebce391fe46b1e7cd8690aebd7b7f323b111a622",
+      "passed": true
+    }
+  ],
+  "timing_excluded": true,
+  "overlap": "Standalone four one-TU builds while main release build stage active; no performance measurements running. Main build wall times are not used as compile performance claims.",
+  "utc": "2026-10-15T02:13:56.909339+00:00",
+  "state": "qualified"
+}

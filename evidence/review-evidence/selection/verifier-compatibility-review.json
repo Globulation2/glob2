@@ -1,0 +1,19 @@
+{
+  "approved": true,
+  "packager_sha256": "bd41b3dcd94fda05a3f155a53b50fb9770c714760bd057fa43fa8b717fe73f9b",
+  "prior_reviewed_sha256": "48910a7191c77d792b0a43baa6cc0d13f1b0a8aebb7d19d4c1678b5581d4d21f",
+  "comparison_limit": "No saved prior source body located in selection directory; cannot claim exact historical diff. Reviewed current gates/copy path against previous documented invariants and extracted generated-verifier literal.",
+  "checks": [
+    "Host digest helper intentionally still uses hashlib.file_digest and therefore needsPython3.11+; consumer verifier now uses chunkedsha256 only.",
+    "Generated verifier onlyopens bundledrelativecontentmanifest andselectedfiles; unchangedassertsha256 semantics; newmessage points to separatelyqualifiedtools/README.json.",
+    "Currentrootapproval/terminal/sourcevalidation/heldrunner gates, fixturealiascopyhash checks,newoutput/exclusiveflock andnoautomaticcompression preserved.",
+    "No selectionrules changed bythisreview; broadbackupbody exclusion remains selectionownerresponsibility."
+  ],
+  "tiny_fixture_test": {
+    "valid_returncode": 0,
+    "valid_stdout": "Selected content verified; see tools/README.json for separately qualified final-cohort recomputation",
+    "tampered_returncode": 1,
+    "tampered_rejected": true
+  },
+  "activity": "ASTextract+tinytemporaryvalid/tamperedverification only; no packagerimport/package/fullbundle/largefilehash/browser/build/native/productionchanges."
+}

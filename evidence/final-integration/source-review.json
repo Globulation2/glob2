@@ -1,0 +1,22 @@
+{
+  "approved": true,
+  "commit": "efb843d8047bba6f546c031614a31c917513ad54",
+  "parent": "054804590ee1dd109f09642fc05654c324f08344",
+  "source_sha256": {
+    "src/common/ComputeExecutor.h": "8e59b8816e147ffa72adc5b11d869483dbefe4663a3aca28a39ccc106b9663c1",
+    "src/common/ComputeExecutorHarness.cpp": "6ae602481e2f0079aa1668f9aa34f0d91b7c3f4818779e8078e84622737e659d"
+  },
+  "checks": [
+    "Committed diff exactlytwo reviewedfiles; headerandHarness byte-identical source-onlydraft. No other API/state/feature changes.",
+    "Wakecardinality preserves sharedEDF/lane/continuation/context ownership. Publication underlock followedbyunlock+notifications; fullworkerneed retainsbroadcast.",
+    "Heldparallelprogress test includesOff/Waits/Trace, actualparticipants3/5 and2/3readyheads, browserunavailablepool WARN,10s callback vs5s observation, RAIIrelease/join.",
+    "Samebuilddir incremental rebuild is sound after preserving cleancontrolbinary+source/buildidentity: SCons tracks commonheader includers; no need to compile allunaffectedobjects twice. Preserve native runtimeasset/dependency provenance withcontrolbinary."
+  ],
+  "compatibility": "No publicAPI, savedbytes, SIMrules/RNG, replay/network acceptance orpublicationtick changes. No SIMrevision/saveversion bump justified for notificationcardinality alone; actual checksum/replay tests must confirm scheduling cannot leak into simulation. Never bumpSIMtohide mismatch.",
+  "remaining": [
+    "FinalcommittedHarness build/tests andcandidate golden/perTick receipts pendingatthisreview.",
+    "AlternateCV runtime/browserexecution andnativeinteractivefeel remain pending or explicitomissions; oneLinuxhost doesnotproveuniversal optimality.",
+    "2mspark doesnotproveallworkerssleep; heldtestchecksprogress,notexactnotifycount."
+  ],
+  "activity": "Readonlygit/source/smallartifactcomparison only; no builds/native/signals."
+}

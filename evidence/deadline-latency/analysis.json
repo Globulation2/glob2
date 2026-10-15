@@ -1,0 +1,935 @@
+{
+  "scope": "Conditional gated CPU backlog latency, four repeats of one fixed workload; no engine frame/input population claim. Process CPU includes payload validation after inner urgent wait; Off only timings.",
+  "comparisons": [
+    {
+      "allocation": "3physical6SMT",
+      "kind": "required",
+      "candidate": "first-steal",
+      "metrics": {
+        "urgent_join_ns": {
+          "baseline_median": 340298.0,
+          "candidate_median": 13630280.0,
+          "ratio": 40.05395271203474,
+          "candidate_samples": [
+            13650300,
+            18000842,
+            13610260,
+            13561921
+          ],
+          "baseline_samples": [
+            611816,
+            314268,
+            335928,
+            344668
+          ]
+        },
+        "later_started_before_urgent": {
+          "baseline_median": 0.5,
+          "candidate_median": 127.5,
+          "ratio": 255.0,
+          "candidate_samples": [
+            128,
+            112,
+            128,
+            127
+          ],
+          "baseline_samples": [
+            0,
+            0,
+            2,
+            1
+          ]
+        },
+        "presentation_start_delay_ns": {
+          "baseline_median": -1.0,
+          "candidate_median": -1.0,
+          "ratio": null,
+          "candidate_samples": [
+            -1,
+            -1,
+            -1,
+            -1
+          ],
+          "baseline_samples": [
+            -1,
+            -1,
+            -1,
+            -1
+          ]
+        }
+      }
+    },
+    {
+      "allocation": "3physical6SMT",
+      "kind": "required",
+      "candidate": "local-round-robin",
+      "metrics": {
+        "urgent_join_ns": {
+          "baseline_median": 340298.0,
+          "candidate_median": 13449352.0,
+          "ratio": 39.52227753322088,
+          "candidate_samples": [
+            13018305,
+            26067739,
+            12999715,
+            13880399
+          ],
+          "baseline_samples": [
+            611816,
+            314268,
+            335928,
+            344668
+          ]
+        },
+        "later_started_before_urgent": {
+          "baseline_median": 0.5,
+          "candidate_median": 125.0,
+          "ratio": 250.0,
+          "candidate_samples": [
+            122,
+            128,
+            122,
+            128
+          ],
+          "baseline_samples": [
+            0,
+            0,
+            2,
+            1
+          ]
+        },
+        "presentation_start_delay_ns": {
+          "baseline_median": -1.0,
+          "candidate_median": -1.0,
+          "ratio": null,
+          "candidate_samples": [
+            -1,
+            -1,
+            -1,
+            -1
+          ],
+          "baseline_samples": [
+            -1,
+            -1,
+            -1,
+            -1
+          ]
+        }
+      }
+    },
+    {
+      "allocation": "3physical6SMT",
+      "kind": "required",
+      "candidate": "local-steal",
+      "metrics": {
+        "urgent_join_ns": {
+          "baseline_median": 340298.0,
+          "candidate_median": 13620145.5,
+          "ratio": 40.02417146148376,
+          "candidate_samples": [
+            13653820,
+            13017265,
+            13625690,
+            13614601
+          ],
+          "baseline_samples": [
+            611816,
+            314268,
+            335928,
+            344668
+          ]
+        },
+        "later_started_before_urgent": {
+          "baseline_median": 0.5,
+          "candidate_median": 128.0,
+          "ratio": 256.0,
+          "candidate_samples": [
+            128,
+            122,
+            128,
+            128
+          ],
+          "baseline_samples": [
+            0,
+            0,
+            2,
+            1
+          ]
+        },
+        "presentation_start_delay_ns": {
+          "baseline_median": -1.0,
+          "candidate_median": -1.0,
+          "ratio": null,
+          "candidate_samples": [
+            -1,
+            -1,
+            -1,
+            -1
+          ],
+          "baseline_samples": [
+            -1,
+            -1,
+            -1,
+            -1
+          ]
+        }
+      }
+    },
+    {
+      "allocation": "3physical6SMT",
+      "kind": "required",
+      "candidate": "local-priority-steal",
+      "metrics": {
+        "urgent_join_ns": {
+          "baseline_median": 340298.0,
+          "candidate_median": 318308.0,
+          "ratio": 0.9353801667949856,
+          "candidate_samples": [
+            338808,
+            324578,
+            312038,
+            309188
+          ],
+          "baseline_samples": [
+            611816,
+            314268,
+            335928,
+            344668
+          ]
+        },
+        "later_started_before_urgent": {
+          "baseline_median": 0.5,
+          "candidate_median": 1.0,
+          "ratio": 2.0,
+          "candidate_samples": [
+            0,
+            0,
+            2,
+            2
+          ],
+          "baseline_samples": [
+            0,
+            0,
+            2,
+            1
+          ]
+        },
+        "presentation_start_delay_ns": {
+          "baseline_median": -1.0,
+          "candidate_median": -1.0,
+          "ratio": null,
+          "candidate_samples": [
+            -1,
+            -1,
+            -1,
+            -1
+          ],
+          "baseline_samples": [
+            -1,
+            -1,
+            -1,
+            -1
+          ]
+        }
+      }
+    },
+    {
+      "allocation": "3physical6SMT",
+      "kind": "optional",
+      "candidate": "first-steal",
+      "metrics": {
+        "urgent_join_ns": {
+          "baseline_median": 342042.5,
+          "candidate_median": 13308067.5,
+          "ratio": 38.907643056052976,
+          "candidate_samples": [
+            13045094,
+            13651430,
+            13011964,
+            13571041
+          ],
+          "baseline_samples": [
+            343237,
+            313308,
+            340848,
+            372238
+          ]
+        },
+        "later_started_before_urgent": {
+          "baseline_median": 0.5,
+          "candidate_median": 125.0,
+          "ratio": 250.0,
+          "candidate_samples": [
+            122,
+            128,
+            123,
+            127
+          ],
+          "baseline_samples": [
+            1,
+            0,
+            2,
+            0
+          ]
+        },
+        "presentation_start_delay_ns": {
+          "baseline_median": 2297470.0,
+          "candidate_median": 2188615.5,
+          "ratio": 0.9526198383439174,
+          "candidate_samples": [
+            2122166,
+            2255065,
+            2112245,
+            2270115
+          ],
+          "baseline_samples": [
+            2295985,
+            2470774,
+            2263806,
+            2298955
+          ]
+        }
+      }
+    },
+    {
+      "allocation": "3physical6SMT",
+      "kind": "optional",
+      "candidate": "local-round-robin",
+      "metrics": {
+        "urgent_join_ns": {
+          "baseline_median": 342042.5,
+          "candidate_median": 13482086.5,
+          "ratio": 39.41640731780407,
+          "candidate_samples": [
+            13911509,
+            27805427,
+            13052664,
+            13019574
+          ],
+          "baseline_samples": [
+            343237,
+            313308,
+            340848,
+            372238
+          ]
+        },
+        "later_started_before_urgent": {
+          "baseline_median": 0.5,
+          "candidate_median": 125.0,
+          "ratio": 250.0,
+          "candidate_samples": [
+            128,
+            128,
+            122,
+            122
+          ],
+          "baseline_samples": [
+            1,
+            0,
+            2,
+            0
+          ]
+        },
+        "presentation_start_delay_ns": {
+          "baseline_median": 2297470.0,
+          "candidate_median": 2197945.5,
+          "ratio": 0.9566808271707574,
+          "candidate_samples": [
+            2266496,
+            4459231,
+            2129395,
+            2117306
+          ],
+          "baseline_samples": [
+            2295985,
+            2470774,
+            2263806,
+            2298955
+          ]
+        }
+      }
+    },
+    {
+      "allocation": "3physical6SMT",
+      "kind": "optional",
+      "candidate": "local-steal",
+      "metrics": {
+        "urgent_join_ns": {
+          "baseline_median": 342042.5,
+          "candidate_median": 13326402.5,
+          "ratio": 38.96124750579241,
+          "candidate_samples": [
+            13012994,
+            13018975,
+            13633830,
+            13994108
+          ],
+          "baseline_samples": [
+            343237,
+            313308,
+            340848,
+            372238
+          ]
+        },
+        "later_started_before_urgent": {
+          "baseline_median": 0.5,
+          "candidate_median": 124.0,
+          "ratio": 248.0,
+          "candidate_samples": [
+            122,
+            107,
+            128,
+            126
+          ],
+          "baseline_samples": [
+            1,
+            0,
+            2,
+            0
+          ]
+        },
+        "presentation_start_delay_ns": {
+          "baseline_median": 2297470.0,
+          "candidate_median": 2185260.5,
+          "ratio": 0.9511595363595607,
+          "candidate_samples": [
+            2116695,
+            2118646,
+            2251875,
+            2277615
+          ],
+          "baseline_samples": [
+            2295985,
+            2470774,
+            2263806,
+            2298955
+          ]
+        }
+      }
+    },
+    {
+      "allocation": "3physical6SMT",
+      "kind": "optional",
+      "candidate": "local-priority-steal",
+      "metrics": {
+        "urgent_join_ns": {
+          "baseline_median": 342042.5,
+          "candidate_median": 323607.5,
+          "ratio": 0.9461031889312,
+          "candidate_samples": [
+            319478,
+            631016,
+            327737,
+            308198
+          ],
+          "baseline_samples": [
+            343237,
+            313308,
+            340848,
+            372238
+          ]
+        },
+        "later_started_before_urgent": {
+          "baseline_median": 0.5,
+          "candidate_median": 2.0,
+          "ratio": 4.0,
+          "candidate_samples": [
+            2,
+            2,
+            2,
+            0
+          ],
+          "baseline_samples": [
+            1,
+            0,
+            2,
+            0
+          ]
+        },
+        "presentation_start_delay_ns": {
+          "baseline_median": 2297470.0,
+          "candidate_median": 2123561.0,
+          "ratio": 0.9243041258427749,
+          "candidate_samples": [
+            2131346,
+            4251292,
+            2115776,
+            2114017
+          ],
+          "baseline_samples": [
+            2295985,
+            2470774,
+            2263806,
+            2298955
+          ]
+        }
+      }
+    },
+    {
+      "allocation": "all32",
+      "kind": "required",
+      "candidate": "first-steal",
+      "metrics": {
+        "urgent_join_ns": {
+          "baseline_median": 343127.5,
+          "candidate_median": 13793204.5,
+          "ratio": 40.198481613977314,
+          "candidate_samples": [
+            13957089,
+            13629320,
+            17208957,
+            13055434
+          ],
+          "baseline_samples": [
+            347428,
+            345618,
+            340637,
+            338468
+          ]
+        },
+        "later_started_before_urgent": {
+          "baseline_median": 0.0,
+          "candidate_median": 121.0,
+          "ratio": null,
+          "candidate_samples": [
+            110,
+            128,
+            116,
+            126
+          ],
+          "baseline_samples": [
+            0,
+            0,
+            0,
+            1
+          ]
+        },
+        "presentation_start_delay_ns": {
+          "baseline_median": -1.0,
+          "candidate_median": -1.0,
+          "ratio": null,
+          "candidate_samples": [
+            -1,
+            -1,
+            -1,
+            -1
+          ],
+          "baseline_samples": [
+            -1,
+            -1,
+            -1,
+            -1
+          ]
+        }
+      }
+    },
+    {
+      "allocation": "all32",
+      "kind": "required",
+      "candidate": "local-round-robin",
+      "metrics": {
+        "urgent_join_ns": {
+          "baseline_median": 343127.5,
+          "candidate_median": 13588675.5,
+          "ratio": 39.60240872561948,
+          "candidate_samples": [
+            13790759,
+            13386592,
+            14204827,
+            13052915
+          ],
+          "baseline_samples": [
+            347428,
+            345618,
+            340637,
+            338468
+          ]
+        },
+        "later_started_before_urgent": {
+          "baseline_median": 0.0,
+          "candidate_median": 116.5,
+          "ratio": null,
+          "candidate_samples": [
+            108,
+            125,
+            108,
+            125
+          ],
+          "baseline_samples": [
+            0,
+            0,
+            0,
+            1
+          ]
+        },
+        "presentation_start_delay_ns": {
+          "baseline_median": -1.0,
+          "candidate_median": -1.0,
+          "ratio": null,
+          "candidate_samples": [
+            -1,
+            -1,
+            -1,
+            -1
+          ],
+          "baseline_samples": [
+            -1,
+            -1,
+            -1,
+            -1
+          ]
+        }
+      }
+    },
+    {
+      "allocation": "all32",
+      "kind": "required",
+      "candidate": "local-steal",
+      "metrics": {
+        "urgent_join_ns": {
+          "baseline_median": 343127.5,
+          "candidate_median": 14869208.0,
+          "ratio": 43.33435239087511,
+          "candidate_samples": [
+            17064608,
+            13049684,
+            13874260,
+            15864156
+          ],
+          "baseline_samples": [
+            347428,
+            345618,
+            340637,
+            338468
+          ]
+        },
+        "later_started_before_urgent": {
+          "baseline_median": 0.0,
+          "candidate_median": 110.5,
+          "ratio": null,
+          "candidate_samples": [
+            113,
+            108,
+            108,
+            128
+          ],
+          "baseline_samples": [
+            0,
+            0,
+            0,
+            1
+          ]
+        },
+        "presentation_start_delay_ns": {
+          "baseline_median": -1.0,
+          "candidate_median": -1.0,
+          "ratio": null,
+          "candidate_samples": [
+            -1,
+            -1,
+            -1,
+            -1
+          ],
+          "baseline_samples": [
+            -1,
+            -1,
+            -1,
+            -1
+          ]
+        }
+      }
+    },
+    {
+      "allocation": "all32",
+      "kind": "required",
+      "candidate": "local-priority-steal",
+      "metrics": {
+        "urgent_join_ns": {
+          "baseline_median": 343127.5,
+          "candidate_median": 591666.0,
+          "ratio": 1.7243327917465083,
+          "candidate_samples": [
+            333648,
+            552496,
+            630836,
+            666686
+          ],
+          "baseline_samples": [
+            347428,
+            345618,
+            340637,
+            338468
+          ]
+        },
+        "later_started_before_urgent": {
+          "baseline_median": 0.0,
+          "candidate_median": 1.0,
+          "ratio": null,
+          "candidate_samples": [
+            0,
+            1,
+            1,
+            1
+          ],
+          "baseline_samples": [
+            0,
+            0,
+            0,
+            1
+          ]
+        },
+        "presentation_start_delay_ns": {
+          "baseline_median": -1.0,
+          "candidate_median": -1.0,
+          "ratio": null,
+          "candidate_samples": [
+            -1,
+            -1,
+            -1,
+            -1
+          ],
+          "baseline_samples": [
+            -1,
+            -1,
+            -1,
+            -1
+          ]
+        }
+      }
+    },
+    {
+      "allocation": "all32",
+      "kind": "optional",
+      "candidate": "first-steal",
+      "metrics": {
+        "urgent_join_ns": {
+          "baseline_median": 360412.5,
+          "candidate_median": 13302717.5,
+          "ratio": 36.90970069018139,
+          "candidate_samples": [
+            13334212,
+            13404092,
+            13271223,
+            13140124
+          ],
+          "baseline_samples": [
+            358908,
+            631476,
+            361917,
+            343448
+          ]
+        },
+        "later_started_before_urgent": {
+          "baseline_median": 0.0,
+          "candidate_median": 109.0,
+          "ratio": null,
+          "candidate_samples": [
+            109,
+            109,
+            127,
+            106
+          ],
+          "baseline_samples": [
+            0,
+            1,
+            0,
+            0
+          ]
+        },
+        "presentation_start_delay_ns": {
+          "baseline_median": 2334329.5,
+          "candidate_median": 2166681.0,
+          "ratio": 0.9281813043102956,
+          "candidate_samples": [
+            2193115,
+            2176386,
+            2156976,
+            2134626
+          ],
+          "baseline_samples": [
+            2143886,
+            3245639,
+            2524773,
+            2124026
+          ]
+        }
+      }
+    },
+    {
+      "allocation": "all32",
+      "kind": "optional",
+      "candidate": "local-round-robin",
+      "metrics": {
+        "urgent_join_ns": {
+          "baseline_median": 360412.5,
+          "candidate_median": 13202883.0,
+          "ratio": 36.632700031214235,
+          "candidate_samples": [
+            13074534,
+            13095604,
+            13310162,
+            13946949
+          ],
+          "baseline_samples": [
+            358908,
+            631476,
+            361917,
+            343448
+          ]
+        },
+        "later_started_before_urgent": {
+          "baseline_median": 0.0,
+          "candidate_median": 108.0,
+          "ratio": null,
+          "candidate_samples": [
+            108,
+            108,
+            113,
+            108
+          ],
+          "baseline_samples": [
+            0,
+            1,
+            0,
+            0
+          ]
+        },
+        "presentation_start_delay_ns": {
+          "baseline_median": 2334329.5,
+          "candidate_median": 2151245.5,
+          "ratio": 0.9215689130433385,
+          "candidate_samples": [
+            2124866,
+            2121156,
+            2177625,
+            2988921
+          ],
+          "baseline_samples": [
+            2143886,
+            3245639,
+            2524773,
+            2124026
+          ]
+        }
+      }
+    },
+    {
+      "allocation": "all32",
+      "kind": "optional",
+      "candidate": "local-steal",
+      "metrics": {
+        "urgent_join_ns": {
+          "baseline_median": 360412.5,
+          "candidate_median": 13388112.0,
+          "ratio": 37.14663614608261,
+          "candidate_samples": [
+            13132784,
+            13402532,
+            13373692,
+            17623764
+          ],
+          "baseline_samples": [
+            358908,
+            631476,
+            361917,
+            343448
+          ]
+        },
+        "later_started_before_urgent": {
+          "baseline_median": 0.0,
+          "candidate_median": 121.0,
+          "ratio": null,
+          "candidate_samples": [
+            106,
+            128,
+            128,
+            114
+          ],
+          "baseline_samples": [
+            0,
+            1,
+            0,
+            0
+          ]
+        },
+        "presentation_start_delay_ns": {
+          "baseline_median": 2334329.5,
+          "candidate_median": 2175376.0,
+          "ratio": 0.9319061426418164,
+          "candidate_samples": [
+            2130667,
+            2179086,
+            2171666,
+            4258582
+          ],
+          "baseline_samples": [
+            2143886,
+            3245639,
+            2524773,
+            2124026
+          ]
+        }
+      }
+    },
+    {
+      "allocation": "all32",
+      "kind": "optional",
+      "candidate": "local-priority-steal",
+      "metrics": {
+        "urgent_join_ns": {
+          "baseline_median": 360412.5,
+          "candidate_median": 446782.5,
+          "ratio": 1.2396420767870149,
+          "candidate_samples": [
+            565207,
+            321038,
+            328358,
+            642336
+          ],
+          "baseline_samples": [
+            358908,
+            631476,
+            361917,
+            343448
+          ]
+        },
+        "later_started_before_urgent": {
+          "baseline_median": 0.0,
+          "candidate_median": 0.5,
+          "ratio": null,
+          "candidate_samples": [
+            0,
+            0,
+            2,
+            1
+          ],
+          "baseline_samples": [
+            0,
+            1,
+            0,
+            0
+          ]
+        },
+        "presentation_start_delay_ns": {
+          "baseline_median": 2334329.5,
+          "candidate_median": 2800881.5,
+          "ratio": 1.1998655288381526,
+          "candidate_samples": [
+            3867065,
+            2178816,
+            2166446,
+            3422947
+          ],
+          "baseline_samples": [
+            2143886,
+            3245639,
+            2524773,
+            2124026
+          ]
+        }
+      }
+    }
+  ],
+  "all_payloads_verified": true,
+  "cases": 80
+}

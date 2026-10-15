@@ -1,0 +1,896 @@
+{
+  "state": "validated",
+  "runs": 32,
+  "independent_seeds": 8,
+  "nested_repeats": 2,
+  "actual_order": "B,W,W,B everyseed; nooverlap, recordedordinal+monotonic/UTC timestamps",
+  "metrics": {
+    "wall": {
+      "baseline_mean": 1.324429652125,
+      "wake_mean": 1.2432738536249999,
+      "ratio_of_seed_repeat_means_change_percent": -6.1276035589952755,
+      "paired_independent_seed_MC10000_percentile95": [
+        -12.892555576823472,
+        0.43166307802275067
+      ],
+      "per_seed_change_percent": [
+        -11.504120224351212,
+        -22.983185437799815,
+        4.632364898593311,
+        1.0448413123593792,
+        -1.6197434870485972,
+        -3.35477562022658,
+        4.957210625199537,
+        -12.468297539957229
+      ],
+      "mean_of_seed_ratios_percent": -5.161963184153901
+    },
+    "cpu": {
+      "baseline_mean": 3.575419875,
+      "wake_mean": 3.4304589375,
+      "ratio_of_seed_repeat_means_change_percent": -4.0543752221548495,
+      "paired_independent_seed_MC10000_percentile95": [
+        -10.297792997640045,
+        2.0721620918851915
+      ],
+      "per_seed_change_percent": [
+        -9.278786114166094,
+        -19.70863281081825,
+        6.064605991638317,
+        -0.28485894406473644,
+        -0.7989013555354751,
+        -4.175929558432512,
+        9.356606278085899,
+        -8.421240005301412
+      ],
+      "mean_of_seed_ratios_percent": -3.405892064824283
+    },
+    "sys": {
+      "baseline_mean": 0.163732875,
+      "wake_mean": 0.15511681249999998,
+      "ratio_of_seed_repeat_means_change_percent": -5.2622678860308465,
+      "paired_independent_seed_MC10000_percentile95": [
+        -15.796520266265146,
+        6.822497837126362
+      ],
+      "per_seed_change_percent": [
+        -18.288595345892755,
+        -27.88278607248419,
+        4.952032531024209,
+        15.460792938003953,
+        -0.40522611411469844,
+        -0.7034321756225315,
+        20.73554938971882,
+        -16.970515641062576
+      ],
+      "mean_of_seed_ratios_percent": -2.8877725613037213
+    },
+    "rss": {
+      "baseline_mean": 79200.25,
+      "wake_mean": 79407.5,
+      "ratio_of_seed_repeat_means_change_percent": 0.2616784669240202,
+      "paired_independent_seed_MC10000_percentile95": [
+        -0.4976700912268117,
+        1.0266927454219754
+      ],
+      "per_seed_change_percent": [
+        1.8616275214852207,
+        1.3000480562511019,
+        -0.4627068349846608,
+        -1.380764692591574,
+        1.362853379268425,
+        0.15545470501217018,
+        -0.9834667201886638,
+        0.28291787735128526
+      ],
+      "mean_of_seed_ratios_percent": 0.26699541145041306
+    },
+    "cpu_per_tick": {
+      "baseline_mean": 0.0008729052429199219,
+      "wake_mean": 0.000837514389038086,
+      "ratio_of_seed_repeat_means_change_percent": -4.0543752221548495,
+      "paired_independent_seed_MC10000_percentile95": [
+        -10.297792997640045,
+        2.0721620918851915
+      ],
+      "per_seed_change_percent": [
+        -9.278786114166094,
+        -19.70863281081825,
+        6.064605991638317,
+        -0.28485894406473644,
+        -0.7989013555354751,
+        -4.175929558432512,
+        9.356606278085899,
+        -8.421240005301412
+      ],
+      "mean_of_seed_ratios_percent": -3.405892064824283
+    }
+  },
+  "units": [
+    {
+      "seed": "1056243202",
+      "means": {
+        "baseline": {
+          "wall": 1.3465487015000002,
+          "cpu": 3.623405,
+          "sys": 0.176919,
+          "rss": 78426,
+          "cpu_per_tick": 0.000884620361328125
+        },
+        "wake-only": {
+          "wall": 1.19164012,
+          "cpu": 3.287197,
+          "sys": 0.144563,
+          "rss": 79886,
+          "cpu_per_tick": 0.000802538330078125
+        }
+      },
+      "repeat_changes": {
+        "wall": [
+          -10.860398748594136,
+          -12.158472502532646
+        ],
+        "cpu": [
+          -10.863659408564441,
+          -7.657301777315217
+        ],
+        "sys": [
+          -22.717269418276242,
+          -14.34077241747962
+        ],
+        "rss": [
+          0.7099391480730244,
+          3.026727543220642
+        ],
+        "cpu_per_tick": [
+          -10.863659408564441,
+          -7.657301777315217
+        ]
+      }
+    },
+    {
+      "seed": "744345666",
+      "means": {
+        "baseline": {
+          "wall": 1.595521589,
+          "cpu": 4.1925105,
+          "sys": 0.210777,
+          "rss": 79074,
+          "cpu_per_tick": 0.0010235621337890625
+        },
+        "wake-only": {
+          "wall": 1.2288199034999998,
+          "cpu": 3.366224,
+          "sys": 0.1520065,
+          "rss": 80102,
+          "cpu_per_tick": 0.00082183203125
+        }
+      },
+      "repeat_changes": {
+        "wall": [
+          -31.767147732102995,
+          -11.480383387063176
+        ],
+        "cpu": [
+          -25.91454411705606,
+          -12.244293739894097
+        ],
+        "sys": [
+          -29.69305682361636,
+          -25.708975483439843
+        ],
+        "rss": [
+          -0.26145105334607344,
+          2.88070032573291
+        ],
+        "cpu_per_tick": [
+          -25.91454411705606,
+          -12.244293739894097
+        ]
+      }
+    },
+    {
+      "seed": "1064623205",
+      "means": {
+        "baseline": {
+          "wall": 1.2081997905,
+          "cpu": 3.3542245,
+          "sys": 0.151978,
+          "rss": 79532,
+          "cpu_per_tick": 0.0008189024658203125
+        },
+        "wake-only": {
+          "wall": 1.2641680135,
+          "cpu": 3.557645,
+          "sys": 0.15950399999999998,
+          "rss": 79164,
+          "cpu_per_tick": 0.000868565673828125
+        }
+      },
+      "repeat_changes": {
+        "wall": [
+          11.107791819244262,
+          -1.9784409376247258
+        ],
+        "cpu": [
+          9.694021513164675,
+          2.3059799815630777
+        ],
+        "sys": [
+          -1.5421099776384284,
+          11.72544512330369
+        ],
+        "rss": [
+          -0.7889546351084853,
+          -0.1400490171560076
+        ],
+        "cpu_per_tick": [
+          9.694021513164675,
+          2.3059799815630777
+        ]
+      }
+    },
+    {
+      "seed": "725864695",
+      "means": {
+        "baseline": {
+          "wall": 1.226517448,
+          "cpu": 3.418183,
+          "sys": 0.13016149999999999,
+          "rss": 79666,
+          "cpu_per_tick": 0.000834517333984375
+        },
+        "wake-only": {
+          "wall": 1.239332609,
+          "cpu": 3.4084459999999996,
+          "sys": 0.1502855,
+          "rss": 78566,
+          "cpu_per_tick": 0.0008321401367187499
+        }
+      },
+      "repeat_changes": {
+        "wall": [
+          6.104345058950078,
+          -3.9946020524960657
+        ],
+        "cpu": [
+          3.0095844882086276,
+          -3.4879651771822617
+        ],
+        "sys": [
+          27.201540228769282,
+          4.844007168720954
+        ],
+        "rss": [
+          -1.525449327896089,
+          -1.2368552829243873
+        ],
+        "cpu_per_tick": [
+          3.0095844882086276,
+          -3.4879651771822617
+        ]
+      }
+    },
+    {
+      "seed": "599004658",
+      "means": {
+        "baseline": {
+          "wall": 1.233183659,
+          "cpu": 3.3848985000000003,
+          "sys": 0.1458445,
+          "rss": 78952,
+          "cpu_per_tick": 0.0008263912353515626
+        },
+        "wake-only": {
+          "wall": 1.213209247,
+          "cpu": 3.3578565000000005,
+          "sys": 0.14525349999999998,
+          "rss": 80028,
+          "cpu_per_tick": 0.0008197891845703126
+        }
+      },
+      "repeat_changes": {
+        "wall": [
+          -1.550822772689553,
+          -1.688411463075734
+        ],
+        "cpu": [
+          0.3286080080368903,
+          -1.9128993551820073
+        ],
+        "sys": [
+          -2.8029817756910713,
+          1.8713325224225974
+        ],
+        "rss": [
+          1.249809480262165,
+          1.4752690345071429
+        ],
+        "cpu_per_tick": [
+          0.3286080080368903,
+          -1.9128993551820073
+        ]
+      }
+    },
+    {
+      "seed": "117787757",
+      "means": {
+        "baseline": {
+          "wall": 1.2399721385,
+          "cpu": 3.4755615000000004,
+          "sys": 0.146496,
+          "rss": 79766,
+          "cpu_per_tick": 0.0008485257568359376
+        },
+        "wake-only": {
+          "wall": 1.1983738554999999,
+          "cpu": 3.3304245,
+          "sys": 0.1454655,
+          "rss": 79890,
+          "cpu_per_tick": 0.0008130919189453125
+        }
+      },
+      "repeat_changes": {
+        "wall": [
+          -3.3668869905624343,
+          -3.3425817654628487
+        ],
+        "cpu": [
+          -5.063640578960927,
+          -3.2608883010782463
+        ],
+        "sys": [
+          -5.312395803944692,
+          4.541872208762676
+        ],
+        "rss": [
+          0.5303712598819121,
+          -0.2211388651555457
+        ],
+        "cpu_per_tick": [
+          -5.063640578960927,
+          -3.2608883010782463
+        ]
+      }
+    },
+    {
+      "seed": "85910194",
+      "means": {
+        "baseline": {
+          "wall": 1.1906082465,
+          "cpu": 3.283899,
+          "sys": 0.146326,
+          "rss": 79718,
+          "cpu_per_tick": 0.000801733154296875
+        },
+        "wake-only": {
+          "wall": 1.249629205,
+          "cpu": 3.5911605,
+          "sys": 0.17666749999999998,
+          "rss": 78934,
+          "cpu_per_tick": 0.0008767481689453125
+        }
+      },
+      "repeat_changes": {
+        "wall": [
+          7.0904155371346755,
+          3.0110861023576074
+        ],
+        "cpu": [
+          12.166591727605613,
+          6.704049678263391
+        ],
+        "sys": [
+          8.824803163581896,
+          31.787429429706382
+        ],
+        "rss": [
+          0.8875888849664726,
+          -2.8357463804293603
+        ],
+        "cpu_per_tick": [
+          12.166591727605613,
+          6.704049678263391
+        ]
+      }
+    },
+    {
+      "seed": "769116511",
+      "means": {
+        "baseline": {
+          "wall": 1.554885644,
+          "cpu": 3.8706770000000006,
+          "sys": 0.20136099999999998,
+          "rss": 78468,
+          "cpu_per_tick": 0.0009449895019531251
+        },
+        "wake-only": {
+          "wall": 1.3610178755,
+          "cpu": 3.544718,
+          "sys": 0.16718899999999998,
+          "rss": 78690,
+          "cpu_per_tick": 0.00086540966796875
+        }
+      },
+      "repeat_changes": {
+        "wall": [
+          19.0911864194949,
+          -32.75912210256111
+        ],
+        "cpu": [
+          7.577991889441327,
+          -21.03262823018278
+        ],
+        "sys": [
+          19.655599079375065,
+          -40.12425985142316
+        ],
+        "rss": [
+          -0.5224448389551051,
+          1.0963676417849344
+        ],
+        "cpu_per_tick": [
+          7.577991889441327,
+          -21.03262823018278
+        ]
+      }
+    }
+  ],
+  "rows": [
+    {
+      "seed": "1056243202",
+      "role": "baseline",
+      "repeat": 0,
+      "ordinal": 0,
+      "started_monotonic": 3300611.43125006,
+      "finished_monotonic": 3300613.242407818,
+      "wall": 1.357576498,
+      "cpu": 3.664778,
+      "sys": 0.166763,
+      "rss": 78880,
+      "cpu_per_tick": 0.00089472119140625,
+      "receipt": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/confirmation/balanced-n4/timing/balanced-Playground-1056243202-n4-baseline-r0/receipt.json"
+    },
+    {
+      "seed": "1056243202",
+      "role": "wake-only",
+      "repeat": 0,
+      "ordinal": 1,
+      "started_monotonic": 3300613.280606884,
+      "finished_monotonic": 3300614.909442832,
+      "wall": 1.210138277,
+      "cpu": 3.266649,
+      "sys": 0.128879,
+      "rss": 79440,
+      "cpu_per_tick": 0.000797521728515625,
+      "receipt": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/confirmation/balanced-n4/timing/balanced-Playground-1056243202-n4-wake-only-r0/receipt.json"
+    },
+    {
+      "seed": "1056243202",
+      "role": "baseline",
+      "repeat": 1,
+      "ordinal": 3,
+      "started_monotonic": 3300616.634511591,
+      "finished_monotonic": 3300618.404260954,
+      "wall": 1.335520905,
+      "cpu": 3.582032,
+      "sys": 0.187075,
+      "rss": 77972,
+      "cpu_per_tick": 0.00087451953125,
+      "receipt": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/confirmation/balanced-n4/timing/balanced-Playground-1056243202-n4-baseline-r1/receipt.json"
+    },
+    {
+      "seed": "1056243202",
+      "role": "wake-only",
+      "repeat": 1,
+      "ordinal": 2,
+      "started_monotonic": 3300614.947935476,
+      "finished_monotonic": 3300616.59699988,
+      "wall": 1.173141963,
+      "cpu": 3.307745,
+      "sys": 0.160247,
+      "rss": 80332,
+      "cpu_per_tick": 0.000807554931640625,
+      "receipt": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/confirmation/balanced-n4/timing/balanced-Playground-1056243202-n4-wake-only-r1/receipt.json"
+    },
+    {
+      "seed": "744345666",
+      "role": "baseline",
+      "repeat": 0,
+      "ordinal": 4,
+      "started_monotonic": 3300618.464243545,
+      "finished_monotonic": 3300620.717474488,
+      "wall": 1.80935399,
+      "cpu": 4.578456,
+      "sys": 0.23001,
+      "rss": 79556,
+      "cpu_per_tick": 0.001117787109375,
+      "receipt": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/confirmation/balanced-n4/timing/balanced-Playground-744345666-n4-baseline-r0/receipt.json"
+    },
+    {
+      "seed": "744345666",
+      "role": "wake-only",
+      "repeat": 0,
+      "ordinal": 5,
+      "started_monotonic": 3300620.755015939,
+      "finished_monotonic": 3300622.424199489,
+      "wall": 1.234573835,
+      "cpu": 3.3919699999999997,
+      "sys": 0.161713,
+      "rss": 79348,
+      "cpu_per_tick": 0.0008281176757812499,
+      "receipt": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/confirmation/balanced-n4/timing/balanced-Playground-744345666-n4-wake-only-r0/receipt.json"
+    },
+    {
+      "seed": "744345666",
+      "role": "baseline",
+      "repeat": 1,
+      "ordinal": 7,
+      "started_monotonic": 3300624.149120939,
+      "finished_monotonic": 3300625.959364813,
+      "wall": 1.381689188,
+      "cpu": 3.806565,
+      "sys": 0.191544,
+      "rss": 78592,
+      "cpu_per_tick": 0.000929337158203125,
+      "receipt": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/confirmation/balanced-n4/timing/balanced-Playground-744345666-n4-baseline-r1/receipt.json"
+    },
+    {
+      "seed": "744345666",
+      "role": "wake-only",
+      "repeat": 1,
+      "ordinal": 6,
+      "started_monotonic": 3300622.462199927,
+      "finished_monotonic": 3300624.111066792,
+      "wall": 1.223065972,
+      "cpu": 3.340478,
+      "sys": 0.14229999999999998,
+      "rss": 80856,
+      "cpu_per_tick": 0.00081554638671875,
+      "receipt": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/confirmation/balanced-n4/timing/balanced-Playground-744345666-n4-wake-only-r1/receipt.json"
+    },
+    {
+      "seed": "1064623205",
+      "role": "baseline",
+      "repeat": 0,
+      "ordinal": 8,
+      "started_monotonic": 3300625.997262941,
+      "finished_monotonic": 3300627.646701482,
+      "wall": 1.220698787,
+      "cpu": 3.412887,
+      "sys": 0.15517699999999998,
+      "rss": 79092,
+      "cpu_per_tick": 0.000833224365234375,
+      "receipt": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/confirmation/balanced-n4/timing/balanced-Playground-1064623205-n4-baseline-r0/receipt.json"
+    },
+    {
+      "seed": "1064623205",
+      "role": "wake-only",
+      "repeat": 0,
+      "ordinal": 9,
+      "started_monotonic": 3300627.685573824,
+      "finished_monotonic": 3300629.476964663,
+      "wall": 1.356291467,
+      "cpu": 3.743733,
+      "sys": 0.152784,
+      "rss": 78468,
+      "cpu_per_tick": 0.000913997314453125,
+      "receipt": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/confirmation/balanced-n4/timing/balanced-Playground-1064623205-n4-wake-only-r0/receipt.json"
+    },
+    {
+      "seed": "1064623205",
+      "role": "baseline",
+      "repeat": 1,
+      "ordinal": 11,
+      "started_monotonic": 3300631.180672694,
+      "finished_monotonic": 3300632.789608193,
+      "wall": 1.195700794,
+      "cpu": 3.2955620000000003,
+      "sys": 0.148779,
+      "rss": 79972,
+      "cpu_per_tick": 0.0008045805664062501,
+      "receipt": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/confirmation/balanced-n4/timing/balanced-Playground-1064623205-n4-baseline-r1/receipt.json"
+    },
+    {
+      "seed": "1064623205",
+      "role": "wake-only",
+      "repeat": 1,
+      "ordinal": 10,
+      "started_monotonic": 3300629.532947201,
+      "finished_monotonic": 3300631.142889785,
+      "wall": 1.17204456,
+      "cpu": 3.371557,
+      "sys": 0.16622399999999998,
+      "rss": 79860,
+      "cpu_per_tick": 0.000823134033203125,
+      "receipt": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/confirmation/balanced-n4/timing/balanced-Playground-1064623205-n4-wake-only-r1/receipt.json"
+    },
+    {
+      "seed": "725864695",
+      "role": "baseline",
+      "repeat": 0,
+      "ordinal": 12,
+      "started_monotonic": 3300632.82781542,
+      "finished_monotonic": 3300634.476717955,
+      "wall": 1.224081114,
+      "cpu": 3.370133,
+      "sys": 0.12361799999999999,
+      "rss": 79452,
+      "cpu_per_tick": 0.000822786376953125,
+      "receipt": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/confirmation/balanced-n4/timing/balanced-Playground-725864695-n4-baseline-r0/receipt.json"
+    },
+    {
+      "seed": "725864695",
+      "role": "wake-only",
+      "repeat": 0,
+      "ordinal": 13,
+      "started_monotonic": 3300634.514804642,
+      "finished_monotonic": 3300636.244091823,
+      "wall": 1.298803249,
+      "cpu": 3.4715599999999998,
+      "sys": 0.157244,
+      "rss": 78240,
+      "cpu_per_tick": 0.0008475488281249999,
+      "receipt": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/confirmation/balanced-n4/timing/balanced-Playground-725864695-n4-wake-only-r0/receipt.json"
+    },
+    {
+      "seed": "725864695",
+      "role": "baseline",
+      "repeat": 1,
+      "ordinal": 15,
+      "started_monotonic": 3300637.931329143,
+      "finished_monotonic": 3300639.601440717,
+      "wall": 1.228953782,
+      "cpu": 3.466233,
+      "sys": 0.136705,
+      "rss": 79880,
+      "cpu_per_tick": 0.000846248291015625,
+      "receipt": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/confirmation/balanced-n4/timing/balanced-Playground-725864695-n4-baseline-r1/receipt.json"
+    },
+    {
+      "seed": "725864695",
+      "role": "wake-only",
+      "repeat": 1,
+      "ordinal": 14,
+      "started_monotonic": 3300636.28216901,
+      "finished_monotonic": 3300637.891238569,
+      "wall": 1.179861969,
+      "cpu": 3.345332,
+      "sys": 0.14332699999999998,
+      "rss": 78892,
+      "cpu_per_tick": 0.0008167314453125,
+      "receipt": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/confirmation/balanced-n4/timing/balanced-Playground-725864695-n4-wake-only-r1/receipt.json"
+    },
+    {
+      "seed": "599004658",
+      "role": "baseline",
+      "repeat": 0,
+      "ordinal": 16,
+      "started_monotonic": 3300639.639389745,
+      "finished_monotonic": 3300641.288709107,
+      "wall": 1.230918409,
+      "cpu": 3.364495,
+      "sys": 0.142063,
+      "rss": 78732,
+      "cpu_per_tick": 0.000821409912109375,
+      "receipt": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/confirmation/balanced-n4/timing/balanced-Playground-599004658-n4-baseline-r0/receipt.json"
+    },
+    {
+      "seed": "599004658",
+      "role": "wake-only",
+      "repeat": 0,
+      "ordinal": 17,
+      "started_monotonic": 3300641.326947643,
+      "finished_monotonic": 3300642.976076766,
+      "wall": 1.211829046,
+      "cpu": 3.375551,
+      "sys": 0.13808099999999998,
+      "rss": 79716,
+      "cpu_per_tick": 0.000824109130859375,
+      "receipt": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/confirmation/balanced-n4/timing/balanced-Playground-599004658-n4-wake-only-r0/receipt.json"
+    },
+    {
+      "seed": "599004658",
+      "role": "baseline",
+      "repeat": 1,
+      "ordinal": 19,
+      "started_monotonic": 3300644.704323744,
+      "finished_monotonic": 3300646.376409715,
+      "wall": 1.235448909,
+      "cpu": 3.4053020000000003,
+      "sys": 0.14962599999999998,
+      "rss": 79172,
+      "cpu_per_tick": 0.0008313725585937501,
+      "receipt": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/confirmation/balanced-n4/timing/balanced-Playground-599004658-n4-baseline-r1/receipt.json"
+    },
+    {
+      "seed": "599004658",
+      "role": "wake-only",
+      "repeat": 1,
+      "ordinal": 18,
+      "started_monotonic": 3300643.015942231,
+      "finished_monotonic": 3300644.665557621,
+      "wall": 1.214589448,
+      "cpu": 3.3401620000000003,
+      "sys": 0.152426,
+      "rss": 80340,
+      "cpu_per_tick": 0.0008154692382812501,
+      "receipt": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/confirmation/balanced-n4/timing/balanced-Playground-599004658-n4-wake-only-r1/receipt.json"
+    },
+    {
+      "seed": "117787757",
+      "role": "baseline",
+      "repeat": 0,
+      "ordinal": 20,
+      "started_monotonic": 3300646.414924329,
+      "finished_monotonic": 3300648.084197938,
+      "wall": 1.244180221,
+      "cpu": 3.528252,
+      "sys": 0.15595599999999998,
+      "rss": 79944,
+      "cpu_per_tick": 0.0008613896484375,
+      "receipt": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/confirmation/balanced-n4/timing/balanced-Playground-117787757-n4-baseline-r0/receipt.json"
+    },
+    {
+      "seed": "117787757",
+      "role": "wake-only",
+      "repeat": 0,
+      "ordinal": 21,
+      "started_monotonic": 3300648.121985207,
+      "finished_monotonic": 3300649.770742573,
+      "wall": 1.202290079,
+      "cpu": 3.3495939999999997,
+      "sys": 0.147671,
+      "rss": 80368,
+      "cpu_per_tick": 0.0008177719726562499,
+      "receipt": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/confirmation/balanced-n4/timing/balanced-Playground-117787757-n4-wake-only-r0/receipt.json"
+    },
+    {
+      "seed": "117787757",
+      "role": "baseline",
+      "repeat": 1,
+      "ordinal": 23,
+      "started_monotonic": 3300651.455876527,
+      "finished_monotonic": 3300653.124804369,
+      "wall": 1.235764056,
+      "cpu": 3.422871,
+      "sys": 0.137036,
+      "rss": 79588,
+      "cpu_per_tick": 0.000835661865234375,
+      "receipt": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/confirmation/balanced-n4/timing/balanced-Playground-117787757-n4-baseline-r1/receipt.json"
+    },
+    {
+      "seed": "117787757",
+      "role": "wake-only",
+      "repeat": 1,
+      "ordinal": 22,
+      "started_monotonic": 3300649.80876402,
+      "finished_monotonic": 3300651.417529472,
+      "wall": 1.194457632,
+      "cpu": 3.311255,
+      "sys": 0.14326,
+      "rss": 79412,
+      "cpu_per_tick": 0.000808411865234375,
+      "receipt": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/confirmation/balanced-n4/timing/balanced-Playground-117787757-n4-wake-only-r1/receipt.json"
+    },
+    {
+      "seed": "85910194",
+      "role": "baseline",
+      "repeat": 0,
+      "ordinal": 24,
+      "started_monotonic": 3300653.163360713,
+      "finished_monotonic": 3300654.7124817,
+      "wall": 1.136006269,
+      "cpu": 3.1892579999999997,
+      "sys": 0.140853,
+      "rss": 79316,
+      "cpu_per_tick": 0.0007786274414062499,
+      "receipt": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/confirmation/balanced-n4/timing/balanced-Playground-85910194-n4-baseline-r0/receipt.json"
+    },
+    {
+      "seed": "85910194",
+      "role": "wake-only",
+      "repeat": 0,
+      "ordinal": 25,
+      "started_monotonic": 3300654.75012384,
+      "finished_monotonic": 3300656.401937485,
+      "wall": 1.216553834,
+      "cpu": 3.577282,
+      "sys": 0.153283,
+      "rss": 80020,
+      "cpu_per_tick": 0.00087335986328125,
+      "receipt": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/confirmation/balanced-n4/timing/balanced-Playground-85910194-n4-wake-only-r0/receipt.json"
+    },
+    {
+      "seed": "85910194",
+      "role": "baseline",
+      "repeat": 1,
+      "ordinal": 27,
+      "started_monotonic": 3300658.190734321,
+      "finished_monotonic": 3300659.860544527,
+      "wall": 1.245210224,
+      "cpu": 3.37854,
+      "sys": 0.151799,
+      "rss": 80120,
+      "cpu_per_tick": 0.0008248388671875,
+      "receipt": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/confirmation/balanced-n4/timing/balanced-Playground-85910194-n4-baseline-r1/receipt.json"
+    },
+    {
+      "seed": "85910194",
+      "role": "wake-only",
+      "repeat": 1,
+      "ordinal": 26,
+      "started_monotonic": 3300656.440690468,
+      "finished_monotonic": 3300658.152186027,
+      "wall": 1.282704576,
+      "cpu": 3.605039,
+      "sys": 0.20005199999999998,
+      "rss": 77848,
+      "cpu_per_tick": 0.000880136474609375,
+      "receipt": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/confirmation/balanced-n4/timing/balanced-Playground-85910194-n4-wake-only-r1/receipt.json"
+    },
+    {
+      "seed": "769116511",
+      "role": "baseline",
+      "repeat": 0,
+      "ordinal": 28,
+      "started_monotonic": 3300659.898689374,
+      "finished_monotonic": 3300661.567527526,
+      "wall": 1.216961392,
+      "cpu": 3.412342,
+      "sys": 0.15598099999999998,
+      "rss": 78860,
+      "cpu_per_tick": 0.00083309130859375,
+      "receipt": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/confirmation/balanced-n4/timing/balanced-Playground-769116511-n4-baseline-r0/receipt.json"
+    },
+    {
+      "seed": "769116511",
+      "role": "wake-only",
+      "repeat": 0,
+      "ordinal": 29,
+      "started_monotonic": 3300661.60609117,
+      "finished_monotonic": 3300663.5359037,
+      "wall": 1.44929376,
+      "cpu": 3.670929,
+      "sys": 0.18664,
+      "rss": 78448,
+      "cpu_per_tick": 0.000896222900390625,
+      "receipt": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/confirmation/balanced-n4/timing/balanced-Playground-769116511-n4-wake-only-r0/receipt.json"
+    },
+    {
+      "seed": "769116511",
+      "role": "baseline",
+      "repeat": 1,
+      "ordinal": 31,
+      "started_monotonic": 3300665.322419771,
+      "finished_monotonic": 3300667.734127482,
+      "wall": 1.892809896,
+      "cpu": 4.3290120000000005,
+      "sys": 0.246741,
+      "rss": 78076,
+      "cpu_per_tick": 0.0010568876953125001,
+      "receipt": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/confirmation/balanced-n4/timing/balanced-Playground-769116511-n4-baseline-r1/receipt.json"
+    },
+    {
+      "seed": "769116511",
+      "role": "wake-only",
+      "repeat": 1,
+      "ordinal": 30,
+      "started_monotonic": 3300663.574678793,
+      "finished_monotonic": 3300665.283832787,
+      "wall": 1.272741991,
+      "cpu": 3.418507,
+      "sys": 0.14773799999999998,
+      "rss": 78932,
+      "cpu_per_tick": 0.000834596435546875,
+      "receipt": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/confirmation/balanced-n4/timing/balanced-Playground-769116511-n4-wake-only-r1/receipt.json"
+    }
+  ],
+  "bootstrap": {
+    "method": "paired independentseedunits afteraveragingnestedrepeats",
+    "draws": 10000,
+    "random_seed": 20261015,
+    "limits": "Conditional8predeclaredseedssinglemap/budget/version; populationtails/generalpolicy unestablished; no bootstrapoverindividualtimingrepeats."
+  },
+  "scope": "Latest054 CPU PGmixedN4 all32 only. WholeprocessCPU includesstartup/finalchecksum;wall isinner run. OldBfirstdata unchanged; nocorrectionpooledacrosscampaigns."
+}

@@ -1,0 +1,196 @@
+{
+  "state": "statically_reviewed_frozen_for_root_gated_compile_correctness",
+  "source": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/weighted-followup/WeightedCoordinationBenchmark.cpp",
+  "source_sha256": "6a2e357c339b31b74c167d7384beed965b8c0c6b0369724e849fe059f4c7024f",
+  "compile_command": [
+    "g++-13",
+    "-std=c++20",
+    "-O3",
+    "-pthread",
+    "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/weighted-followup/WeightedCoordinationBenchmark.cpp",
+    "-o",
+    "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/weighted-followup/weighted-micro"
+  ],
+  "gate": "Root only, after old campaign stable boundary and existing scheduler qualification. No builds or native jobs executed by this agent.",
+  "initial_correctness_matrix": {
+    "workers": [
+      1,
+      4,
+      32
+    ],
+    "jobs": 128,
+    "lanes": [
+      0,
+      8
+    ],
+    "iterations": 8,
+    "policies": [
+      "bare-steal",
+      "steal",
+      "static",
+      "static-steal",
+      "two-choice",
+      "clock-only",
+      "observe-only",
+      "last",
+      "ewma"
+    ],
+    "shapes": [
+      "balanced",
+      "skew",
+      "misleading",
+      "drift",
+      "within-class"
+    ],
+    "warmup_per_class": [
+      0,
+      8
+    ],
+    "repeats": 1,
+    "timeout_seconds": 30,
+    "assertions": [
+      "identical workload digest across policies/workers for same jobs/lanes/iterations/shape",
+      "exactly once each job",
+      "zero outstanding reservations on shutdown; barecontrol counters remainzero",
+      "only ready lane heads execute"
+    ]
+  },
+  "staged_timing": {
+    "workers": [
+      4,
+      32
+    ],
+    "jobs": 4096,
+    "lanes": [
+      0,
+      8
+    ],
+    "iterations": 64,
+    "policies": [
+      "bare-steal",
+      "steal",
+      "static",
+      "static-steal",
+      "two-choice",
+      "clock-only",
+      "observe-only",
+      "last",
+      "ewma"
+    ],
+    "shapes": [
+      "skew",
+      "misleading",
+      "drift"
+    ],
+    "repeats": 2,
+    "warmup_per_class": [
+      0,
+      8
+    ],
+    "timeout_seconds": 60,
+    "allocation": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9,
+      10,
+      11,
+      12,
+      13,
+      14,
+      15,
+      16,
+      17,
+      18,
+      19,
+      20,
+      21,
+      22,
+      23,
+      24,
+      25,
+      26,
+      27,
+      28,
+      29,
+      30,
+      31
+    ],
+    "gate": "Correctness before timing; root-owned wrapper only. No further matrix expansion without promising results."
+  },
+  "commands_example": [
+    [
+      "weighted-micro",
+      "4",
+      "4096",
+      "8",
+      "64",
+      "steal",
+      "drift",
+      "0"
+    ],
+    [
+      "weighted-micro",
+      "4",
+      "4096",
+      "8",
+      "64",
+      "observe-only",
+      "drift",
+      "0"
+    ],
+    [
+      "weighted-micro",
+      "4",
+      "4096",
+      "8",
+      "64",
+      "last",
+      "drift",
+      "0"
+    ],
+    [
+      "weighted-micro",
+      "4",
+      "4096",
+      "8",
+      "64",
+      "ewma",
+      "drift",
+      "8"
+    ]
+  ],
+  "wall_scope": "Worker creation excluded by ready barrier; inner span includes releasing start barrier, producer enqueue, callbacks, bookkeeping and final worker join. Whole-process CPU still includes excluded warmup/thread creation; report separately.",
+  "unsupported_contracts": "No asynchronousCompletion/presentation/context-affinity/engine-save-load coverage in standalonemicro.",
+  "dynamic_model": "Whole-class durationns last/EWMA; static relative hints unchanged; common1ns coldprior orcommonserialcalibration. No normalizedinteger quantization floor.",
+  "output_schema": {
+    "prefix": "WEIGHTED_RESULT ",
+    "fields": [
+      "workers",
+      "threads_including_submitter",
+      "submitter_executes_callbacks",
+      "jobs",
+      "iterations",
+      "lanes",
+      "policy",
+      "shape",
+      "wall_ns",
+      "digest",
+      "warmup_per_class",
+      "warm_digest",
+      "samples"
+    ],
+    "samples": "whole-class wall durationns orzero when notobserved",
+    "budget_scope": "workers4=4callbackworkers+1idle submittingowner, unlikeengineN4 with3workers+owner. Microdoesnot modelengineownerassistance orrealoptionalservices."
+  },
+  "control_scope": "bare-steal skips estimate/hint reservation/debit/transfer bookkeeping entirely; constant-unit steal retains samequeue accounting as diagnostic overhead control. Identical queue/CV payload/wakes/output/remainingcounter. All9arms researchonly.",
+  "wrapper_owner": "Root owns run-weighted-probe.py. No competing runner created.",
+  "independent_review": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/weighted-followup/independent-review.json",
+  "freeze_scope": "Source and declared matrices frozen before root compile/timing; no native or compiler work executed by author/reviewer."
+}

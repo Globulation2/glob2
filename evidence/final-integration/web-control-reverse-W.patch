@@ -1,0 +1,18 @@
+diff --git a/src/common/ComputeExecutor.h b/src/common/ComputeExecutor.h
+index d615a4b6b..9a953e7b0 100644
+--- a/src/common/ComputeExecutor.h
++++ b/src/common/ComputeExecutor.h
+@@ -1555,12 +1555,7 @@ private:
+ 		lock.unlock();
+ 		if (!ownerRunsDeferred()) {
+ 			if (runnable == 1) ready.notify_one();
+-			else if (runnable >= workers.size()) ready.notify_all();
+-            else {
+-                // Deferred jobs can run on any simulation worker. Wake only
+-                // enough workers for the newly runnable work.
+-                for (std::size_t wake = 0; wake < runnable; ++wake) ready.notify_one();
+-            }
++			else if (runnable) ready.notify_all();
+ 		}
+ 		return batch;
+ 	}

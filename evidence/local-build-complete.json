@@ -1,0 +1,40 @@
+{
+  "state": "complete",
+  "base": "48438f1f08a68b24ef0049834d371b9d00d84bae",
+  "patch_sha256": "0189434a16ec30d3298a58d34471940a22f9df3879a21ddb7ff7c49fd5b5b3a4",
+  "outputs": {
+    "native": {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/local-completion-source/build/linux/client/release/src/glob2",
+      "sha256": "1dce23504801e914734b124b076b66313537061c76eb6872d594ce69782f1501"
+    },
+    "unit": {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/local-completion-source/build/linux/client/release/test/glob2-unit-tests",
+      "sha256": "87fb691fb34993422d4b90ed63b31f9ce996fdcc21e810b23882a447a95ef735"
+    },
+    "engine": {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/local-completion-source/build/linux/client/release/test/glob2-engine-tests",
+      "sha256": "1264382b6133ea837cf07c03426de3d6b351cfdda451110c98fa0f3bc6f18eb2"
+    },
+    "micro-baseline": {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/micro-baseline",
+      "sha256": "3aec229c2fe2acfa797575d5324af4dcc3545d23ead2fea0d3667c706ba3a11a",
+      "header_sha256": "fa37bd1b3b3f1027aedda6858af0a2f574c0a2c9499f250fb4dee6d9659e19ea"
+    },
+    "micro-wake": {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/micro-wake",
+      "sha256": "76b1276b47d08ca21757d56290b17c087d34d65f20b5ca60aeaeab21779e374c",
+      "header_sha256": "204fd6064bb4b6074a1d95ca905d700735e41ba7eaabb49720e44b3423f229c7"
+    },
+    "micro-sharded": {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/micro-sharded",
+      "sha256": "accaac9e290879b5bb39a595e5dc304a0d8e0c6f3d5cde9381a92f9611b7aa5c",
+      "header_sha256": "ff6550ddf5a6b28d1b884f2432a42eb9dea59913908061c6136c1a65218a12d6"
+    },
+    "micro-local-completion": {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/micro-local-completion",
+      "sha256": "ef8b17b9dac1c45b8c900ca7b7c2905cc4d0cc80d0ecc423af3f1ae073a61448",
+      "header_sha256": "cfdde45e73d0789c2eec88991fd45f8558dbfc6a76a9d0d82b1d509b48a0e786"
+    }
+  },
+  "updated_utc": "2026-10-15T00:01:23.357876+00:00"
+}

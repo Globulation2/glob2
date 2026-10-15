@@ -1,0 +1,3413 @@
+{
+  "state": "complete",
+  "plan_sha256": "a912c2a77fe6d07ad0eaea8b7ed4ada7af17844c98bb674780a36c77ee9e7090",
+  "launcher_sha256": "8e53b4b9cb35a6c1189c6e0ccb09da0cec89dc7ec5965854fb54de477fad4f16",
+  "receipt_hashes": {
+    "Playground/1056243202-baseline/receipt.json": "c35414172f3a74cd07df4b6489e2b80724da672d5fbcef0bdf3910687c410cdc",
+    "Playground/1056243202-wake-only/receipt.json": "d0c9550fefe2bc43057544346044732347798a76053ba55abd817c95e8a48b06",
+    "Playground/744345666-wake-only/receipt.json": "efa6f860d57f79098ba62fbf2ad767fcc5b8e49169533c59acd2cd32018507ca",
+    "Playground/744345666-baseline/receipt.json": "46a39154d926a58c20277fd8b34359d61a636dfb50b3ac1b03fe4d7befd40e71",
+    "Playground/1064623205-baseline/receipt.json": "cfcee26a15d6573a6eb61ae415bd91bd82a12ccf681f532ccb516df3454a4d62",
+    "Playground/1064623205-wake-only/receipt.json": "d52a32fc5d4d8a9417c7eeb4daa02dd61011fc65d44bfcaca4a861124c713ebc",
+    "Playground/725864695-wake-only/receipt.json": "94e9e0c1ff74646568805f1a7462d7b3ec7c588bf7bb383886d50feea16ad92c",
+    "Playground/725864695-baseline/receipt.json": "ffd7b05cdf21b6ac54c3694ac8627505941ad7e23f5fa33cc21f9e489f25dadc",
+    "Playground/599004658-baseline/receipt.json": "f9879b632e56729d050cf1d3139fbb401208b698c22c36eff51bb29736a41167",
+    "Playground/599004658-wake-only/receipt.json": "74256b9b9ef2ec9a354fd013f4c2a95a3af4f6dea29851c75a06b7f12ae56122",
+    "Playground/117787757-wake-only/receipt.json": "ef401d428bfef8b96fbb44da8c5ef21c62b96c0c709b037ef542429bdc9f7786",
+    "Playground/117787757-baseline/receipt.json": "798f03af6fbd3e60fd873670730545a12c151159695970aad7aec3efb0c35b4b",
+    "Playground/85910194-baseline/receipt.json": "7480898455816618aa014cb881867ea77fbddc71e03a9de71e8eef610cc95c90",
+    "Playground/85910194-wake-only/receipt.json": "5a61115803b7b0ef7715b411166e89daefd9bf9ebf68763369d71d758c78dc84",
+    "Playground/769116511-wake-only/receipt.json": "4a9fd7bb1dfd221fd84f669abf564143a634ac9fd4b53b944cdaf6ea28681502",
+    "Playground/769116511-baseline/receipt.json": "0be9048f80066df1f40c16587d63f94933ecfa45a23375c29a3a612d4e8ff7a6",
+    "Playground/1030656205-baseline/receipt.json": "359d6a961c2fc31c22fb56fc0dc4544f2f6d93126ecbf52ebd65c788ab35c924",
+    "Playground/1030656205-wake-only/receipt.json": "43e51124412c9f994356fe45a392e4fa01c906d4cd502c5569b79926df51e20b",
+    "Playground/79851807-wake-only/receipt.json": "d56e53cec055f18d58f4bb9ec1dcb6a3d175c7849ea9350c0a7f5b044a94a93a",
+    "Playground/79851807-baseline/receipt.json": "ec842128a910462694764d444bc8caa55e78b16b724b0c605e8763eca79e2e4a",
+    "Playground/1480527227-baseline/receipt.json": "852ade1e6fd582c52aa4152890cd30f6fb2c9afe81309653673e13631654e254",
+    "Playground/1480527227-wake-only/receipt.json": "87c07d323de905e97a06ba89a746213fa342950a57c63ec62f77b78ab461ad46",
+    "Playground/31444774-wake-only/receipt.json": "9beeeae8eb6bc6b875cfbb532ffa1b8fa8e0b0bc26e4ccccdde67664b39815d8",
+    "Playground/31444774-baseline/receipt.json": "378a8f5252c5b9b08412be75630f93788e649ea9a8fb2b38d7d5ec86ee6c7981",
+    "Playground/1514826878-baseline/receipt.json": "c28bc95767f7188a3a6101656aea8ce31d7cce41372eb36b172f4ec17e317891",
+    "Playground/1514826878-wake-only/receipt.json": "81f5f501f2a37e9665231f91451e00b5fa4b4617ec20d71af4dd27479f9099b4",
+    "Playground/1858401095-wake-only/receipt.json": "2ce7dcad4c6721be015b19f4c21b24e5c76a16f6bd3c26df6794107b9e28ec41",
+    "Playground/1858401095-baseline/receipt.json": "e4181d49c5e687505f9d0e5d066af34ecf0007b33b6a93c44da5d67660993816",
+    "Playground/1635872854-baseline/receipt.json": "d88a706b6d0da867d2fdd98bcc5cea1967d83f03d2c41f4428611c4ea2906642",
+    "Playground/1635872854-wake-only/receipt.json": "41243e7906283725e85f4be7db042d325f71d01ed7dc22f003a5cae75443b896",
+    "Playground/1441583672-wake-only/receipt.json": "a7e8eeddb787b5751598ed8e4ad1ce8ee32bcbd42e82cad8d2310b52fc0b52ce",
+    "Playground/1441583672-baseline/receipt.json": "2e0de214087ec883c9ac6521d14630a05c3a402ce7c6c89ee5dd362c66e825e8",
+    "Playground/741493568-baseline/receipt.json": "86050b464441275fb1eab3924d776c3dcbe1b0e30050a44ca62b69c6da1621bf",
+    "Playground/741493568-wake-only/receipt.json": "5c0a86e65b9e0bedc5a8164e10f46c1853dbbd3509e0018c97b7b48f2c1959a3",
+    "Playground/466374853-wake-only/receipt.json": "e444c9926f916a48b42f127f3e10f814696d99a51768966bb5bc1d1013227d23",
+    "Playground/466374853-baseline/receipt.json": "958cdf6c6eea85e2523cc850763fbf1f9da2b63b0efda7221c7aaf8fbbe2aeed",
+    "Playground/2037486757-baseline/receipt.json": "5d931b1ae4762ad94954c8375688436451ab036cb8f9be264c995fbf599cacff",
+    "Playground/2037486757-wake-only/receipt.json": "902040e0bbc0db842b67ec135d9234e144251441c673462123a07398453c2da6",
+    "Playground/1414753418-wake-only/receipt.json": "46798caabb1f4534685927ffecade45e68592b6230a50843cd50832994ab9963",
+    "Playground/1414753418-baseline/receipt.json": "e2938ce2499e286c888eec6f1ad9f67895e45e1c3a2fe34f2d9c7e22ebb27128",
+    "Playground/1298936997-baseline/receipt.json": "c6a0dc02150747975b366b5e609acd4118a1cbb53939cd71022b63d09e5b96cf",
+    "Playground/1298936997-wake-only/receipt.json": "2a34c72f7e804cf346165f4b9cb42b7909056368133ae8610a2aac377dc4083c",
+    "Playground/1139586032-wake-only/receipt.json": "b752e658721f8591c864ee2af9650b9d58fced2744cac894eb12b1155e2d2572",
+    "Playground/1139586032-baseline/receipt.json": "8a30793cae6004b7da45eddc69d7d78892e96534b075793c1c75aea6d64de820",
+    "Playground/1845486380-baseline/receipt.json": "afa332f00fcdc24a76c56d5390e5f642363575c1d0db4782b80fd24b77b5420f",
+    "Playground/1845486380-wake-only/receipt.json": "f74e572988986ae209b98d782cd24a01b69ece1e2d8d4292e6c57a0d57622ec8",
+    "Playground/275303672-wake-only/receipt.json": "ce4fe570e430587926639cdd750e4c7daf27367c18cc5dbcb4da80fe3c9f6df7",
+    "Playground/275303672-baseline/receipt.json": "05bb7426a3cbd3ab149fed22291e265bf99b6711b6d5ecf39f4d89c5bd3c49ef",
+    "Playground/1013771484-baseline/receipt.json": "4b3242f7645f8355cd08e205e1f0ea511796bed24badd9fafc45d351d1be1fb7",
+    "Playground/1013771484-wake-only/receipt.json": "9fe57f70723af0ba95647c284a85e9bf5c66a43aa0a9766755afa3e52e19c623",
+    "Playground/1961520297-wake-only/receipt.json": "837e55b0cb3dc0442699dcb8f5b119c502ca1e838e8893999d8810554fe307cb",
+    "Playground/1961520297-baseline/receipt.json": "cb935f60075ff496c31c4390a1149a8eb43b2dccf68a3a7b633756e92ec7989e",
+    "Playground/56523606-baseline/receipt.json": "f3ca550755d5f77264e8c7517b034da9ccd9ffaadf8bd7535b3f97d18707eec5",
+    "Playground/56523606-wake-only/receipt.json": "328de3f73dab225e03dc299b1cb240aba529d59d9a28c8611a2a0e972f0de5e5",
+    "Playground/7804900-wake-only/receipt.json": "342bb27ca7ce72bd8aa8fc2a2e13c7f8673dcf037e6534703c285c25808ab9e2",
+    "Playground/7804900-baseline/receipt.json": "fa4b524841c1338ce957be199c343f424be91c5383d92a127fcb7a88dcd2ecbb",
+    "Playground/494353701-baseline/receipt.json": "ff5791b3a0dbba451e7663ae9b2d96aeb36ae13428dff02be3ad09268e6185c1",
+    "Playground/494353701-wake-only/receipt.json": "e820206951f3e3246045c438b834586c35a5d8e3b325ea6e7b8c9146c1c23a2c",
+    "Playground/2092499754-wake-only/receipt.json": "ee396eacb358c0fb832bd92efacbaacdb70a0d283124dc7b2db8eefdd5c86f83",
+    "Playground/2092499754-baseline/receipt.json": "b7116995de9fae91238c8c78b4369db87454a6c0006dd7294dedc359aee7ed4c",
+    "Playground/1910481143-baseline/receipt.json": "70224771ab352c8ee2f9f97a7f4dc736cd6bbb9a4e8dbec3616e1dd091e847a8",
+    "Playground/1910481143-wake-only/receipt.json": "c1ac3857b2027f9f18988524aa33d91264e05cae085bacf5791cc5fa8eecd732",
+    "Playground/2122112527-wake-only/receipt.json": "5d82d94e407059590cede883c88b5e1d2d33fd9689f54e3baed4fe02748042ce",
+    "Playground/2122112527-baseline/receipt.json": "4cfb87ad3d7b95b9b592e47d80db7462c7bdaafd90010f349af8cc271fdfc9c4",
+    "Oazis/1056243202-baseline/receipt.json": "098e7d5543bfcd20f6639fc8d5c147bf2d01b4a08cd1b5237588153b7fa89089",
+    "Oazis/1056243202-wake-only/receipt.json": "d5103a71f133d09f28a255429d8d40f936570c5416f27896d9ec96906e50a14a",
+    "Oazis/744345666-wake-only/receipt.json": "86f0c404b636f3824982ad731cc289c0bbc327e340592868602f57856a036980",
+    "Oazis/744345666-baseline/receipt.json": "f406bbeff05869de8817486891864fba058d3282aee60ba1ec084b0655839da7",
+    "Oazis/1064623205-baseline/receipt.json": "cd9a921a3698c99e0af127f8441b1ce5a21de7ce05c01a696347191578cd4c1f",
+    "Oazis/1064623205-wake-only/receipt.json": "5aae64335d468d0e56ff9fc5e592c21247fb29a684a2fd5c7654aab2fe8b0477",
+    "Oazis/725864695-wake-only/receipt.json": "24621a575cd1d69cffcd3f7ebbee6a6f8753a0085a8a157c2069141fba3dd4dc",
+    "Oazis/725864695-baseline/receipt.json": "9929a1651ece709a8e8850a87cec3a90d59203efaa8a7eac6cd8292bd2617f48",
+    "Oazis/599004658-baseline/receipt.json": "54fdacf5c031090f862e8b792691b2eb53d8b30722a5a924b042166730a8179e",
+    "Oazis/599004658-wake-only/receipt.json": "e06795dd6b084255fc508f7bd7849660c50ff35cb2f49dd09bfedea4e75c8b24",
+    "Oazis/117787757-wake-only/receipt.json": "78041f1feda59890c330584df4524e1268e407fbf5774a1df9027c0660b41a2b",
+    "Oazis/117787757-baseline/receipt.json": "f9690ed2bfa74b46db88837e685d83f24b023316b3ec8fd7d12a44e2f80fd976",
+    "Oazis/85910194-baseline/receipt.json": "622ee06a7c1489e3a2cd10f84ea7b5ca3d8814429d3453eb5a6ad8730882cbb6",
+    "Oazis/85910194-wake-only/receipt.json": "9e8d9bdc051adcc8a99bb8d32c7d5b244a68e4afbd6806965ed68028346f1254",
+    "Oazis/769116511-wake-only/receipt.json": "883270f8d1dd7e0494aa787fbb52bc4c888b5d6e69d7e7ea8aec38e26b75ddf6",
+    "Oazis/769116511-baseline/receipt.json": "e76f8f87d6c2c1a4963fccbbe527660c065fec4a8623d649115c44f75b3b7ca6",
+    "Oazis/1030656205-baseline/receipt.json": "25ed432d3214ecd34a80344b44c14672ff206a04e516b44d266957dc67b4875b",
+    "Oazis/1030656205-wake-only/receipt.json": "21778f5886c6494711c5b7759e42bbf8321d9ef4bb43b0057a390e1195c6413b",
+    "Oazis/79851807-wake-only/receipt.json": "350a7f47395963fc870cfbfa26fc8620a1fe507de174fee06c2c7ed9be4e6d3f",
+    "Oazis/79851807-baseline/receipt.json": "488aed348cf0f0317f5fb2acdaaf5f2f44342deb1389498c5cc83d7c988f6dbd",
+    "Oazis/1480527227-baseline/receipt.json": "87dff3a95f3661ad398d5a115c4f9415848bcc506f7c91cbdd87d39c7a512c1b",
+    "Oazis/1480527227-wake-only/receipt.json": "c4802f71093d3e0f5c0630971e6efc4918e846985a04a290cde8acdde505859a",
+    "Oazis/31444774-wake-only/receipt.json": "33d9ea8bb424cf7802f14aeb25bb58d8ad5de8fc2a5514f45a0e6e6c1f71f97d",
+    "Oazis/31444774-baseline/receipt.json": "326072dbd3889eb4f895d3afcb01c8dc0d159060752d83b5cfdad1aca5393b5f",
+    "Oazis/1514826878-baseline/receipt.json": "da474d6febf2f5867616d7b962d698882881b84bf835d5213e56e43b0425abd9",
+    "Oazis/1514826878-wake-only/receipt.json": "a77c0e5eb34ef4795cd671179219d2915af56a6f2f5dc6b12567a35426df1cf7",
+    "Oazis/1858401095-wake-only/receipt.json": "8d3d5e6774c695e322886935b328eab5902a2783f1c0fa0e45bfdf008b23d59f",
+    "Oazis/1858401095-baseline/receipt.json": "71474109ad6584cf971f1f2ee04d25020342f717afc25da5c9c9ae111b440bc8",
+    "Oazis/1635872854-baseline/receipt.json": "02a72e31392f08925657d5c4251661a4d54ffe55bf18af693b4f0d44e7de5920",
+    "Oazis/1635872854-wake-only/receipt.json": "f002cb5fb509a2429bc720842d68414c64ba81bb9c0c689382f7ff5db1755c28",
+    "Oazis/1441583672-wake-only/receipt.json": "b8b297678d12bd9683331745bcbc63179931556179098435be72347bb053497f",
+    "Oazis/1441583672-baseline/receipt.json": "1cb51b9ae93807b103891370679ee674c68a0fc6577ede66c332b6f13e3dd2d4",
+    "Oazis/741493568-baseline/receipt.json": "a677637a5848877f5ef0c8fa882da15d34bf052a309daa8a3f6db7accb9a9c14",
+    "Oazis/741493568-wake-only/receipt.json": "9b35e3565362312a5ccd1567d15132538be3ba9da5077571a1cb191cd16400b1",
+    "Oazis/466374853-wake-only/receipt.json": "dac94b3c7c6ca9cf9178ba7ebab4f2d2e8cb994a69f95be3597d4bd35ab27749",
+    "Oazis/466374853-baseline/receipt.json": "2246e920abed9fd12796845824547072a5a25322f9813de1cee671e5db629c8c",
+    "Oazis/2037486757-baseline/receipt.json": "03462c7b8951585b0aa8b0820657d8cc3e3b60bec3fd4d4256d8c9761be52efd",
+    "Oazis/2037486757-wake-only/receipt.json": "36fb72da1b6edee01a49001a77eefc657cab3e25e5999794c49328c9eec75048",
+    "Oazis/1414753418-wake-only/receipt.json": "7bcead7f14ff3ea05a38caefbc011b568593171ce4e35b8c5dfc9c69ffbfbe6d",
+    "Oazis/1414753418-baseline/receipt.json": "671588f8f850b102fdb9ee92360d3456ee3376195932fc92019810871847e8a5",
+    "Oazis/1298936997-baseline/receipt.json": "d8d93103c475ca190554be0782871e524715651ad95e160c9ce9d5d0716bad64",
+    "Oazis/1298936997-wake-only/receipt.json": "9366fb439e729ace6d2bab5422c1a1984fb22724135aca7e07e03f70959deeb6",
+    "Oazis/1139586032-wake-only/receipt.json": "6a63f1d6aab01bd13e521b217e15deb97a6610e672b1dff62eba6c34c451bbb0",
+    "Oazis/1139586032-baseline/receipt.json": "8a4f64a8e85d2b6948948cc9c425cfb8772db47c9cbe52368557bb768d6c9681",
+    "Oazis/1845486380-baseline/receipt.json": "5d8ed5d4b2062acf596d320b7da5b79c76750570aa4c3a56a16b6e94a95e8035",
+    "Oazis/1845486380-wake-only/receipt.json": "98bcee0f61b6fedd5694d845ef1731d9f05de416ff241f8c38671f8e8649837c",
+    "Oazis/275303672-wake-only/receipt.json": "8c7ce1c961628db0819e9e55dcb07c8377825d5a771dd1910d4021a168e2fac5",
+    "Oazis/275303672-baseline/receipt.json": "b5764b916c91d94d09e4535840a14b996517e1a4c97a095a2ae30c3208caf5a2",
+    "Oazis/1013771484-baseline/receipt.json": "35d8f57ea76ed319478a48f508e0102617e47111d9778c8d040747498843a4d0",
+    "Oazis/1013771484-wake-only/receipt.json": "edf289bd2ed5d78e62a492d8aeb2ad743c3d9de3764c4fe601844c17d9ac35bc",
+    "Oazis/1961520297-wake-only/receipt.json": "9cba8385d35e2d408703c8e9732b1f0467011bb7eb4de54c146e4f0ca9cf7476",
+    "Oazis/1961520297-baseline/receipt.json": "fe819b5b9f9ba0c1da9cc6a69ce3ddb04978dcdd503aa06a7663e3e85e1c5de5",
+    "Oazis/56523606-baseline/receipt.json": "2589404f1def5f03e4295531a3be83be946173294632ba4801c9d0dface26d64",
+    "Oazis/56523606-wake-only/receipt.json": "b84cbf8f0dfb635eef4b791c58078343b3daa6e4ee33f67d5a638303dd91bb2d",
+    "Oazis/7804900-wake-only/receipt.json": "9a347efc2ec458eac0819cd09c9e11aa2ac026332b425a5adb3e45cc794658b6",
+    "Oazis/7804900-baseline/receipt.json": "e57c91f979e24006526ecb6f06550cf2da26fb3b2e593dabb4d61520468352ac",
+    "Oazis/494353701-baseline/receipt.json": "c20d5d632edbb8483561fdcd2a9eb43c7cdd4cc67be9fb7d3ff97bdcfa7d945c",
+    "Oazis/494353701-wake-only/receipt.json": "bcfdcdd334365a88ae7ebac067f6c5ca89ca1ab99416b341142cb79f22081dcd",
+    "Oazis/2092499754-wake-only/receipt.json": "718f2d38fa397875521fcb79b02d474c3bc2d93bd27e7d37b88b26b940d3c2b5",
+    "Oazis/2092499754-baseline/receipt.json": "b010ab5e428bc9a8b4d924d6022cb05353b93ebd76890c995eb80c1395236e3e",
+    "Oazis/1910481143-baseline/receipt.json": "efa35f5cd77060be1e406bc6772dddcccfaf73c9882ccc41cd396b86e75fb9c5",
+    "Oazis/1910481143-wake-only/receipt.json": "45df800fe0493d4f69bead6e9f5681e005bc718d3c3c62846c0d1981289c0184",
+    "Oazis/2122112527-wake-only/receipt.json": "e70f260de91062614f3e9ef73cbd91d02cbdab2ec1d1da3efcb14277e5e8fb0d",
+    "Oazis/2122112527-baseline/receipt.json": "09279386aedb20f6d02632c595097cda915263789c00ace4a51db8746ab837ad"
+  },
+  "wave_hashes": {
+    "wave-0-Oazis-baseline.json": "586af253efb0f1c916f23083c6078c15da7b5a75ec26aac294f8b0815fe5120b",
+    "wave-0-Oazis-wake-only.json": "b8fe42f2934f392759ee4d50b5838fa20d6f3c6d82e3e682e01133d329008de5",
+    "wave-17-Playground-wake-only.json": "163ef167a74917bf0a7341addc908e319f598a50500a16e477c010712bbc455b",
+    "wave-0-Playground-baseline.json": "c0160c5585f6f230f02abff66f862ff780c09bfbbd4125a388da78388a1ec744",
+    "wave-17-Playground-baseline.json": "5e93aa6b73c0d5047ce46f7a9bc7313b67ef6a7aa1bbb50b0f9fb51aecce6acd",
+    "wave-0-Playground-wake-only.json": "abe00df084a268544de33212462e8fd3d8e1e0b04819844564d48d60d9d0fad3",
+    "wave-1-Oazis-wake-only.json": "8c6d9d30123c41534fad2606bb976bbff832d070d0586e01e361cb98c6462712",
+    "wave-20-Playground-wake-only.json": "4c6fd2e7700829ca4160e93d64d5fbee2988e04a7279e7533a963794021b6708",
+    "wave-1-Playground-wake-only.json": "35473c7f6460af867e1a6a5bbe311e3f4e833bf58b0169fdac0272e2f1e7c780",
+    "wave-21-Playground-wake-only.json": "784ce2e6a5b834a180a9262630c1b94031e10b43a2bba5282a5be0b93a21313b",
+    "wave-1-Playground-baseline.json": "4b9a0dece02805ac9fcb5932d66ff35da5b6ede9ecdb53fea56d2049e396059d",
+    "wave-21-Playground-baseline.json": "48f7936efbf7be9449f056ed3d376e415d8e282dd1f9bbffef2f95ab824caba2",
+    "wave-2-Playground-baseline.json": "ebad88824d06a8a1e1cf27de74215d81da7692389acc9db7521e3d104839caa5",
+    "wave-22-Playground-baseline.json": "c4fefd2955c5f40ca07e865a2f6530f502ee751cc765ece56245aacbba584a72",
+    "wave-2-Playground-wake-only.json": "971087a362727887ff8a1fb24d05689fccf98c52dd30ec8d168170f055ecffa1",
+    "wave-22-Playground-wake-only.json": "c3d923550313cbdabc88c497047805407770d137a6ab7e2b8e981ffa00026b6f",
+    "wave-3-Playground-wake-only.json": "ddacf09f2067f2daccdbf3b058202fbb4aaa1db36974c9ec500de758ff725e20",
+    "wave-23-Playground-wake-only.json": "27e59f01b57359e88ae8c4814fc1cd481da046d86602855267cff11a9a5292e0",
+    "wave-3-Playground-baseline.json": "06fa8fa80c531a0ec16042eb5b47b95d454312b0beb2992cf32500dad36479e0",
+    "wave-23-Playground-baseline.json": "2420abad869f14347a4cd2fead42e6f525d9ffe09cc550a23843bed60a4c076d",
+    "wave-4-Playground-baseline.json": "b4b80a45a0d368d4dcc31e2cb4afbc40742dcbb8853e2c60d84605f4d4a613ee",
+    "wave-24-Playground-baseline.json": "7a00e91616483e835323e12ca9bbaa0702084d37ed58c800e8118be8eb670816",
+    "wave-4-Playground-wake-only.json": "338261674cc9793a14fe0e32cb4a3676b33ac64efdc71438118a90ffe864f77a",
+    "wave-24-Playground-wake-only.json": "50bca2b4d95a56f2cc1e69ab631223e058acd92c9210f67675a93efdec375c0a",
+    "wave-5-Playground-wake-only.json": "4911761159a5aec0b2ec423adf3c15167f43410bf148e718e1af6191c89c45a8",
+    "wave-25-Playground-wake-only.json": "129294c475060588d588913088e27e0ae55efc211740612ba716e37b2b2c3883",
+    "wave-5-Playground-baseline.json": "ca432840fb17def3a6cbf3f61930aea6c6a5c670c6a1c5e8b33627af263e903f",
+    "wave-25-Playground-baseline.json": "e43b0b369fcb04496288f375b6a797a19ac5ae37af4661b3706be7000de2e293",
+    "wave-6-Playground-baseline.json": "4045fda4f4a422575a63b175a260539d054060e4c24e0fa953406911418649f8",
+    "wave-26-Playground-baseline.json": "3211ac872b4fcc280c5de90f36b85205234174e668afbf5622776aeba324609e",
+    "wave-6-Playground-wake-only.json": "9a4dbdcea4614ae77c22137a5c5fade4c559b3e46086c74d15c90caf058cc6d1",
+    "wave-26-Playground-wake-only.json": "7fd81fdf7cb2c41848efdf015f81059a1ead98c3e194ce5cb30e45d59f28d692",
+    "wave-7-Playground-wake-only.json": "03d423567b3e6cfe9a8f4ca77839318fce29149eb2de216915968228cc288bb6",
+    "wave-27-Playground-wake-only.json": "09ddbdc1c7fee9b45aafe3252f87bea35e795b09cc776e1b37e5da7a7d0facea",
+    "wave-7-Playground-baseline.json": "965ac9daf8c931d8fe69a94b1a4beb85a2c2db1dcdca5f6a89d39b9b0a47158f",
+    "wave-27-Playground-baseline.json": "e82962920bb68c2be8328df7f5d13e61fe166a07ed81e586fc5d757c60cb0200",
+    "wave-8-Playground-baseline.json": "31c3e0017a482f0a3ae6c10a616b195a93b44beea77db598818006e57c0d91be",
+    "wave-28-Playground-baseline.json": "3abe4c5428992e149c462a7fb9fa9eda34e9a5549bfe02abed445dceb239a4a9",
+    "wave-8-Playground-wake-only.json": "6c61f2b9a0c9916483cb8b01218ec9f290401b9b9d87c5b946917a47c2605e8b",
+    "wave-28-Playground-wake-only.json": "86eb650b1e0fde1c6933c2d64ff8565c9f23af2d7cecdf57f8002caa42632896",
+    "wave-9-Playground-wake-only.json": "a76b68df1cce618021ccf37aaae37158fc8adcecfb2c91ed0eda611767fce705",
+    "wave-29-Playground-wake-only.json": "50900629f1c8492b1da73be900e40f6d276a89b846e14a0f9a8e0dcf055ce773",
+    "wave-9-Playground-baseline.json": "beba1ace9d1d27832c31983acc3a57492da0af4d04f68fd0a1eba3304a8816b6",
+    "wave-29-Playground-baseline.json": "fb772536625e5bc6c94aa8cd13c6be3828685ce4f017438a1539d7394aa30ebb",
+    "wave-10-Playground-baseline.json": "a55cc20c109acbbcaa20cde99ee2fea7bf80429bc5ed8fc2a68ace541dc82542",
+    "wave-1-Oazis-baseline.json": "5ae29beb39d0f28b7f3c39bc5897836d2ff208a2ad766e345a8793ae78aecbf3",
+    "wave-10-Playground-wake-only.json": "0e739d9280d742cdeb555302c5158ecae2b5758f146a9e48a1ea2c19f8bf3a62",
+    "wave-15-Playground-wake-only.json": "09085c57080861ec1f622b30b8a9f12aa31872d053916da28bffffe998ac4f81",
+    "wave-11-Playground-wake-only.json": "4065a0e679bad9591f511ce683e62a312fcb93e93c8dd23bcdbfca386696d3e3",
+    "wave-30-Playground-baseline.json": "96ba11d85b374aba48211278733b07a59b22fdcd966416ec819fdeb47ac8f359",
+    "wave-11-Playground-baseline.json": "4fb2a231481b1feefbe506b05cc6af8701d5d27ee6dceff6dde07d712c463612",
+    "wave-30-Playground-wake-only.json": "fa588ba03877e60c85d78129d9b767f1d97dd9b7e9217ce5384b4ff1b485d033",
+    "wave-12-Playground-baseline.json": "45e477fde1d77edd6ca3d89e6ac8a0a86955ca5d0d36f31ba38f768ce4c070c4",
+    "wave-15-Playground-baseline.json": "43e11a1efabe331df897ff57c0fa891229f3209496cd0467e397273c6866f589",
+    "wave-12-Playground-wake-only.json": "4d5db090534433099ab23c94c10317f8d6dbfe3bfc6dbf5271d64d7075956352",
+    "wave-16-Playground-baseline.json": "d40a0680890fcf6a8db2544285e938fb53dfa2a58ca1ff4f3f54f9c2461c86f8",
+    "wave-13-Playground-wake-only.json": "1b3a5276857ff7b7b8e6173ccc177f8d4fbbc73b430281aa8d43af4008d7b43e",
+    "wave-31-Playground-wake-only.json": "62b47827ea686c21c4232b3afd3509976595778e049ace9ff93e46f1eda4d625",
+    "wave-13-Playground-baseline.json": "6a39d7a62be1ae490073e569ef7fcd34f711f938858451c873c3de47ab61ec18",
+    "wave-31-Playground-baseline.json": "82c87d5384c585f2254f1855930c29d8533c3187a9f89b895dcd160f2c93d856",
+    "wave-14-Playground-baseline.json": "182902b5e6b180db8b9a02bab85a3a6166db63eab486126892784fa7b3e2f2cc",
+    "wave-16-Playground-wake-only.json": "aa91dd55bc8b67ce385658f1d528fbc8e4df7dcbd8d4581b561cf04d461caee2",
+    "wave-14-Playground-wake-only.json": "b7f395077bd1eb7e2c103c292ec2ec61cca0c3fe19c0ca2bfc7d46ea175ee57e",
+    "wave-18-Playground-baseline.json": "fb028f1cc69f666d506cb5034727093c80dc27c2da9da68b149ae71fa182b569",
+    "wave-19-Playground-baseline.json": "870c8280fcb72ecaac49437fefae4cbfb4e12b15e347d36bf1234a4ffb923302",
+    "wave-18-Playground-wake-only.json": "198714670d2878176f5dd106b2286c0ac19d4b0a58c5a9b6c499b1b93f3f372c",
+    "wave-20-Playground-baseline.json": "9b4ca40f0d3c9aed4282711e5c1f3823ba762b3673c970d2ecfd8f161267d930",
+    "wave-19-Playground-wake-only.json": "76acd95d436867ee272ad101e346afb4f013d87162c9df855a7edfc9bafc73be",
+    "wave-2-Oazis-baseline.json": "872524ca69835a14295df7ef4df077d52322339db1e01ff2562838ac549ed9b9",
+    "wave-2-Oazis-wake-only.json": "cd0c63f45f35dd5d879b4385dcc4085cc4b38429c27fafb5360218fe91d83717",
+    "wave-3-Oazis-wake-only.json": "4815d18a8ee31bf6ad503ba608d28ef0fbd15c2641ab86d2bc8c612d68e851b7",
+    "wave-3-Oazis-baseline.json": "03f944823da6e220b19e52b7c9567266fa88c99a6f5056466aa344cc94450d0c",
+    "wave-4-Oazis-baseline.json": "b21184a1fbec35a75fc6512c77e97562faa8310b86c4c6e35227533d3fa47c8f",
+    "wave-4-Oazis-wake-only.json": "faec26a70bba2ab4fdde2040c4f858d1a195e05eea3393891d6324d9f46083d6",
+    "wave-5-Oazis-wake-only.json": "4c5e35c1f40c0d6ea1b283642e32639c08335ccc9d93b24474f4e90cb97f7ff0",
+    "wave-5-Oazis-baseline.json": "e260593bd0081446723b46414c44333596b1888ea82da096f97af8d87f1ffe6a",
+    "wave-6-Oazis-baseline.json": "2ffa945bd0b8a3b31e76b406ae7a08c10edd8de3ac56d5e0b7eed697ba26decf",
+    "wave-6-Oazis-wake-only.json": "f4e7766499f35f0ba396274cefaf7462c396474cad903cd5938ed4cb449bbe52",
+    "wave-7-Oazis-wake-only.json": "f33f8eb61eb65f60d64289466c5de7197fe36160de9670fe695e9ceb26e94ca0",
+    "wave-7-Oazis-baseline.json": "c6dac475de75a853c993baba2d39d393b6598594826ac413242a9f7a382bd239",
+    "wave-8-Oazis-baseline.json": "69d5be04a1139f06ee65b59141d6a84c90d2796f386da1a499c13552a9788eca",
+    "wave-8-Oazis-wake-only.json": "33d7aa291befd0553eda9430f79a8b4eb20ef9c9655309b78ea72bad68765fb7",
+    "wave-9-Oazis-wake-only.json": "e7c511582c2a3af74485b48535eadd370405b45ae6f6a495475171d210292ea2",
+    "wave-9-Oazis-baseline.json": "8b227b0581bb957581af7fd4bb7b71844812134f7226c8976c3c86d82b8107cd",
+    "wave-10-Oazis-baseline.json": "31a696cbdcf214ec47a5d2d5839ac7494c3eeafb7c5852b9ed1a729b20a598eb",
+    "wave-10-Oazis-wake-only.json": "be1e1e8cc6228f398a33f5c18d6a4c6b9195c16eb4552fd2266996b88a0a0220",
+    "wave-11-Oazis-wake-only.json": "2f1ca26f7a6f42e78fbf88e4e296ddbea6e12641e0af75165fd70d51e4989330",
+    "wave-11-Oazis-baseline.json": "ec9d733bc75dbced82f34ea00cf140a30265efcf27cc6a89c05db86ccd5d37f4",
+    "wave-12-Oazis-baseline.json": "b8ed216a89de7e22d65108fd96622a68f0d784cd3a4cf607eccc2da7f02dfec5",
+    "wave-12-Oazis-wake-only.json": "1b1854823e18245778f58b25f3fee815b01c4da1c51565b86249f3f643900208",
+    "wave-13-Oazis-wake-only.json": "58e370a2d0fefd515de9596f95c051d359ba8b43d0650a5c0d36bad5c900d6e2",
+    "wave-13-Oazis-baseline.json": "7ab5990fc0b8dc75074aa9b50cd1a743a45189bc78b5d7a74a61e7437e32eb88",
+    "wave-14-Oazis-baseline.json": "e70f80cbf80d39c8942daf68c463db71a49790740639160bc5ad95a00bba8142",
+    "wave-14-Oazis-wake-only.json": "89e9ec1312d11b1bd448c2f257a995eaf02f212a3173d2134daa6f7bbc68653c",
+    "wave-15-Oazis-wake-only.json": "94ca4684d4620f2b1654bbd35a3b67ae6fe82d0af19c84191359526a40e257ad",
+    "wave-15-Oazis-baseline.json": "06f670acf68ec628eab6817de726cd398d9fd6fbba14535ac2696fffc8527de6",
+    "wave-16-Oazis-baseline.json": "fc6027873178d9992eeeeb0a32d6b8d3316c3d150025b417a92bb44c69e2dd00",
+    "wave-16-Oazis-wake-only.json": "819a6a48b791d39d25bfdd4c230b5d9b915e813eda49608a46abbb1f4f07270d",
+    "wave-17-Oazis-wake-only.json": "b99e37e98b6c0cb8afe1827b66df863b7bb2b47c2f3e7b9ea0cf2cdd1f523284",
+    "wave-17-Oazis-baseline.json": "0c09773bb0979c0e961bf6ef6cd82cdc49576dc22de6cdbcc01cd992cdd8c03c",
+    "wave-18-Oazis-baseline.json": "f1953b94da07360a517f15ec912e1079c9ff8385250247008fc4d0f1c210dc3b",
+    "wave-18-Oazis-wake-only.json": "b854c3fc3fc8e380a26f17b28f34dd3ee96fcea8636af4ab38075deb0e71359d",
+    "wave-19-Oazis-wake-only.json": "6eb8b96f0365373ae6fa89359fab5d30107e951b7a4ca82e70a7e463c431eb8a",
+    "wave-19-Oazis-baseline.json": "f10ba0db65efbc83dc8d3635a826b50b5f49453dfa0c45708747b62083bb39ff",
+    "wave-20-Oazis-baseline.json": "c3f2b7b71c629e580e58723bbdc9a49fdef9749cbc68aec08ae7c8c96f9c6f04",
+    "wave-20-Oazis-wake-only.json": "0c2e7e43629789da81a5db457eab94a7c953c944bd3da9ef2503a0cd0807a628",
+    "wave-21-Oazis-wake-only.json": "94936af7c28f81065607fc3f6a00ddf8ff1a92dce10bd9f13799d300de7ccc75",
+    "wave-21-Oazis-baseline.json": "f5fdb6c9bab87fdacb49fbf8dcdfdc1d8aa35174e1695c9bac7aa75a041c121e",
+    "wave-22-Oazis-baseline.json": "f9f3d09dedeff1a0ce288d1d0c35d8bdf99f5206271aa24970d452e1157a0aef",
+    "wave-22-Oazis-wake-only.json": "3cf2df7e456a5b6bd4d91735c667fd0ceee72b2dce449494492525c811df8a0d",
+    "wave-23-Oazis-wake-only.json": "6faa5e1590b5d439d719ba4e1019eb55cdf57c8b82fb6d4b182fbdfd8cfd7b93",
+    "wave-23-Oazis-baseline.json": "593a7e7b94cb26be4ab8b532bfd398dc73ba09b73fd0bc998789ce79d994b1eb",
+    "wave-24-Oazis-baseline.json": "2c4e17630b7a7bd2d1c6bd3d280c580db9cc26bc3b4ee4c24c71d20e8469e981",
+    "wave-24-Oazis-wake-only.json": "3164e3c38c1c5a99001b1f1db9455e34a234ac7e1ceede563bf5e6f4c8fd8804",
+    "wave-25-Oazis-wake-only.json": "5fc72a9bb2d2f9361a418bd03563f56a444067e5081326adadd272b6aa25dbdd",
+    "wave-25-Oazis-baseline.json": "366870e2d3a035c5f7f93e8510cde5434dca8d710668eba935105d99afaee384",
+    "wave-26-Oazis-baseline.json": "4ef9dbeb065b69f74c2cbf4bc4703ca7e4c6a487393dcb073391edc91f9bdc80",
+    "wave-26-Oazis-wake-only.json": "7a8eb67e9fe9e36effa2812ba89fcfbb8f16500ba28715a291945a0864c7df18",
+    "wave-27-Oazis-wake-only.json": "1363376277a12175234bc50245eb71527f862cac770f8cc823e895f8995777d9",
+    "wave-27-Oazis-baseline.json": "f0a81fb10c07c77407c5dd3274f76addbee1212bc5b2a2035685a2c6ae0d7844",
+    "wave-28-Oazis-baseline.json": "f1388469b2bc2ee350c74c9072dc8c1039a8eee5e5b904bc46905796c76c0b39",
+    "wave-28-Oazis-wake-only.json": "6163468713ec54b5eac502d167070602db238f949e53c51e5b6f15efe2be8266",
+    "wave-29-Oazis-wake-only.json": "519d684ddd2fd7284d93224df4bbecbca992f83b8a0f46eb10b2e66fd2099461",
+    "wave-29-Oazis-baseline.json": "ea6f760edc3bba55145df98916362b98abcf89e17686b0f6d490ff7b81d4415f",
+    "wave-30-Oazis-baseline.json": "3145188084f488faacb696154f6b707d764ce45848ad012a2a25c583db6c84b7",
+    "wave-30-Oazis-wake-only.json": "6c9964807eea9e902795c2077562a69ada3cb3dfca13f2924ea266f3e7f228ef",
+    "wave-31-Oazis-wake-only.json": "7d370f44b4ff05fa6d3cba556e21d52cebbcb5fc755918d6d8487331c13e2ff6",
+    "wave-31-Oazis-baseline.json": "bc0fe89e694fd1e1feaa64cf71a8e47624004b766cc7c96cbb85ac2a80560fea"
+  },
+  "regime": "serial",
+  "runs": 128,
+  "campaign_makespan_seconds": 13660.965109205805,
+  "winners": 128,
+  "caps": 0,
+  "campaign_completed_games_per_hour": 33.731145370503704,
+  "campaign_tick_coverage_complete": true,
+  "waves": [
+    {
+      "map": "Playground",
+      "role": "baseline",
+      "wave": 0,
+      "seed_indices": [
+        0
+      ],
+      "started_monotonic": 3301648.750095642,
+      "finished_monotonic": 3301678.2312439,
+      "makespan_seconds": 29.4811482578516,
+      "winners": 1,
+      "caps": 0,
+      "games_per_hour": 122.11193297198747,
+      "observed_ticks_per_second": 1503.4014147734524,
+      "complete_tick_coverage": true,
+      "sum_game_seconds": 29.387790403794497,
+      "scope": "Actual homogeneous wave makespan including launches/waits, not sum of parallel game runtimes."
+    },
+    {
+      "map": "Playground",
+      "role": "wake-only",
+      "wave": 0,
+      "seed_indices": [
+        0
+      ],
+      "started_monotonic": 3301678.423078864,
+      "finished_monotonic": 3301704.157885467,
+      "makespan_seconds": 25.734806603286415,
+      "winners": 1,
+      "caps": 0,
+      "games_per_hour": 139.88836424907382,
+      "observed_ticks_per_second": 1722.258911179847,
+      "complete_tick_coverage": true,
+      "sum_game_seconds": 25.642549741081893,
+      "scope": "Actual homogeneous wave makespan including launches/waits, not sum of parallel game runtimes."
+    },
+    {
+      "map": "Playground",
+      "role": "wake-only",
+      "wave": 1,
+      "seed_indices": [
+        1
+      ],
+      "started_monotonic": 3301704.335723203,
+      "finished_monotonic": 3301740.242672124,
+      "makespan_seconds": 35.90694892080501,
+      "winners": 1,
+      "caps": 0,
+      "games_per_hour": 100.25914504571308,
+      "observed_ticks_per_second": 1542.7097446283974,
+      "complete_tick_coverage": true,
+      "sum_game_seconds": 35.812427185010165,
+      "scope": "Actual homogeneous wave makespan including launches/waits, not sum of parallel game runtimes."
+    },
+    {
+      "map": "Playground",
+      "role": "baseline",
+      "wave": 1,
+      "seed_indices": [
+        1
+      ],
+      "started_monotonic": 3301740.414192952,
+      "finished_monotonic": 3301780.459636191,
+      "makespan_seconds": 40.045443238690495,
+      "winners": 1,
+      "caps": 0,
+      "games_per_hour": 89.89786874232439,
+      "observed_ticks_per_second": 1383.2784836423104,
+      "complete_tick_coverage": true,
+      "sum_game_seconds": 39.955395902041346,
+      "scope": "Actual homogeneous wave makespan including launches/waits, not sum of parallel game runtimes."
+    },
+    {
+      "map": "Playground",
+      "role": "baseline",
+      "wave": 2,
+      "seed_indices": [
+        2
+      ],
+      "started_monotonic": 3301780.631285968,
+      "finished_monotonic": 3301809.583936781,
+      "makespan_seconds": 28.952650813385844,
+      "winners": 1,
+      "caps": 0,
+      "games_per_hour": 124.34094629896865,
+      "observed_ticks_per_second": 1497.6866981710773,
+      "complete_tick_coverage": true,
+      "sum_game_seconds": 28.883541068062186,
+      "scope": "Actual homogeneous wave makespan including launches/waits, not sum of parallel game runtimes."
+    },
+    {
+      "map": "Playground",
+      "role": "wake-only",
+      "wave": 2,
+      "seed_indices": [
+        2
+      ],
+      "started_monotonic": 3301809.766602556,
+      "finished_monotonic": 3301835.465845304,
+      "makespan_seconds": 25.69924274785444,
+      "winners": 1,
+      "caps": 0,
+      "games_per_hour": 140.08194853525612,
+      "observed_ticks_per_second": 1687.28707010716,
+      "complete_tick_coverage": true,
+      "sum_game_seconds": 25.627961058169603,
+      "scope": "Actual homogeneous wave makespan including launches/waits, not sum of parallel game runtimes."
+    },
+    {
+      "map": "Playground",
+      "role": "wake-only",
+      "wave": 3,
+      "seed_indices": [
+        3
+      ],
+      "started_monotonic": 3301835.659167988,
+      "finished_monotonic": 3301873.11810885,
+      "makespan_seconds": 37.45894086174667,
+      "winners": 1,
+      "caps": 0,
+      "games_per_hour": 96.10522660763068,
+      "observed_ticks_per_second": 1594.9730191387507,
+      "complete_tick_coverage": true,
+      "sum_game_seconds": 37.363341971766204,
+      "scope": "Actual homogeneous wave makespan including launches/waits, not sum of parallel game runtimes."
+    },
+    {
+      "map": "Playground",
+      "role": "baseline",
+      "wave": 3,
+      "seed_indices": [
+        3
+      ],
+      "started_monotonic": 3301873.295695479,
+      "finished_monotonic": 3301915.658058739,
+      "makespan_seconds": 42.3623632597737,
+      "winners": 1,
+      "caps": 0,
+      "games_per_hour": 84.98109460806393,
+      "observed_ticks_per_second": 1410.3556884592742,
+      "complete_tick_coverage": true,
+      "sum_game_seconds": 42.27229366498068,
+      "scope": "Actual homogeneous wave makespan including launches/waits, not sum of parallel game runtimes."
+    },
+    {
+      "map": "Playground",
+      "role": "baseline",
+      "wave": 4,
+      "seed_indices": [
+        4
+      ],
+      "started_monotonic": 3301915.834798083,
+      "finished_monotonic": 3301947.707208244,
+      "makespan_seconds": 31.87241016095504,
+      "winners": 1,
+      "caps": 0,
+      "games_per_hour": 112.95035367015143,
+      "observed_ticks_per_second": 1455.8673086117685,
+      "complete_tick_coverage": true,
+      "sum_game_seconds": 31.802754620090127,
+      "scope": "Actual homogeneous wave makespan including launches/waits, not sum of parallel game runtimes."
+    },
+    {
+      "map": "Playground",
+      "role": "wake-only",
+      "wave": 4,
+      "seed_indices": [
+        4
+      ],
+      "started_monotonic": 3301947.895218623,
+      "finished_monotonic": 3301976.097887394,
+      "makespan_seconds": 28.202668771147728,
+      "winners": 1,
+      "caps": 0,
+      "games_per_hour": 127.64749425710096,
+      "observed_ticks_per_second": 1645.305285699444,
+      "complete_tick_coverage": true,
+      "sum_game_seconds": 28.131143412087113,
+      "scope": "Actual homogeneous wave makespan including launches/waits, not sum of parallel game runtimes."
+    },
+    {
+      "map": "Playground",
+      "role": "wake-only",
+      "wave": 5,
+      "seed_indices": [
+        5
+      ],
+      "started_monotonic": 3301976.289408791,
+      "finished_monotonic": 3302020.111831317,
+      "makespan_seconds": 43.82242252631113,
+      "winners": 1,
+      "caps": 0,
+      "games_per_hour": 82.1497259271449,
+      "observed_ticks_per_second": 1550.3022444551027,
+      "complete_tick_coverage": true,
+      "sum_game_seconds": 43.72677918802947,
+      "scope": "Actual homogeneous wave makespan including launches/waits, not sum of parallel game runtimes."
+    },
+    {
+      "map": "Playground",
+      "role": "baseline",
+      "wave": 5,
+      "seed_indices": [
+        5
+      ],
+      "started_monotonic": 3302020.294457573,
+      "finished_monotonic": 3302069.356040007,
+      "makespan_seconds": 49.061582433991134,
+      "winners": 1,
+      "caps": 0,
+      "games_per_hour": 73.37716847685343,
+      "observed_ticks_per_second": 1384.749464439019,
+      "complete_tick_coverage": true,
+      "sum_game_seconds": 48.99064155295491,
+      "scope": "Actual homogeneous wave makespan including launches/waits, not sum of parallel game runtimes."
+    },
+    {
+      "map": "Playground",
+      "role": "baseline",
+      "wave": 6,
+      "seed_indices": [
+        6
+      ],
+      "started_monotonic": 3302069.550277575,
+      "finished_monotonic": 3302106.460530756,
+      "makespan_seconds": 36.91025318112224,
+      "winners": 1,
+      "caps": 0,
+      "games_per_hour": 97.53387445852636,
+      "observed_ticks_per_second": 1406.2759132345193,
+      "complete_tick_coverage": true,
+      "sum_game_seconds": 36.81761763198301,
+      "scope": "Actual homogeneous wave makespan including launches/waits, not sum of parallel game runtimes."
+    },
+    {
+      "map": "Playground",
+      "role": "wake-only",
+      "wave": 6,
+      "seed_indices": [
+        6
+      ],
+      "started_monotonic": 3302106.646728777,
+      "finished_monotonic": 3302139.594542911,
+      "makespan_seconds": 32.94781413394958,
+      "winners": 1,
+      "caps": 0,
+      "games_per_hour": 109.2636975965742,
+      "observed_ticks_per_second": 1575.400413179939,
+      "complete_tick_coverage": true,
+      "sum_game_seconds": 32.85658707516268,
+      "scope": "Actual homogeneous wave makespan including launches/waits, not sum of parallel game runtimes."
+    },
+    {
+      "map": "Playground",
+      "role": "wake-only",
+      "wave": 7,
+      "seed_indices": [
+        7
+      ],
+      "started_monotonic": 3302139.776744019,
+      "finished_monotonic": 3302167.956403373,
+      "makespan_seconds": 28.17965935403481,
+      "winners": 1,
+      "caps": 0,
+      "games_per_hour": 127.7517217213822,
+      "observed_ticks_per_second": 1752.256809766225,
+      "complete_tick_coverage": true,
+      "sum_game_seconds": 28.10709165316075,
+      "scope": "Actual homogeneous wave makespan including launches/waits, not sum of parallel game runtimes."
+    },
+    {
+      "map": "Playground",
+      "role": "baseline",
+      "wave": 7,
+      "seed_indices": [
+        7
+      ],
+      "started_monotonic": 3302168.143438549,
+      "finished_monotonic": 3302199.933702249,
+      "makespan_seconds": 31.790263700298965,
+      "winners": 1,
+      "caps": 0,
+      "games_per_hour": 113.24221887364038,
+      "observed_ticks_per_second": 1553.242856539615,
+      "complete_tick_coverage": true,
+      "sum_game_seconds": 31.69658904802054,
+      "scope": "Actual homogeneous wave makespan including launches/waits, not sum of parallel game runtimes."
+    },
+    {
+      "map": "Playground",
+      "role": "baseline",
+      "wave": 8,
+      "seed_indices": [
+        8
+      ],
+      "started_monotonic": 3302200.121400041,
+      "finished_monotonic": 3302227.820444125,
+      "makespan_seconds": 27.69904408417642,
+      "winners": 1,
+      "caps": 0,
+      "games_per_hour": 129.96838407346212,
+      "observed_ticks_per_second": 1505.3949108597844,
+      "complete_tick_coverage": true,
+      "sum_game_seconds": 27.629093746189028,
+      "scope": "Actual homogeneous wave makespan including launches/waits, not sum of parallel game runtimes."
+    },
+    {
+      "map": "Playground",
+      "role": "wake-only",
+      "wave": 8,
+      "seed_indices": [
+        8
+      ],
+      "started_monotonic": 3302228.00298374,
+      "finished_monotonic": 3302252.497738584,
+      "makespan_seconds": 24.49475484387949,
+      "winners": 1,
+      "caps": 0,
+      "games_per_hour": 146.9702400756843,
+      "observed_ticks_per_second": 1702.3236307433012,
+      "complete_tick_coverage": true,
+      "sum_game_seconds": 24.423872960731387,
+      "scope": "Actual homogeneous wave makespan including launches/waits, not sum of parallel game runtimes."
+    },
+    {
+      "map": "Playground",
+      "role": "wake-only",
+      "wave": 9,
+      "seed_indices": [
+        9
+      ],
+      "started_monotonic": 3302252.680288979,
+      "finished_monotonic": 3302285.916257972,
+      "makespan_seconds": 33.23596899304539,
+      "winners": 1,
+      "caps": 0,
+      "games_per_hour": 108.31638459986824,
+      "observed_ticks_per_second": 1676.3164032214054,
+      "complete_tick_coverage": true,
+      "sum_game_seconds": 33.144343056716025,
+      "scope": "Actual homogeneous wave makespan including launches/waits, not sum of parallel game runtimes."
+    },
+    {
+      "map": "Playground",
+      "role": "baseline",
+      "wave": 9,
+      "seed_indices": [
+        9
+      ],
+      "started_monotonic": 3302286.104254601,
+      "finished_monotonic": 3302323.008867691,
+      "makespan_seconds": 36.90461308974773,
+      "winners": 1,
+      "caps": 0,
+      "games_per_hour": 97.54878045314331,
+      "observed_ticks_per_second": 1509.6757650462296,
+      "complete_tick_coverage": true,
+      "sum_game_seconds": 36.81202893983573,
+      "scope": "Actual homogeneous wave makespan including launches/waits, not sum of parallel game runtimes."
+    },
+    {
+      "map": "Playground",
+      "role": "baseline",
+      "wave": 10,
+      "seed_indices": [
+        10
+      ],
+      "started_monotonic": 3302323.188642365,
+      "finished_monotonic": 3302372.921011252,
+      "makespan_seconds": 49.732368886936456,
+      "winners": 1,
+      "caps": 0,
+      "games_per_hour": 72.38746274452325,
+      "observed_ticks_per_second": 1446.5025819209761,
+      "complete_tick_coverage": true,
+      "sum_game_seconds": 49.640196865890175,
+      "scope": "Actual homogeneous wave makespan including launches/waits, not sum of parallel game runtimes."
+    },
+    {
+      "map": "Playground",
+      "role": "wake-only",
+      "wave": 10,
+      "seed_indices": [
+        10
+      ],
+      "started_monotonic": 3302373.101836239,
+      "finished_monotonic": 3302417.51492043,
+      "makespan_seconds": 44.41308419080451,
+      "winners": 1,
+      "caps": 0,
+      "games_per_hour": 81.0571944189672,
+      "observed_ticks_per_second": 1619.7479033643508,
+      "complete_tick_coverage": true,
+      "sum_game_seconds": 44.31949974922463,
+      "scope": "Actual homogeneous wave makespan including launches/waits, not sum of parallel game runtimes."
+    },
+    {
+      "map": "Playground",
+      "role": "wake-only",
+      "wave": 11,
+      "seed_indices": [
+        11
+      ],
+      "started_monotonic": 3302417.697987712,
+      "finished_monotonic": 3302452.52192735,
+      "makespan_seconds": 34.82393963821232,
+      "winners": 1,
+      "caps": 0,
+      "games_per_hour": 103.37716057977882,
+      "observed_ticks_per_second": 1561.2822835340485,
+      "complete_tick_coverage": true,
+      "sum_game_seconds": 34.75295493612066,
+      "scope": "Actual homogeneous wave makespan including launches/waits, not sum of parallel game runtimes."
+    },
+    {
+      "map": "Playground",
+      "role": "baseline",
+      "wave": 11,
+      "seed_indices": [
+        11
+      ],
+      "started_monotonic": 3302452.710942792,
+      "finished_monotonic": 3302491.816167903,
+      "makespan_seconds": 39.10522511135787,
+      "winners": 1,
+      "caps": 0,
+      "games_per_hour": 92.05930894780612,
+      "observed_ticks_per_second": 1390.3512854145051,
+      "complete_tick_coverage": true,
+      "sum_game_seconds": 39.01190720498562,
+      "scope": "Actual homogeneous wave makespan including launches/waits, not sum of parallel game runtimes."
+    },
+    {
+      "map": "Playground",
+      "role": "baseline",
+      "wave": 12,
+      "seed_indices": [
+        12
+      ],
+      "started_monotonic": 3302492.006527376,
+      "finished_monotonic": 3302522.019084478,
+      "makespan_seconds": 30.01255710190162,
+      "winners": 1,
+      "caps": 0,
+      "games_per_hour": 119.9497926077049,
+      "observed_ticks_per_second": 1529.0266618798826,
+      "complete_tick_coverage": true,
+      "sum_game_seconds": 29.941925797145814,
+      "scope": "Actual homogeneous wave makespan including launches/waits, not sum of parallel game runtimes."
+    },
+    {
+      "map": "Playground",
+      "role": "wake-only",
+      "wave": 12,
+      "seed_indices": [
+        12
+      ],
+      "started_monotonic": 3302522.208867616,
+      "finished_monotonic": 3302548.94087015,
+      "makespan_seconds": 26.732002533972263,
+      "winners": 1,
+      "caps": 0,
+      "games_per_hour": 134.67004559142,
+      "observed_ticks_per_second": 1716.668997830629,
+      "complete_tick_coverage": true,
+      "sum_game_seconds": 26.636653583031148,
+      "scope": "Actual homogeneous wave makespan including launches/waits, not sum of parallel game runtimes."
+    },
+    {
+      "map": "Playground",
+      "role": "wake-only",
+      "wave": 13,
+      "seed_indices": [
+        13
+      ],
+      "started_monotonic": 3302549.127810056,
+      "finished_monotonic": 3302585.860893977,
+      "makespan_seconds": 36.73308392101899,
+      "winners": 1,
+      "caps": 0,
+      "games_per_hour": 98.00429519450309,
+      "observed_ticks_per_second": 1676.145681979321,
+      "complete_tick_coverage": true,
+      "sum_game_seconds": 36.66158317308873,
+      "scope": "Actual homogeneous wave makespan including launches/waits, not sum of parallel game runtimes."
+    },
+    {
+      "map": "Playground",
+      "role": "baseline",
+      "wave": 13,
+      "seed_indices": [
+        13
+      ],
+      "started_monotonic": 3302586.046250134,
+      "finished_monotonic": 3302627.875502298,
+      "makespan_seconds": 41.829252164345235,
+      "winners": 1,
+      "caps": 0,
+      "games_per_hour": 86.06417312592066,
+      "observed_ticks_per_second": 1471.9364276008155,
+      "complete_tick_coverage": true,
+      "sum_game_seconds": 41.75943092396483,
+      "scope": "Actual homogeneous wave makespan including launches/waits, not sum of parallel game runtimes."
+    },
+    {
+      "map": "Playground",
+      "role": "baseline",
+      "wave": 14,
+      "seed_indices": [
+        14
+      ],
+      "started_monotonic": 3302628.059214,
+      "finished_monotonic": 3302649.925283551,
+      "makespan_seconds": 21.86606955109164,
+      "winners": 1,
+      "caps": 0,
+      "games_per_hour": 164.6386421477505,
+      "observed_ticks_per_second": 1659.6489787616292,
+      "complete_tick_coverage": true,
+      "sum_game_seconds": 21.7746639479883,
+      "scope": "Actual homogeneous wave makespan including launches/waits, not sum of parallel game runtimes."
+    },
+    {
+      "map": "Playground",
+      "role": "wake-only",
+      "wave": 14,
+      "seed_indices": [
+        14
+      ],
+      "started_monotonic": 3302650.107096196,
+      "finished_monotonic": 3302669.352244631,
+      "makespan_seconds": 19.245148434769362,
+      "winners": 1,
+      "caps": 0,
+      "games_per_hour": 187.06013165874256,
+      "observed_ticks_per_second": 1885.670049415491,
+      "complete_tick_coverage": true,
+      "sum_game_seconds": 19.175275288056582,
+      "scope": "Actual homogeneous wave makespan including launches/waits, not sum of parallel game runtimes."
+    },
+    {
+      "map": "Playground",
+      "role": "wake-only",
+      "wave": 15,
+      "seed_indices": [
+        15
+      ],
+      "started_monotonic": 3302669.546302135,
+      "finished_monotonic": 3302712.145022582,
+      "makespan_seconds": 42.59872044669464,
+      "winners": 1,
+      "caps": 0,
+      "games_per_hour": 84.50958062237605,
+      "observed_ticks_per_second": 1497.9323165316155,
+      "complete_tick_coverage": true,
+      "sum_game_seconds": 42.52819954510778,
+      "scope": "Actual homogeneous wave makespan including launches/waits, not sum of parallel game runtimes."
+    },
+    {
+      "map": "Playground",
+      "role": "baseline",
+      "wave": 15,
+      "seed_indices": [
+        15
+      ],
+      "started_monotonic": 3302712.328247278,
+      "finished_monotonic": 3302759.85151155,
+      "makespan_seconds": 47.523264272138476,
+      "winners": 1,
+      "caps": 0,
+      "games_per_hour": 75.75237213051832,
+      "observed_ticks_per_second": 1342.7107960134374,
+      "complete_tick_coverage": true,
+      "sum_game_seconds": 47.43056752718985,
+      "scope": "Actual homogeneous wave makespan including launches/waits, not sum of parallel game runtimes."
+    },
+    {
+      "map": "Playground",
+      "role": "baseline",
+      "wave": 16,
+      "seed_indices": [
+        16
+      ],
+      "started_monotonic": 3302760.029760008,
+      "finished_monotonic": 3302802.410620169,
+      "makespan_seconds": 42.38086016057059,
+      "winners": 1,
+      "caps": 0,
+      "games_per_hour": 84.94400506173048,
+      "observed_ticks_per_second": 1435.4121122014756,
+      "complete_tick_coverage": true,
+      "sum_game_seconds": 42.311251583043486,
+      "scope": "Actual homogeneous wave makespan including launches/waits, not sum of parallel game runtimes."
+    },
+    {
+      "map": "Playground",
+      "role": "wake-only",
+      "wave": 16,
+      "seed_indices": [
+        16
+      ],
+      "started_monotonic": 3302802.59310956,
+      "finished_monotonic": 3302839.751172891,
+      "makespan_seconds": 37.15806333068758,
+      "winners": 1,
+      "caps": 0,
+      "games_per_hour": 96.88341310907025,
+      "observed_ticks_per_second": 1637.1682091881055,
+      "complete_tick_coverage": true,
+      "sum_game_seconds": 37.06665331777185,
+      "scope": "Actual homogeneous wave makespan including launches/waits, not sum of parallel game runtimes."
+    },
+    {
+      "map": "Playground",
+      "role": "wake-only",
+      "wave": 17,
+      "seed_indices": [
+        17
+      ],
+      "started_monotonic": 3302839.939024136,
+      "finished_monotonic": 3302873.245088583,
+      "makespan_seconds": 33.30606444692239,
+      "winners": 1,
+      "caps": 0,
+      "games_per_hour": 108.08842352830594,
+      "observed_ticks_per_second": 1665.1021644535529,
+      "complete_tick_coverage": true,
+      "sum_game_seconds": 33.21354776062071,
+      "scope": "Actual homogeneous wave makespan including launches/waits, not sum of parallel game runtimes."
+    },
+    {
+      "map": "Playground",
+      "role": "baseline",
+      "wave": 17,
+      "seed_indices": [
+        17
+      ],
+      "started_monotonic": 3302873.424179986,
+      "finished_monotonic": 3302910.904828589,
+      "makespan_seconds": 37.48064860282466,
+      "winners": 1,
+      "caps": 0,
+      "games_per_hour": 96.04956515423515,
+      "observed_ticks_per_second": 1479.6435512009925,
+      "complete_tick_coverage": true,
+      "sum_game_seconds": 37.410599157214165,
+      "scope": "Actual homogeneous wave makespan including launches/waits, not sum of parallel game runtimes."
+    },
+    {
+      "map": "Playground",
+      "role": "baseline",
+      "wave": 18,
+      "seed_indices": [
+        18
+      ],
+      "started_monotonic": 3302911.090232629,
+      "finished_monotonic": 3302952.960042318,
+      "makespan_seconds": 41.86980968900025,
+      "winners": 1,
+      "caps": 0,
+      "games_per_hour": 85.98080637910726,
+      "observed_ticks_per_second": 1397.1403365458382,
+      "complete_tick_coverage": true,
+      "sum_game_seconds": 41.77852572361007,
+      "scope": "Actual homogeneous wave makespan including launches/waits, not sum of parallel game runtimes."
+    },
+    {
+      "map": "Playground",
+      "role": "wake-only",
+      "wave": 18,
+      "seed_indices": [
+        18
+      ],
+      "started_monotonic": 3302953.141854063,
+      "finished_monotonic": 3302990.34598593,
+      "makespan_seconds": 37.204131866805255,
+      "winners": 1,
+      "caps": 0,
+      "games_per_hour": 96.7634458690874,
+      "observed_ticks_per_second": 1572.3522379027431,
+      "complete_tick_coverage": true,
+      "sum_game_seconds": 37.11111774388701,
+      "scope": "Actual homogeneous wave makespan including launches/waits, not sum of parallel game runtimes."
+    },
+    {
+      "map": "Playground",
+      "role": "wake-only",
+      "wave": 19,
+      "seed_indices": [
+        19
+      ],
+      "started_monotonic": 3302990.524205779,
+      "finished_monotonic": 3303046.662922209,
+      "makespan_seconds": 56.13871642993763,
+      "winners": 1,
+      "caps": 0,
+      "games_per_hour": 64.12686696342408,
+      "observed_ticks_per_second": 1429.637246875136,
+      "complete_tick_coverage": true,
+      "sum_game_seconds": 56.048933796118945,
+      "scope": "Actual homogeneous wave makespan including launches/waits, not sum of parallel game runtimes."
+    },
+    {
+      "map": "Playground",
+      "role": "baseline",
+      "wave": 19,
+      "seed_indices": [
+        19
+      ],
+      "started_monotonic": 3303046.859639105,
+      "finished_monotonic": 3303109.63851352,
+      "makespan_seconds": 62.77887441497296,
+      "winners": 1,
+      "caps": 0,
+      "games_per_hour": 57.34413102413618,
+      "observed_ticks_per_second": 1278.4236854819783,
+      "complete_tick_coverage": true,
+      "sum_game_seconds": 62.70957181369886,
+      "scope": "Actual homogeneous wave makespan including launches/waits, not sum of parallel game runtimes."
+    },
+    {
+      "map": "Playground",
+      "role": "baseline",
+      "wave": 20,
+      "seed_indices": [
+        20
+      ],
+      "started_monotonic": 3303109.826271205,
+      "finished_monotonic": 3303134.288229599,
+      "makespan_seconds": 24.461958393920213,
+      "winners": 1,
+      "caps": 0,
+      "games_per_hour": 147.16728489305032,
+      "observed_ticks_per_second": 1813.1827094850985,
+      "complete_tick_coverage": true,
+      "sum_game_seconds": 24.371783170849085,
+      "scope": "Actual homogeneous wave makespan including launches/waits, not sum of parallel game runtimes."
+    },
+    {
+      "map": "Playground",
+      "role": "wake-only",
+      "wave": 20,
+      "seed_indices": [
+        20
+      ],
+      "started_monotonic": 3303134.468153427,
+      "finished_monotonic": 3303155.838300006,
+      "makespan_seconds": 21.370146579109132,
+      "winners": 1,
+      "caps": 0,
+      "games_per_hour": 168.45930310647756,
+      "observed_ticks_per_second": 2075.512202773529,
+      "complete_tick_coverage": true,
+      "sum_game_seconds": 21.279246740974486,
+      "scope": "Actual homogeneous wave makespan including launches/waits, not sum of parallel game runtimes."
+    },
+    {
+      "map": "Playground",
+      "role": "wake-only",
+      "wave": 21,
+      "seed_indices": [
+        21
+      ],
+      "started_monotonic": 3303156.013794952,
+      "finished_monotonic": 3303174.624533723,
+      "makespan_seconds": 18.610738771036267,
+      "winners": 1,
+      "caps": 0,
+      "games_per_hour": 193.43670577992577,
+      "observed_ticks_per_second": 1769.408533703599,
+      "complete_tick_coverage": true,
+      "sum_game_seconds": 18.51866351161152,
+      "scope": "Actual homogeneous wave makespan including launches/waits, not sum of parallel game runtimes."
+    },
+    {
+      "map": "Playground",
+      "role": "baseline",
+      "wave": 21,
+      "seed_indices": [
+        21
+      ],
+      "started_monotonic": 3303174.797133399,
+      "finished_monotonic": 3303195.743411268,
+      "makespan_seconds": 20.946277868933976,
+      "winners": 1,
+      "caps": 0,
+      "games_per_hour": 171.8682442067315,
+      "observed_ticks_per_second": 1572.11702270213,
+      "complete_tick_coverage": true,
+      "sum_game_seconds": 20.876338521949947,
+      "scope": "Actual homogeneous wave makespan including launches/waits, not sum of parallel game runtimes."
+    },
+    {
+      "map": "Playground",
+      "role": "baseline",
+      "wave": 22,
+      "seed_indices": [
+        22
+      ],
+      "started_monotonic": 3303195.928570611,
+      "finished_monotonic": 3303236.862435073,
+      "makespan_seconds": 40.933864462189376,
+      "winners": 1,
+      "caps": 0,
+      "games_per_hour": 87.94674158667138,
+      "observed_ticks_per_second": 1355.6013029567764,
+      "complete_tick_coverage": true,
+      "sum_game_seconds": 40.86433165287599,
+      "scope": "Actual homogeneous wave makespan including launches/waits, not sum of parallel game runtimes."
+    },
+    {
+      "map": "Playground",
+      "role": "wake-only",
+      "wave": 22,
+      "seed_indices": [
+        22
+      ],
+      "started_monotonic": 3303237.049053776,
+      "finished_monotonic": 3303272.506527152,
+      "makespan_seconds": 35.457473375834525,
+      "winners": 1,
+      "caps": 0,
+      "games_per_hour": 101.53007694150939,
+      "observed_ticks_per_second": 1564.9733248567657,
+      "complete_tick_coverage": true,
+      "sum_game_seconds": 35.36405298486352,
+      "scope": "Actual homogeneous wave makespan including launches/waits, not sum of parallel game runtimes."
+    },
+    {
+      "map": "Playground",
+      "role": "wake-only",
+      "wave": 23,
+      "seed_indices": [
+        23
+      ],
+      "started_monotonic": 3303272.691762684,
+      "finished_monotonic": 3303301.20818424,
+      "makespan_seconds": 28.516421556007117,
+      "winners": 1,
+      "caps": 0,
+      "games_per_hour": 126.24304886675527,
+      "observed_ticks_per_second": 1633.9357274715542,
+      "complete_tick_coverage": true,
+      "sum_game_seconds": 28.44480410218239,
+      "scope": "Actual homogeneous wave makespan including launches/waits, not sum of parallel game runtimes."
+    },
+    {
+      "map": "Playground",
+      "role": "baseline",
+      "wave": 23,
+      "seed_indices": [
+        23
+      ],
+      "started_monotonic": 3303301.390927349,
+      "finished_monotonic": 3303333.227833673,
+      "makespan_seconds": 31.836906323675066,
+      "winners": 1,
+      "caps": 0,
+      "games_per_hour": 113.07631348975987,
+      "observed_ticks_per_second": 1463.5215974282976,
+      "complete_tick_coverage": true,
+      "sum_game_seconds": 31.744018540252,
+      "scope": "Actual homogeneous wave makespan including launches/waits, not sum of parallel game runtimes."
+    },
+    {
+      "map": "Playground",
+      "role": "baseline",
+      "wave": 24,
+      "seed_indices": [
+        24
+      ],
+      "started_monotonic": 3303333.413127125,
+      "finished_monotonic": 3303364.354812825,
+      "makespan_seconds": 30.941685700323433,
+      "winners": 1,
+      "caps": 0,
+      "games_per_hour": 116.34789503282846,
+      "observed_ticks_per_second": 1488.283490628264,
+      "complete_tick_coverage": true,
+      "sum_game_seconds": 30.85007187584415,
+      "scope": "Actual homogeneous wave makespan including launches/waits, not sum of parallel game runtimes."
+    },
+    {
+      "map": "Playground",
+      "role": "wake-only",
+      "wave": 24,
+      "seed_indices": [
+        24
+      ],
+      "started_monotonic": 3303364.523968663,
+      "finished_monotonic": 3303392.402843666,
+      "makespan_seconds": 27.878875002730638,
+      "winners": 1,
+      "caps": 0,
+      "games_per_hour": 129.1300312386132,
+      "observed_ticks_per_second": 1651.7883162605938,
+      "complete_tick_coverage": true,
+      "sum_game_seconds": 27.788892288692296,
+      "scope": "Actual homogeneous wave makespan including launches/waits, not sum of parallel game runtimes."
+    },
+    {
+      "map": "Playground",
+      "role": "wake-only",
+      "wave": 25,
+      "seed_indices": [
+        25
+      ],
+      "started_monotonic": 3303392.571652487,
+      "finished_monotonic": 3303422.021711735,
+      "makespan_seconds": 29.450059248134494,
+      "winners": 1,
+      "caps": 0,
+      "games_per_hour": 122.24084066072095,
+      "observed_ticks_per_second": 1688.6213905715701,
+      "complete_tick_coverage": true,
+      "sum_game_seconds": 29.380849775858223,
+      "scope": "Actual homogeneous wave makespan including launches/waits, not sum of parallel game runtimes."
+    },
+    {
+      "map": "Playground",
+      "role": "baseline",
+      "wave": 25,
+      "seed_indices": [
+        25
+      ],
+      "started_monotonic": 3303422.197125062,
+      "finished_monotonic": 3303455.738060743,
+      "makespan_seconds": 33.54093568120152,
+      "winners": 1,
+      "caps": 0,
+      "games_per_hour": 107.33153166080784,
+      "observed_ticks_per_second": 1482.6658526366593,
+      "complete_tick_coverage": true,
+      "sum_game_seconds": 33.44943045685068,
+      "scope": "Actual homogeneous wave makespan including launches/waits, not sum of parallel game runtimes."
+    },
+    {
+      "map": "Playground",
+      "role": "baseline",
+      "wave": 26,
+      "seed_indices": [
+        26
+      ],
+      "started_monotonic": 3303455.916097773,
+      "finished_monotonic": 3303480.806210788,
+      "makespan_seconds": 24.890113015193492,
+      "winners": 1,
+      "caps": 0,
+      "games_per_hour": 144.63574342962917,
+      "observed_ticks_per_second": 1568.5746374943285,
+      "complete_tick_coverage": true,
+      "sum_game_seconds": 24.8205210166052,
+      "scope": "Actual homogeneous wave makespan including launches/waits, not sum of parallel game runtimes."
+    },
+    {
+      "map": "Playground",
+      "role": "wake-only",
+      "wave": 26,
+      "seed_indices": [
+        26
+      ],
+      "started_monotonic": 3303480.986299754,
+      "finished_monotonic": 3303502.579510295,
+      "makespan_seconds": 21.59321054071188,
+      "winners": 1,
+      "caps": 0,
+      "games_per_hour": 166.71907094188487,
+      "observed_ticks_per_second": 1808.0683243647413,
+      "complete_tick_coverage": true,
+      "sum_game_seconds": 21.5213056281209,
+      "scope": "Actual homogeneous wave makespan including launches/waits, not sum of parallel game runtimes."
+    },
+    {
+      "map": "Playground",
+      "role": "wake-only",
+      "wave": 27,
+      "seed_indices": [
+        27
+      ],
+      "started_monotonic": 3303502.760538425,
+      "finished_monotonic": 3303532.960434752,
+      "makespan_seconds": 30.199896327219903,
+      "winners": 1,
+      "caps": 0,
+      "games_per_hour": 119.20570723136,
+      "observed_ticks_per_second": 1622.3234500259034,
+      "complete_tick_coverage": true,
+      "sum_game_seconds": 30.12899915734306,
+      "scope": "Actual homogeneous wave makespan including launches/waits, not sum of parallel game runtimes."
+    },
+    {
+      "map": "Playground",
+      "role": "baseline",
+      "wave": 27,
+      "seed_indices": [
+        27
+      ],
+      "started_monotonic": 3303533.140023562,
+      "finished_monotonic": 3303567.027594713,
+      "makespan_seconds": 33.88757115090266,
+      "winners": 1,
+      "caps": 0,
+      "games_per_hour": 106.23363899315952,
+      "observed_ticks_per_second": 1445.7808080085715,
+      "complete_tick_coverage": true,
+      "sum_game_seconds": 33.79744519898668,
+      "scope": "Actual homogeneous wave makespan including launches/waits, not sum of parallel game runtimes."
+    },
+    {
+      "map": "Playground",
+      "role": "baseline",
+      "wave": 28,
+      "seed_indices": [
+        28
+      ],
+      "started_monotonic": 3303567.1969915,
+      "finished_monotonic": 3303615.020761911,
+      "makespan_seconds": 47.82377041084692,
+      "winners": 1,
+      "caps": 0,
+      "games_per_hour": 75.2763734241975,
+      "observed_ticks_per_second": 1420.5906271369806,
+      "complete_tick_coverage": true,
+      "sum_game_seconds": 47.73003017203882,
+      "scope": "Actual homogeneous wave makespan including launches/waits, not sum of parallel game runtimes."
+    },
+    {
+      "map": "Playground",
+      "role": "wake-only",
+      "wave": 28,
+      "seed_indices": [
+        28
+      ],
+      "started_monotonic": 3303615.190540795,
+      "finished_monotonic": 3303657.605559763,
+      "makespan_seconds": 42.41501896781847,
+      "winners": 1,
+      "caps": 0,
+      "games_per_hour": 84.8755956641544,
+      "observed_ticks_per_second": 1601.7439495087006,
+      "complete_tick_coverage": true,
+      "sum_game_seconds": 42.34555619955063,
+      "scope": "Actual homogeneous wave makespan including launches/waits, not sum of parallel game runtimes."
+    },
+    {
+      "map": "Playground",
+      "role": "wake-only",
+      "wave": 29,
+      "seed_indices": [
+        29
+      ],
+      "started_monotonic": 3303657.787655026,
+      "finished_monotonic": 3303679.555745814,
+      "makespan_seconds": 21.768090787809342,
+      "winners": 1,
+      "caps": 0,
+      "games_per_hour": 165.37968511304112,
+      "observed_ticks_per_second": 1720.0406027784682,
+      "complete_tick_coverage": true,
+      "sum_game_seconds": 21.674535571597517,
+      "scope": "Actual homogeneous wave makespan including launches/waits, not sum of parallel game runtimes."
+    },
+    {
+      "map": "Playground",
+      "role": "baseline",
+      "wave": 29,
+      "seed_indices": [
+        29
+      ],
+      "started_monotonic": 3303679.736736065,
+      "finished_monotonic": 3303704.501779414,
+      "makespan_seconds": 24.765043349005282,
+      "winners": 1,
+      "caps": 0,
+      "games_per_hour": 145.36619012801359,
+      "observed_ticks_per_second": 1511.8891363258567,
+      "complete_tick_coverage": true,
+      "sum_game_seconds": 24.67506026988849,
+      "scope": "Actual homogeneous wave makespan including launches/waits, not sum of parallel game runtimes."
+    },
+    {
+      "map": "Playground",
+      "role": "baseline",
+      "wave": 30,
+      "seed_indices": [
+        30
+      ],
+      "started_monotonic": 3303704.671046323,
+      "finished_monotonic": 3303730.325873051,
+      "makespan_seconds": 25.654826727695763,
+      "winners": 1,
+      "caps": 0,
+      "games_per_hour": 140.32447142251038,
+      "observed_ticks_per_second": 1582.9379956855964,
+      "complete_tick_coverage": true,
+      "sum_game_seconds": 25.586344534996897,
+      "scope": "Actual homogeneous wave makespan including launches/waits, not sum of parallel game runtimes."
+    },
+    {
+      "map": "Playground",
+      "role": "wake-only",
+      "wave": 30,
+      "seed_indices": [
+        30
+      ],
+      "started_monotonic": 3303730.504853246,
+      "finished_monotonic": 3303753.277286948,
+      "makespan_seconds": 22.77243370236829,
+      "winners": 1,
+      "caps": 0,
+      "games_per_hour": 158.08587026979058,
+      "observed_ticks_per_second": 1783.2964421267209,
+      "complete_tick_coverage": true,
+      "sum_game_seconds": 22.68002421921119,
+      "scope": "Actual homogeneous wave makespan including launches/waits, not sum of parallel game runtimes."
+    },
+    {
+      "map": "Playground",
+      "role": "wake-only",
+      "wave": 31,
+      "seed_indices": [
+        31
+      ],
+      "started_monotonic": 3303753.464352319,
+      "finished_monotonic": 3303780.195534301,
+      "makespan_seconds": 26.73118198197335,
+      "winners": 1,
+      "caps": 0,
+      "games_per_hour": 134.67417948176495,
+      "observed_ticks_per_second": 1776.5768843302826,
+      "complete_tick_coverage": true,
+      "sum_game_seconds": 26.638640019111335,
+      "scope": "Actual homogeneous wave makespan including launches/waits, not sum of parallel game runtimes."
+    },
+    {
+      "map": "Playground",
+      "role": "baseline",
+      "wave": 31,
+      "seed_indices": [
+        31
+      ],
+      "started_monotonic": 3303780.377781394,
+      "finished_monotonic": 3303810.453666155,
+      "makespan_seconds": 30.075884761288762,
+      "winners": 1,
+      "caps": 0,
+      "games_per_hour": 119.69722681720167,
+      "observed_ticks_per_second": 1579.0059170969187,
+      "complete_tick_coverage": true,
+      "sum_game_seconds": 29.996520951390266,
+      "scope": "Actual homogeneous wave makespan including launches/waits, not sum of parallel game runtimes."
+    },
+    {
+      "map": "Oazis",
+      "role": "baseline",
+      "wave": 0,
+      "seed_indices": [
+        0
+      ],
+      "started_monotonic": 3303810.628673147,
+      "finished_monotonic": 3303948.988469099,
+      "makespan_seconds": 138.3597959522158,
+      "winners": 1,
+      "caps": 0,
+      "games_per_hour": 26.01911903110426,
+      "observed_ticks_per_second": 557.6330860349494,
+      "complete_tick_coverage": true,
+      "sum_game_seconds": 138.2895433115773,
+      "scope": "Actual homogeneous wave makespan including launches/waits, not sum of parallel game runtimes."
+    },
+    {
+      "map": "Oazis",
+      "role": "wake-only",
+      "wave": 0,
+      "seed_indices": [
+        0
+      ],
+      "started_monotonic": 3303949.168403608,
+      "finished_monotonic": 3304082.530752545,
+      "makespan_seconds": 133.3623489374295,
+      "winners": 1,
+      "caps": 0,
+      "games_per_hour": 26.994125618535982,
+      "observed_ticks_per_second": 578.5291022145902,
+      "complete_tick_coverage": true,
+      "sum_game_seconds": 133.26995121361688,
+      "scope": "Actual homogeneous wave makespan including launches/waits, not sum of parallel game runtimes."
+    },
+    {
+      "map": "Oazis",
+      "role": "wake-only",
+      "wave": 1,
+      "seed_indices": [
+        1
+      ],
+      "started_monotonic": 3304082.706166074,
+      "finished_monotonic": 3304230.773674894,
+      "makespan_seconds": 148.06750881997868,
+      "winners": 1,
+      "caps": 0,
+      "games_per_hour": 24.31323406931159,
+      "observed_ticks_per_second": 679.9195907482986,
+      "complete_tick_coverage": true,
+      "sum_game_seconds": 147.9752499256283,
+      "scope": "Actual homogeneous wave makespan including launches/waits, not sum of parallel game runtimes."
+    },
+    {
+      "map": "Oazis",
+      "role": "baseline",
+      "wave": 1,
+      "seed_indices": [
+        1
+      ],
+      "started_monotonic": 3304230.951399798,
+      "finished_monotonic": 3304385.853540527,
+      "makespan_seconds": 154.90214072912931,
+      "winners": 1,
+      "caps": 0,
+      "games_per_hour": 23.240479331368082,
+      "observed_ticks_per_second": 649.9200045017085,
+      "complete_tick_coverage": true,
+      "sum_game_seconds": 154.83114658296108,
+      "scope": "Actual homogeneous wave makespan including launches/waits, not sum of parallel game runtimes."
+    },
+    {
+      "map": "Oazis",
+      "role": "baseline",
+      "wave": 2,
+      "seed_indices": [
+        2
+      ],
+      "started_monotonic": 3304386.044824709,
+      "finished_monotonic": 3304569.218428146,
+      "makespan_seconds": 183.17360343690962,
+      "winners": 1,
+      "caps": 0,
+      "games_per_hour": 19.653486814981758,
+      "observed_ticks_per_second": 618.615334709123,
+      "complete_tick_coverage": true,
+      "sum_game_seconds": 183.08403313485906,
+      "scope": "Actual homogeneous wave makespan including launches/waits, not sum of parallel game runtimes."
+    },
+    {
+      "map": "Oazis",
+      "role": "wake-only",
+      "wave": 2,
+      "seed_indices": [
+        2
+      ],
+      "started_monotonic": 3304569.390669236,
+      "finished_monotonic": 3304747.132597357,
+      "makespan_seconds": 177.74192812107503,
+      "winners": 1,
+      "caps": 0,
+      "games_per_hour": 20.254084323580287,
+      "observed_ticks_per_second": 637.5198086228269,
+      "complete_tick_coverage": true,
+      "sum_game_seconds": 177.6478157597594,
+      "scope": "Actual homogeneous wave makespan including launches/waits, not sum of parallel game runtimes."
+    },
+    {
+      "map": "Oazis",
+      "role": "wake-only",
+      "wave": 3,
+      "seed_indices": [
+        3
+      ],
+      "started_monotonic": 3304747.316901179,
+      "finished_monotonic": 3304882.207357547,
+      "makespan_seconds": 134.89045636774972,
+      "winners": 1,
+      "caps": 0,
+      "games_per_hour": 26.68832248728833,
+      "observed_ticks_per_second": 560.350984312271,
+      "complete_tick_coverage": true,
+      "sum_game_seconds": 134.79491542605683,
+      "scope": "Actual homogeneous wave makespan including launches/waits, not sum of parallel game runtimes."
+    },
+    {
+      "map": "Oazis",
+      "role": "baseline",
+      "wave": 3,
+      "seed_indices": [
+        3
+      ],
+      "started_monotonic": 3304882.393253979,
+      "finished_monotonic": 3305021.356878348,
+      "makespan_seconds": 138.96362436935306,
+      "winners": 1,
+      "caps": 0,
+      "games_per_hour": 25.906060066708662,
+      "observed_ticks_per_second": 543.9265156117336,
+      "complete_tick_coverage": true,
+      "sum_game_seconds": 138.89224909991026,
+      "scope": "Actual homogeneous wave makespan including launches/waits, not sum of parallel game runtimes."
+    },
+    {
+      "map": "Oazis",
+      "role": "baseline",
+      "wave": 4,
+      "seed_indices": [
+        4
+      ],
+      "started_monotonic": 3305021.533354544,
+      "finished_monotonic": 3305208.810884919,
+      "makespan_seconds": 187.27753037493676,
+      "winners": 1,
+      "caps": 0,
+      "games_per_hour": 19.222807951347193,
+      "observed_ticks_per_second": 625.5635674255915,
+      "complete_tick_coverage": true,
+      "sum_game_seconds": 187.1844950048253,
+      "scope": "Actual homogeneous wave makespan including launches/waits, not sum of parallel game runtimes."
+    },
+    {
+      "map": "Oazis",
+      "role": "wake-only",
+      "wave": 4,
+      "seed_indices": [
+        4
+      ],
+      "started_monotonic": 3305208.990642833,
+      "finished_monotonic": 3305390.524267856,
+      "makespan_seconds": 181.53362502297387,
+      "winners": 1,
+      "caps": 0,
+      "games_per_hour": 19.831036809540958,
+      "observed_ticks_per_second": 645.3570239958226,
+      "complete_tick_coverage": true,
+      "sum_game_seconds": 181.44124487880617,
+      "scope": "Actual homogeneous wave makespan including launches/waits, not sum of parallel game runtimes."
+    },
+    {
+      "map": "Oazis",
+      "role": "wake-only",
+      "wave": 5,
+      "seed_indices": [
+        5
+      ],
+      "started_monotonic": 3305390.708043752,
+      "finished_monotonic": 3305711.324024607,
+      "makespan_seconds": 320.61598085518926,
+      "winners": 1,
+      "caps": 0,
+      "games_per_hour": 11.228386028661468,
+      "observed_ticks_per_second": 507.4294786119262,
+      "complete_tick_coverage": true,
+      "sum_game_seconds": 320.5226905401796,
+      "scope": "Actual homogeneous wave makespan including launches/waits, not sum of parallel game runtimes."
+    },
+    {
+      "map": "Oazis",
+      "role": "baseline",
+      "wave": 5,
+      "seed_indices": [
+        5
+      ],
+      "started_monotonic": 3305711.50710632,
+      "finished_monotonic": 3306042.755306468,
+      "makespan_seconds": 331.2482001478784,
+      "winners": 1,
+      "caps": 0,
+      "games_per_hour": 10.867983579662804,
+      "observed_ticks_per_second": 491.1422912709282,
+      "complete_tick_coverage": true,
+      "sum_game_seconds": 331.15569162229076,
+      "scope": "Actual homogeneous wave makespan including launches/waits, not sum of parallel game runtimes."
+    },
+    {
+      "map": "Oazis",
+      "role": "baseline",
+      "wave": 6,
+      "seed_indices": [
+        6
+      ],
+      "started_monotonic": 3306042.925268087,
+      "finished_monotonic": 3306325.422676612,
+      "makespan_seconds": 282.49740852508694,
+      "winners": 1,
+      "caps": 0,
+      "games_per_hour": 12.74347973241781,
+      "observed_ticks_per_second": 608.7489471066364,
+      "complete_tick_coverage": true,
+      "sum_game_seconds": 282.40586718311533,
+      "scope": "Actual homogeneous wave makespan including launches/waits, not sum of parallel game runtimes."
+    },
+    {
+      "map": "Oazis",
+      "role": "wake-only",
+      "wave": 6,
+      "seed_indices": [
+        6
+      ],
+      "started_monotonic": 3306325.598548319,
+      "finished_monotonic": 3306599.189046873,
+      "makespan_seconds": 273.590498553589,
+      "winners": 1,
+      "caps": 0,
+      "games_per_hour": 13.158351693616499,
+      "observed_ticks_per_second": 628.5671502086748,
+      "complete_tick_coverage": true,
+      "sum_game_seconds": 273.49812554894015,
+      "scope": "Actual homogeneous wave makespan including launches/waits, not sum of parallel game runtimes."
+    },
+    {
+      "map": "Oazis",
+      "role": "wake-only",
+      "wave": 7,
+      "seed_indices": [
+        7
+      ],
+      "started_monotonic": 3306599.372418865,
+      "finished_monotonic": 3306766.140974269,
+      "makespan_seconds": 166.76855540368706,
+      "winners": 1,
+      "caps": 0,
+      "games_per_hour": 21.58680328726052,
+      "observed_ticks_per_second": 596.3834114845436,
+      "complete_tick_coverage": true,
+      "sum_game_seconds": 166.67520039202645,
+      "scope": "Actual homogeneous wave makespan including launches/waits, not sum of parallel game runtimes."
+    },
+    {
+      "map": "Oazis",
+      "role": "baseline",
+      "wave": 7,
+      "seed_indices": [
+        7
+      ],
+      "started_monotonic": 3306766.326069367,
+      "finished_monotonic": 3306937.575532851,
+      "makespan_seconds": 171.24946348369122,
+      "winners": 1,
+      "caps": 0,
+      "games_per_hour": 21.021963670810816,
+      "observed_ticks_per_second": 580.7784618809728,
+      "complete_tick_coverage": true,
+      "sum_game_seconds": 171.157246991992,
+      "scope": "Actual homogeneous wave makespan including launches/waits, not sum of parallel game runtimes."
+    },
+    {
+      "map": "Oazis",
+      "role": "baseline",
+      "wave": 8,
+      "seed_indices": [
+        8
+      ],
+      "started_monotonic": 3306937.745598879,
+      "finished_monotonic": 3307077.210784656,
+      "makespan_seconds": 139.46518577681854,
+      "winners": 1,
+      "caps": 0,
+      "games_per_hour": 25.812893590239497,
+      "observed_ticks_per_second": 561.7029050200505,
+      "complete_tick_coverage": true,
+      "sum_game_seconds": 139.3938766149804,
+      "scope": "Actual homogeneous wave makespan including launches/waits, not sum of parallel game runtimes."
+    },
+    {
+      "map": "Oazis",
+      "role": "wake-only",
+      "wave": 8,
+      "seed_indices": [
+        8
+      ],
+      "started_monotonic": 3307077.399537219,
+      "finished_monotonic": 3307217.066448696,
+      "makespan_seconds": 139.66691147675738,
+      "winners": 1,
+      "caps": 0,
+      "games_per_hour": 25.775611144656068,
+      "observed_ticks_per_second": 560.8916182916853,
+      "complete_tick_coverage": true,
+      "sum_game_seconds": 139.5693808742799,
+      "scope": "Actual homogeneous wave makespan including launches/waits, not sum of parallel game runtimes."
+    },
+    {
+      "map": "Oazis",
+      "role": "wake-only",
+      "wave": 9,
+      "seed_indices": [
+        9
+      ],
+      "started_monotonic": 3307217.247123786,
+      "finished_monotonic": 3307349.538377375,
+      "makespan_seconds": 132.29125358909369,
+      "winners": 1,
+      "caps": 0,
+      "games_per_hour": 27.212683396151522,
+      "observed_ticks_per_second": 605.7089779260059,
+      "complete_tick_coverage": true,
+      "sum_game_seconds": 132.21962841786444,
+      "scope": "Actual homogeneous wave makespan including launches/waits, not sum of parallel game runtimes."
+    },
+    {
+      "map": "Oazis",
+      "role": "baseline",
+      "wave": 9,
+      "seed_indices": [
+        9
+      ],
+      "started_monotonic": 3307349.721691106,
+      "finished_monotonic": 3307486.404615976,
+      "makespan_seconds": 136.68292486993596,
+      "winners": 1,
+      "caps": 0,
+      "games_per_hour": 26.338330142010566,
+      "observed_ticks_per_second": 586.2473317442518,
+      "complete_tick_coverage": true,
+      "sum_game_seconds": 136.58823109604418,
+      "scope": "Actual homogeneous wave makespan including launches/waits, not sum of parallel game runtimes."
+    },
+    {
+      "map": "Oazis",
+      "role": "baseline",
+      "wave": 10,
+      "seed_indices": [
+        10
+      ],
+      "started_monotonic": 3307486.587986967,
+      "finished_monotonic": 3307659.857281194,
+      "makespan_seconds": 173.26929422700778,
+      "winners": 1,
+      "caps": 0,
+      "games_per_hour": 20.77690693010777,
+      "observed_ticks_per_second": 511.4004786324582,
+      "complete_tick_coverage": true,
+      "sum_game_seconds": 173.1983505198732,
+      "scope": "Actual homogeneous wave makespan including launches/waits, not sum of parallel game runtimes."
+    },
+    {
+      "map": "Oazis",
+      "role": "wake-only",
+      "wave": 10,
+      "seed_indices": [
+        10
+      ],
+      "started_monotonic": 3307660.034535909,
+      "finished_monotonic": 3307830.13988219,
+      "makespan_seconds": 170.10534628108144,
+      "winners": 1,
+      "caps": 0,
+      "games_per_hour": 21.163355995004256,
+      "observed_ticks_per_second": 520.9124929770353,
+      "complete_tick_coverage": true,
+      "sum_game_seconds": 170.0099343364127,
+      "scope": "Actual homogeneous wave makespan including launches/waits, not sum of parallel game runtimes."
+    },
+    {
+      "map": "Oazis",
+      "role": "wake-only",
+      "wave": 11,
+      "seed_indices": [
+        11
+      ],
+      "started_monotonic": 3307830.327285256,
+      "finished_monotonic": 3307951.722864906,
+      "makespan_seconds": 121.3955796500668,
+      "winners": 1,
+      "caps": 0,
+      "games_per_hour": 29.655116029572987,
+      "observed_ticks_per_second": 577.5663348048556,
+      "complete_tick_coverage": true,
+      "sum_game_seconds": 121.3027996099554,
+      "scope": "Actual homogeneous wave makespan including launches/waits, not sum of parallel game runtimes."
+    },
+    {
+      "map": "Oazis",
+      "role": "baseline",
+      "wave": 11,
+      "seed_indices": [
+        11
+      ],
+      "started_monotonic": 3307951.906208043,
+      "finished_monotonic": 3308077.016757556,
+      "makespan_seconds": 125.11054951278493,
+      "winners": 1,
+      "caps": 0,
+      "games_per_hour": 28.774551898456167,
+      "observed_ticks_per_second": 560.4163699467655,
+      "complete_tick_coverage": true,
+      "sum_game_seconds": 125.01712212804705,
+      "scope": "Actual homogeneous wave makespan including launches/waits, not sum of parallel game runtimes."
+    },
+    {
+      "map": "Oazis",
+      "role": "baseline",
+      "wave": 12,
+      "seed_indices": [
+        12
+      ],
+      "started_monotonic": 3308077.203009351,
+      "finished_monotonic": 3308230.885700133,
+      "makespan_seconds": 153.68269078200683,
+      "winners": 1,
+      "caps": 0,
+      "games_per_hour": 23.424889177054204,
+      "observed_ticks_per_second": 489.54114231847115,
+      "complete_tick_coverage": true,
+      "sum_game_seconds": 153.5862996620126,
+      "scope": "Actual homogeneous wave makespan including launches/waits, not sum of parallel game runtimes."
+    },
+    {
+      "map": "Oazis",
+      "role": "wake-only",
+      "wave": 12,
+      "seed_indices": [
+        12
+      ],
+      "started_monotonic": 3308231.068782833,
+      "finished_monotonic": 3308383.922934448,
+      "makespan_seconds": 152.85415161494166,
+      "winners": 1,
+      "caps": 0,
+      "games_per_hour": 23.551862752598577,
+      "observed_ticks_per_second": 492.1946784247226,
+      "complete_tick_coverage": true,
+      "sum_game_seconds": 152.7812116970308,
+      "scope": "Actual homogeneous wave makespan including launches/waits, not sum of parallel game runtimes."
+    },
+    {
+      "map": "Oazis",
+      "role": "wake-only",
+      "wave": 13,
+      "seed_indices": [
+        13
+      ],
+      "started_monotonic": 3308384.1132533,
+      "finished_monotonic": 3308563.185118795,
+      "makespan_seconds": 179.07186549482867,
+      "winners": 1,
+      "caps": 0,
+      "games_per_hour": 20.103660561373683,
+      "observed_ticks_per_second": 535.9300844652868,
+      "complete_tick_coverage": true,
+      "sum_game_seconds": 178.97848461009562,
+      "scope": "Actual homogeneous wave makespan including launches/waits, not sum of parallel game runtimes."
+    },
+    {
+      "map": "Oazis",
+      "role": "baseline",
+      "wave": 13,
+      "seed_indices": [
+        13
+      ],
+      "started_monotonic": 3308563.355338588,
+      "finished_monotonic": 3308747.336782355,
+      "makespan_seconds": 183.9814437669702,
+      "winners": 1,
+      "caps": 0,
+      "games_per_hour": 19.567190724732754,
+      "observed_ticks_per_second": 521.6286927368341,
+      "complete_tick_coverage": true,
+      "sum_game_seconds": 183.91143288556486,
+      "scope": "Actual homogeneous wave makespan including launches/waits, not sum of parallel game runtimes."
+    },
+    {
+      "map": "Oazis",
+      "role": "baseline",
+      "wave": 14,
+      "seed_indices": [
+        14
+      ],
+      "started_monotonic": 3308747.518942531,
+      "finished_monotonic": 3308850.013507642,
+      "makespan_seconds": 102.49456511065364,
+      "winners": 1,
+      "caps": 0,
+      "games_per_hour": 35.12381360039357,
+      "observed_ticks_per_second": 572.3035161588572,
+      "complete_tick_coverage": true,
+      "sum_game_seconds": 102.40102090779692,
+      "scope": "Actual homogeneous wave makespan including launches/waits, not sum of parallel game runtimes."
+    },
+    {
+      "map": "Oazis",
+      "role": "wake-only",
+      "wave": 14,
+      "seed_indices": [
+        14
+      ],
+      "started_monotonic": 3308850.19917523,
+      "finished_monotonic": 3308948.864740794,
+      "makespan_seconds": 98.66556556383148,
+      "winners": 1,
+      "caps": 0,
+      "games_per_hour": 36.486893673872345,
+      "observed_ticks_per_second": 594.5133914227789,
+      "complete_tick_coverage": true,
+      "sum_game_seconds": 98.57086951332167,
+      "scope": "Actual homogeneous wave makespan including launches/waits, not sum of parallel game runtimes."
+    },
+    {
+      "map": "Oazis",
+      "role": "wake-only",
+      "wave": 15,
+      "seed_indices": [
+        15
+      ],
+      "started_monotonic": 3308949.048761204,
+      "finished_monotonic": 3309160.922650624,
+      "makespan_seconds": 211.8738894201815,
+      "winners": 1,
+      "caps": 0,
+      "games_per_hour": 16.991239505027423,
+      "observed_ticks_per_second": 620.4539896810819,
+      "complete_tick_coverage": true,
+      "sum_game_seconds": 211.78083533793688,
+      "scope": "Actual homogeneous wave makespan including launches/waits, not sum of parallel game runtimes."
+    },
+    {
+      "map": "Oazis",
+      "role": "baseline",
+      "wave": 15,
+      "seed_indices": [
+        15
+      ],
+      "started_monotonic": 3309161.107971995,
+      "finished_monotonic": 3309380.913365007,
+      "makespan_seconds": 219.80539301177487,
+      "winners": 1,
+      "caps": 0,
+      "games_per_hour": 16.378124079090043,
+      "observed_ticks_per_second": 598.0653986636163,
+      "complete_tick_coverage": true,
+      "sum_game_seconds": 219.73403267702088,
+      "scope": "Actual homogeneous wave makespan including launches/waits, not sum of parallel game runtimes."
+    },
+    {
+      "map": "Oazis",
+      "role": "baseline",
+      "wave": 16,
+      "seed_indices": [
+        16
+      ],
+      "started_monotonic": 3309381.105029231,
+      "finished_monotonic": 3309528.469926764,
+      "makespan_seconds": 147.36489753285423,
+      "winners": 1,
+      "caps": 0,
+      "games_per_hour": 24.429155519871337,
+      "observed_ticks_per_second": 540.7122139262189,
+      "complete_tick_coverage": true,
+      "sum_game_seconds": 147.2710942258127,
+      "scope": "Actual homogeneous wave makespan including launches/waits, not sum of parallel game runtimes."
+    },
+    {
+      "map": "Oazis",
+      "role": "wake-only",
+      "wave": 16,
+      "seed_indices": [
+        16
+      ],
+      "started_monotonic": 3309528.64923761,
+      "finished_monotonic": 3309675.231046461,
+      "makespan_seconds": 146.5818088511005,
+      "winners": 1,
+      "caps": 0,
+      "games_per_hour": 24.55966417808994,
+      "observed_ticks_per_second": 543.6008780662673,
+      "complete_tick_coverage": true,
+      "sum_game_seconds": 146.50982748065144,
+      "scope": "Actual homogeneous wave makespan including launches/waits, not sum of parallel game runtimes."
+    },
+    {
+      "map": "Oazis",
+      "role": "wake-only",
+      "wave": 17,
+      "seed_indices": [
+        17
+      ],
+      "started_monotonic": 3309675.418176018,
+      "finished_monotonic": 3309801.132160356,
+      "makespan_seconds": 125.71398433763534,
+      "winners": 1,
+      "caps": 0,
+      "games_per_hour": 28.63643228689124,
+      "observed_ticks_per_second": 594.1264243077518,
+      "complete_tick_coverage": true,
+      "sum_game_seconds": 125.62152654118836,
+      "scope": "Actual homogeneous wave makespan including launches/waits, not sum of parallel game runtimes."
+    },
+    {
+      "map": "Oazis",
+      "role": "baseline",
+      "wave": 17,
+      "seed_indices": [
+        17
+      ],
+      "started_monotonic": 3309801.304277366,
+      "finished_monotonic": 3309931.319685307,
+      "makespan_seconds": 130.0154079408385,
+      "winners": 1,
+      "caps": 0,
+      "games_per_hour": 27.68902591636004,
+      "observed_ticks_per_second": 574.4703738035921,
+      "complete_tick_coverage": true,
+      "sum_game_seconds": 129.92138328403234,
+      "scope": "Actual homogeneous wave makespan including launches/waits, not sum of parallel game runtimes."
+    },
+    {
+      "map": "Oazis",
+      "role": "baseline",
+      "wave": 18,
+      "seed_indices": [
+        18
+      ],
+      "started_monotonic": 3309931.504187054,
+      "finished_monotonic": 3310132.957587168,
+      "makespan_seconds": 201.45340011408553,
+      "winners": 1,
+      "caps": 0,
+      "games_per_hour": 17.87013769914668,
+      "observed_ticks_per_second": 501.0091661041318,
+      "complete_tick_coverage": true,
+      "sum_game_seconds": 201.3603620911017,
+      "scope": "Actual homogeneous wave makespan including launches/waits, not sum of parallel game runtimes."
+    },
+    {
+      "map": "Oazis",
+      "role": "wake-only",
+      "wave": 18,
+      "seed_indices": [
+        18
+      ],
+      "started_monotonic": 3310133.134653514,
+      "finished_monotonic": 3310327.940821372,
+      "makespan_seconds": 194.8061678581871,
+      "winners": 1,
+      "caps": 0,
+      "games_per_hour": 18.479907692762012,
+      "observed_ticks_per_second": 518.1047453973528,
+      "complete_tick_coverage": true,
+      "sum_game_seconds": 194.71350323176011,
+      "scope": "Actual homogeneous wave makespan including launches/waits, not sum of parallel game runtimes."
+    },
+    {
+      "map": "Oazis",
+      "role": "wake-only",
+      "wave": 19,
+      "seed_indices": [
+        19
+      ],
+      "started_monotonic": 3310328.120297909,
+      "finished_monotonic": 3310654.072968807,
+      "makespan_seconds": 325.9526708982885,
+      "winners": 1,
+      "caps": 0,
+      "games_per_hour": 11.044548247077742,
+      "observed_ticks_per_second": 636.1721148918151,
+      "complete_tick_coverage": true,
+      "sum_game_seconds": 325.8588352310471,
+      "scope": "Actual homogeneous wave makespan including launches/waits, not sum of parallel game runtimes."
+    },
+    {
+      "map": "Oazis",
+      "role": "baseline",
+      "wave": 19,
+      "seed_indices": [
+        19
+      ],
+      "started_monotonic": 3310654.260213194,
+      "finished_monotonic": 3310990.905475863,
+      "makespan_seconds": 336.6452626688406,
+      "winners": 1,
+      "caps": 0,
+      "games_per_hour": 10.693749175200294,
+      "observed_ticks_per_second": 615.9658934633009,
+      "complete_tick_coverage": true,
+      "sum_game_seconds": 336.5528571419418,
+      "scope": "Actual homogeneous wave makespan including launches/waits, not sum of parallel game runtimes."
+    },
+    {
+      "map": "Oazis",
+      "role": "baseline",
+      "wave": 20,
+      "seed_indices": [
+        20
+      ],
+      "started_monotonic": 3310991.089386045,
+      "finished_monotonic": 3311143.560051455,
+      "makespan_seconds": 152.47066541016102,
+      "winners": 1,
+      "caps": 0,
+      "games_per_hour": 23.61109916006235,
+      "observed_ticks_per_second": 512.9511292523545,
+      "complete_tick_coverage": true,
+      "sum_game_seconds": 152.37802115315571,
+      "scope": "Actual homogeneous wave makespan including launches/waits, not sum of parallel game runtimes."
+    },
+    {
+      "map": "Oazis",
+      "role": "wake-only",
+      "wave": 20,
+      "seed_indices": [
+        20
+      ],
+      "started_monotonic": 3311143.745441416,
+      "finished_monotonic": 3311293.690797347,
+      "makespan_seconds": 149.94535593129694,
+      "winners": 1,
+      "caps": 0,
+      "games_per_hour": 24.008746237192394,
+      "observed_ticks_per_second": 521.5900120030047,
+      "complete_tick_coverage": true,
+      "sum_game_seconds": 149.8733606399037,
+      "scope": "Actual homogeneous wave makespan including launches/waits, not sum of parallel game runtimes."
+    },
+    {
+      "map": "Oazis",
+      "role": "wake-only",
+      "wave": 21,
+      "seed_indices": [
+        21
+      ],
+      "started_monotonic": 3311293.883018857,
+      "finished_monotonic": 3311509.095978774,
+      "makespan_seconds": 215.2129599172622,
+      "winners": 1,
+      "caps": 0,
+      "games_per_hour": 16.727617153651,
+      "observed_ticks_per_second": 545.5526472250455,
+      "complete_tick_coverage": true,
+      "sum_game_seconds": 215.14020495163277,
+      "scope": "Actual homogeneous wave makespan including launches/waits, not sum of parallel game runtimes."
+    },
+    {
+      "map": "Oazis",
+      "role": "baseline",
+      "wave": 21,
+      "seed_indices": [
+        21
+      ],
+      "started_monotonic": 3311509.282420268,
+      "finished_monotonic": 3311731.585280177,
+      "makespan_seconds": 222.30285990936682,
+      "winners": 1,
+      "caps": 0,
+      "games_per_hour": 16.194123644957717,
+      "observed_ticks_per_second": 528.1533492095793,
+      "complete_tick_coverage": true,
+      "sum_game_seconds": 222.23197577986866,
+      "scope": "Actual homogeneous wave makespan including launches/waits, not sum of parallel game runtimes."
+    },
+    {
+      "map": "Oazis",
+      "role": "baseline",
+      "wave": 22,
+      "seed_indices": [
+        22
+      ],
+      "started_monotonic": 3311731.773500508,
+      "finished_monotonic": 3311932.922600074,
+      "makespan_seconds": 201.14909956604242,
+      "winners": 1,
+      "caps": 0,
+      "games_per_hour": 17.89717183803762,
+      "observed_ticks_per_second": 518.9483831903875,
+      "complete_tick_coverage": true,
+      "sum_game_seconds": 201.0776379047893,
+      "scope": "Actual homogeneous wave makespan including launches/waits, not sum of parallel game runtimes."
+    },
+    {
+      "map": "Oazis",
+      "role": "wake-only",
+      "wave": 22,
+      "seed_indices": [
+        22
+      ],
+      "started_monotonic": 3311933.105216739,
+      "finished_monotonic": 3312126.773799107,
+      "makespan_seconds": 193.66858236817643,
+      "winners": 1,
+      "caps": 0,
+      "games_per_hour": 18.588456403094685,
+      "observed_ticks_per_second": 538.9929472481783,
+      "complete_tick_coverage": true,
+      "sum_game_seconds": 193.57565134204924,
+      "scope": "Actual homogeneous wave makespan including launches/waits, not sum of parallel game runtimes."
+    },
+    {
+      "map": "Oazis",
+      "role": "wake-only",
+      "wave": 23,
+      "seed_indices": [
+        23
+      ],
+      "started_monotonic": 3312126.959076032,
+      "finished_monotonic": 3312290.107441354,
+      "makespan_seconds": 163.1483653220348,
+      "winners": 1,
+      "caps": 0,
+      "games_per_hour": 22.065804906436192,
+      "observed_ticks_per_second": 595.1024995460806,
+      "complete_tick_coverage": true,
+      "sum_game_seconds": 163.0520365233533,
+      "scope": "Actual homogeneous wave makespan including launches/waits, not sum of parallel game runtimes."
+    },
+    {
+      "map": "Oazis",
+      "role": "baseline",
+      "wave": 23,
+      "seed_indices": [
+        23
+      ],
+      "started_monotonic": 3312290.290936242,
+      "finished_monotonic": 3312459.188495899,
+      "makespan_seconds": 168.89755965722725,
+      "winners": 1,
+      "caps": 0,
+      "games_per_hour": 21.314695175620635,
+      "observed_ticks_per_second": 574.8454873891687,
+      "complete_tick_coverage": true,
+      "sum_game_seconds": 168.80432441364974,
+      "scope": "Actual homogeneous wave makespan including launches/waits, not sum of parallel game runtimes."
+    },
+    {
+      "map": "Oazis",
+      "role": "baseline",
+      "wave": 24,
+      "seed_indices": [
+        24
+      ],
+      "started_monotonic": 3312459.37702484,
+      "finished_monotonic": 3312627.428114309,
+      "makespan_seconds": 168.05108946887776,
+      "winners": 1,
+      "caps": 0,
+      "games_per_hour": 21.422056895779317,
+      "observed_ticks_per_second": 551.272831927441,
+      "complete_tick_coverage": true,
+      "sum_game_seconds": 167.95590749196708,
+      "scope": "Actual homogeneous wave makespan including launches/waits, not sum of parallel game runtimes."
+    },
+    {
+      "map": "Oazis",
+      "role": "wake-only",
+      "wave": 24,
+      "seed_indices": [
+        24
+      ],
+      "started_monotonic": 3312627.648680826,
+      "finished_monotonic": 3312790.676404441,
+      "makespan_seconds": 163.0277236145921,
+      "winners": 1,
+      "caps": 0,
+      "games_per_hour": 22.08213376339983,
+      "observed_ticks_per_second": 568.2591766969131,
+      "complete_tick_coverage": true,
+      "sum_game_seconds": 162.9550971146673,
+      "scope": "Actual homogeneous wave makespan including launches/waits, not sum of parallel game runtimes."
+    },
+    {
+      "map": "Oazis",
+      "role": "wake-only",
+      "wave": 25,
+      "seed_indices": [
+        25
+      ],
+      "started_monotonic": 3312790.867935929,
+      "finished_monotonic": 3313038.447731218,
+      "makespan_seconds": 247.57979528885335,
+      "winners": 1,
+      "caps": 0,
+      "games_per_hour": 14.540766526605497,
+      "observed_ticks_per_second": 562.5095530817337,
+      "complete_tick_coverage": true,
+      "sum_game_seconds": 247.48531652614474,
+      "scope": "Actual homogeneous wave makespan including launches/waits, not sum of parallel game runtimes."
+    },
+    {
+      "map": "Oazis",
+      "role": "baseline",
+      "wave": 25,
+      "seed_indices": [
+        25
+      ],
+      "started_monotonic": 3313038.624580744,
+      "finished_monotonic": 3313294.974895142,
+      "makespan_seconds": 256.3503143978305,
+      "winners": 1,
+      "caps": 0,
+      "games_per_hour": 14.043282952300785,
+      "observed_ticks_per_second": 543.2644010097559,
+      "complete_tick_coverage": true,
+      "sum_game_seconds": 256.2571814437397,
+      "scope": "Actual homogeneous wave makespan including launches/waits, not sum of parallel game runtimes."
+    },
+    {
+      "map": "Oazis",
+      "role": "baseline",
+      "wave": 26,
+      "seed_indices": [
+        26
+      ],
+      "started_monotonic": 3313295.166733035,
+      "finished_monotonic": 3313475.195845604,
+      "makespan_seconds": 180.02911256905645,
+      "winners": 1,
+      "caps": 0,
+      "games_per_hour": 19.99676579319411,
+      "observed_ticks_per_second": 636.7081321696301,
+      "complete_tick_coverage": true,
+      "sum_game_seconds": 179.93400702206418,
+      "scope": "Actual homogeneous wave makespan including launches/waits, not sum of parallel game runtimes."
+    },
+    {
+      "map": "Oazis",
+      "role": "wake-only",
+      "wave": 26,
+      "seed_indices": [
+        26
+      ],
+      "started_monotonic": 3313475.387556588,
+      "finished_monotonic": 3313648.845867441,
+      "makespan_seconds": 173.45831085322425,
+      "winners": 1,
+      "caps": 0,
+      "games_per_hour": 20.754266441843903,
+      "observed_ticks_per_second": 660.8273736563331,
+      "complete_tick_coverage": true,
+      "sum_game_seconds": 173.3654478881508,
+      "scope": "Actual homogeneous wave makespan including launches/waits, not sum of parallel game runtimes."
+    },
+    {
+      "map": "Oazis",
+      "role": "wake-only",
+      "wave": 27,
+      "seed_indices": [
+        27
+      ],
+      "started_monotonic": 3313649.018706718,
+      "finished_monotonic": 3313822.749751887,
+      "makespan_seconds": 173.7310451688245,
+      "winners": 1,
+      "caps": 0,
+      "games_per_hour": 20.72168504196629,
+      "observed_ticks_per_second": 506.3573980949373,
+      "complete_tick_coverage": true,
+      "sum_game_seconds": 173.6379191861488,
+      "scope": "Actual homogeneous wave makespan including launches/waits, not sum of parallel game runtimes."
+    },
+    {
+      "map": "Oazis",
+      "role": "baseline",
+      "wave": 27,
+      "seed_indices": [
+        27
+      ],
+      "started_monotonic": 3313822.936570167,
+      "finished_monotonic": 3314001.42322453,
+      "makespan_seconds": 178.48665436310694,
+      "winners": 1,
+      "caps": 0,
+      "games_per_hour": 20.169575214717664,
+      "observed_ticks_per_second": 492.86598101075356,
+      "complete_tick_coverage": true,
+      "sum_game_seconds": 178.39261583378538,
+      "scope": "Actual homogeneous wave makespan including launches/waits, not sum of parallel game runtimes."
+    },
+    {
+      "map": "Oazis",
+      "role": "baseline",
+      "wave": 28,
+      "seed_indices": [
+        28
+      ],
+      "started_monotonic": 3314001.610084327,
+      "finished_monotonic": 3314149.921676498,
+      "makespan_seconds": 148.31159217096865,
+      "winners": 1,
+      "caps": 0,
+      "games_per_hour": 24.273220638411328,
+      "observed_ticks_per_second": 512.0166191221332,
+      "complete_tick_coverage": true,
+      "sum_game_seconds": 148.21852145390585,
+      "scope": "Actual homogeneous wave makespan including launches/waits, not sum of parallel game runtimes."
+    },
+    {
+      "map": "Oazis",
+      "role": "wake-only",
+      "wave": 28,
+      "seed_indices": [
+        28
+      ],
+      "started_monotonic": 3314150.113197771,
+      "finished_monotonic": 3314297.308910615,
+      "makespan_seconds": 147.19571284390986,
+      "winners": 1,
+      "caps": 0,
+      "games_per_hour": 24.457234048776495,
+      "observed_ticks_per_second": 515.8981775544415,
+      "complete_tick_coverage": true,
+      "sum_game_seconds": 147.12380105815828,
+      "scope": "Actual homogeneous wave makespan including launches/waits, not sum of parallel game runtimes."
+    },
+    {
+      "map": "Oazis",
+      "role": "wake-only",
+      "wave": 29,
+      "seed_indices": [
+        29
+      ],
+      "started_monotonic": 3314297.490995479,
+      "finished_monotonic": 3314501.814138324,
+      "makespan_seconds": 204.3231428451836,
+      "winners": 1,
+      "caps": 0,
+      "games_per_hour": 17.619149499514762,
+      "observed_ticks_per_second": 620.3604654615261,
+      "complete_tick_coverage": true,
+      "sum_game_seconds": 204.22848745109513,
+      "scope": "Actual homogeneous wave makespan including launches/waits, not sum of parallel game runtimes."
+    },
+    {
+      "map": "Oazis",
+      "role": "baseline",
+      "wave": 29,
+      "seed_indices": [
+        29
+      ],
+      "started_monotonic": 3314502.00529568,
+      "finished_monotonic": 3314716.004400462,
+      "makespan_seconds": 213.99910478200763,
+      "winners": 1,
+      "caps": 0,
+      "games_per_hour": 16.822500279462275,
+      "observed_ticks_per_second": 592.3108890063781,
+      "complete_tick_coverage": true,
+      "sum_game_seconds": 213.91559911286458,
+      "scope": "Actual homogeneous wave makespan including launches/waits, not sum of parallel game runtimes."
+    },
+    {
+      "map": "Oazis",
+      "role": "baseline",
+      "wave": 30,
+      "seed_indices": [
+        30
+      ],
+      "started_monotonic": 3314716.197286974,
+      "finished_monotonic": 3314864.673584338,
+      "makespan_seconds": 148.47629736363888,
+      "winners": 1,
+      "caps": 0,
+      "games_per_hour": 24.246294283478154,
+      "observed_ticks_per_second": 565.7603367779811,
+      "complete_tick_coverage": true,
+      "sum_game_seconds": 148.3824457428418,
+      "scope": "Actual homogeneous wave makespan including launches/waits, not sum of parallel game runtimes."
+    },
+    {
+      "map": "Oazis",
+      "role": "wake-only",
+      "wave": 30,
+      "seed_indices": [
+        30
+      ],
+      "started_monotonic": 3314864.851500834,
+      "finished_monotonic": 3315009.021596663,
+      "makespan_seconds": 144.17009582929313,
+      "winners": 1,
+      "caps": 0,
+      "games_per_hour": 24.970504315004664,
+      "observed_ticks_per_second": 582.6589731858394,
+      "complete_tick_coverage": true,
+      "sum_game_seconds": 144.07529105618596,
+      "scope": "Actual homogeneous wave makespan including launches/waits, not sum of parallel game runtimes."
+    },
+    {
+      "map": "Oazis",
+      "role": "wake-only",
+      "wave": 31,
+      "seed_indices": [
+        31
+      ],
+      "started_monotonic": 3315009.20725213,
+      "finished_monotonic": 3315156.858731974,
+      "makespan_seconds": 147.65147984400392,
+      "winners": 1,
+      "caps": 0,
+      "games_per_hour": 24.381740053018472,
+      "observed_ticks_per_second": 609.8821366039759,
+      "complete_tick_coverage": true,
+      "sum_game_seconds": 147.55894115706906,
+      "scope": "Actual homogeneous wave makespan including launches/waits, not sum of parallel game runtimes."
+    },
+    {
+      "map": "Oazis",
+      "role": "baseline",
+      "wave": 31,
+      "seed_indices": [
+        31
+      ],
+      "started_monotonic": 3315157.049488662,
+      "finished_monotonic": 3315309.529632833,
+      "makespan_seconds": 152.48014417104423,
+      "winners": 1,
+      "caps": 0,
+      "games_per_hour": 23.609631401985748,
+      "observed_ticks_per_second": 590.5686965968935,
+      "complete_tick_coverage": true,
+      "sum_game_seconds": 152.38430627528578,
+      "scope": "Actual homogeneous wave makespan including launches/waits, not sum of parallel game runtimes."
+    }
+  ],
+  "pairs": [
+    {
+      "map": "Playground",
+      "seed_index": 0,
+      "seed": 1056243202,
+      "both_winners": true,
+      "endpoints_match": true,
+      "statuses": [
+        "winner",
+        "winner"
+      ],
+      "eligible_winner_timing_pair": true,
+      "limitation": "Ticks/winner equality without checksum sidecar is not per-tick equivalence."
+    },
+    {
+      "map": "Playground",
+      "seed_index": 1,
+      "seed": 744345666,
+      "both_winners": true,
+      "endpoints_match": true,
+      "statuses": [
+        "winner",
+        "winner"
+      ],
+      "eligible_winner_timing_pair": true,
+      "limitation": "Ticks/winner equality without checksum sidecar is not per-tick equivalence."
+    },
+    {
+      "map": "Playground",
+      "seed_index": 2,
+      "seed": 1064623205,
+      "both_winners": true,
+      "endpoints_match": true,
+      "statuses": [
+        "winner",
+        "winner"
+      ],
+      "eligible_winner_timing_pair": true,
+      "limitation": "Ticks/winner equality without checksum sidecar is not per-tick equivalence."
+    },
+    {
+      "map": "Playground",
+      "seed_index": 3,
+      "seed": 725864695,
+      "both_winners": true,
+      "endpoints_match": true,
+      "statuses": [
+        "winner",
+        "winner"
+      ],
+      "eligible_winner_timing_pair": true,
+      "limitation": "Ticks/winner equality without checksum sidecar is not per-tick equivalence."
+    },
+    {
+      "map": "Playground",
+      "seed_index": 4,
+      "seed": 599004658,
+      "both_winners": true,
+      "endpoints_match": true,
+      "statuses": [
+        "winner",
+        "winner"
+      ],
+      "eligible_winner_timing_pair": true,
+      "limitation": "Ticks/winner equality without checksum sidecar is not per-tick equivalence."
+    },
+    {
+      "map": "Playground",
+      "seed_index": 5,
+      "seed": 117787757,
+      "both_winners": true,
+      "endpoints_match": true,
+      "statuses": [
+        "winner",
+        "winner"
+      ],
+      "eligible_winner_timing_pair": true,
+      "limitation": "Ticks/winner equality without checksum sidecar is not per-tick equivalence."
+    },
+    {
+      "map": "Playground",
+      "seed_index": 6,
+      "seed": 85910194,
+      "both_winners": true,
+      "endpoints_match": true,
+      "statuses": [
+        "winner",
+        "winner"
+      ],
+      "eligible_winner_timing_pair": true,
+      "limitation": "Ticks/winner equality without checksum sidecar is not per-tick equivalence."
+    },
+    {
+      "map": "Playground",
+      "seed_index": 7,
+      "seed": 769116511,
+      "both_winners": true,
+      "endpoints_match": true,
+      "statuses": [
+        "winner",
+        "winner"
+      ],
+      "eligible_winner_timing_pair": true,
+      "limitation": "Ticks/winner equality without checksum sidecar is not per-tick equivalence."
+    },
+    {
+      "map": "Playground",
+      "seed_index": 8,
+      "seed": 1030656205,
+      "both_winners": true,
+      "endpoints_match": true,
+      "statuses": [
+        "winner",
+        "winner"
+      ],
+      "eligible_winner_timing_pair": true,
+      "limitation": "Ticks/winner equality without checksum sidecar is not per-tick equivalence."
+    },
+    {
+      "map": "Playground",
+      "seed_index": 9,
+      "seed": 79851807,
+      "both_winners": true,
+      "endpoints_match": true,
+      "statuses": [
+        "winner",
+        "winner"
+      ],
+      "eligible_winner_timing_pair": true,
+      "limitation": "Ticks/winner equality without checksum sidecar is not per-tick equivalence."
+    },
+    {
+      "map": "Playground",
+      "seed_index": 10,
+      "seed": 1480527227,
+      "both_winners": true,
+      "endpoints_match": true,
+      "statuses": [
+        "winner",
+        "winner"
+      ],
+      "eligible_winner_timing_pair": true,
+      "limitation": "Ticks/winner equality without checksum sidecar is not per-tick equivalence."
+    },
+    {
+      "map": "Playground",
+      "seed_index": 11,
+      "seed": 31444774,
+      "both_winners": true,
+      "endpoints_match": true,
+      "statuses": [
+        "winner",
+        "winner"
+      ],
+      "eligible_winner_timing_pair": true,
+      "limitation": "Ticks/winner equality without checksum sidecar is not per-tick equivalence."
+    },
+    {
+      "map": "Playground",
+      "seed_index": 12,
+      "seed": 1514826878,
+      "both_winners": true,
+      "endpoints_match": true,
+      "statuses": [
+        "winner",
+        "winner"
+      ],
+      "eligible_winner_timing_pair": true,
+      "limitation": "Ticks/winner equality without checksum sidecar is not per-tick equivalence."
+    },
+    {
+      "map": "Playground",
+      "seed_index": 13,
+      "seed": 1858401095,
+      "both_winners": true,
+      "endpoints_match": true,
+      "statuses": [
+        "winner",
+        "winner"
+      ],
+      "eligible_winner_timing_pair": true,
+      "limitation": "Ticks/winner equality without checksum sidecar is not per-tick equivalence."
+    },
+    {
+      "map": "Playground",
+      "seed_index": 14,
+      "seed": 1635872854,
+      "both_winners": true,
+      "endpoints_match": true,
+      "statuses": [
+        "winner",
+        "winner"
+      ],
+      "eligible_winner_timing_pair": true,
+      "limitation": "Ticks/winner equality without checksum sidecar is not per-tick equivalence."
+    },
+    {
+      "map": "Playground",
+      "seed_index": 15,
+      "seed": 1441583672,
+      "both_winners": true,
+      "endpoints_match": true,
+      "statuses": [
+        "winner",
+        "winner"
+      ],
+      "eligible_winner_timing_pair": true,
+      "limitation": "Ticks/winner equality without checksum sidecar is not per-tick equivalence."
+    },
+    {
+      "map": "Playground",
+      "seed_index": 16,
+      "seed": 741493568,
+      "both_winners": true,
+      "endpoints_match": true,
+      "statuses": [
+        "winner",
+        "winner"
+      ],
+      "eligible_winner_timing_pair": true,
+      "limitation": "Ticks/winner equality without checksum sidecar is not per-tick equivalence."
+    },
+    {
+      "map": "Playground",
+      "seed_index": 17,
+      "seed": 466374853,
+      "both_winners": true,
+      "endpoints_match": true,
+      "statuses": [
+        "winner",
+        "winner"
+      ],
+      "eligible_winner_timing_pair": true,
+      "limitation": "Ticks/winner equality without checksum sidecar is not per-tick equivalence."
+    },
+    {
+      "map": "Playground",
+      "seed_index": 18,
+      "seed": 2037486757,
+      "both_winners": true,
+      "endpoints_match": true,
+      "statuses": [
+        "winner",
+        "winner"
+      ],
+      "eligible_winner_timing_pair": true,
+      "limitation": "Ticks/winner equality without checksum sidecar is not per-tick equivalence."
+    },
+    {
+      "map": "Playground",
+      "seed_index": 19,
+      "seed": 1414753418,
+      "both_winners": true,
+      "endpoints_match": true,
+      "statuses": [
+        "winner",
+        "winner"
+      ],
+      "eligible_winner_timing_pair": true,
+      "limitation": "Ticks/winner equality without checksum sidecar is not per-tick equivalence."
+    },
+    {
+      "map": "Playground",
+      "seed_index": 20,
+      "seed": 1298936997,
+      "both_winners": true,
+      "endpoints_match": true,
+      "statuses": [
+        "winner",
+        "winner"
+      ],
+      "eligible_winner_timing_pair": true,
+      "limitation": "Ticks/winner equality without checksum sidecar is not per-tick equivalence."
+    },
+    {
+      "map": "Playground",
+      "seed_index": 21,
+      "seed": 1139586032,
+      "both_winners": true,
+      "endpoints_match": true,
+      "statuses": [
+        "winner",
+        "winner"
+      ],
+      "eligible_winner_timing_pair": true,
+      "limitation": "Ticks/winner equality without checksum sidecar is not per-tick equivalence."
+    },
+    {
+      "map": "Playground",
+      "seed_index": 22,
+      "seed": 1845486380,
+      "both_winners": true,
+      "endpoints_match": true,
+      "statuses": [
+        "winner",
+        "winner"
+      ],
+      "eligible_winner_timing_pair": true,
+      "limitation": "Ticks/winner equality without checksum sidecar is not per-tick equivalence."
+    },
+    {
+      "map": "Playground",
+      "seed_index": 23,
+      "seed": 275303672,
+      "both_winners": true,
+      "endpoints_match": true,
+      "statuses": [
+        "winner",
+        "winner"
+      ],
+      "eligible_winner_timing_pair": true,
+      "limitation": "Ticks/winner equality without checksum sidecar is not per-tick equivalence."
+    },
+    {
+      "map": "Playground",
+      "seed_index": 24,
+      "seed": 1013771484,
+      "both_winners": true,
+      "endpoints_match": true,
+      "statuses": [
+        "winner",
+        "winner"
+      ],
+      "eligible_winner_timing_pair": true,
+      "limitation": "Ticks/winner equality without checksum sidecar is not per-tick equivalence."
+    },
+    {
+      "map": "Playground",
+      "seed_index": 25,
+      "seed": 1961520297,
+      "both_winners": true,
+      "endpoints_match": true,
+      "statuses": [
+        "winner",
+        "winner"
+      ],
+      "eligible_winner_timing_pair": true,
+      "limitation": "Ticks/winner equality without checksum sidecar is not per-tick equivalence."
+    },
+    {
+      "map": "Playground",
+      "seed_index": 26,
+      "seed": 56523606,
+      "both_winners": true,
+      "endpoints_match": true,
+      "statuses": [
+        "winner",
+        "winner"
+      ],
+      "eligible_winner_timing_pair": true,
+      "limitation": "Ticks/winner equality without checksum sidecar is not per-tick equivalence."
+    },
+    {
+      "map": "Playground",
+      "seed_index": 27,
+      "seed": 7804900,
+      "both_winners": true,
+      "endpoints_match": true,
+      "statuses": [
+        "winner",
+        "winner"
+      ],
+      "eligible_winner_timing_pair": true,
+      "limitation": "Ticks/winner equality without checksum sidecar is not per-tick equivalence."
+    },
+    {
+      "map": "Playground",
+      "seed_index": 28,
+      "seed": 494353701,
+      "both_winners": true,
+      "endpoints_match": true,
+      "statuses": [
+        "winner",
+        "winner"
+      ],
+      "eligible_winner_timing_pair": true,
+      "limitation": "Ticks/winner equality without checksum sidecar is not per-tick equivalence."
+    },
+    {
+      "map": "Playground",
+      "seed_index": 29,
+      "seed": 2092499754,
+      "both_winners": true,
+      "endpoints_match": true,
+      "statuses": [
+        "winner",
+        "winner"
+      ],
+      "eligible_winner_timing_pair": true,
+      "limitation": "Ticks/winner equality without checksum sidecar is not per-tick equivalence."
+    },
+    {
+      "map": "Playground",
+      "seed_index": 30,
+      "seed": 1910481143,
+      "both_winners": true,
+      "endpoints_match": true,
+      "statuses": [
+        "winner",
+        "winner"
+      ],
+      "eligible_winner_timing_pair": true,
+      "limitation": "Ticks/winner equality without checksum sidecar is not per-tick equivalence."
+    },
+    {
+      "map": "Playground",
+      "seed_index": 31,
+      "seed": 2122112527,
+      "both_winners": true,
+      "endpoints_match": true,
+      "statuses": [
+        "winner",
+        "winner"
+      ],
+      "eligible_winner_timing_pair": true,
+      "limitation": "Ticks/winner equality without checksum sidecar is not per-tick equivalence."
+    },
+    {
+      "map": "Oazis",
+      "seed_index": 0,
+      "seed": 1056243202,
+      "both_winners": true,
+      "endpoints_match": true,
+      "statuses": [
+        "winner",
+        "winner"
+      ],
+      "eligible_winner_timing_pair": true,
+      "limitation": "Ticks/winner equality without checksum sidecar is not per-tick equivalence."
+    },
+    {
+      "map": "Oazis",
+      "seed_index": 1,
+      "seed": 744345666,
+      "both_winners": true,
+      "endpoints_match": true,
+      "statuses": [
+        "winner",
+        "winner"
+      ],
+      "eligible_winner_timing_pair": true,
+      "limitation": "Ticks/winner equality without checksum sidecar is not per-tick equivalence."
+    },
+    {
+      "map": "Oazis",
+      "seed_index": 2,
+      "seed": 1064623205,
+      "both_winners": true,
+      "endpoints_match": true,
+      "statuses": [
+        "winner",
+        "winner"
+      ],
+      "eligible_winner_timing_pair": true,
+      "limitation": "Ticks/winner equality without checksum sidecar is not per-tick equivalence."
+    },
+    {
+      "map": "Oazis",
+      "seed_index": 3,
+      "seed": 725864695,
+      "both_winners": true,
+      "endpoints_match": true,
+      "statuses": [
+        "winner",
+        "winner"
+      ],
+      "eligible_winner_timing_pair": true,
+      "limitation": "Ticks/winner equality without checksum sidecar is not per-tick equivalence."
+    },
+    {
+      "map": "Oazis",
+      "seed_index": 4,
+      "seed": 599004658,
+      "both_winners": true,
+      "endpoints_match": true,
+      "statuses": [
+        "winner",
+        "winner"
+      ],
+      "eligible_winner_timing_pair": true,
+      "limitation": "Ticks/winner equality without checksum sidecar is not per-tick equivalence."
+    },
+    {
+      "map": "Oazis",
+      "seed_index": 5,
+      "seed": 117787757,
+      "both_winners": true,
+      "endpoints_match": true,
+      "statuses": [
+        "winner",
+        "winner"
+      ],
+      "eligible_winner_timing_pair": true,
+      "limitation": "Ticks/winner equality without checksum sidecar is not per-tick equivalence."
+    },
+    {
+      "map": "Oazis",
+      "seed_index": 6,
+      "seed": 85910194,
+      "both_winners": true,
+      "endpoints_match": true,
+      "statuses": [
+        "winner",
+        "winner"
+      ],
+      "eligible_winner_timing_pair": true,
+      "limitation": "Ticks/winner equality without checksum sidecar is not per-tick equivalence."
+    },
+    {
+      "map": "Oazis",
+      "seed_index": 7,
+      "seed": 769116511,
+      "both_winners": true,
+      "endpoints_match": true,
+      "statuses": [
+        "winner",
+        "winner"
+      ],
+      "eligible_winner_timing_pair": true,
+      "limitation": "Ticks/winner equality without checksum sidecar is not per-tick equivalence."
+    },
+    {
+      "map": "Oazis",
+      "seed_index": 8,
+      "seed": 1030656205,
+      "both_winners": true,
+      "endpoints_match": true,
+      "statuses": [
+        "winner",
+        "winner"
+      ],
+      "eligible_winner_timing_pair": true,
+      "limitation": "Ticks/winner equality without checksum sidecar is not per-tick equivalence."
+    },
+    {
+      "map": "Oazis",
+      "seed_index": 9,
+      "seed": 79851807,
+      "both_winners": true,
+      "endpoints_match": true,
+      "statuses": [
+        "winner",
+        "winner"
+      ],
+      "eligible_winner_timing_pair": true,
+      "limitation": "Ticks/winner equality without checksum sidecar is not per-tick equivalence."
+    },
+    {
+      "map": "Oazis",
+      "seed_index": 10,
+      "seed": 1480527227,
+      "both_winners": true,
+      "endpoints_match": true,
+      "statuses": [
+        "winner",
+        "winner"
+      ],
+      "eligible_winner_timing_pair": true,
+      "limitation": "Ticks/winner equality without checksum sidecar is not per-tick equivalence."
+    },
+    {
+      "map": "Oazis",
+      "seed_index": 11,
+      "seed": 31444774,
+      "both_winners": true,
+      "endpoints_match": true,
+      "statuses": [
+        "winner",
+        "winner"
+      ],
+      "eligible_winner_timing_pair": true,
+      "limitation": "Ticks/winner equality without checksum sidecar is not per-tick equivalence."
+    },
+    {
+      "map": "Oazis",
+      "seed_index": 12,
+      "seed": 1514826878,
+      "both_winners": true,
+      "endpoints_match": true,
+      "statuses": [
+        "winner",
+        "winner"
+      ],
+      "eligible_winner_timing_pair": true,
+      "limitation": "Ticks/winner equality without checksum sidecar is not per-tick equivalence."
+    },
+    {
+      "map": "Oazis",
+      "seed_index": 13,
+      "seed": 1858401095,
+      "both_winners": true,
+      "endpoints_match": true,
+      "statuses": [
+        "winner",
+        "winner"
+      ],
+      "eligible_winner_timing_pair": true,
+      "limitation": "Ticks/winner equality without checksum sidecar is not per-tick equivalence."
+    },
+    {
+      "map": "Oazis",
+      "seed_index": 14,
+      "seed": 1635872854,
+      "both_winners": true,
+      "endpoints_match": true,
+      "statuses": [
+        "winner",
+        "winner"
+      ],
+      "eligible_winner_timing_pair": true,
+      "limitation": "Ticks/winner equality without checksum sidecar is not per-tick equivalence."
+    },
+    {
+      "map": "Oazis",
+      "seed_index": 15,
+      "seed": 1441583672,
+      "both_winners": true,
+      "endpoints_match": true,
+      "statuses": [
+        "winner",
+        "winner"
+      ],
+      "eligible_winner_timing_pair": true,
+      "limitation": "Ticks/winner equality without checksum sidecar is not per-tick equivalence."
+    },
+    {
+      "map": "Oazis",
+      "seed_index": 16,
+      "seed": 741493568,
+      "both_winners": true,
+      "endpoints_match": true,
+      "statuses": [
+        "winner",
+        "winner"
+      ],
+      "eligible_winner_timing_pair": true,
+      "limitation": "Ticks/winner equality without checksum sidecar is not per-tick equivalence."
+    },
+    {
+      "map": "Oazis",
+      "seed_index": 17,
+      "seed": 466374853,
+      "both_winners": true,
+      "endpoints_match": true,
+      "statuses": [
+        "winner",
+        "winner"
+      ],
+      "eligible_winner_timing_pair": true,
+      "limitation": "Ticks/winner equality without checksum sidecar is not per-tick equivalence."
+    },
+    {
+      "map": "Oazis",
+      "seed_index": 18,
+      "seed": 2037486757,
+      "both_winners": true,
+      "endpoints_match": true,
+      "statuses": [
+        "winner",
+        "winner"
+      ],
+      "eligible_winner_timing_pair": true,
+      "limitation": "Ticks/winner equality without checksum sidecar is not per-tick equivalence."
+    },
+    {
+      "map": "Oazis",
+      "seed_index": 19,
+      "seed": 1414753418,
+      "both_winners": true,
+      "endpoints_match": true,
+      "statuses": [
+        "winner",
+        "winner"
+      ],
+      "eligible_winner_timing_pair": true,
+      "limitation": "Ticks/winner equality without checksum sidecar is not per-tick equivalence."
+    },
+    {
+      "map": "Oazis",
+      "seed_index": 20,
+      "seed": 1298936997,
+      "both_winners": true,
+      "endpoints_match": true,
+      "statuses": [
+        "winner",
+        "winner"
+      ],
+      "eligible_winner_timing_pair": true,
+      "limitation": "Ticks/winner equality without checksum sidecar is not per-tick equivalence."
+    },
+    {
+      "map": "Oazis",
+      "seed_index": 21,
+      "seed": 1139586032,
+      "both_winners": true,
+      "endpoints_match": true,
+      "statuses": [
+        "winner",
+        "winner"
+      ],
+      "eligible_winner_timing_pair": true,
+      "limitation": "Ticks/winner equality without checksum sidecar is not per-tick equivalence."
+    },
+    {
+      "map": "Oazis",
+      "seed_index": 22,
+      "seed": 1845486380,
+      "both_winners": true,
+      "endpoints_match": true,
+      "statuses": [
+        "winner",
+        "winner"
+      ],
+      "eligible_winner_timing_pair": true,
+      "limitation": "Ticks/winner equality without checksum sidecar is not per-tick equivalence."
+    },
+    {
+      "map": "Oazis",
+      "seed_index": 23,
+      "seed": 275303672,
+      "both_winners": true,
+      "endpoints_match": true,
+      "statuses": [
+        "winner",
+        "winner"
+      ],
+      "eligible_winner_timing_pair": true,
+      "limitation": "Ticks/winner equality without checksum sidecar is not per-tick equivalence."
+    },
+    {
+      "map": "Oazis",
+      "seed_index": 24,
+      "seed": 1013771484,
+      "both_winners": true,
+      "endpoints_match": true,
+      "statuses": [
+        "winner",
+        "winner"
+      ],
+      "eligible_winner_timing_pair": true,
+      "limitation": "Ticks/winner equality without checksum sidecar is not per-tick equivalence."
+    },
+    {
+      "map": "Oazis",
+      "seed_index": 25,
+      "seed": 1961520297,
+      "both_winners": true,
+      "endpoints_match": true,
+      "statuses": [
+        "winner",
+        "winner"
+      ],
+      "eligible_winner_timing_pair": true,
+      "limitation": "Ticks/winner equality without checksum sidecar is not per-tick equivalence."
+    },
+    {
+      "map": "Oazis",
+      "seed_index": 26,
+      "seed": 56523606,
+      "both_winners": true,
+      "endpoints_match": true,
+      "statuses": [
+        "winner",
+        "winner"
+      ],
+      "eligible_winner_timing_pair": true,
+      "limitation": "Ticks/winner equality without checksum sidecar is not per-tick equivalence."
+    },
+    {
+      "map": "Oazis",
+      "seed_index": 27,
+      "seed": 7804900,
+      "both_winners": true,
+      "endpoints_match": true,
+      "statuses": [
+        "winner",
+        "winner"
+      ],
+      "eligible_winner_timing_pair": true,
+      "limitation": "Ticks/winner equality without checksum sidecar is not per-tick equivalence."
+    },
+    {
+      "map": "Oazis",
+      "seed_index": 28,
+      "seed": 494353701,
+      "both_winners": true,
+      "endpoints_match": true,
+      "statuses": [
+        "winner",
+        "winner"
+      ],
+      "eligible_winner_timing_pair": true,
+      "limitation": "Ticks/winner equality without checksum sidecar is not per-tick equivalence."
+    },
+    {
+      "map": "Oazis",
+      "seed_index": 29,
+      "seed": 2092499754,
+      "both_winners": true,
+      "endpoints_match": true,
+      "statuses": [
+        "winner",
+        "winner"
+      ],
+      "eligible_winner_timing_pair": true,
+      "limitation": "Ticks/winner equality without checksum sidecar is not per-tick equivalence."
+    },
+    {
+      "map": "Oazis",
+      "seed_index": 30,
+      "seed": 1910481143,
+      "both_winners": true,
+      "endpoints_match": true,
+      "statuses": [
+        "winner",
+        "winner"
+      ],
+      "eligible_winner_timing_pair": true,
+      "limitation": "Ticks/winner equality without checksum sidecar is not per-tick equivalence."
+    },
+    {
+      "map": "Oazis",
+      "seed_index": 31,
+      "seed": 2122112527,
+      "both_winners": true,
+      "endpoints_match": true,
+      "statuses": [
+        "winner",
+        "winner"
+      ],
+      "eligible_winner_timing_pair": true,
+      "limitation": "Ticks/winner equality without checksum sidecar is not per-tick equivalence."
+    }
+  ],
+  "scope": "Two-role interleaved campaign makespan; role throughput comparisons use matched homogeneous waves, not overlapping role campaign spans. Caps are censored outcomes, never winners. Campaign left paused for root decision."
+}

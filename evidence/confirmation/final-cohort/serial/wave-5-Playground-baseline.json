@@ -1,0 +1,18 @@
+{
+  "map": "Playground",
+  "role": "baseline",
+  "wave": 5,
+  "seed_indices": [
+    5
+  ],
+  "started_monotonic": 3302020.294457573,
+  "finished_monotonic": 3302069.356040007,
+  "makespan_seconds": 49.061582433991134,
+  "winners": 1,
+  "caps": 0,
+  "games_per_hour": 73.37716847685343,
+  "observed_ticks_per_second": 1384.749464439019,
+  "complete_tick_coverage": true,
+  "sum_game_seconds": 48.99064155295491,
+  "scope": "Actual homogeneous wave makespan including launches/waits, not sum of parallel game runtimes."
+}

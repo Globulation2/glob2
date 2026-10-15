@@ -1,0 +1,1311 @@
+{
+  "schema_version": 1,
+  "snapshot_utc": "2026-10-15T01:35:50.226457+00:00",
+  "base_commit": "48438f1f08a68b24ef0049834d371b9d00d84bae",
+  "scope": "Artifact reconstruction index, not acceptance. No workload or build launched to create this index.",
+  "authority": {
+    "current_pipeline": [
+      {
+        "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/pilot-ready.json",
+        "exists": true,
+        "sha256": "210b0380e7305fd56ebb00aed844f82ac69f6153955c96c760683c382083278e"
+      },
+      {
+        "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/build-local-and-qualify.py",
+        "exists": true,
+        "sha256": "603429abd53f12ced6c935fd3602ff1080882cb7b4e9bbf0e674b0c8ce7bd7b7"
+      },
+      {
+        "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/pilot.py",
+        "exists": true,
+        "sha256": "678080a4a2a73592875d034597759e5e1ba773a7152cc45461e9a0588dcfdeb7"
+      },
+      {
+        "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/prepare-harness-manifest.py",
+        "exists": true,
+        "sha256": "d5593bed454bf69dd20d15bd2c1f7cb5c2674921482b13fe7b540a0432c18f6c"
+      },
+      {
+        "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/timing-runner.py",
+        "exists": true,
+        "sha256": "04985193e040a180a01a83b8bbccb88420aa76ff4423759f35c747e044edc8f2"
+      },
+      {
+        "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/run-weighted-probe.py",
+        "exists": true,
+        "sha256": "9e75b0cb184611a3ef8231dc8d70624a80ea395122b67e48758dee24c1c35458"
+      },
+      {
+        "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/run-latency-probe.py",
+        "exists": true,
+        "sha256": "57a93fb1baa8e4da90209487573ac6434a7372d18b0334bb68fb9c85b4dd765f"
+      },
+      {
+        "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/run-producer-qualification.py",
+        "exists": true,
+        "sha256": "982fe316a2a34ceb42e903f0604be34082e464c1a5550cc0ee2bc9ff13ea876b"
+      },
+      {
+        "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/confirmation/prepare-next.py",
+        "exists": true,
+        "sha256": "b1cc4438241a6ad5958c82a4a448f1c7861e109178527533f3bb27c04426b0dc"
+      }
+    ],
+    "planned_case_counts": {
+      "executor_synthetic": 800,
+      "executor_native": 160,
+      "executor_per_tick_parity": 100,
+      "weighted_correctness": 540,
+      "weighted_screen": 432,
+      "latency_trace": 10,
+      "latency_off": 80,
+      "priority_qualification": 4
+    },
+    "commands": [
+      {
+        "stage": "weighted-build",
+        "command": [
+          "python3",
+          "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/run-weighted-probe.py",
+          "build"
+        ],
+        "timeout": 600
+      },
+      {
+        "stage": "latency-build",
+        "command": [
+          "python3",
+          "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/run-latency-probe.py",
+          "build"
+        ],
+        "timeout": 1200
+      },
+      {
+        "stage": "weighted-correctness",
+        "command": [
+          "python3",
+          "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/run-weighted-probe.py",
+          "correctness"
+        ],
+        "timeout": 1800
+      },
+      {
+        "stage": "latency-qualification",
+        "command": [
+          "python3",
+          "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/run-latency-probe.py",
+          "qualify"
+        ],
+        "timeout": 600
+      },
+      {
+        "stage": "producer-qualification",
+        "command": [
+          "python3",
+          "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/run-producer-qualification.py"
+        ],
+        "timeout": 3600
+      },
+      {
+        "stage": "resolve-built-binaries-and-manifests",
+        "command": [
+          "python3",
+          "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/pilot.py",
+          "--gate",
+          "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/timing-gate.json"
+        ]
+      },
+      {
+        "stage": "per-tick-parity",
+        "command": [
+          "python3",
+          "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/pilot.py",
+          "--gate",
+          "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/timing-gate.json",
+          "--execute-correctness"
+        ]
+      },
+      {
+        "stage": "prepare-synthetic-manifest",
+        "command": [
+          "python3",
+          "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/prepare-harness-manifest.py",
+          "--baseline",
+          "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/micro-baseline",
+          "--wake",
+          "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/micro-wake",
+          "--candidate",
+          "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/micro-sharded"
+        ]
+      },
+      {
+        "stage": "synthetic-pilot",
+        "command": [
+          "python3",
+          "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/timing-runner.py",
+          "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/harness-pilot-manifest.json",
+          "--execute",
+          "--gate",
+          "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/timing-gate.json"
+        ],
+        "timeout": 1800
+      },
+      {
+        "stage": "validate-synthetic-results",
+        "command": [
+          "python3",
+          "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/analyze-pilot.py",
+          "--manifest",
+          "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/harness-pilot-manifest.json"
+        ],
+        "timeout": 120
+      },
+      {
+        "stage": "latency-timing",
+        "command": [
+          "python3",
+          "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/run-latency-probe.py",
+          "timing"
+        ],
+        "timeout": 900
+      },
+      {
+        "stage": "weighted-timing",
+        "command": [
+          "python3",
+          "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/run-weighted-probe.py",
+          "timing"
+        ],
+        "timeout": 1800
+      },
+      {
+        "stage": "native-pilot",
+        "command": [
+          "python3",
+          "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/pilot.py",
+          "--gate",
+          "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/timing-gate.json",
+          "--execute-native"
+        ],
+        "timeout": 2400
+      }
+    ],
+    "note": "Current wrapper/source hashes and generated execution receipts take precedence over earlier design text; a planned count is not an executed count."
+  },
+  "experiments": [
+    {
+      "id": "B",
+      "roles": [
+        "baseline"
+      ],
+      "status": "frozen_existing_release_control",
+      "source": [
+        {
+          "path": "/home/bradley/.codex/worktrees/engine-history-latest-master/glob2/src/common/ComputeExecutor.h",
+          "exists": true,
+          "sha256": "fa37bd1b3b3f1027aedda6858af0a2f574c0a2c9499f250fb4dee6d9659e19ea"
+        }
+      ],
+      "binary": {
+        "path": "/home/bradley/.codex/worktrees/engine-history-latest-master/glob2/build/linux/client/release/src/glob2",
+        "sha256_from_frozen_receipt": "5d64de6dcd91777354851015cf1b9584b529504ed67b64459b4c77cb487f2333"
+      },
+      "qualification": "Existing frozen current control; new executor pilot not run. Prior benchmark/replay receipts do not establish new candidate equivalence.",
+      "receipts": [
+        {
+          "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/source-manifest.json",
+          "exists": true,
+          "sha256": "a6444f2a2140524a4c6ab0cffb7ad7cb9221f4fc9615f489729691d018263f88"
+        },
+        {
+          "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/build-complete.json",
+          "exists": true,
+          "sha256": "a0a0fcd6c373fcfe80ac3b117d6689af421e97c5c68352db19cee11d00ee5b38"
+        }
+      ]
+    },
+    {
+      "id": "W",
+      "roles": [
+        "wake-only"
+      ],
+      "status": "built_existing_bounded_wake_control",
+      "source": [
+        {
+          "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/wake-prototype/candidate.patch",
+          "exists": true,
+          "sha256": "9e9311d1a5f1186f041388982f860056f483222c77a80560785539a5dd356fa2"
+        },
+        {
+          "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/wake-prototype/source/src/common/ComputeExecutor.h",
+          "exists": true,
+          "sha256": "204fd6064bb4b6074a1d95ca905d700735e41ba7eaabb49720e44b3423f229c7"
+        }
+      ],
+      "receipts": [
+        {
+          "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/wake-prototype/build.json",
+          "exists": true,
+          "sha256": "04bc43d1ff50ca1a97a3aa78f421c498b623b0745dd9a6e0aa83920a56233ae3"
+        },
+        {
+          "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/wake-prototype/refined-build-complete.json",
+          "exists": true,
+          "sha256": "c8fcb9cc77f70db401dafb65659e416ce3ef9e8c0144cf652a7b20f79faabf61"
+        },
+        {
+          "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/prototype-checksums-verified.json",
+          "exists": true,
+          "sha256": "b9d6efca9a143dcc524db5c24cec8bc90cf207bb28b3964f2184c0bb3c35e7f7"
+        },
+        {
+          "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/prototype-pilot.json",
+          "exists": true,
+          "sha256": "0eade36ad3e42fadd288dab3446e7b097583e4a0a68de93712c047e86e640584"
+        }
+      ],
+      "qualification": "Bounded wake-only control. Prior 4096-tick prototype parity and 128-window pilot have narrower configurations than new executor qualification; no new pilot results.",
+      "binary": {
+        "command": [
+          "taskset",
+          "-c",
+          "0-31",
+          "scons",
+          "release=1",
+          "CC=gcc-13",
+          "CXX=g++-13",
+          "LINKFLAGS=-L/usr/lib/gcc/x86_64-linux-gnu/15",
+          "-j32",
+          "build/linux/client/release/src/glob2",
+          "unit-tests"
+        ],
+        "returncode": 0,
+        "wall_seconds": 307.6461770636961,
+        "source_change": "candidate.patch",
+        "benchmark_adapter": "Same as frozen current binary",
+        "binary": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/wake-prototype/source/build/linux/client/release/src/glob2",
+        "binary_sha256": "eca1d73a704171dc185f844daccbaa9db74e35d6eb6f244776f4bf0cd08d9675"
+      },
+      "new_pilot_eligible": true
+    },
+    {
+      "id": "first-sharded",
+      "roles": {
+        "steal": "54-case ComputeExecutor harness passed; future native/parity eligible subject to remaining gates",
+        "round-robin": "REJECTED native/parity: spare-worker presentation cancellation contract failed",
+        "lane-affine": "Not qualified; excluded native/parity with first RR; dispatch-only unsafe research control"
+      },
+      "status": "built_contract_failure_stopped_pipeline",
+      "source": [
+        {
+          "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/source/src/common/ComputeExecutor.h",
+          "exists": true,
+          "sha256": "ff6550ddf5a6b28d1b884f2432a42eb9dea59913908061c6136c1a65218a12d6"
+        },
+        {
+          "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/source/src/common/ComputeExecutorHarness.cpp",
+          "exists": true,
+          "sha256": "ac39d39241d0cdd310e5d03503b53d707d89a32ca09a15c404d28ea7fb2138d4"
+        },
+        {
+          "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/candidate.patch",
+          "exists": true,
+          "sha256": "c9dde7b9f54586b807309b468066d99a4f02f7667add782094827b9ef4d373bf"
+        }
+      ],
+      "outputs_from_build_receipt": {
+        "native": {
+          "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/source/build/linux/client/release/src/glob2",
+          "sha256": "482d5b383fc9e13a8fc213e517b3d9b523554af37d63056a7bc3750a99758b2a"
+        },
+        "unit": {
+          "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/source/build/linux/client/release/test/glob2-unit-tests",
+          "sha256": "c503cc6ac4a5659434a9a9aeec88604014c5e8ff2b29e67eb43cd1a6b23c77ae"
+        },
+        "engine": {
+          "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/source/build/linux/client/release/test/glob2-engine-tests",
+          "sha256": "972ac321203bcc8bbeb7afa21a1cf05ed8db478a66689f9cf0a122d90efc74c8"
+        },
+        "micro-baseline": {
+          "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/micro-baseline",
+          "sha256": "3aec229c2fe2acfa797575d5324af4dcc3545d23ead2fea0d3667c706ba3a11a",
+          "header_sha256": "fa37bd1b3b3f1027aedda6858af0a2f574c0a2c9499f250fb4dee6d9659e19ea"
+        },
+        "micro-wake": {
+          "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/micro-wake",
+          "sha256": "76b1276b47d08ca21757d56290b17c087d34d65f20b5ca60aeaeab21779e374c",
+          "header_sha256": "204fd6064bb4b6074a1d95ca905d700735e41ba7eaabb49720e44b3423f229c7"
+        },
+        "micro-sharded": {
+          "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/micro-sharded",
+          "sha256": "accaac9e290879b5bb39a595e5dc304a0d8e0c6f3d5cde9381a92f9611b7aa5c",
+          "header_sha256": "ff6550ddf5a6b28d1b884f2432a42eb9dea59913908061c6136c1a65218a12d6"
+        }
+      },
+      "receipts": [
+        {
+          "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/candidate-ready.json",
+          "exists": true,
+          "sha256": "9f32fc35d07c828544d77ced5b2d7d7bb7ed79ab44ba1c358473fe2070cab2b5"
+        },
+        {
+          "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/build-complete.json",
+          "exists": true,
+          "sha256": "a0a0fcd6c373fcfe80ac3b117d6689af421e97c5c68352db19cee11d00ee5b38"
+        },
+        {
+          "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/contracts-steal-receipt.json",
+          "exists": true,
+          "sha256": "a1c9c7593b97c7a8eff4b40266b4eab63c972680a9efbbd5679e8feec2b1cdb7"
+        },
+        {
+          "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/contracts-steal.log",
+          "exists": true,
+          "sha256": "b7e13b912e6085acd6939f16217609cf2c9bebb8c27485c75824eb008c48e653"
+        },
+        {
+          "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/contracts-round-robin-receipt.json",
+          "exists": true,
+          "sha256": "7f8fd3ff13c8b0cf69cdc1c0d543428bc0cd744bb0b49ba9462b31947337a71d"
+        },
+        {
+          "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/contracts-round-robin.log",
+          "exists": true,
+          "sha256": "bf298865614ef246677bf8cd8c2ba4eb835242be8fcf54df7b71f572be423696"
+        },
+        {
+          "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/pipeline-failure.json",
+          "exists": true,
+          "sha256": "9e913f251cafee2ad1aeab95fa472ee21896534053e7bcdf1f1092b505d1e5bc"
+        },
+        {
+          "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/sharded-independent-source-review.json",
+          "exists": true,
+          "sha256": "61eb1fd4c9e1770aefcbe70b91a5124a615fe75e656a6253f403cc1323479a0d"
+        }
+      ],
+      "qualification": "First steal passed 54 cases, not full engine/per-tick/platform qualification. First RR/lane-affine appear only in synthetic dispatch micro, which has no presentation contract.",
+      "commands": [
+        {
+          "stage": "native_unit_engine",
+          "cwd": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/source",
+          "env": {
+            "CCACHE": "1",
+            "CCACHE_MAXSIZE": "12G",
+            "GLOB2_SDL3_PREFIX": "/home/bradley/.codex/worktrees/repair-tls-rejection-fixture/glob2/build/sdl3-ci/prefix",
+            "GLOB2_RENDER_SHADER_INPUT": "/home/bradley/.codex/worktrees/execution-resource-profiles/glob2/artifacts/resource-profiles/validation/renderer-bundle-v2/shaders"
+          },
+          "command": [
+            "taskset",
+            "-c",
+            "0-31",
+            "scons",
+            "release=1",
+            "CC=gcc-13",
+            "CXX=g++-13",
+            "LINKFLAGS=-L/usr/lib/gcc/x86_64-linux-gnu/15",
+            "-j32",
+            "build/linux/client/release/src/glob2",
+            "unit-tests",
+            "engine-tests"
+          ]
+        },
+        {
+          "stage": "synthetic_optional",
+          "cwd": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/source",
+          "env": {},
+          "command": [
+            "g++-13",
+            "-std=gnu++20",
+            "-O3",
+            "-pthread",
+            "-I/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/source/src/common",
+            "-I/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/source/libgag/include",
+            "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/synthetic.cpp",
+            "-L/usr/lib/gcc/x86_64-linux-gnu/15",
+            "-o",
+            "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/synthetic"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "local-successor",
+      "roles": {
+        "local-completion-round-robin": "58-case executor suite passed; remaining producer/parity/platform gates pending",
+        "local-completion-steal": "58-case executor suite passed; remaining producer/parity/platform gates pending",
+        "local-completion-lane-affine": "REJECTED engine/native/parity/latency eligibility; shape3 idle mixed lane parallelism failed Off/Waits/Trace; synthetic research only"
+      },
+      "status": "built_RR_steal_executor_contracts_passed_affine_rejected",
+      "source": [
+        {
+          "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/local-completion-source/src/common/ComputeExecutor.h",
+          "exists": true,
+          "sha256": "cfdde45e73d0789c2eec88991fd45f8558dbfc6a76a9d0d82b1d509b48a0e786"
+        },
+        {
+          "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/local-completion-source/src/common/ComputeExecutorHarness.cpp",
+          "exists": true,
+          "sha256": "4ee385c3f7ced338beb4af34aaaf50525d852d4aafabe40314ac84ae36b454b0"
+        },
+        {
+          "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/local-completion-candidate.patch",
+          "exists": true,
+          "sha256": "0189434a16ec30d3298a58d34471940a22f9df3879a21ddb7ff7c49fd5b5b3a4"
+        },
+        {
+          "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/local-completion-incremental.patch",
+          "exists": true,
+          "sha256": "6176a8705c4ffdf860cb08de8270819390d40ed76a4e3a099d6d6464a4e53da9"
+        }
+      ],
+      "approved_snapshot": {
+        "state": "approved_for_compile_and_correctness_qualification",
+        "source_hashes": {
+          "src/common/ComputeExecutor.h": "cfdde45e73d0789c2eec88991fd45f8558dbfc6a76a9d0d82b1d509b48a0e786",
+          "src/common/ComputeExecutorHarness.cpp": "4ee385c3f7ced338beb4af34aaaf50525d852d4aafabe40314ac84ae36b454b0",
+          "src/app/Glob2.cpp": "06e6919eae114d35bce6e77b517283d1e41659afc8e45002cbcade532c55cdf0",
+          "src/engine/EngineRun.cpp": "e77d2120514f8397a5cb88313bc466d23174ed4eff82338797b2dc81020a8d2b",
+          "maps/Playground.map": "2a323a2d02475fb1ddd2ddfac99c51890aa7b2a2f3537ad7bee93aba85d84eaf",
+          "maps/Oazis.map": "cd80d8c9a72643a95bb0bd3c22deb594aeed125d12cb3294859e7fffbc131448"
+        },
+        "patch_sha256": "0189434a16ec30d3298a58d34471940a22f9df3879a21ddb7ff7c49fd5b5b3a4",
+        "review_files": [
+          "local-completion-independent-review.json",
+          "optional-rescue-independent-review.json"
+        ],
+        "first_source_unchanged": true,
+        "production_acceptance": false,
+        "scope": "Root experiment gate; release builds first, all3mode executor contracts, standalone sanitizers then exact per-tick parity before timings. Old campaign held only between measured cohorts.",
+        "updated_utc": "2026-10-14T22:51:35.860859+00:00"
+      },
+      "observed_pipeline": {
+        "state": "resumed-contracts-steal",
+        "command": [
+          "taskset",
+          "-c",
+          "0-31",
+          "python3",
+          "test/run_tests.py",
+          "--build-dir",
+          "build/linux/client/release",
+          "--binary",
+          "all",
+          "--no-display",
+          "-j",
+          "8",
+          "--filter",
+          "ComputeExecutor/*",
+          "--junit",
+          "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/resumed-junit-steal.xml",
+          "--artifacts",
+          "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/resumed-validation-steal"
+        ],
+        "cwd": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/local-completion-source",
+        "updated_utc": "2026-10-15T00:06:41.863628+00:00"
+      },
+      "receipts": [
+        {
+          "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/local-completion-ready.json",
+          "exists": true,
+          "sha256": "ee05e3207666ecbc1bf771084b3bdabfe65d43c40b7d83ba71ad5770b666c7fe"
+        },
+        {
+          "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/local-stage-approved.json",
+          "exists": true,
+          "sha256": "412a8d42a02ac174f7212f9a2372eced53a42e99f1576c5b34874816f0a7c465"
+        },
+        {
+          "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/local-completion-independent-review.json",
+          "exists": true,
+          "sha256": "c3475683a13a1075c7e384fe40d4aba8abf14c1157d64f58a18e6d4351bf51fa"
+        },
+        {
+          "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/optional-rescue-independent-review.json",
+          "exists": true,
+          "sha256": "f650d2ae2ecbf5549caee0f5f5f4a99209145703a76611151d05dd19d92e396a"
+        },
+        {
+          "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/local-pipeline-status.json",
+          "exists": true,
+          "sha256": "c5b47185e6250fdcd81609cda6f0363e9133d20d64451b7c127a9a8e59ed1ddd"
+        },
+        {
+          "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/local-build-complete.json",
+          "exists": true,
+          "sha256": "4bc79868fe93a26a8284ef04450b883237c4433f916548ef29ed6095a0b2ad2c"
+        },
+        {
+          "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/local-contracts-round-robin-receipt.json",
+          "exists": true,
+          "sha256": "a6a3f1eee91651dc0a13248973836ed9834a2a7a3d2b4a5690b2d8348738e918"
+        },
+        {
+          "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/local-contracts-steal-receipt.json",
+          "exists": true,
+          "sha256": "6a7ed9bfdca983de2cfaa4dd92e5f743181721d107bcfdc4968b96a96fb50d11"
+        },
+        {
+          "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/local-contracts-lane-affine-receipt.json",
+          "exists": true,
+          "sha256": "a9ab4b5a08d1a4ec060673e6929fec300ccbc5682acd73936dd8b3a154da3b60"
+        },
+        {
+          "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/local-contracts-lane-affine.log",
+          "exists": true,
+          "sha256": "2fe12857baf39cec76c3671508e38b7ae258abcd02f1c479aaab74545c95c4af"
+        },
+        {
+          "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/local-junit-round-robin.xml",
+          "exists": true,
+          "sha256": "7b09863f4edd8e7721a1983a3cdc775b32ba81cf1e1bc58ebb27b1dc9d2f1fa8"
+        },
+        {
+          "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/local-junit-steal.xml",
+          "exists": true,
+          "sha256": "26bf595207f964ea4d57290000547b42bbb4485daa258f0c8c8e5199e6629a32"
+        },
+        {
+          "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/local-junit-lane-affine.xml",
+          "exists": true,
+          "sha256": "e2f5066df617a6f463761e884f8a1a40b6c8a6718c913a3182ca42b4f22475a5"
+        },
+        {
+          "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/policy-rejection/local-lane-affine/change-receipt.json",
+          "exists": true,
+          "sha256": "a4ddca2c8660a4b01526ef59205ca6a8c8804ccab63df2b239c9ff0eb69ac47e"
+        },
+        {
+          "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/standalone-races/results.json",
+          "exists": true,
+          "sha256": "6f54e6ecba812686b48dd5122b4160de6255f6f04f3a8dbc9f322aac878d7a8a"
+        }
+      ],
+      "qualification": "Release build completed. RR and steal each passed 58 registered executor cases. Affine shape3 mixed lane/independent test failed in all three telemetry modes; rejection retained despite sanitizer passes. Six narrow sanitizer stresses do not replace executor or engine compatibility qualification.",
+      "commands": [
+        {
+          "stage": "native_unit_engine",
+          "cwd": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/local-completion-source",
+          "env": {
+            "CCACHE": "1",
+            "CCACHE_MAXSIZE": "12G",
+            "GLOB2_SDL3_PREFIX": "/home/bradley/.codex/worktrees/repair-tls-rejection-fixture/glob2/build/sdl3-ci/prefix",
+            "GLOB2_RENDER_SHADER_INPUT": "/home/bradley/.codex/worktrees/execution-resource-profiles/glob2/artifacts/resource-profiles/validation/renderer-bundle-v2/shaders"
+          },
+          "command": [
+            "taskset",
+            "-c",
+            "0-31",
+            "scons",
+            "release=1",
+            "CC=gcc-13",
+            "CXX=g++-13",
+            "LINKFLAGS=-L/usr/lib/gcc/x86_64-linux-gnu/15",
+            "-j32",
+            "build/linux/client/release/src/glob2",
+            "unit-tests",
+            "engine-tests"
+          ]
+        },
+        {
+          "stage": "synthetic_optional",
+          "cwd": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/local-completion-source",
+          "env": {},
+          "command": [
+            "g++-13",
+            "-std=gnu++20",
+            "-O3",
+            "-pthread",
+            "-I/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/local-completion-source/src/common",
+            "-I/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/local-completion-source/libgag/include",
+            "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/synthetic.cpp",
+            "-L/usr/lib/gcc/x86_64-linux-gnu/15",
+            "-o",
+            "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/local-completion-synthetic"
+          ]
+        }
+      ],
+      "outputs_from_build_receipt": {
+        "native": {
+          "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/local-completion-source/build/linux/client/release/src/glob2",
+          "sha256": "1dce23504801e914734b124b076b66313537061c76eb6872d594ce69782f1501"
+        },
+        "unit": {
+          "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/local-completion-source/build/linux/client/release/test/glob2-unit-tests",
+          "sha256": "87fb691fb34993422d4b90ed63b31f9ce996fdcc21e810b23882a447a95ef735"
+        },
+        "engine": {
+          "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/local-completion-source/build/linux/client/release/test/glob2-engine-tests",
+          "sha256": "1264382b6133ea837cf07c03426de3d6b351cfdda451110c98fa0f3bc6f18eb2"
+        },
+        "micro-baseline": {
+          "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/micro-baseline",
+          "sha256": "3aec229c2fe2acfa797575d5324af4dcc3545d23ead2fea0d3667c706ba3a11a",
+          "header_sha256": "fa37bd1b3b3f1027aedda6858af0a2f574c0a2c9499f250fb4dee6d9659e19ea"
+        },
+        "micro-wake": {
+          "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/micro-wake",
+          "sha256": "76b1276b47d08ca21757d56290b17c087d34d65f20b5ca60aeaeab21779e374c",
+          "header_sha256": "204fd6064bb4b6074a1d95ca905d700735e41ba7eaabb49720e44b3423f229c7"
+        },
+        "micro-sharded": {
+          "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/micro-sharded",
+          "sha256": "accaac9e290879b5bb39a595e5dc304a0d8e0c6f3d5cde9381a92f9611b7aa5c",
+          "header_sha256": "ff6550ddf5a6b28d1b884f2432a42eb9dea59913908061c6136c1a65218a12d6"
+        },
+        "micro-local-completion": {
+          "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/micro-local-completion",
+          "sha256": "ef8b17b9dac1c45b8c900ca7b7c2905cc4d0cc80d0ecc423af3f1ae073a61448",
+          "header_sha256": "cfdde45e73d0789c2eec88991fd45f8558dbfc6a76a9d0d82b1d509b48a0e786"
+        }
+      },
+      "standalone_sanitizers": {
+        "header_sha256": "cfdde45e73d0789c2eec88991fd45f8558dbfc6a76a9d0d82b1d509b48a0e786",
+        "source_sha256": "dbc68838dfc13d52110dfd6df0b9bb168203a033d5f452638ecb110d9ac212c2",
+        "cases": {
+          "presentation": "64 late ready jobs while designated worker holds optional presentation; gate5s rejects delayed barrier.",
+          "early": "Continuation resolved before original callback returns; callback gate verifies no continuation/tail overlap.",
+          "reuse": "512 batches,17 distinct result slots, immediateownerjoin/storage reuse; lastnotifier lifetime/publication stress.",
+          "lane": "256 two-batch rounds withconcurrent owneradmission/completion; same-lane overlap/count checks.",
+          "waking": "512 tinyjoins withintermittent idle pauses target wake-beforeparking."
+        },
+        "builds": {
+          "asan_ubsan": {
+            "command": [
+              "g++-13",
+              "-std=c++20",
+              "-O1",
+              "-g",
+              "-fno-omit-frame-pointer",
+              "-pthread",
+              "-Iartifacts/october-regression/coordination-redesign/local-completion-source/src/common",
+              "-Iartifacts/october-regression/coordination-redesign/local-completion-source/libgag/include",
+              "artifacts/october-regression/coordination-redesign/standalone-races/races.cpp",
+              "-fsanitize=address,undefined",
+              "-L/usr/lib/gcc/x86_64-linux-gnu/15",
+              "-o",
+              "artifacts/october-regression/coordination-redesign/standalone-races/races-asan"
+            ],
+            "returncode": 0
+          },
+          "tsan": {
+            "command": [
+              "g++-13",
+              "-std=c++20",
+              "-O1",
+              "-g",
+              "-fno-omit-frame-pointer",
+              "-pthread",
+              "-Iartifacts/october-regression/coordination-redesign/local-completion-source/src/common",
+              "-Iartifacts/october-regression/coordination-redesign/local-completion-source/libgag/include",
+              "artifacts/october-regression/coordination-redesign/standalone-races/races.cpp",
+              "-fsanitize=thread",
+              "-L/usr/lib/gcc/x86_64-linux-gnu/15",
+              "-o",
+              "artifacts/october-regression/coordination-redesign/standalone-races/races-tsan"
+            ],
+            "returncode": 0
+          }
+        },
+        "runs": [
+          {
+            "kind": "asan_ubsan",
+            "policy": "steal",
+            "command": [
+              "timeout",
+              "60s",
+              "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/standalone-races/races-asan",
+              "all"
+            ],
+            "returncode": 0,
+            "status": "passed",
+            "log": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/standalone-races/asan_ubsan-steal.log",
+            "binary_sha256": "7fa6c3ab605176b7a2bd2bc40127cfabdb289868f83534f6ce8ee5383b8a4476",
+            "timing_excluded": true
+          },
+          {
+            "kind": "asan_ubsan",
+            "policy": "round-robin",
+            "command": [
+              "timeout",
+              "60s",
+              "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/standalone-races/races-asan",
+              "all"
+            ],
+            "returncode": 0,
+            "status": "passed",
+            "log": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/standalone-races/asan_ubsan-round-robin.log",
+            "binary_sha256": "7fa6c3ab605176b7a2bd2bc40127cfabdb289868f83534f6ce8ee5383b8a4476",
+            "timing_excluded": true
+          },
+          {
+            "kind": "asan_ubsan",
+            "policy": "lane-affine",
+            "command": [
+              "timeout",
+              "60s",
+              "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/standalone-races/races-asan",
+              "all"
+            ],
+            "returncode": 0,
+            "status": "passed",
+            "log": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/standalone-races/asan_ubsan-lane-affine.log",
+            "binary_sha256": "7fa6c3ab605176b7a2bd2bc40127cfabdb289868f83534f6ce8ee5383b8a4476",
+            "timing_excluded": true
+          },
+          {
+            "kind": "tsan",
+            "policy": "steal",
+            "command": [
+              "timeout",
+              "60s",
+              "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/standalone-races/races-tsan",
+              "all"
+            ],
+            "returncode": 0,
+            "status": "passed",
+            "log": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/standalone-races/tsan-steal.log",
+            "binary_sha256": "6d00204f2ac1b0a0550b55a5a7fda87f3065837b7ca6c03c4e4bdca07fab33ef",
+            "timing_excluded": true
+          },
+          {
+            "kind": "tsan",
+            "policy": "round-robin",
+            "command": [
+              "timeout",
+              "60s",
+              "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/standalone-races/races-tsan",
+              "all"
+            ],
+            "returncode": 0,
+            "status": "passed",
+            "log": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/standalone-races/tsan-round-robin.log",
+            "binary_sha256": "6d00204f2ac1b0a0550b55a5a7fda87f3065837b7ca6c03c4e4bdca07fab33ef",
+            "timing_excluded": true
+          },
+          {
+            "kind": "tsan",
+            "policy": "lane-affine",
+            "command": [
+              "timeout",
+              "60s",
+              "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/standalone-races/races-tsan",
+              "all"
+            ],
+            "returncode": 0,
+            "status": "passed",
+            "log": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/standalone-races/tsan-lane-affine.log",
+            "binary_sha256": "6d00204f2ac1b0a0550b55a5a7fda87f3065837b7ca6c03c4e4bdca07fab33ef",
+            "timing_excluded": true
+          }
+        ],
+        "platform": "Linux x86_64; GCC13; platform coverage limited",
+        "started_utc": "2026-10-15T00:05:04.401313+00:00",
+        "completed_utc": "2026-10-15T00:05:27.273179+00:00"
+      },
+      "sanitizer_log_refs": [
+        {
+          "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/standalone-races/asan_ubsan-steal.log",
+          "exists": true,
+          "sha256": "e91eb7798e06cb1e7277ecd6873f755789725a42447c3e0af7523160ba22af33"
+        },
+        {
+          "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/standalone-races/asan_ubsan-round-robin.log",
+          "exists": true,
+          "sha256": "e91eb7798e06cb1e7277ecd6873f755789725a42447c3e0af7523160ba22af33"
+        },
+        {
+          "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/standalone-races/asan_ubsan-lane-affine.log",
+          "exists": true,
+          "sha256": "e91eb7798e06cb1e7277ecd6873f755789725a42447c3e0af7523160ba22af33"
+        },
+        {
+          "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/standalone-races/tsan-steal.log",
+          "exists": true,
+          "sha256": "e91eb7798e06cb1e7277ecd6873f755789725a42447c3e0af7523160ba22af33"
+        },
+        {
+          "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/standalone-races/tsan-round-robin.log",
+          "exists": true,
+          "sha256": "e91eb7798e06cb1e7277ecd6873f755789725a42447c3e0af7523160ba22af33"
+        },
+        {
+          "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/standalone-races/tsan-lane-affine.log",
+          "exists": true,
+          "sha256": "e91eb7798e06cb1e7277ecd6873f755789725a42447c3e0af7523160ba22af33"
+        }
+      ]
+    },
+    {
+      "id": "priority-header-only",
+      "roles": [
+        "local-priority-steal"
+      ],
+      "status": "frozen_static_reviewed_standalone_diagnostic_not_engine_candidate",
+      "source": [
+        {
+          "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/deadline-latency/priority-include/ComputeExecutor.h",
+          "exists": true,
+          "sha256": "11dd290f5673e42063300e01c1a3835aaacda5c3ffd71f0be7e73dd002775927"
+        },
+        {
+          "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/deadline-latency/local-priority-header.patch",
+          "exists": true,
+          "sha256": "715242a711ed5eaddeb7a967dbe4cdea616b72fa2d9f73428d9e00da868fe7e0"
+        },
+        {
+          "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/deadline-latency/probe.cpp",
+          "exists": true,
+          "sha256": "4affbeca486235bed52cec56db0bf154ef20eda03f10cd478e2ab15cb592d78a"
+        },
+        {
+          "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/deadline-latency/priority-queue-qualification.cpp",
+          "exists": true,
+          "sha256": "c1c76669da4653214f72c9e9e79292fc043f9e94f8532c6a4aa03274126fa484"
+        }
+      ],
+      "receipts": [
+        {
+          "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/deadline-latency/priority-header-ready.json",
+          "exists": true,
+          "sha256": "fbf5bf309644e07b41b11e623c90bafe22f176ba42586f63d6d3a3f0cf4980d1"
+        },
+        {
+          "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/deadline-latency/priority-independent-review.json",
+          "exists": true,
+          "sha256": "92a1146745739cdfa479831e52fd658d7cfe6f0a5d25b7389bfc4e88765937ae"
+        },
+        {
+          "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/deadline-latency/priority-qualification-ready.json",
+          "exists": true,
+          "sha256": "b22ce07249a89a107e6bfb13c1a096f9d5961b03e531690e2734c5bb395189c6"
+        },
+        {
+          "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/deadline-latency/root-priority-approved.json",
+          "exists": true,
+          "sha256": "3602280278121f6a12f64b1be3ddd7703c709ee0a5fd80c1b5b2dac3aa6986c1"
+        }
+      ],
+      "qualification": "Unexecuted header-only standalone urgency diagnostic, not engine candidate. Five roles: baseline, first-steal, local-RR, local-steal, priority-steal;10 Trace/80 Off. Four auxiliaries retained: three one-worker per-policy queue ordering tests (affine explicitly not policy-qualified) plus steal races. Source/receipts pending actual execution.",
+      "commands": [
+        "g++-13",
+        "-std=c++20",
+        "-O3",
+        "-pthread",
+        "-I/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/deadline-latency/priority-include",
+        "-I/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/local-completion-source/src/common",
+        "-I/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/local-completion-source/libgag/include",
+        "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/deadline-latency/probe.cpp",
+        "-L/usr/lib/gcc/x86_64-linux-gnu/15",
+        "-o",
+        "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/deadline-latency/probe-local-priority"
+      ]
+    },
+    {
+      "id": "weighted-standalone",
+      "roles": [
+        "bare-steal",
+        "steal",
+        "static",
+        "static-steal",
+        "two-choice",
+        "clock-only",
+        "observe-only",
+        "last",
+        "ewma"
+      ],
+      "status": "frozen_static_reviewed_unbuilt_unexecuted",
+      "source": [
+        {
+          "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/weighted-followup/WeightedCoordinationBenchmark.cpp",
+          "exists": true,
+          "sha256": "6a2e357c339b31b74c167d7384beed965b8c0c6b0369724e849fe059f4c7024f"
+        }
+      ],
+      "receipts": [
+        {
+          "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/weighted-followup/freeze.json",
+          "exists": true,
+          "sha256": "8d95c6de5d6a1b0a79a01cf70f802274455bfc796ca27615fe5edadbb5ce7b2d"
+        },
+        {
+          "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/weighted-followup/probe-ready.json",
+          "exists": true,
+          "sha256": "09ee047f62bbe48d6992d6e7f7ca45ecf876d066dde90122c7e128aa7bc924d4"
+        },
+        {
+          "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/weighted-followup/independent-review.json",
+          "exists": true,
+          "sha256": "b9abfa1a0a570c7b572640db1938aa331c3d96a0d379cf075088fd4503023341"
+        },
+        {
+          "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/weighted-followup/root-approved.json",
+          "exists": true,
+          "sha256": "dbd4ba82bab4b16093689732d97de5fcc952463453ecf64fc387c91341880e98"
+        }
+      ],
+      "qualification": "Real-cost-blind class-history micro only. Latest/EWMA whole callback wall durations; common cold prior or excluded common serial calibration. Bare-steal isolates accounting; observe-only isolates timing/estimator apparatus. No async GPU/presentation, engine save/load or production performance qualification. Four workers plus submitter means five participants, unlike engine N4.",
+      "planned": {
+        "correctness_cases": 540,
+        "screen_cases": 432,
+        "correctness": {
+          "workers": [
+            1,
+            4,
+            32
+          ],
+          "jobs": 128,
+          "lanes": [
+            0,
+            8
+          ],
+          "iterations": 8,
+          "policies": [
+            "bare-steal",
+            "steal",
+            "static",
+            "static-steal",
+            "two-choice",
+            "clock-only",
+            "observe-only",
+            "last",
+            "ewma"
+          ],
+          "shapes": [
+            "balanced",
+            "skew",
+            "misleading",
+            "drift",
+            "within-class"
+          ],
+          "warmup_per_class": [
+            0,
+            8
+          ],
+          "repeats": 1,
+          "timeout_seconds": 30,
+          "assertions": [
+            "identical workload digest across policies/workers for same jobs/lanes/iterations/shape",
+            "exactly once each job",
+            "zero outstanding reservations on shutdown; barecontrol counters remainzero",
+            "only ready lane heads execute"
+          ]
+        },
+        "screen": {
+          "workers": [
+            4,
+            32
+          ],
+          "jobs": 4096,
+          "lanes": [
+            0,
+            8
+          ],
+          "iterations": 64,
+          "policies": [
+            "bare-steal",
+            "steal",
+            "static",
+            "static-steal",
+            "two-choice",
+            "clock-only",
+            "observe-only",
+            "last",
+            "ewma"
+          ],
+          "shapes": [
+            "skew",
+            "misleading",
+            "drift"
+          ],
+          "repeats": 2,
+          "warmup_per_class": [
+            0,
+            8
+          ],
+          "timeout_seconds": 60,
+          "allocation": [
+            0,
+            1,
+            2,
+            3,
+            4,
+            5,
+            6,
+            7,
+            8,
+            9,
+            10,
+            11,
+            12,
+            13,
+            14,
+            15,
+            16,
+            17,
+            18,
+            19,
+            20,
+            21,
+            22,
+            23,
+            24,
+            25,
+            26,
+            27,
+            28,
+            29,
+            30,
+            31
+          ],
+          "gate": "Correctness before timing; root-owned wrapper only. No further matrix expansion without promising results."
+        }
+      },
+      "commands_source": {
+        "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/run-weighted-probe.py",
+        "exists": true,
+        "sha256": "9e75b0cb184611a3ef8231dc8d70624a80ea395122b67e48758dee24c1c35458"
+      }
+    },
+    {
+      "id": "atomic-wait-design",
+      "roles": [],
+      "status": "design_only_no_implementation_no_execution",
+      "source": [
+        {
+          "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/atomic-completion-wait-design.json",
+          "exists": true,
+          "sha256": "53d6a6f980dfd560a9ff5607f8a48ab164154a5b2ad2f93c70f5609cda137d32"
+        }
+      ],
+      "qualification": "Theoretical stable slot atomic wait/notify completion; lifetime, ABA, shutdown and platform implementation remain untested. No patch, binary, qualification or measured benefit."
+    },
+    {
+      "id": "immediate-run-followup",
+      "roles": [],
+      "status": "design_only_separate_source_patch_unbuilt_unexecuted",
+      "source": [
+        {
+          "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/immediate-run-followup/include/ComputeExecutor.h",
+          "exists": true,
+          "sha256": "5ff42deca6fdf70fcfb75b6b611e1ef0a5cc9d028d3a8224ba73096b1d5bf2e2"
+        },
+        {
+          "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/immediate-run-followup/remove-runDone.patch",
+          "exists": true,
+          "sha256": "0c1565e2a80caebc05f8bcb6f9acc675549e4a596840fd1d91ffac76ae8f53dc"
+        },
+        {
+          "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/immediate-run-followup/probe.cpp",
+          "exists": true,
+          "sha256": "bb22992b108a85e2289294d35c257d5be88a1b9ca0ec6bdf6a37a7a6f6e2096d"
+        }
+      ],
+      "receipts": [
+        {
+          "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/immediate-run-followup/manifest.json",
+          "exists": true,
+          "sha256": "7dc87f2c92eb21526735544cc9bb668578995a169721fb7122ff0a1a62400563"
+        },
+        {
+          "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/immediate-run-followup/design-proof.json",
+          "exists": true,
+          "sha256": "8668af28833f47f850f71ebb5840570850ef4dd98fb9aa0798feb1d3625dc90d"
+        }
+      ],
+      "declared_manifest": {
+        "status": "design_only_statically_clear_followup_not_compiled",
+        "baseline_header": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/local-completion-source/src/common/ComputeExecutor.h",
+        "baseline_sha256": "cfdde45e73d0789c2eec88991fd45f8558dbfc6a76a9d0d82b1d509b48a0e786",
+        "header": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/immediate-run-followup/include/ComputeExecutor.h",
+        "header_sha256": "5ff42deca6fdf70fcfb75b6b611e1ef0a5cc9d028d3a8224ba73096b1d5bf2e2",
+        "patch": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/immediate-run-followup/remove-runDone.patch",
+        "patch_sha256": "0c1565e2a80caebc05f8bcb6f9acc675549e4a596840fd1d91ffac76ae8f53dc",
+        "scope": "Immediate run followup only. No frozen engine source edits; do not integrate/compile before native residual cost warrants separate experiment.",
+        "behavior": "Delete redundant runDone/percallback Off+Waits global bookkeeping; retain global worker inFlight register/return, generation control, Trace events and error lock. Owner exhausts claims then waits inFlight==0.",
+        "independent_review": "regression_feature_audit confirms source proof under existing single-producer/lifecycle contract; runtime tests needed before any acceptance."
+      },
+      "objective": "Remove redundant immediate-run runDone per-callback shared bookkeeping while retaining worker inFlight entry/exit, generation publication, Trace/errors and ownership/lifetime guarantees. Separate from deferred scheduler and atomic wait proposals.",
+      "qualification": "Static source proof only. Qualifying harness under preparation, no build/test/performance evidence; future held-worker, late-generation, exception/nesting/lifecycle and telemetry cases required. Not integrated into frozen candidates."
+    }
+  ],
+  "execution_snapshot": {
+    "state": "frozen_SIM57_pilot_complete_latest_SIM61_confirmation_preparing",
+    "completed_counts": {
+      "per_tick_parity_runs": 100,
+      "synthetic_timing_cases": 800,
+      "native_timing_windows": 160,
+      "weighted_correctness": 540,
+      "weighted_timing": 432,
+      "off_latency": 80
+    },
+    "analysis_valid": true,
+    "independent_recomputations": [
+      {
+        "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/fresh-audit-causal/executor-complete/review.json",
+        "sha256": "e6a413fd8e040376c2f2f75def578048bad9b06d1bbf68f502a3f46169a91e11"
+      },
+      {
+        "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/micro-independent-conclusions.json",
+        "sha256": "270edf349b0f337c988c638f7894b3b2a816804f9452063929c386551d9e4711"
+      },
+      {
+        "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/post-pipeline-minimal-route.json",
+        "sha256": "f1c131b910a64c9938e703ca99e6062e0ef30fd0c14fa95832b100fb9fba8d28"
+      }
+    ],
+    "current_recommendation": "Reject current strict affinity/FIFO production promotion; do not integrate adaptive estimates from these micro results. Qualify simplest bounded-wakeup W on unrestricted allocation and latest master before accepting. No production acceptance yet.",
+    "frozen_base": "48438f1f08a68b24ef0049834d371b9d00d84bae",
+    "newly_fetched_master": "054804590ee1dd109f09642fc05654c324f08344",
+    "new_master_scope": "Separate newSIM61 B/W pair; retain all hiring/snapshot/gradient/GPU changes. Do not pool checksums or gameplay trajectories across revisions.",
+    "immediate_run_followup": "Standalone qualified; no native timing/integration justified because no active gameplay call path. Preserve failed original serial-exception test expectation and corrected qualifications."
+  },
+  "shared_scope": {
+    "native_roles": [
+      "baseline",
+      "wake-only",
+      "steal",
+      "local-completion-round-robin",
+      "local-completion-steal"
+    ],
+    "env_selector": "GLOB2_DEFERRED_DISPATCH must be applied per variant",
+    "native_allocation": "Initial pilot 3 physical cores / 6 SMT CPUs; cannot establish all-core or production policy gains.",
+    "uncertainty": "Independent game seeds are units; repeats nested. Mature one-save runs conditional on that state. Synthetic repeat counts do not support game-population confidence intervals.",
+    "preservation": "No candidate accepted for production; exact per-tick parity, loaded CPU/OpenCL saves, producer contracts, presentation and affected platforms remain gates.",
+    "explicit_ineligible_roles": [
+      "round-robin",
+      "lane-affine",
+      "local-completion-lane-affine"
+    ]
+  },
+  "historical_not_authoritative": [
+    {
+      "file": {
+        "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/evaluation-plan.json",
+        "exists": true,
+        "sha256": "915ae4a85d98902f308aabe927cd06f3064c8bcafafedf6c37c597046274a2cc"
+      },
+      "reason": "Early 500-case / five-role planning, superseded by pilot-ready plus current scripts; retained unchanged."
+    },
+    {
+      "file": {
+        "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/deadline-latency/manifest.json",
+        "exists": true,
+        "sha256": "41835e3997a16c38da65007c30818159ce2220a3d1a10d64e3ce6305c91beb5c"
+      },
+      "reason": "Earlier latency manifest snapshot now revised to five roles10 Trace/80 Off; current wrapper and approval hashes authoritative."
+    },
+    {
+      "files": [
+        {
+          "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/shared-ready-reference.h",
+          "exists": true,
+          "sha256": "5c41e1895ba91bb06cf29de8ac34461d7c43f80ba7df5de64d573ca3110f5b2c"
+        },
+        {
+          "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/shared-ready-reference.patch",
+          "exists": true,
+          "sha256": "5e62438697336b1e58a57138a00538ef64e0d60c096ed7ca7b9eb5d73e88be63"
+        }
+      ],
+      "reason": "Earlier centralized ready reference; not active sharded candidate or validated implementation."
+    }
+  ],
+  "followups": [
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/confirmation/decision-plan.json",
+      "exists": true,
+      "sha256": "9e2a595bf4848e6917cc36aa3618f7c84c011816fd388350464fe2044f607ab1"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/local-priority-followup-design.json",
+      "exists": true,
+      "sha256": "02973c895131670fa2b30dbd855b6b291562e22c6cc37001b60a7df5bdd5e5f5"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/control-inspection-followup.json",
+      "exists": true,
+      "sha256": "b213d88638c9be16c840267e8653a98e4f208f948e47eccb35bf2ddaa5549976"
+    }
+  ],
+  "requested_objective": "Preserve all simulation/features while testing coordination costs, parallelism and responsiveness. No global participant policy, machine-specific tuning, game performance or platform acceptance from micro results.",
+  "superseded_snapshot": {
+    "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/policy-rejection/local-lane-affine/executor-index-before-refresh.json",
+    "exists": true,
+    "sha256": "51804f15b0820683878e57c50504ce7273a754ad2d5944185df553b6427cf7e0"
+  },
+  "post_snapshot_campaign_events": [
+    {
+      "id": "confirmation_wake_guard_off64",
+      "kind": "additional_timing_receipts",
+      "native_runs": 0,
+      "off_latency_runs": 64,
+      "status": "complete",
+      "source": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/confirmation/wake-only-allcore/guard-timing-complete.json",
+      "scope": "Two separatebases B/W,balancedBWWBBWWB;conditionalurgency/presentationdiagnostic,noTraceclockinference.",
+      "recorded_utc": "2026-10-15T03:06:27.644398+00:00"
+    },
+    {
+      "id": "confirmation_wake_native120",
+      "kind": "additional_timing_receipts",
+      "native_runs": 120,
+      "status": "complete_order_confounded",
+      "cohorts": {
+        "old_allcore": 32,
+        "latest_allcore": 56,
+        "latest_restricted": 32
+      },
+      "source": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/fresh-audit-causal/wake-confirmation/review.json",
+      "caveat": "All60B/Wpairedblocks baselinefirst;alloldresultsretained,noorderbiascorrection. Sourceversions neverpooled.",
+      "additional_per_tick_runs": 44,
+      "recorded_utc": "2026-10-15T03:06:27.644441+00:00"
+    },
+    {
+      "id": "balanced_n4_native32",
+      "kind": "additional_timing_receipts",
+      "native_runs": 32,
+      "status": "complete_independently_validated",
+      "source": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/fresh-audit-causal/balanced-n4/review.json",
+      "scope": "Latest054PGmixedN4all32,8firstpredeclaredseeds\u00d72nestedrepeats\u00d72roles,exactABBA;conditional8seedbootstrap,nostronguniversalclaim.",
+      "recorded_utc": "2026-10-15T03:06:27.644446+00:00"
+    },
+    {
+      "id": "original_executor_campaign_1472_complete",
+      "kind": "previously_planned_campaign_completed",
+      "actual_completed_utc": "2026-10-15T00:52:27.302008+00:00",
+      "recorded_utc": "2026-10-15T03:07:24.946285+00:00",
+      "timed_processes": 1472,
+      "native": 160,
+      "dispatch_micro": 800,
+      "Off_latency": 80,
+      "weighted_micro": 432,
+      "per_tick_parity": 100,
+      "source": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/pilot-analysis.json",
+      "scope": "Originalfrozen484campaign; separatefromadditionalguard64/native120/balanced32events; originalindexsnapshotretainedhistorically."
+    },
+    {
+      "event": "final_serial_Playground32_complete",
+      "utc": "2026-10-15T04:24:29.722808+00:00",
+      "runs": 64,
+      "independent_seed_pairs": 32,
+      "regime": "Single game at a time, auto32 within all32 logicalCPUs, latest054 B/W CPU",
+      "findings": {
+        "runs": 64,
+        "paired_seeds": 32,
+        "all_winners": true,
+        "all_endpoints_match": true,
+        "first_role_counts": {
+          "baseline": 16,
+          "wake-only": 16
+        },
+        "analysis": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/fresh-audit-causal/final-playground32/summary.json",
+        "independent_review": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/fresh-audit-causal/final-playground32/review.json",
+        "wall_change_percent": -11.318143472682273,
+        "cpu_change_percent": -39.898159340869555,
+        "system_cpu_change_percent": -83.93530144744523,
+        "scope": "CPUauto32/all32 only. OA andfour-gamewaves pending. No productionacceptance."
+      },
+      "limit": "First completedmap of ongoing256run campaign; no OA/concurrent/production decision; originaltimings unchanged."
+    }
+  ]
+}

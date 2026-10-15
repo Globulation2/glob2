@@ -1,0 +1,62 @@
+--- a/src/common/ComputeExecutor.h
++++ b/src/common/ComputeExecutor.h
+@@ -456,8 +456,8 @@
+ 	bool stopping = false;
+ 	// run(): one blocking batch at a time. inFlight counts workers inside
+ 	// invoke() for the current generation; the batch state changes only when
+-	// its jobs are done and no worker is still reading it.
+-	std::size_t generation = 0, runDone = 0, count = 0, inFlight = 0;
++	// the owner has exhausted its claim loop and all registered workers returned.
++	std::size_t generation = 0, count = 0, inFlight = 0;
+ 	std::atomic<std::size_t> next{0};
+ 	std::function<void(std::size_t)> job;
+ 	std::exception_ptr error;
+@@ -790,13 +790,12 @@
+             standaloneEvent<Mode>(ComputeTelemetry::EventKind::CallbackStart, 1, runSerial<Mode>(), i, unsigned(slot));
+ 			try { job(i); }
+ 			catch (...) { std::lock_guard<std::mutex> lock(mutex); if (!error) error = std::current_exception(); }
+-			{
+-				std::lock_guard<std::mutex> lock(mutex);
+-				standaloneEvent<Mode>(ComputeTelemetry::EventKind::CallbackEnd, 1, runSerial<Mode>(), i, unsigned(slot));
++            if constexpr (Mode == ComputeTelemetryMode::Trace) {
++                std::lock_guard<std::mutex> lock(mutex);
++                standaloneEvent<Mode>(ComputeTelemetry::EventKind::CallbackEnd, 1, runSerial<Mode>(), i, unsigned(slot));
+                 standaloneEvent<Mode>(ComputeTelemetry::EventKind::Complete, 1, runSerial<Mode>(), i, unsigned(slot));
+-                if constexpr (Mode == ComputeTelemetryMode::Trace) ++workerMetrics[slot].jobs;
+-				if (++runDone == count) runFinished.notify_all();
+-			}
++                ++workerMetrics[slot].jobs;
++            }
+ 		}
+ 		if constexpr (Mode == ComputeTelemetryMode::Trace) {
+             std::lock_guard lock(mutex);
+@@ -1406,7 +1405,7 @@
+         result.traceOpenWork = maintenanceRunning || bool(presentation) || bool(presentationPending);
+         result.traceCoverageGap = diagnostics->traceCoverageGap;
+         if (includeTrace && telemetryModeValue == ComputeTelemetryMode::Trace) {
+-            if (live || inFlight || runDone != count || presentationRunning || graphicsRunning || (graphicsBatch && !graphicsBatch->finished.load()) || diagnostics->traceRunActive || diagnostics->traceGraphicsInFlight)
++            if (live || inFlight || presentationRunning || graphicsRunning || (graphicsBatch && !graphicsBatch->finished.load()) || diagnostics->traceRunActive || diagnostics->traceGraphicsInFlight)
+                 throw std::logic_error("Compute trace snapshot requires drained required work and idle presentation");
+             result.streams = diagnostics->streams;
+             result.traceIncluded = true;
+@@ -1639,7 +1638,7 @@
+             {
+                 std::unique_lock lock(mutex);
+                 runFinished.wait(lock, [&] { return inFlight == 0; });
+-                job = function; count = n; next = 0; runDone = 0; error = nullptr;
++                job = function; count = n; next = 0; error = nullptr;
+                 ++generation;
+                 if constexpr (Mode == ComputeTelemetryMode::Trace) {
+                     diagnostics->runTags = tags; ++diagnostics->runSerial; diagnostics->traceRunActive = true;
+@@ -1654,9 +1653,9 @@
+             std::unique_lock lock(mutex);
+             const auto acquired = diagnosticStart<Mode>();
+             lockNs = acquired-lockStart;
+-            incomplete = runDone != count || inFlight != 0;
++            incomplete = inFlight != 0;
+             standaloneEvent<Mode>(ComputeTelemetry::EventKind::JoinInspection, 1, runSerial<Mode>(), n, 0);
+-            runFinished.wait(lock, [&] { return runDone == count && inFlight == 0; });
++            runFinished.wait(lock, [&] { return inFlight == 0; });
+             backgroundNs = diagnosticElapsed<Mode>(acquired);
+             if constexpr (Mode != ComputeTelemetryMode::Off) { ++totals.parallelBatches; totals.waitNs += backgroundNs; }
+             standaloneEvent<Mode>(ComputeTelemetry::EventKind::JoinEnd, 1, runSerial<Mode>(), n, 0);

@@ -1,0 +1,22 @@
+{
+  "state": "strict_lane_affine_rejected",
+  "eligible_local_modes": [
+    "round-robin",
+    "steal"
+  ],
+  "rejected_local_modes": [
+    "lane-affine"
+  ],
+  "reason": "Independent ready heads can collide on one worker queue while another worker is idle; strict affinity disables required-work stealing. Existing parallelism contract retained. No frozen C++ edits.",
+  "evidence": {
+    "local-pipeline-failure.json": "287b56ff12868f06f1f436ec797d61ebe4b95370d1ddd9f6445f0a77245d2ad5",
+    "local-contracts-lane-affine.log": "2fe12857baf39cec76c3671508e38b7ae258abcd02f1c479aaab74545c95c4af",
+    "local-contracts-lane-affine-receipt.json": "a9ab4b5a08d1a4ec060673e6929fec300ccbc5682acd73936dd8b3a154da3b60",
+    "local-junit-lane-affine.xml": "e2f5066df617a6f463761e884f8a1a40b6c8a6718c913a3182ca42b4f22475a5",
+    "lane-affine-failure-diagnosis.json": "e6bbf90e98c7e6391ffa115734d37759be5304508aa2ac9c644cc7ab751f7d1c",
+    "lane-affine-failure-independent.json": "aea8131295d3b297100b02725c5ccf85b7d6eb4b50e7658fb54dbbaee0b464d5"
+  },
+  "sanitizer_scope": "All modes can undergo narrow memory/race stress; passing such stress never reverses the failed scheduling contract.",
+  "production_acceptance": false,
+  "utc": "2026-10-15T00:05:54.897282+00:00"
+}

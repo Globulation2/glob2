@@ -1,0 +1,102 @@
+{
+  "status": "independent_simplicity_audit_design_only_no_edits_builds_or_workloads",
+  "source_sha256": "cfdde45e73d0789c2eec88991fd45f8558dbfc6a76a9d0d82b1d509b48a0e786",
+  "assessment": "Prototype removes shared ordinary deferred dispatch/completion and blocked-job scans, but its dual serial/parallel representation and research controls are not a minimal production design. A timing win alone does not justify shipping all cumulative+611/-228 lines. Retain frozen source until qualification and measurements.",
+  "necessary_invariants": [
+    {
+      "state": "Slot serial, Claim slot/index/serial, stable per-slot job storage",
+      "refs": "ComputeExecutor.h:326-350,883-886",
+      "purpose": "ABA stale handles and queued intrusive-node lifetime until join. Do not replace serial validation or free on completed count alone."
+    },
+    {
+      "state": "Per-worker queue mutex/CV/head/tail and immutable copied Dispatch",
+      "refs": "328-334,409-459",
+      "purpose": "Workers obtain runnable work without shared dispatch mutex; copy callback/context/offset before execution, so no global lookup prologue."
+    },
+    {
+      "state": "Lane head/tail, laneNext and lane-local mutex",
+      "refs": "471-474,904-910,1680-1721",
+      "purpose": "Exactly one runnable head per ordered controller lane, promotion before predecessor batch retirement. Single owner admission locks referenced lanes in stable order."
+    },
+    {
+      "state": "Atomic completed plus finished, completionMutex/CV/error",
+      "refs": "349-357,912-920,1750-1785",
+      "purpose": "Cheap NoLane fan-in; finished is terminal-notifier publication, not merely arithmetic total. Join always acknowledges batch mutex before retirement; polling cannot bypass ack. Error protected independently."
+    },
+    {
+      "state": "Ticket stateMutex/running/resolved/settled, owner/lifetime",
+      "refs": "259-286,924-959,1000-1012,1125-1133",
+      "purpose": "Exactly-once early/late external settlement and safe teardown after continuation publication. Lifetime mutex serializes external API lifetime only, not ordinary callbacks."
+    },
+    {
+      "state": "optionalBusy and mandatory rescue",
+      "refs": "333,391-459,1043-1101",
+      "purpose": "Static assigned required jobs cannot wait behind optional callbacks while spare workers exist. Preserve even if research RR modes deleted; primary stealing can otherwise miss transient victim lock."
+    },
+    {
+      "state": "controlVersion versus stealVersion",
+      "refs": "332,370-385,1025,1072",
+      "purpose": "Peer distribution wakes must not trigger global control inspection on every job; control generations preserve run/presentation/lifecycle service and lostwake safety."
+    }
+  ],
+  "deletion_opportunities": [
+    {
+      "priority": "first after evidence",
+      "proposal": "Select one dispatch policy; remove getenv selector, laneAffinity mode and static RR research controls, their mode-specific branches and research-only counters/tests that establish no retained contract.",
+      "keep": "General steal primary plus mandatory optional rescue. Retain relevant contract regression tests."
+    },
+    {
+      "priority": "high structural",
+      "proposal": "Make per-job record canonical at admission: immutable lane/offset/callback plus lane link/current continuation, reused for both serial and worker execution.",
+      "current_redundancy": "groups + starts + jobGroups + dispatch carry overlapping callback/lane/index mapping; continuations vector duplicates mutable callback choice; serial execute reconstructs Dispatch under global mutex.",
+      "refs": "339-348,810,836-843,931,963-969,1698-1721",
+      "potential_deletions": "Remove jobGroups and group helper; potentially groups/starts and continuations if Trace metadata separately preserved. This is an actual representation simplification, not just deleting assertions.",
+      "caution": "Trace uses group laneBases+starts at528-529; per-job trace sequence costs more bytes than per-group. Do not trade fewer lines for unmeasured per-job memory expansion. Continuation resume must preserve lane and offset0 while retaining old leases/context lifetime."
+    },
+    {
+      "priority": "medium serial-only",
+      "proposal": "Replace ready linked-batch structure with fixed-slot due scan of nonempty readyJobs for owner fallback.",
+      "current_redundancy": "readyCount/head/tail plus per-slot readyNext/readyPosition, add/remove list traversal. readyPosition is only sentinel-or0, never a position. pick owner already scans linked ready batches.",
+      "refs": "345-346,468-469,811-879",
+      "tradeoff": "Eliminates list maintenance/state and branch for unused parallel pick; scans bounded Slots only in no-worker fallback. Preserve exact due and ascending ready-index owner contract; retain minheap unless a contract audit permits simpler FIFO. No worker blocked-job scanning reintroduced."
+    },
+    {
+      "priority": "low safe cleanup",
+      "proposal": "Rename readyPosition to membership bool if list retained; remove pick(bool owner)/claim(bool owner) nonowner branches since assert owner==ownerRunsDeferred and parallel path never calls them.",
+      "refs": "853-879",
+      "caution": "Verify complete call graph and tests before edit."
+    },
+    {
+      "priority": "trace-only",
+      "proposal": "Move laneIssued/laneBases into diagnostics state if only Trace uses sequence; retain laneDue because pending-lane due-order validation is functional.",
+      "refs": "341,474,528-529,1693,1708,1720",
+      "tradeoff": "No Off sequence increments/storage solely for diagnostic ordering; ensure telemetry configure resets and no public metric dependence."
+    },
+    {
+      "priority": "small API cleanup",
+      "proposal": "Replace ControlWake CV-shaped wrapper with explicit wakeControl calls once source stable.",
+      "refs": "363-375",
+      "reason": "notify_one currently broadcasts control to all queues. Explicit operation expresses real semantics and avoids misleading local wake interpretation.",
+      "caution": "This changes spelling only, not scheduling; no performance claim."
+    }
+  ],
+  "not_redundant": [
+    "finished cannot simply become completed==total: last notifier must still finish accessing slot mutex/CV before owner may recycle.",
+    "laneDue cannot be deleted with laneIssued: laneDue rejects enqueueing earlier-due work behind pending later-due lane head.",
+    "Ticket resolved/running/settled states encode early external completion race; do not collapse without proof.",
+    "CompletionLifetime teardown acknowledgment must cover sender notifications after continuation already completed.",
+    "optionalBusy rescue covers frozen first RR contract failure; deleting static policy alone does not prove best-effort try-steal cannot miss rescue opportunity."
+  ],
+  "residual_costs": {
+    "immediate_run": "run/invoke still shared work-generation/inFlight/runDone accounting; not changed by deferred redesign.",
+    "periodic_control": "Global mutex every eight claims, control epoch, and idle maintenance/presentation inspection; wakeControl visits all queue mutexes. See control-inspection-followup.json for pending-opportunity epoch design, no current edit.",
+    "other_shared": "Atomic dispatchCursor on every ready enqueue; same-lane mutex by design; per-batch atomic fan-in; Trace intentionally global diagnostic work. External ticket APIs globally serialized through lifetime mutex only when called."
+  },
+  "minimal_production_scope_if_wins": [
+    "One stealing policy; per-worker runnable queues, canonical ready lane heads, batch-local terminal fan-in and ticket-local settlement. Preserve existing public ComputeExecutor lifecycle and Group API; no cost-hint API required.",
+    "Retain simulation-facing lanes, publication horizons, context/maintenance/presentation affinity, slot generations and errors; preserve mandatory optional rescue and precise retirement acknowledgment.",
+    "Simplify duplicated per-job/serial representations only after frozen correctness/timing results; requalify final source. Do not simultaneously redesign immediate run/control unless profiles justify separate step.",
+    "Weighted dynamic placement is separate incremental experiment: require benefit versus bare-steal after clocks, class atomic writes/CAS, O(N) loads and cold/within-class controls. Do not add Group hints/class machinery based on standalone success alone."
+  ],
+  "acceptance": "Require clear game performance benefit and correctness/save/load/per-tick evidence, then review minimal final patch for state and ownership clarity. Net lines are warning of prototype scope, not sole metric. No performance or platform coverage claim made."
+}

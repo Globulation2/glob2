@@ -1,0 +1,1 @@
+COORDINATION_RESULT {"participants":8,"requested_policy":"lane-affine","pattern":"lanes","rounds":64,"jobs_per_round":128,"iterations":256,"wall_ns":4113153,"digest":12026144827922376579,"jobs_checked":8192}

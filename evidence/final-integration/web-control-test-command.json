@@ -1,0 +1,14 @@
+{
+  "command": [
+    "npx",
+    "--no-install",
+    "playwright",
+    "test",
+    "tests/threading.spec.js",
+    "--project=firefox",
+    "--grep",
+    "threaded runtime executes shared compute",
+    "--reporter=json"
+  ],
+  "env_flags": "unchangedsanitizeddefaults;freshPlaywrightownedserver/profile"
+}

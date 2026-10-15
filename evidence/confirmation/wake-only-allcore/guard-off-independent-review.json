@@ -1,0 +1,642 @@
+{
+  "state": "independent_raw_off_review",
+  "scope": "64 existing Off micro receipts only; no new workloads. Four repetitions per role/base/allocation/kind; no native timing inference.",
+  "groups": [
+    {
+      "base": "old",
+      "allocation": "3physical6SMT",
+      "kind": "required",
+      "actual_arm_order": "BWWBBWWB",
+      "roles": {
+        "baseline": {
+          "urgent_join_us": {
+            "median": 334.438,
+            "min": 319.178,
+            "max": 354.138,
+            "all": [
+              319.178,
+              354.138,
+              337.628,
+              331.248
+            ]
+          },
+          "presentation_start_delay_us": {
+            "median": -0.001,
+            "min": -0.001,
+            "max": -0.001,
+            "all": [
+              -0.001,
+              -0.001,
+              -0.001,
+              -0.001
+            ]
+          },
+          "later_callback_starts_before_urgent": [
+            0,
+            1,
+            0,
+            0
+          ]
+        },
+        "wake-only": {
+          "urgent_join_us": {
+            "median": 339.85799999999995,
+            "min": 315.348,
+            "max": 349.907,
+            "all": [
+              349.907,
+              343.948,
+              335.768,
+              315.348
+            ]
+          },
+          "presentation_start_delay_us": {
+            "median": -0.001,
+            "min": -0.001,
+            "max": -0.001,
+            "all": [
+              -0.001,
+              -0.001,
+              -0.001,
+              -0.001
+            ]
+          },
+          "later_callback_starts_before_urgent": [
+            1,
+            0,
+            1,
+            0
+          ]
+        }
+      }
+    },
+    {
+      "base": "old",
+      "allocation": "3physical6SMT",
+      "kind": "optional",
+      "actual_arm_order": "BWWBBWWB",
+      "roles": {
+        "baseline": {
+          "urgent_join_us": {
+            "median": 332.418,
+            "min": 328.328,
+            "max": 359.397,
+            "all": [
+              329.868,
+              328.328,
+              334.968,
+              359.397
+            ]
+          },
+          "presentation_start_delay_us": {
+            "median": 2180.7155000000002,
+            "min": 2173.606,
+            "max": 2324.304,
+            "all": [
+              2182.005,
+              2179.426,
+              2173.606,
+              2324.304
+            ]
+          },
+          "later_callback_starts_before_urgent": [
+            2,
+            2,
+            1,
+            2
+          ]
+        },
+        "wake-only": {
+          "urgent_join_us": {
+            "median": 342.4375,
+            "min": 316.208,
+            "max": 369.888,
+            "all": [
+              369.888,
+              335.958,
+              348.917,
+              316.208
+            ]
+          },
+          "presentation_start_delay_us": {
+            "median": 2199.6255,
+            "min": 2168.556,
+            "max": 2326.654,
+            "all": [
+              2206.696,
+              2326.654,
+              2192.555,
+              2168.556
+            ]
+          },
+          "later_callback_starts_before_urgent": [
+            2,
+            0,
+            1,
+            1
+          ]
+        }
+      }
+    },
+    {
+      "base": "old",
+      "allocation": "all32",
+      "kind": "required",
+      "actual_arm_order": "BWWBBWWB",
+      "roles": {
+        "baseline": {
+          "urgent_join_us": {
+            "median": 356.6325,
+            "min": 346.718,
+            "max": 686.065,
+            "all": [
+              358.238,
+              686.065,
+              355.027,
+              346.718
+            ]
+          },
+          "presentation_start_delay_us": {
+            "median": -0.001,
+            "min": -0.001,
+            "max": -0.001,
+            "all": [
+              -0.001,
+              -0.001,
+              -0.001,
+              -0.001
+            ]
+          },
+          "later_callback_starts_before_urgent": [
+            0,
+            1,
+            0,
+            0
+          ]
+        },
+        "wake-only": {
+          "urgent_join_us": {
+            "median": 459.857,
+            "min": 328.468,
+            "max": 623.426,
+            "all": [
+              623.426,
+              328.468,
+              583.166,
+              336.548
+            ]
+          },
+          "presentation_start_delay_us": {
+            "median": -0.001,
+            "min": -0.001,
+            "max": -0.001,
+            "all": [
+              -0.001,
+              -0.001,
+              -0.001,
+              -0.001
+            ]
+          },
+          "later_callback_starts_before_urgent": [
+            2,
+            0,
+            0,
+            0
+          ]
+        }
+      }
+    },
+    {
+      "base": "old",
+      "allocation": "all32",
+      "kind": "optional",
+      "actual_arm_order": "BWWBBWWB",
+      "roles": {
+        "baseline": {
+          "urgent_join_us": {
+            "median": 346.51800000000003,
+            "min": 326.848,
+            "max": 650.566,
+            "all": [
+              352.168,
+              340.868,
+              650.566,
+              326.848
+            ]
+          },
+          "presentation_start_delay_us": {
+            "median": 2397.9390000000003,
+            "min": 2177.015,
+            "max": 3433.027,
+            "all": [
+              2184.925,
+              2177.015,
+              2610.953,
+              3433.027
+            ]
+          },
+          "later_callback_starts_before_urgent": [
+            0,
+            0,
+            0,
+            1
+          ]
+        },
+        "wake-only": {
+          "urgent_join_us": {
+            "median": 352.0425,
+            "min": 341.138,
+            "max": 360.948,
+            "all": [
+              360.948,
+              359.398,
+              341.138,
+              344.687
+            ]
+          },
+          "presentation_start_delay_us": {
+            "median": 2185.6555,
+            "min": 2181.386,
+            "max": 2201.895,
+            "all": [
+              2186.766,
+              2184.545,
+              2181.386,
+              2201.895
+            ]
+          },
+          "later_callback_starts_before_urgent": [
+            0,
+            1,
+            1,
+            0
+          ]
+        }
+      }
+    },
+    {
+      "base": "latest",
+      "allocation": "3physical6SMT",
+      "kind": "required",
+      "actual_arm_order": "BWWBBWWB",
+      "roles": {
+        "baseline": {
+          "urgent_join_us": {
+            "median": 333.0475,
+            "min": 323.488,
+            "max": 337.188,
+            "all": [
+              336.237,
+              337.188,
+              329.858,
+              323.488
+            ]
+          },
+          "presentation_start_delay_us": {
+            "median": -0.001,
+            "min": -0.001,
+            "max": -0.001,
+            "all": [
+              -0.001,
+              -0.001,
+              -0.001,
+              -0.001
+            ]
+          },
+          "later_callback_starts_before_urgent": [
+            1,
+            0,
+            2,
+            0
+          ]
+        },
+        "wake-only": {
+          "urgent_join_us": {
+            "median": 328.13800000000003,
+            "min": 317.658,
+            "max": 337.078,
+            "all": [
+              336.918,
+              319.358,
+              337.078,
+              317.658
+            ]
+          },
+          "presentation_start_delay_us": {
+            "median": -0.001,
+            "min": -0.001,
+            "max": -0.001,
+            "all": [
+              -0.001,
+              -0.001,
+              -0.001,
+              -0.001
+            ]
+          },
+          "later_callback_starts_before_urgent": [
+            1,
+            1,
+            1,
+            0
+          ]
+        }
+      }
+    },
+    {
+      "base": "latest",
+      "allocation": "3physical6SMT",
+      "kind": "optional",
+      "actual_arm_order": "BWWBBWWB",
+      "roles": {
+        "baseline": {
+          "urgent_join_us": {
+            "median": 333.00300000000004,
+            "min": 318.078,
+            "max": 355.948,
+            "all": [
+              355.948,
+              320.158,
+              345.848,
+              318.078
+            ]
+          },
+          "presentation_start_delay_us": {
+            "median": 2178.8055,
+            "min": 2169.865,
+            "max": 2183.135,
+            "all": [
+              2181.725,
+              2175.886,
+              2183.135,
+              2169.865
+            ]
+          },
+          "later_callback_starts_before_urgent": [
+            0,
+            2,
+            1,
+            0
+          ]
+        },
+        "wake-only": {
+          "urgent_join_us": {
+            "median": 332.072,
+            "min": 317.568,
+            "max": 338.257,
+            "all": [
+              338.257,
+              317.568,
+              327.717,
+              336.427
+            ]
+          },
+          "presentation_start_delay_us": {
+            "median": 2175.6955,
+            "min": 2164.755,
+            "max": 2182.394,
+            "all": [
+              2173.325,
+              2178.066,
+              2182.394,
+              2164.755
+            ]
+          },
+          "later_callback_starts_before_urgent": [
+            0,
+            1,
+            1,
+            1
+          ]
+        }
+      }
+    },
+    {
+      "base": "latest",
+      "allocation": "all32",
+      "kind": "required",
+      "actual_arm_order": "BWWBBWWB",
+      "roles": {
+        "baseline": {
+          "urgent_join_us": {
+            "median": 487.9315,
+            "min": 336.158,
+            "max": 638.426,
+            "all": [
+              341.268,
+              634.595,
+              638.426,
+              336.158
+            ]
+          },
+          "presentation_start_delay_us": {
+            "median": -0.001,
+            "min": -0.001,
+            "max": -0.001,
+            "all": [
+              -0.001,
+              -0.001,
+              -0.001,
+              -0.001
+            ]
+          },
+          "later_callback_starts_before_urgent": [
+            0,
+            0,
+            1,
+            0
+          ]
+        },
+        "wake-only": {
+          "urgent_join_us": {
+            "median": 491.40700000000004,
+            "min": 328.867,
+            "max": 635.186,
+            "all": [
+              328.867,
+              626.586,
+              635.186,
+              356.228
+            ]
+          },
+          "presentation_start_delay_us": {
+            "median": -0.001,
+            "min": -0.001,
+            "max": -0.001,
+            "all": [
+              -0.001,
+              -0.001,
+              -0.001,
+              -0.001
+            ]
+          },
+          "later_callback_starts_before_urgent": [
+            0,
+            0,
+            0,
+            1
+          ]
+        }
+      }
+    },
+    {
+      "base": "latest",
+      "allocation": "all32",
+      "kind": "optional",
+      "actual_arm_order": "BWWBBWWB",
+      "roles": {
+        "baseline": {
+          "urgent_join_us": {
+            "median": 496.992,
+            "min": 347.968,
+            "max": 661.165,
+            "all": [
+              661.165,
+              347.968,
+              635.046,
+              358.938
+            ]
+          },
+          "presentation_start_delay_us": {
+            "median": 2588.6675,
+            "min": 2202.606,
+            "max": 4255.611,
+            "all": [
+              2205.625,
+              2202.606,
+              4255.611,
+              2971.71
+            ]
+          },
+          "later_callback_starts_before_urgent": [
+            0,
+            0,
+            0,
+            1
+          ]
+        },
+        "wake-only": {
+          "urgent_join_us": {
+            "median": 364.64250000000004,
+            "min": 353.038,
+            "max": 660.056,
+            "all": [
+              353.038,
+              374.437,
+              660.056,
+              354.848
+            ]
+          },
+          "presentation_start_delay_us": {
+            "median": 2203.34,
+            "min": 2181.496,
+            "max": 3186.669,
+            "all": [
+              2190.955,
+              2215.725,
+              2181.496,
+              3186.669
+            ]
+          },
+          "later_callback_starts_before_urgent": [
+            1,
+            2,
+            0,
+            1
+          ]
+        }
+      }
+    }
+  ],
+  "validation": "All64 individual receipts equal aggregate rows, returncode0, tracefalse, same payload digest and1032result bytes; actual binaries rehashed. Every8case cell is BWWBBWWB: two B-first/two W-first pairs, unlike native timing runner arm-order defect.",
+  "interpretation": [
+    "No FIFO-like urgent starvation in these receipts: later callback starts before urgent range0..2 across all64, versus previously rejected FIFO backlog107..128. Callback-start order is OS-sensitive and is not exact claim-order proof.",
+    "Latest required median urgent join:333.05us B vs328.14us W on6SMT;487.93us B vs491.41us W all32. Latest optional presentation median:2178.81us B vs2175.70us W on6SMT;2588.67us B vs2203.34us W all32.",
+    "Old all32 required W median459.86us vs B356.63us is a retained loss; four repetitions cannot establish persistent host-general change. Other cells mixed; no universal latency win or automatic acceptance threshold.",
+    "Off means executor telemetry off; latency harness itself deliberately clocks gate/join endpoints. These are conditional synthetic latency observations, not whole-engine production clock costs."
+  ],
+  "n4_source_hypothesis": {
+    "status": "plausible_unmeasured",
+    "refs": [
+      "confirmation/latest-wake/wake-only/src/common/ComputeExecutor.h:1533 runnable counts only idle ordered lane heads or NoLane jobs",
+      "confirmation/latest-wake/wake-only/src/common/ComputeExecutor.h:1557 one head unchanged; heads>=workers broadcast; intermediate repeated notify_one",
+      "confirmation/latest-wake/baseline/src/building/HiringJobs.h:7 RefreshInterval4",
+      "confirmation/latest-wake/baseline/src/building/HiringPipeline.cpp:204 teams tick%Refresh steppingRefresh; lines220-223 one lane group/team",
+      "confirmation/latest-wake/baseline/src/team/stats/TeamStatsPipeline.cpp:159 single ordered statistics head"
+    ],
+    "reasoning": "N4 means3workers. Playground8teams produces2 hiring groups each phase, reaching the changed two-notify_one versus single broadcast path when lanes idle. Oazis11teams produces3,3,3,2 groups across phases, with only two-head phase changing under idle assumptions. Existing work and lane backlog can change actual runnable counts. Two notify_one calls may have different wake/syscall/contention cost than one notify_all; source alone cannot establish magnitude or sign.",
+    "counterlimits": "No measured producer-specific branch frequencies or wake costs. Native120 are B-first due rotation/reversal defect; observed PG N4 +3.68%wall/+3.93%CPU remains directional evidence, not clean causal effect. Autoall32 improvements do not prove N4 free."
+  },
+  "recommendation": [
+    "Keep W unchanged while testing; no invented worker-count threshold or gameplay rule. Run balanced AB/BA N4 screen with additional independent original seeds and both maps under identical masks; retain whole CPU/wall and individual pairs. Separate all32 from restricted allocation.",
+    "If balanced N4 loss persists and decision remains ambiguous, instrument a separate diagnostic for runnable histogram by producer, workers sleeping/busy at admission and notify-call/wake behavior. Keep diagnostic off final timing, compare identical work/checksums, avoid broad hot profiling or rewriting scheduler before evidence.",
+    "Check32-seed winner/cap outcomes and balanced screen before hidden CPU-savings claim or production acceptance."
+  ],
+  "bound_files_sha256": {
+    "artifacts/october-regression/coordination-redesign/confirmation/wake-only-allcore/guard-timing-old.json": "680e4c7b93f06dcd8da49c6175f660d920419afd5f373c7db2b06cefa07e4ac8",
+    "artifacts/october-regression/coordination-redesign/confirmation/wake-only-allcore/guard-timing/old/3physical6SMT-required-baseline-0/receipt.json": "19ac1332d8a84aaa5403de466ab9c652964ff0d985517e6d8c5c591b4c7981c1",
+    "artifacts/october-regression/coordination-redesign/confirmation/wake-only-allcore/guard-timing/old/3physical6SMT-required-wake-only-0/receipt.json": "c156270f0f7c53c455463347e2376d6d417d47a5ab840d808cf00991edaf8a5c",
+    "artifacts/october-regression/coordination-redesign/confirmation/wake-only-allcore/guard-timing/old/3physical6SMT-required-wake-only-1/receipt.json": "ae18eea87bfba276ac553f885f0c57c21e7d6ff3c95529634da2cec466684a55",
+    "artifacts/october-regression/coordination-redesign/confirmation/wake-only-allcore/guard-timing/old/3physical6SMT-required-baseline-1/receipt.json": "b5b8a94663a9ddb22fd02fcd595e240e141fcc0988d535a1fc3ffe7503372860",
+    "artifacts/october-regression/coordination-redesign/confirmation/wake-only-allcore/guard-timing/old/3physical6SMT-required-baseline-2/receipt.json": "92cac4ceb06b88373721dce37a6d279de7a115ab677bfd86bb97e70e1782012d",
+    "artifacts/october-regression/coordination-redesign/confirmation/wake-only-allcore/guard-timing/old/3physical6SMT-required-wake-only-2/receipt.json": "5725dcd9b159d01a2b9dd22e2455d00924796e5bb195732c40ecba97ac013df6",
+    "artifacts/october-regression/coordination-redesign/confirmation/wake-only-allcore/guard-timing/old/3physical6SMT-required-wake-only-3/receipt.json": "8bc5c9cc620b6e6de3a27e6c48b00d69a591723fc4aae3bf4ac510f1f8e45a05",
+    "artifacts/october-regression/coordination-redesign/confirmation/wake-only-allcore/guard-timing/old/3physical6SMT-required-baseline-3/receipt.json": "e4ca4f538aa1bf714fe60194ce2546f112f3f6680bba17ebc443bf3ba35e42fe",
+    "artifacts/october-regression/coordination-redesign/confirmation/wake-only-allcore/guard-timing/old/3physical6SMT-optional-baseline-0/receipt.json": "0aa516aaacdc937bde75788a73eac4856439c5d28ecab21d3566570b04daf95a",
+    "artifacts/october-regression/coordination-redesign/confirmation/wake-only-allcore/guard-timing/old/3physical6SMT-optional-wake-only-0/receipt.json": "158046ce7368f321f3103dcc56297c90273b5f6da1b61d4b67338ec262836e0a",
+    "artifacts/october-regression/coordination-redesign/confirmation/wake-only-allcore/guard-timing/old/3physical6SMT-optional-wake-only-1/receipt.json": "6c99cd29bf7adb20b9c39d3b09e9990b6cc19416695a2ae1fbb5d6e45c73258d",
+    "artifacts/october-regression/coordination-redesign/confirmation/wake-only-allcore/guard-timing/old/3physical6SMT-optional-baseline-1/receipt.json": "826c5953ab915c18a86a529f75fe0c3e06da175f0889a96b205890df6bdedf41",
+    "artifacts/october-regression/coordination-redesign/confirmation/wake-only-allcore/guard-timing/old/3physical6SMT-optional-baseline-2/receipt.json": "4d0209587ae5194979ace94bce35648841ea99a6db425040551a081051a85881",
+    "artifacts/october-regression/coordination-redesign/confirmation/wake-only-allcore/guard-timing/old/3physical6SMT-optional-wake-only-2/receipt.json": "c56c9f56ad798d0b62fdec5e1c80b2d042e6164cd693686a04f02fe90a2ccad0",
+    "artifacts/october-regression/coordination-redesign/confirmation/wake-only-allcore/guard-timing/old/3physical6SMT-optional-wake-only-3/receipt.json": "0d120b8b0c0363dd5ea7f31cec1990b171b60aac976b60bb204795ea6c53b182",
+    "artifacts/october-regression/coordination-redesign/confirmation/wake-only-allcore/guard-timing/old/3physical6SMT-optional-baseline-3/receipt.json": "9793f27cfb46d8e5b1d2111bf8ba95846e73ae6b222c405af8698238ded7ea5f",
+    "artifacts/october-regression/coordination-redesign/confirmation/wake-only-allcore/guard-timing/old/all32-required-baseline-0/receipt.json": "f42af5aeac7fa38fc7a5500aa67559560b63cb78bef3842d163d71a68620ee64",
+    "artifacts/october-regression/coordination-redesign/confirmation/wake-only-allcore/guard-timing/old/all32-required-wake-only-0/receipt.json": "a685dd739dd175d9bbe61b86c3047520b3e2592e7afaeb4426ffc0d56fc34c8f",
+    "artifacts/october-regression/coordination-redesign/confirmation/wake-only-allcore/guard-timing/old/all32-required-wake-only-1/receipt.json": "1e32cdfe0c905645ee5e1e5260f6889d736f40f362df175d47f06dea6e78d5de",
+    "artifacts/october-regression/coordination-redesign/confirmation/wake-only-allcore/guard-timing/old/all32-required-baseline-1/receipt.json": "fa26e250e43a5da841c9036103e4d541c1e468738414badd3796c8f1d3d7f739",
+    "artifacts/october-regression/coordination-redesign/confirmation/wake-only-allcore/guard-timing/old/all32-required-baseline-2/receipt.json": "d438320f879438283f26aaed36d66228279b15eb2663ac1a356cb2146f030041",
+    "artifacts/october-regression/coordination-redesign/confirmation/wake-only-allcore/guard-timing/old/all32-required-wake-only-2/receipt.json": "b2aea3ae1fb02ab7ad6e76443dba0106b21f1d7df755903e3369fd8eccf78262",
+    "artifacts/october-regression/coordination-redesign/confirmation/wake-only-allcore/guard-timing/old/all32-required-wake-only-3/receipt.json": "71889a65dc9858fcf66083ba80098ef0a8486a18919d853ccd3eeaa2654e04b7",
+    "artifacts/october-regression/coordination-redesign/confirmation/wake-only-allcore/guard-timing/old/all32-required-baseline-3/receipt.json": "3dab15a51f2f4f527004dbd2f17c6260b7d2f5464770404fc43b6dee8f8515cb",
+    "artifacts/october-regression/coordination-redesign/confirmation/wake-only-allcore/guard-timing/old/all32-optional-baseline-0/receipt.json": "080cbeb9508d98af7976d31e512e5e0a27cabe19a34ad7fd1372ad5d1ef372a9",
+    "artifacts/october-regression/coordination-redesign/confirmation/wake-only-allcore/guard-timing/old/all32-optional-wake-only-0/receipt.json": "cecd1de8c0eec25f59f627dd95c2c3ca0aae926fec548138efc45db631a2256a",
+    "artifacts/october-regression/coordination-redesign/confirmation/wake-only-allcore/guard-timing/old/all32-optional-wake-only-1/receipt.json": "9a7ddc5342f2f885bea75d43cf12386ab9a9ef6c73a5a2d741437fe3d2808055",
+    "artifacts/october-regression/coordination-redesign/confirmation/wake-only-allcore/guard-timing/old/all32-optional-baseline-1/receipt.json": "34ab00afa3d6c584c060b0110e3aa793f305c4ea41c8d7d122e31f9b1ce5342e",
+    "artifacts/october-regression/coordination-redesign/confirmation/wake-only-allcore/guard-timing/old/all32-optional-baseline-2/receipt.json": "34dea08061cc12e03e37d3182db23b3ba71a30c3586e73d56936fac18171b30e",
+    "artifacts/october-regression/coordination-redesign/confirmation/wake-only-allcore/guard-timing/old/all32-optional-wake-only-2/receipt.json": "57bb3338ebd21e1bca0b21e0f713bf19d1da68741846971ec2cdbd3f32e5152e",
+    "artifacts/october-regression/coordination-redesign/confirmation/wake-only-allcore/guard-timing/old/all32-optional-wake-only-3/receipt.json": "d58273db56e626746d2662a38834bf6104d5d4e61c00910e28a7ec6a93b45f81",
+    "artifacts/october-regression/coordination-redesign/confirmation/wake-only-allcore/guard-timing/old/all32-optional-baseline-3/receipt.json": "0eccfeef6cb236fd3860ad5b8b727e85c121503159bd82647bc3fed375050cd3",
+    "artifacts/october-regression/coordination-redesign/confirmation/wake-only-allcore/guard-timing-latest.json": "f62be76aacfbb0b4758cb35f7bc62464b5c5aa081669d2a90ff40c43854d099a",
+    "artifacts/october-regression/coordination-redesign/confirmation/wake-only-allcore/guard-timing/latest/3physical6SMT-required-baseline-0/receipt.json": "20a87f1def973f24c571d36039c547f05f8c8b6b7418ad88faf39893b64ec714",
+    "artifacts/october-regression/coordination-redesign/confirmation/wake-only-allcore/guard-timing/latest/3physical6SMT-required-wake-only-0/receipt.json": "a298770f4ae083ff263a579337b405313d355f4268add9b312d191a653594abe",
+    "artifacts/october-regression/coordination-redesign/confirmation/wake-only-allcore/guard-timing/latest/3physical6SMT-required-wake-only-1/receipt.json": "c7e5f02bf623ff481886352a0aef3d0aa368992260892d500eaeafa926645870",
+    "artifacts/october-regression/coordination-redesign/confirmation/wake-only-allcore/guard-timing/latest/3physical6SMT-required-baseline-1/receipt.json": "cce0e0fdfae1780545f2aced59d37b0397ece91ac95fb9f0119b0e1e4ea3736c",
+    "artifacts/october-regression/coordination-redesign/confirmation/wake-only-allcore/guard-timing/latest/3physical6SMT-required-baseline-2/receipt.json": "b3694b997c752a317d5e7eb81796880a2f306f525f9d5da26cabbacdd9cb19a7",
+    "artifacts/october-regression/coordination-redesign/confirmation/wake-only-allcore/guard-timing/latest/3physical6SMT-required-wake-only-2/receipt.json": "82b4ff10496d88466d6061de6f0422dbe6b3cc60c12ebfe6df264ee9eae60d30",
+    "artifacts/october-regression/coordination-redesign/confirmation/wake-only-allcore/guard-timing/latest/3physical6SMT-required-wake-only-3/receipt.json": "4f7620a8d7f766f5dd7b22a3a0b265120e2845f91cd60954838edc206413c16f",
+    "artifacts/october-regression/coordination-redesign/confirmation/wake-only-allcore/guard-timing/latest/3physical6SMT-required-baseline-3/receipt.json": "8df6d513fb3c2a4966685d43a4c9f6ff0224e7bc7e0480395afd33ddd9fc60c2",
+    "artifacts/october-regression/coordination-redesign/confirmation/wake-only-allcore/guard-timing/latest/3physical6SMT-optional-baseline-0/receipt.json": "6c05e9e5a2b1c0a022aa43a2407c77e55ca494bc239c2ed3852d6b7b61aba8f3",
+    "artifacts/october-regression/coordination-redesign/confirmation/wake-only-allcore/guard-timing/latest/3physical6SMT-optional-wake-only-0/receipt.json": "c7767fa89d13efb2775ccfa325af8c413e2ecadeca741b55a05e7eea9a713e01",
+    "artifacts/october-regression/coordination-redesign/confirmation/wake-only-allcore/guard-timing/latest/3physical6SMT-optional-wake-only-1/receipt.json": "7d2f6c6ae7b9a678defd39d7c6682594d5b9ed073d5fad9882c50ee9c7c42711",
+    "artifacts/october-regression/coordination-redesign/confirmation/wake-only-allcore/guard-timing/latest/3physical6SMT-optional-baseline-1/receipt.json": "306ffb36d6b2ab300913f1b18c37d937c7668eecbea3c8498b81543cd6e21a89",
+    "artifacts/october-regression/coordination-redesign/confirmation/wake-only-allcore/guard-timing/latest/3physical6SMT-optional-baseline-2/receipt.json": "75aa545f24442fdd0013ca20aa0035521e57222c2303623c313fe4aab5e213b1",
+    "artifacts/october-regression/coordination-redesign/confirmation/wake-only-allcore/guard-timing/latest/3physical6SMT-optional-wake-only-2/receipt.json": "a1e26165d2552302aa3800de9a748626835a83cbb8d0501adfdca285b1ad7556",
+    "artifacts/october-regression/coordination-redesign/confirmation/wake-only-allcore/guard-timing/latest/3physical6SMT-optional-wake-only-3/receipt.json": "fcaf3d57dd29e02abcce2a2d1f2affcbb7c3e731f2f0b5f108a8125ab2901e81",
+    "artifacts/october-regression/coordination-redesign/confirmation/wake-only-allcore/guard-timing/latest/3physical6SMT-optional-baseline-3/receipt.json": "151b0a8a240d22667cf537a454861f57994249a77aa89c098eab116946ce6f09",
+    "artifacts/october-regression/coordination-redesign/confirmation/wake-only-allcore/guard-timing/latest/all32-required-baseline-0/receipt.json": "afdad71146c85d2ceadad0a7731050d29b265b03cbe3ed9989947dbc0c27a2d0",
+    "artifacts/october-regression/coordination-redesign/confirmation/wake-only-allcore/guard-timing/latest/all32-required-wake-only-0/receipt.json": "aa5f9ef4fb0c8a4a173454dce96949c5ce1fd2ab41025fe7287c091af74ca2c1",
+    "artifacts/october-regression/coordination-redesign/confirmation/wake-only-allcore/guard-timing/latest/all32-required-wake-only-1/receipt.json": "cfa308e6a03d7dbacb064a7a3cc01ee525bd483d3a42432711e0f5460344a61f",
+    "artifacts/october-regression/coordination-redesign/confirmation/wake-only-allcore/guard-timing/latest/all32-required-baseline-1/receipt.json": "522274115ebd762aaed3785d18d96a60a1cb1f42dce9df8e05c36d05c9daa6f9",
+    "artifacts/october-regression/coordination-redesign/confirmation/wake-only-allcore/guard-timing/latest/all32-required-baseline-2/receipt.json": "75eb2401f85c78b461d9221744475dae64257285ceb6dc6131e7e5b86822ab4d",
+    "artifacts/october-regression/coordination-redesign/confirmation/wake-only-allcore/guard-timing/latest/all32-required-wake-only-2/receipt.json": "c2d827de0107c2adfc5b72cd5ccd63cdd5f8e060912546dd43ccac7b0c75cf4c",
+    "artifacts/october-regression/coordination-redesign/confirmation/wake-only-allcore/guard-timing/latest/all32-required-wake-only-3/receipt.json": "fdc7d1b4ec224600136dc2ba21c7536c650892a1e2d9cdff8a180b708e83698a",
+    "artifacts/october-regression/coordination-redesign/confirmation/wake-only-allcore/guard-timing/latest/all32-required-baseline-3/receipt.json": "cb8163985908a47ddaf858fa226a8ab4e455f7f73f38b76da3f117bc76683f57",
+    "artifacts/october-regression/coordination-redesign/confirmation/wake-only-allcore/guard-timing/latest/all32-optional-baseline-0/receipt.json": "4c11c4328e30640e5b52db3cae9fe2872fd1344ea4e6a5490d15c4ec9169922c",
+    "artifacts/october-regression/coordination-redesign/confirmation/wake-only-allcore/guard-timing/latest/all32-optional-wake-only-0/receipt.json": "7a8a5754994929762d498b470f2a8a3c01e0a124401edaba0feed3ad62267bc0",
+    "artifacts/october-regression/coordination-redesign/confirmation/wake-only-allcore/guard-timing/latest/all32-optional-wake-only-1/receipt.json": "218d3e3c1ea79a34d30eb1bfe534f799737b973a4e046ee1a14c42ebe35c0a64",
+    "artifacts/october-regression/coordination-redesign/confirmation/wake-only-allcore/guard-timing/latest/all32-optional-baseline-1/receipt.json": "f3788a9df24834984bc36942b9c24f5c17cc34c5e7d5ee4423afd4daf3d6885f",
+    "artifacts/october-regression/coordination-redesign/confirmation/wake-only-allcore/guard-timing/latest/all32-optional-baseline-2/receipt.json": "75610371dfc0df85ecb8bbe1df3e967fd68ac7d24da8d2cb352ab38454773e79",
+    "artifacts/october-regression/coordination-redesign/confirmation/wake-only-allcore/guard-timing/latest/all32-optional-wake-only-2/receipt.json": "51dcccfb44495cfebb7f9f9168d3e8524fe01a8a69f93b0617968de6a4135809",
+    "artifacts/october-regression/coordination-redesign/confirmation/wake-only-allcore/guard-timing/latest/all32-optional-wake-only-3/receipt.json": "a6c65b72fa9b34040e4187cd7a1f34a94a402eedefa9b78e83408490a2190c03",
+    "artifacts/october-regression/coordination-redesign/confirmation/wake-only-allcore/guard-timing/latest/all32-optional-baseline-3/receipt.json": "0d2ad4a11bb232cbd9c884fb456826dd6951879a94de6762c4334d01afbd88f5"
+  }
+}

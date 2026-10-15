@@ -1,0 +1,31 @@
+{
+  "state": "compiled",
+  "outputs": {
+    "old": {
+      "baseline": {
+        "binary": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/deadline-latency/probe-baseline",
+        "binary_sha256": "d293a630a5fcc30426069625f19338022c0c0afa28b55303e16f44c7f0a2db9e",
+        "header_sha256": "fa37bd1b3b3f1027aedda6858af0a2f574c0a2c9499f250fb4dee6d9659e19ea"
+      },
+      "wake-only": {
+        "binary": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/confirmation/wake-only-allcore/guard-old-wake-only",
+        "binary_sha256": "c965c71f9d217af6c36e88fd71e8474a47f1f222476102d322447c697bff621c",
+        "header_sha256": "204fd6064bb4b6074a1d95ca905d700735e41ba7eaabb49720e44b3423f229c7"
+      }
+    },
+    "latest": {
+      "baseline": {
+        "binary": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/confirmation/wake-only-allcore/guard-latest-baseline",
+        "binary_sha256": "ab7b962336fd477df750ff289473215ec378a736f3363ec719457e04dcc44371",
+        "header_sha256": "2053e76c927db8ceeb6e83cd2a70edb77e1fc02275b14a3ff998eafd7f6933af"
+      },
+      "wake-only": {
+        "binary": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/confirmation/wake-only-allcore/guard-latest-wake-only",
+        "binary_sha256": "d0368e40d9c3befa0152eca6898ff59e5e8c1e76df9b41452e8231e6978c7204",
+        "header_sha256": "8e59b8816e147ffa72adc5b11d869483dbefe4663a3aca28a39ccc106b9663c1"
+      }
+    }
+  },
+  "manifest_sha256": "154ed016dd56e52af6f0f8877592990f319512d1aeaf6141127f005311ed3ef9",
+  "boundary_nonce": "2cf2bfe0664d4eedbd6f26ca0974a96c"
+}

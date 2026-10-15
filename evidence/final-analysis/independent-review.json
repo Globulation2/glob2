@@ -1,0 +1,25 @@
+{
+  "approved": true,
+  "scope": "Independent readonly finalreport/browserreceipt sanity review; no runtime/build/fullasset rehash",
+  "utc": "2026-10-15T09:44:31.388090+00:00",
+  "bound_files_sha256": {
+    "artifacts/october-regression/coordination-redesign/final-analysis/generate.py": "25f351bc00ea3428b8841e812272d798919ce59cac4de337f8caf50dedea2837",
+    "artifacts/october-regression/coordination-redesign/final-analysis/summary.json": "1d18578d94c065ec4be3b6f94a2c69e7fb1d0fae6459300e601ce387c38203a3",
+    "artifacts/october-regression/coordination-redesign/final-analysis/summary.html": "b633c6dc288450f1d4e08f027f3cb431bae9f215cc020a8e7321be74c67bcac7",
+    "artifacts/october-regression/coordination-redesign/final-analysis/detailed.json": "093e6d525bbae1c3551f97b3910956fbcd776f7116813473eb8f8c5228edd7b6",
+    "artifacts/october-regression/coordination-redesign/final-analysis/detailed.html": "32c6b0d1994ff59c0e336c5a700198ec68cac1de1113e0acdf3d96c8e10e874b"
+  },
+  "checks": [
+    "Summary=detailedsummary; acceptedforreviewnotmerged exactefb843/PR1185, sourcevalidation/upload stillpending.",
+    "Bothdirectbrowserengine228/8117508,actual4workerpartial and843golden qualified; ChromiumUIpass remains separate fromFirefoxUI2candidatefailures+sameoriginalheadercontrolfailure.",
+    "Matchedbaselinecontrolreproduction supportsfailurewithoutW; noFirefoxUIpass orzerochanged-call proof inferred.",
+    "Restorationreceipt7690 fileidentities+candidateheader/Harnesscleancommit distinguishesrestoredservedbytesfrombaselinecontrolobjectcache; futureSConsmustinvalidate.",
+    "All256nativecounts/adverseseeds/concurrentthroughputCIcrosszero, originalBfirstconfounding andplatform/nativefeel limitations retained.",
+    "Finalrefresh embeds completedselected-sourcevalidation statepassed andfinalrecomputation statevalidated exactly; packaging/publication remainpending andFirefoxUIlimitation unchanged.",
+    "Finalcachecorrectionrefresh links passedmechanicalquarantine/missingtargetreceipt; no reliance onrestoredSConsmetadataalone; publicationrecordedseparately,notclaimedcomplete."
+  ],
+  "limits": [
+    "Reviewer checkedsavedmetadata consistency, not7690actualasset rehash or rerun browsercases.",
+    "OriginalheadercontrolisolatesWconditioninthisenvironment; doesnotestablishFirefoxrootcause orallbrowserUIcompatibility."
+  ]
+}

@@ -1,0 +1,38 @@
+{
+  "command": [
+    "taskset",
+    "-c",
+    "12,13,14,28,29,30",
+    "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/deadline-latency/probe-first-steal",
+    "off",
+    "required"
+  ],
+  "returncode": 0,
+  "status": "completed",
+  "process_wall_seconds": 0.07152491994202137,
+  "user_cpu_seconds": 0.076749,
+  "system_cpu_seconds": 0.006977,
+  "total_cpu_seconds": 0.083726,
+  "peak_rss_kib": 23168,
+  "voluntary_context_switches": 18,
+  "involuntary_context_switches": 4,
+  "harness_sha256": "4affbeca486235bed52cec56db0bf154ef20eda03f10cd478e2ab15cb592d78a",
+  "utc": "2026-10-15T00:40:46.032410+00:00",
+  "role": "first-steal",
+  "policy": "steal",
+  "kind": "required",
+  "repeat": 3,
+  "allocation": "3physical6SMT",
+  "binary_sha256": "7ce77b86848b19f15448fc363e87573862b6f7a648b3b31282bf85bbb8455d77",
+  "header_sha256": "ff6550ddf5a6b28d1b884f2432a42eb9dea59913908061c6136c1a65218a12d6",
+  "validation_errors": [],
+  "latency": {
+    "trace": false,
+    "urgent_join_ns": 13561921,
+    "later_started_before_urgent": 127,
+    "presentation_start_delay_ns": -1,
+    "later_total": 128,
+    "digest": 6568891044718746485,
+    "result_bytes": 1032
+  }
+}

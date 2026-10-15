@@ -1,0 +1,21 @@
+{
+  "state": "failed",
+  "command": [
+    "npx",
+    "--no-install",
+    "playwright",
+    "test",
+    "tests/threading.spec.js",
+    "tests/determinism.spec.js",
+    "--project=chromium",
+    "--project=firefox",
+    "--grep",
+    "threaded runtime executes shared compute|committed match record \\(threaded\\)",
+    "--reporter=json"
+  ],
+  "cwd": "/home/bradley/.codex/worktrees/engine-optimization/glob2/browser",
+  "removed_env_keys": [],
+  "started_utc": "2026-10-15T09:19:54.980140+00:00",
+  "returncode": 1,
+  "finished_utc": "2026-10-15T09:21:48.511296+00:00"
+}

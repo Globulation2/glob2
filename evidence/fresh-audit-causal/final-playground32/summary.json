@@ -1,0 +1,798 @@
+{
+  "utc": "2026-10-15T04:21:56.290666+00:00",
+  "state": "completed_map_only_independently_validated",
+  "map": "Playground",
+  "base_revision": "054804590ee1dd109f09642fc05654c324f08344",
+  "regime": "serial auto32/all32CPU,canonical8Nicowar+observer9",
+  "completed_runs": 64,
+  "matched_winner_pairs": 32,
+  "caps": 0,
+  "failures": 0,
+  "order_first_role_counts": {
+    "baseline": 16,
+    "wake-only": 16
+  },
+  "metrics": {
+    "e2e_seconds": {
+      "baseline_mean": 35.52432135891286,
+      "wake_mean": 31.503627699814388,
+      "ratio_of_means_change_percent": -11.318143472682273,
+      "adverse_positive_seeds": 0,
+      "adverse_negative_seeds": 32,
+      "per_seed_change_percent": [
+        -12.744206390654755,
+        -10.368984272333325,
+        -11.271401945561388,
+        -11.61269301381951,
+        -11.544947133867511,
+        -10.74462835771529,
+        -10.758519457759363,
+        -11.32455416392495,
+        -11.600890043307144,
+        -9.963280994682577,
+        -10.718525414071456,
+        -10.917057314031231,
+        -11.038943308147998,
+        -12.207656182284211,
+        -11.937675208860664,
+        -10.33588303423053,
+        -12.395280378265728,
+        -11.218883127093948,
+        -11.171787177462322,
+        -10.621405672116069,
+        -12.689003542315936,
+        -11.293527396384684,
+        -13.459852261220984,
+        -10.393184573925785,
+        -9.922763225549513,
+        -12.163378046872486,
+        -13.292289014711212,
+        -10.854211080290789,
+        -11.281103223862033,
+        -12.160151446327284,
+        -11.358872744836424,
+        -11.194234617142495
+      ],
+      "order_stratum_changes_percent": {
+        "baseline": -11.647541160882879,
+        "wake-only": -11.026134431568313
+      },
+      "paired_seed_MC10000_percentile95_percent": [
+        -11.639801069233803,
+        -11.021797180519549
+      ],
+      "valid_draws": 10000,
+      "independent_mulberry32_seed1729_CI95_percent": [
+        -11.636101512224332,
+        -11.036632776959356
+      ]
+    },
+    "inner_seconds": {
+      "baseline_mean": 34.8883375,
+      "wake_mean": 30.86541875,
+      "ratio_of_means_change_percent": -11.53084107260771,
+      "adverse_positive_seeds": 0,
+      "adverse_negative_seeds": 32,
+      "per_seed_change_percent": [
+        -13.098299806764624,
+        -10.618357168471992,
+        -11.605192635152594,
+        -11.850991143686418,
+        -11.821327239347301,
+        -10.870657620192848,
+        -10.992701012351091,
+        -11.643612928978175,
+        -11.822084797793298,
+        -10.286678374587177,
+        -10.777209260574006,
+        -11.075220039210777,
+        -11.269744835965978,
+        -12.37171082238866,
+        -12.085304690053,
+        -10.494071272982241,
+        -12.580372737567425,
+        -11.413606303835522,
+        -11.202215689278262,
+        -10.801635576856494,
+        -13.04633502230197,
+        -11.63147811660611,
+        -13.716984649804242,
+        -10.625930343588141,
+        -10.049385742061345,
+        -12.357806864296439,
+        -13.727093970488614,
+        -10.996671424648364,
+        -11.324925623836046,
+        -12.648052212422478,
+        -11.721435611432963,
+        -11.442538453147154
+      ],
+      "order_stratum_changes_percent": {
+        "baseline": -11.854145514782777,
+        "wake-only": -11.244891455454976
+      },
+      "paired_seed_MC10000_percentile95_percent": [
+        -11.866448962643322,
+        -11.226123796115742
+      ],
+      "valid_draws": 10000,
+      "independent_mulberry32_seed1729_CI95_percent": [
+        -11.860419649225426,
+        -11.235040386180282
+      ]
+    },
+    "total_cpu_seconds": {
+      "baseline_mean": 161.64675303125,
+      "wake_mean": 97.1526739375,
+      "ratio_of_means_change_percent": -39.89815934086954,
+      "adverse_positive_seeds": 0,
+      "adverse_negative_seeds": 32,
+      "per_seed_change_percent": [
+        -39.33781306135749,
+        -37.28319321703084,
+        -41.89701167840251,
+        -38.24921935884511,
+        -39.65753024255307,
+        -37.25588664116313,
+        -39.9647133781551,
+        -39.95313064352014,
+        -41.33518486928038,
+        -39.831623445667596,
+        -39.75437815352778,
+        -37.66860797145416,
+        -41.39386097550221,
+        -38.64605093278398,
+        -40.712059630730124,
+        -36.160850355390615,
+        -38.33980652934936,
+        -40.1916409673693,
+        -39.40071805728442,
+        -36.805659832746606,
+        -43.01552565304142,
+        -38.82928351147895,
+        -52.222054129132765,
+        -39.73821386988439,
+        -39.118716101007976,
+        -41.76787197706295,
+        -43.815063449223366,
+        -39.42475106741624,
+        -38.65170368496737,
+        -40.27118165464895,
+        -39.72805086155585,
+        -39.5141295188387
+      ],
+      "order_stratum_changes_percent": {
+        "baseline": -41.296663080785024,
+        "wake-only": -38.62196360493238
+      },
+      "paired_seed_MC10000_percentile95_percent": [
+        -41.310215074947926,
+        -38.89089310791792
+      ],
+      "valid_draws": 10000,
+      "independent_mulberry32_seed1729_CI95_percent": [
+        -41.28681581547972,
+        -38.880620540026484
+      ]
+    },
+    "user_cpu_seconds": {
+      "baseline_mean": 98.65983,
+      "wake_mean": 87.034014625,
+      "ratio_of_means_change_percent": -11.783737489715929,
+      "adverse_positive_seeds": 0,
+      "adverse_negative_seeds": 32,
+      "per_seed_change_percent": [
+        -10.805235852409844,
+        -10.091553455562352,
+        -14.02862962505087,
+        -10.840872013771364,
+        -11.695415415401001,
+        -10.79334840668148,
+        -14.163174885990093,
+        -11.791209603747621,
+        -14.001413231415249,
+        -11.780319594654475,
+        -13.179495481110093,
+        -10.846674474628315,
+        -14.38672414044948,
+        -12.554084230632878,
+        -11.869771468394962,
+        -11.488726295577234,
+        -10.46157341603653,
+        -13.28506619304477,
+        -13.083292243553169,
+        -9.799673607291426,
+        -11.686456258530232,
+        -9.302355342858181,
+        -9.598301869500803,
+        -12.149993608370046,
+        -10.138211589917889,
+        -13.256539521505161,
+        -16.09649695211244,
+        -12.66773297751531,
+        -11.808243432585574,
+        -11.623580441654035,
+        -10.133608607065625,
+        -9.75737510628748
+      ],
+      "order_stratum_changes_percent": {
+        "baseline": -12.286374262268385,
+        "wake-only": -11.341110532401578
+      },
+      "paired_seed_MC10000_percentile95_percent": [
+        -12.328599800473242,
+        -11.263307945178347
+      ],
+      "valid_draws": 10000,
+      "independent_mulberry32_seed1729_CI95_percent": [
+        -12.324165266207967,
+        -11.250565854141342
+      ]
+    },
+    "system_cpu_seconds": {
+      "baseline_mean": 62.98692303125,
+      "wake_mean": 10.1186593125,
+      "ratio_of_means_change_percent": -83.93530144744524,
+      "adverse_positive_seeds": 0,
+      "adverse_negative_seeds": 32,
+      "per_seed_change_percent": [
+        -83.46710029423035,
+        -82.46087611853777,
+        -84.06902271614442,
+        -83.49320412855022,
+        -83.71637057831994,
+        -83.0108634675637,
+        -83.74640051515696,
+        -82.6358978531933,
+        -83.3535068007582,
+        -84.21053769286264,
+        -84.2394476504311,
+        -82.09767651947351,
+        -84.36801823729498,
+        -82.54266454947404,
+        -83.44840336669567,
+        -82.27483003672448,
+        -83.95098620704637,
+        -85.40533905155033,
+        -84.61898391649174,
+        -83.5914961670553,
+        -84.89016804678025,
+        -82.48115521646777,
+        -90.10541051713193,
+        -83.873751091276,
+        -83.12747820628228,
+        -84.23449983588395,
+        -84.6264981340435,
+        -83.2081901770311,
+        -83.59616650133844,
+        -81.97359116414266,
+        -82.47681398410849,
+        -84.51631594797968
+      ],
+      "order_stratum_changes_percent": {
+        "baseline": -84.62852810486159,
+        "wake-only": -83.26647467022758
+      },
+      "paired_seed_MC10000_percentile95_percent": [
+        -84.78885545014919,
+        -83.32772736696838
+      ],
+      "valid_draws": 10000,
+      "independent_mulberry32_seed1729_CI95_percent": [
+        -84.77888822342415,
+        -83.31762685059226
+      ]
+    },
+    "peak_rss_kib": {
+      "baseline_mean": 151651.375,
+      "wake_mean": 150836.375,
+      "ratio_of_means_change_percent": -0.537416821970782,
+      "adverse_positive_seeds": 6,
+      "adverse_negative_seeds": 26,
+      "per_seed_change_percent": [
+        -0.6190581472473977,
+        -0.870901639344257,
+        -0.47079954280737635,
+        -0.46202417926538564,
+        -1.6700686583781765,
+        -1.1440521589371366,
+        1.0002792657848536,
+        -0.9081211192866312,
+        -0.6530567445944491,
+        -0.26390794890741587,
+        -0.683574400634035,
+        0.14190984854349775,
+        -0.4440569918544135,
+        -0.18509214944868457,
+        -0.7946862768354879,
+        -0.6469568614047461,
+        -0.7781016347737979,
+        -0.6550500996815423,
+        -0.8434009573740631,
+        -1.682268348935012,
+        -0.7991885162757839,
+        0.24295010845987175,
+        -0.07344561225781643,
+        -0.9561394215488961,
+        -1.0523798134417617,
+        0.6289800605491225,
+        0.7602153943617296,
+        -1.1003337505214872,
+        -0.4587267891564828,
+        -0.786216125794581,
+        -1.2025875580633172,
+        0.49679841024508065
+      ],
+      "order_stratum_changes_percent": {
+        "baseline": -0.5445138843498731,
+        "wake-only": -0.5305482927082439
+      },
+      "paired_seed_MC10000_percentile95_percent": [
+        -0.7498061067490049,
+        -0.3141295835203782
+      ],
+      "valid_draws": 10000,
+      "independent_mulberry32_seed1729_CI95_percent": [
+        -0.7500346085704473,
+        -0.3110117916082755
+      ]
+    },
+    "voluntary_context_switches": {
+      "baseline_mean": 4008860.53125,
+      "wake_mean": 855466.84375,
+      "ratio_of_means_change_percent": -78.66059851467925,
+      "adverse_positive_seeds": 0,
+      "adverse_negative_seeds": 32,
+      "per_seed_change_percent": [
+        -78.89861963378182,
+        -77.42757938287738,
+        -78.09798366296914,
+        -78.9192221878375,
+        -78.74430301692499,
+        -78.14690160815043,
+        -78.71686571119085,
+        -78.11637468081848,
+        -78.75383938450234,
+        -79.7534036485591,
+        -79.4097990294309,
+        -77.30718286406298,
+        -79.3074174403618,
+        -79.06918705331054,
+        -79.25411423022105,
+        -78.10318361395194,
+        -79.58392663379918,
+        -80.73790796650091,
+        -79.62641422773211,
+        -78.1667425383739,
+        -80.56785576998634,
+        -78.61478597401808,
+        -74.21302049644815,
+        -78.13116966489848,
+        -77.89593510434635,
+        -78.98097669396013,
+        -79.1860354523082,
+        -78.52247706070851,
+        -78.83552880801092,
+        -77.41857709386537,
+        -78.42747491540585,
+        -79.94557523550888
+      ],
+      "order_stratum_changes_percent": {
+        "baseline": -78.75121501626192,
+        "wake-only": -78.57860504162075
+      },
+      "paired_seed_MC10000_percentile95_percent": [
+        -79.02409091846536,
+        -78.25797618396136
+      ],
+      "valid_draws": 10000,
+      "independent_mulberry32_seed1729_CI95_percent": [
+        -79.03045216991582,
+        -78.25775669817726
+      ]
+    },
+    "involuntary_context_switches": {
+      "baseline_mean": 3076.90625,
+      "wake_mean": 129.40625,
+      "ratio_of_means_change_percent": -95.79427387493526,
+      "adverse_positive_seeds": 0,
+      "adverse_negative_seeds": 32,
+      "per_seed_change_percent": [
+        -96.84560044272274,
+        -94.9347420758235,
+        -96.0546282245827,
+        -95.70337364735838,
+        -95.11249030256013,
+        -96.2341946124244,
+        -95.23638968481374,
+        -96.47174126102581,
+        -96.23609923011121,
+        -95.23126568662603,
+        -96.3088768115942,
+        -95.21723256663016,
+        -95.119825708061,
+        -97.078611898017,
+        -88.48886783514922,
+        -96.31307929969104,
+        -96.35787806809184,
+        -96.83794466403161,
+        -95.68300955905026,
+        -96.11382459120831,
+        -95.21613832853026,
+        -94.60632362058277,
+        -95.45929018789144,
+        -95.19774011299435,
+        -95.5379632961497,
+        -96.64820751967356,
+        -96.65617623918175,
+        -95.76029351814105,
+        -95.4733727810651,
+        -96.25399725902238,
+        -94.65346534653465,
+        -96.42553191489361
+      ],
+      "order_stratum_changes_percent": {
+        "baseline": -95.470715835141,
+        "wake-only": -96.07914287351272
+      },
+      "paired_seed_MC10000_percentile95_percent": [
+        -96.13370867591695,
+        -95.34637119690835
+      ],
+      "valid_draws": 10000,
+      "independent_mulberry32_seed1729_CI95_percent": [
+        -96.13028628701417,
+        -95.34712129522676
+      ]
+    },
+    "inner_tps": {
+      "baseline_mean": 1511.9840897396641,
+      "wake_mean": 1711.5380335063496,
+      "ratio_of_means_change_percent": 13.198151033523441,
+      "adverse_positive_seeds": 32,
+      "adverse_negative_seeds": 0,
+      "per_seed_change_percent": [
+        15.072547231687228,
+        11.879796378867336,
+        13.128817156931461,
+        13.444270443249117,
+        13.406107020270607,
+        12.196497056906018,
+        12.350336587425815,
+        13.178009326726903,
+        13.407081320400117,
+        11.466165992089739,
+        12.078986962029337,
+        12.454593696036497,
+        12.701129750085594,
+        14.11839822333263,
+        13.746626371672853,
+        11.72444263998187,
+        14.390787437014918,
+        12.884152777436842,
+        12.615422531354392,
+        12.109678968568494,
+        15.003778191118332,
+        13.162467662358711,
+        15.897664904420994,
+        11.889276592683196,
+        11.17211463753225,
+        14.100293959054454,
+        15.911245606810741,
+        12.355348502880336,
+        12.771261488651442,
+        14.479416352775587,
+        13.277782316259557,
+        12.921032573967018
+      ],
+      "order_stratum_changes_percent": {
+        "baseline": 13.584865021562887,
+        "wake-only": 12.7969950178064
+      },
+      "paired_seed_MC10000_percentile95_percent": [
+        12.788526566094456,
+        13.623985525740824
+      ],
+      "valid_draws": 10000,
+      "independent_mulberry32_seed1729_CI95_percent": [
+        12.797811500623313,
+        13.620258223434485
+      ]
+    },
+    "e2e_tps": {
+      "baseline_mean": 1482.6115185801316,
+      "wake_mean": 1673.7840544011847,
+      "ratio_of_means_change_percent": 12.894310709533352,
+      "adverse_positive_seeds": 32,
+      "adverse_negative_seeds": 0,
+      "per_seed_change_percent": [
+        14.605570430901249,
+        11.568522556787997,
+        12.703234574545984,
+        13.138417053067553,
+        13.051766699342316,
+        12.03807475115035,
+        12.055514310598014,
+        12.770789091784751,
+        13.12331091228236,
+        11.06579749323624,
+        12.005318531959809,
+        12.254935664300604,
+        12.40873671991698,
+        13.905148958810255,
+        13.555939202347522,
+        11.527334884897588,
+        14.14910113494674,
+        12.636564533372852,
+        12.576845601725072,
+        11.883612348110573,
+        14.533110440980646,
+        12.731345374141734,
+        15.553304001571021,
+        11.598654102935036,
+        11.015838829953983,
+        13.847729769666305,
+        15.32999644860471,
+        12.17579788324812,
+        12.715558504212865,
+        13.843547827723167,
+        12.814449789360882,
+        12.605301659055733
+      ],
+      "order_stratum_changes_percent": {
+        "baseline": 13.282066647646861,
+        "wake-only": 12.493044796763275
+      },
+      "paired_seed_MC10000_percentile95_percent": [
+        12.505865651466111,
+        13.293580703253324
+      ],
+      "valid_draws": 10000,
+      "independent_mulberry32_seed1729_CI95_percent": [
+        12.523320082194328,
+        13.289495942026178
+      ]
+    },
+    "cpu_per_tick": {
+      "baseline_mean": 0.003094438988887616,
+      "wake_mean": 0.0018542084614589821,
+      "ratio_of_means_change_percent": -40.079333665404405,
+      "adverse_positive_seeds": 0,
+      "adverse_negative_seeds": 32,
+      "per_seed_change_percent": [
+        -39.33781306135747,
+        -37.28319321703084,
+        -41.89701167840251,
+        -38.24921935884511,
+        -39.65753024255309,
+        -37.25588664116313,
+        -39.9647133781551,
+        -39.953130643520154,
+        -41.3351848692804,
+        -39.831623445667596,
+        -39.75437815352778,
+        -37.66860797145416,
+        -41.39386097550221,
+        -38.64605093278397,
+        -40.712059630730124,
+        -36.160850355390615,
+        -38.339806529349374,
+        -40.1916409673693,
+        -39.40071805728442,
+        -36.805659832746606,
+        -43.01552565304142,
+        -38.82928351147896,
+        -52.222054129132786,
+        -39.73821386988439,
+        -39.118716101007976,
+        -41.76787197706295,
+        -43.81506344922336,
+        -39.42475106741623,
+        -38.65170368496737,
+        -40.27118165464895,
+        -39.728050861555865,
+        -39.5141295188387
+      ],
+      "order_stratum_changes_percent": {
+        "baseline": -41.354485997503346,
+        "wake-only": -38.81317435922917
+      },
+      "paired_seed_MC10000_percentile95_percent": [
+        -41.37402344601422,
+        -39.123099153028406
+      ],
+      "valid_draws": 10000,
+      "independent_mulberry32_seed1729_CI95_percent": [
+        -41.36031374306521,
+        -39.1039302343925
+      ]
+    },
+    "ticks": {
+      "baseline_mean": 51920,
+      "wake_mean": 51920,
+      "ratio_of_means_change_percent": 0.0,
+      "adverse_positive_seeds": 0,
+      "adverse_negative_seeds": 0,
+      "per_seed_change_percent": [
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "order_stratum_changes_percent": {
+        "baseline": 0.0,
+        "wake-only": 0.0
+      },
+      "paired_seed_MC10000_percentile95_percent": [
+        0,
+        0
+      ],
+      "valid_draws": 10000,
+      "independent_mulberry32_seed1729_CI95_percent": [
+        0,
+        0
+      ]
+    }
+  },
+  "bootstrap": {
+    "method": "Paired32independentseed bootstrap10000, same seed indices for all metrics; no individual-run/wave resampling.",
+    "implementation": "JavaScript V8 xorshift32 uniformfloor draws; seed20261015; linear empirical percentile.",
+    "seed": 20261015
+  },
+  "interpretation": [
+    "All32completedPGseeds matchedwinner/ticks andreportedendpointchecks, canonical8Nicowar+observer9, CPUauto32participants/32eligible. Rolefirstorderbalanced16/16 withnonoverlappingpairedgames.",
+    "FullPGmapestimatesreplaceearlier14pairprefix forthismaponly; OAandwavesremainunfinished/unassessed.",
+    "Pairedseedintervals quantifyvariationacrossthesedeclared32seeds, notsystematichost/drift/platformuncertainty; narrowintervalsarenotuniversalprecision.",
+    "Noacceptance/stoprecommendation beforeOA+concurrentwavescomplete. WholeprocessCPU/sys/contextreductionsarenotpurecallbackCPUoruniversalworkerpolicyproof.",
+    "RatioofmeanTPS isnotreciprocalofratioofmeanwallwhenper-seedgamelengthsvary; pairedtickcountsagree."
+  ],
+  "limits": [
+    "CompletedPGmaponly; unfinishedOA+wavesnotincluded. No acceptance/stopdecisionfromthisresult.",
+    "32predeclaredseedpairedwinnerintervals conditionalonthismap/version/host/single-gameauto32.",
+    "TPSmeanandtotal-tick/total-wall ratiosdistinct; processCPU/sysincludesstartup/load/shutdown.",
+    "Winner/tick/observedendpoint checks complementpriorlatest40per-tickparity; notnaturalper-tickproof.",
+    "No source/boundfilechanges,bootstrapPythonloops,profiles/builds/signals/workloads."
+  ],
+  "aggregate_rates": {
+    "baseline": {
+      "total_ticks": 1661440,
+      "total_e2e_seconds": 1136.7782834852114,
+      "ticks_over_sum_e2e_seconds": 1461.5339016736361
+    },
+    "wake-only": {
+      "total_ticks": 1661440,
+      "total_e2e_seconds": 1008.1160863940604,
+      "ticks_over_sum_e2e_seconds": 1648.0641688228782
+    }
+  },
+  "root_independent_comparison": {
+    "source": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/confirmation/completed-playground32/root-statistics.json",
+    "sha256": "b28ce1093408e79111389fc142a351bd71ed580dc707a45118338419c23596a4",
+    "checks": {
+      "e2e_seconds": {
+        "baseline_mean_difference": 0.0,
+        "wake_mean_difference": 0.0,
+        "change_percentagepoint_difference": 0.0,
+        "primary_CI_differences": [
+          0.0,
+          0.0
+        ]
+      },
+      "inner_seconds": {
+        "baseline_mean_difference": 0.0,
+        "wake_mean_difference": 0.0,
+        "change_percentagepoint_difference": 0.0,
+        "primary_CI_differences": [
+          0.0,
+          0.0
+        ]
+      },
+      "total_cpu_seconds": {
+        "baseline_mean_difference": -2.842170943040401e-14,
+        "wake_mean_difference": -1.4210854715202004e-14,
+        "change_percentagepoint_difference": 1.4210854715202004e-14,
+        "primary_CI_differences": [
+          0.0,
+          0.0
+        ]
+      },
+      "system_cpu_seconds": {
+        "baseline_mean_difference": 7.105427357601002e-15,
+        "wake_mean_difference": -1.7763568394002505e-15,
+        "change_percentagepoint_difference": -1.4210854715202004e-14,
+        "primary_CI_differences": [
+          0.0,
+          0.0
+        ]
+      },
+      "cpu_per_tick": {
+        "baseline_mean_difference": 4.336808689942018e-19,
+        "wake_mean_difference": -2.168404344971009e-19,
+        "change_percentagepoint_difference": -1.4210854715202004e-14,
+        "primary_CI_differences": [
+          0.0,
+          0.0
+        ]
+      },
+      "peak_rss_kib": {
+        "baseline_mean_difference": 0.0,
+        "wake_mean_difference": 0.0,
+        "change_percentagepoint_difference": 0.0,
+        "primary_CI_differences": [
+          0.0,
+          0.0
+        ]
+      },
+      "voluntary_context_switches": {
+        "baseline_mean_difference": 0.0,
+        "wake_mean_difference": 0.0,
+        "change_percentagepoint_difference": 0.0,
+        "primary_CI_differences": [
+          0.0,
+          0.0
+        ]
+      },
+      "inner_tps": {
+        "baseline_mean_difference": 0.0,
+        "wake_mean_difference": 2.2737367544323206e-13,
+        "change_percentagepoint_difference": 2.1316282072803006e-14,
+        "primary_CI_differences": [
+          0.0,
+          0.0
+        ]
+      }
+    },
+    "interpretation": "Means/changesagreefloatingroundoff; samexorshiftCIsagreeexactly. IndependentMulberry32 intervals agreewithinMonteCarlosamplingvariation."
+  },
+  "reproduction": {
+    "steps": [
+      [
+        "taskset",
+        "-c",
+        "15,31",
+        "python3",
+        "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/fresh-audit-causal/final-playground32/audit.py"
+      ],
+      [
+        "node",
+        "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/fresh-audit-causal/final-playground32/bootstrap.mjs"
+      ],
+      [
+        "taskset",
+        "-c",
+        "15,31",
+        "python3",
+        "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/fresh-audit-causal/final-playground32/assemble.py"
+      ]
+    ],
+    "execution_note": "Actualbootstrap executedinremoteV8controlisolate, notbenchmarkhost. Nodefileisfullreproduction source; do notexecuteCPU-heavyresamplingonbenchhostduringmeasurement."
+  }
+}

@@ -1,0 +1,49 @@
+{
+  "status": "Prepared unbuilt/unexecuted; root review/cohort gate before compile or timing. Frozen pipeline mustnotchange withoutrootapproval.",
+  "harness_sha256": "4affbeca486235bed52cec56db0bf154ef20eda03f10cd478e2ab15cb592d78a",
+  "build_commands": {
+    "baseline": "g++-13 -std=c++20 -O3 -pthread -I/home/bradley/.codex/worktrees/engine-history-latest-master/glob2/src/common -I/home/bradley/.codex/worktrees/engine-history-latest-master/glob2/libgag/include artifacts/october-regression/coordination-redesign/deadline-latency/probe.cpp -L/usr/lib/gcc/x86_64-linux-gnu/15 -o artifacts/october-regression/coordination-redesign/deadline-latency/probe-baseline",
+    "first-steal": "g++-13 -std=c++20 -O3 -pthread -Iartifacts/october-regression/coordination-redesign/source/src/common -Iartifacts/october-regression/coordination-redesign/source/libgag/include artifacts/october-regression/coordination-redesign/deadline-latency/probe.cpp -L/usr/lib/gcc/x86_64-linux-gnu/15 -o artifacts/october-regression/coordination-redesign/deadline-latency/probe-first-steal",
+    "local": "g++-13 -std=c++20 -O3 -pthread -Iartifacts/october-regression/coordination-redesign/local-completion-source/src/common -Iartifacts/october-regression/coordination-redesign/local-completion-source/libgag/include artifacts/october-regression/coordination-redesign/deadline-latency/probe.cpp -L/usr/lib/gcc/x86_64-linux-gnu/15 -o artifacts/october-regression/coordination-redesign/deadline-latency/probe-local"
+  },
+  "qualification_commands": [
+    "GLOB2_DEFERRED_DISPATCH=steal timeout 40s artifacts/october-regression/coordination-redesign/deadline-latency/probe-baseline trace required",
+    "GLOB2_DEFERRED_DISPATCH=steal timeout 40s artifacts/october-regression/coordination-redesign/deadline-latency/probe-baseline trace optional",
+    "GLOB2_DEFERRED_DISPATCH=steal timeout 40s artifacts/october-regression/coordination-redesign/deadline-latency/probe-first-steal trace required",
+    "GLOB2_DEFERRED_DISPATCH=steal timeout 40s artifacts/october-regression/coordination-redesign/deadline-latency/probe-first-steal trace optional",
+    "GLOB2_DEFERRED_DISPATCH=round-robin timeout 40s artifacts/october-regression/coordination-redesign/deadline-latency/probe-local trace required",
+    "GLOB2_DEFERRED_DISPATCH=round-robin timeout 40s artifacts/october-regression/coordination-redesign/deadline-latency/probe-local trace optional",
+    "GLOB2_DEFERRED_DISPATCH=steal timeout 40s artifacts/october-regression/coordination-redesign/deadline-latency/probe-local trace required",
+    "GLOB2_DEFERRED_DISPATCH=steal timeout 40s artifacts/october-regression/coordination-redesign/deadline-latency/probe-local trace optional"
+  ],
+  "timing_template": "GLOB2_DEFERRED_DISPATCH=<POLICY> taskset -c <MATCHED_CPU_MASK> timeout 40s artifacts/october-regression/coordination-redesign/deadline-latency/probe-<ROLE> off <required|optional>",
+  "design": "Threecallbackworkers held; prequeue128 identical longCPU laterdue100 independentjobs; enqueueurgentindependentlane2 due1; releasesworkers thenjoinsurgent. Measure release\u2192urgentjoin andlatercallbacksstartedbeforeurgent. Optionalvariant adds1presentationchunk andmeasures servicestartdelay. LaneFIFO preserved; fixedpayload/results identical acrossroles.",
+  "expected": "EDF baseline urgentpriority shouldlimitrunninglaterjobs beforeurgent. FIFOlocalqueues maydeferurgent behindbacklog; stealing primarilybalancescost noturgency. Thisexperiment measurescontractlatency separatefromchecksums.",
+  "metrics": [
+    "urgent_join_ns",
+    "later_started_before_urgent",
+    "presentation_start_delay_ns (optionalvariant)",
+    "payloaddigest/resultbytes (identical expected)",
+    "Processuser/systemCPU/wall/RSS viaexternalwait4receipt ifrootruns"
+  ],
+  "limits": [
+    "Globalreadyorder race aroundgates allowsfewlaterjobsstartbeforeurgent evenEDF; reportobservations notassertzero.",
+    "Prequeue+release syntheticcriticalpath, notgameframebenchmark; noGPU/async/savecoverage.",
+    "30s internalwatchdog/5sgates/40soutertimeout; sanitizeroverhead nottiming.",
+    "Traceforqualification,Offtiming; measureallvariantswithsameflags/count/mask,rotateorder andseveralrepeats; no confidenceclaimfromsinglepayload.",
+    "Verificationrecomputespayloadaftertimedurgentwindow, so processCPU includescheckwork; innerlatencydoesnot.",
+    "IfFIFOhasmaterialurgentlatencyregression, evaluateperqueue due-priority orurgentrescue; no priorityrewritebeforeevidence. HeapintroducesO(logn)bookkeeping, so compareonlyafterlatencycaseprovesneed."
+  ],
+  "exception_safety": "State outlives executor; RAII release guard declared after executor releases held callbacks on unwind before executor stop/drain/cancel. Result storage allocated before any callback submission.",
+  "expected_trace_cases": 10,
+  "expected_timing_cases": 80,
+  "authoritative_roles": [
+    "baseline",
+    "first-steal",
+    "local-round-robin",
+    "local-steal",
+    "local-priority-steal"
+  ],
+  "auxiliary_priority_checks": 4,
+  "excluded_policy": "Local lane-affine not eligible. One-worker priority queue affine ordering check is a narrow diagnostic only."
+}

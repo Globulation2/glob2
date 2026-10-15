@@ -1,0 +1,35 @@
+{
+  "state": "passed",
+  "utc": "2026-10-15T09:43:23.396137+00:00",
+  "reason": "The control compiled original-header objects, while restoration also restored candidate SCons signature metadata. Do not assume that metadata alone guarantees invalidation. Move all generated web object sets out of active target paths so future builds must recreate targets.",
+  "moves": [
+    {
+      "source": "/home/bradley/.codex/worktrees/engine-optimization/glob2/build/emscripten/client/release/obj",
+      "quarantine": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/final-integration/web-control-object-cache-quarantine/obj",
+      "active_target_absent": true
+    },
+    {
+      "source": "/home/bradley/.codex/worktrees/engine-optimization/glob2/build/emscripten/client/release/threaded/obj",
+      "quarantine": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/final-integration/web-control-object-cache-quarantine/threaded/obj",
+      "active_target_absent": true
+    },
+    {
+      "source": "/home/bradley/.codex/worktrees/engine-optimization/glob2/build/emscripten/client/release/music-obj",
+      "quarantine": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/final-integration/web-control-object-cache-quarantine/music-obj",
+      "active_target_absent": true
+    },
+    {
+      "source": "/home/bradley/.codex/worktrees/engine-optimization/glob2/build/emscripten/client/release/recording-obj",
+      "quarantine": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/final-integration/web-control-object-cache-quarantine/recording-obj",
+      "active_target_absent": true
+    },
+    {
+      "source": "/home/bradley/.codex/worktrees/engine-optimization/glob2/build/emscripten/client/release/hive-obj",
+      "quarantine": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/final-integration/web-control-object-cache-quarantine/hive-obj",
+      "active_target_absent": true
+    }
+  ],
+  "public_runtime_files_changed": false,
+  "source_changed": false,
+  "scope": "Generated object directories only; no deletion. Quarantined baseline/mixed objects excluded from portable evidence. Existing tested candidate public runtime bytes remain unchanged."
+}

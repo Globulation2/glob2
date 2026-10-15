@@ -1,0 +1,77 @@
+{
+  "state": "qualified_both_original_and_relocated_regimes",
+  "source_sha256": "056f9635d75f7a8ca697c4e0a0e760868a9eb1dfc49510df81ebdc896c37d031",
+  "canonical_analyzer_sha256": "d666ec60e13e71e8866ddfb97de76d82930676503c911810c8a18de407b00afd",
+  "canonical_parser_launcher_sha256": "8e53b4b9cb35a6c1189c6e0ccb09da0cec89dc7ec5965854fb54de477fad4f16",
+  "python_requirement": "Python3.8+ standard library only, without-O; no engine, browser, subprocess, compiler, packages or original checkout required. Runtime/version recorded.",
+  "purpose": "Recompute the retained canonical final-cohort tables from a compact portable evidence bundle. This is a direct adaptation of the frozen analyzer, not a new scheduler/model or independent sensitivity estimator.",
+  "input_layout": [
+    "evidence/confirmation/final-cohort/plan.json",
+    "evidence/confirmation/final-cohort/launcher.py (hash only, never imported/executed)",
+    "evidence/confirmation/wake-only-allcore/latest-resolve-complete.json",
+    "evidence/confirmation/final-cohort/<serial|waves>/complete.json",
+    "evidence/confirmation/final-cohort/<regime>/<map>/<seed>-<role>/receipt.json",
+    "evidence/confirmation/final-cohort/<regime>/<map>/<seed>-<role>/stdout.log",
+    "evidence/confirmation/final-cohort/<regime>/wave-*.json",
+    "Optional:<regime>/analysis.json for--compare-retained",
+    "Optional:root-approved.json and checksum sidecar bodies; omitted bodies explicitly reported"
+  ],
+  "commands": [
+    {
+      "when": "After completed256/sourcevalidation and gatedsafehold only",
+      "argv": [
+        "python3",
+        "tools/recompute-final.py",
+        "--root",
+        "<portable-bundle-root>",
+        "--regime",
+        "both",
+        "--compare-retained",
+        "--output",
+        "<new-result.json>"
+      ]
+    },
+    {
+      "when": "Single completedregime, not incomplete map/prefix",
+      "argv": [
+        "python3",
+        "tools/recompute-final.py",
+        "--root",
+        "<bundle>/evidence/confirmation/final-cohort",
+        "--regime",
+        "serial",
+        "--output",
+        "<new-serial-result.json>"
+      ]
+    }
+  ],
+  "algorithm": {
+    "seed_metric_rng": "random.Random(605441),10000choices; exact canonical map/metric loop and RNGconsumption order preserved. Paired32seedunits, no independent repeat counts.",
+    "per_game_estimand": "Wmean/Bmean\u22121 for selected matchingwinner pairs with metric present. In four-game regime, also resample the paired four-seed host-wave clusters; retain excluded/censored seeds.",
+    "host_wave_rng": "random.Random(605442),10000 paired8wave draws separately per map.",
+    "host_estimands": "Sum Wspans /sum Bspans\u22121; completed-rate ratio (Wwinners/Wspan)/(Bwinners/Bspan)\u22121. Allwaves includingcaps retained; cap consumes span andcounts0wins. NotmeanpergameTPS or sumparallelgamewall.",
+    "quantile": "Sort draws; endpoint values[int(.025*(N\u22121))],values[int(.975*(N\u22121))]. Floor-index order statistics, no interpolation. This intentionally matches canonicalPython analyzer, not independent V8/root linear-quantile sensitivity.",
+    "units": "Change fractions in JSON; multiply100 for percentages. Requested 10000draws fixed, no CI from two nested repeats.",
+    "roundoff": "--compare-retained recursively compares maps/waves/campaignmetrics at1e\u221212relative/absolute tolerance; sortedportable receipt iteration may alter finalbits of additive summaries. Pythonimplementation/version captured; notasserting byte-identicalJSON acrossallPythonversions."
+  },
+  "validation": [
+    "Exactly32unique declaredseeds,128unique map/seed/role receipts perregime,64pairs; plan/launcher/receipt/wavehashes checked. No original absolute file opened.",
+    "Command,cwd,seed,profile/environment,fixture/binary declaredhash identities checked against packagedplan/resolvedmetadata; HISTORY stdout reparsed for actualroster/dimensions/participants/eligibleCPUs/backend/winner/cap.",
+    "Bothwinner endpoints/availablecanonical checksum metadata mustmatch; mismatchesfail. Paireligibility/exclusions recomputed andmatch retainedpairs. Caps remain caps regardless terminalwinner text.",
+    "Roleorder from source-declared seed/wave alternation, homogeneous nooverlap, wave members/masks/monotonic containment/span/winner/cap counts, sumgamewall and completed-rate arithmetic checked.",
+    "All requestedregimes validatebefore anybootstrap; incompletebundle fails early. Newoutput only; never overwrites retained analysis or input."
+  ],
+  "limits": [
+    "Internal hashes establish self-consistency, not independent authenticity. Run bundleindex/verify.py first if supplied and retain signed/root-approved evidence references separately.",
+    "Original absolute commands/cwd/fixture references are provenance strings only. Actual engine binaries, source checkout, dependencies and fixture bytes are not executed or required; absent bytes notclaimed reverified.",
+    "Missing optional detailed checksum bodies listed; endpointmetadata is not full per-tick proof. Prior exact-source per-tick/save/replay/platform evidence remains separate.",
+    "Wave spans include launch/wait/runner validation work from original experiment, not a pure steady-state engine-only estimator.",
+    "Serialauto32/all32 vsfourconcurrent6/6logicalCPU regimes jointlychange allocation/concurrency/budget; no universalworker-count optimum or productionacceptance inferred."
+  ],
+  "pending_before_portability_claim": [
+    "Actual gated bundle packaging/contentmanifest verification remains pending final source/platform validation. No fullpackage/archive produced.",
+    "Relocation tested a minimal explicit-file copy. Optional root approval absent supported; original binary/fixture bytes and full checksum bodies are not verified by this tool.",
+    "Additional all-cap/missing-metric and duplicate/order synthetic cases were proposed but not executed; no claim of exhaustive parser/statistics fuzzing."
+  ],
+  "qualification": "qualification/receipt.json: both completed128-run regimes match retained canonical numbers within1e-12; relocated auto-root execution matches, with original-worktree content opens denied by audit hook. Cap/no-winner exclusion, zero-reference, cap-dominance, corrupted-hash and inconsistent failed-pair checks passed."
+}

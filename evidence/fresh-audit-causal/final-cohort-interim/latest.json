@@ -1,0 +1,383 @@
+{
+  "utc": "2026-10-15T03:37:19.834906+00:00",
+  "scope": "Read-only incomplete serialprefix; completedpairsonly forcomparisons; no bootstrap,adoption,stoporreorderingdecision.",
+  "retained_receipts_snapshot": 28,
+  "reported_progress": 28,
+  "receipt_status_counts": {
+    "winner": 28
+  },
+  "completed_pairs_snapshot": 14,
+  "verified_pairs": [
+    {
+      "map": "Playground",
+      "seed_index": 0,
+      "seed": 1056243202,
+      "both_winners": true,
+      "endpoints_match": true,
+      "statuses": [
+        "winner",
+        "winner"
+      ],
+      "eligible_winner_timing_pair": true,
+      "limitation": "Ticks/winner equality without checksum sidecar is not per-tick equivalence.",
+      "actual_first_role": "baseline"
+    },
+    {
+      "map": "Playground",
+      "seed_index": 1,
+      "seed": 744345666,
+      "both_winners": true,
+      "endpoints_match": true,
+      "statuses": [
+        "winner",
+        "winner"
+      ],
+      "eligible_winner_timing_pair": true,
+      "limitation": "Ticks/winner equality without checksum sidecar is not per-tick equivalence.",
+      "actual_first_role": "wake-only"
+    },
+    {
+      "map": "Playground",
+      "seed_index": 2,
+      "seed": 1064623205,
+      "both_winners": true,
+      "endpoints_match": true,
+      "statuses": [
+        "winner",
+        "winner"
+      ],
+      "eligible_winner_timing_pair": true,
+      "limitation": "Ticks/winner equality without checksum sidecar is not per-tick equivalence.",
+      "actual_first_role": "baseline"
+    },
+    {
+      "map": "Playground",
+      "seed_index": 3,
+      "seed": 725864695,
+      "both_winners": true,
+      "endpoints_match": true,
+      "statuses": [
+        "winner",
+        "winner"
+      ],
+      "eligible_winner_timing_pair": true,
+      "limitation": "Ticks/winner equality without checksum sidecar is not per-tick equivalence.",
+      "actual_first_role": "wake-only"
+    },
+    {
+      "map": "Playground",
+      "seed_index": 4,
+      "seed": 599004658,
+      "both_winners": true,
+      "endpoints_match": true,
+      "statuses": [
+        "winner",
+        "winner"
+      ],
+      "eligible_winner_timing_pair": true,
+      "limitation": "Ticks/winner equality without checksum sidecar is not per-tick equivalence.",
+      "actual_first_role": "baseline"
+    },
+    {
+      "map": "Playground",
+      "seed_index": 5,
+      "seed": 117787757,
+      "both_winners": true,
+      "endpoints_match": true,
+      "statuses": [
+        "winner",
+        "winner"
+      ],
+      "eligible_winner_timing_pair": true,
+      "limitation": "Ticks/winner equality without checksum sidecar is not per-tick equivalence.",
+      "actual_first_role": "wake-only"
+    },
+    {
+      "map": "Playground",
+      "seed_index": 6,
+      "seed": 85910194,
+      "both_winners": true,
+      "endpoints_match": true,
+      "statuses": [
+        "winner",
+        "winner"
+      ],
+      "eligible_winner_timing_pair": true,
+      "limitation": "Ticks/winner equality without checksum sidecar is not per-tick equivalence.",
+      "actual_first_role": "baseline"
+    },
+    {
+      "map": "Playground",
+      "seed_index": 7,
+      "seed": 769116511,
+      "both_winners": true,
+      "endpoints_match": true,
+      "statuses": [
+        "winner",
+        "winner"
+      ],
+      "eligible_winner_timing_pair": true,
+      "limitation": "Ticks/winner equality without checksum sidecar is not per-tick equivalence.",
+      "actual_first_role": "wake-only"
+    },
+    {
+      "map": "Playground",
+      "seed_index": 8,
+      "seed": 1030656205,
+      "both_winners": true,
+      "endpoints_match": true,
+      "statuses": [
+        "winner",
+        "winner"
+      ],
+      "eligible_winner_timing_pair": true,
+      "limitation": "Ticks/winner equality without checksum sidecar is not per-tick equivalence.",
+      "actual_first_role": "baseline"
+    },
+    {
+      "map": "Playground",
+      "seed_index": 9,
+      "seed": 79851807,
+      "both_winners": true,
+      "endpoints_match": true,
+      "statuses": [
+        "winner",
+        "winner"
+      ],
+      "eligible_winner_timing_pair": true,
+      "limitation": "Ticks/winner equality without checksum sidecar is not per-tick equivalence.",
+      "actual_first_role": "wake-only"
+    },
+    {
+      "map": "Playground",
+      "seed_index": 10,
+      "seed": 1480527227,
+      "both_winners": true,
+      "endpoints_match": true,
+      "statuses": [
+        "winner",
+        "winner"
+      ],
+      "eligible_winner_timing_pair": true,
+      "limitation": "Ticks/winner equality without checksum sidecar is not per-tick equivalence.",
+      "actual_first_role": "baseline"
+    },
+    {
+      "map": "Playground",
+      "seed_index": 11,
+      "seed": 31444774,
+      "both_winners": true,
+      "endpoints_match": true,
+      "statuses": [
+        "winner",
+        "winner"
+      ],
+      "eligible_winner_timing_pair": true,
+      "limitation": "Ticks/winner equality without checksum sidecar is not per-tick equivalence.",
+      "actual_first_role": "wake-only"
+    },
+    {
+      "map": "Playground",
+      "seed_index": 12,
+      "seed": 1514826878,
+      "both_winners": true,
+      "endpoints_match": true,
+      "statuses": [
+        "winner",
+        "winner"
+      ],
+      "eligible_winner_timing_pair": true,
+      "limitation": "Ticks/winner equality without checksum sidecar is not per-tick equivalence.",
+      "actual_first_role": "baseline"
+    },
+    {
+      "map": "Playground",
+      "seed_index": 13,
+      "seed": 1858401095,
+      "both_winners": true,
+      "endpoints_match": true,
+      "statuses": [
+        "winner",
+        "winner"
+      ],
+      "eligible_winner_timing_pair": true,
+      "limitation": "Ticks/winner equality without checksum sidecar is not per-tick equivalence.",
+      "actual_first_role": "wake-only"
+    }
+  ],
+  "metrics": [
+    {
+      "map": "Playground",
+      "complete_pairs": 14,
+      "eligible_winner_pairs": 14,
+      "first_role_counts": {
+        "baseline": 7,
+        "wake-only": 7
+      },
+      "metrics": {
+        "e2e_seconds": {
+          "paired_prefix_n": 14,
+          "baseline_mean": 36.75722909785275,
+          "wake_mean": 32.65762776738432,
+          "ratio_of_paired_prefix_means_change_percent": -11.153183825567304
+        },
+        "inner_seconds": {
+          "paired_prefix_n": 14,
+          "baseline_mean": 36.12309285714286,
+          "wake_mean": 32.01414285714286,
+          "ratio_of_paired_prefix_means_change_percent": -11.374856566822212
+        },
+        "total_cpu_seconds": {
+          "paired_prefix_n": 14,
+          "baseline_mean": 166.10368964285715,
+          "wake_mean": 100.86427378571429,
+          "ratio_of_paired_prefix_means_change_percent": -39.27631950705936
+        },
+        "system_cpu_seconds": {
+          "paired_prefix_n": 14,
+          "baseline_mean": 63.30960628571429,
+          "wake_mean": 10.528524,
+          "ratio_of_paired_prefix_means_change_percent": -83.36978443289459
+        },
+        "peak_rss_kib": {
+          "paired_prefix_n": 14,
+          "baseline_mean": 152912,
+          "wake_mean": 152123.7142857143,
+          "ratio_of_paired_prefix_means_change_percent": -0.5155159269944254
+        },
+        "voluntary_context_switches": {
+          "paired_prefix_n": 14,
+          "baseline_mean": 4154666.6428571427,
+          "wake_mean": 887871.0714285715,
+          "ratio_of_paired_prefix_means_change_percent": -78.62954725970536
+        },
+        "involuntary_context_switches": {
+          "paired_prefix_n": 14,
+          "baseline_mean": 3207.4285714285716,
+          "wake_mean": 129.42857142857142,
+          "ratio_of_paired_prefix_means_change_percent": -95.96472474612506
+        },
+        "inner_tps": {
+          "paired_prefix_n": 14,
+          "baseline_mean": 1490.7452345751594,
+          "wake_mean": 1683.5621619411193,
+          "ratio_of_paired_prefix_means_change_percent": 12.934264211879887
+        },
+        "cpu_per_tick": {
+          "paired_prefix_n": 14,
+          "baseline_mean": 0.003098508417378235,
+          "wake_mean": 0.0018769721244126063,
+          "ratio_of_paired_prefix_means_change_percent": -39.423365323603576
+        }
+      }
+    },
+    {
+      "map": "Oazis",
+      "complete_pairs": 0,
+      "eligible_winner_pairs": 0,
+      "first_role_counts": {},
+      "metrics": {}
+    }
+  ],
+  "actual_live_glob2_processes": [
+    {
+      "pid": 117249,
+      "state": "R",
+      "parent_pid": 111285,
+      "starttime": "330262827",
+      "argv": [
+        "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/confirmation/latest-wake/baseline/build/linux/client/release/src/glob2",
+        "dev",
+        "random-games",
+        "--runs",
+        "1",
+        "--ticks",
+        "2147483647",
+        "--map",
+        "Playground",
+        "--matchup",
+        "nicowar,nicowar,nicowar,nicowar,nicowar,nicowar,nicowar,nicowar",
+        "--compute-threads",
+        "auto",
+        "--gradient-backend",
+        "cpu"
+      ],
+      "cpus_allowed_list": "0-31",
+      "requested_game_seed": "1635872854"
+    }
+  ],
+  "progress_active_identity_checks": [
+    {
+      "pid": 116839,
+      "claimed_starttime": "330258626",
+      "live_same_identity": false
+    }
+  ],
+  "live_claims_only": [
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/confirmation/final-cohort/serial/Playground/1635872854-baseline/active-claim.json",
+      "pid": 117249,
+      "claimed_starttime": "330262827",
+      "live_same_identity": true,
+      "role": "baseline",
+      "seed": 1635872854
+    }
+  ],
+  "historical_claim_files": 29,
+  "outer_identity": {
+    "pid": 109088,
+    "state": "S",
+    "parent_pid": 8420,
+    "starttime": "330122782",
+    "argv": [
+      "python3",
+      "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/confirmation/final-controller/final-controller.py"
+    ],
+    "cpus_allowed_list": "0-31"
+  },
+  "old_campaign_identity": {
+    "pid": 4072783,
+    "state": "T",
+    "parent_pid": 4072780,
+    "starttime": "327146496",
+    "argv": [
+      "python3",
+      "artifacts/october-regression/expanded-runner.py"
+    ],
+    "cpus_allowed_list": "0-31"
+  },
+  "errors": [],
+  "provenance": {
+    "plan": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/confirmation/final-cohort/plan.json",
+    "plan_sha256": "a912c2a77fe6d07ad0eaea8b7ed4ada7af17844c98bb674780a36c77ee9e7090",
+    "launcher_sha256": "8e53b4b9cb35a6c1189c6e0ccb09da0cec89dc7ec5965854fb54de477fad4f16",
+    "analyzer_sha256": "d666ec60e13e71e8866ddfb97de76d82930676503c911810c8a18de407b00afd",
+    "serial_claim": {
+      "pid": 111285,
+      "starttime": "330164822",
+      "source_sha256": "8e53b4b9cb35a6c1189c6e0ccb09da0cec89dc7ec5965854fb54de477fad4f16",
+      "plan_sha256": "a912c2a77fe6d07ad0eaea8b7ed4ada7af17844c98bb674780a36c77ee9e7090"
+    }
+  },
+  "limits": [
+    "Progressactive map canretainjust-finishedPID; actual/proc PID+starttime andactiveclaim required.",
+    "Prefixisdeterministicseedorder andmostly/onlyPG; cannotrepresentOA,all32seedsorconcurrentwaves.",
+    "No confidenceinterval/sequentialsignificancetesting here. Effects descriptiveonly; repeatedlooksnotadoption/stopcriteria.",
+    "Matchingwinner/ticks/observedendpoint isnotper-ticksimulationproof; latest40parityseparate.",
+    "WholeprocessCPU/sys/RSS/contextdistinctfrominnergamewall/TPS.",
+    "Snapshotfiles mayadvancebetweenreads; countsareexplicitlyasread,notatomicglobalstatus."
+  ],
+  "serial_launcher_identity_verified": {
+    "pid": 111285,
+    "starttime": "330164822",
+    "parent": 109088,
+    "argv": [
+      "python3",
+      "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/confirmation/final-cohort/launcher.py",
+      "serial",
+      "--execute"
+    ]
+  },
+  "actual_old_campaign_identity_matches_expected": true,
+  "actual_outer_identity_matches_expected": true
+}

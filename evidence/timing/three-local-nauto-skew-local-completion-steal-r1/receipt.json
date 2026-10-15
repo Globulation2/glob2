@@ -1,0 +1,86 @@
+{
+  "validation_errors": [],
+  "case": {
+    "id": "three-local-nauto-skew-local-completion-steal-r1",
+    "scenario": {
+      "id": "three-local-nauto-skew",
+      "kind": "harness",
+      "args": [
+        "{participants}",
+        "{dispatch_policy}",
+        "skew",
+        "32",
+        "128",
+        "16"
+      ],
+      "env": {},
+      "fixture_sha256": {},
+      "budget": "auto",
+      "resolved_participants": 32,
+      "allocation": [
+        12,
+        13,
+        14,
+        28,
+        29,
+        30
+      ],
+      "repeats": 2,
+      "timeout_seconds": 120
+    },
+    "variant": {
+      "role": "local-completion-steal",
+      "binary": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/micro-local-completion",
+      "sha256": "ef8b17b9dac1c45b8c900ca7b7c2905cc4d0cc80d0ecc423af3f1ae073a61448",
+      "cwd": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign",
+      "dispatch_policy": "steal",
+      "env": {
+        "GLOB2_DEFERRED_DISPATCH": "steal"
+      }
+    },
+    "repeat": 1
+  },
+  "command": [
+    "taskset",
+    "-c",
+    "12,13,14,28,29,30",
+    "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/micro-local-completion",
+    "32",
+    "steal",
+    "skew",
+    "32",
+    "128",
+    "16"
+  ],
+  "binary_sha256": "ef8b17b9dac1c45b8c900ca7b7c2905cc4d0cc80d0ecc423af3f1ae073a61448",
+  "status": "completed",
+  "returncode": 0,
+  "process_wall_seconds": 0.021063651889562607,
+  "user_cpu_seconds": 0.009687,
+  "system_cpu_seconds": 0.017221,
+  "total_cpu_seconds": 0.026908,
+  "voluntary_context_switches": 1216,
+  "involuntary_context_switches": 71,
+  "peak_rss_kib": 24216,
+  "native": null,
+  "harness": [
+    {
+      "participants": 32,
+      "requested_policy": "steal",
+      "pattern": "skew",
+      "rounds": 32,
+      "jobs_per_round": 128,
+      "iterations": 16,
+      "wall_ns": 2599073,
+      "digest": 5746686940522794905,
+      "jobs_checked": 4096
+    }
+  ],
+  "variant_env": {
+    "GLOB2_DEFERRED_DISPATCH": "steal"
+  },
+  "scenario_env": {},
+  "fixture_sha256": {},
+  "design_claims": {},
+  "mutex_accounting_scope": "Record queue pop/callback-start global dispatch mutex absence separately from remaining shared completion/dependency mutex; do not infer this from throughput."
+}

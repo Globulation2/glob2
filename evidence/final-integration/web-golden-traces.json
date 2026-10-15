@@ -1,0 +1,16 @@
+{
+  "chromium": {
+    "original": "/home/bradley/.codex/worktrees/engine-optimization/glob2/build/browser-test-results/determinism-WebAssembly-ve-9f6c1-tted-match-record-threaded--chromium/verify-match.checksums.txt",
+    "retained": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/final-integration/web-chromium/checksums.txt",
+    "sha256": "3b91be7eee296dd1c8bc5406b6aadfe50965fbe22cc1fb3bc504558c859395f8",
+    "lines": 843,
+    "exact_committed_trace": true
+  },
+  "firefox": {
+    "original": "/home/bradley/.codex/worktrees/engine-optimization/glob2/build/browser-test-results/determinism-WebAssembly-ve-9f6c1-tted-match-record-threaded--firefox/verify-match.checksums.txt",
+    "retained": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/final-integration/web-firefox/checksums.txt",
+    "sha256": "3b91be7eee296dd1c8bc5406b6aadfe50965fbe22cc1fb3bc504558c859395f8",
+    "lines": 843,
+    "exact_committed_trace": true
+  }
+}

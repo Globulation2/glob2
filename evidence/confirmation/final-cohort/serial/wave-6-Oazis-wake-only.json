@@ -1,0 +1,18 @@
+{
+  "map": "Oazis",
+  "role": "wake-only",
+  "wave": 6,
+  "seed_indices": [
+    6
+  ],
+  "started_monotonic": 3306325.598548319,
+  "finished_monotonic": 3306599.189046873,
+  "makespan_seconds": 273.590498553589,
+  "winners": 1,
+  "caps": 0,
+  "games_per_hour": 13.158351693616499,
+  "observed_ticks_per_second": 628.5671502086748,
+  "complete_tick_coverage": true,
+  "sum_game_seconds": 273.49812554894015,
+  "scope": "Actual homogeneous wave makespan including launches/waits, not sum of parallel game runtimes."
+}

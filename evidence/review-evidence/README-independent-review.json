@@ -1,0 +1,14 @@
+{
+  "approved": true,
+  "readme_sha256": "158edd4c2e25e95ca74eaee325e68fe280b7b2697759b2ff2040cb9f5072c7b7",
+  "selection_sha256": "ccded00b4a31bff4aa3863ba8ddb92589c10a0866c73d4c23dc9010f14c65c8f",
+  "metadata_freeze_sha256": "a447c433736fb83d18162a7ee379e1231921ab183470249cf445d97037e93666",
+  "checks": [
+    "READMEcompletedsourcebinding consistent withselected-sourcevalidation/recompute receipts; acceptedforreviewnotmerged/FirefoxUIlimitation unchanged",
+    "Selectionexplicitcontrolheaders/reverseWpatch/reviews androotJSONreceipts retained; no backupbody/binaryextension entries permetadatafreeze",
+    "4666files173219279bytes metadata-only snapshot; noactualbundle/materialization/portablebyteverification claimed",
+    "Finalreportrefresh5hashesapprovedseparately; publication/package remainsrootgated",
+    "CachecleanupREADMEdelta correctly describesfivequarantinedobjectdirs/absentactivetargets/publicunchanged; selectionexplicitreceipt only, noquarantinebodies; metadata snapshot4667files173230499bytes,zeromissing/backup/quarantine/binaryextensions."
+  ],
+  "activity": "ReadonlysmallJSON/sourcehashchecks only; no selectionmutation/package/copy/compression/native/build/signals."
+}

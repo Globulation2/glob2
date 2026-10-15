@@ -1,0 +1,107 @@
+{
+  "command": [
+    "taskset",
+    "-c",
+    "0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31",
+    "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/confirmation/latest-wake/baseline/build/linux/client/release/src/glob2",
+    "game",
+    "run",
+    "--map-file",
+    "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/confirmation/latest-wake/baseline/maps/Playground.map",
+    "--game-seed",
+    "1056243202",
+    "--ticks",
+    "4096",
+    "--compute-threads",
+    "4",
+    "--gradient-backend",
+    "cpu",
+    "--player",
+    "castor",
+    "--player",
+    "numbi",
+    "--player",
+    "warrush",
+    "--player",
+    "nicowar",
+    "--player",
+    "nicowar",
+    "--player",
+    "nicowar",
+    "--player",
+    "nicowar",
+    "--player",
+    "nicowar",
+    "--write-replay",
+    "--telemetry",
+    "checksums",
+    "--output-dir",
+    "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/confirmation/wake-only-allcore/latest/parity/parity-Playground-n4-cpu-mixed/baseline/native"
+  ],
+  "binary_sha256": "4a90fb41dbd1ac1bc674930a29cc4581d9fa87a638f04b57137df8eea5e8d0e9",
+  "case": {
+    "id": "parity-Playground-n4-cpu-mixed",
+    "args": [
+      "--map-file",
+      "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/confirmation/latest-wake/baseline/maps/Playground.map",
+      "--game-seed",
+      "1056243202",
+      "--ticks",
+      "4096",
+      "--compute-threads",
+      "4",
+      "--gradient-backend",
+      "cpu",
+      "--player",
+      "castor",
+      "--player",
+      "numbi",
+      "--player",
+      "warrush",
+      "--player",
+      "nicowar",
+      "--player",
+      "nicowar",
+      "--player",
+      "nicowar",
+      "--player",
+      "nicowar",
+      "--player",
+      "nicowar"
+    ],
+    "env": {
+      "GLOB2_ASSET_DIR": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/confirmation/latest-wake/baseline",
+      "GLOB2_OPENCL_DEVICE": "0"
+    },
+    "fixture_sha256": {
+      "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/confirmation/latest-wake/baseline/maps/Playground.map": "2a323a2d02475fb1ddd2ddfac99c51890aa7b2a2f3537ad7bee93aba85d84eaf"
+    },
+    "initial_tick": 0,
+    "measured_ticks": 4096
+  },
+  "role": "baseline",
+  "initial": 941441255,
+  "final": 667503685,
+  "checksums": {
+    "GCS1": "9ef928890c7043b80d7a05a7ea3eafaeaa0fe703cf27b0fa9ba1ab65cec777d6",
+    "native": "7daf7118ebb95e718a6a82398a4fc42801acd3015facc4bba14b234122ff906f"
+  },
+  "sidecar_details": {
+    "GCS1": {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/confirmation/wake-only-allcore/latest/parity/parity-Playground-n4-cpu-mixed/baseline/native/game.replay.checksums",
+      "rows": 4096,
+      "first_tick": 0,
+      "last_tick": 4095,
+      "teams": 8,
+      "players": 8,
+      "bytes": 65325916
+    },
+    "native": {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/confirmation/wake-only-allcore/latest/parity/parity-Playground-n4-cpu-mixed/baseline/native/world.checksums",
+      "rows": 4096,
+      "first_tick": 0,
+      "last_tick": 4095,
+      "bytes": 63409
+    }
+  }
+}

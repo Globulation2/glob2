@@ -1,0 +1,17 @@
+{
+  "approved": true,
+  "files_sha256": {
+    "web-complete.json": "0a17c9475330766b9fe44b6869b5a6bbbfc6a6fa02a3e71fdece5b0c11908747",
+    "web-review.json": "86c8e1ecf293714b0f5047aee721b30e110468f48cbac46b63382eb77456c6d2",
+    "web-control-restoration.json": "ca4d7c42698fadfb2639c8e746edfcf228c8b560776364e1921d92809bed5446"
+  },
+  "checks": [
+    "webcomplete bindswebreviewhash andexactcommit",
+    "Originalheadercontrolbuild0/test1 remainsfailure,notrelabelledUIpass",
+    "Candidateheader/Harness/restorationidentity andcache caveat explicit",
+    "Directengine/golden/partialcoverage doesnotreplaceFirefoxUIstartup"
+  ],
+  "limits": [
+    "Savedreceipt sanityreview only; no runtime/assets rehashed byreviewer"
+  ]
+}

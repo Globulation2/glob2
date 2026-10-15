@@ -1,0 +1,26 @@
+{
+  "state": "executed_independently_validated",
+  "commands": [
+    [
+      "taskset",
+      "-c",
+      "15,31",
+      "python3",
+      "artifacts/october-regression/fresh-audit-causal/final-oazis-waves32/audit.py"
+    ],
+    [
+      "taskset",
+      "-c",
+      "15,31",
+      "python3",
+      "artifacts/october-regression/fresh-audit-causal/final-oazis-waves32/extract-waves.py"
+    ]
+  ],
+  "gate": "audit requires32 completed Oazis pairs and64 winner receipts; no prefix effect/CI output. extract validates8 pairedwave files, source order, member bounds anddisjointmasks.",
+  "source_sha256": "bef29d16bb2a19ed3cf1ab8037334fa756cf490f4a9e176bb237017ce9072a96",
+  "bootstrap_recipe": "artifacts/october-regression/fresh-audit-causal/final-oazis-waves32/bootstrap.mjs",
+  "bootstrap_execution": "ControlisolateV8 only whiletimingsactive: xorshift32 seed605442,10000paired8wave draws, linearpercentile; same algorithm asPG. Do not execute node onbenchmarkhost whiletimings active.",
+  "scope": "Latest054CPU,canonical11Ni+observer12,4concurrentgames\u00d7explicit6participants/eligible6disjointmasks,onehost. Caps causefailclosed independentwinneraudit; frozenanalyzerretainscensoring. No newperTickproof/platform/browser/feel claims.",
+  "extract_sha256": "4ca33228f1c24418aaf3aac791c1177bdb5811d1d58bcaa6569c42c7faa5bb17",
+  "review_sha256": "56dcaf24f972254e3d5498f229cc0bdfa5e72801d8549cb29bdc94bfc20603cc"
+}

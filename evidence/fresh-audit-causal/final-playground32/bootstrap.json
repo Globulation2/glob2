@@ -1,0 +1,91 @@
+{
+  "method": "Paired32independentseed bootstrap10000, same seed indices for all metrics; no individual-run/wave resampling.",
+  "implementation": "JavaScript V8 xorshift32 uniformfloor draws; seed20261015; linear empirical percentile.",
+  "seed": 20261015,
+  "metrics": {
+    "e2e_seconds": {
+      "paired_seed_MC10000_percentile95_percent": [
+        -11.639801069233803,
+        -11.021797180519549
+      ],
+      "valid_draws": 10000
+    },
+    "inner_seconds": {
+      "paired_seed_MC10000_percentile95_percent": [
+        -11.866448962643322,
+        -11.226123796115742
+      ],
+      "valid_draws": 10000
+    },
+    "total_cpu_seconds": {
+      "paired_seed_MC10000_percentile95_percent": [
+        -41.310215074947926,
+        -38.89089310791792
+      ],
+      "valid_draws": 10000
+    },
+    "user_cpu_seconds": {
+      "paired_seed_MC10000_percentile95_percent": [
+        -12.328599800473242,
+        -11.263307945178347
+      ],
+      "valid_draws": 10000
+    },
+    "system_cpu_seconds": {
+      "paired_seed_MC10000_percentile95_percent": [
+        -84.78885545014919,
+        -83.32772736696838
+      ],
+      "valid_draws": 10000
+    },
+    "peak_rss_kib": {
+      "paired_seed_MC10000_percentile95_percent": [
+        -0.7498061067490049,
+        -0.3141295835203782
+      ],
+      "valid_draws": 10000
+    },
+    "voluntary_context_switches": {
+      "paired_seed_MC10000_percentile95_percent": [
+        -79.02409091846536,
+        -78.25797618396136
+      ],
+      "valid_draws": 10000
+    },
+    "involuntary_context_switches": {
+      "paired_seed_MC10000_percentile95_percent": [
+        -96.13370867591695,
+        -95.34637119690835
+      ],
+      "valid_draws": 10000
+    },
+    "inner_tps": {
+      "paired_seed_MC10000_percentile95_percent": [
+        12.788526566094456,
+        13.623985525740824
+      ],
+      "valid_draws": 10000
+    },
+    "e2e_tps": {
+      "paired_seed_MC10000_percentile95_percent": [
+        12.505865651466111,
+        13.293580703253324
+      ],
+      "valid_draws": 10000
+    },
+    "cpu_per_tick": {
+      "paired_seed_MC10000_percentile95_percent": [
+        -41.37402344601422,
+        -39.123099153028406
+      ],
+      "valid_draws": 10000
+    },
+    "ticks": {
+      "paired_seed_MC10000_percentile95_percent": [
+        0,
+        0
+      ],
+      "valid_draws": 10000
+    }
+  }
+}

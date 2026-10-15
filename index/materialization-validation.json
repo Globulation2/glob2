@@ -1,0 +1,20 @@
+{
+  "state": "validated_materialization",
+  "utc": "2026-10-15T09:49:58.467807+00:00",
+  "selected_files": 4667,
+  "selected_bytes": 173230499,
+  "selected_content_verified": true,
+  "actual_bundle_final_recomputation": "validated_recomputation",
+  "source_commit": "efb843d8047bba6f546c031614a31c917513ad54",
+  "base": "054804590ee1dd109f09642fc05654c324f08344",
+  "files": {
+    "index/content-manifest.json": "782303fef4ca48c306b0aec0ffd875b4b509dedd7d96155926f0fe5e79c7e58e",
+    "index/verify.py": "a00cf90a4bf419ee7cba0ab08e6b721a75a68178ffdcc508df6a10268ef7698b",
+    "index/recomputed-final.json": "f8992cc8f8b8825d1a46053d35f300ade518d8a5b0553d0350a0750faaffdef0",
+    "tools/recompute-final.py": "056f9635d75f7a8ca697c4e0a0e760868a9eb1dfc49510df81ebdc896c37d031",
+    "index/RESULTS.html": "fe16d90a8dffcbd175734c97dc77a0b1bf4b65c96adc38fecdbcf2286fed448d",
+    "index/START-HERE.txt": "a59bc31f1b781043783cd9c108594711f4936ee01ed8e158258a92e5c7738844"
+  },
+  "gate_sha256": "999baf3451cacdb0e188581c0929d481a5a71daa39c823bed5ee59db9757ed7b",
+  "scope": "Content copied/hashed and final256 recomputed from actual bundle. Does not claim rerunning engines or portable execution of every historical analysis."
+}

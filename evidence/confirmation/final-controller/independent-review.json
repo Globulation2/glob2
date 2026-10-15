@@ -1,0 +1,19 @@
+{
+  "approved": true,
+  "controller_sha256": "9751a2bde59f38a66c90eeafcc5776056dedc40879846520f77f5a1fdf143d72",
+  "review_type": "independent_static_source_review",
+  "checks": [
+    "Exact fresh nonce/campaign PID starttime and natural completed16 boundary; campaign state T and no active games before each stage",
+    "All bound inputs rehashed; latest binary hashes match root-approved roles; no source/build actions",
+    "Plan-derived 128-game serial and32-wave timeout budgets preserve1h individual caps",
+    "TERM/INT raises into owned-tree cleanup and failure hold; success-only exact campaign resume",
+    "Analyzer must report state validated for both regimes before success"
+  ],
+  "limitations": [
+    "No controller execution or native workloads; static review is not runtime qualification",
+    "Launcher and analyzer separately independently reviewed; root approval must bind final hashes"
+  ],
+  "source_paths": [
+    "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/confirmation/final-controller/final-controller.py"
+  ]
+}

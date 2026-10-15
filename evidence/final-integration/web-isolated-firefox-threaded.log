@@ -1,0 +1,58 @@
+[JavaScript Warning: "Loading failed for the <script> with source “http://127.0.0.1:8770/theme.js”." {file: "http://127.0.0.1:8770/" line: 8}]
+[JavaScript Warning: "WEBGL_debug_renderer_info is deprecated in Firefox and will be removed. Please use RENDERER." {file: "http://127.0.0.1:8770/" line: 574}]
+[JavaScript Warning: "WebGL context was lost." {file: "http://127.0.0.1:8770/" line: 576}]
+[JavaScript Error: "downloadable font: download failed (font-family: "Nunito Variable" style:normal weight:200..1000 width:100 src index:0): status=2147746065 source: http://127.0.0.1:8770/signin/assets/nunito.woff2"]
+WARNING: using emscripten GL emulation. This is a collection of limited workarounds, do not expect it to work.
+WARNING: using emscripten GL emulation unsafe opts. If weirdness happens, try -sGL_UNSAFE_OPTS=0
+WARNING: using emscripten GL emulation. This is a collection of limited workarounds, do not expect it to work.
+WARNING: using emscripten GL emulation unsafe opts. If weirdness happens, try -sGL_UNSAFE_OPTS=0
+WARNING: using emscripten GL emulation. This is a collection of limited workarounds, do not expect it to work.
+WARNING: using emscripten GL emulation unsafe opts. If weirdness happens, try -sGL_UNSAFE_OPTS=0
+WARNING: using emscripten GL emulation. This is a collection of limited workarounds, do not expect it to work.
+WARNING: using emscripten GL emulation unsafe opts. If weirdness happens, try -sGL_UNSAFE_OPTS=0
+WARNING: using emscripten GL emulation. This is a collection of limited workarounds, do not expect it to work.
+WARNING: using emscripten GL emulation unsafe opts. If weirdness happens, try -sGL_UNSAFE_OPTS=0
+WARNING: using emscripten GL emulation. This is a collection of limited workarounds, do not expect it to work.
+WARNING: using emscripten GL emulation unsafe opts. If weirdness happens, try -sGL_UNSAFE_OPTS=0
+WARNING: using emscripten GL emulation. This is a collection of limited workarounds, do not expect it to work.
+WARNING: using emscripten GL emulation unsafe opts. If weirdness happens, try -sGL_UNSAFE_OPTS=0
+WARNING: using emscripten GL emulation. This is a collection of limited workarounds, do not expect it to work.
+WARNING: using emscripten GL emulation. This is a collection of limited workarounds, do not expect it to work.
+WARNING: using emscripten GL emulation unsafe opts. If weirdness happens, try -sGL_UNSAFE_OPTS=0
+WARNING: using emscripten GL emulation. This is a collection of limited workarounds, do not expect it to work.
+WARNING: using emscripten GL emulation unsafe opts. If weirdness happens, try -sGL_UNSAFE_OPTS=0
+WARNING: using emscripten GL emulation unsafe opts. If weirdness happens, try -sGL_UNSAFE_OPTS=0
+WARNING: using emscripten GL emulation. This is a collection of limited workarounds, do not expect it to work.
+WARNING: using emscripten GL emulation unsafe opts. If weirdness happens, try -sGL_UNSAFE_OPTS=0
+WARNING: using emscripten GL emulation. This is a collection of limited workarounds, do not expect it to work.
+WARNING: using emscripten GL emulation unsafe opts. If weirdness happens, try -sGL_UNSAFE_OPTS=0
+WARNING: using emscripten GL emulation. This is a collection of limited workarounds, do not expect it to work.
+WARNING: using emscripten GL emulation unsafe opts. If weirdness happens, try -sGL_UNSAFE_OPTS=0
+WARNING: using emscripten GL emulation. This is a collection of limited workarounds, do not expect it to work.
+WARNING: using emscripten GL emulation. This is a collection of limited workarounds, do not expect it to work.
+WARNING: using emscripten GL emulation unsafe opts. If weirdness happens, try -sGL_UNSAFE_OPTS=0
+WARNING: using emscripten GL emulation unsafe opts. If weirdness happens, try -sGL_UNSAFE_OPTS=0
+WARNING: using emscripten GL emulation. This is a collection of limited workarounds, do not expect it to work.
+WARNING: using emscripten GL emulation. This is a collection of limited workarounds, do not expect it to work.
+WARNING: using emscripten GL emulation unsafe opts. If weirdness happens, try -sGL_UNSAFE_OPTS=0
+WARNING: using emscripten GL emulation unsafe opts. If weirdness happens, try -sGL_UNSAFE_OPTS=0
+[JavaScript Warning: "The WebAssembly exception handling 'try' instruction is deprecated and should no longer be used. Please recompile to use the 'try_table' instruction instead."]
+[JavaScript Warning: "The WebAssembly exception handling 'try' instruction is deprecated and should no longer be used. Please recompile to use the 'try_table' instruction instead." {file: "http://127.0.0.1:8770/threaded/index.js" line: 1}]
+[JavaScript Warning: "The WebAssembly exception handling 'try' instruction is deprecated and should no longer be used. Please recompile to use the 'try_table' instruction instead." {file: "http://127.0.0.1:8770/threaded/index.js" line: 1}]
+[JavaScript Warning: "The WebAssembly exception handling 'try' instruction is deprecated and should no longer be used. Please recompile to use the 'try_table' instruction instead." {file: "http://127.0.0.1:8770/threaded/index.js" line: 1}]
+[JavaScript Warning: "The WebAssembly exception handling 'try' instruction is deprecated and should no longer be used. Please recompile to use the 'try_table' instruction instead." {file: "http://127.0.0.1:8770/threaded/index.js" line: 1}]
+[JavaScript Warning: "The WebAssembly exception handling 'try' instruction is deprecated and should no longer be used. Please recompile to use the 'try_table' instruction instead." {file: "http://127.0.0.1:8770/threaded/index.js" line: 1}]
+[JavaScript Warning: "The WebAssembly exception handling 'try' instruction is deprecated and should no longer be used. Please recompile to use the 'try_table' instruction instead." {file: "http://127.0.0.1:8770/threaded/index.js" line: 1}]
+[JavaScript Warning: "The WebAssembly exception handling 'try' instruction is deprecated and should no longer be used. Please recompile to use the 'try_table' instruction instead." {file: "http://127.0.0.1:8770/threaded/index.js" line: 1}]
+[JavaScript Warning: "The WebAssembly exception handling 'try' instruction is deprecated and should no longer be used. Please recompile to use the 'try_table' instruction instead." {file: "http://127.0.0.1:8770/threaded/index.js" line: 1}]
+[JavaScript Warning: "The WebAssembly exception handling 'try' instruction is deprecated and should no longer be used. Please recompile to use the 'try_table' instruction instead." {file: "http://127.0.0.1:8770/threaded/index.js" line: 1}]
+[JavaScript Warning: "The WebAssembly exception handling 'try' instruction is deprecated and should no longer be used. Please recompile to use the 'try_table' instruction instead." {file: "http://127.0.0.1:8770/threaded/index.js" line: 1}]
+[JavaScript Warning: "The WebAssembly exception handling 'try' instruction is deprecated and should no longer be used. Please recompile to use the 'try_table' instruction instead." {file: "http://127.0.0.1:8770/threaded/index.js" line: 1}]
+[JavaScript Warning: "The WebAssembly exception handling 'try' instruction is deprecated and should no longer be used. Please recompile to use the 'try_table' instruction instead." {file: "http://127.0.0.1:8770/threaded/index.js" line: 1}]
+[JavaScript Warning: "The WebAssembly exception handling 'try' instruction is deprecated and should no longer be used. Please recompile to use the 'try_table' instruction instead." {file: "http://127.0.0.1:8770/threaded/index.js" line: 1}]
+[JavaScript Warning: "The WebAssembly exception handling 'try' instruction is deprecated and should no longer be used. Please recompile to use the 'try_table' instruction instead." {file: "http://127.0.0.1:8770/threaded/index.js" line: 1}]
+[JavaScript Warning: "The WebAssembly exception handling 'try' instruction is deprecated and should no longer be used. Please recompile to use the 'try_table' instruction instead." {file: "http://127.0.0.1:8770/threaded/index.js" line: 1}]
+[JavaScript Warning: "The WebAssembly exception handling 'try' instruction is deprecated and should no longer be used. Please recompile to use the 'try_table' instruction instead." {file: "http://127.0.0.1:8770/threaded/index.js" line: 1}]
+readlink() error: No such file or directory
+Settings::load("preferences.txt") : error, can't open file.
+InvalidStateError: An attempt was made to use an object that is not, or is no longer, usable

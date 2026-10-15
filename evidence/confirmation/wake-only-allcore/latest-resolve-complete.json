@@ -1,0 +1,22 @@
+{
+  "base_revision": "054804590ee1dd109f09642fc05654c324f08344",
+  "recipe_sha256": "44aaede4240da3763e4b48889e0d1267ca74db6f825bf9c20c43aa1e7f913d0d",
+  "variants": [
+    {
+      "role": "baseline",
+      "binary": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/confirmation/latest-wake/baseline/build/linux/client/release/src/glob2",
+      "cwd": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/confirmation/latest-wake/baseline",
+      "env": {},
+      "base_revision": "054804590ee1dd109f09642fc05654c324f08344",
+      "sha256": "4a90fb41dbd1ac1bc674930a29cc4581d9fa87a638f04b57137df8eea5e8d0e9"
+    },
+    {
+      "role": "wake-only",
+      "binary": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/confirmation/latest-wake/wake-only/build/linux/client/release/src/glob2",
+      "cwd": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/confirmation/latest-wake/wake-only",
+      "env": {},
+      "base_revision": "054804590ee1dd109f09642fc05654c324f08344",
+      "sha256": "99fbc82a526f0e15035bc675e50ac604a056574e931e077b3de955d19ce273a2"
+    }
+  ]
+}

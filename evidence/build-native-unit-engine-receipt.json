@@ -1,0 +1,20 @@
+{
+  "command": [
+    "taskset",
+    "-c",
+    "0-31",
+    "scons",
+    "release=1",
+    "CC=gcc-13",
+    "CXX=g++-13",
+    "LINKFLAGS=-L/usr/lib/gcc/x86_64-linux-gnu/15",
+    "-j32",
+    "build/linux/client/release/src/glob2",
+    "unit-tests",
+    "engine-tests"
+  ],
+  "cwd": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/source",
+  "returncode": 0,
+  "elapsed_seconds": 490.51303603406996,
+  "updated_utc": "2026-10-14T22:36:55.923802+00:00"
+}

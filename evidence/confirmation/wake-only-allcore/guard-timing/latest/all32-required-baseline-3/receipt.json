@@ -1,0 +1,37 @@
+{
+  "command": [
+    "taskset",
+    "-c",
+    "0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31",
+    "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/confirmation/wake-only-allcore/guard-latest-baseline",
+    "off",
+    "required"
+  ],
+  "returncode": 0,
+  "wall_seconds": 0.08150898199528456,
+  "user_cpu_seconds": 0.090449,
+  "system_cpu_seconds": 0.001016,
+  "total_cpu_seconds": 0.091465,
+  "peak_rss_kib": 23464,
+  "utc": "2026-10-15T02:33:17.555313+00:00",
+  "wrapper_sha256": "2ed5e6b9908d88f461a52ee44432355045ecb1be15949c9985c36fbdfd651b46",
+  "manifest_sha256": "154ed016dd56e52af6f0f8877592990f319512d1aeaf6141127f005311ed3ef9",
+  "harness_sha256": "4affbeca486235bed52cec56db0bf154ef20eda03f10cd478e2ab15cb592d78a",
+  "correctness_or_conditional_micro_only": true,
+  "version": "latest",
+  "role": "baseline",
+  "allocation": "all32",
+  "kind": "required",
+  "repeat": 3,
+  "latency": {
+    "trace": false,
+    "urgent_join_ns": 336158,
+    "later_started_before_urgent": 0,
+    "presentation_start_delay_ns": -1,
+    "later_total": 128,
+    "digest": 6568891044718746485,
+    "result_bytes": 1032
+  },
+  "binary_sha256": "ab7b962336fd477df750ff289473215ec378a736f3363ec719457e04dcc44371",
+  "header_sha256": "2053e76c927db8ceeb6e83cd2a70edb77e1fc02275b14a3ff998eafd7f6933af"
+}

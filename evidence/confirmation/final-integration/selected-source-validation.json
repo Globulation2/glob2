@@ -1,0 +1,111 @@
+{
+  "state": "passed",
+  "utc": "2026-10-15T09:43:44.935835+00:00",
+  "revision": "efb843d8047bba6f546c031614a31c917513ad54",
+  "base": "054804590ee1dd109f09642fc05654c324f08344",
+  "PR": "https://github.com/Globulation2/glob2/pull/1185",
+  "decision": "Accept bounded wakeups for review on tested workloads; no universal optimality or fixed pool policy.",
+  "source_sha256": {
+    "src/common/ComputeExecutor.h": "8e59b8816e147ffa72adc5b11d869483dbefe4663a3aca28a39ccc106b9663c1",
+    "src/common/ComputeExecutorHarness.cpp": "6ae602481e2f0079aa1668f9aa34f0d91b7c3f4818779e8078e84622737e659d"
+  },
+  "native": {
+    "unit_cases": 56,
+    "save_load_cases": 2,
+    "failed": 0,
+    "skipped": 0,
+    "golden_rows": 843,
+    "partial_verbose_assertions": 54,
+    "partial_actual_participants": 5
+  },
+  "browser_engine": {
+    "Chromium": {
+      "cases": 228,
+      "assertions": 8117508,
+      "golden_rows": 843,
+      "partial_four_workers": true,
+      "original_UI_wrapper": "passed"
+    },
+    "Firefox": {
+      "cases": 228,
+      "assertions": 8117508,
+      "golden_rows": 843,
+      "partial_four_workers": true,
+      "original_UI_wrapper": "failed; same direct corpus passed"
+    }
+  },
+  "Firefox_UI_control": "Same loading/InvalidStateError reproduced with exact original054 executor header and unchanged flags. UI test remains failed; recorded existing limitation.",
+  "root_reverified_critical_public_hashes": {
+    "index.js": "cb4351a96e1d3d889abe62044ec727df5927d83c24afafcae7c3c533f556bea7",
+    "index.wasm": "7a9c28762d5bf01dfb05109fa427ab059f17d067d8d7ebf0ee4d5a91c31a9c20",
+    "script-tests.js": "3778d3daeb876f9e37fb1f5dc0eef6ccd53f7f40596b71ae1013c50b5193214f",
+    "script-tests.wasm": "571f7cf4dc6100a030aac31d1ab903b3da290b911bd72402bd6dec12773c7ef5",
+    "threaded/index.js": "8ca7b259f6498bd43cfa09d9089255d4df0ed6adc37e9d003bb7b218b0bdfaf7",
+    "threaded/index.wasm": "ab5fad6d9eb2559937986be8ad49db6121b532958bc73f60129a1eb74170fd03",
+    "threaded/script-tests.js": "d0482f108d8328928ae638ab0d27faaba7ae139cf064b7ac877729fb610ea01a",
+    "threaded/script-tests.wasm": "5d92a77536aed76bfc203eb7ec29d900483cc863c840956931d0f4961c6f2286"
+  },
+  "bound_public_restore_receipt_count": 7690,
+  "receipts": [
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/confirmation/final-integration/control-build.json",
+      "sha256": "8b5732e34fc1b716af643aaec03ceafa1c09f67230f2764935a303afd525ace2"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/confirmation/final-integration/candidate-build.json",
+      "sha256": "47207f0ad83f794472d3a7a6bd572e39adee85253aa2803f9ed9b4cf8c396831"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/confirmation/final-integration/environment.json",
+      "sha256": "9a86a46193346bed2bdd4959c7f9e6ce535813cebcf390371c46817320ca23f3"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/confirmation/final-integration/native-validation.json",
+      "sha256": "985d75756cbf0bdc46d86cc5214e346b4da4a560368a049205d8fc70e8996d37"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/confirmation/final-integration/native-partial-verbose.json",
+      "sha256": "a814d7d82852ec7ebb5fa034fd5530c0eb18b32e28fb38105f32a3f606e411a9"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/confirmation/final-integration/golden-control-receipt.json",
+      "sha256": "0614503dfffdbf6c5a710d4c1bfee53676d3f16ad173aaf900f905f584e78893"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/final-integration/source-review.json",
+      "sha256": "3effe82435011b5b20d5ebd60c8de2aed39cd56048f0980569101ef4e6fffeb3"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/final-integration/web-build.json",
+      "sha256": "17135c4356e8fe9dc89ed2e05f5ce208f00ba9e9d3b2f815d93f99e9abb8593f"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/final-integration/web-review.json",
+      "sha256": "86c8e1ecf293714b0f5047aee721b30e110468f48cbac46b63382eb77456c6d2"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/final-integration/web-complete.json",
+      "sha256": "0a17c9475330766b9fe44b6869b5a6bbbfc6a6fa02a3e71fdece5b0c11908747"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/final-integration/web-control-restoration.json",
+      "sha256": "ca4d7c42698fadfb2639c8e746edfcf228c8b560776364e1921d92809bed5446"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/final-integration/web-control-cache-safety.json",
+      "sha256": "373a79a5f2877fbbf269c866f8a14c1c6c638a794f46e96b87c86ad24746633c"
+    }
+  ],
+  "reused_exact_core_evidence": {
+    "timing": "256 CPU games,128 endpoint pairs,no caps; independent raw audits retained.",
+    "parity": "40 traces=20 paired contexts;32CPU+8actualOpenCL runs,small/large/mixed/mature/load/continuations.",
+    "focused": "202 earlier focused cases acrossB/W,101selectedW;576 bursts across4headers,144selectedlatestW;64Off guards."
+  },
+  "cache_cleanup": "Control-derived web object directories quarantined, active targets absent. Future SCons must recreate missing targets; tested candidate public outputs are unchanged.",
+  "limits": [
+    "No W runtime verification on Windows,macOS,Android,iOS; no second physical CPU or GPU vendor performance replication.",
+    "Browser engine correctness is not cross-device performance evidence; Firefox UI startup remains failed in both matched roles.",
+    "No manual native playthrough, quantitative input/frame pacing or sustained thermal/battery validation.",
+    "Final timing uses CPU backend and two fixed Nicowar maps; mixedAI/GPU correctness and short pilots are separate."
+  ]
+}

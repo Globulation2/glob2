@@ -1,0 +1,19 @@
+{
+  "approved": true,
+  "source_sha256": "056f9635d75f7a8ca697c4e0a0e760868a9eb1dfc49510df81ebdc896c37d031",
+  "scope": "Independent static review only; no imports/bootstrap/plan/package/contenthashing/native execution",
+  "checks": [
+    "Relative input location and child path containment avoid opening original absolute provenance paths",
+    "Preflights all requested regimes before bootstrap; checks128 unique receipts and32declaredseeds/map/role, rawstdout/config/binaryidentity, caps, pair eligibility and trajectory mismatches",
+    "Wave metadata/hash sidecars, exactseedgrouping and alternatingorder validated; eightpairedwave bootstrap retainscaps in actualmakespan/game throughput",
+    "Canonical Random605441/605442 and10000choices/floorquantile order match source analyzer; no32^32 enumeration",
+    "Output exclusivecreate; retainedanalysis compare numeric1e-12 and nooverwrite; -O explicitlyrejected",
+    "Missingoptionalchecksum bodies and absentbinary/dependency bytes are explicit limitations, not fullperTickqualification claims"
+  ],
+  "limits": [
+    "Unexecuted: no demonstrated relocation or canonical numeric equivalence yet; --compare-retained must run after finalcomplete withselectedcompactbundle",
+    "Selection must explicitly include bothregimecomplete.json/analysis.json plus launcher/plan/resolver/rawreceipts/waves/stdout; currentpendinglistalone does not select terminalfiles",
+    "Rootapproval optional weakens external anchor but remains explicit; contentmanifest verification and rootselectedsource/finalrecompute gate are separate packager responsibilities",
+    "Canonicalalgorithm replication confirms reproducibility, not independent estimator sensitivity or universal scheduling optimality"
+  ]
+}

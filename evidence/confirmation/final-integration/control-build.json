@@ -1,0 +1,123 @@
+{
+  "state": "passed",
+  "cwd": "/home/bradley/.codex/worktrees/engine-optimization/glob2",
+  "base": "054804590ee1dd109f09642fc05654c324f08344",
+  "command": [
+    "scons",
+    "--build=build/wake-control",
+    "release=1",
+    "CC=gcc-13",
+    "CXX=g++-13",
+    "LINKFLAGS=-L/usr/lib/gcc/x86_64-linux-gnu/15",
+    "-j32",
+    "build/wake-control/src/glob2"
+  ],
+  "env_overrides": {
+    "CCACHE": "1",
+    "CCACHE_MAXSIZE": "12G",
+    "GLOB2_SDL3_PREFIX": "/home/bradley/.codex/worktrees/repair-tls-rejection-fixture/glob2/build/sdl3-ci/prefix",
+    "GLOB2_RENDER_SHADER_INPUT": "/home/bradley/.codex/worktrees/execution-resource-profiles/glob2/artifacts/resource-profiles/validation/renderer-bundle-v2/shaders"
+  },
+  "started_utc": "2026-10-15T08:52:50.427448+00:00",
+  "hold": {
+    "state": "paused_between_cohorts",
+    "runner_pid": 4072783,
+    "runner_starttime": "327146496",
+    "boundary_nonce": "01c33dcd9de544ea80661ff2638e31b3",
+    "target": "combined-four-cpu/Oazis",
+    "completed_receipts": 16,
+    "active_games": [],
+    "active_descendants": [],
+    "no_measured_run_interrupted": true,
+    "final_controller_retired": {
+      "pid": 109088,
+      "starttime": "330122782"
+    },
+    "final256_proof": {
+      "controller_complete_sha256": "b59bb77ba4b68e9ca17d9ab7e703b6afe210a760a175fa1d0abae5486dca50f8",
+      "regimes": {
+        "serial": {
+          "complete.json": "47430ccc1803657f8c0387e940cae18f83a768c3f09cab57105deac674dd2f86",
+          "analysis.json": "a1befaa85755eae3e9795af6360304e247705a4f174dd9fd30012148108fa31e"
+        },
+        "waves": {
+          "complete.json": "b4549ecb095948efb0e6444c482d4b3ca5dee5c7618f95df2b246768d604c7f3",
+          "analysis.json": "450e0b7f117ecac3e722c473ee586ac1293d27f87be5c996be97311714f89a28"
+        }
+      }
+    },
+    "cohort_receipts": [
+      {
+        "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/expanded/combined-four-cpu/Oazis/runs/1030656205/result.json",
+        "sha256": "ec029f9383e22104c122b18122697d0949199f0f9c7cfe9a002b6335415f5093"
+      },
+      {
+        "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/expanded/combined-four-cpu/Oazis/runs/1056243202/result.json",
+        "sha256": "534d30c7103f71b79afdc6dac299ef62c5ab70b1c8cd1c5f11b41edcbdcb1eb3"
+      },
+      {
+        "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/expanded/combined-four-cpu/Oazis/runs/1064623205/result.json",
+        "sha256": "777209a382a8b654d55a671ab1b5ab0295c012cf20f73ea6fbd70294c1c4d889"
+      },
+      {
+        "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/expanded/combined-four-cpu/Oazis/runs/117787757/result.json",
+        "sha256": "9ddd741e90eec276bd814e767b00cb7e20eac1ece2ae48a24552853b1832d0da"
+      },
+      {
+        "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/expanded/combined-four-cpu/Oazis/runs/1441583672/result.json",
+        "sha256": "677ca9936886d30d655d5b9d0269e5949808c8b1bd1d9a240c0b61477a69e253"
+      },
+      {
+        "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/expanded/combined-four-cpu/Oazis/runs/1480527227/result.json",
+        "sha256": "2f65693db06f352797d4b62b216c3df7d7ec8aeb13508b5d050689462a6884ad"
+      },
+      {
+        "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/expanded/combined-four-cpu/Oazis/runs/1514826878/result.json",
+        "sha256": "9170a53fb898a9c4d12d5be6e38cd4089ece65575533ff7cdc0c39aefbd1024c"
+      },
+      {
+        "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/expanded/combined-four-cpu/Oazis/runs/1635872854/result.json",
+        "sha256": "fe5746b55f335cb238110c4affd8dc6bc84d378c566ddd3e02a912f7e5ce70d2"
+      },
+      {
+        "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/expanded/combined-four-cpu/Oazis/runs/1858401095/result.json",
+        "sha256": "987d2c091f266dc70a9f529988e3bc53a677e375daee38d04151a9c7973b8b6e"
+      },
+      {
+        "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/expanded/combined-four-cpu/Oazis/runs/31444774/result.json",
+        "sha256": "e46de86b546d6a19dfcff1af4d6a1bb75205d291f58fd38ec5a465c3f32dc3e1"
+      },
+      {
+        "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/expanded/combined-four-cpu/Oazis/runs/599004658/result.json",
+        "sha256": "5ba70d12759853bb5c6cae53d56c300e364bad413935333750a44d15fc332f3f"
+      },
+      {
+        "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/expanded/combined-four-cpu/Oazis/runs/725864695/result.json",
+        "sha256": "41177e45305c1d8491448e37586647423f9205054a26c68493aa042fdf0efd44"
+      },
+      {
+        "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/expanded/combined-four-cpu/Oazis/runs/744345666/result.json",
+        "sha256": "43117c51c4372ae297826fe30c909613ed9d4a7260f3daaaab919da0a57142df"
+      },
+      {
+        "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/expanded/combined-four-cpu/Oazis/runs/769116511/result.json",
+        "sha256": "194e2f5f814c37f36611d4906b08cabe3db3519933dd3c85bed20db876e26d15"
+      },
+      {
+        "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/expanded/combined-four-cpu/Oazis/runs/79851807/result.json",
+        "sha256": "3d011903b39175fcd02a9e47d47801ef89ac8b63b43536bd49a8d3955d10eb6b"
+      },
+      {
+        "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/expanded/combined-four-cpu/Oazis/runs/85910194/result.json",
+        "sha256": "4f0603ca96310dfa4cacbde275b3c689968ecfab20f05f322548186e59883b04"
+      }
+    ],
+    "needs_repair": false,
+    "reason": "Root postcampaign validation window; no build/adoption/thread-policy decision by watcher",
+    "utc": "2026-10-15T08:50:13.484365+00:00"
+  },
+  "returncode": 0,
+  "finished_utc": "2026-10-15T08:58:49.102611+00:00",
+  "binary_sha256": "eabbfcf1b073d0cf823d958be5c5d32221c73cb2598d47c9a6d29b835cd0af95",
+  "preserved_binary": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/confirmation/final-integration/control-glob2"
+}

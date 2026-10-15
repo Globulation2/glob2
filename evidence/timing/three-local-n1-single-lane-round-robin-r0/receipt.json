@@ -1,0 +1,97 @@
+{
+  "validation_errors": [],
+  "case": {
+    "id": "three-local-n1-single-lane-round-robin-r0",
+    "scenario": {
+      "id": "three-local-n1-single-lane",
+      "kind": "harness",
+      "args": [
+        "{participants}",
+        "{dispatch_policy}",
+        "single-lane",
+        "64",
+        "128",
+        "256"
+      ],
+      "env": {},
+      "fixture_sha256": {},
+      "budget": 1,
+      "resolved_participants": 1,
+      "allocation": [
+        12,
+        13,
+        14,
+        28,
+        29,
+        30
+      ],
+      "repeats": 2,
+      "timeout_seconds": 120
+    },
+    "variant": {
+      "role": "round-robin",
+      "binary": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/micro-sharded",
+      "sha256": "accaac9e290879b5bb39a595e5dc304a0d8e0c6f3d5cde9381a92f9611b7aa5c",
+      "cwd": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign",
+      "dispatch_policy": "round-robin",
+      "env": {
+        "GLOB2_DEFERRED_DISPATCH": "round-robin"
+      },
+      "design_claims": {
+        "dispatch_only_research_control": true,
+        "optional_presentation_contract_failed_or_unsafe": true,
+        "local_affine_mixed_lane_parallelism_failed": false,
+        "not_native_game_or_production_eligible": true
+      }
+    },
+    "repeat": 0
+  },
+  "command": [
+    "taskset",
+    "-c",
+    "12,13,14,28,29,30",
+    "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/micro-sharded",
+    "1",
+    "round-robin",
+    "single-lane",
+    "64",
+    "128",
+    "256"
+  ],
+  "binary_sha256": "accaac9e290879b5bb39a595e5dc304a0d8e0c6f3d5cde9381a92f9611b7aa5c",
+  "status": "completed",
+  "returncode": 0,
+  "process_wall_seconds": 0.021014661993831396,
+  "user_cpu_seconds": 0.015195,
+  "system_cpu_seconds": 0.004052,
+  "total_cpu_seconds": 0.019247,
+  "voluntary_context_switches": 1,
+  "involuntary_context_switches": 1,
+  "peak_rss_kib": 24216,
+  "native": null,
+  "harness": [
+    {
+      "participants": 1,
+      "requested_policy": "round-robin",
+      "pattern": "single-lane",
+      "rounds": 64,
+      "jobs_per_round": 128,
+      "iterations": 256,
+      "wall_ns": 9088020,
+      "digest": 1371303990252762791,
+      "jobs_checked": 8192
+    }
+  ],
+  "variant_env": {
+    "GLOB2_DEFERRED_DISPATCH": "round-robin"
+  },
+  "scenario_env": {},
+  "fixture_sha256": {},
+  "design_claims": {
+    "dispatch_only_research_control": true,
+    "optional_presentation_contract_failed_or_unsafe": true,
+    "local_affine_mixed_lane_parallelism_failed": false,
+    "not_native_game_or_production_eligible": true
+  },
+  "mutex_accounting_scope": "Record queue pop/callback-start global dispatch mutex absence separately from remaining shared completion/dependency mutex; do not infer this from throughput."
+}

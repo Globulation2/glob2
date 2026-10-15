@@ -1,0 +1,12 @@
+{
+  "base": "48438f1f08a68b24ef0049834d371b9d00d84bae",
+  "baseline": "/home/bradley/.codex/worktrees/engine-history-latest-master/glob2",
+  "source": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/source",
+  "benchmark_adapter_copies": {
+    "src/app/Glob2.cpp": "06e6919eae114d35bce6e77b517283d1e41659afc8e45002cbcade532c55cdf0",
+    "src/engine/EngineRun.cpp": "e77d2120514f8397a5cb88313bc466d23174ed4eff82338797b2dc81020a8d2b",
+    "maps/Playground.map": "2a323a2d02475fb1ddd2ddfac99c51890aa7b2a2f3537ad7bee93aba85d84eaf",
+    "maps/Oazis.map": "cd80d8c9a72643a95bb0bd3c22deb594aeed125d12cb3294859e7fffbc131448"
+  },
+  "note": "Frozen baseline benchmark adapter and raw maps preserved byte-for-byte; no E/W/S changes; no build performed."
+}

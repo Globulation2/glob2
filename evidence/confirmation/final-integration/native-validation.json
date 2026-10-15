@@ -1,0 +1,450 @@
+{
+  "state": "passed",
+  "revision": "efb843d8047bba6f546c031614a31c917513ad54",
+  "base": "054804590ee1dd109f09642fc05654c324f08344",
+  "source_sha256": {
+    "src/common/ComputeExecutor.h": "8e59b8816e147ffa72adc5b11d869483dbefe4663a3aca28a39ccc106b9663c1",
+    "src/common/ComputeExecutorHarness.cpp": "6ae602481e2f0079aa1668f9aa34f0d91b7c3f4818779e8078e84622737e659d"
+  },
+  "checks": [
+    {
+      "kind": "unit",
+      "command": [
+        "python3",
+        "test/run_tests.py",
+        "--build-dir",
+        "/home/bradley/.codex/worktrees/engine-optimization/glob2/build/wake-control",
+        "--binary",
+        "unit",
+        "--no-display",
+        "--timeout",
+        "120",
+        "-j",
+        "1",
+        "--artifacts",
+        "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/confirmation/final-integration/native-unit",
+        "--junit",
+        "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/confirmation/final-integration/native-unit.xml",
+        "--filter",
+        "ComputeExecutor/*",
+        "--filter",
+        "ReplayStepCounter/*",
+        "--filter",
+        "TurnHarness/two clients on clean links execute identical turns",
+        "--filter",
+        "TurnHarness/a restarted client reloads, replays the full log and rejoins"
+      ],
+      "returncode": 0,
+      "cases": 56,
+      "failed": 0,
+      "skipped": 0,
+      "names": [
+        {
+          "classname": "ComputeExecutor",
+          "name": "automatic sizing respects platform limits and supports unknown CPU counts",
+          "time": "0",
+          "status": "run"
+        },
+        {
+          "classname": "ComputeExecutor",
+          "name": "CPU availability provenance distinguishes affinity from hardware hints",
+          "time": "0",
+          "status": "run"
+        },
+        {
+          "classname": "ComputeExecutor",
+          "name": "thread configuration accepts auto and rejects malformed or overflowing overrides",
+          "time": "0.000229",
+          "status": "run"
+        },
+        {
+          "classname": "ComputeExecutor",
+          "name": "supported platforms execute jobs concurrently on distinct threads",
+          "time": "0.027348",
+          "status": "run"
+        },
+        {
+          "classname": "ComputeExecutor",
+          "name": "exclusive slots; nested batches; reuse; errors; barriers and reconfiguration",
+          "time": "0.115276",
+          "status": "run"
+        },
+        {
+          "classname": "ComputeExecutor",
+          "name": "deferred batches complete with lanes and isolated errors",
+          "time": "0.211784",
+          "status": "run"
+        },
+        {
+          "classname": "ComputeExecutor",
+          "name": "idle workers retain parallelism for independent and mixed lane groups",
+          "time": "0.116886",
+          "status": "run"
+        },
+        {
+          "classname": "ComputeExecutor",
+          "name": "repeated lane groups and empty groups preserve ordering and independent work",
+          "time": "0.000242",
+          "status": "run"
+        },
+        {
+          "classname": "ComputeExecutor",
+          "name": "external completion and continuation wake parked lane successors",
+          "time": "0.038341",
+          "status": "run"
+        },
+        {
+          "classname": "ComputeExecutor",
+          "name": "lane groups run in index order and the horizon is bounded",
+          "time": "0.02954",
+          "status": "run"
+        },
+        {
+          "classname": "ComputeExecutor",
+          "name": "workers run deferred batches earliest due first and the owner only waits",
+          "time": "0.008978",
+          "status": "run"
+        },
+        {
+          "classname": "ComputeExecutor",
+          "name": "without workers the owner runs the jobs due no later than the join",
+          "time": "0.004071",
+          "status": "run"
+        },
+        {
+          "classname": "ComputeExecutor",
+          "name": "a lane keeps submission order: a lane job due before a live earlier one is rejected",
+          "time": "0.013233",
+          "status": "run"
+        },
+        {
+          "classname": "ComputeExecutor",
+          "name": "the slot count covers every producer's horizon",
+          "time": "0",
+          "status": "run"
+        },
+        {
+          "classname": "ComputeExecutor",
+          "name": "presentation cannot delay simulation barriers with spare workers or run on the simulation owner",
+          "time": "0.009013",
+          "status": "run"
+        },
+        {
+          "classname": "ComputeExecutor",
+          "name": "with one worker the owner waits through its presentation chunk and never runs the join itself",
+          "time": "0.02442",
+          "status": "run"
+        },
+        {
+          "classname": "ComputeExecutor",
+          "name": "presentation progresses before a continuous simulation backlog drains",
+          "time": "0.009892",
+          "status": "run"
+        },
+        {
+          "classname": "ComputeExecutor",
+          "name": "presentation replacement, chunk pumping, cancellation and errors retain no captures",
+          "time": "0.006093",
+          "status": "run"
+        },
+        {
+          "classname": "ComputeExecutor",
+          "name": "resumable presentation yields without advancing or retaining canceled inputs",
+          "time": "0.004253",
+          "status": "run"
+        },
+        {
+          "classname": "ComputeExecutor",
+          "name": "worker only maintenance never uses the owner including creation failure",
+          "time": "0.008191",
+          "status": "run"
+        },
+        {
+          "classname": "ComputeExecutor",
+          "name": "worker only maintenance yields to required jobs and cannot delay their completed join",
+          "time": "0.004571",
+          "status": "run"
+        },
+        {
+          "classname": "ComputeExecutor",
+          "name": "suspended device work releases the only worker and preserves lane completion",
+          "time": "0.004596",
+          "status": "run"
+        },
+        {
+          "classname": "ComputeExecutor",
+          "name": "early device failure resumes exactly once on the worker at its original lane position",
+          "time": "0.004326",
+          "status": "run"
+        },
+        {
+          "classname": "ComputeExecutor",
+          "name": "early asynchronous completion cannot release an invoking callback's inputs",
+          "time": "0.004364",
+          "status": "run"
+        },
+        {
+          "classname": "ComputeExecutor",
+          "name": "continuation of a nonzero lane-group index keeps its original sequence",
+          "time": "0.004316",
+          "status": "run"
+        },
+        {
+          "classname": "ComputeExecutor",
+          "name": "retained completion tickets can be resolved after executor destruction",
+          "time": "0.004401",
+          "status": "run"
+        },
+        {
+          "classname": "ComputeExecutor",
+          "name": "graphics batches finish once, retain failures and release captures",
+          "time": "0.01329",
+          "status": "run"
+        },
+        {
+          "classname": "ComputeExecutor",
+          "name": "serial graphics finish never pumps scene or required work and abandonment releases captures",
+          "time": "0.002072",
+          "status": "run"
+        },
+        {
+          "classname": "ComputeExecutor",
+          "name": "graphics cancellation drains claimed work and reconfiguration releases inputs",
+          "time": "0.00893",
+          "status": "run"
+        },
+        {
+          "classname": "ComputeExecutor",
+          "name": "both presentation classes progress during required lane backlog",
+          "time": "0.004708",
+          "status": "run"
+        },
+        {
+          "classname": "ComputeExecutor",
+          "name": "graphics callback barriers are rejected and completed tickets do not pump newer work",
+          "time": "0.002175",
+          "status": "run"
+        },
+        {
+          "classname": "ComputeExecutor",
+          "name": "empty graphics submissions bypass occupied admission and concurrency metrics respect ceilings",
+          "time": "0.006608",
+          "status": "run"
+        },
+        {
+          "classname": "ComputeExecutor",
+          "name": "graphics capture destruction can inspect scheduler metrics before completion",
+          "time": "0.01133",
+          "status": "run"
+        },
+        {
+          "classname": "ComputeExecutor",
+          "name": "disabled diagnostics do not read the injected clock or collect counters",
+          "time": "0.000262",
+          "status": "run"
+        },
+        {
+          "classname": "ComputeExecutor",
+          "name": "owner execution, stale handles, reuse and lifecycle attribution use one locked inspection",
+          "time": "0.00017",
+          "status": "run"
+        },
+        {
+          "classname": "ComputeExecutor",
+          "name": "worker waits aggregate distinct ticks globally and per producer without worker timing",
+          "time": "0.000545",
+          "status": "run"
+        },
+        {
+          "classname": "ComputeExecutor",
+          "name": "complete joins and trace overflow remain valid and snapshots require drain",
+          "time": "0.000623",
+          "status": "run"
+        },
+        {
+          "classname": "ComputeExecutor",
+          "name": "trace preserves early external resolution and continuation callback ordering",
+          "time": "0.013983",
+          "status": "run"
+        },
+        {
+          "classname": "ComputeExecutor",
+          "name": "trace storage allocation failure downgrades without losing required work",
+          "time": "0",
+          "status": "run"
+        },
+        {
+          "classname": "ComputeExecutor",
+          "name": "blocking fork join failures and presentation remain traced without entering tick waits",
+          "time": "0.024391",
+          "status": "run"
+        },
+        {
+          "classname": "ComputeExecutor",
+          "name": "graphics diagnostics are optional and waits mode attributes the owner barrier",
+          "time": "0.022169",
+          "status": "run"
+        },
+        {
+          "classname": "ComputeExecutor",
+          "name": "yielded presentation chunks keep callback indices paired",
+          "time": "0.017308",
+          "status": "run"
+        },
+        {
+          "classname": "ComputeExecutor",
+          "name": "worker-only maintenance is traced as other work without a required join",
+          "time": "0.013425",
+          "status": "run"
+        },
+        {
+          "classname": "ComputeExecutor",
+          "name": "session reset suppresses a returning maintenance interval from the previous epoch",
+          "time": "0.026487",
+          "status": "run"
+        },
+        {
+          "classname": "ComputeExecutor",
+          "name": "synchronous graphics adapter keeps empty calls idle and guards owner callbacks",
+          "time": "0.00524",
+          "status": "run"
+        },
+        {
+          "classname": "ComputeExecutor",
+          "name": "graphics adapter restores callback state on failure and never pumps other work",
+          "time": "0.004422",
+          "status": "run"
+        },
+        {
+          "classname": "ComputeExecutor",
+          "name": "synchronous graphics cancellation rejects incomplete output after draining",
+          "time": "0.018797",
+          "status": "run"
+        },
+        {
+          "classname": "ComputeExecutor",
+          "name": "graphics adapter preserves occupied admission and serial finish shares the scene cap",
+          "time": "0.024526",
+          "status": "run"
+        },
+        {
+          "classname": "ComputeExecutor",
+          "name": "canceling a slot-blocked graphics batch wakes its owner before scene completion",
+          "time": "0.024449",
+          "status": "run"
+        },
+        {
+          "classname": "ReplayStepCounter",
+          "name": "truncated replay bodies never become zero-filled orders",
+          "time": "0.001815",
+          "status": "run"
+        },
+        {
+          "classname": "ReplayStepCounter",
+          "name": "step totals cannot wrap",
+          "time": "0",
+          "status": "run"
+        },
+        {
+          "classname": "ReplayStepCounter",
+          "name": "checksum mismatch closes playback safely",
+          "time": "0",
+          "status": "run"
+        },
+        {
+          "classname": "ReplayStepCounter",
+          "name": "legacy create decoder respects both historical payload lengths",
+          "time": "0",
+          "status": "run"
+        },
+        {
+          "classname": "ReplayStepCounter",
+          "name": "WideRoundTrip",
+          "time": "0.000698",
+          "status": "run"
+        },
+        {
+          "classname": "ReplayStepCounter",
+          "name": "VersionBounds",
+          "time": "0.000138",
+          "status": "run"
+        },
+        {
+          "classname": "ReplayStepCounter",
+          "name": "DecodeVersionPlumbing",
+          "time": "0",
+          "status": "run"
+        }
+      ],
+      "partial_pool_warning": false,
+      "state": "passed"
+    },
+    {
+      "kind": "engine",
+      "command": [
+        "python3",
+        "test/run_tests.py",
+        "--build-dir",
+        "/home/bradley/.codex/worktrees/engine-optimization/glob2/build/wake-control",
+        "--binary",
+        "engine",
+        "--no-display",
+        "--timeout",
+        "120",
+        "-j",
+        "1",
+        "--artifacts",
+        "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/confirmation/final-integration/native-engine",
+        "--junit",
+        "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/confirmation/final-integration/native-engine.xml",
+        "--filter",
+        "HiringPipeline/whole game save and resume preserves every publication phase*",
+        "--filter",
+        "SharedWorkerLifecycle/pending gradient work survives a save and continues at the same deadlines"
+      ],
+      "returncode": 0,
+      "cases": 2,
+      "failed": 0,
+      "skipped": 0,
+      "names": [
+        {
+          "classname": "HiringPipeline",
+          "name": "whole game save and resume preserves every publication phase [save-format][artifacts]",
+          "time": "5.41708",
+          "status": "run"
+        },
+        {
+          "classname": "SharedWorkerLifecycle",
+          "name": "pending gradient work survives a save and continues at the same deadlines",
+          "time": "0.405756",
+          "status": "run"
+        }
+      ],
+      "partial_pool_warning": false,
+      "state": "passed"
+    },
+    {
+      "kind": "committed-match",
+      "command": [
+        "/home/bradley/.codex/worktrees/engine-optimization/glob2/build/wake-control/src/glob2",
+        "match",
+        "verify",
+        "test/fixtures/multiplayer/FourSquares1.g2mr",
+        "--map-file",
+        "maps/FourSquares1.map.gz",
+        "--output-dir",
+        "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/confirmation/final-integration/golden-candidate",
+        "--compute-threads",
+        "4"
+      ],
+      "returncode": 0,
+      "verdict": "verified",
+      "trace_matches_committed_and_control": true,
+      "tick_lines": 843,
+      "checksums_sha256": "3b91be7eee296dd1c8bc5406b6aadfe50965fbe22cc1fb3bc504558c859395f8",
+      "state": "passed"
+    }
+  ],
+  "started_utc": "2026-10-15T09:07:22.872773+00:00",
+  "finished_utc": "2026-10-15T09:07:30.908268+00:00"
+}

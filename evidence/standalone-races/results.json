@@ -1,0 +1,144 @@
+{
+  "header_sha256": "cfdde45e73d0789c2eec88991fd45f8558dbfc6a76a9d0d82b1d509b48a0e786",
+  "source_sha256": "dbc68838dfc13d52110dfd6df0b9bb168203a033d5f452638ecb110d9ac212c2",
+  "cases": {
+    "presentation": "64 late ready jobs while designated worker holds optional presentation; gate5s rejects delayed barrier.",
+    "early": "Continuation resolved before original callback returns; callback gate verifies no continuation/tail overlap.",
+    "reuse": "512 batches,17 distinct result slots, immediateownerjoin/storage reuse; lastnotifier lifetime/publication stress.",
+    "lane": "256 two-batch rounds withconcurrent owneradmission/completion; same-lane overlap/count checks.",
+    "waking": "512 tinyjoins withintermittent idle pauses target wake-beforeparking."
+  },
+  "builds": {
+    "asan_ubsan": {
+      "command": [
+        "g++-13",
+        "-std=c++20",
+        "-O1",
+        "-g",
+        "-fno-omit-frame-pointer",
+        "-pthread",
+        "-Iartifacts/october-regression/coordination-redesign/local-completion-source/src/common",
+        "-Iartifacts/october-regression/coordination-redesign/local-completion-source/libgag/include",
+        "artifacts/october-regression/coordination-redesign/standalone-races/races.cpp",
+        "-fsanitize=address,undefined",
+        "-L/usr/lib/gcc/x86_64-linux-gnu/15",
+        "-o",
+        "artifacts/october-regression/coordination-redesign/standalone-races/races-asan"
+      ],
+      "returncode": 0
+    },
+    "tsan": {
+      "command": [
+        "g++-13",
+        "-std=c++20",
+        "-O1",
+        "-g",
+        "-fno-omit-frame-pointer",
+        "-pthread",
+        "-Iartifacts/october-regression/coordination-redesign/local-completion-source/src/common",
+        "-Iartifacts/october-regression/coordination-redesign/local-completion-source/libgag/include",
+        "artifacts/october-regression/coordination-redesign/standalone-races/races.cpp",
+        "-fsanitize=thread",
+        "-L/usr/lib/gcc/x86_64-linux-gnu/15",
+        "-o",
+        "artifacts/october-regression/coordination-redesign/standalone-races/races-tsan"
+      ],
+      "returncode": 0
+    }
+  },
+  "runs": [
+    {
+      "kind": "asan_ubsan",
+      "policy": "steal",
+      "command": [
+        "timeout",
+        "60s",
+        "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/standalone-races/races-asan",
+        "all"
+      ],
+      "returncode": 0,
+      "status": "passed",
+      "log": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/standalone-races/asan_ubsan-steal.log",
+      "binary_sha256": "7fa6c3ab605176b7a2bd2bc40127cfabdb289868f83534f6ce8ee5383b8a4476",
+      "timing_excluded": true
+    },
+    {
+      "kind": "asan_ubsan",
+      "policy": "round-robin",
+      "command": [
+        "timeout",
+        "60s",
+        "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/standalone-races/races-asan",
+        "all"
+      ],
+      "returncode": 0,
+      "status": "passed",
+      "log": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/standalone-races/asan_ubsan-round-robin.log",
+      "binary_sha256": "7fa6c3ab605176b7a2bd2bc40127cfabdb289868f83534f6ce8ee5383b8a4476",
+      "timing_excluded": true
+    },
+    {
+      "kind": "asan_ubsan",
+      "policy": "lane-affine",
+      "command": [
+        "timeout",
+        "60s",
+        "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/standalone-races/races-asan",
+        "all"
+      ],
+      "returncode": 0,
+      "status": "passed",
+      "log": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/standalone-races/asan_ubsan-lane-affine.log",
+      "binary_sha256": "7fa6c3ab605176b7a2bd2bc40127cfabdb289868f83534f6ce8ee5383b8a4476",
+      "timing_excluded": true
+    },
+    {
+      "kind": "tsan",
+      "policy": "steal",
+      "command": [
+        "timeout",
+        "60s",
+        "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/standalone-races/races-tsan",
+        "all"
+      ],
+      "returncode": 0,
+      "status": "passed",
+      "log": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/standalone-races/tsan-steal.log",
+      "binary_sha256": "6d00204f2ac1b0a0550b55a5a7fda87f3065837b7ca6c03c4e4bdca07fab33ef",
+      "timing_excluded": true
+    },
+    {
+      "kind": "tsan",
+      "policy": "round-robin",
+      "command": [
+        "timeout",
+        "60s",
+        "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/standalone-races/races-tsan",
+        "all"
+      ],
+      "returncode": 0,
+      "status": "passed",
+      "log": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/standalone-races/tsan-round-robin.log",
+      "binary_sha256": "6d00204f2ac1b0a0550b55a5a7fda87f3065837b7ca6c03c4e4bdca07fab33ef",
+      "timing_excluded": true
+    },
+    {
+      "kind": "tsan",
+      "policy": "lane-affine",
+      "command": [
+        "timeout",
+        "60s",
+        "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/standalone-races/races-tsan",
+        "all"
+      ],
+      "returncode": 0,
+      "status": "passed",
+      "log": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/standalone-races/tsan-lane-affine.log",
+      "binary_sha256": "6d00204f2ac1b0a0550b55a5a7fda87f3065837b7ca6c03c4e4bdca07fab33ef",
+      "timing_excluded": true
+    }
+  ],
+  "platform": "Linux x86_64; GCC13; platform coverage limited",
+  "started_utc": "2026-10-15T00:05:04.401313+00:00",
+  "completed_utc": "2026-10-15T00:05:27.273179+00:00"
+}

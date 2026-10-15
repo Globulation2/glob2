@@ -1,0 +1,1 @@
+Selected raw evidence; no binaries/full checkouts/.git or heavy Trace glob. Original receipts are unmodified. index/content-manifest.json maps original paths to dereferenced portable files. Run python3 index/verify.py to verify packaged bytes only. This is NOT a portable recomputation claim; see preflight_requirements/unresolved_portability. No compression/upload performed.

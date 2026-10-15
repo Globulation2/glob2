@@ -1,0 +1,18 @@
+{
+  "approved": true,
+  "source_sha256": "056f9635d75f7a8ca697c4e0a0e760868a9eb1dfc49510df81ebdc896c37d031",
+  "qualification_receipt_sha256": "95b33402aa12f513183ec9c456c4d8decda63becf246f1132e8032345b9a2fea",
+  "selection_sha256": "e4946514ebe9df60b3e77680716fb6cae825d6bc40c41824f2b41598ee76a093",
+  "checks": [
+    "Originalbothregime retainedcomparison andrelocatedresult contenthashes matchreceipt. Maps equality across original/relocated artifacts checked; bothstate retainedcomparison matched1e-12.",
+    "Relocation wrapper audit hook rejects originalworktree contentopens; root autodetection runs relativebundlelayout and omitsoptionalrootapproval explicitly.",
+    "Qualification source preservescap/no-winner/zero-reference/parseroverride/hashcorruption fixturechecks; endpointmismatch rejection reported inedge receipt and directlyvalidated byload_regime source assertions.",
+    "Selection129unique corealiases includesallfour terminalcomplete/analysisJSON plus toolportablealias, finalaudits/report sources. Existingrawrules retainadversecells; no fullcheckout/binaryglobs added."
+  ],
+  "limits": [
+    "No bootstrap re-executed byreviewer; reviewed savedqualificationoutputs andapparatus.",
+    "Endpointmismatch reportededgecheck is not reproduced by savedqualify.py script; retain itsadditionalinvocation orappend reproducibleedgecase beforefuturecompleteapparatus claims.",
+    "Optionalsidecarbodies/absentbinaryfixturebytes are explicit limitations; portable recomputation is numericalartifact verification,not fullsimulation replay orproductionacceptance."
+  ],
+  "activity": "Readonlysmallartifact/source/hashcomparison only; no package/compression/build/native/signals."
+}

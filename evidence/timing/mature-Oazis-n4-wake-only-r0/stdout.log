@@ -1,0 +1,6 @@
+Settings::load("preferences.txt") : error, can't open file.
+nox::game started
+nox::gui.game.checkSum() = 2f316c1e
+HISTORY_RESULT ticks=65000 ended=0 winner=-1 width=256 height=256 teams=11 controllers=11 compute_participants=4 compute_requested=4 eligible_cpus=6 gradient_backend=cpu
+automaticEndingGame ended: 65000 ticks, 36 minutes, 6 seconds
+GLOB2_GAME_END ticks=65000 winner_team=-1 seed=1056243202 map="Oazis" orders=2318 players=team0:Nicowar,team1:Nicowar,team2:Nicowar,team3:Nicowar,team4:Nicowar,team5:Nicowar,team6:Nicowar,team7:Nicowar,team8:Nicowar,team9:Nicowar,team10:Nicowar

@@ -1,0 +1,5 @@
+PASS glob2-unit-tests ComputeExecutor (49 cases) (1.0s)
+PASS glob2-unit-tests ReplayStepCounter (7 cases) (0.0s)
+
+2 passed, 0 failed, 0 skipped (1.0s of test time)
+[run_tests] JUnit report: /home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/confirmation/final-integration/native-unit.xml (56 cases)

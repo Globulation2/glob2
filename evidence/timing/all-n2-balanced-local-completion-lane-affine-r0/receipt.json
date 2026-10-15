@@ -1,0 +1,123 @@
+{
+  "validation_errors": [],
+  "case": {
+    "id": "all-n2-balanced-local-completion-lane-affine-r0",
+    "scenario": {
+      "id": "all-n2-balanced",
+      "kind": "harness",
+      "args": [
+        "{participants}",
+        "{dispatch_policy}",
+        "balanced",
+        "128",
+        "64",
+        "256"
+      ],
+      "env": {},
+      "fixture_sha256": {},
+      "budget": 2,
+      "resolved_participants": 2,
+      "allocation": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15,
+        16,
+        17,
+        18,
+        19,
+        20,
+        21,
+        22,
+        23,
+        24,
+        25,
+        26,
+        27,
+        28,
+        29,
+        30,
+        31
+      ],
+      "repeats": 2,
+      "timeout_seconds": 120
+    },
+    "variant": {
+      "role": "local-completion-lane-affine",
+      "binary": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/micro-local-completion",
+      "sha256": "ef8b17b9dac1c45b8c900ca7b7c2905cc4d0cc80d0ecc423af3f1ae073a61448",
+      "cwd": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign",
+      "dispatch_policy": "lane-affine",
+      "env": {
+        "GLOB2_DEFERRED_DISPATCH": "lane-affine"
+      },
+      "design_claims": {
+        "dispatch_only_research_control": true,
+        "optional_presentation_contract_failed_or_unsafe": true,
+        "local_affine_mixed_lane_parallelism_failed": true,
+        "not_native_game_or_production_eligible": true
+      }
+    },
+    "repeat": 0
+  },
+  "command": [
+    "taskset",
+    "-c",
+    "0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31",
+    "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/micro-local-completion",
+    "2",
+    "lane-affine",
+    "balanced",
+    "128",
+    "64",
+    "256"
+  ],
+  "binary_sha256": "ef8b17b9dac1c45b8c900ca7b7c2905cc4d0cc80d0ecc423af3f1ae073a61448",
+  "status": "completed",
+  "returncode": 0,
+  "process_wall_seconds": 0.04110834002494812,
+  "user_cpu_seconds": 0.018008,
+  "system_cpu_seconds": 0.004001,
+  "total_cpu_seconds": 0.022009,
+  "voluntary_context_switches": 322,
+  "involuntary_context_switches": 0,
+  "peak_rss_kib": 24216,
+  "native": null,
+  "harness": [
+    {
+      "participants": 2,
+      "requested_policy": "lane-affine",
+      "pattern": "balanced",
+      "rounds": 128,
+      "jobs_per_round": 64,
+      "iterations": 256,
+      "wall_ns": 16561101,
+      "digest": 1946156145118738286,
+      "jobs_checked": 8192
+    }
+  ],
+  "variant_env": {
+    "GLOB2_DEFERRED_DISPATCH": "lane-affine"
+  },
+  "scenario_env": {},
+  "fixture_sha256": {},
+  "design_claims": {
+    "dispatch_only_research_control": true,
+    "optional_presentation_contract_failed_or_unsafe": true,
+    "local_affine_mixed_lane_parallelism_failed": true,
+    "not_native_game_or_production_eligible": true
+  },
+  "mutex_accounting_scope": "Record queue pop/callback-start global dispatch mutex absence separately from remaining shared completion/dependency mutex; do not infer this from throughput."
+}

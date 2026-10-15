@@ -1,0 +1,30 @@
+--- a/src/common/ComputeExecutor.h
++++ b/src/common/ComputeExecutor.h
+@@ -411,9 +411,25 @@
+         {
+             std::lock_guard lock(queue.mutex);
+             optionalBusy=queue.optionalBusy;
++            // Only ready jobs enter this list. Their unfinished batch keeps
++            // slot.due immutable and node storage alive through queue ownership.
++            const auto earlier=[this](const Dispatch& a,const Dispatch& b) {
++                const auto adue=slots[a.claim.slot].due,bdue=slots[b.claim.slot].due;
++                if(adue!=bdue) return adue<bdue;
++                if(a.claim.serial!=b.claim.serial) return a.claim.serial<b.claim.serial;
++                return a.claim.index<b.claim.index;
++            };
+             work.next=nullptr;
+-            if(queue.tail) queue.tail->next=&work; else queue.head=&work;
+-            queue.tail=&work;
++            if(!queue.tail) queue.head=queue.tail=&work;
++            else if(!earlier(work,*queue.tail)) {
++                queue.tail->next=&work; queue.tail=&work;
++            } else if(earlier(work,*queue.head)) {
++                work.next=queue.head; queue.head=&work;
++            } else {
++                auto* previous=queue.head;
++                while(previous->next && !earlier(work,*previous->next)) previous=previous->next;
++                work.next=previous->next; previous->next=&work;
++            }
+         }
+         queue.ready.notify_one();
+         // Late required work must not sit behind optional callbacks while a

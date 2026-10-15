@@ -1,0 +1,23 @@
+[
+  {
+    "type": "event",
+    "time": 5054.104,
+    "class": "BrowserContext",
+    "method": "pageError",
+    "params": {
+      "error": {
+        "error": {
+          "message": "An attempt was made to use an object that is not, or is no longer, usable",
+          "stack": "InvalidStateError: An attempt was made to use an object that is not, or is no longer, usable\n    at quit_ (http://127.0.0.1:8770/threaded/index.js:1:418656)\n    at handleException (http://127.0.0.1:8770/threaded/index.js:1:516044)\n    at callUserCallback (http://127.0.0.1:8770/threaded/index.js:1:516416)\n    at checkMailbox (http://127.0.0.1:8770/threaded/index.js:1:516773)\n    at promise callback*__emscripten_thread_mailbox_await (http://127.0.0.1:8770/threaded/index.js:1:516625)\n    at checkMailbox/< (http://127.0.0.1:8770/threaded/index.js:1:516860)\n    at callUserCallback (http://127.0.0.1:8770/threaded/index.js:1:516373)\n    at checkMailbox (http://127.0.0.1:8770/threaded/index.js:1:516773)\n    at promise callback*__emscripten_thread_mailbox_await (http://127.0.0.1:8770/threaded/index.js:1:516625)\n    at checkMailbox/< (http://127.0.0.1:8770/threaded/index.js:1:516860)\n    at callUserCallback (http://127.0.0.1:8770/threaded/index.js:1:516373)\n    at checkMailbox (http://127.0.0.1:8770/threaded/index.js:1:516773)\n    at promise callback*__emscripten_thread_mailbox_await (http://127.0.0.1:8770/threaded/index.js:1:516625)\n    at checkMailbox/< (http://127.0.0.1:8770/threaded/index.js:1:516860)\n    at callUserCallback (http://127.0.0.1:8770/threaded/index.js:1:516373)\n    at checkMailbox (http://127.0.0.1:8770/threaded/index.js:1:516773)\n    at promise callback*__emscripten_thread_mailbox_await (http://127.0.0.1:8770/threaded/index.js:1:516625)\n    at checkMailbox/< (http://127.0.0.1:8770/threaded/index.js:1:516860)\n    at callUserCallback (http://127.0.0.1:8770/threaded/index.js:1:516373)\n    at checkMailbox (http://127.0.0.1:8770/threaded/index.js:1:516773)\n    at promise callback*__emscripten_thread_mailbox_await (http://127.0.0.1:8770/threaded/index.js:1:516625)\n    at checkMailbox/< (http://127.0.0.1:8770/threaded/index.js:1:516860)\n    at callUserCallback (http://127.0.0.1:8770/threaded/index.js:1:516373)\n    at checkMailbox (http://127.0.0.1:8770/threaded/index.js:1:516773)\n    at promise callback*__emscripten_thread_mailbox_await (http://127.0.0.1:8770/threaded/index.js:1:516625)\n    at checkMailbox/< (http://127.0.0.1:8770/threaded/index.js:1:516860)\n    at callUserCallback (http://127.0.0.1:8770/threaded/index.js:1:516373)\n    at checkMailbox (http://127.0.0.1:8770/threaded/index.js:1:516773)\n    at promise callback*__emscripten_thread_mailbox_await (http://127.0.0.1:8770/threaded/index.js:1:516625)\n    at checkMailbox/< (http://127.0.0.1:8770/threaded/index.js:1:516860)\n    at callUserCallback (http://127.0.0.1:8770/threaded/index.js:1:516373)\n    at checkMailbox (http://127.0.0.1:8770/threaded/index.js:1:516773)\n    at promise callback*__emscripten_thread_mailbox_await (http://127.0.0.1:8770/threaded/index.js:1:516625)\n    at checkMailbox/< (http://127.0.0.1:8770/threaded/index.js:1:516860)\n    at callUserCallback (http://127.0.0.1:8770/threaded/index.js:1:516373)\n    at checkMailbox (http://127.0.0.1:8770/threaded/index.js:1:516773)\n    at promise callback*__emscripten_thread_mailbox_await (http://127.0.0.1:8770/threaded/index.js:1:516625)\n    at checkMailbox/< (http://127.0.0.1:8770/threaded/index.js:1:516860)\n    at callUserCallback (http://127.0.0.1:8770/threaded/index.js:1:516373)\n    at checkMailbox (http://127.0.0.1:8770/threaded/index.js:1:516773)\n    at promise callback*__emscripten_thread_mailbox_await (http://127.0.0.1:8770/threaded/index.js:1:516625)\n    at checkMailbox/< (http://127.0.0.1:8770/threaded/index.js:1:516860)\n    at callUserCallback (http://127.0.0.1:8770/threaded/index.js:1:516373)\n    at checkMailbox (http://127.0.0.1:8770/threaded/index.js:1:516773)\n    at promise callback*__emscripten_thread_mailbox_await (http://127.0.0.1:8770/threaded/index.js:1:516625)\n    at checkMailbox/< (http://127.0.0.1:8770/threaded/index.js:1:516860)\n    at callUserCallback (http://127.0.0.1:8770/threaded/index.js:1:516373)\n    at checkMailbox (http://127.0.0.1:8770/threaded/index.js:1:516773)\n    at promise callback*__emscripten_thread_mailbox_await (http://127.0.0.1:8770/threaded/index.js:1:516625)\n    at checkMailbox/< (http://127.0.0.1:8770/threaded/index.js:1:516860)",
+          "name": "InvalidStateError"
+        }
+      },
+      "location": {
+        "url": "http://127.0.0.1:8770/threaded/index.js",
+        "line": 0,
+        "column": 560150
+      }
+    },
+    "pageId": "page@1812f4c5d46c1dbfd5c0e8d5c092b150"
+  }
+]

@@ -1,0 +1,1890 @@
+<meta charset="utf-8"><style>body{font:15px system-ui;max-width:1500px;margin:30px auto;padding:0 20px}td,th{border:1px solid #ccc;padding:6px;text-align:left}table{border-collapse:collapse;margin:16px 0}code,pre{white-space:pre-wrap;overflow-wrap:anywhere}.loss{color:#a21}.gain{color:#075}</style>
+<h1>Executor experiment summary</h1><p>Final256campaign andexactcandidatevalidation complete; acceptedforreview withFirefoxUIlimitation,notmerged.</p><p>Reject current FIFO/distributed and affine variants for production. W is a minimal confirmation candidate; preserve all latest054 features and test W within each revision/allocation, never pool old/new trajectories.</p>
+<p>1472 timed processes:160 native +800 dispatch micro +80 Off urgency +432 weighted. Separate100 per-tick parity runs matched20 groups.</p>
+<p>Fresh PG/OA each2 independent seeds×2repeats; report both per-seed effects, not narrow population confidence. Serial guards1seed1repeat; mature1save×2repeats;small64 one seed×2repeats. Synthetic2 timing repeats fixedpayload no populationCI. Ordinary processCPU includes setup/load/finalchecksum; innerwall run_ns is different scope.</p>
+<p><strong>Auto is32participants restricted to6eligibleSMT CPUs/3physicalcores in every inspected native result. Gains are oversubscription-conditional, not evidence for all32allocation policy.</strong> resource_plan requested0,resolved32,eligible6,exceeds_cpu_allocation=true</p>
+<p><strong>W wins freshauto on both seeds/maps: PG wall−16.67% CPU−15.98%, OA−5.11%/−4.86%. PG individualseedwall−17.24/−16.09%; OA−4.81/−5.40%. N4PG+1.17% wall/OA−0.37%, weak/no gain.</strong> two seeds,repeatmeans nested</p>
+<p><strong>W matureauto savesPG6.72%,OA3.94% wall; small64auto saves58.55% wall,53.77%CPU. These are one-state/one-seed conditional outcomes.</strong> no workloadpopulationCI</p>
+<p><strong>LocalRR materially regresses every fresh/mature N4 map: PGfresh+9.50%,OAfresh+24.72%,PGmature+10.31%,OAmature+15.09% wall. Localsteal and firststeal typically trailW; no general native rationale to add their complexity.</strong> Wbeatsallshards in allfourfreshmap/budgetcells andalmostallmaturecells; solefirststealOAmatureN4 edge0.37% vsW isweakconditional.</p>
+<p><strong>Micro shows throughput opportunities but catastrophic singlelane behavior: all32N4wall firststeal+166.6%,localsteal+218.5%,localRR+1506.8%; all32autowall+935.7/+826.9/+2016.7%. Localsteal all32auto balanced/skew−47.6/−54.2% wall does not offset representative native/urgency failures.</strong> two repeats,fixedpayload; retainabsolutevaluesinrawreport</p>
+<p><strong>Off urgency failure is real: all32required baseline median0.343ms versusfirststeal13.793/localRR13.589/localsteal14.869ms;3physical0.340ms versus13.449–13.630ms. Priorityheader0.318ms3physical/0.592msall32 recoversmosturgency.</strong> gatedbacklogconditional—notgameinputlatency; noTraceclockclaim</p>
+<p><strong>Optional service delay itself is roughly2ms acrossroles; priorityall32optional median2.801ms versusFIFO2.151–2.175ms. Mustreviewactualbaselineandsamples ratherthanclaimpriorityunconditionallyimprovespresentation.</strong> fourrepeatconditionalnoloadpopulationCI</p>
+<h2>Native effects on frozen484</h2><p>Positive wall/CPU means regression. Fresh2seeds×2nestedrepeats; mature1save×2repeats; small1seed×2repeats. Auto32 participants restricted to6eligible logicalCPUs.</p>
+<table><tr><th>Family<th>Pair<th>Independent/conditional units<th>Wall change<th>Whole-process CPU change<tr><td>fresh-Playground-n4<td>baseline → wake-only<td>2<td class="loss">+1.17%<td>+1.00%<tr><td>fresh-Playground-n4<td>baseline → steal<td>2<td class="loss">+4.17%<td>+2.34%<tr><td>fresh-Playground-n4<td>baseline → local-completion-round-robin<td>2<td class="loss">+9.50%<td>+2.69%<tr><td>fresh-Playground-n4<td>baseline → local-completion-steal<td>2<td class="loss">+1.64%<td>-0.31%<tr><td>fresh-Playground-nauto<td>baseline → wake-only<td>2<td class="gain">-16.67%<td>-15.98%<tr><td>fresh-Playground-nauto<td>baseline → steal<td>2<td class="gain">-11.96%<td>-9.18%<tr><td>fresh-Playground-nauto<td>baseline → local-completion-round-robin<td>2<td class="gain">-9.60%<td>-5.42%<tr><td>fresh-Playground-nauto<td>baseline → local-completion-steal<td>2<td class="gain">-10.63%<td>-7.69%<tr><td>serial-guard-Playground<td>baseline → wake-only<td>1<td class="gain">-2.40%<td>-1.90%<tr><td>serial-guard-Playground<td>baseline → steal<td>1<td class="loss">+0.10%<td>+0.45%<tr><td>serial-guard-Playground<td>baseline → local-completion-round-robin<td>1<td class="loss">+9.09%<td>+8.65%<tr><td>serial-guard-Playground<td>baseline → local-completion-steal<td>1<td class="gain">-2.08%<td>-1.69%<tr><td>mature-Playground-n4<td>baseline → wake-only<td>1<td class="gain">-2.35%<td>-0.37%<tr><td>mature-Playground-n4<td>baseline → steal<td>1<td class="loss">+2.44%<td>+2.02%<tr><td>mature-Playground-n4<td>baseline → local-completion-round-robin<td>1<td class="loss">+10.31%<td>+3.99%<tr><td>mature-Playground-n4<td>baseline → local-completion-steal<td>1<td class="loss">+2.09%<td>+1.24%<tr><td>mature-Playground-nauto<td>baseline → wake-only<td>1<td class="gain">-6.72%<td>-7.29%<tr><td>mature-Playground-nauto<td>baseline → steal<td>1<td class="gain">-5.11%<td>-4.02%<tr><td>mature-Playground-nauto<td>baseline → local-completion-round-robin<td>1<td class="loss">+0.92%<td>+2.64%<tr><td>mature-Playground-nauto<td>baseline → local-completion-steal<td>1<td class="gain">-3.39%<td>-2.11%<tr><td>fresh-Oazis-n4<td>baseline → wake-only<td>2<td class="gain">-0.37%<td>-0.65%<tr><td>fresh-Oazis-n4<td>baseline → steal<td>2<td class="loss">+4.05%<td>+1.92%<tr><td>fresh-Oazis-n4<td>baseline → local-completion-round-robin<td>2<td class="loss">+24.72%<td>+2.34%<tr><td>fresh-Oazis-n4<td>baseline → local-completion-steal<td>2<td class="loss">+4.20%<td>+1.10%<tr><td>fresh-Oazis-nauto<td>baseline → wake-only<td>2<td class="gain">-5.11%<td>-4.86%<tr><td>fresh-Oazis-nauto<td>baseline → steal<td>2<td class="gain">-1.81%<td>+0.05%<tr><td>fresh-Oazis-nauto<td>baseline → local-completion-round-robin<td>2<td class="gain">-0.25%<td>-1.16%<tr><td>fresh-Oazis-nauto<td>baseline → local-completion-steal<td>2<td class="gain">-2.34%<td>-0.49%<tr><td>serial-guard-Oazis<td>baseline → wake-only<td>1<td class="loss">+0.52%<td>+0.95%<tr><td>serial-guard-Oazis<td>baseline → steal<td>1<td class="loss">+0.05%<td>-0.02%<tr><td>serial-guard-Oazis<td>baseline → local-completion-round-robin<td>1<td class="loss">+4.02%<td>+3.77%<tr><td>serial-guard-Oazis<td>baseline → local-completion-steal<td>1<td class="loss">+0.11%<td>+0.39%<tr><td>mature-Oazis-n4<td>baseline → wake-only<td>1<td class="loss">+1.12%<td>+0.37%<tr><td>mature-Oazis-n4<td>baseline → steal<td>1<td class="loss">+0.75%<td>+1.09%<tr><td>mature-Oazis-n4<td>baseline → local-completion-round-robin<td>1<td class="loss">+15.09%<td>+5.83%<tr><td>mature-Oazis-n4<td>baseline → local-completion-steal<td>1<td class="loss">+1.48%<td>+2.33%<tr><td>mature-Oazis-nauto<td>baseline → wake-only<td>1<td class="gain">-3.94%<td>-3.19%<tr><td>mature-Oazis-nauto<td>baseline → steal<td>1<td class="gain">-2.85%<td>-1.41%<tr><td>mature-Oazis-nauto<td>baseline → local-completion-round-robin<td>1<td class="loss">+0.53%<td>+4.39%<tr><td>mature-Oazis-nauto<td>baseline → local-completion-steal<td>1<td class="gain">-1.08%<td>+0.28%<tr><td>small64-n1<td>baseline → wake-only<td>1<td class="loss">+0.03%<td>-1.56%<tr><td>small64-n1<td>baseline → steal<td>1<td class="loss">+1.51%<td>+0.81%<tr><td>small64-n1<td>baseline → local-completion-round-robin<td>1<td class="loss">+2.87%<td>+1.31%<tr><td>small64-n1<td>baseline → local-completion-steal<td>1<td class="gain">-0.81%<td>-2.06%<tr><td>small64-n4<td>baseline → wake-only<td>1<td class="gain">-4.62%<td>-7.14%<tr><td>small64-n4<td>baseline → steal<td>1<td class="gain">-5.06%<td>-10.74%<tr><td>small64-n4<td>baseline → local-completion-round-robin<td>1<td class="loss">+4.82%<td>-8.20%<tr><td>small64-n4<td>baseline → local-completion-steal<td>1<td class="gain">-0.42%<td>-9.41%<tr><td>small64-nauto<td>baseline → wake-only<td>1<td class="gain">-58.55%<td>-53.77%<tr><td>small64-nauto<td>baseline → steal<td>1<td class="gain">-51.81%<td>-45.75%<tr><td>small64-nauto<td>baseline → local-completion-round-robin<td>1<td class="gain">-54.76%<td>-48.30%<tr><td>small64-nauto<td>baseline → local-completion-steal<td>1<td class="gain">-53.31%<td>-48.01%</table>
+<h2>Urgency and presentation: Off only</h2><table><tr><th>Allocation<th>Kind<th>Candidate<th>Baseline urgent median ms<th>Candidate urgent median ms<th>Candidate presentation median ms
+<tr><td>3physical6SMT<td>required<td>first-steal<td>0.340<td>13.630<td>n/a
+<tr><td>3physical6SMT<td>required<td>local-round-robin<td>0.340<td>13.449<td>n/a
+<tr><td>3physical6SMT<td>required<td>local-steal<td>0.340<td>13.620<td>n/a
+<tr><td>3physical6SMT<td>required<td>local-priority-steal<td>0.340<td>0.318<td>n/a
+<tr><td>3physical6SMT<td>optional<td>first-steal<td>0.342<td>13.308<td>2.189
+<tr><td>3physical6SMT<td>optional<td>local-round-robin<td>0.342<td>13.482<td>2.198
+<tr><td>3physical6SMT<td>optional<td>local-steal<td>0.342<td>13.326<td>2.185
+<tr><td>3physical6SMT<td>optional<td>local-priority-steal<td>0.342<td>0.324<td>2.124
+<tr><td>all32<td>required<td>first-steal<td>0.343<td>13.793<td>n/a
+<tr><td>all32<td>required<td>local-round-robin<td>0.343<td>13.589<td>n/a
+<tr><td>all32<td>required<td>local-steal<td>0.343<td>14.869<td>n/a
+<tr><td>all32<td>required<td>local-priority-steal<td>0.343<td>0.592<td>n/a
+<tr><td>all32<td>optional<td>first-steal<td>0.360<td>13.303<td>2.167
+<tr><td>all32<td>optional<td>local-round-robin<td>0.360<td>13.203<td>2.151
+<tr><td>all32<td>optional<td>local-steal<td>0.360<td>13.388<td>2.175
+<tr><td>all32<td>optional<td>local-priority-steal<td>0.360<td>0.447<td>2.801
+</table><p>Four repeats of a fixed gated workload; no game-input latency population inference. Trace clocks excluded. Priority header is standalone, not integrated engine qualification.</p>
+<h2>Weighted class-history models and controls</h2><p>24 heterogeneous fixed cells perpair; two timing repeats. Descriptive median ofcellchanges is not a pooled speedup or confidenceinterval. Bare-steal omits accounting; steal retains constant-unit accounting; clock-only/observe-only separate instrumentation from placement.</p><table><tr><th>Reference<th>Candidate<th>Cells/wins<th>Median wall change<th>Min/max
+<tr><td>bare-steal<td>clock-only<td>24/3<td>+6.79%<td>-15.22% / +33.13%
+<tr><td>bare-steal<td>ewma<td>24/6<td>+10.59%<td>-8.18% / +57.92%
+<tr><td>bare-steal<td>last<td>24/5<td>+9.45%<td>-5.32% / +49.43%
+<tr><td>bare-steal<td>observe-only<td>24/4<td>+5.36%<td>-10.62% / +31.59%
+<tr><td>bare-steal<td>static<td>24/6<td>+32.72%<td>-12.78% / +99.98%
+<tr><td>bare-steal<td>static-steal<td>24/2<td>+9.62%<td>-4.52% / +52.76%
+<tr><td>bare-steal<td>steal<td>24/4<td>+3.08%<td>-5.57% / +37.28%
+<tr><td>bare-steal<td>two-choice<td>24/3<td>+6.17%<td>-4.21% / +76.73%
+<tr><td>observe-only<td>bare-steal<td>24/20<td>-5.08%<td>-24.01% / +11.88%
+<tr><td>observe-only<td>clock-only<td>24/9<td>+2.47%<td>-24.54% / +29.98%
+<tr><td>observe-only<td>ewma<td>24/7<td>+6.23%<td>-16.69% / +26.96%
+<tr><td>observe-only<td>last<td>24/7<td>+3.35%<td>-10.83% / +32.24%
+<tr><td>observe-only<td>static<td>24/6<td>+21.76%<td>-18.50% / +51.97%
+<tr><td>observe-only<td>static-steal<td>24/7<td>+4.20%<td>-13.75% / +34.88%
+<tr><td>observe-only<td>steal<td>24/14<td>-0.46%<td>-22.69% / +10.35%
+<tr><td>observe-only<td>two-choice<td>24/11<td>+2.53%<td>-9.62% / +45.21%
+<tr><td>static-steal<td>bare-steal<td>24/22<td>-8.78%<td>-34.54% / +4.74%
+<tr><td>static-steal<td>clock-only<td>24/14<td>-0.64%<td>-41.90% / +15.28%
+<tr><td>static-steal<td>ewma<td>24/13<td>-1.22%<td>-18.48% / +19.27%
+<tr><td>static-steal<td>last<td>24/14<td>-1.41%<td>-21.39% / +19.65%
+<tr><td>static-steal<td>observe-only<td>24/17<td>-4.02%<td>-25.86% / +15.94%
+<tr><td>static-steal<td>static<td>24/8<td>+24.15%<td>-37.25% / +47.23%
+<tr><td>static-steal<td>steal<td>24/18<td>-5.14%<td>-33.40% / +10.43%
+<tr><td>static-steal<td>two-choice<td>24/14<td>-3.44%<td>-21.10% / +68.37%
+<tr><td>steal<td>bare-steal<td>24/20<td>-2.99%<td>-27.16% / +5.90%
+<tr><td>steal<td>clock-only<td>24/8<td>+3.09%<td>-20.78% / +30.85%
+<tr><td>steal<td>ewma<td>24/8<td>+7.44%<td>-13.75% / +55.22%
+<tr><td>steal<td>last<td>24/5<td>+5.15%<td>-14.86% / +31.66%
+<tr><td>steal<td>observe-only<td>24/10<td>+0.46%<td>-9.38% / +29.34%
+<tr><td>steal<td>static<td>24/7<td>+21.11%<td>-14.44% / +96.57%
+<tr><td>steal<td>static-steal<td>24/6<td>+5.42%<td>-9.45% / +50.15%
+<tr><td>steal<td>two-choice<td>24/10<td>+3.37%<td>-9.42% / +73.72%
+</table><h2>Rejected and unresolved paths</h2>
+<ul><li>First-source RR failed presentation/spare-worker contract; first affine unqualified.</li><li>Local affine failed independent/mixed-lane parallelism Off/Waits/Trace, remains rejected despite sanitizer passes.</li><li>LocalRR N4 native losses and every sharded single-lane micro loss retained.</li><li>Original immediate probe failed frozen baseline because it assumed serial exceptions drain; diagnostic assumption fixed, original failure archived. No engine bug or performance win inferred.</li></ul>
+<p>Normal AI/gradient pipeline/growth/stats/turret deferred jobs use submit/join, separate from immediate run()/invoke runDone bookkeeping. SnapshotGradient::batchCPUGroup contains a reachable executor-&gt;run route through propagateBatch/backend batching. Its use is conditional; no retained engine call-count measurement establishes zero calls. Removing immediate runDone cannot explain deferred-path improvements without proving those jobs execute immediate run. Source proof establishes a candidate simplification, not observed engine savings.</p>
+<h2>Latest confirmation: kept separate</h2><p>Latest cached hiring candidates, shared snapshots, gradient/GPU cleanup and historical-save repairs remain in both latest B/W sources. Frozen484 SIM57 is a separate control, not replacement implementation.</p>
+<pre>{
+  &quot;cohorts&quot;: {
+    &quot;old&quot;: {
+      &quot;status&quot;: &quot;complete_validated&quot;,
+      &quot;planned_native_runs&quot;: 32,
+      &quot;base_revision&quot;: &quot;48438f1f08a68b24ef0049834d371b9d00d84bae&quot;,
+      &quot;analysis_path&quot;: &quot;/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/confirmation/wake-only-allcore/old/analysis/pilot-analysis.json&quot;
+    },
+    &quot;latest&quot;: {
+      &quot;status&quot;: &quot;complete_validated&quot;,
+      &quot;planned_native_runs&quot;: 56,
+      &quot;base_revision&quot;: &quot;054804590ee1dd109f09642fc05654c324f08344&quot;,
+      &quot;analysis_path&quot;: &quot;/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/confirmation/wake-only-allcore/latest/analysis/pilot-analysis.json&quot;
+    },
+    &quot;latest-restricted&quot;: {
+      &quot;status&quot;: &quot;complete_validated&quot;,
+      &quot;planned_native_runs&quot;: 32,
+      &quot;base_revision&quot;: &quot;054804590ee1dd109f09642fc05654c324f08344&quot;,
+      &quot;analysis_path&quot;: &quot;/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/confirmation/wake-only-allcore/latest-restricted/analysis/pilot-analysis.json&quot;
+    }
+  },
+  &quot;live_stage&quot;: {
+    &quot;state&quot;: &quot;complete&quot;,
+    &quot;utc&quot;: &quot;2026-10-15T02:40:04.459743+00:00&quot;
+  }
+}</pre>
+<h2>Reconstruction and exact inputs</h2><p><a href="/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/final-analysis/detailed.json">Detailed JSON with source/binary/fixture hashes and receipt links</a> · <a href="/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/final-analysis/detailed.html">Detailed comparisons</a> · <a href="/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/final-analysis/generate.py">Report generator</a></p>
+<h3>Confirmation ordering limitation</h3><p><strong>120newnativeprocesses complete, but all60B/Wblocks baselinefirst; systematicorderdriftunidentified. At that stage latestPGN4loss recurredbothseeds andmotivatedthebalanced8seed screen nowattachedbelow. EarlierautoCPUefficiencybenefitsremainordertimeconfounded/descriptive,notuniversalfreewin.</strong></p><p>AllobservedBreceiptsfinishbeforepairedW. Systematiccache/temperature/frequency/backgrounddrift remains confounded; sign unknown and cannot estimate correction from no Wfirst blocks. Repeats nested do not remove orderbias. Do not discard or silentlyreplace observations.</p><p><a href="/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/fresh-audit-causal/wake-confirmation/review.json">Independent120run recomputation and order audit</a></p>
+<h3>old 48438f1f08a68b24ef0049834d371b9d00d84bae</h3>
+<table><tr><th>Family<th>Pair<th>Independent/conditional units<th>Wall change<th>Whole-process CPU change<tr><td>fresh-Playground-n4<td>baseline → wake-only<td>2<td class="loss">+5.90%<td>+6.10%<tr><td>fresh-Playground-nauto<td>baseline → wake-only<td>2<td class="gain">-11.00%<td>-36.98%<tr><td>fresh-Oazis-n4<td>baseline → wake-only<td>2<td class="gain">-0.94%<td>-0.68%<tr><td>fresh-Oazis-nauto<td>baseline → wake-only<td>2<td class="gain">-2.48%<td>-18.47%</table>
+<h3>latest 054804590ee1dd109f09642fc05654c324f08344</h3>
+<table><tr><th>Family<th>Pair<th>Independent/conditional units<th>Wall change<th>Whole-process CPU change<tr><td>fresh-Playground-n4<td>baseline → wake-only<td>2<td class="loss">+3.68%<td>+3.93%<tr><td>fresh-Playground-nauto<td>baseline → wake-only<td>2<td class="gain">-9.40%<td>-47.41%<tr><td>fresh-Oazis-n4<td>baseline → wake-only<td>2<td class="loss">+0.21%<td>-0.24%<tr><td>fresh-Oazis-nauto<td>baseline → wake-only<td>2<td class="gain">-7.04%<td>-25.20%<tr><td>mature-Playground-n4<td>baseline → wake-only<td>1<td class="gain">-0.99%<td>-5.67%<tr><td>mature-Playground-nauto<td>baseline → wake-only<td>1<td class="loss">+2.10%<td>-34.69%<tr><td>mature-Oazis-n4<td>baseline → wake-only<td>1<td class="loss">+0.37%<td>+0.94%<tr><td>mature-Oazis-nauto<td>baseline → wake-only<td>1<td class="gain">-3.86%<td>-17.86%<tr><td>small64-n4<td>baseline → wake-only<td>1<td class="gain">-8.32%<td>+0.77%<tr><td>small64-nauto<td>baseline → wake-only<td>1<td class="gain">-38.83%<td>-60.81%</table>
+<h3>latest-restricted 054804590ee1dd109f09642fc05654c324f08344</h3>
+<table><tr><th>Family<th>Pair<th>Independent/conditional units<th>Wall change<th>Whole-process CPU change<tr><td>fresh-Playground-n4<td>baseline → wake-only<td>2<td class="loss">+2.37%<td>+2.18%<tr><td>fresh-Playground-nauto<td>baseline → wake-only<td>2<td class="gain">-27.08%<td>-28.45%<tr><td>fresh-Oazis-n4<td>baseline → wake-only<td>2<td class="gain">-0.12%<td>+0.80%<tr><td>fresh-Oazis-nauto<td>baseline → wake-only<td>2<td class="gain">-9.51%<td>-9.01%</table>
+<h2>Balanced PG N4 followup (additional32 runs)</h2><p><strong>Balanced8seedPGN4 meanlossnotreproduced;wall−6.13%CI[−12.89,+0.43],CPU−4.05%[−10.30,+2.07]. Conditionalintervalsincludezero;adverseseedsretained. Advancebalancedwholewinnerconfirmation,notproductionacceptanceorposthocoldtimingcorrection.</strong></p><p>Eightfirstpredeclaredseeds×two nestedrepeats, exactB,W,W,B verifiedbyrecordedordinal/monotonic timestamps. Prior120dataunchanged. <a href="/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/fresh-audit-causal/balanced-n4/review.json">Independent raw audit</a></p><table><tr><th>Metric<th>Ratioofseedmeans change<th>PairedseedMC10000 CI95<th>Adverseseeds/8
+<tr><td>wall<td>-6.128%<td>[-12.892555576823472, 0.43166307802275067]<td>3/8
+<tr><td>cpu<td>-4.054%<td>[-10.297792997640045, 2.0721620918851915]<td>2/8
+<tr><td>sys<td>-5.262%<td>[-15.796520266265146, 6.822497837126362]<td>3/8
+<tr><td>rss<td>+0.262%<td>[-0.4976700912268117, 1.0266927454219754]<td>5/8
+</table><p>SecondPRNG intervalcheck agreesclosely. AB/BA strata differ; balancednewdata cannotidentifyorcorrectpastorderbias. Wall3/8seedslower,CPU2/8slower; notrecommendedas universalfreeCPU/wallwin.</p>
+<h2>Completed frozen Oazis64 CPU/OpenCL comparison</h2><p>FrozenSIM57, four games concurrently on fixed disjoint3physical+SMT masks, shared selected GPU0. Actualoffload unknown; backend flag alone does not establishGPUwork. Not latestGPU/platform policy.</p><table><tr><th>Subset<th>Paired seeds<th>Metric<th>Ratio-of-means change<th>Paired-seed bootstrap95
+<tr><td>all<td>64<td>ticks_per_second<td>+0.215%<td>[-0.46251731166848914, 0.9144156343292429]
+<tr><td>all<td>64<td>run_wall_seconds<td>-0.259%<td>[-0.917147577640865, 0.41091918540156913]
+<tr><td>all<td>64<td>wall_seconds<td>-0.177%<td>[-0.8355084117119732, 0.49442574205522266]
+<tr><td>all<td>64<td>total_cpu_seconds<td>-0.286%<td>[-0.9975153326105709, 0.43112273592866396]
+<tr><td>all<td>64<td>cpu_seconds_per_tick<td>-0.250%<td>[-0.9792004756927902, 0.46631102564768134]
+<tr><td>all<td>64<td>ticks<td>+0.000%<td>[0.0, 0.0]
+<tr><td>all<td>64<td>peak_rss_kib<td>+26.305%<td>[25.920083073400757, 26.690130328337304]
+<tr><td>original32<td>32<td>ticks_per_second<td>+0.786%<td>[-0.2808280346201999, 1.8958282990243096]
+<tr><td>original32<td>32<td>run_wall_seconds<td>-0.778%<td>[-1.7795046072447611, 0.22082338073824126]
+<tr><td>original32<td>32<td>wall_seconds<td>-0.694%<td>[-1.6946758659685168, 0.30431142115219345]
+<tr><td>original32<td>32<td>total_cpu_seconds<td>-1.148%<td>[-2.307152103498228, -0.059522923495391664]
+<tr><td>original32<td>32<td>cpu_seconds_per_tick<td>-1.280%<td>[-2.4370496344780217, -0.180774446580171]
+<tr><td>original32<td>32<td>ticks<td>+0.000%<td>[0.0, 0.0]
+<tr><td>original32<td>32<td>peak_rss_kib<td>+26.472%<td>[25.942474010265364, 26.982942029491014]
+<tr><td>additional32<td>32<td>ticks_per_second<td>-0.361%<td>[-1.1719888313134144, 0.4578219466707867]
+<tr><td>additional32<td>32<td>run_wall_seconds<td>+0.235%<td>[-0.6070676537967201, 1.1059199205528818]
+<tr><td>additional32<td>32<td>wall_seconds<td>+0.317%<td>[-0.5264403594712902, 1.1949333480814608]
+<tr><td>additional32<td>32<td>total_cpu_seconds<td>+0.536%<td>[-0.2947219759127517, 1.3985749141255541]
+<tr><td>additional32<td>32<td>cpu_seconds_per_tick<td>+0.769%<td>[0.021024052594224574, 1.5323373401886058]
+<tr><td>additional32<td>32<td>ticks<td>+0.000%<td>[0.0, 0.0]
+<tr><td>additional32<td>32<td>peak_rss_kib<td>+26.142%<td>[25.593787644112112, 26.702507640862393]
+</table><p>Near-zero CPU/TPS/wall effects include zero in paired intervals; RSS rises about26%. Original/additional32 subsets retained to expose drift. Replay equality does not establish actual GPU offload.</p>
+<h2>Final canonical confirmation: separate256 planned games</h2><p>256 additional completevalidated games,128 serial+128 four-game waves; latest054 only, separate from1472+120+32 earlier processes. Full-regime tables require completed validated128. Bothmaps/regimes complete:256winners128matchingpairs,nocaps. Independentfullwaves128 review attached. Historical PG32/OA19 snapshots and completed-map wave subsets are not extra counts. Wave host-throughput uses actual8 paired-wave makespan/completed-games-per-hour CI; per-game cluster interval separate. Caps censored separately; no productionacceptance from experimental results.</p>
+<p><strong>Completed64games/32matchingwinnerpairs/8pairedwaves: actualhost throughput +0.826%, canonicalpairedwave95%[-1.484,+3.280] (independentlinear sensitivity[-1.516,+3.246]); no established throughput gain. Whole-process CPU -1.166%;20/32 individual innerwall changes adverse. System CPU -12.945% and voluntary context switches -10.427%, lower on all32seeds, are narrower overhead observations rather than a large whole-engine benefit. Preserve small/mixed effects alongside serial auto32 findings; no universal free win.</strong></p><p>Serial auto32/all32CPU and four-concurrent explicit6/disjoint6-logical-CPU waves differ in concurrency, affinity and participant budget together. Their contrast does not identify a universal worker-count effect or optimal threshold. Both regimes complete; no universal workerpolicy or productionacceptance.</p>
+<p><a href="/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/fresh-audit-causal/final-serial128/Playground-raw-audit.json">Completed serial Playground32 raw audit</a> · <a href="/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/fresh-audit-causal/final-serial128/Oazis-raw-audit.json">Completed serial Oazis32 raw audit</a> · <a href="/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/fresh-audit-causal/final-playground-waves32/review.json">Completed Playground waves32 independent audit and wave-cluster uncertainty</a></p>
+<p><a href="/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/fresh-audit-causal/final-oazis-interim/snapshot-19/review.html">Historical PG32/OA19 descriptive prefix snapshot</a> — PG32/OA19 mechanism is a retained historical serial prefix snapshot, superseded for full-map results by completed serial128 below. It is not additional data or pending serial Oazis.</p>
+<p><a href="/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/fresh-audit-causal/final-serial128/review.json">Full serial128 independent review</a> · <a href="/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/fresh-audit-causal/final-playground-waves32/root-independent-bootstrap.json">Root independent20,000-draw wave sensitivity</a></p><p>Root wave-throughput sensitivity interval [-1.5021989925812496, 3.237129800732763]%; it also includes zero. No additional bootstrap was run by this report.</p>
+<h3>Coverage limits</h3><ul><li>Exactefb843implementationacceptedforreview,notmerged/globallyoptimal. Native56unit+2engine+843goldentrace passed; directpartialcase54assertions establishes5participants4workers/allmodes/shapes withoutskip.</li><li>Bothbrowserdirectenginecorpora228cases8117508assertionseach,843goldentraceexactboth,actual4workerpartialcasebothpassed. ChromiumoriginalUI/lifecyclepassed; FirefoxoriginalUIwrapperfailedtwiceandmatchedoriginalheadercontrolfailedidentically. UIlimitationexplicit.</li><li>Candidateheader/Harnessand7690publicruntimefilesexactrestoredandGitclean; controlobjectdirectoriesquarantinedandabsentfromactivetargets; completedcache-safetyreceiptpassed. Currentoriginunchanged054; Portable evidence publication is recorded separately in the PR., no merge claim.</li><li>Natural256winnerendpointscomplementseparateperTickqualification; notnewfullperTickproof. Platform/browserversionsandscopeexplicit; maintainernativefeel/omittedplatformcoverage remainreviewlimits.</li></ul><p><a href="/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/confirmation/post-campaign-coverage/audit.json">Receipt-backed remaining coverage and minimal validation recipe</a></p>
+<h3>Completed Playground four-game waves; Oazis completed below</h3><table><tr><th>Metric<th>B→W change<th>Uncertainty / adverse cases
+<tr><td>Actual completed-games/hour over role active wave spans<td>+0.826%<td>[-1.5157141537471597, 3.2462094922179308]% paired8wave95% interval
+<tr><td>Whole-process CPU/game<td>-1.166%<td>[-2.550672365897953, -0.06312857353727892]% wave-cluster95% interval
+<tr><td>Individual innerwall adverse seeds<td>20/32<td>Retained; per-game latency is separate from host throughput
+</table>
+<h3>serial: complete_validated</h3>
+<pre>[
+  {
+    &quot;map&quot;: &quot;Playground&quot;,
+    &quot;eligible_seed_pairs&quot;: [
+      1056243202,
+      744345666,
+      1064623205,
+      725864695,
+      599004658,
+      117787757,
+      85910194,
+      769116511,
+      1030656205,
+      79851807,
+      1480527227,
+      31444774,
+      1514826878,
+      1858401095,
+      1635872854,
+      1441583672,
+      741493568,
+      466374853,
+      2037486757,
+      1414753418,
+      1298936997,
+      1139586032,
+      1845486380,
+      275303672,
+      1013771484,
+      1961520297,
+      56523606,
+      7804900,
+      494353701,
+      2092499754,
+      1910481143,
+      2122112527
+    ],
+    &quot;excluded_pairs&quot;: [],
+    &quot;metrics&quot;: {
+      &quot;e2e_seconds&quot;: {
+        &quot;eligible&quot;: 32,
+        &quot;undefined_zero_reference_seed_draws&quot;: 0,
+        &quot;wave_cluster_count&quot;: null,
+        &quot;wave_clustered_bootstrap95&quot;: null,
+        &quot;baseline_mean&quot;: 35.52432135891286,
+        &quot;wake_mean&quot;: 31.503627699814388,
+        &quot;ratio_of_means_change&quot;: -0.11318143472682274,
+        &quot;paired_bootstrap95&quot;: [
+          -0.11645915160870901,
+          -0.11025417743026888
+        ],
+        &quot;conditional_on&quot;: &quot;Both matching winners, metric present. Seed bootstrap treats seeds independently; waves also supplies paired four-seed wave-cluster interval to account shared host windows.&quot;
+      },
+      &quot;inner_seconds&quot;: {
+        &quot;eligible&quot;: 32,
+        &quot;undefined_zero_reference_seed_draws&quot;: 0,
+        &quot;wave_cluster_count&quot;: null,
+        &quot;wave_clustered_bootstrap95&quot;: null,
+        &quot;baseline_mean&quot;: 34.8883375,
+        &quot;wake_mean&quot;: 30.86541875,
+        &quot;ratio_of_means_change&quot;: -0.11530841072607712,
+        &quot;paired_bootstrap95&quot;: [
+          -0.11873763482331712,
+          -0.1123547432337485
+        ],
+        &quot;conditional_on&quot;: &quot;Both matching winners, metric present. Seed bootstrap treats seeds independently; waves also supplies paired four-seed wave-cluster interval to account shared host windows.&quot;
+      },
+      &quot;user_cpu_seconds&quot;: {
+        &quot;eligible&quot;: 32,
+        &quot;undefined_zero_reference_seed_draws&quot;: 0,
+        &quot;wave_cluster_count&quot;: null,
+        &quot;wave_clustered_bootstrap95&quot;: null,
+        &quot;baseline_mean&quot;: 98.65983,
+        &quot;wake_mean&quot;: 87.034014625,
+        &quot;ratio_of_means_change&quot;: -0.11783737489715929,
+        &quot;paired_bootstrap95&quot;: [
+          -0.12330578209888077,
+          -0.11263779800866214
+        ],
+        &quot;conditional_on&quot;: &quot;Both matching winners, metric present. Seed bootstrap treats seeds independently; waves also supplies paired four-seed wave-cluster interval to account shared host windows.&quot;
+      },
+      &quot;system_cpu_seconds&quot;: {
+        &quot;eligible&quot;: 32,
+        &quot;undefined_zero_reference_seed_draws&quot;: 0,
+        &quot;wave_cluster_count&quot;: null,
+        &quot;wave_clustered_bootstrap95&quot;: null,
+        &quot;baseline_mean&quot;: 62.98692303125,
+        &quot;wake_mean&quot;: 10.1186593125,
+        &quot;ratio_of_means_change&quot;: -0.8393530144744524,
+        &quot;paired_bootstrap95&quot;: [
+          -0.847926184822256,
+          -0.8332094394379944
+        ],
+        &quot;conditional_on&quot;: &quot;Both matching winners, metric present. Seed bootstrap treats seeds independently; waves also supplies paired four-seed wave-cluster interval to account shared host windows.&quot;
+      },
+      &quot;total_cpu_seconds&quot;: {
+        &quot;eligible&quot;: 32,
+        &quot;undefined_zero_reference_seed_draws&quot;: 0,
+        &quot;wave_cluster_count&quot;: null,
+        &quot;wave_clustered_bootstrap95&quot;: null,
+        &quot;baseline_mean&quot;: 161.64675303125,
+        &quot;wake_mean&quot;: 97.1526739375,
+        &quot;ratio_of_means_change&quot;: -0.39898159340869543,
+        &quot;paired_bootstrap95&quot;: [
+          -0.412983679451034,
+          -0.38894564347366256
+        ],
+        &quot;conditional_on&quot;: &quot;Both matching winners, metric present. Seed bootstrap treats seeds independently; waves also supplies paired four-seed wave-cluster interval to account shared host windows.&quot;
+      },
+      &quot;peak_rss_kib&quot;: {
+        &quot;eligible&quot;: 32,
+        &quot;undefined_zero_reference_seed_draws&quot;: 0,
+        &quot;wave_cluster_count&quot;: null,
+        &quot;wave_clustered_bootstrap95&quot;: null,
+        &quot;baseline_mean&quot;: 151651.375,
+        &quot;wake_mean&quot;: 150836.375,
+        &quot;ratio_of_means_change&quot;: -0.00537416821970782,
+        &quot;paired_bootstrap95&quot;: [
+          -0.007537088643058798,
+          -0.0030760781828241823
+        ],
+        &quot;conditional_on&quot;: &quot;Both matching winners, metric present. Seed bootstrap treats seeds independently; waves also supplies paired four-seed wave-cluster interval to account shared host windows.&quot;
+      },
+      &quot;voluntary_context_switches&quot;: {
+        &quot;eligible&quot;: 32,
+        &quot;undefined_zero_reference_seed_draws&quot;: 0,
+        &quot;wave_cluster_count&quot;: null,
+        &quot;wave_clustered_bootstrap95&quot;: null,
+        &quot;baseline_mean&quot;: 4008860.53125,
+        &quot;wake_mean&quot;: 855466.84375,
+        &quot;ratio_of_means_change&quot;: -0.7866059851467925,
+        &quot;paired_bootstrap95&quot;: [
+          -0.7902504415635617,
+          -0.7825413194764858
+        ],
+        &quot;conditional_on&quot;: &quot;Both matching winners, metric present. Seed bootstrap treats seeds independently; waves also supplies paired four-seed wave-cluster interval to account shared host windows.&quot;
+      },
+      &quot;involuntary_context_switches&quot;: {
+        &quot;eligible&quot;: 32,
+        &quot;undefined_zero_reference_seed_draws&quot;: 0,
+        &quot;wave_cluster_count&quot;: null,
+        &quot;wave_clustered_bootstrap95&quot;: null,
+        &quot;baseline_mean&quot;: 3076.90625,
+        &quot;wake_mean&quot;: 129.40625,
+        &quot;ratio_of_means_change&quot;: -0.9579427387493525,
+        &quot;paired_bootstrap95&quot;: [
+          -0.9612940859732567,
+          -0.9534656618193398
+        ],
+        &quot;conditional_on&quot;: &quot;Both matching winners, metric present. Seed bootstrap treats seeds independently; waves also supplies paired four-seed wave-cluster interval to account shared host windows.&quot;
+      },
+      &quot;cpu_per_tick&quot;: {
+        &quot;eligible&quot;: 32,
+        &quot;undefined_zero_reference_seed_draws&quot;: 0,
+        &quot;wave_cluster_count&quot;: null,
+        &quot;wave_clustered_bootstrap95&quot;: null,
+        &quot;baseline_mean&quot;: 0.003094438988887616,
+        &quot;wake_mean&quot;: 0.0018542084614589821,
+        &quot;ratio_of_means_change&quot;: -0.40079333665404404,
+        &quot;paired_bootstrap95&quot;: [
+          -0.41394343151958946,
+          -0.39126259625251936
+        ],
+        &quot;conditional_on&quot;: &quot;Both matching winners, metric present. Seed bootstrap treats seeds independently; waves also supplies paired four-seed wave-cluster interval to account shared host windows.&quot;
+      },
+      &quot;inner_tps&quot;: {
+        &quot;eligible&quot;: 32,
+        &quot;undefined_zero_reference_seed_draws&quot;: 0,
+        &quot;wave_cluster_count&quot;: null,
+        &quot;wave_clustered_bootstrap95&quot;: null,
+        &quot;baseline_mean&quot;: 1511.9840897396641,
+        &quot;wake_mean&quot;: 1711.5380335063496,
+        &quot;ratio_of_means_change&quot;: 0.13198151033523442,
+        &quot;paired_bootstrap95&quot;: [
+          0.12786170079835912,
+          0.13622336673120383
+        ],
+        &quot;conditional_on&quot;: &quot;Both matching winners, metric present. Seed bootstrap treats seeds independently; waves also supplies paired four-seed wave-cluster interval to account shared host windows.&quot;
+      },
+      &quot;e2e_tps&quot;: {
+        &quot;eligible&quot;: 32,
+        &quot;undefined_zero_reference_seed_draws&quot;: 0,
+        &quot;wave_cluster_count&quot;: null,
+        &quot;wave_clustered_bootstrap95&quot;: null,
+        &quot;baseline_mean&quot;: 1482.6115185801316,
+        &quot;wake_mean&quot;: 1673.7840544011847,
+        &quot;ratio_of_means_change&quot;: 0.12894310709533352,
+        &quot;paired_bootstrap95&quot;: [
+          0.12501754198110504,
+          0.13294752756765615
+        ],
+        &quot;conditional_on&quot;: &quot;Both matching winners, metric present. Seed bootstrap treats seeds independently; waves also supplies paired four-seed wave-cluster interval to account shared host windows.&quot;
+      }
+    },
+    &quot;role_summaries&quot;: {
+      &quot;baseline&quot;: {
+        &quot;runs&quot;: 32,
+        &quot;winners&quot;: 32,
+        &quot;caps&quot;: 0,
+        &quot;no_winner&quot;: 0,
+        &quot;all_process_cpu_seconds&quot;: 5172.696097,
+        &quot;all_process_system_cpu_seconds&quot;: 2015.581537,
+        &quot;max_process_peak_rss_kib&quot;: 176904,
+        &quot;all_voluntary_context_switches&quot;: 128283537,
+        &quot;all_involuntary_context_switches&quot;: 98461,
+        &quot;winner_mean_inner_tps&quot;: 1511.9840897396641,
+        &quot;winner_ticks_over_sum_game_e2e_seconds&quot;: 1461.5339016736361,
+        &quot;actual_role_wave_makespan_sum_seconds&quot;: 1139.4175400203094,
+        &quot;completed_games_per_role_active_wave_hour&quot;: 101.10428877367171,
+        &quot;note&quot;: &quot;Role wave active windows exclude interleaved other role; not fictitious contiguous per-role campaign span. Wave tick throughput with missing cap tick counts is incomplete; report raw waves.&quot;
+      },
+      &quot;wake-only&quot;: {
+        &quot;runs&quot;: 32,
+        &quot;winners&quot;: 32,
+        &quot;caps&quot;: 0,
+        &quot;no_winner&quot;: 0,
+        &quot;all_process_cpu_seconds&quot;: 3108.885566,
+        &quot;all_process_system_cpu_seconds&quot;: 323.797098,
+        &quot;max_process_peak_rss_kib&quot;: 173928,
+        &quot;all_voluntary_context_switches&quot;: 27374939,
+        &quot;all_involuntary_context_switches&quot;: 4141,
+        &quot;winner_mean_inner_tps&quot;: 1711.5380335063496,
+        &quot;winner_ticks_over_sum_game_e2e_seconds&quot;: 1648.0641688228782,
+        &quot;actual_role_wave_makespan_sum_seconds&quot;: 1010.799729836639,
+        &quot;completed_games_per_role_active_wave_hour&quot;: 113.96916382102528,
+        &quot;note&quot;: &quot;Role wave active windows exclude interleaved other role; not fictitious contiguous per-role campaign span. Wave tick throughput with missing cap tick counts is incomplete; report raw waves.&quot;
+      }
+    },
+    &quot;paired_wave_throughput&quot;: null
+  },
+  {
+    &quot;map&quot;: &quot;Oazis&quot;,
+    &quot;eligible_seed_pairs&quot;: [
+      1056243202,
+      744345666,
+      1064623205,
+      725864695,
+      599004658,
+      117787757,
+      85910194,
+      769116511,
+      1030656205,
+      79851807,
+      1480527227,
+      31444774,
+      1514826878,
+      1858401095,
+      1635872854,
+      1441583672,
+      741493568,
+      466374853,
+      2037486757,
+      1414753418,
+      1298936997,
+      1139586032,
+      1845486380,
+      275303672,
+      1013771484,
+      1961520297,
+      56523606,
+      7804900,
+      494353701,
+      2092499754,
+      1910481143,
+      2122112527
+    ],
+    &quot;excluded_pairs&quot;: [],
+    &quot;metrics&quot;: {
+      &quot;e2e_seconds&quot;: {
+        &quot;eligible&quot;: 32,
+        &quot;undefined_zero_reference_seed_draws&quot;: 0,
+        &quot;wave_cluster_count&quot;: null,
+        &quot;wave_clustered_bootstrap95&quot;: null,
+        &quot;baseline_mean&quot;: 182.05840249355242,
+        &quot;wake_mean&quot;: 176.74417454565992,
+        &quot;ratio_of_means_change&quot;: -0.02918968789743559,
+        &quot;paired_bootstrap95&quot;: [
+          -0.032224526266391496,
+          -0.02571175076021448
+        ],
+        &quot;conditional_on&quot;: &quot;Both matching winners, metric present. Seed bootstrap treats seeds independently; waves also supplies paired four-seed wave-cluster interval to account shared host windows.&quot;
+      },
+      &quot;inner_seconds&quot;: {
+        &quot;eligible&quot;: 32,
+        &quot;undefined_zero_reference_seed_draws&quot;: 0,
+        &quot;wave_cluster_count&quot;: null,
+        &quot;wave_clustered_bootstrap95&quot;: null,
+        &quot;baseline_mean&quot;: 181.263625,
+        &quot;wake_mean&quot;: 175.94139375,
+        &quot;ratio_of_means_change&quot;: -0.029361827283328257,
+        &quot;paired_bootstrap95&quot;: [
+          -0.03238611287984117,
+          -0.02578890001211065
+        ],
+        &quot;conditional_on&quot;: &quot;Both matching winners, metric present. Seed bootstrap treats seeds independently; waves also supplies paired four-seed wave-cluster interval to account shared host windows.&quot;
+      },
+      &quot;user_cpu_seconds&quot;: {
+        &quot;eligible&quot;: 32,
+        &quot;undefined_zero_reference_seed_draws&quot;: 0,
+        &quot;wave_cluster_count&quot;: null,
+        &quot;wave_clustered_bootstrap95&quot;: null,
+        &quot;baseline_mean&quot;: 605.970564625,
+        &quot;wake_mean&quot;: 576.8142269375,
+        &quot;ratio_of_means_change&quot;: -0.048115105567121175,
+        &quot;paired_bootstrap95&quot;: [
+          -0.05140010295968511,
+          -0.04460666428952431
+        ],
+        &quot;conditional_on&quot;: &quot;Both matching winners, metric present. Seed bootstrap treats seeds independently; waves also supplies paired four-seed wave-cluster interval to account shared host windows.&quot;
+      },
+      &quot;system_cpu_seconds&quot;: {
+        &quot;eligible&quot;: 32,
+        &quot;undefined_zero_reference_seed_draws&quot;: 0,
+        &quot;wave_cluster_count&quot;: null,
+        &quot;wave_clustered_bootstrap95&quot;: null,
+        &quot;baseline_mean&quot;: 125.48211746875,
+        &quot;wake_mean&quot;: 27.60117775,
+        &quot;ratio_of_means_change&quot;: -0.7800389544998412,
+        &quot;paired_bootstrap95&quot;: [
+          -0.786037462310639,
+          -0.7739344499228458
+        ],
+        &quot;conditional_on&quot;: &quot;Both matching winners, metric present. Seed bootstrap treats seeds independently; waves also supplies paired four-seed wave-cluster interval to account shared host windows.&quot;
+      },
+      &quot;total_cpu_seconds&quot;: {
+        &quot;eligible&quot;: 32,
+        &quot;undefined_zero_reference_seed_draws&quot;: 0,
+        &quot;wave_cluster_count&quot;: null,
+        &quot;wave_clustered_bootstrap95&quot;: null,
+        &quot;baseline_mean&quot;: 731.45268209375,
+        &quot;wake_mean&quot;: 604.4154046875,
+        &quot;ratio_of_means_change&quot;: -0.17367805261525815,
+        &quot;paired_bootstrap95&quot;: [
+          -0.17821014253723366,
+          -0.1688999500587548
+        ],
+        &quot;conditional_on&quot;: &quot;Both matching winners, metric present. Seed bootstrap treats seeds independently; waves also supplies paired four-seed wave-cluster interval to account shared host windows.&quot;
+      },
+      &quot;peak_rss_kib&quot;: {
+        &quot;eligible&quot;: 32,
+        &quot;undefined_zero_reference_seed_draws&quot;: 0,
+        &quot;wave_cluster_count&quot;: null,
+        &quot;wave_clustered_bootstrap95&quot;: null,
+        &quot;baseline_mean&quot;: 483454.5,
+        &quot;wake_mean&quot;: 483357.125,
+        &quot;ratio_of_means_change&quot;: -0.00020141502457826643,
+        &quot;paired_bootstrap95&quot;: [
+          -0.002329385639496251,
+          0.0019111816204440135
+        ],
+        &quot;conditional_on&quot;: &quot;Both matching winners, metric present. Seed bootstrap treats seeds independently; waves also supplies paired four-seed wave-cluster interval to account shared host windows.&quot;
+      },
+      &quot;voluntary_context_switches&quot;: {
+        &quot;eligible&quot;: 32,
+        &quot;undefined_zero_reference_seed_draws&quot;: 0,
+        &quot;wave_cluster_count&quot;: null,
+        &quot;wave_clustered_bootstrap95&quot;: null,
+        &quot;baseline_mean&quot;: 8106577.40625,
+        &quot;wake_mean&quot;: 2085545.875,
+        &quot;ratio_of_means_change&quot;: -0.7427341070730925,
+        &quot;paired_bootstrap95&quot;: [
+          -0.7501996545749344,
+          -0.7352739049822428
+        ],
+        &quot;conditional_on&quot;: &quot;Both matching winners, metric present. Seed bootstrap treats seeds independently; waves also supplies paired four-seed wave-cluster interval to account shared host windows.&quot;
+      },
+      &quot;involuntary_context_switches&quot;: {
+        &quot;eligible&quot;: 32,
+        &quot;undefined_zero_reference_seed_draws&quot;: 0,
+        &quot;wave_cluster_count&quot;: null,
+        &quot;wave_clustered_bootstrap95&quot;: null,
+        &quot;baseline_mean&quot;: 9507.09375,
+        &quot;wake_mean&quot;: 826.3125,
+        &quot;ratio_of_means_change&quot;: -0.9130846374582138,
+        &quot;paired_bootstrap95&quot;: [
+          -0.9186180294616433,
+          -0.9078006819902324
+        ],
+        &quot;conditional_on&quot;: &quot;Both matching winners, metric present. Seed bootstrap treats seeds independently; waves also supplies paired four-seed wave-cluster interval to account shared host windows.&quot;
+      },
+      &quot;cpu_per_tick&quot;: {
+        &quot;eligible&quot;: 32,
+        &quot;undefined_zero_reference_seed_draws&quot;: 0,
+        &quot;wave_cluster_count&quot;: null,
+        &quot;wave_clustered_bootstrap95&quot;: null,
+        &quot;baseline_mean&quot;: 0.007236416351028671,
+        &quot;wake_mean&quot;: 0.005989417816128279,
+        &quot;ratio_of_means_change&quot;: -0.17232266282234143,
+        &quot;paired_bootstrap95&quot;: [
+          -0.17699438340107332,
+          -0.16771376541539718
+        ],
+        &quot;conditional_on&quot;: &quot;Both matching winners, metric present. Seed bootstrap treats seeds independently; waves also supplies paired four-seed wave-cluster interval to account shared host windows.&quot;
+      },
+      &quot;inner_tps&quot;: {
+        &quot;eligible&quot;: 32,
+        &quot;undefined_zero_reference_seed_draws&quot;: 0,
+        &quot;wave_cluster_count&quot;: null,
+        &quot;wave_clustered_bootstrap95&quot;: null,
+        &quot;baseline_mean&quot;: 563.220502760366,
+        &quot;wake_mean&quot;: 580.0789280251342,
+        &quot;ratio_of_means_change&quot;: 0.02993219384263246,
+        &quot;paired_bootstrap95&quot;: [
+          0.025884104637664107,
+          0.033587464267283984
+        ],
+        &quot;conditional_on&quot;: &quot;Both matching winners, metric present. Seed bootstrap treats seeds independently; waves also supplies paired four-seed wave-cluster interval to account shared host windows.&quot;
+      },
+      &quot;e2e_tps&quot;: {
+        &quot;eligible&quot;: 32,
+        &quot;undefined_zero_reference_seed_draws&quot;: 0,
+        &quot;wave_cluster_count&quot;: null,
+        &quot;wave_clustered_bootstrap95&quot;: null,
+        &quot;baseline_mean&quot;: 560.5829957786381,
+        &quot;wake_mean&quot;: 577.256166118562,
+        &quot;ratio_of_means_change&quot;: 0.029742554564583523,
+        &quot;paired_bootstrap95&quot;: [
+          0.025692243155766237,
+          0.03327167878379722
+        ],
+        &quot;conditional_on&quot;: &quot;Both matching winners, metric present. Seed bootstrap treats seeds independently; waves also supplies paired four-seed wave-cluster interval to account shared host windows.&quot;
+      }
+    },
+    &quot;role_summaries&quot;: {
+      &quot;baseline&quot;: {
+        &quot;runs&quot;: 32,
+        &quot;winners&quot;: 32,
+        &quot;caps&quot;: 0,
+        &quot;no_winner&quot;: 0,
+        &quot;all_process_cpu_seconds&quot;: 23406.485827,
+        &quot;all_process_system_cpu_seconds&quot;: 4015.427759,
+        &quot;max_process_peak_rss_kib&quot;: 561248,
+        &quot;all_voluntary_context_switches&quot;: 259410477,
+        &quot;all_involuntary_context_switches&quot;: 304227,
+        &quot;winner_mean_inner_tps&quot;: 563.220502760366,
+        &quot;winner_ticks_over_sum_game_e2e_seconds&quot;: 560.8639788191936,
+        &quot;actual_role_wave_makespan_sum_seconds&quot;: 5828.647276163101,
+        &quot;completed_games_per_role_active_wave_hour&quot;: 19.764448686254042,
+        &quot;note&quot;: &quot;Role wave active windows exclude interleaved other role; not fictitious contiguous per-role campaign span. Wave tick throughput with missing cap tick counts is incomplete; report raw waves.&quot;
+      },
+      &quot;wake-only&quot;: {
+        &quot;runs&quot;: 32,
+        &quot;winners&quot;: 32,
+        &quot;caps&quot;: 0,
+        &quot;no_winner&quot;: 0,
+        &quot;all_process_cpu_seconds&quot;: 19341.29295,
+        &quot;all_process_system_cpu_seconds&quot;: 883.237688,
+        &quot;max_process_peak_rss_kib&quot;: 560888,
+        &quot;all_voluntary_context_switches&quot;: 66737468,
+        &quot;all_involuntary_context_switches&quot;: 26442,
+        &quot;winner_mean_inner_tps&quot;: 580.0789280251342,
+        &quot;winner_ticks_over_sum_game_e2e_seconds&quot;: 577.7276691720383,
+        &quot;actual_role_wave_makespan_sum_seconds&quot;: 5658.662666944321,
+        &quot;completed_games_per_role_active_wave_hour&quot;: 20.358167075933512,
+        &quot;note&quot;: &quot;Role wave active windows exclude interleaved other role; not fictitious contiguous per-role campaign span. Wave tick throughput with missing cap tick counts is incomplete; report raw waves.&quot;
+      }
+    },
+    &quot;paired_wave_throughput&quot;: null
+  }
+]</pre>
+<h3>waves: complete_validated</h3>
+<pre>[
+  {
+    &quot;map&quot;: &quot;Playground&quot;,
+    &quot;eligible_seed_pairs&quot;: [
+      1056243202,
+      744345666,
+      1064623205,
+      725864695,
+      599004658,
+      117787757,
+      85910194,
+      769116511,
+      1030656205,
+      79851807,
+      1480527227,
+      31444774,
+      1514826878,
+      1858401095,
+      1635872854,
+      1441583672,
+      741493568,
+      466374853,
+      2037486757,
+      1414753418,
+      1298936997,
+      1139586032,
+      1845486380,
+      275303672,
+      1013771484,
+      1961520297,
+      56523606,
+      7804900,
+      494353701,
+      2092499754,
+      1910481143,
+      2122112527
+    ],
+    &quot;excluded_pairs&quot;: [],
+    &quot;metrics&quot;: {
+      &quot;e2e_seconds&quot;: {
+        &quot;eligible&quot;: 32,
+        &quot;undefined_zero_reference_seed_draws&quot;: 0,
+        &quot;wave_cluster_count&quot;: 8,
+        &quot;wave_clustered_bootstrap95&quot;: [
+          -0.008779642215388073,
+          0.005894595297303962
+        ],
+        &quot;baseline_mean&quot;: 30.763375272639678,
+        &quot;wake_mean&quot;: 30.74601838174567,
+        &quot;ratio_of_means_change&quot;: -0.000564206324572103,
+        &quot;paired_bootstrap95&quot;: [
+          -0.014144312564847827,
+          0.013162390953680658
+        ],
+        &quot;conditional_on&quot;: &quot;Both matching winners, metric present. Seed bootstrap treats seeds independently; waves also supplies paired four-seed wave-cluster interval to account shared host windows.&quot;
+      },
+      &quot;inner_seconds&quot;: {
+        &quot;eligible&quot;: 32,
+        &quot;undefined_zero_reference_seed_draws&quot;: 0,
+        &quot;wave_cluster_count&quot;: 8,
+        &quot;wave_clustered_bootstrap95&quot;: [
+          -0.009048041580375976,
+          0.006027243359903789
+        ],
+        &quot;baseline_mean&quot;: 29.84788125,
+        &quot;wake_mean&quot;: 29.83105625,
+        &quot;ratio_of_means_change&quot;: -0.0005636916020630434,
+        &quot;paired_bootstrap95&quot;: [
+          -0.014234412427190257,
+          0.012823475007914364
+        ],
+        &quot;conditional_on&quot;: &quot;Both matching winners, metric present. Seed bootstrap treats seeds independently; waves also supplies paired four-seed wave-cluster interval to account shared host windows.&quot;
+      },
+      &quot;user_cpu_seconds&quot;: {
+        &quot;eligible&quot;: 32,
+        &quot;undefined_zero_reference_seed_draws&quot;: 0,
+        &quot;wave_cluster_count&quot;: 8,
+        &quot;wave_clustered_bootstrap95&quot;: [
+          -0.02154200852144339,
+          0.003161432273677489
+        ],
+        &quot;baseline_mean&quot;: 86.63206984375,
+        &quot;wake_mean&quot;: 85.97402865625,
+        &quot;ratio_of_means_change&quot;: -0.0075958151373601845,
+        &quot;paired_bootstrap95&quot;: [
+          -0.01890633679188347,
+          0.003517460901410141
+        ],
+        &quot;conditional_on&quot;: &quot;Both matching winners, metric present. Seed bootstrap treats seeds independently; waves also supplies paired four-seed wave-cluster interval to account shared host windows.&quot;
+      },
+      &quot;system_cpu_seconds&quot;: {
+        &quot;eligible&quot;: 32,
+        &quot;undefined_zero_reference_seed_draws&quot;: 0,
+        &quot;wave_cluster_count&quot;: 8,
+        &quot;wave_clustered_bootstrap95&quot;: [
+          -0.1464640898141173,
+          -0.11332988941668831
+        ],
+        &quot;baseline_mean&quot;: 2.9877235625,
+        &quot;wake_mean&quot;: 2.60096353125,
+        &quot;ratio_of_means_change&quot;: -0.1294497376210988,
+        &quot;paired_bootstrap95&quot;: [
+          -0.14573576528395882,
+          -0.11339534059700751
+        ],
+        &quot;conditional_on&quot;: &quot;Both matching winners, metric present. Seed bootstrap treats seeds independently; waves also supplies paired four-seed wave-cluster interval to account shared host windows.&quot;
+      },
+      &quot;total_cpu_seconds&quot;: {
+        &quot;eligible&quot;: 32,
+        &quot;undefined_zero_reference_seed_draws&quot;: 0,
+        &quot;wave_cluster_count&quot;: 8,
+        &quot;wave_clustered_bootstrap95&quot;: [
+          -0.0255066360585543,
+          -0.0006603519661023682
+        ],
+        &quot;baseline_mean&quot;: 89.61979340625,
+        &quot;wake_mean&quot;: 88.5749921875,
+        &quot;ratio_of_means_change&quot;: -0.011658152502247665,
+        &quot;paired_bootstrap95&quot;: [
+          -0.023162382646647384,
+          -0.00022894310711374377
+        ],
+        &quot;conditional_on&quot;: &quot;Both matching winners, metric present. Seed bootstrap treats seeds independently; waves also supplies paired four-seed wave-cluster interval to account shared host windows.&quot;
+      },
+      &quot;peak_rss_kib&quot;: {
+        &quot;eligible&quot;: 32,
+        &quot;undefined_zero_reference_seed_draws&quot;: 0,
+        &quot;wave_cluster_count&quot;: 8,
+        &quot;wave_clustered_bootstrap95&quot;: [
+          -0.001243049116229411,
+          0.0008447041127457311
+        ],
+        &quot;baseline_mean&quot;: 134360.375,
+        &quot;wake_mean&quot;: 134315.25,
+        &quot;ratio_of_means_change&quot;: -0.0003358505065202966,
+        &quot;paired_bootstrap95&quot;: [
+          -0.0021535540075130477,
+          0.0015823062344157979
+        ],
+        &quot;conditional_on&quot;: &quot;Both matching winners, metric present. Seed bootstrap treats seeds independently; waves also supplies paired four-seed wave-cluster interval to account shared host windows.&quot;
+      },
+      &quot;voluntary_context_switches&quot;: {
+        &quot;eligible&quot;: 32,
+        &quot;undefined_zero_reference_seed_draws&quot;: 0,
+        &quot;wave_cluster_count&quot;: 8,
+        &quot;wave_clustered_bootstrap95&quot;: [
+          -0.11170179629509891,
+          -0.09688870909621661
+        ],
+        &quot;baseline_mean&quot;: 316831.9375,
+        &quot;wake_mean&quot;: 283796.59375,
+        &quot;ratio_of_means_change&quot;: -0.10426772001165441,
+        &quot;paired_bootstrap95&quot;: [
+          -0.11527870061222201,
+          -0.09303922712094315
+        ],
+        &quot;conditional_on&quot;: &quot;Both matching winners, metric present. Seed bootstrap treats seeds independently; waves also supplies paired four-seed wave-cluster interval to account shared host windows.&quot;
+      },
+      &quot;involuntary_context_switches&quot;: {
+        &quot;eligible&quot;: 32,
+        &quot;undefined_zero_reference_seed_draws&quot;: 0,
+        &quot;wave_cluster_count&quot;: 8,
+        &quot;wave_clustered_bootstrap95&quot;: [
+          -0.272,
+          0.4173913043478261
+        ],
+        &quot;baseline_mean&quot;: 444.9375,
+        &quot;wake_mean&quot;: 463.15625,
+        &quot;ratio_of_means_change&quot;: 0.04094676218570026,
+        &quot;paired_bootstrap95&quot;: [
+          -0.24579149996225558,
+          0.37310137760508644
+        ],
+        &quot;conditional_on&quot;: &quot;Both matching winners, metric present. Seed bootstrap treats seeds independently; waves also supplies paired four-seed wave-cluster interval to account shared host windows.&quot;
+      },
+      &quot;cpu_per_tick&quot;: {
+        &quot;eligible&quot;: 32,
+        &quot;undefined_zero_reference_seed_draws&quot;: 0,
+        &quot;wave_cluster_count&quot;: 8,
+        &quot;wave_clustered_bootstrap95&quot;: [
+          -0.025638780663566396,
+          -0.0004414422841468868
+        ],
+        &quot;baseline_mean&quot;: 0.0017100886570188926,
+        &quot;wake_mean&quot;: 0.0016897966711811327,
+        &quot;ratio_of_means_change&quot;: -0.011866043175290053,
+        &quot;paired_bootstrap95&quot;: [
+          -0.02391253351079914,
+          -0.0005330913082308708
+        ],
+        &quot;conditional_on&quot;: &quot;Both matching winners, metric present. Seed bootstrap treats seeds independently; waves also supplies paired four-seed wave-cluster interval to account shared host windows.&quot;
+      },
+      &quot;inner_tps&quot;: {
+        &quot;eligible&quot;: 32,
+        &quot;undefined_zero_reference_seed_draws&quot;: 0,
+        &quot;wave_cluster_count&quot;: 8,
+        &quot;wave_clustered_bootstrap95&quot;: [
+          -0.007979249366249275,
+          0.0071100938232138144
+        ],
+        &quot;baseline_mean&quot;: 1779.9345064257013,
+        &quot;wake_mean&quot;: 1778.3660406868398,
+        &quot;ratio_of_means_change&quot;: -0.0008811929501896243,
+        &quot;paired_bootstrap95&quot;: [
+          -0.014429671265943855,
+          0.013316375939636194
+        ],
+        &quot;conditional_on&quot;: &quot;Both matching winners, metric present. Seed bootstrap treats seeds independently; waves also supplies paired four-seed wave-cluster interval to account shared host windows.&quot;
+      },
+      &quot;e2e_tps&quot;: {
+        &quot;eligible&quot;: 32,
+        &quot;undefined_zero_reference_seed_draws&quot;: 0,
+        &quot;wave_cluster_count&quot;: 8,
+        &quot;wave_clustered_bootstrap95&quot;: [
+          -0.008031752297561257,
+          0.006825786524339739
+        ],
+        &quot;baseline_mean&quot;: 1721.9085284871205,
+        &quot;wake_mean&quot;: 1720.7540547888007,
+        &quot;ratio_of_means_change&quot;: -0.0006704616878424607,
+        &quot;paired_bootstrap95&quot;: [
+          -0.014939662997812908,
+          0.013598638297114274
+        ],
+        &quot;conditional_on&quot;: &quot;Both matching winners, metric present. Seed bootstrap treats seeds independently; waves also supplies paired four-seed wave-cluster interval to account shared host windows.&quot;
+      }
+    },
+    &quot;role_summaries&quot;: {
+      &quot;baseline&quot;: {
+        &quot;runs&quot;: 32,
+        &quot;winners&quot;: 32,
+        &quot;caps&quot;: 0,
+        &quot;no_winner&quot;: 0,
+        &quot;all_process_cpu_seconds&quot;: 2867.833389,
+        &quot;all_process_system_cpu_seconds&quot;: 95.607154,
+        &quot;max_process_peak_rss_kib&quot;: 156272,
+        &quot;all_voluntary_context_switches&quot;: 10138622,
+        &quot;all_involuntary_context_switches&quot;: 14238,
+        &quot;winner_mean_inner_tps&quot;: 1779.9345064257013,
+        &quot;winner_ticks_over_sum_game_e2e_seconds&quot;: 1687.7211794824282,
+        &quot;actual_role_wave_makespan_sum_seconds&quot;: 323.59086103364825,
+        &quot;completed_games_per_role_active_wave_hour&quot;: 356.00510976118403,
+        &quot;note&quot;: &quot;Role wave active windows exclude interleaved other role; not fictitious contiguous per-role campaign span. Wave tick throughput with missing cap tick counts is incomplete; report raw waves.&quot;
+      },
+      &quot;wake-only&quot;: {
+        &quot;runs&quot;: 32,
+        &quot;winners&quot;: 32,
+        &quot;caps&quot;: 0,
+        &quot;no_winner&quot;: 0,
+        &quot;all_process_cpu_seconds&quot;: 2834.39975,
+        &quot;all_process_system_cpu_seconds&quot;: 83.230833,
+        &quot;max_process_peak_rss_kib&quot;: 155700,
+        &quot;all_voluntary_context_switches&quot;: 9081491,
+        &quot;all_involuntary_context_switches&quot;: 14821,
+        &quot;winner_mean_inner_tps&quot;: 1778.3660406868398,
+        &quot;winner_ticks_over_sum_game_e2e_seconds&quot;: 1688.6739399995158,
+        &quot;actual_role_wave_makespan_sum_seconds&quot;: 320.93836845783517,
+        &quot;completed_games_per_role_active_wave_hour&quot;: 358.9474220659751,
+        &quot;note&quot;: &quot;Role wave active windows exclude interleaved other role; not fictitious contiguous per-role campaign span. Wave tick throughput with missing cap tick counts is incomplete; report raw waves.&quot;
+      }
+    },
+    &quot;paired_wave_throughput&quot;: {
+      &quot;paired_wave_units&quot;: 8,
+      &quot;games_per_wave&quot;: 4,
+      &quot;bootstrap_draws&quot;: 10000,
+      &quot;random_seed&quot;: 605442,
+      &quot;makespan_ratio_change&quot;: -0.008197056515564793,
+      &quot;makespan_paired_wave_bootstrap95&quot;: [
+        -0.03179291949474272,
+        0.015060098290474944
+      ],
+      &quot;baseline_completed_games_per_hour&quot;: 356.00510976118403,
+      &quot;wake_completed_games_per_hour&quot;: 358.9474220659751,
+      &quot;completed_games_per_hour_ratio_change&quot;: 0.008264803577580304,
+      &quot;throughput_paired_wave_bootstrap95&quot;: [
+        -0.014836656781050173,
+        0.03279625472535974
+      ],
+      &quot;undefined_zero_baseline_winner_draws&quot;: 0,
+      &quot;caps&quot;: {
+        &quot;baseline&quot;: 0,
+        &quot;wake-only&quot;: 0
+      },
+      &quot;raw_wave_pairs&quot;: [
+        {
+          &quot;baseline&quot;: {
+            &quot;map&quot;: &quot;Playground&quot;,
+            &quot;role&quot;: &quot;baseline&quot;,
+            &quot;wave&quot;: 0,
+            &quot;seed_indices&quot;: [
+              0,
+              1,
+              2,
+              3
+            ],
+            &quot;started_monotonic&quot;: 3315311.937472503,
+            &quot;finished_monotonic&quot;: 3315348.948094293,
+            &quot;makespan_seconds&quot;: 37.010621789842844,
+            &quot;winners&quot;: 4,
+            &quot;caps&quot;: 0,
+            &quot;games_per_hour&quot;: 389.0774946113421,
+            &quot;observed_ticks_per_second&quot;: 5480.156511600753,
+            &quot;complete_tick_coverage&quot;: true,
+            &quot;sum_game_seconds&quot;: 122.41937477095053,
+            &quot;scope&quot;: &quot;Actual homogeneous wave makespan including launches/waits, not sum of parallel game runtimes.&quot;
+          },
+          &quot;wake-only&quot;: {
+            &quot;map&quot;: &quot;Playground&quot;,
+            &quot;role&quot;: &quot;wake-only&quot;,
+            &quot;wave&quot;: 0,
+            &quot;seed_indices&quot;: [
+              0,
+              1,
+              2,
+              3
+            ],
+            &quot;started_monotonic&quot;: 3315349.136724607,
+            &quot;finished_monotonic&quot;: 3315384.634975912,
+            &quot;makespan_seconds&quot;: 35.49825130496174,
+            &quot;winners&quot;: 4,
+            &quot;caps&quot;: 0,
+            &quot;games_per_hour&quot;: 405.65378492284356,
+            &quot;observed_ticks_per_second&quot;: 5713.633560638251,
+            &quot;complete_tick_coverage&quot;: true,
+            &quot;sum_game_seconds&quot;: 123.30440136650577,
+            &quot;scope&quot;: &quot;Actual homogeneous wave makespan including launches/waits, not sum of parallel game runtimes.&quot;
+          }
+        },
+        {
+          &quot;baseline&quot;: {
+            &quot;map&quot;: &quot;Playground&quot;,
+            &quot;role&quot;: &quot;baseline&quot;,
+            &quot;wave&quot;: 1,
+            &quot;seed_indices&quot;: [
+              4,
+              5,
+              6,
+              7
+            ],
+            &quot;started_monotonic&quot;: 3315428.981838286,
+            &quot;finished_monotonic&quot;: 3315474.671333341,
+            &quot;makespan_seconds&quot;: 45.689495055004954,
+            &quot;winners&quot;: 4,
+            &quot;caps&quot;: 0,
+            &quot;games_per_hour&quot;: 315.1709158235178,
+            &quot;observed_ticks_per_second&quot;: 4719.334274550709,
+            &quot;complete_tick_coverage&quot;: true,
+            &quot;sum_game_seconds&quot;: 130.93809220055118,
+            &quot;scope&quot;: &quot;Actual homogeneous wave makespan including launches/waits, not sum of parallel game runtimes.&quot;
+          },
+          &quot;wake-only&quot;: {
+            &quot;map&quot;: &quot;Playground&quot;,
+            &quot;role&quot;: &quot;wake-only&quot;,
+            &quot;wave&quot;: 1,
+            &quot;seed_indices&quot;: [
+              4,
+              5,
+              6,
+              7
+            ],
+            &quot;started_monotonic&quot;: 3315384.816216641,
+            &quot;finished_monotonic&quot;: 3315428.769467029,
+            &quot;makespan_seconds&quot;: 43.95325038768351,
+            &quot;winners&quot;: 4,
+            &quot;caps&quot;: 0,
+            &quot;games_per_hour&quot;: 327.62082150891706,
+            &quot;observed_ticks_per_second&quot;: 4905.757778961023,
+            &quot;complete_tick_coverage&quot;: true,
+            &quot;sum_game_seconds&quot;: 131.74951917445287,
+            &quot;scope&quot;: &quot;Actual homogeneous wave makespan including launches/waits, not sum of parallel game runtimes.&quot;
+          }
+        },
+        {
+          &quot;baseline&quot;: {
+            &quot;map&quot;: &quot;Playground&quot;,
+            &quot;role&quot;: &quot;baseline&quot;,
+            &quot;wave&quot;: 2,
+            &quot;seed_indices&quot;: [
+              8,
+              9,
+              10,
+              11
+            ],
+            &quot;started_monotonic&quot;: 3315474.85923866,
+            &quot;finished_monotonic&quot;: 3315522.386077916,
+            &quot;makespan_seconds&quot;: 47.52683925582096,
+            &quot;winners&quot;: 4,
+            &quot;caps&quot;: 0,
+            &quot;games_per_hour&quot;: 302.986696053774,
+            &quot;observed_ticks_per_second&quot;: 4707.234975079883,
+            &quot;complete_tick_coverage&quot;: true,
+            &quot;sum_game_seconds&quot;: 135.0379195450805,
+            &quot;scope&quot;: &quot;Actual homogeneous wave makespan including launches/waits, not sum of parallel game runtimes.&quot;
+          },
+          &quot;wake-only&quot;: {
+            &quot;map&quot;: &quot;Playground&quot;,
+            &quot;role&quot;: &quot;wake-only&quot;,
+            &quot;wave&quot;: 2,
+            &quot;seed_indices&quot;: [
+              8,
+              9,
+              10,
+              11
+            ],
+            &quot;started_monotonic&quot;: 3315522.574825499,
+            &quot;finished_monotonic&quot;: 3315570.601082063,
+            &quot;makespan_seconds&quot;: 48.0262565636076,
+            &quot;winners&quot;: 4,
+            &quot;caps&quot;: 0,
+            &quot;games_per_hour&quot;: 299.83598619492966,
+            &quot;observed_ticks_per_second&quot;: 4658.285196634005,
+            &quot;complete_tick_coverage&quot;: true,
+            &quot;sum_game_seconds&quot;: 136.17803551070392,
+            &quot;scope&quot;: &quot;Actual homogeneous wave makespan including launches/waits, not sum of parallel game runtimes.&quot;
+          }
+        },
+        {
+          &quot;baseline&quot;: {
+            &quot;map&quot;: &quot;Playground&quot;,
+            &quot;role&quot;: &quot;baseline&quot;,
+            &quot;wave&quot;: 3,
+            &quot;seed_indices&quot;: [
+              12,
+              13,
+              14,
+              15
+            ],
+            &quot;started_monotonic&quot;: 3315608.724985416,
+            &quot;finished_monotonic&quot;: 3315648.232151657,
+            &quot;makespan_seconds&quot;: 39.507166240829974,
+            &quot;winners&quot;: 4,
+            &quot;caps&quot;: 0,
+            &quot;games_per_hour&quot;: 364.49083470628295,
+            &quot;observed_ticks_per_second&quot;: 5253.730392474728,
+            &quot;complete_tick_coverage&quot;: true,
+            &quot;sum_game_seconds&quot;: 121.41720105707645,
+            &quot;scope&quot;: &quot;Actual homogeneous wave makespan including launches/waits, not sum of parallel game runtimes.&quot;
+          },
+          &quot;wake-only&quot;: {
+            &quot;map&quot;: &quot;Playground&quot;,
+            &quot;role&quot;: &quot;wake-only&quot;,
+            &quot;wave&quot;: 3,
+            &quot;seed_indices&quot;: [
+              12,
+              13,
+              14,
+              15
+            ],
+            &quot;started_monotonic&quot;: 3315570.79874465,
+            &quot;finished_monotonic&quot;: 3315608.525313615,
+            &quot;makespan_seconds&quot;: 37.72656896477565,
+            &quot;winners&quot;: 4,
+            &quot;caps&quot;: 0,
+            &quot;games_per_hour&quot;: 381.69386708462457,
+            &quot;observed_ticks_per_second&quot;: 5501.6929897281025,
+            &quot;complete_tick_coverage&quot;: true,
+            &quot;sum_game_seconds&quot;: 118.75527426227927,
+            &quot;scope&quot;: &quot;Actual homogeneous wave makespan including launches/waits, not sum of parallel game runtimes.&quot;
+          }
+        },
+        {
+          &quot;baseline&quot;: {
+            &quot;map&quot;: &quot;Playground&quot;,
+            &quot;role&quot;: &quot;baseline&quot;,
+            &quot;wave&quot;: 4,
+            &quot;seed_indices&quot;: [
+              16,
+              17,
+              18,
+              19
+            ],
+            &quot;started_monotonic&quot;: 3315648.421659974,
+            &quot;finished_monotonic&quot;: 3315698.09749703,
+            &quot;makespan_seconds&quot;: 49.675837056245655,
+            &quot;winners&quot;: 4,
+            &quot;caps&quot;: 0,
+            &quot;games_per_hour&quot;: 289.8793629525668,
+            &quot;observed_ticks_per_second&quot;: 5134.246650161545,
+            &quot;complete_tick_coverage&quot;: true,
+            &quot;sum_game_seconds&quot;: 157.94475936237723,
+            &quot;scope&quot;: &quot;Actual homogeneous wave makespan including launches/waits, not sum of parallel game runtimes.&quot;
+          },
+          &quot;wake-only&quot;: {
+            &quot;map&quot;: &quot;Playground&quot;,
+            &quot;role&quot;: &quot;wake-only&quot;,
+            &quot;wave&quot;: 4,
+            &quot;seed_indices&quot;: [
+              16,
+              17,
+              18,
+              19
+            ],
+            &quot;started_monotonic&quot;: 3315698.310535122,
+            &quot;finished_monotonic&quot;: 3315749.13460436,
+            &quot;makespan_seconds&quot;: 50.82406923780218,
+            &quot;winners&quot;: 4,
+            &quot;caps&quot;: 0,
+            &quot;games_per_hour&quot;: 283.33032391844563,
+            &quot;observed_ticks_per_second&quot;: 5018.252253802203,
+            &quot;complete_tick_coverage&quot;: true,
+            &quot;sum_game_seconds&quot;: 159.2398754847236,
+            &quot;scope&quot;: &quot;Actual homogeneous wave makespan including launches/waits, not sum of parallel game runtimes.&quot;
+          }
+        },
+        {
+          &quot;baseline&quot;: {
+            &quot;map&quot;: &quot;Playground&quot;,
+            &quot;role&quot;: &quot;baseline&quot;,
+            &quot;wave&quot;: 5,
+            &quot;seed_indices&quot;: [
+              20,
+              21,
+              22,
+              23
+            ],
+            &quot;started_monotonic&quot;: 3315786.362948798,
+            &quot;finished_monotonic&quot;: 3315822.678916427,
+            &quot;makespan_seconds&quot;: 36.315967628732324,
+            &quot;winners&quot;: 4,
+            &quot;caps&quot;: 0,
+            &quot;games_per_hour&quot;: 396.5197939158604,
+            &quot;observed_ticks_per_second&quot;: 4939.094610770837,
+            &quot;complete_tick_coverage&quot;: true,
+            &quot;sum_game_seconds&quot;: 100.35659702355042,
+            &quot;scope&quot;: &quot;Actual homogeneous wave makespan including launches/waits, not sum of parallel game runtimes.&quot;
+          },
+          &quot;wake-only&quot;: {
+            &quot;map&quot;: &quot;Playground&quot;,
+            &quot;role&quot;: &quot;wake-only&quot;,
+            &quot;wave&quot;: 5,
+            &quot;seed_indices&quot;: [
+              20,
+              21,
+              22,
+              23
+            ],
+            &quot;started_monotonic&quot;: 3315749.344581835,
+            &quot;finished_monotonic&quot;: 3315786.174521302,
+            &quot;makespan_seconds&quot;: 36.82993946690112,
+            &quot;winners&quot;: 4,
+            &quot;caps&quot;: 0,
+            &quot;games_per_hour&quot;: 390.9862521751144,
+            &quot;observed_ticks_per_second&quot;: 4870.168200010133,
+            &quot;complete_tick_coverage&quot;: true,
+            &quot;sum_game_seconds&quot;: 100.49509385181591,
+            &quot;scope&quot;: &quot;Actual homogeneous wave makespan including launches/waits, not sum of parallel game runtimes.&quot;
+          }
+        },
+        {
+          &quot;baseline&quot;: {
+            &quot;map&quot;: &quot;Playground&quot;,
+            &quot;role&quot;: &quot;baseline&quot;,
+            &quot;wave&quot;: 6,
+            &quot;seed_indices&quot;: [
+              24,
+              25,
+              26,
+              27
+            ],
+            &quot;started_monotonic&quot;: 3315822.892277876,
+            &quot;finished_monotonic&quot;: 3315852.183096066,
+            &quot;makespan_seconds&quot;: 29.290818190202117,
+            &quot;winners&quot;: 4,
+            &quot;caps&quot;: 0,
+            &quot;games_per_hour&quot;: 491.62163741867926,
+            &quot;observed_ticks_per_second&quot;: 6275.550201649441,
+            &quot;complete_tick_coverage&quot;: true,
+            &quot;sum_game_seconds&quot;: 107.41864262102172,
+            &quot;scope&quot;: &quot;Actual homogeneous wave makespan including launches/waits, not sum of parallel game runtimes.&quot;
+          },
+          &quot;wake-only&quot;: {
+            &quot;map&quot;: &quot;Playground&quot;,
+            &quot;role&quot;: &quot;wake-only&quot;,
+            &quot;wave&quot;: 6,
+            &quot;seed_indices&quot;: [
+              24,
+              25,
+              26,
+              27
+            ],
+            &quot;started_monotonic&quot;: 3315852.355937977,
+            &quot;finished_monotonic&quot;: 3315883.349282415,
+            &quot;makespan_seconds&quot;: 30.993344438262284,
+            &quot;winners&quot;: 4,
+            &quot;caps&quot;: 0,
+            &quot;games_per_hour&quot;: 464.6158799894707,
+            &quot;observed_ticks_per_second&quot;: 5930.821708065594,
+            &quot;complete_tick_coverage&quot;: true,
+            &quot;sum_game_seconds&quot;: 106.03822467802092,
+            &quot;scope&quot;: &quot;Actual homogeneous wave makespan including launches/waits, not sum of parallel game runtimes.&quot;
+          }
+        },
+        {
+          &quot;baseline&quot;: {
+            &quot;map&quot;: &quot;Playground&quot;,
+            &quot;role&quot;: &quot;baseline&quot;,
+            &quot;wave&quot;: 7,
+            &quot;seed_indices&quot;: [
+              28,
+              29,
+              30,
+              31
+            ],
+            &quot;started_monotonic&quot;: 3315920.792041314,
+            &quot;finished_monotonic&quot;: 3315959.366157131,
+            &quot;makespan_seconds&quot;: 38.574115816969424,
+            &quot;winners&quot;: 4,
+            &quot;caps&quot;: 0,
+            &quot;games_per_hour&quot;: 373.3073252625324,
+            &quot;observed_ticks_per_second&quot;: 5015.798700819081,
+            &quot;complete_tick_coverage&quot;: true,
+            &quot;sum_game_seconds&quot;: 108.89542214386165,
+            &quot;scope&quot;: &quot;Actual homogeneous wave makespan including launches/waits, not sum of parallel game runtimes.&quot;
+          },
+          &quot;wake-only&quot;: {
+            &quot;map&quot;: &quot;Playground&quot;,
+            &quot;role&quot;: &quot;wake-only&quot;,
+            &quot;wave&quot;: 7,
+            &quot;seed_indices&quot;: [
+              28,
+              29,
+              30,
+              31
+            ],
+            &quot;started_monotonic&quot;: 3315883.522345004,
+            &quot;finished_monotonic&quot;: 3315920.609033098,
+            &quot;makespan_seconds&quot;: 37.086688093841076,
+            &quot;winners&quot;: 4,
+            &quot;caps&quot;: 0,
+            &quot;games_per_hour&quot;: 388.2794808628755,
+            &quot;observed_ticks_per_second&quot;: 5216.966247038136,
+            &quot;complete_tick_coverage&quot;: true,
+            &quot;sum_game_seconds&quot;: 108.1121638873592,
+            &quot;scope&quot;: &quot;Actual homogeneous wave makespan including launches/waits, not sum of parallel game runtimes.&quot;
+          }
+        }
+      ],
+      &quot;scope&quot;: &quot;Actual matched homogeneous4gamewave makespans, 8pairedwaveunits permap. Allwavesincludingcaps retained; cap consumeswindow andcontributes0 completedwins. NotpergameTPSmean orsumgamewall; conditionalon1hcap andfixed32seedgrouping. ThiswaveCI leads hostthroughput conclusions.&quot;
+    }
+  },
+  {
+    &quot;map&quot;: &quot;Oazis&quot;,
+    &quot;eligible_seed_pairs&quot;: [
+      1056243202,
+      744345666,
+      1064623205,
+      725864695,
+      599004658,
+      117787757,
+      85910194,
+      769116511,
+      1030656205,
+      79851807,
+      1480527227,
+      31444774,
+      1514826878,
+      1858401095,
+      1635872854,
+      1441583672,
+      741493568,
+      466374853,
+      2037486757,
+      1414753418,
+      1298936997,
+      1139586032,
+      1845486380,
+      275303672,
+      1013771484,
+      1961520297,
+      56523606,
+      7804900,
+      494353701,
+      2092499754,
+      1910481143,
+      2122112527
+    ],
+    &quot;excluded_pairs&quot;: [],
+    &quot;metrics&quot;: {
+      &quot;e2e_seconds&quot;: {
+        &quot;eligible&quot;: 32,
+        &quot;undefined_zero_reference_seed_draws&quot;: 0,
+        &quot;wave_cluster_count&quot;: 8,
+        &quot;wave_clustered_bootstrap95&quot;: [
+          -0.0038162563162317253,
+          0.007860473907816079
+        ],
+        &quot;baseline_mean&quot;: 201.80040367571928,
+        &quot;wake_mean&quot;: 202.09996210370446,
+        &quot;ratio_of_means_change&quot;: 0.0014844292802631553,
+        &quot;paired_bootstrap95&quot;: [
+          -0.006671167495385433,
+          0.0093275707697007
+        ],
+        &quot;conditional_on&quot;: &quot;Both matching winners, metric present. Seed bootstrap treats seeds independently; waves also supplies paired four-seed wave-cluster interval to account shared host windows.&quot;
+      },
+      &quot;inner_seconds&quot;: {
+        &quot;eligible&quot;: 32,
+        &quot;undefined_zero_reference_seed_draws&quot;: 0,
+        &quot;wave_cluster_count&quot;: 8,
+        &quot;wave_clustered_bootstrap95&quot;: [
+          -0.003935128814347544,
+          0.007888244241546438
+        ],
+        &quot;baseline_mean&quot;: 200.7386875,
+        &quot;wake_mean&quot;: 201.04459375,
+        &quot;ratio_of_means_change&quot;: 0.001523902810214306,
+        &quot;paired_bootstrap95&quot;: [
+          -0.006264468371840803,
+          0.009242363990866753
+        ],
+        &quot;conditional_on&quot;: &quot;Both matching winners, metric present. Seed bootstrap treats seeds independently; waves also supplies paired four-seed wave-cluster interval to account shared host windows.&quot;
+      },
+      &quot;user_cpu_seconds&quot;: {
+        &quot;eligible&quot;: 32,
+        &quot;undefined_zero_reference_seed_draws&quot;: 0,
+        &quot;wave_cluster_count&quot;: 8,
+        &quot;wave_clustered_bootstrap95&quot;: [
+          -0.00782236002276615,
+          0.0033237057551349647
+        ],
+        &quot;baseline_mean&quot;: 624.83171125,
+        &quot;wake_mean&quot;: 623.02143621875,
+        &quot;ratio_of_means_change&quot;: -0.002897220161295122,
+        &quot;paired_bootstrap95&quot;: [
+          -0.011062307977708685,
+          0.004751776777756733
+        ],
+        &quot;conditional_on&quot;: &quot;Both matching winners, metric present. Seed bootstrap treats seeds independently; waves also supplies paired four-seed wave-cluster interval to account shared host windows.&quot;
+      },
+      &quot;system_cpu_seconds&quot;: {
+        &quot;eligible&quot;: 32,
+        &quot;undefined_zero_reference_seed_draws&quot;: 0,
+        &quot;wave_cluster_count&quot;: 8,
+        &quot;wave_clustered_bootstrap95&quot;: [
+          -0.060176497103194615,
+          -0.028987235513867393
+        ],
+        &quot;baseline_mean&quot;: 6.60633134375,
+        &quot;wake_mean&quot;: 6.2910158125,
+        &quot;ratio_of_means_change&quot;: -0.047729294042798465,
+        &quot;paired_bootstrap95&quot;: [
+          -0.06108659465350563,
+          -0.03434555366332748
+        ],
+        &quot;conditional_on&quot;: &quot;Both matching winners, metric present. Seed bootstrap treats seeds independently; waves also supplies paired four-seed wave-cluster interval to account shared host windows.&quot;
+      },
+      &quot;total_cpu_seconds&quot;: {
+        &quot;eligible&quot;: 32,
+        &quot;undefined_zero_reference_seed_draws&quot;: 0,
+        &quot;wave_cluster_count&quot;: 8,
+        &quot;wave_clustered_bootstrap95&quot;: [
+          -0.008240353088404095,
+          0.003049585074388572
+        ],
+        &quot;baseline_mean&quot;: 631.43804259375,
+        &quot;wake_mean&quot;: 629.31245203125,
+        &quot;ratio_of_means_change&quot;: -0.0033662694027251083,
+        &quot;paired_bootstrap95&quot;: [
+          -0.011417425000049164,
+          0.0044650788209257275
+        ],
+        &quot;conditional_on&quot;: &quot;Both matching winners, metric present. Seed bootstrap treats seeds independently; waves also supplies paired four-seed wave-cluster interval to account shared host windows.&quot;
+      },
+      &quot;peak_rss_kib&quot;: {
+        &quot;eligible&quot;: 32,
+        &quot;undefined_zero_reference_seed_draws&quot;: 0,
+        &quot;wave_cluster_count&quot;: 8,
+        &quot;wave_clustered_bootstrap95&quot;: [
+          -0.0030979467097388413,
+          0.003891900641582957
+        ],
+        &quot;baseline_mean&quot;: 429215.125,
+        &quot;wake_mean&quot;: 429381.75,
+        &quot;ratio_of_means_change&quot;: 0.0003882085935345003,
+        &quot;paired_bootstrap95&quot;: [
+          -0.0022189153705045594,
+          0.002960466240454096
+        ],
+        &quot;conditional_on&quot;: &quot;Both matching winners, metric present. Seed bootstrap treats seeds independently; waves also supplies paired four-seed wave-cluster interval to account shared host windows.&quot;
+      },
+      &quot;voluntary_context_switches&quot;: {
+        &quot;eligible&quot;: 32,
+        &quot;undefined_zero_reference_seed_draws&quot;: 0,
+        &quot;wave_cluster_count&quot;: 8,
+        &quot;wave_clustered_bootstrap95&quot;: [
+          -0.08324954692102327,
+          -0.0728065732242994
+        ],
+        &quot;baseline_mean&quot;: 619715.8125,
+        &quot;wake_mean&quot;: 571587.625,
+        &quot;ratio_of_means_change&quot;: -0.07766170642934822,
+        &quot;paired_bootstrap95&quot;: [
+          -0.08312858044607085,
+          -0.07256814046990956
+        ],
+        &quot;conditional_on&quot;: &quot;Both matching winners, metric present. Seed bootstrap treats seeds independently; waves also supplies paired four-seed wave-cluster interval to account shared host windows.&quot;
+      },
+      &quot;involuntary_context_switches&quot;: {
+        &quot;eligible&quot;: 32,
+        &quot;undefined_zero_reference_seed_draws&quot;: 0,
+        &quot;wave_cluster_count&quot;: 8,
+        &quot;wave_clustered_bootstrap95&quot;: [
+          -0.00895305547988745,
+          0.2764290104486786
+        ],
+        &quot;baseline_mean&quot;: 1404.3125,
+        &quot;wake_mean&quot;: 1575.59375,
+        &quot;ratio_of_means_change&quot;: 0.12196804486180968,
+        &quot;paired_bootstrap95&quot;: [
+          0.013208658798487205,
+          0.24283926420930846
+        ],
+        &quot;conditional_on&quot;: &quot;Both matching winners, metric present. Seed bootstrap treats seeds independently; waves also supplies paired four-seed wave-cluster interval to account shared host windows.&quot;
+      },
+      &quot;cpu_per_tick&quot;: {
+        &quot;eligible&quot;: 32,
+        &quot;undefined_zero_reference_seed_draws&quot;: 0,
+        &quot;wave_cluster_count&quot;: 8,
+        &quot;wave_clustered_bootstrap95&quot;: [
+          -0.009189744361829622,
+          0.0031883736982414312
+        ],
+        &quot;baseline_mean&quot;: 0.0062418982721525965,
+        &quot;wake_mean&quot;: 0.006218597036670389,
+        &quot;ratio_of_means_change&quot;: -0.0037330367247673246,
+        &quot;paired_bootstrap95&quot;: [
+          -0.011754486419589205,
+          0.003998599948032311
+        ],
+        &quot;conditional_on&quot;: &quot;Both matching winners, metric present. Seed bootstrap treats seeds independently; waves also supplies paired four-seed wave-cluster interval to account shared host windows.&quot;
+      },
+      &quot;inner_tps&quot;: {
+        &quot;eligible&quot;: 32,
+        &quot;undefined_zero_reference_seed_draws&quot;: 0,
+        &quot;wave_cluster_count&quot;: 8,
+        &quot;wave_clustered_bootstrap95&quot;: [
+          -0.008763221677452915,
+          0.004459600729248114
+        ],
+        &quot;baseline_mean&quot;: 509.26019423547615,
+        &quot;wake_mean&quot;: 508.37269973772976,
+        &quot;ratio_of_means_change&quot;: -0.001742713268761853,
+        &quot;paired_bootstrap95&quot;: [
+          -0.010311483088232043,
+          0.007242272034465369
+        ],
+        &quot;conditional_on&quot;: &quot;Both matching winners, metric present. Seed bootstrap treats seeds independently; waves also supplies paired four-seed wave-cluster interval to account shared host windows.&quot;
+      },
+      &quot;e2e_tps&quot;: {
+        &quot;eligible&quot;: 32,
+        &quot;undefined_zero_reference_seed_draws&quot;: 0,
+        &quot;wave_cluster_count&quot;: 8,
+        &quot;wave_clustered_bootstrap95&quot;: [
+          -0.008793479829802608,
+          0.0045035626069911405
+        ],
+        &quot;baseline_mean&quot;: 506.3443588733063,
+        &quot;wake_mean&quot;: 505.5384510883934,
+        &quot;ratio_of_means_change&quot;: -0.001591619953476231,
+        &quot;paired_bootstrap95&quot;: [
+          -0.01019184039561205,
+          0.007291643795797498
+        ],
+        &quot;conditional_on&quot;: &quot;Both matching winners, metric present. Seed bootstrap treats seeds independently; waves also supplies paired four-seed wave-cluster interval to account shared host windows.&quot;
+      }
+    },
+    &quot;role_summaries&quot;: {
+      &quot;baseline&quot;: {
+        &quot;runs&quot;: 32,
+        &quot;winners&quot;: 32,
+        &quot;caps&quot;: 0,
+        &quot;no_winner&quot;: 0,
+        &quot;all_process_cpu_seconds&quot;: 20206.017363,
+        &quot;all_process_system_cpu_seconds&quot;: 211.402603,
+        &quot;max_process_peak_rss_kib&quot;: 502148,
+        &quot;all_voluntary_context_switches&quot;: 19830906,
+        &quot;all_involuntary_context_switches&quot;: 44938,
+        &quot;winner_mean_inner_tps&quot;: 509.26019423547615,
+        &quot;winner_ticks_over_sum_game_e2e_seconds&quot;: 505.9950234989838,
+        &quot;actual_role_wave_makespan_sum_seconds&quot;: 2141.3828691504896,
+        &quot;completed_games_per_role_active_wave_hour&quot;: 53.79701204283059,
+        &quot;note&quot;: &quot;Role wave active windows exclude interleaved other role; not fictitious contiguous per-role campaign span. Wave tick throughput with missing cap tick counts is incomplete; report raw waves.&quot;
+      },
+      &quot;wake-only&quot;: {
+        &quot;runs&quot;: 32,
+        &quot;winners&quot;: 32,
+        &quot;caps&quot;: 0,
+        &quot;no_winner&quot;: 0,
+        &quot;all_process_cpu_seconds&quot;: 20137.998465,
+        &quot;all_process_system_cpu_seconds&quot;: 201.312506,
+        &quot;max_process_peak_rss_kib&quot;: 503892,
+        &quot;all_voluntary_context_switches&quot;: 18290804,
+        &quot;all_involuntary_context_switches&quot;: 50419,
+        &quot;winner_mean_inner_tps&quot;: 508.37269973772976,
+        &quot;winner_ticks_over_sum_game_e2e_seconds&quot;: 505.24502299314554,
+        &quot;actual_role_wave_makespan_sum_seconds&quot;: 2154.459721720312,
+        &quot;completed_games_per_role_active_wave_hour&quot;: 53.47048210676879,
+        &quot;note&quot;: &quot;Role wave active windows exclude interleaved other role; not fictitious contiguous per-role campaign span. Wave tick throughput with missing cap tick counts is incomplete; report raw waves.&quot;
+      }
+    },
+    &quot;paired_wave_throughput&quot;: {
+      &quot;paired_wave_units&quot;: 8,
+      &quot;games_per_wave&quot;: 4,
+      &quot;bootstrap_draws&quot;: 10000,
+      &quot;random_seed&quot;: 605442,
+      &quot;makespan_ratio_change&quot;: 0.006106732597057629,
+      &quot;makespan_paired_wave_bootstrap95&quot;: [
+        -0.006108801022712718,
+        0.019240918868385304
+      ],
+      &quot;baseline_completed_games_per_hour&quot;: 53.79701204283059,
+      &quot;wake_completed_games_per_hour&quot;: 53.47048210676879,
+      &quot;completed_games_per_hour_ratio_change&quot;: -0.006069666765169512,
+      &quot;throughput_paired_wave_bootstrap95&quot;: [
+        -0.018877694676688872,
+        0.006146347838675403
+      ],
+      &quot;undefined_zero_baseline_winner_draws&quot;: 0,
+      &quot;caps&quot;: {
+        &quot;baseline&quot;: 0,
+        &quot;wake-only&quot;: 0
+      },
+      &quot;raw_wave_pairs&quot;: [
+        {
+          &quot;baseline&quot;: {
+            &quot;map&quot;: &quot;Oazis&quot;,
+            &quot;role&quot;: &quot;baseline&quot;,
+            &quot;wave&quot;: 0,
+            &quot;seed_indices&quot;: [
+              0,
+              1,
+              2,
+              3
+            ],
+            &quot;started_monotonic&quot;: 3315959.54746817,
+            &quot;finished_monotonic&quot;: 3316175.471790047,
+            &quot;makespan_seconds&quot;: 215.9243218768388,
+            &quot;winners&quot;: 4,
+            &quot;caps&quot;: 0,
+            &quot;games_per_hour&quot;: 66.69003229850884,
+            &quot;observed_ticks_per_second&quot;: 1698.4098725533022,
+            &quot;complete_tick_coverage&quot;: true,
+            &quot;sum_game_seconds&quot;: 687.6873297756538,
+            &quot;scope&quot;: &quot;Actual homogeneous wave makespan including launches/waits, not sum of parallel game runtimes.&quot;
+          },
+          &quot;wake-only&quot;: {
+            &quot;map&quot;: &quot;Oazis&quot;,
+            &quot;role&quot;: &quot;wake-only&quot;,
+            &quot;wave&quot;: 0,
+            &quot;seed_indices&quot;: [
+              0,
+              1,
+              2,
+              3
+            ],
+            &quot;started_monotonic&quot;: 3316175.688272792,
+            &quot;finished_monotonic&quot;: 3316389.810285633,
+            &quot;makespan_seconds&quot;: 214.12201284104958,
+            &quot;winners&quot;: 4,
+            &quot;caps&quot;: 0,
+            &quot;games_per_hour&quot;: 67.25137602124838,
+            &quot;observed_ticks_per_second&quot;: 1712.7057378833595,
+            &quot;complete_tick_coverage&quot;: true,
+            &quot;sum_game_seconds&quot;: 684.6604323498905,
+            &quot;scope&quot;: &quot;Actual homogeneous wave makespan including launches/waits, not sum of parallel game runtimes.&quot;
+          }
+        },
+        {
+          &quot;baseline&quot;: {
+            &quot;map&quot;: &quot;Oazis&quot;,
+            &quot;role&quot;: &quot;baseline&quot;,
+            &quot;wave&quot;: 1,
+            &quot;seed_indices&quot;: [
+              4,
+              5,
+              6,
+              7
+            ],
+            &quot;started_monotonic&quot;: 3316764.459213561,
+            &quot;finished_monotonic&quot;: 3317144.893301883,
+            &quot;makespan_seconds&quot;: 380.43408832186833,
+            &quot;winners&quot;: 4,
+            &quot;caps&quot;: 0,
+            &quot;games_per_hour&quot;: 37.851497649750044,
+            &quot;observed_ticks_per_second&quot;: 1449.060473081459,
+            &quot;complete_tick_coverage&quot;: true,
+            &quot;sum_game_seconds&quot;: 1083.256476284936,
+            &quot;scope&quot;: &quot;Actual homogeneous wave makespan including launches/waits, not sum of parallel game runtimes.&quot;
+          },
+          &quot;wake-only&quot;: {
+            &quot;map&quot;: &quot;Oazis&quot;,
+            &quot;role&quot;: &quot;wake-only&quot;,
+            &quot;wave&quot;: 1,
+            &quot;seed_indices&quot;: [
+              4,
+              5,
+              6,
+              7
+            ],
+            &quot;started_monotonic&quot;: 3316389.992071257,
+            &quot;finished_monotonic&quot;: 3316764.266224621,
+            &quot;makespan_seconds&quot;: 374.27415336389095,
+            &quot;winners&quot;: 4,
+            &quot;caps&quot;: 0,
+            &quot;games_per_hour&quot;: 38.474470840628655,
+            &quot;observed_ticks_per_second&quot;: 1472.9096173093778,
+            &quot;complete_tick_coverage&quot;: true,
+            &quot;sum_game_seconds&quot;: 1072.516429274343,
+            &quot;scope&quot;: &quot;Actual homogeneous wave makespan including launches/waits, not sum of parallel game runtimes.&quot;
+          }
+        },
+        {
+          &quot;baseline&quot;: {
+            &quot;map&quot;: &quot;Oazis&quot;,
+            &quot;role&quot;: &quot;baseline&quot;,
+            &quot;wave&quot;: 2,
+            &quot;seed_indices&quot;: [
+              8,
+              9,
+              10,
+              11
+            ],
+            &quot;started_monotonic&quot;: 3317145.078788404,
+            &quot;finished_monotonic&quot;: 3317351.065466403,
+            &quot;makespan_seconds&quot;: 205.98667799914256,
+            &quot;winners&quot;: 4,
+            &quot;caps&quot;: 0,
+            &quot;games_per_hour&quot;: 69.90743352858937,
+            &quot;observed_ticks_per_second&quot;: 1539.8665733194666,
+            &quot;complete_tick_coverage&quot;: true,
+            &quot;sum_game_seconds&quot;: 647.9640773888677,
+            &quot;scope&quot;: &quot;Actual homogeneous wave makespan including launches/waits, not sum of parallel game runtimes.&quot;
+          },
+          &quot;wake-only&quot;: {
+            &quot;map&quot;: &quot;Oazis&quot;,
+            &quot;role&quot;: &quot;wake-only&quot;,
+            &quot;wave&quot;: 2,
+            &quot;seed_indices&quot;: [
+              8,
+              9,
+              10,
+              11
+            ],
+            &quot;started_monotonic&quot;: 3317351.268544084,
+            &quot;finished_monotonic&quot;: 3317557.057245819,
+            &quot;makespan_seconds&quot;: 205.78870173497126,
+            &quot;winners&quot;: 4,
+            &quot;caps&quot;: 0,
+            &quot;games_per_hour&quot;: 69.97468703867574,
+            &quot;observed_ticks_per_second&quot;: 1541.3479813313634,
+            &quot;complete_tick_coverage&quot;: true,
+            &quot;sum_game_seconds&quot;: 659.681215337012,
+            &quot;scope&quot;: &quot;Actual homogeneous wave makespan including launches/waits, not sum of parallel game runtimes.&quot;
+          }
+        },
+        {
+          &quot;baseline&quot;: {
+            &quot;map&quot;: &quot;Oazis&quot;,
+            &quot;role&quot;: &quot;baseline&quot;,
+            &quot;wave&quot;: 3,
+            &quot;seed_indices&quot;: [
+              12,
+              13,
+              14,
+              15
+            ],
+            &quot;started_monotonic&quot;: 3317786.036174685,
+            &quot;finished_monotonic&quot;: 3318007.934997536,
+            &quot;makespan_seconds&quot;: 221.89882285054773,
+            &quot;winners&quot;: 4,
+            &quot;caps&quot;: 0,
+            &quot;games_per_hour&quot;: 64.89444069605823,
+            &quot;observed_ticks_per_second&quot;: 1628.309674465261,
+            &quot;complete_tick_coverage&quot;: true,
+            &quot;sum_game_seconds&quot;: 714.2662914218381,
+            &quot;scope&quot;: &quot;Actual homogeneous wave makespan including launches/waits, not sum of parallel game runtimes.&quot;
+          },
+          &quot;wake-only&quot;: {
+            &quot;map&quot;: &quot;Oazis&quot;,
+            &quot;role&quot;: &quot;wake-only&quot;,
+            &quot;wave&quot;: 3,
+            &quot;seed_indices&quot;: [
+              12,
+              13,
+              14,
+              15
+            ],
+            &quot;started_monotonic&quot;: 3317557.261505521,
+            &quot;finished_monotonic&quot;: 3317785.851056231,
+            &quot;makespan_seconds&quot;: 228.58955071028322,
+            &quot;winners&quot;: 4,
+            &quot;caps&quot;: 0,
+            &quot;games_per_hour&quot;: 62.995005481465384,
+            &quot;observed_ticks_per_second&quot;: 1580.6496792057687,
+            &quot;complete_tick_coverage&quot;: true,
+            &quot;sum_game_seconds&quot;: 721.8282266333699,
+            &quot;scope&quot;: &quot;Actual homogeneous wave makespan including launches/waits, not sum of parallel game runtimes.&quot;
+          }
+        },
+        {
+          &quot;baseline&quot;: {
+            &quot;map&quot;: &quot;Oazis&quot;,
+            &quot;role&quot;: &quot;baseline&quot;,
+            &quot;wave&quot;: 4,
+            &quot;seed_indices&quot;: [
+              16,
+              17,
+              18,
+              19
+            ],
+            &quot;started_monotonic&quot;: 3318008.125257412,
+            &quot;finished_monotonic&quot;: 3318347.30776715,
+            &quot;makespan_seconds&quot;: 339.1825097380206,
+            &quot;winners&quot;: 4,
+            &quot;caps&quot;: 0,
+            &quot;games_per_hour&quot;: 42.45501930840226,
+            &quot;observed_ticks_per_second&quot;: 1364.0561842571265,
+            &quot;complete_tick_coverage&quot;: true,
+            &quot;sum_game_seconds&quot;: 892.657695543021,
+            &quot;scope&quot;: &quot;Actual homogeneous wave makespan including launches/waits, not sum of parallel game runtimes.&quot;
+          },
+          &quot;wake-only&quot;: {
+            &quot;map&quot;: &quot;Oazis&quot;,
+            &quot;role&quot;: &quot;wake-only&quot;,
+            &quot;wave&quot;: 4,
+            &quot;seed_indices&quot;: [
+              16,
+              17,
+              18,
+              19
+            ],
+            &quot;started_monotonic&quot;: 3318347.492547836,
+            &quot;finished_monotonic&quot;: 3318694.254267658,
+            &quot;makespan_seconds&quot;: 346.7617198219523,
+            &quot;winners&quot;: 4,
+            &quot;caps&quot;: 0,
+            &quot;games_per_hour&quot;: 41.52707515522129,
+            &quot;observed_ticks_per_second&quot;: 1334.2418541399516,
+            &quot;complete_tick_coverage&quot;: true,
+            &quot;sum_game_seconds&quot;: 893.3596493625082,
+            &quot;scope&quot;: &quot;Actual homogeneous wave makespan including launches/waits, not sum of parallel game runtimes.&quot;
+          }
+        },
+        {
+          &quot;baseline&quot;: {
+            &quot;map&quot;: &quot;Oazis&quot;,
+            &quot;role&quot;: &quot;baseline&quot;,
+            &quot;wave&quot;: 5,
+            &quot;seed_indices&quot;: [
+              20,
+              21,
+              22,
+              23
+            ],
+            &quot;started_monotonic&quot;: 3318951.922265408,
+            &quot;finished_monotonic&quot;: 3319202.172964118,
+            &quot;makespan_seconds&quot;: 250.25069870986044,
+            &quot;winners&quot;: 4,
+            &quot;caps&quot;: 0,
+            &quot;games_per_hour&quot;: 57.54229688163747,
+            &quot;observed_ticks_per_second&quot;: 1586.7927723965772,
+            &quot;complete_tick_coverage&quot;: true,
+            &quot;sum_game_seconds&quot;: 827.4358860757202,
+            &quot;scope&quot;: &quot;Actual homogeneous wave makespan including launches/waits, not sum of parallel game runtimes.&quot;
+          },
+          &quot;wake-only&quot;: {
+            &quot;map&quot;: &quot;Oazis&quot;,
+            &quot;role&quot;: &quot;wake-only&quot;,
+            &quot;wave&quot;: 5,
+            &quot;seed_indices&quot;: [
+              20,
+              21,
+              22,
+              23
+            ],
+            &quot;started_monotonic&quot;: 3318694.439386921,
+            &quot;finished_monotonic&quot;: 3318951.738557284,
+            &quot;makespan_seconds&quot;: 257.29917036322877,
+            &quot;winners&quot;: 4,
+            &quot;caps&quot;: 0,
+            &quot;games_per_hour&quot;: 55.96597913499506,
+            &quot;observed_ticks_per_second&quot;: 1543.3240590687499,
+            &quot;complete_tick_coverage&quot;: true,
+            &quot;sum_game_seconds&quot;: 827.8627421660349,
+            &quot;scope&quot;: &quot;Actual homogeneous wave makespan including launches/waits, not sum of parallel game runtimes.&quot;
+          }
+        },
+        {
+          &quot;baseline&quot;: {
+            &quot;map&quot;: &quot;Oazis&quot;,
+            &quot;role&quot;: &quot;baseline&quot;,
+            &quot;wave&quot;: 6,
+            &quot;seed_indices&quot;: [
+              24,
+              25,
+              26,
+              27
+            ],
+            &quot;started_monotonic&quot;: 3319202.358510446,
+            &quot;finished_monotonic&quot;: 3319491.989627708,
+            &quot;makespan_seconds&quot;: 289.63111726241186,
+            &quot;winners&quot;: 4,
+            &quot;caps&quot;: 0,
+            &quot;games_per_hour&quot;: 49.71841470663975,
+            &quot;observed_ticks_per_second&quot;: 1500.1979210898471,
+            &quot;complete_tick_coverage&quot;: true,
+            &quot;sum_game_seconds&quot;: 869.3606931343675,
+            &quot;scope&quot;: &quot;Actual homogeneous wave makespan including launches/waits, not sum of parallel game runtimes.&quot;
+          },
+          &quot;wake-only&quot;: {
+            &quot;map&quot;: &quot;Oazis&quot;,
+            &quot;role&quot;: &quot;wake-only&quot;,
+            &quot;wave&quot;: 6,
+            &quot;seed_indices&quot;: [
+              24,
+              25,
+              26,
+              27
+            ],
+            &quot;started_monotonic&quot;: 3319492.177762067,
+            &quot;finished_monotonic&quot;: 3319779.29846526,
+            &quot;makespan_seconds&quot;: 287.1207031928934,
+            &quot;winners&quot;: 4,
+            &quot;caps&quot;: 0,
+            &quot;games_per_hour&quot;: 50.153123198245275,
+            &quot;observed_ticks_per_second&quot;: 1513.3147668146087,
+            &quot;complete_tick_coverage&quot;: true,
+            &quot;sum_game_seconds&quot;: 866.6671491144225,
+            &quot;scope&quot;: &quot;Actual homogeneous wave makespan including launches/waits, not sum of parallel game runtimes.&quot;
+          }
+        },
+        {
+          &quot;baseline&quot;: {
+            &quot;map&quot;: &quot;Oazis&quot;,
+            &quot;role&quot;: &quot;baseline&quot;,
+            &quot;wave&quot;: 7,
+            &quot;seed_indices&quot;: [
+              28,
+              29,
+              30,
+              31
+            ],
+            &quot;started_monotonic&quot;: 3320020.197996206,
+            &quot;finished_monotonic&quot;: 3320258.272628598,
+            &quot;makespan_seconds&quot;: 238.07463239179924,
+            &quot;winners&quot;: 4,
+            &quot;caps&quot;: 0,
+            &quot;games_per_hour&quot;: 60.485234631390426,
+            &quot;observed_ticks_per_second&quot;: 1582.4617524978162,
+            &quot;complete_tick_coverage&quot;: true,
+            &quot;sum_game_seconds&quot;: 734.9844679986127,
+            &quot;scope&quot;: &quot;Actual homogeneous wave makespan including launches/waits, not sum of parallel game runtimes.&quot;
+          },
+          &quot;wake-only&quot;: {
+            &quot;map&quot;: &quot;Oazis&quot;,
+            &quot;role&quot;: &quot;wake-only&quot;,
+            &quot;wave&quot;: 7,
+            &quot;seed_indices&quot;: [
+              28,
+              29,
+              30,
+              31
+            ],
+            &quot;started_monotonic&quot;: 3319779.509369782,
+            &quot;finished_monotonic&quot;: 3320020.013079474,
+            &quot;makespan_seconds&quot;: 240.50370969204232,
+            &quot;winners&quot;: 4,
+            &quot;caps&quot;: 0,
+            &quot;games_per_hour&quot;: 59.87433631871526,
+            &quot;observed_ticks_per_second&quot;: 1566.4789556984765,
+            &quot;complete_tick_coverage&quot;: true,
+            &quot;sum_game_seconds&quot;: 740.6229430809617,
+            &quot;scope&quot;: &quot;Actual homogeneous wave makespan including launches/waits, not sum of parallel game runtimes.&quot;
+          }
+        }
+      ],
+      &quot;scope&quot;: &quot;Actual matched homogeneous4gamewave makespans, 8pairedwaveunits permap. Allwavesincludingcaps retained; cap consumeswindow andcontributes0 completedwins. NotpergameTPSmean orsumgamewall; conditionalon1hcap andfixed32seedgrouping. ThiswaveCI leads hostthroughput conclusions.&quot;
+    }
+  }
+]</pre>
+<h2>Completed Oazis waves and canonical primary uncertainty</h2><p>Actualthroughput−0.60697%,canonical95%[−1.88777,+0.61463];wholeprocessCPU−0.33663%,wavecluster95%[−0.82404,+0.30496].18/32innerwalland17/32CPU adverse. Narrow sys−4.773%/volCS−7.766% reductions do not establish throughput or wholeengine benefit. Serialauto32 results do not extrapolate to sharedbudget6.</p><p>Primarycanonical: frozenanalyzer paired8wave bootstrap10000 PythonRandom605442, discrete order-statistic endpoints atfloor(p*(N−1)). Independentsensitivity: xorshift32seed605442 MC10000 withlinearquantiles (androot20k sensitivity); same ratio-of-summedwavewindows estimator/differentdraws andquantiles. Allintervals includezero, so scientificconclusion unchanged. Do not present independent sensitivity ascanonical.</p><table><tr><th>Map<th>Actual throughput change<th>Canonical8wave95% interval<th>Independentlinear sensitivity
+<tr><td>Playground<td>+0.8265%<td>[-1.4836656781050173, 3.279625472535974]%<td>[-1.5157141537471597, 3.2462094922179308]%
+<tr><td>Oazis<td>-0.6070%<td>[-1.8877694676688872, 0.6146347838675403]%<td>[-1.8644709757909377, 0.6033500663226832]%
+</table><p><a href="/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/fresh-audit-causal/final-waves128/review.json">Independentfull128wave audit</a> · <a href="/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/fresh-audit-causal/final-oazis-waves32/review.json">Oaziswave rawindependentreview</a></p>
+<h2>Exact implementation accepted for review</h2><p>Commit efb843d8047bba6f546c031614a31c917513ad54 · <a href="https://github.com/Globulation2/glob2/pull/1185">Draft PR1185</a></p><p>Root accepts exactminimalW implementation for review on testedworkloads; no global throughputgain oroptimalparticipantpolicy claim. PRremainsdraft. Portable evidence publication is recorded separately in the PR.</p><p>Native56unit+2engine cases,843-rowgoldentrace,and54verbosepartialassertions passed. Bothbrowserdirectcorpora228cases/8,117,508assertionseach,golden843both,actualfour-workerpartialbranchboth passed.</p><p>Candidateoriginalwrapperfailedtwice; matched054originalheadercontrolfailedidentically. Preexistinginmatchedcontrol, remainsUItestfailure; directenginepass doesnotrelabelUIpassed.</p><p>Exactcandidateheader/Harness/7690servedpublicfiles restored, cleanefb843. Root mechanicallyquarantinedallfivecontrol-derivedwebobjectdirectories, preservingbytesoutsideactivetargets. Publicruntimebytesunchanged; completedcache-safetyreceiptpassed.</p><p><a href="/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/confirmation/final-integration/native-validation.json">Nativevalidation</a> · <a href="/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/final-integration/web-complete.json">Browsercombinedreceipt</a> · <a href="/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/final-integration/web-review.json">Browsercontrolandrestorationevidence</a> · <a href="/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/final-integration/web-control-cache-safety.json">Completedwebobjectcachequarantine</a> · <a href="/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/confirmation/final-integration/selected-source-validation.json">Completedselectedsourcequalification</a> · <a href="/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/confirmation/final-integration/final-recomputation-validation.json">Completedfinalrecomputationvalidation</a></p>
+<h3>Immediate/deferred callgraph source locations</h3><ul><li><a href="/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/local-completion-source/src/common/ComputeExecutor.h:1420">run immediate entry</a></li><li><a href="/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/local-completion-source/src/common/ComputeExecutor.h:798">invoke runDone completion accounting</a></li><li><a href="/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/local-completion-source/src/common/ComputeExecutor.h:1437">submit deferred entry, separate route</a></li><li><a href="/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/local-completion-source/src/map/gradient/SnapshotGradient.cpp:354">batchCPUGroup conditional immediate caller</a></li><li><a href="/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/local-completion-source/src/map/gradient/SnapshotGradient.cpp:393">batch backend installs groupCPU callback only if field.executor</a></li></ul>
