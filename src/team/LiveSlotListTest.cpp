@@ -9,6 +9,43 @@
 
 TEST_SUITE("TeamLiveLists")
 {
+TEST_CASE("integrity rejects missing mismatched and extra live-list entries")
+{
+	glob2test::HeadlessGlobals globals;
+	glob2test::HeadlessGame world({.teams=1, .discovered=true, .clearImmobile=true, .loadDefaultRace=true, .header=true});
+	auto* team = world.game.teams[0];
+	auto* firstUnit = world.addUnit(WORKER, 8, 12, 0);
+	auto* secondUnit = world.addUnit(WORKER, 9, 12, 0);
+	auto* firstBuilding = world.addBuilding("inn", 4, 4, 0, 0);
+	auto* secondBuilding = world.addBuilding("swarm", 12, 4, 0, 0);
+	REQUIRE(firstUnit); REQUIRE(secondUnit);
+	REQUIRE(firstBuilding); REQUIRE(secondBuilding);
+	REQUIRE(team->integrity());
+	const auto unitSlot = team->liveUnits.slots().front();
+	const auto buildingSlot = team->liveBuildings.slots().front();
+
+	SUBCASE("missing unit") { team->liveUnits.clear(); }
+	SUBCASE("wrong unit slot")
+	{
+		team->liveUnits.detach(unitSlot);
+		team->liveUnits.attach(Unit::MAX_COUNT - 1, firstUnit);
+	}
+	SUBCASE("wrong unit pointer") { team->liveUnits.attach(unitSlot, secondUnit); }
+	SUBCASE("extra unit") { team->liveUnits.attach(Unit::MAX_COUNT - 1, firstUnit); }
+	SUBCASE("missing building") { team->liveBuildings.clear(); }
+	SUBCASE("wrong building slot")
+	{
+		team->liveBuildings.detach(buildingSlot);
+		team->liveBuildings.attach(Building::MAX_COUNT - 1, firstBuilding);
+	}
+	SUBCASE("wrong building pointer") { team->liveBuildings.attach(buildingSlot, secondBuilding); }
+	SUBCASE("extra building") { team->liveBuildings.attach(Building::MAX_COUNT - 1, firstBuilding); }
+
+	CHECK_FALSE(team->integrity());
+	team->rebuildLiveLists();
+	CHECK(team->integrity());
+}
+
 TEST_CASE("live slot lists follow every slot assignment and order the snapshot records")
 {
 	glob2test::HeadlessGlobals globals;

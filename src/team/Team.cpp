@@ -91,19 +91,21 @@ bool Team::integrity(void)
 {
 	checkInvariant(noMoreBuildingSitesCountdown<=noMoreBuildingSitesCountdownMax);
 	// The live lists must name exactly the occupied slots, in slot order. This
-	// runs every tick, so it rides along the existing slot sweeps.
+	// check does not mutate them, so retain stable views across entity checks.
+	const auto buildingSlots = liveBuildings.slots();
+	const auto buildingEntries = liveBuildings.entries();
 	std::size_t liveBuilding = 0;
 	for (int id=0; id<Building::MAX_COUNT; id++)
 	{
 		Building *b=myBuildings[id];
 		if (b)
 		{
-			checkInvariant(liveBuilding < liveBuildings.size() && liveBuildings.slots()[liveBuilding] == id && liveBuildings.entries()[liveBuilding] == b);
+			checkInvariant(liveBuilding < buildingSlots.size() && buildingSlots[liveBuilding] == id && buildingEntries[liveBuilding] == b);
 			++liveBuilding;
 			checkInvariant(b->integrity());
 		}
 	}
-	checkInvariant(liveBuilding == liveBuildings.size());
+	checkInvariant(liveBuilding == buildingSlots.size());
 	for (std::list<Building *>::iterator it=virtualBuildings.begin(); it!=virtualBuildings.end(); ++it)
 	{
 		checkInvariant(*it);
@@ -119,18 +121,20 @@ bool Team::integrity(void)
 		checkInvariant(myBuildings[Building::GIDtoID((*it)->gid)]);
 	}
 
+	const auto unitSlots = liveUnits.slots();
+	const auto unitEntries = liveUnits.entries();
 	std::size_t liveUnit = 0;
 	for (int i=0; i<Unit::MAX_COUNT; i++)
 	{
 		Unit *u=myUnits[i];
 		if (u)
 		{
-			checkInvariant(liveUnit < liveUnits.size() && liveUnits.slots()[liveUnit] == i && liveUnits.entries()[liveUnit] == u);
+			checkInvariant(liveUnit < unitSlots.size() && unitSlots[liveUnit] == i && unitEntries[liveUnit] == u);
 			++liveUnit;
 			checkInvariant(u->integrity());
 		}
 	}
-	checkInvariant(liveUnit == liveUnits.size());
+	checkInvariant(liveUnit == unitSlots.size());
 	return true;
 }
 
