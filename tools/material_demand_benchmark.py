@@ -135,7 +135,7 @@ def simulation_fixture(args, output):
     if args.measure:
         common += ['--benchmark-warmup', '128']
     current = game_run(binary, common, output / 'candidate')
-    proof = {'save_sha256': sha(save), 'ticks': current['ticks'],
+    proof = {'game_launcher_sha256': sha(binary), 'save_sha256': sha(save), 'ticks': current['ticks'],
              'final_checksum': current['finalChecksum'], 'baseline_equal': None}
     if args.baseline_game:
         base = game_run(args.baseline_game.resolve(), common, output / 'baseline')
@@ -146,10 +146,13 @@ def simulation_fixture(args, output):
         if sha(output / 'baseline/game.replay') != sha(output / 'candidate/game.replay'):
             raise ValueError('Baseline replay orders differ')
         proof['baseline_equal'] = True
+        proof['baseline_launcher_sha256'] = sha(args.baseline_game.resolve())
+    # Recording canonicalizes historical save headers before checksumming, just
+    # as it does in the candidate/baseline runs above. Keep both split branches equal.
     full = game_run(binary, ['--load-game', str(save), '--ticks', str(args.ticks + 128),
-                            '--telemetry', 'checksums'], output / 'continuous')
+                            '--telemetry', 'checksums', '--write-replay'], output / 'continuous')
     split = game_run(binary, ['--load-game', str(output / 'candidate/final.game.gz'),
-                             '--ticks', str(args.ticks + 128), '--telemetry', 'checksums'], output / 'resumed')
+                             '--ticks', str(args.ticks + 128), '--telemetry', 'checksums', '--write-replay'], output / 'resumed')
     compare_traces(output / 'continuous', output / 'resumed', tail_from=args.ticks)
     if full['finalChecksum'] != split['finalChecksum']:
         raise ValueError('Save/load continuation checksum differs')

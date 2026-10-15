@@ -3,6 +3,8 @@ import json
 from pathlib import Path
 import tempfile
 import unittest
+from unittest.mock import patch
+from types import SimpleNamespace
 
 spec = importlib.util.spec_from_file_location('material_demand_benchmark', Path(__file__).parents[1] / 'tools/material_demand_benchmark.py')
 bench = importlib.util.module_from_spec(spec)
@@ -64,6 +66,19 @@ class MaterialDemandBenchmarkTests(unittest.TestCase):
             (b / 'world.checksums').write_text('11 cc\n')
             with self.assertRaises(ValueError):
                 bench.compare_traces(a, b, tail_from=11)
+
+
+    def test_historical_headers_are_canonicalized_in_both_split_branches(self):
+        args = SimpleNamespace(game_binary=Path('game'), save=Path('old.game'),
+                               measure=False, ticks=25153, baseline_game=None)
+        with tempfile.TemporaryDirectory() as directory:
+            with patch.object(bench, 'game_run', return_value={'ticks': 25153, 'finalChecksum': 7}) as run, \
+                 patch.object(bench, 'compare_traces'), patch.object(bench, 'sha', return_value='hash'):
+                proof = bench.simulation_fixture(args, Path(directory))
+        self.assertTrue(proof['save_load_equal'])
+        self.assertEqual(run.call_count, 3)
+        for call in run.call_args_list:
+            self.assertIn('--write-replay', call.args[1])
 
 
 if __name__ == '__main__':
