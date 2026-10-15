@@ -1555,7 +1555,12 @@ private:
 		lock.unlock();
 		if (!ownerRunsDeferred()) {
 			if (runnable == 1) ready.notify_one();
-			else if (runnable) ready.notify_all();
+			else if (runnable >= workers.size()) ready.notify_all();
+			else {
+				// Deferred jobs can run on any simulation worker. Wake only
+				// enough workers for the newly runnable work.
+				for (std::size_t wake = 0; wake < runnable; ++wake) ready.notify_one();
+			}
 		}
 		return batch;
 	}
