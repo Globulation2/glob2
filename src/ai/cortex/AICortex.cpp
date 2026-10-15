@@ -337,9 +337,8 @@ const AIEngine::BuildingView* AICortex::findUpgradeTarget(int buildingType) cons
 	const AIEngine::BuildingView* best = NULL;
 	int bestLevel = 0;
 	std::size_t bestDemand = 0;
-	for (int i = 0; i < ::Building::MAX_COUNT; i++)
+	for (const AIEngine::BuildingView* b : observedWorld->buildingsForTeam(team->number))
 	{
-		const AIEngine::BuildingView* b = observedWorld->buildingSlots(team->number)[i];
 		if (b == NULL)
 			continue;
 		if (!Cortex::servesRole(*observedWorld, *Cortex::buildingType(*observedWorld,*b), buildingType))
@@ -520,7 +519,7 @@ shared_ptr<Order> AICortex::decide()
 		{
 			Cortex::TrackedBuilding& t0 = obs.trackedSwarms[0];
 			const int bid = ::Building::GIDtoID(static_cast<Uint16>(t0.gid));
-			const AIEngine::BuildingView* b = observedWorld->buildingSlots(observedTeam->number)[bid];
+			const AIEngine::BuildingView* b = observedWorld->buildingAtSlot(Building::GIDfrom(bid, observedTeam->number));
 			if (b && b->buildingState == ::Building::ALIVE && !Cortex::buildingType(*observedWorld,*b)->isBuildingSite
 			 && Cortex::servesRole(*observedWorld, *Cortex::buildingType(*observedWorld,*b), Cortex::CORTEX_BUILD_SWARM))
 			{
@@ -619,9 +618,8 @@ shared_ptr<Order> AICortex::decide()
                 // They never enroll a new simulation gradient.
                 AIEngine::ResourceInitializations diagnosticFields;
                 AIEngine::WorldQueries diagnosticQueries(*g, tm->number, diagnosticFields);
-				for (int b = 0; b < ::Building::MAX_COUNT; b++)
+				for (const AIEngine::BuildingView* bb : g->buildingsForTeam(tm->number))
 				{
-					const AIEngine::BuildingView* bb = g->buildingSlots(tm->number)[b];
 					if (bb == NULL || bb->buildingState == ::Building::DEAD)
 						continue;
 					if (!Cortex::servesRole(*observedWorld, *Cortex::buildingType(*observedWorld,*bb), Cortex::CORTEX_BUILD_FOOD))
@@ -709,9 +707,8 @@ shared_ptr<Order> AICortex::decide()
 				}
 				// Distance from the flag (the front) to the nearest own inn (food).
 				int innDist = -1;
-				for (int b = 0; b < ::Building::MAX_COUNT; b++)
+				for (const AIEngine::BuildingView* bb : observedWorld->buildingsForTeam(team->number))
 				{
-					const AIEngine::BuildingView* bb = observedWorld->buildingSlots(team->number)[b];
 					if (bb == NULL || bb->buildingState == ::Building::DEAD)
 						continue;
 					if (!Cortex::servesRole(*observedWorld, *Cortex::buildingType(*observedWorld,*bb), Cortex::CORTEX_BUILD_FOOD))
@@ -799,9 +796,8 @@ shared_ptr<Order> AICortex::decide()
 				if (*trackX[p] < 0)
 					continue; // nothing ordered for this slot.
 				const AIEngine::BuildingView* found = NULL;
-				for (int i = 0; i < ::Building::MAX_COUNT; i++)
+				for (const AIEngine::BuildingView* b : observedWorld->buildingsForTeam(observedTeam->number))
 				{
-					const AIEngine::BuildingView* b = observedWorld->buildingSlots(observedTeam->number)[i];
 					if (b == NULL || b->buildingState != ::Building::ALIVE)
 						continue;
 					if (!Cortex::servesRole(*observedWorld, *Cortex::buildingType(*observedWorld,*b), shortTypes[p]))

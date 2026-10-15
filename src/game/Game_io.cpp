@@ -234,11 +234,11 @@ GAGCore::CooperativeTask Game::loadTask(GAGCore::InputStream *stream)
         if (!(co_await teams[i]->loadTask(stream, &buildingsTypes, versionMinor)))
             co_return false;
 		if (teams[i]->teamNumber != i) co_return false;
-		for (int slot = 0; slot < Building::MAX_COUNT; ++slot)
-			if (const Building *b = teams[i]->myBuildings[slot]; b && !isBuildingTypeAvailable(b->typeNum)) co_return false;
+		for (const Building* b : teams[i]->liveBuildings.entries())
+			if (!isBuildingTypeAvailable(b->typeNum)) co_return false;
         if (versionMinor >= FILE_FORMAT_VERSION_UNIT_CATALOG)
-            for (int slot = 0; slot < Unit::MAX_COUNT; ++slot)
-                if (const Unit *unit = teams[i]->myUnits[slot]; unit && !isUnitTypeAvailable(unit->typeNum))
+            for (const Unit* unit : teams[i]->liveUnits.entries())
+                if (!isUnitTypeAvailable(unit->typeNum))
                     co_return false;
 		stream->readLeaveSection();
 	}
@@ -256,8 +256,7 @@ GAGCore::CooperativeTask Game::loadTask(GAGCore::InputStream *stream)
         for(int team=0;team<mapHeader.getNumberOfTeams();++team)
         {
             teams[team]->race.setCatalog(gameHeader.getUnitCatalog());
-            for (int slot = 0; slot < Unit::MAX_COUNT; ++slot)
-                if (auto *unit = teams[team]->myUnits[slot])
+            for (auto* unit : teams[team]->liveUnits.entries())
                 {
                     const auto &traits = teams[team]->race.getRuntime(unit->typeNum);
                     unit->capabilityFlags = traits.flags;
@@ -461,18 +460,15 @@ GAGCore::CooperativeTask Game::loadTask(GAGCore::InputStream *stream)
 			stream->readLeaveSection();
 		}
 		stream->readLeaveSection();
-		for (int t = 0; t < mapHeader.getNumberOfTeams(); ++t)
-			for (int slot = 0; slot < SCRIPT_ENTITY_SLOTS_PER_TEAM; ++slot)
-			{
-				const auto *unit = teams[t]->myUnits[slot];
-				const auto *building = teams[t]->myBuildings[slot];
-				if (unit && (!unit->scriptIdentity || unit->scriptIdentity !=
-					scriptGenerations[scriptGenerationIndex(false, t, slot)]))
+		for (int t=0; t<mapHeader.getNumberOfTeams(); ++t) {
+			for (const Unit* unit : teams[t]->liveUnits.entries())
+				if (!unit->scriptIdentity || unit->scriptIdentity!=scriptGenerations[scriptGenerationIndex(false,t,Unit::GIDtoID(unit->gid))])
 					throw std::runtime_error("Invalid unit script identity");
-				if (building && (!building->scriptIdentity || building->scriptIdentity !=
-					scriptGenerations[scriptGenerationIndex(true, t, slot)]))
+			for (const Building* building : teams[t]->liveBuildings.entries())
+				if (!building->scriptIdentity || building->scriptIdentity!=scriptGenerations[scriptGenerationIndex(true,t,Building::GIDtoID(building->gid))])
 					throw std::runtime_error("Invalid building script identity");
-			}
+		}
+
 	}
 	gameSection.commit();
 
@@ -511,11 +507,8 @@ bool Game::checkBuildingsDoNotOverlapAndHealMissing() {
 	for (int ti=0; ti<mapHeader.getNumberOfTeams(); ti++)
 	{
 		Team *team = teams[ti];
-		for (int bi=0; bi<Building::MAX_COUNT; bi++)
+		for (const Building* building : team->liveBuildings.entries())
 		{
-			const auto building = team->myBuildings[bi];
-			if (!building)
-				continue;
 			if (building->buildingState==Building::DEAD)  // kill() cleared its footprint
 				continue;
 			const auto x = building->posX;
@@ -539,7 +532,7 @@ bool Game::checkBuildingsDoNotOverlapAndHealMissing() {
 					{
 						std::cerr << "Missing map cell GBID at " << xi << "," << yi
 							<< " for team " << ti
-							<< " building " << bi
+							<< " building " << Building::GIDtoID(gid)
 							<< " (" << building->type->type << "), healing!"
 							<< std::endl;
 						auto cell = map.getTile(xi, yi);

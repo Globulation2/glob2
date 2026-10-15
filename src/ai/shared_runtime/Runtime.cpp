@@ -264,9 +264,8 @@ void Runtime::init_starting_buildings()
 	{
 		if(std::size_t(t)<observation().teams.size())
 		{
-			for(int bu=0; bu<Building::MAX_COUNT; ++bu)
+			for (auto* b : observation().buildingsForTeam(t))
 			{
-				auto* b=observation().buildingSlots(t)[bu];
 				if(b)
 				{
 					starting_buildings.insert(b->gid);

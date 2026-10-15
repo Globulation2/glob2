@@ -418,9 +418,8 @@ bool Game::executeAlterForbidden(const OrderAlterForbidden& oaa, int localPlayer
 	if (!changed) return true;
 
 	for (int team=0; team<mapHeader.getNumberOfTeams(); ++team)
-		for (int id=0; id<Building::MAX_COUNT; ++id)
+		for (Building* building : teams[team]->liveBuildings.entries())
 		{
-			Building* building = teams[team]->myBuildings[id];
 			if (!building) continue;
 			const bool ownTeam = team == oaa.teamNumber;
 			const bool clearingFlag = building->runtime->attractsRole(0);

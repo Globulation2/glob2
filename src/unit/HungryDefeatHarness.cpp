@@ -49,8 +49,7 @@ struct Colony
         game.gameHeader.getWinningConditions().push_back(std::make_shared<WinningConditionDeath>());
         const int type = globalContainer->buildingsTypes.getTypeNum(buildingName, 0, false);
         inn = new Building(8, 8, 0, type, team, &globalContainer->buildingsTypes, 0, 0);
-        team->myBuildings[0] = inn;
-        team->rebuildLiveLists();
+        team->attachBuilding(0, inn);
         game.map.setBuilding(8, 8, inn->type->width, inn->type->height, inn->gid);
         inn->setMaterial(WHEAT, corn);
         inn->maxUnitInside = 1;
@@ -61,8 +60,7 @@ struct Colony
     Unit* unit(int type = WORKER)
     {
         auto* u = new Unit(6, 8, 0, type, team, 0);
-        team->myUnits[0] = u;
-        team->rebuildLiveLists();
+        team->attachUnit(0, u);
         u->action = type == EXPLORER ? FLY : WALK;
         u->hungry = u->trigHungry / 2;
         u->medical = Unit::MED_HUNGRY;

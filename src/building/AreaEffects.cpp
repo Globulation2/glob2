@@ -188,8 +188,7 @@ void Runtime::beginTick(Game &game, bool fund)
 	{
 		for (int t = 0; t < teams; ++t)
 			if (game.teams[t])
-				for (int id = 0; id < Building::MAX_COUNT; ++id)
-					if (auto *b = game.teams[t]->myBuildings[id])
+				for (auto *b : game.teams[t]->liveBuildings.entries())
 						changed(b->gid);
 		scan = false;
 	}

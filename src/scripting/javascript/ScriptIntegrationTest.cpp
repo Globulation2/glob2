@@ -34,6 +34,38 @@ static std::string save(Game &game)
 	stream.flush();
 	return memory->takeContents();
 }
+TEST_CASE("JavaScript compact population pagination preserves visibility and fixed query budgets" *
+          doctest::test_suite("JavaScriptIntegration"))
+{
+    glob2test::HeadlessGlobals globals;
+    glob2test::HeadlessGame fixture{glob2test::GameOptions{.wDec=5,.hDec=5,.teams=2,.clearImmobile=true,.loadDefaultRace=true}};
+    auto& game=fixture.game;
+    auto* first=fixture.addUnit(WORKER,2,2,0);
+    auto* survivor=fixture.addUnit(WORKER,3,2,0);
+    REQUIRE(first); REQUIRE(survivor);
+    const auto reused=first->gid;
+    REQUIRE(game.removeUnitAndBuildingAndFlags(2,2,unsigned(Game::DEL_UNIT)));
+    auto* appended=fixture.addUnit(WORKER,4,2,0); REQUIRE(appended);
+    REQUIRE(appended->gid==reused);
+    game.map.unsetMapDiscovered(); game.map.switchFogOfWar(); game.map.switchFogOfWar();
+    Observations fair(game,0);
+    std::size_t beforeWork=0,afterWork=0;
+    auto page=Value::object().set("team",0).set("offset",1).set("limit",1);
+    auto rows=fair.query("units",{page});
+    REQUIRE(rows.items.size()==1);
+    // Public script order stays ascending ID even though the live order is survivor, appended.
+    CHECK(rows.items[0].get("id").number==survivor->gid);
+    auto baseline=fair.query("units",{},[&](std::size_t nodes,std::size_t bytes){beforeWork+=nodes+bytes;});
+    std::size_t spatialBefore=0,spatialAfter=0,visibleBefore=0,visibleAfter=0;
+    fair.visitSpatialEntities(true,-1,[&](const auto&){++visibleBefore;},[&](std::size_t nodes,std::size_t bytes){spatialBefore+=nodes+bytes;});
+    for (int i=0;i<6;++i) REQUIRE(fixture.addUnit(WORKER,20+i,22,1));
+    auto after=fair.query("units",{},[&](std::size_t nodes,std::size_t bytes){afterWork+=nodes+bytes;});
+    fair.visitSpatialEntities(true,-1,[&](const auto&){++visibleAfter;},[&](std::size_t nodes,std::size_t bytes){spatialAfter+=nodes+bytes;});
+    CHECK(after.encode()==baseline.encode()); CHECK(afterWork==beforeWork);
+    CHECK(visibleAfter==visibleBefore); CHECK(spatialAfter==spatialBefore);
+    CHECK(spatialBefore==2*Unit::MAX_COUNT);
+    CHECK(fair.query("units",{Value::object().set("offset",2).set("limit",1)}).items.empty());
+}
 TEST_CASE("JavaScript observations visibility memory pagination and stale references" *
 		  doctest::test_suite("JavaScriptIntegration"))
 {

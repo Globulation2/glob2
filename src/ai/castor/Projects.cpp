@@ -352,10 +352,9 @@ std::shared_ptr<Order>AICastor::continueProject(Project *project)
 				mainWorkers=((isFree+mainWorkers)>>1);
 		}
 		
-		const auto myBuildings=observation->buildingSlots(observedTeam->number);
-		for (int i=0; i<Building::MAX_COUNT; i++)
+		const auto myBuildings=observation->buildingsForTeam(observedTeam->number);
+		for (const AIEngine::BuildingView *b : myBuildings)
 		{
-			const AIEngine::BuildingView *b=myBuildings[i];
 			if (b)
 			{
 				if (provides(*b, project->demand))
@@ -446,10 +445,9 @@ std::shared_ptr<Order>AICastor::continueProject(Project *project)
 		
 		if ((project->waitFinished || overWorkers) && enoughFreeWorkers())
 		{
-			const auto myBuildings=observation->buildingSlots(observedTeam->number);
-			for (int i=0; i<Building::MAX_COUNT; i++)
+			const auto myBuildings=observation->buildingsForTeam(observedTeam->number);
+			for (const AIEngine::BuildingView *b : myBuildings)
 			{
-				const AIEngine::BuildingView *b=myBuildings[i];
 				if (b && provides(*b, project->demand) && requestedWorkers(*b)<desiredWorkers(*b,project->mainWorkers))
 				{
 					const int workers=requestedWorkers(*b)+1;
@@ -488,10 +486,9 @@ std::shared_ptr<Order>AICastor::continueProject(Project *project)
 		{
 			Sint32 finalWorkers=project->finalWorkers;
 			
-			const auto myBuildings=observation->buildingSlots(observedTeam->number);
-			for (int i=0; i<Building::MAX_COUNT; i++)
+			const auto myBuildings=observation->buildingsForTeam(observedTeam->number);
+			for (const AIEngine::BuildingView *b : myBuildings)
 			{
-				const AIEngine::BuildingView *b=myBuildings[i];
 				if (b && provides(*b, project->demand) && requestedWorkers(*b)!=desiredWorkers(*b,finalWorkers))
 				{
 

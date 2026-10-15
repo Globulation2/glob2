@@ -539,7 +539,7 @@ TEST_SUITE("UnitCustomization")
                 loaded=new Unit(&input,restored.team,FILE_FORMAT_VERSION_UNIT_CATALOG);
                 REQUIRE(input.getPosition()==bytes.size());
             }
-            restored.team->myUnits[0]=loaded; restored.team->rebuildLiveLists();
+            restored.team->attachUnit(0, loaded);
             restored.game.map.setGroundUnit(loaded->posX,loaded->posY,loaded->gid);
             REQUIRE(loaded->widePrimaryCargo()); CHECK(loaded->carriedPacketCount()==1);
             CHECK(saveUnit(*loaded,text)==bytes); CHECK(restored.game.unitCargo.entries()==original);
@@ -721,11 +721,11 @@ TEST_SUITE("UnitCustomization")
         REQUIRE(attacker); REQUIRE(victim);
         attacker->hp=500000;
         auto snapshot=AIEngine::AIWorldView::capture(world.game,AIEngine::AIWorldView::captureCatalog(world.game));
-        const auto* observed=snapshot->unitSlots(0)[Unit::GIDtoID(attacker->gid)]; REQUIRE(observed);
+        const auto* observed=snapshot->unitAtSlot(attacker->gid); REQUIRE(observed);
         CHECK(AIMaxima::WorldHelpers::warrior_power(*snapshot,observed)==127500000);
         attacker->experienceLevel=INT_MAX;
         snapshot=AIEngine::AIWorldView::capture(world.game,snapshot->catalog);
-        observed=snapshot->unitSlots(0)[Unit::GIDtoID(attacker->gid)]; REQUIRE(observed);
+        observed=snapshot->unitAtSlot(attacker->gid); REQUIRE(observed);
         CHECK(AIEngine::ObservationQueries::realAttackStrength(*snapshot,*observed)==INT_MAX);
         CHECK(AIMaxima::WorldHelpers::warrior_power(*snapshot,observed)==INT_MAX);
         CHECK(attacker->getRealAttackStrength()==INT_MAX);
@@ -2587,7 +2587,7 @@ TEST_SUITE("UnitCustomization")
                 REQUIRE(restored.configuredVisionRadius==radius);
             }
             auto frozen=AIEngine::AIWorldView::capture(world.game,AIEngine::AIWorldView::captureCatalog(world.game));
-            const auto* observed=frozen->unitSlots(0)[Unit::GIDtoID(unit->gid)]; REQUIRE(observed);
+            const auto* observed=frozen->unitAtSlot(unit->gid); REQUIRE(observed);
             CHECK(observed->configuredVisionRadius==radius);
             unit->configuredVisionRadius=Uint8((radius+1)%33);
             CHECK(observed->configuredVisionRadius==radius);
@@ -3040,7 +3040,8 @@ TEST_SUITE("UnitCustomization")
             const auto random=candidate.syncRandom; const auto entity=unit.entityRandom.exportState();
             for(int team=0;team<candidate.teamsCount();++team) {
                 REQUIRE(candidate.teams[team]->liveBuildings.matches(candidate.teams[team]->myBuildings,Building::MAX_COUNT));
-                REQUIRE(std::is_sorted(candidate.teams[team]->liveBuildings.slots().begin(),candidate.teams[team]->liveBuildings.slots().end()));
+                for (const auto* building : candidate.teams[team]->liveBuildings)
+                    REQUIRE(candidate.teams[team]->myBuildings[Building::GIDtoID(building->gid)]==building);
             }
             std::vector<Uint8> truth;
             for(int y=0;y<candidate.map.getH();++y)for(int x=0;x<candidate.map.getW();++x) {

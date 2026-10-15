@@ -72,9 +72,8 @@ namespace Cortex
 	int distanceToNearestBuilding(const AIEngine::AIWorldView* game, const AIEngine::TeamView* team, const PlanningIntent& intents, int x, int y)
 	{
 		int best = -1;
-		for (int i = 0; i < ::Building::MAX_COUNT; i++)
+		for (const AIEngine::BuildingView* b : game->buildingsForTeam(team->number))
 		{
-			const AIEngine::BuildingView* b = game->buildingSlots(team->number)[i];
 			if (b == NULL || b->buildingState == ::Building::DEAD)
 				continue;
 			int d = warpDistMax(*game,x, y, plannedX(intents,*b), plannedY(intents,*b));
@@ -328,9 +327,8 @@ namespace Cortex
 		if (game == NULL || team == NULL)
 			return false;
 
-		for (int i = 0; i < ::Building::MAX_COUNT; i++)
+		for (const AIEngine::BuildingView* b : game->buildingsForTeam(team->number))
 		{
-			const AIEngine::BuildingView* b = game->buildingSlots(team->number)[i];
 			if (b == NULL || b->buildingState == ::Building::DEAD)
 				continue;
 			if (buildingType(*game,*b) == NULL ||
@@ -379,9 +377,8 @@ namespace Cortex
 		// type returns the box covering its current footprint plus all remaining upgrade
 		// levels, anchored relative to the current corner (posX, posY), so this works
 		// whether the existing building is level 0 or already partly upgraded.
-		for (int i = 0; i < ::Building::MAX_COUNT; i++)
+		for (const AIEngine::BuildingView* b : game->buildingsForTeam(team->number))
 		{
-			const AIEngine::BuildingView* b = game->buildingSlots(team->number)[i];
 			if (b == NULL || b->buildingState == ::Building::DEAD)
 				continue;
 			if (buildingType(*game,*b) == NULL || buildingType(*game,*b)->nextLevel < 0 || !buildingType(*game,*b)->semantics.occupiesGround)
@@ -400,9 +397,8 @@ namespace Cortex
 	{
 		if (!team) return;
         const auto* game=&map;
-		for (int i = 0; i < ::Building::MAX_COUNT; ++i)
+		for (const AIEngine::BuildingView* b : game->buildingsForTeam(team->number))
 		{
-			const AIEngine::BuildingView* b = game->buildingSlots(team->number)[i];
 			if (!b || b->buildingState == ::Building::DEAD) continue;
 			buildings.push_back({plannedX(intents,*b), plannedY(intents,*b), 0, 0});
 			if (!buildingType(*game,*b)) continue;

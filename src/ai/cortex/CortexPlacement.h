@@ -61,7 +61,7 @@ namespace Cortex
 	/// FAIRNESS: only buildings the team has legitimately seen are included —
 	/// gate strictly on Building::seenByMask & team->mask (the engine's own per-
 	/// building discovery record). NEVER read unfogged enemy state. Iterate enemy
-	/// myBuildings[] by index (never an std::set); break ties deterministically by
+	/// compact population ranges in append order; break ties deterministically by
 	/// scan order / the supplied controller stream, as placeCandidates does.
 	///
 	/// Returns the number of valid targets written (0..CORTEX_FLAG_TARGETS); 0 when

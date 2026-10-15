@@ -466,9 +466,9 @@ Uint64 BuildingRegister::identity_of(const AIEngine::BuildingView* building) con
 void BuildingRegister::initiate()
 {
 	pendingBuildings.clear(); foundBuildings.clear(); nextId=0;
-	for(int i=0;i<Building::MAX_COUNT;++i)
+	for (const AIEngine::BuildingView* b : observation().buildingsForTeam(teamNumber()))
 	{
-		const AIEngine::BuildingView* b=observation().buildingSlots(teamNumber())[i]; if(!b) continue;
+		if(!b) continue;
 		BuildingRecord r; r.x=b->posX; r.y=b->posY; r.type=b->typeNum; r.gid=b->gid;
 		r.runtimeIdentity=identity_of(b);
 		foundBuildings[nextId++]=r;
@@ -784,9 +784,8 @@ void BuildingRegister::tick()
 			int gid=NOGBID;
 			if(const auto* requested=&observation().catalog->at(r.type).resolvedType; requested && !requested->semantics.occupiesGround)
 			{
-				for(int b=0;b<Building::MAX_COUNT;++b)
+				for (const AIEngine::BuildingView* candidate : observation().buildingsForTeam(teamNumber()))
 				{
-					const AIEngine::BuildingView* candidate=observation().buildingSlots(teamNumber())[b];
 					if(candidate && candidate->posX==r.x && candidate->posY==r.y
 					   && AIMaximaBuildings::lineageRoot(observation(),candidate->typeNum)==AIMaximaBuildings::lineageRoot(observation(),r.type)) { gid=candidate->gid; break; }
 				}
@@ -1005,7 +1004,10 @@ bool BuildingOrder::score_location(Context& context,const BuildingType* bt,bool 
 	if(!flag&&!AIEngine::ObservationQueries::hardBuildingSpace((*map),x,y,bt->width,bt->height))return false;
 	if(flag)
 	{
-		for(int b=0;b<Building::MAX_COUNT;++b){const AIEngine::BuildingView* f=context.observation().buildingSlots(context.teamNumber())[b];if(f&&!AIEngine::ObservationQueries::buildingType(context.observation(),*f).semantics.occupiesGround&&f->posX==x&&f->posY==y)return false;}
+		for (const AIEngine::BuildingView* f : context.observation().buildingsForTeam(context.teamNumber()))
+		{
+			if(f&&!AIEngine::ObservationQueries::buildingType(context.observation(),*f).semantics.occupiesGround&&f->posX==x&&f->posY==y)return false;
+		}
 	}
 	bool ok=true;total=0;
 	for(size_t ci=0;ci<constraints.size()&&ok;++ci)
@@ -1125,9 +1127,9 @@ void enemy_building_iterator::advance()
 {
 	if(ended)return; const auto* owner=(team>=0&&std::size_t(team)<context->observation().teams.size()) ? &context->observation().teams[team] : nullptr;
 	if(!owner){ended=true;return;}
-	for(++index;index<Building::MAX_COUNT;++index)
+	for(++index;index<int(context->observation().buildingsForTeam(team).size());++index)
 	{
-		const AIEngine::BuildingView* b=context->observation().buildingSlots(team)[index];if(!b||!(b->seenByMask&context->observedTeam().mask))continue;
+		const AIEngine::BuildingView* b=context->observation().buildingsForTeam(team)[index];if(!b||!(b->seenByMask&context->observedTeam().mask))continue;
 		if(type!=-1&&!AIMaximaBuildings::serves(context->observation(),AIEngine::ObservationQueries::buildingType(context->observation(),*b),type))continue;
 		if(level!=-1&&AIMaximaBuildings::lineagePosition(context->observation(),b->typeNum)!=level)continue;
 		if(construction!=AnyConstruction&&int(construction)!=int(bool(AIEngine::ObservationQueries::buildingType(context->observation(),*b).isBuildingSite)))continue;

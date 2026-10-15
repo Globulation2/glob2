@@ -17,39 +17,31 @@ using SimulationSnapshot::TileView;
 using SimulationSnapshot::RuleView;
 using SimulationSnapshot::BuildProjectView;
 
-// Borrowed slot traversal over the engine's captured index. Empty legacy slots
-// remain visible, with no allocated pointer arrays or copied entity state.
-template<class Record> class EntitySlots
+// Borrowed compact traversal; ordinal indexing never exposes empty ID slots.
+template<class Record> class EntityRange
 {
-	std::span<const Record> records;
-	std::span<const Uint32> indices;
+ std::span<const Record> records;
 public:
-	EntitySlots() = default;
-	EntitySlots(std::span<const Record> records, std::span<const Uint32> indices)
-		: records(records), indices(indices) {}
-	std::size_t size() const { return indices.size(); }
-	const Record* operator[](std::size_t slot) const
-	{ const auto index = indices[slot]; return index == SimulationSnapshot::Entities::NoRecord ? nullptr : &records[index]; }
-	class Iterator
-	{
-		const Record* records = nullptr;
-		const Uint32* indices = nullptr;
-		std::size_t position = 0;
-	public:
-		using value_type = const Record*;
-		using difference_type = std::ptrdiff_t;
-		using iterator_category = std::forward_iterator_tag;
-		Iterator() = default;
-		Iterator(const Record* records, const Uint32* indices, std::size_t position)
-			: records(records), indices(indices), position(position) {}
-		const Record* operator*() const
-		{ const auto index = indices[position]; return index == SimulationSnapshot::Entities::NoRecord ? nullptr : &records[index]; }
-		Iterator& operator++() { ++position; return *this; }
-		Iterator operator++(int) { auto previous = *this; ++*this; return previous; }
-		bool operator==(const Iterator&) const = default;
-	};
-	Iterator begin() const { return {records.data(), indices.data(), 0}; }
-	Iterator end() const { return {records.data(), indices.data(), indices.size()}; }
+ EntityRange() = default;
+ explicit EntityRange(std::span<const Record> records) : records(records) {}
+ std::size_t size() const { return records.size(); }
+ bool empty() const { return records.empty(); }
+ const Record* operator[](std::size_t ordinal) const { return &records[ordinal]; }
+ class Iterator {
+  const Record* record = nullptr;
+ public:
+  using value_type = const Record*;
+  using difference_type = std::ptrdiff_t;
+  using iterator_category = std::forward_iterator_tag;
+  Iterator() = default;
+  explicit Iterator(const Record* record) : record(record) {}
+  const Record* operator*() const { return record; }
+  Iterator& operator++() { ++record; return *this; }
+  Iterator operator++(int) { auto old=*this; ++*this; return old; }
+  bool operator==(const Iterator&) const = default;
+ };
+ Iterator begin() const { return Iterator(records.data()); }
+ Iterator end() const { return Iterator(records.empty() ? records.data() : records.data()+records.size()); }
 };
 
 // Controller observations adapt an engine lease. Borrowed spans remain valid
@@ -159,15 +151,17 @@ public:
 	const UnitView* unit(UnitRef identity) const;
 	const BuildingView* buildingAtSlot(Uint16 gid) const;
 	const UnitView* unitAtSlot(Uint16 gid) const;
-	EntitySlots<BuildingView> buildingSlots(int team) const
+	EntityRange<BuildingView> buildingsForTeam(int team) const
 	{
-		if (!lease.entities || team < 0 || std::size_t(team) >= lease.entities->buildingSlotIndices.size() / BuildingUtils::MAX_COUNT) return {};
-		return {buildings, std::span<const Uint32>(lease.entities->buildingSlotIndices).subspan(std::size_t(team) * BuildingUtils::MAX_COUNT, BuildingUtils::MAX_COUNT)};
+		if (!lease.entities || team < 0 || std::size_t(team) >= lease.entities->buildingRanges.size()) return {};
+		const auto range = lease.entities->buildingRanges[team];
+		return EntityRange<BuildingView>(buildings.subspan(range.offset, range.count));
 	}
-	EntitySlots<UnitView> unitSlots(int team) const
+	EntityRange<UnitView> unitsForTeam(int team) const
 	{
-		if (!lease.entities || team < 0 || std::size_t(team) >= lease.entities->unitSlotIndices.size() / UnitUtils::MAX_COUNT) return {};
-		return {units, std::span<const Uint32>(lease.entities->unitSlotIndices).subspan(std::size_t(team) * UnitUtils::MAX_COUNT, UnitUtils::MAX_COUNT)};
+		if (!lease.entities || team < 0 || std::size_t(team) >= lease.entities->unitRanges.size()) return {};
+		const auto range = lease.entities->unitRanges[team];
+		return EntityRange<UnitView>(units.subspan(range.offset, range.count));
 	}
 	TileView tile(int x, int y) const;
 	std::size_t tileIndex(int x, int y) const

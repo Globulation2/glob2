@@ -375,7 +375,7 @@ private:
 	/// Find the single best finished instance of `buildingType` (an
 	/// Cortex semantic role) to upgrade to its next level, or NULL if no
 	/// instance currently passes the full engine Upgradable predicate. Scans
-	/// game->buildingSlots(team->number) by ARRAY INDEX (never a std::set) and ranks eligible
+	/// game->buildingsForTeam(team->number) in population order and ranks eligible
 	/// instances deterministically — improving on Nicowar's random pick. See the
 	/// .cpp for the predicate and the bottleneck ranking.
 	const AIEngine::BuildingView* findUpgradeTarget(int buildingType) const;

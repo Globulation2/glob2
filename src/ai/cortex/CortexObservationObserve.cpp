@@ -86,7 +86,7 @@ namespace Cortex
 
 		// production / food-supply: one live pass over the colony's buildings.
 		// The TeamStat snapshot carries neither signal, so both are computed
-		// here directly from game->buildingSlots(team->number) (iterated by index, never a set).
+		// here directly from game->buildingsForTeam(team->number) (in population order).
 		//   feedCapacity   = units the colony's inns can feed: sum of
 		//                    type->maxUnitInside over working, feeding buildings.
 		//                    Mirrors AICastor's foodSum (ai/castor/Control.cpp:36-43);
@@ -96,7 +96,7 @@ namespace Cortex
 		//                    site/dead) whose production ratio is nonzero, i.e.
 		//                    actually producing units right now.
 		//   warFlagsActive = count of our own live WAR_FLAG virtual buildings.
-		//                    Virtual flags are registered in game->buildingSlots(team->number) too
+		//                    Virtual flags are registered in game->buildingsForTeam(team->number) too
 		//                    (Game::addBuilding sets myBuildings[id]=b regardless of
 		//                    isVirtual, Game_editor.cpp:261), so they show up in this
 		//                    same index scan — no separate virtualBuildings pass.
@@ -128,7 +128,7 @@ namespace Cortex
 		Sint32 warFlagX     = 0;
 		Sint32 warFlagY     = 0;
 		Sint32 warFlagRange = 0;
-		// Single index pass over game->buildingSlots(team->number) filling the building-derived
+		// Single population pass over game->buildingsForTeam(team->number) filling the building-derived
 		// signals and capturing the live war flag's footprint. Split into a helper
 		// (CortexObservation.cpp) only to keep each .cpp under the file-size cap;
 		// the call sits exactly where the loop ran inline, so the determinism-
@@ -176,12 +176,11 @@ namespace Cortex
 		// CORTEX_DEFENSE_TARGET_SEPARATION from every earlier pick so two flags
 		// never cover one assault point. Greedy K-pass selection over the index
 		// scan: deterministic (strict > keeps the first-seen on timer ties), and
-		// K * MAX_COUNT stays trivially cheap. Iterate by index, never a std::set.
+		// Each pass visits only the compact live population.
 		obs.buildingsUnderAttack = 0;
 		obs.unitsUnderAttack     = 0;
-		for (int i = 0; i < ::Building::MAX_COUNT; i++)
+		for (const AIEngine::BuildingView* b : game->buildingsForTeam(team->number))
 		{
-			const AIEngine::BuildingView* b = game->buildingSlots(team->number)[i];
 			if (b == NULL || b->buildingState == ::Building::DEAD)
 				continue;
 			// C++: Building::underAttackTimer (Uint8), building/Building.h:526
@@ -192,9 +191,8 @@ namespace Cortex
 		{
 			const AIEngine::BuildingView* pick  = NULL;
 			Uint8 pickTimer = 0;
-			for (int i = 0; i < ::Building::MAX_COUNT; i++)
+			for (const AIEngine::BuildingView* b : game->buildingsForTeam(team->number))
 			{
-				const AIEngine::BuildingView* b = game->buildingSlots(team->number)[i];
 				if (b == NULL || b->buildingState == ::Building::DEAD)
 					continue;
 				if (b->underAttackTimer == 0)
@@ -228,9 +226,8 @@ namespace Cortex
 			obs.defenseTargets[k].y     = plannedY(intents,*pick);
 			obs.defenseTargets[k].score = pick->underAttackTimer;
 		}
-		for (int i = 0; i < ::Unit::MAX_COUNT; i++)
+		for (const AIEngine::UnitView* u : game->unitsForTeam(team->number))
 		{
-			const AIEngine::UnitView* u = game->unitSlots(team->number)[i];
 			if (u == NULL)
 				continue;
 			// C++: Unit::underAttackTimer (Uint8), unit/Unit.h:241
@@ -297,8 +294,8 @@ namespace Cortex
             obs.productionPlacementType=productionChoice.placementType;
             if(productionChoice.placementType>=0)
                 placeCandidates(random, game,team,scratch,intents,CORTEX_BUILD_SWARM,0,obs.buildCandidates[CORTEX_BUILD_SWARM],productionChoice.placementType,maxBuildLevel);
-            for(int id=0;id<::Building::MAX_COUNT;++id) {
-                const auto* building=game->buildingSlots(team->number)[id];
+            for (const auto* building : game->buildingsForTeam(team->number))
+            {
                 if(!building || building->buildingState!=::Building::ALIVE || buildingType(*game,*building)->isBuildingSite)continue;
                 const auto mask=buildingType(*game,*building)->semantics.production.enabledUnitMask;
                 if(!mask)continue;
@@ -333,9 +330,8 @@ namespace Cortex
 				if (!obs.flagTargets[t].valid)
 					continue;
 				int innDist = -1;
-				for (int i = 0; i < ::Building::MAX_COUNT; i++)
+				for (const AIEngine::BuildingView* b : game->buildingsForTeam(team->number))
 				{
-					const AIEngine::BuildingView* b = game->buildingSlots(team->number)[i];
 					if (b == NULL || b->buildingState != ::Building::ALIVE
 					 || buildingType(*game,*b)->isBuildingSite)
 						continue;
@@ -462,7 +458,7 @@ namespace Cortex
 		// docs/ai/development.md). We expose only which enemy teams exist and
 		// are alive (public, shown in the UI) plus VISIBILITY-GATED intel: each
 		// enemy entity is counted only if we can legitimately see it. We iterate
-		// the enemy's OWN entity arrays by index (never a std::set) and gate each
+		// the enemy's compact entity ranges in population order and gate each
 		// entry — we never scan unfogged truth.
 		if (game != NULL)
 		{
@@ -486,9 +482,8 @@ namespace Cortex
 				// signal. team->mask is our vision bit (1<<teamNumber).
 				// C++: Building::seenByMask (Uint32), building/Building.h:560
 				es.totalBuilding = 0;
-				for (int j = 0; j < ::Building::MAX_COUNT; j++)
+				for (const AIEngine::BuildingView* b : game->buildingsForTeam(other->number))
 				{
-					const AIEngine::BuildingView* b = game->buildingSlots(other->number)[j];
 					if (b == NULL || b->buildingState == ::Building::DEAD)
 						continue;
 					if ((b->seenByMask & team->mask) != 0)
@@ -500,9 +495,8 @@ namespace Cortex
 				// FOW — we do NOT scan the whole map.
 				// C++: Map::isFOWDiscovered(int x,int y,int visionMask), map/Map.h:202
 				es.totalUnit = 0;
-				for (int j = 0; j < ::Unit::MAX_COUNT; j++)
+				for (const AIEngine::UnitView* u : game->unitsForTeam(other->number))
 				{
-					const AIEngine::UnitView* u = game->unitSlots(other->number)[j];
 					if (u == NULL)
 						continue;
 					// C++: Unit::posX/posY, unit/Unit.h:220

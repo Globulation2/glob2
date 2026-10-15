@@ -159,6 +159,14 @@ BinaryInputStream* writeReplayBody(Uint16 versionMinor, Uint32 firstCounter, Uin
 // 2. Version floor and ceiling.
 void testVersionBounds()
 {
+	{
+		ReplayReader previous;
+		check(!previous.loadReplay(writeReplayBody(164,1),false),
+		      "population boundary: format164 slot-order replay rejected");
+		ReplayReader current;
+		check(current.loadReplay(writeReplayBody(165,1),false),
+		      "population boundary: format165 append-order replay accepted");
+	}
 	for (Uint16 version : {137, 138, 139, 140, 141}) {
 		ReplayReader reader;
 		check(!reader.loadReplay(writeReplayBody(version, 1), false),

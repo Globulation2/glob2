@@ -19,9 +19,9 @@ class Order;
 //! Malformed or truncated replay bodies are rejected, including partial recordings.
 
 //! Oldest replay format (the VERSION_MINOR the replay was written with) that
-//! the reader still accepts. Version 164 changes hiring publication to one tick.
+//! the reader still accepts. Version 165 changes entity update and task scheduling order.
 //! Save compatibility has a separate floor in Version.h.
-static constexpr Uint16 REPLAY_MINIMUM_VERSION_MINOR = 164;
+static constexpr Uint16 REPLAY_MINIMUM_VERSION_MINOR = 165;
 
 /// This class is used for reading replays.
 /// The replay stream is kept open and read every time you do retrieveOrder.

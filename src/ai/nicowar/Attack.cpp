@@ -34,7 +34,7 @@ int NewNicowar::choose_building_to_attack(Runtime& runtime)
 
 	for(enemy_building_iterator ebi(runtime, target, -1, -1, indeterminate); ebi!=enemy_building_iterator(); ++ebi)
 	{
-		const AIEngine::BuildingView* b=runtime.observation().buildingSlots(target)[Building::GIDtoID(*ebi)];
+		const AIEngine::BuildingView* b=runtime.observation().buildingAtSlot(Building::GIDfrom(Building::GIDtoID(*ebi), target));
 		if(gradient.get_height(b->posX, b->posY) != AI_NICOWAR_GRADIENT_UNREACHABLE)
 			buildings_to_attack.push_back(*ebi);
 	}
@@ -159,7 +159,7 @@ void NewNicowar::choose_enemy_target(Runtime& runtime)
 				   cheating and has been fixed. */
 				for(; ebi != enemy_building_iterator(); ++ebi)
 				{
-					const AIEngine::BuildingView* b=runtime.observation().buildingSlots(*i)[Building::GIDtoID(*ebi)];
+					const AIEngine::BuildingView* b=runtime.observation().buildingAtSlot(Building::GIDfrom(Building::GIDtoID(*ebi), *i));
 					if(gradient.get_height(b->posX, b->posY) != AI_NICOWAR_GRADIENT_UNREACHABLE)
 					{
 						available_reachable_targets.push_back(*i);
@@ -196,7 +196,7 @@ bool NewNicowar::dig_out_enemy(Runtime& runtime)
 
 	for(enemy_building_iterator ebi(runtime, target, -1, -1, indeterminate); ebi!=enemy_building_iterator(); ++ebi)
 	{
-		const AIEngine::BuildingView* b=runtime.observation().buildingSlots(target)[Building::GIDtoID(*ebi)];
+		const AIEngine::BuildingView* b=runtime.observation().buildingAtSlot(Building::GIDfrom(Building::GIDtoID(*ebi), target));
 		int bx = dimensionRemainder(b->posX + mi.get_width(), mi.get_width());
 		int by = dimensionRemainder(b->posY + mi.get_height(), mi.get_height());
 		if(gradient.get_height(bx, by) == AI_NICOWAR_GRADIENT_UNREACHABLE)
@@ -211,8 +211,8 @@ bool NewNicowar::dig_out_enemy(Runtime& runtime)
 
 
 	int building=buildings_to_attack[num];
-	const int bx=dimensionRemainder(runtime.observation().buildingSlots(target)[Building::GIDtoID(building)]->posX, mi.get_width());
-	const int by=dimensionRemainder(runtime.observation().buildingSlots(target)[Building::GIDtoID(building)]->posY, mi.get_height());
+	const int bx=dimensionRemainder(runtime.observation().buildingAtSlot(Building::GIDfrom(Building::GIDtoID(building), target))->posX, mi.get_width());
+	const int by=dimensionRemainder(runtime.observation().buildingAtSlot(Building::GIDfrom(Building::GIDtoID(building), target))->posY, mi.get_height());
 
 	AISharedRuntime::Gradients::GradientInfo gi_pathfind;
     gi_pathfind.terrainTravel=field::TerrainTravel::Swim;

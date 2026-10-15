@@ -259,9 +259,8 @@ void Game::syncStep(Sint32 localTeam, PreparationCompletion completion)
 		{
 			map.switchFogOfWar();
 			for (int t=0; t<mapHeader.getNumberOfTeams(); t++)
-				for (int i=0; i<Building::MAX_COUNT; i++)
+				for (Building *b : teams[t]->liveBuildings.entries())
 				{
-					Building *b=teams[t]->myBuildings[i];
 					if (b)
 					{
 						assert(b->owner==teams[t]);

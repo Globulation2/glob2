@@ -35,9 +35,8 @@ M::Place referencePlace(Game &game, const Team *team, int x, int y)
 	for (int t = 0; t < game.teamsCount(); ++t)
 	{
 		const Team *other = game.teams[t];
-		for (int i = 0; i < Building::MAX_COUNT; ++i)
+		for (const Building *b : other->liveBuildings.entries())
 		{
-			const Building *b = other->myBuildings[i];
 			if (!b || b->type->isVirtual)
 				continue;
 			for (int by = b->posY; by < b->posY + b->type->height; ++by)
@@ -439,9 +438,8 @@ TEST_SUITE("TeamStatsSave")
 		{
 			int own = 1 << 30, enemy = 1 << 30;
 			for (int t = 0; t < game.teamsCount(); ++t)
-				for (int i = 0; i < Building::MAX_COUNT; ++i)
+				for (Building *b : game.teams[t]->liveBuildings.entries())
 				{
-					Building *b = game.teams[t]->myBuildings[i];
 					if (!b || b->type->isVirtual)
 						continue;
 					const int d = game.map.warpDistMax(x, y, b->getMidX(), b->getMidY());

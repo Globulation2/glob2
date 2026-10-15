@@ -259,8 +259,7 @@ class GameGUITouchHarness
 		{
 			int count = 0;
 			for (int t = 0; t < editor.game.mapHeader.getNumberOfTeams(); ++t)
-				for (int b = 0; b < Building::MAX_COUNT; ++b)
-					count += editor.game.teams[t]->myBuildings[b] != nullptr;
+				count += editor.game.teams[t]->liveBuildings.size();
 			return count;
 		};
 		auto drag = [&](GAGCore::ViewPoint end)
@@ -2075,8 +2074,7 @@ class GameGUITouchHarness
 		const int type = gui.game.buildingsTypes.getTypeNum("inn", 0, false);
 		auto *building =
 			new Building(0, 0, 2, type, gui.localTeam, &gui.game.buildingsTypes, 1, 1);
-		gui.localTeam->myBuildings[2] = building;
-        gui.localTeam->attachBuilding(2);
+		gui.localTeam->attachBuilding(2, building);
 		require(building->type->maxUnitWorking > 0, "Allocation fixture must accept workers");
 		auto actionPoint = [&](int kind, int value, int side = 0)
 		{
@@ -2126,8 +2124,7 @@ class GameGUITouchHarness
 		auto *rangeFlag =
 			new Building(0, 0, 3, gui.game.buildingsTypes.getTypeNum("warflag", 0, false),
 						 gui.localTeam, &gui.game.buildingsTypes, 1, 1);
-		gui.localTeam->myBuildings[3] = rangeFlag;
-        gui.localTeam->attachBuilding(3);
+		gui.localTeam->attachBuilding(3, rangeFlag);
 		{
 			const auto savedCamera = gui.camera;
 			const int savedX = gui.viewportX, savedY = gui.viewportY;
@@ -2485,8 +2482,7 @@ class GameGUITouchHarness
 		while (workerSlot < Unit::MAX_COUNT && gui.localTeam->myUnits[workerSlot])
 			++workerSlot;
 		require(workerSlot < Unit::MAX_COUNT, "Repair fixture has a free worker slot");
-		gui.localTeam->myUnits[workerSlot] = new Unit(0, 0, workerSlot, WORKER, gui.localTeam, 3);
-        gui.localTeam->attachUnit(workerSlot);
+		gui.localTeam->attachUnit(workerSlot, new Unit(0, 0, workerSlot, WORKER, gui.localTeam, 3));
 		bool constructionSpace = false;
 		for (int y = 0; y < gui.game.map.getH() && !constructionSpace; ++y)
 			for (int x = 0; x < gui.game.map.getW() && !constructionSpace; ++x)
@@ -2503,8 +2499,7 @@ class GameGUITouchHarness
 			auto *b =
 				new Building(0, 0, slot, gui.game.buildingsTypes.getTypeNum(name, 0, false),
 							 gui.localTeam, &gui.game.buildingsTypes, 1, 1);
-			gui.localTeam->myBuildings[slot] = b;
-        gui.localTeam->attachBuilding(slot);
+			gui.localTeam->attachBuilding(slot, b);
 			return b;
 		};
 		auto *swarm = fixture("swarm", 4);
@@ -3726,15 +3721,13 @@ class GameGUITouchHarness
 		gui.touch->panelOpen = true;
 		glob2test::drawGUI(gui,0);
 		const int id = Unit::GIDtoID(worker->gid);
-		gui.localTeam->myUnits[id] = nullptr;
 		gui.localTeam->detachUnit(id);
 		gui.game.snapshots().invalidateBoundary();
 		gui.prepareLocalPresentation();
 		gui.checkSelection(); // Threaded client steps invalidate before prepareDraw.
 		gui.touch->prepareDraw();
 		require(gui.selectionMode == GameGUI::NO_SELECTION && !gui.touch->panelOpen, "Removed unit dismisses its inspector");
-		gui.localTeam->myUnits[id] = worker;
-		gui.localTeam->attachUnit(id);
+		gui.localTeam->attachUnit(id, worker);
 		gui.game.snapshots().invalidateBoundary();
 		globalContainer->replaying = false;
 		globalContainer->replayShowFog = true;
@@ -4041,7 +4034,6 @@ class GameGUITouchHarness
 
 			gui.localTeam->virtualBuildings.remove(flag);
 			gui.localTeam->detachBuilding(Building::GIDtoID(flag->gid));
-            gui.localTeam->myBuildings[Building::GIDtoID(flag->gid)] = nullptr;
 			delete flag;
 		}
 		GAGCore::setProcessEnvironment("GLOB2_MOBILE_UI", "0", 1);

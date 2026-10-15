@@ -206,9 +206,8 @@ namespace
 		const AIEngine::AIWorldView* map=&world;
 		const int width=(*map).width;
 		const int height=(*map).height;
-		for(int id=0; id<Unit::MAX_COUNT; ++id)
+		for (const AIEngine::UnitView* worker : world.unitsForTeam(observedTeam))
 		{
-			const AIEngine::UnitView* worker=world.unitSlots(observedTeam)[id];
 			if(!worker || !AIEngine::ObservationQueries::matchesStrategyUnitRole(world,*worker,WORKER)
 			   || (swimming && worker->performance[SWIM]<=0))
 				continue;
@@ -664,8 +663,9 @@ Maxima::StrategicSnapshot Maxima::collect_snapshot(Context& runtime)
 		state.hungry=state.critical_food=state.unserved_food=0;
 	state.need_heal=stat->needHeal;
 	state.buildings=stat->totalBuilding;
-	for(int id=0;id<Building::MAX_COUNT;++id) {
-	 const auto* b=runtime.observation().buildingSlots(runtime.teamNumber())[id];if(!b||b->buildingState==Building::DEAD)continue;
+	for (const auto* b : runtime.observation().buildingsForTeam(runtime.teamNumber()))
+	{
+		if(!b||b->buildingState==Building::DEAD)continue;
 	 const unsigned roles=AIMaximaBuildings::capabilities(runtime.observation(),AIEngine::ObservationQueries::buildingType(runtime.observation(),*b));
 	 auto has=[&](int role){return bool(roles&AIMaximaBuildings::roleBit(role));};
 	 state.swarms+=has(AIMaximaBuildings::Production);state.inns+=has(AIMaximaBuildings::Feeding);
@@ -702,9 +702,8 @@ Maxima::StrategicSnapshot Maxima::collect_snapshot(Context& runtime)
 		state.swimming_explorers+=runtime.observation().capabilityUpgradeCount(*stat,UnitRuntimeTraits::Explore,SWIM,level);
 		state.swimming_warriors+=runtime.observation().capabilityUpgradeCount(*stat,UnitRuntimeTraits::Melee,SWIM,level);
 	}
-	for(int i=0; i<Unit::MAX_COUNT; ++i)
+	for (const AIEngine::UnitView* unit : runtime.observation().unitsForTeam(runtime.teamNumber()))
 	{
-		const AIEngine::UnitView* unit=runtime.observation().unitSlots(runtime.teamNumber())[i];
         if(unit && !unit->isDead)recurringMeals[unit->typeNum]+=recipient_meal_rate(*unit);
 		if(unit && unit->underAttackTimer)
 			state.own_units_under_attack+=1;
@@ -715,9 +714,8 @@ Maxima::StrategicSnapshot Maxima::collect_snapshot(Context& runtime)
 	}
     for(unsigned unit=0;unit<state.feeding_demand.size();++unit)state.feeding_demand[unit]=int(std::min<long long>(INT_MAX,(recurringMeals[unit]+MealRatePrecision/2)/MealRatePrecision));
 
-	for(int i=0; i<Building::MAX_COUNT; ++i)
+	for (const AIEngine::BuildingView* building : runtime.observation().buildingsForTeam(runtime.teamNumber()))
 	{
-		const AIEngine::BuildingView* building=runtime.observation().buildingSlots(runtime.teamNumber())[i];
 		if(!building)
 			continue;
 		// Only a level-zero site is new construction. Upgrade sites retain the
@@ -907,9 +905,8 @@ void Maxima::initialize_topology_profile(Context& runtime)
 				|| map.is_resource(x, y, materialIndex(MaterialId::Prunes)) ? 1 : 0;
 		}
 	int start_label=largest_label;
-	for(int id=0; id<Building::MAX_COUNT; ++id)
+	for (const AIEngine::BuildingView* building : runtime.observation().buildingsForTeam(runtime.teamNumber()))
 	{
-		const AIEngine::BuildingView* building=runtime.observation().buildingSlots(runtime.teamNumber())[id];
 		if(!building || AIEngine::ObservationQueries::buildingType(runtime.observation(),*building).isVirtual)
 			continue;
 		const int bx=powerOfTwoRemainder(powerOfTwoRemainder(building->posX, width)+width, width);
@@ -1031,7 +1028,8 @@ void Maxima::update_environment_model(Context& runtime)
 	observed.water_tiles=0;
     collect_building_profiles();
 	std::vector<long long> feedingRates(runtime.observation().catalog->size());
-	for(int id=0;id<Building::MAX_COUNT;++id){const auto* b=runtime.observation().buildingSlots(runtime.teamNumber())[id];
+	for (const auto* b : runtime.observation().buildingsForTeam(runtime.teamNumber()))
+	{
 	 if(!b||AIEngine::ObservationQueries::buildingType(runtime.observation(),*b).isBuildingSite||b->buildingState!=Building::ALIVE||!AIMaximaBuildings::serves(runtime.observation(),AIEngine::ObservationQueries::buildingType(runtime.observation(),*b),AIMaximaBuildings::Feeding))continue;
      const unsigned mask=AIEngine::ObservationQueries::buildingType(runtime.observation(),*b).semantics.feeding.unitMask&AIEngine::ObservationQueries::buildingType(runtime.observation(),*b).semantics.admittedUnitMask&7u;
      feedingRates[b->typeNum]+=development_feeding_visit_rate[b->typeNum];
@@ -1048,9 +1046,8 @@ void Maxima::update_environment_model(Context& runtime)
 	MapInfo map(runtime);
 	const int map_width=map.get_width(),map_height=map.get_height();
 	std::vector<Uint8> local_tiles(map_width*map_height,0);
-	for(int id=0;id<Building::MAX_COUNT;++id)
+	for (const AIEngine::BuildingView* building : runtime.observation().buildingsForTeam(runtime.teamNumber()))
 	{
-		const AIEngine::BuildingView* building=runtime.observation().buildingSlots(runtime.teamNumber())[id];
 		if(!building||AIEngine::ObservationQueries::buildingType(runtime.observation(),*building).isVirtual)continue;
 		for(int dy=-policy.local_territory_radius;
 			dy<=policy.local_territory_radius;++dy)
@@ -1418,9 +1415,8 @@ void Maxima::sample_reconnaissance_forces(Context& runtime)
 	reconnaissance.beginForceObservation(timer, living);
 	std::vector<Tactics::ThreatSighting> threats;
 	std::vector<const AIEngine::BuildingView*> own_buildings;
-	for(int b=0; b<Building::MAX_COUNT; ++b)
+	for (const AIEngine::BuildingView* building : runtime.observation().buildingsForTeam(runtime.teamNumber()))
 	{
-		const AIEngine::BuildingView* building=runtime.observation().buildingSlots(runtime.teamNumber())[b];
 		if(building && !AIEngine::ObservationQueries::buildingType(runtime.observation(),*building).isVirtual)
 			own_buildings.push_back(building);
 	}
@@ -1428,9 +1424,8 @@ void Maxima::sample_reconnaissance_forces(Context& runtime)
 	for(std::vector<int>::const_iterator team=living.begin(); team!=living.end(); ++team)
 	{
 		const AIEngine::TeamView* enemy_team=(&runtime.observation().teams[*team]);
-		for(int i=0; i<Unit::MAX_COUNT; ++i)
+		for (const AIEngine::UnitView* unit : runtime.observation().unitsForTeam(enemy_team->number))
 		{
-			const AIEngine::UnitView* unit=runtime.observation().unitSlots(enemy_team->number)[i];
 			if(!unit || !AIEngine::ObservationQueries::visible(runtime.observation(),
 				unit->posX, unit->posY, runtime.observedTeam().mask))
 				continue;
@@ -1501,9 +1496,8 @@ void Maxima::update_reconnaissance(Context& runtime)
 	for(std::vector<int>::const_iterator team=living.begin(); team!=living.end(); ++team)
 	{
 		const AIEngine::TeamView* enemy_team=(&runtime.observation().teams[*team]);
-		for(int i=0; i<Unit::MAX_COUNT; ++i)
+		for (const AIEngine::UnitView* unit : runtime.observation().unitsForTeam(enemy_team->number))
 		{
-			const AIEngine::UnitView* unit=runtime.observation().unitSlots(enemy_team->number)[i];
 			if(!unit || !AIEngine::ObservationQueries::visible(runtime.observation(),
 				unit->posX, unit->posY, runtime.observedTeam().mask))
 				continue;
@@ -1544,9 +1538,8 @@ void Maxima::update_reconnaissance(Context& runtime)
 			if(warrior || attack_explorer)
 			{
 				const int threat_radius=warrior ? 144 : 324;
-				for(int b=0; b<Building::MAX_COUNT; ++b)
+				for (const AIEngine::BuildingView* own : runtime.observation().buildingsForTeam(runtime.teamNumber()))
 				{
-					const AIEngine::BuildingView* own=runtime.observation().buildingSlots(runtime.teamNumber())[b];
 					if(own && !AIEngine::ObservationQueries::buildingType(runtime.observation(),*own).isVirtual
 					   && runtime.observation().distanceSquared(unit->posX, unit->posY,
 						own->posX, own->posY)<=threat_radius)
@@ -1561,9 +1554,8 @@ void Maxima::update_reconnaissance(Context& runtime)
 				attack_explorer, colony_threat, colony_explorer_threat);
 		}
 
-		for(int i=0; i<Building::MAX_COUNT; ++i)
+		for (const AIEngine::BuildingView* building : runtime.observation().buildingsForTeam(enemy_team->number))
 		{
-			const AIEngine::BuildingView* building=runtime.observation().buildingSlots(enemy_team->number)[i];
 			if(!building || AIEngine::ObservationQueries::buildingType(runtime.observation(),*building).isVirtual
 			   || !building_currently_visible(runtime.observation(),runtime.observedTeam().mask,building))
 				continue;
@@ -1587,7 +1579,7 @@ void Maxima::update_reconnaissance(Context& runtime)
 					continue;
 				const int id=Building::GIDtoID(building->first);
 				const AIEngine::BuildingView* actual=id>=0 && id<Building::MAX_COUNT
-					? runtime.observation().buildingSlots(enemy_team->number)[id] : NULL;
+					? runtime.observation().buildingAtSlot(Building::GIDfrom(id, enemy_team->number)) : NULL;
 				if(!actual || actual->gid!=building->first
 				   || runtime.observation().occupancyAt(runtime.observation().tileIndex(building->second.x,
 					building->second.y)).building!=building->first)
@@ -3240,9 +3232,8 @@ void Maxima::emit_director_snapshot(Context& runtime) const
 	int swarm_workers=0;
 	int technology_workers=0;
 	int military_workers=0;
-	for(int i=0; i<Building::MAX_COUNT; ++i)
+	for (const AIEngine::BuildingView* building : runtime.observation().buildingsForTeam(runtime.teamNumber()))
 	{
-		const AIEngine::BuildingView* building=runtime.observation().buildingSlots(runtime.teamNumber())[i];
 		if(!building || AIEngine::ObservationQueries::buildingType(runtime.observation(),*building).isBuildingSite)
 			continue;
 		const int assigned=building->maxUnitWorking;
@@ -3971,7 +3962,7 @@ void Maxima::handle_event(Context& runtime, const RuntimeEvent& event)
 			const int local=Building::GIDtoID(gid);
 			if(team>=0 && team<Team::MAX_COUNT && std::size_t(team)<runtime.observation().teams.size()
 			   && local>=0 && local<Building::MAX_COUNT
-			   && runtime.observation().buildingSlots(team)[local]==NULL)
+			   && runtime.observation().buildingAtSlot(Building::GIDfrom(local, team))==NULL)
 			{
 				reason="target_destroyed";
 				campaign.buildings_destroyed+=1;
@@ -4381,9 +4372,8 @@ AIMaximaPlacement::WorldState Maxima::collect_development_world(
 	add_preemptive_hash(worldSignature,Uint32(world.width));
 	add_preemptive_hash(worldSignature,Uint32(world.height));
 	// Final placement validation must see losses since the last strategy tick.
-	for(int id=0; id<Unit::MAX_COUNT; ++id)
+	for (const AIEngine::UnitView* worker : runtime.observation().unitsForTeam(runtime.teamNumber()))
 	{
-		const AIEngine::UnitView* worker=runtime.observation().unitSlots(runtime.teamNumber())[id];
 		if(worker && (worker->capabilityFlags&UnitRuntimeTraits::Transport) && worker->performance[SWIM]>0)
 			++world.swimmingBuilders;
 	}
@@ -4510,9 +4500,8 @@ AIMaximaPlacement::WorldState Maxima::collect_development_world(
 	{
 		if(std::size_t(team)>=runtime.observation().teams.size()
 		   || !(runtime.observedTeam().enemies&runtime.observation().teams[team].mask))continue;
-		for(int id=0;id<Building::MAX_COUNT;++id)
+		for (const AIEngine::BuildingView* enemy : runtime.observation().buildingsForTeam(team))
 		{
-			const AIEngine::BuildingView* enemy=runtime.observation().buildingSlots(team)[id];
 			if(!enemy||AIEngine::ObservationQueries::buildingType(runtime.observation(),*enemy).isVirtual
 			   ||!(enemy->seenByMask&runtime.observedTeam().allies))continue;
 			const int radius=strategy.placement.enemy_threat_radius;
@@ -4606,7 +4595,7 @@ AIMaximaPlacement::WorldState Maxima::collect_development_world(
     }
     std::vector<std::vector<long long>> colonyMeals(world.feedingColonies.size(),std::vector<long long>(context.observation().unitTypeCount()));
     for(auto& colony:world.feedingColonies)colony.demand.resize(context.observation().unitTypeCount());
-    for(int id=0;id<Unit::MAX_COUNT;++id)if(const auto* u=runtime.observation().unitSlots(runtime.teamNumber())[id];u && !u->isDead)
+    for(const auto* u:runtime.observation().unitsForTeam(runtime.teamNumber()))if(!u->isDead)
         colonyMeals[world.feedingColonyAt(u->posX,u->posY)][u->typeNum]+=recipient_meal_rate(*u);
     for(size_t colony=0;colony<world.feedingColonies.size();++colony)for(unsigned unit=0;unit<context.observation().unitTypeCount();++unit)
         world.feedingColonies[colony].demand[unit]=int(std::min<long long>(INT_MAX,(colonyMeals[colony][unit]+MealRatePrecision/2)/MealRatePrecision));
@@ -5701,9 +5690,8 @@ Labour::Observation Maxima::observe_labour(Context& runtime) const
     const auto workerTraining=runtime.observation().configuration->isUnitUpgradesDisabled()
         ? AIEngine::ObservationQueries::WorkerTrainingProjection{}
         : AIEngine::ObservationQueries::workerTrainingProjection(runtime.observation(),swimming);
-	for(int id=0; id<Building::MAX_COUNT; ++id)
+	for (const AIEngine::BuildingView* b : runtime.observation().buildingsForTeam(team->number))
 	{
-		const AIEngine::BuildingView* b=runtime.observation().buildingSlots(team->number)[id];
 		if(!b || b->buildingState!=Building::ALIVE) continue;
 		const bool site=AIEngine::ObservationQueries::buildingType(runtime.observation(),*b).isBuildingSite;
 		const bool swarm=AIMaximaBuildings::serves(context.observation(),AIEngine::ObservationQueries::buildingType(runtime.observation(),*b),AIMaximaBuildings::Production);
@@ -5742,9 +5730,8 @@ Labour::Observation Maxima::observe_labour(Context& runtime) const
 			result.trainingSlots+=b->maxUnitInside;
 		}
 	}
-	for(int id=0; id<Unit::MAX_COUNT; ++id)
+	for (const AIEngine::UnitView* u : runtime.observation().unitsForTeam(team->number))
 	{
-		const AIEngine::UnitView* u=runtime.observation().unitSlots(team->number)[id];
 		if(!u || u->isDead) continue;
 		if(u->medical==Unit::MED_DAMAGED) ++result.hurtUnits;
 		if(!runtime.observation().configuration->isHungerDisabled() && u->medical==Unit::MED_HUNGRY) ++result.hungryUnits;
