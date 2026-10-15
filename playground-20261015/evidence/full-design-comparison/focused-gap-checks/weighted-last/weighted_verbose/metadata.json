@@ -1,0 +1,11 @@
+{
+  "state": "passed",
+  "cases": 2,
+  "assertions": 73,
+  "no_warning_skips": true,
+  "log": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/focused-gap-checks/weighted-last/weighted_verbose/stdout.log",
+  "stdout_sha256": "eea661a3f48e1c8d9c90c0d07353a48d5dbc1140b976b14f5db1aedf90a3583c",
+  "command_receipt": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/focused-gap-checks/weighted-last/weighted_verbose/command.json",
+  "command_receipt_sha256": "8cbf4bc356d1c95f64210e69271bc4e6f0c4aa988574c279f2fc6c7bbf91d355",
+  "unit_sha256": "8d8e4bc2f5b32f292b066ac4da2e7546376925789bc9fd03fb619c683680336c"
+}

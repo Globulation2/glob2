@@ -1,0 +1,20 @@
+{
+  "approved": true,
+  "source_sha256": "4a60e2ea2eb3b2548a204b303ee7d0ba5a2051e9df1aec0e6a1a413d48b51d6c",
+  "template_sha256": "99ad72d72e883e8415c47fe07ff8cd07aea4544555eb76aa2be67ddbcceaf2fe",
+  "review_kind": "source-only independent review; no bootstrap/plot/nativeexecution",
+  "scope": [
+    "Mandatory reviewed watcher/rootapproval/sentinel input bindings, exact448stop proof and retirednative/controller/export/postcontroller census beforeheavywork",
+    "448rawreceipts independentlyparsed viahashboundauditparser; exactcommand/env/binarymetadata/affinity/CPUarithmetic/log/status/cap/winner/ticks checked",
+    "448single-game windows and416pairs/orderinventory, balanced16/16precedence andmean6.5, endpointmismatch failclosed; postbootstrap proof/receipt/window/pairhashrecheck",
+    "10000pairedseedbootstrap ratioofmeans fixedRNG/floorquantile; all32 retained, winnerconditionalruntime/caps explicit, TPS adverse directioncorrect",
+    "Late Agg plots +CSV/rawaudit/manifest limitedPG448; no fake896/1792complete, noOA/waves/checksum/nativecontinuation"
+  ],
+  "limits": [
+    "Static proof only; nofullcorpus/CI/plotexecutionbyreviewer",
+    "TelemetryOff winner/tick outcomes are not wholegameperTickchecksums;280bounded qualification separate",
+    "Many correlated exploratory comparisons ononeLinuxhost; nofamilywisecontrol/universalbest schedulerclaim",
+    "Noobserver suspension occurred withsentinelroute; noadjustment/exclusion for rejected STOPdrafts"
+  ],
+  "blockers": []
+}

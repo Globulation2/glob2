@@ -1,0 +1,38 @@
+{
+  "command": [
+    "taskset",
+    "-c",
+    "6,7,8,22,23,24",
+    "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/first-steal-source/build/linux/client/release/src/glob2",
+    "game",
+    "run",
+    "--load-game",
+    "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/mature-instruction-census/oazis-initial-state/native/final.game.gz",
+    "--ticks",
+    "60512",
+    "--compute-threads",
+    "auto",
+    "--gradient-backend",
+    "cpu",
+    "--write-replay",
+    "--telemetry",
+    "checksums",
+    "--output-dir",
+    "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/qualification/first-steal/parity/continuation-Oazis-nauto/native"
+  ],
+  "cwd": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/first-steal-source",
+  "env_overrides": {
+    "SDL_VIDEODRIVER": "dummy",
+    "SDL_AUDIODRIVER": "dummy",
+    "GLOB2_ASSET_DIR": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/first-steal-source",
+    "GLOB2_USER_DIR": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/qualification/first-steal/parity/continuation-Oazis-nauto/profile",
+    "GLOB2_USER_DATA_DIR": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/qualification/first-steal/parity/continuation-Oazis-nauto/profile",
+    "GLOB2_DEFERRED_DISPATCH": "steal",
+    "GLOB2_OPENCL_DEVICE": "0"
+  },
+  "returncode": 0,
+  "elapsed_seconds": 9.426110148895532,
+  "binary_sha256": "dee303f16c67f787651f14a601d73d23657dbb7a3b638f91b46952372fa76103",
+  "stdout_sha256": "98dc986380a79b1e3f7d490ab904ad26a305fefb3abdb1f3885cbc9ff72c3da4",
+  "utc": "2026-10-15T13:16:07.552154+00:00"
+}

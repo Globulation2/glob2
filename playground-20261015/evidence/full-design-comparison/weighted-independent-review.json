@@ -1,0 +1,26 @@
+{
+  "approved_for_compile_qualification": true,
+  "header_sha256": "935d73b61290da1d96c865cd11e5bba947e34fe7dc4de5c88d4af7dc3bbf111a",
+  "preparation_sha256": "569862233ac4ad974647c031cf1cba9a21d3f6fc5608066dcee09c49398e5f1e",
+  "checks": [
+    "Immutableproducerclasses0..7 andseparatecontinuation8..15 fit16samplecells; allsevenproductionproducers annotated withoutstate/rule changes.",
+    "Reservationchargedbeforequeuepublication, transferscharge destinationbeforedebit source, releasebeforecallbackretirement/lane/continuationpromotion/terminalbatchpublication. LocalDispatchcopy owns executingreservation; repushoverwritesoriginalnodecharge.",
+    "No newglobaldispatch/completionlock; outstanding/sample operations relaxedatomics areapproximateplacement hints, notpublication/simulationstate. Existingqueue/lane/batch lifetime rules unchanged.",
+    "AsyncGPUwait notcountedactiveCPU aftercallbackslice returns; continuation usesseparateclass. Stop drainscallbacks beforequeuezeroassert/clear; configure resets histories.",
+    "Max84slots*2^24jobs*2^30reservationns fitsuint64 including boundedtemporarytransferovercharge; inputclass/batchguards checkedbeforeallocation.",
+    "Bareavoidsclock/accounting,clockonlydoesnotreserve/updatehistory,observeonlyRRplacementwithhistory/reservations,weightedpoliciesexplicit LinuxthreadCPU clocks; fixedpriorns areconfiguration notobservedfits.",
+    "Identical054HISTORYadapters andlatestHiringlane/slot constants retained.",
+    "Focusedtestdelta friendaccessonly,noproductionruntimecounter: testmanuallycharges/transfers/debitsidlequeues thenchecks real64jobs exactlyonce, cold/reset/learnedpolicycontrols.",
+    "ActiveHiringcallback Off gate validatesreservedqueued+inflightuntilreturn; contextbeforeexecutor,10sworker/5sobservation,RAIIreleasejoin beforecontextdestruction, noworkerassertions.",
+    "Testsrequiringactual3/4participants WARNskipunsupportedpool; qualificationmustrecordnoWARN onnativehost; async/exception/lane/saves stillcoveredexistingcontracts/perTick.",
+    "RecoveryHarnessonly: exactSlots84 andcompiletimebound includesHiringHorizon4, matchingpinned054header; header/accountingunchanged. Priorfailedbuild/qualificationevidence retained; unitrebuildrequired."
+  ],
+  "limits": [
+    "Unbuilt/unexecuted sourceaudit only; all8policycontracts and20perTickcontexts required beforegamequalification.",
+    "Oneparticipantownerfallback goesexecute ratherthanworkerqueue; noqueue reservation needed. Costclassestimation there is not representativeparallelpolicy learning; do not inferN1estimatoroverhead symmetry.",
+    "Perclassatomics/CAS andO(worker) placement addcontention/cost; nativewholewinnerdata must payforthis, no claimfromsourcealone.",
+    "ClockCPUspan includescallback-blocking CPU behavior but excludesasyncwait; notwalltimeprediction orGPUduration. Coldpriorsfixedunmeasuredns couldmislead; do not presentthem aslearnednativecalibration."
+  ],
+  "activity": "Readonlydiff/source/preparationinspection only; no builds/native/signals.",
+  "harness_sha256": "9c7d80e59522ac546110598c7fba3ecddeda4b21039eab445cf3e05feaf22add"
+}

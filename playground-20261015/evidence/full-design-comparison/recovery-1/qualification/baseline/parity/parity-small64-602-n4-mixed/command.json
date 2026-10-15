@@ -1,0 +1,43 @@
+{
+  "command": [
+    "taskset",
+    "-c",
+    "0,1,2,16,17,18",
+    "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/confirmation/latest-wake/baseline/build/linux/client/release/src/glob2",
+    "game",
+    "run",
+    "--map-file",
+    "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/fixtures/small-ni.map.gz",
+    "--game-seed",
+    "602",
+    "--ticks",
+    "4096",
+    "--compute-threads",
+    "4",
+    "--gradient-backend",
+    "cpu",
+    "--player",
+    "castor",
+    "--player",
+    "nicowar",
+    "--write-replay",
+    "--telemetry",
+    "checksums",
+    "--output-dir",
+    "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/qualification/baseline/parity/parity-small64-602-n4-mixed/native"
+  ],
+  "cwd": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/confirmation/latest-wake/baseline",
+  "env_overrides": {
+    "SDL_VIDEODRIVER": "dummy",
+    "SDL_AUDIODRIVER": "dummy",
+    "GLOB2_ASSET_DIR": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/confirmation/latest-wake/baseline",
+    "GLOB2_USER_DIR": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/qualification/baseline/parity/parity-small64-602-n4-mixed/profile",
+    "GLOB2_USER_DATA_DIR": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/qualification/baseline/parity/parity-small64-602-n4-mixed/profile",
+    "GLOB2_OPENCL_DEVICE": "0"
+  },
+  "returncode": 0,
+  "elapsed_seconds": 6.607031100895256,
+  "binary_sha256": "4a90fb41dbd1ac1bc674930a29cc4581d9fa87a638f04b57137df8eea5e8d0e9",
+  "stdout_sha256": "df030916528dc703eb5ead627e47618bb6293d02afb9f8a4d2d87b5195589efc",
+  "utc": "2026-10-15T12:11:25.884613+00:00"
+}

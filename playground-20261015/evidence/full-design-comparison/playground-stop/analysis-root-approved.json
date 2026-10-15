@@ -1,0 +1,46 @@
+{
+  "approved": true,
+  "script_sha256": "4a60e2ea2eb3b2548a204b303ee7d0ba5a2051e9df1aec0e6a1a413d48b51d6c",
+  "conditional_stop_proof_derivation_authorized": true,
+  "stop_proof_path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/playground-stop/complete.json",
+  "stop_proof_required_state": "stopped_after_complete_playground",
+  "static_bindings": {
+    "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/campaign/plan.json": "7ba521d13781a75a1c04bec826dca5f8b6ec40f9c72f916ff48046d0b43eb077",
+    "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/campaign/resolved-variants.json": "e4703cce45467bc9f04e871e91a4626ade45fce31bdc28b891f50e6cf7e191a2",
+    "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/campaign/runner.py": "470086d1a9590df0dd3990b14e53c7480d5a700335f56dac58f0df51b6c02784",
+    "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/independent-audit/audit-whole-games.py": "2f0906a9cf98e7af751cdf866c77661034a463ef92ee322d4906096d566760b7",
+    "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/matched-baseline-failures-review.json": "fed4bcd975d141b4dee2e1b369971437a21e3736ce3e1955b55f8a9f376a0881",
+    "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/weighted-preparation-bare-diagnostic/summary.json": "423079774370fbc914c31269929963d9a99d6a045fe5c2be0577ecdd59352038",
+    "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/playground-stop/watch.py": "de25f6eb4880f05b76680bc62a23da52adbdf19bc290eab94fe9042695700cdd",
+    "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/playground-stop/independent-review.json": "94155b7770fbda2dff36006d98ad9adfaff3e7abd5abe0f62f3c6785c5e8c647",
+    "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/playground-stop/root-approved.json": "2443d36b91ca4b119c147cf2a77586d0246a38778c256b788216d121f7809147",
+    "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/playground-stop/sentinel-installed.json": "7fdc351d25b6545f8416701f04122d0a0d652e27188e866a59585caea5e121ac",
+    "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/playground-stop/watch-launch.json": "f459b31673da19fba83bdff24ce51df67548a66f05cfaf8d64b651e7b04e2ec7",
+    "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/playground-stop/preflight-result.json": "6a92acbd49e03b2bb8e9d526228e441cb79d8983d52a57be66802ceda889d0c0",
+    "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/campaign/serial/Oazis": "e5cf8ea285763f773a61b68f5d121ac2c5bf90785bb4514be39c3b2eb2b5dfb9",
+    "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/playground-stop/analysis-independent-review.json": "6cf55b9f3601b36e83defba61f46619587b1b065f0b82615d071255e87c8c39f"
+  },
+  "additional_retired_processes": [
+    {
+      "pid": 460595,
+      "starttime": "334012174",
+      "role": "timingparentcontroller"
+    },
+    {
+      "pid": 526727,
+      "starttime": "334790768",
+      "role": "stoppedfuturepostcontroller"
+    },
+    {
+      "pid": 357159,
+      "starttime": "333223077",
+      "role": "stoppedfullexporter"
+    }
+  ],
+  "utc": "2026-10-15T16:24:51.400369+00:00",
+  "approval_scope": "Userrequestedfinishonly448unrestrictedPlaygroundgames,stopandreport. PassivewaitthenPG-onlyrawaudit/pairedanalysis/CSV/plots, nootherexperiments.",
+  "independent_review": {
+    "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/playground-stop/analysis-independent-review.json",
+    "sha256": "6cf55b9f3601b36e83defba61f46619587b1b065f0b82615d071255e87c8c39f"
+  }
+}

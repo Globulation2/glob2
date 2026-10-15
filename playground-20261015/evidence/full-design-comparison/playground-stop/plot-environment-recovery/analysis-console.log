@@ -1,0 +1,7 @@
+Traceback (most recent call last):
+  File "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/playground-stop/analyze-playground.py", line 165, in <module>
+    try:main()
+        ~~~~^^
+  File "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/playground-stop/analyze-playground.py", line 140, in main
+    import matplotlib
+ModuleNotFoundError: No module named 'matplotlib'

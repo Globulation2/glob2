@@ -1,0 +1,5 @@
+{
+  "state": "checker_failed_false_positive",
+  "error": "symtable checker did not whitelist interpreter-provided __file__; actualsample receipt/parser/env/window/pairs checks had passed.",
+  "native_or_heavy_work": false
+}

@@ -1,0 +1,748 @@
+{
+  "state": "revalidated",
+  "contexts": 20,
+  "baseline_binary_sha256": "4a90fb41dbd1ac1bc674930a29cc4581d9fa87a638f04b57137df8eea5e8d0e9",
+  "traces": [
+    {
+      "case": "parity-Playground-n1-cpu-nicowar",
+      "role": "baseline",
+      "initialChecksum": 955072743,
+      "finalChecksum": 369942638,
+      "checksums": {
+        "GCS1": "d5acb2b78ce82625eb6ea55d9134bda016b03ea4fd8a57083755e1ca6fdc3a79",
+        "native": "d9ee50203fcaa3650a6d121533ebe44a6a56e831865c3fee4cc7e01adc74fa51"
+      },
+      "sidecar_details": {
+        "GCS1": {
+          "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/recovery-1/qualification/baseline/parity/parity-Playground-n1-cpu-nicowar/native/game.replay.checksums",
+          "rows": 4096,
+          "first_tick": 0,
+          "last_tick": 4095,
+          "teams": 8,
+          "players": 8,
+          "bytes": 60931048
+        },
+        "native": {
+          "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/recovery-1/qualification/baseline/parity/parity-Playground-n1-cpu-nicowar/native/world.checksums",
+          "rows": 4096,
+          "first_tick": 0,
+          "last_tick": 4095,
+          "bytes": 63346
+        }
+      },
+      "command_receipt": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/recovery-1/qualification/baseline/parity/parity-Playground-n1-cpu-nicowar/command.json",
+      "result_sha256": "cf7aed1edd08dcee7bf68b3f00fad4e3388f91382852ded3be905211de466297",
+      "binary_sha256": "4a90fb41dbd1ac1bc674930a29cc4581d9fa87a638f04b57137df8eea5e8d0e9",
+      "requested_opencl": false,
+      "correctness_only": true,
+      "reused_qualification": true,
+      "reuse_source_receipt": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/recovery-1/qualification/baseline/parity/parity-Playground-n1-cpu-nicowar/receipt.json",
+      "reuse_source_receipt_sha256": "50fb7a2bd0463e75296466066846ec583e558caa407c03648293b09645599ea2",
+      "reuse_reason": "Exactbaselinebinary/source/fixtures unchanged; rawsidecars,result andlogsreverified afterharness/selector-only repair."
+    },
+    {
+      "case": "parity-Playground-n4-cpu-nicowar",
+      "role": "baseline",
+      "initialChecksum": 955072743,
+      "finalChecksum": 369942638,
+      "checksums": {
+        "GCS1": "d5acb2b78ce82625eb6ea55d9134bda016b03ea4fd8a57083755e1ca6fdc3a79",
+        "native": "d9ee50203fcaa3650a6d121533ebe44a6a56e831865c3fee4cc7e01adc74fa51"
+      },
+      "sidecar_details": {
+        "GCS1": {
+          "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/recovery-1/qualification/baseline/parity/parity-Playground-n4-cpu-nicowar/native/game.replay.checksums",
+          "rows": 4096,
+          "first_tick": 0,
+          "last_tick": 4095,
+          "teams": 8,
+          "players": 8,
+          "bytes": 60931048
+        },
+        "native": {
+          "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/recovery-1/qualification/baseline/parity/parity-Playground-n4-cpu-nicowar/native/world.checksums",
+          "rows": 4096,
+          "first_tick": 0,
+          "last_tick": 4095,
+          "bytes": 63346
+        }
+      },
+      "command_receipt": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/recovery-1/qualification/baseline/parity/parity-Playground-n4-cpu-nicowar/command.json",
+      "result_sha256": "a5a695f7e87f9a891170e821603680cdc1a301e449d764cfe1d03daac8680100",
+      "binary_sha256": "4a90fb41dbd1ac1bc674930a29cc4581d9fa87a638f04b57137df8eea5e8d0e9",
+      "requested_opencl": false,
+      "correctness_only": true,
+      "reused_qualification": true,
+      "reuse_source_receipt": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/recovery-1/qualification/baseline/parity/parity-Playground-n4-cpu-nicowar/receipt.json",
+      "reuse_source_receipt_sha256": "8b657dabad60f11bf28da3aea00e67e80355cf59e8eaeee8ae4180dc421943ac",
+      "reuse_reason": "Exactbaselinebinary/source/fixtures unchanged; rawsidecars,result andlogsreverified afterharness/selector-only repair."
+    },
+    {
+      "case": "parity-Playground-nauto-cpu-nicowar",
+      "role": "baseline",
+      "initialChecksum": 955072743,
+      "finalChecksum": 369942638,
+      "checksums": {
+        "GCS1": "d5acb2b78ce82625eb6ea55d9134bda016b03ea4fd8a57083755e1ca6fdc3a79",
+        "native": "d9ee50203fcaa3650a6d121533ebe44a6a56e831865c3fee4cc7e01adc74fa51"
+      },
+      "sidecar_details": {
+        "GCS1": {
+          "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/recovery-1/qualification/baseline/parity/parity-Playground-nauto-cpu-nicowar/native/game.replay.checksums",
+          "rows": 4096,
+          "first_tick": 0,
+          "last_tick": 4095,
+          "teams": 8,
+          "players": 8,
+          "bytes": 60931048
+        },
+        "native": {
+          "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/recovery-1/qualification/baseline/parity/parity-Playground-nauto-cpu-nicowar/native/world.checksums",
+          "rows": 4096,
+          "first_tick": 0,
+          "last_tick": 4095,
+          "bytes": 63346
+        }
+      },
+      "command_receipt": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/recovery-1/qualification/baseline/parity/parity-Playground-nauto-cpu-nicowar/command.json",
+      "result_sha256": "87597328f5db670057f2c433556dc2fa759c9de660a14e014428e28b820b42c0",
+      "binary_sha256": "4a90fb41dbd1ac1bc674930a29cc4581d9fa87a638f04b57137df8eea5e8d0e9",
+      "requested_opencl": false,
+      "correctness_only": true,
+      "reused_qualification": true,
+      "reuse_source_receipt": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/recovery-1/qualification/baseline/parity/parity-Playground-nauto-cpu-nicowar/receipt.json",
+      "reuse_source_receipt_sha256": "684d84b1e7d8bcaeeaa1989657856094d171efd4c29331a2fbb450d160e2751b",
+      "reuse_reason": "Exactbaselinebinary/source/fixtures unchanged; rawsidecars,result andlogsreverified afterharness/selector-only repair."
+    },
+    {
+      "case": "parity-Playground-n4-opencl-nicowar",
+      "role": "baseline",
+      "initialChecksum": 955072743,
+      "finalChecksum": 369942638,
+      "checksums": {
+        "GCS1": "d5acb2b78ce82625eb6ea55d9134bda016b03ea4fd8a57083755e1ca6fdc3a79",
+        "native": "d9ee50203fcaa3650a6d121533ebe44a6a56e831865c3fee4cc7e01adc74fa51"
+      },
+      "sidecar_details": {
+        "GCS1": {
+          "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/recovery-1/qualification/baseline/parity/parity-Playground-n4-opencl-nicowar/native/game.replay.checksums",
+          "rows": 4096,
+          "first_tick": 0,
+          "last_tick": 4095,
+          "teams": 8,
+          "players": 8,
+          "bytes": 60931048
+        },
+        "native": {
+          "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/recovery-1/qualification/baseline/parity/parity-Playground-n4-opencl-nicowar/native/world.checksums",
+          "rows": 4096,
+          "first_tick": 0,
+          "last_tick": 4095,
+          "bytes": 63346
+        }
+      },
+      "command_receipt": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/recovery-1/qualification/baseline/parity/parity-Playground-n4-opencl-nicowar/command.json",
+      "result_sha256": "fd459dded6eb16a314cb3d1beaad2447e0ab9f82c4cb9b013da42bf310c9c11a",
+      "binary_sha256": "4a90fb41dbd1ac1bc674930a29cc4581d9fa87a638f04b57137df8eea5e8d0e9",
+      "requested_opencl": true,
+      "correctness_only": true,
+      "reused_qualification": true,
+      "reuse_source_receipt": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/recovery-1/qualification/baseline/parity/parity-Playground-n4-opencl-nicowar/receipt.json",
+      "reuse_source_receipt_sha256": "a56def2f32132873f82a7a32e25c53dcea843ea4436e8a7acdd49cf4b072c0f2",
+      "reuse_reason": "Exactbaselinebinary/source/fixtures unchanged; rawsidecars,result andlogsreverified afterharness/selector-only repair."
+    },
+    {
+      "case": "parity-Playground-nauto-opencl-nicowar",
+      "role": "baseline",
+      "initialChecksum": 955072743,
+      "finalChecksum": 369942638,
+      "checksums": {
+        "GCS1": "d5acb2b78ce82625eb6ea55d9134bda016b03ea4fd8a57083755e1ca6fdc3a79",
+        "native": "d9ee50203fcaa3650a6d121533ebe44a6a56e831865c3fee4cc7e01adc74fa51"
+      },
+      "sidecar_details": {
+        "GCS1": {
+          "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/recovery-1/qualification/baseline/parity/parity-Playground-nauto-opencl-nicowar/native/game.replay.checksums",
+          "rows": 4096,
+          "first_tick": 0,
+          "last_tick": 4095,
+          "teams": 8,
+          "players": 8,
+          "bytes": 60931048
+        },
+        "native": {
+          "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/recovery-1/qualification/baseline/parity/parity-Playground-nauto-opencl-nicowar/native/world.checksums",
+          "rows": 4096,
+          "first_tick": 0,
+          "last_tick": 4095,
+          "bytes": 63346
+        }
+      },
+      "command_receipt": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/recovery-1/qualification/baseline/parity/parity-Playground-nauto-opencl-nicowar/command.json",
+      "result_sha256": "2a0172535c366fbac39c107110116677671088b56f1c05c0052cc00b03428db2",
+      "binary_sha256": "4a90fb41dbd1ac1bc674930a29cc4581d9fa87a638f04b57137df8eea5e8d0e9",
+      "requested_opencl": true,
+      "correctness_only": true,
+      "reused_qualification": true,
+      "reuse_source_receipt": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/recovery-1/qualification/baseline/parity/parity-Playground-nauto-opencl-nicowar/receipt.json",
+      "reuse_source_receipt_sha256": "009c323f38991da2e39bca24341a5a336fff8bf1a36f453c79eb644d66fc8e90",
+      "reuse_reason": "Exactbaselinebinary/source/fixtures unchanged; rawsidecars,result andlogsreverified afterharness/selector-only repair."
+    },
+    {
+      "case": "parity-Playground-n4-cpu-mixed",
+      "role": "baseline",
+      "initialChecksum": 941441255,
+      "finalChecksum": 667503685,
+      "checksums": {
+        "GCS1": "9ef928890c7043b80d7a05a7ea3eafaeaa0fe703cf27b0fa9ba1ab65cec777d6",
+        "native": "7daf7118ebb95e718a6a82398a4fc42801acd3015facc4bba14b234122ff906f"
+      },
+      "sidecar_details": {
+        "GCS1": {
+          "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/recovery-1/qualification/baseline/parity/parity-Playground-n4-cpu-mixed/native/game.replay.checksums",
+          "rows": 4096,
+          "first_tick": 0,
+          "last_tick": 4095,
+          "teams": 8,
+          "players": 8,
+          "bytes": 65325916
+        },
+        "native": {
+          "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/recovery-1/qualification/baseline/parity/parity-Playground-n4-cpu-mixed/native/world.checksums",
+          "rows": 4096,
+          "first_tick": 0,
+          "last_tick": 4095,
+          "bytes": 63409
+        }
+      },
+      "command_receipt": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/recovery-1/qualification/baseline/parity/parity-Playground-n4-cpu-mixed/command.json",
+      "result_sha256": "68866bbd5a83f66c8c5b9234d066a81e87fa9d62e6e5cd62b2d278b52e062387",
+      "binary_sha256": "4a90fb41dbd1ac1bc674930a29cc4581d9fa87a638f04b57137df8eea5e8d0e9",
+      "requested_opencl": false,
+      "correctness_only": true,
+      "reused_qualification": true,
+      "reuse_source_receipt": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/recovery-1/qualification/baseline/parity/parity-Playground-n4-cpu-mixed/receipt.json",
+      "reuse_source_receipt_sha256": "96c17a465d77cadb15c27f124803f79ce0bf0043734faae861e2b11a21ba883e",
+      "reuse_reason": "Exactbaselinebinary/source/fixtures unchanged; rawsidecars,result andlogsreverified afterharness/selector-only repair."
+    },
+    {
+      "case": "continuation-Playground-n4",
+      "role": "baseline",
+      "initialChecksum": 1881005449,
+      "finalChecksum": 2849047883,
+      "checksums": {
+        "GCS1": "e5f3d46058fc5b68ba6354a1b0a4df630160794e47ff0bdc0cbf3c7d167526f2",
+        "native": "9c3e2e0020ab6869645e67287b69ed530e2b0512fb17ef3165007d7806d3357c"
+      },
+      "sidecar_details": {
+        "GCS1": {
+          "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/recovery-1/qualification/baseline/parity/continuation-Playground-n4/native/game.replay.checksums",
+          "rows": 512,
+          "first_tick": 20000,
+          "last_tick": 20511,
+          "teams": 8,
+          "players": 8,
+          "bytes": 23252758
+        },
+        "native": {
+          "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/recovery-1/qualification/baseline/parity/continuation-Playground-n4/native/world.checksums",
+          "rows": 512,
+          "first_tick": 20000,
+          "last_tick": 20511,
+          "bytes": 8587
+        }
+      },
+      "command_receipt": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/recovery-1/qualification/baseline/parity/continuation-Playground-n4/command.json",
+      "result_sha256": "6a5a05f410328853e51b91753968d509e3061a174af5c4443716979dc5ac655f",
+      "binary_sha256": "4a90fb41dbd1ac1bc674930a29cc4581d9fa87a638f04b57137df8eea5e8d0e9",
+      "requested_opencl": false,
+      "correctness_only": true,
+      "reused_qualification": true,
+      "reuse_source_receipt": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/recovery-1/qualification/baseline/parity/continuation-Playground-n4/receipt.json",
+      "reuse_source_receipt_sha256": "556c180a7cc689921ef9242de72d18993807ba7baff39157995c25977bf56e2e",
+      "reuse_reason": "Exactbaselinebinary/source/fixtures unchanged; rawsidecars,result andlogsreverified afterharness/selector-only repair."
+    },
+    {
+      "case": "continuation-Playground-nauto",
+      "role": "baseline",
+      "initialChecksum": 1881005449,
+      "finalChecksum": 2849047883,
+      "checksums": {
+        "GCS1": "e5f3d46058fc5b68ba6354a1b0a4df630160794e47ff0bdc0cbf3c7d167526f2",
+        "native": "9c3e2e0020ab6869645e67287b69ed530e2b0512fb17ef3165007d7806d3357c"
+      },
+      "sidecar_details": {
+        "GCS1": {
+          "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/recovery-1/qualification/baseline/parity/continuation-Playground-nauto/native/game.replay.checksums",
+          "rows": 512,
+          "first_tick": 20000,
+          "last_tick": 20511,
+          "teams": 8,
+          "players": 8,
+          "bytes": 23252758
+        },
+        "native": {
+          "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/recovery-1/qualification/baseline/parity/continuation-Playground-nauto/native/world.checksums",
+          "rows": 512,
+          "first_tick": 20000,
+          "last_tick": 20511,
+          "bytes": 8587
+        }
+      },
+      "command_receipt": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/recovery-1/qualification/baseline/parity/continuation-Playground-nauto/command.json",
+      "result_sha256": "824f0fdfd882203db27b3ae9413cf042f0c3f0be37833ad22700866b888c1b92",
+      "binary_sha256": "4a90fb41dbd1ac1bc674930a29cc4581d9fa87a638f04b57137df8eea5e8d0e9",
+      "requested_opencl": false,
+      "correctness_only": true,
+      "reused_qualification": true,
+      "reuse_source_receipt": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/recovery-1/qualification/baseline/parity/continuation-Playground-nauto/receipt.json",
+      "reuse_source_receipt_sha256": "adbb057378d6512c9acf504cc1f4cd35daa8e2182ed8fc7a3908d6bf879cf6d6",
+      "reuse_reason": "Exactbaselinebinary/source/fixtures unchanged; rawsidecars,result andlogsreverified afterharness/selector-only repair."
+    },
+    {
+      "case": "parity-Oazis-n1-cpu-nicowar",
+      "role": "baseline",
+      "initialChecksum": 3148121990,
+      "finalChecksum": 3731272377,
+      "checksums": {
+        "GCS1": "c72e761fa230293a02b03c18871de77954c92543e4eb326ca26fa189ce063329",
+        "native": "c3531d5ab6da2452b9d6b87d0e028c8190bd5af54460d5b9308b6eb003af6525"
+      },
+      "sidecar_details": {
+        "GCS1": {
+          "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/recovery-1/qualification/baseline/parity/parity-Oazis-n1-cpu-nicowar/native/game.replay.checksums",
+          "rows": 4096,
+          "first_tick": 0,
+          "last_tick": 4095,
+          "teams": 11,
+          "players": 11,
+          "bytes": 56233196
+        },
+        "native": {
+          "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/recovery-1/qualification/baseline/parity/parity-Oazis-n1-cpu-nicowar/native/world.checksums",
+          "rows": 4096,
+          "first_tick": 0,
+          "last_tick": 4095,
+          "bytes": 63387
+        }
+      },
+      "command_receipt": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/recovery-1/qualification/baseline/parity/parity-Oazis-n1-cpu-nicowar/command.json",
+      "result_sha256": "753fb052a0a033861e9d7eea1690f1699bdaa16f935aab3e8b131d3cae14d6ab",
+      "binary_sha256": "4a90fb41dbd1ac1bc674930a29cc4581d9fa87a638f04b57137df8eea5e8d0e9",
+      "requested_opencl": false,
+      "correctness_only": true,
+      "reused_qualification": true,
+      "reuse_source_receipt": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/recovery-1/qualification/baseline/parity/parity-Oazis-n1-cpu-nicowar/receipt.json",
+      "reuse_source_receipt_sha256": "b4362c316a6e1e6c499562113436475ae78a48cab79953e3077a0f32c5adf312",
+      "reuse_reason": "Exactbaselinebinary/source/fixtures unchanged; rawsidecars,result andlogsreverified afterharness/selector-only repair."
+    },
+    {
+      "case": "parity-Oazis-n4-cpu-nicowar",
+      "role": "baseline",
+      "initialChecksum": 3148121990,
+      "finalChecksum": 3731272377,
+      "checksums": {
+        "GCS1": "c72e761fa230293a02b03c18871de77954c92543e4eb326ca26fa189ce063329",
+        "native": "c3531d5ab6da2452b9d6b87d0e028c8190bd5af54460d5b9308b6eb003af6525"
+      },
+      "sidecar_details": {
+        "GCS1": {
+          "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/recovery-1/qualification/baseline/parity/parity-Oazis-n4-cpu-nicowar/native/game.replay.checksums",
+          "rows": 4096,
+          "first_tick": 0,
+          "last_tick": 4095,
+          "teams": 11,
+          "players": 11,
+          "bytes": 56233196
+        },
+        "native": {
+          "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/recovery-1/qualification/baseline/parity/parity-Oazis-n4-cpu-nicowar/native/world.checksums",
+          "rows": 4096,
+          "first_tick": 0,
+          "last_tick": 4095,
+          "bytes": 63387
+        }
+      },
+      "command_receipt": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/recovery-1/qualification/baseline/parity/parity-Oazis-n4-cpu-nicowar/command.json",
+      "result_sha256": "9903f7ebd0bbbc15ebc5367c49f2bad2a2200a72b287f6bc73c05afc28ea037d",
+      "binary_sha256": "4a90fb41dbd1ac1bc674930a29cc4581d9fa87a638f04b57137df8eea5e8d0e9",
+      "requested_opencl": false,
+      "correctness_only": true,
+      "reused_qualification": true,
+      "reuse_source_receipt": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/recovery-1/qualification/baseline/parity/parity-Oazis-n4-cpu-nicowar/receipt.json",
+      "reuse_source_receipt_sha256": "fbbc7e73c62760fbdd2e530d1b03172587af1632ae4b24a47261412efb561125",
+      "reuse_reason": "Exactbaselinebinary/source/fixtures unchanged; rawsidecars,result andlogsreverified afterharness/selector-only repair."
+    },
+    {
+      "case": "parity-Oazis-nauto-cpu-nicowar",
+      "role": "baseline",
+      "initialChecksum": 3148121990,
+      "finalChecksum": 3731272377,
+      "checksums": {
+        "GCS1": "c72e761fa230293a02b03c18871de77954c92543e4eb326ca26fa189ce063329",
+        "native": "c3531d5ab6da2452b9d6b87d0e028c8190bd5af54460d5b9308b6eb003af6525"
+      },
+      "sidecar_details": {
+        "GCS1": {
+          "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/recovery-1/qualification/baseline/parity/parity-Oazis-nauto-cpu-nicowar/native/game.replay.checksums",
+          "rows": 4096,
+          "first_tick": 0,
+          "last_tick": 4095,
+          "teams": 11,
+          "players": 11,
+          "bytes": 56233196
+        },
+        "native": {
+          "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/recovery-1/qualification/baseline/parity/parity-Oazis-nauto-cpu-nicowar/native/world.checksums",
+          "rows": 4096,
+          "first_tick": 0,
+          "last_tick": 4095,
+          "bytes": 63387
+        }
+      },
+      "command_receipt": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/recovery-1/qualification/baseline/parity/parity-Oazis-nauto-cpu-nicowar/command.json",
+      "result_sha256": "3e7d2dad7a62fcaffaa1e4f13f082194b1992a1bf5410c3e57a11554e5a2e86e",
+      "binary_sha256": "4a90fb41dbd1ac1bc674930a29cc4581d9fa87a638f04b57137df8eea5e8d0e9",
+      "requested_opencl": false,
+      "correctness_only": true,
+      "reused_qualification": true,
+      "reuse_source_receipt": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/recovery-1/qualification/baseline/parity/parity-Oazis-nauto-cpu-nicowar/receipt.json",
+      "reuse_source_receipt_sha256": "3946814723ad9a4ca1fbaac6bdf45d3a9075ef5e04abdf6334676c7654c02867",
+      "reuse_reason": "Exactbaselinebinary/source/fixtures unchanged; rawsidecars,result andlogsreverified afterharness/selector-only repair."
+    },
+    {
+      "case": "parity-Oazis-n4-opencl-nicowar",
+      "role": "baseline",
+      "initialChecksum": 3148121990,
+      "finalChecksum": 3731272377,
+      "checksums": {
+        "GCS1": "c72e761fa230293a02b03c18871de77954c92543e4eb326ca26fa189ce063329",
+        "native": "c3531d5ab6da2452b9d6b87d0e028c8190bd5af54460d5b9308b6eb003af6525"
+      },
+      "sidecar_details": {
+        "GCS1": {
+          "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/recovery-1/qualification/baseline/parity/parity-Oazis-n4-opencl-nicowar/native/game.replay.checksums",
+          "rows": 4096,
+          "first_tick": 0,
+          "last_tick": 4095,
+          "teams": 11,
+          "players": 11,
+          "bytes": 56233196
+        },
+        "native": {
+          "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/recovery-1/qualification/baseline/parity/parity-Oazis-n4-opencl-nicowar/native/world.checksums",
+          "rows": 4096,
+          "first_tick": 0,
+          "last_tick": 4095,
+          "bytes": 63387
+        }
+      },
+      "command_receipt": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/recovery-1/qualification/baseline/parity/parity-Oazis-n4-opencl-nicowar/command.json",
+      "result_sha256": "927b278fb5142bc55491e0cbcbc67671d3af476e7d892cc03f0f07eb0d69d47a",
+      "binary_sha256": "4a90fb41dbd1ac1bc674930a29cc4581d9fa87a638f04b57137df8eea5e8d0e9",
+      "requested_opencl": true,
+      "correctness_only": true,
+      "reused_qualification": true,
+      "reuse_source_receipt": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/recovery-1/qualification/baseline/parity/parity-Oazis-n4-opencl-nicowar/receipt.json",
+      "reuse_source_receipt_sha256": "bf083cd47f0479692ef0f82e8db21f854e0f809e990f18a60d52386879e9d07a",
+      "reuse_reason": "Exactbaselinebinary/source/fixtures unchanged; rawsidecars,result andlogsreverified afterharness/selector-only repair."
+    },
+    {
+      "case": "parity-Oazis-nauto-opencl-nicowar",
+      "role": "baseline",
+      "initialChecksum": 3148121990,
+      "finalChecksum": 3731272377,
+      "checksums": {
+        "GCS1": "c72e761fa230293a02b03c18871de77954c92543e4eb326ca26fa189ce063329",
+        "native": "c3531d5ab6da2452b9d6b87d0e028c8190bd5af54460d5b9308b6eb003af6525"
+      },
+      "sidecar_details": {
+        "GCS1": {
+          "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/recovery-1/qualification/baseline/parity/parity-Oazis-nauto-opencl-nicowar/native/game.replay.checksums",
+          "rows": 4096,
+          "first_tick": 0,
+          "last_tick": 4095,
+          "teams": 11,
+          "players": 11,
+          "bytes": 56233196
+        },
+        "native": {
+          "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/recovery-1/qualification/baseline/parity/parity-Oazis-nauto-opencl-nicowar/native/world.checksums",
+          "rows": 4096,
+          "first_tick": 0,
+          "last_tick": 4095,
+          "bytes": 63387
+        }
+      },
+      "command_receipt": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/recovery-1/qualification/baseline/parity/parity-Oazis-nauto-opencl-nicowar/command.json",
+      "result_sha256": "3b8d5d6406d6c47e547ac612cde26670024cd0a8b1ccf2655f138b23e14ca4af",
+      "binary_sha256": "4a90fb41dbd1ac1bc674930a29cc4581d9fa87a638f04b57137df8eea5e8d0e9",
+      "requested_opencl": true,
+      "correctness_only": true,
+      "reused_qualification": true,
+      "reuse_source_receipt": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/recovery-1/qualification/baseline/parity/parity-Oazis-nauto-opencl-nicowar/receipt.json",
+      "reuse_source_receipt_sha256": "561c26f57a10258588798f5f5dd931d67c7987163f0dfef92131008c871a93ff",
+      "reuse_reason": "Exactbaselinebinary/source/fixtures unchanged; rawsidecars,result andlogsreverified afterharness/selector-only repair."
+    },
+    {
+      "case": "parity-Oazis-n4-cpu-mixed",
+      "role": "baseline",
+      "initialChecksum": 3149563782,
+      "finalChecksum": 3704462902,
+      "checksums": {
+        "GCS1": "c57f861ffc3c323c13622558029a1f6fd50f3a947e5f32785785a2d1d20000bc",
+        "native": "5a3252a69906edf453db9ea586060f8803a4e67c360d2c252a02eec6c0fee3d0"
+      },
+      "sidecar_details": {
+        "GCS1": {
+          "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/recovery-1/qualification/baseline/parity/parity-Oazis-n4-cpu-mixed/native/game.replay.checksums",
+          "rows": 4096,
+          "first_tick": 0,
+          "last_tick": 4095,
+          "teams": 11,
+          "players": 11,
+          "bytes": 64604854
+        },
+        "native": {
+          "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/recovery-1/qualification/baseline/parity/parity-Oazis-n4-cpu-mixed/native/world.checksums",
+          "rows": 4096,
+          "first_tick": 0,
+          "last_tick": 4095,
+          "bytes": 63363
+        }
+      },
+      "command_receipt": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/recovery-1/qualification/baseline/parity/parity-Oazis-n4-cpu-mixed/command.json",
+      "result_sha256": "24a342708ded644a5dfffff644572490ce6f2dda11dd8402bc314c13c79f41d8",
+      "binary_sha256": "4a90fb41dbd1ac1bc674930a29cc4581d9fa87a638f04b57137df8eea5e8d0e9",
+      "requested_opencl": false,
+      "correctness_only": true,
+      "reused_qualification": true,
+      "reuse_source_receipt": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/recovery-1/qualification/baseline/parity/parity-Oazis-n4-cpu-mixed/receipt.json",
+      "reuse_source_receipt_sha256": "c80fca1ec95e4a36434bf169384d46c51b17713db2fc518c28afa39bcd574be0",
+      "reuse_reason": "Exactbaselinebinary/source/fixtures unchanged; rawsidecars,result andlogsreverified afterharness/selector-only repair."
+    },
+    {
+      "case": "continuation-Oazis-n4",
+      "role": "baseline",
+      "initialChecksum": 2377477703,
+      "finalChecksum": 2153299056,
+      "checksums": {
+        "GCS1": "152cdd6e07b884390d2d640401c0da281ddb2fea395e15d45bec51b5a25a2ecd",
+        "native": "eb780c10a36bf2872e8f42d7c39cce5b891f50b68108ba06b5f75fd99ce45dbf"
+      },
+      "sidecar_details": {
+        "GCS1": {
+          "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/recovery-1/qualification/baseline/parity/continuation-Oazis-n4/native/game.replay.checksums",
+          "rows": 512,
+          "first_tick": 60000,
+          "last_tick": 60511,
+          "teams": 11,
+          "players": 11,
+          "bytes": 44948350
+        },
+        "native": {
+          "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/recovery-1/qualification/baseline/parity/continuation-Oazis-n4/native/world.checksums",
+          "rows": 512,
+          "first_tick": 60000,
+          "last_tick": 60511,
+          "bytes": 8558
+        }
+      },
+      "command_receipt": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/recovery-1/qualification/baseline/parity/continuation-Oazis-n4/command.json",
+      "result_sha256": "61d5f71722707f78219a0091c747b38fab41d4be4e74ea8124d1fc285faf094a",
+      "binary_sha256": "4a90fb41dbd1ac1bc674930a29cc4581d9fa87a638f04b57137df8eea5e8d0e9",
+      "requested_opencl": false,
+      "correctness_only": true,
+      "reused_qualification": true,
+      "reuse_source_receipt": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/recovery-1/qualification/baseline/parity/continuation-Oazis-n4/receipt.json",
+      "reuse_source_receipt_sha256": "78755320209e92002f468845c1847e88d48726c593a09fe39395631756c64356",
+      "reuse_reason": "Exactbaselinebinary/source/fixtures unchanged; rawsidecars,result andlogsreverified afterharness/selector-only repair."
+    },
+    {
+      "case": "continuation-Oazis-nauto",
+      "role": "baseline",
+      "initialChecksum": 2377477703,
+      "finalChecksum": 2153299056,
+      "checksums": {
+        "GCS1": "152cdd6e07b884390d2d640401c0da281ddb2fea395e15d45bec51b5a25a2ecd",
+        "native": "eb780c10a36bf2872e8f42d7c39cce5b891f50b68108ba06b5f75fd99ce45dbf"
+      },
+      "sidecar_details": {
+        "GCS1": {
+          "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/recovery-1/qualification/baseline/parity/continuation-Oazis-nauto/native/game.replay.checksums",
+          "rows": 512,
+          "first_tick": 60000,
+          "last_tick": 60511,
+          "teams": 11,
+          "players": 11,
+          "bytes": 44948350
+        },
+        "native": {
+          "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/recovery-1/qualification/baseline/parity/continuation-Oazis-nauto/native/world.checksums",
+          "rows": 512,
+          "first_tick": 60000,
+          "last_tick": 60511,
+          "bytes": 8558
+        }
+      },
+      "command_receipt": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/recovery-1/qualification/baseline/parity/continuation-Oazis-nauto/command.json",
+      "result_sha256": "c0ab6db0505a417beb3722f97ede54da4a59e8998c313c6190a57749d061a11b",
+      "binary_sha256": "4a90fb41dbd1ac1bc674930a29cc4581d9fa87a638f04b57137df8eea5e8d0e9",
+      "requested_opencl": false,
+      "correctness_only": true,
+      "reused_qualification": true,
+      "reuse_source_receipt": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/recovery-1/qualification/baseline/parity/continuation-Oazis-nauto/receipt.json",
+      "reuse_source_receipt_sha256": "0b8a73389155a1b9bfa5de30d65ba3542a210dc9cf78e0561796d337f0a2a941",
+      "reuse_reason": "Exactbaselinebinary/source/fixtures unchanged; rawsidecars,result andlogsreverified afterharness/selector-only repair."
+    },
+    {
+      "case": "parity-small64-602-n1-nicowar",
+      "role": "baseline",
+      "initialChecksum": 1368633184,
+      "finalChecksum": 3581604919,
+      "checksums": {
+        "GCS1": "3b27d1c8250556392c3ba8375598a0ed130291704fc02bca4fcd1f3881c27eeb",
+        "native": "8c184b68a59cf0547ab99d5dd014a968d956a495fd82090340141a483840b108"
+      },
+      "sidecar_details": {
+        "GCS1": {
+          "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/recovery-1/qualification/baseline/parity/parity-small64-602-n1-nicowar/native/game.replay.checksums",
+          "rows": 4096,
+          "first_tick": 0,
+          "last_tick": 4095,
+          "teams": 2,
+          "players": 2,
+          "bytes": 18674396
+        },
+        "native": {
+          "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/recovery-1/qualification/baseline/parity/parity-small64-602-n1-nicowar/native/world.checksums",
+          "rows": 4096,
+          "first_tick": 0,
+          "last_tick": 4095,
+          "bytes": 63367
+        }
+      },
+      "command_receipt": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/recovery-1/qualification/baseline/parity/parity-small64-602-n1-nicowar/command.json",
+      "result_sha256": "15d8d3b27ba2a2b173c90390d272f7ed01f7ed585a674a84212e56a31c169f9e",
+      "binary_sha256": "4a90fb41dbd1ac1bc674930a29cc4581d9fa87a638f04b57137df8eea5e8d0e9",
+      "requested_opencl": false,
+      "correctness_only": true,
+      "reused_qualification": true,
+      "reuse_source_receipt": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/recovery-1/qualification/baseline/parity/parity-small64-602-n1-nicowar/receipt.json",
+      "reuse_source_receipt_sha256": "9687282d0894da5ec839d90e59fe088b25f023043d591c8502d4dc06f41b45e8",
+      "reuse_reason": "Exactbaselinebinary/source/fixtures unchanged; rawsidecars,result andlogsreverified afterharness/selector-only repair."
+    },
+    {
+      "case": "parity-small64-602-n4-nicowar",
+      "role": "baseline",
+      "initialChecksum": 1368633184,
+      "finalChecksum": 3581604919,
+      "checksums": {
+        "GCS1": "3b27d1c8250556392c3ba8375598a0ed130291704fc02bca4fcd1f3881c27eeb",
+        "native": "8c184b68a59cf0547ab99d5dd014a968d956a495fd82090340141a483840b108"
+      },
+      "sidecar_details": {
+        "GCS1": {
+          "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/recovery-1/qualification/baseline/parity/parity-small64-602-n4-nicowar/native/game.replay.checksums",
+          "rows": 4096,
+          "first_tick": 0,
+          "last_tick": 4095,
+          "teams": 2,
+          "players": 2,
+          "bytes": 18674396
+        },
+        "native": {
+          "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/recovery-1/qualification/baseline/parity/parity-small64-602-n4-nicowar/native/world.checksums",
+          "rows": 4096,
+          "first_tick": 0,
+          "last_tick": 4095,
+          "bytes": 63367
+        }
+      },
+      "command_receipt": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/recovery-1/qualification/baseline/parity/parity-small64-602-n4-nicowar/command.json",
+      "result_sha256": "0a5fa79225439cde185719f8797d7719c4a93ca41094603b20e52324e22ea3c5",
+      "binary_sha256": "4a90fb41dbd1ac1bc674930a29cc4581d9fa87a638f04b57137df8eea5e8d0e9",
+      "requested_opencl": false,
+      "correctness_only": true,
+      "reused_qualification": true,
+      "reuse_source_receipt": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/recovery-1/qualification/baseline/parity/parity-small64-602-n4-nicowar/receipt.json",
+      "reuse_source_receipt_sha256": "e197e8105d826f43b75eff4880f5a22e89791218e999f6c3bd509090b0df9843",
+      "reuse_reason": "Exactbaselinebinary/source/fixtures unchanged; rawsidecars,result andlogsreverified afterharness/selector-only repair."
+    },
+    {
+      "case": "parity-small64-602-nauto-nicowar",
+      "role": "baseline",
+      "initialChecksum": 1368633184,
+      "finalChecksum": 3581604919,
+      "checksums": {
+        "GCS1": "3b27d1c8250556392c3ba8375598a0ed130291704fc02bca4fcd1f3881c27eeb",
+        "native": "8c184b68a59cf0547ab99d5dd014a968d956a495fd82090340141a483840b108"
+      },
+      "sidecar_details": {
+        "GCS1": {
+          "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/recovery-1/qualification/baseline/parity/parity-small64-602-nauto-nicowar/native/game.replay.checksums",
+          "rows": 4096,
+          "first_tick": 0,
+          "last_tick": 4095,
+          "teams": 2,
+          "players": 2,
+          "bytes": 18674396
+        },
+        "native": {
+          "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/recovery-1/qualification/baseline/parity/parity-small64-602-nauto-nicowar/native/world.checksums",
+          "rows": 4096,
+          "first_tick": 0,
+          "last_tick": 4095,
+          "bytes": 63367
+        }
+      },
+      "command_receipt": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/recovery-1/qualification/baseline/parity/parity-small64-602-nauto-nicowar/command.json",
+      "result_sha256": "c95991a525d8df923335637d257c1889e21d5ed73be78fe51d516b7fcf791ef6",
+      "binary_sha256": "4a90fb41dbd1ac1bc674930a29cc4581d9fa87a638f04b57137df8eea5e8d0e9",
+      "requested_opencl": false,
+      "correctness_only": true,
+      "reused_qualification": true,
+      "reuse_source_receipt": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/recovery-1/qualification/baseline/parity/parity-small64-602-nauto-nicowar/receipt.json",
+      "reuse_source_receipt_sha256": "05d1d60b1ea5b500390780a652e5efe01b4065ba0b14a3446c482e416cc9f7c9",
+      "reuse_reason": "Exactbaselinebinary/source/fixtures unchanged; rawsidecars,result andlogsreverified afterharness/selector-only repair."
+    },
+    {
+      "case": "parity-small64-602-n4-mixed",
+      "role": "baseline",
+      "initialChecksum": 2375266145,
+      "finalChecksum": 2181226775,
+      "checksums": {
+        "GCS1": "04ef1028b30c05e1bc00180be1d4287af2cd559ffa8e3c592258e3c17eb094c2",
+        "native": "2d8ebb2e6ae9e184359cf59e5aab8cb141707a37b9a0b6b72597f346831e7327"
+      },
+      "sidecar_details": {
+        "GCS1": {
+          "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/recovery-1/qualification/baseline/parity/parity-small64-602-n4-mixed/native/game.replay.checksums",
+          "rows": 4096,
+          "first_tick": 0,
+          "last_tick": 4095,
+          "teams": 2,
+          "players": 2,
+          "bytes": 18478354
+        },
+        "native": {
+          "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/recovery-1/qualification/baseline/parity/parity-small64-602-n4-mixed/native/world.checksums",
+          "rows": 4096,
+          "first_tick": 0,
+          "last_tick": 4095,
+          "bytes": 63319
+        }
+      },
+      "command_receipt": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/recovery-1/qualification/baseline/parity/parity-small64-602-n4-mixed/command.json",
+      "result_sha256": "ca934c90a55cbc4fe9c0b78c7142277d9e1fbb168e2ab828c6fd37c00d85117a",
+      "binary_sha256": "4a90fb41dbd1ac1bc674930a29cc4581d9fa87a638f04b57137df8eea5e8d0e9",
+      "requested_opencl": false,
+      "correctness_only": true,
+      "reused_qualification": true,
+      "reuse_source_receipt": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/recovery-1/qualification/baseline/parity/parity-small64-602-n4-mixed/receipt.json",
+      "reuse_source_receipt_sha256": "a5dbbdeb46bd17a5ee9c896e71d634543f669048b7acba217701c13e08b31af7",
+      "reuse_reason": "Exactbaselinebinary/source/fixtures unchanged; rawsidecars,result andlogsreverified afterharness/selector-only repair."
+    }
+  ],
+  "utc": "2026-10-15T12:34:05.565699+00:00"
+}

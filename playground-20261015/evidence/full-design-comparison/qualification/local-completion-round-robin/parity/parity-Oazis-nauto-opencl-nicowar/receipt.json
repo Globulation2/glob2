@@ -1,0 +1,33 @@
+{
+  "case": "parity-Oazis-nauto-opencl-nicowar",
+  "role": "local-completion-round-robin",
+  "initialChecksum": 3148121990,
+  "finalChecksum": 3731272377,
+  "checksums": {
+    "GCS1": "c72e761fa230293a02b03c18871de77954c92543e4eb326ca26fa189ce063329",
+    "native": "c3531d5ab6da2452b9d6b87d0e028c8190bd5af54460d5b9308b6eb003af6525"
+  },
+  "sidecar_details": {
+    "GCS1": {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/qualification/local-completion-round-robin/parity/parity-Oazis-nauto-opencl-nicowar/native/game.replay.checksums",
+      "rows": 4096,
+      "first_tick": 0,
+      "last_tick": 4095,
+      "teams": 11,
+      "players": 11,
+      "bytes": 56233196
+    },
+    "native": {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/qualification/local-completion-round-robin/parity/parity-Oazis-nauto-opencl-nicowar/native/world.checksums",
+      "rows": 4096,
+      "first_tick": 0,
+      "last_tick": 4095,
+      "bytes": 63387
+    }
+  },
+  "command_receipt": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/qualification/local-completion-round-robin/parity/parity-Oazis-nauto-opencl-nicowar/command.json",
+  "result_sha256": "2ee3c5854120048daa21531f6ae95b1a5dc6effe49d63495aa954c5c32e976c8",
+  "binary_sha256": "30361dab0356ac87d8644e9e5780c1cdbddb6627b15f6b5b2d452369ce0bbcff",
+  "requested_opencl": true,
+  "correctness_only": true
+}

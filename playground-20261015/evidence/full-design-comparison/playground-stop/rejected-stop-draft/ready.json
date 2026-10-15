@@ -1,0 +1,36 @@
+{
+  "state": "prepared_not_launched_pending_independent_review_and_root_approval",
+  "source": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/playground-stop/watch.py",
+  "source_sha256": "fb5015566374e28e6ad515de812379cc65e193aad8e27c009456566d1222fd7e",
+  "plan_sha256": "7ba521d13781a75a1c04bec826dca5f8b6ec40f9c72f916ff48046d0b43eb077",
+  "runner_sha256": "470086d1a9590df0dd3990b14e53c7480d5a700335f56dac58f0df51b6c02784",
+  "runner": {
+    "pid": 460600,
+    "starttime": "334012252"
+  },
+  "final_case": {
+    "map": "Playground",
+    "seed_index": 31,
+    "seed": 2122112527,
+    "role": "wake-only"
+  },
+  "root_approval_schema": {
+    "approved": true,
+    "source_sha256": "exact source",
+    "review_sha256": "exact independent-review.json",
+    "plan_sha256": "exact frozen plan",
+    "runner_sha256": "exact frozen runner",
+    "runner": {
+      "pid": 460600,
+      "starttime": "334012252"
+    }
+  },
+  "command": [
+    "python3",
+    "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/playground-stop/watch.py"
+  ],
+  "proof": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/playground-stop/complete.json",
+  "signals": "Only root-approved watcher may STOP runner, then TERM+CONT after final native death. Native signals restricted to original1h cap. No signals sent during preparation.",
+  "crash_recovery": "Independent new-session guardian ready beforeSTOP; owner failure transfers final-child wait/cap and pendingTERM+CONT. Simultaneous SIGKILL of both monitor processes remains external intervention risk.",
+  "scope": "448PG only; no Oazis/waves/56. Last game observer polling may add ~50ms plus scheduling to e2e; original engineinner retained. Parentcontroller retirement checked separately by analysis."
+}

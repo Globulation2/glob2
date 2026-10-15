@@ -1,0 +1,22 @@
+{
+  "approved": true,
+  "utc": "2026-10-15T12:33:08.011106+00:00",
+  "source_sha256": "d8d9760565941e5acb4c119dbf8e6072ef0813d5c3575514907b647691c68e2f",
+  "scope": "Independent source-only review of recoveryqualification; no workload/build/signal execution.",
+  "checks": [
+    "Originalqualificationattempt1archivedwithpath-mapping; nooverwriteoforiginalfailures.",
+    "UnitTurnHarnessselectorsnowtrailingwildcards; per-filterJUnitinventorymustbenonempty, allselectedtestsrequiredpassed/noskippedunitcases.",
+    "All14rolesrerunfocusedunit/engine andweightedverbose2cases73assertions/noWARN; unresolvedoriginalbare-steal180stimeoutcannotbeignoredorconvertedtopass.",
+    "Exactly20baselinecontexts revalidated againstsamecurrent054nativebinary,exactcase/role/cwd/returncode/commandhistoricaloutputpath/fullGLOB2andSDLenv. Sourcefixtures/log/nativeJSONinitialfinal/ticks/bothsidecarstreams rehashedandreparsed; OpenCLrequestedcontextsrequireactualbackendopenclandpositiveGPUfields.",
+    "Reusedtracerecordskeeporiginalsource_receipt/hashandexplicitarchivedcommand/sidecaractualpaths; nofakefreshmeasurement. Independentearlierrawauditconfirmedall20including4realOpenCLcases.",
+    "Remaining13roles20contextseach compareexactinitial/final/fullperTickhashestoretainedbaseline; globalqualifiedonlyafterall14pass. State20reused+260new,not280new.",
+    "All4source/outputhashescheckedafterbuildcompletion; cleanprocesscensusblocksactivecompiler/nativeboundary. Incrementalunitrepairmustrefreshbuildreceiptunit/sourcehasheswhilepreservingnative/enginebytehashes.",
+    "Signalhandlersonlysetstop; registeredchildcleanupfinally, timeoutcleanup, stopchecks beforepublication, serializedGPUcases anddisjoint4CPUcorrectnessworkers retained.",
+    "No fullgame timinglaunchedbyqualifier; failureholdsrootconditionalfinalizergate."
+  ],
+  "failure_scope_reference": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/fresh-audit-causal/full-design-qualification-recovery/review.json",
+  "limitations": [
+    "Originalweighted-bare-stealsuitetimeout remainsretainedunexplainedhistoricalfailure; sourceapprovaldoesnotclaimrecoverytestscompleted.",
+    "Browser/mobile/platform/presentation/performancequalificationnotestablishedbythisheadlesscorrectnessgate."
+  ]
+}

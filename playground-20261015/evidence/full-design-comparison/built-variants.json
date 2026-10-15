@@ -1,0 +1,280 @@
+{
+  "state": "built_pending_qualification",
+  "base_revision": "054804590ee1dd109f09642fc05654c324f08344",
+  "variants": [
+    {
+      "role": "baseline",
+      "binary": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/confirmation/latest-wake/baseline/build/linux/client/release/src/glob2",
+      "cwd": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/confirmation/latest-wake/baseline",
+      "env": {},
+      "base_revision": "054804590ee1dd109f09642fc05654c324f08344",
+      "sha256": "4a90fb41dbd1ac1bc674930a29cc4581d9fa87a638f04b57137df8eea5e8d0e9",
+      "unit": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/confirmation/latest-wake/baseline/build/linux/client/release/test/glob2-unit-tests",
+      "engine": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/confirmation/latest-wake/baseline/build/linux/client/release/test/glob2-engine-tests",
+      "source_label": "existing-baseline"
+    },
+    {
+      "role": "wake-only",
+      "binary": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/confirmation/latest-wake/wake-only/build/linux/client/release/src/glob2",
+      "cwd": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/confirmation/latest-wake/wake-only",
+      "env": {},
+      "base_revision": "054804590ee1dd109f09642fc05654c324f08344",
+      "sha256": "99fbc82a526f0e15035bc675e50ac604a056574e931e077b3de955d19ce273a2",
+      "unit": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/confirmation/latest-wake/wake-only/build/linux/client/release/test/glob2-unit-tests",
+      "engine": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/confirmation/latest-wake/wake-only/build/linux/client/release/test/glob2-engine-tests",
+      "source_label": "existing-wake-only"
+    },
+    {
+      "role": "first-steal",
+      "source_label": "first-steal-source",
+      "env": {
+        "GLOB2_DEFERRED_DISPATCH": "steal"
+      },
+      "qualification_constraints": [
+        "Run allComputeExecutor selectedtests ineachrole/mode withnonzeroselection; no relaxationofpresentation/independentlane contracts.",
+        "Prioritynativefirstintegration must additionallyrun sortedqueuequalification andcontinuation/crossslotreuse contracts; sortedlocalqueues notglobalEDF.",
+        "Samebase/SIM61 samebenchmarkadapters/fixedfixturebytes; verifyB/W/allroleperTickCPU+OpenCL/mixedAI+maturecontinuation beforewholewinnercomparisons.",
+        "PureOffordinarywork no globaldispatchprologue inshardedvariants; firstretainsglobalcompletion, localperbatch/lanecompletion; lifecycle/telemetry/control remainshared.",
+        "Allvariants retainoldqueueschedulingexceptions versusbaselineEDF; urgency losses remainrecorded evenifwholewinnerfast.",
+        "Do nottreatenginebuild/contracts/parity as universalperformance orplatformproof."
+      ],
+      "binary": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/first-steal-source/build/linux/client/release/src/glob2",
+      "sha256": "dee303f16c67f787651f14a601d73d23657dbb7a3b638f91b46952372fa76103",
+      "cwd": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/first-steal-source",
+      "unit": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/first-steal-source/build/linux/client/release/test/glob2-unit-tests",
+      "engine": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/first-steal-source/build/linux/client/release/test/glob2-engine-tests",
+      "base_revision": "054804590ee1dd109f09642fc05654c324f08344"
+    },
+    {
+      "role": "local-completion-round-robin",
+      "source_label": "local-source",
+      "env": {
+        "GLOB2_DEFERRED_DISPATCH": "round-robin"
+      },
+      "qualification_constraints": [
+        "Run allComputeExecutor selectedtests ineachrole/mode withnonzeroselection; no relaxationofpresentation/independentlane contracts.",
+        "Prioritynativefirstintegration must additionallyrun sortedqueuequalification andcontinuation/crossslotreuse contracts; sortedlocalqueues notglobalEDF.",
+        "Samebase/SIM61 samebenchmarkadapters/fixedfixturebytes; verifyB/W/allroleperTickCPU+OpenCL/mixedAI+maturecontinuation beforewholewinnercomparisons.",
+        "PureOffordinarywork no globaldispatchprologue inshardedvariants; firstretainsglobalcompletion, localperbatch/lanecompletion; lifecycle/telemetry/control remainshared.",
+        "Allvariants retainoldqueueschedulingexceptions versusbaselineEDF; urgency losses remainrecorded evenifwholewinnerfast.",
+        "Do nottreatenginebuild/contracts/parity as universalperformance orplatformproof."
+      ],
+      "binary": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/local-source/build/linux/client/release/src/glob2",
+      "sha256": "30361dab0356ac87d8644e9e5780c1cdbddb6627b15f6b5b2d452369ce0bbcff",
+      "cwd": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/local-source",
+      "unit": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/local-source/build/linux/client/release/test/glob2-unit-tests",
+      "engine": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/local-source/build/linux/client/release/test/glob2-engine-tests",
+      "base_revision": "054804590ee1dd109f09642fc05654c324f08344"
+    },
+    {
+      "role": "local-completion-steal",
+      "source_label": "local-source",
+      "env": {
+        "GLOB2_DEFERRED_DISPATCH": "steal"
+      },
+      "qualification_constraints": [
+        "Run allComputeExecutor selectedtests ineachrole/mode withnonzeroselection; no relaxationofpresentation/independentlane contracts.",
+        "Prioritynativefirstintegration must additionallyrun sortedqueuequalification andcontinuation/crossslotreuse contracts; sortedlocalqueues notglobalEDF.",
+        "Samebase/SIM61 samebenchmarkadapters/fixedfixturebytes; verifyB/W/allroleperTickCPU+OpenCL/mixedAI+maturecontinuation beforewholewinnercomparisons.",
+        "PureOffordinarywork no globaldispatchprologue inshardedvariants; firstretainsglobalcompletion, localperbatch/lanecompletion; lifecycle/telemetry/control remainshared.",
+        "Allvariants retainoldqueueschedulingexceptions versusbaselineEDF; urgency losses remainrecorded evenifwholewinnerfast.",
+        "Do nottreatenginebuild/contracts/parity as universalperformance orplatformproof."
+      ],
+      "binary": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/local-source/build/linux/client/release/src/glob2",
+      "sha256": "30361dab0356ac87d8644e9e5780c1cdbddb6627b15f6b5b2d452369ce0bbcff",
+      "cwd": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/local-source",
+      "unit": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/local-source/build/linux/client/release/test/glob2-unit-tests",
+      "engine": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/local-source/build/linux/client/release/test/glob2-engine-tests",
+      "base_revision": "054804590ee1dd109f09642fc05654c324f08344"
+    },
+    {
+      "role": "local-priority-steal",
+      "source_label": "priority-source",
+      "env": {
+        "GLOB2_DEFERRED_DISPATCH": "steal"
+      },
+      "qualification_constraints": [
+        "Run allComputeExecutor selectedtests ineachrole/mode withnonzeroselection; no relaxationofpresentation/independentlane contracts.",
+        "Prioritynativefirstintegration must additionallyrun sortedqueuequalification andcontinuation/crossslotreuse contracts; sortedlocalqueues notglobalEDF.",
+        "Samebase/SIM61 samebenchmarkadapters/fixedfixturebytes; verifyB/W/allroleperTickCPU+OpenCL/mixedAI+maturecontinuation beforewholewinnercomparisons.",
+        "PureOffordinarywork no globaldispatchprologue inshardedvariants; firstretainsglobalcompletion, localperbatch/lanecompletion; lifecycle/telemetry/control remainshared.",
+        "Allvariants retainoldqueueschedulingexceptions versusbaselineEDF; urgency losses remainrecorded evenifwholewinnerfast.",
+        "Do nottreatenginebuild/contracts/parity as universalperformance orplatformproof."
+      ],
+      "binary": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/priority-source/build/linux/client/release/src/glob2",
+      "sha256": "1e50e84add3885c2c58d96a4fa702928a421144137bdb8b7ae66cdce5ffdbdd8",
+      "cwd": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/priority-source",
+      "unit": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/priority-source/build/linux/client/release/test/glob2-unit-tests",
+      "engine": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/priority-source/build/linux/client/release/test/glob2-engine-tests",
+      "base_revision": "054804590ee1dd109f09642fc05654c324f08344"
+    },
+    {
+      "role": "weighted-fixed-no-steal",
+      "source_label": "weighted-source",
+      "env": {
+        "GLOB2_DEFERRED_DISPATCH": "steal",
+        "GLOB2_WEIGHTED_POLICY": "fixed-no-steal"
+      },
+      "qualification_constraints": [
+        "Compute telemetry Off for timing; prediction clocks independent of telemetry.",
+        "Require actual participants requested; serial owner fallback changes no job placement.",
+        "Same054initial state/seed/orders must match baseline everytick, including continuation/deadline and lifecycle/save tests.",
+        "Explicit class annotations cover7production producers; Generic reserved forHarness or future unannotatedjobs.",
+        "Fixed-no-steal intentionally disables opportunistic general stealing but retains mandatory optional-work rescue."
+      ],
+      "binary": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/weighted-source/build/linux/client/release/src/glob2",
+      "sha256": "257d526f5d56c7b63b614ce3a0f895345cb20569c6a6f573e09a9abee5e5336c",
+      "cwd": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/weighted-source",
+      "unit": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/weighted-source/build/linux/client/release/test/glob2-unit-tests",
+      "engine": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/weighted-source/build/linux/client/release/test/glob2-engine-tests",
+      "base_revision": "054804590ee1dd109f09642fc05654c324f08344"
+    },
+    {
+      "role": "weighted-fixed-steal",
+      "source_label": "weighted-source",
+      "env": {
+        "GLOB2_DEFERRED_DISPATCH": "steal",
+        "GLOB2_WEIGHTED_POLICY": "fixed"
+      },
+      "qualification_constraints": [
+        "Compute telemetry Off for timing; prediction clocks independent of telemetry.",
+        "Require actual participants requested; serial owner fallback changes no job placement.",
+        "Same054initial state/seed/orders must match baseline everytick, including continuation/deadline and lifecycle/save tests.",
+        "Explicit class annotations cover7production producers; Generic reserved forHarness or future unannotatedjobs.",
+        "Fixed-no-steal intentionally disables opportunistic general stealing but retains mandatory optional-work rescue."
+      ],
+      "binary": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/weighted-source/build/linux/client/release/src/glob2",
+      "sha256": "257d526f5d56c7b63b614ce3a0f895345cb20569c6a6f573e09a9abee5e5336c",
+      "cwd": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/weighted-source",
+      "unit": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/weighted-source/build/linux/client/release/test/glob2-unit-tests",
+      "engine": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/weighted-source/build/linux/client/release/test/glob2-engine-tests",
+      "base_revision": "054804590ee1dd109f09642fc05654c324f08344"
+    },
+    {
+      "role": "weighted-two-choice",
+      "source_label": "weighted-source",
+      "env": {
+        "GLOB2_DEFERRED_DISPATCH": "steal",
+        "GLOB2_WEIGHTED_POLICY": "two-choice"
+      },
+      "qualification_constraints": [
+        "Compute telemetry Off for timing; prediction clocks independent of telemetry.",
+        "Require actual participants requested; serial owner fallback changes no job placement.",
+        "Same054initial state/seed/orders must match baseline everytick, including continuation/deadline and lifecycle/save tests.",
+        "Explicit class annotations cover7production producers; Generic reserved forHarness or future unannotatedjobs.",
+        "Fixed-no-steal intentionally disables opportunistic general stealing but retains mandatory optional-work rescue."
+      ],
+      "binary": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/weighted-source/build/linux/client/release/src/glob2",
+      "sha256": "257d526f5d56c7b63b614ce3a0f895345cb20569c6a6f573e09a9abee5e5336c",
+      "cwd": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/weighted-source",
+      "unit": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/weighted-source/build/linux/client/release/test/glob2-unit-tests",
+      "engine": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/weighted-source/build/linux/client/release/test/glob2-engine-tests",
+      "base_revision": "054804590ee1dd109f09642fc05654c324f08344"
+    },
+    {
+      "role": "weighted-last",
+      "source_label": "weighted-source",
+      "env": {
+        "GLOB2_DEFERRED_DISPATCH": "steal",
+        "GLOB2_WEIGHTED_POLICY": "last"
+      },
+      "qualification_constraints": [
+        "Compute telemetry Off for timing; prediction clocks independent of telemetry.",
+        "Require actual participants requested; serial owner fallback changes no job placement.",
+        "Same054initial state/seed/orders must match baseline everytick, including continuation/deadline and lifecycle/save tests.",
+        "Explicit class annotations cover7production producers; Generic reserved forHarness or future unannotatedjobs.",
+        "Fixed-no-steal intentionally disables opportunistic general stealing but retains mandatory optional-work rescue."
+      ],
+      "binary": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/weighted-source/build/linux/client/release/src/glob2",
+      "sha256": "257d526f5d56c7b63b614ce3a0f895345cb20569c6a6f573e09a9abee5e5336c",
+      "cwd": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/weighted-source",
+      "unit": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/weighted-source/build/linux/client/release/test/glob2-unit-tests",
+      "engine": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/weighted-source/build/linux/client/release/test/glob2-engine-tests",
+      "base_revision": "054804590ee1dd109f09642fc05654c324f08344"
+    },
+    {
+      "role": "weighted-ewma",
+      "source_label": "weighted-source",
+      "env": {
+        "GLOB2_DEFERRED_DISPATCH": "steal",
+        "GLOB2_WEIGHTED_POLICY": "ewma"
+      },
+      "qualification_constraints": [
+        "Compute telemetry Off for timing; prediction clocks independent of telemetry.",
+        "Require actual participants requested; serial owner fallback changes no job placement.",
+        "Same054initial state/seed/orders must match baseline everytick, including continuation/deadline and lifecycle/save tests.",
+        "Explicit class annotations cover7production producers; Generic reserved forHarness or future unannotatedjobs.",
+        "Fixed-no-steal intentionally disables opportunistic general stealing but retains mandatory optional-work rescue."
+      ],
+      "binary": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/weighted-source/build/linux/client/release/src/glob2",
+      "sha256": "257d526f5d56c7b63b614ce3a0f895345cb20569c6a6f573e09a9abee5e5336c",
+      "cwd": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/weighted-source",
+      "unit": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/weighted-source/build/linux/client/release/test/glob2-unit-tests",
+      "engine": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/weighted-source/build/linux/client/release/test/glob2-engine-tests",
+      "base_revision": "054804590ee1dd109f09642fc05654c324f08344"
+    },
+    {
+      "role": "weighted-clock-only",
+      "source_label": "weighted-source",
+      "env": {
+        "GLOB2_DEFERRED_DISPATCH": "steal",
+        "GLOB2_WEIGHTED_POLICY": "clock-only"
+      },
+      "qualification_constraints": [
+        "Compute telemetry Off for timing; prediction clocks independent of telemetry.",
+        "Require actual participants requested; serial owner fallback changes no job placement.",
+        "Same054initial state/seed/orders must match baseline everytick, including continuation/deadline and lifecycle/save tests.",
+        "Explicit class annotations cover7production producers; Generic reserved forHarness or future unannotatedjobs.",
+        "Fixed-no-steal intentionally disables opportunistic general stealing but retains mandatory optional-work rescue."
+      ],
+      "binary": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/weighted-source/build/linux/client/release/src/glob2",
+      "sha256": "257d526f5d56c7b63b614ce3a0f895345cb20569c6a6f573e09a9abee5e5336c",
+      "cwd": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/weighted-source",
+      "unit": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/weighted-source/build/linux/client/release/test/glob2-unit-tests",
+      "engine": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/weighted-source/build/linux/client/release/test/glob2-engine-tests",
+      "base_revision": "054804590ee1dd109f09642fc05654c324f08344"
+    },
+    {
+      "role": "weighted-observe-only",
+      "source_label": "weighted-source",
+      "env": {
+        "GLOB2_DEFERRED_DISPATCH": "steal",
+        "GLOB2_WEIGHTED_POLICY": "observe-only"
+      },
+      "qualification_constraints": [
+        "Compute telemetry Off for timing; prediction clocks independent of telemetry.",
+        "Require actual participants requested; serial owner fallback changes no job placement.",
+        "Same054initial state/seed/orders must match baseline everytick, including continuation/deadline and lifecycle/save tests.",
+        "Explicit class annotations cover7production producers; Generic reserved forHarness or future unannotatedjobs.",
+        "Fixed-no-steal intentionally disables opportunistic general stealing but retains mandatory optional-work rescue."
+      ],
+      "binary": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/weighted-source/build/linux/client/release/src/glob2",
+      "sha256": "257d526f5d56c7b63b614ce3a0f895345cb20569c6a6f573e09a9abee5e5336c",
+      "cwd": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/weighted-source",
+      "unit": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/weighted-source/build/linux/client/release/test/glob2-unit-tests",
+      "engine": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/weighted-source/build/linux/client/release/test/glob2-engine-tests",
+      "base_revision": "054804590ee1dd109f09642fc05654c324f08344"
+    },
+    {
+      "role": "weighted-bare-steal",
+      "source_label": "weighted-source",
+      "env": {
+        "GLOB2_DEFERRED_DISPATCH": "steal",
+        "GLOB2_WEIGHTED_POLICY": "bare-steal"
+      },
+      "qualification_constraints": [
+        "Compute telemetry Off for timing; prediction clocks independent of telemetry.",
+        "Require actual participants requested; serial owner fallback changes no job placement.",
+        "Same054initial state/seed/orders must match baseline everytick, including continuation/deadline and lifecycle/save tests.",
+        "Explicit class annotations cover7production producers; Generic reserved forHarness or future unannotatedjobs.",
+        "Fixed-no-steal intentionally disables opportunistic general stealing but retains mandatory optional-work rescue."
+      ],
+      "binary": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/weighted-source/build/linux/client/release/src/glob2",
+      "sha256": "257d526f5d56c7b63b614ce3a0f895345cb20569c6a6f573e09a9abee5e5336c",
+      "cwd": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/weighted-source",
+      "unit": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/weighted-source/build/linux/client/release/test/glob2-unit-tests",
+      "engine": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/weighted-source/build/linux/client/release/test/glob2-engine-tests",
+      "base_revision": "054804590ee1dd109f09642fc05654c324f08344"
+    }
+  ]
+}

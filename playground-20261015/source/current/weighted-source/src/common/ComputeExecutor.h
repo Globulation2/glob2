@@ -1,0 +1,1942 @@
+// SPDX-License-Identifier: GPL-3.0-or-later
+#pragma once
+
+#include <algorithm>
+#include <array>
+#include <bit>
+#include <cassert>
+#include <atomic>
+#include <chrono>
+#include <condition_variable>
+#include <cstddef>
+#include <cstdint>
+#include <exception>
+#include <functional>
+#include <mutex>
+#include <memory>
+#include <span>
+#include <stdexcept>
+#include <thread>
+#include <ThreadSupport.h>
+#include <PresentationWork.h>
+#include <vector>
+#include <utility>
+#include <cstdlib>
+#include <cstring>
+#if defined(__linux__)
+#include <time.h>
+#endif
+#include "ComputeTelemetry.h"
+
+// One executor shares the simulation's workers with optional presentation work.
+// Required simulation work has two shapes:
+//
+//  * run(): a blocking fork/join batch submitted and joined by one thread. Jobs
+//    may nest batches; nested work stays on its current thread. No simulation
+//    state may escape the barrier.
+//  * submit()/join(): deferred batches (AI decisions, gradients). The owner
+//    thread submits each batch tagged with the tick it is due. Workers run
+//    deferred jobs in ordered lanes. Research parallel dispatch assigns ready
+//    jobs round-robin to local queues, optionally stealing, preserving publication ticks. At a
+//    join the owner only waits: it never runs deferred work while any worker
+//    exists, even when the only worker also runs presentation, which it
+//    interleaves with these jobs. With no workers the owner runs the jobs due
+//    no later than the batch at its join, because nothing else can.
+//
+// Jobs compute only from inputs fixed at submission, so the schedule never
+// changes a result. Joins always end: a worker claims a lane job only after its
+// predecessor completed, and neither jobs nor presentation chunks wait on the owner.
+// Optional scene preparation is resumable and runs on a designated worker;
+// bounded graphics batches share its opportunities without entering simulation
+// barriers. Graphics inputs belong to the submitting owner until synchronous
+// completion. Worker-only maintenance uses idle opportunities and cannot retain
+// game inputs. Neither presentation nor maintenance is pumped by required joins.
+class ComputeExecutor : public GAGCore::PresentationWork
+{
+public:
+	// Optional maintenance is never a deferred Group: join/run/owner fallback
+	// cannot execute it. A pass must be bounded and must not retain game inputs.
+	// No ticket or completion barrier is exposed to required work.
+	class WorkerOnly
+	{
+	public:
+		virtual ~WorkerOnly() = default;
+		virtual bool pending() const noexcept = 0;
+		virtual void process() noexcept = 0;
+	};
+	// Presentation is best-effort work, never part of a simulation barrier.
+	// One chunk runs at a time; at most one replacement waits behind it.
+	class Presentation
+	{
+		friend class ComputeExecutor;
+	public:
+		enum class Status { Pending, Running, Complete, Canceled, Failed };
+		Status status() const { return state.load(std::memory_order_acquire); }
+		bool finished() const
+		{
+			const auto value = status();
+			return value == Status::Complete || value == Status::Canceled || value == Status::Failed;
+		}
+		void cancel() { canceled.store(true, std::memory_order_release); }
+		void rethrowFailure() const { if (status() == Status::Failed) std::rethrow_exception(error); }
+	private:
+		std::atomic<Status> state{Status::Pending};
+		std::atomic<bool> canceled{false};
+		std::function<bool(std::size_t)> job;
+		std::size_t next = 0, count = 0;
+		std::exception_ptr error;
+	};
+	using PresentationTicket = std::shared_ptr<Presentation>;
+    struct GraphicsMetrics
+    {
+        std::uint64_t batches = 0, parallelBatches = 0, jobs = 0;
+        std::uint64_t queueNs = 0, activeNs = 0, waitNs = 0;
+    };
+    struct PresentationBatchOptions
+    {
+        std::size_t maximumConcurrency = 2;
+    };
+    class PresentationCancellationToken
+    {
+        const std::atomic<bool> *flag;
+
+    public:
+        explicit PresentationCancellationToken(const std::atomic<bool> *flag) : flag(flag) {}
+        bool canceled() const { return flag->load(std::memory_order_acquire); }
+    };
+    struct PresentationJobContext
+    {
+        std::size_t index;
+        PresentationCancellationToken cancellation;
+    };
+
+private:
+    struct GraphicsBatch
+    {
+        std::mutex mutex;
+        std::condition_variable done;
+        std::atomic<bool> canceled{false}, finished{false};
+        std::atomic<Presentation::Status> status{Presentation::Status::Pending};
+        std::size_t next = 0, count = 0, running = 0, limit = 2;
+        bool serial = false, settling = false;
+        ComputeExecutor *owner = nullptr;
+
+        std::function<void(PresentationJobContext)> job;
+        std::exception_ptr error;
+        // The caller holds only the batch mutex. Captured storage is released
+        // with neither scheduler nor batch mutex held, before completion.
+        void settle(std::unique_lock<std::mutex>& lock)
+        {
+            if (settling || finished.load(std::memory_order_acquire))
+                return;
+            if (!running && (canceled.load() || next == count))
+            {
+                settling = true;
+                // A moved-from std::function may keep its inline callable on
+                // libc++. Swap guarantees that the retained state is empty.
+                std::function<void(PresentationJobContext)> released;
+                released.swap(job);
+                lock.unlock();
+                auto* previous = active;
+                active = owner; // Lifecycle barriers remain forbidden in capture destructors.
+                released = {};
+                active = previous;
+                // Completion also wakes an owner waiting for a scene slot.
+                // Publish under the scheduler mutex to avoid a lost wakeup;
+                // the unfinished batch keeps stop() draining during handoff.
+                std::unique_lock schedulerLock(owner->mutex);
+                lock.lock();
+                status.store(error             ? Presentation::Status::Failed
+                             : canceled.load() ? Presentation::Status::Canceled
+                                               : Presentation::Status::Complete,
+                             std::memory_order_release);
+                finished.store(true, std::memory_order_release);
+                done.notify_all();
+                owner->graphicsReady.notify_all();
+                owner->ready.notify_all();
+            }
+        }
+        void cancel()
+        {
+            std::unique_lock lock(mutex);
+            if (finished.load(std::memory_order_acquire))
+                return;
+            canceled.store(true, std::memory_order_release);
+            settle(lock);
+        }
+        struct DrainObservation {
+            bool incomplete = false;
+            std::uint64_t lockNs = 0, waitNs = 0, inspected = 0, completed = 0;
+        };
+        template<ComputeTelemetryMode Mode>
+        DrainObservation drainMeasured(std::uint64_t (*clock)() noexcept) {
+            DrainObservation result;
+            const auto start = [&] { if constexpr (Mode != ComputeTelemetryMode::Off) return clock(); else return std::uint64_t(0); }();
+            std::unique_lock lock(mutex);
+            if constexpr (Mode != ComputeTelemetryMode::Off) {
+                result.inspected = clock(); result.lockNs = result.inspected-start;
+                result.incomplete = !finished.load(std::memory_order_acquire);
+            }
+            done.wait(lock, [&] { return finished.load(std::memory_order_acquire); });
+            if constexpr (Mode != ComputeTelemetryMode::Off) { result.completed = clock(); result.waitNs = result.completed-result.inspected; }
+            return result;
+        }
+        void drain() { drainMeasured<ComputeTelemetryMode::Off>(nullptr); }
+    };
+
+public:
+    // Move-only ownership makes abandonment a cancellation barrier. The state
+    // survives executor shutdown for failure/status inspection, without inputs.
+    class PresentationBatchTicket
+    {
+        friend class ComputeExecutor;
+        std::shared_ptr<GraphicsBatch> work;
+        explicit PresentationBatchTicket(std::shared_ptr<GraphicsBatch> work)
+            : work(std::move(work))
+        {
+        }
+
+    public:
+        PresentationBatchTicket() = default;
+        PresentationBatchTicket(const PresentationBatchTicket &) = delete;
+        PresentationBatchTicket &operator=(const PresentationBatchTicket &) = delete;
+        PresentationBatchTicket(PresentationBatchTicket &&) = default;
+        PresentationBatchTicket &operator=(PresentationBatchTicket &&other)
+        {
+            if (this != &other)
+            {
+                dispose();
+                work = std::move(other.work);
+            }
+            return *this;
+        }
+        ~PresentationBatchTicket() { dispose(); }
+        void dispose()
+        {
+            if (work && !finished())
+            {
+                // Destruction inside a callback could wait for itself.
+                if (ComputeExecutor::active)
+                    std::terminate();
+                work->cancel();
+                work->drain();
+            }
+        }
+        void cancel()
+        {
+            if (work)
+                work->cancel();
+        }
+        bool finished() const { return !work || work->finished.load(std::memory_order_acquire); }
+        Presentation::Status status() const
+        {
+            return work ? work->status.load(std::memory_order_acquire)
+                        : Presentation::Status::Complete;
+        }
+        void rethrowFailure() const
+        {
+            if (status() == Presentation::Status::Failed)
+                std::rethrow_exception(work->error);
+        }
+    };
+	struct PresentationMetrics
+	{
+		std::uint64_t submitted = 0, replaced = 0, chunks = 0, activeNs = 0;
+	};
+	struct Metrics
+	{
+		std::size_t batches = 0, jobs = 0, parallelBatches = 0;
+		std::uint64_t batchNs = 0, waitNs = 0;
+		std::size_t deferredBatches = 0, deferredJobs = 0, ownerJobs = 0, workerJobs = 0;
+        std::size_t controlInspections = 0;
+		std::uint64_t joinWaitNs = 0;
+
+	};
+	struct Job
+	{
+		void (*invoke)(void*, std::size_t) = nullptr;
+		void* context = nullptr;
+	};
+	// A suspended deferred job keeps its batch and lane incomplete while its
+	// worker runs other work. Resolution is one-shot, including early resolution
+	// before the invoking callback returns. No completion retains game inputs.
+	struct CompletionLifetime {
+		std::mutex mutex;
+		ComputeExecutor* executor;
+		explicit CompletionLifetime(ComputeExecutor* executor):executor(executor) {}
+	};
+	class Completion
+	{
+		friend class ComputeExecutor;
+		std::atomic<ComputeExecutor*> owner;
+		std::shared_ptr<CompletionLifetime> lifetime;
+		std::size_t slot, index;
+		std::uint64_t serial;
+		std::mutex stateMutex;
+        bool running = true, resolved = false, settled = false;
+		Job continuation;
+		std::exception_ptr error;
+		Completion(ComputeExecutor* owner, std::size_t slot, std::size_t index, std::uint64_t serial)
+			: owner(owner), lifetime(owner->completionLifetime), slot(slot), index(index), serial(serial) {}
+	public:
+		bool complete(std::exception_ptr error = {}) {
+			std::lock_guard lock(lifetime->mutex);
+			auto* target = lifetime->executor == owner.load(std::memory_order_acquire) ? lifetime->executor : nullptr;
+			return target && target->resolve(*this, {}, error);
+		}
+		bool resume(Job continuation) {
+			if (!continuation.invoke) throw std::invalid_argument("Completion needs a nonempty continuation");
+			std::lock_guard lock(lifetime->mutex);
+			auto* target = lifetime->executor == owner.load(std::memory_order_acquire) ? lifetime->executor : nullptr;
+			return target && target->resolve(*this, continuation, {});
+		}
+	};
+	using CompletionTicket = std::shared_ptr<Completion>;
+	static constexpr unsigned NoLane = ~0u;
+	// AI occupies player lanes 0–15; all statistics batches share lane 16.
+	static constexpr unsigned StatisticsLaneBase = 16;
+	static constexpr unsigned HiringLaneBase = 32;
+	static constexpr unsigned Lanes = 48;
+    // Stable producer identities, never callback addresses or diagnostic tags.
+    enum class JobClass : unsigned { Generic, AI, PeriodicGradient, BuildingGradient, Growth, Statistics, Turret, Hiring, Count };
+	struct Group
+	{
+		std::size_t count = 0;
+		Job job;
+		unsigned lane = NoLane;
+        JobClass jobClass = JobClass::Generic;
+	};
+	class Batch
+	{
+		friend class ComputeExecutor;
+		std::size_t slot = 0;
+		std::uint64_t serial = 0;
+	public:
+		bool empty() const { return serial == 0; }
+	};
+	// Join order within one simulation tick: the observation boundary of tick t
+	// (AI deliveries) precedes the publications at the start of tick t's step.
+	static constexpr std::uint64_t boundaryDue(std::uint64_t tick) { return 2 * tick; }
+	static constexpr std::uint64_t advanceDue(std::uint64_t tick) { return 2 * tick + 1; }
+	// A batch occupies a slot from submission until its join. Each deferred
+	// producer submits at most one batch per tick and joins it at its horizon,
+	// so it holds at most horizon + 1 slots: AI decisions (8), periodic
+	// gradients (16), building gradients (8), growth (16), statistics (8), turrets (4)
+	// and hiring (4), plus headroom for tests and teardown. Producers assert their horizons.
+	static constexpr std::size_t AIHorizon = 8, GradientHorizon = 16, BuildingHorizon = 8, GrowthHorizon = 16, StatisticsHorizon = 8, TurretHorizon = 4, HiringHorizon = 4;
+	static constexpr std::size_t Slots = (AIHorizon + 1) + (GradientHorizon + 1) + (BuildingHorizon + 1) + (GrowthHorizon + 1) + (StatisticsHorizon + 1) + (TurretHorizon + 1) + (HiringHorizon + 1) + 13;
+private:
+	using Clock = std::chrono::steady_clock;
+	inline static thread_local ComputeExecutor *active = nullptr;
+	inline static thread_local std::size_t activeSlot = 0;
+	inline static thread_local std::size_t deferredSlot = 0, deferredIndex = 0;
+	inline static thread_local std::uint64_t deferredSerial = 0;
+	struct Claim { std::size_t slot = 0, index = 0; bool valid = false; std::uint64_t serial = 0; };
+    struct Dispatch { Claim claim; Job job; std::size_t offset=0; unsigned lane=NoLane; unsigned costClass=0; std::size_t charged=0; std::uint64_t reservedNs=0; Dispatch* next=nullptr; };
+    struct WorkerQueue {
+        std::mutex mutex; std::condition_variable ready;
+        Dispatch* head=nullptr; Dispatch* tail=nullptr;
+        std::size_t controlVersion=0, stealVersion=0;
+        bool optionalBusy=false;
+        std::atomic<std::uint64_t> outstandingNs{0}; // queued plus executing callback reservations
+    };
+	struct Slot
+	{
+		std::uint64_t serial = 0; // zero: free
+		std::uint64_t due = 0;
+		std::vector<Group> groups;
+		std::vector<std::size_t> starts; // first job index of each group
+		std::vector<std::uint64_t> laneBases; // lane sequence of each group's first job
+        std::vector<std::size_t> jobGroups;
+        std::vector<Claim> laneNext;
+        std::vector<Dispatch> dispatch;
+        std::vector<std::size_t> readyJobs; // Minheap: preserve ascending ready index.
+        std::size_t readyNext = Slots, readyPosition = Slots;
+		std::vector<CompletionTicket> completions;
+		std::vector<Job> continuations;
+		std::size_t total = 0;
+        std::atomic<std::size_t> completed{0};
+        std::atomic<bool> finished{false};
+        std::mutex completionMutex;
+        std::condition_variable completionDone;
+		std::exception_ptr error;
+	};
+	std::shared_ptr<CompletionLifetime> completionLifetime = std::make_shared<CompletionLifetime>(this);
+	std::vector<std::thread> workers;
+    std::vector<std::unique_ptr<WorkerQueue>> queues;
+    std::atomic<std::size_t> dispatchCursor{0};
+    bool stealing=false, laneAffinity=false;
+    friend struct ComputeWeightedTestAccess; // Artifact-only focused accounting contract tests.
+    enum class CostPolicy { Bare, Fixed, TwoChoice, Last, EWMA, ClockOnly, ObserveOnly };
+    CostPolicy costPolicy=CostPolicy::Bare;
+    static constexpr std::uint64_t MaxEstimateNs=1ull<<30;
+    static constexpr std::size_t MaxResearchBatchJobs=1u<<24;
+    // Whole-callback CPU priors, explicit research configuration, not measured fits.
+    static constexpr std::array<std::uint64_t,8> fixedNs={100000,1000000,2000000,1000000,500000,500000,1000000,1000000};
+    std::array<std::atomic<std::uint64_t>,16> costSamples{}; // separate continuation classes
+    bool clocksCost() const { return costPolicy==CostPolicy::Last || costPolicy==CostPolicy::EWMA || costPolicy==CostPolicy::ClockOnly || costPolicy==CostPolicy::ObserveOnly; }
+    bool accountsCost() const { return costPolicy!=CostPolicy::Bare && costPolicy!=CostPolicy::ClockOnly; }
+    static std::uint64_t callbackCpuNs() {
+#if defined(__linux__)
+        timespec value{};
+        if(clock_gettime(CLOCK_THREAD_CPUTIME_ID,&value)) std::terminate();
+        return std::uint64_t(value.tv_sec)*1000000000ull+std::uint64_t(value.tv_nsec);
+#else
+        // Clock-based modes are rejected by configure on unsupported runtimes.
+        std::terminate();
+#endif
+    }
+    std::uint64_t estimateCost(unsigned kind) const {
+        if(costPolicy==CostPolicy::Last || costPolicy==CostPolicy::EWMA || costPolicy==CostPolicy::ObserveOnly) {
+            const auto sampled=costSamples[kind].load(std::memory_order_relaxed);
+            return sampled ? sampled : fixedNs[kind%8];
+        }
+        return fixedNs[kind%8];
+    }
+    void observeCost(unsigned kind,std::uint64_t elapsed) {
+        if(costPolicy==CostPolicy::ClockOnly) return;
+        elapsed=std::clamp<std::uint64_t>(elapsed,1,MaxEstimateNs);
+        if(costPolicy!=CostPolicy::EWMA) costSamples[kind].store(elapsed,std::memory_order_relaxed);
+        else {
+            auto old=costSamples[kind].load(std::memory_order_relaxed);
+            while(!costSamples[kind].compare_exchange_weak(old,old ? (old*7+elapsed)/8 : elapsed,std::memory_order_relaxed)) {}
+        }
+    }
+    void transferReservation(Dispatch& work,std::size_t worker) {
+        if(!work.reservedNs || work.charged==worker) return;
+        // Charge destination before debit; approximate placement may briefly
+        // overestimate, never omit running CPU. No queue/global lock needed.
+        queues[worker]->outstandingNs.fetch_add(work.reservedNs,std::memory_order_relaxed);
+        const auto previous=queues[work.charged]->outstandingNs.fetch_sub(work.reservedNs,std::memory_order_relaxed);
+        if(previous<work.reservedNs) std::terminate();
+        work.charged=worker;
+    }
+    void releaseReservation(const Dispatch& work) {
+        if(!work.reservedNs) return;
+        const auto previous=queues[work.charged]->outstandingNs.fetch_sub(work.reservedNs,std::memory_order_relaxed);
+        if(previous<work.reservedNs) std::terminate();
+    }
+	mutable std::mutex mutex;
+    // Deferred work has per-worker queues/CVs. Owner presentation and trace
+    // barriers still use separate CVs and cannot consume worker notifications.
+	std::condition_variable graphicsReady, runFinished;
+    // Control publications (run/presentation/maintenance/lifecycle) have their
+    // own per-worker sequence. Deferred work wakes its selected local queue.
+    struct ControlWake {
+        ComputeExecutor* owner;
+        void notify_all() { owner->wakeControl(); }
+        void notify_one() { owner->wakeControl(); }
+    } ready{this};
+    void wakeControl() {
+        for(auto& queue:queues) {
+            { std::lock_guard lock(queue->mutex); ++queue->controlVersion; }
+            queue->ready.notify_one();
+        }
+    }
+    bool hasQueuedDispatch() {
+        for(auto& queue:queues) { std::lock_guard lock(queue->mutex); if(queue->head) return true; }
+        return false;
+    }
+    void wakePeer(std::size_t index) {
+        auto& queue=*queues[index];
+        { std::lock_guard lock(queue.mutex); ++queue.stealVersion; }
+        queue.ready.notify_one();
+    }
+    void wakeOptionalHelpers(std::size_t unavailable) {
+        for(std::size_t index=0;index<queues.size();++index)
+            if(index!=unavailable) wakePeer(index);
+    }
+    struct OptionalService {
+        ComputeExecutor& executor; std::size_t index;
+        OptionalService(ComputeExecutor& executor,std::size_t worker):executor(executor),index(worker-1) {
+            auto& queue=*executor.queues[index];
+            bool queued;
+            { std::lock_guard lock(queue.mutex); queue.optionalBusy=true; queued=queue.head!=nullptr; }
+            // Work queued before optional entry must become visible to spare
+            // workers, even in static assignment / lane-affine controls.
+            if(queued) executor.wakeOptionalHelpers(index);
+        }
+        ~OptionalService() {
+            auto& queue=*executor.queues[index];
+            std::lock_guard lock(queue.mutex); queue.optionalBusy=false;
+        }
+    };
+    void pushDispatch(Dispatch& work) {
+        const auto roundRobin=dispatchCursor.fetch_add(1,std::memory_order_relaxed)%queues.size();
+        auto index=laneAffinity && work.lane!=NoLane ? work.lane%queues.size() : roundRobin;
+        const bool weighted=costPolicy==CostPolicy::Fixed || costPolicy==CostPolicy::TwoChoice || costPolicy==CostPolicy::Last || costPolicy==CostPolicy::EWMA;
+        if(weighted) {
+            if(costPolicy==CostPolicy::TwoChoice && queues.size()>1) {
+                const auto second=(roundRobin+1+(dispatchCursor.load(std::memory_order_relaxed)/queues.size())%(queues.size()-1))%queues.size();
+                if(queues[second]->outstandingNs.load(std::memory_order_relaxed)<queues[index]->outstandingNs.load(std::memory_order_relaxed)) index=second;
+            } else for(std::size_t n=1;n<queues.size();++n) {
+                const auto candidate=(roundRobin+n)%queues.size();
+                if(queues[candidate]->outstandingNs.load(std::memory_order_relaxed)<queues[index]->outstandingNs.load(std::memory_order_relaxed)) index=candidate;
+            }
+        }
+        work.charged=index;
+        work.reservedNs=accountsCost() ? estimateCost(work.costClass) : 0;
+        auto& queue=*queues[index];
+        if(work.reservedNs) queue.outstandingNs.fetch_add(work.reservedNs,std::memory_order_relaxed);
+        bool optionalBusy;
+        {
+            std::lock_guard lock(queue.mutex);
+            optionalBusy=queue.optionalBusy;
+            work.next=nullptr;
+            if(queue.tail) queue.tail->next=&work; else queue.head=&work;
+            queue.tail=&work;
+        }
+        queue.ready.notify_one();
+        // Late required work must not sit behind optional callbacks while a
+        // spare worker is idle. General stealing is an independent policy.
+        if(optionalBusy) wakeOptionalHelpers(index);
+        else if(stealing && queues.size()>1) wakePeer((index+1)%queues.size());
+    }
+    bool popDispatch(std::size_t index, Dispatch& work) {
+        auto& queue=*queues[index];
+        std::lock_guard lock(queue.mutex);
+        if(!queue.head) return false;
+        auto* item=queue.head; queue.head=item->next;
+        if(!queue.head) queue.tail=nullptr;
+        work=*item; work.next=nullptr;
+        return true;
+    }
+    bool nextDispatch(std::size_t index, Dispatch& work) {
+        if(popDispatch(index,work)) { transferReservation(work,index); return true; }
+        if(stealing) for(std::size_t step=1;step<queues.size();++step) {
+            auto& queue=*queues[(index+step)%queues.size()];
+            std::unique_lock lock(queue.mutex,std::try_to_lock);
+            if(!lock || !queue.head) continue;
+            auto* item=queue.head; queue.head=item->next;
+            if(!queue.head) queue.tail=nullptr;
+            work=*item; work.next=nullptr; transferReservation(work,index); return true;
+        }
+        // Optional work never owns an inaccessible required queue. Unlike
+        // opportunistic stealing, rescue cannot miss a transient queue lock
+        // and park while the optional callback remains gated.
+        for(std::size_t step=1;step<queues.size();++step) {
+            auto& queue=*queues[(index+step)%queues.size()];
+            std::lock_guard lock(queue.mutex);
+            if(!queue.optionalBusy || !queue.head) continue;
+            auto* item=queue.head; queue.head=item->next;
+            if(!queue.head) queue.tail=nullptr;
+            work=*item; work.next=nullptr; transferReservation(work,index); return true;
+        }
+        return false;
+    }
+	bool stopping = false;
+	// run(): one blocking batch at a time. inFlight counts workers inside
+	// invoke() for the current generation; the batch state changes only when
+	// its jobs are done and no worker is still reading it.
+	std::size_t generation = 0, runDone = 0, count = 0, inFlight = 0;
+	std::atomic<std::size_t> next{0};
+	std::function<void(std::size_t)> job;
+	std::exception_ptr error;
+	// submit()/join(): live batches, each held from submission to its join.
+	std::array<Slot, Slots> slots;
+    // Serial fallback tracks only ready batches; the owner chooses eligible
+    // earliest due work at its barrier. Parallel workers use local queues.
+    std::size_t readyCount = 0;
+    std::size_t readyHead = Slots, readyTail = Slots;
+    std::array<Claim, Lanes> laneHead{}, laneTail{};
+    std::array<std::mutex,Lanes> laneMutexes;
+	std::size_t live = 0;
+	std::uint64_t nextSerial = 1;
+	std::array<std::uint64_t, Lanes> laneIssued{}, laneDue{};
+
+    ComputeTelemetryMode telemetryModeValue = ComputeTelemetryMode::Off, requestedTelemetryMode = ComputeTelemetryMode::Off;
+    using DiagnosticClock = std::uint64_t (*)() noexcept;
+    static std::uint64_t realDiagnosticClock() noexcept {
+        return std::chrono::duration_cast<std::chrono::nanoseconds>(Clock::now().time_since_epoch()).count();
+    }
+    struct DiagnosticsState {
+        struct BatchRecord { std::uint64_t serial = 0; BatchDiagnostics tags; };
+        std::array<BatchRecord, Slots> batches{};
+        ComputeTelemetry::Summary summary;
+        std::array<std::uint64_t, unsigned(ComputeProducer::Count)> lastProducerTick;
+        std::uint64_t lastBackgroundTick = ComputeTelemetry::NoTick, lastAdvanceTick = ComputeTelemetry::NoTick;
+        std::uint64_t currentTick = ComputeTelemetry::NoTick, tickWaitNs = 0;
+        bool tickWaited = false;
+        DiagnosticClock clock = realDiagnosticClock;
+        std::vector<ComputeTelemetry::Stream> streams;
+        std::size_t traceBytes = 0;
+        std::uint64_t nextPresentation = 1, currentPresentation = 0, pendingPresentation = 0;
+        std::uint64_t runSerial = 0, graphicsSerial = 0, graphicsSubmitted = 0, maintenanceSerial = 0;
+        std::size_t traceGraphicsInFlight = 0;
+        bool traceRunActive = false, graphicsJoined = false, traceCoverageGap = false;
+        std::uint64_t epoch = 0;
+        BatchDiagnostics runTags;
+        DiagnosticsState() { lastProducerTick.fill(ComputeTelemetry::NoTick); }
+        void selectTick(std::uint64_t tick) noexcept {
+            if (currentTick == tick) return;
+            if (currentTick != ComputeTelemetry::NoTick && tickWaited) summary.tickBackground.add(tickWaitNs);
+            currentTick = tick; tickWaitNs = 0; tickWaited = false;
+        }
+        void waited(ComputeProducer producer, std::uint64_t tick, std::uint64_t ns) noexcept {
+            selectTick(tick);
+            tickWaitNs += ns; tickWaited = true;
+            if (lastBackgroundTick != tick) { ++summary.backgroundTicks; lastBackgroundTick = tick; }
+            auto& last = lastProducerTick[unsigned(producer)];
+            if (last != tick) { ++summary.affectedTicks[unsigned(producer)]; last = tick; }
+        }
+    };
+    std::unique_ptr<DiagnosticsState> diagnostics;
+    // Trace writes use the scheduler lock, except run callback starts whose
+    // single-writer stream is protected by the run barrier during snapshots.
+    template<ComputeTelemetryMode Mode>
+    void event(ComputeTelemetry::EventKind kind, std::size_t slotIndex, std::size_t index = 0,
+        unsigned thread = 0, JoinContext context = {JoinReason::Teardown, ComputeTelemetry::NoTick}, unsigned classification = 0, std::uint64_t timestamp = ComputeTelemetry::NoTick) noexcept {
+        if constexpr (Mode == ComputeTelemetryMode::Trace) {
+            const auto& slot = slots[slotIndex];
+            const auto& record = diagnostics->batches[slotIndex];
+            if (record.serial != slot.serial) return;
+            ComputeTelemetry::Event value;
+            value.timestampNs = timestamp == ComputeTelemetry::NoTick ? diagnostics->clock() : timestamp; value.serial = slot.serial; value.due = slot.due;
+            value.kind = kind; value.job = index; value.thread = thread; value.producer = record.tags.producer;
+            value.observationTick = record.tags.observationTick; value.publicationTick = record.tags.publicationTick;
+            value.logicalTick = context.logicalTick; value.reason = context.reason; value.classification = classification;
+            if (index < slot.total) {
+                const auto g = group(slot, index); value.lane = slot.groups[g].lane;
+                value.laneSequence = slot.laneBases[g] + index - slot.starts[g];
+            }
+            // External resolvers share one stream, serialized by the existing mutex.
+            const auto stream = thread == ~0u ? diagnostics->streams.size()-1 : thread;
+            diagnostics->streams[stream].append(value);
+        }
+    }
+
+    template<ComputeTelemetryMode Mode>
+    void standaloneEvent(ComputeTelemetry::EventKind kind, unsigned executionKind, std::uint64_t serial,
+        std::size_t index, unsigned thread, JoinContext context = {JoinReason::Teardown, ComputeTelemetry::NoTick},
+        unsigned classification = 0, std::uint64_t timestamp = ComputeTelemetry::NoTick) noexcept {
+        if constexpr (Mode == ComputeTelemetryMode::Trace) {
+            ComputeTelemetry::Event value;
+            value.timestampNs = timestamp == ComputeTelemetry::NoTick ? diagnostics->clock() : timestamp; value.serial = serial;
+            value.logicalTick = context.logicalTick; value.reason = context.reason; value.classification = classification;
+            value.kind = kind; value.job = index; value.thread = thread; value.executionKind = executionKind;
+            value.producer = executionKind == 2 || executionKind == 3 ? ComputeProducer::Presentation
+                : executionKind == 1 ? diagnostics->runTags.producer : ComputeProducer::Other;
+            if (executionKind == 1) {
+                value.observationTick = diagnostics->runTags.observationTick;
+                value.publicationTick = diagnostics->runTags.publicationTick;
+            }
+            const auto stream = executionKind >= 2 && !thread ? diagnostics->streams.size()-2 : thread;
+            diagnostics->streams[stream].append(value);
+        }
+    }
+    template<ComputeTelemetryMode Mode> std::uint64_t diagnosticStart() const noexcept {
+        if constexpr (Mode != ComputeTelemetryMode::Off) return diagnostics->clock(); else return 0;
+    }
+    template<ComputeTelemetryMode Mode> std::uint64_t diagnosticElapsed(std::uint64_t start) const noexcept {
+        if constexpr (Mode != ComputeTelemetryMode::Off) return diagnostics->clock() - start; else return 0;
+    }
+	Metrics totals;
+	struct WorkerMetrics { std::uint64_t jobs = 0, activeNs = 0; };
+	std::vector<WorkerMetrics> workerMetrics;
+	PresentationTicket presentation, presentationPending;
+	bool presentationRunning = false;
+    std::shared_ptr<GraphicsBatch> graphicsBatch;
+    std::size_t graphicsRunning = 0;
+    bool preferGraphics = false;
+    GraphicsMetrics graphicsTotals;
+	// Set before launching workers, never inferred from the vector while it grows.
+	// Zero means there are no workers, so the owner runs deferred jobs itself.
+	unsigned presentationWorker = 0;
+	bool ownerRunsDeferred() const { return presentationWorker == 0; }
+	PresentationMetrics presentationTotals;
+	std::condition_variable presentationDone;
+	std::shared_ptr<WorkerOnly> maintenance;
+	bool maintenanceRunning = false;
+	// Optional observations do not wake the pool. Returning workers and normal
+	// required-work wakeups provide opportunities; idle tail samples may remain
+	// pending until another opportunity or lifecycle disposal. Registration still
+	// wakes workers, allowing asynchronous backend preparation before first work.
+	bool maintenanceClaimable(std::size_t worker) const
+	{
+		return worker != presentationWorker && maintenance && !maintenanceRunning && !presentation && !presentationPending && maintenance->pending();
+	}
+
+    std::size_t presentationLimit() const
+    {
+        return graphicsBatch && (!graphicsBatch->finished.load() || graphicsRunning)
+                   ? graphicsBatch->limit
+                   : 2;
+    }
+	bool presentationClaimable(std::size_t worker) const
+	{
+        return worker == presentationWorker && graphicsRunning < presentationLimit() &&
+               !presentationRunning && (presentation || presentationPending);
+	}
+	template<ComputeTelemetryMode Mode>
+	PresentationTicket claimPresentation(unsigned thread)
+	{
+		if (!presentation) {
+            presentation = std::move(presentationPending);
+            if constexpr (Mode == ComputeTelemetryMode::Trace) diagnostics->currentPresentation = std::exchange(diagnostics->pendingPresentation, 0);
+        }
+		presentationRunning = true;
+		presentation->state.store(Presentation::Status::Running, std::memory_order_release);
+		standaloneEvent<Mode>(ComputeTelemetry::EventKind::Claim, 2, diagnosticsSerial<Mode>(), presentation->next, thread);
+        standaloneEvent<Mode>(ComputeTelemetry::EventKind::CallbackStart, 2, diagnosticsSerial<Mode>(), presentation->next, thread);
+		return presentation;
+	}
+    template<ComputeTelemetryMode Mode> std::uint64_t graphicsSerial() const noexcept {
+        if constexpr (Mode == ComputeTelemetryMode::Trace) return diagnostics->graphicsSerial; else return 0;
+    }
+    template<ComputeTelemetryMode Mode> std::uint64_t runSerial() const noexcept {
+        if constexpr (Mode == ComputeTelemetryMode::Trace) return diagnostics->runSerial; else return 0;
+    }
+    template<ComputeTelemetryMode Mode> std::uint64_t diagnosticsSerial() const noexcept {
+        if constexpr (Mode == ComputeTelemetryMode::Trace) return diagnostics->currentPresentation; else return 0;
+    }
+	template<ComputeTelemetryMode Mode>
+	void executePresentation(const PresentationTicket& work, std::size_t thread)
+	{
+		auto* previous = active;
+		const auto previousSlot = activeSlot;
+		active = this; activeSlot = thread;
+		const auto start = diagnosticStart<Mode>();
+        const auto callbackIndex = [&] { if constexpr (Mode == ComputeTelemetryMode::Trace) return work->next; else return std::size_t(0); }();
+		bool ran = false;
+		try
+		{
+			if (!work->canceled.load(std::memory_order_acquire))
+			{
+				if (work->job(work->next)) ++work->next;
+				ran = true;
+			}
+		}
+		catch (...) { work->error = std::current_exception(); }
+		active = previous; activeSlot = previousSlot;
+		// Release captured inputs outside the scheduler lock before publishing
+		// completion. A ticket retained for status must not retain a world.
+		const bool canceled = work->canceled.load(std::memory_order_acquire);
+		const bool done = canceled || work->error || work->next == work->count;
+		if (done) work->job = {};
+		{
+			std::lock_guard<std::mutex> lock(mutex);
+			if constexpr (Mode == ComputeTelemetryMode::Trace) { presentationTotals.chunks += ran; }
+			if constexpr (Mode == ComputeTelemetryMode::Trace) { presentationTotals.activeNs += diagnosticElapsed<Mode>(start); }
+			if (done)
+			{
+				work->state.store(work->error ? Presentation::Status::Failed : canceled ? Presentation::Status::Canceled : Presentation::Status::Complete,
+					std::memory_order_release);
+				presentation.reset();
+			}
+            standaloneEvent<Mode>(ComputeTelemetry::EventKind::CallbackEnd, 2, diagnosticsSerial<Mode>(), callbackIndex, unsigned(thread));
+            if (done) {
+                standaloneEvent<Mode>(ComputeTelemetry::EventKind::Complete, 2, diagnosticsSerial<Mode>(), callbackIndex, unsigned(thread));
+                standaloneEvent<Mode>(ComputeTelemetry::EventKind::Retire, 2, diagnosticsSerial<Mode>(), work->count, unsigned(thread));
+                if constexpr (Mode == ComputeTelemetryMode::Trace) diagnostics->currentPresentation = 0;
+            }
+			presentationRunning = false;
+		}
+		presentationDone.notify_all();
+		graphicsReady.notify_all();
+		ready.notify_all();
+	}
+
+    bool graphicsClaimable(bool owner = false, std::size_t worker = 0) const
+    {
+        if (!graphicsBatch ||
+            graphicsRunning + std::size_t(presentationRunning) >= presentationLimit())
+            return false;
+        // Keep a slot available for the designated worker when scene work is
+        // waiting. It may alternate that slot between the two classes; spare
+        // workers cannot repeatedly fill it before scene preparation claims.
+        if (!owner && worker != presentationWorker && !presentationRunning &&
+            (presentation || presentationPending) && graphicsRunning >= presentationLimit()-1)
+            return false;
+        std::lock_guard lock(graphicsBatch->mutex);
+        return (owner || !graphicsBatch->serial) && !graphicsBatch->canceled.load() &&
+               graphicsBatch->next < graphicsBatch->count &&
+               graphicsBatch->running < graphicsBatch->limit;
+    }
+    bool cpuPresentationClaimable(std::size_t worker) const
+    {
+        return presentationClaimable(worker) || graphicsClaimable(false, worker);
+    }
+    // Scheduler mutex held on entry and exit. Alternate both presentation
+    // classes at the designated worker's reserved opportunity.
+    template<ComputeTelemetryMode Mode>
+    void executeCpuPresentation(std::unique_lock<std::mutex> &lock, std::size_t worker,
+                                bool sceneAllowed = true)
+    {
+        if (sceneAllowed && presentationClaimable(worker) &&
+            (!preferGraphics || !graphicsClaimable(false, worker)))
+        {
+            preferGraphics = true;
+            const auto work = claimPresentation<Mode>(unsigned(worker));
+            lock.unlock();
+            executePresentation<Mode>(work, worker);
+            lock.lock();
+            return;
+        }
+        if (worker == presentationWorker) preferGraphics = false;
+        auto work = graphicsBatch;
+        std::size_t index;
+        {
+            std::lock_guard batchLock(work->mutex);
+            // Ticket cancellation can race a scheduler opportunity.
+            if (work->canceled.load() || work->next == work->count)
+                return;
+            index = work->next++;
+            ++work->running;
+            ++graphicsRunning;
+            work->status.store(Presentation::Status::Running, std::memory_order_release);
+        }
+        const auto started = Mode == ComputeTelemetryMode::Trace ? diagnosticStart<Mode>() : 0;
+        const auto serial = graphicsSerial<Mode>();
+        if constexpr (Mode == ComputeTelemetryMode::Trace) {
+            ++diagnostics->traceGraphicsInFlight;
+            graphicsTotals.queueNs += started - diagnostics->graphicsSubmitted;
+        }
+        standaloneEvent<Mode>(ComputeTelemetry::EventKind::Claim, 3, serial, index, unsigned(worker));
+        standaloneEvent<Mode>(ComputeTelemetry::EventKind::CallbackStart, 3, serial, index, unsigned(worker));
+        lock.unlock();
+        auto *previous = active;
+        auto previousSlot = activeSlot;
+        active = this;
+        activeSlot = worker;
+        std::exception_ptr failure;
+        try
+        {
+            work->job({index, PresentationCancellationToken(&work->canceled)});
+        }
+        catch (...)
+        {
+            failure = std::current_exception();
+        }
+        const auto callbackEnd = Mode == ComputeTelemetryMode::Trace ? diagnosticStart<Mode>() : 0;
+        active = previous;
+        activeSlot = previousSlot;
+        {
+            std::lock_guard batchLock(work->mutex);
+            if (failure)
+            {
+                if (!work->error)
+                    work->error = failure;
+                work->canceled.store(true);
+            }
+        }
+        lock.lock();
+        --graphicsRunning;
+        if constexpr (Mode == ComputeTelemetryMode::Trace) {
+            ++graphicsTotals.jobs; graphicsTotals.activeNs += callbackEnd - started;
+        }
+        standaloneEvent<Mode>(ComputeTelemetry::EventKind::CallbackEnd, 3, serial, index, unsigned(worker), {JoinReason::Teardown, ComputeTelemetry::NoTick}, 0, callbackEnd);
+        // Publish totals before completion, but release potentially expensive
+        // captured storage outside the scheduler mutex.
+        lock.unlock();
+        bool final = false;
+        {
+            std::unique_lock batchLock(work->mutex);
+            --work->running;
+            work->settle(batchLock);
+            if constexpr (Mode == ComputeTelemetryMode::Trace) final = work->finished.load();
+        }
+        lock.lock();
+        standaloneEvent<Mode>(ComputeTelemetry::EventKind::Complete, 3, serial, index, unsigned(worker));
+        if constexpr (Mode == ComputeTelemetryMode::Trace) --diagnostics->traceGraphicsInFlight;
+        if (final) standaloneEvent<Mode>(ComputeTelemetry::EventKind::Retire, 3, serial, work->count, unsigned(worker));
+		graphicsReady.notify_all();
+		ready.notify_all();
+	}
+
+	template<ComputeTelemetryMode Mode>
+	std::size_t invoke(std::size_t slot)
+	{
+		auto *previous = active;
+		const auto previousSlot = activeSlot;
+		active = this;
+		activeSlot = slot;
+		const auto started = Mode == ComputeTelemetryMode::Trace ? diagnosticStart<Mode>() : 0;
+        std::size_t executed = 0;
+		for (;;)
+		{
+			const auto i = next.fetch_add(1, std::memory_order_relaxed);
+			if (i >= count) break;
+			if constexpr (Mode != ComputeTelemetryMode::Off) ++executed;
+            standaloneEvent<Mode>(ComputeTelemetry::EventKind::Claim, 1, runSerial<Mode>(), i, unsigned(slot));
+            standaloneEvent<Mode>(ComputeTelemetry::EventKind::CallbackStart, 1, runSerial<Mode>(), i, unsigned(slot));
+			try { job(i); }
+			catch (...) { std::lock_guard<std::mutex> lock(mutex); if (!error) error = std::current_exception(); }
+			{
+				std::lock_guard<std::mutex> lock(mutex);
+				standaloneEvent<Mode>(ComputeTelemetry::EventKind::CallbackEnd, 1, runSerial<Mode>(), i, unsigned(slot));
+                standaloneEvent<Mode>(ComputeTelemetry::EventKind::Complete, 1, runSerial<Mode>(), i, unsigned(slot));
+                if constexpr (Mode == ComputeTelemetryMode::Trace) ++workerMetrics[slot].jobs;
+				if (++runDone == count) runFinished.notify_all();
+			}
+		}
+		if constexpr (Mode == ComputeTelemetryMode::Trace) {
+            std::lock_guard lock(mutex);
+            workerMetrics[slot].activeNs += diagnosticElapsed<Mode>(started);
+        }
+		active = previous;
+		activeSlot = previousSlot;
+        return executed;
+	}
+    static bool before(const Slot& a, const Slot& b) { return a.due != b.due ? a.due < b.due : a.serial < b.serial; }
+    std::size_t group(const Slot& slot, std::size_t index) const { return slot.jobGroups[index]; }
+    void addReadyBatch(std::size_t index) {
+        auto& slot=slots[index];
+        assert(slot.serial && !slot.readyJobs.empty() && slot.readyPosition==Slots);
+        slot.readyPosition=0; slot.readyNext=Slots;
+        if(readyTail!=Slots) slots[readyTail].readyNext=index; else readyHead=index;
+        readyTail=index; ++readyCount;
+
+    }
+    void removeReadyBatch(std::size_t index) {
+        auto& slot=slots[index];
+        assert(slot.readyPosition!=Slots && readyCount);
+        if(readyHead==index) readyHead=slot.readyNext;
+        else {
+            auto previous=readyHead;
+            while(slots[previous].readyNext!=index) previous=slots[previous].readyNext;
+            slots[previous].readyNext=slot.readyNext;
+            if(readyTail==index) readyTail=previous;
+        }
+        if(readyHead==Slots) readyTail=Slots;
+        --readyCount;
+
+        slot.readyPosition=Slots; slot.readyNext=Slots;
+    }
+    void enqueueReady(Claim job) {
+        auto& slot=slots[job.slot];
+        assert(job.valid && slot.serial==job.serial && job.index<slot.total);
+        if(!ownerRunsDeferred()) {
+            const auto g=group(slot,job.index);
+            const auto lane=slot.groups[g].lane;
+            assert(lane==NoLane || (laneHead[lane].slot==job.slot && laneHead[lane].index==job.index && laneHead[lane].serial==job.serial));
+            auto& item=slot.dispatch[job.index]; item.claim=job; item.lane=lane;
+            item.job=slot.continuations[job.index].invoke ? slot.continuations[job.index] : slot.groups[g].job;
+            item.offset=slot.continuations[job.index].invoke ? 0 : job.index-slot.starts[g];
+            item.costClass=unsigned(slot.groups[g].jobClass)+(slot.continuations[job.index].invoke ? 8u : 0u);
+            pushDispatch(item); return;
+        }
+        const bool wasEmpty=slot.readyJobs.empty();
+        // Submission reserves every job: completion/continuation never allocates.
+        slot.readyJobs.push_back(job.index);
+        std::push_heap(slot.readyJobs.begin(),slot.readyJobs.end(),std::greater<std::size_t>());
+        if(wasEmpty) addReadyBatch(job.slot);
+    }
+    Claim pick(bool owner, const Slot* limit) const {
+        if(!readyCount) return {};
+        auto index=readyHead;
+        if(owner) {
+            // Serial barriers retain due-limited execution. Scan only bounded
+            // ready batches, never blocked jobs; lane heads remain authoritative.
+            index=Slots;
+            for(auto i=readyHead;i!=Slots;i=slots[i].readyNext)
+                if((!limit || !before(*limit,slots[i])) && (index==Slots || before(slots[i],slots[index]))) index=i;
+            if(index==Slots) return {};
+        }
+
+        const auto& slot=slots[index];
+        return {index,slot.readyJobs.front(),true,slot.serial};
+    }
+    template<ComputeTelemetryMode Mode>
+    Claim claim(bool owner, const Slot* limit = nullptr, unsigned thread = 0) {
+        assert(owner==ownerRunsDeferred());
+        const auto best=pick(owner,limit);
+        if(!best.valid) return best;
+        auto& slot=slots[best.slot];
+        removeReadyBatch(best.slot);
+        std::pop_heap(slot.readyJobs.begin(),slot.readyJobs.end(),std::greater<std::size_t>());
+        slot.readyJobs.pop_back();
+        if(!slot.readyJobs.empty()) addReadyBatch(best.slot);
+        event<Mode>(ComputeTelemetry::EventKind::Claim,best.slot,best.index,thread);
+        return best;
+    }
+	template<ComputeTelemetryMode Mode>
+	void freeSlot(Slot& slot)
+	{
+		assert(slot.readyJobs.empty() && slot.readyPosition==Slots && slot.completed==slot.total);
+		event<Mode>(ComputeTelemetry::EventKind::Retire, std::size_t(&slot - slots.data()));
+		slot.serial = 0; slot.groups.clear(); slot.starts.clear(); slot.laneBases.clear(); slot.jobGroups.clear(); slot.laneNext.clear(); slot.dispatch.clear(); slot.readyJobs.clear(); slot.completions.clear(); slot.continuations.clear();
+		slot.total=0; slot.completed.store(0,std::memory_order_relaxed); slot.finished.store(false,std::memory_order_relaxed); slot.error=nullptr;
+		--live;
+	}
+    // Normal completion has no scheduler lock. Everything touching the slot
+    // happens before terminal fan-in; the last notifier holds completionMutex.
+    // Owner join acquires that same mutex before retiring/reusing the slot.
+    template<ComputeTelemetryMode Mode>
+    void completeJob(Slot& slot,std::size_t index,std::exception_ptr failure,unsigned thread) {
+        if constexpr(Mode==ComputeTelemetryMode::Trace) {
+            std::lock_guard diagnosticsLock(mutex);
+            event<Mode>(ComputeTelemetry::EventKind::Complete,std::size_t(&slot-slots.data()),index,thread);
+        }
+        if(failure) {
+            std::lock_guard batchLock(slot.completionMutex);
+            if(!slot.error) slot.error=failure;
+        }
+        if(auto& ticket=slot.completions[index]) ticket->owner.store(nullptr,std::memory_order_release);
+        slot.completions[index].reset();
+        const auto lane=slot.groups[group(slot,index)].lane;
+        if(lane!=NoLane) {
+            std::lock_guard laneLock(laneMutexes[lane]);
+            const auto head=laneHead[lane];
+            assert(head.valid && head.slot==std::size_t(&slot-slots.data()) && head.index==index && head.serial==slot.serial);
+            laneHead[lane]=slot.laneNext[index];
+            if(laneHead[lane].valid) enqueueReady(laneHead[lane]); else laneTail[lane]={};
+        }
+        // Final slot access for non-last completers. The acq_rel release
+        // sequence publishes all prior results/errors to the last completer.
+        const auto total=slot.total;
+        const auto previous=slot.completed.fetch_add(1,std::memory_order_acq_rel);
+        if(previous+1==total) {
+            std::lock_guard batchLock(slot.completionMutex);
+            slot.finished.store(true,std::memory_order_release);
+            slot.completionDone.notify_all();
+        }
+        // No slot access beyond this point, including diagnostics.
+    }
+    template<ComputeTelemetryMode Mode>
+    void settle(Completion& ticket,unsigned thread) {
+        auto& slot=slots[ticket.slot];
+        if(ticket.continuation.invoke && !ticket.error) {
+            if constexpr(Mode==ComputeTelemetryMode::Trace) {
+                std::lock_guard diagnosticsLock(mutex);
+                event<Mode>(ComputeTelemetry::EventKind::Runnable,ticket.slot,ticket.index,thread);
+            }
+            slot.continuations[ticket.index]=ticket.continuation;
+            ticket.owner.store(nullptr,std::memory_order_release);
+            slot.completions[ticket.index].reset();
+            // Lane head stays owned by this job until continuation terminates.
+            enqueueReady({ticket.slot,ticket.index,true,ticket.serial});
+        } else completeJob<Mode>(slot,ticket.index,ticket.error,thread);
+    }
+    template<ComputeTelemetryMode Mode>
+    bool resolveImpl(Completion& ticket,Job continuation,std::exception_ptr failure) {
+        bool settleNow=false;
+        {
+            std::lock_guard stateLock(ticket.stateMutex);
+            if(ticket.owner.load(std::memory_order_acquire)!=this || ticket.resolved || ticket.settled) return false;
+            // In Trace, record before releasing ticket state: original callback
+            // cannot retire and free the slot ahead of this optional event.
+            if constexpr(Mode==ComputeTelemetryMode::Trace) {
+                std::lock_guard diagnosticsLock(mutex);
+                event<Mode>(ComputeTelemetry::EventKind::ExternalResolution,ticket.slot,ticket.index,~0u);
+            }
+            ticket.resolved=true; ticket.continuation=continuation; ticket.error=failure;
+            if(!ticket.running) { ticket.settled=true; settleNow=true; }
+        }
+        if(settleNow) settle<Mode>(ticket,~0u);
+        return true;
+    }
+    bool resolve(Completion& ticket, Job continuation, std::exception_ptr failure) {
+        if (telemetryModeValue == ComputeTelemetryMode::Trace) return resolveImpl<ComputeTelemetryMode::Trace>(ticket, continuation, failure);
+        return resolveImpl<ComputeTelemetryMode::Off>(ticket, continuation, failure);
+    }
+	// Outside the mutex: run one claimed deferred job, then record completion.
+    template<ComputeTelemetryMode Mode>
+    void execute(const Claim& claim, std::size_t thread) {
+        Dispatch work;
+        { std::lock_guard lock(mutex);
+            auto& slot=slots[claim.slot]; const auto g=group(slot,claim.index);
+            work.claim=claim;
+            work.job=slot.continuations[claim.index].invoke ? slot.continuations[claim.index] : slot.groups[g].job;
+            work.offset=slot.continuations[claim.index].invoke ? 0 : claim.index-slot.starts[g];
+        }
+        executeDispatch<Mode>(work,thread);
+    }
+    template<ComputeTelemetryMode Mode>
+    void executeDispatch(const Dispatch& work,std::size_t thread) {
+        const auto claim=work.claim;
+        const auto serial=claim.serial;
+        if constexpr(Mode==ComputeTelemetryMode::Trace) {
+            std::lock_guard lock(mutex);
+            if(thread) event<Mode>(ComputeTelemetry::EventKind::Claim,claim.slot,claim.index,unsigned(thread));
+            event<Mode>(ComputeTelemetry::EventKind::CallbackStart,claim.slot,claim.index,unsigned(thread));
+        }
+		auto *previous = active;
+		const auto previousSlot = activeSlot;
+		active = this; activeSlot = thread;
+		const auto previousDeferredSlot = deferredSlot, previousDeferredIndex = deferredIndex;
+		const auto previousDeferredSerial = deferredSerial;
+		deferredSlot = claim.slot; deferredIndex = claim.index;
+		deferredSerial = serial;
+		const auto started = Mode == ComputeTelemetryMode::Trace ? diagnosticStart<Mode>() : 0;
+        const bool timedCost=clocksCost();
+        const auto costStart=timedCost ? callbackCpuNs() : 0;
+		std::exception_ptr failure;
+		try { work.job.invoke(work.job.context, work.offset); }
+		catch (...) { failure = std::current_exception(); }
+        if(timedCost) observeCost(work.costClass,callbackCpuNs()-costStart);
+        // End this CPU slice before any continuation/lane publication and
+        // before terminal count can allow owner slot reuse. Async wait is free.
+        releaseReservation(work);
+const auto callbackEnd = Mode == ComputeTelemetryMode::Trace ? diagnosticStart<Mode>() : 0;
+        const auto elapsed = callbackEnd - started;
+		active = previous; activeSlot = previousSlot;
+		deferredSlot = previousDeferredSlot; deferredIndex = previousDeferredIndex; deferredSerial = previousDeferredSerial;
+        auto& slot=slots[claim.slot];
+        assert(slot.serial==serial);
+        if constexpr(Mode==ComputeTelemetryMode::Trace) {
+            std::lock_guard diagnosticsLock(mutex);
+            event<Mode>(ComputeTelemetry::EventKind::CallbackEnd,claim.slot,claim.index,unsigned(thread),{JoinReason::Teardown,ComputeTelemetry::NoTick},0,callbackEnd);
+            workerMetrics[thread].activeNs+=elapsed; ++workerMetrics[thread].jobs;
+            if(thread) ++totals.workerJobs; else ++totals.ownerJobs;
+        }
+        if(auto ticket=slot.completions[claim.index]) {
+            bool settleNow=false;
+            {
+                std::lock_guard stateLock(ticket->stateMutex);
+                ticket->running=false;
+                if(failure) { ticket->resolved=true; ticket->error=failure; }
+                if(ticket->resolved && !ticket->settled) { ticket->settled=true; settleNow=true; }
+            }
+            if(settleNow) settle<Mode>(*ticket,unsigned(thread));
+        } else completeJob<Mode>(slot,claim.index,failure,unsigned(thread));
+
+	}
+	template<ComputeTelemetryMode Mode>
+	void worker(std::size_t slot)
+	{
+        std::size_t seen=0, simulationClaims=0, controlSeen=0, stealSeen=0;
+        auto& queue=*queues[slot-1];
+        for (;;) {
+            // Observe control publications before draining another deferred job,
+            // preserving run priority, presentation fairness and lifecycle service.
+            bool control=false;
+            { std::lock_guard lock(queue.mutex); control=queue.controlVersion!=controlSeen || simulationClaims>=8; controlSeen=queue.controlVersion; stealSeen=queue.stealVersion; }
+            Dispatch work;
+            if(!control && nextDispatch(slot-1,work)) {
+                ++simulationClaims;
+                executeDispatch<Mode>(work,slot);
+                continue;
+            }
+            std::unique_lock<std::mutex> lock(mutex);
+            if constexpr(Mode==ComputeTelemetryMode::Trace) ++totals.controlInspections;
+            if (stopping)
+                return;
+			// The designated worker interleaves presentation chunks with
+			// simulation jobs, so neither starves the other: a join waits at
+			// most one chunk for it, and other workers keep claiming meanwhile.
+            if (slot == presentationWorker && simulationClaims >= 8 &&
+                cpuPresentationClaimable(slot))
+			{
+				simulationClaims = 0;
+                { OptionalService optional(*this,slot); executeCpuPresentation<Mode>(lock,slot); }
+				continue;
+			}
+			if (generation != seen)
+			{
+				++simulationClaims;
+				seen = generation;
+				++inFlight;
+				lock.unlock();
+				invoke<Mode>(slot);
+				lock.lock();
+				if (--inFlight == 0) runFinished.notify_all();
+				continue;
+			}
+            if(simulationClaims>=8) simulationClaims=0;
+            lock.unlock();
+            if(nextDispatch(slot-1,work)) {
+                ++simulationClaims; executeDispatch<Mode>(work,slot);
+                continue;
+            }
+            lock.lock();
+            // No currently assigned deferred work; control service remains
+            // serialized, while normal queue pop/callback is entirely local.
+            if(simulationClaims>=8) simulationClaims=0;
+            if (!cpuPresentationClaimable(slot))
+            {
+                    if (!maintenanceClaimable(slot) || hasQueuedDispatch()) {
+                        lock.unlock();
+                        std::unique_lock local(queue.mutex);
+                        queue.ready.wait(local,[&] { return queue.head || queue.controlVersion!=controlSeen || queue.stealVersion!=stealSeen; });
+                        continue;
+                    }
+                    OptionalService optional(*this,slot);
+					const auto work = maintenance;
+					maintenanceRunning = true;
+                    const auto serial = [&] { if constexpr (Mode == ComputeTelemetryMode::Trace) return ++diagnostics->maintenanceSerial; else return std::uint64_t(0); }();
+                    const auto epoch = [&] { if constexpr (Mode == ComputeTelemetryMode::Trace) return diagnostics->epoch; else return std::uint64_t(0); }();
+                    standaloneEvent<Mode>(ComputeTelemetry::EventKind::Claim, 4, serial, 0, unsigned(slot));
+                    standaloneEvent<Mode>(ComputeTelemetry::EventKind::CallbackStart, 4, serial, 0, unsigned(slot));
+					lock.unlock();
+                    active = this;
+                    activeSlot = slot;
+					work->process();
+                    const auto callbackEnd = Mode == ComputeTelemetryMode::Trace ? diagnosticStart<Mode>() : 0;
+                    active = nullptr;
+                    activeSlot = 0;
+					lock.lock();
+					maintenanceRunning = false;
+                    if constexpr (Mode == ComputeTelemetryMode::Trace) {
+                        if (epoch == diagnostics->epoch) {
+                            standaloneEvent<Mode>(ComputeTelemetry::EventKind::CallbackEnd, 4, serial, 0, unsigned(slot), {JoinReason::Teardown, ComputeTelemetry::NoTick}, 0, callbackEnd);
+                            standaloneEvent<Mode>(ComputeTelemetry::EventKind::Complete, 4, serial, 0, unsigned(slot));
+                            standaloneEvent<Mode>(ComputeTelemetry::EventKind::Retire, 4, serial, 0, unsigned(slot));
+                        }
+                    }
+					continue;
+				}
+				simulationClaims = 0;
+                { OptionalService optional(*this,slot); executeCpuPresentation<Mode>(lock,slot); }
+				continue;
+        }
+	}
+	void stop(JoinReason reason = JoinReason::Teardown)
+	{
+        if (active)
+            throw std::logic_error("Executor lifecycle inside a job");
+        std::shared_ptr<GraphicsBatch> pendingGraphics;
+        {
+            std::lock_guard lock(mutex);
+            pendingGraphics = graphicsBatch;
+        }
+        if (pendingGraphics)
+        {
+            pendingGraphics->cancel();
+            pendingGraphics->drain();
+        }
+        {
+            std::lock_guard lock(mutex);
+            graphicsBatch.reset();
+        }
+		setWorkerOnly({});
+		cancelPresentationAndWait();
+		joinAll({reason, ComputeTelemetry::NoTick});
+        // External resume can publish a continuation that finishes before the
+        // resolver returns from its queue notifications. Acknowledge those
+        // API calls before queues are destroyed/reconfigured. Services above
+        // are already drained; no worker body can still require this lock.
+        std::lock_guard resolutionAck(completionLifetime->mutex);
+		{ std::lock_guard<std::mutex> lock(mutex); stopping = true; }
+		ready.notify_all();
+		for (auto &worker : workers) worker.join();
+		workers.clear();
+        for(auto& queue:queues) if(queue->outstandingNs.load(std::memory_order_relaxed)) std::terminate();
+        queues.clear(); dispatchCursor=0;
+		stopping = false;
+		generation = 0;
+	}
+    void noSuspensionEvent() noexcept {}
+    void traceSuspensionEvent() noexcept { event<ComputeTelemetryMode::Trace>(ComputeTelemetry::EventKind::Suspend, deferredSlot, deferredIndex, unsigned(activeSlot)); }
+    void (ComputeExecutor::*recordSuspension)() noexcept = &ComputeExecutor::noSuspensionEvent;
+    std::size_t requestedTraceBytes = ComputeTelemetry::DefaultTraceBytes;
+    DiagnosticClock requestedClock = realDiagnosticClock;
+    void initializeDiagnostics(unsigned threads) noexcept {
+        std::vector<WorkerMetrics>().swap(workerMetrics);
+        diagnostics.reset(); telemetryModeValue = ComputeTelemetryMode::Off;
+        recordSuspension = &ComputeExecutor::noSuspensionEvent;
+        if (requestedTelemetryMode == ComputeTelemetryMode::Off) return;
+        try { diagnostics = std::make_unique<DiagnosticsState>(); }
+        catch (const std::bad_alloc&) { return; }
+        diagnostics->clock = requestedClock;
+        telemetryModeValue = ComputeTelemetryMode::Waits;
+        if (requestedTelemetryMode != ComputeTelemetryMode::Trace) return;
+        try {
+            // Owner + workers + external completion stream, all fixed at configure.
+            workerMetrics.resize(threads);
+            diagnostics->streams.resize(std::size_t(threads) + 2);
+            const auto capacity = requestedTraceBytes / sizeof(ComputeTelemetry::Event) / diagnostics->streams.size();
+            for (auto& stream : diagnostics->streams) stream.storage.resize(capacity);
+            diagnostics->traceBytes = capacity * sizeof(ComputeTelemetry::Event) * diagnostics->streams.size();
+            telemetryModeValue = ComputeTelemetryMode::Trace;
+            recordSuspension = &ComputeExecutor::traceSuspensionEvent;
+        } catch (const std::bad_alloc&) { diagnostics->streams.clear(); workerMetrics.clear(); }
+        catch (const std::length_error&) { diagnostics->streams.clear(); workerMetrics.clear(); }
+    }
+    static void validateContext(JoinContext context) {
+        if (unsigned(context.reason) >= unsigned(JoinReason::Count)) throw std::invalid_argument("Invalid compute join reason");
+    }
+public:
+	ComputeExecutor() = default;
+	ComputeExecutor(const ComputeExecutor &) = delete;
+	ComputeExecutor &operator=(const ComputeExecutor &) = delete;
+	~ComputeExecutor() {
+		stop();
+		std::lock_guard lock(completionLifetime->mutex);
+		completionLifetime->executor = nullptr;
+	}
+	// Configure only between batches; pending deferred work is joined first.
+	// Thread creation failure retains a usable serial executor; caller reports
+	// the actual thread count.
+	void configure(unsigned threads,
+		const std::function<std::thread(std::function<void()>)> &launch =
+			[](std::function<void()> function) { return GAGCore::ThreadSupport::launch(std::move(function)); })
+	{
+        if (active)
+            throw std::logic_error("Executor configuration inside a job");
+        if (!threads)
+            throw std::invalid_argument("Executor needs at least one thread");
+		stop(JoinReason::Reconfigure);
+        const auto* cost=std::getenv("GLOB2_WEIGHTED_POLICY");
+        costPolicy=CostPolicy::Bare;
+        if(cost && *cost) {
+            if(!std::strcmp(cost,"fixed") || !std::strcmp(cost,"fixed-no-steal")) costPolicy=CostPolicy::Fixed;
+            else if(!std::strcmp(cost,"two-choice")) costPolicy=CostPolicy::TwoChoice;
+            else if(!std::strcmp(cost,"last")) costPolicy=CostPolicy::Last;
+            else if(!std::strcmp(cost,"ewma")) costPolicy=CostPolicy::EWMA;
+            else if(!std::strcmp(cost,"clock-only")) costPolicy=CostPolicy::ClockOnly;
+            else if(!std::strcmp(cost,"observe-only")) costPolicy=CostPolicy::ObserveOnly;
+            else if(std::strcmp(cost,"bare-steal")) throw std::invalid_argument("Unknown weighted research policy");
+        }
+#if !defined(__linux__)
+        if(clocksCost()) throw std::invalid_argument("Research callback CPU clock requires Linux");
+#endif
+        for(auto& sample:costSamples) sample.store(0,std::memory_order_relaxed);
+        const auto* dispatchPolicy=std::getenv("GLOB2_DEFERRED_DISPATCH");
+        if(dispatchPolicy && *dispatchPolicy && std::strcmp(dispatchPolicy,"round-robin") && std::strcmp(dispatchPolicy,"steal") && std::strcmp(dispatchPolicy,"lane-affine"))
+            throw std::invalid_argument("Unknown research deferred dispatch policy");
+        stealing=dispatchPolicy && !std::strcmp(dispatchPolicy,"steal");
+        laneAffinity=dispatchPolicy && !std::strcmp(dispatchPolicy,"lane-affine");
+        // Weighted experimental arms always retain opportunistic stealing and
+        // optional rescue; explicit incompatible static modes fail closed.
+        if(cost && *cost) {
+            if(dispatchPolicy && *dispatchPolicy && std::strcmp(dispatchPolicy,"steal")) throw std::invalid_argument("Weighted policies require steal dispatch");
+            stealing=std::strcmp(cost,"fixed-no-steal")!=0; laneAffinity=false;
+        }
+        initializeDiagnostics(threads);
+		presentationWorker = threads > 1 ? threads - 1 : 0;
+		if constexpr (GAGCore::ThreadSupport::available)
+		{
+			try
+			{
+				workers.reserve(threads > 0 ? threads - 1 : 0);
+                queues.reserve(threads > 0 ? threads - 1 : 0);
+                for(unsigned i=1;i<threads;++i) queues.push_back(std::make_unique<WorkerQueue>());
+				for (unsigned i = 1; i < threads; ++i)
+					workers.push_back(launch([this, i] {
+                        if (telemetryModeValue == ComputeTelemetryMode::Trace) worker<ComputeTelemetryMode::Trace>(i);
+                        else worker<ComputeTelemetryMode::Off>(i);
+                    }));
+			}
+            catch (...)
+            {
+                stop();
+                presentationWorker = 0;
+            }
+		}
+		else presentationWorker = 0;
+
+		totals = {};
+		presentationTotals = {};
+        graphicsTotals = {};
+    }
+    PresentationBatchTicket
+    submitPresentationBatch(std::size_t count, PresentationBatchOptions options,
+                            std::function<void(PresentationJobContext)> function)
+    {
+        if (active)
+            throw std::logic_error("Graphics batch submission inside a job");
+        if (count && !function)
+            throw std::invalid_argument("Graphics batch needs work");
+        auto work = std::make_shared<GraphicsBatch>();
+        work->owner = this;
+        work->count = count;
+        work->limit = std::clamp(options.maximumConcurrency, std::size_t(1), std::size_t(2));
+        work->job = std::move(function);
+#if defined(__EMSCRIPTEN__)
+        work->serial = true;
+#endif
+        if (!count)
+        {
+            std::unique_lock batchLock(work->mutex);
+            work->settle(batchLock);
+            return PresentationBatchTicket(work);
+        }
+        {
+            std::lock_guard lock(mutex);
+            if (graphicsBatch && !graphicsBatch->finished.load())
+                throw std::logic_error("Graphics batch already admitted");
+            graphicsBatch = work;
+            if (diagnostics) diagnostics->graphicsJoined = false;
+            if (telemetryModeValue == ComputeTelemetryMode::Trace) {
+                ++graphicsTotals.batches;
+                graphicsTotals.parallelBatches += count > 1 && threadCount() > 2 && work->limit > 1 && !work->serial;
+                diagnostics->graphicsSubmitted = diagnostics->clock(); ++diagnostics->graphicsSerial;
+                standaloneEvent<ComputeTelemetryMode::Trace>(ComputeTelemetry::EventKind::Submit, 3, diagnostics->graphicsSerial, count, 0);
+            }
+        }
+        ready.notify_all();
+        return PresentationBatchTicket(work);
+    }
+private:
+    template<ComputeTelemetryMode Mode>
+    void finishPresentationBatchImpl(PresentationBatchTicket& ticket, JoinContext context) {
+        if (active) throw std::logic_error("Graphics batch barrier inside a job");
+        if (!ticket.work) return;
+        const bool alreadyComplete = ticket.finished();
+        if constexpr (Mode == ComputeTelemetryMode::Off) {
+            if (alreadyComplete) { ticket.rethrowFailure(); return; }
+        }
+        if (!alreadyComplete && ticket.work->owner != this)
+            throw std::logic_error("Graphics batch belongs to another executor");
+        const auto start = diagnosticStart<Mode>();
+        std::uint64_t ownerNs = 0, ownerLockNs = 0, ceilingWaitNs = 0;
+        bool ownerExecuted = false, ceilingWaited = false;
+        if (!alreadyComplete && (!presentationWorker || ticket.work->serial)) {
+            const auto ownerStart = diagnosticStart<Mode>();
+            std::unique_lock lock(mutex);
+            if constexpr (Mode != ComputeTelemetryMode::Off) ownerLockNs = diagnosticElapsed<Mode>(ownerStart);
+            while (!ticket.finished()) {
+                bool firstInspection = true, blocked = false;
+                const auto waitStart = diagnosticStart<Mode>();
+                graphicsReady.wait(lock, [&] {
+                    const bool runnable = ticket.finished() || graphicsClaimable(true);
+                    if constexpr (Mode != ComputeTelemetryMode::Off) {
+                        if (firstInspection) { blocked = !runnable; firstInspection = false; }
+                    }
+                    return runnable;
+                });
+                if constexpr (Mode != ComputeTelemetryMode::Off) {
+                    if (blocked) { ceilingWaited = true; ceilingWaitNs += diagnosticElapsed<Mode>(waitStart); }
+                }
+                if (!ticket.finished()) {
+                    const auto executionStart = diagnosticStart<Mode>();
+                    if constexpr (Mode != ComputeTelemetryMode::Off) ownerExecuted = true;
+                    executeCpuPresentation<Mode>(lock, 0, false);
+                    if constexpr (Mode != ComputeTelemetryMode::Off) ownerNs += diagnosticElapsed<Mode>(executionStart);
+                }
+            }
+        }
+        const auto observation = ticket.work->template drainMeasured<Mode>([&] {
+            if constexpr (Mode != ComputeTelemetryMode::Off) return diagnostics->clock; else return DiagnosticClock(nullptr);
+        }());
+        if constexpr (Mode != ComputeTelemetryMode::Off) {
+            std::unique_lock lock(mutex);
+            if constexpr (Mode == ComputeTelemetryMode::Trace) {
+                if (graphicsBatch == ticket.work) graphicsReady.wait(lock, [&] { return diagnostics->traceGraphicsInFlight == 0; });
+            }
+            if (graphicsBatch == ticket.work && !diagnostics->graphicsJoined && ticket.work->count) {
+                auto& value = diagnostics->summary.joins[unsigned(ComputeProducer::Presentation)][unsigned(context.reason)];
+                diagnostics->graphicsJoined = true;
+                ++value.joined; value.incomplete += ownerExecuted || observation.incomplete || ceilingWaited;
+                value.lock.add(ownerLockNs+observation.lockNs);
+                if (ownerExecuted) { ++value.ownerExecutions; value.owner.add(ownerNs); }
+                if (observation.incomplete || ceilingWaited) {
+                    ++value.backgroundAttempts; value.background.add(observation.waitNs + ceilingWaitNs);
+                    if (ComputeTelemetry::required(context.reason) && context.logicalTick != ComputeTelemetry::NoTick)
+                        diagnostics->waited(ComputeProducer::Presentation, context.logicalTick, observation.waitNs + ceilingWaitNs);
+                }
+                value.total.add(diagnosticElapsed<Mode>(start));
+                graphicsTotals.waitNs += diagnosticElapsed<Mode>(start);
+                standaloneEvent<Mode>(ComputeTelemetry::EventKind::JoinInspection, 3, graphicsSerial<Mode>(), ticket.work->count, 0,
+                    context, observation.incomplete || ceilingWaited ? 1 : ownerExecuted ? 2 : 0, observation.inspected);
+                standaloneEvent<Mode>(ComputeTelemetry::EventKind::JoinEnd, 3, graphicsSerial<Mode>(), ticket.work->count, 0, context);
+            }
+        }
+        ticket.rethrowFailure();
+    }
+public:
+    void finishPresentationBatch(PresentationBatchTicket& ticket,
+        JoinContext context = {JoinReason::ImmediateRequired, ComputeTelemetry::NoTick}) {
+        validateContext(context);
+        switch (telemetryModeValue) {
+            case ComputeTelemetryMode::Off: return finishPresentationBatchImpl<ComputeTelemetryMode::Off>(ticket, context);
+            case ComputeTelemetryMode::Waits: return finishPresentationBatchImpl<ComputeTelemetryMode::Waits>(ticket, context);
+            case ComputeTelemetryMode::Trace: return finishPresentationBatchImpl<ComputeTelemetryMode::Trace>(ticket, context);
+        }
+    }
+    GraphicsMetrics graphicsMetrics() const
+    {
+        std::lock_guard lock(mutex);
+        return graphicsTotals;
+    }
+    void executePresentationJobs(std::size_t count,
+                                 const std::function<void(std::size_t)> &function) override
+    {
+        if (active)
+            throw std::logic_error("Graphics batch submission inside a job");
+        if (!count)
+            return;
+        const auto concurrency = GAGCore::renderConcurrency();
+        auto ticket = submitPresentationBatch(count, {concurrency},
+                                              [function](PresentationJobContext context)
+                                              {
+                                                  if (!context.cancellation.canceled())
+                                                      function(context.index);
+                                              });
+        finishPresentationBatch(ticket);
+        // Asynchronous callers may inspect a canceled ticket after draining.
+        // Synchronous raster callers require every job before publishing pixels.
+        if (ticket.status() == Presentation::Status::Canceled)
+            throw std::runtime_error("Synchronous graphics batch was canceled");
+	}
+    // Drains using the old mode before selecting new specializations. Tags and
+    // observations never enter scheduler state, save data or checksums.
+    void configureTelemetry(ComputeTelemetryMode mode, std::size_t traceBytes = ComputeTelemetry::DefaultTraceBytes,
+        DiagnosticClock clock = realDiagnosticClock) {
+        if (unsigned(mode) > unsigned(ComputeTelemetryMode::Trace) || !clock) throw std::invalid_argument("Invalid compute telemetry configuration");
+        const auto threads = unsigned(threadCount());
+        auto service = maintenance;
+        stop(JoinReason::Reconfigure);
+        requestedTelemetryMode = mode; requestedTraceBytes = traceBytes; requestedClock = clock;
+        configure(threads);
+        setWorkerOnly(std::move(service));
+    }
+    ComputeTelemetryMode telemetryMode() const noexcept { return telemetryModeValue; }
+    bool telemetryEnabled() const noexcept { return telemetryModeValue != ComputeTelemetryMode::Off; }
+    void advancingTick(std::uint64_t tick) {
+        if (!diagnostics) return;
+        std::lock_guard lock(mutex);
+        if (diagnostics->lastAdvanceTick != tick) { ++diagnostics->summary.advancingTicks; diagnostics->lastAdvanceTick = tick; }
+    }
+    // Reset only with required work drained. Presentation is canceled at the
+    // session boundary, and streams remain allocated at their configured sizes.
+    void resetTelemetry() {
+        if (!diagnostics) return;
+        std::lock_guard lock(mutex);
+        if (live || inFlight || presentationRunning || graphicsRunning || (graphicsBatch && !graphicsBatch->finished.load()) || (diagnostics && (diagnostics->traceRunActive || diagnostics->traceGraphicsInFlight))) throw std::logic_error("Compute telemetry reset requires a drained executor");
+        if (!diagnostics) return;
+        diagnostics->summary = {}; diagnostics->batches = {};
+        ++diagnostics->epoch; diagnostics->traceCoverageGap = maintenanceRunning;
+        diagnostics->lastProducerTick.fill(ComputeTelemetry::NoTick);
+        diagnostics->lastBackgroundTick = diagnostics->lastAdvanceTick = diagnostics->currentTick = ComputeTelemetry::NoTick;
+        diagnostics->tickWaitNs = 0; diagnostics->tickWaited = false;
+        diagnostics->runSerial = 0; diagnostics->runTags = {}; diagnostics->nextPresentation = 1;
+        for (auto& stream : diagnostics->streams) { stream.used = 0; stream.lost = 0; }
+        totals = {}; presentationTotals = {}; for (auto& value : workerMetrics) value = {};
+    }
+    ComputeTelemetry::Snapshot telemetrySnapshot(bool includeTrace = false) const {
+        std::lock_guard lock(mutex);
+        ComputeTelemetry::Snapshot result;
+        result.requested = requestedTelemetryMode; result.mode = telemetryModeValue;
+        result.available = bool(diagnostics); result.threads = unsigned(threadCount());
+        if (!diagnostics) return result;
+        result.summary = diagnostics->summary;
+        if (diagnostics->tickWaited) result.summary.tickBackground.add(diagnostics->tickWaitNs);
+        result.traceBytes = diagnostics->traceBytes;
+        result.traceOpenWork = maintenanceRunning || bool(presentation) || bool(presentationPending);
+        result.traceCoverageGap = diagnostics->traceCoverageGap;
+        if (includeTrace && telemetryModeValue == ComputeTelemetryMode::Trace) {
+            if (live || inFlight || runDone != count || presentationRunning || graphicsRunning || (graphicsBatch && !graphicsBatch->finished.load()) || diagnostics->traceRunActive || diagnostics->traceGraphicsInFlight)
+                throw std::logic_error("Compute trace snapshot requires drained required work and idle presentation");
+            result.streams = diagnostics->streams;
+            result.traceIncluded = true;
+        } else if (telemetryModeValue == ComputeTelemetryMode::Trace) {
+            // Loss counters are written under this same mutex.
+            result.streams.resize(diagnostics->streams.size());
+            for (std::size_t i = 0; i < result.streams.size(); ++i) result.streams[i].lost = diagnostics->streams[i].lost;
+        }
+        return result;
+    }
+    void run(std::size_t n, const std::function<void(std::size_t)>& function,
+        BatchDiagnostics tags = {}, JoinContext context = {JoinReason::ImmediateRequired, ComputeTelemetry::NoTick}) {
+        if (!n) return;
+        if (active) { for (std::size_t i=0;i<n;++i) function(i); return; }
+        validateContext(context);
+        if (unsigned(tags.producer) >= unsigned(ComputeProducer::Count)) throw std::invalid_argument("Invalid compute producer");
+        if (telemetryModeValue == ComputeTelemetryMode::Off) return runImpl<ComputeTelemetryMode::Off>(n, function, tags, context);
+        return runEnabled(n, function, tags, context);
+    }
+private:
+    void runEnabled(std::size_t n, const std::function<void(std::size_t)>& function,
+        BatchDiagnostics tags, JoinContext context) {
+        if (telemetryModeValue == ComputeTelemetryMode::Waits) return runImpl<ComputeTelemetryMode::Waits>(n, function, tags, context);
+        return runImpl<ComputeTelemetryMode::Trace>(n, function, tags, context);
+    }
+public:
+
+    Batch submit(std::span<const Group> groups, std::uint64_t due = 0, BatchDiagnostics tags = {}) {
+        if (groups.empty() && !active) return {};
+        if (groups.size() == 1 && !groups.front().count && !active) {
+            if (groups.front().lane != NoLane && groups.front().lane >= Lanes)
+                throw std::invalid_argument("Compute lane index exceeds the lane count");
+            return {};
+        }
+        if (unsigned(tags.producer) >= unsigned(ComputeProducer::Count)) throw std::invalid_argument("Invalid compute producer");
+        if (telemetryModeValue == ComputeTelemetryMode::Off) return submitImpl<ComputeTelemetryMode::Off>(groups, due, tags);
+        return submitEnabled(groups, due, tags);
+        return {};
+    }
+private:
+    Batch submitEnabled(std::span<const Group> groups, std::uint64_t due, BatchDiagnostics tags) {
+        if (telemetryModeValue == ComputeTelemetryMode::Waits) return submitImpl<ComputeTelemetryMode::Waits>(groups, due, tags);
+        return submitImpl<ComputeTelemetryMode::Trace>(groups, due, tags);
+    }
+public:
+
+    bool pumpPresentation() {
+        if (telemetryModeValue == ComputeTelemetryMode::Trace) return pumpPresentationImpl<ComputeTelemetryMode::Trace>();
+        return pumpPresentationImpl<ComputeTelemetryMode::Off>();
+    }
+	// The submitting thread owns admission. Replacing pending work releases its
+	// captures immediately; active work finishes its current chunk on its worker.
+	PresentationTicket submitPresentation(std::size_t chunks, std::function<void(std::size_t)> function)
+	{
+		if (!function) throw std::invalid_argument("Presentation needs nonempty work");
+		return submitResumablePresentation(chunks, [function=std::move(function)](std::size_t chunk) {
+			function(chunk);
+			return true;
+		});
+	}
+	// Returning false yields to simulation jobs, then resumes the same chunk.
+	// This keeps data-dependent operations bounded without inspecting the world
+	// or constructing an operation list on the submitting thread.
+	PresentationTicket submitResumablePresentation(std::size_t chunks, std::function<bool(std::size_t)> function)
+	{
+		if (active) throw std::logic_error("Presentation cannot be submitted from inside a job");
+		if (!chunks || !function) throw std::invalid_argument("Presentation needs nonempty work");
+		auto work = std::make_shared<Presentation>();
+		work->count = chunks; work->job = std::move(function);
+		PresentationTicket replaced;
+		{
+			std::lock_guard<std::mutex> lock(mutex);
+			replaced = std::move(presentationPending);
+			presentationPending = work;
+            if (telemetryModeValue == ComputeTelemetryMode::Trace) {
+                if (replaced) standaloneEvent<ComputeTelemetryMode::Trace>(ComputeTelemetry::EventKind::Retire, 2, diagnostics->pendingPresentation, 0, 0);
+                diagnostics->pendingPresentation = diagnostics->nextPresentation++;
+                standaloneEvent<ComputeTelemetryMode::Trace>(ComputeTelemetry::EventKind::Submit, 2, diagnostics->pendingPresentation, 0, 0);
+            }
+			if (telemetryEnabled()) ++presentationTotals.submitted;
+			if (replaced && telemetryEnabled()) ++presentationTotals.replaced;
+		}
+		if (replaced)
+		{
+			replaced->job = {};
+			replaced->state.store(Presentation::Status::Canceled, std::memory_order_release);
+		}
+		ready.notify_all();
+		return work;
+	}
+	// Graphics/application thread fallback for an executor with no workers.
+	// This is deliberately not called by run(), join(), or joinAll().
+private:
+	template<ComputeTelemetryMode Mode>
+	bool pumpPresentationImpl()
+	{
+		if (active) throw std::logic_error("Presentation cannot be pumped from inside a job");
+		PresentationTicket work;
+		{
+			std::lock_guard<std::mutex> lock(mutex);
+			if (presentationWorker || !presentationClaimable(0)) return false;
+			work = claimPresentation<Mode>(0);
+		}
+		executePresentation<Mode>(work, 0);
+		return true;
+	}
+public:
+	// Lifecycle barrier only: does not run presentation on the caller. A running
+	// chunk retains its inputs until it exits; unstarted chunks are discarded.
+	void cancelPresentationAndWait()
+	{
+		if (active) throw std::logic_error("Presentation lifecycle barrier inside a job");
+		PresentationTicket discarded, pending;
+		{
+			std::unique_lock<std::mutex> lock(mutex);
+			if (presentation) presentation->cancel();
+			pending = std::move(presentationPending);
+			presentationDone.wait(lock, [&] { return !presentationRunning; });
+			discarded = std::move(presentation);
+            if (telemetryModeValue == ComputeTelemetryMode::Trace) {
+                if (discarded) standaloneEvent<ComputeTelemetryMode::Trace>(ComputeTelemetry::EventKind::Retire, 2, diagnostics->currentPresentation, 0, 0);
+                if (pending) standaloneEvent<ComputeTelemetryMode::Trace>(ComputeTelemetry::EventKind::Retire, 2, diagnostics->pendingPresentation, 0, 0);
+                diagnostics->currentPresentation = diagnostics->pendingPresentation = 0;
+            }
+		}
+		for (auto& work : {discarded, pending}) if (work)
+		{
+			work->job = {};
+			work->state.store(Presentation::Status::Canceled, std::memory_order_release);
+		}
+	}
+	PresentationMetrics presentationMetrics() const { std::lock_guard<std::mutex> lock(mutex); return presentationTotals; }
+	std::size_t threadCount() const { return workers.size() + 1; }
+	std::size_t slot() const { return active == this ? activeSlot : 0; }
+	static std::size_t workerSlot() { return active ? activeSlot : 0; }
+	static std::size_t executionThreads() { return active ? active->threadCount() : 1; }
+	// Configuration/lifecycle only. Replacing a service does not wait for a
+	// running pass; the worker retains its old service until that pass ends.
+	void setWorkerOnly(std::shared_ptr<WorkerOnly> service)
+	{
+		std::shared_ptr<WorkerOnly> old;
+		{
+			std::lock_guard<std::mutex> lock(mutex);
+			old = std::exchange(maintenance, std::move(service));
+		}
+		ready.notify_all();
+	}
+	// A consistent copy; workers update the deferred counters under the mutex.
+	Metrics metrics() const { std::lock_guard<std::mutex> lock(mutex); return totals; }
+	// Sum of active elapsed times, NOT CPU time (the benchmark measures process CPU).
+	std::uint64_t activeNs() const
+	{
+		std::lock_guard lock(mutex);
+        std::uint64_t value = 0;
+		for (const auto &worker : workerMetrics) value += worker.activeNs;
+		return value;
+	}
+private:
+    template<ComputeTelemetryMode Mode>
+    void runImpl(std::size_t n, const std::function<void(std::size_t)>& function, BatchDiagnostics tags, JoinContext context) {
+        if (!n) return;
+        if (active) {
+            for (std::size_t i = 0; i < n; ++i) function(i);
+            return;
+        }
+        const auto start = diagnosticStart<Mode>();
+        std::uint64_t ownerNs = 0, backgroundNs = 0, lockNs = 0;
+        bool incomplete = false;
+        std::size_t ownerJobs = 0;
+        std::exception_ptr failure;
+        // Under the existing completion lock (or enabled-only serial accounting
+        // lock). Fork/join owners can both compute and wait in the same call.
+        const auto record = [&] {
+            if constexpr (Mode == ComputeTelemetryMode::Trace) diagnostics->traceRunActive = false;
+            if constexpr (Mode != ComputeTelemetryMode::Off) {
+                auto& value = diagnostics->summary.joins[unsigned(tags.producer)][unsigned(context.reason)];
+                ++value.joined; value.incomplete += incomplete; value.lock.add(lockNs);
+                if (ownerJobs) { ++value.ownerExecutions; value.owner.add(ownerNs); }
+                if (incomplete) {
+                    ++value.backgroundAttempts; value.background.add(backgroundNs);
+                    if (ComputeTelemetry::required(context.reason) && context.logicalTick != ComputeTelemetry::NoTick)
+                        diagnostics->waited(tags.producer, context.logicalTick, backgroundNs);
+                }
+                value.total.add(diagnosticElapsed<Mode>(start));
+                ++totals.batches; totals.jobs += n; totals.batchNs += diagnosticElapsed<Mode>(start);
+            }
+        };
+        if (n == 1 || workers.empty()) {
+            if constexpr (Mode == ComputeTelemetryMode::Trace) {
+                std::lock_guard lock(mutex);
+                diagnostics->runTags = tags; ++diagnostics->runSerial; diagnostics->traceRunActive = true;
+                standaloneEvent<Mode>(ComputeTelemetry::EventKind::Submit, 1, runSerial<Mode>(), n, 0);
+            }
+            const auto ownerStart = diagnosticStart<Mode>();
+            active = this; activeSlot = 0;
+            try {
+                for (std::size_t i = 0; i < n; ++i) {
+                    if constexpr (Mode != ComputeTelemetryMode::Off) ++ownerJobs;
+                    if constexpr (Mode == ComputeTelemetryMode::Trace) {
+                        std::lock_guard lock(mutex);
+                        standaloneEvent<Mode>(ComputeTelemetry::EventKind::CallbackStart, 1, runSerial<Mode>(), i, 0);
+                    }
+                    try { function(i); }
+                    catch (...) {
+                        if constexpr (Mode == ComputeTelemetryMode::Trace) {
+                            std::lock_guard lock(mutex);
+                            standaloneEvent<Mode>(ComputeTelemetry::EventKind::CallbackEnd, 1, runSerial<Mode>(), i, 0);
+                            standaloneEvent<Mode>(ComputeTelemetry::EventKind::Complete, 1, runSerial<Mode>(), i, 0);
+                        }
+                        throw;
+                    }
+                    if constexpr (Mode == ComputeTelemetryMode::Trace) {
+                        std::lock_guard lock(mutex);
+                        standaloneEvent<Mode>(ComputeTelemetry::EventKind::CallbackEnd, 1, runSerial<Mode>(), i, 0);
+                        standaloneEvent<Mode>(ComputeTelemetry::EventKind::Complete, 1, runSerial<Mode>(), i, 0);
+                    }
+                }
+            } catch (...) { failure = std::current_exception(); }
+            active = nullptr;
+            ownerNs = diagnosticElapsed<Mode>(ownerStart);
+            if constexpr (Mode != ComputeTelemetryMode::Off) {
+                std::lock_guard lock(mutex);
+                if constexpr (Mode == ComputeTelemetryMode::Trace) {
+                    workerMetrics[0].jobs += ownerJobs; workerMetrics[0].activeNs += ownerNs;
+                    standaloneEvent<Mode>(ComputeTelemetry::EventKind::Retire, 1, runSerial<Mode>(), n, 0);
+                }
+                record();
+            }
+        } else {
+            {
+                std::unique_lock lock(mutex);
+                runFinished.wait(lock, [&] { return inFlight == 0; });
+                job = function; count = n; next = 0; runDone = 0; error = nullptr;
+                ++generation;
+                if constexpr (Mode == ComputeTelemetryMode::Trace) {
+                    diagnostics->runTags = tags; ++diagnostics->runSerial; diagnostics->traceRunActive = true;
+                    standaloneEvent<Mode>(ComputeTelemetry::EventKind::Submit, 1, runSerial<Mode>(), n, 0);
+                }
+            }
+            ready.notify_all();
+            const auto ownerStart = diagnosticStart<Mode>();
+            ownerJobs = invoke<Mode>(0);
+            ownerNs = diagnosticElapsed<Mode>(ownerStart);
+            const auto lockStart = diagnosticStart<Mode>();
+            std::unique_lock lock(mutex);
+            const auto acquired = diagnosticStart<Mode>();
+            lockNs = acquired-lockStart;
+            incomplete = runDone != count || inFlight != 0;
+            standaloneEvent<Mode>(ComputeTelemetry::EventKind::JoinInspection, 1, runSerial<Mode>(), n, 0);
+            runFinished.wait(lock, [&] { return runDone == count && inFlight == 0; });
+            backgroundNs = diagnosticElapsed<Mode>(acquired);
+            if constexpr (Mode != ComputeTelemetryMode::Off) { ++totals.parallelBatches; totals.waitNs += backgroundNs; }
+            standaloneEvent<Mode>(ComputeTelemetry::EventKind::JoinEnd, 1, runSerial<Mode>(), n, 0);
+            standaloneEvent<Mode>(ComputeTelemetry::EventKind::Retire, 1, runSerial<Mode>(), n, 0);
+            failure = error; job = {};
+            record();
+        }
+        if (failure) std::rethrow_exception(failure);
+    }
+	// Queue a batch of groups, due at the given tick key; groups are copied.
+	// Returns an empty batch when nothing was submitted. Never call from inside a job.
+	template<ComputeTelemetryMode Mode>
+	Batch submitImpl(std::span<const Group> groups, std::uint64_t due, BatchDiagnostics tags)
+	{
+		if (active) throw std::logic_error("Deferred batches cannot be submitted from inside a job");
+		Batch batch;
+		std::size_t total = 0;
+		for (const auto& group : groups)
+		{
+			if (group.lane != NoLane && group.lane >= Lanes) throw std::invalid_argument("Compute lane index exceeds the lane count");
+            if(unsigned(group.jobClass)>=unsigned(JobClass::Count)) throw std::invalid_argument("Unknown research job class");
+            //84slots*2^24jobs*2^30ns <2^64; each callback has one reservation.
+            if(group.count>MaxResearchBatchJobs-total) throw std::invalid_argument("Research batch job bound exceeded");
+			total += group.count;
+		}
+		if (!total) return batch;
+		std::unique_lock<std::mutex> lock(mutex);
+		if (live == Slots) throw std::logic_error("Compute executor exceeded its deferred batch horizon");
+        std::array<bool,Lanes> usedLanes{};
+        for(const auto& work:groups) if(work.lane!=NoLane) usedLanes[work.lane]=true;
+        std::array<std::unique_lock<std::mutex>,Lanes> laneLocks;
+        for(unsigned lane=0;lane<Lanes;++lane) if(usedLanes[lane]) laneLocks[lane]=std::unique_lock<std::mutex>(laneMutexes[lane]);
+		// Validate before touching executor state: a partial submission would
+		// leave lane sequences nobody completes. Due order never contradicts
+		// lane order, so an inline owner can run lanes in due order.
+		for (const auto& group : groups)
+			if (group.lane != NoLane && laneHead[group.lane].valid && due < laneDue[group.lane])
+				throw std::logic_error("Compute lane job due before an earlier one");
+		std::size_t index = 0;
+		while (slots[index].serial) ++index;
+		auto& slot = slots[index];
+        slot.groups.assign(groups.begin(),groups.end());
+        slot.starts.resize(groups.size()); slot.laneBases.resize(groups.size());
+        slot.jobGroups.resize(total); slot.laneNext.assign(total,{}); slot.dispatch.resize(total);
+        slot.readyJobs.clear(); if(ownerRunsDeferred()) slot.readyJobs.reserve(total);
+        slot.completions.assign(total,{}); slot.continuations.assign(total,{});
+        slot.serial=nextSerial++; slot.due=due; slot.total=total; slot.completed.store(0,std::memory_order_relaxed); slot.finished.store(false,std::memory_order_relaxed); slot.error=nullptr;
+        std::size_t start=0;
+        for(std::size_t g=0;g<slot.groups.size();++g) {
+            const auto& work=slot.groups[g];
+            slot.starts[g]=start;
+            slot.laneBases[g]=work.lane==NoLane ? 0 : laneIssued[work.lane];
+            for(std::size_t offset=0;offset<work.count;++offset) {
+                const auto job=start+offset; slot.jobGroups[job]=g;
+                Claim node{index,job,true,slot.serial};
+                if(work.lane==NoLane) { enqueueReady(node); }
+                else {
+                    auto& tail=laneTail[work.lane];
+                    if(tail.valid) slots[tail.slot].laneNext[tail.index]=node;
+                    else { laneHead[work.lane]=node; enqueueReady(node); }
+                    tail=node;
+                }
+            }
+            if(work.lane!=NoLane) { laneIssued[work.lane]+=work.count; laneDue[work.lane]=due; }
+            start+=work.count;
+        }
+		++live;
+		if constexpr (Mode != ComputeTelemetryMode::Off) { ++totals.deferredBatches; totals.deferredJobs += total; }
+
+        if constexpr (Mode != ComputeTelemetryMode::Off) diagnostics->batches[index] = {slot.serial, tags};
+        event<Mode>(ComputeTelemetry::EventKind::Submit, index);
+		batch.slot = index; batch.serial = slot.serial;
+		lock.unlock();
+		return batch;
+	}
+public:
+	// Suspend only the currently executing deferred callback. The caller must
+	// arrange complete() or resume() on every path, including handoff failures.
+	CompletionTicket defer()
+	{
+		if (active != this || !deferredSerial || !activeSlot)
+			throw std::logic_error("Only a worker deferred job can suspend");
+		auto& slot = slots[deferredSlot];
+		if (slot.serial != deferredSerial || slot.completions[deferredIndex])
+			throw std::logic_error("Deferred callback already suspended");
+		auto ticket = CompletionTicket(new Completion(this, deferredSlot, deferredIndex, deferredSerial));
+		slot.completions[deferredIndex] = ticket;
+        if(telemetryModeValue==ComputeTelemetryMode::Trace) {
+            std::lock_guard diagnosticsLock(mutex); (this->*recordSuspension)();
+        }
+		return ticket;
+	}
+	// True once every job of the batch has completed (or the batch was joined).
+	bool finished(const Batch& batch) const
+	{
+		if (batch.empty()) return true;
+		std::lock_guard<std::mutex> lock(mutex);
+		const auto& slot = slots[batch.slot];
+		return slot.serial != batch.serial || slot.finished.load(std::memory_order_acquire);
+	}
+	// Wait for the batch (with no workers, first run the jobs due no later than
+	// it), then rethrow the batch's first error. The batch becomes empty and its
+	// slot free.
+private:
+    template<ComputeTelemetryMode Mode>
+    void joinImpl(Batch& batch, JoinContext context) {
+        if (batch.empty()) return;
+        if (active) throw std::logic_error("Deferred batches cannot be joined from inside a job");
+        const auto start = diagnosticStart<Mode>();
+        std::unique_lock<std::mutex> lock(mutex);
+        const auto acquired = diagnosticStart<Mode>();
+        auto& slot = slots[batch.slot];
+        if (slot.serial != batch.serial) { batch = {}; return; }
+        const bool incomplete = !slot.finished.load(std::memory_order_acquire);
+        const bool owner = ownerRunsDeferred();
+        event<Mode>(ComputeTelemetry::EventKind::JoinInspection, batch.slot, slot.total, 0, context, incomplete ? (owner ? 2 : 1) : 0);
+        const auto workStart = diagnosticStart<Mode>();
+        for (Claim claimed; owner && (claimed = claim<Mode>(true, &slot)).valid; lock.lock()) {
+            lock.unlock(); execute<Mode>(claimed, 0);
+        }
+        lock.unlock();
+        std::exception_ptr failure;
+        {
+            // Even an already-finished batch needs notifier retirement ack:
+            // acquire the batch mutex before allowing its slot to be reused.
+            std::unique_lock batchLock(slot.completionMutex);
+            slot.completionDone.wait(batchLock,[&] { return slot.finished.load(std::memory_order_acquire); });
+            failure=slot.error;
+        }
+        const auto completed=diagnosticStart<Mode>();
+        lock.lock();
+        if constexpr (Mode != ComputeTelemetryMode::Off) {
+            const auto producer = diagnostics->batches[batch.slot].tags.producer;
+            auto& value = diagnostics->summary.joins[unsigned(producer)][unsigned(context.reason)];
+            ++value.joined; value.incomplete += incomplete;
+            value.lock.add(acquired - start);
+            if (incomplete) {
+                if (owner) { ++value.ownerExecutions; value.owner.add(completed - workStart); }
+                else {
+                    ++value.backgroundAttempts; value.background.add(completed - workStart);
+                    totals.joinWaitNs += completed - workStart;
+                    if (ComputeTelemetry::required(context.reason) && context.logicalTick != ComputeTelemetry::NoTick)
+                        diagnostics->waited(producer, context.logicalTick, completed - workStart);
+                }
+            }
+        }
+        event<Mode>(ComputeTelemetry::EventKind::JoinEnd, batch.slot, slot.total, 0, context);
+        const auto producer = [&] { if constexpr (Mode != ComputeTelemetryMode::Off) return diagnostics->batches[batch.slot].tags.producer; else return ComputeProducer::Other; }();
+        freeSlot<Mode>(slot); batch = {};
+        if constexpr (Mode != ComputeTelemetryMode::Off)
+            diagnostics->summary.joins[unsigned(producer)][unsigned(context.reason)].total.add(diagnosticElapsed<Mode>(start));
+        lock.unlock();
+        if (failure) std::rethrow_exception(failure);
+    }
+public:
+    void join(Batch& batch, JoinContext context = {JoinReason::ImmediateRequired, ComputeTelemetry::NoTick}) {
+        if (batch.empty()) return;
+        validateContext(context);
+        if (telemetryModeValue == ComputeTelemetryMode::Off) return joinImpl<ComputeTelemetryMode::Off>(batch, context);
+        return joinEnabled(batch, context);
+    }
+private:
+    void joinEnabled(Batch& batch, JoinContext context) {
+        if (telemetryModeValue == ComputeTelemetryMode::Waits) return joinImpl<ComputeTelemetryMode::Waits>(batch, context);
+        return joinImpl<ComputeTelemetryMode::Trace>(batch, context);
+    }
+public:
+
+	// Complete and free every live batch; errors of individual batches are
+	// discarded here, since the batches' owners have given up their handles.
+    void joinAll(JoinContext context = {JoinReason::Teardown, ComputeTelemetry::NoTick}) {
+        if (active) return;
+        // Owner admission is serialized, as for submit/join. Snapshot live identities
+        // under the existing lock; join performs the authoritative inspection.
+        std::array<Batch, Slots> batches;
+        {
+            std::lock_guard lock(mutex);
+            for (std::size_t i = 0; i < Slots; ++i) { batches[i].slot = i; batches[i].serial = slots[i].serial; }
+        }
+        for (auto& batch : batches) { try { join(batch, context); } catch (...) {} }
+    }
+	std::size_t liveBatches() const { std::lock_guard<std::mutex> lock(mutex); return live; }
+};

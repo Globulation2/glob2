@@ -1,0 +1,31 @@
+{
+  "state": "ORIGINAL_TIMEOUT_NOT_REPRODUCED_REMAINS_UNEXPLAINED",
+  "binary_sha256": "712fcd8e06d1bd5ba9cc129dd46e8eb743f52d70c24b6eec989d72b1d8dd9643",
+  "direct_suite_runs": 1,
+  "repeated_full_suites": 30,
+  "isolated_case_runs": 180,
+  "parallel_suite_runs": 40,
+  "parallel_policy_counts": {
+    "bare-steal": 10,
+    "last": 10,
+    "observe-only": 10,
+    "clock-only": 10
+  },
+  "parallel_masks": [
+    "12,13,14,28,29,30",
+    "3,4,5,19,20,21",
+    "6,7,8,22,23,24",
+    "9,10,11,25,26,27"
+  ],
+  "timeouts_in_diagnostics": 0,
+  "failures": "Only known staleSlots79 assertion (repaired source expects84); all60cases complete in every fullsuite. 177/180isolatedpass,3staleslot failures.",
+  "parallel_unexpected_logs": [],
+  "original_failure": "qualification/weighted-bare-steal/focused-unit timeout180seconds preserved; several worker threads runnable, onefutex; no priorcaseprogress available due buffered JUnit reporter.",
+  "limitations": [
+    "Idle direct/repeated/parallel diagnostics do not prove originalhang absent or repaired.",
+    "Originalqualification usedJUnit reporter/testregistry; diagnostic useslinebufferedconsole withduration andsamebinary/policy/6CPU masks.",
+    "No header/code repairs made bydiagnosingagent; candidate independently repairedonlyHarnessSlots expectations.",
+    "Repairedsuite must be rerun; native/engine binaries unchanged byunit-onlyrebuild."
+  ],
+  "build_hold": "All diagnosticprocesses finished; rootmayresumeunit-onlyrebuild."
+}

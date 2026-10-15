@@ -1,0 +1,33 @@
+{
+  "case": "continuation-Oazis-n4",
+  "role": "weighted-last",
+  "initialChecksum": 2377477703,
+  "finalChecksum": 2153299056,
+  "checksums": {
+    "GCS1": "152cdd6e07b884390d2d640401c0da281ddb2fea395e15d45bec51b5a25a2ecd",
+    "native": "eb780c10a36bf2872e8f42d7c39cce5b891f50b68108ba06b5f75fd99ce45dbf"
+  },
+  "sidecar_details": {
+    "GCS1": {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/qualification/weighted-last/parity/continuation-Oazis-n4/native/game.replay.checksums",
+      "rows": 512,
+      "first_tick": 60000,
+      "last_tick": 60511,
+      "teams": 11,
+      "players": 11,
+      "bytes": 44948350
+    },
+    "native": {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/qualification/weighted-last/parity/continuation-Oazis-n4/native/world.checksums",
+      "rows": 512,
+      "first_tick": 60000,
+      "last_tick": 60511,
+      "bytes": 8558
+    }
+  },
+  "command_receipt": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/qualification/weighted-last/parity/continuation-Oazis-n4/command.json",
+  "result_sha256": "e6c6090ef930a0e92ac6e21aff125e2b18e593f77b001b579aba1f53ef06a26e",
+  "binary_sha256": "257d526f5d56c7b63b614ce3a0f895345cb20569c6a6f573e09a9abee5e5336c",
+  "requested_opencl": false,
+  "correctness_only": true
+}

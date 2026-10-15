@@ -1,0 +1,7 @@
+{
+  "state": "report_ready_awaiting_user_decision",
+  "runs": 448,
+  "output": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/playground-stop/results",
+  "receipt_sha256": "7e28fce94ea149ae5ac2b19c74bdec01737de471b4cf13bc40374ad453471bf3",
+  "no_further_automation": true
+}

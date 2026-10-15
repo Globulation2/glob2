@@ -1,0 +1,30 @@
+{
+  "approved": true,
+  "source_sha256": "9abb82ac90e7cf20dd92058220c7f13401a276d3891866ab7121b201bb3e2f83",
+  "checks": [
+    "Rootapproval/source/helperhash gates andcleannative/compilerstartup; currentnative/unit/engine/sourceidentities checked.",
+    "Reusesall14focusedunit/engine results afterrawlog/command/env/XMLinventoryvalidation; exacttwoenginebaselinefailures retainedrc1,160pass2fail andfullnormalizedassertionevents,notgreen.",
+    "20baselinecontextsfullyrevalidatedincludingcommand/env/result/sidecars/actualOpenCLfields;260remainingcase-leveltasks use8workers/4masks2each withsingleGPUadmission soCPUqueuecancontinue.",
+    "Existingcompletedparityreceipts revalidated before reuse; incompleteattempts renamedpreserved; no passing162testcohort rerun.",
+    "Fresh14Gradient22+8weighted2/73 metadata/command/log/JUnit/unitidentity proofs validatedandnormalized intoexplicitfocusedrecordkinds.",
+    "Stop-onlyhandler/pollingownedchildcleanup; guardsbeforeeachrole/global/resolvedpublication. Anynewfailure/mismatch/timeout haltsadmission andpreservesfailure.",
+    "Role/global/resolved allqualified_with_known_baseline_failures withreviewpath/hash andexplicitresearch-only limits; campaignfinalizerindependentlyrechecks14XMLhashes+exactevents."
+  ],
+  "limits": [
+    "Source reviewonly, no driver/nativeexecutionbyreviewer.",
+    "8workeroversubscribedcorrectnessrunisnotperformanceevidence; wholewinnerbenchmarkregimesunchanged.",
+    "Originalbaretimeoutremainsunexplainedhistoricalfailure; nonreproductiondoesnoteraseit."
+  ],
+  "activity": "Readonlysource/smallhashinspection only; no builds/native/signals.",
+  "utc": "2026-10-15T14:00:29.890985+00:00",
+  "gradient_schema_repair": {
+    "actual_classname": "src/map/gradient/GradientPipelineHarness.cpp",
+    "strict_names": "22unique orderedXMLnamesmustequalhash-boundfreshmetadata.names; allnoerror/failure/skip andrc0",
+    "actual_schema_exercise": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/fresh-audit-causal/gradient-schema-repair/review.json",
+    "actual_schema_exercise_sha256": "b5da5f14a13d71c53a5d7b7f123e58fe4a1c8d72e97268f71a70b450a9278aef",
+    "actual_helper_calls": 42,
+    "weighted_verbose_records_checked": 8,
+    "no_native_reruns": true,
+    "recovery3_failure_preserved": true
+  }
+}

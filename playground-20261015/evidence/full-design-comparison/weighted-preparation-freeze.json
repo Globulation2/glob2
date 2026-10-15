@@ -1,0 +1,25 @@
+{
+  "state": "FROZEN_STATIC_REVIEW_CLEAR_FOR_ROOT_GATED_BUILD_NOT_COMPILED_OR_QUALIFIED",
+  "preparation_sha256": "8251975d1e80c85f0f5ec8c2ac0eb6391d724c583cdbb06bfa1b4a0b6a23ed8f",
+  "independent_review": "artifacts/october-regression/coordination-redesign/full-design-comparison/weighted-independent-review.json",
+  "independent_review_sha256": "b9e3216a18d0396086bc072858b4a40449dea8e930d8c6bbcc2283cb995e5aec",
+  "source_hashes": {
+    "src/ai/engine/AIOrderScheduler.cpp": "2e95bf7ded131d390001f9937497d32aa81fee16409340f764149949dc657c57",
+    "src/app/Glob2.cpp": "06e6919eae114d35bce6e77b517283d1e41659afc8e45002cbcade532c55cdf0",
+    "src/building/HiringPipeline.cpp": "9c3d56954b5db3bece8294ab746773c3ec57f40487451859f00608146ef59c2a",
+    "src/building/TurretTargetingPipeline.cpp": "e99c591f96ddf6cc1721225a2f336a42feba9992fd8e41f33f19b5718f8e2bf3",
+    "src/common/ComputeExecutor.h": "935d73b61290da1d96c865cd11e5bba947e34fe7dc4de5c88d4af7dc3bbf111a",
+    "src/common/ComputeExecutorHarness.cpp": "0cd9c75b3083ed0b2c41a0bd680df58a05aaf9c4a2497464c1f5f8efeda4adad",
+    "src/engine/EngineRun.cpp": "e77d2120514f8397a5cb88313bc466d23174ed4eff82338797b2dc81020a8d2b",
+    "src/map/ResourceGrowth.cpp": "42ca1369d49d9b9929c10978ff67be6e9b2a49cffbaa152535650225b92bf101",
+    "src/map/gradient/BuildingGradientPipeline.h": "768ed98b2020662174e26e87a8d5091d7f602b23ca982660621a7dbbd7f828b1",
+    "src/map/gradient/GradientPipeline.h": "026e99bd221427c452716516ec33ea843607710ab2a6a759d5ec772e7b9743cd",
+    "src/team/stats/TeamStatsPipeline.cpp": "93eb0b85cd99711edb853db46acb63ee170a75dbfdd0ca778fae2b522bfae0a5"
+  },
+  "constraints": [
+    "Actual3/4participants andnoWARN skips forfocusedtests",
+    "All8policycontracts and20perTickcontexts plusproducer/save/lifecyclequalification beforetiming",
+    "No sourceorpreparation changes afterrootbuildbinds inputs; anyrepairrequiresnewreview/newbuildreceipt"
+  ],
+  "no_runtime_work": "Source/gitdiffcheck/ASTonly; no compiler/nativejob/timing launched."
+}

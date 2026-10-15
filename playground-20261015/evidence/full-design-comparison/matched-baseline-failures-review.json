@@ -1,0 +1,155 @@
+{
+  "state": "matched_failures_independently_confirmed_not_test_pass",
+  "normalization": "Only logged name pointer line normalized; assertiontype/message/body/sourcefileline/expression/values andeventcounts remainexact.",
+  "baseline_failures": [
+    {
+      "suite": "ResourceGrowth",
+      "name": "historical growth payloads are rejected after header preflight",
+      "events": [
+        {
+          "type": "CHECK_FALSE",
+          "message": "true",
+          "body": "\nsrc/map/ResourceGrowthTest.cpp:828:\nCHECK_FALSE( engine.gui.game.load(input.get()) ) is NOT correct!\n  values: CHECK_FALSE( true )\n  logged: name := <volatile-address>"
+        },
+        {
+          "type": "CHECK_FALSE",
+          "message": "true",
+          "body": "\nsrc/map/ResourceGrowthTest.cpp:828:\nCHECK_FALSE( engine.gui.game.load(input.get()) ) is NOT correct!\n  values: CHECK_FALSE( true )\n  logged: name := <volatile-address>"
+        },
+        {
+          "type": "CHECK_FALSE",
+          "message": "true",
+          "body": "\nsrc/map/ResourceGrowthTest.cpp:828:\nCHECK_FALSE( engine.gui.game.load(input.get()) ) is NOT correct!\n  values: CHECK_FALSE( true )\n  logged: name := <volatile-address>"
+        }
+      ]
+    },
+    {
+      "suite": "TurretTargeting",
+      "name": "overlapping publication preserves other sources through upgrade and incarnation changes",
+      "events": [
+        {
+          "type": "CHECK",
+          "message": "false",
+          "body": "\nsrc/building/TurretTargetingTest.cpp:456:\nCHECK( pipeline->entries(*changed).empty() ) is NOT correct!\n  values: CHECK( false )\n\n      "
+        }
+      ]
+    }
+  ],
+  "roles": [
+    {
+      "role": "baseline",
+      "cases": 162,
+      "passed": 160,
+      "matched_failed_cases": 2,
+      "error_or_skip_cases": 0,
+      "junit_sha256": "8a4b0ae48b55758e9c15f705390257a97371775a60fa12b63494c70ed16116c5"
+    },
+    {
+      "role": "local-completion-round-robin",
+      "cases": 162,
+      "passed": 160,
+      "matched_failed_cases": 2,
+      "error_or_skip_cases": 0,
+      "junit_sha256": "972de1c20d3ed67e958f3100195b15ff7b902194b241fe400a901c9c406f23f3"
+    },
+    {
+      "role": "wake-only",
+      "cases": 162,
+      "passed": 160,
+      "matched_failed_cases": 2,
+      "error_or_skip_cases": 0,
+      "junit_sha256": "886325e14aee3e2c83cff522f0a9fad08017d38803f9c46204146eb9e49ddc6a"
+    },
+    {
+      "role": "first-steal",
+      "cases": 162,
+      "passed": 160,
+      "matched_failed_cases": 2,
+      "error_or_skip_cases": 0,
+      "junit_sha256": "d8b8597d36c04d41d826117afcef03b01794d73c6f775c6edffc873eec160da9"
+    },
+    {
+      "role": "local-completion-steal",
+      "cases": 162,
+      "passed": 160,
+      "matched_failed_cases": 2,
+      "error_or_skip_cases": 0,
+      "junit_sha256": "936d25b996a3cd555598f5a85b8fc0def06d7ae6b69d2544c41bb96b1dd415fb"
+    },
+    {
+      "role": "weighted-fixed-no-steal",
+      "cases": 162,
+      "passed": 160,
+      "matched_failed_cases": 2,
+      "error_or_skip_cases": 0,
+      "junit_sha256": "7bf9d645a5092c116bd83e9b2174e9fcf89a0b30b675f9828793cc680db51ae3"
+    },
+    {
+      "role": "local-priority-steal",
+      "cases": 162,
+      "passed": 160,
+      "matched_failed_cases": 2,
+      "error_or_skip_cases": 0,
+      "junit_sha256": "6e44dc94a7a547b99746ec909af4d30c47c0e26dafa6ac6bddebf761496a41fd"
+    },
+    {
+      "role": "weighted-fixed-steal",
+      "cases": 162,
+      "passed": 160,
+      "matched_failed_cases": 2,
+      "error_or_skip_cases": 0,
+      "junit_sha256": "c8fd3564a1ee6f74a56866728d0d14c8b284a64b012e902e0583f27b7e7291a1"
+    },
+    {
+      "role": "weighted-two-choice",
+      "cases": 162,
+      "passed": 160,
+      "matched_failed_cases": 2,
+      "error_or_skip_cases": 0,
+      "junit_sha256": "1d31d36d1cc8ce6c22b47283845732539c0c7855209c592addb84ef22e00a01d"
+    },
+    {
+      "role": "weighted-last",
+      "cases": 162,
+      "passed": 160,
+      "matched_failed_cases": 2,
+      "error_or_skip_cases": 0,
+      "junit_sha256": "9676162d3106602a0c08e0bce00d246e6e42423ec405d481f7407db9c03383ef"
+    },
+    {
+      "role": "weighted-clock-only",
+      "cases": 162,
+      "passed": 160,
+      "matched_failed_cases": 2,
+      "error_or_skip_cases": 0,
+      "junit_sha256": "926abe31e5cb1005cd24c238198321fc2b1c80a2c1184510b65f7e75419215bf"
+    },
+    {
+      "role": "weighted-ewma",
+      "cases": 162,
+      "passed": 160,
+      "matched_failed_cases": 2,
+      "error_or_skip_cases": 0,
+      "junit_sha256": "3e05dee0840d3f4ec7ede404213c9f801d240ef6d461007f895940b0aa8d1d53"
+    },
+    {
+      "role": "weighted-observe-only",
+      "cases": 162,
+      "passed": 160,
+      "matched_failed_cases": 2,
+      "error_or_skip_cases": 0,
+      "junit_sha256": "91108f571dbc66ec92c125e96db98db7932d5dbadb917595ea3f71a1b1768a06"
+    },
+    {
+      "role": "weighted-bare-steal",
+      "cases": 162,
+      "passed": 160,
+      "matched_failed_cases": 2,
+      "error_or_skip_cases": 0,
+      "junit_sha256": "1e9fbabc47329f9039187e2264632ae9cf043129faf303b0d9d4a588a7121dbc"
+    }
+  ],
+  "scope": "Allowsa separatelyrootapproved experimentalbaseline-failure exceptiononly; preserve rc1/rawXML/logs. Notproductionacceptance/testgreen. Allremainingweightedverbose/perTickcorrectnessgates remainrequired.",
+  "parallelism": "8correctnessworkers may share4masks2each withsingleGPUlock; actualmasks recorded, no performanceinterpretation or benchmarkregimechange.",
+  "activity": "Read14JUnitXMLfiles andhashsmallartifacts only; no sourceedits/native/tests/builds/signals."
+}

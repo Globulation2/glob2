@@ -1,0 +1,197 @@
+{
+  "binary_sha256": "712fcd8e06d1bd5ba9cc129dd46e8eb743f52d70c24b6eec989d72b1d8dd9643",
+  "command": [
+    "taskset",
+    "-c",
+    "3,4,5,19,20,21",
+    "stdbuf",
+    "-oL",
+    "-eL",
+    "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/weighted-source/build/linux/client/release/test/glob2-unit-tests",
+    "--test-suite=ComputeExecutor",
+    "--duration=true",
+    "--no-breaks=true"
+  ],
+  "results": [
+    {
+      "repeat": 0,
+      "returncode": 1,
+      "elapsed_seconds": 0.8657040200196207,
+      "log": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/weighted-preparation-bare-diagnostic/repeat-suite-00.log"
+    },
+    {
+      "repeat": 1,
+      "returncode": 1,
+      "elapsed_seconds": 0.9156901948153973,
+      "log": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/weighted-preparation-bare-diagnostic/repeat-suite-01.log"
+    },
+    {
+      "repeat": 2,
+      "returncode": 1,
+      "elapsed_seconds": 0.8657543389126658,
+      "log": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/weighted-preparation-bare-diagnostic/repeat-suite-02.log"
+    },
+    {
+      "repeat": 3,
+      "returncode": 1,
+      "elapsed_seconds": 1.1158088208176196,
+      "log": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/weighted-preparation-bare-diagnostic/repeat-suite-03.log"
+    },
+    {
+      "repeat": 4,
+      "returncode": 1,
+      "elapsed_seconds": 0.8653854508884251,
+      "log": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/weighted-preparation-bare-diagnostic/repeat-suite-04.log"
+    },
+    {
+      "repeat": 5,
+      "returncode": 1,
+      "elapsed_seconds": 1.116348807234317,
+      "log": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/weighted-preparation-bare-diagnostic/repeat-suite-05.log"
+    },
+    {
+      "repeat": 6,
+      "returncode": 1,
+      "elapsed_seconds": 0.8663366050459445,
+      "log": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/weighted-preparation-bare-diagnostic/repeat-suite-06.log"
+    },
+    {
+      "repeat": 7,
+      "returncode": 1,
+      "elapsed_seconds": 0.9163379189558327,
+      "log": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/weighted-preparation-bare-diagnostic/repeat-suite-07.log"
+    },
+    {
+      "repeat": 8,
+      "returncode": 1,
+      "elapsed_seconds": 1.116714715026319,
+      "log": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/weighted-preparation-bare-diagnostic/repeat-suite-08.log"
+    },
+    {
+      "repeat": 9,
+      "returncode": 1,
+      "elapsed_seconds": 1.117223601322621,
+      "log": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/weighted-preparation-bare-diagnostic/repeat-suite-09.log"
+    },
+    {
+      "repeat": 10,
+      "returncode": 1,
+      "elapsed_seconds": 0.8668383709155023,
+      "log": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/weighted-preparation-bare-diagnostic/repeat-suite-10.log"
+    },
+    {
+      "repeat": 11,
+      "returncode": 1,
+      "elapsed_seconds": 0.8667585318908095,
+      "log": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/weighted-preparation-bare-diagnostic/repeat-suite-11.log"
+    },
+    {
+      "repeat": 12,
+      "returncode": 1,
+      "elapsed_seconds": 1.067319116089493,
+      "log": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/weighted-preparation-bare-diagnostic/repeat-suite-12.log"
+    },
+    {
+      "repeat": 13,
+      "returncode": 1,
+      "elapsed_seconds": 0.8666014233604074,
+      "log": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/weighted-preparation-bare-diagnostic/repeat-suite-13.log"
+    },
+    {
+      "repeat": 14,
+      "returncode": 1,
+      "elapsed_seconds": 1.117359720170498,
+      "log": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/weighted-preparation-bare-diagnostic/repeat-suite-14.log"
+    },
+    {
+      "repeat": 15,
+      "returncode": 1,
+      "elapsed_seconds": 0.9166479972191155,
+      "log": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/weighted-preparation-bare-diagnostic/repeat-suite-15.log"
+    },
+    {
+      "repeat": 16,
+      "returncode": 1,
+      "elapsed_seconds": 1.1175346691161394,
+      "log": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/weighted-preparation-bare-diagnostic/repeat-suite-16.log"
+    },
+    {
+      "repeat": 17,
+      "returncode": 1,
+      "elapsed_seconds": 0.8669100506231189,
+      "log": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/weighted-preparation-bare-diagnostic/repeat-suite-17.log"
+    },
+    {
+      "repeat": 18,
+      "returncode": 1,
+      "elapsed_seconds": 0.8668183721601963,
+      "log": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/weighted-preparation-bare-diagnostic/repeat-suite-18.log"
+    },
+    {
+      "repeat": 19,
+      "returncode": 1,
+      "elapsed_seconds": 0.8664440340362489,
+      "log": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/weighted-preparation-bare-diagnostic/repeat-suite-19.log"
+    },
+    {
+      "repeat": 20,
+      "returncode": 1,
+      "elapsed_seconds": 1.1170128919184208,
+      "log": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/weighted-preparation-bare-diagnostic/repeat-suite-20.log"
+    },
+    {
+      "repeat": 21,
+      "returncode": 1,
+      "elapsed_seconds": 1.117407999932766,
+      "log": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/weighted-preparation-bare-diagnostic/repeat-suite-21.log"
+    },
+    {
+      "repeat": 22,
+      "returncode": 1,
+      "elapsed_seconds": 0.9169509662315249,
+      "log": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/weighted-preparation-bare-diagnostic/repeat-suite-22.log"
+    },
+    {
+      "repeat": 23,
+      "returncode": 1,
+      "elapsed_seconds": 0.8667983920313418,
+      "log": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/weighted-preparation-bare-diagnostic/repeat-suite-23.log"
+    },
+    {
+      "repeat": 24,
+      "returncode": 1,
+      "elapsed_seconds": 1.1174360299482942,
+      "log": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/weighted-preparation-bare-diagnostic/repeat-suite-24.log"
+    },
+    {
+      "repeat": 25,
+      "returncode": 1,
+      "elapsed_seconds": 0.8666463028639555,
+      "log": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/weighted-preparation-bare-diagnostic/repeat-suite-25.log"
+    },
+    {
+      "repeat": 26,
+      "returncode": 1,
+      "elapsed_seconds": 0.8665641243569553,
+      "log": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/weighted-preparation-bare-diagnostic/repeat-suite-26.log"
+    },
+    {
+      "repeat": 27,
+      "returncode": 1,
+      "elapsed_seconds": 1.1174294198863208,
+      "log": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/weighted-preparation-bare-diagnostic/repeat-suite-27.log"
+    },
+    {
+      "repeat": 28,
+      "returncode": 1,
+      "elapsed_seconds": 0.8668500417843461,
+      "log": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/weighted-preparation-bare-diagnostic/repeat-suite-28.log"
+    },
+    {
+      "repeat": 29,
+      "returncode": 1,
+      "elapsed_seconds": 0.8666096529923379,
+      "log": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/weighted-preparation-bare-diagnostic/repeat-suite-29.log"
+    }
+  ]
+}

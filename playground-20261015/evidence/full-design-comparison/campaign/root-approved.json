@@ -1,0 +1,2141 @@
+{
+  "approved": true,
+  "authorization_kind": "rootpreapprovedconditionalfinalizer_afterexactstaticreview",
+  "source_sha256": "470086d1a9590df0dd3990b14e53c7480d5a700335f56dac58f0df51b6c02784",
+  "controller_sha256": "a4864395a3048d8062082222f2ff8415a310cff6292a3738a01623000c509e9d",
+  "plan_sha256": "7ba521d13781a75a1c04bec826dca5f8b6ec40f9c72f916ff48046d0b43eb077",
+  "resolved_sha256": "e4703cce45467bc9f04e871e91a4626ade45fce31bdc28b891f50e6cf7e191a2",
+  "binary_hashes": {
+    "baseline": "4a90fb41dbd1ac1bc674930a29cc4581d9fa87a638f04b57137df8eea5e8d0e9",
+    "wake-only": "99fbc82a526f0e15035bc675e50ac604a056574e931e077b3de955d19ce273a2",
+    "first-steal": "dee303f16c67f787651f14a601d73d23657dbb7a3b638f91b46952372fa76103",
+    "local-completion-round-robin": "30361dab0356ac87d8644e9e5780c1cdbddb6627b15f6b5b2d452369ce0bbcff",
+    "local-completion-steal": "30361dab0356ac87d8644e9e5780c1cdbddb6627b15f6b5b2d452369ce0bbcff",
+    "local-priority-steal": "1e50e84add3885c2c58d96a4fa702928a421144137bdb8b7ae66cdce5ffdbdd8",
+    "weighted-fixed-no-steal": "257d526f5d56c7b63b614ce3a0f895345cb20569c6a6f573e09a9abee5e5336c",
+    "weighted-fixed-steal": "257d526f5d56c7b63b614ce3a0f895345cb20569c6a6f573e09a9abee5e5336c",
+    "weighted-two-choice": "257d526f5d56c7b63b614ce3a0f895345cb20569c6a6f573e09a9abee5e5336c",
+    "weighted-last": "257d526f5d56c7b63b614ce3a0f895345cb20569c6a6f573e09a9abee5e5336c",
+    "weighted-ewma": "257d526f5d56c7b63b614ce3a0f895345cb20569c6a6f573e09a9abee5e5336c",
+    "weighted-clock-only": "257d526f5d56c7b63b614ce3a0f895345cb20569c6a6f573e09a9abee5e5336c",
+    "weighted-observe-only": "257d526f5d56c7b63b614ce3a0f895345cb20569c6a6f573e09a9abee5e5336c",
+    "weighted-bare-steal": "257d526f5d56c7b63b614ce3a0f895345cb20569c6a6f573e09a9abee5e5336c"
+  },
+  "bound_files": [
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/baseline-parity-reuse.json",
+      "sha256": "3de96bf1e96bdc01fef83377d72b080a089e4ec45f754b8d355c44357b5c65cb"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/build-all.py",
+      "sha256": "fb7822bf3bc8833a24892eae5fbb5d1e0032e3d2787d58fedbd18b792e5193d8"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/build-window.json",
+      "sha256": "7fbf8c319e674ae96a9225e0136099914d2ecc5e170b67f93ac41e378139ac64"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/builds-complete.json",
+      "sha256": "297d36dd192c0ca8b61ad1f0576c7e288167d1c2946c2cfced85b2fa25b2523c"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/campaign/analyze.py",
+      "sha256": "ed01a09d557f9eb61f5a2621e2bb0adaeb73f14406692febae61280b5b9cd2e6"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/campaign/approve-qualified.py",
+      "sha256": "feb545772b210686c9e112da3f3d7d783db1e20b328f492a8cc89cacd688e7fc"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/campaign/controller.py",
+      "sha256": "a4864395a3048d8062082222f2ff8415a310cff6292a3738a01623000c509e9d"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/campaign/independent-review.json",
+      "sha256": "04120fdae1b1b642a7155b33f060ef7d88a0390fdc57f9a03b5b0b97f16a3361"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/campaign/plan-template.json",
+      "sha256": "186a655852a02725cb6ba43a8e65ba22dcd766bd2505aece0b8ddc77a1be8016"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/campaign/resolve-plan.py",
+      "sha256": "61919d03ab2f7345c57b0b454dcb689e7c8c1dd73e14d2e8abe6637076bc40be"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/campaign/runner.py",
+      "sha256": "470086d1a9590df0dd3990b14e53c7480d5a700335f56dac58f0df51b6c02784"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/campaign/verify.py",
+      "sha256": "d1f6d81bfb28793632897a77376a5d6944870871379c0d046b1f193783c4f2fc"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/focused-gap-checks/gap-checks-complete.json",
+      "sha256": "78ac02f411904794964f1d2de39c81d36209f85c3f58e06be257b03bfa91c6fa"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/focused-gap-run.py",
+      "sha256": "0281eb884a4fe1d63723534fb0d16705c139de5400c8d5b4ec8f31dc7d8e188d"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/harness-slot-repair.json",
+      "sha256": "0f528bc2b5a209beb40e60472e1803ef3bb4f844766343208f14f43fcd0cfb9d"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/matched-baseline-failures-review.json",
+      "sha256": "fed4bcd975d141b4dee2e1b369971437a21e3736ce3e1955b55f8a9f376a0881"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/preparation.json",
+      "sha256": "6a436101f2fb07ed56f13d32719e91a739fd4ef5a069be899e29098a8894dfc2"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/qualification-independent-review.json",
+      "sha256": "e702cdd58d60dc752f4cc04114fadbef58b70b214ad9ae67dc6ec2ec1eedfbc6"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/qualify-all.py",
+      "sha256": "d8d9760565941e5acb4c119dbf8e6072ef0813d5c3575514907b647691c68e2f"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/rebuild-harnesses.py",
+      "sha256": "15a35ae7de57101dea00d2cf26a62d7d1fc80eb4d2c86f08cf0c3c3d25a0ee19"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/recover-qualification.py",
+      "sha256": "9abb82ac90e7cf20dd92058220c7f13401a276d3891866ab7121b201bb3e2f83"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/recovery-qualification-independent-review.json",
+      "sha256": "c12c5319878691efe3f48d8bb310501be3928ea76190e41e3b26118596830451"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/recovery-root-approved.json",
+      "sha256": "d9b65db23277a6ae18cbd23951bdad26d462a977ba70fcbccef7f237108c00e0"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/recovery-source-independent-review.json",
+      "sha256": "bb8f013bb11ade4d7a20855505821ee3a8f0ca026531f5bfc21bfa30bc1333d5"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/request.json",
+      "sha256": "8fb77b1d5bc532c5314f34ecd99104ffa2b4019eda6ba2a363ab1e0d9aae57c7"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/weighted-independent-review.json",
+      "sha256": "a0ed91d8fae5059408f91b330367a45a9fb249f5c7c48125d2e372924c754888"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/weighted-preparation-bare-diagnostic/summary.json",
+      "sha256": "423079774370fbc914c31269929963d9a99d6a045fe5c2be0577ecdd59352038"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/weighted-preparation.json",
+      "sha256": "569862233ac4ad974647c031cf1cba9a21d3f6fc5608066dcee09c49398e5f1e"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/recovery-3/classname-repair.json",
+      "sha256": "a351fed5a3507f8325dd9b7567d20f7ff7e43f846a4d72dd2bb10af82b7dab63"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/recovery-3/gradient-classname-exercise.json",
+      "sha256": "0b6fa127cfd3bf1de44d2c850bafb456bb3f4366046e1adc0d6ebe88aa366e8c"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/confirmation/latest-wake/baseline/build/linux/client/release/src/glob2",
+      "sha256": "4a90fb41dbd1ac1bc674930a29cc4581d9fa87a638f04b57137df8eea5e8d0e9"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/qualification/baseline/complete.json",
+      "sha256": "b1f6cd7d152877b928ef637906c24f885d2899f5f5d44836dfe9830ece07bbbf"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/recovery-1/qualification/baseline/parity/parity-Playground-n1-cpu-nicowar/command.json",
+      "sha256": "804f6cd66e4af7f791f13201b76e6aff2e9ca64dfa0f6036e8cadf189aca0347"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/recovery-1/qualification/baseline/parity/parity-Playground-n4-cpu-nicowar/command.json",
+      "sha256": "3237c4e560391eebac08dab6b3b6797b700ebea992f982354f920701a27e0d19"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/recovery-1/qualification/baseline/parity/parity-Playground-nauto-cpu-nicowar/command.json",
+      "sha256": "a50d911df30665622c2f6a1bf22d83ca38c3b95d786ca0e7a8b6414fcf3fb4b4"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/recovery-1/qualification/baseline/parity/parity-Playground-n4-opencl-nicowar/command.json",
+      "sha256": "a4598326f8cfbc2387bcb66125dede520319577ab283873f66924b9ad261247b"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/recovery-1/qualification/baseline/parity/parity-Playground-nauto-opencl-nicowar/command.json",
+      "sha256": "754d17d55c6d2b515d0a99f5f8a72ab27449ddfb719fed16ecbccbd3321a050f"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/recovery-1/qualification/baseline/parity/parity-Playground-n4-cpu-mixed/command.json",
+      "sha256": "912985a841dc7cfc8f9f7cb090ee495f724570317576ebd9eb73c31ab862311a"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/recovery-1/qualification/baseline/parity/continuation-Playground-n4/command.json",
+      "sha256": "b00efc89ba9895c7abca65f10ace87dd4201fb84fc7920eded39cb133d2aeaf2"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/recovery-1/qualification/baseline/parity/continuation-Playground-nauto/command.json",
+      "sha256": "8ed3b1dc3c2060c70dbc3ab518711702c2c0d9c0906b2d3925f74a074ec4e7fd"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/recovery-1/qualification/baseline/parity/parity-Oazis-n1-cpu-nicowar/command.json",
+      "sha256": "bcc74d03bbf81928299a7990c62bb9c98bd2880df99d18f0a99cc83a8e1e443c"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/recovery-1/qualification/baseline/parity/parity-Oazis-n4-cpu-nicowar/command.json",
+      "sha256": "dcc05f6e98e1ec467bdda87e1da2738bffad4a5ceb2110f9f69607378b2abe65"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/recovery-1/qualification/baseline/parity/parity-Oazis-nauto-cpu-nicowar/command.json",
+      "sha256": "fd8cab5d4c8f9d8917a55aba51c7de86f750c6836c19dd954bb5f4db102cb8f5"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/recovery-1/qualification/baseline/parity/parity-Oazis-n4-opencl-nicowar/command.json",
+      "sha256": "9dc5c9d4159b63a3e1a1b35ebad16da420730ee8d07fb8b9856aa83f3a0c3315"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/recovery-1/qualification/baseline/parity/parity-Oazis-nauto-opencl-nicowar/command.json",
+      "sha256": "132ff4475e92a89c8ec386408940b53f16b31bc7aa8dd3392203ab2e564f1b58"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/recovery-1/qualification/baseline/parity/parity-Oazis-n4-cpu-mixed/command.json",
+      "sha256": "27e3983f7aa170a221cbb13ef9910cba250ee151e9869077e1b064da18de78d9"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/recovery-1/qualification/baseline/parity/continuation-Oazis-n4/command.json",
+      "sha256": "61ebfa97b9b87d401b00e315c21a7d71c873a34d8822bea680ae8e0e0d23bc9a"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/recovery-1/qualification/baseline/parity/continuation-Oazis-nauto/command.json",
+      "sha256": "32ad48a598217112f1d5a730f79a9e68596d0d79c5859df261eb6d34994865d9"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/recovery-1/qualification/baseline/parity/parity-small64-602-n1-nicowar/command.json",
+      "sha256": "d9e201394960641c6cb5908f8b6048e1f95e4118b2151306d0fb979ef416d76d"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/recovery-1/qualification/baseline/parity/parity-small64-602-n4-nicowar/command.json",
+      "sha256": "7caed816d2801dd2eb19ee94b9cb937e1471eda67daf87ac707d496c5895dc3c"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/recovery-1/qualification/baseline/parity/parity-small64-602-nauto-nicowar/command.json",
+      "sha256": "d28c35cc769e230e2919fec984fe7c57b6257fdb3f5b4bd06c32c83b9f2e6ded"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/recovery-1/qualification/baseline/parity/parity-small64-602-n4-mixed/command.json",
+      "sha256": "da86984dd59735dd5f0c98f0759eac2b785419fe0541128f24abdff042e993ca"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/qualification/baseline/focused-unit/command.json",
+      "sha256": "8680a2074020e256c088b5c07f541751da111670b3008100d365563f1586a085"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/qualification/baseline/focused-unit/junit.xml",
+      "sha256": "403fcf892ff1bc57296f0b3b6bbcbaddfad579d86eded405b78b2a1960aa3c28"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/qualification/baseline/focused-unit/stdout.log",
+      "sha256": "3f0d97623a4abed95d57eff58454fe09dee28a14cd99111d19ab1ceb9b91eb5e"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/confirmation/latest-wake/baseline/build/linux/client/release/test/glob2-unit-tests",
+      "sha256": "87166d79204ddede9fc30b125814536cdd374acc1f5f69f8e982ff58ac8c1098"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/qualification/baseline/focused-engine/command.json",
+      "sha256": "1fb2206143514c5b783827544b3189b58c41a8c28356b8ef6d5217ff2cd90125"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/qualification/baseline/focused-engine/junit.xml",
+      "sha256": "8a4b0ae48b55758e9c15f705390257a97371775a60fa12b63494c70ed16116c5"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/qualification/baseline/focused-engine/stdout.log",
+      "sha256": "b2a2b278a21250ea94b2abfc50775d39ef39cb961a23ed6906fbc300da1bf981"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/confirmation/latest-wake/baseline/build/linux/client/release/test/glob2-engine-tests",
+      "sha256": "1cd9d0a1d834c6a3496d364920a44b242f12f4e3ec6ad9c29dadfa04fd85e7ec"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/focused-gap-checks/baseline/gradient/command.json",
+      "sha256": "1bc4aa5e8dfe6274625e9ef827aaa66748c7b44bb9cc446b6587fe0ddd5daf59"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/focused-gap-checks/baseline/gradient/junit.xml",
+      "sha256": "b7446513b3ef807d89474c44122a08ba191d40425eb2c73453cde6ac65835e9e"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/focused-gap-checks/baseline/gradient/stdout.log",
+      "sha256": "7b9c06087789279d0ee49e42e41f9465ba96a99c0e4f3e0381932f960c5f5af0"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/confirmation/latest-wake/wake-only/build/linux/client/release/src/glob2",
+      "sha256": "99fbc82a526f0e15035bc675e50ac604a056574e931e077b3de955d19ce273a2"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/qualification/wake-only/complete.json",
+      "sha256": "2bebbd6e641ef24d27891914046ca5655fbf63604630b12c92a5c93c03f93ecf"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/qualification/wake-only/parity/parity-Playground-n1-cpu-nicowar/command.json",
+      "sha256": "4adcf635de642c3fff0cc7d34483c242ecbdc6b9817e555f19b50d4e34a27ba9"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/qualification/wake-only/parity/parity-Playground-n4-cpu-nicowar/command.json",
+      "sha256": "f32cc732fe8b3767189e56a79540cbe63fba9c004d715b76282f43804305aad1"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/qualification/wake-only/parity/parity-Playground-nauto-cpu-nicowar/command.json",
+      "sha256": "0b1e70ca7e87b52ddf19979071c06355bfaa27916df9889316e3eea59cc1f620"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/qualification/wake-only/parity/parity-Playground-n4-opencl-nicowar/command.json",
+      "sha256": "05758ddfa06158a3fd45a9beaf3c0063c946fb2d95abfe1c596e0412dae5e99f"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/qualification/wake-only/parity/parity-Playground-nauto-opencl-nicowar/command.json",
+      "sha256": "1402fcc8fd06901b9a39c3423f5bb4f8b0a0a36658bc5ca57d10bdd0a31b3055"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/qualification/wake-only/parity/parity-Playground-n4-cpu-mixed/command.json",
+      "sha256": "f814c11fda29fbbd15d7b6e7b4899b5b359049b353c808c7f76e4eaac729b274"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/qualification/wake-only/parity/continuation-Playground-n4/command.json",
+      "sha256": "daa78284d0847f0033156bbb473663f63a6c387755d7188ebf57d4055fff6290"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/qualification/wake-only/parity/continuation-Playground-nauto/command.json",
+      "sha256": "c63071bea34b75a79310d7d8748707be52dec97667eb5980daa517cd8fe8925f"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/qualification/wake-only/parity/parity-Oazis-n1-cpu-nicowar/command.json",
+      "sha256": "4b8de35435c9fb1595faf2f944e847ad89f89e43a9c7aedfb5e81a41a3e5e090"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/qualification/wake-only/parity/parity-Oazis-n4-cpu-nicowar/command.json",
+      "sha256": "c183e63f25b7b68825d65605d0c3cde8327b0660a0439991398a38caddad786a"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/qualification/wake-only/parity/parity-Oazis-nauto-cpu-nicowar/command.json",
+      "sha256": "6d3ec4616ccb56ba34ef9e51edb37246b4526f74643a30fb71a8df69a50f75eb"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/qualification/wake-only/parity/parity-Oazis-n4-opencl-nicowar/command.json",
+      "sha256": "829bfd0dd5552ef1709822e2fe7e2cd11dcb15970f01d9578b9d6f60c1a678a5"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/qualification/wake-only/parity/parity-Oazis-nauto-opencl-nicowar/command.json",
+      "sha256": "e975bd865ecdf536b6bd145d2937d3819c3554f42d13cbba92d7de23bcbba292"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/qualification/wake-only/parity/parity-Oazis-n4-cpu-mixed/command.json",
+      "sha256": "55b2360087b8116e1c8c6116afbb57b07f70b4b0a860d98ca954e6dc84f27d2c"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/qualification/wake-only/parity/continuation-Oazis-n4/command.json",
+      "sha256": "f5306e3f7138953c0fb5ac68e0e95f25e735d61bf6551007664a75f53db99d7d"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/qualification/wake-only/parity/continuation-Oazis-nauto/command.json",
+      "sha256": "3563ff66c3c39eff992c8961d67710c7e5d391fcb2eac6d3ee4823962b6546d8"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/qualification/wake-only/parity/parity-small64-602-n1-nicowar/command.json",
+      "sha256": "c96d88fea2e94479c957bdf354effd3f324efd7ed95643872f21c29834294370"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/qualification/wake-only/parity/parity-small64-602-n4-nicowar/command.json",
+      "sha256": "822b24c2d5241bf30f0f5134fdcfcd58550601fdcbd99185272e59b98a82b4c0"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/qualification/wake-only/parity/parity-small64-602-nauto-nicowar/command.json",
+      "sha256": "9d9a8991ed1dcf14be5810005424f4dba17949c9c2fbde5b6184f26fffe17797"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/qualification/wake-only/parity/parity-small64-602-n4-mixed/command.json",
+      "sha256": "edf254e722d2fe2b8cada5716f58d5e927c8fc78ea547e3b89fcee096f9b9425"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/qualification/wake-only/focused-unit/command.json",
+      "sha256": "461cd5f890448bc0231f39a6a423816eb7eafcec33d42244ed0aaf88d267c02e"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/qualification/wake-only/focused-unit/junit.xml",
+      "sha256": "580dd7c1b0b39cd426d37434bb2c37b338c456ca538970418cbdac9cf1bea803"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/qualification/wake-only/focused-unit/stdout.log",
+      "sha256": "fc15dc314b69577fb19858eb11a997018f810d31460513fb19a75917f32c72dc"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/confirmation/latest-wake/wake-only/build/linux/client/release/test/glob2-unit-tests",
+      "sha256": "14c6d991f4950ed42e599acba57cf9d2910b99bdc359ceb759ac9d4660745f68"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/qualification/wake-only/focused-engine/command.json",
+      "sha256": "7db3549b5c17445a5daba38696d4cba14a96fd440d6b2c18c167c28ed2666ae8"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/qualification/wake-only/focused-engine/junit.xml",
+      "sha256": "886325e14aee3e2c83cff522f0a9fad08017d38803f9c46204146eb9e49ddc6a"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/qualification/wake-only/focused-engine/stdout.log",
+      "sha256": "3de9a469417d673b6b03ff322885753c94a6f276b731878b77e4dad9e9b9ce10"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/confirmation/latest-wake/wake-only/build/linux/client/release/test/glob2-engine-tests",
+      "sha256": "33e5de242d4c65c8b94e1f947bd0d69dbda5375dc6d065ec52e821823c3d000f"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/focused-gap-checks/wake-only/gradient/command.json",
+      "sha256": "56b3adb57fb402e38edb63ba32f1e5c6f70bdd59edd0c81a7efac5e3ece6c63c"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/focused-gap-checks/wake-only/gradient/junit.xml",
+      "sha256": "6004deb30831383ec7eb2e9b74ade2be8b93a791fcd585437924f6de8355ece0"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/focused-gap-checks/wake-only/gradient/stdout.log",
+      "sha256": "2eb641dda2441920292149e7da4bf03dfc63feccb0f92d3861b7e41d9b9d0a49"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/first-steal-source/build/linux/client/release/src/glob2",
+      "sha256": "dee303f16c67f787651f14a601d73d23657dbb7a3b638f91b46952372fa76103"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/qualification/first-steal/complete.json",
+      "sha256": "ebac93e2acabada0dd4bc4b014cd4854871e9e45db8ee55c54f3076a4bee7659"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/qualification/first-steal/parity/parity-Playground-n1-cpu-nicowar/command.json",
+      "sha256": "700dc65511ccc4eec9f697f041ef34d06d07e676bc9effbf0ef08f18b95b62d8"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/qualification/first-steal/parity/parity-Playground-n4-cpu-nicowar/command.json",
+      "sha256": "e0a0230d4114cd128a4a4761b50c8ab18414f694ddf7866ca322284054069f55"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/qualification/first-steal/parity/parity-Playground-nauto-cpu-nicowar/command.json",
+      "sha256": "18032ca677cc2c828a20571cb7836b4c4b80e45a91eab0ea1558feb4a8859608"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/qualification/first-steal/parity/parity-Playground-n4-opencl-nicowar/command.json",
+      "sha256": "d4efcc200d78b14325a670571ed63f8bfe23e7d5f09e4c7738e8bbeb2e3a7587"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/qualification/first-steal/parity/parity-Playground-nauto-opencl-nicowar/command.json",
+      "sha256": "582af029bb3500ab76526baad0db483b1cbdfa8623b710419691fe1518dcc9a2"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/qualification/first-steal/parity/parity-Playground-n4-cpu-mixed/command.json",
+      "sha256": "c6dd807c3be5bf36da79c2e9e3064fc247a684b133acb7b34e7072885f5f2ceb"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/qualification/first-steal/parity/continuation-Playground-n4/command.json",
+      "sha256": "4408fca575381467b8580d5e22001de75773e94cbceb15cde13a12d904f78794"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/qualification/first-steal/parity/continuation-Playground-nauto/command.json",
+      "sha256": "97519d8acc722ed5b85ba95c2a1028abc6a8eeda9f3e12b4959a189d4583c263"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/qualification/first-steal/parity/parity-Oazis-n1-cpu-nicowar/command.json",
+      "sha256": "70a9630493c1b06447d50013f90b76805a5a3ed8638b693c5387d16499678c9f"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/qualification/first-steal/parity/parity-Oazis-n4-cpu-nicowar/command.json",
+      "sha256": "54d43d705977db7b861ce62d7cf3a7b420ea116d8d091279b0cf73a1128dbf2d"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/qualification/first-steal/parity/parity-Oazis-nauto-cpu-nicowar/command.json",
+      "sha256": "6f03ba4b85940fc0360eb850b64f9a52ba40b596294e7b1076ff7c332dde5d31"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/qualification/first-steal/parity/parity-Oazis-n4-opencl-nicowar/command.json",
+      "sha256": "981e986ce35f1cdee6e94e1c2c19bfa30cb04d219391b9ea5b897cb51b1d39d6"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/qualification/first-steal/parity/parity-Oazis-nauto-opencl-nicowar/command.json",
+      "sha256": "6d31256ec708f866be53a68724933b8a53b893cc028f1229066768ab74a8a2a3"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/qualification/first-steal/parity/parity-Oazis-n4-cpu-mixed/command.json",
+      "sha256": "1904e498420bfc6cfa42e08c68659e3f1b951bcbec20e3f98bb7836344b0c0f7"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/qualification/first-steal/parity/continuation-Oazis-n4/command.json",
+      "sha256": "02d9447f1a10e634aa7bfc72a04b8cfcb57e42dbf2bb46fb814d5c1c4c6fc194"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/qualification/first-steal/parity/continuation-Oazis-nauto/command.json",
+      "sha256": "fed2b9e939be20fa2f0d8c8e99a4cfd14bb1688e6c85dde08f46a724749f16ba"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/qualification/first-steal/parity/parity-small64-602-n1-nicowar/command.json",
+      "sha256": "6d2710461c0f5d645a6fcbbb62861afcd92773327b092020f7a2ab34319424d8"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/qualification/first-steal/parity/parity-small64-602-n4-nicowar/command.json",
+      "sha256": "4c622feee6ca42c04de6fec6a700e50c2d7a9db319ace47d8b7807de293ff673"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/qualification/first-steal/parity/parity-small64-602-nauto-nicowar/command.json",
+      "sha256": "aa96371196ce1382ba5000e02c43f566e986910f4b3c95e3162894c896700424"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/qualification/first-steal/parity/parity-small64-602-n4-mixed/command.json",
+      "sha256": "236584283e85820d14c2ef84f05a901d6582224fce342e0f56697f1360df713f"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/qualification/first-steal/focused-unit/command.json",
+      "sha256": "a3020ebcaa1aae6dcf3186c9f12b3e677fdfe0529f8550fa1fdbb8815f541866"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/qualification/first-steal/focused-unit/junit.xml",
+      "sha256": "d4f817982761c3b35c952101b123f6e1b63b9d7e4dfe1fadfedf77c698adcf99"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/qualification/first-steal/focused-unit/stdout.log",
+      "sha256": "36ea01b269cb8657f9e4ccfb5582e55d29dd2af27dded400685475b814ab9a69"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/first-steal-source/build/linux/client/release/test/glob2-unit-tests",
+      "sha256": "dd3601149469fdb85da7f086e6fae109a743ca412c2e2c4a876d483730a1937b"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/qualification/first-steal/focused-engine/command.json",
+      "sha256": "b1080c42f288c088a5da1c21827eef91989ee9f220831128fe8a8a8e8d2dc440"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/qualification/first-steal/focused-engine/junit.xml",
+      "sha256": "d8b8597d36c04d41d826117afcef03b01794d73c6f775c6edffc873eec160da9"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/qualification/first-steal/focused-engine/stdout.log",
+      "sha256": "55533f9c7049ebe74875efce8e5f5494adfe4e7728e5a87dd891e5647d6b4056"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/first-steal-source/build/linux/client/release/test/glob2-engine-tests",
+      "sha256": "9f696465c932f66f4af2799061cad54d3ccb7b4bea18bdf4eb3d89e63c05b50a"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/focused-gap-checks/first-steal/gradient/command.json",
+      "sha256": "8998a4282c244e2105d5c1da29949aa9941441c873718b9d730fdb49f59fd2d4"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/focused-gap-checks/first-steal/gradient/junit.xml",
+      "sha256": "6583959a25af83f37faed52827a0fefb56dfb4b40f9368bffdb3c86a9f1849db"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/focused-gap-checks/first-steal/gradient/stdout.log",
+      "sha256": "27127f221fecd34a655522b6c091a80e85ffa6a391c91f091bed2bc2b6246d0a"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/local-source/build/linux/client/release/src/glob2",
+      "sha256": "30361dab0356ac87d8644e9e5780c1cdbddb6627b15f6b5b2d452369ce0bbcff"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/qualification/local-completion-round-robin/complete.json",
+      "sha256": "edeeae419128b2d559a48a04cf67c0a72123b31e4c078524ecfe382554709bfe"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/qualification/local-completion-round-robin/parity/parity-Playground-n1-cpu-nicowar/command.json",
+      "sha256": "80c06231e708b3db38d49f14ffb0312ba3ef4f53ea4c546783762d8e75444f73"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/qualification/local-completion-round-robin/parity/parity-Playground-n4-cpu-nicowar/command.json",
+      "sha256": "b8b1f4342718c592e07675844b7c9059ffdc1867d3e8f6e663f255abfe1a6201"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/qualification/local-completion-round-robin/parity/parity-Playground-nauto-cpu-nicowar/command.json",
+      "sha256": "77c65fcf18bddf21d21675d47d9801d7502c235d68ab6f2fc71edc6f66d2fb23"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/qualification/local-completion-round-robin/parity/parity-Playground-n4-opencl-nicowar/command.json",
+      "sha256": "43d146b83045993acaa79211e557ce03499f6404a4f5b1da2fe30f620d71563c"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/qualification/local-completion-round-robin/parity/parity-Playground-nauto-opencl-nicowar/command.json",
+      "sha256": "93a1ab28f6e56fe64970ac6435861b58ec99a4aec55e3b6bb7f4b0c2fb82b0a8"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/qualification/local-completion-round-robin/parity/parity-Playground-n4-cpu-mixed/command.json",
+      "sha256": "f5b39ede637782344c1265d683e5f43146c82abc0118b987c51608f117cdf6c3"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/qualification/local-completion-round-robin/parity/continuation-Playground-n4/command.json",
+      "sha256": "cc29122ec8939a6010cc7409171ab5be7f8586ad41f45152f5e83f517b8c7a98"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/qualification/local-completion-round-robin/parity/continuation-Playground-nauto/command.json",
+      "sha256": "eb91b5643c3d3fbc393fb625e5afe167ab1f1e41f05126b52112653ebc23a8f7"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/qualification/local-completion-round-robin/parity/parity-Oazis-n1-cpu-nicowar/command.json",
+      "sha256": "ea0205dc5e377d58a582aad3850527ba311ce5f1f180ce2d746036f3082d9061"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/qualification/local-completion-round-robin/parity/parity-Oazis-n4-cpu-nicowar/command.json",
+      "sha256": "05d91b888034fe4dc47cbfef6ffbc0aef8c599997220512093528722cf2d3d50"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/qualification/local-completion-round-robin/parity/parity-Oazis-nauto-cpu-nicowar/command.json",
+      "sha256": "e64371eaec82bff0abd6be6e38c1a937bffe6f7f0464e2260644cd793857fbdc"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/qualification/local-completion-round-robin/parity/parity-Oazis-n4-opencl-nicowar/command.json",
+      "sha256": "ef2ca85e3a94c6fc05db85fb7bc47dc9e07b967caa34ab3c19443a313f8edfa9"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/qualification/local-completion-round-robin/parity/parity-Oazis-nauto-opencl-nicowar/command.json",
+      "sha256": "d6e001cc0e49dbe46604edcc3199a1c21ff869af61ad681645f1249f039d63bf"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/qualification/local-completion-round-robin/parity/parity-Oazis-n4-cpu-mixed/command.json",
+      "sha256": "04d24138161b174eb5d7a6906fab1e7483b361cf382f327ae9e888390e63e994"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/qualification/local-completion-round-robin/parity/continuation-Oazis-n4/command.json",
+      "sha256": "eda9f9fc2ab952e370c2d8aa82d6431cbd93a756b418f9fe4d02cebb06c782e0"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/qualification/local-completion-round-robin/parity/continuation-Oazis-nauto/command.json",
+      "sha256": "21796cae91f53786e02037e17d38a83b5b188a69e6743e1fa8ed699b3a3b234e"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/qualification/local-completion-round-robin/parity/parity-small64-602-n1-nicowar/command.json",
+      "sha256": "7b8cb7cf9a6b8910af8b35af782eda446a5a17d744b31dfb7c3f7af4bbc73c2e"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/qualification/local-completion-round-robin/parity/parity-small64-602-n4-nicowar/command.json",
+      "sha256": "ef6f49141b1e1e20007ca60c61dd4c3d5913cb359e95f346a2b748d6328a5856"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/qualification/local-completion-round-robin/parity/parity-small64-602-nauto-nicowar/command.json",
+      "sha256": "aff3dcffb91c2c1139e2399af4e5c1dac00e5c4b12f485616f1b65e8aa4d64c2"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/qualification/local-completion-round-robin/parity/parity-small64-602-n4-mixed/command.json",
+      "sha256": "2ba03a3af74765a5a23342fbacbda69eefcbad783d8ae52f8f7f232e992e54dc"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/qualification/local-completion-round-robin/focused-unit/command.json",
+      "sha256": "f7b4e8c4447caad7717420d4f4cdeeaf6f659f53649a90d06d972dee5dc624e7"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/qualification/local-completion-round-robin/focused-unit/junit.xml",
+      "sha256": "c71a804192a41953c97065a4ff859f0fbeb3dc242d45e9a420510548875cf268"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/qualification/local-completion-round-robin/focused-unit/stdout.log",
+      "sha256": "3807866679446fe571a7418baca01b4827bbaa921ebb117082d75e1e84dcc96f"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/local-source/build/linux/client/release/test/glob2-unit-tests",
+      "sha256": "21fdce3bc9c1d4d67159f0f5bc01c4a91499b51542d47a5e40f5fb45775e29ee"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/qualification/local-completion-round-robin/focused-engine/command.json",
+      "sha256": "073159157b884085bb90c6f4191374dedde4f53a08f33e1524ac41ef6f5e24a2"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/qualification/local-completion-round-robin/focused-engine/junit.xml",
+      "sha256": "972de1c20d3ed67e958f3100195b15ff7b902194b241fe400a901c9c406f23f3"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/qualification/local-completion-round-robin/focused-engine/stdout.log",
+      "sha256": "afad2cdcd80f75d5e1fe2117b62ba1ad3284266e906ff73cde3de7f9c33a3c95"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/local-source/build/linux/client/release/test/glob2-engine-tests",
+      "sha256": "24649096e38e3d721f15f0153d69909f142d5d83462fa0fe65b005d1440f1ef3"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/focused-gap-checks/local-completion-round-robin/gradient/command.json",
+      "sha256": "0836eedca871b45d9f0d0eb93b5b62bc24c35a755bf6af9c2e09c023616f723c"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/focused-gap-checks/local-completion-round-robin/gradient/junit.xml",
+      "sha256": "b409c9e09a3e5d14edb4217e872e4e6ea407f107960090469a31ede648cad1c4"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/focused-gap-checks/local-completion-round-robin/gradient/stdout.log",
+      "sha256": "725d0a111a8f422e896b1ac7e16f39cdf3151f837584fab5f1592c71a9aa0bed"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/qualification/local-completion-steal/complete.json",
+      "sha256": "0ede3642455c06a57f0f48defa430e6897bd4d7048ae82a9d3be1801942cd849"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/qualification/local-completion-steal/parity/parity-Playground-n1-cpu-nicowar/command.json",
+      "sha256": "2f98052967f5d8286046560c29946e8b8f3c6c4074805e3f0581bf45928c7cab"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/qualification/local-completion-steal/parity/parity-Playground-n4-cpu-nicowar/command.json",
+      "sha256": "db4b588ef378fdd1772fa5b430c9e4c6eff6b5df8f89f2b13d87c16e2029627a"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/qualification/local-completion-steal/parity/parity-Playground-nauto-cpu-nicowar/command.json",
+      "sha256": "8b27281306bd18b4b4b931e721af3e21477cc5bc062df384a045310f195743ed"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/qualification/local-completion-steal/parity/parity-Playground-n4-opencl-nicowar/command.json",
+      "sha256": "51129b0ab13d1ee05356cff02ab74a37c1451392190f481fa84b9e406d847a15"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/qualification/local-completion-steal/parity/parity-Playground-nauto-opencl-nicowar/command.json",
+      "sha256": "ea57894b7413b74219ba7928e670af42455aff836c517e3e937a3336c0be6c63"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/qualification/local-completion-steal/parity/parity-Playground-n4-cpu-mixed/command.json",
+      "sha256": "aad62eaf36b02564812eff80b9e52af3f3790bd6fe2c086e9c079d3d38af1c45"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/qualification/local-completion-steal/parity/continuation-Playground-n4/command.json",
+      "sha256": "19d8da2d8319fc47ab617b012b9d29b736af63979c4c6a7b5d01a03fa4b3cd6e"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/qualification/local-completion-steal/parity/continuation-Playground-nauto/command.json",
+      "sha256": "80487781345e55ff47ac4060e5ce8bc31ffd1bc9dc5dce8ce4d409bb3c69c51e"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/qualification/local-completion-steal/parity/parity-Oazis-n1-cpu-nicowar/command.json",
+      "sha256": "3ef983b31321cf7cee129b88cdd8391e40173dc27c8dffa517f478331f1a5a58"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/qualification/local-completion-steal/parity/parity-Oazis-n4-cpu-nicowar/command.json",
+      "sha256": "4dd949a3a497a693cf81c9236a4653a45bb358c0fdc53e7513f1d316638c9461"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/qualification/local-completion-steal/parity/parity-Oazis-nauto-cpu-nicowar/command.json",
+      "sha256": "53db2fd844daf5912383a25331ce2abcb3187faeed0f11df42321e91763e4f1f"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/qualification/local-completion-steal/parity/parity-Oazis-n4-opencl-nicowar/command.json",
+      "sha256": "6fbfb8102cc72864a23a90704d65b66a7a87f8d687249de247432bf855f100cf"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/qualification/local-completion-steal/parity/parity-Oazis-nauto-opencl-nicowar/command.json",
+      "sha256": "ebe954841cd6a28f95f7b8a382e02ddbdea9dd5e24a801ab75134d3b95fe12bb"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/qualification/local-completion-steal/parity/parity-Oazis-n4-cpu-mixed/command.json",
+      "sha256": "023d2cf8143dadebecb5ea2272c985b5e55adea9ee281317ff208b30d13268fb"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/qualification/local-completion-steal/parity/continuation-Oazis-n4/command.json",
+      "sha256": "4270435063dbd5006db17ef21832f2a22541fc62cae68bc4444fe25ca90d7c9a"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/qualification/local-completion-steal/parity/continuation-Oazis-nauto/command.json",
+      "sha256": "ab7a8e90a3fe2e6e51245371d09441b054a17d630b7bb7d11fca3765933a5281"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/qualification/local-completion-steal/parity/parity-small64-602-n1-nicowar/command.json",
+      "sha256": "a2ce3eba58a718a885365ddc322eba9137a4d0747ded5aed0269f44028135d2c"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/qualification/local-completion-steal/parity/parity-small64-602-n4-nicowar/command.json",
+      "sha256": "0d935648eb2f63abda0f0d9566ab52fd2d24657c5daf1ee84866352542b8d7d3"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/qualification/local-completion-steal/parity/parity-small64-602-nauto-nicowar/command.json",
+      "sha256": "284c7f2abb6e4e08ea0d1632cbc0c182ce15777a5b21fa57216c9af1b4a6abbe"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/qualification/local-completion-steal/parity/parity-small64-602-n4-mixed/command.json",
+      "sha256": "2c92114076ebd2de283a9518320b406120144c17e63b382a02313f222365f6d3"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/qualification/local-completion-steal/focused-unit/command.json",
+      "sha256": "0e3eb97e490358e82cace4469bbdca5fe0a208d97fc8bbf3a7a1b6b477a32b45"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/qualification/local-completion-steal/focused-unit/junit.xml",
+      "sha256": "0e083dc3acfec165b649ebf699c4dc386343cdeec8fd0b703f10af895e203ff3"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/qualification/local-completion-steal/focused-unit/stdout.log",
+      "sha256": "4d47b1cbd875a0078a58e569139b1fdc4a32337ba941eb5b455d44c86627c159"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/qualification/local-completion-steal/focused-engine/command.json",
+      "sha256": "754c6c7e0a27baebaa5bcccdd441a26ed8c96daf113d144209de7391bba0c465"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/qualification/local-completion-steal/focused-engine/junit.xml",
+      "sha256": "936d25b996a3cd555598f5a85b8fc0def06d7ae6b69d2544c41bb96b1dd415fb"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/qualification/local-completion-steal/focused-engine/stdout.log",
+      "sha256": "9feb9fb22a592eadf67bcc46af814e5fb7faf27c5b218be18a51d42fd57b7ed2"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/focused-gap-checks/local-completion-steal/gradient/command.json",
+      "sha256": "2a9b6beda3b0f4e7009c3c7bba2d12e9bb85f9b3d5572891312750753abce23b"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/focused-gap-checks/local-completion-steal/gradient/junit.xml",
+      "sha256": "93ce4414d45ed970cef90f6e21241b20be33ff4ed8a129439eee5e4bcd0a8e3e"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/focused-gap-checks/local-completion-steal/gradient/stdout.log",
+      "sha256": "725d0a111a8f422e896b1ac7e16f39cdf3151f837584fab5f1592c71a9aa0bed"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/priority-source/build/linux/client/release/src/glob2",
+      "sha256": "1e50e84add3885c2c58d96a4fa702928a421144137bdb8b7ae66cdce5ffdbdd8"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/qualification/local-priority-steal/complete.json",
+      "sha256": "48a14a16f1bf1845ffd0aa83f0f2680d2035ca4865d553a85506706dfa94ee13"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/qualification/local-priority-steal/parity/parity-Playground-n1-cpu-nicowar/command.json",
+      "sha256": "cb0a01d850436660343db48d7d5a72d334e62a6dd9ef6e8d1b4f34fc74cd66d1"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/qualification/local-priority-steal/parity/parity-Playground-n4-cpu-nicowar/command.json",
+      "sha256": "9f36851c0b0a509d8e475c9a316b62c40439820256d9538a620fb2b39c4b06f0"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/qualification/local-priority-steal/parity/parity-Playground-nauto-cpu-nicowar/command.json",
+      "sha256": "47158acd187505c870c0458d1ef4b5dcc73f41fd5838dfa3161f40c418a035eb"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/qualification/local-priority-steal/parity/parity-Playground-n4-opencl-nicowar/command.json",
+      "sha256": "9da098a130f78dbe55491ad1345a887cfc301f80136db48aeaa9a9300fb4d6ae"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/qualification/local-priority-steal/parity/parity-Playground-nauto-opencl-nicowar/command.json",
+      "sha256": "0c313830a67ac8d7cdecf782f68c1f8c943b93c9009c91b8bf705b1b608d5609"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/qualification/local-priority-steal/parity/parity-Playground-n4-cpu-mixed/command.json",
+      "sha256": "b7551614037705bf306afa29674031de032ee2de31c6e3375633ec29a9a68745"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/qualification/local-priority-steal/parity/continuation-Playground-n4/command.json",
+      "sha256": "78d437e33e9b8f5d32da12f86fff186ad793865e56edbeef8e3347dd5c6fb2a8"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/qualification/local-priority-steal/parity/continuation-Playground-nauto/command.json",
+      "sha256": "c2835171b6c2a6f99df177f87bbb36ced3e4f80aac4ea062ce3b132b732c2664"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/qualification/local-priority-steal/parity/parity-Oazis-n1-cpu-nicowar/command.json",
+      "sha256": "f2d5608d1903d70f9e46f4c9d8b8f1dcc3e78eff3caaf32931c7b7d530321a2e"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/qualification/local-priority-steal/parity/parity-Oazis-n4-cpu-nicowar/command.json",
+      "sha256": "9a8880e9823caca98283301f3dd880b4888a8fae0bc4151719b8f991d4cd628f"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/qualification/local-priority-steal/parity/parity-Oazis-nauto-cpu-nicowar/command.json",
+      "sha256": "7e75d5d00131b7da246a80e338806c2c1658c0195e8d85c3325450ad09fa379b"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/qualification/local-priority-steal/parity/parity-Oazis-n4-opencl-nicowar/command.json",
+      "sha256": "312e20a83c9f5fcefa4b98c77684d77000cce7463b3f75f23917ef305504213b"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/qualification/local-priority-steal/parity/parity-Oazis-nauto-opencl-nicowar/command.json",
+      "sha256": "de3aabe40769dca6fa5e36226c48ce1688e8484aaed4774b51709b1105e98965"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/qualification/local-priority-steal/parity/parity-Oazis-n4-cpu-mixed/command.json",
+      "sha256": "dade6cee98c450118247b89e1da029e9970b82424c22f4265c260972ae8f4771"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/qualification/local-priority-steal/parity/continuation-Oazis-n4/command.json",
+      "sha256": "d049dad3c59a33004e3e5db19a69726de9545013899e40772b12c5a32f8af3c2"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/qualification/local-priority-steal/parity/continuation-Oazis-nauto/command.json",
+      "sha256": "de8993a2aa7f550f20d27bb70dfff7ac0537647c15ccd7cdd5d71ec97cadc8d2"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/qualification/local-priority-steal/parity/parity-small64-602-n1-nicowar/command.json",
+      "sha256": "fd27d9907bf02d521cbe4e843adbd3050c268e53deda5f68f97f71f028646ec8"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/qualification/local-priority-steal/parity/parity-small64-602-n4-nicowar/command.json",
+      "sha256": "f72441a52271aee399c07ad6f90dfe308a590c0c5721c104fc232179034ede65"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/qualification/local-priority-steal/parity/parity-small64-602-nauto-nicowar/command.json",
+      "sha256": "187f6cbe5ffaf8f17e9dc461e65faf6fddb2de82536347854a98e2ed99f076b1"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/qualification/local-priority-steal/parity/parity-small64-602-n4-mixed/command.json",
+      "sha256": "ebaa8d57ba3a81e8b0067a0414e0a80fac314872a0942cbe8f0f9169b08e6708"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/qualification/local-priority-steal/focused-unit/command.json",
+      "sha256": "d701d175007a729d3acedc3d37f2f3e1d985ca8641d43e9acb9728df12576041"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/qualification/local-priority-steal/focused-unit/junit.xml",
+      "sha256": "5182d8051d3ef7bb09cfba5f99dcfc117b185278fe8916a39a169cec76e34a63"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/qualification/local-priority-steal/focused-unit/stdout.log",
+      "sha256": "0a137484b99749549a9722e35bc36fb97da76cc9d25d39434b60c92bc373935b"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/priority-source/build/linux/client/release/test/glob2-unit-tests",
+      "sha256": "5d3f4c26b2850813af43db01a31ec5cf27585996ceef7b8c9b888647d77612eb"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/qualification/local-priority-steal/focused-engine/command.json",
+      "sha256": "413daf9d97e63e9efd44ff89306c584b8f357734e2f2a513e5d21084022630d4"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/qualification/local-priority-steal/focused-engine/junit.xml",
+      "sha256": "6e44dc94a7a547b99746ec909af4d30c47c0e26dafa6ac6bddebf761496a41fd"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/qualification/local-priority-steal/focused-engine/stdout.log",
+      "sha256": "7ecd23383999e7b0c0cf4f5055ba63fca2e005debfddcf492014149e9d4bb491"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/priority-source/build/linux/client/release/test/glob2-engine-tests",
+      "sha256": "6b7f5b336a193f734a499db4fc62c9a2504e59dfb1f0ecbade2202dfee24abb9"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/focused-gap-checks/local-priority-steal/gradient/command.json",
+      "sha256": "cee11aa5a9c3e35e1a627fa9832727bf74221b57030f1abf71fc68522969a2cb"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/focused-gap-checks/local-priority-steal/gradient/junit.xml",
+      "sha256": "3e6a4571c7a96a5cf9fe85db4e1f3176e715f678714dbbc75c641118bc7ab2f1"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/focused-gap-checks/local-priority-steal/gradient/stdout.log",
+      "sha256": "e59ca0e10bd2aca0a44e97d7ff939583b50c2455ea2fcd58984c4e3e9239b63b"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/weighted-source/build/linux/client/release/src/glob2",
+      "sha256": "257d526f5d56c7b63b614ce3a0f895345cb20569c6a6f573e09a9abee5e5336c"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/qualification/weighted-fixed-no-steal/complete.json",
+      "sha256": "1cb98d12081a51d578db26255b609321fecb62a827fc09a2c906420a45f492c4"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/qualification/weighted-fixed-no-steal/parity/parity-Playground-n1-cpu-nicowar/command.json",
+      "sha256": "ed21c99bf245b0ca0858f9fa3319a706760a7df57ab89bd72215fa20bf1baadb"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/qualification/weighted-fixed-no-steal/parity/parity-Playground-n4-cpu-nicowar/command.json",
+      "sha256": "c3a873db569595d649cbdbcf0695376817f1ec5444a258b53bb9a4a5be6d7d77"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/qualification/weighted-fixed-no-steal/parity/parity-Playground-nauto-cpu-nicowar/command.json",
+      "sha256": "1063ccac3ae43800b565636c529b91b5c3782c1125bf6a554cd4dfe743d589a2"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/qualification/weighted-fixed-no-steal/parity/parity-Playground-n4-opencl-nicowar/command.json",
+      "sha256": "c8604c05d9d902d7dde338a383ce8ec4bd76e10c2af288f125d20315098022d6"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/qualification/weighted-fixed-no-steal/parity/parity-Playground-nauto-opencl-nicowar/command.json",
+      "sha256": "eb765c95c7c0cf7e127761a3ee596b49ac674091d0893fb92580390ad994dac4"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/qualification/weighted-fixed-no-steal/parity/parity-Playground-n4-cpu-mixed/command.json",
+      "sha256": "08cb67aae83efca94de055c3d0411bb7000e7131ce1617a973a2b1389e9c26a3"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/qualification/weighted-fixed-no-steal/parity/continuation-Playground-n4/command.json",
+      "sha256": "c538a6c535181ecb289fe71d1c13095d7a154d18c5cea6a9ddcf95e1fdc74f52"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/qualification/weighted-fixed-no-steal/parity/continuation-Playground-nauto/command.json",
+      "sha256": "37c97049603d83313d659a512e1e1766d88361b558f84141a5033cc1b5f55517"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/qualification/weighted-fixed-no-steal/parity/parity-Oazis-n1-cpu-nicowar/command.json",
+      "sha256": "b845b4b1259188f1a920c1fcace1bc5f4527045f11b6cdedbbc19619005ee2d3"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/qualification/weighted-fixed-no-steal/parity/parity-Oazis-n4-cpu-nicowar/command.json",
+      "sha256": "97d4ec82b368d7681ee59cd308eda5c847bc0322f386edacc75c6b72d36749b0"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/qualification/weighted-fixed-no-steal/parity/parity-Oazis-nauto-cpu-nicowar/command.json",
+      "sha256": "8642f653a1ac2c8449d8d2e3bc869194028878f8cce2679ee7458f4ba4ad7e43"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/qualification/weighted-fixed-no-steal/parity/parity-Oazis-n4-opencl-nicowar/command.json",
+      "sha256": "e5b4ff990b5ec3717378aa4be4ccafeefdafc25ba7f4403a8eb4e26d70329db7"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/qualification/weighted-fixed-no-steal/parity/parity-Oazis-nauto-opencl-nicowar/command.json",
+      "sha256": "8fe3977d4aba31c721bceee6696d61c4bd99d857ffae36f5019e36e8a05a4d71"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/qualification/weighted-fixed-no-steal/parity/parity-Oazis-n4-cpu-mixed/command.json",
+      "sha256": "c4bebbe52c4841a2e1e635b67ef7b0acd6a8f750c5338b12b594687b88074b11"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/qualification/weighted-fixed-no-steal/parity/continuation-Oazis-n4/command.json",
+      "sha256": "f38b9150ab510ae3e213cc4efe1541cfebb77be4d19d63b3c22fc3b012f50776"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/qualification/weighted-fixed-no-steal/parity/continuation-Oazis-nauto/command.json",
+      "sha256": "db6fd3ab547c20c492a8ce006f3d8f99fbcd590331f6cf9ea6660125c8ed2820"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/qualification/weighted-fixed-no-steal/parity/parity-small64-602-n1-nicowar/command.json",
+      "sha256": "f57d72487bc844e3160c5d5ca4760bb6f047417061d3f67464a2de4383920f4a"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/qualification/weighted-fixed-no-steal/parity/parity-small64-602-n4-nicowar/command.json",
+      "sha256": "d899cf7468f6fbeb78be8ae3cff041fc5cd975bf6af88f2bdac138c72b8e4716"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/qualification/weighted-fixed-no-steal/parity/parity-small64-602-nauto-nicowar/command.json",
+      "sha256": "37963b77ac8fd07cc57f1b4b8e0b04f24a35188afd70ab9113ef841fea6d5190"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/qualification/weighted-fixed-no-steal/parity/parity-small64-602-n4-mixed/command.json",
+      "sha256": "4d9cd42795972b7f2b8815f7c8368f71b1109a028507b7ab12c7f67aed6397e6"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/qualification/weighted-fixed-no-steal/focused-unit/command.json",
+      "sha256": "8ae4da9273e4e5ac7bfd4587dd09f2fb01b90250b8168e4eb111b27556f6a306"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/qualification/weighted-fixed-no-steal/focused-unit/junit.xml",
+      "sha256": "184f5b3457a9825cca0ddaddd31c24280c53a6a033c3b755cac64f5c07c59ef7"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/qualification/weighted-fixed-no-steal/focused-unit/stdout.log",
+      "sha256": "5fbee1c1f9989b3be21bfd70efa0eb04c8e73bfc0ff6f13ceb170f98b8145ca4"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/weighted-source/build/linux/client/release/test/glob2-unit-tests",
+      "sha256": "8d8e4bc2f5b32f292b066ac4da2e7546376925789bc9fd03fb619c683680336c"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/qualification/weighted-fixed-no-steal/focused-engine/command.json",
+      "sha256": "d44b6c87697a965ed3ee06d1e5bc4026da86eee40c266302075142ed66f7f8cd"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/qualification/weighted-fixed-no-steal/focused-engine/junit.xml",
+      "sha256": "7bf9d645a5092c116bd83e9b2174e9fcf89a0b30b675f9828793cc680db51ae3"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/qualification/weighted-fixed-no-steal/focused-engine/stdout.log",
+      "sha256": "d52f404d248ed8d903b77863f177b546cf3f91c1244211a8e18ce58f8acebba1"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/weighted-source/build/linux/client/release/test/glob2-engine-tests",
+      "sha256": "30ceba8e3d30254ab236d919454d6ec69af536a645df7b289f143850cc4d02f0"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/focused-gap-checks/weighted-fixed-no-steal/gradient/command.json",
+      "sha256": "cd080473bbc3377ee029557d2c10b80821dc3cec2dc9cfb33d6ca6c475e4d83d"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/focused-gap-checks/weighted-fixed-no-steal/gradient/junit.xml",
+      "sha256": "d9529d101ca4235f265b31ad7503b4bc5955f58527bf8d73280d5bbd104e2ae6"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/focused-gap-checks/weighted-fixed-no-steal/gradient/stdout.log",
+      "sha256": "084839f62959bed0bbbc1402d41bf49ade2fb7eb696552246d333e76bb4697de"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/focused-gap-checks/weighted-fixed-no-steal/weighted_verbose/command.json",
+      "sha256": "8b97acb676822395af23cc25273fc7ac3fecdbc8e5b2bd39b04a148e277c3932"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/focused-gap-checks/weighted-fixed-no-steal/weighted_verbose/stdout.log",
+      "sha256": "f94a30c8bbf148cc1f359782d71d2c2d7d7c88f2730ff61fbb7e3b534057497a"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/qualification/weighted-fixed-steal/complete.json",
+      "sha256": "d2096d82045318d634639989009521b986bc5082341dd4e5f9644a22a732a530"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/qualification/weighted-fixed-steal/parity/parity-Playground-n1-cpu-nicowar/command.json",
+      "sha256": "9d4f9ab862cb2603beb3f5bc4b8361e233b8db1230fddd05289fbba1340e7fae"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/qualification/weighted-fixed-steal/parity/parity-Playground-n4-cpu-nicowar/command.json",
+      "sha256": "1c5b5b9170c0a5c89cfaeab80fd7014d6906b8f3b4d785fa41838da7f8891ea7"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/qualification/weighted-fixed-steal/parity/parity-Playground-nauto-cpu-nicowar/command.json",
+      "sha256": "31c8b0238488830c95092f8de66c2e11e7f2f6292401ca63f2b86c497f6cbca0"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/qualification/weighted-fixed-steal/parity/parity-Playground-n4-opencl-nicowar/command.json",
+      "sha256": "8236c4bed183ffa0190324391762935c2af775a9483bf3c1a84f88623f43d14e"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/qualification/weighted-fixed-steal/parity/parity-Playground-nauto-opencl-nicowar/command.json",
+      "sha256": "12a65ce4b070ec74693e32f930798ae903f72406083a2bbe103f8371c9bb6dd4"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/qualification/weighted-fixed-steal/parity/parity-Playground-n4-cpu-mixed/command.json",
+      "sha256": "e0ab506de5f0b96ad1695b56da8b3f1f264808780556aeddaacb4688c826bb9a"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/qualification/weighted-fixed-steal/parity/continuation-Playground-n4/command.json",
+      "sha256": "0502587d5728b849ef8097ab800bbb876d806e8b4f46f71728ef38e99b7ba30d"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/qualification/weighted-fixed-steal/parity/continuation-Playground-nauto/command.json",
+      "sha256": "75c8a1dc9d8d8fd9fbc5da2cf6f9cd9e0d4c1f81ea3ac194f245adf676a37485"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/qualification/weighted-fixed-steal/parity/parity-Oazis-n1-cpu-nicowar/command.json",
+      "sha256": "4290027cf4c6889561f17cb022a86216f6d474e2d4c563b60d6af9e8cee81c18"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/qualification/weighted-fixed-steal/parity/parity-Oazis-n4-cpu-nicowar/command.json",
+      "sha256": "1289319d1ed5ac6f3d0634b2513e0a85107c41de2301df8db190fd26875db3c1"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/qualification/weighted-fixed-steal/parity/parity-Oazis-nauto-cpu-nicowar/command.json",
+      "sha256": "756db9ae4ca70dbfbc6457c06026d46873a2e411461d3a3bd50fb882163e9cca"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/qualification/weighted-fixed-steal/parity/parity-Oazis-n4-opencl-nicowar/command.json",
+      "sha256": "5c3a89a82f46f2e18a89890f89bdbd594445a4ad6fa12b3ebf030fe6abac1a01"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/qualification/weighted-fixed-steal/parity/parity-Oazis-nauto-opencl-nicowar/command.json",
+      "sha256": "e9d5e07e747418e8829871522e698f81e3d5ec48ba475b54ca072c376c88bc28"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/qualification/weighted-fixed-steal/parity/parity-Oazis-n4-cpu-mixed/command.json",
+      "sha256": "89cb1f6b367c344c1ee7202d089380de5ccf7e461fa082eb2da2d3c57c8fe139"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/qualification/weighted-fixed-steal/parity/continuation-Oazis-n4/command.json",
+      "sha256": "3a068dad6b98f2f2f97931cf6ca647f4601c27654914723f1f008bebdea75b22"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/qualification/weighted-fixed-steal/parity/continuation-Oazis-nauto/command.json",
+      "sha256": "fb809b9520a1e88f6485edd7f5335075248920387f22d024bdfbfe7e02c5c031"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/qualification/weighted-fixed-steal/parity/parity-small64-602-n1-nicowar/command.json",
+      "sha256": "8b972e9de2b48870d4514c5974b54943e88ff50103cecc27e2794b7b801103f2"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/qualification/weighted-fixed-steal/parity/parity-small64-602-n4-nicowar/command.json",
+      "sha256": "1ae916c555eb644c5157d40f53e15ab5988196f4c71245347204f68308b86a16"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/qualification/weighted-fixed-steal/parity/parity-small64-602-nauto-nicowar/command.json",
+      "sha256": "e290c7ee7e327dee55481dd1d77334071099663fc76c73a14032ff4736e1595b"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/qualification/weighted-fixed-steal/parity/parity-small64-602-n4-mixed/command.json",
+      "sha256": "acb6f1fc803132666877d63eaf600508a813b6ab0c7c8154260645095b32fc8b"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/qualification/weighted-fixed-steal/focused-unit/command.json",
+      "sha256": "a7b8d0e14bf12bf19cfd89100f0b4ced64f70a2fa407fdcb68196890df819c51"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/qualification/weighted-fixed-steal/focused-unit/junit.xml",
+      "sha256": "8be40a413fd3decd397420d2e92357bebd1ab69e9574a3fd3af38757ba6de070"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/qualification/weighted-fixed-steal/focused-unit/stdout.log",
+      "sha256": "f2caa2c11d1d7ff785d173fce748c70854b320804ef5411155ca49d446a92fed"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/qualification/weighted-fixed-steal/focused-engine/command.json",
+      "sha256": "f7cb512b83f84c68d3cb3d92123fe7c999d04d8b4fab4c8dc0bf87efa94a2b54"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/qualification/weighted-fixed-steal/focused-engine/junit.xml",
+      "sha256": "c8fd3564a1ee6f74a56866728d0d14c8b284a64b012e902e0583f27b7e7291a1"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/qualification/weighted-fixed-steal/focused-engine/stdout.log",
+      "sha256": "1da800f2eb142cde20c7457c95289fadc6caa808dc9b0e95265120a918f4a1c3"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/focused-gap-checks/weighted-fixed-steal/gradient/command.json",
+      "sha256": "d0bb6aa17e664e6867e26c5680345f60f9fd28646f5863074813de3d5df5d5ef"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/focused-gap-checks/weighted-fixed-steal/gradient/junit.xml",
+      "sha256": "c33b587c5535eb92bdfdbcc43bb26f96b937ec1b9c77a5a07a97b0ae6cb3f121"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/focused-gap-checks/weighted-fixed-steal/gradient/stdout.log",
+      "sha256": "084839f62959bed0bbbc1402d41bf49ade2fb7eb696552246d333e76bb4697de"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/focused-gap-checks/weighted-fixed-steal/weighted_verbose/command.json",
+      "sha256": "d2931a343f88088d7d1dd71f7a6e40c1e3fde4fffb673e8ac760bdf2111ebdf3"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/focused-gap-checks/weighted-fixed-steal/weighted_verbose/stdout.log",
+      "sha256": "f94a30c8bbf148cc1f359782d71d2c2d7d7c88f2730ff61fbb7e3b534057497a"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/qualification/weighted-two-choice/complete.json",
+      "sha256": "0e34c6512033698fbe7aede30f2e8027bc26bceb0bc346ded11799fbfe8403d3"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/qualification/weighted-two-choice/parity/parity-Playground-n1-cpu-nicowar/command.json",
+      "sha256": "3930f161020dd738be645e17c5eb0d0eaa22781346e6901ad5fa4d5e62bba659"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/qualification/weighted-two-choice/parity/parity-Playground-n4-cpu-nicowar/command.json",
+      "sha256": "6f0f61f853268f9adc1694c52f4e6af7fad4a456f1158930bdbd345965bb9249"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/qualification/weighted-two-choice/parity/parity-Playground-nauto-cpu-nicowar/command.json",
+      "sha256": "b92040f133c304d41f6af2f5ae9ee7ae506cfb95cb6be05acc0fc8edc002caea"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/qualification/weighted-two-choice/parity/parity-Playground-n4-opencl-nicowar/command.json",
+      "sha256": "0171caae40368540eeef9d40bef5bc3e60ae57624dcd2cb119c3d93a806fcf59"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/qualification/weighted-two-choice/parity/parity-Playground-nauto-opencl-nicowar/command.json",
+      "sha256": "4847ee0ec34727097c4d42593d9657dfbfa67106584dbf133c1e2879baee3c84"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/qualification/weighted-two-choice/parity/parity-Playground-n4-cpu-mixed/command.json",
+      "sha256": "53b5e8b837356d088a40cf47cb83ab0bf7a6b946e6fb75067f21b2cac851ad66"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/qualification/weighted-two-choice/parity/continuation-Playground-n4/command.json",
+      "sha256": "aa8f4b1e4d5734ed3be56c1113c9a775148f145805ec33566fcde3472c776326"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/qualification/weighted-two-choice/parity/continuation-Playground-nauto/command.json",
+      "sha256": "e5797e7fe9f1cb3b51e6c7846f1c633e5725fa7d34a2d31841a90a4680e1fed9"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/qualification/weighted-two-choice/parity/parity-Oazis-n1-cpu-nicowar/command.json",
+      "sha256": "cea38ec5545d4fc26b4a6701a41a278e6231fded068aa1d071f5334bfbd16438"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/qualification/weighted-two-choice/parity/parity-Oazis-n4-cpu-nicowar/command.json",
+      "sha256": "9144f1107c32af522b657dd2da9bfb052382507a1d2ef4efa879783cc029b5c9"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/qualification/weighted-two-choice/parity/parity-Oazis-nauto-cpu-nicowar/command.json",
+      "sha256": "ea727cc66c46eb06317bd7b8c7526867317dd650c4202040ab3e25986de4b18c"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/qualification/weighted-two-choice/parity/parity-Oazis-n4-opencl-nicowar/command.json",
+      "sha256": "5feb62901b9b0658f5db2fa50108f3f59b2c117a55f80714b72a5a7411c73227"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/qualification/weighted-two-choice/parity/parity-Oazis-nauto-opencl-nicowar/command.json",
+      "sha256": "fd31f99e9271353c9dbefe46c254c51c56e034ac265a70869b569fa97cd0b10f"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/qualification/weighted-two-choice/parity/parity-Oazis-n4-cpu-mixed/command.json",
+      "sha256": "449e80789f2d1671e3a52b36c0dd791df4e6bce3adb6564bff245308691f3e3e"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/qualification/weighted-two-choice/parity/continuation-Oazis-n4/command.json",
+      "sha256": "893bcb469ae5d054db4e598d078034941a9e452e6539d8ace93c675e135a8e2b"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/qualification/weighted-two-choice/parity/continuation-Oazis-nauto/command.json",
+      "sha256": "e7be25ea994f53e5606367330b890b560e4a692d77a52bc00bd66ac37a6a28d5"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/qualification/weighted-two-choice/parity/parity-small64-602-n1-nicowar/command.json",
+      "sha256": "4b2a7041b87c1bf92ec39178857258dd6c6fd3b25b1652f89eaed90a54018e60"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/qualification/weighted-two-choice/parity/parity-small64-602-n4-nicowar/command.json",
+      "sha256": "1d52254827ee6c51ea3c2010689635c0292397f11d0d807147a3c2baa1a73725"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/qualification/weighted-two-choice/parity/parity-small64-602-nauto-nicowar/command.json",
+      "sha256": "fd14b398770fc576f248649406739bdea4982470ca959dbb13213e098ccfa315"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/qualification/weighted-two-choice/parity/parity-small64-602-n4-mixed/command.json",
+      "sha256": "7b574ea009daf3e07f6af19d5599852568198922ca87c70753fbbe809c647082"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/qualification/weighted-two-choice/focused-unit/command.json",
+      "sha256": "7751805d9cf918ada3ba9b51bd6fcbefd581fd85ba95399f8d1d3950f3bb7323"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/qualification/weighted-two-choice/focused-unit/junit.xml",
+      "sha256": "56230808587ccae2dacd656e90eb27ea747bef6e6f75006aee5da4fc58722b81"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/qualification/weighted-two-choice/focused-unit/stdout.log",
+      "sha256": "666c20e8d0d1e1c60a7d1a60f21f357302f1c960a615721ed4cdd693ce6d18d9"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/qualification/weighted-two-choice/focused-engine/command.json",
+      "sha256": "9b581af8ae0a3ebdb9b9c59062c23a4ef3d6ff1ec0a815e497a3199a32cafb60"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/qualification/weighted-two-choice/focused-engine/junit.xml",
+      "sha256": "1d31d36d1cc8ce6c22b47283845732539c0c7855209c592addb84ef22e00a01d"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/qualification/weighted-two-choice/focused-engine/stdout.log",
+      "sha256": "2b846aeaff00206d6d41ff8fc0f58aba97f51bd98292715ec91b0b3e9b5016dd"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/focused-gap-checks/weighted-two-choice/gradient/command.json",
+      "sha256": "268b8d4f7ce42bc43265d72f753e9fae4cb31f709bd22953e5cc0f7c774c95ea"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/focused-gap-checks/weighted-two-choice/gradient/junit.xml",
+      "sha256": "e219998b6587c47fd102abb667a52674fec180d2af9ad5250511374ab2e1e539"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/focused-gap-checks/weighted-two-choice/gradient/stdout.log",
+      "sha256": "084839f62959bed0bbbc1402d41bf49ade2fb7eb696552246d333e76bb4697de"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/focused-gap-checks/weighted-two-choice/weighted_verbose/command.json",
+      "sha256": "237734b829709b2f25c8257552760e0a806b1a317e01b224851223b4a01acb2f"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/focused-gap-checks/weighted-two-choice/weighted_verbose/stdout.log",
+      "sha256": "f94a30c8bbf148cc1f359782d71d2c2d7d7c88f2730ff61fbb7e3b534057497a"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/qualification/weighted-last/complete.json",
+      "sha256": "c5b36684588c9ec7ad69d29feed25d479f2f318695bd19de13ccab5aa28de63e"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/qualification/weighted-last/parity/parity-Playground-n1-cpu-nicowar/command.json",
+      "sha256": "10bbc610bf1ea859c87453281ea391307945be3dbdfb36f8a3a35b2c0321a949"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/qualification/weighted-last/parity/parity-Playground-n4-cpu-nicowar/command.json",
+      "sha256": "c9639b80fd26525b35e5821ac96324b34ceff5c6c2db21d83fbb18ee030a1a75"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/qualification/weighted-last/parity/parity-Playground-nauto-cpu-nicowar/command.json",
+      "sha256": "8bfca3e38adab225e0d7603b6049dbf0de9b73f32d1a416233362f759232d81d"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/qualification/weighted-last/parity/parity-Playground-n4-opencl-nicowar/command.json",
+      "sha256": "d767d50ad57e9bdbb1d0a58cc555bf37efe89ae53f56d888d6201fcac707f6bb"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/qualification/weighted-last/parity/parity-Playground-nauto-opencl-nicowar/command.json",
+      "sha256": "0718e0836277ed21d3c45e9c9e6dcdcc574c26f745d06f2b4f233d0f263169c4"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/qualification/weighted-last/parity/parity-Playground-n4-cpu-mixed/command.json",
+      "sha256": "72b04b2f866b26f113b30187fb8a36aa3624c7bdf9d15cc0cebc80c7ea1b582c"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/qualification/weighted-last/parity/continuation-Playground-n4/command.json",
+      "sha256": "6acd35a119c3b6ec09acc128339f2204330b5ba6d8e2f39ddcb6e406daa78677"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/qualification/weighted-last/parity/continuation-Playground-nauto/command.json",
+      "sha256": "52ab5e4076e8150cdd533ab1b7b39d4d9bc8318e0a18cdb7e99372510a03645c"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/qualification/weighted-last/parity/parity-Oazis-n1-cpu-nicowar/command.json",
+      "sha256": "88ed0424af4b6bb35ab9f3a0ab440324d71d47df82160b8c799405fe57761ea0"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/qualification/weighted-last/parity/parity-Oazis-n4-cpu-nicowar/command.json",
+      "sha256": "38ad2ef8e3b47a2c72f0e921ef816061ca5bbff3df0130577ec60b14e8ea7ee2"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/qualification/weighted-last/parity/parity-Oazis-nauto-cpu-nicowar/command.json",
+      "sha256": "c7c80ecb122569ce242906eb5f3213835a9d5fcd512542c5a5903961a94d07e1"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/qualification/weighted-last/parity/parity-Oazis-n4-opencl-nicowar/command.json",
+      "sha256": "0b268603028f48511ae262da19d242edac0ebc809c156cb771ae7b05d0bd0243"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/qualification/weighted-last/parity/parity-Oazis-nauto-opencl-nicowar/command.json",
+      "sha256": "2024874672edf67c973305aeec0029c7cd4bc42b912aa3d2ccfaa9152aada2bd"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/qualification/weighted-last/parity/parity-Oazis-n4-cpu-mixed/command.json",
+      "sha256": "312bb16eb6e397145be8f661b1a0077c868941afa4f35b66c918a0d0827b303c"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/qualification/weighted-last/parity/continuation-Oazis-n4/command.json",
+      "sha256": "20b6bba5cf1fb9b34ac59f1c246f068a088de485ffd508a271d04c1b3450b78a"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/qualification/weighted-last/parity/continuation-Oazis-nauto/command.json",
+      "sha256": "e2a5a2e8dd8e4e589035b0aca258611af4573d901080e7a2032432c7664c337d"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/qualification/weighted-last/parity/parity-small64-602-n1-nicowar/command.json",
+      "sha256": "7489898e5189892cf4943ac7a5dfdf9ae6a28f99497e579141bd507fdda68091"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/qualification/weighted-last/parity/parity-small64-602-n4-nicowar/command.json",
+      "sha256": "eeace1fc61e074e388f6ef2f55b6af5bc278bbe5cbdf93030879ab3709c27f2c"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/qualification/weighted-last/parity/parity-small64-602-nauto-nicowar/command.json",
+      "sha256": "98613cb8a52c261fad70ca5a9b3028eb76150aa835561c98469119bd8aa6df2f"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/qualification/weighted-last/parity/parity-small64-602-n4-mixed/command.json",
+      "sha256": "8ec1454b4e816f071a73387be23f0682231fa94316ad5ff35e21f6e360d2e041"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/qualification/weighted-last/focused-unit/command.json",
+      "sha256": "884603ebbf29092a6c26fac0b328698e849773992d6eca748aa77d6c2fa0ce20"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/qualification/weighted-last/focused-unit/junit.xml",
+      "sha256": "22d5680b4fa700460081c504141eea3cf8e2527f73e9c106c54b919b25ef9b3e"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/qualification/weighted-last/focused-unit/stdout.log",
+      "sha256": "5acff412205ccadff8ab78485d8016a73716ce21be2cc1309ac54698e59ab112"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/qualification/weighted-last/focused-engine/command.json",
+      "sha256": "5dfb30584b8c01febeb3fb99ab78c3ce96bf09bada07316e11435a3e4e1562dc"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/qualification/weighted-last/focused-engine/junit.xml",
+      "sha256": "9676162d3106602a0c08e0bce00d246e6e42423ec405d481f7407db9c03383ef"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/qualification/weighted-last/focused-engine/stdout.log",
+      "sha256": "c4106f40183644d023c4adb16674fb6c9c8ec217852c9ef096ecbb511a1b8630"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/focused-gap-checks/weighted-last/gradient/command.json",
+      "sha256": "0e2832f7866cae2312735f27a9dceaeadb6fc8549a07f5c258fb4f7a56265d9f"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/focused-gap-checks/weighted-last/gradient/junit.xml",
+      "sha256": "67dec0063f5983b280fadea63c5d934788ef892d3cdc9c66c27ce6197fb5ae18"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/focused-gap-checks/weighted-last/gradient/stdout.log",
+      "sha256": "084839f62959bed0bbbc1402d41bf49ade2fb7eb696552246d333e76bb4697de"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/focused-gap-checks/weighted-last/weighted_verbose/command.json",
+      "sha256": "8cbf4bc356d1c95f64210e69271bc4e6f0c4aa988574c279f2fc6c7bbf91d355"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/focused-gap-checks/weighted-last/weighted_verbose/stdout.log",
+      "sha256": "eea661a3f48e1c8d9c90c0d07353a48d5dbc1140b976b14f5db1aedf90a3583c"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/qualification/weighted-ewma/complete.json",
+      "sha256": "31ea09c8a8376e8f13dc15f2d91a8a4aad3a63e444f0fa9bcd69d2352a238b18"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/qualification/weighted-ewma/parity/parity-Playground-n1-cpu-nicowar/command.json",
+      "sha256": "0aebde1c51726fc5b6a76840821755bac4e6ebd97eda460a782c3b571443c178"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/qualification/weighted-ewma/parity/parity-Playground-n4-cpu-nicowar/command.json",
+      "sha256": "6efdc8a0ab1d7945abf2df99b592b1748f5de56646c46f610c333067364c063b"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/qualification/weighted-ewma/parity/parity-Playground-nauto-cpu-nicowar/command.json",
+      "sha256": "523818f00cb5cc895c95dc35e08e98d8d4a794a398799949f5db59239f2a2cf6"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/qualification/weighted-ewma/parity/parity-Playground-n4-opencl-nicowar/command.json",
+      "sha256": "ada5360ae68f21d84e699732763d745d449cc6da0a43040ea672e516e027926f"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/qualification/weighted-ewma/parity/parity-Playground-nauto-opencl-nicowar/command.json",
+      "sha256": "13fda2d1322c271e49adbbb072cb23b9f2564e837b6ed3771d5412e062bc63ce"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/qualification/weighted-ewma/parity/parity-Playground-n4-cpu-mixed/command.json",
+      "sha256": "37f287d16f0a8811086cc43b39c713081f8e44edc954a3e6672505f3d341456f"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/qualification/weighted-ewma/parity/continuation-Playground-n4/command.json",
+      "sha256": "91dc602a84540fd6c17e37213fd13ac348965e593f08c1ff08f8671224fc8d06"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/qualification/weighted-ewma/parity/continuation-Playground-nauto/command.json",
+      "sha256": "5759e49ce45a9ea4f3f6d557837686f4329b624c7f06e60fb3de8fc308f5f3a8"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/qualification/weighted-ewma/parity/parity-Oazis-n1-cpu-nicowar/command.json",
+      "sha256": "4f78c0476c2acebb040f8fb258c9741378535a81f88c20e7946ed412d54d1cb1"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/qualification/weighted-ewma/parity/parity-Oazis-n4-cpu-nicowar/command.json",
+      "sha256": "c692761458c1c00b5a95ef3dce610f914b160fa1ea226a1545a141b9f1065c63"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/qualification/weighted-ewma/parity/parity-Oazis-nauto-cpu-nicowar/command.json",
+      "sha256": "e862fdfaacd3fdbd5e0f47f688ff91b1ec570caa05b814301d90439df3548ec6"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/qualification/weighted-ewma/parity/parity-Oazis-n4-opencl-nicowar/command.json",
+      "sha256": "8317a69a70529bb5bf01c82be5bfb8a849959106ae6f9e7230620992c326b032"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/qualification/weighted-ewma/parity/parity-Oazis-nauto-opencl-nicowar/command.json",
+      "sha256": "c7c9224889e39493ed288983e9956b4c7c11a66399ed79e439991ea69cee8d7e"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/qualification/weighted-ewma/parity/parity-Oazis-n4-cpu-mixed/command.json",
+      "sha256": "d167fd2cbab13aa7048276a476723f5166316d671d1b9b69e2a07b247ea7f87d"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/qualification/weighted-ewma/parity/continuation-Oazis-n4/command.json",
+      "sha256": "b75a6d324dcd159e53f95ea9172f77a32e561f8df4041ef95d435ab12820e1df"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/qualification/weighted-ewma/parity/continuation-Oazis-nauto/command.json",
+      "sha256": "c98fc523bf4f760826f8d7f91222890e386dda1bfc80b507788ae46e08d7c8ae"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/qualification/weighted-ewma/parity/parity-small64-602-n1-nicowar/command.json",
+      "sha256": "0cec8151dbe1c8ecf1002970daaf53ef9d9a379e8bce6d6a7efdf8738039cbe1"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/qualification/weighted-ewma/parity/parity-small64-602-n4-nicowar/command.json",
+      "sha256": "577357a24898ce21008d1003557886218fe937fe19b11b458151a1dc95ca8827"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/qualification/weighted-ewma/parity/parity-small64-602-nauto-nicowar/command.json",
+      "sha256": "cbc72e03f3c26a38e095d27142463c8a2c320cd6a6dfcacacbe9db27e231c77e"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/qualification/weighted-ewma/parity/parity-small64-602-n4-mixed/command.json",
+      "sha256": "71274ca25aaf026ae17cec39f3157c4c9ef9e7e248d6dc2ed17551bc71d5b40c"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/qualification/weighted-ewma/focused-unit/command.json",
+      "sha256": "af276566390ea4564f5664c2de728ede9cbdda3962b86736e10201737c59b017"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/qualification/weighted-ewma/focused-unit/junit.xml",
+      "sha256": "0a912d8b76f24caa5a1979be73000053d170bfdee0f9f48f7658e6a78aae3188"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/qualification/weighted-ewma/focused-unit/stdout.log",
+      "sha256": "d5227d58f499026e91006d7a6bd11e99dec4ef79c5cccca4083855a4df45fd03"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/qualification/weighted-ewma/focused-engine/command.json",
+      "sha256": "24f1c62441e98336a1c8cf39efcd8b9170190e696d062974de96e4e13411001c"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/qualification/weighted-ewma/focused-engine/junit.xml",
+      "sha256": "3e05dee0840d3f4ec7ede404213c9f801d240ef6d461007f895940b0aa8d1d53"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/qualification/weighted-ewma/focused-engine/stdout.log",
+      "sha256": "a2621525d3581471d5e72802862be212b7940898728e431e58b5fddc35599ff1"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/focused-gap-checks/weighted-ewma/gradient/command.json",
+      "sha256": "8010a6525fd660eb672684505dbf945f4e03eac1c48b2588dd29a3dc0e819c97"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/focused-gap-checks/weighted-ewma/gradient/junit.xml",
+      "sha256": "03369f80c63605c9ff4ca5b4f5e848c8ca895fbccd5124791531fb799a38bbe0"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/focused-gap-checks/weighted-ewma/gradient/stdout.log",
+      "sha256": "084839f62959bed0bbbc1402d41bf49ade2fb7eb696552246d333e76bb4697de"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/focused-gap-checks/weighted-ewma/weighted_verbose/command.json",
+      "sha256": "8798e8fdfcfad3354ac52b67a902ef48a81a31bc19fa22d66f7f326959407f36"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/focused-gap-checks/weighted-ewma/weighted_verbose/stdout.log",
+      "sha256": "eea661a3f48e1c8d9c90c0d07353a48d5dbc1140b976b14f5db1aedf90a3583c"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/qualification/weighted-clock-only/complete.json",
+      "sha256": "9ea7f3fdb06ebe467988507a1b4601ec9e43e312182e5f7d2301a294a349b66a"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/qualification/weighted-clock-only/parity/parity-Playground-n1-cpu-nicowar/command.json",
+      "sha256": "c98faa82859141c9fb1b3dac4e2e7daf4ca7e3f08bda676b66e7aa794fcba5bf"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/qualification/weighted-clock-only/parity/parity-Playground-n4-cpu-nicowar/command.json",
+      "sha256": "da7fdbf2a3b70e0f7efd6d9713e0ab1533517a6b767d68480e8dd934fa55d743"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/qualification/weighted-clock-only/parity/parity-Playground-nauto-cpu-nicowar/command.json",
+      "sha256": "56abf8160316846f9fd3c29bef59f7999e51c303028f1e8d5e9ead3da4be0789"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/qualification/weighted-clock-only/parity/parity-Playground-n4-opencl-nicowar/command.json",
+      "sha256": "d62ee8bb34570ca8f9d078efaee32ad83f6a39c30c516e2e8cb0e660deff90dd"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/qualification/weighted-clock-only/parity/parity-Playground-nauto-opencl-nicowar/command.json",
+      "sha256": "9b22ee4b55cdfecf832d1e2713b94f28e15971b4fd70289db47ebed69936c770"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/qualification/weighted-clock-only/parity/parity-Playground-n4-cpu-mixed/command.json",
+      "sha256": "be5eba531e62f5714a98319039eaa2e7c2628885b98485e607cb9095cb057c1b"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/qualification/weighted-clock-only/parity/continuation-Playground-n4/command.json",
+      "sha256": "13e31009c5f9974cf302f37a16b1914ab4ec91e2893bc4164f7a852ad7ea1a18"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/qualification/weighted-clock-only/parity/continuation-Playground-nauto/command.json",
+      "sha256": "c942ef436e4ff7291b027ff2884473d92a3895baccde4812f1505a4379e2b0fd"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/qualification/weighted-clock-only/parity/parity-Oazis-n1-cpu-nicowar/command.json",
+      "sha256": "60e41b73eb2e9ffb70d7bd88be35e21ba0b98e2d126ff75b64e9278f86eb53d8"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/qualification/weighted-clock-only/parity/parity-Oazis-n4-cpu-nicowar/command.json",
+      "sha256": "dcb3d8cc847e3b908959d4c0b73d4c7b79a2bfd83ef1511cf8b076383b4a99f5"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/qualification/weighted-clock-only/parity/parity-Oazis-nauto-cpu-nicowar/command.json",
+      "sha256": "39f33e70d602b13cb50d89e8ece9c4eb0af345c737663653b8dd39df38fca00d"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/qualification/weighted-clock-only/parity/parity-Oazis-n4-opencl-nicowar/command.json",
+      "sha256": "a62f2bf273d7e5d6613056044c5df3c2ba5f913ba2b37bfb071f3e65e62c7068"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/qualification/weighted-clock-only/parity/parity-Oazis-nauto-opencl-nicowar/command.json",
+      "sha256": "c75193ef78c626ff532dab977eaa3b4f22650b84c6adb4265d54ed6073f472a1"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/qualification/weighted-clock-only/parity/parity-Oazis-n4-cpu-mixed/command.json",
+      "sha256": "b61c438a506f80cf0ccc54cf055ab0fe25962615640d0abe07fe12cdc5965e58"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/qualification/weighted-clock-only/parity/continuation-Oazis-n4/command.json",
+      "sha256": "b8b555693fdd974e14b1abcba9b970f23ad7d0c2fbd2b55c97b47c5f499f34de"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/qualification/weighted-clock-only/parity/continuation-Oazis-nauto/command.json",
+      "sha256": "5bf1c601022db19992103b732643f8286e22602aafaa88eee0bf7aa903b569e9"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/qualification/weighted-clock-only/parity/parity-small64-602-n1-nicowar/command.json",
+      "sha256": "d6f801c9ff07237a470af2e68739af7b7ba49c60aab6b2d3fec46896040db06c"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/qualification/weighted-clock-only/parity/parity-small64-602-n4-nicowar/command.json",
+      "sha256": "97d597307f697c1080d233d96fac6bfd73bdd160a75ff9e995f946ad6339beb5"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/qualification/weighted-clock-only/parity/parity-small64-602-nauto-nicowar/command.json",
+      "sha256": "0539cabda36dcdefd9c1ea847c096109c81221940f3b8115a685356cdfcb0420"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/qualification/weighted-clock-only/parity/parity-small64-602-n4-mixed/command.json",
+      "sha256": "3531daaa7404a78c3789ad059a68d3e62866d8040a305af86ecea857073ab15b"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/qualification/weighted-clock-only/focused-unit/command.json",
+      "sha256": "cad4b19204138a1e19973ccffef0b323e0e2ab4b6be84bba3ed045edeb684dd3"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/qualification/weighted-clock-only/focused-unit/junit.xml",
+      "sha256": "f9e0014b21cef0840630aadc059c3b4e8095987ef9bf92f19a5310dc8b8c645a"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/qualification/weighted-clock-only/focused-unit/stdout.log",
+      "sha256": "668eb96a7bfbaef27803627b867ded6c166c3c024237f5fb2ab4d3d05af98371"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/qualification/weighted-clock-only/focused-engine/command.json",
+      "sha256": "6d271dc89a0a8d2e2cfdb49810b4aa9649b70eb73afb7496d64db6ca6965a5d2"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/qualification/weighted-clock-only/focused-engine/junit.xml",
+      "sha256": "926abe31e5cb1005cd24c238198321fc2b1c80a2c1184510b65f7e75419215bf"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/qualification/weighted-clock-only/focused-engine/stdout.log",
+      "sha256": "4d1df448c9170d17bbce9c556552d50384e13d928052d5d3e06ce59f29dc4b3c"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/focused-gap-checks/weighted-clock-only/gradient/command.json",
+      "sha256": "d712cf7990ab5ca6f867576c9496fe8d3a73d1a9b808ffd5e8dabe1d783b3b29"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/focused-gap-checks/weighted-clock-only/gradient/junit.xml",
+      "sha256": "a8c8b9d143c1bc6d1da9ce73dbcb9b88b721328a81db9256473a687207d7ca87"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/focused-gap-checks/weighted-clock-only/gradient/stdout.log",
+      "sha256": "084839f62959bed0bbbc1402d41bf49ade2fb7eb696552246d333e76bb4697de"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/focused-gap-checks/weighted-clock-only/weighted_verbose/command.json",
+      "sha256": "4ec1acbb01ebb1c4aa9733ff604207e6e90efb47ff6fe825b7891371fca90448"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/focused-gap-checks/weighted-clock-only/weighted_verbose/stdout.log",
+      "sha256": "dc84a6f2cfa67903a8549ed854f2da161f2e7abf2257b8ca6392e632ec87c797"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/qualification/weighted-observe-only/complete.json",
+      "sha256": "7b4700d667f21349dbf8c9f12054fb321407aca698d9397a090412e998f2a7ed"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/qualification/weighted-observe-only/parity/parity-Playground-n1-cpu-nicowar/command.json",
+      "sha256": "1bf6e93e93cebd738c37b89be2e994ee8475820131cc8d486909386a59f12ed6"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/qualification/weighted-observe-only/parity/parity-Playground-n4-cpu-nicowar/command.json",
+      "sha256": "dfa5c054716c482cb7b4f8fa96d5c8b65bceceef4814623e75dbd25c149d356e"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/qualification/weighted-observe-only/parity/parity-Playground-nauto-cpu-nicowar/command.json",
+      "sha256": "9c39d84408ed904189d396ea384ca94fad52c76c0183c2ad659c4e77bed84e2a"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/qualification/weighted-observe-only/parity/parity-Playground-n4-opencl-nicowar/command.json",
+      "sha256": "27d5b6b4b92d712ec24afa067bb3ca50a82d27459476ea1460fa7968714b6c00"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/qualification/weighted-observe-only/parity/parity-Playground-nauto-opencl-nicowar/command.json",
+      "sha256": "fe135a38af6b61215941811671b21385f7c3e813e3f039846364fe9c80ce54c6"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/qualification/weighted-observe-only/parity/parity-Playground-n4-cpu-mixed/command.json",
+      "sha256": "5f0cee77c7ced802a655d67c432cb2e7590bcda7bbe9f9380c365dc00c6f07a5"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/qualification/weighted-observe-only/parity/continuation-Playground-n4/command.json",
+      "sha256": "c0b5bc7268c65bee35dc298cdb87666237a4383936eeae8641a68022b50028bf"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/qualification/weighted-observe-only/parity/continuation-Playground-nauto/command.json",
+      "sha256": "9e151a4e96a10a93b7123a63d920a977d2afe0a9a330707cec12d49494d9130f"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/qualification/weighted-observe-only/parity/parity-Oazis-n1-cpu-nicowar/command.json",
+      "sha256": "cc604ce8a0810cdbda7a463bb1e830653e7c1ae40f0e8400d66bca594c8c38f3"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/qualification/weighted-observe-only/parity/parity-Oazis-n4-cpu-nicowar/command.json",
+      "sha256": "abc3d9b9bd552707d184119378c008f1e1c4a309a04d1f6ada64d06b69ff9558"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/qualification/weighted-observe-only/parity/parity-Oazis-nauto-cpu-nicowar/command.json",
+      "sha256": "104c5a29a359787dd747448a84ed712ecc504cf566f8309fd364c099bc515600"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/qualification/weighted-observe-only/parity/parity-Oazis-n4-opencl-nicowar/command.json",
+      "sha256": "9562384276883e2701c533a7e3820fe60de72d90f7e4efdd29e5e07e524ada97"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/qualification/weighted-observe-only/parity/parity-Oazis-nauto-opencl-nicowar/command.json",
+      "sha256": "3f8ea6745c761f7d6100c55033c4986f1877cfeb2908ce552e6f025d03995cc0"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/qualification/weighted-observe-only/parity/parity-Oazis-n4-cpu-mixed/command.json",
+      "sha256": "0d403a421e744349d302999044f13ba2022048405f1cffe254b9d1f9de0365a9"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/qualification/weighted-observe-only/parity/continuation-Oazis-n4/command.json",
+      "sha256": "64fe4e68b2fa20ca55d9ccc45ab1af62d4b4bc2392a10878dd84aee4422678dc"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/qualification/weighted-observe-only/parity/continuation-Oazis-nauto/command.json",
+      "sha256": "90bb7d01293bd633694c46dc4c5aa35279f48f9937423bb51f4f6bdb9b6d5cc4"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/qualification/weighted-observe-only/parity/parity-small64-602-n1-nicowar/command.json",
+      "sha256": "1d375625706c447f764ba407f573a4246920a8897e4056722a2213d7e37313e9"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/qualification/weighted-observe-only/parity/parity-small64-602-n4-nicowar/command.json",
+      "sha256": "d2b3bd82aee4f7224991c7923dd661106614d712e294a744718a45df5c94bc9e"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/qualification/weighted-observe-only/parity/parity-small64-602-nauto-nicowar/command.json",
+      "sha256": "a90e7c9372eb723cddc9bdf82d605006571fc6e59ed06a165d67c1e244306c3f"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/qualification/weighted-observe-only/parity/parity-small64-602-n4-mixed/command.json",
+      "sha256": "99f018ad44f40ccc2187015308c5733a0c971ac2f2cfd2e6153a544c2ae6dedf"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/qualification/weighted-observe-only/focused-unit/command.json",
+      "sha256": "bd722ad0e9ca8b3f6f5dc1d64ee018a4f614275597873caf84366913c7d3f7dd"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/qualification/weighted-observe-only/focused-unit/junit.xml",
+      "sha256": "bbe021059fa5da201efb8c64bd63cf0d45a174191eb09b749a85fb1d951a6ba3"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/qualification/weighted-observe-only/focused-unit/stdout.log",
+      "sha256": "a9fb6b3f1da70ddb22b9dedeee1122292c594cebd47cea1e0c2979b4901b752a"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/qualification/weighted-observe-only/focused-engine/command.json",
+      "sha256": "2305bb8f3de996f0350a5221c7048c7f9bb66f9970f1d087eeb2450f5aca31d4"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/qualification/weighted-observe-only/focused-engine/junit.xml",
+      "sha256": "91108f571dbc66ec92c125e96db98db7932d5dbadb917595ea3f71a1b1768a06"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/qualification/weighted-observe-only/focused-engine/stdout.log",
+      "sha256": "0003e6c47f6ccefbb7459ccfe5157794cad2074b5b7950bbd406a60d56ce9ec7"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/focused-gap-checks/weighted-observe-only/gradient/command.json",
+      "sha256": "f0a6dbabb5b1bf76f209bfb404e9432c93a07da16558bf70f02f7fecb1ecf05c"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/focused-gap-checks/weighted-observe-only/gradient/junit.xml",
+      "sha256": "6a14e6d313a1fd0590eb3ee75bd75ea03a77d90e2fdc007f138c45d051ea3f87"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/focused-gap-checks/weighted-observe-only/gradient/stdout.log",
+      "sha256": "084839f62959bed0bbbc1402d41bf49ade2fb7eb696552246d333e76bb4697de"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/focused-gap-checks/weighted-observe-only/weighted_verbose/command.json",
+      "sha256": "64215116203fee239a194eabe90773ddfbdf0a996f5cdc15a08448edcaf2d14a"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/focused-gap-checks/weighted-observe-only/weighted_verbose/stdout.log",
+      "sha256": "eea661a3f48e1c8d9c90c0d07353a48d5dbc1140b976b14f5db1aedf90a3583c"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/qualification/weighted-bare-steal/complete.json",
+      "sha256": "faef891f9aacaf80e22af2b293b77ad07206191e6aa6a9bcb9b8b237b9eae1dc"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/qualification/weighted-bare-steal/parity/parity-Playground-n1-cpu-nicowar/command.json",
+      "sha256": "1dd54b0bc33feb02e7b41a454566b8e69c562276407f28589b81917e384221bf"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/qualification/weighted-bare-steal/parity/parity-Playground-n4-cpu-nicowar/command.json",
+      "sha256": "2d7a5b35b7189efd4ed1f4e9e647c0d22ed00ea8c31d83d4544d1f024a29e411"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/qualification/weighted-bare-steal/parity/parity-Playground-nauto-cpu-nicowar/command.json",
+      "sha256": "eeb741820189f875bd9fd998bfe7729906edae0308c3b960f1b60e6134e950d8"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/qualification/weighted-bare-steal/parity/parity-Playground-n4-opencl-nicowar/command.json",
+      "sha256": "84a64e49d9c908320665c944a65e7939ab1002719e5176f048b8db9ee150bcc2"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/qualification/weighted-bare-steal/parity/parity-Playground-nauto-opencl-nicowar/command.json",
+      "sha256": "e265dca9b82da2fd3c3d14d3834e0a539e9ce6c4ab6b7fe0bb79a5c2d48e5d63"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/qualification/weighted-bare-steal/parity/parity-Playground-n4-cpu-mixed/command.json",
+      "sha256": "ef07096104170aad40ca7548c21e73db509d84b6112cadd22b992dc50ebe46db"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/qualification/weighted-bare-steal/parity/continuation-Playground-n4/command.json",
+      "sha256": "ac21d04aac5f5b4a56c800b11844b68aa48058f09891bc9e84a856446661be28"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/qualification/weighted-bare-steal/parity/continuation-Playground-nauto/command.json",
+      "sha256": "b42a378c2d6e2510c17ec00175ea73c79a538287ddec914ed999cf82ed79e648"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/qualification/weighted-bare-steal/parity/parity-Oazis-n1-cpu-nicowar/command.json",
+      "sha256": "055ea5704ff265d31963dde0fa60df9bebd24eaeb17e2b79f4478adc2c4bd5b5"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/qualification/weighted-bare-steal/parity/parity-Oazis-n4-cpu-nicowar/command.json",
+      "sha256": "9f16d01080865bb7bf5c0831a62fd34a171e17f379c12eaa4bf66e5a0bc7b842"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/qualification/weighted-bare-steal/parity/parity-Oazis-nauto-cpu-nicowar/command.json",
+      "sha256": "d3b1216efdfcecf3f96eccad86c6cf74b1640a7b08bc0877c865e85ba05c246b"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/qualification/weighted-bare-steal/parity/parity-Oazis-n4-opencl-nicowar/command.json",
+      "sha256": "25727f1200b5f0aefcefb59593de131b9d7343ef47755b45146b87426cfe6a37"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/qualification/weighted-bare-steal/parity/parity-Oazis-nauto-opencl-nicowar/command.json",
+      "sha256": "59356b7cfbd2e4f1b65ea0b829c0d6fda64d035ed0306c045eb6659cc61ab068"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/qualification/weighted-bare-steal/parity/parity-Oazis-n4-cpu-mixed/command.json",
+      "sha256": "b38953fdc6af1bb80ef64ad692b07e8009e239860926ad035d98c76827213519"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/qualification/weighted-bare-steal/parity/continuation-Oazis-n4/command.json",
+      "sha256": "34e9eb7831ffe0fc36466a4091d834d0839be61a073217a9acd269333b033c50"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/qualification/weighted-bare-steal/parity/continuation-Oazis-nauto/command.json",
+      "sha256": "6685f16ee38a3eeca4fb4a6e0d074cdd90d1863afa0d44e83c2972b46e87c1db"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/qualification/weighted-bare-steal/parity/parity-small64-602-n1-nicowar/command.json",
+      "sha256": "ceb71cfdc69e000e3f70c2e0f9f22399c24d2bdf1c81568d06cceca56cb98529"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/qualification/weighted-bare-steal/parity/parity-small64-602-n4-nicowar/command.json",
+      "sha256": "f2800a65ad8a0a57b9753058a8e5a3b569568c0f4dc85189fa9233a8c8c8cd84"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/qualification/weighted-bare-steal/parity/parity-small64-602-nauto-nicowar/command.json",
+      "sha256": "65d45da43be4d3227ed9ed55527ee3c52c693899629ca5ea624c2f9419ce7d3d"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/qualification/weighted-bare-steal/parity/parity-small64-602-n4-mixed/command.json",
+      "sha256": "ac79ee5569151ffbe7511e721770f7dc5779ce7acc94188ddab1951d60464fbe"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/qualification/weighted-bare-steal/focused-unit/command.json",
+      "sha256": "428361159808572124e908b2d98a607c9a1d3979190772f4a14f1fbbd81e29b9"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/qualification/weighted-bare-steal/focused-unit/junit.xml",
+      "sha256": "7685df3ac0c21e87bab076fd51ad2bdc471527821df170e706639c9e27b09710"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/qualification/weighted-bare-steal/focused-unit/stdout.log",
+      "sha256": "85eee5ce214e1f24033ccc362e2a2eafd1bec063aec4fc484f2aa078208b0133"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/qualification/weighted-bare-steal/focused-engine/command.json",
+      "sha256": "3547b66997e205d810622631e1f10ecb69fbc515b6d4e7881e33cc5c17e0eb06"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/qualification/weighted-bare-steal/focused-engine/junit.xml",
+      "sha256": "1e9fbabc47329f9039187e2264632ae9cf043129faf303b0d9d4a588a7121dbc"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/qualification/weighted-bare-steal/focused-engine/stdout.log",
+      "sha256": "341279f467ff68b0fe7faf197f3508f1eb53c12bbc073b2b93a8726bd535f774"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/focused-gap-checks/weighted-bare-steal/gradient/command.json",
+      "sha256": "3e0119c14eb08de0a9a818ab8664141d11949ce920c1430ad827d1abf08c287c"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/focused-gap-checks/weighted-bare-steal/gradient/junit.xml",
+      "sha256": "3d37ab127c7fb87ec63367fc01fb8f09e6ffecb9739ebc44322eedabcca3cc0f"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/focused-gap-checks/weighted-bare-steal/gradient/stdout.log",
+      "sha256": "084839f62959bed0bbbc1402d41bf49ade2fb7eb696552246d333e76bb4697de"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/focused-gap-checks/weighted-bare-steal/weighted_verbose/command.json",
+      "sha256": "c9a090a1e703b121577c0d7a6a5c01a98bd3648376d77241e02ef3c7d9ffdd2b"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/focused-gap-checks/weighted-bare-steal/weighted_verbose/stdout.log",
+      "sha256": "dc84a6f2cfa67903a8549ed854f2da161f2e7abf2257b8ca6392e632ec87c797"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/first-steal-source/src/app/Glob2.cpp",
+      "sha256": "06e6919eae114d35bce6e77b517283d1e41659afc8e45002cbcade532c55cdf0"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/first-steal-source/src/common/ComputeExecutor.h",
+      "sha256": "fdd475c70671a5d81ae2bba4630bd790d9aec9bcd2beab71bf5be784c1f9a6a4"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/first-steal-source/src/common/ComputeExecutorHarness.cpp",
+      "sha256": "0db3068a2c3efa0b9a794602fe5c2b914e185b8d7d466d5ff344f8fd6bee6a17"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/first-steal-source/src/engine/EngineRun.cpp",
+      "sha256": "e77d2120514f8397a5cb88313bc466d23174ed4eff82338797b2dc81020a8d2b"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/local-source/src/app/Glob2.cpp",
+      "sha256": "06e6919eae114d35bce6e77b517283d1e41659afc8e45002cbcade532c55cdf0"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/local-source/src/common/ComputeExecutor.h",
+      "sha256": "cb66dfda4c3e7644e5200eac2615ed3763ede617e497f9532be9bf593ba0b06f"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/local-source/src/common/ComputeExecutorHarness.cpp",
+      "sha256": "700d72f5d6accb439107e52de0eefa7a2d6cc42067d54d94feff673b696c9c87"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/local-source/src/engine/EngineRun.cpp",
+      "sha256": "e77d2120514f8397a5cb88313bc466d23174ed4eff82338797b2dc81020a8d2b"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/priority-source/src/app/Glob2.cpp",
+      "sha256": "06e6919eae114d35bce6e77b517283d1e41659afc8e45002cbcade532c55cdf0"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/priority-source/src/common/ComputeExecutor.h",
+      "sha256": "9f53e57b7f70ca140245a6d03e024cf610b08c95734ce79296b4feafbb2591d7"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/priority-source/src/common/ComputeExecutorHarness.cpp",
+      "sha256": "700d72f5d6accb439107e52de0eefa7a2d6cc42067d54d94feff673b696c9c87"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/priority-source/src/engine/EngineRun.cpp",
+      "sha256": "e77d2120514f8397a5cb88313bc466d23174ed4eff82338797b2dc81020a8d2b"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/weighted-source/src/ai/engine/AIOrderScheduler.cpp",
+      "sha256": "2e95bf7ded131d390001f9937497d32aa81fee16409340f764149949dc657c57"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/weighted-source/src/app/Glob2.cpp",
+      "sha256": "06e6919eae114d35bce6e77b517283d1e41659afc8e45002cbcade532c55cdf0"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/weighted-source/src/building/HiringPipeline.cpp",
+      "sha256": "9c3d56954b5db3bece8294ab746773c3ec57f40487451859f00608146ef59c2a"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/weighted-source/src/building/TurretTargetingPipeline.cpp",
+      "sha256": "e99c591f96ddf6cc1721225a2f336a42feba9992fd8e41f33f19b5718f8e2bf3"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/weighted-source/src/common/ComputeExecutor.h",
+      "sha256": "935d73b61290da1d96c865cd11e5bba947e34fe7dc4de5c88d4af7dc3bbf111a"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/weighted-source/src/common/ComputeExecutorHarness.cpp",
+      "sha256": "9c7d80e59522ac546110598c7fba3ecddeda4b21039eab445cf3e05feaf22add"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/weighted-source/src/engine/EngineRun.cpp",
+      "sha256": "e77d2120514f8397a5cb88313bc466d23174ed4eff82338797b2dc81020a8d2b"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/weighted-source/src/map/ResourceGrowth.cpp",
+      "sha256": "42ca1369d49d9b9929c10978ff67be6e9b2a49cffbaa152535650225b92bf101"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/weighted-source/src/map/gradient/BuildingGradientPipeline.h",
+      "sha256": "768ed98b2020662174e26e87a8d5091d7f602b23ca982660621a7dbbd7f828b1"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/weighted-source/src/map/gradient/GradientPipeline.h",
+      "sha256": "026e99bd221427c452716516ec33ea843607710ab2a6a759d5ec772e7b9743cd"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/weighted-source/src/team/stats/TeamStatsPipeline.cpp",
+      "sha256": "93eb0b85cd99711edb853db46acb63ee170a75dbfdd0ca778fae2b522bfae0a5"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/confirmation/latest-wake/baseline/src/common/ComputeExecutor.h",
+      "sha256": "2053e76c927db8ceeb6e83cd2a70edb77e1fc02275b14a3ff998eafd7f6933af"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/confirmation/latest-wake/baseline/src/app/Glob2.cpp",
+      "sha256": "06e6919eae114d35bce6e77b517283d1e41659afc8e45002cbcade532c55cdf0"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/confirmation/latest-wake/baseline/src/engine/EngineRun.cpp",
+      "sha256": "e77d2120514f8397a5cb88313bc466d23174ed4eff82338797b2dc81020a8d2b"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/confirmation/latest-wake/baseline/src/app/cli/Headless.cpp",
+      "sha256": "8dbc0b195ac3291907f0ec7302d1dfabfefbfeff72fb2113096f541001ffaf7c"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/confirmation/latest-wake/baseline/src/game/SimRevision.h",
+      "sha256": "f4ea642c836c2651ea0a4233c7f9922bac0e5db55260854dfe04e8274749d1ea"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/confirmation/latest-wake/baseline/maps/Playground.map",
+      "sha256": "2a323a2d02475fb1ddd2ddfac99c51890aa7b2a2f3537ad7bee93aba85d84eaf"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/confirmation/latest-wake/baseline/maps/Oazis.map",
+      "sha256": "cd80d8c9a72643a95bb0bd3c22deb594aeed125d12cb3294859e7fffbc131448"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/confirmation/latest-wake/wake-only/src/common/ComputeExecutor.h",
+      "sha256": "8e59b8816e147ffa72adc5b11d869483dbefe4663a3aca28a39ccc106b9663c1"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/confirmation/latest-wake/wake-only/src/app/Glob2.cpp",
+      "sha256": "06e6919eae114d35bce6e77b517283d1e41659afc8e45002cbcade532c55cdf0"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/confirmation/latest-wake/wake-only/src/engine/EngineRun.cpp",
+      "sha256": "e77d2120514f8397a5cb88313bc466d23174ed4eff82338797b2dc81020a8d2b"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/confirmation/latest-wake/wake-only/src/app/cli/Headless.cpp",
+      "sha256": "8dbc0b195ac3291907f0ec7302d1dfabfefbfeff72fb2113096f541001ffaf7c"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/confirmation/latest-wake/wake-only/src/game/SimRevision.h",
+      "sha256": "f4ea642c836c2651ea0a4233c7f9922bac0e5db55260854dfe04e8274749d1ea"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/confirmation/latest-wake/wake-only/maps/Playground.map",
+      "sha256": "2a323a2d02475fb1ddd2ddfac99c51890aa7b2a2f3537ad7bee93aba85d84eaf"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/confirmation/latest-wake/wake-only/maps/Oazis.map",
+      "sha256": "cd80d8c9a72643a95bb0bd3c22deb594aeed125d12cb3294859e7fffbc131448"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/expanded/complete.json",
+      "sha256": "1ca51bc831141c73d475ed4fd870c08e78ae1057c99d6ea91f43f3fcfaaf8984"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/campaign/root-conditional-approved.json",
+      "sha256": "3fd9b0ef6ccfdaeb7effdd64f54e506bd98e4884318dea5a3091105c2c32e981"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/campaign/plan.json",
+      "sha256": "7ba521d13781a75a1c04bec826dca5f8b6ec40f9c72f916ff48046d0b43eb077"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/campaign/resolved-variants.json",
+      "sha256": "e4703cce45467bc9f04e871e91a4626ade45fce31bdc28b891f50e6cf7e191a2"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/qualification-complete.json",
+      "sha256": "36e812800f9722c5245cbf73273fec6349377889e4c96f67bac56ea0a878f6d5"
+    },
+    {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/campaign/derived-plan-review.json",
+      "sha256": "9ddf777927ff5756e6813c735af4d0b138f6249a57608a6b90fd739d24445071"
+    }
+  ],
+  "expanded_complete": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/expanded/complete.json",
+  "expanded_complete_sha256": "1ca51bc831141c73d475ed4fd870c08e78ae1057c99d6ea91f43f3fcfaaf8984",
+  "baseline_failure_review": {
+    "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/matched-baseline-failures-review.json",
+    "sha256": "fed4bcd975d141b4dee2e1b369971437a21e3736ce3e1955b55f8a9f376a0881"
+  },
+  "qualification_state": "qualified_with_known_baseline_failures"
+}

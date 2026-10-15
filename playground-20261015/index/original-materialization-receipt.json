@@ -1,0 +1,26 @@
+{
+  "state": "verified_portable_tree_not_published",
+  "selection": "artifacts/october-regression/coordination-redesign/full-design-comparison/playground-stop/resolved-selection-final.json",
+  "selection_sha256": "c9fb40e89856e2e9e8da6336c4b4512a12ae9cb8e2353fc9366dd2ae2aa58cf7",
+  "materializer_sha256": "438297c8676a932caecefc53425c571b60ff722b8fa6491123c2716457278540",
+  "output": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/playground-stop/portable-evidence-playground448-v1",
+  "selected_files": 3552,
+  "selected_bytes": 38465771,
+  "portable_verifier": "passed",
+  "generated_index_hashes_verified": {
+    "README.txt": "8c17c68a1b77234804dcff38e30969b80e46d578fc2e0620f37d37350075d4aa",
+    "index/content-manifest.json": "b5fa3bc850f2e6dd3b1f50a13096c273f8152240b2669fb6d17a0c17ed0ca385",
+    "index/verify.py": "391c1c5c05cf0eb436fbe515cb55f9c81ce2af6fbc4b0f067b1dc7735f1582c8"
+  },
+  "report_relative_links_checked": [
+    "every-game.csv",
+    "comparisons.csv",
+    "raw-audit.json",
+    "completion-time.svg",
+    "completion-time.png",
+    "total-cpu.svg",
+    "total-cpu.png"
+  ],
+  "missing_report_links": [],
+  "scope": "448 Playground timing observations; endpoint outcomes only, bounded checksum qualification separate; no Oazis/waves/throughput/full-game checksum claim; no compression or publishing"
+}

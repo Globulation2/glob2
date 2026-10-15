@@ -1,0 +1,270 @@
+{
+  "state": "complete",
+  "sources": [
+    {
+      "source": {
+        "label": "first-steal-source",
+        "cwd": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/first-steal-source",
+        "env": {
+          "CCACHE": "1",
+          "CCACHE_MAXSIZE": "12G",
+          "GLOB2_SDL3_PREFIX": "/home/bradley/.codex/worktrees/repair-tls-rejection-fixture/glob2/build/sdl3-ci/prefix",
+          "GLOB2_RENDER_SHADER_INPUT": "/home/bradley/.codex/worktrees/execution-resource-profiles/glob2/artifacts/resource-profiles/validation/renderer-bundle-v2/shaders"
+        },
+        "build_command": [
+          "scons",
+          "release=1",
+          "CC=gcc-13",
+          "CXX=g++-13",
+          "LINKFLAGS=-L/usr/lib/gcc/x86_64-linux-gnu/15",
+          "-j32",
+          "unit-tests",
+          "engine-tests",
+          "build/linux/client/release/src/glob2"
+        ],
+        "expected_native": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/first-steal-source/build/linux/client/release/src/glob2",
+        "expected_unit": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/first-steal-source/build/linux/client/release/test/glob2-unit-tests",
+        "expected_engine": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/first-steal-source/build/linux/client/release/test/glob2-engine-tests",
+        "source_hashes": {
+          "src/app/Glob2.cpp": "06e6919eae114d35bce6e77b517283d1e41659afc8e45002cbcade532c55cdf0",
+          "src/common/ComputeExecutor.h": "fdd475c70671a5d81ae2bba4630bd790d9aec9bcd2beab71bf5be784c1f9a6a4",
+          "src/common/ComputeExecutorHarness.cpp": "0db3068a2c3efa0b9a794602fe5c2b914e185b8d7d466d5ff344f8fd6bee6a17",
+          "src/engine/EngineRun.cpp": "e77d2120514f8397a5cb88313bc466d23174ed4eff82338797b2dc81020a8d2b"
+        },
+        "patch": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/first-steal-source.patch",
+        "patch_sha256": "2ec6060fd3c5859b65f73077ba2d7151f921b3fc2e5e6916c334ef4c0853d06c"
+      },
+      "command": [
+        "scons",
+        "release=1",
+        "CC=gcc-13",
+        "CXX=g++-13",
+        "LINKFLAGS=-L/usr/lib/gcc/x86_64-linux-gnu/15",
+        "-j32",
+        "unit-tests"
+      ],
+      "returncode": 0,
+      "elapsed_seconds": 19.20203841244802,
+      "game_and_engine_binaries_unchanged": true,
+      "original_full_build_seconds": 461.09519531810656,
+      "original_build_receipt": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/builds/first-steal-source/complete.json",
+      "utc": "2026-10-15T12:31:26.496040+00:00",
+      "outputs": {
+        "native": {
+          "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/first-steal-source/build/linux/client/release/src/glob2",
+          "sha256": "dee303f16c67f787651f14a601d73d23657dbb7a3b638f91b46952372fa76103"
+        },
+        "unit": {
+          "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/first-steal-source/build/linux/client/release/test/glob2-unit-tests",
+          "sha256": "dd3601149469fdb85da7f086e6fae109a743ca412c2e2c4a876d483730a1937b"
+        },
+        "engine": {
+          "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/first-steal-source/build/linux/client/release/test/glob2-engine-tests",
+          "sha256": "9f696465c932f66f4af2799061cad54d3ccb7b4bea18bdf4eb3d89e63c05b50a"
+        }
+      },
+      "state": "built"
+    },
+    {
+      "source": {
+        "label": "local-source",
+        "cwd": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/local-source",
+        "env": {
+          "CCACHE": "1",
+          "CCACHE_MAXSIZE": "12G",
+          "GLOB2_SDL3_PREFIX": "/home/bradley/.codex/worktrees/repair-tls-rejection-fixture/glob2/build/sdl3-ci/prefix",
+          "GLOB2_RENDER_SHADER_INPUT": "/home/bradley/.codex/worktrees/execution-resource-profiles/glob2/artifacts/resource-profiles/validation/renderer-bundle-v2/shaders"
+        },
+        "build_command": [
+          "scons",
+          "release=1",
+          "CC=gcc-13",
+          "CXX=g++-13",
+          "LINKFLAGS=-L/usr/lib/gcc/x86_64-linux-gnu/15",
+          "-j32",
+          "unit-tests",
+          "engine-tests",
+          "build/linux/client/release/src/glob2"
+        ],
+        "expected_native": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/local-source/build/linux/client/release/src/glob2",
+        "expected_unit": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/local-source/build/linux/client/release/test/glob2-unit-tests",
+        "expected_engine": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/local-source/build/linux/client/release/test/glob2-engine-tests",
+        "source_hashes": {
+          "src/app/Glob2.cpp": "06e6919eae114d35bce6e77b517283d1e41659afc8e45002cbcade532c55cdf0",
+          "src/common/ComputeExecutor.h": "cb66dfda4c3e7644e5200eac2615ed3763ede617e497f9532be9bf593ba0b06f",
+          "src/common/ComputeExecutorHarness.cpp": "700d72f5d6accb439107e52de0eefa7a2d6cc42067d54d94feff673b696c9c87",
+          "src/engine/EngineRun.cpp": "e77d2120514f8397a5cb88313bc466d23174ed4eff82338797b2dc81020a8d2b"
+        },
+        "patch": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/local-source.patch",
+        "patch_sha256": "b776aef67c5a6dd0a5072d428f45b75184f994c9610cf0d1ffac02fcf212b28f"
+      },
+      "command": [
+        "scons",
+        "release=1",
+        "CC=gcc-13",
+        "CXX=g++-13",
+        "LINKFLAGS=-L/usr/lib/gcc/x86_64-linux-gnu/15",
+        "-j32",
+        "unit-tests"
+      ],
+      "returncode": 0,
+      "elapsed_seconds": 19.00763272261247,
+      "game_and_engine_binaries_unchanged": true,
+      "original_full_build_seconds": 459.7550537888892,
+      "original_build_receipt": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/builds/local-source/complete.json",
+      "utc": "2026-10-15T12:31:45.843461+00:00",
+      "outputs": {
+        "native": {
+          "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/local-source/build/linux/client/release/src/glob2",
+          "sha256": "30361dab0356ac87d8644e9e5780c1cdbddb6627b15f6b5b2d452369ce0bbcff"
+        },
+        "unit": {
+          "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/local-source/build/linux/client/release/test/glob2-unit-tests",
+          "sha256": "21fdce3bc9c1d4d67159f0f5bc01c4a91499b51542d47a5e40f5fb45775e29ee"
+        },
+        "engine": {
+          "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/local-source/build/linux/client/release/test/glob2-engine-tests",
+          "sha256": "24649096e38e3d721f15f0153d69909f142d5d83462fa0fe65b005d1440f1ef3"
+        }
+      },
+      "state": "built"
+    },
+    {
+      "source": {
+        "label": "priority-source",
+        "cwd": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/priority-source",
+        "env": {
+          "CCACHE": "1",
+          "CCACHE_MAXSIZE": "12G",
+          "GLOB2_SDL3_PREFIX": "/home/bradley/.codex/worktrees/repair-tls-rejection-fixture/glob2/build/sdl3-ci/prefix",
+          "GLOB2_RENDER_SHADER_INPUT": "/home/bradley/.codex/worktrees/execution-resource-profiles/glob2/artifacts/resource-profiles/validation/renderer-bundle-v2/shaders"
+        },
+        "build_command": [
+          "scons",
+          "release=1",
+          "CC=gcc-13",
+          "CXX=g++-13",
+          "LINKFLAGS=-L/usr/lib/gcc/x86_64-linux-gnu/15",
+          "-j32",
+          "unit-tests",
+          "engine-tests",
+          "build/linux/client/release/src/glob2"
+        ],
+        "expected_native": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/priority-source/build/linux/client/release/src/glob2",
+        "expected_unit": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/priority-source/build/linux/client/release/test/glob2-unit-tests",
+        "expected_engine": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/priority-source/build/linux/client/release/test/glob2-engine-tests",
+        "source_hashes": {
+          "src/app/Glob2.cpp": "06e6919eae114d35bce6e77b517283d1e41659afc8e45002cbcade532c55cdf0",
+          "src/common/ComputeExecutor.h": "9f53e57b7f70ca140245a6d03e024cf610b08c95734ce79296b4feafbb2591d7",
+          "src/common/ComputeExecutorHarness.cpp": "700d72f5d6accb439107e52de0eefa7a2d6cc42067d54d94feff673b696c9c87",
+          "src/engine/EngineRun.cpp": "e77d2120514f8397a5cb88313bc466d23174ed4eff82338797b2dc81020a8d2b"
+        },
+        "patch": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/priority-source.patch",
+        "patch_sha256": "b3ef6ab4dc9139263ca7f0029431e3923390222bb4a12d656fef801ec55ca95c"
+      },
+      "command": [
+        "scons",
+        "release=1",
+        "CC=gcc-13",
+        "CXX=g++-13",
+        "LINKFLAGS=-L/usr/lib/gcc/x86_64-linux-gnu/15",
+        "-j32",
+        "unit-tests"
+      ],
+      "returncode": 0,
+      "elapsed_seconds": 19.061857469845563,
+      "game_and_engine_binaries_unchanged": true,
+      "original_full_build_seconds": 457.72337096882984,
+      "original_build_receipt": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/builds/priority-source/complete.json",
+      "utc": "2026-10-15T12:32:05.203136+00:00",
+      "outputs": {
+        "native": {
+          "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/priority-source/build/linux/client/release/src/glob2",
+          "sha256": "1e50e84add3885c2c58d96a4fa702928a421144137bdb8b7ae66cdce5ffdbdd8"
+        },
+        "unit": {
+          "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/priority-source/build/linux/client/release/test/glob2-unit-tests",
+          "sha256": "5d3f4c26b2850813af43db01a31ec5cf27585996ceef7b8c9b888647d77612eb"
+        },
+        "engine": {
+          "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/priority-source/build/linux/client/release/test/glob2-engine-tests",
+          "sha256": "6b7f5b336a193f734a499db4fc62c9a2504e59dfb1f0ecbade2202dfee24abb9"
+        }
+      },
+      "state": "built"
+    },
+    {
+      "source": {
+        "label": "weighted-source",
+        "cwd": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/weighted-source",
+        "env": {
+          "CCACHE": "1",
+          "CCACHE_MAXSIZE": "12G",
+          "GLOB2_SDL3_PREFIX": "/home/bradley/.codex/worktrees/repair-tls-rejection-fixture/glob2/build/sdl3-ci/prefix",
+          "GLOB2_RENDER_SHADER_INPUT": "/home/bradley/.codex/worktrees/execution-resource-profiles/glob2/artifacts/resource-profiles/validation/renderer-bundle-v2/shaders"
+        },
+        "build_command": [
+          "scons",
+          "release=1",
+          "CC=gcc-13",
+          "CXX=g++-13",
+          "LINKFLAGS=-L/usr/lib/gcc/x86_64-linux-gnu/15",
+          "-j32",
+          "unit-tests",
+          "engine-tests",
+          "build/linux/client/release/src/glob2"
+        ],
+        "expected_native": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/weighted-source/build/linux/client/release/src/glob2",
+        "expected_unit": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/weighted-source/build/linux/client/release/test/glob2-unit-tests",
+        "expected_engine": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/weighted-source/build/linux/client/release/test/glob2-engine-tests",
+        "source_hashes": {
+          "src/ai/engine/AIOrderScheduler.cpp": "2e95bf7ded131d390001f9937497d32aa81fee16409340f764149949dc657c57",
+          "src/app/Glob2.cpp": "06e6919eae114d35bce6e77b517283d1e41659afc8e45002cbcade532c55cdf0",
+          "src/building/HiringPipeline.cpp": "9c3d56954b5db3bece8294ab746773c3ec57f40487451859f00608146ef59c2a",
+          "src/building/TurretTargetingPipeline.cpp": "e99c591f96ddf6cc1721225a2f336a42feba9992fd8e41f33f19b5718f8e2bf3",
+          "src/common/ComputeExecutor.h": "935d73b61290da1d96c865cd11e5bba947e34fe7dc4de5c88d4af7dc3bbf111a",
+          "src/common/ComputeExecutorHarness.cpp": "9c7d80e59522ac546110598c7fba3ecddeda4b21039eab445cf3e05feaf22add",
+          "src/engine/EngineRun.cpp": "e77d2120514f8397a5cb88313bc466d23174ed4eff82338797b2dc81020a8d2b",
+          "src/map/ResourceGrowth.cpp": "42ca1369d49d9b9929c10978ff67be6e9b2a49cffbaa152535650225b92bf101",
+          "src/map/gradient/BuildingGradientPipeline.h": "768ed98b2020662174e26e87a8d5091d7f602b23ca982660621a7dbbd7f828b1",
+          "src/map/gradient/GradientPipeline.h": "026e99bd221427c452716516ec33ea843607710ab2a6a759d5ec772e7b9743cd",
+          "src/team/stats/TeamStatsPipeline.cpp": "93eb0b85cd99711edb853db46acb63ee170a75dbfdd0ca778fae2b522bfae0a5"
+        },
+        "patch": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/weighted-source.patch",
+        "patch_sha256": "cf103b25a32891ecc0c0cc5aabec184f54c3b1d18ffb6ec15083e3b82eb501f2"
+      },
+      "command": [
+        "scons",
+        "release=1",
+        "CC=gcc-13",
+        "CXX=g++-13",
+        "LINKFLAGS=-L/usr/lib/gcc/x86_64-linux-gnu/15",
+        "-j32",
+        "unit-tests"
+      ],
+      "returncode": 0,
+      "elapsed_seconds": 19.31241555372253,
+      "game_and_engine_binaries_unchanged": true,
+      "original_full_build_seconds": 451.2991970288567,
+      "original_build_receipt": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/builds/weighted-source/complete.json",
+      "utc": "2026-10-15T12:32:24.832238+00:00",
+      "outputs": {
+        "native": {
+          "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/weighted-source/build/linux/client/release/src/glob2",
+          "sha256": "257d526f5d56c7b63b614ce3a0f895345cb20569c6a6f573e09a9abee5e5336c"
+        },
+        "unit": {
+          "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/weighted-source/build/linux/client/release/test/glob2-unit-tests",
+          "sha256": "8d8e4bc2f5b32f292b066ac4da2e7546376925789bc9fd03fb619c683680336c"
+        },
+        "engine": {
+          "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/weighted-source/build/linux/client/release/test/glob2-engine-tests",
+          "sha256": "30ceba8e3d30254ab236d919454d6ec69af536a645df7b289f143850cc4d02f0"
+        }
+      },
+      "state": "built"
+    }
+  ],
+  "recovery": "Unit-harness-onlyrebuild; allgameandenginebinaryhashes unchanged.",
+  "utc": "2026-10-15T12:32:25.049394+00:00"
+}

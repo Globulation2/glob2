@@ -1,0 +1,43 @@
+{
+  "command": [
+    "taskset",
+    "-c",
+    "3,4,5,19,20,21",
+    "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/confirmation/latest-wake/wake-only/build/linux/client/release/src/glob2",
+    "game",
+    "run",
+    "--map-file",
+    "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/fixtures/small-ni.map.gz",
+    "--game-seed",
+    "602",
+    "--ticks",
+    "4096",
+    "--compute-threads",
+    "auto",
+    "--gradient-backend",
+    "cpu",
+    "--player",
+    "nicowar",
+    "--player",
+    "nicowar",
+    "--write-replay",
+    "--telemetry",
+    "checksums",
+    "--output-dir",
+    "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/qualification/wake-only/parity/parity-small64-602-nauto-nicowar/native"
+  ],
+  "cwd": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/confirmation/latest-wake/wake-only",
+  "env_overrides": {
+    "SDL_VIDEODRIVER": "dummy",
+    "SDL_AUDIODRIVER": "dummy",
+    "GLOB2_ASSET_DIR": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/confirmation/latest-wake/wake-only",
+    "GLOB2_USER_DIR": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/qualification/wake-only/parity/parity-small64-602-nauto-nicowar/profile",
+    "GLOB2_USER_DATA_DIR": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/qualification/wake-only/parity/parity-small64-602-nauto-nicowar/profile",
+    "GLOB2_OPENCL_DEVICE": "0"
+  },
+  "returncode": 0,
+  "elapsed_seconds": 7.348872182890773,
+  "binary_sha256": "99fbc82a526f0e15035bc675e50ac604a056574e931e077b3de955d19ce273a2",
+  "stdout_sha256": "e504ae7b48ed50bfa1a0edd3d2cafea39f2231024266d2da2fa299e87a964dcf",
+  "utc": "2026-10-15T13:15:30.443213+00:00"
+}

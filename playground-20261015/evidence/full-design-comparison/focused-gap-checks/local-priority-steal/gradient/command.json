@@ -1,0 +1,29 @@
+{
+  "state": "passed",
+  "command": [
+    "taskset",
+    "-c",
+    "10,11,26,27",
+    "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/priority-source/build/linux/client/release/test/glob2-unit-tests",
+    "--no-breaks=true",
+    "--test-suite=GradientPipeline",
+    "--reporters=junit",
+    "--out=/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/focused-gap-checks/local-priority-steal/gradient/junit.xml"
+  ],
+  "cwd": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/priority-source",
+  "env": {
+    "SDL_VIDEODRIVER": "dummy",
+    "SDL_AUDIODRIVER": "dummy",
+    "GLOB2_ASSET_DIR": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/priority-source",
+    "GLOB2_USER_DIR": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/focused-gap-checks/local-priority-steal/gradient/profile",
+    "GLOB2_USER_DATA_DIR": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/focused-gap-checks/local-priority-steal/gradient/profile",
+    "GLOB2_DEFERRED_DISPATCH": "steal"
+  },
+  "unit_sha256_before": "5d3f4c26b2850813af43db01a31ec5cf27585996ceef7b8c9b888647d77612eb",
+  "unit_sha256_after": "5d3f4c26b2850813af43db01a31ec5cf27585996ceef7b8c9b888647d77612eb",
+  "build_expected_unit_sha256": "5d3f4c26b2850813af43db01a31ec5cf27585996ceef7b8c9b888647d77612eb",
+  "returncode": 0,
+  "elapsed_seconds": 3.2431542868725955,
+  "stdout_sha256": "e59ca0e10bd2aca0a44e97d7ff939583b50c2455ea2fcd58984c4e3e9239b63b",
+  "mask": "10,11,26,27"
+}

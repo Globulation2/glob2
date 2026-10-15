@@ -1,0 +1,193 @@
+<?xml version='1.0' encoding='utf-8'?>
+<testsuites tests="162" failures="4" errors="0" skipped="0"><testsuite name="AIPipeline"><testcase classname="AIPipeline" name="a submitted deadline is delivered even when no new poll is eligible" time="0.089874" status="run" />
+  <testcase classname="AIPipeline" name="every shipped controller preserves orders and state across worker counts and all delays" time="6.25512" status="run" />
+  <testcase classname="AIPipeline" name="pause and repeated boundary calls cannot execute a published command twice" time="0.450898" status="run" />
+  <testcase classname="AIPipeline" name="replacement cancels an old output without rejecting identical new wire bytes" time="0.09088" status="run" />
+  <testcase classname="AIPipeline" name="save continuation retains controller caches receipts and future commands at pipeline boundaries" time="36.7046" status="run" />
+  <testcase classname="AIPipeline" name="team death cancels submitted work and saves receipts for a revived controller" time="0.179334" status="run" />
+  <testcase classname="AIPipeline" name="wrapper preemption preserves controller rejection feedback and pending release identity across save" time="0.180454" status="run" />
+  </testsuite><testsuite name="AIStateContinuation"><testcase classname="AIStateContinuation" name="Cabino specialist modules survive save-load" time="27.6636" status="run" />
+  <testcase classname="AIStateContinuation" name="Castor and Maxima active full games preserve decisions and RNG [slow]" time="10.883" status="run" />
+  <testcase classname="AIStateContinuation" name="Cortex economy and food shortage survive save-load" time="2.89545" status="run" />
+  <testcase classname="AIStateContinuation" name="Econo shared runtime survives save-load" time="11.6544" status="run" />
+  <testcase classname="AIStateContinuation" name="Nicowar shared runtime survives save-load" time="26.1422" status="run" />
+  <testcase classname="AIStateContinuation" name="Numbi growth and attack preparation survive save-load" time="18.4609" status="run" />
+  <testcase classname="AIStateContinuation" name="Warrush growth and attack preparation survive save-load" time="32.5776" status="run" />
+  <testcase classname="AIStateContinuation" name="all controllers continue alongside another AI and a shared-team controller [slow]" time="12.0571" status="run" />
+  </testsuite><testsuite name="BuildingGradientInvalidation"><testcase classname="BuildingGradientInvalidation" name="a deleted building's pending result cannot replace a reused destination" time="0.079496" status="run" />
+  <testcase classname="BuildingGradientInvalidation" name="a paused field keeps its original obstacles" time="0.063252" status="run" />
+  <testcase classname="BuildingGradientInvalidation" name="a pending result keeps the generation a team-local edit carries forward" time="0.078483" status="run" />
+  <testcase classname="BuildingGradientInvalidation" name="a ring cuts off a virtual flags field" time="0.064627" status="run" />
+  <testcase classname="BuildingGradientInvalidation" name="a rival teams ring cuts off a cached field" time="0.063873" status="run" />
+  <testcase classname="BuildingGradientInvalidation" name="access metadata follows the newest capture across swim classes and saves" time="0.061727" status="run" />
+  <testcase classname="BuildingGradientInvalidation" name="an empty building pipeline follows a changed header delay through save and load" time="0.078409" status="run" />
+  <testcase classname="BuildingGradientInvalidation" name="area and team-wide resets keep stale walking fields serving with the pipeline on" time="0.132634" status="run" />
+  <testcase classname="BuildingGradientInvalidation" name="centre placed inside an existing ring" time="0.060468" status="run" />
+  <testcase classname="BuildingGradientInvalidation" name="delayed fields" time="0.385309" status="run" />
+  <testcase classname="BuildingGradientInvalidation" name="idle field storage is reused without stale routes" time="0.063897" status="run" />
+  <testcase classname="BuildingGradientInvalidation" name="partial scheduled fields resume on the owner from transferred buckets" time="0.100499" status="run" />
+  <testcase classname="BuildingGradientInvalidation" name="pending building results survive save boundaries and cannot resurrect evicted fields" time="1.04937" status="run" />
+  <testcase classname="BuildingGradientInvalidation" name="prediction retains reader demand across rebuilds and save completion" time="0.064465" status="run" />
+  <testcase classname="BuildingGradientInvalidation" name="public reads resolve their inputs" time="0.072616" status="run" />
+  <testcase classname="BuildingGradientInvalidation" name="requests during team stepping are captured at the observation boundary" time="0.061137" status="run" />
+  <testcase classname="BuildingGradientInvalidation" name="retained format126 access flags restore walking and swimming locks into the footprint route and survive current saves [save-format]" time="2.86219" status="run" />
+  <testcase classname="BuildingGradientInvalidation" name="ring placed around an existing field" time="0.063728" status="run" />
+  <testcase classname="BuildingGradientInvalidation" name="same-tick swim classes write access metadata in request order" time="0.078494" status="run" />
+  <testcase classname="BuildingGradientInvalidation" name="scheduled building fields publish at fixed deadlines across worker counts and delays" time="0.317758" status="run" />
+  <testcase classname="BuildingGradientInvalidation" name="slow and failing workers never change the publication tick" time="0.24847" status="run" />
+  <testcase classname="BuildingGradientInvalidation" name="snapshot building seeds and captured-input searches match the synchronous kernels for every route and swim class" time="1.20012" status="run" />
+  <testcase classname="BuildingGradientInvalidation" name="synchronous rebuilds and lifecycle hooks supersede pending jobs that share a deadline" time="0.062685" status="run" />
+  </testsuite><testsuite name="HiringPipeline"><testcase classname="HiringPipeline" name="a returning attraction worker does not wait another recruitment-clock cycle" time="0.060432" status="run" />
+  <testcase classname="HiringPipeline" name="all attraction jobs admit through the production candidate consumer" time="0.094984" status="run" />
+  <testcase classname="HiringPipeline" name="an expired hybrid attraction request releases unused delivery seats" time="0.078943" status="run" />
+  <testcase classname="HiringPipeline" name="an owed attraction round retries for a bounded window" time="0.059651" status="run" />
+  <testcase classname="HiringPipeline" name="cold route generations publish only at the fixed deadline" time="0.113105" status="run" />
+  <testcase classname="HiringPipeline" name="configuration changes keep suggestions and admission rechecks live eligibility" time="0.060371" status="run" />
+  <testcase classname="HiringPipeline" name="imminent attraction peers receive alternatives without inactive peers claiming them" time="0.0605" status="run" />
+  <testcase classname="HiringPipeline" name="missing lists do not synchronously scan or assign a worker" time="0.060589" status="run" />
+  <testcase classname="HiringPipeline" name="paused and waiting replicas retain the same pre-order hiring observation" time="0.095097" status="run" />
+  <testcase classname="HiringPipeline" name="production traces and published candidates match across participant counts" time="0.259152" status="run" />
+  <testcase classname="HiringPipeline" name="saving every delay phase retains outputs and pending identity without early publication" time="0.180062" status="run" />
+  <testcase classname="HiringPipeline" name="transient unavailability and changed cargo are validated on every attempt" time="0.06056" status="run" />
+  <testcase classname="HiringPipeline" name="whole game save and resume preserves every publication phase [save-format][artifacts]" time="5.17754" status="run" />
+  <testcase classname="HiringPipeline" name="whole-game continuation retains an outstanding attraction request" time="0.200051" status="run" />
+  </testsuite><testsuite name="HiringPlanner"><testcase classname="HiringPlanner" name="bounded shortlists match sorted prefixes for every job" time="0.000383" status="run" />
+  <testcase classname="HiringPlanner" name="busy ground classes do not initialize unused hiring routes" time="0.06024" status="run" />
+  <testcase classname="HiringPlanner" name="cold routes are established by live admission rather than observation" time="0.060062" status="run" />
+  <testcase classname="HiringPlanner" name="defense score uses frozen attack modifiers and saturated integer strength" time="0.078597" status="run" />
+  <testcase classname="HiringPlanner" name="distance bounds preserve exhaustive rankings for every job" time="0.119904" status="run" />
+  <testcase classname="HiringPlanner" name="diverse material offers cover peers without reserving live workers" time="0.06198" status="run" />
+  <testcase classname="HiringPlanner" name="fetch jobs reuse canonical resource estimates independently of live planes" time="0.06044" status="run" />
+  <testcase classname="HiringPlanner" name="food-unsafe high-skill workers cannot crowd a viable worker out" time="0.060583" status="run" />
+  <testcase classname="HiringPlanner" name="job quotas bound each list to vacancies plus two" time="0.060163" status="run" />
+  <testcase classname="HiringPlanner" name="missing building fields never trigger private construction" time="0.060417" status="run" />
+  <testcase classname="HiringPlanner" name="missing shared planes do not suppress suggestions after visibility-rule changes" time="0.064596" status="run" />
+  <testcase classname="HiringPlanner" name="missing supplier planes retain fetch suggestions for live admission" time="0.088414" status="run" />
+  <testcase classname="HiringPlanner" name="observed funding reproduces live material apportionment" time="0.060576" status="run" />
+  <testcase classname="HiringPlanner" name="planning skips zero-demand and staffed buildings and resumes on vacancies" time="0.060562" status="run" />
+  <testcase classname="HiringPlanner" name="published resource estimates are used and missing planes remain recruitable" time="0.059921" status="run" />
+  <testcase classname="HiringPlanner" name="ranking tie break follows unit identity" time="0" status="run" />
+  <testcase classname="HiringPlanner" name="resource estimates borrow the normal snapshot plane without private builds" time="0.06257" status="run" />
+  <testcase classname="HiringPlanner" name="shared field survives replacement and proposals preserve owner demand" time="0.06034" status="run" />
+  <testcase classname="HiringPlanner" name="shared resource planes retain ordered unreachable-neighbor admission estimates" time="0.06266" status="run" />
+  <testcase classname="HiringPlanner" name="snapshot planning skips busy workers without changing live units" time="0.060782" status="run" />
+  <testcase classname="HiringPlanner" name="supplier membership survives waiting-for-construction observations" time="0.088053" status="run" />
+  <testcase classname="HiringPlanner" name="unrelated live route enrollment cannot change hiring inputs" time="0.060806" status="run" />
+  <testcase classname="HiringPlanner" name="worker construction quotas match repair funding" time="0.060256" status="run" />
+  <testcase classname="HiringPlanner" name="worker demand uses immutable shared funding and staffing facts" time="0.060331" status="run" />
+  </testsuite><testsuite name="LegacyAIState"><testcase classname="LegacyAIState" name="Cabino construction polls preserve high material and combined source masks" time="0.096574" status="run" />
+  <testcase classname="LegacyAIState" name="Cabino material mask placement resumes without changing RNG" time="0.105156" status="run" />
+  <testcase classname="LegacyAIState" name="Cabino preserves stale gradients module latches and fruit memories" time="0.10219" status="run" />
+  <testcase classname="LegacyAIState" name="Cabino saving leaves its pending FIFO intact" time="0.090718" status="run" />
+  <testcase classname="LegacyAIState" name="Cortex saved policy and model supersede the current process selection" time="0.088173" status="run" />
+  <testcase classname="LegacyAIState" name="Nicowar explorer phases and full construction counts survive" time="0.090793" status="run" />
+  <testcase classname="LegacyAIState" name="Numbi phase clock survives and advances on the original poll" time="0.088398" status="run" />
+  <testcase classname="LegacyAIState" name="Numbi wrapper preserves an active phase clock and the next decision" time="0.09249" status="run" />
+  <testcase classname="LegacyAIState" name="Warrush timers and constructors round-trip at boundaries" time="0.087405" status="run" />
+  <testcase classname="LegacyAIState" name="Warrush wrapper preserves the next decision and its random stream" time="0.089304" status="run" />
+  <testcase classname="LegacyAIState" name="new timer records reject out-of-range missing and malformed values" time="0.087607" status="run" />
+  <testcase classname="LegacyAIState" name="old layouts default omitted clocks without consuming the following field" time="0.087421" status="run" />
+  <testcase classname="LegacyAIState" name="pre-fix format 127 writers remain aligned for Cabino Nicowar and Cortex" time="0.090106" status="run" />
+  <testcase classname="LegacyAIState" name="shared runtime reload replaces queues and registrations in binary and text" time="0.094939" status="run" />
+  </testsuite><testsuite name="ResourceGrowth"><testcase classname="ResourceGrowth" name="both format 144 and 145 lineages and compact growth saves retain continuation [save-format]" time="3.71438" status="run" />
+  <testcase classname="ResourceGrowth" name="configured seeds preserve rates variety collisions and saved output" time="0.099079" status="run" />
+  <testcase classname="ResourceGrowth" name="finishing the last deferred tick computes without publishing early" time="0.10277" status="run" />
+  <testcase classname="ResourceGrowth" name="format 144 and 145 packed growth headers cannot alias artwork lengths" time="0" status="run" />
+  <testcase classname="ResourceGrowth" name="frozen input outlives terrain and resource edits and wrapping remains valid" time="0.091831" status="run" />
+  <testcase classname="ResourceGrowth" name="historical growth payloads are rejected after header preflight" time="0.492695" status="run">
+      <failure message="true" type="CHECK_FALSE">
+src/map/ResourceGrowthTest.cpp:828:
+CHECK_FALSE( engine.gui.game.load(input.get()) ) is NOT correct!
+  values: CHECK_FALSE( true )
+  logged: name := 0x5c081a83504e
+
+      </failure>
+      <failure message="true" type="CHECK_FALSE">
+src/map/ResourceGrowthTest.cpp:828:
+CHECK_FALSE( engine.gui.game.load(input.get()) ) is NOT correct!
+  values: CHECK_FALSE( true )
+  logged: name := 0x5c081a835060
+
+      </failure>
+      <failure message="true" type="CHECK_FALSE">
+src/map/ResourceGrowthTest.cpp:828:
+CHECK_FALSE( engine.gui.game.load(input.get()) ) is NOT correct!
+  values: CHECK_FALSE( true )
+  logged: name := 0x5c081a835072
+
+      </failure>
+    </testcase>
+  <testcase classname="ResourceGrowth" name="kernel is immutable deterministic and responds to disabled growth and scarcity" time="0.090872" status="run" />
+  <testcase classname="ResourceGrowth" name="later completed work cannot publish ahead of an earlier batch" time="0.092893" status="run" />
+  <testcase classname="ResourceGrowth" name="legacy pending masks migrate and signed pending proposals validate on load" time="0.088936" status="run" />
+  <testcase classname="ResourceGrowth" name="light checksums leave zero-worker work deferred and world replacement discards it" time="0.091496" status="run" />
+  <testcase classname="ResourceGrowth" name="material growth events oscillate independently and create configured seed stocks" time="0.089119" status="run" />
+  <testcase classname="ResourceGrowth" name="mature growth events oscillate and respect intervening harvests" time="0.093991" status="run" />
+  <testcase classname="ResourceGrowth" name="pipeline waits at exact deadline and pause does not publish" time="0.090214" status="run" />
+  <testcase classname="ResourceGrowth" name="proposal capacity grows safely and is retained for reuse" time="0.089652" status="run" />
+  <testcase classname="ResourceGrowth" name="publication accounts for proposals rejected by a different world" time="0.130365" status="run" />
+  <testcase classname="ResourceGrowth" name="setting the delay leaves reservations and unfinished work untouched" time="0.090517" status="run" />
+  <testcase classname="ResourceGrowth" name="signed proposals use only current resource type and apply in order" time="0.088866" status="run" />
+  <testcase classname="ResourceGrowth" name="source decisions cannot shift scan sampling or another source" time="0.093135" status="run" />
+  <testcase classname="ResourceGrowth" name="text save layout probes are relative and preserve section state" time="0" status="run" />
+  <testcase classname="ResourceGrowth" name="typed proposal loading validates fields and preserves old queued units" time="0.093626" status="run" />
+  <testcase classname="ResourceGrowth" name="zero seed stocks use authoritative resource initialization" time="0.25444" status="run" />
+  <testcase classname="ResourceGrowth" name="zero-worker and shared deadlines match and pending work survives saving" time="0.691175" status="run" />
+  </testsuite><testsuite name="SharedWorkerLifecycle"><testcase classname="SharedWorkerLifecycle" name="background saves finish on a worker and remain readable after teardown" time="0.042526" status="run" />
+  <testcase classname="SharedWorkerLifecycle" name="no-AI completed ticks and saved continuation agree across diagnostic modes and worker counts [artifacts]" time="4.20306" status="run" />
+  <testcase classname="SharedWorkerLifecycle" name="pending gradient work survives a save and continues at the same deadlines" time="0.393794" status="run" />
+  <testcase classname="SharedWorkerLifecycle" name="reduced saved AI rosters retire trailing controllers and preserve continuation" time="2.37013" status="run" />
+  <testcase classname="SharedWorkerLifecycle" name="resource catalog import drains deferred material preparation before replacing stocks" time="0.132982" status="run" />
+  </testsuite><testsuite name="SimulationReadPhase"><testcase classname="SimulationReadPhase" name="AI and pending gradients share the standard boundary with presentation" time="0.093857" status="run" />
+  <testcase classname="SimulationReadPhase" name="direct completed steps match deferred preparation across worker counts" time="0.990877" status="run" />
+  <testcase classname="SimulationReadPhase" name="presentation borrows the published no-AI read boundary without recapture" time="0.064086" status="run" />
+  </testsuite><testsuite name="TeamStatsPipeline"><testcase classname="TeamStatsPipeline" name="complete frames preserve cumulative measurements and retained readers" time="0.319736" status="run" />
+  <testcase classname="TeamStatsPipeline" name="delayed statistics AI and presentation share one capture per boundary" time="0.146991" status="run" />
+  <testcase classname="TeamStatsPipeline" name="direct scalar checksums match canonical binary bytes" time="0" status="run" />
+  <testcase classname="TeamStatsPipeline" name="failed computation or submission remains a failure at later owner barriers" time="0.092045" status="run" />
+  <testcase classname="TeamStatsPipeline" name="format 155 pending digests are discarded without losing samples" time="0.06387" status="run" />
+  <testcase classname="TeamStatsPipeline" name="format 156 raw aggregate samples retain exact smoothing after loading and resaving" time="0.060734" status="run" />
+  <testcase classname="TeamStatsPipeline" name="format 157 pending measurement deltas migrate and resave without early publication" time="0.062639" status="run" />
+  <testcase classname="TeamStatsPipeline" name="full game save preserves statistics across smoothing and history boundaries" time="0.643898" status="run" />
+  <testcase classname="TeamStatsPipeline" name="lagged windows include current samples and never feed approximations into the raw ring" time="0.113474" status="run" />
+  <testcase classname="TeamStatsPipeline" name="late workers are joined at the deadline without choosing publication time" time="0.083512" status="run" />
+  <testcase classname="TeamStatsPipeline" name="light checks do not execute jobs and full checks cover computed pending samples" time="0.078582" status="run" />
+  <testcase classname="TeamStatsPipeline" name="periodic snapshot places match live coverage at wrapped footprint boundaries" time="0.063782" status="run" />
+  <testcase classname="TeamStatsPipeline" name="publication is fixed to source tick plus delay and boundaries are idempotent" time="0.111442" status="run" />
+  <testcase classname="TeamStatsPipeline" name="pure captures pause and waiting admit no statistics and readers share the generation" time="0.067276" status="run" />
+  <testcase classname="TeamStatsPipeline" name="raw snapshot samples retain synchronous aggregation and smoothing" time="0.060799" status="run" />
+  <testcase classname="TeamStatsPipeline" name="routine statistics coverage excludes diagnostic ledgers and full checks retain them" time="0.060815" status="run" />
+  <testcase classname="TeamStatsPipeline" name="save drains work without moving deadlines and restores pending samples" time="0.066264" status="run" />
+  <testcase classname="TeamStatsPipeline" name="worker counts produce identical publication and pending sample checksums" time="0.45774" status="run" />
+  </testsuite><testsuite name="TurretTargeting"><testcase classname="TurretTargeting" name="bounded capacities are prefixes of uncapped tier ranking" time="0.088457" status="run" />
+  <testcase classname="TurretTargeting" name="captured offense preserves glass cannon saturation and active area modifiers" time="0.115334" status="run" />
+  <testcase classname="TurretTargeting" name="consumer rechecks incarnation occupancy alliance movement and cooldown boundaries" time="0.08715" status="run" />
+  <testcase classname="TurretTargeting" name="cooldown admission includes exact serving boundary and empty ammunition" time="1.35126" status="run" />
+  <testcase classname="TurretTargeting" name="custom footprints blockers building offsets and frozen combat facts" time="0.106964" status="run" />
+  <testcase classname="TurretTargeting" name="empty range has one hundred armed turrets and no clearance work" time="0.093881" status="run" />
+  <testcase classname="TurretTargeting" name="engine-style stepping reuses admitted boundary after orders mutate occupancy" time="0.088512" status="run" />
+  <testcase classname="TurretTargeting" name="forecast refresh arrives before the first ready step after zero crossing" time="0.088518" status="run" />
+  <testcase classname="TurretTargeting" name="ground movement return suppresses air only in preferred fold" time="0.088356" status="run" />
+  <testcase classname="TurretTargeting" name="historical saves start with a blank turret cache and retain current resave continuation [save-format]" time="0.171045" status="run" />
+  <testcase classname="TurretTargeting" name="index shares unchanged chunks and refreshes changed occupancy" time="0.087817" status="run" />
+  <testcase classname="TurretTargeting" name="indexed encounter order covers custom footprints repeated wraps and temporary chunks" time="2.36395" status="run" />
+  <testcase classname="TurretTargeting" name="new cached saves roundtrip and unsupported formats are rejected" time="0.206377" status="run" />
+  <testcase classname="TurretTargeting" name="observing and shadow consumption preserve complete save bytes" time="0.17087" status="run" />
+  <testcase classname="TurretTargeting" name="overlapping generations reuse the previous logical index before publication" time="0.224403" status="run" />
+  <testcase classname="TurretTargeting" name="overlapping publication preserves other sources through upgrade and incarnation changes" time="0.088861" status="run">
+      <failure message="false" type="CHECK">
+src/building/TurretTargetingTest.cpp:456:
+CHECK( pipeline-&gt;entries(*changed).empty() ) is NOT correct!
+  values: CHECK( false )
+
+      </failure>
+    </testcase>
+  <testcase classname="TurretTargeting" name="pinned large building keeps its original unwrapped aim offset" time="0.10595" status="run" />
+  <testcase classname="TurretTargeting" name="published slot reuse replaces records by incarnation" time="0.136541" status="run" />
+  <testcase classname="TurretTargeting" name="reference and frozen head match randomized ground air wrap and alliances" time="0.1168" status="run" />
+  <testcase classname="TurretTargeting" name="saved target lists retain admissions deadlines and ordered entries" time="0.573405" status="run" />
+  <testcase classname="TurretTargeting" name="shared completed boundary captures once and publishes only at deadlines" time="0.574748" status="run" />
+  <testcase classname="TurretTargeting" name="shared executor team jobs agree across participants and overlapping generations" time="0.095774" status="run" />
+  <testcase classname="TurretTargeting" name="shared turret worker failures are reported at publication after draining" time="0.17845" status="run" />
+  <testcase classname="TurretTargeting" name="turret admission requires due teams and survives paused repeated boundaries" time="0.088042" status="run" />
+  </testsuite></testsuites>

@@ -1,0 +1,19 @@
+{
+  "approved": true,
+  "source_sha256": "6e2033570ccb617ac1f487aab6d44b8c17531d058b95dfafca7fca478ef30fb7",
+  "review_kind": "static source only; resolver not executed",
+  "scope": [
+    "RequiresPG448 stopped proof and completedPGexport boundtoproof; no native/compiler before sourceverification",
+    "Currentpreparation+weighted+buildsource overlays checkedafterHarnessrepair; conflictingmanifesthashes are explicitblocked state; originalpatches clearly historical",
+    "Exact448rawreceipt/window references andresults, actual280qualification tracepaths includingbaseline reuse, focusedfailure andtimeout/recovery evidence retained",
+    "Declaredhash+same-size fixturealiasdedup preserves sourcealiases; unknown/differenthash collisionblocked",
+    "No copy/compression/package/publication; missingmandatory orcriticalschemaerror yieldsblockedreceipt instead of silentdrop"
+  ],
+  "limits": [
+    "Resolution is notfull contentverification: ordinarymetadata/stdout/result declaredhashes are retained forlatermaterialization, notallrehashed here",
+    "Missingguessedhistoricalpaths will intentionallyblock andneed explicitreview ratherthan treatingabsenceaspass",
+    "No resolver run/fullcorpus scan/largehashwork performed duringtiming",
+    "Selected280checksumbodies omittedexplicitly; metadatahashes cannotrevalidate omittedbodycontents portably"
+  ],
+  "blockers": []
+}

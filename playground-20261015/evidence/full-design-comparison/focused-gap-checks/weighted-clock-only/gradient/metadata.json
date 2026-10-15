@@ -1,0 +1,33 @@
+{
+  "state": "passed",
+  "cases": 22,
+  "names": [
+    "fixed publication; supersession; bounded buffers; scheduling stress; fallback; exceptions and teardown",
+    "reservation is invalidatable before preparation and seed failures cannot strand it",
+    "projected terrain leases end at completion including failed work",
+    "gradient, building and AI batches share the maximum deferred horizon",
+    "building pipeline admits several jobs per tick, publishes in reservation order at fixed deadlines, supersedes, survives slow and failing workers",
+    "building pipeline pending results survive a save-style round trip",
+    "serial preparation computes at join and errors surface at the deadline",
+    "shared preparation executes off the owner and retains its deadline",
+    "backend selection survives worker scratch resizing",
+    "owned GPU service initializes with two slots and leaves the sole worker free until fixed publication",
+    "GPU decline recovers original seeds exactly once on a worker and retains inputs until recovery",
+    "one-slot device configuration creates no driver activity",
+    "explicit CPU jobs bypass device ownership and retain publication deadlines",
+    "availability changes during seeding do not reinterpret captured CPU execution",
+    "nullable GPU preparation recovers once on the original worker without device reentry",
+    "device registration stop and reconfigure never join a slow background initializer",
+    "application shutdown joins background initialization and later registrations restart",
+    "two device registrations share exactly one process coordinator",
+    "pending required GPU work cancels at publication and drains through one worker recovery",
+    "device adapters retain committed fields when another ready field declines",
+    "bounded required device queue recovers excess fields exactly once",
+    "malformed captured configurations decline and recover once"
+  ],
+  "junit": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/focused-gap-checks/weighted-clock-only/gradient/junit.xml",
+  "junit_sha256": "a8c8b9d143c1bc6d1da9ce73dbcb9b88b721328a81db9256473a687207d7ca87",
+  "command_receipt": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/focused-gap-checks/weighted-clock-only/gradient/command.json",
+  "command_receipt_sha256": "d712cf7990ab5ca6f867576c9496fe8d3a73d1a9b808ffd5e8dabe1d783b3b29",
+  "unit_sha256": "8d8e4bc2f5b32f292b066ac4da2e7546376925789bc9fd03fb619c683680336c"
+}

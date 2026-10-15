@@ -1,0 +1,39 @@
+{
+  "command": [
+    "taskset",
+    "-c",
+    "9,10,11,25,26,27",
+    "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/weighted-source/build/linux/client/release/src/glob2",
+    "game",
+    "run",
+    "--load-game",
+    "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/mature-instruction-census/playground-initial-state/native/final.game.gz",
+    "--ticks",
+    "20512",
+    "--compute-threads",
+    "4",
+    "--gradient-backend",
+    "cpu",
+    "--write-replay",
+    "--telemetry",
+    "checksums",
+    "--output-dir",
+    "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/qualification/weighted-observe-only/parity/continuation-Playground-n4/native"
+  ],
+  "cwd": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/weighted-source",
+  "env_overrides": {
+    "SDL_VIDEODRIVER": "dummy",
+    "SDL_AUDIODRIVER": "dummy",
+    "GLOB2_ASSET_DIR": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/weighted-source",
+    "GLOB2_USER_DIR": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/qualification/weighted-observe-only/parity/continuation-Playground-n4/profile",
+    "GLOB2_USER_DATA_DIR": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/qualification/weighted-observe-only/parity/continuation-Playground-n4/profile",
+    "GLOB2_DEFERRED_DISPATCH": "steal",
+    "GLOB2_WEIGHTED_POLICY": "observe-only",
+    "GLOB2_OPENCL_DEVICE": "0"
+  },
+  "returncode": 0,
+  "elapsed_seconds": 4.525010152719915,
+  "binary_sha256": "257d526f5d56c7b63b614ce3a0f895345cb20569c6a6f573e09a9abee5e5336c",
+  "stdout_sha256": "bda12a6dee5b934ac0057e6bfa834299384cf8aae65bfd3edc2fec107b11e899",
+  "utc": "2026-10-15T13:23:25.499174+00:00"
+}

@@ -1,0 +1,33 @@
+{
+  "case": "parity-Oazis-n4-cpu-mixed",
+  "role": "first-steal",
+  "initialChecksum": 3149563782,
+  "finalChecksum": 3704462902,
+  "checksums": {
+    "GCS1": "c57f861ffc3c323c13622558029a1f6fd50f3a947e5f32785785a2d1d20000bc",
+    "native": "5a3252a69906edf453db9ea586060f8803a4e67c360d2c252a02eec6c0fee3d0"
+  },
+  "sidecar_details": {
+    "GCS1": {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/qualification/first-steal/parity/parity-Oazis-n4-cpu-mixed/native/game.replay.checksums",
+      "rows": 4096,
+      "first_tick": 0,
+      "last_tick": 4095,
+      "teams": 11,
+      "players": 11,
+      "bytes": 64604854
+    },
+    "native": {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/qualification/first-steal/parity/parity-Oazis-n4-cpu-mixed/native/world.checksums",
+      "rows": 4096,
+      "first_tick": 0,
+      "last_tick": 4095,
+      "bytes": 63363
+    }
+  },
+  "command_receipt": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/qualification/first-steal/parity/parity-Oazis-n4-cpu-mixed/command.json",
+  "result_sha256": "7423cec4d424b70121fcfe54f902fc841a0d0071d32434a1187bb449a3dea600",
+  "binary_sha256": "dee303f16c67f787651f14a601d73d23657dbb7a3b638f91b46952372fa76103",
+  "requested_opencl": false,
+  "correctness_only": true
+}

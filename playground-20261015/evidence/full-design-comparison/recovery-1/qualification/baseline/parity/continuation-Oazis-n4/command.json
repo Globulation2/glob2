@@ -1,0 +1,37 @@
+{
+  "command": [
+    "taskset",
+    "-c",
+    "0,1,2,16,17,18",
+    "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/confirmation/latest-wake/baseline/build/linux/client/release/src/glob2",
+    "game",
+    "run",
+    "--load-game",
+    "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/mature-instruction-census/oazis-initial-state/native/final.game.gz",
+    "--ticks",
+    "60512",
+    "--compute-threads",
+    "4",
+    "--gradient-backend",
+    "cpu",
+    "--write-replay",
+    "--telemetry",
+    "checksums",
+    "--output-dir",
+    "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/qualification/baseline/parity/continuation-Oazis-n4/native"
+  ],
+  "cwd": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/confirmation/latest-wake/baseline",
+  "env_overrides": {
+    "SDL_VIDEODRIVER": "dummy",
+    "SDL_AUDIODRIVER": "dummy",
+    "GLOB2_ASSET_DIR": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/confirmation/latest-wake/baseline",
+    "GLOB2_USER_DIR": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/qualification/baseline/parity/continuation-Oazis-n4/profile",
+    "GLOB2_USER_DATA_DIR": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/qualification/baseline/parity/continuation-Oazis-n4/profile",
+    "GLOB2_OPENCL_DEVICE": "0"
+  },
+  "returncode": 0,
+  "elapsed_seconds": 9.410201613791287,
+  "binary_sha256": "4a90fb41dbd1ac1bc674930a29cc4581d9fa87a638f04b57137df8eea5e8d0e9",
+  "stdout_sha256": "ff9c93f7ee5d580aa8f4ae13029cf34d3574fe7ab51ad95e85ba31a5de039e81",
+  "utc": "2026-10-15T12:10:48.264079+00:00"
+}

@@ -1,0 +1,18 @@
+{
+  "approved": true,
+  "source_sha256": "438297c8676a932caecefc53425c571b60ff722b8fa6491123c2716457278540",
+  "review_kind": "static only; no materialization/hashsweep/copy run",
+  "scope": [
+    "Explicitaftercompletion switch/newoutput only; PG448stop+result and writerPIDstartretirement/nativecompiler census checkedthroughcopy",
+    "Resolved selection musthavemissing/conflictfree280contexts; declaredSHA andeveryalias actualbytes checked",
+    "Source/destination fullSHA plus source size/mtime/ctime stability; deny ELF/wasm/MZ andrepository/profile paths",
+    "Partialtree markedINCOMPLETE onfailure, no compression/publication; portablelayoutresults/index.html andstandalonehashverifier preserve selected originals"
+  ],
+  "limits": [
+    "Caller must provide reviewedresolver output; tooldoesnot independentlyreconstructselection or validate statistical conclusions",
+    "Generated verifier explicitlyrequiresPython3.11+; bodies omitted fromselection remainunverified",
+    "No sourcecopy/tool execution performed; review doesnotattestfuturegeneratedtree",
+    "Root shouldreserve generated README.txt andindex paths for this tool; currentresolver aliases areevidence/source/fixtures/results so no collision"
+  ],
+  "blockers": []
+}

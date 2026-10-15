@@ -1,0 +1,16 @@
+{
+  "state": "INDEPENDENT_STATIC_REVIEW_CLEAR_NOT_EXECUTED",
+  "source_sha256": "438297c8676a932caecefc53425c571b60ff722b8fa6491123c2716457278540",
+  "timing_gate": "BothPG448stop/report receipts, runner/controller+analysis/watchretired, native/compiler censusclean before anycopy/hashmass.",
+  "command": [
+    "python3",
+    "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/playground-stop/materialize-evidence.py",
+    "--execute-after-completion",
+    "--selection",
+    "<resolved-selection.json>",
+    "--output",
+    "<NEW-PG-only-filetree>"
+  ],
+  "behavior": "Verifydeclaredsource/currentoverlay/map/rawrecords+allsourcealiases andsource/dest hashes; explicitbinarymagic/pathban; emitcontentmanifest+verify.py, preserveincompletefailures; no compression/publish.",
+  "independent_review_sha256": "983c00ee0048e83f17c57bbd2960e093bccb5e66af4757d86ac242a2b3a7addf"
+}

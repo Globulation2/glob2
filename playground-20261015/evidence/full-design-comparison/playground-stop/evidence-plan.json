@@ -1,0 +1,397 @@
+{
+  "state": "SOURCE_PREPARATION_METADATA_PLAN_ONLY_NOT_PUBLISHED",
+  "user_scope": "StopafterPlaygroundunrestricted32seeds\u00d714roles=448games; analyze/reportandawaitdecision. NoOazis/waves/56continuation orfutureexperiments authorized.",
+  "base_revision": "054804590ee1dd109f09642fc05654c324f08344",
+  "seeds": [
+    1056243202,
+    744345666,
+    1064623205,
+    725864695,
+    599004658,
+    117787757,
+    85910194,
+    769116511,
+    1030656205,
+    79851807,
+    1480527227,
+    31444774,
+    1514826878,
+    1858401095,
+    1635872854,
+    1441583672,
+    741493568,
+    466374853,
+    2037486757,
+    1414753418,
+    1298936997,
+    1139586032,
+    1845486380,
+    275303672,
+    1013771484,
+    1961520297,
+    56523606,
+    7804900,
+    494353701,
+    2092499754,
+    1910481143,
+    2122112527
+  ],
+  "requested_roles": [
+    {
+      "role": "baseline",
+      "source_label": "existing-baseline",
+      "env": {},
+      "binary_sha256": "4a90fb41dbd1ac1bc674930a29cc4581d9fa87a638f04b57137df8eea5e8d0e9"
+    },
+    {
+      "role": "wake-only",
+      "source_label": "existing-wake-only",
+      "env": {},
+      "binary_sha256": "99fbc82a526f0e15035bc675e50ac604a056574e931e077b3de955d19ce273a2"
+    },
+    {
+      "role": "first-steal",
+      "source_label": "first-steal-source",
+      "env": {
+        "GLOB2_DEFERRED_DISPATCH": "steal"
+      },
+      "binary_sha256": "dee303f16c67f787651f14a601d73d23657dbb7a3b638f91b46952372fa76103"
+    },
+    {
+      "role": "local-completion-round-robin",
+      "source_label": "local-source",
+      "env": {
+        "GLOB2_DEFERRED_DISPATCH": "round-robin"
+      },
+      "binary_sha256": "30361dab0356ac87d8644e9e5780c1cdbddb6627b15f6b5b2d452369ce0bbcff"
+    },
+    {
+      "role": "local-completion-steal",
+      "source_label": "local-source",
+      "env": {
+        "GLOB2_DEFERRED_DISPATCH": "steal"
+      },
+      "binary_sha256": "30361dab0356ac87d8644e9e5780c1cdbddb6627b15f6b5b2d452369ce0bbcff"
+    },
+    {
+      "role": "local-priority-steal",
+      "source_label": "priority-source",
+      "env": {
+        "GLOB2_DEFERRED_DISPATCH": "steal"
+      },
+      "binary_sha256": "1e50e84add3885c2c58d96a4fa702928a421144137bdb8b7ae66cdce5ffdbdd8"
+    },
+    {
+      "role": "weighted-fixed-no-steal",
+      "source_label": "weighted-source",
+      "env": {
+        "GLOB2_DEFERRED_DISPATCH": "steal",
+        "GLOB2_WEIGHTED_POLICY": "fixed-no-steal"
+      },
+      "binary_sha256": "257d526f5d56c7b63b614ce3a0f895345cb20569c6a6f573e09a9abee5e5336c"
+    },
+    {
+      "role": "weighted-fixed-steal",
+      "source_label": "weighted-source",
+      "env": {
+        "GLOB2_DEFERRED_DISPATCH": "steal",
+        "GLOB2_WEIGHTED_POLICY": "fixed"
+      },
+      "binary_sha256": "257d526f5d56c7b63b614ce3a0f895345cb20569c6a6f573e09a9abee5e5336c"
+    },
+    {
+      "role": "weighted-two-choice",
+      "source_label": "weighted-source",
+      "env": {
+        "GLOB2_DEFERRED_DISPATCH": "steal",
+        "GLOB2_WEIGHTED_POLICY": "two-choice"
+      },
+      "binary_sha256": "257d526f5d56c7b63b614ce3a0f895345cb20569c6a6f573e09a9abee5e5336c"
+    },
+    {
+      "role": "weighted-last",
+      "source_label": "weighted-source",
+      "env": {
+        "GLOB2_DEFERRED_DISPATCH": "steal",
+        "GLOB2_WEIGHTED_POLICY": "last"
+      },
+      "binary_sha256": "257d526f5d56c7b63b614ce3a0f895345cb20569c6a6f573e09a9abee5e5336c"
+    },
+    {
+      "role": "weighted-ewma",
+      "source_label": "weighted-source",
+      "env": {
+        "GLOB2_DEFERRED_DISPATCH": "steal",
+        "GLOB2_WEIGHTED_POLICY": "ewma"
+      },
+      "binary_sha256": "257d526f5d56c7b63b614ce3a0f895345cb20569c6a6f573e09a9abee5e5336c"
+    },
+    {
+      "role": "weighted-clock-only",
+      "source_label": "weighted-source",
+      "env": {
+        "GLOB2_DEFERRED_DISPATCH": "steal",
+        "GLOB2_WEIGHTED_POLICY": "clock-only"
+      },
+      "binary_sha256": "257d526f5d56c7b63b614ce3a0f895345cb20569c6a6f573e09a9abee5e5336c"
+    },
+    {
+      "role": "weighted-observe-only",
+      "source_label": "weighted-source",
+      "env": {
+        "GLOB2_DEFERRED_DISPATCH": "steal",
+        "GLOB2_WEIGHTED_POLICY": "observe-only"
+      },
+      "binary_sha256": "257d526f5d56c7b63b614ce3a0f895345cb20569c6a6f573e09a9abee5e5336c"
+    },
+    {
+      "role": "weighted-bare-steal",
+      "source_label": "weighted-source",
+      "env": {
+        "GLOB2_DEFERRED_DISPATCH": "steal",
+        "GLOB2_WEIGHTED_POLICY": "bare-steal"
+      },
+      "binary_sha256": "257d526f5d56c7b63b614ce3a0f895345cb20569c6a6f573e09a9abee5e5336c"
+    }
+  ],
+  "metadata_snapshot": {
+    "receipt_files_now": 261,
+    "receipt_bytes_now": 954632,
+    "stdout_files_now": 262,
+    "stdout_bytes_now": 257726,
+    "single_window_files_now": 261,
+    "note": "Stat/list only duringtiming. Countsareactiveprefix, not448completed; no contenthash/copy/compression/bootstrap."
+  },
+  "layout": {
+    "README.txt": "Compactactualscope/status/reproduction/limitations andaccessiblelinks",
+    "evidence/": "Stable pathsrelativefull-design-comparison includingrawPG/qualification/failures/sourceplans",
+    "source/": "Smallports/patches+adapter/probe/testsource againstpinned054, notfullcheckouts",
+    "fixtures/<declared-sha>/": "ExactfixedPlaygroundmapbytes; qualificationmaturesave mayreferencepriorpublicimmutablefixture ratherthanduplicate",
+    "results/": "FinalPGCSV/HTML/SVG/PNG/rawaudit/datasetmanifest andreceipts",
+    "index/": "Contentmanifest/verify/absoluteprovenance-to-portablemapping andpublicationreceipt"
+  },
+  "required_groups": [
+    {
+      "name": "AllPGobservations",
+      "selectors": [
+        "campaign/serial/Playground/*/receipt.json",
+        "campaign/serial/Playground/*/stdout.log",
+        "campaign/serial/wave-*-Playground-*.json",
+        "campaign/serial/pairs.json"
+      ],
+      "expected_final": {
+        "receipts": 448,
+        "stdout_logs": 448,
+        "single_game_windows": 448,
+        "window_binding_files": 448,
+        "pairs": 416
+      },
+      "notes": "Retainallroles,seeds,caps/nonwinners/adverseobservations; estimatedcompactreceipt/stdoutpayload~2MiB beforeexactfinalstat. Windowselectorincludes448.binding.json companionfiles; independentlyassertcounts aftercompletion. NoOazis orconcurrentwave observations included."
+    },
+    {
+      "name": "FinalPGaudit/report/plots",
+      "selectors": [
+        "playground-stop/results/receipt.json",
+        "playground-stop/results/dataset-manifest.json",
+        "playground-stop/results/raw-audit.json",
+        "playground-stop/results/every-game.csv",
+        "playground-stop/results/comparisons.csv",
+        "playground-stop/results/index.html",
+        "playground-stop/results/completion-time.svg",
+        "playground-stop/results/completion-time.png",
+        "playground-stop/results/total-cpu.svg",
+        "playground-stop/results/total-cpu.png"
+      ],
+      "notes": "Notyetgenerated. Bindactual448proof/datahashes, all14pairedmeans/CIs/metrics/adverseseeds. Nofake896/1792completion proof; nohostthroughputclaims."
+    },
+    {
+      "name": "Source/build/role reproducibility",
+      "selectors": [
+        "request.json",
+        "source-preparation.json",
+        "preparation.json",
+        "weighted-preparation.json",
+        "weighted-preparation-freeze.json",
+        "weighted-preparation.py",
+        "weighted-preparation-tests.py",
+        "built-variants.json",
+        "builds-complete.json",
+        "build-all.py",
+        "rebuild-harnesses.py",
+        "harness-slot-repair.json",
+        "first-steal-source.patch",
+        "local-source.patch",
+        "priority-source.patch",
+        "weighted-source.patch",
+        "candidate-ready.json",
+        "weighted-independent-review.json",
+        "staged-fixed-maps.json",
+        "campaign/plan.json",
+        "campaign/resolved-variants.json",
+        "campaign/runner.py",
+        "campaign/verify.py",
+        "campaign/resolve-plan.py",
+        "campaign/root-approved.json",
+        "builds/*/complete.json",
+        "builds/*/*.log",
+        "recovery-1/builds-complete.json",
+        "recovery-1/preparation.json",
+        "recovery-1/unit-rebuild-*/receipt.json",
+        "recovery-1/unit-rebuild-*/build.log",
+        "recovery-1/rebuild-launch.json",
+        "recovery-1/rebuild-controller.log"
+      ],
+      "notes": "Exactcompiler/releaseflags/dependencies/source/binary/unit/enginehashes,stablejobclasses/CPU-nsprior/control/coldepoch,roleenv,seeds/commands/affinity andactualbackend. Providepinned054checkout+patchrecipe; binariesnotincluded. PGfixedmapactualbytesanddeclaredhashrequired; nothash-onlyreconstruction.",
+      "dynamic_current_sources": "Readpreparation.json+weighted-preparation.json sources[].cwd/source_hashes andbuilds-complete sources[].source.source_hashes; resolveCURRENTsmallfiles. Controls useabsolute source_hashes fromcoordination-redesign/confirmation/latest-wake/ready.json. OnlyfixedPGmapbytes selected, exactdeclaredsha/aliases checked."
+    },
+    {
+      "name": "280boundedqualification compactrecords",
+      "selectors": [
+        "qualification-complete.json",
+        "qualification-independent-review.json",
+        "baseline-parity-reuse.json",
+        "recovery-root-approved.json",
+        "recovery-qualification-independent-review.json",
+        "recovery-source-independent-review.json",
+        "recovery-final-gate-review.json",
+        "recover-qualification.py",
+        "qualification/*/complete.json",
+        "qualification/*/focused-*/command.json",
+        "qualification/*/focused-*/junit.xml",
+        "focused-gap-run.py",
+        "focused-gap-checks/gap-checks-complete.json",
+        "focused-gap-checks/*/*/metadata.json",
+        "focused-gap-checks/*/*/command.json",
+        "focused-gap-checks/*/*/junit.xml",
+        "focused-gap-checks/*/*/stdout.log",
+        "supplemental-focused-complete.json",
+        "qualification/*/focused-*/stdout.log"
+      ],
+      "notes": "Resolvebaseline20reusedcontextreferences+260newactualrolecontexts viafinalqualifiedrolemanifests; require280compactrecords, not280newruns. PreserveperTickhash/rows/first-last+source/backend/budget references; omittingmassGCSbodies limitsstandalonereverification andmustbelabeled. Nativefocus+save/continuity checks notequalallplatformproof.",
+      "dynamic_resolution": "qualification-complete.roles[*].path -> actual role complete.json -> traces[*].command_receipt and reuse_source_receipt. This deliberatelyfindsbaseline20 inrecovery-1/qualification/baseline/parity, notguessednormalpath. Require14roles\u00d720uniquecontexts=280; sidecarbodiesomittedbutprovenancehashes/rowcountsretained."
+    },
+    {
+      "name": "Failures/rejectedmechanisms",
+      "selectors": [
+        "matched-baseline-failures-review.json",
+        "qualification/*/failure.json",
+        "recovery-*/qualification/*/failure.json",
+        "recovery-*/qualification/*/focused-*/junit.xml",
+        "recovery-*/qualification/weighted-bare-steal/focused-unit/stdout.log",
+        "weighted-preparation-bare-diagnostic/summary.json",
+        "weighted-preparation-bare-diagnostic/direct-suite.json",
+        "weighted-preparation-bare-diagnostic/direct-suite.log",
+        "weighted-preparation-bare-diagnostic/isolated-cases.json",
+        "weighted-preparation-bare-diagnostic/repeated-suite.json",
+        "weighted-preparation-bare-diagnostic/parallel-waves.json",
+        "weighted-preparation-bare-diagnostic/*.py",
+        "playground-stop/rejected-stop-draft/*.json",
+        "playground-stop/rejected-stop-draft/*.py",
+        "playground-stop/preflight-attempt1.json"
+      ],
+      "notes": "Known2baselineenginefailuresremainfailures(all14);160otherspass. Originalbare180s timeoutUNEXPLAINED despite31fullbaresuites/180isolated/40parallelnorepro andlaterqualification; retainoriginaltimeoutlog/JUnit, notjustsummary. HistoricalfirststaticRR/strictaffinity failures andurgencynegativeevidence maylinkimmutablepriorbundlec9efaa; currentlocalRRresearcharmisdistinct. RejectedSIGSTOPdraftneverlaunched; reason/race retained compactly."
+    },
+    {
+      "name": "Administrative scope stop andanalysis source",
+      "selectors": [
+        "playground-stop/watch.py",
+        "playground-stop/independent-review.json",
+        "playground-stop/root-approved.json",
+        "playground-stop/watch-launch.json",
+        "playground-stop/sentinel-installed.json",
+        "playground-stop/sentinel-preflight.json",
+        "playground-stop/complete.json",
+        "playground-stop/future-stages-held.json",
+        "playground-stop/analyze-playground.py",
+        "playground-stop/analysis-independent-review.json",
+        "playground-stop/analysis-root-approved.json",
+        "playground-stop/analysis-launch.json",
+        "playground-stop/analysis-ready.json",
+        "playground-stop/analysis-console.log",
+        "playground-stop/preflight.py",
+        "playground-stop/preflight-result.json",
+        "independent-audit/audit-whole-games.py",
+        "independent-audit/feature-independent-review.json",
+        "campaign/serial/Oazis"
+      ],
+      "notes": "OazisisaregularadministrativeJSONsentinel, NOTanOazisresultdirectory. Frozenrunner target.mkdir failsbeforefirstOA Popen onlyafterPGreceipts/windows/pairscommit. Noengine/parentpause/signal/handoffbias; futurepostcontroller/exporterstoppedpassively; originalgamecapsunchanged. Includeexactrootgates/sourceapproval/retiredidentities/completionproof; analysisawaitsdecisionandlaunchesnothingelse."
+    }
+  ],
+  "README_plan": [
+    "Actual448PGonlystatus;noOazis/waves/56, nofuturecontinuationwithoutuserdecision.",
+    "Pinned054commonbase/14rolemechanisms: baseline/W,firststeal,localRR/localsteal/priority, fixedno-steal/fixedsteal/twochoice/LAST/EWMA/clock/observe/barecontrols; explicitresearchpriors andsourcefidelity.",
+    "EverygameCSV/rawreceipt/window/pair links plus timeCPUstandalonefigures/allmetricCSV andfreshindependentauditreview.",
+    "32pairedseedunits; 448observationsarenot448independentseeds. Conditionalmatchingwinners; capsconsumeelapsedbutarecensoredfromcompletionmeans;10000pairedseedCIs/floorquantiles,manyexploratorycomparisonsnofamilywisecontrol.",
+    "TelemetryOffwinner/tickagreementonly, not448wholegamechecksums;280boundedperTickcontexts separate andtheircompressed/hashreferences clearlyscoped. No56futureproofcredit.",
+    "Exact2knownbaselineenginefailures+160pass andunexplainedoriginalbaretimeoutwithallattempts; noallgreenclaim.",
+    "CurrentlocalRRqualifiedboundedresearch vsolderfailedstaticRR/affinity prototypes; executionpriority/urgentjoin risks remain fromhistory.",
+    "OneLinuxhost/unrestrictedauto32PG CPUbackend only; no universaloptimum orworkerpolicy,noWindows/Android/iOS/allplatform/nativefeelproof.",
+    "No administrative PGpause/signal orboundaryseedexclusion; Oazissentinel outputguardstopsnaturalnextadmission, notgamework.",
+    "Rebuildrecipe/sourcepatches/flags/dependencies/binaryhashes/roleenv/seeds/PGfixturebytes; historicalmaturefixtures referencedimmutablepriorbundlewhereappropriate.",
+    "Accessibleimmutablebundle/figure URLs andPR1185comment afterrootpublicationapproval; localpaths insufficient."
+  ],
+  "history_reuse": {
+    "existing_public_evidence_commit_prefix": "c9efaa",
+    "policy": "Treatasimmutablehistoryreferenceonly; resolvefullcommit/repository/paths fromretainedpublicationreceiptsbeforelinking. Do notblindduplicateold1472/120/32/64/256corpus orclaimitwasnewPG448.",
+    "reuse_candidates": [
+      "Oldernegativeprototypes/urgencycontracts/statisticalcontrols",
+      "PriorWbrowser/save/replay/sourceevidencewithmatchingrevision scope",
+      "Maturefixturebytesifexactdeclaredhash/identitymatches"
+    ],
+    "must_be_new": [
+      "AllPG448raw observations/order/pairs",
+      "Current14ports/build/roledefs/qualifiedknownfailures/baretimeout",
+      "Sentinelstopproof+freshPGaudit/plots"
+    ]
+  },
+  "exclusions": [
+    "ELF/wasm/runtimebinaries/libraries",
+    "Fullsourcecheckouts/.git/compilerobjects/cache",
+    "Userprofiles/cache/massGCS/checksum/replaybodies (retainprovenancehashes andexplicitavailabilitylimits)",
+    "UnexecutedfutureOazis/waves/56 plans asresult evidence",
+    "Compression/materialization/upload whiletiming"
+  ],
+  "final_gates": [
+    "448stopproofcompleted,actualrunner/controller/nativecleancensus; analyzerterminatesafterreportreadyawaitinguser.",
+    "Actualrawaudit/resultsreceipthashesverified andindependentlyreviewed; all448/448/448binding/416countsreconcile.",
+    "Postfinish explicitselectionstats/dedup/missingfileaudit; do nottreatpendingselectorsaspresentfiles.",
+    "Source/base/flags/fixtureportablepath mapping+contenthashmanifest+verify onrelocatedmaterialization afterrootallowscopies/hashing.",
+    "Rootpublicationapproval; accessibleimmutableevidencebranch/attachmentandPNG/SVGlinks viaPR1185, noautomaticmerge."
+  ],
+  "execution": "Plan/lightmetadataonly: no copy/compression/bootstrap/plotimport/native/build/signal/publish; noactiveboundfilechanges.",
+  "fixed_playground_fixture_refs": [
+    {
+      "source_reference": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/confirmation/latest-wake/baseline/maps/Playground.map",
+      "declared_sha256": "2a323a2d02475fb1ddd2ddfac99c51890aa7b2a2f3537ad7bee93aba85d84eaf",
+      "required_bytes": true,
+      "note": "DeduplicateactualPGbytesbydeclaredSHA aftertiming; retainalloriginalsourcealiases/commands."
+    }
+  ],
+  "external_reproduction_refs": [
+    {
+      "path": "artifacts/october-regression/coordination-redesign/confirmation/latest-wake/ready.json",
+      "purpose": "Baseline/Wsourceheader hashes/sharedadapters/buildrecipe; exactmatchinghistoricalpublicfilemayreferencededuplicated."
+    },
+    {
+      "path": "artifacts/october-regression/coordination-redesign/confirmation/production-wake-draft/candidate.patch",
+      "purpose": "MinimalWsourcepatch; verifyexactheader/baseidentities againstcurrentrolemetadata beforehistoricalreuse."
+    }
+  ],
+  "concrete_resolver": {
+    "state": "INDEPENDENT_STATIC_REVIEW_CLEAR_SOURCE_ONLY_NOT_EXECUTED",
+    "script_sha256": "6e2033570ccb617ac1f487aab6d44b8c17531d058b95dfafca7fca478ef30fb7",
+    "command": [
+      "python3",
+      "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/playground-stop/resolve-evidence.py",
+      "--resolve-after-completion",
+      "--output",
+      "<NEW-concrete-selection.json>"
+    ],
+    "gate": "PG448stopproof+resultsreceiptcomplete/noactivenativecompiler; noresolution/copy/masshashduringtiming.",
+    "resolver": "Followscurrentpreparation+weighted+buildsource_hashes andcontrolsabsolutesource_hashes; verifiesonlysmallcurrentsource/PGmapbytes, preserveoriginalpatch/repair/currentoverlays separately. Followsactual14rolemanifesttraces/command_receipts/reusedbaselinepaths for280contexts. Explicitmissing/conflictingmandatoryprovenance blocksstate.",
+    "no_packaging": "SelectionJSON/stat/declaredhashresolution only; no copying/compression/upload/native actions.",
+    "independent_review_path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/playground-stop/resolver-independent-review.json",
+    "independent_review_sha256": "ec2fd98891f69f2d2a4fa2bc2512d9d77f7c81a9b71dce7ccbe311bb9f859e54"
+  },
+  "source_reconstruction_rule": "Originalport.patch files alone are NOT claimed current afterHarnessrepair. Retain originalpatches+harness-slot-repair+unit-onlyrepair receipts/logs; current verified source overlays applied LAST onpinned054are authoritative."
+}

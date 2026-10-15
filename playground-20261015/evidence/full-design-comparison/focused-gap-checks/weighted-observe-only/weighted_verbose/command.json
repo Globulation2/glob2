@@ -1,0 +1,30 @@
+{
+  "state": "passed",
+  "command": [
+    "taskset",
+    "-c",
+    "14,15,30,31",
+    "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/weighted-source/build/linux/client/release/test/glob2-unit-tests",
+    "--no-breaks=true",
+    "--test-suite=ComputeExecutor",
+    "--test-case=weighted*",
+    "--success=true"
+  ],
+  "cwd": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/weighted-source",
+  "env": {
+    "SDL_VIDEODRIVER": "dummy",
+    "SDL_AUDIODRIVER": "dummy",
+    "GLOB2_ASSET_DIR": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/weighted-source",
+    "GLOB2_USER_DIR": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/focused-gap-checks/weighted-observe-only/weighted_verbose/profile",
+    "GLOB2_USER_DATA_DIR": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/focused-gap-checks/weighted-observe-only/weighted_verbose/profile",
+    "GLOB2_DEFERRED_DISPATCH": "steal",
+    "GLOB2_WEIGHTED_POLICY": "observe-only"
+  },
+  "unit_sha256_before": "8d8e4bc2f5b32f292b066ac4da2e7546376925789bc9fd03fb619c683680336c",
+  "unit_sha256_after": "8d8e4bc2f5b32f292b066ac4da2e7546376925789bc9fd03fb619c683680336c",
+  "build_expected_unit_sha256": "8d8e4bc2f5b32f292b066ac4da2e7546376925789bc9fd03fb619c683680336c",
+  "returncode": 0,
+  "elapsed_seconds": 0.05614432319998741,
+  "stdout_sha256": "eea661a3f48e1c8d9c90c0d07353a48d5dbc1140b976b14f5db1aedf90a3583c",
+  "mask": "14,15,30,31"
+}

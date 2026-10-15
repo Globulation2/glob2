@@ -1,0 +1,16 @@
+{
+  "state": "INDEPENDENT_STATIC_REVIEW_CLEAR_SOURCE_ONLY_NOT_EXECUTED",
+  "script_sha256": "6e2033570ccb617ac1f487aab6d44b8c17531d058b95dfafca7fca478ef30fb7",
+  "command": [
+    "python3",
+    "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/playground-stop/resolve-evidence.py",
+    "--resolve-after-completion",
+    "--output",
+    "<NEW-concrete-selection.json>"
+  ],
+  "gate": "PG448stopproof+resultsreceiptcomplete/noactivenativecompiler; noresolution/copy/masshashduringtiming.",
+  "resolver": "Followscurrentpreparation+weighted+buildsource_hashes andcontrolsabsolutesource_hashes; verifiesonlysmallcurrentsource/PGmapbytes, preserveoriginalpatch/repair/currentoverlays separately. Followsactual14rolemanifesttraces/command_receipts/reusedbaselinepaths for280contexts. Explicitmissing/conflictingmandatoryprovenance blocksstate.",
+  "no_packaging": "SelectionJSON/stat/declaredhashresolution only; no copying/compression/upload/native actions.",
+  "independent_review_path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/playground-stop/resolver-independent-review.json",
+  "independent_review_sha256": "ec2fd98891f69f2d2a4fa2bc2512d9d77f7c81a9b71dce7ccbe311bb9f859e54"
+}

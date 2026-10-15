@@ -1,0 +1,17 @@
+{
+  "approved": true,
+  "source_sha256": "de25f6eb4880f05b76680bc62a23da52adbdf19bc290eab94fe9042695700cdd",
+  "review_kind": "static read-only watcher review; no execution/signals",
+  "scope": [
+    "Frozen runner target.mkdir(parents=True) precedes Popen; regular serial/Oazis sentinel blocks firstOazis while allowing finalPG receipt/wave/pairs unchanged",
+    "Exact root runner/controller identities and actualargv/source/plan/claim bound; sentinelfile/body/hash/installationreceipt fixed beforeandafter retirement",
+    "448receiptpath inventory,448wavepath inventory+bindingSHA and416pairroster required; no wavesdirectory, no nativecontinuation",
+    "No STOP/TERM/CONT or childactions in this watcher; rejected STOPdraft has residual wait4-return0/stopflag race and must not be used"
+  ],
+  "limits": [
+    "Watcher output hashes inventory, not full rawgame correctness; PGanalysis must validate receipts/logs/statuses/commands/outcomes",
+    "No observer-induced finalgame elapsedtime adjustment needed; existing cap/status receipts remain authoritative",
+    "External unrelated interventions cannot be ruled out by a passive watcher alone; nointerrupt fields describe this administrative mechanism"
+  ],
+  "blockers": []
+}

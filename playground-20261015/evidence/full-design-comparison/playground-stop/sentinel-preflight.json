@@ -1,0 +1,13 @@
+{
+  "state": "passed_source_only_sentinel_preflight",
+  "source_sha256": "de25f6eb4880f05b76680bc62a23da52adbdf19bc290eab94fe9042695700cdd",
+  "sentinel_receipt_sha256": "7fdc351d25b6545f8416701f04122d0a0d652e27188e866a59585caea5e121ac",
+  "checks": {
+    "sentinel_is_regular_file": true,
+    "sentinel_is_not_directory": true,
+    "sentinel_state": "administrative_stop_requested_before_oazis",
+    "runner_mkdir_before_popen": true
+  },
+  "signals_sent": false,
+  "watcher_launched": false
+}

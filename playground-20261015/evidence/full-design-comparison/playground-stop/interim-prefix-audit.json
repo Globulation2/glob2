@@ -1,0 +1,1054 @@
+{
+  "state": "light_interim_raw_arithmetic_inventory_check_passed",
+  "utc": "2026-10-15T16:27:50.470048+00:00",
+  "completed_receipts": 260,
+  "status_counts": {
+    "winner": 260
+  },
+  "distinct_seeds_started": 19,
+  "completed_winner_outcome_disagreements": 0,
+  "validated": "Declaredcommand/allocation/budget, unique seed-role, user+sys CPU sum, monotonic e2e, winner/tick agreement among available same-seed observations.",
+  "not_done": "No bootstrap/plots/nativejobs/full448analysis or complete-per-tick timing proof.",
+  "receipts": [
+    {
+      "path": "Playground/1056243202-baseline/receipt.json",
+      "sha256": "fcb5020dcdb1fb9299b6619bed730522b82cd2a243127a7b1bf4830c07ba2867"
+    },
+    {
+      "path": "Playground/1056243202-wake-only/receipt.json",
+      "sha256": "704950b15479fa290fa61a864ec57cdef10f819f19c7bdaa15a3e7937117adba"
+    },
+    {
+      "path": "Playground/1056243202-first-steal/receipt.json",
+      "sha256": "c01da262e51cd08ea2e36b4f09bfbeee147c11a670733fc35f7900f0ccbb9ad7"
+    },
+    {
+      "path": "Playground/1056243202-local-completion-round-robin/receipt.json",
+      "sha256": "e10e8cf3d559710bce6cffb48210330be1393264c4492ea629dc7402619c583c"
+    },
+    {
+      "path": "Playground/1056243202-local-completion-steal/receipt.json",
+      "sha256": "ef7b3d72e9b348c94a19229271302945be0c7f2248f418d9bfa327f41e6b9d3d"
+    },
+    {
+      "path": "Playground/1056243202-local-priority-steal/receipt.json",
+      "sha256": "6daae4f0b21c9e1253a2104e80e67a12b3fa2afec3b56560deba0bc7c8ffd1fe"
+    },
+    {
+      "path": "Playground/1056243202-weighted-fixed-no-steal/receipt.json",
+      "sha256": "06e79ec7c4990cdd96ea54c3341e906ba02fb70a511f6e3d83f94c30acf1be6e"
+    },
+    {
+      "path": "Playground/1056243202-weighted-fixed-steal/receipt.json",
+      "sha256": "ce7e5ad42784bc1bbb49e0f51dd88b811a9f666b65677e17cf99da9d3404b0ec"
+    },
+    {
+      "path": "Playground/1056243202-weighted-two-choice/receipt.json",
+      "sha256": "539ac55025ac780823dcc183e8dbb7132506109c803ebc8228caf9321026c773"
+    },
+    {
+      "path": "Playground/1056243202-weighted-last/receipt.json",
+      "sha256": "e89cae70978cde788ab6a7c19605f23e2ed1faf17c056b57e3ed9ee82542beb3"
+    },
+    {
+      "path": "Playground/1056243202-weighted-ewma/receipt.json",
+      "sha256": "13c9433d410692f23fed3c9e8b4bc32b52a4ea10fc51192d62f567b8e8b33327"
+    },
+    {
+      "path": "Playground/1056243202-weighted-clock-only/receipt.json",
+      "sha256": "d59cce0ca79ba837d20844e9781e2f148237578aa73f0fef729766e1ae575ff7"
+    },
+    {
+      "path": "Playground/1056243202-weighted-observe-only/receipt.json",
+      "sha256": "4f58cbc9c875383565e6596bb57f0e2eeb9ec9c925853678641ef420194e4c97"
+    },
+    {
+      "path": "Playground/1056243202-weighted-bare-steal/receipt.json",
+      "sha256": "27b4f021b480930580f58147be852546f2be1a3285457504e93cdb80747c6b70"
+    },
+    {
+      "path": "Playground/744345666-weighted-bare-steal/receipt.json",
+      "sha256": "5398f5b4e4b40f1a8c66f32532f369bfaa1dc0764e5b3a353c07c3d3902b2641"
+    },
+    {
+      "path": "Playground/744345666-weighted-observe-only/receipt.json",
+      "sha256": "74a4a38d36cc920df4a1f547134a690a149dea46c13e6d34e02f05b26f4d9fe1"
+    },
+    {
+      "path": "Playground/744345666-weighted-clock-only/receipt.json",
+      "sha256": "84112200b62c04c639131a0a8acacba693a169b97be36c2ed96769b77dc5c964"
+    },
+    {
+      "path": "Playground/744345666-weighted-ewma/receipt.json",
+      "sha256": "6bbb8ef756ddb8e8072456975ac77059cf75852de6f4fb4319222900942fdd58"
+    },
+    {
+      "path": "Playground/744345666-weighted-last/receipt.json",
+      "sha256": "8a86900e440f95446e02a0b5c61b987097d6b622a26eedf898ce42661bdcfe18"
+    },
+    {
+      "path": "Playground/744345666-weighted-two-choice/receipt.json",
+      "sha256": "875f7f86499580c30a511df10f3d745d0407302966e2f56f15a4474ad0e58ffc"
+    },
+    {
+      "path": "Playground/744345666-weighted-fixed-steal/receipt.json",
+      "sha256": "a43bcecd96639ed5379e4e7ed1203fd705b44b1978ad1ab48910a9d3b6f5ae18"
+    },
+    {
+      "path": "Playground/744345666-weighted-fixed-no-steal/receipt.json",
+      "sha256": "a58cf1d6c2e531e26b0c44266882a4cc2d3b3944953d5f92e8771c5ec7c1c15a"
+    },
+    {
+      "path": "Playground/744345666-local-priority-steal/receipt.json",
+      "sha256": "30e70b3c983b1b10a1abf558ffe0adb7e7efbd8e8168286809d665c2e3014d33"
+    },
+    {
+      "path": "Playground/744345666-local-completion-steal/receipt.json",
+      "sha256": "90cf67c56697390909fdd031b2ab5e49e7581843a69970fa44b0f5cb2e9139ba"
+    },
+    {
+      "path": "Playground/744345666-local-completion-round-robin/receipt.json",
+      "sha256": "1806de3596e7e20d118b8594e43ce26b80826578213f23308e92a90dd73b26f9"
+    },
+    {
+      "path": "Playground/744345666-first-steal/receipt.json",
+      "sha256": "821df9fab40864956284efd722a6fabeab48c378cdf825525f0983c389f6435d"
+    },
+    {
+      "path": "Playground/744345666-wake-only/receipt.json",
+      "sha256": "809e980bb11803ef6a792d243b31f108573f52b3bb8bc7fea130a16a29b68f28"
+    },
+    {
+      "path": "Playground/744345666-baseline/receipt.json",
+      "sha256": "3ef7ff84397a65f34430727e4447bfaa82364128d77fa7e37343e4f98cf9c962"
+    },
+    {
+      "path": "Playground/1064623205-wake-only/receipt.json",
+      "sha256": "bb84f4265196f691541d7531f5dfe0e7ae4ed6086431dcae2c69f6571192202c"
+    },
+    {
+      "path": "Playground/1064623205-first-steal/receipt.json",
+      "sha256": "6d1683b04e9c465a7d79fe5dcf4f0fe153b6bee64a4d12f8283aa07b052c2225"
+    },
+    {
+      "path": "Playground/1064623205-local-completion-round-robin/receipt.json",
+      "sha256": "f66da645f245c9b3f538945a3e61d361d94d326c110f8ea01306dab3f8a55439"
+    },
+    {
+      "path": "Playground/1064623205-local-completion-steal/receipt.json",
+      "sha256": "2444b15b93528220c91031f779261c3204357d2804ecb12099d7d80dc9006c8e"
+    },
+    {
+      "path": "Playground/1064623205-local-priority-steal/receipt.json",
+      "sha256": "9288cbd9b86b1f2d4d6f9134ce32811660ba58adeceb125565dd93dcb14891cc"
+    },
+    {
+      "path": "Playground/1064623205-weighted-fixed-no-steal/receipt.json",
+      "sha256": "5214615e6f411b300a229ad0917a1060e0680b46ab8f34f9cc50bde185e4ee71"
+    },
+    {
+      "path": "Playground/1064623205-weighted-fixed-steal/receipt.json",
+      "sha256": "62e5cb43bfd584db87ebaf09b3f009b80553d8a4039974b1396b503e3a2ebab0"
+    },
+    {
+      "path": "Playground/1064623205-weighted-two-choice/receipt.json",
+      "sha256": "537f8f33a87aecd9cec908f43b467bd293a156468af2da063f0f90186f0d982d"
+    },
+    {
+      "path": "Playground/1064623205-weighted-last/receipt.json",
+      "sha256": "98b1531deb685e21f5383ee5e9589cdfbea0c3527e9111f7572e7881d790de10"
+    },
+    {
+      "path": "Playground/1064623205-weighted-ewma/receipt.json",
+      "sha256": "bd9ad62e99df97b6079f8b2939de8154ae2df29fe4fd169449607dcc4d1e8e16"
+    },
+    {
+      "path": "Playground/1064623205-weighted-clock-only/receipt.json",
+      "sha256": "e31036e8222975d5893da52f49f075ca3be0562d04c097cacf2dab17dfd46e1b"
+    },
+    {
+      "path": "Playground/1064623205-weighted-observe-only/receipt.json",
+      "sha256": "c2dc836fe201f639d246aa865e8a2c5583779edabb7bf3ee04523d57a4ba3633"
+    },
+    {
+      "path": "Playground/1064623205-weighted-bare-steal/receipt.json",
+      "sha256": "74dfda28356534da853bfded544a03a8a7a307e6f99339eb4bbd725ea86f8a6b"
+    },
+    {
+      "path": "Playground/1064623205-baseline/receipt.json",
+      "sha256": "e6751edb784a4da0ddd82837441e53ad297019997fbcf9add719af7541903a62"
+    },
+    {
+      "path": "Playground/725864695-baseline/receipt.json",
+      "sha256": "b07f9c8a5803245b750467183de03d8349eabe357838ecd2b5d0c3f269901d5f"
+    },
+    {
+      "path": "Playground/725864695-weighted-bare-steal/receipt.json",
+      "sha256": "7794c06deeb7f11605cb772ef0c48677157ead9760ab3a14f2ec7dc84d6b65af"
+    },
+    {
+      "path": "Playground/725864695-weighted-observe-only/receipt.json",
+      "sha256": "967994c6f91d6c82a53226164f9860dd7f3c8f832ae6447dfee55ab0a4421418"
+    },
+    {
+      "path": "Playground/725864695-weighted-clock-only/receipt.json",
+      "sha256": "8c7e7b4c52f69e7c7aa11dffaa581e0392677efacd87651ff010475dfdf4ee15"
+    },
+    {
+      "path": "Playground/725864695-weighted-ewma/receipt.json",
+      "sha256": "a250d259b86774422d936fab89ae4143f5f0d3ea4c7c94a16f6b142035dd76d2"
+    },
+    {
+      "path": "Playground/725864695-weighted-last/receipt.json",
+      "sha256": "92ea8a19e016b3549339bfae91165f9d41013f17a1df6f467cd2e4530a38f97c"
+    },
+    {
+      "path": "Playground/725864695-weighted-two-choice/receipt.json",
+      "sha256": "4fdf2241438755817e282c6a3ccef8b59400baf0d8f7e12061d8f37dba76ef92"
+    },
+    {
+      "path": "Playground/725864695-weighted-fixed-steal/receipt.json",
+      "sha256": "c6749d589d9e219c4106d4b5d701fe194cbeb24b4f24e4bae6043b76583ecd79"
+    },
+    {
+      "path": "Playground/725864695-weighted-fixed-no-steal/receipt.json",
+      "sha256": "5467013fd8ac81a0d54a43501563d5ca0be4e1f126d242ea0d98e0b2b0e86dbf"
+    },
+    {
+      "path": "Playground/725864695-local-priority-steal/receipt.json",
+      "sha256": "0ccbdfb7b4f249b5a102dd9882e1813bd91e3552014ec59db72457ca6d73d4c4"
+    },
+    {
+      "path": "Playground/725864695-local-completion-steal/receipt.json",
+      "sha256": "96d4a448b2bd188e8e73372f092e454d6fda9d7bbfe599b6971b3ee7283156d7"
+    },
+    {
+      "path": "Playground/725864695-local-completion-round-robin/receipt.json",
+      "sha256": "dbaf30508071fe1950618d7a47d3185fa0ad45fe6a2dfc97e597df9732ce41f6"
+    },
+    {
+      "path": "Playground/725864695-first-steal/receipt.json",
+      "sha256": "2ddb9b5ebf1d793cc935392af349cff41cc78bbfc197c0d11fca4f9f675ccfbd"
+    },
+    {
+      "path": "Playground/725864695-wake-only/receipt.json",
+      "sha256": "71dab27879990d00ff0b6ab569b2db0238e2333daa138e3446893dcd8389fd82"
+    },
+    {
+      "path": "Playground/599004658-first-steal/receipt.json",
+      "sha256": "5884d37ff347f71e74987fefc07f2dcc86fec060f5c546d509e4586790b41e92"
+    },
+    {
+      "path": "Playground/599004658-local-completion-round-robin/receipt.json",
+      "sha256": "046d0d88f57dd9805b4aab77630e2cdb1e3f20351ef9cfdc182aa3d7bbdc0339"
+    },
+    {
+      "path": "Playground/599004658-local-completion-steal/receipt.json",
+      "sha256": "9a953a11cc8c46f70cfbfbc2d614446d6162345065a4da7fa48c7a41513dec10"
+    },
+    {
+      "path": "Playground/599004658-local-priority-steal/receipt.json",
+      "sha256": "44ac40e0d48f060aa4e13d5f304395ad50864541a66b0201100ec79f9d4a72ef"
+    },
+    {
+      "path": "Playground/599004658-weighted-fixed-no-steal/receipt.json",
+      "sha256": "7cfc9cc114ba80c2de9cb46610b4be552bf34e564d1d01d8affa1323e878fef7"
+    },
+    {
+      "path": "Playground/599004658-weighted-fixed-steal/receipt.json",
+      "sha256": "08392ce42cdcbde6d9320cc0acf2e60aa87ba6ecb3970baa8e0d24c7a60ae3d4"
+    },
+    {
+      "path": "Playground/599004658-weighted-two-choice/receipt.json",
+      "sha256": "12f9cef33c191c9433c3712433de35b11fa746144e6a8c53a156133576daf9e0"
+    },
+    {
+      "path": "Playground/599004658-weighted-last/receipt.json",
+      "sha256": "d09a9c0de71f876e85df8ac0d7428b7e4008ef9bd73eac4ded42a826439f3bd3"
+    },
+    {
+      "path": "Playground/599004658-weighted-ewma/receipt.json",
+      "sha256": "47b1249621dd81fc26348758d6c24a6389143a03f3f02a3bcc82a41bfea58162"
+    },
+    {
+      "path": "Playground/599004658-weighted-clock-only/receipt.json",
+      "sha256": "64f2d27d045d95d23620b99cafa66f46839ed6eec6a0b8eaae9f17439a4d92f3"
+    },
+    {
+      "path": "Playground/599004658-weighted-observe-only/receipt.json",
+      "sha256": "cf5371bea36d8acaae612898824f96358109273e39d0aec40ec319b7f6283b3a"
+    },
+    {
+      "path": "Playground/599004658-weighted-bare-steal/receipt.json",
+      "sha256": "1464b341b07e08bbc6bedd1ed568d795d4aa97970f828140e2c579288758d750"
+    },
+    {
+      "path": "Playground/599004658-baseline/receipt.json",
+      "sha256": "9dc619e10ffb0b8a27b0d843d9f6c7a449a853f3ff50c06d7e964c962faa01e2"
+    },
+    {
+      "path": "Playground/599004658-wake-only/receipt.json",
+      "sha256": "132edc9aec34123c404874cfb54510edb504ee1c8a0f3aacce283abdd198aa49"
+    },
+    {
+      "path": "Playground/117787757-wake-only/receipt.json",
+      "sha256": "28be130383df72ee05f84aca2f31d52d3a6dd95036bf5a64172021ec0539624a"
+    },
+    {
+      "path": "Playground/117787757-baseline/receipt.json",
+      "sha256": "b65f99696ebf6dfed7a01046ee33f7caa8dcb96d7e1e825d2b40616503dd8e6e"
+    },
+    {
+      "path": "Playground/117787757-weighted-bare-steal/receipt.json",
+      "sha256": "20d02ed8ef016c65a4525131c63e421dce361b5a353209a84a919e8234836ec4"
+    },
+    {
+      "path": "Playground/117787757-weighted-observe-only/receipt.json",
+      "sha256": "aa817f0d8e8a976936c83ee688c8d7e880e8724339c1b1f2d500531521bc2b5c"
+    },
+    {
+      "path": "Playground/117787757-weighted-clock-only/receipt.json",
+      "sha256": "c4335d70c6af46e32f818c0b24fcb77d8622cc382f48ee87ade48f54c99810fb"
+    },
+    {
+      "path": "Playground/117787757-weighted-ewma/receipt.json",
+      "sha256": "30c8cefc27667b7ce308c10aa4f963c79566c1969eafd2080c122ab43b3b1961"
+    },
+    {
+      "path": "Playground/117787757-weighted-last/receipt.json",
+      "sha256": "38dc633dccabc1510decc47b02efdb4a851e12f60fadf330a4fd44baa0798072"
+    },
+    {
+      "path": "Playground/117787757-weighted-two-choice/receipt.json",
+      "sha256": "887b0af0e013ce3d9dbf4dcf3a2d1461ac4a8bcdcf3b56029f7b56ebd9acdd4e"
+    },
+    {
+      "path": "Playground/117787757-weighted-fixed-steal/receipt.json",
+      "sha256": "c942aaf9e531f679ae610100a884d5dee187288fb5ab634913def97baeab9971"
+    },
+    {
+      "path": "Playground/117787757-weighted-fixed-no-steal/receipt.json",
+      "sha256": "2f14012e980c6f96b83c7626afad4a7a4156354b247715868e434affe12ae749"
+    },
+    {
+      "path": "Playground/117787757-local-priority-steal/receipt.json",
+      "sha256": "8a3e2deb049d6a0afde93cae5a9ac5ba963feb3442f33b351cbddf318ec9ce8a"
+    },
+    {
+      "path": "Playground/117787757-local-completion-steal/receipt.json",
+      "sha256": "bf7bf573026553935602ca5d35d10a02e5bac3dc0a73c90843e07991ab015ecc"
+    },
+    {
+      "path": "Playground/117787757-local-completion-round-robin/receipt.json",
+      "sha256": "e3b51a52c29ce3bc9732fb7bbf944e97a0c3e57688adfff881f30db58e3088ec"
+    },
+    {
+      "path": "Playground/117787757-first-steal/receipt.json",
+      "sha256": "4e4af0fa6cabb73fa73f9773c151062891a36db865c1a13b728d01f2cfa77256"
+    },
+    {
+      "path": "Playground/85910194-local-completion-round-robin/receipt.json",
+      "sha256": "286167c669eab4ff36f0bb525bb53154732937441c83188923e34e4df6643eb8"
+    },
+    {
+      "path": "Playground/85910194-local-completion-steal/receipt.json",
+      "sha256": "182d5db9adacc819cb2bfb9a2233c04da0b0ed9e052c33be43ed7f9a1a1dcd4e"
+    },
+    {
+      "path": "Playground/85910194-local-priority-steal/receipt.json",
+      "sha256": "11711bb826e7e09174bf263e80b392f8ce525e754318aadc76eac354ba63bcc1"
+    },
+    {
+      "path": "Playground/85910194-weighted-fixed-no-steal/receipt.json",
+      "sha256": "f98345e93cb7061476e3aaadb5fe7481e43f6e2435160e28452d01cc91e39a03"
+    },
+    {
+      "path": "Playground/85910194-weighted-fixed-steal/receipt.json",
+      "sha256": "be2cc2eca43d5de7363ffbb85431858e8c7790e4819ec5ca0dd60849bb3b939f"
+    },
+    {
+      "path": "Playground/85910194-weighted-two-choice/receipt.json",
+      "sha256": "d8aec98f26e11657b896ecf4881ba543cfc3506d8d446b4ff715db604f4d81a8"
+    },
+    {
+      "path": "Playground/85910194-weighted-last/receipt.json",
+      "sha256": "1889368dc04e9db6264e3d481eddc8bb37f20727a89a9d03a4ebf056662874fd"
+    },
+    {
+      "path": "Playground/85910194-weighted-ewma/receipt.json",
+      "sha256": "98ca5dbea9e7a4fc6a7e972304323be5c52859befdb19fb569b8d7a8684879d3"
+    },
+    {
+      "path": "Playground/85910194-weighted-clock-only/receipt.json",
+      "sha256": "f897d6d005b4c45e8c5e8ed33dbb035c08835b332d6e9c0e0ab2e60eda8d07ee"
+    },
+    {
+      "path": "Playground/85910194-weighted-observe-only/receipt.json",
+      "sha256": "f9da602cafe400d110c013a2282995ff06a7d60f6d628bbbdbdb40cfaab415e7"
+    },
+    {
+      "path": "Playground/85910194-weighted-bare-steal/receipt.json",
+      "sha256": "caa96fa75081a69a12ddf46b0aa7ec4317c80dacc5fafdb6f04625b3492131ec"
+    },
+    {
+      "path": "Playground/85910194-baseline/receipt.json",
+      "sha256": "77002ce4bca894f9cb57c2c3e5c1c31e474986e2a7e9206ee7c96d149cef980f"
+    },
+    {
+      "path": "Playground/85910194-wake-only/receipt.json",
+      "sha256": "a0e401a9eb3aea827bcb5b3169080cce73ce1fe036b47e6d69245157b6a707b4"
+    },
+    {
+      "path": "Playground/85910194-first-steal/receipt.json",
+      "sha256": "56f7725ddffe67b06fa777959fc6254cae08192313535ec22e2300d58f7424e3"
+    },
+    {
+      "path": "Playground/769116511-first-steal/receipt.json",
+      "sha256": "b8c4a18ed2e8085375fe69a6111ed4950039c39d5699f024f116f81cb73970aa"
+    },
+    {
+      "path": "Playground/769116511-wake-only/receipt.json",
+      "sha256": "1d9b2d63317c7c1e1fec931be7ebf18c5ba4ba4290ae65e120fffd140e2535c0"
+    },
+    {
+      "path": "Playground/769116511-baseline/receipt.json",
+      "sha256": "b04bdf5efe489259a97e98dd7453f5284ad6ed37b30c00656a5195e18d749158"
+    },
+    {
+      "path": "Playground/769116511-weighted-bare-steal/receipt.json",
+      "sha256": "a03cf5c205789762e8a3372a203e9657fccc36a84008797e3cb6999bb196820f"
+    },
+    {
+      "path": "Playground/769116511-weighted-observe-only/receipt.json",
+      "sha256": "d78edcc0825bb55ddcf1fc1ca0d06d4043a9734b29bf34ec5f6cc25a701cf367"
+    },
+    {
+      "path": "Playground/769116511-weighted-clock-only/receipt.json",
+      "sha256": "39074aef6d7bc503b271545105eb37890e88b1bdad18f79765b9d5fc074d0ef9"
+    },
+    {
+      "path": "Playground/769116511-weighted-ewma/receipt.json",
+      "sha256": "973cea092d1829f58e4d6bf8a2d597f7abc95f2522499f698e0a867ce97f79b1"
+    },
+    {
+      "path": "Playground/769116511-weighted-last/receipt.json",
+      "sha256": "c513649acee9ae6a9c7d43d394e0741bb0e201d45c0797e6dfe64b43f4d6287b"
+    },
+    {
+      "path": "Playground/769116511-weighted-two-choice/receipt.json",
+      "sha256": "cab965b031f479609a15e281ceeee820e774367488d9a7f704bb2d3d3b26eaef"
+    },
+    {
+      "path": "Playground/769116511-weighted-fixed-steal/receipt.json",
+      "sha256": "bd923d4389582f6af8d0d90971e9f6664170f34bdb7459a28369e12297ae498b"
+    },
+    {
+      "path": "Playground/769116511-weighted-fixed-no-steal/receipt.json",
+      "sha256": "356b26128f39ad051dbf83122b66cb293f0cb7ff1119459100c16e31a4d8c2c6"
+    },
+    {
+      "path": "Playground/769116511-local-priority-steal/receipt.json",
+      "sha256": "c910a8a3fc04881af37262493a4700d1c6eeec1c494d7bd0b2df772b0816e797"
+    },
+    {
+      "path": "Playground/769116511-local-completion-steal/receipt.json",
+      "sha256": "1936e2ee5f5bc3d9714a7574ead99cce106fc038451f98e8c2c7f3f7ad751845"
+    },
+    {
+      "path": "Playground/769116511-local-completion-round-robin/receipt.json",
+      "sha256": "48c4c59d46ffd71366f8d17cfc474b6dc94902153708628fcdbd57d434081b61"
+    },
+    {
+      "path": "Playground/1030656205-local-completion-steal/receipt.json",
+      "sha256": "197f632c1d8e30ce681a08213860b837a925546ab9ca02eb16232063f3a1409d"
+    },
+    {
+      "path": "Playground/1030656205-local-priority-steal/receipt.json",
+      "sha256": "15ff0d97a52f65a8721be37a47ccf022f0c50dac4691bbf9f7b150c8fc4321ba"
+    },
+    {
+      "path": "Playground/1030656205-weighted-fixed-no-steal/receipt.json",
+      "sha256": "3c630929229b10a6c2c7dc3a87412634d61b4b756b8f1f00fcd7a9b323eb734e"
+    },
+    {
+      "path": "Playground/1030656205-weighted-fixed-steal/receipt.json",
+      "sha256": "e232803c82146ee014816c46a81cd23b40f69536c8ceda7a58d76f4d13650bc9"
+    },
+    {
+      "path": "Playground/1030656205-weighted-two-choice/receipt.json",
+      "sha256": "c19b16f9bd72d06d41aff34a052ae86bf187448112577b4df046a48ce6acaf98"
+    },
+    {
+      "path": "Playground/1030656205-weighted-last/receipt.json",
+      "sha256": "1ab47c7a0faf78e058bf18db45aa95417e85715bb318fc96f431cbce49060be8"
+    },
+    {
+      "path": "Playground/1030656205-weighted-ewma/receipt.json",
+      "sha256": "9f5899a6709861cd3c86a6efc07170cd6031a18bf70bc325937ad8b61d68f110"
+    },
+    {
+      "path": "Playground/1030656205-weighted-clock-only/receipt.json",
+      "sha256": "8fe5749eba1b9e7e075aa1f9e500a56231916c8afc52a777cc01942b11819adc"
+    },
+    {
+      "path": "Playground/1030656205-weighted-observe-only/receipt.json",
+      "sha256": "1fa58156ab0c270e43844b802355c83e3c5ec93ff743366d9407730770917cf3"
+    },
+    {
+      "path": "Playground/1030656205-weighted-bare-steal/receipt.json",
+      "sha256": "8f3d6979ac77857ac8c93dee7c85428ed2bc4c614539c926bc4bb27cd6970fce"
+    },
+    {
+      "path": "Playground/1030656205-baseline/receipt.json",
+      "sha256": "2f93d7d47338e31c73c198308225955df76fbadfed88b75267722729cee73bf0"
+    },
+    {
+      "path": "Playground/1030656205-wake-only/receipt.json",
+      "sha256": "6c46d46af81b0dafdc4b410ed82b144fa4f930cfc65a881b0332b70a79b7c2fe"
+    },
+    {
+      "path": "Playground/1030656205-first-steal/receipt.json",
+      "sha256": "4bd43436fd1a4b6fddc6e89ee24bb18e32839ab57345aaf59b945223fcac3a9a"
+    },
+    {
+      "path": "Playground/1030656205-local-completion-round-robin/receipt.json",
+      "sha256": "ebaf41167dad8e7e0ba94845d806ae12504f99504284aeb12fe41b29ba5e8143"
+    },
+    {
+      "path": "Playground/79851807-local-completion-round-robin/receipt.json",
+      "sha256": "9b11bcd28fe97a7ec5cd68a7df96407665937b50aa438309bc86da88553386c0"
+    },
+    {
+      "path": "Playground/79851807-first-steal/receipt.json",
+      "sha256": "35aad9022d6b045d666b40928ffd647fc47c6706fbdf89173d818a24a6bca983"
+    },
+    {
+      "path": "Playground/79851807-wake-only/receipt.json",
+      "sha256": "702b6471c1881bc5ad09baf5d93093c6e8248cc9a6237cec0aca906765fa3f70"
+    },
+    {
+      "path": "Playground/79851807-baseline/receipt.json",
+      "sha256": "3c66de4006e387518af62f0bd21239a97f7ee0d70e426f585cd3699c949dda28"
+    },
+    {
+      "path": "Playground/79851807-weighted-bare-steal/receipt.json",
+      "sha256": "6cfa7c8c4f12c51c7056ace9c07b3b048915ce11165f6dfe9c7e435a6e16f01a"
+    },
+    {
+      "path": "Playground/79851807-weighted-observe-only/receipt.json",
+      "sha256": "a6dd30ba6cc3976bd0cf7a2b026d072d0dd7723a82ff3f8d00fa3e640e346a39"
+    },
+    {
+      "path": "Playground/79851807-weighted-clock-only/receipt.json",
+      "sha256": "b3628594cb37d792680f51dd657b40f5ea93a03ee035b2033a6844618ef078c1"
+    },
+    {
+      "path": "Playground/79851807-weighted-ewma/receipt.json",
+      "sha256": "7eab5df29cec9e5402f31f9714fb5cb5e60a5a3d9a16295f47ffbece1eef30e5"
+    },
+    {
+      "path": "Playground/79851807-weighted-last/receipt.json",
+      "sha256": "ee1971f0c9de2adf5d1bf7e09472624544b38ca0a0c78a699780d8038fe294fe"
+    },
+    {
+      "path": "Playground/79851807-weighted-two-choice/receipt.json",
+      "sha256": "8c8e5c77fb01366b7b57424fa5571e88e02016bf11426fb79d6429c5e3ef283f"
+    },
+    {
+      "path": "Playground/79851807-weighted-fixed-steal/receipt.json",
+      "sha256": "92bb6a005800bc6745e74098ec5962f0ba3278024f76abb73372b3fece496b55"
+    },
+    {
+      "path": "Playground/79851807-weighted-fixed-no-steal/receipt.json",
+      "sha256": "37660659a8557d03305315ab79f4f44a8f4c4aaed72b90bbac0b3c7f09dcfc8b"
+    },
+    {
+      "path": "Playground/79851807-local-priority-steal/receipt.json",
+      "sha256": "8985a171c8ff58d23b77d7e76d69bfaef7720b2e4ec22d193637a6fea5e03811"
+    },
+    {
+      "path": "Playground/79851807-local-completion-steal/receipt.json",
+      "sha256": "73d89bd273765bf0819fa7f0a0c7da9107390424fff2ede091ca7f25f9aa9551"
+    },
+    {
+      "path": "Playground/1480527227-local-priority-steal/receipt.json",
+      "sha256": "35eb491daf2e3f6a0a01a7d2c188a47459797dc9f51f281d139fd78747c670fd"
+    },
+    {
+      "path": "Playground/1480527227-weighted-fixed-no-steal/receipt.json",
+      "sha256": "f41204b41d6567beb1c032f05c1a620cdcfdc2424ac08537eee4254468d6c68c"
+    },
+    {
+      "path": "Playground/1480527227-weighted-fixed-steal/receipt.json",
+      "sha256": "ec047998d3c9b15f203889a533fbf0c02d565d8377551ff1b28e867439694add"
+    },
+    {
+      "path": "Playground/1480527227-weighted-two-choice/receipt.json",
+      "sha256": "3c141d74554656a49f99815d3020eb1b9123c3bfdc2dc95c580f6fdc9f3c46ea"
+    },
+    {
+      "path": "Playground/1480527227-weighted-last/receipt.json",
+      "sha256": "e4f01ca2795407b5e42080a019f09bc7a67b99e490398c1ecf9b69fc60310a17"
+    },
+    {
+      "path": "Playground/1480527227-weighted-ewma/receipt.json",
+      "sha256": "7bde14998d236ea5e78baf689bcfac7ae520f808966130534a66dded05d53fdd"
+    },
+    {
+      "path": "Playground/1480527227-weighted-clock-only/receipt.json",
+      "sha256": "c140593cc2680d52ef906852b9fe6747bacedd3d0cd627a374e55efbee47c41c"
+    },
+    {
+      "path": "Playground/1480527227-weighted-observe-only/receipt.json",
+      "sha256": "7a4fb0e13bba2f04bad77936ea89552336e2750d3729e577a71d4394fb7b0d2f"
+    },
+    {
+      "path": "Playground/1480527227-weighted-bare-steal/receipt.json",
+      "sha256": "2300eb4419bc879ff7197ce3201c5c56abcac0f629fa4d0ee9a45d8a5fe2923b"
+    },
+    {
+      "path": "Playground/1480527227-baseline/receipt.json",
+      "sha256": "fa6fcad7c875db7251f56a522c2c8a4be278d3b85d15ec38758f12a7c0b446a0"
+    },
+    {
+      "path": "Playground/1480527227-wake-only/receipt.json",
+      "sha256": "ff9e05831ccbc750b4f8448f777e17a4a5e3738a3f41b65a8a4b78810259dfbd"
+    },
+    {
+      "path": "Playground/1480527227-first-steal/receipt.json",
+      "sha256": "0cd5ce8bfe015a5ba39a8a5b00772fed1c85a899a879d8999b617816aef7f3e5"
+    },
+    {
+      "path": "Playground/1480527227-local-completion-round-robin/receipt.json",
+      "sha256": "65f6904487e3c2f0d7da8d67d094ef18d0de946d9d9ba97c2690a7128db179ae"
+    },
+    {
+      "path": "Playground/1480527227-local-completion-steal/receipt.json",
+      "sha256": "f2701751a06a68e9e330b90dbc764d81e57d74a8cc9691603b18a50973ff33ff"
+    },
+    {
+      "path": "Playground/31444774-local-completion-steal/receipt.json",
+      "sha256": "f186b9d334f2eb7b2969e89471b2b06a4d4e95298c7972a238296959d169a0f1"
+    },
+    {
+      "path": "Playground/31444774-local-completion-round-robin/receipt.json",
+      "sha256": "9ce9cea937940c0c423235ce536fc572f38a268a3f076bf0d725459a2ef4694e"
+    },
+    {
+      "path": "Playground/31444774-first-steal/receipt.json",
+      "sha256": "74f68bb4e7e0554d80fc37f9e443bbc8980affbbce67d44a70ecba57ebce3382"
+    },
+    {
+      "path": "Playground/31444774-wake-only/receipt.json",
+      "sha256": "c359ba2ec37e6e906ae225ee09036c4c0f56c2d02fe7134ced2feeef1db0467c"
+    },
+    {
+      "path": "Playground/31444774-baseline/receipt.json",
+      "sha256": "9f0d75738e0d2cb56991e0fae13d639fd8b9de9135856fe95231c72cdc36470b"
+    },
+    {
+      "path": "Playground/31444774-weighted-bare-steal/receipt.json",
+      "sha256": "4265b8dcb826b92515ae1eccdad8604c0e33fa6fcc1a6bde173c64beb347f278"
+    },
+    {
+      "path": "Playground/31444774-weighted-observe-only/receipt.json",
+      "sha256": "e666bb97c0a29be802b7190893b67e4c61e98c5ec91c192784a2f10f43415169"
+    },
+    {
+      "path": "Playground/31444774-weighted-clock-only/receipt.json",
+      "sha256": "9e63369d8c1a0beed3ac4f46d57560daec86d437a38603314d487bdbea0faeb7"
+    },
+    {
+      "path": "Playground/31444774-weighted-ewma/receipt.json",
+      "sha256": "e2165fbf8f76345baaec857462b4ea46aff5c3b453e14ea58d2c464d8b30371b"
+    },
+    {
+      "path": "Playground/31444774-weighted-last/receipt.json",
+      "sha256": "b5401d7e1d99716feecffad0317e23f7135f706c631af0bee7e1334f678118d3"
+    },
+    {
+      "path": "Playground/31444774-weighted-two-choice/receipt.json",
+      "sha256": "9be683c0bcfea06b7039e039ef42036064e2920f921ce488d8e01c6db4cd937f"
+    },
+    {
+      "path": "Playground/31444774-weighted-fixed-steal/receipt.json",
+      "sha256": "0ad5f94d0c95c10d9a014408cfcb86b8fcc696945427e54b4cb8e83dd26c72b7"
+    },
+    {
+      "path": "Playground/31444774-weighted-fixed-no-steal/receipt.json",
+      "sha256": "28f2f13c0f7df7e3c33dae44f4493547376d9d5a288dd49c265083d498138fe7"
+    },
+    {
+      "path": "Playground/31444774-local-priority-steal/receipt.json",
+      "sha256": "e0bfbbdfec798123cdad12a5f1e7133a6f057be0e73bf96164017620aa1b4a6e"
+    },
+    {
+      "path": "Playground/1514826878-weighted-fixed-no-steal/receipt.json",
+      "sha256": "f4295cea178ecb008262e9c112887ab601b7d807a088e661678ab2cab286e9c1"
+    },
+    {
+      "path": "Playground/1514826878-weighted-fixed-steal/receipt.json",
+      "sha256": "f49b6543acbd1e436b1a32d9ef511e7c707b2f00f1bac054dbeeda04cc05accb"
+    },
+    {
+      "path": "Playground/1514826878-weighted-two-choice/receipt.json",
+      "sha256": "fc97a5ca9106c033e92e00c0c012fd4b1a2a5d46dc2ec4a05d58679432adefc9"
+    },
+    {
+      "path": "Playground/1514826878-weighted-last/receipt.json",
+      "sha256": "4996c8ec010861f136900fb1d1e83be32ca6f5dae47704eadfa08073929117a1"
+    },
+    {
+      "path": "Playground/1514826878-weighted-ewma/receipt.json",
+      "sha256": "05ad1675f5c7016a66179465fd8bd8d18ae7994dbad651e6bbaf661deaabd0b6"
+    },
+    {
+      "path": "Playground/1514826878-weighted-clock-only/receipt.json",
+      "sha256": "17274e9139d2fd3b8575f0f2d9d781d89f24bd7deb93c9690c1666e4e990c524"
+    },
+    {
+      "path": "Playground/1514826878-weighted-observe-only/receipt.json",
+      "sha256": "5c2770c3737427b50ce64f47d867d3d0dd719b1446e5309240687b0e895a5993"
+    },
+    {
+      "path": "Playground/1514826878-weighted-bare-steal/receipt.json",
+      "sha256": "8ab04214782f15ea5dadff015c3160490b1455312bfd2dee5c67a8a474cdc812"
+    },
+    {
+      "path": "Playground/1514826878-baseline/receipt.json",
+      "sha256": "4f82323045e22f685c174b8ebeb2b96f29f4c5c30f05e5f99510f3c45e092570"
+    },
+    {
+      "path": "Playground/1514826878-wake-only/receipt.json",
+      "sha256": "a7716866daddf6277bebf7bf377755b90e884abb1edc682141e035fdb43fb95a"
+    },
+    {
+      "path": "Playground/1514826878-first-steal/receipt.json",
+      "sha256": "517c06cc71a5a11b97a695fa7a5735f9601ca6b082a5907b4f2d06ef2724d90f"
+    },
+    {
+      "path": "Playground/1514826878-local-completion-round-robin/receipt.json",
+      "sha256": "01387cb8d08c0955eaa023f0eeee70fbe9fed14bf0b8c99d2770499217456af3"
+    },
+    {
+      "path": "Playground/1514826878-local-completion-steal/receipt.json",
+      "sha256": "de7876d4fcf3ed06a1cd55c59f378de758b39ea634687cf9d4c4bfb2ed8f3cad"
+    },
+    {
+      "path": "Playground/1514826878-local-priority-steal/receipt.json",
+      "sha256": "728a4cfe0b5fa8dd8a572ede9f2c61d3a3a07dbce018499102f29ad860082d2e"
+    },
+    {
+      "path": "Playground/1858401095-local-priority-steal/receipt.json",
+      "sha256": "10ea1e89c5647e8aa73f6c529cb8244b4b5552e58bc40514ee2328fd10decf3c"
+    },
+    {
+      "path": "Playground/1858401095-local-completion-steal/receipt.json",
+      "sha256": "326eda300b4b3fbbfcef3fd6be6c4ea519c5318c3b6ed42f58591faebc36c65c"
+    },
+    {
+      "path": "Playground/1858401095-local-completion-round-robin/receipt.json",
+      "sha256": "1f6aeba9d7655ecab888489a1f0bbc4be40c7801e48a3a842dfb02ccfeb4e8e8"
+    },
+    {
+      "path": "Playground/1858401095-first-steal/receipt.json",
+      "sha256": "212ef012a291290d500adb7db6626e384c5591ffde164155d3e5f1156be3a87a"
+    },
+    {
+      "path": "Playground/1858401095-wake-only/receipt.json",
+      "sha256": "879630019ff0aab6f753ad268659453f707475b6e69d811603a8b8d6324d06b6"
+    },
+    {
+      "path": "Playground/1858401095-baseline/receipt.json",
+      "sha256": "dfd5e13f8bdfd8d8e64285a6b72a121d7969194dc90e911abb1c7a66b1f51b18"
+    },
+    {
+      "path": "Playground/1858401095-weighted-bare-steal/receipt.json",
+      "sha256": "e5fcb048f906821f7ee0ed2c94c724ead31c067223161b3f870f356c347945a0"
+    },
+    {
+      "path": "Playground/1858401095-weighted-observe-only/receipt.json",
+      "sha256": "e12527beec84f88940a312ddbd1efe6666f1ec39190100512e559265a0908cf6"
+    },
+    {
+      "path": "Playground/1858401095-weighted-clock-only/receipt.json",
+      "sha256": "fd685a6e75b2d382ae122ff585ad842c6dd5aee191ea9086ef8fa74f3c993ade"
+    },
+    {
+      "path": "Playground/1858401095-weighted-ewma/receipt.json",
+      "sha256": "755cc8ef668fc56e3cd625792625f48a64d3cf96548331976945afb9e023e31b"
+    },
+    {
+      "path": "Playground/1858401095-weighted-last/receipt.json",
+      "sha256": "599052067203c35b00f28f58e41956741bf8dc8e68acf611127942e5c6bf343e"
+    },
+    {
+      "path": "Playground/1858401095-weighted-two-choice/receipt.json",
+      "sha256": "98d9016c4ad87974f9ee1de91af1472711d2b5bb517cbb177d2644c64bd0c6f7"
+    },
+    {
+      "path": "Playground/1858401095-weighted-fixed-steal/receipt.json",
+      "sha256": "5d1ef125bd3de1e53925b647f9eda8de56b621f4820b3da5bfc352c94668132b"
+    },
+    {
+      "path": "Playground/1858401095-weighted-fixed-no-steal/receipt.json",
+      "sha256": "d1d0138a729999278729a91910426bf89fa485c615c8499d73f80cd86a2450f9"
+    },
+    {
+      "path": "Playground/1635872854-weighted-fixed-steal/receipt.json",
+      "sha256": "e9b27f6b532493a1ea2f0e3235e877183b482643736a79db9684d20cf08c80e4"
+    },
+    {
+      "path": "Playground/1635872854-weighted-two-choice/receipt.json",
+      "sha256": "f48dbdac89e0a08d047823fee9e6e4988c14b7a01bdf982be8dbfa8bba75315c"
+    },
+    {
+      "path": "Playground/1635872854-weighted-last/receipt.json",
+      "sha256": "18a6d9bab1f26a3f5c0dfdb297401fd215f44db6e24646a87be2638d394cc81f"
+    },
+    {
+      "path": "Playground/1635872854-weighted-ewma/receipt.json",
+      "sha256": "42db582f9e4bd53d75dc33b696fde72cc57276f34cb7794ef58c33c2b9f803d4"
+    },
+    {
+      "path": "Playground/1635872854-weighted-clock-only/receipt.json",
+      "sha256": "248a133541c629f5f80719e6ba66b4d011f3a23cbbc1b29eba0fa9931a1f4b17"
+    },
+    {
+      "path": "Playground/1635872854-weighted-observe-only/receipt.json",
+      "sha256": "767ea317ed1886814a7798e75031521902e32ad5f5ff19ce6fe2daaf3e7b209a"
+    },
+    {
+      "path": "Playground/1635872854-weighted-bare-steal/receipt.json",
+      "sha256": "ca9f7065bd28c2858e18de37846a6a4c30247098cde0431fdf3b9873b56d0cdd"
+    },
+    {
+      "path": "Playground/1635872854-baseline/receipt.json",
+      "sha256": "229fead9362e48870f30ca7f6c79a3373a2cbbf4d0df864b77395822e2f6ff76"
+    },
+    {
+      "path": "Playground/1635872854-wake-only/receipt.json",
+      "sha256": "fd65f548b156c011e807b21677d4ac73eba10d5f7b889b8cd764c1a2a4df67ef"
+    },
+    {
+      "path": "Playground/1635872854-first-steal/receipt.json",
+      "sha256": "1ff20433372ea56fa2c6ff9686c663c4886c9bc4ccaf6f77b14d06d3da4a3d19"
+    },
+    {
+      "path": "Playground/1635872854-local-completion-round-robin/receipt.json",
+      "sha256": "e8346c60abe3a37b5089cde27f235a50f61637cd88727a60f0a22b5a56facb52"
+    },
+    {
+      "path": "Playground/1635872854-local-completion-steal/receipt.json",
+      "sha256": "e64340fbd94b43fce07334e45bc96b353e5e60b65bce3759c9020bcf98efa88b"
+    },
+    {
+      "path": "Playground/1635872854-local-priority-steal/receipt.json",
+      "sha256": "b015d0fe5d14af48a34925ab9f32772fd2837b340eeb470e2d31566067c73f2e"
+    },
+    {
+      "path": "Playground/1635872854-weighted-fixed-no-steal/receipt.json",
+      "sha256": "b4abe60cacc587571eb7e3ad4452db84684f7cfb0a0ac2a7fecbdb13a617cab8"
+    },
+    {
+      "path": "Playground/1441583672-weighted-fixed-no-steal/receipt.json",
+      "sha256": "9cdaf91c08e91fc9b8ff4708b192572cf79b089375732b7d856dbad2a990aed7"
+    },
+    {
+      "path": "Playground/1441583672-local-priority-steal/receipt.json",
+      "sha256": "d6256b2a059f64fd9ac7c09f148d711ae34b1a8b56e459874508c938f379dca5"
+    },
+    {
+      "path": "Playground/1441583672-local-completion-steal/receipt.json",
+      "sha256": "76fd797f81e1e991f54abb39bac697fcfe32d99dd72c82ca9bb2a710c8aac128"
+    },
+    {
+      "path": "Playground/1441583672-local-completion-round-robin/receipt.json",
+      "sha256": "c8c9c0f56721a35b57ea2c7fca119f89bbf7398d898ea7cb169471adde76e438"
+    },
+    {
+      "path": "Playground/1441583672-first-steal/receipt.json",
+      "sha256": "3e6f5349c8d522142e84aadddf7b7de75fbfdae5df053546eafea39f63d5d0b1"
+    },
+    {
+      "path": "Playground/1441583672-wake-only/receipt.json",
+      "sha256": "d335eccdc4bf2028b7528f1296480116e471427434c2b28a645a7f3ecba0dbc4"
+    },
+    {
+      "path": "Playground/1441583672-baseline/receipt.json",
+      "sha256": "a10247e28714f8132fafeb66b5c810d3aebd6a5e9553dbee682cf81be84cff49"
+    },
+    {
+      "path": "Playground/1441583672-weighted-bare-steal/receipt.json",
+      "sha256": "dedc6f4e4a675078633fb275b702dde749cf6e88f198907e8e7f0140410ae761"
+    },
+    {
+      "path": "Playground/1441583672-weighted-observe-only/receipt.json",
+      "sha256": "09422e6e79c8fa2dcdfc2eaf3715b7132dd6abc9a9a44cf8f938e8e1645a2bd0"
+    },
+    {
+      "path": "Playground/1441583672-weighted-clock-only/receipt.json",
+      "sha256": "cf1e31429fead324c6a5c6d89288b001c5533d82bf24d9054a3e493b0deae758"
+    },
+    {
+      "path": "Playground/1441583672-weighted-ewma/receipt.json",
+      "sha256": "26b51cfb3dd788a26639f67d5e6f6b19980deb244effea06eeafb301b0869e3a"
+    },
+    {
+      "path": "Playground/1441583672-weighted-last/receipt.json",
+      "sha256": "f6ad1300467bdf3d34c10bda0a2fafba8814f251e462b1e21a47eea862ef5eb1"
+    },
+    {
+      "path": "Playground/1441583672-weighted-two-choice/receipt.json",
+      "sha256": "acbcb00e1d7f2ef5ccbe4b6af93377dccf100cf00c3280254716ee3e7d102680"
+    },
+    {
+      "path": "Playground/1441583672-weighted-fixed-steal/receipt.json",
+      "sha256": "dc9807712d9f416361eeb7f2729fef0d82ceef14c1f05c253cadd77078ebc1ae"
+    },
+    {
+      "path": "Playground/741493568-weighted-two-choice/receipt.json",
+      "sha256": "8433ef37dbc1d4080a865b59f14529eb2d30bf3d1920933087caf6af886264f9"
+    },
+    {
+      "path": "Playground/741493568-weighted-last/receipt.json",
+      "sha256": "79a881053bf39ed1621602019548cbd742b233b70ea5655ca0e23ef21cca32f7"
+    },
+    {
+      "path": "Playground/741493568-weighted-ewma/receipt.json",
+      "sha256": "1c8378a12c32a0c62fd10a267b545a51da3f0f714d04fb89d791da3fa57ff8ff"
+    },
+    {
+      "path": "Playground/741493568-weighted-clock-only/receipt.json",
+      "sha256": "6416f6b775921e2666fd3cebf50fe70b53fbdc83e254541ef2777e79553f9e16"
+    },
+    {
+      "path": "Playground/741493568-weighted-observe-only/receipt.json",
+      "sha256": "f48b88614d983a093f814aaa61971060c6849545f695030782515c0f188c1693"
+    },
+    {
+      "path": "Playground/741493568-weighted-bare-steal/receipt.json",
+      "sha256": "414879e1a00c1179437a97cdbbcfcc2c3fad11c390f296068622eb827591ad10"
+    },
+    {
+      "path": "Playground/741493568-baseline/receipt.json",
+      "sha256": "51a57b0a209bad039fe437f6f0f065e58fad6bf64515e365a1f62fcaf4085f8c"
+    },
+    {
+      "path": "Playground/741493568-wake-only/receipt.json",
+      "sha256": "e98de5b60eae16d684dad5007f8b4335ac50d3adfdcb91d68909efa77dc5479e"
+    },
+    {
+      "path": "Playground/741493568-first-steal/receipt.json",
+      "sha256": "3e0e647a12f019ccb6248a331d44a08f64ba182772a1dbe22f13c27f6e5af50b"
+    },
+    {
+      "path": "Playground/741493568-local-completion-round-robin/receipt.json",
+      "sha256": "f99fecb9884b6ac3726f59e720ccbb8a86597c82020b62b53a5a4b12d15f4ac5"
+    },
+    {
+      "path": "Playground/741493568-local-completion-steal/receipt.json",
+      "sha256": "fbd642e455b18382fa6709f78622872da33cf62176c7841e49724b1bba21fb4b"
+    },
+    {
+      "path": "Playground/741493568-local-priority-steal/receipt.json",
+      "sha256": "bc3204980c5cb336afd7ef10287f617be7ae0394b524bc0fab12c08167c6df8d"
+    },
+    {
+      "path": "Playground/741493568-weighted-fixed-no-steal/receipt.json",
+      "sha256": "6937abb6bb1cff5989b2e343cf3b4bb4146dbe4a4a7b3922932af7361a1ff9a5"
+    },
+    {
+      "path": "Playground/741493568-weighted-fixed-steal/receipt.json",
+      "sha256": "1a8a6a9b7cc8f67cb3324e7bfe7d1fd18a51a092b236a600569d8b457f44308a"
+    },
+    {
+      "path": "Playground/466374853-weighted-fixed-steal/receipt.json",
+      "sha256": "2684b30b1b8feaab9810fe22b447d9d2efb70912df46ee81acdd302991254c96"
+    },
+    {
+      "path": "Playground/466374853-weighted-fixed-no-steal/receipt.json",
+      "sha256": "36f7e0fcfa6876b62abbc02787661c1ef04e85ca78f10a41326b7da8385e7868"
+    },
+    {
+      "path": "Playground/466374853-local-priority-steal/receipt.json",
+      "sha256": "50ac234900359ef8475e3af8fa4557f8e527c2931b9252d4d0dba05b954705de"
+    },
+    {
+      "path": "Playground/466374853-local-completion-steal/receipt.json",
+      "sha256": "5c46ca3f8df2c5fb9b35d6f5960857207e8e3de246ae6d50976ac2334a12392e"
+    },
+    {
+      "path": "Playground/466374853-local-completion-round-robin/receipt.json",
+      "sha256": "af0b847270c3b3e690c94a5ff269e77d2b400307a39ee051f9cec09911dacbcd"
+    },
+    {
+      "path": "Playground/466374853-first-steal/receipt.json",
+      "sha256": "f258f4c69d2c38415fbbf9249e8482ce6306513958dc09ff36f7cf425a7d2495"
+    },
+    {
+      "path": "Playground/466374853-wake-only/receipt.json",
+      "sha256": "7ef90d8d4b35eb10a3717aa7ea10e5e25aa1bc1e806f2f14e21a366471b2d26d"
+    },
+    {
+      "path": "Playground/466374853-baseline/receipt.json",
+      "sha256": "7c735c7d98cafec883e67e6dfdb7db4f90fc8d19aa2fa8a90cddeedc25878644"
+    },
+    {
+      "path": "Playground/466374853-weighted-bare-steal/receipt.json",
+      "sha256": "d3319945e11b450a0294bebe64d22b410d80c14fa3ce9463e612cd5fbe6330bd"
+    },
+    {
+      "path": "Playground/466374853-weighted-observe-only/receipt.json",
+      "sha256": "73b138d692c5158d236d4d3ddc14a94ee7d9ac66ac7a83264930231b0f3261ba"
+    },
+    {
+      "path": "Playground/466374853-weighted-clock-only/receipt.json",
+      "sha256": "091dfeed8bcd35938f8c7056b63ad21038710457ad3d0f0b940942e75b909f5b"
+    },
+    {
+      "path": "Playground/466374853-weighted-ewma/receipt.json",
+      "sha256": "35d5420c33b324fcdea4f6d5c4592101780131deb807e382cdfda5b8b949abef"
+    },
+    {
+      "path": "Playground/466374853-weighted-last/receipt.json",
+      "sha256": "93e2213e61a3f9c02732a632c57b99dafc540c2b479bb9efbb22eabfc43b5d8d"
+    },
+    {
+      "path": "Playground/466374853-weighted-two-choice/receipt.json",
+      "sha256": "f0d703715f70f53ef24f8148d22abe22fa1a220a499a60cd6cd813e885b56e83"
+    },
+    {
+      "path": "Playground/2037486757-weighted-last/receipt.json",
+      "sha256": "b9753fc99b08dc5c9266a5f2f15a010223aaba87d70e332657d7b6abc61c65cf"
+    },
+    {
+      "path": "Playground/2037486757-weighted-ewma/receipt.json",
+      "sha256": "1f4ad39e757f825e88bbe5bbf61024b23789297d1e98af4e827003809f0c4186"
+    },
+    {
+      "path": "Playground/2037486757-weighted-clock-only/receipt.json",
+      "sha256": "1c091ffaa2e5c7abe42a14ae8cbf57a9ff2b841dc3b0fc7d63f42833f2123158"
+    },
+    {
+      "path": "Playground/2037486757-weighted-observe-only/receipt.json",
+      "sha256": "56b464ca362c6c91d0bb5ffa6e2cc64b1ab864fcbf4b20cb60d329c81694d2cb"
+    },
+    {
+      "path": "Playground/2037486757-weighted-bare-steal/receipt.json",
+      "sha256": "a15c0b96fb03e068cfa80d1ce5a75f03e1810fbd5df5a846b8d48589b927a205"
+    },
+    {
+      "path": "Playground/2037486757-baseline/receipt.json",
+      "sha256": "910b036c77faa8028b6c55c70c41c4432dd515c94b28ed07f39b375ce19242e5"
+    },
+    {
+      "path": "Playground/2037486757-wake-only/receipt.json",
+      "sha256": "a6d51e5b58a5f9e2946cfadd441fa2b4d86de32ae838410d6de99c44028f612d"
+    },
+    {
+      "path": "Playground/2037486757-first-steal/receipt.json",
+      "sha256": "91c73cb7cee1270bc5da996c6345e01eda4923a93ac2574d950e7420f4c984f3"
+    }
+  ]
+}

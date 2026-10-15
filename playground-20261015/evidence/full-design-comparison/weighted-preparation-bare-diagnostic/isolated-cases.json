@@ -1,0 +1,3069 @@
+{
+  "binary_sha256": "712fcd8e06d1bd5ba9cc129dd46e8eb743f52d70c24b6eec989d72b1d8dd9643",
+  "env": {
+    "GLOB2_DEFERRED_DISPATCH": "steal",
+    "GLOB2_WEIGHTED_POLICY": "bare-steal"
+  },
+  "results": [
+    {
+      "repeat": 0,
+      "case": "automatic sizing respects platform limits and supports unknown CPU counts",
+      "command": [
+        "taskset",
+        "-c",
+        "3,4,5,19,20,21",
+        "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/weighted-source/build/linux/client/release/test/glob2-unit-tests",
+        "--test-suite=ComputeExecutor",
+        "--test-case=automatic sizing respects platform limits and supports unknown CPU counts",
+        "--duration=true",
+        "--no-breaks=true"
+      ],
+      "returncode": 0,
+      "elapsed_seconds": 0.016402978915721178,
+      "log": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/weighted-preparation-bare-diagnostic/isolated-0-00.log"
+    },
+    {
+      "repeat": 0,
+      "case": "CPU availability provenance distinguishes affinity from hardware hints",
+      "command": [
+        "taskset",
+        "-c",
+        "3,4,5,19,20,21",
+        "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/weighted-source/build/linux/client/release/test/glob2-unit-tests",
+        "--test-suite=ComputeExecutor",
+        "--test-case=CPU availability provenance distinguishes affinity from hardware hints",
+        "--duration=true",
+        "--no-breaks=true"
+      ],
+      "returncode": 0,
+      "elapsed_seconds": 0.01605276297777891,
+      "log": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/weighted-preparation-bare-diagnostic/isolated-0-01.log"
+    },
+    {
+      "repeat": 0,
+      "case": "thread configuration accepts auto and rejects malformed or overflowing overrides",
+      "command": [
+        "taskset",
+        "-c",
+        "3,4,5,19,20,21",
+        "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/weighted-source/build/linux/client/release/test/glob2-unit-tests",
+        "--test-suite=ComputeExecutor",
+        "--test-case=thread configuration accepts auto and rejects malformed or overflowing overrides",
+        "--duration=true",
+        "--no-breaks=true"
+      ],
+      "returncode": 0,
+      "elapsed_seconds": 0.016359200235456228,
+      "log": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/weighted-preparation-bare-diagnostic/isolated-0-02.log"
+    },
+    {
+      "repeat": 0,
+      "case": "supported platforms execute jobs concurrently on distinct threads",
+      "command": [
+        "taskset",
+        "-c",
+        "3,4,5,19,20,21",
+        "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/weighted-source/build/linux/client/release/test/glob2-unit-tests",
+        "--test-suite=ComputeExecutor",
+        "--test-case=supported platforms execute jobs concurrently on distinct threads",
+        "--duration=true",
+        "--no-breaks=true"
+      ],
+      "returncode": 0,
+      "elapsed_seconds": 0.06425320915877819,
+      "log": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/weighted-preparation-bare-diagnostic/isolated-0-03.log"
+    },
+    {
+      "repeat": 0,
+      "case": "exclusive slots; nested batches; reuse; errors; barriers and reconfiguration",
+      "command": [
+        "taskset",
+        "-c",
+        "3,4,5,19,20,21",
+        "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/weighted-source/build/linux/client/release/test/glob2-unit-tests",
+        "--test-suite=ComputeExecutor",
+        "--test-case=exclusive slots; nested batches; reuse; errors; barriers and reconfiguration",
+        "--duration=true",
+        "--no-breaks=true"
+      ],
+      "returncode": 0,
+      "elapsed_seconds": 0.16432625707238913,
+      "log": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/weighted-preparation-bare-diagnostic/isolated-0-04.log"
+    },
+    {
+      "repeat": 0,
+      "case": "deferred batches complete with lanes and isolated errors",
+      "command": [
+        "taskset",
+        "-c",
+        "3,4,5,19,20,21",
+        "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/weighted-source/build/linux/client/release/test/glob2-unit-tests",
+        "--test-suite=ComputeExecutor",
+        "--test-case=deferred batches complete with lanes and isolated errors",
+        "--duration=true",
+        "--no-breaks=true"
+      ],
+      "returncode": 0,
+      "elapsed_seconds": 0.26455609407275915,
+      "log": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/weighted-preparation-bare-diagnostic/isolated-0-05.log"
+    },
+    {
+      "repeat": 0,
+      "case": "idle workers retain parallelism for independent and mixed lane groups",
+      "command": [
+        "taskset",
+        "-c",
+        "3,4,5,19,20,21",
+        "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/weighted-source/build/linux/client/release/test/glob2-unit-tests",
+        "--test-suite=ComputeExecutor",
+        "--test-case=idle workers retain parallelism for independent and mixed lane groups",
+        "--duration=true",
+        "--no-breaks=true"
+      ],
+      "returncode": 0,
+      "elapsed_seconds": 0.06451996695250273,
+      "log": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/weighted-preparation-bare-diagnostic/isolated-0-06.log"
+    },
+    {
+      "repeat": 0,
+      "case": "repeated lane groups and empty groups preserve ordering and independent work",
+      "command": [
+        "taskset",
+        "-c",
+        "3,4,5,19,20,21",
+        "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/weighted-source/build/linux/client/release/test/glob2-unit-tests",
+        "--test-suite=ComputeExecutor",
+        "--test-case=repeated lane groups and empty groups preserve ordering and independent work",
+        "--duration=true",
+        "--no-breaks=true"
+      ],
+      "returncode": 0,
+      "elapsed_seconds": 0.0160102229565382,
+      "log": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/weighted-preparation-bare-diagnostic/isolated-0-07.log"
+    },
+    {
+      "repeat": 0,
+      "case": "external completion and continuation wake parked lane successors",
+      "command": [
+        "taskset",
+        "-c",
+        "3,4,5,19,20,21",
+        "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/weighted-source/build/linux/client/release/test/glob2-unit-tests",
+        "--test-suite=ComputeExecutor",
+        "--test-case=external completion and continuation wake parked lane successors",
+        "--duration=true",
+        "--no-breaks=true"
+      ],
+      "returncode": 0,
+      "elapsed_seconds": 0.06433023791760206,
+      "log": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/weighted-preparation-bare-diagnostic/isolated-0-08.log"
+    },
+    {
+      "repeat": 0,
+      "case": "lane groups run in index order and the horizon is bounded",
+      "command": [
+        "taskset",
+        "-c",
+        "3,4,5,19,20,21",
+        "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/weighted-source/build/linux/client/release/test/glob2-unit-tests",
+        "--test-suite=ComputeExecutor",
+        "--test-case=lane groups run in index order and the horizon is bounded",
+        "--duration=true",
+        "--no-breaks=true"
+      ],
+      "returncode": 0,
+      "elapsed_seconds": 0.06428457796573639,
+      "log": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/weighted-preparation-bare-diagnostic/isolated-0-09.log"
+    },
+    {
+      "repeat": 0,
+      "case": "sharded ready dispatch executes each independent job and the owner only waits",
+      "command": [
+        "taskset",
+        "-c",
+        "3,4,5,19,20,21",
+        "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/weighted-source/build/linux/client/release/test/glob2-unit-tests",
+        "--test-suite=ComputeExecutor",
+        "--test-case=sharded ready dispatch executes each independent job and the owner only waits",
+        "--duration=true",
+        "--no-breaks=true"
+      ],
+      "returncode": 0,
+      "elapsed_seconds": 0.11449890211224556,
+      "log": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/weighted-preparation-bare-diagnostic/isolated-0-10.log"
+    },
+    {
+      "repeat": 0,
+      "case": "without workers the owner runs the jobs due no later than the join",
+      "command": [
+        "taskset",
+        "-c",
+        "3,4,5,19,20,21",
+        "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/weighted-source/build/linux/client/release/test/glob2-unit-tests",
+        "--test-suite=ComputeExecutor",
+        "--test-case=without workers the owner runs the jobs due no later than the join",
+        "--duration=true",
+        "--no-breaks=true"
+      ],
+      "returncode": 0,
+      "elapsed_seconds": 0.06441792799159884,
+      "log": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/weighted-preparation-bare-diagnostic/isolated-0-11.log"
+    },
+    {
+      "repeat": 0,
+      "case": "a lane keeps submission order: a lane job due before a live earlier one is rejected",
+      "command": [
+        "taskset",
+        "-c",
+        "3,4,5,19,20,21",
+        "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/weighted-source/build/linux/client/release/test/glob2-unit-tests",
+        "--test-suite=ComputeExecutor",
+        "--test-case=a lane keeps submission order: a lane job due before a live earlier one is rejected",
+        "--duration=true",
+        "--no-breaks=true"
+      ],
+      "returncode": 0,
+      "elapsed_seconds": 0.11445379117503762,
+      "log": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/weighted-preparation-bare-diagnostic/isolated-0-12.log"
+    },
+    {
+      "repeat": 0,
+      "case": "the slot count covers every producer's horizon",
+      "command": [
+        "taskset",
+        "-c",
+        "3,4,5,19,20,21",
+        "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/weighted-source/build/linux/client/release/test/glob2-unit-tests",
+        "--test-suite=ComputeExecutor",
+        "--test-case=the slot count covers every producer's horizon",
+        "--duration=true",
+        "--no-breaks=true"
+      ],
+      "returncode": 1,
+      "elapsed_seconds": 0.016117791645228863,
+      "log": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/weighted-preparation-bare-diagnostic/isolated-0-13.log"
+    },
+    {
+      "repeat": 0,
+      "case": "presentation cannot delay simulation barriers with spare workers or run on the simulation owner",
+      "command": [
+        "taskset",
+        "-c",
+        "3,4,5,19,20,21",
+        "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/weighted-source/build/linux/client/release/test/glob2-unit-tests",
+        "--test-suite=ComputeExecutor",
+        "--test-case=presentation cannot delay simulation barriers with spare workers or run on the simulation owner",
+        "--duration=true",
+        "--no-breaks=true"
+      ],
+      "returncode": 0,
+      "elapsed_seconds": 0.06409911997616291,
+      "log": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/weighted-preparation-bare-diagnostic/isolated-0-14.log"
+    },
+    {
+      "repeat": 0,
+      "case": "with one worker the owner waits through its presentation chunk and never runs the join itself",
+      "command": [
+        "taskset",
+        "-c",
+        "3,4,5,19,20,21",
+        "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/weighted-source/build/linux/client/release/test/glob2-unit-tests",
+        "--test-suite=ComputeExecutor",
+        "--test-case=with one worker the owner waits through its presentation chunk and never runs the join itself",
+        "--duration=true",
+        "--no-breaks=true"
+      ],
+      "returncode": 0,
+      "elapsed_seconds": 0.06425690790638328,
+      "log": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/weighted-preparation-bare-diagnostic/isolated-0-15.log"
+    },
+    {
+      "repeat": 0,
+      "case": "presentation progresses before a continuous simulation backlog drains",
+      "command": [
+        "taskset",
+        "-c",
+        "3,4,5,19,20,21",
+        "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/weighted-source/build/linux/client/release/test/glob2-unit-tests",
+        "--test-suite=ComputeExecutor",
+        "--test-case=presentation progresses before a continuous simulation backlog drains",
+        "--duration=true",
+        "--no-breaks=true"
+      ],
+      "returncode": 0,
+      "elapsed_seconds": 0.06413279892876744,
+      "log": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/weighted-preparation-bare-diagnostic/isolated-0-16.log"
+    },
+    {
+      "repeat": 0,
+      "case": "presentation replacement, chunk pumping, cancellation and errors retain no captures",
+      "command": [
+        "taskset",
+        "-c",
+        "3,4,5,19,20,21",
+        "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/weighted-source/build/linux/client/release/test/glob2-unit-tests",
+        "--test-suite=ComputeExecutor",
+        "--test-case=presentation replacement\\, chunk pumping\\, cancellation and errors retain no captures",
+        "--duration=true",
+        "--no-breaks=true"
+      ],
+      "returncode": 0,
+      "elapsed_seconds": 0.06423274893313646,
+      "log": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/weighted-preparation-bare-diagnostic/isolated-0-17.log"
+    },
+    {
+      "repeat": 0,
+      "case": "resumable presentation yields without advancing or retaining canceled inputs",
+      "command": [
+        "taskset",
+        "-c",
+        "3,4,5,19,20,21",
+        "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/weighted-source/build/linux/client/release/test/glob2-unit-tests",
+        "--test-suite=ComputeExecutor",
+        "--test-case=resumable presentation yields without advancing or retaining canceled inputs",
+        "--duration=true",
+        "--no-breaks=true"
+      ],
+      "returncode": 0,
+      "elapsed_seconds": 0.06459854636341333,
+      "log": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/weighted-preparation-bare-diagnostic/isolated-0-18.log"
+    },
+    {
+      "repeat": 0,
+      "case": "worker only maintenance never uses the owner including creation failure",
+      "command": [
+        "taskset",
+        "-c",
+        "3,4,5,19,20,21",
+        "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/weighted-source/build/linux/client/release/test/glob2-unit-tests",
+        "--test-suite=ComputeExecutor",
+        "--test-case=worker only maintenance never uses the owner including creation failure",
+        "--duration=true",
+        "--no-breaks=true"
+      ],
+      "returncode": 0,
+      "elapsed_seconds": 0.0645425459370017,
+      "log": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/weighted-preparation-bare-diagnostic/isolated-0-19.log"
+    },
+    {
+      "repeat": 0,
+      "case": "worker only maintenance yields to required jobs and cannot delay their completed join",
+      "command": [
+        "taskset",
+        "-c",
+        "3,4,5,19,20,21",
+        "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/weighted-source/build/linux/client/release/test/glob2-unit-tests",
+        "--test-suite=ComputeExecutor",
+        "--test-case=worker only maintenance yields to required jobs and cannot delay their completed join",
+        "--duration=true",
+        "--no-breaks=true"
+      ],
+      "returncode": 0,
+      "elapsed_seconds": 0.06442283792421222,
+      "log": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/weighted-preparation-bare-diagnostic/isolated-0-20.log"
+    },
+    {
+      "repeat": 0,
+      "case": "suspended device work releases the only worker and preserves lane completion",
+      "command": [
+        "taskset",
+        "-c",
+        "3,4,5,19,20,21",
+        "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/weighted-source/build/linux/client/release/test/glob2-unit-tests",
+        "--test-suite=ComputeExecutor",
+        "--test-case=suspended device work releases the only worker and preserves lane completion",
+        "--duration=true",
+        "--no-breaks=true"
+      ],
+      "returncode": 0,
+      "elapsed_seconds": 0.06441077683120966,
+      "log": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/weighted-preparation-bare-diagnostic/isolated-0-21.log"
+    },
+    {
+      "repeat": 0,
+      "case": "early device failure resumes exactly once on the worker at its original lane position",
+      "command": [
+        "taskset",
+        "-c",
+        "3,4,5,19,20,21",
+        "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/weighted-source/build/linux/client/release/test/glob2-unit-tests",
+        "--test-suite=ComputeExecutor",
+        "--test-case=early device failure resumes exactly once on the worker at its original lane position",
+        "--duration=true",
+        "--no-breaks=true"
+      ],
+      "returncode": 0,
+      "elapsed_seconds": 0.06430875789374113,
+      "log": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/weighted-preparation-bare-diagnostic/isolated-0-22.log"
+    },
+    {
+      "repeat": 0,
+      "case": "early asynchronous completion cannot release an invoking callback's inputs",
+      "command": [
+        "taskset",
+        "-c",
+        "3,4,5,19,20,21",
+        "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/weighted-source/build/linux/client/release/test/glob2-unit-tests",
+        "--test-suite=ComputeExecutor",
+        "--test-case=early asynchronous completion cannot release an invoking callback's inputs",
+        "--duration=true",
+        "--no-breaks=true"
+      ],
+      "returncode": 0,
+      "elapsed_seconds": 0.06437408830970526,
+      "log": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/weighted-preparation-bare-diagnostic/isolated-0-23.log"
+    },
+    {
+      "repeat": 0,
+      "case": "continuation of a nonzero lane-group index keeps its original sequence",
+      "command": [
+        "taskset",
+        "-c",
+        "3,4,5,19,20,21",
+        "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/weighted-source/build/linux/client/release/test/glob2-unit-tests",
+        "--test-suite=ComputeExecutor",
+        "--test-case=continuation of a nonzero lane-group index keeps its original sequence",
+        "--duration=true",
+        "--no-breaks=true"
+      ],
+      "returncode": 0,
+      "elapsed_seconds": 0.06450094794854522,
+      "log": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/weighted-preparation-bare-diagnostic/isolated-0-24.log"
+    },
+    {
+      "repeat": 0,
+      "case": "retained completion tickets can be resolved after executor destruction",
+      "command": [
+        "taskset",
+        "-c",
+        "3,4,5,19,20,21",
+        "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/weighted-source/build/linux/client/release/test/glob2-unit-tests",
+        "--test-suite=ComputeExecutor",
+        "--test-case=retained completion tickets can be resolved after executor destruction",
+        "--duration=true",
+        "--no-breaks=true"
+      ],
+      "returncode": 0,
+      "elapsed_seconds": 0.06435885839164257,
+      "log": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/weighted-preparation-bare-diagnostic/isolated-0-25.log"
+    },
+    {
+      "repeat": 0,
+      "case": "graphics batches finish once, retain failures and release captures",
+      "command": [
+        "taskset",
+        "-c",
+        "3,4,5,19,20,21",
+        "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/weighted-source/build/linux/client/release/test/glob2-unit-tests",
+        "--test-suite=ComputeExecutor",
+        "--test-case=graphics batches finish once\\, retain failures and release captures",
+        "--duration=true",
+        "--no-breaks=true"
+      ],
+      "returncode": 0,
+      "elapsed_seconds": 0.11428585182875395,
+      "log": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/weighted-preparation-bare-diagnostic/isolated-0-26.log"
+    },
+    {
+      "repeat": 0,
+      "case": "serial graphics finish never pumps scene or required work and abandonment releases captures",
+      "command": [
+        "taskset",
+        "-c",
+        "3,4,5,19,20,21",
+        "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/weighted-source/build/linux/client/release/test/glob2-unit-tests",
+        "--test-suite=ComputeExecutor",
+        "--test-case=serial graphics finish never pumps scene or required work and abandonment releases captures",
+        "--duration=true",
+        "--no-breaks=true"
+      ],
+      "returncode": 0,
+      "elapsed_seconds": 0.03213242441415787,
+      "log": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/weighted-preparation-bare-diagnostic/isolated-0-27.log"
+    },
+    {
+      "repeat": 0,
+      "case": "graphics cancellation drains claimed work and reconfiguration releases inputs",
+      "command": [
+        "taskset",
+        "-c",
+        "3,4,5,19,20,21",
+        "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/weighted-source/build/linux/client/release/test/glob2-unit-tests",
+        "--test-suite=ComputeExecutor",
+        "--test-case=graphics cancellation drains claimed work and reconfiguration releases inputs",
+        "--duration=true",
+        "--no-breaks=true"
+      ],
+      "returncode": 0,
+      "elapsed_seconds": 0.06413171999156475,
+      "log": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/weighted-preparation-bare-diagnostic/isolated-0-28.log"
+    },
+    {
+      "repeat": 0,
+      "case": "both presentation classes progress during required lane backlog",
+      "command": [
+        "taskset",
+        "-c",
+        "3,4,5,19,20,21",
+        "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/weighted-source/build/linux/client/release/test/glob2-unit-tests",
+        "--test-suite=ComputeExecutor",
+        "--test-case=both presentation classes progress during required lane backlog",
+        "--duration=true",
+        "--no-breaks=true"
+      ],
+      "returncode": 0,
+      "elapsed_seconds": 0.06425265921279788,
+      "log": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/weighted-preparation-bare-diagnostic/isolated-0-29.log"
+    },
+    {
+      "repeat": 0,
+      "case": "graphics callback barriers are rejected and completed tickets do not pump newer work",
+      "command": [
+        "taskset",
+        "-c",
+        "3,4,5,19,20,21",
+        "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/weighted-source/build/linux/client/release/test/glob2-unit-tests",
+        "--test-suite=ComputeExecutor",
+        "--test-case=graphics callback barriers are rejected and completed tickets do not pump newer work",
+        "--duration=true",
+        "--no-breaks=true"
+      ],
+      "returncode": 0,
+      "elapsed_seconds": 0.03244482213631272,
+      "log": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/weighted-preparation-bare-diagnostic/isolated-0-30.log"
+    },
+    {
+      "repeat": 0,
+      "case": "empty graphics submissions bypass occupied admission and concurrency metrics respect ceilings",
+      "command": [
+        "taskset",
+        "-c",
+        "3,4,5,19,20,21",
+        "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/weighted-source/build/linux/client/release/test/glob2-unit-tests",
+        "--test-suite=ComputeExecutor",
+        "--test-case=empty graphics submissions bypass occupied admission and concurrency metrics respect ceilings",
+        "--duration=true",
+        "--no-breaks=true"
+      ],
+      "returncode": 0,
+      "elapsed_seconds": 0.06419573910534382,
+      "log": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/weighted-preparation-bare-diagnostic/isolated-0-31.log"
+    },
+    {
+      "repeat": 0,
+      "case": "graphics capture destruction can inspect scheduler metrics before completion",
+      "command": [
+        "taskset",
+        "-c",
+        "3,4,5,19,20,21",
+        "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/weighted-source/build/linux/client/release/test/glob2-unit-tests",
+        "--test-suite=ComputeExecutor",
+        "--test-case=graphics capture destruction can inspect scheduler metrics before completion",
+        "--duration=true",
+        "--no-breaks=true"
+      ],
+      "returncode": 0,
+      "elapsed_seconds": 0.06414266023784876,
+      "log": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/weighted-preparation-bare-diagnostic/isolated-0-32.log"
+    },
+    {
+      "repeat": 0,
+      "case": "disabled diagnostics do not read the injected clock or collect counters",
+      "command": [
+        "taskset",
+        "-c",
+        "3,4,5,19,20,21",
+        "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/weighted-source/build/linux/client/release/test/glob2-unit-tests",
+        "--test-suite=ComputeExecutor",
+        "--test-case=disabled diagnostics do not read the injected clock or collect counters",
+        "--duration=true",
+        "--no-breaks=true"
+      ],
+      "returncode": 0,
+      "elapsed_seconds": 0.016348780132830143,
+      "log": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/weighted-preparation-bare-diagnostic/isolated-0-33.log"
+    },
+    {
+      "repeat": 0,
+      "case": "owner execution, stale handles, reuse and lifecycle attribution use one locked inspection",
+      "command": [
+        "taskset",
+        "-c",
+        "3,4,5,19,20,21",
+        "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/weighted-source/build/linux/client/release/test/glob2-unit-tests",
+        "--test-suite=ComputeExecutor",
+        "--test-case=owner execution\\, stale handles\\, reuse and lifecycle attribution use one locked inspection",
+        "--duration=true",
+        "--no-breaks=true"
+      ],
+      "returncode": 0,
+      "elapsed_seconds": 0.0160937518812716,
+      "log": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/weighted-preparation-bare-diagnostic/isolated-0-34.log"
+    },
+    {
+      "repeat": 0,
+      "case": "worker waits aggregate distinct ticks globally and per producer without worker timing",
+      "command": [
+        "taskset",
+        "-c",
+        "3,4,5,19,20,21",
+        "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/weighted-source/build/linux/client/release/test/glob2-unit-tests",
+        "--test-suite=ComputeExecutor",
+        "--test-case=worker waits aggregate distinct ticks globally and per producer without worker timing",
+        "--duration=true",
+        "--no-breaks=true"
+      ],
+      "returncode": 0,
+      "elapsed_seconds": 0.016047172248363495,
+      "log": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/weighted-preparation-bare-diagnostic/isolated-0-35.log"
+    },
+    {
+      "repeat": 0,
+      "case": "complete joins and trace overflow remain valid and snapshots require drain",
+      "command": [
+        "taskset",
+        "-c",
+        "3,4,5,19,20,21",
+        "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/weighted-source/build/linux/client/release/test/glob2-unit-tests",
+        "--test-suite=ComputeExecutor",
+        "--test-case=complete joins and trace overflow remain valid and snapshots require drain",
+        "--duration=true",
+        "--no-breaks=true"
+      ],
+      "returncode": 0,
+      "elapsed_seconds": 0.016051711980253458,
+      "log": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/weighted-preparation-bare-diagnostic/isolated-0-36.log"
+    },
+    {
+      "repeat": 0,
+      "case": "trace preserves early external resolution and continuation callback ordering",
+      "command": [
+        "taskset",
+        "-c",
+        "3,4,5,19,20,21",
+        "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/weighted-source/build/linux/client/release/test/glob2-unit-tests",
+        "--test-suite=ComputeExecutor",
+        "--test-case=trace preserves early external resolution and continuation callback ordering",
+        "--duration=true",
+        "--no-breaks=true"
+      ],
+      "returncode": 0,
+      "elapsed_seconds": 0.06420464906841516,
+      "log": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/weighted-preparation-bare-diagnostic/isolated-0-37.log"
+    },
+    {
+      "repeat": 0,
+      "case": "trace storage allocation failure downgrades without losing required work",
+      "command": [
+        "taskset",
+        "-c",
+        "3,4,5,19,20,21",
+        "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/weighted-source/build/linux/client/release/test/glob2-unit-tests",
+        "--test-suite=ComputeExecutor",
+        "--test-case=trace storage allocation failure downgrades without losing required work",
+        "--duration=true",
+        "--no-breaks=true"
+      ],
+      "returncode": 0,
+      "elapsed_seconds": 0.01615553069859743,
+      "log": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/weighted-preparation-bare-diagnostic/isolated-0-38.log"
+    },
+    {
+      "repeat": 0,
+      "case": "blocking fork join failures and presentation remain traced without entering tick waits",
+      "command": [
+        "taskset",
+        "-c",
+        "3,4,5,19,20,21",
+        "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/weighted-source/build/linux/client/release/test/glob2-unit-tests",
+        "--test-suite=ComputeExecutor",
+        "--test-case=blocking fork join failures and presentation remain traced without entering tick waits",
+        "--duration=true",
+        "--no-breaks=true"
+      ],
+      "returncode": 0,
+      "elapsed_seconds": 0.06408823980018497,
+      "log": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/weighted-preparation-bare-diagnostic/isolated-0-39.log"
+    },
+    {
+      "repeat": 0,
+      "case": "graphics diagnostics are optional and waits mode attributes the owner barrier",
+      "command": [
+        "taskset",
+        "-c",
+        "3,4,5,19,20,21",
+        "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/weighted-source/build/linux/client/release/test/glob2-unit-tests",
+        "--test-suite=ComputeExecutor",
+        "--test-case=graphics diagnostics are optional and waits mode attributes the owner barrier",
+        "--duration=true",
+        "--no-breaks=true"
+      ],
+      "returncode": 0,
+      "elapsed_seconds": 0.06409454997628927,
+      "log": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/weighted-preparation-bare-diagnostic/isolated-0-40.log"
+    },
+    {
+      "repeat": 0,
+      "case": "yielded presentation chunks keep callback indices paired",
+      "command": [
+        "taskset",
+        "-c",
+        "3,4,5,19,20,21",
+        "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/weighted-source/build/linux/client/release/test/glob2-unit-tests",
+        "--test-suite=ComputeExecutor",
+        "--test-case=yielded presentation chunks keep callback indices paired",
+        "--duration=true",
+        "--no-breaks=true"
+      ],
+      "returncode": 0,
+      "elapsed_seconds": 0.06419274024665356,
+      "log": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/weighted-preparation-bare-diagnostic/isolated-0-41.log"
+    },
+    {
+      "repeat": 0,
+      "case": "worker-only maintenance is traced as other work without a required join",
+      "command": [
+        "taskset",
+        "-c",
+        "3,4,5,19,20,21",
+        "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/weighted-source/build/linux/client/release/test/glob2-unit-tests",
+        "--test-suite=ComputeExecutor",
+        "--test-case=worker-only maintenance is traced as other work without a required join",
+        "--duration=true",
+        "--no-breaks=true"
+      ],
+      "returncode": 0,
+      "elapsed_seconds": 0.0645205769687891,
+      "log": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/weighted-preparation-bare-diagnostic/isolated-0-42.log"
+    },
+    {
+      "repeat": 0,
+      "case": "session reset suppresses a returning maintenance interval from the previous epoch",
+      "command": [
+        "taskset",
+        "-c",
+        "3,4,5,19,20,21",
+        "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/weighted-source/build/linux/client/release/test/glob2-unit-tests",
+        "--test-suite=ComputeExecutor",
+        "--test-case=session reset suppresses a returning maintenance interval from the previous epoch",
+        "--duration=true",
+        "--no-breaks=true"
+      ],
+      "returncode": 0,
+      "elapsed_seconds": 0.06452686619013548,
+      "log": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/weighted-preparation-bare-diagnostic/isolated-0-43.log"
+    },
+    {
+      "repeat": 0,
+      "case": "synchronous graphics adapter keeps empty calls idle and guards owner callbacks",
+      "command": [
+        "taskset",
+        "-c",
+        "3,4,5,19,20,21",
+        "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/weighted-source/build/linux/client/release/test/glob2-unit-tests",
+        "--test-suite=ComputeExecutor",
+        "--test-case=synchronous graphics adapter keeps empty calls idle and guards owner callbacks",
+        "--duration=true",
+        "--no-breaks=true"
+      ],
+      "returncode": 0,
+      "elapsed_seconds": 0.06451731733977795,
+      "log": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/weighted-preparation-bare-diagnostic/isolated-0-44.log"
+    },
+    {
+      "repeat": 0,
+      "case": "graphics adapter restores callback state on failure and never pumps other work",
+      "command": [
+        "taskset",
+        "-c",
+        "3,4,5,19,20,21",
+        "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/weighted-source/build/linux/client/release/test/glob2-unit-tests",
+        "--test-suite=ComputeExecutor",
+        "--test-case=graphics adapter restores callback state on failure and never pumps other work",
+        "--duration=true",
+        "--no-breaks=true"
+      ],
+      "returncode": 0,
+      "elapsed_seconds": 0.06451322697103024,
+      "log": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/weighted-preparation-bare-diagnostic/isolated-0-45.log"
+    },
+    {
+      "repeat": 0,
+      "case": "synchronous graphics cancellation rejects incomplete output after draining",
+      "command": [
+        "taskset",
+        "-c",
+        "3,4,5,19,20,21",
+        "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/weighted-source/build/linux/client/release/test/glob2-unit-tests",
+        "--test-suite=ComputeExecutor",
+        "--test-case=synchronous graphics cancellation rejects incomplete output after draining",
+        "--duration=true",
+        "--no-breaks=true"
+      ],
+      "returncode": 0,
+      "elapsed_seconds": 0.06422344874590635,
+      "log": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/weighted-preparation-bare-diagnostic/isolated-0-46.log"
+    },
+    {
+      "repeat": 0,
+      "case": "graphics adapter preserves occupied admission and serial finish shares the scene cap",
+      "command": [
+        "taskset",
+        "-c",
+        "3,4,5,19,20,21",
+        "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/weighted-source/build/linux/client/release/test/glob2-unit-tests",
+        "--test-suite=ComputeExecutor",
+        "--test-case=graphics adapter preserves occupied admission and serial finish shares the scene cap",
+        "--duration=true",
+        "--no-breaks=true"
+      ],
+      "returncode": 0,
+      "elapsed_seconds": 0.0646086260676384,
+      "log": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/weighted-preparation-bare-diagnostic/isolated-0-47.log"
+    },
+    {
+      "repeat": 0,
+      "case": "canceling a slot-blocked graphics batch wakes its owner before scene completion",
+      "command": [
+        "taskset",
+        "-c",
+        "3,4,5,19,20,21",
+        "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/weighted-source/build/linux/client/release/test/glob2-unit-tests",
+        "--test-suite=ComputeExecutor",
+        "--test-case=canceling a slot-blocked graphics batch wakes its owner before scene completion",
+        "--duration=true",
+        "--no-breaks=true"
+      ],
+      "returncode": 0,
+      "elapsed_seconds": 0.06442754762247205,
+      "log": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/weighted-preparation-bare-diagnostic/isolated-0-48.log"
+    },
+    {
+      "repeat": 0,
+      "case": "sharded queues preserve lane order across repeated groups exceptions and slot reuse",
+      "command": [
+        "taskset",
+        "-c",
+        "3,4,5,19,20,21",
+        "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/weighted-source/build/linux/client/release/test/glob2-unit-tests",
+        "--test-suite=ComputeExecutor",
+        "--test-case=sharded queues preserve lane order across repeated groups exceptions and slot reuse",
+        "--duration=true",
+        "--no-breaks=true"
+      ],
+      "returncode": 0,
+      "elapsed_seconds": 0.16451734583824873,
+      "log": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/weighted-preparation-bare-diagnostic/isolated-0-49.log"
+    },
+    {
+      "repeat": 0,
+      "case": "sharded ordinary callbacks can inspect metrics without scheduler lock ownership",
+      "command": [
+        "taskset",
+        "-c",
+        "3,4,5,19,20,21",
+        "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/weighted-source/build/linux/client/release/test/glob2-unit-tests",
+        "--test-suite=ComputeExecutor",
+        "--test-case=sharded ordinary callbacks can inspect metrics without scheduler lock ownership",
+        "--duration=true",
+        "--no-breaks=true"
+      ],
+      "returncode": 0,
+      "elapsed_seconds": 0.016168571077287197,
+      "log": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/weighted-preparation-bare-diagnostic/isolated-0-50.log"
+    },
+    {
+      "repeat": 0,
+      "case": "idle steal peer consumes ready work assigned behind a busy worker",
+      "command": [
+        "taskset",
+        "-c",
+        "3,4,5,19,20,21",
+        "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/weighted-source/build/linux/client/release/test/glob2-unit-tests",
+        "--test-suite=ComputeExecutor",
+        "--test-case=idle steal peer consumes ready work assigned behind a busy worker",
+        "--duration=true",
+        "--no-breaks=true"
+      ],
+      "returncode": 0,
+      "elapsed_seconds": 0.016010812018066645,
+      "log": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/weighted-preparation-bare-diagnostic/isolated-0-51.log"
+    },
+    {
+      "repeat": 0,
+      "case": "required queue already populated at optional entry is rescued by spare worker",
+      "command": [
+        "taskset",
+        "-c",
+        "3,4,5,19,20,21",
+        "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/weighted-source/build/linux/client/release/test/glob2-unit-tests",
+        "--test-suite=ComputeExecutor",
+        "--test-case=required queue already populated at optional entry is rescued by spare worker",
+        "--duration=true",
+        "--no-breaks=true"
+      ],
+      "returncode": 0,
+      "elapsed_seconds": 0.01601490192115307,
+      "log": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/weighted-preparation-bare-diagnostic/isolated-0-52.log"
+    },
+    {
+      "repeat": 0,
+      "case": "steady sharded deferred dispatch inspects shared control periodically",
+      "command": [
+        "taskset",
+        "-c",
+        "3,4,5,19,20,21",
+        "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/weighted-source/build/linux/client/release/test/glob2-unit-tests",
+        "--test-suite=ComputeExecutor",
+        "--test-case=steady sharded deferred dispatch inspects shared control periodically",
+        "--duration=true",
+        "--no-breaks=true"
+      ],
+      "returncode": 0,
+      "elapsed_seconds": 0.06423121923580766,
+      "log": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/weighted-preparation-bare-diagnostic/isolated-0-53.log"
+    },
+    {
+      "repeat": 0,
+      "case": "lane affine dispatch retains a controller lane on one worker",
+      "command": [
+        "taskset",
+        "-c",
+        "3,4,5,19,20,21",
+        "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/weighted-source/build/linux/client/release/test/glob2-unit-tests",
+        "--test-suite=ComputeExecutor",
+        "--test-case=lane affine dispatch retains a controller lane on one worker",
+        "--duration=true",
+        "--no-breaks=true"
+      ],
+      "returncode": 0,
+      "elapsed_seconds": 0.01606976194307208,
+      "log": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/weighted-preparation-bare-diagnostic/isolated-0-54.log"
+    },
+    {
+      "repeat": 0,
+      "case": "batch local terminal fan in survives immediate slot and result storage reuse",
+      "command": [
+        "taskset",
+        "-c",
+        "3,4,5,19,20,21",
+        "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/weighted-source/build/linux/client/release/test/glob2-unit-tests",
+        "--test-suite=ComputeExecutor",
+        "--test-case=batch local terminal fan in survives immediate slot and result storage reuse",
+        "--duration=true",
+        "--no-breaks=true"
+      ],
+      "returncode": 0,
+      "elapsed_seconds": 0.11418221378698945,
+      "log": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/weighted-preparation-bare-diagnostic/isolated-0-55.log"
+    },
+    {
+      "repeat": 0,
+      "case": "retired batch storage cannot remain in another batch lane chain",
+      "command": [
+        "taskset",
+        "-c",
+        "3,4,5,19,20,21",
+        "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/weighted-source/build/linux/client/release/test/glob2-unit-tests",
+        "--test-suite=ComputeExecutor",
+        "--test-case=retired batch storage cannot remain in another batch lane chain",
+        "--duration=true",
+        "--no-breaks=true"
+      ],
+      "returncode": 0,
+      "elapsed_seconds": 0.016096752136945724,
+      "log": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/weighted-preparation-bare-diagnostic/isolated-0-56.log"
+    },
+    {
+      "repeat": 0,
+      "case": "concurrent batch local failures publish one error before finished",
+      "command": [
+        "taskset",
+        "-c",
+        "3,4,5,19,20,21",
+        "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/weighted-source/build/linux/client/release/test/glob2-unit-tests",
+        "--test-suite=ComputeExecutor",
+        "--test-case=concurrent batch local failures publish one error before finished",
+        "--duration=true",
+        "--no-breaks=true"
+      ],
+      "returncode": 0,
+      "elapsed_seconds": 0.016037811990827322,
+      "log": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/weighted-preparation-bare-diagnostic/isolated-0-57.log"
+    },
+    {
+      "repeat": 0,
+      "case": "weighted cost classes cold reset and reservation transfer debit",
+      "command": [
+        "taskset",
+        "-c",
+        "3,4,5,19,20,21",
+        "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/weighted-source/build/linux/client/release/test/glob2-unit-tests",
+        "--test-suite=ComputeExecutor",
+        "--test-case=weighted cost classes cold reset and reservation transfer debit",
+        "--duration=true",
+        "--no-breaks=true"
+      ],
+      "returncode": 0,
+      "elapsed_seconds": 0.016027621924877167,
+      "log": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/weighted-preparation-bare-diagnostic/isolated-0-58.log"
+    },
+    {
+      "repeat": 0,
+      "case": "weighted reservations include active callbacks until their CPU slice returns",
+      "command": [
+        "taskset",
+        "-c",
+        "3,4,5,19,20,21",
+        "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/weighted-source/build/linux/client/release/test/glob2-unit-tests",
+        "--test-suite=ComputeExecutor",
+        "--test-case=weighted reservations include active callbacks until their CPU slice returns",
+        "--duration=true",
+        "--no-breaks=true"
+      ],
+      "returncode": 0,
+      "elapsed_seconds": 0.01594445202499628,
+      "log": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/weighted-preparation-bare-diagnostic/isolated-0-59.log"
+    },
+    {
+      "repeat": 1,
+      "case": "automatic sizing respects platform limits and supports unknown CPU counts",
+      "command": [
+        "taskset",
+        "-c",
+        "3,4,5,19,20,21",
+        "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/weighted-source/build/linux/client/release/test/glob2-unit-tests",
+        "--test-suite=ComputeExecutor",
+        "--test-case=automatic sizing respects platform limits and supports unknown CPU counts",
+        "--duration=true",
+        "--no-breaks=true"
+      ],
+      "returncode": 0,
+      "elapsed_seconds": 0.015911403112113476,
+      "log": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/weighted-preparation-bare-diagnostic/isolated-1-00.log"
+    },
+    {
+      "repeat": 1,
+      "case": "CPU availability provenance distinguishes affinity from hardware hints",
+      "command": [
+        "taskset",
+        "-c",
+        "3,4,5,19,20,21",
+        "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/weighted-source/build/linux/client/release/test/glob2-unit-tests",
+        "--test-suite=ComputeExecutor",
+        "--test-case=CPU availability provenance distinguishes affinity from hardware hints",
+        "--duration=true",
+        "--no-breaks=true"
+      ],
+      "returncode": 0,
+      "elapsed_seconds": 0.016089220996946096,
+      "log": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/weighted-preparation-bare-diagnostic/isolated-1-01.log"
+    },
+    {
+      "repeat": 1,
+      "case": "thread configuration accepts auto and rejects malformed or overflowing overrides",
+      "command": [
+        "taskset",
+        "-c",
+        "3,4,5,19,20,21",
+        "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/weighted-source/build/linux/client/release/test/glob2-unit-tests",
+        "--test-suite=ComputeExecutor",
+        "--test-case=thread configuration accepts auto and rejects malformed or overflowing overrides",
+        "--duration=true",
+        "--no-breaks=true"
+      ],
+      "returncode": 0,
+      "elapsed_seconds": 0.016082951799035072,
+      "log": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/weighted-preparation-bare-diagnostic/isolated-1-02.log"
+    },
+    {
+      "repeat": 1,
+      "case": "supported platforms execute jobs concurrently on distinct threads",
+      "command": [
+        "taskset",
+        "-c",
+        "3,4,5,19,20,21",
+        "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/weighted-source/build/linux/client/release/test/glob2-unit-tests",
+        "--test-suite=ComputeExecutor",
+        "--test-case=supported platforms execute jobs concurrently on distinct threads",
+        "--duration=true",
+        "--no-breaks=true"
+      ],
+      "returncode": 0,
+      "elapsed_seconds": 0.06438026810064912,
+      "log": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/weighted-preparation-bare-diagnostic/isolated-1-03.log"
+    },
+    {
+      "repeat": 1,
+      "case": "exclusive slots; nested batches; reuse; errors; barriers and reconfiguration",
+      "command": [
+        "taskset",
+        "-c",
+        "3,4,5,19,20,21",
+        "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/weighted-source/build/linux/client/release/test/glob2-unit-tests",
+        "--test-suite=ComputeExecutor",
+        "--test-case=exclusive slots; nested batches; reuse; errors; barriers and reconfiguration",
+        "--duration=true",
+        "--no-breaks=true"
+      ],
+      "returncode": 0,
+      "elapsed_seconds": 0.1644810657016933,
+      "log": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/weighted-preparation-bare-diagnostic/isolated-1-04.log"
+    },
+    {
+      "repeat": 1,
+      "case": "deferred batches complete with lanes and isolated errors",
+      "command": [
+        "taskset",
+        "-c",
+        "3,4,5,19,20,21",
+        "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/weighted-source/build/linux/client/release/test/glob2-unit-tests",
+        "--test-suite=ComputeExecutor",
+        "--test-case=deferred batches complete with lanes and isolated errors",
+        "--duration=true",
+        "--no-breaks=true"
+      ],
+      "returncode": 0,
+      "elapsed_seconds": 0.26510271010920405,
+      "log": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/weighted-preparation-bare-diagnostic/isolated-1-05.log"
+    },
+    {
+      "repeat": 1,
+      "case": "idle workers retain parallelism for independent and mixed lane groups",
+      "command": [
+        "taskset",
+        "-c",
+        "3,4,5,19,20,21",
+        "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/weighted-source/build/linux/client/release/test/glob2-unit-tests",
+        "--test-suite=ComputeExecutor",
+        "--test-case=idle workers retain parallelism for independent and mixed lane groups",
+        "--duration=true",
+        "--no-breaks=true"
+      ],
+      "returncode": 0,
+      "elapsed_seconds": 0.0644875168800354,
+      "log": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/weighted-preparation-bare-diagnostic/isolated-1-06.log"
+    },
+    {
+      "repeat": 1,
+      "case": "repeated lane groups and empty groups preserve ordering and independent work",
+      "command": [
+        "taskset",
+        "-c",
+        "3,4,5,19,20,21",
+        "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/weighted-source/build/linux/client/release/test/glob2-unit-tests",
+        "--test-suite=ComputeExecutor",
+        "--test-case=repeated lane groups and empty groups preserve ordering and independent work",
+        "--duration=true",
+        "--no-breaks=true"
+      ],
+      "returncode": 0,
+      "elapsed_seconds": 0.016099592205137014,
+      "log": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/weighted-preparation-bare-diagnostic/isolated-1-07.log"
+    },
+    {
+      "repeat": 1,
+      "case": "external completion and continuation wake parked lane successors",
+      "command": [
+        "taskset",
+        "-c",
+        "3,4,5,19,20,21",
+        "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/weighted-source/build/linux/client/release/test/glob2-unit-tests",
+        "--test-suite=ComputeExecutor",
+        "--test-case=external completion and continuation wake parked lane successors",
+        "--duration=true",
+        "--no-breaks=true"
+      ],
+      "returncode": 0,
+      "elapsed_seconds": 0.06415298022329807,
+      "log": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/weighted-preparation-bare-diagnostic/isolated-1-08.log"
+    },
+    {
+      "repeat": 1,
+      "case": "lane groups run in index order and the horizon is bounded",
+      "command": [
+        "taskset",
+        "-c",
+        "3,4,5,19,20,21",
+        "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/weighted-source/build/linux/client/release/test/glob2-unit-tests",
+        "--test-suite=ComputeExecutor",
+        "--test-case=lane groups run in index order and the horizon is bounded",
+        "--duration=true",
+        "--no-breaks=true"
+      ],
+      "returncode": 0,
+      "elapsed_seconds": 0.06416822876781225,
+      "log": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/weighted-preparation-bare-diagnostic/isolated-1-09.log"
+    },
+    {
+      "repeat": 1,
+      "case": "sharded ready dispatch executes each independent job and the owner only waits",
+      "command": [
+        "taskset",
+        "-c",
+        "3,4,5,19,20,21",
+        "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/weighted-source/build/linux/client/release/test/glob2-unit-tests",
+        "--test-suite=ComputeExecutor",
+        "--test-case=sharded ready dispatch executes each independent job and the owner only waits",
+        "--duration=true",
+        "--no-breaks=true"
+      ],
+      "returncode": 0,
+      "elapsed_seconds": 0.06421518931165338,
+      "log": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/weighted-preparation-bare-diagnostic/isolated-1-10.log"
+    },
+    {
+      "repeat": 1,
+      "case": "without workers the owner runs the jobs due no later than the join",
+      "command": [
+        "taskset",
+        "-c",
+        "3,4,5,19,20,21",
+        "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/weighted-source/build/linux/client/release/test/glob2-unit-tests",
+        "--test-suite=ComputeExecutor",
+        "--test-case=without workers the owner runs the jobs due no later than the join",
+        "--duration=true",
+        "--no-breaks=true"
+      ],
+      "returncode": 0,
+      "elapsed_seconds": 0.06413658987730742,
+      "log": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/weighted-preparation-bare-diagnostic/isolated-1-11.log"
+    },
+    {
+      "repeat": 1,
+      "case": "a lane keeps submission order: a lane job due before a live earlier one is rejected",
+      "command": [
+        "taskset",
+        "-c",
+        "3,4,5,19,20,21",
+        "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/weighted-source/build/linux/client/release/test/glob2-unit-tests",
+        "--test-suite=ComputeExecutor",
+        "--test-case=a lane keeps submission order: a lane job due before a live earlier one is rejected",
+        "--duration=true",
+        "--no-breaks=true"
+      ],
+      "returncode": 0,
+      "elapsed_seconds": 0.11449924064800143,
+      "log": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/weighted-preparation-bare-diagnostic/isolated-1-12.log"
+    },
+    {
+      "repeat": 1,
+      "case": "the slot count covers every producer's horizon",
+      "command": [
+        "taskset",
+        "-c",
+        "3,4,5,19,20,21",
+        "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/weighted-source/build/linux/client/release/test/glob2-unit-tests",
+        "--test-suite=ComputeExecutor",
+        "--test-case=the slot count covers every producer's horizon",
+        "--duration=true",
+        "--no-breaks=true"
+      ],
+      "returncode": 1,
+      "elapsed_seconds": 0.01623852038756013,
+      "log": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/weighted-preparation-bare-diagnostic/isolated-1-13.log"
+    },
+    {
+      "repeat": 1,
+      "case": "presentation cannot delay simulation barriers with spare workers or run on the simulation owner",
+      "command": [
+        "taskset",
+        "-c",
+        "3,4,5,19,20,21",
+        "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/weighted-source/build/linux/client/release/test/glob2-unit-tests",
+        "--test-suite=ComputeExecutor",
+        "--test-case=presentation cannot delay simulation barriers with spare workers or run on the simulation owner",
+        "--duration=true",
+        "--no-breaks=true"
+      ],
+      "returncode": 0,
+      "elapsed_seconds": 0.06414581881836057,
+      "log": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/weighted-preparation-bare-diagnostic/isolated-1-14.log"
+    },
+    {
+      "repeat": 1,
+      "case": "with one worker the owner waits through its presentation chunk and never runs the join itself",
+      "command": [
+        "taskset",
+        "-c",
+        "3,4,5,19,20,21",
+        "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/weighted-source/build/linux/client/release/test/glob2-unit-tests",
+        "--test-suite=ComputeExecutor",
+        "--test-case=with one worker the owner waits through its presentation chunk and never runs the join itself",
+        "--duration=true",
+        "--no-breaks=true"
+      ],
+      "returncode": 0,
+      "elapsed_seconds": 0.06414625979959965,
+      "log": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/weighted-preparation-bare-diagnostic/isolated-1-15.log"
+    },
+    {
+      "repeat": 1,
+      "case": "presentation progresses before a continuous simulation backlog drains",
+      "command": [
+        "taskset",
+        "-c",
+        "3,4,5,19,20,21",
+        "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/weighted-source/build/linux/client/release/test/glob2-unit-tests",
+        "--test-suite=ComputeExecutor",
+        "--test-case=presentation progresses before a continuous simulation backlog drains",
+        "--duration=true",
+        "--no-breaks=true"
+      ],
+      "returncode": 0,
+      "elapsed_seconds": 0.0642099091783166,
+      "log": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/weighted-preparation-bare-diagnostic/isolated-1-16.log"
+    },
+    {
+      "repeat": 1,
+      "case": "presentation replacement, chunk pumping, cancellation and errors retain no captures",
+      "command": [
+        "taskset",
+        "-c",
+        "3,4,5,19,20,21",
+        "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/weighted-source/build/linux/client/release/test/glob2-unit-tests",
+        "--test-suite=ComputeExecutor",
+        "--test-case=presentation replacement\\, chunk pumping\\, cancellation and errors retain no captures",
+        "--duration=true",
+        "--no-breaks=true"
+      ],
+      "returncode": 0,
+      "elapsed_seconds": 0.06419890932738781,
+      "log": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/weighted-preparation-bare-diagnostic/isolated-1-17.log"
+    },
+    {
+      "repeat": 1,
+      "case": "resumable presentation yields without advancing or retaining canceled inputs",
+      "command": [
+        "taskset",
+        "-c",
+        "3,4,5,19,20,21",
+        "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/weighted-source/build/linux/client/release/test/glob2-unit-tests",
+        "--test-suite=ComputeExecutor",
+        "--test-case=resumable presentation yields without advancing or retaining canceled inputs",
+        "--duration=true",
+        "--no-breaks=true"
+      ],
+      "returncode": 0,
+      "elapsed_seconds": 0.06414882931858301,
+      "log": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/weighted-preparation-bare-diagnostic/isolated-1-18.log"
+    },
+    {
+      "repeat": 1,
+      "case": "worker only maintenance never uses the owner including creation failure",
+      "command": [
+        "taskset",
+        "-c",
+        "3,4,5,19,20,21",
+        "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/weighted-source/build/linux/client/release/test/glob2-unit-tests",
+        "--test-suite=ComputeExecutor",
+        "--test-case=worker only maintenance never uses the owner including creation failure",
+        "--duration=true",
+        "--no-breaks=true"
+      ],
+      "returncode": 0,
+      "elapsed_seconds": 0.06418993882834911,
+      "log": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/weighted-preparation-bare-diagnostic/isolated-1-19.log"
+    },
+    {
+      "repeat": 1,
+      "case": "worker only maintenance yields to required jobs and cannot delay their completed join",
+      "command": [
+        "taskset",
+        "-c",
+        "3,4,5,19,20,21",
+        "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/weighted-source/build/linux/client/release/test/glob2-unit-tests",
+        "--test-suite=ComputeExecutor",
+        "--test-case=worker only maintenance yields to required jobs and cannot delay their completed join",
+        "--duration=true",
+        "--no-breaks=true"
+      ],
+      "returncode": 0,
+      "elapsed_seconds": 0.06422188878059387,
+      "log": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/weighted-preparation-bare-diagnostic/isolated-1-20.log"
+    },
+    {
+      "repeat": 1,
+      "case": "suspended device work releases the only worker and preserves lane completion",
+      "command": [
+        "taskset",
+        "-c",
+        "3,4,5,19,20,21",
+        "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/weighted-source/build/linux/client/release/test/glob2-unit-tests",
+        "--test-suite=ComputeExecutor",
+        "--test-case=suspended device work releases the only worker and preserves lane completion",
+        "--duration=true",
+        "--no-breaks=true"
+      ],
+      "returncode": 0,
+      "elapsed_seconds": 0.06418749876320362,
+      "log": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/weighted-preparation-bare-diagnostic/isolated-1-21.log"
+    },
+    {
+      "repeat": 1,
+      "case": "early device failure resumes exactly once on the worker at its original lane position",
+      "command": [
+        "taskset",
+        "-c",
+        "3,4,5,19,20,21",
+        "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/weighted-source/build/linux/client/release/test/glob2-unit-tests",
+        "--test-suite=ComputeExecutor",
+        "--test-case=early device failure resumes exactly once on the worker at its original lane position",
+        "--duration=true",
+        "--no-breaks=true"
+      ],
+      "returncode": 0,
+      "elapsed_seconds": 0.06453691702336073,
+      "log": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/weighted-preparation-bare-diagnostic/isolated-1-22.log"
+    },
+    {
+      "repeat": 1,
+      "case": "early asynchronous completion cannot release an invoking callback's inputs",
+      "command": [
+        "taskset",
+        "-c",
+        "3,4,5,19,20,21",
+        "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/weighted-source/build/linux/client/release/test/glob2-unit-tests",
+        "--test-suite=ComputeExecutor",
+        "--test-case=early asynchronous completion cannot release an invoking callback's inputs",
+        "--duration=true",
+        "--no-breaks=true"
+      ],
+      "returncode": 0,
+      "elapsed_seconds": 0.06452548829838634,
+      "log": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/weighted-preparation-bare-diagnostic/isolated-1-23.log"
+    },
+    {
+      "repeat": 1,
+      "case": "continuation of a nonzero lane-group index keeps its original sequence",
+      "command": [
+        "taskset",
+        "-c",
+        "3,4,5,19,20,21",
+        "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/weighted-source/build/linux/client/release/test/glob2-unit-tests",
+        "--test-suite=ComputeExecutor",
+        "--test-case=continuation of a nonzero lane-group index keeps its original sequence",
+        "--duration=true",
+        "--no-breaks=true"
+      ],
+      "returncode": 0,
+      "elapsed_seconds": 0.06441642809659243,
+      "log": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/weighted-preparation-bare-diagnostic/isolated-1-24.log"
+    },
+    {
+      "repeat": 1,
+      "case": "retained completion tickets can be resolved after executor destruction",
+      "command": [
+        "taskset",
+        "-c",
+        "3,4,5,19,20,21",
+        "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/weighted-source/build/linux/client/release/test/glob2-unit-tests",
+        "--test-suite=ComputeExecutor",
+        "--test-case=retained completion tickets can be resolved after executor destruction",
+        "--duration=true",
+        "--no-breaks=true"
+      ],
+      "returncode": 0,
+      "elapsed_seconds": 0.06424951879307628,
+      "log": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/weighted-preparation-bare-diagnostic/isolated-1-25.log"
+    },
+    {
+      "repeat": 1,
+      "case": "graphics batches finish once, retain failures and release captures",
+      "command": [
+        "taskset",
+        "-c",
+        "3,4,5,19,20,21",
+        "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/weighted-source/build/linux/client/release/test/glob2-unit-tests",
+        "--test-suite=ComputeExecutor",
+        "--test-case=graphics batches finish once\\, retain failures and release captures",
+        "--duration=true",
+        "--no-breaks=true"
+      ],
+      "returncode": 0,
+      "elapsed_seconds": 0.11432355269789696,
+      "log": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/weighted-preparation-bare-diagnostic/isolated-1-26.log"
+    },
+    {
+      "repeat": 1,
+      "case": "serial graphics finish never pumps scene or required work and abandonment releases captures",
+      "command": [
+        "taskset",
+        "-c",
+        "3,4,5,19,20,21",
+        "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/weighted-source/build/linux/client/release/test/glob2-unit-tests",
+        "--test-suite=ComputeExecutor",
+        "--test-case=serial graphics finish never pumps scene or required work and abandonment releases captures",
+        "--duration=true",
+        "--no-breaks=true"
+      ],
+      "returncode": 0,
+      "elapsed_seconds": 0.0321310143917799,
+      "log": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/weighted-preparation-bare-diagnostic/isolated-1-27.log"
+    },
+    {
+      "repeat": 1,
+      "case": "graphics cancellation drains claimed work and reconfiguration releases inputs",
+      "command": [
+        "taskset",
+        "-c",
+        "3,4,5,19,20,21",
+        "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/weighted-source/build/linux/client/release/test/glob2-unit-tests",
+        "--test-suite=ComputeExecutor",
+        "--test-case=graphics cancellation drains claimed work and reconfiguration releases inputs",
+        "--duration=true",
+        "--no-breaks=true"
+      ],
+      "returncode": 0,
+      "elapsed_seconds": 0.11438258178532124,
+      "log": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/weighted-preparation-bare-diagnostic/isolated-1-28.log"
+    },
+    {
+      "repeat": 1,
+      "case": "both presentation classes progress during required lane backlog",
+      "command": [
+        "taskset",
+        "-c",
+        "3,4,5,19,20,21",
+        "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/weighted-source/build/linux/client/release/test/glob2-unit-tests",
+        "--test-suite=ComputeExecutor",
+        "--test-case=both presentation classes progress during required lane backlog",
+        "--duration=true",
+        "--no-breaks=true"
+      ],
+      "returncode": 0,
+      "elapsed_seconds": 0.06434323778375983,
+      "log": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/weighted-preparation-bare-diagnostic/isolated-1-29.log"
+    },
+    {
+      "repeat": 1,
+      "case": "graphics callback barriers are rejected and completed tickets do not pump newer work",
+      "command": [
+        "taskset",
+        "-c",
+        "3,4,5,19,20,21",
+        "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/weighted-source/build/linux/client/release/test/glob2-unit-tests",
+        "--test-suite=ComputeExecutor",
+        "--test-case=graphics callback barriers are rejected and completed tickets do not pump newer work",
+        "--duration=true",
+        "--no-breaks=true"
+      ],
+      "returncode": 0,
+      "elapsed_seconds": 0.03222239390015602,
+      "log": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/weighted-preparation-bare-diagnostic/isolated-1-30.log"
+    },
+    {
+      "repeat": 1,
+      "case": "empty graphics submissions bypass occupied admission and concurrency metrics respect ceilings",
+      "command": [
+        "taskset",
+        "-c",
+        "3,4,5,19,20,21",
+        "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/weighted-source/build/linux/client/release/test/glob2-unit-tests",
+        "--test-suite=ComputeExecutor",
+        "--test-case=empty graphics submissions bypass occupied admission and concurrency metrics respect ceilings",
+        "--duration=true",
+        "--no-breaks=true"
+      ],
+      "returncode": 0,
+      "elapsed_seconds": 0.06421929923817515,
+      "log": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/weighted-preparation-bare-diagnostic/isolated-1-31.log"
+    },
+    {
+      "repeat": 1,
+      "case": "graphics capture destruction can inspect scheduler metrics before completion",
+      "command": [
+        "taskset",
+        "-c",
+        "3,4,5,19,20,21",
+        "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/weighted-source/build/linux/client/release/test/glob2-unit-tests",
+        "--test-suite=ComputeExecutor",
+        "--test-case=graphics capture destruction can inspect scheduler metrics before completion",
+        "--duration=true",
+        "--no-breaks=true"
+      ],
+      "returncode": 0,
+      "elapsed_seconds": 0.06414864864200354,
+      "log": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/weighted-preparation-bare-diagnostic/isolated-1-32.log"
+    },
+    {
+      "repeat": 1,
+      "case": "disabled diagnostics do not read the injected clock or collect counters",
+      "command": [
+        "taskset",
+        "-c",
+        "3,4,5,19,20,21",
+        "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/weighted-source/build/linux/client/release/test/glob2-unit-tests",
+        "--test-suite=ComputeExecutor",
+        "--test-case=disabled diagnostics do not read the injected clock or collect counters",
+        "--duration=true",
+        "--no-breaks=true"
+      ],
+      "returncode": 0,
+      "elapsed_seconds": 0.01611870201304555,
+      "log": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/weighted-preparation-bare-diagnostic/isolated-1-33.log"
+    },
+    {
+      "repeat": 1,
+      "case": "owner execution, stale handles, reuse and lifecycle attribution use one locked inspection",
+      "command": [
+        "taskset",
+        "-c",
+        "3,4,5,19,20,21",
+        "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/weighted-source/build/linux/client/release/test/glob2-unit-tests",
+        "--test-suite=ComputeExecutor",
+        "--test-case=owner execution\\, stale handles\\, reuse and lifecycle attribution use one locked inspection",
+        "--duration=true",
+        "--no-breaks=true"
+      ],
+      "returncode": 0,
+      "elapsed_seconds": 0.016299450770020485,
+      "log": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/weighted-preparation-bare-diagnostic/isolated-1-34.log"
+    },
+    {
+      "repeat": 1,
+      "case": "worker waits aggregate distinct ticks globally and per producer without worker timing",
+      "command": [
+        "taskset",
+        "-c",
+        "3,4,5,19,20,21",
+        "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/weighted-source/build/linux/client/release/test/glob2-unit-tests",
+        "--test-suite=ComputeExecutor",
+        "--test-case=worker waits aggregate distinct ticks globally and per producer without worker timing",
+        "--duration=true",
+        "--no-breaks=true"
+      ],
+      "returncode": 0,
+      "elapsed_seconds": 0.016374160069972277,
+      "log": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/weighted-preparation-bare-diagnostic/isolated-1-35.log"
+    },
+    {
+      "repeat": 1,
+      "case": "complete joins and trace overflow remain valid and snapshots require drain",
+      "command": [
+        "taskset",
+        "-c",
+        "3,4,5,19,20,21",
+        "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/weighted-source/build/linux/client/release/test/glob2-unit-tests",
+        "--test-suite=ComputeExecutor",
+        "--test-case=complete joins and trace overflow remain valid and snapshots require drain",
+        "--duration=true",
+        "--no-breaks=true"
+      ],
+      "returncode": 0,
+      "elapsed_seconds": 0.01642642030492425,
+      "log": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/weighted-preparation-bare-diagnostic/isolated-1-36.log"
+    },
+    {
+      "repeat": 1,
+      "case": "trace preserves early external resolution and continuation callback ordering",
+      "command": [
+        "taskset",
+        "-c",
+        "3,4,5,19,20,21",
+        "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/weighted-source/build/linux/client/release/test/glob2-unit-tests",
+        "--test-suite=ComputeExecutor",
+        "--test-case=trace preserves early external resolution and continuation callback ordering",
+        "--duration=true",
+        "--no-breaks=true"
+      ],
+      "returncode": 0,
+      "elapsed_seconds": 0.06426229933276772,
+      "log": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/weighted-preparation-bare-diagnostic/isolated-1-37.log"
+    },
+    {
+      "repeat": 1,
+      "case": "trace storage allocation failure downgrades without losing required work",
+      "command": [
+        "taskset",
+        "-c",
+        "3,4,5,19,20,21",
+        "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/weighted-source/build/linux/client/release/test/glob2-unit-tests",
+        "--test-suite=ComputeExecutor",
+        "--test-case=trace storage allocation failure downgrades without losing required work",
+        "--duration=true",
+        "--no-breaks=true"
+      ],
+      "returncode": 0,
+      "elapsed_seconds": 0.01619789097458124,
+      "log": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/weighted-preparation-bare-diagnostic/isolated-1-38.log"
+    },
+    {
+      "repeat": 1,
+      "case": "blocking fork join failures and presentation remain traced without entering tick waits",
+      "command": [
+        "taskset",
+        "-c",
+        "3,4,5,19,20,21",
+        "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/weighted-source/build/linux/client/release/test/glob2-unit-tests",
+        "--test-suite=ComputeExecutor",
+        "--test-case=blocking fork join failures and presentation remain traced without entering tick waits",
+        "--duration=true",
+        "--no-breaks=true"
+      ],
+      "returncode": 0,
+      "elapsed_seconds": 0.06456281570717692,
+      "log": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/weighted-preparation-bare-diagnostic/isolated-1-39.log"
+    },
+    {
+      "repeat": 1,
+      "case": "graphics diagnostics are optional and waits mode attributes the owner barrier",
+      "command": [
+        "taskset",
+        "-c",
+        "3,4,5,19,20,21",
+        "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/weighted-source/build/linux/client/release/test/glob2-unit-tests",
+        "--test-suite=ComputeExecutor",
+        "--test-case=graphics diagnostics are optional and waits mode attributes the owner barrier",
+        "--duration=true",
+        "--no-breaks=true"
+      ],
+      "returncode": 0,
+      "elapsed_seconds": 0.06467933626845479,
+      "log": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/weighted-preparation-bare-diagnostic/isolated-1-40.log"
+    },
+    {
+      "repeat": 1,
+      "case": "yielded presentation chunks keep callback indices paired",
+      "command": [
+        "taskset",
+        "-c",
+        "3,4,5,19,20,21",
+        "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/weighted-source/build/linux/client/release/test/glob2-unit-tests",
+        "--test-suite=ComputeExecutor",
+        "--test-case=yielded presentation chunks keep callback indices paired",
+        "--duration=true",
+        "--no-breaks=true"
+      ],
+      "returncode": 0,
+      "elapsed_seconds": 0.06429578782990575,
+      "log": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/weighted-preparation-bare-diagnostic/isolated-1-41.log"
+    },
+    {
+      "repeat": 1,
+      "case": "worker-only maintenance is traced as other work without a required join",
+      "command": [
+        "taskset",
+        "-c",
+        "3,4,5,19,20,21",
+        "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/weighted-source/build/linux/client/release/test/glob2-unit-tests",
+        "--test-suite=ComputeExecutor",
+        "--test-case=worker-only maintenance is traced as other work without a required join",
+        "--duration=true",
+        "--no-breaks=true"
+      ],
+      "returncode": 0,
+      "elapsed_seconds": 0.06433007773011923,
+      "log": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/weighted-preparation-bare-diagnostic/isolated-1-42.log"
+    },
+    {
+      "repeat": 1,
+      "case": "session reset suppresses a returning maintenance interval from the previous epoch",
+      "command": [
+        "taskset",
+        "-c",
+        "3,4,5,19,20,21",
+        "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/weighted-source/build/linux/client/release/test/glob2-unit-tests",
+        "--test-suite=ComputeExecutor",
+        "--test-case=session reset suppresses a returning maintenance interval from the previous epoch",
+        "--duration=true",
+        "--no-breaks=true"
+      ],
+      "returncode": 0,
+      "elapsed_seconds": 0.0642684088088572,
+      "log": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/weighted-preparation-bare-diagnostic/isolated-1-43.log"
+    },
+    {
+      "repeat": 1,
+      "case": "synchronous graphics adapter keeps empty calls idle and guards owner callbacks",
+      "command": [
+        "taskset",
+        "-c",
+        "3,4,5,19,20,21",
+        "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/weighted-source/build/linux/client/release/test/glob2-unit-tests",
+        "--test-suite=ComputeExecutor",
+        "--test-case=synchronous graphics adapter keeps empty calls idle and guards owner callbacks",
+        "--duration=true",
+        "--no-breaks=true"
+      ],
+      "returncode": 0,
+      "elapsed_seconds": 0.06422726903110743,
+      "log": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/weighted-preparation-bare-diagnostic/isolated-1-44.log"
+    },
+    {
+      "repeat": 1,
+      "case": "graphics adapter restores callback state on failure and never pumps other work",
+      "command": [
+        "taskset",
+        "-c",
+        "3,4,5,19,20,21",
+        "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/weighted-source/build/linux/client/release/test/glob2-unit-tests",
+        "--test-suite=ComputeExecutor",
+        "--test-case=graphics adapter restores callback state on failure and never pumps other work",
+        "--duration=true",
+        "--no-breaks=true"
+      ],
+      "returncode": 0,
+      "elapsed_seconds": 0.06418201886117458,
+      "log": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/weighted-preparation-bare-diagnostic/isolated-1-45.log"
+    },
+    {
+      "repeat": 1,
+      "case": "synchronous graphics cancellation rejects incomplete output after draining",
+      "command": [
+        "taskset",
+        "-c",
+        "3,4,5,19,20,21",
+        "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/weighted-source/build/linux/client/release/test/glob2-unit-tests",
+        "--test-suite=ComputeExecutor",
+        "--test-case=synchronous graphics cancellation rejects incomplete output after draining",
+        "--duration=true",
+        "--no-breaks=true"
+      ],
+      "returncode": 0,
+      "elapsed_seconds": 0.06418513925746083,
+      "log": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/weighted-preparation-bare-diagnostic/isolated-1-46.log"
+    },
+    {
+      "repeat": 1,
+      "case": "graphics adapter preserves occupied admission and serial finish shares the scene cap",
+      "command": [
+        "taskset",
+        "-c",
+        "3,4,5,19,20,21",
+        "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/weighted-source/build/linux/client/release/test/glob2-unit-tests",
+        "--test-suite=ComputeExecutor",
+        "--test-case=graphics adapter preserves occupied admission and serial finish shares the scene cap",
+        "--duration=true",
+        "--no-breaks=true"
+      ],
+      "returncode": 0,
+      "elapsed_seconds": 0.06421736907213926,
+      "log": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/weighted-preparation-bare-diagnostic/isolated-1-47.log"
+    },
+    {
+      "repeat": 1,
+      "case": "canceling a slot-blocked graphics batch wakes its owner before scene completion",
+      "command": [
+        "taskset",
+        "-c",
+        "3,4,5,19,20,21",
+        "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/weighted-source/build/linux/client/release/test/glob2-unit-tests",
+        "--test-suite=ComputeExecutor",
+        "--test-case=canceling a slot-blocked graphics batch wakes its owner before scene completion",
+        "--duration=true",
+        "--no-breaks=true"
+      ],
+      "returncode": 0,
+      "elapsed_seconds": 0.06434568809345365,
+      "log": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/weighted-preparation-bare-diagnostic/isolated-1-48.log"
+    },
+    {
+      "repeat": 1,
+      "case": "sharded queues preserve lane order across repeated groups exceptions and slot reuse",
+      "command": [
+        "taskset",
+        "-c",
+        "3,4,5,19,20,21",
+        "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/weighted-source/build/linux/client/release/test/glob2-unit-tests",
+        "--test-suite=ComputeExecutor",
+        "--test-case=sharded queues preserve lane order across repeated groups exceptions and slot reuse",
+        "--duration=true",
+        "--no-breaks=true"
+      ],
+      "returncode": 0,
+      "elapsed_seconds": 0.16461638594046235,
+      "log": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/weighted-preparation-bare-diagnostic/isolated-1-49.log"
+    },
+    {
+      "repeat": 1,
+      "case": "sharded ordinary callbacks can inspect metrics without scheduler lock ownership",
+      "command": [
+        "taskset",
+        "-c",
+        "3,4,5,19,20,21",
+        "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/weighted-source/build/linux/client/release/test/glob2-unit-tests",
+        "--test-suite=ComputeExecutor",
+        "--test-case=sharded ordinary callbacks can inspect metrics without scheduler lock ownership",
+        "--duration=true",
+        "--no-breaks=true"
+      ],
+      "returncode": 0,
+      "elapsed_seconds": 0.016234821174293756,
+      "log": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/weighted-preparation-bare-diagnostic/isolated-1-50.log"
+    },
+    {
+      "repeat": 1,
+      "case": "idle steal peer consumes ready work assigned behind a busy worker",
+      "command": [
+        "taskset",
+        "-c",
+        "3,4,5,19,20,21",
+        "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/weighted-source/build/linux/client/release/test/glob2-unit-tests",
+        "--test-suite=ComputeExecutor",
+        "--test-case=idle steal peer consumes ready work assigned behind a busy worker",
+        "--duration=true",
+        "--no-breaks=true"
+      ],
+      "returncode": 0,
+      "elapsed_seconds": 0.016093922313302755,
+      "log": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/weighted-preparation-bare-diagnostic/isolated-1-51.log"
+    },
+    {
+      "repeat": 1,
+      "case": "required queue already populated at optional entry is rescued by spare worker",
+      "command": [
+        "taskset",
+        "-c",
+        "3,4,5,19,20,21",
+        "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/weighted-source/build/linux/client/release/test/glob2-unit-tests",
+        "--test-suite=ComputeExecutor",
+        "--test-case=required queue already populated at optional entry is rescued by spare worker",
+        "--duration=true",
+        "--no-breaks=true"
+      ],
+      "returncode": 0,
+      "elapsed_seconds": 0.0160614219494164,
+      "log": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/weighted-preparation-bare-diagnostic/isolated-1-52.log"
+    },
+    {
+      "repeat": 1,
+      "case": "steady sharded deferred dispatch inspects shared control periodically",
+      "command": [
+        "taskset",
+        "-c",
+        "3,4,5,19,20,21",
+        "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/weighted-source/build/linux/client/release/test/glob2-unit-tests",
+        "--test-suite=ComputeExecutor",
+        "--test-case=steady sharded deferred dispatch inspects shared control periodically",
+        "--duration=true",
+        "--no-breaks=true"
+      ],
+      "returncode": 0,
+      "elapsed_seconds": 0.06420123903080821,
+      "log": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/weighted-preparation-bare-diagnostic/isolated-1-53.log"
+    },
+    {
+      "repeat": 1,
+      "case": "lane affine dispatch retains a controller lane on one worker",
+      "command": [
+        "taskset",
+        "-c",
+        "3,4,5,19,20,21",
+        "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/weighted-source/build/linux/client/release/test/glob2-unit-tests",
+        "--test-suite=ComputeExecutor",
+        "--test-case=lane affine dispatch retains a controller lane on one worker",
+        "--duration=true",
+        "--no-breaks=true"
+      ],
+      "returncode": 0,
+      "elapsed_seconds": 0.01602661283686757,
+      "log": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/weighted-preparation-bare-diagnostic/isolated-1-54.log"
+    },
+    {
+      "repeat": 1,
+      "case": "batch local terminal fan in survives immediate slot and result storage reuse",
+      "command": [
+        "taskset",
+        "-c",
+        "3,4,5,19,20,21",
+        "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/weighted-source/build/linux/client/release/test/glob2-unit-tests",
+        "--test-suite=ComputeExecutor",
+        "--test-case=batch local terminal fan in survives immediate slot and result storage reuse",
+        "--duration=true",
+        "--no-breaks=true"
+      ],
+      "returncode": 0,
+      "elapsed_seconds": 0.11427467269822955,
+      "log": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/weighted-preparation-bare-diagnostic/isolated-1-55.log"
+    },
+    {
+      "repeat": 1,
+      "case": "retired batch storage cannot remain in another batch lane chain",
+      "command": [
+        "taskset",
+        "-c",
+        "3,4,5,19,20,21",
+        "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/weighted-source/build/linux/client/release/test/glob2-unit-tests",
+        "--test-suite=ComputeExecutor",
+        "--test-case=retired batch storage cannot remain in another batch lane chain",
+        "--duration=true",
+        "--no-breaks=true"
+      ],
+      "returncode": 0,
+      "elapsed_seconds": 0.016344879753887653,
+      "log": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/weighted-preparation-bare-diagnostic/isolated-1-56.log"
+    },
+    {
+      "repeat": 1,
+      "case": "concurrent batch local failures publish one error before finished",
+      "command": [
+        "taskset",
+        "-c",
+        "3,4,5,19,20,21",
+        "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/weighted-source/build/linux/client/release/test/glob2-unit-tests",
+        "--test-suite=ComputeExecutor",
+        "--test-case=concurrent batch local failures publish one error before finished",
+        "--duration=true",
+        "--no-breaks=true"
+      ],
+      "returncode": 0,
+      "elapsed_seconds": 0.01607099175453186,
+      "log": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/weighted-preparation-bare-diagnostic/isolated-1-57.log"
+    },
+    {
+      "repeat": 1,
+      "case": "weighted cost classes cold reset and reservation transfer debit",
+      "command": [
+        "taskset",
+        "-c",
+        "3,4,5,19,20,21",
+        "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/weighted-source/build/linux/client/release/test/glob2-unit-tests",
+        "--test-suite=ComputeExecutor",
+        "--test-case=weighted cost classes cold reset and reservation transfer debit",
+        "--duration=true",
+        "--no-breaks=true"
+      ],
+      "returncode": 0,
+      "elapsed_seconds": 0.01605532132089138,
+      "log": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/weighted-preparation-bare-diagnostic/isolated-1-58.log"
+    },
+    {
+      "repeat": 1,
+      "case": "weighted reservations include active callbacks until their CPU slice returns",
+      "command": [
+        "taskset",
+        "-c",
+        "3,4,5,19,20,21",
+        "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/weighted-source/build/linux/client/release/test/glob2-unit-tests",
+        "--test-suite=ComputeExecutor",
+        "--test-case=weighted reservations include active callbacks until their CPU slice returns",
+        "--duration=true",
+        "--no-breaks=true"
+      ],
+      "returncode": 0,
+      "elapsed_seconds": 0.01640960993245244,
+      "log": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/weighted-preparation-bare-diagnostic/isolated-1-59.log"
+    },
+    {
+      "repeat": 2,
+      "case": "automatic sizing respects platform limits and supports unknown CPU counts",
+      "command": [
+        "taskset",
+        "-c",
+        "3,4,5,19,20,21",
+        "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/weighted-source/build/linux/client/release/test/glob2-unit-tests",
+        "--test-suite=ComputeExecutor",
+        "--test-case=automatic sizing respects platform limits and supports unknown CPU counts",
+        "--duration=true",
+        "--no-breaks=true"
+      ],
+      "returncode": 0,
+      "elapsed_seconds": 0.01611621119081974,
+      "log": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/weighted-preparation-bare-diagnostic/isolated-2-00.log"
+    },
+    {
+      "repeat": 2,
+      "case": "CPU availability provenance distinguishes affinity from hardware hints",
+      "command": [
+        "taskset",
+        "-c",
+        "3,4,5,19,20,21",
+        "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/weighted-source/build/linux/client/release/test/glob2-unit-tests",
+        "--test-suite=ComputeExecutor",
+        "--test-case=CPU availability provenance distinguishes affinity from hardware hints",
+        "--duration=true",
+        "--no-breaks=true"
+      ],
+      "returncode": 0,
+      "elapsed_seconds": 0.01609801221638918,
+      "log": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/weighted-preparation-bare-diagnostic/isolated-2-01.log"
+    },
+    {
+      "repeat": 2,
+      "case": "thread configuration accepts auto and rejects malformed or overflowing overrides",
+      "command": [
+        "taskset",
+        "-c",
+        "3,4,5,19,20,21",
+        "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/weighted-source/build/linux/client/release/test/glob2-unit-tests",
+        "--test-suite=ComputeExecutor",
+        "--test-case=thread configuration accepts auto and rejects malformed or overflowing overrides",
+        "--duration=true",
+        "--no-breaks=true"
+      ],
+      "returncode": 0,
+      "elapsed_seconds": 0.01614744169637561,
+      "log": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/weighted-preparation-bare-diagnostic/isolated-2-02.log"
+    },
+    {
+      "repeat": 2,
+      "case": "supported platforms execute jobs concurrently on distinct threads",
+      "command": [
+        "taskset",
+        "-c",
+        "3,4,5,19,20,21",
+        "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/weighted-source/build/linux/client/release/test/glob2-unit-tests",
+        "--test-suite=ComputeExecutor",
+        "--test-case=supported platforms execute jobs concurrently on distinct threads",
+        "--duration=true",
+        "--no-breaks=true"
+      ],
+      "returncode": 0,
+      "elapsed_seconds": 0.0641617993824184,
+      "log": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/weighted-preparation-bare-diagnostic/isolated-2-03.log"
+    },
+    {
+      "repeat": 2,
+      "case": "exclusive slots; nested batches; reuse; errors; barriers and reconfiguration",
+      "command": [
+        "taskset",
+        "-c",
+        "3,4,5,19,20,21",
+        "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/weighted-source/build/linux/client/release/test/glob2-unit-tests",
+        "--test-suite=ComputeExecutor",
+        "--test-case=exclusive slots; nested batches; reuse; errors; barriers and reconfiguration",
+        "--duration=true",
+        "--no-breaks=true"
+      ],
+      "returncode": 0,
+      "elapsed_seconds": 0.16463207500055432,
+      "log": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/weighted-preparation-bare-diagnostic/isolated-2-04.log"
+    },
+    {
+      "repeat": 2,
+      "case": "deferred batches complete with lanes and isolated errors",
+      "command": [
+        "taskset",
+        "-c",
+        "3,4,5,19,20,21",
+        "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/weighted-source/build/linux/client/release/test/glob2-unit-tests",
+        "--test-suite=ComputeExecutor",
+        "--test-case=deferred batches complete with lanes and isolated errors",
+        "--duration=true",
+        "--no-breaks=true"
+      ],
+      "returncode": 0,
+      "elapsed_seconds": 0.26446840493008494,
+      "log": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/weighted-preparation-bare-diagnostic/isolated-2-05.log"
+    },
+    {
+      "repeat": 2,
+      "case": "idle workers retain parallelism for independent and mixed lane groups",
+      "command": [
+        "taskset",
+        "-c",
+        "3,4,5,19,20,21",
+        "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/weighted-source/build/linux/client/release/test/glob2-unit-tests",
+        "--test-suite=ComputeExecutor",
+        "--test-case=idle workers retain parallelism for independent and mixed lane groups",
+        "--duration=true",
+        "--no-breaks=true"
+      ],
+      "returncode": 0,
+      "elapsed_seconds": 0.06422493886202574,
+      "log": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/weighted-preparation-bare-diagnostic/isolated-2-06.log"
+    },
+    {
+      "repeat": 2,
+      "case": "repeated lane groups and empty groups preserve ordering and independent work",
+      "command": [
+        "taskset",
+        "-c",
+        "3,4,5,19,20,21",
+        "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/weighted-source/build/linux/client/release/test/glob2-unit-tests",
+        "--test-suite=ComputeExecutor",
+        "--test-case=repeated lane groups and empty groups preserve ordering and independent work",
+        "--duration=true",
+        "--no-breaks=true"
+      ],
+      "returncode": 0,
+      "elapsed_seconds": 0.016180230770260096,
+      "log": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/weighted-preparation-bare-diagnostic/isolated-2-07.log"
+    },
+    {
+      "repeat": 2,
+      "case": "external completion and continuation wake parked lane successors",
+      "command": [
+        "taskset",
+        "-c",
+        "3,4,5,19,20,21",
+        "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/weighted-source/build/linux/client/release/test/glob2-unit-tests",
+        "--test-suite=ComputeExecutor",
+        "--test-case=external completion and continuation wake parked lane successors",
+        "--duration=true",
+        "--no-breaks=true"
+      ],
+      "returncode": 0,
+      "elapsed_seconds": 0.06420692894607782,
+      "log": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/weighted-preparation-bare-diagnostic/isolated-2-08.log"
+    },
+    {
+      "repeat": 2,
+      "case": "lane groups run in index order and the horizon is bounded",
+      "command": [
+        "taskset",
+        "-c",
+        "3,4,5,19,20,21",
+        "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/weighted-source/build/linux/client/release/test/glob2-unit-tests",
+        "--test-suite=ComputeExecutor",
+        "--test-case=lane groups run in index order and the horizon is bounded",
+        "--duration=true",
+        "--no-breaks=true"
+      ],
+      "returncode": 0,
+      "elapsed_seconds": 0.06413376983255148,
+      "log": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/weighted-preparation-bare-diagnostic/isolated-2-09.log"
+    },
+    {
+      "repeat": 2,
+      "case": "sharded ready dispatch executes each independent job and the owner only waits",
+      "command": [
+        "taskset",
+        "-c",
+        "3,4,5,19,20,21",
+        "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/weighted-source/build/linux/client/release/test/glob2-unit-tests",
+        "--test-suite=ComputeExecutor",
+        "--test-case=sharded ready dispatch executes each independent job and the owner only waits",
+        "--duration=true",
+        "--no-breaks=true"
+      ],
+      "returncode": 0,
+      "elapsed_seconds": 0.06425899919122458,
+      "log": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/weighted-preparation-bare-diagnostic/isolated-2-10.log"
+    },
+    {
+      "repeat": 2,
+      "case": "without workers the owner runs the jobs due no later than the join",
+      "command": [
+        "taskset",
+        "-c",
+        "3,4,5,19,20,21",
+        "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/weighted-source/build/linux/client/release/test/glob2-unit-tests",
+        "--test-suite=ComputeExecutor",
+        "--test-case=without workers the owner runs the jobs due no later than the join",
+        "--duration=true",
+        "--no-breaks=true"
+      ],
+      "returncode": 0,
+      "elapsed_seconds": 0.06429672800004482,
+      "log": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/weighted-preparation-bare-diagnostic/isolated-2-11.log"
+    },
+    {
+      "repeat": 2,
+      "case": "a lane keeps submission order: a lane job due before a live earlier one is rejected",
+      "command": [
+        "taskset",
+        "-c",
+        "3,4,5,19,20,21",
+        "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/weighted-source/build/linux/client/release/test/glob2-unit-tests",
+        "--test-suite=ComputeExecutor",
+        "--test-case=a lane keeps submission order: a lane job due before a live earlier one is rejected",
+        "--duration=true",
+        "--no-breaks=true"
+      ],
+      "returncode": 0,
+      "elapsed_seconds": 0.11483593890443444,
+      "log": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/weighted-preparation-bare-diagnostic/isolated-2-12.log"
+    },
+    {
+      "repeat": 2,
+      "case": "the slot count covers every producer's horizon",
+      "command": [
+        "taskset",
+        "-c",
+        "3,4,5,19,20,21",
+        "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/weighted-source/build/linux/client/release/test/glob2-unit-tests",
+        "--test-suite=ComputeExecutor",
+        "--test-case=the slot count covers every producer's horizon",
+        "--duration=true",
+        "--no-breaks=true"
+      ],
+      "returncode": 1,
+      "elapsed_seconds": 0.016414839774370193,
+      "log": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/weighted-preparation-bare-diagnostic/isolated-2-13.log"
+    },
+    {
+      "repeat": 2,
+      "case": "presentation cannot delay simulation barriers with spare workers or run on the simulation owner",
+      "command": [
+        "taskset",
+        "-c",
+        "3,4,5,19,20,21",
+        "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/weighted-source/build/linux/client/release/test/glob2-unit-tests",
+        "--test-suite=ComputeExecutor",
+        "--test-case=presentation cannot delay simulation barriers with spare workers or run on the simulation owner",
+        "--duration=true",
+        "--no-breaks=true"
+      ],
+      "returncode": 0,
+      "elapsed_seconds": 0.06453003687784076,
+      "log": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/weighted-preparation-bare-diagnostic/isolated-2-14.log"
+    },
+    {
+      "repeat": 2,
+      "case": "with one worker the owner waits through its presentation chunk and never runs the join itself",
+      "command": [
+        "taskset",
+        "-c",
+        "3,4,5,19,20,21",
+        "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/weighted-source/build/linux/client/release/test/glob2-unit-tests",
+        "--test-suite=ComputeExecutor",
+        "--test-case=with one worker the owner waits through its presentation chunk and never runs the join itself",
+        "--duration=true",
+        "--no-breaks=true"
+      ],
+      "returncode": 0,
+      "elapsed_seconds": 0.06406401935964823,
+      "log": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/weighted-preparation-bare-diagnostic/isolated-2-15.log"
+    },
+    {
+      "repeat": 2,
+      "case": "presentation progresses before a continuous simulation backlog drains",
+      "command": [
+        "taskset",
+        "-c",
+        "3,4,5,19,20,21",
+        "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/weighted-source/build/linux/client/release/test/glob2-unit-tests",
+        "--test-suite=ComputeExecutor",
+        "--test-case=presentation progresses before a continuous simulation backlog drains",
+        "--duration=true",
+        "--no-breaks=true"
+      ],
+      "returncode": 0,
+      "elapsed_seconds": 0.06409111898392439,
+      "log": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/weighted-preparation-bare-diagnostic/isolated-2-16.log"
+    },
+    {
+      "repeat": 2,
+      "case": "presentation replacement, chunk pumping, cancellation and errors retain no captures",
+      "command": [
+        "taskset",
+        "-c",
+        "3,4,5,19,20,21",
+        "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/weighted-source/build/linux/client/release/test/glob2-unit-tests",
+        "--test-suite=ComputeExecutor",
+        "--test-case=presentation replacement\\, chunk pumping\\, cancellation and errors retain no captures",
+        "--duration=true",
+        "--no-breaks=true"
+      ],
+      "returncode": 0,
+      "elapsed_seconds": 0.06452627712860703,
+      "log": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/weighted-preparation-bare-diagnostic/isolated-2-17.log"
+    },
+    {
+      "repeat": 2,
+      "case": "resumable presentation yields without advancing or retaining canceled inputs",
+      "command": [
+        "taskset",
+        "-c",
+        "3,4,5,19,20,21",
+        "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/weighted-source/build/linux/client/release/test/glob2-unit-tests",
+        "--test-suite=ComputeExecutor",
+        "--test-case=resumable presentation yields without advancing or retaining canceled inputs",
+        "--duration=true",
+        "--no-breaks=true"
+      ],
+      "returncode": 0,
+      "elapsed_seconds": 0.0644902870990336,
+      "log": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/weighted-preparation-bare-diagnostic/isolated-2-18.log"
+    },
+    {
+      "repeat": 2,
+      "case": "worker only maintenance never uses the owner including creation failure",
+      "command": [
+        "taskset",
+        "-c",
+        "3,4,5,19,20,21",
+        "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/weighted-source/build/linux/client/release/test/glob2-unit-tests",
+        "--test-suite=ComputeExecutor",
+        "--test-case=worker only maintenance never uses the owner including creation failure",
+        "--duration=true",
+        "--no-breaks=true"
+      ],
+      "returncode": 0,
+      "elapsed_seconds": 0.11452113091945648,
+      "log": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/weighted-preparation-bare-diagnostic/isolated-2-19.log"
+    },
+    {
+      "repeat": 2,
+      "case": "worker only maintenance yields to required jobs and cannot delay their completed join",
+      "command": [
+        "taskset",
+        "-c",
+        "3,4,5,19,20,21",
+        "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/weighted-source/build/linux/client/release/test/glob2-unit-tests",
+        "--test-suite=ComputeExecutor",
+        "--test-case=worker only maintenance yields to required jobs and cannot delay their completed join",
+        "--duration=true",
+        "--no-breaks=true"
+      ],
+      "returncode": 0,
+      "elapsed_seconds": 0.06426870916038752,
+      "log": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/weighted-preparation-bare-diagnostic/isolated-2-20.log"
+    },
+    {
+      "repeat": 2,
+      "case": "suspended device work releases the only worker and preserves lane completion",
+      "command": [
+        "taskset",
+        "-c",
+        "3,4,5,19,20,21",
+        "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/weighted-source/build/linux/client/release/test/glob2-unit-tests",
+        "--test-suite=ComputeExecutor",
+        "--test-case=suspended device work releases the only worker and preserves lane completion",
+        "--duration=true",
+        "--no-breaks=true"
+      ],
+      "returncode": 0,
+      "elapsed_seconds": 0.06416362011805177,
+      "log": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/weighted-preparation-bare-diagnostic/isolated-2-21.log"
+    },
+    {
+      "repeat": 2,
+      "case": "early device failure resumes exactly once on the worker at its original lane position",
+      "command": [
+        "taskset",
+        "-c",
+        "3,4,5,19,20,21",
+        "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/weighted-source/build/linux/client/release/test/glob2-unit-tests",
+        "--test-suite=ComputeExecutor",
+        "--test-case=early device failure resumes exactly once on the worker at its original lane position",
+        "--duration=true",
+        "--no-breaks=true"
+      ],
+      "returncode": 0,
+      "elapsed_seconds": 0.0642017088830471,
+      "log": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/weighted-preparation-bare-diagnostic/isolated-2-22.log"
+    },
+    {
+      "repeat": 2,
+      "case": "early asynchronous completion cannot release an invoking callback's inputs",
+      "command": [
+        "taskset",
+        "-c",
+        "3,4,5,19,20,21",
+        "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/weighted-source/build/linux/client/release/test/glob2-unit-tests",
+        "--test-suite=ComputeExecutor",
+        "--test-case=early asynchronous completion cannot release an invoking callback's inputs",
+        "--duration=true",
+        "--no-breaks=true"
+      ],
+      "returncode": 0,
+      "elapsed_seconds": 0.06455703591927886,
+      "log": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/weighted-preparation-bare-diagnostic/isolated-2-23.log"
+    },
+    {
+      "repeat": 2,
+      "case": "continuation of a nonzero lane-group index keeps its original sequence",
+      "command": [
+        "taskset",
+        "-c",
+        "3,4,5,19,20,21",
+        "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/weighted-source/build/linux/client/release/test/glob2-unit-tests",
+        "--test-suite=ComputeExecutor",
+        "--test-case=continuation of a nonzero lane-group index keeps its original sequence",
+        "--duration=true",
+        "--no-breaks=true"
+      ],
+      "returncode": 0,
+      "elapsed_seconds": 0.06441489793360233,
+      "log": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/weighted-preparation-bare-diagnostic/isolated-2-24.log"
+    },
+    {
+      "repeat": 2,
+      "case": "retained completion tickets can be resolved after executor destruction",
+      "command": [
+        "taskset",
+        "-c",
+        "3,4,5,19,20,21",
+        "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/weighted-source/build/linux/client/release/test/glob2-unit-tests",
+        "--test-suite=ComputeExecutor",
+        "--test-case=retained completion tickets can be resolved after executor destruction",
+        "--duration=true",
+        "--no-breaks=true"
+      ],
+      "returncode": 0,
+      "elapsed_seconds": 0.06451481720432639,
+      "log": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/weighted-preparation-bare-diagnostic/isolated-2-25.log"
+    },
+    {
+      "repeat": 2,
+      "case": "graphics batches finish once, retain failures and release captures",
+      "command": [
+        "taskset",
+        "-c",
+        "3,4,5,19,20,21",
+        "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/weighted-source/build/linux/client/release/test/glob2-unit-tests",
+        "--test-suite=ComputeExecutor",
+        "--test-case=graphics batches finish once\\, retain failures and release captures",
+        "--duration=true",
+        "--no-breaks=true"
+      ],
+      "returncode": 0,
+      "elapsed_seconds": 0.11433707224205136,
+      "log": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/weighted-preparation-bare-diagnostic/isolated-2-26.log"
+    },
+    {
+      "repeat": 2,
+      "case": "serial graphics finish never pumps scene or required work and abandonment releases captures",
+      "command": [
+        "taskset",
+        "-c",
+        "3,4,5,19,20,21",
+        "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/weighted-source/build/linux/client/release/test/glob2-unit-tests",
+        "--test-suite=ComputeExecutor",
+        "--test-case=serial graphics finish never pumps scene or required work and abandonment releases captures",
+        "--duration=true",
+        "--no-breaks=true"
+      ],
+      "returncode": 0,
+      "elapsed_seconds": 0.03216593386605382,
+      "log": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/weighted-preparation-bare-diagnostic/isolated-2-27.log"
+    },
+    {
+      "repeat": 2,
+      "case": "graphics cancellation drains claimed work and reconfiguration releases inputs",
+      "command": [
+        "taskset",
+        "-c",
+        "3,4,5,19,20,21",
+        "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/weighted-source/build/linux/client/release/test/glob2-unit-tests",
+        "--test-suite=ComputeExecutor",
+        "--test-case=graphics cancellation drains claimed work and reconfiguration releases inputs",
+        "--duration=true",
+        "--no-breaks=true"
+      ],
+      "returncode": 0,
+      "elapsed_seconds": 0.06426479807123542,
+      "log": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/weighted-preparation-bare-diagnostic/isolated-2-28.log"
+    },
+    {
+      "repeat": 2,
+      "case": "both presentation classes progress during required lane backlog",
+      "command": [
+        "taskset",
+        "-c",
+        "3,4,5,19,20,21",
+        "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/weighted-source/build/linux/client/release/test/glob2-unit-tests",
+        "--test-suite=ComputeExecutor",
+        "--test-case=both presentation classes progress during required lane backlog",
+        "--duration=true",
+        "--no-breaks=true"
+      ],
+      "returncode": 0,
+      "elapsed_seconds": 0.06418620888143778,
+      "log": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/weighted-preparation-bare-diagnostic/isolated-2-29.log"
+    },
+    {
+      "repeat": 2,
+      "case": "graphics callback barriers are rejected and completed tickets do not pump newer work",
+      "command": [
+        "taskset",
+        "-c",
+        "3,4,5,19,20,21",
+        "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/weighted-source/build/linux/client/release/test/glob2-unit-tests",
+        "--test-suite=ComputeExecutor",
+        "--test-case=graphics callback barriers are rejected and completed tickets do not pump newer work",
+        "--duration=true",
+        "--no-breaks=true"
+      ],
+      "returncode": 0,
+      "elapsed_seconds": 0.032206203788518906,
+      "log": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/weighted-preparation-bare-diagnostic/isolated-2-30.log"
+    },
+    {
+      "repeat": 2,
+      "case": "empty graphics submissions bypass occupied admission and concurrency metrics respect ceilings",
+      "command": [
+        "taskset",
+        "-c",
+        "3,4,5,19,20,21",
+        "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/weighted-source/build/linux/client/release/test/glob2-unit-tests",
+        "--test-suite=ComputeExecutor",
+        "--test-case=empty graphics submissions bypass occupied admission and concurrency metrics respect ceilings",
+        "--duration=true",
+        "--no-breaks=true"
+      ],
+      "returncode": 0,
+      "elapsed_seconds": 0.06415236974135041,
+      "log": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/weighted-preparation-bare-diagnostic/isolated-2-31.log"
+    },
+    {
+      "repeat": 2,
+      "case": "graphics capture destruction can inspect scheduler metrics before completion",
+      "command": [
+        "taskset",
+        "-c",
+        "3,4,5,19,20,21",
+        "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/weighted-source/build/linux/client/release/test/glob2-unit-tests",
+        "--test-suite=ComputeExecutor",
+        "--test-case=graphics capture destruction can inspect scheduler metrics before completion",
+        "--duration=true",
+        "--no-breaks=true"
+      ],
+      "returncode": 0,
+      "elapsed_seconds": 0.06431970791891217,
+      "log": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/weighted-preparation-bare-diagnostic/isolated-2-32.log"
+    },
+    {
+      "repeat": 2,
+      "case": "disabled diagnostics do not read the injected clock or collect counters",
+      "command": [
+        "taskset",
+        "-c",
+        "3,4,5,19,20,21",
+        "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/weighted-source/build/linux/client/release/test/glob2-unit-tests",
+        "--test-suite=ComputeExecutor",
+        "--test-case=disabled diagnostics do not read the injected clock or collect counters",
+        "--duration=true",
+        "--no-breaks=true"
+      ],
+      "returncode": 0,
+      "elapsed_seconds": 0.016021711751818657,
+      "log": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/weighted-preparation-bare-diagnostic/isolated-2-33.log"
+    },
+    {
+      "repeat": 2,
+      "case": "owner execution, stale handles, reuse and lifecycle attribution use one locked inspection",
+      "command": [
+        "taskset",
+        "-c",
+        "3,4,5,19,20,21",
+        "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/weighted-source/build/linux/client/release/test/glob2-unit-tests",
+        "--test-suite=ComputeExecutor",
+        "--test-case=owner execution\\, stale handles\\, reuse and lifecycle attribution use one locked inspection",
+        "--duration=true",
+        "--no-breaks=true"
+      ],
+      "returncode": 0,
+      "elapsed_seconds": 0.01606370322406292,
+      "log": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/weighted-preparation-bare-diagnostic/isolated-2-34.log"
+    },
+    {
+      "repeat": 2,
+      "case": "worker waits aggregate distinct ticks globally and per producer without worker timing",
+      "command": [
+        "taskset",
+        "-c",
+        "3,4,5,19,20,21",
+        "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/weighted-source/build/linux/client/release/test/glob2-unit-tests",
+        "--test-suite=ComputeExecutor",
+        "--test-case=worker waits aggregate distinct ticks globally and per producer without worker timing",
+        "--duration=true",
+        "--no-breaks=true"
+      ],
+      "returncode": 0,
+      "elapsed_seconds": 0.015995542984455824,
+      "log": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/weighted-preparation-bare-diagnostic/isolated-2-35.log"
+    },
+    {
+      "repeat": 2,
+      "case": "complete joins and trace overflow remain valid and snapshots require drain",
+      "command": [
+        "taskset",
+        "-c",
+        "3,4,5,19,20,21",
+        "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/weighted-source/build/linux/client/release/test/glob2-unit-tests",
+        "--test-suite=ComputeExecutor",
+        "--test-case=complete joins and trace overflow remain valid and snapshots require drain",
+        "--duration=true",
+        "--no-breaks=true"
+      ],
+      "returncode": 0,
+      "elapsed_seconds": 0.016292680986225605,
+      "log": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/weighted-preparation-bare-diagnostic/isolated-2-36.log"
+    },
+    {
+      "repeat": 2,
+      "case": "trace preserves early external resolution and continuation callback ordering",
+      "command": [
+        "taskset",
+        "-c",
+        "3,4,5,19,20,21",
+        "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/weighted-source/build/linux/client/release/test/glob2-unit-tests",
+        "--test-suite=ComputeExecutor",
+        "--test-case=trace preserves early external resolution and continuation callback ordering",
+        "--duration=true",
+        "--no-breaks=true"
+      ],
+      "returncode": 0,
+      "elapsed_seconds": 0.06438479665666819,
+      "log": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/weighted-preparation-bare-diagnostic/isolated-2-37.log"
+    },
+    {
+      "repeat": 2,
+      "case": "trace storage allocation failure downgrades without losing required work",
+      "command": [
+        "taskset",
+        "-c",
+        "3,4,5,19,20,21",
+        "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/weighted-source/build/linux/client/release/test/glob2-unit-tests",
+        "--test-suite=ComputeExecutor",
+        "--test-case=trace storage allocation failure downgrades without losing required work",
+        "--duration=true",
+        "--no-breaks=true"
+      ],
+      "returncode": 0,
+      "elapsed_seconds": 0.01633510086685419,
+      "log": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/weighted-preparation-bare-diagnostic/isolated-2-38.log"
+    },
+    {
+      "repeat": 2,
+      "case": "blocking fork join failures and presentation remain traced without entering tick waits",
+      "command": [
+        "taskset",
+        "-c",
+        "3,4,5,19,20,21",
+        "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/weighted-source/build/linux/client/release/test/glob2-unit-tests",
+        "--test-suite=ComputeExecutor",
+        "--test-case=blocking fork join failures and presentation remain traced without entering tick waits",
+        "--duration=true",
+        "--no-breaks=true"
+      ],
+      "returncode": 0,
+      "elapsed_seconds": 0.0643063778989017,
+      "log": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/weighted-preparation-bare-diagnostic/isolated-2-39.log"
+    },
+    {
+      "repeat": 2,
+      "case": "graphics diagnostics are optional and waits mode attributes the owner barrier",
+      "command": [
+        "taskset",
+        "-c",
+        "3,4,5,19,20,21",
+        "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/weighted-source/build/linux/client/release/test/glob2-unit-tests",
+        "--test-suite=ComputeExecutor",
+        "--test-case=graphics diagnostics are optional and waits mode attributes the owner barrier",
+        "--duration=true",
+        "--no-breaks=true"
+      ],
+      "returncode": 0,
+      "elapsed_seconds": 0.06426147883757949,
+      "log": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/weighted-preparation-bare-diagnostic/isolated-2-40.log"
+    },
+    {
+      "repeat": 2,
+      "case": "yielded presentation chunks keep callback indices paired",
+      "command": [
+        "taskset",
+        "-c",
+        "3,4,5,19,20,21",
+        "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/weighted-source/build/linux/client/release/test/glob2-unit-tests",
+        "--test-suite=ComputeExecutor",
+        "--test-case=yielded presentation chunks keep callback indices paired",
+        "--duration=true",
+        "--no-breaks=true"
+      ],
+      "returncode": 0,
+      "elapsed_seconds": 0.06416969886049628,
+      "log": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/weighted-preparation-bare-diagnostic/isolated-2-41.log"
+    },
+    {
+      "repeat": 2,
+      "case": "worker-only maintenance is traced as other work without a required join",
+      "command": [
+        "taskset",
+        "-c",
+        "3,4,5,19,20,21",
+        "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/weighted-source/build/linux/client/release/test/glob2-unit-tests",
+        "--test-suite=ComputeExecutor",
+        "--test-case=worker-only maintenance is traced as other work without a required join",
+        "--duration=true",
+        "--no-breaks=true"
+      ],
+      "returncode": 0,
+      "elapsed_seconds": 0.06422084895893931,
+      "log": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/weighted-preparation-bare-diagnostic/isolated-2-42.log"
+    },
+    {
+      "repeat": 2,
+      "case": "session reset suppresses a returning maintenance interval from the previous epoch",
+      "command": [
+        "taskset",
+        "-c",
+        "3,4,5,19,20,21",
+        "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/weighted-source/build/linux/client/release/test/glob2-unit-tests",
+        "--test-suite=ComputeExecutor",
+        "--test-case=session reset suppresses a returning maintenance interval from the previous epoch",
+        "--duration=true",
+        "--no-breaks=true"
+      ],
+      "returncode": 0,
+      "elapsed_seconds": 0.06415653880685568,
+      "log": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/weighted-preparation-bare-diagnostic/isolated-2-43.log"
+    },
+    {
+      "repeat": 2,
+      "case": "synchronous graphics adapter keeps empty calls idle and guards owner callbacks",
+      "command": [
+        "taskset",
+        "-c",
+        "3,4,5,19,20,21",
+        "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/weighted-source/build/linux/client/release/test/glob2-unit-tests",
+        "--test-suite=ComputeExecutor",
+        "--test-case=synchronous graphics adapter keeps empty calls idle and guards owner callbacks",
+        "--duration=true",
+        "--no-breaks=true"
+      ],
+      "returncode": 0,
+      "elapsed_seconds": 0.06429621810093522,
+      "log": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/weighted-preparation-bare-diagnostic/isolated-2-44.log"
+    },
+    {
+      "repeat": 2,
+      "case": "graphics adapter restores callback state on failure and never pumps other work",
+      "command": [
+        "taskset",
+        "-c",
+        "3,4,5,19,20,21",
+        "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/weighted-source/build/linux/client/release/test/glob2-unit-tests",
+        "--test-suite=ComputeExecutor",
+        "--test-case=graphics adapter restores callback state on failure and never pumps other work",
+        "--duration=true",
+        "--no-breaks=true"
+      ],
+      "returncode": 0,
+      "elapsed_seconds": 0.06420677900314331,
+      "log": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/weighted-preparation-bare-diagnostic/isolated-2-45.log"
+    },
+    {
+      "repeat": 2,
+      "case": "synchronous graphics cancellation rejects incomplete output after draining",
+      "command": [
+        "taskset",
+        "-c",
+        "3,4,5,19,20,21",
+        "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/weighted-source/build/linux/client/release/test/glob2-unit-tests",
+        "--test-suite=ComputeExecutor",
+        "--test-case=synchronous graphics cancellation rejects incomplete output after draining",
+        "--duration=true",
+        "--no-breaks=true"
+      ],
+      "returncode": 0,
+      "elapsed_seconds": 0.06451873667538166,
+      "log": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/weighted-preparation-bare-diagnostic/isolated-2-46.log"
+    },
+    {
+      "repeat": 2,
+      "case": "graphics adapter preserves occupied admission and serial finish shares the scene cap",
+      "command": [
+        "taskset",
+        "-c",
+        "3,4,5,19,20,21",
+        "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/weighted-source/build/linux/client/release/test/glob2-unit-tests",
+        "--test-suite=ComputeExecutor",
+        "--test-case=graphics adapter preserves occupied admission and serial finish shares the scene cap",
+        "--duration=true",
+        "--no-breaks=true"
+      ],
+      "returncode": 0,
+      "elapsed_seconds": 0.06451115710660815,
+      "log": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/weighted-preparation-bare-diagnostic/isolated-2-47.log"
+    },
+    {
+      "repeat": 2,
+      "case": "canceling a slot-blocked graphics batch wakes its owner before scene completion",
+      "command": [
+        "taskset",
+        "-c",
+        "3,4,5,19,20,21",
+        "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/weighted-source/build/linux/client/release/test/glob2-unit-tests",
+        "--test-suite=ComputeExecutor",
+        "--test-case=canceling a slot-blocked graphics batch wakes its owner before scene completion",
+        "--duration=true",
+        "--no-breaks=true"
+      ],
+      "returncode": 0,
+      "elapsed_seconds": 0.06431053811684251,
+      "log": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/weighted-preparation-bare-diagnostic/isolated-2-48.log"
+    },
+    {
+      "repeat": 2,
+      "case": "sharded queues preserve lane order across repeated groups exceptions and slot reuse",
+      "command": [
+        "taskset",
+        "-c",
+        "3,4,5,19,20,21",
+        "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/weighted-source/build/linux/client/release/test/glob2-unit-tests",
+        "--test-suite=ComputeExecutor",
+        "--test-case=sharded queues preserve lane order across repeated groups exceptions and slot reuse",
+        "--duration=true",
+        "--no-breaks=true"
+      ],
+      "returncode": 0,
+      "elapsed_seconds": 0.16459273500368,
+      "log": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/weighted-preparation-bare-diagnostic/isolated-2-49.log"
+    },
+    {
+      "repeat": 2,
+      "case": "sharded ordinary callbacks can inspect metrics without scheduler lock ownership",
+      "command": [
+        "taskset",
+        "-c",
+        "3,4,5,19,20,21",
+        "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/weighted-source/build/linux/client/release/test/glob2-unit-tests",
+        "--test-suite=ComputeExecutor",
+        "--test-case=sharded ordinary callbacks can inspect metrics without scheduler lock ownership",
+        "--duration=true",
+        "--no-breaks=true"
+      ],
+      "returncode": 0,
+      "elapsed_seconds": 0.016218521632254124,
+      "log": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/weighted-preparation-bare-diagnostic/isolated-2-50.log"
+    },
+    {
+      "repeat": 2,
+      "case": "idle steal peer consumes ready work assigned behind a busy worker",
+      "command": [
+        "taskset",
+        "-c",
+        "3,4,5,19,20,21",
+        "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/weighted-source/build/linux/client/release/test/glob2-unit-tests",
+        "--test-suite=ComputeExecutor",
+        "--test-case=idle steal peer consumes ready work assigned behind a busy worker",
+        "--duration=true",
+        "--no-breaks=true"
+      ],
+      "returncode": 0,
+      "elapsed_seconds": 0.016123241744935513,
+      "log": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/weighted-preparation-bare-diagnostic/isolated-2-51.log"
+    },
+    {
+      "repeat": 2,
+      "case": "required queue already populated at optional entry is rescued by spare worker",
+      "command": [
+        "taskset",
+        "-c",
+        "3,4,5,19,20,21",
+        "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/weighted-source/build/linux/client/release/test/glob2-unit-tests",
+        "--test-suite=ComputeExecutor",
+        "--test-case=required queue already populated at optional entry is rescued by spare worker",
+        "--duration=true",
+        "--no-breaks=true"
+      ],
+      "returncode": 0,
+      "elapsed_seconds": 0.016134252306073904,
+      "log": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/weighted-preparation-bare-diagnostic/isolated-2-52.log"
+    },
+    {
+      "repeat": 2,
+      "case": "steady sharded deferred dispatch inspects shared control periodically",
+      "command": [
+        "taskset",
+        "-c",
+        "3,4,5,19,20,21",
+        "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/weighted-source/build/linux/client/release/test/glob2-unit-tests",
+        "--test-suite=ComputeExecutor",
+        "--test-case=steady sharded deferred dispatch inspects shared control periodically",
+        "--duration=true",
+        "--no-breaks=true"
+      ],
+      "returncode": 0,
+      "elapsed_seconds": 0.06425397889688611,
+      "log": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/weighted-preparation-bare-diagnostic/isolated-2-53.log"
+    },
+    {
+      "repeat": 2,
+      "case": "lane affine dispatch retains a controller lane on one worker",
+      "command": [
+        "taskset",
+        "-c",
+        "3,4,5,19,20,21",
+        "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/weighted-source/build/linux/client/release/test/glob2-unit-tests",
+        "--test-suite=ComputeExecutor",
+        "--test-case=lane affine dispatch retains a controller lane on one worker",
+        "--duration=true",
+        "--no-breaks=true"
+      ],
+      "returncode": 0,
+      "elapsed_seconds": 0.016054062638431787,
+      "log": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/weighted-preparation-bare-diagnostic/isolated-2-54.log"
+    },
+    {
+      "repeat": 2,
+      "case": "batch local terminal fan in survives immediate slot and result storage reuse",
+      "command": [
+        "taskset",
+        "-c",
+        "3,4,5,19,20,21",
+        "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/weighted-source/build/linux/client/release/test/glob2-unit-tests",
+        "--test-suite=ComputeExecutor",
+        "--test-case=batch local terminal fan in survives immediate slot and result storage reuse",
+        "--duration=true",
+        "--no-breaks=true"
+      ],
+      "returncode": 0,
+      "elapsed_seconds": 0.11432925285771489,
+      "log": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/weighted-preparation-bare-diagnostic/isolated-2-55.log"
+    },
+    {
+      "repeat": 2,
+      "case": "retired batch storage cannot remain in another batch lane chain",
+      "command": [
+        "taskset",
+        "-c",
+        "3,4,5,19,20,21",
+        "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/weighted-source/build/linux/client/release/test/glob2-unit-tests",
+        "--test-suite=ComputeExecutor",
+        "--test-case=retired batch storage cannot remain in another batch lane chain",
+        "--duration=true",
+        "--no-breaks=true"
+      ],
+      "returncode": 0,
+      "elapsed_seconds": 0.016140172258019447,
+      "log": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/weighted-preparation-bare-diagnostic/isolated-2-56.log"
+    },
+    {
+      "repeat": 2,
+      "case": "concurrent batch local failures publish one error before finished",
+      "command": [
+        "taskset",
+        "-c",
+        "3,4,5,19,20,21",
+        "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/weighted-source/build/linux/client/release/test/glob2-unit-tests",
+        "--test-suite=ComputeExecutor",
+        "--test-case=concurrent batch local failures publish one error before finished",
+        "--duration=true",
+        "--no-breaks=true"
+      ],
+      "returncode": 0,
+      "elapsed_seconds": 0.016364210285246372,
+      "log": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/weighted-preparation-bare-diagnostic/isolated-2-57.log"
+    },
+    {
+      "repeat": 2,
+      "case": "weighted cost classes cold reset and reservation transfer debit",
+      "command": [
+        "taskset",
+        "-c",
+        "3,4,5,19,20,21",
+        "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/weighted-source/build/linux/client/release/test/glob2-unit-tests",
+        "--test-suite=ComputeExecutor",
+        "--test-case=weighted cost classes cold reset and reservation transfer debit",
+        "--duration=true",
+        "--no-breaks=true"
+      ],
+      "returncode": 0,
+      "elapsed_seconds": 0.016146241687238216,
+      "log": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/weighted-preparation-bare-diagnostic/isolated-2-58.log"
+    },
+    {
+      "repeat": 2,
+      "case": "weighted reservations include active callbacks until their CPU slice returns",
+      "command": [
+        "taskset",
+        "-c",
+        "3,4,5,19,20,21",
+        "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/weighted-source/build/linux/client/release/test/glob2-unit-tests",
+        "--test-suite=ComputeExecutor",
+        "--test-case=weighted reservations include active callbacks until their CPU slice returns",
+        "--duration=true",
+        "--no-breaks=true"
+      ],
+      "returncode": 0,
+      "elapsed_seconds": 0.01631684973835945,
+      "log": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/weighted-preparation-bare-diagnostic/isolated-2-59.log"
+    }
+  ]
+}

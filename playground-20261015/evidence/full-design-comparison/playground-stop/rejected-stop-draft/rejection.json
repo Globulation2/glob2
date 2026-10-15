@@ -1,0 +1,6 @@
+{
+  "state": "rejected_not_launched",
+  "reason": "SIGSTOP can land after wait4 WNOHANG returns0 before stopflag check; pendingTERM could bypass finalreceipt. Exclusive output sentinel avoids processsignals, childlifetime and wallpoll bias.",
+  "replacement": "Root-created regularfile campaign/serial/Oazis blocks firstOA target.mkdir beforePopen. Readonly watcher validates completion.",
+  "signals_sent": false
+}

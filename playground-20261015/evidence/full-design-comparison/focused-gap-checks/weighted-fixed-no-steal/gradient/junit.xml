@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuites>
+  <testsuite name="/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/weighted-source/build/linux/client/release/test/glob2-unit-tests" errors="0" failures="0" tests="211456" time="3.11304" timestamp="2026-10-15T13:08:41Z" doctest_version="2.4.11">
+    <testcase classname="src/map/gradient/GradientPipelineHarness.cpp" name="fixed publication; supersession; bounded buffers; scheduling stress; fallback; exceptions and teardown" time="1.60187" status="run"/>
+    <testcase classname="src/map/gradient/GradientPipelineHarness.cpp" name="reservation is invalidatable before preparation and seed failures cannot strand it" time="0.014237" status="run"/>
+    <testcase classname="src/map/gradient/GradientPipelineHarness.cpp" name="projected terrain leases end at completion including failed work" time="0.020127" status="run"/>
+    <testcase classname="src/map/gradient/GradientPipelineHarness.cpp" name="gradient, building and AI batches share the maximum deferred horizon" time="0.004747" status="run"/>
+    <testcase classname="src/map/gradient/GradientPipelineHarness.cpp" name="building pipeline admits several jobs per tick, publishes in reservation order at fixed deadlines, supersedes, survives slow and failing workers" time="1.21983" status="run"/>
+    <testcase classname="src/map/gradient/GradientPipelineHarness.cpp" name="building pipeline pending results survive a save-style round trip" time="0.00155" status="run"/>
+    <testcase classname="src/map/gradient/GradientPipelineHarness.cpp" name="serial preparation computes at join and errors surface at the deadline" time="0.006417" status="run"/>
+    <testcase classname="src/map/gradient/GradientPipelineHarness.cpp" name="shared preparation executes off the owner and retains its deadline" time="0.000225" status="run"/>
+    <testcase classname="src/map/gradient/GradientPipelineHarness.cpp" name="backend selection survives worker scratch resizing" time="0.0317" status="run"/>
+    <testcase classname="src/map/gradient/GradientPipelineHarness.cpp" name="owned GPU service initializes with two slots and leaves the sole worker free until fixed publication" time="0.007347" status="run"/>
+    <testcase classname="src/map/gradient/GradientPipelineHarness.cpp" name="GPU decline recovers original seeds exactly once on a worker and retains inputs until recovery" time="0.013798" status="run"/>
+    <testcase classname="src/map/gradient/GradientPipelineHarness.cpp" name="one-slot device configuration creates no driver activity" time="0" status="run"/>
+    <testcase classname="src/map/gradient/GradientPipelineHarness.cpp" name="explicit CPU jobs bypass device ownership and retain publication deadlines" time="0.02189" status="run"/>
+    <testcase classname="src/map/gradient/GradientPipelineHarness.cpp" name="availability changes during seeding do not reinterpret captured CPU execution" time="0.007538" status="run"/>
+    <testcase classname="src/map/gradient/GradientPipelineHarness.cpp" name="nullable GPU preparation recovers once on the original worker without device reentry" time="0.036191" status="run"/>
+    <testcase classname="src/map/gradient/GradientPipelineHarness.cpp" name="device registration stop and reconfigure never join a slow background initializer" time="0.000143" status="run"/>
+    <testcase classname="src/map/gradient/GradientPipelineHarness.cpp" name="application shutdown joins background initialization and later registrations restart" time="0.10041" status="run"/>
+    <testcase classname="src/map/gradient/GradientPipelineHarness.cpp" name="two device registrations share exactly one process coordinator" time="0" status="run"/>
+    <testcase classname="src/map/gradient/GradientPipelineHarness.cpp" name="pending required GPU work cancels at publication and drains through one worker recovery" time="0.024141" status="run"/>
+    <testcase classname="src/map/gradient/GradientPipelineHarness.cpp" name="device adapters retain committed fields when another ready field declines" time="0.000465" status="run"/>
+    <testcase classname="src/map/gradient/GradientPipelineHarness.cpp" name="bounded required device queue recovers excess fields exactly once" time="0.0003" status="run"/>
+    <testcase classname="src/map/gradient/GradientPipelineHarness.cpp" name="malformed captured configurations decline and recover once" time="0.000114" status="run"/>
+  </testsuite>
+</testsuites>

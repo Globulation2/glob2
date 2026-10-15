@@ -1,0 +1,33 @@
+{
+  "case": "continuation-Oazis-n4",
+  "role": "first-steal",
+  "initialChecksum": 2377477703,
+  "finalChecksum": 2153299056,
+  "checksums": {
+    "GCS1": "152cdd6e07b884390d2d640401c0da281ddb2fea395e15d45bec51b5a25a2ecd",
+    "native": "eb780c10a36bf2872e8f42d7c39cce5b891f50b68108ba06b5f75fd99ce45dbf"
+  },
+  "sidecar_details": {
+    "GCS1": {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/qualification/first-steal/parity/continuation-Oazis-n4/native/game.replay.checksums",
+      "rows": 512,
+      "first_tick": 60000,
+      "last_tick": 60511,
+      "teams": 11,
+      "players": 11,
+      "bytes": 44948350
+    },
+    "native": {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/qualification/first-steal/parity/continuation-Oazis-n4/native/world.checksums",
+      "rows": 512,
+      "first_tick": 60000,
+      "last_tick": 60511,
+      "bytes": 8558
+    }
+  },
+  "command_receipt": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/qualification/first-steal/parity/continuation-Oazis-n4/command.json",
+  "result_sha256": "f3aff272b7c3c543121f7073dbe6a83b73482a24c69666283e16ca66fc8d4be7",
+  "binary_sha256": "dee303f16c67f787651f14a601d73d23657dbb7a3b638f91b46952372fa76103",
+  "requested_opencl": false,
+  "correctness_only": true
+}

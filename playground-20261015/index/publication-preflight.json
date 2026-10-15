@@ -1,0 +1,13 @@
+{
+  "state": "publication_tree_verified_ready_for_git",
+  "utc": "2026-10-15T18:13:34.216073+00:00",
+  "branch": "evidence/executor-playground-20261015",
+  "preserved_parent_commit": "c9efaa240e78045b4bab705a25080110aae50339",
+  "selected_files": 3558,
+  "selected_bytes": 38725708,
+  "manifest_sha256": "26ff06ba42a8191c3540ac4ddbaa4499f22b1ef05f3a1d439fd8e6ade7dffedd",
+  "credential_pattern_matches": [],
+  "all448games_winners": true,
+  "no_oazis_or_waves": true,
+  "summary_and_plot_extras": 6
+}

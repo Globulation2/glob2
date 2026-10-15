@@ -1,0 +1,13 @@
+{
+  "state": "plot_of_existing_independent_audit_no_experiments",
+  "source_sha256": "75dc546a7505393b5a5cc1242a9459871ae8d5ff82b75111f8a6148fd2a517dd",
+  "audit_sha256": "8f67c6977a253d8a91e1021e07e97c7c3e367c5f54f39dc9ef12d612d3541b74",
+  "runs": 448,
+  "paired_seeds": 32,
+  "bootstrap": "10000 paired-seed draws random.Random(20261015), ratio cohort sums/means, linear quantiles. Sensitivity calculation differs canonical seed605441/floorquantiles; all32independent seeds, no repeats.",
+  "outputs": {
+    "versus-bounded-wakeups.png": "4014a5c46fa813c24768102f9aa7ed1934293524c311e674159068f1b794459d",
+    "versus-bounded-wakeups.svg": "26dfeb01bf35d4ef2b4118f9441ef4aa89f77e69ae478fbcff789944d7e34679"
+  },
+  "limits": "One host/Playground/CPU/auto32. Exploratory intervals; no multiplicity adjustment. Outcome agreement is not whole-game checksum proof."
+}

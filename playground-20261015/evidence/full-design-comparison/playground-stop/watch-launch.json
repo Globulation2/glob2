@@ -1,0 +1,8 @@
+{
+  "pid": 531772,
+  "starttime": "334852262",
+  "utc": "2026-10-15T16:21:58.499070+00:00",
+  "source_sha256": "de25f6eb4880f05b76680bc62a23da52adbdf19bc290eab94fe9042695700cdd",
+  "root_gate_sha256": "2443d36b91ca4b119c147cf2a77586d0246a38778c256b788216d121f7809147",
+  "role": "Read-onlywaitfor448PGandretirement; sentinelalreadyblocksOazis"
+}

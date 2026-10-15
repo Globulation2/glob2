@@ -1,0 +1,39 @@
+{
+  "state": "preparing_full_design_campaign",
+  "utc": "2026-10-15T11:30:53.660219+00:00",
+  "user_request": "Full side-by-side whole-game measurements for alternative executor designs, including CPU and game completion time.",
+  "base_revision": "054804590ee1dd109f09642fc05654c324f08344",
+  "seeds_per_map": 32,
+  "maps": {
+    "Playground": {
+      "size": [
+        128,
+        128
+      ],
+      "nicowars": 8
+    },
+    "Oazis": {
+      "size": [
+        256,
+        256
+      ],
+      "nicowars": 11
+    }
+  },
+  "cap_seconds": 3600,
+  "regimes": [
+    "serial_unrestricted_auto32",
+    "four_concurrent_sixparticipants_threephysical_sixSMT"
+  ],
+  "timing_rules": [
+    "Compile and qualify all binaries before timing begins",
+    "Balanced multi-role ordering; fresh baseline and wake controls in same campaign",
+    "No profiling telemetry in ordinary timing",
+    "Exact per-tick parity plus focused lifecycle/context tests before admitting a design",
+    "Retain failed qualifications and capped runs explicitly",
+    "Freeze maps seeds source binary flags affinity and policies; preserve historical data"
+  ],
+  "old_expanded_campaign": "complete608",
+  "production_PR": "https://github.com/Globulation2/glob2/pull/1185",
+  "PR_status": "Retain existing implementation; no new alternative accepted until full comparison."
+}

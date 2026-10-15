@@ -1,0 +1,26 @@
+{
+  "state": "prepared_readonly_not_launched_pending_review",
+  "source": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/playground-stop/watch.py",
+  "source_sha256": "de25f6eb4880f05b76680bc62a23da52adbdf19bc290eab94fe9042695700cdd",
+  "runner_sha256": "470086d1a9590df0dd3990b14e53c7480d5a700335f56dac58f0df51b6c02784",
+  "plan_sha256": "7ba521d13781a75a1c04bec826dca5f8b6ec40f9c72f916ff48046d0b43eb077",
+  "runner": {
+    "pid": 460600,
+    "starttime": "334012252"
+  },
+  "controller": {
+    "pid": 460595,
+    "starttime": "334012174"
+  },
+  "command": [
+    "python3",
+    "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/playground-stop/watch.py"
+  ],
+  "approval_schema": "root-approved.json approved/source_sha256/review_sha256/runner_sha256/plan_sha256/runner/controller /sentinel_receipt_sha256/sentinel_sha256",
+  "sentinel_receipt": "Exact rootinstalled receipt/body bound via approval sentinel_receipt_sha256/sentinel_sha256; body administrative_stop_requested_before_oazis/not_game_data:true",
+  "proof": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/playground-stop/complete.json",
+  "scope": "Only448Playground. Rootinstalled regular Oazis outputfile prevents firstOA mkdir beforePopen. No signals or suspension; originalcap unchanged, noextra e2eoverhead. Readonly watcher waitsbothretired and hashes exactreceipt/wave/pairroster. Analysis separately reparses all outcomes and metrics.",
+  "rejected_draft": "rejected-stop-draft/rejection.json",
+  "sentinel_sha256": "e5cf8ea285763f773a61b68f5d121ac2c5bf90785bb4514be39c3b2eb2b5dfb9",
+  "sentinel_receipt_sha256": "7fdc351d25b6545f8416701f04122d0a0d652e27188e866a59585caea5e121ac"
+}

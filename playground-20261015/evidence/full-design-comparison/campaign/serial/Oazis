@@ -1,0 +1,7 @@
+{
+  "state": "administrative_stop_requested_before_oazis",
+  "user_request": "Complete Playground32seeds acrossall14designs, thenstop,reportresultsandawaitdecision.",
+  "utc": "2026-10-15T16:20:07.797511+00:00",
+  "purpose": "Regular output-path sentinel makes the existing Oazis target.mkdir fail before native launch. Frozen source/plan/commands remain unchanged.",
+  "not_game_data": true
+}

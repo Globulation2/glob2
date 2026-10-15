@@ -1,0 +1,33 @@
+{
+  "case": "parity-Oazis-n4-cpu-nicowar",
+  "role": "local-priority-steal",
+  "initialChecksum": 3148121990,
+  "finalChecksum": 3731272377,
+  "checksums": {
+    "GCS1": "c72e761fa230293a02b03c18871de77954c92543e4eb326ca26fa189ce063329",
+    "native": "c3531d5ab6da2452b9d6b87d0e028c8190bd5af54460d5b9308b6eb003af6525"
+  },
+  "sidecar_details": {
+    "GCS1": {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/qualification/local-priority-steal/parity/parity-Oazis-n4-cpu-nicowar/native/game.replay.checksums",
+      "rows": 4096,
+      "first_tick": 0,
+      "last_tick": 4095,
+      "teams": 11,
+      "players": 11,
+      "bytes": 56233196
+    },
+    "native": {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/qualification/local-priority-steal/parity/parity-Oazis-n4-cpu-nicowar/native/world.checksums",
+      "rows": 4096,
+      "first_tick": 0,
+      "last_tick": 4095,
+      "bytes": 63387
+    }
+  },
+  "command_receipt": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/qualification/local-priority-steal/parity/parity-Oazis-n4-cpu-nicowar/command.json",
+  "result_sha256": "a07d4e752bae1a0d51472ae6614e92aa9255f5823170ffcf47d5b7cc8e75bcdb",
+  "binary_sha256": "1e50e84add3885c2c58d96a4fa702928a421144137bdb8b7ae66cdce5ffdbdd8",
+  "requested_opencl": false,
+  "correctness_only": true
+}

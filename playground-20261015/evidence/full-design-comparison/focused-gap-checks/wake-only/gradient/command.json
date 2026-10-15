@@ -1,0 +1,28 @@
+{
+  "state": "passed",
+  "command": [
+    "taskset",
+    "-c",
+    "2,3,18,19",
+    "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/confirmation/latest-wake/wake-only/build/linux/client/release/test/glob2-unit-tests",
+    "--no-breaks=true",
+    "--test-suite=GradientPipeline",
+    "--reporters=junit",
+    "--out=/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/focused-gap-checks/wake-only/gradient/junit.xml"
+  ],
+  "cwd": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/confirmation/latest-wake/wake-only",
+  "env": {
+    "SDL_VIDEODRIVER": "dummy",
+    "SDL_AUDIODRIVER": "dummy",
+    "GLOB2_ASSET_DIR": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/confirmation/latest-wake/wake-only",
+    "GLOB2_USER_DIR": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/focused-gap-checks/wake-only/gradient/profile",
+    "GLOB2_USER_DATA_DIR": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/focused-gap-checks/wake-only/gradient/profile"
+  },
+  "unit_sha256_before": "14c6d991f4950ed42e599acba57cf9d2910b99bdc359ceb759ac9d4660745f68",
+  "unit_sha256_after": "14c6d991f4950ed42e599acba57cf9d2910b99bdc359ceb759ac9d4660745f68",
+  "build_expected_unit_sha256": "existingbaseline/wake currenthashbound",
+  "returncode": 0,
+  "elapsed_seconds": 4.160780438221991,
+  "stdout_sha256": "2eb641dda2441920292149e7da4bf03dfc63feccb0f92d3861b7e41d9b9d0a49",
+  "mask": "2,3,18,19"
+}

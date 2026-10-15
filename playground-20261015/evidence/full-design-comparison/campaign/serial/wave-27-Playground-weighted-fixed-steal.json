@@ -1,0 +1,18 @@
+{
+  "map": "Playground",
+  "role": "weighted-fixed-steal",
+  "wave": 27,
+  "seed_indices": [
+    27
+  ],
+  "started_monotonic": 3352644.70811272,
+  "finished_monotonic": 3352674.983727333,
+  "makespan_seconds": 30.27561461320147,
+  "winners": 1,
+  "caps": 0,
+  "games_per_hour": 118.90757779794981,
+  "observed_ticks_per_second": 1618.2660740646536,
+  "complete_tick_coverage": true,
+  "sum_game_seconds": 30.184164769016206,
+  "scope": "Actual homogeneous wave makespan including launches/waits, not sum of parallel game runtimes."
+}

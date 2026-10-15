@@ -1,0 +1,59 @@
+{
+  "state": "light_actual_schema_preflight_passed",
+  "script_sha256": "4a60e2ea2eb3b2548a204b303ee7d0ba5a2051e9df1aec0e6a1a413d48b51d6c",
+  "sample_receipts": [
+    {
+      "role": "baseline",
+      "seed": 1056243202,
+      "receipt_sha256": "fcb5020dcdb1fb9299b6619bed730522b82cd2a243127a7b1bf4830c07ba2867",
+      "stdout_sha256": "e0d67c6a7d4a4a61933183c53a2be566dc6596611fe4fdad6e4fbc543407fa38",
+      "wave_sha256": "6263da0af419bd84943c4bec04722a01bcad55c3a0ce079dd0adbf87b2b42f29",
+      "status": "winner"
+    },
+    {
+      "role": "wake-only",
+      "seed": 1056243202,
+      "receipt_sha256": "704950b15479fa290fa61a864ec57cdef10f819f19c7bdaa15a3e7937117adba",
+      "stdout_sha256": "9ee1a6b1b88ddb8d021884679559eed7867fda17c2f8371138bfddbac542125b",
+      "wave_sha256": "6c24fb734a8fe6c70b66c7f7001bd98069e91b272e3ad30389a5d37ce07c91ba",
+      "status": "winner"
+    },
+    {
+      "role": "local-completion-round-robin",
+      "seed": 1056243202,
+      "receipt_sha256": "e10e8cf3d559710bce6cffb48210330be1393264c4492ea629dc7402619c583c",
+      "stdout_sha256": "93fdc4b38adda1eb7b00e162fd66bb3e7d070bf639cdf1d4b55d826e9ab587ab",
+      "wave_sha256": "4bb80742e425b855e98719778b4479326a2a1ade6aa79d77d3473ba06edaacc8",
+      "status": "winner"
+    },
+    {
+      "role": "weighted-fixed-no-steal",
+      "seed": 1056243202,
+      "receipt_sha256": "06e79ec7c4990cdd96ea54c3341e906ba02fb70a511f6e3d83f94c30acf1be6e",
+      "stdout_sha256": "7c23d0bc5d6709929169083c820298402354c2e64a11b1285f72c3d64cf5e963",
+      "wave_sha256": "c66c8bf4789157e15556d3c18b4d985bc3253afe5d394fb9ae3112f25d873cf7",
+      "status": "winner"
+    },
+    {
+      "role": "weighted-last",
+      "seed": 1056243202,
+      "receipt_sha256": "e89cae70978cde788ab6a7c19605f23e2ed1faf17c056b57e3ed9ee82542beb3",
+      "stdout_sha256": "031a0f21b43f62635815d7669943829b0cbc4a30ed9118d7c93a8298bba49254",
+      "wave_sha256": "e0306330f4ba42432c63745af007c9e352042afaca6c45cb9f68b779548a9cea",
+      "status": "winner"
+    },
+    {
+      "role": "weighted-ewma",
+      "seed": 1056243202,
+      "receipt_sha256": "13c9433d410692f23fed3c9e8b4bc32b52a4ea10fc51192d62f567b8e8b33327",
+      "stdout_sha256": "92ce7d94d87d877b22ee6f78ed6f2f9283d21de329aae7b34205000a22ec7475",
+      "wave_sha256": "dbe4ce9b4bd42eb49fe51d7ba1f24b2bc7150780dd96381c87e950a5ff880adb",
+      "status": "winner"
+    }
+  ],
+  "sample_pairs": 13,
+  "order_entries": 32,
+  "unresolved_global_names": [],
+  "sentinel_sha256": "e5cf8ea285763f773a61b68f5d121ac2c5bf90785bb4514be39c3b2eb2b5dfb9",
+  "limits": "Only6existingfirstseedreceipts/windows and13pairs inspected; no448validation/bootstrap/plotimports/nativejobs. Localuse-before-assignmentflow manuallyreviewed; symtable checks unresolvedglobalnames only."
+}

@@ -1,0 +1,62 @@
+<?xml version='1.0' encoding='utf-8'?>
+<testsuites tests="60" failures="0" errors="0" skipped="0"><testsuite name="ComputeExecutor"><testcase classname="ComputeExecutor" name="automatic sizing respects platform limits and supports unknown CPU counts" time="0" status="run" />
+    <testcase classname="ComputeExecutor" name="CPU availability provenance distinguishes affinity from hardware hints" time="0" status="run" />
+    <testcase classname="ComputeExecutor" name="thread configuration accepts auto and rejects malformed or overflowing overrides" time="0.000138" status="run" />
+    <testcase classname="ComputeExecutor" name="supported platforms execute jobs concurrently on distinct threads" time="0.026644" status="run" />
+    <testcase classname="ComputeExecutor" name="exclusive slots; nested batches; reuse; errors; barriers and reconfiguration" time="0.110183" status="run" />
+    <testcase classname="ComputeExecutor" name="deferred batches complete with lanes and isolated errors" time="0.211662" status="run" />
+    <testcase classname="ComputeExecutor" name="idle workers retain parallelism for independent and mixed lane groups" time="0.051146" status="run" />
+    <testcase classname="ComputeExecutor" name="repeated lane groups and empty groups preserve ordering and independent work" time="0.000131" status="run" />
+    <testcase classname="ComputeExecutor" name="external completion and continuation wake parked lane successors" time="0.039159" status="run" />
+    <testcase classname="ComputeExecutor" name="lane groups run in index order and the horizon is bounded" time="0.031064" status="run" />
+    <testcase classname="ComputeExecutor" name="workers run deferred batches earliest due first and the owner only waits" time="0.010022" status="run" />
+    <testcase classname="ComputeExecutor" name="without workers the owner runs the jobs due no later than the join" time="0.005321" status="run" />
+    <testcase classname="ComputeExecutor" name="a lane keeps submission order: a lane job due before a live earlier one is rejected" time="0.01482" status="run" />
+    <testcase classname="ComputeExecutor" name="the slot count covers every producer's horizon" time="0" status="run" />
+    <testcase classname="ComputeExecutor" name="presentation cannot delay simulation barriers with spare workers or run on the simulation owner" time="0.011014" status="run" />
+    <testcase classname="ComputeExecutor" name="with one worker the owner waits through its presentation chunk and never runs the join itself" time="0.025968" status="run" />
+    <testcase classname="ComputeExecutor" name="presentation progresses before a continuous simulation backlog drains" time="0.00953" status="run" />
+    <testcase classname="ComputeExecutor" name="presentation replacement, chunk pumping, cancellation and errors retain no captures" time="0.010222" status="run" />
+    <testcase classname="ComputeExecutor" name="resumable presentation yields without advancing or retaining canceled inputs" time="0.006968" status="run" />
+    <testcase classname="ComputeExecutor" name="worker only maintenance never uses the owner including creation failure" time="0.01247" status="run" />
+    <testcase classname="ComputeExecutor" name="worker only maintenance yields to required jobs and cannot delay their completed join" time="0.006248" status="run" />
+    <testcase classname="ComputeExecutor" name="suspended device work releases the only worker and preserves lane completion" time="0.005427" status="run" />
+    <testcase classname="ComputeExecutor" name="early device failure resumes exactly once on the worker at its original lane position" time="0.00606" status="run" />
+    <testcase classname="ComputeExecutor" name="early asynchronous completion cannot release an invoking callback's inputs" time="0.005435" status="run" />
+    <testcase classname="ComputeExecutor" name="continuation of a nonzero lane-group index keeps its original sequence" time="0.005886" status="run" />
+    <testcase classname="ComputeExecutor" name="retained completion tickets can be resolved after executor destruction" time="0.006459" status="run" />
+    <testcase classname="ComputeExecutor" name="graphics batches finish once, retain failures and release captures" time="0.021682" status="run" />
+    <testcase classname="ComputeExecutor" name="serial graphics finish never pumps scene or required work and abandonment releases captures" time="0.003564" status="run" />
+    <testcase classname="ComputeExecutor" name="graphics cancellation drains claimed work and reconfiguration releases inputs" time="0.014851" status="run" />
+    <testcase classname="ComputeExecutor" name="both presentation classes progress during required lane backlog" time="0.00754" status="run" />
+    <testcase classname="ComputeExecutor" name="graphics callback barriers are rejected and completed tickets do not pump newer work" time="0.003629" status="run" />
+    <testcase classname="ComputeExecutor" name="empty graphics submissions bypass occupied admission and concurrency metrics respect ceilings" time="0.011129" status="run" />
+    <testcase classname="ComputeExecutor" name="graphics capture destruction can inspect scheduler metrics before completion" time="0.018257" status="run" />
+    <testcase classname="ComputeExecutor" name="disabled diagnostics do not read the injected clock or collect counters" time="0.000226" status="run" />
+    <testcase classname="ComputeExecutor" name="owner execution, stale handles, reuse and lifecycle attribution use one locked inspection" time="0.000177" status="run" />
+    <testcase classname="ComputeExecutor" name="worker waits aggregate distinct ticks globally and per producer without worker timing" time="0.000301" status="run" />
+    <testcase classname="ComputeExecutor" name="complete joins and trace overflow remain valid and snapshots require drain" time="0.000831" status="run" />
+    <testcase classname="ComputeExecutor" name="trace preserves early external resolution and continuation callback ordering" time="0.019967" status="run" />
+    <testcase classname="ComputeExecutor" name="trace storage allocation failure downgrades without losing required work" time="0.000116" status="run" />
+    <testcase classname="ComputeExecutor" name="blocking fork join failures and presentation remain traced without entering tick waits" time="0.031785" status="run" />
+    <testcase classname="ComputeExecutor" name="graphics diagnostics are optional and waits mode attributes the owner barrier" time="0.025916" status="run" />
+    <testcase classname="ComputeExecutor" name="yielded presentation chunks keep callback indices paired" time="0.018821" status="run" />
+    <testcase classname="ComputeExecutor" name="worker-only maintenance is traced as other work without a required join" time="0.01505" status="run" />
+    <testcase classname="ComputeExecutor" name="session reset suppresses a returning maintenance interval from the previous epoch" time="0.029729" status="run" />
+    <testcase classname="ComputeExecutor" name="synchronous graphics adapter keeps empty calls idle and guards owner callbacks" time="0.006691" status="run" />
+    <testcase classname="ComputeExecutor" name="graphics adapter restores callback state on failure and never pumps other work" time="0.005627" status="run" />
+    <testcase classname="ComputeExecutor" name="synchronous graphics cancellation rejects incomplete output after draining" time="0.021219" status="run" />
+    <testcase classname="ComputeExecutor" name="graphics adapter preserves occupied admission and serial finish shares the scene cap" time="0.025834" status="run" />
+    <testcase classname="ComputeExecutor" name="canceling a slot-blocked graphics batch wakes its owner before scene completion" time="0.02601" status="run" />
+  </testsuite><testsuite name="HiringRanking"><testcase classname="HiringRanking" name="material ranking keeps skill preference and stable ties" time="0" status="run" />
+    <testcase classname="HiringRanking" name="attraction roles preserve opposite skill preferences" time="0" status="run" />
+  </testsuite><testsuite name="ReplayStepCounter"><testcase classname="ReplayStepCounter" name="truncated replay bodies never become zero-filled orders" time="0.000961" status="run" />
+    <testcase classname="ReplayStepCounter" name="step totals cannot wrap" time="0" status="run" />
+    <testcase classname="ReplayStepCounter" name="checksum mismatch closes playback safely" time="0" status="run" />
+    <testcase classname="ReplayStepCounter" name="legacy create decoder respects both historical payload lengths" time="0" status="run" />
+    <testcase classname="ReplayStepCounter" name="WideRoundTrip" time="0.000359" status="run" />
+    <testcase classname="ReplayStepCounter" name="VersionBounds" time="0" status="run" />
+    <testcase classname="ReplayStepCounter" name="DecodeVersionPlumbing" time="0" status="run" />
+  </testsuite><testsuite name="TurnHarness"><testcase classname="TurnHarness" name="two clients on clean links execute identical turns [network-sim]" time="0.022342" status="run" />
+    <testcase classname="TurnHarness" name="a restarted client reloads, replays the full log and rejoins [network-sim]" time="0.039199" status="run" />
+  </testsuite></testsuites>

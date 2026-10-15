@@ -1,0 +1,62 @@
+{
+  "state": "analysis_plot_environment_recovery_only_no_game_reruns",
+  "utc": "2026-10-15T18:05:47.873565+00:00",
+  "python": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/playground-stop/plot-venv/bin/python",
+  "packages": [
+    {
+      "name": "contourpy",
+      "version": "1.4.0"
+    },
+    {
+      "name": "cycler",
+      "version": "0.12.1"
+    },
+    {
+      "name": "fonttools",
+      "version": "4.66.1"
+    },
+    {
+      "name": "kiwisolver",
+      "version": "1.5.1"
+    },
+    {
+      "name": "matplotlib",
+      "version": "3.11.2"
+    },
+    {
+      "name": "numpy",
+      "version": "2.4.6"
+    },
+    {
+      "name": "packaging",
+      "version": "26.3"
+    },
+    {
+      "name": "pillow",
+      "version": "12.3.0"
+    },
+    {
+      "name": "pip",
+      "version": "25.1.1"
+    },
+    {
+      "name": "pyparsing",
+      "version": "3.3.3"
+    },
+    {
+      "name": "python-dateutil",
+      "version": "2.9.0.post0"
+    },
+    {
+      "name": "six",
+      "version": "1.17.0"
+    }
+  ],
+  "pins_from_requirements_dev": {
+    "numpy": "2.4.6",
+    "fonttools": "4.66.1",
+    "matplotlib": "3.11.2"
+  },
+  "failure_archive": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/playground-stop/plot-environment-recovery",
+  "same_approved_analysis_source_sha256": "4a60e2ea2eb3b2548a204b303ee7d0ba5a2051e9df1aec0e6a1a413d48b51d6c"
+}

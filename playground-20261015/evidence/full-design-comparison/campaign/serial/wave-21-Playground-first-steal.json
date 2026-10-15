@@ -1,0 +1,18 @@
+{
+  "map": "Playground",
+  "role": "first-steal",
+  "wave": 21,
+  "seed_indices": [
+    21
+  ],
+  "started_monotonic": 3350324.181344722,
+  "finished_monotonic": 3350343.083931603,
+  "makespan_seconds": 18.90258688107133,
+  "winners": 1,
+  "caps": 0,
+  "games_per_hour": 190.4501231841959,
+  "observed_ticks_per_second": 1742.0895990154363,
+  "complete_tick_coverage": true,
+  "sum_game_seconds": 18.80805412773043,
+  "scope": "Actual homogeneous wave makespan including launches/waits, not sum of parallel game runtimes."
+}

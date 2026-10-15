@@ -1,0 +1,24 @@
+{
+  "command": [
+    "taskset",
+    "-c",
+    "3,4,5,19,20,21",
+    "stdbuf",
+    "-oL",
+    "-eL",
+    "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/weighted-source/build/linux/client/release/test/glob2-unit-tests",
+    "--test-suite=ComputeExecutor",
+    "--duration=true",
+    "--no-breaks=true"
+  ],
+  "env": {
+    "GLOB2_DEFERRED_DISPATCH": "steal",
+    "GLOB2_WEIGHTED_POLICY": "bare-steal",
+    "SDL_VIDEODRIVER": "dummy",
+    "SDL_AUDIODRIVER": "dummy"
+  },
+  "binary_sha256": "712fcd8e06d1bd5ba9cc129dd46e8eb743f52d70c24b6eec989d72b1d8dd9643",
+  "timeout_seconds": 60,
+  "returncode": 1,
+  "elapsed_seconds": 0.9576726020313799
+}

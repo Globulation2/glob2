@@ -1,0 +1,1 @@
+Playground448 executor comparison: see README.md for rendered results and limits. Open results/index.html locally for the full report. Verify all selected data/source bytes with python3 index/verify.py. Raw timing provides outcome agreement; separate bounded checksum qualification remains qualified. Stopped by user before Oazis/waves/further experiments.

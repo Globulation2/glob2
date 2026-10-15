@@ -1,0 +1,20 @@
+{
+  "state": "playground448_exported_stopped_awaiting_user",
+  "script_sha256": "4a60e2ea2eb3b2548a204b303ee7d0ba5a2051e9df1aec0e6a1a413d48b51d6c",
+  "gate_sha256": "ef7082e198493cfbcefca84b35b1f1ddd63600ebdf7119b6d5764af89c246c2b",
+  "stop_proof_sha256": "dd83b9dd961c950c67ba8f5f46b9d2b5b171c80509bea23954a7704140a98dde",
+  "runs": 448,
+  "outputs": {
+    "dataset-manifest.json": "ceec6fe22302f2e58fb89b74fef2708411df7df9be8be614dc021c156269592e",
+    "raw-audit.json": "92d9c13d233f7ad17a562bdbc05170ae8c835f22bb1270d92f156fb7e883a18c",
+    "every-game.csv": "66f813e08511afc3b5e407a9636ed7f883db2c7055d122947293e843aeb459e4",
+    "comparisons.csv": "4e5607f952f43676bcbcc97921bc7644333cce09c90f56dee97ab15b9adf10b5",
+    "completion-time.svg": "0eee2aa9c4ac0ce3cce18b6fffcb72712818066fb8f9550329844d3b236dcfa1",
+    "completion-time.png": "b5a48d9a12b206d6e5eda7530fadae0ecde395b28fa331b422d8aac0e332ee81",
+    "total-cpu.svg": "9ebdbbfd3bc28b12902e04d65c17323e98ce8f3b116438e7c8d898036366d3bf",
+    "total-cpu.png": "3baab05c7f4aca4b8c6f2eed8acbf1d6ecb11e11554a9d973cf401d58a7e72ec",
+    "index.html": "da93abc21ea49f7444980ca0c6408a71149114b03a7fc4fb216a30dbb395eb9a"
+  },
+  "no_further_automation": true,
+  "matplotlib": "3.11.2"
+}

@@ -1,0 +1,33 @@
+{
+  "case": "parity-small64-602-n4-mixed",
+  "role": "weighted-ewma",
+  "initialChecksum": 2375266145,
+  "finalChecksum": 2181226775,
+  "checksums": {
+    "GCS1": "04ef1028b30c05e1bc00180be1d4287af2cd559ffa8e3c592258e3c17eb094c2",
+    "native": "2d8ebb2e6ae9e184359cf59e5aab8cb141707a37b9a0b6b72597f346831e7327"
+  },
+  "sidecar_details": {
+    "GCS1": {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/qualification/weighted-ewma/parity/parity-small64-602-n4-mixed/native/game.replay.checksums",
+      "rows": 4096,
+      "first_tick": 0,
+      "last_tick": 4095,
+      "teams": 2,
+      "players": 2,
+      "bytes": 18478354
+    },
+    "native": {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/qualification/weighted-ewma/parity/parity-small64-602-n4-mixed/native/world.checksums",
+      "rows": 4096,
+      "first_tick": 0,
+      "last_tick": 4095,
+      "bytes": 63319
+    }
+  },
+  "command_receipt": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/qualification/weighted-ewma/parity/parity-small64-602-n4-mixed/command.json",
+  "result_sha256": "3e8dfa2f6eb380c2af20404bce015123f3bc6670bb3dec4782378b823c580dce",
+  "binary_sha256": "257d526f5d56c7b63b614ce3a0f895345cb20569c6a6f573e09a9abee5e5336c",
+  "requested_opencl": false,
+  "correctness_only": true
+}

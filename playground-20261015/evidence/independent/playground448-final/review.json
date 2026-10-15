@@ -1,0 +1,1017 @@
+{
+  "state": "independently_verified_448_playground_only",
+  "runs": 448,
+  "independent_seeds": 32,
+  "roles": [
+    "baseline",
+    "wake-only",
+    "first-steal",
+    "local-completion-round-robin",
+    "local-completion-steal",
+    "local-priority-steal",
+    "weighted-fixed-no-steal",
+    "weighted-fixed-steal",
+    "weighted-two-choice",
+    "weighted-last",
+    "weighted-ewma",
+    "weighted-clock-only",
+    "weighted-observe-only",
+    "weighted-bare-steal"
+  ],
+  "all_winners": 448,
+  "caps": 0,
+  "outcome_matched_seed_sets": 32,
+  "per_tick_timing_proof": false,
+  "actual_participants": 32,
+  "actual_eligible_cpus": 32,
+  "backend": "cpu",
+  "order_pairwise_before_after": [
+    16,
+    16
+  ],
+  "mean_position": 6.5,
+  "raw_point_estimates_match_report": true,
+  "contrasts": [
+    {
+      "reference": "wake-only",
+      "candidate": "baseline",
+      "metrics": {
+        "e2e_seconds": {
+          "change_percent": 11.431691326293624,
+          "CI95_independent_linear": [
+            10.944547350140946,
+            11.975233618236139
+          ],
+          "adverse_seeds": 32,
+          "reference_mean": 31.71435484844551,
+          "candidate_mean": 35.33984200084524
+        },
+        "total_cpu_seconds": {
+          "change_percent": 63.887130013473524,
+          "CI95_independent_linear": [
+            62.410163804669054,
+            65.51157478531518
+          ],
+          "adverse_seeds": 32,
+          "reference_mean": 97.3093564375,
+          "candidate_mean": 159.4775115
+        }
+      }
+    },
+    {
+      "reference": "wake-only",
+      "candidate": "first-steal",
+      "metrics": {
+        "e2e_seconds": {
+          "change_percent": 1.018333433364771,
+          "CI95_independent_linear": [
+            0.49063955955233385,
+            1.5363359454319756
+          ],
+          "adverse_seeds": 26,
+          "reference_mean": 31.71435484844551,
+          "candidate_mean": 32.03731272704317
+        },
+        "total_cpu_seconds": {
+          "change_percent": 6.404592088483163,
+          "CI95_independent_linear": [
+            5.707879677701238,
+            7.103096938664865
+          ],
+          "adverse_seeds": 32,
+          "reference_mean": 97.3093564375,
+          "candidate_mean": 103.54162378125
+        }
+      }
+    },
+    {
+      "reference": "wake-only",
+      "candidate": "local-completion-round-robin",
+      "metrics": {
+        "e2e_seconds": {
+          "change_percent": -0.25634119643892506,
+          "CI95_independent_linear": [
+            -0.6733971287564727,
+            0.17851987192782798
+          ],
+          "adverse_seeds": 11,
+          "reference_mean": 31.71435484844551,
+          "candidate_mean": 31.63305789178412
+        },
+        "total_cpu_seconds": {
+          "change_percent": 1.5052743807228763,
+          "CI95_independent_linear": [
+            0.9925916406236884,
+            2.0532817140663897
+          ],
+          "adverse_seeds": 28,
+          "reference_mean": 97.3093564375,
+          "candidate_mean": 98.77412925
+        }
+      }
+    },
+    {
+      "reference": "wake-only",
+      "candidate": "local-completion-steal",
+      "metrics": {
+        "e2e_seconds": {
+          "change_percent": 0.8456625127272854,
+          "CI95_independent_linear": [
+            0.3887274744745134,
+            1.3185835233473375
+          ],
+          "adverse_seeds": 24,
+          "reference_mean": 31.71435484844551,
+          "candidate_mean": 31.98255125855212
+        },
+        "total_cpu_seconds": {
+          "change_percent": 9.805811819471465,
+          "CI95_independent_linear": [
+            9.008616963420774,
+            10.58694844227921
+          ],
+          "adverse_seeds": 32,
+          "reference_mean": 97.3093564375,
+          "candidate_mean": 106.8513288125
+        }
+      }
+    },
+    {
+      "reference": "wake-only",
+      "candidate": "local-priority-steal",
+      "metrics": {
+        "e2e_seconds": {
+          "change_percent": 0.19990704275909543,
+          "CI95_independent_linear": [
+            -0.17120002674606283,
+            0.5546810537808993
+          ],
+          "adverse_seeds": 19,
+          "reference_mean": 31.71435484844551,
+          "candidate_mean": 31.777754077353165
+        },
+        "total_cpu_seconds": {
+          "change_percent": 10.784638269075808,
+          "CI95_independent_linear": [
+            10.051506418145985,
+            11.472162851379533
+          ],
+          "adverse_seeds": 32,
+          "reference_mean": 97.3093564375,
+          "candidate_mean": 107.80381853125
+        }
+      }
+    },
+    {
+      "reference": "wake-only",
+      "candidate": "weighted-fixed-no-steal",
+      "metrics": {
+        "e2e_seconds": {
+          "change_percent": 0.16518857193359437,
+          "CI95_independent_linear": [
+            -0.4200564364922649,
+            0.8256545140603045
+          ],
+          "adverse_seeds": 16,
+          "reference_mean": 31.71435484844551,
+          "candidate_mean": 31.76674333831761
+        },
+        "total_cpu_seconds": {
+          "change_percent": 1.7666622721980163,
+          "CI95_independent_linear": [
+            1.179334015991097,
+            2.355096330553983
+          ],
+          "adverse_seeds": 29,
+          "reference_mean": 97.3093564375,
+          "candidate_mean": 99.028484125
+        }
+      }
+    },
+    {
+      "reference": "wake-only",
+      "candidate": "weighted-fixed-steal",
+      "metrics": {
+        "e2e_seconds": {
+          "change_percent": 0.7289942927803938,
+          "CI95_independent_linear": [
+            0.258166391308215,
+            1.1955726848825996
+          ],
+          "adverse_seeds": 23,
+          "reference_mean": 31.71435484844551,
+          "candidate_mean": 31.945550685282797
+        },
+        "total_cpu_seconds": {
+          "change_percent": 8.857838421772058,
+          "CI95_independent_linear": [
+            8.40655459604235,
+            9.369060848970495
+          ],
+          "adverse_seeds": 32,
+          "reference_mean": 97.3093564375,
+          "candidate_mean": 105.928862
+        }
+      }
+    },
+    {
+      "reference": "wake-only",
+      "candidate": "weighted-two-choice",
+      "metrics": {
+        "e2e_seconds": {
+          "change_percent": 0.08892264626851887,
+          "CI95_independent_linear": [
+            -0.3486205133199882,
+            0.49482220204757343
+          ],
+          "adverse_seeds": 21,
+          "reference_mean": 31.71435484844551,
+          "candidate_mean": 31.742556092023733
+        },
+        "total_cpu_seconds": {
+          "change_percent": 8.676727529456985,
+          "CI95_independent_linear": [
+            8.135416836650379,
+            9.254801545181056
+          ],
+          "adverse_seeds": 32,
+          "reference_mean": 97.3093564375,
+          "candidate_mean": 105.75262415625
+        }
+      }
+    },
+    {
+      "reference": "wake-only",
+      "candidate": "weighted-last",
+      "metrics": {
+        "e2e_seconds": {
+          "change_percent": 0.31163295776184263,
+          "CI95_independent_linear": [
+            -0.12027208706397671,
+            0.7320547269104566
+          ],
+          "adverse_seeds": 19,
+          "reference_mean": 31.71435484844551,
+          "candidate_mean": 31.813187230494805
+        },
+        "total_cpu_seconds": {
+          "change_percent": 10.79988741293334,
+          "CI95_independent_linear": [
+            10.317953456186043,
+            11.343571496553194
+          ],
+          "adverse_seeds": 32,
+          "reference_mean": 97.3093564375,
+          "candidate_mean": 107.818657375
+        }
+      }
+    },
+    {
+      "reference": "wake-only",
+      "candidate": "weighted-ewma",
+      "metrics": {
+        "e2e_seconds": {
+          "change_percent": 0.42753206010088807,
+          "CI95_independent_linear": [
+            -0.020730216370559426,
+            0.9178325400918019
+          ],
+          "adverse_seeds": 19,
+          "reference_mean": 31.71435484844551,
+          "candidate_mean": 31.849943883076776
+        },
+        "total_cpu_seconds": {
+          "change_percent": 10.498034630473875,
+          "CI95_independent_linear": [
+            9.775907879401943,
+            11.266784810952558
+          ],
+          "adverse_seeds": 32,
+          "reference_mean": 97.3093564375,
+          "candidate_mean": 107.524926375
+        }
+      }
+    },
+    {
+      "reference": "wake-only",
+      "candidate": "weighted-clock-only",
+      "metrics": {
+        "e2e_seconds": {
+          "change_percent": -0.429833838346938,
+          "CI95_independent_linear": [
+            -0.9569448580538453,
+            0.08757791167451098
+          ],
+          "adverse_seeds": 13,
+          "reference_mean": 31.71435484844551,
+          "candidate_mean": 31.57803581969347
+        },
+        "total_cpu_seconds": {
+          "change_percent": 9.303085142757507,
+          "CI95_independent_linear": [
+            8.678248685690443,
+            9.921411827365224
+          ],
+          "adverse_seeds": 32,
+          "reference_mean": 97.3093564375,
+          "candidate_mean": 106.36212871875
+        }
+      }
+    },
+    {
+      "reference": "wake-only",
+      "candidate": "weighted-observe-only",
+      "metrics": {
+        "e2e_seconds": {
+          "change_percent": 0.021662158889879102,
+          "CI95_independent_linear": [
+            -0.42557025355663414,
+            0.49798915438133584
+          ],
+          "adverse_seeds": 15,
+          "reference_mean": 31.71435484844551,
+          "candidate_mean": 31.72122486238368
+        },
+        "total_cpu_seconds": {
+          "change_percent": 9.86840831813307,
+          "CI95_independent_linear": [
+            9.281800519606909,
+            10.52381021332162
+          ],
+          "adverse_seeds": 32,
+          "reference_mean": 97.3093564375,
+          "candidate_mean": 106.9122410625
+        }
+      }
+    },
+    {
+      "reference": "wake-only",
+      "candidate": "weighted-bare-steal",
+      "metrics": {
+        "e2e_seconds": {
+          "change_percent": -0.24285245766531016,
+          "CI95_independent_linear": [
+            -0.6617065154850285,
+            0.12940567681560813
+          ],
+          "adverse_seeds": 14,
+          "reference_mean": 31.71435484844551,
+          "candidate_mean": 31.63733575826336
+        },
+        "total_cpu_seconds": {
+          "change_percent": 8.565871218769882,
+          "CI95_independent_linear": [
+            7.943256310632003,
+            9.21911454358196
+          ],
+          "adverse_seeds": 32,
+          "reference_mean": 97.3093564375,
+          "candidate_mean": 105.64475059375
+        }
+      }
+    },
+    {
+      "reference": "weighted-bare-steal",
+      "candidate": "weighted-last",
+      "metrics": {
+        "e2e_seconds": {
+          "change_percent": 0.5558352750531848,
+          "CI95_independent_linear": [
+            0.15110681684564586,
+            0.9587208385957529
+          ],
+          "adverse_seeds": 22,
+          "reference_mean": 31.63733575826336,
+          "candidate_mean": 31.813187230494805
+        },
+        "total_cpu_seconds": {
+          "change_percent": 2.0577518230031178,
+          "CI95_independent_linear": [
+            1.6188707773329754,
+            2.5290302360769545
+          ],
+          "adverse_seeds": 31,
+          "reference_mean": 105.64475059375,
+          "candidate_mean": 107.818657375
+        }
+      }
+    },
+    {
+      "reference": "weighted-clock-only",
+      "candidate": "weighted-last",
+      "metrics": {
+        "e2e_seconds": {
+          "change_percent": 0.7446676295638444,
+          "CI95_independent_linear": [
+            0.2515790903280346,
+            1.2230286059085143
+          ],
+          "adverse_seeds": 24,
+          "reference_mean": 31.57803581969347,
+          "candidate_mean": 31.813187230494805
+        },
+        "total_cpu_seconds": {
+          "change_percent": 1.3694053266848805,
+          "CI95_independent_linear": [
+            0.8556092262200599,
+            1.9495033748123323
+          ],
+          "adverse_seeds": 27,
+          "reference_mean": 106.36212871875,
+          "candidate_mean": 107.818657375
+        }
+      }
+    },
+    {
+      "reference": "weighted-observe-only",
+      "candidate": "weighted-last",
+      "metrics": {
+        "e2e_seconds": {
+          "change_percent": 0.28990799854067273,
+          "CI95_independent_linear": [
+            -0.22853188887789644,
+            0.7934658250323705
+          ],
+          "adverse_seeds": 22,
+          "reference_mean": 31.72122486238368,
+          "candidate_mean": 31.813187230494805
+        },
+        "total_cpu_seconds": {
+          "change_percent": 0.84781340610951,
+          "CI95_independent_linear": [
+            0.4209274390891321,
+            1.2764162522135922
+          ],
+          "adverse_seeds": 25,
+          "reference_mean": 106.9122410625,
+          "candidate_mean": 107.818657375
+        }
+      }
+    },
+    {
+      "reference": "weighted-fixed-no-steal",
+      "candidate": "weighted-last",
+      "metrics": {
+        "e2e_seconds": {
+          "change_percent": 0.14620287538626986,
+          "CI95_independent_linear": [
+            -0.4294086092241428,
+            0.692361443711244
+          ],
+          "adverse_seeds": 20,
+          "reference_mean": 31.76674333831761,
+          "candidate_mean": 31.813187230494805
+        },
+        "total_cpu_seconds": {
+          "change_percent": 8.87640897229578,
+          "CI95_independent_linear": [
+            8.327967192272256,
+            9.497163919251495
+          ],
+          "adverse_seeds": 32,
+          "reference_mean": 99.028484125,
+          "candidate_mean": 107.818657375
+        }
+      }
+    },
+    {
+      "reference": "weighted-fixed-steal",
+      "candidate": "weighted-last",
+      "metrics": {
+        "e2e_seconds": {
+          "change_percent": -0.41434081413087576,
+          "CI95_independent_linear": [
+            -0.806652889112659,
+            -0.015582440708209244
+          ],
+          "adverse_seeds": 11,
+          "reference_mean": 31.945550685282797,
+          "candidate_mean": 31.813187230494805
+        },
+        "total_cpu_seconds": {
+          "change_percent": 1.784023106941346,
+          "CI95_independent_linear": [
+            1.383121500586797,
+            2.2094074404649087
+          ],
+          "adverse_seeds": 32,
+          "reference_mean": 105.928862,
+          "candidate_mean": 107.818657375
+        }
+      }
+    },
+    {
+      "reference": "weighted-two-choice",
+      "candidate": "weighted-last",
+      "metrics": {
+        "e2e_seconds": {
+          "change_percent": 0.22251244753670463,
+          "CI95_independent_linear": [
+            -0.186954086763452,
+            0.6141228147995853
+          ],
+          "adverse_seeds": 19,
+          "reference_mean": 31.742556092023733,
+          "candidate_mean": 31.813187230494805
+        },
+        "total_cpu_seconds": {
+          "change_percent": 1.953647235928102,
+          "CI95_independent_linear": [
+            1.4780404465403358,
+            2.453685597282995
+          ],
+          "adverse_seeds": 29,
+          "reference_mean": 105.75262415625,
+          "candidate_mean": 107.818657375
+        }
+      }
+    },
+    {
+      "reference": "weighted-ewma",
+      "candidate": "weighted-last",
+      "metrics": {
+        "e2e_seconds": {
+          "change_percent": -0.1154057059469471,
+          "CI95_independent_linear": [
+            -0.5461761292482894,
+            0.29330463354547415
+          ],
+          "adverse_seeds": 12,
+          "reference_mean": 31.849943883076776,
+          "candidate_mean": 31.813187230494805
+        },
+        "total_cpu_seconds": {
+          "change_percent": 0.27317479760515795,
+          "CI95_independent_linear": [
+            -0.18207230165136978,
+            0.7568656000861811
+          ],
+          "adverse_seeds": 22,
+          "reference_mean": 107.524926375,
+          "candidate_mean": 107.818657375
+        }
+      }
+    }
+  ],
+  "bootstrap": "10000 paired-seed draws random.Random(20261015), ratio cohort sums/means, linear quantiles. Sensitivity calculation differs canonical seed605441/floorquantiles; all32independent seeds, no repeats.",
+  "report_sha256": "92d9c13d233f7ad17a562bdbc05170ae8c835f22bb1270d92f156fb7e883a18c",
+  "stop_proof_sha256": "dd83b9dd961c950c67ba8f5f46b9d2b5b171c80509bea23954a7704140a98dde",
+  "raw_receipt_hashes": {
+    "Playground/1013771484-baseline/receipt.json": "c403147fcd229070d6cc2aa34ceab41ceffbcb5ac4e8abbe9feaad3380ae6169",
+    "Playground/1013771484-first-steal/receipt.json": "23ebfd5be8d2420fad1104b4354a549ceefe62c12056c238545a2440fb6cda6b",
+    "Playground/1013771484-local-completion-round-robin/receipt.json": "70b506525d3af365b2f77b7da3bb0d964bf6a2371a8f84ca298ab712c2ae33d9",
+    "Playground/1013771484-local-completion-steal/receipt.json": "7cdc7998c1854155f4c2295c04799b9f8d3a54564da0ad6bbad806035f21ab8e",
+    "Playground/1013771484-local-priority-steal/receipt.json": "698f6c7286a4f1b4dddf5e6f7ce927d81d521efd6473b72e54567a5b007d4a04",
+    "Playground/1013771484-wake-only/receipt.json": "5d10958b88d5e9bab2e853addaad828bf299c8978937def9a4503b21bfbab949",
+    "Playground/1013771484-weighted-bare-steal/receipt.json": "af12c97023d46b3b1e771aaa1177f28e75b028cbf83a0a325ae807836e456690",
+    "Playground/1013771484-weighted-clock-only/receipt.json": "fec28cdef0d15dbc48458e46270a85179b9996a75f5d4668fde4a2ddd85b3706",
+    "Playground/1013771484-weighted-ewma/receipt.json": "8be43ec4393611bac81581a42806e6db397cf09e6d1062212d00fcf583b4bd39",
+    "Playground/1013771484-weighted-fixed-no-steal/receipt.json": "8e110107c08a30192031399e7f87859ab342a17f9e411864b07c77118d341d5f",
+    "Playground/1013771484-weighted-fixed-steal/receipt.json": "9d0c953d345d73ed0a6b807e7726c37bff85f192bff5eb838de9b085c2131e8f",
+    "Playground/1013771484-weighted-last/receipt.json": "15fd0f682ffc282bf22e04713a6840dd0d574951cc81dd181ae6a56752530bf1",
+    "Playground/1013771484-weighted-observe-only/receipt.json": "b07bddf516198370b3fcac4844dc1d453202302b9c397d3cbf00ada2dfd47e55",
+    "Playground/1013771484-weighted-two-choice/receipt.json": "b70af7b8f3b18839bf5ee8641c258f1b7e999e66a9ab208bc79d452a7699d3f1",
+    "Playground/1030656205-baseline/receipt.json": "2f93d7d47338e31c73c198308225955df76fbadfed88b75267722729cee73bf0",
+    "Playground/1030656205-first-steal/receipt.json": "4bd43436fd1a4b6fddc6e89ee24bb18e32839ab57345aaf59b945223fcac3a9a",
+    "Playground/1030656205-local-completion-round-robin/receipt.json": "ebaf41167dad8e7e0ba94845d806ae12504f99504284aeb12fe41b29ba5e8143",
+    "Playground/1030656205-local-completion-steal/receipt.json": "197f632c1d8e30ce681a08213860b837a925546ab9ca02eb16232063f3a1409d",
+    "Playground/1030656205-local-priority-steal/receipt.json": "15ff0d97a52f65a8721be37a47ccf022f0c50dac4691bbf9f7b150c8fc4321ba",
+    "Playground/1030656205-wake-only/receipt.json": "6c46d46af81b0dafdc4b410ed82b144fa4f930cfc65a881b0332b70a79b7c2fe",
+    "Playground/1030656205-weighted-bare-steal/receipt.json": "8f3d6979ac77857ac8c93dee7c85428ed2bc4c614539c926bc4bb27cd6970fce",
+    "Playground/1030656205-weighted-clock-only/receipt.json": "8fe5749eba1b9e7e075aa1f9e500a56231916c8afc52a777cc01942b11819adc",
+    "Playground/1030656205-weighted-ewma/receipt.json": "9f5899a6709861cd3c86a6efc07170cd6031a18bf70bc325937ad8b61d68f110",
+    "Playground/1030656205-weighted-fixed-no-steal/receipt.json": "3c630929229b10a6c2c7dc3a87412634d61b4b756b8f1f00fcd7a9b323eb734e",
+    "Playground/1030656205-weighted-fixed-steal/receipt.json": "e232803c82146ee014816c46a81cd23b40f69536c8ceda7a58d76f4d13650bc9",
+    "Playground/1030656205-weighted-last/receipt.json": "1ab47c7a0faf78e058bf18db45aa95417e85715bb318fc96f431cbce49060be8",
+    "Playground/1030656205-weighted-observe-only/receipt.json": "1fa58156ab0c270e43844b802355c83e3c5ec93ff743366d9407730770917cf3",
+    "Playground/1030656205-weighted-two-choice/receipt.json": "c19b16f9bd72d06d41aff34a052ae86bf187448112577b4df046a48ce6acaf98",
+    "Playground/1056243202-baseline/receipt.json": "fcb5020dcdb1fb9299b6619bed730522b82cd2a243127a7b1bf4830c07ba2867",
+    "Playground/1056243202-first-steal/receipt.json": "c01da262e51cd08ea2e36b4f09bfbeee147c11a670733fc35f7900f0ccbb9ad7",
+    "Playground/1056243202-local-completion-round-robin/receipt.json": "e10e8cf3d559710bce6cffb48210330be1393264c4492ea629dc7402619c583c",
+    "Playground/1056243202-local-completion-steal/receipt.json": "ef7b3d72e9b348c94a19229271302945be0c7f2248f418d9bfa327f41e6b9d3d",
+    "Playground/1056243202-local-priority-steal/receipt.json": "6daae4f0b21c9e1253a2104e80e67a12b3fa2afec3b56560deba0bc7c8ffd1fe",
+    "Playground/1056243202-wake-only/receipt.json": "704950b15479fa290fa61a864ec57cdef10f819f19c7bdaa15a3e7937117adba",
+    "Playground/1056243202-weighted-bare-steal/receipt.json": "27b4f021b480930580f58147be852546f2be1a3285457504e93cdb80747c6b70",
+    "Playground/1056243202-weighted-clock-only/receipt.json": "d59cce0ca79ba837d20844e9781e2f148237578aa73f0fef729766e1ae575ff7",
+    "Playground/1056243202-weighted-ewma/receipt.json": "13c9433d410692f23fed3c9e8b4bc32b52a4ea10fc51192d62f567b8e8b33327",
+    "Playground/1056243202-weighted-fixed-no-steal/receipt.json": "06e79ec7c4990cdd96ea54c3341e906ba02fb70a511f6e3d83f94c30acf1be6e",
+    "Playground/1056243202-weighted-fixed-steal/receipt.json": "ce7e5ad42784bc1bbb49e0f51dd88b811a9f666b65677e17cf99da9d3404b0ec",
+    "Playground/1056243202-weighted-last/receipt.json": "e89cae70978cde788ab6a7c19605f23e2ed1faf17c056b57e3ed9ee82542beb3",
+    "Playground/1056243202-weighted-observe-only/receipt.json": "4f58cbc9c875383565e6596bb57f0e2eeb9ec9c925853678641ef420194e4c97",
+    "Playground/1056243202-weighted-two-choice/receipt.json": "539ac55025ac780823dcc183e8dbb7132506109c803ebc8228caf9321026c773",
+    "Playground/1064623205-baseline/receipt.json": "e6751edb784a4da0ddd82837441e53ad297019997fbcf9add719af7541903a62",
+    "Playground/1064623205-first-steal/receipt.json": "6d1683b04e9c465a7d79fe5dcf4f0fe153b6bee64a4d12f8283aa07b052c2225",
+    "Playground/1064623205-local-completion-round-robin/receipt.json": "f66da645f245c9b3f538945a3e61d361d94d326c110f8ea01306dab3f8a55439",
+    "Playground/1064623205-local-completion-steal/receipt.json": "2444b15b93528220c91031f779261c3204357d2804ecb12099d7d80dc9006c8e",
+    "Playground/1064623205-local-priority-steal/receipt.json": "9288cbd9b86b1f2d4d6f9134ce32811660ba58adeceb125565dd93dcb14891cc",
+    "Playground/1064623205-wake-only/receipt.json": "bb84f4265196f691541d7531f5dfe0e7ae4ed6086431dcae2c69f6571192202c",
+    "Playground/1064623205-weighted-bare-steal/receipt.json": "74dfda28356534da853bfded544a03a8a7a307e6f99339eb4bbd725ea86f8a6b",
+    "Playground/1064623205-weighted-clock-only/receipt.json": "e31036e8222975d5893da52f49f075ca3be0562d04c097cacf2dab17dfd46e1b",
+    "Playground/1064623205-weighted-ewma/receipt.json": "bd9ad62e99df97b6079f8b2939de8154ae2df29fe4fd169449607dcc4d1e8e16",
+    "Playground/1064623205-weighted-fixed-no-steal/receipt.json": "5214615e6f411b300a229ad0917a1060e0680b46ab8f34f9cc50bde185e4ee71",
+    "Playground/1064623205-weighted-fixed-steal/receipt.json": "62e5cb43bfd584db87ebaf09b3f009b80553d8a4039974b1396b503e3a2ebab0",
+    "Playground/1064623205-weighted-last/receipt.json": "98b1531deb685e21f5383ee5e9589cdfbea0c3527e9111f7572e7881d790de10",
+    "Playground/1064623205-weighted-observe-only/receipt.json": "c2dc836fe201f639d246aa865e8a2c5583779edabb7bf3ee04523d57a4ba3633",
+    "Playground/1064623205-weighted-two-choice/receipt.json": "537f8f33a87aecd9cec908f43b467bd293a156468af2da063f0f90186f0d982d",
+    "Playground/1139586032-baseline/receipt.json": "707dfba16458a4ff4c49292d1507c4b07d551c67b17a06b3a42b333acb4cb3f0",
+    "Playground/1139586032-first-steal/receipt.json": "5bc0b08b517bacd0c866929577062d19f5b62915cf2cc166de13c69aa9e0aca9",
+    "Playground/1139586032-local-completion-round-robin/receipt.json": "166704fae20025509e0ac31a28b0dcc7606a46b4d230598e4876a5fc924f9623",
+    "Playground/1139586032-local-completion-steal/receipt.json": "dad8a7d86f99c3cd14aed83392b553b3b55495a4ed3d117e8737121e6e1c2c13",
+    "Playground/1139586032-local-priority-steal/receipt.json": "b4cacb75f985cbb08d2b45353f9311402019cf37543a54a6daf0f1215da0212a",
+    "Playground/1139586032-wake-only/receipt.json": "7ea85423fe656676cc00d310432f81442a96dc44f98d684eea53023a35e916cd",
+    "Playground/1139586032-weighted-bare-steal/receipt.json": "0d0f6d5d2ccc5ebb36af1ec9a80acb4f308107a0ec3eded71541a7742815e3dd",
+    "Playground/1139586032-weighted-clock-only/receipt.json": "840f88f18c82d424c81c712c30084a3ac6bc5c61088f1187820f4cc28eeb7f68",
+    "Playground/1139586032-weighted-ewma/receipt.json": "accfcc2213b9ae1a7b503b897d50e4c9f54943fd79d68838594e2e03a1a772ef",
+    "Playground/1139586032-weighted-fixed-no-steal/receipt.json": "44dc44ce69e7af2f7cbd4827bf46371ce15789d66949041637f86c6c909ac1e8",
+    "Playground/1139586032-weighted-fixed-steal/receipt.json": "2be43b6f77e97767db380b30b52eedb3b94f9d4023aace00f51ddb7efb8e45f9",
+    "Playground/1139586032-weighted-last/receipt.json": "a7a429ec98ccb462cfbee32513e4e6d13cd5ff44bdf2efceecae86f917797143",
+    "Playground/1139586032-weighted-observe-only/receipt.json": "79c73b7bc154f807fa9a40d0f06970450a5de1936241ecb6ee54ad2679fb0562",
+    "Playground/1139586032-weighted-two-choice/receipt.json": "150ae6bd5388559aa7271c913483722bfe6536d3379fc9155b9e69b07f9fa370",
+    "Playground/117787757-baseline/receipt.json": "b65f99696ebf6dfed7a01046ee33f7caa8dcb96d7e1e825d2b40616503dd8e6e",
+    "Playground/117787757-first-steal/receipt.json": "4e4af0fa6cabb73fa73f9773c151062891a36db865c1a13b728d01f2cfa77256",
+    "Playground/117787757-local-completion-round-robin/receipt.json": "e3b51a52c29ce3bc9732fb7bbf944e97a0c3e57688adfff881f30db58e3088ec",
+    "Playground/117787757-local-completion-steal/receipt.json": "bf7bf573026553935602ca5d35d10a02e5bac3dc0a73c90843e07991ab015ecc",
+    "Playground/117787757-local-priority-steal/receipt.json": "8a3e2deb049d6a0afde93cae5a9ac5ba963feb3442f33b351cbddf318ec9ce8a",
+    "Playground/117787757-wake-only/receipt.json": "28be130383df72ee05f84aca2f31d52d3a6dd95036bf5a64172021ec0539624a",
+    "Playground/117787757-weighted-bare-steal/receipt.json": "20d02ed8ef016c65a4525131c63e421dce361b5a353209a84a919e8234836ec4",
+    "Playground/117787757-weighted-clock-only/receipt.json": "c4335d70c6af46e32f818c0b24fcb77d8622cc382f48ee87ade48f54c99810fb",
+    "Playground/117787757-weighted-ewma/receipt.json": "30c8cefc27667b7ce308c10aa4f963c79566c1969eafd2080c122ab43b3b1961",
+    "Playground/117787757-weighted-fixed-no-steal/receipt.json": "2f14012e980c6f96b83c7626afad4a7a4156354b247715868e434affe12ae749",
+    "Playground/117787757-weighted-fixed-steal/receipt.json": "c942aaf9e531f679ae610100a884d5dee187288fb5ab634913def97baeab9971",
+    "Playground/117787757-weighted-last/receipt.json": "38dc633dccabc1510decc47b02efdb4a851e12f60fadf330a4fd44baa0798072",
+    "Playground/117787757-weighted-observe-only/receipt.json": "aa817f0d8e8a976936c83ee688c8d7e880e8724339c1b1f2d500531521bc2b5c",
+    "Playground/117787757-weighted-two-choice/receipt.json": "887b0af0e013ce3d9dbf4dcf3a2d1461ac4a8bcdcf3b56029f7b56ebd9acdd4e",
+    "Playground/1298936997-baseline/receipt.json": "e0af494d0d9ca0db785d9ee7941760fd3b549d8c8ff491b5f29a8282faf1087a",
+    "Playground/1298936997-first-steal/receipt.json": "605f429ed86f7fccbfa3e0915fed63fc321c8efcd4e20442aba627b9673c00e3",
+    "Playground/1298936997-local-completion-round-robin/receipt.json": "857dcf0c87639331d53bf64d4c4d7823345724510e22dbf062a6cf2abe752092",
+    "Playground/1298936997-local-completion-steal/receipt.json": "1794374bd0853205efe0bd5c0cc51a7925a49708427b72c064ea10101fe9cab1",
+    "Playground/1298936997-local-priority-steal/receipt.json": "65092594b7032021043b9c0891fdf4f4b801f30342d4a9326043c9537d6f3387",
+    "Playground/1298936997-wake-only/receipt.json": "91628376fc544136ebec791277d715c184fefc522463bcaa579f184257f88343",
+    "Playground/1298936997-weighted-bare-steal/receipt.json": "4845771ac122e0ae0e7297898b20f31f18bb5628bb8f2186e0619a79f35e0ba2",
+    "Playground/1298936997-weighted-clock-only/receipt.json": "4d8bbd68b5f117fc79663fb633456b6c63895e81739261caaab1470282cd92a2",
+    "Playground/1298936997-weighted-ewma/receipt.json": "c76bec7f1d007756f2464f2ab1b465bbc4db7b6469d6d2b70c3b86dc9f4335e7",
+    "Playground/1298936997-weighted-fixed-no-steal/receipt.json": "fd1c3a474b39876a47cf6a9adab24c4809eafc24831b1dbafbb473dfc4407ce9",
+    "Playground/1298936997-weighted-fixed-steal/receipt.json": "5b169b0f62f107afcd9133f3ffe6c0d9f0560478a11562f45201e2536f343c3a",
+    "Playground/1298936997-weighted-last/receipt.json": "870360efda0324b5bf3a47ed59006b0f7497df1c78b685153eb38a9eafc04747",
+    "Playground/1298936997-weighted-observe-only/receipt.json": "2aa5ca3a93cd8ec8851b5a3d82530e5cee5614a6043dcc49f4c0ed566d3e290f",
+    "Playground/1298936997-weighted-two-choice/receipt.json": "0069db499e25b5516345bf6edc416688fbfe8140a1dca9513c8e838f4c20590c",
+    "Playground/1414753418-baseline/receipt.json": "3e9b2376cd83418596015ab2390eebdc102c11b243264700564eefad045f9717",
+    "Playground/1414753418-first-steal/receipt.json": "261ad308b860613a1a5db0fb2ef17d26ee6c51431cc6d2baef41e8a9e3281474",
+    "Playground/1414753418-local-completion-round-robin/receipt.json": "44eb688e6faa6b44e994d838dbce8f048289a65a08bc246c9d8a8b758153320c",
+    "Playground/1414753418-local-completion-steal/receipt.json": "69728cdeecbd19f7bfb4bd3eec64f19045b43d6b0d693c0f6b287ac9d91e4bf3",
+    "Playground/1414753418-local-priority-steal/receipt.json": "e0e974a0fc537ef5d51a7d8c2b03c24762e45b98ae5aa1a9a738d1f8153a54ab",
+    "Playground/1414753418-wake-only/receipt.json": "9215e70084720cd8462817df93e99b0e180b2dd53bd9daaffd32f4522c224b43",
+    "Playground/1414753418-weighted-bare-steal/receipt.json": "56c28202788c0db66b2b3b41ee09fe4d01e8f34502623c9c0518fc7875a85ef6",
+    "Playground/1414753418-weighted-clock-only/receipt.json": "395fc84f422c5ff485d73ef08dd24966b17e630a983d0b950a51d5e51d8504fc",
+    "Playground/1414753418-weighted-ewma/receipt.json": "af97389c886d9d2a50d0e6ce624016881a207bf82fc55c82b6eb5a1b480d1470",
+    "Playground/1414753418-weighted-fixed-no-steal/receipt.json": "9acc40efb3efab59fb0300ed3d86a09458734c47fdfd4320c3553f99b933010b",
+    "Playground/1414753418-weighted-fixed-steal/receipt.json": "dfc83d3b130c4b74f1bb8a34814bc248fbdd5c4cff6a929a4eb3c8322d76c403",
+    "Playground/1414753418-weighted-last/receipt.json": "ea99a2732a2d5867d16635faac199d32901b1467b25d7d32d8e7c34e7da37870",
+    "Playground/1414753418-weighted-observe-only/receipt.json": "7930d3e8f5b6e800b4a26babdf67dea791cdc6364719886cf29cf9c7cb4c7e10",
+    "Playground/1414753418-weighted-two-choice/receipt.json": "0433ed150f3d162f20d89e51974fbe8c11d79a6533464db192a0f0270db25356",
+    "Playground/1441583672-baseline/receipt.json": "a10247e28714f8132fafeb66b5c810d3aebd6a5e9553dbee682cf81be84cff49",
+    "Playground/1441583672-first-steal/receipt.json": "3e6f5349c8d522142e84aadddf7b7de75fbfdae5df053546eafea39f63d5d0b1",
+    "Playground/1441583672-local-completion-round-robin/receipt.json": "c8c9c0f56721a35b57ea2c7fca119f89bbf7398d898ea7cb169471adde76e438",
+    "Playground/1441583672-local-completion-steal/receipt.json": "76fd797f81e1e991f54abb39bac697fcfe32d99dd72c82ca9bb2a710c8aac128",
+    "Playground/1441583672-local-priority-steal/receipt.json": "d6256b2a059f64fd9ac7c09f148d711ae34b1a8b56e459874508c938f379dca5",
+    "Playground/1441583672-wake-only/receipt.json": "d335eccdc4bf2028b7528f1296480116e471427434c2b28a645a7f3ecba0dbc4",
+    "Playground/1441583672-weighted-bare-steal/receipt.json": "dedc6f4e4a675078633fb275b702dde749cf6e88f198907e8e7f0140410ae761",
+    "Playground/1441583672-weighted-clock-only/receipt.json": "cf1e31429fead324c6a5c6d89288b001c5533d82bf24d9054a3e493b0deae758",
+    "Playground/1441583672-weighted-ewma/receipt.json": "26b51cfb3dd788a26639f67d5e6f6b19980deb244effea06eeafb301b0869e3a",
+    "Playground/1441583672-weighted-fixed-no-steal/receipt.json": "9cdaf91c08e91fc9b8ff4708b192572cf79b089375732b7d856dbad2a990aed7",
+    "Playground/1441583672-weighted-fixed-steal/receipt.json": "dc9807712d9f416361eeb7f2729fef0d82ceef14c1f05c253cadd77078ebc1ae",
+    "Playground/1441583672-weighted-last/receipt.json": "f6ad1300467bdf3d34c10bda0a2fafba8814f251e462b1e21a47eea862ef5eb1",
+    "Playground/1441583672-weighted-observe-only/receipt.json": "09422e6e79c8fa2dcdfc2eaf3715b7132dd6abc9a9a44cf8f938e8e1645a2bd0",
+    "Playground/1441583672-weighted-two-choice/receipt.json": "acbcb00e1d7f2ef5ccbe4b6af93377dccf100cf00c3280254716ee3e7d102680",
+    "Playground/1480527227-baseline/receipt.json": "fa6fcad7c875db7251f56a522c2c8a4be278d3b85d15ec38758f12a7c0b446a0",
+    "Playground/1480527227-first-steal/receipt.json": "0cd5ce8bfe015a5ba39a8a5b00772fed1c85a899a879d8999b617816aef7f3e5",
+    "Playground/1480527227-local-completion-round-robin/receipt.json": "65f6904487e3c2f0d7da8d67d094ef18d0de946d9d9ba97c2690a7128db179ae",
+    "Playground/1480527227-local-completion-steal/receipt.json": "f2701751a06a68e9e330b90dbc764d81e57d74a8cc9691603b18a50973ff33ff",
+    "Playground/1480527227-local-priority-steal/receipt.json": "35eb491daf2e3f6a0a01a7d2c188a47459797dc9f51f281d139fd78747c670fd",
+    "Playground/1480527227-wake-only/receipt.json": "ff9e05831ccbc750b4f8448f777e17a4a5e3738a3f41b65a8a4b78810259dfbd",
+    "Playground/1480527227-weighted-bare-steal/receipt.json": "2300eb4419bc879ff7197ce3201c5c56abcac0f629fa4d0ee9a45d8a5fe2923b",
+    "Playground/1480527227-weighted-clock-only/receipt.json": "c140593cc2680d52ef906852b9fe6747bacedd3d0cd627a374e55efbee47c41c",
+    "Playground/1480527227-weighted-ewma/receipt.json": "7bde14998d236ea5e78baf689bcfac7ae520f808966130534a66dded05d53fdd",
+    "Playground/1480527227-weighted-fixed-no-steal/receipt.json": "f41204b41d6567beb1c032f05c1a620cdcfdc2424ac08537eee4254468d6c68c",
+    "Playground/1480527227-weighted-fixed-steal/receipt.json": "ec047998d3c9b15f203889a533fbf0c02d565d8377551ff1b28e867439694add",
+    "Playground/1480527227-weighted-last/receipt.json": "e4f01ca2795407b5e42080a019f09bc7a67b99e490398c1ecf9b69fc60310a17",
+    "Playground/1480527227-weighted-observe-only/receipt.json": "7a4fb0e13bba2f04bad77936ea89552336e2750d3729e577a71d4394fb7b0d2f",
+    "Playground/1480527227-weighted-two-choice/receipt.json": "3c141d74554656a49f99815d3020eb1b9123c3bfdc2dc95c580f6fdc9f3c46ea",
+    "Playground/1514826878-baseline/receipt.json": "4f82323045e22f685c174b8ebeb2b96f29f4c5c30f05e5f99510f3c45e092570",
+    "Playground/1514826878-first-steal/receipt.json": "517c06cc71a5a11b97a695fa7a5735f9601ca6b082a5907b4f2d06ef2724d90f",
+    "Playground/1514826878-local-completion-round-robin/receipt.json": "01387cb8d08c0955eaa023f0eeee70fbe9fed14bf0b8c99d2770499217456af3",
+    "Playground/1514826878-local-completion-steal/receipt.json": "de7876d4fcf3ed06a1cd55c59f378de758b39ea634687cf9d4c4bfb2ed8f3cad",
+    "Playground/1514826878-local-priority-steal/receipt.json": "728a4cfe0b5fa8dd8a572ede9f2c61d3a3a07dbce018499102f29ad860082d2e",
+    "Playground/1514826878-wake-only/receipt.json": "a7716866daddf6277bebf7bf377755b90e884abb1edc682141e035fdb43fb95a",
+    "Playground/1514826878-weighted-bare-steal/receipt.json": "8ab04214782f15ea5dadff015c3160490b1455312bfd2dee5c67a8a474cdc812",
+    "Playground/1514826878-weighted-clock-only/receipt.json": "17274e9139d2fd3b8575f0f2d9d781d89f24bd7deb93c9690c1666e4e990c524",
+    "Playground/1514826878-weighted-ewma/receipt.json": "05ad1675f5c7016a66179465fd8bd8d18ae7994dbad651e6bbaf661deaabd0b6",
+    "Playground/1514826878-weighted-fixed-no-steal/receipt.json": "f4295cea178ecb008262e9c112887ab601b7d807a088e661678ab2cab286e9c1",
+    "Playground/1514826878-weighted-fixed-steal/receipt.json": "f49b6543acbd1e436b1a32d9ef511e7c707b2f00f1bac054dbeeda04cc05accb",
+    "Playground/1514826878-weighted-last/receipt.json": "4996c8ec010861f136900fb1d1e83be32ca6f5dae47704eadfa08073929117a1",
+    "Playground/1514826878-weighted-observe-only/receipt.json": "5c2770c3737427b50ce64f47d867d3d0dd719b1446e5309240687b0e895a5993",
+    "Playground/1514826878-weighted-two-choice/receipt.json": "fc97a5ca9106c033e92e00c0c012fd4b1a2a5d46dc2ec4a05d58679432adefc9",
+    "Playground/1635872854-baseline/receipt.json": "229fead9362e48870f30ca7f6c79a3373a2cbbf4d0df864b77395822e2f6ff76",
+    "Playground/1635872854-first-steal/receipt.json": "1ff20433372ea56fa2c6ff9686c663c4886c9bc4ccaf6f77b14d06d3da4a3d19",
+    "Playground/1635872854-local-completion-round-robin/receipt.json": "e8346c60abe3a37b5089cde27f235a50f61637cd88727a60f0a22b5a56facb52",
+    "Playground/1635872854-local-completion-steal/receipt.json": "e64340fbd94b43fce07334e45bc96b353e5e60b65bce3759c9020bcf98efa88b",
+    "Playground/1635872854-local-priority-steal/receipt.json": "b015d0fe5d14af48a34925ab9f32772fd2837b340eeb470e2d31566067c73f2e",
+    "Playground/1635872854-wake-only/receipt.json": "fd65f548b156c011e807b21677d4ac73eba10d5f7b889b8cd764c1a2a4df67ef",
+    "Playground/1635872854-weighted-bare-steal/receipt.json": "ca9f7065bd28c2858e18de37846a6a4c30247098cde0431fdf3b9873b56d0cdd",
+    "Playground/1635872854-weighted-clock-only/receipt.json": "248a133541c629f5f80719e6ba66b4d011f3a23cbbc1b29eba0fa9931a1f4b17",
+    "Playground/1635872854-weighted-ewma/receipt.json": "42db582f9e4bd53d75dc33b696fde72cc57276f34cb7794ef58c33c2b9f803d4",
+    "Playground/1635872854-weighted-fixed-no-steal/receipt.json": "b4abe60cacc587571eb7e3ad4452db84684f7cfb0a0ac2a7fecbdb13a617cab8",
+    "Playground/1635872854-weighted-fixed-steal/receipt.json": "e9b27f6b532493a1ea2f0e3235e877183b482643736a79db9684d20cf08c80e4",
+    "Playground/1635872854-weighted-last/receipt.json": "18a6d9bab1f26a3f5c0dfdb297401fd215f44db6e24646a87be2638d394cc81f",
+    "Playground/1635872854-weighted-observe-only/receipt.json": "767ea317ed1886814a7798e75031521902e32ad5f5ff19ce6fe2daaf3e7b209a",
+    "Playground/1635872854-weighted-two-choice/receipt.json": "f48dbdac89e0a08d047823fee9e6e4988c14b7a01bdf982be8dbfa8bba75315c",
+    "Playground/1845486380-baseline/receipt.json": "7cfff2f9e8401d9093fc1334e46acccafc281bad9ca93080d7257868691a5c9c",
+    "Playground/1845486380-first-steal/receipt.json": "c69a2eaf442df146cb0fc094a2160cd812b6ff9f4841b9feb59c8b7fc79e03e2",
+    "Playground/1845486380-local-completion-round-robin/receipt.json": "e78bf6b2c0c2a54b353f4306392823bde9cba466443b1de4fa50932529e548cc",
+    "Playground/1845486380-local-completion-steal/receipt.json": "fac5f4c1e4de6877725fbbf5634f2dbcd3ac46129cbb16563f4520c612a41e27",
+    "Playground/1845486380-local-priority-steal/receipt.json": "750ccdd7fb938ace09d9a912d654805ae592b25179f7eab20ad2caf0d29b4857",
+    "Playground/1845486380-wake-only/receipt.json": "f431eb0f88f09a2db0217a2ebc3fff15460d8235ef93248d0f1e42759034f8c6",
+    "Playground/1845486380-weighted-bare-steal/receipt.json": "4ec387cf475537a35fcd355a1584c17e697f2b0d7b56f4e81d2c18354625235f",
+    "Playground/1845486380-weighted-clock-only/receipt.json": "2bb8a13bb9753e16cb1e3b02bf0335b3a4da296a5b03a57a85b7d58fb57b27d1",
+    "Playground/1845486380-weighted-ewma/receipt.json": "494faae0b503eacf18f10644803db5abddc8fba203886db0eb7dbeb58c82a1e8",
+    "Playground/1845486380-weighted-fixed-no-steal/receipt.json": "352e2e195cda8b56444c091cb71940fd999e73e814f888bfd6fbf22d3be4a431",
+    "Playground/1845486380-weighted-fixed-steal/receipt.json": "fe6b87100b5b31abff1ecc3a6fba4ce4b50d98fe36fb431371558226c9dffdc4",
+    "Playground/1845486380-weighted-last/receipt.json": "a4083bff53a0119cd81f26ecbea9d5562388751f5031b6a60b917b819f53f2a3",
+    "Playground/1845486380-weighted-observe-only/receipt.json": "53b66440779870ef4e5082bb80e8a3dda829a45274b3c0483f2c3d6d35312a7f",
+    "Playground/1845486380-weighted-two-choice/receipt.json": "058fb962857a537a90359152a1eec79accc25f2cbc6105f59130355b2487c765",
+    "Playground/1858401095-baseline/receipt.json": "dfd5e13f8bdfd8d8e64285a6b72a121d7969194dc90e911abb1c7a66b1f51b18",
+    "Playground/1858401095-first-steal/receipt.json": "212ef012a291290d500adb7db6626e384c5591ffde164155d3e5f1156be3a87a",
+    "Playground/1858401095-local-completion-round-robin/receipt.json": "1f6aeba9d7655ecab888489a1f0bbc4be40c7801e48a3a842dfb02ccfeb4e8e8",
+    "Playground/1858401095-local-completion-steal/receipt.json": "326eda300b4b3fbbfcef3fd6be6c4ea519c5318c3b6ed42f58591faebc36c65c",
+    "Playground/1858401095-local-priority-steal/receipt.json": "10ea1e89c5647e8aa73f6c529cb8244b4b5552e58bc40514ee2328fd10decf3c",
+    "Playground/1858401095-wake-only/receipt.json": "879630019ff0aab6f753ad268659453f707475b6e69d811603a8b8d6324d06b6",
+    "Playground/1858401095-weighted-bare-steal/receipt.json": "e5fcb048f906821f7ee0ed2c94c724ead31c067223161b3f870f356c347945a0",
+    "Playground/1858401095-weighted-clock-only/receipt.json": "fd685a6e75b2d382ae122ff585ad842c6dd5aee191ea9086ef8fa74f3c993ade",
+    "Playground/1858401095-weighted-ewma/receipt.json": "755cc8ef668fc56e3cd625792625f48a64d3cf96548331976945afb9e023e31b",
+    "Playground/1858401095-weighted-fixed-no-steal/receipt.json": "d1d0138a729999278729a91910426bf89fa485c615c8499d73f80cd86a2450f9",
+    "Playground/1858401095-weighted-fixed-steal/receipt.json": "5d1ef125bd3de1e53925b647f9eda8de56b621f4820b3da5bfc352c94668132b",
+    "Playground/1858401095-weighted-last/receipt.json": "599052067203c35b00f28f58e41956741bf8dc8e68acf611127942e5c6bf343e",
+    "Playground/1858401095-weighted-observe-only/receipt.json": "e12527beec84f88940a312ddbd1efe6666f1ec39190100512e559265a0908cf6",
+    "Playground/1858401095-weighted-two-choice/receipt.json": "98d9016c4ad87974f9ee1de91af1472711d2b5bb517cbb177d2644c64bd0c6f7",
+    "Playground/1910481143-baseline/receipt.json": "47a198755e44333a2967251899b8b3153d18106f5b301c6c54543eefe5d14295",
+    "Playground/1910481143-first-steal/receipt.json": "2614a2882f771f0a981c23cc7418c53df3057e1e9879ef809082ec45f2d2d1ee",
+    "Playground/1910481143-local-completion-round-robin/receipt.json": "2b127e0d5f1b794b58ade821a2e3bbc3c76d8b5525e3878527a96d50b64329e5",
+    "Playground/1910481143-local-completion-steal/receipt.json": "e6a1b01db5a8dff0860b6ba8675994fb3c855140b0c18f73f25bd1edddff39b6",
+    "Playground/1910481143-local-priority-steal/receipt.json": "0350dee2c1bdafead61d4878af66d7672009e373bd57b58cf469cbdda4dc96b4",
+    "Playground/1910481143-wake-only/receipt.json": "fdc444c3c3fd6f6cea2034cfd56f78ec9b9de97d42d2c38e23f9a6714d9e7df6",
+    "Playground/1910481143-weighted-bare-steal/receipt.json": "38926a8126852b1e6265c35b9fe013c590876ed2a4fb62ed7c24680acdf2f337",
+    "Playground/1910481143-weighted-clock-only/receipt.json": "7b8ad49f3cfc8a5172e0ca319520b8fc6b45b1173ce61e3aa73a18ec7730ab19",
+    "Playground/1910481143-weighted-ewma/receipt.json": "26dd76b28c9ea012daba6fca8b908017baefd4524b3e00a2725e1eedd7ca790e",
+    "Playground/1910481143-weighted-fixed-no-steal/receipt.json": "55a26b81cf87ff7f7a4cab445aab29135a20e7478319a74b3f0a2989bf5fc40e",
+    "Playground/1910481143-weighted-fixed-steal/receipt.json": "f4eee36b4d1c0ab83e7ff2ada9798a6d6c8dda2f1b123a3df5c0ce3bbb0c903d",
+    "Playground/1910481143-weighted-last/receipt.json": "2f4ab1f7b89ea0932ec9c8bdaab1d20abac0cc332ab9ec08e32175bae89730de",
+    "Playground/1910481143-weighted-observe-only/receipt.json": "62e3cacccd631e2562f1293b4f0c4bafa52ba71de509612c010f4a8f3908c89d",
+    "Playground/1910481143-weighted-two-choice/receipt.json": "394f094bfff748d8a8e3b0c7e4bf59de9d0bfa680ce8c750422de83795b10b71",
+    "Playground/1961520297-baseline/receipt.json": "083f2810700263077c77910c6e048492922126715e0022033bde458dff39d718",
+    "Playground/1961520297-first-steal/receipt.json": "c85c9e2af6e711cdcb5183de6855ea0471896bab2b0f11149af46b486d49e9a4",
+    "Playground/1961520297-local-completion-round-robin/receipt.json": "d2fe1165c437906c7fcf299cd9ecad64d22302c20eb0586611f40f3e68476bc0",
+    "Playground/1961520297-local-completion-steal/receipt.json": "977ce54b07a3ceeecf48a1aa24f6a951d8c3049b44ff3db9f5025eda6e490179",
+    "Playground/1961520297-local-priority-steal/receipt.json": "5ddc99f69684d4038b6b818d97efdc641c5ada3ddfabfb7de5e54e7532df6af4",
+    "Playground/1961520297-wake-only/receipt.json": "5abdd689075557f5a02f75f034a7db3409c647a1d77689276a67ee08eda3eb02",
+    "Playground/1961520297-weighted-bare-steal/receipt.json": "81e4246d09e45fa93d5b24fb447f819c1864910be6e2d01425b3c63ad39a22e2",
+    "Playground/1961520297-weighted-clock-only/receipt.json": "43b89fe4dcbb1f5b698dcd69607d945026cd96bdf3585dccb37ac287985ec25f",
+    "Playground/1961520297-weighted-ewma/receipt.json": "0ce06fbaa4e946ec7229de38406756ba4615b59971bc09f55842e64c1cbd0a3b",
+    "Playground/1961520297-weighted-fixed-no-steal/receipt.json": "de366b2b1cf4e07e61edfe1edb0c79bf4ead85e6ad6ee98358354545c8dc41e3",
+    "Playground/1961520297-weighted-fixed-steal/receipt.json": "5657def6a6844911e81348cf824c8075bd0bad1af3b2b8868793897d2d8d41e8",
+    "Playground/1961520297-weighted-last/receipt.json": "5f364d68181381ddd051f2697f643aca4de8fa78b7c77112e253beac493d595f",
+    "Playground/1961520297-weighted-observe-only/receipt.json": "9c367fd6e31666fe0a9c949bfa31a87d4e5c5d51f86516390c300946b9b4e663",
+    "Playground/1961520297-weighted-two-choice/receipt.json": "a88ca59a446525b9e47b68710c97787bf2d62e82667cda9cfb774adb2037dab9",
+    "Playground/2037486757-baseline/receipt.json": "910b036c77faa8028b6c55c70c41c4432dd515c94b28ed07f39b375ce19242e5",
+    "Playground/2037486757-first-steal/receipt.json": "91c73cb7cee1270bc5da996c6345e01eda4923a93ac2574d950e7420f4c984f3",
+    "Playground/2037486757-local-completion-round-robin/receipt.json": "60e3267913f7671e8dbd3febb9c2d64ccb050e1da39619af2e63fc2fd3a598da",
+    "Playground/2037486757-local-completion-steal/receipt.json": "74f1c00c26ff1c08da6bd6eaabc9a23abfa72cdc580f185d3bec890fd4f06395",
+    "Playground/2037486757-local-priority-steal/receipt.json": "a1ee297726ddb5d09dc57fd469bbfad5d20e0a534f6f88cdd0210f3f5d0e1c1f",
+    "Playground/2037486757-wake-only/receipt.json": "a6d51e5b58a5f9e2946cfadd441fa2b4d86de32ae838410d6de99c44028f612d",
+    "Playground/2037486757-weighted-bare-steal/receipt.json": "a15c0b96fb03e068cfa80d1ce5a75f03e1810fbd5df5a846b8d48589b927a205",
+    "Playground/2037486757-weighted-clock-only/receipt.json": "1c091ffaa2e5c7abe42a14ae8cbf57a9ff2b841dc3b0fc7d63f42833f2123158",
+    "Playground/2037486757-weighted-ewma/receipt.json": "1f4ad39e757f825e88bbe5bbf61024b23789297d1e98af4e827003809f0c4186",
+    "Playground/2037486757-weighted-fixed-no-steal/receipt.json": "aad05f4f4a1901dedb8874c12a5490acb5a286ef3f9fcc7a33130296203ebb13",
+    "Playground/2037486757-weighted-fixed-steal/receipt.json": "bb253247d4e3802ab439be2bd1042e8e8fb470aca662448b60d8dac0c621f4e7",
+    "Playground/2037486757-weighted-last/receipt.json": "b9753fc99b08dc5c9266a5f2f15a010223aaba87d70e332657d7b6abc61c65cf",
+    "Playground/2037486757-weighted-observe-only/receipt.json": "56b464ca362c6c91d0bb5ffa6e2cc64b1ab864fcbf4b20cb60d329c81694d2cb",
+    "Playground/2037486757-weighted-two-choice/receipt.json": "51959243d83bbdb613199c8ad28c41e2bffbfc050fd5a046899f8e161124f52f",
+    "Playground/2092499754-baseline/receipt.json": "10eb89ba28dd380741beff9ec69b0436aa1f6e324c4742a11bad25188b0f451f",
+    "Playground/2092499754-first-steal/receipt.json": "97310cb70e9c825f0bfdd661b26068e515e60b92090e2ad07b555d6d6f5189f5",
+    "Playground/2092499754-local-completion-round-robin/receipt.json": "fde83a8243cef91b04015056ae45d649670c944d946939f98b41b1869cb1290b",
+    "Playground/2092499754-local-completion-steal/receipt.json": "4b27c3d4c5fd91bbd25eedf582a5da93d47821496a6edce964a541126e6234f5",
+    "Playground/2092499754-local-priority-steal/receipt.json": "54a574b3854de3c7267ec8a638be56ecc6f485c245073994a6f291576678b87f",
+    "Playground/2092499754-wake-only/receipt.json": "8be813c005c9668df9cbabb38a52d3d79e910778743e49ea046c1d23b47a0eb3",
+    "Playground/2092499754-weighted-bare-steal/receipt.json": "f84c87fab55810c5e75b5f73fe02e262be29aa8676356b8722318e108d25805b",
+    "Playground/2092499754-weighted-clock-only/receipt.json": "973fbd55505aae8628cb7141832e16e8b49dee231332f71fcfb34d11355c897e",
+    "Playground/2092499754-weighted-ewma/receipt.json": "6ad9f4b35d853eb537b12ee5c49d000722cd81c1be6a4d7ad68d43ca02b68744",
+    "Playground/2092499754-weighted-fixed-no-steal/receipt.json": "41c0c8f60d5f51c095487c1230fafcc74fabf9a7f1fe1b43375d053678439a08",
+    "Playground/2092499754-weighted-fixed-steal/receipt.json": "6e1a53668b84d187b07bf555f5a334bf1a2e0b1c3d9e21926f3b9b3d4384dae3",
+    "Playground/2092499754-weighted-last/receipt.json": "afece8ad0711ce524ec793d7d3d1d1e70d4bc5665d55f183bcb8e82db747718c",
+    "Playground/2092499754-weighted-observe-only/receipt.json": "89d602d57acbc49096921a2bfc0771ab4474d3e23000f68d5ec2e597b0a48984",
+    "Playground/2092499754-weighted-two-choice/receipt.json": "c848e842b0964d0fecdd535a047762ecc2e6a57de3712a0cbdc4e1a8b55a997f",
+    "Playground/2122112527-baseline/receipt.json": "b89d7f2379b7d3404dcf9fa038e8dbe0f1f71260af159cf6ceb1d4cc68b1e9c8",
+    "Playground/2122112527-first-steal/receipt.json": "15bc5acc079d5c630593fbde1e1af8177ed6c9a6483fdd82fa91e3cc6277cc8b",
+    "Playground/2122112527-local-completion-round-robin/receipt.json": "303f27d1450d23a31a7b884daf63ba24a9b65cd398760e5dda4a96d3d8dc5663",
+    "Playground/2122112527-local-completion-steal/receipt.json": "2db571e8f8875ba6b80f5f163ea25f2aa0d68a4410f174b07e5b3fb644ce572b",
+    "Playground/2122112527-local-priority-steal/receipt.json": "0b4ffc642e35362bf07140b0972778123b36adcb1c894427904af135d3c40a40",
+    "Playground/2122112527-wake-only/receipt.json": "76b96a6a7270858c4d46787ad904e76021befdc1bc03252c416204bf69f0c182",
+    "Playground/2122112527-weighted-bare-steal/receipt.json": "2ae1cc528b4a4bf239fc39f9fbed4c9d58effdaf92b22a4f3ce922353a73e25a",
+    "Playground/2122112527-weighted-clock-only/receipt.json": "b495adbcefc11105c4b5078622b1470da33c0139ec1c5feba5b9b89e7b93c917",
+    "Playground/2122112527-weighted-ewma/receipt.json": "63e83fa52ea5def1bab08023b796343ed0682d852dbd60239d89611168c4bfd4",
+    "Playground/2122112527-weighted-fixed-no-steal/receipt.json": "1396d8d32fdd15b34d9444e22a18c7dbb081bfb96cf45c05671eac17e5e0f859",
+    "Playground/2122112527-weighted-fixed-steal/receipt.json": "d8d99b54d618df057273465cce5108ffc43894f3cc112bd99ed27cea5128def2",
+    "Playground/2122112527-weighted-last/receipt.json": "39e650af1c805df5b43c5c3baac522fb5a365f41e8b53a522cc980c1c718d6c6",
+    "Playground/2122112527-weighted-observe-only/receipt.json": "5aeae706dc77eaa892e93000e9583148b91c8f3007406d39b8b4cba0d80a5b8b",
+    "Playground/2122112527-weighted-two-choice/receipt.json": "ea61c07170f79f032a4858962b2aeb090d7167b9c47c91891c68297a277eb48f",
+    "Playground/275303672-baseline/receipt.json": "23c148d44523a01e387045c99532fa990b7ce318bb2448c034c2a6eed59168aa",
+    "Playground/275303672-first-steal/receipt.json": "d81bc83b70fce4935ae8214e48c1878993c32223f17c462cdd84fae24aa8183d",
+    "Playground/275303672-local-completion-round-robin/receipt.json": "c941e7fbc26e2d3713f5a1cfb6ff39191837f2b3c156b54613df845735b3ff21",
+    "Playground/275303672-local-completion-steal/receipt.json": "9271df03012c22bf286be984626a86ac06bdc4a5cb14991f68cf46e129eb3650",
+    "Playground/275303672-local-priority-steal/receipt.json": "ed033b99db7b08a8c78c6c2a5d11e14f8165aae2c8a7b2509578d89845cfd154",
+    "Playground/275303672-wake-only/receipt.json": "26b5a3f8712a2c7d41cc52a22115cfefaef164b0afa1a46d0b85a618902a202e",
+    "Playground/275303672-weighted-bare-steal/receipt.json": "4c31cefc831ab64de01dd4f02d941e3ba2dd4bdf078c862b8992b03dc53d1a0b",
+    "Playground/275303672-weighted-clock-only/receipt.json": "0a13b920b04352b30b5caead487acc43f802a090e3e365d9aeb500436c353ff4",
+    "Playground/275303672-weighted-ewma/receipt.json": "948032f3d8ee7427fca4a07d96f8e44300ee1d2e9894599537f863bf0310f7ae",
+    "Playground/275303672-weighted-fixed-no-steal/receipt.json": "c602cb12ca05acccfa0123ae642c4a0c1e029b5380c3b33860511dd87206cda9",
+    "Playground/275303672-weighted-fixed-steal/receipt.json": "cb52f33dfa68cb037ad74ca9984af8d7b5cc4e984ba131b1c518b61178bfbdd2",
+    "Playground/275303672-weighted-last/receipt.json": "f85dfb9ac79a15bf4cfec06feda1ddff0def2f699886bc9f57f45c1e4ac3751c",
+    "Playground/275303672-weighted-observe-only/receipt.json": "42034a17097e23a8bafda4ecf70ee1ba97681cbd62d2d6046bc5327b55866b51",
+    "Playground/275303672-weighted-two-choice/receipt.json": "fe788d9b4fad008e303f26e7bbc0ead55ddb8833990634092bac8619f02b0c16",
+    "Playground/31444774-baseline/receipt.json": "9f0d75738e0d2cb56991e0fae13d639fd8b9de9135856fe95231c72cdc36470b",
+    "Playground/31444774-first-steal/receipt.json": "74f68bb4e7e0554d80fc37f9e443bbc8980affbbce67d44a70ecba57ebce3382",
+    "Playground/31444774-local-completion-round-robin/receipt.json": "9ce9cea937940c0c423235ce536fc572f38a268a3f076bf0d725459a2ef4694e",
+    "Playground/31444774-local-completion-steal/receipt.json": "f186b9d334f2eb7b2969e89471b2b06a4d4e95298c7972a238296959d169a0f1",
+    "Playground/31444774-local-priority-steal/receipt.json": "e0bfbbdfec798123cdad12a5f1e7133a6f057be0e73bf96164017620aa1b4a6e",
+    "Playground/31444774-wake-only/receipt.json": "c359ba2ec37e6e906ae225ee09036c4c0f56c2d02fe7134ced2feeef1db0467c",
+    "Playground/31444774-weighted-bare-steal/receipt.json": "4265b8dcb826b92515ae1eccdad8604c0e33fa6fcc1a6bde173c64beb347f278",
+    "Playground/31444774-weighted-clock-only/receipt.json": "9e63369d8c1a0beed3ac4f46d57560daec86d437a38603314d487bdbea0faeb7",
+    "Playground/31444774-weighted-ewma/receipt.json": "e2165fbf8f76345baaec857462b4ea46aff5c3b453e14ea58d2c464d8b30371b",
+    "Playground/31444774-weighted-fixed-no-steal/receipt.json": "28f2f13c0f7df7e3c33dae44f4493547376d9d5a288dd49c265083d498138fe7",
+    "Playground/31444774-weighted-fixed-steal/receipt.json": "0ad5f94d0c95c10d9a014408cfcb86b8fcc696945427e54b4cb8e83dd26c72b7",
+    "Playground/31444774-weighted-last/receipt.json": "b5401d7e1d99716feecffad0317e23f7135f706c631af0bee7e1334f678118d3",
+    "Playground/31444774-weighted-observe-only/receipt.json": "e666bb97c0a29be802b7190893b67e4c61e98c5ec91c192784a2f10f43415169",
+    "Playground/31444774-weighted-two-choice/receipt.json": "9be683c0bcfea06b7039e039ef42036064e2920f921ce488d8e01c6db4cd937f",
+    "Playground/466374853-baseline/receipt.json": "7c735c7d98cafec883e67e6dfdb7db4f90fc8d19aa2fa8a90cddeedc25878644",
+    "Playground/466374853-first-steal/receipt.json": "f258f4c69d2c38415fbbf9249e8482ce6306513958dc09ff36f7cf425a7d2495",
+    "Playground/466374853-local-completion-round-robin/receipt.json": "af0b847270c3b3e690c94a5ff269e77d2b400307a39ee051f9cec09911dacbcd",
+    "Playground/466374853-local-completion-steal/receipt.json": "5c46ca3f8df2c5fb9b35d6f5960857207e8e3de246ae6d50976ac2334a12392e",
+    "Playground/466374853-local-priority-steal/receipt.json": "50ac234900359ef8475e3af8fa4557f8e527c2931b9252d4d0dba05b954705de",
+    "Playground/466374853-wake-only/receipt.json": "7ef90d8d4b35eb10a3717aa7ea10e5e25aa1bc1e806f2f14e21a366471b2d26d",
+    "Playground/466374853-weighted-bare-steal/receipt.json": "d3319945e11b450a0294bebe64d22b410d80c14fa3ce9463e612cd5fbe6330bd",
+    "Playground/466374853-weighted-clock-only/receipt.json": "091dfeed8bcd35938f8c7056b63ad21038710457ad3d0f0b940942e75b909f5b",
+    "Playground/466374853-weighted-ewma/receipt.json": "35d5420c33b324fcdea4f6d5c4592101780131deb807e382cdfda5b8b949abef",
+    "Playground/466374853-weighted-fixed-no-steal/receipt.json": "36f7e0fcfa6876b62abbc02787661c1ef04e85ca78f10a41326b7da8385e7868",
+    "Playground/466374853-weighted-fixed-steal/receipt.json": "2684b30b1b8feaab9810fe22b447d9d2efb70912df46ee81acdd302991254c96",
+    "Playground/466374853-weighted-last/receipt.json": "93e2213e61a3f9c02732a632c57b99dafc540c2b479bb9efbb22eabfc43b5d8d",
+    "Playground/466374853-weighted-observe-only/receipt.json": "73b138d692c5158d236d4d3ddc14a94ee7d9ac66ac7a83264930231b0f3261ba",
+    "Playground/466374853-weighted-two-choice/receipt.json": "f0d703715f70f53ef24f8148d22abe22fa1a220a499a60cd6cd813e885b56e83",
+    "Playground/494353701-baseline/receipt.json": "b17d8b411e53d97294bcb025c98515f1997fde5eda36868be7d84497965b6600",
+    "Playground/494353701-first-steal/receipt.json": "7afc1809303e24fa951d1dc0b2c8da30831db2cb59eb784a13d1c5f79779935a",
+    "Playground/494353701-local-completion-round-robin/receipt.json": "1e429a9f501c0d3829e67d58df329b388533db02e9144ec9cffaf93055f5939e",
+    "Playground/494353701-local-completion-steal/receipt.json": "1b108f7d1ed27f75640b8325194a724329e88b78ac799357766770906efec05e",
+    "Playground/494353701-local-priority-steal/receipt.json": "c202f76245a096d9d8fe658b7acb8b077556ec1c1010cf41ab84a0f577cddf45",
+    "Playground/494353701-wake-only/receipt.json": "1a7a9c8be0346f9de214c7e5a2fec4c21df9ff48df5e0f0cea7fcd2d5395fa3b",
+    "Playground/494353701-weighted-bare-steal/receipt.json": "6039cd3164862935c06b280a883ba62801002b045be07a8ded24af95eb8a503c",
+    "Playground/494353701-weighted-clock-only/receipt.json": "46fc18c11eb641ee7b8069aee68c6a6bd8ecd3124e170ede055e3c6ec896b272",
+    "Playground/494353701-weighted-ewma/receipt.json": "d0672eb20521967e0cdce7951fb0b5705dc98a9f43944f8e34ad98cca3cbde60",
+    "Playground/494353701-weighted-fixed-no-steal/receipt.json": "6f1f989e8ead2be23c5012e8f4f9a88c1a91a4768c76ef3deecc9eb655f02ab9",
+    "Playground/494353701-weighted-fixed-steal/receipt.json": "6604b3fc8078c1c0a2ed7c474d1b598726ef6c2276847e2063a08f5c52db5d53",
+    "Playground/494353701-weighted-last/receipt.json": "2087b49352749d8ab317ef8d3228d197aa82b039e464790228e70906f20e853d",
+    "Playground/494353701-weighted-observe-only/receipt.json": "e26e1b9d0725ef42888bd607b5bbb910393fe8cedc25e660a5baa3f6e6c332ac",
+    "Playground/494353701-weighted-two-choice/receipt.json": "a2cecbe3e87c7cd79a74174079d92ef8d7da91f39011e2ede6ad3bbc25b6806a",
+    "Playground/56523606-baseline/receipt.json": "0ceb9d6dc8f32e149c81d55cc22b36f2c416f7a037e30094836d9969b38bcae4",
+    "Playground/56523606-first-steal/receipt.json": "897b260fcbf372a9c10bbdedc5d10b2fab51c19cc8fcab4bc6ed005c65467d9a",
+    "Playground/56523606-local-completion-round-robin/receipt.json": "b084dec8ec7d312a5d54b3cbc0d88b1bd24c25ae4b6b027094ae1e5b91360fe1",
+    "Playground/56523606-local-completion-steal/receipt.json": "04583a8148d0d9021a853d7f8f5cd52f992306c7e237b57c528a3a20acabb4d9",
+    "Playground/56523606-local-priority-steal/receipt.json": "938780196380da0dd7f78638d69bd871a6d114fd39fefc4ad3931e7d3088fd4d",
+    "Playground/56523606-wake-only/receipt.json": "87016ad34d69e642cc1211c31eba4cde30de7b6561f03dbc926d0d605c159a31",
+    "Playground/56523606-weighted-bare-steal/receipt.json": "19bd95b2ec03548bb3aa8c62e7e59469dab5a53664a55f6791b9bec5066ee2a6",
+    "Playground/56523606-weighted-clock-only/receipt.json": "463eec944ba54773e71c1635546028c0d832e075e38d2b1448aab07ae0c7f76d",
+    "Playground/56523606-weighted-ewma/receipt.json": "5f0a656ce29fdeb44a456f81b2026f201ac01f9f08875e39732c2f3a856d6205",
+    "Playground/56523606-weighted-fixed-no-steal/receipt.json": "ad9e2c2544e8bf80d031923121fe00e960051dce70df325170dee4fe43a4f9ef",
+    "Playground/56523606-weighted-fixed-steal/receipt.json": "7522b7cfc72eba3ebb07ab5bc48efc9d6cea08345edb24c71d8764028fd7cec7",
+    "Playground/56523606-weighted-last/receipt.json": "e68579f9f52359be5430c49c63930b870abcad4f78879a68fbfccaf4bb987859",
+    "Playground/56523606-weighted-observe-only/receipt.json": "d86cc4de3ac7a13763156d8cb61e9d32a69a015fd403424cb7268d7582dabc1e",
+    "Playground/56523606-weighted-two-choice/receipt.json": "5b5a9cf774e049548e673a2a504994d0dabcb1c2d6dfbd31ee65dc6d715853b3",
+    "Playground/599004658-baseline/receipt.json": "9dc619e10ffb0b8a27b0d843d9f6c7a449a853f3ff50c06d7e964c962faa01e2",
+    "Playground/599004658-first-steal/receipt.json": "5884d37ff347f71e74987fefc07f2dcc86fec060f5c546d509e4586790b41e92",
+    "Playground/599004658-local-completion-round-robin/receipt.json": "046d0d88f57dd9805b4aab77630e2cdb1e3f20351ef9cfdc182aa3d7bbdc0339",
+    "Playground/599004658-local-completion-steal/receipt.json": "9a953a11cc8c46f70cfbfbc2d614446d6162345065a4da7fa48c7a41513dec10",
+    "Playground/599004658-local-priority-steal/receipt.json": "44ac40e0d48f060aa4e13d5f304395ad50864541a66b0201100ec79f9d4a72ef",
+    "Playground/599004658-wake-only/receipt.json": "132edc9aec34123c404874cfb54510edb504ee1c8a0f3aacce283abdd198aa49",
+    "Playground/599004658-weighted-bare-steal/receipt.json": "1464b341b07e08bbc6bedd1ed568d795d4aa97970f828140e2c579288758d750",
+    "Playground/599004658-weighted-clock-only/receipt.json": "64f2d27d045d95d23620b99cafa66f46839ed6eec6a0b8eaae9f17439a4d92f3",
+    "Playground/599004658-weighted-ewma/receipt.json": "47b1249621dd81fc26348758d6c24a6389143a03f3f02a3bcc82a41bfea58162",
+    "Playground/599004658-weighted-fixed-no-steal/receipt.json": "7cfc9cc114ba80c2de9cb46610b4be552bf34e564d1d01d8affa1323e878fef7",
+    "Playground/599004658-weighted-fixed-steal/receipt.json": "08392ce42cdcbde6d9320cc0acf2e60aa87ba6ecb3970baa8e0d24c7a60ae3d4",
+    "Playground/599004658-weighted-last/receipt.json": "d09a9c0de71f876e85df8ac0d7428b7e4008ef9bd73eac4ded42a826439f3bd3",
+    "Playground/599004658-weighted-observe-only/receipt.json": "cf5371bea36d8acaae612898824f96358109273e39d0aec40ec319b7f6283b3a",
+    "Playground/599004658-weighted-two-choice/receipt.json": "12f9cef33c191c9433c3712433de35b11fa746144e6a8c53a156133576daf9e0",
+    "Playground/725864695-baseline/receipt.json": "b07f9c8a5803245b750467183de03d8349eabe357838ecd2b5d0c3f269901d5f",
+    "Playground/725864695-first-steal/receipt.json": "2ddb9b5ebf1d793cc935392af349cff41cc78bbfc197c0d11fca4f9f675ccfbd",
+    "Playground/725864695-local-completion-round-robin/receipt.json": "dbaf30508071fe1950618d7a47d3185fa0ad45fe6a2dfc97e597df9732ce41f6",
+    "Playground/725864695-local-completion-steal/receipt.json": "96d4a448b2bd188e8e73372f092e454d6fda9d7bbfe599b6971b3ee7283156d7",
+    "Playground/725864695-local-priority-steal/receipt.json": "0ccbdfb7b4f249b5a102dd9882e1813bd91e3552014ec59db72457ca6d73d4c4",
+    "Playground/725864695-wake-only/receipt.json": "71dab27879990d00ff0b6ab569b2db0238e2333daa138e3446893dcd8389fd82",
+    "Playground/725864695-weighted-bare-steal/receipt.json": "7794c06deeb7f11605cb772ef0c48677157ead9760ab3a14f2ec7dc84d6b65af",
+    "Playground/725864695-weighted-clock-only/receipt.json": "8c7e7b4c52f69e7c7aa11dffaa581e0392677efacd87651ff010475dfdf4ee15",
+    "Playground/725864695-weighted-ewma/receipt.json": "a250d259b86774422d936fab89ae4143f5f0d3ea4c7c94a16f6b142035dd76d2",
+    "Playground/725864695-weighted-fixed-no-steal/receipt.json": "5467013fd8ac81a0d54a43501563d5ca0be4e1f126d242ea0d98e0b2b0e86dbf",
+    "Playground/725864695-weighted-fixed-steal/receipt.json": "c6749d589d9e219c4106d4b5d701fe194cbeb24b4f24e4bae6043b76583ecd79",
+    "Playground/725864695-weighted-last/receipt.json": "92ea8a19e016b3549339bfae91165f9d41013f17a1df6f467cd2e4530a38f97c",
+    "Playground/725864695-weighted-observe-only/receipt.json": "967994c6f91d6c82a53226164f9860dd7f3c8f832ae6447dfee55ab0a4421418",
+    "Playground/725864695-weighted-two-choice/receipt.json": "4fdf2241438755817e282c6a3ccef8b59400baf0d8f7e12061d8f37dba76ef92",
+    "Playground/741493568-baseline/receipt.json": "51a57b0a209bad039fe437f6f0f065e58fad6bf64515e365a1f62fcaf4085f8c",
+    "Playground/741493568-first-steal/receipt.json": "3e0e647a12f019ccb6248a331d44a08f64ba182772a1dbe22f13c27f6e5af50b",
+    "Playground/741493568-local-completion-round-robin/receipt.json": "f99fecb9884b6ac3726f59e720ccbb8a86597c82020b62b53a5a4b12d15f4ac5",
+    "Playground/741493568-local-completion-steal/receipt.json": "fbd642e455b18382fa6709f78622872da33cf62176c7841e49724b1bba21fb4b",
+    "Playground/741493568-local-priority-steal/receipt.json": "bc3204980c5cb336afd7ef10287f617be7ae0394b524bc0fab12c08167c6df8d",
+    "Playground/741493568-wake-only/receipt.json": "e98de5b60eae16d684dad5007f8b4335ac50d3adfdcb91d68909efa77dc5479e",
+    "Playground/741493568-weighted-bare-steal/receipt.json": "414879e1a00c1179437a97cdbbcfcc2c3fad11c390f296068622eb827591ad10",
+    "Playground/741493568-weighted-clock-only/receipt.json": "6416f6b775921e2666fd3cebf50fe70b53fbdc83e254541ef2777e79553f9e16",
+    "Playground/741493568-weighted-ewma/receipt.json": "1c8378a12c32a0c62fd10a267b545a51da3f0f714d04fb89d791da3fa57ff8ff",
+    "Playground/741493568-weighted-fixed-no-steal/receipt.json": "6937abb6bb1cff5989b2e343cf3b4bb4146dbe4a4a7b3922932af7361a1ff9a5",
+    "Playground/741493568-weighted-fixed-steal/receipt.json": "1a8a6a9b7cc8f67cb3324e7bfe7d1fd18a51a092b236a600569d8b457f44308a",
+    "Playground/741493568-weighted-last/receipt.json": "79a881053bf39ed1621602019548cbd742b233b70ea5655ca0e23ef21cca32f7",
+    "Playground/741493568-weighted-observe-only/receipt.json": "f48b88614d983a093f814aaa61971060c6849545f695030782515c0f188c1693",
+    "Playground/741493568-weighted-two-choice/receipt.json": "8433ef37dbc1d4080a865b59f14529eb2d30bf3d1920933087caf6af886264f9",
+    "Playground/744345666-baseline/receipt.json": "3ef7ff84397a65f34430727e4447bfaa82364128d77fa7e37343e4f98cf9c962",
+    "Playground/744345666-first-steal/receipt.json": "821df9fab40864956284efd722a6fabeab48c378cdf825525f0983c389f6435d",
+    "Playground/744345666-local-completion-round-robin/receipt.json": "1806de3596e7e20d118b8594e43ce26b80826578213f23308e92a90dd73b26f9",
+    "Playground/744345666-local-completion-steal/receipt.json": "90cf67c56697390909fdd031b2ab5e49e7581843a69970fa44b0f5cb2e9139ba",
+    "Playground/744345666-local-priority-steal/receipt.json": "30e70b3c983b1b10a1abf558ffe0adb7e7efbd8e8168286809d665c2e3014d33",
+    "Playground/744345666-wake-only/receipt.json": "809e980bb11803ef6a792d243b31f108573f52b3bb8bc7fea130a16a29b68f28",
+    "Playground/744345666-weighted-bare-steal/receipt.json": "5398f5b4e4b40f1a8c66f32532f369bfaa1dc0764e5b3a353c07c3d3902b2641",
+    "Playground/744345666-weighted-clock-only/receipt.json": "84112200b62c04c639131a0a8acacba693a169b97be36c2ed96769b77dc5c964",
+    "Playground/744345666-weighted-ewma/receipt.json": "6bbb8ef756ddb8e8072456975ac77059cf75852de6f4fb4319222900942fdd58",
+    "Playground/744345666-weighted-fixed-no-steal/receipt.json": "a58cf1d6c2e531e26b0c44266882a4cc2d3b3944953d5f92e8771c5ec7c1c15a",
+    "Playground/744345666-weighted-fixed-steal/receipt.json": "a43bcecd96639ed5379e4e7ed1203fd705b44b1978ad1ab48910a9d3b6f5ae18",
+    "Playground/744345666-weighted-last/receipt.json": "8a86900e440f95446e02a0b5c61b987097d6b622a26eedf898ce42661bdcfe18",
+    "Playground/744345666-weighted-observe-only/receipt.json": "74a4a38d36cc920df4a1f547134a690a149dea46c13e6d34e02f05b26f4d9fe1",
+    "Playground/744345666-weighted-two-choice/receipt.json": "875f7f86499580c30a511df10f3d745d0407302966e2f56f15a4474ad0e58ffc",
+    "Playground/769116511-baseline/receipt.json": "b04bdf5efe489259a97e98dd7453f5284ad6ed37b30c00656a5195e18d749158",
+    "Playground/769116511-first-steal/receipt.json": "b8c4a18ed2e8085375fe69a6111ed4950039c39d5699f024f116f81cb73970aa",
+    "Playground/769116511-local-completion-round-robin/receipt.json": "48c4c59d46ffd71366f8d17cfc474b6dc94902153708628fcdbd57d434081b61",
+    "Playground/769116511-local-completion-steal/receipt.json": "1936e2ee5f5bc3d9714a7574ead99cce106fc038451f98e8c2c7f3f7ad751845",
+    "Playground/769116511-local-priority-steal/receipt.json": "c910a8a3fc04881af37262493a4700d1c6eeec1c494d7bd0b2df772b0816e797",
+    "Playground/769116511-wake-only/receipt.json": "1d9b2d63317c7c1e1fec931be7ebf18c5ba4ba4290ae65e120fffd140e2535c0",
+    "Playground/769116511-weighted-bare-steal/receipt.json": "a03cf5c205789762e8a3372a203e9657fccc36a84008797e3cb6999bb196820f",
+    "Playground/769116511-weighted-clock-only/receipt.json": "39074aef6d7bc503b271545105eb37890e88b1bdad18f79765b9d5fc074d0ef9",
+    "Playground/769116511-weighted-ewma/receipt.json": "973cea092d1829f58e4d6bf8a2d597f7abc95f2522499f698e0a867ce97f79b1",
+    "Playground/769116511-weighted-fixed-no-steal/receipt.json": "356b26128f39ad051dbf83122b66cb293f0cb7ff1119459100c16e31a4d8c2c6",
+    "Playground/769116511-weighted-fixed-steal/receipt.json": "bd923d4389582f6af8d0d90971e9f6664170f34bdb7459a28369e12297ae498b",
+    "Playground/769116511-weighted-last/receipt.json": "c513649acee9ae6a9c7d43d394e0741bb0e201d45c0797e6dfe64b43f4d6287b",
+    "Playground/769116511-weighted-observe-only/receipt.json": "d78edcc0825bb55ddcf1fc1ca0d06d4043a9734b29bf34ec5f6cc25a701cf367",
+    "Playground/769116511-weighted-two-choice/receipt.json": "cab965b031f479609a15e281ceeee820e774367488d9a7f704bb2d3d3b26eaef",
+    "Playground/7804900-baseline/receipt.json": "1ee15c15bbaec05ce96d58ed5554dcaf346fca2ebd525a77a470fd9b9658c34b",
+    "Playground/7804900-first-steal/receipt.json": "015a2e6045eb2baf61f7b67d7df63707918d68d02e45eb24585252efd27779f5",
+    "Playground/7804900-local-completion-round-robin/receipt.json": "8b5b99474aad19c36aca0c5872e1195506f9f5cc26e2738cf44735c0f59be6df",
+    "Playground/7804900-local-completion-steal/receipt.json": "f5afbf1bc9d019d3502eed8b37dc55c9eab13b1b6240ddb08d84d98a368b7184",
+    "Playground/7804900-local-priority-steal/receipt.json": "8b03a84c63c738dc653fd80ece34367037fcf58c64cf73048279a3b81019c8c5",
+    "Playground/7804900-wake-only/receipt.json": "559a7dfe548cc9921baf6d8d9ad8366e0d02f9ed6cebacfc30e756a8cd290306",
+    "Playground/7804900-weighted-bare-steal/receipt.json": "3e5b987b51432477502770771574ca4eae53115077f30ca00ccced1db6508715",
+    "Playground/7804900-weighted-clock-only/receipt.json": "2fec05884484112eea627cd439bdfeb91cd2b2c50f475694b40bdc612dfbb331",
+    "Playground/7804900-weighted-ewma/receipt.json": "45c15e548820ed945df11723dc5cc0cb45b8ee9f0006ba513745872aefbf0ef9",
+    "Playground/7804900-weighted-fixed-no-steal/receipt.json": "fd40275b225db497191f9a4f6bcbed29017208966de47d9ec4faf40bd9b4a604",
+    "Playground/7804900-weighted-fixed-steal/receipt.json": "bbc90ff4ef82d9edd2111f9fda38d09f827e38b0acc8ce95fd587d3299a2c5da",
+    "Playground/7804900-weighted-last/receipt.json": "9e2998df323a5f67f99b9e6910ca4c3970737d63d65ca9a305ddc895a673962e",
+    "Playground/7804900-weighted-observe-only/receipt.json": "5e7a341bb777744df07b8a6e98465ccbbbdd9fc88e8cca761d79943a48081885",
+    "Playground/7804900-weighted-two-choice/receipt.json": "5da00776c162fa9957be004b5765a1e47e3d7a6872899d75736392542ae988d9",
+    "Playground/79851807-baseline/receipt.json": "3c66de4006e387518af62f0bd21239a97f7ee0d70e426f585cd3699c949dda28",
+    "Playground/79851807-first-steal/receipt.json": "35aad9022d6b045d666b40928ffd647fc47c6706fbdf89173d818a24a6bca983",
+    "Playground/79851807-local-completion-round-robin/receipt.json": "9b11bcd28fe97a7ec5cd68a7df96407665937b50aa438309bc86da88553386c0",
+    "Playground/79851807-local-completion-steal/receipt.json": "73d89bd273765bf0819fa7f0a0c7da9107390424fff2ede091ca7f25f9aa9551",
+    "Playground/79851807-local-priority-steal/receipt.json": "8985a171c8ff58d23b77d7e76d69bfaef7720b2e4ec22d193637a6fea5e03811",
+    "Playground/79851807-wake-only/receipt.json": "702b6471c1881bc5ad09baf5d93093c6e8248cc9a6237cec0aca906765fa3f70",
+    "Playground/79851807-weighted-bare-steal/receipt.json": "6cfa7c8c4f12c51c7056ace9c07b3b048915ce11165f6dfe9c7e435a6e16f01a",
+    "Playground/79851807-weighted-clock-only/receipt.json": "b3628594cb37d792680f51dd657b40f5ea93a03ee035b2033a6844618ef078c1",
+    "Playground/79851807-weighted-ewma/receipt.json": "7eab5df29cec9e5402f31f9714fb5cb5e60a5a3d9a16295f47ffbece1eef30e5",
+    "Playground/79851807-weighted-fixed-no-steal/receipt.json": "37660659a8557d03305315ab79f4f44a8f4c4aaed72b90bbac0b3c7f09dcfc8b",
+    "Playground/79851807-weighted-fixed-steal/receipt.json": "92bb6a005800bc6745e74098ec5962f0ba3278024f76abb73372b3fece496b55",
+    "Playground/79851807-weighted-last/receipt.json": "ee1971f0c9de2adf5d1bf7e09472624544b38ca0a0c78a699780d8038fe294fe",
+    "Playground/79851807-weighted-observe-only/receipt.json": "a6dd30ba6cc3976bd0cf7a2b026d072d0dd7723a82ff3f8d00fa3e640e346a39",
+    "Playground/79851807-weighted-two-choice/receipt.json": "8c8e5c77fb01366b7b57424fa5571e88e02016bf11426fb79d6429c5e3ef283f",
+    "Playground/85910194-baseline/receipt.json": "77002ce4bca894f9cb57c2c3e5c1c31e474986e2a7e9206ee7c96d149cef980f",
+    "Playground/85910194-first-steal/receipt.json": "56f7725ddffe67b06fa777959fc6254cae08192313535ec22e2300d58f7424e3",
+    "Playground/85910194-local-completion-round-robin/receipt.json": "286167c669eab4ff36f0bb525bb53154732937441c83188923e34e4df6643eb8",
+    "Playground/85910194-local-completion-steal/receipt.json": "182d5db9adacc819cb2bfb9a2233c04da0b0ed9e052c33be43ed7f9a1a1dcd4e",
+    "Playground/85910194-local-priority-steal/receipt.json": "11711bb826e7e09174bf263e80b392f8ce525e754318aadc76eac354ba63bcc1",
+    "Playground/85910194-wake-only/receipt.json": "a0e401a9eb3aea827bcb5b3169080cce73ce1fe036b47e6d69245157b6a707b4",
+    "Playground/85910194-weighted-bare-steal/receipt.json": "caa96fa75081a69a12ddf46b0aa7ec4317c80dacc5fafdb6f04625b3492131ec",
+    "Playground/85910194-weighted-clock-only/receipt.json": "f897d6d005b4c45e8c5e8ed33dbb035c08835b332d6e9c0e0ab2e60eda8d07ee",
+    "Playground/85910194-weighted-ewma/receipt.json": "98ca5dbea9e7a4fc6a7e972304323be5c52859befdb19fb569b8d7a8684879d3",
+    "Playground/85910194-weighted-fixed-no-steal/receipt.json": "f98345e93cb7061476e3aaadb5fe7481e43f6e2435160e28452d01cc91e39a03",
+    "Playground/85910194-weighted-fixed-steal/receipt.json": "be2cc2eca43d5de7363ffbb85431858e8c7790e4819ec5ca0dd60849bb3b939f",
+    "Playground/85910194-weighted-last/receipt.json": "1889368dc04e9db6264e3d481eddc8bb37f20727a89a9d03a4ebf056662874fd",
+    "Playground/85910194-weighted-observe-only/receipt.json": "f9da602cafe400d110c013a2282995ff06a7d60f6d628bbbdbdb40cfaab415e7",
+    "Playground/85910194-weighted-two-choice/receipt.json": "d8aec98f26e11657b896ecf4881ba543cfc3506d8d446b4ff715db604f4d81a8"
+  },
+  "limits": [
+    "Onehost/Playground/unrestrictedauto32 only; user stopped before Oazis or concurrentwaves.",
+    "Timing telemetryOff: winner/tick agreement only, bounded280qualification perTick separate.",
+    "Exploratory many comparisons have no familywise adjustment; no universal optimality or adoption claim.",
+    "WholeprocessCPU includes startup/load/shutdown; no pure runCPU attribution.",
+    "Knownbaseline2enginefailures retained; originalbare suite timeout remains limitation."
+  ],
+  "source_sha256": "00bb8f7ff7f1d2cc13dde6ed77281689654a6d7c2f27835c699ab093a1de5b14"
+}

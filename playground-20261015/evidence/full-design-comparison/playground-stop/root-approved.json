@@ -1,0 +1,19 @@
+{
+  "source_sha256": "de25f6eb4880f05b76680bc62a23da52adbdf19bc290eab94fe9042695700cdd",
+  "runner_sha256": "470086d1a9590df0dd3990b14e53c7480d5a700335f56dac58f0df51b6c02784",
+  "plan_sha256": "7ba521d13781a75a1c04bec826dca5f8b6ec40f9c72f916ff48046d0b43eb077",
+  "runner": {
+    "pid": 460600,
+    "starttime": "334012252"
+  },
+  "controller": {
+    "pid": 460595,
+    "starttime": "334012174"
+  },
+  "sentinel_receipt_sha256": "7fdc351d25b6545f8416701f04122d0a0d652e27188e866a59585caea5e121ac",
+  "sentinel_sha256": "e5cf8ea285763f773a61b68f5d121ac2c5bf90785bb4514be39c3b2eb2b5dfb9",
+  "approved": true,
+  "review_sha256": "94155b7770fbda2dff36006d98ad9adfaff3e7abd5abe0f62f3c6785c5e8c647",
+  "utc": "2026-10-15T16:21:58.499070+00:00",
+  "scope": "Read-only proof of user-requested448PGcompletion and retirement; never resumeOazis/waves/otherexperiments."
+}

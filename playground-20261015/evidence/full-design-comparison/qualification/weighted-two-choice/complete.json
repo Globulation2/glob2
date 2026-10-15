@@ -1,0 +1,1189 @@
+{
+  "state": "qualified_with_known_baseline_failures",
+  "research_qualification_only": true,
+  "role": "weighted-two-choice",
+  "variant": {
+    "role": "weighted-two-choice",
+    "source_label": "weighted-source",
+    "env": {
+      "GLOB2_DEFERRED_DISPATCH": "steal",
+      "GLOB2_WEIGHTED_POLICY": "two-choice"
+    },
+    "qualification_constraints": [
+      "Compute telemetry Off for timing; prediction clocks independent of telemetry.",
+      "Require actual participants requested; serial owner fallback changes no job placement.",
+      "Same054initial state/seed/orders must match baseline everytick, including continuation/deadline and lifecycle/save tests.",
+      "Explicit class annotations cover7production producers; Generic reserved forHarness or future unannotatedjobs.",
+      "Fixed-no-steal intentionally disables opportunistic general stealing but retains mandatory optional-work rescue."
+    ],
+    "binary": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/weighted-source/build/linux/client/release/src/glob2",
+    "sha256": "257d526f5d56c7b63b614ce3a0f895345cb20569c6a6f573e09a9abee5e5336c",
+    "cwd": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/weighted-source",
+    "unit": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/weighted-source/build/linux/client/release/test/glob2-unit-tests",
+    "engine": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/weighted-source/build/linux/client/release/test/glob2-engine-tests",
+    "base_revision": "054804590ee1dd109f09642fc05654c324f08344"
+  },
+  "focused_tests": [
+    {
+      "kind": "unit",
+      "cases": 71,
+      "failures": [],
+      "known_baseline_failure_events": [],
+      "passed_cases": 71,
+      "skips": [],
+      "tested_binary_sha256": "8d8e4bc2f5b32f292b066ac4da2e7546376925789bc9fd03fb619c683680336c",
+      "filter_inventory": {
+        "ComputeExecutor/*": [
+          "ComputeExecutor/automatic sizing respects platform limits and supports unknown CPU counts",
+          "ComputeExecutor/CPU availability provenance distinguishes affinity from hardware hints",
+          "ComputeExecutor/thread configuration accepts auto and rejects malformed or overflowing overrides",
+          "ComputeExecutor/supported platforms execute jobs concurrently on distinct threads",
+          "ComputeExecutor/exclusive slots; nested batches; reuse; errors; barriers and reconfiguration",
+          "ComputeExecutor/deferred batches complete with lanes and isolated errors",
+          "ComputeExecutor/idle workers retain parallelism for independent and mixed lane groups",
+          "ComputeExecutor/repeated lane groups and empty groups preserve ordering and independent work",
+          "ComputeExecutor/external completion and continuation wake parked lane successors",
+          "ComputeExecutor/lane groups run in index order and the horizon is bounded",
+          "ComputeExecutor/sharded ready dispatch executes each independent job and the owner only waits",
+          "ComputeExecutor/without workers the owner runs the jobs due no later than the join",
+          "ComputeExecutor/a lane keeps submission order: a lane job due before a live earlier one is rejected",
+          "ComputeExecutor/the slot count covers every producer's horizon",
+          "ComputeExecutor/presentation cannot delay simulation barriers with spare workers or run on the simulation owner",
+          "ComputeExecutor/with one worker the owner waits through its presentation chunk and never runs the join itself",
+          "ComputeExecutor/presentation progresses before a continuous simulation backlog drains",
+          "ComputeExecutor/presentation replacement, chunk pumping, cancellation and errors retain no captures",
+          "ComputeExecutor/resumable presentation yields without advancing or retaining canceled inputs",
+          "ComputeExecutor/worker only maintenance never uses the owner including creation failure",
+          "ComputeExecutor/worker only maintenance yields to required jobs and cannot delay their completed join",
+          "ComputeExecutor/suspended device work releases the only worker and preserves lane completion",
+          "ComputeExecutor/early device failure resumes exactly once on the worker at its original lane position",
+          "ComputeExecutor/early asynchronous completion cannot release an invoking callback's inputs",
+          "ComputeExecutor/continuation of a nonzero lane-group index keeps its original sequence",
+          "ComputeExecutor/retained completion tickets can be resolved after executor destruction",
+          "ComputeExecutor/graphics batches finish once, retain failures and release captures",
+          "ComputeExecutor/serial graphics finish never pumps scene or required work and abandonment releases captures",
+          "ComputeExecutor/graphics cancellation drains claimed work and reconfiguration releases inputs",
+          "ComputeExecutor/both presentation classes progress during required lane backlog",
+          "ComputeExecutor/graphics callback barriers are rejected and completed tickets do not pump newer work",
+          "ComputeExecutor/empty graphics submissions bypass occupied admission and concurrency metrics respect ceilings",
+          "ComputeExecutor/graphics capture destruction can inspect scheduler metrics before completion",
+          "ComputeExecutor/disabled diagnostics do not read the injected clock or collect counters",
+          "ComputeExecutor/owner execution, stale handles, reuse and lifecycle attribution use one locked inspection",
+          "ComputeExecutor/worker waits aggregate distinct ticks globally and per producer without worker timing",
+          "ComputeExecutor/complete joins and trace overflow remain valid and snapshots require drain",
+          "ComputeExecutor/trace preserves early external resolution and continuation callback ordering",
+          "ComputeExecutor/trace storage allocation failure downgrades without losing required work",
+          "ComputeExecutor/blocking fork join failures and presentation remain traced without entering tick waits",
+          "ComputeExecutor/graphics diagnostics are optional and waits mode attributes the owner barrier",
+          "ComputeExecutor/yielded presentation chunks keep callback indices paired",
+          "ComputeExecutor/worker-only maintenance is traced as other work without a required join",
+          "ComputeExecutor/session reset suppresses a returning maintenance interval from the previous epoch",
+          "ComputeExecutor/synchronous graphics adapter keeps empty calls idle and guards owner callbacks",
+          "ComputeExecutor/graphics adapter restores callback state on failure and never pumps other work",
+          "ComputeExecutor/synchronous graphics cancellation rejects incomplete output after draining",
+          "ComputeExecutor/graphics adapter preserves occupied admission and serial finish shares the scene cap",
+          "ComputeExecutor/canceling a slot-blocked graphics batch wakes its owner before scene completion",
+          "ComputeExecutor/sharded queues preserve lane order across repeated groups exceptions and slot reuse",
+          "ComputeExecutor/sharded ordinary callbacks can inspect metrics without scheduler lock ownership",
+          "ComputeExecutor/idle steal peer consumes ready work assigned behind a busy worker",
+          "ComputeExecutor/required queue already populated at optional entry is rescued by spare worker",
+          "ComputeExecutor/steady sharded deferred dispatch inspects shared control periodically",
+          "ComputeExecutor/lane affine dispatch retains a controller lane on one worker",
+          "ComputeExecutor/batch local terminal fan in survives immediate slot and result storage reuse",
+          "ComputeExecutor/retired batch storage cannot remain in another batch lane chain",
+          "ComputeExecutor/concurrent batch local failures publish one error before finished",
+          "ComputeExecutor/weighted cost classes cold reset and reservation transfer debit",
+          "ComputeExecutor/weighted reservations include active callbacks until their CPU slice returns"
+        ],
+        "ReplayStepCounter/*": [
+          "ReplayStepCounter/truncated replay bodies never become zero-filled orders",
+          "ReplayStepCounter/step totals cannot wrap",
+          "ReplayStepCounter/checksum mismatch closes playback safely",
+          "ReplayStepCounter/legacy create decoder respects both historical payload lengths",
+          "ReplayStepCounter/WideRoundTrip",
+          "ReplayStepCounter/VersionBounds",
+          "ReplayStepCounter/DecodeVersionPlumbing"
+        ],
+        "HiringRanking/*": [
+          "HiringRanking/material ranking keeps skill preference and stable ties",
+          "HiringRanking/attraction roles preserve opposite skill preferences"
+        ],
+        "TurnHarness/two clients on clean links execute identical turns*": [
+          "TurnHarness/two clients on clean links execute identical turns [network-sim]"
+        ],
+        "TurnHarness/a restarted client reloads, replays the full log and rejoins*": [
+          "TurnHarness/a restarted client reloads, replays the full log and rejoins [network-sim]"
+        ]
+      },
+      "junit_sha256": "56230808587ccae2dacd656e90eb27ea747bef6e6f75006aee5da4fc58722b81",
+      "command_receipt": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/qualification/weighted-two-choice/focused-unit/command.json",
+      "original_returncode": 0,
+      "reused_focused_evidence": true
+    },
+    {
+      "kind": "engine",
+      "cases": 162,
+      "failures": [
+        {
+          "class": "ResourceGrowth",
+          "name": "historical growth payloads are rejected after header preflight"
+        },
+        {
+          "class": "TurretTargeting",
+          "name": "overlapping publication preserves other sources through upgrade and incarnation changes"
+        }
+      ],
+      "known_baseline_failure_events": [
+        {
+          "suite": "ResourceGrowth",
+          "name": "historical growth payloads are rejected after header preflight",
+          "events": [
+            {
+              "type": "CHECK_FALSE",
+              "message": "true",
+              "body": "\nsrc/map/ResourceGrowthTest.cpp:828:\nCHECK_FALSE( engine.gui.game.load(input.get()) ) is NOT correct!\n  values: CHECK_FALSE( true )\n  logged: name := <volatile-address>"
+            },
+            {
+              "type": "CHECK_FALSE",
+              "message": "true",
+              "body": "\nsrc/map/ResourceGrowthTest.cpp:828:\nCHECK_FALSE( engine.gui.game.load(input.get()) ) is NOT correct!\n  values: CHECK_FALSE( true )\n  logged: name := <volatile-address>"
+            },
+            {
+              "type": "CHECK_FALSE",
+              "message": "true",
+              "body": "\nsrc/map/ResourceGrowthTest.cpp:828:\nCHECK_FALSE( engine.gui.game.load(input.get()) ) is NOT correct!\n  values: CHECK_FALSE( true )\n  logged: name := <volatile-address>"
+            }
+          ]
+        },
+        {
+          "suite": "TurretTargeting",
+          "name": "overlapping publication preserves other sources through upgrade and incarnation changes",
+          "events": [
+            {
+              "type": "CHECK",
+              "message": "false",
+              "body": "\nsrc/building/TurretTargetingTest.cpp:456:\nCHECK( pipeline->entries(*changed).empty() ) is NOT correct!\n  values: CHECK( false )\n\n      "
+            }
+          ]
+        }
+      ],
+      "passed_cases": 160,
+      "skips": [],
+      "tested_binary_sha256": "30ceba8e3d30254ab236d919454d6ec69af536a645df7b289f143850cc4d02f0",
+      "filter_inventory": {
+        "AIPipeline/*": [
+          "AIPipeline/a submitted deadline is delivered even when no new poll is eligible",
+          "AIPipeline/every shipped controller preserves orders and state across worker counts and all delays",
+          "AIPipeline/pause and repeated boundary calls cannot execute a published command twice",
+          "AIPipeline/replacement cancels an old output without rejecting identical new wire bytes",
+          "AIPipeline/save continuation retains controller caches receipts and future commands at pipeline boundaries",
+          "AIPipeline/team death cancels submitted work and saves receipts for a revived controller",
+          "AIPipeline/wrapper preemption preserves controller rejection feedback and pending release identity across save"
+        ],
+        "SharedWorkerLifecycle/*": [
+          "SharedWorkerLifecycle/background saves finish on a worker and remain readable after teardown",
+          "SharedWorkerLifecycle/no-AI completed ticks and saved continuation agree across diagnostic modes and worker counts [artifacts]",
+          "SharedWorkerLifecycle/pending gradient work survives a save and continues at the same deadlines",
+          "SharedWorkerLifecycle/reduced saved AI rosters retire trailing controllers and preserve continuation",
+          "SharedWorkerLifecycle/resource catalog import drains deferred material preparation before replacing stocks"
+        ],
+        "SimulationReadPhase/*": [
+          "SimulationReadPhase/AI and pending gradients share the standard boundary with presentation",
+          "SimulationReadPhase/direct completed steps match deferred preparation across worker counts",
+          "SimulationReadPhase/presentation borrows the published no-AI read boundary without recapture"
+        ],
+        "BuildingGradientInvalidation/*": [
+          "BuildingGradientInvalidation/a deleted building's pending result cannot replace a reused destination",
+          "BuildingGradientInvalidation/a paused field keeps its original obstacles",
+          "BuildingGradientInvalidation/a pending result keeps the generation a team-local edit carries forward",
+          "BuildingGradientInvalidation/a ring cuts off a virtual flags field",
+          "BuildingGradientInvalidation/a rival teams ring cuts off a cached field",
+          "BuildingGradientInvalidation/access metadata follows the newest capture across swim classes and saves",
+          "BuildingGradientInvalidation/an empty building pipeline follows a changed header delay through save and load",
+          "BuildingGradientInvalidation/area and team-wide resets keep stale walking fields serving with the pipeline on",
+          "BuildingGradientInvalidation/centre placed inside an existing ring",
+          "BuildingGradientInvalidation/delayed fields",
+          "BuildingGradientInvalidation/idle field storage is reused without stale routes",
+          "BuildingGradientInvalidation/partial scheduled fields resume on the owner from transferred buckets",
+          "BuildingGradientInvalidation/pending building results survive save boundaries and cannot resurrect evicted fields",
+          "BuildingGradientInvalidation/prediction retains reader demand across rebuilds and save completion",
+          "BuildingGradientInvalidation/public reads resolve their inputs",
+          "BuildingGradientInvalidation/requests during team stepping are captured at the observation boundary",
+          "BuildingGradientInvalidation/retained format126 access flags restore walking and swimming locks into the footprint route and survive current saves [save-format]",
+          "BuildingGradientInvalidation/ring placed around an existing field",
+          "BuildingGradientInvalidation/same-tick swim classes write access metadata in request order",
+          "BuildingGradientInvalidation/scheduled building fields publish at fixed deadlines across worker counts and delays",
+          "BuildingGradientInvalidation/slow and failing workers never change the publication tick",
+          "BuildingGradientInvalidation/snapshot building seeds and captured-input searches match the synchronous kernels for every route and swim class",
+          "BuildingGradientInvalidation/synchronous rebuilds and lifecycle hooks supersede pending jobs that share a deadline"
+        ],
+        "ResourceGrowth/*": [
+          "ResourceGrowth/both format 144 and 145 lineages and compact growth saves retain continuation [save-format]",
+          "ResourceGrowth/configured seeds preserve rates variety collisions and saved output",
+          "ResourceGrowth/finishing the last deferred tick computes without publishing early",
+          "ResourceGrowth/format 144 and 145 packed growth headers cannot alias artwork lengths",
+          "ResourceGrowth/frozen input outlives terrain and resource edits and wrapping remains valid",
+          "ResourceGrowth/historical growth payloads are rejected after header preflight",
+          "ResourceGrowth/kernel is immutable deterministic and responds to disabled growth and scarcity",
+          "ResourceGrowth/later completed work cannot publish ahead of an earlier batch",
+          "ResourceGrowth/legacy pending masks migrate and signed pending proposals validate on load",
+          "ResourceGrowth/light checksums leave zero-worker work deferred and world replacement discards it",
+          "ResourceGrowth/material growth events oscillate independently and create configured seed stocks",
+          "ResourceGrowth/mature growth events oscillate and respect intervening harvests",
+          "ResourceGrowth/pipeline waits at exact deadline and pause does not publish",
+          "ResourceGrowth/proposal capacity grows safely and is retained for reuse",
+          "ResourceGrowth/publication accounts for proposals rejected by a different world",
+          "ResourceGrowth/setting the delay leaves reservations and unfinished work untouched",
+          "ResourceGrowth/signed proposals use only current resource type and apply in order",
+          "ResourceGrowth/source decisions cannot shift scan sampling or another source",
+          "ResourceGrowth/text save layout probes are relative and preserve section state",
+          "ResourceGrowth/typed proposal loading validates fields and preserves old queued units",
+          "ResourceGrowth/zero seed stocks use authoritative resource initialization",
+          "ResourceGrowth/zero-worker and shared deadlines match and pending work survives saving"
+        ],
+        "TeamStatsPipeline/*": [
+          "TeamStatsPipeline/complete frames preserve cumulative measurements and retained readers",
+          "TeamStatsPipeline/delayed statistics AI and presentation share one capture per boundary",
+          "TeamStatsPipeline/direct scalar checksums match canonical binary bytes",
+          "TeamStatsPipeline/failed computation or submission remains a failure at later owner barriers",
+          "TeamStatsPipeline/format 155 pending digests are discarded without losing samples",
+          "TeamStatsPipeline/format 156 raw aggregate samples retain exact smoothing after loading and resaving",
+          "TeamStatsPipeline/format 157 pending measurement deltas migrate and resave without early publication",
+          "TeamStatsPipeline/full game save preserves statistics across smoothing and history boundaries",
+          "TeamStatsPipeline/lagged windows include current samples and never feed approximations into the raw ring",
+          "TeamStatsPipeline/late workers are joined at the deadline without choosing publication time",
+          "TeamStatsPipeline/light checks do not execute jobs and full checks cover computed pending samples",
+          "TeamStatsPipeline/periodic snapshot places match live coverage at wrapped footprint boundaries",
+          "TeamStatsPipeline/publication is fixed to source tick plus delay and boundaries are idempotent",
+          "TeamStatsPipeline/pure captures pause and waiting admit no statistics and readers share the generation",
+          "TeamStatsPipeline/raw snapshot samples retain synchronous aggregation and smoothing",
+          "TeamStatsPipeline/routine statistics coverage excludes diagnostic ledgers and full checks retain them",
+          "TeamStatsPipeline/save drains work without moving deadlines and restores pending samples",
+          "TeamStatsPipeline/worker counts produce identical publication and pending sample checksums"
+        ],
+        "TurretTargeting/*": [
+          "TurretTargeting/bounded capacities are prefixes of uncapped tier ranking",
+          "TurretTargeting/captured offense preserves glass cannon saturation and active area modifiers",
+          "TurretTargeting/consumer rechecks incarnation occupancy alliance movement and cooldown boundaries",
+          "TurretTargeting/cooldown admission includes exact serving boundary and empty ammunition",
+          "TurretTargeting/custom footprints blockers building offsets and frozen combat facts",
+          "TurretTargeting/empty range has one hundred armed turrets and no clearance work",
+          "TurretTargeting/engine-style stepping reuses admitted boundary after orders mutate occupancy",
+          "TurretTargeting/forecast refresh arrives before the first ready step after zero crossing",
+          "TurretTargeting/ground movement return suppresses air only in preferred fold",
+          "TurretTargeting/historical saves start with a blank turret cache and retain current resave continuation [save-format]",
+          "TurretTargeting/index shares unchanged chunks and refreshes changed occupancy",
+          "TurretTargeting/indexed encounter order covers custom footprints repeated wraps and temporary chunks",
+          "TurretTargeting/new cached saves roundtrip and unsupported formats are rejected",
+          "TurretTargeting/observing and shadow consumption preserve complete save bytes",
+          "TurretTargeting/overlapping generations reuse the previous logical index before publication",
+          "TurretTargeting/overlapping publication preserves other sources through upgrade and incarnation changes",
+          "TurretTargeting/pinned large building keeps its original unwrapped aim offset",
+          "TurretTargeting/published slot reuse replaces records by incarnation",
+          "TurretTargeting/reference and frozen head match randomized ground air wrap and alliances",
+          "TurretTargeting/saved target lists retain admissions deadlines and ordered entries",
+          "TurretTargeting/shared completed boundary captures once and publishes only at deadlines",
+          "TurretTargeting/shared executor team jobs agree across participants and overlapping generations",
+          "TurretTargeting/shared turret worker failures are reported at publication after draining",
+          "TurretTargeting/turret admission requires due teams and survives paused repeated boundaries"
+        ],
+        "HiringPipeline/*": [
+          "HiringPipeline/a returning attraction worker does not wait another recruitment-clock cycle",
+          "HiringPipeline/all attraction jobs admit through the production candidate consumer",
+          "HiringPipeline/an expired hybrid attraction request releases unused delivery seats",
+          "HiringPipeline/an owed attraction round retries for a bounded window",
+          "HiringPipeline/cold route generations publish only at the fixed deadline",
+          "HiringPipeline/configuration changes keep suggestions and admission rechecks live eligibility",
+          "HiringPipeline/imminent attraction peers receive alternatives without inactive peers claiming them",
+          "HiringPipeline/missing lists do not synchronously scan or assign a worker",
+          "HiringPipeline/paused and waiting replicas retain the same pre-order hiring observation",
+          "HiringPipeline/production traces and published candidates match across participant counts",
+          "HiringPipeline/saving every delay phase retains outputs and pending identity without early publication",
+          "HiringPipeline/transient unavailability and changed cargo are validated on every attempt",
+          "HiringPipeline/whole game save and resume preserves every publication phase [save-format][artifacts]",
+          "HiringPipeline/whole-game continuation retains an outstanding attraction request"
+        ],
+        "HiringPlanner/*": [
+          "HiringPlanner/bounded shortlists match sorted prefixes for every job",
+          "HiringPlanner/busy ground classes do not initialize unused hiring routes",
+          "HiringPlanner/cold routes are established by live admission rather than observation",
+          "HiringPlanner/defense score uses frozen attack modifiers and saturated integer strength",
+          "HiringPlanner/distance bounds preserve exhaustive rankings for every job",
+          "HiringPlanner/diverse material offers cover peers without reserving live workers",
+          "HiringPlanner/fetch jobs reuse canonical resource estimates independently of live planes",
+          "HiringPlanner/food-unsafe high-skill workers cannot crowd a viable worker out",
+          "HiringPlanner/job quotas bound each list to vacancies plus two",
+          "HiringPlanner/missing building fields never trigger private construction",
+          "HiringPlanner/missing shared planes do not suppress suggestions after visibility-rule changes",
+          "HiringPlanner/missing supplier planes retain fetch suggestions for live admission",
+          "HiringPlanner/observed funding reproduces live material apportionment",
+          "HiringPlanner/planning skips zero-demand and staffed buildings and resumes on vacancies",
+          "HiringPlanner/published resource estimates are used and missing planes remain recruitable",
+          "HiringPlanner/ranking tie break follows unit identity",
+          "HiringPlanner/resource estimates borrow the normal snapshot plane without private builds",
+          "HiringPlanner/shared field survives replacement and proposals preserve owner demand",
+          "HiringPlanner/shared resource planes retain ordered unreachable-neighbor admission estimates",
+          "HiringPlanner/snapshot planning skips busy workers without changing live units",
+          "HiringPlanner/supplier membership survives waiting-for-construction observations",
+          "HiringPlanner/unrelated live route enrollment cannot change hiring inputs",
+          "HiringPlanner/worker construction quotas match repair funding",
+          "HiringPlanner/worker demand uses immutable shared funding and staffing facts"
+        ],
+        "AIStateContinuation/*": [
+          "AIStateContinuation/Cabino specialist modules survive save-load",
+          "AIStateContinuation/Castor and Maxima active full games preserve decisions and RNG [slow]",
+          "AIStateContinuation/Cortex economy and food shortage survive save-load",
+          "AIStateContinuation/Econo shared runtime survives save-load",
+          "AIStateContinuation/Nicowar shared runtime survives save-load",
+          "AIStateContinuation/Numbi growth and attack preparation survive save-load",
+          "AIStateContinuation/Warrush growth and attack preparation survive save-load",
+          "AIStateContinuation/all controllers continue alongside another AI and a shared-team controller [slow]"
+        ],
+        "LegacyAIState/*": [
+          "LegacyAIState/Cabino construction polls preserve high material and combined source masks",
+          "LegacyAIState/Cabino material mask placement resumes without changing RNG",
+          "LegacyAIState/Cabino preserves stale gradients module latches and fruit memories",
+          "LegacyAIState/Cabino saving leaves its pending FIFO intact",
+          "LegacyAIState/Cortex saved policy and model supersede the current process selection",
+          "LegacyAIState/Nicowar explorer phases and full construction counts survive",
+          "LegacyAIState/Numbi phase clock survives and advances on the original poll",
+          "LegacyAIState/Numbi wrapper preserves an active phase clock and the next decision",
+          "LegacyAIState/Warrush timers and constructors round-trip at boundaries",
+          "LegacyAIState/Warrush wrapper preserves the next decision and its random stream",
+          "LegacyAIState/new timer records reject out-of-range missing and malformed values",
+          "LegacyAIState/old layouts default omitted clocks without consuming the following field",
+          "LegacyAIState/pre-fix format 127 writers remain aligned for Cabino Nicowar and Cortex",
+          "LegacyAIState/shared runtime reload replaces queues and registrations in binary and text"
+        ]
+      },
+      "junit_sha256": "1d31d36d1cc8ce6c22b47283845732539c0c7855209c592addb84ef22e00a01d",
+      "command_receipt": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/qualification/weighted-two-choice/focused-engine/command.json",
+      "original_returncode": 1,
+      "reused_focused_evidence": true
+    },
+    {
+      "cases": 22,
+      "command_receipt": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/focused-gap-checks/weighted-two-choice/gradient/command.json",
+      "tested_binary_sha256": "8d8e4bc2f5b32f292b066ac4da2e7546376925789bc9fd03fb619c683680336c",
+      "fresh_supplemental_metadata": {
+        "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/focused-gap-checks/weighted-two-choice/gradient/metadata.json",
+        "sha256": "6c489a08d9e27c64ee4e60991d5e097c07bd5268cf4c61240b62e3670171657b"
+      },
+      "kind": "unit_gradient",
+      "failures": [],
+      "skips": [],
+      "junit_sha256": "e219998b6587c47fd102abb667a52674fec180d2af9ad5250511374ab2e1e539",
+      "names": [
+        "fixed publication; supersession; bounded buffers; scheduling stress; fallback; exceptions and teardown",
+        "reservation is invalidatable before preparation and seed failures cannot strand it",
+        "projected terrain leases end at completion including failed work",
+        "gradient, building and AI batches share the maximum deferred horizon",
+        "building pipeline admits several jobs per tick, publishes in reservation order at fixed deadlines, supersedes, survives slow and failing workers",
+        "building pipeline pending results survive a save-style round trip",
+        "serial preparation computes at join and errors surface at the deadline",
+        "shared preparation executes off the owner and retains its deadline",
+        "backend selection survives worker scratch resizing",
+        "owned GPU service initializes with two slots and leaves the sole worker free until fixed publication",
+        "GPU decline recovers original seeds exactly once on a worker and retains inputs until recovery",
+        "one-slot device configuration creates no driver activity",
+        "explicit CPU jobs bypass device ownership and retain publication deadlines",
+        "availability changes during seeding do not reinterpret captured CPU execution",
+        "nullable GPU preparation recovers once on the original worker without device reentry",
+        "device registration stop and reconfigure never join a slow background initializer",
+        "application shutdown joins background initialization and later registrations restart",
+        "two device registrations share exactly one process coordinator",
+        "pending required GPU work cancels at publication and drains through one worker recovery",
+        "device adapters retain committed fields when another ready field declines",
+        "bounded required device queue recovers excess fields exactly once",
+        "malformed captured configurations decline and recover once"
+      ],
+      "junit_classname": "src/map/gradient/GradientPipelineHarness.cpp"
+    },
+    {
+      "cases": 2,
+      "command_receipt": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/focused-gap-checks/weighted-two-choice/weighted_verbose/command.json",
+      "tested_binary_sha256": "8d8e4bc2f5b32f292b066ac4da2e7546376925789bc9fd03fb619c683680336c",
+      "fresh_supplemental_metadata": {
+        "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/focused-gap-checks/weighted-two-choice/weighted_verbose/metadata.json",
+        "sha256": "dd00169683ed67d3cc74b7d51055bd5be2c6451df862c5ecf0ac1207064ff0b6"
+      },
+      "kind": "weighted_verbose",
+      "assertions": 73,
+      "no_warning": true,
+      "actual_participants": [
+        3,
+        4
+      ]
+    }
+  ],
+  "exact_per_tick_contexts": 20,
+  "traces": [
+    {
+      "case": "parity-Playground-n1-cpu-nicowar",
+      "role": "weighted-two-choice",
+      "initialChecksum": 955072743,
+      "finalChecksum": 369942638,
+      "checksums": {
+        "GCS1": "d5acb2b78ce82625eb6ea55d9134bda016b03ea4fd8a57083755e1ca6fdc3a79",
+        "native": "d9ee50203fcaa3650a6d121533ebe44a6a56e831865c3fee4cc7e01adc74fa51"
+      },
+      "sidecar_details": {
+        "GCS1": {
+          "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/qualification/weighted-two-choice/parity/parity-Playground-n1-cpu-nicowar/native/game.replay.checksums",
+          "rows": 4096,
+          "first_tick": 0,
+          "last_tick": 4095,
+          "teams": 8,
+          "players": 8,
+          "bytes": 60931048
+        },
+        "native": {
+          "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/qualification/weighted-two-choice/parity/parity-Playground-n1-cpu-nicowar/native/world.checksums",
+          "rows": 4096,
+          "first_tick": 0,
+          "last_tick": 4095,
+          "bytes": 63346
+        }
+      },
+      "command_receipt": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/qualification/weighted-two-choice/parity/parity-Playground-n1-cpu-nicowar/command.json",
+      "result_sha256": "8a53e93de75c901ab883c58ab55603f1123e3f84bcaea65a38b20428dcf2bad4",
+      "binary_sha256": "257d526f5d56c7b63b614ce3a0f895345cb20569c6a6f573e09a9abee5e5336c",
+      "requested_opencl": false,
+      "correctness_only": true,
+      "actual_gradient_backend": "cpu",
+      "actual_gradient_device": "",
+      "actual_gradient_gpu_fields": 0
+    },
+    {
+      "case": "parity-Playground-n4-cpu-nicowar",
+      "role": "weighted-two-choice",
+      "initialChecksum": 955072743,
+      "finalChecksum": 369942638,
+      "checksums": {
+        "GCS1": "d5acb2b78ce82625eb6ea55d9134bda016b03ea4fd8a57083755e1ca6fdc3a79",
+        "native": "d9ee50203fcaa3650a6d121533ebe44a6a56e831865c3fee4cc7e01adc74fa51"
+      },
+      "sidecar_details": {
+        "GCS1": {
+          "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/qualification/weighted-two-choice/parity/parity-Playground-n4-cpu-nicowar/native/game.replay.checksums",
+          "rows": 4096,
+          "first_tick": 0,
+          "last_tick": 4095,
+          "teams": 8,
+          "players": 8,
+          "bytes": 60931048
+        },
+        "native": {
+          "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/qualification/weighted-two-choice/parity/parity-Playground-n4-cpu-nicowar/native/world.checksums",
+          "rows": 4096,
+          "first_tick": 0,
+          "last_tick": 4095,
+          "bytes": 63346
+        }
+      },
+      "command_receipt": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/qualification/weighted-two-choice/parity/parity-Playground-n4-cpu-nicowar/command.json",
+      "result_sha256": "f03f915cb4e541b482718e3f17f14cdf87aca2fc6c4cd5f601a348353baafdcf",
+      "binary_sha256": "257d526f5d56c7b63b614ce3a0f895345cb20569c6a6f573e09a9abee5e5336c",
+      "requested_opencl": false,
+      "correctness_only": true,
+      "actual_gradient_backend": "cpu",
+      "actual_gradient_device": "",
+      "actual_gradient_gpu_fields": 0
+    },
+    {
+      "case": "parity-Playground-nauto-cpu-nicowar",
+      "role": "weighted-two-choice",
+      "initialChecksum": 955072743,
+      "finalChecksum": 369942638,
+      "checksums": {
+        "GCS1": "d5acb2b78ce82625eb6ea55d9134bda016b03ea4fd8a57083755e1ca6fdc3a79",
+        "native": "d9ee50203fcaa3650a6d121533ebe44a6a56e831865c3fee4cc7e01adc74fa51"
+      },
+      "sidecar_details": {
+        "GCS1": {
+          "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/qualification/weighted-two-choice/parity/parity-Playground-nauto-cpu-nicowar/native/game.replay.checksums",
+          "rows": 4096,
+          "first_tick": 0,
+          "last_tick": 4095,
+          "teams": 8,
+          "players": 8,
+          "bytes": 60931048
+        },
+        "native": {
+          "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/qualification/weighted-two-choice/parity/parity-Playground-nauto-cpu-nicowar/native/world.checksums",
+          "rows": 4096,
+          "first_tick": 0,
+          "last_tick": 4095,
+          "bytes": 63346
+        }
+      },
+      "command_receipt": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/qualification/weighted-two-choice/parity/parity-Playground-nauto-cpu-nicowar/command.json",
+      "result_sha256": "f795300edf678f679e090cf531188f084ed89f0ef356b29dc571230747b0f329",
+      "binary_sha256": "257d526f5d56c7b63b614ce3a0f895345cb20569c6a6f573e09a9abee5e5336c",
+      "requested_opencl": false,
+      "correctness_only": true,
+      "actual_gradient_backend": "cpu",
+      "actual_gradient_device": "",
+      "actual_gradient_gpu_fields": 0
+    },
+    {
+      "case": "parity-Playground-n4-opencl-nicowar",
+      "role": "weighted-two-choice",
+      "initialChecksum": 955072743,
+      "finalChecksum": 369942638,
+      "checksums": {
+        "GCS1": "d5acb2b78ce82625eb6ea55d9134bda016b03ea4fd8a57083755e1ca6fdc3a79",
+        "native": "d9ee50203fcaa3650a6d121533ebe44a6a56e831865c3fee4cc7e01adc74fa51"
+      },
+      "sidecar_details": {
+        "GCS1": {
+          "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/qualification/weighted-two-choice/parity/parity-Playground-n4-opencl-nicowar/native/game.replay.checksums",
+          "rows": 4096,
+          "first_tick": 0,
+          "last_tick": 4095,
+          "teams": 8,
+          "players": 8,
+          "bytes": 60931048
+        },
+        "native": {
+          "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/qualification/weighted-two-choice/parity/parity-Playground-n4-opencl-nicowar/native/world.checksums",
+          "rows": 4096,
+          "first_tick": 0,
+          "last_tick": 4095,
+          "bytes": 63346
+        }
+      },
+      "command_receipt": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/qualification/weighted-two-choice/parity/parity-Playground-n4-opencl-nicowar/command.json",
+      "result_sha256": "6af33b833c663e5182d248985682bee706ab16c82f600d1bd027bb3489b5b06f",
+      "binary_sha256": "257d526f5d56c7b63b614ce3a0f895345cb20569c6a6f573e09a9abee5e5336c",
+      "requested_opencl": true,
+      "correctness_only": true,
+      "actual_gradient_backend": "opencl",
+      "actual_gradient_device": "NVIDIA GeForce RTX 2070 SUPER",
+      "actual_gradient_gpu_fields": 2115
+    },
+    {
+      "case": "parity-Playground-nauto-opencl-nicowar",
+      "role": "weighted-two-choice",
+      "initialChecksum": 955072743,
+      "finalChecksum": 369942638,
+      "checksums": {
+        "GCS1": "d5acb2b78ce82625eb6ea55d9134bda016b03ea4fd8a57083755e1ca6fdc3a79",
+        "native": "d9ee50203fcaa3650a6d121533ebe44a6a56e831865c3fee4cc7e01adc74fa51"
+      },
+      "sidecar_details": {
+        "GCS1": {
+          "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/qualification/weighted-two-choice/parity/parity-Playground-nauto-opencl-nicowar/native/game.replay.checksums",
+          "rows": 4096,
+          "first_tick": 0,
+          "last_tick": 4095,
+          "teams": 8,
+          "players": 8,
+          "bytes": 60931048
+        },
+        "native": {
+          "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/qualification/weighted-two-choice/parity/parity-Playground-nauto-opencl-nicowar/native/world.checksums",
+          "rows": 4096,
+          "first_tick": 0,
+          "last_tick": 4095,
+          "bytes": 63346
+        }
+      },
+      "command_receipt": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/qualification/weighted-two-choice/parity/parity-Playground-nauto-opencl-nicowar/command.json",
+      "result_sha256": "c36147d242c95270b9f09ad267d11de43a46efd0da6196265bf6347e75badecb",
+      "binary_sha256": "257d526f5d56c7b63b614ce3a0f895345cb20569c6a6f573e09a9abee5e5336c",
+      "requested_opencl": true,
+      "correctness_only": true,
+      "actual_gradient_backend": "opencl",
+      "actual_gradient_device": "NVIDIA GeForce RTX 2070 SUPER",
+      "actual_gradient_gpu_fields": 2115
+    },
+    {
+      "case": "parity-Playground-n4-cpu-mixed",
+      "role": "weighted-two-choice",
+      "initialChecksum": 941441255,
+      "finalChecksum": 667503685,
+      "checksums": {
+        "GCS1": "9ef928890c7043b80d7a05a7ea3eafaeaa0fe703cf27b0fa9ba1ab65cec777d6",
+        "native": "7daf7118ebb95e718a6a82398a4fc42801acd3015facc4bba14b234122ff906f"
+      },
+      "sidecar_details": {
+        "GCS1": {
+          "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/qualification/weighted-two-choice/parity/parity-Playground-n4-cpu-mixed/native/game.replay.checksums",
+          "rows": 4096,
+          "first_tick": 0,
+          "last_tick": 4095,
+          "teams": 8,
+          "players": 8,
+          "bytes": 65325916
+        },
+        "native": {
+          "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/qualification/weighted-two-choice/parity/parity-Playground-n4-cpu-mixed/native/world.checksums",
+          "rows": 4096,
+          "first_tick": 0,
+          "last_tick": 4095,
+          "bytes": 63409
+        }
+      },
+      "command_receipt": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/qualification/weighted-two-choice/parity/parity-Playground-n4-cpu-mixed/command.json",
+      "result_sha256": "377c9ec4a7414aba059580151f2ccc97fdc938ab24a2d9533254212cc27fdfaf",
+      "binary_sha256": "257d526f5d56c7b63b614ce3a0f895345cb20569c6a6f573e09a9abee5e5336c",
+      "requested_opencl": false,
+      "correctness_only": true,
+      "actual_gradient_backend": "cpu",
+      "actual_gradient_device": "",
+      "actual_gradient_gpu_fields": 0
+    },
+    {
+      "case": "continuation-Playground-n4",
+      "role": "weighted-two-choice",
+      "initialChecksum": 1881005449,
+      "finalChecksum": 2849047883,
+      "checksums": {
+        "GCS1": "e5f3d46058fc5b68ba6354a1b0a4df630160794e47ff0bdc0cbf3c7d167526f2",
+        "native": "9c3e2e0020ab6869645e67287b69ed530e2b0512fb17ef3165007d7806d3357c"
+      },
+      "sidecar_details": {
+        "GCS1": {
+          "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/qualification/weighted-two-choice/parity/continuation-Playground-n4/native/game.replay.checksums",
+          "rows": 512,
+          "first_tick": 20000,
+          "last_tick": 20511,
+          "teams": 8,
+          "players": 8,
+          "bytes": 23252758
+        },
+        "native": {
+          "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/qualification/weighted-two-choice/parity/continuation-Playground-n4/native/world.checksums",
+          "rows": 512,
+          "first_tick": 20000,
+          "last_tick": 20511,
+          "bytes": 8587
+        }
+      },
+      "command_receipt": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/qualification/weighted-two-choice/parity/continuation-Playground-n4/command.json",
+      "result_sha256": "41f62a07ca5e2ce467a895c2784000d18ef38620465c24ce35ceab097647fc46",
+      "binary_sha256": "257d526f5d56c7b63b614ce3a0f895345cb20569c6a6f573e09a9abee5e5336c",
+      "requested_opencl": false,
+      "correctness_only": true,
+      "actual_gradient_backend": "cpu",
+      "actual_gradient_device": "",
+      "actual_gradient_gpu_fields": 0
+    },
+    {
+      "case": "continuation-Playground-nauto",
+      "role": "weighted-two-choice",
+      "initialChecksum": 1881005449,
+      "finalChecksum": 2849047883,
+      "checksums": {
+        "GCS1": "e5f3d46058fc5b68ba6354a1b0a4df630160794e47ff0bdc0cbf3c7d167526f2",
+        "native": "9c3e2e0020ab6869645e67287b69ed530e2b0512fb17ef3165007d7806d3357c"
+      },
+      "sidecar_details": {
+        "GCS1": {
+          "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/qualification/weighted-two-choice/parity/continuation-Playground-nauto/native/game.replay.checksums",
+          "rows": 512,
+          "first_tick": 20000,
+          "last_tick": 20511,
+          "teams": 8,
+          "players": 8,
+          "bytes": 23252758
+        },
+        "native": {
+          "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/qualification/weighted-two-choice/parity/continuation-Playground-nauto/native/world.checksums",
+          "rows": 512,
+          "first_tick": 20000,
+          "last_tick": 20511,
+          "bytes": 8587
+        }
+      },
+      "command_receipt": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/qualification/weighted-two-choice/parity/continuation-Playground-nauto/command.json",
+      "result_sha256": "7de7f85b71869adad051ad42cc5edccf88dfda4dd193f7c18d594b1808bd3a10",
+      "binary_sha256": "257d526f5d56c7b63b614ce3a0f895345cb20569c6a6f573e09a9abee5e5336c",
+      "requested_opencl": false,
+      "correctness_only": true,
+      "actual_gradient_backend": "cpu",
+      "actual_gradient_device": "",
+      "actual_gradient_gpu_fields": 0
+    },
+    {
+      "case": "parity-Oazis-n1-cpu-nicowar",
+      "role": "weighted-two-choice",
+      "initialChecksum": 3148121990,
+      "finalChecksum": 3731272377,
+      "checksums": {
+        "GCS1": "c72e761fa230293a02b03c18871de77954c92543e4eb326ca26fa189ce063329",
+        "native": "c3531d5ab6da2452b9d6b87d0e028c8190bd5af54460d5b9308b6eb003af6525"
+      },
+      "sidecar_details": {
+        "GCS1": {
+          "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/qualification/weighted-two-choice/parity/parity-Oazis-n1-cpu-nicowar/native/game.replay.checksums",
+          "rows": 4096,
+          "first_tick": 0,
+          "last_tick": 4095,
+          "teams": 11,
+          "players": 11,
+          "bytes": 56233196
+        },
+        "native": {
+          "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/qualification/weighted-two-choice/parity/parity-Oazis-n1-cpu-nicowar/native/world.checksums",
+          "rows": 4096,
+          "first_tick": 0,
+          "last_tick": 4095,
+          "bytes": 63387
+        }
+      },
+      "command_receipt": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/qualification/weighted-two-choice/parity/parity-Oazis-n1-cpu-nicowar/command.json",
+      "result_sha256": "76842bd4d24530edf8a338a90480858cdab884bc455aec4042f1042e93e60366",
+      "binary_sha256": "257d526f5d56c7b63b614ce3a0f895345cb20569c6a6f573e09a9abee5e5336c",
+      "requested_opencl": false,
+      "correctness_only": true,
+      "actual_gradient_backend": "cpu",
+      "actual_gradient_device": "",
+      "actual_gradient_gpu_fields": 0
+    },
+    {
+      "case": "parity-Oazis-n4-cpu-nicowar",
+      "role": "weighted-two-choice",
+      "initialChecksum": 3148121990,
+      "finalChecksum": 3731272377,
+      "checksums": {
+        "GCS1": "c72e761fa230293a02b03c18871de77954c92543e4eb326ca26fa189ce063329",
+        "native": "c3531d5ab6da2452b9d6b87d0e028c8190bd5af54460d5b9308b6eb003af6525"
+      },
+      "sidecar_details": {
+        "GCS1": {
+          "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/qualification/weighted-two-choice/parity/parity-Oazis-n4-cpu-nicowar/native/game.replay.checksums",
+          "rows": 4096,
+          "first_tick": 0,
+          "last_tick": 4095,
+          "teams": 11,
+          "players": 11,
+          "bytes": 56233196
+        },
+        "native": {
+          "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/qualification/weighted-two-choice/parity/parity-Oazis-n4-cpu-nicowar/native/world.checksums",
+          "rows": 4096,
+          "first_tick": 0,
+          "last_tick": 4095,
+          "bytes": 63387
+        }
+      },
+      "command_receipt": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/qualification/weighted-two-choice/parity/parity-Oazis-n4-cpu-nicowar/command.json",
+      "result_sha256": "09af6c6baed697eb3c320c80c2ddbae70abd2411e18ea2de697748d0d1bb6a26",
+      "binary_sha256": "257d526f5d56c7b63b614ce3a0f895345cb20569c6a6f573e09a9abee5e5336c",
+      "requested_opencl": false,
+      "correctness_only": true,
+      "actual_gradient_backend": "cpu",
+      "actual_gradient_device": "",
+      "actual_gradient_gpu_fields": 0
+    },
+    {
+      "case": "parity-Oazis-nauto-cpu-nicowar",
+      "role": "weighted-two-choice",
+      "initialChecksum": 3148121990,
+      "finalChecksum": 3731272377,
+      "checksums": {
+        "GCS1": "c72e761fa230293a02b03c18871de77954c92543e4eb326ca26fa189ce063329",
+        "native": "c3531d5ab6da2452b9d6b87d0e028c8190bd5af54460d5b9308b6eb003af6525"
+      },
+      "sidecar_details": {
+        "GCS1": {
+          "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/qualification/weighted-two-choice/parity/parity-Oazis-nauto-cpu-nicowar/native/game.replay.checksums",
+          "rows": 4096,
+          "first_tick": 0,
+          "last_tick": 4095,
+          "teams": 11,
+          "players": 11,
+          "bytes": 56233196
+        },
+        "native": {
+          "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/qualification/weighted-two-choice/parity/parity-Oazis-nauto-cpu-nicowar/native/world.checksums",
+          "rows": 4096,
+          "first_tick": 0,
+          "last_tick": 4095,
+          "bytes": 63387
+        }
+      },
+      "command_receipt": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/qualification/weighted-two-choice/parity/parity-Oazis-nauto-cpu-nicowar/command.json",
+      "result_sha256": "f1df5ec3be44fd0a4e51af52155aaf59e73e35c30079f91e004a62abf9c4a0d7",
+      "binary_sha256": "257d526f5d56c7b63b614ce3a0f895345cb20569c6a6f573e09a9abee5e5336c",
+      "requested_opencl": false,
+      "correctness_only": true,
+      "actual_gradient_backend": "cpu",
+      "actual_gradient_device": "",
+      "actual_gradient_gpu_fields": 0
+    },
+    {
+      "case": "parity-Oazis-n4-opencl-nicowar",
+      "role": "weighted-two-choice",
+      "initialChecksum": 3148121990,
+      "finalChecksum": 3731272377,
+      "checksums": {
+        "GCS1": "c72e761fa230293a02b03c18871de77954c92543e4eb326ca26fa189ce063329",
+        "native": "c3531d5ab6da2452b9d6b87d0e028c8190bd5af54460d5b9308b6eb003af6525"
+      },
+      "sidecar_details": {
+        "GCS1": {
+          "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/qualification/weighted-two-choice/parity/parity-Oazis-n4-opencl-nicowar/native/game.replay.checksums",
+          "rows": 4096,
+          "first_tick": 0,
+          "last_tick": 4095,
+          "teams": 11,
+          "players": 11,
+          "bytes": 56233196
+        },
+        "native": {
+          "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/qualification/weighted-two-choice/parity/parity-Oazis-n4-opencl-nicowar/native/world.checksums",
+          "rows": 4096,
+          "first_tick": 0,
+          "last_tick": 4095,
+          "bytes": 63387
+        }
+      },
+      "command_receipt": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/qualification/weighted-two-choice/parity/parity-Oazis-n4-opencl-nicowar/command.json",
+      "result_sha256": "5b0dff25bc0a8d855cc5d5e5a8c5d0c4ed82efb944569ce749ff8307fb88d2f4",
+      "binary_sha256": "257d526f5d56c7b63b614ce3a0f895345cb20569c6a6f573e09a9abee5e5336c",
+      "requested_opencl": true,
+      "correctness_only": true,
+      "actual_gradient_backend": "opencl",
+      "actual_gradient_device": "NVIDIA GeForce RTX 2070 SUPER",
+      "actual_gradient_gpu_fields": 2015
+    },
+    {
+      "case": "parity-Oazis-nauto-opencl-nicowar",
+      "role": "weighted-two-choice",
+      "initialChecksum": 3148121990,
+      "finalChecksum": 3731272377,
+      "checksums": {
+        "GCS1": "c72e761fa230293a02b03c18871de77954c92543e4eb326ca26fa189ce063329",
+        "native": "c3531d5ab6da2452b9d6b87d0e028c8190bd5af54460d5b9308b6eb003af6525"
+      },
+      "sidecar_details": {
+        "GCS1": {
+          "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/qualification/weighted-two-choice/parity/parity-Oazis-nauto-opencl-nicowar/native/game.replay.checksums",
+          "rows": 4096,
+          "first_tick": 0,
+          "last_tick": 4095,
+          "teams": 11,
+          "players": 11,
+          "bytes": 56233196
+        },
+        "native": {
+          "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/qualification/weighted-two-choice/parity/parity-Oazis-nauto-opencl-nicowar/native/world.checksums",
+          "rows": 4096,
+          "first_tick": 0,
+          "last_tick": 4095,
+          "bytes": 63387
+        }
+      },
+      "command_receipt": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/qualification/weighted-two-choice/parity/parity-Oazis-nauto-opencl-nicowar/command.json",
+      "result_sha256": "56259014add92160d8e6f584fb0a6553cbebbfc19468f9406708d1659e3586ed",
+      "binary_sha256": "257d526f5d56c7b63b614ce3a0f895345cb20569c6a6f573e09a9abee5e5336c",
+      "requested_opencl": true,
+      "correctness_only": true,
+      "actual_gradient_backend": "opencl",
+      "actual_gradient_device": "NVIDIA GeForce RTX 2070 SUPER",
+      "actual_gradient_gpu_fields": 2012
+    },
+    {
+      "case": "parity-Oazis-n4-cpu-mixed",
+      "role": "weighted-two-choice",
+      "initialChecksum": 3149563782,
+      "finalChecksum": 3704462902,
+      "checksums": {
+        "GCS1": "c57f861ffc3c323c13622558029a1f6fd50f3a947e5f32785785a2d1d20000bc",
+        "native": "5a3252a69906edf453db9ea586060f8803a4e67c360d2c252a02eec6c0fee3d0"
+      },
+      "sidecar_details": {
+        "GCS1": {
+          "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/qualification/weighted-two-choice/parity/parity-Oazis-n4-cpu-mixed/native/game.replay.checksums",
+          "rows": 4096,
+          "first_tick": 0,
+          "last_tick": 4095,
+          "teams": 11,
+          "players": 11,
+          "bytes": 64604854
+        },
+        "native": {
+          "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/qualification/weighted-two-choice/parity/parity-Oazis-n4-cpu-mixed/native/world.checksums",
+          "rows": 4096,
+          "first_tick": 0,
+          "last_tick": 4095,
+          "bytes": 63363
+        }
+      },
+      "command_receipt": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/qualification/weighted-two-choice/parity/parity-Oazis-n4-cpu-mixed/command.json",
+      "result_sha256": "2aecf9645ec4fb706c4c09ef0a273af6b30b4207e5daadc4350c9d99d05a7340",
+      "binary_sha256": "257d526f5d56c7b63b614ce3a0f895345cb20569c6a6f573e09a9abee5e5336c",
+      "requested_opencl": false,
+      "correctness_only": true,
+      "actual_gradient_backend": "cpu",
+      "actual_gradient_device": "",
+      "actual_gradient_gpu_fields": 0
+    },
+    {
+      "case": "continuation-Oazis-n4",
+      "role": "weighted-two-choice",
+      "initialChecksum": 2377477703,
+      "finalChecksum": 2153299056,
+      "checksums": {
+        "GCS1": "152cdd6e07b884390d2d640401c0da281ddb2fea395e15d45bec51b5a25a2ecd",
+        "native": "eb780c10a36bf2872e8f42d7c39cce5b891f50b68108ba06b5f75fd99ce45dbf"
+      },
+      "sidecar_details": {
+        "GCS1": {
+          "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/qualification/weighted-two-choice/parity/continuation-Oazis-n4/native/game.replay.checksums",
+          "rows": 512,
+          "first_tick": 60000,
+          "last_tick": 60511,
+          "teams": 11,
+          "players": 11,
+          "bytes": 44948350
+        },
+        "native": {
+          "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/qualification/weighted-two-choice/parity/continuation-Oazis-n4/native/world.checksums",
+          "rows": 512,
+          "first_tick": 60000,
+          "last_tick": 60511,
+          "bytes": 8558
+        }
+      },
+      "command_receipt": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/qualification/weighted-two-choice/parity/continuation-Oazis-n4/command.json",
+      "result_sha256": "269251eb871f211d55740a803661bc66ffa11022d8e0aabc79ef1ea028924479",
+      "binary_sha256": "257d526f5d56c7b63b614ce3a0f895345cb20569c6a6f573e09a9abee5e5336c",
+      "requested_opencl": false,
+      "correctness_only": true,
+      "actual_gradient_backend": "cpu",
+      "actual_gradient_device": "",
+      "actual_gradient_gpu_fields": 0
+    },
+    {
+      "case": "continuation-Oazis-nauto",
+      "role": "weighted-two-choice",
+      "initialChecksum": 2377477703,
+      "finalChecksum": 2153299056,
+      "checksums": {
+        "GCS1": "152cdd6e07b884390d2d640401c0da281ddb2fea395e15d45bec51b5a25a2ecd",
+        "native": "eb780c10a36bf2872e8f42d7c39cce5b891f50b68108ba06b5f75fd99ce45dbf"
+      },
+      "sidecar_details": {
+        "GCS1": {
+          "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/qualification/weighted-two-choice/parity/continuation-Oazis-nauto/native/game.replay.checksums",
+          "rows": 512,
+          "first_tick": 60000,
+          "last_tick": 60511,
+          "teams": 11,
+          "players": 11,
+          "bytes": 44948350
+        },
+        "native": {
+          "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/qualification/weighted-two-choice/parity/continuation-Oazis-nauto/native/world.checksums",
+          "rows": 512,
+          "first_tick": 60000,
+          "last_tick": 60511,
+          "bytes": 8558
+        }
+      },
+      "command_receipt": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/qualification/weighted-two-choice/parity/continuation-Oazis-nauto/command.json",
+      "result_sha256": "c26e30d6ebab9a1e6f1b402f6396775a9ef4ab7a87382d6ea1dc510a57cec6b1",
+      "binary_sha256": "257d526f5d56c7b63b614ce3a0f895345cb20569c6a6f573e09a9abee5e5336c",
+      "requested_opencl": false,
+      "correctness_only": true,
+      "actual_gradient_backend": "cpu",
+      "actual_gradient_device": "",
+      "actual_gradient_gpu_fields": 0
+    },
+    {
+      "case": "parity-small64-602-n1-nicowar",
+      "role": "weighted-two-choice",
+      "initialChecksum": 1368633184,
+      "finalChecksum": 3581604919,
+      "checksums": {
+        "GCS1": "3b27d1c8250556392c3ba8375598a0ed130291704fc02bca4fcd1f3881c27eeb",
+        "native": "8c184b68a59cf0547ab99d5dd014a968d956a495fd82090340141a483840b108"
+      },
+      "sidecar_details": {
+        "GCS1": {
+          "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/qualification/weighted-two-choice/parity/parity-small64-602-n1-nicowar/native/game.replay.checksums",
+          "rows": 4096,
+          "first_tick": 0,
+          "last_tick": 4095,
+          "teams": 2,
+          "players": 2,
+          "bytes": 18674396
+        },
+        "native": {
+          "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/qualification/weighted-two-choice/parity/parity-small64-602-n1-nicowar/native/world.checksums",
+          "rows": 4096,
+          "first_tick": 0,
+          "last_tick": 4095,
+          "bytes": 63367
+        }
+      },
+      "command_receipt": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/qualification/weighted-two-choice/parity/parity-small64-602-n1-nicowar/command.json",
+      "result_sha256": "d37fb225bbbe9569aa57bbd283a13f78a21bb03de10c6cd631b5d2001d508964",
+      "binary_sha256": "257d526f5d56c7b63b614ce3a0f895345cb20569c6a6f573e09a9abee5e5336c",
+      "requested_opencl": false,
+      "correctness_only": true,
+      "actual_gradient_backend": "cpu",
+      "actual_gradient_device": "",
+      "actual_gradient_gpu_fields": 0
+    },
+    {
+      "case": "parity-small64-602-n4-nicowar",
+      "role": "weighted-two-choice",
+      "initialChecksum": 1368633184,
+      "finalChecksum": 3581604919,
+      "checksums": {
+        "GCS1": "3b27d1c8250556392c3ba8375598a0ed130291704fc02bca4fcd1f3881c27eeb",
+        "native": "8c184b68a59cf0547ab99d5dd014a968d956a495fd82090340141a483840b108"
+      },
+      "sidecar_details": {
+        "GCS1": {
+          "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/qualification/weighted-two-choice/parity/parity-small64-602-n4-nicowar/native/game.replay.checksums",
+          "rows": 4096,
+          "first_tick": 0,
+          "last_tick": 4095,
+          "teams": 2,
+          "players": 2,
+          "bytes": 18674396
+        },
+        "native": {
+          "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/qualification/weighted-two-choice/parity/parity-small64-602-n4-nicowar/native/world.checksums",
+          "rows": 4096,
+          "first_tick": 0,
+          "last_tick": 4095,
+          "bytes": 63367
+        }
+      },
+      "command_receipt": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/qualification/weighted-two-choice/parity/parity-small64-602-n4-nicowar/command.json",
+      "result_sha256": "6ca1c769ee8b5a32aacd6b1887cf83c10f794e4661425c9b757ca298234ca71c",
+      "binary_sha256": "257d526f5d56c7b63b614ce3a0f895345cb20569c6a6f573e09a9abee5e5336c",
+      "requested_opencl": false,
+      "correctness_only": true,
+      "actual_gradient_backend": "cpu",
+      "actual_gradient_device": "",
+      "actual_gradient_gpu_fields": 0
+    },
+    {
+      "case": "parity-small64-602-nauto-nicowar",
+      "role": "weighted-two-choice",
+      "initialChecksum": 1368633184,
+      "finalChecksum": 3581604919,
+      "checksums": {
+        "GCS1": "3b27d1c8250556392c3ba8375598a0ed130291704fc02bca4fcd1f3881c27eeb",
+        "native": "8c184b68a59cf0547ab99d5dd014a968d956a495fd82090340141a483840b108"
+      },
+      "sidecar_details": {
+        "GCS1": {
+          "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/qualification/weighted-two-choice/parity/parity-small64-602-nauto-nicowar/native/game.replay.checksums",
+          "rows": 4096,
+          "first_tick": 0,
+          "last_tick": 4095,
+          "teams": 2,
+          "players": 2,
+          "bytes": 18674396
+        },
+        "native": {
+          "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/qualification/weighted-two-choice/parity/parity-small64-602-nauto-nicowar/native/world.checksums",
+          "rows": 4096,
+          "first_tick": 0,
+          "last_tick": 4095,
+          "bytes": 63367
+        }
+      },
+      "command_receipt": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/qualification/weighted-two-choice/parity/parity-small64-602-nauto-nicowar/command.json",
+      "result_sha256": "3d0613cb3668a69a1bd2e599ddcc8eb71b315463a5c258f47400b40bda1d11ec",
+      "binary_sha256": "257d526f5d56c7b63b614ce3a0f895345cb20569c6a6f573e09a9abee5e5336c",
+      "requested_opencl": false,
+      "correctness_only": true,
+      "actual_gradient_backend": "cpu",
+      "actual_gradient_device": "",
+      "actual_gradient_gpu_fields": 0
+    },
+    {
+      "case": "parity-small64-602-n4-mixed",
+      "role": "weighted-two-choice",
+      "initialChecksum": 2375266145,
+      "finalChecksum": 2181226775,
+      "checksums": {
+        "GCS1": "04ef1028b30c05e1bc00180be1d4287af2cd559ffa8e3c592258e3c17eb094c2",
+        "native": "2d8ebb2e6ae9e184359cf59e5aab8cb141707a37b9a0b6b72597f346831e7327"
+      },
+      "sidecar_details": {
+        "GCS1": {
+          "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/qualification/weighted-two-choice/parity/parity-small64-602-n4-mixed/native/game.replay.checksums",
+          "rows": 4096,
+          "first_tick": 0,
+          "last_tick": 4095,
+          "teams": 2,
+          "players": 2,
+          "bytes": 18478354
+        },
+        "native": {
+          "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/qualification/weighted-two-choice/parity/parity-small64-602-n4-mixed/native/world.checksums",
+          "rows": 4096,
+          "first_tick": 0,
+          "last_tick": 4095,
+          "bytes": 63319
+        }
+      },
+      "command_receipt": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/qualification/weighted-two-choice/parity/parity-small64-602-n4-mixed/command.json",
+      "result_sha256": "448db1b29c6fffd79f51a84a6f2dd66d5abdac5b6f6eab1b8c05e6063861d5b0",
+      "binary_sha256": "257d526f5d56c7b63b614ce3a0f895345cb20569c6a6f573e09a9abee5e5336c",
+      "requested_opencl": false,
+      "correctness_only": true,
+      "actual_gradient_backend": "cpu",
+      "actual_gradient_device": "",
+      "actual_gradient_gpu_fields": 0
+    }
+  ],
+  "base_revision": "054804590ee1dd109f09642fc05654c324f08344",
+  "baseline_failure_review": {
+    "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/matched-baseline-failures-review.json",
+    "sha256": "fed4bcd975d141b4dee2e1b369971437a21e3736ce3e1955b55f8a9f376a0881"
+  },
+  "known_baseline_failures": [
+    {
+      "suite": "ResourceGrowth",
+      "name": "historical growth payloads are rejected after header preflight",
+      "events": [
+        {
+          "type": "CHECK_FALSE",
+          "message": "true",
+          "body": "\nsrc/map/ResourceGrowthTest.cpp:828:\nCHECK_FALSE( engine.gui.game.load(input.get()) ) is NOT correct!\n  values: CHECK_FALSE( true )\n  logged: name := <volatile-address>"
+        },
+        {
+          "type": "CHECK_FALSE",
+          "message": "true",
+          "body": "\nsrc/map/ResourceGrowthTest.cpp:828:\nCHECK_FALSE( engine.gui.game.load(input.get()) ) is NOT correct!\n  values: CHECK_FALSE( true )\n  logged: name := <volatile-address>"
+        },
+        {
+          "type": "CHECK_FALSE",
+          "message": "true",
+          "body": "\nsrc/map/ResourceGrowthTest.cpp:828:\nCHECK_FALSE( engine.gui.game.load(input.get()) ) is NOT correct!\n  values: CHECK_FALSE( true )\n  logged: name := <volatile-address>"
+        }
+      ]
+    },
+    {
+      "suite": "TurretTargeting",
+      "name": "overlapping publication preserves other sources through upgrade and incarnation changes",
+      "events": [
+        {
+          "type": "CHECK",
+          "message": "false",
+          "body": "\nsrc/building/TurretTargetingTest.cpp:456:\nCHECK( pipeline->entries(*changed).empty() ) is NOT correct!\n  values: CHECK( false )\n\n      "
+        }
+      ]
+    }
+  ],
+  "fresh_supplemental_manifest": {
+    "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/focused-gap-checks/gap-checks-complete.json",
+    "sha256": "78ac02f411904794964f1d2de39c81d36209f85c3f58e06be257b03bfa91c6fa"
+  },
+  "limits": [
+    "Known2baselineenginefailuresretainedNOTpassed.",
+    "Researchheadlessqualificationonly; noplatform/browser/livepresentation/performanceacceptance."
+  ]
+}

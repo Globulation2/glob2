@@ -1,0 +1,45 @@
+{
+  "source": {
+    "label": "weighted-source",
+    "cwd": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/weighted-source",
+    "env": {
+      "CCACHE": "1",
+      "CCACHE_MAXSIZE": "12G",
+      "GLOB2_SDL3_PREFIX": "/home/bradley/.codex/worktrees/repair-tls-rejection-fixture/glob2/build/sdl3-ci/prefix",
+      "GLOB2_RENDER_SHADER_INPUT": "/home/bradley/.codex/worktrees/execution-resource-profiles/glob2/artifacts/resource-profiles/validation/renderer-bundle-v2/shaders"
+    },
+    "build_command": [
+      "scons",
+      "release=1",
+      "CC=gcc-13",
+      "CXX=g++-13",
+      "LINKFLAGS=-L/usr/lib/gcc/x86_64-linux-gnu/15",
+      "-j32",
+      "unit-tests",
+      "engine-tests",
+      "build/linux/client/release/src/glob2"
+    ],
+    "expected_native": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/weighted-source/build/linux/client/release/src/glob2",
+    "expected_unit": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/weighted-source/build/linux/client/release/test/glob2-unit-tests",
+    "expected_engine": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/weighted-source/build/linux/client/release/test/glob2-engine-tests",
+    "source_hashes": {
+      "src/ai/engine/AIOrderScheduler.cpp": "2e95bf7ded131d390001f9937497d32aa81fee16409340f764149949dc657c57",
+      "src/app/Glob2.cpp": "06e6919eae114d35bce6e77b517283d1e41659afc8e45002cbcade532c55cdf0",
+      "src/building/HiringPipeline.cpp": "9c3d56954b5db3bece8294ab746773c3ec57f40487451859f00608146ef59c2a",
+      "src/building/TurretTargetingPipeline.cpp": "e99c591f96ddf6cc1721225a2f336a42feba9992fd8e41f33f19b5718f8e2bf3",
+      "src/common/ComputeExecutor.h": "935d73b61290da1d96c865cd11e5bba947e34fe7dc4de5c88d4af7dc3bbf111a",
+      "src/common/ComputeExecutorHarness.cpp": "0cd9c75b3083ed0b2c41a0bd680df58a05aaf9c4a2497464c1f5f8efeda4adad",
+      "src/engine/EngineRun.cpp": "e77d2120514f8397a5cb88313bc466d23174ed4eff82338797b2dc81020a8d2b",
+      "src/map/ResourceGrowth.cpp": "42ca1369d49d9b9929c10978ff67be6e9b2a49cffbaa152535650225b92bf101",
+      "src/map/gradient/BuildingGradientPipeline.h": "768ed98b2020662174e26e87a8d5091d7f602b23ca982660621a7dbbd7f828b1",
+      "src/map/gradient/GradientPipeline.h": "026e99bd221427c452716516ec33ea843607710ab2a6a759d5ec772e7b9743cd",
+      "src/team/stats/TeamStatsPipeline.cpp": "93eb0b85cd99711edb853db46acb63ee170a75dbfdd0ca778fae2b522bfae0a5"
+    },
+    "patch": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/weighted-source.patch",
+    "patch_sha256": "e90fc1d3895e1f8ce8d2d7271ce6000bc7b9531fa010a6d7d963fff2e12ad3b7"
+  },
+  "returncode": 0,
+  "elapsed_seconds": 451.2991970288567,
+  "utc": "2026-10-15T12:03:55.331187+00:00",
+  "manifest_sha256": "8251975d1e80c85f0f5ec8c2ac0eb6391d724c583cdbb06bfa1b4a0b6a23ed8f"
+}

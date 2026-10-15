@@ -1,0 +1,9 @@
+{
+  "state": "passive_wait_no_heavy_work",
+  "utc": "2026-10-15T18:02:06.704454+00:00",
+  "native_or_controller_busy": [
+    "460595",
+    "460600",
+    "578613"
+  ]
+}

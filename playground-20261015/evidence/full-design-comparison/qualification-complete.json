@@ -1,0 +1,122 @@
+{
+  "state": "qualified_with_known_baseline_failures",
+  "research_qualification_only": true,
+  "roles": {
+    "baseline": {
+      "state": "qualified_with_known_baseline_failures",
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/qualification/baseline/complete.json",
+      "sha256": "b1f6cd7d152877b928ef637906c24f885d2899f5f5d44836dfe9830ece07bbbf"
+    },
+    "wake-only": {
+      "state": "qualified_with_known_baseline_failures",
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/qualification/wake-only/complete.json",
+      "sha256": "2bebbd6e641ef24d27891914046ca5655fbf63604630b12c92a5c93c03f93ecf"
+    },
+    "first-steal": {
+      "state": "qualified_with_known_baseline_failures",
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/qualification/first-steal/complete.json",
+      "sha256": "ebac93e2acabada0dd4bc4b014cd4854871e9e45db8ee55c54f3076a4bee7659"
+    },
+    "local-completion-round-robin": {
+      "state": "qualified_with_known_baseline_failures",
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/qualification/local-completion-round-robin/complete.json",
+      "sha256": "edeeae419128b2d559a48a04cf67c0a72123b31e4c078524ecfe382554709bfe"
+    },
+    "local-completion-steal": {
+      "state": "qualified_with_known_baseline_failures",
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/qualification/local-completion-steal/complete.json",
+      "sha256": "0ede3642455c06a57f0f48defa430e6897bd4d7048ae82a9d3be1801942cd849"
+    },
+    "local-priority-steal": {
+      "state": "qualified_with_known_baseline_failures",
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/qualification/local-priority-steal/complete.json",
+      "sha256": "48a14a16f1bf1845ffd0aa83f0f2680d2035ca4865d553a85506706dfa94ee13"
+    },
+    "weighted-fixed-no-steal": {
+      "state": "qualified_with_known_baseline_failures",
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/qualification/weighted-fixed-no-steal/complete.json",
+      "sha256": "1cb98d12081a51d578db26255b609321fecb62a827fc09a2c906420a45f492c4"
+    },
+    "weighted-fixed-steal": {
+      "state": "qualified_with_known_baseline_failures",
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/qualification/weighted-fixed-steal/complete.json",
+      "sha256": "d2096d82045318d634639989009521b986bc5082341dd4e5f9644a22a732a530"
+    },
+    "weighted-two-choice": {
+      "state": "qualified_with_known_baseline_failures",
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/qualification/weighted-two-choice/complete.json",
+      "sha256": "0e34c6512033698fbe7aede30f2e8027bc26bceb0bc346ded11799fbfe8403d3"
+    },
+    "weighted-last": {
+      "state": "qualified_with_known_baseline_failures",
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/qualification/weighted-last/complete.json",
+      "sha256": "c5b36684588c9ec7ad69d29feed25d479f2f318695bd19de13ccab5aa28de63e"
+    },
+    "weighted-ewma": {
+      "state": "qualified_with_known_baseline_failures",
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/qualification/weighted-ewma/complete.json",
+      "sha256": "31ea09c8a8376e8f13dc15f2d91a8a4aad3a63e444f0fa9bcd69d2352a238b18"
+    },
+    "weighted-clock-only": {
+      "state": "qualified_with_known_baseline_failures",
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/qualification/weighted-clock-only/complete.json",
+      "sha256": "9ea7f3fdb06ebe467988507a1b4601ec9e43e312182e5f7d2301a294a349b66a"
+    },
+    "weighted-observe-only": {
+      "state": "qualified_with_known_baseline_failures",
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/qualification/weighted-observe-only/complete.json",
+      "sha256": "7b4700d667f21349dbf8c9f12054fb321407aca698d9397a090412e998f2a7ed"
+    },
+    "weighted-bare-steal": {
+      "state": "qualified_with_known_baseline_failures",
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/qualification/weighted-bare-steal/complete.json",
+      "sha256": "faef891f9aacaf80e22af2b293b77ad07206191e6aa6a9bcb9b8b237b9eae1dc"
+    }
+  },
+  "failed_roles": [],
+  "base_revision": "054804590ee1dd109f09642fc05654c324f08344",
+  "baseline_failure_review": {
+    "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/matched-baseline-failures-review.json",
+    "sha256": "fed4bcd975d141b4dee2e1b369971437a21e3736ce3e1955b55f8a9f376a0881"
+  },
+  "known_baseline_failures": [
+    {
+      "suite": "ResourceGrowth",
+      "name": "historical growth payloads are rejected after header preflight",
+      "events": [
+        {
+          "type": "CHECK_FALSE",
+          "message": "true",
+          "body": "\nsrc/map/ResourceGrowthTest.cpp:828:\nCHECK_FALSE( engine.gui.game.load(input.get()) ) is NOT correct!\n  values: CHECK_FALSE( true )\n  logged: name := <volatile-address>"
+        },
+        {
+          "type": "CHECK_FALSE",
+          "message": "true",
+          "body": "\nsrc/map/ResourceGrowthTest.cpp:828:\nCHECK_FALSE( engine.gui.game.load(input.get()) ) is NOT correct!\n  values: CHECK_FALSE( true )\n  logged: name := <volatile-address>"
+        },
+        {
+          "type": "CHECK_FALSE",
+          "message": "true",
+          "body": "\nsrc/map/ResourceGrowthTest.cpp:828:\nCHECK_FALSE( engine.gui.game.load(input.get()) ) is NOT correct!\n  values: CHECK_FALSE( true )\n  logged: name := <volatile-address>"
+        }
+      ]
+    },
+    {
+      "suite": "TurretTargeting",
+      "name": "overlapping publication preserves other sources through upgrade and incarnation changes",
+      "events": [
+        {
+          "type": "CHECK",
+          "message": "false",
+          "body": "\nsrc/building/TurretTargetingTest.cpp:456:\nCHECK( pipeline->entries(*changed).empty() ) is NOT correct!\n  values: CHECK( false )\n\n      "
+        }
+      ]
+    }
+  ],
+  "baseline_contexts_reused": 20,
+  "other_contexts_verified": 260,
+  "supplemental_manifest": {
+    "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/focused-gap-checks/gap-checks-complete.json",
+    "sha256": "78ac02f411904794964f1d2de39c81d36209f85c3f58e06be257b03bfa91c6fa"
+  }
+}

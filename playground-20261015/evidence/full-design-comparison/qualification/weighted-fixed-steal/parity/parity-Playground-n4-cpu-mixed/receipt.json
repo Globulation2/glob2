@@ -1,0 +1,33 @@
+{
+  "case": "parity-Playground-n4-cpu-mixed",
+  "role": "weighted-fixed-steal",
+  "initialChecksum": 941441255,
+  "finalChecksum": 667503685,
+  "checksums": {
+    "GCS1": "9ef928890c7043b80d7a05a7ea3eafaeaa0fe703cf27b0fa9ba1ab65cec777d6",
+    "native": "7daf7118ebb95e718a6a82398a4fc42801acd3015facc4bba14b234122ff906f"
+  },
+  "sidecar_details": {
+    "GCS1": {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/qualification/weighted-fixed-steal/parity/parity-Playground-n4-cpu-mixed/native/game.replay.checksums",
+      "rows": 4096,
+      "first_tick": 0,
+      "last_tick": 4095,
+      "teams": 8,
+      "players": 8,
+      "bytes": 65325916
+    },
+    "native": {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/qualification/weighted-fixed-steal/parity/parity-Playground-n4-cpu-mixed/native/world.checksums",
+      "rows": 4096,
+      "first_tick": 0,
+      "last_tick": 4095,
+      "bytes": 63409
+    }
+  },
+  "command_receipt": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/qualification/weighted-fixed-steal/parity/parity-Playground-n4-cpu-mixed/command.json",
+  "result_sha256": "217055f4a6683c1c4a47e8520e942da22f00f6097c368a9ead1305d0c1940972",
+  "binary_sha256": "257d526f5d56c7b63b614ce3a0f895345cb20569c6a6f573e09a9abee5e5336c",
+  "requested_opencl": false,
+  "correctness_only": true
+}

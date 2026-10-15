@@ -1,0 +1,16 @@
+{
+  "pid": 580579,
+  "starttime": "335475200",
+  "utc": "2026-10-15T18:05:47.873565+00:00",
+  "script_sha256": "4a60e2ea2eb3b2548a204b303ee7d0ba5a2051e9df1aec0e6a1a413d48b51d6c",
+  "command": [
+    "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/playground-stop/plot-venv/bin/python",
+    "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/playground-stop/analyze-playground.py",
+    "--wait",
+    "--gate",
+    "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/playground-stop/analysis-root-approved.json",
+    "--output",
+    "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/playground-stop/results"
+  ],
+  "recovery": "Same analysis/data; plotting packages installed at repository pins. No native games rerun."
+}

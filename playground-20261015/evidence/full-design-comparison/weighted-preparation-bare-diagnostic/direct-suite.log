@@ -1,0 +1,373 @@
+GLOB2_TEST_BUILD compiler=13.4.0 platform=Linux pointer_bits=64
+GLOB2_TEST_PROVENANCE {"compiler": "g++-13", "dirty": true, "flags": {"CCFLAGS": "", "CPPDEFINES": "GLOB2_OFFICIAL_INSTANCE_ORIGIN \\\"https://app.glob2online.com\\\" GLOB2_OFFICIAL_INSTANCE_FORMER_ORIGINS \\\"https://glob2online.com\\\" HAVE_CONFIG_H GLOB2_RENDER_SHADER_DIR \\\"/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/weighted-source/build/linux/client/release/shaders\\\" SDL_MAIN_HANDLED", "CXXFLAGS": "-std=gnu++20 -Wall -fPIC -O3 -s", "LINKFLAGS": "-L/usr/lib/gcc/x86_64-linux-gnu/15 -Wl,-rpath,$ORIGIN/../lib/glob2 -Wall -O3 -fwhole-program -Wl,-rpath,/home/bradley/.codex/worktrees/repair-tls-rejection-fixture/glob2/build/sdl3-ci/prefix/lib -Wl,--enable-new-dtags"}, "revision": "054804590ee1dd109f09642fc05654c324f08344", "sourceStatus": [" M src/ai/engine/AIOrderScheduler.cpp", " M src/app/Glob2.cpp", " M src/building/HiringPipeline.cpp", " M src/building/TurretTargetingPipeline.cpp", " M src/common/ComputeExecutor.h", " M src/common/ComputeExecutorHarness.cpp", " M src/engine/EngineRun.cpp", " M src/map/ResourceGrowth.cpp", " M src/map/gradient/BuildingGradientPipeline.h", " M src/map/gradient/GradientPipeline.h", " M src/team/stats/TeamStatsPipeline.cpp"], "sourceTreeSha256": "cd6f58922a021a8a4428bfe5277d118e0990db19a198d7937ebcad49d2149272"}
+[doctest] doctest version is "2.4.11"
+[doctest] run with "--help" for options
+===============================================================================
+src/common/ComputeExecutorHarness.cpp:23:
+TEST SUITE: ComputeExecutor
+TEST CASE:  automatic sizing respects platform limits and supports unknown CPU counts
+
+0.000023 s: automatic sizing respects platform limits and supports unknown CPU counts
+===============================================================================
+src/common/ComputeExecutorHarness.cpp:35:
+TEST SUITE: ComputeExecutor
+TEST CASE:  CPU availability provenance distinguishes affinity from hardware hints
+
+0.000026 s: CPU availability provenance distinguishes affinity from hardware hints
+===============================================================================
+src/common/ComputeExecutorHarness.cpp:43:
+TEST SUITE: ComputeExecutor
+TEST CASE:  thread configuration accepts auto and rejects malformed or overflowing overrides
+
+0.000182 s: thread configuration accepts auto and rejects malformed or overflowing overrides
+===============================================================================
+src/common/ComputeExecutorHarness.cpp:61:
+TEST SUITE: ComputeExecutor
+TEST CASE:  supported platforms execute jobs concurrently on distinct threads
+
+0.028266 s: supported platforms execute jobs concurrently on distinct threads
+===============================================================================
+src/common/ComputeExecutorHarness.cpp:84:
+TEST SUITE: ComputeExecutor
+TEST CASE:  exclusive slots; nested batches; reuse; errors; barriers and reconfiguration
+
+src/common/ComputeExecutorHarness.cpp:122: MESSAGE: PASS executor: exclusive slots, nested batches, reuse, errors, barriers, reconfiguration
+
+0.112963 s: exclusive slots; nested batches; reuse; errors; barriers and reconfiguration
+===============================================================================
+src/common/ComputeExecutorHarness.cpp:142:
+TEST SUITE: ComputeExecutor
+TEST CASE:  deferred batches complete with lanes and isolated errors
+
+0.169523 s: deferred batches complete with lanes and isolated errors
+===============================================================================
+src/common/ComputeExecutorHarness.cpp:224:
+TEST SUITE: ComputeExecutor
+TEST CASE:  idle workers retain parallelism for independent and mixed lane groups
+
+0.031788 s: idle workers retain parallelism for independent and mixed lane groups
+===============================================================================
+src/common/ComputeExecutorHarness.cpp:270:
+TEST SUITE: ComputeExecutor
+TEST CASE:  repeated lane groups and empty groups preserve ordering and independent work
+
+0.000264 s: repeated lane groups and empty groups preserve ordering and independent work
+===============================================================================
+src/common/ComputeExecutorHarness.cpp:320:
+TEST SUITE: ComputeExecutor
+TEST CASE:  external completion and continuation wake parked lane successors
+
+0.019501 s: external completion and continuation wake parked lane successors
+===============================================================================
+src/common/ComputeExecutorHarness.cpp:405:
+TEST SUITE: ComputeExecutor
+TEST CASE:  lane groups run in index order and the horizon is bounded
+
+0.014225 s: lane groups run in index order and the horizon is bounded
+===============================================================================
+src/common/ComputeExecutorHarness.cpp:466:
+TEST SUITE: ComputeExecutor
+TEST CASE:  sharded ready dispatch executes each independent job and the owner only waits
+
+0.012871 s: sharded ready dispatch executes each independent job and the owner only waits
+===============================================================================
+src/common/ComputeExecutorHarness.cpp:505:
+TEST SUITE: ComputeExecutor
+TEST CASE:  without workers the owner runs the jobs due no later than the join
+
+0.006072 s: without workers the owner runs the jobs due no later than the join
+===============================================================================
+src/common/ComputeExecutorHarness.cpp:529:
+TEST SUITE: ComputeExecutor
+TEST CASE:  a lane keeps submission order: a lane job due before a live earlier one is rejected
+
+0.013686 s: a lane keeps submission order: a lane job due before a live earlier one is rejected
+===============================================================================
+src/common/ComputeExecutorHarness.cpp:560:
+TEST SUITE: ComputeExecutor
+TEST CASE:  the slot count covers every producer's horizon
+
+src/common/ComputeExecutorHarness.cpp:565: ERROR: CHECK( ComputeExecutor::Slots == 79 ) is NOT correct!
+  values: CHECK( 84 == 79 )
+
+0.000125 s: the slot count covers every producer's horizon
+===============================================================================
+src/common/ComputeExecutorHarness.cpp:603:
+TEST SUITE: ComputeExecutor
+TEST CASE:  presentation cannot delay simulation barriers with spare workers or run on the simulation owner
+
+0.009126 s: presentation cannot delay simulation barriers with spare workers or run on the simulation owner
+===============================================================================
+src/common/ComputeExecutorHarness.cpp:645:
+TEST SUITE: ComputeExecutor
+TEST CASE:  with one worker the owner waits through its presentation chunk and never runs the join itself
+
+0.024469 s: with one worker the owner waits through its presentation chunk and never runs the join itself
+===============================================================================
+src/common/ComputeExecutorHarness.cpp:693:
+TEST SUITE: ComputeExecutor
+TEST CASE:  presentation progresses before a continuous simulation backlog drains
+
+0.007148 s: presentation progresses before a continuous simulation backlog drains
+===============================================================================
+src/common/ComputeExecutorHarness.cpp:721:
+TEST SUITE: ComputeExecutor
+TEST CASE:  presentation replacement, chunk pumping, cancellation and errors retain no captures
+
+0.006900 s: presentation replacement, chunk pumping, cancellation and errors retain no captures
+===============================================================================
+src/common/ComputeExecutorHarness.cpp:757:
+TEST SUITE: ComputeExecutor
+TEST CASE:  resumable presentation yields without advancing or retaining canceled inputs
+
+0.004814 s: resumable presentation yields without advancing or retaining canceled inputs
+===============================================================================
+src/common/ComputeExecutorHarness.cpp:785:
+TEST SUITE: ComputeExecutor
+TEST CASE:  worker only maintenance never uses the owner including creation failure
+
+0.009027 s: worker only maintenance never uses the owner including creation failure
+===============================================================================
+src/common/ComputeExecutorHarness.cpp:806:
+TEST SUITE: ComputeExecutor
+TEST CASE:  worker only maintenance yields to required jobs and cannot delay their completed join
+
+0.004394 s: worker only maintenance yields to required jobs and cannot delay their completed join
+===============================================================================
+src/common/ComputeExecutorHarness.cpp:845:
+TEST SUITE: ComputeExecutor
+TEST CASE:  suspended device work releases the only worker and preserves lane completion
+
+0.004419 s: suspended device work releases the only worker and preserves lane completion
+===============================================================================
+src/common/ComputeExecutorHarness.cpp:881:
+TEST SUITE: ComputeExecutor
+TEST CASE:  early device failure resumes exactly once on the worker at its original lane position
+
+0.004337 s: early device failure resumes exactly once on the worker at its original lane position
+===============================================================================
+src/common/ComputeExecutorHarness.cpp:913:
+TEST SUITE: ComputeExecutor
+TEST CASE:  early asynchronous completion cannot release an invoking callback's inputs
+
+0.004341 s: early asynchronous completion cannot release an invoking callback's inputs
+===============================================================================
+src/common/ComputeExecutorHarness.cpp:930:
+TEST SUITE: ComputeExecutor
+TEST CASE:  continuation of a nonzero lane-group index keeps its original sequence
+
+0.004642 s: continuation of a nonzero lane-group index keeps its original sequence
+===============================================================================
+src/common/ComputeExecutorHarness.cpp:950:
+TEST SUITE: ComputeExecutor
+TEST CASE:  retained completion tickets can be resolved after executor destruction
+
+0.004340 s: retained completion tickets can be resolved after executor destruction
+===============================================================================
+src/common/ComputeExecutorHarness.cpp:967:
+TEST SUITE: ComputeExecutor
+TEST CASE:  graphics batches finish once, retain failures and release captures
+
+0.013386 s: graphics batches finish once, retain failures and release captures
+===============================================================================
+src/common/ComputeExecutorHarness.cpp:1003:
+TEST SUITE: ComputeExecutor
+TEST CASE:  serial graphics finish never pumps scene or required work and abandonment releases captures
+
+0.002096 s: serial graphics finish never pumps scene or required work and abandonment releases captures
+===============================================================================
+src/common/ComputeExecutorHarness.cpp:1029:
+TEST SUITE: ComputeExecutor
+TEST CASE:  graphics cancellation drains claimed work and reconfiguration releases inputs
+
+0.008937 s: graphics cancellation drains claimed work and reconfiguration releases inputs
+===============================================================================
+src/common/ComputeExecutorHarness.cpp:1079:
+TEST SUITE: ComputeExecutor
+TEST CASE:  both presentation classes progress during required lane backlog
+
+0.004822 s: both presentation classes progress during required lane backlog
+===============================================================================
+src/common/ComputeExecutorHarness.cpp:1146:
+TEST SUITE: ComputeExecutor
+TEST CASE:  graphics callback barriers are rejected and completed tickets do not pump newer work
+
+0.002305 s: graphics callback barriers are rejected and completed tickets do not pump newer work
+===============================================================================
+src/common/ComputeExecutorHarness.cpp:1172:
+TEST SUITE: ComputeExecutor
+TEST CASE:  empty graphics submissions bypass occupied admission and concurrency metrics respect ceilings
+
+0.006659 s: empty graphics submissions bypass occupied admission and concurrency metrics respect ceilings
+===============================================================================
+src/common/ComputeExecutorHarness.cpp:1203:
+TEST SUITE: ComputeExecutor
+TEST CASE:  graphics capture destruction can inspect scheduler metrics before completion
+
+0.008510 s: graphics capture destruction can inspect scheduler metrics before completion
+===============================================================================
+src/common/ComputeExecutorHarness.cpp:1245:
+TEST SUITE: ComputeExecutor
+TEST CASE:  disabled diagnostics do not read the injected clock or collect counters
+
+0.000218 s: disabled diagnostics do not read the injected clock or collect counters
+===============================================================================
+src/common/ComputeExecutorHarness.cpp:1265:
+TEST SUITE: ComputeExecutor
+TEST CASE:  owner execution, stale handles, reuse and lifecycle attribution use one locked inspection
+
+0.000154 s: owner execution, stale handles, reuse and lifecycle attribution use one locked inspection
+===============================================================================
+src/common/ComputeExecutorHarness.cpp:1296:
+TEST SUITE: ComputeExecutor
+TEST CASE:  worker waits aggregate distinct ticks globally and per producer without worker timing
+
+0.000377 s: worker waits aggregate distinct ticks globally and per producer without worker timing
+===============================================================================
+src/common/ComputeExecutorHarness.cpp:1323:
+TEST SUITE: ComputeExecutor
+TEST CASE:  complete joins and trace overflow remain valid and snapshots require drain
+
+0.000569 s: complete joins and trace overflow remain valid and snapshots require drain
+===============================================================================
+src/common/ComputeExecutorHarness.cpp:1345:
+TEST SUITE: ComputeExecutor
+TEST CASE:  trace preserves early external resolution and continuation callback ordering
+
+0.015108 s: trace preserves early external resolution and continuation callback ordering
+===============================================================================
+src/common/ComputeExecutorHarness.cpp:1382:
+TEST SUITE: ComputeExecutor
+TEST CASE:  trace storage allocation failure downgrades without losing required work
+
+0.000088 s: trace storage allocation failure downgrades without losing required work
+===============================================================================
+src/common/ComputeExecutorHarness.cpp:1397:
+TEST SUITE: ComputeExecutor
+TEST CASE:  blocking fork join failures and presentation remain traced without entering tick waits
+
+0.026234 s: blocking fork join failures and presentation remain traced without entering tick waits
+===============================================================================
+src/common/ComputeExecutorHarness.cpp:1421:
+TEST SUITE: ComputeExecutor
+TEST CASE:  graphics diagnostics are optional and waits mode attributes the owner barrier
+
+0.025249 s: graphics diagnostics are optional and waits mode attributes the owner barrier
+===============================================================================
+src/common/ComputeExecutorHarness.cpp:1439:
+TEST SUITE: ComputeExecutor
+TEST CASE:  yielded presentation chunks keep callback indices paired
+
+0.025621 s: yielded presentation chunks keep callback indices paired
+===============================================================================
+src/common/ComputeExecutorHarness.cpp:1456:
+TEST SUITE: ComputeExecutor
+TEST CASE:  worker-only maintenance is traced as other work without a required join
+
+0.025224 s: worker-only maintenance is traced as other work without a required join
+===============================================================================
+src/common/ComputeExecutorHarness.cpp:1488:
+TEST SUITE: ComputeExecutor
+TEST CASE:  session reset suppresses a returning maintenance interval from the previous epoch
+
+0.035478 s: session reset suppresses a returning maintenance interval from the previous epoch
+===============================================================================
+src/common/ComputeExecutorHarness.cpp:1514:
+TEST SUITE: ComputeExecutor
+TEST CASE:  synchronous graphics adapter keeps empty calls idle and guards owner callbacks
+
+0.007134 s: synchronous graphics adapter keeps empty calls idle and guards owner callbacks
+===============================================================================
+src/common/ComputeExecutorHarness.cpp:1545:
+TEST SUITE: ComputeExecutor
+TEST CASE:  graphics adapter restores callback state on failure and never pumps other work
+
+0.004446 s: graphics adapter restores callback state on failure and never pumps other work
+===============================================================================
+src/common/ComputeExecutorHarness.cpp:1580:
+TEST SUITE: ComputeExecutor
+TEST CASE:  synchronous graphics cancellation rejects incomplete output after draining
+
+0.019018 s: synchronous graphics cancellation rejects incomplete output after draining
+===============================================================================
+src/common/ComputeExecutorHarness.cpp:1623:
+TEST SUITE: ComputeExecutor
+TEST CASE:  graphics adapter preserves occupied admission and serial finish shares the scene cap
+
+0.030271 s: graphics adapter preserves occupied admission and serial finish shares the scene cap
+===============================================================================
+src/common/ComputeExecutorHarness.cpp:1661:
+TEST SUITE: ComputeExecutor
+TEST CASE:  canceling a slot-blocked graphics batch wakes its owner before scene completion
+
+0.024453 s: canceling a slot-blocked graphics batch wakes its owner before scene completion
+===============================================================================
+src/common/ComputeExecutorHarness.cpp:1695:
+TEST SUITE: ComputeExecutor
+TEST CASE:  sharded queues preserve lane order across repeated groups exceptions and slot reuse
+
+0.029713 s: sharded queues preserve lane order across repeated groups exceptions and slot reuse
+===============================================================================
+src/common/ComputeExecutorHarness.cpp:1725:
+TEST SUITE: ComputeExecutor
+TEST CASE:  sharded ordinary callbacks can inspect metrics without scheduler lock ownership
+
+0.000194 s: sharded ordinary callbacks can inspect metrics without scheduler lock ownership
+===============================================================================
+src/common/ComputeExecutorHarness.cpp:1746:
+TEST SUITE: ComputeExecutor
+TEST CASE:  idle steal peer consumes ready work assigned behind a busy worker
+
+0.000162 s: idle steal peer consumes ready work assigned behind a busy worker
+===============================================================================
+src/common/ComputeExecutorHarness.cpp:1778:
+TEST SUITE: ComputeExecutor
+TEST CASE:  required queue already populated at optional entry is rescued by spare worker
+
+0.000174 s: required queue already populated at optional entry is rescued by spare worker
+===============================================================================
+src/common/ComputeExecutorHarness.cpp:1815:
+TEST SUITE: ComputeExecutor
+TEST CASE:  steady sharded deferred dispatch inspects shared control periodically
+
+0.006063 s: steady sharded deferred dispatch inspects shared control periodically
+===============================================================================
+src/common/ComputeExecutorHarness.cpp:1829:
+TEST SUITE: ComputeExecutor
+TEST CASE:  lane affine dispatch retains a controller lane on one worker
+
+0.000007 s: lane affine dispatch retains a controller lane on one worker
+===============================================================================
+src/common/ComputeExecutorHarness.cpp:1844:
+TEST SUITE: ComputeExecutor
+TEST CASE:  batch local terminal fan in survives immediate slot and result storage reuse
+
+0.042145 s: batch local terminal fan in survives immediate slot and result storage reuse
+===============================================================================
+src/common/ComputeExecutorHarness.cpp:1861:
+TEST SUITE: ComputeExecutor
+TEST CASE:  retired batch storage cannot remain in another batch lane chain
+
+0.000150 s: retired batch storage cannot remain in another batch lane chain
+===============================================================================
+src/common/ComputeExecutorHarness.cpp:1884:
+TEST SUITE: ComputeExecutor
+TEST CASE:  concurrent batch local failures publish one error before finished
+
+0.001254 s: concurrent batch local failures publish one error before finished
+===============================================================================
+src/common/ComputeExecutorHarness.cpp:1921:
+TEST SUITE: ComputeExecutor
+TEST CASE:  weighted cost classes cold reset and reservation transfer debit
+
+0.000291 s: weighted cost classes cold reset and reservation transfer debit
+===============================================================================
+src/common/ComputeExecutorHarness.cpp:1941:
+TEST SUITE: ComputeExecutor
+TEST CASE:  weighted reservations include active callbacks until their CPU slice returns
+
+0.000097 s: weighted reservations include active callbacks until their CPU slice returns
+===============================================================================
+[doctest] test cases:     60 |     59 passed | 1 failed | 1134 skipped
+[doctest] assertions: 152308 | 152307 passed | 1 failed |
+[doctest] Status: FAILURE!

@@ -1,0 +1,18 @@
+{
+  "map": "Playground",
+  "role": "local-completion-round-robin",
+  "wave": 1,
+  "seed_indices": [
+    1
+  ],
+  "started_monotonic": 3340855.799108058,
+  "finished_monotonic": 3340891.636411646,
+  "makespan_seconds": 35.83730358770117,
+  "winners": 1,
+  "caps": 0,
+  "games_per_hour": 100.4539861987682,
+  "observed_ticks_per_second": 1545.7078087484906,
+  "complete_tick_coverage": true,
+  "sum_game_seconds": 35.74408168671653,
+  "scope": "Actual homogeneous wave makespan including launches/waits, not sum of parallel game runtimes."
+}

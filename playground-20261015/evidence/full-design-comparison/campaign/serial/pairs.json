@@ -1,0 +1,5826 @@
+[
+  {
+    "map": "Playground",
+    "seed": 1056243202,
+    "seed_index": 0,
+    "reference": "baseline",
+    "candidate": "wake-only",
+    "both_winners": true,
+    "endpoints_match": true,
+    "eligible_winner_timing_pair": true,
+    "statuses": [
+      "winner",
+      "winner"
+    ]
+  },
+  {
+    "map": "Playground",
+    "seed": 1056243202,
+    "seed_index": 0,
+    "reference": "baseline",
+    "candidate": "first-steal",
+    "both_winners": true,
+    "endpoints_match": true,
+    "eligible_winner_timing_pair": true,
+    "statuses": [
+      "winner",
+      "winner"
+    ]
+  },
+  {
+    "map": "Playground",
+    "seed": 1056243202,
+    "seed_index": 0,
+    "reference": "baseline",
+    "candidate": "local-completion-round-robin",
+    "both_winners": true,
+    "endpoints_match": true,
+    "eligible_winner_timing_pair": true,
+    "statuses": [
+      "winner",
+      "winner"
+    ]
+  },
+  {
+    "map": "Playground",
+    "seed": 1056243202,
+    "seed_index": 0,
+    "reference": "baseline",
+    "candidate": "local-completion-steal",
+    "both_winners": true,
+    "endpoints_match": true,
+    "eligible_winner_timing_pair": true,
+    "statuses": [
+      "winner",
+      "winner"
+    ]
+  },
+  {
+    "map": "Playground",
+    "seed": 1056243202,
+    "seed_index": 0,
+    "reference": "baseline",
+    "candidate": "local-priority-steal",
+    "both_winners": true,
+    "endpoints_match": true,
+    "eligible_winner_timing_pair": true,
+    "statuses": [
+      "winner",
+      "winner"
+    ]
+  },
+  {
+    "map": "Playground",
+    "seed": 1056243202,
+    "seed_index": 0,
+    "reference": "baseline",
+    "candidate": "weighted-fixed-no-steal",
+    "both_winners": true,
+    "endpoints_match": true,
+    "eligible_winner_timing_pair": true,
+    "statuses": [
+      "winner",
+      "winner"
+    ]
+  },
+  {
+    "map": "Playground",
+    "seed": 1056243202,
+    "seed_index": 0,
+    "reference": "baseline",
+    "candidate": "weighted-fixed-steal",
+    "both_winners": true,
+    "endpoints_match": true,
+    "eligible_winner_timing_pair": true,
+    "statuses": [
+      "winner",
+      "winner"
+    ]
+  },
+  {
+    "map": "Playground",
+    "seed": 1056243202,
+    "seed_index": 0,
+    "reference": "baseline",
+    "candidate": "weighted-two-choice",
+    "both_winners": true,
+    "endpoints_match": true,
+    "eligible_winner_timing_pair": true,
+    "statuses": [
+      "winner",
+      "winner"
+    ]
+  },
+  {
+    "map": "Playground",
+    "seed": 1056243202,
+    "seed_index": 0,
+    "reference": "baseline",
+    "candidate": "weighted-last",
+    "both_winners": true,
+    "endpoints_match": true,
+    "eligible_winner_timing_pair": true,
+    "statuses": [
+      "winner",
+      "winner"
+    ]
+  },
+  {
+    "map": "Playground",
+    "seed": 1056243202,
+    "seed_index": 0,
+    "reference": "baseline",
+    "candidate": "weighted-ewma",
+    "both_winners": true,
+    "endpoints_match": true,
+    "eligible_winner_timing_pair": true,
+    "statuses": [
+      "winner",
+      "winner"
+    ]
+  },
+  {
+    "map": "Playground",
+    "seed": 1056243202,
+    "seed_index": 0,
+    "reference": "baseline",
+    "candidate": "weighted-clock-only",
+    "both_winners": true,
+    "endpoints_match": true,
+    "eligible_winner_timing_pair": true,
+    "statuses": [
+      "winner",
+      "winner"
+    ]
+  },
+  {
+    "map": "Playground",
+    "seed": 1056243202,
+    "seed_index": 0,
+    "reference": "baseline",
+    "candidate": "weighted-observe-only",
+    "both_winners": true,
+    "endpoints_match": true,
+    "eligible_winner_timing_pair": true,
+    "statuses": [
+      "winner",
+      "winner"
+    ]
+  },
+  {
+    "map": "Playground",
+    "seed": 1056243202,
+    "seed_index": 0,
+    "reference": "baseline",
+    "candidate": "weighted-bare-steal",
+    "both_winners": true,
+    "endpoints_match": true,
+    "eligible_winner_timing_pair": true,
+    "statuses": [
+      "winner",
+      "winner"
+    ]
+  },
+  {
+    "map": "Playground",
+    "seed": 744345666,
+    "seed_index": 1,
+    "reference": "baseline",
+    "candidate": "wake-only",
+    "both_winners": true,
+    "endpoints_match": true,
+    "eligible_winner_timing_pair": true,
+    "statuses": [
+      "winner",
+      "winner"
+    ]
+  },
+  {
+    "map": "Playground",
+    "seed": 744345666,
+    "seed_index": 1,
+    "reference": "baseline",
+    "candidate": "first-steal",
+    "both_winners": true,
+    "endpoints_match": true,
+    "eligible_winner_timing_pair": true,
+    "statuses": [
+      "winner",
+      "winner"
+    ]
+  },
+  {
+    "map": "Playground",
+    "seed": 744345666,
+    "seed_index": 1,
+    "reference": "baseline",
+    "candidate": "local-completion-round-robin",
+    "both_winners": true,
+    "endpoints_match": true,
+    "eligible_winner_timing_pair": true,
+    "statuses": [
+      "winner",
+      "winner"
+    ]
+  },
+  {
+    "map": "Playground",
+    "seed": 744345666,
+    "seed_index": 1,
+    "reference": "baseline",
+    "candidate": "local-completion-steal",
+    "both_winners": true,
+    "endpoints_match": true,
+    "eligible_winner_timing_pair": true,
+    "statuses": [
+      "winner",
+      "winner"
+    ]
+  },
+  {
+    "map": "Playground",
+    "seed": 744345666,
+    "seed_index": 1,
+    "reference": "baseline",
+    "candidate": "local-priority-steal",
+    "both_winners": true,
+    "endpoints_match": true,
+    "eligible_winner_timing_pair": true,
+    "statuses": [
+      "winner",
+      "winner"
+    ]
+  },
+  {
+    "map": "Playground",
+    "seed": 744345666,
+    "seed_index": 1,
+    "reference": "baseline",
+    "candidate": "weighted-fixed-no-steal",
+    "both_winners": true,
+    "endpoints_match": true,
+    "eligible_winner_timing_pair": true,
+    "statuses": [
+      "winner",
+      "winner"
+    ]
+  },
+  {
+    "map": "Playground",
+    "seed": 744345666,
+    "seed_index": 1,
+    "reference": "baseline",
+    "candidate": "weighted-fixed-steal",
+    "both_winners": true,
+    "endpoints_match": true,
+    "eligible_winner_timing_pair": true,
+    "statuses": [
+      "winner",
+      "winner"
+    ]
+  },
+  {
+    "map": "Playground",
+    "seed": 744345666,
+    "seed_index": 1,
+    "reference": "baseline",
+    "candidate": "weighted-two-choice",
+    "both_winners": true,
+    "endpoints_match": true,
+    "eligible_winner_timing_pair": true,
+    "statuses": [
+      "winner",
+      "winner"
+    ]
+  },
+  {
+    "map": "Playground",
+    "seed": 744345666,
+    "seed_index": 1,
+    "reference": "baseline",
+    "candidate": "weighted-last",
+    "both_winners": true,
+    "endpoints_match": true,
+    "eligible_winner_timing_pair": true,
+    "statuses": [
+      "winner",
+      "winner"
+    ]
+  },
+  {
+    "map": "Playground",
+    "seed": 744345666,
+    "seed_index": 1,
+    "reference": "baseline",
+    "candidate": "weighted-ewma",
+    "both_winners": true,
+    "endpoints_match": true,
+    "eligible_winner_timing_pair": true,
+    "statuses": [
+      "winner",
+      "winner"
+    ]
+  },
+  {
+    "map": "Playground",
+    "seed": 744345666,
+    "seed_index": 1,
+    "reference": "baseline",
+    "candidate": "weighted-clock-only",
+    "both_winners": true,
+    "endpoints_match": true,
+    "eligible_winner_timing_pair": true,
+    "statuses": [
+      "winner",
+      "winner"
+    ]
+  },
+  {
+    "map": "Playground",
+    "seed": 744345666,
+    "seed_index": 1,
+    "reference": "baseline",
+    "candidate": "weighted-observe-only",
+    "both_winners": true,
+    "endpoints_match": true,
+    "eligible_winner_timing_pair": true,
+    "statuses": [
+      "winner",
+      "winner"
+    ]
+  },
+  {
+    "map": "Playground",
+    "seed": 744345666,
+    "seed_index": 1,
+    "reference": "baseline",
+    "candidate": "weighted-bare-steal",
+    "both_winners": true,
+    "endpoints_match": true,
+    "eligible_winner_timing_pair": true,
+    "statuses": [
+      "winner",
+      "winner"
+    ]
+  },
+  {
+    "map": "Playground",
+    "seed": 1064623205,
+    "seed_index": 2,
+    "reference": "baseline",
+    "candidate": "wake-only",
+    "both_winners": true,
+    "endpoints_match": true,
+    "eligible_winner_timing_pair": true,
+    "statuses": [
+      "winner",
+      "winner"
+    ]
+  },
+  {
+    "map": "Playground",
+    "seed": 1064623205,
+    "seed_index": 2,
+    "reference": "baseline",
+    "candidate": "first-steal",
+    "both_winners": true,
+    "endpoints_match": true,
+    "eligible_winner_timing_pair": true,
+    "statuses": [
+      "winner",
+      "winner"
+    ]
+  },
+  {
+    "map": "Playground",
+    "seed": 1064623205,
+    "seed_index": 2,
+    "reference": "baseline",
+    "candidate": "local-completion-round-robin",
+    "both_winners": true,
+    "endpoints_match": true,
+    "eligible_winner_timing_pair": true,
+    "statuses": [
+      "winner",
+      "winner"
+    ]
+  },
+  {
+    "map": "Playground",
+    "seed": 1064623205,
+    "seed_index": 2,
+    "reference": "baseline",
+    "candidate": "local-completion-steal",
+    "both_winners": true,
+    "endpoints_match": true,
+    "eligible_winner_timing_pair": true,
+    "statuses": [
+      "winner",
+      "winner"
+    ]
+  },
+  {
+    "map": "Playground",
+    "seed": 1064623205,
+    "seed_index": 2,
+    "reference": "baseline",
+    "candidate": "local-priority-steal",
+    "both_winners": true,
+    "endpoints_match": true,
+    "eligible_winner_timing_pair": true,
+    "statuses": [
+      "winner",
+      "winner"
+    ]
+  },
+  {
+    "map": "Playground",
+    "seed": 1064623205,
+    "seed_index": 2,
+    "reference": "baseline",
+    "candidate": "weighted-fixed-no-steal",
+    "both_winners": true,
+    "endpoints_match": true,
+    "eligible_winner_timing_pair": true,
+    "statuses": [
+      "winner",
+      "winner"
+    ]
+  },
+  {
+    "map": "Playground",
+    "seed": 1064623205,
+    "seed_index": 2,
+    "reference": "baseline",
+    "candidate": "weighted-fixed-steal",
+    "both_winners": true,
+    "endpoints_match": true,
+    "eligible_winner_timing_pair": true,
+    "statuses": [
+      "winner",
+      "winner"
+    ]
+  },
+  {
+    "map": "Playground",
+    "seed": 1064623205,
+    "seed_index": 2,
+    "reference": "baseline",
+    "candidate": "weighted-two-choice",
+    "both_winners": true,
+    "endpoints_match": true,
+    "eligible_winner_timing_pair": true,
+    "statuses": [
+      "winner",
+      "winner"
+    ]
+  },
+  {
+    "map": "Playground",
+    "seed": 1064623205,
+    "seed_index": 2,
+    "reference": "baseline",
+    "candidate": "weighted-last",
+    "both_winners": true,
+    "endpoints_match": true,
+    "eligible_winner_timing_pair": true,
+    "statuses": [
+      "winner",
+      "winner"
+    ]
+  },
+  {
+    "map": "Playground",
+    "seed": 1064623205,
+    "seed_index": 2,
+    "reference": "baseline",
+    "candidate": "weighted-ewma",
+    "both_winners": true,
+    "endpoints_match": true,
+    "eligible_winner_timing_pair": true,
+    "statuses": [
+      "winner",
+      "winner"
+    ]
+  },
+  {
+    "map": "Playground",
+    "seed": 1064623205,
+    "seed_index": 2,
+    "reference": "baseline",
+    "candidate": "weighted-clock-only",
+    "both_winners": true,
+    "endpoints_match": true,
+    "eligible_winner_timing_pair": true,
+    "statuses": [
+      "winner",
+      "winner"
+    ]
+  },
+  {
+    "map": "Playground",
+    "seed": 1064623205,
+    "seed_index": 2,
+    "reference": "baseline",
+    "candidate": "weighted-observe-only",
+    "both_winners": true,
+    "endpoints_match": true,
+    "eligible_winner_timing_pair": true,
+    "statuses": [
+      "winner",
+      "winner"
+    ]
+  },
+  {
+    "map": "Playground",
+    "seed": 1064623205,
+    "seed_index": 2,
+    "reference": "baseline",
+    "candidate": "weighted-bare-steal",
+    "both_winners": true,
+    "endpoints_match": true,
+    "eligible_winner_timing_pair": true,
+    "statuses": [
+      "winner",
+      "winner"
+    ]
+  },
+  {
+    "map": "Playground",
+    "seed": 725864695,
+    "seed_index": 3,
+    "reference": "baseline",
+    "candidate": "wake-only",
+    "both_winners": true,
+    "endpoints_match": true,
+    "eligible_winner_timing_pair": true,
+    "statuses": [
+      "winner",
+      "winner"
+    ]
+  },
+  {
+    "map": "Playground",
+    "seed": 725864695,
+    "seed_index": 3,
+    "reference": "baseline",
+    "candidate": "first-steal",
+    "both_winners": true,
+    "endpoints_match": true,
+    "eligible_winner_timing_pair": true,
+    "statuses": [
+      "winner",
+      "winner"
+    ]
+  },
+  {
+    "map": "Playground",
+    "seed": 725864695,
+    "seed_index": 3,
+    "reference": "baseline",
+    "candidate": "local-completion-round-robin",
+    "both_winners": true,
+    "endpoints_match": true,
+    "eligible_winner_timing_pair": true,
+    "statuses": [
+      "winner",
+      "winner"
+    ]
+  },
+  {
+    "map": "Playground",
+    "seed": 725864695,
+    "seed_index": 3,
+    "reference": "baseline",
+    "candidate": "local-completion-steal",
+    "both_winners": true,
+    "endpoints_match": true,
+    "eligible_winner_timing_pair": true,
+    "statuses": [
+      "winner",
+      "winner"
+    ]
+  },
+  {
+    "map": "Playground",
+    "seed": 725864695,
+    "seed_index": 3,
+    "reference": "baseline",
+    "candidate": "local-priority-steal",
+    "both_winners": true,
+    "endpoints_match": true,
+    "eligible_winner_timing_pair": true,
+    "statuses": [
+      "winner",
+      "winner"
+    ]
+  },
+  {
+    "map": "Playground",
+    "seed": 725864695,
+    "seed_index": 3,
+    "reference": "baseline",
+    "candidate": "weighted-fixed-no-steal",
+    "both_winners": true,
+    "endpoints_match": true,
+    "eligible_winner_timing_pair": true,
+    "statuses": [
+      "winner",
+      "winner"
+    ]
+  },
+  {
+    "map": "Playground",
+    "seed": 725864695,
+    "seed_index": 3,
+    "reference": "baseline",
+    "candidate": "weighted-fixed-steal",
+    "both_winners": true,
+    "endpoints_match": true,
+    "eligible_winner_timing_pair": true,
+    "statuses": [
+      "winner",
+      "winner"
+    ]
+  },
+  {
+    "map": "Playground",
+    "seed": 725864695,
+    "seed_index": 3,
+    "reference": "baseline",
+    "candidate": "weighted-two-choice",
+    "both_winners": true,
+    "endpoints_match": true,
+    "eligible_winner_timing_pair": true,
+    "statuses": [
+      "winner",
+      "winner"
+    ]
+  },
+  {
+    "map": "Playground",
+    "seed": 725864695,
+    "seed_index": 3,
+    "reference": "baseline",
+    "candidate": "weighted-last",
+    "both_winners": true,
+    "endpoints_match": true,
+    "eligible_winner_timing_pair": true,
+    "statuses": [
+      "winner",
+      "winner"
+    ]
+  },
+  {
+    "map": "Playground",
+    "seed": 725864695,
+    "seed_index": 3,
+    "reference": "baseline",
+    "candidate": "weighted-ewma",
+    "both_winners": true,
+    "endpoints_match": true,
+    "eligible_winner_timing_pair": true,
+    "statuses": [
+      "winner",
+      "winner"
+    ]
+  },
+  {
+    "map": "Playground",
+    "seed": 725864695,
+    "seed_index": 3,
+    "reference": "baseline",
+    "candidate": "weighted-clock-only",
+    "both_winners": true,
+    "endpoints_match": true,
+    "eligible_winner_timing_pair": true,
+    "statuses": [
+      "winner",
+      "winner"
+    ]
+  },
+  {
+    "map": "Playground",
+    "seed": 725864695,
+    "seed_index": 3,
+    "reference": "baseline",
+    "candidate": "weighted-observe-only",
+    "both_winners": true,
+    "endpoints_match": true,
+    "eligible_winner_timing_pair": true,
+    "statuses": [
+      "winner",
+      "winner"
+    ]
+  },
+  {
+    "map": "Playground",
+    "seed": 725864695,
+    "seed_index": 3,
+    "reference": "baseline",
+    "candidate": "weighted-bare-steal",
+    "both_winners": true,
+    "endpoints_match": true,
+    "eligible_winner_timing_pair": true,
+    "statuses": [
+      "winner",
+      "winner"
+    ]
+  },
+  {
+    "map": "Playground",
+    "seed": 599004658,
+    "seed_index": 4,
+    "reference": "baseline",
+    "candidate": "wake-only",
+    "both_winners": true,
+    "endpoints_match": true,
+    "eligible_winner_timing_pair": true,
+    "statuses": [
+      "winner",
+      "winner"
+    ]
+  },
+  {
+    "map": "Playground",
+    "seed": 599004658,
+    "seed_index": 4,
+    "reference": "baseline",
+    "candidate": "first-steal",
+    "both_winners": true,
+    "endpoints_match": true,
+    "eligible_winner_timing_pair": true,
+    "statuses": [
+      "winner",
+      "winner"
+    ]
+  },
+  {
+    "map": "Playground",
+    "seed": 599004658,
+    "seed_index": 4,
+    "reference": "baseline",
+    "candidate": "local-completion-round-robin",
+    "both_winners": true,
+    "endpoints_match": true,
+    "eligible_winner_timing_pair": true,
+    "statuses": [
+      "winner",
+      "winner"
+    ]
+  },
+  {
+    "map": "Playground",
+    "seed": 599004658,
+    "seed_index": 4,
+    "reference": "baseline",
+    "candidate": "local-completion-steal",
+    "both_winners": true,
+    "endpoints_match": true,
+    "eligible_winner_timing_pair": true,
+    "statuses": [
+      "winner",
+      "winner"
+    ]
+  },
+  {
+    "map": "Playground",
+    "seed": 599004658,
+    "seed_index": 4,
+    "reference": "baseline",
+    "candidate": "local-priority-steal",
+    "both_winners": true,
+    "endpoints_match": true,
+    "eligible_winner_timing_pair": true,
+    "statuses": [
+      "winner",
+      "winner"
+    ]
+  },
+  {
+    "map": "Playground",
+    "seed": 599004658,
+    "seed_index": 4,
+    "reference": "baseline",
+    "candidate": "weighted-fixed-no-steal",
+    "both_winners": true,
+    "endpoints_match": true,
+    "eligible_winner_timing_pair": true,
+    "statuses": [
+      "winner",
+      "winner"
+    ]
+  },
+  {
+    "map": "Playground",
+    "seed": 599004658,
+    "seed_index": 4,
+    "reference": "baseline",
+    "candidate": "weighted-fixed-steal",
+    "both_winners": true,
+    "endpoints_match": true,
+    "eligible_winner_timing_pair": true,
+    "statuses": [
+      "winner",
+      "winner"
+    ]
+  },
+  {
+    "map": "Playground",
+    "seed": 599004658,
+    "seed_index": 4,
+    "reference": "baseline",
+    "candidate": "weighted-two-choice",
+    "both_winners": true,
+    "endpoints_match": true,
+    "eligible_winner_timing_pair": true,
+    "statuses": [
+      "winner",
+      "winner"
+    ]
+  },
+  {
+    "map": "Playground",
+    "seed": 599004658,
+    "seed_index": 4,
+    "reference": "baseline",
+    "candidate": "weighted-last",
+    "both_winners": true,
+    "endpoints_match": true,
+    "eligible_winner_timing_pair": true,
+    "statuses": [
+      "winner",
+      "winner"
+    ]
+  },
+  {
+    "map": "Playground",
+    "seed": 599004658,
+    "seed_index": 4,
+    "reference": "baseline",
+    "candidate": "weighted-ewma",
+    "both_winners": true,
+    "endpoints_match": true,
+    "eligible_winner_timing_pair": true,
+    "statuses": [
+      "winner",
+      "winner"
+    ]
+  },
+  {
+    "map": "Playground",
+    "seed": 599004658,
+    "seed_index": 4,
+    "reference": "baseline",
+    "candidate": "weighted-clock-only",
+    "both_winners": true,
+    "endpoints_match": true,
+    "eligible_winner_timing_pair": true,
+    "statuses": [
+      "winner",
+      "winner"
+    ]
+  },
+  {
+    "map": "Playground",
+    "seed": 599004658,
+    "seed_index": 4,
+    "reference": "baseline",
+    "candidate": "weighted-observe-only",
+    "both_winners": true,
+    "endpoints_match": true,
+    "eligible_winner_timing_pair": true,
+    "statuses": [
+      "winner",
+      "winner"
+    ]
+  },
+  {
+    "map": "Playground",
+    "seed": 599004658,
+    "seed_index": 4,
+    "reference": "baseline",
+    "candidate": "weighted-bare-steal",
+    "both_winners": true,
+    "endpoints_match": true,
+    "eligible_winner_timing_pair": true,
+    "statuses": [
+      "winner",
+      "winner"
+    ]
+  },
+  {
+    "map": "Playground",
+    "seed": 117787757,
+    "seed_index": 5,
+    "reference": "baseline",
+    "candidate": "wake-only",
+    "both_winners": true,
+    "endpoints_match": true,
+    "eligible_winner_timing_pair": true,
+    "statuses": [
+      "winner",
+      "winner"
+    ]
+  },
+  {
+    "map": "Playground",
+    "seed": 117787757,
+    "seed_index": 5,
+    "reference": "baseline",
+    "candidate": "first-steal",
+    "both_winners": true,
+    "endpoints_match": true,
+    "eligible_winner_timing_pair": true,
+    "statuses": [
+      "winner",
+      "winner"
+    ]
+  },
+  {
+    "map": "Playground",
+    "seed": 117787757,
+    "seed_index": 5,
+    "reference": "baseline",
+    "candidate": "local-completion-round-robin",
+    "both_winners": true,
+    "endpoints_match": true,
+    "eligible_winner_timing_pair": true,
+    "statuses": [
+      "winner",
+      "winner"
+    ]
+  },
+  {
+    "map": "Playground",
+    "seed": 117787757,
+    "seed_index": 5,
+    "reference": "baseline",
+    "candidate": "local-completion-steal",
+    "both_winners": true,
+    "endpoints_match": true,
+    "eligible_winner_timing_pair": true,
+    "statuses": [
+      "winner",
+      "winner"
+    ]
+  },
+  {
+    "map": "Playground",
+    "seed": 117787757,
+    "seed_index": 5,
+    "reference": "baseline",
+    "candidate": "local-priority-steal",
+    "both_winners": true,
+    "endpoints_match": true,
+    "eligible_winner_timing_pair": true,
+    "statuses": [
+      "winner",
+      "winner"
+    ]
+  },
+  {
+    "map": "Playground",
+    "seed": 117787757,
+    "seed_index": 5,
+    "reference": "baseline",
+    "candidate": "weighted-fixed-no-steal",
+    "both_winners": true,
+    "endpoints_match": true,
+    "eligible_winner_timing_pair": true,
+    "statuses": [
+      "winner",
+      "winner"
+    ]
+  },
+  {
+    "map": "Playground",
+    "seed": 117787757,
+    "seed_index": 5,
+    "reference": "baseline",
+    "candidate": "weighted-fixed-steal",
+    "both_winners": true,
+    "endpoints_match": true,
+    "eligible_winner_timing_pair": true,
+    "statuses": [
+      "winner",
+      "winner"
+    ]
+  },
+  {
+    "map": "Playground",
+    "seed": 117787757,
+    "seed_index": 5,
+    "reference": "baseline",
+    "candidate": "weighted-two-choice",
+    "both_winners": true,
+    "endpoints_match": true,
+    "eligible_winner_timing_pair": true,
+    "statuses": [
+      "winner",
+      "winner"
+    ]
+  },
+  {
+    "map": "Playground",
+    "seed": 117787757,
+    "seed_index": 5,
+    "reference": "baseline",
+    "candidate": "weighted-last",
+    "both_winners": true,
+    "endpoints_match": true,
+    "eligible_winner_timing_pair": true,
+    "statuses": [
+      "winner",
+      "winner"
+    ]
+  },
+  {
+    "map": "Playground",
+    "seed": 117787757,
+    "seed_index": 5,
+    "reference": "baseline",
+    "candidate": "weighted-ewma",
+    "both_winners": true,
+    "endpoints_match": true,
+    "eligible_winner_timing_pair": true,
+    "statuses": [
+      "winner",
+      "winner"
+    ]
+  },
+  {
+    "map": "Playground",
+    "seed": 117787757,
+    "seed_index": 5,
+    "reference": "baseline",
+    "candidate": "weighted-clock-only",
+    "both_winners": true,
+    "endpoints_match": true,
+    "eligible_winner_timing_pair": true,
+    "statuses": [
+      "winner",
+      "winner"
+    ]
+  },
+  {
+    "map": "Playground",
+    "seed": 117787757,
+    "seed_index": 5,
+    "reference": "baseline",
+    "candidate": "weighted-observe-only",
+    "both_winners": true,
+    "endpoints_match": true,
+    "eligible_winner_timing_pair": true,
+    "statuses": [
+      "winner",
+      "winner"
+    ]
+  },
+  {
+    "map": "Playground",
+    "seed": 117787757,
+    "seed_index": 5,
+    "reference": "baseline",
+    "candidate": "weighted-bare-steal",
+    "both_winners": true,
+    "endpoints_match": true,
+    "eligible_winner_timing_pair": true,
+    "statuses": [
+      "winner",
+      "winner"
+    ]
+  },
+  {
+    "map": "Playground",
+    "seed": 85910194,
+    "seed_index": 6,
+    "reference": "baseline",
+    "candidate": "wake-only",
+    "both_winners": true,
+    "endpoints_match": true,
+    "eligible_winner_timing_pair": true,
+    "statuses": [
+      "winner",
+      "winner"
+    ]
+  },
+  {
+    "map": "Playground",
+    "seed": 85910194,
+    "seed_index": 6,
+    "reference": "baseline",
+    "candidate": "first-steal",
+    "both_winners": true,
+    "endpoints_match": true,
+    "eligible_winner_timing_pair": true,
+    "statuses": [
+      "winner",
+      "winner"
+    ]
+  },
+  {
+    "map": "Playground",
+    "seed": 85910194,
+    "seed_index": 6,
+    "reference": "baseline",
+    "candidate": "local-completion-round-robin",
+    "both_winners": true,
+    "endpoints_match": true,
+    "eligible_winner_timing_pair": true,
+    "statuses": [
+      "winner",
+      "winner"
+    ]
+  },
+  {
+    "map": "Playground",
+    "seed": 85910194,
+    "seed_index": 6,
+    "reference": "baseline",
+    "candidate": "local-completion-steal",
+    "both_winners": true,
+    "endpoints_match": true,
+    "eligible_winner_timing_pair": true,
+    "statuses": [
+      "winner",
+      "winner"
+    ]
+  },
+  {
+    "map": "Playground",
+    "seed": 85910194,
+    "seed_index": 6,
+    "reference": "baseline",
+    "candidate": "local-priority-steal",
+    "both_winners": true,
+    "endpoints_match": true,
+    "eligible_winner_timing_pair": true,
+    "statuses": [
+      "winner",
+      "winner"
+    ]
+  },
+  {
+    "map": "Playground",
+    "seed": 85910194,
+    "seed_index": 6,
+    "reference": "baseline",
+    "candidate": "weighted-fixed-no-steal",
+    "both_winners": true,
+    "endpoints_match": true,
+    "eligible_winner_timing_pair": true,
+    "statuses": [
+      "winner",
+      "winner"
+    ]
+  },
+  {
+    "map": "Playground",
+    "seed": 85910194,
+    "seed_index": 6,
+    "reference": "baseline",
+    "candidate": "weighted-fixed-steal",
+    "both_winners": true,
+    "endpoints_match": true,
+    "eligible_winner_timing_pair": true,
+    "statuses": [
+      "winner",
+      "winner"
+    ]
+  },
+  {
+    "map": "Playground",
+    "seed": 85910194,
+    "seed_index": 6,
+    "reference": "baseline",
+    "candidate": "weighted-two-choice",
+    "both_winners": true,
+    "endpoints_match": true,
+    "eligible_winner_timing_pair": true,
+    "statuses": [
+      "winner",
+      "winner"
+    ]
+  },
+  {
+    "map": "Playground",
+    "seed": 85910194,
+    "seed_index": 6,
+    "reference": "baseline",
+    "candidate": "weighted-last",
+    "both_winners": true,
+    "endpoints_match": true,
+    "eligible_winner_timing_pair": true,
+    "statuses": [
+      "winner",
+      "winner"
+    ]
+  },
+  {
+    "map": "Playground",
+    "seed": 85910194,
+    "seed_index": 6,
+    "reference": "baseline",
+    "candidate": "weighted-ewma",
+    "both_winners": true,
+    "endpoints_match": true,
+    "eligible_winner_timing_pair": true,
+    "statuses": [
+      "winner",
+      "winner"
+    ]
+  },
+  {
+    "map": "Playground",
+    "seed": 85910194,
+    "seed_index": 6,
+    "reference": "baseline",
+    "candidate": "weighted-clock-only",
+    "both_winners": true,
+    "endpoints_match": true,
+    "eligible_winner_timing_pair": true,
+    "statuses": [
+      "winner",
+      "winner"
+    ]
+  },
+  {
+    "map": "Playground",
+    "seed": 85910194,
+    "seed_index": 6,
+    "reference": "baseline",
+    "candidate": "weighted-observe-only",
+    "both_winners": true,
+    "endpoints_match": true,
+    "eligible_winner_timing_pair": true,
+    "statuses": [
+      "winner",
+      "winner"
+    ]
+  },
+  {
+    "map": "Playground",
+    "seed": 85910194,
+    "seed_index": 6,
+    "reference": "baseline",
+    "candidate": "weighted-bare-steal",
+    "both_winners": true,
+    "endpoints_match": true,
+    "eligible_winner_timing_pair": true,
+    "statuses": [
+      "winner",
+      "winner"
+    ]
+  },
+  {
+    "map": "Playground",
+    "seed": 769116511,
+    "seed_index": 7,
+    "reference": "baseline",
+    "candidate": "wake-only",
+    "both_winners": true,
+    "endpoints_match": true,
+    "eligible_winner_timing_pair": true,
+    "statuses": [
+      "winner",
+      "winner"
+    ]
+  },
+  {
+    "map": "Playground",
+    "seed": 769116511,
+    "seed_index": 7,
+    "reference": "baseline",
+    "candidate": "first-steal",
+    "both_winners": true,
+    "endpoints_match": true,
+    "eligible_winner_timing_pair": true,
+    "statuses": [
+      "winner",
+      "winner"
+    ]
+  },
+  {
+    "map": "Playground",
+    "seed": 769116511,
+    "seed_index": 7,
+    "reference": "baseline",
+    "candidate": "local-completion-round-robin",
+    "both_winners": true,
+    "endpoints_match": true,
+    "eligible_winner_timing_pair": true,
+    "statuses": [
+      "winner",
+      "winner"
+    ]
+  },
+  {
+    "map": "Playground",
+    "seed": 769116511,
+    "seed_index": 7,
+    "reference": "baseline",
+    "candidate": "local-completion-steal",
+    "both_winners": true,
+    "endpoints_match": true,
+    "eligible_winner_timing_pair": true,
+    "statuses": [
+      "winner",
+      "winner"
+    ]
+  },
+  {
+    "map": "Playground",
+    "seed": 769116511,
+    "seed_index": 7,
+    "reference": "baseline",
+    "candidate": "local-priority-steal",
+    "both_winners": true,
+    "endpoints_match": true,
+    "eligible_winner_timing_pair": true,
+    "statuses": [
+      "winner",
+      "winner"
+    ]
+  },
+  {
+    "map": "Playground",
+    "seed": 769116511,
+    "seed_index": 7,
+    "reference": "baseline",
+    "candidate": "weighted-fixed-no-steal",
+    "both_winners": true,
+    "endpoints_match": true,
+    "eligible_winner_timing_pair": true,
+    "statuses": [
+      "winner",
+      "winner"
+    ]
+  },
+  {
+    "map": "Playground",
+    "seed": 769116511,
+    "seed_index": 7,
+    "reference": "baseline",
+    "candidate": "weighted-fixed-steal",
+    "both_winners": true,
+    "endpoints_match": true,
+    "eligible_winner_timing_pair": true,
+    "statuses": [
+      "winner",
+      "winner"
+    ]
+  },
+  {
+    "map": "Playground",
+    "seed": 769116511,
+    "seed_index": 7,
+    "reference": "baseline",
+    "candidate": "weighted-two-choice",
+    "both_winners": true,
+    "endpoints_match": true,
+    "eligible_winner_timing_pair": true,
+    "statuses": [
+      "winner",
+      "winner"
+    ]
+  },
+  {
+    "map": "Playground",
+    "seed": 769116511,
+    "seed_index": 7,
+    "reference": "baseline",
+    "candidate": "weighted-last",
+    "both_winners": true,
+    "endpoints_match": true,
+    "eligible_winner_timing_pair": true,
+    "statuses": [
+      "winner",
+      "winner"
+    ]
+  },
+  {
+    "map": "Playground",
+    "seed": 769116511,
+    "seed_index": 7,
+    "reference": "baseline",
+    "candidate": "weighted-ewma",
+    "both_winners": true,
+    "endpoints_match": true,
+    "eligible_winner_timing_pair": true,
+    "statuses": [
+      "winner",
+      "winner"
+    ]
+  },
+  {
+    "map": "Playground",
+    "seed": 769116511,
+    "seed_index": 7,
+    "reference": "baseline",
+    "candidate": "weighted-clock-only",
+    "both_winners": true,
+    "endpoints_match": true,
+    "eligible_winner_timing_pair": true,
+    "statuses": [
+      "winner",
+      "winner"
+    ]
+  },
+  {
+    "map": "Playground",
+    "seed": 769116511,
+    "seed_index": 7,
+    "reference": "baseline",
+    "candidate": "weighted-observe-only",
+    "both_winners": true,
+    "endpoints_match": true,
+    "eligible_winner_timing_pair": true,
+    "statuses": [
+      "winner",
+      "winner"
+    ]
+  },
+  {
+    "map": "Playground",
+    "seed": 769116511,
+    "seed_index": 7,
+    "reference": "baseline",
+    "candidate": "weighted-bare-steal",
+    "both_winners": true,
+    "endpoints_match": true,
+    "eligible_winner_timing_pair": true,
+    "statuses": [
+      "winner",
+      "winner"
+    ]
+  },
+  {
+    "map": "Playground",
+    "seed": 1030656205,
+    "seed_index": 8,
+    "reference": "baseline",
+    "candidate": "wake-only",
+    "both_winners": true,
+    "endpoints_match": true,
+    "eligible_winner_timing_pair": true,
+    "statuses": [
+      "winner",
+      "winner"
+    ]
+  },
+  {
+    "map": "Playground",
+    "seed": 1030656205,
+    "seed_index": 8,
+    "reference": "baseline",
+    "candidate": "first-steal",
+    "both_winners": true,
+    "endpoints_match": true,
+    "eligible_winner_timing_pair": true,
+    "statuses": [
+      "winner",
+      "winner"
+    ]
+  },
+  {
+    "map": "Playground",
+    "seed": 1030656205,
+    "seed_index": 8,
+    "reference": "baseline",
+    "candidate": "local-completion-round-robin",
+    "both_winners": true,
+    "endpoints_match": true,
+    "eligible_winner_timing_pair": true,
+    "statuses": [
+      "winner",
+      "winner"
+    ]
+  },
+  {
+    "map": "Playground",
+    "seed": 1030656205,
+    "seed_index": 8,
+    "reference": "baseline",
+    "candidate": "local-completion-steal",
+    "both_winners": true,
+    "endpoints_match": true,
+    "eligible_winner_timing_pair": true,
+    "statuses": [
+      "winner",
+      "winner"
+    ]
+  },
+  {
+    "map": "Playground",
+    "seed": 1030656205,
+    "seed_index": 8,
+    "reference": "baseline",
+    "candidate": "local-priority-steal",
+    "both_winners": true,
+    "endpoints_match": true,
+    "eligible_winner_timing_pair": true,
+    "statuses": [
+      "winner",
+      "winner"
+    ]
+  },
+  {
+    "map": "Playground",
+    "seed": 1030656205,
+    "seed_index": 8,
+    "reference": "baseline",
+    "candidate": "weighted-fixed-no-steal",
+    "both_winners": true,
+    "endpoints_match": true,
+    "eligible_winner_timing_pair": true,
+    "statuses": [
+      "winner",
+      "winner"
+    ]
+  },
+  {
+    "map": "Playground",
+    "seed": 1030656205,
+    "seed_index": 8,
+    "reference": "baseline",
+    "candidate": "weighted-fixed-steal",
+    "both_winners": true,
+    "endpoints_match": true,
+    "eligible_winner_timing_pair": true,
+    "statuses": [
+      "winner",
+      "winner"
+    ]
+  },
+  {
+    "map": "Playground",
+    "seed": 1030656205,
+    "seed_index": 8,
+    "reference": "baseline",
+    "candidate": "weighted-two-choice",
+    "both_winners": true,
+    "endpoints_match": true,
+    "eligible_winner_timing_pair": true,
+    "statuses": [
+      "winner",
+      "winner"
+    ]
+  },
+  {
+    "map": "Playground",
+    "seed": 1030656205,
+    "seed_index": 8,
+    "reference": "baseline",
+    "candidate": "weighted-last",
+    "both_winners": true,
+    "endpoints_match": true,
+    "eligible_winner_timing_pair": true,
+    "statuses": [
+      "winner",
+      "winner"
+    ]
+  },
+  {
+    "map": "Playground",
+    "seed": 1030656205,
+    "seed_index": 8,
+    "reference": "baseline",
+    "candidate": "weighted-ewma",
+    "both_winners": true,
+    "endpoints_match": true,
+    "eligible_winner_timing_pair": true,
+    "statuses": [
+      "winner",
+      "winner"
+    ]
+  },
+  {
+    "map": "Playground",
+    "seed": 1030656205,
+    "seed_index": 8,
+    "reference": "baseline",
+    "candidate": "weighted-clock-only",
+    "both_winners": true,
+    "endpoints_match": true,
+    "eligible_winner_timing_pair": true,
+    "statuses": [
+      "winner",
+      "winner"
+    ]
+  },
+  {
+    "map": "Playground",
+    "seed": 1030656205,
+    "seed_index": 8,
+    "reference": "baseline",
+    "candidate": "weighted-observe-only",
+    "both_winners": true,
+    "endpoints_match": true,
+    "eligible_winner_timing_pair": true,
+    "statuses": [
+      "winner",
+      "winner"
+    ]
+  },
+  {
+    "map": "Playground",
+    "seed": 1030656205,
+    "seed_index": 8,
+    "reference": "baseline",
+    "candidate": "weighted-bare-steal",
+    "both_winners": true,
+    "endpoints_match": true,
+    "eligible_winner_timing_pair": true,
+    "statuses": [
+      "winner",
+      "winner"
+    ]
+  },
+  {
+    "map": "Playground",
+    "seed": 79851807,
+    "seed_index": 9,
+    "reference": "baseline",
+    "candidate": "wake-only",
+    "both_winners": true,
+    "endpoints_match": true,
+    "eligible_winner_timing_pair": true,
+    "statuses": [
+      "winner",
+      "winner"
+    ]
+  },
+  {
+    "map": "Playground",
+    "seed": 79851807,
+    "seed_index": 9,
+    "reference": "baseline",
+    "candidate": "first-steal",
+    "both_winners": true,
+    "endpoints_match": true,
+    "eligible_winner_timing_pair": true,
+    "statuses": [
+      "winner",
+      "winner"
+    ]
+  },
+  {
+    "map": "Playground",
+    "seed": 79851807,
+    "seed_index": 9,
+    "reference": "baseline",
+    "candidate": "local-completion-round-robin",
+    "both_winners": true,
+    "endpoints_match": true,
+    "eligible_winner_timing_pair": true,
+    "statuses": [
+      "winner",
+      "winner"
+    ]
+  },
+  {
+    "map": "Playground",
+    "seed": 79851807,
+    "seed_index": 9,
+    "reference": "baseline",
+    "candidate": "local-completion-steal",
+    "both_winners": true,
+    "endpoints_match": true,
+    "eligible_winner_timing_pair": true,
+    "statuses": [
+      "winner",
+      "winner"
+    ]
+  },
+  {
+    "map": "Playground",
+    "seed": 79851807,
+    "seed_index": 9,
+    "reference": "baseline",
+    "candidate": "local-priority-steal",
+    "both_winners": true,
+    "endpoints_match": true,
+    "eligible_winner_timing_pair": true,
+    "statuses": [
+      "winner",
+      "winner"
+    ]
+  },
+  {
+    "map": "Playground",
+    "seed": 79851807,
+    "seed_index": 9,
+    "reference": "baseline",
+    "candidate": "weighted-fixed-no-steal",
+    "both_winners": true,
+    "endpoints_match": true,
+    "eligible_winner_timing_pair": true,
+    "statuses": [
+      "winner",
+      "winner"
+    ]
+  },
+  {
+    "map": "Playground",
+    "seed": 79851807,
+    "seed_index": 9,
+    "reference": "baseline",
+    "candidate": "weighted-fixed-steal",
+    "both_winners": true,
+    "endpoints_match": true,
+    "eligible_winner_timing_pair": true,
+    "statuses": [
+      "winner",
+      "winner"
+    ]
+  },
+  {
+    "map": "Playground",
+    "seed": 79851807,
+    "seed_index": 9,
+    "reference": "baseline",
+    "candidate": "weighted-two-choice",
+    "both_winners": true,
+    "endpoints_match": true,
+    "eligible_winner_timing_pair": true,
+    "statuses": [
+      "winner",
+      "winner"
+    ]
+  },
+  {
+    "map": "Playground",
+    "seed": 79851807,
+    "seed_index": 9,
+    "reference": "baseline",
+    "candidate": "weighted-last",
+    "both_winners": true,
+    "endpoints_match": true,
+    "eligible_winner_timing_pair": true,
+    "statuses": [
+      "winner",
+      "winner"
+    ]
+  },
+  {
+    "map": "Playground",
+    "seed": 79851807,
+    "seed_index": 9,
+    "reference": "baseline",
+    "candidate": "weighted-ewma",
+    "both_winners": true,
+    "endpoints_match": true,
+    "eligible_winner_timing_pair": true,
+    "statuses": [
+      "winner",
+      "winner"
+    ]
+  },
+  {
+    "map": "Playground",
+    "seed": 79851807,
+    "seed_index": 9,
+    "reference": "baseline",
+    "candidate": "weighted-clock-only",
+    "both_winners": true,
+    "endpoints_match": true,
+    "eligible_winner_timing_pair": true,
+    "statuses": [
+      "winner",
+      "winner"
+    ]
+  },
+  {
+    "map": "Playground",
+    "seed": 79851807,
+    "seed_index": 9,
+    "reference": "baseline",
+    "candidate": "weighted-observe-only",
+    "both_winners": true,
+    "endpoints_match": true,
+    "eligible_winner_timing_pair": true,
+    "statuses": [
+      "winner",
+      "winner"
+    ]
+  },
+  {
+    "map": "Playground",
+    "seed": 79851807,
+    "seed_index": 9,
+    "reference": "baseline",
+    "candidate": "weighted-bare-steal",
+    "both_winners": true,
+    "endpoints_match": true,
+    "eligible_winner_timing_pair": true,
+    "statuses": [
+      "winner",
+      "winner"
+    ]
+  },
+  {
+    "map": "Playground",
+    "seed": 1480527227,
+    "seed_index": 10,
+    "reference": "baseline",
+    "candidate": "wake-only",
+    "both_winners": true,
+    "endpoints_match": true,
+    "eligible_winner_timing_pair": true,
+    "statuses": [
+      "winner",
+      "winner"
+    ]
+  },
+  {
+    "map": "Playground",
+    "seed": 1480527227,
+    "seed_index": 10,
+    "reference": "baseline",
+    "candidate": "first-steal",
+    "both_winners": true,
+    "endpoints_match": true,
+    "eligible_winner_timing_pair": true,
+    "statuses": [
+      "winner",
+      "winner"
+    ]
+  },
+  {
+    "map": "Playground",
+    "seed": 1480527227,
+    "seed_index": 10,
+    "reference": "baseline",
+    "candidate": "local-completion-round-robin",
+    "both_winners": true,
+    "endpoints_match": true,
+    "eligible_winner_timing_pair": true,
+    "statuses": [
+      "winner",
+      "winner"
+    ]
+  },
+  {
+    "map": "Playground",
+    "seed": 1480527227,
+    "seed_index": 10,
+    "reference": "baseline",
+    "candidate": "local-completion-steal",
+    "both_winners": true,
+    "endpoints_match": true,
+    "eligible_winner_timing_pair": true,
+    "statuses": [
+      "winner",
+      "winner"
+    ]
+  },
+  {
+    "map": "Playground",
+    "seed": 1480527227,
+    "seed_index": 10,
+    "reference": "baseline",
+    "candidate": "local-priority-steal",
+    "both_winners": true,
+    "endpoints_match": true,
+    "eligible_winner_timing_pair": true,
+    "statuses": [
+      "winner",
+      "winner"
+    ]
+  },
+  {
+    "map": "Playground",
+    "seed": 1480527227,
+    "seed_index": 10,
+    "reference": "baseline",
+    "candidate": "weighted-fixed-no-steal",
+    "both_winners": true,
+    "endpoints_match": true,
+    "eligible_winner_timing_pair": true,
+    "statuses": [
+      "winner",
+      "winner"
+    ]
+  },
+  {
+    "map": "Playground",
+    "seed": 1480527227,
+    "seed_index": 10,
+    "reference": "baseline",
+    "candidate": "weighted-fixed-steal",
+    "both_winners": true,
+    "endpoints_match": true,
+    "eligible_winner_timing_pair": true,
+    "statuses": [
+      "winner",
+      "winner"
+    ]
+  },
+  {
+    "map": "Playground",
+    "seed": 1480527227,
+    "seed_index": 10,
+    "reference": "baseline",
+    "candidate": "weighted-two-choice",
+    "both_winners": true,
+    "endpoints_match": true,
+    "eligible_winner_timing_pair": true,
+    "statuses": [
+      "winner",
+      "winner"
+    ]
+  },
+  {
+    "map": "Playground",
+    "seed": 1480527227,
+    "seed_index": 10,
+    "reference": "baseline",
+    "candidate": "weighted-last",
+    "both_winners": true,
+    "endpoints_match": true,
+    "eligible_winner_timing_pair": true,
+    "statuses": [
+      "winner",
+      "winner"
+    ]
+  },
+  {
+    "map": "Playground",
+    "seed": 1480527227,
+    "seed_index": 10,
+    "reference": "baseline",
+    "candidate": "weighted-ewma",
+    "both_winners": true,
+    "endpoints_match": true,
+    "eligible_winner_timing_pair": true,
+    "statuses": [
+      "winner",
+      "winner"
+    ]
+  },
+  {
+    "map": "Playground",
+    "seed": 1480527227,
+    "seed_index": 10,
+    "reference": "baseline",
+    "candidate": "weighted-clock-only",
+    "both_winners": true,
+    "endpoints_match": true,
+    "eligible_winner_timing_pair": true,
+    "statuses": [
+      "winner",
+      "winner"
+    ]
+  },
+  {
+    "map": "Playground",
+    "seed": 1480527227,
+    "seed_index": 10,
+    "reference": "baseline",
+    "candidate": "weighted-observe-only",
+    "both_winners": true,
+    "endpoints_match": true,
+    "eligible_winner_timing_pair": true,
+    "statuses": [
+      "winner",
+      "winner"
+    ]
+  },
+  {
+    "map": "Playground",
+    "seed": 1480527227,
+    "seed_index": 10,
+    "reference": "baseline",
+    "candidate": "weighted-bare-steal",
+    "both_winners": true,
+    "endpoints_match": true,
+    "eligible_winner_timing_pair": true,
+    "statuses": [
+      "winner",
+      "winner"
+    ]
+  },
+  {
+    "map": "Playground",
+    "seed": 31444774,
+    "seed_index": 11,
+    "reference": "baseline",
+    "candidate": "wake-only",
+    "both_winners": true,
+    "endpoints_match": true,
+    "eligible_winner_timing_pair": true,
+    "statuses": [
+      "winner",
+      "winner"
+    ]
+  },
+  {
+    "map": "Playground",
+    "seed": 31444774,
+    "seed_index": 11,
+    "reference": "baseline",
+    "candidate": "first-steal",
+    "both_winners": true,
+    "endpoints_match": true,
+    "eligible_winner_timing_pair": true,
+    "statuses": [
+      "winner",
+      "winner"
+    ]
+  },
+  {
+    "map": "Playground",
+    "seed": 31444774,
+    "seed_index": 11,
+    "reference": "baseline",
+    "candidate": "local-completion-round-robin",
+    "both_winners": true,
+    "endpoints_match": true,
+    "eligible_winner_timing_pair": true,
+    "statuses": [
+      "winner",
+      "winner"
+    ]
+  },
+  {
+    "map": "Playground",
+    "seed": 31444774,
+    "seed_index": 11,
+    "reference": "baseline",
+    "candidate": "local-completion-steal",
+    "both_winners": true,
+    "endpoints_match": true,
+    "eligible_winner_timing_pair": true,
+    "statuses": [
+      "winner",
+      "winner"
+    ]
+  },
+  {
+    "map": "Playground",
+    "seed": 31444774,
+    "seed_index": 11,
+    "reference": "baseline",
+    "candidate": "local-priority-steal",
+    "both_winners": true,
+    "endpoints_match": true,
+    "eligible_winner_timing_pair": true,
+    "statuses": [
+      "winner",
+      "winner"
+    ]
+  },
+  {
+    "map": "Playground",
+    "seed": 31444774,
+    "seed_index": 11,
+    "reference": "baseline",
+    "candidate": "weighted-fixed-no-steal",
+    "both_winners": true,
+    "endpoints_match": true,
+    "eligible_winner_timing_pair": true,
+    "statuses": [
+      "winner",
+      "winner"
+    ]
+  },
+  {
+    "map": "Playground",
+    "seed": 31444774,
+    "seed_index": 11,
+    "reference": "baseline",
+    "candidate": "weighted-fixed-steal",
+    "both_winners": true,
+    "endpoints_match": true,
+    "eligible_winner_timing_pair": true,
+    "statuses": [
+      "winner",
+      "winner"
+    ]
+  },
+  {
+    "map": "Playground",
+    "seed": 31444774,
+    "seed_index": 11,
+    "reference": "baseline",
+    "candidate": "weighted-two-choice",
+    "both_winners": true,
+    "endpoints_match": true,
+    "eligible_winner_timing_pair": true,
+    "statuses": [
+      "winner",
+      "winner"
+    ]
+  },
+  {
+    "map": "Playground",
+    "seed": 31444774,
+    "seed_index": 11,
+    "reference": "baseline",
+    "candidate": "weighted-last",
+    "both_winners": true,
+    "endpoints_match": true,
+    "eligible_winner_timing_pair": true,
+    "statuses": [
+      "winner",
+      "winner"
+    ]
+  },
+  {
+    "map": "Playground",
+    "seed": 31444774,
+    "seed_index": 11,
+    "reference": "baseline",
+    "candidate": "weighted-ewma",
+    "both_winners": true,
+    "endpoints_match": true,
+    "eligible_winner_timing_pair": true,
+    "statuses": [
+      "winner",
+      "winner"
+    ]
+  },
+  {
+    "map": "Playground",
+    "seed": 31444774,
+    "seed_index": 11,
+    "reference": "baseline",
+    "candidate": "weighted-clock-only",
+    "both_winners": true,
+    "endpoints_match": true,
+    "eligible_winner_timing_pair": true,
+    "statuses": [
+      "winner",
+      "winner"
+    ]
+  },
+  {
+    "map": "Playground",
+    "seed": 31444774,
+    "seed_index": 11,
+    "reference": "baseline",
+    "candidate": "weighted-observe-only",
+    "both_winners": true,
+    "endpoints_match": true,
+    "eligible_winner_timing_pair": true,
+    "statuses": [
+      "winner",
+      "winner"
+    ]
+  },
+  {
+    "map": "Playground",
+    "seed": 31444774,
+    "seed_index": 11,
+    "reference": "baseline",
+    "candidate": "weighted-bare-steal",
+    "both_winners": true,
+    "endpoints_match": true,
+    "eligible_winner_timing_pair": true,
+    "statuses": [
+      "winner",
+      "winner"
+    ]
+  },
+  {
+    "map": "Playground",
+    "seed": 1514826878,
+    "seed_index": 12,
+    "reference": "baseline",
+    "candidate": "wake-only",
+    "both_winners": true,
+    "endpoints_match": true,
+    "eligible_winner_timing_pair": true,
+    "statuses": [
+      "winner",
+      "winner"
+    ]
+  },
+  {
+    "map": "Playground",
+    "seed": 1514826878,
+    "seed_index": 12,
+    "reference": "baseline",
+    "candidate": "first-steal",
+    "both_winners": true,
+    "endpoints_match": true,
+    "eligible_winner_timing_pair": true,
+    "statuses": [
+      "winner",
+      "winner"
+    ]
+  },
+  {
+    "map": "Playground",
+    "seed": 1514826878,
+    "seed_index": 12,
+    "reference": "baseline",
+    "candidate": "local-completion-round-robin",
+    "both_winners": true,
+    "endpoints_match": true,
+    "eligible_winner_timing_pair": true,
+    "statuses": [
+      "winner",
+      "winner"
+    ]
+  },
+  {
+    "map": "Playground",
+    "seed": 1514826878,
+    "seed_index": 12,
+    "reference": "baseline",
+    "candidate": "local-completion-steal",
+    "both_winners": true,
+    "endpoints_match": true,
+    "eligible_winner_timing_pair": true,
+    "statuses": [
+      "winner",
+      "winner"
+    ]
+  },
+  {
+    "map": "Playground",
+    "seed": 1514826878,
+    "seed_index": 12,
+    "reference": "baseline",
+    "candidate": "local-priority-steal",
+    "both_winners": true,
+    "endpoints_match": true,
+    "eligible_winner_timing_pair": true,
+    "statuses": [
+      "winner",
+      "winner"
+    ]
+  },
+  {
+    "map": "Playground",
+    "seed": 1514826878,
+    "seed_index": 12,
+    "reference": "baseline",
+    "candidate": "weighted-fixed-no-steal",
+    "both_winners": true,
+    "endpoints_match": true,
+    "eligible_winner_timing_pair": true,
+    "statuses": [
+      "winner",
+      "winner"
+    ]
+  },
+  {
+    "map": "Playground",
+    "seed": 1514826878,
+    "seed_index": 12,
+    "reference": "baseline",
+    "candidate": "weighted-fixed-steal",
+    "both_winners": true,
+    "endpoints_match": true,
+    "eligible_winner_timing_pair": true,
+    "statuses": [
+      "winner",
+      "winner"
+    ]
+  },
+  {
+    "map": "Playground",
+    "seed": 1514826878,
+    "seed_index": 12,
+    "reference": "baseline",
+    "candidate": "weighted-two-choice",
+    "both_winners": true,
+    "endpoints_match": true,
+    "eligible_winner_timing_pair": true,
+    "statuses": [
+      "winner",
+      "winner"
+    ]
+  },
+  {
+    "map": "Playground",
+    "seed": 1514826878,
+    "seed_index": 12,
+    "reference": "baseline",
+    "candidate": "weighted-last",
+    "both_winners": true,
+    "endpoints_match": true,
+    "eligible_winner_timing_pair": true,
+    "statuses": [
+      "winner",
+      "winner"
+    ]
+  },
+  {
+    "map": "Playground",
+    "seed": 1514826878,
+    "seed_index": 12,
+    "reference": "baseline",
+    "candidate": "weighted-ewma",
+    "both_winners": true,
+    "endpoints_match": true,
+    "eligible_winner_timing_pair": true,
+    "statuses": [
+      "winner",
+      "winner"
+    ]
+  },
+  {
+    "map": "Playground",
+    "seed": 1514826878,
+    "seed_index": 12,
+    "reference": "baseline",
+    "candidate": "weighted-clock-only",
+    "both_winners": true,
+    "endpoints_match": true,
+    "eligible_winner_timing_pair": true,
+    "statuses": [
+      "winner",
+      "winner"
+    ]
+  },
+  {
+    "map": "Playground",
+    "seed": 1514826878,
+    "seed_index": 12,
+    "reference": "baseline",
+    "candidate": "weighted-observe-only",
+    "both_winners": true,
+    "endpoints_match": true,
+    "eligible_winner_timing_pair": true,
+    "statuses": [
+      "winner",
+      "winner"
+    ]
+  },
+  {
+    "map": "Playground",
+    "seed": 1514826878,
+    "seed_index": 12,
+    "reference": "baseline",
+    "candidate": "weighted-bare-steal",
+    "both_winners": true,
+    "endpoints_match": true,
+    "eligible_winner_timing_pair": true,
+    "statuses": [
+      "winner",
+      "winner"
+    ]
+  },
+  {
+    "map": "Playground",
+    "seed": 1858401095,
+    "seed_index": 13,
+    "reference": "baseline",
+    "candidate": "wake-only",
+    "both_winners": true,
+    "endpoints_match": true,
+    "eligible_winner_timing_pair": true,
+    "statuses": [
+      "winner",
+      "winner"
+    ]
+  },
+  {
+    "map": "Playground",
+    "seed": 1858401095,
+    "seed_index": 13,
+    "reference": "baseline",
+    "candidate": "first-steal",
+    "both_winners": true,
+    "endpoints_match": true,
+    "eligible_winner_timing_pair": true,
+    "statuses": [
+      "winner",
+      "winner"
+    ]
+  },
+  {
+    "map": "Playground",
+    "seed": 1858401095,
+    "seed_index": 13,
+    "reference": "baseline",
+    "candidate": "local-completion-round-robin",
+    "both_winners": true,
+    "endpoints_match": true,
+    "eligible_winner_timing_pair": true,
+    "statuses": [
+      "winner",
+      "winner"
+    ]
+  },
+  {
+    "map": "Playground",
+    "seed": 1858401095,
+    "seed_index": 13,
+    "reference": "baseline",
+    "candidate": "local-completion-steal",
+    "both_winners": true,
+    "endpoints_match": true,
+    "eligible_winner_timing_pair": true,
+    "statuses": [
+      "winner",
+      "winner"
+    ]
+  },
+  {
+    "map": "Playground",
+    "seed": 1858401095,
+    "seed_index": 13,
+    "reference": "baseline",
+    "candidate": "local-priority-steal",
+    "both_winners": true,
+    "endpoints_match": true,
+    "eligible_winner_timing_pair": true,
+    "statuses": [
+      "winner",
+      "winner"
+    ]
+  },
+  {
+    "map": "Playground",
+    "seed": 1858401095,
+    "seed_index": 13,
+    "reference": "baseline",
+    "candidate": "weighted-fixed-no-steal",
+    "both_winners": true,
+    "endpoints_match": true,
+    "eligible_winner_timing_pair": true,
+    "statuses": [
+      "winner",
+      "winner"
+    ]
+  },
+  {
+    "map": "Playground",
+    "seed": 1858401095,
+    "seed_index": 13,
+    "reference": "baseline",
+    "candidate": "weighted-fixed-steal",
+    "both_winners": true,
+    "endpoints_match": true,
+    "eligible_winner_timing_pair": true,
+    "statuses": [
+      "winner",
+      "winner"
+    ]
+  },
+  {
+    "map": "Playground",
+    "seed": 1858401095,
+    "seed_index": 13,
+    "reference": "baseline",
+    "candidate": "weighted-two-choice",
+    "both_winners": true,
+    "endpoints_match": true,
+    "eligible_winner_timing_pair": true,
+    "statuses": [
+      "winner",
+      "winner"
+    ]
+  },
+  {
+    "map": "Playground",
+    "seed": 1858401095,
+    "seed_index": 13,
+    "reference": "baseline",
+    "candidate": "weighted-last",
+    "both_winners": true,
+    "endpoints_match": true,
+    "eligible_winner_timing_pair": true,
+    "statuses": [
+      "winner",
+      "winner"
+    ]
+  },
+  {
+    "map": "Playground",
+    "seed": 1858401095,
+    "seed_index": 13,
+    "reference": "baseline",
+    "candidate": "weighted-ewma",
+    "both_winners": true,
+    "endpoints_match": true,
+    "eligible_winner_timing_pair": true,
+    "statuses": [
+      "winner",
+      "winner"
+    ]
+  },
+  {
+    "map": "Playground",
+    "seed": 1858401095,
+    "seed_index": 13,
+    "reference": "baseline",
+    "candidate": "weighted-clock-only",
+    "both_winners": true,
+    "endpoints_match": true,
+    "eligible_winner_timing_pair": true,
+    "statuses": [
+      "winner",
+      "winner"
+    ]
+  },
+  {
+    "map": "Playground",
+    "seed": 1858401095,
+    "seed_index": 13,
+    "reference": "baseline",
+    "candidate": "weighted-observe-only",
+    "both_winners": true,
+    "endpoints_match": true,
+    "eligible_winner_timing_pair": true,
+    "statuses": [
+      "winner",
+      "winner"
+    ]
+  },
+  {
+    "map": "Playground",
+    "seed": 1858401095,
+    "seed_index": 13,
+    "reference": "baseline",
+    "candidate": "weighted-bare-steal",
+    "both_winners": true,
+    "endpoints_match": true,
+    "eligible_winner_timing_pair": true,
+    "statuses": [
+      "winner",
+      "winner"
+    ]
+  },
+  {
+    "map": "Playground",
+    "seed": 1635872854,
+    "seed_index": 14,
+    "reference": "baseline",
+    "candidate": "wake-only",
+    "both_winners": true,
+    "endpoints_match": true,
+    "eligible_winner_timing_pair": true,
+    "statuses": [
+      "winner",
+      "winner"
+    ]
+  },
+  {
+    "map": "Playground",
+    "seed": 1635872854,
+    "seed_index": 14,
+    "reference": "baseline",
+    "candidate": "first-steal",
+    "both_winners": true,
+    "endpoints_match": true,
+    "eligible_winner_timing_pair": true,
+    "statuses": [
+      "winner",
+      "winner"
+    ]
+  },
+  {
+    "map": "Playground",
+    "seed": 1635872854,
+    "seed_index": 14,
+    "reference": "baseline",
+    "candidate": "local-completion-round-robin",
+    "both_winners": true,
+    "endpoints_match": true,
+    "eligible_winner_timing_pair": true,
+    "statuses": [
+      "winner",
+      "winner"
+    ]
+  },
+  {
+    "map": "Playground",
+    "seed": 1635872854,
+    "seed_index": 14,
+    "reference": "baseline",
+    "candidate": "local-completion-steal",
+    "both_winners": true,
+    "endpoints_match": true,
+    "eligible_winner_timing_pair": true,
+    "statuses": [
+      "winner",
+      "winner"
+    ]
+  },
+  {
+    "map": "Playground",
+    "seed": 1635872854,
+    "seed_index": 14,
+    "reference": "baseline",
+    "candidate": "local-priority-steal",
+    "both_winners": true,
+    "endpoints_match": true,
+    "eligible_winner_timing_pair": true,
+    "statuses": [
+      "winner",
+      "winner"
+    ]
+  },
+  {
+    "map": "Playground",
+    "seed": 1635872854,
+    "seed_index": 14,
+    "reference": "baseline",
+    "candidate": "weighted-fixed-no-steal",
+    "both_winners": true,
+    "endpoints_match": true,
+    "eligible_winner_timing_pair": true,
+    "statuses": [
+      "winner",
+      "winner"
+    ]
+  },
+  {
+    "map": "Playground",
+    "seed": 1635872854,
+    "seed_index": 14,
+    "reference": "baseline",
+    "candidate": "weighted-fixed-steal",
+    "both_winners": true,
+    "endpoints_match": true,
+    "eligible_winner_timing_pair": true,
+    "statuses": [
+      "winner",
+      "winner"
+    ]
+  },
+  {
+    "map": "Playground",
+    "seed": 1635872854,
+    "seed_index": 14,
+    "reference": "baseline",
+    "candidate": "weighted-two-choice",
+    "both_winners": true,
+    "endpoints_match": true,
+    "eligible_winner_timing_pair": true,
+    "statuses": [
+      "winner",
+      "winner"
+    ]
+  },
+  {
+    "map": "Playground",
+    "seed": 1635872854,
+    "seed_index": 14,
+    "reference": "baseline",
+    "candidate": "weighted-last",
+    "both_winners": true,
+    "endpoints_match": true,
+    "eligible_winner_timing_pair": true,
+    "statuses": [
+      "winner",
+      "winner"
+    ]
+  },
+  {
+    "map": "Playground",
+    "seed": 1635872854,
+    "seed_index": 14,
+    "reference": "baseline",
+    "candidate": "weighted-ewma",
+    "both_winners": true,
+    "endpoints_match": true,
+    "eligible_winner_timing_pair": true,
+    "statuses": [
+      "winner",
+      "winner"
+    ]
+  },
+  {
+    "map": "Playground",
+    "seed": 1635872854,
+    "seed_index": 14,
+    "reference": "baseline",
+    "candidate": "weighted-clock-only",
+    "both_winners": true,
+    "endpoints_match": true,
+    "eligible_winner_timing_pair": true,
+    "statuses": [
+      "winner",
+      "winner"
+    ]
+  },
+  {
+    "map": "Playground",
+    "seed": 1635872854,
+    "seed_index": 14,
+    "reference": "baseline",
+    "candidate": "weighted-observe-only",
+    "both_winners": true,
+    "endpoints_match": true,
+    "eligible_winner_timing_pair": true,
+    "statuses": [
+      "winner",
+      "winner"
+    ]
+  },
+  {
+    "map": "Playground",
+    "seed": 1635872854,
+    "seed_index": 14,
+    "reference": "baseline",
+    "candidate": "weighted-bare-steal",
+    "both_winners": true,
+    "endpoints_match": true,
+    "eligible_winner_timing_pair": true,
+    "statuses": [
+      "winner",
+      "winner"
+    ]
+  },
+  {
+    "map": "Playground",
+    "seed": 1441583672,
+    "seed_index": 15,
+    "reference": "baseline",
+    "candidate": "wake-only",
+    "both_winners": true,
+    "endpoints_match": true,
+    "eligible_winner_timing_pair": true,
+    "statuses": [
+      "winner",
+      "winner"
+    ]
+  },
+  {
+    "map": "Playground",
+    "seed": 1441583672,
+    "seed_index": 15,
+    "reference": "baseline",
+    "candidate": "first-steal",
+    "both_winners": true,
+    "endpoints_match": true,
+    "eligible_winner_timing_pair": true,
+    "statuses": [
+      "winner",
+      "winner"
+    ]
+  },
+  {
+    "map": "Playground",
+    "seed": 1441583672,
+    "seed_index": 15,
+    "reference": "baseline",
+    "candidate": "local-completion-round-robin",
+    "both_winners": true,
+    "endpoints_match": true,
+    "eligible_winner_timing_pair": true,
+    "statuses": [
+      "winner",
+      "winner"
+    ]
+  },
+  {
+    "map": "Playground",
+    "seed": 1441583672,
+    "seed_index": 15,
+    "reference": "baseline",
+    "candidate": "local-completion-steal",
+    "both_winners": true,
+    "endpoints_match": true,
+    "eligible_winner_timing_pair": true,
+    "statuses": [
+      "winner",
+      "winner"
+    ]
+  },
+  {
+    "map": "Playground",
+    "seed": 1441583672,
+    "seed_index": 15,
+    "reference": "baseline",
+    "candidate": "local-priority-steal",
+    "both_winners": true,
+    "endpoints_match": true,
+    "eligible_winner_timing_pair": true,
+    "statuses": [
+      "winner",
+      "winner"
+    ]
+  },
+  {
+    "map": "Playground",
+    "seed": 1441583672,
+    "seed_index": 15,
+    "reference": "baseline",
+    "candidate": "weighted-fixed-no-steal",
+    "both_winners": true,
+    "endpoints_match": true,
+    "eligible_winner_timing_pair": true,
+    "statuses": [
+      "winner",
+      "winner"
+    ]
+  },
+  {
+    "map": "Playground",
+    "seed": 1441583672,
+    "seed_index": 15,
+    "reference": "baseline",
+    "candidate": "weighted-fixed-steal",
+    "both_winners": true,
+    "endpoints_match": true,
+    "eligible_winner_timing_pair": true,
+    "statuses": [
+      "winner",
+      "winner"
+    ]
+  },
+  {
+    "map": "Playground",
+    "seed": 1441583672,
+    "seed_index": 15,
+    "reference": "baseline",
+    "candidate": "weighted-two-choice",
+    "both_winners": true,
+    "endpoints_match": true,
+    "eligible_winner_timing_pair": true,
+    "statuses": [
+      "winner",
+      "winner"
+    ]
+  },
+  {
+    "map": "Playground",
+    "seed": 1441583672,
+    "seed_index": 15,
+    "reference": "baseline",
+    "candidate": "weighted-last",
+    "both_winners": true,
+    "endpoints_match": true,
+    "eligible_winner_timing_pair": true,
+    "statuses": [
+      "winner",
+      "winner"
+    ]
+  },
+  {
+    "map": "Playground",
+    "seed": 1441583672,
+    "seed_index": 15,
+    "reference": "baseline",
+    "candidate": "weighted-ewma",
+    "both_winners": true,
+    "endpoints_match": true,
+    "eligible_winner_timing_pair": true,
+    "statuses": [
+      "winner",
+      "winner"
+    ]
+  },
+  {
+    "map": "Playground",
+    "seed": 1441583672,
+    "seed_index": 15,
+    "reference": "baseline",
+    "candidate": "weighted-clock-only",
+    "both_winners": true,
+    "endpoints_match": true,
+    "eligible_winner_timing_pair": true,
+    "statuses": [
+      "winner",
+      "winner"
+    ]
+  },
+  {
+    "map": "Playground",
+    "seed": 1441583672,
+    "seed_index": 15,
+    "reference": "baseline",
+    "candidate": "weighted-observe-only",
+    "both_winners": true,
+    "endpoints_match": true,
+    "eligible_winner_timing_pair": true,
+    "statuses": [
+      "winner",
+      "winner"
+    ]
+  },
+  {
+    "map": "Playground",
+    "seed": 1441583672,
+    "seed_index": 15,
+    "reference": "baseline",
+    "candidate": "weighted-bare-steal",
+    "both_winners": true,
+    "endpoints_match": true,
+    "eligible_winner_timing_pair": true,
+    "statuses": [
+      "winner",
+      "winner"
+    ]
+  },
+  {
+    "map": "Playground",
+    "seed": 741493568,
+    "seed_index": 16,
+    "reference": "baseline",
+    "candidate": "wake-only",
+    "both_winners": true,
+    "endpoints_match": true,
+    "eligible_winner_timing_pair": true,
+    "statuses": [
+      "winner",
+      "winner"
+    ]
+  },
+  {
+    "map": "Playground",
+    "seed": 741493568,
+    "seed_index": 16,
+    "reference": "baseline",
+    "candidate": "first-steal",
+    "both_winners": true,
+    "endpoints_match": true,
+    "eligible_winner_timing_pair": true,
+    "statuses": [
+      "winner",
+      "winner"
+    ]
+  },
+  {
+    "map": "Playground",
+    "seed": 741493568,
+    "seed_index": 16,
+    "reference": "baseline",
+    "candidate": "local-completion-round-robin",
+    "both_winners": true,
+    "endpoints_match": true,
+    "eligible_winner_timing_pair": true,
+    "statuses": [
+      "winner",
+      "winner"
+    ]
+  },
+  {
+    "map": "Playground",
+    "seed": 741493568,
+    "seed_index": 16,
+    "reference": "baseline",
+    "candidate": "local-completion-steal",
+    "both_winners": true,
+    "endpoints_match": true,
+    "eligible_winner_timing_pair": true,
+    "statuses": [
+      "winner",
+      "winner"
+    ]
+  },
+  {
+    "map": "Playground",
+    "seed": 741493568,
+    "seed_index": 16,
+    "reference": "baseline",
+    "candidate": "local-priority-steal",
+    "both_winners": true,
+    "endpoints_match": true,
+    "eligible_winner_timing_pair": true,
+    "statuses": [
+      "winner",
+      "winner"
+    ]
+  },
+  {
+    "map": "Playground",
+    "seed": 741493568,
+    "seed_index": 16,
+    "reference": "baseline",
+    "candidate": "weighted-fixed-no-steal",
+    "both_winners": true,
+    "endpoints_match": true,
+    "eligible_winner_timing_pair": true,
+    "statuses": [
+      "winner",
+      "winner"
+    ]
+  },
+  {
+    "map": "Playground",
+    "seed": 741493568,
+    "seed_index": 16,
+    "reference": "baseline",
+    "candidate": "weighted-fixed-steal",
+    "both_winners": true,
+    "endpoints_match": true,
+    "eligible_winner_timing_pair": true,
+    "statuses": [
+      "winner",
+      "winner"
+    ]
+  },
+  {
+    "map": "Playground",
+    "seed": 741493568,
+    "seed_index": 16,
+    "reference": "baseline",
+    "candidate": "weighted-two-choice",
+    "both_winners": true,
+    "endpoints_match": true,
+    "eligible_winner_timing_pair": true,
+    "statuses": [
+      "winner",
+      "winner"
+    ]
+  },
+  {
+    "map": "Playground",
+    "seed": 741493568,
+    "seed_index": 16,
+    "reference": "baseline",
+    "candidate": "weighted-last",
+    "both_winners": true,
+    "endpoints_match": true,
+    "eligible_winner_timing_pair": true,
+    "statuses": [
+      "winner",
+      "winner"
+    ]
+  },
+  {
+    "map": "Playground",
+    "seed": 741493568,
+    "seed_index": 16,
+    "reference": "baseline",
+    "candidate": "weighted-ewma",
+    "both_winners": true,
+    "endpoints_match": true,
+    "eligible_winner_timing_pair": true,
+    "statuses": [
+      "winner",
+      "winner"
+    ]
+  },
+  {
+    "map": "Playground",
+    "seed": 741493568,
+    "seed_index": 16,
+    "reference": "baseline",
+    "candidate": "weighted-clock-only",
+    "both_winners": true,
+    "endpoints_match": true,
+    "eligible_winner_timing_pair": true,
+    "statuses": [
+      "winner",
+      "winner"
+    ]
+  },
+  {
+    "map": "Playground",
+    "seed": 741493568,
+    "seed_index": 16,
+    "reference": "baseline",
+    "candidate": "weighted-observe-only",
+    "both_winners": true,
+    "endpoints_match": true,
+    "eligible_winner_timing_pair": true,
+    "statuses": [
+      "winner",
+      "winner"
+    ]
+  },
+  {
+    "map": "Playground",
+    "seed": 741493568,
+    "seed_index": 16,
+    "reference": "baseline",
+    "candidate": "weighted-bare-steal",
+    "both_winners": true,
+    "endpoints_match": true,
+    "eligible_winner_timing_pair": true,
+    "statuses": [
+      "winner",
+      "winner"
+    ]
+  },
+  {
+    "map": "Playground",
+    "seed": 466374853,
+    "seed_index": 17,
+    "reference": "baseline",
+    "candidate": "wake-only",
+    "both_winners": true,
+    "endpoints_match": true,
+    "eligible_winner_timing_pair": true,
+    "statuses": [
+      "winner",
+      "winner"
+    ]
+  },
+  {
+    "map": "Playground",
+    "seed": 466374853,
+    "seed_index": 17,
+    "reference": "baseline",
+    "candidate": "first-steal",
+    "both_winners": true,
+    "endpoints_match": true,
+    "eligible_winner_timing_pair": true,
+    "statuses": [
+      "winner",
+      "winner"
+    ]
+  },
+  {
+    "map": "Playground",
+    "seed": 466374853,
+    "seed_index": 17,
+    "reference": "baseline",
+    "candidate": "local-completion-round-robin",
+    "both_winners": true,
+    "endpoints_match": true,
+    "eligible_winner_timing_pair": true,
+    "statuses": [
+      "winner",
+      "winner"
+    ]
+  },
+  {
+    "map": "Playground",
+    "seed": 466374853,
+    "seed_index": 17,
+    "reference": "baseline",
+    "candidate": "local-completion-steal",
+    "both_winners": true,
+    "endpoints_match": true,
+    "eligible_winner_timing_pair": true,
+    "statuses": [
+      "winner",
+      "winner"
+    ]
+  },
+  {
+    "map": "Playground",
+    "seed": 466374853,
+    "seed_index": 17,
+    "reference": "baseline",
+    "candidate": "local-priority-steal",
+    "both_winners": true,
+    "endpoints_match": true,
+    "eligible_winner_timing_pair": true,
+    "statuses": [
+      "winner",
+      "winner"
+    ]
+  },
+  {
+    "map": "Playground",
+    "seed": 466374853,
+    "seed_index": 17,
+    "reference": "baseline",
+    "candidate": "weighted-fixed-no-steal",
+    "both_winners": true,
+    "endpoints_match": true,
+    "eligible_winner_timing_pair": true,
+    "statuses": [
+      "winner",
+      "winner"
+    ]
+  },
+  {
+    "map": "Playground",
+    "seed": 466374853,
+    "seed_index": 17,
+    "reference": "baseline",
+    "candidate": "weighted-fixed-steal",
+    "both_winners": true,
+    "endpoints_match": true,
+    "eligible_winner_timing_pair": true,
+    "statuses": [
+      "winner",
+      "winner"
+    ]
+  },
+  {
+    "map": "Playground",
+    "seed": 466374853,
+    "seed_index": 17,
+    "reference": "baseline",
+    "candidate": "weighted-two-choice",
+    "both_winners": true,
+    "endpoints_match": true,
+    "eligible_winner_timing_pair": true,
+    "statuses": [
+      "winner",
+      "winner"
+    ]
+  },
+  {
+    "map": "Playground",
+    "seed": 466374853,
+    "seed_index": 17,
+    "reference": "baseline",
+    "candidate": "weighted-last",
+    "both_winners": true,
+    "endpoints_match": true,
+    "eligible_winner_timing_pair": true,
+    "statuses": [
+      "winner",
+      "winner"
+    ]
+  },
+  {
+    "map": "Playground",
+    "seed": 466374853,
+    "seed_index": 17,
+    "reference": "baseline",
+    "candidate": "weighted-ewma",
+    "both_winners": true,
+    "endpoints_match": true,
+    "eligible_winner_timing_pair": true,
+    "statuses": [
+      "winner",
+      "winner"
+    ]
+  },
+  {
+    "map": "Playground",
+    "seed": 466374853,
+    "seed_index": 17,
+    "reference": "baseline",
+    "candidate": "weighted-clock-only",
+    "both_winners": true,
+    "endpoints_match": true,
+    "eligible_winner_timing_pair": true,
+    "statuses": [
+      "winner",
+      "winner"
+    ]
+  },
+  {
+    "map": "Playground",
+    "seed": 466374853,
+    "seed_index": 17,
+    "reference": "baseline",
+    "candidate": "weighted-observe-only",
+    "both_winners": true,
+    "endpoints_match": true,
+    "eligible_winner_timing_pair": true,
+    "statuses": [
+      "winner",
+      "winner"
+    ]
+  },
+  {
+    "map": "Playground",
+    "seed": 466374853,
+    "seed_index": 17,
+    "reference": "baseline",
+    "candidate": "weighted-bare-steal",
+    "both_winners": true,
+    "endpoints_match": true,
+    "eligible_winner_timing_pair": true,
+    "statuses": [
+      "winner",
+      "winner"
+    ]
+  },
+  {
+    "map": "Playground",
+    "seed": 2037486757,
+    "seed_index": 18,
+    "reference": "baseline",
+    "candidate": "wake-only",
+    "both_winners": true,
+    "endpoints_match": true,
+    "eligible_winner_timing_pair": true,
+    "statuses": [
+      "winner",
+      "winner"
+    ]
+  },
+  {
+    "map": "Playground",
+    "seed": 2037486757,
+    "seed_index": 18,
+    "reference": "baseline",
+    "candidate": "first-steal",
+    "both_winners": true,
+    "endpoints_match": true,
+    "eligible_winner_timing_pair": true,
+    "statuses": [
+      "winner",
+      "winner"
+    ]
+  },
+  {
+    "map": "Playground",
+    "seed": 2037486757,
+    "seed_index": 18,
+    "reference": "baseline",
+    "candidate": "local-completion-round-robin",
+    "both_winners": true,
+    "endpoints_match": true,
+    "eligible_winner_timing_pair": true,
+    "statuses": [
+      "winner",
+      "winner"
+    ]
+  },
+  {
+    "map": "Playground",
+    "seed": 2037486757,
+    "seed_index": 18,
+    "reference": "baseline",
+    "candidate": "local-completion-steal",
+    "both_winners": true,
+    "endpoints_match": true,
+    "eligible_winner_timing_pair": true,
+    "statuses": [
+      "winner",
+      "winner"
+    ]
+  },
+  {
+    "map": "Playground",
+    "seed": 2037486757,
+    "seed_index": 18,
+    "reference": "baseline",
+    "candidate": "local-priority-steal",
+    "both_winners": true,
+    "endpoints_match": true,
+    "eligible_winner_timing_pair": true,
+    "statuses": [
+      "winner",
+      "winner"
+    ]
+  },
+  {
+    "map": "Playground",
+    "seed": 2037486757,
+    "seed_index": 18,
+    "reference": "baseline",
+    "candidate": "weighted-fixed-no-steal",
+    "both_winners": true,
+    "endpoints_match": true,
+    "eligible_winner_timing_pair": true,
+    "statuses": [
+      "winner",
+      "winner"
+    ]
+  },
+  {
+    "map": "Playground",
+    "seed": 2037486757,
+    "seed_index": 18,
+    "reference": "baseline",
+    "candidate": "weighted-fixed-steal",
+    "both_winners": true,
+    "endpoints_match": true,
+    "eligible_winner_timing_pair": true,
+    "statuses": [
+      "winner",
+      "winner"
+    ]
+  },
+  {
+    "map": "Playground",
+    "seed": 2037486757,
+    "seed_index": 18,
+    "reference": "baseline",
+    "candidate": "weighted-two-choice",
+    "both_winners": true,
+    "endpoints_match": true,
+    "eligible_winner_timing_pair": true,
+    "statuses": [
+      "winner",
+      "winner"
+    ]
+  },
+  {
+    "map": "Playground",
+    "seed": 2037486757,
+    "seed_index": 18,
+    "reference": "baseline",
+    "candidate": "weighted-last",
+    "both_winners": true,
+    "endpoints_match": true,
+    "eligible_winner_timing_pair": true,
+    "statuses": [
+      "winner",
+      "winner"
+    ]
+  },
+  {
+    "map": "Playground",
+    "seed": 2037486757,
+    "seed_index": 18,
+    "reference": "baseline",
+    "candidate": "weighted-ewma",
+    "both_winners": true,
+    "endpoints_match": true,
+    "eligible_winner_timing_pair": true,
+    "statuses": [
+      "winner",
+      "winner"
+    ]
+  },
+  {
+    "map": "Playground",
+    "seed": 2037486757,
+    "seed_index": 18,
+    "reference": "baseline",
+    "candidate": "weighted-clock-only",
+    "both_winners": true,
+    "endpoints_match": true,
+    "eligible_winner_timing_pair": true,
+    "statuses": [
+      "winner",
+      "winner"
+    ]
+  },
+  {
+    "map": "Playground",
+    "seed": 2037486757,
+    "seed_index": 18,
+    "reference": "baseline",
+    "candidate": "weighted-observe-only",
+    "both_winners": true,
+    "endpoints_match": true,
+    "eligible_winner_timing_pair": true,
+    "statuses": [
+      "winner",
+      "winner"
+    ]
+  },
+  {
+    "map": "Playground",
+    "seed": 2037486757,
+    "seed_index": 18,
+    "reference": "baseline",
+    "candidate": "weighted-bare-steal",
+    "both_winners": true,
+    "endpoints_match": true,
+    "eligible_winner_timing_pair": true,
+    "statuses": [
+      "winner",
+      "winner"
+    ]
+  },
+  {
+    "map": "Playground",
+    "seed": 1414753418,
+    "seed_index": 19,
+    "reference": "baseline",
+    "candidate": "wake-only",
+    "both_winners": true,
+    "endpoints_match": true,
+    "eligible_winner_timing_pair": true,
+    "statuses": [
+      "winner",
+      "winner"
+    ]
+  },
+  {
+    "map": "Playground",
+    "seed": 1414753418,
+    "seed_index": 19,
+    "reference": "baseline",
+    "candidate": "first-steal",
+    "both_winners": true,
+    "endpoints_match": true,
+    "eligible_winner_timing_pair": true,
+    "statuses": [
+      "winner",
+      "winner"
+    ]
+  },
+  {
+    "map": "Playground",
+    "seed": 1414753418,
+    "seed_index": 19,
+    "reference": "baseline",
+    "candidate": "local-completion-round-robin",
+    "both_winners": true,
+    "endpoints_match": true,
+    "eligible_winner_timing_pair": true,
+    "statuses": [
+      "winner",
+      "winner"
+    ]
+  },
+  {
+    "map": "Playground",
+    "seed": 1414753418,
+    "seed_index": 19,
+    "reference": "baseline",
+    "candidate": "local-completion-steal",
+    "both_winners": true,
+    "endpoints_match": true,
+    "eligible_winner_timing_pair": true,
+    "statuses": [
+      "winner",
+      "winner"
+    ]
+  },
+  {
+    "map": "Playground",
+    "seed": 1414753418,
+    "seed_index": 19,
+    "reference": "baseline",
+    "candidate": "local-priority-steal",
+    "both_winners": true,
+    "endpoints_match": true,
+    "eligible_winner_timing_pair": true,
+    "statuses": [
+      "winner",
+      "winner"
+    ]
+  },
+  {
+    "map": "Playground",
+    "seed": 1414753418,
+    "seed_index": 19,
+    "reference": "baseline",
+    "candidate": "weighted-fixed-no-steal",
+    "both_winners": true,
+    "endpoints_match": true,
+    "eligible_winner_timing_pair": true,
+    "statuses": [
+      "winner",
+      "winner"
+    ]
+  },
+  {
+    "map": "Playground",
+    "seed": 1414753418,
+    "seed_index": 19,
+    "reference": "baseline",
+    "candidate": "weighted-fixed-steal",
+    "both_winners": true,
+    "endpoints_match": true,
+    "eligible_winner_timing_pair": true,
+    "statuses": [
+      "winner",
+      "winner"
+    ]
+  },
+  {
+    "map": "Playground",
+    "seed": 1414753418,
+    "seed_index": 19,
+    "reference": "baseline",
+    "candidate": "weighted-two-choice",
+    "both_winners": true,
+    "endpoints_match": true,
+    "eligible_winner_timing_pair": true,
+    "statuses": [
+      "winner",
+      "winner"
+    ]
+  },
+  {
+    "map": "Playground",
+    "seed": 1414753418,
+    "seed_index": 19,
+    "reference": "baseline",
+    "candidate": "weighted-last",
+    "both_winners": true,
+    "endpoints_match": true,
+    "eligible_winner_timing_pair": true,
+    "statuses": [
+      "winner",
+      "winner"
+    ]
+  },
+  {
+    "map": "Playground",
+    "seed": 1414753418,
+    "seed_index": 19,
+    "reference": "baseline",
+    "candidate": "weighted-ewma",
+    "both_winners": true,
+    "endpoints_match": true,
+    "eligible_winner_timing_pair": true,
+    "statuses": [
+      "winner",
+      "winner"
+    ]
+  },
+  {
+    "map": "Playground",
+    "seed": 1414753418,
+    "seed_index": 19,
+    "reference": "baseline",
+    "candidate": "weighted-clock-only",
+    "both_winners": true,
+    "endpoints_match": true,
+    "eligible_winner_timing_pair": true,
+    "statuses": [
+      "winner",
+      "winner"
+    ]
+  },
+  {
+    "map": "Playground",
+    "seed": 1414753418,
+    "seed_index": 19,
+    "reference": "baseline",
+    "candidate": "weighted-observe-only",
+    "both_winners": true,
+    "endpoints_match": true,
+    "eligible_winner_timing_pair": true,
+    "statuses": [
+      "winner",
+      "winner"
+    ]
+  },
+  {
+    "map": "Playground",
+    "seed": 1414753418,
+    "seed_index": 19,
+    "reference": "baseline",
+    "candidate": "weighted-bare-steal",
+    "both_winners": true,
+    "endpoints_match": true,
+    "eligible_winner_timing_pair": true,
+    "statuses": [
+      "winner",
+      "winner"
+    ]
+  },
+  {
+    "map": "Playground",
+    "seed": 1298936997,
+    "seed_index": 20,
+    "reference": "baseline",
+    "candidate": "wake-only",
+    "both_winners": true,
+    "endpoints_match": true,
+    "eligible_winner_timing_pair": true,
+    "statuses": [
+      "winner",
+      "winner"
+    ]
+  },
+  {
+    "map": "Playground",
+    "seed": 1298936997,
+    "seed_index": 20,
+    "reference": "baseline",
+    "candidate": "first-steal",
+    "both_winners": true,
+    "endpoints_match": true,
+    "eligible_winner_timing_pair": true,
+    "statuses": [
+      "winner",
+      "winner"
+    ]
+  },
+  {
+    "map": "Playground",
+    "seed": 1298936997,
+    "seed_index": 20,
+    "reference": "baseline",
+    "candidate": "local-completion-round-robin",
+    "both_winners": true,
+    "endpoints_match": true,
+    "eligible_winner_timing_pair": true,
+    "statuses": [
+      "winner",
+      "winner"
+    ]
+  },
+  {
+    "map": "Playground",
+    "seed": 1298936997,
+    "seed_index": 20,
+    "reference": "baseline",
+    "candidate": "local-completion-steal",
+    "both_winners": true,
+    "endpoints_match": true,
+    "eligible_winner_timing_pair": true,
+    "statuses": [
+      "winner",
+      "winner"
+    ]
+  },
+  {
+    "map": "Playground",
+    "seed": 1298936997,
+    "seed_index": 20,
+    "reference": "baseline",
+    "candidate": "local-priority-steal",
+    "both_winners": true,
+    "endpoints_match": true,
+    "eligible_winner_timing_pair": true,
+    "statuses": [
+      "winner",
+      "winner"
+    ]
+  },
+  {
+    "map": "Playground",
+    "seed": 1298936997,
+    "seed_index": 20,
+    "reference": "baseline",
+    "candidate": "weighted-fixed-no-steal",
+    "both_winners": true,
+    "endpoints_match": true,
+    "eligible_winner_timing_pair": true,
+    "statuses": [
+      "winner",
+      "winner"
+    ]
+  },
+  {
+    "map": "Playground",
+    "seed": 1298936997,
+    "seed_index": 20,
+    "reference": "baseline",
+    "candidate": "weighted-fixed-steal",
+    "both_winners": true,
+    "endpoints_match": true,
+    "eligible_winner_timing_pair": true,
+    "statuses": [
+      "winner",
+      "winner"
+    ]
+  },
+  {
+    "map": "Playground",
+    "seed": 1298936997,
+    "seed_index": 20,
+    "reference": "baseline",
+    "candidate": "weighted-two-choice",
+    "both_winners": true,
+    "endpoints_match": true,
+    "eligible_winner_timing_pair": true,
+    "statuses": [
+      "winner",
+      "winner"
+    ]
+  },
+  {
+    "map": "Playground",
+    "seed": 1298936997,
+    "seed_index": 20,
+    "reference": "baseline",
+    "candidate": "weighted-last",
+    "both_winners": true,
+    "endpoints_match": true,
+    "eligible_winner_timing_pair": true,
+    "statuses": [
+      "winner",
+      "winner"
+    ]
+  },
+  {
+    "map": "Playground",
+    "seed": 1298936997,
+    "seed_index": 20,
+    "reference": "baseline",
+    "candidate": "weighted-ewma",
+    "both_winners": true,
+    "endpoints_match": true,
+    "eligible_winner_timing_pair": true,
+    "statuses": [
+      "winner",
+      "winner"
+    ]
+  },
+  {
+    "map": "Playground",
+    "seed": 1298936997,
+    "seed_index": 20,
+    "reference": "baseline",
+    "candidate": "weighted-clock-only",
+    "both_winners": true,
+    "endpoints_match": true,
+    "eligible_winner_timing_pair": true,
+    "statuses": [
+      "winner",
+      "winner"
+    ]
+  },
+  {
+    "map": "Playground",
+    "seed": 1298936997,
+    "seed_index": 20,
+    "reference": "baseline",
+    "candidate": "weighted-observe-only",
+    "both_winners": true,
+    "endpoints_match": true,
+    "eligible_winner_timing_pair": true,
+    "statuses": [
+      "winner",
+      "winner"
+    ]
+  },
+  {
+    "map": "Playground",
+    "seed": 1298936997,
+    "seed_index": 20,
+    "reference": "baseline",
+    "candidate": "weighted-bare-steal",
+    "both_winners": true,
+    "endpoints_match": true,
+    "eligible_winner_timing_pair": true,
+    "statuses": [
+      "winner",
+      "winner"
+    ]
+  },
+  {
+    "map": "Playground",
+    "seed": 1139586032,
+    "seed_index": 21,
+    "reference": "baseline",
+    "candidate": "wake-only",
+    "both_winners": true,
+    "endpoints_match": true,
+    "eligible_winner_timing_pair": true,
+    "statuses": [
+      "winner",
+      "winner"
+    ]
+  },
+  {
+    "map": "Playground",
+    "seed": 1139586032,
+    "seed_index": 21,
+    "reference": "baseline",
+    "candidate": "first-steal",
+    "both_winners": true,
+    "endpoints_match": true,
+    "eligible_winner_timing_pair": true,
+    "statuses": [
+      "winner",
+      "winner"
+    ]
+  },
+  {
+    "map": "Playground",
+    "seed": 1139586032,
+    "seed_index": 21,
+    "reference": "baseline",
+    "candidate": "local-completion-round-robin",
+    "both_winners": true,
+    "endpoints_match": true,
+    "eligible_winner_timing_pair": true,
+    "statuses": [
+      "winner",
+      "winner"
+    ]
+  },
+  {
+    "map": "Playground",
+    "seed": 1139586032,
+    "seed_index": 21,
+    "reference": "baseline",
+    "candidate": "local-completion-steal",
+    "both_winners": true,
+    "endpoints_match": true,
+    "eligible_winner_timing_pair": true,
+    "statuses": [
+      "winner",
+      "winner"
+    ]
+  },
+  {
+    "map": "Playground",
+    "seed": 1139586032,
+    "seed_index": 21,
+    "reference": "baseline",
+    "candidate": "local-priority-steal",
+    "both_winners": true,
+    "endpoints_match": true,
+    "eligible_winner_timing_pair": true,
+    "statuses": [
+      "winner",
+      "winner"
+    ]
+  },
+  {
+    "map": "Playground",
+    "seed": 1139586032,
+    "seed_index": 21,
+    "reference": "baseline",
+    "candidate": "weighted-fixed-no-steal",
+    "both_winners": true,
+    "endpoints_match": true,
+    "eligible_winner_timing_pair": true,
+    "statuses": [
+      "winner",
+      "winner"
+    ]
+  },
+  {
+    "map": "Playground",
+    "seed": 1139586032,
+    "seed_index": 21,
+    "reference": "baseline",
+    "candidate": "weighted-fixed-steal",
+    "both_winners": true,
+    "endpoints_match": true,
+    "eligible_winner_timing_pair": true,
+    "statuses": [
+      "winner",
+      "winner"
+    ]
+  },
+  {
+    "map": "Playground",
+    "seed": 1139586032,
+    "seed_index": 21,
+    "reference": "baseline",
+    "candidate": "weighted-two-choice",
+    "both_winners": true,
+    "endpoints_match": true,
+    "eligible_winner_timing_pair": true,
+    "statuses": [
+      "winner",
+      "winner"
+    ]
+  },
+  {
+    "map": "Playground",
+    "seed": 1139586032,
+    "seed_index": 21,
+    "reference": "baseline",
+    "candidate": "weighted-last",
+    "both_winners": true,
+    "endpoints_match": true,
+    "eligible_winner_timing_pair": true,
+    "statuses": [
+      "winner",
+      "winner"
+    ]
+  },
+  {
+    "map": "Playground",
+    "seed": 1139586032,
+    "seed_index": 21,
+    "reference": "baseline",
+    "candidate": "weighted-ewma",
+    "both_winners": true,
+    "endpoints_match": true,
+    "eligible_winner_timing_pair": true,
+    "statuses": [
+      "winner",
+      "winner"
+    ]
+  },
+  {
+    "map": "Playground",
+    "seed": 1139586032,
+    "seed_index": 21,
+    "reference": "baseline",
+    "candidate": "weighted-clock-only",
+    "both_winners": true,
+    "endpoints_match": true,
+    "eligible_winner_timing_pair": true,
+    "statuses": [
+      "winner",
+      "winner"
+    ]
+  },
+  {
+    "map": "Playground",
+    "seed": 1139586032,
+    "seed_index": 21,
+    "reference": "baseline",
+    "candidate": "weighted-observe-only",
+    "both_winners": true,
+    "endpoints_match": true,
+    "eligible_winner_timing_pair": true,
+    "statuses": [
+      "winner",
+      "winner"
+    ]
+  },
+  {
+    "map": "Playground",
+    "seed": 1139586032,
+    "seed_index": 21,
+    "reference": "baseline",
+    "candidate": "weighted-bare-steal",
+    "both_winners": true,
+    "endpoints_match": true,
+    "eligible_winner_timing_pair": true,
+    "statuses": [
+      "winner",
+      "winner"
+    ]
+  },
+  {
+    "map": "Playground",
+    "seed": 1845486380,
+    "seed_index": 22,
+    "reference": "baseline",
+    "candidate": "wake-only",
+    "both_winners": true,
+    "endpoints_match": true,
+    "eligible_winner_timing_pair": true,
+    "statuses": [
+      "winner",
+      "winner"
+    ]
+  },
+  {
+    "map": "Playground",
+    "seed": 1845486380,
+    "seed_index": 22,
+    "reference": "baseline",
+    "candidate": "first-steal",
+    "both_winners": true,
+    "endpoints_match": true,
+    "eligible_winner_timing_pair": true,
+    "statuses": [
+      "winner",
+      "winner"
+    ]
+  },
+  {
+    "map": "Playground",
+    "seed": 1845486380,
+    "seed_index": 22,
+    "reference": "baseline",
+    "candidate": "local-completion-round-robin",
+    "both_winners": true,
+    "endpoints_match": true,
+    "eligible_winner_timing_pair": true,
+    "statuses": [
+      "winner",
+      "winner"
+    ]
+  },
+  {
+    "map": "Playground",
+    "seed": 1845486380,
+    "seed_index": 22,
+    "reference": "baseline",
+    "candidate": "local-completion-steal",
+    "both_winners": true,
+    "endpoints_match": true,
+    "eligible_winner_timing_pair": true,
+    "statuses": [
+      "winner",
+      "winner"
+    ]
+  },
+  {
+    "map": "Playground",
+    "seed": 1845486380,
+    "seed_index": 22,
+    "reference": "baseline",
+    "candidate": "local-priority-steal",
+    "both_winners": true,
+    "endpoints_match": true,
+    "eligible_winner_timing_pair": true,
+    "statuses": [
+      "winner",
+      "winner"
+    ]
+  },
+  {
+    "map": "Playground",
+    "seed": 1845486380,
+    "seed_index": 22,
+    "reference": "baseline",
+    "candidate": "weighted-fixed-no-steal",
+    "both_winners": true,
+    "endpoints_match": true,
+    "eligible_winner_timing_pair": true,
+    "statuses": [
+      "winner",
+      "winner"
+    ]
+  },
+  {
+    "map": "Playground",
+    "seed": 1845486380,
+    "seed_index": 22,
+    "reference": "baseline",
+    "candidate": "weighted-fixed-steal",
+    "both_winners": true,
+    "endpoints_match": true,
+    "eligible_winner_timing_pair": true,
+    "statuses": [
+      "winner",
+      "winner"
+    ]
+  },
+  {
+    "map": "Playground",
+    "seed": 1845486380,
+    "seed_index": 22,
+    "reference": "baseline",
+    "candidate": "weighted-two-choice",
+    "both_winners": true,
+    "endpoints_match": true,
+    "eligible_winner_timing_pair": true,
+    "statuses": [
+      "winner",
+      "winner"
+    ]
+  },
+  {
+    "map": "Playground",
+    "seed": 1845486380,
+    "seed_index": 22,
+    "reference": "baseline",
+    "candidate": "weighted-last",
+    "both_winners": true,
+    "endpoints_match": true,
+    "eligible_winner_timing_pair": true,
+    "statuses": [
+      "winner",
+      "winner"
+    ]
+  },
+  {
+    "map": "Playground",
+    "seed": 1845486380,
+    "seed_index": 22,
+    "reference": "baseline",
+    "candidate": "weighted-ewma",
+    "both_winners": true,
+    "endpoints_match": true,
+    "eligible_winner_timing_pair": true,
+    "statuses": [
+      "winner",
+      "winner"
+    ]
+  },
+  {
+    "map": "Playground",
+    "seed": 1845486380,
+    "seed_index": 22,
+    "reference": "baseline",
+    "candidate": "weighted-clock-only",
+    "both_winners": true,
+    "endpoints_match": true,
+    "eligible_winner_timing_pair": true,
+    "statuses": [
+      "winner",
+      "winner"
+    ]
+  },
+  {
+    "map": "Playground",
+    "seed": 1845486380,
+    "seed_index": 22,
+    "reference": "baseline",
+    "candidate": "weighted-observe-only",
+    "both_winners": true,
+    "endpoints_match": true,
+    "eligible_winner_timing_pair": true,
+    "statuses": [
+      "winner",
+      "winner"
+    ]
+  },
+  {
+    "map": "Playground",
+    "seed": 1845486380,
+    "seed_index": 22,
+    "reference": "baseline",
+    "candidate": "weighted-bare-steal",
+    "both_winners": true,
+    "endpoints_match": true,
+    "eligible_winner_timing_pair": true,
+    "statuses": [
+      "winner",
+      "winner"
+    ]
+  },
+  {
+    "map": "Playground",
+    "seed": 275303672,
+    "seed_index": 23,
+    "reference": "baseline",
+    "candidate": "wake-only",
+    "both_winners": true,
+    "endpoints_match": true,
+    "eligible_winner_timing_pair": true,
+    "statuses": [
+      "winner",
+      "winner"
+    ]
+  },
+  {
+    "map": "Playground",
+    "seed": 275303672,
+    "seed_index": 23,
+    "reference": "baseline",
+    "candidate": "first-steal",
+    "both_winners": true,
+    "endpoints_match": true,
+    "eligible_winner_timing_pair": true,
+    "statuses": [
+      "winner",
+      "winner"
+    ]
+  },
+  {
+    "map": "Playground",
+    "seed": 275303672,
+    "seed_index": 23,
+    "reference": "baseline",
+    "candidate": "local-completion-round-robin",
+    "both_winners": true,
+    "endpoints_match": true,
+    "eligible_winner_timing_pair": true,
+    "statuses": [
+      "winner",
+      "winner"
+    ]
+  },
+  {
+    "map": "Playground",
+    "seed": 275303672,
+    "seed_index": 23,
+    "reference": "baseline",
+    "candidate": "local-completion-steal",
+    "both_winners": true,
+    "endpoints_match": true,
+    "eligible_winner_timing_pair": true,
+    "statuses": [
+      "winner",
+      "winner"
+    ]
+  },
+  {
+    "map": "Playground",
+    "seed": 275303672,
+    "seed_index": 23,
+    "reference": "baseline",
+    "candidate": "local-priority-steal",
+    "both_winners": true,
+    "endpoints_match": true,
+    "eligible_winner_timing_pair": true,
+    "statuses": [
+      "winner",
+      "winner"
+    ]
+  },
+  {
+    "map": "Playground",
+    "seed": 275303672,
+    "seed_index": 23,
+    "reference": "baseline",
+    "candidate": "weighted-fixed-no-steal",
+    "both_winners": true,
+    "endpoints_match": true,
+    "eligible_winner_timing_pair": true,
+    "statuses": [
+      "winner",
+      "winner"
+    ]
+  },
+  {
+    "map": "Playground",
+    "seed": 275303672,
+    "seed_index": 23,
+    "reference": "baseline",
+    "candidate": "weighted-fixed-steal",
+    "both_winners": true,
+    "endpoints_match": true,
+    "eligible_winner_timing_pair": true,
+    "statuses": [
+      "winner",
+      "winner"
+    ]
+  },
+  {
+    "map": "Playground",
+    "seed": 275303672,
+    "seed_index": 23,
+    "reference": "baseline",
+    "candidate": "weighted-two-choice",
+    "both_winners": true,
+    "endpoints_match": true,
+    "eligible_winner_timing_pair": true,
+    "statuses": [
+      "winner",
+      "winner"
+    ]
+  },
+  {
+    "map": "Playground",
+    "seed": 275303672,
+    "seed_index": 23,
+    "reference": "baseline",
+    "candidate": "weighted-last",
+    "both_winners": true,
+    "endpoints_match": true,
+    "eligible_winner_timing_pair": true,
+    "statuses": [
+      "winner",
+      "winner"
+    ]
+  },
+  {
+    "map": "Playground",
+    "seed": 275303672,
+    "seed_index": 23,
+    "reference": "baseline",
+    "candidate": "weighted-ewma",
+    "both_winners": true,
+    "endpoints_match": true,
+    "eligible_winner_timing_pair": true,
+    "statuses": [
+      "winner",
+      "winner"
+    ]
+  },
+  {
+    "map": "Playground",
+    "seed": 275303672,
+    "seed_index": 23,
+    "reference": "baseline",
+    "candidate": "weighted-clock-only",
+    "both_winners": true,
+    "endpoints_match": true,
+    "eligible_winner_timing_pair": true,
+    "statuses": [
+      "winner",
+      "winner"
+    ]
+  },
+  {
+    "map": "Playground",
+    "seed": 275303672,
+    "seed_index": 23,
+    "reference": "baseline",
+    "candidate": "weighted-observe-only",
+    "both_winners": true,
+    "endpoints_match": true,
+    "eligible_winner_timing_pair": true,
+    "statuses": [
+      "winner",
+      "winner"
+    ]
+  },
+  {
+    "map": "Playground",
+    "seed": 275303672,
+    "seed_index": 23,
+    "reference": "baseline",
+    "candidate": "weighted-bare-steal",
+    "both_winners": true,
+    "endpoints_match": true,
+    "eligible_winner_timing_pair": true,
+    "statuses": [
+      "winner",
+      "winner"
+    ]
+  },
+  {
+    "map": "Playground",
+    "seed": 1013771484,
+    "seed_index": 24,
+    "reference": "baseline",
+    "candidate": "wake-only",
+    "both_winners": true,
+    "endpoints_match": true,
+    "eligible_winner_timing_pair": true,
+    "statuses": [
+      "winner",
+      "winner"
+    ]
+  },
+  {
+    "map": "Playground",
+    "seed": 1013771484,
+    "seed_index": 24,
+    "reference": "baseline",
+    "candidate": "first-steal",
+    "both_winners": true,
+    "endpoints_match": true,
+    "eligible_winner_timing_pair": true,
+    "statuses": [
+      "winner",
+      "winner"
+    ]
+  },
+  {
+    "map": "Playground",
+    "seed": 1013771484,
+    "seed_index": 24,
+    "reference": "baseline",
+    "candidate": "local-completion-round-robin",
+    "both_winners": true,
+    "endpoints_match": true,
+    "eligible_winner_timing_pair": true,
+    "statuses": [
+      "winner",
+      "winner"
+    ]
+  },
+  {
+    "map": "Playground",
+    "seed": 1013771484,
+    "seed_index": 24,
+    "reference": "baseline",
+    "candidate": "local-completion-steal",
+    "both_winners": true,
+    "endpoints_match": true,
+    "eligible_winner_timing_pair": true,
+    "statuses": [
+      "winner",
+      "winner"
+    ]
+  },
+  {
+    "map": "Playground",
+    "seed": 1013771484,
+    "seed_index": 24,
+    "reference": "baseline",
+    "candidate": "local-priority-steal",
+    "both_winners": true,
+    "endpoints_match": true,
+    "eligible_winner_timing_pair": true,
+    "statuses": [
+      "winner",
+      "winner"
+    ]
+  },
+  {
+    "map": "Playground",
+    "seed": 1013771484,
+    "seed_index": 24,
+    "reference": "baseline",
+    "candidate": "weighted-fixed-no-steal",
+    "both_winners": true,
+    "endpoints_match": true,
+    "eligible_winner_timing_pair": true,
+    "statuses": [
+      "winner",
+      "winner"
+    ]
+  },
+  {
+    "map": "Playground",
+    "seed": 1013771484,
+    "seed_index": 24,
+    "reference": "baseline",
+    "candidate": "weighted-fixed-steal",
+    "both_winners": true,
+    "endpoints_match": true,
+    "eligible_winner_timing_pair": true,
+    "statuses": [
+      "winner",
+      "winner"
+    ]
+  },
+  {
+    "map": "Playground",
+    "seed": 1013771484,
+    "seed_index": 24,
+    "reference": "baseline",
+    "candidate": "weighted-two-choice",
+    "both_winners": true,
+    "endpoints_match": true,
+    "eligible_winner_timing_pair": true,
+    "statuses": [
+      "winner",
+      "winner"
+    ]
+  },
+  {
+    "map": "Playground",
+    "seed": 1013771484,
+    "seed_index": 24,
+    "reference": "baseline",
+    "candidate": "weighted-last",
+    "both_winners": true,
+    "endpoints_match": true,
+    "eligible_winner_timing_pair": true,
+    "statuses": [
+      "winner",
+      "winner"
+    ]
+  },
+  {
+    "map": "Playground",
+    "seed": 1013771484,
+    "seed_index": 24,
+    "reference": "baseline",
+    "candidate": "weighted-ewma",
+    "both_winners": true,
+    "endpoints_match": true,
+    "eligible_winner_timing_pair": true,
+    "statuses": [
+      "winner",
+      "winner"
+    ]
+  },
+  {
+    "map": "Playground",
+    "seed": 1013771484,
+    "seed_index": 24,
+    "reference": "baseline",
+    "candidate": "weighted-clock-only",
+    "both_winners": true,
+    "endpoints_match": true,
+    "eligible_winner_timing_pair": true,
+    "statuses": [
+      "winner",
+      "winner"
+    ]
+  },
+  {
+    "map": "Playground",
+    "seed": 1013771484,
+    "seed_index": 24,
+    "reference": "baseline",
+    "candidate": "weighted-observe-only",
+    "both_winners": true,
+    "endpoints_match": true,
+    "eligible_winner_timing_pair": true,
+    "statuses": [
+      "winner",
+      "winner"
+    ]
+  },
+  {
+    "map": "Playground",
+    "seed": 1013771484,
+    "seed_index": 24,
+    "reference": "baseline",
+    "candidate": "weighted-bare-steal",
+    "both_winners": true,
+    "endpoints_match": true,
+    "eligible_winner_timing_pair": true,
+    "statuses": [
+      "winner",
+      "winner"
+    ]
+  },
+  {
+    "map": "Playground",
+    "seed": 1961520297,
+    "seed_index": 25,
+    "reference": "baseline",
+    "candidate": "wake-only",
+    "both_winners": true,
+    "endpoints_match": true,
+    "eligible_winner_timing_pair": true,
+    "statuses": [
+      "winner",
+      "winner"
+    ]
+  },
+  {
+    "map": "Playground",
+    "seed": 1961520297,
+    "seed_index": 25,
+    "reference": "baseline",
+    "candidate": "first-steal",
+    "both_winners": true,
+    "endpoints_match": true,
+    "eligible_winner_timing_pair": true,
+    "statuses": [
+      "winner",
+      "winner"
+    ]
+  },
+  {
+    "map": "Playground",
+    "seed": 1961520297,
+    "seed_index": 25,
+    "reference": "baseline",
+    "candidate": "local-completion-round-robin",
+    "both_winners": true,
+    "endpoints_match": true,
+    "eligible_winner_timing_pair": true,
+    "statuses": [
+      "winner",
+      "winner"
+    ]
+  },
+  {
+    "map": "Playground",
+    "seed": 1961520297,
+    "seed_index": 25,
+    "reference": "baseline",
+    "candidate": "local-completion-steal",
+    "both_winners": true,
+    "endpoints_match": true,
+    "eligible_winner_timing_pair": true,
+    "statuses": [
+      "winner",
+      "winner"
+    ]
+  },
+  {
+    "map": "Playground",
+    "seed": 1961520297,
+    "seed_index": 25,
+    "reference": "baseline",
+    "candidate": "local-priority-steal",
+    "both_winners": true,
+    "endpoints_match": true,
+    "eligible_winner_timing_pair": true,
+    "statuses": [
+      "winner",
+      "winner"
+    ]
+  },
+  {
+    "map": "Playground",
+    "seed": 1961520297,
+    "seed_index": 25,
+    "reference": "baseline",
+    "candidate": "weighted-fixed-no-steal",
+    "both_winners": true,
+    "endpoints_match": true,
+    "eligible_winner_timing_pair": true,
+    "statuses": [
+      "winner",
+      "winner"
+    ]
+  },
+  {
+    "map": "Playground",
+    "seed": 1961520297,
+    "seed_index": 25,
+    "reference": "baseline",
+    "candidate": "weighted-fixed-steal",
+    "both_winners": true,
+    "endpoints_match": true,
+    "eligible_winner_timing_pair": true,
+    "statuses": [
+      "winner",
+      "winner"
+    ]
+  },
+  {
+    "map": "Playground",
+    "seed": 1961520297,
+    "seed_index": 25,
+    "reference": "baseline",
+    "candidate": "weighted-two-choice",
+    "both_winners": true,
+    "endpoints_match": true,
+    "eligible_winner_timing_pair": true,
+    "statuses": [
+      "winner",
+      "winner"
+    ]
+  },
+  {
+    "map": "Playground",
+    "seed": 1961520297,
+    "seed_index": 25,
+    "reference": "baseline",
+    "candidate": "weighted-last",
+    "both_winners": true,
+    "endpoints_match": true,
+    "eligible_winner_timing_pair": true,
+    "statuses": [
+      "winner",
+      "winner"
+    ]
+  },
+  {
+    "map": "Playground",
+    "seed": 1961520297,
+    "seed_index": 25,
+    "reference": "baseline",
+    "candidate": "weighted-ewma",
+    "both_winners": true,
+    "endpoints_match": true,
+    "eligible_winner_timing_pair": true,
+    "statuses": [
+      "winner",
+      "winner"
+    ]
+  },
+  {
+    "map": "Playground",
+    "seed": 1961520297,
+    "seed_index": 25,
+    "reference": "baseline",
+    "candidate": "weighted-clock-only",
+    "both_winners": true,
+    "endpoints_match": true,
+    "eligible_winner_timing_pair": true,
+    "statuses": [
+      "winner",
+      "winner"
+    ]
+  },
+  {
+    "map": "Playground",
+    "seed": 1961520297,
+    "seed_index": 25,
+    "reference": "baseline",
+    "candidate": "weighted-observe-only",
+    "both_winners": true,
+    "endpoints_match": true,
+    "eligible_winner_timing_pair": true,
+    "statuses": [
+      "winner",
+      "winner"
+    ]
+  },
+  {
+    "map": "Playground",
+    "seed": 1961520297,
+    "seed_index": 25,
+    "reference": "baseline",
+    "candidate": "weighted-bare-steal",
+    "both_winners": true,
+    "endpoints_match": true,
+    "eligible_winner_timing_pair": true,
+    "statuses": [
+      "winner",
+      "winner"
+    ]
+  },
+  {
+    "map": "Playground",
+    "seed": 56523606,
+    "seed_index": 26,
+    "reference": "baseline",
+    "candidate": "wake-only",
+    "both_winners": true,
+    "endpoints_match": true,
+    "eligible_winner_timing_pair": true,
+    "statuses": [
+      "winner",
+      "winner"
+    ]
+  },
+  {
+    "map": "Playground",
+    "seed": 56523606,
+    "seed_index": 26,
+    "reference": "baseline",
+    "candidate": "first-steal",
+    "both_winners": true,
+    "endpoints_match": true,
+    "eligible_winner_timing_pair": true,
+    "statuses": [
+      "winner",
+      "winner"
+    ]
+  },
+  {
+    "map": "Playground",
+    "seed": 56523606,
+    "seed_index": 26,
+    "reference": "baseline",
+    "candidate": "local-completion-round-robin",
+    "both_winners": true,
+    "endpoints_match": true,
+    "eligible_winner_timing_pair": true,
+    "statuses": [
+      "winner",
+      "winner"
+    ]
+  },
+  {
+    "map": "Playground",
+    "seed": 56523606,
+    "seed_index": 26,
+    "reference": "baseline",
+    "candidate": "local-completion-steal",
+    "both_winners": true,
+    "endpoints_match": true,
+    "eligible_winner_timing_pair": true,
+    "statuses": [
+      "winner",
+      "winner"
+    ]
+  },
+  {
+    "map": "Playground",
+    "seed": 56523606,
+    "seed_index": 26,
+    "reference": "baseline",
+    "candidate": "local-priority-steal",
+    "both_winners": true,
+    "endpoints_match": true,
+    "eligible_winner_timing_pair": true,
+    "statuses": [
+      "winner",
+      "winner"
+    ]
+  },
+  {
+    "map": "Playground",
+    "seed": 56523606,
+    "seed_index": 26,
+    "reference": "baseline",
+    "candidate": "weighted-fixed-no-steal",
+    "both_winners": true,
+    "endpoints_match": true,
+    "eligible_winner_timing_pair": true,
+    "statuses": [
+      "winner",
+      "winner"
+    ]
+  },
+  {
+    "map": "Playground",
+    "seed": 56523606,
+    "seed_index": 26,
+    "reference": "baseline",
+    "candidate": "weighted-fixed-steal",
+    "both_winners": true,
+    "endpoints_match": true,
+    "eligible_winner_timing_pair": true,
+    "statuses": [
+      "winner",
+      "winner"
+    ]
+  },
+  {
+    "map": "Playground",
+    "seed": 56523606,
+    "seed_index": 26,
+    "reference": "baseline",
+    "candidate": "weighted-two-choice",
+    "both_winners": true,
+    "endpoints_match": true,
+    "eligible_winner_timing_pair": true,
+    "statuses": [
+      "winner",
+      "winner"
+    ]
+  },
+  {
+    "map": "Playground",
+    "seed": 56523606,
+    "seed_index": 26,
+    "reference": "baseline",
+    "candidate": "weighted-last",
+    "both_winners": true,
+    "endpoints_match": true,
+    "eligible_winner_timing_pair": true,
+    "statuses": [
+      "winner",
+      "winner"
+    ]
+  },
+  {
+    "map": "Playground",
+    "seed": 56523606,
+    "seed_index": 26,
+    "reference": "baseline",
+    "candidate": "weighted-ewma",
+    "both_winners": true,
+    "endpoints_match": true,
+    "eligible_winner_timing_pair": true,
+    "statuses": [
+      "winner",
+      "winner"
+    ]
+  },
+  {
+    "map": "Playground",
+    "seed": 56523606,
+    "seed_index": 26,
+    "reference": "baseline",
+    "candidate": "weighted-clock-only",
+    "both_winners": true,
+    "endpoints_match": true,
+    "eligible_winner_timing_pair": true,
+    "statuses": [
+      "winner",
+      "winner"
+    ]
+  },
+  {
+    "map": "Playground",
+    "seed": 56523606,
+    "seed_index": 26,
+    "reference": "baseline",
+    "candidate": "weighted-observe-only",
+    "both_winners": true,
+    "endpoints_match": true,
+    "eligible_winner_timing_pair": true,
+    "statuses": [
+      "winner",
+      "winner"
+    ]
+  },
+  {
+    "map": "Playground",
+    "seed": 56523606,
+    "seed_index": 26,
+    "reference": "baseline",
+    "candidate": "weighted-bare-steal",
+    "both_winners": true,
+    "endpoints_match": true,
+    "eligible_winner_timing_pair": true,
+    "statuses": [
+      "winner",
+      "winner"
+    ]
+  },
+  {
+    "map": "Playground",
+    "seed": 7804900,
+    "seed_index": 27,
+    "reference": "baseline",
+    "candidate": "wake-only",
+    "both_winners": true,
+    "endpoints_match": true,
+    "eligible_winner_timing_pair": true,
+    "statuses": [
+      "winner",
+      "winner"
+    ]
+  },
+  {
+    "map": "Playground",
+    "seed": 7804900,
+    "seed_index": 27,
+    "reference": "baseline",
+    "candidate": "first-steal",
+    "both_winners": true,
+    "endpoints_match": true,
+    "eligible_winner_timing_pair": true,
+    "statuses": [
+      "winner",
+      "winner"
+    ]
+  },
+  {
+    "map": "Playground",
+    "seed": 7804900,
+    "seed_index": 27,
+    "reference": "baseline",
+    "candidate": "local-completion-round-robin",
+    "both_winners": true,
+    "endpoints_match": true,
+    "eligible_winner_timing_pair": true,
+    "statuses": [
+      "winner",
+      "winner"
+    ]
+  },
+  {
+    "map": "Playground",
+    "seed": 7804900,
+    "seed_index": 27,
+    "reference": "baseline",
+    "candidate": "local-completion-steal",
+    "both_winners": true,
+    "endpoints_match": true,
+    "eligible_winner_timing_pair": true,
+    "statuses": [
+      "winner",
+      "winner"
+    ]
+  },
+  {
+    "map": "Playground",
+    "seed": 7804900,
+    "seed_index": 27,
+    "reference": "baseline",
+    "candidate": "local-priority-steal",
+    "both_winners": true,
+    "endpoints_match": true,
+    "eligible_winner_timing_pair": true,
+    "statuses": [
+      "winner",
+      "winner"
+    ]
+  },
+  {
+    "map": "Playground",
+    "seed": 7804900,
+    "seed_index": 27,
+    "reference": "baseline",
+    "candidate": "weighted-fixed-no-steal",
+    "both_winners": true,
+    "endpoints_match": true,
+    "eligible_winner_timing_pair": true,
+    "statuses": [
+      "winner",
+      "winner"
+    ]
+  },
+  {
+    "map": "Playground",
+    "seed": 7804900,
+    "seed_index": 27,
+    "reference": "baseline",
+    "candidate": "weighted-fixed-steal",
+    "both_winners": true,
+    "endpoints_match": true,
+    "eligible_winner_timing_pair": true,
+    "statuses": [
+      "winner",
+      "winner"
+    ]
+  },
+  {
+    "map": "Playground",
+    "seed": 7804900,
+    "seed_index": 27,
+    "reference": "baseline",
+    "candidate": "weighted-two-choice",
+    "both_winners": true,
+    "endpoints_match": true,
+    "eligible_winner_timing_pair": true,
+    "statuses": [
+      "winner",
+      "winner"
+    ]
+  },
+  {
+    "map": "Playground",
+    "seed": 7804900,
+    "seed_index": 27,
+    "reference": "baseline",
+    "candidate": "weighted-last",
+    "both_winners": true,
+    "endpoints_match": true,
+    "eligible_winner_timing_pair": true,
+    "statuses": [
+      "winner",
+      "winner"
+    ]
+  },
+  {
+    "map": "Playground",
+    "seed": 7804900,
+    "seed_index": 27,
+    "reference": "baseline",
+    "candidate": "weighted-ewma",
+    "both_winners": true,
+    "endpoints_match": true,
+    "eligible_winner_timing_pair": true,
+    "statuses": [
+      "winner",
+      "winner"
+    ]
+  },
+  {
+    "map": "Playground",
+    "seed": 7804900,
+    "seed_index": 27,
+    "reference": "baseline",
+    "candidate": "weighted-clock-only",
+    "both_winners": true,
+    "endpoints_match": true,
+    "eligible_winner_timing_pair": true,
+    "statuses": [
+      "winner",
+      "winner"
+    ]
+  },
+  {
+    "map": "Playground",
+    "seed": 7804900,
+    "seed_index": 27,
+    "reference": "baseline",
+    "candidate": "weighted-observe-only",
+    "both_winners": true,
+    "endpoints_match": true,
+    "eligible_winner_timing_pair": true,
+    "statuses": [
+      "winner",
+      "winner"
+    ]
+  },
+  {
+    "map": "Playground",
+    "seed": 7804900,
+    "seed_index": 27,
+    "reference": "baseline",
+    "candidate": "weighted-bare-steal",
+    "both_winners": true,
+    "endpoints_match": true,
+    "eligible_winner_timing_pair": true,
+    "statuses": [
+      "winner",
+      "winner"
+    ]
+  },
+  {
+    "map": "Playground",
+    "seed": 494353701,
+    "seed_index": 28,
+    "reference": "baseline",
+    "candidate": "wake-only",
+    "both_winners": true,
+    "endpoints_match": true,
+    "eligible_winner_timing_pair": true,
+    "statuses": [
+      "winner",
+      "winner"
+    ]
+  },
+  {
+    "map": "Playground",
+    "seed": 494353701,
+    "seed_index": 28,
+    "reference": "baseline",
+    "candidate": "first-steal",
+    "both_winners": true,
+    "endpoints_match": true,
+    "eligible_winner_timing_pair": true,
+    "statuses": [
+      "winner",
+      "winner"
+    ]
+  },
+  {
+    "map": "Playground",
+    "seed": 494353701,
+    "seed_index": 28,
+    "reference": "baseline",
+    "candidate": "local-completion-round-robin",
+    "both_winners": true,
+    "endpoints_match": true,
+    "eligible_winner_timing_pair": true,
+    "statuses": [
+      "winner",
+      "winner"
+    ]
+  },
+  {
+    "map": "Playground",
+    "seed": 494353701,
+    "seed_index": 28,
+    "reference": "baseline",
+    "candidate": "local-completion-steal",
+    "both_winners": true,
+    "endpoints_match": true,
+    "eligible_winner_timing_pair": true,
+    "statuses": [
+      "winner",
+      "winner"
+    ]
+  },
+  {
+    "map": "Playground",
+    "seed": 494353701,
+    "seed_index": 28,
+    "reference": "baseline",
+    "candidate": "local-priority-steal",
+    "both_winners": true,
+    "endpoints_match": true,
+    "eligible_winner_timing_pair": true,
+    "statuses": [
+      "winner",
+      "winner"
+    ]
+  },
+  {
+    "map": "Playground",
+    "seed": 494353701,
+    "seed_index": 28,
+    "reference": "baseline",
+    "candidate": "weighted-fixed-no-steal",
+    "both_winners": true,
+    "endpoints_match": true,
+    "eligible_winner_timing_pair": true,
+    "statuses": [
+      "winner",
+      "winner"
+    ]
+  },
+  {
+    "map": "Playground",
+    "seed": 494353701,
+    "seed_index": 28,
+    "reference": "baseline",
+    "candidate": "weighted-fixed-steal",
+    "both_winners": true,
+    "endpoints_match": true,
+    "eligible_winner_timing_pair": true,
+    "statuses": [
+      "winner",
+      "winner"
+    ]
+  },
+  {
+    "map": "Playground",
+    "seed": 494353701,
+    "seed_index": 28,
+    "reference": "baseline",
+    "candidate": "weighted-two-choice",
+    "both_winners": true,
+    "endpoints_match": true,
+    "eligible_winner_timing_pair": true,
+    "statuses": [
+      "winner",
+      "winner"
+    ]
+  },
+  {
+    "map": "Playground",
+    "seed": 494353701,
+    "seed_index": 28,
+    "reference": "baseline",
+    "candidate": "weighted-last",
+    "both_winners": true,
+    "endpoints_match": true,
+    "eligible_winner_timing_pair": true,
+    "statuses": [
+      "winner",
+      "winner"
+    ]
+  },
+  {
+    "map": "Playground",
+    "seed": 494353701,
+    "seed_index": 28,
+    "reference": "baseline",
+    "candidate": "weighted-ewma",
+    "both_winners": true,
+    "endpoints_match": true,
+    "eligible_winner_timing_pair": true,
+    "statuses": [
+      "winner",
+      "winner"
+    ]
+  },
+  {
+    "map": "Playground",
+    "seed": 494353701,
+    "seed_index": 28,
+    "reference": "baseline",
+    "candidate": "weighted-clock-only",
+    "both_winners": true,
+    "endpoints_match": true,
+    "eligible_winner_timing_pair": true,
+    "statuses": [
+      "winner",
+      "winner"
+    ]
+  },
+  {
+    "map": "Playground",
+    "seed": 494353701,
+    "seed_index": 28,
+    "reference": "baseline",
+    "candidate": "weighted-observe-only",
+    "both_winners": true,
+    "endpoints_match": true,
+    "eligible_winner_timing_pair": true,
+    "statuses": [
+      "winner",
+      "winner"
+    ]
+  },
+  {
+    "map": "Playground",
+    "seed": 494353701,
+    "seed_index": 28,
+    "reference": "baseline",
+    "candidate": "weighted-bare-steal",
+    "both_winners": true,
+    "endpoints_match": true,
+    "eligible_winner_timing_pair": true,
+    "statuses": [
+      "winner",
+      "winner"
+    ]
+  },
+  {
+    "map": "Playground",
+    "seed": 2092499754,
+    "seed_index": 29,
+    "reference": "baseline",
+    "candidate": "wake-only",
+    "both_winners": true,
+    "endpoints_match": true,
+    "eligible_winner_timing_pair": true,
+    "statuses": [
+      "winner",
+      "winner"
+    ]
+  },
+  {
+    "map": "Playground",
+    "seed": 2092499754,
+    "seed_index": 29,
+    "reference": "baseline",
+    "candidate": "first-steal",
+    "both_winners": true,
+    "endpoints_match": true,
+    "eligible_winner_timing_pair": true,
+    "statuses": [
+      "winner",
+      "winner"
+    ]
+  },
+  {
+    "map": "Playground",
+    "seed": 2092499754,
+    "seed_index": 29,
+    "reference": "baseline",
+    "candidate": "local-completion-round-robin",
+    "both_winners": true,
+    "endpoints_match": true,
+    "eligible_winner_timing_pair": true,
+    "statuses": [
+      "winner",
+      "winner"
+    ]
+  },
+  {
+    "map": "Playground",
+    "seed": 2092499754,
+    "seed_index": 29,
+    "reference": "baseline",
+    "candidate": "local-completion-steal",
+    "both_winners": true,
+    "endpoints_match": true,
+    "eligible_winner_timing_pair": true,
+    "statuses": [
+      "winner",
+      "winner"
+    ]
+  },
+  {
+    "map": "Playground",
+    "seed": 2092499754,
+    "seed_index": 29,
+    "reference": "baseline",
+    "candidate": "local-priority-steal",
+    "both_winners": true,
+    "endpoints_match": true,
+    "eligible_winner_timing_pair": true,
+    "statuses": [
+      "winner",
+      "winner"
+    ]
+  },
+  {
+    "map": "Playground",
+    "seed": 2092499754,
+    "seed_index": 29,
+    "reference": "baseline",
+    "candidate": "weighted-fixed-no-steal",
+    "both_winners": true,
+    "endpoints_match": true,
+    "eligible_winner_timing_pair": true,
+    "statuses": [
+      "winner",
+      "winner"
+    ]
+  },
+  {
+    "map": "Playground",
+    "seed": 2092499754,
+    "seed_index": 29,
+    "reference": "baseline",
+    "candidate": "weighted-fixed-steal",
+    "both_winners": true,
+    "endpoints_match": true,
+    "eligible_winner_timing_pair": true,
+    "statuses": [
+      "winner",
+      "winner"
+    ]
+  },
+  {
+    "map": "Playground",
+    "seed": 2092499754,
+    "seed_index": 29,
+    "reference": "baseline",
+    "candidate": "weighted-two-choice",
+    "both_winners": true,
+    "endpoints_match": true,
+    "eligible_winner_timing_pair": true,
+    "statuses": [
+      "winner",
+      "winner"
+    ]
+  },
+  {
+    "map": "Playground",
+    "seed": 2092499754,
+    "seed_index": 29,
+    "reference": "baseline",
+    "candidate": "weighted-last",
+    "both_winners": true,
+    "endpoints_match": true,
+    "eligible_winner_timing_pair": true,
+    "statuses": [
+      "winner",
+      "winner"
+    ]
+  },
+  {
+    "map": "Playground",
+    "seed": 2092499754,
+    "seed_index": 29,
+    "reference": "baseline",
+    "candidate": "weighted-ewma",
+    "both_winners": true,
+    "endpoints_match": true,
+    "eligible_winner_timing_pair": true,
+    "statuses": [
+      "winner",
+      "winner"
+    ]
+  },
+  {
+    "map": "Playground",
+    "seed": 2092499754,
+    "seed_index": 29,
+    "reference": "baseline",
+    "candidate": "weighted-clock-only",
+    "both_winners": true,
+    "endpoints_match": true,
+    "eligible_winner_timing_pair": true,
+    "statuses": [
+      "winner",
+      "winner"
+    ]
+  },
+  {
+    "map": "Playground",
+    "seed": 2092499754,
+    "seed_index": 29,
+    "reference": "baseline",
+    "candidate": "weighted-observe-only",
+    "both_winners": true,
+    "endpoints_match": true,
+    "eligible_winner_timing_pair": true,
+    "statuses": [
+      "winner",
+      "winner"
+    ]
+  },
+  {
+    "map": "Playground",
+    "seed": 2092499754,
+    "seed_index": 29,
+    "reference": "baseline",
+    "candidate": "weighted-bare-steal",
+    "both_winners": true,
+    "endpoints_match": true,
+    "eligible_winner_timing_pair": true,
+    "statuses": [
+      "winner",
+      "winner"
+    ]
+  },
+  {
+    "map": "Playground",
+    "seed": 1910481143,
+    "seed_index": 30,
+    "reference": "baseline",
+    "candidate": "wake-only",
+    "both_winners": true,
+    "endpoints_match": true,
+    "eligible_winner_timing_pair": true,
+    "statuses": [
+      "winner",
+      "winner"
+    ]
+  },
+  {
+    "map": "Playground",
+    "seed": 1910481143,
+    "seed_index": 30,
+    "reference": "baseline",
+    "candidate": "first-steal",
+    "both_winners": true,
+    "endpoints_match": true,
+    "eligible_winner_timing_pair": true,
+    "statuses": [
+      "winner",
+      "winner"
+    ]
+  },
+  {
+    "map": "Playground",
+    "seed": 1910481143,
+    "seed_index": 30,
+    "reference": "baseline",
+    "candidate": "local-completion-round-robin",
+    "both_winners": true,
+    "endpoints_match": true,
+    "eligible_winner_timing_pair": true,
+    "statuses": [
+      "winner",
+      "winner"
+    ]
+  },
+  {
+    "map": "Playground",
+    "seed": 1910481143,
+    "seed_index": 30,
+    "reference": "baseline",
+    "candidate": "local-completion-steal",
+    "both_winners": true,
+    "endpoints_match": true,
+    "eligible_winner_timing_pair": true,
+    "statuses": [
+      "winner",
+      "winner"
+    ]
+  },
+  {
+    "map": "Playground",
+    "seed": 1910481143,
+    "seed_index": 30,
+    "reference": "baseline",
+    "candidate": "local-priority-steal",
+    "both_winners": true,
+    "endpoints_match": true,
+    "eligible_winner_timing_pair": true,
+    "statuses": [
+      "winner",
+      "winner"
+    ]
+  },
+  {
+    "map": "Playground",
+    "seed": 1910481143,
+    "seed_index": 30,
+    "reference": "baseline",
+    "candidate": "weighted-fixed-no-steal",
+    "both_winners": true,
+    "endpoints_match": true,
+    "eligible_winner_timing_pair": true,
+    "statuses": [
+      "winner",
+      "winner"
+    ]
+  },
+  {
+    "map": "Playground",
+    "seed": 1910481143,
+    "seed_index": 30,
+    "reference": "baseline",
+    "candidate": "weighted-fixed-steal",
+    "both_winners": true,
+    "endpoints_match": true,
+    "eligible_winner_timing_pair": true,
+    "statuses": [
+      "winner",
+      "winner"
+    ]
+  },
+  {
+    "map": "Playground",
+    "seed": 1910481143,
+    "seed_index": 30,
+    "reference": "baseline",
+    "candidate": "weighted-two-choice",
+    "both_winners": true,
+    "endpoints_match": true,
+    "eligible_winner_timing_pair": true,
+    "statuses": [
+      "winner",
+      "winner"
+    ]
+  },
+  {
+    "map": "Playground",
+    "seed": 1910481143,
+    "seed_index": 30,
+    "reference": "baseline",
+    "candidate": "weighted-last",
+    "both_winners": true,
+    "endpoints_match": true,
+    "eligible_winner_timing_pair": true,
+    "statuses": [
+      "winner",
+      "winner"
+    ]
+  },
+  {
+    "map": "Playground",
+    "seed": 1910481143,
+    "seed_index": 30,
+    "reference": "baseline",
+    "candidate": "weighted-ewma",
+    "both_winners": true,
+    "endpoints_match": true,
+    "eligible_winner_timing_pair": true,
+    "statuses": [
+      "winner",
+      "winner"
+    ]
+  },
+  {
+    "map": "Playground",
+    "seed": 1910481143,
+    "seed_index": 30,
+    "reference": "baseline",
+    "candidate": "weighted-clock-only",
+    "both_winners": true,
+    "endpoints_match": true,
+    "eligible_winner_timing_pair": true,
+    "statuses": [
+      "winner",
+      "winner"
+    ]
+  },
+  {
+    "map": "Playground",
+    "seed": 1910481143,
+    "seed_index": 30,
+    "reference": "baseline",
+    "candidate": "weighted-observe-only",
+    "both_winners": true,
+    "endpoints_match": true,
+    "eligible_winner_timing_pair": true,
+    "statuses": [
+      "winner",
+      "winner"
+    ]
+  },
+  {
+    "map": "Playground",
+    "seed": 1910481143,
+    "seed_index": 30,
+    "reference": "baseline",
+    "candidate": "weighted-bare-steal",
+    "both_winners": true,
+    "endpoints_match": true,
+    "eligible_winner_timing_pair": true,
+    "statuses": [
+      "winner",
+      "winner"
+    ]
+  },
+  {
+    "map": "Playground",
+    "seed": 2122112527,
+    "seed_index": 31,
+    "reference": "baseline",
+    "candidate": "wake-only",
+    "both_winners": true,
+    "endpoints_match": true,
+    "eligible_winner_timing_pair": true,
+    "statuses": [
+      "winner",
+      "winner"
+    ]
+  },
+  {
+    "map": "Playground",
+    "seed": 2122112527,
+    "seed_index": 31,
+    "reference": "baseline",
+    "candidate": "first-steal",
+    "both_winners": true,
+    "endpoints_match": true,
+    "eligible_winner_timing_pair": true,
+    "statuses": [
+      "winner",
+      "winner"
+    ]
+  },
+  {
+    "map": "Playground",
+    "seed": 2122112527,
+    "seed_index": 31,
+    "reference": "baseline",
+    "candidate": "local-completion-round-robin",
+    "both_winners": true,
+    "endpoints_match": true,
+    "eligible_winner_timing_pair": true,
+    "statuses": [
+      "winner",
+      "winner"
+    ]
+  },
+  {
+    "map": "Playground",
+    "seed": 2122112527,
+    "seed_index": 31,
+    "reference": "baseline",
+    "candidate": "local-completion-steal",
+    "both_winners": true,
+    "endpoints_match": true,
+    "eligible_winner_timing_pair": true,
+    "statuses": [
+      "winner",
+      "winner"
+    ]
+  },
+  {
+    "map": "Playground",
+    "seed": 2122112527,
+    "seed_index": 31,
+    "reference": "baseline",
+    "candidate": "local-priority-steal",
+    "both_winners": true,
+    "endpoints_match": true,
+    "eligible_winner_timing_pair": true,
+    "statuses": [
+      "winner",
+      "winner"
+    ]
+  },
+  {
+    "map": "Playground",
+    "seed": 2122112527,
+    "seed_index": 31,
+    "reference": "baseline",
+    "candidate": "weighted-fixed-no-steal",
+    "both_winners": true,
+    "endpoints_match": true,
+    "eligible_winner_timing_pair": true,
+    "statuses": [
+      "winner",
+      "winner"
+    ]
+  },
+  {
+    "map": "Playground",
+    "seed": 2122112527,
+    "seed_index": 31,
+    "reference": "baseline",
+    "candidate": "weighted-fixed-steal",
+    "both_winners": true,
+    "endpoints_match": true,
+    "eligible_winner_timing_pair": true,
+    "statuses": [
+      "winner",
+      "winner"
+    ]
+  },
+  {
+    "map": "Playground",
+    "seed": 2122112527,
+    "seed_index": 31,
+    "reference": "baseline",
+    "candidate": "weighted-two-choice",
+    "both_winners": true,
+    "endpoints_match": true,
+    "eligible_winner_timing_pair": true,
+    "statuses": [
+      "winner",
+      "winner"
+    ]
+  },
+  {
+    "map": "Playground",
+    "seed": 2122112527,
+    "seed_index": 31,
+    "reference": "baseline",
+    "candidate": "weighted-last",
+    "both_winners": true,
+    "endpoints_match": true,
+    "eligible_winner_timing_pair": true,
+    "statuses": [
+      "winner",
+      "winner"
+    ]
+  },
+  {
+    "map": "Playground",
+    "seed": 2122112527,
+    "seed_index": 31,
+    "reference": "baseline",
+    "candidate": "weighted-ewma",
+    "both_winners": true,
+    "endpoints_match": true,
+    "eligible_winner_timing_pair": true,
+    "statuses": [
+      "winner",
+      "winner"
+    ]
+  },
+  {
+    "map": "Playground",
+    "seed": 2122112527,
+    "seed_index": 31,
+    "reference": "baseline",
+    "candidate": "weighted-clock-only",
+    "both_winners": true,
+    "endpoints_match": true,
+    "eligible_winner_timing_pair": true,
+    "statuses": [
+      "winner",
+      "winner"
+    ]
+  },
+  {
+    "map": "Playground",
+    "seed": 2122112527,
+    "seed_index": 31,
+    "reference": "baseline",
+    "candidate": "weighted-observe-only",
+    "both_winners": true,
+    "endpoints_match": true,
+    "eligible_winner_timing_pair": true,
+    "statuses": [
+      "winner",
+      "winner"
+    ]
+  },
+  {
+    "map": "Playground",
+    "seed": 2122112527,
+    "seed_index": 31,
+    "reference": "baseline",
+    "candidate": "weighted-bare-steal",
+    "both_winners": true,
+    "endpoints_match": true,
+    "eligible_winner_timing_pair": true,
+    "statuses": [
+      "winner",
+      "winner"
+    ]
+  }
+]

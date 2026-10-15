@@ -1,0 +1,30 @@
+{
+  "state": "passed",
+  "command": [
+    "taskset",
+    "-c",
+    "10,11,26,27",
+    "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/weighted-source/build/linux/client/release/test/glob2-unit-tests",
+    "--no-breaks=true",
+    "--test-suite=ComputeExecutor",
+    "--test-case=weighted*",
+    "--success=true"
+  ],
+  "cwd": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/weighted-source",
+  "env": {
+    "SDL_VIDEODRIVER": "dummy",
+    "SDL_AUDIODRIVER": "dummy",
+    "GLOB2_ASSET_DIR": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/weighted-source",
+    "GLOB2_USER_DIR": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/focused-gap-checks/weighted-two-choice/weighted_verbose/profile",
+    "GLOB2_USER_DATA_DIR": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/focused-gap-checks/weighted-two-choice/weighted_verbose/profile",
+    "GLOB2_DEFERRED_DISPATCH": "steal",
+    "GLOB2_WEIGHTED_POLICY": "two-choice"
+  },
+  "unit_sha256_before": "8d8e4bc2f5b32f292b066ac4da2e7546376925789bc9fd03fb619c683680336c",
+  "unit_sha256_after": "8d8e4bc2f5b32f292b066ac4da2e7546376925789bc9fd03fb619c683680336c",
+  "build_expected_unit_sha256": "8d8e4bc2f5b32f292b066ac4da2e7546376925789bc9fd03fb619c683680336c",
+  "returncode": 0,
+  "elapsed_seconds": 0.04054827010259032,
+  "stdout_sha256": "f94a30c8bbf148cc1f359782d71d2c2d7d7c88f2730ff61fbb7e3b534057497a",
+  "mask": "10,11,26,27"
+}

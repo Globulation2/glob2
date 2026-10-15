@@ -1,0 +1,39 @@
+{
+  "state": "SOURCE_ONLY_REPAIR_UNIT_REBUILD_REQUIRED",
+  "base_revision": "054804590ee1dd109f09642fc05654c324f08344",
+  "changes": [
+    {
+      "label": "first-steal-source",
+      "before_harness_sha256": "ac39d39241d0cdd310e5d03503b53d707d89a32ca09a15c404d28ea7fb2138d4",
+      "after_harness_sha256": "0db3068a2c3efa0b9a794602fe5c2b914e185b8d7d466d5ff344f8fd6bee6a17",
+      "changes": "IncludeHiringHorizon incompiletimecapacitybound; exactSlots84 insteadold79. Headerunchanged."
+    },
+    {
+      "label": "local-source",
+      "before_harness_sha256": "4ee385c3f7ced338beb4af34aaaf50525d852d4aafabe40314ac84ae36b454b0",
+      "after_harness_sha256": "700d72f5d6accb439107e52de0eefa7a2d6cc42067d54d94feff673b696c9c87",
+      "changes": "IncludeHiringHorizon incompiletimecapacitybound; exactSlots84 insteadold79. Headerunchanged."
+    },
+    {
+      "label": "priority-source",
+      "before_harness_sha256": "4ee385c3f7ced338beb4af34aaaf50525d852d4aafabe40314ac84ae36b454b0",
+      "after_harness_sha256": "700d72f5d6accb439107e52de0eefa7a2d6cc42067d54d94feff673b696c9c87",
+      "changes": "IncludeHiringHorizon incompiletimecapacitybound; exactSlots84 insteadold79. Headerunchanged."
+    },
+    {
+      "label": "weighted-source",
+      "before_harness_sha256": "0cd9c75b3083ed0b2c41a0bd680df58a05aaf9c4a2497464c1f5f8efeda4adad",
+      "after_harness_sha256": "9c7d80e59522ac546110598c7fba3ecddeda4b21039eab445cf3e05feaf22add",
+      "changes": "IncludeHiringHorizon incompiletimecapacitybound; exactSlots84 insteadold79. Headerunchanged."
+    }
+  ],
+  "test_filter_correction": {
+    "binary": "unit",
+    "source": "test/tests.py:343; test/support/Glob2Test.h:19 tags appended",
+    "filters": [
+      "TurnHarness/two clients on clean links execute identical turns*",
+      "TurnHarness/a restarted client reloads, replays the full log and rejoins*"
+    ]
+  },
+  "preserved": "No header/productioncallback/policy edits. Priorbuild/qualificationoutputs untouched. Prep sourcehashes/patches refreshed. No builds/tests/native/signals."
+}

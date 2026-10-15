@@ -1,0 +1,167 @@
+{
+  "state": "passed",
+  "source_manifest": "artifacts/october-regression/coordination-redesign/full-design-comparison/focused-gap-checks/gap-checks-complete.json",
+  "source_sha256": "78ac02f411904794964f1d2de39c81d36209f85c3f58e06be257b03bfa91c6fa",
+  "roles": {
+    "local-priority-steal": {
+      "gradient": {
+        "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/focused-gap-checks/local-priority-steal/gradient/metadata.json",
+        "sha256": "eb51e5e2743e54ca13a33e63d6fdb9009a6ca334d49d28edc0995058014253ac",
+        "state_key": "state",
+        "expected_state": "passed"
+      }
+    },
+    "local-completion-steal": {
+      "gradient": {
+        "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/focused-gap-checks/local-completion-steal/gradient/metadata.json",
+        "sha256": "083a5c721ec6f36d3587af0e8940d84d13617b42d2e4f389552a7f7ffa8fbec7",
+        "state_key": "state",
+        "expected_state": "passed"
+      }
+    },
+    "first-steal": {
+      "gradient": {
+        "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/focused-gap-checks/first-steal/gradient/metadata.json",
+        "sha256": "4a692671cd6866ab5837e3229e4c86ad27dfb4a491ef222cd154d4c25783b305",
+        "state_key": "state",
+        "expected_state": "passed"
+      }
+    },
+    "weighted-fixed-no-steal": {
+      "gradient": {
+        "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/focused-gap-checks/weighted-fixed-no-steal/gradient/metadata.json",
+        "sha256": "3014991a725cb649ad092bbf770d707df4359c9bc3fe64f2b6d264cf4e17217d",
+        "state_key": "state",
+        "expected_state": "passed"
+      },
+      "weighted_verbose": {
+        "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/focused-gap-checks/weighted-fixed-no-steal/weighted_verbose/metadata.json",
+        "sha256": "669759edb210a08953af40ed2e170817772e192201a9ff3af144d641dc0ca7d4",
+        "state_key": "state",
+        "expected_state": "passed"
+      }
+    },
+    "weighted-fixed-steal": {
+      "gradient": {
+        "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/focused-gap-checks/weighted-fixed-steal/gradient/metadata.json",
+        "sha256": "af10b4e770990a606410670d98613db0b68f1a3fa86b92d63599661352be0922",
+        "state_key": "state",
+        "expected_state": "passed"
+      },
+      "weighted_verbose": {
+        "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/focused-gap-checks/weighted-fixed-steal/weighted_verbose/metadata.json",
+        "sha256": "cb381eadcb73aa61353d9b324a289d6792e441323ea027290ce3a787c245b48d",
+        "state_key": "state",
+        "expected_state": "passed"
+      }
+    },
+    "local-completion-round-robin": {
+      "gradient": {
+        "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/focused-gap-checks/local-completion-round-robin/gradient/metadata.json",
+        "sha256": "98112ac7c162ae6bdaf83d1ef582951c3e3f9d66b90ec2549e7a4431d5d1adb9",
+        "state_key": "state",
+        "expected_state": "passed"
+      }
+    },
+    "baseline": {
+      "gradient": {
+        "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/focused-gap-checks/baseline/gradient/metadata.json",
+        "sha256": "34c3d584cf5634ef87306f8ae40f463945cf5d3437c46aeb587b7ad8e5b81637",
+        "state_key": "state",
+        "expected_state": "passed"
+      }
+    },
+    "wake-only": {
+      "gradient": {
+        "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/focused-gap-checks/wake-only/gradient/metadata.json",
+        "sha256": "d5625fd87a25f463aa7dd9f1d1a510c2ee56a1ceeca68bcc1a5f6e74109adc9b",
+        "state_key": "state",
+        "expected_state": "passed"
+      }
+    },
+    "weighted-two-choice": {
+      "gradient": {
+        "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/focused-gap-checks/weighted-two-choice/gradient/metadata.json",
+        "sha256": "6c489a08d9e27c64ee4e60991d5e097c07bd5268cf4c61240b62e3670171657b",
+        "state_key": "state",
+        "expected_state": "passed"
+      },
+      "weighted_verbose": {
+        "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/focused-gap-checks/weighted-two-choice/weighted_verbose/metadata.json",
+        "sha256": "dd00169683ed67d3cc74b7d51055bd5be2c6451df862c5ecf0ac1207064ff0b6",
+        "state_key": "state",
+        "expected_state": "passed"
+      }
+    },
+    "weighted-last": {
+      "gradient": {
+        "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/focused-gap-checks/weighted-last/gradient/metadata.json",
+        "sha256": "390c9f64b80823003823ef9bc22180f46e8677b74a5ae25734f07f66f86d6771",
+        "state_key": "state",
+        "expected_state": "passed"
+      },
+      "weighted_verbose": {
+        "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/focused-gap-checks/weighted-last/weighted_verbose/metadata.json",
+        "sha256": "6befe4033d1511a979bbe67695efffe409eec12091ebbf500f4a13eba436743e",
+        "state_key": "state",
+        "expected_state": "passed"
+      }
+    },
+    "weighted-ewma": {
+      "gradient": {
+        "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/focused-gap-checks/weighted-ewma/gradient/metadata.json",
+        "sha256": "f4acd422717c9f2777f898a14acf1d03d999c5b6d1e05f024c3ddeff1efedefc",
+        "state_key": "state",
+        "expected_state": "passed"
+      },
+      "weighted_verbose": {
+        "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/focused-gap-checks/weighted-ewma/weighted_verbose/metadata.json",
+        "sha256": "c149de6b0fc22232322da53330f8c94df6c4cb41bd8b11e5ce173d90d4239761",
+        "state_key": "state",
+        "expected_state": "passed"
+      }
+    },
+    "weighted-bare-steal": {
+      "gradient": {
+        "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/focused-gap-checks/weighted-bare-steal/gradient/metadata.json",
+        "sha256": "6ac54b3dda3d1c21093bafe23bd210fdf936ef69b8f49d3e9bb3231fa4212750",
+        "state_key": "state",
+        "expected_state": "passed"
+      },
+      "weighted_verbose": {
+        "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/focused-gap-checks/weighted-bare-steal/weighted_verbose/metadata.json",
+        "sha256": "247b0397e40d70c22464821272fdda10af17009be1f2bd8611e65150d2e56b6a",
+        "state_key": "state",
+        "expected_state": "passed"
+      }
+    },
+    "weighted-clock-only": {
+      "gradient": {
+        "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/focused-gap-checks/weighted-clock-only/gradient/metadata.json",
+        "sha256": "32dc334e89db9369beaae10a6d949b885a5b84f6aebe17b8131bc961289c3886",
+        "state_key": "state",
+        "expected_state": "passed"
+      },
+      "weighted_verbose": {
+        "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/focused-gap-checks/weighted-clock-only/weighted_verbose/metadata.json",
+        "sha256": "a74cc5ae9b030073c12fa9efb068811f86292b39acd1d2194d968b1efc4a3b72",
+        "state_key": "state",
+        "expected_state": "passed"
+      }
+    },
+    "weighted-observe-only": {
+      "gradient": {
+        "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/focused-gap-checks/weighted-observe-only/gradient/metadata.json",
+        "sha256": "63f1b63ae077c03a5e7d833189f04f3535082f50073f3c49d27bdf17232953df",
+        "state_key": "state",
+        "expected_state": "passed"
+      },
+      "weighted_verbose": {
+        "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/focused-gap-checks/weighted-observe-only/weighted_verbose/metadata.json",
+        "sha256": "661ef749ea4e53f38f28db3722a519d3c47e761b7bbced017fe327b8d88f3990",
+        "state_key": "state",
+        "expected_state": "passed"
+      }
+    }
+  }
+}

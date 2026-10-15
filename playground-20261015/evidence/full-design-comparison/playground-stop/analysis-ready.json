@@ -1,0 +1,31 @@
+{
+  "state": "INDEPENDENT_STATIC_REVIEW_AND_LIGHT_SCHEMA_PREFLIGHT_PASSED_NOT_LAUNCHED",
+  "script_sha256": "4a60e2ea2eb3b2548a204b303ee7d0ba5a2051e9df1aec0e6a1a413d48b51d6c",
+  "command": [
+    "python3",
+    "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/playground-stop/analyze-playground.py",
+    "--wait",
+    "--gate",
+    "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/playground-stop/analysis-root-approved.json",
+    "--output",
+    "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/playground-stop/results"
+  ],
+  "scope": "Exactly448PGserialresults, not896serialcompleteor1792campaign. NoOazis/waves/56automation.",
+  "wait_gate": "Exactreviewedguardcomplete448+parent/runner/export/postcontrollerretirement+census; onlythenparse/hash/bootstrap/lateAgg.",
+  "statistics": "10000pairedseed ratioofmeans/floor95CI; all32primary, no seed exclusions/sensitivity. Conditionalmatchingwinners,caps retained separately; no PG/parent administrative pause/signals.",
+  "outputs": [
+    "raw-audit.json",
+    "every-game.csv",
+    "comparisons.csv",
+    "index.html",
+    "completion-time.svg/png",
+    "total-cpu.svg/png",
+    "receipt.json",
+    "dataset-manifest.json"
+  ],
+  "no_heavy_work": "Sourcewrites/ASTonly; no bootstrap/plots/engine/build/compress whiletiming.",
+  "gate_template_sha256": "99ad72d72e883e8415c47fe07ff8cd07aea4544555eb76aa2be67ddbcceaf2fe",
+  "preflight_result_sha256": "6a92acbd49e03b2bb8e9d526228e441cb79d8983d52a57be66802ceda889d0c0",
+  "independent_review_path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/playground-stop/analysis-independent-review.json",
+  "independent_review_sha256": "6cf55b9f3601b36e83defba61f46619587b1b065f0b82615d071255e87c8c39f"
+}

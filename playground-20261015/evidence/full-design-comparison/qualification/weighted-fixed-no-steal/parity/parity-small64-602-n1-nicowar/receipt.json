@@ -1,0 +1,33 @@
+{
+  "case": "parity-small64-602-n1-nicowar",
+  "role": "weighted-fixed-no-steal",
+  "initialChecksum": 1368633184,
+  "finalChecksum": 3581604919,
+  "checksums": {
+    "GCS1": "3b27d1c8250556392c3ba8375598a0ed130291704fc02bca4fcd1f3881c27eeb",
+    "native": "8c184b68a59cf0547ab99d5dd014a968d956a495fd82090340141a483840b108"
+  },
+  "sidecar_details": {
+    "GCS1": {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/qualification/weighted-fixed-no-steal/parity/parity-small64-602-n1-nicowar/native/game.replay.checksums",
+      "rows": 4096,
+      "first_tick": 0,
+      "last_tick": 4095,
+      "teams": 2,
+      "players": 2,
+      "bytes": 18674396
+    },
+    "native": {
+      "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/qualification/weighted-fixed-no-steal/parity/parity-small64-602-n1-nicowar/native/world.checksums",
+      "rows": 4096,
+      "first_tick": 0,
+      "last_tick": 4095,
+      "bytes": 63367
+    }
+  },
+  "command_receipt": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/qualification/weighted-fixed-no-steal/parity/parity-small64-602-n1-nicowar/command.json",
+  "result_sha256": "e4ac6cc11ae5618f0f2ab41d91c250b3f9dea091c50c66f717a62f92f8ebd926",
+  "binary_sha256": "257d526f5d56c7b63b614ce3a0f895345cb20569c6a6f573e09a9abee5e5336c",
+  "requested_opencl": false,
+  "correctness_only": true
+}

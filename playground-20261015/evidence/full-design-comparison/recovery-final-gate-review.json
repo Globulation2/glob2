@@ -1,0 +1,26 @@
+{
+  "approved": true,
+  "utc": "2026-10-15T12:35:43.420318+00:00",
+  "root_conditional_sha256": "cae4e17504cb572fc1860303d80d3c7a4132480d5bbb192acbfbaaf1ee141ac5",
+  "finalizer_sha256": "5d79ead9fe0dbabe1ccb1177d44525b2e07229c90ba1b304cb55a4b9414376c3",
+  "qualification_source_sha256": "d8d9760565941e5acb4c119dbf8e6072ef0813d5c3575514907b647691c68e2f",
+  "checks": [
+    "All21rootconditionalboundfiles hashesmatchcurrentbytes, includingnewbuildoutputs/preps/Harnessrepair/recoverysourceproof/baretimeoutsummary/staticcampaignreview.",
+    "Allfouractualnative binaries andfouractualengine binaries rehashedandmatchedbothnewbuildreceipt andoriginalrecovery-1 buildhashes. OnlyunitHarnessinput/outputchanged.",
+    "Currentfirstfourfocusedunitcommandsbaseline/W/firststeal/localRR returned0; zerocurrentrolefailure.json observed. No rolecompleteyet; engine/parityqualificationstillpending.",
+    "All14recoveryqualifiedandcleanretiredqualifier required byunchangedconditionalfinalizerbeforecampaignapproval; originalbaretimeoutnoterased.",
+    "Oldattemptreceipts retainedinrecovery-1; no freshgame timing reusedfromfailedattempt."
+  ],
+  "native_sha256": {
+    "first-steal-source": "dee303f16c67f787651f14a601d73d23657dbb7a3b638f91b46952372fa76103",
+    "local-source": "30361dab0356ac87d8644e9e5780c1cdbddb6627b15f6b5b2d452369ce0bbcff",
+    "priority-source": "1e50e84add3885c2c58d96a4fa702928a421144137bdb8b7ae66cdce5ffdbdd8",
+    "weighted-source": "257d526f5d56c7b63b614ce3a0f895345cb20569c6a6f573e09a9abee5e5336c"
+  },
+  "limits": [
+    "Readonlysnapshotduringactivecorrectnessqualification,notfull14rolepass claim.",
+    "Qualification-progress.json maynotexistuntilfirstrolefinishes; absenceisnotfailure.",
+    "No timinghasbeenlaunchedbyreviewer; finalizerremainsconditional."
+  ],
+  "activity": "Readonlyboundfile/source+8native/enginebinaryhashcheck; no boundreviews/source edits, builds/native/controllerlaunch/signals."
+}

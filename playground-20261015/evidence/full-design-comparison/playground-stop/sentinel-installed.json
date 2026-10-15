@@ -1,0 +1,12 @@
+{
+  "state": "oazis_output_path_sentinel_installed",
+  "path": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/campaign/serial/Oazis",
+  "sha256": "e5cf8ea285763f773a61b68f5d121ac2c5bf90785bb4514be39c3b2eb2b5dfb9",
+  "bytes": 394,
+  "regular_file": true,
+  "directory": false,
+  "signals_sent_to_games_or_timing_parents": false,
+  "no_measured_run_interrupted": true,
+  "utc": "2026-10-15T16:20:07.797511+00:00",
+  "source_order_evidence": "campaign/runner.py run(): target.mkdir(parents=True) before subprocess.Popen; expected administrative failure at first Oazis launch attempt after complete PG."
+}

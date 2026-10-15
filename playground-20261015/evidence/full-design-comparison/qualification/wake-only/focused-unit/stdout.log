@@ -1,0 +1,7 @@
+PASS glob2-unit-tests HiringRanking (2 cases) (0.0s)
+PASS glob2-unit-tests ComputeExecutor (49 cases) (1.0s)
+PASS glob2-unit-tests TurnHarness (2 cases) (0.1s)
+PASS glob2-unit-tests ReplayStepCounter (7 cases) (0.0s)
+
+4 passed, 0 failed, 0 skipped (1.2s of test time)
+[run_tests] JUnit report: /home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/qualification/wake-only/focused-unit/junit.xml (60 cases)
