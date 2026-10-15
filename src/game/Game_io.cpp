@@ -31,6 +31,7 @@
 #include "FileFormatVersions.h"
 #include "Version.h"
 #include "Game.h"
+#include "ChecksumSchedule.h"
 #include "TurretTargeting.h"
 #include "EntityRandomIO.h"
 #include <DeferredStream.h>
@@ -919,11 +920,13 @@ Uint32 Game::checkSum(std::vector<Uint32> *checkSumsVector, std::vector<Uint32> 
 	{
 		if (players[i]->type==BasePlayer::P_IP)
 		{
-			heavy=true;
+            // Full verification remains exhaustive. Remote clients add the
+            // map-cell sweep periodically, rather than on every normal tick.
+            heavy = heavy || legacy152 || SimulationChecksum::secondaryDue(stepCounter);
 			break;
 		}
 	}
-	Uint32 mapCs=map.checkSum(heavy, includePending);
+	Uint32 mapCs=map.checkSum(heavy, includePending, legacy152);
 	cs^=mapCs;
 	if (checkSumsVector)
 		checkSumsVector->push_back(mapCs);// [3+t*20+p*2]

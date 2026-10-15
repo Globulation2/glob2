@@ -200,7 +200,7 @@ class LocatedOutput : public GAGCore::BinaryOutputStream
 public:
   size_t statsPosition = 0, smoothingPosition = 0, coveragePosition = 0,
 		 measurementCountPosition = 0;
-  void writeUint32(Uint32 value, const std::string name) override
+  void writeUint32(Uint32 value, std::string_view name) override
   {
 	  if (name == "coverageStartTick")
 		  coveragePosition = getPosition();
@@ -209,7 +209,7 @@ public:
 	  BinaryOutputStream::writeUint32(value, name);
   }
   explicit LocatedOutput(GAGCore::StreamBackend *backend) : BinaryOutputStream(backend) {}
-  void writeSint32(Sint32 value, const std::string name) override
+  void writeSint32(Sint32 value, std::string_view name) override
   {
 	  if (name == "statsIndex")
 		  statsPosition = getPosition();
@@ -844,9 +844,9 @@ static void measurementReplayBoundaries()
 	// Format 124 introduced experiments; format 125 adds JavaScript identities.
 	// Format 128 changes save encoding, retaining the format-127 replay floor.
 	// Format 130 adds the farm-areas tile mask, still retaining that floor.
-	// Format 165 makes append-order populations authoritative. The replay floor advances; network
+	// Format 166 makes append-order populations authoritative. The replay floor advances; network
 	// protocol and saved-game floor remain.
-	require(REPLAY_MINIMUM_VERSION_MINOR == 165 && NET_PROTOCOL_VERSION == 71,
+	require(REPLAY_MINIMUM_VERSION_MINOR == 166 && NET_PROTOCOL_VERSION == 71,
 			"integrated simulation uses current replay and network gates");
 	for (int version : {98, 99, 100, 101, 102, 103, 104, 105, 106, 107, 115, 119, 120, 121, 122, 123, 124, 133, 134, 135, FILE_FORMAT_VERSION_RUNTIME_TERRAIN, FILE_FORMAT_VERSION_TERRAIN_SEED, 139, FILE_FORMAT_VERSION_RUNTIME_RESOURCES, FILE_FORMAT_VERSION_TERRAIN_CATALOGUE, FILE_FORMAT_VERSION_AI_PIPELINE, FILE_FORMAT_VERSION_BUILDING_ARTWORK, FILE_FORMAT_VERSION_VERTEX_TERRAIN, FILE_FORMAT_VERSION_GREEDY_FETCHING, FILE_FORMAT_VERSION_PRIVATE_RANDOM-1, FILE_FORMAT_VERSION_PRIVATE_RANDOM, FILE_FORMAT_VERSION_ENTITY_RANDOM, 155, 156, REPLAY_MINIMUM_VERSION_MINOR-1, VERSION_MINOR, VERSION_MINOR+1})
 	{
@@ -1799,7 +1799,7 @@ TEST_CASE("Compact identity tables preserve unused slots and reject invalid entr
         using BinaryOutputStream::BinaryOutputStream;
         std::vector<size_t> indices,values;
         bool identities=false;
-        void writeUint32(const Uint32 v,const std::string name) override
+        void writeUint32(const Uint32 v,std::string_view name) override
         {
             if(name=="nonzero") identities=true;
             if(identities && name=="index") indices.push_back(getPosition());

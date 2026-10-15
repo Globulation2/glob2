@@ -16,18 +16,18 @@ class ScalarStream : public GAGCore::OutputStream
  GAGCore::OutputStream& target;
 public:
  explicit ScalarStream(GAGCore::OutputStream& target):target(target) {}
- void write(const void* data,size_t size,const std::string name) override {target.write(data,size,name);}
- void writeSint8(const Sint8 value,const std::string name) override {target.writeSint8(value,name);}
- void writeUint8(const Uint8 value,const std::string name) override {target.writeUint8(value,name);}
- void writeSint16(const Sint16 value,const std::string name) override {target.writeSint16(value,name);}
- void writeUint16(const Uint16 value,const std::string name) override {target.writeUint16(value,name);}
- void writeSint32(const Sint32 value,const std::string name) override {target.writeSint32(value,name);}
- void writeUint32(const Uint32 value,const std::string name) override {target.writeUint32(value,name);}
- void writeFloat(const float value,const std::string name) override {target.writeFloat(value,name);}
- void writeDouble(const double value,const std::string name) override {target.writeDouble(value,name);}
- void writeText(const std::string& value,const std::string name) override {target.writeText(value,name);}
+ void write(const void* data,size_t size,std::string_view name) override {target.write(data,size,name);}
+ void writeSint8(const Sint8 value,std::string_view name) override {target.writeSint8(value,name);}
+ void writeUint8(const Uint8 value,std::string_view name) override {target.writeUint8(value,name);}
+ void writeSint16(const Sint16 value,std::string_view name) override {target.writeSint16(value,name);}
+ void writeUint16(const Uint16 value,std::string_view name) override {target.writeUint16(value,name);}
+ void writeSint32(const Sint32 value,std::string_view name) override {target.writeSint32(value,name);}
+ void writeUint32(const Uint32 value,std::string_view name) override {target.writeUint32(value,name);}
+ void writeFloat(const float value,std::string_view name) override {target.writeFloat(value,name);}
+ void writeDouble(const double value,std::string_view name) override {target.writeDouble(value,name);}
+ void writeText(const std::string& value,std::string_view name) override {target.writeText(value,name);}
  void flush() override {target.flush();}
- void writeEnterSection(const std::string name) override {target.writeEnterSection(name);}
+ void writeEnterSection(std::string_view name) override {target.writeEnterSection(name);}
  void writeEnterSection(unsigned id) override {target.writeEnterSection(id);}
  void writeLeaveSection(size_t count=1) override {target.writeLeaveSection(count);}
  bool canSeek() override {return target.canSeek();}

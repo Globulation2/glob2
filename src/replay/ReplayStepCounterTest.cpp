@@ -161,11 +161,11 @@ void testVersionBounds()
 {
 	{
 		ReplayReader previous;
-		check(!previous.loadReplay(writeReplayBody(164,1),false),
-		      "population boundary: format164 slot-order replay rejected");
+		check(!previous.loadReplay(writeReplayBody(165,1),false),
+		      "population boundary: format165 slot-order replay rejected");
 		ReplayReader current;
-		check(current.loadReplay(writeReplayBody(165,1),false),
-		      "population boundary: format165 append-order replay accepted");
+		check(current.loadReplay(writeReplayBody(166,1),false),
+		      "population boundary: format166 append-order replay accepted");
 	}
 	for (Uint16 version : {137, 138, 139, 140, 141}) {
 		ReplayReader reader;

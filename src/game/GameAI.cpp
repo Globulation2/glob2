@@ -1,5 +1,6 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "Game.h"
+#include "ChecksumSchedule.h"
 #include "TurretTargeting.h"
 #include "TeamStatsPipeline.h"
 #include "HiringPipeline.h"
@@ -113,6 +114,9 @@ void Game::loadTeamStats(GAGCore::InputStream* s, int versionMinor){auto p=std::
 Uint32 Game::teamStatsChecksum(bool heavy) const {
  const auto queue=statsPipeline ? statsPipeline->checkSum(heavy) : 0;
  Uint32 cs=(queue^gameHeader.getTeamStatsDelay())*16777619u;
+ // Secondary AI statistics are sampled at a deterministic 32-tick boundary.
+ // Queue timing remains covered every tick; full verification is exhaustive.
+ if (!heavy && !SimulationChecksum::secondaryDue(stepCounter)) return cs;
  for(int t=0;t<teamsCount();++t) {
   const auto& stats=teams[t]->stats;
   const auto value=heavy ? stats.checkSum() : teamStatsCoreChecksum(stats,stats.smoothedStats,stats.statsIndex,stats.smoothedIndex);

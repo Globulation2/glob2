@@ -660,7 +660,7 @@ TEST_SUITE("UnitCustomization")
                 int invalid;unsigned ability=0;
                 InvalidCacheOutput(GAGCore::MemoryStreamBackend* bytes,int invalid):BinaryOutputStream(bytes),invalid(invalid) {}
                 void writeEnterSection(unsigned id) override {ability=id;BinaryOutputStream::writeEnterSection(id);}
-                void writeUint32(Uint32 value,const std::string name) override {
+                void writeUint32(Uint32 value,std::string_view name) override {
                     if(name=="performance") {
                         if(invalid==0 && ability==WALK)value=Uint32(-1);
                         if(invalid==1 && ability==HP)value=0;
@@ -3156,10 +3156,10 @@ TEST_SUITE("UnitCustomization")
             Uint32 replacement;
             ReplacingOutput(GAGCore::MemoryStreamBackend* backend, std::string field, Uint32 replacement)
                 : BinaryOutputStream(backend), field(std::move(field)), replacement(replacement) {}
-            void writeSint32(Sint32 value, const std::string name) override {
+            void writeSint32(Sint32 value, std::string_view name) override {
                 BinaryOutputStream::writeSint32(name==field ? Sint32(replacement) : value,name);
             }
-            void writeUint32(Uint32 value, const std::string name) override {
+            void writeUint32(Uint32 value, std::string_view name) override {
                 BinaryOutputStream::writeUint32(name==field ? replacement : value,name);
             }
         };
@@ -3236,7 +3236,7 @@ TEST_SUITE("UnitCustomization")
                 Sint32 replacement;unsigned ability=0;
                 WideCacheOutput(GAGCore::MemoryStreamBackend* bytes,Sint32 replacement):BinaryOutputStream(bytes),replacement(replacement) {}
                 void writeEnterSection(unsigned id) override {ability=id;BinaryOutputStream::writeEnterSection(id);}
-                void writeUint32(Uint32 value,const std::string name) override {
+                void writeUint32(Uint32 value,std::string_view name) override {
                     BinaryOutputStream::writeUint32(name=="performance" && ability==ARMOR ? Uint32(replacement) : value,name);
                 }
             };

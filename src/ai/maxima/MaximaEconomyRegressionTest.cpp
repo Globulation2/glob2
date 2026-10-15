@@ -880,13 +880,13 @@ TEST_CASE("counted opponent records preserve slot fifteen and load the legacy tw
         size_t countOffset = 0;
         std::vector<size_t> mealOffsets;
         std::vector<size_t> additionalMealOffsets;
-        void writeSint32(Sint32 value, const std::string name) override
+        void writeSint32(Sint32 value, std::string_view name) override
         {
             if(name=="feeding_workers" || name=="feeding_explorers" || name=="feeding_warriors")
                 mealOffsets.push_back(getPosition());
             BinaryOutputStream::writeSint32(value,name);
         }
-        void writeUint32(Uint32 value, const std::string name) override
+        void writeUint32(Uint32 value, std::string_view name) override
         {
             if (name == "count") countOffset = getPosition();
             if (name == "additionalMealDemand") additionalMealOffsets.push_back(getPosition());

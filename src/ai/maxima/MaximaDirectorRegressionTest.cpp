@@ -150,7 +150,7 @@ static void quarantineBudgetContinuation()
     REQUIRE(current.size()>4);
     for (bool legacy : {false,true}) {
         auto bytes=current;
-        // Format 164 has the identical preceding execution payload, but no
+        // Format 165 has the identical preceding execution payload, but no
         // appended quarantine word. The sentinel catches accidental overreads.
         if (legacy) bytes.resize(bytes.size()-4);
         bytes.append("\x12\x34\x56\x78",4);

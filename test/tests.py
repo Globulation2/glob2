@@ -332,6 +332,7 @@ UNIT_TESTS = [
     '#src/map/preview/MapRenderGeometryTest.cpp',
     '#src/common/MersenneTwisterTest.cpp',
     '#src/common/EntityRandomTest.cpp',
+    '#src/common/WordChecksumTest.cpp',
     '#src/render/torus/TorusGeometryTest.cpp',
     '#src/render/torus/TorusPickingTest.cpp',
     '#src/render/torus/TorusTextureTilesTest.cpp',

@@ -28,6 +28,7 @@
 #include "StatsChecksum.h"
 #include "TeamStatsChecksum.h"
 #include <ChecksumStream.h>
+#include <WordChecksum.h>
 #include "Unit.h"
 #include "Bullet.h"
 #include "Map.h"
@@ -36,15 +37,16 @@
 
 namespace
 {
-void statValue(GAGCore::ChecksumStream* stream, const char*, const int& value) { stream->addUint32(Uint32(value)); }
-void statValue(GAGCore::ChecksumStream* stream, const char*, const Uint32& value) { stream->addUint32(value); }
-void statValue(GAGCore::ChecksumStream* stream, const char*, const Uint64& value) {
+template<class T> concept StatisticsChecksum = std::is_same_v<T, GAGCore::ChecksumStream> || std::is_same_v<T, GAGCore::WordChecksum>;
+void statValue(StatisticsChecksum auto* stream, const char*, const int& value) { stream->addUint32(Uint32(value)); }
+void statValue(StatisticsChecksum auto* stream, const char*, const Uint32& value) { stream->addUint32(value); }
+void statValue(StatisticsChecksum auto* stream, const char*, const Uint64& value) {
 	stream->addUint32(Uint32(value)); stream->addUint32(Uint32(value>>32));
 }
-template<class Name> void enterStatSection(GAGCore::ChecksumStream*, Name) {}
-void leaveStatSection(GAGCore::ChecksumStream*) {}
+template<class Name> void enterStatSection(StatisticsChecksum auto*, Name) {}
+void leaveStatSection(StatisticsChecksum auto*) {}
 template<class T, std::size_t N>
-void statValue(GAGCore::ChecksumStream* stream, const char*, const std::array<T,N>& values) {
+void statValue(StatisticsChecksum auto* stream, const char*, const std::array<T,N>& values) {
 	for (const auto& value:values) statValue(stream,"",value);
 }
 // Second byte of each cold sampling qualification row: independent uniform
@@ -124,6 +126,14 @@ void statValue(GAGCore::OutputStream* stream,const char* name,const std::array<T
     }
     leaveStatSection(stream);
 }
+// The routine fingerprint has no stream names or section machinery.
+template<class Store>
+void unitStatValue(GAGCore::WordChecksum* stream, const char*, Store& values, int versionMinor)
+{
+    const unsigned count = versionMinor >= FILE_FORMAT_VERSION_UNIT_CATALOG ? values.size() : NB_UNIT_TYPE;
+    if (versionMinor >= FILE_FORMAT_VERSION_UNIT_CATALOG) stream->addUint32(count);
+    for (unsigned i=0; i<count; ++i) statValue(stream, "", values[i]);
+}
 template<class Stream,class Store>
 void unitStatValue(Stream* stream,const char* name,Store& values,int versionMinor)
 {
@@ -161,9 +171,9 @@ void statValue(GAGCore::OutputStream* stream,const char* name,const BuildingMeas
 {
 	stream->writeEnterSection(name); variantFields(stream,value); stream->writeLeaveSection();
 }
-void statValue(GAGCore::ChecksumStream* stream, const char*, const BuildingMeasurement& value) { variantFields(stream,value); }
+void statValue(StatisticsChecksum auto* stream, const char*, const BuildingMeasurement& value) { variantFields(stream,value); }
 template<class T>
-void statValue(GAGCore::ChecksumStream* stream, const char*, const std::vector<T>& values) {
+void statValue(StatisticsChecksum auto* stream, const char*, const std::vector<T>& values) {
 	stream->addUint32(Uint32(values.size()));
 	for (const auto& value:values) statValue(stream,"",value);
 }
@@ -2007,20 +2017,22 @@ TeamStatsSample TeamStats::loadSample(GAGCore::InputStream *stream, int versionM
 Uint32 teamStatsCoreChecksum(const TeamStats &stats, std::span<const TeamSmoothedStat> smoothing,
                             int statsIndex, int smoothedIndex)
 {
-	GAGCore::ChecksumStream stream;
-	stream.writeUint32(stats.sourceTick, "sourceTick");
-	stream.writeUint32(stats.publishedTick, "publishedTick");
-	stream.writeSint32(statsIndex, "statsIndex");
-	stream.writeSint32(smoothedIndex, "smoothedIndex");
+	GAGCore::WordChecksum stream;
+	stream.addUint32(Uint32(stats.sourceTick));
+	stream.addUint32(Uint32(stats.publishedTick));
+	stream.addUint32(Uint32(statsIndex));
+	stream.addUint32(Uint32(smoothedIndex));
 	liveStatFields(&stream, *stats.getLatestStat());
+	stream.addUint32(Uint32(smoothing.size()));
 	for (const auto &sample : smoothing) smoothedStatFields(&stream, sample);
-	stream.writeUint32(stats.coverageBuildingTick, "coverageTick");
-	stream.writeUint32(stats.coverageBuildingGeneration, "coverageGeneration");
+	stream.addUint32(Uint32(stats.coverageBuildingTick));
+	stream.addUint32(Uint32(stats.coverageBuildingGeneration));
+	stream.addUint32(Uint32(stats.coverageBuildings.size()));
 	for (const auto &b : stats.coverageBuildings) {
-		stream.writeSint32(b.x, "x"); stream.writeSint32(b.y, "y");
-		stream.writeSint32(b.width, "width"); stream.writeSint32(b.height, "height");
+		stream.addUint32(Uint32(b.x)); stream.addUint32(Uint32(b.y));
+		stream.addUint32(Uint32(b.width)); stream.addUint32(Uint32(b.height));
 	}
-	return stream.value;
+	return stream.value();
 }
 Uint32 TeamStats::checkSum() const
 {

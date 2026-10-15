@@ -78,7 +78,7 @@ TEST_CASE("binary and text saves restore nonslot order scheduler and continuatio
 		}
 	}
 }
-TEST_CASE("format164 slot encoding bootstraps ascending population order") {
+TEST_CASE("formats164 and165 slot encoding bootstrap ascending population order") {
 	glob2test::HeadlessGlobals globals;
 	glob2test::HeadlessGame world({.teams=2,.discovered=true,.clearImmobile=true,.loadDefaultRace=true,.header=true});
 	auto& game=world.game; auto* team=game.teams[0];
@@ -96,9 +96,9 @@ TEST_CASE("format164 slot encoding bootstraps ascending population order") {
 	REQUIRE_FALSE(std::is_sorted(expectedBuildings.begin(),expectedBuildings.end()));
 	std::sort(expectedUnits.begin(),expectedUnits.end());
 	std::sort(expectedBuildings.begin(),expectedBuildings.end());
-	// A real pre165 simulation always traversed slot order. The synthetic adapter
+	// A real pre166 simulation always traversed slot order. The synthetic adapter
 	// rewrites Team records but map runtime continuation still has implicit order,
-	// so canonicalize this deliberately nonslot fixture before emitting format164.
+	// so canonicalize this deliberately nonslot fixture before emitting the historical format.
 	std::vector<Unit*> units(team->liveUnits.begin(),team->liveUnits.end());
 	std::vector<Building*> buildings(team->liveBuildings.begin(),team->liveBuildings.end());
 	for (auto* unit : units) team->detachUnit(Unit::GIDtoID(unit->gid));
@@ -107,30 +107,34 @@ TEST_CASE("format164 slot encoding bootstraps ascending population order") {
 	std::sort(buildings.begin(),buildings.end(),[](const auto* a,const auto* b) { return a->gid<b->gid; });
 	for (auto* unit : units) team->attachUnit(Unit::GIDtoID(unit->gid),unit);
 	for (auto* building : buildings) team->attachBuilding(Building::GIDtoID(building->gid),building);
-	team->taskSwapNext=Unit::GIDtoID(units.back()->gid); // Format164 must not persist this new field.
-	struct Format164Output : glob2test::LegacyPopulationOutput {
-		Format164Output(GAGCore::MemoryStreamBackend* backend,Game& game)
-			: LegacyPopulationOutput(backend,&game,164) {}
-		void writeSint32(Sint32 value,const std::string name) override {
-			BinaryOutputStream::writeSint32(name=="versionMinor" ? 164 : value,name);
+	team->taskSwapNext=Unit::GIDtoID(units.back()->gid); // Historical formats must not persist this new field.
+	struct HistoricalOutput : glob2test::LegacyPopulationOutput {
+		int version;
+		HistoricalOutput(GAGCore::MemoryStreamBackend* backend,Game& game,int version)
+			: LegacyPopulationOutput(backend,&game,version),version(version) {}
+		void writeSint32(Sint32 value,std::string_view name) override {
+			BinaryOutputStream::writeSint32(name=="versionMinor" ? version : value,name);
 		}
 	};
-	auto* backend=new GAGCore::MemoryStreamBackend;
-	Format164Output output(backend,game);
-	game.save(&output,false,"format164 population bootstrap"); output.flush();
-	const auto bytes=backend->takeContents();
-	glob2test::HeadlessGame restored({.header=true});
-	REQUIRE(loadPopulation(restored.game,bytes,false));
-	CHECK(restored.game.mapHeader.getVersionMinor()==164);
-	auto* loaded=restored.game.teams[0];
-	CHECK(populationOrder(loaded->liveUnits)==expectedUnits);
-	CHECK(populationOrder(loaded->liveBuildings)==expectedBuildings);
-	CHECK(loaded->taskSwapNext==Unit::GIDtoID(expectedUnits.front()));
-	CHECK(loaded->liveUnits.matches(loaded->myUnits,Unit::MAX_COUNT));
-	CHECK(loaded->liveBuildings.matches(loaded->myBuildings,Building::MAX_COUNT));
-	CHECK(restored.game.teams[1]->liveUnits.empty());
-	CHECK(restored.game.teams[1]->liveBuildings.empty());
-	CHECK(restored.game.teams[1]->taskSwapNext==0xffff);
+	for (int version : {164,165}) {
+		CAPTURE(version);
+		auto* backend=new GAGCore::MemoryStreamBackend;
+		HistoricalOutput output(backend,game,version);
+		game.save(&output,false,"historical population bootstrap"); output.flush();
+		const auto bytes=backend->takeContents();
+		glob2test::HeadlessGame restored({.header=true});
+		REQUIRE(loadPopulation(restored.game,bytes,false));
+		CHECK(restored.game.mapHeader.getVersionMinor()==version);
+		auto* loaded=restored.game.teams[0];
+		CHECK(populationOrder(loaded->liveUnits)==expectedUnits);
+		CHECK(populationOrder(loaded->liveBuildings)==expectedBuildings);
+		CHECK(loaded->taskSwapNext==Unit::GIDtoID(expectedUnits.front()));
+		CHECK(loaded->liveUnits.matches(loaded->myUnits,Unit::MAX_COUNT));
+		CHECK(loaded->liveBuildings.matches(loaded->myBuildings,Building::MAX_COUNT));
+		CHECK(restored.game.teams[1]->liveUnits.empty());
+		CHECK(restored.game.teams[1]->liveBuildings.empty());
+		CHECK(restored.game.teams[1]->taskSwapNext==0xffff);
+	}
 }
 TEST_CASE("invalid population records fail without leaving broken membership") {
 	glob2test::HeadlessGlobals globals;

@@ -114,5 +114,12 @@ TEST_SUITE("EntityRandom")
         altered = restored.exportState(); altered.increment ^= 2;
         before.importState(altered);
         CHECK(before.checksum() != restored.checksum());
+        // Paired high bits canceled in the previous word-wise XOR/multiply
+        // fingerprint, even though these are two distinct valid RNG states.
+        altered = restored.exportState();
+        altered.value ^= 1ULL << 63;
+        altered.increment ^= 1ULL << 63;
+        before.importState(altered);
+        CHECK(before.checksum() != restored.checksum());
     }
 }

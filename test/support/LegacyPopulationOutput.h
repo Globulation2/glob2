@@ -10,6 +10,7 @@
 #include <algorithm>
 #include <stdexcept>
 #include <string>
+#include <string_view>
 #include <vector>
 
 namespace glob2test
@@ -30,7 +31,7 @@ class LegacyPopulationOutput : public GAGCore::BinaryOutputStream
     unsigned populationSection = 0;
 
     bool suppressed() const { return suppressedAt && !injecting; }
-    void population(const std::string& name)
+    void population(std::string_view name)
     {
         if (!team || populationSection >= 4)
             throw std::logic_error("Unexpected synthetic historical population section");
@@ -61,11 +62,11 @@ class LegacyPopulationOutput : public GAGCore::BinaryOutputStream
 public:
     LegacyPopulationOutput(GAGCore::MemoryStreamBackend* backend, Game* game, int version)
         : BinaryOutputStream(backend), game(game), legacy(version<FILE_FORMAT_VERSION_INTRUSIVE_POPULATION), formatVersion(version) {}
-    void writeEnterSection(const std::string name) override
+    void writeEnterSection(std::string_view name) override
     {
         if (injecting || !legacy) return;
         const bool teamChild = !sections.empty() && sections.back()=="Team";
-        sections.push_back(name);
+        sections.emplace_back(name);
         if (suppressed()) return;
         if (name=="HiringPipeline" && formatVersion<FILE_FORMAT_VERSION_CACHED_HIRING) {
             suppressedAt=sections.size();
@@ -95,11 +96,11 @@ public:
             sections.pop_back();
         }
     }
-    void write(const void* data, std::size_t size, const std::string name) override
+    void write(const void* data, std::size_t size, std::string_view name) override
     { if (!suppressed()) BinaryOutputStream::write(data,size,name); }
-    void writeEndianIndependent(const void* data, std::size_t size, const std::string name) override
+    void writeEndianIndependent(const void* data, std::size_t size, std::string_view name) override
     { if (!suppressed()) BinaryOutputStream::writeEndianIndependent(data,size,name); }
-    void writeUint32(Uint32 value, const std::string name) override
+    void writeUint32(Uint32 value, std::string_view name) override
     {
         if (suppressed()) return;
         BinaryOutputStream::writeUint32(value,name);
@@ -126,12 +127,12 @@ public:
             }
         }
     }
-    void writeUint16(Uint16 value, const std::string name) override
+    void writeUint16(Uint16 value, std::string_view name) override
     {
         if (legacy && !injecting && !sections.empty() && sections.back()=="Team" && name=="taskSwapNext") return;
         BinaryOutputStream::writeUint16(value,name);
     }
-    void writeUint16Sections(const Uint16* values, std::size_t count, const std::string name) override
+    void writeUint16Sections(const Uint16* values, std::size_t count, std::string_view name) override
     { if (!suppressed()) BinaryOutputStream::writeUint16Sections(values,count,name); }
 };
 }

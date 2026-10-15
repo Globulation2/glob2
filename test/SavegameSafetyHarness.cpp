@@ -701,7 +701,7 @@ static void checkRandomContinuation(bool text, bool ai)
 	public:
 		size_t runtimeStart=0, runtimeEnd=0, pipelineStart=0;
 		explicit CheckpointOutput(StreamBackend *backend) : BinaryOutputStream(backend) {}
-		void writeEnterSection(const std::string name) override
+		void writeEnterSection(std::string_view name) override
 		{
 			if (name=="mapRuntime") runtimeStart=getPosition();
 			if (name=="GameGUI") runtimeEnd=getPosition();
@@ -1278,7 +1278,7 @@ TEST_SUITE("SavegameSafety")
             {
                 using BinaryOutputStream::BinaryOutputStream;
                 size_t depth=0,cellDepth=0,start=0,end=0;
-                void writeEnterSection(const std::string name) override {
+                void writeEnterSection(std::string_view name) override {
                     ++depth;if(name=="cases") {start=getPosition();cellDepth=depth;}
                 }
                 void writeEnterSection(unsigned) override {++depth;}
