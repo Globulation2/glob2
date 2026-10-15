@@ -59,6 +59,8 @@ AIWorldView::AIWorldView(SimulationSnapshot::Handle captured) : lease(std::move(
 			|| buildingSlots / BuildingUtils::MAX_COUNT != unitSlots / UnitUtils::MAX_COUNT
 			|| buildings.size() > buildingSlots || units.size() > unitSlots)
 			throw std::logic_error("AI observation entity slot index size mismatch");
+		// Keep construction proportional to team count. verifyCapture audits each
+		// record's ownership and identity when deep verification is requested.
 		const auto validateRanges = [](const auto& ranges, const auto& records, std::size_t teamCount) {
 			if (ranges.size()!=teamCount) throw std::logic_error("AI observation entity range size mismatch");
 			std::size_t end=0;
@@ -66,8 +68,6 @@ AIWorldView::AIWorldView(SimulationSnapshot::Handle captured) : lease(std::move(
 				const auto range=ranges[team];
 				if (range.offset!=end || range.count>records.size()-end)
 					throw std::logic_error("AI observation entity team range mismatch");
-				for (std::size_t i=end;i<end+range.count;++i)
-					if (records[i].team!=int(team)) throw std::logic_error("AI observation entity ownership mismatch");
 				end+=range.count;
 			}
 			if (end!=records.size()) throw std::logic_error("AI observation uncovered entity records");

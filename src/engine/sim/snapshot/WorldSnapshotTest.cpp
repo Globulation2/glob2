@@ -1180,6 +1180,7 @@ TEST_SUITE("WorldSnapshot")
         check("building team range", [&](auto& entities) { entities.buildingRanges.clear(); });
         check("unit lookup", [&](auto& entities) { entities.unitSlotIndices[worker->gid]=SimulationSnapshot::Entities::NoRecord; });
         check("unit team", [&](auto& entities) { entities.units[0].team=1; });
+        check("building team", [&](auto& entities) { entities.buildings[0].team=1; });
         check("unit attack strength", [&](auto& entities) { ++entities.units[0].realAttackStrength; });
         check("working reference", [&](auto& entities) { entities.relationships[entities.buildings[0].working.offset]=Game::refOf(occupant); });
         check("inside reference", [&](auto& entities) { entities.relationships[entities.buildings[0].inside.offset]=Game::refOf(worker); });
