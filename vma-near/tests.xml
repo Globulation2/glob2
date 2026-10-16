@@ -1,0 +1,23 @@
+<?xml version='1.0' encoding='utf-8'?>
+<testsuites tests="21" failures="0" errors="0" skipped="0"><testsuite name="TeamStatsPipeline"><testcase classname="TeamStatsPipeline" name="complete frames preserve cumulative measurements and retained readers" time="0.270237" status="run" />
+  <testcase classname="TeamStatsPipeline" name="delayed statistics AI and presentation share one capture per boundary" time="0.143629" status="run" />
+  <testcase classname="TeamStatsPipeline" name="direct scalar checksums match canonical binary bytes" time="0" status="run" />
+  <testcase classname="TeamStatsPipeline" name="failed computation or submission remains a failure at later owner barriers" time="0.071977" status="run" />
+  <testcase classname="TeamStatsPipeline" name="format 155 pending digests are discarded without losing samples" time="0.07353" status="run" />
+  <testcase classname="TeamStatsPipeline" name="format 156 raw aggregate samples retain exact smoothing after loading and resaving" time="0.076907" status="run" />
+  <testcase classname="TeamStatsPipeline" name="format 157 pending measurement deltas migrate and resave without early publication" time="0.089519" status="run" />
+  <testcase classname="TeamStatsPipeline" name="full game save preserves statistics across smoothing and history boundaries" time="0.425907" status="run" />
+  <testcase classname="TeamStatsPipeline" name="inspection admits no work and paused or waiting frames reuse the initial observation" time="0.074778" status="run" />
+  <testcase classname="TeamStatsPipeline" name="lagged windows include current samples and never feed approximations into the raw ring" time="0.126855" status="run" />
+  <testcase classname="TeamStatsPipeline" name="late workers are joined at the deadline without choosing publication time" time="0.065448" status="run" />
+  <testcase classname="TeamStatsPipeline" name="legacy zero-delay pending samples publish their original output before new delayed samples" time="0.076138" status="run" />
+  <testcase classname="TeamStatsPipeline" name="light checks do not execute jobs and full checks cover computed pending samples" time="0.094383" status="run" />
+  <testcase classname="TeamStatsPipeline" name="periodic snapshot places match live coverage at wrapped footprint boundaries" time="0.047957" status="run" />
+  <testcase classname="TeamStatsPipeline" name="publication is fixed to source tick plus delay and boundaries are idempotent" time="0.124305" status="run" />
+  <testcase classname="TeamStatsPipeline" name="raw snapshot samples retain synchronous aggregation and smoothing" time="0.080223" status="run" />
+  <testcase classname="TeamStatsPipeline" name="remote map sweeps are periodic and explicit verification remains exhaustive" time="0.10585" status="run" />
+  <testcase classname="TeamStatsPipeline" name="routine statistics coverage excludes diagnostic ledgers and full checks retain them" time="0.075524" status="run" />
+  <testcase classname="TeamStatsPipeline" name="save drains work without moving deadlines and restores pending samples" time="0.079152" status="run" />
+  <testcase classname="TeamStatsPipeline" name="secondary statistics are periodic while verification and entity checks stay immediate" time="0.11215" status="run" />
+  <testcase classname="TeamStatsPipeline" name="worker counts produce identical publication and pending sample checksums" time="0.310458" status="run" />
+  </testsuite></testsuites>

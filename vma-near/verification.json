@@ -1,0 +1,11 @@
+{
+  "testedCommit": "51edc205f",
+  "finalCommit": "fdffb149a18006674a23b0e7e486fe9b8071544c",
+  "base": "6a73f66ae01ac320fc7b3c96bfa569db1b029035",
+  "platform": "Linux devlaptop 7.0.0-38-generic #38~24.04.4-Ubuntu SMP PREEMPT_DYNAMIC Mon Sep 14 16:37:11 UTC 2 x86_64 x86_64 x86_64 GNU/Linux",
+  "compiler": "g++ (Ubuntu 13.3.0-6ubuntu2~24.04.1) 13.3.0",
+  "fullMasterRun": "https://github.com/Globulation2/glob2/actions/runs/38861165281",
+  "rendererBaselineRun": "https://github.com/Globulation2/glob2/actions/runs/38870484027",
+  "rendererBudgetRun": "https://github.com/Globulation2/glob2/actions/runs/38872991725",
+  "windowsRun": "https://github.com/Globulation2/glob2/actions/runs/38873263518"
+}
