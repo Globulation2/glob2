@@ -1,0 +1,16 @@
+# Browser simulation fixture recovery
+
+Tested source 3ece8845092ddc71a08102e566350ea2c4cd1f9d, base cc8c1a041b20a0ba1a91f2c0eb0c01f59fb3ee47. Linux x86_64, GCC 13.3 release build with pinned SDL 3.4.16, Node 24.19.0, pinned Playwright 1.63.0 and installed Chromium/Firefox/WebKit. Native executable and original CI Wasm artifact provenance are in fixture-provenance.json. The browser artifact comes from a5b380584 with the omitted unchanged presentation-surface.js restored. Between that artifact and tested source the only production source change is the native Torus renderer admission fix; simulation inputs/code are unchanged.
+
+The old import fixture is format 152, below REPLAY_MINIMUM_VERSION_MINOR=167. Re-recorded the same cross-replay.game.gz, seed 42, 1500 ticks using the current native engine. The two import/reload tests still assert the exact recorded version and reject truncated streams. Studio manifests were from version 153 / SIM_REVISION 45; references now come from native current simulation 167 / SIM_REVISION 66. This PR changes fixtures, version assertions and the stale recording command only; it does not alter simulation or weaken comparisons.
+
+Commands (paths relative to the repository; isolated profiles and SDL dummy drivers):
+
+```
+GLOB2_TEST_SEED=42 GLOB2_REPLAY_PATH=artifacts/ci-recovery/browser-artifact/cross-replay.replay build/ci-recovery-release/src/glob2 game repeat games/cross-replay.game.gz --ticks 1500 --runs 1
+GLOB2_CHECKSUM_SIDECAR=1 build/ci-recovery-release/src/glob2 game run --map-file platform/apps/engine-agent/fixtures/ais/two.map.gz --game-seed 19 --player javascript --ai-script 0:examples/javascript/studio-starter.js --player numbi --ticks 1024 --write-replay --telemetry checksums --save initial --save final --output-dir artifacts/ci-recovery/browser-artifact/studio-reference
+```
+
+Generator recording uses frozen-package.json from the fully passing native MapPreview/generator Studio harness, examples:swamp, map/game seed 19, width/height 7, four teams/workers, one candidate, four Nicowar players, 64 ticks, telemetry checksums and initial/final saves. A second native game run loads initial.game.gz for the same 64 ticks; both raw traces are byte-identical. All full native logs and source/test provenance are retained in ../final-verification. Scripts in this archive record focused Playwright commands and isolated HTTP server setup. Studio raw traces, reports, initial/final saves and per-browser traces are retained here for direct comparison.
+
+Chromium Studio: all 8 cases pass. Chromium replay import, truncation rejection, repeated match/replay reload and damaged-load recovery pass in both execution modes. Firefox/WebKit: 15 passed, one unavailable interactive threaded WebKit case. All 18 raw per-browser checksum traces are byte-identical to native. Focused Studio results are retained alongside an explicit byte-comparison manifest; interactive threaded WebKit falls back and is reported unavailable rather than accepted as threaded coverage. Full Chromium inventory is still running independently. Documentation validation: 309 documents, zero errors. Hosted full current-master CI is pending and remains the completion gate for the user task.
