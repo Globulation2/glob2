@@ -451,18 +451,22 @@ checksum adapter retains its historical entity/RNG representation for fixtures.
   the existing field/deadline representation. Reconfiguration drains work before
   resizing scratch; teardown drains callbacks and discards reservations. Job-owned
   errors survive executor batch retirement and surface at save/publication.
-- Building, material/market (including consumer-specific supply), guard/clear and
-  forbidden fields publish complete immutable generations through the existing
-  gradient pipelines. A cold read enrolls one deterministic request and returns
+- Material/market (including consumer-specific supply), guard/clear and forbidden
+  fields publish complete immutable generations. Building footprint fields retain
+  resumable lazy searches; workers prepare the fitted predicted depth, and hiring
+  workers or live readers resolve additional cells under the generation lock. A cold read enrolls one deterministic request and returns
   `Pending`; absence never proves a destination inaccessible. The owner keeps
-  serving an older complete field while a refresh waits. It validates proposed
+  serving an older field while a refresh waits. It validates proposed
   steps against current occupancy, forbidden paint and movement capabilities.
 - Building requests use stable FIFO admission, up to four per tick, and publish
   after the match's `buildingGradientDelay` (1–8, default 8). Periodic/demand fields
   share one FIFO admission per tick and their existing configured delay. Queue
   waiting precedes the fixed capture-to-publication delay. Overflow never builds
-  synchronously. Workers seed and fully propagate private outputs, including
-  footprint routes; live readers never extend a search. Soft dirtiness coalesces
+  synchronously. Workers seed private outputs and build movement-cost inputs from the captured
+  snapshot. Footprint searches stop at the
+  [predicted depth](../ai/architecture/building-gradient-depth-model.md); clearing
+  and combat routes keep their existing full-depth preparation. Live point reads
+  resolve requested layers, while explicit array reads finish the field. Soft dirtiness coalesces
   a later refresh without cancelling an admitted result; destination identity and
   hard epochs reject deleted, replaced, moved or reconfigured goals.
 - Units retain targets, activities and reservations through Pending and wait with
@@ -473,43 +477,11 @@ checksum adapter retains its historical entity/RNG representation for fixtures.
   Explicit one-participant execution runs the same jobs with the same publication
   boundaries; explicit editor/reference builders remain available.
   Format 168 persists cold FIFO requests and complete unpublished outputs without
-  publishing early during save. Queued demand has its own named stream section,
+  publishing early during save. Saving finishes lazy building searches without
+  changing their answers, age or reader-demand history. Checksums exclude derived
+  frontier progress, which can advance on hiring workers. Queued demand has its own named stream section,
   separate from pending jobs, so text saves retain both inventories independently.
-  Older supported saves still load. The historical
-  [building depth model](../ai/architecture/building-gradient-depth-model.md) no
-  longer selects partial fields for publication.
-- Air destination ranking joins the periodic/demand FIFO and uses that pipeline's
-  configured delay, executor and publication boundary.
-  Building destinations share complete destination-rooted air fields. Material,
-  guard and clearing-zone fields also carry stable goal labels; equal-cost ties
-  follow the original row-major candidate order. Painted clearing claims require
-  a complete private choice job captured for the unit identity, source and task.
-  Workers enumerate all candidates, including alternatives excluded by claims.
-  Readers revalidate current visibility, stock, restrictions and claims before
-  accepting a destination; an invalid stale choice requests a refresh and waits.
-  Unrestricted point-distance formulas remain constant-time; unrestricted resource
-  and painted-area enumeration still runs on workers and preserves Chebyshev
-  ranking. Weighted reverse propagation charges the forward destination's entry
-  cost and preserves each caller's distance rounding.
-  Air costs now use the shared 16-bit encoding and exact kernel `COST_LIMIT`.
-  Longer routes become unavailable to destination selection even if the former
-  32-bit search could reach them. This finite range and delayed choices change
-  simulation rules. Immediate air A* steering and hazardous-terrain escape routing
-  retain owner execution, with separate audit categories from field initialization,
-  air traversal construction, goal enumeration and propagation.
-- Air cold requests occupy bounded metadata only; the FIFO head reserves plane
-  capacity and a deadline at admission. Cache pressure can evict a warm allocation
-  while retaining its stable metadata and queued refresh. Resource, area, visibility,
-  supplier-stock and clearing-claim revisions coalesce prompt refreshes without
-  restarting admitted jobs. The 64 MiB air output reservation budget accounts
-  for runtime-owned published, admitted and boundary-retired generations. It is
-  not a total-memory ceiling: pipeline free buffers, executor scratch and immutable
-  snapshots have separate lifetimes and are outside that reservation. Current
-  readers scope their leases to an owner decision; jobs capture primitive snapshots
-  rather than published air fields.
-  Keeping arbitrary external leases across boundaries remains memory-safe but is
-  outside that logical byte budget. A future long-lived worker consumer needs an
-  explicit logical retirement protocol before those bytes can be budgeted.
+  Older supported saves still load.
 - Consumer-specific material caches use deterministic LRU admission. Queued and
   admitted destinations cannot be evicted. A newly published result also keeps a
   first-read opportunity for at most 256 simulation ticks (the ordinary action
@@ -525,8 +497,7 @@ checksum adapter retains its historical entity/RNG representation for fixtures.
   Material and area getters return borrowed const arrays for the current owner
   decision, not leases across publication or cache admission. Snapshot consumers
   retain snapshot-owned planes; building worker consumers use
-  `SharedBuildingGradient` leases, and air queries hold their published output
-  lease through local selection. Workers never enqueue live requests: owner
+  `SharedBuildingGradient` leases, whose lock protects resumable values and queues. Workers never enqueue live requests: owner
   admission fixes request order and captures primitive inputs, executor jobs own
   private outputs, and only owner publication replaces a live generation.
 
@@ -784,8 +755,9 @@ Resource distances read the snapshot's published resource planes. AI query field
 are local planning caches, whose presence depends on local polling, so they never
 enroll map fields. Missing planes, flying transport and consumer-specific supplier
 modes use an optimistic zero estimate. Building routes borrow existing valid
-generations through `SharedBuildingGradient` leases. Published fields are complete
-and immutable; retirement hands the buffer to the lease instead of copying it. Observation never initializes or refreshes a
+generations through `SharedBuildingGradient` leases. Workers settle candidate
+cells on the shared frontier under its mutex; retirement transfers the buffer and
+search to the lease instead of copying them. Observation never initializes or refreshes a
 field: missing ones use an obstacle-free bound, and live admission establishes them.
 
 Published lists and pending outputs with their deadlines are saved; saving drains

@@ -72,13 +72,12 @@ checkpoint from a run started with `--rule buildingGradientDelay=N`. Other
 overrides of a saved game, including `--experiment`, `--rule` and
 `--ai-order-delay`, are still rejected.
 
-Scheduled building fields are complete at publication. Cold reads and refreshes
-use the same FIFO pipeline; readers return Pending rather than seeding or
-extending a field on the simulation owner. Format 168 persists cold requests and
-completed unpublished outputs, air destination labels and unit-specific choices,
-and raises the replay floor to 168. Air destination costs use the common bounded
-16-bit range; immediate air steering stays independent. Supported older saves
-remain readable; `MINIMUM_VERSION_MINOR` is unchanged.
+Scheduled building footprint fields retain their lazy frontier at publication,
+using the fitted production depth predictor. Hiring workers extend leased fields
+for candidates; live readers resolve additional demand. Cold requests and refreshes
+share FIFO admission and fixed publication deadlines. Format 168 saves queued
+requests and completed unpublished outputs; save-time completion preserves route
+answers and remaining deadlines. Supported save formats still start at 58.
 
 Format 143 saves the AI engine's completed pending orders, logical deadlines and
 execution feedback. Saving finishes outstanding decisions without executing

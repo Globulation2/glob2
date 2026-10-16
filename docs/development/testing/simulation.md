@@ -295,24 +295,28 @@ also be compiled directly with ThreadSanitizer without SDL.
 
 `BuildingGradientInvalidationHarness` exercises real resource, guard and clear
 fields, including cold publication and soft edits while an older snapshot is pending.
-`AirGradientPublication` and `DelayedGradientPublication` cover complete fields,
-FIFO admission, immutable guidance, and binary/text save continuation across
+`DelayedGradientPublication` covers lazy building fields, complete material/area
+fields, FIFO admission, and binary/text save continuation across
 one, two, four and eight compute participants. Their checkpoint with both
 admitted jobs and queued demand also checks that text serialization preserves
 the two inventories independently.
 
-Both publication suites are included in `web-tests`. After building the serial
+The publication suite is included in `web-tests`. After building the serial
 and threaded Wasm harnesses, run from `browser/`:
 
 ```sh
-npx playwright test determinism.spec.js --grep 'complete gradient publication'
+npx playwright test determinism.spec.js --grep 'ground gradient publication'
 ```
 
 This runs the same corpus in each browser runtime and exports JUnit, per-boundary
 checksum traces and named owner/worker kernel counters under
 `artifacts/browser-determinism/gradient-publication/`. Binary/text save fixtures
 round-trip inside browser MEMFS. The compiled serial target uses the caller at
-the same fixed deadlines; threaded builds retain the worker owner-audit checks.
+the same fixed deadlines; threaded builds retain the worker preparation audit checks. Lazy reads and explicit
+save/array materialization may expand building fields on the owner; the audit
+checks seeding and cold input preparation separately from reader expansion.
+`HiringPlanner` verifies that background ranking extends only the required
+frontier, leaves distant cells unresolved, and lets live admission reuse the work.
 
 `benchmark_gradient_pipeline.py --verify` compares real-game per-tick traces across
 worker counts under the same delayed schedule. `check_gradient_pipeline.py` also

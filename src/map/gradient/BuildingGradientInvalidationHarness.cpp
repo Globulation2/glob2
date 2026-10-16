@@ -732,7 +732,7 @@ void scheduledCaptureAtBoundary()
 
 // 3. Cold queries only enroll demand. A resumable generation becomes visible
 // at the same deadline with serial execution or any worker count.
-void scheduledCompletePublication()
+void scheduledLazyPublication()
 {
 	std::vector<Uint16> reference;
 	for (unsigned workers : {0u, 1u, 3u, 7u})
@@ -1315,7 +1315,7 @@ TEST_SUITE("BuildingGradientInvalidation")
 
 	{
 		glob2test::HeadlessGlobals globals;
-		scheduledCompletePublication();
+		scheduledLazyPublication();
 	}
 
 	TEST_CASE("centre placed inside an existing ring")
@@ -1377,10 +1377,10 @@ TEST_SUITE("BuildingGradientInvalidation")
 		glob2test::HeadlessGlobals globals;
 		scheduledCaptureAtBoundary();
 	}
-	TEST_CASE("scheduled fields publish complete without a reader-owned frontier")
+	TEST_CASE("scheduled fields publish resumable lazy frontiers at fixed deadlines")
 	{
 		glob2test::HeadlessGlobals globals;
-		scheduledCompletePublication();
+		scheduledLazyPublication();
 	}
 	TEST_CASE("synchronous rebuilds and lifecycle hooks supersede pending jobs that share a deadline")
 	{
