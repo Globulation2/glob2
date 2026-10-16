@@ -5,6 +5,10 @@ from pathlib import Path
 import subprocess
 
 
+BROWSER_TRACE_VARIANTS = (('serial', 1), ('threaded', 1), ('threaded', 2),
+                          ('threaded', 4), ('threaded', 8), ('threaded', 'auto'))
+
+
 def validate_traces(root, native, browsers):
     reference = None
     for platform in native:
@@ -18,7 +22,7 @@ def validate_traces(root, native, browsers):
             raise ValueError(f'{platform}: simulation differs')
         reference = value
     expected = {(browser, variant, threads) for browser in browsers
-                for variant, threads in [('serial', 1), ('threaded', 1), ('threaded', 2), ('threaded', 4)]}
+                for variant, threads in BROWSER_TRACE_VARIANTS}
     found = set()
     for path in root.glob('browser-determinism-wasm-*/wasm/*/manifest.json'):
         manifest = json.loads(path.read_text())
@@ -33,7 +37,7 @@ def validate_traces(root, native, browsers):
             raise ValueError(f'Browser simulation differs: {identity}')
         found.add(identity)
     if found != expected:
-        raise ValueError(f'Missing browser/thread traces: {sorted(expected - found)}')
+        raise ValueError(f'Missing browser/thread traces: {sorted(expected - found, key=str)}')
     return len(native) + len(found)
 
 

@@ -189,6 +189,11 @@ actual verification from those cohorts.
 For explicitly requested affected PR verification, primary Linux keeps the
 complete applicable native suite. Simulation/save/AI changes add older-GCC and
 Windows compatibility cases plus native/browser per-tick and scripting comparisons.
+The per-tick comparison requires each selected browser's serial/1 and threaded/1,
+2, 4, 8 and automatic worker-count traces, each matching the native trace.
+Full Firefox and WebKit simulation jobs also run both runtimes' catalog registry
+and composition contracts, providing every resource/unit composition producer
+required by the comparison.
 Presentation changes retain software/WebGL and Firefox/WebKit coverage. Network
 changes retain transport/server/deployment checks. Android changes retain arm64
 builds and x86_64 emulator smoke. Shared headers, dependency/build configuration
