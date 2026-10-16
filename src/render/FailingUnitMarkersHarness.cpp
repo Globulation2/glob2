@@ -122,6 +122,11 @@ public:
 	{
 		// Observe qualified suggestions, then reject them at live admission.
 		// The planner itself filters unschooled workers before the marker scan.
+		// A larger observed request puts all ten workers in its bounded shortlist;
+		// restore the real request before testing the admission and drawing.
+		const auto requested = scene.inn->maxUnitWorking;
+		scene.inn->maxUnitWorking = LOW_COUNT + 1;
+		scene.inn->updateCallLists();
 		std::array<int, LOW_COUNT> levels;
 		for (int i = 0; i < LOW_COUNT; ++i)
 		{
@@ -130,6 +135,8 @@ public:
 		}
 		glob2test::publishCurrentHiringSuggestions(*scene.team->game);
 		for (int i = 0; i < LOW_COUNT; ++i) scene.low[i]->constructionLevel = levels[i];
+		scene.inn->maxUnitWorking = requested;
+		scene.inn->updateCallLists();
 		scene.team->updateAllBuildingTasks();
 		scene.team->game->snapshots().invalidateBoundary();
 	}

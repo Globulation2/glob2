@@ -204,6 +204,7 @@ public:
     bool rejected=false;
     bool overlayFailure=true;
     bool completedWorld=false;
+    unsigned submissions=0, worldSubmissions=0;
     mutable bool phaseRejected=false;
     std::function<bool()> phaseFault;
     explicit OverlayAdmissionDevice(std::unique_ptr<GAGCore::RenderDevice> value) : device(std::move(value)) {}
@@ -216,6 +217,7 @@ public:
     }
     bool canBeginFrame() override {return device->canBeginFrame();}
     GAGCore::RenderSubmission submit(GAGCore::RenderFrame frame) override {
+        ++submissions;
         const bool world=std::any_of(frame.packets.begin(),frame.packets.end(),[](const auto &packet){
             return !packet.target && packet.kind==GAGCore::DrawPacket::Kind::MeshTriangles &&
                 packet.material==GAGCore::DrawPacket::Material::WorldLit;
@@ -226,7 +228,7 @@ public:
         });
         const auto submitted=device->submit(std::move(frame));
         if(overlay && submitted){rejected=true;throw GAGCore::RenderAdmissionDeferred("Injected final torus overlay admission failure");}
-        if(world && submitted) completedWorld=true;
+        if(world && submitted) { completedWorld=true; ++worldSubmissions; }
         return submitted;
     }
     GAGCore::RenderCompletion completion(GAGCore::RenderSubmission value) override {return device->completion(value);}
@@ -281,7 +283,9 @@ static void deviceOverlayRetry(GAGCore::RendererBackend backend)
     gui.selectionMode=GameGUI::TOOL_SELECTION;gui.toolManager.activateBuildingTool("swarm");
     bool complete=false;unsigned holds=0;
     const auto checksum=gui.game.checkSum();
-    for(unsigned attempt=0;attempt<128 && !complete;++attempt){
+    // SDL GPU may need additional bounded region/resource-admission turns
+    // before the completed world mesh is submitted after the injected retry.
+    for(unsigned attempt=0;attempt<512 && !complete;++attempt){
         // Pausing a running multi-turn capture freezes source animation clocks,
         // independently of the capture's immutable initial animation phase.
         gui.gamePaused=attempt==1 || attempt==2;
@@ -297,6 +301,7 @@ static void deviceOverlayRetry(GAGCore::RendererBackend backend)
         REQUIRE(gfx->presentationDevice.get()==probe);
         REQUIRE(gfx->backendSwitchStatus().active==backend);
     }
+    INFO("submissions=",probe->submissions," worlds=",probe->worldSubmissions," holds=",holds);
     REQUIRE(probe->rejected);REQUIRE(complete);REQUIRE(holds>1);
     REQUIRE(gui.game.checkSum()==checksum);
     REQUIRE(std::abs(gui.toolManager.highlightStrength-.1f)<.00001f);
