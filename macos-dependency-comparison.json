@@ -1,0 +1,18 @@
+{
+  "first": [
+    "^[[33mWarning:^[[0m cmake 4.4.4 is already installed and up-to-date.",
+    "^[[33mWarning:^[[0m freetype 2.14.3 is already installed and up-to-date.",
+    "^[[33mWarning:^[[0m libpng 1.6.59 is already installed and up-to-date.",
+    "^[[33mWarning:^[[0m jpeg-turbo 3.2.0 is already installed and up-to-date.",
+    "^[[33mWarning:^[[0m pkgconf 3.0.8 is already installed and up-to-date.",
+    "^[[33mWarning:^[[0m openssl@3 3.6.5 is already installed and up-to-date."
+  ],
+  "second": [
+    "^[[33mWarning:^[[0m cmake 4.4.4 is already installed and up-to-date.",
+    "^[[33mWarning:^[[0m freetype 2.14.3 is already installed and up-to-date.",
+    "^[[33mWarning:^[[0m libpng 1.6.59 is already installed and up-to-date.",
+    "^[[33mWarning:^[[0m jpeg-turbo 3.2.0 is already installed and up-to-date.",
+    "^[[33mWarning:^[[0m pkgconf 3.0.8 is already installed and up-to-date.",
+    "^[[33mWarning:^[[0m openssl@3 3.6.5 is already installed and up-to-date."
+  ]
+}

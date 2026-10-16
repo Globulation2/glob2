@@ -1,4 +1,8 @@
 {
+  "artifacts/ci-recovery/accept-macos-polder.py": {
+    "bytes": 2842,
+    "sha256": "2cc6624958ce99d7eb8a868a55ad439cab1e63f51f4984be718dedc37085587d"
+  },
   "artifacts/ci-recovery/android-smoke.log": {
     "bytes": 206,
     "sha256": "a7132ff20f7d0f944acdfccbd3c35b209603b6d0039d6f99d67a3eeb8759fb90"
@@ -92,12 +96,20 @@
     "sha256": "dea624f2a11ce462cc8e4d74d59bb35c24e781c9e05e98ff591f6a78d9fd4f96"
   },
   "artifacts/ci-recovery/compare-linux-macos.py": {
-    "bytes": 1608,
-    "sha256": "baf05d198392c8d6410f858476517898c0b5f0933e9b8be783afdbd9e07b7a9e"
+    "bytes": 1787,
+    "sha256": "9cd6c9bf818c39e2b72481001e870b3f6c4c0ec635d88f6a26cbd53109be1409"
   },
   "artifacts/ci-recovery/compare-polder-history.py": {
     "bytes": 3652,
     "sha256": "ee46e21904f3299dbb44f006bf59542fc25d9c306461916d393620ea02f62437"
+  },
+  "artifacts/ci-recovery/dependency-inputs.json": {
+    "bytes": 5103,
+    "sha256": "74e20017b2a239c3156048f538d0be53189bc80f6f0b321f118973bde683097a"
+  },
+  "artifacts/ci-recovery/final-generator-contracts.log": {
+    "bytes": 1074,
+    "sha256": "2b4cbb8bc3e0bb792d31df1936d6be3e876860a6e98827ce52a696dd5bee8191"
   },
   "artifacts/ci-recovery/final-sim-revision.log": {
     "bytes": 100,
@@ -268,8 +280,8 @@
     "sha256": "26aa688926173e021e4fc758d0f8a66773c7ae60ba7e03c6e21a4c5ab3e0020a"
   },
   "artifacts/ci-recovery/linux-macos-comparison.json": {
-    "bytes": 10364,
-    "sha256": "8475819bd7c454ac3a998608f1b50bae467068aeef33a7f5d10d0b35e2259aa1"
+    "bytes": 11269,
+    "sha256": "176c864f1bb8ebbbbbdcd326c8f48012a2dc48411488edbc1c478c75e6b02b25"
   },
   "artifacts/ci-recovery/local-stack.log": {
     "bytes": 2526,
@@ -367,6 +379,10 @@
     "bytes": 3422,
     "sha256": "17c6ddc2740c5eeb0132fbe2bce4692104c598241461efc81204e7f372d1dc67"
   },
+  "artifacts/ci-recovery/macos-generator-comparison.json": {
+    "bytes": 2640,
+    "sha256": "b68e7413eaf79626b55d3e55b88bd0ef6c51c2945fe2133fd2e6ce4d17a007ab"
+  },
   "artifacts/ci-recovery/macos-generator-first/designs/MapGeneratorDefaults/Explicit_designs_preserve_topology_across_the_runtime-resource_RNG_epoch/resource-design-observations.json": {
     "bytes": 1382,
     "sha256": "219e96a0fcf4ed0feaf4bbd065d091b7ca2564c0bdd4b41f70e4a5283a607f55"
@@ -396,6 +412,38 @@
     "sha256": "ffaa254b07e705d1be73e74e63b96e24d5c177285997fa45aa69fb3bee3eec66"
   },
   "artifacts/ci-recovery/macos-generator-first/rows.txt": {
+    "bytes": 26945,
+    "sha256": "0ffc429d2725b35948f10bd60ac38e986056821aa328efa3eb7c2f7bca4ed1f8"
+  },
+  "artifacts/ci-recovery/macos-generator-second/designs/MapGeneratorDefaults/Explicit_designs_preserve_topology_across_the_runtime-resource_RNG_epoch/resource-design-observations.json": {
+    "bytes": 1382,
+    "sha256": "219e96a0fcf4ed0feaf4bbd065d091b7ca2564c0bdd4b41f70e4a5283a607f55"
+  },
+  "artifacts/ci-recovery/macos-generator-second/designs/build-provenance.json": {
+    "bytes": 743,
+    "sha256": "dc05d0e86d104f3040383194bbaa73df2fd4585bc04d176402c272702d9c9adb"
+  },
+  "artifacts/ci-recovery/macos-generator-second/designs-junit.xml": {
+    "bytes": 318,
+    "sha256": "d142137e06537d480605027ea1e9acb900f5bfd0ac44599715052f33cb194253"
+  },
+  "artifacts/ci-recovery/macos-generator-second/inventory.log": {
+    "bytes": 14132,
+    "sha256": "f5d9a73073c5424a7b5193a842c87e98edbf5ace2dcbefb32d07fcc99e53b3af"
+  },
+  "artifacts/ci-recovery/macos-generator-second/manifest.json": {
+    "bytes": 1997,
+    "sha256": "e3213160daecb7dc413988dac6238fc65fc01408e2d186ee32ae308b1a3810d9"
+  },
+  "artifacts/ci-recovery/macos-generator-second/print-0.log": {
+    "bytes": 27005,
+    "sha256": "ffaa254b07e705d1be73e74e63b96e24d5c177285997fa45aa69fb3bee3eec66"
+  },
+  "artifacts/ci-recovery/macos-generator-second/print-1.log": {
+    "bytes": 27005,
+    "sha256": "ffaa254b07e705d1be73e74e63b96e24d5c177285997fa45aa69fb3bee3eec66"
+  },
+  "artifacts/ci-recovery/macos-generator-second/rows.txt": {
     "bytes": 26945,
     "sha256": "0ffc429d2725b35948f10bd60ac38e986056821aa328efa3eb7c2f7bca4ed1f8"
   },
@@ -1307,6 +1355,30 @@
     "bytes": 169639,
     "sha256": "71c406e6fa0a515e39e4c74f560e636e7246339f4b9ac6090ce56c5b3d74bce5"
   },
+  "artifacts/ci-recovery/macos-native-second/tests/build-provenance.json": {
+    "bytes": 743,
+    "sha256": "dc05d0e86d104f3040383194bbaa73df2fd4585bc04d176402c272702d9c9adb"
+  },
+  "artifacts/ci-recovery/macos-native-second/tests/engine-junit.xml": {
+    "bytes": 180652,
+    "sha256": "69b4cb57088e53753b80872f8f8653e0b6dad412107bf8997a57ada8c61b3021"
+  },
+  "artifacts/ci-recovery/macos-native-second/tests/engine.inventory.json": {
+    "bytes": 374386,
+    "sha256": "5b56c09b7455d6a39cf1acce6669ef2136e92a9db8320e120d02a5c1b9db3597"
+  },
+  "artifacts/ci-recovery/macos-native-second/tests/unit-junit.xml": {
+    "bytes": 169981,
+    "sha256": "4ef741946b7c96be67a188d7ba378a2227e926a01229cc412f0dd40eb72926c9"
+  },
+  "artifacts/ci-recovery/macos-second-complete.log": {
+    "bytes": 34699254,
+    "sha256": "1a2f2da9f2289a54a06e46d8c98dfb780821016188954d863747d83669aeb7df"
+  },
+  "artifacts/ci-recovery/macos-second-job.json": {
+    "bytes": 3437,
+    "sha256": "9b4daf1b5c9b9bdbe2fce502d98b89fa9ee1771d4c5c6738af7d3eeccc09e6bc"
+  },
   "artifacts/ci-recovery/master65-build-info.log": {
     "bytes": 1608,
     "sha256": "2ccab90abd070e91ab3b16efd2871123cbbe0417bc7ed57853e06274afd88b93"
@@ -1342,6 +1414,10 @@
   "artifacts/ci-recovery/music-tests.log": {
     "bytes": 15198,
     "sha256": "6fd175050e0f475fd29bedf88b93806db6e29f53ee5b77416bc18bd6e5180624"
+  },
+  "artifacts/ci-recovery/native-build-info.json": {
+    "bytes": 155,
+    "sha256": "21290f7284bf24cf086d53377ca33856dd4a71cf26f161d404300f05be143f98"
   },
   "artifacts/ci-recovery/platform-database-tests-bounded.log": {
     "bytes": 523,

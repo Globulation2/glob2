@@ -1,0 +1,62 @@
+{
+  "independentRuns": [
+    "38851645900",
+    "38854428497"
+  ],
+  "source": {
+    "dirty": false,
+    "revision": "8ac5bc598914f69b00ff269bfc7cf46d392d358f",
+    "sourceStatus": [],
+    "sourceTreeSha256": "79b6e7c06c12dc887b2250b9dcb023846e83780a17717f989e9d7b22aa558388"
+  },
+  "platform": "macos-arm64",
+  "compiler": "Apple clang version 21.0.0 (clang-2100.1.1.101)\nTarget: arm64-apple-darwin25.6.0\nThread model: posix\nInstalledDir: /Applications/Xcode_26.6.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin\n",
+  "flags": {
+    "CCFLAGS": "",
+    "CPPDEFINES": "GLOB2_OFFICIAL_INSTANCE_ORIGIN \\\"https://app.glob2online.com\\\" GLOB2_OFFICIAL_INSTANCE_FORMER_ORIGINS \\\"https://glob2online.com\\\" HAVE_CONFIG_H GL_SILENCE_DEPRECATION GLOB2_RENDER_SHADER_DIR \\\"/Users/runner/work/glob2/glob2/build/darwin/client/release/shaders\\\" SDL_MAIN_HANDLED",
+    "CXXFLAGS": "-I/opt/homebrew/opt/openssl@3/include -std=gnu++20 -Wall -fPIC -O3",
+    "LINKFLAGS": "-L/opt/homebrew/opt/openssl@3/lib -Wall -O3 -Wl,-rpath,/Users/runner/work/glob2/glob2/build/sdl3-ci/prefix/lib"
+  },
+  "binarySha256": [
+    "66d4cf17d5b741b19556967289e4d59009271c95b73f3464a3e81ddecf6b6071",
+    "66d4cf17d5b741b19556967289e4d59009271c95b73f3464a3e81ddecf6b6071"
+  ],
+  "matchingRows": 564,
+  "unchangedAcceptedNonPolderRows": 556,
+  "acceptedRows": [
+    {
+      "before": "macos-arm64 30 6 7 7 4 1 ok 15370796314553267537",
+      "after": "macos-arm64 30 7 7 7 4 1 ok 6788725001055980144"
+    },
+    {
+      "before": "macos-arm64 30 6 8 8 2 1 ok 6320544998031971294",
+      "after": "macos-arm64 30 7 8 8 2 1 ok 10977429681709173549"
+    },
+    {
+      "before": "macos-arm64 30 6 8 8 4 1 ok 7551321311665018947",
+      "after": "macos-arm64 30 7 8 8 4 1 ok 2055576107962924180"
+    },
+    {
+      "before": "macos-arm64 30 6 8 8 4 2 ok 11389172561066315383",
+      "after": "macos-arm64 30 7 8 8 4 2 ok 7272091769716548868"
+    },
+    {
+      "before": "macos-arm64 30 6 8 8 4 3 ok 7091378655207835894",
+      "after": "macos-arm64 30 7 8 8 4 3 ok 17460540468504026865"
+    },
+    {
+      "before": "macos-arm64 30 6 8 8 8 1 ok 3737099883991090204",
+      "after": "macos-arm64 30 7 8 8 8 1 ok 18306782409563719156"
+    },
+    {
+      "before": "macos-arm64 30 6 9 8 4 1 ok 5558453860314232212",
+      "after": "macos-arm64 30 7 9 8 4 1 ok 17954910640564097104"
+    },
+    {
+      "before": "macos-arm64 30 6 9 9 4 1 ok 5992384891314150952",
+      "after": "macos-arm64 30 7 9 9 4 1 ok 5257367982339723081"
+    }
+  ],
+  "historicalLinuxComparison": "polder-history/comparison.json",
+  "productionDifferenceFromMeasuredSource": ""
+}
