@@ -1,0 +1,7 @@
+# Compact first-run FPS fixture recovery
+
+Tested commit 4f0fd0a3b85b5a0e74cc2163b2c05f5d19a7b9b1, base 2d330d2988b8dde865874d8824c604710bf641ab. Linux x86_64, Node 24.19.0, Playwright 1.63.0, cached Chromium/Firefox/WebKit. Command and artifact provenance in run-render-fps.py and result.json: actual a5b380584 CI Wasm, with omitted byte-identical presentation-surface.js restored. No production simulation differences from current; later production change is native Torus renderer only.
+
+The compact FPS test starts a fresh 460x820 profile and waits for MainMenuScreen, but touch presentation first asks which hand holds the phone. The baseline broad Chromium log reports HandPreferenceScreen after 60 seconds. The fixture now waits for that screen and clicks the real hand.right control before proceeding. It still verifies unlimited and 60 FPS persistence through rotation and reload, plus absence of text-action dispatch during paint. No application changes or first-run bypass.
+
+Final focused command: Playwright test tests/render-fps.spec.js --project=chromium --project=firefox --project=webkit --workers=1 --trace=off, isolated browser/serve.py server, GLOB2_TEST_RENDERER=webgl2, LIBGL_ALWAYS_SOFTWARE=1, DISPLAY removed. All 9 cases pass in 3.6 minutes. Broader Chromium suite continues separately; full latest-master CI remains pending. No native rerun is needed for this browser fixture-only change.
