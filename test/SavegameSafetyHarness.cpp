@@ -766,9 +766,14 @@ static void checkRandomContinuation(bool text, bool ai)
 		// Reject invalid queue sizes, deadlines, destinations and cancellation flags.
 		const auto pipeline=output.pipelineStart;
 		REQUIRE(static_cast<unsigned char>(bytes[pipeline+1])>0);
+		// Format167 widens each destination to Uint32; the deadline and
+		// cancellation flag follow those four bytes, after delay and count.
+		const auto destination=pipeline+2;
+		const auto remaining=destination+sizeof(Uint32);
 		for (const auto [offset,value] : std::vector<std::pair<size_t,unsigned char>>{
 			{pipeline,0}, {pipeline,17}, {pipeline+1,17},
-			{pipeline+2,255}, {pipeline+4,0}, {pipeline+4,17}, {pipeline+5,2}}) {
+			{destination,255}, {remaining,0}, {remaining,17}, {remaining+1,2}}) {
+			CAPTURE(offset); CAPTURE(value);
 			auto malformed=bytes; malformed[offset]=value;
 			auto bad=input(malformed,true); bool rejected=false;
 			try { rejected=!restored.load(bad.get()); } catch(const std::exception &) { rejected=true; }

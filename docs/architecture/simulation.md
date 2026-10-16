@@ -413,8 +413,9 @@ checksum adapter retains its historical entity/RNG representation for fixtures.
   observed boundary neither advances its queues again nor resubmits its jobs.
   Earlier supported saves retain their completed pending outputs and historical
   deadlines, including zero-delay outputs; they are never regenerated from the
-  loaded world. New admissions use the new timing rule. Replay floor 167 and the
-  simulation revision separate the changed trajectory from earlier executions.
+  loaded world. New admissions use the new timing rule. The current replay floor
+  is 168, also requiring delayed gradient publication; simulation revisions keep
+  these trajectories separate from earlier executions.
 - The simulation preset always includes catalogs, terrain, resources, occupancy,
   areas, visibility, entities, teams, rules, published resource fields, growth and
   cumulative statistics inputs.
@@ -450,23 +451,52 @@ checksum adapter retains its historical entity/RNG representation for fixtures.
   the existing field/deadline representation. Reconfiguration drains work before
   resizing scratch; teardown drains callbacks and discards reservations. Job-owned
   errors survive executor batch retirement and surface at save/publication.
-- Stale building walking fields are refreshed by `BuildingGradientPipeline`
-  (`src/map/gradient/`, `MapGradientScheduling.cpp`). Team stepping requests a
-  refresh and keeps serving the old field; at the next observation up to four requests are
-  staged from the shared handle with the periodic job, built on
-  workers and published `buildingGradientDelay` ticks later (the match rule, 1–8,
-  default 8), before team stepping. Publication swaps the field and its search on
-  the owner; it is discarded if a synchronous rebuild or a reset superseded it.
-  Access metadata (`locked`, and a clearing flag's `anyResourceToClear`) follows
-  the newest capture, so it, and the AI's view of it, may lag up to the delay. Team-wide resets and forbidden-area paints keep the old
-  walking fields serving until the refresh publishes, so units may follow a
-  pre-edit field for up to the delay. Fields a building has never had (or lost to
-  idle eviction or its own move, type or range change), queue overflow (more than
-  64 waiting requests) and maps without a game build synchronously.
-  `Map::predictBuildingDepth` reads the production
-  [depth model](../ai/architecture/building-gradient-depth-model.md) from the field's own past
-  reader demand (its serving search's required cost and `settledCostHint`). It only moves
-  search work between worker and owner. Experimental depth overrides are retired.
+- Material/market (including consumer-specific supply), guard/clear and forbidden
+  fields publish complete immutable generations. A cold read enrolls one deterministic request and returns
+  `Pending`; absence never proves a destination inaccessible. The owner keeps
+  serving an older field while a refresh waits. It validates proposed
+  steps against current occupancy, forbidden paint and movement capabilities.
+- Building routing retains its existing lazy implementation: cold fields initialize
+  on first use, scheduled footprint refreshes prepare the fitted predicted depth,
+  and publication transfers both values and the resumable frontier. Hiring workers
+  resolve candidate cells under the shared generation lock; live readers resolve
+  additional demand. Clearing/combat preparation, refresh scheduling, supersession
+  and save completion retain their previous behavior. Material and area demand
+  fields share one FIFO admission per tick and the configured delay; queue waiting
+  precedes that delay. Soft dirtiness coalesces a later refresh without cancelling
+  an admitted result; destination identity rejects reconfigured consumers.
+- Units retain targets, activities and reservations through Pending and wait with
+  the existing zero-displacement movement state on their normal decision cadence.
+  Hunger, health and local combat/adjacent interactions continue. This introduces
+  first-use latency for material and area guidance (about 267 ms after admission
+  at delay 8), changing fetching, idle clearing and responses to painted areas.
+  Cold building routes retain their previous immediate lazy initialization.
+  Explicit one-participant execution runs the same jobs with the same publication
+  boundaries; explicit editor/reference builders remain available.
+  Format 168 persists material/area FIFO requests and complete unpublished outputs
+  without publishing early during save. Existing building save completion and
+  encoding remain unchanged; checksums exclude derived building frontier progress. Queued demand has its own named stream section,
+  separate from pending jobs, so text saves retain both inventories independently.
+  Older supported saves still load.
+- Consumer-specific material caches use deterministic LRU admission. Queued and
+  admitted destinations cannot be evicted. A newly published result also keeps a
+  first-read opportunity for at most 256 simulation ticks (the ordinary action
+  cadence bound), released earlier by its owner reader. This bounded logical hold
+  prevents an earlier reader from continually evicting a later reader's result,
+  while allowing abandoned demand to retire. Its publication tick is saved and
+  checksummed; physical completion and reference counts never select admission.
+  Reducing the requested budget preserves enough effective capacity for retained
+  destinations, so every state produced by the runtime remains loadable.
+  Consumer entries capture identity, type, position and shared-pool membership;
+  changing that eligibility hard-supersedes the old ticket even when its slot
+  and script identity are unchanged.
+  Material and area getters return borrowed const arrays for the current owner
+  decision, not leases across publication or cache admission. Snapshot consumers
+  retain snapshot-owned planes; building worker consumers use
+  `SharedBuildingGradient` leases, whose lock protects resumable values and queues. Workers never enqueue live requests: owner
+  admission fixes request order and captures primitive inputs, executor jobs own
+  private outputs, and only owner publication replaces a live generation.
+
 - The executor ring holds 79 batches: each deferred producer holds at most its
   horizon plus one (AI decisions 8, periodic gradients 16, building gradients 8, resource growth 16,
   team statistics 8, turret shortlist jobs 4),
@@ -478,8 +508,8 @@ checksum adapter retains its historical entity/RNG representation for fixtures.
   predicates. Each executor slot owns derived seed templates, maintained using
   exact immutable chunk versions, with direct-kernel fallbacks. Material caches
   retain compact base fields and goal bitsets. No cached template retains snapshot
-  buffers or reads the live mutable material cache. Immediate building seeding
-  remains in its domain source files.
+  buffers or reads the live mutable material cache. Building jobs retain their
+  existing frozen terrain/water inputs and lazy frontier.
   Material and clearing precedence comes from the restricted unsigned-integer
   source `src/field/shaders/preparation-rules.json`; regenerate its C++, OpenCL
   and GLSL predicates with `tools/shaders/gradient_preparation_rules.py --generate`.
@@ -721,9 +751,9 @@ Resource distances read the snapshot's published resource planes. AI query field
 are local planning caches, whose presence depends on local polling, so they never
 enroll map fields. Missing planes, flying transport and consumer-specific supplier
 modes use an optimistic zero estimate. Building routes borrow existing valid
-generations through `SharedBuildingGradient` leases; workers settle only queried
-cells under the generation's lock, and retirement hands the buffer and search to
-the lease instead of copying them. Observation never initializes or refreshes a
+generations through `SharedBuildingGradient` leases. Workers settle candidate
+cells on the shared frontier under its mutex; retirement transfers the buffer and
+search to the lease instead of copying them. Observation never initializes or refreshes a
 field: missing ones use an obstacle-free bound, and live admission establishes them.
 
 Published lists and pending outputs with their deadlines are saved; saving drains

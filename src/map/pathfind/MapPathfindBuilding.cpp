@@ -175,3 +175,23 @@ bool Map::pathfindBuilding(EntityRandom& random, Building *building, int swimCla
 		return true;
 	return buildingGradientDirection(random, building, swimClass, x, y, dx, dy, false, route);
 }
+
+// Result adapters for consumers shared with delayed material/area routing.
+// Building initialization and lazy resolution retain their original semantics.
+FieldReadiness Map::requestBuildingField(Building* building,int swim,BuildingRoute route)
+{
+    prepareBuildingGradient(building,swim,route);
+    return FieldReadiness::Ready;
+}
+const Uint16* Map::lookupBuildingField(const Building* building,int swim,BuildingRoute route) const
+{
+    return building->globalGradient[building->routeSlot(swim,route)];
+}
+RouteResult Map::queryBuildingDistance(Building* building,int swim,int x,int y,int* distance,BuildingRoute route)
+{
+    return buildingAvailable(building,swim,x,y,distance,route) ? RouteResult::Reachable : RouteResult::Unreachable;
+}
+StepResult Map::queryBuildingStep(EntityRandom& random,Building* building,int swim,int x,int y,int* dx,int* dy,BuildingRoute route)
+{
+    return pathfindBuilding(random,building,swim,x,y,dx,dy,route) ? StepResult::Step : StepResult::Blocked;
+}

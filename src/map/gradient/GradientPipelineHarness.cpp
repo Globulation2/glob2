@@ -9,6 +9,7 @@
 #include <cstdint>
 #include "map/gradient/GradientPipeline.h"
 #include "map/gradient/BuildingGradientPipeline.h"
+#include "map/gradient/GradientExecutionAudit.h"
 #include <deque>
 #include <vector>
 #include <array>
@@ -42,6 +43,59 @@ public:
 
 TEST_SUITE("GradientPipeline")
 {
+TEST_CASE("kernel audit can retire safely before observation workers drain")
+{
+    if constexpr (!GAGCore::ThreadSupport::available) return;
+    for (unsigned attempt=0;attempt<32;++attempt)
+    {
+        auto audit=std::make_unique<GradientExecutionAudit>();
+        std::atomic<bool> entered{false},finished{false};
+        auto worker=GAGCore::ThreadSupport::launch([&] {
+            GradientExecutionAudit::record(GradientExecutionAudit::Kind::Seed);
+            entered.store(true,std::memory_order_release);
+            for (unsigned i=0;i<4096;++i)
+                GradientExecutionAudit::record(GradientExecutionAudit::Kind::Propagation);
+            finished.store(true,std::memory_order_release);
+        });
+        while (!entered.load(std::memory_order_acquire)) std::this_thread::yield();
+        CHECK(audit->totals().other>0);
+        audit.reset(); // Mirrors fatal test unwinding before executor teardown.
+        worker.join();
+        CHECK(finished.load(std::memory_order_acquire));
+    }
+}
+
+TEST_CASE("kernel audit distinguishes owner preparation from deferred worker work")
+{
+    for (unsigned workers : {0u, 1u, 3u, 7u})
+    {
+        GradientExecutionAudit audit;
+        TestGradientPipeline pipeline;
+        pipeline.configure(workers, 3, 1, [](auto& job, auto&) {
+            GradientExecutionAudit::record(GradientExecutionAudit::Kind::Propagation);
+            job.data[0] = 19;
+        });
+        auto* published = new std::uint16_t[1]{7};
+        pipeline.advance(); // Admission at advance 1; publication at advance 4.
+        pipeline.submit(&published, 0, [](auto&) {});
+        // Draining for a save may finish the private job, never publish early.
+        pipeline.finish();
+        CHECK(published[0] == 7);
+        pipeline.advance(); CHECK(published[0] == 7);
+        pipeline.advance(); CHECK(published[0] == 7);
+        pipeline.advance(); CHECK(published[0] == 19);
+        const auto counts = audit.totals();
+        const bool hasWorkers = workers && GAGCore::ThreadSupport::available;
+        CHECK(counts.owner == (hasWorkers ? 0 : 1));
+        CHECK(counts.other == (hasWorkers ? 1 : 0));
+        // A pre-submit kernel must be visible even when join telemetry is empty.
+        GradientExecutionAudit::record(GradientExecutionAudit::Kind::Seed);
+        CHECK(audit.counts(GradientExecutionAudit::Kind::Seed).owner == 1);
+        pipeline.reset();
+        delete[] published;
+    }
+}
+
 TEST_CASE("fixed publication; supersession; bounded buffers; scheduling stress; fallback; exceptions and teardown")
 {
 	for (unsigned workers : {0, 1, 2, 4, 8}) for (unsigned delay : {1, 2, 3, 8}) {
@@ -363,7 +417,7 @@ TEST_CASE("building pipeline admits several jobs per tick, publishes in reservat
             }
             pipeline.prepare(staged);
             for (unsigned i=1; i<delay; ++i) { pipeline.advance(); CHECK(published.empty()); }
-            std::thread opener([&] { std::this_thread::sleep_for(std::chrono::milliseconds(20)); release.set_value(); });
+            std::jthread opener([&] { std::this_thread::sleep_for(std::chrono::milliseconds(20)); release.set_value(); });
             pipeline.advance(); // Waits for the gated job, then publishes all four.
             opener.join();
             CHECK(published==std::vector<unsigned>{0,1,2,3});

@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "Material.h"
 #include "EngineFixtures.h"
+#include "GradientFixture.h"
 #include "MapInternal.h"
 #include "Order.h"
 #include "OrderValidation.h"
@@ -114,11 +115,21 @@ std::string marketTrace(bool enabled, bool report=false)
 			if (tick==749)
 			{
 				const auto state=simulation(g);
+                const auto checkCheckpoint=[&](const std::string& phase) {
+                    const auto actual=simulation(g);
+                    CAPTURE(phase); CAPTURE(pipeline);
+                    REQUIRE(actual.size()==state.size());
+                    for (size_t component=0;component<state.size();++component) {
+                        CAPTURE(component);
+                        CHECK(actual[component]==state[component]);
+                    }
+                };
 				const auto bytes=save(g,pipeline);
+                checkCheckpoint("save"); // Finishing private jobs cannot publish them.
 				if (!glob2test::artifactDir().empty()) glob2test::writeFile(glob2test::artifactDir()/(pipeline ? "midgame.txt" : "midgame.bin"),bytes);
 				const auto marketId=market->gid, secondId=second->gid, innId=inn->gid;
 				REQUIRE(load(g,bytes,pipeline));
-				CHECK(simulation(g)==state);
+                checkCheckpoint("load");
 				world.team=g.teams[0];
 				market=world.team->myBuildings[Building::GIDtoID(marketId)];
                 inn=world.team->myBuildings[Building::GIDtoID(innId)];
@@ -222,6 +233,7 @@ TEST_CASE("disabled gate blocks explicit fetch APIs and upgrade execution")
 	CHECK_FALSE(market->isUpgradeAvailable());
 	for (int sw=0; sw<SWIM_CLASS_COUNT; ++sw)
 	{
+		glob2test::awaitGradient(g,[&] { return g.map.getMaterialGradientSlot(0,CHERRY,sw); });
 		CHECK(g.map.getMaterialGradientSlot(0,CHERRY,sw,true)==g.map.getMaterialGradientSlot(0,CHERRY,sw));
 		CHECK(g.map.marketMaterialGradients[0][CHERRY][sw]==nullptr);
 		g.map.dirtyMarketGradientsSlot(0,CHERRY);
@@ -267,6 +279,9 @@ TEST_CASE("each market level accepts only its resources across all swim classes"
 				bool accepts=market->type->maxMaterial[r]>0;
 				CHECK(g.map.isStockedMarketTile(market->gid,0,r)==accepts);
 				CHECK_FALSE(g.map.isStockedMarketTile(market->gid,1,r));
+				glob2test::awaitGradient(g,[&] { return g.map.getMaterialGradientSlot(1,r,sw,true); });
+				glob2test::awaitGradient(g,[&] { return g.map.getMaterialGradientSlot(0,r,sw,true); });
+				glob2test::awaitGradient(g,[&] { return g.map.getMaterialGradientSlot(0,r,sw,false); });
 				CHECK_FALSE(g.map.materialAvailableSlot(1,r,sw,6,6,true));
 				CHECK(g.map.materialAvailableSlot(0,r,sw,6,6,true)==accepts);
 				CHECK_FALSE(g.map.materialAvailableSlot(0,r,sw,6,6));
@@ -287,13 +302,25 @@ TEST_CASE("market routes respect forbidden ground and water across swim classes"
         for(int y=0;y<world.game.map.getH();++y)for(int x=0;x<world.game.map.getW();++x)
             if(world.game.map.getBuilding(x,y)==NOGBID)world.game.map.paintCell(x,y,WATER);
 	for (int y=7;y<=8+market->type->height;++y) for (int x=7;x<=8+market->type->width;++x) world.game.map.addForbidden(x,y,0);
-	for (int sw=waterOnly?SWIM_CLASS_COUNT-1:0;sw<(waterOnly?SWIM_CLASS_COUNT:SWIM_CLASS_COUNT-1);++sw) CHECK_FALSE(world.game.map.materialAvailableSlot(0,CHERRY,sw,5,5,true));
+	for (int sw=waterOnly?SWIM_CLASS_COUNT-1:0;sw<(waterOnly?SWIM_CLASS_COUNT:SWIM_CLASS_COUNT-1);++sw) {
+        glob2test::awaitGradient(world.game,[&] { return world.game.map.getMaterialGradientSlot(0,CHERRY,sw,true); });
+        CHECK_FALSE(world.game.map.materialAvailableSlot(0,CHERRY,sw,5,5,true));
+    }
 	for (int y=7;y<=8+market->type->height;++y) for (int x=7;x<=8+market->type->width;++x)
 	{ world.game.map.removeForbidden(x,y,0); world.game.map.paintCell(x, y, WATER); }
 	world.game.map.bumpTopologyGeneration();
 	for (int sw=waterOnly?SWIM_CLASS_COUNT-1:0;sw<(waterOnly?SWIM_CLASS_COUNT:SWIM_CLASS_COUNT-1);++sw)
 	{
+		std::vector<Uint16> expected(world.game.map.cellCount());
+		world.game.map.seedMaterialGradient(0,CHERRY,sw,expected.data(),true);
+		world.game.map.propagateGradient(expected.data(),sw);
 		world.game.map.updateMaterialGradient(0,CHERRY,sw,true);
+		// An older in-flight refresh may publish first. Wait for the generation
+		// captured after painting rather than treating any pointer swap as fresh.
+		glob2test::awaitGradient(world.game,[&] {
+			const auto* field=world.game.map.getMaterialGradientSlot(0,CHERRY,sw,true);
+			return field && std::equal(expected.begin(),expected.end(),field) ? field : nullptr;
+		});
 		CHECK(world.game.map.materialAvailableSlot(0,CHERRY,sw,5,5,true)==(sw>0));
 	}
     }
@@ -311,14 +338,14 @@ TEST_CASE("a frequently refreshed market field publishes depletion and restockin
 	market->setMaterial(CHERRY, 20);
 	map.configureGradientPipeline(2,3);
 	map.getMaterialGradientSlot(0,CHERRY,0,true);
-	for (int tick=0;tick<8;++tick) { map.advanceGradientPipeline(); map.syncStep(tick); }
+	for (int tick=0;tick<8;++tick) world.step();
 	CHECK(map.gradientPipelineStatus().published>0);
 	market->setMaterial(CHERRY, 0);
 	map.dirtyMarketGradientsSlot(0,CHERRY);
-	for (int tick=8;tick<16;++tick) { map.advanceGradientPipeline(); map.syncStep(tick); }
+	for (int tick=8;tick<16;++tick) world.step();
 	CHECK_FALSE(map.materialAvailableSlot(0,CHERRY,0,5,5,true));
 	market->addMaterialIntoBuilding(CHERRY);
-	for (int tick=16;tick<24;++tick) { map.advanceGradientPipeline(); map.syncStep(tick); }
+	for (int tick=16;tick<24;++tick) world.step();
 	CHECK(map.materialAvailableSlot(0,CHERRY,0,5,5,true));
 }
 TEST_CASE("upgrading cancelling and completing preserve shared stock and gate")

@@ -346,8 +346,7 @@ void Unit::subscriptionSuccess(Building* building, bool inside, bool attraction,
 					{
 						displacement=DIS_GOING_TO_RESOURCE;
 						targetBuilding=NULL;
-						findMaterialDestination(destinationPurpose,&targetX,&targetY,nullptr,attachedBuilding->fetchesFromMarkets(),attachedBuilding);
-						setValidTarget(true);
+						setValidTarget(queryMaterialDestination(destinationPurpose,&targetX,&targetY,nullptr,attachedBuilding->fetchesFromMarkets(),attachedBuilding)==RouteResult::Reachable);
 					}
 				}
 				break;
@@ -751,20 +750,28 @@ bool Unit::continueExtendedCargoCollection()
 	};
 	if (carriedMaterial>=0 && !widePrimaryCargo()) subtract(carriedMaterial,{carriedPacket.numerator,carriedPacket.denominator});
 	if (const auto* extra=owner->game->unitCargo.find(gid)) for (const auto& entry:*extra) subtract(entry.material,entry.packet);
-	int selected=-1, best=INT_MAX;
+	int selected=-1, pending=-1, best=INT_MAX;
 	for (int material=0;material<MaterialCount;++material) {
 		if (wished[material]<=0 || !canCarryMaterial(material)) continue;
 		int distance;
-		if (!findMaterialDestination(material,nullptr,nullptr,&distance,attachedBuilding->fetchesFromMarkets(),attachedBuilding)) continue;
+        const auto route=queryMaterialDestination(material,nullptr,nullptr,&distance,attachedBuilding->fetchesFromMarkets(),attachedBuilding);
+        if (route==RouteResult::Pending) { if (pending<0) pending=material; continue; }
+        if (route!=RouteResult::Reachable) continue;
 		if (distance>=foodStepsLeft(trigHungry)/2) continue;
 		const int score=int(std::min(Sint64(INT_MAX),Sint64(distance)*256/wished[material]));
 		if (score<best) { selected=material; best=score; }
 	}
+	if (selected<0 && pending>=0) {
+		destinationPurpose=pending; setTargetBuilding(nullptr);
+		displacement=DIS_GOING_TO_RESOURCE; setValidTarget(false);
+		return true;
+	}
 	if (selected<0) return false;
 	int distance;
-	if (!findMaterialDestination(selected,&targetX,&targetY,&distance,attachedBuilding->fetchesFromMarkets(),attachedBuilding)) return false;
+	const auto route=queryMaterialDestination(selected,&targetX,&targetY,&distance,attachedBuilding->fetchesFromMarkets(),attachedBuilding);
+	if (route==RouteResult::Unreachable) return false;
 	destinationPurpose=selected; setTargetBuilding(nullptr);
-	displacement=DIS_GOING_TO_RESOURCE; setValidTarget(true);
+	displacement=DIS_GOING_TO_RESOURCE; setValidTarget(route==RouteResult::Reachable);
 	return true;
 }
 
@@ -802,8 +809,18 @@ bool Unit::findMaterialDestination(int material,Sint32* x,Sint32* y,int* distanc
 	return true;
 }
 
-// Air clearing has no ground gradient. This cold capability combination scans
-// goals once per completed action and shares the constrained air-distance field.
+RouteResult Unit::queryMaterialDestination(int material,Sint32* x,Sint32* y,int* distance,bool withMarkets,const Building* consumer)
+{
+    Map& map=*owner->map;
+    if (!performance[FLY]) {
+        const auto result=map.queryMaterialDistance(owner->teamNumber,material,swimClass(),posX,posY,distance,withMarkets,consumer);
+        if (result!=RouteResult::Reachable || !x || !y) return result;
+        return map.materialAvailableUpdateSlot(owner->teamNumber,material,swimClass(),posX,posY,x,y,distance,withMarkets,consumer)
+            ? RouteResult::Reachable : RouteResult::Unreachable;
+    }
+    return findMaterialDestination(material,x,y,distance,withMarkets,consumer) ? RouteResult::Reachable : RouteResult::Unreachable;
+}
+
 bool Unit::findAirClearingDestination(const Building* zone,Sint32* x,Sint32* y,int* distance)
 {
 	Map& map=*owner->map;
@@ -831,6 +848,10 @@ bool Unit::findAirClearingDestination(const Building* zone,Sint32* x,Sint32* y,i
 	if (best==UINT_MAX) return false;
 	*x=bestX; *y=bestY; *distance=(best+GRADIENT_STEP-1)/GRADIENT_STEP; return true;
 }
+RouteResult Unit::queryAirClearingDestination(const Building* zone,Sint32* x,Sint32* y,int* distance)
+{
+    return findAirClearingDestination(zone,x,y,distance) ? RouteResult::Reachable : RouteResult::Unreachable;
+}
 
 bool Unit::findAirGuardDestination(Sint32* x,Sint32* y)
 {
@@ -845,4 +866,8 @@ bool Unit::findAirGuardDestination(Sint32* x,Sint32* y)
 		if (cost<best) { best=cost; *x=px; *y=py; }
 	}
 	return best!=UINT_MAX;
+}
+RouteResult Unit::queryAirGuardDestination(Sint32* x,Sint32* y)
+{
+    return findAirGuardDestination(x,y) ? RouteResult::Reachable : RouteResult::Unreachable;
 }

@@ -294,7 +294,30 @@ buffers, partial thread-creation failure, exception delivery and teardown. It ca
 also be compiled directly with ThreadSanitizer without SDL.
 
 `BuildingGradientInvalidationHarness` exercises real resource, guard and clear
-fields, including a synchronous update while an older snapshot is pending.
+fields, including cold publication and soft edits while an older snapshot is pending.
+`DelayedGradientPublication` covers complete material/area fields, FIFO admission,
+and binary/text save continuation across
+one, two, four and eight compute participants. Their checkpoint with both
+admitted jobs and queued demand also checks that text serialization preserves
+the two inventories independently.
+
+The publication suite is included in `web-tests`. After building the serial
+and threaded Wasm harnesses, run from `browser/`:
+
+```sh
+npx playwright test determinism.spec.js --grep 'ground gradient publication'
+```
+
+This runs the same corpus in each browser runtime and exports JUnit, per-boundary
+checksum traces and named owner/worker kernel counters under
+`artifacts/browser-determinism/gradient-publication/`. Binary/text save fixtures
+round-trip inside browser MEMFS. The compiled serial target uses the caller at
+the same fixed deadlines; threaded builds retain the worker preparation audit checks. Lazy reads and explicit
+save/array materialization may expand building fields on the owner; the audit
+checks seeding and cold input preparation separately from reader expansion.
+`HiringPlanner` verifies that background ranking extends only the required
+frontier, leaves distant cells unresolved, and lets live admission reuse the work.
+
 `benchmark_gradient_pipeline.py --verify` compares real-game per-tick traces across
 worker counts under the same delayed schedule. `check_gradient_pipeline.py` also
 checks the one-worker/eight-tick defaults and save/resume at each of the eight
@@ -341,11 +364,14 @@ keeping every tile of a farmed field alive, and a save/load round trip. Design:
 `MarketFetch` covers hiring and arrival at stocked markets, preference for a
 nearer natural resource, stock exhaustion, a retained worker's next delivery, and binary/text preservation of market
 fields and pending gradient publications. Non-market buildings use these fields;
-markets themselves fetch from natural resources. The market fields participate
-in the existing one-field-per-tick round robin and optional fixed-delay gradient
-pipeline. Stock transitions invalidate pending market snapshots and request a
-refresh. Format 135 saves these fields and their scheduling flags; older saves
-load without them and allocate them on first use. Run
+markets themselves fetch from natural resources. Market demand and periodic
+refreshes share deterministic FIFO admission and fixed-delay publication with
+other material fields. Stock transitions request a refresh without cancelling
+an admitted snapshot; its complete result publishes at the original deadline,
+then newer dirtiness schedules another refresh. Missing fields remain Pending
+until publication. Format 135 introduced saved market fields and scheduling
+flags; format 168 also preserves cold requests and their publication state.
+Older saves without market fields enroll them on first use. Run
 `python3 test/run_tests.py --filter 'MarketFetch/*'`.
 
 `MarketFetch` also checks the three market levels: existing type IDs 49–50

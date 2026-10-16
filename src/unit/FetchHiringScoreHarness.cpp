@@ -4,6 +4,7 @@
 // whether a unit may be hired for a resource measures the walk to that resource,
 // not the whole fetch-and-carry trip, and the score estimates that whole trip.
 #include "EngineFixtures.h"
+#include "GradientFixture.h"
 #include "GlobalContainer.h"
 #include "FileManager.h"
 #include <SDL3/SDL.h>
@@ -21,6 +22,7 @@
 #include "IntBuildingType.h"
 #include "FixedPoint.h"
 #include <algorithm>
+#include <array>
 #include <cstdio>
 #include <cstdlib>
 #include <climits>
@@ -29,6 +31,8 @@
 class FetchHiringScoreHarness
 {
 public:
+    static bool considerExplorer(Building* building, Unit* unit, int* distance)
+        { return building->considerUnitForExplorerFlag(unit,distance); }
     static std::vector<Unit*> candidates(Building* building)
     {
         building->resetFailureTallies();
@@ -101,6 +105,8 @@ static void aUnitIsJudgedOnTheWalkToTheResource()
 	unit->attachedBuilding = NULL;
 	const int swimClass = unit->swimClass();
 
+	glob2test::awaitGradient(game, [&] { return game.map.buildingGradient(site,swimClass); });
+	glob2test::awaitGradient(game, [&] { return game.map.getMaterialGradientSlot(0,WOOD,swimClass); });
 	int distBuilding = 0, distResource = 0;
 	require(game.map.buildingAvailable(site, swimClass, unit->posX, unit->posY, &distBuilding),
 		"the site is reachable");
@@ -167,6 +173,8 @@ static void theScoreEstimatesTheWholeTrip()
 	unit->hungry = unit->trigHungry + 1000 * unit->race->hungriness;
 
 	const int swimClass = unit->swimClass();
+	glob2test::awaitGradient(game, [&] { return game.map.buildingGradient(site,swimClass); });
+	glob2test::awaitGradient(game, [&] { return game.map.getMaterialGradientSlot(0,WOOD,swimClass); });
 	int distBuilding = 0, distResource = 0;
 	require(game.map.buildingAvailable(site, swimClass, unit->posX, unit->posY, &distBuilding),
 		"the site is reachable");
@@ -201,6 +209,8 @@ TEST_SUITE("FetchHiringScore")
         auto* unit=world.addUnit(WORKER,6,8);
         REQUIRE(unit);
         unit->activity=Unit::ACT_RANDOM; unit->medical=Unit::MED_FREE;
+        glob2test::awaitGradient(world.game, [&] { return world.game.map.buildingGradient(inn,unit->swimClass()); });
+        glob2test::awaitGradient(world.game, [&] { return world.game.map.getMaterialGradientSlot(0,WHEAT,unit->swimClass()); });
         int buildingDistance=0,resourceDistance=0;
         REQUIRE(world.game.map.buildingAvailable(inn,unit->swimClass(),unit->posX,unit->posY,&buildingDistance));
         REQUIRE(world.game.map.materialAvailableSlot(0,WHEAT,unit->swimClass(),unit->posX,unit->posY,&resourceDistance));
@@ -283,7 +293,13 @@ TEST_SUITE("FetchHiringScore")
         CHECK(team->myUnits[3]->destinationPurpose == -1);
         CHECK(team->myUnits[Unit::MAX_COUNT-1]->destinationPurpose == -1);
         REQUIRE(world.game.map.incResourceByIndex(16, 8, WHEAT, 0));
-        CHECK(FetchHiringScoreHarness::candidates(inn) == std::vector<Unit*>{team->myUnits[3], team->myUnits[Unit::MAX_COUNT-1]});
+        glob2test::awaitGradient(world.game,[&] {
+            return world.game.map.getMaterialGradientSlot(0,WHEAT,team->myUnits[3]->swimClass());
+        });
+        glob2test::awaitBuildingGradient(world.game,inn,team->myUnits[3]->swimClass(),BuildingRoute::Footprint);
+        // Eligibility scans retain population order; the ranked delivery
+        // choice above independently proves that equal scores prefer low gid.
+        CHECK(FetchHiringScoreHarness::candidates(inn) == std::vector<Unit*>{team->myUnits[Unit::MAX_COUNT-1], team->myUnits[3]});
         team->myUnits[Unit::MAX_COUNT-1]->activity = Unit::ACT_FILLING;
         CHECK(FetchHiringScoreHarness::candidates(inn) == std::vector<Unit*>{team->myUnits[3]});
         CHECK(FetchHiringScoreHarness::unavailable(inn) == 1);

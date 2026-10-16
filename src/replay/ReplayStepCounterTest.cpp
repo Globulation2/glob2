@@ -168,7 +168,10 @@ void testVersionBounds()
 		      "observation boundary: format166 replay uses older timing");
 		ReplayReader current;
 		check(current.loadReplay(writeReplayBody(REPLAY_MINIMUM_VERSION_MINOR,1),false),
-		      "observation boundary: current replay timing accepted");
+		      "current delayed-publication replay accepted");
+		ReplayReader observation;
+		check(!observation.loadReplay(writeReplayBody(167,1),false),
+		      "delayed publication boundary: format167 replay rejected");
 	}
 	for (Uint16 version : {137, 138, 139, 140, 141}) {
 		ReplayReader reader;

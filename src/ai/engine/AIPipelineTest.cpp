@@ -365,7 +365,7 @@ TEST_CASE("legacy zero-delay real output and its execution receipt survive pipel
     // This full save now carries a real accepted receipt whose historical
     // scheduled and execution ticks are both zero. Reload must retain it.
     const auto checkpoint=save(game);
-    glob2test::HeadlessGame restored({}); load(restored.game,checkpoint,2);
+    glob2test::HeadlessGame restored(glob2test::GameOptions{}); load(restored.game,checkpoint,2);
     CHECK(state(restored.game)==state(game));
     CHECK(restored.game.deliverAIOrders(player,false)[0].second->getOrderType()==ORDER_NULL);
     restored.game.observeCompletedWorld();

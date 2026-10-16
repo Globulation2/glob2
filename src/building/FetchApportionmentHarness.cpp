@@ -3,6 +3,7 @@
 // spread its fetchers across them, instead of sending everyone to whichever
 // resource happens to be nearest and leaving the others with nobody.
 #include "EngineFixtures.h"
+#include "GradientFixture.h"
 #include <list>
 #include "GlobalContainer.h"
 #include "FileManager.h"
@@ -88,6 +89,8 @@ static void siteSpreadsItsFetchersAcrossBothResources()
 
 	// Confirm the layout really is lopsided, so a pass here means the
 	// apportionment did the work and not an accidentally even map.
+	glob2test::awaitGradient(game, [&] { return game.map.buildingGradient(site,0); });
+	for (int material : {WOOD,STONE}) glob2test::awaitGradient(game, [&] { return game.map.getMaterialGradientSlot(0,material,0); });
 	int woodDistance = 0, stoneDistance = 0;
 	Unit* probe = team->myUnits[0];
 	require(game.map.materialAvailableSlot(0, WOOD, probe->swimClass(), probe->posX, probe->posY, &woodDistance),
@@ -162,6 +165,8 @@ static int hireOneOfTwo(int emptyX, int emptyY, int loadedX, int loadedY, int* e
 	require(site->neededMaterial(WHEAT) == 0, "the wheat is of no use here");
 
 	const int swimClass = team->myUnits[0]->swimClass();
+	glob2test::awaitGradient(game, [&] { return game.map.buildingGradient(site,swimClass); });
+	glob2test::awaitGradient(game, [&] { return game.map.getMaterialGradientSlot(0,STONE,swimClass); });
 	for (int n = 0; n < 2; ++n)
 	{
 		Unit* unit = team->myUnits[n];
