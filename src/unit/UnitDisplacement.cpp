@@ -228,7 +228,7 @@ void Unit::handleDisplacement(void)
 								int distance;
 								const auto route=performance[FLY]
 									? queryMaterialDestination(r,nullptr,nullptr,&distance,false,attachedBuilding)
-									: map->queryMaterialDistance(teamNumber,r,swimClass(),posX,posY,&distance,false,attachedBuilding);
+									: (map->materialAvailableSlot(teamNumber,r,swimClass(),posX,posY,&distance,false,attachedBuilding) ? RouteResult::Reachable : RouteResult::Unreachable);
 								if (route==RouteResult::Pending) { if (pendingResource<0) pendingResource=r; continue; }
 								if (route!=RouteResult::Reachable || (distance<<1)>=timeLeft) continue;
 								const int value=distance/need;

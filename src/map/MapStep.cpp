@@ -418,7 +418,7 @@ void Map::stagePeriodicGradientPreparation()
 		for (int t=0; t<numberOfTeam; t++)
 			for (int r=0; r<MaterialCount; r++)
 				for (int s=0; s<SWIM_CLASS_COUNT; s++)
-					if (materialGradients[t][r][s] && !gradientUpdated[t][r][s])
+					if (hasMaterialSourceSlot(r) && materialGradients[t][r][s] && !gradientUpdated[t][r][s])
 					{
                         const bool queued=dispatch(&materialGradients[t][r][s], Kind::Materials, t, r, s);
                         gradientUpdated[t][r][s]=true; // Visited in this refresh round, even if already pending.
