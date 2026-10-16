@@ -221,6 +221,7 @@ TEST_SUITE("UnitContinuation")
                 if (medical==Unit::MED_HUNGRY) service->setMaterial(WHEAT, 20);
                 world.team->addToStaticAbilitiesLists(service);
                 service->update();
+                if (!unit->performance[FLY]) glob2test::awaitBuildingGradient(world.game,service,unit->swimClass());
                 REQUIRE((medical==Unit::MED_HUNGRY?world.team->findNearestFood(unit):world.team->findNearestHeal(unit))==service);
             }
             unit->medical=Unit::Medical(medical);
