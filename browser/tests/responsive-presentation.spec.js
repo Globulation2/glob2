@@ -11,8 +11,11 @@ async function touchMatch(page,x,y) {await page.touchscreen.tap(x,y);await match
 
 test.describe('responsive mixed input',()=>{
   test.use({viewport:{width:1024,height:768},hasTouch:true});
+  test.beforeEach(async({page})=>{
+    await page.goto(gameURL());await screen(page,'HandPreferenceScreen');
+    await tapControl(page,'hand.right');await screen(page,'MainMenuScreen');
+  });
   test('native text editing preserves Unicode and selection across rotation',async({page},info)=>{
-    await page.goto(gameURL());await screen(page,'MainMenuScreen');
     expect(await page.evaluate(()=>Module.presentationMetrics.touch)).toBe(true);
     await clickMainMenu(page,'settings');await screen(page,'SettingsScreen');
     const canvas=page.locator('#canvas');
@@ -44,7 +47,6 @@ test.describe('responsive mixed input',()=>{
     expect(await page.evaluate(()=>(FS.analyzePath('/home/web_user/.glob2/preferences.txt').exists ? FS.readFile('/home/web_user/.glob2/preferences.txt',{encoding:'utf8'}) : ''))).toContain('username=Ada 🌱');
   });
   test('touch setup and gameplay retain their session when resized with a mouse attached',async({page},info)=>{
-    await page.goto(gameURL());await screen(page,'MainMenuScreen');
     await clickMainMenu(page,'custom');await screen(page,'CustomGameScreen');
     await clickCustomGameStart(page);
     await expect.poll(async()=>(await snapshot(page)).tick,{timeout:60000}).toBeGreaterThan(20);
@@ -99,7 +101,6 @@ test.describe('responsive mixed input',()=>{
   test('touch browser editor retains its dock across phone rotation',async({page},info)=>{
     const controls=()=>page.evaluate(()=>Object.keys(glob2Diagnostics.snapshot().controls));
     const tray=async()=>(await controls()).some(key=>key.startsWith('tray/'));
-    await page.goto(gameURL());await screen(page,'MainMenuScreen');
     await clickMainMenu(page,'editor');await screen(page,'EditorMainMenu');
     await clickControl(page,'new-map');await screen(page,'NewMapScreen');
     await clickCreateMap(page);await screen(page,'MapEditorScreen');
@@ -128,7 +129,6 @@ test.describe('responsive mixed input',()=>{
   // TODO(WS-C merge): EditorDock publishes its brush cards as brush/<catalogue id>
   // (EditorDock.h); enable this once the dock is on this branch.
   test.fixme('touch tablet dock publishes its brush cards',async({page})=>{
-    await page.goto(gameURL());await screen(page,'MainMenuScreen');
     await clickMainMenu(page,'editor');await screen(page,'EditorMainMenu');
     await clickControl(page,'new-map');await screen(page,'NewMapScreen');
     await clickCreateMap(page);await screen(page,'MapEditorScreen');
