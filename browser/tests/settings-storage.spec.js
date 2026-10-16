@@ -52,7 +52,11 @@ for (const fault of ['quota','aborted transaction']) test(`settings survive ${fa
   await screen(page,'SettingsScreen');
   // The status line sits at the left of the footer, on the Done button's row.
   const done=await controlBox(page,'done'), panel=await require('./main-menu').rootBox(page,'done');
-  await expect.poll(()=>hasDarkText(page,{x:panel.x,y:done.y,width:Math.max(24,done.x-panel.x-160),height:done.height})).toBe(true);
+  // Small support text has antialiased ink lighter than interactive labels.
+  // Keep the pixel-count floor and verify that bare footer paper does not pass.
+  const blankX=panel.x+panel.width/2;
+  await expect.poll(()=>hasDarkText(page,{x:blankX,y:done.y,width:Math.max(24,done.x-blankX-160),height:done.height},180)).toBe(false);
+  await expect.poll(()=>hasDarkText(page,{x:panel.x,y:done.y,width:Math.max(24,done.x-panel.x-160),height:done.height},180)).toBe(true);
   await page.screenshot({path:info.outputPath('settings-save-failure.png')});
   const restored=await context.newPage(); await restored.goto(gameURL()); await screen(restored,'MainMenuScreen');
   expect(await preferences(restored)).toEqual(lowPreferences); await restored.close();
