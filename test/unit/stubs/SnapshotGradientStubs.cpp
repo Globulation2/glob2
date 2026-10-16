@@ -18,3 +18,9 @@ namespace gradient_preparation
 {
 MinimalCostViewMetrics minimalCostViewMetrics() noexcept { return {}; }
 }
+
+#include "gradient/AirGradientRuntime.h"
+#include <cassert>
+// Unit Map fixtures never enroll air guidance; catalog installation therefore
+// has no air inventory to retire. Engine tests exercise the real invalidation.
+void AirGradientRuntime::invalidate(Map&) { assert(entries.empty()); }
