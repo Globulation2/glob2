@@ -222,7 +222,7 @@ void generate(const char *path)
 		auto order = game.players[0]->ai->getOrder(false);
 		order->sender = 0;
 		game.executeOrder(order, 0);
-		game.syncStep(0);
+		game.step(0);
 		if (i % 3000 == 0)
 		{
 			int buildings = 0, units = 0;
@@ -695,7 +695,7 @@ int main(int argc, char **argv)
 				auto order = gui.game.players[0]->ai->getOrder(false);
 				order->sender = 0;
 				gui.game.executeOrder(order, 0);
-				gui.game.syncStep(0);
+				gui.game.step(0);
 			}
 			const auto result =
 				std::make_pair(gui.game.checkSum(nullptr, nullptr, nullptr), getSyncRandState());

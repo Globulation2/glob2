@@ -39,6 +39,22 @@ class GradientComputeTest(unittest.TestCase):
     def test_current_bundle_is_complete(self):
         self.assertEqual(set(shader.verify()['files']), shader.BUNDLE_FILES)
 
+    def test_windows_checkout_preserves_receipted_bytes(self):
+        # Exercise Git's real checkout conversion with the Windows default.
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            self.copy_bundle(root)
+            shutil.copyfile(ROOT / '.gitattributes', root / '.gitattributes')
+            subprocess.run(['git', 'init', '-q', str(root)], check=True)
+            subprocess.run(['git', '-C', str(root), '-c', 'core.autocrlf=true', 'add', '.'],
+                           check=True, capture_output=True)
+            for relative in (*shader.BUNDLE_FILES,
+                             *(f'third_party/vulkan/{name}' for name in shader.VULKAN_FILES)):
+                (root / relative).unlink()
+            subprocess.run(['git', '-C', str(root), '-c', 'core.autocrlf=true',
+                            'checkout-index', '-a', '-f'], check=True)
+            shader.verify(root)
+
     def test_every_shipped_input_is_checked(self):
         for relative in (*shader.BUNDLE_FILES, *(f'third_party/vulkan/{name}' for name in shader.VULKAN_FILES)):
             with self.subTest(input=relative), tempfile.TemporaryDirectory() as directory:

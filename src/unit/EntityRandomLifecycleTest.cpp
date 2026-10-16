@@ -335,6 +335,35 @@ TEST_SUITE("EntityRandomLifecycle")
         building->areaFundingTick = 0;
         unit->entityRandom.nextU32(); building->entityRandom.nextU32();
         auto bytes = save(world.game, true);
+        // Format 150 stored allocation slots, before counted append-order records.
+        // Rewrite the entity records too; changing the header alone is not an old save.
+        auto legacyPopulation = [&](const char* name, auto* const* slots, int capacity) {
+            auto* backend = new GAGCore::MemoryStreamBackend;
+            GAGCore::TextOutputStream output(backend);
+            output.writeEnterSection(name);
+            for (int slot = 0; slot < capacity; ++slot) {
+                output.writeEnterSection(unsigned(slot));
+                output.writeUint32(slots[slot] != nullptr, "isUsed");
+                if (slots[slot]) slots[slot]->save(&output);
+                output.writeLeaveSection();
+            }
+            output.writeLeaveSection();
+            output.flush();
+            const auto start = bytes.find(std::string(name) + "\n");
+            REQUIRE(start != std::string::npos);
+            auto end = bytes.find('{', start);
+            REQUIRE(end != std::string::npos);
+            unsigned depth = 0;
+            do {
+                REQUIRE(end < bytes.size());
+                if (bytes[end] == '{') ++depth;
+                if (bytes[end] == '}') --depth;
+                ++end;
+            } while (depth);
+            bytes.replace(start, end - start, backend->takeContents());
+        };
+        legacyPopulation("myUnits", world.team->myUnits, Unit::MAX_COUNT);
+        legacyPopulation("myBuildings", world.team->myBuildings, Building::MAX_COUNT);
         // Reconstruct the released format-150 text layout: keep its area fields,
         // but remove every later RNG section, rather than just patching a header.
         auto eraseSections = [&](const std::string& name) {

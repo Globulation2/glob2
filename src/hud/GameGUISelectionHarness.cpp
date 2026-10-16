@@ -29,6 +29,10 @@ public:
         first = world.addUnit(WORKER, 10, 10);
         REQUIRE(first->gid == firstGid);
         REQUIRE(world.game.teams[0]->liveUnits.back() == first);
+        REQUIRE(world.game.teams[0]->liveUnits.size() == 3);
+        REQUIRE(first->gid != middle->gid);
+        REQUIRE(first->gid != last->gid);
+        CAPTURE(first->gid); CAPTURE(middle->gid); CAPTURE(last->gid);
         gui.setSelection(GameGUI::UNIT_SELECTION, middle);
         gui.prepareLocalPresentation(gui.frameScene);
         gui.iterateSelection();

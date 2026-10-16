@@ -591,9 +591,8 @@ static void run(bool gpu, int width, int height)
             SDL_Event wheel{};
             wheel.type = SDL_EVENT_MOUSE_WHEEL;
             wheel.wheel.y = 1;
-#if SDL_VERSION_ATLEAST(2,0,18)
-            wheel.wheel.y = 1;
-#endif
+            wheel.wheel.mouse_x = x;
+            wheel.wheel.mouse_y = y;
             const double beforeZoom = gui.camera.zoom;
             gui.processEvent(&wheel);
             REQUIRE(gui.camera.zoom > beforeZoom);
@@ -1066,6 +1065,8 @@ static void run(bool gpu, int width, int height)
                 SDL_Event wheel{};
                 wheel.type = SDL_EVENT_MOUSE_WHEEL;
                 wheel.wheel.y = -1;
+                wheel.wheel.mouse_x = gui.mouseX;
+                wheel.wheel.mouse_y = gui.mouseY;
                 for (int notch = 0; notch < 60; notch++)
                     gui.processEvent(&wheel);
                 REQUIRE(gui.camera.zoom == gui.camera.minimumZoom());

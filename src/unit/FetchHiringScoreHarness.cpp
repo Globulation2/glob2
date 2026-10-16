@@ -37,6 +37,8 @@ public:
             int distance=0;
             if(unit->hasCapability(UnitRuntimeTraits::Transport) && unit->performance[HARVEST] && unit->performance[BUILD] && building->considerUnitForMaterial(unit,WHEAT,&distance))units.push_back(unit);
         }
+        // This helper checks membership; carrying() checks the planner's ranking.
+        std::sort(units.begin(),units.end(),[](const Unit* a,const Unit* b) { return a->gid<b->gid; });
         return units;
     }
     static int unavailable(Building* building)

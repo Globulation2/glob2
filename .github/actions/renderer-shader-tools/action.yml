@@ -1,0 +1,14 @@
+name: Pinned offline renderer shader compiler
+description: Build glslang 15.1.0 for the native Vulkan differential tests; it is never shipped.
+runs:
+  using: composite
+  steps:
+    - shell: bash
+      run: |
+        source_dir="$PWD/build/glslang-source"
+        git init "$source_dir"
+        git -C "$source_dir" fetch --depth 1 https://github.com/KhronosGroup/glslang.git 1062752a891c95b2bfeed9e356562d88f9df84ac
+        git -C "$source_dir" checkout --detach FETCH_HEAD
+        cmake -S "$source_dir" -B build/glslang-tools -DCMAKE_BUILD_TYPE=Release -DENABLE_OPT=OFF -DENABLE_GLSLANG_BINARIES=ON -DENABLE_HLSL=OFF
+        cmake --build build/glslang-tools -j2
+        echo "GLOB2_GLSLANG=$PWD/build/glslang-tools/StandAlone/glslang" >> "$GITHUB_ENV"
