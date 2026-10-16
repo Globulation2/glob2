@@ -218,7 +218,6 @@ def _build_variant(directory, identity, arguments, threaded=False, packaged=None
                 '#src/game/SharedWorkerLifecycleTest.cpp',
                 ('#src/map/gradient/BuildingGradientInvalidationHarness.cpp', dict(cxxflags=['-fno-access-control'])),
                 ('#src/map/gradient/DelayedGradientPublicationHarness.cpp', dict(cxxflags=['-fno-access-control'])),
-                ('#src/map/gradient/AirGradientPublicationHarness.cpp', dict(cxxflags=['-fno-access-control'])),
                 ('#src/engine/sim/snapshot/WorldSnapshotTest.cpp', dict(cxxflags=['-fno-access-control'])),
                 '#src/render/scene/SceneExtractTest.cpp', '#src/render/scene/SceneBufferTest.cpp',
                 '#src/render/overlay/OverlayFillTest.cpp',

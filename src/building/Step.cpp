@@ -18,6 +18,8 @@
 #include "Team.h"
 #include "Unit.h"
 #include "Order.h"
+#include "field/AirPathfind.h"
+#include "field/TerrainMovementCosts.h"
 
 void Building::step(void)
 {
@@ -98,14 +100,16 @@ bool considerBuildingCandidate(Building& building, Unit* unit, int* distBuilding
     if(unit->performance[FLY] && airDistance>=0) {
         *distBuilding=airDistance;accessible=airDistance!=INT_MAX;
     } else if(unit->performance[FLY]) {
-        Map& map=*building.owner->map;
-        if(map.hasAirTerrainConstraints()) {
-            int cost=0;
-            const auto result=map.queryAirBuildingDistance(&building,false,false,unit->posX,unit->posY,&cost);
-            if(result==RouteResult::Pending) return false;
-            accessible=result==RouteResult::Reachable;
-            *distBuilding=accessible?(cost+GRADIENT_STEP-1)/GRADIENT_STEP:INT_MAX;
-        } else *distBuilding=map.warpDistMax(unit->posX,unit->posY,building.posX,building.posY);
+        const Map& map=*building.owner->map;
+        field::AirDistanceField routes(map.getW(),map.getH(),building.posX,building.posY,
+            [&map](int x,int y){return map.terrainPropertiesAt(x,y).flyable;},
+            [&map](int x,int y){return map.cellRule(map.coordToIndex(x,y)).airCost;},
+            map.hasAirTerrainConstraints(),field::AirDistanceDirection::ToDestination);
+        if(routes.enabled()) {
+            const auto cost=routes.costTo(unit->posX,unit->posY);
+            accessible=cost!=decltype(routes)::unreachable;
+            *distBuilding=accessible?int((cost+GRADIENT_STEP-1)/GRADIENT_STEP):INT_MAX;
+        } else *distBuilding=building.owner->map->warpDistMax(unit->posX,unit->posY,building.posX,building.posY);
     } else {
         const auto result=building.owner->map->queryBuildingDistance(&building,unit->swimClass(),unit->posX,unit->posY,distBuilding,BuildingRoute::Footprint);
         if (result==RouteResult::Pending) return false;
@@ -260,6 +264,13 @@ bool Building::hireMaterialUnit(const int *targets, const int *served)
 	const auto *lists = owner->game->hiringCandidates(*this);
 	if (!lists)
 		return false;
+	const Map &map = *owner->map;
+	field::AirDistanceField air(
+		map.getW(), map.getH(), posX, posY,
+		[&map](int x, int y) { return map.terrainPropertiesAt(x, y).flyable; },
+		[&map](int x, int y) { return map.cellRule(map.coordToIndex(x, y)).airCost; },
+		type->runtimeFlyingCarriers && map.hasAirTerrainConstraints(),
+		field::AirDistanceDirection::ToDestination);
 	const auto choose = [&](Hiring::Job job, int material) -> Unit *
 	{
 		if (!wantsAnotherDelivery(material, targets, served))
@@ -273,17 +284,25 @@ bool Building::hireMaterialUnit(const int *targets, const int *served)
 						!u->hasCapability(UnitRuntimeTraits::Transport) || !u->performance[BUILD] ||
 						u->activity != Unit::ACT_RANDOM || u->medical != Unit::MED_FREE)
 						continue;
+					int airDistance = -1;
+					if (u->performance[FLY] && air.enabled())
+					{
+						const auto cost = air.costTo(u->posX, u->posY);
+						airDistance = cost == decltype(air)::unreachable
+										  ? INT_MAX
+										  : int((cost + GRADIENT_STEP - 1) / GRADIENT_STEP);
+					}
 					int distance = 0;
 					if (job == Hiring::Job::Delivery)
 					{
 						if (!u->hasDeliverableCargo(*this, material) ||
-							!considerUnitForBuilding(u, &distance))
+							!considerUnitForBuilding(u, &distance, airDistance))
 							continue;
 					}
 					else
 					{
 						if (!u->performance[HARVEST] || u->hasCarriedMaterial(material) ||
-							!considerUnitForMaterial(u, material, &distance))
+							!considerUnitForMaterial(u, material, &distance, airDistance))
 							continue;
 						Sint32 x, y;
 						if (u->queryMaterialDestination(material, &x, &y, nullptr,
@@ -326,12 +345,6 @@ bool Building::considerUnitForExplorerFlag(Unit* unit, int* dist, int terrainDis
 		return false;
 	}
 	int timeLeft = remainingFoodTime(*unit);
-    if(unit->performance[FLY] && terrainDistance<0 && owner->map->hasAirTerrainConstraints()) {
-        int cost=0;
-        const auto result=owner->map->queryAirBuildingDistance(this,false,false,unit->posX,unit->posY,&cost);
-        if(result==RouteResult::Pending) return false;
-        terrainDistance=result==RouteResult::Reachable?(cost+GRADIENT_STEP-1)/GRADIENT_STEP:INT_MAX;
-    }
     if(!unit->performance[FLY]) {
         int distance=0;
         const auto route=owner->map->queryBuildingDistance(this,unit->swimClass(),unit->posX,unit->posY,&distance,BuildingRoute::Combat);
@@ -441,13 +454,6 @@ bool Building::considerUnitForWarriorFlag(Unit* unit, int* dist, int terrainDist
 	// linear gradient steps respectively); compare as-is. The corresponding
 	// check in subscribeToBringMaterialsStep uses the same pairing.
 	int timeLeft = remainingFoodTime(*unit);
-    if(unit->performance[FLY] && terrainDistance<0 && owner->map->hasAirTerrainConstraints()) {
-        int cost=0;
-        const auto result=owner->map->queryAirBuildingDistance(this,false,false,unit->posX,unit->posY,&cost);
-        if(result==RouteResult::Pending) return false;
-        if(result!=RouteResult::Reachable){noteUnitFailing(unit,UnitCantAccessBuilding);return false;}
-        terrainDistance=(cost+GRADIENT_STEP-1)/GRADIENT_STEP;
-    }
 	if (unit->performance[FLY]) distBuilding=terrainDistance>=0 ? terrainDistance : owner->map->warpDistMax(unit->posX,unit->posY,posX,posY);
     else {
         const auto route=owner->map->queryBuildingDistance(this,unit->swimClass(),unit->posX,unit->posY,&distBuilding,BuildingRoute::Combat);
@@ -503,6 +509,13 @@ bool Building::hireFlagUnits()
 	const auto *lists = owner->game->hiringCandidates(*this);
 	if (!lists)
 		return false;
+	const Map &map = *owner->map;
+	field::AirDistanceField air(
+		map.getW(), map.getH(), posX, posY,
+		[&map](int x, int y) { return map.terrainPropertiesAt(x, y).flyable; },
+		[&map](int x, int y) { return map.cellRule(map.coordToIndex(x, y)).airCost; },
+		type->runtimeFlyingAttractions && map.hasAirTerrainConstraints(),
+		field::AirDistanceDirection::ToDestination);
 	bool hired = false;
 	while (Sint32(unitsWorking.size()) < desiredMaxUnitWorking)
 	{
@@ -531,11 +544,18 @@ bool Building::hireFlagUnits()
 							auto *u = owner->game->resolveUnit(entry.unit);
 							if (!u || u->isDead || u->owner != owner || u->attachedBuilding == this)
 								continue;
-							int distance = 0;
+							int travel = -1, distance = 0;
+							if (u->performance[FLY] && air.enabled())
+							{
+								const auto cost = air.costTo(u->posX, u->posY);
+								travel = cost == decltype(air)::unreachable
+											 ? INT_MAX
+											 : int((cost + GRADIENT_STEP - 1) / GRADIENT_STEP);
+							}
 							const bool eligible =
 								role == 0   ? considerUnitForWorkerFlag(u, &distance)
-								: role == 1 ? considerUnitForExplorerFlag(u, &distance)
-											: considerUnitForWarriorFlag(u, &distance);
+								: role == 1 ? considerUnitForExplorerFlag(u, &distance, travel)
+											: considerUnitForWarriorFlag(u, &distance, travel);
 							if (eligible)
 							{
 								candidate = u;

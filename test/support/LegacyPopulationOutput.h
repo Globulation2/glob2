@@ -48,7 +48,7 @@ class LegacyPopulationOutput : public GAGCore::BinaryOutputStream
             // These formats share the current material/swim slot encoding.
             // Cold demands and new cache families have no historical equivalent.
             if (formatVersion<164
-                || !runtime.materialFields.empty() || !runtime.air.entries.empty()
+                || !runtime.materialFields.empty()
                 || !runtime.fieldRequests.empty())
                 throw std::logic_error("Historical pending runtime contains unrepresentable demand or caches");
             const auto legacyEnd=Team::MAX_COUNT*(2*MaterialSlotCount+2)*SWIM_CLASS_COUNT;
@@ -69,7 +69,7 @@ class LegacyPopulationOutput : public GAGCore::BinaryOutputStream
             });
             return;
         }
-        if (!runtime.materialFields.empty() || !runtime.air.entries.empty()
+        if (!runtime.materialFields.empty()
             || runtime.pipeline.pendingCount() || runtime.buildings.pendingCount()
             || !runtime.fieldRequests.empty())
             throw std::logic_error("Synthetic historical fixture requires empty gradient jobs and material/air caches");

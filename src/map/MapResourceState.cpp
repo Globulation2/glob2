@@ -103,7 +103,6 @@ void Map::installCatalogs(std::shared_ptr<const TerrainRegistry> terrain,
             gradientRuntime->pipeline.invalidate(&field.published);
             field.topology=0;
         }
-        gradientRuntime->air.invalidate(*this);
         if (game)
             for (int team=0;team<game->teamsCount();++team)
                 for (auto* building:game->teams[team]->liveBuildings.entries())

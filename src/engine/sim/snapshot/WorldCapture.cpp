@@ -426,11 +426,6 @@ Handle capture(const Game& game,
 			if (storage) storage->entityBytesCopied += sizeof(UnitState);
 			v.identity = Game::refOf(u); v.team = t;
 			v.realAttackStrength = u->getRealAttackStrength();
-			v.hasClearingClaim = u->previousClearingArea && game.map.isClearingAreaClaimed(
-				u->previousClearingArea->x, u->previousClearingArea->y, t) == u->gid;
-			v.clearingClaimX = v.hasClearingClaim ? u->previousClearingArea->x : 0;
-			v.clearingClaimY = v.hasClearingClaim ? u->previousClearingArea->y : 0;
-			v.clearingClaimDistance = v.hasClearingClaim ? u->previousClearingAreaDistance : 0;
                 if(!v.performance[FLY] && !v.isDead && v.activity==Unit::ACT_RANDOM && v.medical==Unit::MED_FREE)entities->availableGroundClasses[t]|=Uint8(1u<<Map::swimClass(v.performance[WALK],v.performance[SWIM]));
 			v.attached = Game::refOf(u->attachedBuilding);
 			v.target = Game::refOf(u->targetBuilding);
@@ -695,12 +690,6 @@ void verifyCapture(const Game& game, const Handle& handle)
                     throw std::logic_error("snapshot verification: unit state differs from the game");
                 if (unit.realAttackStrength != live->getRealAttackStrength())
                     throw std::logic_error("snapshot verification: unit attack strength differs from the game");
-                const bool hasClaim=live->previousClearingArea && game.map.isClearingAreaClaimed(
-                    live->previousClearingArea->x,live->previousClearingArea->y,t)==live->gid;
-                if (unit.hasClearingClaim!=hasClaim || (hasClaim &&
-                    (unit.clearingClaimX!=live->previousClearingArea->x || unit.clearingClaimY!=live->previousClearingArea->y
-                     || unit.clearingClaimDistance!=live->previousClearingAreaDistance)))
-                    throw std::logic_error("snapshot verification: unit clearing claim differs from the game");
                 if (unit.attached != Game::refOf(live->attachedBuilding) || unit.target != Game::refOf(live->targetBuilding))
                     throw std::logic_error("snapshot verification: unit building references differ from the game");
             }

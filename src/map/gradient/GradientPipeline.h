@@ -38,9 +38,6 @@ class GradientPipeline
 		ComputeExecutor::Batch batch;
 		GradientPipeline *owner = nullptr;
 		std::function<void(Job &)> seed;
-        std::shared_ptr<void> payload;
-        std::function<void(Job&,GradientWorkspace&)> customWork;
-        std::function<void(Job&)> customPublish;
 		// Allocated only for GPU-configured submissions, never CPU jobs.
 		std::unique_ptr<DeviceJob> device;
 	};
@@ -50,7 +47,6 @@ class GradientPipeline
 		const std::uint16_t *data;
 		unsigned remaining;
         bool superseded;
-        const Job* job=nullptr;
     };
     struct RestoredSnapshot
 	{
@@ -59,8 +55,6 @@ class GradientPipeline
 		unsigned remaining;
 		bool superseded;
         std::unique_ptr<std::uint16_t[]> data;
-        std::shared_ptr<void> payload;
-        std::function<void(Job&)> customPublish;
     };
     using Work = std::function<void(Job &, GradientWorkspace &)>;
 	using AsyncWork = std::function<std::shared_ptr<gradient_kernel::OwnedGradientField>(
@@ -114,8 +108,7 @@ class GradientPipeline
 		{
 			if (job.seed)
 				job.seed(job);
-            if (job.customWork) job.customWork(job,scratch.propagation);
-            else self.work(job, scratch.propagation);
+            self.work(job, scratch.propagation);
 		}
 		catch (...)
 		{
@@ -133,12 +126,6 @@ class GradientPipeline
 		job.crowding = &scratch.crowding;
 		try
 		{
-            if (job.customWork) {
-                if (job.seed) job.seed(job);
-                job.customWork(job,scratch.propagation);
-                releaseInputs(job);
-                return;
-            }
 			const auto decision = self.backendSession->choose(
 				gradient_preparation::backendFamily(job.request.kind), 1, self.selected);
 			if (job.seed)
@@ -296,7 +283,7 @@ class GradientPipeline
 		finish({JoinReason::Save, ComputeTelemetry::NoTick});
 		for (const auto &job : pending)
 			visitor(PendingSnapshot{job->slot, job->data.get(), unsigned(job->due - tick),
-                                    job->superseded,job.get()});
+                                    job->superseded});
 	}
 	void restoreCompleted(RestoredSnapshot value)
 	{
@@ -311,8 +298,6 @@ class GradientPipeline
 		job->superseded = value.superseded;
 		job->done = true;
         job->data = std::move(value.data);
-        job->payload=std::move(value.payload);
-        job->customPublish=std::move(value.customPublish);
         pending.push_back(std::move(job));
 	}
 	void advance()
@@ -326,18 +311,14 @@ class GradientPipeline
 				std::rethrow_exception(job.error);
 			if (!job.superseded && (!validDestination || validDestination(job.slot)))
 			{
-                if (job.customPublish) job.customPublish(job);
-                else {
 				auto *old = *job.slot;
 				*job.slot = job.data.release();
 				job.data.reset(old);
                 if (onPublished) onPublished(job.slot);
-                }
                 ++metrics.published;
             }
             else
 				++metrics.discarded;
-            job.customWork={}; job.customPublish={}; job.payload.reset();
             spare.push_back(std::move(pending.front()));
 			pending.pop_front();
 		}
@@ -370,7 +351,6 @@ class GradientPipeline
 			spare.pop_back();
 		}
         if (!job->data) job->data=std::make_unique_for_overwrite<std::uint16_t[]>(cells);
-        job->customWork={}; job->customPublish={}; job->payload.reset();
 		if (callback.invoke == runGPU)
 			job->device = std::make_unique<DeviceJob>();
 		job->slot = slot;

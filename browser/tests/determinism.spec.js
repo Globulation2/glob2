@@ -440,7 +440,7 @@ for (const variant of ['serial', 'threaded']) {
   });
 }
 
-test('WebAssembly verifies complete gradient publication across serial and threaded runtimes', async ({page}, info) => {
+test('WebAssembly verifies ground gradient publication across serial and threaded runtimes', async ({page}, info) => {
   test.setTimeout(1800000);
   let serialTraces;
   for (const variant of ['serial', 'threaded']) {
@@ -460,7 +460,7 @@ test('WebAssembly verifies complete gradient publication across serial and threa
           ENV.GLOB2_USER_DATA_DIR='/evidence/profile';ENV.GLOB2_TEST_ARTIFACTS_ROOT='/evidence/cases';}],
         async onRuntimeInitialized(){
           const result={files:{},threaded:typeof SharedArrayBuffer!=='undefined' && HEAP8.buffer instanceof SharedArrayBuffer};
-          try {result.exit=(await Module.start(['--test-suite=AirGradientPublication,DelayedGradientPublication',
+          try {result.exit=(await Module.start(['--test-suite=DelayedGradientPublication',
             '--reporters=junit','--out=/evidence/tests.xml']))??0;}
           catch(error){result.error=String(error);}
           function collect(directory){for(const name of FS.readdir(directory)){
@@ -504,16 +504,16 @@ test('WebAssembly verifies complete gradient publication across serial and threa
     expect(junit).toMatch(/failures="0"/);
     expect(junit).toMatch(/errors="0"/);
     expect(junit).not.toMatch(/<skipped\b/);
-    expect(junit.match(/<testcase\b/g)).toHaveLength(17);
+    expect(junit.match(/<testcase\b/g)).toHaveLength(4);
     for (const participants of [1, 2, 4, 8]) {
-      for (const prefix of ['participants-', 'air-participants-']) {
+      for (const prefix of ['participants-']) {
         expect(Object.keys(result.files).some(name => name.endsWith('/' + prefix + participants + '.tsv'))).toBe(true);
         expect(Object.keys(result.files).some(name => name.endsWith('/' + prefix + participants + '-kernel-entries.tsv'))).toBe(true);
       }
     }
     const traces = Object.fromEntries(Object.entries(result.files)
       .filter(([name]) => name.endsWith('.tsv') && !name.endsWith('-kernel-entries.tsv')));
-    expect(Object.keys(traces)).toHaveLength(38);
+    expect(Object.keys(traces)).toHaveLength(16);
     for (const [name, contents] of Object.entries(traces)) {
       const lines = contents.trimEnd().split('\n');
       expect(lines[0], name).toMatch(/^boundary\t/);

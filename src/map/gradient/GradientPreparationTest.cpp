@@ -1908,10 +1908,6 @@ TEST_CASE("the version-152 checksum adapter excludes newly introduced publicatio
     REQUIRE(map.requestMaterialField(0,WHEAT,0)==FieldReadiness::Pending);
     CHECK(map.checkSum(true,false,true)==legacy);
     CHECK(map.checkSum(true,false,false)!=current);
-    air_guidance::Key guard; guard.family=air_guidance::Family::Guard;
-    REQUIRE(map.requestAirField(guard)==FieldReadiness::Pending);
-    CHECK(map.checkSum(true,false,true)==legacy);
-    CHECK(map.checkSum(true,false,false)!=current);
 }
 
 TEST_CASE("consumer pool changes hard-supersede ground supplier fields at a stable identity" * doctest::test_suite("GradientPreparation"))

@@ -408,8 +408,6 @@ CLIENT_SOURCES = (
     'map/gradient/MapGradientMaterial.cpp',
     'map/gradient/MapGradientScheduling.cpp',
     'map/gradient/SnapshotGradient.cpp',
-    'map/gradient/AirGradientRuntime.cpp',
-    'map/gradient/AirDestinationSelection.cpp',
     'map/gradient/ResourceSeedCache.cpp',
     'map/io/MapExploredAreaIO.cpp',
     'map/io/MapIO.cpp',

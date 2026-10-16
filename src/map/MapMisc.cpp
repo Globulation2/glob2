@@ -115,7 +115,6 @@ Uint32 Map::checkSum(bool heavy, bool includePending, bool legacy152)
                             // Hash scheduling metadata, never partially settled storage.
                         }
 
-        cs=gradientRuntime->air.checksum(*this,cs,heavy);
     }
 
 	privateRandom(RandomDomain::GrowthJobs); // Initialize without advancing.

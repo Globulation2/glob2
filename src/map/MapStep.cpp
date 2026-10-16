@@ -261,11 +261,6 @@ void Map::preparePendingGradient(const SimulationSnapshot::Handle& foundation)
         throw std::invalid_argument("Gradient preparation requires the current observation boundary");
     prepareStagedBuildingGradients(foundation);
     if (!gradientRuntime->preparation.job) return;
-    if (gradientRuntime->air.idForSlot(gradientRuntime->preparation.job->slot)) {
-        auto* job=std::exchange(gradientRuntime->preparation,{}).job;
-        gradientRuntime->air.prepare(*this,*job,foundation);
-        return;
-    }
     auto request=gradientRequest(gradientRuntime->preparation, *this);
     request.consumer=gradientRuntime->preparation.job->request.consumer;
     request.modes=gradientRuntime->preparation.job->request.modes;
@@ -311,8 +306,6 @@ void Map::configureGradientPipeline(unsigned workers, unsigned delay)
 	if (workers>16 || delay<1 || delay>16) throw std::invalid_argument("Invalid gradient pipeline configuration");
 	ensureBuildingGradientPipeline();
     gradientRuntime->pipeline.validDestination=[this](Uint16** slot) {
-        if (const auto id=gradientRuntime->air.idForSlot(slot))
-            return gradientRuntime->air.valid(*this,gradientRuntime->air.entries.at(id).key);
         for (const auto& [key,entry]:gradientRuntime->materialFields) if (&entry.published==slot && entry.consumer>=0) {
             const auto* building=game->teams[entry.team]->myBuildings[Building::GIDtoID(entry.consumer)];
             return building && building->scriptIdentity==entry.identity && building->typeNum==entry.type
@@ -371,9 +364,6 @@ void Map::syncStep(Uint32 stepCounter)
 
 void Map::stagePeriodicGradientPreparation()
 {
-    gradientRuntime->air.retireBoundary();
-    gradientRuntime->air.prune(*this);
-
 	// Building requests are admitted first; the periodic job below may return early.
 	stageBuildingGradientPreparation();
     const auto enqueuePeriodic=[&]() {
@@ -452,7 +442,6 @@ void Map::stagePeriodicGradientPreparation()
     enqueuePeriodic();
     if (!gradientRuntime->fieldRequests.empty()) {
         auto request=gradientRuntime->fieldRequests.front();
-        if (!gradientRuntime->air.tryAdmit(*this,request.slot)) return;
         gradientRuntime->fieldRequests.pop_front();
         auto* job=gradientRuntime->pipeline.reserve(request.slot, request.request.swim);
         job->request=request.request;
@@ -635,7 +624,6 @@ bool Map::requestGradientField(Uint16** slot, int kind, int team, int material, 
 
 unsigned Map::gradientDestination(Uint16* const* slot) const
 {
-    if (const auto id=gradientRuntime->air.idForSlot(slot)) return AirGradientRuntime::DestinationBase+id;
     for (int t=0;t<Team::MAX_COUNT;++t) for (int swim=0;swim<SWIM_CLASS_COUNT;++swim) {
         if (slot==&forbiddenGradient[t][swim]) return 5000+t*SWIM_CLASS_COUNT+swim;
         if (slot==&guardAreasGradient[t][swim]) return (t*(MaterialSlotCount+2)+MaterialSlotCount)*SWIM_CLASS_COUNT+swim;
@@ -651,11 +639,6 @@ unsigned Map::gradientDestination(Uint16* const* slot) const
 }
 Uint16** Map::gradientDestination(unsigned id)
 {
-    if (id>=AirGradientRuntime::DestinationBase) {
-        const auto found=gradientRuntime->air.entries.find(id-AirGradientRuntime::DestinationBase);
-        if (found==gradientRuntime->air.entries.end()) throw std::runtime_error("Invalid air gradient destination");
-        return &found->second.slot;
-    }
     if (id>=10000) {
         id-=10000; if (id>=gradientRuntime->materialFields.size()) throw std::runtime_error("Invalid cached gradient destination");
         auto it=gradientRuntime->materialFields.begin(); std::advance(it,id); return &it->second.published;
