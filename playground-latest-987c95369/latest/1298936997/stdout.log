@@ -1,0 +1,16 @@
+Settings::load("preferences.txt") : error, can't open file.
+Random Seed initial: 1298936997
+Randomly Chosen Map: Playground
+Random Seed gameheader: 1298936997    Player: bradley for team 0
+    Player: Nicowar 0 for team 1
+    Player: Nicowar 1 for team 2
+    Player: Nicowar 2 for team 3
+    Player: Nicowar 3 for team 4
+    Player: Nicowar 4 for team 5
+    Player: Nicowar 5 for team 6
+    Player: Nicowar 6 for team 7
+    Player: Nicowar 7 for team 0
+nox::game started
+nox::gui.game.isGameEnded
+automaticEndingGame ended: 46754 ticks, 25 minutes, 58 seconds
+GLOB2_GAME_END ticks=46754 winner_team=7 seed=1298936997 map="Playground" orders=21914 players=team0:local,team1:Nicowar,team2:Nicowar,team3:Nicowar,team4:Nicowar,team5:Nicowar,team6:Nicowar,team7:Nicowar,team0:Nicowar
