@@ -1,0 +1,9 @@
+# Browser launcher artifact recovery
+
+Tested commit: 9168836fa (base 17e249a2735e3d76e76ca7e500b6ea872f4393e0), Linux x86_64, Python 3.12, Node 24.19.0, pinned Playwright 1.63.0 / Chromium.
+
+Both upload inventories omitted presentation-surface.js required by shell.html. The regression test fails twice before the fix and all 28 browser packaging tests pass afterwards. All 130 Node unit tests pass after correcting the canceled WebGPU task fixture to its four-word signal layout; cancellation remains unpublished until queue retirement, all eight buffers are destroyed, zero dispatches are reported and an adjacent canary stays intact. No production execution changes.
+
+Actual web-client artifact 12039827091 from master a5b380584bb3958488f01adba274e2f9dd6dce21 fails static packaging with the missing module. Adding the omitted file (byte-identical at artifact source and tested source) makes packaging and gzip verification pass. This is the original older Wasm binary, not a newly compiled current-master browser binary. Chromium WebGL2 then passes match reload, damaged-save recovery and all three torus checks (5 passing / 7 total); the remaining two fail because the independently stale format-152 replay fixture is rejected by the current format-167 acceptance floor. That separate fixture repair is in progress. No blanket browser-suite success is claimed.
+
+Commands and evidence: python3 test/build_system/test_browser_package.py; Node node --test browser/unit/*.test.js; package-static.py and verify-static-package.py logs; run-playwright.py records the server and invocation. Web-asset contracts: 25 passed / 1 optional skip; CI policy contracts: 93 passed; docs: 309 documents, zero errors. The complete native suite already passed 2968 cases before these delivery/test-only edits, retained in ../final-verification. Hardware GPU and other browser engines were not exercised locally for this upload-list change; full master CI remains required by the user goal.
