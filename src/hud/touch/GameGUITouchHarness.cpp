@@ -2071,10 +2071,16 @@ class GameGUITouchHarness
 			gui.touch->cancel();
 		}
 		gui.touch->panelOpen = false;
-		const int type = gui.game.buildingsTypes.getTypeNum("inn", 0, false);
-		auto *building =
-			new Building(0, 0, 2, type, gui.localTeam, &gui.game.buildingsTypes, 1, 1);
-		gui.localTeam->attachBuilding(2, building);
+		auto fixture = [&](const char *name, int slot)
+		{
+			while (slot < Building::MAX_COUNT && gui.localTeam->myBuildings[slot]) ++slot;
+			require(slot < Building::MAX_COUNT, "Action fixture has a free building slot");
+			auto *b = new Building(0, 0, slot, gui.game.buildingsTypes.getTypeNum(name, 0, false),
+				gui.localTeam, &gui.game.buildingsTypes, 1, 1);
+			gui.localTeam->attachBuilding(slot, b);
+			return b;
+		};
+		auto *building = fixture("inn", 2);
 		require(building->type->maxUnitWorking > 0, "Allocation fixture must accept workers");
 		auto actionPoint = [&](int kind, int value, int side = 0)
 		{
@@ -2121,10 +2127,7 @@ class GameGUITouchHarness
 			auto p = actionPoint(kind, value, side);
 			tap(p.x, p.y);
 		};
-		auto *rangeFlag =
-			new Building(0, 0, 3, gui.game.buildingsTypes.getTypeNum("warflag", 0, false),
-						 gui.localTeam, &gui.game.buildingsTypes, 1, 1);
-		gui.localTeam->attachBuilding(3, rangeFlag);
+		auto *rangeFlag = fixture("warflag", 3);
 		{
 			const auto savedCamera = gui.camera;
 			const int savedX = gui.viewportX, savedY = gui.viewportY;
@@ -2494,14 +2497,6 @@ class GameGUITouchHarness
 			}
 		require(constructionSpace, "Fixture has space for repair and upgrade");
 
-		auto fixture = [&](const char *name, int slot)
-		{
-			auto *b =
-				new Building(0, 0, slot, gui.game.buildingsTypes.getTypeNum(name, 0, false),
-							 gui.localTeam, &gui.game.buildingsTypes, 1, 1);
-			gui.localTeam->attachBuilding(slot, b);
-			return b;
-		};
 		auto *swarm = fixture("swarm", 4);
 		auto *clearing = fixture("clearingflag", 5);
 		auto *exploring = fixture("explorationflag", 6);

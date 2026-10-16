@@ -1,7 +1,8 @@
 # Golden map fingerprints, owner-specific resource placement (save format 152, SIM40).
 # platform id revision wDec hDec teams seed status hash
 # The 67 affected generator revisions account for SIM40 owner-specific resource placement/smoothing.
-# Current Linux rows were measured independently with GCC 11 and 13; generator recipes are unchanged by the revision-only repair.
+# Linux rows for the SIM40 revision-only repair were measured independently with GCC 11 and 13.
+# Polder revision 7 follows expanded-ground defaults; Linux GCC 13 and independent native macOS jobs supplied its rows.
 # Historical epoch-0 rows (including macos-arm64) are preserved in fixtures/map-generators/pre-resource-epoch-golden.txt.
 # macos-arm64 rows were measured in independent native jobs; revision metadata follows the same SIM40 repair.
 # Older historical rows described the per-cell terrain model.
@@ -232,14 +233,14 @@ linux-x86_64 29 8 8 8 4 3 ok 11537524141276844621
 linux-x86_64 29 8 8 8 8 1 ok 14827175024734134539
 linux-x86_64 29 8 9 8 4 1 ok 14477763903160432971
 linux-x86_64 29 8 9 9 4 1 ok 5802326788245144933
-linux-x86_64 30 6 7 7 4 1 ok 5963119367235123396
-linux-x86_64 30 6 8 8 2 1 ok 2909740831057757793
-linux-x86_64 30 6 8 8 4 1 ok 6911664989139228983
-linux-x86_64 30 6 8 8 4 2 ok 6446233944967497528
-linux-x86_64 30 6 8 8 4 3 ok 10666357640635515634
-linux-x86_64 30 6 8 8 8 1 ok 1869959650490197197
-linux-x86_64 30 6 9 8 4 1 ok 1407226423711943986
-linux-x86_64 30 6 9 9 4 1 ok 5371655034956572539
+linux-x86_64 30 7 7 7 4 1 ok 12904150762249905775
+linux-x86_64 30 7 8 8 2 1 ok 3754918904379074138
+linux-x86_64 30 7 8 8 4 1 ok 18083767463757706656
+linux-x86_64 30 7 8 8 4 2 ok 15301086667669821703
+linux-x86_64 30 7 8 8 4 3 ok 4275439395545623339
+linux-x86_64 30 7 8 8 8 1 ok 9075663802938586868
+linux-x86_64 30 7 9 8 4 1 ok 3719095522988582445
+linux-x86_64 30 7 9 9 4 1 ok 4174281323649035045
 linux-x86_64 31 8 7 7 4 1 ok 7193605205140929215
 linux-x86_64 31 8 8 8 2 1 ok 13337559357464071536
 linux-x86_64 31 8 8 8 4 1 ok 6543104054344413015
@@ -796,14 +797,14 @@ macos-arm64 29 8 8 8 4 3 ok 11537524141276844621
 macos-arm64 29 8 8 8 8 1 ok 14827175024734134539
 macos-arm64 29 8 9 8 4 1 ok 14477763903160432971
 macos-arm64 29 8 9 9 4 1 ok 5802326788245144933
-macos-arm64 30 6 7 7 4 1 ok 15370796314553267537
-macos-arm64 30 6 8 8 2 1 ok 6320544998031971294
-macos-arm64 30 6 8 8 4 1 ok 7551321311665018947
-macos-arm64 30 6 8 8 4 2 ok 11389172561066315383
-macos-arm64 30 6 8 8 4 3 ok 7091378655207835894
-macos-arm64 30 6 8 8 8 1 ok 3737099883991090204
-macos-arm64 30 6 9 8 4 1 ok 5558453860314232212
-macos-arm64 30 6 9 9 4 1 ok 5992384891314150952
+macos-arm64 30 7 7 7 4 1 ok 6788725001055980144
+macos-arm64 30 7 8 8 2 1 ok 10977429681709173549
+macos-arm64 30 7 8 8 4 1 ok 2055576107962924180
+macos-arm64 30 7 8 8 4 2 ok 7272091769716548868
+macos-arm64 30 7 8 8 4 3 ok 17460540468504026865
+macos-arm64 30 7 8 8 8 1 ok 18306782409563719156
+macos-arm64 30 7 9 8 4 1 ok 17954910640564097104
+macos-arm64 30 7 9 9 4 1 ok 5257367982339723081
 macos-arm64 31 8 7 7 4 1 ok 7193605205140929215
 macos-arm64 31 8 8 8 2 1 ok 13337559357464071536
 macos-arm64 31 8 8 8 4 1 ok 6543104054344413015

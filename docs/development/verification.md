@@ -40,6 +40,11 @@ changes build once per selected platform and distribute programs to sweep consum
 Primary generator sweeps are complete; secondary platforms retain golden rows and
 telemetry equivalence under enabled tiers. Native inventory audits require every
 selected engine case to belong to exactly one shard.
+The Linux program archive includes the generated renderer shader bundle alongside
+the executables and runtime assets so consumers can run without rebuilding.
+Linux native builds and coverage compile the pinned build-only glslang tool to
+include Vulkan shader assets. The test runner selects that bundle for the native
+SDL GPU differential cases; the compiler is not part of the program archive.
 
 ELF dependency collection records runtime package owners and rejects unresolved or
 unowned libraries. Generator, CLI and browser consumers install runtime libraries

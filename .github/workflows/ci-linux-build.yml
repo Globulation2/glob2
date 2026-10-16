@@ -93,7 +93,7 @@ jobs:
             libopusfile-dev libopus-dev libogg-dev libspeex-dev \
             libboost-dev libssl-dev \
             zlib1g-dev libfribidi-dev libpcre3-dev \
-            libgl1-mesa-dev libglu1-mesa-dev libepoxy-dev libgl1-mesa-dri xvfb xauth openbox x11-utils gdb
+            libgl1-mesa-dev libglu1-mesa-dev libepoxy-dev libgl1-mesa-dri mesa-vulkan-drivers xvfb xauth openbox x11-utils gdb
 
       - uses: actions/checkout@v4
         id: actions_checkout_v4_1
@@ -154,6 +154,7 @@ jobs:
           python3 test/test-ccache.py
           python3 test/test-dev-compile.py
 
+      - uses: ./.github/actions/renderer-shader-tools
       - name: Build glob2 and the regression harnesses
         id: build_glob2_and_the_regression_harnesses
         run: |
@@ -178,6 +179,7 @@ jobs:
           # together with the executables that name it in their build config.
           test -d build/linux/client/release/runtime-assets/data
           {
+            find build/linux/client/release/shaders -type f -print0
             find build/linux/client/release build/sdl3-ci/prefix/lib -path '*/configure' -prune -o \( -type f -o -type l \) \( -perm /111 -o -name '*.so*' \) -print0
             find build/linux/client/release/runtime-assets -type f -print0
             printf '%s\0' build/linux/client/release/runtime-assets.json
@@ -404,7 +406,7 @@ jobs:
         run: |
           if [ "${{ inputs.runtime_packages }}" = true ]; then
             xargs sudo apt-get install -y --no-install-recommends < artifacts/ci-native/runtime-packages.txt
-            sudo apt-get install -y --no-install-recommends python3 libgl1 libglu1-mesa libepoxy0 libgl1-mesa-dri xvfb xauth openbox x11-utils gdb
+            sudo apt-get install -y --no-install-recommends python3 libgl1 libglu1-mesa libepoxy0 libgl1-mesa-dri mesa-vulkan-drivers xvfb xauth openbox x11-utils gdb
             python3 .github/scripts/linux_runtime_packages.py build/linux/client/release --verify
           else
           sudo env DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends \
@@ -413,7 +415,7 @@ jobs:
             libopusfile-dev libopus-dev libogg-dev libspeex-dev \
             libboost-date-time-dev libboost-thread-dev libboost-system-dev libssl-dev \
             zlib1g-dev libfribidi-dev libpcre3-dev \
-            libgl1-mesa-dev libglu1-mesa-dev libepoxy-dev libgl1-mesa-dri xvfb xauth openbox x11-utils gdb
+            libgl1-mesa-dev libglu1-mesa-dev libepoxy-dev libgl1-mesa-dri mesa-vulkan-drivers xvfb xauth openbox x11-utils gdb
           fi
 
       - name: Plan native and auxiliary shard workloads
@@ -676,7 +678,7 @@ jobs:
         run: |
           sudo apt-get update -qq
           xargs sudo apt-get install -y --no-install-recommends < artifacts/ci-native/runtime-packages.txt
-          sudo apt-get install -y --no-install-recommends python3 libgl1 libglu1-mesa libepoxy0 libgl1-mesa-dri xvfb xauth openbox x11-utils gdb
+          sudo apt-get install -y --no-install-recommends python3 libgl1 libglu1-mesa libepoxy0 libgl1-mesa-dri mesa-vulkan-drivers xvfb xauth openbox x11-utils gdb
           python3 .github/scripts/linux_runtime_packages.py build/linux/client/release --verify
 
       - name: Check secondary-platform golden rows

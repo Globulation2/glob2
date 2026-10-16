@@ -310,6 +310,10 @@ class Smoke:
             self.tls = ssl.create_default_context()
             return {'attached': self.project, 'origin': self.origin}
         if not self.arguments.no_build:
+            # Every image in this build must use the same resolved theme revision.
+            self.env['GLOB2_DESIGN_SYSTEM_SHA'] = subprocess.check_output(
+                ['node', str(ROOT / 'platform/scripts/design-system.mjs'), '--resolve-only'],
+                text=True, cwd=ROOT).strip()
             log('building images (platform, music-worker, skin-render-worker, engine-agent, relay, caddy)')
             started = time.monotonic()
             self.compose('build', 'init', 'music-worker', 'skin-render-worker', 'engine-agent', 'relay', 'caddy', timeout=7200)

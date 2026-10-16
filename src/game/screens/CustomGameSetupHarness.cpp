@@ -2344,6 +2344,7 @@ struct CustomGameSetupHarness
 			REQUIRE((globalContainer->replayVisibleTeams == 0xffffffffu &&
 				   !globalContainer->replayShowFog));
 		}
+		e.establishObservation(false); // The owner admits decisions before the order phase.
 		e.gatherAndAdvanceOrders(true);
 		// Delayed decisions may still be running; join before reading the test counters.
 		e.gui.game.drainAI();

@@ -56,7 +56,8 @@ passed to `live_match_e2e.py` needs an explicit Compose file when run there:
 python3 test/deployment/platform_stack_smoke.py --log-dir artifacts/platform-stack
 ```
 
-The smoke test builds the images, starts an isolated project with its own ports,
+The smoke test resolves one design-system revision for all images, builds them,
+starts an isolated project with its own ports,
 volumes and `.env`, and checks: every service healthy and `init` successful; TLS
 from the local CA, HTTP redirect, the web app, invite pages at `/j/` and `/play/`, and that
 `/internal`, `/healthz`, `/readyz` and `/metrics` are not public; the instance

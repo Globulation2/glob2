@@ -215,9 +215,11 @@ class CliSmoke(unittest.TestCase):
         self.assertIn("map", complete(["glob2", "m"]))
         self.assertIn("generate", complete(["glob2", "map", "g"]))
         self.assertIn("--window-size", complete(["glob2", "play", "--window"]))
-        self.assertEqual(complete(["glob2", "play", "--renderer", "s"]), ["software"])
+        self.assertEqual(complete(["glob2", "play", "--renderer", "s"]),
+                         ["sdl-gpu", "software", "sdl"])
         self.assertEqual(
-            complete(["glob2", "play", "--renderer=s"]), ["--renderer=software"]
+            complete(["glob2", "play", "--renderer=s"]),
+            ["--renderer=sdl-gpu", "--renderer=software", "--renderer=sdl"]
         )
         (self.root / "path with spaces").mkdir()
         (self.root / "file with spaces.replay").touch()

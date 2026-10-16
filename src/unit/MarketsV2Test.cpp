@@ -311,14 +311,15 @@ TEST_CASE("a frequently refreshed market field publishes depletion and restockin
 	market->setMaterial(CHERRY, 20);
 	map.configureGradientPipeline(2,3);
 	map.getMaterialGradientSlot(0,CHERRY,0,true);
-	for (int tick=0;tick<8;++tick) { map.advanceGradientPipeline(); map.syncStep(tick); }
+	// The owner captures a completed world before preparing periodic work.
+	world.step(8);
 	CHECK(map.gradientPipelineStatus().published>0);
 	market->setMaterial(CHERRY, 0);
 	map.dirtyMarketGradientsSlot(0,CHERRY);
-	for (int tick=8;tick<16;++tick) { map.advanceGradientPipeline(); map.syncStep(tick); }
+	world.step(8);
 	CHECK_FALSE(map.materialAvailableSlot(0,CHERRY,0,5,5,true));
 	market->addMaterialIntoBuilding(CHERRY);
-	for (int tick=16;tick<24;++tick) { map.advanceGradientPipeline(); map.syncStep(tick); }
+	world.step(8);
 	CHECK(map.materialAvailableSlot(0,CHERRY,0,5,5,true));
 }
 TEST_CASE("upgrading cancelling and completing preserve shared stock and gate")

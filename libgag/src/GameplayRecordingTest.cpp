@@ -10,6 +10,7 @@
 #include <fstream>
 #include <thread>
 #include <array>
+#include <optional>
 
 using namespace GAGCore::Recording;
 namespace
@@ -23,6 +24,15 @@ std::filesystem::path output(const char *label)
 {
 	return glob2test::artifactDir() /
 		   (std::string(label) + "-" + std::to_string(SDL_GetPerformanceCounter()) + ".mp4");
+}
+std::optional<CaptureTicket> reserveWhenAvailable(Recorder& recorder)
+{
+	// Admission uses try_lock; a worker holding the mutex is a transient refusal.
+	const auto deadline = std::chrono::steady_clock::now() + std::chrono::seconds(5);
+	std::optional<CaptureTicket> ticket;
+	while (!(ticket = recorder.reserveCapture()) && std::chrono::steady_clock::now() < deadline)
+		std::this_thread::sleep_for(std::chrono::milliseconds(1));
+	return ticket;
 }
 void draw(Recorder &recorder, SDL_Surface *pixels, int milliseconds)
 {
@@ -80,7 +90,7 @@ TEST_SUITE("GameplayRecording")
         REQUIRE(recorder.start(output("capture-match-context").string()));
         recorder.beginMatch("single_player", "original map", 3, 123);
         auto capture = [&]() {
-            auto ticket = recorder.reserveCapture();
+            auto ticket = reserveWhenAvailable(recorder);
             REQUIRE(ticket);
             auto context = ticket->context;
             recorder.dropCapture(*ticket);
@@ -131,12 +141,12 @@ TEST_SUITE("GameplayRecording")
         Recorder recorder;
         recorder.screen("main_menu");
         REQUIRE(recorder.start(output("capture-admission").string()));
-        auto dropped = recorder.reserveCapture();
+        auto dropped = reserveWhenAvailable(recorder);
         REQUIRE(dropped);
         CHECK(dropped->context->screen == "main_menu");
         recorder.dropCapture(*dropped);
         CHECK(recorder.status().droppedFrames == 1);
-        auto admitted = recorder.reserveCapture();
+        auto admitted = reserveWhenAvailable(recorder);
         REQUIRE(admitted);
         recorder.screen("game_session");
         recorder.beginMatch("singleplayer", "later map", 0, 123);
@@ -146,7 +156,7 @@ TEST_SUITE("GameplayRecording")
         recorder.shutdown();
         CHECK(recorder.status().droppedFrames == 2);
         REQUIRE(recorder.start(output("capture-next-session").string()));
-        auto next = recorder.reserveCapture();
+        auto next = reserveWhenAvailable(recorder);
         REQUIRE(next);
         CHECK(next->generation != admitted->generation);
         auto pixels = std::unique_ptr<SDL_Surface, decltype(&SDL_DestroySurface)>(SDL_CreateSurface(16,16,SDL_PIXELFORMAT_RGBA32), SDL_DestroySurface);

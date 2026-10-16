@@ -294,6 +294,34 @@ class JunitTest(unittest.TestCase):
 
 @unittest.skipIf(os.name == 'nt', 'uses a shell script as the fake binary')
 class EndToEndTest(unittest.TestCase):
+    def test_generated_vulkan_bundle_reaches_test_process_and_explicit_override_wins(self):
+        with tempfile.TemporaryDirectory() as directory:
+            build = Path(directory) / 'build'
+            (build / 'test').mkdir(parents=True)
+            shaders = build / 'shaders'
+            (shaders / 'vulkan').mkdir(parents=True)
+            (shaders / 'vulkan/primitive.vert.spv').write_bytes(b'shader fixture')
+            binary = build / 'test' / run_tests.BINARIES['engine']
+            listing = LISTING.replace('\n', '\\n').replace('"', '\\"')
+            binary.write_text('#!/bin/sh\n'
+                              'for a in "$@"; do case "$a" in -ltc) printf "%b" "' + listing + '"; exit 0;; esac; done\n'
+                              'test "$GLOB2_TEST_SHADER_DIRECTORY" = "$EXPECTED_SHADERS" || exit 9\n'
+                              'for a in "$@"; do case "$a" in -o=*) echo "<testsuites><testsuite><testcase classname=\\"src/unit/HungryDefeatHarness.cpp\\" name=\\"feeds the last worker\\"/></testsuite></testsuites>" > "${a#-o=}";; esac; done\n')
+            binary.chmod(binary.stat().st_mode | stat.S_IEXEC)
+            for override in (None, str(Path(directory) / 'explicit-shaders')):
+                with self.subTest(override=override):
+                    environment = dict(os.environ)
+                    environment.pop('GLOB2_TEST_SHADER_DIRECTORY', None)
+                    environment['EXPECTED_SHADERS'] = override or str(shaders.resolve())
+                    if override:
+                        environment['GLOB2_TEST_SHADER_DIRECTORY'] = override
+                    result = subprocess.run(
+                        [sys.executable, str(HERE / 'run_tests.py'), '--binary', 'engine',
+                         '--build-dir', str(build), '--filter', 'HungryDefeat/*',
+                         '--junit', str(Path(directory) / 'junit.xml')],
+                        capture_output=True, text=True, env=environment)
+                    self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
+
     def test_fullscreen_requires_explicit_opt_in_even_in_process(self):
         with tempfile.TemporaryDirectory() as directory:
             build = Path(directory) / 'build'

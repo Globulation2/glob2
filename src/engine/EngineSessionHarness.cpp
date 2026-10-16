@@ -743,7 +743,7 @@ TEST_SUITE("EngineSession")
         REQUIRE(engine.initCampaign("maps/balanced.map")==Engine::EE_NO_ERROR);
         engine.beginSession(SDL_GetTicks());
         engine.gui.gamePaused=true;
-        REQUIRE(engine.admitPresentation());
+        // beginSession already admitted the first observation's presentation.
         REQUIRE(engine.serialPresentation);
         REQUIRE(engine.startSimulationThread(SDL_GetTicks()));
         CHECK_FALSE(engine.serialPresentation);

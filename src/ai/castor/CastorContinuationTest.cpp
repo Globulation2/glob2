@@ -15,6 +15,7 @@
 #include <StreamBackend.h>
 #include <set>
 #include <algorithm>
+#include <utility>
 #include <nlohmann/json.hpp>
 
 struct CastorResourcePolicyAccess
@@ -87,6 +88,15 @@ TEST_CASE("Castor waits for configured recovery rather than exhausted finite foo
 
 namespace
 {
+// Version 7 adds text section names only; binary section delimiters carry no bytes.
+struct CastorBinaryVersionOutput : GAGCore::BinaryOutputStream
+{
+    Sint32 version;
+    CastorBinaryVersionOutput(GAGCore::MemoryStreamBackend* backend,Sint32 version)
+        : BinaryOutputStream(backend),version(version) {}
+    void writeSint32(Sint32 value,std::string_view name) override
+        { BinaryOutputStream::writeSint32(name=="aiFileVersion" ? version : value,name); }
+};
 struct World
 {
     glob2test::HeadlessGame world{glob2test::GameOptions{
@@ -162,6 +172,12 @@ void continuation(AI::ImplementationID id, bool depleted, int checkpoint)
     GAGCore::BinaryOutputStream out(backend);
     game.save(&out,false,"AI coverage continuation"); out.flush();
     const auto bytes=backend->takeContents();
+    auto controllerState=[](Game& owner) {
+        auto* data=new GAGCore::MemoryStreamBackend;
+        GAGCore::TextOutputStream output(data);
+        owner.players[0]->ai->save(&output);output.flush();return data->takeContents();
+    };
+    const auto savedController=controllerState(game);
     const auto before=state(game);
     std::vector<std::string> orders;
     std::vector<std::vector<Uint32>> traces;
@@ -175,6 +191,12 @@ void continuation(AI::ImplementationID id, bool depleted, int checkpoint)
     GAGCore::BinaryInputStream input(new GAGCore::MemoryStreamBackend(bytes.data(),bytes.size()));
     input.seekFromStart(0);
     REQUIRE(restored.game.load(&input));
+    const auto loadedController=controllerState(restored.game);
+    if(loadedController!=savedController) {
+        glob2test::writeFile(glob2test::artifactDir()/"castor-before.txt",savedController);
+        glob2test::writeFile(glob2test::artifactDir()/"castor-restored.txt",loadedController);
+    }
+    CHECK(static_cast<bool>(loadedController==savedController));
     restored.game.setWaitingOnMask(0);
     REQUIRE(state(restored.game)==before);
     for (int i=0; i<128; ++i)
@@ -247,12 +269,14 @@ TEST_SUITE("CastorContinuation")
         project->subPhase=AICastor::AI_CASTOR_SUBPHASE_WAIT_FINISHED;
         project->timer=217; project->blocking=false; project->priority=17;
         initial.projects.push_back(project);
-        for (bool text : {false,true})
+        initial.pendingWorkers[0]={1,7,0x12345678u,0x23456789abcdef01ull};
+        for (const auto [text,format] : {std::pair{false,6},std::pair{false,7},std::pair{true,7}})
         {
+            CAPTURE(text); CAPTURE(format);
             auto* backend=new GAGCore::MemoryStreamBackend;
             std::unique_ptr<GAGCore::OutputStream> output;
             if (text) output=std::make_unique<GAGCore::TextOutputStream>(backend);
-            else output=std::make_unique<GAGCore::BinaryOutputStream>(backend);
+            else output=std::make_unique<CastorBinaryVersionOutput>(backend,format);
             initial.save(output.get()); output->flush();
             const auto bytes=backend->takeContents();
             std::unique_ptr<GAGCore::InputStream> input;
@@ -262,16 +286,24 @@ TEST_SUITE("CastorContinuation")
             else input=std::make_unique<GAGCore::BinaryInputStream>(data);
             input->seekFromStart(0);
             AICastor restored(world.world.game.players[0]);
-            REQUIRE(restored.load(input.get(),world.world.game.players[0],126));
+            REQUIRE(restored.load(input.get(),world.world.game.players[0],VERSION_MINOR));
+            REQUIRE(restored.pendingWorkers.contains(0));
+            CHECK(restored.pendingWorkers.at(0).tick==initial.pendingWorkers.at(0).tick);
+            CHECK(restored.pendingWorkers.at(0).sequence==initial.pendingWorkers.at(0).sequence);
             REQUIRE(restored.projects.size()==initial.projects.size());
             CHECK(restored.projects.back()->debugStdName==project->debugStdName);
             CHECK(std::string(restored.projects.back()->debugName)==project->debugStdName);
             auto* secondBackend=new GAGCore::MemoryStreamBackend;
             std::unique_ptr<GAGCore::OutputStream> second;
             if (text) second=std::make_unique<GAGCore::TextOutputStream>(secondBackend);
-            else second=std::make_unique<GAGCore::BinaryOutputStream>(secondBackend);
+            else second=std::make_unique<CastorBinaryVersionOutput>(secondBackend,format);
             restored.save(second.get()); second->flush();
-            CHECK(secondBackend->takeContents()==bytes);
+            const auto roundTrip=secondBackend->takeContents();
+            if(roundTrip!=bytes) {
+                glob2test::writeFile(glob2test::artifactDir()/"castor-snapshot-before.txt",bytes);
+                glob2test::writeFile(glob2test::artifactDir()/"castor-snapshot-after.txt",roundTrip);
+            }
+            CHECK(static_cast<bool>(roundTrip==bytes));
         }
     }
     TEST_CASE("decisions keep assignments private and rejected requests can retry")

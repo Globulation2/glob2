@@ -15,7 +15,7 @@
 #include "Utilities.h"
 
 #define AI_FILE_MIN_VERSION 1
-#define AI_FILE_VERSION 6
+#define AI_FILE_VERSION 7
 
 using std::shared_ptr;
 
@@ -641,18 +641,23 @@ bool AICastor::load(GAGCore::InputStream *stream, Player *player, Sint32 version
 		stream->readEnterSection("pendingAssignments");
 		const Uint32 workerCount=stream->readUint32("workers");
 		if (workerCount>Building::MAX_COUNT) { stream->readLeaveSection(2); return false; }
+		if (aiFileVersion>=7) stream->readEnterSection("workerRecords");
 		for (Uint32 i=0;i<workerCount;++i)
 		{
 			stream->readEnterSection(i);
 			const Uint16 gid=stream->readUint16("gid");
-			PendingWorkers intent{stream->readUint32("generation"),stream->readSint32("workers")};
+			PendingWorkers intent{};
+			intent.generation=stream->readUint32("generation");
    if(aiFileVersion>=6) {intent.tick=stream->readUint32("tick");intent.sequence=stream->readUint32("sequenceLow");intent.sequence|=Uint64(stream->readUint32("sequenceHigh"))<<32;}
+			intent.workers=stream->readSint32("workers");
 			stream->readLeaveSection();
 			if (Building::GIDtoTeam(gid)!=team->teamNumber || intent.workers<0 || !pendingWorkers.emplace(gid,intent).second)
-			{ stream->readLeaveSection(2); return false; }
+			{ stream->readLeaveSection(aiFileVersion>=7 ? 3 : 2); return false; }
 		}
+		if (aiFileVersion>=7) stream->readLeaveSection();
 		const Uint32 ratioCount=stream->readUint32("ratios");
 		if (ratioCount>Building::MAX_COUNT) { stream->readLeaveSection(2); return false; }
+		if (aiFileVersion>=7) stream->readEnterSection("ratioRecords");
 		for (Uint32 i=0;i<ratioCount;++i)
 		{
 			stream->readEnterSection(i);
@@ -663,8 +668,9 @@ bool AICastor::load(GAGCore::InputStream *stream, Player *player, Sint32 version
 				intent.ratios[unit]=stream->readSint32(("ratio"+std::to_string(unit)).c_str());
 			stream->readLeaveSection();
 			if (Building::GIDtoTeam(gid)!=team->teamNumber || !pendingRatios.emplace(gid,intent).second)
-			{ stream->readLeaveSection(2); return false; }
+			{ stream->readLeaveSection(aiFileVersion>=7 ? 3 : 2); return false; }
 		}
+		if (aiFileVersion>=7) stream->readLeaveSection();
 		stream->readLeaveSection();
 	}
  if(aiFileVersion>=6) {
@@ -709,6 +715,7 @@ void AICastor::save(GAGCore::OutputStream *stream)
 	}
 	stream->writeEnterSection("pendingAssignments");
 	stream->writeUint32(static_cast<Uint32>(pendingWorkers.size()),"workers");
+	stream->writeEnterSection("workerRecords");
 	i=0;
 	for (const auto& [gid,intent]:pendingWorkers)
 	{
@@ -719,7 +726,9 @@ void AICastor::save(GAGCore::OutputStream *stream)
 		stream->writeSint32(intent.workers,"workers");
 		stream->writeLeaveSection();
 	}
+	stream->writeLeaveSection();
 	stream->writeUint32(static_cast<Uint32>(pendingRatios.size()),"ratios");
+	stream->writeEnterSection("ratioRecords");
 	i=0;
 	for (const auto& [gid,intent]:pendingRatios)
 	{
@@ -731,6 +740,7 @@ void AICastor::save(GAGCore::OutputStream *stream)
 			stream->writeSint32(intent.ratios[unit],("ratio"+std::to_string(unit)).c_str());
 		stream->writeLeaveSection();
 	}
+	stream->writeLeaveSection();
 	stream->writeLeaveSection();
  stream->writeEnterSection("pendingCreates");stream->writeUint32(pendingCreates.size(),"count");i=0;
  for(const auto& intent:pendingCreates) {
