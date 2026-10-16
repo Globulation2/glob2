@@ -45,15 +45,28 @@ jobs:
           out=Path('artifacts/renderer-debug').resolve();out.mkdir(parents=True,exist_ok=True)
           cases=[c for c in registry.list_cases(registry.binary_path(build,'engine'),'engine') if c.suite=='TorusRender' and (c.name.startswith('SDL GPU captures large logical maps') or c.name.startswith('SDL GPU retries a submitted final torus overlay'))]
           assert len(cases)==2
-          original_prefix=registry.xvfb_prefix
-          registry.xvfb_prefix=lambda job:original_prefix(job)+['gdb','--batch','-ex','set pagination off','-ex','set print thread-events off','-ex','set auto-solib-add off','-ex','set debuginfod enabled off','-ex','set debug-file-directory '+os.environ['RUNNER_TEMP']+'/mesa-symbols/usr/lib/debug','-ex','handle SIGSEGV stop print nopass','-ex','run','-ex','sharedlibrary libvulkan_lvp','-ex','info sharedlibrary','-ex','p $_siginfo','-ex','frame 2','-ex','p *set','-ex','python import gdb; print("VMA_COUNT",len(open("/proc/%d/maps"%gdb.selected_inferior().pid).readlines())); print("VM_MAX_MAP_COUNT",open("/proc/sys/vm/max_map_count").read())','-ex','thread apply all bt full','--args']
+          import threading,time
+          stop=threading.Event();peak={'maps':0,'samples':0}
+          def sample():
+              while not stop.is_set():
+                  for proc in Path('/proc').glob('[0-9]*'):
+                      try:
+                          if b'glob2-engine-tests' not in (proc/'cmdline').read_bytes():continue
+                          maps=len((proc/'maps').read_text().splitlines());peak['samples']+=1;peak['maps']=max(peak['maps'],maps)
+                      except (FileNotFoundError,PermissionError,ProcessLookupError):pass
+                  stop.wait(.1)
+          thread=threading.Thread(target=sample);thread.start()
           rows=[]
-          for index in range(3):
-              args=types.SimpleNamespace(keep_profiles=False,fullscreen=True,update_fixtures=False,artifacts=out/str(index),verbose=False)
-              result=registry.run_job(registry.Job('engine',cases),args,build)
-              (out/f'{index}.log').write_text(result.output)
-              row={'index':index,'status':result.status,'seconds':result.seconds};rows.append(row);print(json.dumps(row),flush=True)
-              (out/'results.json').write_text(json.dumps(rows,indent=2)+'\n')
+          try:
+              for index in range(3):
+                  for ordinal,case in enumerate(cases):
+                      args=types.SimpleNamespace(keep_profiles=False,fullscreen=True,update_fixtures=False,artifacts=out/f'{index}-{ordinal}',verbose=False)
+                      result=registry.run_job(registry.Job('engine',[case]),args,build)
+                      (out/f'{index}-{ordinal}.log').write_text(result.output)
+                      row={'index':index,'case':case.name,'status':result.status,'seconds':result.seconds};rows.append(row);print(json.dumps(row),flush=True)
+                      (out/'results.json').write_text(json.dumps(rows,indent=2)+'\n')
+          finally:
+              stop.set();thread.join();peak['systemMaxMapCount']=int(Path('/proc/sys/vm/max_map_count').read_text());(out/'peak.json').write_text(json.dumps(peak,indent=2)+'\n')
           sys.exit(any(r['status']!='pass' for r in rows))
           DIAGNOSTIC
       - uses: actions/upload-artifact@v4
