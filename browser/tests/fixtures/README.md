@@ -2,9 +2,9 @@
 
 ## Replay import
 
-`cross-replay.replay` is an import/playback fixture recorded at file format 152
+`cross-replay.replay` is an import/playback fixture recorded at file format 167
 from the repository's unchanged `games/cross-replay.game.gz` (seed 42), for 1,500
-ticks. The replay reader's current minimum accepted format is 152.
+ticks. The replay reader's current minimum accepted format is 167.
 
 Re-record when the accepted replay floor changes, using an isolated profile:
 
@@ -13,7 +13,7 @@ GLOB2_USER_DATA_DIR="$PWD/artifacts/browser-fixture-profile" \
 GLOB2_TEST_SEED=42 \
 GLOB2_REPLAY_PATH="$PWD/browser/tests/fixtures/cross-replay.replay" \
 SDL_VIDEODRIVER=dummy SDL_AUDIODRIVER=dummy \
-./build/darwin/client/release/src/glob2 game repeat games/cross-replay.game.gz 1500 1
+./build/darwin/client/release/src/glob2 game repeat games/cross-replay.game.gz --ticks 1500 --runs 1
 ```
 
 Use the corresponding native build path on other platforms. This fixture is
