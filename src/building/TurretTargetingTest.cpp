@@ -135,8 +135,10 @@ TEST_SUITE("TurretTargeting")
                     // The independent original selector remains the head oracle.
                     auto changed=catalog;
                     changed["variants"][id]["properties"]["shootingRange"]=range;
-                    world.game.buildingsTypes.loadSnapshotJson(changed.dump()); world.game.configureBuildingCatalog();
+                    world.game.buildingsTypes.loadSnapshotJson(changed.dump());
+                    // Rebind before configuring the replacement catalog reads live buildings.
                     turret->bindType(id);
+                    world.game.configureBuildingCatalog();
                     const auto observed=observe(world.game);
                     compare(*turret,observed);
                     std::vector<Entry> expected;
