@@ -53,6 +53,10 @@ Linux native builds and coverage compile the pinned build-only glslang tool to
 include Vulkan shader assets. The test runner selects that bundle for the native
 SDL GPU differential cases; the compiler is not part of the program archive.
 
+Browser CI and development archives include launcher-relative scripts, including
+`presentation-surface.js`, and the serial/threaded shader preload packages.
+Downstream browser and packaging jobs consume this complete runtime closure.
+
 ELF dependency collection records runtime package owners and rejects unresolved or
 unowned libraries. Generator, CLI and browser consumers install runtime libraries
 rather than compiler/header environments. Enable `CI_RUNTIME_PACKAGES_ENABLED=true`
