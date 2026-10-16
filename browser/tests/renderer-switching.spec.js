@@ -282,9 +282,10 @@ for(const mode of ['serial','threaded']) {
       torus:restored.torus,torusSettled:restored.torusSettled}),contentType:'application/json'});
     expect(restored.screenClass).toContain('GameSessionScreen');
     expect(restored.controls.done).toBeUndefined();
-    // Software cannot display Torus, but switching back preserves its mode.
-    // Wait for that restoration before explicitly proving the public toggle;
-    // an unconditional G here would turn the restored view off.
+    // An unsupported backend resets the view. As in the native switching
+    // harness, activate Torus afresh after returning to a capable renderer.
+    await expect.poll(async()=>(await state(page)).torus,{timeout:120000}).toBe(false);
+    await page.locator('#canvas').press('g',{delay:80});
     await expect.poll(async()=>(await state(page)).torusSettled,{timeout:120000}).toBe(true);
     await page.locator('#canvas').press('g',{delay:80});
     await expect.poll(async()=>(await state(page)).torus,{timeout:120000}).toBe(false);
