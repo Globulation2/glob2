@@ -33,10 +33,20 @@ struct TestSettingsScreen : SettingsScreen {
     int speedRow(int value) const { return value-Settings::GAME_SPEED_MINIMUM; }
 };
 
+struct PauseShortcut { SDL_Keycode key; SDL_WindowID window; };
+
 static Uint32 SDLCALL resumeGame(void* data, SDL_TimerID, Uint32) {
+    const auto& shortcut=*static_cast<PauseShortcut*>(data);
+    // The fixture supplies the focus precondition as well as the shortcut.
+    // Window-manager focus notifications can otherwise discard the first key.
+    SDL_Event focus={};
+    focus.type=SDL_EVENT_WINDOW_FOCUS_GAINED;
+    focus.window.windowID=shortcut.window;
+    SDL_PushEvent(&focus);
     SDL_Event event={};
     event.type=SDL_EVENT_KEY_DOWN;
-    event.key.key=*static_cast<SDL_Keycode*>(data);
+    event.key.windowID=shortcut.window;
+    event.key.key=shortcut.key;
     SDL_PushEvent(&event);
     return 0;
 }
@@ -319,8 +329,9 @@ TEST_CASE("live engine speed; pause; hard pause and replay playback [display][wr
             settings.gameSpeed=10;
             Engine engine;
             REQUIRE(engine.initCampaign("maps/balanced.map")==Engine::EE_NO_ERROR);
-            resumeGame(&key,0,0);
-            const SDL_TimerID timer=SDL_AddTimer(240,resumeGame,&key);
+            PauseShortcut shortcut{key,globalContainer->gfx->windowID()};
+            resumeGame(&shortcut,0,0);
+            const SDL_TimerID timer=SDL_AddTimer(240,resumeGame,&shortcut);
             REQUIRE(timer);
             const Uint64 start=SDL_GetTicks();
             engine.run();
