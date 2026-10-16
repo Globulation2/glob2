@@ -37,7 +37,8 @@ test('software renderer remains available', async ({page}) => {
 // Test browsers usually emulate WebGL2. These tests answer the shell's acceleration
 // probe at the browser boundary; its renderer selection runs unchanged.
 const UNMASKED_RENDERER_WEBGL = 0x9246;
-test('the default renderer is WebGL2 when the browser accelerates it', async ({page}) => {
+for (const variant of ['serial','threaded']) {
+test(`the default renderer is WebGL2 when the browser accelerates it (${variant})`, async ({page}) => {
   await page.addInitScript(name => {
     const getContext = HTMLCanvasElement.prototype.getContext;
     HTMLCanvasElement.prototype.getContext = function(type, attributes) {
@@ -48,11 +49,15 @@ test('the default renderer is WebGL2 when the browser accelerates it', async ({p
       return parameter === name ? 'Test hardware GPU' : getParameter.call(this, parameter);
     };
   }, UNMASKED_RENDERER_WEBGL);
-  await page.goto('/'); await screen(page,'MainMenuScreen');
-  expect((await state(page)).renderer).toBe('webgl2');
+  await page.goto('/?threads='+variant); await screen(page,'MainMenuScreen');
+  const runtime = await state(page);
+  test.skip(runtime.executionMode !== variant, `Interactive ${variant} runtime unavailable: ${runtime.threadFallback}`);
+  expect(runtime.renderer).toBe('webgl2');
   expect((await state(page)).renderContext.width).toBeGreaterThan(0);
   expect((await state(page)).renderContext.error).toBeNull();
 });
+
+}
 
 const fallbacks = {
   unavailable: () => {
