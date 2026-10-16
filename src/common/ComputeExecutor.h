@@ -1376,6 +1376,7 @@ public:
 	PresentationMetrics presentationMetrics() const { std::lock_guard<std::mutex> lock(mutex); return presentationTotals; }
 	std::size_t threadCount() const { return workers.size() + 1; }
 	std::size_t slot() const { return active == this ? activeSlot : 0; }
+    bool insideJob() const { return active == this; }
 	static std::size_t workerSlot() { return active ? activeSlot : 0; }
 	static std::size_t executionThreads() { return active ? active->threadCount() : 1; }
 	// Configuration/lifecycle only. Replacing a service does not wait for a

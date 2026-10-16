@@ -2,6 +2,7 @@
 // Copyright (C) 2001-2004 Stephane Magnenat & Luc-Olivier de Charrière
 
 #pragma once
+#include "gradient/FieldReadiness.h"
 
 #include "UnitState.h"
 #include "UnitCatalog.h"
@@ -81,6 +82,14 @@ public:
 		bool withMarkets=false, const Building* consumer=nullptr);
 	void syncStep(void);
 	
+	RouteResult queryAirGuardDestination(Sint32* x, Sint32* y);
+	RouteResult queryAirClearingDestination(const Building* zone, Sint32* x, Sint32* y, int* distance);
+	RouteResult queryMaterialDestination(int material, Sint32* x, Sint32* y, int* distance,
+        bool withMarkets=false, const Building* consumer=nullptr);
+    void waitForGradient();
+private:
+    bool gradientDecisionPending=false;
+public:
 	void directionFromDxDy(void);
 private:
 	bool continueExtendedCargoCollection();

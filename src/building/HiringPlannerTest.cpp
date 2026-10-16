@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "HiringPipeline.h"
 #include "EngineFixtures.h"
+#include "GradientFixture.h"
 #include "HiringPlanner.h"
 #include <sstream>
 #include "SharedBuildingGradient.h"
@@ -41,6 +42,39 @@ void checkPlannerOutput(const HiringPlanner::Output &actual, const HiringPlanner
 
 TEST_SUITE("HiringPlanner")
 {
+    TEST_CASE("private flying recruitment uses the common bounded air range")
+    {
+        glob2test::HeadlessGlobals globals;
+        glob2test::HeadlessGame world({.wDec=12,.hDec=3,.clearImmobile=true,.header=true,.seed=4921});
+        auto& map=world.game.map;
+        glob2test::importTerrainBeforeMatch(world.game,R"({"schemaVersion":1,"terrains":[{"key":"fixture:slow-air-hiring","name":"Slow air","base":"grass","properties":{"airSpeedQ8":64},"appearance":"grass"}]})");
+        const auto slow=*map.terrainRegistry().find("fixture:slow-air-hiring");
+        {
+            auto edit=map.editTerrain();
+            for(int y=0;y<map.getH();++y) for(int x=0;x<map.getW();++x) map.paintCell(x,y,slow);
+        }
+        auto* flag=world.addBuilding("explorationflag",8,4);
+        auto* near=world.addUnit(EXPLORER,12,4);
+        auto* far=world.addUnit(EXPLORER,2048,4);
+        REQUIRE(flag); REQUIRE(near); REQUIRE(far);
+        flag->explorersRequireBombing=false;
+        flag->maxUnitWorking=2;
+        flag->subscriptionWorkingTimer=32;
+        flag->updateCallLists();
+        near->hungriness=0; far->hungriness=0;
+        const auto input=HiringPipeline::bindRoutes(world.game,world.game.captureReadBoundary());
+        HiringPlanner::Planner planner;
+        const auto result=planner.rank(input,0,8);
+        bool found=false;
+        for(const auto& building:result.buildings) if(building.building==Game::refOf(flag))
+            for(const auto& list:building.jobs) if(list.key.job==Hiring::Job::Explore) {
+                found=true;
+                REQUIRE(list.candidates.size()==1);
+                CHECK(list.candidates.front().unit==Game::refOf(near));
+            }
+        CHECK(found);
+    }
+
 	TEST_CASE("distance bounds preserve exhaustive rankings for every job")
 	{
 		glob2test::HeadlessGlobals globals;

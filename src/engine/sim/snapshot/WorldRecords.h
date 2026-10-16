@@ -40,6 +40,10 @@ struct BuildingView : BuildingStateRecord
 struct UnitView : UnitState
 {
     int realAttackStrength = 0;
+	// Sparse clearing claims are captured in the existing entity pass. Air
+	// choice jobs expand these into worker-private lookup storage when needed.
+	bool hasClearingClaim = false;
+	Uint32 clearingClaimX = 0, clearingClaimY = 0, clearingClaimDistance = 0;
 	UnitRef identity;
 	int team = 0;
 	BuildingRef attached, target;

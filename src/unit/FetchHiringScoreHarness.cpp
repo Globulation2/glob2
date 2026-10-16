@@ -4,6 +4,7 @@
 // whether a unit may be hired for a resource measures the walk to that resource,
 // not the whole fetch-and-carry trip, and the score estimates that whole trip.
 #include "EngineFixtures.h"
+#include "GradientFixture.h"
 #include "GlobalContainer.h"
 #include "FileManager.h"
 #include <SDL3/SDL.h>
@@ -189,6 +190,44 @@ static void theScoreEstimatesTheWholeTrip()
 
 TEST_SUITE("FetchHiringScore")
 {
+    TEST_CASE("flying flag recruitment defers cold guidance without recording an access failure")
+    {
+        glob2test::HeadlessGlobals globals;
+        glob2test::HeadlessGame world({.clearImmobile=true,.header=true,.seed=4921});
+        auto& game=world.game;
+        auto& map=game.map;
+        glob2test::importTerrainBeforeMatch(game,R"({"schemaVersion":1,"terrains":[{"key":"fixture:air-recruitment-barrier","name":"Barrier","base":"grass","properties":{"flyable":false},"appearance":"grass"}]})");
+        map.paintCell(24,24,*map.terrainRegistry().find("fixture:air-recruitment-barrier"));
+        map.configureCompute(2);
+        map.configureGradientPipeline(1,3);
+        auto* unit=world.addUnit(EXPLORER,12,12);
+        auto* flag=world.addBuilding("explorationflag",8,8);
+        REQUIRE(unit); REQUIRE(flag);
+        flag->explorersRequireBombing=false;
+        int distance=-1;
+        const auto random=unit->entityRandom;
+        std::array<Uint32,Building::UnitCantWorkReasonSize> failures{};
+        std::copy(std::begin(flag->unitsFailingRequirements),std::end(flag->unitsFailingRequirements),failures.begin());
+        for(unsigned repeat=0;repeat<16;++repeat) {
+            CHECK_FALSE(FetchHiringScoreHarness::considerExplorer(flag,unit,&distance));
+            CHECK(std::equal(failures.begin(),failures.end(),std::begin(flag->unitsFailingRequirements)));
+            CHECK(unit->entityRandom==random);
+        }
+        bool accepted=false;
+        for(unsigned boundary=0;boundary<512 && !accepted;++boundary) {
+            map.advanceGradientPipeline();
+            ++game.stepCounter;
+            map.stagePeriodicGradientPreparation();
+            glob2test::prepareGradientBoundary(game);
+            accepted=FetchHiringScoreHarness::considerExplorer(flag,unit,&distance);
+        }
+        REQUIRE(accepted);
+        CHECK(distance>0);
+        CHECK(unit->attachedBuilding==nullptr);
+        CHECK(flag->unitsWorking.empty());
+        map.finishGradientPipeline();
+    }
+
     TEST_CASE("recruitment retains exact hunger boundaries and widened cached extremes")
     {
         glob2test::HeadlessGlobals globals;

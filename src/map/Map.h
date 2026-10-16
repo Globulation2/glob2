@@ -4,6 +4,7 @@
 
 #pragma once
 #include "OwnerRandom.h"
+#include "gradient/AirGradientTypes.h"
 #include <CooperativeTask.h>
 #include "ComputeExecutor.h"
 #include <array>
@@ -105,6 +106,7 @@ enum AreaType
 class Map
 {
 	friend class ResourceSeedCache;
+    friend struct AirGradientRuntime;
 	void resourceSeedChanged(size_t index, unsigned flags);
 	void invalidateResourceSeeds();
 	void seedMaterialGradientDirect(int team, Uint8 resource, int swim, Uint16 *output, const Uint16 *supplierSeeds);
@@ -1091,6 +1093,15 @@ public:
 	Uint64 materialRoutingCacheBytes() const;
 	void saveMaterialRoutingCache(GAGCore::OutputStream* stream) const;
 	void loadMaterialRoutingCache(GAGCore::InputStream* stream, bool packed, int versionMinor);
+    unsigned gradientDestination(Uint16* const*) const;
+    Uint16** gradientDestination(unsigned);
+    FieldReadiness requestAirField(const air_guidance::Key&,bool refresh=false);
+    void refreshAirField(const air_guidance::Key& key) { requestAirField(key,true); }
+    air_guidance::Published lookupAirField(const air_guidance::Key&) const;
+    RouteResult queryAirDestination(const air_guidance::Key&,int,int,air_guidance::Sample*,bool allowBlockedSource=false);
+    RouteResult queryAirBuildingDistance(Building*,bool midpoint,bool allowBlockedSource,int,int,int*);
+    bool requestGradientField(Uint16** slot, int kind, int team, int material, int swim, int consumer = -1, unsigned modes = 1);
+    RouteResult queryBuildingDistance(Building*,int,int,int,int*,BuildingRoute = BuildingRoute::Automatic);
 	Uint16 *getForbiddenGradient(int teamNumber, int swimClass);
 	Uint16 *getGuardAreasGradient(int teamNumber, int swimClass);
 	Uint16 *getClearAreasGradient(int teamNumber, int swimClass);
