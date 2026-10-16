@@ -18,8 +18,8 @@ using air_guidance::Key;
 using air_guidance::Family;
 void advanceAir(Game& game)
 {
-    game.map.advanceGradientPipeline();
     ++game.stepCounter;
+    game.map.advanceGradientPipeline();
     game.map.stagePeriodicGradientPreparation();
     glob2test::prepareGradientBoundary(game);
 }
@@ -263,7 +263,7 @@ TEST_CASE("a cold FIFO head defers without a deadline then evicts queued warm al
     CHECK(assigned==1);
     CHECK(map.gradientRuntime->fieldRequests.front().slot==warmSlots.front());
     CHECK(*warmSlots.front()==nullptr); // Allocation evicted; stable metadata survives.
-    for (int advance=0;advance<3;++advance) { map.advanceGradientPipeline(); ++game.stepCounter; }
+    for (int advance=0;advance<3;++advance) { ++game.stepCounter; map.advanceGradientPipeline(); }
     CHECK(map.lookupAirField(cold).readiness==FieldReadiness::Ready);
     map.finishGradientPipeline();
 }
@@ -344,7 +344,7 @@ TEST_CASE("retired generation budget attribution survives saves before the next 
         const auto frozen=std::vector<Uint16>(oldLease.values.get(),oldLease.values.get()+map.cellCount());
         map.requestAirField(key,true);
         for (unsigned boundary=0;boundary<32;++boundary) {
-            map.advanceGradientPipeline(); ++game.stepCounter;
+            ++game.stepCounter; map.advanceGradientPipeline();
             if (map.lookupAirField(key).values!=oldLease.values) break;
             map.stagePeriodicGradientPreparation(); glob2test::prepareGradientBoundary(game);
         }

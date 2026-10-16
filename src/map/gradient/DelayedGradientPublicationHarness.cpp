@@ -14,12 +14,12 @@
 #include <iomanip>
 
 namespace {
-// Advance the same publication/capture boundaries as the game, without unit
-// decisions obscuring which cold demand generated a field.
+// Advance isolated completed-world boundaries without unit decisions. Publication
+// and capture see the same Game tick, so admission at c publishes at c+K.
 void advanceFields(Game& game)
 {
-    game.map.advanceGradientPipeline();
     ++game.stepCounter;
+    game.map.advanceGradientPipeline();
     game.map.stagePeriodicGradientPreparation();
     glob2test::prepareGradientBoundary(game);
 }

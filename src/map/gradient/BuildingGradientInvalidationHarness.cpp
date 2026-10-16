@@ -388,7 +388,7 @@ static void delayedFields()
 		const auto original=reference();
 		map.configureCompute(workers+1);
 		map.configureGradientPipeline(workers, 3);
-		const auto publish=[&]() { map.advanceGradientPipeline(); ++world.game.stepCounter; };
+		const auto publish=[&]() { ++world.game.stepCounter; map.advanceGradientPipeline(); };
 		const auto capture=[&]() { map.stagePeriodicGradientPreparation(); glob2test::prepareGradientBoundary(world.game); };
 		require(!field(), "cold read enrolls without publishing a placeholder");
 		publish(); capture(); // Admission at advance 1, publication at advance 4.
@@ -562,9 +562,9 @@ void scheduledKernelsMatchSynchronous(KernelTerrain config)
 }
 
 // ── Scheduled building gradients ──
-// Each tick mirrors Game::syncStep: publication, team stepping (where units
-// ask for fields and so request refreshes), the step counter, staging, and the
-// observation boundary that captures and submits the staged jobs.
+// Isolated pipeline tests below count publication advances directly, separating
+// consumer requests from captured input mutations. The real owner observation's
+// Game-tick deadline and tick-zero metadata are pinned by a separate case below.
 struct Scheduler
 {
 	Game& game;
@@ -1143,6 +1143,58 @@ void scheduledSameTickSwimClassesKeepRequestOrder()
 
 TEST_SUITE("BuildingGradientInvalidation")
 {
+    TEST_CASE("owner observation at tick zero publishes cold fields and access metadata together at tick K")
+    {
+        glob2test::HeadlessGlobals globals;
+        constexpr unsigned delay=4;
+        for (unsigned workers:{0u,2u}) {
+            CAPTURE(workers);
+            World world;
+            Scheduler scheduler(world,workers,delay);
+            world.game.gameHeader.setResourceGrowthDisabled(true);
+            auto* site=world.place(24,24);
+            for (int y=23;y<=24+world.siteH;++y)
+                for (int x=23;x<=24+world.siteW;++x)
+                    if (x==23 || y==23 || x==24+world.siteW || y==24+world.siteH)
+                        world.game.map.addForbidden(x,y,0);
+            const auto type=world.game.buildingsTypes.getTypeNum("clearingflag",0,false);
+            auto* flag=world.game.addBuilding(44,44,type,0); REQUIRE(flag);
+            flag->unitStayRange=4; flag->setClearsMaterial(WOOD,true);
+            world.game.map.setResourceByIndex(46,44,WOOD,1);
+            auto& game=world.game; auto& map=game.map;
+            const auto access=site->routeAccess(0,BuildingRoute::Footprint);
+            const auto variant=swimAccessVariant(0);
+            REQUIRE(game.stepCounter==0);
+            REQUIRE_FALSE(site->isLocked(access));
+            REQUIRE(flag->anyResourceToClear[variant]==0);
+            GradientExecutionAudit audit;
+            REQUIRE(map.requestBuildingField(site,0,BuildingRoute::Footprint)==FieldReadiness::Pending);
+            REQUIRE(map.requestBuildingField(flag,0,BuildingRoute::Clearing)==FieldReadiness::Pending);
+            game.observeCompletedWorld();
+            REQUIRE(map.buildingGradientPipelineStatus().pending==2);
+            map.finishGradientPipeline(); // Force early private completion without publication.
+            for (unsigned tick=0;tick<delay;++tick) {
+                CAPTURE(tick);
+                if (tick) { ++game.stepCounter; game.observeCompletedWorld(); }
+                CHECK(map.lookupBuildingField(site,0,BuildingRoute::Footprint)==nullptr);
+                CHECK(map.lookupBuildingField(flag,0,BuildingRoute::Clearing)==nullptr);
+                CHECK_FALSE(site->isLocked(access));
+                CHECK(flag->anyResourceToClear[variant]==0);
+            }
+            ++game.stepCounter; game.observeCompletedWorld();
+            REQUIRE(game.stepCounter==delay);
+            REQUIRE(map.lookupBuildingField(site,0,BuildingRoute::Footprint)!=nullptr);
+            REQUIRE(map.lookupBuildingField(flag,0,BuildingRoute::Clearing)!=nullptr);
+            CHECK(site->lastGlobalGradientUpdateStepCounter[site->routeSlot(0,BuildingRoute::Footprint)]==0);
+            CHECK(flag->lastGlobalGradientUpdateStepCounter[flag->routeSlot(0,BuildingRoute::Clearing)]==0);
+            CHECK(site->isLocked(access));
+            CHECK(flag->anyResourceToClear[variant]==1);
+            map.finishGradientPipeline();
+            if (workers && GAGCore::ThreadSupport::available) CHECK(audit.totals().owner==0);
+            else CHECK(audit.totals().owner>0);
+        }
+    }
+
     TEST_CASE("observation phase is covered by both current checksum tiers")
     {
         glob2test::HeadlessGlobals globals;

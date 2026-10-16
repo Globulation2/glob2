@@ -42,8 +42,8 @@ template<class Read> auto awaitGradient(Game& game, Read read)
     auto field=read();
     for (unsigned boundary=0; !field && boundary<4096; ++boundary)
     {
-        game.map.advanceGradientPipeline();
         ++game.stepCounter;
+        game.map.advanceGradientPipeline();
         game.map.stagePeriodicGradientPreparation();
         prepareGradientBoundary(game);
         field=read();

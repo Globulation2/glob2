@@ -147,6 +147,9 @@ void Map::ensureBuildingGradientPipeline()
 		{
 			if (s == swim || swimAccessVariant(s) != swimAccessVariant(swim)) continue;
 			const int other = b->routeSlot(s, p.route);
+			// Tick zero is a valid capture boundary. An absent sibling's default
+			// zero stamp is not published evidence and cannot suppress metadata.
+			if (!b->globalGradient[other]) continue;
 			const auto stamped = b->lastGlobalGradientUpdateStepCounter[other];
 			if (stamped > p.captureTick || (stamped == p.captureTick && !publishedEarlier(other))) newest = false;
 		}

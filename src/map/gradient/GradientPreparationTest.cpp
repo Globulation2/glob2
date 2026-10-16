@@ -1154,11 +1154,19 @@ TEST_CASE("published plane registry matches a sweep of live material fields" * d
 	CHECK(handle.resourceFields->planes.size() == 3);
 	const auto* stone = handle.resourceFields->find(MapState::planeKey(1, STONE, 1, false));
 	REQUIRE(stone);
-    CHECK(std::equal(stone->values->begin(), stone->values->end(), liveStone));
-    const auto frozen = stone->values->at(7);
-    liveStone[7] ^= 1;
-    CHECK(stone->values->at(7) == frozen);
-    CHECK(stone->values->at(7) != liveStone[7]);
+	CHECK(std::equal(stone->values->begin(), stone->values->end(), liveStone));
+	const auto frozen = *stone->values;
+	// Published fields are immutable. Replace the live generation through its
+	// normal delayed refresh and retain the captured snapshot across publication.
+	m.replaceResource(10 + STONE, 10, Resource{});
+	m.updateMaterialGradient(1, STONE, 1, false);
+	const auto* replacement = glob2test::awaitGradient(world.game, [&]() -> const Uint16* {
+		const auto* field = m.getMaterialGradientSlot(1, STONE, 1);
+		return field && !std::equal(frozen.begin(), frozen.end(), field) ? field : nullptr;
+	});
+	check();
+	CHECK(*stone->values == frozen);
+	CHECK_FALSE(std::equal(stone->values->begin(), stone->values->end(), replacement));
 	CHECK_FALSE(handle.resourceFields->find(MapState::planeKey(0, WOOD, 0, false)));
 }
 
@@ -1698,7 +1706,7 @@ TEST_CASE("depleting the last natural source eventually publishes completed unre
         map.configureCompute(participants); map.configureGradientPipeline(participants-1,3);
         map.setResourceByIndex(8,8,WHEAT,1);
         const auto boundary=[&] {
-            map.advanceGradientPipeline(); ++game.stepCounter;
+            ++game.stepCounter; map.advanceGradientPipeline();
             map.stagePeriodicGradientPreparation();
             map.game->snapshotStore().invalidateBoundary();
             map.preparePendingGradient(map.game->snapshotStore().captureBoundary(*map.game));
@@ -1746,7 +1754,7 @@ TEST_CASE("stock changes during shared market work retain dirty demand through i
     auto* supplier=world.addBuilding("inn",8,8); REQUIRE(supplier);
     supplier->setMaterial(WHEAT,10);
     const auto boundary=[&] {
-        map.advanceGradientPipeline(); ++game.stepCounter;
+        ++game.stepCounter; map.advanceGradientPipeline();
         map.stagePeriodicGradientPreparation();
         map.game->snapshotStore().invalidateBoundary();
         map.preparePendingGradient(map.game->snapshotStore().captureBoundary(*map.game));
@@ -1862,7 +1870,7 @@ TEST_CASE("a locally blocked consumer field refreshes its stable supplier-cache 
     REQUIRE(map.materialSupplyModesSlot(consumer,WHEAT)==2);
     CHECK(map.getMaterialGradientSlot(0,WHEAT,0,false,consumer)==nullptr);
     for (unsigned i=0;i<16 && !map.lookupMaterialGradientSlot(0,WHEAT,0,false,consumer);++i) {
-        map.advanceGradientPipeline(); ++game.stepCounter;
+        ++game.stepCounter; map.advanceGradientPipeline();
         map.stagePeriodicGradientPreparation();
         map.game->snapshotStore().invalidateBoundary();
         map.preparePendingGradient(map.game->snapshotStore().captureBoundary(*map.game));
@@ -1937,7 +1945,7 @@ TEST_CASE("consumer pool changes hard-supersede ground supplier fields at a stab
         const auto identity=consumer->scriptIdentity;
         const auto type=consumer->typeNum;
         const auto boundary=[&] {
-            map.advanceGradientPipeline(); ++game.stepCounter;
+            ++game.stepCounter; map.advanceGradientPipeline();
             map.stagePeriodicGradientPreparation();
             map.game->snapshotStore().invalidateBoundary();
             map.preparePendingGradient(map.game->snapshotStore().captureBoundary(*map.game));

@@ -42,13 +42,13 @@ void edit(Fixture& f,int x,int y,bool add,bool mixed=false) {
     order->maxX=mixed?2:1; order->maxY=1; order->mask.resize(mixed?2:1,true);
     f.game.executeOrder(order,0);
 }
-// The production order: publish, step the map if requested, then capture the
-// completed world and admit work. No helper finishes or publishes a live field.
+// Complete optional maintenance for the old tick, then publish/capture the new
+// completed-world boundary. No helper finishes a live field synchronously.
 void boundary(Fixture& f,bool maintenance=false) {
     auto& map=f.game.map;
-    map.advanceGradientPipeline();
     if (maintenance) map.syncStep(f.game.stepCounter);
     ++f.game.stepCounter;
+    map.advanceGradientPipeline();
     map.stagePeriodicGradientPreparation(); glob2test::prepareGradientBoundary(f.game);
 }
 template<class Predicate> void await(Fixture& f,Predicate ready,bool maintenance=false,unsigned limit=4096) {
