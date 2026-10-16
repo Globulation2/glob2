@@ -295,8 +295,8 @@ also be compiled directly with ThreadSanitizer without SDL.
 
 `BuildingGradientInvalidationHarness` exercises real resource, guard and clear
 fields, including cold publication and soft edits while an older snapshot is pending.
-`DelayedGradientPublication` covers lazy building fields, complete material/area
-fields, FIFO admission, and binary/text save continuation across
+`DelayedGradientPublication` covers complete material/area fields, FIFO admission,
+and binary/text save continuation across
 one, two, four and eight compute participants. Their checkpoint with both
 admitted jobs and queued demand also checks that text serialization preserves
 the two inventories independently.

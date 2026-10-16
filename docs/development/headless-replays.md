@@ -72,12 +72,11 @@ checkpoint from a run started with `--rule buildingGradientDelay=N`. Other
 overrides of a saved game, including `--experiment`, `--rule` and
 `--ai-order-delay`, are still rejected.
 
-Scheduled building footprint fields retain their lazy frontier at publication,
-using the fitted production depth predictor. Hiring workers extend leased fields
-for candidates; live readers resolve additional demand. Cold requests and refreshes
-share FIFO admission and fixed publication deadlines. Format 168 saves queued
-requests and completed unpublished outputs; save-time completion preserves route
-answers and remaining deadlines. Supported save formats still start at 58.
+Scheduled building fields retain the production depth predictor and lazy
+reader/hiring expansion. Their initialization, refresh and save behavior are
+unchanged. Material and area cold requests use FIFO admission and fixed
+publication deadlines. Format 168 saves that queued demand and completed
+unpublished outputs, preserving remaining deadlines and the save floor of 58.
 
 Format 143 saves the AI engine's completed pending orders, logical deadlines and
 execution feedback. Saving finishes outstanding decisions without executing

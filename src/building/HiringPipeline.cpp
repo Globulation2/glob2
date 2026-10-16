@@ -432,8 +432,8 @@ HiringPlanner::Inputs HiringPipeline::bindRoutes(Game &game, const SimulationSna
 		auto *live = game.resolveBuilding(b.identity);
 		if (!live)
 			throw std::logic_error("Hiring capture lost building incarnation");
-		// The owner borrows serving lazy generations. Hiring workers resolve
-		// candidates under the generation lock; missing routes stay absent.
+		// The owner borrows existing generations. Workers expand them under
+		// the existing locks; observation never prepares a cold or stale field.
 		const auto &type = inputs.world.catalogs->buildings->at(b.typeNum).resolvedType;
 		const bool footprint =
 			std::any_of(std::begin(type.maxMaterial), std::begin(type.maxMaterial) + MaterialCount,

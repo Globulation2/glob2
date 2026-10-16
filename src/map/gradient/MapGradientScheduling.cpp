@@ -6,8 +6,7 @@
 // Boundary placement: publish due fields, capture one immutable observation,
 // then stage and submit requests using that observation. Team stepping requests
 // refreshes while serving existing fields until a later boundary publishes them.
-// The owner manages bounded request metadata and scalar captures. Map-sized
-// input construction, seeding and predicted-depth preparation run inside executor jobs.
+// Every owner-side step is O(1) per job; seeding and the search run on workers.
 
 #include <PerformanceTelemetry.h>
 #include "Map.h"
@@ -43,7 +42,6 @@ void buildScheduled(PipelineJob& job)
 {
 	auto& p = job.payload;
 	if (building_gradient::workHook) building_gradient::workHook(p);
-	p.inputs = BuildingGradientSearch::Inputs::ofSnapshot(*job.snapshotLease, p.swim);
 	const auto result = gradient_preparation::buildBuilding(p.seed, *job.snapshotLease, p.inputs, p.data.get(), *p.search, p.depthTarget);
 	p.locked = result.locked;
 	p.resourceState = result.resourceState;
@@ -93,12 +91,10 @@ Building* Map::buildingGradientDestination(int team, int id, Uint32 identity) co
 	return building && building->scriptIdentity == identity ? building : nullptr;
 }
 
-// Game-backed queries follow the match's buildingGradientDelay, including
-// editor fixtures. A map without a Game has no building publication pipeline;
-// building queries/kernels themselves require Game-backed destinations. Explicit
-// editor/reference callers can invoke the synchronous builder directly. Changing
-// delay with pending work would move deadlines, so only an empty pipeline can
-// reconfigure (a new match or a fork of a loaded game).
+// Follows the match's buildingGradientDelay; a map without a game (the editor,
+// map-only tests) builds its fields synchronously. A change with pending work
+// would move deadlines, so it is refused; with an empty pipeline (a new match,
+// or a fork of a loaded game) it reconfigures.
 void Map::ensureBuildingGradientPipeline()
 {
 	auto& rt = *gradientRuntime;
@@ -107,19 +103,20 @@ void Map::ensureBuildingGradientPipeline()
 	if (pipeline.delayTicks() == delay) return;
 	if (pipeline.pendingCount() || !rt.buildingRequests.empty() || !rt.stagedBuildings.empty())
 		throw std::logic_error("Scheduled building gradients cannot change with pending work");
-	// Captures of one tick publish together in reservation order. Swim classes
-	// sharing access metadata must resolve equal-capture ties in that same order.
+	// Captures of one tick publish together, in request order; the synchronous
+	// path built them in that order, so a later one overwrites an earlier one.
 	struct Published { int team; Uint16 building; int slot; Uint32 captureTick, publishTick; };
 	pipeline.publish = [this, sameTick = std::vector<Published>{}](PipelineJob& job) mutable {
 		auto& p = job.payload;
 		Building* b = buildingGradientDestination(p.team, p.buildingId, p.scriptIdentity);
-		if (!b || b->refreshEpoch[p.slot] != p.epoch) return false;
+		if (!b || b->refreshEpoch[p.slot] != p.epoch || !b->globalGradient[p.slot]) return false;
 		const int slot = p.slot, swim = p.swim;
         auto guard=SharedBuildingGradient::lock(b->sharedGradient[slot]);
 
-		// Transfer the buffer and its resumable search as one generation.
+		// Pointer swap: the transferred search already points at data, so a
+		// partial field resumes from its own buckets with no rescan.
 		auto& search = b->globalGradientSearch[slot];
-		// The depth model uses owner demand from the replaced lifetime.
+		// The depth model reads the replaced lifetime; a locked one leaves the older value.
 		if (search) b->settledCostHint[slot] = Uint16(std::min(search->requiredCost(), 0xFFFE));
 		b->retireSharedGradient(slot);
         recycleBuildingGradientSearch(std::move(search));
@@ -147,9 +144,6 @@ void Map::ensureBuildingGradientPipeline()
 		{
 			if (s == swim || swimAccessVariant(s) != swimAccessVariant(swim)) continue;
 			const int other = b->routeSlot(s, p.route);
-			// Tick zero is a valid capture boundary. An absent sibling's default
-			// zero stamp is not published evidence and cannot suppress metadata.
-			if (!b->globalGradient[other]) continue;
 			const auto stamped = b->lastGlobalGradientUpdateStepCounter[other];
 			if (stamped > p.captureTick || (stamped == p.captureTick && !publishedEarlier(other))) newest = false;
 		}
@@ -172,7 +166,7 @@ void Map::ensureBuildingGradientPipeline()
 	pipeline.deadline = [this](unsigned remaining) {
 		return ComputeExecutor::advanceDue(std::uint64_t(game ? game->stepCounter : 0) + remaining);
 	};
-	// Both serial and worker execution publish only at the configured deadline.
+	// Statistics record what readers needed, so they default to seeds only.
 	if (delay) pipeline.configure(compute, delay, buildScheduled);
 	else pipeline.drain();
 }
@@ -188,16 +182,23 @@ void Map::resetBuildingGradientPipeline() noexcept
 bool Map::requestBuildingRefresh(Building* building, int slot)
 {
 	auto& rt = *gradientRuntime;
-	if (!buildingGradientPipelineActive()) return false;
+	if (!buildingGradientPipelineActive() || !building->globalGradient[slot]) return false;
 	if (building->refreshRequested.test(slot)) return true; // Already queued or in flight.
 	building->refreshRequested.set(slot);
 	rt.buildingRequests.push_back({building->owner->teamNumber, Uint16(Building::GIDtoID(building->gid)),
 		building->scriptIdentity, building->refreshEpoch[slot], slot, false});
-	// Remove superseded metadata without disturbing FIFO order of live requests.
-	std::erase_if(rt.buildingRequests, [this](const auto& r) {
-		const auto* b = buildingGradientDestination(r.team, r.building, r.identity);
-		return r.stale || !b || b->refreshEpoch[r.slot] != r.epoch;
-	});
+	if (rt.buildingRequests.size() > GradientRuntime::BuildingRequestLimit)
+	{
+		// Deterministic overflow: the oldest request is served synchronously now.
+		const auto oldest = rt.buildingRequests.front();
+		rt.buildingRequests.pop_front();
+		Building* b = buildingGradientDestination(oldest.team, oldest.building, oldest.identity);
+		if (b && !oldest.stale && b->refreshEpoch[oldest.slot] == oldest.epoch && b->globalGradient[oldest.slot])
+		{
+			noteBuildingSyncReason(BuildingSyncReason::Overflow);
+			updateGlobalGradient(b, slotSwim(oldest.slot), slotRoute(oldest.slot)); // Supersedes and clears the request.
+		}
+	}
 	return true;
 }
 
@@ -225,7 +226,7 @@ void Map::stageBuildingGradientPreparation()
 		const auto request = rt.buildingRequests.front();
 		rt.buildingRequests.pop_front();
 		Building* b = buildingGradientDestination(request.team, request.building, request.identity);
-		if (!b || request.stale || b->refreshEpoch[request.slot] != request.epoch) continue;
+		if (!b || request.stale || b->refreshEpoch[request.slot] != request.epoch || !b->globalGradient[request.slot]) continue;
 		auto* job = pipeline.reserve();
 		job->payload = {};
 		auto& p = job->payload;
@@ -254,9 +255,8 @@ void Map::prepareStagedBuildingGradients(const SimulationSnapshot::Handle& found
 		Building* b = buildingGradientDestination(p.team, p.buildingId, p.scriptIdentity);
 		if (!b) throw std::logic_error("Staged building gradient lost its destination");
 		p.seed = gradient_preparation::captureBuildingSeed(*b, p.swim, p.route);
-		// The worker materializes cost planes from the same immutable boundary
-		// that supplies its seeds; the owner must not construct a cold plane here.
-		p.inputs = {};
+		// Owner cost planes from the same boundary as the lease the seeder reads.
+		p.inputs = BuildingGradientSearch::Inputs::of(*this, p.swim);
 		job->snapshotLease = foundation.buildingGradientView();
 	}
 	rt.buildings.prepare(staged);

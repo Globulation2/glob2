@@ -276,7 +276,6 @@ Building *Game::addBuilding(int x, int y, int typeNum, int teamNumber, Sint32 un
 		map.setBuilding(x, y, w, h, gid);
 	team->attachBuilding(id,b);
 	areaEffects.changed(gid);
-	b->prewarmPathfindGradients();
 	snapshots().invalidateBoundary();
 	return b;
 }

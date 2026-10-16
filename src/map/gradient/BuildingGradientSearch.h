@@ -13,7 +13,6 @@
 #include "field/TerrainGradientWorkspace.h"
 
 class Map;
-namespace SimulationSnapshot { struct Handle; }
 
 // Resumable version of the building field's zero-cost, multi-source Dijkstra.
 // Obstacles/goals are already frozen in the initialized gradient. Weighted swim
@@ -33,7 +32,6 @@ class BuildingGradientSearch
 		bool modifiedCosts = false;
 		unsigned buckets = 64;
 		static Inputs of(const Map &map, int swim);
-		static Inputs ofSnapshot(const SimulationSnapshot::Handle &snapshot, int swim);
 	};
 
   private:

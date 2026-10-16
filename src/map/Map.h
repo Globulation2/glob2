@@ -282,10 +282,10 @@ public:
     void applyGradientBackendRequest();
     void configureGradientExecution();
 	// Scheduled building gradients (MapGradientScheduling.cpp). Team stepping
-	// requests fields and keeps serving old published generations;
+	// requests refreshes of existing fields and keeps serving the old ones;
 	// after the tick up to MaxJobsPerTick requests are staged, captured at the
 	// observation boundary, built on workers and published
-	// buildingGradientDelay ticks later. Cold fields return Pending; area and
+	// buildingGradientDelay ticks later. Cold fields stay synchronous; area and
 	// team-wide resets keep old walking fields serving instead of making them
 	// cold (Building::keepsStaleGradients).
 	//! Why a building walking field was built on the owner. cold_* name what
@@ -313,10 +313,12 @@ public:
 	//! Follow the header's buildingGradientDelay now; throws with pending work.
 	void ensureBuildingGradientPipeline();
 	bool buildingGradientPipelineActive() const;
-	//! Queue a cold build or refresh (slot = routeSlot). False only when the
-	//! explicit map/editor path has no simulation publication pipeline.
+	//! Queue a refresh of an existing walking field (slot = routeSlot). False
+	//! when the caller must rebuild synchronously (no pipeline: a map without
+	//! a game, or no existing field).
 	bool requestBuildingRefresh(Building *building, int slot);
-	//! Fitted preparation depth for footprint routes; readers resolve further demand.
+	//! Worker depth for a scheduled walking field: every reader still resolves
+	//! its cell first, so the prediction moves CPU, never values.
 	int predictBuildingDepth(const Building *building, int slot) const;
 	void updateTeamAreaGradients(int teamNumber);
 	void seedMaterialGradient(int team, Uint8 resource, int swim, Uint16 *gradient, bool withMarkets = false, const Building* consumer = nullptr, unsigned modes = 0);
@@ -893,9 +895,10 @@ public:
     bool takeHarvestMaterialSlot(int x,int y,int dx,int dy,int material,Uint32 teamMask) { return validMaterial(material) && takeHarvest(x,y,dx,dy,static_cast<MaterialId>(material),teamMask); }
 
 private:
-	//! Legacy readiness/access adapter. Never exposes an unfinished field.
+	//! Allocate/refresh and mark use, without exposing the possibly partial field.
 	bool prepareBuildingGradient(Building *building, int swimClass, BuildingRoute route = BuildingRoute::Automatic);
-	//! Resolve a scalar or movement layer before reading a resumable field.
+	//! Read or move on a prepared field. Both settle their input cell first;
+	//! neither refreshes the field or changes its use timestamp.
 	Uint16 buildingGradientValue(Building *building, int swimClass, size_t cell, BuildingRoute route = BuildingRoute::Automatic) const;
 	bool buildingGradientDirection(EntityRandom& random, Building *building, int swimClass, int x, int y,
 		int *dx, int *dy, bool strict, BuildingRoute route = BuildingRoute::Automatic) const;
@@ -1178,12 +1181,12 @@ public:
 	//! Checks live occupancy at descent; returns false with zero direction if blocked.
 	bool pathfindTerrainSafety(Unit *unit);
 
-	// Enrollment is owner-only. Lookup borrows a lazy generation; resolve before reading values.
+	// Result adapters preserve the existing immediate lazy building semantics.
 	FieldReadiness requestBuildingField(Building *building, int swimClass, BuildingRoute route = BuildingRoute::Automatic);
 	const Uint16 *lookupBuildingField(const Building *building, int swimClass, BuildingRoute route = BuildingRoute::Automatic) const;
 	RouteResult queryBuildingDistance(Building *building, int swimClass, int x, int y, int *dist, BuildingRoute route = BuildingRoute::Automatic);
 	StepResult queryBuildingStep(EntityRandom& random, Building *building, int swimClass, int x, int y, int *dx, int *dy, BuildingRoute route = BuildingRoute::Automatic);
-	//! Explicit synchronous reference/editor build; live readers enroll jobs.
+	//! Initialize a lazy field from the current map; point reads settle demand.
 	void updateGlobalGradient(Building *building, int swimClass, BuildingRoute route = BuildingRoute::Automatic);
 	//! Complete field adapter; finishes a lazy generation, NULL while Pending or locked.
 	const Uint16 *buildingGradient(Building *building, int swimClass, BuildingRoute route = BuildingRoute::Automatic);

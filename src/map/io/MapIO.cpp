@@ -747,12 +747,12 @@ void Map::saveBuildingGradientPipeline(GAGCore::OutputStream *stream) const
 	stream->writeEnterSection("buildingGradientPipeline");
 	stream->writeUint8(rt.buildings.delayTicks(), "delay");
 	stream->writeEnterSection("queue");
-	stream->writeUint32(rt.buildingRequests.size(), "count");
+	stream->writeUint16(rt.buildingRequests.size(), "count");
 	unsigned index=0;
 	for (const auto &request : rt.buildingRequests)
 	{
 		const Building *b=buildingGradientDestination(request.team, request.building, request.identity);
-		const bool stale=request.stale || !b || b->refreshEpoch[request.slot]!=request.epoch;
+		const bool stale=request.stale || !b || b->refreshEpoch[request.slot]!=request.epoch || !b->globalGradient[request.slot];
 		stream->writeEnterSection(index++);
 		stream->writeUint8(request.team, "team");
 		stream->writeUint16(request.building, "building");
@@ -768,8 +768,7 @@ void Map::saveBuildingGradientPipeline(GAGCore::OutputStream *stream) const
 	rt.buildings.visitPending([&](BuildingGradientJobPipeline::Job &job, unsigned remaining) {
 		auto &p=job.payload;
 		const Building *b=buildingGradientDestination(p.team, p.buildingId, p.scriptIdentity);
-		const bool superseded=job.superseded || !b || b->refreshEpoch[p.slot]!=p.epoch;
-		// The on-disk representation stays complete; finishing never changes answers or reader demand.
+		const bool superseded=job.superseded || !b || b->refreshEpoch[p.slot]!=p.epoch || !b->globalGradient[p.slot];
 		if (!superseded && p.search && !p.locked) p.search->finish();
 		stream->writeEnterSection(index++);
 		stream->writeUint8(p.team, "team");
@@ -795,8 +794,7 @@ void Map::loadBuildingGradientPipeline(GAGCore::InputStream *stream, bool packed
 	stream->readEnterSection("buildingGradientPipeline");
 	const unsigned delay=stream->readUint8("delay");
 	stream->readEnterSection("queue");
-	const unsigned requests=versionMinor >= FILE_FORMAT_VERSION_DELAYED_GRADIENTS ? stream->readUint32("count") : stream->readUint16("count");
-	if (requests > GradientRuntime::BuildingRequestLimit) throw std::runtime_error("Invalid saved building gradient request count");
+	const unsigned requests=stream->readUint16("count");
 	ensureBuildingGradientPipeline();
 	// An empty pipeline carries no deadlines, so it follows the header even when
 	// the saved delay predates a fork or a header change; saved work must match.

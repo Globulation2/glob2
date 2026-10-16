@@ -64,13 +64,10 @@ TEST_CASE("cold queued and privately completed fields continue through binary an
         game.gameHeader.setBuildingGradientDelay(3);
         map.configureCompute(2);
         map.configureGradientPipeline(1,3);
-        auto* building=world.addBuilding("inn",4,4);
-        REQUIRE(building);
         map.setResourceByIndex(20,20,WHEAT,1);
         map.addForbidden(24,24,0);
         map.addGuardArea(22,22,0);
         map.addClearArea(20,20,0);
-        map.requestBuildingField(building,0,BuildingRoute::Footprint);
         map.getMaterialGradientSlot(0,WHEAT,0);
         map.getForbiddenGradient(0,0);
         map.getGuardAreasGradient(0,0);
@@ -129,54 +126,7 @@ TEST_CASE("cold queued and privately completed fields continue through binary an
     }
 }
 
-TEST_CASE("cold metadata beyond the former queue limit admits FIFO without owner fallback")
-{
-    glob2test::HeadlessGlobals globals;
-    glob2test::HeadlessGame world({.wDec=6,.hDec=6,.clearImmobile=true,.header=true,.seed=731});
-    auto& game=world.game;
-    auto& map=game.map;
-    game.gameHeader.setBuildingGradientDelay(3);
-    map.configureCompute(2);
-    map.configureGradientPipeline(1,3);
-    std::vector<Building*> buildings;
-    std::vector<std::pair<Building*,int>> requested;
-    for (int i=0;i<12;++i) {
-        auto* b=world.addBuilding("inn",4+12*(i%4),4+12*(i/4));
-        REQUIRE(b);
-        buildings.push_back(b);
-    }
-    // Creation prewarms walking footprint routes in building order. Those
-    // existing requests retain their FIFO positions when demand enrolls the
-    // remaining classes, so the observed order must include them first.
-    for (auto* b:buildings) requested.emplace_back(b,0);
-    for (auto* b:buildings)
-        for (int swim=1;swim<SWIM_CLASS_COUNT;++swim) requested.emplace_back(b,swim);
-    GradientExecutionAudit audit;
-    for (const auto [building,swim]:requested)
-        REQUIRE(map.requestBuildingField(building,swim,BuildingRoute::Footprint)==FieldReadiness::Pending);
-    REQUIRE(requested.size()>64);
-    CHECK(map.buildingGradientPipelineStatus().synchronous==0);
-    for (unsigned tick=0;tick<requested.size()+4;++tick)
-    {
-        advanceFields(game);
-        bool missing=false;
-        for (const auto [building,swim]:requested) {
-            const auto* field=map.lookupBuildingField(building,swim,BuildingRoute::Footprint);
-            if (!field) missing=true;
-            else CHECK_FALSE(missing); // Every observed publication is a FIFO prefix.
-        }
-    }
-    for (const auto [building,swim]:requested)
-        CHECK(map.lookupBuildingField(building,swim,BuildingRoute::Footprint)!=nullptr);
-    map.finishGradientPipeline();
-    CHECK(map.buildingGradientPipelineStatus().synchronous==0);
-    if (GAGCore::ThreadSupport::available) {
-            CHECK(audit.counts(GradientExecutionAudit::Kind::Seed).owner==0);
-            CHECK(audit.counts(GradientExecutionAudit::Kind::TerrainPlane).owner==0);
-        }
-}
-
-TEST_CASE("cold simulation fields publish identical lazy building and complete area generations with one two four and eight participants [artifacts]")
+TEST_CASE("cold material and area fields publish identical generations with one two four and eight participants [artifacts]")
 {
     glob2test::HeadlessGlobals globals;
     std::vector<std::vector<Uint32>> expected;
@@ -190,15 +140,12 @@ TEST_CASE("cold simulation fields publish identical lazy building and complete a
         game.gameHeader.setBuildingGradientDelay(3);
         map.configureCompute(participants);
         map.configureGradientPipeline(participants-1,3);
-        auto* building = world.addBuilding("inn",4,4);
-        REQUIRE(building);
         map.setResourceByIndex(20,20,WHEAT,1);
         map.addGuardArea(22,22,0);
         map.addClearArea(20,20,0);
         map.addForbidden(24,24,0);
         const auto fields = [&] {
-            return std::array<const Uint16*,6>{
-                map.lookupBuildingField(building,0,BuildingRoute::Footprint),
+            return std::array<const Uint16*,5>{
                 map.getMaterialGradientSlot(0,WHEAT,0),
                 map.getMaterialGradientSlot(0,WOOD,0),
                 map.getGuardAreasGradient(0,0),
@@ -206,12 +153,11 @@ TEST_CASE("cold simulation fields publish identical lazy building and complete a
                 map.getForbiddenGradient(0,0)};
         };
         GradientExecutionAudit audit;
-        REQUIRE(map.requestBuildingField(building,0,BuildingRoute::Footprint)==FieldReadiness::Pending);
         for (const auto* field : fields()) CHECK(field==nullptr);
-        const auto queued = map.buildingGradientPipelineStatus().queued;
+        const auto queued=map.gradientRuntime->fieldRequests.size();
         for (int i=0;i<20;++i)
-            REQUIRE(map.requestBuildingField(building,0,BuildingRoute::Footprint)==FieldReadiness::Pending);
-        CHECK(map.buildingGradientPipelineStatus().queued==queued);
+            REQUIRE(map.requestMaterialField(0,WHEAT,0)==FieldReadiness::Pending);
+        CHECK(map.gradientRuntime->fieldRequests.size()==queued);
 
         std::vector<std::vector<Uint32>> trajectory;
         std::vector<std::vector<Uint32>> checksumTrajectory;
@@ -232,12 +178,7 @@ TEST_CASE("cold simulation fields publish identical lazy building and complete a
         const auto ready=fields();
         for (const auto* field : ready) REQUIRE(field!=nullptr);
         // No source is a completed field, distinct from the initial nullptr.
-        CHECK(ready[2][map.coordToIndex(16,16)]==GRADIENT_UNREACHABLE);
-        int distance=-1;
-        CHECK(map.queryBuildingDistance(building,0,16,16,&distance,BuildingRoute::Footprint)==RouteResult::Reachable);
-        const auto* search=building->globalGradientSearch[building->routeSlot(0,BuildingRoute::Footprint)].get();
-        REQUIRE(search);
-        CHECK(search->resolved(map.coordToIndex(16,16)));
+        CHECK(ready[1][map.coordToIndex(16,16)]==GRADIENT_UNREACHABLE);
         // Drain outstanding private work before the audit's lifetime ends.
         map.finishGradientPipeline();
         const auto counts=audit.totals();

@@ -504,7 +504,7 @@ test('WebAssembly verifies ground gradient publication across serial and threade
     expect(junit).toMatch(/failures="0"/);
     expect(junit).toMatch(/errors="0"/);
     expect(junit).not.toMatch(/<skipped\b/);
-    expect(junit.match(/<testcase\b/g)).toHaveLength(4);
+    expect(junit.match(/<testcase\b/g)).toHaveLength(3);
     for (const participants of [1, 2, 4, 8]) {
       for (const prefix of ['participants-']) {
         expect(Object.keys(result.files).some(name => name.endsWith('/' + prefix + participants + '.tsv'))).toBe(true);

@@ -1,9 +1,7 @@
 # The building-field depth model
 
 Scheduled footprint fields prepare part of a search on a worker and transfer its
-frontier to the serving generation at the fixed publication deadline, including
-for cold requests. Hiring workers resolve candidates through a locked shared
-lease without changing owner demand history. Live readers
+frontier to the simulation owner at the fixed publication deadline. Readers
 resolve their requested cells before using them. Preparation depth changes where
 CPU work happens, while the frozen input, resulting values and deadline remain
 the same.

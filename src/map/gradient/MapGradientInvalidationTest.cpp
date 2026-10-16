@@ -74,7 +74,7 @@ std::vector<Uint16> referenceArea(Fixture& f,gradient_preparation::Kind kind,int
 std::vector<Uint16> referenceBuilding(Fixture& f,Building* building,int swim) {
     auto snapshot=SimulationSnapshot::capture(f.game,SimulationSnapshot::captureCatalog(f.game),SimulationSnapshot::Simulation);
     const auto seed=gradient_preparation::captureBuildingSeed(*building,swim,BuildingRoute::Automatic);
-    const auto inputs=BuildingGradientSearch::Inputs::ofSnapshot(snapshot,swim);
+    const auto inputs=BuildingGradientSearch::Inputs::of(f.game.map,swim);
     std::vector<Uint16> field(f.game.map.cellCount()); BuildingGradientSearch search;
     gradient_preparation::buildBuilding(seed,snapshot,inputs,field.data(),search,gradient_kernel::COST_LIMIT);
     return field;

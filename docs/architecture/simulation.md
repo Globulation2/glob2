@@ -452,34 +452,30 @@ checksum adapter retains its historical entity/RNG representation for fixtures.
   resizing scratch; teardown drains callbacks and discards reservations. Job-owned
   errors survive executor batch retirement and surface at save/publication.
 - Material/market (including consumer-specific supply), guard/clear and forbidden
-  fields publish complete immutable generations. Building footprint fields retain
-  resumable lazy searches; workers prepare the fitted predicted depth, and hiring
-  workers or live readers resolve additional cells under the generation lock. A cold read enrolls one deterministic request and returns
+  fields publish complete immutable generations. A cold read enrolls one deterministic request and returns
   `Pending`; absence never proves a destination inaccessible. The owner keeps
   serving an older field while a refresh waits. It validates proposed
   steps against current occupancy, forbidden paint and movement capabilities.
-- Building requests use stable FIFO admission, up to four per tick, and publish
-  after the match's `buildingGradientDelay` (1–8, default 8). Periodic/demand fields
-  share one FIFO admission per tick and their existing configured delay. Queue
-  waiting precedes the fixed capture-to-publication delay. Overflow never builds
-  synchronously. Workers seed private outputs and build movement-cost inputs from the captured
-  snapshot. Footprint searches stop at the
-  [predicted depth](../ai/architecture/building-gradient-depth-model.md); clearing
-  and combat routes keep their existing full-depth preparation. Live point reads
-  resolve requested layers, while explicit array reads finish the field. Soft dirtiness coalesces
-  a later refresh without cancelling an admitted result; destination identity and
-  hard epochs reject deleted, replaced, moved or reconfigured goals.
+- Building routing retains its existing lazy implementation: cold fields initialize
+  on first use, scheduled footprint refreshes prepare the fitted predicted depth,
+  and publication transfers both values and the resumable frontier. Hiring workers
+  resolve candidate cells under the shared generation lock; live readers resolve
+  additional demand. Clearing/combat preparation, refresh scheduling, supersession
+  and save completion retain their previous behavior. Material and area demand
+  fields share one FIFO admission per tick and the configured delay; queue waiting
+  precedes that delay. Soft dirtiness coalesces a later refresh without cancelling
+  an admitted result; destination identity rejects reconfigured consumers.
 - Units retain targets, activities and reservations through Pending and wait with
   the existing zero-displacement movement state on their normal decision cadence.
   Hunger, health and local combat/adjacent interactions continue. This introduces
-  deliberate first-use latency (about 267 ms after admission at delay 8), changing
-  emergency feeding, construction staffing and new restrictions' guidance.
+  first-use latency for material and area guidance (about 267 ms after admission
+  at delay 8), changing fetching, idle clearing and responses to painted areas.
+  Cold building routes retain their previous immediate lazy initialization.
   Explicit one-participant execution runs the same jobs with the same publication
   boundaries; explicit editor/reference builders remain available.
-  Format 168 persists cold FIFO requests and complete unpublished outputs without
-  publishing early during save. Saving finishes lazy building searches without
-  changing their answers, age or reader-demand history. Checksums exclude derived
-  frontier progress, which can advance on hiring workers. Queued demand has its own named stream section,
+  Format 168 persists material/area FIFO requests and complete unpublished outputs
+  without publishing early during save. Existing building save completion and
+  encoding remain unchanged; checksums exclude derived building frontier progress. Queued demand has its own named stream section,
   separate from pending jobs, so text saves retain both inventories independently.
   Older supported saves still load.
 - Consumer-specific material caches use deterministic LRU admission. Queued and
@@ -512,8 +508,8 @@ checksum adapter retains its historical entity/RNG representation for fixtures.
   predicates. Each executor slot owns derived seed templates, maintained using
   exact immutable chunk versions, with direct-kernel fallbacks. Material caches
   retain compact base fields and goal bitsets. No cached template retains snapshot
-  buffers or reads the live mutable material cache. Building jobs derive cold
-  terrain/water movement planes privately from immutable snapshot components.
+  buffers or reads the live mutable material cache. Building jobs retain their
+  existing frozen terrain/water inputs and lazy frontier.
   Material and clearing precedence comes from the restricted unsigned-integer
   source `src/field/shaders/preparation-rules.json`; regenerate its C++, OpenCL
   and GLSL predicates with `tools/shaders/gradient_preparation_rules.py --generate`.

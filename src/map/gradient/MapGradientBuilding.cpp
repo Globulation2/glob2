@@ -3,7 +3,6 @@
 
 #include <PerformanceTelemetry.h>
 #include "Map.h"
-#include "GradientExecutionAudit.h"
 #include "BuildingType.h"
 #include "Game.h"
 #include "Unit.h"
@@ -30,7 +29,6 @@ void Map::finishBuildingGradient(Building *building, int swimClass, BuildingRout
 void Map::updateGlobalGradient(Building *building, int swimClass, BuildingRoute route)
 {
 	PERF_SCOPE_TIME(BuildingGradient);
-	GradientExecutionAudit::record(GradientExecutionAudit::Kind::Seed);
 	route = building->resolveRoute(route);
 	const int slot = building->routeSlot(swimClass, route);
     auto guard=SharedBuildingGradient::lock(building->sharedGradient[slot]);
