@@ -1,0 +1,683 @@
+{
+  "state": "verified",
+  "latest_runs": 32,
+  "historical_runs": 64,
+  "build_sha256": "eaaf863dfa25b7388d10ea99974b2fc00fc40d3e0352508ce1fdc703bea8d513",
+  "request_sha256": "f0cfc709b544a28a45b1370d608e1314c0581503559b831b02905b7fb5bb442f",
+  "complete_sha256": "36841b70064b948d9209d7625769386d5c2555bf1313fca74b5e70ef40d63df0",
+  "records": [
+    {
+      "role": "baseline",
+      "seed": 1056243202,
+      "receipt": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/campaign/serial/Playground/1056243202-baseline/receipt.json",
+      "receipt_sha256": "fcb5020dcdb1fb9299b6619bed730522b82cd2a243127a7b1bf4830c07ba2867",
+      "stdout_sha256": "e0d67c6a7d4a4a61933183c53a2be566dc6596611fe4fdad6e4fbc543407fa38"
+    },
+    {
+      "role": "baseline",
+      "seed": 744345666,
+      "receipt": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/campaign/serial/Playground/744345666-baseline/receipt.json",
+      "receipt_sha256": "3ef7ff84397a65f34430727e4447bfaa82364128d77fa7e37343e4f98cf9c962",
+      "stdout_sha256": "b229c3b5960747bd63636474169aecc7e0a8caacb3e74b2743c7c4cd7e146197"
+    },
+    {
+      "role": "baseline",
+      "seed": 1064623205,
+      "receipt": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/campaign/serial/Playground/1064623205-baseline/receipt.json",
+      "receipt_sha256": "e6751edb784a4da0ddd82837441e53ad297019997fbcf9add719af7541903a62",
+      "stdout_sha256": "4ffdc44ff67db3daa167785c7f738d4f7d9c3da6da9abeb1ba450384b3d64be2"
+    },
+    {
+      "role": "baseline",
+      "seed": 725864695,
+      "receipt": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/campaign/serial/Playground/725864695-baseline/receipt.json",
+      "receipt_sha256": "b07f9c8a5803245b750467183de03d8349eabe357838ecd2b5d0c3f269901d5f",
+      "stdout_sha256": "5d2e75ab2ebb2690dd1291951ab051ace9a23de9553b0ae6377167f82783ace2"
+    },
+    {
+      "role": "baseline",
+      "seed": 599004658,
+      "receipt": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/campaign/serial/Playground/599004658-baseline/receipt.json",
+      "receipt_sha256": "9dc619e10ffb0b8a27b0d843d9f6c7a449a853f3ff50c06d7e964c962faa01e2",
+      "stdout_sha256": "41e20810b9b80eabae8054bfd4b43509a2dbb1b5489e04394dbe35b9e484bf7f"
+    },
+    {
+      "role": "baseline",
+      "seed": 117787757,
+      "receipt": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/campaign/serial/Playground/117787757-baseline/receipt.json",
+      "receipt_sha256": "b65f99696ebf6dfed7a01046ee33f7caa8dcb96d7e1e825d2b40616503dd8e6e",
+      "stdout_sha256": "7160bb904bc39de24fc59224feaa7dfeb663f06f75147a46b315aac85e499fa6"
+    },
+    {
+      "role": "baseline",
+      "seed": 85910194,
+      "receipt": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/campaign/serial/Playground/85910194-baseline/receipt.json",
+      "receipt_sha256": "77002ce4bca894f9cb57c2c3e5c1c31e474986e2a7e9206ee7c96d149cef980f",
+      "stdout_sha256": "34577fc61dcc1e55a1df63b8cac1949e9ea44df014c57f447c7081369ab97375"
+    },
+    {
+      "role": "baseline",
+      "seed": 769116511,
+      "receipt": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/campaign/serial/Playground/769116511-baseline/receipt.json",
+      "receipt_sha256": "b04bdf5efe489259a97e98dd7453f5284ad6ed37b30c00656a5195e18d749158",
+      "stdout_sha256": "7b6fa495edbdb2e59c0c4cc5e134da463274249d09bfe22ac9a4a74f15d888b0"
+    },
+    {
+      "role": "baseline",
+      "seed": 1030656205,
+      "receipt": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/campaign/serial/Playground/1030656205-baseline/receipt.json",
+      "receipt_sha256": "2f93d7d47338e31c73c198308225955df76fbadfed88b75267722729cee73bf0",
+      "stdout_sha256": "6cc8505431bedb2d235bd2d063578b96691217f9d1ae9b14e12a6122b195ada3"
+    },
+    {
+      "role": "baseline",
+      "seed": 79851807,
+      "receipt": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/campaign/serial/Playground/79851807-baseline/receipt.json",
+      "receipt_sha256": "3c66de4006e387518af62f0bd21239a97f7ee0d70e426f585cd3699c949dda28",
+      "stdout_sha256": "25240a57c1fa20d1f1a9507cd2ff8ac580853c437dc209e4bbc27aa05f23c2c1"
+    },
+    {
+      "role": "baseline",
+      "seed": 1480527227,
+      "receipt": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/campaign/serial/Playground/1480527227-baseline/receipt.json",
+      "receipt_sha256": "fa6fcad7c875db7251f56a522c2c8a4be278d3b85d15ec38758f12a7c0b446a0",
+      "stdout_sha256": "faab7e8b71a8edd9ba0da99ddfbd189448d2fdd7a830c78108227bd4d8ae0b1e"
+    },
+    {
+      "role": "baseline",
+      "seed": 31444774,
+      "receipt": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/campaign/serial/Playground/31444774-baseline/receipt.json",
+      "receipt_sha256": "9f0d75738e0d2cb56991e0fae13d639fd8b9de9135856fe95231c72cdc36470b",
+      "stdout_sha256": "9cf399aad827222417fb9d895733735691ff8c1ed033c729d6df220087b4efce"
+    },
+    {
+      "role": "baseline",
+      "seed": 1514826878,
+      "receipt": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/campaign/serial/Playground/1514826878-baseline/receipt.json",
+      "receipt_sha256": "4f82323045e22f685c174b8ebeb2b96f29f4c5c30f05e5f99510f3c45e092570",
+      "stdout_sha256": "a102a9536b162203daf302e049a466fac4e482208b6285110b7ac6e4b8030386"
+    },
+    {
+      "role": "baseline",
+      "seed": 1858401095,
+      "receipt": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/campaign/serial/Playground/1858401095-baseline/receipt.json",
+      "receipt_sha256": "dfd5e13f8bdfd8d8e64285a6b72a121d7969194dc90e911abb1c7a66b1f51b18",
+      "stdout_sha256": "67b4cc0cb00da332f386463fdee78fc7f3401a3bdf8c545d0a0d1aa7c7dae0d2"
+    },
+    {
+      "role": "baseline",
+      "seed": 1635872854,
+      "receipt": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/campaign/serial/Playground/1635872854-baseline/receipt.json",
+      "receipt_sha256": "229fead9362e48870f30ca7f6c79a3373a2cbbf4d0df864b77395822e2f6ff76",
+      "stdout_sha256": "e900af041412e64bf137bc330eeab0a9780466e1287ee07b8ac3f1f671d1db8a"
+    },
+    {
+      "role": "baseline",
+      "seed": 1441583672,
+      "receipt": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/campaign/serial/Playground/1441583672-baseline/receipt.json",
+      "receipt_sha256": "a10247e28714f8132fafeb66b5c810d3aebd6a5e9553dbee682cf81be84cff49",
+      "stdout_sha256": "6e96db0887847608030ab35e8e5e1e2b768f357831188c05b1c19da43859aaff"
+    },
+    {
+      "role": "baseline",
+      "seed": 741493568,
+      "receipt": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/campaign/serial/Playground/741493568-baseline/receipt.json",
+      "receipt_sha256": "51a57b0a209bad039fe437f6f0f065e58fad6bf64515e365a1f62fcaf4085f8c",
+      "stdout_sha256": "1dfcbf387a0a1ea75c76c8eea92e9857f10ee95cde65bef713e63cb667c2b944"
+    },
+    {
+      "role": "baseline",
+      "seed": 466374853,
+      "receipt": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/campaign/serial/Playground/466374853-baseline/receipt.json",
+      "receipt_sha256": "7c735c7d98cafec883e67e6dfdb7db4f90fc8d19aa2fa8a90cddeedc25878644",
+      "stdout_sha256": "092f17ec02c0b5f09d94e45447daa278a0c5522d11324ce385c4dfd7ac47ca87"
+    },
+    {
+      "role": "baseline",
+      "seed": 2037486757,
+      "receipt": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/campaign/serial/Playground/2037486757-baseline/receipt.json",
+      "receipt_sha256": "910b036c77faa8028b6c55c70c41c4432dd515c94b28ed07f39b375ce19242e5",
+      "stdout_sha256": "d3f757ea2642d633318961efff34c7270fe90228e3cff33aabb890ed84c72145"
+    },
+    {
+      "role": "baseline",
+      "seed": 1414753418,
+      "receipt": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/campaign/serial/Playground/1414753418-baseline/receipt.json",
+      "receipt_sha256": "3e9b2376cd83418596015ab2390eebdc102c11b243264700564eefad045f9717",
+      "stdout_sha256": "21f9f61d1dd0b1628517b5c796d7c88e11b7b81c410113014468c4375df32214"
+    },
+    {
+      "role": "baseline",
+      "seed": 1298936997,
+      "receipt": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/campaign/serial/Playground/1298936997-baseline/receipt.json",
+      "receipt_sha256": "e0af494d0d9ca0db785d9ee7941760fd3b549d8c8ff491b5f29a8282faf1087a",
+      "stdout_sha256": "ea62e67b3980d0f273c5d0d1ac9402f6f0b5173618085dec7e7d6f7767f8fdb0"
+    },
+    {
+      "role": "baseline",
+      "seed": 1139586032,
+      "receipt": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/campaign/serial/Playground/1139586032-baseline/receipt.json",
+      "receipt_sha256": "707dfba16458a4ff4c49292d1507c4b07d551c67b17a06b3a42b333acb4cb3f0",
+      "stdout_sha256": "ad5c30508605071717b73beeb2917f770426afb3a7c903dce1a859d4098844ce"
+    },
+    {
+      "role": "baseline",
+      "seed": 1845486380,
+      "receipt": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/campaign/serial/Playground/1845486380-baseline/receipt.json",
+      "receipt_sha256": "7cfff2f9e8401d9093fc1334e46acccafc281bad9ca93080d7257868691a5c9c",
+      "stdout_sha256": "5f805a9ffd30b20836891901f6440680d116c7230a628802eb99fc62eacd5593"
+    },
+    {
+      "role": "baseline",
+      "seed": 275303672,
+      "receipt": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/campaign/serial/Playground/275303672-baseline/receipt.json",
+      "receipt_sha256": "23c148d44523a01e387045c99532fa990b7ce318bb2448c034c2a6eed59168aa",
+      "stdout_sha256": "3bbf0b0ca09c33b37ebd9740f72cf20fc43be22786762d3c25ffd38e6e747bd3"
+    },
+    {
+      "role": "baseline",
+      "seed": 1013771484,
+      "receipt": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/campaign/serial/Playground/1013771484-baseline/receipt.json",
+      "receipt_sha256": "c403147fcd229070d6cc2aa34ceab41ceffbcb5ac4e8abbe9feaad3380ae6169",
+      "stdout_sha256": "775d349a681002cb45d3efaafb54a46bc5b0a01e9d4791f042e1acb907caa3fd"
+    },
+    {
+      "role": "baseline",
+      "seed": 1961520297,
+      "receipt": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/campaign/serial/Playground/1961520297-baseline/receipt.json",
+      "receipt_sha256": "083f2810700263077c77910c6e048492922126715e0022033bde458dff39d718",
+      "stdout_sha256": "6f229a946358278e396e241e894b07e625584d3bdbdeb43ad7062fccd7e81fb6"
+    },
+    {
+      "role": "baseline",
+      "seed": 56523606,
+      "receipt": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/campaign/serial/Playground/56523606-baseline/receipt.json",
+      "receipt_sha256": "0ceb9d6dc8f32e149c81d55cc22b36f2c416f7a037e30094836d9969b38bcae4",
+      "stdout_sha256": "af42f212e2132ca8f029ff8148dbc52229b0b36dc6520ba17dbf9667a5286b30"
+    },
+    {
+      "role": "baseline",
+      "seed": 7804900,
+      "receipt": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/campaign/serial/Playground/7804900-baseline/receipt.json",
+      "receipt_sha256": "1ee15c15bbaec05ce96d58ed5554dcaf346fca2ebd525a77a470fd9b9658c34b",
+      "stdout_sha256": "aa4414039247d525d9e3bea5404a0df73227a0f81dd065f15bc89ad6f0ee25a3"
+    },
+    {
+      "role": "baseline",
+      "seed": 494353701,
+      "receipt": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/campaign/serial/Playground/494353701-baseline/receipt.json",
+      "receipt_sha256": "b17d8b411e53d97294bcb025c98515f1997fde5eda36868be7d84497965b6600",
+      "stdout_sha256": "8dd3ebba65226e1e1c89abd9a3ad6c35655f37552af8e83caa84a5c323b8acf9"
+    },
+    {
+      "role": "baseline",
+      "seed": 2092499754,
+      "receipt": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/campaign/serial/Playground/2092499754-baseline/receipt.json",
+      "receipt_sha256": "10eb89ba28dd380741beff9ec69b0436aa1f6e324c4742a11bad25188b0f451f",
+      "stdout_sha256": "0cfcc99c896cc8174e1c923c9154c9a2b90be685874f154a978a3b93d0dd8fc9"
+    },
+    {
+      "role": "baseline",
+      "seed": 1910481143,
+      "receipt": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/campaign/serial/Playground/1910481143-baseline/receipt.json",
+      "receipt_sha256": "47a198755e44333a2967251899b8b3153d18106f5b301c6c54543eefe5d14295",
+      "stdout_sha256": "cc193e9d7bf079588cb88bbe8c609ebd1a5a382056790e25faa5755d1f31cc01"
+    },
+    {
+      "role": "baseline",
+      "seed": 2122112527,
+      "receipt": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/campaign/serial/Playground/2122112527-baseline/receipt.json",
+      "receipt_sha256": "b89d7f2379b7d3404dcf9fa038e8dbe0f1f71260af159cf6ceb1d4cc68b1e9c8",
+      "stdout_sha256": "7f86f46517ef7b2db1d00b73c400e96de7cb90a66d43a2379781518ecd5a38d5"
+    },
+    {
+      "role": "wake-only",
+      "seed": 1056243202,
+      "receipt": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/campaign/serial/Playground/1056243202-wake-only/receipt.json",
+      "receipt_sha256": "704950b15479fa290fa61a864ec57cdef10f819f19c7bdaa15a3e7937117adba",
+      "stdout_sha256": "9ee1a6b1b88ddb8d021884679559eed7867fda17c2f8371138bfddbac542125b"
+    },
+    {
+      "role": "wake-only",
+      "seed": 744345666,
+      "receipt": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/campaign/serial/Playground/744345666-wake-only/receipt.json",
+      "receipt_sha256": "809e980bb11803ef6a792d243b31f108573f52b3bb8bc7fea130a16a29b68f28",
+      "stdout_sha256": "7545f688c527cb0e7f710eff8c2d071ce9da56f7f2583e22c97d8236b97aa8d8"
+    },
+    {
+      "role": "wake-only",
+      "seed": 1064623205,
+      "receipt": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/campaign/serial/Playground/1064623205-wake-only/receipt.json",
+      "receipt_sha256": "bb84f4265196f691541d7531f5dfe0e7ae4ed6086431dcae2c69f6571192202c",
+      "stdout_sha256": "4d9f26fb523f31c422111f3a66203be546cfe941a12084315042dfa78905fade"
+    },
+    {
+      "role": "wake-only",
+      "seed": 725864695,
+      "receipt": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/campaign/serial/Playground/725864695-wake-only/receipt.json",
+      "receipt_sha256": "71dab27879990d00ff0b6ab569b2db0238e2333daa138e3446893dcd8389fd82",
+      "stdout_sha256": "3b8bab49df2af34a9b9128cbb3d34e7dd7a509d180debc7205fcfb0cdefaa4a2"
+    },
+    {
+      "role": "wake-only",
+      "seed": 599004658,
+      "receipt": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/campaign/serial/Playground/599004658-wake-only/receipt.json",
+      "receipt_sha256": "132edc9aec34123c404874cfb54510edb504ee1c8a0f3aacce283abdd198aa49",
+      "stdout_sha256": "3d233d2d2911c850de908ced198cb4ec4ffb9a5195e265080da198b53d215d9c"
+    },
+    {
+      "role": "wake-only",
+      "seed": 117787757,
+      "receipt": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/campaign/serial/Playground/117787757-wake-only/receipt.json",
+      "receipt_sha256": "28be130383df72ee05f84aca2f31d52d3a6dd95036bf5a64172021ec0539624a",
+      "stdout_sha256": "1b644c4ae84c5650f206fc6c5c509f5933730d3190f0ac353185daf5ed2a4bbf"
+    },
+    {
+      "role": "wake-only",
+      "seed": 85910194,
+      "receipt": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/campaign/serial/Playground/85910194-wake-only/receipt.json",
+      "receipt_sha256": "a0e401a9eb3aea827bcb5b3169080cce73ce1fe036b47e6d69245157b6a707b4",
+      "stdout_sha256": "e52abddc2bad038ca9379eaa3e19a0dd12be2baaf948db768644b2ebbb5a0106"
+    },
+    {
+      "role": "wake-only",
+      "seed": 769116511,
+      "receipt": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/campaign/serial/Playground/769116511-wake-only/receipt.json",
+      "receipt_sha256": "1d9b2d63317c7c1e1fec931be7ebf18c5ba4ba4290ae65e120fffd140e2535c0",
+      "stdout_sha256": "d39e67987e14a221d2d342795e102c0e4025295f060defe67849697a31629b67"
+    },
+    {
+      "role": "wake-only",
+      "seed": 1030656205,
+      "receipt": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/campaign/serial/Playground/1030656205-wake-only/receipt.json",
+      "receipt_sha256": "6c46d46af81b0dafdc4b410ed82b144fa4f930cfc65a881b0332b70a79b7c2fe",
+      "stdout_sha256": "1cc97c56c2d61ec01e21cc2aea8f674bf9498bee54a8043b42c90541f0feb3b0"
+    },
+    {
+      "role": "wake-only",
+      "seed": 79851807,
+      "receipt": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/campaign/serial/Playground/79851807-wake-only/receipt.json",
+      "receipt_sha256": "702b6471c1881bc5ad09baf5d93093c6e8248cc9a6237cec0aca906765fa3f70",
+      "stdout_sha256": "0d192fb8ac7c4ea7c5e0849435893754891bbd38c9172cc354e2edd1ea665ded"
+    },
+    {
+      "role": "wake-only",
+      "seed": 1480527227,
+      "receipt": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/campaign/serial/Playground/1480527227-wake-only/receipt.json",
+      "receipt_sha256": "ff9e05831ccbc750b4f8448f777e17a4a5e3738a3f41b65a8a4b78810259dfbd",
+      "stdout_sha256": "3e333ef032e05e915127cbbf577b45b8a719d2ec58f940e55b4452e98e6e087a"
+    },
+    {
+      "role": "wake-only",
+      "seed": 31444774,
+      "receipt": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/campaign/serial/Playground/31444774-wake-only/receipt.json",
+      "receipt_sha256": "c359ba2ec37e6e906ae225ee09036c4c0f56c2d02fe7134ced2feeef1db0467c",
+      "stdout_sha256": "fd1699e068827a2937e59d7660c375a2a9f69b82b6a5e45819ac8c6e9aac7d1a"
+    },
+    {
+      "role": "wake-only",
+      "seed": 1514826878,
+      "receipt": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/campaign/serial/Playground/1514826878-wake-only/receipt.json",
+      "receipt_sha256": "a7716866daddf6277bebf7bf377755b90e884abb1edc682141e035fdb43fb95a",
+      "stdout_sha256": "9556c59cdbc176eecf6515646f6fbe4bce7a75b9a666b53c85c4046ea3af2379"
+    },
+    {
+      "role": "wake-only",
+      "seed": 1858401095,
+      "receipt": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/campaign/serial/Playground/1858401095-wake-only/receipt.json",
+      "receipt_sha256": "879630019ff0aab6f753ad268659453f707475b6e69d811603a8b8d6324d06b6",
+      "stdout_sha256": "e4f0fd38826c799ebede281f1ce15945f493647cd5127c288640daabb3c81165"
+    },
+    {
+      "role": "wake-only",
+      "seed": 1635872854,
+      "receipt": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/campaign/serial/Playground/1635872854-wake-only/receipt.json",
+      "receipt_sha256": "fd65f548b156c011e807b21677d4ac73eba10d5f7b889b8cd764c1a2a4df67ef",
+      "stdout_sha256": "b22d2bf95f25322f1f804fcecba36eedee9cfc3b032f61cd23643e072436366f"
+    },
+    {
+      "role": "wake-only",
+      "seed": 1441583672,
+      "receipt": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/campaign/serial/Playground/1441583672-wake-only/receipt.json",
+      "receipt_sha256": "d335eccdc4bf2028b7528f1296480116e471427434c2b28a645a7f3ecba0dbc4",
+      "stdout_sha256": "e0db027993db6c9dadc9446f5bd9f968eec3350d2e22ade0e25d78256253c1e7"
+    },
+    {
+      "role": "wake-only",
+      "seed": 741493568,
+      "receipt": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/campaign/serial/Playground/741493568-wake-only/receipt.json",
+      "receipt_sha256": "e98de5b60eae16d684dad5007f8b4335ac50d3adfdcb91d68909efa77dc5479e",
+      "stdout_sha256": "6bcbc7f6e9594563864a857cbc6045208a9cbf1477bd1f0be565b9da7442f8c9"
+    },
+    {
+      "role": "wake-only",
+      "seed": 466374853,
+      "receipt": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/campaign/serial/Playground/466374853-wake-only/receipt.json",
+      "receipt_sha256": "7ef90d8d4b35eb10a3717aa7ea10e5e25aa1bc1e806f2f14e21a366471b2d26d",
+      "stdout_sha256": "de5c484f5af488332b551ffad365dc8fb797833f1bdb1977a656f7cb8954826b"
+    },
+    {
+      "role": "wake-only",
+      "seed": 2037486757,
+      "receipt": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/campaign/serial/Playground/2037486757-wake-only/receipt.json",
+      "receipt_sha256": "a6d51e5b58a5f9e2946cfadd441fa2b4d86de32ae838410d6de99c44028f612d",
+      "stdout_sha256": "a1809c5fa7d23b9dc705731f8292e209c5e70961ce27f54371e0ad80adc26ae2"
+    },
+    {
+      "role": "wake-only",
+      "seed": 1414753418,
+      "receipt": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/campaign/serial/Playground/1414753418-wake-only/receipt.json",
+      "receipt_sha256": "9215e70084720cd8462817df93e99b0e180b2dd53bd9daaffd32f4522c224b43",
+      "stdout_sha256": "5d1ff24a7acfdee4db3e99e88b2add706ad037f6d5a89e593f734cbf534ae162"
+    },
+    {
+      "role": "wake-only",
+      "seed": 1298936997,
+      "receipt": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/campaign/serial/Playground/1298936997-wake-only/receipt.json",
+      "receipt_sha256": "91628376fc544136ebec791277d715c184fefc522463bcaa579f184257f88343",
+      "stdout_sha256": "07b97791a03f7c73790f029e871f2d10fb7efdaabd3b25b5d06882c469ff162b"
+    },
+    {
+      "role": "wake-only",
+      "seed": 1139586032,
+      "receipt": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/campaign/serial/Playground/1139586032-wake-only/receipt.json",
+      "receipt_sha256": "7ea85423fe656676cc00d310432f81442a96dc44f98d684eea53023a35e916cd",
+      "stdout_sha256": "29dd575efd931415361f368d7ec3c32921299c9f0c0310489e30a737c88c0310"
+    },
+    {
+      "role": "wake-only",
+      "seed": 1845486380,
+      "receipt": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/campaign/serial/Playground/1845486380-wake-only/receipt.json",
+      "receipt_sha256": "f431eb0f88f09a2db0217a2ebc3fff15460d8235ef93248d0f1e42759034f8c6",
+      "stdout_sha256": "bcbd31dc914b7e7e919a8e39d30f20251a5987e26151936823f1d506927582d7"
+    },
+    {
+      "role": "wake-only",
+      "seed": 275303672,
+      "receipt": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/campaign/serial/Playground/275303672-wake-only/receipt.json",
+      "receipt_sha256": "26b5a3f8712a2c7d41cc52a22115cfefaef164b0afa1a46d0b85a618902a202e",
+      "stdout_sha256": "a8d0afd81866d53db3353d621fb2d39b1ecab8b3217f09c8dc666673cee05a0a"
+    },
+    {
+      "role": "wake-only",
+      "seed": 1013771484,
+      "receipt": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/campaign/serial/Playground/1013771484-wake-only/receipt.json",
+      "receipt_sha256": "5d10958b88d5e9bab2e853addaad828bf299c8978937def9a4503b21bfbab949",
+      "stdout_sha256": "0dae677f7ebdaf6acf4143e033b476b8c120a3c4629edfe92b8ff968fb285104"
+    },
+    {
+      "role": "wake-only",
+      "seed": 1961520297,
+      "receipt": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/campaign/serial/Playground/1961520297-wake-only/receipt.json",
+      "receipt_sha256": "5abdd689075557f5a02f75f034a7db3409c647a1d77689276a67ee08eda3eb02",
+      "stdout_sha256": "8a84b349cf2ebe5b4c4d8b6ea16e640c13f30b084b31f53b8d3c1e0cd41fd7d2"
+    },
+    {
+      "role": "wake-only",
+      "seed": 56523606,
+      "receipt": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/campaign/serial/Playground/56523606-wake-only/receipt.json",
+      "receipt_sha256": "87016ad34d69e642cc1211c31eba4cde30de7b6561f03dbc926d0d605c159a31",
+      "stdout_sha256": "eb59f8e27a0d4ac4a8c6f967106cc598d7a99f269920729887028b418f5fb691"
+    },
+    {
+      "role": "wake-only",
+      "seed": 7804900,
+      "receipt": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/campaign/serial/Playground/7804900-wake-only/receipt.json",
+      "receipt_sha256": "559a7dfe548cc9921baf6d8d9ad8366e0d02f9ed6cebacfc30e756a8cd290306",
+      "stdout_sha256": "2607f0b5297f56a889bedbfd6c54a53d02601165904ebce9ef26124026f3163f"
+    },
+    {
+      "role": "wake-only",
+      "seed": 494353701,
+      "receipt": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/campaign/serial/Playground/494353701-wake-only/receipt.json",
+      "receipt_sha256": "1a7a9c8be0346f9de214c7e5a2fec4c21df9ff48df5e0f0cea7fcd2d5395fa3b",
+      "stdout_sha256": "b0db00c38d806a89c6b51078f29a2620b6ff4016265b7bcc645a1b3ee690b02b"
+    },
+    {
+      "role": "wake-only",
+      "seed": 2092499754,
+      "receipt": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/campaign/serial/Playground/2092499754-wake-only/receipt.json",
+      "receipt_sha256": "8be813c005c9668df9cbabb38a52d3d79e910778743e49ea046c1d23b47a0eb3",
+      "stdout_sha256": "b2b2a06f5c630e6f5fb2617204c28dfa498b89797a2e8206648c18a13c3f74d7"
+    },
+    {
+      "role": "wake-only",
+      "seed": 1910481143,
+      "receipt": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/campaign/serial/Playground/1910481143-wake-only/receipt.json",
+      "receipt_sha256": "fdc444c3c3fd6f6cea2034cfd56f78ec9b9de97d42d2c38e23f9a6714d9e7df6",
+      "stdout_sha256": "a6f5809f7ae477d7b0a84ec57e4f9b563f0b924cbc9d5a0bff96928aaeb5f375"
+    },
+    {
+      "role": "wake-only",
+      "seed": 2122112527,
+      "receipt": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/campaign/serial/Playground/2122112527-wake-only/receipt.json",
+      "receipt_sha256": "76b96a6a7270858c4d46787ad904e76021befdc1bc03252c416204bf69f0c182",
+      "stdout_sha256": "ea720b8a0484492a32afb1e849e94111955b754538f7708ed2583a2451830e7d"
+    },
+    {
+      "role": "latest-master",
+      "seed": 1056243202,
+      "receipt": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/playground-pr1194-403dfd099/runs/1056243202/receipt.json",
+      "receipt_sha256": "1a9f1a8f993eb0c5f7c179d045770a2061a125deb031414067d38915cfca069f",
+      "stdout_sha256": "7777bc045b7bec207108a15e6f3fa8514bc8b2752ab12d120c60c978d23843d0"
+    },
+    {
+      "role": "latest-master",
+      "seed": 744345666,
+      "receipt": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/playground-pr1194-403dfd099/runs/744345666/receipt.json",
+      "receipt_sha256": "7c26cab7a2da85e5c1c8ee37ab30a0e0f02ce3825242b87eb0c9fa4dfc373e7c",
+      "stdout_sha256": "3ac2d6c53b1a7732884c5d1db79ff62d70f57c342b1fa6c8784fdc74d2e42bf0"
+    },
+    {
+      "role": "latest-master",
+      "seed": 1064623205,
+      "receipt": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/playground-pr1194-403dfd099/runs/1064623205/receipt.json",
+      "receipt_sha256": "3a916d6022ac38ae6301d12343c18624480761e45b0c068b28b07199883b1f70",
+      "stdout_sha256": "6339a5de20a737b77b56d1ccdce2f7faaee439034a59c53e1404057121d0f41a"
+    },
+    {
+      "role": "latest-master",
+      "seed": 725864695,
+      "receipt": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/playground-pr1194-403dfd099/runs/725864695/receipt.json",
+      "receipt_sha256": "b7a0edcf65903f4f099dc4fa5bb0dbf8834621174417d31c9152454a12894850",
+      "stdout_sha256": "a2d5eb80cb9c6a70320289464dbb635e2ccc9c70a15c98f9cafd9803e47dc701"
+    },
+    {
+      "role": "latest-master",
+      "seed": 599004658,
+      "receipt": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/playground-pr1194-403dfd099/runs/599004658/receipt.json",
+      "receipt_sha256": "bf838efbda357646a32badde2876fc738d165573f66e829595c683f43c22ac2f",
+      "stdout_sha256": "7517c5765fe0b3c8a21ebc961282e9871beb47bc6150d492c53fe94d1cb50684"
+    },
+    {
+      "role": "latest-master",
+      "seed": 117787757,
+      "receipt": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/playground-pr1194-403dfd099/runs/117787757/receipt.json",
+      "receipt_sha256": "10e41fd67fd4eadd56ae959a28788afd4e1528c2fcb36f65b0a0766e3b5a5242",
+      "stdout_sha256": "414240d43c1e216ad49e67510729a7253f00951accd13c86dc606acf634729da"
+    },
+    {
+      "role": "latest-master",
+      "seed": 85910194,
+      "receipt": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/playground-pr1194-403dfd099/runs/85910194/receipt.json",
+      "receipt_sha256": "28cfda46a45eb0a9e42d9ea221a254aabf5e0db1cf21a27f313731e4bed14bb3",
+      "stdout_sha256": "b90253243b8fd35523445fc96a6ba4e38d6ede0344a9f99d14846e424215a211"
+    },
+    {
+      "role": "latest-master",
+      "seed": 769116511,
+      "receipt": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/playground-pr1194-403dfd099/runs/769116511/receipt.json",
+      "receipt_sha256": "d130093c45a3825497ebd9d2d11e60cff37856d31899562c9fb9feb9f8200700",
+      "stdout_sha256": "4089861e9c8ec2596e8787b6a8dabf5bd73c9517547297ac3b38190c320ba94b"
+    },
+    {
+      "role": "latest-master",
+      "seed": 1030656205,
+      "receipt": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/playground-pr1194-403dfd099/runs/1030656205/receipt.json",
+      "receipt_sha256": "06a56c4a7ae2b43c041fc2c62cf88ffc32df65a1fbf7bda6611ca6ba324235ae",
+      "stdout_sha256": "5d687992dd9951b8759c7244b82a53136401042d0f96500932f9ee4f6026daa2"
+    },
+    {
+      "role": "latest-master",
+      "seed": 79851807,
+      "receipt": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/playground-pr1194-403dfd099/runs/79851807/receipt.json",
+      "receipt_sha256": "e887f5bb61655e8f50a1dae92872008cc07bb4937d0d9002dd50383b4206b432",
+      "stdout_sha256": "5e12f62c11d5cbbab20e4419a3c824871352e84a62eb3ada1cb0c487b5d9da2a"
+    },
+    {
+      "role": "latest-master",
+      "seed": 1480527227,
+      "receipt": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/playground-pr1194-403dfd099/runs/1480527227/receipt.json",
+      "receipt_sha256": "5f27d299b81f178ed0c2861e1804a968ad44b384ea9c73b12492568c2aef4ccc",
+      "stdout_sha256": "6f3af304df72bdde4497869bd78c90a27fe2c6e852a6341dafe5ffab9764e044"
+    },
+    {
+      "role": "latest-master",
+      "seed": 31444774,
+      "receipt": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/playground-pr1194-403dfd099/runs/31444774/receipt.json",
+      "receipt_sha256": "6354175da60458d148161f84651d1428bf96f9b63ab9b5bc0b7b989ccc1075b1",
+      "stdout_sha256": "3e9c28eac74f586b1d35d2d85a627d07cb586e87ad3cc2ee17048a3f313e815a"
+    },
+    {
+      "role": "latest-master",
+      "seed": 1514826878,
+      "receipt": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/playground-pr1194-403dfd099/runs/1514826878/receipt.json",
+      "receipt_sha256": "2049bc8f0f0b2d619c781b038864206072e52229b38e74896206e669a0f06d7d",
+      "stdout_sha256": "033ad44427216a97f4639acf97fca3d52937ce6be2f5d7f5bbe9fd2691fde10e"
+    },
+    {
+      "role": "latest-master",
+      "seed": 1858401095,
+      "receipt": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/playground-pr1194-403dfd099/runs/1858401095/receipt.json",
+      "receipt_sha256": "f682ec796c9fffd615b45c7b2da6c50c41bffdf75eb1a73cba037517b80c7678",
+      "stdout_sha256": "241f922e65a05fce1a1d79fb7c1c6b590b7f750785feadd5e89268eb02e3539b"
+    },
+    {
+      "role": "latest-master",
+      "seed": 1635872854,
+      "receipt": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/playground-pr1194-403dfd099/runs/1635872854/receipt.json",
+      "receipt_sha256": "72c88c2c5bc98d053ecf649b2d8e3632d0bde7bb4d3dbdaea8b4204225a34ab6",
+      "stdout_sha256": "ebc458b3b7e275d6e976c85de55f5c755039eb7f056b33a91e0992250c311f04"
+    },
+    {
+      "role": "latest-master",
+      "seed": 1441583672,
+      "receipt": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/playground-pr1194-403dfd099/runs/1441583672/receipt.json",
+      "receipt_sha256": "9f7500888023febfe56060e1d6e6ccf360ed44aaa56abc18b625e16e441a91f3",
+      "stdout_sha256": "740b6b30dcabe8d1995507771a51770fc2eeb72af871e60e50bd224e08befd0f"
+    },
+    {
+      "role": "latest-master",
+      "seed": 741493568,
+      "receipt": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/playground-pr1194-403dfd099/runs/741493568/receipt.json",
+      "receipt_sha256": "5ef5f247e3c57324e00dfbd8f8597d702d2119deecbf67e8ba8505170ef6bf64",
+      "stdout_sha256": "40c2e0b651dc4cf7100b6cbf4bd65cdce21f48dd6cc144aba419452a68701d30"
+    },
+    {
+      "role": "latest-master",
+      "seed": 466374853,
+      "receipt": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/playground-pr1194-403dfd099/runs/466374853/receipt.json",
+      "receipt_sha256": "cbf5e3b4bb0873ef990f355354143e801ec164264981969a152b50d674f77544",
+      "stdout_sha256": "045132e3934078953d77283036a740028636c8926fe7a73165f6b0e1e95a1853"
+    },
+    {
+      "role": "latest-master",
+      "seed": 2037486757,
+      "receipt": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/playground-pr1194-403dfd099/runs/2037486757/receipt.json",
+      "receipt_sha256": "01ae7a2bfbd762a2b7caf7485408e7b5f636403f3ded1cdc23534f01a72a8a46",
+      "stdout_sha256": "4012a1ea82f15f9b45197cce55d1893400ea74e00340b94722fed470921dea6e"
+    },
+    {
+      "role": "latest-master",
+      "seed": 1414753418,
+      "receipt": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/playground-pr1194-403dfd099/runs/1414753418/receipt.json",
+      "receipt_sha256": "74cbc2bd8249979c92e6dff62f2174e3499f4a681b2da244467eec3874875f6c",
+      "stdout_sha256": "c9236bbcf1f62cdc4a94149e7996be56f9a52e172bd143c004b7403e5cdcc145"
+    },
+    {
+      "role": "latest-master",
+      "seed": 1298936997,
+      "receipt": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/playground-pr1194-403dfd099/runs/1298936997/receipt.json",
+      "receipt_sha256": "80ac734ccdf86e89ebfa9f8c07447a3e18597ed2832c9f65d4771315c74ea8e7",
+      "stdout_sha256": "9ad78119840e3dbd6b58ada3549f6cce17a75f2266d9e8d816cf0de9d974bb8e"
+    },
+    {
+      "role": "latest-master",
+      "seed": 1139586032,
+      "receipt": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/playground-pr1194-403dfd099/runs/1139586032/receipt.json",
+      "receipt_sha256": "124a2c67ac9d21449a7036cf44f6b004ffe43ecc2ab0c3c5f64ef1bf3db90f9d",
+      "stdout_sha256": "95436de0e09d7fc4478ecb162113df9b2bdb6cf8c4e776a1a0375220d9de6fd2"
+    },
+    {
+      "role": "latest-master",
+      "seed": 1845486380,
+      "receipt": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/playground-pr1194-403dfd099/runs/1845486380/receipt.json",
+      "receipt_sha256": "f80196c8f251bf85065780e235ec8b552bf58f8d7312994e5ac29732415c20d1",
+      "stdout_sha256": "d44ac535c84f432eb4873773968b770e77e924c60701cd86a757662ff4df396a"
+    },
+    {
+      "role": "latest-master",
+      "seed": 275303672,
+      "receipt": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/playground-pr1194-403dfd099/runs/275303672/receipt.json",
+      "receipt_sha256": "ab6717429c13e1243b2fff04ec6a4f2f76d33f2ebbdddbb3572e4c53432269e9",
+      "stdout_sha256": "3bf1a9e2b7993dcd05ff16cb47c9561ce6311675f4267b0ad2e768318af84f8a"
+    },
+    {
+      "role": "latest-master",
+      "seed": 1013771484,
+      "receipt": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/playground-pr1194-403dfd099/runs/1013771484/receipt.json",
+      "receipt_sha256": "101d38dd41c1384a6010d42e50ded2f9cdcfc90ef7d7c87949427c81adf88cd1",
+      "stdout_sha256": "a82db6a0e69e663b332252462ea8f6c68f6a8e700d78d76e47a09dfa98c83de4"
+    },
+    {
+      "role": "latest-master",
+      "seed": 1961520297,
+      "receipt": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/playground-pr1194-403dfd099/runs/1961520297/receipt.json",
+      "receipt_sha256": "112e3909b9441ff70d3350619336828ca11e3c0f2dc84775eb123bd9a6d633d9",
+      "stdout_sha256": "c17dd09f5bcb5f9af0e3552438e3e29b8d885359e3ce0bcc82b9933675d061a8"
+    },
+    {
+      "role": "latest-master",
+      "seed": 56523606,
+      "receipt": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/playground-pr1194-403dfd099/runs/56523606/receipt.json",
+      "receipt_sha256": "7c2eb767c039cfd9706adc9b428cb10dee35ae89d681e439661622aa15b55479",
+      "stdout_sha256": "98196ab784240675a154f62293fcf3cbe07e66cf986ff919615e5d8c686c2e68"
+    },
+    {
+      "role": "latest-master",
+      "seed": 7804900,
+      "receipt": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/playground-pr1194-403dfd099/runs/7804900/receipt.json",
+      "receipt_sha256": "e7d0d6f1d68bac8888001e5dbd9e8f95e945c378e5da663fb9e6b448a0c884e7",
+      "stdout_sha256": "082d967bd0ce55175e1975a99b91225592a414f6c4882bce6c5d49dfd7715bd8"
+    },
+    {
+      "role": "latest-master",
+      "seed": 494353701,
+      "receipt": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/playground-pr1194-403dfd099/runs/494353701/receipt.json",
+      "receipt_sha256": "7d8e2739678b896b14b93fc45e681207975704ab933712525746b23e4c98f386",
+      "stdout_sha256": "d856b1d9d62fe57f20f15b081377b8fb2c1c5e41ba2f4b06f4434438f7b69c66"
+    },
+    {
+      "role": "latest-master",
+      "seed": 2092499754,
+      "receipt": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/playground-pr1194-403dfd099/runs/2092499754/receipt.json",
+      "receipt_sha256": "e170a209b2db6b4e9f4ecd537ef0eaacd5c2ddf5b37764f8bb34a8989b8df25c",
+      "stdout_sha256": "fd348d2921936d64cc3296a560d6086ba7fab74e0ee302d003c56281a278f6ab"
+    },
+    {
+      "role": "latest-master",
+      "seed": 1910481143,
+      "receipt": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/playground-pr1194-403dfd099/runs/1910481143/receipt.json",
+      "receipt_sha256": "2704af9aea83d5014404b2362f80d757ec11e3af092bee8d417bdb0a50cc5d4b",
+      "stdout_sha256": "e951f9f4459b59d7dc7c3f5bd81dc775743e128a8381dc07f69cfa899f257c01"
+    },
+    {
+      "role": "latest-master",
+      "seed": 2122112527,
+      "receipt": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/playground-pr1194-403dfd099/runs/2122112527/receipt.json",
+      "receipt_sha256": "99824fa2ba22bf1e9d9622aa06524b67736707ba24e0f9e4205c9fa3e7107097",
+      "stdout_sha256": "0f9c7a3dc0740d8dabcafdbe323322991a04c2c39b12a85b4c0ebe07eece9ccf"
+    }
+  ],
+  "utc": "2026-10-16T02:23:47.354687+00:00"
+}

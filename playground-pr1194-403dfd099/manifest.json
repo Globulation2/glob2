@@ -1,0 +1,1476 @@
+{
+  "files": [
+    {
+      "path": "request.json",
+      "bytes": 1833,
+      "sha256": "f0cfc709b544a28a45b1370d608e1314c0581503559b831b02905b7fb5bb442f",
+      "original": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/playground-pr1194-403dfd099/request.json"
+    },
+    {
+      "path": "build.py",
+      "bytes": 2627,
+      "sha256": "edcad00f7f96c1c5a2aae753886889b55f6eaa143deed6603b1d754f13226e6d",
+      "original": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/playground-pr1194-403dfd099/build.py"
+    },
+    {
+      "path": "build-complete.json",
+      "bytes": 10222,
+      "sha256": "eaaf863dfa25b7388d10ea99974b2fc00fc40d3e0352508ce1fdc703bea8d513",
+      "original": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/playground-pr1194-403dfd099/build-complete.json"
+    },
+    {
+      "path": "build.log",
+      "bytes": 38611,
+      "sha256": "fc35f27a271f30a1321e5489d21eb8b3394ea701a6b051db31e8c5f4e3a2bba3",
+      "original": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/playground-pr1194-403dfd099/build.log"
+    },
+    {
+      "path": "run.py",
+      "bytes": 9287,
+      "sha256": "c77966138355fd8879dc00251f8d69f74d68d66911735b1324acad90e62a9d55",
+      "original": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/playground-pr1194-403dfd099/run.py"
+    },
+    {
+      "path": "launch.json",
+      "bytes": 355,
+      "sha256": "58e22044bfb867cec3961ead859460923b79bf67f9d614464d28dd537625c88b",
+      "original": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/playground-pr1194-403dfd099/launch.json"
+    },
+    {
+      "path": "qualification.json",
+      "bytes": 2646,
+      "sha256": "35a98f79d6ce872fcca78f810e1f7c0c4be451854244de3af7e42eb313766032",
+      "original": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/playground-pr1194-403dfd099/qualification.json"
+    },
+    {
+      "path": "complete.json",
+      "bytes": 3656,
+      "sha256": "36841b70064b948d9209d7625769386d5c2555bf1313fca74b5e70ef40d63df0",
+      "original": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/playground-pr1194-403dfd099/complete.json"
+    },
+    {
+      "path": "analyze.py",
+      "bytes": 15048,
+      "sha256": "781aa5a6e52e27329b51b080a450bf1f09300e19701224d91fd9a9b3304f2158",
+      "original": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/playground-pr1194-403dfd099/analyze.py"
+    },
+    {
+      "path": "publish.py",
+      "bytes": 5191,
+      "sha256": "b32a451578dd65b47a7e61968d1a8b6b9037c87b8e4a531939b5ade5a7bab88d",
+      "original": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/playground-pr1194-403dfd099/publish.py"
+    },
+    {
+      "path": "compare-previous.py",
+      "bytes": 8469,
+      "sha256": "f44f1ca621dc84b523d2e2b3eed37a32dda4888a38381d12a67e96bebcb2fcc4",
+      "original": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/playground-pr1194-403dfd099/compare-previous.py"
+    },
+    {
+      "path": "pipeline.py",
+      "bytes": 1523,
+      "sha256": "12f44eb49637e1c5ceb515e8deb142fd0ca28bc8569b2d12c52771a84e37aae2",
+      "original": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/playground-pr1194-403dfd099/pipeline.py"
+    },
+    {
+      "path": "results/summary.json",
+      "bytes": 19423,
+      "sha256": "4e0de821c440ecf717f16c03ede8f1591c94d7bdd1517062716312ea486f3de0",
+      "original": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/playground-pr1194-403dfd099/results/summary.json"
+    },
+    {
+      "path": "results/every-game.csv",
+      "bytes": 42646,
+      "sha256": "09f1cc1bcc66de9064f52f8c3f02e5a6a8e4215b46b7db4ddeea53d5b57298fb",
+      "original": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/playground-pr1194-403dfd099/results/every-game.csv"
+    },
+    {
+      "path": "results/comparisons.csv",
+      "bytes": 2803,
+      "sha256": "9cec9a3b7bbf1e0103cc2cd93f49f75e0d45fbacaeaf9e3e72515f3ccff1f9a0",
+      "original": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/playground-pr1194-403dfd099/results/comparisons.csv"
+    },
+    {
+      "path": "results/raw-audit.json",
+      "bytes": 40887,
+      "sha256": "8959c97e1513b72da40bf61beefcc4e6923bc9ee7f4221a67dc3af30ad85950c",
+      "original": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/playground-pr1194-403dfd099/results/raw-audit.json"
+    },
+    {
+      "path": "results/performance.png",
+      "bytes": 233949,
+      "sha256": "d5bb145ed2b39d9c9c846003ee7d1ac6f2dbac4592eb886a2cb694f18c1dca56",
+      "original": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/playground-pr1194-403dfd099/results/performance.png"
+    },
+    {
+      "path": "results/performance.svg",
+      "bytes": 136610,
+      "sha256": "91985d9087ca20972c86c27d0bd3fee74ac8ad3fb0d7531d054ef597b0babec6",
+      "original": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/playground-pr1194-403dfd099/results/performance.svg"
+    },
+    {
+      "path": "results/index.html",
+      "bytes": 4054,
+      "sha256": "a2e565743f866185a4a694364035c0230f3cfee724978504e9f48a3db8b47dc9",
+      "original": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/playground-pr1194-403dfd099/results/index.html"
+    },
+    {
+      "path": "results/receipt.json",
+      "bytes": 876,
+      "sha256": "04519c3c301aa36c412839096e99c651b8e2bf9325aa5a1bbac37629a71ccc81",
+      "original": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/playground-pr1194-403dfd099/results/receipt.json"
+    },
+    {
+      "path": "results/previous-master-comparison.json",
+      "bytes": 19267,
+      "sha256": "be8a371b1e9d88e14234ae7d885aa1c97567c6c0689d732f07d1947d42b78767",
+      "original": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/playground-pr1194-403dfd099/results/previous-master-comparison.json"
+    },
+    {
+      "path": "results/previous-master-comparison.html",
+      "bytes": 2666,
+      "sha256": "7a3a2beaea08923d4735704b10550296499ef0b37fe74fe9c187bd4608cdf35c",
+      "original": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/playground-pr1194-403dfd099/results/previous-master-comparison.html"
+    },
+    {
+      "path": "results/previous-master-comparison.svg",
+      "bytes": 107791,
+      "sha256": "35682d836dc48564dcca605ce964cbd46d697f34a0084b1ff3894639e3eac706",
+      "original": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/playground-pr1194-403dfd099/results/previous-master-comparison.svg"
+    },
+    {
+      "path": "results/previous-master-comparison.png",
+      "bytes": 174436,
+      "sha256": "b7388b6a2bff0c21ce93cf1035cc0324fe0d849e0fa60d3130fdf052f3114628",
+      "original": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/playground-pr1194-403dfd099/results/previous-master-comparison.png"
+    },
+    {
+      "path": "results/previous-pr-comparison.json",
+      "bytes": 19218,
+      "sha256": "8a363ae1f46f54c8b1c36926e09239e5c06277778606e7265518b326a720a1a0",
+      "original": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/playground-pr1194-403dfd099/results/previous-pr-comparison.json"
+    },
+    {
+      "path": "results/previous-pr-comparison.html",
+      "bytes": 2701,
+      "sha256": "83a5cff0037ef688bf4121ffc13ed7d412a32230ee85d35450a535fca320f936",
+      "original": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/playground-pr1194-403dfd099/results/previous-pr-comparison.html"
+    },
+    {
+      "path": "results/previous-pr-comparison.svg",
+      "bytes": 112242,
+      "sha256": "7e22c5db90d0132c8e404929797a8648bf3798bdf6ede4db64d66d588e408903",
+      "original": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/playground-pr1194-403dfd099/results/previous-pr-comparison.svg"
+    },
+    {
+      "path": "results/previous-pr-comparison.png",
+      "bytes": 173860,
+      "sha256": "9f375b8fee98b6c108f6ced6dd54876084b27c6e0828b7f382f89f30fb492d84",
+      "original": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/playground-pr1194-403dfd099/results/previous-pr-comparison.png"
+    },
+    {
+      "path": "results/fix-overview.html",
+      "bytes": 3876,
+      "sha256": "41400733fa6dee581a044048f09d0e32f1f3d55b3bf1de78a3f41e5f2afa7ed2",
+      "original": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/playground-pr1194-403dfd099/results/fix-overview.html"
+    },
+    {
+      "path": "qualification/golden.log",
+      "bytes": 108,
+      "sha256": "afb523e97c8d937417ad8cd608dbf147912a938d9e6a3295eb07a2926f31b266",
+      "original": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/playground-pr1194-403dfd099/qualification/golden.log"
+    },
+    {
+      "path": "qualification/auto.log",
+      "bytes": 373,
+      "sha256": "baafd0ec8a90e5dd8cc017a1a31c840c96791e016fbebd1044f088e789fbdbb7",
+      "original": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/playground-pr1194-403dfd099/qualification/auto.log"
+    },
+    {
+      "path": "qualification/golden/checksums.txt",
+      "bytes": 10914,
+      "sha256": "e0108ce0802c0ae419879e19cf515e4e0bc1b01f47135a8136d298b1b971a1e7",
+      "original": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/playground-pr1194-403dfd099/qualification/golden/checksums.txt"
+    },
+    {
+      "path": "qualification/golden/result.json",
+      "bytes": 9698,
+      "sha256": "7527c000023aaff78e4efbd0a37b16e648b5290dc60164e147a53980d6a246ce",
+      "original": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/playground-pr1194-403dfd099/qualification/golden/result.json"
+    },
+    {
+      "path": "qualification/golden/compute.json",
+      "bytes": 644,
+      "sha256": "63fdcc50c93ee1b250b105abcbe8b866e35e0d8c0e8200291da553aadb36279a",
+      "original": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/playground-pr1194-403dfd099/qualification/golden/compute.json"
+    },
+    {
+      "path": "qualification/golden/verdict.json",
+      "bytes": 430,
+      "sha256": "ecda8c69d396e1283b9fcb2d33bcdb055877d46660c13ce5fad5b85fb69d687f",
+      "original": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/playground-pr1194-403dfd099/qualification/golden/verdict.json"
+    },
+    {
+      "path": "qualification/golden/artifacts.json",
+      "bytes": 222,
+      "sha256": "bf31934402de8c23343eef0180b29941445e2869a0494284e8d485f9899c0a38",
+      "original": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/playground-pr1194-403dfd099/qualification/golden/artifacts.json"
+    },
+    {
+      "path": "qualification/auto/result.json",
+      "bytes": 23011,
+      "sha256": "2e9ade61f4723faf8b34c9ce9315e8352d963d6f1b343b43ecf1e7e5bd540dd7",
+      "original": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/playground-pr1194-403dfd099/qualification/auto/result.json"
+    },
+    {
+      "path": "qualification/auto/artifacts.json",
+      "bytes": 72,
+      "sha256": "4c14a1e85b04c000a73cfab3a4b752e06270a18a2ce630b9b2d7ea686716b365",
+      "original": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/playground-pr1194-403dfd099/qualification/auto/artifacts.json"
+    },
+    {
+      "path": "latest/1056243202/receipt.json",
+      "bytes": 5020,
+      "sha256": "1a9f1a8f993eb0c5f7c179d045770a2061a125deb031414067d38915cfca069f",
+      "original": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/playground-pr1194-403dfd099/runs/1056243202/receipt.json"
+    },
+    {
+      "path": "latest/1056243202/stdout.log",
+      "bytes": 779,
+      "sha256": "7777bc045b7bec207108a15e6f3fa8514bc8b2752ab12d120c60c978d23843d0",
+      "original": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/playground-pr1194-403dfd099/runs/1056243202/stdout.log"
+    },
+    {
+      "path": "latest/744345666/receipt.json",
+      "bytes": 5017,
+      "sha256": "7c26cab7a2da85e5c1c8ee37ab30a0e0f02ce3825242b87eb0c9fa4dfc373e7c",
+      "original": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/playground-pr1194-403dfd099/runs/744345666/receipt.json"
+    },
+    {
+      "path": "latest/744345666/stdout.log",
+      "bytes": 775,
+      "sha256": "3ac2d6c53b1a7732884c5d1db79ff62d70f57c342b1fa6c8784fdc74d2e42bf0",
+      "original": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/playground-pr1194-403dfd099/runs/744345666/stdout.log"
+    },
+    {
+      "path": "latest/1064623205/receipt.json",
+      "bytes": 5023,
+      "sha256": "3a916d6022ac38ae6301d12343c18624480761e45b0c068b28b07199883b1f70",
+      "original": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/playground-pr1194-403dfd099/runs/1064623205/receipt.json"
+    },
+    {
+      "path": "latest/1064623205/stdout.log",
+      "bytes": 779,
+      "sha256": "6339a5de20a737b77b56d1ccdce2f7faaee439034a59c53e1404057121d0f41a",
+      "original": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/playground-pr1194-403dfd099/runs/1064623205/stdout.log"
+    },
+    {
+      "path": "latest/725864695/receipt.json",
+      "bytes": 5019,
+      "sha256": "b7a0edcf65903f4f099dc4fa5bb0dbf8834621174417d31c9152454a12894850",
+      "original": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/playground-pr1194-403dfd099/runs/725864695/receipt.json"
+    },
+    {
+      "path": "latest/725864695/stdout.log",
+      "bytes": 776,
+      "sha256": "a2d5eb80cb9c6a70320289464dbb635e2ccc9c70a15c98f9cafd9803e47dc701",
+      "original": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/playground-pr1194-403dfd099/runs/725864695/stdout.log"
+    },
+    {
+      "path": "latest/599004658/receipt.json",
+      "bytes": 5022,
+      "sha256": "bf838efbda357646a32badde2876fc738d165573f66e829595c683f43c22ac2f",
+      "original": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/playground-pr1194-403dfd099/runs/599004658/receipt.json"
+    },
+    {
+      "path": "latest/599004658/stdout.log",
+      "bytes": 778,
+      "sha256": "7517c5765fe0b3c8a21ebc961282e9871beb47bc6150d492c53fe94d1cb50684",
+      "original": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/playground-pr1194-403dfd099/runs/599004658/stdout.log"
+    },
+    {
+      "path": "latest/117787757/receipt.json",
+      "bytes": 5026,
+      "sha256": "10e41fd67fd4eadd56ae959a28788afd4e1528c2fcb36f65b0a0766e3b5a5242",
+      "original": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/playground-pr1194-403dfd099/runs/117787757/receipt.json"
+    },
+    {
+      "path": "latest/117787757/stdout.log",
+      "bytes": 776,
+      "sha256": "414240d43c1e216ad49e67510729a7253f00951accd13c86dc606acf634729da",
+      "original": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/playground-pr1194-403dfd099/runs/117787757/stdout.log"
+    },
+    {
+      "path": "latest/85910194/receipt.json",
+      "bytes": 5014,
+      "sha256": "28cfda46a45eb0a9e42d9ea221a254aabf5e0db1cf21a27f313731e4bed14bb3",
+      "original": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/playground-pr1194-403dfd099/runs/85910194/receipt.json"
+    },
+    {
+      "path": "latest/85910194/stdout.log",
+      "bytes": 772,
+      "sha256": "b90253243b8fd35523445fc96a6ba4e38d6ede0344a9f99d14846e424215a211",
+      "original": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/playground-pr1194-403dfd099/runs/85910194/stdout.log"
+    },
+    {
+      "path": "latest/769116511/receipt.json",
+      "bytes": 5030,
+      "sha256": "d130093c45a3825497ebd9d2d11e60cff37856d31899562c9fb9feb9f8200700",
+      "original": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/playground-pr1194-403dfd099/runs/769116511/receipt.json"
+    },
+    {
+      "path": "latest/769116511/stdout.log",
+      "bytes": 775,
+      "sha256": "4089861e9c8ec2596e8787b6a8dabf5bd73c9517547297ac3b38190c320ba94b",
+      "original": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/playground-pr1194-403dfd099/runs/769116511/stdout.log"
+    },
+    {
+      "path": "latest/1030656205/receipt.json",
+      "bytes": 5024,
+      "sha256": "06a56c4a7ae2b43c041fc2c62cf88ffc32df65a1fbf7bda6611ca6ba324235ae",
+      "original": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/playground-pr1194-403dfd099/runs/1030656205/receipt.json"
+    },
+    {
+      "path": "latest/1030656205/stdout.log",
+      "bytes": 778,
+      "sha256": "5d687992dd9951b8759c7244b82a53136401042d0f96500932f9ee4f6026daa2",
+      "original": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/playground-pr1194-403dfd099/runs/1030656205/stdout.log"
+    },
+    {
+      "path": "latest/79851807/receipt.json",
+      "bytes": 5012,
+      "sha256": "e887f5bb61655e8f50a1dae92872008cc07bb4937d0d9002dd50383b4206b432",
+      "original": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/playground-pr1194-403dfd099/runs/79851807/receipt.json"
+    },
+    {
+      "path": "latest/79851807/stdout.log",
+      "bytes": 773,
+      "sha256": "5e12f62c11d5cbbab20e4419a3c824871352e84a62eb3ada1cb0c487b5d9da2a",
+      "original": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/playground-pr1194-403dfd099/runs/79851807/stdout.log"
+    },
+    {
+      "path": "latest/1480527227/receipt.json",
+      "bytes": 5022,
+      "sha256": "5f27d299b81f178ed0c2861e1804a968ad44b384ea9c73b12492568c2aef4ccc",
+      "original": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/playground-pr1194-403dfd099/runs/1480527227/receipt.json"
+    },
+    {
+      "path": "latest/1480527227/stdout.log",
+      "bytes": 779,
+      "sha256": "6f3af304df72bdde4497869bd78c90a27fe2c6e852a6341dafe5ffab9764e044",
+      "original": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/playground-pr1194-403dfd099/runs/1480527227/stdout.log"
+    },
+    {
+      "path": "latest/31444774/receipt.json",
+      "bytes": 5019,
+      "sha256": "6354175da60458d148161f84651d1428bf96f9b63ab9b5bc0b7b989ccc1075b1",
+      "original": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/playground-pr1194-403dfd099/runs/31444774/receipt.json"
+    },
+    {
+      "path": "latest/31444774/stdout.log",
+      "bytes": 773,
+      "sha256": "3e9c28eac74f586b1d35d2d85a627d07cb586e87ad3cc2ee17048a3f313e815a",
+      "original": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/playground-pr1194-403dfd099/runs/31444774/stdout.log"
+    },
+    {
+      "path": "latest/1514826878/receipt.json",
+      "bytes": 5033,
+      "sha256": "2049bc8f0f0b2d619c781b038864206072e52229b38e74896206e669a0f06d7d",
+      "original": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/playground-pr1194-403dfd099/runs/1514826878/receipt.json"
+    },
+    {
+      "path": "latest/1514826878/stdout.log",
+      "bytes": 778,
+      "sha256": "033ad44427216a97f4639acf97fca3d52937ce6be2f5d7f5bbe9fd2691fde10e",
+      "original": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/playground-pr1194-403dfd099/runs/1514826878/stdout.log"
+    },
+    {
+      "path": "latest/1858401095/receipt.json",
+      "bytes": 5025,
+      "sha256": "f682ec796c9fffd615b45c7b2da6c50c41bffdf75eb1a73cba037517b80c7678",
+      "original": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/playground-pr1194-403dfd099/runs/1858401095/receipt.json"
+    },
+    {
+      "path": "latest/1858401095/stdout.log",
+      "bytes": 779,
+      "sha256": "241f922e65a05fce1a1d79fb7c1c6b590b7f750785feadd5e89268eb02e3539b",
+      "original": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/playground-pr1194-403dfd099/runs/1858401095/stdout.log"
+    },
+    {
+      "path": "latest/1635872854/receipt.json",
+      "bytes": 5029,
+      "sha256": "72c88c2c5bc98d053ecf649b2d8e3632d0bde7bb4d3dbdaea8b4204225a34ab6",
+      "original": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/playground-pr1194-403dfd099/runs/1635872854/receipt.json"
+    },
+    {
+      "path": "latest/1635872854/stdout.log",
+      "bytes": 779,
+      "sha256": "ebc458b3b7e275d6e976c85de55f5c755039eb7f056b33a91e0992250c311f04",
+      "original": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/playground-pr1194-403dfd099/runs/1635872854/stdout.log"
+    },
+    {
+      "path": "latest/1441583672/receipt.json",
+      "bytes": 5026,
+      "sha256": "9f7500888023febfe56060e1d6e6ccf360ed44aaa56abc18b625e16e441a91f3",
+      "original": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/playground-pr1194-403dfd099/runs/1441583672/receipt.json"
+    },
+    {
+      "path": "latest/1441583672/stdout.log",
+      "bytes": 779,
+      "sha256": "740b6b30dcabe8d1995507771a51770fc2eeb72af871e60e50bd224e08befd0f",
+      "original": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/playground-pr1194-403dfd099/runs/1441583672/stdout.log"
+    },
+    {
+      "path": "latest/741493568/receipt.json",
+      "bytes": 5012,
+      "sha256": "5ef5f247e3c57324e00dfbd8f8597d702d2119deecbf67e8ba8505170ef6bf64",
+      "original": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/playground-pr1194-403dfd099/runs/741493568/receipt.json"
+    },
+    {
+      "path": "latest/741493568/stdout.log",
+      "bytes": 776,
+      "sha256": "40c2e0b651dc4cf7100b6cbf4bd65cdce21f48dd6cc144aba419452a68701d30",
+      "original": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/playground-pr1194-403dfd099/runs/741493568/stdout.log"
+    },
+    {
+      "path": "latest/466374853/receipt.json",
+      "bytes": 5024,
+      "sha256": "cbf5e3b4bb0873ef990f355354143e801ec164264981969a152b50d674f77544",
+      "original": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/playground-pr1194-403dfd099/runs/466374853/receipt.json"
+    },
+    {
+      "path": "latest/466374853/stdout.log",
+      "bytes": 776,
+      "sha256": "045132e3934078953d77283036a740028636c8926fe7a73165f6b0e1e95a1853",
+      "original": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/playground-pr1194-403dfd099/runs/466374853/stdout.log"
+    },
+    {
+      "path": "latest/2037486757/receipt.json",
+      "bytes": 5028,
+      "sha256": "01ae7a2bfbd762a2b7caf7485408e7b5f636403f3ded1cdc23534f01a72a8a46",
+      "original": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/playground-pr1194-403dfd099/runs/2037486757/receipt.json"
+    },
+    {
+      "path": "latest/2037486757/stdout.log",
+      "bytes": 779,
+      "sha256": "4012a1ea82f15f9b45197cce55d1893400ea74e00340b94722fed470921dea6e",
+      "original": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/playground-pr1194-403dfd099/runs/2037486757/stdout.log"
+    },
+    {
+      "path": "latest/1414753418/receipt.json",
+      "bytes": 5022,
+      "sha256": "74cbc2bd8249979c92e6dff62f2174e3499f4a681b2da244467eec3874875f6c",
+      "original": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/playground-pr1194-403dfd099/runs/1414753418/receipt.json"
+    },
+    {
+      "path": "latest/1414753418/stdout.log",
+      "bytes": 779,
+      "sha256": "c9236bbcf1f62cdc4a94149e7996be56f9a52e172bd143c004b7403e5cdcc145",
+      "original": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/playground-pr1194-403dfd099/runs/1414753418/stdout.log"
+    },
+    {
+      "path": "latest/1298936997/receipt.json",
+      "bytes": 5033,
+      "sha256": "80ac734ccdf86e89ebfa9f8c07447a3e18597ed2832c9f65d4771315c74ea8e7",
+      "original": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/playground-pr1194-403dfd099/runs/1298936997/receipt.json"
+    },
+    {
+      "path": "latest/1298936997/stdout.log",
+      "bytes": 778,
+      "sha256": "9ad78119840e3dbd6b58ada3549f6cce17a75f2266d9e8d816cf0de9d974bb8e",
+      "original": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/playground-pr1194-403dfd099/runs/1298936997/stdout.log"
+    },
+    {
+      "path": "latest/1139586032/receipt.json",
+      "bytes": 5029,
+      "sha256": "124a2c67ac9d21449a7036cf44f6b004ffe43ecc2ab0c3c5f64ef1bf3db90f9d",
+      "original": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/playground-pr1194-403dfd099/runs/1139586032/receipt.json"
+    },
+    {
+      "path": "latest/1139586032/stdout.log",
+      "bytes": 779,
+      "sha256": "95436de0e09d7fc4478ecb162113df9b2bdb6cf8c4e776a1a0375220d9de6fd2",
+      "original": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/playground-pr1194-403dfd099/runs/1139586032/stdout.log"
+    },
+    {
+      "path": "latest/1845486380/receipt.json",
+      "bytes": 5027,
+      "sha256": "f80196c8f251bf85065780e235ec8b552bf58f8d7312994e5ac29732415c20d1",
+      "original": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/playground-pr1194-403dfd099/runs/1845486380/receipt.json"
+    },
+    {
+      "path": "latest/1845486380/stdout.log",
+      "bytes": 779,
+      "sha256": "d44ac535c84f432eb4873773968b770e77e924c60701cd86a757662ff4df396a",
+      "original": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/playground-pr1194-403dfd099/runs/1845486380/stdout.log"
+    },
+    {
+      "path": "latest/275303672/receipt.json",
+      "bytes": 5014,
+      "sha256": "ab6717429c13e1243b2fff04ec6a4f2f76d33f2ebbdddbb3572e4c53432269e9",
+      "original": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/playground-pr1194-403dfd099/runs/275303672/receipt.json"
+    },
+    {
+      "path": "latest/275303672/stdout.log",
+      "bytes": 776,
+      "sha256": "3bf1a9e2b7993dcd05ff16cb47c9561ce6311675f4267b0ad2e768318af84f8a",
+      "original": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/playground-pr1194-403dfd099/runs/275303672/stdout.log"
+    },
+    {
+      "path": "latest/1013771484/receipt.json",
+      "bytes": 5023,
+      "sha256": "101d38dd41c1384a6010d42e50ded2f9cdcfc90ef7d7c87949427c81adf88cd1",
+      "original": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/playground-pr1194-403dfd099/runs/1013771484/receipt.json"
+    },
+    {
+      "path": "latest/1013771484/stdout.log",
+      "bytes": 778,
+      "sha256": "a82db6a0e69e663b332252462ea8f6c68f6a8e700d78d76e47a09dfa98c83de4",
+      "original": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/playground-pr1194-403dfd099/runs/1013771484/stdout.log"
+    },
+    {
+      "path": "latest/1961520297/receipt.json",
+      "bytes": 5035,
+      "sha256": "112e3909b9441ff70d3350619336828ca11e3c0f2dc84775eb123bd9a6d633d9",
+      "original": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/playground-pr1194-403dfd099/runs/1961520297/receipt.json"
+    },
+    {
+      "path": "latest/1961520297/stdout.log",
+      "bytes": 779,
+      "sha256": "c17dd09f5bcb5f9af0e3552438e3e29b8d885359e3ce0bcc82b9933675d061a8",
+      "original": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/playground-pr1194-403dfd099/runs/1961520297/stdout.log"
+    },
+    {
+      "path": "latest/56523606/receipt.json",
+      "bytes": 5013,
+      "sha256": "7c2eb767c039cfd9706adc9b428cb10dee35ae89d681e439661622aa15b55479",
+      "original": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/playground-pr1194-403dfd099/runs/56523606/receipt.json"
+    },
+    {
+      "path": "latest/56523606/stdout.log",
+      "bytes": 773,
+      "sha256": "98196ab784240675a154f62293fcf3cbe07e66cf986ff919615e5d8c686c2e68",
+      "original": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/playground-pr1194-403dfd099/runs/56523606/stdout.log"
+    },
+    {
+      "path": "latest/7804900/receipt.json",
+      "bytes": 5013,
+      "sha256": "e7d0d6f1d68bac8888001e5dbd9e8f95e945c378e5da663fb9e6b448a0c884e7",
+      "original": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/playground-pr1194-403dfd099/runs/7804900/receipt.json"
+    },
+    {
+      "path": "latest/7804900/stdout.log",
+      "bytes": 770,
+      "sha256": "082d967bd0ce55175e1975a99b91225592a414f6c4882bce6c5d49dfd7715bd8",
+      "original": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/playground-pr1194-403dfd099/runs/7804900/stdout.log"
+    },
+    {
+      "path": "latest/494353701/receipt.json",
+      "bytes": 5017,
+      "sha256": "7d8e2739678b896b14b93fc45e681207975704ab933712525746b23e4c98f386",
+      "original": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/playground-pr1194-403dfd099/runs/494353701/receipt.json"
+    },
+    {
+      "path": "latest/494353701/stdout.log",
+      "bytes": 776,
+      "sha256": "d856b1d9d62fe57f20f15b081377b8fb2c1c5e41ba2f4b06f4434438f7b69c66",
+      "original": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/playground-pr1194-403dfd099/runs/494353701/stdout.log"
+    },
+    {
+      "path": "latest/2092499754/receipt.json",
+      "bytes": 5030,
+      "sha256": "e170a209b2db6b4e9f4ecd537ef0eaacd5c2ddf5b37764f8bb34a8989b8df25c",
+      "original": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/playground-pr1194-403dfd099/runs/2092499754/receipt.json"
+    },
+    {
+      "path": "latest/2092499754/stdout.log",
+      "bytes": 779,
+      "sha256": "fd348d2921936d64cc3296a560d6086ba7fab74e0ee302d003c56281a278f6ab",
+      "original": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/playground-pr1194-403dfd099/runs/2092499754/stdout.log"
+    },
+    {
+      "path": "latest/1910481143/receipt.json",
+      "bytes": 5033,
+      "sha256": "2704af9aea83d5014404b2362f80d757ec11e3af092bee8d417bdb0a50cc5d4b",
+      "original": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/playground-pr1194-403dfd099/runs/1910481143/receipt.json"
+    },
+    {
+      "path": "latest/1910481143/stdout.log",
+      "bytes": 779,
+      "sha256": "e951f9f4459b59d7dc7c3f5bd81dc775743e128a8381dc07f69cfa899f257c01",
+      "original": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/playground-pr1194-403dfd099/runs/1910481143/stdout.log"
+    },
+    {
+      "path": "latest/2122112527/receipt.json",
+      "bytes": 5031,
+      "sha256": "99824fa2ba22bf1e9d9622aa06524b67736707ba24e0f9e4205c9fa3e7107097",
+      "original": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/playground-pr1194-403dfd099/runs/2122112527/receipt.json"
+    },
+    {
+      "path": "latest/2122112527/stdout.log",
+      "bytes": 779,
+      "sha256": "0f9c7a3dc0740d8dabcafdbe323322991a04c2c39b12a85b4c0ebe07eece9ccf",
+      "original": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/playground-pr1194-403dfd099/runs/2122112527/stdout.log"
+    },
+    {
+      "path": "historical/baseline/1056243202/receipt.json",
+      "bytes": 3569,
+      "sha256": "fcb5020dcdb1fb9299b6619bed730522b82cd2a243127a7b1bf4830c07ba2867",
+      "original": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/campaign/serial/Playground/1056243202-baseline/receipt.json"
+    },
+    {
+      "path": "historical/baseline/1056243202/stdout.log",
+      "bytes": 988,
+      "sha256": "e0d67c6a7d4a4a61933183c53a2be566dc6596611fe4fdad6e4fbc543407fa38",
+      "original": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/campaign/serial/Playground/1056243202-baseline/stdout.log"
+    },
+    {
+      "path": "historical/baseline/744345666/receipt.json",
+      "bytes": 3557,
+      "sha256": "3ef7ff84397a65f34430727e4447bfaa82364128d77fa7e37343e4f98cf9c962",
+      "original": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/campaign/serial/Playground/744345666-baseline/receipt.json"
+    },
+    {
+      "path": "historical/baseline/744345666/stdout.log",
+      "bytes": 985,
+      "sha256": "b229c3b5960747bd63636474169aecc7e0a8caacb3e74b2743c7c4cd7e146197",
+      "original": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/campaign/serial/Playground/744345666-baseline/stdout.log"
+    },
+    {
+      "path": "historical/baseline/1064623205/receipt.json",
+      "bytes": 3562,
+      "sha256": "e6751edb784a4da0ddd82837441e53ad297019997fbcf9add719af7541903a62",
+      "original": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/campaign/serial/Playground/1064623205-baseline/receipt.json"
+    },
+    {
+      "path": "historical/baseline/1064623205/stdout.log",
+      "bytes": 987,
+      "sha256": "4ffdc44ff67db3daa167785c7f738d4f7d9c3da6da9abeb1ba450384b3d64be2",
+      "original": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/campaign/serial/Playground/1064623205-baseline/stdout.log"
+    },
+    {
+      "path": "historical/baseline/725864695/receipt.json",
+      "bytes": 3558,
+      "sha256": "b07f9c8a5803245b750467183de03d8349eabe357838ecd2b5d0c3f269901d5f",
+      "original": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/campaign/serial/Playground/725864695-baseline/receipt.json"
+    },
+    {
+      "path": "historical/baseline/725864695/stdout.log",
+      "bytes": 985,
+      "sha256": "5d2e75ab2ebb2690dd1291951ab051ace9a23de9553b0ae6377167f82783ace2",
+      "original": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/campaign/serial/Playground/725864695-baseline/stdout.log"
+    },
+    {
+      "path": "historical/baseline/599004658/receipt.json",
+      "bytes": 3559,
+      "sha256": "9dc619e10ffb0b8a27b0d843d9f6c7a449a853f3ff50c06d7e964c962faa01e2",
+      "original": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/campaign/serial/Playground/599004658-baseline/receipt.json"
+    },
+    {
+      "path": "historical/baseline/599004658/stdout.log",
+      "bytes": 985,
+      "sha256": "41e20810b9b80eabae8054bfd4b43509a2dbb1b5489e04394dbe35b9e484bf7f",
+      "original": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/campaign/serial/Playground/599004658-baseline/stdout.log"
+    },
+    {
+      "path": "historical/baseline/117787757/receipt.json",
+      "bytes": 3566,
+      "sha256": "b65f99696ebf6dfed7a01046ee33f7caa8dcb96d7e1e825d2b40616503dd8e6e",
+      "original": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/campaign/serial/Playground/117787757-baseline/receipt.json"
+    },
+    {
+      "path": "historical/baseline/117787757/stdout.log",
+      "bytes": 985,
+      "sha256": "7160bb904bc39de24fc59224feaa7dfeb663f06f75147a46b315aac85e499fa6",
+      "original": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/campaign/serial/Playground/117787757-baseline/stdout.log"
+    },
+    {
+      "path": "historical/baseline/85910194/receipt.json",
+      "bytes": 3551,
+      "sha256": "77002ce4bca894f9cb57c2c3e5c1c31e474986e2a7e9206ee7c96d149cef980f",
+      "original": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/campaign/serial/Playground/85910194-baseline/receipt.json"
+    },
+    {
+      "path": "historical/baseline/85910194/stdout.log",
+      "bytes": 982,
+      "sha256": "34577fc61dcc1e55a1df63b8cac1949e9ea44df014c57f447c7081369ab97375",
+      "original": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/campaign/serial/Playground/85910194-baseline/stdout.log"
+    },
+    {
+      "path": "historical/baseline/769116511/receipt.json",
+      "bytes": 3559,
+      "sha256": "b04bdf5efe489259a97e98dd7453f5284ad6ed37b30c00656a5195e18d749158",
+      "original": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/campaign/serial/Playground/769116511-baseline/receipt.json"
+    },
+    {
+      "path": "historical/baseline/769116511/stdout.log",
+      "bytes": 985,
+      "sha256": "7b6fa495edbdb2e59c0c4cc5e134da463274249d09bfe22ac9a4a74f15d888b0",
+      "original": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/campaign/serial/Playground/769116511-baseline/stdout.log"
+    },
+    {
+      "path": "historical/baseline/1030656205/receipt.json",
+      "bytes": 3563,
+      "sha256": "2f93d7d47338e31c73c198308225955df76fbadfed88b75267722729cee73bf0",
+      "original": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/campaign/serial/Playground/1030656205-baseline/receipt.json"
+    },
+    {
+      "path": "historical/baseline/1030656205/stdout.log",
+      "bytes": 987,
+      "sha256": "6cc8505431bedb2d235bd2d063578b96691217f9d1ae9b14e12a6122b195ada3",
+      "original": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/campaign/serial/Playground/1030656205-baseline/stdout.log"
+    },
+    {
+      "path": "historical/baseline/79851807/receipt.json",
+      "bytes": 3555,
+      "sha256": "3c66de4006e387518af62f0bd21239a97f7ee0d70e426f585cd3699c949dda28",
+      "original": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/campaign/serial/Playground/79851807-baseline/receipt.json"
+    },
+    {
+      "path": "historical/baseline/79851807/stdout.log",
+      "bytes": 982,
+      "sha256": "25240a57c1fa20d1f1a9507cd2ff8ac580853c437dc209e4bbc27aa05f23c2c1",
+      "original": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/campaign/serial/Playground/79851807-baseline/stdout.log"
+    },
+    {
+      "path": "historical/baseline/1480527227/receipt.json",
+      "bytes": 3572,
+      "sha256": "fa6fcad7c875db7251f56a522c2c8a4be278d3b85d15ec38758f12a7c0b446a0",
+      "original": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/campaign/serial/Playground/1480527227-baseline/receipt.json"
+    },
+    {
+      "path": "historical/baseline/1480527227/stdout.log",
+      "bytes": 988,
+      "sha256": "faab7e8b71a8edd9ba0da99ddfbd189448d2fdd7a830c78108227bd4d8ae0b1e",
+      "original": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/campaign/serial/Playground/1480527227-baseline/stdout.log"
+    },
+    {
+      "path": "historical/baseline/31444774/receipt.json",
+      "bytes": 3555,
+      "sha256": "9f0d75738e0d2cb56991e0fae13d639fd8b9de9135856fe95231c72cdc36470b",
+      "original": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/campaign/serial/Playground/31444774-baseline/receipt.json"
+    },
+    {
+      "path": "historical/baseline/31444774/stdout.log",
+      "bytes": 982,
+      "sha256": "9cf399aad827222417fb9d895733735691ff8c1ed033c729d6df220087b4efce",
+      "original": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/campaign/serial/Playground/31444774-baseline/stdout.log"
+    },
+    {
+      "path": "historical/baseline/1514826878/receipt.json",
+      "bytes": 3570,
+      "sha256": "4f82323045e22f685c174b8ebeb2b96f29f4c5c30f05e5f99510f3c45e092570",
+      "original": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/campaign/serial/Playground/1514826878-baseline/receipt.json"
+    },
+    {
+      "path": "historical/baseline/1514826878/stdout.log",
+      "bytes": 988,
+      "sha256": "a102a9536b162203daf302e049a466fac4e482208b6285110b7ac6e4b8030386",
+      "original": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/campaign/serial/Playground/1514826878-baseline/stdout.log"
+    },
+    {
+      "path": "historical/baseline/1858401095/receipt.json",
+      "bytes": 3564,
+      "sha256": "dfd5e13f8bdfd8d8e64285a6b72a121d7969194dc90e911abb1c7a66b1f51b18",
+      "original": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/campaign/serial/Playground/1858401095-baseline/receipt.json"
+    },
+    {
+      "path": "historical/baseline/1858401095/stdout.log",
+      "bytes": 988,
+      "sha256": "67b4cc0cb00da332f386463fdee78fc7f3401a3bdf8c545d0a0d1aa7c7dae0d2",
+      "original": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/campaign/serial/Playground/1858401095-baseline/stdout.log"
+    },
+    {
+      "path": "historical/baseline/1635872854/receipt.json",
+      "bytes": 3563,
+      "sha256": "229fead9362e48870f30ca7f6c79a3373a2cbbf4d0df864b77395822e2f6ff76",
+      "original": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/campaign/serial/Playground/1635872854-baseline/receipt.json"
+    },
+    {
+      "path": "historical/baseline/1635872854/stdout.log",
+      "bytes": 987,
+      "sha256": "e900af041412e64bf137bc330eeab0a9780466e1287ee07b8ac3f1f671d1db8a",
+      "original": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/campaign/serial/Playground/1635872854-baseline/stdout.log"
+    },
+    {
+      "path": "historical/baseline/1441583672/receipt.json",
+      "bytes": 3572,
+      "sha256": "a10247e28714f8132fafeb66b5c810d3aebd6a5e9553dbee682cf81be84cff49",
+      "original": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/campaign/serial/Playground/1441583672-baseline/receipt.json"
+    },
+    {
+      "path": "historical/baseline/1441583672/stdout.log",
+      "bytes": 988,
+      "sha256": "6e96db0887847608030ab35e8e5e1e2b768f357831188c05b1c19da43859aaff",
+      "original": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/campaign/serial/Playground/1441583672-baseline/stdout.log"
+    },
+    {
+      "path": "historical/baseline/741493568/receipt.json",
+      "bytes": 3559,
+      "sha256": "51a57b0a209bad039fe437f6f0f065e58fad6bf64515e365a1f62fcaf4085f8c",
+      "original": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/campaign/serial/Playground/741493568-baseline/receipt.json"
+    },
+    {
+      "path": "historical/baseline/741493568/stdout.log",
+      "bytes": 985,
+      "sha256": "1dfcbf387a0a1ea75c76c8eea92e9857f10ee95cde65bef713e63cb667c2b944",
+      "original": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/campaign/serial/Playground/741493568-baseline/stdout.log"
+    },
+    {
+      "path": "historical/baseline/466374853/receipt.json",
+      "bytes": 3560,
+      "sha256": "7c735c7d98cafec883e67e6dfdb7db4f90fc8d19aa2fa8a90cddeedc25878644",
+      "original": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/campaign/serial/Playground/466374853-baseline/receipt.json"
+    },
+    {
+      "path": "historical/baseline/466374853/stdout.log",
+      "bytes": 985,
+      "sha256": "092f17ec02c0b5f09d94e45447daa278a0c5522d11324ce385c4dfd7ac47ca87",
+      "original": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/campaign/serial/Playground/466374853-baseline/stdout.log"
+    },
+    {
+      "path": "historical/baseline/2037486757/receipt.json",
+      "bytes": 3572,
+      "sha256": "910b036c77faa8028b6c55c70c41c4432dd515c94b28ed07f39b375ce19242e5",
+      "original": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/campaign/serial/Playground/2037486757-baseline/receipt.json"
+    },
+    {
+      "path": "historical/baseline/2037486757/stdout.log",
+      "bytes": 988,
+      "sha256": "d3f757ea2642d633318961efff34c7270fe90228e3cff33aabb890ed84c72145",
+      "original": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/campaign/serial/Playground/2037486757-baseline/stdout.log"
+    },
+    {
+      "path": "historical/baseline/1414753418/receipt.json",
+      "bytes": 3568,
+      "sha256": "3e9b2376cd83418596015ab2390eebdc102c11b243264700564eefad045f9717",
+      "original": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/campaign/serial/Playground/1414753418-baseline/receipt.json"
+    },
+    {
+      "path": "historical/baseline/1414753418/stdout.log",
+      "bytes": 987,
+      "sha256": "21f9f61d1dd0b1628517b5c796d7c88e11b7b81c410113014468c4375df32214",
+      "original": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/campaign/serial/Playground/1414753418-baseline/stdout.log"
+    },
+    {
+      "path": "historical/baseline/1298936997/receipt.json",
+      "bytes": 3564,
+      "sha256": "e0af494d0d9ca0db785d9ee7941760fd3b549d8c8ff491b5f29a8282faf1087a",
+      "original": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/campaign/serial/Playground/1298936997-baseline/receipt.json"
+    },
+    {
+      "path": "historical/baseline/1298936997/stdout.log",
+      "bytes": 988,
+      "sha256": "ea62e67b3980d0f273c5d0d1ac9402f6f0b5173618085dec7e7d6f7767f8fdb0",
+      "original": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/campaign/serial/Playground/1298936997-baseline/stdout.log"
+    },
+    {
+      "path": "historical/baseline/1139586032/receipt.json",
+      "bytes": 3561,
+      "sha256": "707dfba16458a4ff4c49292d1507c4b07d551c67b17a06b3a42b333acb4cb3f0",
+      "original": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/campaign/serial/Playground/1139586032-baseline/receipt.json"
+    },
+    {
+      "path": "historical/baseline/1139586032/stdout.log",
+      "bytes": 988,
+      "sha256": "ad5c30508605071717b73beeb2917f770426afb3a7c903dce1a859d4098844ce",
+      "original": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/campaign/serial/Playground/1139586032-baseline/stdout.log"
+    },
+    {
+      "path": "historical/baseline/1845486380/receipt.json",
+      "bytes": 3570,
+      "sha256": "7cfff2f9e8401d9093fc1334e46acccafc281bad9ca93080d7257868691a5c9c",
+      "original": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/campaign/serial/Playground/1845486380-baseline/receipt.json"
+    },
+    {
+      "path": "historical/baseline/1845486380/stdout.log",
+      "bytes": 988,
+      "sha256": "5f805a9ffd30b20836891901f6440680d116c7230a628802eb99fc62eacd5593",
+      "original": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/campaign/serial/Playground/1845486380-baseline/stdout.log"
+    },
+    {
+      "path": "historical/baseline/275303672/receipt.json",
+      "bytes": 3557,
+      "sha256": "23c148d44523a01e387045c99532fa990b7ce318bb2448c034c2a6eed59168aa",
+      "original": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/campaign/serial/Playground/275303672-baseline/receipt.json"
+    },
+    {
+      "path": "historical/baseline/275303672/stdout.log",
+      "bytes": 985,
+      "sha256": "3bbf0b0ca09c33b37ebd9740f72cf20fc43be22786762d3c25ffd38e6e747bd3",
+      "original": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/campaign/serial/Playground/275303672-baseline/stdout.log"
+    },
+    {
+      "path": "historical/baseline/1013771484/receipt.json",
+      "bytes": 3565,
+      "sha256": "c403147fcd229070d6cc2aa34ceab41ceffbcb5ac4e8abbe9feaad3380ae6169",
+      "original": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/campaign/serial/Playground/1013771484-baseline/receipt.json"
+    },
+    {
+      "path": "historical/baseline/1013771484/stdout.log",
+      "bytes": 988,
+      "sha256": "775d349a681002cb45d3efaafb54a46bc5b0a01e9d4791f042e1acb907caa3fd",
+      "original": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/campaign/serial/Playground/1013771484-baseline/stdout.log"
+    },
+    {
+      "path": "historical/baseline/1961520297/receipt.json",
+      "bytes": 3563,
+      "sha256": "083f2810700263077c77910c6e048492922126715e0022033bde458dff39d718",
+      "original": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/campaign/serial/Playground/1961520297-baseline/receipt.json"
+    },
+    {
+      "path": "historical/baseline/1961520297/stdout.log",
+      "bytes": 988,
+      "sha256": "6f229a946358278e396e241e894b07e625584d3bdbdeb43ad7062fccd7e81fb6",
+      "original": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/campaign/serial/Playground/1961520297-baseline/stdout.log"
+    },
+    {
+      "path": "historical/baseline/56523606/receipt.json",
+      "bytes": 3556,
+      "sha256": "0ceb9d6dc8f32e149c81d55cc22b36f2c416f7a037e30094836d9969b38bcae4",
+      "original": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/campaign/serial/Playground/56523606-baseline/receipt.json"
+    },
+    {
+      "path": "historical/baseline/56523606/stdout.log",
+      "bytes": 982,
+      "sha256": "af42f212e2132ca8f029ff8148dbc52229b0b36dc6520ba17dbf9667a5286b30",
+      "original": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/campaign/serial/Playground/56523606-baseline/stdout.log"
+    },
+    {
+      "path": "historical/baseline/7804900/receipt.json",
+      "bytes": 3551,
+      "sha256": "1ee15c15bbaec05ce96d58ed5554dcaf346fca2ebd525a77a470fd9b9658c34b",
+      "original": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/campaign/serial/Playground/7804900-baseline/receipt.json"
+    },
+    {
+      "path": "historical/baseline/7804900/stdout.log",
+      "bytes": 979,
+      "sha256": "aa4414039247d525d9e3bea5404a0df73227a0f81dd065f15bc89ad6f0ee25a3",
+      "original": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/campaign/serial/Playground/7804900-baseline/stdout.log"
+    },
+    {
+      "path": "historical/baseline/494353701/receipt.json",
+      "bytes": 3558,
+      "sha256": "b17d8b411e53d97294bcb025c98515f1997fde5eda36868be7d84497965b6600",
+      "original": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/campaign/serial/Playground/494353701-baseline/receipt.json"
+    },
+    {
+      "path": "historical/baseline/494353701/stdout.log",
+      "bytes": 985,
+      "sha256": "8dd3ebba65226e1e1c89abd9a3ad6c35655f37552af8e83caa84a5c323b8acf9",
+      "original": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/campaign/serial/Playground/494353701-baseline/stdout.log"
+    },
+    {
+      "path": "historical/baseline/2092499754/receipt.json",
+      "bytes": 3561,
+      "sha256": "10eb89ba28dd380741beff9ec69b0436aa1f6e324c4742a11bad25188b0f451f",
+      "original": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/campaign/serial/Playground/2092499754-baseline/receipt.json"
+    },
+    {
+      "path": "historical/baseline/2092499754/stdout.log",
+      "bytes": 988,
+      "sha256": "0cfcc99c896cc8174e1c923c9154c9a2b90be685874f154a978a3b93d0dd8fc9",
+      "original": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/campaign/serial/Playground/2092499754-baseline/stdout.log"
+    },
+    {
+      "path": "historical/baseline/1910481143/receipt.json",
+      "bytes": 3570,
+      "sha256": "47a198755e44333a2967251899b8b3153d18106f5b301c6c54543eefe5d14295",
+      "original": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/campaign/serial/Playground/1910481143-baseline/receipt.json"
+    },
+    {
+      "path": "historical/baseline/1910481143/stdout.log",
+      "bytes": 988,
+      "sha256": "cc193e9d7bf079588cb88bbe8c609ebd1a5a382056790e25faa5755d1f31cc01",
+      "original": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/campaign/serial/Playground/1910481143-baseline/stdout.log"
+    },
+    {
+      "path": "historical/baseline/2122112527/receipt.json",
+      "bytes": 3563,
+      "sha256": "b89d7f2379b7d3404dcf9fa038e8dbe0f1f71260af159cf6ceb1d4cc68b1e9c8",
+      "original": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/campaign/serial/Playground/2122112527-baseline/receipt.json"
+    },
+    {
+      "path": "historical/baseline/2122112527/stdout.log",
+      "bytes": 987,
+      "sha256": "7f86f46517ef7b2db1d00b73c400e96de7cb90a66d43a2379781518ecd5a38d5",
+      "original": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/campaign/serial/Playground/2122112527-baseline/stdout.log"
+    },
+    {
+      "path": "historical/wake-only/1056243202/receipt.json",
+      "bytes": 3572,
+      "sha256": "704950b15479fa290fa61a864ec57cdef10f819f19c7bdaa15a3e7937117adba",
+      "original": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/campaign/serial/Playground/1056243202-wake-only/receipt.json"
+    },
+    {
+      "path": "historical/wake-only/1056243202/stdout.log",
+      "bytes": 988,
+      "sha256": "9ee1a6b1b88ddb8d021884679559eed7867fda17c2f8371138bfddbac542125b",
+      "original": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/campaign/serial/Playground/1056243202-wake-only/stdout.log"
+    },
+    {
+      "path": "historical/wake-only/744345666/receipt.json",
+      "bytes": 3563,
+      "sha256": "809e980bb11803ef6a792d243b31f108573f52b3bb8bc7fea130a16a29b68f28",
+      "original": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/campaign/serial/Playground/744345666-wake-only/receipt.json"
+    },
+    {
+      "path": "historical/wake-only/744345666/stdout.log",
+      "bytes": 984,
+      "sha256": "7545f688c527cb0e7f710eff8c2d071ce9da56f7f2583e22c97d8236b97aa8d8",
+      "original": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/campaign/serial/Playground/744345666-wake-only/stdout.log"
+    },
+    {
+      "path": "historical/wake-only/1064623205/receipt.json",
+      "bytes": 3571,
+      "sha256": "bb84f4265196f691541d7531f5dfe0e7ae4ed6086431dcae2c69f6571192202c",
+      "original": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/campaign/serial/Playground/1064623205-wake-only/receipt.json"
+    },
+    {
+      "path": "historical/wake-only/1064623205/stdout.log",
+      "bytes": 987,
+      "sha256": "4d9f26fb523f31c422111f3a66203be546cfe941a12084315042dfa78905fade",
+      "original": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/campaign/serial/Playground/1064623205-wake-only/stdout.log"
+    },
+    {
+      "path": "historical/wake-only/725864695/receipt.json",
+      "bytes": 3567,
+      "sha256": "71dab27879990d00ff0b6ab569b2db0238e2333daa138e3446893dcd8389fd82",
+      "original": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/campaign/serial/Playground/725864695-wake-only/receipt.json"
+    },
+    {
+      "path": "historical/wake-only/725864695/stdout.log",
+      "bytes": 985,
+      "sha256": "3b8bab49df2af34a9b9128cbb3d34e7dd7a509d180debc7205fcfb0cdefaa4a2",
+      "original": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/campaign/serial/Playground/725864695-wake-only/stdout.log"
+    },
+    {
+      "path": "historical/wake-only/599004658/receipt.json",
+      "bytes": 3557,
+      "sha256": "132edc9aec34123c404874cfb54510edb504ee1c8a0f3aacce283abdd198aa49",
+      "original": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/campaign/serial/Playground/599004658-wake-only/receipt.json"
+    },
+    {
+      "path": "historical/wake-only/599004658/stdout.log",
+      "bytes": 985,
+      "sha256": "3d233d2d2911c850de908ced198cb4ec4ffb9a5195e265080da198b53d215d9c",
+      "original": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/campaign/serial/Playground/599004658-wake-only/stdout.log"
+    },
+    {
+      "path": "historical/wake-only/117787757/receipt.json",
+      "bytes": 3571,
+      "sha256": "28be130383df72ee05f84aca2f31d52d3a6dd95036bf5a64172021ec0539624a",
+      "original": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/campaign/serial/Playground/117787757-wake-only/receipt.json"
+    },
+    {
+      "path": "historical/wake-only/117787757/stdout.log",
+      "bytes": 985,
+      "sha256": "1b644c4ae84c5650f206fc6c5c509f5933730d3190f0ac353185daf5ed2a4bbf",
+      "original": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/campaign/serial/Playground/117787757-wake-only/stdout.log"
+    },
+    {
+      "path": "historical/wake-only/85910194/receipt.json",
+      "bytes": 3555,
+      "sha256": "a0e401a9eb3aea827bcb5b3169080cce73ce1fe036b47e6d69245157b6a707b4",
+      "original": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/campaign/serial/Playground/85910194-wake-only/receipt.json"
+    },
+    {
+      "path": "historical/wake-only/85910194/stdout.log",
+      "bytes": 982,
+      "sha256": "e52abddc2bad038ca9379eaa3e19a0dd12be2baaf948db768644b2ebbb5a0106",
+      "original": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/campaign/serial/Playground/85910194-wake-only/stdout.log"
+    },
+    {
+      "path": "historical/wake-only/769116511/receipt.json",
+      "bytes": 3569,
+      "sha256": "1d9b2d63317c7c1e1fec931be7ebf18c5ba4ba4290ae65e120fffd140e2535c0",
+      "original": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/campaign/serial/Playground/769116511-wake-only/receipt.json"
+    },
+    {
+      "path": "historical/wake-only/769116511/stdout.log",
+      "bytes": 985,
+      "sha256": "d39e67987e14a221d2d342795e102c0e4025295f060defe67849697a31629b67",
+      "original": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/campaign/serial/Playground/769116511-wake-only/stdout.log"
+    },
+    {
+      "path": "historical/wake-only/1030656205/receipt.json",
+      "bytes": 3572,
+      "sha256": "6c46d46af81b0dafdc4b410ed82b144fa4f930cfc65a881b0332b70a79b7c2fe",
+      "original": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/campaign/serial/Playground/1030656205-wake-only/receipt.json"
+    },
+    {
+      "path": "historical/wake-only/1030656205/stdout.log",
+      "bytes": 987,
+      "sha256": "1cc97c56c2d61ec01e21cc2aea8f674bf9498bee54a8043b42c90541f0feb3b0",
+      "original": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/campaign/serial/Playground/1030656205-wake-only/stdout.log"
+    },
+    {
+      "path": "historical/wake-only/79851807/receipt.json",
+      "bytes": 3561,
+      "sha256": "702b6471c1881bc5ad09baf5d93093c6e8248cc9a6237cec0aca906765fa3f70",
+      "original": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/campaign/serial/Playground/79851807-wake-only/receipt.json"
+    },
+    {
+      "path": "historical/wake-only/79851807/stdout.log",
+      "bytes": 982,
+      "sha256": "0d192fb8ac7c4ea7c5e0849435893754891bbd38c9172cc354e2edd1ea665ded",
+      "original": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/campaign/serial/Playground/79851807-wake-only/stdout.log"
+    },
+    {
+      "path": "historical/wake-only/1480527227/receipt.json",
+      "bytes": 3568,
+      "sha256": "ff9e05831ccbc750b4f8448f777e17a4a5e3738a3f41b65a8a4b78810259dfbd",
+      "original": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/campaign/serial/Playground/1480527227-wake-only/receipt.json"
+    },
+    {
+      "path": "historical/wake-only/1480527227/stdout.log",
+      "bytes": 988,
+      "sha256": "3e333ef032e05e915127cbbf577b45b8a719d2ec58f940e55b4452e98e6e087a",
+      "original": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/campaign/serial/Playground/1480527227-wake-only/stdout.log"
+    },
+    {
+      "path": "historical/wake-only/31444774/receipt.json",
+      "bytes": 3560,
+      "sha256": "c359ba2ec37e6e906ae225ee09036c4c0f56c2d02fe7134ced2feeef1db0467c",
+      "original": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/campaign/serial/Playground/31444774-wake-only/receipt.json"
+    },
+    {
+      "path": "historical/wake-only/31444774/stdout.log",
+      "bytes": 982,
+      "sha256": "fd1699e068827a2937e59d7660c375a2a9f69b82b6a5e45819ac8c6e9aac7d1a",
+      "original": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/campaign/serial/Playground/31444774-wake-only/stdout.log"
+    },
+    {
+      "path": "historical/wake-only/1514826878/receipt.json",
+      "bytes": 3566,
+      "sha256": "a7716866daddf6277bebf7bf377755b90e884abb1edc682141e035fdb43fb95a",
+      "original": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/campaign/serial/Playground/1514826878-wake-only/receipt.json"
+    },
+    {
+      "path": "historical/wake-only/1514826878/stdout.log",
+      "bytes": 988,
+      "sha256": "9556c59cdbc176eecf6515646f6fbe4bce7a75b9a666b53c85c4046ea3af2379",
+      "original": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/campaign/serial/Playground/1514826878-wake-only/stdout.log"
+    },
+    {
+      "path": "historical/wake-only/1858401095/receipt.json",
+      "bytes": 3569,
+      "sha256": "879630019ff0aab6f753ad268659453f707475b6e69d811603a8b8d6324d06b6",
+      "original": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/campaign/serial/Playground/1858401095-wake-only/receipt.json"
+    },
+    {
+      "path": "historical/wake-only/1858401095/stdout.log",
+      "bytes": 988,
+      "sha256": "e4f0fd38826c799ebede281f1ce15945f493647cd5127c288640daabb3c81165",
+      "original": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/campaign/serial/Playground/1858401095-wake-only/stdout.log"
+    },
+    {
+      "path": "historical/wake-only/1635872854/receipt.json",
+      "bytes": 3563,
+      "sha256": "fd65f548b156c011e807b21677d4ac73eba10d5f7b889b8cd764c1a2a4df67ef",
+      "original": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/campaign/serial/Playground/1635872854-wake-only/receipt.json"
+    },
+    {
+      "path": "historical/wake-only/1635872854/stdout.log",
+      "bytes": 987,
+      "sha256": "b22d2bf95f25322f1f804fcecba36eedee9cfc3b032f61cd23643e072436366f",
+      "original": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/campaign/serial/Playground/1635872854-wake-only/stdout.log"
+    },
+    {
+      "path": "historical/wake-only/1441583672/receipt.json",
+      "bytes": 3570,
+      "sha256": "d335eccdc4bf2028b7528f1296480116e471427434c2b28a645a7f3ecba0dbc4",
+      "original": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/campaign/serial/Playground/1441583672-wake-only/receipt.json"
+    },
+    {
+      "path": "historical/wake-only/1441583672/stdout.log",
+      "bytes": 988,
+      "sha256": "e0db027993db6c9dadc9446f5bd9f968eec3350d2e22ade0e25d78256253c1e7",
+      "original": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/campaign/serial/Playground/1441583672-wake-only/stdout.log"
+    },
+    {
+      "path": "historical/wake-only/741493568/receipt.json",
+      "bytes": 3564,
+      "sha256": "e98de5b60eae16d684dad5007f8b4335ac50d3adfdcb91d68909efa77dc5479e",
+      "original": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/campaign/serial/Playground/741493568-wake-only/receipt.json"
+    },
+    {
+      "path": "historical/wake-only/741493568/stdout.log",
+      "bytes": 985,
+      "sha256": "6bcbc7f6e9594563864a857cbc6045208a9cbf1477bd1f0be565b9da7442f8c9",
+      "original": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/campaign/serial/Playground/741493568-wake-only/stdout.log"
+    },
+    {
+      "path": "historical/wake-only/466374853/receipt.json",
+      "bytes": 3560,
+      "sha256": "7ef90d8d4b35eb10a3717aa7ea10e5e25aa1bc1e806f2f14e21a366471b2d26d",
+      "original": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/campaign/serial/Playground/466374853-wake-only/receipt.json"
+    },
+    {
+      "path": "historical/wake-only/466374853/stdout.log",
+      "bytes": 985,
+      "sha256": "de5c484f5af488332b551ffad365dc8fb797833f1bdb1977a656f7cb8954826b",
+      "original": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/campaign/serial/Playground/466374853-wake-only/stdout.log"
+    },
+    {
+      "path": "historical/wake-only/2037486757/receipt.json",
+      "bytes": 3567,
+      "sha256": "a6d51e5b58a5f9e2946cfadd441fa2b4d86de32ae838410d6de99c44028f612d",
+      "original": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/campaign/serial/Playground/2037486757-wake-only/receipt.json"
+    },
+    {
+      "path": "historical/wake-only/2037486757/stdout.log",
+      "bytes": 988,
+      "sha256": "a1809c5fa7d23b9dc705731f8292e209c5e70961ce27f54371e0ad80adc26ae2",
+      "original": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/campaign/serial/Playground/2037486757-wake-only/stdout.log"
+    },
+    {
+      "path": "historical/wake-only/1414753418/receipt.json",
+      "bytes": 3569,
+      "sha256": "9215e70084720cd8462817df93e99b0e180b2dd53bd9daaffd32f4522c224b43",
+      "original": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/campaign/serial/Playground/1414753418-wake-only/receipt.json"
+    },
+    {
+      "path": "historical/wake-only/1414753418/stdout.log",
+      "bytes": 988,
+      "sha256": "5d1ff24a7acfdee4db3e99e88b2add706ad037f6d5a89e593f734cbf534ae162",
+      "original": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/campaign/serial/Playground/1414753418-wake-only/stdout.log"
+    },
+    {
+      "path": "historical/wake-only/1298936997/receipt.json",
+      "bytes": 3573,
+      "sha256": "91628376fc544136ebec791277d715c184fefc522463bcaa579f184257f88343",
+      "original": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/campaign/serial/Playground/1298936997-wake-only/receipt.json"
+    },
+    {
+      "path": "historical/wake-only/1298936997/stdout.log",
+      "bytes": 988,
+      "sha256": "07b97791a03f7c73790f029e871f2d10fb7efdaabd3b25b5d06882c469ff162b",
+      "original": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/campaign/serial/Playground/1298936997-wake-only/stdout.log"
+    },
+    {
+      "path": "historical/wake-only/1139586032/receipt.json",
+      "bytes": 3564,
+      "sha256": "7ea85423fe656676cc00d310432f81442a96dc44f98d684eea53023a35e916cd",
+      "original": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/campaign/serial/Playground/1139586032-wake-only/receipt.json"
+    },
+    {
+      "path": "historical/wake-only/1139586032/stdout.log",
+      "bytes": 987,
+      "sha256": "29dd575efd931415361f368d7ec3c32921299c9f0c0310489e30a737c88c0310",
+      "original": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/campaign/serial/Playground/1139586032-wake-only/stdout.log"
+    },
+    {
+      "path": "historical/wake-only/1845486380/receipt.json",
+      "bytes": 3568,
+      "sha256": "f431eb0f88f09a2db0217a2ebc3fff15460d8235ef93248d0f1e42759034f8c6",
+      "original": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/campaign/serial/Playground/1845486380-wake-only/receipt.json"
+    },
+    {
+      "path": "historical/wake-only/1845486380/stdout.log",
+      "bytes": 988,
+      "sha256": "bcbd31dc914b7e7e919a8e39d30f20251a5987e26151936823f1d506927582d7",
+      "original": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/campaign/serial/Playground/1845486380-wake-only/stdout.log"
+    },
+    {
+      "path": "historical/wake-only/275303672/receipt.json",
+      "bytes": 3569,
+      "sha256": "26b5a3f8712a2c7d41cc52a22115cfefaef164b0afa1a46d0b85a618902a202e",
+      "original": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/campaign/serial/Playground/275303672-wake-only/receipt.json"
+    },
+    {
+      "path": "historical/wake-only/275303672/stdout.log",
+      "bytes": 985,
+      "sha256": "a8d0afd81866d53db3353d621fb2d39b1ecab8b3217f09c8dc666673cee05a0a",
+      "original": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/campaign/serial/Playground/275303672-wake-only/stdout.log"
+    },
+    {
+      "path": "historical/wake-only/1013771484/receipt.json",
+      "bytes": 3565,
+      "sha256": "5d10958b88d5e9bab2e853addaad828bf299c8978937def9a4503b21bfbab949",
+      "original": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/campaign/serial/Playground/1013771484-wake-only/receipt.json"
+    },
+    {
+      "path": "historical/wake-only/1013771484/stdout.log",
+      "bytes": 988,
+      "sha256": "0dae677f7ebdaf6acf4143e033b476b8c120a3c4629edfe92b8ff968fb285104",
+      "original": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/campaign/serial/Playground/1013771484-wake-only/stdout.log"
+    },
+    {
+      "path": "historical/wake-only/1961520297/receipt.json",
+      "bytes": 3565,
+      "sha256": "5abdd689075557f5a02f75f034a7db3409c647a1d77689276a67ee08eda3eb02",
+      "original": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/campaign/serial/Playground/1961520297-wake-only/receipt.json"
+    },
+    {
+      "path": "historical/wake-only/1961520297/stdout.log",
+      "bytes": 988,
+      "sha256": "8a84b349cf2ebe5b4c4d8b6ea16e640c13f30b084b31f53b8d3c1e0cd41fd7d2",
+      "original": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/campaign/serial/Playground/1961520297-wake-only/stdout.log"
+    },
+    {
+      "path": "historical/wake-only/56523606/receipt.json",
+      "bytes": 3557,
+      "sha256": "87016ad34d69e642cc1211c31eba4cde30de7b6561f03dbc926d0d605c159a31",
+      "original": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/campaign/serial/Playground/56523606-wake-only/receipt.json"
+    },
+    {
+      "path": "historical/wake-only/56523606/stdout.log",
+      "bytes": 982,
+      "sha256": "eb59f8e27a0d4ac4a8c6f967106cc598d7a99f269920729887028b418f5fb691",
+      "original": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/campaign/serial/Playground/56523606-wake-only/stdout.log"
+    },
+    {
+      "path": "historical/wake-only/7804900/receipt.json",
+      "bytes": 3555,
+      "sha256": "559a7dfe548cc9921baf6d8d9ad8366e0d02f9ed6cebacfc30e756a8cd290306",
+      "original": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/campaign/serial/Playground/7804900-wake-only/receipt.json"
+    },
+    {
+      "path": "historical/wake-only/7804900/stdout.log",
+      "bytes": 979,
+      "sha256": "2607f0b5297f56a889bedbfd6c54a53d02601165904ebce9ef26124026f3163f",
+      "original": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/campaign/serial/Playground/7804900-wake-only/stdout.log"
+    },
+    {
+      "path": "historical/wake-only/494353701/receipt.json",
+      "bytes": 3571,
+      "sha256": "1a7a9c8be0346f9de214c7e5a2fec4c21df9ff48df5e0f0cea7fcd2d5395fa3b",
+      "original": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/campaign/serial/Playground/494353701-wake-only/receipt.json"
+    },
+    {
+      "path": "historical/wake-only/494353701/stdout.log",
+      "bytes": 985,
+      "sha256": "b0db00c38d806a89c6b51078f29a2620b6ff4016265b7bcc645a1b3ee690b02b",
+      "original": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/campaign/serial/Playground/494353701-wake-only/stdout.log"
+    },
+    {
+      "path": "historical/wake-only/2092499754/receipt.json",
+      "bytes": 3572,
+      "sha256": "8be813c005c9668df9cbabb38a52d3d79e910778743e49ea046c1d23b47a0eb3",
+      "original": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/campaign/serial/Playground/2092499754-wake-only/receipt.json"
+    },
+    {
+      "path": "historical/wake-only/2092499754/stdout.log",
+      "bytes": 987,
+      "sha256": "b2b2a06f5c630e6f5fb2617204c28dfa498b89797a2e8206648c18a13c3f74d7",
+      "original": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/campaign/serial/Playground/2092499754-wake-only/stdout.log"
+    },
+    {
+      "path": "historical/wake-only/1910481143/receipt.json",
+      "bytes": 3563,
+      "sha256": "fdc444c3c3fd6f6cea2034cfd56f78ec9b9de97d42d2c38e23f9a6714d9e7df6",
+      "original": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/campaign/serial/Playground/1910481143-wake-only/receipt.json"
+    },
+    {
+      "path": "historical/wake-only/1910481143/stdout.log",
+      "bytes": 988,
+      "sha256": "a6f5809f7ae477d7b0a84ec57e4f9b563f0b924cbc9d5a0bff96928aaeb5f375",
+      "original": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/campaign/serial/Playground/1910481143-wake-only/stdout.log"
+    },
+    {
+      "path": "historical/wake-only/2122112527/receipt.json",
+      "bytes": 3565,
+      "sha256": "76b96a6a7270858c4d46787ad904e76021befdc1bc03252c416204bf69f0c182",
+      "original": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/campaign/serial/Playground/2122112527-wake-only/receipt.json"
+    },
+    {
+      "path": "historical/wake-only/2122112527/stdout.log",
+      "bytes": 987,
+      "sha256": "ea720b8a0484492a32afb1e849e94111955b754538f7708ed2583a2451830e7d",
+      "original": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/october-regression/coordination-redesign/full-design-comparison/campaign/serial/Playground/2122112527-wake-only/stdout.log"
+    },
+    {
+      "path": "fixtures/Playground.map",
+      "bytes": 659316,
+      "sha256": "2a323a2d02475fb1ddd2ddfac99c51890aa7b2a2f3537ad7bee93aba85d84eaf",
+      "original": "/home/bradley/.codex/worktrees/engine-optimization/glob2/maps/Playground.map"
+    },
+    {
+      "path": "fixtures/FourSquares1.g2mr",
+      "bytes": 3679,
+      "sha256": "f76e602c8d48a6094550d7e81f68e5bce3ec57c64cb7e0f8c217b174e97af1c8",
+      "original": "/home/bradley/.codex/worktrees/engine-optimization/glob2/test/fixtures/multiplayer/FourSquares1.g2mr"
+    },
+    {
+      "path": "fixtures/FourSquares1.verify-trace.txt",
+      "bytes": 10914,
+      "sha256": "e0108ce0802c0ae419879e19cf515e4e0bc1b01f47135a8136d298b1b971a1e7",
+      "original": "/home/bradley/.codex/worktrees/engine-optimization/glob2/test/fixtures/multiplayer/FourSquares1.verify-trace.txt"
+    },
+    {
+      "path": "fixtures/FourSquares1.map.gz",
+      "bytes": 48770,
+      "sha256": "3f2ba4e3313fa31801449e057adaff679951abba7c599c271442a29578931869",
+      "original": "/home/bradley/.codex/worktrees/engine-optimization/glob2/maps/FourSquares1.map.gz"
+    },
+    {
+      "path": "verify.py",
+      "bytes": 2210,
+      "sha256": "b5580d0db01a23258e2e48fdaf5eef0117b2935bba37e5108d5fe338f10b1e73"
+    },
+    {
+      "path": "README.md",
+      "bytes": 3402,
+      "sha256": "84dd60a665f493bdf80b9d8df43580008b91a2422bd508cce27b352123f056f8"
+    },
+    {
+      "path": "compare-pr-before.py",
+      "bytes": 8500,
+      "sha256": "a4f361b84239d7ed1b930326d317d83b3141f65b0f82f67f2e276b345b6c0193",
+      "original": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/playground-pr1194-403dfd099/compare-pr-before.py"
+    },
+    {
+      "path": "summarize-fix.py",
+      "bytes": 5052,
+      "sha256": "788799e9736ba0f92bafd7e45ef84d0ecac5e066cc9e6a04c54056979152c7f0",
+      "original": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/playground-pr1194-403dfd099/summarize-fix.py"
+    },
+    {
+      "path": "verify-previous-export.py",
+      "bytes": 2069,
+      "sha256": "e462050ada91304dcc72a89d6e79308e682573e8506bfa2d8e3e6cf5c224348f",
+      "original": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/playground-pr1194-403dfd099/verify-previous-export.py"
+    },
+    {
+      "path": "verify-pr-before-export.py",
+      "bytes": 2065,
+      "sha256": "03422483e12c45d0b9936bef277088d3a5a25c8678529db7b8a60de90c8f92b7",
+      "original": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/playground-pr1194-403dfd099/verify-pr-before-export.py"
+    },
+    {
+      "path": "independent-point-audit.json",
+      "bytes": 2992,
+      "sha256": "83d482e92767f31abaa233555a52df36811223192464b863b3f5f503437ee718",
+      "original": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/playground-pr1194-403dfd099/independent-point-audit.json"
+    },
+    {
+      "path": "preparation/fix.txt",
+      "bytes": 1164,
+      "sha256": "fb5eca37b80a5bc9d66e682f9c93295915d1d50f3afe09536abf018d26f3ac47",
+      "original": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/playground-pr1194-403dfd099/preparation/fix.txt"
+    },
+    {
+      "path": "preparation/pr.json",
+      "bytes": 4757,
+      "sha256": "a59eee6149962efd27243518684f9606d9e05f7e687e5b24888499390bf50f93",
+      "original": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/playground-pr1194-403dfd099/preparation/pr.json"
+    },
+    {
+      "path": "preparation/history.txt",
+      "bytes": 9663,
+      "sha256": "297a792b53a388ef8016a9bf42f71711158655e3820fddd2ac503ff3ab46247e",
+      "original": "/home/bradley/.codex/worktrees/a630/glob2/artifacts/playground-pr1194-403dfd099/preparation/history.txt"
+    }
+  ],
+  "omissions": [
+    "Native executable and object/cache files",
+    "Per-game disposable profiles and generated replay bodies",
+    "Full historical sources already retained under earlier evidence commit5903347157253813a6a328fd4a362d997f77c232"
+  ],
+  "note": "Original absolute paths are provenance; verify.py is portable and recomputes raw summary math. Bootstrap and plotting source is retained with package versions.",
+  "primary_comparison_dependencies": [
+    "Adjacent playground-latest-987c95369/latest",
+    "Adjacent playground-pr1194-f56cbc8f6/latest"
+  ]
+}

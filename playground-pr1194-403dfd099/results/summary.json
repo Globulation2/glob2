@@ -1,0 +1,657 @@
+{
+  "revision": "403dfd0999a2511cbd84f9869403c8960b991f26",
+  "groups": {
+    "baseline": {
+      "winners": 32,
+      "caps": 0,
+      "metrics": {
+        "e2e_seconds": {
+          "mean": 35.33984200084524,
+          "median": 33.486909065628424,
+          "p95": 49.21240952149965,
+          "min": 20.857480519916862,
+          "max": 61.79077411815524,
+          "mean_ci95": [
+            32.30123836506864,
+            38.555509888903174
+          ]
+        },
+        "total_cpu_seconds": {
+          "mean": 159.4775115,
+          "median": 150.029102,
+          "p95": 217.5263249,
+          "min": 98.848198,
+          "max": 262.35300900000004,
+          "mean_ci95": [
+            146.72138178828126,
+            172.83216246640626
+          ]
+        },
+        "e2e_tps": {
+          "mean": 1489.3225873696206,
+          "median": 1476.8036023005502,
+          "p95": 1619.6376056664399,
+          "min": 1298.8670419718655,
+          "max": 1802.0559184687136,
+          "mean_ci95": [
+            1457.2223577782656,
+            1523.4130554357614
+          ]
+        },
+        "cpu_ms_tick": {
+          "mean": 3.053598193754703,
+          "median": 3.0620394987154,
+          "p95": 3.2651607031863077,
+          "min": 2.6388996708301393,
+          "max": 3.3142309982761327,
+          "mean_ci95": [
+            3.004950861428811,
+            3.1000099256210865
+          ]
+        },
+        "peak_mib": {
+          "mean": 148.263916015625,
+          "median": 148.294921875,
+          "p95": 160.535546875,
+          "min": 127.21484375,
+          "max": 171.54296875,
+          "mean_ci95": [
+            145.03118591308595,
+            151.5462646484375
+          ]
+        },
+        "ticks": {
+          "mean": 51920.0,
+          "median": 49554.0,
+          "p95": 69738.0,
+          "min": 32930.0,
+          "max": 80258.0,
+          "mean_ci95": [
+            48306.925,
+            55704.399999999994
+          ]
+        },
+        "user_cpu_seconds": {
+          "mean": 98.403452875,
+          "median": 92.35789349999999,
+          "p95": 136.8065024,
+          "min": 59.29352,
+          "max": 168.88337,
+          "mean_ci95": [
+            89.88171998749999,
+            107.40291849765624
+          ]
+        },
+        "system_cpu_seconds": {
+          "mean": 61.074058625,
+          "median": 58.6077495,
+          "p95": 80.71982249999999,
+          "min": 39.554678,
+          "max": 93.469639,
+          "mean_ci95": [
+            56.79332266328125,
+            65.52201840859374
+          ]
+        },
+        "voluntary_context_switches": {
+          "mean": 4043566.625,
+          "median": 3830007.0,
+          "p95": 5415514.649999999,
+          "min": 2542024.0,
+          "max": 6244432.0,
+          "mean_ci95": [
+            3756419.69765625,
+            4343372.12578125
+          ]
+        },
+        "involuntary_context_switches": {
+          "mean": 2903.125,
+          "median": 2829.0,
+          "p95": 4060.1,
+          "min": 1702.0,
+          "max": 5597.0,
+          "mean_ci95": [
+            2637.87421875,
+            3196.25234375
+          ]
+        }
+      },
+      "aggregate_e2e_tps": 1469.1633312553636,
+      "pooled_cpu_ms_per_tick": 3.0716007607858242,
+      "sum_winner_cpu_seconds": 5103.280368,
+      "sum_winner_e2e_seconds": 1130.8749440270476,
+      "mean_orders": 22791.46875,
+      "observed_max_peak_mib": 171.54296875
+    },
+    "wake-only": {
+      "winners": 32,
+      "caps": 0,
+      "metrics": {
+        "e2e_seconds": {
+          "mean": 31.71435484844551,
+          "median": 29.882834975142032,
+          "p95": 44.33409653073177,
+          "min": 18.505058141890913,
+          "max": 56.28097839979455,
+          "mean_ci95": [
+            28.910866450300453,
+            34.70123409159642
+          ]
+        },
+        "total_cpu_seconds": {
+          "mean": 97.30935643750001,
+          "median": 92.0491195,
+          "p95": 134.6440736,
+          "min": 57.157379,
+          "max": 168.213279,
+          "mean_ci95": [
+            89.01840958593749,
+            106.09422069921874
+          ]
+        },
+        "e2e_tps": {
+          "mean": 1663.674844708914,
+          "median": 1667.2793691658003,
+          "p95": 1853.6267625728992,
+          "min": 1426.0235390700489,
+          "max": 2080.95636931598,
+          "mean_ci95": [
+            1622.3393978563026,
+            1708.4573465759024
+          ]
+        },
+        "cpu_ms_tick": {
+          "mean": 1.858313834270219,
+          "median": 1.8527198427599965,
+          "p95": 2.0542105661354615,
+          "min": 1.4668338143121253,
+          "max": 2.095906688429814,
+          "mean_ci95": [
+            1.8148365669631907,
+            1.900359405853926
+          ]
+        },
+        "peak_mib": {
+          "mean": 147.4461669921875,
+          "median": 147.916015625,
+          "p95": 159.5888671875,
+          "min": 126.05078125,
+          "max": 169.7421875,
+          "mean_ci95": [
+            144.29378662109374,
+            150.64177551269532
+          ]
+        },
+        "ticks": {
+          "mean": 51920.0,
+          "median": 49554.0,
+          "p95": 69738.0,
+          "min": 32930.0,
+          "max": 80258.0,
+          "mean_ci95": [
+            48306.925,
+            55704.399999999994
+          ]
+        },
+        "user_cpu_seconds": {
+          "mean": 87.1794189375,
+          "median": 82.6521975,
+          "p95": 121.330236,
+          "min": 50.731707,
+          "max": 152.453536,
+          "mean_ci95": [
+            79.55487439921875,
+            95.2322229921875
+          ]
+        },
+        "system_cpu_seconds": {
+          "mean": 10.1299375,
+          "median": 9.6407815,
+          "p95": 13.3138376,
+          "min": 6.425672,
+          "max": 15.759743,
+          "mean_ci95": [
+            9.42257518515625,
+            10.857874539062498
+          ]
+        },
+        "voluntary_context_switches": {
+          "mean": 856101.53125,
+          "median": 818464.0,
+          "p95": 1147943.9,
+          "min": 537547.0,
+          "max": 1371576.0,
+          "mean_ci95": [
+            793646.75,
+            921781.23125
+          ]
+        },
+        "involuntary_context_switches": {
+          "mean": 135.46875,
+          "median": 134.0,
+          "p95": 203.45,
+          "min": 65.0,
+          "max": 266.0,
+          "mean_ci95": [
+            121.46875,
+            150.53203125
+          ]
+        }
+      },
+      "aggregate_e2e_tps": 1637.1135483635694,
+      "pooled_cpu_ms_per_tick": 1.874217188703775,
+      "sum_winner_cpu_seconds": 3113.899406,
+      "sum_winner_e2e_seconds": 1014.8593551502563,
+      "mean_orders": 22791.46875,
+      "observed_max_peak_mib": 169.7421875
+    },
+    "latest-master": {
+      "winners": 32,
+      "caps": 0,
+      "metrics": {
+        "e2e_seconds": {
+          "mean": 25.728250104468316,
+          "median": 23.53037366620265,
+          "p95": 35.751180853764524,
+          "min": 13.93172436999157,
+          "max": 49.708299461286515,
+          "mean_ci95": [
+            23.319707809868486,
+            28.401388111470805
+          ]
+        },
+        "total_cpu_seconds": {
+          "mean": 115.02281743750001,
+          "median": 106.5713685,
+          "p95": 161.251656,
+          "min": 64.624713,
+          "max": 205.434014,
+          "mean_ci95": [
+            104.71968348203126,
+            126.15117128828125
+          ]
+        },
+        "e2e_tps": {
+          "mean": 2279.2168844943426,
+          "median": 2282.080829316743,
+          "p95": 2448.395590932336,
+          "min": 2048.678719249296,
+          "max": 2511.111420827886,
+          "mean_ci95": [
+            2238.0137900227182,
+            2321.6234254029346
+          ]
+        },
+        "cpu_ms_tick": {
+          "mean": 1.975539398347395,
+          "median": 1.9639302257920845,
+          "p95": 2.218230590968139,
+          "min": 1.6839654740809495,
+          "max": 2.2678743791301343,
+          "mean_ci95": [
+            1.9255102854566217,
+            2.024917175121741
+          ]
+        },
+        "peak_mib": {
+          "mean": 140.486328125,
+          "median": 138.8203125,
+          "p95": 151.166015625,
+          "min": 128.80859375,
+          "max": 160.9296875,
+          "mean_ci95": [
+            138.17040405273437,
+            142.96375122070313
+          ]
+        },
+        "ticks": {
+          "mean": 58238.0,
+          "median": 52258.0,
+          "p95": 77322.0,
+          "min": 33986.0,
+          "max": 113122.0,
+          "mean_ci95": [
+            53147.75,
+            64066.0
+          ]
+        },
+        "user_cpu_seconds": {
+          "mean": 104.93129725,
+          "median": 96.6789575,
+          "p95": 148.1223209,
+          "min": 58.024234,
+          "max": 189.890304,
+          "mean_ci95": [
+            95.3195835796875,
+            115.28253709843749
+          ]
+        },
+        "system_cpu_seconds": {
+          "mean": 10.091520187499999,
+          "median": 9.561905,
+          "p95": 13.73224295,
+          "min": 6.600479,
+          "max": 15.54371,
+          "mean_ci95": [
+            9.352579707812499,
+            10.879637235156249
+          ]
+        },
+        "voluntary_context_switches": {
+          "mean": 931941.71875,
+          "median": 874031.5,
+          "p95": 1253696.5999999999,
+          "min": 566855.0,
+          "max": 1531299.0,
+          "mean_ci95": [
+            859965.0203125,
+            1009822.68515625
+          ]
+        },
+        "involuntary_context_switches": {
+          "mean": 174.21875,
+          "median": 174.5,
+          "p95": 250.64999999999998,
+          "min": 84.0,
+          "max": 261.0,
+          "mean_ci95": [
+            157.96796875,
+            190.75078125
+          ]
+        }
+      },
+      "aggregate_e2e_tps": 2263.5818512151977,
+      "pooled_cpu_ms_per_tick": 1.975047519446066,
+      "sum_winner_cpu_seconds": 3680.730158,
+      "sum_winner_e2e_seconds": 823.3040033429861,
+      "mean_orders": 24268.09375,
+      "observed_max_peak_mib": 160.9296875
+    }
+  },
+  "comparisons": [
+    {
+      "reference": "baseline",
+      "candidate": "latest-master",
+      "metric": "e2e_seconds",
+      "n": 32,
+      "reference_mean": 35.33984200084524,
+      "latest_mean": 25.728250104468316,
+      "change_pct": -27.19760856923763,
+      "change_ci95_low": -35.85834596653724,
+      "change_ci95_high": -16.636449539302127,
+      "adverse_seeds": 6,
+      "outcomes_matching": 0
+    },
+    {
+      "reference": "baseline",
+      "candidate": "latest-master",
+      "metric": "total_cpu_seconds",
+      "n": 32,
+      "reference_mean": 159.4775115,
+      "latest_mean": 115.02281743750001,
+      "change_pct": -27.875211773981047,
+      "change_ci95_low": -35.89048172435217,
+      "change_ci95_high": -18.2763850897775,
+      "adverse_seeds": 6,
+      "outcomes_matching": 0
+    },
+    {
+      "reference": "baseline",
+      "candidate": "latest-master",
+      "metric": "e2e_tps",
+      "n": 32,
+      "reference_mean": 1489.3225873696206,
+      "latest_mean": 2279.2168844943426,
+      "change_pct": 53.037152852143365,
+      "change_ci95_low": 48.84729461733192,
+      "change_ci95_high": 57.22734653958047,
+      "adverse_seeds": 0,
+      "outcomes_matching": 0
+    },
+    {
+      "reference": "baseline",
+      "candidate": "latest-master",
+      "metric": "cpu_ms_tick",
+      "n": 32,
+      "reference_mean": 3.053598193754703,
+      "latest_mean": 1.975539398347395,
+      "change_pct": -35.30453998866587,
+      "change_ci95_low": -37.087809420061575,
+      "change_ci95_high": -33.57643585522488,
+      "adverse_seeds": 0,
+      "outcomes_matching": 0
+    },
+    {
+      "reference": "baseline",
+      "candidate": "latest-master",
+      "metric": "peak_mib",
+      "n": 32,
+      "reference_mean": 148.263916015625,
+      "latest_mean": 140.486328125,
+      "change_pct": -5.245772605793942,
+      "change_ci95_low": -7.766393648709952,
+      "change_ci95_high": -2.5541159104960456,
+      "adverse_seeds": 7,
+      "outcomes_matching": 0
+    },
+    {
+      "reference": "baseline",
+      "candidate": "latest-master",
+      "metric": "ticks",
+      "n": 32,
+      "reference_mean": 51920.0,
+      "latest_mean": 58238.0,
+      "change_pct": 12.168721109399083,
+      "change_ci95_low": 0.2570460018642108,
+      "change_ci95_high": 26.636960739600543,
+      "adverse_seeds": 18,
+      "outcomes_matching": 0
+    },
+    {
+      "reference": "baseline",
+      "candidate": "latest-master",
+      "metric": "user_cpu_seconds",
+      "n": 32,
+      "reference_mean": 98.403452875,
+      "latest_mean": 104.93129725,
+      "change_pct": 6.63375540621749,
+      "change_ci95_low": -5.870567809181849,
+      "change_ci95_high": 21.69290250694863,
+      "adverse_seeds": 16,
+      "outcomes_matching": 0
+    },
+    {
+      "reference": "baseline",
+      "candidate": "latest-master",
+      "metric": "system_cpu_seconds",
+      "n": 32,
+      "reference_mean": 61.074058625,
+      "latest_mean": 10.091520187499999,
+      "change_pct": -83.4765849614436,
+      "change_ci95_low": -84.97956140693037,
+      "change_ci95_high": -81.7018596061324,
+      "adverse_seeds": 0,
+      "outcomes_matching": 0
+    },
+    {
+      "reference": "baseline",
+      "candidate": "latest-master",
+      "metric": "voluntary_context_switches",
+      "n": 32,
+      "reference_mean": 4043566.625,
+      "latest_mean": 931941.71875,
+      "change_pct": -76.95248266745203,
+      "change_ci95_low": -79.17985816863431,
+      "change_ci95_high": -74.30157501366575,
+      "adverse_seeds": 0,
+      "outcomes_matching": 0
+    },
+    {
+      "reference": "baseline",
+      "candidate": "latest-master",
+      "metric": "involuntary_context_switches",
+      "n": 32,
+      "reference_mean": 2903.125,
+      "latest_mean": 174.21875,
+      "change_pct": -93.9989235737352,
+      "change_ci95_low": -94.73297528847363,
+      "change_ci95_high": -93.12449081984943,
+      "adverse_seeds": 0,
+      "outcomes_matching": 0
+    },
+    {
+      "reference": "wake-only",
+      "candidate": "latest-master",
+      "metric": "e2e_seconds",
+      "n": 32,
+      "reference_mean": 31.71435484844551,
+      "latest_mean": 25.728250104468316,
+      "change_pct": -18.87506390271283,
+      "change_ci95_low": -28.642691020778546,
+      "change_ci95_high": -7.002777835562526,
+      "adverse_seeds": 8,
+      "outcomes_matching": 0
+    },
+    {
+      "reference": "wake-only",
+      "candidate": "latest-master",
+      "metric": "total_cpu_seconds",
+      "n": 32,
+      "reference_mean": 97.30935643750001,
+      "latest_mean": 115.02281743750001,
+      "change_pct": 18.203245451918093,
+      "change_ci95_low": 4.5639258140440075,
+      "change_ci95_high": 34.576861473877436,
+      "adverse_seeds": 19,
+      "outcomes_matching": 0
+    },
+    {
+      "reference": "wake-only",
+      "candidate": "latest-master",
+      "metric": "e2e_tps",
+      "n": 32,
+      "reference_mean": 1663.674844708914,
+      "latest_mean": 2279.2168844943426,
+      "change_pct": 36.998938929868075,
+      "change_ci95_low": 32.769224912528365,
+      "change_ci95_high": 41.13142237853738,
+      "adverse_seeds": 0,
+      "outcomes_matching": 0
+    },
+    {
+      "reference": "wake-only",
+      "candidate": "latest-master",
+      "metric": "cpu_ms_tick",
+      "n": 32,
+      "reference_mean": 1.858313834270219,
+      "latest_mean": 1.975539398347395,
+      "change_pct": 6.308168292962835,
+      "change_ci95_low": 2.967546463499315,
+      "change_ci95_high": 9.637082178551946,
+      "adverse_seeds": 22,
+      "outcomes_matching": 0
+    },
+    {
+      "reference": "wake-only",
+      "candidate": "latest-master",
+      "metric": "peak_mib",
+      "n": 32,
+      "reference_mean": 147.4461669921875,
+      "latest_mean": 140.486328125,
+      "change_pct": -4.720257575469066,
+      "change_ci95_low": -7.261926482368162,
+      "change_ci95_high": -2.0104695286355967,
+      "adverse_seeds": 8,
+      "outcomes_matching": 0
+    },
+    {
+      "reference": "wake-only",
+      "candidate": "latest-master",
+      "metric": "ticks",
+      "n": 32,
+      "reference_mean": 51920.0,
+      "latest_mean": 58238.0,
+      "change_pct": 12.168721109399083,
+      "change_ci95_low": 0.2570460018642108,
+      "change_ci95_high": 26.636960739600543,
+      "adverse_seeds": 18,
+      "outcomes_matching": 0
+    },
+    {
+      "reference": "wake-only",
+      "candidate": "latest-master",
+      "metric": "user_cpu_seconds",
+      "n": 32,
+      "reference_mean": 87.1794189375,
+      "latest_mean": 104.93129725,
+      "change_pct": 20.36246459181672,
+      "change_ci95_low": 6.108228834043001,
+      "change_ci95_high": 37.41883393159535,
+      "adverse_seeds": 19,
+      "outcomes_matching": 0
+    },
+    {
+      "reference": "wake-only",
+      "candidate": "latest-master",
+      "metric": "system_cpu_seconds",
+      "n": 32,
+      "reference_mean": 10.1299375,
+      "latest_mean": 10.091520187499999,
+      "change_pct": -0.37924530630126796,
+      "change_ci95_low": -9.2948429595456,
+      "change_ci95_high": 10.332319669968712,
+      "adverse_seeds": 13,
+      "outcomes_matching": 0
+    },
+    {
+      "reference": "wake-only",
+      "candidate": "latest-master",
+      "metric": "voluntary_context_switches",
+      "n": 32,
+      "reference_mean": 856101.53125,
+      "latest_mean": 931941.71875,
+      "change_pct": 8.858784236638995,
+      "change_ci95_low": -1.7141085521770352,
+      "change_ci95_high": 21.656425666488627,
+      "adverse_seeds": 16,
+      "outcomes_matching": 0
+    },
+    {
+      "reference": "wake-only",
+      "candidate": "latest-master",
+      "metric": "involuntary_context_switches",
+      "n": 32,
+      "reference_mean": 135.46875,
+      "latest_mean": 174.21875,
+      "change_pct": 28.604382929642448,
+      "change_ci95_low": 13.12955596517589,
+      "change_ci95_high": 47.04316273251701,
+      "adverse_seeds": 22,
+      "outcomes_matching": 0
+    }
+  ],
+  "decomposition": {
+    "baseline": {
+      "total_ticks_change_pct": 12.168721109399083,
+      "aggregate_tps_change_pct": 54.072852422815586,
+      "total_e2e_change_pct": -27.19760856923763,
+      "pooled_cpu_per_tick_change_pct": -35.69973205304263,
+      "total_cpu_change_pct": -27.875211773981057
+    },
+    "wake-only": {
+      "total_ticks_change_pct": 12.168721109399083,
+      "aggregate_tps_change_pct": 38.2666372456471,
+      "total_e2e_change_pct": -18.87506390271283,
+      "pooled_cpu_per_tick_change_pct": 5.379863729241863,
+      "total_cpu_change_pct": 18.203245451918093
+    }
+  },
+  "methods": "32 fixed paired seeds. 10000 paired bootstrap draws; ratio of arithmetic means; numpy linear 2.5/97.5 quantiles. Historical controls were not rerun/interleaved. Intervals describe seed variability, not temporal/environment confounding. Winners only for completion metrics; caps separate. E2E TPS for every role; no comparison of old inner TPS with new E2E TPS.",
+  "limits": [
+    "CPU backend, one host, unrestricted auto32, one game at a time; no concurrent-throughput claim.",
+    "Historical references use archived research adapters on054804590; latest is unmodifiedPR1194 403dfd099.",
+    "Hiring timing changed on master: seed pairing does not establish identical gameplay or equal useful work.",
+    "No timed checksum telemetry; outcome agreement would not establish checksum equivalence.",
+    "Golden and64-tickauto smoke checks are separate from whole-game timing."
+  ]
+}

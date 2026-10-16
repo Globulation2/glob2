@@ -1,0 +1,22 @@
+commit 403dfd0999a2511cbd84f9869403c8960b991f26
+Author:     Bradley Arsenault <brad@bradleyarsenault.me>
+AuthorDate: Thu Oct 15 22:07:59 2026 -0400
+Commit:     Bradley Arsenault <brad@bradleyarsenault.me>
+CommitDate: Thu Oct 15 22:07:59 2026 -0400
+
+    Avoid gradient destination scans in routine checksums
+
+diff --git a/src/map/MapMisc.cpp b/src/map/MapMisc.cpp
+index 24b48023f..0d17e98a0 100644
+--- a/src/map/MapMisc.cpp
++++ b/src/map/MapMisc.cpp
+@@ -78,7 +78,8 @@ Uint32 Map::checkSum(bool heavy, bool includePending, bool legacy152)
+         cs=rotl1(cs)^Uint32(gradientRuntime->fieldRequests.size());
+         for (const auto& queued:gradientRuntime->fieldRequests) {
+             const auto& request=queued.request;
+-            cs=rotl1(cs)^gradientDestination(queued.slot);
++            // Hash stored request metadata without reverse-looking up its slot
++            // in the destination registry on every tick.
+             cs=rotl1(cs)^unsigned(request.kind)^unsigned(request.team<<8)^unsigned(request.material<<16)^unsigned(request.swim<<24);
+             cs=rotl1(cs)^Uint32(request.consumer)^request.modes^Uint32(request.excludesShared);
+         }
