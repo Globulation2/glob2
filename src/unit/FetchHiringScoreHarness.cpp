@@ -30,6 +30,8 @@
 class FetchHiringScoreHarness
 {
 public:
+    static bool considerExplorer(Building* building, Unit* unit, int* distance)
+        { return building->considerUnitForExplorerFlag(unit,distance); }
     static std::vector<Unit*> candidates(Building* building)
     {
         building->resetFailureTallies();
