@@ -103,10 +103,6 @@ void Map::installCatalogs(std::shared_ptr<const TerrainRegistry> terrain,
             gradientRuntime->pipeline.invalidate(&field.published);
             field.topology=0;
         }
-        if (game)
-            for (int team=0;team<game->teamsCount();++team)
-                for (auto* building:game->teams[team]->liveBuildings.entries())
-                    building->resetPathfindGradients(Building::GradientDrop::Own);
     }
     terrainEditChanged = terrainRoutesChanged = true;
     finishTerrainEdit();
