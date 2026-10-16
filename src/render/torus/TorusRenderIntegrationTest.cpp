@@ -203,6 +203,7 @@ class OverlayAdmissionDevice final : public GAGCore::RenderDevice
 public:
     bool rejected=false;
     bool overlayFailure=true;
+    bool completedWorld=false;
     mutable bool phaseRejected=false;
     std::function<bool()> phaseFault;
     explicit OverlayAdmissionDevice(std::unique_ptr<GAGCore::RenderDevice> value) : device(std::move(value)) {}
@@ -215,12 +216,17 @@ public:
     }
     bool canBeginFrame() override {return device->canBeginFrame();}
     GAGCore::RenderSubmission submit(GAGCore::RenderFrame frame) override {
+        const bool world=std::any_of(frame.packets.begin(),frame.packets.end(),[](const auto &packet){
+            return !packet.target && packet.kind==GAGCore::DrawPacket::Kind::MeshTriangles &&
+                packet.material==GAGCore::DrawPacket::Material::WorldLit;
+        });
         const bool overlay=overlayFailure && !rejected && std::any_of(frame.packets.begin(),frame.packets.end(),[](const auto &packet){
             return packet.target && packet.target->descriptor.budgetClass==GAGCore::TextureDescriptor::BudgetClass::TerrainPage &&
                 !packet.targetScissor && (packet.kind==GAGCore::DrawPacket::Kind::Fill || packet.kind==GAGCore::DrawPacket::Kind::Blit);
         });
         const auto submitted=device->submit(std::move(frame));
         if(overlay && submitted){rejected=true;throw GAGCore::RenderAdmissionDeferred("Injected final torus overlay admission failure");}
+        if(world && submitted) completedWorld=true;
         return submitted;
     }
     GAGCore::RenderCompletion completion(GAGCore::RenderSubmission value) override {return device->completion(value);}
@@ -264,13 +270,14 @@ static void deviceOverlayRetry(GAGCore::RendererBackend backend)
     for(unsigned attempt=0;attempt<128 && !initialized;++attempt){
         int vx=17,vy=21;
         REQUIRE(gui.torusView.draw(gui.drawnScene(),&gui,0,Game::DRAW_WHOLE_MAP|Game::DRAW_AREA,vx,vy,960,720));
-        initialized=gfx->flushDeviceFrame();
+        initialized=gfx->flushDeviceFrame() && probe->completedWorld;
         gfx->nextFrame();SDL_Delay(1);
     }
     REQUIRE(initialized);
     int pickedX=0,pickedY=0;
     REQUIRE(gui.torusView.pick(gui.mouseX,gui.mouseY,pickedX,pickedY));
     probe->overlayFailure=true;
+    probe->completedWorld=false;
     gui.selectionMode=GameGUI::TOOL_SELECTION;gui.toolManager.activateBuildingTool("swarm");
     bool complete=false;unsigned holds=0;
     const auto checksum=gui.game.checkSum();
@@ -284,7 +291,7 @@ static void deviceOverlayRetry(GAGCore::RendererBackend backend)
         REQUIRE(gui.torusView.draw(gui.drawnScene(),&gui,0,Game::DRAW_WHOLE_MAP|Game::DRAW_AREA,vx,vy,960,720));
         REQUIRE(gui.view.render.animationTime==animationBefore+(gui.gamePaused?0:1));
         REQUIRE(gui.view.render.areaAnimationTick==areaBefore+(gui.gamePaused?0:1));
-        complete=gfx->flushDeviceFrame();
+        complete=gfx->flushDeviceFrame() && probe->completedWorld;
         if(!complete)++holds;
         gfx->nextFrame();SDL_Delay(1);
         REQUIRE(gfx->presentationDevice.get()==probe);

@@ -18,8 +18,6 @@ TEST_CASE("JavaScript fatal failure tears down a live engine session" *
 	Engine engine;
 	auto initial = glob2test::inflated("test/fixtures/javascript/profile1-initial159.game.gz");
 	REQUIRE(engine.initCustom(initial.string()) == Engine::EE_NO_ERROR);
-	engine.beginSession(0);
-	const auto tick = engine.gui.game.stepCounter;
 	struct FailingRuntime : Script::Runtime
 	{
 		void validate(const std::string &) override {}
@@ -32,6 +30,10 @@ TEST_CASE("JavaScript fatal failure tears down a live engine session" *
 	auto *controller =
 		static_cast<AIJavaScript *>(engine.gui.game.players[0]->ai->aiImplementation);
 	controller->runtime = std::make_unique<FailingRuntime>();
+	// Session startup admits the first decision; install the failure before
+	// that admission instead of replacing a runtime already used by a job.
+	engine.beginSession(0);
+	const auto tick = engine.gui.game.stepCounter;
 	CHECK_THROWS_AS(engine.stepSession(40, {}), Script::HostFailure);
 	CHECK_FALSE(engine.gui.isRunning);
 	CHECK_FALSE(engine.net);
