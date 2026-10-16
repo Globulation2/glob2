@@ -19,7 +19,8 @@ class Order;
 //! Malformed or truncated replay bodies are rejected, including partial recordings.
 
 //! Oldest replay format (the VERSION_MINOR the replay was written with) that
-//! the reader still accepts. Version 167 changes completed-observation timing;
+//! the reader still accepts. Version 170 delays cold building initialization.
+//! Version 167 changes completed-observation timing;
 //! version 166 changed entity update and task scheduling order.
 //! Save compatibility has a separate floor in Version.h.
 static constexpr Uint16 REPLAY_MINIMUM_VERSION_MINOR = 170;
