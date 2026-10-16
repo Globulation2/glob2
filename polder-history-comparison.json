@@ -1,0 +1,359 @@
+{
+  "source": "cd0f2ca4472640fa7e8491fb19ae910762738d27",
+  "diagnostic": "Existing release objects linked to a separate main calling runMapStudy directly; game binary and production sources unchanged",
+  "comparisons": [
+    {
+      "request": [
+        7,
+        7,
+        4,
+        1
+      ],
+      "classic": {
+        "request": [
+          7,
+          7,
+          4,
+          1
+        ],
+        "ground": 0,
+        "fingerprint": 5963119367235123396,
+        "topologyFingerprint": 8580974463331364143,
+        "expectedFingerprint": 5963119367235123396,
+        "textSha256": "d70ffef2bf5c57f68d1d3ceba0999a91c71256889b316a27f322357e0ad404eb",
+        "matchesExpected": true
+      },
+      "expanded": {
+        "request": [
+          7,
+          7,
+          4,
+          1
+        ],
+        "ground": 1,
+        "fingerprint": 12904150762249905775,
+        "topologyFingerprint": 12028197022766948058,
+        "expectedFingerprint": 12904150762249905775,
+        "textSha256": "2412aabbe783935a09f6c31ea2174341f385684dd16c375b4c99970832e43e17",
+        "matchesExpected": true
+      },
+      "terrainSubstitutions": {
+        "1->12": 976,
+        "1->19": 958,
+        "1->18": 717
+      },
+      "resourceIdentityChanges": 0,
+      "resourceStockChanges": 6,
+      "startPositionChanges": 0
+    },
+    {
+      "request": [
+        8,
+        8,
+        2,
+        1
+      ],
+      "classic": {
+        "request": [
+          8,
+          8,
+          2,
+          1
+        ],
+        "ground": 0,
+        "fingerprint": 2909740831057757793,
+        "topologyFingerprint": 1620256039558610345,
+        "expectedFingerprint": 2909740831057757793,
+        "textSha256": "588e496974a16c1360276b898462aa69690ef3a4ec2e4e81a28a591af1b6a176",
+        "matchesExpected": true
+      },
+      "expanded": {
+        "request": [
+          8,
+          8,
+          2,
+          1
+        ],
+        "ground": 1,
+        "fingerprint": 3754918904379074138,
+        "topologyFingerprint": 5881924087311709860,
+        "expectedFingerprint": 3754918904379074138,
+        "textSha256": "e6cb56f14dad5908856b38948507adad951c0019f5b97b7b216f1a30ee1bdd04",
+        "matchesExpected": true
+      },
+      "terrainSubstitutions": {
+        "1->19": 4626,
+        "1->18": 3411,
+        "1->12": 488
+      },
+      "resourceIdentityChanges": 0,
+      "resourceStockChanges": 234,
+      "startPositionChanges": 0
+    },
+    {
+      "request": [
+        8,
+        8,
+        4,
+        1
+      ],
+      "classic": {
+        "request": [
+          8,
+          8,
+          4,
+          1
+        ],
+        "ground": 0,
+        "fingerprint": 6911664989139228983,
+        "topologyFingerprint": 5807033239631197999,
+        "expectedFingerprint": 6911664989139228983,
+        "textSha256": "3110c455a7df2ff94b47e637c662d37d0a0d70b1d763ed97d3169db34bd44150",
+        "matchesExpected": true
+      },
+      "expanded": {
+        "request": [
+          8,
+          8,
+          4,
+          1
+        ],
+        "ground": 1,
+        "fingerprint": 18083767463757706656,
+        "topologyFingerprint": 7974539417781419106,
+        "expectedFingerprint": 18083767463757706656,
+        "textSha256": "4d1c4a8866dac6275e5a428455ee59503ab4d73c4583100311dd4183449289c4",
+        "matchesExpected": true
+      },
+      "terrainSubstitutions": {
+        "1->19": 4548,
+        "1->18": 3557,
+        "1->12": 976
+      },
+      "resourceIdentityChanges": 0,
+      "resourceStockChanges": 176,
+      "startPositionChanges": 0
+    },
+    {
+      "request": [
+        8,
+        8,
+        4,
+        2
+      ],
+      "classic": {
+        "request": [
+          8,
+          8,
+          4,
+          2
+        ],
+        "ground": 0,
+        "fingerprint": 6446233944967497528,
+        "topologyFingerprint": 8747163907776132745,
+        "expectedFingerprint": 6446233944967497528,
+        "textSha256": "676242b7e2ff25b4ee44e5263c42621acdaac48af41b5941755c987c8339c68e",
+        "matchesExpected": true
+      },
+      "expanded": {
+        "request": [
+          8,
+          8,
+          4,
+          2
+        ],
+        "ground": 1,
+        "fingerprint": 15301086667669821703,
+        "topologyFingerprint": 17556343771562769172,
+        "expectedFingerprint": 15301086667669821703,
+        "textSha256": "22ccfa1ea23d415ef3ea3550643e5d48ecc6543a62c939b53df77891c0a9d78f",
+        "matchesExpected": true
+      },
+      "terrainSubstitutions": {
+        "1->19": 2588,
+        "1->18": 1987,
+        "1->12": 960
+      },
+      "resourceIdentityChanges": 0,
+      "resourceStockChanges": 46,
+      "startPositionChanges": 0
+    },
+    {
+      "request": [
+        8,
+        8,
+        4,
+        3
+      ],
+      "classic": {
+        "request": [
+          8,
+          8,
+          4,
+          3
+        ],
+        "ground": 0,
+        "fingerprint": 10666357640635515634,
+        "topologyFingerprint": 17401293456126380272,
+        "expectedFingerprint": 10666357640635515634,
+        "textSha256": "fd4a6ab22d57c8c75e93c3791db403c469b8a1d3b23c45cc3759466a1907beca",
+        "matchesExpected": true
+      },
+      "expanded": {
+        "request": [
+          8,
+          8,
+          4,
+          3
+        ],
+        "ground": 1,
+        "fingerprint": 4275439395545623339,
+        "topologyFingerprint": 12897806698295827589,
+        "expectedFingerprint": 4275439395545623339,
+        "textSha256": "408cd2016a2a3b78f46a2c802df85fa818c9deeda835201182ce8fd4549a4e66",
+        "matchesExpected": true
+      },
+      "terrainSubstitutions": {
+        "1->19": 4286,
+        "1->18": 3581,
+        "1->12": 976
+      },
+      "resourceIdentityChanges": 0,
+      "resourceStockChanges": 320,
+      "startPositionChanges": 0
+    },
+    {
+      "request": [
+        8,
+        8,
+        8,
+        1
+      ],
+      "classic": {
+        "request": [
+          8,
+          8,
+          8,
+          1
+        ],
+        "ground": 0,
+        "fingerprint": 1869959650490197197,
+        "topologyFingerprint": 6365714825151709961,
+        "expectedFingerprint": 1869959650490197197,
+        "textSha256": "c6c21db8681e1403d0d0a731785acc06c33ceb195442f1f72296a3f5a4ccc1f1",
+        "matchesExpected": true
+      },
+      "expanded": {
+        "request": [
+          8,
+          8,
+          8,
+          1
+        ],
+        "ground": 1,
+        "fingerprint": 9075663802938586868,
+        "topologyFingerprint": 14206543627681402428,
+        "expectedFingerprint": 9075663802938586868,
+        "textSha256": "d3c3489f9841332c577345cdef651e7df6fed039f7da79576deb68d1ade9bc9a",
+        "matchesExpected": true
+      },
+      "terrainSubstitutions": {
+        "1->19": 4294,
+        "1->12": 1952,
+        "1->18": 3927
+      },
+      "resourceIdentityChanges": 0,
+      "resourceStockChanges": 105,
+      "startPositionChanges": 0
+    },
+    {
+      "request": [
+        9,
+        8,
+        4,
+        1
+      ],
+      "classic": {
+        "request": [
+          9,
+          8,
+          4,
+          1
+        ],
+        "ground": 0,
+        "fingerprint": 1407226423711943986,
+        "topologyFingerprint": 10278110166339616471,
+        "expectedFingerprint": 1407226423711943986,
+        "textSha256": "9b3ff1f3dac8d188b77036b301f9d19c2a1eabb8b4c29659f749de1c0461e7cf",
+        "matchesExpected": true
+      },
+      "expanded": {
+        "request": [
+          9,
+          8,
+          4,
+          1
+        ],
+        "ground": 1,
+        "fingerprint": 3719095522988582445,
+        "topologyFingerprint": 14464206104360614756,
+        "expectedFingerprint": 3719095522988582445,
+        "textSha256": "c4a3e900f488e70787f5e61de7259aaa32d2e6e5f5368f1ef0dd53b2cb031c6e",
+        "matchesExpected": true
+      },
+      "terrainSubstitutions": {
+        "1->19": 17947,
+        "1->18": 11857,
+        "1->12": 976
+      },
+      "resourceIdentityChanges": 0,
+      "resourceStockChanges": 1536,
+      "startPositionChanges": 0
+    },
+    {
+      "request": [
+        9,
+        9,
+        4,
+        1
+      ],
+      "classic": {
+        "request": [
+          9,
+          9,
+          4,
+          1
+        ],
+        "ground": 0,
+        "fingerprint": 5371655034956572539,
+        "topologyFingerprint": 996162879986925800,
+        "expectedFingerprint": 5371655034956572539,
+        "textSha256": "16e78d1f13c5880d22b900cc98b332cf73e961f9aa088c18bd94a3d3aaa727de",
+        "matchesExpected": true
+      },
+      "expanded": {
+        "request": [
+          9,
+          9,
+          4,
+          1
+        ],
+        "ground": 1,
+        "fingerprint": 4174281323649035045,
+        "topologyFingerprint": 9513392123523942268,
+        "expectedFingerprint": 4174281323649035045,
+        "textSha256": "86de5e2090d0fabd2d23e3626384bfaaf049d182c878aa3c8e3b7a8b5a14f3c5",
+        "matchesExpected": true
+      },
+      "terrainSubstitutions": {
+        "1->19": 19198,
+        "1->18": 14226,
+        "1->12": 976
+      },
+      "resourceIdentityChanges": 0,
+      "resourceStockChanges": 9100,
+      "startPositionChanges": 0
+    }
+  ],
+  "allFingerprintsMatch": true
+}
