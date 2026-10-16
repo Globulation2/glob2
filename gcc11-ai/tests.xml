@@ -1,0 +1,13 @@
+<?xml version='1.0' encoding='utf-8'?>
+<testsuites tests="11" failures="0" errors="0" skipped="0"><testsuite name="AIPipeline"><testcase classname="AIPipeline" name="a submitted deadline is delivered even when no new poll is eligible" time="0.063729" status="run" />
+  <testcase classname="AIPipeline" name="every shipped controller preserves orders and state across worker counts and all delays" time="2.71611" status="run" />
+  <testcase classname="AIPipeline" name="legacy zero-delay real output and its execution receipt survive pipeline saves" time="0.124198" status="run" />
+  <testcase classname="AIPipeline" name="pause and repeated boundary calls cannot execute a published command twice" time="0.303381" status="run" />
+  <testcase classname="AIPipeline" name="paused startup can resume on a stalled boundary after an empty delivery phase" time="0.062636" status="run" />
+  <testcase classname="AIPipeline" name="replacement cancels an old output without rejecting identical new wire bytes" time="0.064942" status="run" />
+  <testcase classname="AIPipeline" name="save between AI admission and delivery retains the original pending output" time="0.124177" status="run" />
+  <testcase classname="AIPipeline" name="save continuation retains controller caches receipts and future commands at pipeline boundaries" time="17.7074" status="run" />
+  <testcase classname="AIPipeline" name="saving before the first observation initializes AI without admitting work" time="0.120684" status="run" />
+  <testcase classname="AIPipeline" name="team death cancels submitted work and saves receipts for a revived controller" time="0.128261" status="run" />
+  <testcase classname="AIPipeline" name="wrapper preemption preserves controller rejection feedback and pending release identity across save" time="0.12329" status="run" />
+  </testsuite></testsuites>
