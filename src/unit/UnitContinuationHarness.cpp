@@ -183,6 +183,10 @@ TEST_SUITE("UnitContinuation")
             CHECK(unit->attachedBuilding==nullptr);
             CHECK(service->unitsInside.empty());
             CHECK(unit->entityRandom==random);
+            // Admission follows a completed publication boundary; an initial
+            // tick-zero reservation is deliberately not a valid pipeline phase.
+            map.advanceGradientPipeline();
+            ++game.stepCounter;
             // Completing private work cannot make a candidate visible early.
             map.stagePeriodicGradientPreparation();
             map.preparePendingGradient();
