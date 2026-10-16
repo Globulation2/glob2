@@ -1,0 +1,21 @@
+# PR 1194 split verification
+
+Evidence accompanies independent draft PRs; it is not committed to their source branches.
+
+## Narrowed ground publication — PR 1194
+
+- Tested source: `9f45cb9d8b0e49ef03a1b3026c1166b70812920a` (golden-only final commit; native behavioral suite at its source-identical parent `2bb77df8c`). Base: `987c953698bb3f0bfd1078184773075ba3313091`, directly included in head; no stacked dependency.
+- Environment: macOS 26.6.2 ARM64, Apple Clang 21.0.0; Linux ARM64 Ubuntu 22.04 container, GCC 11.4.0. Linux source imported by Git bundle and reset to the tested head in a dedicated container.
+- Dependencies: repository-pinned development prefixes from `tools/dev_build.py`; SDL3 prefix `/opt/glob2-sdl` on Linux. Full compiler commands and dependency paths are retained in build logs. Fast development configuration `dev_fast=1`, `-O0 -g1`, ordinary compilation, no PCH/unity. No representative performance measurement.
+- Native build: `PYTHONPATH=. python3 tools/dev_build.py engine-tests unit-tests`.
+- Native behavioral command: `python3 test/run_tests.py --build-dir build/darwin/client/debug/dev-dev_fast-true-linker-auto --binary engine --filter 'BuildingGradientInvalidation/*' --filter 'HiringPlanner/*' --filter 'HiringPipeline/*' --filter 'DelayedGradientPublication/*' --filter 'GradientPreparation/*' --filter 'MapGradientInvalidation/*' --filter 'UnitContinuation/*' --filter 'BuildingProductionCombat/*' --filter 'BuildingStock/*' --filter 'FetchHiringScore/*' --filter 'ResourceFetchTarget/*' --exclude-tag benchmark --no-display --timeout 600 --artifacts artifacts/revise-1194/cases --junit artifacts/revise-1194/tests.xml`. 167 passed, zero failures.
+- Native compatibility command: same runner/build with filters `TurnEngineHarness/*`, `*Replay*/*`, `*Version*/*`, `MarketsV2/*`, `LegacyRoundTripSave/*`, `GuardAreaBalance/*`, artifacts `compatibility`, JUnit `compatibility.xml`. 46 passed, zero failures; one market-panel display case skipped because this was headless. Covers replay acceptance, network/sim version, committed multiplayer verification, historical saves and deterministic continuations.
+- Unit command: same runner/build with `--binary unit --filter 'SimVersion/*' --filter '*Replay*/*'`; nine cases passed across two unit-suite invocations.
+- Golden update: same engine runner with `--tag golden --update-fixtures` and filters `TurnEngineHarness/the committed*`, `MarketsV2/*`, `GuardAreaBalance/*`, `LegacyRoundTripSave/*`; six cases passed. Ordinary compatibility run subsequently verifies these fixtures.
+- Linux build: `GLOB2_SDL3_PREFIX=/opt/glob2-sdl LD_LIBRARY_PATH=/opt/glob2-sdl/lib PYTHONPATH=. python3 tools/dev_build.py engine-tests unit-tests`.
+- Linux tests: same runner with Linux build directory, filters `DelayedGradientPublication/*`, `HiringPlanner/background ranking*`, `BuildingGradientInvalidation/partial scheduled*`, `TurnEngineHarness/the committed*`, `*Replay*/*`, `*Version*/*`, `--no-display --timeout 600`; 14 passed, zero failures. Three ground-publication cases, transferred lazy frontier, shared-frontier background hiring, historical/replay/network acceptance, and committed multiplayer trace.
+- Cross-platform comparison: ten state TSV files compare byte-for-byte: four participant traces and six binary/text continuation checkpoints (0,2,7). Kernel-entry telemetry is retained but excluded from equality because thread identity is intentionally platform-dependent. Arrays/checksum components are also asserted inside each harness.
+- Nine core building implementation/header files match master byte-for-byte: lifecycle, Building.h, game editor, hiring pipeline, building scheduler, building gradient implementation, building search .cpp/.h, shared frontier header. Point-query enum adapters preserve the original implementation.
+- Limitations: not the full GCC13 primary suite; Windows, browser, Android/iOS and release builds were not run. No platform coverage or play/performance acceptance is implied. No maintainer acceptance is claimed; PR remains draft for behavior review.
+
+`pr1194-evidence.tar.gz` contains logs, JUnit, saves, per-tick traces and artifacts. All test commands exited zero after fixture repairs. Early failed development runs are superseded by the retained final runs.
