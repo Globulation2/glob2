@@ -360,11 +360,14 @@ keeping every tile of a farmed field alive, and a save/load round trip. Design:
 `MarketFetch` covers hiring and arrival at stocked markets, preference for a
 nearer natural resource, stock exhaustion, a retained worker's next delivery, and binary/text preservation of market
 fields and pending gradient publications. Non-market buildings use these fields;
-markets themselves fetch from natural resources. The market fields participate
-in the existing one-field-per-tick round robin and optional fixed-delay gradient
-pipeline. Stock transitions invalidate pending market snapshots and request a
-refresh. Format 135 saves these fields and their scheduling flags; older saves
-load without them and allocate them on first use. Run
+markets themselves fetch from natural resources. Market demand and periodic
+refreshes share deterministic FIFO admission and fixed-delay publication with
+other material fields. Stock transitions request a refresh without cancelling
+an admitted snapshot; its complete result publishes at the original deadline,
+then newer dirtiness schedules another refresh. Missing fields remain Pending
+until publication. Format 135 introduced saved market fields and scheduling
+flags; format 168 also preserves cold requests and their publication state.
+Older saves without market fields enroll them on first use. Run
 `python3 test/run_tests.py --filter 'MarketFetch/*'`.
 
 `MarketFetch` also checks the three market levels: existing type IDs 49–50

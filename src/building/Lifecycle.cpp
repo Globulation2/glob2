@@ -183,8 +183,8 @@ bool Building::keepsStaleGradients(GradientDrop cause) const
 void Building::prewarmPathfindGradients()
 {
 	auto& map = owner->game->map;
-	// Loading reconstructs persisted queues separately; editor setup has no
-	// running publication pipeline. Never turn either path into a cold build.
+	// Loading restores persisted queues separately. Prewarm only an already
+	// active pipeline; editor setup normally has none.
 	if (!map.buildingGradientPipelineActive() || buildingState != ALIVE ||
 		owner->myBuildings[GIDtoID(gid)] != this) return;
 	std::bitset<SWIM_CLASS_COUNT> classes;

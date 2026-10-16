@@ -471,7 +471,7 @@ checksum adapter retains its historical entity/RNG representation for fixtures.
   deliberate first-use latency (about 267 ms after admission at delay 8), changing
   emergency feeding, construction staffing and new restrictions' guidance.
   Explicit one-participant execution runs the same jobs with the same publication
-  boundaries; maps without a simulation retain explicit editor/reference builders.
+  boundaries; explicit editor/reference builders remain available.
   Format 168 persists cold FIFO requests and complete unpublished outputs without
   publishing early during save. Queued demand has its own named stream section,
   separate from pending jobs, so text saves retain both inventories independently.
