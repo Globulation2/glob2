@@ -1,0 +1,7 @@
+{
+  "revision": "ba8461519cf5f724dc72eb784b19789d8eb0192f",
+  "base": "b115b5942ece98256ee690dac10b1af58e59de90",
+  "compiler": "g++ (Ubuntu 13.3.0-6ubuntu2~24.04.1) 13.3.0",
+  "cleanDisplay": "owned Xvfb/Openbox, DISPLAY unset in parent",
+  "finalRevision": "ae56c3b2de6f83c2392358a05c4459b963000b40"
+}
