@@ -1,124 +1,145 @@
-name: thread sanitizer
-
-# ThreadSanitizer over the simulation thread and the main thread (input, GUI,
-# drawing from the extracted Scene). Nightly and on demand, and on pull
-# requests that touch the code the two threads share, so it does not add a
-# sanitizer build to every pull request.
+name: Windows Asio thread layout validation
 on:
-  workflow_call:
+  workflow_dispatch:
     inputs:
       revision:
+        description: Exact source revision to build and diagnose
+        required: true
         type: string
-        default: ""
-  workflow_dispatch:
-
-
+concurrency:
+  group: windows-recovery-diagnostics-${{ github.ref }}-${{ inputs.revision }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' || (github.event_name == 'push' && startsWith(github.ref, 'refs/heads/') && github.ref != format('refs/heads/{0}', github.event.repository.default_branch)) }}
 permissions:
   contents: read
-
 env:
   GLOB2_DEV_MODE: isolated
-
+  GLOB2_GENERATOR_PROTOTYPE_DIAGNOSTICS: "1"
 jobs:
-  tsan:
-    name: thread sanitizer (threaded games)
-    runs-on: ubuntu-24.04
+  diagnose:
+    runs-on: windows-latest
     timeout-minutes: 90
+    env:
+      CCACHE: 1
+      CCACHE_DIR: ${{ github.workspace }}\.ccache
+      CCACHE_COMPILERCHECK: content
+      CCACHE_MAXSIZE: 5G
+    defaults:
+      run:
+        shell: msys2 {0}
     steps:
-      - name: Install dependencies
-        timeout-minutes: 15
-        env:
-          DEBIAN_FRONTEND: noninteractive
-        run: |
-          sudo tee /etc/apt/apt.conf.d/80-ci-network >/dev/null <<'EOF'
-          Acquire::By-Hash "force";
-          Acquire::Retries "3";
-          Acquire::http::Timeout "30";
-          Acquire::https::Timeout "30";
-          EOF
-          sudo apt-get update -qq
-          sudo env DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends \
-            ca-certificates git g++-13 python3 python3-venv scons pkg-config nasm libva-dev \
-            cmake libfreetype-dev libx11-dev libxext-dev libxcursor-dev libxi-dev libxrandr-dev libxss-dev libxtst-dev libasound2-dev libpulse-dev libwayland-dev libxkbcommon-dev \
-            libopusfile-dev libopus-dev libogg-dev libspeex-dev \
-            libboost-dev libssl-dev \
-            zlib1g-dev libfribidi-dev libpcre3-dev \
-            libgl1-mesa-dev libglu1-mesa-dev libepoxy-dev libgl1-mesa-dri xvfb xauth
+      # MinGW Python builds the engine; standard CPython supplies compatible
+      # binary wheels for the private, pinned build-time asset encoder.
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065 # v5.6.0
+        id: asset_encoder_python
+        with:
+          python-version: '3.12'
+      - uses: msys2/setup-msys2@v2
+        id: msys2_setup_msys2_v2_1
+        with:
+          msystem: MINGW64
+          update: true
+          install: >-
+            git
+            make mingw-w64-x86_64-toolchain
+            mingw-w64-x86_64-pkgconf
+            mingw-w64-x86_64-python
+            mingw-w64-x86_64-scons
+            mingw-w64-x86_64-cmake
+            mingw-w64-x86_64-freetype
+            mingw-w64-x86_64-opusfile
+            mingw-w64-x86_64-opus
+            mingw-w64-x86_64-libogg
+            mingw-w64-x86_64-speex
+            mingw-w64-x86_64-zlib
+            mingw-w64-x86_64-fribidi
+            mingw-w64-x86_64-pcre
+            mingw-w64-x86_64-openssl
+            mingw-w64-x86_64-boost
+            mingw-w64-x86_64-libepoxy
+            mingw-w64-x86_64-libsystre
+            mingw-w64-x86_64-nasm
+            mingw-w64-x86_64-ccache
 
       - uses: actions/checkout@v4
+        id: actions_checkout_v4_1
         with:
           ref: ${{ inputs.revision || github.sha }}
 
+      - name: Prepare pinned asset encoder
+        shell: pwsh
+        run: |
+          $encoder = & "${{ steps.asset_encoder_python.outputs.python-path }}" tools/package_assets.py --encoder-python
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+          "GLOB2_ASSET_ENCODER_PYTHON=$encoder" >> $env:GITHUB_ENV
+
+      # Checkout uses Git for Windows; MSYS Git otherwise defaults to different
+      # newline handling and reports unchanged CRLF source files as modifications.
+      - name: Align Git newline handling for Windows builds
+        run: git config --local core.autocrlf true
+
+      - name: Restore the compiler cache
+        id: restore_the_compiler_cache
+        continue-on-error: true
+        uses: actions/cache/restore@v4
+        with:
+          path: ${{ env.CCACHE_DIR }}
+          key: ccache-windows-${{ github.run_id }}-${{ github.run_attempt }}
+          restore-keys: ccache-windows-
+
+      - name: Reset the cache statistics
+        id: cache_ready
+        run: |
+          ccache -z
+          echo "CCACHE_RUN_START=$(date +%s)" >> "$GITHUB_ENV"
+
+      - name: Record Windows checkout before compilation
+        run: |
+          mkdir -p artifacts/windows-source
+          {
+            command -v git
+            git --version
+            git config --show-origin --get-regexp '^core\.(symlinks|filemode|autocrlf)$' || true
+            git status --porcelain=v1 --untracked-files=all
+          } > artifacts/windows-source/before-build.log 2>&1
+          cat artifacts/windows-source/before-build.log
+
+      - name: Retain Windows checkout diagnostics before compilation
+        uses: actions/upload-artifact@v4
+        continue-on-error: true
+        with:
+          name: windows-source-before-build
+          path: artifacts/windows-source/before-build.log
+
       - uses: ./.github/actions/sdl3
         with:
-          cc: gcc-13
-          cxx: g++-13
-      - name: Build pinned SDL3 dependencies
+          shell: msys2 {0}
+          cc: gcc
+          cxx: g++
+      - name: Build glob2 and the regression harnesses
+        id: build_glob2_and_the_regression_harnesses
         run: |
           python3 scons/sdl3_dependencies.py --prefix build/sdl3-ci/prefix --work build/sdl3-ci/sources --jobs 2
-          echo "LD_LIBRARY_PATH=$PWD/build/sdl3-ci/prefix/lib${LD_LIBRARY_PATH:+:$LD_LIBRARY_PATH}" >> "$GITHUB_ENV"
-
-      - name: Build glob2 with ThreadSanitizer
-        run: |
+          cygpath -w "$PWD/build/sdl3-ci/prefix/bin" >> "$GITHUB_PATH"
           export PATH="$PWD/build/sdl3-ci/prefix/bin:$PATH"
-          GLOB2_SDL3_PREFIX=build/sdl3-ci/prefix scons CC=gcc-13 CXX=g++-13 -j$(nproc) release=0 server=0 \
-            --build=build/tsan \
-            CXXFLAGS='-g -fsanitize=thread' LINKFLAGS='-fsanitize=thread' \
-            build/tsan/src/glob2
+          GLOB2_SDL3_PREFIX=build/sdl3-ci/prefix scons -j$(nproc) release=1 mingw=1 server=0 engine-tests
+          # MSYS2 starts each step with its own PATH; colocate the pinned
+          # SDL DLLs so Windows can load the client and every harness directly.
+          for directory in build/mingw/client/release/src build/mingw/client/release/test; do
+            mkdir -p "$directory"
+            cp build/sdl3-ci/prefix/bin/*.dll "$directory/"
+          done
 
-      # Newer runner kernels randomize more address bits than TSan's shadow
-      # memory layout accepts.
-      - name: Allow the ThreadSanitizer memory layout
-        run: sudo sysctl vm.mmap_rnd_bits=28
-
-      - name: Headless game on the simulation thread
-        env:
-          GLOB2_SIM_THREAD: '1'
-          TSAN_OPTIONS: halt_on_error=1 exitcode=66 second_deadlock_stack=1 suppressions=${{ github.workspace }}/test/tsan.supp
-        run: |
-          mkdir -p artifacts/tsan
-          build/tsan/src/glob2 game run --map-file "$PWD/maps/balanced.map.gz" --game-seed 7 \
-            --player maxima --player cortex --player warrush --player cabino --ticks 600 --write-replay \
-            --output-dir "$PWD/artifacts/tsan/headless" > artifacts/tsan/headless.log 2>&1
-
-      - name: Windowed game (simulation thread, input and drawing)
-        env:
-          GLOB2_USER_DATA_DIR: ${{ runner.temp }}/tsan-profile
-          GLOB2_TEST_SEED: '5'
-          GLOB2_TEST_MAX_TICKS: '300'
-          GLOB2_SIM_THREAD: '1'
-          # Keep the game's simulation/UI concurrency instrumented, but render
-          # synchronously inside the uninstrumented Mesa driver. Its worker
-          # fence synchronization is invisible to TSan.
-          LP_NUM_THREADS: '0'
-          # A headless game does not need desktop-session services; keep their
-          # uninstrumented D-Bus shutdown locks outside this game-thread check.
-          DBUS_SESSION_BUS_ADDRESS: 'unix:path=/nonexistent/glob2-tsan-session-bus'
-          DBUS_SYSTEM_BUS_ADDRESS: 'unix:path=/nonexistent/glob2-tsan-system-bus'
-          # No PulseAudio: its uninstrumented mainloop thread reports races
-          # inside libpulse during audio startup, unrelated to the game threads.
-          SDL_AUDIODRIVER: dummy
-          # Present the game's software-rendered frame without uninstrumented
-          # Mesa/llvmpipe worker threads. GPU rendering has separate coverage.
-          SDL_RENDER_DRIVER: software
-          SDL_FRAMEBUFFER_ACCELERATION: '0'
-          # SDL3 leaves threads it created during startup unjoined at exit; that
-          # is not a race between the game's threads, so thread leaks are not reported.
-          TSAN_OPTIONS: halt_on_error=1 exitcode=66 second_deadlock_stack=1 report_thread_leaks=0 suppressions=${{ github.workspace }}/test/tsan.supp
-        run: |
-          mkdir -p artifacts/tsan
-          xvfb-run -a -s '-screen 0 1280x1024x24' \
-            build/tsan/src/glob2 dev random-games --display --runs 1 --map balanced --matchup maxima,cortex,maxima,cortex \
-            --renderer software --mute --window-size 1024x768 > artifacts/tsan/windowed.log 2>&1
-
-      - name: Show sanitizer reports
-        if: failure()
-        run: |
-          grep -h -A40 'WARNING: ThreadSanitizer' artifacts/tsan/*.log | head -400 || true
-
+      - name: Validate affected network suites
+        run: >-
+          python3 test/run_tests.py --binary engine --build-dir build/mingw/client/release
+          --filter 'MCP/*' --filter 'WssTransport/*' --filter 'LanMatchHarness/*'
+          --filter 'TurretTargeting/indexed encounter order*' --exclude-tag benchmark
+          --jobs 2 --junit artifacts/windows-asio/junit.xml --artifacts artifacts/windows-asio/cases
       - uses: actions/upload-artifact@v4
         if: always()
         with:
-          name: thread-sanitizer
-          path: artifacts/tsan/*.log
-          if-no-files-found: ignore
+          name: windows-asio-validation
+          path: |
+            artifacts/windows-asio/
+            build/mingw/client/release/include/glob2/TestBuildProvenance.h
+          if-no-files-found: error
