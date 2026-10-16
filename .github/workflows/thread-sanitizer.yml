@@ -8,6 +8,7 @@ env:
   GLOB2_DEV_MODE: isolated
   VK_INSTANCE_LAYERS: VK_LAYER_KHRONOS_validation
   VK_LAYER_VALIDATE_SYNC: "1"
+  DEBUGINFOD_URLS: https://debuginfod.ubuntu.com
 jobs:
   capture:
     runs-on: ubuntu-24.04
@@ -42,7 +43,7 @@ jobs:
           cases=[c for c in registry.list_cases(registry.binary_path(build,'engine'),'engine') if c.suite=='TorusRender' and c.name.startswith('SDL GPU captures large logical maps')]
           assert len(cases)==1
           original_prefix=registry.xvfb_prefix
-          registry.xvfb_prefix=lambda job:original_prefix(job)+['gdb','--batch','-ex','set pagination off','-ex','set print thread-events off','-ex','set debuginfod enabled off','-ex','handle SIGSEGV stop print nopass','-ex','run','-ex','thread apply all bt','--args']
+          registry.xvfb_prefix=lambda job:original_prefix(job)+['gdb','--batch','-ex','set pagination off','-ex','set print thread-events off','-ex','set auto-solib-add off','-ex','set debuginfod enabled on','-ex','handle SIGSEGV stop print nopass','-ex','run','-ex','sharedlibrary libvulkan_lvp','-ex','info sharedlibrary','-ex','thread apply all bt full','--args']
           rows=[]
           for index in range(1):
               args=types.SimpleNamespace(keep_profiles=False,fullscreen=True,update_fixtures=False,artifacts=out/str(index),verbose=False)
