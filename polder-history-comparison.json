@@ -44,6 +44,13 @@
       },
       "resourceIdentityChanges": 0,
       "resourceStockChanges": 6,
+      "classicStockTotal": 6253,
+      "expandedStockTotal": 6253,
+      "stockMultisetsEqual": true,
+      "changedStockResourceTypes": [
+        0,
+        1
+      ],
       "startPositionChanges": 0
     },
     {
@@ -88,6 +95,13 @@
       },
       "resourceIdentityChanges": 0,
       "resourceStockChanges": 234,
+      "classicStockTotal": 31356,
+      "expandedStockTotal": 31356,
+      "stockMultisetsEqual": true,
+      "changedStockResourceTypes": [
+        0,
+        1
+      ],
       "startPositionChanges": 0
     },
     {
@@ -132,6 +146,13 @@
       },
       "resourceIdentityChanges": 0,
       "resourceStockChanges": 176,
+      "classicStockTotal": 30032,
+      "expandedStockTotal": 30032,
+      "stockMultisetsEqual": true,
+      "changedStockResourceTypes": [
+        0,
+        1
+      ],
       "startPositionChanges": 0
     },
     {
@@ -176,6 +197,13 @@
       },
       "resourceIdentityChanges": 0,
       "resourceStockChanges": 46,
+      "classicStockTotal": 33895,
+      "expandedStockTotal": 33895,
+      "stockMultisetsEqual": true,
+      "changedStockResourceTypes": [
+        0,
+        1
+      ],
       "startPositionChanges": 0
     },
     {
@@ -220,6 +248,13 @@
       },
       "resourceIdentityChanges": 0,
       "resourceStockChanges": 320,
+      "classicStockTotal": 29308,
+      "expandedStockTotal": 29308,
+      "stockMultisetsEqual": true,
+      "changedStockResourceTypes": [
+        0,
+        1
+      ],
       "startPositionChanges": 0
     },
     {
@@ -264,6 +299,13 @@
       },
       "resourceIdentityChanges": 0,
       "resourceStockChanges": 105,
+      "classicStockTotal": 27308,
+      "expandedStockTotal": 27308,
+      "stockMultisetsEqual": true,
+      "changedStockResourceTypes": [
+        0,
+        1
+      ],
       "startPositionChanges": 0
     },
     {
@@ -308,6 +350,13 @@
       },
       "resourceIdentityChanges": 0,
       "resourceStockChanges": 1536,
+      "classicStockTotal": 51003,
+      "expandedStockTotal": 51003,
+      "stockMultisetsEqual": true,
+      "changedStockResourceTypes": [
+        0,
+        1
+      ],
       "startPositionChanges": 0
     },
     {
@@ -352,6 +401,13 @@
       },
       "resourceIdentityChanges": 0,
       "resourceStockChanges": 9100,
+      "classicStockTotal": 129069,
+      "expandedStockTotal": 129069,
+      "stockMultisetsEqual": true,
+      "changedStockResourceTypes": [
+        0,
+        1
+      ],
       "startPositionChanges": 0
     }
   ],

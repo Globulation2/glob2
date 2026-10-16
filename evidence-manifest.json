@@ -91,9 +91,13 @@
     "bytes": 7588,
     "sha256": "dea624f2a11ce462cc8e4d74d59bb35c24e781c9e05e98ff591f6a78d9fd4f96"
   },
+  "artifacts/ci-recovery/compare-linux-macos.py": {
+    "bytes": 1608,
+    "sha256": "baf05d198392c8d6410f858476517898c0b5f0933e9b8be783afdbd9e07b7a9e"
+  },
   "artifacts/ci-recovery/compare-polder-history.py": {
-    "bytes": 3294,
-    "sha256": "dbbe79be4ffd7db82b5932e8350a0485ab4c98789e58d38c1368d426417c89f3"
+    "bytes": 3652,
+    "sha256": "ee46e21904f3299dbb44f006bf59542fc25d9c306461916d393620ea02f62437"
   },
   "artifacts/ci-recovery/final-sim-revision.log": {
     "bytes": 100,
@@ -263,9 +267,1045 @@
     "bytes": 449,
     "sha256": "26aa688926173e021e4fc758d0f8a66773c7ae60ba7e03c6e21a4c5ab3e0020a"
   },
+  "artifacts/ci-recovery/linux-macos-comparison.json": {
+    "bytes": 10364,
+    "sha256": "8475819bd7c454ac3a998608f1b50bae467068aeef33a7f5d10d0b35e2259aa1"
+  },
   "artifacts/ci-recovery/local-stack.log": {
     "bytes": 2526,
     "sha256": "de0ed261c3ba54f8a5b66eb93c0ad4fcf0ddba7a9db9b0e64ab734647993ec68"
+  },
+  "artifacts/ci-recovery/macos-determinism-first/manifest.json": {
+    "bytes": 1182,
+    "sha256": "2a63f100c7bc5c8cb3bc8204c2af81119d488192d6b42ebdeed4e808c0cb372d"
+  },
+  "artifacts/ci-recovery/macos-determinism-first/native.replay": {
+    "bytes": 2784552,
+    "sha256": "e10281091d2e18101a3d3f35201a9365e11570442501b8d388f1732a335fae4d"
+  },
+  "artifacts/ci-recovery/macos-determinism-first/native.replay.checksums": {
+    "bytes": 4123206,
+    "sha256": "f3d4294461df8887f801bedb73805acb048bc778f183ed9b9154dce1618001b9"
+  },
+  "artifacts/ci-recovery/macos-determinism-first/resources/native/cases/RuntimeResources/frozen_seeded_resource_compositions_preserve_invariants_and_exact_simulation_continuation__golden/seeded-compositions.trace": {
+    "bytes": 13378,
+    "sha256": "a2477f32b4a196225ccb48141b9af7533962a562d38d88edde14cf9dec58f9c0"
+  },
+  "artifacts/ci-recovery/macos-determinism-first/resources/native/cases/build-provenance.json": {
+    "bytes": 743,
+    "sha256": "dc05d0e86d104f3040383194bbaa73df2fd4585bc04d176402c272702d9c9adb"
+  },
+  "artifacts/ci-recovery/macos-determinism-first/resources/native/manifest.json": {
+    "bytes": 1321,
+    "sha256": "45d824b302944a8a333405ba7bc50b131e779653519808ffe8c26f16fe9c7533"
+  },
+  "artifacts/ci-recovery/macos-determinism-first/resources/native/run.log": {
+    "bytes": 921,
+    "sha256": "c1e95684a2437f21783f629b20fda73f433d23ddfcfcf2ea5ad124902ab30609"
+  },
+  "artifacts/ci-recovery/macos-determinism-first/resources/native/tests.xml": {
+    "bytes": 498,
+    "sha256": "b80d0852e38358673cef65ae754ba84b396f9ce695b77d6a775de37a51040d3f"
+  },
+  "artifacts/ci-recovery/macos-determinism-first/run.log": {
+    "bytes": 331,
+    "sha256": "70baf888db7cf9bd8f3cae078176fd07fe36ef04b12bf1f63bd8b1ba905e1bc0"
+  },
+  "artifacts/ci-recovery/macos-determinism-first/units/native/cases/UnitCustomization/all_locked_capability_ablations_match_fixed_tick_and_RNG_traces__golden__artifacts/unit-ablations.trace": {
+    "bytes": 1334,
+    "sha256": "aa6e89dbeac63ede4d17ced1ff9fa7a0b092612b43b0499255a264643f928595"
+  },
+  "artifacts/ci-recovery/macos-determinism-first/units/native/cases/build-provenance.json": {
+    "bytes": 743,
+    "sha256": "dc05d0e86d104f3040383194bbaa73df2fd4585bc04d176402c272702d9c9adb"
+  },
+  "artifacts/ci-recovery/macos-determinism-first/units/native/manifest.json": {
+    "bytes": 1314,
+    "sha256": "c3682a67518789026ed372c10f7b4374452e313e7ad0a10b707b9f0641452578"
+  },
+  "artifacts/ci-recovery/macos-determinism-first/units/native/run.log": {
+    "bytes": 921,
+    "sha256": "c1e95684a2437f21783f629b20fda73f433d23ddfcfcf2ea5ad124902ab30609"
+  },
+  "artifacts/ci-recovery/macos-determinism-first/units/native/tests.xml": {
+    "bytes": 478,
+    "sha256": "22455d5938ae2076e27abdfa3bd9c1e352761e7242c271eb9267a828b72ca2f3"
+  },
+  "artifacts/ci-recovery/macos-determinism-first/verify-match/artifacts.json": {
+    "bytes": 222,
+    "sha256": "1cbce8da588a6d7c1d10d5dd89f5b376be82f1d5de750fcaa1b58372ae573730"
+  },
+  "artifacts/ci-recovery/macos-determinism-first/verify-match/checksums.txt": {
+    "bytes": 10914,
+    "sha256": "11d24ec976c3ac8e7efcc59ba6201be8ae2230292b2b400938dacb57e3c3bb60"
+  },
+  "artifacts/ci-recovery/macos-determinism-first/verify-match/compute.json": {
+    "bytes": 610,
+    "sha256": "89245f69acab9a461127bb714398bfe27c841c5aa1826b9f8a956155ca91a99c"
+  },
+  "artifacts/ci-recovery/macos-determinism-first/verify-match/result.json": {
+    "bytes": 9698,
+    "sha256": "a239a6fcbe43b4e61f09860e170509be3a49566a34dd67a1ff50db1f6e21e569"
+  },
+  "artifacts/ci-recovery/macos-determinism-first/verify-match/verdict.json": {
+    "bytes": 430,
+    "sha256": "c9351da583adc8bd624fcfb571e570eef24598a9a0574c98aff197b610c9f64d"
+  },
+  "artifacts/ci-recovery/macos-determinism-first/verify-match.checksums.txt": {
+    "bytes": 10914,
+    "sha256": "11d24ec976c3ac8e7efcc59ba6201be8ae2230292b2b400938dacb57e3c3bb60"
+  },
+  "artifacts/ci-recovery/macos-determinism-first/verify-match.log": {
+    "bytes": 108,
+    "sha256": "4f1bd4968858e787775d02311e997ef15f7f3f944c1081c3b08b256166691330"
+  },
+  "artifacts/ci-recovery/macos-first-complete.log": {
+    "bytes": 34698403,
+    "sha256": "c495916c35d413ad647a4cee9e01e10db64eda7ff64e42ba2f73846a8c211876"
+  },
+  "artifacts/ci-recovery/macos-first-job.json": {
+    "bytes": 3422,
+    "sha256": "17c6ddc2740c5eeb0132fbe2bce4692104c598241461efc81204e7f372d1dc67"
+  },
+  "artifacts/ci-recovery/macos-generator-first/designs/MapGeneratorDefaults/Explicit_designs_preserve_topology_across_the_runtime-resource_RNG_epoch/resource-design-observations.json": {
+    "bytes": 1382,
+    "sha256": "219e96a0fcf4ed0feaf4bbd065d091b7ca2564c0bdd4b41f70e4a5283a607f55"
+  },
+  "artifacts/ci-recovery/macos-generator-first/designs/build-provenance.json": {
+    "bytes": 743,
+    "sha256": "dc05d0e86d104f3040383194bbaa73df2fd4585bc04d176402c272702d9c9adb"
+  },
+  "artifacts/ci-recovery/macos-generator-first/designs-junit.xml": {
+    "bytes": 318,
+    "sha256": "93e76abf494e9c3fd6254505ba2f0d8f511017bd38863290c8dc3ca2ed1e6e7b"
+  },
+  "artifacts/ci-recovery/macos-generator-first/inventory.log": {
+    "bytes": 14132,
+    "sha256": "f5d9a73073c5424a7b5193a842c87e98edbf5ace2dcbefb32d07fcc99e53b3af"
+  },
+  "artifacts/ci-recovery/macos-generator-first/manifest.json": {
+    "bytes": 1997,
+    "sha256": "e011009dd28261a7708a78842b4c7ba061d0e19c6c4144f05fb8de55c4b028bc"
+  },
+  "artifacts/ci-recovery/macos-generator-first/print-0.log": {
+    "bytes": 27005,
+    "sha256": "ffaa254b07e705d1be73e74e63b96e24d5c177285997fa45aa69fb3bee3eec66"
+  },
+  "artifacts/ci-recovery/macos-generator-first/print-1.log": {
+    "bytes": 27005,
+    "sha256": "ffaa254b07e705d1be73e74e63b96e24d5c177285997fa45aa69fb3bee3eec66"
+  },
+  "artifacts/ci-recovery/macos-generator-first/rows.txt": {
+    "bytes": 26945,
+    "sha256": "0ffc429d2725b35948f10bd60ac38e986056821aa328efa3eb7c2f7bca4ed1f8"
+  },
+  "artifacts/ci-recovery/macos-javascript-first/javascript-corpus/corpus/JavaScriptCompatibility/JavaScript_current_saves_reject_truncated_generation_tables/truncated-generations-1.bin": {
+    "bytes": 769120,
+    "sha256": "48ce30bb3fb88a21ea0cf7a2feb5ddbdc9c0f6c6f1a9bf4836d17936910e0924"
+  },
+  "artifacts/ci-recovery/macos-javascript-first/javascript-corpus/corpus/JavaScriptCompatibility/JavaScript_current_saves_reject_truncated_generation_tables/truncated-generations-2.bin": {
+    "bytes": 769119,
+    "sha256": "d4291f4682c26a36ed6332cb1df92b493ff7e2ae5f5add293858fc90535db594"
+  },
+  "artifacts/ci-recovery/macos-javascript-first/javascript-corpus/corpus/JavaScriptCompatibility/JavaScript_current_saves_reject_truncated_generation_tables/truncated-generations-3.bin": {
+    "bytes": 769118,
+    "sha256": "458b61640a4ccd1bfc40ba41f570db6a97ba1c8a82379bacc2c8d360846c5e48"
+  },
+  "artifacts/ci-recovery/macos-javascript-first/javascript-corpus/corpus/JavaScriptCompatibility/JavaScript_current_saves_reject_truncated_generation_tables/truncated-generations-4.bin": {
+    "bytes": 769117,
+    "sha256": "5fe8299ce3e058c0e7d856845aaa8a876191551ff7da7f1fc8375edf30c36ad2"
+  },
+  "artifacts/ci-recovery/macos-javascript-first/javascript-corpus/corpus/JavaScriptCompatibility/JavaScript_upgrade_retains_genuine_master124_experiments_and_continuation/master124-upgraded.game": {
+    "bytes": 1479404,
+    "sha256": "40236971cca7e3376a94edc99661b161da0b959a45a6236aef843275dfc7797a"
+  },
+  "artifacts/ci-recovery/macos-javascript-first/javascript-corpus/corpus/JavaScriptCompatibility/JavaScript_upgrade_retains_genuine_master124_experiments_and_continuation/master124-world-fields.value": {
+    "bytes": 144853,
+    "sha256": "4bb996bacf1bdbdf96774dfa02ad41ddf477f5b367c708f8df43411edab4048c"
+  },
+  "artifacts/ci-recovery/macos-javascript-first/javascript-corpus/corpus/JavaScriptCompatibility/JavaScript_upgrade_retains_genuine_master124_experiments_and_continuation/upgraded-world-fields.value": {
+    "bytes": 144853,
+    "sha256": "4bb996bacf1bdbdf96774dfa02ad41ddf477f5b367c708f8df43411edab4048c"
+  },
+  "artifacts/ci-recovery/macos-javascript-first/javascript-corpus/corpus/JavaScriptIntegration/JavaScript_custom_library_and_telemetry_dialogs_render__display_1280x800___artifacts/ai-telemetry-phone.bmp": {
+    "bytes": 1185738,
+    "sha256": "da2b3e3de7e07c1f8c7976ad19834b09f2c1b59d649367be837c6acad42d5292"
+  },
+  "artifacts/ci-recovery/macos-javascript-first/javascript-corpus/corpus/JavaScriptIntegration/JavaScript_custom_library_and_telemetry_dialogs_render__display_1280x800___artifacts/ai-telemetry.bmp": {
+    "bytes": 4096138,
+    "sha256": "2cd0537cacd7364dbdb2d07f65049272c89b6bdde237c06dae8b5f23eff94aa8"
+  },
+  "artifacts/ci-recovery/macos-javascript-first/javascript-corpus/corpus/JavaScriptIntegration/JavaScript_custom_library_and_telemetry_dialogs_render__display_1280x800___artifacts/custom-ai-library-phone.bmp": {
+    "bytes": 1185738,
+    "sha256": "953969b96f8e4070f471e13bb148f681ccae138f5ef65ff0f14ab93c0b3611dc"
+  },
+  "artifacts/ci-recovery/macos-javascript-first/javascript-corpus/corpus/JavaScriptIntegration/JavaScript_custom_library_and_telemetry_dialogs_render__display_1280x800___artifacts/custom-ai-library.bmp": {
+    "bytes": 4096138,
+    "sha256": "8f8ab461b56340209680c8dda9d62beb213a1711956620dc6f29fc21f60c86de"
+  },
+  "artifacts/ci-recovery/macos-javascript-first/javascript-corpus/corpus/JavaScriptIntegration/JavaScript_orders_execute_and_survive_save_load/supported-orders.game": {
+    "bytes": 643841,
+    "sha256": "42d7511d46ba551d6f692fbd0ee81820943daf906a979019f90b9a5d19da7fa8"
+  },
+  "artifacts/ci-recovery/macos-javascript-first/javascript-corpus/corpus/JavaScriptLifecycle/Scripting_building_completion_upgrade_and_repair_preserve_identity/lifecycle.game": {
+    "bytes": 643121,
+    "sha256": "40f5ad3529e9d5225a3dc59f009b5382f71e2562102ce5e9c8076e1caf27c17f"
+  },
+  "artifacts/ci-recovery/macos-javascript-first/javascript-corpus/corpus/JavaScriptLifecycle/Scripting_conversion_allocates_fresh_identity_in_a_reused_destination_slot/lifecycle.game": {
+    "bytes": 638613,
+    "sha256": "33b74863bf2b8b53d687ec61d913402d966e2f6fd107f6552b32de106edb068d"
+  },
+  "artifacts/ci-recovery/macos-javascript-first/javascript-corpus/corpus/JavaScriptLifecycle/Scripting_conversion_back_never_resurrects_the_original_reference/lifecycle.game": {
+    "bytes": 639546,
+    "sha256": "fe0723a7d96848982482203902fc0ce273e07c67aa98a744dd2a9ae6a4ace86c"
+  },
+  "artifacts/ci-recovery/macos-javascript-first/javascript-corpus/corpus/JavaScriptLifecycle/Scripting_editor_deletion_and_reuse_never_revive_a_reference/lifecycle.game": {
+    "bytes": 638585,
+    "sha256": "27c8c8fd067d75619f6c072683b9a83fc4cf29d874c6ecc9be88d5e7756c4ff4"
+  },
+  "artifacts/ci-recovery/macos-javascript-first/javascript-corpus/corpus/JavaScriptLifecycle/Scripting_identity_survives_conversion_and_save_load/lifecycle.game": {
+    "bytes": 638613,
+    "sha256": "5c53ebdc1c90a6e7d0ac4a654c750ce4469719dc81e7a4040492d9d2b5bcb350"
+  },
+  "artifacts/ci-recovery/macos-javascript-first/javascript-corpus/corpus/JavaScriptLifecycle/Scripting_normal_death_invalidates_lookup_before_cleanup_and_slot_reuse/lifecycle.game": {
+    "bytes": 638595,
+    "sha256": "72dd54aead4d822a14b0da5a588459c35defdb1a8bd24ae11ab580a0f285f058"
+  },
+  "artifacts/ci-recovery/macos-javascript-first/javascript-corpus/corpus/JavaScriptNumbers/JavaScript_shared_numeric_corpus/numeric-profile1.txt": {
+    "bytes": 372219,
+    "sha256": "b62390e5dbeec9fd27b73d2c3a4c19430263a7340fb7f3615d4ad40343df77ac"
+  },
+  "artifacts/ci-recovery/macos-javascript-first/javascript-corpus/corpus/JavaScriptNumbers/JavaScript_shared_numeric_corpus/numeric-profile1.value": {
+    "bytes": 103890,
+    "sha256": "5220d8c67375eba774f6d97b7d224b4b79f792944dcb43b04af6ef6320978c68"
+  },
+  "artifacts/ci-recovery/macos-javascript-first/javascript-corpus/corpus/JavaScriptNumbers/JavaScript_shared_saved_global_number_corpus/global-numbers-profile1.txt": {
+    "bytes": 24685,
+    "sha256": "617f47f300d7408bb749cc4fbab424899ec82ccea7267682dff0c0d64ef9f94f"
+  },
+  "artifacts/ci-recovery/macos-javascript-first/javascript-corpus/corpus/JavaScriptNumbers/JavaScript_shared_saved_global_number_corpus/global-numbers-profile1.value": {
+    "bytes": 3965,
+    "sha256": "e792b307328eadd0031daef9511eb8c09a468d3d862f30b3a58e0632dd335812"
+  },
+  "artifacts/ci-recovery/macos-javascript-first/javascript-corpus/corpus/JavaScriptRealistic/JavaScript_realistic_economic_planner_and_scenario_survey/realistic-economy-0.txt": {
+    "bytes": 8932,
+    "sha256": "324aa57776972cda4ae197430a76742be15530197b5cf4259cce732e39d230fd"
+  },
+  "artifacts/ci-recovery/macos-javascript-first/javascript-corpus/corpus/JavaScriptRealistic/JavaScript_realistic_economic_planner_and_scenario_survey/realistic-economy-0.value": {
+    "bytes": 2269,
+    "sha256": "99398d17968b0547c2d9fe8a069eecd9076fdf52e56ffdef4f687b7537fe4794"
+  },
+  "artifacts/ci-recovery/macos-javascript-first/javascript-corpus/corpus/JavaScriptRealistic/JavaScript_realistic_economic_planner_and_scenario_survey/realistic-economy-1.txt": {
+    "bytes": 8932,
+    "sha256": "1f1ffe2181f3d14b34d95b7e10135697603240ad52fb602f34dec065dd01d966"
+  },
+  "artifacts/ci-recovery/macos-javascript-first/javascript-corpus/corpus/JavaScriptRealistic/JavaScript_realistic_economic_planner_and_scenario_survey/realistic-economy-1.value": {
+    "bytes": 2269,
+    "sha256": "cfac88964329bf15eddeb41a42306c69eb483ca9fbd9a506c4cece5b93a0cf21"
+  },
+  "artifacts/ci-recovery/macos-javascript-first/javascript-corpus/corpus/JavaScriptRealistic/JavaScript_realistic_economic_planner_and_scenario_survey/realistic-economy-2.txt": {
+    "bytes": 8932,
+    "sha256": "a3b93cc06db127b32cd4dea11fe25648b9f06d5599ff061831825b22d9561956"
+  },
+  "artifacts/ci-recovery/macos-javascript-first/javascript-corpus/corpus/JavaScriptRealistic/JavaScript_realistic_economic_planner_and_scenario_survey/realistic-economy-2.value": {
+    "bytes": 2269,
+    "sha256": "67a7fca3c1d0c7676d96065d3e9029200074222c056435b7fc17cf7486370b51"
+  },
+  "artifacts/ci-recovery/macos-javascript-first/javascript-corpus/corpus/JavaScriptRealistic/JavaScript_realistic_economic_planner_and_scenario_survey/realistic-economy-3.txt": {
+    "bytes": 8932,
+    "sha256": "1cba74958cc0b5104725ae3b683a9e9565310852c5e7610ee90f7f6240a771e4"
+  },
+  "artifacts/ci-recovery/macos-javascript-first/javascript-corpus/corpus/JavaScriptRealistic/JavaScript_realistic_economic_planner_and_scenario_survey/realistic-economy-3.value": {
+    "bytes": 2269,
+    "sha256": "d46fff8fc3d6ed137f3f15243d30772263cb1954f2270fb06f025b3954d0f30b"
+  },
+  "artifacts/ci-recovery/macos-javascript-first/javascript-corpus/corpus/JavaScriptRealistic/JavaScript_realistic_economic_planner_and_scenario_survey/realistic-survey-0.txt": {
+    "bytes": 1059,
+    "sha256": "b4308e91550d3e33929503623bb13e7bf5c04f79cc7e0f4c4e2a953fae073dd1"
+  },
+  "artifacts/ci-recovery/macos-javascript-first/javascript-corpus/corpus/JavaScriptRealistic/JavaScript_realistic_economic_planner_and_scenario_survey/realistic-survey-0.value": {
+    "bytes": 401,
+    "sha256": "79460c2e024c88e0edd44c232e6b53b164e9b13c1156ff74cda231edef89a172"
+  },
+  "artifacts/ci-recovery/macos-javascript-first/javascript-corpus/corpus/JavaScriptRealistic/JavaScript_realistic_economic_planner_and_scenario_survey/realistic-survey-1.txt": {
+    "bytes": 1059,
+    "sha256": "2f1e7d914ec49ff953671499b99ee669281e6dec25ee1516925e0d5d7f6258b3"
+  },
+  "artifacts/ci-recovery/macos-javascript-first/javascript-corpus/corpus/JavaScriptRealistic/JavaScript_realistic_economic_planner_and_scenario_survey/realistic-survey-1.value": {
+    "bytes": 401,
+    "sha256": "1179db006b8c9b8e845879c4f84d8fa02bb5adf689681fb5b2dd207484bd6de1"
+  },
+  "artifacts/ci-recovery/macos-javascript-first/javascript-corpus/corpus/JavaScriptRealistic/JavaScript_realistic_economic_planner_and_scenario_survey/realistic-survey-2.txt": {
+    "bytes": 1059,
+    "sha256": "df3c4fe6c15a747430edb6d6f9ca38121a3fc7639f659cb3025c66b434ae2eca"
+  },
+  "artifacts/ci-recovery/macos-javascript-first/javascript-corpus/corpus/JavaScriptRealistic/JavaScript_realistic_economic_planner_and_scenario_survey/realistic-survey-2.value": {
+    "bytes": 401,
+    "sha256": "5b221c2240480bdc9a5ea775839dc2b8579851ebbf2d384db76e9f578c909930"
+  },
+  "artifacts/ci-recovery/macos-javascript-first/javascript-corpus/corpus/JavaScriptRealistic/JavaScript_realistic_economic_planner_and_scenario_survey/realistic-survey-3.txt": {
+    "bytes": 1059,
+    "sha256": "99019d2832973e63ac2e9ea29836b29dbcc22de62d1af3f0a484fae147fe5c93"
+  },
+  "artifacts/ci-recovery/macos-javascript-first/javascript-corpus/corpus/JavaScriptRealistic/JavaScript_realistic_economic_planner_and_scenario_survey/realistic-survey-3.value": {
+    "bytes": 401,
+    "sha256": "6652cbe2833aa3f6d5686c22c86e91f654f71055906de8e5733fefd8e6d4f8bf"
+  },
+  "artifacts/ci-recovery/macos-javascript-first/javascript-corpus/corpus/JavaScriptSession/JavaScript_initialization_errors_reach_headless_and_UI_load_diagnostics/invalid-embedded-ai.game": {
+    "bytes": 754129,
+    "sha256": "95a8cb26817d5db65e95be7e7a6c7257b0028e4d50b94fbb635cfbbf67dfb224"
+  },
+  "artifacts/ci-recovery/macos-javascript-first/javascript-corpus/corpus/JavaScriptSimulation/JavaScript_conversion_boundary_resumes_globals_RNG_references_and_complete_tick_records/conversion-initial.game": {
+    "bytes": 698264,
+    "sha256": "84ca3d513142cb6d4bea698162e7d3502045a68aba0a65a24d84c680f391e4c6"
+  },
+  "artifacts/ci-recovery/macos-javascript-first/javascript-corpus/corpus/JavaScriptSimulation/JavaScript_conversion_boundary_resumes_globals_RNG_references_and_complete_tick_records/playback/final.game": {
+    "bytes": 1017593,
+    "sha256": "8fa396518f747a2e5096607773313bd5fa958a4fe611e514313c7f658f875ea7"
+  },
+  "artifacts/ci-recovery/macos-javascript-first/javascript-corpus/corpus/JavaScriptSimulation/JavaScript_conversion_boundary_resumes_globals_RNG_references_and_complete_tick_records/playback/game.replay.checksums": {
+    "bytes": 250900,
+    "sha256": "54d6089722bd2f981b8eed2353e02fbad1e666eb54f8f1a08e827c8c5f82afec"
+  },
+  "artifacts/ci-recovery/macos-javascript-first/javascript-corpus/corpus/JavaScriptSimulation/JavaScript_conversion_boundary_resumes_globals_RNG_references_and_complete_tick_records/resumed-conversion/final.game": {
+    "bytes": 1169496,
+    "sha256": "882b92974f53585d3d5151df8c0b14e703a1a7ff7db1367de9ac53926ffb7a45"
+  },
+  "artifacts/ci-recovery/macos-javascript-first/javascript-corpus/corpus/JavaScriptSimulation/JavaScript_conversion_boundary_resumes_globals_RNG_references_and_complete_tick_records/resumed-conversion/game.replay": {
+    "bytes": 974377,
+    "sha256": "f8d45e99067899525ae89a24dc954d8669d610440f17526fca626e2b71b6bfd4"
+  },
+  "artifacts/ci-recovery/macos-javascript-first/javascript-corpus/corpus/JavaScriptSimulation/JavaScript_conversion_boundary_resumes_globals_RNG_references_and_complete_tick_records/resumed-conversion/game.replay.checksums": {
+    "bytes": 250900,
+    "sha256": "54d6089722bd2f981b8eed2353e02fbad1e666eb54f8f1a08e827c8c5f82afec"
+  },
+  "artifacts/ci-recovery/macos-javascript-first/javascript-corpus/corpus/JavaScriptSimulation/JavaScript_conversion_boundary_resumes_globals_RNG_references_and_complete_tick_records/workers1/conversion-0.game": {
+    "bytes": 704491,
+    "sha256": "6d4443c08d267ec8cd641f1843b2c74c8a0c9a677bdc93b0fd740f09ed3d1fa5"
+  },
+  "artifacts/ci-recovery/macos-javascript-first/javascript-corpus/corpus/JavaScriptSimulation/JavaScript_conversion_boundary_resumes_globals_RNG_references_and_complete_tick_records/workers1/final.game": {
+    "bytes": 1169496,
+    "sha256": "882b92974f53585d3d5151df8c0b14e703a1a7ff7db1367de9ac53926ffb7a45"
+  },
+  "artifacts/ci-recovery/macos-javascript-first/javascript-corpus/corpus/JavaScriptSimulation/JavaScript_conversion_boundary_resumes_globals_RNG_references_and_complete_tick_records/workers1/game.replay": {
+    "bytes": 974377,
+    "sha256": "f8d45e99067899525ae89a24dc954d8669d610440f17526fca626e2b71b6bfd4"
+  },
+  "artifacts/ci-recovery/macos-javascript-first/javascript-corpus/corpus/JavaScriptSimulation/JavaScript_conversion_boundary_resumes_globals_RNG_references_and_complete_tick_records/workers1/game.replay.checksums": {
+    "bytes": 250900,
+    "sha256": "54d6089722bd2f981b8eed2353e02fbad1e666eb54f8f1a08e827c8c5f82afec"
+  },
+  "artifacts/ci-recovery/macos-javascript-first/javascript-corpus/corpus/JavaScriptSimulation/JavaScript_conversion_boundary_resumes_globals_RNG_references_and_complete_tick_records/workers4/conversion-0.game": {
+    "bytes": 704491,
+    "sha256": "6d4443c08d267ec8cd641f1843b2c74c8a0c9a677bdc93b0fd740f09ed3d1fa5"
+  },
+  "artifacts/ci-recovery/macos-javascript-first/javascript-corpus/corpus/JavaScriptSimulation/JavaScript_conversion_boundary_resumes_globals_RNG_references_and_complete_tick_records/workers4/final.game": {
+    "bytes": 1169496,
+    "sha256": "882b92974f53585d3d5151df8c0b14e703a1a7ff7db1367de9ac53926ffb7a45"
+  },
+  "artifacts/ci-recovery/macos-javascript-first/javascript-corpus/corpus/JavaScriptSimulation/JavaScript_conversion_boundary_resumes_globals_RNG_references_and_complete_tick_records/workers4/game.replay": {
+    "bytes": 974377,
+    "sha256": "f8d45e99067899525ae89a24dc954d8669d610440f17526fca626e2b71b6bfd4"
+  },
+  "artifacts/ci-recovery/macos-javascript-first/javascript-corpus/corpus/JavaScriptSimulation/JavaScript_conversion_boundary_resumes_globals_RNG_references_and_complete_tick_records/workers4/game.replay.checksums": {
+    "bytes": 250900,
+    "sha256": "54d6089722bd2f981b8eed2353e02fbad1e666eb54f8f1a08e827c8c5f82afec"
+  },
+  "artifacts/ci-recovery/macos-javascript-first/javascript-corpus/corpus/JavaScriptSimulation/JavaScript_economic_planners_and_map_survey_execute__resume_and_replay_256_ticks/playback/final.game": {
+    "bytes": 910981,
+    "sha256": "ad05c7b0a77ab61b177367bf879da95b47e9ca5c44f0a73c6b8c0828055efc39"
+  },
+  "artifacts/ci-recovery/macos-javascript-first/javascript-corpus/corpus/JavaScriptSimulation/JavaScript_economic_planners_and_map_survey_execute__resume_and_replay_256_ticks/playback/game.replay.checksums": {
+    "bytes": 461844,
+    "sha256": "3614560fa27303e65246ab2c404e77338e28f60a97304ef62a3078148f4e30ba"
+  },
+  "artifacts/ci-recovery/macos-javascript-first/javascript-corpus/corpus/JavaScriptSimulation/JavaScript_economic_planners_and_map_survey_execute__resume_and_replay_256_ticks/resumed-128/final.game": {
+    "bytes": 967731,
+    "sha256": "e0b8a429b42bb904bfcdd813a7e4012c10c0d2dce5d6c4819a54a2a1b9f14857"
+  },
+  "artifacts/ci-recovery/macos-javascript-first/javascript-corpus/corpus/JavaScriptSimulation/JavaScript_economic_planners_and_map_survey_execute__resume_and_replay_256_ticks/resumed-128/game.replay": {
+    "bytes": 1136338,
+    "sha256": "d1166a56f8600dcd3dbb4890604b713ea68dd985b5568ebf611a356ad2ba9c28"
+  },
+  "artifacts/ci-recovery/macos-javascript-first/javascript-corpus/corpus/JavaScriptSimulation/JavaScript_economic_planners_and_map_survey_execute__resume_and_replay_256_ticks/resumed-128/game.replay.checksums": {
+    "bytes": 230932,
+    "sha256": "39863d5c107f2cdb9b02a8468b6ae8ad66c54c4c1b6ea7047dcb371ad20b9bcf"
+  },
+  "artifacts/ci-recovery/macos-javascript-first/javascript-corpus/corpus/JavaScriptSimulation/JavaScript_economic_planners_and_map_survey_execute__resume_and_replay_256_ticks/resumed-32/final.game": {
+    "bytes": 967731,
+    "sha256": "e0b8a429b42bb904bfcdd813a7e4012c10c0d2dce5d6c4819a54a2a1b9f14857"
+  },
+  "artifacts/ci-recovery/macos-javascript-first/javascript-corpus/corpus/JavaScriptSimulation/JavaScript_economic_planners_and_map_survey_execute__resume_and_replay_256_ticks/resumed-32/game.replay": {
+    "bytes": 1236046,
+    "sha256": "b391c149e2136e14982824e063dcb5ebafb85eefdde1f4f743a19584152240cb"
+  },
+  "artifacts/ci-recovery/macos-javascript-first/javascript-corpus/corpus/JavaScriptSimulation/JavaScript_economic_planners_and_map_survey_execute__resume_and_replay_256_ticks/resumed-32/game.replay.checksums": {
+    "bytes": 404116,
+    "sha256": "2938eb870c0928789fff5b050f587c60367e69617ea3d038c5f8d895acca85ef"
+  },
+  "artifacts/ci-recovery/macos-javascript-first/javascript-corpus/corpus/JavaScriptSimulation/JavaScript_economic_planners_and_map_survey_execute__resume_and_replay_256_ticks/workers1/checkpoint-128.game": {
+    "bytes": 968667,
+    "sha256": "4256147e04fb1cf4d0c8c5d6d909fd22f15f3a755dd47b934cadd213b5ea86e1"
+  },
+  "artifacts/ci-recovery/macos-javascript-first/javascript-corpus/corpus/JavaScriptSimulation/JavaScript_economic_planners_and_map_survey_execute__resume_and_replay_256_ticks/workers1/checkpoint-32.game": {
+    "bytes": 967125,
+    "sha256": "88978c325de45c1300c487195c67870c52e29b931cfffcf271b187e4bd0bc32d"
+  },
+  "artifacts/ci-recovery/macos-javascript-first/javascript-corpus/corpus/JavaScriptSimulation/JavaScript_economic_planners_and_map_survey_execute__resume_and_replay_256_ticks/workers1/final.game": {
+    "bytes": 967731,
+    "sha256": "a2453c681c35ddc65a332654b8ddf1599c7dac5e4e9a8d4c031625d5c5676b6e"
+  },
+  "artifacts/ci-recovery/macos-javascript-first/javascript-corpus/corpus/JavaScriptSimulation/JavaScript_economic_planners_and_map_survey_execute__resume_and_replay_256_ticks/workers1/game.replay": {
+    "bytes": 995276,
+    "sha256": "ff1f6c0e1394b0744f3e2dd4badb169a5f16fe743becf4dd306a3c7e4baf3749"
+  },
+  "artifacts/ci-recovery/macos-javascript-first/javascript-corpus/corpus/JavaScriptSimulation/JavaScript_economic_planners_and_map_survey_execute__resume_and_replay_256_ticks/workers1/game.replay.checksums": {
+    "bytes": 461844,
+    "sha256": "3614560fa27303e65246ab2c404e77338e28f60a97304ef62a3078148f4e30ba"
+  },
+  "artifacts/ci-recovery/macos-javascript-first/javascript-corpus/corpus/JavaScriptSimulation/JavaScript_economic_planners_and_map_survey_execute__resume_and_replay_256_ticks/workers4/checkpoint-128.game": {
+    "bytes": 968667,
+    "sha256": "4256147e04fb1cf4d0c8c5d6d909fd22f15f3a755dd47b934cadd213b5ea86e1"
+  },
+  "artifacts/ci-recovery/macos-javascript-first/javascript-corpus/corpus/JavaScriptSimulation/JavaScript_economic_planners_and_map_survey_execute__resume_and_replay_256_ticks/workers4/checkpoint-32.game": {
+    "bytes": 967125,
+    "sha256": "88978c325de45c1300c487195c67870c52e29b931cfffcf271b187e4bd0bc32d"
+  },
+  "artifacts/ci-recovery/macos-javascript-first/javascript-corpus/corpus/JavaScriptSimulation/JavaScript_economic_planners_and_map_survey_execute__resume_and_replay_256_ticks/workers4/final.game": {
+    "bytes": 967731,
+    "sha256": "a2453c681c35ddc65a332654b8ddf1599c7dac5e4e9a8d4c031625d5c5676b6e"
+  },
+  "artifacts/ci-recovery/macos-javascript-first/javascript-corpus/corpus/JavaScriptSimulation/JavaScript_economic_planners_and_map_survey_execute__resume_and_replay_256_ticks/workers4/game.replay": {
+    "bytes": 995276,
+    "sha256": "ff1f6c0e1394b0744f3e2dd4badb169a5f16fe743becf4dd306a3c7e4baf3749"
+  },
+  "artifacts/ci-recovery/macos-javascript-first/javascript-corpus/corpus/JavaScriptSimulation/JavaScript_economic_planners_and_map_survey_execute__resume_and_replay_256_ticks/workers4/game.replay.checksums": {
+    "bytes": 461844,
+    "sha256": "3614560fa27303e65246ab2c404e77338e28f60a97304ef62a3078148f4e30ba"
+  },
+  "artifacts/ci-recovery/macos-javascript-first/javascript-corpus/corpus/JavaScriptSimulation/JavaScript_original_fixture_executes__resumes_and_replays_256_ticks/playback/final.game": {
+    "bytes": 928952,
+    "sha256": "71943a18cba71575a3e38cd925850b87bedd9df7d3053cd44dfd3f5b1c701714"
+  },
+  "artifacts/ci-recovery/macos-javascript-first/javascript-corpus/corpus/JavaScriptSimulation/JavaScript_original_fixture_executes__resumes_and_replays_256_ticks/playback/game.replay.checksums": {
+    "bytes": 461844,
+    "sha256": "104987c86940bd194079df6d855f2282343ff6417514cecc77799ffba5d9ddda"
+  },
+  "artifacts/ci-recovery/macos-javascript-first/javascript-corpus/corpus/JavaScriptSimulation/JavaScript_original_fixture_executes__resumes_and_replays_256_ticks/resumed-128/final.game": {
+    "bytes": 984933,
+    "sha256": "159d5e165687dec029f32c47c1eaf3941d86813ff8e79c12db8a9736c27d5604"
+  },
+  "artifacts/ci-recovery/macos-javascript-first/javascript-corpus/corpus/JavaScriptSimulation/JavaScript_original_fixture_executes__resumes_and_replays_256_ticks/resumed-128/game.replay": {
+    "bytes": 1152606,
+    "sha256": "1e5e83cf4627f861f8fc5e8b9c82255a18d01923b3bbd7318ec3be0d47a4287f"
+  },
+  "artifacts/ci-recovery/macos-javascript-first/javascript-corpus/corpus/JavaScriptSimulation/JavaScript_original_fixture_executes__resumes_and_replays_256_ticks/resumed-128/game.replay.checksums": {
+    "bytes": 230932,
+    "sha256": "985d55777de438953a6b19e684af7726480258f0bae9f80da8df67ed12baead4"
+  },
+  "artifacts/ci-recovery/macos-javascript-first/javascript-corpus/corpus/JavaScriptSimulation/JavaScript_original_fixture_executes__resumes_and_replays_256_ticks/resumed-32/final.game": {
+    "bytes": 984933,
+    "sha256": "54954621c80e764c894ba9bd8bd61a48178f768d338b12034d29cda3e3ba9e8f"
+  },
+  "artifacts/ci-recovery/macos-javascript-first/javascript-corpus/corpus/JavaScriptSimulation/JavaScript_original_fixture_executes__resumes_and_replays_256_ticks/resumed-32/game.replay": {
+    "bytes": 1251850,
+    "sha256": "683436cff72be99c31f99dc9785dacdd62e6b0802e142fd8c7b3583b187781e2"
+  },
+  "artifacts/ci-recovery/macos-javascript-first/javascript-corpus/corpus/JavaScriptSimulation/JavaScript_original_fixture_executes__resumes_and_replays_256_ticks/resumed-32/game.replay.checksums": {
+    "bytes": 404116,
+    "sha256": "2f82ebf0ead2f6c6f724144121d31cbfbd78559f19fad58ce5ec3a014724cdbb"
+  },
+  "artifacts/ci-recovery/macos-javascript-first/javascript-corpus/corpus/JavaScriptSimulation/JavaScript_original_fixture_executes__resumes_and_replays_256_ticks/workers1/checkpoint-128.game": {
+    "bytes": 986129,
+    "sha256": "7e466cd3b752591c09a6fb8f37d4424fbe44c161a570b41226459681ad1c8660"
+  },
+  "artifacts/ci-recovery/macos-javascript-first/javascript-corpus/corpus/JavaScriptSimulation/JavaScript_original_fixture_executes__resumes_and_replays_256_ticks/workers1/checkpoint-32.game": {
+    "bytes": 985299,
+    "sha256": "a144d2274be95ed1c33b58e742d5af125f9e430b79e794440147da41d1c12dbb"
+  },
+  "artifacts/ci-recovery/macos-javascript-first/javascript-corpus/corpus/JavaScriptSimulation/JavaScript_original_fixture_executes__resumes_and_replays_256_ticks/workers1/final.game": {
+    "bytes": 984933,
+    "sha256": "b9878401bba58abe01c8d22803cb156071cddd9766c913f8880d29537d1e0dbf"
+  },
+  "artifacts/ci-recovery/macos-javascript-first/javascript-corpus/corpus/JavaScriptSimulation/JavaScript_original_fixture_executes__resumes_and_replays_256_ticks/workers1/game.replay": {
+    "bytes": 989285,
+    "sha256": "2aca93d5aa328658d113969bb2b09b4ae5dde25b4fbe251034fe626089c365b3"
+  },
+  "artifacts/ci-recovery/macos-javascript-first/javascript-corpus/corpus/JavaScriptSimulation/JavaScript_original_fixture_executes__resumes_and_replays_256_ticks/workers1/game.replay.checksums": {
+    "bytes": 461844,
+    "sha256": "104987c86940bd194079df6d855f2282343ff6417514cecc77799ffba5d9ddda"
+  },
+  "artifacts/ci-recovery/macos-javascript-first/javascript-corpus/corpus/JavaScriptSimulation/JavaScript_original_fixture_executes__resumes_and_replays_256_ticks/workers4/checkpoint-128.game": {
+    "bytes": 986129,
+    "sha256": "7e466cd3b752591c09a6fb8f37d4424fbe44c161a570b41226459681ad1c8660"
+  },
+  "artifacts/ci-recovery/macos-javascript-first/javascript-corpus/corpus/JavaScriptSimulation/JavaScript_original_fixture_executes__resumes_and_replays_256_ticks/workers4/checkpoint-32.game": {
+    "bytes": 985299,
+    "sha256": "a144d2274be95ed1c33b58e742d5af125f9e430b79e794440147da41d1c12dbb"
+  },
+  "artifacts/ci-recovery/macos-javascript-first/javascript-corpus/corpus/JavaScriptSimulation/JavaScript_original_fixture_executes__resumes_and_replays_256_ticks/workers4/final.game": {
+    "bytes": 984933,
+    "sha256": "b9878401bba58abe01c8d22803cb156071cddd9766c913f8880d29537d1e0dbf"
+  },
+  "artifacts/ci-recovery/macos-javascript-first/javascript-corpus/corpus/JavaScriptSimulation/JavaScript_original_fixture_executes__resumes_and_replays_256_ticks/workers4/game.replay": {
+    "bytes": 989285,
+    "sha256": "2aca93d5aa328658d113969bb2b09b4ae5dde25b4fbe251034fe626089c365b3"
+  },
+  "artifacts/ci-recovery/macos-javascript-first/javascript-corpus/corpus/JavaScriptSimulation/JavaScript_original_fixture_executes__resumes_and_replays_256_ticks/workers4/game.replay.checksums": {
+    "bytes": 461844,
+    "sha256": "104987c86940bd194079df6d855f2282343ff6417514cecc77799ffba5d9ddda"
+  },
+  "artifacts/ci-recovery/macos-javascript-first/javascript-corpus/corpus/JavaScriptSimulation/JavaScript_profile_two_actions_fields_telemetry_and_construction_survive_save_resume_and_worker_counts/playback/final.game": {
+    "bytes": 1000621,
+    "sha256": "76f4efa40cb09619a290b99628269a653ce1ba50a5e4aca13cc8389267cd0a78"
+  },
+  "artifacts/ci-recovery/macos-javascript-first/javascript-corpus/corpus/JavaScriptSimulation/JavaScript_profile_two_actions_fields_telemetry_and_construction_survive_save_resume_and_worker_counts/playback/game.replay.checksums": {
+    "bytes": 231744,
+    "sha256": "a7ff4617c27e77f6d14174786727302ba38edefd58bbebaebc163719d6b2d35c"
+  },
+  "artifacts/ci-recovery/macos-javascript-first/javascript-corpus/corpus/JavaScriptSimulation/JavaScript_profile_two_actions_fields_telemetry_and_construction_survive_save_resume_and_worker_counts/profile2-initial.game": {
+    "bytes": 687638,
+    "sha256": "41f2bbec5491050de699fa3d67e35d52a6444e1c90615891c4fc4e83c4323bc9"
+  },
+  "artifacts/ci-recovery/macos-javascript-first/javascript-corpus/corpus/JavaScriptSimulation/JavaScript_profile_two_actions_fields_telemetry_and_construction_survive_save_resume_and_worker_counts/resume-128/final.game": {
+    "bytes": 1222223,
+    "sha256": "76b9bc2d7047866e23b3b3d8847551162897b35ec34d592b6f70bfba43ae0eef"
+  },
+  "artifacts/ci-recovery/macos-javascript-first/javascript-corpus/corpus/JavaScriptSimulation/JavaScript_profile_two_actions_fields_telemetry_and_construction_survive_save_resume_and_worker_counts/resume-128/game.replay": {
+    "bytes": 1343048,
+    "sha256": "9a08192846461c11344e1f5c9bec7c89aab6f29bf412288c482d86ee40a188f4"
+  },
+  "artifacts/ci-recovery/macos-javascript-first/javascript-corpus/corpus/JavaScriptSimulation/JavaScript_profile_two_actions_fields_telemetry_and_construction_survive_save_resume_and_worker_counts/resume-128/game.replay.checksums": {
+    "bytes": 117268,
+    "sha256": "02f5b59821a7f533e23fc18978285befc938df4809ffddaaa3a9ce3bdbeb6f4e"
+  },
+  "artifacts/ci-recovery/macos-javascript-first/javascript-corpus/corpus/JavaScriptSimulation/JavaScript_profile_two_actions_fields_telemetry_and_construction_survive_save_resume_and_worker_counts/resume-32/final.game": {
+    "bytes": 1222223,
+    "sha256": "adeeb6829751fd3516410a180daf61b642fa22abfde093dc25ec3e44180d6c28"
+  },
+  "artifacts/ci-recovery/macos-javascript-first/javascript-corpus/corpus/JavaScriptSimulation/JavaScript_profile_two_actions_fields_telemetry_and_construction_survive_save_resume_and_worker_counts/resume-32/game.replay": {
+    "bytes": 1402747,
+    "sha256": "d8d203ed66c5dd818cb920131bb9df9a32c299af8fbdc67b21ee70b0c0797f6a"
+  },
+  "artifacts/ci-recovery/macos-javascript-first/javascript-corpus/corpus/JavaScriptSimulation/JavaScript_profile_two_actions_fields_telemetry_and_construction_survive_save_resume_and_worker_counts/resume-32/game.replay.checksums": {
+    "bytes": 205204,
+    "sha256": "694f668b18a0380ef23ad7397c41bb46d14f58a4fd6dd9cd1059ceee8637e08e"
+  },
+  "artifacts/ci-recovery/macos-javascript-first/javascript-corpus/corpus/JavaScriptSimulation/JavaScript_profile_two_actions_fields_telemetry_and_construction_survive_save_resume_and_worker_counts/workers1/checkpoint-128.game": {
+    "bytes": 1172687,
+    "sha256": "f12928273c6c6ee69addc6a7e6b6a7dfe31c6505573f9da676571e89029a729d"
+  },
+  "artifacts/ci-recovery/macos-javascript-first/javascript-corpus/corpus/JavaScriptSimulation/JavaScript_profile_two_actions_fields_telemetry_and_construction_survive_save_resume_and_worker_counts/workers1/checkpoint-32.game": {
+    "bytes": 1129480,
+    "sha256": "331b11f1473a55ee8f1d0f3b4ca6de6a5e4532fbc4760e1d373d42725c45290a"
+  },
+  "artifacts/ci-recovery/macos-javascript-first/javascript-corpus/corpus/JavaScriptSimulation/JavaScript_profile_two_actions_fields_telemetry_and_construction_survive_save_resume_and_worker_counts/workers1/final.game": {
+    "bytes": 1222223,
+    "sha256": "023e20eec69e4c42e3c1160382bc52add8f6ccfccfdaee6d807e17c676c05699"
+  },
+  "artifacts/ci-recovery/macos-javascript-first/javascript-corpus/corpus/JavaScriptSimulation/JavaScript_profile_two_actions_fields_telemetry_and_construction_survive_save_resume_and_worker_counts/workers1/game.replay": {
+    "bytes": 928837,
+    "sha256": "df7f8976750e4f6abca3f799bbb18728b4ab492c8fe8b63a3c36305f36e5ed10"
+  },
+  "artifacts/ci-recovery/macos-javascript-first/javascript-corpus/corpus/JavaScriptSimulation/JavaScript_profile_two_actions_fields_telemetry_and_construction_survive_save_resume_and_worker_counts/workers1/game.replay.checksums": {
+    "bytes": 231744,
+    "sha256": "a7ff4617c27e77f6d14174786727302ba38edefd58bbebaebc163719d6b2d35c"
+  },
+  "artifacts/ci-recovery/macos-javascript-first/javascript-corpus/corpus/JavaScriptSimulation/JavaScript_profile_two_actions_fields_telemetry_and_construction_survive_save_resume_and_worker_counts/workers4/final.game": {
+    "bytes": 1222223,
+    "sha256": "b0fe446aef66caebd568e9a921a9bc1c7348a356492d57668b5286457700edd9"
+  },
+  "artifacts/ci-recovery/macos-javascript-first/javascript-corpus/corpus/JavaScriptSimulation/JavaScript_profile_two_actions_fields_telemetry_and_construction_survive_save_resume_and_worker_counts/workers4/game.replay": {
+    "bytes": 928837,
+    "sha256": "df7f8976750e4f6abca3f799bbb18728b4ab492c8fe8b63a3c36305f36e5ed10"
+  },
+  "artifacts/ci-recovery/macos-javascript-first/javascript-corpus/corpus/JavaScriptSimulation/JavaScript_profile_two_actions_fields_telemetry_and_construction_survive_save_resume_and_worker_counts/workers4/game.replay.checksums": {
+    "bytes": 231744,
+    "sha256": "a7ff4617c27e77f6d14174786727302ba38edefd58bbebaebc163719d6b2d35c"
+  },
+  "artifacts/ci-recovery/macos-javascript-first/javascript-corpus/corpus/build-provenance.json": {
+    "bytes": 743,
+    "sha256": "dc05d0e86d104f3040383194bbaa73df2fd4585bc04d176402c272702d9c9adb"
+  },
+  "artifacts/ci-recovery/macos-javascript-first/javascript-corpus/glob2-engine-tests.log": {
+    "bytes": 13501,
+    "sha256": "46701658452d158568a5d075b0d4486c2319c9a7f4f495350060b9df4abf1592"
+  },
+  "artifacts/ci-recovery/macos-javascript-first/javascript-corpus/glob2-engine-tests.xml": {
+    "bytes": 13186,
+    "sha256": "64543d145864bb2246dcddcace1354e29af85b7190e3878188dfcfd49c744660"
+  },
+  "artifacts/ci-recovery/macos-javascript-first/javascript-corpus/glob2-unit-tests.log": {
+    "bytes": 4484,
+    "sha256": "e61ae396ee5562093cd8915786af9202b85ce7b0c6c51f1883f44f20b0d30489"
+  },
+  "artifacts/ci-recovery/macos-javascript-first/javascript-corpus/glob2-unit-tests.xml": {
+    "bytes": 4421,
+    "sha256": "0d40f83dbcd7293de799494c5caf8351eddd6a5652cc094c847d9100aa579ba2"
+  },
+  "artifacts/ci-recovery/macos-javascript-first/javascript-corpus/manifest.json": {
+    "bytes": 21891,
+    "sha256": "080b0b1c7ec4db9a986e96f5fed6d2f24a16ab96ba0a8738c838611000a97aa2"
+  },
+  "artifacts/ci-recovery/macos-javascript-first/javascript-profile/manifest.json": {
+    "bytes": 2023,
+    "sha256": "d87202fa78e9633cd10de96e415c8183ba1bd45d500f613e217b4164ac6436a2"
+  },
+  "artifacts/ci-recovery/macos-javascript-first/javascript-profile/profile1/resumed-128/artifacts.json": {
+    "bytes": 345,
+    "sha256": "bb0e1b6d04c8d1a5862109fb76e5059af778e7bf252b2d61552ce112926501e9"
+  },
+  "artifacts/ci-recovery/macos-javascript-first/javascript-profile/profile1/resumed-128/command.json": {
+    "bytes": 450,
+    "sha256": "70e1a05f5f9ed3a30050cb791cc4a5b541e473b87cc93fa8afa82c4001408350"
+  },
+  "artifacts/ci-recovery/macos-javascript-first/javascript-profile/profile1/resumed-128/engine.log": {
+    "bytes": 403,
+    "sha256": "21108cd5bf85d059e07f258589203dfc47b856190f30859cb4852a4816bd9c98"
+  },
+  "artifacts/ci-recovery/macos-javascript-first/javascript-profile/profile1/resumed-128/final.game.gz": {
+    "bytes": 49956,
+    "sha256": "a090ad66c69e3c22a38bc62ceee748a84e96c5a647bcdeb950818489f1b361e1"
+  },
+  "artifacts/ci-recovery/macos-javascript-first/javascript-profile/profile1/resumed-128/game.replay": {
+    "bytes": 1149542,
+    "sha256": "1c91593d318571d444094360738d720d3663e26f158933132899cc6f16f535d3"
+  },
+  "artifacts/ci-recovery/macos-javascript-first/javascript-profile/profile1/resumed-128/game.replay.checksums": {
+    "bytes": 230932,
+    "sha256": "8d9223916b86fc40849ccc68dcab06d74c0a73350afe71e84f156f8a83a30912"
+  },
+  "artifacts/ci-recovery/macos-javascript-first/javascript-profile/profile1/resumed-128/progress.jsonl": {
+    "bytes": 32,
+    "sha256": "b81a76b19f7553c8e795693c55c4e2c99c44ccd73102a6ec5b4bf3821816bc85"
+  },
+  "artifacts/ci-recovery/macos-javascript-first/javascript-profile/profile1/resumed-128/result.json": {
+    "bytes": 11875,
+    "sha256": "988fb42c93013cf459fb5bfe1d41749b537520e089030183e3aa48c841c21c8c"
+  },
+  "artifacts/ci-recovery/macos-javascript-first/javascript-profile/profile1/resumed-128/world.checksums": {
+    "bytes": 1893,
+    "sha256": "f2f98abf3d783fc2330dbe8bcd85e720b837c13dbcb46d3f92a7f5086626398b"
+  },
+  "artifacts/ci-recovery/macos-javascript-first/javascript-profile/profile1/workers1/artifacts.json": {
+    "bytes": 440,
+    "sha256": "b193e610b52d551378ade87f111db81b65b9e69cf23b94fb24d21deb67adf4a6"
+  },
+  "artifacts/ci-recovery/macos-javascript-first/javascript-profile/profile1/workers1/checkpoint-128.game.gz": {
+    "bytes": 49164,
+    "sha256": "6e3c49bcf0be929be0ba84a41914fcbff9be14c668f26c2cf13973419949698b"
+  },
+  "artifacts/ci-recovery/macos-javascript-first/javascript-profile/profile1/workers1/checkpoint-256.game.gz": {
+    "bytes": 49957,
+    "sha256": "9a5fc6c0dcb960885314a18342cb85bafbff3136b678bc681b7e67719e4fe2c5"
+  },
+  "artifacts/ci-recovery/macos-javascript-first/javascript-profile/profile1/workers1/command.json": {
+    "bytes": 457,
+    "sha256": "5e87fef1436311b0e5883383089e65fe05c3d1fd96cf2ec2c7c14f149719cd74"
+  },
+  "artifacts/ci-recovery/macos-javascript-first/javascript-profile/profile1/workers1/engine.log": {
+    "bytes": 638,
+    "sha256": "bcb744af8641f2c69d7ee90f234199c76cb978386bbfba7f167a510f6c684544"
+  },
+  "artifacts/ci-recovery/macos-javascript-first/javascript-profile/profile1/workers1/final.game.gz": {
+    "bytes": 49957,
+    "sha256": "f3f9f3329497d2c596957f3abacf0a4599793dd3da185eda4fbdf65875148a6b"
+  },
+  "artifacts/ci-recovery/macos-javascript-first/javascript-profile/profile1/workers1/game.replay": {
+    "bytes": 989285,
+    "sha256": "4691f617d75d48abda493042a94fda09718f738470ef24b483e8557b048cedad"
+  },
+  "artifacts/ci-recovery/macos-javascript-first/javascript-profile/profile1/workers1/game.replay.checksums": {
+    "bytes": 461844,
+    "sha256": "bbbfe1afe8e0e5dafdcb6db07f14a9640290b6993000b15937cd6e7f67abfbfd"
+  },
+  "artifacts/ci-recovery/macos-javascript-first/javascript-profile/profile1/workers1/progress.jsonl": {
+    "bytes": 32,
+    "sha256": "b81a76b19f7553c8e795693c55c4e2c99c44ccd73102a6ec5b4bf3821816bc85"
+  },
+  "artifacts/ci-recovery/macos-javascript-first/javascript-profile/profile1/workers1/result.json": {
+    "bytes": 11736,
+    "sha256": "c416215a65e6bfbf7ea183c4ed8a53fdfe2603b95a49c080c40a5db42d35f33d"
+  },
+  "artifacts/ci-recovery/macos-javascript-first/javascript-profile/profile1/workers1/world.checksums": {
+    "bytes": 3663,
+    "sha256": "2495a8699bb702d877999f4bcf4e308f9a9530717d9a325d9e4dcf89b483858e"
+  },
+  "artifacts/ci-recovery/macos-javascript-first/javascript-profile/profile1/workers4/artifacts.json": {
+    "bytes": 440,
+    "sha256": "b65f00336a3ebcc7f38af776e371ee62289ad858749463b5431cfc6090f0cce1"
+  },
+  "artifacts/ci-recovery/macos-javascript-first/javascript-profile/profile1/workers4/checkpoint-128.game.gz": {
+    "bytes": 49164,
+    "sha256": "6e3c49bcf0be929be0ba84a41914fcbff9be14c668f26c2cf13973419949698b"
+  },
+  "artifacts/ci-recovery/macos-javascript-first/javascript-profile/profile1/workers4/checkpoint-256.game.gz": {
+    "bytes": 49957,
+    "sha256": "9a5fc6c0dcb960885314a18342cb85bafbff3136b678bc681b7e67719e4fe2c5"
+  },
+  "artifacts/ci-recovery/macos-javascript-first/javascript-profile/profile1/workers4/command.json": {
+    "bytes": 457,
+    "sha256": "fd24159049bd19598e70ca937ec616fc6025f9e5cd152bf9b48aff07fd2a3bf9"
+  },
+  "artifacts/ci-recovery/macos-javascript-first/javascript-profile/profile1/workers4/engine.log": {
+    "bytes": 638,
+    "sha256": "681fb07f9926558a3c90c40e02e1f29a89f3d13ea5cc3b5553a43cb23b9b4be5"
+  },
+  "artifacts/ci-recovery/macos-javascript-first/javascript-profile/profile1/workers4/final.game.gz": {
+    "bytes": 49957,
+    "sha256": "f3f9f3329497d2c596957f3abacf0a4599793dd3da185eda4fbdf65875148a6b"
+  },
+  "artifacts/ci-recovery/macos-javascript-first/javascript-profile/profile1/workers4/game.replay": {
+    "bytes": 989285,
+    "sha256": "4691f617d75d48abda493042a94fda09718f738470ef24b483e8557b048cedad"
+  },
+  "artifacts/ci-recovery/macos-javascript-first/javascript-profile/profile1/workers4/game.replay.checksums": {
+    "bytes": 461844,
+    "sha256": "bbbfe1afe8e0e5dafdcb6db07f14a9640290b6993000b15937cd6e7f67abfbfd"
+  },
+  "artifacts/ci-recovery/macos-javascript-first/javascript-profile/profile1/workers4/progress.jsonl": {
+    "bytes": 32,
+    "sha256": "b81a76b19f7553c8e795693c55c4e2c99c44ccd73102a6ec5b4bf3821816bc85"
+  },
+  "artifacts/ci-recovery/macos-javascript-first/javascript-profile/profile1/workers4/result.json": {
+    "bytes": 11885,
+    "sha256": "c66ee0c7f709d8bbea56b2e37d004cdf37bef0f97bb88d08cf08a9502f776b26"
+  },
+  "artifacts/ci-recovery/macos-javascript-first/javascript-profile/profile1/workers4/world.checksums": {
+    "bytes": 3663,
+    "sha256": "2495a8699bb702d877999f4bcf4e308f9a9530717d9a325d9e4dcf89b483858e"
+  },
+  "artifacts/ci-recovery/macos-javascript-first/javascript-profile/realistic-profile1/resumed-128/artifacts.json": {
+    "bytes": 345,
+    "sha256": "6d0061650f9b087d61d1b27d7d99a616a3c0a3aae95131a447eb2e65393b1456"
+  },
+  "artifacts/ci-recovery/macos-javascript-first/javascript-profile/realistic-profile1/resumed-128/command.json": {
+    "bytes": 470,
+    "sha256": "61a0080369ec9dd4c43840e0f33d066ce4b0d5c6375ac10bd2397c85e4a157db"
+  },
+  "artifacts/ci-recovery/macos-javascript-first/javascript-profile/realistic-profile1/resumed-128/engine.log": {
+    "bytes": 413,
+    "sha256": "d868ebcfbd9eb86f1d4d16526021a1af088051d2d60268cb370601b7df35bc5b"
+  },
+  "artifacts/ci-recovery/macos-javascript-first/javascript-profile/realistic-profile1/resumed-128/final.game.gz": {
+    "bytes": 50293,
+    "sha256": "88b02e7547701fd1713544fb1095f87e096282b415771d83a9abecb2f2e4b38c"
+  },
+  "artifacts/ci-recovery/macos-javascript-first/javascript-profile/realistic-profile1/resumed-128/game.replay": {
+    "bytes": 1133202,
+    "sha256": "8778bc84f5b644a05e458e22609928b3eaa35aef6bfc11eb1466bf34ef1a0086"
+  },
+  "artifacts/ci-recovery/macos-javascript-first/javascript-profile/realistic-profile1/resumed-128/game.replay.checksums": {
+    "bytes": 230932,
+    "sha256": "9978fbf518306e7263468d8bc574fd0a3ba1665f5e74b2fe35924d498ef43b2a"
+  },
+  "artifacts/ci-recovery/macos-javascript-first/javascript-profile/realistic-profile1/resumed-128/progress.jsonl": {
+    "bytes": 32,
+    "sha256": "b81a76b19f7553c8e795693c55c4e2c99c44ccd73102a6ec5b4bf3821816bc85"
+  },
+  "artifacts/ci-recovery/macos-javascript-first/javascript-profile/realistic-profile1/resumed-128/result.json": {
+    "bytes": 14532,
+    "sha256": "64ef1557427a20e838987be99e4d4e2388e0c58b41f542d29756d8fdebe97b7b"
+  },
+  "artifacts/ci-recovery/macos-javascript-first/javascript-profile/realistic-profile1/resumed-128/world.checksums": {
+    "bytes": 1883,
+    "sha256": "a832fb0f34a7e16da1528cc253d39b6e5617d57ac09f26cf23bc5479f55a6611"
+  },
+  "artifacts/ci-recovery/macos-javascript-first/javascript-profile/realistic-profile1/resumed-224/artifacts.json": {
+    "bytes": 343,
+    "sha256": "ef2b95bc9d1312554195fdc8d51319305e4c934c94cf34d84205525e51ff8fd8"
+  },
+  "artifacts/ci-recovery/macos-javascript-first/javascript-profile/realistic-profile1/resumed-224/command.json": {
+    "bytes": 470,
+    "sha256": "2f5f5d1840318c2012d635cb2c11a45b722a85c314f0407fe2152a0353184363"
+  },
+  "artifacts/ci-recovery/macos-javascript-first/javascript-profile/realistic-profile1/resumed-224/engine.log": {
+    "bytes": 412,
+    "sha256": "6d57c9ae08ce07526c669809b7667b8eb5a8b0e6337643f0d2249120af174306"
+  },
+  "artifacts/ci-recovery/macos-javascript-first/javascript-profile/realistic-profile1/resumed-224/final.game.gz": {
+    "bytes": 50293,
+    "sha256": "88b02e7547701fd1713544fb1095f87e096282b415771d83a9abecb2f2e4b38c"
+  },
+  "artifacts/ci-recovery/macos-javascript-first/javascript-profile/realistic-profile1/resumed-224/game.replay": {
+    "bytes": 1034105,
+    "sha256": "b1a228c882561130eb3e24546bce3e3f362cc58df96a9080fc4d64b3c09d1304"
+  },
+  "artifacts/ci-recovery/macos-javascript-first/javascript-profile/realistic-profile1/resumed-224/game.replay.checksums": {
+    "bytes": 57748,
+    "sha256": "eba65dd72a21137980106e248163ad0527e3b0821795fc6f140c598bee64041f"
+  },
+  "artifacts/ci-recovery/macos-javascript-first/javascript-profile/realistic-profile1/resumed-224/progress.jsonl": {
+    "bytes": 32,
+    "sha256": "b81a76b19f7553c8e795693c55c4e2c99c44ccd73102a6ec5b4bf3821816bc85"
+  },
+  "artifacts/ci-recovery/macos-javascript-first/javascript-profile/realistic-profile1/resumed-224/result.json": {
+    "bytes": 14519,
+    "sha256": "36b2c2f5115b07bf2e8c6ea96fc76bb72cea4579ec8501a3de7be7f230b36e20"
+  },
+  "artifacts/ci-recovery/macos-javascript-first/javascript-profile/realistic-profile1/resumed-224/world.checksums": {
+    "bytes": 473,
+    "sha256": "0142f144647da3b9ba0d4c2e014204441cd15edd3760671aec67754ff3c740e7"
+  },
+  "artifacts/ci-recovery/macos-javascript-first/javascript-profile/realistic-profile1/resumed-32/artifacts.json": {
+    "bytes": 345,
+    "sha256": "956379b29369252630eb71570aab1cba4a468254ec3d89c4f916bd741bb62e5e"
+  },
+  "artifacts/ci-recovery/macos-javascript-first/javascript-profile/realistic-profile1/resumed-32/command.json": {
+    "bytes": 468,
+    "sha256": "bcabee889afe6aa1a83210f11d074bcd06af3984c2ad786fae719dbaa5d63e65"
+  },
+  "artifacts/ci-recovery/macos-javascript-first/javascript-profile/realistic-profile1/resumed-32/engine.log": {
+    "bytes": 412,
+    "sha256": "47100712cc2222a79225cc4d25832c361d7f09ae535aca23aeb17582fcef5985"
+  },
+  "artifacts/ci-recovery/macos-javascript-first/javascript-profile/realistic-profile1/resumed-32/final.game.gz": {
+    "bytes": 50293,
+    "sha256": "88b02e7547701fd1713544fb1095f87e096282b415771d83a9abecb2f2e4b38c"
+  },
+  "artifacts/ci-recovery/macos-javascript-first/javascript-profile/realistic-profile1/resumed-32/game.replay": {
+    "bytes": 1232980,
+    "sha256": "826a361799651cf8d8d0e1184c4b7b8bbf9d4e936f606f9b909ead6560453dea"
+  },
+  "artifacts/ci-recovery/macos-javascript-first/javascript-profile/realistic-profile1/resumed-32/game.replay.checksums": {
+    "bytes": 404116,
+    "sha256": "39cf9f4b20f26b6581ae8bf76016d0b446d4f05a7e2e15279f94a5c87898bb23"
+  },
+  "artifacts/ci-recovery/macos-javascript-first/javascript-profile/realistic-profile1/resumed-32/progress.jsonl": {
+    "bytes": 32,
+    "sha256": "b81a76b19f7553c8e795693c55c4e2c99c44ccd73102a6ec5b4bf3821816bc85"
+  },
+  "artifacts/ci-recovery/macos-javascript-first/javascript-profile/realistic-profile1/resumed-32/result.json": {
+    "bytes": 14539,
+    "sha256": "df81c8d3f6200f3e920ed994ea38d03fcf5b4a47ae10f49c83419986ce782a1e"
+  },
+  "artifacts/ci-recovery/macos-javascript-first/javascript-profile/realistic-profile1/resumed-32/world.checksums": {
+    "bytes": 3232,
+    "sha256": "03cb32207ecb98f2842cea695525f89271f312dcbb05b165675bf6465b9aa328"
+  },
+  "artifacts/ci-recovery/macos-javascript-first/javascript-profile/realistic-profile1/resumed-64/artifacts.json": {
+    "bytes": 345,
+    "sha256": "984d368dda04b7951d7889fd49a2ce14ea0ac5a866631248102fa9772c192e01"
+  },
+  "artifacts/ci-recovery/macos-javascript-first/javascript-profile/realistic-profile1/resumed-64/command.json": {
+    "bytes": 468,
+    "sha256": "78bc7e08728e4e4d68c6afa28a3db24cbe50df3442c38555e6415debf55b6be6"
+  },
+  "artifacts/ci-recovery/macos-javascript-first/javascript-profile/realistic-profile1/resumed-64/engine.log": {
+    "bytes": 412,
+    "sha256": "ddea19c2aa879c64d7182d0a8480fd46553bd3c72bd391cae32050d0ae1d6f6e"
+  },
+  "artifacts/ci-recovery/macos-javascript-first/javascript-profile/realistic-profile1/resumed-64/final.game.gz": {
+    "bytes": 50293,
+    "sha256": "88b02e7547701fd1713544fb1095f87e096282b415771d83a9abecb2f2e4b38c"
+  },
+  "artifacts/ci-recovery/macos-javascript-first/javascript-profile/realistic-profile1/resumed-64/game.replay": {
+    "bytes": 1199552,
+    "sha256": "db50e551cbfd29dad38dcdf0e868b9bc477af496aa208b49188870b9c4fc2f5d"
+  },
+  "artifacts/ci-recovery/macos-javascript-first/javascript-profile/realistic-profile1/resumed-64/game.replay.checksums": {
+    "bytes": 346388,
+    "sha256": "9991fa5fc1dc0ea7aaed8f5c31b2c21dc094fff960689c3902dfc1e214ede027"
+  },
+  "artifacts/ci-recovery/macos-javascript-first/javascript-profile/realistic-profile1/resumed-64/progress.jsonl": {
+    "bytes": 32,
+    "sha256": "b81a76b19f7553c8e795693c55c4e2c99c44ccd73102a6ec5b4bf3821816bc85"
+  },
+  "artifacts/ci-recovery/macos-javascript-first/javascript-profile/realistic-profile1/resumed-64/result.json": {
+    "bytes": 14538,
+    "sha256": "ba6d1a97e652da1cddce7761236aed63fbd5f4ec27cc04c2648af626f488e9b3"
+  },
+  "artifacts/ci-recovery/macos-javascript-first/javascript-profile/realistic-profile1/resumed-64/world.checksums": {
+    "bytes": 2793,
+    "sha256": "13deb04136d2b70b98ae2dea36d414d2019cf3810974a2133fd171f35a246fb9"
+  },
+  "artifacts/ci-recovery/macos-javascript-first/javascript-profile/realistic-profile1/resumed-96/artifacts.json": {
+    "bytes": 345,
+    "sha256": "b38bc2569d6a219e25eaf5165ad2f7b968a79510c7bd62e33671bf92e85ec506"
+  },
+  "artifacts/ci-recovery/macos-javascript-first/javascript-profile/realistic-profile1/resumed-96/command.json": {
+    "bytes": 468,
+    "sha256": "18469ac46a306b1b1c98d66eb7fc32bead9966a4eef0895577a6ec720f558950"
+  },
+  "artifacts/ci-recovery/macos-javascript-first/javascript-profile/realistic-profile1/resumed-96/engine.log": {
+    "bytes": 412,
+    "sha256": "c9ce255d949e71593b27ef14119d86d7ae471292496a4a1e9bc9cb0770d1ac03"
+  },
+  "artifacts/ci-recovery/macos-javascript-first/javascript-profile/realistic-profile1/resumed-96/final.game.gz": {
+    "bytes": 50293,
+    "sha256": "88b02e7547701fd1713544fb1095f87e096282b415771d83a9abecb2f2e4b38c"
+  },
+  "artifacts/ci-recovery/macos-javascript-first/javascript-profile/realistic-profile1/resumed-96/game.replay": {
+    "bytes": 1166253,
+    "sha256": "ba297fc3aba8d3dfa041c7a5040ae930fe7133ed0cc12232fa45f196d8e26d16"
+  },
+  "artifacts/ci-recovery/macos-javascript-first/javascript-profile/realistic-profile1/resumed-96/game.replay.checksums": {
+    "bytes": 288660,
+    "sha256": "17370e481ed8e4fa7b5779000616d9ef81ce87e1181459362e6d9713296f8f17"
+  },
+  "artifacts/ci-recovery/macos-javascript-first/javascript-profile/realistic-profile1/resumed-96/progress.jsonl": {
+    "bytes": 32,
+    "sha256": "b81a76b19f7553c8e795693c55c4e2c99c44ccd73102a6ec5b4bf3821816bc85"
+  },
+  "artifacts/ci-recovery/macos-javascript-first/javascript-profile/realistic-profile1/resumed-96/result.json": {
+    "bytes": 14533,
+    "sha256": "e889542a0c05a7ab17a782b93f1eef97fb185456a8ee1d64714bf7f0a51cb0af"
+  },
+  "artifacts/ci-recovery/macos-javascript-first/javascript-profile/realistic-profile1/resumed-96/world.checksums": {
+    "bytes": 2352,
+    "sha256": "2b83fd341c0c90dea8e4fae56a2d6190b3640f09d12b1327c3669afa2fc907ee"
+  },
+  "artifacts/ci-recovery/macos-javascript-first/javascript-profile/realistic-profile1/workers1/artifacts.json": {
+    "bytes": 726,
+    "sha256": "823dac6e9f26200b2e58a6f7c0d73d7479db16bf24e7cb08e1d704d2804bc3db"
+  },
+  "artifacts/ci-recovery/macos-javascript-first/javascript-profile/realistic-profile1/workers1/checkpoint-128.game.gz": {
+    "bytes": 49291,
+    "sha256": "585adb7cfb3c6ddb6c07ca4897ad9b467e74900e4fccd5d66434c857bddfe072"
+  },
+  "artifacts/ci-recovery/macos-javascript-first/javascript-profile/realistic-profile1/workers1/checkpoint-160.game.gz": {
+    "bytes": 49613,
+    "sha256": "89187279b3902e53a8fe1855b74b09cb4788e62e173e2997487585d58a6fd948"
+  },
+  "artifacts/ci-recovery/macos-javascript-first/javascript-profile/realistic-profile1/workers1/checkpoint-192.game.gz": {
+    "bytes": 50045,
+    "sha256": "35517b428dbf0e78f96031139de1999e0795468479512cfc51b5778d200a5c2d"
+  },
+  "artifacts/ci-recovery/macos-javascript-first/javascript-profile/realistic-profile1/workers1/checkpoint-224.game.gz": {
+    "bytes": 50153,
+    "sha256": "1bed9af851d96809f37278a4235f22caaaeea0459ea3f02954b1883971bc93c7"
+  },
+  "artifacts/ci-recovery/macos-javascript-first/javascript-profile/realistic-profile1/workers1/checkpoint-256.game.gz": {
+    "bytes": 50292,
+    "sha256": "b51e8b39d33c67584bd865c4385bbe19d902dde775a4f8cc5aace76567f539fa"
+  },
+  "artifacts/ci-recovery/macos-javascript-first/javascript-profile/realistic-profile1/workers1/checkpoint-32.game.gz": {
+    "bytes": 48468,
+    "sha256": "4c4cb0cd290c59b295d49d7e2222ab8bff9afab85b44d67e7ec8c30bc431657f"
+  },
+  "artifacts/ci-recovery/macos-javascript-first/javascript-profile/realistic-profile1/workers1/checkpoint-64.game.gz": {
+    "bytes": 48866,
+    "sha256": "46e5b5b910eef86472bd3c018d0816f2a9699d504dafe98fac901e2f35da541c"
+  },
+  "artifacts/ci-recovery/macos-javascript-first/javascript-profile/realistic-profile1/workers1/checkpoint-96.game.gz": {
+    "bytes": 48984,
+    "sha256": "86640b2c9d84f2800b9a80543db125682953fa870de22847e69256468bf7b72b"
+  },
+  "artifacts/ci-recovery/macos-javascript-first/javascript-profile/realistic-profile1/workers1/command.json": {
+    "bytes": 476,
+    "sha256": "aad883cffe38b0888a5d3b2aa3c2d42dd4f976042298e508f56314618c4e9aa8"
+  },
+  "artifacts/ci-recovery/macos-javascript-first/javascript-profile/realistic-profile1/workers1/engine.log": {
+    "bytes": 1439,
+    "sha256": "d119dd40e02e34d22c476aa6a7f0b75c3d4476205565e106838ae58012d2801a"
+  },
+  "artifacts/ci-recovery/macos-javascript-first/javascript-profile/realistic-profile1/workers1/final.game.gz": {
+    "bytes": 50292,
+    "sha256": "b51e8b39d33c67584bd865c4385bbe19d902dde775a4f8cc5aace76567f539fa"
+  },
+  "artifacts/ci-recovery/macos-javascript-first/javascript-profile/realistic-profile1/workers1/game.replay": {
+    "bytes": 995276,
+    "sha256": "b74700a1977086a8b2152d8f8135840daef7fc710f65e87a12bf476833f5e9e7"
+  },
+  "artifacts/ci-recovery/macos-javascript-first/javascript-profile/realistic-profile1/workers1/game.replay.checksums": {
+    "bytes": 461844,
+    "sha256": "e0e1fc40ea85949fe18bc90a9cb3fd8f2283871807e241b3f8c9488d7aba1abf"
+  },
+  "artifacts/ci-recovery/macos-javascript-first/javascript-profile/realistic-profile1/workers1/progress.jsonl": {
+    "bytes": 32,
+    "sha256": "b81a76b19f7553c8e795693c55c4e2c99c44ccd73102a6ec5b4bf3821816bc85"
+  },
+  "artifacts/ci-recovery/macos-javascript-first/javascript-profile/realistic-profile1/workers1/result.json": {
+    "bytes": 14394,
+    "sha256": "b59f8a224109b35ed2d3632fc58b17b37a9e0657beb53804601c7f53f75167de"
+  },
+  "artifacts/ci-recovery/macos-javascript-first/javascript-profile/realistic-profile1/workers1/world.checksums": {
+    "bytes": 3659,
+    "sha256": "28ad8a87e35419ec93a455420ff99e3d34ee2506dc3d1c12c35fb7a13d306736"
+  },
+  "artifacts/ci-recovery/macos-javascript-first/javascript-profile/realistic-profile1/workers4/artifacts.json": {
+    "bytes": 726,
+    "sha256": "100d8c0846396095c69d91e536b8c744a19b9c8f16e3ef924f14fe17a0ed0090"
+  },
+  "artifacts/ci-recovery/macos-javascript-first/javascript-profile/realistic-profile1/workers4/checkpoint-128.game.gz": {
+    "bytes": 49291,
+    "sha256": "585adb7cfb3c6ddb6c07ca4897ad9b467e74900e4fccd5d66434c857bddfe072"
+  },
+  "artifacts/ci-recovery/macos-javascript-first/javascript-profile/realistic-profile1/workers4/checkpoint-160.game.gz": {
+    "bytes": 49613,
+    "sha256": "89187279b3902e53a8fe1855b74b09cb4788e62e173e2997487585d58a6fd948"
+  },
+  "artifacts/ci-recovery/macos-javascript-first/javascript-profile/realistic-profile1/workers4/checkpoint-192.game.gz": {
+    "bytes": 50045,
+    "sha256": "35517b428dbf0e78f96031139de1999e0795468479512cfc51b5778d200a5c2d"
+  },
+  "artifacts/ci-recovery/macos-javascript-first/javascript-profile/realistic-profile1/workers4/checkpoint-224.game.gz": {
+    "bytes": 50153,
+    "sha256": "1bed9af851d96809f37278a4235f22caaaeea0459ea3f02954b1883971bc93c7"
+  },
+  "artifacts/ci-recovery/macos-javascript-first/javascript-profile/realistic-profile1/workers4/checkpoint-256.game.gz": {
+    "bytes": 50292,
+    "sha256": "b51e8b39d33c67584bd865c4385bbe19d902dde775a4f8cc5aace76567f539fa"
+  },
+  "artifacts/ci-recovery/macos-javascript-first/javascript-profile/realistic-profile1/workers4/checkpoint-32.game.gz": {
+    "bytes": 48468,
+    "sha256": "4c4cb0cd290c59b295d49d7e2222ab8bff9afab85b44d67e7ec8c30bc431657f"
+  },
+  "artifacts/ci-recovery/macos-javascript-first/javascript-profile/realistic-profile1/workers4/checkpoint-64.game.gz": {
+    "bytes": 48866,
+    "sha256": "46e5b5b910eef86472bd3c018d0816f2a9699d504dafe98fac901e2f35da541c"
+  },
+  "artifacts/ci-recovery/macos-javascript-first/javascript-profile/realistic-profile1/workers4/checkpoint-96.game.gz": {
+    "bytes": 48984,
+    "sha256": "86640b2c9d84f2800b9a80543db125682953fa870de22847e69256468bf7b72b"
+  },
+  "artifacts/ci-recovery/macos-javascript-first/javascript-profile/realistic-profile1/workers4/command.json": {
+    "bytes": 476,
+    "sha256": "90613480758e214c5bba3dbdd80b0555f92db98485c97df3103de5a3032d94bd"
+  },
+  "artifacts/ci-recovery/macos-javascript-first/javascript-profile/realistic-profile1/workers4/engine.log": {
+    "bytes": 1439,
+    "sha256": "f98b5b70bfd550029b7ccfe48af7996bdfa7dde332fe3c24089004a580053f91"
+  },
+  "artifacts/ci-recovery/macos-javascript-first/javascript-profile/realistic-profile1/workers4/final.game.gz": {
+    "bytes": 50292,
+    "sha256": "b51e8b39d33c67584bd865c4385bbe19d902dde775a4f8cc5aace76567f539fa"
+  },
+  "artifacts/ci-recovery/macos-javascript-first/javascript-profile/realistic-profile1/workers4/game.replay": {
+    "bytes": 995276,
+    "sha256": "b74700a1977086a8b2152d8f8135840daef7fc710f65e87a12bf476833f5e9e7"
+  },
+  "artifacts/ci-recovery/macos-javascript-first/javascript-profile/realistic-profile1/workers4/game.replay.checksums": {
+    "bytes": 461844,
+    "sha256": "e0e1fc40ea85949fe18bc90a9cb3fd8f2283871807e241b3f8c9488d7aba1abf"
+  },
+  "artifacts/ci-recovery/macos-javascript-first/javascript-profile/realistic-profile1/workers4/progress.jsonl": {
+    "bytes": 32,
+    "sha256": "b81a76b19f7553c8e795693c55c4e2c99c44ccd73102a6ec5b4bf3821816bc85"
+  },
+  "artifacts/ci-recovery/macos-javascript-first/javascript-profile/realistic-profile1/workers4/result.json": {
+    "bytes": 14542,
+    "sha256": "16e9c9323532f641c9ff3f32350504aa956491c629820b94c35a9e17eb11bdb0"
+  },
+  "artifacts/ci-recovery/macos-javascript-first/javascript-profile/realistic-profile1/workers4/world.checksums": {
+    "bytes": 3659,
+    "sha256": "28ad8a87e35419ec93a455420ff99e3d34ee2506dc3d1c12c35fb7a13d306736"
+  },
+  "artifacts/ci-recovery/macos-native-first/tests/build-provenance.json": {
+    "bytes": 743,
+    "sha256": "dc05d0e86d104f3040383194bbaa73df2fd4585bc04d176402c272702d9c9adb"
+  },
+  "artifacts/ci-recovery/macos-native-first/tests/engine-junit.xml": {
+    "bytes": 180605,
+    "sha256": "9287e7ed426c05deaecb38dde9e22f2f8620a2f8bfadcbea099dda0e09534af4"
+  },
+  "artifacts/ci-recovery/macos-native-first/tests/engine.inventory.json": {
+    "bytes": 374386,
+    "sha256": "5b56c09b7455d6a39cf1acce6669ef2136e92a9db8320e120d02a5c1b9db3597"
+  },
+  "artifacts/ci-recovery/macos-native-first/tests/unit-junit.xml": {
+    "bytes": 169639,
+    "sha256": "71c406e6fa0a515e39e4c74f560e636e7246339f4b9ac6090ce56c5b3d74bce5"
   },
   "artifacts/ci-recovery/master65-build-info.log": {
     "bytes": 1608,
@@ -440,12 +1480,12 @@
     "sha256": "f411fc57851c73c91c6cc84d6ed1c226cd07a38360172945c70fb16472f1295e"
   },
   "artifacts/ci-recovery/polder-history/comparison.json": {
-    "bytes": 9075,
-    "sha256": "bbda94fd0feb4a9b6972070c6279b88a7fc050bf594fe01d9adb4fb18fe05454"
+    "bytes": 10443,
+    "sha256": "bb9e0a75492e1652e8df8989ce7cc2818f462b8ae69133caea43dae221e249ed"
   },
   "artifacts/ci-recovery/polder-history-comparison.log": {
-    "bytes": 9075,
-    "sha256": "bbda94fd0feb4a9b6972070c6279b88a7fc050bf594fe01d9adb4fb18fe05454"
+    "bytes": 10443,
+    "sha256": "bb9e0a75492e1652e8df8989ce7cc2818f462b8ae69133caea43dae221e249ed"
   },
   "artifacts/ci-recovery/polder-observation-1.log": {
     "bytes": 455,
@@ -462,6 +1502,22 @@
   "artifacts/ci-recovery/polder-study-main.cpp": {
     "bytes": 98,
     "sha256": "d2e5abaf240a7eccf0a1e38153afefd8926af41144ff5aaab25cb01412561a1d"
+  },
+  "artifacts/ci-recovery/portable-unit/build-provenance.json": {
+    "bytes": 789,
+    "sha256": "b33139a435505975c22a6e98e4f8a3936dacb49ccbdca44412faffd7f4be4b49"
+  },
+  "artifacts/ci-recovery/portable-unit-build.log": {
+    "bytes": 24687,
+    "sha256": "ebf356de8c7e17386b37d2d57eae1d433df49ee0cdf09221c97da3b4d5709cfe"
+  },
+  "artifacts/ci-recovery/portable-unit-junit.xml": {
+    "bytes": 167568,
+    "sha256": "3722e9b1060427cfc3696ee7643a9a126a744d6e7116be172fd8f0aab9ceca84"
+  },
+  "artifacts/ci-recovery/portable-unit-tests.log": {
+    "bytes": 9751,
+    "sha256": "e8911b11d30bdead86048fe718552b4796956f9f90f19d50d8cc0e0af143ba93"
   },
   "artifacts/ci-recovery/qualified-build-contracts.log": {
     "bytes": 22145,
@@ -5270,6 +6326,18 @@
   "artifacts/ci-recovery/torus-retry-stress.log": {
     "bytes": 472,
     "sha256": "f1cde9ea63b5070eb2bf6aa111905432464046f6cbf13847a912e56c3c9574c0"
+  },
+  "artifacts/ci-recovery/weak-credit-libcxx.log": {
+    "bytes": 97,
+    "sha256": "96791001057c2fb2af68bfaabaf5033cf2dd442b109131042729c6a457ad60e2"
+  },
+  "artifacts/ci-recovery/weak-credit-libstdcxx.log": {
+    "bytes": 97,
+    "sha256": "04e69f3098de0974530960af45f7a8c81d1d3b7cdb61dc667a125ba3b42d9db2"
+  },
+  "artifacts/ci-recovery/weak-credit-probe.cpp": {
+    "bytes": 1048,
+    "sha256": "37edfe9a3450b2430c790fafd3664a06731c6c90775b389d209fc2b6eda4cc14"
   },
   "artifacts/map-report/commands.json": {
     "bytes": 11837,
