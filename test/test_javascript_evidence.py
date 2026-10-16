@@ -11,7 +11,7 @@ from unittest.mock import patch
 
 from build_provenance import build_issues, source_identity
 from check_javascript_evidence import provenance_issues, inventory
-from check_javascript import save_header, header_checksum_delta, continuation_matches
+from check_javascript import save_header, header_checksum_delta, continuation_matches, adjust_header_checksum
 
 ROOT = Path(__file__).resolve().parents[1]
 spec = importlib.util.spec_from_file_location('android_device_tests', ROOT / 'mobile/android_device_tests.py')
@@ -170,6 +170,19 @@ class AndroidRetrievalTests(unittest.TestCase):
 
 
 class SaveHeaderTests(unittest.TestCase):
+    def test_fixture_header_adjustment_preserves_framing_and_every_other_record_byte(self):
+        metadata = struct.pack('<4sIIII', b'GCS1', 2, 2, 2, 0)
+        records = [struct.pack('<II', tick, 0x12345678 + tick) +
+                   struct.pack('<III', 0x87654321, 0, 0) * 2 for tick in range(2)]
+        trace = metadata + b''.join(records)
+        adjusted = adjust_header_checksum(trace, (0, 125, 2, 2), (0, 159, 2, 2))
+        self.assertEqual(adjusted[:20], metadata)
+        for offset in (20, 52):
+            self.assertEqual(adjusted[offset:offset + 4], trace[offset:offset + 4])
+            self.assertEqual(adjusted[offset + 8:offset + 32], trace[offset + 8:offset + 32])
+            self.assertEqual(struct.unpack_from('<I', adjusted, offset + 4)[0],
+                             struct.unpack_from('<I', trace, offset + 4)[0] ^ 0x1c400000)
+
     def test_header_delta_uses_executed_protocol(self):
         before, after = (0, 125, 2, 2), (0, 153, 2, 2)
         self.assertEqual(header_checksum_delta(before, after, 152), 0x72000000)

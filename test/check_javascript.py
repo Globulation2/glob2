@@ -150,6 +150,18 @@ def continuation_matches(ticks, records, initial, checkpoint, boundary):
     return True
 
 
+def adjust_header_checksum(trace, before, after):
+    """Apply only the known MapHeader version contribution to complete records."""
+    delta = header_checksum_delta(before, after)
+    adjusted = bytearray(trace)
+    position = 20
+    for record in complete_ticks(trace).values():
+        checksum = struct.unpack_from('<I', record, 4)[0]
+        struct.pack_into('<I', adjusted, position + 4, checksum ^ delta)
+        position += len(record)
+    return bytes(adjusted)
+
+
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('binary', type=Path)
@@ -175,14 +187,23 @@ def main():
         # simulation trace. Still load the original version-125 save below.
         trace = FIXTURE / (name + '-256-cached159.checksums.gz')
         expected = gzip.decompress(trace.read_bytes())
+        initial = FIXTURE / (name + '-initial159.game.gz')
+        header = save_header(initial)
+        # ScriptSimulationTest validates the real input, then normalizes its
+        # MapHeader version to 125 for the frozen trace. The CLI retains the
+        # loaded header. Adjust that single known contribution, retaining every
+        # other aggregate bit and all team/entity bytes.
+        fixture_header = (header[0], 125, *header[2:])
+        expected = adjust_header_checksum(expected, fixture_header, header)
         ticks = complete_ticks(expected)
         assert set(ticks) == set(range(256)), name + ': incomplete unit-era trace'
-        initial = FIXTURE / (name + '-initial159.game.gz')
         manifest['fixtures'][name] = {'initialSha256': hashlib.sha256(initial.read_bytes()).hexdigest(),
                                      'trace': str(trace.relative_to(ROOT)),
                                      'releasedTraceSha256': hashlib.sha256(released).hexdigest(),
                                      'teams16TraceSha256': hashlib.sha256(expanded).hexdigest(),
-                                     'traceSha256': hashlib.sha256(expected).hexdigest()}
+                                     'traceSha256': hashlib.sha256(gzip.decompress(trace.read_bytes())).hexdigest(),
+                                     'executedTraceSha256': hashlib.sha256(expected).hexdigest(),
+                                     'fixtureHeaderVersion': 125, 'loadedHeaderVersion': header[1]}
         interval = 32 if name == 'realistic-profile1' else 128
         baseline = output / name / 'workers1'
         actual = run(binary, baseline, initial, 1, interval)
