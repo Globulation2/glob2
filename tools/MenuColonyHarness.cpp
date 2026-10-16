@@ -763,7 +763,8 @@ int main(int argc, char **argv)
 			Preview<MainMenuScreen> probe;
 			probe.render();
 			const auto order = probe.GAGGUI::ui::UIScreen::host().focusOrder();
-			require(order.size() == std::size(actions),
+			require(order.size() == std::size(actions) + 1 &&
+					std::find(order.begin(), order.end(), "menu/discord") != order.end(),
 					"main menu exposes every navigation action to the keyboard");
 			for (size_t i = 0; i < order.size(); ++i)
 			{
@@ -772,7 +773,20 @@ int main(int argc, char **argv)
 				for (size_t t = 0; t <= i; ++t)
 					main.key(SDLK_TAB);
 				main.key(SDLK_RETURN);
-				require(main.result() == std::atoi(order[i].c_str() + 5), "main keyboard route");
+				if (order[i] == "menu/discord")
+				{
+					main.render();
+					const auto communityOrder = main.GAGGUI::ui::UIScreen::host().focusOrder();
+					require(main.isExecutionRunning() &&
+						std::find(communityOrder.begin(), communityOrder.end(), "discord/back") != communityOrder.end(),
+						"community keyboard route opens its panel");
+					main.key(SDLK_ESCAPE);
+					main.render();
+					require(main.isExecutionRunning() && main.GAGGUI::ui::UIScreen::host().focusOrder() == order,
+						"community Back returns to main menu navigation");
+				}
+				else
+					require(main.result() == std::atoi(order[i].c_str() + 5), "main keyboard route");
 			}
 			Preview<SettingsScreen> settings;
 			settings.selectCategory(SettingsScreen::Category::Recording);
