@@ -1,0 +1,5 @@
+<?xml version='1.0' encoding='utf-8'?>
+<testsuites tests="3" failures="0" errors="0" skipped="0"><testsuite name="GameSpeed"><testcase classname="GameSpeed" name="live engine speed; pause; hard pause and replay playback [display][writes-preferences]" time="4.73377" status="run" />
+  <testcase classname="GameSpeed" name="presets; bounds; legacy settings and persistence" time="0.074021" status="run" />
+  <testcase classname="GameSpeed" name="settings screen; in-game slider; shortcuts and camera cadence [display][writes-preferences]" time="0.690792" status="run" />
+  </testsuite></testsuites>
