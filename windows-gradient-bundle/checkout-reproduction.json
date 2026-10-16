@@ -1,0 +1,94 @@
+{
+  "base": "987c953698bb3f0bfd1078184773075ba3313091",
+  "head": "f56cbc8f624dd35c2066cce1aad51d0d9ada25cf",
+  "identicalToBase": {
+    "src/field/GradientComputeShaders.h": true,
+    "src/field/shaders/frozen8.comp": true,
+    "src/field/shaders/frozen8.wgsl": true,
+    "src/field/shaders/jacobi.comp": true,
+    "src/field/shaders/jacobi.wgsl": true,
+    "src/field/shaders/manifest.json": true,
+    "third_party/vulkan/LICENSE.txt": true,
+    "third_party/vulkan/manifest.json": true,
+    "third_party/vulkan/vk_platform.h": true,
+    "third_party/vulkan/vulkan_core.h": true,
+    "tools/shaders/gradient_compute.py": true
+  },
+  "checkouts": {
+    "core.autocrlf=false": {
+      "command": [
+        "git",
+        "-c",
+        "core.autocrlf=false",
+        "checkout-index",
+        "--prefix=/var/folders/k5/ybkkc_zd0mvbwc97vyr8f1gm0000gn/T/gradient-crlf-proof-xkz_t7xv/checkout/",
+        "--",
+        "src/field/GradientComputeShaders.h",
+        "src/field/shaders/frozen8.comp",
+        "src/field/shaders/frozen8.wgsl",
+        "src/field/shaders/jacobi.comp",
+        "src/field/shaders/jacobi.wgsl",
+        "src/field/shaders/manifest.json",
+        "third_party/vulkan/LICENSE.txt",
+        "third_party/vulkan/manifest.json",
+        "third_party/vulkan/vk_platform.h",
+        "third_party/vulkan/vulkan_core.h",
+        "tools/shaders/gradient_compute.py"
+      ],
+      "headerSha256": "ba22243a438adb8a18e42013e786b1e80fdb6df094dd14d3f668073b36ecbbc7",
+      "headerCRLF": 0,
+      "verify": "PASS"
+    },
+    "core.autocrlf=true": {
+      "command": [
+        "git",
+        "-c",
+        "core.autocrlf=true",
+        "checkout-index",
+        "--prefix=/var/folders/k5/ybkkc_zd0mvbwc97vyr8f1gm0000gn/T/gradient-crlf-proof-00wirdg3/checkout/",
+        "--",
+        "src/field/GradientComputeShaders.h",
+        "src/field/shaders/frozen8.comp",
+        "src/field/shaders/frozen8.wgsl",
+        "src/field/shaders/jacobi.comp",
+        "src/field/shaders/jacobi.wgsl",
+        "src/field/shaders/manifest.json",
+        "third_party/vulkan/LICENSE.txt",
+        "third_party/vulkan/manifest.json",
+        "third_party/vulkan/vk_platform.h",
+        "third_party/vulkan/vulkan_core.h",
+        "tools/shaders/gradient_compute.py"
+      ],
+      "headerSha256": "3da19894d3439241cb9e20f569afb7e3fceb6a0fb56f50025cf8ce0c9870c0f5",
+      "headerCRLF": 1224,
+      "verify": "Stale gradient shader bundle: src/field/GradientComputeShaders.h; regenerate with tools/shaders/gradient_compute.py"
+    },
+    "core.autocrlf=true + candidate LF attributes": {
+      "command": [
+        "git",
+        "-c",
+        "core.autocrlf=true",
+        "-c",
+        "core.attributesFile=/Users/bradley/.codex/worktrees/1cb7/glob2/artifacts/delayed-gradients/windows-gradient-bundle/candidate.gitattributes",
+        "checkout-index",
+        "--prefix=/var/folders/k5/ybkkc_zd0mvbwc97vyr8f1gm0000gn/T/gradient-crlf-proof-szy1f8ai/checkout/",
+        "--",
+        "src/field/GradientComputeShaders.h",
+        "src/field/shaders/frozen8.comp",
+        "src/field/shaders/frozen8.wgsl",
+        "src/field/shaders/jacobi.comp",
+        "src/field/shaders/jacobi.wgsl",
+        "src/field/shaders/manifest.json",
+        "third_party/vulkan/LICENSE.txt",
+        "third_party/vulkan/manifest.json",
+        "third_party/vulkan/vk_platform.h",
+        "third_party/vulkan/vulkan_core.h",
+        "tools/shaders/gradient_compute.py"
+      ],
+      "headerSha256": "ba22243a438adb8a18e42013e786b1e80fdb6df094dd14d3f668073b36ecbbc7",
+      "headerCRLF": 0,
+      "verify": "PASS",
+      "tamperedHeader": "Stale gradient shader bundle: src/field/GradientComputeShaders.h; regenerate with tools/shaders/gradient_compute.py"
+    }
+  }
+}

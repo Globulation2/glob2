@@ -1,0 +1,1452 @@
+﻿2026-10-16T01:07:56.2718474Z Current runner version: '2.337.0'
+2026-10-16T01:07:56.2735871Z ##[group]Runner Image Provisioner
+2026-10-16T01:07:56.2736342Z Hosted Compute Agent
+2026-10-16T01:07:56.2736676Z Version: 20261002.596
+2026-10-16T01:07:56.2737000Z Commit: c3d12f3313a95f25162a1503be624f3b0617f8c0
+2026-10-16T01:07:56.2737378Z Build Date: 2026-10-02T22:28:27Z
+2026-10-16T01:07:56.2737736Z Worker ID: {5ebf1853-0d69-4a29-89df-233f17e677fb}
+2026-10-16T01:07:56.2738099Z Region: centralus
+2026-10-16T01:07:56.2738384Z Cloud: Azure
+2026-10-16T01:07:56.2738662Z ##[endgroup]
+2026-10-16T01:07:56.2739639Z ##[group]Operating System
+2026-10-16T01:07:56.2739976Z Microsoft Windows Server 2025
+2026-10-16T01:07:56.2740296Z 10.0.26100
+2026-10-16T01:07:56.2740574Z Datacenter
+2026-10-16T01:07:56.2740848Z ##[endgroup]
+2026-10-16T01:07:56.2741116Z ##[group]Runner Image
+2026-10-16T01:07:56.2741438Z Image: windows-2025-vs2026
+2026-10-16T01:07:56.2741754Z Version: 20261007.264.1
+2026-10-16T01:07:56.2743208Z Included Software: https://github.com/actions/runner-images/blob/win25-vs2026/20261007.264/images/windows/Windows2025-VS2026-Readme.md
+2026-10-16T01:07:56.2744486Z Image Release: https://github.com/actions/runner-images/releases/tag/win25-vs2026%2F20261007.264
+2026-10-16T01:07:56.2745228Z ##[endgroup]
+2026-10-16T01:07:56.2747915Z ##[group]GITHUB_TOKEN Permissions
+2026-10-16T01:07:56.2750401Z Actions: write
+2026-10-16T01:07:56.2750878Z ArtifactMetadata: write
+2026-10-16T01:07:56.2751402Z Attestations: write
+2026-10-16T01:07:56.2751846Z Checks: write
+2026-10-16T01:07:56.2752273Z CodeQuality: write
+2026-10-16T01:07:56.2752717Z Contents: write
+2026-10-16T01:07:56.2753165Z CopilotRequests: write
+2026-10-16T01:07:56.2753669Z Deployments: write
+2026-10-16T01:07:56.2754108Z Discussions: write
+2026-10-16T01:07:56.2754540Z Drives: write
+2026-10-16T01:07:56.2754968Z Issues: write
+2026-10-16T01:07:56.2755507Z Metadata: read
+2026-10-16T01:07:56.2755942Z Models: read
+2026-10-16T01:07:56.2756433Z Packages: write
+2026-10-16T01:07:56.2756861Z Pages: write
+2026-10-16T01:07:56.2757295Z PullRequests: write
+2026-10-16T01:07:56.2757771Z RepositoryProjects: write
+2026-10-16T01:07:56.2758280Z SecurityEvents: write
+2026-10-16T01:07:56.2758743Z Statuses: write
+2026-10-16T01:07:56.2759185Z VulnerabilityAlerts: read
+2026-10-16T01:07:56.2759670Z ##[endgroup]
+2026-10-16T01:07:56.2761388Z Secret source: Actions
+2026-10-16T01:07:56.2762084Z Cache mode: write
+2026-10-16T01:07:56.2762621Z Prepare workflow directory
+2026-10-16T01:07:56.3141307Z Prepare all required actions
+2026-10-16T01:07:56.3182386Z Getting action download info
+2026-10-16T01:07:56.5566506Z Download action repository 'actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065' (SHA:a26af69be951a213d495a4c3e4e4022e16d87065)
+2026-10-16T01:07:56.6769214Z Download action repository 'msys2/setup-msys2@v2' (SHA:ec48f7c5447b3140e2b088413ae3a55687bccb6e)
+2026-10-16T01:07:56.9246140Z Download action repository 'actions/checkout@v4' (SHA:11d5960a326750d5838078e36cf38b85af677262)
+2026-10-16T01:07:56.9768713Z Download action repository 'actions/cache@v4' (SHA:0057852bfaa89a56745cba8c7296529d2fc39830)
+2026-10-16T01:07:57.0544188Z Download action repository 'actions/upload-artifact@v4' (SHA:ea165f8d65b6e75b540449e92b4886f43607fa02)
+2026-10-16T01:07:57.2677639Z Complete job name: windows (mingw-w64)
+2026-10-16T01:07:57.3553601Z ##[group]Run actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065
+2026-10-16T01:07:57.3554427Z with:
+2026-10-16T01:07:57.3554645Z   python-version: 3.12
+2026-10-16T01:07:57.3554905Z   check-latest: false
+2026-10-16T01:07:57.3557025Z   token: ***
+2026-10-16T01:07:57.3557251Z   update-environment: true
+2026-10-16T01:07:57.3557517Z   allow-prereleases: false
+2026-10-16T01:07:57.3557770Z   freethreaded: false
+2026-10-16T01:07:57.3558084Z env:
+2026-10-16T01:07:57.3558299Z   GLOB2_DEV_MODE: isolated
+2026-10-16T01:07:57.3558541Z   CCACHE: 1
+2026-10-16T01:07:57.3558769Z   CCACHE_DIR: D:\a\glob2\glob2\.ccache
+2026-10-16T01:07:57.3559067Z   CCACHE_COMPILERCHECK: content
+2026-10-16T01:07:57.3560466Z   CCACHE_MAXSIZE: 5G
+2026-10-16T01:07:57.3560701Z ##[endgroup]
+2026-10-16T01:07:57.4757846Z ##[group]Installed versions
+2026-10-16T01:07:57.4880397Z (node:8632) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.
+2026-10-16T01:07:57.4881447Z (Use `node --trace-deprecation ...` to show where the warning was created)
+2026-10-16T01:07:57.4881995Z Successfully set up CPython (3.12.10)
+2026-10-16T01:07:57.4882562Z ##[endgroup]
+2026-10-16T01:07:57.5231013Z ##[group]Run msys2/setup-msys2@v2
+2026-10-16T01:07:57.5231403Z with:
+2026-10-16T01:07:57.5231629Z   msystem: MINGW64
+2026-10-16T01:07:57.5231856Z   update: true
+2026-10-16T01:07:57.5233462Z   install: git make mingw-w64-x86_64-toolchain mingw-w64-x86_64-pkgconf mingw-w64-x86_64-python mingw-w64-x86_64-scons mingw-w64-x86_64-cmake mingw-w64-x86_64-freetype mingw-w64-x86_64-opusfile mingw-w64-x86_64-opus mingw-w64-x86_64-libogg mingw-w64-x86_64-speex mingw-w64-x86_64-zlib mingw-w64-x86_64-fribidi mingw-w64-x86_64-pcre mingw-w64-x86_64-openssl mingw-w64-x86_64-boost mingw-w64-x86_64-libepoxy mingw-w64-x86_64-libsystre mingw-w64-x86_64-nasm mingw-w64-x86_64-ccache
+2026-10-16T01:07:57.5235304Z   path-type: minimal
+2026-10-16T01:07:57.5235536Z   release: true
+2026-10-16T01:07:57.5235774Z   platform-check-severity: fatal
+2026-10-16T01:07:57.5236050Z   cache: true
+2026-10-16T01:07:57.5236284Z env:
+2026-10-16T01:07:57.5236492Z   GLOB2_DEV_MODE: isolated
+2026-10-16T01:07:57.5236760Z   CCACHE: 1
+2026-10-16T01:07:57.5236987Z   CCACHE_DIR: D:\a\glob2\glob2\.ccache
+2026-10-16T01:07:57.5237278Z   CCACHE_COMPILERCHECK: content
+2026-10-16T01:07:57.5237540Z   CCACHE_MAXSIZE: 5G
+2026-10-16T01:07:57.5237854Z   pythonLocation: C:\hostedtoolcache\windows\Python\3.12.10\x64
+2026-10-16T01:07:57.5238364Z   PKG_CONFIG_PATH: C:\hostedtoolcache\windows\Python\3.12.10\x64/lib/pkgconfig
+2026-10-16T01:07:57.5238848Z   Python_ROOT_DIR: C:\hostedtoolcache\windows\Python\3.12.10\x64
+2026-10-16T01:07:57.5239294Z   Python2_ROOT_DIR: C:\hostedtoolcache\windows\Python\3.12.10\x64
+2026-10-16T01:07:57.5239740Z   Python3_ROOT_DIR: C:\hostedtoolcache\windows\Python\3.12.10\x64
+2026-10-16T01:07:57.5240097Z ##[endgroup]
+2026-10-16T01:07:57.6134879Z ##[warning][msystem-mingw64] MINGW64 is deprecated. Migrate to UCRT64 or CLANG64. To acknowledge and suppress this warning, add 'msystem-mingw64' to 'suppress-deprecation-warnings'.
+2026-10-16T01:07:57.6140807Z ##[group]Downloading MSYS2...
+2026-10-16T01:07:58.1611338Z ##[endgroup]
+2026-10-16T01:07:58.1612284Z ##[group]Extracting MSYS2...
+2026-10-16T01:07:58.1624705Z [command]C:\hostedtoolcache\windows\msys2-installer\0.0.20260927\x64\base.exe -y
+2026-10-16T01:07:58.3624509Z 
+2026-10-16T01:07:58.3627652Z 7-Zip SFX 26.02 ZS v1.5.7 R1 (x64) : Copyright (c) 1999- Igor Pavlov, 2016- Tino Reichardt, 2022- Sergey G. Brester : 2026-06-27
+2026-10-16T01:07:58.3629588Z 
+2026-10-16T01:07:58.3630641Z Extracting archive: C:\hostedtoolcache\windows\msys2-installer\0.0.20260927\x64\base.exe
+2026-10-16T01:07:58.3632857Z --
+2026-10-16T01:07:58.3633872Z Path = C:\hostedtoolcache\windows\msys2-installer\0.0.20260927\x64\base.exe
+2026-10-16T01:07:58.3635128Z Type = 7z
+2026-10-16T01:07:58.3635497Z 
+2026-10-16T01:07:58.5663356Z   0%
+2026-10-16T01:07:58.5664508Z     
+2026-10-16T01:07:58.7686483Z   1% 1508 - msys64\usr\lib\terminfo\64\d414-unix-w
+2026-10-16T01:07:58.7687854Z                                                   
+2026-10-16T01:07:59.1261441Z   1% 2892 - msys64\usr\lib\terminfo\74\tek4025-cr
+2026-10-16T01:07:59.1278966Z                                                  
+2026-10-16T01:07:59.3153885Z   1% 3064 - msys64\usr\lib\terminfo\74\tvi912c-vb-mc
+2026-10-16T01:07:59.3154283Z                                                     
+2026-10-16T01:07:59.5193334Z   2% 3934 - msys64\usr\share\bash-completion\completions-core\ccache.bash
+2026-10-16T01:07:59.5193843Z                                                                          
+2026-10-16T01:07:59.7222915Z   6% 5247 - msys64\usr\share\gnupg\help.de.txt
+2026-10-16T01:07:59.7223283Z                                               
+2026-10-16T01:07:59.9260374Z  27% 6101 - msys64\usr\share\locale\ru\LC_MESSAGES\sed.mo
+2026-10-16T01:07:59.9260659Z                                                          
+2026-10-16T01:08:00.1289153Z  36% 7278 - msys64\usr\share\man\man3\CURLOPT_EXPECT_100_TIMEOUT_MS.3.gz
+2026-10-16T01:08:00.1289561Z                                                                         
+2026-10-16T01:08:00.6600932Z  38% 8565 - msys64\usr\share\man\man3\start_color.3x.gz
+2026-10-16T01:08:00.6601656Z                                                        
+2026-10-16T01:08:00.8627241Z  43% 8993 - msys64\usr\share\nano\cmake.nanorc
+2026-10-16T01:08:00.8627853Z                                               
+2026-10-16T01:08:01.0654495Z  45% 10374 - msys64\usr\share\terminfo\6d\mach-gnu-color
+2026-10-16T01:08:01.0654885Z                                                         
+2026-10-16T01:08:01.2684966Z  45% 11777 - msys64\usr\share\terminfo\78\xnuppc+112x37
+2026-10-16T01:08:01.2685371Z                                                        
+2026-10-16T01:08:01.4722081Z  46% 12779 - msys64\usr\share\zoneinfo\posix\Arctic\Longyearbyen
+2026-10-16T01:08:01.4722383Z                                                                 
+2026-10-16T01:08:01.6780817Z  48% 14064
+2026-10-16T01:08:02.0585764Z           
+2026-10-16T01:08:02.0586017Z  84% 14364 - msys64\usr\bin\passwd.exe
+2026-10-16T01:08:02.0586383Z                                       
+2026-10-16T01:08:02.0806282Z  91% 14497 - msys64\usr\lib\gawk\readdir.dll
+2026-10-16T01:08:02.0806865Z                                             
+2026-10-16T01:08:02.0807507Z Everything is Ok
+2026-10-16T01:08:02.0825136Z ##[endgroup]
+2026-10-16T01:08:02.0825751Z ##[group]Disable Key Refresh...
+2026-10-16T01:08:02.0838417Z ##[endgroup]
+2026-10-16T01:08:02.0849243Z ##[group]Restoring package cache...
+2026-10-16T01:08:02.2920153Z Cache hit for restore-key: msys2-pkgs-upd:true-conf:29d6effa-files:4be80e828b4f289d02aeb116e04dbedc46e6b009363516ee32a30e4111b6c51c
+2026-10-16T01:08:03.7827622Z Received 134217728 of 266423472 (50.4%), 95.8 MBs/sec
+2026-10-16T01:08:04.6977438Z Received 266423472 of 266423472 (100.0%), 112.9 MBs/sec
+2026-10-16T01:08:04.6981390Z Cache Size: ~254 MB (266423472 B)
+2026-10-16T01:08:04.7082164Z [command]"C:\Program Files\Git\usr\bin\tar.exe" -xf D:/a/_temp/64b44432-388d-4e57-a19a-9025e6a887e6/cache.tzst -P -C D:/a/glob2/glob2 --force-local --use-compress-program "zstd -d"
+2026-10-16T01:08:05.4248622Z Cache restored successfully
+2026-10-16T01:08:05.4415512Z Cache restore for msys2-pkgs-upd:true-conf:29d6effa, got msys2-pkgs-upd:true-conf:29d6effa-files:4be80e828b4f289d02aeb116e04dbedc46e6b009363516ee32a30e4111b6c51c
+2026-10-16T01:08:05.4418667Z Cache restore for msys2-pkgs-upd:true-conf:29d6effa, got msys2-pkgs-upd:true-conf:29d6effa-files:4be80e828b4f289d02aeb116e04dbedc46e6b009363516ee32a30e4111b6c51c
+2026-10-16T01:08:05.4419756Z ##[endgroup]
+2026-10-16T01:08:05.4420119Z ##[group]Starting MSYS2 for the first time...
+2026-10-16T01:08:05.5244960Z [command]C:\Windows\system32\cmd.exe /D /S /C D:\a\_temp\setup-msys2\msys2.cmd -c "'uname' '-a'"
+2026-10-16T01:08:05.5672076Z [1;32mMSYS2 is starting for the first time. Executing the initial setup.[1;0m
+2026-10-16T01:08:05.6327643Z Copying skeleton files.
+2026-10-16T01:08:05.6328028Z These files are for the users to personalise their msys2 experience.
+2026-10-16T01:08:05.6328331Z 
+2026-10-16T01:08:05.6328459Z They will never be overwritten nor automatically updated.
+2026-10-16T01:08:05.6328673Z 
+2026-10-16T01:08:05.6737311Z './.bashrc' -> '/home/runneradmin/.bashrc'
+2026-10-16T01:08:05.6863362Z './.bash_profile' -> '/home/runneradmin/.bash_profile'
+2026-10-16T01:08:05.6972912Z './.profile' -> '/home/runneradmin/.profile'
+2026-10-16T01:08:05.7384901Z 'C:\Windows\system32\drivers\etc\hosts' -> '/etc/hosts'
+2026-10-16T01:08:05.7723486Z 'C:\Windows\system32\drivers\etc\protocol' -> '/etc/protocols'
+2026-10-16T01:08:05.8051073Z 'C:\Windows\system32\drivers\etc\services' -> '/etc/services'
+2026-10-16T01:08:05.8381858Z 'C:\Windows\system32\drivers\etc\networks' -> '/etc/networks'
+2026-10-16T01:08:05.9571737Z gpg: /etc/pacman.d/gnupg/trustdb.gpg: trustdb created
+2026-10-16T01:08:05.9621449Z gpg: no ultimately trusted keys found
+2026-10-16T01:08:06.1473876Z gpg: starting migration from earlier GnuPG versions
+2026-10-16T01:08:06.1936777Z gpg: porting secret keys from '/etc/pacman.d/gnupg/secring.gpg' to gpg-agent
+2026-10-16T01:08:06.1937427Z gpg: migration succeeded
+2026-10-16T01:08:06.2084419Z ==> Generating pacman master key. This may take some time.
+2026-10-16T01:08:06.2226064Z gpg: Generating pacman keyring master key...
+2026-10-16T01:08:06.8040305Z gpg: directory '/etc/pacman.d/gnupg/openpgp-revocs.d' created
+2026-10-16T01:08:06.8207363Z gpg: revocation certificate stored as '/etc/pacman.d/gnupg/openpgp-revocs.d/596684105D7C714B9F99C16B74477255934E8DDD.rev'
+2026-10-16T01:08:06.8207755Z gpg: Done
+2026-10-16T01:08:06.8335085Z ==> Updating trust database...
+2026-10-16T01:08:06.8595106Z gpg: marginals needed: 3  completes needed: 1  trust model: pgp
+2026-10-16T01:08:06.8595506Z gpg: depth: 0  valid:   1  signed:   0  trust: 0-, 0q, 0n, 0m, 0f, 1u
+2026-10-16T01:08:06.9440154Z ==> Appending keys from msys2.gpg...
+2026-10-16T01:08:07.3000567Z ==> Locally signing trusted keys in keyring...
+2026-10-16T01:08:07.6839749Z   -> Locally signed 5 keys.
+2026-10-16T01:08:07.6947950Z ==> Importing owner trust values...
+2026-10-16T01:08:07.7075919Z gpg: setting ownertrust to 4
+2026-10-16T01:08:07.7076175Z gpg: setting ownertrust to 4
+2026-10-16T01:08:07.7076373Z gpg: setting ownertrust to 4
+2026-10-16T01:08:07.7076567Z gpg: setting ownertrust to 4
+2026-10-16T01:08:07.7076763Z gpg: setting ownertrust to 4
+2026-10-16T01:08:07.7262718Z ==> Disabling revoked keys in keyring...
+2026-10-16T01:08:07.9181421Z   -> Disabled 4 keys.
+2026-10-16T01:08:07.9278755Z ==> Updating trust database...
+2026-10-16T01:08:07.9537847Z gpg: marginals needed: 3  completes needed: 1  trust model: pgp
+2026-10-16T01:08:07.9552274Z gpg: depth: 0  valid:   1  signed:   5  trust: 0-, 0q, 0n, 0m, 0f, 1u
+2026-10-16T01:08:07.9569855Z gpg: depth: 1  valid:   5  signed:   7  trust: 0-, 0q, 0n, 5m, 0f, 0u
+2026-10-16T01:08:07.9576260Z gpg: depth: 2  valid:   4  signed:   2  trust: 4-, 0q, 0n, 0m, 0f, 0u
+2026-10-16T01:08:07.9577924Z gpg: next trustdb check due at 2027-02-10
+2026-10-16T01:08:07.9825965Z pacman-key (pacman) 6.1.0
+2026-10-16T01:08:07.9826343Z Copyright (c) 2010-2024 Pacman Development Team <pacman-dev@lists.archlinux.org>.
+2026-10-16T01:08:07.9826619Z 
+2026-10-16T01:08:07.9932112Z This is free software; see the source for copying conditions.
+2026-10-16T01:08:07.9932490Z There is NO WARRANTY, to the extent permitted by law.
+2026-10-16T01:08:08.1344835Z [1;32mInitial setup complete. MSYS2 is now ready to use.[1;0m
+2026-10-16T01:08:08.1461724Z MINGW64_NT-10.0-26100 runnervm0xl3a 3.6.10-c770e1b9.x86_64 2026-09-26 06:38 UTC x86_64 Msys
+2026-10-16T01:08:08.1497387Z ##[endgroup]
+2026-10-16T01:08:08.1497660Z ##[group]Disable CheckSpace...
+2026-10-16T01:08:08.1839651Z [command]C:\Windows\system32\cmd.exe /D /S /C D:\a\_temp\setup-msys2\msys2.cmd -c "'sed' '-i' 's/^CheckSpace/#CheckSpace/g' '/etc/pacman.conf'"
+2026-10-16T01:08:08.3182676Z ##[endgroup]
+2026-10-16T01:08:08.3182935Z ##[group]Updating packages...
+2026-10-16T01:08:08.3508373Z [command]C:\Windows\system32\cmd.exe /D /S /C D:\a\_temp\setup-msys2\msys2.cmd -c "'pacman' '--noconfirm' '-Syuu' '--overwrite' '*'"
+2026-10-16T01:08:08.8159107Z :: Synchronizing package databases...
+2026-10-16T01:08:10.8995813Z  clangarm64 downloading...
+2026-10-16T01:08:10.8996084Z  mingw32 downloading...
+2026-10-16T01:08:10.8996215Z  mingw64 downloading...
+2026-10-16T01:08:10.8996341Z  ucrt64 downloading...
+2026-10-16T01:08:10.8996460Z  clang64 downloading...
+2026-10-16T01:08:10.8996578Z  msys downloading...
+2026-10-16T01:08:11.2207741Z :: Starting core system upgrade...
+2026-10-16T01:08:11.3419265Z warning: terminate other MSYS2 programs before proceeding
+2026-10-16T01:08:11.3419665Z resolving dependencies...
+2026-10-16T01:08:11.3419889Z looking for conflicting packages...
+2026-10-16T01:08:11.3473365Z 
+2026-10-16T01:08:11.3473765Z Packages (2) bash-5.3.20-2  msys2-runtime-3.6.11-3
+2026-10-16T01:08:11.3473941Z 
+2026-10-16T01:08:11.3474004Z Total Installed Size:  18.56 MiB
+2026-10-16T01:08:11.3474156Z Net Upgrade Size:       0.01 MiB
+2026-10-16T01:08:11.3474569Z 
+2026-10-16T01:08:11.3476128Z :: Proceed with installation? [Y/n] 
+2026-10-16T01:08:11.3476398Z checking keyring...
+2026-10-16T01:08:11.3863745Z checking package integrity...
+2026-10-16T01:08:11.5874018Z loading package files...
+2026-10-16T01:08:11.5906019Z checking for file conflicts...
+2026-10-16T01:08:11.5906484Z :: Processing package changes...
+2026-10-16T01:08:11.5906715Z upgrading bash...
+2026-10-16T01:08:11.6769292Z upgrading msys2-runtime...
+2026-10-16T01:08:11.7641077Z :: To complete this update all MSYS2 processes including this terminal will be closed. Confirm to proceed [Y/n] 
+2026-10-16T01:08:11.9606242Z ##[endgroup]
+2026-10-16T01:08:11.9606648Z ##[group]Killing remaining tasks...
+2026-10-16T01:08:12.0017846Z [command]C:\Windows\system32\taskkill.exe /F /FI "MODULES eq msys-2.0.dll"
+2026-10-16T01:08:12.0998231Z 
+2026-10-16T01:08:12.0998775Z INFO: No tasks running with the specified criteria.
+2026-10-16T01:08:12.1025513Z ##[endgroup]
+2026-10-16T01:08:12.1025798Z ##[group]Final system upgrade...
+2026-10-16T01:08:12.1371699Z [command]C:\Windows\system32\cmd.exe /D /S /C D:\a\_temp\setup-msys2\msys2.cmd -c "'pacman' '--noconfirm' '-Syuu' '--overwrite' '*'"
+2026-10-16T01:08:12.6131176Z :: Synchronizing package databases...
+2026-10-16T01:08:13.5050899Z  clangarm64 downloading...
+2026-10-16T01:08:13.5051115Z  mingw32 downloading...
+2026-10-16T01:08:13.5051253Z  mingw64 downloading...
+2026-10-16T01:08:13.5051374Z  ucrt64 downloading...
+2026-10-16T01:08:13.5051531Z  clang64 downloading...
+2026-10-16T01:08:13.5051646Z  msys downloading...
+2026-10-16T01:08:13.8090724Z :: Starting core system upgrade...
+2026-10-16T01:08:13.9317590Z  there is nothing to do
+2026-10-16T01:08:13.9317889Z :: Starting full system upgrade...
+2026-10-16T01:08:13.9502255Z resolving dependencies...
+2026-10-16T01:08:13.9555986Z looking for conflicting packages...
+2026-10-16T01:08:13.9578016Z 
+2026-10-16T01:08:13.9578847Z Packages (10) bsdtar-3.8.10-1  curl-8.23.0-1  dash-0.5.13.5-1  libcurl-8.23.0-1  libexpat-2.9.0-1  libopenssl-3.6.5-1  libpcre2_8-10.49-1  libsqlite-3.54.0-1  openssl-3.6.5-1  tzcode-2026e-1
+2026-10-16T01:08:13.9579527Z 
+2026-10-16T01:08:13.9579627Z Total Installed Size:  14.07 MiB
+2026-10-16T01:08:13.9579865Z Net Upgrade Size:       0.07 MiB
+2026-10-16T01:08:13.9580020Z 
+2026-10-16T01:08:13.9592291Z :: Proceed with installation? [Y/n] 
+2026-10-16T01:08:13.9592685Z checking keyring...
+2026-10-16T01:08:13.9990632Z checking package integrity...
+2026-10-16T01:08:14.7806139Z loading package files...
+2026-10-16T01:08:14.7985706Z checking for file conflicts...
+2026-10-16T01:08:14.8007574Z :: Processing package changes...
+2026-10-16T01:08:14.8007949Z upgrading libexpat...
+2026-10-16T01:08:14.8036501Z upgrading libopenssl...
+2026-10-16T01:08:14.8212573Z upgrading bsdtar...
+2026-10-16T01:08:14.8272787Z upgrading openssl...
+2026-10-16T01:08:14.8859977Z upgrading libpcre2_8...
+2026-10-16T01:08:14.8892204Z upgrading libcurl...
+2026-10-16T01:08:14.8934555Z upgrading curl...
+2026-10-16T01:08:15.1396299Z upgrading dash...
+2026-10-16T01:08:15.2250051Z upgrading libsqlite...
+2026-10-16T01:08:15.2319629Z upgrading tzcode...
+2026-10-16T01:08:16.2392854Z ##[endgroup]
+2026-10-16T01:08:16.2393150Z ##[group]Installing additional packages through pacman...
+2026-10-16T01:08:16.2733256Z [command]C:\Windows\system32\cmd.exe /D /S /C D:\a\_temp\setup-msys2\msys2.cmd -c "'pacman' '--noconfirm' '-S' '--needed' '--overwrite' '*' 'git' 'make' 'mingw-w64-x86_64-toolchain' 'mingw-w64-x86_64-pkgconf' 'mingw-w64-x86_64-python' 'mingw-w64-x86_64-scons' 'mingw-w64-x86_64-cmake' 'mingw-w64-x86_64-freetype' 'mingw-w64-x86_64-opusfile' 'mingw-w64-x86_64-opus' 'mingw-w64-x86_64-libogg' 'mingw-w64-x86_64-speex' 'mingw-w64-x86_64-zlib' 'mingw-w64-x86_64-fribidi' 'mingw-w64-x86_64-pcre' 'mingw-w64-x86_64-openssl' 'mingw-w64-x86_64-boost' 'mingw-w64-x86_64-libepoxy' 'mingw-w64-x86_64-libsystre' 'mingw-w64-x86_64-nasm' 'mingw-w64-x86_64-ccache'"
+2026-10-16T01:08:16.8480448Z :: There are 12 members in group mingw-w64-x86_64-toolchain:
+2026-10-16T01:08:16.8480728Z :: Repository mingw64
+2026-10-16T01:08:16.8481468Z    1) mingw-w64-x86_64-binutils  2) mingw-w64-x86_64-crt  3) mingw-w64-x86_64-gcc  4) mingw-w64-x86_64-gdb  5) mingw-w64-x86_64-gdb-multiarch  6) mingw-w64-x86_64-headers  7) mingw-w64-x86_64-libgomp  8) mingw-w64-x86_64-libstdc++  9) mingw-w64-x86_64-libwinpthread  10) mingw-w64-x86_64-make  11) mingw-w64-x86_64-pkgconf  12) mingw-w64-x86_64-winpthreads
+2026-10-16T01:08:16.8482133Z 
+2026-10-16T01:08:16.8482200Z Enter a selection (default=all): 
+2026-10-16T01:08:16.8482344Z resolving dependencies...
+2026-10-16T01:08:16.8545483Z looking for conflicting packages...
+2026-10-16T01:08:16.8611829Z warning: dependency cycle detected:
+2026-10-16T01:08:16.8612222Z warning: mingw-w64-x86_64-harfbuzz will be installed before its mingw-w64-x86_64-freetype dependency
+2026-10-16T01:08:16.8617016Z 
+2026-10-16T01:08:16.8625562Z Packages (137) db-6.2.32-6  gdbm-1.26-1  heimdal-7.8.0-7  heimdal-libs-7.8.0-7  libcbor-0.14.0-2  libdb-6.2.32-6  libedit-20240808_3.1-1  libfido2-1.17.0-1  libgdbm-1.26-1  mingw-w64-x86_64-boost-libs-1.92.0-4  mingw-w64-x86_64-brotli-1.2.0-1  mingw-w64-x86_64-bzip2-1.0.8-4  mingw-w64-x86_64-c-ares-1.34.8-1  mingw-w64-x86_64-ca-certificates-20260816-1  mingw-w64-x86_64-cc-libs-16.2.0-6  mingw-w64-x86_64-cppdap-1.65.r11.g6464cd7-1  mingw-w64-x86_64-curl-8.23.0-1  mingw-w64-x86_64-egl-headers-1.5.r284.3ae2b7c-1  mingw-w64-x86_64-expat-2.9.0-1  mingw-w64-x86_64-fmt-12.2.0-1  mingw-w64-x86_64-gettext-runtime-1.0-1  mingw-w64-x86_64-gles-headers-3.2.r1065.7fc154c-1  mingw-w64-x86_64-glib2-2.90.1-1  mingw-w64-x86_64-gmp-6.3.0-2  mingw-w64-x86_64-gnutls-3.8.13-3  mingw-w64-x86_64-graphite2-1.3.15-1  mingw-w64-x86_64-harfbuzz-14.6.0-1  mingw-w64-x86_64-hiredis-1.3.0-2  mingw-w64-x86_64-hwloc-2.15.0-1  mingw-w64-x86_64-icu-78.3-4  mingw-w64-x86_64-isl-0.28-1  mingw-w64-x86_64-jsoncpp-1.9.8-1  mingw-w64-x86_64-libarchive-3.8.10-1  mingw-w64-x86_64-libb2-0.98.1-3  mingw-w64-x86_64-libblake3-1.8.7-1  mingw-w64-x86_64-libffi-3.8.0-1  mingw-w64-x86_64-libgcc-16.2.0-6  mingw-w64-x86_64-libiconv-1.19-1  mingw-w64-x86_64-libidn2-2.3.8-4  mingw-w64-x86_64-libltdl-2.6.2-1  mingw-w64-x86_64-libpng-1.6.59-1  mingw-w64-x86_64-libpsl-0.21.5-3  mingw-w64-x86_64-libquadmath-16.2.0-6  mingw-w64-x86_64-libssh2-1.11.1-2  mingw-w64-x86_64-libtasn1-4.21.0-1  mingw-w64-x86_64-libtre-0.9.0-2  mingw-w64-x86_64-libunistring-1.4.2-1  mingw-w64-x86_64-libuv-1.53.0-1  mingw-w64-x86_64-lz4-1.10.0-1  mingw-w64-x86_64-mpc-1.4.1-1  mingw-w64-x86_64-mpdecimal-4.0.1-3  mingw-w64-x86_64-mpfr-4.2.2-3  mingw-w64-x86_64-ncurses-6.6-4  mingw-w64-x86_64-nettle-4.0-1  mingw-w64-x86_64-nghttp2-1.70.0-1  mingw-w64-x86_64-nghttp3-1.18.0-1  mingw-w64-x86_64-ngtcp2-1.25.0-1  mingw-w64-x86_64-ninja-1.13.2-1  mingw-w64-x86_64-p11-kit-0.26.5-1  mingw-w64-x86_64-pcre2-10.49-1  mingw-w64-x86_64-python-packaging-26.3-1  mingw-w64-x86_64-readline-8.3.003-1  mingw-w64-x86_64-rhash-1.4.6-1  mingw-w64-x86_64-speexdsp-1.2.1-2  mingw-w64-x86_64-sqlite3-3.54.0-1  mingw-w64-x86_64-tbb-2023.1.0-1  mingw-w64-x86_64-tcl-8.6.18-1  mingw-w64-x86_64-termcap-1.3.1-8  mingw-w64-x86_64-tk-8.6.18-1  mingw-w64-x86_64-tzdata-2026e-1  mingw-w64-x86_64-windows-default-manifest-20260815-1  mingw-w64-x86_64-wineditline-2.208-1  mingw-w64-x86_64-xxhash-0.8.4-1  mingw-w64-x86_64-xz-5.8.4-1  mingw-w64-x86_64-zstd-1.5.7-2  openssh-10.6p1-1  perl-5.42.3-3  perl-authen-sasl-2.2100-2  perl-clone-0.51-1  perl-convert-binhex-1.125-3  perl-encode-locale-1.05-3  perl-error-0.17030-3  perl-file-listing-6.16-2  perl-html-parser-3.86-2  perl-html-tagset-3.24-2  perl-http-cookiejar-0.014-2  perl-http-cookies-6.12-2  perl-http-daemon-6.17-2  perl-http-date-6.08-2  perl-http-message-7.04-2  perl-http-negotiate-6.01-4  perl-io-html-1.004-3  perl-io-socket-ssl-2.099-2  perl-io-stringy-2.113-4  perl-libwww-6.83-3  perl-lwp-mediatypes-6.05-2  perl-mailtools-2.22-2  perl-mime-tools-5.518-2  perl-net-http-6.24-2  perl-net-smtp-ssl-1.04-3  perl-net-ssleay-1.96-2  perl-termreadkey-2.38-9  perl-timedate-2.35-2  perl-try-tiny-0.32-2  perl-uri-5.37-2  perl-www-robotrules-6.03-2  git-2.56.0-1  make-4.4.1-3  mingw-w64-x86_64-binutils-2.47-4  mingw-w64-x86_64-boost-1.92.0-4  mingw-w64-x86_64-ccache-4.14.1-1  mingw-w64-x86_64-cmake-4.4.4-3  mingw-w64-x86_64-crt-14.0.0.r426.g4564ee4b5-1  mingw-w64-x86_64-freetype-2.15.0-1  mingw-w64-x86_64-fribidi-1.0.17-1  mingw-w64-x86_64-gcc-16.2.0-6  mingw-w64-x86_64-gdb-18.1-3  mingw-w64-x86_64-gdb-multiarch-18.1-3  mingw-w64-x86_64-headers-14.0.0.r426.g4564ee4b5-1  mingw-w64-x86_64-libepoxy-1.5.10-7  mingw-w64-x86_64-libgomp-16.2.0-6  mingw-w64-x86_64-libogg-1.3.6-1  mingw-w64-x86_64-libstdc++-16.2.0-6  mingw-w64-x86_64-libsystre-1.0.2-3  mingw-w64-x86_64-libwinpthread-14.0.0.r426.g4564ee4b5-2  mingw-w64-x86_64-make-4.4.1-5  mingw-w64-x86_64-nasm-3.02-1  mingw-w64-x86_64-openssl-3.6.5-1  mingw-w64-x86_64-opus-1.6.1-1  mingw-w64-x86_64-opusfile-0.12-4  mingw-w64-x86_64-pcre-8.45-2  mingw-w64-x86_64-pkgconf-1~3.0.8-1  mingw-w64-x86_64-python-3.14.8-1  mingw-w64-x86_64-scons-4.11.1-1  mingw-w64-x86_64-speex-1.2.1-1  mingw-w64-x86_64-winpthreads-14.0.0.r426.g4564ee4b5-2  mingw-w64-x86_64-zlib-1.3.2-2
+2026-10-16T01:08:16.8632972Z 
+2026-10-16T01:08:16.8633029Z Total Installed Size:  1501.33 MiB
+2026-10-16T01:08:16.8714299Z 
+2026-10-16T01:08:16.8714412Z :: Proceed with installation? [Y/n] 
+2026-10-16T01:08:16.8714614Z checking keyring...
+2026-10-16T01:08:16.9137286Z checking package integrity...
+2026-10-16T01:08:28.1673327Z loading package files...
+2026-10-16T01:08:28.5696225Z checking for file conflicts...
+2026-10-16T01:08:30.4792462Z :: Processing package changes...
+2026-10-16T01:08:30.4792795Z installing libdb...
+2026-10-16T01:08:30.4862078Z installing libedit...
+2026-10-16T01:08:30.5041354Z installing heimdal-libs...
+2026-10-16T01:08:30.5152513Z installing heimdal...
+2026-10-16T01:08:30.8847196Z installing libcbor...
+2026-10-16T01:08:30.8863220Z installing libfido2...
+2026-10-16T01:08:30.8885452Z installing openssh...
+2026-10-16T01:08:30.9110467Z installing db...
+2026-10-16T01:08:30.9163738Z installing libgdbm...
+2026-10-16T01:08:30.9183377Z installing gdbm...
+2026-10-16T01:08:30.9293096Z installing perl...
+2026-10-16T01:08:31.7930272Z installing perl-error...
+2026-10-16T01:08:31.7976139Z installing perl-authen-sasl...
+2026-10-16T01:08:31.8092327Z installing perl-encode-locale...
+2026-10-16T01:08:31.8124129Z installing perl-http-date...
+2026-10-16T01:08:31.8156077Z installing perl-file-listing...
+2026-10-16T01:08:31.8187380Z installing perl-html-tagset...
+2026-10-16T01:08:31.8219949Z installing perl-clone...
+2026-10-16T01:08:31.8248355Z installing perl-io-html...
+2026-10-16T01:08:31.8279816Z installing perl-lwp-mediatypes...
+2026-10-16T01:08:31.8316737Z installing perl-uri...
+2026-10-16T01:08:31.8652727Z installing perl-http-message...
+2026-10-16T01:08:31.8753163Z installing perl-html-parser...
+2026-10-16T01:08:31.8833868Z installing perl-http-cookies...
+2026-10-16T01:08:31.8877691Z installing perl-http-daemon...
+2026-10-16T01:08:31.8905806Z installing perl-http-cookiejar...
+2026-10-16T01:08:31.8942799Z installing perl-http-negotiate...
+2026-10-16T01:08:31.8969739Z installing perl-net-http...
+2026-10-16T01:08:31.9026552Z installing perl-www-robotrules...
+2026-10-16T01:08:31.9075986Z installing perl-try-tiny...
+2026-10-16T01:08:31.9122076Z installing perl-libwww...
+2026-10-16T01:08:31.9304316Z Optional dependencies for perl-libwww
+2026-10-16T01:08:31.9304632Z     perl-lwp-protocol-https: for https:// url schemes
+2026-10-16T01:08:31.9305154Z installing perl-convert-binhex...
+2026-10-16T01:08:32.2912892Z module test... pass.
+2026-10-16T01:08:32.2920991Z installing perl-io-stringy...
+2026-10-16T01:08:32.2999842Z installing perl-timedate...
+2026-10-16T01:08:32.3355178Z installing perl-mailtools...
+2026-10-16T01:08:32.3509459Z installing perl-mime-tools...
+2026-10-16T01:08:32.3717699Z installing perl-net-ssleay...
+2026-10-16T01:08:32.4114675Z installing perl-io-socket-ssl...
+2026-10-16T01:08:32.4184678Z installing perl-net-smtp-ssl...
+2026-10-16T01:08:32.4209494Z installing perl-termreadkey...
+2026-10-16T01:08:32.4252960Z installing git...
+2026-10-16T01:08:32.7302657Z Optional dependencies for git
+2026-10-16T01:08:32.7303198Z     python: various helper scripts
+2026-10-16T01:08:32.7303566Z     subversion: git svn
+2026-10-16T01:08:32.7303887Z     aspell: spell checking in git gui
+2026-10-16T01:08:32.7304198Z installing make...
+2026-10-16T01:08:32.7483993Z installing mingw-w64-x86_64-libwinpthread...
+2026-10-16T01:08:32.7510661Z installing mingw-w64-x86_64-libgcc...
+2026-10-16T01:08:32.7539082Z installing mingw-w64-x86_64-tzdata...
+2026-10-16T01:08:33.7652023Z installing mingw-w64-x86_64-libstdc++...
+2026-10-16T01:08:33.7717075Z installing mingw-w64-x86_64-cc-libs...
+2026-10-16T01:08:33.7729872Z installing mingw-w64-x86_64-libiconv...
+2026-10-16T01:08:33.7864318Z installing mingw-w64-x86_64-gettext-runtime...
+2026-10-16T01:08:33.8576421Z installing mingw-w64-x86_64-zlib...
+2026-10-16T01:08:33.8622423Z installing mingw-w64-x86_64-zstd...
+2026-10-16T01:08:33.8734606Z installing mingw-w64-x86_64-binutils...
+2026-10-16T01:08:34.0464026Z installing mingw-w64-x86_64-headers...
+2026-10-16T01:08:34.7094680Z installing mingw-w64-x86_64-crt...
+2026-10-16T01:08:35.5933750Z installing mingw-w64-x86_64-gmp...
+2026-10-16T01:08:35.6151326Z installing mingw-w64-x86_64-isl...
+2026-10-16T01:08:35.6519759Z installing mingw-w64-x86_64-mpfr...
+2026-10-16T01:08:35.6679822Z installing mingw-w64-x86_64-mpc...
+2026-10-16T01:08:35.6726948Z installing mingw-w64-x86_64-windows-default-manifest...
+2026-10-16T01:08:35.6744109Z installing mingw-w64-x86_64-winpthreads...
+2026-10-16T01:08:35.6803190Z installing mingw-w64-x86_64-gcc...
+2026-10-16T01:08:36.3929248Z Optional dependencies for mingw-w64-x86_64-gcc
+2026-10-16T01:08:36.3929599Z     mingw-w64-x86_64-libatomic
+2026-10-16T01:08:36.3929844Z     mingw-w64-x86_64-libgomp: OpenMP [pending]
+2026-10-16T01:08:36.3930144Z     mingw-w64-x86_64-libquadmath: Quad Math [pending]
+2026-10-16T01:08:36.3930461Z installing mingw-w64-x86_64-expat...
+2026-10-16T01:08:36.4017439Z installing mingw-w64-x86_64-bzip2...
+2026-10-16T01:08:36.4116735Z installing mingw-w64-x86_64-wineditline...
+2026-10-16T01:08:36.4163673Z installing mingw-w64-x86_64-pcre2...
+2026-10-16T01:08:36.5124029Z installing mingw-w64-x86_64-libtre...
+2026-10-16T01:08:36.5187770Z installing mingw-w64-x86_64-libsystre...
+2026-10-16T01:08:36.5233295Z installing mingw-w64-x86_64-ncurses...
+2026-10-16T01:08:38.9457137Z installing mingw-w64-x86_64-libffi...
+2026-10-16T01:08:38.9512324Z installing mingw-w64-x86_64-mpdecimal...
+2026-10-16T01:08:38.9590742Z installing mingw-w64-x86_64-openssl...
+2026-10-16T01:08:41.9486948Z Optional dependencies for mingw-w64-x86_64-openssl
+2026-10-16T01:08:41.9487218Z     mingw-w64-x86_64-ca-certificates [pending]
+2026-10-16T01:08:41.9487386Z installing mingw-w64-x86_64-tcl...
+2026-10-16T01:08:42.8905634Z installing mingw-w64-x86_64-sqlite3...
+2026-10-16T01:08:42.9584963Z installing mingw-w64-x86_64-tk...
+2026-10-16T01:08:43.2935553Z installing mingw-w64-x86_64-libb2...
+2026-10-16T01:08:43.2969761Z installing mingw-w64-x86_64-xz...
+2026-10-16T01:08:43.3555853Z installing mingw-w64-x86_64-python...
+2026-10-16T01:08:47.3089328Z installing mingw-w64-x86_64-termcap...
+2026-10-16T01:08:47.3125910Z installing mingw-w64-x86_64-readline...
+2026-10-16T01:08:47.4875674Z installing mingw-w64-x86_64-xxhash...
+2026-10-16T01:08:47.4948368Z installing mingw-w64-x86_64-gdb...
+2026-10-16T01:08:47.5731153Z Optional dependencies for mingw-w64-x86_64-gdb
+2026-10-16T01:08:47.5731828Z     mingw-w64-x86_64-python-pygments: for syntax highlighting
+2026-10-16T01:08:47.5732147Z installing mingw-w64-x86_64-gdb-multiarch...
+2026-10-16T01:08:47.6164282Z Optional dependencies for mingw-w64-x86_64-gdb-multiarch
+2026-10-16T01:08:47.6164689Z     mingw-w64-x86_64-python-pygments: for syntax highlighting
+2026-10-16T01:08:47.6164986Z installing mingw-w64-x86_64-libgomp...
+2026-10-16T01:08:47.6222635Z installing mingw-w64-x86_64-make...
+2026-10-16T01:08:47.6257996Z installing mingw-w64-x86_64-pkgconf...
+2026-10-16T01:08:47.6393083Z installing mingw-w64-x86_64-scons...
+2026-10-16T01:08:48.9803037Z installing mingw-w64-x86_64-cppdap...
+2026-10-16T01:08:48.9947901Z installing mingw-w64-x86_64-c-ares...
+2026-10-16T01:08:49.0555029Z installing mingw-w64-x86_64-brotli...
+2026-10-16T01:08:49.0677734Z installing mingw-w64-x86_64-libunistring...
+2026-10-16T01:08:49.0952256Z installing mingw-w64-x86_64-libidn2...
+2026-10-16T01:08:49.1116295Z installing mingw-w64-x86_64-libpsl...
+2026-10-16T01:08:49.1167302Z installing mingw-w64-x86_64-libtasn1...
+2026-10-16T01:08:49.1383420Z installing mingw-w64-x86_64-p11-kit...
+2026-10-16T01:08:49.2145943Z installing mingw-w64-x86_64-ca-certificates...
+2026-10-16T01:08:49.7344328Z installing mingw-w64-x86_64-libssh2...
+2026-10-16T01:08:49.8047106Z installing mingw-w64-x86_64-nghttp2...
+2026-10-16T01:08:49.8141663Z installing mingw-w64-x86_64-nettle...
+2026-10-16T01:08:49.8441379Z installing mingw-w64-x86_64-gnutls...
+2026-10-16T01:08:50.5281389Z installing mingw-w64-x86_64-ngtcp2...
+2026-10-16T01:08:50.5404212Z installing mingw-w64-x86_64-nghttp3...
+2026-10-16T01:08:50.5475923Z installing mingw-w64-x86_64-curl...
+2026-10-16T01:08:50.7553546Z installing mingw-w64-x86_64-jsoncpp...
+2026-10-16T01:08:50.7651715Z installing mingw-w64-x86_64-lz4...
+2026-10-16T01:08:50.7728077Z installing mingw-w64-x86_64-libarchive...
+2026-10-16T01:08:50.8154037Z installing mingw-w64-x86_64-libuv...
+2026-10-16T01:08:50.8274044Z installing mingw-w64-x86_64-ninja...
+2026-10-16T01:08:50.8306076Z installing mingw-w64-x86_64-rhash...
+2026-10-16T01:08:50.8493878Z installing mingw-w64-x86_64-cmake...
+2026-10-16T01:08:52.5766676Z installing mingw-w64-x86_64-libpng...
+2026-10-16T01:08:52.5889623Z installing mingw-w64-x86_64-python-packaging...
+2026-10-16T01:08:52.6244242Z installing mingw-w64-x86_64-glib2...
+2026-10-16T01:08:52.9438738Z installing mingw-w64-x86_64-graphite2...
+2026-10-16T01:08:52.9708771Z installing mingw-w64-x86_64-harfbuzz...
+2026-10-16T01:08:53.0283996Z installing mingw-w64-x86_64-freetype...
+2026-10-16T01:08:53.0554361Z installing mingw-w64-x86_64-libogg...
+2026-10-16T01:08:53.0971911Z installing mingw-w64-x86_64-opus...
+2026-10-16T01:08:53.1044275Z installing mingw-w64-x86_64-opusfile...
+2026-10-16T01:08:53.1109367Z installing mingw-w64-x86_64-speexdsp...
+2026-10-16T01:08:53.1179846Z installing mingw-w64-x86_64-speex...
+2026-10-16T01:08:53.1263571Z installing mingw-w64-x86_64-fribidi...
+2026-10-16T01:08:53.1374180Z installing mingw-w64-x86_64-pcre...
+2026-10-16T01:08:53.2141112Z installing mingw-w64-x86_64-icu...
+2026-10-16T01:08:53.4313237Z installing mingw-w64-x86_64-libquadmath...
+2026-10-16T01:08:53.4344355Z installing mingw-w64-x86_64-boost-libs...
+2026-10-16T01:08:53.4609110Z installing mingw-w64-x86_64-boost...
+2026-10-16T01:09:02.0557488Z Optional dependencies for mingw-w64-x86_64-boost
+2026-10-16T01:09:02.0557903Z     mingw-w64-x86_64-python: For Boost.Python [installed]
+2026-10-16T01:09:02.0558310Z     mingw-w64-x86_64-python-numpy: For Boost.Python (NumPy)
+2026-10-16T01:09:02.0558649Z installing mingw-w64-x86_64-egl-headers...
+2026-10-16T01:09:02.0584105Z installing mingw-w64-x86_64-gles-headers...
+2026-10-16T01:09:02.0652388Z installing mingw-w64-x86_64-libepoxy...
+2026-10-16T01:09:02.0821724Z installing mingw-w64-x86_64-nasm...
+2026-10-16T01:09:02.0892331Z installing mingw-w64-x86_64-fmt...
+2026-10-16T01:09:02.1016606Z installing mingw-w64-x86_64-hiredis...
+2026-10-16T01:09:02.1153731Z installing mingw-w64-x86_64-libltdl...
+2026-10-16T01:09:02.1198814Z installing mingw-w64-x86_64-hwloc...
+2026-10-16T01:09:02.3160145Z Optional dependencies for mingw-w64-x86_64-hwloc
+2026-10-16T01:09:02.3160475Z     mingw-w64-x86_64-cairo
+2026-10-16T01:09:02.3160686Z installing mingw-w64-x86_64-tbb...
+2026-10-16T01:09:02.3744375Z installing mingw-w64-x86_64-libblake3...
+2026-10-16T01:09:02.3800300Z installing mingw-w64-x86_64-ccache...
+2026-10-16T01:09:02.5217228Z :: Running post-transaction hooks...
+2026-10-16T01:09:02.5217470Z (1/1) Updating the info directory file...
+2026-10-16T01:09:02.9372932Z ##[endgroup]
+2026-10-16T01:09:02.9374015Z ##[group]Saving package cache...
+2026-10-16T01:09:02.9721374Z [command]C:\Windows\system32\cmd.exe /D /S /C D:\a\_temp\setup-msys2\msys2.cmd -c "'paccache' '-r' '-f' '-u' '-k0'"
+2026-10-16T01:09:03.5211433Z ==> no candidate packages found for pruning
+2026-10-16T01:09:03.5585877Z [command]C:\Windows\system32\cmd.exe /D /S /C D:\a\_temp\setup-msys2\msys2.cmd -c "'paccache' '-r' '-f' '-k1'"
+2026-10-16T01:09:03.7528486Z ==> no candidate packages found for pruning
+2026-10-16T01:09:04.2448822Z Cache unchanged, skipping save for msys2-pkgs-upd:true-conf:29d6effa-files:4be80e828b4f289d02aeb116e04dbedc46e6b009363516ee32a30e4111b6c51c
+2026-10-16T01:09:04.2783612Z [command]C:\Windows\system32\cmd.exe /D /S /C D:\a\_temp\setup-msys2\msys2.cmd -c "'pacman' '--noconfirm' '-Scc'"
+2026-10-16T01:09:04.7366682Z 
+2026-10-16T01:09:04.7367142Z Cache directory: /var/cache/pacman/pkg/
+2026-10-16T01:09:04.7882140Z :: Do you want to remove ALL files from cache? [Y/n] 
+2026-10-16T01:09:04.7882548Z removing all files from cache...
+2026-10-16T01:09:04.7882717Z 
+2026-10-16T01:09:04.7882821Z Database directory: /var/lib/pacman/
+2026-10-16T01:09:04.7895037Z :: Do you want to remove unused repositories? [Y/n] 
+2026-10-16T01:09:04.7895641Z removing unused sync repositories...
+2026-10-16T01:09:04.7938081Z ##[endgroup]
+2026-10-16T01:09:04.8196886Z ##[group]Run actions/checkout@v4
+2026-10-16T01:09:04.8197080Z with:
+2026-10-16T01:09:04.8197212Z   ref: 077a81087b3fbb8206c1ca7ed919cab95da4fc0b
+2026-10-16T01:09:04.8197388Z   repository: Globulation2/glob2
+2026-10-16T01:09:04.8198880Z   token: ***
+2026-10-16T01:09:04.8198987Z   ssh-strict: true
+2026-10-16T01:09:04.8199104Z   ssh-user: git
+2026-10-16T01:09:04.8199221Z   persist-credentials: true
+2026-10-16T01:09:04.8199351Z   clean: true
+2026-10-16T01:09:04.8199472Z   sparse-checkout-cone-mode: true
+2026-10-16T01:09:04.8199614Z   fetch-depth: 1
+2026-10-16T01:09:04.8199720Z   fetch-tags: false
+2026-10-16T01:09:04.8199826Z   show-progress: true
+2026-10-16T01:09:04.8199933Z   lfs: false
+2026-10-16T01:09:04.8200035Z   submodules: false
+2026-10-16T01:09:04.8200160Z   set-safe-directory: true
+2026-10-16T01:09:04.8200302Z   allow-unsafe-pr-checkout: false
+2026-10-16T01:09:04.8200437Z env:
+2026-10-16T01:09:04.8200543Z   GLOB2_DEV_MODE: isolated
+2026-10-16T01:09:04.8200701Z   CCACHE: 1
+2026-10-16T01:09:04.8200817Z   CCACHE_DIR: D:\a\glob2\glob2\.ccache
+2026-10-16T01:09:04.8200968Z   CCACHE_COMPILERCHECK: content
+2026-10-16T01:09:04.8201107Z   CCACHE_MAXSIZE: 5G
+2026-10-16T01:09:04.8201270Z   pythonLocation: C:\hostedtoolcache\windows\Python\3.12.10\x64
+2026-10-16T01:09:04.8201526Z   PKG_CONFIG_PATH: C:\hostedtoolcache\windows\Python\3.12.10\x64/lib/pkgconfig
+2026-10-16T01:09:04.8201779Z   Python_ROOT_DIR: C:\hostedtoolcache\windows\Python\3.12.10\x64
+2026-10-16T01:09:04.8202013Z   Python2_ROOT_DIR: C:\hostedtoolcache\windows\Python\3.12.10\x64
+2026-10-16T01:09:04.8202248Z   Python3_ROOT_DIR: C:\hostedtoolcache\windows\Python\3.12.10\x64
+2026-10-16T01:09:04.8202432Z   MSYSTEM: MINGW64
+2026-10-16T01:09:04.8202544Z ##[endgroup]
+2026-10-16T01:09:04.8926294Z Syncing repository: Globulation2/glob2
+2026-10-16T01:09:04.8926773Z ##[group]Getting Git version info
+2026-10-16T01:09:04.8927025Z Working directory is 'D:\a\glob2\glob2'
+2026-10-16T01:09:04.9434187Z [command]"C:\Program Files\Git\bin\git.exe" version
+2026-10-16T01:09:05.3156554Z git version 2.56.0.windows.2
+2026-10-16T01:09:05.3196552Z ##[endgroup]
+2026-10-16T01:09:05.3210455Z Temporarily overriding HOME='D:\a\_temp\c05dc3a4-4b2a-47c5-a948-25d30b11b648' before making global git config changes
+2026-10-16T01:09:05.3211060Z Adding repository directory to the temporary git global config as a safe directory
+2026-10-16T01:09:05.3218180Z [command]"C:\Program Files\Git\bin\git.exe" config --global --add safe.directory D:\a\glob2\glob2
+2026-10-16T01:09:05.3878685Z Deleting the contents of 'D:\a\glob2\glob2'
+2026-10-16T01:09:05.3882648Z ##[group]Initializing the repository
+2026-10-16T01:09:05.3889159Z [command]"C:\Program Files\Git\bin\git.exe" init D:\a\glob2\glob2
+2026-10-16T01:09:05.5721588Z Initialized empty Git repository in D:/a/glob2/glob2/.git/
+2026-10-16T01:09:05.5758285Z [command]"C:\Program Files\Git\bin\git.exe" remote add origin https://github.com/Globulation2/glob2
+2026-10-16T01:09:05.6346355Z ##[endgroup]
+2026-10-16T01:09:05.6346598Z ##[group]Disabling automatic garbage collection
+2026-10-16T01:09:05.6353082Z [command]"C:\Program Files\Git\bin\git.exe" config --local gc.auto 0
+2026-10-16T01:09:05.6595091Z ##[endgroup]
+2026-10-16T01:09:05.6595431Z ##[group]Setting up auth
+2026-10-16T01:09:05.6605540Z [command]"C:\Program Files\Git\bin\git.exe" config --local --name-only --get-regexp core\.sshCommand
+2026-10-16T01:09:05.6864224Z [command]"C:\Program Files\Git\bin\git.exe" submodule foreach --recursive "sh -c \"git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :\""
+2026-10-16T01:09:06.8869621Z [command]"C:\Program Files\Git\bin\git.exe" config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+2026-10-16T01:09:06.9114234Z [command]"C:\Program Files\Git\bin\git.exe" submodule foreach --recursive "sh -c \"git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :\""
+2026-10-16T01:09:07.2965408Z [command]"C:\Program Files\Git\bin\git.exe" config --local --name-only --get-regexp ^includeIf\.gitdir:
+2026-10-16T01:09:07.3203083Z [command]"C:\Program Files\Git\bin\git.exe" submodule foreach --recursive "git config --local --show-origin --name-only --get-regexp remote.origin.url"
+2026-10-16T01:09:07.7012231Z [command]"C:\Program Files\Git\bin\git.exe" config --local http.https://github.com/.extraheader "AUTHORIZATION: basic ***"
+2026-10-16T01:09:07.7274551Z ##[endgroup]
+2026-10-16T01:09:07.7274822Z ##[group]Fetching the repository
+2026-10-16T01:09:07.7283126Z [command]"C:\Program Files\Git\bin\git.exe" -c protocol.version=2 fetch --no-tags --prune --no-recurse-submodules --depth=1 origin 077a81087b3fbb8206c1ca7ed919cab95da4fc0b
+2026-10-16T01:09:37.1035191Z From https://github.com/Globulation2/glob2
+2026-10-16T01:09:37.1035726Z  * branch              077a81087b3fbb8206c1ca7ed919cab95da4fc0b -> FETCH_HEAD
+2026-10-16T01:09:37.1067691Z ##[endgroup]
+2026-10-16T01:09:37.1068116Z ##[group]Determining the checkout info
+2026-10-16T01:09:37.1069754Z ##[endgroup]
+2026-10-16T01:09:37.1078888Z [command]"C:\Program Files\Git\bin\git.exe" sparse-checkout disable
+2026-10-16T01:09:37.6274898Z [command]"C:\Program Files\Git\bin\git.exe" config --local --unset-all extensions.worktreeConfig
+2026-10-16T01:09:37.6590085Z ##[group]Checking out the ref
+2026-10-16T01:09:37.6599444Z [command]"C:\Program Files\Git\bin\git.exe" checkout --progress --force 077a81087b3fbb8206c1ca7ed919cab95da4fc0b
+2026-10-16T01:09:38.9446855Z Updating files:  28% (5914/20625)
+2026-10-16T01:09:39.0044508Z Updating files:  29% (5982/20625)
+2026-10-16T01:09:39.0338277Z Updating files:  30% (6188/20625)
+2026-10-16T01:09:39.0541138Z Updating files:  31% (6394/20625)
+2026-10-16T01:09:39.0818791Z Updating files:  32% (6600/20625)
+2026-10-16T01:09:39.1062135Z Updating files:  33% (6807/20625)
+2026-10-16T01:09:39.1295764Z Updating files:  34% (7013/20625)
+2026-10-16T01:09:39.1660948Z Updating files:  35% (7219/20625)
+2026-10-16T01:09:39.1943934Z Updating files:  36% (7425/20625)
+2026-10-16T01:09:39.2239441Z Updating files:  37% (7632/20625)
+2026-10-16T01:09:39.2530645Z Updating files:  38% (7838/20625)
+2026-10-16T01:09:39.2827840Z Updating files:  39% (8044/20625)
+2026-10-16T01:09:39.3424060Z Updating files:  40% (8250/20625)
+2026-10-16T01:09:39.3674893Z Updating files:  41% (8457/20625)
+2026-10-16T01:09:39.3926919Z Updating files:  42% (8663/20625)
+2026-10-16T01:09:39.4240383Z Updating files:  43% (8869/20625)
+2026-10-16T01:09:39.4467822Z Updating files:  44% (9075/20625)
+2026-10-16T01:09:39.4742654Z Updating files:  45% (9282/20625)
+2026-10-16T01:09:39.5018389Z Updating files:  46% (9488/20625)
+2026-10-16T01:09:39.5291290Z Updating files:  47% (9694/20625)
+2026-10-16T01:09:39.5535033Z Updating files:  48% (9900/20625)
+2026-10-16T01:09:39.5767940Z Updating files:  49% (10107/20625)
+2026-10-16T01:09:39.8831131Z Updating files:  50% (10313/20625)
+2026-10-16T01:09:40.7261295Z Updating files:  50% (10380/20625)
+2026-10-16T01:09:40.7714709Z Updating files:  51% (10519/20625)
+2026-10-16T01:09:40.8152824Z Updating files:  52% (10725/20625)
+2026-10-16T01:09:40.8391380Z Updating files:  53% (10932/20625)
+2026-10-16T01:09:40.9161227Z Updating files:  53% (10940/20625)
+2026-10-16T01:09:40.9721200Z Updating files:  54% (11138/20625)
+2026-10-16T01:09:40.9959662Z Updating files:  55% (11344/20625)
+2026-10-16T01:09:41.0203643Z Updating files:  56% (11550/20625)
+2026-10-16T01:09:41.0490487Z Updating files:  57% (11757/20625)
+2026-10-16T01:09:41.0767175Z Updating files:  58% (11963/20625)
+2026-10-16T01:09:41.1033875Z Updating files:  59% (12169/20625)
+2026-10-16T01:09:41.1317615Z Updating files:  60% (12375/20625)
+2026-10-16T01:09:41.1583493Z Updating files:  61% (12582/20625)
+2026-10-16T01:09:41.1842186Z Updating files:  62% (12788/20625)
+2026-10-16T01:09:41.2078842Z Updating files:  63% (12994/20625)
+2026-10-16T01:09:41.2354623Z Updating files:  64% (13200/20625)
+2026-10-16T01:09:41.2605256Z Updating files:  65% (13407/20625)
+2026-10-16T01:09:41.2837673Z Updating files:  66% (13613/20625)
+2026-10-16T01:09:41.3060671Z Updating files:  67% (13819/20625)
+2026-10-16T01:09:41.3391831Z Updating files:  68% (14025/20625)
+2026-10-16T01:09:41.4489875Z Updating files:  69% (14232/20625)
+2026-10-16T01:09:41.4753349Z Updating files:  70% (14438/20625)
+2026-10-16T01:09:41.4938850Z Updating files:  71% (14644/20625)
+2026-10-16T01:09:41.5203370Z Updating files:  72% (14850/20625)
+2026-10-16T01:09:41.5464253Z Updating files:  73% (15057/20625)
+2026-10-16T01:09:41.5664320Z Updating files:  74% (15263/20625)
+2026-10-16T01:09:41.6133143Z Updating files:  75% (15469/20625)
+2026-10-16T01:09:41.6369923Z Updating files:  76% (15675/20625)
+2026-10-16T01:09:41.6685022Z Updating files:  77% (15882/20625)
+2026-10-16T01:09:41.6933474Z Updating files:  78% (16088/20625)
+2026-10-16T01:09:41.7323512Z Updating files:  79% (16294/20625)
+2026-10-16T01:09:41.7602720Z Updating files:  80% (16500/20625)
+2026-10-16T01:09:41.8911182Z Updating files:  81% (16707/20625)
+2026-10-16T01:09:42.3218829Z Updating files:  81% (16855/20625)
+2026-10-16T01:09:42.3477213Z Updating files:  82% (16913/20625)
+2026-10-16T01:09:42.3991251Z Updating files:  83% (17119/20625)
+2026-10-16T01:09:42.4202522Z Updating files:  84% (17325/20625)
+2026-10-16T01:09:42.4386971Z Updating files:  85% (17532/20625)
+2026-10-16T01:09:42.4598923Z Updating files:  86% (17738/20625)
+2026-10-16T01:09:42.4931247Z Updating files:  87% (17944/20625)
+2026-10-16T01:09:42.5193713Z Updating files:  88% (18150/20625)
+2026-10-16T01:09:42.6064447Z Updating files:  89% (18357/20625)
+2026-10-16T01:09:42.6343714Z Updating files:  90% (18563/20625)
+2026-10-16T01:09:42.6651822Z Updating files:  91% (18769/20625)
+2026-10-16T01:09:42.6902726Z Updating files:  92% (18975/20625)
+2026-10-16T01:09:42.7777411Z Updating files:  93% (19182/20625)
+2026-10-16T01:09:42.8074139Z Updating files:  94% (19388/20625)
+2026-10-16T01:09:42.8322100Z Updating files:  95% (19594/20625)
+2026-10-16T01:09:42.8652243Z Updating files:  95% (19694/20625)
+2026-10-16T01:09:42.9686537Z Updating files:  96% (19800/20625)
+2026-10-16T01:09:43.0099367Z Updating files:  97% (20007/20625)
+2026-10-16T01:09:43.0458237Z Updating files:  98% (20213/20625)
+2026-10-16T01:09:43.0743605Z Updating files:  99% (20419/20625)
+2026-10-16T01:09:43.0743907Z Updating files: 100% (20625/20625)
+2026-10-16T01:09:43.0744130Z Updating files: 100% (20625/20625), done.
+2026-10-16T01:09:43.0952897Z Note: switching to '077a81087b3fbb8206c1ca7ed919cab95da4fc0b'.
+2026-10-16T01:09:43.0953164Z 
+2026-10-16T01:09:43.0953336Z You are in 'detached HEAD' state. You can look around, make experimental
+2026-10-16T01:09:43.0953740Z changes and commit them, and you can discard any commits you make in this
+2026-10-16T01:09:43.0954140Z state without impacting any branches by switching back to a branch.
+2026-10-16T01:09:43.0954376Z 
+2026-10-16T01:09:43.0954572Z If you want to create a new branch to retain commits you create, you may
+2026-10-16T01:09:43.0954953Z do so (now or later) by using -c with the switch command. Example:
+2026-10-16T01:09:43.0955172Z 
+2026-10-16T01:09:43.0955257Z   git switch -c <new-branch-name>
+2026-10-16T01:09:43.0955403Z 
+2026-10-16T01:09:43.0955482Z Or undo this operation with:
+2026-10-16T01:09:43.0955609Z 
+2026-10-16T01:09:43.0955677Z   git switch -
+2026-10-16T01:09:43.0956030Z 
+2026-10-16T01:09:43.0956207Z Turn off this advice by setting config variable advice.detachedHead to false
+2026-10-16T01:09:43.0956472Z 
+2026-10-16T01:09:43.0959986Z HEAD is now at 077a8108 Merge f56cbc8f624dd35c2066cce1aad51d0d9ada25cf into 987c953698bb3f0bfd1078184773075ba3313091
+2026-10-16T01:09:43.1498436Z ##[endgroup]
+2026-10-16T01:09:43.2065422Z [command]"C:\Program Files\Git\bin\git.exe" log -1 --format=%H
+2026-10-16T01:09:43.2358620Z 077a81087b3fbb8206c1ca7ed919cab95da4fc0b
+2026-10-16T01:09:43.2610216Z ##[group]Run $encoder = & "C:\hostedtoolcache\windows\Python\3.12.10\x64\python.exe" tools/package_assets.py --encoder-python
+2026-10-16T01:09:43.2610751Z [36;1m$encoder = & "C:\hostedtoolcache\windows\Python\3.12.10\x64\python.exe" tools/package_assets.py --encoder-python[0m
+2026-10-16T01:09:43.2611067Z [36;1mif ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }[0m
+2026-10-16T01:09:43.2611282Z [36;1m"GLOB2_ASSET_ENCODER_PYTHON=$encoder" >> $env:GITHUB_ENV[0m
+2026-10-16T01:09:43.4706520Z shell: C:\Program Files\PowerShell\7\pwsh.EXE -command ". '{0}'"
+2026-10-16T01:09:43.4706855Z env:
+2026-10-16T01:09:43.4707032Z   GLOB2_DEV_MODE: isolated
+2026-10-16T01:09:43.4707231Z   CCACHE: 1
+2026-10-16T01:09:43.4707408Z   CCACHE_DIR: D:\a\glob2\glob2\.ccache
+2026-10-16T01:09:43.4707643Z   CCACHE_COMPILERCHECK: content
+2026-10-16T01:09:43.4707846Z   CCACHE_MAXSIZE: 5G
+2026-10-16T01:09:43.4708102Z   pythonLocation: C:\hostedtoolcache\windows\Python\3.12.10\x64
+2026-10-16T01:09:43.4708593Z   PKG_CONFIG_PATH: C:\hostedtoolcache\windows\Python\3.12.10\x64/lib/pkgconfig
+2026-10-16T01:09:43.4708996Z   Python_ROOT_DIR: C:\hostedtoolcache\windows\Python\3.12.10\x64
+2026-10-16T01:09:43.4709360Z   Python2_ROOT_DIR: C:\hostedtoolcache\windows\Python\3.12.10\x64
+2026-10-16T01:09:43.4709718Z   Python3_ROOT_DIR: C:\hostedtoolcache\windows\Python\3.12.10\x64
+2026-10-16T01:09:43.4710004Z   MSYSTEM: MINGW64
+2026-10-16T01:09:43.4710169Z ##[endgroup]
+2026-10-16T01:09:52.5479785Z Collecting Pillow==12.2.0 (from -r D:\a\glob2\glob2\tools\asset-requirements.txt (line 2))
+2026-10-16T01:09:52.6081108Z   Downloading pillow-12.2.0-cp312-cp312-win_amd64.whl.metadata (9.0 kB)
+2026-10-16T01:09:52.7145325Z Downloading pillow-12.2.0-cp312-cp312-win_amd64.whl (7.1 MB)
+2026-10-16T01:09:52.9184843Z    ---------------------------------------- 7.1/7.1 MB 43.7 MB/s eta 0:00:00
+2026-10-16T01:09:52.9445145Z Installing collected packages: Pillow
+2026-10-16T01:09:53.1969167Z Successfully installed Pillow-12.2.0
+2026-10-16T01:09:53.4868219Z 
+2026-10-16T01:09:53.4868808Z [notice] A new release of pip is available: 25.0.1 -> 26.2.1
+2026-10-16T01:09:53.4869546Z [notice] To update, run: D:\a\glob2\glob2\build\mobile-tools\asset-encoder-runtime-assets-v1-py3.12\venv\Scripts\python.exe -m pip install --upgrade pip
+2026-10-16T01:09:53.7123292Z ##[group]Run git config --local core.autocrlf true
+2026-10-16T01:09:53.7123574Z [36;1mgit config --local core.autocrlf true[0m
+2026-10-16T01:09:53.7125234Z shell: D:\a\_temp\setup-msys2\msys2.CMD {0}
+2026-10-16T01:09:53.7125376Z env:
+2026-10-16T01:09:53.7125481Z   GLOB2_DEV_MODE: isolated
+2026-10-16T01:09:53.7125601Z   CCACHE: 1
+2026-10-16T01:09:53.7125707Z   CCACHE_DIR: D:\a\glob2\glob2\.ccache
+2026-10-16T01:09:53.7125850Z   CCACHE_COMPILERCHECK: content
+2026-10-16T01:09:53.7125976Z   CCACHE_MAXSIZE: 5G
+2026-10-16T01:09:53.7126127Z   pythonLocation: C:\hostedtoolcache\windows\Python\3.12.10\x64
+2026-10-16T01:09:53.7126527Z   PKG_CONFIG_PATH: C:\hostedtoolcache\windows\Python\3.12.10\x64/lib/pkgconfig
+2026-10-16T01:09:53.7126767Z   Python_ROOT_DIR: C:\hostedtoolcache\windows\Python\3.12.10\x64
+2026-10-16T01:09:53.7126988Z   Python2_ROOT_DIR: C:\hostedtoolcache\windows\Python\3.12.10\x64
+2026-10-16T01:09:53.7127259Z   Python3_ROOT_DIR: C:\hostedtoolcache\windows\Python\3.12.10\x64
+2026-10-16T01:09:53.7127429Z   MSYSTEM: MINGW64
+2026-10-16T01:09:53.7127696Z   GLOB2_ASSET_ENCODER_PYTHON: D:\a\glob2\glob2\build\mobile-tools\asset-encoder-runtime-assets-v1-py3.12\venv\Scripts\python.exe
+2026-10-16T01:09:53.7128061Z ##[endgroup]
+2026-10-16T01:09:53.8955625Z ##[group]Run actions/cache/restore@v4
+2026-10-16T01:09:53.8955908Z with:
+2026-10-16T01:09:53.8956075Z   path: D:\a\glob2\glob2\.ccache
+2026-10-16T01:09:53.8956302Z   key: ccache-windows-38832889808-1
+2026-10-16T01:09:53.8956449Z   restore-keys: ccache-windows-
+2026-10-16T01:09:53.8956582Z   enableCrossOsArchive: false
+2026-10-16T01:09:53.8956719Z   fail-on-cache-miss: false
+2026-10-16T01:09:53.8956844Z   lookup-only: false
+2026-10-16T01:09:53.8956952Z env:
+2026-10-16T01:09:53.8957047Z   GLOB2_DEV_MODE: isolated
+2026-10-16T01:09:53.8957176Z   CCACHE: 1
+2026-10-16T01:09:53.8957284Z   CCACHE_DIR: D:\a\glob2\glob2\.ccache
+2026-10-16T01:09:53.8957428Z   CCACHE_COMPILERCHECK: content
+2026-10-16T01:09:53.8957551Z   CCACHE_MAXSIZE: 5G
+2026-10-16T01:09:53.8957704Z   pythonLocation: C:\hostedtoolcache\windows\Python\3.12.10\x64
+2026-10-16T01:09:53.8957953Z   PKG_CONFIG_PATH: C:\hostedtoolcache\windows\Python\3.12.10\x64/lib/pkgconfig
+2026-10-16T01:09:53.8958231Z   Python_ROOT_DIR: C:\hostedtoolcache\windows\Python\3.12.10\x64
+2026-10-16T01:09:53.8958455Z   Python2_ROOT_DIR: C:\hostedtoolcache\windows\Python\3.12.10\x64
+2026-10-16T01:09:53.8958670Z   Python3_ROOT_DIR: C:\hostedtoolcache\windows\Python\3.12.10\x64
+2026-10-16T01:09:53.8958840Z   MSYSTEM: MINGW64
+2026-10-16T01:09:53.8959118Z   GLOB2_ASSET_ENCODER_PYTHON: D:\a\glob2\glob2\build\mobile-tools\asset-encoder-runtime-assets-v1-py3.12\venv\Scripts\python.exe
+2026-10-16T01:09:53.8959413Z ##[endgroup]
+2026-10-16T01:09:53.9792039Z (node:5640) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.
+2026-10-16T01:09:53.9792470Z (Use `node --trace-deprecation ...` to show where the warning was created)
+2026-10-16T01:09:54.1722676Z Cache hit for restore-key: ccache-windows-38280367102-1
+2026-10-16T01:09:54.1790583Z (node:5640) [DEP0169] DeprecationWarning: `url.parse()` behavior is not standardized and prone to errors that have security implications. Use the WHATWG URL API instead. CVEs are not issued for `url.parse()` vulnerabilities.
+2026-10-16T01:09:55.2236849Z Received 77464238 of 77464238 (100.0%), 80.7 MBs/sec
+2026-10-16T01:09:55.2239545Z Cache Size: ~74 MB (77464238 B)
+2026-10-16T01:09:55.2303010Z [command]"C:\Program Files\Git\usr\bin\tar.exe" -xf D:/a/_temp/ecb6da39-f74f-467b-b234-eea564f56429/cache.tzst -P -C D:/a/glob2/glob2 --force-local --use-compress-program "zstd -d"
+2026-10-16T01:09:55.6435457Z Cache restored successfully
+2026-10-16T01:09:55.6563353Z Cache restored from key: ccache-windows-38280367102-1
+2026-10-16T01:09:55.6802659Z ##[group]Run ccache -z
+2026-10-16T01:09:55.6802883Z [36;1mccache -z[0m
+2026-10-16T01:09:55.6803037Z [36;1mecho "CCACHE_RUN_START=$(date +%s)" >> "$GITHUB_ENV"[0m
+2026-10-16T01:09:55.6805114Z shell: D:\a\_temp\setup-msys2\msys2.CMD {0}
+2026-10-16T01:09:55.6805264Z env:
+2026-10-16T01:09:55.6805380Z   GLOB2_DEV_MODE: isolated
+2026-10-16T01:09:55.6805500Z   CCACHE: 1
+2026-10-16T01:09:55.6805606Z   CCACHE_DIR: D:\a\glob2\glob2\.ccache
+2026-10-16T01:09:55.6805759Z   CCACHE_COMPILERCHECK: content
+2026-10-16T01:09:55.6805887Z   CCACHE_MAXSIZE: 5G
+2026-10-16T01:09:55.6806045Z   pythonLocation: C:\hostedtoolcache\windows\Python\3.12.10\x64
+2026-10-16T01:09:55.6806289Z   PKG_CONFIG_PATH: C:\hostedtoolcache\windows\Python\3.12.10\x64/lib/pkgconfig
+2026-10-16T01:09:55.6806532Z   Python_ROOT_DIR: C:\hostedtoolcache\windows\Python\3.12.10\x64
+2026-10-16T01:09:55.6806755Z   Python2_ROOT_DIR: C:\hostedtoolcache\windows\Python\3.12.10\x64
+2026-10-16T01:09:55.6806999Z   Python3_ROOT_DIR: C:\hostedtoolcache\windows\Python\3.12.10\x64
+2026-10-16T01:09:55.6807171Z   MSYSTEM: MINGW64
+2026-10-16T01:09:55.6807448Z   GLOB2_ASSET_ENCODER_PYTHON: D:\a\glob2\glob2\build\mobile-tools\asset-encoder-runtime-assets-v1-py3.12\venv\Scripts\python.exe
+2026-10-16T01:09:55.6807741Z ##[endgroup]
+2026-10-16T01:09:55.8783145Z Statistics zeroed
+2026-10-16T01:09:55.9056675Z ##[group]Run mkdir -p artifacts/windows-source
+2026-10-16T01:09:55.9056950Z [36;1mmkdir -p artifacts/windows-source[0m
+2026-10-16T01:09:55.9057299Z [36;1m{[0m
+2026-10-16T01:09:55.9057411Z [36;1m  command -v git[0m
+2026-10-16T01:09:55.9057537Z [36;1m  git --version[0m
+2026-10-16T01:09:55.9057753Z [36;1m  git config --show-origin --get-regexp '^core\.(symlinks|filemode|autocrlf)$' || true[0m
+2026-10-16T01:09:55.9058024Z [36;1m  git status --porcelain=v1 --untracked-files=all[0m
+2026-10-16T01:09:55.9058228Z [36;1m} > artifacts/windows-source/before-build.log 2>&1[0m
+2026-10-16T01:09:55.9058427Z [36;1mcat artifacts/windows-source/before-build.log[0m
+2026-10-16T01:09:55.9059775Z shell: D:\a\_temp\setup-msys2\msys2.CMD {0}
+2026-10-16T01:09:55.9059922Z env:
+2026-10-16T01:09:55.9060030Z   GLOB2_DEV_MODE: isolated
+2026-10-16T01:09:55.9060146Z   CCACHE: 1
+2026-10-16T01:09:55.9060255Z   CCACHE_DIR: D:\a\glob2\glob2\.ccache
+2026-10-16T01:09:55.9060512Z   CCACHE_COMPILERCHECK: content
+2026-10-16T01:09:55.9060641Z   CCACHE_MAXSIZE: 5G
+2026-10-16T01:09:55.9060797Z   pythonLocation: C:\hostedtoolcache\windows\Python\3.12.10\x64
+2026-10-16T01:09:55.9061049Z   PKG_CONFIG_PATH: C:\hostedtoolcache\windows\Python\3.12.10\x64/lib/pkgconfig
+2026-10-16T01:09:55.9061289Z   Python_ROOT_DIR: C:\hostedtoolcache\windows\Python\3.12.10\x64
+2026-10-16T01:09:55.9061514Z   Python2_ROOT_DIR: C:\hostedtoolcache\windows\Python\3.12.10\x64
+2026-10-16T01:09:55.9061730Z   Python3_ROOT_DIR: C:\hostedtoolcache\windows\Python\3.12.10\x64
+2026-10-16T01:09:55.9061900Z   MSYSTEM: MINGW64
+2026-10-16T01:09:55.9062174Z   GLOB2_ASSET_ENCODER_PYTHON: D:\a\glob2\glob2\build\mobile-tools\asset-encoder-runtime-assets-v1-py3.12\venv\Scripts\python.exe
+2026-10-16T01:09:55.9062476Z   CCACHE_RUN_START: 1792112995
+2026-10-16T01:09:55.9062604Z ##[endgroup]
+2026-10-16T01:09:59.7567158Z /usr/bin/git
+2026-10-16T01:09:59.7567344Z git version 2.56.0
+2026-10-16T01:09:59.7567554Z file:.git/config	core.filemode false
+2026-10-16T01:09:59.7567730Z file:.git/config	core.autocrlf true
+2026-10-16T01:09:59.7702321Z ##[group]Run actions/upload-artifact@v4
+2026-10-16T01:09:59.7702528Z with:
+2026-10-16T01:09:59.7702649Z   name: windows-source-before-build
+2026-10-16T01:09:59.7702815Z   path: artifacts/windows-source/before-build.log
+2026-10-16T01:09:59.7702983Z   if-no-files-found: warn
+2026-10-16T01:09:59.7703108Z   compression-level: 6
+2026-10-16T01:09:59.7703224Z   overwrite: false
+2026-10-16T01:09:59.7703338Z   include-hidden-files: false
+2026-10-16T01:09:59.7703460Z env:
+2026-10-16T01:09:59.7703563Z   GLOB2_DEV_MODE: isolated
+2026-10-16T01:09:59.7703679Z   CCACHE: 1
+2026-10-16T01:09:59.7703945Z   CCACHE_DIR: D:\a\glob2\glob2\.ccache
+2026-10-16T01:09:59.7704092Z   CCACHE_COMPILERCHECK: content
+2026-10-16T01:09:59.7704219Z   CCACHE_MAXSIZE: 5G
+2026-10-16T01:09:59.7704379Z   pythonLocation: C:\hostedtoolcache\windows\Python\3.12.10\x64
+2026-10-16T01:09:59.7704630Z   PKG_CONFIG_PATH: C:\hostedtoolcache\windows\Python\3.12.10\x64/lib/pkgconfig
+2026-10-16T01:09:59.7704897Z   Python_ROOT_DIR: C:\hostedtoolcache\windows\Python\3.12.10\x64
+2026-10-16T01:09:59.7705117Z   Python2_ROOT_DIR: C:\hostedtoolcache\windows\Python\3.12.10\x64
+2026-10-16T01:09:59.7705338Z   Python3_ROOT_DIR: C:\hostedtoolcache\windows\Python\3.12.10\x64
+2026-10-16T01:09:59.7705508Z   MSYSTEM: MINGW64
+2026-10-16T01:09:59.7705779Z   GLOB2_ASSET_ENCODER_PYTHON: D:\a\glob2\glob2\build\mobile-tools\asset-encoder-runtime-assets-v1-py3.12\venv\Scripts\python.exe
+2026-10-16T01:09:59.7706081Z   CCACHE_RUN_START: 1792112995
+2026-10-16T01:09:59.7706203Z ##[endgroup]
+2026-10-16T01:09:59.8933054Z (node:6552) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.
+2026-10-16T01:09:59.8933483Z (Use `node --trace-deprecation ...` to show where the warning was created)
+2026-10-16T01:09:59.8965198Z With the provided path, there will be 1 file uploaded
+2026-10-16T01:09:59.8968144Z Artifact name is valid!
+2026-10-16T01:09:59.8969178Z Root directory input is valid!
+2026-10-16T01:10:00.1924896Z Beginning upload of artifact content to blob storage
+2026-10-16T01:10:00.2044442Z (node:6552) [DEP0169] DeprecationWarning: `url.parse()` behavior is not standardized and prone to errors that have security implications. Use the WHATWG URL API instead. CVEs are not issued for `url.parse()` vulnerabilities.
+2026-10-16T01:10:00.3407497Z Uploaded bytes 226
+2026-10-16T01:10:00.3821758Z Finished uploading artifact content to blob storage!
+2026-10-16T01:10:00.3822445Z SHA256 digest of uploaded artifact zip is 21ce3c3e08f4ec6489bd151e7c12547ca9fa5157c14e94a2c7e2b47b5789e228
+2026-10-16T01:10:00.3823498Z Finalizing artifact upload
+2026-10-16T01:10:00.6297041Z Artifact windows-source-before-build.zip successfully finalized. Artifact ID 12018118342
+2026-10-16T01:10:00.6298122Z Artifact windows-source-before-build has been successfully uploaded! Final size is 226 bytes. Artifact ID is 12018118342
+2026-10-16T01:10:00.6305307Z Artifact download URL: https://github.com/Globulation2/glob2/actions/runs/38832889808/artifacts/12018118342
+2026-10-16T01:10:00.6625841Z Prepare all required actions
+2026-10-16T01:10:00.6626347Z Getting action download info
+2026-10-16T01:10:00.8452874Z ##[group]Run ./.github/actions/sdl3
+2026-10-16T01:10:00.8453032Z with:
+2026-10-16T01:10:00.8453139Z   shell: msys2 {0}
+2026-10-16T01:10:00.8453247Z   cc: gcc
+2026-10-16T01:10:00.8453341Z   cxx: g++
+2026-10-16T01:10:00.8453442Z env:
+2026-10-16T01:10:00.8453547Z   GLOB2_DEV_MODE: isolated
+2026-10-16T01:10:00.8453674Z   CCACHE: 1
+2026-10-16T01:10:00.8453784Z   CCACHE_DIR: D:\a\glob2\glob2\.ccache
+2026-10-16T01:10:00.8453953Z   CCACHE_COMPILERCHECK: content
+2026-10-16T01:10:00.8454084Z   CCACHE_MAXSIZE: 5G
+2026-10-16T01:10:00.8454247Z   pythonLocation: C:\hostedtoolcache\windows\Python\3.12.10\x64
+2026-10-16T01:10:00.8454495Z   PKG_CONFIG_PATH: C:\hostedtoolcache\windows\Python\3.12.10\x64/lib/pkgconfig
+2026-10-16T01:10:00.8454743Z   Python_ROOT_DIR: C:\hostedtoolcache\windows\Python\3.12.10\x64
+2026-10-16T01:10:00.8454987Z   Python2_ROOT_DIR: C:\hostedtoolcache\windows\Python\3.12.10\x64
+2026-10-16T01:10:00.8455203Z   Python3_ROOT_DIR: C:\hostedtoolcache\windows\Python\3.12.10\x64
+2026-10-16T01:10:00.8455375Z   MSYSTEM: MINGW64
+2026-10-16T01:10:00.8455653Z   GLOB2_ASSET_ENCODER_PYTHON: D:\a\glob2\glob2\build\mobile-tools\asset-encoder-runtime-assets-v1-py3.12\venv\Scripts\python.exe
+2026-10-16T01:10:00.8455951Z   CCACHE_RUN_START: 1792112995
+2026-10-16T01:10:00.8456083Z ##[endgroup]
+2026-10-16T01:10:00.8500182Z ##[start-action display=Run python3 .github/scripts/ci_dependency_cache.py key --cc 'gcc' --cxx 'g++';id=__self.identity]
+2026-10-16T01:10:00.8590812Z ##[group]Run python3 .github/scripts/ci_dependency_cache.py key --cc 'gcc' --cxx 'g++'
+2026-10-16T01:10:00.8591308Z [36;1mpython3 .github/scripts/ci_dependency_cache.py key --cc 'gcc' --cxx 'g++'[0m
+2026-10-16T01:10:00.8592635Z shell: D:\a\_temp\setup-msys2\msys2.CMD {0}
+2026-10-16T01:10:00.8592780Z env:
+2026-10-16T01:10:00.8592891Z   GLOB2_DEV_MODE: isolated
+2026-10-16T01:10:00.8593026Z   CCACHE: 1
+2026-10-16T01:10:00.8593138Z   CCACHE_DIR: D:\a\glob2\glob2\.ccache
+2026-10-16T01:10:00.8593290Z   CCACHE_COMPILERCHECK: content
+2026-10-16T01:10:00.8593426Z   CCACHE_MAXSIZE: 5G
+2026-10-16T01:10:00.8593585Z   pythonLocation: C:\hostedtoolcache\windows\Python\3.12.10\x64
+2026-10-16T01:10:00.8593841Z   PKG_CONFIG_PATH: C:\hostedtoolcache\windows\Python\3.12.10\x64/lib/pkgconfig
+2026-10-16T01:10:00.8594087Z   Python_ROOT_DIR: C:\hostedtoolcache\windows\Python\3.12.10\x64
+2026-10-16T01:10:00.8594309Z   Python2_ROOT_DIR: C:\hostedtoolcache\windows\Python\3.12.10\x64
+2026-10-16T01:10:00.8594534Z   Python3_ROOT_DIR: C:\hostedtoolcache\windows\Python\3.12.10\x64
+2026-10-16T01:10:00.8594704Z   MSYSTEM: MINGW64
+2026-10-16T01:10:00.8594984Z   GLOB2_ASSET_ENCODER_PYTHON: D:\a\glob2\glob2\build\mobile-tools\asset-encoder-runtime-assets-v1-py3.12\venv\Scripts\python.exe
+2026-10-16T01:10:00.8595446Z   CCACHE_RUN_START: 1792112995
+2026-10-16T01:10:00.8595576Z ##[endgroup]
+2026-10-16T01:10:01.1501774Z 8448c4ceeb6734e87587881b3c3738bdf4fc804856d16ac5b6cd1620a4482627
+2026-10-16T01:10:01.1644950Z ##[end-action id=__self.identity;outcome=success;conclusion=success;duration_ms=314]
+2026-10-16T01:10:01.1646929Z ##[start-action display=Run actions/cache/restore@v4;id=__self.restore]
+2026-10-16T01:10:01.1737084Z ##[group]Run actions/cache/restore@v4
+2026-10-16T01:10:01.1737236Z with:
+2026-10-16T01:10:01.1737343Z   path: build/sdl3-ci/prefix
+2026-10-16T01:10:01.1737610Z   key: sdl3-prefix-v1-Windows-X64-8448c4ceeb6734e87587881b3c3738bdf4fc804856d16ac5b6cd1620a4482627
+2026-10-16T01:10:01.1737904Z   enableCrossOsArchive: false
+2026-10-16T01:10:01.1738043Z   fail-on-cache-miss: false
+2026-10-16T01:10:01.1738171Z   lookup-only: false
+2026-10-16T01:10:01.1738285Z env:
+2026-10-16T01:10:01.1738387Z   GLOB2_DEV_MODE: isolated
+2026-10-16T01:10:01.1738513Z   CCACHE: 1
+2026-10-16T01:10:01.1738623Z   CCACHE_DIR: D:\a\glob2\glob2\.ccache
+2026-10-16T01:10:01.1738774Z   CCACHE_COMPILERCHECK: content
+2026-10-16T01:10:01.1740048Z   CCACHE_MAXSIZE: 5G
+2026-10-16T01:10:01.1740220Z   pythonLocation: C:\hostedtoolcache\windows\Python\3.12.10\x64
+2026-10-16T01:10:01.1740468Z   PKG_CONFIG_PATH: C:\hostedtoolcache\windows\Python\3.12.10\x64/lib/pkgconfig
+2026-10-16T01:10:01.1740714Z   Python_ROOT_DIR: C:\hostedtoolcache\windows\Python\3.12.10\x64
+2026-10-16T01:10:01.1740933Z   Python2_ROOT_DIR: C:\hostedtoolcache\windows\Python\3.12.10\x64
+2026-10-16T01:10:01.1741149Z   Python3_ROOT_DIR: C:\hostedtoolcache\windows\Python\3.12.10\x64
+2026-10-16T01:10:01.1741574Z   MSYSTEM: MINGW64
+2026-10-16T01:10:01.1741862Z   GLOB2_ASSET_ENCODER_PYTHON: D:\a\glob2\glob2\build\mobile-tools\asset-encoder-runtime-assets-v1-py3.12\venv\Scripts\python.exe
+2026-10-16T01:10:01.1742169Z   CCACHE_RUN_START: 1792112995
+2026-10-16T01:10:01.1742296Z ##[endgroup]
+2026-10-16T01:10:01.2547858Z (node:5652) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.
+2026-10-16T01:10:01.2548297Z (Use `node --trace-deprecation ...` to show where the warning was created)
+2026-10-16T01:10:01.4306460Z Cache hit for: sdl3-prefix-v1-Windows-X64-8448c4ceeb6734e87587881b3c3738bdf4fc804856d16ac5b6cd1620a4482627
+2026-10-16T01:10:01.4377874Z (node:5652) [DEP0169] DeprecationWarning: `url.parse()` behavior is not standardized and prone to errors that have security implications. Use the WHATWG URL API instead. CVEs are not issued for `url.parse()` vulnerabilities.
+2026-10-16T01:10:01.9666416Z Received 6958205 of 6958205 (100.0%), 17.1 MBs/sec
+2026-10-16T01:10:01.9667726Z Cache Size: ~7 MB (6958205 B)
+2026-10-16T01:10:01.9683617Z [command]"C:\Program Files\Git\usr\bin\tar.exe" -xf D:/a/_temp/6768a0ff-9a6e-434b-ac63-831f5e55b0f2/cache.tzst -P -C D:/a/glob2/glob2 --force-local --use-compress-program "zstd -d"
+2026-10-16T01:10:02.0912480Z Cache restored successfully
+2026-10-16T01:10:02.0985290Z Cache restored from key: sdl3-prefix-v1-Windows-X64-8448c4ceeb6734e87587881b3c3738bdf4fc804856d16ac5b6cd1620a4482627
+2026-10-16T01:10:02.1086421Z ##[end-action id=__self.restore;outcome=success;conclusion=success;duration_ms=943]
+2026-10-16T01:10:02.1089917Z ##[start-action display=Run python3 .github/scripts/ci_dependency_cache.py verify --key '8448c4ceeb6734e87587881b3c3738bdf4fc804856d16ac5b6cd1620a4482627';id=__self.__run]
+2026-10-16T01:10:02.1193962Z ##[group]Run python3 .github/scripts/ci_dependency_cache.py verify --key '8448c4ceeb6734e87587881b3c3738bdf4fc804856d16ac5b6cd1620a4482627'
+2026-10-16T01:10:02.1194472Z [36;1mpython3 .github/scripts/ci_dependency_cache.py verify --key '8448c4ceeb6734e87587881b3c3738bdf4fc804856d16ac5b6cd1620a4482627'[0m
+2026-10-16T01:10:02.1195970Z shell: D:\a\_temp\setup-msys2\msys2.CMD {0}
+2026-10-16T01:10:02.1196122Z env:
+2026-10-16T01:10:02.1196236Z   GLOB2_DEV_MODE: isolated
+2026-10-16T01:10:02.1196362Z   CCACHE: 1
+2026-10-16T01:10:02.1196478Z   CCACHE_DIR: D:\a\glob2\glob2\.ccache
+2026-10-16T01:10:02.1196638Z   CCACHE_COMPILERCHECK: content
+2026-10-16T01:10:02.1196781Z   CCACHE_MAXSIZE: 5G
+2026-10-16T01:10:02.1196948Z   pythonLocation: C:\hostedtoolcache\windows\Python\3.12.10\x64
+2026-10-16T01:10:02.1197208Z   PKG_CONFIG_PATH: C:\hostedtoolcache\windows\Python\3.12.10\x64/lib/pkgconfig
+2026-10-16T01:10:02.1197629Z   Python_ROOT_DIR: C:\hostedtoolcache\windows\Python\3.12.10\x64
+2026-10-16T01:10:02.1197853Z   Python2_ROOT_DIR: C:\hostedtoolcache\windows\Python\3.12.10\x64
+2026-10-16T01:10:02.1198082Z   Python3_ROOT_DIR: C:\hostedtoolcache\windows\Python\3.12.10\x64
+2026-10-16T01:10:02.1198316Z   MSYSTEM: MINGW64
+2026-10-16T01:10:02.1198774Z   GLOB2_ASSET_ENCODER_PYTHON: D:\a\glob2\glob2\build\mobile-tools\asset-encoder-runtime-assets-v1-py3.12\venv\Scripts\python.exe
+2026-10-16T01:10:02.1199287Z   CCACHE_RUN_START: 1792112995
+2026-10-16T01:10:02.1199499Z ##[endgroup]
+2026-10-16T01:10:02.3466462Z ##[end-action id=__self.__run;outcome=success;conclusion=success;duration_ms=237]
+2026-10-16T01:10:02.3472927Z ##[start-action display=Run python3 scons/sdl3_dependencies.py --prefix build/sdl3-ci/prefix --work build/sdl3-ci/sources --jobs 2;id=__self.__run_2]
+2026-10-16T01:10:02.3564120Z ##[group]Run python3 scons/sdl3_dependencies.py --prefix build/sdl3-ci/prefix --work build/sdl3-ci/sources --jobs 2
+2026-10-16T01:10:02.3564553Z [36;1mpython3 scons/sdl3_dependencies.py --prefix build/sdl3-ci/prefix --work build/sdl3-ci/sources --jobs 2[0m
+2026-10-16T01:10:02.3564979Z [36;1mpython3 scons/recording_dependencies.py --prefix build/sdl3-ci/prefix/recording --work build/recording-ci/sources --jobs 2[0m
+2026-10-16T01:10:02.3565462Z [36;1mpython3 .github/scripts/ci_dependency_cache.py seal --key '8448c4ceeb6734e87587881b3c3738bdf4fc804856d16ac5b6cd1620a4482627'[0m
+2026-10-16T01:10:02.3566895Z shell: D:\a\_temp\setup-msys2\msys2.CMD {0}
+2026-10-16T01:10:02.3567055Z env:
+2026-10-16T01:10:02.3567164Z   GLOB2_DEV_MODE: isolated
+2026-10-16T01:10:02.3567296Z   CCACHE: 1
+2026-10-16T01:10:02.3567408Z   CCACHE_DIR: D:\a\glob2\glob2\.ccache
+2026-10-16T01:10:02.3567569Z   CCACHE_COMPILERCHECK: content
+2026-10-16T01:10:02.3567705Z   CCACHE_MAXSIZE: 5G
+2026-10-16T01:10:02.3567869Z   pythonLocation: C:\hostedtoolcache\windows\Python\3.12.10\x64
+2026-10-16T01:10:02.3568117Z   PKG_CONFIG_PATH: C:\hostedtoolcache\windows\Python\3.12.10\x64/lib/pkgconfig
+2026-10-16T01:10:02.3568371Z   Python_ROOT_DIR: C:\hostedtoolcache\windows\Python\3.12.10\x64
+2026-10-16T01:10:02.3568600Z   Python2_ROOT_DIR: C:\hostedtoolcache\windows\Python\3.12.10\x64
+2026-10-16T01:10:02.3568820Z   Python3_ROOT_DIR: C:\hostedtoolcache\windows\Python\3.12.10\x64
+2026-10-16T01:10:02.3569132Z   MSYSTEM: MINGW64
+2026-10-16T01:10:02.3569416Z   GLOB2_ASSET_ENCODER_PYTHON: D:\a\glob2\glob2\build\mobile-tools\asset-encoder-runtime-assets-v1-py3.12\venv\Scripts\python.exe
+2026-10-16T01:10:02.3569719Z   CCACHE_RUN_START: 1792112995
+2026-10-16T01:10:02.3569850Z   CC: gcc
+2026-10-16T01:10:02.3569949Z   CXX: g++
+2026-10-16T01:10:02.3570048Z ##[endgroup]
+2026-10-16T01:10:02.8314973Z ##[end-action id=__self.__run_2;outcome=success;conclusion=success;duration_ms=484]
+2026-10-16T01:10:02.8316974Z ##[start-action display=Run actions/cache/save@v4;id=__self.__actions_cache]
+2026-10-16T01:10:02.8324439Z ##[end-action id=__self.__actions_cache;outcome=skipped;conclusion=skipped;duration_ms=0]
+2026-10-16T01:10:02.8419229Z ##[group]Run python3 scons/sdl3_dependencies.py --prefix build/sdl3-ci/prefix --work build/sdl3-ci/sources --jobs 2
+2026-10-16T01:10:02.8419703Z [36;1mpython3 scons/sdl3_dependencies.py --prefix build/sdl3-ci/prefix --work build/sdl3-ci/sources --jobs 2[0m
+2026-10-16T01:10:02.8420045Z [36;1mcygpath -w "$PWD/build/sdl3-ci/prefix/bin" >> "$GITHUB_PATH"[0m
+2026-10-16T01:10:02.8420274Z [36;1mexport PATH="$PWD/build/sdl3-ci/prefix/bin:$PATH"[0m
+2026-10-16T01:10:02.8420615Z [36;1mGLOB2_SDL3_PREFIX=build/sdl3-ci/prefix scons -j$(nproc) release=1 mingw=1 server=0 build/mingw/client/release/src/glob2.exe \[0m
+2026-10-16T01:10:02.8420919Z [36;1m  unit-tests \[0m
+2026-10-16T01:10:02.8421045Z [36;1m  engine-tests \[0m
+2026-10-16T01:10:02.8421189Z [36;1m  software-render-benchmark \[0m
+2026-10-16T01:10:02.8421345Z [36;1m  map-report-test[0m
+2026-10-16T01:10:02.8421541Z [36;1m# MSYS2 starts each step with its own PATH; colocate the pinned[0m
+2026-10-16T01:10:02.8421824Z [36;1m# SDL DLLs so Windows can load the client and every harness directly.[0m
+2026-10-16T01:10:02.8422113Z [36;1mfor directory in build/mingw/client/release/src build/mingw/client/release/test; do[0m
+2026-10-16T01:10:02.8422379Z [36;1m  cp build/sdl3-ci/prefix/bin/*.dll "$directory/"[0m
+2026-10-16T01:10:02.8422549Z [36;1mdone[0m
+2026-10-16T01:10:02.8423683Z shell: D:\a\_temp\setup-msys2\msys2.CMD {0}
+2026-10-16T01:10:02.8423834Z env:
+2026-10-16T01:10:02.8423944Z   GLOB2_DEV_MODE: isolated
+2026-10-16T01:10:02.8424068Z   CCACHE: 1
+2026-10-16T01:10:02.8424178Z   CCACHE_DIR: D:\a\glob2\glob2\.ccache
+2026-10-16T01:10:02.8424330Z   CCACHE_COMPILERCHECK: content
+2026-10-16T01:10:02.8424464Z   CCACHE_MAXSIZE: 5G
+2026-10-16T01:10:02.8424622Z   pythonLocation: C:\hostedtoolcache\windows\Python\3.12.10\x64
+2026-10-16T01:10:02.8424879Z   PKG_CONFIG_PATH: C:\hostedtoolcache\windows\Python\3.12.10\x64/lib/pkgconfig
+2026-10-16T01:10:02.8425132Z   Python_ROOT_DIR: C:\hostedtoolcache\windows\Python\3.12.10\x64
+2026-10-16T01:10:02.8425357Z   Python2_ROOT_DIR: C:\hostedtoolcache\windows\Python\3.12.10\x64
+2026-10-16T01:10:02.8425586Z   Python3_ROOT_DIR: C:\hostedtoolcache\windows\Python\3.12.10\x64
+2026-10-16T01:10:02.8425765Z   MSYSTEM: MINGW64
+2026-10-16T01:10:02.8426043Z   GLOB2_ASSET_ENCODER_PYTHON: D:\a\glob2\glob2\build\mobile-tools\asset-encoder-runtime-assets-v1-py3.12\venv\Scripts\python.exe
+2026-10-16T01:10:02.8426355Z   CCACHE_RUN_START: 1792112995
+2026-10-16T01:10:02.8426487Z ##[endgroup]
+2026-10-16T01:10:03.2142183Z scons: Reading SConscript files ...
+2026-10-16T01:10:11.3176826Z Checking whether the C compiler works... yes
+2026-10-16T01:10:11.3948016Z Checking whether the C++ compiler works... yes
+2026-10-16T01:10:11.5819523Z Checking for C library SDL3... yes
+2026-10-16T01:10:11.7028085Z Checking for C library SDL3_ttf... yes
+2026-10-16T01:10:11.8227120Z Checking for C library SDL3_image... yes
+2026-10-16T01:10:11.9736791Z Checking for C library SDL3_net... yes
+2026-10-16T01:10:12.0895520Z Checking for C library speex... yes
+2026-10-16T01:10:12.1616297Z Checking for C++ header file speex/speex.h... yes
+2026-10-16T01:10:12.2771120Z Checking for C library opusfile... yes
+2026-10-16T01:10:12.3764037Z Checking for C++ header file opusfile.h... yes
+2026-10-16T01:10:12.4945276Z Checking for C library opus... yes
+2026-10-16T01:10:12.6130607Z Checking for C library ogg... yes
+2026-10-16T01:10:12.7585923Z Checking for C++ header file zlib.h... yes
+2026-10-16T01:10:12.8765735Z Checking for C library z... yes
+2026-10-16T01:10:12.9967209Z Checking for C library regex... yes
+2026-10-16T01:10:13.0858734Z Checking for C++ header file regex.h... yes
+2026-10-16T01:10:14.0374866Z Checking for C++ header file openssl/ssl.h... yes
+2026-10-16T01:10:14.1564291Z Checking for C library ssl... yes
+2026-10-16T01:10:14.2969525Z Checking for C library crypto... yes
+2026-10-16T01:10:17.4633771Z Checking for C++ header file boost/beast/websocket.hpp... yes
+2026-10-16T01:10:19.6211449Z Checking for C++ header file boost/asio/ssl.hpp... yes
+2026-10-16T01:10:19.7429704Z Checking for C library GL... no
+2026-10-16T01:10:19.8638569Z Checking for C library GL... no
+2026-10-16T01:10:19.9869098Z Checking for C library opengl32... yes
+2026-10-16T01:10:20.8276539Z Checking for C++ header file GL/gl.h... yes
+2026-10-16T01:10:20.9514739Z Checking for C library GLU... no
+2026-10-16T01:10:21.0704701Z Checking for C library GLU... no
+2026-10-16T01:10:21.1906680Z Checking for C library glu32... yes
+2026-10-16T01:10:22.0217454Z Checking for C++ header file GL/glu.h... yes
+2026-10-16T01:10:22.1444143Z Checking for C library epoxy... yes
+2026-10-16T01:10:22.3189977Z Checking for C++ header file epoxy/gl.h... yes
+2026-10-16T01:10:22.4479693Z Checking for C library fribidi... yes
+2026-10-16T01:10:22.5321461Z Checking for C++ header file fribidi/fribidi.h... yes
+2026-10-16T01:10:22.6582925Z Checking for C library portaudio... no
+2026-10-16T01:10:22.6675814Z ValueError: Stale gradient shader bundle: src/field/GradientComputeShaders.h; regenerate with tools/shaders/gradient_compute.py:
+2026-10-16T01:10:22.6676924Z   File "D:/a/glob2/glob2/SConstruct", line 656:
+2026-10-16T01:10:22.6677191Z     main()
+2026-10-16T01:10:22.6677365Z   File "D:/a/glob2/glob2/SConstruct", line 474:
+2026-10-16T01:10:22.6677643Z     configure(env, server_only, relay)
+2026-10-16T01:10:22.6677889Z   File "D:/a/glob2/glob2/SConstruct", line 282:
+2026-10-16T01:10:22.6678219Z     renderer_shaders.configure(env, env.Dir('#').abspath, env['BUILDDIR'])
+2026-10-16T01:10:22.6678522Z   File "D:/a/glob2/glob2/scons/renderer_shaders.py", line 75:
+2026-10-16T01:10:22.6678714Z     compute.verify(Path(root))
+2026-10-16T01:10:22.6678915Z   File "D:/a/glob2/glob2/tools/shaders/gradient_compute.py", line 43:
+2026-10-16T01:10:22.6679249Z     raise ValueError('Stale gradient shader bundle: ' + relative + '; regenerate with tools/shaders/gradient_compute.py')
+2026-10-16T01:10:22.7225201Z ##[error]Process completed with exit code 2.
+2026-10-16T01:10:22.7337632Z ##[group]Run actions/upload-artifact@v4
+2026-10-16T01:10:22.7337822Z with:
+2026-10-16T01:10:22.7337934Z   name: cli-windows
+2026-10-16T01:10:22.7338114Z   path: artifacts/cli-smoke/
+artifacts/cli-smoke.xml
+
+2026-10-16T01:10:22.7338294Z   if-no-files-found: ignore
+2026-10-16T01:10:22.7338443Z   compression-level: 6
+2026-10-16T01:10:22.7338566Z   overwrite: false
+2026-10-16T01:10:22.7338685Z   include-hidden-files: false
+2026-10-16T01:10:22.7338822Z env:
+2026-10-16T01:10:22.7338931Z   GLOB2_DEV_MODE: isolated
+2026-10-16T01:10:22.7339052Z   CCACHE: 1
+2026-10-16T01:10:22.7339170Z   CCACHE_DIR: D:\a\glob2\glob2\.ccache
+2026-10-16T01:10:22.7339322Z   CCACHE_COMPILERCHECK: content
+2026-10-16T01:10:22.7339457Z   CCACHE_MAXSIZE: 5G
+2026-10-16T01:10:22.7339621Z   pythonLocation: C:\hostedtoolcache\windows\Python\3.12.10\x64
+2026-10-16T01:10:22.7339881Z   PKG_CONFIG_PATH: C:\hostedtoolcache\windows\Python\3.12.10\x64/lib/pkgconfig
+2026-10-16T01:10:22.7340153Z   Python_ROOT_DIR: C:\hostedtoolcache\windows\Python\3.12.10\x64
+2026-10-16T01:10:22.7340379Z   Python2_ROOT_DIR: C:\hostedtoolcache\windows\Python\3.12.10\x64
+2026-10-16T01:10:22.7340607Z   Python3_ROOT_DIR: C:\hostedtoolcache\windows\Python\3.12.10\x64
+2026-10-16T01:10:22.7340788Z   MSYSTEM: MINGW64
+2026-10-16T01:10:22.7341223Z   GLOB2_ASSET_ENCODER_PYTHON: D:\a\glob2\glob2\build\mobile-tools\asset-encoder-runtime-assets-v1-py3.12\venv\Scripts\python.exe
+2026-10-16T01:10:22.7341527Z   CCACHE_RUN_START: 1792112995
+2026-10-16T01:10:22.7341658Z ##[endgroup]
+2026-10-16T01:10:22.8539881Z (node:4720) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.
+2026-10-16T01:10:22.8540418Z (Use `node --trace-deprecation ...` to show where the warning was created)
+2026-10-16T01:10:22.8567715Z Multiple search paths detected. Calculating the least common ancestor of all paths
+2026-10-16T01:10:22.8569531Z The least common ancestor is D:\a\glob2\glob2\artifacts. This will be the root directory of the artifact
+2026-10-16T01:10:22.8569856Z No files were found with the provided path: artifacts/cli-smoke/
+2026-10-16T01:10:22.8570089Z artifacts/cli-smoke.xml. No artifacts will be uploaded.
+2026-10-16T01:10:22.8774070Z ##[group]Run mkdir -p artifacts/windows-source
+2026-10-16T01:10:22.8774349Z [36;1mmkdir -p artifacts/windows-source[0m
+2026-10-16T01:10:22.8774511Z [36;1m{[0m
+2026-10-16T01:10:22.8774620Z [36;1m  command -v git[0m
+2026-10-16T01:10:22.8774752Z [36;1m  git --version[0m
+2026-10-16T01:10:22.8774975Z [36;1m  git config --show-origin --get-regexp '^core\.(symlinks|filemode|autocrlf)$' || true[0m
+2026-10-16T01:10:22.8775249Z [36;1m  git status --porcelain=v1 --untracked-files=all[0m
+2026-10-16T01:10:22.8775428Z [36;1m  git diff --summary[0m
+2026-10-16T01:10:22.8775593Z [36;1m} > artifacts/windows-source/after-build.log 2>&1[0m
+2026-10-16T01:10:22.8775792Z [36;1mcat artifacts/windows-source/after-build.log[0m
+2026-10-16T01:10:22.8777201Z shell: D:\a\_temp\setup-msys2\msys2.CMD {0}
+2026-10-16T01:10:22.8777357Z env:
+2026-10-16T01:10:22.8777473Z   GLOB2_DEV_MODE: isolated
+2026-10-16T01:10:22.8777593Z   CCACHE: 1
+2026-10-16T01:10:22.8777725Z   CCACHE_DIR: D:\a\glob2\glob2\.ccache
+2026-10-16T01:10:22.8777875Z   CCACHE_COMPILERCHECK: content
+2026-10-16T01:10:22.8778019Z   CCACHE_MAXSIZE: 5G
+2026-10-16T01:10:22.8778185Z   pythonLocation: C:\hostedtoolcache\windows\Python\3.12.10\x64
+2026-10-16T01:10:22.8778438Z   PKG_CONFIG_PATH: C:\hostedtoolcache\windows\Python\3.12.10\x64/lib/pkgconfig
+2026-10-16T01:10:22.8778823Z   Python_ROOT_DIR: C:\hostedtoolcache\windows\Python\3.12.10\x64
+2026-10-16T01:10:22.8779099Z   Python2_ROOT_DIR: C:\hostedtoolcache\windows\Python\3.12.10\x64
+2026-10-16T01:10:22.8779323Z   Python3_ROOT_DIR: C:\hostedtoolcache\windows\Python\3.12.10\x64
+2026-10-16T01:10:22.8779500Z   MSYSTEM: MINGW64
+2026-10-16T01:10:22.8779832Z   GLOB2_ASSET_ENCODER_PYTHON: D:\a\glob2\glob2\build\mobile-tools\asset-encoder-runtime-assets-v1-py3.12\venv\Scripts\python.exe
+2026-10-16T01:10:22.8780162Z   CCACHE_RUN_START: 1792112995
+2026-10-16T01:10:22.8780474Z ##[endgroup]
+2026-10-16T01:10:23.4963189Z /usr/bin/git
+2026-10-16T01:10:23.4963662Z git version 2.56.0
+2026-10-16T01:10:23.4963889Z file:.git/config	core.filemode false
+2026-10-16T01:10:23.4964156Z file:.git/config	core.autocrlf true
+2026-10-16T01:10:23.5108057Z ##[group]Run actions/upload-artifact@v4
+2026-10-16T01:10:23.5108260Z with:
+2026-10-16T01:10:23.5108381Z   name: javascript-profile-mingw
+2026-10-16T01:10:23.5108646Z   path: artifacts/javascript-profile
+artifacts/javascript-corpus
+artifacts/windows-source
+
+2026-10-16T01:10:23.5108901Z   if-no-files-found: warn
+2026-10-16T01:10:23.5109032Z   compression-level: 6
+2026-10-16T01:10:23.5109152Z   overwrite: false
+2026-10-16T01:10:23.5109272Z   include-hidden-files: false
+2026-10-16T01:10:23.5109404Z env:
+2026-10-16T01:10:23.5109509Z   GLOB2_DEV_MODE: isolated
+2026-10-16T01:10:23.5109647Z   CCACHE: 1
+2026-10-16T01:10:23.5109761Z   CCACHE_DIR: D:\a\glob2\glob2\.ccache
+2026-10-16T01:10:23.5109914Z   CCACHE_COMPILERCHECK: content
+2026-10-16T01:10:23.5110044Z   CCACHE_MAXSIZE: 5G
+2026-10-16T01:10:23.5110204Z   pythonLocation: C:\hostedtoolcache\windows\Python\3.12.10\x64
+2026-10-16T01:10:23.5110493Z   PKG_CONFIG_PATH: C:\hostedtoolcache\windows\Python\3.12.10\x64/lib/pkgconfig
+2026-10-16T01:10:23.5111054Z   Python_ROOT_DIR: C:\hostedtoolcache\windows\Python\3.12.10\x64
+2026-10-16T01:10:23.5111282Z   Python2_ROOT_DIR: C:\hostedtoolcache\windows\Python\3.12.10\x64
+2026-10-16T01:10:23.5111504Z   Python3_ROOT_DIR: C:\hostedtoolcache\windows\Python\3.12.10\x64
+2026-10-16T01:10:23.5111685Z   MSYSTEM: MINGW64
+2026-10-16T01:10:23.5112054Z   GLOB2_ASSET_ENCODER_PYTHON: D:\a\glob2\glob2\build\mobile-tools\asset-encoder-runtime-assets-v1-py3.12\venv\Scripts\python.exe
+2026-10-16T01:10:23.5112358Z   CCACHE_RUN_START: 1792112995
+2026-10-16T01:10:23.5112487Z ##[endgroup]
+2026-10-16T01:10:23.6365185Z (node:7844) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.
+2026-10-16T01:10:23.6365858Z (Use `node --trace-deprecation ...` to show where the warning was created)
+2026-10-16T01:10:23.6410452Z Multiple search paths detected. Calculating the least common ancestor of all paths
+2026-10-16T01:10:23.6412169Z The least common ancestor is D:\a\glob2\glob2\artifacts. This will be the root directory of the artifact
+2026-10-16T01:10:23.6412623Z With the provided path, there will be 2 files uploaded
+2026-10-16T01:10:23.6415376Z Artifact name is valid!
+2026-10-16T01:10:23.6416325Z Root directory input is valid!
+2026-10-16T01:10:23.9202163Z Beginning upload of artifact content to blob storage
+2026-10-16T01:10:23.9326574Z (node:7844) [DEP0169] DeprecationWarning: `url.parse()` behavior is not standardized and prone to errors that have security implications. Use the WHATWG URL API instead. CVEs are not issued for `url.parse()` vulnerabilities.
+2026-10-16T01:10:24.0448510Z Uploaded bytes 488
+2026-10-16T01:10:24.0817558Z Finished uploading artifact content to blob storage!
+2026-10-16T01:10:24.0818523Z SHA256 digest of uploaded artifact zip is d1db20f3d3da82e8c33ac7b3e3ea985944f860e92114cd74ba0d951613dcd1de
+2026-10-16T01:10:24.0819942Z Finalizing artifact upload
+2026-10-16T01:10:24.3341410Z Artifact javascript-profile-mingw.zip successfully finalized. Artifact ID 12017513456
+2026-10-16T01:10:24.3341956Z Artifact javascript-profile-mingw has been successfully uploaded! Final size is 488 bytes. Artifact ID is 12017513456
+2026-10-16T01:10:24.3349113Z Artifact download URL: https://github.com/Globulation2/glob2/actions/runs/38832889808/artifacts/12017513456
+2026-10-16T01:10:24.3577380Z ##[group]Run actions/upload-artifact@v4
+2026-10-16T01:10:24.3577579Z with:
+2026-10-16T01:10:24.3577706Z   name: native-test-results-windows
+2026-10-16T01:10:24.3577858Z   path: artifacts/tests/
+2026-10-16T01:10:24.3577995Z   if-no-files-found: ignore
+2026-10-16T01:10:24.3578135Z   compression-level: 6
+2026-10-16T01:10:24.3578259Z   overwrite: false
+2026-10-16T01:10:24.3578382Z   include-hidden-files: false
+2026-10-16T01:10:24.3578517Z env:
+2026-10-16T01:10:24.3578627Z   GLOB2_DEV_MODE: isolated
+2026-10-16T01:10:24.3578749Z   CCACHE: 1
+2026-10-16T01:10:24.3578863Z   CCACHE_DIR: D:\a\glob2\glob2\.ccache
+2026-10-16T01:10:24.3579029Z   CCACHE_COMPILERCHECK: content
+2026-10-16T01:10:24.3579172Z   CCACHE_MAXSIZE: 5G
+2026-10-16T01:10:24.3579482Z   pythonLocation: C:\hostedtoolcache\windows\Python\3.12.10\x64
+2026-10-16T01:10:24.3579834Z   PKG_CONFIG_PATH: C:\hostedtoolcache\windows\Python\3.12.10\x64/lib/pkgconfig
+2026-10-16T01:10:24.3580216Z   Python_ROOT_DIR: C:\hostedtoolcache\windows\Python\3.12.10\x64
+2026-10-16T01:10:24.3580569Z   Python2_ROOT_DIR: C:\hostedtoolcache\windows\Python\3.12.10\x64
+2026-10-16T01:10:24.3580854Z   Python3_ROOT_DIR: C:\hostedtoolcache\windows\Python\3.12.10\x64
+2026-10-16T01:10:24.3581034Z   MSYSTEM: MINGW64
+2026-10-16T01:10:24.3581317Z   GLOB2_ASSET_ENCODER_PYTHON: D:\a\glob2\glob2\build\mobile-tools\asset-encoder-runtime-assets-v1-py3.12\venv\Scripts\python.exe
+2026-10-16T01:10:24.3581626Z   CCACHE_RUN_START: 1792112995
+2026-10-16T01:10:24.3581758Z ##[endgroup]
+2026-10-16T01:10:24.5299452Z (node:6544) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.
+2026-10-16T01:10:24.5300126Z (Use `node --trace-deprecation ...` to show where the warning was created)
+2026-10-16T01:10:24.5327638Z No files were found with the provided path: artifacts/tests/. No artifacts will be uploaded.
+2026-10-16T01:10:24.5587349Z ##[group]Run actions/upload-artifact@v4
+2026-10-16T01:10:24.5587549Z with:
+2026-10-16T01:10:24.5587670Z   name: map-report-windows
+2026-10-16T01:10:24.5587815Z   path: artifacts/map-report/
+2026-10-16T01:10:24.5587958Z   if-no-files-found: warn
+2026-10-16T01:10:24.5588090Z   compression-level: 6
+2026-10-16T01:10:24.5588213Z   overwrite: false
+2026-10-16T01:10:24.5588338Z   include-hidden-files: false
+2026-10-16T01:10:24.5588466Z env:
+2026-10-16T01:10:24.5588570Z   GLOB2_DEV_MODE: isolated
+2026-10-16T01:10:24.5588692Z   CCACHE: 1
+2026-10-16T01:10:24.5588803Z   CCACHE_DIR: D:\a\glob2\glob2\.ccache
+2026-10-16T01:10:24.5588956Z   CCACHE_COMPILERCHECK: content
+2026-10-16T01:10:24.5589093Z   CCACHE_MAXSIZE: 5G
+2026-10-16T01:10:24.5589278Z   pythonLocation: C:\hostedtoolcache\windows\Python\3.12.10\x64
+2026-10-16T01:10:24.5589541Z   PKG_CONFIG_PATH: C:\hostedtoolcache\windows\Python\3.12.10\x64/lib/pkgconfig
+2026-10-16T01:10:24.5589812Z   Python_ROOT_DIR: C:\hostedtoolcache\windows\Python\3.12.10\x64
+2026-10-16T01:10:24.5590043Z   Python2_ROOT_DIR: C:\hostedtoolcache\windows\Python\3.12.10\x64
+2026-10-16T01:10:24.5590266Z   Python3_ROOT_DIR: C:\hostedtoolcache\windows\Python\3.12.10\x64
+2026-10-16T01:10:24.5590441Z   MSYSTEM: MINGW64
+2026-10-16T01:10:24.5590722Z   GLOB2_ASSET_ENCODER_PYTHON: D:\a\glob2\glob2\build\mobile-tools\asset-encoder-runtime-assets-v1-py3.12\venv\Scripts\python.exe
+2026-10-16T01:10:24.5591030Z   CCACHE_RUN_START: 1792112995
+2026-10-16T01:10:24.5591169Z ##[endgroup]
+2026-10-16T01:10:24.6999644Z (node:6436) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.
+2026-10-16T01:10:24.7000517Z (Use `node --trace-deprecation ...` to show where the warning was created)
+2026-10-16T01:10:24.7027357Z ##[warning]No files were found with the provided path: artifacts/map-report/. No artifacts will be uploaded.
+2026-10-16T01:10:24.7299716Z ##[group]Run actions/upload-artifact@v4
+2026-10-16T01:10:24.7300018Z with:
+2026-10-16T01:10:24.7300203Z   name: map-cli-windows
+2026-10-16T01:10:24.7300441Z   path: artifacts/map-cli/
+artifacts/map-image/
+
+2026-10-16T01:10:24.7300714Z   if-no-files-found: warn
+2026-10-16T01:10:24.7300924Z   compression-level: 6
+2026-10-16T01:10:24.7301122Z   overwrite: false
+2026-10-16T01:10:24.7301316Z   include-hidden-files: false
+2026-10-16T01:10:24.7301524Z env:
+2026-10-16T01:10:24.7301688Z   GLOB2_DEV_MODE: isolated
+2026-10-16T01:10:24.7301882Z   CCACHE: 1
+2026-10-16T01:10:24.7302063Z   CCACHE_DIR: D:\a\glob2\glob2\.ccache
+2026-10-16T01:10:24.7302319Z   CCACHE_COMPILERCHECK: content
+2026-10-16T01:10:24.7302534Z   CCACHE_MAXSIZE: 5G
+2026-10-16T01:10:24.7302805Z   pythonLocation: C:\hostedtoolcache\windows\Python\3.12.10\x64
+2026-10-16T01:10:24.7303252Z   PKG_CONFIG_PATH: C:\hostedtoolcache\windows\Python\3.12.10\x64/lib/pkgconfig
+2026-10-16T01:10:24.7303688Z   Python_ROOT_DIR: C:\hostedtoolcache\windows\Python\3.12.10\x64
+2026-10-16T01:10:24.7304063Z   Python2_ROOT_DIR: C:\hostedtoolcache\windows\Python\3.12.10\x64
+2026-10-16T01:10:24.7304438Z   Python3_ROOT_DIR: C:\hostedtoolcache\windows\Python\3.12.10\x64
+2026-10-16T01:10:24.7304737Z   MSYSTEM: MINGW64
+2026-10-16T01:10:24.7305202Z   GLOB2_ASSET_ENCODER_PYTHON: D:\a\glob2\glob2\build\mobile-tools\asset-encoder-runtime-assets-v1-py3.12\venv\Scripts\python.exe
+2026-10-16T01:10:24.7305722Z   CCACHE_RUN_START: 1792112995
+2026-10-16T01:10:24.7305936Z ##[endgroup]
+2026-10-16T01:10:24.8815756Z (node:5532) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.
+2026-10-16T01:10:24.8816790Z (Use `node --trace-deprecation ...` to show where the warning was created)
+2026-10-16T01:10:24.8867246Z Multiple search paths detected. Calculating the least common ancestor of all paths
+2026-10-16T01:10:24.8869634Z The least common ancestor is D:\a\glob2\glob2\artifacts. This will be the root directory of the artifact
+2026-10-16T01:10:24.8871615Z ##[warning]No files were found with the provided path: artifacts/map-cli/
+artifacts/map-image/. No artifacts will be uploaded.
+2026-10-16T01:10:24.9178790Z ##[group]Run actions/upload-artifact@v4
+2026-10-16T01:10:24.9179137Z with:
+2026-10-16T01:10:24.9179356Z   name: released-compatibility-windows
+2026-10-16T01:10:24.9179650Z   path: artifacts/released-compatibility/
+2026-10-16T01:10:24.9179936Z   if-no-files-found: warn
+2026-10-16T01:10:24.9180163Z   compression-level: 6
+2026-10-16T01:10:24.9180373Z   overwrite: false
+2026-10-16T01:10:24.9180578Z   include-hidden-files: false
+2026-10-16T01:10:24.9180801Z env:
+2026-10-16T01:10:24.9180978Z   GLOB2_DEV_MODE: isolated
+2026-10-16T01:10:24.9181187Z   CCACHE: 1
+2026-10-16T01:10:24.9181380Z   CCACHE_DIR: D:\a\glob2\glob2\.ccache
+2026-10-16T01:10:24.9181925Z   CCACHE_COMPILERCHECK: content
+2026-10-16T01:10:24.9182166Z   CCACHE_MAXSIZE: 5G
+2026-10-16T01:10:24.9182431Z   pythonLocation: C:\hostedtoolcache\windows\Python\3.12.10\x64
+2026-10-16T01:10:24.9182845Z   PKG_CONFIG_PATH: C:\hostedtoolcache\windows\Python\3.12.10\x64/lib/pkgconfig
+2026-10-16T01:10:24.9183296Z   Python_ROOT_DIR: C:\hostedtoolcache\windows\Python\3.12.10\x64
+2026-10-16T01:10:24.9183676Z   Python2_ROOT_DIR: C:\hostedtoolcache\windows\Python\3.12.10\x64
+2026-10-16T01:10:24.9184056Z   Python3_ROOT_DIR: C:\hostedtoolcache\windows\Python\3.12.10\x64
+2026-10-16T01:10:24.9184564Z   MSYSTEM: MINGW64
+2026-10-16T01:10:24.9185030Z   GLOB2_ASSET_ENCODER_PYTHON: D:\a\glob2\glob2\build\mobile-tools\asset-encoder-runtime-assets-v1-py3.12\venv\Scripts\python.exe
+2026-10-16T01:10:24.9185548Z   CCACHE_RUN_START: 1792112995
+2026-10-16T01:10:24.9185760Z ##[endgroup]
+2026-10-16T01:10:25.0784844Z (node:2244) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.
+2026-10-16T01:10:25.0785591Z (Use `node --trace-deprecation ...` to show where the warning was created)
+2026-10-16T01:10:25.0821205Z ##[warning]No files were found with the provided path: artifacts/released-compatibility/. No artifacts will be uploaded.
+2026-10-16T01:10:25.1079747Z ##[group]Run ccache -s -v
+2026-10-16T01:10:25.1080074Z [36;1mccache -s -v[0m
+2026-10-16T01:10:25.1082116Z shell: D:\a\_temp\setup-msys2\msys2.CMD {0}
+2026-10-16T01:10:25.1082382Z env:
+2026-10-16T01:10:25.1082576Z   GLOB2_DEV_MODE: isolated
+2026-10-16T01:10:25.1082789Z   CCACHE: 1
+2026-10-16T01:10:25.1082972Z   CCACHE_DIR: D:\a\glob2\glob2\.ccache
+2026-10-16T01:10:25.1083228Z   CCACHE_COMPILERCHECK: content
+2026-10-16T01:10:25.1083449Z   CCACHE_MAXSIZE: 5G
+2026-10-16T01:10:25.1083713Z   pythonLocation: C:\hostedtoolcache\windows\Python\3.12.10\x64
+2026-10-16T01:10:25.1084126Z   PKG_CONFIG_PATH: C:\hostedtoolcache\windows\Python\3.12.10\x64/lib/pkgconfig
+2026-10-16T01:10:25.1084568Z   Python_ROOT_DIR: C:\hostedtoolcache\windows\Python\3.12.10\x64
+2026-10-16T01:10:25.1084954Z   Python2_ROOT_DIR: C:\hostedtoolcache\windows\Python\3.12.10\x64
+2026-10-16T01:10:25.1085339Z   Python3_ROOT_DIR: C:\hostedtoolcache\windows\Python\3.12.10\x64
+2026-10-16T01:10:25.1085688Z   MSYSTEM: MINGW64
+2026-10-16T01:10:25.1086164Z   GLOB2_ASSET_ENCODER_PYTHON: D:\a\glob2\glob2\build\mobile-tools\asset-encoder-runtime-assets-v1-py3.12\venv\Scripts\python.exe
+2026-10-16T01:10:25.1086704Z   CCACHE_RUN_START: 1792112995
+2026-10-16T01:10:25.1086932Z ##[endgroup]
+2026-10-16T01:10:25.3044407Z Cache directory:       D:\a\glob2\glob2\.ccache
+2026-10-16T01:10:25.3045162Z Config file:           D:\a\glob2\glob2\.ccache\ccache.conf
+2026-10-16T01:10:25.3045602Z Directory config file:
+2026-10-16T01:10:25.3046096Z System config file:    C:\ProgramData\ccache\ccache.conf
+2026-10-16T01:10:25.3046589Z Stats updated:         10/16/26 01:10:22
+2026-10-16T01:10:25.3047701Z Cacheable calls:         34 /  34 (100.0%)
+2026-10-16T01:10:25.3048468Z   Hits:                   0 /  34 ( 0.00%)
+2026-10-16T01:10:25.3048803Z     Direct:               0
+2026-10-16T01:10:25.3049114Z     Preprocessed:         0
+2026-10-16T01:10:25.3049724Z   Misses:                34 /  34 (100.0%)
+2026-10-16T01:10:25.3050080Z Successful lookups:
+2026-10-16T01:10:25.3050353Z   Direct:                 0 /  34 ( 0.00%)
+2026-10-16T01:10:25.3050652Z   Preprocessed:           0 /  34 ( 0.00%)
+2026-10-16T01:10:25.3050966Z Local storage:
+2026-10-16T01:10:25.3051236Z   Cache size (GB):      0.1 / 5.0 ( 1.66%)
+2026-10-16T01:10:25.3051559Z   Files:               2308
+2026-10-16T01:10:25.3051858Z   Hits:                   0 /  34 ( 0.00%)
+2026-10-16T01:10:25.3052355Z   Misses:                34 /  34 (100.0%)
+2026-10-16T01:10:25.3052699Z   Reads:                 68
+2026-10-16T01:10:25.3052991Z   Writes:                68
+2026-10-16T01:10:25.3251131Z ##[group]Run python3 test/ci_step_summary.py
+2026-10-16T01:10:25.3251440Z [36;1mpython3 test/ci_step_summary.py[0m
+2026-10-16T01:10:25.3253007Z shell: D:\a\_temp\setup-msys2\msys2.CMD {0}
+2026-10-16T01:10:25.3253168Z env:
+2026-10-16T01:10:25.3253279Z   GLOB2_DEV_MODE: isolated
+2026-10-16T01:10:25.3253406Z   CCACHE: 1
+2026-10-16T01:10:25.3253515Z   CCACHE_DIR: D:\a\glob2\glob2\.ccache
+2026-10-16T01:10:25.3253669Z   CCACHE_COMPILERCHECK: content
+2026-10-16T01:10:25.3253807Z   CCACHE_MAXSIZE: 5G
+2026-10-16T01:10:25.3253978Z   pythonLocation: C:\hostedtoolcache\windows\Python\3.12.10\x64
+2026-10-16T01:10:25.3254242Z   PKG_CONFIG_PATH: C:\hostedtoolcache\windows\Python\3.12.10\x64/lib/pkgconfig
+2026-10-16T01:10:25.3254523Z   Python_ROOT_DIR: C:\hostedtoolcache\windows\Python\3.12.10\x64
+2026-10-16T01:10:25.3254752Z   Python2_ROOT_DIR: C:\hostedtoolcache\windows\Python\3.12.10\x64
+2026-10-16T01:10:25.3255005Z   Python3_ROOT_DIR: C:\hostedtoolcache\windows\Python\3.12.10\x64
+2026-10-16T01:10:25.3255188Z   MSYSTEM: MINGW64
+2026-10-16T01:10:25.3255470Z   GLOB2_ASSET_ENCODER_PYTHON: D:\a\glob2\glob2\build\mobile-tools\asset-encoder-runtime-assets-v1-py3.12\venv\Scripts\python.exe
+2026-10-16T01:10:25.3255884Z   CCACHE_RUN_START: 1792112995
+2026-10-16T01:10:25.3262013Z   CI_STEPS_JSON: {
+  "asset_encoder_python": {
+    "outputs": {
+      "python-version": "3.12.10",
+      "python-path": "C:\\hostedtoolcache\\windows\\Python\\3.12.10\\x64\\python.exe"
+    },
+    "outcome": "success",
+    "conclusion": "success"
+  },
+  "msys2_setup_msys2_v2_1": {
+    "outputs": {
+      "msys2-location": "D:\\a\\_temp\\msys64"
+    },
+    "outcome": "success",
+    "conclusion": "success"
+  },
+  "actions_checkout_v4_1": {
+    "outputs": {
+      "commit": "077a81087b3fbb8206c1ca7ed919cab95da4fc0b",
+      "ref": ""
+    },
+    "outcome": "success",
+    "conclusion": "success"
+  },
+  "restore_the_compiler_cache": {
+    "outputs": {
+      "cache-primary-key": "ccache-windows-38832889808-1",
+      "cache-matched-key": "ccache-windows-38280367102-1",
+      "cache-hit": "false"
+    },
+    "outcome": "success",
+    "conclusion": "success"
+  },
+  "cache_ready": {
+    "outputs": {},
+    "outcome": "success",
+    "conclusion": "success"
+  },
+  "build_glob2_and_the_regression_harnesses": {
+    "outputs": {},
+    "outcome": "failure",
+    "conclusion": "failure"
+  },
+  "execute_shared_javascript_corpus": {
+    "outputs": {},
+    "outcome": "skipped",
+    "conclusion": "skipped"
+  },
+  "verify_frozen_javascript_simulation_profile": {
+    "outputs": {},
+    "outcome": "skipped",
+    "conclusion": "skipped"
+  },
+  "run_the_unit_tests": {
+    "outputs": {},
+    "outcome": "skipped",
+    "conclusion": "skipped"
+  },
+  "run_the_engine_tests": {
+    "outputs": {},
+    "outcome": "skipped",
+    "conclusion": "skipped"
+  },
+  "test_map_json_reports": {
+    "outputs": {},
+    "outcome": "skipped",
+    "conclusion": "skipped"
+  },
+  "upload_map_json_reports_and_command_log": {
+    "outputs": {},
+    "outcome": "success",
+    "conclusion": "success"
+  },
+  "test_headless_map_cli": {
+    "outputs": {},
+    "outcome": "skipped",
+    "conclusion": "skipped"
+  },
+  "upload_map_cli_previews_and_command_log": {
+    "outputs": {},
+    "outcome": "success",
+    "conclusion": "success"
+  },
+  "verify_save_continuation_traces": {
+    "outputs": {},
+    "outcome": "skipped",
+    "conclusion": "skipped"
+  },
+  "verify_default_gradient_schedule_against_cross_platform": {
+    "outputs": {},
+    "outcome": "skipped",
+    "conclusion": "skipped"
+  },
+  "report_the_cache_statistics": {
+    "outputs": {},
+    "outcome": "success",
+    "conclusion": "success"
+  },
+  "retain_browser_native_simulation_trace": {
+    "outputs": {},
+    "outcome": "skipped",
+    "conclusion": "skipped"
+  },
+  "upload_artifact_1": {
+    "outputs": {},
+    "outcome": "skipped",
+    "conclusion": "skipped"
+  },
+  "drop_cache_entries_this_run_did_not_use": {
+    "outputs": {},
+    "outcome": "skipped",
+    "conclusion": "skipped"
+  },
+  "save_the_compiler_cache": {
+    "outputs": {},
+    "outcome": "skipped",
+    "conclusion": "skipped"
+  }
+}
+2026-10-16T01:10:25.3268396Z ##[endgroup]
+2026-10-16T01:10:25.5152240Z ## CI check results
+2026-10-16T01:10:25.5152671Z 
+2026-10-16T01:10:25.5152838Z - Failed: `build_glob2_and_the_regression_harnesses`
+2026-10-16T01:10:25.5153082Z 
+2026-10-16T01:10:25.5335547Z ##[error]Process completed with exit code 1.
+2026-10-16T01:10:25.5467961Z ##[group]Run actions/upload-artifact@v4
+2026-10-16T01:10:25.5468179Z with:
+2026-10-16T01:10:25.5468311Z   name: ci-observation-windows-0
+2026-10-16T01:10:25.5468470Z   path: artifacts/ci-observation/
+2026-10-16T01:10:25.5468619Z   if-no-files-found: ignore
+2026-10-16T01:10:25.5468760Z   compression-level: 6
+2026-10-16T01:10:25.5468885Z   overwrite: false
+2026-10-16T01:10:25.5469009Z   include-hidden-files: false
+2026-10-16T01:10:25.5469146Z env:
+2026-10-16T01:10:25.5469249Z   GLOB2_DEV_MODE: isolated
+2026-10-16T01:10:25.5469376Z   CCACHE: 1
+2026-10-16T01:10:25.5469498Z   CCACHE_DIR: D:\a\glob2\glob2\.ccache
+2026-10-16T01:10:25.5469653Z   CCACHE_COMPILERCHECK: content
+2026-10-16T01:10:25.5469790Z   CCACHE_MAXSIZE: 5G
+2026-10-16T01:10:25.5469968Z   pythonLocation: C:\hostedtoolcache\windows\Python\3.12.10\x64
+2026-10-16T01:10:25.5470230Z   PKG_CONFIG_PATH: C:\hostedtoolcache\windows\Python\3.12.10\x64/lib/pkgconfig
+2026-10-16T01:10:25.5470509Z   Python_ROOT_DIR: C:\hostedtoolcache\windows\Python\3.12.10\x64
+2026-10-16T01:10:25.5470737Z   Python2_ROOT_DIR: C:\hostedtoolcache\windows\Python\3.12.10\x64
+2026-10-16T01:10:25.5470958Z   Python3_ROOT_DIR: C:\hostedtoolcache\windows\Python\3.12.10\x64
+2026-10-16T01:10:25.5471137Z   MSYSTEM: MINGW64
+2026-10-16T01:10:25.5471415Z   GLOB2_ASSET_ENCODER_PYTHON: D:\a\glob2\glob2\build\mobile-tools\asset-encoder-runtime-assets-v1-py3.12\venv\Scripts\python.exe
+2026-10-16T01:10:25.5471723Z   CCACHE_RUN_START: 1792112995
+2026-10-16T01:10:25.5471855Z ##[endgroup]
+2026-10-16T01:10:25.6970972Z (node:3440) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.
+2026-10-16T01:10:25.6971637Z (Use `node --trace-deprecation ...` to show where the warning was created)
+2026-10-16T01:10:25.7017660Z With the provided path, there will be 1 file uploaded
+2026-10-16T01:10:25.7021569Z Artifact name is valid!
+2026-10-16T01:10:25.7022475Z Root directory input is valid!
+2026-10-16T01:10:25.9610652Z Beginning upload of artifact content to blob storage
+2026-10-16T01:10:25.9732316Z (node:3440) [DEP0169] DeprecationWarning: `url.parse()` behavior is not standardized and prone to errors that have security implications. Use the WHATWG URL API instead. CVEs are not issued for `url.parse()` vulnerabilities.
+2026-10-16T01:10:26.0920668Z Uploaded bytes 202
+2026-10-16T01:10:26.1264571Z Finished uploading artifact content to blob storage!
+2026-10-16T01:10:26.1265146Z SHA256 digest of uploaded artifact zip is c0c5d62ec581c991b83c004f596cc9a5516f5ec99ea7874211b8c57a4b104222
+2026-10-16T01:10:26.1267090Z Finalizing artifact upload
+2026-10-16T01:10:26.3764444Z Artifact ci-observation-windows-0.zip successfully finalized. Artifact ID 12017503508
+2026-10-16T01:10:26.3765556Z Artifact ci-observation-windows-0 has been successfully uploaded! Final size is 202 bytes. Artifact ID is 12017503508
+2026-10-16T01:10:26.3773603Z Artifact download URL: https://github.com/Globulation2/glob2/actions/runs/38832889808/artifacts/12017503508
+2026-10-16T01:10:26.4100713Z Post job cleanup.
+2026-10-16T01:10:26.5464998Z [command]"C:\Program Files\Git\bin\git.exe" version
+2026-10-16T01:10:26.5782597Z git version 2.56.0.windows.2
+2026-10-16T01:10:26.5838104Z Temporarily overriding HOME='D:\a\_temp\a5d4415c-3fbb-4a3b-83a8-45da9035e269' before making global git config changes
+2026-10-16T01:10:26.5839002Z Adding repository directory to the temporary git global config as a safe directory
+2026-10-16T01:10:26.5845520Z [command]"C:\Program Files\Git\bin\git.exe" config --global --add safe.directory D:\a\glob2\glob2
+2026-10-16T01:10:26.6159493Z [command]"C:\Program Files\Git\bin\git.exe" config --local --name-only --get-regexp core\.sshCommand
+2026-10-16T01:10:26.6480515Z [command]"C:\Program Files\Git\bin\git.exe" submodule foreach --recursive "sh -c \"git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :\""
+2026-10-16T01:10:27.1577123Z [command]"C:\Program Files\Git\bin\git.exe" config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+2026-10-16T01:10:27.1817709Z http.https://github.com/.extraheader
+2026-10-16T01:10:27.1846718Z [command]"C:\Program Files\Git\bin\git.exe" config --local --unset-all http.https://github.com/.extraheader
+2026-10-16T01:10:27.2097373Z [command]"C:\Program Files\Git\bin\git.exe" submodule foreach --recursive "sh -c \"git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :\""
+2026-10-16T01:10:27.5861261Z [command]"C:\Program Files\Git\bin\git.exe" config --local --name-only --get-regexp ^includeIf\.gitdir:
+2026-10-16T01:10:27.6105872Z [command]"C:\Program Files\Git\bin\git.exe" submodule foreach --recursive "git config --local --show-origin --name-only --get-regexp remote.origin.url"
+2026-10-16T01:10:28.0233497Z Cleaning up orphan processes
+2026-10-16T01:10:28.0651036Z ##[warning]Node.js 20 is deprecated. The following actions target Node.js 20 but are being forced to run on Node.js 24: actions/cache/restore@v4, actions/checkout@v4, actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065, actions/upload-artifact@v4. For more information see: https://github.blog/changelog/2025-09-19-deprecation-of-node-20-on-github-actions-runners/

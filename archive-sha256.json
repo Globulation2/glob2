@@ -1,0 +1,20 @@
+[
+  {
+    "file": "ready-f56cbc8f6-tests.zip",
+    "files": 394,
+    "bytes": 12384348,
+    "sha256": "e24cf3787c7f382d1db1282797455a1138a434fff5f58d0df5ad028ef7bfcd32"
+  },
+  {
+    "file": "ready-f56cbc8f6-mac-midgame.zip",
+    "files": 71,
+    "bytes": 74237111,
+    "sha256": "dd24b4494ccfa2fa086772df71161b903930993a54599b482466f023c82b1d2c"
+  },
+  {
+    "file": "ready-f56cbc8f6-linux-midgame.zip",
+    "files": 71,
+    "bytes": 74237309,
+    "sha256": "6eb323f30848ce521ec45704b93dbe5e9ee391ba960b5370ffcfe986d54df8e7"
+  }
+]

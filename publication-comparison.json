@@ -1,0 +1,103 @@
+{
+  "portable_traces_identical": 38,
+  "first_audits": [
+    {
+      "file": "AirGradientPublication/air_publication_and_binary_text_continuations_agree_with_one_two_four_and_eight_participants_artifacts/air-participants-1-kernel-entries.tsv",
+      "participants": 1,
+      "covered_owner_entries": 8,
+      "covered_other_entries": 0
+    },
+    {
+      "file": "AirGradientPublication/air_publication_and_binary_text_continuations_agree_with_one_two_four_and_eight_participants_artifacts/air-participants-2-kernel-entries.tsv",
+      "participants": 2,
+      "covered_owner_entries": 0,
+      "covered_other_entries": 8
+    },
+    {
+      "file": "AirGradientPublication/air_publication_and_binary_text_continuations_agree_with_one_two_four_and_eight_participants_artifacts/air-participants-4-kernel-entries.tsv",
+      "participants": 4,
+      "covered_owner_entries": 0,
+      "covered_other_entries": 8
+    },
+    {
+      "file": "AirGradientPublication/air_publication_and_binary_text_continuations_agree_with_one_two_four_and_eight_participants_artifacts/air-participants-8-kernel-entries.tsv",
+      "participants": 8,
+      "covered_owner_entries": 0,
+      "covered_other_entries": 8
+    },
+    {
+      "file": "DelayedGradientPublication/cold_simulation_fields_publish_identical_complete_generations_with_one_two_four_and_eight_participants_artifacts/participants-1-kernel-entries.tsv",
+      "participants": 1,
+      "covered_owner_entries": 99,
+      "covered_other_entries": 0
+    },
+    {
+      "file": "DelayedGradientPublication/cold_simulation_fields_publish_identical_complete_generations_with_one_two_four_and_eight_participants_artifacts/participants-2-kernel-entries.tsv",
+      "participants": 2,
+      "covered_owner_entries": 0,
+      "covered_other_entries": 99
+    },
+    {
+      "file": "DelayedGradientPublication/cold_simulation_fields_publish_identical_complete_generations_with_one_two_four_and_eight_participants_artifacts/participants-4-kernel-entries.tsv",
+      "participants": 4,
+      "covered_owner_entries": 0,
+      "covered_other_entries": 99
+    },
+    {
+      "file": "DelayedGradientPublication/cold_simulation_fields_publish_identical_complete_generations_with_one_two_four_and_eight_participants_artifacts/participants-8-kernel-entries.tsv",
+      "participants": 8,
+      "covered_owner_entries": 0,
+      "covered_other_entries": 99
+    }
+  ],
+  "second_audits": [
+    {
+      "file": "AirGradientPublication/air_publication_and_binary_text_continuations_agree_with_one_two_four_and_eight_participants_artifacts/air-participants-1-kernel-entries.tsv",
+      "participants": 1,
+      "covered_owner_entries": 8,
+      "covered_other_entries": 0
+    },
+    {
+      "file": "AirGradientPublication/air_publication_and_binary_text_continuations_agree_with_one_two_four_and_eight_participants_artifacts/air-participants-2-kernel-entries.tsv",
+      "participants": 2,
+      "covered_owner_entries": 0,
+      "covered_other_entries": 8
+    },
+    {
+      "file": "AirGradientPublication/air_publication_and_binary_text_continuations_agree_with_one_two_four_and_eight_participants_artifacts/air-participants-4-kernel-entries.tsv",
+      "participants": 4,
+      "covered_owner_entries": 0,
+      "covered_other_entries": 8
+    },
+    {
+      "file": "AirGradientPublication/air_publication_and_binary_text_continuations_agree_with_one_two_four_and_eight_participants_artifacts/air-participants-8-kernel-entries.tsv",
+      "participants": 8,
+      "covered_owner_entries": 0,
+      "covered_other_entries": 8
+    },
+    {
+      "file": "DelayedGradientPublication/cold_simulation_fields_publish_identical_complete_generations_with_one_two_four_and_eight_participants_artifacts/participants-1-kernel-entries.tsv",
+      "participants": 1,
+      "covered_owner_entries": 99,
+      "covered_other_entries": 0
+    },
+    {
+      "file": "DelayedGradientPublication/cold_simulation_fields_publish_identical_complete_generations_with_one_two_four_and_eight_participants_artifacts/participants-2-kernel-entries.tsv",
+      "participants": 2,
+      "covered_owner_entries": 0,
+      "covered_other_entries": 99
+    },
+    {
+      "file": "DelayedGradientPublication/cold_simulation_fields_publish_identical_complete_generations_with_one_two_four_and_eight_participants_artifacts/participants-4-kernel-entries.tsv",
+      "participants": 4,
+      "covered_owner_entries": 0,
+      "covered_other_entries": 99
+    },
+    {
+      "file": "DelayedGradientPublication/cold_simulation_fields_publish_identical_complete_generations_with_one_two_four_and_eight_participants_artifacts/participants-8-kernel-entries.tsv",
+      "participants": 8,
+      "covered_owner_entries": 0,
+      "covered_other_entries": 99
+    }
+  ]
+}

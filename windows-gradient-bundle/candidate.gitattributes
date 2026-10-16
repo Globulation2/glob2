@@ -1,0 +1,6 @@
+src/field/GradientComputeShaders.h text eol=lf
+tools/shaders/gradient_compute.py text eol=lf
+src/field/shaders/*.comp text eol=lf
+src/field/shaders/*.wgsl text eol=lf
+third_party/vulkan/*.h text eol=lf
+third_party/vulkan/LICENSE.txt text eol=lf

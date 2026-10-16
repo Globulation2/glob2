@@ -1,0 +1,69 @@
+{
+  "head": "f56cbc8f624dd35c2066cce1aad51d0d9ada25cf",
+  "base": "987c953698bb3f0bfd1078184773075ba3313091",
+  "source_manifest_sha256": "60c2d5b403b91eae9597e6b25cc136840ef35723322fc753a9b92dd659cbea3b",
+  "platforms": [
+    "macOS ARM64 Apple Clang21",
+    "Ubuntu22.04 ARM64 GCC11.4"
+  ],
+  "runs": 16,
+  "ticks_per_run": 256,
+  "comparisons": [
+    {
+      "trace": "12000-participants-1/world.checksums",
+      "lines": 256,
+      "sha256": "5dbaf30081ead14a86f1b74441d4c107d6d7a662bbbd66c106ff4de864802283",
+      "platforms_identical": true,
+      "matches_serial": true
+    },
+    {
+      "trace": "12000-participants-2/world.checksums",
+      "lines": 256,
+      "sha256": "5dbaf30081ead14a86f1b74441d4c107d6d7a662bbbd66c106ff4de864802283",
+      "platforms_identical": true,
+      "matches_serial": true
+    },
+    {
+      "trace": "12000-participants-4/world.checksums",
+      "lines": 256,
+      "sha256": "5dbaf30081ead14a86f1b74441d4c107d6d7a662bbbd66c106ff4de864802283",
+      "platforms_identical": true,
+      "matches_serial": true
+    },
+    {
+      "trace": "12000-participants-8/world.checksums",
+      "lines": 256,
+      "sha256": "5dbaf30081ead14a86f1b74441d4c107d6d7a662bbbd66c106ff4de864802283",
+      "platforms_identical": true,
+      "matches_serial": true
+    },
+    {
+      "trace": "24000-participants-1/world.checksums",
+      "lines": 256,
+      "sha256": "dc3077acbccc6a13a718532934425047f5dea85fba3d15390038a5c3785b263c",
+      "platforms_identical": true,
+      "matches_serial": true
+    },
+    {
+      "trace": "24000-participants-2/world.checksums",
+      "lines": 256,
+      "sha256": "dc3077acbccc6a13a718532934425047f5dea85fba3d15390038a5c3785b263c",
+      "platforms_identical": true,
+      "matches_serial": true
+    },
+    {
+      "trace": "24000-participants-4/world.checksums",
+      "lines": 256,
+      "sha256": "dc3077acbccc6a13a718532934425047f5dea85fba3d15390038a5c3785b263c",
+      "platforms_identical": true,
+      "matches_serial": true
+    },
+    {
+      "trace": "24000-participants-8/world.checksums",
+      "lines": 256,
+      "sha256": "dc3077acbccc6a13a718532934425047f5dea85fba3d15390038a5c3785b263c",
+      "platforms_identical": true,
+      "matches_serial": true
+    }
+  ]
+}
