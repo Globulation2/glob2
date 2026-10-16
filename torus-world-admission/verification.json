@@ -1,0 +1,8 @@
+{
+  "revision": "61cd188ecf8d50b229e21539bb9e62cf12f745e4",
+  "base": "a5b380584bb3958488f01adba274e2f9dd6dce21",
+  "compiler": "g++ (Ubuntu 13.3.0-6ubuntu2~24.04.1) 13.3.0",
+  "platform": "Linux devlaptop 7.0.0-38-generic #38~24.04.4-Ubuntu SMP PREEMPT_DYNAMIC Mon Sep 14 16:37:11 UTC 2 x86_64 x86_64 x86_64 GNU/Linux",
+  "nativeBaseline": "ae56c3b2de6f83c2392358a05c4459b963000b40 (tree identical to a5b380584)",
+  "windowsFoundationRun": "https://github.com/Globulation2/glob2/actions/runs/38873263518"
+}

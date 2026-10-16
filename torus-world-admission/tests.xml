@@ -1,0 +1,6 @@
+<?xml version='1.0' encoding='utf-8'?>
+<testsuites tests="4" failures="0" errors="0" skipped="0"><testsuite name="TorusRender"><testcase classname="TorusRender" name="SDL GPU fatal torus fallback advances animation once [display][isolated]" time="1.6039" status="run" />
+  <testcase classname="TorusRender" name="SDL GPU retries a submitted final torus overlay coherently [display][isolated]" time="27.1343" status="run" />
+  <testcase classname="TorusRender" name="programmable GL fatal torus fallback advances animation once [display][isolated]" time="1.89403" status="run" />
+  <testcase classname="TorusRender" name="programmable GL retries a submitted final torus overlay coherently [display][isolated]" time="2.17577" status="run" />
+  </testsuite></testsuites>

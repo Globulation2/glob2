@@ -1,0 +1,4 @@
+<?xml version='1.0' encoding='utf-8'?>
+<testsuites tests="2" failures="0" errors="0" skipped="0"><testsuite name="TorusRender"><testcase classname="TorusRender" name="SDL GPU captures large logical maps beyond the window [display][isolated][artifacts]" time="22.0313" status="run" />
+  <testcase classname="TorusRender" name="programmable GL captures large logical maps beyond the window [display][isolated][artifacts]" time="16.9707" status="run" />
+  </testsuite></testsuites>
