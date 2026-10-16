@@ -170,10 +170,12 @@ class AndroidRetrievalTests(unittest.TestCase):
 
 
 class SaveHeaderTests(unittest.TestCase):
-    def test_header_delta_uses_executed_152_or_153_protocol(self):
+    def test_header_delta_uses_executed_protocol(self):
         before, after = (0, 125, 2, 2), (0, 153, 2, 2)
         self.assertEqual(header_checksum_delta(before, after, 152), 0x72000000)
         self.assertEqual(header_checksum_delta(before, after, 153), 0x39000000)
+        self.assertEqual(header_checksum_delta(before, after, 155), 0x1c800000)
+        self.assertEqual(header_checksum_delta(before, after), 0x1c800000)
         self.assertEqual(header_checksum_delta(after, after, 153), 0)
         with self.assertRaises(AssertionError):
             header_checksum_delta(before, after, 154)
@@ -181,7 +183,7 @@ class SaveHeaderTests(unittest.TestCase):
     def test_current_continuation_retains_every_entity_and_aggregate_bit(self):
         expected = {tick: struct.pack('<III', tick, 0x12345678, 0x87654321)
                     for tick in range(128, 256)}
-        actual = {tick: struct.pack('<III', tick, 0x12345678 ^ 0x39000000, 0x87654321)
+        actual = {tick: struct.pack('<III', tick, 0x12345678 ^ 0x1c800000, 0x87654321)
                   for tick in expected}
         with patch('check_javascript.save_header', side_effect=lambda path:
                    (0, 125 if path == 'initial' else 153, 2, 2)):
@@ -194,7 +196,7 @@ class SaveHeaderTests(unittest.TestCase):
 
     @staticmethod
     def fixture(version, resource_declarations=None, required=(), ai_delay=0, building_gradient_delay=4,
-                terrain_required=('ice-terrain',)):
+                terrain_required=('ice-terrain',), statistics_delay=0):
         def text(value):
             encoded = value.encode('utf8')
             return struct.pack('>I', len(encoded)) + encoded
@@ -214,6 +216,8 @@ class SaveHeaderTests(unittest.TestCase):
         result += bytes(5)
         if version >= 143:
             result += bytes([ai_delay])
+        if version >= 155:
+            result += bytes([statistics_delay])
         if version >= 148:
             result += bytes([building_gradient_delay])
         result += struct.pack('>I', 3)  # Three players in GameHeader.
@@ -226,7 +230,7 @@ class SaveHeaderTests(unittest.TestCase):
             return save_header(path)
 
     def test_legacy_and_resource_headers_have_correct_player_offsets(self):
-        for version in (125, 137, 138, 139, 140, 142, 143, 146, 147, 148, 152, 153):
+        for version in (125, 137, 138, 139, 140, 142, 143, 146, 147, 148, 152, 153, 154, 155, 167):
             self.assertEqual(self.parse(self.fixture(version)), (0, version, 2, 3))
         declarations = [('custom-crops', 'Custom crops', 'Enable experimental multi-material crops.')]
         self.assertEqual(self.parse(self.fixture(140, declarations, ['custom-crops'])), (0, 140, 2, 3))
@@ -238,6 +242,12 @@ class SaveHeaderTests(unittest.TestCase):
     def test_building_gradient_delay_does_not_shift_player_count(self):
         for delay in (1, 4, 8):
             self.assertEqual(self.parse(self.fixture(148, building_gradient_delay=delay)), (0, 148, 2, 3))
+
+    def test_statistics_delay_does_not_shift_player_count(self):
+        for delay in (0, 1, 8):
+            self.assertEqual(self.parse(self.fixture(167, statistics_delay=delay)), (0, 167, 2, 3))
+        with self.assertRaises(AssertionError):
+            self.parse(self.fixture(167, statistics_delay=9))
 
     def test_resource_header_metadata_bounds_are_checked(self):
         for declarations, required in [([('x' * 129, 'Label', 'Help')], []),
@@ -276,7 +286,7 @@ class SaveHeaderTests(unittest.TestCase):
                 with self.subTest(offset=offset, value=value), self.assertRaises(AssertionError):
                     self.parse(gzip.compress(malformed))
         with self.assertRaises(AssertionError):
-            self.parse(self.fixture(154))
+            self.parse(self.fixture(168))
 
 
 if __name__ == '__main__':
