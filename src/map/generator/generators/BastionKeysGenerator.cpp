@@ -356,8 +356,8 @@ void dressGround(Layout &L, GenerationContext &context)
 		{
 			// A harbour arm is a rocky headland: shingle, with outcrop on its far half so it reads
 			// as a breakwater rather than a strip of lawn.
-			const bool far = fromWall[i] >= armFrom;
-			next[i] = far && scrub.at(x, y) > .5 ? OUTCROP : clay.at(x, y) > .8 ? DIRT : GRAVEL;
+			const bool outerHalf = fromWall[i] >= armFrom;
+			next[i] = outerHalf && scrub.at(x, y) > .5 ? OUTCROP : clay.at(x, y) > .8 ? DIRT : GRAVEL;
 			++arms;
 		}
 		else if (fromSea[i] <= 3 && scrub.at(x, y) > .55)
