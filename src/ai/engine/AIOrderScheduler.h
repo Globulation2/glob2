@@ -3,6 +3,7 @@
 
 #include "ComputeExecutor.h"
 #include <atomic>
+#include <algorithm>
 #include <deque>
 #include <functional>
 #include <map>
@@ -59,8 +60,7 @@ private:
 		Decide decide;
 		std::optional<Command> completed;
 		std::exception_ptr failure;
-		Uint64 computationNs = 0;
-		template<bool Measure> static void run(void* context, std::size_t);
+		static void run(void* context, std::size_t);
 	};
 	// The decisions admitted at one observation tick, dispatched to the executor
 	// as one batch (one group per controller on that controller's lane) once the
@@ -75,10 +75,6 @@ private:
 	};
 	std::deque<TickBatch> batches;
 	ComputeExecutor* executor = nullptr;
-	// Smoothed decision work of recent batches. A delay-zero batch is handed to
-	// the workers only when it carries enough work to repay waking them;
-	// otherwise the owner decides it inline. Neither changes a decision.
-	Uint64 recentWorkNs = SharedWorkThresholdNs;
 	std::map<unsigned, RequestId> lastSubmitted;
 	unsigned delay = 0;
 	std::optional<Uint32> submissionTick;
@@ -90,18 +86,23 @@ private:
 	bool liveWork() const;
 
 public:
-	static constexpr Uint64 SharedWorkThresholdNs = 100000;
 	struct Metrics { Uint64 submitted = 0, delivered = 0, deadlineMisses = 0, deadlineWaitNs = 0, maximumPending = 0, sharedBatches = 0; } metrics;
 	OrderScheduler() = default;
 	OrderScheduler(const OrderScheduler&) = delete;
 	// Joins every admitted decision; the executor must outlive the scheduler.
 	~OrderScheduler();
 	// Shared execution hands batches to the executor's workers and the
-	// submitter waits for them at the deadline; otherwise the submitter decides
-	// when it dispatches. Either way decisions are delivered at the deadline.
+	// submitter waits for them at the deadline. Without workers, the executor
+	// runs the decisions on the owner at that same join.
 	void configure(unsigned delayTicks, ComputeExecutor& executor);
 	void configureExecution(ComputeExecutor& executor);
 	unsigned delayTicks() const { return delay; }
+	// Configuration zero now means delivery at the next completed observation.
+	unsigned effectiveDelay() const { return std::max(1u, delay); }
+	bool wasDelivered(Uint32 tick) const { return deliveryTick && *deliveryTick == tick; }
+	bool validDeadline(Uint32 observed, Uint32 due) const {
+		return due >= observed && (due - observed == delay || (!delay && due - observed == 1));
+	}
 	bool hasExecutor() const { return executor != nullptr; }
 	std::size_t pendingCount() const;
 	bool wasSubmitted(unsigned player, Uint32 generation, Uint32 tick) const {

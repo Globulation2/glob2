@@ -44,11 +44,25 @@ void Pipeline::cancel(unsigned player) {
 bool Pipeline::wasPolled(unsigned player, Uint32 tick) const {
  return scheduler.wasSubmitted(player,actors.at(player).generation,tick);
 }
-std::vector<std::pair<unsigned,std::shared_ptr<Order>>> Pipeline::prepare(Game& game,
+void Pipeline::initialize(Game& game)
+{
+    // Session setup and saving configure execution without pretending to admit
+    // work. Restored schedulers attach to this world's executor on first use.
+    if (!configured)
+    {
+        scheduler.configure(game.gameHeader.getAIOrderDelay(), game.map.computeExecutor());
+        configured = true;
+    }
+    else if (scheduler.delayTicks() != game.gameHeader.getAIOrderDelay())
+        throw std::logic_error("AI delay cannot change during a match");
+    else if (!scheduler.hasExecutor())
+        scheduler.configureExecution(game.map.computeExecutor());
+}
+
+void Pipeline::admit(Game& game,
  std::span<const unsigned> eligible,bool paused,const std::shared_ptr<GameDiagnostics::Session>& diagnostics,
  const SimulationSnapshot::Handle& captured) {
- std::vector<std::pair<unsigned,std::shared_ptr<Order>>> result;
- std::array<bool,32> requested{},newlyDelivered{};
+ std::array<bool,32> requested{};
  if(diagnostics && diagnosticsSession.lock()!=diagnostics) scheduler.adoptDiagnostics(*diagnostics);
  diagnosticsSession=diagnostics;
  for(auto p:eligible) {
@@ -56,16 +70,9 @@ std::vector<std::pair<unsigned,std::shared_ptr<Order>>> Pipeline::prepare(Game& 
   if(requested[p])throw std::invalid_argument("Duplicate AI poll player");
   requested[p]=true;
  }
- // Decisions use the shared executor; the owner joins at the deadline.
- // Without workers, the executor runs deferred work on the owner at its join.
- if(!configured) {scheduler.configure(game.gameHeader.getAIOrderDelay(),game.map.computeExecutor());configured=true;}
- else if(scheduler.delayTicks()!=game.gameHeader.getAIOrderDelay()) throw std::logic_error("AI delay cannot change during a match");
- else if(!scheduler.hasExecutor()) scheduler.configureExecution(game.map.computeExecutor());
- if(paused) {
-  game.map.preparePendingWorld(captured);
-  for(auto p:eligible) result.emplace_back(p,std::make_shared<NullOrder>());
-  return result;
- }
+ initialize(game);
+ if(paused) return;
+ if(!captured.entities || captured.tick!=game.stepCounter) throw std::invalid_argument("AI admission requires the completed observation");
  for(unsigned p=0;p<actors.size();++p) {
   auto* player=p<unsigned(game.gameHeader.getNumberOfPlayers())?game.players[p]:nullptr;
   auto* current=player?player->ai:nullptr;
@@ -95,7 +102,7 @@ std::vector<std::pair<unsigned,std::shared_ptr<Order>>> Pipeline::prepare(Game& 
   if(std::adjacent_find(polls.begin(),polls.end())!=polls.end()) throw std::invalid_argument("Duplicate AI poll");
   std::shared_ptr<const AIWorldView> world;
   for(auto p:polls) {
-   auto* player=game.players[p]; auto& actor=actors[p]; actor.published.reset();
+   auto* player=game.players[p]; auto& actor=actors[p];
    if(!player||!player->ai||!player->team->isAlive) continue;
    actor.controller=player->ai; actor.suspended=false; auto* ai=actor.controller; ai->prepareDecision();
    if(actor.sequence==std::numeric_limits<Uint64>::max()) throw std::overflow_error("AI poll sequence overflow");
@@ -103,7 +110,7 @@ std::vector<std::pair<unsigned,std::shared_ptr<Order>>> Pipeline::prepare(Game& 
    RequestId request{p,actor.generation,game.stepCounter,actor.sequence++,0};
    auto feedback=std::move(actor.feedback); actor.feedback.clear();
    auto fields=diagnostics?diagnostics->reserveCapture(p,game.stepCounter):nullptr;
-   scheduler.submit(request,world,[ai,world,request,feedback=std::move(feedback),fields,team=unsigned(player->teamNumber),delay=scheduler.delayTicks()](const AIWorldView& input) {
+   scheduler.submit(request,world,[ai,world,request,feedback=std::move(feedback),fields,team=unsigned(player->teamNumber),delay=scheduler.effectiveDelay()](const AIWorldView& input) {
     // AI query fields are local planning caches: their presence and age depend on
     // local polling, so they never enroll authoritative map fields.
     DecisionContext context{input,request.player,team,feedback,world,request.observedTick+delay,request.pollSequence,nullptr,fields,request.generation};
@@ -111,7 +118,25 @@ std::vector<std::pair<unsigned,std::shared_ptr<Order>>> Pipeline::prepare(Game& 
    });
   }
   scheduler.dispatch();
-  game.map.preparePendingWorld(captured);
+  if(diagnostics) diagnostics->completeTick(captured);
+  boundary=game.stepCounter;
+ }
+}
+std::vector<std::pair<unsigned,std::shared_ptr<Order>>> Pipeline::deliverDue(Game& game,
+ std::span<const unsigned> eligible,bool paused) {
+ std::vector<std::pair<unsigned,std::shared_ptr<Order>>> result;
+ std::array<bool,32> requested{},newlyDelivered{};
+ for(auto p:eligible) {
+  if(p>=unsigned(game.gameHeader.getNumberOfPlayers())||p>=actors.size()||requested[p]) throw std::invalid_argument("Invalid AI delivery player");
+  requested[p]=true;
+ }
+ if(paused) {
+  for(auto p:eligible) result.emplace_back(p,std::make_shared<NullOrder>());
+  return result;
+ }
+ const auto diagnostics=diagnosticsSession.lock();
+ if(!scheduler.wasDelivered(game.stepCounter)) {
+  for(auto& actor:actors) actor.published.reset();
   for(auto& delivery:scheduler.takeDue(game.stepCounter)) {
    newlyDelivered[delivery.request.player]=true;
    auto& actor=actors[delivery.request.player];
@@ -132,8 +157,6 @@ std::vector<std::pair<unsigned,std::shared_ptr<Order>>> Pipeline::prepare(Game& 
     actor.admitted=std::move(delivery);
    }
   }
-  if(diagnostics) diagnostics->completeTick(captured);
-  boundary=game.stepCounter;
  }
  // Poll eligibility controls new observations, never a submitted deadline.
  // Repeated stalled calls return only requested actors, avoiding re-enqueueing
@@ -207,7 +230,7 @@ bool Pipeline::load(Game& game,GAGCore::InputStream* s)
   for(unsigned i=0;i<count;++i) {
    s->readEnterSection(i);auto receipt=loadExecutionReceipt(*s);
    if(!validRequest(receipt.request,p,actor))return false;
-   if(receipt.executionTick>game.stepCounter || receipt.scheduledTick!=receipt.request.observedTick+scheduler.delayTicks()
+   if(receipt.executionTick>game.stepCounter || !scheduler.validDeadline(receipt.request.observedTick,receipt.scheduledTick)
      ||(receipt.status==ExecutionStatus::Canceled ? receipt.executionTick>receipt.scheduledTick : receipt.executionTick!=receipt.scheduledTick) || (!actor.feedback.empty() && actor.feedback.back().request.pollSequence>=receipt.request.pollSequence))return false;
    actor.feedback.push_back(std::move(receipt));s->readLeaveSection();
   }
@@ -218,7 +241,7 @@ bool Pipeline::load(Game& game,GAGCore::InputStream* s)
    const auto target=Command::targetGid(*order);
    if(target.has_value()!=delivery.command.target.has_value()
      ||(target && *target!=delivery.command.target->gid))return false;
-   if(!validRequest(delivery.request,p,actor)||delivery.dueTick!=delivery.request.observedTick+scheduler.delayTicks()
+   if(!validRequest(delivery.request,p,actor)||!scheduler.validDeadline(delivery.request.observedTick,delivery.dueTick)
      ||delivery.dueTick!=game.stepCounter||!boundary||*boundary!=delivery.dueTick||order->getOrderType()==ORDER_NULL)return false;
    actor.admitted=std::move(delivery);
   }

@@ -121,7 +121,7 @@ TEST_CASE("retained seeded compositions preserve full simulation continuation [g
         for (int tick=0; tick<257; ++tick)
         {
             CAPTURE(tick);
-            restored.game.syncStep(0); invariants(restored.game);
+            restored.game.step(0); invariants(restored.game);
             CHECK(components(restored.game) == states[tick]);
             CHECK(restored.game.syncRandom == random[tick]);
         }

@@ -252,14 +252,6 @@ gradient_preparation::Request gradientRequest(const GradientRuntime::Preparation
     return request;
 }
 }
-void Map::preparePendingGradient()
-{
-    if (hasPendingGradientPreparation()) {
-        auto& store=game->snapshotStore();
-        store.invalidateBoundary(); // Direct map stepping may not advance Game's tick.
-        preparePendingGradient(store.captureBoundary(*game));
-    }
-}
 void Map::preparePendingGradient(const SimulationSnapshot::Handle& foundation)
 {
     if (!hasPendingGradientPreparation()) return;
@@ -289,7 +281,6 @@ void Map::preparePendingGradient(const SimulationSnapshot::Handle& foundation)
 
 void Map::advanceGradientPipeline()
 {
-	preparePendingGradient();
 	ensureBuildingGradientPipeline();
 	gradientRuntime->pipeline.advance();
 	// Building fields publish after the periodic planes, before teams step.
@@ -297,12 +288,13 @@ void Map::advanceGradientPipeline()
 }
 void Map::finishGradientPipeline(JoinContext context)
 {
-	preparePendingGradient();
 	gradientRuntime->pipeline.finish(context);
 	gradientRuntime->buildings.finish(context);
 }
 void Map::resetGradientPipeline() noexcept
 {
+	gradientRuntime->worldResultsPublishedTick.reset();
+	gradientRuntime->worldWorkSubmittedTick.reset();
 	gradientRuntime->preparation={};
     gradientRuntime->fieldRequests.clear();
 	gradientRuntime->pipeline.reset();
@@ -310,7 +302,6 @@ void Map::resetGradientPipeline() noexcept
 }
 void Map::setGradientWorkerCount(unsigned workers)
 {
-	preparePendingGradient();
 	gradientRuntime->pipeline.finish({JoinReason::Reconfigure, ComputeTelemetry::NoTick});
 	gradientRuntime->buildings.finish({JoinReason::Reconfigure, ComputeTelemetry::NoTick});
 }
@@ -318,7 +309,6 @@ void Map::setGradientWorkerCount(unsigned workers)
 void Map::configureGradientPipeline(unsigned workers, unsigned delay)
 {
 	if (workers>16 || delay<1 || delay>16) throw std::invalid_argument("Invalid gradient pipeline configuration");
-	preparePendingGradient();
 	ensureBuildingGradientPipeline();
     gradientRuntime->pipeline.validDestination=[this](Uint16** slot) {
         if (const auto id=gradientRuntime->air.idForSlot(slot))
@@ -336,10 +326,9 @@ void Map::configureGradientPipeline(unsigned workers, unsigned delay)
         for (auto& [key,entry] : gradientRuntime->materialFields)
             if (&entry.published==slot) { entry.cells.release(); entry.cells.reset(entry.published); entry.awaitingFirstRead=true; entry.publishedStep=game->stepCounter; break; }
     };
-	// Staged after tick c-1's step counter advanced to c, a job published
-	// `remaining` advances later is joined at the start of step c+remaining-1.
+	// Work observed at c publishes at boundary c + remaining.
 	gradientRuntime->pipeline.deadline = [this](unsigned remaining) {
-		return ComputeExecutor::advanceDue(std::uint64_t(game ? game->stepCounter : 0) + remaining - 1);
+		return ComputeExecutor::advanceDue(std::uint64_t(game ? game->stepCounter : 0) + remaining);
 	};
 	gradientRuntime->pipeline.configure(compute, delay, size,
         [](GradientPipeline::Job &job, GradientWorkspace &scratch) {
@@ -351,11 +340,9 @@ void Map::configureGradientPipeline(unsigned workers, unsigned delay)
     });
 }
 
-void Map::syncStep(Uint32 stepCounter, bool preparePeriodic)
+void Map::syncStep(Uint32 stepCounter)
 {
-	preparePendingGradient();
 	PERF_SCOPE_TIME(Map);
-	gradientRuntime->growth.publish(*this, stepCounter);
 	for (int i=0; i<sizeSector; i++)
 		sectors[i].step();
 	game->animations->step();
@@ -380,14 +367,13 @@ void Map::syncStep(Uint32 stepCounter, bool preparePeriodic)
         if (forbiddenGradient[team][swim]) updateForbiddenGradient(team,swim);
     }
 
-	if (preparePeriodic) { stagePeriodicGradientPreparation(); preparePendingGradient(); }
 }
 
 void Map::stagePeriodicGradientPreparation()
 {
     gradientRuntime->air.retireBoundary();
     gradientRuntime->air.prune(*this);
-	preparePendingGradient();
+
 	// Building requests are admitted first; the periodic job below may return early.
 	stageBuildingGradientPreparation();
     const auto enqueuePeriodic=[&]() {

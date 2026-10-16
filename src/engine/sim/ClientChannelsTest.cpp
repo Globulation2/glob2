@@ -328,3 +328,31 @@ TEST_SUITE("ClientChannels")
 		detached.publishClientEvent(ClientEvent::PauseChanged{true});
 	}
 }
+
+TEST_SUITE("ClientChannels")
+{
+    TEST_CASE("waiting masks update and clear while the same completed world remains retained")
+    {
+        glob2test::HeadlessGlobals globals;
+        glob2test::HeadlessGame fixture({.teams=2,.loadDefaultRace=true,.header=true});
+        auto& game=fixture.game;
+        auto& channel=fixture.gui.clientEvents;
+        const auto world=game.observeCompletedWorld({.presentation=true});
+        const auto materializations=game.snapshots().metrics.coreMaterializations;
+        CHECK(channel.waitingMask()==0);
+        for (const Uint32 mask : {Uint32(1),Uint32(2),Uint32(3),Uint32(0)}) {
+            game.setWaitingOnMask(mask);
+            CHECK(channel.waitingMask()==mask);
+            const auto& retained=game.observeCompletedWorld({.presentation=true});
+            CHECK(retained.tick==world.tick);
+            CHECK(retained.observationRevision==world.observationRevision);
+            CHECK(retained.entities==world.entities);
+            CHECK(retained.session==world.session);
+            CHECK(game.snapshots().metrics.coreMaterializations==materializations);
+        }
+        channel.publishWaitingMask(2);
+        channel.reset();
+        CHECK(channel.waitingMask()==0);
+        CHECK(game.snapshots().metrics.coreMaterializations==materializations);
+    }
+}

@@ -484,7 +484,7 @@ static void rallyAssemblesByMovement()
         int arrived=0;
         for(int tick=0;tick<2000 && arrived<15;++tick) {
             const auto previousStep=f.game.stepCounter;
-            f.game.syncStep(0);
+            f.game.step(0);
             REQUIRE(f.game.stepCounter==previousStep+1);
             // Keep the format-115 baseline: this fixture's header version is
             // rotated eight times by MapHeader/Game checksums (three teams,

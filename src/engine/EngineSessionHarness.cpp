@@ -16,6 +16,10 @@
 #include "OutcomeReason.h"
 #include "NetEngine.h"
 #include "Player.h"
+#include "AI.h"
+#include "AIJavaScript.h"
+#include <array>
+#include <StreamBackend.h>
 #include "sim/SimulationRunner.h"
 #include "sim/presentation/SceneInputs.h"
 #include "sim/presentation/ScenePreparation.h"
@@ -265,6 +269,54 @@ TEST_SUITE("EngineSession")
         CHECK_FALSE(engine.gui.isRunning);
     }
 
+    TEST_CASE("paused restore delivers pending AI orders before an unpause can advance")
+    {
+        glob2test::HeadlessGlobals globals;
+        glob2test::HeadlessGame source({.teams=2,.loadDefaultRace=true,.header=true});
+        source.addBuilding("swarm",4,4,0,1);
+        source.addUnit(WORKER,12,12,1);
+        auto& original=source.game;
+        original.setWaitingOnMask(0);
+        original.gameHeader.setAIOrderDelay(0);
+        original.gameHeader.setAIConfig(1,Script::config(
+            "function step(c){return {type:'workers',building:c.game.buildings({team:c.myTeam})[0],workers:3};}"));
+        original.players[1]->makeItAI(AI::JAVASCRIPT);
+        constexpr std::array<unsigned,1> actors{1};
+        const auto initial=original.observeCompletedWorld();
+        original.admitAIOrders(actors,false,{},initial);
+        REQUIRE(original.deliverAIOrders(actors,false)[0].second->getOrderType()==ORDER_NULL);
+        original.advanceLiveSimulation(0);
+        REQUIRE(original.stepCounter==1);
+        auto* memory=new GAGCore::MemoryStreamBackend;
+        GAGCore::BinaryOutputStream output(memory);
+        original.save(&output,false,"pending AI before paused restore"); output.flush();
+        const auto saved=memory->takeContents();
+
+        Engine engine;
+        GAGCore::BinaryInputStream input(new GAGCore::MemoryStreamBackend(saved.data(),saved.size()));
+        input.seekFromStart(0); REQUIRE(engine.gui.game.load(&input));
+        auto& game=engine.gui.game;
+        engine.gui.localPlayer=0; engine.gui.localTeamNo=0;
+        engine.net=std::make_unique<NetEngine>(2,0);
+        engine.gui.gamePaused=true;
+        engine.establishObservation(false);
+        engine.net->pushOrder(std::make_shared<PauseGameOrder>(false),0,false);
+        engine.net->pushOrder(std::make_shared<NullOrder>(),1,true);
+        engine.gatherAndAdvanceOrders(false);
+        engine.executeOrdersAndStep(true);
+        CHECK_FALSE(engine.gui.gamePaused);
+        REQUIRE(game.stepCounter==1);
+        // The resumed owner admits work using the retained observation, then
+        // delivers the original due output before its next advancement.
+        engine.establishObservation(false);
+        engine.net->pushOrder(std::make_shared<NullOrder>(),0,false);
+        engine.gatherAndAdvanceOrders(false);
+        REQUIRE(engine.net->retrieveOrder(1));
+        CHECK(engine.net->retrieveOrder(1)->getOrderType()==ORDER_MODIFY_BUILDING);
+        engine.executeOrdersAndStep(true);
+        CHECK(game.stepCounter==2);
+    }
+
     TEST_CASE("observation players preserve seat order and spectator readiness")
     {
         glob2test::HeadlessGlobals globals;
@@ -386,23 +438,26 @@ TEST_SUITE("EngineSession")
                 if (engine.runner) REQUIRE(engine.runner->acquireScene());
                 else REQUIRE(engine.serialPresentation->acquire());
             };
-            const auto simulationOnly=[](const SimulationSnapshot::Handle& world) {
+            const auto completedGraphical=[](const SimulationSnapshot::Handle& world) {
                 CHECK_NOTHROW(world.simulationView());
                 REQUIRE(world.entities);
                 REQUIRE(world.resourceFields);
                 REQUIRE(world.statisticsInputs);
-                CHECK_FALSE(world.session);
-                CHECK_FALSE(world.effects);
-                CHECK_FALSE(world.statistics);
+                REQUIRE(world.session);
+                REQUIRE(world.effects);
+                REQUIRE(world.statistics);
             };
             engine.gui.recordTick(1000,33);
             camera(0);
-            const auto initial=engine.openReadBoundary(false);
-            simulationOnly(initial);
+            const auto initial=engine.establishObservation(false);
+            completedGraphical(initial);
+            const auto initialMaterializations=game.snapshots().metrics.coreMaterializations;
+            CHECK(initialMaterializations==1);
             CHECK_FALSE(engine.retainedPresentation);
-            const auto firstFrame=engine.openReadBoundary(true);
+            const auto firstFrame=engine.establishObservation(true);
             CHECK(firstFrame.entities==initial.entities);
             CHECK(firstFrame.supportsPresentation());
+            CHECK(game.snapshots().metrics.coreMaterializations==initialMaterializations);
             finish();
 
             // A completed camera refresh consumes the client request before the
@@ -412,7 +467,7 @@ TEST_SUITE("EngineSession")
             finish();
             ++game.stepCounter;
             engine.gui.recordTick(1033,33);
-            engine.openReadBoundary(true);
+            engine.establishObservation(true);
             REQUIRE(engine.retainedPresentation->world.tick==game.stepCounter);
             CHECK(engine.retainedPresentation->request.tickTime==1033);
             finish();
@@ -424,17 +479,22 @@ TEST_SUITE("EngineSession")
             engine.refreshRetainedPresentation();
             ++game.stepCounter;
             engine.gui.recordTick(1066,33);
-            const auto busy=engine.openReadBoundary(true);
-            simulationOnly(busy);
+            const auto busy=engine.establishObservation(true);
+            completedGraphical(busy);
+            const auto busyMaterializations=game.snapshots().metrics.coreMaterializations;
+            CHECK(busyMaterializations==initialMaterializations+2);
             CHECK(engine.retainedPresentation->world.tick==game.stepCounter-1);
             finish();
             camera(3);
             const auto retained=engine.retainedPresentation;
             engine.refreshRetainedPresentation();
             CHECK(engine.retainedPresentation==retained);
-            const auto admitted=engine.openReadBoundary(true);
+            const auto admitted=engine.establishObservation(true);
             CHECK(admitted.entities==busy.entities);
             CHECK(admitted.supportsPresentation());
+            CHECK(admitted.effects==busy.effects);
+            CHECK(admitted.statistics==busy.statistics);
+            CHECK(game.snapshots().metrics.coreMaterializations==busyMaterializations);
             REQUIRE(engine.retainedPresentation->world.tick==game.stepCounter);
             CHECK(engine.retainedPresentation->request.tickTime==1066);
             finish();
@@ -446,9 +506,67 @@ TEST_SUITE("EngineSession")
             engine.refreshRetainedPresentation();
             CHECK(engine.retainedPresentation->request.view.viewportX==4);
             CHECK(engine.retainedPresentation->request.tickTime==1066);
+            CHECK(engine.retainedPresentation->world.entities==admitted.entities);
+            CHECK(engine.retainedPresentation->world.effects==admitted.effects);
+            CHECK(game.snapshots().metrics.coreMaterializations==busyMaterializations);
             CHECK(game.snapshots().metrics.captures==captures);
             finish();
         }
+    }
+
+    TEST_CASE("paused selection history and debug requests reuse the complete graphical observation")
+    {
+        glob2test::HeadlessGlobals globals;
+        Engine engine;
+        struct RestoreHeadless { ~RestoreHeadless() { globalContainer->runNoX=true; } } restore;
+        globalContainer->runNoX=false;
+        auto& game=engine.gui.game;
+        game.map.setSize(5,5,GRASS);
+        game.map.setGame(&game);
+        game.addTeam();
+        game.teams[0]->race.loadDefault();
+        const auto type=game.buildingsTypes.getTypeNum("inn",0,false);
+        REQUIRE(type>=0);
+        auto* building=game.addBuilding(4,4,type,0); REQUIRE(building);
+        game.map.setBuilding(4,4,building->type->width,building->type->height,building->gid);
+        building->verbose=1;
+        auto& executor=game.map.computeExecutor();
+        executor.configure(1);
+        engine.runner=std::make_unique<SimulationRunner>(engine);
+        SceneRequest request;
+        request.includePanels=false;
+        request.view.displayW=128; request.view.displayH=128;
+        engine.runner->requestScene(request);
+        const auto world=engine.establishObservation(true);
+        while(executor.pumpPresentation()) {}
+        REQUIRE(engine.runner->acquireScene());
+        const auto materializations=game.snapshots().metrics.coreMaterializations;
+        REQUIRE(materializations==1);
+
+        engine.gui.gamePaused=true;
+        request.selectedBuilding=Game::refOf(building);
+        request.includePanels=true;
+        request.includeHistory=true;
+        request.includeTelemetry=true;
+        request.includeScriptAreas=true;
+        request.view.debugLayers=1;
+        engine.runner->requestScene(request);
+        CHECK_NOTHROW(engine.refreshRetainedPresentation());
+        while(executor.pumpPresentation()) {}
+        const auto* frame=engine.runner->acquireScene(); REQUIRE(frame);
+        REQUIRE(engine.retainedPresentation);
+        const auto& retained=engine.retainedPresentation->world;
+        CHECK(engine.retainedPresentation->request.selectedBuilding==Game::refOf(building));
+        CHECK(retained.tick==world.tick);
+        CHECK(retained.observationRevision==world.observationRevision);
+        CHECK(retained.entities==world.entities);
+        CHECK(retained.effects==world.effects);
+        CHECK(retained.history==world.history);
+        CHECK(retained.entityDiagnostics==world.entityDiagnostics);
+        REQUIRE(retained.history); REQUIRE(retained.telemetry);
+        REQUIRE(retained.entityDiagnostics); REQUIRE(retained.annotations);
+        CHECK(frame->world.entities==world.entities);
+        CHECK(game.snapshots().metrics.coreMaterializations==materializations);
     }
 
     TEST_CASE("menu colony rendering consumes its shared boundary without recapture [display]")

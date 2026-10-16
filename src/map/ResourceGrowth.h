@@ -82,6 +82,9 @@ class Pipeline
 	~Pipeline() { reset(); }
 	bool needsPreparation() const { return reservation.has_value(); }
 	std::size_t count() const { return pending.size(); }
+    // Owner metadata only: saved completed work already admitted this observation.
+    bool hasObservation(Uint32 tick) const
+    { return !pending.empty() && pending.back()->output.sourceTick == tick; }
 	void stage(Uint32 tick, Uint32 seed);
 	void prepare(const SimulationSnapshot::Handle &, ComputeExecutor &);
 	void publish(Map &, Uint32 tick);

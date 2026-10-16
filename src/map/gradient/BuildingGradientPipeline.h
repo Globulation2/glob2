@@ -129,7 +129,7 @@ public:
 	void advance() {
 		++tick; admitted = 0;
 		while (!pending.empty() && pending.front()->due <= tick) {
-			auto& job = *pending.front(); wait(job, {JoinReason::TickDeadline, deadline ? deadline(1)/2 : tick});
+			auto& job = *pending.front(); wait(job, {JoinReason::TickDeadline, deadline ? deadline(0)/2 : tick});
 			if (job.error) std::rethrow_exception(job.error);
 			if (!job.superseded && publish && publish(job)) ++metrics.published;
 			else ++metrics.discarded;
@@ -168,7 +168,7 @@ public:
 			for (auto* job : jobs) groups.push_back({1, {&run, job}, ComputeExecutor::NoLane});
 			const auto due = jobs.front()->due; // every job staged this tick shares it
 			const auto key = deadline ? deadline(unsigned(due - tick)) : ComputeExecutor::advanceDue(due);
-			const auto batch = executor->submit(groups, key, {ComputeProducer::BuildingGradient, deadline ? key/2 - (due-tick) + 1 : tick, key/2});
+			const auto batch = executor->submit(groups, key, {ComputeProducer::BuildingGradient, deadline ? key/2 - (due-tick) : tick, key/2});
 			for (auto* job : jobs) job->batch = batch;
 			++metrics.batches;
 			metrics.maxBatch = std::max<std::uint64_t>(metrics.maxBatch, jobs.size());

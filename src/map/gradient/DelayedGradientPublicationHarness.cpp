@@ -1,5 +1,6 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "EngineFixtures.h"
+#include "GradientFixture.h"
 #include "GradientExecutionAudit.h"
 #include "GradientRuntime.h"
 #include "BuildingGradientSearch.h"
@@ -20,7 +21,7 @@ void advanceFields(Game& game)
     game.map.advanceGradientPipeline();
     ++game.stepCounter;
     game.map.stagePeriodicGradientPreparation();
-    game.map.preparePendingGradient();
+    glob2test::prepareGradientBoundary(game);
 }
 
 std::vector<Uint32> normalizedChecksums(Game& game)

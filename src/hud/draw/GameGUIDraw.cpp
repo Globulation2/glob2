@@ -494,6 +494,7 @@ void GameGUI::drawOverlayInfos(void)
 	// than this many GUI steps, so brief network hiccups don't flash the box.
 	constexpr int WAIT_NOTICE_DEBOUNCE_STEPS = 2;
 	const SceneHud &hud = drawnScene().panels.hud;
+    const Uint32 waitingMask = clientEvents.waitingMask();
 	// Turn games show every player's connection in the panel instead (ConnectionOverlay).
 	const std::vector<std::string> connectionLines = connectionNotice && !connectionOverlay ? connectionNotice() : std::vector<std::string>();
 	if (!connectionLines.empty())
@@ -505,11 +506,11 @@ void GameGUI::drawOverlayInfos(void)
 		for (int i = 0; i < lines; ++i)
 			globalContainer->gfx->drawString(44, 44+i*20, globalContainer->standardFont, connectionLines[i].c_str());
 	}
-	else if (!connectionOverlay && hud.state().anyPlayerWaited && hud.state().maskAwayPlayer && anyPlayerWaitedTimeFor>WAIT_NOTICE_DEBOUNCE_STEPS)
+	else if (!connectionOverlay && waitingMask && anyPlayerWaitedTimeFor>WAIT_NOTICE_DEBOUNCE_STEPS)
 	{
 		int nbap=0; // Number of away players
 		Uint32 pm=1;
-		Uint32 apm=hud.state().maskAwayPlayer;
+		Uint32 apm=waitingMask;
 		for(int pi=0; pi<int(hud.state().players.size()); pi++)
 		{
 			if (pm&apm)

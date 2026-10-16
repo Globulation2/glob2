@@ -128,6 +128,9 @@ public:
         events.push(std::move(event));
     }
     Uint64 executedOrderRevision() const { return orderRevision.load(); }
+    //! Connection readiness can change while a completed world stays retained.
+    void publishWaitingMask(Uint32 mask) { waitingMaskValue.store(mask, std::memory_order_relaxed); }
+    Uint32 waitingMask() const { return waitingMaskValue.load(std::memory_order_relaxed); }
 	template <typename F>
 	void drain(F &&consume) { events.drain(std::forward<F>(consume)); }
 	bool empty() const { return events.empty(); }
@@ -141,12 +144,14 @@ public:
 	{
 		events.clear();
         orderRevision=0;
+        publishWaitingMask(0);
 		publishPulse(TickPulse());
 	}
 
 private:
 	LosslessQueue<ClientEventVariant> events;
     std::atomic<Uint64> orderRevision{0};
+    std::atomic<Uint32> waitingMaskValue{0};
 	mutable std::mutex pulseMutex;
 	TickPulse pulseValue;
 };

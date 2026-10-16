@@ -26,8 +26,6 @@ struct Session
     std::shared_ptr<const GameHints> hints;
     bool editor = false, totalPrestigeReached = false, prestigeWinCondition = false;
     int prestigeToReach = 0;
-    bool anyPlayerWaited = false;
-    Uint32 maskAwayPlayer = 0;
     Uint64 executedOrderRevision = 0;
     Uint32 terrainSeed = 0;
     Uint16 fertilityMaximum = 0;

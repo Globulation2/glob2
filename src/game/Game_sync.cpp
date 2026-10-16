@@ -215,13 +215,10 @@ void Game::prestigeSyncStep()
 
 
 
-void Game::syncStep(Sint32 localTeam, PreparationCompletion completion)
+void Game::advanceLiveSimulation(Sint32 localTeam)
 {
-	ensureTurretTargeting();
 	map.applyGradientBackendRequest();
-    // Also serves standalone/headless callers without an Engine read boundary.
-    const auto observed=prepareReadBoundary(anyPlayerWaited);
-	map.preparePendingWorld(observed);
+    assert(completedObservation && completedObservation->tick == stepCounter);
 	applyClientRequests();
 	if (!anyPlayerWaited)
 	{
@@ -233,15 +230,11 @@ void Game::syncStep(Sint32 localTeam, PreparationCompletion completion)
 
 		Uint64 startTick=SDL_GetTicks();
 
-		if (!map.gradientPipelineEnabled()) map.configureGradientPipeline(2, 8);
-		map.advanceGradientPipeline();
-
-		if (turretTargetingPipeline) turretTargetingPipeline->publish(*this);
 		areaEffects.beginTick(*this);
 		for (int i=0; i<mapHeader.getNumberOfTeams(); i++)
 			teams[i]->syncStep();
 
-		map.syncStep(stepCounter, false);
+		map.syncStep(stepCounter);
 		if (globalContainer->replaying && globalContainer->replayReader)
 			globalContainer->replayReader->applyTelemetry(*this);
 		if ((stepCounter & 31) == 0)
@@ -251,9 +244,6 @@ void Game::syncStep(Sint32 localTeam, PreparationCompletion completion)
 			if (globalContainer->replayWriter)
 				globalContainer->replayWriter->captureTelemetry();
 		}
-		// Normally polled controllers already observed this logical tick in their
-		// ordered worker stream. Only replica/replay seats need this boundary.
-		observeUnpolledAI();
 
 		if ((stepCounter&FOW_SWITCH_TICK_MASK)==FOW_SWITCH_TICK_PHASE)
 		{
@@ -289,13 +279,8 @@ void Game::syncStep(Sint32 localTeam, PreparationCompletion completion)
 		publishTickEvents();
 		map.computeExecutor().advancingTick(stepCounter);
 		stepCounter++;
-		// All world mutations, including script/fog/project tail work, are done.
-		// Selection stays ordered; only private preparation can join AI decisions.
-		map.stagePeriodicGradientPreparation();
-        map.stageResourceGrowth();
-		if (completion == PreparationCompletion::Complete) {
-            map.preparePendingWorld(prepareReadBoundary(false));
-        }
+        orderEditedWorld = false;
+
 	}
 }
 

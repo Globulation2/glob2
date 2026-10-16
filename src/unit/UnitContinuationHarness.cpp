@@ -117,7 +117,7 @@ static void checkContinuation(int checkpoint, bool hazards = false)
     second->previousClearingAreaDistance = UNIT_CLEAR_AREA_DISTANCE_NONE;
     game.map.setClearingAreaClaimed(12, 12, 0, first->gid);
     game.teams[0]->noMoreBuildingSitesCountdown = 91;
-    for (int i = 0; i < checkpoint; ++i) game.syncStep(0);
+    for (int i = 0; i < checkpoint; ++i) game.step(0);
     const auto before = state(game);
     auto* storage = new GAGCore::MemoryStreamBackend;
     GAGCore::BinaryOutputStream output(storage);
@@ -126,7 +126,7 @@ static void checkContinuation(int checkpoint, bool hazards = false)
     std::vector<std::vector<Uint32>> expected;
     for (int i = 0; i < 256; ++i)
     {
-        game.syncStep(0);
+        game.step(0);
         expected.push_back(state(game));
     }
     const auto expectedRandom = game.syncRandom;
@@ -138,7 +138,7 @@ static void checkContinuation(int checkpoint, bool hazards = false)
     REQUIRE(state(restored.game) == before);
     for (int i = 0; i < 256; ++i)
     {
-        restored.game.syncStep(0);
+        restored.game.step(0);
         if (state(restored.game) != expected[i])
         {
             FAIL("continuation mismatch checkpoint=" << checkpoint << " offset=" << i);
@@ -189,14 +189,14 @@ TEST_SUITE("UnitContinuation")
             ++game.stepCounter;
             // Completing private work cannot make a candidate visible early.
             map.stagePeriodicGradientPreparation();
-            map.preparePendingGradient();
+            map.preparePendingGradient(game.captureReadBoundary());
             map.finishGradientPipeline();
             CHECK(choose()==nullptr);
             for(unsigned boundary=0;boundary<512 && !choose();++boundary) {
                 map.advanceGradientPipeline();
                 ++game.stepCounter;
                 map.stagePeriodicGradientPreparation();
-                map.preparePendingGradient();
+                map.preparePendingGradient(game.captureReadBoundary());
             }
             REQUIRE(choose()==service);
             UnitActivityAccess::run(*unit);
@@ -247,7 +247,7 @@ TEST_SUITE("UnitContinuation")
                 assertWaiting();
                 ++game.stepCounter;
                 game.map.stagePeriodicGradientPreparation();
-                game.map.preparePendingGradient();
+                game.map.preparePendingGradient(game.captureReadBoundary());
             }
             game.map.advanceGradientPipeline();
             UnitActivityAccess::route(*unit);

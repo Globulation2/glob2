@@ -19,9 +19,10 @@ class Order;
 //! Malformed or truncated replay bodies are rejected, including partial recordings.
 
 //! Oldest replay format (the VERSION_MINOR the replay was written with) that
-//! the reader still accepts. Version 167 delays cold gradient publication and changes simulation trajectories.
+//! the reader still accepts. Version 168 delays cold gradient publication;
+//! version 167 changes completed-observation timing.
 //! Save compatibility has a separate floor in Version.h.
-static constexpr Uint16 REPLAY_MINIMUM_VERSION_MINOR = 167;
+static constexpr Uint16 REPLAY_MINIMUM_VERSION_MINOR = 168;
 
 /// This class is used for reading replays.
 /// The replay stream is kept open and read every time you do retrieveOrder.

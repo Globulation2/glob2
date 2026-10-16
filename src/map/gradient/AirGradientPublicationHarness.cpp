@@ -1,5 +1,6 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "EngineFixtures.h"
+#include "GradientFixture.h"
 #include "GradientExecutionAudit.h"
 #include "AirGradientTypes.h"
 #include "GradientRuntime.h"
@@ -20,7 +21,7 @@ void advanceAir(Game& game)
     game.map.advanceGradientPipeline();
     ++game.stepCounter;
     game.map.stagePeriodicGradientPreparation();
-    game.map.preparePendingGradient();
+    glob2test::prepareGradientBoundary(game);
 }
 air_guidance::Published awaitAir(Game& game,const Key& key)
 {
@@ -345,7 +346,7 @@ TEST_CASE("retired generation budget attribution survives saves before the next 
         for (unsigned boundary=0;boundary<32;++boundary) {
             map.advanceGradientPipeline(); ++game.stepCounter;
             if (map.lookupAirField(key).values!=oldLease.values) break;
-            map.stagePeriodicGradientPreparation(); map.preparePendingGradient();
+            map.stagePeriodicGradientPreparation(); glob2test::prepareGradientBoundary(game);
         }
         REQUIRE(map.lookupAirField(key).values!=oldLease.values);
         REQUIRE_FALSE(map.gradientRuntime->air.retired.empty());

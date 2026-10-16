@@ -57,6 +57,9 @@ struct GradientRuntime
 	std::array<std::array<Uint64,MaterialCount>,Team::MAX_COUNT> stockRevision{};
 	Uint64 materialCacheClock=0, materialCacheBudget=64ull*1024*1024;
 	std::vector<Workspace> workspaces{1};
+	// Publication is idempotent during pause, inspection and restored boundaries.
+	std::optional<Uint32> worldResultsPublishedTick;
+	std::optional<Uint32> worldWorkSubmittedTick;
 	GradientPipeline pipeline;
     AirGradientRuntime air;
     struct FieldRequest { Uint16** slot; gradient_preparation::Request request; };

@@ -49,11 +49,9 @@ bool Map::stockSupplierEligibleSlot(const Building*, const Building*, int, unsig
 void AirGradientRuntime::invalidate(Map&) {
     if (!entries.empty() || !retired.empty()) std::abort();
 }
-void Map::preparePendingGradient() {
-    if (gradientRuntime->preparation.job) std::abort();
-}
+
 void Map::finishGradientPipeline(JoinContext) {
-    preparePendingGradient();
+    if (gradientRuntime->preparation.job) std::abort();
     gradientRuntime->pipeline.finish();
 }
 // Unit fixtures never schedule building fields; clearing only drops storage.

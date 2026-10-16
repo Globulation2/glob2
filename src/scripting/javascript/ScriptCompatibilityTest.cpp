@@ -134,10 +134,11 @@ TEST_CASE("Current simulation rejects earlier replays and enforces acceptance bo
 	glob2test::GlobalsOptions options;
 	options.loadStrings = true;
 	glob2test::HeadlessGlobals globals(options);
-	// Format 166 changes population order; 167 delays shared gradient publication.
+	// Format 168 delays shared fields after format 167's completed-observation
+	// timing and format 166's population/task ordering changes.
 	// Script save-format milestones remain independent of these current gates.
-	CHECK(REPLAY_MINIMUM_VERSION_MINOR == 167);
-	CHECK(VERSION_MINOR == 167);
+	CHECK(REPLAY_MINIMUM_VERSION_MINOR == 168);
+	CHECK(VERSION_MINOR == 168);
 	CHECK(NET_PROTOCOL_VERSION == 71);
 	CHECK(FILE_FORMAT_VERSION_JAVASCRIPT == 125);
 	CHECK(FILE_FORMAT_VERSION_EXPERIMENTS == 124);
@@ -269,7 +270,7 @@ TEST_CASE("JavaScript upgrade retains genuine master124 experiments and continua
 				for (auto value : *fields) records << ' ' << value;
 			}
 			records << '\n';
-			game.syncStep(-1);
+			game.step(-1);
 		}
 		CHECK(game.stepCounter == initialTick + 64);
 		const auto result = records.str();

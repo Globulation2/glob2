@@ -842,7 +842,9 @@ TEST_SUITE("GradientPreparation")
             REQUIRE(m.getMaterialGradientSlot(0,resource,0)==nullptr);
             REQUIRE(m.gradientRuntime->fieldRequests.size()==1);
             m.advanceGradientPipeline();
-            m.stagePeriodicGradientPreparation(); m.preparePendingGradient();
+            m.stagePeriodicGradientPreparation();
+            m.game->snapshotStore().invalidateBoundary();
+            m.preparePendingGradient(m.game->snapshotStore().captureBoundary(*m.game));
             for (unsigned i=1;i<8;++i) {
                 m.advanceGradientPipeline();
                 REQUIRE(m.lookupMaterialGradientSlot(0,resource,0)==nullptr);
@@ -960,8 +962,8 @@ TEST_CASE("unused catalog definitions allocate no material gradients and schedul
     expanded.game.syncRandom=base.game.syncRandom;
     for (unsigned tick=0;tick<64;++tick)
     {
-        { auto random=base.game.bindRandom(); base.game.syncStep(0); }
-        { auto random=expanded.game.bindRandom(); expanded.game.syncStep(0); }
+        { auto random=base.game.bindRandom(); base.game.step(0); }
+        { auto random=expanded.game.bindRandom(); expanded.game.step(0); }
         CHECK(base.game.syncRandom==expanded.game.syncRandom);
         CHECK(original.gradientPipelineStatus().jobs==candidate.gradientPipelineStatus().jobs);
         CHECK(original.gradientPipelineStatus().pending==candidate.gradientPipelineStatus().pending);
@@ -1122,7 +1124,7 @@ TEST_CASE("published plane registry matches a sweep of live material fields" * d
 			if (!inserted) { CHECK(plane.generation >= it->second); it->second = plane.generation; }
 		}
 	};
-	for (int resource=0; resource<3; ++resource) m.setResourceByIndex(10 + resource, 10, resource, 0);
+	for (int resource : {WOOD, WHEAT, STONE}) m.setResourceByIndex(10 + resource, 10, resource, 0);
 	m.setMapDiscovered();
 	check(); CHECK(m.publishedResourceFields().empty());
 	CHECK(m.getMaterialGradientSlot(0,WHEAT,0)==nullptr); check();
@@ -1138,7 +1140,8 @@ TEST_CASE("published plane registry matches a sweep of live material fields" * d
 	}); check();
 	CHECK(m.publishedResourceFields()[0].generation > first);
 	glob2test::awaitGradient(world.game,[&] { return m.getMaterialGradientSlot(1,WOOD,2); }); check();
-	glob2test::awaitGradient(world.game,[&] { return m.getMaterialGradientSlot(1,STONE,1); }); check();
+	auto* liveStone=glob2test::awaitGradient(world.game,[&] { return m.getMaterialGradientSlot(1,STONE,1); }); check();
+
 	CHECK(m.publishedResourceFields().size() == 3);
 	// Bulk slot changes re-register every live plane with a newer generation.
 	std::map<Uint16, Uint64> before;
@@ -1151,7 +1154,11 @@ TEST_CASE("published plane registry matches a sweep of live material fields" * d
 	CHECK(handle.resourceFields->planes.size() == 3);
 	const auto* stone = handle.resourceFields->find(MapState::planeKey(1, STONE, 1, false));
 	REQUIRE(stone);
-	CHECK(*stone->values==std::vector<Uint16>(m.materialGradients[1][STONE][1],m.materialGradients[1][STONE][1]+m.size));
+    CHECK(std::equal(stone->values->begin(), stone->values->end(), liveStone));
+    const auto frozen = stone->values->at(7);
+    liveStone[7] ^= 1;
+    CHECK(stone->values->at(7) == frozen);
+    CHECK(stone->values->at(7) != liveStone[7]);
 	CHECK_FALSE(handle.resourceFields->find(MapState::planeKey(0, WOOD, 0, false)));
 }
 
@@ -1301,6 +1308,7 @@ TEST_CASE("GradientPreparation/modified terrain costs remain exact when field ob
     setBackend(Backend::OpenCL);
     map.configureCompute(3); // one eligible maintenance worker plus presentation
     if constexpr(GAGCore::ThreadSupport::available) {
+        REQUIRE(map.computeExecutor().threadCount() == 3);
         const auto deadline=std::chrono::steady_clock::now()+std::chrono::seconds(30);
         while(initializationState.load()!=2 && std::chrono::steady_clock::now()<deadline) std::this_thread::yield();
         REQUIRE(initializationState.load()==2);
@@ -1308,23 +1316,41 @@ TEST_CASE("GradientPreparation/modified terrain costs remain exact when field ob
 
     for (unsigned entry=0;entry<2;++entry) {
         for(unsigned phase=0;phase<2;++phase) {
+            CAPTURE(entry); CAPTURE(phase);
             std::vector<Uint16> output(map.size,1);output[0]=65535;output[phase?37:13]=0;
             auto expected=output;
             setBackend(Backend::CPU);map.propagateGradient(expected.data(),0);
             setBackend(Backend::OpenCL);
-            const auto completed=openCLStatus().committedFields;
+            const auto before = openCLStatus();
+            const auto completed=before.committedFields;
+            std::size_t executionSlot = 0;
             const bool deviceReady=readyPlans.load()&(1u<<unsigned(Plan::Frozen8));
             std::function<void()> work=[&] {
+                executionSlot = ComputeExecutor::workerSlot();
                 if(entry==0) gradient_preparation::propagate(request,snapshot,output.data(),scratch);
                 else map.propagateGradient(output.data(),0);
             };
             const ComputeExecutor::Group group{1,{[](void* p,std::size_t){(*static_cast<std::function<void()>*>(p))();},&work}};
             auto batch=map.computeExecutor().submit(std::span(&group,1)); map.computeExecutor().join(batch);
+            const auto after = openCLStatus();
+            CAPTURE(executionSlot); CAPTURE(deviceReady);
+            CAPTURE(before.available); CAPTURE(after.available); CAPTURE(after.error);
+            CAPTURE(before.budgetDeclines); CAPTURE(after.budgetDeclines);
+            CAPTURE(before.cpuSelections); CAPTURE(after.cpuSelections);
+            if constexpr(GAGCore::ThreadSupport::available)
+                REQUIRE(executionSlot != 0);
             CHECK(output==expected);
-            if(deviceReady) {
-                INFO("OpenCL readiness can change on failure: " << openCLStatus().error);
-                CAPTURE(openCLStatus().available); CAPTURE(openCLStatus().budgetDeclines); CAPTURE(openCLStatus().requiredCancellations);
-                CHECK(openCLStatus().committedFields==completed+1);
+            if (deviceReady) {
+                if (after.error.empty()) {
+                    CHECK(after.committedFields == completed + 1);
+                } else {
+                    // Readiness permits a device attempt, not a successful
+                    // execution. A reported failure must retire the backend and
+                    // recover this exact field on CPU without a false GPU commit.
+                    REQUIRE_FALSE(after.available);
+                    CHECK(after.committedFields == completed);
+                    CHECK(after.cpuSelections == before.cpuSelections + 1);
+                }
             }
         }
     }
@@ -1633,7 +1659,9 @@ TEST_CASE("material LRU retains a published result until its waiting reader obse
         map.setMaterialRoutingCacheBudget(map.size*sizeof(Uint16));
         const auto publish=[&] {
             map.advanceGradientPipeline();
-            map.stagePeriodicGradientPreparation(); map.preparePendingGradient();
+            map.stagePeriodicGradientPreparation();
+            map.game->snapshotStore().invalidateBoundary();
+            map.preparePendingGradient(map.game->snapshotStore().captureBoundary(*map.game));
             for (unsigned i=0;i<3;++i) map.advanceGradientPipeline();
         };
         CHECK(map.cachedMaterialGradientSlot(consumer,WHEAT,0,2)==nullptr);
@@ -1671,7 +1699,9 @@ TEST_CASE("depleting the last natural source eventually publishes completed unre
         map.setResourceByIndex(8,8,WHEAT,1);
         const auto boundary=[&] {
             map.advanceGradientPipeline(); ++game.stepCounter;
-            map.stagePeriodicGradientPreparation(); map.preparePendingGradient();
+            map.stagePeriodicGradientPreparation();
+            map.game->snapshotStore().invalidateBoundary();
+            map.preparePendingGradient(map.game->snapshotStore().captureBoundary(*map.game));
         };
         REQUIRE(map.queryMaterialDistance(0,WHEAT,0,8,8)==RouteResult::Pending);
         for (unsigned i=0;i<16 && !map.lookupMaterialGradientSlot(0,WHEAT,0);++i) boundary();
@@ -1717,7 +1747,9 @@ TEST_CASE("stock changes during shared market work retain dirty demand through i
     supplier->setMaterial(WHEAT,10);
     const auto boundary=[&] {
         map.advanceGradientPipeline(); ++game.stepCounter;
-        map.stagePeriodicGradientPreparation(); map.preparePendingGradient();
+        map.stagePeriodicGradientPreparation();
+        map.game->snapshotStore().invalidateBoundary();
+        map.preparePendingGradient(map.game->snapshotStore().captureBoundary(*map.game));
     };
     CHECK(map.queryMaterialDistance(0,WHEAT,0,12,8,nullptr,true)==RouteResult::Pending);
     for (unsigned i=0;i<16 && !map.lookupMaterialGradientSlot(0,WHEAT,0,true);++i) boundary();
@@ -1831,7 +1863,9 @@ TEST_CASE("a locally blocked consumer field refreshes its stable supplier-cache 
     CHECK(map.getMaterialGradientSlot(0,WHEAT,0,false,consumer)==nullptr);
     for (unsigned i=0;i<16 && !map.lookupMaterialGradientSlot(0,WHEAT,0,false,consumer);++i) {
         map.advanceGradientPipeline(); ++game.stepCounter;
-        map.stagePeriodicGradientPreparation(); map.preparePendingGradient();
+        map.stagePeriodicGradientPreparation();
+        map.game->snapshotStore().invalidateBoundary();
+        map.preparePendingGradient(map.game->snapshotStore().captureBoundary(*map.game));
     }
     const auto* field=map.getMaterialGradientSlot(0,WHEAT,0,false,consumer);
     REQUIRE(field!=nullptr);
@@ -1904,7 +1938,9 @@ TEST_CASE("consumer pool changes hard-supersede ground supplier fields at a stab
         const auto type=consumer->typeNum;
         const auto boundary=[&] {
             map.advanceGradientPipeline(); ++game.stepCounter;
-            map.stagePeriodicGradientPreparation(); map.preparePendingGradient();
+            map.stagePeriodicGradientPreparation();
+            map.game->snapshotStore().invalidateBoundary();
+            map.preparePendingGradient(map.game->snapshotStore().captureBoundary(*map.game));
         };
         REQUIRE(map.getMaterialGradientSlot(0,WHEAT,0,false,consumer)==nullptr);
         if (publishFirst) {

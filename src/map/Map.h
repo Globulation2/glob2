@@ -267,16 +267,14 @@ public:
 	// Owner selects/reserves and captures inputs before dispatch. Deferred jobs
 	// seed and propagate private data from immutable leases; join before save/reconfigure.
 	void stagePeriodicGradientPreparation();
-    bool hasPendingWorldPreparation() const;
-    void preparePendingWorld();
-    void preparePendingWorld(const SimulationSnapshot::Handle&);
+    void publishWorldResultsDue();
+    void submitWorldWork(const SimulationSnapshot::Handle&);
     void stageResourceGrowth();
     void finishResourceGrowth(JoinContext context = {JoinReason::Verification, ComputeTelemetry::NoTick});
     void setResourceGrowthDelay(unsigned delay);
     unsigned resourceGrowthDelay() const;
     const ResourceGrowth::Metrics& resourceGrowthMetrics() const;
 	bool hasPendingGradientPreparation() const;
-	void preparePendingGradient();
 	void preparePendingGradient(const SimulationSnapshot::Handle& foundation);
 	void advanceGradientPipeline();
 	void finishGradientPipeline(JoinContext context = {JoinReason::Verification, ComputeTelemetry::NoTick});
@@ -404,9 +402,9 @@ public:
 			((Uint32(1) << Team::MAX_COUNT) - 1);
 	}
 	//! Do a step associated with map (grow resources and process bullets)
-	// Standalone map callers capture/submit periodic preparation here. Game defers
-	// selection until its entire tick (including scripts/fog/projects) is complete.
-	void syncStep(Uint32 stepCounter, bool preparePeriodic = true);
+	// Applies live map mutations only. The Game observation boundary publishes
+	// due fields, captures the completed world, and submits subsequent jobs.
+	void syncStep(Uint32 stepCounter);
 	//! Switch the Fog of War bufferResourceType
 	void switchFogOfWar(void);
 
@@ -1299,7 +1297,8 @@ protected:
 	// Pathfinding gradients, see GradientConstants.h for the cell values. Indexed
 	// [team][swim class]; NULL until a unit of that class asks for one.
 	// Map owns the buffers and frees them on clear. Resource/guard/clear fields
-	// refresh round-robin in syncStep; forbidden fields refresh through map edits.
+	// refresh round-robin at completed-world submission boundaries; forbidden
+	// fields also enroll refreshes through map edits and periodic maintenance.
 	// Used to go to resources
 	//[int team][int resourceNumber][int swimClass]
 	Uint16 *materialGradients[Team::MAX_COUNT][MaterialSlotCount][SWIM_CLASS_COUNT];

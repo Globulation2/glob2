@@ -34,7 +34,7 @@ namespace glob2test
 			}
 		// Production decisions all observe the same completed simulation tick.
 		for (const auto &order : pending) game.executeOrder(order, order->sender);
-		game.syncStep(0);
+		game.step(0);
 		return orders;
 	}
 
@@ -174,7 +174,7 @@ namespace glob2test
 	{
 		for (int i = 0; i < ticks; ++i)
 		{
-			game.syncStep(0);  // advances stepCounter itself
+			game.step(0);  // advances stepCounter itself
 			gui.consumeClientEvents();  // as the engine does after every tick
 		}
 	}

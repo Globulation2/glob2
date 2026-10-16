@@ -1,9 +1,19 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #pragma once
 #include "EngineFixtures.h"
+#include "engine/sim/snapshot/WorldSnapshot.h"
 
 namespace glob2test
 {
+// Isolated map-job fixtures explicitly capture their preparation input. This
+// neither creates an owner observation nor admits growth, hiring or statistics.
+inline void prepareGradientBoundary(Game& game)
+{
+    if (!game.map.hasPendingGradientPreparation()) return;
+    game.snapshotStore().invalidateBoundary();
+    game.map.preparePendingGradient(game.snapshotStore().captureBoundary(game));
+}
+
 // Build custom terrain before match entities exist. The editor authoring API
 // accepts a detached map; always restore its Game even if definitions reject.
 inline void importTerrainBeforeMatch(Game& game,std::string_view definitions)
@@ -35,7 +45,7 @@ template<class Read> auto awaitGradient(Game& game, Read read)
         game.map.advanceGradientPipeline();
         ++game.stepCounter;
         game.map.stagePeriodicGradientPreparation();
-        game.map.preparePendingGradient();
+        prepareGradientBoundary(game);
         field=read();
     }
     REQUIRE_MESSAGE(field!=nullptr,"gradient did not publish within the fixture boundary limit");

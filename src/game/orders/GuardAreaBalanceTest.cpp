@@ -83,7 +83,7 @@ namespace
 			if (movedTiles)
 				for (Unit* u : team->liveUnits.entries())
 						before[Unit::GIDtoID(u->gid)] = game.map.coordToIndex(u->posX, u->posY);
-			game.syncStep(0);
+			game.step(0);
 			for (Unit* u : team->liveUnits.entries())
 					u->hungry = Unit::HUNGRY_MAX;
 			if (movedTiles)

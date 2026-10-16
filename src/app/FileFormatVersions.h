@@ -288,5 +288,8 @@ static constexpr int FILE_FORMAT_VERSION_LEAN_TURRET_TARGETING = 163;
 // Append-ordered intrusive populations and the live round-robin task cursor.
 static constexpr int FILE_FORMAT_VERSION_INTRUSIVE_POPULATION = 166;
 
+// One immutable world observation per owner boundary; persisted admission phase.
+static constexpr int FILE_FORMAT_VERSION_SINGLE_OBSERVATION = 167;
+
 // Cold gradient demand, stable cache destinations and unpublished complete fields.
-static constexpr int FILE_FORMAT_VERSION_DELAYED_GRADIENTS = 167;
+static constexpr int FILE_FORMAT_VERSION_DELAYED_GRADIENTS = 168;

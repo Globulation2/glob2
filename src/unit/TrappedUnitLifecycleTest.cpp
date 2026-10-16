@@ -103,7 +103,7 @@ std::vector<Uint32> state(Game& game, int id) {
 Trace finish(Game& game, int id) {
     Trace trace;
     for (int tick = 0; tick < 128; ++tick) {
-        game.syncStep(0);
+        game.step(0);
         trace.push_back(state(game, id));
     }
     REQUIRE(game.teams[0]->myUnits[id] != nullptr);
@@ -149,10 +149,10 @@ Trace eliminationAndSave(int resource, int purpose) {
 void rescue() {
     Fixture f;
     f.game.teams[0]->allies |= f.game.teams[1]->me;
-    f.game.syncStep(0);
+    f.game.step(0);
     REQUIRE((f.unit->hungry == 10 && f.game.teams[0]->isAlive));
     f.game.map.replaceResource(20, 19, Resource{});
-    for (int i = 0; i < 16 && f.unit->attachedBuilding; ++i) f.game.syncStep(0);
+    for (int i = 0; i < 16 && f.unit->attachedBuilding; ++i) f.game.step(0);
     REQUIRE((f.game.teams[0]->myUnits[f.id] == f.unit && !f.unit->isDead));
     REQUIRE((f.unit->attachedBuilding == nullptr && f.building->unitsInside.empty()));
     REQUIRE(f.unit->movement == Unit::MOV_EXITING_BUILDING);
@@ -161,18 +161,18 @@ void rescue() {
 void allyProtection(int inactiveReason) {
     Fixture f;
     f.game.teams[0]->allies |= f.game.teams[1]->me;
-    for (int i = 0; i < 32; ++i) f.game.syncStep(0);
+    for (int i = 0; i < 32; ++i) f.game.step(0);
     REQUIRE((f.game.teams[0]->isAlive && f.unit->hungry == 10));
     if (inactiveReason == 0) f.game.teams[1]->isAlive = false;
     if (inactiveReason == 1) f.game.teams[1]->playersMask = 0;
     if (inactiveReason == 2) f.game.teams[1]->hasLost = true;
-    f.game.syncStep(0);
+    f.game.step(0);
     REQUIRE(!f.game.teams[0]->isAlive);
 }
 void freeUnitProtection() {
     Fixture f;
     REQUIRE(f.game.addUnit(10, 10, 0, WORKER, 0, 0, 0, 0));
-    for (int i = 0; i < 16; ++i) f.game.syncStep(0);
+    for (int i = 0; i < 16; ++i) f.game.step(0);
     REQUIRE((f.game.teams[0]->isAlive && f.unit->hungry == 10));
 }
 void openExitProtection() {
@@ -180,7 +180,7 @@ void openExitProtection() {
     f.game.map.replaceResource(20, 19, Resource{});
     // Even before its movement update, an available exit must protect the unit.
     f.unit->delta = 0;
-    f.game.syncStep(0);
+    f.game.step(0);
     REQUIRE(f.game.teams[0]->isAlive);
 }
 void productionRecovery(bool stocked, bool blocked) {
@@ -206,13 +206,13 @@ void productionRecovery(bool stocked, bool blocked) {
                 }
             }
     }
-    f.game.syncStep(0);
+    f.game.step(0);
     REQUIRE(f.game.teams[0]->isAlive == (stocked && !blocked));
     REQUIRE(f.unit->hungry == 10);
     if (stocked && !blocked) {
         swarm->ratio[WORKER] = 1;
         swarm->productionTimeout = 0;
-        f.game.syncStep(0);
+        f.game.step(0);
         REQUIRE(f.game.teams[0]->myUnits[1]);
         REQUIRE(f.game.teams[0]->isAlive);
     }
@@ -221,7 +221,7 @@ void activeService(int purpose) {
     Fixture f(WOOD, purpose);
     f.unit->displacement = Unit::DIS_INSIDE;
     f.unit->insideTimeout = -100;
-    for (int i = 0; i < 16; ++i) f.game.syncStep(0);
+    for (int i = 0; i < 16; ++i) f.game.step(0);
     REQUIRE(f.game.teams[0]->myUnits[f.id] == f.unit);
     REQUIRE((f.unit->hungry == 10 && f.unit->hp == 2));
     REQUIRE((f.unit->insideTimeout < 0 && f.unit->attachedBuilding == f.building));

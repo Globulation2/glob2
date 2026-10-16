@@ -1,5 +1,6 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "EngineFixtures.h"
+#include "GradientFixture.h"
 #include "GlobalContainer.h"
 #include "Game.h"
 #include "Map.h"
@@ -46,9 +47,9 @@ void edit(Fixture& f,int x,int y,bool add,bool mixed=false) {
 void boundary(Fixture& f,bool maintenance=false) {
     auto& map=f.game.map;
     map.advanceGradientPipeline();
-    if (maintenance) map.syncStep(f.game.stepCounter,false);
+    if (maintenance) map.syncStep(f.game.stepCounter);
     ++f.game.stepCounter;
-    map.stagePeriodicGradientPreparation(); map.preparePendingGradient();
+    map.stagePeriodicGradientPreparation(); glob2test::prepareGradientBoundary(f.game);
 }
 template<class Predicate> void await(Fixture& f,Predicate ready,bool maintenance=false,unsigned limit=4096) {
     for (unsigned i=0;i<limit && !ready();++i) boundary(f,maintenance);

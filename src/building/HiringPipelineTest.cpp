@@ -42,8 +42,10 @@ TEST_SUITE("HiringPipeline")
 			CAPTURE(mode);
 			glob2test::HeadlessGame w({.discovered = true, .loadDefaultRace = true});
 			auto *b = innWithWorker(w);
+			const auto world = w.game.observeCompletedWorld();
 			w.game.anyPlayerWaited = mode == 1;
-			w.game.prepareReadBoundary(mode == 2);
+			const auto retained = w.game.observeCompletedWorld();
+			CHECK(retained.entities == world.entities);
 			const auto initial = w.game.hiringChecksum();
 			REQUIRE(initial != 0);
 			if (mode == 0)
@@ -53,9 +55,8 @@ TEST_SUITE("HiringPipeline")
 			// A matched order changes the live world at this same boundary.
 			b->desiredMaxUnitWorking = 3;
 			b->updateCallLists();
-			w.game.snapshotStore().invalidateBoundary();
 			w.game.anyPlayerWaited = false;
-			w.game.prepareReadBoundary(false);
+			w.game.observeCompletedWorld();
 			CHECK(w.game.hiringChecksum() == initial);
 		}
 	}
@@ -117,9 +118,9 @@ TEST_SUITE("HiringPipeline")
 			std::vector<std::pair<Uint32, Uint32>> actual;
 			for (unsigned tick = 0; tick < 64; ++tick)
 			{
-				w.game.prepareReadBoundary(false);
+				w.game.observeCompletedWorld();
 				actual.emplace_back(w.game.checkSum(), w.game.hiringChecksum());
-				w.game.syncStep(0);
+				w.game.advanceLiveSimulation(0);
 			}
 			if (reference.empty())
 				reference = actual;
@@ -179,8 +180,8 @@ TEST_SUITE("HiringPipeline")
 				{.discovered = true, .loadDefaultRace = true, .header = true});
 			innWithWorker(original);
 			for (unsigned tick = 0; tick < phase; ++tick)
-				original.game.syncStep(0);
-			original.game.prepareReadBoundary(false);
+				original.game.step(0);
+			original.game.observeCompletedWorld();
 			const auto checksum = original.game.checkSum();
 			auto *storage = new GAGCore::MemoryStreamBackend;
 			std::unique_ptr<GAGCore::OutputStream> out;
@@ -203,8 +204,8 @@ TEST_SUITE("HiringPipeline")
 			CHECK(restored.game.checkSum() == checksum);
 			for (unsigned tick = 0; tick < 12; ++tick)
 			{
-				original.game.syncStep(0);
-				restored.game.syncStep(0);
+				original.game.step(0);
+				restored.game.step(0);
 				CHECK(original.game.checkSum() == restored.game.checkSum());
 			}
 		}
@@ -344,7 +345,7 @@ TEST_SUITE("HiringPipeline")
 		b->updateCallLists();
 		CHECK_FALSE(b->subscribeForFlagingStep());
 		REQUIRE(b->subscriptionWorkingTimer == 33);
-		original.game.prepareReadBoundary(false);
+		original.game.observeCompletedWorld();
 		const auto checksum = original.game.checkSum();
 		auto *storage = new GAGCore::MemoryStreamBackend;
 		GAGCore::BinaryOutputStream out(storage);
@@ -362,8 +363,8 @@ TEST_SUITE("HiringPipeline")
 		CHECK(loaded->subscriptionWorkingTimer == 33);
 		for (unsigned tick = 0; tick < 12; ++tick)
 		{
-			original.game.syncStep(0);
-			restored.game.syncStep(0);
+			original.game.step(0);
+			restored.game.step(0);
 			CHECK(original.game.checkSum() == restored.game.checkSum());
 		}
 	}

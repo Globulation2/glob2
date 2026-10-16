@@ -777,7 +777,7 @@ void Map::setTerrainSeed(Uint32 seed)
 {
     if (terrainSeedValue == seed) return;
     terrainSeedValue = seed;
-    if (game) game->snapshots().invalidateBoundary();
+    if (game) game->invalidateObservation();
 }
 
 EntityRandom& Map::privateRandom(RandomDomain domain)

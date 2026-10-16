@@ -104,7 +104,7 @@ ENGINE_TESTS = [
     ('#src/scripting/javascript/ScriptSessionTest.cpp', dict(cxxflags=['-fno-access-control'])),
     ('#src/scripting/javascript/ScriptSimulationTest.cpp', dict(cxxflags=['-fno-access-control'])),
     '#src/building/BuildingExpelHarness.cpp',
-    '#src/map/gradient/BuildingGradientInvalidationHarness.cpp',
+    ('#src/map/gradient/BuildingGradientInvalidationHarness.cpp', dict(cxxflags=['-fno-access-control'])),
     '#src/building/FetchApportionmentHarness.cpp',
     '#src/hud/GameGUISelectionHarness.cpp',
     '#src/render/scene/SceneExtractTest.cpp',

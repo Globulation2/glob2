@@ -2,6 +2,7 @@
 #include "EngineFixtures.h"
 #include "LegacyPopulationOutput.h"
 #include "Version.h"
+#include "gradient/GradientRuntime.h"
 #include <BinaryStream.h>
 #include <TextStream.h>
 #include <StreamBackend.h>
@@ -71,7 +72,7 @@ TEST_CASE("binary and text saves restore nonslot order scheduler and continuatio
 		CHECK(populationState(restored.game)==populationState(game));
 		game.setWaitingOnMask(0); restored.game.setWaitingOnMask(0);
 		for (int tick=0;tick<32;++tick) {
-			game.syncStep(0); restored.game.syncStep(0);
+			game.step(0); restored.game.step(0);
 			CHECK(populationState(restored.game)==populationState(game));
 			CHECK(populationOrder(loaded->liveUnits)==populationOrder(team->liveUnits));
 			CHECK(loaded->taskSwapNext==team->taskSwapNext);
@@ -135,6 +136,100 @@ TEST_CASE("formats164 through166 preserve population encoding and scheduler boun
 		CHECK(restored.game.teams[1]->liveBuildings.empty());
 		CHECK(restored.game.teams[1]->taskSwapNext==0xffff);
 	}
+}
+TEST_CASE("format166 pending jobs and append order survive an immediate upgrade before observation") {
+    glob2test::HeadlessGlobals globals;
+    std::string historical;
+    std::vector<Uint16> expectedUnits,expectedBuildings;
+    Uint16 expectedNext=0xffff;
+    std::size_t pendingFields=0,pendingGrowth=0;
+    {
+        glob2test::HeadlessGame world({.teams=2,.discovered=true,.clearImmobile=true,.loadDefaultRace=true,.header=true});
+        auto& game=world.game; auto* team=game.teams[0];
+        REQUIRE(world.addUnit(WORKER,8,12)); REQUIRE(world.addUnit(WORKER,9,12));
+        auto* final=world.addUnit(WORKER,10,12); REQUIRE(final);
+        REQUIRE(game.removeUnitAndBuildingAndFlags(9,12,unsigned(Game::DEL_GROUND_UNIT)));
+        REQUIRE(world.addUnit(WORKER,9,12));
+        REQUIRE(world.addBuilding("inn",4,4)); REQUIRE(world.addBuilding("inn",14,4));
+        REQUIRE(world.addBuilding("inn",24,4));
+        REQUIRE(game.removeUnitAndBuildingAndFlags(14,4,unsigned(Game::DEL_BUILDING)));
+        REQUIRE(world.addBuilding("inn",14,4));
+        team->taskSwapNext=Unit::GIDtoID(final->gid);
+        expectedUnits=populationOrder(team->liveUnits);
+        expectedBuildings=populationOrder(team->liveBuildings);
+        expectedNext=team->taskSwapNext;
+        REQUIRE_FALSE(std::is_sorted(expectedUnits.begin(),expectedUnits.end()));
+        REQUIRE_FALSE(std::is_sorted(expectedBuildings.begin(),expectedBuildings.end()));
+        // Released format166 used synchronous cold construction. Prime complete
+        // reference generations so the historical save contains representable
+        // warm jobs rather than new-format cold publication requests.
+        for (auto* building:team->liveBuildings) {
+            const auto slot=building->routeSlot(0,BuildingRoute::Automatic);
+            REQUIRE(!building->globalGradient[slot]);
+            building->globalGradient[slot]=game.map.acquireBuildingGradientBuffer();
+            game.map.updateGlobalGradient(building,0);
+        }
+        game.map.setResourceByIndex(20,20,WHEAT,1);
+        glob2test::LegacyPopulationOutput::primeMaterialGradient(game.map,0,WHEAT,0);
+        game.map.configureCompute(1);
+        game.map.configureGradientPipeline(0,3);
+        game.observeCompletedWorld();
+        REQUIRE(game.stepCounter==0);
+        pendingFields=game.map.gradientPipelineStatus().pending;
+        pendingGrowth=game.map.gradientRuntime->growth.count();
+        REQUIRE(pendingFields>0); REQUIRE(pendingGrowth==1);
+        struct HistoricalOutput : glob2test::LegacyPopulationOutput {
+            HistoricalOutput(GAGCore::MemoryStreamBackend* backend,Game& game)
+                : LegacyPopulationOutput(backend,&game,166,GradientLayout::PreservePending) {}
+            void writeSint32(Sint32 value,std::string_view name) override {
+                BinaryOutputStream::writeSint32(name=="versionMinor" ? 166 : value,name);
+            }
+        };
+        auto* backend=new GAGCore::MemoryStreamBackend;
+        HistoricalOutput output(backend,game);
+        game.save(&output,false,"format166 pending observation"); output.flush();
+        historical=backend->takeContents();
+    }
+    for (unsigned workers : {1u,4u}) {
+        CAPTURE(workers);
+        glob2test::HeadlessGame direct({.header=true}),upgraded({.header=true});
+        REQUIRE(loadPopulation(direct.game,historical,false));
+        REQUIRE(direct.game.mapHeader.getVersionMinor()==166);
+        CHECK(populationOrder(direct.game.teams[0]->liveUnits)==expectedUnits);
+        CHECK(populationOrder(direct.game.teams[0]->liveBuildings)==expectedBuildings);
+        CHECK(direct.game.teams[0]->taskSwapNext==expectedNext);
+        CHECK(direct.game.map.gradientPipelineStatus().pending==pendingFields);
+        CHECK(direct.game.map.gradientRuntime->growth.count()==pendingGrowth);
+        // Save the migration before any observation can publish old jobs. The
+        // current format must retain submitted-without-published phase state.
+        CHECK_THROWS_AS(direct.game.observation(),std::logic_error);
+        const auto current=savePopulation(direct.game,false);
+        REQUIRE(loadPopulation(upgraded.game,current,false));
+        CHECK(upgraded.game.mapHeader.getVersionMinor()==VERSION_MINOR);
+        CHECK_THROWS_AS(upgraded.game.observation(),std::logic_error);
+        direct.game.map.configureCompute(1);
+        upgraded.game.map.configureCompute(workers);
+        for (Game* game : {&direct.game,&upgraded.game}) {
+            CHECK(game->map.gradientPipelineStatus().pending==pendingFields);
+            CHECK(game->map.gradientRuntime->growth.count()==pendingGrowth);
+            game->setWaitingOnMask(0);
+            game->observeCompletedWorld();
+            // Restored T0 jobs retain their original inputs. Bootstrap must not
+            // admit a replacement growth batch or material-field job at T0.
+            CHECK(game->map.resourceGrowthMetrics().submitted==0);
+            CHECK(game->map.gradientPipelineStatus().jobs==0);
+            CHECK(game->map.gradientRuntime->growth.count()==pendingGrowth);
+        }
+        CHECK(populationState(upgraded.game)==populationState(direct.game));
+        for (unsigned tick=0;tick<16;++tick) {
+            CAPTURE(tick);
+            direct.game.step(0); upgraded.game.step(0);
+            CHECK(populationState(upgraded.game)==populationState(direct.game));
+            CHECK(populationOrder(upgraded.game.teams[0]->liveUnits)==populationOrder(direct.game.teams[0]->liveUnits));
+            CHECK(populationOrder(upgraded.game.teams[0]->liveBuildings)==populationOrder(direct.game.teams[0]->liveBuildings));
+            CHECK(upgraded.game.teams[0]->taskSwapNext==direct.game.teams[0]->taskSwapNext);
+        }
+    }
 }
 TEST_CASE("invalid population records fail without leaving broken membership") {
 	glob2test::HeadlessGlobals globals;

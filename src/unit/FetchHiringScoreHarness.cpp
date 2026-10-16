@@ -225,7 +225,7 @@ TEST_SUITE("FetchHiringScore")
             map.advanceGradientPipeline();
             ++game.stepCounter;
             map.stagePeriodicGradientPreparation();
-            map.preparePendingGradient();
+            glob2test::prepareGradientBoundary(game);
             accepted=FetchHiringScoreHarness::considerExplorer(flag,unit,&distance);
         }
         REQUIRE(accepted);

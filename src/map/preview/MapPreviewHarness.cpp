@@ -134,7 +134,7 @@ struct MapPreviewHarness
 		REQUIRE(game.checkSum(nullptr, nullptr, nullptr, true) ==
 				report.at("checksum").get<Uint32>());
 		for (int tick = 0; tick < 16; ++tick)
-			game.syncStep(0);
+			game.step(0);
 		auto *memory = new MemoryStreamBackend;
 		BinaryOutputStream out(memory);
 		game.save(&out, false, "Studio checkpoint");
@@ -145,8 +145,8 @@ struct MapPreviewHarness
 		REQUIRE(restored.load(&saved));
 		for (int tick = 0; tick < 16; ++tick)
 		{
-			game.syncStep(0);
-			restored.syncStep(0);
+			game.step(0);
+			restored.step(0);
 			REQUIRE(game.checkSum(nullptr, nullptr, nullptr, true) ==
 					restored.checkSum(nullptr, nullptr, nullptr, true));
 		}

@@ -10,6 +10,7 @@
 #include <BinaryStream.h>
 #include <algorithm>
 #include <stdexcept>
+#include <memory>
 #include <string>
 #include <string_view>
 #include <vector>
@@ -18,15 +19,18 @@ namespace glob2test
 {
 // Test-only adapter for synthetic historical files. Header overrides alone do
 // not turn current counted population records into the pre-166 slot encoding.
-// It also emits the pre-167 empty gradient-job/cache layout for fresh synthetic
+// It also emits the pre-168 empty gradient-job/cache layout for fresh synthetic
 // fixtures. Warm material/air caches or admitted jobs require genuine historical
 // fixtures instead; silently dropping their state would weaken continuation tests.
+// PreservePending explicitly supports representable 164–167 warm-field jobs,
+// retaining every private array and deadline while rejecting new cold/cache state.
 // Other historical field differences remain the fixture author's responsibility.
 class LegacyPopulationOutput : public GAGCore::BinaryOutputStream
 {
     Game* game;
     bool legacy;
     int formatVersion;
+    bool preservePending;
     bool injecting = false;
     std::vector<std::string> sections;
     std::size_t suppressedAt = 0;
@@ -36,13 +40,48 @@ class LegacyPopulationOutput : public GAGCore::BinaryOutputStream
 
     bool suppressed() const { return suppressedAt && !injecting; }
     bool tracking() const { return legacy || formatVersion<FILE_FORMAT_VERSION_DELAYED_GRADIENTS; }
-    void requireEmptyGradientRuntime() const
+    void requireGradientRuntime() const
     {
+        if (!game) throw std::logic_error("Synthetic historical runtime requires its owning Game");
         const auto& runtime=*game->map.gradientRuntime;
+        if (preservePending) {
+            // These formats share the current material/swim slot encoding.
+            // Cold demands and new cache families have no historical equivalent.
+            if (formatVersion<164
+                || !runtime.materialFields.empty() || !runtime.air.entries.empty()
+                || !runtime.fieldRequests.empty())
+                throw std::logic_error("Historical pending runtime contains unrepresentable demand or caches");
+            const auto legacyEnd=Team::MAX_COUNT*(2*MaterialSlotCount+2)*SWIM_CLASS_COUNT;
+            runtime.pipeline.visitLogical([&](auto* slot,unsigned,bool) {
+                if (!*slot || game->map.gradientDestination(slot)>=legacyEnd)
+                    throw std::logic_error("Historical pending runtime requires a published legacy field destination");
+            });
+            const auto publishedBuilding=[&](int team,int id,Uint32 identity,int slot) {
+                const auto* building=game->teams[team]->myBuildings[id];
+                return building && building->scriptIdentity==identity && building->globalGradient[slot];
+            };
+            for (const auto& request:runtime.buildingRequests)
+                if (!request.stale && !publishedBuilding(request.team,request.building,request.identity,request.slot))
+                    throw std::logic_error("Historical building request has no published generation");
+            runtime.buildings.visitLogical([&](const auto& job,unsigned,bool superseded) {
+                if (!superseded && !publishedBuilding(job.team,job.buildingId,job.scriptIdentity,job.slot))
+                    throw std::logic_error("Historical building job has no published generation");
+            });
+            return;
+        }
         if (!runtime.materialFields.empty() || !runtime.air.entries.empty()
             || runtime.pipeline.pendingCount() || runtime.buildings.pendingCount()
             || !runtime.fieldRequests.empty())
             throw std::logic_error("Synthetic historical fixture requires empty gradient jobs and material/air caches");
+    }
+    bool observationField(std::string_view name) const
+    {
+        // Format 166 introduced counted populations, but not owner observation
+        // markers. Omit these independently of the older population rewrite so
+        // following runtime sections remain aligned in every historical layout.
+        return formatVersion < FILE_FORMAT_VERSION_SINGLE_OBSERVATION
+            && (name == "worldResultsPublished" || name == "worldResultsPublishedTick"
+                || name == "worldWorkSubmitted" || name == "worldWorkSubmittedTick");
     }
     void population(std::string_view name)
     {
@@ -73,8 +112,35 @@ class LegacyPopulationOutput : public GAGCore::BinaryOutputStream
         suppressedAt = sections.size();
     }
 public:
-    LegacyPopulationOutput(GAGCore::MemoryStreamBackend* backend, Game* game, int version)
-        : BinaryOutputStream(backend), game(game), legacy(version<FILE_FORMAT_VERSION_INTRUSIVE_POPULATION), formatVersion(version) {}
+    enum class GradientLayout { Empty, PreservePending };
+    // Historical periodic jobs always refreshed a published plane. Prepare that
+    // reference state explicitly instead of serializing a new cold demand as old.
+    // Call only in controlled fixtures compiled with access-control diagnostics off.
+    static void primeMaterialGradient(Map& map,int team,int material,int swim)
+    {
+        if (team<0 || team>=Team::MAX_COUNT || material<0 || material>=MaterialCount
+            || swim<0 || swim>=SWIM_CLASS_COUNT)
+            throw std::invalid_argument("Invalid historical material field key");
+        auto& slot=map.materialGradients[team][material][swim];
+        bool pending=false;
+        for (const auto& request:map.gradientRuntime->fieldRequests) if (request.slot==&slot) pending=true;
+        map.gradientRuntime->pipeline.visitLogical([&](auto* destination,unsigned,bool) {
+            if (destination==&slot) pending=true;
+        });
+        if (slot || pending) throw std::logic_error("Historical material reference must precede enrollment");
+        auto field=std::make_unique_for_overwrite<Uint16[]>(map.getW()*map.getH());
+        map.seedMaterialGradient(team,Uint8(material),swim,field.get());
+        map.propagateGradient(field.get(),swim);
+        slot=field.release();
+        map.publishPlane(&slot);
+    }
+    LegacyPopulationOutput(GAGCore::MemoryStreamBackend* backend, Game* game, int version,
+        GradientLayout gradients=GradientLayout::Empty)
+        : BinaryOutputStream(backend), game(game), legacy(version<FILE_FORMAT_VERSION_INTRUSIVE_POPULATION),
+          formatVersion(version), preservePending(gradients==GradientLayout::PreservePending) {}
+    // Runtime-only historical migration fixtures still retain the owning Game.
+    LegacyPopulationOutput(GAGCore::MemoryStreamBackend* backend, Map& map, int version)
+        : LegacyPopulationOutput(backend,map.game,version,GradientLayout::PreservePending) {}
     void writeEnterSection(std::string_view name) override
     {
         if (injecting || !tracking()) return;
@@ -82,8 +148,13 @@ public:
         sections.emplace_back(name);
         if (suppressed()) return;
         if (formatVersion<FILE_FORMAT_VERSION_DELAYED_GRADIENTS) {
-            if (name=="mapRuntime") requireEmptyGradientRuntime();
-            if (name=="resourceRoutingCache" || name=="airFields" || name=="gradientPipeline" || name=="buildingGradientPipeline") {
+            if (name=="mapRuntime") requireGradientRuntime();
+            if (preservePending && name=="queuedRequests") {
+                suppressedAt=sections.size();
+                return;
+            }
+            if (name=="resourceRoutingCache" || name=="airFields"
+                || (!preservePending && (name=="gradientPipeline" || name=="buildingGradientPipeline"))) {
                 if (name=="gradientPipeline" && formatVersion>=FILE_FORMAT_VERSION_GRADIENT_PIPELINE) {
                     BinaryOutputStream::writeUint8(game->map.gradientRuntime->pipeline.enabled()
                         ? game->map.gradientRuntime->pipeline.delayTicks() : 8,"delay");
@@ -136,12 +207,27 @@ public:
         }
     }
     void write(const void* data, std::size_t size, std::string_view name) override
-    { if (!suppressed()) BinaryOutputStream::write(data,size,name); }
+    { if (!suppressed() && !observationField(name)) BinaryOutputStream::write(data,size,name); }
     void writeEndianIndependent(const void* data, std::size_t size, std::string_view name) override
-    { if (!suppressed()) BinaryOutputStream::writeEndianIndependent(data,size,name); }
+    { if (!suppressed() && !observationField(name)) BinaryOutputStream::writeEndianIndependent(data,size,name); }
     void writeUint32(Uint32 value, std::string_view name) override
     {
         if (suppressed()) return;
+        if (preservePending && formatVersion<FILE_FORMAT_VERSION_DELAYED_GRADIENTS && !injecting) {
+            if (!sections.empty() && sections.back()=="gradientPipeline" && name=="requests") {
+                if (value) throw std::logic_error("Historical pending runtime cannot encode queued field demand");
+                return;
+            }
+            const bool periodicDestination=name=="destination"
+                && std::find(sections.begin(),sections.end(),"gradientPipeline")!=sections.end();
+            const bool buildingQueueCount=name=="count" && sections.size()>=2 && sections.back()=="queue"
+                && sections[sections.size()-2]=="buildingGradientPipeline";
+            if (periodicDestination || buildingQueueCount) {
+                if (value>0xffff) throw std::logic_error("Historical gradient field exceeds its 16-bit encoding");
+                BinaryOutputStream::writeUint16(Uint16(value),name);
+                return;
+            }
+        }
         BinaryOutputStream::writeUint32(value,name);
         if (formatVersion>=FILE_FORMAT_VERSION_TURRET_TARGETING
             && formatVersion<FILE_FORMAT_VERSION_LEAN_TURRET_TARGETING) {

@@ -379,8 +379,8 @@ TEST_CASE("resource identities above byte range preserve compound stocks through
     CHECK(loaded.checkSum(true)==map.checkSum(true));
     for (int tick=0;tick<32;++tick)
     {
-        { auto random=original.game.bindRandom(); original.game.syncStep(0); }
-        { auto random=restored.game.bindRandom(); restored.game.syncStep(0); }
+        { auto random=original.game.bindRandom(); original.game.step(0); }
+        { auto random=restored.game.bindRandom(); restored.game.step(0); }
         CHECK(original.game.checkSum(nullptr,nullptr,nullptr,true)==restored.game.checkSum(nullptr,nullptr,nullptr,true));
     }
 }
@@ -470,8 +470,8 @@ TEST_CASE("a half-harvested scavenge site survives save and continues identicall
     CHECK(loaded.materialStocksAt(at)==map.materialStocksAt(at));
     for (int tick=0;tick<32;++tick)
     {
-        { auto random=original.game.bindRandom(); original.game.syncStep(0); }
-        { auto random=restored.game.bindRandom(); restored.game.syncStep(0); }
+        { auto random=original.game.bindRandom(); original.game.step(0); }
+        { auto random=restored.game.bindRandom(); restored.game.step(0); }
         CHECK(original.game.checkSum(nullptr,nullptr,nullptr,true)==restored.game.checkSum(nullptr,nullptr,nullptr,true));
     }
     REQUIRE(loaded.takeHarvest(11,12,1,0,MaterialId::Metal,1));
@@ -1313,7 +1313,7 @@ TEST_CASE("frozen seeded resource compositions preserve invariants and exact sim
                 else CHECK(removed==0);
             }
             else if(tick%4==3) current.growResourceStock(index);
-            game.syncStep(0);
+            game.step(0);
             invariant(current);
         };
         record(seed,original.game);
@@ -1482,8 +1482,8 @@ TEST_CASE("released terrain-seed format 138 retains legacy resource and material
     for (unsigned tick = 0; tick < 32; ++tick)
     {
         CHECK(restored.game.checkSum(nullptr,nullptr,nullptr,true) == legacy.game.checkSum(nullptr,nullptr,nullptr,true));
-        { auto random = restored.game.bindRandom(); restored.game.syncStep(0); }
-        { auto random = legacy.game.bindRandom(); legacy.game.syncStep(0); }
+        { auto random = restored.game.bindRandom(); restored.game.step(0); }
+        { auto random = legacy.game.bindRandom(); legacy.game.step(0); }
     }
     CHECK(restored.game.checkSum(nullptr,nullptr,nullptr,true) == legacy.game.checkSum(nullptr,nullptr,nullptr,true));
 }
@@ -1527,7 +1527,7 @@ TEST_CASE("released observation format 139 imports legacy stocks and preserves c
     for(unsigned tick=0;tick<32;++tick)
     {
         CHECK(original.game.checkSum(nullptr,nullptr,nullptr,true)==restored.game.checkSum(nullptr,nullptr,nullptr,true));
-        original.game.syncStep(0); restored.game.syncStep(0);
+        original.game.step(0); restored.game.step(0);
     }
     CHECK(original.game.checkSum(nullptr,nullptr,nullptr,true)==restored.game.checkSum(nullptr,nullptr,nullptr,true));
 }

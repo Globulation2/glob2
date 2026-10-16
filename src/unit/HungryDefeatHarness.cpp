@@ -171,7 +171,7 @@ TEST_SUITE("HungryDefeat")
             std::vector<Uint32> trace;
             for (int tick = 0; tick < 512; ++tick)
             {
-                game.syncStep(0);
+                game.step(0);
                 REQUIRE(game.teams[0]->isAlive);
                 REQUIRE_FALSE(game.teams[0]->hasLost);
                 REQUIRE_FALSE(game.teams[1]->hasWon);

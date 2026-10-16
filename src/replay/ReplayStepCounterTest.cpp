@@ -163,9 +163,15 @@ void testVersionBounds()
 		ReplayReader previous;
 		check(!previous.loadReplay(writeReplayBody(165,1),false),
 		      "population boundary: format165 slot-order replay rejected");
+		ReplayReader population;
+		check(!population.loadReplay(writeReplayBody(166,1),false),
+		      "observation boundary: format166 replay uses older timing");
 		ReplayReader current;
-		check(!current.loadReplay(writeReplayBody(166,1),false),
-		      "delayed publication boundary: format166 replay rejected");
+		check(current.loadReplay(writeReplayBody(REPLAY_MINIMUM_VERSION_MINOR,1),false),
+		      "current delayed-publication replay accepted");
+		ReplayReader observation;
+		check(!observation.loadReplay(writeReplayBody(167,1),false),
+		      "delayed publication boundary: format167 replay rejected");
 	}
 	for (Uint16 version : {137, 138, 139, 140, 141}) {
 		ReplayReader reader;
