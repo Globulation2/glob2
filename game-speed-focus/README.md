@@ -14,3 +14,5 @@ Validation:
 - python3 test/check_sim_revision.py --base origin/master passes.
 
 Coverage rationale: a fixture-only event precondition, leaving all assertions and shipped code unchanged. The complete prior suite passes every other case, including fullscreen restoration and all viewport sweeps under isolated Xvfb. Full final local rerun and master CI continue. Actual Windows/macOS execution is not claimed locally; no gameplay or artwork feel changes. Focused success is not a full hosted checkpoint.
+
+Final local checkpoint: the complete run at 61cd188ecf8d50b229e21539bb9e62cf12f745e4 passes all1872jobs/2968cases with no failures/errors/skips; final fixture-only clock-order follow-up passes allthree affected cases at de693a01b7a4e2b304a86cce2d6b28c44d3b2314. See final-verification for exact revisions, tree equality and pending hosted status.

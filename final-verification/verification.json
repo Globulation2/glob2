@@ -1,0 +1,22 @@
+{
+  "fullNativeRevision": "61cd188ecf8d50b229e21539bb9e62cf12f745e4",
+  "fullNativeMergedMaster": "a3f118590f78dc653d7a2fb1d444a5b6d0dd9441",
+  "fullNativeTree": "37accbefd0333ea51553d47cb8d715295ca17dbb",
+  "priorMasterTree": "37accbefd0333ea51553d47cb8d715295ca17dbb",
+  "focusedRevision": "de693a01b7a4e2b304a86cce2d6b28c44d3b2314",
+  "currentMaster": "17e249a2735e3d76e76ca7e500b6ea872f4393e0",
+  "focusedTree": "cb6d3c9ff734ac11d5051a97c1632f34da1426a8",
+  "currentMasterTree": "cb6d3c9ff734ac11d5051a97c1632f34da1426a8",
+  "jobs": 1872,
+  "cases": 2968,
+  "failures": 0,
+  "errors": 0,
+  "skips": 0,
+  "latestMasterRun": 38883032605,
+  "activeOlderMasterRun": 38878240431,
+  "windowsFoundationRun": 38873263518,
+  "focusedProgramSha256": {
+    "engine": "5c3445ef966a49f0bcf751b5023856c60cd21c8ae67ff0152feb11e815401caa",
+    "unit": "add849efdb6aa18bf6b89c224d1eec8d3146ce6fff9f8941380d2762a701ad39"
+  }
+}
