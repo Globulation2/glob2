@@ -1,0 +1,235 @@
+commit f56cbc8f624dd35c2066cce1aad51d0d9ada25cf
+Author:     Bradley Arsenault <brad@bradleyarsenault.me>
+AuthorDate: Thu Oct 15 21:01:43 2026 -0400
+Commit:     Bradley Arsenault <brad@bradleyarsenault.me>
+CommitDate: Thu Oct 15 21:01:43 2026 -0400
+
+    Clarify delayed market refresh and editor ownership documentation
+
+commit 0b392483dd3d3e12ca5d01ba1aa8ab0e30ac2ac1
+Author:     Bradley Arsenault <brad@bradleyarsenault.me>
+AuthorDate: Thu Oct 15 21:00:16 2026 -0400
+Commit:     Bradley Arsenault <brad@bradleyarsenault.me>
+CommitDate: Thu Oct 15 21:00:16 2026 -0400
+
+    Refresh delayed publication goldens for completed-world observation
+
+commit ed20c7b03e502023eb8ebdb1329d138f38bc1557
+Author:     Bradley Arsenault <brad@bradleyarsenault.me>
+AuthorDate: Thu Oct 15 21:00:01 2026 -0400
+Commit:     Bradley Arsenault <brad@bradleyarsenault.me>
+CommitDate: Thu Oct 15 21:00:01 2026 -0400
+
+    Keep catalog lifecycle fixture pending until replacement field publishes
+
+commit 7bf507b1001197fdcac886f4a3686d03a932b494
+Author:     Bradley Arsenault <brad@bradleyarsenault.me>
+AuthorDate: Thu Oct 15 20:41:09 2026 -0400
+Commit:     Bradley Arsenault <brad@bradleyarsenault.me>
+CommitDate: Thu Oct 15 20:41:09 2026 -0400
+
+    Preserve tick-zero field metadata and verify observation-era save migration
+
+commit 500fc87350f67a36b287fbd49d3be091e8b10de5
+Merge: 82fe64106 987c95369
+Author:     Bradley Arsenault <brad@bradleyarsenault.me>
+AuthorDate: Thu Oct 15 20:34:55 2026 -0400
+Commit:     Bradley Arsenault <brad@bradleyarsenault.me>
+CommitDate: Thu Oct 15 20:34:55 2026 -0400
+
+    Integrate delayed fields with completed-world observation boundaries
+
+commit 82fe641066b449d9395b24afeac87ae0eda3d73c
+Author:     Bradley Arsenault <brad@bradleyarsenault.me>
+AuthorDate: Thu Oct 15 20:25:09 2026 -0400
+Commit:     Bradley Arsenault <brad@bradleyarsenault.me>
+CommitDate: Thu Oct 15 20:25:09 2026 -0400
+
+    Refresh delayed-field trajectories and pin valid service admission phases
+
+commit ee53730bc68296373c1104a73c9c9e01e004f476
+Author:     Bradley Arsenault <brad@bradleyarsenault.me>
+AuthorDate: Thu Oct 15 20:15:27 2026 -0400
+Commit:     Bradley Arsenault <brad@bradleyarsenault.me>
+CommitDate: Thu Oct 15 20:15:27 2026 -0400
+
+    Verify complete publication across serial and threaded browser runtimes
+
+commit d005c081dd3d01dc0538c93a0d9dc51cbc0382b2
+Merge: baa40fe11 8d13c0828
+Author:     Bradley Arsenault <brad@bradleyarsenault.me>
+AuthorDate: Thu Oct 15 19:54:52 2026 -0400
+Commit:     Bradley Arsenault <brad@bradleyarsenault.me>
+CommitDate: Thu Oct 15 19:54:52 2026 -0400
+
+    Merge material demand and inline helper updates from master
+
+commit baa40fe116f1668e76014b48541f5a07cfe7801e
+Author:     Bradley Arsenault <brad@bradleyarsenault.me>
+AuthorDate: Thu Oct 15 19:54:20 2026 -0400
+Commit:     Bradley Arsenault <brad@bradleyarsenault.me>
+CommitDate: Thu Oct 15 19:54:20 2026 -0400
+
+    Separate queued and admitted gradient entries in text saves
+
+commit f036bd6e2279568b351801c70d313a7588274ec2
+Author:     Bradley Arsenault <brad@bradleyarsenault.me>
+AuthorDate: Thu Oct 15 19:54:09 2026 -0400
+Commit:     Bradley Arsenault <brad@bradleyarsenault.me>
+CommitDate: Thu Oct 15 19:54:09 2026 -0400
+
+    Exercise delayed routes at valid world and action boundaries
+
+commit 7df1cd59de13a5b306094e7f1ebd149ebb19638b
+Author:     Bradley Arsenault <brad@bradleyarsenault.me>
+AuthorDate: Thu Oct 15 19:45:15 2026 -0400
+Commit:     Bradley Arsenault <brad@bradleyarsenault.me>
+CommitDate: Thu Oct 15 19:45:15 2026 -0400
+
+    Capture OpenCL recovery diagnostics with portable test macros
+
+commit 8a3734a7fd4b9a77bb5754f6cc61c02d7149f3c6
+Author:     Bradley Arsenault <brad@bradleyarsenault.me>
+AuthorDate: Thu Oct 15 19:44:00 2026 -0400
+Commit:     Bradley Arsenault <brad@bradleyarsenault.me>
+CommitDate: Thu Oct 15 19:44:00 2026 -0400
+
+    Preserve reachable supplier peaks and strengthen delayed publication regressions
+
+commit 0ef0d13422104950b9eb1f639e1b12806401d4c7
+Author:     Bradley Arsenault <brad@bradleyarsenault.me>
+AuthorDate: Thu Oct 15 19:08:11 2026 -0400
+Commit:     Bradley Arsenault <brad@bradleyarsenault.me>
+CommitDate: Thu Oct 15 19:08:11 2026 -0400
+
+    Enable historical runtime inspection in the population save harness
+
+commit c120b6c3d80e866c228e0f99b05b1d9ff7d236ee
+Author:     Bradley Arsenault <brad@bradleyarsenault.me>
+AuthorDate: Thu Oct 15 19:05:54 2026 -0400
+Commit:     Bradley Arsenault <brad@bradleyarsenault.me>
+CommitDate: Thu Oct 15 19:05:54 2026 -0400
+
+    Describe complete building publication in regression tests
+
+commit 12e3a41f0b88e884edc9883b0995fcf97314bbcb
+Author:     Bradley Arsenault <brad@bradleyarsenault.me>
+AuthorDate: Thu Oct 15 19:03:33 2026 -0400
+Commit:     Bradley Arsenault <brad@bradleyarsenault.me>
+CommitDate: Thu Oct 15 19:03:33 2026 -0400
+
+    Keep historical population fixtures valid across delayed gradient encoding
+
+commit 0d34678491771090fb465ae66eccfed49771ccec
+Merge: 7d6dedccd 9ea290745
+Author:     Bradley Arsenault <brad@bradleyarsenault.me>
+AuthorDate: Thu Oct 15 19:00:07 2026 -0400
+Commit:     Bradley Arsenault <brad@bradleyarsenault.me>
+CommitDate: Thu Oct 15 19:00:07 2026 -0400
+
+    Merge master entity populations into delayed publication
+
+commit 7d6dedccd5740a7335a6266ca9b9d053d6465129
+Author:     Bradley Arsenault <brad@bradleyarsenault.me>
+AuthorDate: Thu Oct 15 18:49:39 2026 -0400
+Commit:     Bradley Arsenault <brad@bradleyarsenault.me>
+CommitDate: Thu Oct 15 18:49:39 2026 -0400
+
+    Make air reservation bounds explicit and test actual cache pressure
+
+commit 115674d575ce475c28985b0c1bb5296772b55eb7
+Author:     Bradley Arsenault <brad@bradleyarsenault.me>
+AuthorDate: Thu Oct 15 18:42:52 2026 -0400
+Commit:     Bradley Arsenault <brad@bradleyarsenault.me>
+CommitDate: Thu Oct 15 18:42:52 2026 -0400
+
+    Use portable array ownership when restoring air fields
+
+commit 0c43f1da15859159a92441d196ea26391a14c30b
+Author:     Bradley Arsenault <brad@bradleyarsenault.me>
+AuthorDate: Thu Oct 15 18:40:15 2026 -0400
+Commit:     Bradley Arsenault <brad@bradleyarsenault.me>
+CommitDate: Thu Oct 15 18:40:15 2026 -0400
+
+    Tighten gradient ownership budgets and supplier identity boundaries
+
+commit e130ee8d0b06e078cb9909b74f763e9c85bd2f33
+Author:     Bradley Arsenault <brad@bradleyarsenault.me>
+AuthorDate: Thu Oct 15 18:04:17 2026 -0400
+Commit:     Bradley Arsenault <brad@bradleyarsenault.me>
+CommitDate: Thu Oct 15 18:04:17 2026 -0400
+
+    Keep air inventory validation fixture compatible with GCC 11
+
+commit 13f5d826818a9ec25ad866877eb54ee6346773d9
+Author:     Bradley Arsenault <brad@bradleyarsenault.me>
+AuthorDate: Thu Oct 15 17:54:08 2026 -0400
+Commit:     Bradley Arsenault <brad@bradleyarsenault.me>
+CommitDate: Thu Oct 15 17:54:08 2026 -0400
+
+    Keep gradient audit observers safe during test unwinding
+
+commit 6109ca2fbf97c52f81badbad447a68d6123f33c2
+Author:     Bradley Arsenault <brad@bradleyarsenault.me>
+AuthorDate: Thu Oct 15 17:48:30 2026 -0400
+Commit:     Bradley Arsenault <brad@bradleyarsenault.me>
+CommitDate: Thu Oct 15 17:48:30 2026 -0400
+
+    Retain portable air trajectory and kernel audit evidence
+
+commit d046ce79b378784324e6be8527bcadb080a47a72
+Author:     Bradley Arsenault <brad@bradleyarsenault.me>
+AuthorDate: Thu Oct 15 17:39:28 2026 -0400
+Commit:     Bradley Arsenault <brad@bradleyarsenault.me>
+CommitDate: Thu Oct 15 17:39:28 2026 -0400
+
+    Document air admission and refresh ownership
+
+commit 64f4fd2bf3f6c36d1593afcf0b67c899fef6fc4b
+Author:     Bradley Arsenault <brad@bradleyarsenault.me>
+AuthorDate: Thu Oct 15 17:35:47 2026 -0400
+Commit:     Bradley Arsenault <brad@bradleyarsenault.me>
+CommitDate: Thu Oct 15 17:35:47 2026 -0400
+
+    Exercise topology-stable air refresh and dependency save continuation
+
+commit 28d7204dc2505c3705a09d9f5b0971a8d0873cc1
+Author:     Bradley Arsenault <brad@bradleyarsenault.me>
+AuthorDate: Thu Oct 15 17:34:07 2026 -0400
+Commit:     Bradley Arsenault <brad@bradleyarsenault.me>
+CommitDate: Thu Oct 15 17:34:07 2026 -0400
+
+    Admit air output buffers from FIFO and track captured dependencies
+
+commit fcdeeda1c525c04400560f94e0ba64af1be3d187
+Author:     Bradley Arsenault <brad@bradleyarsenault.me>
+AuthorDate: Thu Oct 15 17:18:02 2026 -0400
+Commit:     Bradley Arsenault <brad@bradleyarsenault.me>
+CommitDate: Thu Oct 15 17:18:02 2026 -0400
+
+    Adapt lightweight map fixture to air invalidation boundary
+
+commit 609772a3e6aed75ba118feeef7c1e183f71518d7
+Author:     Bradley Arsenault <brad@bradleyarsenault.me>
+AuthorDate: Thu Oct 15 17:14:16 2026 -0400
+Commit:     Bradley Arsenault <brad@bradleyarsenault.me>
+CommitDate: Thu Oct 15 17:14:16 2026 -0400
+
+    Cover air cache retirement and preserve legacy checksum adaptation
+
+commit c4733a53fbed95f7d1015c22ddc42d0c3ac5573f
+Merge: 9177ec7b1 e7572da6b
+Author:     Bradley Arsenault <brad@bradleyarsenault.me>
+AuthorDate: Thu Oct 15 17:09:44 2026 -0400
+Commit:     Bradley Arsenault <brad@bradleyarsenault.me>
+CommitDate: Thu Oct 15 17:09:44 2026 -0400
+
+    Integrate current checksum and executor changes from master
+
+commit 9177ec7b15e3f5a3036afa968525626844658166
+Author:     Bradley Arsenault <brad@bradleyarsenault.me>
+AuthorDate: Thu Oct 15 17:09:14 2026 -0400
+Commit:     Bradley Arsenault <brad@bradleyarsenault.me>
+CommitDate: Thu Oct 15 17:09:14 2026 -0400
+
+    Delay complete simulation gradient and air destination publication

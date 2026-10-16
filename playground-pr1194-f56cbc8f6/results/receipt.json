@@ -1,0 +1,18 @@
+{
+  "state": "report_ready",
+  "source_sha256": "fb78ee82bc6873df503e286c78e3fc870dd04ae676fac849e2931d7e8d4811f2",
+  "packages": {
+    "numpy": "2.4.6",
+    "matplotlib": "3.11.2"
+  },
+  "files": {
+    "summary.json": "83ebd0ef9d5be96cdfb5c4d1f2a1a178241c29204bf2fcb6ec3c4bfa5eb5c192",
+    "every-game.csv": "9c7f4a6d4cb818698eee2d244cb405876f6b31be89be44b4adc5b9a980582740",
+    "comparisons.csv": "ea59e203ef618e8123504ddf35b04367ef706b2c6117376fe2fec7de6bb79ebb",
+    "raw-audit.json": "974959121efe4969d10e0c5b7f04da5a34ca408bb2662722683aa1338057e3f8",
+    "performance.png": "47764d6b697a21a856776a6919a94f6272144277a51e24556b037eea0f0ba6fb",
+    "performance.svg": "06520a1809a49dcab6cc0cee2c386b4f727a23ab892f9aa17245a80644179011",
+    "index.html": "bb0fabf083209720e894a1a86c6501649cc97872908e1bd6ae07537a3545a75e"
+  },
+  "utc": "2026-10-16T01:57:43.039998+00:00"
+}

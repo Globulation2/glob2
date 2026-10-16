@@ -1,0 +1,5 @@
+{
+  "state": "passed",
+  "native_summaries": 64,
+  "recomputed": "Seven means per role from native summaries and raw wait4/monotonic values; primary reported means matched."
+}
