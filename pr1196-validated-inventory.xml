@@ -1,0 +1,140 @@
+<?xml version='1.0' encoding='utf-8'?>
+<testsuites tests="139" failures="0" errors="0" skipped="1"><testsuite name="Air extraction: full run plus fixture-only rerun"><testcase classname="AirGradientPublication" name="a cold FIFO head defers without a deadline then evicts queued warm allocations without moving their entries" time="0.549063" status="run" />
+  <testcase classname="AirGradientPublication" name="air publication and binary text continuations agree with one two four and eight participants [artifacts]" time="21.443" status="run" />
+  <testcase classname="AirGradientPublication" name="cold demand beyond the plane budget remains uncharged FIFO metadata and completes on workers" time="1.73945" status="run" />
+  <testcase classname="AirGradientPublication" name="consumer configuration changes invalidate both published and pending supplier fields without slot reuse" time="0.79434" status="run" />
+  <testcase classname="AirGradientPublication" name="deleted air building tickets cannot publish into a reused gid through binary and text checkpoints" time="12.0754" status="run" />
+  <testcase classname="AirGradientPublication" name="guard labels retain scan order and clearing-zone goals honor range material and forbidden paint" time="0.532743" status="run" />
+  <testcase classname="AirGradientPublication" name="material visibility and y-major goal ties are captured until a delayed refresh" time="0.51258" status="run" />
+  <testcase classname="AirGradientPublication" name="private clearing choice searches beyond six claimed nearest goals and supersedes a moved source" time="0.518901" status="run" />
+  <testcase classname="AirGradientPublication" name="published air inventory rejects incomplete metadata malformed goals and invalid bounded values in binary and text" time="1.20342" status="run" />
+  <testcase classname="AirGradientPublication" name="queued private and published air outputs preserve binary text continuation at every worker count [artifacts]" time="90.6363" status="run" />
+  <testcase classname="AirGradientPublication" name="resource visibility supplier and claim revisions refresh unavailable air guidance before its age limit" time="99.4813" status="run" />
+  <testcase classname="AirGradientPublication" name="retired generation budget attribution survives saves before the next boundary and ignores retained leases" time="4.19104" status="run" />
+  <testcase classname="AirGradientPublication" name="supplier modes exclude the consumer and foreign stock without inventing natural sources" time="0.700259" status="run" />
+  <testcase classname="BuildingGradientInvalidation" name="a deleted building's pending result cannot replace a reused destination" time="0.451605" status="run" />
+  <testcase classname="BuildingGradientInvalidation" name="a paused field keeps its original obstacles" time="0.366004" status="run" />
+  <testcase classname="BuildingGradientInvalidation" name="a pending result keeps the generation a team-local edit carries forward" time="0.463938" status="run" />
+  <testcase classname="BuildingGradientInvalidation" name="a ring cuts off a virtual flags field" time="0.342097" status="run" />
+  <testcase classname="BuildingGradientInvalidation" name="a rival teams ring cuts off a cached field" time="0.351459" status="run" />
+  <testcase classname="BuildingGradientInvalidation" name="access metadata follows the newest capture across swim classes and saves" time="0.340882" status="run" />
+  <testcase classname="BuildingGradientInvalidation" name="an empty building pipeline follows a changed header delay through save and load" time="0.601088" status="run" />
+  <testcase classname="BuildingGradientInvalidation" name="area and team-wide resets keep stale walking fields serving with the pipeline on" time="0.867004" status="run" />
+  <testcase classname="BuildingGradientInvalidation" name="centre placed inside an existing ring" time="0.334383" status="run" />
+  <testcase classname="BuildingGradientInvalidation" name="delayed fields" time="2.315" status="run" />
+  <testcase classname="BuildingGradientInvalidation" name="idle field storage is reused without stale routes" time="0.441575" status="run" />
+  <testcase classname="BuildingGradientInvalidation" name="initial legacy saves bootstrap only when their observation was not admitted" time="1.51524" status="run" />
+  <testcase classname="BuildingGradientInvalidation" name="observation phase is covered by both current checksum tiers" time="0.431027" status="run" />
+  <testcase classname="BuildingGradientInvalidation" name="partial scheduled fields resume on the owner from transferred buckets" time="0.597059" status="run" />
+  <testcase classname="BuildingGradientInvalidation" name="pending building results survive save boundaries and cannot resurrect evicted fields" time="11.4395" status="run" />
+  <testcase classname="BuildingGradientInvalidation" name="prediction retains reader demand across rebuilds and save completion" time="0.355985" status="run" />
+  <testcase classname="BuildingGradientInvalidation" name="public reads resolve their inputs" time="0.575783" status="run" />
+  <testcase classname="BuildingGradientInvalidation" name="requests during team stepping are captured at the observation boundary" time="0.347028" status="run" />
+  <testcase classname="BuildingGradientInvalidation" name="retained format126 access flags restore walking and swimming locks into the footprint route and survive current saves [save-format]" time="53.3684" status="run" />
+  <testcase classname="BuildingGradientInvalidation" name="ring placed around an existing field" time="0.347973" status="run" />
+  <testcase classname="BuildingGradientInvalidation" name="same-tick swim classes write access metadata in request order" time="1.00656" status="run" />
+  <testcase classname="BuildingGradientInvalidation" name="scheduled building fields publish at fixed deadlines across worker counts and delays" time="2.0295" status="run" />
+  <testcase classname="BuildingGradientInvalidation" name="slow and failing workers never change the publication tick" time="1.28374" status="run" />
+  <testcase classname="BuildingGradientInvalidation" name="snapshot building seeds and captured-input searches match the synchronous kernels for every route and swim class" time="7.23811" status="run" />
+  <testcase classname="BuildingGradientInvalidation" name="synchronous rebuilds and lifecycle hooks supersede pending jobs that share a deadline" time="0.404207" status="run" />
+  <testcase classname="BuildingGradientInvalidation" name="world observation publication and admission survive save boundaries" time="1.25643" status="run" />
+  <testcase classname="BuildingStock" name="all fifteen private stock slots clamp wide save values before narrowing [save-format]" time="0.727896" status="run" />
+  <testcase classname="BuildingStock" name="canceled entering explorers wait for a free exit before medical rebound [save-format]" time="3.24969" status="run" />
+  <testcase classname="BuildingStock" name="canceled entering services preserve ground and air occupancy across resave [save-format][artifacts]" time="13.3396" status="run" />
+  <testcase classname="BuildingStock" name="canceled inside services reset their timer and resume terrain and area effects [save-format][artifacts]" time="9.58456" status="run" />
+  <testcase classname="BuildingStock" name="clamped private stock cancels an unfunded committed production job [save-format]" time="1.94963" status="run" />
+  <testcase classname="BuildingStock" name="clamped stock keeps affordable service commitments and cancels unfunded visits without benefits [save-format]" time="1.77051" status="run" />
+  <testcase classname="BuildingStock" name="clamped stock trims construction funding while preserving wide budget and saved demand [save-format]" time="1.76263" status="run" />
+  <testcase classname="BuildingStock" name="clamping inactive private inventory preserves wide shared stock and service funding [save-format]" time="1.99071" status="run" />
+  <testcase classname="BuildingStock" name="delivery at the private cap records acceptance and retains exact cargo residual" time="1.22361" status="run" />
+  <testcase classname="BuildingStock" name="funded explorers rebound to healing only after a blocked exit opens" time="0.708087" status="run" />
+  <testcase classname="BuildingStock" name="runtime stock updates saturate every slot with wide intermediate arithmetic" time="0.461313" status="run" />
+  <testcase classname="BuildingStock" name="shared runtime reservations and consumption retain wide stock and inactive private inventory" time="1.26073" status="run" />
+  <testcase classname="BuildingStock" name="zero cost service admissions retain reservations through normal entry" time="0.900558" status="run" />
+  <testcase classname="FetchHiringScore" name="a unit is judged on the walk to the resource" time="0.413325" status="run" />
+  <testcase classname="FetchHiringScore" name="carrying candidates preserve sparse slot ties without live writes" time="0.681433" status="run" />
+  <testcase classname="FetchHiringScore" name="carrying selection preserves saturated wide hunger ties without purpose writes" time="0.68068" status="run" />
+  <testcase classname="FetchHiringScore" name="flying flag recruitment defers cold guidance without recording an access failure" time="0.75598" status="run" />
+  <testcase classname="FetchHiringScore" name="recruitment retains exact hunger boundaries and widened cached extremes" time="0.669306" status="run" />
+  <testcase classname="FetchHiringScore" name="the score estimates the whole fetch-and-carry trip" time="0.378361" status="run" />
+  <testcase classname="GuardAreaBalance" name="a larger painted area takes the larger share" time="1.15483" status="run" />
+  <testcase classname="GuardAreaBalance" name="a saved game continues identically for 1000 ticks after loading [save-format]" time="4.48456" status="run" />
+  <testcase classname="GuardAreaBalance" name="an existing clump drains into a newly painted area at every refresh cadence" time="3.81492" status="run" />
+  <testcase classname="GuardAreaBalance" name="crowding box sum matches brute force across the torus seam" time="0.793645" status="run" />
+  <testcase classname="GuardAreaBalance" name="erasing an area releases its warriors to the other one" time="1.77798" status="run" />
+  <testcase classname="GuardAreaBalance" name="settled guards keep moving on every paint layout and stay around the area" time="8.16824" status="run" />
+  <testcase classname="GuardAreaBalance" name="three areas are all guarded" time="1.13569" status="run" />
+  <testcase classname="GuardAreaBalance" name="two nearby patches count as one position" time="1.09067" status="run" />
+  <testcase classname="GuardAreaBalance" name="warriors split between a near and a far guard area at every refresh cadence" time="3.33275" status="run" />
+  <testcase classname="GuardAreaBalance" name="without the experiment every warrior takes the nearest area; nobody leaves it; the checksum trace is stable [golden]" time="3.07279" status="run" />
+  <testcase classname="HiringPipeline" name="whole game save and resume preserves every publication phase [save-format][artifacts]" time="64.042" status="run" />
+  <testcase classname="HiringPlanner" name="bounded shortlists match sorted prefixes for every job" time="0.001041" status="run" />
+  <testcase classname="HiringPlanner" name="busy ground classes do not initialize unused hiring routes" time="0.369602" status="run" />
+  <testcase classname="HiringPlanner" name="cold routes are established by live admission rather than observation" time="0.379241" status="run" />
+  <testcase classname="HiringPlanner" name="defense score uses frozen attack modifiers and saturated integer strength" time="0.450431" status="run" />
+  <testcase classname="HiringPlanner" name="distance bounds preserve exhaustive rankings for every job" time="0.93518" status="run" />
+  <testcase classname="HiringPlanner" name="diverse material offers cover peers without reserving live workers" time="0.333205" status="run" />
+  <testcase classname="HiringPlanner" name="fetch jobs reuse canonical resource estimates independently of live planes" time="0.32594" status="run" />
+  <testcase classname="HiringPlanner" name="food-unsafe high-skill workers cannot crowd a viable worker out" time="0.434654" status="run" />
+  <testcase classname="HiringPlanner" name="job quotas bound each list to vacancies plus two" time="0.316587" status="run" />
+  <testcase classname="HiringPlanner" name="missing building fields never trigger private construction" time="0.315767" status="run" />
+  <testcase classname="HiringPlanner" name="missing shared planes do not suppress suggestions after visibility-rule changes" time="0.319137" status="run" />
+  <testcase classname="HiringPlanner" name="missing supplier planes retain fetch suggestions for live admission" time="0.532317" status="run" />
+  <testcase classname="HiringPlanner" name="observed funding reproduces live material apportionment" time="0.317158" status="run" />
+  <testcase classname="HiringPlanner" name="planning skips zero-demand and staffed buildings and resumes on vacancies" time="0.322058" status="run" />
+  <testcase classname="HiringPlanner" name="private flying recruitment uses the common bounded air range" time="0.950646" status="run" />
+  <testcase classname="HiringPlanner" name="published resource estimates are used and missing planes remain recruitable" time="0.379235" status="run" />
+  <testcase classname="HiringPlanner" name="ranking tie break follows unit identity" time="0" status="run" />
+  <testcase classname="HiringPlanner" name="resource estimates borrow the normal snapshot plane without private builds" time="0.428083" status="run" />
+  <testcase classname="HiringPlanner" name="shared field survives replacement and proposals preserve owner demand" time="0.32661" status="run" />
+  <testcase classname="HiringPlanner" name="shared resource planes retain ordered unreachable-neighbor admission estimates" time="0.460211" status="run" />
+  <testcase classname="HiringPlanner" name="snapshot planning skips busy workers without changing live units" time="0.346482" status="run" />
+  <testcase classname="HiringPlanner" name="supplier membership survives waiting-for-construction observations" time="0.480342" status="run" />
+  <testcase classname="HiringPlanner" name="unrelated live route enrollment cannot change hiring inputs" time="0.342148" status="run" />
+  <testcase classname="HiringPlanner" name="worker construction quotas match repair funding" time="0.317097" status="run" />
+  <testcase classname="HiringPlanner" name="worker demand uses immutable shared funding and staffing facts" time="0.404975" status="run" />
+  <testcase classname="IntrusivePopulationSave" name="binary and text saves restore nonslot order scheduler and continuation" time="19.0333" status="run" />
+  <testcase classname="IntrusivePopulationSave" name="format166 pending jobs and append order survive an immediate upgrade before observation" time="10.2729" status="run" />
+  <testcase classname="IntrusivePopulationSave" name="formats164 and165 slot encoding bootstrap ascending population order" time="5.91181" status="run" />
+  <testcase classname="IntrusivePopulationSave" name="invalid population records fail without leaving broken membership" time="29.9647" status="run" />
+  <testcase classname="LegacyRoundTripSave" name="a format-143 save with live round-trip fields plays on greedily [golden][save-format]" time="12.4617" status="run" />
+  <testcase classname="MarketsV2" name="a frequently refreshed market field publishes depletion and restocking" time="1.70623" status="run" />
+  <testcase classname="MarketsV2" name="disabled fruit deliveries have a stable per-tick trace and save continuation [golden][save-format][artifacts]" time="28.5214" status="run" />
+  <testcase classname="MarketsV2" name="disabled gate blocks explicit fetch APIs and upgrade execution" time="1.41821" status="run" />
+  <testcase classname="MarketsV2" name="each market level accepts only its resources across all swim classes" time="6.12737" status="run" />
+  <testcase classname="MarketsV2" name="enabled supply networks repeat deterministically with save continuation [golden][save-format][artifacts]" time="44.9814" status="run" />
+  <testcase classname="MarketsV2" name="legacy workers already travelling to markets continue after migration [golden][save-format]" time="2.40058" status="run" />
+  <testcase classname="MarketsV2" name="market repair materials do not overwrite shared stock" time="1.44939" status="run" />
+  <testcase classname="MarketsV2" name="market routes respect forbidden ground and water across swim classes" time="2.42233" status="run" />
+  <testcase classname="MarketsV2" name="upgrading cancelling and completing preserve shared stock and gate" time="11.6349" status="run" />
+  <testcase classname="MarketsV2" name="market panels show gated upgrades and shared stock [display][artifacts]" time="0.000"><skipped message="needs a display" /></testcase><testcase classname="ReplayTelemetry" name="capture skips invalid fields and retains exact changes and disappearance" time="0.583168" status="run" />
+  <testcase classname="ReplayTelemetry" name="duplicate players compare with prior capture and schemas can return" time="0.48104" status="run" />
+  <testcase classname="ReplayTelemetry" name="legacy bytes preserve duplicate fields NUL order schemas copy and move" time="0.000272" status="run" />
+  <testcase classname="ReplayTelemetry" name="loader limits and incomplete-frame state keep the existing contract" time="0.005202" status="run" />
+  <testcase classname="ReplayTelemetry" name="logical byte budget and frame limit retain legacy truncation points" time="2.75501" status="run" />
+  <testcase classname="ReplayTelemetry" name="playback expands exact values stamps unavailability and reloaded history" time="0.56587" status="run" />
+  <testcase classname="ReplayTelemetry" name="schema lookup distinguishes prefixes and each metadata component" time="0.523807" status="run" />
+  <testcase classname="ReplayTelemetry" name="stable capture descriptors retain changing payloads and stamps" time="0.546839" status="run" />
+  <testcase classname="TurnEngineHarness" name="a 10 s flag drag and a held key keep the input delay bounded, without a flood [network-sim][artifacts]" time="11.8435" status="run" />
+  <testcase classname="TurnEngineHarness" name="a client sending hostile orders of every type crashes no one and is refused identically everywhere [network-sim][fuzz][artifacts]" time="57.635" status="run" />
+  <testcase classname="TurnEngineHarness" name="a client that executes a tampered order is repaired by an in-place reload and named by the verifier [network-sim][artifacts]" time="38.5936" status="run" />
+  <testcase classname="TurnEngineHarness" name="a pause limit is enforced identically everywhere and the record verifies [network-sim][artifacts]" time="7.51694" status="run" />
+  <testcase classname="TurnEngineHarness" name="a player who leaves stays listed as Left, and the one left standing learns why it won [network-sim]" time="3.84295" status="run" />
+  <testcase classname="TurnEngineHarness" name="a player who quits leaves through the relay's quit order and the rest play on [network-sim]" time="23.21" status="run" />
+  <testcase classname="TurnEngineHarness" name="a save with closed seats: reteamed players keep their colonies, closed ones are cleared [network-sim]" time="16.3833" status="run" />
+  <testcase classname="TurnEngineHarness" name="closed seats are closed colonies: the last player standing wins everywhere and the record verifies [network-sim]" time="24.9397" status="run" />
+  <testcase classname="TurnEngineHarness" name="embedded terrain definitions travel with shared matches and verifier replays [network-sim][artifacts]" time="30.9927" status="run" />
+  <testcase classname="TurnEngineHarness" name="engines report network telemetry, and its output changes nothing they execute [network-sim][artifacts]" time="9.70813" status="run" />
+  <testcase classname="TurnEngineHarness" name="four engines survive a stall and a restart: the restarted client reloads and fast-forwards [network-sim][artifacts]" time="29.8273" status="run" />
+  <testcase classname="TurnEngineHarness" name="one client claiming the game finished does not end it for a player who is reconnecting [network-sim]" time="6.54472" status="run" />
+  <testcase classname="TurnEngineHarness" name="orders a hostile relay forges for a seat are refused by the verifier, which still verifies [network-sim]" time="7.60726" status="run" />
+  <testcase classname="TurnEngineHarness" name="shared scripted maps play and produce verified ordinary replays without installation [network-sim][artifacts]" time="14.1228" status="run" />
+  <testcase classname="TurnEngineHarness" name="the committed match record verifies to the committed checksum trace [network-sim][golden]" time="9.26672" status="run" />
+  <testcase classname="TurnEngineHarness" name="two engines with AI seats under latency, jitter and loss agree at every tick and the record verifies [network-sim][artifacts]" time="32.3802" status="run" />
+  <testcase classname="TurnEngineHarness" name="voice packets do not hold up a player's orders [network-sim][artifacts]" time="13.6231" status="run" />
+  <testcase classname="TurnEngineHarness" name="without a pause limit a pause lasts until someone resumes it [network-sim]" time="4.04697" status="run" />
+  <testcase classname="UnitContinuation" name="five checkpoints replay 256 ticks with matching state and RNG" time="6.19898" status="run" />
+  <testcase classname="UnitContinuation" name="hazard routes and idle escape preserve per-tick state across save load" time="4.45472" status="run" />
+  <testcase classname="UnitContinuation" name="hungry and injured flyers defer cold service guidance and reserve only after publication" time="2.92924" status="run" />
+  <testcase classname="UnitContinuation" name="medical abort clears every working purpose before idle or service continuation" time="11.5909" status="run" />
+  </testsuite></testsuites>
