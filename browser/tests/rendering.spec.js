@@ -46,7 +46,7 @@ test(`the default renderer is WebGL2 when the browser accelerates it (${variant}
     };
     const getParameter = WebGL2RenderingContext.prototype.getParameter;
     WebGL2RenderingContext.prototype.getParameter = function(parameter) {
-      return parameter === name ? 'Test hardware GPU' : getParameter.call(this, parameter);
+      return parameter === name || parameter === this.RENDERER ? 'Test hardware GPU' : getParameter.call(this, parameter);
     };
   }, UNMASKED_RENDERER_WEBGL);
   await page.goto('/?threads='+variant); await screen(page,'MainMenuScreen');
