@@ -1,124 +1,58 @@
-name: thread sanitizer
-
-# ThreadSanitizer over the simulation thread and the main thread (input, GUI,
-# drawing from the extracted Scene). Nightly and on demand, and on pull
-# requests that touch the code the two threads share, so it does not add a
-# sanitizer build to every pull request.
+name: Renderer capture crash diagnostic
 on:
-  workflow_call:
-    inputs:
-      revision:
-        type: string
-        default: ""
   workflow_dispatch:
-
-
 permissions:
   contents: read
-
+  actions: read
 env:
   GLOB2_DEV_MODE: isolated
-
 jobs:
-  tsan:
-    name: thread sanitizer (threaded games)
+  capture:
     runs-on: ubuntu-24.04
-    timeout-minutes: 90
+    timeout-minutes: 60
     steps:
-      - name: Install dependencies
-        timeout-minutes: 15
-        env:
-          DEBIAN_FRONTEND: noninteractive
-        run: |
-          sudo tee /etc/apt/apt.conf.d/80-ci-network >/dev/null <<'EOF'
-          Acquire::By-Hash "force";
-          Acquire::Retries "3";
-          Acquire::http::Timeout "30";
-          Acquire::https::Timeout "30";
-          EOF
-          sudo apt-get update -qq
-          sudo env DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends \
-            ca-certificates git g++-13 python3 python3-venv scons pkg-config nasm libva-dev \
-            cmake libfreetype-dev libx11-dev libxext-dev libxcursor-dev libxi-dev libxrandr-dev libxss-dev libxtst-dev libasound2-dev libpulse-dev libwayland-dev libxkbcommon-dev \
-            libopusfile-dev libopus-dev libogg-dev libspeex-dev \
-            libboost-dev libssl-dev \
-            zlib1g-dev libfribidi-dev libpcre3-dev \
-            libgl1-mesa-dev libglu1-mesa-dev libepoxy-dev libgl1-mesa-dri xvfb xauth
-
       - uses: actions/checkout@v4
         with:
-          ref: ${{ inputs.revision || github.sha }}
-
-      - uses: ./.github/actions/sdl3
+          ref: e04711348d27238e3f21c3ea42179e383ac422ec
+      - uses: actions/download-artifact@v4
         with:
-          cc: gcc-13
-          cxx: g++-13
-      - name: Build pinned SDL3 dependencies
+          github-token: ${{ github.token }}
+          run-id: 38861165281
+          name: linux-test-programs-ubuntu-24.04
+          path: artifacts/ci-native
+      - name: Restore exact CI program and runtime
         run: |
-          python3 scons/sdl3_dependencies.py --prefix build/sdl3-ci/prefix --work build/sdl3-ci/sources --jobs 2
-          echo "LD_LIBRARY_PATH=$PWD/build/sdl3-ci/prefix/lib${LD_LIBRARY_PATH:+:$LD_LIBRARY_PATH}" >> "$GITHUB_ENV"
-
-      - name: Build glob2 with ThreadSanitizer
+          tar -xzf artifacts/ci-native/linux-test-programs.tar.gz
+          python3 .github/scripts/ci_build_provenance.py verify --compiler g++-13
+          echo "LD_LIBRARY_PATH=$PWD/build/sdl3-ci/prefix/lib" >> "$GITHUB_ENV"
+          sudo apt-get update -qq
+          xargs sudo apt-get install -y --no-install-recommends < artifacts/ci-native/runtime-packages.txt
+          sudo apt-get install -y --no-install-recommends python3 libgl1 libglu1-mesa libepoxy0 libgl1-mesa-dri mesa-vulkan-drivers xvfb xauth openbox x11-utils gdb
+      - name: Replay large-map capture under debugger
         run: |
-          export PATH="$PWD/build/sdl3-ci/prefix/bin:$PATH"
-          GLOB2_SDL3_PREFIX=build/sdl3-ci/prefix scons CC=gcc-13 CXX=g++-13 -j$(nproc) release=0 server=0 \
-            --build=build/tsan \
-            CXXFLAGS='-g -fsanitize=thread' LINKFLAGS='-fsanitize=thread' \
-            build/tsan/src/glob2
-
-      # Newer runner kernels randomize more address bits than TSan's shadow
-      # memory layout accepts.
-      - name: Allow the ThreadSanitizer memory layout
-        run: sudo sysctl vm.mmap_rnd_bits=28
-
-      - name: Headless game on the simulation thread
-        env:
-          GLOB2_SIM_THREAD: '1'
-          TSAN_OPTIONS: halt_on_error=1 exitcode=66 second_deadlock_stack=1 suppressions=${{ github.workspace }}/test/tsan.supp
-        run: |
-          mkdir -p artifacts/tsan
-          build/tsan/src/glob2 game run --map-file "$PWD/maps/balanced.map.gz" --game-seed 7 \
-            --player maxima --player cortex --player warrush --player cabino --ticks 600 --write-replay \
-            --output-dir "$PWD/artifacts/tsan/headless" > artifacts/tsan/headless.log 2>&1
-
-      - name: Windowed game (simulation thread, input and drawing)
-        env:
-          GLOB2_USER_DATA_DIR: ${{ runner.temp }}/tsan-profile
-          GLOB2_TEST_SEED: '5'
-          GLOB2_TEST_MAX_TICKS: '300'
-          GLOB2_SIM_THREAD: '1'
-          # Keep the game's simulation/UI concurrency instrumented, but render
-          # synchronously inside the uninstrumented Mesa driver. Its worker
-          # fence synchronization is invisible to TSan.
-          LP_NUM_THREADS: '0'
-          # A headless game does not need desktop-session services; keep their
-          # uninstrumented D-Bus shutdown locks outside this game-thread check.
-          DBUS_SESSION_BUS_ADDRESS: 'unix:path=/nonexistent/glob2-tsan-session-bus'
-          DBUS_SYSTEM_BUS_ADDRESS: 'unix:path=/nonexistent/glob2-tsan-system-bus'
-          # No PulseAudio: its uninstrumented mainloop thread reports races
-          # inside libpulse during audio startup, unrelated to the game threads.
-          SDL_AUDIODRIVER: dummy
-          # Present the game's software-rendered frame without uninstrumented
-          # Mesa/llvmpipe worker threads. GPU rendering has separate coverage.
-          SDL_RENDER_DRIVER: software
-          SDL_FRAMEBUFFER_ACCELERATION: '0'
-          # SDL3 leaves threads it created during startup unjoined at exit; that
-          # is not a race between the game's threads, so thread leaks are not reported.
-          TSAN_OPTIONS: halt_on_error=1 exitcode=66 second_deadlock_stack=1 report_thread_leaks=0 suppressions=${{ github.workspace }}/test/tsan.supp
-        run: |
-          mkdir -p artifacts/tsan
-          xvfb-run -a -s '-screen 0 1280x1024x24' \
-            build/tsan/src/glob2 dev random-games --display --runs 1 --map balanced --matchup maxima,cortex,maxima,cortex \
-            --renderer software --mute --window-size 1024x768 > artifacts/tsan/windowed.log 2>&1
-
-      - name: Show sanitizer reports
-        if: failure()
-        run: |
-          grep -h -A40 'WARNING: ThreadSanitizer' artifacts/tsan/*.log | head -400 || true
-
+          python3 - <<'DIAGNOSTIC'
+          from pathlib import Path
+          import json,sys,types
+          sys.path.insert(0,str(Path('test').resolve()))
+          import run_tests as registry
+          build=Path('build/linux/client/release').resolve()
+          out=Path('artifacts/renderer-debug').resolve();out.mkdir(parents=True,exist_ok=True)
+          cases=[c for c in registry.list_cases(registry.binary_path(build,'engine'),'engine') if c.suite=='TorusRender' and c.name.startswith('SDL GPU captures large logical maps')]
+          assert len(cases)==1
+          original_prefix=registry.xvfb_prefix
+          registry.xvfb_prefix=lambda job:original_prefix(job)+['gdb','--batch','-ex','set pagination off','-ex','set print thread-events off','-ex','set debuginfod enabled off','-ex','handle SIGSEGV stop print nopass','-ex','run','-ex','thread apply all bt','--args']
+          rows=[]
+          for index in range(3):
+              args=types.SimpleNamespace(keep_profiles=False,fullscreen=True,update_fixtures=False,artifacts=out/str(index),verbose=False)
+              result=registry.run_job(registry.Job('engine',cases),args,build)
+              (out/f'{index}.log').write_text(result.output)
+              row={'index':index,'status':result.status,'seconds':result.seconds};rows.append(row);print(json.dumps(row),flush=True)
+              (out/'results.json').write_text(json.dumps(rows,indent=2)+'\n')
+          sys.exit(any(r['status']!='pass' for r in rows))
+          DIAGNOSTIC
       - uses: actions/upload-artifact@v4
         if: always()
         with:
-          name: thread-sanitizer
-          path: artifacts/tsan/*.log
-          if-no-files-found: ignore
+          name: renderer-capture-debug
+          path: artifacts/renderer-debug
+          if-no-files-found: warn
