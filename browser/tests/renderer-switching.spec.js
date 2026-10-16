@@ -6,7 +6,13 @@ const {hasDarkText}=require('./pixels');
 const state=page=>page.evaluate(()=>glob2Diagnostics.snapshot());
 const screen=(page,name)=>expect.poll(async()=>{const s=await state(page);return s.screen+' '+s.screenClass;},{timeout:120000}).toContain(name);
 const generation=page=>page.evaluate(()=>Module.glob2PresentationSurface.generation);
+async function settingsPersisted(page) {
+  // Software-backed GL can leave a settings write in flight after drawing
+  // the new renderer. Wait for durable storage before the next UI action.
+  await expect.poll(async()=>(await state(page)).persisting,{timeout:120000}).toBe(false);
+}
 async function choose(page,label) {
+  await settingsPersisted(page);
   const before={generation:await generation(page),loop:(await state(page)).loop};
   await clickControl(page,'graphics.renderer');
   await clickByLabel(page,/popup/,label);
@@ -96,6 +102,7 @@ async function openOverlay(page) {
 }
 async function resumeOverlay(page) {
   await clickSettingsDone(page);
+  await settingsPersisted(page);
   // Settings closes the menu before opening. Wait for the parent screen to
   // resume and clear its old input before sending a new physical key.
   await expect.poll(async()=>(await state(page)).screenClass).not.toContain('SettingsScreen');
