@@ -102,7 +102,10 @@ TEST_CASE("cold queued and privately completed fields continue through binary an
             : static_cast<GAGCore::InputStream*>(new GAGCore::BinaryInputStream(inputBackend.release())));
         REQUIRE(resumed.game.load(input.get()));
         // Saving can finish private work; loading restores it without kernels.
-        if (GAGCore::ThreadSupport::available) CHECK(audit.totals().owner==0);
+        if (GAGCore::ThreadSupport::available) {
+            CHECK(audit.counts(GradientExecutionAudit::Kind::Seed).owner==0);
+            CHECK(audit.counts(GradientExecutionAudit::Kind::TerrainPlane).owner==0);
+        }
         std::ostringstream trace;
         trace<<"boundary\toriginal_checksum_hash\tresumed_checksum_hash\n";
         const auto record=[&] {
@@ -167,10 +170,13 @@ TEST_CASE("cold metadata beyond the former queue limit admits FIFO without owner
         CHECK(map.lookupBuildingField(building,swim,BuildingRoute::Footprint)!=nullptr);
     map.finishGradientPipeline();
     CHECK(map.buildingGradientPipelineStatus().synchronous==0);
-    if (GAGCore::ThreadSupport::available) CHECK(audit.totals().owner==0);
+    if (GAGCore::ThreadSupport::available) {
+            CHECK(audit.counts(GradientExecutionAudit::Kind::Seed).owner==0);
+            CHECK(audit.counts(GradientExecutionAudit::Kind::TerrainPlane).owner==0);
+        }
 }
 
-TEST_CASE("cold simulation fields publish identical complete generations with one two four and eight participants [artifacts]")
+TEST_CASE("cold simulation fields publish identical lazy building and complete area generations with one two four and eight participants [artifacts]")
 {
     glob2test::HeadlessGlobals globals;
     std::vector<std::vector<Uint32>> expected;
@@ -230,7 +236,8 @@ TEST_CASE("cold simulation fields publish identical complete generations with on
         int distance=-1;
         CHECK(map.queryBuildingDistance(building,0,16,16,&distance,BuildingRoute::Footprint)==RouteResult::Reachable);
         const auto* search=building->globalGradientSearch[building->routeSlot(0,BuildingRoute::Footprint)].get();
-        CHECK((!search || search->complete()));
+        REQUIRE(search);
+        CHECK(search->resolved(map.coordToIndex(16,16)));
         // Drain outstanding private work before the audit's lifetime ends.
         map.finishGradientPipeline();
         const auto counts=audit.totals();
@@ -239,7 +246,8 @@ TEST_CASE("cold simulation fields publish identical complete generations with on
         glob2test::writeFile(glob2test::artifactDir()/(evidenceName+"-kernel-entries.tsv"),
             "owner\tother\n"+std::to_string(counts.owner)+'\t'+std::to_string(counts.other)+'\n');
         if (participants>1 && GAGCore::ThreadSupport::available) {
-            CHECK(counts.owner==0);
+            CHECK(audit.counts(GradientExecutionAudit::Kind::Seed).owner==0);
+            CHECK(audit.counts(GradientExecutionAudit::Kind::TerrainPlane).owner==0);
             CHECK(counts.other>0);
         } else CHECK(counts.owner>0);
         if (expected.empty()) {

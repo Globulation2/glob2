@@ -42,6 +42,51 @@ void checkPlannerOutput(const HiringPlanner::Output &actual, const HiringPlanner
 
 TEST_SUITE("HiringPlanner")
 {
+    TEST_CASE("background ranking extends a lazy building frontier without completing unused cells")
+    {
+        glob2test::HeadlessGlobals globals;
+        glob2test::HeadlessGame world({.wDec=7,.hDec=7,.discovered=true,.clearImmobile=true,.header=true});
+        auto& game=world.game;
+        auto& map=game.map;
+        map.configureCompute(2);
+        auto* building=world.addBuilding("inn",8,8);
+        auto* worker=world.addUnit(WORKER,20,8);
+        REQUIRE(building); REQUIRE(worker);
+        building->maxUnitWorking=1;
+        building->setMaterial(WHEAT,0);
+        building->updateCallLists();
+        worker->carriedMaterial=WHEAT;
+        worker->hungriness=0;
+        glob2test::awaitBuildingGradient(game,building,worker->swimClass(),BuildingRoute::Footprint);
+        const auto slot=building->routeSlot(worker->swimClass(),BuildingRoute::Footprint);
+        auto* search=building->globalGradientSearch[slot].get();
+        REQUIRE(search);
+        REQUIRE_FALSE(search->complete());
+        const auto candidate=map.coordToIndex(worker->posX,worker->posY);
+        REQUIRE_FALSE(search->resolved(candidate));
+        const auto input=HiringPipeline::bindRoutes(game,game.captureReadBoundary());
+        const int initialDepth=search->settledCost();
+        const int initialDemand=search->requiredCost();
+        const auto before=map.checkSum(true);
+        HiringPlanner::Output output;
+        // The planner uses the same leased search as live admission. Run it
+        // off-thread, as the production hiring executor does.
+        std::thread background([&] { output=HiringPlanner::Planner{}.rank(input,0); });
+        background.join();
+        CHECK(output.metrics.sharedQueries>0);
+        CHECK(search->settledCost()>initialDepth);
+        CHECK(search->resolved(candidate));
+        CHECK_FALSE(search->complete());
+        CHECK_FALSE(search->resolved(map.coordToIndex(64,64)));
+        CHECK(search->requiredCost()==initialDemand);
+        CHECK(map.checkSum(true)==before); // Derived worker progress is not world state.
+        const int preparedDepth=search->settledCost();
+        int distance=-1;
+        REQUIRE(map.queryBuildingDistance(building,worker->swimClass(),worker->posX,worker->posY,&distance,BuildingRoute::Footprint)==RouteResult::Reachable);
+        CHECK(search->settledCost()==preparedDepth);
+        CHECK(search->requiredCost()>initialDemand);
+    }
+
     TEST_CASE("private flying recruitment uses the common bounded air range")
     {
         glob2test::HeadlessGlobals globals;

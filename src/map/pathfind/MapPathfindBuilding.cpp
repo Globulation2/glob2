@@ -46,7 +46,6 @@ FieldReadiness Map::requestBuildingField(Building *building, int swimClass, Buil
 			// requires a Game; Game-backed queries normally enroll above.
 			if (!building->globalGradient[slot]) building->globalGradient[slot] = acquireBuildingGradientBuffer();
 			updateGlobalGradient(building, swimClass, route);
-			finishBuildingGradient(building, swimClass, route);
 		}
 	}
 	return building->globalGradient[slot] ? FieldReadiness::Ready : FieldReadiness::Pending;
@@ -68,13 +67,14 @@ const Uint16 *Map::buildingGradient(Building *building, int swimClass, BuildingR
 	const int slot = building->routeSlot(swimClass, route);
     auto guard=SharedBuildingGradient::lock(building->sharedGradient[slot]);
 	if (!prepareBuildingGradient(building, swimClass, route)) return NULL;
+	finishBuildingGradient(building, swimClass, route);
 	return building->globalGradient[slot];
 }
 
 std::shared_ptr<SharedBuildingGradient> Map::leaseBuildingRoute(Building *building, int swimClass, BuildingRoute route)
 {
 	const int slot = building->routeSlot(swimClass, route);
-	// Staleness does not invalidate the immutable published generation.
+	// Borrow the serving generation; its frozen inputs remain valid while stale.
 	if (!building->globalGradient[slot]) return {};
 	return building->leaseGradient(slot);
 }
@@ -85,7 +85,7 @@ Uint16 Map::buildingGradientValue(Building *building, int swimClass, size_t cell
     auto guard=SharedBuildingGradient::lock(building->sharedGradient[slot]);
 	assert(building->globalGradient[slot]);
 	assert(cell < size);
-	assert(!building->globalGradientSearch[slot] || building->globalGradientSearch[slot]->complete());
+	if (auto &search = building->globalGradientSearch[slot]) search->resolve(cell);
 	return building->globalGradient[slot][cell];
 }
 
@@ -94,7 +94,7 @@ bool Map::buildingGradientDirection(EntityRandom& random, Building *building, in
 {
 	const int slot = building->routeSlot(swimClass, route);
     auto guard=SharedBuildingGradient::lock(building->sharedGradient[slot]);
-	// Published values and their neighbors are complete and immutable.
+	// Resolve the whole input layer, including equal-distance sidesteps.
 	buildingGradientValue(building, swimClass, coordToIndex(x, y), route);
 	return directionByGradient(random, building->owner->me, swimClass, x, y,
 		building->globalGradient[slot], dx, dy, strict);
@@ -134,6 +134,7 @@ StepResult Map::queryBuildingStep(EntityRandom& random, Building *building, int 
 	{
 		// This escape path reads the cached field directly as a tie-breaker.
 		// Preserve its old age (do not call buildingGradient here).
+		finishBuildingGradient(building, swimClass, route);
 		return queryForbiddenStep(building->globalGradient[slot], building->owner->teamNumber, swimClass, x, y, dx, dy);
 	}
 

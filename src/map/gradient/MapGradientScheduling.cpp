@@ -7,7 +7,7 @@
 // then stage and submit requests using that observation. Team stepping requests
 // refreshes while serving existing fields until a later boundary publishes them.
 // The owner manages bounded request metadata and scalar captures. Map-sized
-// input construction, seeding and the complete search run inside executor jobs.
+// input construction, seeding and predicted-depth preparation run inside executor jobs.
 
 #include <PerformanceTelemetry.h>
 #include "Map.h"
@@ -44,7 +44,7 @@ void buildScheduled(PipelineJob& job)
 	auto& p = job.payload;
 	if (building_gradient::workHook) building_gradient::workHook(p);
 	p.inputs = BuildingGradientSearch::Inputs::ofSnapshot(*job.snapshotLease, p.swim);
-	const auto result = gradient_preparation::buildBuilding(p.seed, *job.snapshotLease, p.inputs, p.data.get(), *p.search, COST_LIMIT);
+	const auto result = gradient_preparation::buildBuilding(p.seed, *job.snapshotLease, p.inputs, p.data.get(), *p.search, p.depthTarget);
 	p.locked = result.locked;
 	p.resourceState = result.resourceState;
 }
@@ -117,15 +117,15 @@ void Map::ensureBuildingGradientPipeline()
 		const int slot = p.slot, swim = p.swim;
         auto guard=SharedBuildingGradient::lock(b->sharedGradient[slot]);
 
-		// Pointer swap publishes a complete immutable generation.
+		// Transfer the buffer and its resumable search as one generation.
 		auto& search = b->globalGradientSearch[slot];
-		// Retain legacy diagnostic history for explicitly prepared editor fields.
+		// The depth model uses owner demand from the replaced lifetime.
 		if (search) b->settledCostHint[slot] = Uint16(std::min(search->requiredCost(), 0xFFFE));
 		b->retireSharedGradient(slot);
         recycleBuildingGradientSearch(std::move(search));
 		recycleBuildingGradientBuffer(b->globalGradient[slot]);
 		b->globalGradient[slot] = p.data.release();
-		// Published data is complete; frontier storage remains private to the job.
+		if (!p.locked) search = std::move(p.search);
 		b->lastGlobalGradientUpdateStepCounter[slot] = p.captureTick;
 		b->gradientGeneration[slot] = p.generation;
 		// Access metadata is shared by the swim classes of one variant: the
@@ -203,9 +203,16 @@ bool Map::requestBuildingRefresh(Building* building, int slot)
 
 int Map::predictBuildingDepth(const Building* building, int slot) const
 {
-	(void)building;
-	(void)slot;
-	return COST_LIMIT;
+	// Clearing and Combat goals move with resources and enemies: full depth.
+	if (slotRoute(slot) != BuildingRoute::Footprint) return COST_LIMIT;
+	// The field's own past depths when a
+	// job is staged: how deep readers of the serving field have needed it so far, and
+	// the final reader demand of the lifetime it replaced.
+	int serving = -1;
+	if (const auto& search = building->globalGradientSearch[slot]) serving = search->requiredCost();
+	const Uint16 hint = building->settledCostHint[slot];
+	const int previous = hint == Building::UNKNOWN_SETTLED_COST ? -1 : hint;
+	return std::min(BuildingGradientDepth::target(serving, previous), COST_LIMIT);
 }
 
 void Map::stageBuildingGradientPreparation()

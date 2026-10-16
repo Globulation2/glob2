@@ -189,5 +189,4 @@ void Map::updateGlobalGradient(Building *building, int swimClass, BuildingRoute 
 	auto &search = building->globalGradientSearch[slot];
 	if (!search) search = acquireBuildingGradientSearch();
 	search->begin(routeInputs, gradient, swimClass, w, h);
-	search->finish();
 }

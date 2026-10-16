@@ -769,6 +769,8 @@ void Map::saveBuildingGradientPipeline(GAGCore::OutputStream *stream) const
 		auto &p=job.payload;
 		const Building *b=buildingGradientDestination(p.team, p.buildingId, p.scriptIdentity);
 		const bool superseded=job.superseded || !b || b->refreshEpoch[p.slot]!=p.epoch;
+		// The on-disk representation stays complete; finishing never changes answers or reader demand.
+		if (!superseded && p.search && !p.locked) p.search->finish();
 		stream->writeEnterSection(index++);
 		stream->writeUint8(p.team, "team");
 		stream->writeUint16(p.buildingId, "building");

@@ -303,8 +303,8 @@ static void aPausedFieldKeepsItsOriginalObstacles()
 	World world;
 	Building *centre = world.place(20, 20);
 	require(world.available(centre, 18, 20), "nearby query succeeds on a lazy field");
-	require((!centre->globalGradientSearch[0] || centre->globalGradientSearch[0]->complete()),
-		"published reference is complete before nearby reads");
+	require(centre->globalGradientSearch[0] && !centre->globalGradientSearch[0]->complete(),
+		"nearby reads leave the lazy field incomplete");
 	world.placeRing(20, 20, 1);
 	// Cached gradients retain their pre-edit obstacle snapshot until the
 	// normal refresh deadline, including while their search is paused.
@@ -342,11 +342,11 @@ static void publicReadsResolveTheirInputs()
 		int dist, dx, dy;
 		require(map.buildingAvailable(centre, swim, 18, 20, &dist) && dist == expectedDist,
 			"point API resolves its own distance");
-		require(centre->globalGradientSearch[swim]->complete(), "point read observes a complete field");
+		require(!centre->globalGradientSearch[swim]->complete(), "nearby point read preserves the remaining frontier");
 		map.updateGlobalGradient(centre, swim);
 		require(map.pathfindBuilding(random, centre, swim, 18, 20, &dx, &dy) && dx == expectedDx && dy == expectedDy,
 			"movement API resolves its own input layer");
-		require(centre->globalGradientSearch[swim]->complete(), "movement observes a complete field");
+		require(!centre->globalGradientSearch[swim]->complete(), "nearby movement resolves only its input layer");
 		full = map.buildingGradient(centre, swim);
 		require(centre->globalGradientSearch[swim]->complete(), "public array API completes the field");
 		require(std::vector<Uint16>(full, full + expected.size()) == expected, "public array is fully resolved");
@@ -730,7 +730,7 @@ void scheduledCaptureAtBoundary()
 	std::puts("PASS requests during team stepping are captured at the observation boundary");
 }
 
-// 3. Cold queries only enroll demand. The complete generation becomes visible
+// 3. Cold queries only enroll demand. A resumable generation becomes visible
 // at the same deadline with serial execution or any worker count.
 void scheduledCompletePublication()
 {
@@ -755,9 +755,12 @@ void scheduledCompletePublication()
 		}
 		world.game.map.advanceGradientPipeline();
 		REQUIRE(b->globalGradient[0]);
-		REQUIRE(!b->globalGradientSearch[0]);
-		REQUIRE(world.game.map.queryBuildingDistance(b, 0, 2, 2, &distance) == RouteResult::Reachable);
+		REQUIRE(b->globalGradientSearch[0]);
+		REQUIRE(!b->globalGradientSearch[0]->complete());
 		if (workers) REQUIRE(audit.totals().owner == 0);
+		REQUIRE(world.game.map.queryBuildingDistance(b, 0, 2, 2, &distance) == RouteResult::Reachable);
+		REQUIRE(b->globalGradientSearch[0]->resolved(world.game.map.coordToIndex(2,2)));
+		world.game.map.finishBuildingGradient(b,0);
 		const auto values = scheduler.field(b->globalGradient[0]);
 		if (reference.empty()) reference = values;
 		REQUIRE(reference == values);

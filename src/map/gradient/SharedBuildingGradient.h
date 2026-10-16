@@ -7,8 +7,8 @@
 #include <mutex>
 
 // A lease borrows one live building route generation for hiring workers. The
-// published values are complete and immutable. Retirement transfers ownership
-// of the existing buffer to the lease; no array is copied.
+// owner and workers serialize on its mutex. Retirement transfers ownership of
+// the existing buffer/search to the lease; no array or search is copied.
 struct SharedBuildingGradient
 {
     std::recursive_mutex mutex;
@@ -25,13 +25,13 @@ struct SharedBuildingGradient
             guard(field ? std::unique_lock(field->mutex) : std::unique_lock<std::recursive_mutex>{}) {}
     };
     static Guard lock(const std::shared_ptr<SharedBuildingGradient>& field) { return Guard(field); }
-    // Pure distance lookup: a missing field is represented by an absent lease.
+    // Settles only the queried cells; settled values match a full build.
     int distance(int x, int y)
     {
         std::lock_guard guard(mutex);
         const auto read=[&](int a,int b){
             const auto i=std::size_t(b&(height-1))*width+(a&(width-1));
-            assert(!search || search->complete());
+            if(search && !search->resolved(i)) search->resolveForProposal(i);
             return values[i];
         };
         auto value=read(x,y);

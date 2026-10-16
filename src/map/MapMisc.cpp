@@ -111,7 +111,8 @@ Uint32 Map::checkSum(bool heavy, bool includePending, bool legacy152)
                             mix64(b->globalGradient[slot] != nullptr);
                             mix64(b->dirtyGradient[slot]); mix64(b->gradientGeneration[slot]);
                             mix64(b->lastGlobalGradientUpdateStepCounter[slot]); mix64(b->globalGradientUsedStep[slot]);
-                            if (b->globalGradient[slot]) for (size_t i = 0; i < size; ++i) mix64(b->globalGradient[slot][i]);
+                            // Search progress is derived and can advance on hiring workers.
+                            // Hash scheduling metadata, never partially settled storage.
                         }
 
         cs=gradientRuntime->air.checksum(*this,cs,heavy);

@@ -284,7 +284,7 @@ public:
     void applyGradientBackendRequest();
     void configureGradientExecution();
 	// Scheduled building gradients (MapGradientScheduling.cpp). Team stepping
-	// requests complete fields and keeps serving old published generations;
+	// requests fields and keeps serving old published generations;
 	// after the tick up to MaxJobsPerTick requests are staged, captured at the
 	// observation boundary, built on workers and published
 	// buildingGradientDelay ticks later. Cold fields return Pending; area and
@@ -318,7 +318,7 @@ public:
 	//! Queue a cold build or refresh (slot = routeSlot). False only when the
 	//! explicit map/editor path has no simulation publication pipeline.
 	bool requestBuildingRefresh(Building *building, int slot);
-	//! Complete publication always drains the private worker frontier.
+	//! Fitted preparation depth for footprint routes; readers resolve further demand.
 	int predictBuildingDepth(const Building *building, int slot) const;
 	void updateTeamAreaGradients(int teamNumber);
 	void seedMaterialGradient(int team, Uint8 resource, int swim, Uint16 *gradient, bool withMarkets = false, const Building* consumer = nullptr, unsigned modes = 0);
@@ -897,7 +897,7 @@ public:
 private:
 	//! Legacy readiness/access adapter. Never exposes an unfinished field.
 	bool prepareBuildingGradient(Building *building, int swimClass, BuildingRoute route = BuildingRoute::Automatic);
-	//! Read or move on a complete immutable prepared field.
+	//! Resolve a scalar or movement layer before reading a resumable field.
 	Uint16 buildingGradientValue(Building *building, int swimClass, size_t cell, BuildingRoute route = BuildingRoute::Automatic) const;
 	bool buildingGradientDirection(EntityRandom& random, Building *building, int swimClass, int x, int y,
 		int *dx, int *dy, bool strict, BuildingRoute route = BuildingRoute::Automatic) const;
@@ -1185,14 +1185,14 @@ public:
 	//! Checks live occupancy at descent; returns false with zero direction if blocked.
 	bool pathfindTerrainSafety(Unit *unit);
 
-	// Enrollment is owner-only. Lookup borrows a complete immutable generation.
+	// Enrollment is owner-only. Lookup borrows a lazy generation; resolve before reading values.
 	FieldReadiness requestBuildingField(Building *building, int swimClass, BuildingRoute route = BuildingRoute::Automatic);
 	const Uint16 *lookupBuildingField(const Building *building, int swimClass, BuildingRoute route = BuildingRoute::Automatic) const;
 	RouteResult queryBuildingDistance(Building *building, int swimClass, int x, int y, int *dist, BuildingRoute route = BuildingRoute::Automatic);
 	StepResult queryBuildingStep(EntityRandom& random, Building *building, int swimClass, int x, int y, int *dx, int *dy, BuildingRoute route = BuildingRoute::Automatic);
 	//! Explicit synchronous reference/editor build; live readers enroll jobs.
 	void updateGlobalGradient(Building *building, int swimClass, BuildingRoute route = BuildingRoute::Automatic);
-	//! Legacy complete field adapter; NULL while Pending or when locked.
+	//! Complete field adapter; finishes a lazy generation, NULL while Pending or locked.
 	const Uint16 *buildingGradient(Building *building, int swimClass, BuildingRoute route = BuildingRoute::Automatic);
 	// Owner-only: establish a safe generation without querying or finishing it.
 	std::shared_ptr<SharedBuildingGradient> leaseBuildingRoute(Building *building, int swimClass, BuildingRoute route);
