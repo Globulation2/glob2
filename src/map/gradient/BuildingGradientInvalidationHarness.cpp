@@ -638,7 +638,7 @@ constexpr Uint32 RuntimeSentinel = 0x51a7c0de;
 std::string saveLegacyRuntime(Map& map, int version)
 {
     auto* backend = new GAGCore::MemoryStreamBackend;
-    glob2test::LegacyPopulationOutput output(backend, map, version);
+    glob2test::LegacyPopulationOutput output(backend, map.game, version);
     map.saveRuntimeState(&output);
     output.writeUint32(RuntimeSentinel, "followingSection");
     output.flush();
