@@ -2,7 +2,7 @@
 # platform id revision wDec hDec teams seed status hash
 # The 67 affected generator revisions account for SIM40 owner-specific resource placement/smoothing.
 # Linux rows for the SIM40 revision-only repair were measured independently with GCC 11 and 13.
-# Polder revision 7 follows expanded-ground defaults; its Linux rows were measured with GCC 13.
+# Polder revision 7 follows expanded-ground defaults; Linux GCC 13 and independent native macOS jobs supplied its rows.
 # Historical epoch-0 rows (including macos-arm64) are preserved in fixtures/map-generators/pre-resource-epoch-golden.txt.
 # macos-arm64 rows were measured in independent native jobs; revision metadata follows the same SIM40 repair.
 # Older historical rows described the per-cell terrain model.
@@ -797,14 +797,14 @@ macos-arm64 29 8 8 8 4 3 ok 11537524141276844621
 macos-arm64 29 8 8 8 8 1 ok 14827175024734134539
 macos-arm64 29 8 9 8 4 1 ok 14477763903160432971
 macos-arm64 29 8 9 9 4 1 ok 5802326788245144933
-macos-arm64 30 6 7 7 4 1 ok 15370796314553267537
-macos-arm64 30 6 8 8 2 1 ok 6320544998031971294
-macos-arm64 30 6 8 8 4 1 ok 7551321311665018947
-macos-arm64 30 6 8 8 4 2 ok 11389172561066315383
-macos-arm64 30 6 8 8 4 3 ok 7091378655207835894
-macos-arm64 30 6 8 8 8 1 ok 3737099883991090204
-macos-arm64 30 6 9 8 4 1 ok 5558453860314232212
-macos-arm64 30 6 9 9 4 1 ok 5992384891314150952
+macos-arm64 30 7 7 7 4 1 ok 6788725001055980144
+macos-arm64 30 7 8 8 2 1 ok 10977429681709173549
+macos-arm64 30 7 8 8 4 1 ok 2055576107962924180
+macos-arm64 30 7 8 8 4 2 ok 7272091769716548868
+macos-arm64 30 7 8 8 4 3 ok 17460540468504026865
+macos-arm64 30 7 8 8 8 1 ok 18306782409563719156
+macos-arm64 30 7 9 8 4 1 ok 17954910640564097104
+macos-arm64 30 7 9 9 4 1 ok 5257367982339723081
 macos-arm64 31 8 7 7 4 1 ok 7193605205140929215
 macos-arm64 31 8 8 8 2 1 ok 13337559357464071536
 macos-arm64 31 8 8 8 4 1 ok 6543104054344413015
