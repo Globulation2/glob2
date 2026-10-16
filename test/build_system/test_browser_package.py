@@ -17,16 +17,20 @@ spec.loader.exec_module(module)
 
 
 class BrowserPackageTests(unittest.TestCase):
-    def test_ci_artifacts_publish_the_complete_music_runtime(self):
+    def test_ci_artifacts_publish_music_and_launcher_runtime_closures(self):
         workflow = (module.ROOT / ".github/workflows/build.yml").read_text()
         steps = workflow.split("\n      - ")
+        shell = (module.ROOT / "browser/shell.html").read_text()
+        scripts = re.findall(r'<script\b[^>]*\bsrc=["\']([^"\']+)["\']', shell)
+        relative_scripts = [name for name in scripts if not name.startswith(("/", "http:", "https:"))]
         for artifact in ("web-client", "glob2-web-development"):
             matches = [step for step in steps if step.startswith("uses: actions/upload-artifact@") and re.search(
                 rf"(?m)^          name: {re.escape(artifact)}$", step)]
             with self.subTest(artifact=artifact):
                 self.assertEqual(len(matches), 1)
                 paths = {line.strip() for line in matches[0].splitlines()}
-                for name in (*module.MUSIC_FILES, "generator-studio.html"):
+                for name in (*module.MUSIC_FILES, "generator-studio.html", "loader.js",
+                             "index.data", "threaded/index.data", *relative_scripts):
                     self.assertIn("build/emscripten/client/release/" + name, paths)
 
     @unittest.skipIf(os.name == "nt", "POSIX web-server permissions")
