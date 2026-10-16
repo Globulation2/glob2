@@ -185,10 +185,10 @@ void periodic(const AIWorldView &w, unsigned teamId, TeamStatsSample &sample)
 				// Distance to a wrapped interval, without visiting footprint tiles.
 				const auto axis = [](int d, int size, int period)
 				{ return d < size ? 0 : std::min(d - size + 1, period - d); };
-				const bool near = std::max(axis(w.normalizeX(x - b.x), b.width, w.width),
+				const bool withinCoverage = std::max(axis(w.normalizeX(x - b.x), b.width, w.width),
 										   axis(w.normalizeY(y - b.y), b.height, w.height)) <=
 								  GROWTH_COVERAGE_RADII[M::PLACE_BAND];
-				if (near)
+				if (withinCoverage)
 				{
 					nearby |= w.teams[t].mask;
 					break;

@@ -418,6 +418,11 @@ jobs:
             libgl1-mesa-dev libglu1-mesa-dev libepoxy-dev libgl1-mesa-dri mesa-vulkan-drivers xvfb xauth openbox x11-utils gdb
           fi
 
+      - name: Configure software Vulkan mapping budget
+        # Lavapipe maps descriptor allocations individually. Large-map captures
+        # exceed older runners' 262144-map default; use the validated local test budget.
+        run: sudo sysctl -w vm.max_map_count=1048576
+
       - name: Plan native and auxiliary shard workloads
         id: shard_plan
         run: python3 test/ci_native_shard_plan.py --build-dir build/linux/client/release --timing-profile test/ci-timings/${{ inputs.runner }}.json --auxiliary-jobs test/ci-native-auxiliary.json --coverage-profile ${{ inputs.coverage_profile }} --count 4
