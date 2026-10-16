@@ -31,6 +31,15 @@ class LegacyPopulationOutput : public GAGCore::BinaryOutputStream
     unsigned populationSection = 0;
 
     bool suppressed() const { return suppressedAt && !injecting; }
+    bool observationField(std::string_view name) const
+    {
+        // Format 166 introduced counted populations, but not owner observation
+        // markers. Omit these independently of the older population rewrite so
+        // following runtime sections remain aligned in every historical layout.
+        return formatVersion < FILE_FORMAT_VERSION_SINGLE_OBSERVATION
+            && (name == "worldResultsPublished" || name == "worldResultsPublishedTick"
+                || name == "worldWorkSubmitted" || name == "worldWorkSubmittedTick");
+    }
     void population(std::string_view name)
     {
         if (!team || populationSection >= 4)
@@ -97,9 +106,9 @@ public:
         }
     }
     void write(const void* data, std::size_t size, std::string_view name) override
-    { if (!suppressed()) BinaryOutputStream::write(data,size,name); }
+    { if (!suppressed() && !observationField(name)) BinaryOutputStream::write(data,size,name); }
     void writeEndianIndependent(const void* data, std::size_t size, std::string_view name) override
-    { if (!suppressed()) BinaryOutputStream::writeEndianIndependent(data,size,name); }
+    { if (!suppressed() && !observationField(name)) BinaryOutputStream::writeEndianIndependent(data,size,name); }
     void writeUint32(Uint32 value, std::string_view name) override
     {
         if (suppressed()) return;

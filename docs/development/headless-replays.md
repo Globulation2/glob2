@@ -41,9 +41,9 @@ effective values;
 current saves validate redundant tables against the embedded catalog.
 
 Version 159 adopts cached turret targeting (L3/R2/K1) and simulation revision 55.
-The replay and saved-match floors are 159: earlier recordings and saved matches
-are deliberately rejected. The map-format floor remains 58 so existing maps can
-start new matches. New saves retain published lists, pending completed outputs,
+It raised the replay floor to 159; subsequent timing revisions raise it further.
+Maps and saved games retain support from format 58 through version-gated loading.
+New saves retain published lists, pending completed outputs,
 admissions and remaining publication deadlines for deterministic continuation.
 
 Structured `game run` accepts `--ai-order-delay N`, where `N` is an integer
@@ -79,8 +79,9 @@ unsettled cells on the owner before using them.
 Format 143 saves the AI engine's completed pending orders, logical deadlines and
 execution feedback. Saving finishes outstanding decisions without executing
 future commands early. Older supported saves load with delay 0 and an empty
-scheduling queue. Delay 0 preserves strategy and polling cadence, with explicit correctness fixes:
-Castor uses private intent instead of direct world mutation and reconciles upgrade
+scheduling queue. From format 167, newly admitted delay-zero decisions are
+delivered at the next boundary. Strategy and polling cadence remain unchanged,
+with explicit correctness fixes: Castor uses private intent instead of direct world mutation and reconciles upgrade
 execution; Runtime and Cabino retain unexecuted upgrades and release rejected
 reservations; Cortex releases matching rejected action latches. Runtime, Maxima,
 Cabino and Cortex discard queued commands whose selected target incarnation has
@@ -479,11 +480,22 @@ Performance records describe this execution session and are not stored in saves.
 
 ### Gradient scheduling compatibility
 
+Format 167 uses one completed observation for every background consumer. The owner
+publishes due results, captures once, then admits work before applying orders and
+advancing. Newly admitted AI/statistics work configured with delay zero is due at
+the next boundary. Paused frames and stalled turns reuse their observation.
+Saved publication/admission phases and pending outputs preserve continuation;
+old pending results keep their original deadlines. Replay floor 167 and the sim
+revision gate distinguish the changed timing. Runtime world publication and
+AI-order delivery remain separate: world results publish before capture, while
+due AI orders enter the command schedule and undergo live order validation. See the
+[owner timing contract](../architecture/simulation.md#completed-world-observations).
+
 Version 120 makes periodic resource, guard and clear fields publish eight ticks
 after their observation boundary. Current execution uses the shared compute pool. Saves retain
 completed pending fields and their remaining deadlines without publishing them early;
-older formats originally started with an empty queue. Current saved-match
-compatibility starts at 159; existing map compatibility remains 58. Version 123 narrows forbidden-zone invalidations to affected
+older formats originally started with an empty queue. Map and saved-game
+compatibility still starts at 58. Version 123 narrows forbidden-zone invalidations to affected
 fields and gives escape fields an independent bounded refresh schedule. Replay
 versions before 123 used a different routing schedule. The replay floor introduced in format
 127 reflected the sixteen-team capacity changing Warrush's opening window from 24 to 32 ticks.

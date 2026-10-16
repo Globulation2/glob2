@@ -96,7 +96,7 @@ static void theLaterBookerTradesWithTheOneItWouldCross(unsigned unitType = WORKE
 
 	// Units look for food at the end of their current action.
 	for (int i = 0; i < 100 && !(farWorker->attachedBuilding && nearWorker->attachedBuilding); ++i)
-		world.game.syncStep(0);
+		world.game.step(0);
 
 	require(farWorker->activity == Unit::ACT_UPGRADING && farWorker->destinationPurpose == FEED, "the far unit goes to eat");
 	require(nearWorker->activity == Unit::ACT_UPGRADING && nearWorker->destinationPurpose == FEED, "the near unit goes to eat");
@@ -111,7 +111,7 @@ static void theLaterBookerTradesWithTheOneItWouldCross(unsigned unitType = WORKE
 	bool nearAte = false, farAte = false;
 	for (int i = 0; i < 3000 && !(nearAte && farAte); ++i)
 	{
-		world.game.syncStep(0);
+		world.game.step(0);
 		nearAte |= nearWorker->displacement == Unit::DIS_INSIDE && nearWorker->attachedBuilding == a;
 		farAte |= farWorker->displacement == Unit::DIS_INSIDE && farWorker->attachedBuilding == b;
 	}
@@ -134,7 +134,7 @@ static void aGoodBookingStays()
 	Unit* east = world.addHungryWorker(40, 9);
 
 	for (int i = 0; i < 100 && !(west->attachedBuilding && east->attachedBuilding); ++i)
-		world.game.syncStep(0);
+		world.game.step(0);
 
 	require(west->attachedBuilding == a && east->attachedBuilding == b, "each unit keeps its nearest inn");
 	require(World::booked(a, west) && World::booked(b, east), "the guest lists match");

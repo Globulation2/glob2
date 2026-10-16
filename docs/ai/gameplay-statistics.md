@@ -70,12 +70,13 @@ buildings into six bins.
 
 ## Sampling and saves
 
-Statistics read the shared between-tick world snapshot. One deferred batch per
-advancing tick computes all teams in team order on one dedicated executor lane.
-The simulation owner publishes each sample at `sourceTick + teamStatsDelay` in
+Statistics read the shared completed-world observation. One deferred batch per
+logical tick computes all teams in team order on one dedicated executor lane.
+The simulation owner publishes each new sample at
+`sourceTick + max(1, teamStatsDelay)` in
 source-tick/team order, joining late work at that deadline. Worker completion
 order never selects visible statistics. Zero workers use the same calculation
-at the deadline; delay zero calculates and publishes at the observation boundary.
+at the deadline; configured delay zero uses the next observation boundary for new samples.
 AI, scripts, victory calculations and presentation all read published values.
 
 The match-wide `teamStatsDelay` rule accepts 0 through 8 ticks, defaulting to 8.
@@ -105,8 +106,9 @@ simulation-driving statistics/smoothing; full checks
 join and hash complete pending results, published diagnostics and live counters.
 Consequently routine checks detect differing pending simulation statistics when
 they publish; diagnostic measurements are covered by full verification.
-AI telemetry collection remains on the owner. Ordinary pauses do not admit new
-samples, and repeated reads of a boundary do not duplicate them.
+AI telemetry collection remains on the owner. Samples are admitted once per
+logical tick, including an initially paused observation. Further paused frames
+and repeated reads of that boundary do not duplicate them.
 
 Save format **155** introduced collected and published measurements, smoothing
 state, publication timestamps and completed pending samples with their original
@@ -117,7 +119,9 @@ original exact publication reduction, including after resaving. Format **158**
 persists complete measurement frames; loading formats 155–157 completes their
 measurement deltas in source order without publishing early. Saved aggregate
 modes and deadlines are preserved. Saving joins private computation without
-publishing future samples.
+publishing future samples. Format **167** gives new delay-zero samples a one-tick
+effective delay. Already pending samples keep their computed outputs and saved
+deadlines, including historical zero-delay deadlines.
 Older saves migrate to the shared snapshot boundary with delay zero, preserving
 loaded published/smoothing state; their continuation can change. The minimum
 readable save version stays 58. Match termination does not finish reporting:

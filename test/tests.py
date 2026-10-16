@@ -213,7 +213,7 @@ ENGINE_TESTS = [
     '#src/game/screens/CustomGameSetupHarness.cpp',
     '#src/team/TeamLimitTest.cpp',
     '#src/team/IntrusiveEntityListTest.cpp',
-    '#src/team/IntrusivePopulationSaveTest.cpp',
+    ('#src/team/IntrusivePopulationSaveTest.cpp', dict(cxxflags=['-fno-access-control'])),
     '#src/map/preview/MapPreviewHarness.cpp',
     ('#src/map/generator/MapGeneratorDefaultsTest.cpp', dict(cxxflags=['-fno-access-control'])),
 ]

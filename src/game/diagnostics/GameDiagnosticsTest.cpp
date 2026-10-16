@@ -125,7 +125,7 @@ TEST_CASE("pending diagnostic output does not block world advancement or alias l
     session.publishCapture(*first);
     session.completeTick(fixture.game.captureReadBoundary());REQUIRE(session.pending());
     session.publishCapture(*second);
-    fixture.game.syncStep(0);
+    fixture.game.step(0);
     CHECK(fixture.game.stepCounter==2);
     session.beginTick(fixture.game);CHECK_FALSE(session.reserveCapture(0,2));
     session.drain();CHECK_FALSE(session.pending());

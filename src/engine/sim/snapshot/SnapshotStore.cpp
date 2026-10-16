@@ -24,6 +24,7 @@ Handle Store::captureBoundary(const Game& game, CaptureOptions options)
 	const auto entityBefore = storage.entityBytesCopied;
 	const auto sidecarBefore = storage.entitySidecarBytesCopied;
 	auto next = capture(game, catalog, required, latest ? &*latest : nullptr, &storage, unchangedBoundary);
+	metrics.coreMaterializations = storage.coreMaterializations;
 	metrics.entityBytesCopied += storage.entityBytesCopied - entityBefore;
 	metrics.entitySidecarBytesCopied += storage.entitySidecarBytesCopied - sidecarBefore;
 	next.observationRevision = observationRevision;
@@ -69,7 +70,8 @@ void Store::accountCapture(const Handle& next, const Handle& previous, Uint64 co
 		metrics.bytesCopied += next.entities->relationships.size() * sizeof(UnitRef)
 			+ next.entities->funding.size() * sizeof(FundingState);
 	}
-	if (next.teams) {
+	if (next.teams && next.teams == previous.teams) ++metrics.reusedComponents;
+	else if (next.teams) {
 		metrics.bytesCopied += next.teams->values.size() * sizeof(TeamView);
 		for (const auto& team : next.teams->values) metrics.bytesCopied += team.statistics.buildingCountByVariant.size() * sizeof(int)
 			+ (team.virtualBuildings.size()+team.swarms.size()) * sizeof(BuildingRef);
@@ -79,37 +81,44 @@ void Store::accountCapture(const Handle& next, const Handle& previous, Uint64 co
 		if (found && found->values == field.values) ++metrics.reusedComponents;
 		else metrics.bytesCopied += field.values->size() * sizeof(Uint16);
 	}
-    if (next.session) metrics.bytesCopied+=sizeof(Session)+next.session->players.size()*sizeof(Session::Player)
+    if (next.session && next.session == previous.session) ++metrics.reusedComponents;
+    else if (next.session) metrics.bytesCopied+=sizeof(Session)+next.session->players.size()*sizeof(Session::Player)
         +next.session->legacyScriptText.size();
-    if (next.effects) {
+    if (next.effects && next.effects == previous.effects) ++metrics.reusedComponents;
+    else if (next.effects) {
         metrics.bytesCopied+=next.effects->sectors.size()*sizeof(SectorEffects);
         for (const auto& sector:next.effects->sectors) metrics.bytesCopied+=sector.bullets.size()*sizeof(BulletRecord)
             +sector.explosions.size()*sizeof(ExplosionRecord)+sector.deaths.size()*sizeof(DeathRecord);
     }
-    if(next.statisticsInputs) {
+    if (next.statisticsInputs && next.statisticsInputs == previous.statisticsInputs) ++metrics.reusedComponents;
+    else if(next.statisticsInputs) {
         for(const auto& row:next.statisticsInputs->events)metrics.bytesCopied+=sizeof(GameplayEventCounters)+row.capacityBytes();
         for(const auto& row:next.statisticsInputs->coverage)metrics.bytesCopied+=row.size()*sizeof(TeamStats::CoverageBuilding);
     }
-    if (next.statistics) {
+    if (next.statistics && next.statistics == previous.statistics) ++metrics.reusedComponents;
+    else if (next.statistics) {
         for (size_t i=0;i<next.statistics->teams.size();++i) {
             const auto& team=next.statistics->teams[i];
             if (previous.statistics && i<previous.statistics->teams.size() && team==previous.statistics->teams[i]) ++metrics.reusedComponents;
             else if (team) metrics.bytesCopied+=sizeof(TeamStats)+team->displayCapacityBytes();
         }
     }
-    if (next.telemetry) {
+    if (next.telemetry && next.telemetry == previous.telemetry) ++metrics.reusedComponents;
+    else if (next.telemetry) {
         for (const auto& row:next.telemetry->rows) metrics.bytesCopied+=sizeof(row)
             +row.fields.size()*sizeof(AITelemetry::Field)+row.values.size()*sizeof(AITelemetry::Value)
             +row.named.size()*sizeof(AITelemetry::NamedValue);
     }
-    if (next.history) {
+    if (next.history && next.history == previous.history) ++metrics.reusedComponents;
+    else if (next.history) {
         for (size_t i = 0; i < next.history->teams.size(); ++i) {
             const auto& team = next.history->teams[i];
             if (previous.history && i < previous.history->teams.size() && team == previous.history->teams[i]) ++metrics.reusedComponents;
             else if (team) metrics.bytesCopied += sizeof(TeamStats) + team->displayCapacityBytes();
         }
     }
-    if (next.entityDiagnostics) for (const auto& building:next.entityDiagnostics->buildings) {
+    if (next.entityDiagnostics && next.entityDiagnostics == previous.entityDiagnostics) ++metrics.reusedComponents;
+    else if (next.entityDiagnostics) for (const auto& building:next.entityDiagnostics->buildings) {
         metrics.bytesCopied+=sizeof(building)+building.gradient.size()*sizeof(Uint16);
         for (const auto& failed:building.failingUnits) metrics.bytesCopied+=failed.size()*sizeof(Uint16);
     }

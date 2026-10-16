@@ -278,7 +278,7 @@ TEST_SUITE("UnitCatalog")
             REQUIRE(resumed.game.unitCatalog().serialize()==expected->serialize());
             CHECK(vector(resumed.game)==vector(world.game));
             for(int tick=0;tick<64;++tick) {
-                world.game.syncStep(0); resumed.game.syncStep(0);
+                world.game.step(0); resumed.game.step(0);
                 REQUIRE(vector(resumed.game)==vector(world.game)); REQUIRE(resumed.game.syncRandom==world.game.syncRandom);
             }
             CHECK(UnitCatalog::legacyMigration()->runtime(WORKER).hungerRate==425);
@@ -335,7 +335,7 @@ TEST_SUITE("UnitCatalog")
         REQUIRE(load(repeated.game,save(resumed.game))); repeated.game.setWaitingOnMask(0);
         REQUIRE(components(repeated.game,false)==components(resumed.game,false));
         for(int tick=0;tick<64;++tick) {
-            world.game.syncStep(0); resumed.game.syncStep(0); repeated.game.syncStep(0);
+            world.game.step(0); resumed.game.step(0); repeated.game.step(0);
             REQUIRE(components(resumed.game,true)==components(world.game,true));
             REQUIRE(components(repeated.game,false)==components(resumed.game,false));
             REQUIRE(world.game.syncRandom==resumed.game.syncRandom);

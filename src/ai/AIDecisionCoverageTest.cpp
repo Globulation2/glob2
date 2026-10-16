@@ -78,7 +78,7 @@ std::string tick(Game& game)
     if (length) encoded.append(reinterpret_cast<const char*>(order->getData()),length);
     order->sender=0;
     game.executeOrder(order,0);
-    game.syncStep(0);
+    game.step(0);
     return encoded;
 }
 std::vector<Uint32> state(Game& game)

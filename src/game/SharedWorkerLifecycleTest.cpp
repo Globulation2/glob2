@@ -11,6 +11,8 @@
 #include <fstream>
 #include <thread>
 #include <nlohmann/json.hpp>
+#include "Brush.h"
+#include <algorithm>
 
 TEST_SUITE("SharedWorkerLifecycle") {
 TEST_CASE("background saves finish on a worker and remain readable after teardown") {
@@ -31,7 +33,7 @@ TEST_CASE("background saves finish on a worker and remain readable after teardow
     REQUIRE(bytes == "finished on worker");
     REQUIRE((writingThread != submittingThread) == GAGCore::ThreadSupport::available);
 }
-TEST_CASE("resource catalog import drains deferred material preparation before replacing stocks") {
+TEST_CASE("resource catalog import drains admitted material work before replacing stocks") {
     glob2test::HeadlessGlobals globals;
     GameGUI source;
     GameHeader header;
@@ -69,7 +71,8 @@ TEST_CASE("resource catalog import drains deferred material preparation before r
     map.configureGradientPipeline(2, 3);
     map.advanceGradientPipeline();
     map.stagePeriodicGradientPreparation();
-    REQUIRE(map.hasPendingGradientPreparation());
+    map.preparePendingGradient(source.game.snapshotStore().captureBoundary(source.game));
+    REQUIRE_FALSE(map.hasPendingGradientPreparation());
     REQUIRE(map.gradientPipelineStatus().pending == 1);
     definition["yields"]["gold"]["capacity"] = 1;
     definition["yields"]["gold"]["initial"] = 1;
@@ -95,10 +98,8 @@ TEST_CASE("pending gradient work survives a save and continues at the same deadl
     map.getClearAreasGradient(0, 0);
     map.configureCompute(4);
     map.configureGradientPipeline(2, 3);
-    map.advanceGradientPipeline();
-    map.syncStep(0, false);
-    map.stagePeriodicGradientPreparation();
-    REQUIRE(map.hasPendingGradientPreparation());
+    source.game.observeCompletedWorld();
+    REQUIRE_FALSE(map.hasPendingGradientPreparation());
     REQUIRE(map.gradientPipelineStatus().jobs > 0);
     auto *storage = new GAGCore::MemoryStreamBackend;
     GAGCore::BinaryOutputStream writer(storage);
@@ -116,7 +117,7 @@ TEST_CASE("pending gradient work survives a save and continues at the same deadl
     };
     std::vector<std::vector<Uint32>> checksums;
     for (unsigned tick=0; tick<24; ++tick) {
-        source.game.syncStep(0);
+        source.game.step(0);
         checksums.push_back(simulationState(source.game));
     }
     GameGUI restored;
@@ -124,63 +125,59 @@ TEST_CASE("pending gradient work survives a save and continues at the same deadl
     reader.seekFromStart(0);
     REQUIRE(restored.load(&reader));
     for (const auto &expected : checksums) {
-        restored.game.syncStep(0);
+        restored.game.step(0);
         REQUIRE(simulationState(restored.game) == expected);
     }
 }
 }
 
-#include "ReadOnlyPhase.h"
 TEST_SUITE("SimulationReadPhase") {
-TEST_CASE("direct completed steps match deferred preparation across worker counts") {
+TEST_CASE("direct steps and explicit owner phases agree across worker counts") {
     glob2test::HeadlessGlobals globals;
     GameHeader header;
     header.setNumberOfPlayers(1);
     header.setRandomSeed(123456);
     header.getBasePlayer(0) = BasePlayer(0, "Test", 0, BasePlayer::P_LOCAL);
     auto mapHeader = Engine::loadMapHeader("maps/balanced.map");
-    GameGUI direct, deferred;
+    GameGUI direct, explicitPhases;
     REQUIRE(direct.loadFromHeaders(mapHeader, header, true, true));
-    REQUIRE(deferred.loadFromHeaders(mapHeader, header, true, true));
-    for (Game *game : {&direct.game, &deferred.game}) {
+    REQUIRE(explicitPhases.loadFromHeaders(mapHeader, header, true, true));
+    for (Game *game : {&direct.game, &explicitPhases.game}) {
         game->map.getClearAreasGradient(0, 0);
         game->map.getMaterialGradient(0, MaterialId::Wood, 0);
         game->map.configureGradientPipeline(0, 8);
     }
     for (unsigned threads : {1, 4}) {
-        deferred.game.map.configureCompute(threads);
+        explicitPhases.game.map.configureCompute(threads);
         for (unsigned tick = 0; tick < 64; ++tick) {
-            direct.game.syncStep(0);
-            CHECK_FALSE(direct.game.map.hasPendingGradientPreparation());
-            deferred.game.syncStep(0, Game::PreparationCompletion::Deferred);
-            REQUIRE(deferred.game.map.hasPendingGradientPreparation());
-            ReadOnlyPhase phase;
-            // Submission belongs to the owner; the deferred seed job is itself read-only work.
-            deferred.game.map.preparePendingWorld(deferred.game.prepareReadBoundary(false));
-            auto read = [&](size_t) { deferred.game.map.getMaterialGradient(0, MaterialId::Wood, 0); };
-            phase.add(1, read);
-            phase.run(deferred.game.map.computeExecutor());
-            CHECK_FALSE(deferred.game.map.hasPendingGradientPreparation());
-            CHECK(direct.game.checkSum(nullptr, nullptr, nullptr, true) == deferred.game.checkSum(nullptr, nullptr, nullptr, true));
+            direct.game.step(0);
+            auto& game = explicitPhases.game;
+            const auto captures = game.snapshots().metrics.coreMaterializations;
+            const auto& world = game.observeCompletedWorld();
+            REQUIRE(world.tick == game.stepCounter);
+            CHECK(game.snapshots().metrics.coreMaterializations == captures + 1);
+            CHECK(&game.observeCompletedWorld() == &world);
+            game.advanceLiveSimulation(0);
+            CHECK(game.snapshots().metrics.coreMaterializations == captures + 1);
+            CHECK_FALSE(game.map.hasPendingGradientPreparation());
+            CHECK(direct.game.checkSum(nullptr, nullptr, nullptr, true) == game.checkSum(nullptr, nullptr, nullptr, true));
         }
     }
-    deferred.game.syncStep(0, Game::PreparationCompletion::Deferred);
-    REQUIRE(deferred.game.map.hasPendingGradientPreparation());
-    deferred.game.map.configureCompute(1);
-    CHECK_FALSE(deferred.game.map.hasPendingGradientPreparation());
-    deferred.game.syncStep(0, Game::PreparationCompletion::Deferred);
-    deferred.game.map.setGradientWorkerCount(2);
-    CHECK_FALSE(deferred.game.map.hasPendingGradientPreparation());
-    deferred.game.syncStep(0, Game::PreparationCompletion::Deferred);
-    const auto waitingTick = deferred.game.stepCounter;
-    deferred.game.anyPlayerWaited = true;
-    deferred.game.syncStep(0);
-    CHECK(deferred.game.stepCounter == waitingTick);
-    CHECK_FALSE(deferred.game.map.hasPendingGradientPreparation());
-    deferred.game.anyPlayerWaited = false;
-    deferred.game.syncStep(0, Game::PreparationCompletion::Deferred);
-    deferred.game.map.clear(); // Reserved jobs must not outlive their destination.
-    CHECK_FALSE(deferred.game.map.hasPendingGradientPreparation());
+    auto& game = explicitPhases.game;
+    game.map.configureCompute(1);
+    game.map.setGradientWorkerCount(2);
+    CHECK_FALSE(game.map.hasPendingGradientPreparation());
+    const auto waitingTick = game.stepCounter;
+    game.anyPlayerWaited = true;
+    game.step(0);
+    const auto captures = game.snapshots().metrics.coreMaterializations;
+    game.step(0);
+    CHECK(game.stepCounter == waitingTick);
+    CHECK(game.snapshots().metrics.coreMaterializations == captures);
+    game.anyPlayerWaited = false;
+    game.step(0);
+    game.map.clear();
+    CHECK_FALSE(game.map.hasPendingGradientPreparation());
 }
 }
 
@@ -215,8 +212,8 @@ TEST_CASE("no-AI completed ticks and saved continuation agree across diagnostic 
         game.game.map.computeExecutor().configureTelemetry(mode);
         std::vector<Uint32> actual;
         for (unsigned tick=0; tick<96; ++tick) {
-            game.game.syncStep(0,Game::PreparationCompletion::Deferred);
-            REQUIRE(game.game.prepareAIOrders({},false).empty());
+            game.game.step(0);
+            REQUIRE(game.game.deliverAIOrders({},false).empty());
             actual.push_back(game.game.checkSum(nullptr,nullptr,nullptr));
         }
         game.game.map.finishGradientPipeline();
@@ -237,7 +234,7 @@ TEST_CASE("no-AI completed ticks and saved continuation agree across diagnostic 
         restored.game.map.computeExecutor().configureTelemetry(mode);
         CHECK(restored.game.map.computeExecutor().telemetrySnapshot().summary.advancingTicks==0);
         for(unsigned tick=0;tick<16;++tick) {
-            game.game.syncStep(0); restored.game.syncStep(0);
+            game.game.step(0); restored.game.step(0);
             CHECK(game.game.checkSum(nullptr,nullptr,nullptr,true)==restored.game.checkSum(nullptr,nullptr,nullptr,true));
         }
     }
@@ -254,9 +251,10 @@ TEST_CASE("presentation borrows the published no-AI read boundary without recapt
     request.selectedUnit=identity;
     const auto required=SceneExtractor::captureOptions(request);
     const auto captures=game.snapshots().metrics.captures;
-    const auto published=game.captureReadBoundary(required);
+    const auto published=game.observeCompletedWorld(required);
     REQUIRE(game.snapshots().metrics.captures==captures+1);
-    REQUIRE(game.prepareAIOrders({},false,nullptr,&published).empty());
+    game.admitAIOrders({},true,nullptr,published);
+    REQUIRE(game.deliverAIOrders({},true).empty());
     SceneExtractor preparer;
     PresentationFrame frame;
     preparer.prepare(SceneInputs{published.presentationView(required),request},frame);
@@ -270,8 +268,8 @@ TEST_CASE("presentation borrows the published no-AI read boundary without recapt
     CHECK(frame.panels.unit.record==frame.entities.unit(identity.gid));
     const auto hp=frame.panels.unit.state().hp;
     unit->hp=1;
-    game.snapshots().invalidateBoundary();
-    const auto edited=game.captureReadBoundary(required);
+    game.invalidateObservation();
+    const auto edited=game.observeCompletedWorld(required);
     CHECK(edited.observationRevision!=published.observationRevision);
     CHECK(frame.panels.unit.state().hp==hp);
     request.view.viewportX=7;
@@ -288,6 +286,7 @@ namespace {
 class BoundaryObserver final : public AIImplementation
 {
 public:
+    Uint16 realOrderTarget = NOGBID;
     SimulationSnapshot::Handle observed;
     std::shared_ptr<const AIEngine::AIWorldView> observation;
     bool load(GAGCore::InputStream*,Player*,Sint32) override { return true; }
@@ -295,7 +294,12 @@ public:
     bool supportsObservation() const override { return true; }
     std::shared_ptr<Order> getOrder() override { throw std::logic_error("live AI observation"); }
     std::shared_ptr<Order> getOrder(const AIEngine::DecisionContext& context) override
-    { observation=context.observation; observed=context.world.components(); return std::make_shared<NullOrder>(); }
+    {
+        observation=context.observation; observed=context.world.components();
+        if (realOrderTarget != NOGBID)
+            return std::make_shared<OrderModifyBuilding>(realOrderTarget, 1 + (observed.tick & 1));
+        return std::make_shared<NullOrder>();
+    }
 };
 }
 TEST_CASE("AI and pending gradients share the standard boundary with presentation" * doctest::test_suite("SimulationReadPhase"))
@@ -317,16 +321,17 @@ TEST_CASE("AI and pending gradients share the standard boundary with presentatio
     game.map.configureCompute(2);
     game.map.configureGradientPipeline(0,8);
     game.map.getClearAreasGradient(0,0);
-    game.syncStep(0,Game::PreparationCompletion::Deferred);
-    REQUIRE(game.map.hasPendingGradientPreparation());
-    REQUIRE(game.map.hasPendingWorldPreparation());
+
     constexpr std::array<unsigned,2> players{0,1};
     SceneRequest request;
     const auto rendering=SceneExtractor::captureOptions(request);
     const auto captures=game.snapshots().metrics.captures;
-    const auto published=game.captureReadBoundary(rendering);
+    const auto published=game.observeCompletedWorld(rendering);
     CHECK_NOTHROW(published.simulationView());
-    REQUIRE(game.prepareAIOrders(players,false,{},&published).size()==2);
+    game.admitAIOrders(players,false,{},published);
+    const auto bootstrap = game.deliverAIOrders(players,false);
+    REQUIRE(bootstrap.size()==2);
+    for (const auto& [seat,order] : bootstrap) CHECK(order->getOrderType()==ORDER_NULL);
     game.drainAI();
     CHECK_FALSE(game.map.hasPendingGradientPreparation());
     REQUIRE(observer->observed.entities);
@@ -342,6 +347,134 @@ TEST_CASE("AI and pending gradients share the standard boundary with presentatio
     CHECK(game.snapshots().metrics.captures==captures+1);
 }
 
+
+TEST_CASE("real AI commands and presentation extensions materialize entities once per observation" * doctest::test_suite("SimulationReadPhase"))
+{
+    glob2test::HeadlessGlobals globals;
+    glob2test::HeadlessGame fixture({.teams=2,.loadDefaultRace=true,.header=true});
+    auto& game = fixture.game;
+    auto* first = fixture.addBuilding("swarm",4,4);
+    auto* second = fixture.addBuilding("swarm",20,4,0,1);
+    fixture.addUnit(WORKER,12,12); fixture.addUnit(WORKER,24,12,1);
+    REQUIRE(first); REQUIRE(second);
+    game.gameHeader.setAIOrderDelay(0); // Former zero-delay mode now bootstraps one boundary.
+    game.map.configureCompute(4);
+    game.map.configureGradientPipeline(0,8);
+    game.map.getClearAreasGradient(0,0);
+    for (unsigned seat : {0u,1u}) {
+        game.players[seat]->makeItAI(AI::NUMBI);
+        auto* ai = new BoundaryObserver;
+        ai->realOrderTarget = seat ? second->gid : first->gid;
+        delete game.players[seat]->ai->aiImplementation;
+        game.players[seat]->ai->aiImplementation = ai;
+    }
+    constexpr std::array<unsigned,2> seats{0,1};
+    SceneRequest request;
+    const SimulationSnapshot::CaptureOptions presentation{.presentation=true,.history=true,
+        .telemetry=true,.entityDiagnostics=true,.annotations=true};
+    const auto baseline = game.snapshots().metrics.coreMaterializations;
+    unsigned realOrders = 0;
+    for (unsigned tick=0; tick<8; ++tick) {
+        const auto world = game.observeCompletedWorld(presentation);
+        REQUIRE(world.annotations); REQUIRE(world.statistics); REQUIRE(world.history);
+        const auto frozenNames = world.annotations->areaNames;
+        const auto frozenUnits = world.statistics->teams[0]->getLatestStat()->totalUnit;
+        const auto frozenWorkers = world.entities->buildings.front().maxUnitWorking;
+        CHECK(world.tick == tick);
+        game.admitAIOrders(seats,false,{},world);
+        for (auto& [seat,order] : game.deliverAIOrders(seats,false)) {
+            if (tick) {
+                REQUIRE(order->getOrderType() != ORDER_NULL);
+                ++realOrders;
+            } else CHECK(order->getOrderType() == ORDER_NULL);
+            order->sender = seat;
+            order = game.validateAIOrder(std::move(order),seat);
+            REQUIRE(game.executeOrder(order,0));
+        }
+        const auto core = game.snapshots().metrics.coreMaterializations;
+        CHECK(core == baseline + tick + 1);
+        // Optional components were frozen before orders, just as in the engine.
+        // Later camera/panel requests must retain those exact components.
+        const auto rich = game.observeCompletedWorld(presentation);
+        CHECK(rich.entities == world.entities);
+        CHECK(rich.annotations == world.annotations);
+        CHECK(rich.statistics == world.statistics);
+        CHECK(rich.history == world.history);
+        CHECK(rich.effects == world.effects);
+        CHECK(world.annotations->areaNames == frozenNames);
+        CHECK(world.statistics->teams[0]->getLatestStat()->totalUnit == frozenUnits);
+        CHECK(world.entities->buildings.front().maxUnitWorking == frozenWorkers);
+        PresentationFrame frame;
+        SceneExtractor extractor;
+        extractor.prepare(rich.presentationView(presentation),request,frame);
+        request.view.viewportX += 1;
+        extractor.prepare(rich.presentationView(presentation),request,frame);
+        CHECK(game.observeCompletedWorld().entities == world.entities);
+        CHECK(game.snapshots().metrics.coreMaterializations == core);
+        game.advanceLiveSimulation(0);
+        CHECK(game.snapshots().metrics.coreMaterializations == core);
+        const auto next = game.observeCompletedWorld(presentation);
+        CHECK(next.tick == tick + 1);
+        CHECK(next.entities->buildings.front().maxUnitWorking == first->maxUnitWorking);
+        CHECK(world.entities->buildings.front().maxUnitWorking == frozenWorkers);
+    }
+    CHECK(realOrders == 14);
+}
+
+
+TEST_CASE("placement demolition and map edits first appear in the next completed observation" * doctest::test_suite("SimulationReadPhase"))
+{
+    glob2test::HeadlessGlobals globals;
+    glob2test::HeadlessGame fixture({.clearImmobile=true,.loadDefaultRace=true,.header=true});
+    auto& game=fixture.game;
+    auto* oldFlag=fixture.addBuilding("warflag",4,4); REQUIRE(oldFlag);
+    fixture.addUnit(WORKER,12,12);
+    const auto removed=Game::refOf(oldFlag);
+    const SimulationSnapshot::CaptureOptions options{.presentation=true,.history=true,
+        .telemetry=true,.entityDiagnostics=true,.annotations=true};
+    const auto before=game.observeCompletedWorld(options);
+    const auto captures=game.snapshots().metrics.coreMaterializations;
+    const auto resourceCell=game.map.coordToIndex(25,25);
+    const auto areaCell=game.map.coordToIndex(24,24);
+    const auto oldAreaName=before.annotations->areaNames.at(0);
+    const auto oldResource=before.resourceAt(resourceCell).resource.type;
+    const auto oldGuard=before.areasAt(areaCell).guard;
+    const auto execute=[&](std::shared_ptr<Order> order) {
+        order->sender=0; REQUIRE(game.executeOrder(order,0));
+    };
+    execute(std::make_shared<OrderDelete>(removed.gid));
+    execute(std::make_shared<OrderCreate>(0,20,20,game.buildingsTypes.getTypeNum("warflag",0,false),0,0));
+    Utilities::BitArray mask(1); mask.set(0,true);
+    execute(std::make_shared<OrderAlterGuardArea>(0,BrushTool::MODE_ADD,24,24,1,1,mask));
+    // Resource and script edits exercise owner mutations without an order codec.
+    game.map.setResourceByIndex(25,25,WHEAT,1);
+    game.map.setAreaName(0,"new observation");
+    game.finishOrderPhase(true);
+    const auto retained=game.observeCompletedWorld(options);
+    CHECK(retained.entities==before.entities);
+    CHECK(retained.annotations==before.annotations);
+    CHECK(retained.annotations->areaNames.at(0)==oldAreaName);
+    CHECK(retained.resourceAt(resourceCell).resource.type==oldResource);
+    CHECK(retained.areasAt(areaCell).guard==oldGuard);
+    REQUIRE(retained.entities->buildings.size()==1);
+    CHECK(retained.entities->buildings.front().gid==removed.gid);
+    game.advanceLiveSimulation(0);
+    CHECK(game.snapshots().metrics.coreMaterializations==captures);
+    const auto after=game.observeCompletedWorld(options);
+    CHECK(after.tick==before.tick+1);
+    CHECK(game.snapshots().metrics.coreMaterializations==captures+1);
+    CHECK(after.annotations->areaNames.at(0)=="new observation");
+    CHECK(after.resourceAt(resourceCell).resource.type==WHEAT);
+    CHECK((after.areasAt(areaCell).guard & Team::teamNumberToMask(0))!=0);
+    REQUIRE(after.entities->buildings.size()==1);
+    CHECK(after.entities->buildings.front().posX==20);
+    CHECK(after.entities->buildings.front().posY==20);
+    CHECK_FALSE(game.resolveBuilding(removed));
+    // Held consumers still own the pre-order version after publication at T+1.
+    CHECK(before.annotations->areaNames.at(0)==oldAreaName);
+    CHECK(before.resourceAt(resourceCell).resource.type==oldResource);
+    CHECK(before.entities->buildings.front().gid==removed.gid);
+}
 
 TEST_CASE("reduced saved AI rosters retire trailing controllers and preserve continuation" * doctest::test_suite("SharedWorkerLifecycle"))
 {
@@ -361,7 +494,9 @@ TEST_CASE("reduced saved AI rosters retire trailing controllers and preserve con
     // Use actual shared AI admission/deadlines, including canceled future work.
     const auto step=[](Game& game,std::span<const unsigned> seats) {
         std::vector<std::string> wires;
-        for(auto& [seat,order]:game.prepareAIOrders(seats,false))
+        const auto& world = game.observeCompletedWorld();
+        game.admitAIOrders(seats,false,{},world);
+        for(auto& [seat,order]:game.deliverAIOrders(seats,false))
         {
             REQUIRE(seat<unsigned(game.gameHeader.getNumberOfPlayers()));
             order->sender=int(seat);
@@ -372,7 +507,7 @@ TEST_CASE("reduced saved AI rosters retire trailing controllers and preserve con
             wire.push_back(char(game.executeOrder(order,0)));
             wires.push_back(std::move(wire));
         }
-        game.syncStep(0);game.drainAI();
+        game.advanceLiveSimulation(0);game.drainAI();
         return wires;
     };
     const auto bytes=[](auto save) {

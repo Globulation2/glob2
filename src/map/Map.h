@@ -264,16 +264,14 @@ public:
 	// Owner selects/reserves and captures inputs before dispatch. Deferred jobs
 	// seed and propagate private data from immutable leases; join before save/reconfigure.
 	void stagePeriodicGradientPreparation();
-    bool hasPendingWorldPreparation() const;
-    void preparePendingWorld();
-    void preparePendingWorld(const SimulationSnapshot::Handle&);
+    void publishWorldResultsDue();
+    void submitWorldWork(const SimulationSnapshot::Handle&);
     void stageResourceGrowth();
     void finishResourceGrowth(JoinContext context = {JoinReason::Verification, ComputeTelemetry::NoTick});
     void setResourceGrowthDelay(unsigned delay);
     unsigned resourceGrowthDelay() const;
     const ResourceGrowth::Metrics& resourceGrowthMetrics() const;
 	bool hasPendingGradientPreparation() const;
-	void preparePendingGradient();
 	void preparePendingGradient(const SimulationSnapshot::Handle& foundation);
 	void advanceGradientPipeline();
 	void finishGradientPipeline(JoinContext context = {JoinReason::Verification, ComputeTelemetry::NoTick});
@@ -405,7 +403,7 @@ public:
 	//! Do a step associated with map (grow resources and process bullets)
 	// Standalone map callers capture/submit periodic preparation here. Game defers
 	// selection until its entire tick (including scripts/fog/projects) is complete.
-	void syncStep(Uint32 stepCounter, bool preparePeriodic = true);
+	void syncStep(Uint32 stepCounter);
 	//! Switch the Fog of War bufferResourceType
 	void switchFogOfWar(void);
 

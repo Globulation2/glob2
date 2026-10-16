@@ -5,6 +5,7 @@
 #include <ChecksumStream.h>
 #include <BinaryStream.h>
 #include <cstdlib>
+#include <algorithm>
 #include <limits>
 namespace
 {
@@ -109,11 +110,12 @@ void TeamStatsPipeline::prepareBoundary(Game &game, const SimulationSnapshot::Ha
 		std::rethrow_exception(failure);
 	if (!needsSample(game.stepCounter))
 		return;
-	if (!matchesWorld(captured.worldIdentity))
-		throw std::logic_error("Statistics input belongs to another world");
+	if (captured.tick != game.stepCounter || !captured.entities || !matchesWorld(captured.worldIdentity))
+		throw std::logic_error("Statistics input does not match the completed observation");
 	worldIdentity = captured.worldIdentity;
 	if (!pending.empty() &&
-		pending.back()->due - pending.back()->tick != game.gameHeader.getTeamStatsDelay())
+		(pending.back()->due - pending.back()->tick != game.gameHeader.getTeamStatsDelay() &&
+		 pending.back()->due - pending.back()->tick != std::max(1u, game.gameHeader.getTeamStatsDelay())))
 		throw std::logic_error("Cannot change active statistics delay");
 	if (lastSubmitted && game.stepCounter != *lastSubmitted + 1)
 		throw std::logic_error("Statistics observation tick was skipped");
@@ -127,7 +129,7 @@ void TeamStatsPipeline::prepareBoundary(Game &game, const SimulationSnapshot::Ha
 		for (int t = 0; t < game.teamsCount(); ++t)
 			previousFrames.push_back(
 				std::make_shared<GameplayMeasurements>(game.teams[t]->stats.measurements()));
-	const auto delay = game.gameHeader.getTeamStatsDelay();
+	const auto delay = std::max(1u, game.gameHeader.getTeamStatsDelay());
 	if (game.stepCounter > std::numeric_limits<Uint32>::max() - delay)
 		throw std::overflow_error("Statistics deadline overflow");
 	auto batch = spare ? std::move(spare) : std::make_unique<Pending>();
@@ -151,21 +153,15 @@ void TeamStatsPipeline::prepareBoundary(Game &game, const SimulationSnapshot::Ha
 	auto &submitted = *pending.back();
 	try
 	{
-		if (!delay)
-			compute(&submitted, 0);
-		else
-		{
-			const ComputeExecutor::Group group{
-				1, {compute, &submitted}, ComputeExecutor::StatisticsLaneBase};
-			submitted.ticket =
-				executor.submit(std::span(&group, 1), ComputeExecutor::boundaryDue(submitted.due),
-								{ComputeProducer::Other, submitted.tick, submitted.due});
-		}
+		const ComputeExecutor::Group group{
+			1, {compute, &submitted}, ComputeExecutor::StatisticsLaneBase};
+		submitted.ticket =
+			executor.submit(std::span(&group, 1), ComputeExecutor::boundaryDue(submitted.due),
+							{ComputeProducer::Other, submitted.tick, submitted.due});
 	}
 	catch (...)
 	{
-		// Immediate calculation can already have advanced some team frames.
-		// Keep failure sticky instead of permitting a partial retry or save.
+		// Submission failures are terminal; do not retry a partially admitted chain.
 		failure = std::current_exception();
 		throw;
 	}
@@ -258,7 +254,8 @@ void TeamStatsPipeline::load(Game &game, GAGCore::InputStream *s, int versionMin
 		// Format 155 carried a redundant input digest. Preserve its stream layout.
 		if (versionMinor == 155)
 			(void)s->readUint32("inputChecksum");
-		if (b->tick > b->due || b->due - b->tick != game.gameHeader.getTeamStatsDelay() ||
+		if (b->tick > b->due || (b->due - b->tick != game.gameHeader.getTeamStatsDelay() &&
+			 b->due - b->tick != std::max(1u, game.gameHeader.getTeamStatsDelay())) ||
 			b->due < game.stepCounter || b->tick > *lastSubmitted ||
 			(!pending.empty() && b->tick != pending.back()->tick + 1))
 			throw std::runtime_error("Invalid statistics deadline");

@@ -346,7 +346,7 @@ public:
 	int mapMouseX(int x)const {return camera.localX(x);}
 	int mapMouseY(int y)const {return camera.localY(y);}
 	/// Number of consecutive GUI steps the local view has been blocked waiting
-	/// on an away/late player (i.e. game.anyPlayerWaited has stayed true). Reset
+	/// on an away/late player (the latest client waiting mask stays nonzero). Reset
 	/// to 0 as soon as the wait clears. Used only to debounce the on-screen
 	/// "[waiting for X]" notice in GameGUIDraw — it is not part of simulation or
 	/// network state and is never checksummed, networked, or saved.

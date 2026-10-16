@@ -490,7 +490,6 @@ catch (const std::ios_base::failure& error)
 
 void Map::save(GAGCore::OutputStream *stream)
 {
-	preparePendingWorld();
 	stream->writeEnterSection("Map");
 	stream->write("MapB", 4, "signatureStart");
 	
@@ -885,7 +884,6 @@ void Map::saveRuntimeState(GAGCore::OutputStream *stream) const
 {
 	// A header changed since the last tick (a fork) reconfigures an empty pipeline first.
 	const_cast<Map*>(this)->ensureBuildingGradientPipeline();
-	const_cast<Map*>(this)->preparePendingWorld();
 	stream->writeEnterSection("mapRuntime");
 	stream->writeUint8(fogOfWar == fogOfWarA.data(), "fogIsA");
 	stream->writeUint32(topologyGeneration, "topologyGeneration");
@@ -1040,9 +1038,15 @@ void Map::saveRuntimeState(GAGCore::OutputStream *stream) const
 	});
 	stream->writeLeaveSection();
 	saveMaterialRoutingCache(stream);
-	// Last, so streams of older layouts (and tests replaying them) read unchanged.
+	// Preserve the historical runtime prefix; newer continuation fields follow it.
 	saveBuildingGradientPipeline(stream);
     gradientRuntime->growth.save(stream,game->stepCounter);
+    // Added in format 167, after all map-job state. Format 166 already carries
+    // intrusive population order but has no observation phase markers.
+    stream->writeUint8(gradientRuntime->worldResultsPublishedTick.has_value(), "worldResultsPublished");
+    stream->writeUint32(gradientRuntime->worldResultsPublishedTick.value_or(0), "worldResultsPublishedTick");
+    stream->writeUint8(gradientRuntime->worldWorkSubmittedTick.has_value(), "worldWorkSubmitted");
+    stream->writeUint32(gradientRuntime->worldWorkSubmittedTick.value_or(0), "worldWorkSubmittedTick");
 	stream->writeLeaveSection();
 }
 
@@ -1261,6 +1265,34 @@ void Map::loadRuntimeState(GAGCore::InputStream *stream, Sint32 versionMinor)
 	if (versionMinor>=FILE_FORMAT_VERSION_BUILDING_GRADIENT_PIPELINE) loadBuildingGradientPipeline(stream,packed,versionMinor);
     if(versionMinor>=FILE_FORMAT_VERSION_INTEGRATED_RESOURCE_GROWTH || loadedHistoricalGrowthVersion || loadedLegacyGrowth144 || loadedLegacyGrowth145)
         gradientRuntime->growth.load(stream,*this,game->stepCounter,loadedHistoricalGrowthVersion ? loadedHistoricalGrowthVersion : versionMinor);
+    // Legacy saves were written before the old start-of-step publication. Their
+    // pending outputs retain their remaining advances and publish once on entry.
+    // New saves can already represent this tick's observation: do not advance
+    // their local gradient clocks a second time when restoring it.
+    gradientRuntime->worldResultsPublishedTick.reset();
+    gradientRuntime->worldWorkSubmittedTick.reset();
+    if (versionMinor >= FILE_FORMAT_VERSION_SINGLE_OBSERVATION) {
+        const bool published = loadFlag(stream, "worldResultsPublished");
+        const auto tick = stream->readUint32("worldResultsPublishedTick");
+        if (published) {
+            if (tick > game->stepCounter) throw std::runtime_error("Invalid saved world publication boundary");
+            gradientRuntime->worldResultsPublishedTick = tick;
+        }
+        const bool submitted = loadFlag(stream, "worldWorkSubmitted");
+        const auto submittedTick = stream->readUint32("worldWorkSubmittedTick");
+        if (submitted) {
+            if (submittedTick > game->stepCounter || (published && submittedTick > tick))
+                throw std::runtime_error("Invalid saved world submission boundary");
+            gradientRuntime->worldWorkSubmittedTick = submittedTick;
+        }
+    } else if (game->stepCounter != 0 || gradientRuntime->growth.hasObservation(game->stepCounter)
+        || gradientRuntime->pipeline.pendingCount() || gradientRuntime->buildings.pendingCount()) {
+        // Old advancing steps admitted map jobs after incrementing to T. Their
+        // saved outputs already belong to T, even though publication at T is
+        // still due. Never replace those inputs with the newly captured world.
+        // Initial legacy saves without admitted work still bootstrap normally.
+        gradientRuntime->worldWorkSubmittedTick = game->stepCounter;
+    }
 	stream->readLeaveSection();
     if (versionMinor < FILE_FORMAT_VERSION_HAZARD_ROUTING && hasTerrainHealthEffects()) {
         // Consume the complete old state first, then discard only route caches.

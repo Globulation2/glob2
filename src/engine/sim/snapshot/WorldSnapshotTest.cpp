@@ -7,6 +7,7 @@
 #include "Unit.h"
 #include "Team.h"
 #include "OutcomeReason.h"
+#include "Order.h"
 #include "ai/observation/AIWorldView.h"
 #include <limits>
 #include <span>
@@ -145,7 +146,12 @@ TEST_SUITE("WorldSnapshot")
         auto* last=fixture.addBuilding("inn",4,4,0,0); REQUIRE(last);
         REQUIRE(last->gid==reusedBuilding);
         REQUIRE(fixture.addUnit(WORKER,14,14,2));
-        const auto captured=SimulationSnapshot::capture(fixture.game,SimulationSnapshot::captureCatalog(fixture.game));
+        SimulationSnapshot::Store store;
+        const auto captured=store.captureBoundary(fixture.game);
+        const auto widened=store.captureBoundary(fixture.game,allOptions);
+        CHECK(widened.entities==captured.entities);
+        CHECK(store.metrics.coreMaterializations==1);
+        CHECK(store.metrics.entityBytesCopied==3*sizeof(UnitState)+2*sizeof(BuildingStateRecord));
         CHECK_NOTHROW(SimulationSnapshot::verifyCapture(fixture.game,captured));
         AIEngine::AIWorldView world(captured);
         REQUIRE(world.unitsForTeam(0).size()==2);
@@ -1004,6 +1010,10 @@ TEST_SUITE("WorldSnapshot")
 		const auto full = store.captureBoundary(fixture.game, {.presentation=true, .history=true});
 		CHECK(full.terrain == simulation.terrain); CHECK(full.resources == simulation.resources);
 		CHECK(full.entities == simulation.entities);
+        CHECK(full.teams == simulation.teams);
+        CHECK(full.statisticsInputs == simulation.statisticsInputs);
+        CHECK(full.resourceFields == simulation.resourceFields);
+        CHECK(store.metrics.coreMaterializations == 1);
 		REQUIRE(full.entities->units.size() == 1);
 		CHECK(full.entities->relationships.front() == Game::refOf(unit));
 		CHECK_FALSE(simulation.session); CHECK_FALSE(simulation.history);
@@ -1077,9 +1087,22 @@ TEST_SUITE("WorldSnapshot")
 			+ (entities.buildingSlotIndices.size() + entities.unitSlotIndices.size()) * sizeof(Uint32)
 			+ entities.relationships.size() * sizeof(UnitRef)
             + (entities.buildingRanges.size() + entities.unitRanges.size()) * sizeof(SimulationSnapshot::UnitRange);
-		CHECK((freshStore.metrics.bytesCopied - freshBytes)
-			- (reusedStore.metrics.bytesCopied - reusedBytes) == entityBytes);
-		CHECK(reusedStore.metrics.reusedComponents == freshStore.metrics.reusedComponents + 1);
+        Uint64 teamBytes = fresh.teams->values.size() * sizeof(SimulationSnapshot::TeamView);
+        for (const auto& team : fresh.teams->values)
+            teamBytes += team.statistics.buildingCountByVariant.size() * sizeof(int)
+                + (team.virtualBuildings.size() + team.swarms.size()) * sizeof(BuildingRef);
+        Uint64 statisticsBytes = 0;
+        for (const auto& events : fresh.statisticsInputs->events)
+            statisticsBytes += sizeof(GameplayEventCounters) + events.capacityBytes();
+        for (const auto& coverage : fresh.statisticsInputs->coverage)
+            statisticsBytes += coverage.size() * sizeof(TeamStats::CoverageBuilding);
+        CHECK((freshStore.metrics.bytesCopied - freshBytes)
+            - (reusedStore.metrics.bytesCopied - reusedBytes) == entityBytes + teamBytes + statisticsBytes);
+		CHECK(reusedStore.metrics.reusedComponents >= freshStore.metrics.reusedComponents + 3);
+        CHECK(reusedStore.metrics.coreMaterializations == 1);
+        CHECK(freshStore.metrics.coreMaterializations == 2);
+        CHECK(reusedStore.metrics.entityBytesCopied == sizeof(UnitState));
+
 	}
 
 }
@@ -1129,6 +1152,7 @@ TEST_SUITE("WorldSnapshot")
         const auto catalog=SimulationSnapshot::captureCatalog(fixture.game);
         auto first=SimulationSnapshot::capture(fixture.game,catalog,requirements,nullptr,&storage);
         CHECK(storage.bytesCopied==0);
+        CHECK(storage.coreMaterializations==1);
         CHECK(storage.entityBytesCopied==sizeof(UnitState)+sizeof(BuildingStateRecord));
         CHECK(storage.entitySidecarBytesCopied==sizeof(SimulationSnapshot::BuildingView::constructionOriginRatios));
         CHECK_NOTHROW(SimulationSnapshot::verifyCapture(fixture.game,first));
@@ -1138,6 +1162,7 @@ TEST_SUITE("WorldSnapshot")
         auto second=SimulationSnapshot::capture(fixture.game,catalog,requirements,&first,&storage);
         CHECK_NOTHROW(SimulationSnapshot::verifyCapture(fixture.game,second));
         CHECK(second.entities!=first.entities);
+        CHECK(storage.coreMaterializations==2);
         CHECK(second.entities->units.front().levelUpAnimation==LEVEL_UP_ANIMATION_FRAME_COUNT);
         building->setPrivateMaterial(MaterialSlotCount-1,255);
         CHECK_THROWS_AS(SimulationSnapshot::verifyCapture(fixture.game,second),std::logic_error);
@@ -1190,5 +1215,191 @@ TEST_SUITE("WorldSnapshot")
         check("derived maximum hp", [&](auto& entities) { ++entities.buildings[0].maxHp; });
         check("shared inventory binding", [&](auto& entities) { entities.buildings[0].usesTeamResources=!entities.buildings[0].usesTeamResources; });
         check("supply mask", [&](auto& entities) { entities.buildings[0].availableSupplyMask^=1; });
+    }
+}
+
+TEST_SUITE("WorldSnapshot")
+{
+    TEST_CASE("core materialization counts empty worlds and explicit paused revisions")
+    {
+        glob2test::HeadlessGlobals globals;
+        glob2test::HeadlessGame fixture({.wDec=5,.hDec=5,.teams=1,.loadDefaultRace=true});
+        SimulationSnapshot::Store store;
+        CHECK(store.revision() == 0);
+        const auto first = store.captureBoundary(fixture.game);
+        CHECK(first.entities->units.empty());
+        CHECK(first.entities->buildings.empty());
+        CHECK(store.metrics.coreMaterializations == 1);
+        CHECK(store.metrics.entityBytesCopied == 0);
+        store.captureBoundary(fixture.game, allOptions);
+        CHECK(store.metrics.coreMaterializations == 1);
+        store.captureBoundary(fixture.game, allOptions);
+        CHECK(store.metrics.coreMaterializations == 1);
+        store.invalidateBoundary();
+        CHECK(store.revision() == 1);
+        const auto edited = store.captureBoundary(fixture.game);
+        CHECK(edited.tick == first.tick);
+        CHECK(edited.observationRevision == store.revision());
+        CHECK(store.metrics.coreMaterializations == 2);
+    }
+
+    TEST_CASE("optional additions preserve all established observation components")
+    {
+        glob2test::HeadlessGlobals globals;
+        glob2test::HeadlessGame fixture({.wDec=5,.hDec=5,.teams=1,.loadDefaultRace=true});
+        auto* unit = fixture.addUnit(WORKER,12,12); REQUIRE(unit);
+        SimulationSnapshot::Store store;
+        const auto first = store.captureBoundary(fixture.game, {.presentation=true, .history=true});
+        const auto entityBytes = store.metrics.entityBytesCopied;
+        const auto sidecarBytes = store.metrics.entitySidecarBytesCopied;
+        const auto enlarged = store.captureBoundary(fixture.game, allOptions);
+        CHECK(enlarged.entities == first.entities);
+        CHECK(enlarged.teams == first.teams);
+        CHECK(enlarged.statisticsInputs == first.statisticsInputs);
+        CHECK(enlarged.resourceFields == first.resourceFields);
+        CHECK(enlarged.session == first.session);
+        CHECK(enlarged.effects == first.effects);
+        CHECK(enlarged.statistics == first.statistics);
+        CHECK(enlarged.history == first.history);
+        CHECK(store.metrics.coreMaterializations == 1);
+        CHECK(store.metrics.entityBytesCopied == entityBytes);
+        CHECK(store.metrics.entitySidecarBytesCopied == sidecarBytes);
+
+        // Presentation uses the retained handle after live advancement; no
+        // late enrichment can read effects or statistics from the newer world.
+        const auto hp = unit->hp;
+        --unit->hp;
+        fixture.game.totalPrestige += 7;
+        ++fixture.game.stepCounter;
+        const auto presentation = enlarged.presentationView({.presentation=true, .history=true});
+        CHECK(presentation.entities == first.entities);
+        CHECK(presentation.entities->units.front().hp == hp);
+        CHECK(presentation.teams->totalPrestige == first.teams->totalPrestige);
+        CHECK(presentation.effects == first.effects);
+        CHECK(presentation.statistics == first.statistics);
+        CHECK(store.metrics.coreMaterializations == 1);
+        const auto next = store.captureBoundary(fixture.game, allOptions);
+        CHECK(next.entities->units.front().hp == hp - 1);
+        CHECK(next.teams->totalPrestige == fixture.game.totalPrestige);
+        CHECK(store.metrics.coreMaterializations == 2);
+    }
+}
+
+TEST_SUITE("WorldSnapshot")
+{
+    TEST_CASE("owner observation survives acknowledgements stalls and live advancement")
+    {
+        glob2test::HeadlessGlobals globals;
+        glob2test::HeadlessGame fixture({.wDec=5,.hDec=5,.teams=1,.clearImmobile=true,.loadDefaultRace=true,.header=true});
+        auto& game = fixture.game;
+        REQUIRE(fixture.addUnit(WORKER,12,12));
+        const auto world = game.observeCompletedWorld(allOptions);
+        const auto materializations = game.snapshots().metrics.coreMaterializations;
+        REQUIRE(materializations == 1);
+        REQUIRE(world.entities->units.size() == 1);
+        for (int frame = 0; frame < 3; ++frame) {
+            auto order = std::make_shared<NullOrder>(); order->sender = 0;
+            REQUIRE(game.executeOrder(order,0));
+            const auto paused = game.observeCompletedWorld(allOptions);
+            CHECK(paused.entities == world.entities);
+            CHECK(paused.effects == world.effects);
+            CHECK(game.observation().entities == world.entities);
+        }
+        CHECK(game.snapshots().metrics.coreMaterializations == materializations);
+        game.advanceLiveSimulation(0);
+        CHECK(game.snapshots().metrics.coreMaterializations == materializations);
+        // A retained frame remains valid even though live simulation moved on.
+        CHECK(world.presentationView(allOptions).entities == world.entities);
+        const auto next = game.observeCompletedWorld(allOptions);
+        CHECK(next.tick == world.tick + 1);
+        CHECK(next.entities != world.entities);
+        CHECK(game.snapshots().metrics.coreMaterializations == materializations + 1);
+        CHECK(game.observeCompletedWorld(allOptions).entities == next.entities);
+        CHECK(game.snapshots().metrics.coreMaterializations == materializations + 1);
+    }
+
+    TEST_CASE("an established owner observation rejects uncaptured optional components")
+    {
+        glob2test::HeadlessGlobals globals;
+        glob2test::HeadlessGame fixture({.wDec=5,.hDec=5,.teams=1,.clearImmobile=true,.loadDefaultRace=true});
+        auto& game = fixture.game;
+        auto* unit = fixture.addUnit(WORKER,12,12); REQUIRE(unit);
+        const auto first = game.observeCompletedWorld();
+        const auto captures = game.snapshots().metrics.captures;
+        const auto materializations = game.snapshots().metrics.coreMaterializations;
+        const auto entityBytes = game.snapshots().metrics.entityBytesCopied;
+        const auto hp = unit->hp;
+
+        // A later request cannot enrich frozen entities using a newer live world.
+        --unit->hp;
+        CHECK_THROWS_AS(game.observeCompletedWorld(allOptions), std::invalid_argument);
+        const auto& retained = game.observation();
+        CHECK(retained.entities == first.entities);
+        CHECK(retained.observationRevision == first.observationRevision);
+        CHECK(retained.requirements == first.requirements);
+        CHECK(retained.entities->units.front().hp == hp);
+        CHECK_FALSE(retained.session);
+        CHECK(game.snapshots().metrics.captures == captures);
+        CHECK(game.snapshots().metrics.coreMaterializations == materializations);
+        CHECK(game.snapshots().metrics.entityBytesCopied == entityBytes);
+        CHECK(game.observeCompletedWorld().entities == first.entities);
+    }
+
+    TEST_CASE("explicit paused edit establishes another owner observation at the same tick")
+    {
+        glob2test::HeadlessGlobals globals;
+        glob2test::HeadlessGame fixture({.wDec=5,.hDec=5,.teams=1,.clearImmobile=true,.loadDefaultRace=true});
+        auto& game = fixture.game;
+        auto* unit = fixture.addUnit(WORKER,12,12); REQUIRE(unit);
+        const auto first = game.observeCompletedWorld(allOptions);
+        const auto hp = unit->hp;
+        --unit->hp;
+        game.invalidateObservation();
+        const auto edited = game.observeCompletedWorld(allOptions);
+        CHECK(edited.tick == first.tick);
+        CHECK(edited.observationRevision != first.observationRevision);
+        CHECK(edited.entities->units.front().hp == hp - 1);
+        CHECK(first.entities->units.front().hp == hp);
+        CHECK(game.snapshots().metrics.coreMaterializations == 2);
+    }
+}
+
+TEST_SUITE("WorldSnapshot")
+{
+    TEST_CASE("nonadvancing real orders revise observations while advancing orders wait for the next tick")
+    {
+        glob2test::HeadlessGlobals globals;
+        glob2test::HeadlessGame fixture({.wDec=5,.hDec=5,.teams=1,.clearImmobile=true,.loadDefaultRace=true,.header=true});
+        auto& game=fixture.game;
+        auto* building=fixture.addBuilding("inn",4,4); REQUIRE(building);
+        const auto first=game.observeCompletedWorld(allOptions);
+        const auto captures=game.snapshots().metrics.coreMaterializations;
+        const auto original=first.entities->buildings.front().maxUnitWorking;
+        const auto requested=original==1 ? 2 : 1;
+        auto edit=std::make_shared<OrderModifyBuilding>(building->gid,requested); edit->sender=0;
+        REQUIRE(game.executeOrder(edit,0));
+        CHECK(game.observeCompletedWorld(allOptions).entities==first.entities);
+        game.finishOrderPhase(false);
+        const auto edited=game.observeCompletedWorld(allOptions);
+        CHECK(edited.tick==first.tick);
+        CHECK(edited.observationRevision>first.observationRevision);
+        CHECK(edited.entities->buildings.front().maxUnitWorking==requested);
+        CHECK(first.entities->buildings.front().maxUnitWorking==original);
+        CHECK(game.snapshots().metrics.coreMaterializations==captures+1);
+
+        // The next real order belongs to an advancing phase. It cannot revise
+        // or reconstruct the already admitted observation before advancement.
+        game.observeCompletedWorld(allOptions);
+        auto advancing=std::make_shared<OrderModifyBuilding>(building->gid,original); advancing->sender=0;
+        REQUIRE(game.executeOrder(advancing,0));
+        game.finishOrderPhase(true);
+        CHECK(game.observeCompletedWorld(allOptions).entities==edited.entities);
+        game.advanceLiveSimulation(0);
+        CHECK(game.snapshots().metrics.coreMaterializations==captures+1);
+        const auto next=game.observeCompletedWorld(allOptions);
+        CHECK(next.tick==edited.tick+1);
+        CHECK(next.observationRevision>edited.observationRevision);
+        CHECK(next.entities->buildings.front().maxUnitWorking==original);
+        CHECK(game.snapshots().metrics.coreMaterializations==captures+2);
     }
 }

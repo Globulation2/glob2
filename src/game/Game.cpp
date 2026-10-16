@@ -171,6 +171,7 @@ void Game::configureUnitCatalog()
         }
     }
     worldSnapshots.invalidateCatalog();
+    completedObservation.reset(); // Setup/catalog replacement is an explicit owner edit.
 }
 
 void Game::configureBuildingCatalog()
@@ -242,9 +243,8 @@ void Game::init(GameGUI *gui, MapEdit* edit)
 	for (int i=0; i<TICK_PROFILE_BUF_LEN; i++)
 		ticksGameSum[i]=0;
 
-	maskAwayPlayer = 0;
-	// Only setGameHeader and setWaitingOnMask assigned this before; a Game that never
-	// receives a header (headless tests) otherwise gates every syncStep on garbage.
+	// Games created without a header (headless tests) may advance until an
+	// explicit network wait state says otherwise.
 	anyPlayerWaited = false;
 }
 
@@ -514,9 +514,8 @@ void Game::applyStartingRules(void)
 
 void Game::setWaitingOnMask(Uint32 mask)
 {
-    if (maskAwayPlayer!=mask || anyPlayerWaited!=(mask!=0)) snapshots().invalidateBoundary();
-	maskAwayPlayer = mask;
 	anyPlayerWaited = (mask != 0);
+	if (clientEvents) clientEvents->publishWaitingMask(mask);
 }
 
 
@@ -593,9 +592,7 @@ Unit *Game::resolveUnit(UnitRef ref) const
 void Game::publishClientEvent(ClientEventVariant event)
 {
     if (clientEvents) {
-        const bool acknowledgement=std::holds_alternative<ClientEvent::OrderExecuted>(event);
         clientEvents->push(std::move(event));
-        if (acknowledgement) snapshots().invalidateBoundary();
     }
 }
 

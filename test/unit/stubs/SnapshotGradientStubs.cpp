@@ -8,6 +8,8 @@
 // is exercised by the engine's statistics and save/load suites.
 void Game::drainTeamStats() {}
 void Game::drainHiring() {}
+// Unit map fixtures have no owner observation; engine tests cover invalidation.
+void Game::invalidateObservation() {}
 
 // Unit Map fixtures do not link SnapshotGradient.cpp or create owned snapshot
 // cost views. Supply only their diagnostic getter; real cost-view admission,

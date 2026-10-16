@@ -117,8 +117,10 @@ checksum adapter retains its historical entity/RNG representation for fixtures.
   queues; `Game` owns the stable script endpoint (inactive without a GUI):
   - `ClientEvents`: lossless queue of notices the simulation publishes (team
     `GameEvent`s, chat, voice, marks, pause, ghost removal, building removal, unit
-    conversion, executed orders, script presentation) plus a per-tick latest-value pulse
-    (`Team::wasRecentEvent` for every team). `Game::executeOrderAndNotify` publishes
+    conversion, executed orders, script presentation), a latest waiting-player mask,
+    and a per-tick pulse (`Team::wasRecentEvent` for every team). Network-wait notices
+    consume the client mask so they can change during a stall without recapturing
+    the retained world. `Game::executeOrderAndNotify` publishes
     the order effects; `GameGUI::consumeClientEvents` applies them after each order,
     after each engine tick, and at the start of `step` and `drawAll`.
   - `ClientCommandSink`: the presentation commands map scripts issue (building and
@@ -132,7 +134,7 @@ checksum adapter retains its historical entity/RNG representation for fixtures.
   - `ClientRequests`: a latest-value `ClientView` (viewport, observed building,
     overlay, debug layers) and a lossless command queue (the SGSL Space
     acknowledgement). `Game::applyClientRequests` applies them at the start of
-    `Game::syncStep`; only the observed building records
+    `Game::advanceLiveSimulation`; only the observed building records
     `Building::unitsFailingByReason`.
 
   Client code holds entities as `BuildingRef`/`UnitRef` (gid plus `scriptIdentity`)
@@ -366,21 +368,53 @@ checksum adapter retains its historical entity/RNG representation for fixtures.
   are rebuilt from the registry and cells, never serialized. Registry factories
   publish `shared_ptr<const TerrainRegistry>`; copying a registry is private because
   authoring presentation strings borrow its owned key/name storage.
-## Scheduled gradient work
 
-- The engine has a completed-tick observation phase. After fog, projects and
-  scripts, `Game::syncStep` selects/reserves one periodic gradient job. The next
-  observation publishes the complete simulation preset in a game-owned snapshot
-  store. `Game::prepareReadBoundary()` publishes due statistics before capture and
-  admits one new sample on advancing ticks. Its capture does not depend on polled players or
-  pending job kinds. All polled controllers share one immutable AI view of that
-  boundary. Map jobs retain named gradient, building-gradient or growth views,
-  which release unrelated components independently. AI and gradient batches share
-  the compute executor; gradient seeding and propagation may outlive the
-  observation boundary. Direct stepping captures and submits before returning;
-  explicit deferred stepping leaves that capture to its caller. Direct map
-  stepping invalidates the cached boundary because its caller need not advance
-  the game's tick counter.
+## Completed world observations
+
+- `Game::observeCompletedWorld` is the common owner coordinator for graphical,
+  headless, replay and direct stepping. At a new completed boundary it publishes
+  due map, hiring, statistics and targeting results; captures one immutable world;
+  then submits world consumers using named views of that same handle. Engine AI
+  admission receives that handle explicitly. Due AI orders are delivered separately
+  into the ordered command schedule, validated against live state, then executed.
+  `Game::advanceLiveSimulation` only mutates live state and advances the tick; it
+  neither captures nor submits preparation. `Game::step` is the direct caller's
+  observe-then-advance entry point: it also updates unpolled JavaScript visibility
+  history, but leaves AI polling and order execution to its caller. There is no
+  deferred-step variant or runtime optional-snapshot fallback.
+- Observation T represents the completed world after publication and before the
+  orders for its next advancement. Orders and simulation mutations first appear
+  in observation T+1. A published observation is never reconstructed to reflect
+  an order acknowledgement. Synchronous order validation and demand queries still
+  use live state. Every newly admitted background job has a later publication or
+  order-delivery boundary; configured zero-delay AI/statistics now mean one tick.
+
+  | Consumer | Observation input | Effective delay | Publication / first consumer |
+  | --- | --- | --- | --- |
+  | AI | Shared AI view of T | max(1, configured 0–8) | T+delay into the ordered command schedule |
+  | Hiring | Shared entity and route views of T | 1, staggered refresh 4 | T+1 before capture; live worker assignment |
+  | Statistics | Shared statistics inputs of T | max(1, configured 0–8) | T+delay before capture; statistics and presentation |
+  | Targeting | Shared targeting view of T | configured positive delay, default 1 | T+delay before capture; live turret firing |
+  | Periodic gradients | Shared gradient view of T | configured 1–16, default 8 | T+delay before capture; live routing |
+  | Building gradients | Shared building-gradient view of T | configured 1–8 in matches; standalone maps use synchronous live queries | T+delay before capture; live routing |
+  | Resource growth | Shared growth view of T | configured 1–16, default 8 | T+delay before capture; live resources |
+
+- Initial setup and restore establish an observation before admission. Initial AI
+  command slots are null until a decision's delivery deadline. Pause, pacing and
+  network stalls retain the current observation and admit no duplicate world
+  work. Authoritative jobs are admitted once per logical tick independently of
+  local readiness, including an initially paused boundary; AI polling still pauses.
+  An unpause order leaves the simulation tick unchanged until the next order
+  delivery phase, so restored outputs due at that tick cannot be skipped.
+  Actual paused edits explicitly invalidate its observation revision, so
+  the same tick can have a new immutable identity. Order acknowledgements and
+  waiting-mask changes only update client/command state.
+- Format 167 saves map publication/submission phase markers. Restoring an already
+  observed boundary neither advances its queues again nor resubmits its jobs.
+  Earlier supported saves retain their completed pending outputs and historical
+  deadlines, including zero-delay outputs; they are never regenerated from the
+  loaded world. New admissions use the new timing rule. Replay floor 167 and the
+  simulation revision separate the changed trajectory from earlier executions.
 - The simulation preset always includes catalogs, terrain, resources, occupancy,
   areas, visibility, entities, teams, rules, published resource fields, growth and
   cumulative statistics inputs.
@@ -389,12 +423,25 @@ checksum adapter retains its historical entity/RNG representation for fixtures.
   annotation options. Consumers do not contribute arbitrary capture masks.
   Complete snapshots still share unchanged components and refresh dirty map
   chunks in reusable buffers. Capture constructs only components that need filling;
-  reused and unrequested components require no placeholder records. Paused edits, configuration changes and world
-  replacement retain their explicit invalidation boundaries. A cold option may
-  widen the cached capture within a boundary, reusing its immutable entity records
-  and sidecars without another extraction. A changed tick, observation revision,
-  configuration revision or map generation refreshes entities; named views drop
-  unwanted extras.
+  reused and unrequested components require no placeholder records. Paused edits,
+  configuration changes and world replacement retain explicit invalidation
+  boundaries. A cold option may widen an explicit inspection capture at an
+  unchanged boundary, reusing all
+  existing components without another entity extraction. Normal runtime options
+  are fixed by the first observation request, even when presentation preparation
+  is busy. Repeated requests reuse that handle; requesting an omitted payload is
+  an error rather than permission to enrich it from live state. Camera
+  extraction uses the retained full observation. Graphical sessions freeze the
+  optional view inputs before capture so paused panel/debug toggles can project
+  from that observation; headless consumers retain only their requested inputs.
+  Store caching tracks tick, observation and configuration revisions, and map
+  generations. Runtime callers establish a new observation only at the next tick
+  or `Game::invalidateObservation()` for an explicit owner edit. Invalidating the
+  standalone inspection cache does not revoke an established owner observation;
+  live entity helpers and orders cannot refresh that retained handle.
+  Named views drop unwanted extras.
+## Scheduled gradient work
+
 - Gradient selection, round-robin flags, invalidation and publication stay on the
   simulation owner. Jobs own their output and use worker-private scratch; they never read live map
   arrays or mutable seed caches. Publication remains after the configured delay
@@ -405,8 +452,8 @@ checksum adapter retains its historical entity/RNG representation for fixtures.
   errors survive executor batch retirement and surface at save/publication.
 - Stale building walking fields are refreshed by `BuildingGradientPipeline`
   (`src/map/gradient/`, `MapGradientScheduling.cpp`). Team stepping requests a
-  refresh and keeps serving the old field; after the tick up to four requests are
-  staged, captured at the observation boundary with the periodic job, built on
+  refresh and keeps serving the old field; at the next observation up to four requests are
+  staged from the shared handle with the periodic job, built on
   workers and published `buildingGradientDelay` ticks later (the match rule, 1–8,
   default 8), before team stepping. Publication swaps the field and its search on
   the owner; it is discarded if a synchronous rebuild or a reset superseded it.

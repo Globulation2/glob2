@@ -40,7 +40,7 @@ static std::string step(Game& game)
         orders.append(reinterpret_cast<const char*>(order->getData()),order->getDataLength());
         game.executeOrder(order,0);
     }
-    game.syncStep(0);
+    game.step(0);
     return orders;
 }
 static void rejectedStateThrows(Game& game)

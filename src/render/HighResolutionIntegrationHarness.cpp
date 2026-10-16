@@ -296,7 +296,7 @@ public:
             else std::cout<<"SKIP fullscreen camera continuity: enable with --fullscreen\n";
             for(int tick=0;tick<50;++tick)
             {
-                gui.game.syncStep(0);auto sum=gui.game.checkSum(nullptr,nullptr,nullptr,true);
+                gui.game.step(0);auto sum=gui.game.checkSum(nullptr,nullptr,nullptr,true);
                 if(!hd)simulationChecksums.push_back(sum);else REQUIRE(simulationChecksums[tick]==sum);
             }
         }

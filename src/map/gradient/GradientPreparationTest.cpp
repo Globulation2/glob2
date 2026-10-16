@@ -943,8 +943,8 @@ TEST_CASE("unused catalog definitions allocate no material gradients and schedul
     expanded.game.syncRandom=base.game.syncRandom;
     for (unsigned tick=0;tick<64;++tick)
     {
-        { auto random=base.game.bindRandom(); base.game.syncStep(0); }
-        { auto random=expanded.game.bindRandom(); expanded.game.syncStep(0); }
+        { auto random=base.game.bindRandom(); base.game.step(0); }
+        { auto random=expanded.game.bindRandom(); expanded.game.step(0); }
         CHECK(base.game.syncRandom==expanded.game.syncRandom);
         CHECK(original.gradientPipelineStatus().jobs==candidate.gradientPipelineStatus().jobs);
         CHECK(original.gradientPipelineStatus().pending==candidate.gradientPipelineStatus().pending);
@@ -1101,7 +1101,7 @@ TEST_CASE("published plane registry matches a sweep of live material fields" * d
 			if (!inserted) { CHECK(plane.generation >= it->second); it->second = plane.generation; }
 		}
 	};
-	for (int resource=0; resource<3; ++resource) m.setResourceByIndex(10 + resource, 10, resource, 0);
+	for (int resource : {WOOD, WHEAT, STONE}) m.setResourceByIndex(10 + resource, 10, resource, 0);
 	m.setMapDiscovered();
 	check(); CHECK(m.publishedResourceFields().empty());
 	m.getMaterialGradientSlot(0, WHEAT, 0); check();
@@ -1110,7 +1110,7 @@ TEST_CASE("published plane registry matches a sweep of live material fields" * d
 	m.updateMaterialGradient(0, WHEAT, 0, false); check();
 	CHECK(m.publishedResourceFields()[0].generation > first);
 	m.getMaterialGradientSlot(1, WOOD, 2); check();
-	m.getMaterialGradientSlot(1, STONE, 1); check();
+	auto* liveStone = m.getMaterialGradientSlot(1, STONE, 1); REQUIRE(liveStone); check();
 	CHECK(m.publishedResourceFields().size() == 3);
 	// Bulk slot changes re-register every live plane with a newer generation.
 	std::map<Uint16, Uint64> before;
@@ -1122,7 +1122,12 @@ TEST_CASE("published plane registry matches a sweep of live material fields" * d
 	REQUIRE(handle.resourceFields);
 	CHECK(handle.resourceFields->planes.size() == 3);
 	const auto* stone = handle.resourceFields->find(MapState::planeKey(1, STONE, 1, false));
-	REQUIRE(stone); CHECK(stone->values->at(7) == 5);
+	REQUIRE(stone);
+    CHECK(std::equal(stone->values->begin(), stone->values->end(), liveStone));
+    const auto frozen = stone->values->at(7);
+    liveStone[7] ^= 1;
+    CHECK(stone->values->at(7) == frozen);
+    CHECK(stone->values->at(7) != liveStone[7]);
 	CHECK_FALSE(handle.resourceFields->find(MapState::planeKey(0, WOOD, 0, false)));
 }
 
@@ -1272,6 +1277,7 @@ TEST_CASE("GradientPreparation/modified terrain costs remain exact when field ob
     setBackend(Backend::OpenCL);
     map.configureCompute(3); // one eligible maintenance worker plus presentation
     if constexpr(GAGCore::ThreadSupport::available) {
+        REQUIRE(map.computeExecutor().threadCount() == 3);
         const auto deadline=std::chrono::steady_clock::now()+std::chrono::seconds(30);
         while(initializationState.load()!=2 && std::chrono::steady_clock::now()<deadline) std::this_thread::yield();
         REQUIRE(initializationState.load()==2);
@@ -1279,20 +1285,42 @@ TEST_CASE("GradientPreparation/modified terrain costs remain exact when field ob
 
     for (unsigned entry=0;entry<2;++entry) {
         for(unsigned phase=0;phase<2;++phase) {
+            CAPTURE(entry); CAPTURE(phase);
             std::vector<Uint16> output(map.size,1);output[0]=65535;output[phase?37:13]=0;
             auto expected=output;
             setBackend(Backend::CPU);map.propagateGradient(expected.data(),0);
             setBackend(Backend::OpenCL);
-            const auto completed=openCLStatus().committedFields;
+            const auto before = openCLStatus();
+            const auto completed=before.committedFields;
+            std::size_t executionSlot = 0;
             const bool deviceReady=readyPlans.load()&(1u<<unsigned(Plan::Frozen8));
             std::function<void()> work=[&] {
+                executionSlot = ComputeExecutor::workerSlot();
                 if(entry==0) gradient_preparation::propagate(request,snapshot,output.data(),scratch);
                 else map.propagateGradient(output.data(),0);
             };
             const ComputeExecutor::Group group{1,{[](void* p,std::size_t){(*static_cast<std::function<void()>*>(p))();},&work}};
             auto batch=map.computeExecutor().submit(std::span(&group,1)); map.computeExecutor().join(batch);
+            const auto after = openCLStatus();
+            CAPTURE(executionSlot); CAPTURE(deviceReady);
+            CAPTURE(before.available); CAPTURE(after.available); CAPTURE(after.error);
+            CAPTURE(before.budgetDeclines); CAPTURE(after.budgetDeclines);
+            CAPTURE(before.cpuSelections); CAPTURE(after.cpuSelections);
+            if constexpr(GAGCore::ThreadSupport::available)
+                REQUIRE(executionSlot != 0);
             CHECK(output==expected);
-            if(deviceReady) CHECK(openCLStatus().committedFields==completed+1);
+            if (deviceReady) {
+                if (after.error.empty()) {
+                    CHECK(after.committedFields == completed + 1);
+                } else {
+                    // Readiness permits a device attempt, not a successful
+                    // execution. A reported failure must retire the backend and
+                    // recover this exact field on CPU without a false GPU commit.
+                    REQUIRE_FALSE(after.available);
+                    CHECK(after.committedFields == completed);
+                    CHECK(after.cpuSelections == before.cpuSelections + 1);
+                }
+            }
         }
     }
 }

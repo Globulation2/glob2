@@ -2,6 +2,7 @@
 // Copyright (C) 2001-2004 Stephane Magnenat & Luc-Olivier de Charrière
 
 #include "Map.h"
+#include "Game.h"
 #include "gradient/GradientRuntime.h"
 #include "Bullet.h"
 #include "Sector.h"
@@ -17,8 +18,15 @@
 
 Uint32 Map::checkSum(bool heavy, bool includePending, bool legacy152)
 {
-	preparePendingWorld();
-    Uint32 cs = size ^ terrainRegistry().checksum() ^ resourceRegistry().checksum() ^ gradientRuntime->growth.checksum(heavy && includePending);
+    // Only the current-boundary phase matters: old tick markers all mean due
+    // publication/submission on the next observation, while current ones skip it.
+    // This scheduling state belongs in every current checksum tier; the explicit
+    // legacy checksum projection keeps its historical field layout.
+    const Uint32 worldPhase = !legacy152 && game
+        ? (gradientRuntime->worldResultsPublishedTick == game->stepCounter ? 1u : 0u)
+          | (gradientRuntime->worldWorkSubmittedTick == game->stepCounter ? 2u : 0u)
+        : 0u;
+    Uint32 cs = worldPhase ^ size ^ terrainRegistry().checksum() ^ resourceRegistry().checksum() ^ gradientRuntime->growth.checksum(heavy && includePending);
 	if (heavy)
 	{
 		for (size_t index = 0; index < cellCount(); ++index)

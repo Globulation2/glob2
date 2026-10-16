@@ -136,15 +136,11 @@ void SimulationRunner::publishPresentation(const SimulationSnapshot::Handle& wor
 
 void SimulationRunner::withGame(const std::function<void()> &work)
 {
-    const auto mutate=[&] {
-        // Exceptional owner access may mutate entities without advancing a tick.
-        // Invalidate before invoking it, including when the callback throws.
-        engine.gui.game.snapshots().invalidateBoundary();
-        work();
-    };
+    // Parking also serves read-only UI work. Actual edits explicitly announce
+    // a new observation revision; camera/menu callbacks do not recapture.
 	if (!thread.joinable() || finished)
 	{
-		mutate();
+		work();
 		return;
 	}
 	{
@@ -165,7 +161,7 @@ void SimulationRunner::withGame(const std::function<void()> &work)
 			runner.wake.notify_all();
 		}
 	} release{*this};
-	mutate();
+	work();
 }
 
 void SimulationRunner::suspend()
