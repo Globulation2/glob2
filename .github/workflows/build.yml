@@ -167,6 +167,9 @@ jobs:
       - name: Verify coverage accounting
         run: python3 -m unittest discover -s test -p test_run_coverage.py -v
       - uses: ./.github/actions/renderer-shader-tools
+      - name: Configure software Vulkan mapping budget
+        # Keep instrumented display tests on the same budget as native shards.
+        run: sudo sysctl -w vm.max_map_count=1048576
       - name: Run native coverage without the slow integration tier
         run: |
           GLOB2_SDL3_PREFIX=build/sdl3-ci/prefix python3 test/run_coverage.py --quick --timeout 900 -j4 \

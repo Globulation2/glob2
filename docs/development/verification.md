@@ -40,6 +40,13 @@ changes build once per selected platform and distribute programs to sweep consum
 Primary generator sweeps are complete; secondary platforms retain golden rows and
 telemetry equivalence under enabled tiers. Native inventory audits require every
 selected engine case to belong to exactly one shard.
+
+Linux display shards and native coverage set `vm.max_map_count=1048576` for software Vulkan.
+Lavapipe maps descriptor allocations individually, and large-map captures exceed
+the older 262144-map runner limit. Mesa 25.2.8 can crash when those allocations
+fail. This runner setting preserves the full capture inventory and matches the
+limit used by the validated local development host; it does not change shipped code.
+
 The Linux program archive includes the generated renderer shader bundle alongside
 the executables and runtime assets so consumers can run without rebuilding.
 Linux native builds and coverage compile the pinned build-only glslang tool to
