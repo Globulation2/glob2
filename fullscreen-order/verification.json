@@ -1,0 +1,8 @@
+{
+  "revision": "3394f1aef31d1b7a6d966f38ff72969ffdd2ab0e",
+  "base": "e1584c5a26af3dced8852c88dc64919931658a6b",
+  "os": "Linux devlaptop 7.0.0-38-generic #38~24.04.4-Ubuntu SMP PREEMPT_DYNAMIC Mon Sep 14 16:37:11 UTC 2 x86_64 x86_64 x86_64 GNU/Linux",
+  "compiler": "g++ (Ubuntu 13.3.0-6ubuntu2~24.04.1) 13.3.0",
+  "baselineDisplay": ":1",
+  "cleanDisplay": "owned Xvfb/Openbox, DISPLAY unset in test runner parent"
+}
