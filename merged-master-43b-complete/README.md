@@ -1,0 +1,15 @@
+# Exact merged-master verification checkpoint
+
+Source: `43b153739838207983c922ab4cbeed7773459de9`, clean tracked tree. The merge tree equals the tested final PR candidate; receipt included.
+
+Fresh local release verification on Ubuntu 24.04 x86_64 / GCC 13.3 / pinned SDL 3.4.16 and glslang 15.1: all 1,872 native registry jobs, 2,968 cases passed with zero failures, errors or skips. Fullscreen/display and headless cases included. Raw stdout, JUnit, build provenance, selected per-tick checksum traces and Castor/Maxima save-continuation artifacts are attached in the archive. The complete 6.5 GB native capture directory remains local; selected relevant evidence is public here.
+
+Platform: pinned lockfile, Node 24.19.0, existing design-system revision acd277710acfebf528e1fc6f653d55fdf75de4b2. Design sync, lint, typecheck, i18n, web build, all 1,150 tests (15 existing skips), migrations and status passed. Tests used an isolated PostgreSQL 16 container pinned by digest; it was removed afterward. Commands and raw logs included. Hosted CI provides its configured Node 22 coverage.
+
+Music: 135 tests, OK, six optional-extra skips. No optional model packages installed. Exact commands, flags and binary hashes are in verification.json and orchestrator scripts. Development, packaging and runtime dependency pins were not upgraded for these checks.
+
+Full 221-case Chromium verification of freshly built clean 43b serial/threaded release WebAssembly is complete: **204 passed, 17 existing/capability skips, zero failures/retries**, 55.3 minutes. Full raw Playwright outputs, screenshots, recording media, scripting/generator corpus manifests and traces are included. All four strict manifests independently match actual served binary hashes and embedded clean source identity. Top-level Python: 324 tests OK, three skips. Build contracts: 567 OK, two skips.
+
+All ten selected exact-43b hosted Linux/Windows/macOS/browser match-verify traces match the committed per-tick golden; raw traces and original artifact IDs/digests are included. The last serial renderer shard passed all four cases in 36.4 minutes; raw log retained. The [full 43b hosted run](https://github.com/Globulation2/glob2/actions/runs/38916805749) subsequently exposed stale evidence-consumer inventory and Firefox/WebKit catalog selection, repaired separately by [PR #1219](https://github.com/Globulation2/glob2/pull/1219), merged as 486a223. No runtime/engine files changed after this local full-suite result. That repair passes all 568 build contracts and adds 16 passing Firefox/WebKit cases; complete comparison inputs and results are in the adjacent trace-inventory evidence folder. This runtime checkpoint retains the exact original producer/source identity and does not relabel the binaries as 486a223.
+
+Full current-policy hosted verification on latest master 486a223 remains pending: [automatic](https://github.com/Globulation2/glob2/actions/runs/38929266468), [manual](https://github.com/Globulation2/glob2/actions/runs/38929285102). No hosted recovery claim is made before completion. Store/release packaging remains separate.
