@@ -2,6 +2,7 @@
 // Copyright (C) 2001-2004 Stephane Magnenat & Luc-Olivier de Charrière
 
 #pragma once
+#include "gradient/FieldReadiness.h"
 
 #include "UnitState.h"
 #include "UnitCatalog.h"
@@ -81,6 +82,20 @@ public:
 		bool withMarkets=false, const Building* consumer=nullptr);
 	void syncStep(void);
 	
+    bool gradientDecisionPending=false;
+	// Pending fields preserve every assignment and retry on the ordinary action cadence.
+	// The existing zero-displacement movement is already saved and checksummed.
+	void waitForGradient();
+	template<class Search> StepResult findGradientDisplacement(Search search)
+	{
+		int x=dx, y=dy;
+		const auto result=search(&x, &y);
+		if (result == StepResult::Step) {
+			assert(x>=-1 && x<=1 && y>=-1 && y<=1);
+			dx=Sint8(x); dy=Sint8(y);
+		}
+		return result;
+	}
 	void directionFromDxDy(void);
 private:
 	bool continueExtendedCargoCollection();

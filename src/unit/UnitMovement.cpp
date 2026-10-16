@@ -15,8 +15,18 @@
 #include "GlobalContainer.h"
 #include <climits>
 
+void Unit::waitForGradient()
+{
+	gradientDecisionPending=true;
+	dx=dy=0;
+	direction=UNIT_DIRECTION_NONE;
+	movement=MOV_GOING_DX_DY;
+}
+
 void Unit::handleMovement(void)
 {
+	gradientDecisionPending=false;
+	const auto priorClaim=previousClearingArea;
 	// Release any clearing-area claim from a prior tick before this unit decides
 	// what to do this tick. Note: distance is intentionally NOT reset here — it
 	// must survive the per-tick reset (see Unit.h declaration comment).
@@ -68,6 +78,13 @@ void Unit::handleMovement(void)
 		default:
 			assert(false);
 			break;
+	}
+	// A temporary absence of guidance must not release a clearing reservation.
+	// Local interactions and accepted new choices above still replace it normally.
+	if (gradientDecisionPending && priorClaim && !previousClearingArea
+		&& owner->map->isClearingAreaClaimed(priorClaim->x,priorClaim->y,owner->teamNumber)==NOGUID) {
+		previousClearingArea=priorClaim;
+		owner->map->setClearingAreaClaimed(priorClaim->x,priorClaim->y,owner->teamNumber,gid);
 	}
 }
 
@@ -443,7 +460,9 @@ void Unit::handleMovementClearingResources()
 		return;
 	}
 	assert(attachedBuilding);
-	if (findDisplacement([&](int* pathDx, int* pathDy) { return map->pathfindBuilding(entityRandom, attachedBuilding, swimClass(), posX, posY, pathDx, pathDy, BuildingRoute::Clearing); }))
+    const auto route=findGradientDisplacement([&](int* pathDx,int* pathDy) { return map->queryBuildingStep(entityRandom,attachedBuilding,swimClass(),posX,posY,pathDx,pathDy,BuildingRoute::Clearing); });
+    if (route==StepResult::Pending) { waitForGradient(); return; }
+    if (route==StepResult::Step)
 	{
 		directionFromDxDy();
 		movement=MOV_GOING_DX_DY;
@@ -572,15 +591,15 @@ void Unit::handleMovementGoingToFlagOrBuilding()
 	{
 		movement=MOV_FLYING_TARGET;
 	}
-	else if (findDisplacement([&](int* pathDx, int* pathDy) { return map->pathfindBuilding(entityRandom, targetBuilding, swimClass(), posX, posY, pathDx, pathDy,
-		activity == ACT_FLAG ? (jobPurpose == UnitJobPurpose::Clear ? BuildingRoute::Clearing : BuildingRoute::Combat) : BuildingRoute::Footprint); }))
-	{
-		movement=MOV_GOING_DX_DY;
-	}
 	else
 	{
-		stopAttachedForBuilding(true);
-		movement=MOV_RANDOM_GROUND;
+		const auto result = findGradientDisplacement([&](int* pathDx, int* pathDy) {
+			return map->queryBuildingStep(entityRandom, targetBuilding, swimClass(), posX, posY, pathDx, pathDy,
+				activity == ACT_FLAG ? (jobPurpose == UnitJobPurpose::Clear ? BuildingRoute::Clearing : BuildingRoute::Combat) : BuildingRoute::Footprint);
+		});
+		if (result == StepResult::Pending || result == StepResult::AtGoal) waitForGradient();
+		else if (result == StepResult::Step) movement=MOV_GOING_DX_DY;
+		else { stopAttachedForBuilding(true); movement=MOV_RANDOM_GROUND; }
 	}
 }
 

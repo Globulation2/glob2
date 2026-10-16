@@ -53,9 +53,8 @@ struct GradientRuntime
 	// Scheduled building fields share the executor with the periodic pipeline.
 	// Drain it before teams and the gradient buffer pool are destroyed.
 	BuildingGradientJobPipeline buildings;
-	// A refresh asked for during team stepping, admitted FIFO after the tick.
-	// stale requests were superseded while queued; they stay in place so queue
-	// length (and with it the overflow fallback) survives save and load.
+	// Initialization or refresh asked for during team stepping, admitted FIFO
+	// after the tick. Superseded metadata is pruned before adding further demand.
 	struct BuildingRequest
 	{
 		int team = 0;
@@ -64,7 +63,7 @@ struct GradientRuntime
 		int slot = 0;
 		bool stale = false;
 	};
-	static constexpr std::size_t BuildingRequestLimit = 64;
+	static constexpr std::size_t BuildingRequestLimit = Team::MAX_COUNT * Building::MAX_COUNT * BUILDING_GRADIENT_COUNT;
 	std::deque<BuildingRequest> buildingRequests;
 	// Reserved this tick, prepared together at the observation boundary.
 	std::vector<BuildingGradientJobPipeline::Job*> stagedBuildings;

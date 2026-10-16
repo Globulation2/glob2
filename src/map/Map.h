@@ -4,6 +4,7 @@
 
 #pragma once
 #include "OwnerRandom.h"
+#include "gradient/FieldReadiness.h"
 #include <CooperativeTask.h>
 #include "ComputeExecutor.h"
 #include <array>
@@ -284,7 +285,7 @@ public:
 	// requests refreshes of existing fields and keeps serving the old ones;
 	// after the tick up to MaxJobsPerTick requests are staged, captured at the
 	// observation boundary, built on workers and published
-	// buildingGradientDelay ticks later. Cold fields stay synchronous; area and
+	// buildingGradientDelay ticks later. Cold fields queue an initial resumable search; area and
 	// team-wide resets keep old walking fields serving instead of making them
 	// cold (Building::keepsStaleGradients).
 	//! Why a building walking field was built on the owner. cold_* name what
@@ -312,9 +313,9 @@ public:
 	//! Follow the header's buildingGradientDelay now; throws with pending work.
 	void ensureBuildingGradientPipeline();
 	bool buildingGradientPipelineActive() const;
-	//! Queue a refresh of an existing walking field (slot = routeSlot). False
+	//! Queue initialization or refresh of a walking field (slot = routeSlot). False
 	//! when the caller must rebuild synchronously (no pipeline: a map without
-	//! a game, or no existing field).
+	//! a game).
 	bool requestBuildingRefresh(Building *building, int slot);
 	//! Worker depth for a scheduled walking field: every reader still resolves
 	//! its cell first, so the prediction moves CPU, never values.
@@ -1161,6 +1162,10 @@ public:
 
 	//! Initialize a fresh building field and retain its search frontier. Point
 	//! queries extend it on demand; buildingGradient returns a complete field.
+    FieldReadiness requestBuildingField(Building*,int,BuildingRoute = BuildingRoute::Automatic);
+    const Uint16* lookupBuildingField(const Building*,int,BuildingRoute = BuildingRoute::Automatic) const;
+    RouteResult queryBuildingDistance(Building*,int,int,int,int*,BuildingRoute = BuildingRoute::Automatic);
+    StepResult queryBuildingStep(EntityRandom&,Building*,int,int,int,int*,int*,BuildingRoute = BuildingRoute::Automatic);
 	void updateGlobalGradient(Building *building, int swimClass, BuildingRoute route = BuildingRoute::Automatic);
 	//! Complete field, refreshed as needed; NULL when locked. Point queries use
 	//! buildingAvailable/pathfindBuilding so partial arrays never escape this API.

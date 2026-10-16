@@ -22,7 +22,7 @@ class Order;
 //! the reader still accepts. Version 167 changes completed-observation timing;
 //! version 166 changed entity update and task scheduling order.
 //! Save compatibility has a separate floor in Version.h.
-static constexpr Uint16 REPLAY_MINIMUM_VERSION_MINOR = 167;
+static constexpr Uint16 REPLAY_MINIMUM_VERSION_MINOR = 170;
 
 /// This class is used for reading replays.
 /// The replay stream is kept open and read every time you do retrieveOrder.

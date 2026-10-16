@@ -460,9 +460,19 @@ checksum adapter retains its historical entity/RNG representation for fixtures.
   Access metadata (`locked`, and a clearing flag's `anyResourceToClear`) follows
   the newest capture, so it, and the AI's view of it, may lag up to the delay. Team-wide resets and forbidden-area paints keep the old
   walking fields serving until the refresh publishes, so units may follow a
-  pre-edit field for up to the delay. Fields a building has never had (or lost to
-  idle eviction or its own move, type or range change), queue overflow (more than
-  64 waiting requests) and maps without a game build synchronously.
+  pre-edit field for up to the delay. First use after creation, idle eviction,
+  movement, or a type/range change queues initialization on the same pipeline.
+  Until publication, route queries return Pending; assigned units wait without
+  abandoning their assignment or consuming movement RNG. Initialization seeds and
+  settles only the minimum depth (32 cost units), then transfers the unfinished
+  search buckets with the field. Hiring proposals and live readers continue that
+  search only as far as their requested cells. Warm refreshes retain the existing
+  depth model. The FIFO has no synchronous overflow fallback; stale entries are
+  pruned and each live building/route/swim slot has at most one request.
+  Saving retains the existing complete-field representation and remaining
+  deadlines; format 170 adds cold destinations and a wider queue count. Historical
+  save loading remains supported. Maps without an active pipeline retain the
+  synchronous fallback.
   `Map::predictBuildingDepth` reads the production
   [depth model](../ai/architecture/building-gradient-depth-model.md) from the field's own past
   reader demand (its serving search's required cost and `settledCostHint`). It only moves

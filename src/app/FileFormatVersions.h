@@ -15,6 +15,9 @@
 
 #pragma once
 
+// Cold lazy building-gradient requests may have no published destination yet.
+static constexpr int FILE_FORMAT_VERSION_INITIAL_BUILDING_GRADIENT = 170;
+
 // === Save-format minor-version feature gates ===
 // Each constant is the FIRST versionMinor at which the named feature
 // appears in the save stream. Loaders write/read the new field if

@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Exercise clearing arbitration and idle activity across a real game save/load.
 #include "EngineFixtures.h"
+#include "GradientFixture.h"
 #include <string>
 #include "GlobalContainer.h"
 #include "GameGUI.h"
@@ -16,6 +17,7 @@ namespace
 {
 struct UnitActivityAccess : Unit
 {
+    static void route(Unit& unit) { const auto movement=&UnitActivityAccess::handleMovement; (unit.*movement)(); }
     static void run(Unit& unit) { const auto activity=&UnitActivityAccess::handleActivity; (unit.*activity)(); }
 };
 static std::vector<Uint32> state(Game& game)
@@ -148,6 +150,52 @@ static void checkContinuation(int checkpoint, bool hazards = false)
 
 TEST_SUITE("UnitContinuation")
 {
+    TEST_CASE("a pending building route retains assignment and random state until publication")
+    {
+        glob2test::HeadlessGlobals globals;
+        for (unsigned participants : {1u,2u,4u,8u})
+        {
+            CAPTURE(participants);
+            glob2test::HeadlessGame world({.clearImmobile=true,.header=true,.seed=4921});
+            auto& game=world.game;
+            game.gameHeader.setBuildingGradientDelay(3);
+            game.map.configureCompute(participants);
+            game.map.configureGradientPipeline(participants-1,3);
+            auto* unit=world.addUnit(WORKER,16,16);
+            auto* building=world.addBuilding("inn",4,4);
+            REQUIRE(unit); REQUIRE(building);
+            unit->destinationPurpose=FEED;
+            building->unitsInside.push_back(unit);
+            unit->subscriptionSuccess(building,true,false,UnitJobPurpose::None);
+            const auto activity=unit->activity;
+            const auto random=unit->entityRandom;
+            const auto assertWaiting=[&] {
+                UnitActivityAccess::route(*unit);
+                CHECK(unit->targetBuilding==building);
+                CHECK(unit->attachedBuilding==building);
+                CHECK(unit->activity==activity);
+                CHECK(unit->jobPurpose==UnitJobPurpose::None);
+                CHECK(unit->entityRandom==random);
+                CHECK(unit->posX==16); CHECK(unit->posY==16);
+                CHECK(unit->dx==0); CHECK(unit->dy==0);
+                CHECK(std::find(building->unitsInside.begin(),building->unitsInside.end(),unit)!=building->unitsInside.end());
+            };
+            assertWaiting();
+            for (int tick=0;tick<3;++tick) {
+                game.map.advanceGradientPipeline();
+                assertWaiting();
+                ++game.stepCounter;
+                game.map.stagePeriodicGradientPreparation();
+                game.map.preparePendingGradient(game.captureReadBoundary());
+            }
+            game.map.advanceGradientPipeline();
+            UnitActivityAccess::route(*unit);
+            CHECK(unit->attachedBuilding==building);
+            CHECK((unit->dx!=0 || unit->dy!=0));
+            game.map.finishGradientPipeline();
+        }
+    }
+
     TEST_CASE("medical abort clears every working purpose before idle or service continuation")
     {
         glob2test::HeadlessGlobals globals;
