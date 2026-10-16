@@ -32,6 +32,8 @@ jobs:
           sudo apt-get install -y --no-install-recommends python3 libgl1 libglu1-mesa libepoxy0 libgl1-mesa-dri mesa-vulkan-drivers xvfb xauth openbox x11-utils gdb vulkan-validationlayers
           curl -fL --max-time 60 -o "$RUNNER_TEMP/mesa-symbols.ddeb" http://ddebs.ubuntu.com/pool/main/m/mesa/mesa-vulkan-drivers-dbgsym_25.2.8-0ubuntu0.24.04.4_amd64.ddeb
           dpkg-deb -x "$RUNNER_TEMP/mesa-symbols.ddeb" "$RUNNER_TEMP/mesa-symbols"
+      - name: Configure software Vulkan mapping budget
+        run: sudo sysctl -w vm.max_map_count=1048576
       - name: Replay large-map capture under debugger
         run: |
           python3 - <<'DIAGNOSTIC'
@@ -41,12 +43,12 @@ jobs:
           import run_tests as registry
           build=Path('build/linux/client/release').resolve()
           out=Path('artifacts/renderer-debug').resolve();out.mkdir(parents=True,exist_ok=True)
-          cases=[c for c in registry.list_cases(registry.binary_path(build,'engine'),'engine') if c.suite=='TorusRender' and c.name.startswith('SDL GPU captures large logical maps')]
-          assert len(cases)==1
+          cases=[c for c in registry.list_cases(registry.binary_path(build,'engine'),'engine') if c.suite=='TorusRender' and (c.name.startswith('SDL GPU captures large logical maps') or c.name.startswith('SDL GPU retries a submitted final torus overlay'))]
+          assert len(cases)==2
           original_prefix=registry.xvfb_prefix
           registry.xvfb_prefix=lambda job:original_prefix(job)+['gdb','--batch','-ex','set pagination off','-ex','set print thread-events off','-ex','set auto-solib-add off','-ex','set debuginfod enabled off','-ex','set debug-file-directory '+os.environ['RUNNER_TEMP']+'/mesa-symbols/usr/lib/debug','-ex','handle SIGSEGV stop print nopass','-ex','run','-ex','sharedlibrary libvulkan_lvp','-ex','info sharedlibrary','-ex','p $_siginfo','-ex','frame 2','-ex','p *set','-ex','python import gdb; print("VMA_COUNT",len(open("/proc/%d/maps"%gdb.selected_inferior().pid).readlines())); print("VM_MAX_MAP_COUNT",open("/proc/sys/vm/max_map_count").read())','-ex','thread apply all bt full','--args']
           rows=[]
-          for index in range(1):
+          for index in range(3):
               args=types.SimpleNamespace(keep_profiles=False,fullscreen=True,update_fixtures=False,artifacts=out/str(index),verbose=False)
               result=registry.run_job(registry.Job('engine',cases),args,build)
               (out/f'{index}.log').write_text(result.output)
