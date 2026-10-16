@@ -95,10 +95,12 @@ Building* Map::buildingGradientDestination(int team, int id, Uint32 identity) co
 	return building && building->scriptIdentity == identity ? building : nullptr;
 }
 
-// Follows the match's buildingGradientDelay; a map without a game (the editor,
-// map-only tests) builds its fields synchronously. A change with pending work
-// would move deadlines, so it is refused; with an empty pipeline (a new match,
-// or a fork of a loaded game) it reconfigures.
+// Game-backed queries follow the match's buildingGradientDelay, including
+// editor fixtures. A map without a Game has no building publication pipeline;
+// building queries/kernels themselves require Game-backed destinations. Explicit
+// editor/reference callers can invoke the synchronous builder directly. Changing
+// delay with pending work would move deadlines, so only an empty pipeline can
+// reconfigure (a new match or a fork of a loaded game).
 void Map::ensureBuildingGradientPipeline()
 {
 	auto& rt = *gradientRuntime;

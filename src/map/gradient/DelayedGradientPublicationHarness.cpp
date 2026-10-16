@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "EngineFixtures.h"
 #include "GradientExecutionAudit.h"
+#include "GradientRuntime.h"
 #include "BuildingGradientSearch.h"
 #include <array>
 #include <vector>
@@ -80,6 +81,7 @@ TEST_CASE("cold queued and privately completed fields continue through binary an
             // paths in text streams (binary streams are positional).
             REQUIRE(map.gradientPipelineStatus().jobs==2);
             REQUIRE(map.gradientPipelineStatus().pending==2);
+            REQUIRE(map.gradientRuntime->fieldRequests.size()==2);
         }
         GradientExecutionAudit audit;
         auto* storage=new GAGCore::MemoryStreamBackend;

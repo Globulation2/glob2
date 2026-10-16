@@ -42,7 +42,8 @@ FieldReadiness Map::requestBuildingField(Building *building, int swimClass, Buil
 	{
 		if (!requestBuildingRefresh(building, slot))
 		{
-			// Explicit map-only/editor operation: there is no simulation pipeline.
+			// Legacy inactive-scheduler fallback. The building kernel still
+			// requires a Game; Game-backed queries normally enroll above.
 			if (!building->globalGradient[slot]) building->globalGradient[slot] = acquireBuildingGradientBuffer();
 			updateGlobalGradient(building, swimClass, route);
 			finishBuildingGradient(building, swimClass, route);
