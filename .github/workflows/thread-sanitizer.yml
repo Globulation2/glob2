@@ -6,6 +6,8 @@ permissions:
   actions: read
 env:
   GLOB2_DEV_MODE: isolated
+  VK_INSTANCE_LAYERS: VK_LAYER_KHRONOS_validation
+  VK_LAYER_VALIDATE_SYNC: "1"
 jobs:
   capture:
     runs-on: ubuntu-24.04
@@ -27,7 +29,7 @@ jobs:
           echo "LD_LIBRARY_PATH=$PWD/build/sdl3-ci/prefix/lib" >> "$GITHUB_ENV"
           sudo apt-get update -qq
           xargs sudo apt-get install -y --no-install-recommends < artifacts/ci-native/runtime-packages.txt
-          sudo apt-get install -y --no-install-recommends python3 libgl1 libglu1-mesa libepoxy0 libgl1-mesa-dri mesa-vulkan-drivers xvfb xauth openbox x11-utils gdb
+          sudo apt-get install -y --no-install-recommends python3 libgl1 libglu1-mesa libepoxy0 libgl1-mesa-dri mesa-vulkan-drivers xvfb xauth openbox x11-utils gdb vulkan-validationlayers
       - name: Replay large-map capture under debugger
         run: |
           python3 - <<'DIAGNOSTIC'
@@ -42,7 +44,7 @@ jobs:
           original_prefix=registry.xvfb_prefix
           registry.xvfb_prefix=lambda job:original_prefix(job)+['gdb','--batch','-ex','set pagination off','-ex','set print thread-events off','-ex','set debuginfod enabled off','-ex','handle SIGSEGV stop print nopass','-ex','run','-ex','thread apply all bt','--args']
           rows=[]
-          for index in range(3):
+          for index in range(1):
               args=types.SimpleNamespace(keep_profiles=False,fullscreen=True,update_fixtures=False,artifacts=out/str(index),verbose=False)
               result=registry.run_job(registry.Job('engine',cases),args,build)
               (out/f'{index}.log').write_text(result.output)
