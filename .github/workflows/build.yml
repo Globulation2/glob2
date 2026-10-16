@@ -1195,7 +1195,7 @@ jobs:
         run: |
           sudo apt-get update -qq
           xargs sudo apt-get install -y --no-install-recommends < artifacts/ci-native/runtime-packages.txt
-          sudo apt-get install -y --no-install-recommends python3 libgl1 libglu1-mesa libepoxy0 libgl1-mesa-dri mesa-vulkan-drivers xvfb xauth openbox x11-utils gdb
+          sudo apt-get install -y --no-install-recommends python3 libgl1 libglu1-mesa libepoxy0 libgl1-mesa-dri mesa-vulkan-drivers xvfb xauth openbox x11-utils gdb ffmpeg
           python3 .github/scripts/linux_runtime_packages.py build/linux/client/release --verify
       - uses: actions/setup-node@v4
         id: actions_setup_node_v4_1
