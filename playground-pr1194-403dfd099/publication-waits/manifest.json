@@ -1,0 +1,40 @@
+{
+  "files": [
+    {
+      "path": "request.json",
+      "sha256": "dc30fe8e3ed7cd28fc7fc4753825a217956a54b978bae2cc3f948c2de510560d",
+      "bytes": 1730
+    },
+    {
+      "path": "receipt.json",
+      "sha256": "6031d02f0bfdbb5567ee426be2ba8231a0b0580cef73088404ee17a241b4b988",
+      "bytes": 1795
+    },
+    {
+      "path": "stdout.log",
+      "sha256": "ae5ccc16b131f8064d124554589511e5e834583a58ec5be3c4cb88ce1ffcc58c",
+      "bytes": 380
+    },
+    {
+      "path": "native/result.json",
+      "sha256": "ea4961bb865cf12a226d1de4d8e2bbf315bf3d1c73212fc76a484668550eb613",
+      "bytes": 74544
+    },
+    {
+      "path": "summary.json",
+      "sha256": "db20cabf367af3ca8d2569d80b7e9c863f904e8801c7fddae9096ae66d3e2480",
+      "bytes": 5968
+    },
+    {
+      "path": "README.md",
+      "sha256": "4eb8d7385ff06df0dcb850014ad61c52a9c7173081b32e3600182a5f83a7d636",
+      "bytes": 1643
+    },
+    {
+      "path": "verify.py",
+      "sha256": "9865dbea12bc2b3a7d832bf67e27113e4896a2fb5696dbfa7ec72539d0e6dcd6",
+      "bytes": 900
+    }
+  ],
+  "scope": "Separate current-PR publication-wait diagnostic, not ordinary performance timing."
+}
