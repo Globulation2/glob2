@@ -1,0 +1,22 @@
+{
+  "source": "f881f856101b72bb40d30cacbc3bb4e835906da1",
+  "base": "e04711348d27238e3f21c3ea42179e383ac422ec",
+  "windowsFailureJob": "https://github.com/Globulation2/glob2/actions/runs/38861165281/job/116846313115",
+  "originalMacroCompileExitCode": 1,
+  "renamedMacroCompileExitCode": 0,
+  "nativeObjectIdentical": true,
+  "macroObjectIdentical": true,
+  "objectSha256": "42ddff4b7c8fe9a28e90d7a03111bcb6500c5019be8eebe294947f7a39360e8b",
+  "matchingGoldenRows": 8,
+  "rows": [
+    "linux-x86_64 68 3 7 7 4 1 invalid 0",
+    "linux-x86_64 68 3 8 8 2 1 ok 18057465106605513861",
+    "linux-x86_64 68 3 8 8 4 1 ok 14810753684266641626",
+    "linux-x86_64 68 3 8 8 4 2 ok 9093471007203340117",
+    "linux-x86_64 68 3 8 8 4 3 ok 10153695353378715358",
+    "linux-x86_64 68 3 8 8 8 1 invalid 0",
+    "linux-x86_64 68 3 9 8 4 1 ok 17962811958141041200",
+    "linux-x86_64 68 3 9 9 4 1 ok 3821043269182874535"
+  ],
+  "runtimeChange": false
+}
