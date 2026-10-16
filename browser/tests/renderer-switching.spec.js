@@ -215,8 +215,12 @@ async function available(page,label) {
   return false;
 }
 for(const mode of ['serial','threaded']) {
+  // Software GL on hosted runners keeps making progress but spends seconds
+  // per host frame. Serial switches need a larger total functional budget.
+  const switchTimeout=mode==='serial'?720000:360000;
+  const mediaTimeout=mode==='serial'?960000:480000;
   test(`${mode}: Automatic resolving to the active Software renderer completes without replacing the surface`,async({page},info)=>{
-    test.setTimeout(360000);const verify=await start(page,mode);await match(page);await openOverlay(page);
+    test.setTimeout(switchTimeout);const verify=await start(page,mode);await match(page);await openOverlay(page);
     // direct0 keeps Software as its initial automatic policy. Capture the actual
     // presentation object as well as its generation to detect redundant teardown.
     expect(await page.evaluate(()=>Module.renderer)).toBe('software');
@@ -257,7 +261,7 @@ for(const mode of ['serial','threaded']) {
     await page.screenshot({path:info.outputPath('automatic-noop-following-capture.png')});await verify();
   });
   test(`${mode}: repeated menu switches preserve Wasm lifetime and input`,async({page},info)=>{
-    test.setTimeout(360000);const verify=await start(page,mode);
+    test.setTimeout(switchTimeout);const verify=await start(page,mode);
     await clickMainMenu(page,'settings');await screen(page,'SettingsScreen');
     for(let cycle=0;cycle<3;++cycle) {
       await choose(page,'Programmable GL');
@@ -273,7 +277,7 @@ for(const mode of ['serial','threaded']) {
     await verify();
   });
   test(`${mode}: gameplay and torus survive settings overlay switches`,async({page},info)=>{
-    test.setTimeout(360000);const verify=await start(page,mode);await match(page);
+    test.setTimeout(switchTimeout);const verify=await start(page,mode);await match(page);
     const tick=(await state(page)).tick;
     await openOverlay(page);await choose(page,'Programmable GL');await resumeOverlay(page);
     await expect.poll(async()=>(await state(page)).tick,{timeout:120000}).toBeGreaterThan(tick);
@@ -301,7 +305,7 @@ for(const mode of ['serial','threaded']) {
     await page.screenshot({path:info.outputPath('torus-after-switch.png')});await verify();
   });
   test(`${mode}: editor stays open across live renderer switches and resize`,async({page},info)=>{
-    test.setTimeout(360000);const verify=await start(page,mode);
+    test.setTimeout(switchTimeout);const verify=await start(page,mode);
     await clickMainMenu(page,'editor');await screen(page,'EditorMainMenu');await clickControl(page,'new-map');
     await screen(page,'NewMapScreen');await clickCreateMap(page);await screen(page,'MapEditorScreen');
     for(const label of ['Programmable GL','Software']) {
@@ -320,7 +324,7 @@ for(const mode of ['serial','threaded']) {
     await clickControl(page,'choice/1');await screen(page,'EditorMainMenu');await verify();
   });
   test(`${mode}: recording retains one session while changing backend`,async({page},info)=>{
-    test.setTimeout(480000);const verify=await start(page,mode);await match(page);
+    test.setTimeout(mediaTimeout);const verify=await start(page,mode);await match(page);
     const completed=()=>page.evaluate(async()=>{
       const root=await(await navigator.storage.getDirectory()).getDirectoryHandle('glob2-recordings',{create:true});
       const paths=[];for await(const [name,handle]of root.entries())if(name.endsWith('.complete')&&(await handle.getFile()).size)paths.push(decodeURIComponent(name).slice(0,-9));return paths;
@@ -418,14 +422,14 @@ for(const mode of ['serial','threaded']) {
     await info.attach('backend-switch-video',{path:file,contentType:'video/mp4'});await verify();
   });
   test(`${mode}: all available WebGPU pairs retain application ownership`,async({page},info)=>{
-    test.setTimeout(480000);const verify=await start(page,mode);
+    test.setTimeout(mediaTimeout);const verify=await start(page,mode);
     await clickMainMenu(page,'settings');await screen(page,'SettingsScreen');
     test.skip(!await available(page,'WebGPU'),'WebGPU assets or browser/device capability unavailable');
     for(const label of ['Programmable GL','WebGPU','Software','WebGPU','Programmable GL','Software'])await choose(page,label);
     await page.screenshot({path:info.outputPath('all-backend-pairs.png')});await verify();
   });
   test(`${mode}: current GL context restores after earlier canvas replacements`,async({page},info)=>{
-    test.setTimeout(360000);const verify=await start(page,mode);await match(page);
+    test.setTimeout(switchTimeout);const verify=await start(page,mode);await match(page);
     for(const label of ['Programmable GL','Software','Programmable GL']){await openOverlay(page);await choose(page,label);await resumeOverlay(page);}
     const before=await state(page);
     await page.evaluate(()=>Module._glob2_context_action(0));await expect.poll(async()=>(await state(page)).contextLost).toBe(true);
@@ -435,7 +439,7 @@ for(const mode of ['serial','threaded']) {
     await page.screenshot({path:info.outputPath('restored-current-context.png')});await verify();
   });
   test(`${mode}: real WebGPU device loss falls back during gameplay`,async({page},info)=>{
-    test.setTimeout(360000);const verify=await start(page,mode);await match(page);await openOverlay(page);
+    test.setTimeout(switchTimeout);const verify=await start(page,mode);await match(page);await openOverlay(page);
     test.skip(!await available(page,'WebGPU'),'WebGPU assets or browser/device capability unavailable');
     await choose(page,'WebGPU');await resumeOverlay(page);
     const before={generation:await generation(page),tick:(await state(page)).tick};
@@ -462,7 +466,7 @@ for(const mode of ['serial','threaded']) {
     await page.screenshot({path:info.outputPath('device-loss-fallback.png')});await resumeOverlay(page);await verify();
   });
   test(`${mode}: presentation surface creation failure restores the running session`,async({page},info)=>{
-    test.setTimeout(360000);const verify=await start(page,mode);await match(page);await openOverlay(page);
+    test.setTimeout(switchTimeout);const verify=await start(page,mode);await match(page);await openOverlay(page);
     const before={generation:await generation(page),loop:(await state(page)).loop};
     await page.evaluate(()=>{const surface=Module.glob2PresentationSurface,original=surface.prepare;Module.rendererFaultConsumed=0;Module.rendererSurfaceCleanup=()=>{surface.prepare=original;};surface.prepare=function(...args){surface.prepare=original;Module.rendererFaultConsumed++;throw Error('injected presentation surface creation failure');};});
     try {
@@ -477,7 +481,7 @@ for(const mode of ['serial','threaded']) {
     } finally { await page.evaluate(()=>{Module.rendererSurfaceCleanup?.();delete Module.rendererSurfaceCleanup;delete Module.rendererFaultConsumed;}); }
   });
   test(`${mode}: canvas replacement preserves active fullscreen host`,async({page},info)=>{
-    test.setTimeout(360000);const verify=await start(page,mode);
+    test.setTimeout(switchTimeout);const verify=await start(page,mode);
     test.skip(!await page.evaluate(()=>document.fullscreenEnabled),'Fullscreen unavailable on browser/device');
     await clickMainMenu(page,'settings');await screen(page,'SettingsScreen');
     await page.locator('#canvas').click({position:{x:5,y:5}});

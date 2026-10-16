@@ -57,6 +57,13 @@ Browser CI and development archives include launcher-relative scripts, including
 `presentation-surface.js`, and the serial/threaded shader preload packages.
 Downstream browser and packaging jobs consume this complete runtime closure.
 
+Chromium renderer-switch checks run separately from the five general browser
+shards. Serial cases use three shards with one worker per shard; per-test
+sharding keeps a slow source file from occupying one whole job. Threaded cases
+retain their own single-worker job. Serial functional budgets allow slow software
+GL frames while retaining all screen, context, recording and live-game assertions.
+These budgets and shard boundaries do not reduce the selected browser inventory.
+
 ELF dependency collection records runtime package owners and rejects unresolved or
 unowned libraries. Generator, CLI and browser consumers install runtime libraries
 rather than compiler/header environments. Enable `CI_RUNTIME_PACKAGES_ENABLED=true`
