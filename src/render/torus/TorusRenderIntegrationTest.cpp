@@ -205,6 +205,8 @@ public:
     bool overlayFailure=true;
     bool completedWorld=false;
     unsigned submissions=0, worldSubmissions=0;
+    unsigned admittedSubmissions=0, refusedSubmissions=0;
+    std::string lastDeferral;
     mutable bool phaseRejected=false;
     std::function<bool()> phaseFault;
     explicit OverlayAdmissionDevice(std::unique_ptr<GAGCore::RenderDevice> value) : device(std::move(value)) {}
@@ -226,7 +228,11 @@ public:
             return packet.target && packet.target->descriptor.budgetClass==GAGCore::TextureDescriptor::BudgetClass::TerrainPage &&
                 !packet.targetScissor && (packet.kind==GAGCore::DrawPacket::Kind::Fill || packet.kind==GAGCore::DrawPacket::Kind::Blit);
         });
-        const auto submitted=device->submit(std::move(frame));
+        GAGCore::RenderSubmission submitted;
+        try { submitted=device->submit(std::move(frame)); }
+        catch(const GAGCore::RenderAdmissionDeferred& error) { lastDeferral=error.what(); throw; }
+        if(submitted) ++admittedSubmissions;
+        else { ++refusedSubmissions; lastDeferral="device returned no submission"; }
         if(overlay && submitted){rejected=true;throw GAGCore::RenderAdmissionDeferred("Injected final torus overlay admission failure");}
         if(world && submitted) { completedWorld=true; ++worldSubmissions; }
         return submitted;
@@ -283,9 +289,10 @@ static void deviceOverlayRetry(GAGCore::RendererBackend backend)
     gui.selectionMode=GameGUI::TOOL_SELECTION;gui.toolManager.activateBuildingTool("swarm");
     bool complete=false;unsigned holds=0;
     const auto checksum=gui.game.checkSum();
-    // SDL GPU may need additional bounded region/resource-admission turns
-    // before the completed world mesh is submitted after the injected retry.
-    for(unsigned attempt=0;attempt<512 && !complete;++attempt){
+    // Admission is asynchronous: fast polling must not exhaust an iteration
+    // budget while the GPU queue drains its bounded capture regions.
+    const auto retryDeadline=SDL_GetTicks()+60000;
+    for(unsigned attempt=0;!complete && SDL_GetTicks()<retryDeadline;++attempt){
         // Pausing a running multi-turn capture freezes source animation clocks,
         // independently of the capture's immutable initial animation phase.
         gui.gamePaused=attempt==1 || attempt==2;
@@ -301,8 +308,12 @@ static void deviceOverlayRetry(GAGCore::RendererBackend backend)
         REQUIRE(gfx->presentationDevice.get()==probe);
         REQUIRE(gfx->backendSwitchStatus().active==backend);
     }
-    INFO("submissions=",probe->submissions," worlds=",probe->worldSubmissions," holds=",holds);
+    INFO("submissions=",probe->submissions," admitted=",probe->admittedSubmissions," refused=",probe->refusedSubmissions,
+        " worlds=",probe->worldSubmissions," holds=",holds," deferral=",probe->lastDeferral,
+        " logical bytes=",gfx->renderResources()->retainedBytes()," device bytes=",probe->telemetry().resourceBytes);
     REQUIRE(probe->rejected);REQUIRE(complete);REQUIRE(holds>1);
+    std::cout << "Torus overlay recovery: holds=" << holds << " admitted=" << probe->admittedSubmissions
+        << " refused=" << probe->refusedSubmissions << " world submissions=" << probe->worldSubmissions << '\n';
     REQUIRE(gui.game.checkSum()==checksum);
     REQUIRE(std::abs(gui.toolManager.highlightStrength-.1f)<.00001f);
 }
