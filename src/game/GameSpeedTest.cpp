@@ -341,9 +341,11 @@ TEST_CASE("live engine speed; pause; hard pause and replay playback [display][wr
             struct TimerScope {
                 SDL_TimerID id;
                 ~TimerScope() { if(id) SDL_RemoveTimer(id); }
-            } timer{SDL_AddTimer(240,resumeGame,&shortcut)};
-            REQUIRE(timer.id);
+            };
+            // Include any scheduling delay after arming the resume callback.
             const Uint64 start=SDL_GetTicks();
+            TimerScope timer{SDL_AddTimer(240,resumeGame,&shortcut)};
+            REQUIRE(timer.id);
             bool running=true;
             while(running && SDL_GetTicks()-start<3000) {
                 std::vector<SDL_Event> events;
