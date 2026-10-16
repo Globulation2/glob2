@@ -445,7 +445,9 @@ def main():
     # Strict C++ mode omits MinGW's nonstandard WIN32 alias. Legacy platform
     # guards rely on it (including disabling the Unix OSS audio backend).
     if env['mingw'] or isWindowsPlatform or env['mingwcross']:
-        env.Append(CPPDEFINES=["WIN32"])
+        # MinGW headers can expose _POSIX_THREADS at different include depths.
+        # Keep Asio thread layouts identical across every translation unit.
+        env.Append(CPPDEFINES=["WIN32", "BOOST_ASIO_HAS_PTHREADS"])
     if isDarwinPlatform and env['release'] and not server_only and any(
             target in COMMAND_LINE_TARGETS for target in ('bundle', 'package')) and build_dependencies:
         from mac_image_dependency import ensure
