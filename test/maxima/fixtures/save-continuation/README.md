@@ -15,7 +15,11 @@ renewable Wood reserves, the runtime registry/material cache checksum state,
 scheduled building gradients, greedy fetching, persistent owner-specific RNG
 streams, 30-tick normal timing, building area effects, and delayed resource
 growth integrated with the landscape resource catalog, resolved unit definitions,
-assigned job purposes and exact cargo state. CI compares platform continuations against this same trajectory. The original v115 checkpoint
+assigned job purposes and exact cargo state. Flying service selection uses the
+shared air-route distance, including on maps that retain direct flight steering.
+This can select a different inn from the former geometric-distance ranking;
+the active trajectory includes that simulation policy. CI compares platform
+continuations against this same trajectory. The original v115 checkpoint
 is retained to keep testing older-save loading. The test also saves at tick 30256,
 reloads, and compares all remaining records against the uninterrupted continuation
 to verify save/load continuity independently of the fixed baseline. Reload checks
