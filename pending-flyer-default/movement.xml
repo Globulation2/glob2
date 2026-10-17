@@ -1,0 +1,105 @@
+<?xml version='1.0' encoding='utf-8'?>
+<testsuites tests="103" failures="0" errors="0" skipped="0"><testsuite name="EnteringUnitSave"><testcase classname="EnteringUnitSave" name="authored catalogs reject unassigned indoor service membership [save-format]" time="0.721456" status="run" />
+  <testcase classname="EnteringUnitSave" name="generated fixtures round-trip through binary saves [save-format]" time="16.4515" status="run" />
+  <testcase classname="EnteringUnitSave" name="the retained fixture loads [save-format]" time="0.67208" status="run" />
+  </testsuite><testsuite name="EntityRandomLifecycle"><testcase classname="EntityRandomLifecycle" name="binary and text saves preserve exact private state and subsequent draws" time="2.90192" status="run" />
+  <testcase classname="EntityRandomLifecycle" name="entity operations consume only their own streams outside a tick" time="0.333457" status="run" />
+  <testcase classname="EntityRandomLifecycle" name="format 150 text area saves retain funded services through current saves [save-format][artifacts]" time="4.30729" status="run" />
+  <testcase classname="EntityRandomLifecycle" name="fresh header reseeds starting entities but resume header preserves progress" time="0.97128" status="run" />
+  <testcase classname="EntityRandomLifecycle" name="gradient sidesteps draw from the moving unit rather than the target building" time="0.329219" status="run" />
+  <testcase classname="EntityRandomLifecycle" name="malformed new world RNG records fail rather than migrating" time="0.929287" status="run" />
+  <testcase classname="EntityRandomLifecycle" name="missing malformed and even text RNG fields are rejected" time="0.001071" status="run" />
+  <testcase classname="EntityRandomLifecycle" name="snapshots freeze both unit and building RNG state" time="0.349083" status="run" />
+  <testcase classname="EntityRandomLifecycle" name="story identities isolate extra draws and fixed domains differ" time="0" status="run" />
+  <testcase classname="EntityRandomLifecycle" name="team steps consume entity streams without consuming world randomness" time="0.328453" status="run" />
+  <testcase classname="EntityRandomLifecycle" name="truncated binary RNG state and even increments are rejected" time="0.000416" status="run" />
+  <testcase classname="EntityRandomLifecycle" name="upgrades preserve streams and reused slots receive a fresh salt" time="0.330651" status="run" />
+  <testcase classname="EntityRandomLifecycle" name="world owners are isolated and their progress changes lockstep checksums" time="0.318426" status="run" />
+  <testcase classname="EntityRandomLifecycle" name="world streams continue through binary and text saves without resume reseeding" time="2.78083" status="run" />
+  </testsuite><testsuite name="FetchHiringScore"><testcase classname="FetchHiringScore" name="a unit is judged on the walk to the resource" time="0.231071" status="run" />
+  <testcase classname="FetchHiringScore" name="carrying candidates preserve sparse slot ties without live writes" time="0.341023" status="run" />
+  <testcase classname="FetchHiringScore" name="carrying selection preserves saturated wide hunger ties without purpose writes" time="0.337803" status="run" />
+  <testcase classname="FetchHiringScore" name="recruitment retains exact hunger boundaries and widened cached extremes" time="0.33613" status="run" />
+  <testcase classname="FetchHiringScore" name="the score estimates the whole fetch-and-carry trip" time="0.233318" status="run" />
+  </testsuite><testsuite name="HungryDefeat"><testcase classname="HungryDefeat" name="feeding reserves the last inn place and defeat controls hold" time="1.15304" status="run" />
+  <testcase classname="HungryDefeat" name="healing defeat recovery survives a save with an occupied hospital" time="2.18466" status="run" />
+  <testcase classname="HungryDefeat" name="healing reserves the last hospital place without eliminating the colony" time="0.45255" status="run" />
+  </testsuite><testsuite name="LegacyRoundTripSave"><testcase classname="LegacyRoundTripSave" name="a format-143 save with live round-trip fields plays on greedily [golden][save-format]" time="7.24564" status="run" />
+  </testsuite><testsuite name="ResourceFetchTarget"><testcase classname="ResourceFetchTarget" name="a depleted target is refreshed after its gradient rebuild for every swim class" time="0.780462" status="run" />
+  </testsuite><testsuite name="TrappedUnitLifecycle"><testcase classname="TrappedUnitLifecycle" name="trapped elimination; indoor survival; rescue; service; hatchery recovery; repeated seeds and save continuation" time="4.82767" status="run" />
+  </testsuite><testsuite name="UnitCustomization"><testcase classname="UnitCustomization" name="HP rule arithmetic precedes the cached performance cap at creation rebind and training" time="0.347413" status="run" />
+  <testcase classname="UnitCustomization" name="active water-only cargo preserves queued and pending gradient deadlines [save-format]" time="25.3353" status="run" />
+  <testcase classname="UnitCustomization" name="airborne clearing and magic coexist with held cargo" time="0.361892" status="run" />
+  <testcase classname="UnitCustomization" name="all locked capability ablations match fixed tick and RNG traces [golden][artifacts]" time="0.899237" status="run" />
+  <testcase classname="UnitCustomization" name="an explicit producer creates stationary units on a legal birth cell" time="0.43275" status="run" />
+  <testcase classname="UnitCustomization" name="batch planning releases its own harvest obstacle for cold and warm fields without advancing clocks" time="1.92558" status="run" />
+  <testcase classname="UnitCustomization" name="cached performance caps preserve wide save validation and normalized continuation [save-format]" time="2.46175" status="run" />
+  <testcase classname="UnitCustomization" name="catalog derived vision cache preserves padding wire state and visibility continuation [save-format]" time="2.13647" status="run" />
+  <testcase classname="UnitCustomization" name="catalog resizing rejects in-flight projectile rows without publishing state" time="1.97236" status="run" />
+  <testcase classname="UnitCustomization" name="compact unit fields reject wide invalid values before conversion [save-format]" time="0.368052" status="run" />
+  <testcase classname="UnitCustomization" name="concurrent catalogs keep independent live performance and continuation" time="1.31478" status="run" />
+  <testcase classname="UnitCustomization" name="configured magic cooldown follows the magic level while imported tables retain legacy indexing" time="0.547261" status="run" />
+  <testcase classname="UnitCustomization" name="configured service multipliers shorten complete meals and healing visits" time="1.10691" status="run" />
+  <testcase classname="UnitCustomization" name="construction qualification excludes higher-level couriers in live and captured queries" time="0.362898" status="run" />
+  <testcase classname="UnitCustomization" name="conversion cancels pending transport and transfers the complete cargo identity" time="0.577025" status="run" />
+  <testcase classname="UnitCustomization" name="conversion claim release preserves the stock policy and is configurable" time="0.550345" status="run" />
+  <testcase classname="UnitCustomization" name="current saves reject invalid cached bounds and retain pending lethal state" time="0.346948" status="run" />
+  <testcase classname="UnitCustomization" name="current unit records require idle and service assignments to have no working purpose" time="1.96291" status="run" />
+  <testcase classname="UnitCustomization" name="custom carriers resume actual pickup and delivery including active water only fields" time="11.0016" status="run" />
+  <testcase classname="UnitCustomization" name="custom combat extremes preserve observer estimates and clamp lethal overkill" time="0.353674" status="run" />
+  <testcase classname="UnitCustomization" name="custom feeding healing and training resume entry interior and exit with exact reservations" time="11.9813" status="run" />
+  <testcase classname="UnitCustomization" name="custom starvation and pending conversion preserve complete phase continuation" time="2.70676" status="run" />
+  <testcase classname="UnitCustomization" name="deleted units release wide cargo before a GID is reused" time="0.353305" status="run" />
+  <testcase classname="UnitCustomization" name="disabling future flag recruitment preserves all existing job roles and memberships [save-format]" time="3.53821" status="run" />
+  <testcase classname="UnitCustomization" name="documented bulk carrier setup enables an inherited-cost production recipe" time="0.486022" status="run" />
+  <testcase classname="UnitCustomization" name="enemy tower live index matches full slot oracle across lifecycle and save continuation [save-format]" time="1.25127" status="run" />
+  <testcase classname="UnitCustomization" name="enemy tower live index retains last slot and full occupied table oracle" time="0.450009" status="run" />
+  <testcase classname="UnitCustomization" name="extended cargo delivers one usable packet per completed work action" time="0.352841" status="run" />
+  <testcase classname="UnitCustomization" name="extreme hunger and experience saturate without changing valid stock arithmetic" time="0.351114" status="run" />
+  <testcase classname="UnitCustomization" name="flag recruitment refusal does not disable painted clearing or defense areas" time="1.48686" status="run" />
+  <testcase classname="UnitCustomization" name="fractional deliveries retain exact residuals across multipliers and reject overflow atomically" time="0.427522" status="run" />
+  <testcase classname="UnitCustomization" name="game save resumes mixed cargo and per entity RNG at every tick" time="1.23062" status="run" />
+  <testcase classname="UnitCustomization" name="ground and airborne couriers collect mixed kinds and deliver through the engine" time="0.759018" status="run" />
+  <testcase classname="UnitCustomization" name="high unit IDs spawn work and resume all indexed state" time="11.1219" status="run" />
+  <testcase classname="UnitCustomization" name="hybrid flag recruitment policies are independent of abilities and idle area policies [save-format]" time="9.29918" status="run" />
+  <testcase classname="UnitCustomization" name="idle clearing permission does not interrupt a transport assignment" time="0.351674" status="run" />
+  <testcase classname="UnitCustomization" name="idle painted clearing completes without permission to interrupt jobs [save-format]" time="1.50814" status="run" />
+  <testcase classname="UnitCustomization" name="imported movement tables retain historical course admission and direct grants" time="0.43217" status="run" />
+  <testcase classname="UnitCustomization" name="initial hiring finds a wanted material in overflow cargo and completes delivery" time="0.350516" status="run" />
+  <testcase classname="UnitCustomization" name="initial hiring respects retained packet capacity and material kind limits" time="0.542185" status="run" />
+  <testcase classname="UnitCustomization" name="labor and defense statistics require usable clocks and recruitment mobility" time="0.361761" status="run" />
+  <testcase classname="UnitCustomization" name="learning mask updates preserve every neighboring flag" time="0.000102" status="run" />
+  <testcase classname="UnitCustomization" name="legacy setup sentinel retains resolved map definitions and cached unit values" time="0.413354" status="run" />
+  <testcase classname="UnitCustomization" name="maximum healing multiplier and health complete a diagonal service visit" time="0.345628" status="run" />
+  <testcase classname="UnitCustomization" name="migrated tables retain cached performance idle and contact policies" time="0.34596" status="run" />
+  <testcase classname="UnitCustomization" name="migrated vision changes with flight learned during a reserved service [save-format]" time="1.59793" status="run" />
+  <testcase classname="UnitCustomization" name="migrated vision follows cached flight rather than presentation or saved Race tables [save-format]" time="2.79573" status="run" />
+  <testcase classname="UnitCustomization" name="mixed combat and fractional regeneration continue with cached clocks cargo and random streams" time="1.34405" status="run" />
+  <testcase classname="UnitCustomization" name="mixed inventory and assigned purpose survive unit serialization" time="0.354219" status="run" />
+  <testcase classname="UnitCustomization" name="mixed melee and transport conserve multiple material kinds and rejected packets" time="0.348732" status="run" />
+  <testcase classname="UnitCustomization" name="mobility statistics respect swimming only and stationary definitions" time="0.348816" status="run" />
+  <testcase classname="UnitCustomization" name="parallel construction qualification captures all courses before grants and preserves immobile definitions" time="1.63856" status="run" />
+  <testcase classname="UnitCustomization" name="parallel movement losses are assessed together before admission with a surviving mode alternative" time="1.65898" status="run" />
+  <testcase classname="UnitCustomization" name="parallel movement transfer checks exit terrain but ignores temporary occupants and resumes atomically" time="1.29295" status="run" />
+  <testcase classname="UnitCustomization" name="passive healing and starvation damage are independent configured rates" time="0.35322" status="run" />
+  <testcase classname="UnitCustomization" name="pending lethal scouts have bounded attraction ranking and resolve death" time="0.441273" status="run" />
+  <testcase classname="UnitCustomization" name="restored unsafe ongoing training exits without charging materials or changing levels" time="1.29225" status="run" />
+  <testcase classname="UnitCustomization" name="retained single packets and kind limits do not withdraw incompatible resources" time="0.583126" status="run" />
+  <testcase classname="UnitCustomization" name="setup cancels obsolete live work clocks and claims without losing cargo or RNG" time="0.542389" status="run" />
+  <testcase classname="UnitCustomization" name="setup rejects immobile interior patients without publishing partial catalog state" time="1.28435" status="run" />
+  <testcase classname="UnitCustomization" name="setup releases original parallel course reservations before disabling learnability" time="0.67242" status="run" />
+  <testcase classname="UnitCustomization" name="setup scaling preserves lethal extremes and zero-kind inventories refuse packets" time="0.359204" status="run" />
+  <testcase classname="UnitCustomization" name="stock capacity-one wide primary cargo survives unit and game continuation [save-format]" time="4.11822" status="run" />
+  <testcase classname="UnitCustomization" name="survival eligibility is independent of movement and work capabilities" time="0.520393" status="run" />
+  <testcase classname="UnitCustomization" name="swim only fields avoid land and stationary zero hunger units keep making medical progress" time="0.34781" status="run" />
+  <testcase classname="UnitCustomization" name="target search handles a defender whose effective melee strength saturates" time="0.347655" status="run" />
+  <testcase classname="UnitCustomization" name="tiling anchors and starting positions recognize producers of additional units" time="0.408543" status="run" />
+  <testcase classname="UnitCustomization" name="training rejects loss of the last movement mode before reservation or direct mutation" time="1.71843" status="run" />
+  <testcase classname="UnitCustomization" name="transport capability with a zero delivery clock cannot be hired" time="0.350335" status="run" />
+  <testcase classname="UnitCustomization" name="unit experiment gates control spawning and reject disabled live definitions" time="1.27685" status="run" />
+  <testcase classname="UnitCustomization" name="unit loading rejects mismatched assigned purposes and over-capacity primary packets" time="0.873081" status="run" />
+  <testcase classname="UnitCustomization" name="unusable retained fractional cargo releases its job and continues exactly after saving" time="1.26929" status="run" />
+  <testcase classname="UnitCustomization" name="water only exploration rejects dry steering and takes a valid water alternative" time="1.39389" status="run" />
+  <testcase classname="UnitCustomization" name="water only patrol ignores less explored dry neighbours without changing walker or flyer RNG" time="1.37953" status="run" />
+  <testcase classname="UnitCustomization" name="zero-consumption patients heal without a rebound meal despite retained low hunger" time="0.603954" status="run" />
+  </testsuite></testsuites>

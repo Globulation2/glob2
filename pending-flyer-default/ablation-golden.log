@@ -1,0 +1,4 @@
+PASS UnitCustomization/all locked capability ablations match fixed tick and RNG traces [golden][artifacts] (1.0s)
+
+1 passed, 0 failed, 0 skipped (1.0s of test time)
+[run_tests] JUnit report: artifacts/flyer-default/ablation-golden.xml (1 cases)

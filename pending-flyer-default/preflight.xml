@@ -1,0 +1,10 @@
+<?xml version='1.0' encoding='utf-8'?>
+<testsuites tests="8" failures="0" errors="0" skipped="0"><testsuite name="UnitContinuation"><testcase classname="UnitContinuation" name="a pending building route steers while retaining assignment and random state until publication" time="0.843792" status="run" />
+  <testcase classname="UnitContinuation" name="five checkpoints replay 256 ticks with matching state and RNG" time="4.37263" status="run" />
+  <testcase classname="UnitContinuation" name="hazard routes and idle escape preserve per-tick state across save load" time="2.78727" status="run" />
+  <testcase classname="UnitContinuation" name="medical abort clears every working purpose before idle or service continuation" time="7.80553" status="run" />
+  <testcase classname="UnitContinuation" name="movement chosen while pending survives binary and text save continuation [artifacts]" time="3.25731" status="run" />
+  <testcase classname="UnitContinuation" name="pending flag and clearing routes preserve the working job and clearing claim" time="0.506644" status="run" />
+  <testcase classname="UnitContinuation" name="pending steering respects forbidden terrain and mobility and wraps toward flags" time="0.336249" status="run" />
+  <testcase classname="UnitContinuation" name="pending steering tries flyer turns around occupied ground and waits when surrounded" time="1.6724" status="run" />
+  </testsuite></testsuites>

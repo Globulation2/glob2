@@ -1,0 +1,6 @@
+PASS UnitCustomization/conversion cancels pending transport and transfers the complete cargo identity (0.8s)
+PASS UnitCustomization/conversion claim release preserves the stock policy and is configurable (0.8s)
+PASS UnitCustomization/custom starvation and pending conversion preserve complete phase continuation (2.6s)
+
+3 passed, 0 failed, 0 skipped (4.1s of test time)
+[run_tests] JUnit report: artifacts/flyer-default/conversion-fixed.xml (3 cases)

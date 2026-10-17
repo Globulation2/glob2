@@ -1,0 +1,383 @@
+PASS BuildingProductionCombat/completed blocked job retains its budget and zero duration remains a producer (0.6s)
+PASS BuildingProductionCombat/committed recipes reserve distinct resources and ratio changes choose the next job (0.6s)
+PASS BuildingProductionCombat/rectangular hybrid shoots class-specific snapshots and regenerates without production (0.6s)
+PASS BuildingProductionCombat/stock suppliers route independently of fruit exchange with configured pickup cost (0.6s)
+PASS BuildingProductionCombat/overlay services and suppliers share a footprint without occupying ground (0.6s)
+PASS BuildingProductionCombat/combined attraction profiles independently require warrior level and explorer bombing (0.6s)
+PASS BuildingProductionCombat/idle producer sentinel survives binary and text continuation (3.4s)
+PASS BuildingProductionCombat/committed recipe survives binary and text continuation with its reservation (3.6s)
+PASS BuildingProductionCombat/physical combat attraction invalidates on enemy changes and mixed relocation resets routes (0.8s)
+PASS BuildingProductionCombat/hybrid attraction and service routes remain independent across save continuation (3.4s)
+PASS BuildingProductionCombat/direct stock withdrawal is independent of food and fruit exchange (0.6s)
+PASS BuildingProductionCombat/converging upgrades cancel to the instance origin and return real materials (0.6s)
+PASS BuildingProductionCombat/repair budgets use independent fruit costs and cancellation creates no material credits (0.6s)
+PASS BuildingProductionCombat/zero cost roots and upgrade stages complete without a delivery event (0.6s)
+PASS BuildingProductionCombat/construction reserves independent costs beyond storage and survives continuation (1.0s)
+PASS BuildingProductionCombat/repair earns only original damage and paid materials cannot be refunded after healing (0.6s)
+PASS BuildingProductionCombat/zero cost repair preserves damage received after the repair started (0.6s)
+PASS BuildingProductionCombat/version135 partial repair imports remaining work without material credits (1.0s)
+PASS BuildingProductionCombat/partial supplier packets preserve raw equivalents and save continuation (1.0s)
+PASS BuildingProductionCombat/unfunded new-site cooldown uses job state and counts fruit funding (0.6s)
+PASS BuildingProductionCombat/resource permissions separate storage replenishment and direct withdrawal (0.5s)
+PASS BuildingProductionCombat/shared repair sites restore each recorded origin and staffing cap (1.0s)
+PASS BuildingProductionCombat/shared ammunition consumption invalidates stock advertised by another building (0.6s)
+PASS BuildingProductionCombat/combined stock routes include both provider modes and track direct overlay relocation (0.7s)
+PASS BuildingProductionCombat/bounded supply cache excludes the recipient and its shared inventory and resumes eviction (1.0s)
+PASS BuildingProductionCombat/overlay transition and cancellation discard cached footprint routes (0.6s)
+PASS BuildingProductionCombat/mixed attraction borrows quota from an unavailable unit class (0.6s)
+PASS BuildingProductionCombat/late choice advances the common timer and selects ratios only at completion (0.6s)
+PASS BuildingProductionCombat/production transitions initialize new recipes and restore canceled preferences (1.0s)
+PASS BuildingProductionCombat/ground buildings with attraction radii remain melee targets (0.6s)
+PASS BuildingProductionCombat/building flag masks preserve neighboring flags and clear unused bits (0.2s)
+PASS BuildingProductionCombat/compact production preferences validate wide saved values before conversion [save-format] (0.6s)
+PASS BuildingProductionCombat/sole supplier demolition and cancellation preserve routing across save continuation (1.6s)
+PASS BuildingProductionCombat/demolition settles shared partial construction only when removal becomes final (1.6s)
+PASS BuildingProductionCombat/building saves retain capacity boundaries and reject invalid lifecycle values [save-format] (0.6s)
+PASS BuildingServices/mixed visits share capacity and inventory and settle once (0.6s)
+PASS BuildingServices/shared inventory cannot be committed twice by separate buildings (0.6s)
+PASS BuildingServices/construction eligibility and work speed are independently trainable (0.5s)
+PASS BuildingServices/completed feeding admission buffer ignores unrelated mixed services (0.7s)
+PASS BuildingServices/shared delivery never discards inventory above a recipient capacity (0.6s)
+PASS BuildingServices/parallel training waits for the slowest requested course (0.6s)
+PASS BuildingServices/pending mixed visits restore reservations and cancellation releases only unpaid costs (1.3s)
+PASS BuildingProductionCombat/current saves reject construction origins outside the explicit job graph (3.7s)
+PASS BuildingServices/canceling a service capable site restores each origin service exactly once (0.6s)
+PASS BuildingServices/zero duration parallel courses select the slowest inclusive action clock (0.6s)
+PASS BuildingServices/parallel training compares whole remaining ticks from the entry phase (0.6s)
+PASS BuildingServices/minimum service speed completes after diagonal entry (0.6s)
+PASS BuildingServices/save loading rejects a reservation detached from its visitor list (1.3s)
+PASS BuildingServices/stock tiny deficit healing completes without storing a post exit speed burst (0.5s)
+PASS HiringPipeline/paused and waiting replicas retain the same pre-order hiring observation (0.6s)
+PASS BuildingServices/long high speed healing retains bounded phase across save continuation (1.3s)
+PASS HiringPipeline/cold route generations publish only at the fixed deadline (0.8s)
+PASS HiringPipeline/configuration changes keep suggestions and admission rechecks live eligibility (0.5s)
+PASS HiringPipeline/production traces and published candidates match across participant counts (1.3s)
+PASS HiringPipeline/saving every delay phase retains outputs and pending identity without early publication (1.0s)
+PASS HiringPipeline/missing lists do not synchronously scan or assign a worker (0.5s)
+PASS HiringPipeline/transient unavailability and changed cargo are validated on every attempt (0.5s)
+PASS HiringPipeline/all attraction jobs admit through the production candidate consumer (0.7s)
+PASS HiringPipeline/a returning attraction worker does not wait another recruitment-clock cycle (0.5s)
+PASS HiringPipeline/an owed attraction round retries for a bounded window (0.5s)
+PASS HiringPipeline/an expired hybrid attraction request releases unused delivery seats (0.6s)
+PASS HiringPipeline/imminent attraction peers receive alternatives without inactive peers claiming them (0.5s)
+PASS HiringPipeline/whole-game continuation retains an outstanding attraction request (1.1s)
+PASS HiringPlanner/food-unsafe high-skill workers cannot crowd a viable worker out (0.5s)
+PASS HiringGradientPreparation/prewarming reuses a dirty serving generation and its search (0.5s)
+PASS HiringGradientPreparation/a stale unreachable serving field keeps candidates for a live refresh (0.5s)
+PASS HiringGradientPreparation/cold shortlisted destinations are settled before suggestions publish (0.9s)
+PASS HiringGradientPreparation/formats 170 and 171 load without proactive initialization records (0.5s)
+PASS HiringGradientPreparation/primary-only prewarming leaves fallback cells lazy while retaining candidates (0.8s)
+PASS BuildingGradientInitialization/saving a primary-only job does not turn it into a proactive claim (0.5s)
+PASS BuildingGradientInitialization/legacy proactive requests prepare busy units outside the hiring cohort (0.6s)
+PASS BuildingGradientInitialization/creation upgrade and cancellation leave routes lazy (0.5s)
+PASS BuildingGradientInitialization/legacy preparation and primary hiring seed one shared route (0.5s)
+PASS HiringPlanner/distance bounds preserve exhaustive rankings for every job (0.8s)
+PASS HiringPlanner/resource estimates borrow the normal snapshot plane without private builds (0.5s)
+PASS HiringPlanner/shared resource planes retain ordered unreachable-neighbor admission estimates (0.7s)
+PASS HiringPlanner/busy ground classes do not initialize unused hiring routes (0.5s)
+PASS HiringPlanner/cold route observation suggests candidates while live admission remains Pending (0.5s)
+PASS HiringPlanner/unrelated live route enrollment cannot change hiring inputs (0.5s)
+PASS HiringPlanner/published resource estimates are used and missing planes remain recruitable (0.5s)
+PASS HiringPlanner/missing shared planes do not suppress suggestions after visibility-rule changes (0.5s)
+PASS HiringGradientPreparation/a cold primary field survives binary and text saves without early publication [artifacts] (6.6s)
+PASS HiringPlanner/worker demand uses immutable shared funding and staffing facts (0.5s)
+PASS HiringPlanner/observed funding reproduces live material apportionment (0.6s)
+PASS HiringPlanner/worker construction quotas match repair funding (0.5s)
+PASS HiringPlanner/defense score uses frozen attack modifiers and saturated integer strength (0.6s)
+PASS HiringPlanner/supplier membership survives waiting-for-construction observations (0.7s)
+PASS HiringPlanner/snapshot planning skips busy workers without changing live units (0.5s)
+PASS BuildingGradientInitialization/queued and off-cohort pending initialization survive binary and text saves [artifacts] (7.0s)
+PASS HiringPlanner/planning skips zero-demand and staffed buildings and resumes on vacancies (0.5s)
+PASS HiringPlanner/job quotas bound each list to vacancies plus two (0.5s)
+PASS HiringPlanner/diverse material offers cover peers without reserving live workers (0.6s)
+PASS HiringPlanner/shared field survives replacement and proposals preserve owner demand (0.5s)
+PASS HiringPlanner/missing building fields never trigger private construction (0.6s)
+PASS HiringPlanner/ranking tie break follows unit identity (0.3s)
+PASS HiringPlanner/bounded shortlists match sorted prefixes for every job (0.3s)
+PASS HiringPlanner/fetch jobs reuse canonical resource estimates independently of live planes (0.5s)
+PASS HiringPlanner/missing supplier planes retain fetch suggestions for live admission (0.6s)
+PASS BuildingMaterialDemand/dense oracle covers generated private shared construction and repair states (0.5s)
+PASS BuildingMaterialDemand/per material rounding differs from aggregate staffing and wishes can be negative (0.5s)
+PASS BuildingMaterialDemand/division boundaries capacity clamps and authored multiplier bounds remain exact (0.5s)
+PASS BuildingMaterialDemand/fresh queries see shared reservations releases consumption and other building deliveries (0.7s)
+PASS BuildingMaterialDemand/maximum authored demand keeps ceiling and aggregate arithmetic in range (0.5s)
+PASS BuildingMaterialDemand/reserved output slots are initialized and remain distinct from real material staffing (0.5s)
+PASS BuildingMaterialDemand/update boundaries keep wishes staffing and recruitment bucket order observable (0.5s)
+PASS BuildingMaterialDemand/repair upgrade delivery completion and destruction refresh demand at their existing boundaries (0.6s)
+PASS BuildingGradientInvalidation/owner observation at tick zero publishes cold fields and access metadata together at tick K (0.7s)
+PASS BuildingGradientInvalidation/observation phase is covered by both current checksum tiers (0.6s)
+PASS BuildingGradientInvalidation/centre placed inside an existing ring (0.5s)
+PASS BuildingGradientInvalidation/ring placed around an existing field (0.6s)
+PASS BuildingGradientInvalidation/world observation publication and admission survive save boundaries (1.2s)
+PASS BuildingGradientInvalidation/initial legacy saves bootstrap only when their observation was not admitted (1.5s)
+PASS BuildingGradientInvalidation/a paused field keeps its original obstacles (0.5s)
+PASS BuildingGradientInvalidation/a rival teams ring cuts off a cached field (0.5s)
+PASS BuildingGradientInvalidation/a ring cuts off a virtual flags field (0.5s)
+PASS BuildingGradientInvalidation/idle field storage is reused without stale routes (0.6s)
+PASS BuildingGradientInvalidation/public reads resolve their inputs (0.7s)
+PASS BuildingGradientInvalidation/delayed fields (2.1s)
+PASS BuildingGradientInvalidation/scheduled building fields publish at fixed deadlines across worker counts and delays (1.8s)
+PASS BuildingGradientInvalidation/requests during team stepping are captured at the observation boundary (0.5s)
+PASS BuildingGradientInvalidation/synchronous rebuilds and lifecycle hooks supersede pending jobs that share a deadline (0.5s)
+PASS BuildingGradientInvalidation/partial scheduled fields resume on the owner from transferred buckets (0.8s)
+PASS BuildingGradientInvalidation/a deleted building's pending result cannot replace a reused destination (0.6s)
+PASS BuildingGradientInvalidation/access metadata follows the newest capture across swim classes and saves (0.5s)
+PASS BuildingGradientInvalidation/area and team-wide resets keep stale walking fields serving with the pipeline on (0.9s)
+PASS BuildingGradientInvalidation/snapshot building seeds and captured-input searches match the synchronous kernels for every route and swim class (5.4s)
+PASS BuildingGradientInvalidation/slow and failing workers never change the publication tick (1.2s)
+PASS BuildingGradientInvalidation/a pending result keeps the generation a team-local edit carries forward (0.7s)
+PASS BuildingGradientInvalidation/same-tick swim classes write access metadata in request order (0.6s)
+PASS BuildingGradientInvalidation/an empty building pipeline follows a changed header delay through save and load (0.6s)
+PASS BuildingGradientInvalidation/pending building results survive save boundaries and cannot resurrect evicted fields (5.5s)
+PASS InitialBuildingGradient/cold initialization publishes a resumable frontier at fixed deadlines across worker counts [artifacts] (1.5s)
+PASS InitialBuildingGradient/soft edits retain cold deadlines while a building reset supersedes its private result (0.7s)
+PASS InitialBuildingGradient/cold requests beyond the former FIFO limit never initialize synchronously (0.7s)
+PASS UnitContinuation/a pending building route steers while retaining assignment and random state until publication (1.3s)
+PASS HiringPipeline/whole game save and resume preserves every publication phase [save-format][artifacts] (28.9s)
+PASS UnitContinuation/pending steering respects forbidden terrain and mobility and wraps toward flags (0.6s)
+PASS UnitContinuation/pending flag and clearing routes preserve the working job and clearing claim (0.9s)
+PASS UnitContinuation/pending steering tries flyer turns around occupied ground and waits when surrounded (2.4s)
+PASS UnitContinuation/movement chosen while pending survives binary and text save continuation [artifacts] (4.5s)
+PASS UnitContinuation/hazard routes and idle escape preserve per-tick state across save load (3.8s)
+PASS UnitContinuation/medical abort clears every working purpose before idle or service continuation (10.7s)
+PASS BuildingGradientInvalidation/retained format126 access flags restore walking and swimming locks into the footprint route and survive current saves [save-format] (17.6s)
+PASS InitialBuildingGradient/queued and privately completed cold initialization survives binary and text saves [artifacts] (18.1s)
+PASS UnitContinuation/five checkpoints replay 256 ticks with matching state and RNG (5.7s)
+PASS SavegameSafety/autosave defaults; atomic and background writes; truncated and malformed loads; imports and campaign progress [save-format][writes-preferences] (66.8s)
+
+146 passed, 0 failed, 0 skipped (287.4s of test time)
+[run_tests] JUnit report: artifacts/flyer-default/engine.xml (146 cases)
+PASS glob2-unit-tests ReplayAppearance (2 cases) (0.1s)
+PASS glob2-unit-tests ReplayStepCounter (7 cases) (0.1s)
+PASS glob2-unit-tests PlatformClient (24 cases) (0.1s)
+PASS glob2-unit-tests PlatformProtocol (8 cases) (0.1s)
+
+4 passed, 0 failed, 0 skipped (0.4s of test time)
+[run_tests] JUnit report: artifacts/flyer-default/compatibility.xml (41 cases)
+PASS TurnEngineHarness/embedded terrain definitions travel with shared matches and verifier replays [network-sim][artifacts] (4.9s)
+PASS TurnEngineHarness/a client that executes a tampered order is repaired by an in-place reload and named by the verifier [network-sim][artifacts] (8.1s)
+PASS TurnEngineHarness/two engines with AI seats under latency, jitter and loss agree at every tick and the record verifies [network-sim][artifacts] (8.5s)
+PASS TurnEngineHarness/a player who leaves stays listed as Left, and the one left standing learns why it won [network-sim] (1.5s)
+PASS TurnEngineHarness/shared scripted maps play and produce verified ordinary replays without installation [network-sim][artifacts] (12.9s)
+PASS TurnEngineHarness/four engines survive a stall and a restart: the restarted client reloads and fast-forwards [network-sim][artifacts] (8.0s)
+PASS TurnEngineHarness/closed seats are closed colonies: the last player standing wins everywhere and the record verifies [network-sim] (7.9s)
+PASS TurnEngineHarness/a save with closed seats: reteamed players keep their colonies, closed ones are cleared [network-sim] (5.3s)
+PASS TurnEngineHarness/a player who quits leaves through the relay's quit order and the rest play on [network-sim] (11.9s)
+PASS TurnEngineHarness/orders a hostile relay forges for a seat are refused by the verifier, which still verifies [network-sim] (2.7s)
+PASS TurnEngineHarness/a 10 s flag drag and a held key keep the input delay bounded, without a flood [network-sim][artifacts] (4.3s)
+PASS TurnEngineHarness/a pause limit is enforced identically everywhere and the record verifies [network-sim][artifacts] (2.8s)
+PASS TurnEngineHarness/without a pause limit a pause lasts until someone resumes it [network-sim] (1.6s)
+PASS TurnEngineHarness/voice packets do not hold up a player's orders [network-sim][artifacts] (5.3s)
+PASS TurnEngineHarness/the committed match record verifies to the committed checksum trace [network-sim][golden] (2.3s)
+PASS TurnEngineHarness/one client claiming the game finished does not end it for a player who is reconnecting [network-sim] (3.6s)
+PASS TurnEngineHarness/engines report network telemetry, and its output changes nothing they execute [network-sim][artifacts] (4.2s)
+PASS TurnEngineHarness/a client sending hostile orders of every type crashes no one and is refused identically everywhere [network-sim][fuzz][artifacts] (39.1s)
+
+18 passed, 0 failed, 0 skipped (135.0s of test time)
+[run_tests] JUnit report: artifacts/flyer-default/turn.xml (18 cases)
+The sim version key matches the committed match record and follows every change of the golden trace
+PASS EntityRandomLifecycle/world owners are isolated and their progress changes lockstep checksums (0.6s)
+PASS EnteringUnitSave/the retained fixture loads [save-format] (0.9s)
+PASS EnteringUnitSave/authored catalogs reject unassigned indoor service membership [save-format] (1.0s)
+PASS EntityRandomLifecycle/story identities isolate extra draws and fixed domains differ (0.2s)
+PASS EntityRandomLifecycle/entity operations consume only their own streams outside a tick (0.6s)
+PASS EntityRandomLifecycle/malformed new world RNG records fail rather than migrating (1.1s)
+PASS EntityRandomLifecycle/gradient sidesteps draw from the moving unit rather than the target building (0.6s)
+PASS EntityRandomLifecycle/team steps consume entity streams without consuming world randomness (0.6s)
+PASS EntityRandomLifecycle/upgrades preserve streams and reused slots receive a fresh salt (0.6s)
+PASS EntityRandomLifecycle/snapshots freeze both unit and building RNG state (0.6s)
+PASS EntityRandomLifecycle/world streams continue through binary and text saves without resume reseeding (3.0s)
+PASS EntityRandomLifecycle/fresh header reseeds starting entities but resume header preserves progress (1.2s)
+PASS EntityRandomLifecycle/truncated binary RNG state and even increments are rejected (0.2s)
+PASS EntityRandomLifecycle/missing malformed and even text RNG fields are rejected (0.3s)
+PASS FetchHiringScore/recruitment retains exact hunger boundaries and widened cached extremes (0.6s)
+PASS FetchHiringScore/carrying selection preserves saturated wide hunger ties without purpose writes (0.6s)
+PASS FetchHiringScore/carrying candidates preserve sparse slot ties without live writes (0.6s)
+PASS FetchHiringScore/a unit is judged on the walk to the resource (0.5s)
+PASS EntityRandomLifecycle/binary and text saves preserve exact private state and subsequent draws (3.2s)
+PASS FetchHiringScore/the score estimates the whole fetch-and-carry trip (0.5s)
+FAIL HungryDefeat/healing defeat recovery survives a save with an occupied hospital (0.6s)
+FAIL HungryDefeat/healing reserves the last hospital place without eliminating the colony (0.5s)
+FAIL HungryDefeat/feeding reserves the last inn place and defeat controls hold (0.5s)
+PASS EntityRandomLifecycle/format 150 text area saves retain funded services through current saves [save-format][artifacts] (4.6s)
+PASS ResourceFetchTarget/a depleted target is refreshed after its gradient rebuild for every swim class (1.1s)
+PASS UnitCustomization/water only patrol ignores less explored dry neighbours without changing walker or flyer RNG (1.6s)
+PASS UnitCustomization/water only exploration rejects dry steering and takes a valid water alternative (1.7s)
+PASS TrappedUnitLifecycle/trapped elimination; indoor survival; rescue; service; hatchery recovery; repeated seeds and save continuation (5.1s)
+PASS UnitCustomization/flag recruitment refusal does not disable painted clearing or defense areas (1.8s)
+PASS LegacyRoundTripSave/a format-143 save with live round-trip fields plays on greedily [golden][save-format] (7.6s)
+PASS UnitCustomization/idle clearing permission does not interrupt a transport assignment (0.6s)
+PASS EnteringUnitSave/generated fixtures round-trip through binary saves [save-format] (16.9s)
+PASS UnitCustomization/idle painted clearing completes without permission to interrupt jobs [save-format] (1.8s)
+PASS UnitCustomization/catalog resizing rejects in-flight projectile rows without publishing state (2.2s)
+PASS UnitCustomization/disabling future flag recruitment preserves all existing job roles and memberships [save-format] (3.9s)
+PASS UnitCustomization/setup scaling preserves lethal extremes and zero-kind inventories refuse packets (0.6s)
+PASS UnitCustomization/current saves reject invalid cached bounds and retain pending lethal state (0.6s)
+PASS UnitCustomization/custom combat extremes preserve observer estimates and clamp lethal overkill (0.6s)
+PASS UnitCustomization/maximum healing multiplier and health complete a diagonal service visit (0.6s)
+PASS UnitCustomization/mixed melee and transport conserve multiple material kinds and rejected packets (0.6s)
+PASS UnitCustomization/stock capacity-one wide primary cargo survives unit and game continuation [save-format] (4.4s)
+PASS UnitCustomization/extended cargo delivers one usable packet per completed work action (0.6s)
+PASS UnitCustomization/hybrid flag recruitment policies are independent of abilities and idle area policies [save-format] (9.7s)
+FAIL UnitCustomization/all locked capability ablations match fixed tick and RNG traces [golden][artifacts] (1.1s)
+PASS UnitCustomization/documented bulk carrier setup enables an inherited-cost production recipe (0.7s)
+PASS UnitCustomization/tiling anchors and starting positions recognize producers of additional units (0.7s)
+PASS UnitCustomization/labor and defense statistics require usable clocks and recruitment mobility (0.6s)
+PASS UnitCustomization/mobility statistics respect swimming only and stationary definitions (0.6s)
+PASS UnitCustomization/survival eligibility is independent of movement and work capabilities (0.8s)
+FAIL UnitCustomization/conversion claim release preserves the stock policy and is configurable (0.6s)
+PASS UnitCustomization/swim only fields avoid land and stationary zero hunger units keep making medical progress (0.6s)
+PASS UnitCustomization/passive healing and starvation damage are independent configured rates (0.6s)
+PASS UnitCustomization/ground and airborne couriers collect mixed kinds and deliver through the engine (1.0s)
+PASS UnitCustomization/game save resumes mixed cargo and per entity RNG at every tick (1.5s)
+PASS UnitCustomization/airborne clearing and magic coexist with held cargo (0.6s)
+PASS UnitCustomization/batch planning releases its own harvest obstacle for cold and warm fields without advancing clocks (2.2s)
+FAIL UnitCustomization/conversion cancels pending transport and transfers the complete cargo identity (0.6s)
+PASS UnitCustomization/configured service multipliers shorten complete meals and healing visits (1.4s)
+PASS UnitCustomization/retained single packets and kind limits do not withdraw incompatible resources (0.9s)
+PASS UnitCustomization/extreme hunger and experience saturate without changing valid stock arithmetic (0.6s)
+PASS UnitCustomization/fractional deliveries retain exact residuals across multipliers and reject overflow atomically (0.7s)
+PASS UnitCustomization/legacy setup sentinel retains resolved map definitions and cached unit values (0.6s)
+PASS UnitCustomization/migrated tables retain cached performance idle and contact policies (0.6s)
+PASS UnitCustomization/an explicit producer creates stationary units on a legal birth cell (0.7s)
+PASS UnitCustomization/unit experiment gates control spawning and reject disabled live definitions (1.5s)
+PASS UnitCustomization/deleted units release wide cargo before a GID is reused (0.6s)
+PASS UnitCustomization/mixed inventory and assigned purpose survive unit serialization (0.6s)
+PASS UnitCustomization/concurrent catalogs keep independent live performance and continuation (1.5s)
+PASS UnitCustomization/setup cancels obsolete live work clocks and claims without losing cargo or RNG (0.8s)
+PASS UnitCustomization/setup releases original parallel course reservations before disabling learnability (0.9s)
+PASS UnitCustomization/transport capability with a zero delivery clock cannot be hired (0.6s)
+PASS UnitCustomization/initial hiring finds a wanted material in overflow cargo and completes delivery (0.6s)
+PASS UnitCustomization/initial hiring respects retained packet capacity and material kind limits (0.8s)
+PASS UnitCustomization/unit loading rejects mismatched assigned purposes and over-capacity primary packets (1.1s)
+PASS UnitCustomization/target search handles a defender whose effective melee strength saturates (0.6s)
+PASS UnitCustomization/construction qualification excludes higher-level couriers in live and captured queries (0.6s)
+PASS UnitCustomization/pending lethal scouts have bounded attraction ranking and resolve death (0.7s)
+PASS UnitCustomization/unusable retained fractional cargo releases its job and continues exactly after saving (1.5s)
+PASS UnitCustomization/zero-consumption patients heal without a rebound meal despite retained low hunger (0.8s)
+PASS UnitCustomization/configured magic cooldown follows the magic level while imported tables retain legacy indexing (0.8s)
+FAIL UnitCustomization/active water-only cargo preserves queued and pending gradient deadlines [save-format] (0.7s)
+PASS UnitCustomization/setup rejects immobile interior patients without publishing partial catalog state (1.6s)
+FAIL UnitCustomization/custom carriers resume actual pickup and delivery including active water only fields (0.6s)
+PASS UnitCustomization/current unit records require idle and service assignments to have no working purpose (2.2s)
+PASS UnitCustomization/mixed combat and fractional regeneration continue with cached clocks cargo and random streams (1.6s)
+FAIL UnitCustomization/custom starvation and pending conversion preserve complete phase continuation (1.4s)
+PASS UnitCustomization/catalog derived vision cache preserves padding wire state and visibility continuation [save-format] (2.4s)
+PASS UnitCustomization/migrated vision follows cached flight rather than presentation or saved Race tables [save-format] (3.1s)
+PASS UnitCustomization/high unit IDs spawn work and resume all indexed state (11.4s)
+PASS UnitCustomization/migrated vision changes with flight learned during a reserved service [save-format] (1.9s)
+PASS UnitCustomization/parallel movement transfer checks exit terrain but ignores temporary occupants and resumes atomically (1.5s)
+PASS UnitCustomization/training rejects loss of the last movement mode before reservation or direct mutation (2.0s)
+PASS UnitCustomization/restored unsafe ongoing training exits without charging materials or changing levels (1.6s)
+PASS UnitCustomization/imported movement tables retain historical course admission and direct grants (0.7s)
+PASS UnitCustomization/enemy tower live index matches full slot oracle across lifecycle and save continuation [save-format] (1.4s)
+PASS UnitCustomization/parallel construction qualification captures all courses before grants and preserves immobile definitions (1.8s)
+PASS UnitCustomization/parallel movement losses are assessed together before admission with a surviving mode alternative (1.8s)
+PASS UnitCustomization/learning mask updates preserve every neighboring flag (0.3s)
+PASS UnitCustomization/enemy tower live index retains last slot and full occupied table oracle (0.6s)
+PASS UnitCustomization/compact unit fields reject wide invalid values before conversion [save-format] (0.6s)
+PASS UnitCustomization/HP rule arithmetic precedes the cached performance cap at creation rebind and training (0.6s)
+PASS UnitCustomization/custom feeding healing and training resume entry interior and exit with exact reservations (12.0s)
+PASS UnitCustomization/cached performance caps preserve wide save validation and normalized continuation [save-format] (2.7s)
+
+===== FAIL HungryDefeat/feeding reserves the last inn place and defeat controls hold =====
+GLOB2_TEST_BUILD compiler=Apple LLVM 21.0.0 (clang-2100.3.34.2) platform=macOS pointer_bits=64
+GLOB2_TEST_PROVENANCE {"compiler": "g++", "dirty": false, "flags": {"CCFLAGS": "-O0 -g1 -fdebug-prefix-map=/Users/bradley/.codex/worktrees/hiring-gradient-production/glob2=.", "CPPDEFINES": "GLOB2_OFFICIAL_INSTANCE_ORIGIN \\\"https://app.glob2online.com\\\" GLOB2_OFFICIAL_INSTANCE_FORMER_ORIGINS \\\"https://glob2online.com\\\" HAVE_CONFIG_H GL_SILENCE_DEPRECATION GLOB2_RENDER_SHADER_DIR \\\"/Users/bradley/.codex/worktrees/hiring-gradient-production/glob2/build/darwin/client/debug/dev-dev_fast-true-linker-auto/shaders\\\" SDL_MAIN_HANDLED", "CXXFLAGS": "-std=gnu++20 -Wall -fPIC", "LINKFLAGS": "-Wall -Wl,-rpath,/opt/homebrew/lib"}, "revision": "387a6b014966ed160e02cecb7c26d386b3971f98", "sourceStatus": [], "sourceTreeSha256": "09bc114a8aa3cc49a53ec4ea01313e336aeff5bbe0c411d113250d14ee02cf6a"}
+
+[failure] feeding reserves the last inn place and defeat controls hold: false
+src/unit/HungryDefeatHarness.cpp:23:
+REQUIRE( static_cast<bool>(ok) ) is NOT correct!
+  values: REQUIRE( false )
+  logged: hungry unit reserves a meal during the team step
+
+
+===== FAIL HungryDefeat/healing defeat recovery survives a save with an occupied hospital =====
+GLOB2_TEST_BUILD compiler=Apple LLVM 21.0.0 (clang-2100.3.34.2) platform=macOS pointer_bits=64
+GLOB2_TEST_PROVENANCE {"compiler": "g++", "dirty": false, "flags": {"CCFLAGS": "-O0 -g1 -fdebug-prefix-map=/Users/bradley/.codex/worktrees/hiring-gradient-production/glob2=.", "CPPDEFINES": "GLOB2_OFFICIAL_INSTANCE_ORIGIN \\\"https://app.glob2online.com\\\" GLOB2_OFFICIAL_INSTANCE_FORMER_ORIGINS \\\"https://glob2online.com\\\" HAVE_CONFIG_H GL_SILENCE_DEPRECATION GLOB2_RENDER_SHADER_DIR \\\"/Users/bradley/.codex/worktrees/hiring-gradient-production/glob2/build/darwin/client/debug/dev-dev_fast-true-linker-auto/shaders\\\" SDL_MAIN_HANDLED", "CXXFLAGS": "-std=gnu++20 -Wall -fPIC", "LINKFLAGS": "-Wall -Wl,-rpath,/opt/homebrew/lib"}, "revision": "387a6b014966ed160e02cecb7c26d386b3971f98", "sourceStatus": [], "sourceTreeSha256": "09bc114a8aa3cc49a53ec4ea01313e336aeff5bbe0c411d113250d14ee02cf6a"}
+
+[failure] healing defeat recovery survives a save with an occupied hospital: nullptr == 0xc7ae5ca00
+src/unit/HungryDefeatHarness.cpp:160:
+REQUIRE( patient->attachedBuilding == hospital ) is NOT correct!
+  values: REQUIRE( nullptr == 0xc7ae5ca00 )
+
+
+===== FAIL HungryDefeat/healing reserves the last hospital place without eliminating the colony =====
+GLOB2_TEST_BUILD compiler=Apple LLVM 21.0.0 (clang-2100.3.34.2) platform=macOS pointer_bits=64
+GLOB2_TEST_PROVENANCE {"compiler": "g++", "dirty": false, "flags": {"CCFLAGS": "-O0 -g1 -fdebug-prefix-map=/Users/bradley/.codex/worktrees/hiring-gradient-production/glob2=.", "CPPDEFINES": "GLOB2_OFFICIAL_INSTANCE_ORIGIN \\\"https://app.glob2online.com\\\" GLOB2_OFFICIAL_INSTANCE_FORMER_ORIGINS \\\"https://glob2online.com\\\" HAVE_CONFIG_H GL_SILENCE_DEPRECATION GLOB2_RENDER_SHADER_DIR \\\"/Users/bradley/.codex/worktrees/hiring-gradient-production/glob2/build/darwin/client/debug/dev-dev_fast-true-linker-auto/shaders\\\" SDL_MAIN_HANDLED", "CXXFLAGS": "-std=gnu++20 -Wall -fPIC", "LINKFLAGS": "-Wall -Wl,-rpath,/opt/homebrew/lib"}, "revision": "387a6b014966ed160e02cecb7c26d386b3971f98", "sourceStatus": [], "sourceTreeSha256": "09bc114a8aa3cc49a53ec4ea01313e336aeff5bbe0c411d113250d14ee02cf6a"}
+
+[failure] healing reserves the last hospital place without eliminating the colony: false
+src/unit/HungryDefeatHarness.cpp:23:
+REQUIRE( static_cast<bool>(ok) ) is NOT correct!
+  values: REQUIRE( false )
+  logged: injured unit reserves healing during the team step
+
+
+===== FAIL UnitCustomization/active water-only cargo preserves queued and pending gradient deadlines [save-format] =====
+GLOB2_TEST_BUILD compiler=Apple LLVM 21.0.0 (clang-2100.3.34.2) platform=macOS pointer_bits=64
+GLOB2_TEST_PROVENANCE {"compiler": "g++", "dirty": false, "flags": {"CCFLAGS": "-O0 -g1 -fdebug-prefix-map=/Users/bradley/.codex/worktrees/hiring-gradient-production/glob2=.", "CPPDEFINES": "GLOB2_OFFICIAL_INSTANCE_ORIGIN \\\"https://app.glob2online.com\\\" GLOB2_OFFICIAL_INSTANCE_FORMER_ORIGINS \\\"https://glob2online.com\\\" HAVE_CONFIG_H GL_SILENCE_DEPRECATION GLOB2_RENDER_SHADER_DIR \\\"/Users/bradley/.codex/worktrees/hiring-gradient-production/glob2/build/darwin/client/debug/dev-dev_fast-true-linker-auto/shaders\\\" SDL_MAIN_HANDLED", "CXXFLAGS": "-std=gnu++20 -Wall -fPIC", "LINKFLAGS": "-Wall -Wl,-rpath,/opt/homebrew/lib"}, "revision": "387a6b014966ed160e02cecb7c26d386b3971f98", "sourceStatus": [], "sourceTreeSha256": "09bc114a8aa3cc49a53ec4ea01313e336aeff5bbe0c411d113250d14ee02cf6a"}
+
+[failure] active water-only cargo preserves queued and pending gradient deadlines [save-format]: nullptr
+src/unit/UnitCustomizationTest.cpp:2294:
+REQUIRE( map.buildingGradient(inn,WATER_ONLY_CLASS) ) is NOT correct!
+  values: REQUIRE( nullptr )
+  logged: threads := 1
+          int(boundary) := 0
+          superseded := false
+
+
+===== FAIL UnitCustomization/all locked capability ablations match fixed tick and RNG traces [golden][artifacts] =====
+GLOB2_TEST_BUILD compiler=Apple LLVM 21.0.0 (clang-2100.3.34.2) platform=macOS pointer_bits=64
+GLOB2_TEST_PROVENANCE {"compiler": "g++", "dirty": false, "flags": {"CCFLAGS": "-O0 -g1 -fdebug-prefix-map=/Users/bradley/.codex/worktrees/hiring-gradient-production/glob2=.", "CPPDEFINES": "GLOB2_OFFICIAL_INSTANCE_ORIGIN \\\"https://app.glob2online.com\\\" GLOB2_OFFICIAL_INSTANCE_FORMER_ORIGINS \\\"https://glob2online.com\\\" HAVE_CONFIG_H GL_SILENCE_DEPRECATION GLOB2_RENDER_SHADER_DIR \\\"/Users/bradley/.codex/worktrees/hiring-gradient-production/glob2/build/darwin/client/debug/dev-dev_fast-true-linker-auto/shaders\\\" SDL_MAIN_HANDLED", "CXXFLAGS": "-std=gnu++20 -Wall -fPIC", "LINKFLAGS": "-Wall -Wl,-rpath,/opt/homebrew/lib"}, "revision": "387a6b014966ed160e02cecb7c26d386b3971f98", "sourceStatus": [], "sourceTreeSha256": "09bc114a8aa3cc49a53ec4ea01313e336aeff5bbe0c411d113250d14ee02cf6a"}
+
+[failure] all locked capability ablations match fixed tick and RNG traces [golden][artifacts]: golden mismatch against unit-catalog/ablation-checksums.txt at line 2   expected: 0 2034322792   actual:   0 162858343
+test/support/Glob2Test.cpp:207:
+golden mismatch against unit-catalog/ablation-checksums.txt at line 2
+  expected: 0 2034322792
+  actual:   0 162858343
+
+
+===== FAIL UnitCustomization/conversion cancels pending transport and transfers the complete cargo identity =====
+GLOB2_TEST_BUILD compiler=Apple LLVM 21.0.0 (clang-2100.3.34.2) platform=macOS pointer_bits=64
+GLOB2_TEST_PROVENANCE {"compiler": "g++", "dirty": false, "flags": {"CCFLAGS": "-O0 -g1 -fdebug-prefix-map=/Users/bradley/.codex/worktrees/hiring-gradient-production/glob2=.", "CPPDEFINES": "GLOB2_OFFICIAL_INSTANCE_ORIGIN \\\"https://app.glob2online.com\\\" GLOB2_OFFICIAL_INSTANCE_FORMER_ORIGINS \\\"https://glob2online.com\\\" HAVE_CONFIG_H GL_SILENCE_DEPRECATION GLOB2_RENDER_SHADER_DIR \\\"/Users/bradley/.codex/worktrees/hiring-gradient-production/glob2/build/darwin/client/debug/dev-dev_fast-true-linker-auto/shaders\\\" SDL_MAIN_HANDLED", "CXXFLAGS": "-std=gnu++20 -Wall -fPIC", "LINKFLAGS": "-Wall -Wl,-rpath,/opt/homebrew/lib"}, "revision": "387a6b014966ed160e02cecb7c26d386b3971f98", "sourceStatus": [], "sourceTreeSha256": "09bc114a8aa3cc49a53ec4ea01313e336aeff5bbe0c411d113250d14ee02cf6a"}
+
+[failure] conversion cancels pending transport and transfers the complete cargo identity: nullptr == 0xa590e1400
+src/unit/UnitCustomizationTest.cpp:1393:
+REQUIRE( source->findNearestFood(unit)==enemyInn ) is NOT correct!
+  values: REQUIRE( nullptr == 0xa590e1400 )
+  logged: sourceTeam := 0
+
+
+===== FAIL UnitCustomization/conversion claim release preserves the stock policy and is configurable =====
+GLOB2_TEST_BUILD compiler=Apple LLVM 21.0.0 (clang-2100.3.34.2) platform=macOS pointer_bits=64
+GLOB2_TEST_PROVENANCE {"compiler": "g++", "dirty": false, "flags": {"CCFLAGS": "-O0 -g1 -fdebug-prefix-map=/Users/bradley/.codex/worktrees/hiring-gradient-production/glob2=.", "CPPDEFINES": "GLOB2_OFFICIAL_INSTANCE_ORIGIN \\\"https://app.glob2online.com\\\" GLOB2_OFFICIAL_INSTANCE_FORMER_ORIGINS \\\"https://glob2online.com\\\" HAVE_CONFIG_H GL_SILENCE_DEPRECATION GLOB2_RENDER_SHADER_DIR \\\"/Users/bradley/.codex/worktrees/hiring-gradient-production/glob2/build/darwin/client/debug/dev-dev_fast-true-linker-auto/shaders\\\" SDL_MAIN_HANDLED", "CXXFLAGS": "-std=gnu++20 -Wall -fPIC", "LINKFLAGS": "-Wall -Wl,-rpath,/opt/homebrew/lib"}, "revision": "387a6b014966ed160e02cecb7c26d386b3971f98", "sourceStatus": [], "sourceTreeSha256": "09bc114a8aa3cc49a53ec4ea01313e336aeff5bbe0c411d113250d14ee02cf6a"}
+
+[failure] conversion claim release preserves the stock policy and is configurable: nullptr == 0xc14ccca00
+src/unit/UnitCustomizationTest.cpp:1090:
+REQUIRE( world.team->findNearestFood(unit)==inn ) is NOT correct!
+  values: REQUIRE( nullptr == 0xc14ccca00 )
+
+
+===== FAIL UnitCustomization/custom carriers resume actual pickup and delivery including active water only fields =====
+GLOB2_TEST_BUILD compiler=Apple LLVM 21.0.0 (clang-2100.3.34.2) platform=macOS pointer_bits=64
+GLOB2_TEST_PROVENANCE {"compiler": "g++", "dirty": false, "flags": {"CCFLAGS": "-O0 -g1 -fdebug-prefix-map=/Users/bradley/.codex/worktrees/hiring-gradient-production/glob2=.", "CPPDEFINES": "GLOB2_OFFICIAL_INSTANCE_ORIGIN \\\"https://app.glob2online.com\\\" GLOB2_OFFICIAL_INSTANCE_FORMER_ORIGINS \\\"https://glob2online.com\\\" HAVE_CONFIG_H GL_SILENCE_DEPRECATION GLOB2_RENDER_SHADER_DIR \\\"/Users/bradley/.codex/worktrees/hiring-gradient-production/glob2/build/darwin/client/debug/dev-dev_fast-true-linker-auto/shaders\\\" SDL_MAIN_HANDLED", "CXXFLAGS": "-std=gnu++20 -Wall -fPIC", "LINKFLAGS": "-Wall -Wl,-rpath,/opt/homebrew/lib"}, "revision": "387a6b014966ed160e02cecb7c26d386b3971f98", "sourceStatus": [], "sourceTreeSha256": "09bc114a8aa3cc49a53ec4ea01313e336aeff5bbe0c411d113250d14ee02cf6a"}
+
+[failure] custom carriers resume actual pickup and delivery including active water only fields: nullptr
+src/unit/UnitCustomizationTest.cpp:2451:
+REQUIRE( world.game.map.buildingGradient(inn,unit->swimClass()) ) is NOT correct!
+  values: REQUIRE( nullptr )
+  logged: waterOnly := false
+          int(phase) := 16
+
+
+===== FAIL UnitCustomization/custom starvation and pending conversion preserve complete phase continuation =====
+GLOB2_TEST_BUILD compiler=Apple LLVM 21.0.0 (clang-2100.3.34.2) platform=macOS pointer_bits=64
+GLOB2_TEST_PROVENANCE {"compiler": "g++", "dirty": false, "flags": {"CCFLAGS": "-O0 -g1 -fdebug-prefix-map=/Users/bradley/.codex/worktrees/hiring-gradient-production/glob2=.", "CPPDEFINES": "GLOB2_OFFICIAL_INSTANCE_ORIGIN \\\"https://app.glob2online.com\\\" GLOB2_OFFICIAL_INSTANCE_FORMER_ORIGINS \\\"https://glob2online.com\\\" HAVE_CONFIG_H GL_SILENCE_DEPRECATION GLOB2_RENDER_SHADER_DIR \\\"/Users/bradley/.codex/worktrees/hiring-gradient-production/glob2/build/darwin/client/debug/dev-dev_fast-true-linker-auto/shaders\\\" SDL_MAIN_HANDLED", "CXXFLAGS": "-std=gnu++20 -Wall -fPIC", "LINKFLAGS": "-Wall -Wl,-rpath,/opt/homebrew/lib"}, "revision": "387a6b014966ed160e02cecb7c26d386b3971f98", "sourceStatus": [], "sourceTreeSha256": "09bc114a8aa3cc49a53ec4ea01313e336aeff5bbe0c411d113250d14ee02cf6a"}
+
+[failure] custom starvation and pending conversion preserve complete phase continuation: nullptr == 0xb290cd400
+src/unit/UnitCustomizationTest.cpp:2557:
+REQUIRE( world.team->findNearestFood(unit)==enemyInn ) is NOT correct!
+  values: REQUIRE( nullptr == 0xb290cd400 )
+
+
+94 passed, 9 failed, 0 skipped (171.6s of test time)
+[run_tests] JUnit report: artifacts/flyer-default/movement.xml (103 cases)

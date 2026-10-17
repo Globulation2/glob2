@@ -1,0 +1,12 @@
+<?xml version='1.0' encoding='utf-8'?>
+<testsuites tests="2" failures="0" errors="2" skipped="0"><testsuite name="UnitCustomization"><testcase classname="UnitCustomization" name="conversion cancels pending transport and transfers the complete cargo identity" time="0.343103" status="run">
+      <error message="exception">
+        Statistics deadline was skipped
+      </error>
+    </testcase>
+  <testcase classname="UnitCustomization" name="custom starvation and pending conversion preserve complete phase continuation" time="1.4175" status="run">
+      <error message="exception">
+        Invalid statistics deadline
+      </error>
+    </testcase>
+  </testsuite></testsuites>

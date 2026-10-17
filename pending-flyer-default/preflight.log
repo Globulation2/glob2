@@ -1,0 +1,11 @@
+PASS UnitContinuation/pending steering respects forbidden terrain and mobility and wraps toward flags (0.6s)
+PASS UnitContinuation/pending flag and clearing routes preserve the working job and clearing claim (0.7s)
+PASS UnitContinuation/a pending building route steers while retaining assignment and random state until publication (1.1s)
+PASS UnitContinuation/pending steering tries flyer turns around occupied ground and waits when surrounded (1.9s)
+PASS UnitContinuation/hazard routes and idle escape preserve per-tick state across save load (3.0s)
+PASS UnitContinuation/movement chosen while pending survives binary and text save continuation [artifacts] (3.5s)
+PASS UnitContinuation/five checkpoints replay 256 ticks with matching state and RNG (4.6s)
+PASS UnitContinuation/medical abort clears every working purpose before idle or service continuation (8.1s)
+
+8 passed, 0 failed, 0 skipped (23.4s of test time)
+[run_tests] JUnit report: artifacts/flyer-default/preflight.xml (8 cases)

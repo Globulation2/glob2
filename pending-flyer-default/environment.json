@@ -1,0 +1,40 @@
+{
+  "platform": "macOS-26.6.2-arm64-arm-64bit-Mach-O",
+  "machine": "arm64",
+  "macos": "ProductName:\t\tmacOS\nProductVersion:\t\t26.6.2\nBuildVersion:\t\t25G83\n",
+  "compiler": "Apple clang version 21.0.0 (clang-2100.3.34.2)\nTarget: arm64-apple-darwin25.6.0\nThread model: posix\nInstalledDir: /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin\n",
+  "base": "486a2230a4ddb257ba9dee34d3aace05f2260d6f",
+  "parent": "d1c0d4d50109b6f7d30f843368d30406f515b84f",
+  "flags": "dev_fast=1 -O0 -g1",
+  "build_command": "PYTHONPATH=. python3 tools/dev_build.py -j4 engine-tests unit-tests build/darwin/client/debug/dev-dev_fast-true-linker-auto/src/glob2",
+  "python_version": "3.14.7",
+  "linked_libraries": "build/darwin/client/debug/dev-dev_fast-true-linker-auto/src/glob2:\n\t/usr/lib/libz.1.dylib (compatibility version 1.0.0, current version 1.2.12)\n\t/usr/lib/libSystem.B.dylib (compatibility version 1.0.0, current version 1359.0.0)\n\t/opt/homebrew/opt/openssl@3/lib/libssl.3.dylib (compatibility version 3.0.0, current version 3.0.0)\n\t/opt/homebrew/opt/openssl@3/lib/libcrypto.3.dylib (compatibility version 3.0.0, current version 3.0.0)\n\t/opt/homebrew/opt/libepoxy/lib/libepoxy.0.dylib (compatibility version 1.0.0, current version 1.0.0)\n\t/opt/homebrew/opt/fribidi/lib/libfribidi.0.dylib (compatibility version 5.0.0, current version 5.0.0)\n\t/opt/homebrew/opt/sdl3_net/lib/libSDL3_net.0.dylib (compatibility version 201.0.0, current version 201.0.0)\n\t/opt/homebrew/opt/opusfile/lib/libopusfile.0.dylib (compatibility version 5.0.0, current version 5.5.0)\n\t/opt/homebrew/opt/opus/lib/libopus.0.dylib (compatibility version 12.0.0, current version 12.1.0)\n\t/opt/homebrew/opt/libogg/lib/libogg.0.dylib (compatibility version 0.0.0, current version 0.8.6)\n\t/opt/homebrew/opt/sdl3_ttf/lib/libSDL3_ttf.0.dylib (compatibility version 203.0.0, current version 203.0.0)\n\t/opt/homebrew/opt/sdl3_image/lib/libSDL3_image.0.dylib (compatibility version 409.0.0, current version 409.0.0)\n\t/opt/homebrew/opt/speex/lib/libspeex.1.dylib (compatibility version 7.0.0, current version 7.2.0)\n\t/opt/homebrew/opt/sdl3/lib/libSDL3.0.dylib (compatibility version 401.0.0, current version 401.18.0)\n\t/opt/homebrew/opt/webp/lib/libwebp.7.dylib (compatibility version 10.0.0, current version 10.0.0)\n\t/opt/homebrew/opt/webp/lib/libsharpyuv.0.dylib (compatibility version 2.0.0, current version 2.2.0)\n\t/System/Library/Frameworks/Security.framework/Versions/A/Security (compatibility version 1.0.0, current version 62460.1.2)\n\t/System/Library/Frameworks/CoreFoundation.framework/Versions/A/CoreFoundation (compatibility version 150.0.0, current version 5027.0.69)\n\t/System/Library/Frameworks/AppKit.framework/Versions/C/AppKit (compatibility version 45.0.0, current version 2775.10.103)\n\t/System/Library/Frameworks/OpenGL.framework/Versions/A/OpenGL (compatibility version 1.0.0, current version 1.0.0)\n\t/System/Library/Frameworks/GLUT.framework/Versions/A/GLUT (compatibility version 1.0.0, current version 1.0.0)\n\t/System/Library/Frameworks/VideoToolbox.framework/Versions/A/VideoToolbox (compatibility version 1.0.0, current version 3350.77.5)\n\t/System/Library/Frameworks/CoreMedia.framework/Versions/A/CoreMedia (compatibility version 1.0.0, current version 3350.77.5)\n\t/System/Library/Frameworks/CoreVideo.framework/Versions/A/CoreVideo (compatibility version 1.2.0, current version 758.27.0)\n\t/System/Library/Frameworks/Foundation.framework/Versions/C/Foundation (compatibility version 300.0.0, current version 5027.0.69)\n\t/System/Library/Frameworks/AudioToolbox.framework/Versions/A/AudioToolbox (compatibility version 1.0.0, current version 1000.0.0)\n\t/usr/lib/libc++.1.dylib (compatibility version 1.0.0, current version 2200.27.0)\n\t/usr/lib/libobjc.A.dylib (compatibility version 1.0.0, current version 228.0.0)\n",
+  "test_provenance": {
+    "engine": {
+      "compiler": "g++",
+      "dirty": false,
+      "flags": {
+        "CCFLAGS": "-O0 -g1 -fdebug-prefix-map=/Users/bradley/.codex/worktrees/hiring-gradient-production/glob2=.",
+        "CPPDEFINES": "GLOB2_OFFICIAL_INSTANCE_ORIGIN \\\"https://app.glob2online.com\\\" GLOB2_OFFICIAL_INSTANCE_FORMER_ORIGINS \\\"https://glob2online.com\\\" HAVE_CONFIG_H GL_SILENCE_DEPRECATION GLOB2_RENDER_SHADER_DIR \\\"/Users/bradley/.codex/worktrees/hiring-gradient-production/glob2/build/darwin/client/debug/dev-dev_fast-true-linker-auto/shaders\\\" SDL_MAIN_HANDLED",
+        "CXXFLAGS": "-std=gnu++20 -Wall -fPIC",
+        "LINKFLAGS": "-Wall -Wl,-rpath,/opt/homebrew/lib"
+      },
+      "revision": "403404a2badd878783b58f958d9eee6f2934dc37",
+      "sourceStatus": [],
+      "sourceTreeSha256": "edbaa0070e66f5947a23521951e1ccaa8974542c9f47c2048b26fc795cb84ac5"
+    },
+    "unit": {
+      "compiler": "g++",
+      "dirty": false,
+      "flags": {
+        "CCFLAGS": "-O0 -g1 -fdebug-prefix-map=/Users/bradley/.codex/worktrees/hiring-gradient-production/glob2=.",
+        "CPPDEFINES": "GLOB2_OFFICIAL_INSTANCE_ORIGIN \\\"https://app.glob2online.com\\\" GLOB2_OFFICIAL_INSTANCE_FORMER_ORIGINS \\\"https://glob2online.com\\\" HAVE_CONFIG_H GL_SILENCE_DEPRECATION GLOB2_RENDER_SHADER_DIR \\\"/Users/bradley/.codex/worktrees/hiring-gradient-production/glob2/build/darwin/client/debug/dev-dev_fast-true-linker-auto/shaders\\\" SDL_MAIN_HANDLED",
+        "CXXFLAGS": "-std=gnu++20 -Wall -fPIC",
+        "LINKFLAGS": "-Wall -Wl,-rpath,/opt/homebrew/lib"
+      },
+      "revision": "403404a2badd878783b58f958d9eee6f2934dc37",
+      "sourceStatus": [],
+      "sourceTreeSha256": "edbaa0070e66f5947a23521951e1ccaa8974542c9f47c2048b26fc795cb84ac5"
+    }
+  }
+}

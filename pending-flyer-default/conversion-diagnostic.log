@@ -1,0 +1,21 @@
+FAIL UnitCustomization/conversion cancels pending transport and transfers the complete cargo identity (0.5s)
+FAIL UnitCustomization/custom starvation and pending conversion preserve complete phase continuation (1.6s)
+
+===== FAIL UnitCustomization/conversion cancels pending transport and transfers the complete cargo identity =====
+GLOB2_TEST_BUILD compiler=Apple LLVM 21.0.0 (clang-2100.3.34.2) platform=macOS pointer_bits=64
+GLOB2_TEST_PROVENANCE {"compiler": "g++", "dirty": true, "flags": {"CCFLAGS": "-O0 -g1 -fdebug-prefix-map=/Users/bradley/.codex/worktrees/hiring-gradient-production/glob2=.", "CPPDEFINES": "GLOB2_OFFICIAL_INSTANCE_ORIGIN \\\"https://app.glob2online.com\\\" GLOB2_OFFICIAL_INSTANCE_FORMER_ORIGINS \\\"https://glob2online.com\\\" HAVE_CONFIG_H GL_SILENCE_DEPRECATION GLOB2_RENDER_SHADER_DIR \\\"/Users/bradley/.codex/worktrees/hiring-gradient-production/glob2/build/darwin/client/debug/dev-dev_fast-true-linker-auto/shaders\\\" SDL_MAIN_HANDLED", "CXXFLAGS": "-std=gnu++20 -Wall -fPIC", "LINKFLAGS": "-Wall -Wl,-rpath,/opt/homebrew/lib"}, "revision": "387a6b014966ed160e02cecb7c26d386b3971f98", "sourceStatus": [" M src/unit/HungryDefeatHarness.cpp", " M src/unit/UnitCustomizationTest.cpp"], "sourceTreeSha256": "1223e48b626fc0f1f385236022ca5270534b5b461ebed043da34e6ade8a6dc9e"}
+
+[error] conversion cancels pending transport and transfers the complete cargo identity: exception
+Statistics deadline was skipped
+
+
+===== FAIL UnitCustomization/custom starvation and pending conversion preserve complete phase continuation =====
+GLOB2_TEST_BUILD compiler=Apple LLVM 21.0.0 (clang-2100.3.34.2) platform=macOS pointer_bits=64
+GLOB2_TEST_PROVENANCE {"compiler": "g++", "dirty": true, "flags": {"CCFLAGS": "-O0 -g1 -fdebug-prefix-map=/Users/bradley/.codex/worktrees/hiring-gradient-production/glob2=.", "CPPDEFINES": "GLOB2_OFFICIAL_INSTANCE_ORIGIN \\\"https://app.glob2online.com\\\" GLOB2_OFFICIAL_INSTANCE_FORMER_ORIGINS \\\"https://glob2online.com\\\" HAVE_CONFIG_H GL_SILENCE_DEPRECATION GLOB2_RENDER_SHADER_DIR \\\"/Users/bradley/.codex/worktrees/hiring-gradient-production/glob2/build/darwin/client/debug/dev-dev_fast-true-linker-auto/shaders\\\" SDL_MAIN_HANDLED", "CXXFLAGS": "-std=gnu++20 -Wall -fPIC", "LINKFLAGS": "-Wall -Wl,-rpath,/opt/homebrew/lib"}, "revision": "387a6b014966ed160e02cecb7c26d386b3971f98", "sourceStatus": [" M src/unit/HungryDefeatHarness.cpp", " M src/unit/UnitCustomizationTest.cpp"], "sourceTreeSha256": "1223e48b626fc0f1f385236022ca5270534b5b461ebed043da34e6ade8a6dc9e"}
+
+[error] custom starvation and pending conversion preserve complete phase continuation: exception
+Invalid statistics deadline
+
+
+0 passed, 2 failed, 0 skipped (2.2s of test time)
+[run_tests] JUnit report: artifacts/flyer-default/conversion-diagnostic.xml (2 cases)

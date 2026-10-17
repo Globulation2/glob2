@@ -1,0 +1,5 @@
+<?xml version='1.0' encoding='utf-8'?>
+<testsuites tests="3" failures="0" errors="0" skipped="0"><testsuite name="UnitCustomization"><testcase classname="UnitCustomization" name="conversion cancels pending transport and transfers the complete cargo identity" time="0.534403" status="run" />
+  <testcase classname="UnitCustomization" name="conversion claim release preserves the stock policy and is configurable" time="0.518896" status="run" />
+  <testcase classname="UnitCustomization" name="custom starvation and pending conversion preserve complete phase continuation" time="2.34205" status="run" />
+  </testsuite></testsuites>

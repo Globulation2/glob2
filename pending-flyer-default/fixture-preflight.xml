@@ -1,0 +1,18 @@
+<?xml version='1.0' encoding='utf-8'?>
+<testsuites tests="8" failures="0" errors="2" skipped="0"><testsuite name="HungryDefeat"><testcase classname="HungryDefeat" name="feeding reserves the last inn place and defeat controls hold" time="1.06888" status="run" />
+  <testcase classname="HungryDefeat" name="healing defeat recovery survives a save with an occupied hospital" time="2.00032" status="run" />
+  <testcase classname="HungryDefeat" name="healing reserves the last hospital place without eliminating the colony" time="0.420468" status="run" />
+  </testsuite><testsuite name="UnitCustomization"><testcase classname="UnitCustomization" name="active water-only cargo preserves queued and pending gradient deadlines [save-format]" time="23.5671" status="run" />
+  <testcase classname="UnitCustomization" name="conversion cancels pending transport and transfers the complete cargo identity" time="0.345311" status="run">
+      <error message="exception">
+        Statistics deadline was skipped
+      </error>
+    </testcase>
+  <testcase classname="UnitCustomization" name="conversion claim release preserves the stock policy and is configurable" time="0.522852" status="run" />
+  <testcase classname="UnitCustomization" name="custom carriers resume actual pickup and delivery including active water only fields" time="10.6257" status="run" />
+  <testcase classname="UnitCustomization" name="custom starvation and pending conversion preserve complete phase continuation" time="1.43972" status="run">
+      <error message="exception">
+        Invalid statistics deadline
+      </error>
+    </testcase>
+  </testsuite></testsuites>
