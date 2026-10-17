@@ -2,6 +2,7 @@
 #pragma once
 #include "HiringPlanner.h"
 #include "ComputeExecutor.h"
+#include "Version.h"
 #include <deque>
 #include <optional>
 class Game;
@@ -12,7 +13,7 @@ class InputStream;
 class OutputStream;
 } // namespace GAGCore
 
-// Owner-managed continuation state. Workers only rank immutable observations;
+// Owner-managed continuation state. Workers rank and prepare routes from immutable observations;
 // buildings validate and commit suggestions against current live state.
 class HiringPipeline
 {
@@ -20,6 +21,7 @@ class HiringPipeline
 	struct Work;
 	struct Batch;
 	ComputeExecutor &executor;
+	Game *game = nullptr;
 	std::optional<Uint32> lastObserved;
 	std::array<std::shared_ptr<const HiringPlanner::Output>, 16> published;
 	std::deque<std::unique_ptr<Batch>> pending;
@@ -43,6 +45,6 @@ class HiringPipeline
 	void drain(JoinReason = JoinReason::Teardown);
 	const HiringPlanner::BuildingLists *suggestions(const Building &) const;
 	void save(GAGCore::OutputStream *);
-	void load(Game &, GAGCore::InputStream *);
+	void load(Game &, GAGCore::InputStream *, int versionMinor = VERSION_MINOR);
 	Uint32 checkSum() const;
 };

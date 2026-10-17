@@ -733,11 +733,22 @@ enroll map fields. Missing planes, flying transport and consumer-specific suppli
 modes use an optimistic zero estimate. Building routes borrow existing valid
 generations through `SharedBuildingGradient` leases; workers settle only queried
 cells under the generation's lock, and retirement hands the buffer and search to
-the lease instead of copying them. Observation never initializes or refreshes a
-field: missing ones use an obstacle-free bound, and live admission establishes them.
+the lease instead of copying them. Observation only captures route inputs. Missing or stale fields keep the
+obstacle-free ranking estimate. After ranking and team coordination, the hiring
+worker prepares routes only for the primary candidates selected to fill demand;
+the fallback suffix stays on the list without explicit prewarming. Cold fields
+are seeded lazily on that worker and published with the shortlist one tick later,
+provided the building incarnation, slot epoch and topology still match. Existing
+serving fields are reused, including stale generations, without changing their
+refresh schedule. A usable field can still extend during normal ranking, so a
+fallback position may already be covered. Live readers retain ordinary Pending
+and lazy-extension behavior when preparation was invalidated or insufficient.
 
 Published lists and pending outputs with their deadlines are saved; saving drains
-jobs without publishing early. Saves predating cached hiring start with empty
+jobs without publishing early. Prepared cold fields awaiting the same deadline
+are persisted from format 171 onward, using completed fields from their frozen
+inputs; earlier saves contain no such prepared results. The save compatibility
+floor is unchanged. Saves predating cached hiring start with empty
 state. Lists are a pure function of the snapshot, so game checksums omit them.
 Saves containing the previous four-tick hiring policy are no longer accepted.
 

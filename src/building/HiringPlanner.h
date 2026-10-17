@@ -12,6 +12,7 @@ namespace HiringPlanner
 {
 using Hiring::Job;
 using Hiring::Key;
+struct PreparedRoute;
 struct Candidate
 {
 	UnitRef unit;
@@ -21,6 +22,8 @@ struct List
 {
 	Key key;
 	std::vector<Candidate> candidates;
+	// Worker-only prefix selected to fill demand, before fallbacks are appended.
+	unsigned primaryCount = 0;
 };
 struct BuildingLists
 {
@@ -51,6 +54,8 @@ struct Inputs
 		BuildingRef building;
 		int slot;
 		std::shared_ptr<SharedBuildingGradient> field;
+		bool estimateForRanking = false;
+		std::shared_ptr<PreparedRoute> preparation;
 	};
 	// One immutable table per boundary, shared by every admitted team job.
 	std::shared_ptr<const std::vector<Route>> routes;

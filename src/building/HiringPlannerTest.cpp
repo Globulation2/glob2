@@ -173,7 +173,14 @@ TEST_SUITE("HiringPlanner")
 		w.game.snapshotStore().invalidateBoundary();
 		const auto available = w.game.captureReadBoundary();
 		CHECK(available.entities->availableGroundClasses[0] != 0);
-		CHECK(HiringPipeline::bindRoutes(w.game, available).routes->empty());
+		const auto cold = HiringPipeline::bindRoutes(w.game, available);
+		REQUIRE_FALSE(cold.routes->empty());
+		for (const auto &route : *cold.routes)
+		{
+			CHECK(route.estimateForRanking);
+			REQUIRE(route.field);
+			CHECK(route.field->values == nullptr);
+		}
 		// A normal simulation query establishes the shared generation.
 		glob2test::awaitBuildingGradient(w.game,b, u->swimClass());
 		CHECK_FALSE(HiringPipeline::bindRoutes(w.game, w.game.captureReadBoundary()).routes->empty());
@@ -194,7 +201,13 @@ TEST_SUITE("HiringPlanner")
 		const auto slot = b->routeSlot(u->swimClass(), BuildingRoute::Footprint);
 		CHECK(b->globalGradient[slot] == nullptr);
 		const auto input=HiringPipeline::bindRoutes(w.game,w.game.captureReadBoundary());
-		CHECK(input.routes->empty());
+		REQUIRE_FALSE(input.routes->empty());
+		for (const auto &route : *input.routes)
+		{
+			CHECK(route.estimateForRanking);
+			REQUIRE(route.field);
+			CHECK(route.field->values == nullptr);
+		}
 		const auto output=HiringPlanner::Planner{}.rank(input,0);
 		bool suggested=false;
 		for (const auto& building:output.buildings) if (building.building==Game::refOf(b))

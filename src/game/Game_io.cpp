@@ -318,7 +318,7 @@ GAGCore::CooperativeTask Game::loadTask(GAGCore::InputStream *stream)
     }
 
 	if(versionMinor >= FILE_FORMAT_VERSION_TEAM_STATS_PIPELINE && mapHeader.getIsSavedGame()) loadTeamStats(stream,versionMinor);
-    if(versionMinor>=FILE_FORMAT_VERSION_CACHED_HIRING && mapHeader.getIsSavedGame())loadHiring(stream);
+    if(versionMinor>=FILE_FORMAT_VERSION_CACHED_HIRING && mapHeader.getIsSavedGame())loadHiring(stream,versionMinor);
 
 	// Legacy saves reconstruct service lists by running building updates. That
 	// changes tie-breaking order and can even advance construction. New saved

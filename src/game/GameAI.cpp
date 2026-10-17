@@ -215,7 +215,7 @@ std::vector<std::pair<std::string,Uint64>> Game::teamStatsMetrics() const {
 
 void Game::drainHiring(){if(hiringPipeline)hiringPipeline->drain(JoinReason::Reconfigure);}
 void Game::saveHiring(GAGCore::OutputStream* s){if(!hiringPipeline)hiringPipeline=std::make_unique<HiringPipeline>(map.computeExecutor());hiringPipeline->save(s);}
-void Game::loadHiring(GAGCore::InputStream* s){auto p=std::make_unique<HiringPipeline>(map.computeExecutor());p->load(*this,s);hiringPipeline=std::move(p);}
+void Game::loadHiring(GAGCore::InputStream* s, int versionMinor){auto p=std::make_unique<HiringPipeline>(map.computeExecutor());p->load(*this,s,versionMinor);hiringPipeline=std::move(p);}
 Uint32 Game::hiringChecksum() const {return hiringPipeline ? hiringPipeline->checkSum() : 0;}
 const HiringPlanner::BuildingLists* Game::hiringCandidates(const Building& b) const {return hiringPipeline ? hiringPipeline->suggestions(b) : nullptr;}
 std::vector<std::pair<std::string,Uint64>> Game::hiringMetrics() const {
