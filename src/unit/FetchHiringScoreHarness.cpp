@@ -4,6 +4,7 @@
 // whether a unit may be hired for a resource measures the walk to that resource,
 // not the whole fetch-and-carry trip, and the score estimates that whole trip.
 #include "EngineFixtures.h"
+#include "GradientFixture.h"
 #include "GlobalContainer.h"
 #include "FileManager.h"
 #include <SDL3/SDL.h>
@@ -31,6 +32,8 @@ class FetchHiringScoreHarness
 public:
     static std::vector<Unit*> candidates(Building* building)
     {
+        for(auto* unit:building->owner->liveUnits.entries())
+            glob2test::awaitBuildingGradient(*building->owner->game,building,unit->swimClass(),BuildingRoute::Footprint);
         building->resetFailureTallies();
         std::vector<Unit*> units;
         for(auto* unit:building->owner->liveUnits.entries()) {
@@ -104,6 +107,7 @@ static void aUnitIsJudgedOnTheWalkToTheResource()
 	const int swimClass = unit->swimClass();
 
 	int distBuilding = 0, distResource = 0;
+	glob2test::awaitBuildingGradient(game,site,swimClass);
 	require(game.map.buildingAvailable(site, swimClass, unit->posX, unit->posY, &distBuilding),
 		"the site is reachable");
 	require(game.map.materialAvailableSlot(0, WOOD, swimClass, unit->posX, unit->posY, &distResource),
@@ -170,6 +174,7 @@ static void theScoreEstimatesTheWholeTrip()
 
 	const int swimClass = unit->swimClass();
 	int distBuilding = 0, distResource = 0;
+	glob2test::awaitBuildingGradient(game,site,swimClass);
 	require(game.map.buildingAvailable(site, swimClass, unit->posX, unit->posY, &distBuilding),
 		"the site is reachable");
 	require(game.map.materialAvailableSlot(0, WOOD, swimClass, unit->posX, unit->posY, &distResource),
@@ -204,6 +209,7 @@ TEST_SUITE("FetchHiringScore")
         REQUIRE(unit);
         unit->activity=Unit::ACT_RANDOM; unit->medical=Unit::MED_FREE;
         int buildingDistance=0,resourceDistance=0;
+        glob2test::awaitBuildingGradient(world.game,inn,unit->swimClass());
         REQUIRE(world.game.map.buildingAvailable(inn,unit->swimClass(),unit->posX,unit->posY,&buildingDistance));
         REQUIRE(world.game.map.materialAvailableSlot(0,WHEAT,unit->swimClass(),unit->posX,unit->posY,&resourceDistance));
         REQUIRE(buildingDistance<resourceDistance);

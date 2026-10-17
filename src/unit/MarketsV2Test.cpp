@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "Material.h"
 #include "EngineFixtures.h"
+#include "GradientFixture.h"
 #include "MapInternal.h"
 #include "Order.h"
 #include "OrderValidation.h"
@@ -311,15 +312,14 @@ TEST_CASE("a frequently refreshed market field publishes depletion and restockin
 	market->setMaterial(CHERRY, 20);
 	map.configureGradientPipeline(2,3);
 	map.getMaterialGradientSlot(0,CHERRY,0,true);
-	// The owner captures a completed world before preparing periodic work.
-	world.step(8);
+	for (int tick=0;tick<8;++tick) { world.game.stepCounter=tick+1; map.advanceGradientPipeline(); map.syncStep(tick); map.stagePeriodicGradientPreparation(); glob2test::prepareGradientBoundary(world.game); }
 	CHECK(map.gradientPipelineStatus().published>0);
 	market->setMaterial(CHERRY, 0);
 	map.dirtyMarketGradientsSlot(0,CHERRY);
-	world.step(8);
+	for (int tick=8;tick<16;++tick) { world.game.stepCounter=tick+1; map.advanceGradientPipeline(); map.syncStep(tick); map.stagePeriodicGradientPreparation(); glob2test::prepareGradientBoundary(world.game); }
 	CHECK_FALSE(map.materialAvailableSlot(0,CHERRY,0,5,5,true));
 	market->addMaterialIntoBuilding(CHERRY);
-	world.step(8);
+	for (int tick=16;tick<24;++tick) { world.game.stepCounter=tick+1; map.advanceGradientPipeline(); map.syncStep(tick); map.stagePeriodicGradientPreparation(); glob2test::prepareGradientBoundary(world.game); }
 	CHECK(map.materialAvailableSlot(0,CHERRY,0,5,5,true));
 }
 TEST_CASE("upgrading cancelling and completing preserve shared stock and gate")

@@ -5,6 +5,12 @@
 #include "Building.h"
 #include "Unit.h"
 #include "SharedBuildingGradient.h"
+#include "BuildingGradientJob.h"
+#include "SnapshotGradient.h"
+#include "BuildingGradientDepthPolicy.h"
+#include "GradientExecutionAudit.h"
+#include "ai/observation/AIWorldView.h"
+#include <PackedArray.h>
 #include <bit>
 #include <BinaryStream.h>
 #include <ChecksumStream.h>
@@ -164,11 +170,161 @@ std::shared_ptr<const Output> loadOutput(GAGCore::InputStream *s, const Game &ga
 	return o;
 }
 } // namespace
+// Only cold routes own outputs here. Existing (including stale) generations
+// remain leased and are expanded under their usual lock, without refreshing.
+struct HiringPlanner::PreparedRoute
+{
+	BuildingRef building;
+	building_gradient::Job job;
+	SimulationSnapshot::Handle snapshot;
+	std::shared_ptr<SharedBuildingGradient> field = std::make_shared<SharedBuildingGradient>();
+
+	void initialize()
+	{
+		if (job.data)
+			return;
+		GradientExecutionAudit::record(GradientExecutionAudit::Kind::Seed);
+		field->width = snapshot.width;
+		field->height = snapshot.height;
+		job.data.reset(new Uint16[std::size_t(snapshot.width) * snapshot.height]);
+		job.search = acquireBuildingGradientSearch();
+		const auto result = gradient_preparation::buildBuilding(
+			job.seed, snapshot, BuildingGradientSearch::Inputs::ofSnapshot(snapshot, job.swim),
+			job.data.get(), *job.search, BuildingGradientDepth::MIN_DEPTH);
+		job.locked = result.locked;
+		job.resourceState = result.resourceState;
+		if (job.locked)
+			recycleBuildingGradientSearch(std::move(job.search));
+		field->values = job.data.get();
+		field->search = job.search.get();
+		snapshot = {};
+	}
+	Building *destination(Game &game) const
+	{
+		auto *live = game.resolveBuilding(building);
+		return live && live->buildingState == Building::ALIVE &&
+					   live->refreshEpoch[job.slot] == job.epoch &&
+					   game.map.topologyGeneration == job.generation &&
+					   (!live->globalGradient[job.slot] ||
+						live->lastGlobalGradientUpdateStepCounter[job.slot] < job.captureTick)
+				   ? live
+				   : nullptr;
+	}
+	// Like Map's scheduled fields, save a completed field from its frozen
+	// inputs rather than serializing implementation-specific search buckets.
+	void save(GAGCore::OutputStream *s)
+	{
+		if (job.search)
+			job.search->finish();
+		s->writeUint16(building.gid, "gid");
+		s->writeUint32(building.generation, "identity");
+		s->writeUint8(job.slot, "slot");
+		s->writeUint32(job.captureTick, "captured");
+		s->writeUint32(job.generation, "topology");
+		s->writeUint8(job.locked, "locked");
+		s->writeUint8(job.resourceState, "resourceState");
+		const auto cells = std::size_t(field->width) * field->height;
+		if (GAGCore::PackedArray::binary(s))
+			GAGCore::PackedArray::write<Uint16>(s, cells,
+												[&](std::size_t i) { return job.data[i]; });
+		else
+			s->writeUint16Sections(job.data.get(), cells, "value");
+	}
+	static std::shared_ptr<PreparedRoute> load(Game &game, GAGCore::InputStream *s, unsigned team,
+											   unsigned captured)
+	{
+		auto result = std::make_shared<PreparedRoute>();
+		result->building.gid = s->readUint16("gid");
+		result->building.generation = s->readUint32("identity");
+		auto &job = result->job;
+		job.slot = s->readUint8("slot");
+		job.captureTick = s->readUint32("captured");
+		job.generation = s->readUint32("topology");
+		job.locked = readFlag(s, "locked");
+		job.resourceState = s->readUint8("resourceState");
+		if (Building::GIDtoTeam(result->building.gid) != int(team) ||
+			job.slot >= BUILDING_GRADIENT_COUNT || job.captureTick != captured ||
+			!result->building.generation || job.resourceState > 2)
+			throw std::runtime_error("Invalid prepared hiring gradient");
+		job.swim = job.slot % SWIM_CLASS_COUNT;
+		job.route = BuildingRoute(job.slot / SWIM_CLASS_COUNT);
+		auto *live = game.resolveBuilding(result->building);
+		if (live)
+			job.epoch = live->refreshEpoch[job.slot];
+		auto &field = *result->field;
+		field.width = game.map.getW();
+		field.height = game.map.getH();
+		const auto cells = std::size_t(field.width) * field.height;
+		job.data.reset(new Uint16[cells]);
+		if (GAGCore::PackedArray::binary(s))
+			GAGCore::PackedArray::read<Uint16>(s, cells,
+											   [&](std::size_t i, Uint16 v) { job.data[i] = v; });
+		else
+			for (std::size_t i = 0; i < cells; ++i)
+			{
+				s->readEnterSection(i);
+				job.data[i] = s->readUint16("value");
+				s->readLeaveSection();
+			}
+		field.values = job.data.get();
+		return result;
+	}
+	void publish(Game &game, std::vector<const PreparedRoute *> &published)
+	{
+		auto *live = destination(game);
+		if (!live)
+			return;
+		const int slot = job.slot;
+		auto guard = SharedBuildingGradient::lock(live->sharedGradient[slot]);
+		live->retireSharedGradient(slot);
+		game.map.recycleBuildingGradientBuffer(live->globalGradient[slot]);
+		recycleBuildingGradientSearch(std::move(live->globalGradientSearch[slot]));
+		live->supersedeGradient(slot);
+		live->globalGradient[slot] = job.data.release();
+		live->globalGradientSearch[slot] = std::move(job.search);
+		live->sharedGradient[slot] = field;
+		live->dirtyGradient[slot] = false;
+		live->gradientGeneration[slot] = job.generation;
+		live->lastGlobalGradientUpdateStepCounter[slot] = job.captureTick;
+		live->globalGradientUsedStep[slot] =
+			std::max(live->globalGradientUsedStep[slot], job.captureTick);
+		// Access metadata is shared by swim classes of one variant. Keep a
+		// newer sibling's result, including an owner build later in this tick.
+		bool newest = true;
+		for (int swim = 0; swim < SWIM_CLASS_COUNT; ++swim)
+		{
+			if (swim == job.swim || swimAccessVariant(swim) != swimAccessVariant(job.swim))
+				continue;
+			const int other = live->routeSlot(swim, job.route);
+			if (!live->globalGradient[other])
+				continue;
+			const auto stamp = live->lastGlobalGradientUpdateStepCounter[other];
+			const bool publishedHere = std::any_of(published.begin(), published.end(),
+												   [&](const auto *p)
+												   {
+													   return p->building == building &&
+															  p->job.slot == other &&
+															  p->job.captureTick == job.captureTick;
+												   });
+			if (stamp > job.captureTick || (stamp == job.captureTick && !publishedHere))
+				newest = false;
+		}
+		if (newest)
+		{
+			live->setLocked(live->routeAccess(job.swim, job.route), job.locked);
+			if (job.route == BuildingRoute::Clearing)
+				live->anyResourceToClear[swimAccessVariant(job.swim)] = job.resourceState;
+		}
+		published.push_back(this);
+	}
+};
+
 struct HiringPipeline::Work
 {
 	std::shared_ptr<const HiringPlanner::Inputs> input;
 	unsigned team = 0;
 	std::shared_ptr<const Output> output;
+	std::vector<std::shared_ptr<HiringPlanner::PreparedRoute>> gradients;
 };
 struct HiringPipeline::Batch
 {
@@ -191,10 +347,40 @@ void HiringPipeline::compute(void *context, std::size_t)
 {
 	auto &w = *static_cast<Work *>(context);
 	w.output = std::make_shared<Output>(HiringPlanner::Planner{}.rank(*w.input, w.team, Capacity));
+	const AIEngine::AIWorldView world(w.input->world);
+	for (const auto &building : w.output->buildings)
+		for (const auto &list : building.jobs)
+			for (unsigned i = 0; i < list.primaryCount; ++i)
+			{
+				const auto &candidate = list.candidates[i];
+				const auto *unit = world.unitAtSlot(candidate.unit.gid);
+				if (!unit || unit->identity != candidate.unit || unit->performance[FLY])
+					continue;
+				const auto kind =
+					list.key.job == Hiring::Job::Delivery || list.key.job == Hiring::Job::Fetch
+						? BuildingRoute::Footprint
+					: list.key.job == Hiring::Job::Clear ? BuildingRoute::Clearing
+														 : BuildingRoute::Combat;
+				const int slot = int(kind) * SWIM_CLASS_COUNT +
+								 Map::swimClass(unit->performance[WALK], unit->performance[SWIM]);
+				for (const auto &route : *w.input->routes)
+					if (route.building == building.building && route.slot == slot)
+					{
+						if (route.preparation)
+							route.preparation->initialize();
+						route.field->distance(unit->posX, unit->posY);
+						break;
+					}
+			}
+	for (const auto &route : *w.input->routes)
+		if (Building::GIDtoTeam(route.building.gid) == int(w.team) && route.preparation &&
+			route.preparation->job.data)
+			w.gradients.push_back(route.preparation);
 	w.input.reset();
 }
 void HiringPipeline::observe(Game &game, const SimulationSnapshot::Handle &snapshot)
 {
+	this->game = &game;
 	const auto tick = game.stepCounter;
 	if (lastObserved && *lastObserved == tick)
 		return;
@@ -252,10 +438,13 @@ void HiringPipeline::publishDue(Uint32 tick)
 		if (!b.ticket.empty())
 			executor.join(b.ticket, {JoinReason::TickDeadline, tick});
 		b.ticket = {};
+		std::vector<const HiringPlanner::PreparedRoute *> preparedHere;
 		for (const auto &w : b.work)
 		{
 			if (!w.output)
 				throw std::logic_error("Missing hiring result");
+			for (const auto &gradient : w.gradients)
+				gradient->publish(*game, preparedHere);
 			published[w.team] = w.output;
 			++metrics.published;
 		}
@@ -314,6 +503,19 @@ void HiringPipeline::save(GAGCore::OutputStream *s)
 		{
 			s->writeEnterSection(t);
 			saveOutput(s, *b->work[t].output);
+			std::vector<std::shared_ptr<HiringPlanner::PreparedRoute>> gradients;
+			for (const auto &gradient : b->work[t].gradients)
+				if (gradient->destination(*game))
+					gradients.push_back(gradient);
+			s->writeUint32(gradients.size(), "gradients");
+			s->writeEnterSection("preparedGradients");
+			for (unsigned i = 0; i < gradients.size(); ++i)
+			{
+				s->writeEnterSection(i);
+				gradients[i]->save(s);
+				s->writeLeaveSection();
+			}
+			s->writeLeaveSection();
 			s->writeLeaveSection();
 		}
 		s->writeLeaveSection();
@@ -322,8 +524,9 @@ void HiringPipeline::save(GAGCore::OutputStream *s)
 	s->writeLeaveSection();
 	s->writeLeaveSection();
 }
-void HiringPipeline::load(Game &game, GAGCore::InputStream *s)
+void HiringPipeline::load(Game &game, GAGCore::InputStream *s, int versionMinor)
 {
+	this->game = &game;
 	GAGCore::BinaryInputStream::CheckedReads checked(s);
 	s->readEnterSection("HiringPipeline");
 	if (readFlag(s, "hasLast"))
@@ -378,6 +581,24 @@ void HiringPipeline::load(Game &game, GAGCore::InputStream *s)
 				throw std::runtime_error("Invalid hiring admission");
 			expectedTeam += Refresh;
 			b->work.push_back({{}, o->team, o});
+			if (versionMinor >= FILE_FORMAT_VERSION_HIRING_GRADIENTS)
+			{
+				const auto count = s->readCount("gradients");
+				if (count > unsigned(Building::MAX_COUNT * BUILDING_GRADIENT_COUNT))
+					throw std::runtime_error("Too many prepared hiring gradients");
+				s->readEnterSection("preparedGradients");
+				std::set<std::pair<unsigned, unsigned>> destinations;
+				for (unsigned i = 0; i < count; ++i)
+				{
+					s->readEnterSection(i);
+					auto gradient = HiringPlanner::PreparedRoute::load(game, s, o->team, b->tick);
+					if (!destinations.emplace(gradient->building.gid, gradient->job.slot).second)
+						throw std::runtime_error("Duplicate prepared hiring gradient");
+					b->work.back().gradients.push_back(std::move(gradient));
+					s->readLeaveSection();
+				}
+				s->readLeaveSection();
+			}
 			s->readLeaveSection();
 		}
 		s->readLeaveSection(2);
@@ -433,7 +654,8 @@ HiringPlanner::Inputs HiringPipeline::bindRoutes(Game &game, const SimulationSna
 		if (!live)
 			throw std::logic_error("Hiring capture lost building incarnation");
 		// The owner borrows existing generations. Workers expand them under
-		// the existing locks; observation never prepares a cold or stale field.
+		// the existing locks. Cold routes capture O(1) inputs here and are
+		// initialized only if selected as a primary candidate on the worker.
 		const auto &type = inputs.world.catalogs->buildings->at(b.typeNum).resolvedType;
 		const bool footprint =
 			std::any_of(std::begin(type.maxMaterial), std::begin(type.maxMaterial) + MaterialCount,
@@ -450,8 +672,32 @@ HiringPlanner::Inputs HiringPipeline::bindRoutes(Game &game, const SimulationSna
 						(route == BuildingRoute::Clearing && !clearing) ||
 						(route == BuildingRoute::Combat && !combat))
 						continue;
-					if (auto field = game.map.leaseBuildingRoute(live, c, route))
-						routes->push_back({b.identity, live->routeSlot(c, route), std::move(field)});
+					const int slot = live->routeSlot(c, route);
+					auto field = game.map.leaseBuildingRoute(live, c, route);
+					const bool estimate = !field;
+					// Stale fields keep the optimistic ranking fallback. A stale
+					// unreachable result must not hide candidates whose live
+					// admission would request a refresh.
+					if (!field)
+						field = live->leaseGradient(slot);
+					std::shared_ptr<HiringPlanner::PreparedRoute> prepared;
+					if (!field)
+					{
+						prepared = std::make_shared<HiringPlanner::PreparedRoute>();
+						prepared->building = b.identity;
+						auto &job = prepared->job;
+						job.slot = slot;
+						job.swim = c;
+						job.route = route;
+						job.epoch = live->refreshEpoch[slot];
+						job.generation = game.map.topologyGeneration;
+						job.captureTick = game.stepCounter;
+						job.seed = gradient_preparation::captureBuildingSeed(*live, c, route);
+						prepared->snapshot = world.buildingGradientView();
+						field = prepared->field;
+					}
+					routes->push_back(
+						{b.identity, slot, std::move(field), estimate, std::move(prepared)});
 				}
 	}
 	inputs.routes = std::move(routes);

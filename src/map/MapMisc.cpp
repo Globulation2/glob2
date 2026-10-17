@@ -68,6 +68,22 @@ Uint32 Map::checkSum(bool heavy, bool includePending, bool legacy152)
 		if (heavy) for (size_t i=0; i<size; ++i) cs=rotl1(cs)^entry.cells[i];
 	}
 
+    if (!legacy152) {
+        const auto mix=[&](Uint32 value) { cs=rotl1(cs)^value; };
+        mix(gradientRuntime->buildingRequests.size());
+        for (const auto& r:gradientRuntime->buildingRequests) {
+            const auto* b=buildingGradientDestination(r.team,r.building,r.identity);
+            mix(r.team); mix(r.building); mix(r.identity); mix(r.slot);
+            mix(r.stale || !b || b->refreshEpoch[r.slot]!=r.epoch);
+        }
+        gradientRuntime->buildings.visitLogical([&](const auto& p,unsigned remaining,bool superseded) {
+            const auto* b=buildingGradientDestination(p.team,p.buildingId,p.scriptIdentity);
+            mix(p.team); mix(p.buildingId); mix(p.scriptIdentity); mix(p.slot);
+            mix(p.captureTick); mix(p.generation); mix(remaining);
+            mix(superseded || !b || b->refreshEpoch[p.slot]!=p.epoch);
+        });
+    }
+
 	privateRandom(RandomDomain::GrowthJobs); // Initialize without advancing.
 	for (const auto& random : worldRandom.streams)
 		cs = rotr1(cs) ^ (legacy152 ? random.legacyChecksum() : random.checksum());

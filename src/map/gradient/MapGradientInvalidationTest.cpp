@@ -1,5 +1,6 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "EngineFixtures.h"
+#include "GradientFixture.h"
 #include <nlohmann/json.hpp>
 #include <algorithm>
 #include <iostream>
@@ -30,6 +31,22 @@ struct Fixture {
   for(int i=0;i<=lastTeam;++i) { game.addTeam(); game.teams[i]->race.loadDefault(); }
  }
 };
+// These invalidation equivalence tests inspect a current complete field.
+// Wait through actual initialization/refresh publication; other suites assert
+// the stale-serving interval and retained frontier separately.
+const Uint16* currentBuildingField(Fixture& f,Building* b,int swim) {
+ auto& m=f.game.map;const int slot=b->routeSlot(swim,BuildingRoute::Automatic);
+ if(b->globalGradient[slot] && (b->dirtyGradient[slot] || b->gradientGeneration[slot]!=m.topologyGeneration))
+  f.game.stepCounter+=GRADIENT_DIRTY_REBUILD_TICKS;
+ m.requestBuildingField(b,swim);
+ for(unsigned boundary=0;boundary<4096 && (!b->globalGradient[slot] || b->refreshRequested.test(slot));++boundary) {
+  ++f.game.stepCounter;m.advanceGradientPipeline();m.stagePeriodicGradientPreparation();
+  glob2test::prepareGradientBoundary(f.game);
+ }
+ REQUIRE(b->globalGradient[slot]);REQUIRE_FALSE(b->refreshRequested.test(slot));
+ m.finishBuildingGradient(b,swim);
+ return b->globalGradient[slot];
+}
 static auto propagations() {
  return PerformanceTelemetry::collector().calls[static_cast<unsigned>(PerformanceTelemetry::Id::Propagation)];
 }
@@ -70,9 +87,9 @@ TEST_SUITE("MapGradientInvalidation")
    const auto cotton=*map.resourceRegistry().find("test-passable-fabric");
    map.setResource(20,20,cotton,1);
    REQUIRE(!map.resourceBlocksGround(map.coordToIndex(20,20)));
-   map.buildingGradient(building,swim); map.finishBuildingGradient(building,swim);
+   currentBuildingField(f,building,swim); map.finishBuildingGradient(building,swim);
    edit(f,20,20,true);
-   const auto* gradient=map.buildingGradient(building,swim); map.finishBuildingGradient(building,swim);
+   const auto* gradient=currentBuildingField(f,building,swim); map.finishBuildingGradient(building,swim);
    REQUIRE(gradient!=nullptr);
    REQUIRE(gradient[map.coordToIndex(20,20)]==GRADIENT_FORBIDDEN);
    const std::vector<Uint16> actual(gradient,gradient+map.getW()*map.getH());
@@ -94,21 +111,21 @@ TEST_SUITE("MapGradientInvalidation")
 	  if(resource!=NO_RES_TYPE)m.setResourceByIndex(20,20,resource,1);
 	  m.setResourceByIndex(25,24,WHEAT,1);m.addGuardArea(26,26,0);if(selected)m.addClearArea(20,20,0);
 	  if(!add){m.addForbidden(20,20,0);if(mixed)m.addForbidden(21,20,0);}
-	  for(auto* b:bs){m.buildingGradient(b,swim);m.updateGlobalGradient(b,swim);m.finishBuildingGradient(b,swim);}
+	  for(auto* b:bs){currentBuildingField(f,b,swim);m.updateGlobalGradient(b,swim);m.finishBuildingGradient(b,swim);}
 	  m.getForbiddenGradient(0,swim);m.getGuardAreasGradient(0,swim);m.getClearAreasGradient(0,swim);
 	  edit(f,20,20,add,mixed);
-	  for(auto* b:bs){auto* g=m.buildingGradient(b,swim);m.finishBuildingGradient(b,swim);REQUIRE(g!=nullptr);std::vector<Uint16> before(g,g+n);m.updateGlobalGradient(b,swim);m.finishBuildingGradient(b,swim);REQUIRE(std::equal(before.begin(),before.end(),b->globalGradient[b->routeSlot(swim, BuildingRoute::Automatic)]));++checks;}
+	  for(auto* b:bs){auto* g=currentBuildingField(f,b,swim);m.finishBuildingGradient(b,swim);REQUIRE(g!=nullptr);std::vector<Uint16> before(g,g+n);m.updateGlobalGradient(b,swim);m.finishBuildingGradient(b,swim);REQUIRE(std::equal(before.begin(),before.end(),b->globalGradient[b->routeSlot(swim, BuildingRoute::Automatic)]));++checks;}
 	  auto area=[&](auto get,auto update){const Uint16* g=(m.*get)(0,swim);std::vector<Uint16> before(g,g+n);(m.*update)(0,swim);REQUIRE(std::equal(before.begin(),before.end(),(m.*get)(0,swim)));++checks;};
 	  area(&Map::getForbiddenGradient,static_cast<void(Map::*)(int,int)>(&Map::updateForbiddenGradient));
 	  area(&Map::getGuardAreasGradient,static_cast<void(Map::*)(int,int)>(&Map::updateGuardAreasGradient));
 	  area(&Map::getClearAreasGradient,static_cast<void(Map::*)(int,int)>(&Map::updateClearAreasGradient));
 	 }
 	 // Already-stale walking fields must not be blessed current by an unrelated order.
-	 {Fixture f(1);player(f);auto& m=f.game.map;auto* b=f.game.addBuilding(8,8,globals->buildingsTypes.getTypeNum("inn",0,false),0);m.setResourceByIndex(20,20,WHEAT,1);m.buildingGradient(b,0);auto old=b->gradientGeneration[0];m.addForbidden(30,30,1);REQUIRE(old!=m.topologyGeneration);edit(f,20,20,true);REQUIRE(b->gradientGeneration[0]==old);}
+	 {Fixture f(1);player(f);auto& m=f.game.map;auto* b=f.game.addBuilding(8,8,globals->buildingsTypes.getTypeNum("inn",0,false),0);m.setResourceByIndex(20,20,WHEAT,1);currentBuildingField(f,b,0);auto old=b->gradientGeneration[0];m.addForbidden(30,30,1);REQUIRE(old!=m.topologyGeneration);edit(f,20,20,true);REQUIRE(b->gradientGeneration[0]==old);}
 	 // Irrelevant orders preserve a paused search, its frozen field and dirty status.
 	 {Fixture f(1);player(f);auto& m=f.game.map;
 	  auto* b=f.game.addBuilding(8,8,globals->buildingsTypes.getTypeNum("inn",0,false),0);
-	  m.setResourceByIndex(20,20,WHEAT,1);m.buildingGradient(b,0);m.updateGlobalGradient(b,0);
+	  m.setResourceByIndex(20,20,WHEAT,1);currentBuildingField(f,b,0);m.updateGlobalGradient(b,0);
 	  auto* search=b->globalGradientSearch[0].get();REQUIRE(search);
 	  auto* field=b->globalGradient[0];std::vector<Uint16> snapshot(field,field+4096);
 	  const bool dirty=b->dirtyGradient[0];edit(f,20,20,true);

@@ -10,6 +10,7 @@
 
 #include <PerformanceTelemetry.h>
 #include "Map.h"
+#include "GradientExecutionAudit.h"
 #include "gradient/GradientRuntime.h"
 #include "BuildingGradientSearch.h"
 #include "SharedBuildingGradient.h"
@@ -42,6 +43,8 @@ void buildScheduled(PipelineJob& job)
 {
 	auto& p = job.payload;
 	if (building_gradient::workHook) building_gradient::workHook(p);
+    GradientExecutionAudit::record(GradientExecutionAudit::Kind::Seed);
+    p.inputs=BuildingGradientSearch::Inputs::ofSnapshot(*job.snapshotLease,p.swim);
 	const auto result = gradient_preparation::buildBuilding(p.seed, *job.snapshotLease, p.inputs, p.data.get(), *p.search, p.depthTarget);
 	p.locked = result.locked;
 	p.resourceState = result.resourceState;
@@ -109,7 +112,7 @@ void Map::ensureBuildingGradientPipeline()
 	pipeline.publish = [this, sameTick = std::vector<Published>{}](PipelineJob& job) mutable {
 		auto& p = job.payload;
 		Building* b = buildingGradientDestination(p.team, p.buildingId, p.scriptIdentity);
-		if (!b || b->refreshEpoch[p.slot] != p.epoch || !b->globalGradient[p.slot]) return false;
+		if (!b || b->refreshEpoch[p.slot] != p.epoch) return false;
 		const int slot = p.slot, swim = p.swim;
         auto guard=SharedBuildingGradient::lock(b->sharedGradient[slot]);
 
@@ -144,6 +147,7 @@ void Map::ensureBuildingGradientPipeline()
 		{
 			if (s == swim || swimAccessVariant(s) != swimAccessVariant(swim)) continue;
 			const int other = b->routeSlot(s, p.route);
+            if (!b->globalGradient[other]) continue;
 			const auto stamped = b->lastGlobalGradientUpdateStepCounter[other];
 			if (stamped > p.captureTick || (stamped == p.captureTick && !publishedEarlier(other))) newest = false;
 		}
@@ -182,23 +186,16 @@ void Map::resetBuildingGradientPipeline() noexcept
 bool Map::requestBuildingRefresh(Building* building, int slot)
 {
 	auto& rt = *gradientRuntime;
-	if (!buildingGradientPipelineActive() || !building->globalGradient[slot]) return false;
+	if (!buildingGradientPipelineActive()) return false;
 	if (building->refreshRequested.test(slot)) return true; // Already queued or in flight.
 	building->refreshRequested.set(slot);
 	rt.buildingRequests.push_back({building->owner->teamNumber, Uint16(Building::GIDtoID(building->gid)),
 		building->scriptIdentity, building->refreshEpoch[slot], slot, false});
-	if (rt.buildingRequests.size() > GradientRuntime::BuildingRequestLimit)
-	{
-		// Deterministic overflow: the oldest request is served synchronously now.
-		const auto oldest = rt.buildingRequests.front();
-		rt.buildingRequests.pop_front();
-		Building* b = buildingGradientDestination(oldest.team, oldest.building, oldest.identity);
-		if (b && !oldest.stale && b->refreshEpoch[oldest.slot] == oldest.epoch && b->globalGradient[oldest.slot])
-		{
-			noteBuildingSyncReason(BuildingSyncReason::Overflow);
-			updateGlobalGradient(b, slotSwim(oldest.slot), slotRoute(oldest.slot)); // Supersedes and clears the request.
-		}
-	}
+    std::erase_if(rt.buildingRequests,[this](const auto& request) {
+        const auto* b=buildingGradientDestination(request.team,request.building,request.identity);
+        return request.stale || !b || b->refreshEpoch[request.slot]!=request.epoch;
+    });
+
 	return true;
 }
 
@@ -226,7 +223,7 @@ void Map::stageBuildingGradientPreparation()
 		const auto request = rt.buildingRequests.front();
 		rt.buildingRequests.pop_front();
 		Building* b = buildingGradientDestination(request.team, request.building, request.identity);
-		if (!b || request.stale || b->refreshEpoch[request.slot] != request.epoch || !b->globalGradient[request.slot]) continue;
+		if (!b || request.stale || b->refreshEpoch[request.slot] != request.epoch) continue;
 		auto* job = pipeline.reserve();
 		job->payload = {};
 		auto& p = job->payload;
@@ -235,7 +232,8 @@ void Map::stageBuildingGradientPreparation()
 		p.epoch = request.epoch; p.captureTick = game->stepCounter; p.generation = topologyGeneration;
 		p.data.reset(acquireBuildingGradientBuffer());
 		p.search = acquireBuildingGradientSearch();
-		p.depthTarget = predictBuildingDepth(b, p.slot);
+		// Cold initialization stays lazy for every route, including flags.
+        p.depthTarget = b->globalGradient[p.slot] ? predictBuildingDepth(b,p.slot) : BuildingGradientDepth::MIN_DEPTH;
 
 		// The capture consumes earlier dirty marks; later ones survive publication.
 		b->dirtyGradient[p.slot] = false;
@@ -256,7 +254,7 @@ void Map::prepareStagedBuildingGradients(const SimulationSnapshot::Handle& found
 		if (!b) throw std::logic_error("Staged building gradient lost its destination");
 		p.seed = gradient_preparation::captureBuildingSeed(*b, p.swim, p.route);
 		// Owner cost planes from the same boundary as the lease the seeder reads.
-		p.inputs = BuildingGradientSearch::Inputs::of(*this, p.swim);
+		p.inputs = {}; // The worker derives immutable movement planes from the lease.
 		job->snapshotLease = foundation.buildingGradientView();
 	}
 	rt.buildings.prepare(staged);

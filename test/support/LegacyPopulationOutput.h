@@ -73,10 +73,10 @@ public:
         : BinaryOutputStream(backend), game(game), legacy(version<FILE_FORMAT_VERSION_INTRUSIVE_POPULATION), formatVersion(version) {}
     void writeEnterSection(std::string_view name) override
     {
-        if (injecting || !legacy) return;
+        if (injecting) return;
         const bool teamChild = !sections.empty() && sections.back()=="Team";
         sections.emplace_back(name);
-        if (suppressed()) return;
+        if (!legacy || suppressed()) return;
         if (name=="HiringPipeline" && formatVersion<FILE_FORMAT_VERSION_CACHED_HIRING) {
             suppressedAt=sections.size();
             return;
@@ -95,10 +95,10 @@ public:
         } else if (teamChild && (name=="myUnits" || name=="myBuildings")) population(name);
     }
     void writeEnterSection(unsigned) override
-    { if (!injecting && legacy) sections.emplace_back(); }
+    { if (!injecting) sections.emplace_back(); }
     void writeLeaveSection(std::size_t count=1) override
     {
-        if (injecting || !legacy) return;
+        if (injecting) return;
         while (count--) {
             if (sections.empty()) throw std::logic_error("Unbalanced synthetic historical sections");
             if (suppressedAt==sections.size()) suppressedAt=0;
@@ -112,6 +112,13 @@ public:
     void writeUint32(Uint32 value, std::string_view name) override
     {
         if (suppressed()) return;
+        if (formatVersion<FILE_FORMAT_VERSION_INITIAL_BUILDING_GRADIENT && name=="count"
+            && sections.size()>=2 && sections.back()=="queue"
+            && sections[sections.size()-2]=="buildingGradientPipeline") {
+            if (value>65535) throw std::logic_error("Historical building queue exceeds its encoding");
+            BinaryOutputStream::writeUint16(Uint16(value),name);
+            return;
+        }
         BinaryOutputStream::writeUint32(value,name);
         if (formatVersion>=FILE_FORMAT_VERSION_TURRET_TARGETING
             && formatVersion<FILE_FORMAT_VERSION_LEAN_TURRET_TARGETING) {
