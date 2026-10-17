@@ -7,7 +7,8 @@
 // This is the version of map and savegame format, and all of the recorded data on the server
 #define VERSION_MAJOR 0
 #define MINIMUM_VERSION_MINOR 58
-#define VERSION_MINOR 173
+#define VERSION_MINOR 174
+// version 174 steers ground units geometrically while building routes are pending.
 // version 173 restores demand-driven building initialization; save layout is unchanged.
 // version 172 persists proactive building initialization requests.
 // version 171 persists primary-candidate gradients pending hiring publication.

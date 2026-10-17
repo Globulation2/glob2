@@ -24,6 +24,7 @@
 class Team;
 class Race;
 class Building;
+enum class BuildingRoute : unsigned char;
 struct TerrainProperties;
 struct BuildingTrainingSpec;
 
@@ -83,9 +84,10 @@ public:
 	void syncStep(void);
 	
     bool gradientDecisionPending=false;
-	// Pending fields preserve every assignment and retry on the ordinary action cadence.
-	// The existing zero-displacement movement is already saved and checksummed.
+	// Pending fields preserve assignments while ground units steer geometrically.
+	// The normal displacement/movement state already survives saves and checksums.
 	void waitForGradient();
+	void followPendingBuildingRoute(Building&, BuildingRoute);
 	template<class Search> StepResult findGradientDisplacement(Search search)
 	{
 		int x=dx, y=dy;

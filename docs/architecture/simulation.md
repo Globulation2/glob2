@@ -462,9 +462,14 @@ checksum adapter retains its historical entity/RNG representation for fixtures.
   walking fields serving until the refresh publishes, so units may follow a
   pre-edit field for up to the delay. First use after creation, idle eviction,
   movement, or a type/range change queues initialization on the same pipeline.
-  Until publication, route queries return Pending; assigned units wait without
-  abandoning their assignment or consuming movement RNG. Initialization seeds and
-  settles only the minimum depth (32 cost units), then transfers the unfinished
+  Until publication, route queries return Pending. Assigned ground units retain
+  their job and use the ordinary flyer's wrapped eight-direction heading toward
+  the building centre (flag position for attraction routes), trying nearby
+  directions in flyer order when blocked. Ground terrain, forbidden areas and
+  occupancy still apply; with no legal step they wait. This fallback consumes no
+  movement RNG and yields to gradient routing as soon as the field is available.
+  Food/healing destination selection still skips pending candidates. Initialization
+  seeds and settles only the minimum depth (32 cost units), then transfers the unfinished
   search buckets with the field. Hiring proposals and live readers continue that
   search only as far as their requested cells. Warm refreshes retain the existing
   depth model. The FIFO has no synchronous overflow fallback; stale entries are
