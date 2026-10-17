@@ -1,0 +1,56 @@
+[
+  {
+    "report": "core-junit.xml",
+    "counts": {
+      "tests": "171",
+      "failures": "0",
+      "errors": "0",
+      "skipped": "0"
+    }
+  },
+  {
+    "report": "save-junit.xml",
+    "counts": {
+      "tests": "76",
+      "failures": "1",
+      "errors": "0",
+      "skipped": "0"
+    }
+  },
+  {
+    "report": "save-gate-final-junit.xml",
+    "counts": {
+      "tests": "1",
+      "failures": "0",
+      "errors": "0",
+      "skipped": "0"
+    }
+  },
+  {
+    "report": "network-junit.xml",
+    "counts": {
+      "tests": "18",
+      "failures": "0",
+      "errors": "1",
+      "skipped": "0"
+    }
+  },
+  {
+    "report": "network-fuzz-final-junit.xml",
+    "counts": {
+      "tests": "1",
+      "failures": "0",
+      "errors": "0",
+      "skipped": "0"
+    }
+  },
+  {
+    "report": "golden-junit.xml",
+    "counts": {
+      "tests": "1",
+      "failures": "0",
+      "errors": "0",
+      "skipped": "0"
+    }
+  }
+]

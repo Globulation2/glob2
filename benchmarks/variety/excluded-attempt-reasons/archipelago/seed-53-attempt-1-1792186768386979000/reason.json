@@ -1,0 +1,5 @@
+{
+  "reason": "Compiler observed during at least one run; replace all four policy/participant runs in this seed/workload set.",
+  "seed": 53,
+  "workload": "archipelago"
+}

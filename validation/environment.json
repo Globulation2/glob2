@@ -1,0 +1,16 @@
+{
+  "head": "0f37e4aa9d86ba82b9872a12eaa4402dcff22c0e",
+  "base": "486a2230a4ddb257ba9dee34d3aace05f2260d6f",
+  "platform": "macOS-26.6.2-arm64-arm-64bit-Mach-O",
+  "architecture": "arm64",
+  "python": "3.14.7 (main, Aug  5 2026, 10:29:49) [Clang 21.0.0 (clang-2100.1.1.101)]",
+  "compiler": "Apple clang version 21.0.0 (clang-2100.3.34.2)\nTarget: arm64-apple-darwin25.6.0\nThread model: posix\nInstalledDir: /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin\n",
+  "build_command": "PYTHONPATH=. python3 tools/dev_build.py engine-tests unit-tests build/darwin/client/debug/dev-dev_fast-true-linker-auto/src/glob2",
+  "flags": "dev_fast=1 linker=auto (default): -O0 -g1, compiler caching; no PCH/unity. Development correctness checks only, not performance measurements.",
+  "dependency_manifest_sha256": "5c04cd735f6bff4219a13df18554310c18449bd27aee9828985cf336b515604f",
+  "binary_sha256": {
+    "src/glob2": "9845ef716d21a57bdf6377187fdb1386ade31322540bcdc6f24426a546054692",
+    "test/glob2-engine-tests": "0e4a755a1b2d91c2ed1c1b8a935eccee221ff4c0502082059c4b31c61448edd0",
+    "test/glob2-unit-tests": "2d191d111acd40ec2d732732bfef217fe55b91a7d38138bb78a0cab7c76f3ed1"
+  }
+}

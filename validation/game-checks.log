@@ -1,0 +1,9 @@
+holiday-p1 444487412 2200015159
+holiday-p4 444487412 2200015159
+holiday-prefix 444487412 3518202379
+holiday-resume 3496968715 2197655863
+Traceback (most recent call last):
+  File "/Users/bradley/.codex/worktrees/building-gradient-team-quota/glob2/artifacts/team-quota-pr/run_game_checks.py", line 35, in <module>
+    assert parttrace and all(whole.get(tick)==value for tick,value in parttrace.items()),partname
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: resume

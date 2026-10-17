@@ -1,0 +1,167 @@
+{
+  "experiment": {
+    "binary": "/Users/bradley/.codex/worktrees/gradient-staleness/glob2/build/darwin/client/release/client-full-direct-1111/src/glob2",
+    "binary_sha256": "15e6811698578a398a89a4c4c31a21437a8d1122ceb1794ca82d04b59d24afc5",
+    "base_revision": "43b153739838207983c922ab4cbeed7773459de9",
+    "snapshot_revision": "2e8c1e9ab7b39b0b143119aa5c07201f651eec60",
+    "platform": "macOS-26.6.2-arm64-arm-64bit-Mach-O",
+    "architecture": "arm64",
+    "policies": [
+      "capped",
+      "team4"
+    ],
+    "participants": [
+      1,
+      4
+    ],
+    "seeds": [
+      42,
+      43,
+      44,
+      45,
+      46,
+      47,
+      48,
+      49,
+      50,
+      51,
+      52,
+      53,
+      54,
+      55,
+      56,
+      57,
+      58,
+      59,
+      60,
+      61,
+      62,
+      63,
+      64,
+      65,
+      66,
+      67,
+      68,
+      69,
+      70,
+      71,
+      72,
+      73
+    ],
+    "workloads": [
+      {
+        "name": "small-duel",
+        "map": "SmallForTwo.map.gz",
+        "players": [
+          "nicowar",
+          "warrush"
+        ],
+        "ticks": 32768,
+        "map_path": "/Users/bradley/.codex/worktrees/gradient-staleness/glob2/maps/SmallForTwo.map.gz",
+        "map_sha256": "a551bc8ccf3ccd36596100b9d9dcf67dae84a465ee609f41703dfbdff67b6858",
+        "width": 64,
+        "height": 64,
+        "teams": 2,
+        "map_format": [
+          0,
+          64
+        ]
+      },
+      {
+        "name": "archipelago",
+        "map": "Archipelago.map.gz",
+        "players": [
+          "nicowar",
+          "econo",
+          "castor",
+          "warrush",
+          "nicowar"
+        ],
+        "ticks": 32768,
+        "map_path": "/Users/bradley/.codex/worktrees/gradient-staleness/glob2/maps/Archipelago.map.gz",
+        "map_sha256": "8770b2f94199309f2a6f7a9398bb0bfeb1624cd80e3a396e5db39eccf68ada76",
+        "width": 128,
+        "height": 128,
+        "teams": 5,
+        "map_format": [
+          0,
+          81
+        ]
+      },
+      {
+        "name": "large-eleven",
+        "map": "Oazis.map.gz",
+        "players": [
+          "nicowar",
+          "econo",
+          "castor",
+          "warrush",
+          "nicowar",
+          "econo",
+          "castor",
+          "warrush",
+          "nicowar",
+          "econo",
+          "castor"
+        ],
+        "ticks": 32768,
+        "map_path": "/Users/bradley/.codex/worktrees/gradient-staleness/glob2/maps/Oazis.map.gz",
+        "map_sha256": "b3283af95ee177f528d3b57438797c4a1970473c562a76f5ed4faad51f03a6d3",
+        "width": 256,
+        "height": 256,
+        "teams": 11,
+        "map_format": [
+          0,
+          70
+        ]
+      }
+    ],
+    "run_order": "Serial runs, seed outer loop. Rotate/reverse workload order by seed. Alternate participant and policy order by seed and workload. Full four-run seed/workload set replaced if compiler activity occurs during any run.",
+    "build_command": "PYTHONPATH=. CCACHE=1 scons -j8 release=1 client_profile=full server=0",
+    "tick_sample_format": "chronological native unsigned 64-bit nanoseconds; little",
+    "host_contention_guard": "Wait for no clang before run; poll once/second during run. Preserve/retry whole seed/workload set if clang appears. Other host activity not controlled."
+  },
+  "validation": {
+    "completed_valid_runs": 384,
+    "maps": 3,
+    "seeds_per_map": 32,
+    "policies": [
+      "global-four",
+      "four-per-team"
+    ],
+    "compute_participants": [
+      1,
+      4
+    ],
+    "per_run_sample_counts_and_chronological_order": "all checked",
+    "quota_limits": "all checked",
+    "admission_delay_histogram_totals": "all checked",
+    "same_seed_initial_state_across_modes_and_participants": "all96 sets match",
+    "same_policy_final_checksum_between_participant_counts": "all192 pairs match",
+    "excluded_attempt_sets": 12,
+    "excluded_attempt_reasons": [
+      "excluded-host-contention/large-eleven/seed-43-recovered-1792194933116432000/reason.json",
+      "excluded-host-contention/large-eleven/seed-43-attempt-0/reason.json",
+      "excluded-host-contention/large-eleven/seed-42-attempt-1/reason.json",
+      "excluded-host-contention/large-eleven/seed-42-attempt-0/reason.json",
+      "excluded-host-contention/archipelago/seed-65-attempt-0-1792187162264046000/reason.json",
+      "excluded-host-contention/archipelago/seed-53-attempt-1-1792186768386979000/reason.json",
+      "excluded-host-contention/archipelago/seed-53-attempt-0-1792186751674662000/reason.json",
+      "excluded-host-contention/archipelago/seed-48-attempt-0-1792186606913883000/reason.json",
+      "excluded-host-contention/archipelago/seed-59-attempt-0-1792186997310227000/reason.json",
+      "excluded-host-contention/archipelago/seed-44-attempt-0-1792186508481001000/reason.json",
+      "excluded-host-contention/archipelago/seed-69-attempt-0-1792187296310983000/reason.json",
+      "excluded-host-contention/archipelago/seed-54-attempt-0-1792186843116680000/reason.json"
+    ],
+    "large_map_full_second_half_pairs": 32,
+    "supplemental_long_pilot": "Seed42, 65536ticks, both policies/participant counts; same-policy final checksums match; excluded from aggregate estimates."
+  },
+  "metrics": "Chronological native-u64 per-tick wall durations in nanoseconds. Tick-to-tick change is absolute difference between consecutive durations; mean and p99 reported separately. Cluster is a maximal consecutive run of at least two ticks exceeding 1ms (also5ms and33.333333ms recorded); count per million executed ticks. Rolling8/32-tick windows sum consecutive durations. CPU is all-process CPU, normalized per1000 executed ticks; memory is /usr/bin/time -l peakRSS. Aggregate estimates give each of32seeds equal weight. Per-game quantiles use floor((n-1)*p).",
+  "queue_delay": "Extra staging-boundary advances beyond first eligible admission boundary. Excludes ordinary request-to-next-boundary latency and fixed eight-tick publication delay. Includes only requests ultimately admitted; stale/canceled/legacy synchronous-overflow requests excluded from delay distribution. Actual overflow counts separately retained, and all CPU costs included. Per-game histogram bins0-4095 plus exact maximum; no observed histogram saturation. P95 values are averages of per-game quantiles.",
+  "statistics": "10000 paired seed bootstrap resamples, NumPy default_rng seed20261016. Percentile95% intervals for change in arithmetic means. Exploratory comparisons, no multiple-comparison correction. Largest-case results include all32seeds for both modes/participant counts. Late-half comparison restricts to matched seed pairs with all16384samples for ticks16384-32767. All32archipelago and large-map pairs qualify; small duels generally end sooner.",
+  "host_contention": "Serial benchmark runs. Gate on no active clang before run; poll for compiler work once/second during runs. Replace entire four-run seed/map set if any run overlaps compiler activity; all excluded attempts/reasons retained. Initial interrupted runner resumed safely; incomplete or flagged sets replaced wholesale. User asked to wait for other builds and later confirmed they had finished; final large-map matrix resumed thereafter. Other OS/background activity is not controlled.",
+  "build": "Same optimized release executable as policy experiment (binary SHA in experiment.json), AppleClang -O3, no dev_fast/PCH/unity; source snapshots and prior matching build log included. Frozen engine base43b153739838207983c922ab4cbeed7773459de9. No source changes for expanded matrix.",
+  "behavior": "Cold gradients still initialize synchronously; eight-tick background publication and lazy depth policy unchanged. Four-per-team quota is separately enforced for every team, unused quota not borrowed. All finite policies retain >64-request synchronous-overflow fallback. No output saves, autosaves, checksums, detailed event logging, or replay recording in timed runs. End-of-run world checksum retained.",
+  "limits": "Single AppleM3 Mac, three fixed shipped maps, fixed AI lineup per map; vary only game seed within workload. One compute participant reduces parallelism, not core speed/memory bandwidth/power/thermal characteristics. Headless unrestricted execution excludes rendering and real-time pacing. Policies change game development, so measured CPU includes different evolving worlds; not isolated scheduler overhead on identical later work. Legacy overflow fallback can affect the workload, particularly on eleven-team map. PR1197 queued cold-initialization demand not included. Private benchmark prototype, not production/save/network compatibility validation.",
+  "commands": "Exact command/environment/binary hash/RSS/load averages and exit status retained in every run.json. Driver and analysis scripts included. Analysis uses uv run --offline --with matplotlib==3.10.7 python artifacts/gradient-admission-variety-20261016/analyze.py; runtime versions retained in analysis-runtime.json."
+}

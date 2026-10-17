@@ -1,0 +1,61 @@
+BuildingGradientInvalidation/a deleted building's pending result cannot replace a reused destination
+BuildingGradientInvalidation/a paused field keeps its original obstacles
+BuildingGradientInvalidation/a pending result keeps the generation a team-local edit carries forward
+BuildingGradientInvalidation/a ring cuts off a virtual flags field
+BuildingGradientInvalidation/a rival teams ring cuts off a cached field
+BuildingGradientInvalidation/a saturated team cannot block another team's four building refreshes
+BuildingGradientInvalidation/access metadata follows the newest capture across swim classes and saves
+BuildingGradientInvalidation/an empty building pipeline follows a changed header delay through save and load
+BuildingGradientInvalidation/area and team-wide resets keep stale walking fields serving with the pipeline on
+BuildingGradientInvalidation/centre placed inside an existing ring
+BuildingGradientInvalidation/delayed fields
+BuildingGradientInvalidation/format167 byte-sized pending building jobs retain their deadlines [save-format]
+BuildingGradientInvalidation/idle field storage is reused without stale routes
+BuildingGradientInvalidation/initial legacy saves bootstrap only when their observation was not admitted
+BuildingGradientInvalidation/more than 255 pending building gradients survive binary and text saves [save-format]
+BuildingGradientInvalidation/observation phase is covered by both current checksum tiers
+BuildingGradientInvalidation/partial scheduled fields resume on the owner from transferred buckets
+BuildingGradientInvalidation/pending building results survive save boundaries and cannot resurrect evicted fields
+BuildingGradientInvalidation/prediction retains reader demand across rebuilds and save completion
+BuildingGradientInvalidation/public reads resolve their inputs
+BuildingGradientInvalidation/requests during team stepping are captured at the observation boundary
+BuildingGradientInvalidation/retained format126 access flags restore walking and swimming locks into the footprint route and survive current saves [save-format]
+BuildingGradientInvalidation/ring placed around an existing field
+BuildingGradientInvalidation/same-tick swim classes write access metadata in request order
+BuildingGradientInvalidation/scheduled building fields publish at fixed deadlines across worker counts and delays
+BuildingGradientInvalidation/slow and failing workers never change the publication tick
+BuildingGradientInvalidation/snapshot building seeds and captured-input searches match the synchronous kernels for every route and swim class
+BuildingGradientInvalidation/synchronous rebuilds and lifecycle hooks supersede pending jobs that share a deadline
+BuildingGradientInvalidation/world observation publication and admission survive save boundaries
+GradientPipeline/CPU fields keep their original worker
+GradientPipeline/GPU decline recovers original seeds exactly once on a worker and retains inputs until recovery
+GradientPipeline/application shutdown joins background initialization and later registrations restart
+GradientPipeline/availability changes during seeding do not reinterpret captured CPU execution
+GradientPipeline/backend selection survives worker scratch resizing
+GradientPipeline/bounded required device queue recovers excess fields exactly once
+GradientPipeline/building pipeline admits several jobs per tick, publishes in reservation order at fixed deadlines, supersedes, survives slow and failing workers
+GradientPipeline/building pipeline pending results survive a save-style round trip
+GradientPipeline/building quotas are independent per team and a full multi-team horizon restores
+GradientPipeline/device adapters retain committed fields when another ready field declines
+GradientPipeline/device registration stop and reconfigure never join a slow background initializer
+GradientPipeline/explicit CPU jobs bypass device ownership and retain publication deadlines
+GradientPipeline/fixed publication; supersession; bounded buffers; scheduling stress; fallback; exceptions and teardown
+GradientPipeline/gradient, building and AI batches share the maximum deferred horizon
+GradientPipeline/malformed captured configurations decline and recover once
+GradientPipeline/nullable GPU preparation recovers once on the original worker without device reentry
+GradientPipeline/one-slot device configuration creates no driver activity
+GradientPipeline/owned GPU service initializes with two slots and leaves the sole worker free until fixed publication
+GradientPipeline/pending required GPU work cancels at publication and drains through one worker recovery
+GradientPipeline/projected terrain leases end at completion including failed work
+GradientPipeline/reservation is invalidatable before preparation and seed failures cannot strand it
+GradientPipeline/serial preparation computes at join and errors surface at the deadline
+GradientPipeline/shared preparation executes off the owner and retains its deadline
+GradientPipeline/two device registrations share exactly one process coordinator
+ReplayStepCounter/DecodeVersionPlumbing
+ReplayStepCounter/VersionBounds
+ReplayStepCounter/WideRoundTrip
+ReplayStepCounter/checksum mismatch closes playback safely
+ReplayStepCounter/legacy create decoder respects both historical payload lengths
+ReplayStepCounter/step totals cannot wrap
+ReplayStepCounter/truncated replay bodies never become zero-filled orders
+60 cases

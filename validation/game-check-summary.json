@@ -1,0 +1,53 @@
+{
+  "holiday": {
+    "end_tick": 4096,
+    "participants": [
+      1,
+      4
+    ],
+    "identical_trace_sha256": {
+      "world.checksums": "6decc0065721316aa103f948cf647ce0315aba6eaec17f47efdd995c3a2d75da",
+      "game.replay.checksums": "66bc1e2c9d32a6d879448bac0d92d455fb08ae5d72547777a3f3205ed78b7238"
+    },
+    "final_checksum": 2200015159
+  },
+  "oazis": {
+    "end_tick": 2048,
+    "participants": [
+      1,
+      4
+    ],
+    "identical_trace_sha256": {
+      "world.checksums": "710eb34185c85ea1556ac2e5c90983970fbd40203016d075676bd9de43efa949",
+      "game.replay.checksums": "050276b1c619024e1641453a1e18fefc04e41d32731ea5edf142aff56c5bf796"
+    },
+    "final_checksum": 1048396733
+  },
+  "prototype_vs_production_holiday": {
+    "trace_equal": true
+  },
+  "production_final_save": {
+    "continuation_passed": false,
+    "first_different_tick": 2048,
+    "loaded_initial_checksum": 3496968715,
+    "final_checksum": 2197655863
+  },
+  "production_checkpoint": {
+    "continuation_passed": false,
+    "first_different_tick": 2048,
+    "loaded_initial_checksum": 3496968715,
+    "final_checksum": 2197655863
+  },
+  "prototype_team4": {
+    "continuation_passed": false,
+    "first_different_tick": 2048,
+    "loaded_initial_checksum": 3497099787,
+    "final_checksum": 2195951927
+  },
+  "prototype_global4": {
+    "continuation_passed": false,
+    "first_different_tick": 2048,
+    "uninterrupted_final": 2640184445,
+    "resumed_final": 2627470461
+  }
+}

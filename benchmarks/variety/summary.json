@@ -1,0 +1,3527 @@
+{
+  "runs": 384,
+  "seeds_per_workload": 32,
+  "same_mode_participant_checksums_match": true,
+  "workloads": {
+    "small-duel": {
+      "1": {
+        "late_half_metrics_matched_complete_pairs": {},
+        "metrics": {
+          "ticks": {
+            "capped_mean": 15148.0,
+            "team4_mean": 15147.9375,
+            "change_percent": -0.0004125957222100851,
+            "paired_bootstrap_95_percent": [
+              -1.771430150395489,
+              1.8447196224232665
+            ],
+            "team4_lower_seeds": 3,
+            "capped_range": [
+              6338.0,
+              31138.0
+            ],
+            "team4_range": [
+              6338.0,
+              32768.0
+            ]
+          },
+          "mean_ms": {
+            "capped_mean": 0.048495288380971016,
+            "team4_mean": 0.047516322405385225,
+            "change_percent": -2.018682656127735,
+            "paired_bootstrap_95_percent": [
+              -7.152494092595245,
+              1.4444753353867417
+            ],
+            "team4_lower_seeds": 16,
+            "capped_range": [
+              0.04134554524469068,
+              0.08257666134284385
+            ],
+            "team4_range": [
+              0.0408389508644222,
+              0.05991197037271895
+            ]
+          },
+          "cpu_ms_per_1000_ticks": {
+            "capped_mean": 47.40498074925449,
+            "team4_mean": 47.31716623774054,
+            "change_percent": -0.18524321732866778,
+            "paired_bootstrap_95_percent": [
+              -1.2027300026687002,
+              0.799430791714351
+            ],
+            "team4_lower_seeds": 16,
+            "capped_range": [
+              41.38888888888889,
+              62.29646162935732
+            ],
+            "team4_range": [
+              40.87867758568395,
+              59.937997604452896
+            ]
+          },
+          "peak_rss_mib": {
+            "capped_mean": 60.10498046875,
+            "team4_mean": 60.07080078125,
+            "change_percent": -0.056866647711117935,
+            "paired_bootstrap_95_percent": [
+              -0.2474533775180962,
+              0.1365603890654526
+            ],
+            "team4_lower_seeds": 17,
+            "capped_range": [
+              57.8125,
+              67.359375
+            ],
+            "team4_range": [
+              58.015625,
+              67.203125
+            ]
+          },
+          "p99_ms": {
+            "capped_mean": 0.16130078125,
+            "team4_mean": 0.16035024999999997,
+            "change_percent": -0.589291163151151,
+            "paired_bootstrap_95_percent": [
+              -3.3682742605640583,
+              1.911441639391244
+            ],
+            "team4_lower_seeds": 17,
+            "capped_range": [
+              0.133875,
+              0.224333
+            ],
+            "team4_range": [
+              0.133416,
+              0.205458
+            ]
+          },
+          "p999_ms": {
+            "capped_mean": 0.42413015624999995,
+            "team4_mean": 0.253145875,
+            "change_percent": -40.31410611350509,
+            "paired_bootstrap_95_percent": [
+              -68.34378412542088,
+              6.621703173178717
+            ],
+            "team4_lower_seeds": 15,
+            "capped_range": [
+              0.191417,
+              5.949916
+            ],
+            "team4_range": [
+              0.198,
+              0.44675
+            ]
+          },
+          "adjacent_change_p99_ms": {
+            "capped_mean": 0.13935674999999997,
+            "team4_mean": 0.13661974999999998,
+            "change_percent": -1.9640239887913524,
+            "paired_bootstrap_95_percent": [
+              -8.187240086199742,
+              2.158007010526432
+            ],
+            "team4_lower_seeds": 11,
+            "capped_range": [
+              0.114291,
+              0.276874
+            ],
+            "team4_range": [
+              0.112292,
+              0.17370799999999997
+            ]
+          },
+          "adjacent_change_mean_ms": {
+            "capped_mean": 0.019122048468380025,
+            "team4_mean": 0.017466409389944183,
+            "change_percent": -8.658272575626958,
+            "paired_bootstrap_95_percent": [
+              -26.523243659262473,
+              5.971281880517709
+            ],
+            "team4_lower_seeds": 14,
+            "capped_range": [
+              0.013094380228676941,
+              0.08285937047375357
+            ],
+            "team4_range": [
+              0.013061158724522405,
+              0.030887035349836438
+            ]
+          },
+          "gradient_jobs_per_1000_ticks": {
+            "capped_mean": 54.01466807941132,
+            "team4_mean": 54.014432553586495,
+            "change_percent": -0.00043604049270173917,
+            "paired_bootstrap_95_percent": [
+              -0.818721284171321,
+              0.8949124624417812
+            ],
+            "team4_lower_seeds": 3,
+            "capped_range": [
+              18.960374946740522,
+              138.94177115472985
+            ],
+            "team4_range": [
+              18.960374946740522,
+              135.8768406961178
+            ]
+          },
+          "gradient_cpu_ms_per_1000_ticks": {
+            "capped_mean": 1.1748030626397725,
+            "team4_mean": 1.178273805908506,
+            "change_percent": 0.2954319220904056,
+            "paired_bootstrap_95_percent": [
+              -1.3470938282748122,
+              2.0124661394331778
+            ],
+            "team4_lower_seeds": 14,
+            "capped_range": [
+              0.3672212753870189,
+              3.590151217750935
+            ],
+            "team4_range": [
+              0.3829799034228093,
+              3.4098704643133937
+            ]
+          },
+          "max_batch": {
+            "capped_mean": 4.0,
+            "team4_mean": 5.90625,
+            "change_percent": 47.65625,
+            "paired_bootstrap_95_percent": [
+              37.5,
+              58.59375
+            ],
+            "team4_lower_seeds": 0,
+            "capped_range": [
+              4.0,
+              4.0
+            ],
+            "team4_range": [
+              4.0,
+              8.0
+            ]
+          },
+          "max_pending": {
+            "capped_mean": 14.46875,
+            "team4_mean": 14.5,
+            "change_percent": 0.21598272138227959,
+            "paired_bootstrap_95_percent": [
+              -5.607570280748413,
+              4.595306345733038
+            ],
+            "team4_lower_seeds": 1,
+            "capped_range": [
+              8.0,
+              32.0
+            ],
+            "team4_range": [
+              8.0,
+              35.0
+            ]
+          },
+          "max_team_batch": {
+            "capped_mean": 4.0,
+            "team4_mean": 4.0,
+            "change_percent": 0.0,
+            "paired_bootstrap_95_percent": [
+              0.0,
+              0.0
+            ],
+            "team4_lower_seeds": 0,
+            "capped_range": [
+              4.0,
+              4.0
+            ],
+            "team4_range": [
+              4.0,
+              4.0
+            ]
+          },
+          "queue_extra_mean_ticks": {
+            "capped_mean": 0.149778096900199,
+            "team4_mean": 0.14006815767082909,
+            "change_percent": -6.4828832989111245,
+            "paired_bootstrap_95_percent": [
+              -17.35262003072398,
+              7.54500442022964
+            ],
+            "team4_lower_seeds": 26,
+            "capped_range": [
+              0.05660377358490566,
+              0.7469879518072289
+            ],
+            "team4_range": [
+              0.04112554112554113,
+              0.5559531554977228
+            ]
+          },
+          "queue_extra_p95_ticks": {
+            "capped_mean": 1.21875,
+            "team4_mean": 1.15625,
+            "change_percent": -5.128205128205132,
+            "paired_bootstrap_95_percent": [
+              -17.777777777777782,
+              10.000000000000009
+            ],
+            "team4_lower_seeds": 4,
+            "capped_range": [
+              1.0,
+              4.0
+            ],
+            "team4_range": [
+              0.0,
+              4.0
+            ]
+          },
+          "queue_extra_p99_ticks": {
+            "capped_mean": 1.6875,
+            "team4_mean": 1.65625,
+            "change_percent": -1.851851851851849,
+            "paired_bootstrap_95_percent": [
+              -12.245793054063732,
+              6.896551724137923
+            ],
+            "team4_lower_seeds": 2,
+            "capped_range": [
+              1.0,
+              5.0
+            ],
+            "team4_range": [
+              1.0,
+              5.0
+            ]
+          },
+          "queue_extra_max_ticks": {
+            "capped_mean": 2.5,
+            "team4_mean": 2.3125,
+            "change_percent": -7.499999999999996,
+            "paired_bootstrap_95_percent": [
+              -17.500000000000004,
+              2.2222222222222143
+            ],
+            "team4_lower_seeds": 6,
+            "capped_range": [
+              1.0,
+              7.0
+            ],
+            "team4_range": [
+              1.0,
+              7.0
+            ]
+          },
+          "queue_delayed_percent": {
+            "capped_mean": 11.25824398263347,
+            "team4_mean": 10.322628394223523,
+            "change_percent": -8.31049309157974,
+            "paired_bootstrap_95_percent": [
+              -12.737130639928752,
+              -3.616269310659474
+            ],
+            "team4_lower_seeds": 26,
+            "capped_range": [
+              5.345911949685535,
+              33.42782896291047
+            ],
+            "team4_range": [
+              4.112554112554113,
+              28.415867254342754
+            ]
+          },
+          "queue_samples": {
+            "capped_mean": 940.5625,
+            "team4_mean": 944.8125,
+            "change_percent": 0.4518572662635334,
+            "paired_bootstrap_95_percent": [
+              -3.7595779482819105,
+              4.77049821251123
+            ],
+            "team4_lower_seeds": 3,
+            "capped_range": [
+              239.0,
+              4233.0
+            ],
+            "team4_range": [
+              239.0,
+              3895.0
+            ]
+          },
+          "synchronous_overflow": {
+            "capped_mean": 0.0,
+            "team4_mean": 0.0,
+            "change_percent": null,
+            "paired_bootstrap_95_percent": null,
+            "team4_lower_seeds": 0,
+            "capped_range": [
+              0.0,
+              0.0
+            ],
+            "team4_range": [
+              0.0,
+              0.0
+            ]
+          },
+          "final_units": {
+            "capped_mean": 34.96875,
+            "team4_mean": 34.8125,
+            "change_percent": -0.44682752457551045,
+            "paired_bootstrap_95_percent": [
+              -2.088182198178983,
+              1.5399389425657544
+            ],
+            "team4_lower_seeds": 3,
+            "capped_range": [
+              1.0,
+              103.0
+            ],
+            "team4_range": [
+              1.0,
+              99.0
+            ]
+          },
+          "final_buildings": {
+            "capped_mean": 28.46875,
+            "team4_mean": 28.5625,
+            "change_percent": 0.3293084522502765,
+            "paired_bootstrap_95_percent": [
+              -2.2012924943894934,
+              2.9413432039482332
+            ],
+            "team4_lower_seeds": 2,
+            "capped_range": [
+              16.0,
+              50.0
+            ],
+            "team4_range": [
+              16.0,
+              50.0
+            ]
+          },
+          "window_8_p99_ms": {
+            "capped_mean": 0.8705833124999944,
+            "team4_mean": 0.7287332187499835,
+            "change_percent": -16.29368398329043,
+            "paired_bootstrap_95_percent": [
+              -38.01016919024737,
+              1.9741277649755251
+            ],
+            "team4_lower_seeds": 19,
+            "capped_range": [
+              0.5687910000000045,
+              5.375876000000005
+            ],
+            "team4_range": [
+              0.5648759999999982,
+              1.1256680000001325
+            ]
+          },
+          "window_32_p99_ms": {
+            "capped_mean": 3.294146781249982,
+            "team4_mean": 2.3472627499999588,
+            "change_percent": -28.744439581126468,
+            "paired_bootstrap_95_percent": [
+              -56.9896186133992,
+              6.50792696909653
+            ],
+            "team4_lower_seeds": 16,
+            "capped_range": [
+              1.7875809999999888,
+              34.07995799999992
+            ],
+            "team4_range": [
+              1.7912910000000153,
+              4.556418999999778
+            ]
+          },
+          "over_1ms_per_million": {
+            "capped_mean": 100.18441806606998,
+            "team4_mean": 22.082145706322578,
+            "change_percent": -77.95850279655289,
+            "paired_bootstrap_95_percent": [
+              -97.55076333697656,
+              988.6199446055242
+            ],
+            "team4_lower_seeds": 3,
+            "capped_range": [
+              0.0,
+              3023.724608466429
+            ],
+            "team4_range": [
+              0.0,
+              439.41021384630403
+            ]
+          },
+          "clusters_ge2_over_1ms_per_million": {
+            "capped_mean": 4.845712513567995,
+            "team4_mean": 1.5257299091885557,
+            "change_percent": -68.51381701005761,
+            "paired_bootstrap_95_percent": [
+              -100.0,
+              -5.541451030172839
+            ],
+            "team4_lower_seeds": 1,
+            "capped_range": [
+              0.0,
+              155.06280043417584
+            ],
+            "team4_range": [
+              0.0,
+              48.82335709403378
+            ]
+          },
+          "over_5ms_per_million": {
+            "capped_mean": 36.342843851759966,
+            "team4_mean": 6.102919636754223,
+            "change_percent": -83.20736907203073,
+            "paired_bootstrap_95_percent": [
+              -100.0,
+              -49.62210721609219
+            ],
+            "team4_lower_seeds": 1,
+            "capped_range": [
+              0.0,
+              1162.971003256319
+            ],
+            "team4_range": [
+              0.0,
+              195.29342837613513
+            ]
+          },
+          "clusters_ge2_over_5ms_per_million": {
+            "capped_mean": 2.4228562567839975,
+            "team4_mean": 0.0,
+            "change_percent": -100.0,
+            "paired_bootstrap_95_percent": [
+              -100.0,
+              -100.0
+            ],
+            "team4_lower_seeds": 1,
+            "capped_range": [
+              0.0,
+              77.53140021708792
+            ],
+            "team4_range": [
+              0.0,
+              0.0
+            ]
+          },
+          "over_33.3333ms_per_million": {
+            "capped_mean": 7.268568770351992,
+            "team4_mean": 1.5257299091885557,
+            "change_percent": -79.0092113400384,
+            "paired_bootstrap_95_percent": [
+              -100.0,
+              -37.02763402011523
+            ],
+            "team4_lower_seeds": 1,
+            "capped_range": [
+              0.0,
+              232.59420065126375
+            ],
+            "team4_range": [
+              0.0,
+              48.82335709403378
+            ]
+          },
+          "clusters_ge2_over_33.3333ms_per_million": {
+            "capped_mean": 0.0,
+            "team4_mean": 0.0,
+            "change_percent": null,
+            "paired_bootstrap_95_percent": null,
+            "team4_lower_seeds": 0,
+            "capped_range": [
+              0.0,
+              0.0
+            ],
+            "team4_range": [
+              0.0,
+              0.0
+            ]
+          }
+        },
+        "ticks": {
+          "capped": 484736,
+          "team4": 484734
+        },
+        "complete_late_half_seeds": []
+      },
+      "4": {
+        "late_half_metrics_matched_complete_pairs": {},
+        "metrics": {
+          "ticks": {
+            "capped_mean": 15148.0,
+            "team4_mean": 15147.9375,
+            "change_percent": -0.0004125957222100851,
+            "paired_bootstrap_95_percent": [
+              -1.771430150395489,
+              1.8447196224232665
+            ],
+            "team4_lower_seeds": 3,
+            "capped_range": [
+              6338.0,
+              31138.0
+            ],
+            "team4_range": [
+              6338.0,
+              32768.0
+            ]
+          },
+          "mean_ms": {
+            "capped_mean": 0.022984492659903967,
+            "team4_mean": 0.0224776071286886,
+            "change_percent": -2.2053370449181986,
+            "paired_bootstrap_95_percent": [
+              -9.259946626030233,
+              3.879982892252957
+            ],
+            "team4_lower_seeds": 15,
+            "capped_range": [
+              0.01702736821352745,
+              0.04481027092080851
+            ],
+            "team4_range": [
+              0.016974662268729148,
+              0.03641265679567037
+            ]
+          },
+          "cpu_ms_per_1000_ticks": {
+            "capped_mean": 63.12608503155509,
+            "team4_mean": 62.60434708245011,
+            "change_percent": -0.8265013565219137,
+            "paired_bootstrap_95_percent": [
+              -3.960908552965444,
+              2.5732130978005037
+            ],
+            "team4_lower_seeds": 17,
+            "capped_range": [
+              52.30178950561116,
+              91.73445318084346
+            ],
+            "team4_range": [
+              52.17136791022141,
+              88.98779740631062
+            ]
+          },
+          "peak_rss_mib": {
+            "capped_mean": 60.43310546875,
+            "team4_mean": 60.33056640625,
+            "change_percent": -0.1696736609920202,
+            "paired_bootstrap_95_percent": [
+              -0.41747292057847524,
+              0.06524075475703806
+            ],
+            "team4_lower_seeds": 16,
+            "capped_range": [
+              57.75,
+              69.25
+            ],
+            "team4_range": [
+              57.296875,
+              67.796875
+            ]
+          },
+          "p99_ms": {
+            "capped_mean": 0.086474125,
+            "team4_mean": 0.0809686875,
+            "change_percent": -6.366572081533062,
+            "paired_bootstrap_95_percent": [
+              -20.776204915754423,
+              5.841656569120324
+            ],
+            "team4_lower_seeds": 15,
+            "capped_range": [
+              0.047709,
+              0.296917
+            ],
+            "team4_range": [
+              0.047333,
+              0.1435
+            ]
+          },
+          "p999_ms": {
+            "capped_mean": 0.21640878125,
+            "team4_mean": 0.174778625,
+            "change_percent": -19.236814702961592,
+            "paired_bootstrap_95_percent": [
+              -55.61983643394875,
+              45.3003461607806
+            ],
+            "team4_lower_seeds": 20,
+            "capped_range": [
+              0.083958,
+              2.218125
+            ],
+            "team4_range": [
+              0.097875,
+              0.917166
+            ]
+          },
+          "adjacent_change_p99_ms": {
+            "capped_mean": 0.0814673125,
+            "team4_mean": 0.07688140625,
+            "change_percent": -5.629136532520318,
+            "paired_bootstrap_95_percent": [
+              -23.188739903747695,
+              12.202031893252826
+            ],
+            "team4_lower_seeds": 16,
+            "capped_range": [
+              0.038708,
+              0.321584
+            ],
+            "team4_range": [
+              0.041542,
+              0.161417
+            ]
+          },
+          "adjacent_change_mean_ms": {
+            "capped_mean": 0.00941459631342109,
+            "team4_mean": 0.00899824651954602,
+            "change_percent": -4.422386048369775,
+            "paired_bootstrap_95_percent": [
+              -21.845809829387363,
+              14.117091354193784
+            ],
+            "team4_lower_seeds": 15,
+            "capped_range": [
+              0.004403748100276969,
+              0.03157024212684928
+            ],
+            "team4_range": [
+              0.0048564310632489005,
+              0.02365574218833888
+            ]
+          },
+          "gradient_jobs_per_1000_ticks": {
+            "capped_mean": 54.01466807941132,
+            "team4_mean": 54.014432553586495,
+            "change_percent": -0.00043604049270173917,
+            "paired_bootstrap_95_percent": [
+              -0.818721284171321,
+              0.8949124624417812
+            ],
+            "team4_lower_seeds": 3,
+            "capped_range": [
+              18.960374946740522,
+              138.94177115472985
+            ],
+            "team4_range": [
+              18.960374946740522,
+              135.8768406961178
+            ]
+          },
+          "gradient_cpu_ms_per_1000_ticks": {
+            "capped_mean": 1.3373439432893388,
+            "team4_mean": 1.3193633675007317,
+            "change_percent": -1.3444989883740766,
+            "paired_bootstrap_95_percent": [
+              -4.362451480831517,
+              1.7959606383035724
+            ],
+            "team4_lower_seeds": 20,
+            "capped_range": [
+              0.3923476778866638,
+              4.043186995339067
+            ],
+            "team4_range": [
+              0.41763705439568244,
+              3.818554780525611
+            ]
+          },
+          "max_batch": {
+            "capped_mean": 4.0,
+            "team4_mean": 5.90625,
+            "change_percent": 47.65625,
+            "paired_bootstrap_95_percent": [
+              37.5,
+              58.59375
+            ],
+            "team4_lower_seeds": 0,
+            "capped_range": [
+              4.0,
+              4.0
+            ],
+            "team4_range": [
+              4.0,
+              8.0
+            ]
+          },
+          "max_pending": {
+            "capped_mean": 14.46875,
+            "team4_mean": 14.5,
+            "change_percent": 0.21598272138227959,
+            "paired_bootstrap_95_percent": [
+              -5.607570280748413,
+              4.595306345733038
+            ],
+            "team4_lower_seeds": 1,
+            "capped_range": [
+              8.0,
+              32.0
+            ],
+            "team4_range": [
+              8.0,
+              35.0
+            ]
+          },
+          "max_team_batch": {
+            "capped_mean": 4.0,
+            "team4_mean": 4.0,
+            "change_percent": 0.0,
+            "paired_bootstrap_95_percent": [
+              0.0,
+              0.0
+            ],
+            "team4_lower_seeds": 0,
+            "capped_range": [
+              4.0,
+              4.0
+            ],
+            "team4_range": [
+              4.0,
+              4.0
+            ]
+          },
+          "queue_extra_mean_ticks": {
+            "capped_mean": 0.149778096900199,
+            "team4_mean": 0.14006815767082909,
+            "change_percent": -6.4828832989111245,
+            "paired_bootstrap_95_percent": [
+              -17.35262003072398,
+              7.54500442022964
+            ],
+            "team4_lower_seeds": 26,
+            "capped_range": [
+              0.05660377358490566,
+              0.7469879518072289
+            ],
+            "team4_range": [
+              0.04112554112554113,
+              0.5559531554977228
+            ]
+          },
+          "queue_extra_p95_ticks": {
+            "capped_mean": 1.21875,
+            "team4_mean": 1.15625,
+            "change_percent": -5.128205128205132,
+            "paired_bootstrap_95_percent": [
+              -17.777777777777782,
+              10.000000000000009
+            ],
+            "team4_lower_seeds": 4,
+            "capped_range": [
+              1.0,
+              4.0
+            ],
+            "team4_range": [
+              0.0,
+              4.0
+            ]
+          },
+          "queue_extra_p99_ticks": {
+            "capped_mean": 1.6875,
+            "team4_mean": 1.65625,
+            "change_percent": -1.851851851851849,
+            "paired_bootstrap_95_percent": [
+              -12.245793054063732,
+              6.896551724137923
+            ],
+            "team4_lower_seeds": 2,
+            "capped_range": [
+              1.0,
+              5.0
+            ],
+            "team4_range": [
+              1.0,
+              5.0
+            ]
+          },
+          "queue_extra_max_ticks": {
+            "capped_mean": 2.5,
+            "team4_mean": 2.3125,
+            "change_percent": -7.499999999999996,
+            "paired_bootstrap_95_percent": [
+              -17.500000000000004,
+              2.2222222222222143
+            ],
+            "team4_lower_seeds": 6,
+            "capped_range": [
+              1.0,
+              7.0
+            ],
+            "team4_range": [
+              1.0,
+              7.0
+            ]
+          },
+          "queue_delayed_percent": {
+            "capped_mean": 11.25824398263347,
+            "team4_mean": 10.322628394223523,
+            "change_percent": -8.31049309157974,
+            "paired_bootstrap_95_percent": [
+              -12.737130639928752,
+              -3.616269310659474
+            ],
+            "team4_lower_seeds": 26,
+            "capped_range": [
+              5.345911949685535,
+              33.42782896291047
+            ],
+            "team4_range": [
+              4.112554112554113,
+              28.415867254342754
+            ]
+          },
+          "queue_samples": {
+            "capped_mean": 940.5625,
+            "team4_mean": 944.8125,
+            "change_percent": 0.4518572662635334,
+            "paired_bootstrap_95_percent": [
+              -3.7595779482819105,
+              4.77049821251123
+            ],
+            "team4_lower_seeds": 3,
+            "capped_range": [
+              239.0,
+              4233.0
+            ],
+            "team4_range": [
+              239.0,
+              3895.0
+            ]
+          },
+          "synchronous_overflow": {
+            "capped_mean": 0.0,
+            "team4_mean": 0.0,
+            "change_percent": null,
+            "paired_bootstrap_95_percent": null,
+            "team4_lower_seeds": 0,
+            "capped_range": [
+              0.0,
+              0.0
+            ],
+            "team4_range": [
+              0.0,
+              0.0
+            ]
+          },
+          "final_units": {
+            "capped_mean": 34.96875,
+            "team4_mean": 34.8125,
+            "change_percent": -0.44682752457551045,
+            "paired_bootstrap_95_percent": [
+              -2.088182198178983,
+              1.5399389425657544
+            ],
+            "team4_lower_seeds": 3,
+            "capped_range": [
+              1.0,
+              103.0
+            ],
+            "team4_range": [
+              1.0,
+              99.0
+            ]
+          },
+          "final_buildings": {
+            "capped_mean": 28.46875,
+            "team4_mean": 28.5625,
+            "change_percent": 0.3293084522502765,
+            "paired_bootstrap_95_percent": [
+              -2.2012924943894934,
+              2.9413432039482332
+            ],
+            "team4_lower_seeds": 2,
+            "capped_range": [
+              16.0,
+              50.0
+            ],
+            "team4_range": [
+              16.0,
+              50.0
+            ]
+          },
+          "window_8_p99_ms": {
+            "capped_mean": 0.4697175000000005,
+            "team4_mean": 0.3810168437499981,
+            "change_percent": -18.883830440637684,
+            "paired_bootstrap_95_percent": [
+              -48.13297042111409,
+              18.28832942385345
+            ],
+            "team4_lower_seeds": 13,
+            "capped_range": [
+              0.23437799999999243,
+              3.852125000000001
+            ],
+            "team4_range": [
+              0.23179000000000016,
+              1.165165999999985
+            ]
+          },
+          "window_32_p99_ms": {
+            "capped_mean": 1.5393669374999723,
+            "team4_mean": 1.29009500000001,
+            "change_percent": -16.193146119195955,
+            "paired_bootstrap_95_percent": [
+              -50.37476040573671,
+              35.55615155429938
+            ],
+            "team4_lower_seeds": 14,
+            "capped_range": [
+              0.7543310000000076,
+              13.320748999999921
+            ],
+            "team4_range": [
+              0.7600829999999945,
+              6.012873999999982
+            ]
+          },
+          "over_1ms_per_million": {
+            "capped_mean": 114.21506594504872,
+            "team4_mean": 33.55164268842603,
+            "change_percent": -70.62415329290408,
+            "paired_bootstrap_95_percent": [
+              -100.0,
+              1524.568343733751
+            ],
+            "team4_lower_seeds": 4,
+            "capped_range": [
+              0.0,
+              3368.8116394883314
+            ],
+            "team4_range": [
+              0.0,
+              1073.652566029633
+            ]
+          },
+          "clusters_ge2_over_1ms_per_million": {
+            "capped_mean": 24.41167854701689,
+            "team4_mean": 6.710328537685205,
+            "change_percent": -72.51181017822633,
+            "paired_bootstrap_95_percent": [
+              -100.0,
+              -17.535430534678976
+            ],
+            "team4_lower_seeds": 1,
+            "capped_range": [
+              0.0,
+              781.1737135045405
+            ],
+            "team4_range": [
+              0.0,
+              214.73051320592657
+            ]
+          },
+          "over_5ms_per_million": {
+            "capped_mean": 12.437821598882145,
+            "team4_mean": 13.42065707537041,
+            "change_percent": 7.901990462514741,
+            "paired_bootstrap_95_percent": [
+              -100.0,
+              458.12754992484435
+            ],
+            "team4_lower_seeds": 2,
+            "capped_range": [
+              0.0,
+              244.1167854701689
+            ],
+            "team4_range": [
+              0.0,
+              429.46102641185314
+            ]
+          },
+          "clusters_ge2_over_5ms_per_million": {
+            "capped_mean": 1.5257299091885557,
+            "team4_mean": 0.0,
+            "change_percent": -100.0,
+            "paired_bootstrap_95_percent": [
+              -100.0,
+              -100.0
+            ],
+            "team4_lower_seeds": 1,
+            "capped_range": [
+              0.0,
+              48.82335709403378
+            ],
+            "team4_range": [
+              0.0,
+              0.0
+            ]
+          },
+          "over_33.3333ms_per_million": {
+            "capped_mean": 0.0,
+            "team4_mean": 0.0,
+            "change_percent": null,
+            "paired_bootstrap_95_percent": null,
+            "team4_lower_seeds": 0,
+            "capped_range": [
+              0.0,
+              0.0
+            ],
+            "team4_range": [
+              0.0,
+              0.0
+            ]
+          },
+          "clusters_ge2_over_33.3333ms_per_million": {
+            "capped_mean": 0.0,
+            "team4_mean": 0.0,
+            "change_percent": null,
+            "paired_bootstrap_95_percent": null,
+            "team4_lower_seeds": 0,
+            "capped_range": [
+              0.0,
+              0.0
+            ],
+            "team4_range": [
+              0.0,
+              0.0
+            ]
+          }
+        },
+        "ticks": {
+          "capped": 484736,
+          "team4": 484734
+        },
+        "complete_late_half_seeds": []
+      }
+    },
+    "archipelago": {
+      "1": {
+        "late_half_metrics_matched_complete_pairs": {
+          "late_mean_ms": {
+            "capped_mean": 0.23202744976615908,
+            "team4_mean": 0.22128566013336182,
+            "change_percent": -4.6295339812694625,
+            "paired_bootstrap_95_percent": [
+              -9.811007774922569,
+              -0.5037456924502938
+            ]
+          },
+          "late_p99_ms": {
+            "capped_mean": 0.8426276874999999,
+            "team4_mean": 0.90135403125,
+            "change_percent": 6.96942963317948,
+            "paired_bootstrap_95_percent": [
+              -5.062930905642704,
+              16.19509259676875
+            ]
+          },
+          "late_adjacent_change_p99_ms": {
+            "capped_mean": 0.6728605937500001,
+            "team4_mean": 0.67190103125,
+            "change_percent": -0.1426094066011796,
+            "paired_bootstrap_95_percent": [
+              -17.96045296015698,
+              14.024816133175516
+            ]
+          }
+        },
+        "metrics": {
+          "ticks": {
+            "capped_mean": 32768.0,
+            "team4_mean": 32768.0,
+            "change_percent": 0.0,
+            "paired_bootstrap_95_percent": [
+              0.0,
+              0.0
+            ],
+            "team4_lower_seeds": 0,
+            "capped_range": [
+              32768.0,
+              32768.0
+            ],
+            "team4_range": [
+              32768.0,
+              32768.0
+            ]
+          },
+          "mean_ms": {
+            "capped_mean": 0.19912773894786834,
+            "team4_mean": 0.1932125665140152,
+            "change_percent": -2.9705416558773567,
+            "paired_bootstrap_95_percent": [
+              -6.766945526536839,
+              0.2099378312255332
+            ],
+            "team4_lower_seeds": 19,
+            "capped_range": [
+              0.16972635470581054,
+              0.2900623869934082
+            ],
+            "team4_range": [
+              0.16715933615112305,
+              0.25877777468872065
+            ]
+          },
+          "cpu_ms_per_1000_ticks": {
+            "capped_mean": 195.24299812316895,
+            "team4_mean": 191.37201690673828,
+            "change_percent": -1.9826479072958425,
+            "paired_bootstrap_95_percent": [
+              -4.208992057099367,
+              -0.011893281055066342
+            ],
+            "team4_lower_seeds": 20,
+            "capped_range": [
+              169.73764038085938,
+              245.8482666015625
+            ],
+            "team4_range": [
+              167.15054321289062,
+              255.9119873046875
+            ]
+          },
+          "peak_rss_mib": {
+            "capped_mean": 95.5234375,
+            "team4_mean": 96.3916015625,
+            "change_percent": 0.908849268013423,
+            "paired_bootstrap_95_percent": [
+              0.16034005749678062,
+              1.7108010357405457
+            ],
+            "team4_lower_seeds": 15,
+            "capped_range": [
+              88.796875,
+              100.640625
+            ],
+            "team4_range": [
+              91.046875,
+              100.484375
+            ]
+          },
+          "p99_ms": {
+            "capped_mean": 0.7515806562499999,
+            "team4_mean": 0.79014584375,
+            "change_percent": 5.131210759523852,
+            "paired_bootstrap_95_percent": [
+              -2.4050790544790694,
+              10.97664935681107
+            ],
+            "team4_lower_seeds": 3,
+            "capped_range": [
+              0.63275,
+              1.542083
+            ],
+            "team4_range": [
+              0.664166,
+              0.988083
+            ]
+          },
+          "p999_ms": {
+            "capped_mean": 1.59984246875,
+            "team4_mean": 1.4957995000000002,
+            "change_percent": -6.503325845030938,
+            "paired_bootstrap_95_percent": [
+              -38.72741365809299,
+              40.67594009619307
+            ],
+            "team4_lower_seeds": 3,
+            "capped_range": [
+              0.938375,
+              11.832833
+            ],
+            "team4_range": [
+              1.194167,
+              3.851834
+            ]
+          },
+          "adjacent_change_p99_ms": {
+            "capped_mean": 0.5863269062500001,
+            "team4_mean": 0.6146017187499999,
+            "change_percent": 4.822363121767426,
+            "paired_bootstrap_95_percent": [
+              -4.975074190160539,
+              12.325459282204534
+            ],
+            "team4_lower_seeds": 3,
+            "capped_range": [
+              0.5014160000000001,
+              1.4280840000000001
+            ],
+            "team4_range": [
+              0.537292,
+              0.7814589999999999
+            ]
+          },
+          "adjacent_change_mean_ms": {
+            "capped_mean": 0.10013291189401684,
+            "team4_mean": 0.09819877375770593,
+            "change_percent": -1.931570848911346,
+            "paired_bootstrap_95_percent": [
+              -8.798334565474827,
+              4.350168305307289
+            ],
+            "team4_lower_seeds": 12,
+            "capped_range": [
+              0.08520723889889217,
+              0.1822780577715384
+            ],
+            "team4_range": [
+              0.08616619074068423,
+              0.12318328656880397
+            ]
+          },
+          "gradient_jobs_per_1000_ticks": {
+            "capped_mean": 210.0677490234375,
+            "team4_mean": 196.74110412597656,
+            "change_percent": -6.343974722161693,
+            "paired_bootstrap_95_percent": [
+              -11.076038556451037,
+              -1.7294394982285697
+            ],
+            "team4_lower_seeds": 21,
+            "capped_range": [
+              134.796142578125,
+              294.464111328125
+            ],
+            "team4_range": [
+              127.593994140625,
+              283.233642578125
+            ]
+          },
+          "gradient_cpu_ms_per_1000_ticks": {
+            "capped_mean": 19.39235910415649,
+            "team4_mean": 17.995057469367982,
+            "change_percent": -7.205423678901535,
+            "paired_bootstrap_95_percent": [
+              -12.538913701063098,
+              -1.9040989585830428
+            ],
+            "team4_lower_seeds": 22,
+            "capped_range": [
+              11.27369107055664,
+              27.640749755859375
+            ],
+            "team4_range": [
+              10.857405700683593,
+              26.36781591796875
+            ]
+          },
+          "max_batch": {
+            "capped_mean": 4.0,
+            "team4_mean": 15.875,
+            "change_percent": 296.875,
+            "paired_bootstrap_95_percent": [
+              289.84375,
+              304.6875
+            ],
+            "team4_lower_seeds": 0,
+            "capped_range": [
+              4.0,
+              4.0
+            ],
+            "team4_range": [
+              14.0,
+              18.0
+            ]
+          },
+          "max_pending": {
+            "capped_mean": 32.0,
+            "team4_mean": 51.3125,
+            "change_percent": 60.3515625,
+            "paired_bootstrap_95_percent": [
+              52.63427734375,
+              67.87109375
+            ],
+            "team4_lower_seeds": 0,
+            "capped_range": [
+              32.0,
+              32.0
+            ],
+            "team4_range": [
+              39.0,
+              61.0
+            ]
+          },
+          "max_team_batch": {
+            "capped_mean": 4.0,
+            "team4_mean": 4.0,
+            "change_percent": 0.0,
+            "paired_bootstrap_95_percent": [
+              0.0,
+              0.0
+            ],
+            "team4_lower_seeds": 0,
+            "capped_range": [
+              4.0,
+              4.0
+            ],
+            "team4_range": [
+              4.0,
+              4.0
+            ]
+          },
+          "queue_extra_mean_ticks": {
+            "capped_mean": 0.7768840461817775,
+            "team4_mean": 0.23514432812594854,
+            "change_percent": -69.7323777876977,
+            "paired_bootstrap_95_percent": [
+              -72.21712138646022,
+              -66.82184181471771
+            ],
+            "team4_lower_seeds": 32,
+            "capped_range": [
+              0.5444462305095644,
+              1.2982433479721003
+            ],
+            "team4_range": [
+              0.14328942684229262,
+              0.3519577650681918
+            ]
+          },
+          "queue_extra_p95_ticks": {
+            "capped_mean": 4.28125,
+            "team4_mean": 1.46875,
+            "change_percent": -65.69343065693431,
+            "paired_bootstrap_95_percent": [
+              -70.4225352112676,
+              -60.28368794326241
+            ],
+            "team4_lower_seeds": 31,
+            "capped_range": [
+              3.0,
+              7.0
+            ],
+            "team4_range": [
+              1.0,
+              3.0
+            ]
+          },
+          "queue_extra_p99_ticks": {
+            "capped_mean": 6.46875,
+            "team4_mean": 2.9375,
+            "change_percent": -54.589371980676326,
+            "paired_bootstrap_95_percent": [
+              -58.68544600938967,
+              -50.0
+            ],
+            "team4_lower_seeds": 32,
+            "capped_range": [
+              5.0,
+              9.0
+            ],
+            "team4_range": [
+              2.0,
+              4.0
+            ]
+          },
+          "queue_extra_max_ticks": {
+            "capped_mean": 9.21875,
+            "team4_mean": 5.28125,
+            "change_percent": -42.71186440677967,
+            "paired_bootstrap_95_percent": [
+              -47.28466885415767,
+              -37.76223776223776
+            ],
+            "team4_lower_seeds": 32,
+            "capped_range": [
+              6.0,
+              12.0
+            ],
+            "team4_range": [
+              4.0,
+              7.0
+            ]
+          },
+          "queue_delayed_percent": {
+            "capped_mean": 31.759397482915176,
+            "team4_mean": 15.99618186735362,
+            "change_percent": -49.63323257011191,
+            "paired_bootstrap_95_percent": [
+              -52.20518658644471,
+              -46.970924004038956
+            ],
+            "team4_lower_seeds": 32,
+            "capped_range": [
+              25.89270604163141,
+              39.33092224231465
+            ],
+            "team4_range": [
+              11.31815044858523,
+              20.182815356489947
+            ]
+          },
+          "queue_samples": {
+            "capped_mean": 6883.5,
+            "team4_mean": 6446.8125,
+            "change_percent": -6.343974722161693,
+            "paired_bootstrap_95_percent": [
+              -11.076038556451037,
+              -1.7294394982285697
+            ],
+            "team4_lower_seeds": 21,
+            "capped_range": [
+              4417.0,
+              9649.0
+            ],
+            "team4_range": [
+              4181.0,
+              9281.0
+            ]
+          },
+          "synchronous_overflow": {
+            "capped_mean": 0.0,
+            "team4_mean": 0.0,
+            "change_percent": null,
+            "paired_bootstrap_95_percent": null,
+            "team4_lower_seeds": 0,
+            "capped_range": [
+              0.0,
+              0.0
+            ],
+            "team4_range": [
+              0.0,
+              0.0
+            ]
+          },
+          "final_units": {
+            "capped_mean": 196.15625,
+            "team4_mean": 196.03125,
+            "change_percent": -0.06372470925601892,
+            "paired_bootstrap_95_percent": [
+              -4.21352452337585,
+              4.506336583672558
+            ],
+            "team4_lower_seeds": 15,
+            "capped_range": [
+              140.0,
+              279.0
+            ],
+            "team4_range": [
+              132.0,
+              268.0
+            ]
+          },
+          "final_buildings": {
+            "capped_mean": 72.28125,
+            "team4_mean": 71.46875,
+            "change_percent": -1.124081279723299,
+            "paired_bootstrap_95_percent": [
+              -3.6474718789519227,
+              1.5699956389010117
+            ],
+            "team4_lower_seeds": 16,
+            "capped_range": [
+              63.0,
+              81.0
+            ],
+            "team4_range": [
+              59.0,
+              83.0
+            ]
+          },
+          "window_8_p99_ms": {
+            "capped_mean": 4.469040312499985,
+            "team4_mean": 4.2201642187499075,
+            "change_percent": -5.56889346139855,
+            "paired_bootstrap_95_percent": [
+              -18.04203680610482,
+              4.856656489517062
+            ],
+            "team4_lower_seeds": 11,
+            "capped_range": [
+              3.221042999999554,
+              13.455001000001175
+            ],
+            "team4_range": [
+              3.291582000000062,
+              5.898790999999619
+            ]
+          },
+          "window_32_p99_ms": {
+            "capped_mean": 14.81565962499998,
+            "team4_mean": 12.76589006250014,
+            "change_percent": -13.835155601449255,
+            "paired_bootstrap_95_percent": [
+              -31.2955600715449,
+              4.513406950065155
+            ],
+            "team4_lower_seeds": 17,
+            "capped_range": [
+              10.107121999997617,
+              60.80337600000075
+            ],
+            "team4_range": [
+              9.434792999997626,
+              25.202666000000136
+            ]
+          },
+          "over_1ms_per_million": {
+            "capped_mean": 2924.9191284179688,
+            "team4_mean": 4830.360412597656,
+            "change_percent": 65.14509292468209,
+            "paired_bootstrap_95_percent": [
+              9.250188144797416,
+              153.56176865384145
+            ],
+            "team4_lower_seeds": 2,
+            "capped_range": [
+              640.869140625,
+              22735.595703125
+            ],
+            "team4_range": [
+              2380.37109375,
+              9613.037109375
+            ]
+          },
+          "clusters_ge2_over_1ms_per_million": {
+            "capped_mean": 239.37225341796875,
+            "team4_mean": 772.4761962890625,
+            "change_percent": 222.70916334661354,
+            "paired_bootstrap_95_percent": [
+              38.16488095238095,
+              1381.9023569023557
+            ],
+            "team4_lower_seeds": 2,
+            "capped_range": [
+              0.0,
+              4364.013671875
+            ],
+            "team4_range": [
+              183.10546875,
+              1464.84375
+            ]
+          },
+          "over_5ms_per_million": {
+            "capped_mean": 130.65338134765625,
+            "team4_mean": 55.3131103515625,
+            "change_percent": -57.664233576642346,
+            "paired_bootstrap_95_percent": [
+              -97.0708785649363,
+              438.1521739130429
+            ],
+            "team4_lower_seeds": 6,
+            "capped_range": [
+              0.0,
+              2471.923828125
+            ],
+            "team4_range": [
+              0.0,
+              793.45703125
+            ]
+          },
+          "clusters_ge2_over_5ms_per_million": {
+            "capped_mean": 15.2587890625,
+            "team4_mean": 6.67572021484375,
+            "change_percent": -56.25,
+            "paired_bootstrap_95_percent": [
+              -100.0,
+              140.0
+            ],
+            "team4_lower_seeds": 2,
+            "capped_range": [
+              0.0,
+              335.693359375
+            ],
+            "team4_range": [
+              0.0,
+              152.587890625
+            ]
+          },
+          "over_33.3333ms_per_million": {
+            "capped_mean": 19.073486328125,
+            "team4_mean": 4.76837158203125,
+            "change_percent": -75.0,
+            "paired_bootstrap_95_percent": [
+              -100.0,
+              100.0
+            ],
+            "team4_lower_seeds": 4,
+            "capped_range": [
+              0.0,
+              274.658203125
+            ],
+            "team4_range": [
+              0.0,
+              91.552734375
+            ]
+          },
+          "clusters_ge2_over_33.3333ms_per_million": {
+            "capped_mean": 0.95367431640625,
+            "team4_mean": 0.0,
+            "change_percent": -100.0,
+            "paired_bootstrap_95_percent": [
+              -100.0,
+              -100.0
+            ],
+            "team4_lower_seeds": 1,
+            "capped_range": [
+              0.0,
+              30.517578125
+            ],
+            "team4_range": [
+              0.0,
+              0.0
+            ]
+          }
+        },
+        "ticks": {
+          "capped": 1048576,
+          "team4": 1048576
+        },
+        "complete_late_half_seeds": [
+          42,
+          43,
+          44,
+          45,
+          46,
+          47,
+          48,
+          49,
+          50,
+          51,
+          52,
+          53,
+          54,
+          55,
+          56,
+          57,
+          58,
+          59,
+          60,
+          61,
+          62,
+          63,
+          64,
+          65,
+          66,
+          67,
+          68,
+          69,
+          70,
+          71,
+          72,
+          73
+        ]
+      },
+      "4": {
+        "late_half_metrics_matched_complete_pairs": {
+          "late_mean_ms": {
+            "capped_mean": 0.08884031352233887,
+            "team4_mean": 0.08782798600959778,
+            "change_percent": -1.1394911528385676,
+            "paired_bootstrap_95_percent": [
+              -6.306457363895105,
+              4.5200317618869414
+            ]
+          },
+          "late_p99_ms": {
+            "capped_mean": 0.35428653125000004,
+            "team4_mean": 0.367684875,
+            "change_percent": 3.781781854006061,
+            "paired_bootstrap_95_percent": [
+              -1.7738397370801473,
+              9.765898190489592
+            ]
+          },
+          "late_adjacent_change_p99_ms": {
+            "capped_mean": 0.35245453125000004,
+            "team4_mean": 0.35909899999999995,
+            "change_percent": 1.885198844354452,
+            "paired_bootstrap_95_percent": [
+              -5.121348436706985,
+              9.801621689882433
+            ]
+          }
+        },
+        "metrics": {
+          "ticks": {
+            "capped_mean": 32768.0,
+            "team4_mean": 32768.0,
+            "change_percent": 0.0,
+            "paired_bootstrap_95_percent": [
+              0.0,
+              0.0
+            ],
+            "team4_lower_seeds": 0,
+            "capped_range": [
+              32768.0,
+              32768.0
+            ],
+            "team4_range": [
+              32768.0,
+              32768.0
+            ]
+          },
+          "mean_ms": {
+            "capped_mean": 0.07605114747142792,
+            "team4_mean": 0.07521677189159393,
+            "change_percent": -1.0971242480561805,
+            "paired_bootstrap_95_percent": [
+              -5.610148130801945,
+              3.866229532184887
+            ],
+            "team4_lower_seeds": 18,
+            "capped_range": [
+              0.06071093765258789,
+              0.12485379568481444
+            ],
+            "team4_range": [
+              0.057049321166992184,
+              0.12993549053955078
+            ]
+          },
+          "cpu_ms_per_1000_ticks": {
+            "capped_mean": 243.5720443725586,
+            "team4_mean": 239.9873504638672,
+            "change_percent": -1.4717181185244677,
+            "paired_bootstrap_95_percent": [
+              -3.945626079088651,
+              1.3403871637640736
+            ],
+            "team4_lower_seeds": 20,
+            "capped_range": [
+              202.49884033203125,
+              358.97900390625
+            ],
+            "team4_range": [
+              193.818359375,
+              336.5076904296875
+            ]
+          },
+          "peak_rss_mib": {
+            "capped_mean": 99.03857421875,
+            "team4_mean": 100.5380859375,
+            "change_percent": 1.5140683623312112,
+            "paired_bootstrap_95_percent": [
+              -0.4344758823477732,
+              3.582749864936866
+            ],
+            "team4_lower_seeds": 14,
+            "capped_range": [
+              94.75,
+              118.109375
+            ],
+            "team4_range": [
+              93.53125,
+              111.9375
+            ]
+          },
+          "p99_ms": {
+            "capped_mean": 0.301048125,
+            "team4_mean": 0.3070989375,
+            "change_percent": 2.00991535821724,
+            "paired_bootstrap_95_percent": [
+              -2.701840667464318,
+              7.041130116971439
+            ],
+            "team4_lower_seeds": 13,
+            "capped_range": [
+              0.23675,
+              0.462333
+            ],
+            "team4_range": [
+              0.226166,
+              0.397333
+            ]
+          },
+          "p999_ms": {
+            "capped_mean": 0.73274871875,
+            "team4_mean": 0.7791640312500001,
+            "change_percent": 6.3344105983808685,
+            "paired_bootstrap_95_percent": [
+              -28.82446326105786,
+              59.29273825434512
+            ],
+            "team4_lower_seeds": 15,
+            "capped_range": [
+              0.50625,
+              3.6745
+            ],
+            "team4_range": [
+              0.480541,
+              4.70675
+            ]
+          },
+          "adjacent_change_p99_ms": {
+            "capped_mean": 0.29024346875,
+            "team4_mean": 0.29508071874999997,
+            "change_percent": 1.6666180365169536,
+            "paired_bootstrap_95_percent": [
+              -3.0654794124839877,
+              6.6623880940106215
+            ],
+            "team4_lower_seeds": 13,
+            "capped_range": [
+              0.23204200000000003,
+              0.40049999999999997
+            ],
+            "team4_range": [
+              0.223,
+              0.355459
+            ]
+          },
+          "adjacent_change_mean_ms": {
+            "capped_mean": 0.037247233911976985,
+            "team4_mean": 0.037324727723395484,
+            "change_percent": 0.20805252707256638,
+            "paired_bootstrap_95_percent": [
+              -7.805247702970714,
+              9.207077341471972
+            ],
+            "team4_lower_seeds": 16,
+            "capped_range": [
+              0.029248462691122166,
+              0.06324826172673725
+            ],
+            "team4_range": [
+              0.026890620502334664,
+              0.0795361436201056
+            ]
+          },
+          "gradient_jobs_per_1000_ticks": {
+            "capped_mean": 210.0677490234375,
+            "team4_mean": 196.74110412597656,
+            "change_percent": -6.343974722161693,
+            "paired_bootstrap_95_percent": [
+              -11.076038556451037,
+              -1.7294394982285697
+            ],
+            "team4_lower_seeds": 21,
+            "capped_range": [
+              134.796142578125,
+              294.464111328125
+            ],
+            "team4_range": [
+              127.593994140625,
+              283.233642578125
+            ]
+          },
+          "gradient_cpu_ms_per_1000_ticks": {
+            "capped_mean": 22.601638526916503,
+            "team4_mean": 20.98780788230896,
+            "change_percent": -7.1403258780801115,
+            "paired_bootstrap_95_percent": [
+              -12.013344291957207,
+              -1.9978997312580669
+            ],
+            "team4_lower_seeds": 24,
+            "capped_range": [
+              12.868975372314454,
+              31.513651123046873
+            ],
+            "team4_range": [
+              12.599415771484376,
+              30.236715423583984
+            ]
+          },
+          "max_batch": {
+            "capped_mean": 4.0,
+            "team4_mean": 15.875,
+            "change_percent": 296.875,
+            "paired_bootstrap_95_percent": [
+              289.84375,
+              304.6875
+            ],
+            "team4_lower_seeds": 0,
+            "capped_range": [
+              4.0,
+              4.0
+            ],
+            "team4_range": [
+              14.0,
+              18.0
+            ]
+          },
+          "max_pending": {
+            "capped_mean": 32.0,
+            "team4_mean": 51.3125,
+            "change_percent": 60.3515625,
+            "paired_bootstrap_95_percent": [
+              52.63427734375,
+              67.87109375
+            ],
+            "team4_lower_seeds": 0,
+            "capped_range": [
+              32.0,
+              32.0
+            ],
+            "team4_range": [
+              39.0,
+              61.0
+            ]
+          },
+          "max_team_batch": {
+            "capped_mean": 4.0,
+            "team4_mean": 4.0,
+            "change_percent": 0.0,
+            "paired_bootstrap_95_percent": [
+              0.0,
+              0.0
+            ],
+            "team4_lower_seeds": 0,
+            "capped_range": [
+              4.0,
+              4.0
+            ],
+            "team4_range": [
+              4.0,
+              4.0
+            ]
+          },
+          "queue_extra_mean_ticks": {
+            "capped_mean": 0.7768840461817775,
+            "team4_mean": 0.23514432812594854,
+            "change_percent": -69.7323777876977,
+            "paired_bootstrap_95_percent": [
+              -72.21712138646022,
+              -66.82184181471771
+            ],
+            "team4_lower_seeds": 32,
+            "capped_range": [
+              0.5444462305095644,
+              1.2982433479721003
+            ],
+            "team4_range": [
+              0.14328942684229262,
+              0.3519577650681918
+            ]
+          },
+          "queue_extra_p95_ticks": {
+            "capped_mean": 4.28125,
+            "team4_mean": 1.46875,
+            "change_percent": -65.69343065693431,
+            "paired_bootstrap_95_percent": [
+              -70.4225352112676,
+              -60.28368794326241
+            ],
+            "team4_lower_seeds": 31,
+            "capped_range": [
+              3.0,
+              7.0
+            ],
+            "team4_range": [
+              1.0,
+              3.0
+            ]
+          },
+          "queue_extra_p99_ticks": {
+            "capped_mean": 6.46875,
+            "team4_mean": 2.9375,
+            "change_percent": -54.589371980676326,
+            "paired_bootstrap_95_percent": [
+              -58.68544600938967,
+              -50.0
+            ],
+            "team4_lower_seeds": 32,
+            "capped_range": [
+              5.0,
+              9.0
+            ],
+            "team4_range": [
+              2.0,
+              4.0
+            ]
+          },
+          "queue_extra_max_ticks": {
+            "capped_mean": 9.21875,
+            "team4_mean": 5.28125,
+            "change_percent": -42.71186440677967,
+            "paired_bootstrap_95_percent": [
+              -47.28466885415767,
+              -37.76223776223776
+            ],
+            "team4_lower_seeds": 32,
+            "capped_range": [
+              6.0,
+              12.0
+            ],
+            "team4_range": [
+              4.0,
+              7.0
+            ]
+          },
+          "queue_delayed_percent": {
+            "capped_mean": 31.759397482915176,
+            "team4_mean": 15.99618186735362,
+            "change_percent": -49.63323257011191,
+            "paired_bootstrap_95_percent": [
+              -52.20518658644471,
+              -46.970924004038956
+            ],
+            "team4_lower_seeds": 32,
+            "capped_range": [
+              25.89270604163141,
+              39.33092224231465
+            ],
+            "team4_range": [
+              11.31815044858523,
+              20.182815356489947
+            ]
+          },
+          "queue_samples": {
+            "capped_mean": 6883.5,
+            "team4_mean": 6446.8125,
+            "change_percent": -6.343974722161693,
+            "paired_bootstrap_95_percent": [
+              -11.076038556451037,
+              -1.7294394982285697
+            ],
+            "team4_lower_seeds": 21,
+            "capped_range": [
+              4417.0,
+              9649.0
+            ],
+            "team4_range": [
+              4181.0,
+              9281.0
+            ]
+          },
+          "synchronous_overflow": {
+            "capped_mean": 0.0,
+            "team4_mean": 0.0,
+            "change_percent": null,
+            "paired_bootstrap_95_percent": null,
+            "team4_lower_seeds": 0,
+            "capped_range": [
+              0.0,
+              0.0
+            ],
+            "team4_range": [
+              0.0,
+              0.0
+            ]
+          },
+          "final_units": {
+            "capped_mean": 196.15625,
+            "team4_mean": 196.03125,
+            "change_percent": -0.06372470925601892,
+            "paired_bootstrap_95_percent": [
+              -4.21352452337585,
+              4.506336583672558
+            ],
+            "team4_lower_seeds": 15,
+            "capped_range": [
+              140.0,
+              279.0
+            ],
+            "team4_range": [
+              132.0,
+              268.0
+            ]
+          },
+          "final_buildings": {
+            "capped_mean": 72.28125,
+            "team4_mean": 71.46875,
+            "change_percent": -1.124081279723299,
+            "paired_bootstrap_95_percent": [
+              -3.6474718789519227,
+              1.5699956389010117
+            ],
+            "team4_lower_seeds": 16,
+            "capped_range": [
+              63.0,
+              81.0
+            ],
+            "team4_range": [
+              59.0,
+              83.0
+            ]
+          },
+          "window_8_p99_ms": {
+            "capped_mean": 1.5594350312500425,
+            "team4_mean": 1.5366459687500105,
+            "change_percent": -1.4613665874726567,
+            "paired_bootstrap_95_percent": [
+              -9.932340315579461,
+              6.6125677612836355
+            ],
+            "team4_lower_seeds": 14,
+            "capped_range": [
+              1.1814190000000053,
+              3.0983739999999216
+            ],
+            "team4_range": [
+              1.0682510000001457,
+              2.099166999999852
+            ]
+          },
+          "window_32_p99_ms": {
+            "capped_mean": 5.3183936250000166,
+            "team4_mean": 5.302767718749909,
+            "change_percent": -0.2938087579049342,
+            "paired_bootstrap_95_percent": [
+              -24.130055115144007,
+              31.313317574689275
+            ],
+            "team4_lower_seeds": 18,
+            "capped_range": [
+              3.6938809999999194,
+              20.74645699999951
+            ],
+            "team4_range": [
+              3.4012100000002192,
+              21.448873999998796
+            ]
+          },
+          "over_1ms_per_million": {
+            "capped_mean": 270.843505859375,
+            "team4_mean": 300.40740966796875,
+            "change_percent": 10.915492957746476,
+            "paired_bootstrap_95_percent": [
+              -52.30821917808218,
+              153.84615384615384
+            ],
+            "team4_lower_seeds": 13,
+            "capped_range": [
+              30.517578125,
+              2319.3359375
+            ],
+            "team4_range": [
+              61.03515625,
+              2197.265625
+            ]
+          },
+          "clusters_ge2_over_1ms_per_million": {
+            "capped_mean": 25.74920654296875,
+            "team4_mean": 32.4249267578125,
+            "change_percent": 25.92592592592593,
+            "paired_bootstrap_95_percent": [
+              -83.3274647887324,
+              1350.0
+            ],
+            "team4_lower_seeds": 5,
+            "capped_range": [
+              0.0,
+              396.728515625
+            ],
+            "team4_range": [
+              0.0,
+              366.2109375
+            ]
+          },
+          "over_5ms_per_million": {
+            "capped_mean": 32.4249267578125,
+            "team4_mean": 59.1278076171875,
+            "change_percent": 82.35294117647058,
+            "paired_bootstrap_95_percent": [
+              -89.1283422459893,
+              1103.749999999991
+            ],
+            "team4_lower_seeds": 2,
+            "capped_range": [
+              0.0,
+              793.45703125
+            ],
+            "team4_range": [
+              0.0,
+              915.52734375
+            ]
+          },
+          "clusters_ge2_over_5ms_per_million": {
+            "capped_mean": 2.86102294921875,
+            "team4_mean": 9.5367431640625,
+            "change_percent": 233.33333333333334,
+            "paired_bootstrap_95_percent": [
+              -100.0,
+              1564.9999999999636
+            ],
+            "team4_lower_seeds": 2,
+            "capped_range": [
+              0.0,
+              61.03515625
+            ],
+            "team4_range": [
+              0.0,
+              152.587890625
+            ]
+          },
+          "over_33.3333ms_per_million": {
+            "capped_mean": 0.95367431640625,
+            "team4_mean": 3.814697265625,
+            "change_percent": 300.0,
+            "paired_bootstrap_95_percent": [
+              -100.0,
+              900.0
+            ],
+            "team4_lower_seeds": 1,
+            "capped_range": [
+              0.0,
+              30.517578125
+            ],
+            "team4_range": [
+              0.0,
+              91.552734375
+            ]
+          },
+          "clusters_ge2_over_33.3333ms_per_million": {
+            "capped_mean": 0.0,
+            "team4_mean": 0.0,
+            "change_percent": null,
+            "paired_bootstrap_95_percent": null,
+            "team4_lower_seeds": 0,
+            "capped_range": [
+              0.0,
+              0.0
+            ],
+            "team4_range": [
+              0.0,
+              0.0
+            ]
+          }
+        },
+        "ticks": {
+          "capped": 1048576,
+          "team4": 1048576
+        },
+        "complete_late_half_seeds": [
+          42,
+          43,
+          44,
+          45,
+          46,
+          47,
+          48,
+          49,
+          50,
+          51,
+          52,
+          53,
+          54,
+          55,
+          56,
+          57,
+          58,
+          59,
+          60,
+          61,
+          62,
+          63,
+          64,
+          65,
+          66,
+          67,
+          68,
+          69,
+          70,
+          71,
+          72,
+          73
+        ]
+      }
+    },
+    "large-eleven": {
+      "1": {
+        "late_half_metrics_matched_complete_pairs": {
+          "late_mean_ms": {
+            "capped_mean": 1.524815312139511,
+            "team4_mean": 1.5848565139350892,
+            "change_percent": 3.937604857294663,
+            "paired_bootstrap_95_percent": [
+              0.8061882814007738,
+              7.20909705563664
+            ]
+          },
+          "late_p99_ms": {
+            "capped_mean": 5.6069426875,
+            "team4_mean": 5.76783084375,
+            "change_percent": 2.8694453504702233,
+            "paired_bootstrap_95_percent": [
+              -0.7169868746521217,
+              6.601949032854901
+            ]
+          },
+          "late_adjacent_change_p99_ms": {
+            "capped_mean": 4.61637621875,
+            "team4_mean": 4.6343919375,
+            "change_percent": 0.39025672727510674,
+            "paired_bootstrap_95_percent": [
+              -3.4861318516238735,
+              4.448658747269339
+            ]
+          }
+        },
+        "metrics": {
+          "ticks": {
+            "capped_mean": 32768.0,
+            "team4_mean": 32768.0,
+            "change_percent": 0.0,
+            "paired_bootstrap_95_percent": [
+              0.0,
+              0.0
+            ],
+            "team4_lower_seeds": 0,
+            "capped_range": [
+              32768.0,
+              32768.0
+            ],
+            "team4_range": [
+              32768.0,
+              32768.0
+            ]
+          },
+          "mean_ms": {
+            "capped_mean": 1.146464188918114,
+            "team4_mean": 1.178280913250923,
+            "change_percent": 2.775204375361584,
+            "paired_bootstrap_95_percent": [
+              0.4423996389404411,
+              5.245877222436814
+            ],
+            "team4_lower_seeds": 12,
+            "capped_range": [
+              1.0085705234985352,
+              1.3496603729553223
+            ],
+            "team4_range": [
+              1.0224634201049805,
+              1.3953824513244628
+            ]
+          },
+          "cpu_ms_per_1000_ticks": {
+            "capped_mean": 1143.577959060669,
+            "team4_mean": 1177.1302032470703,
+            "change_percent": 2.9339708692847744,
+            "paired_bootstrap_95_percent": [
+              0.6056498528993703,
+              5.35158675303414
+            ],
+            "team4_lower_seeds": 11,
+            "capped_range": [
+              1008.6390075683594,
+              1348.23388671875
+            ],
+            "team4_range": [
+              1022.5631713867188,
+              1395.6392517089844
+            ]
+          },
+          "peak_rss_mib": {
+            "capped_mean": 327.6552734375,
+            "team4_mean": 338.34130859375,
+            "change_percent": 3.2613652281987093,
+            "paired_bootstrap_95_percent": [
+              1.0342267204471618,
+              5.541989630977662
+            ],
+            "team4_lower_seeds": 11,
+            "capped_range": [
+              279.765625,
+              381.890625
+            ],
+            "team4_range": [
+              304.34375,
+              386.359375
+            ]
+          },
+          "p99_ms": {
+            "capped_mean": 4.878376187500001,
+            "team4_mean": 5.0675377812499995,
+            "change_percent": 3.8775524166154485,
+            "paired_bootstrap_95_percent": [
+              1.3160926039746585,
+              6.580545172465453
+            ],
+            "team4_lower_seeds": 10,
+            "capped_range": [
+              4.2745,
+              5.721708
+            ],
+            "team4_range": [
+              4.465292,
+              6.058042
+            ]
+          },
+          "p999_ms": {
+            "capped_mean": 7.942622375000001,
+            "team4_mean": 7.67352340625,
+            "change_percent": -3.3880367974815195,
+            "paired_bootstrap_95_percent": [
+              -9.393836113601305,
+              2.5015914523931615
+            ],
+            "team4_lower_seeds": 18,
+            "capped_range": [
+              6.084417,
+              14.337625
+            ],
+            "team4_range": [
+              6.344375,
+              9.534625
+            ]
+          },
+          "adjacent_change_p99_ms": {
+            "capped_mean": 4.019730375,
+            "team4_mean": 4.08045040625,
+            "change_percent": 1.510549852488552,
+            "paired_bootstrap_95_percent": [
+              -1.1238911958859847,
+              4.253767900102826
+            ],
+            "team4_lower_seeds": 13,
+            "capped_range": [
+              3.4854580000000004,
+              4.716042
+            ],
+            "team4_range": [
+              3.6509579999999997,
+              4.763583000000001
+            ]
+          },
+          "adjacent_change_mean_ms": {
+            "capped_mean": 0.6401961685232094,
+            "team4_mean": 0.6927167293046358,
+            "change_percent": 8.203823041081248,
+            "paired_bootstrap_95_percent": [
+              5.8417709715227515,
+              10.692077158807916
+            ],
+            "team4_lower_seeds": 5,
+            "capped_range": [
+              0.5641954719382306,
+              0.7417176232795191
+            ],
+            "team4_range": [
+              0.6030082841578417,
+              0.7959042882473221
+            ]
+          },
+          "gradient_jobs_per_1000_ticks": {
+            "capped_mean": 1728.0120849609375,
+            "team4_mean": 1835.1764678955078,
+            "change_percent": 6.201599159359628,
+            "paired_bootstrap_95_percent": [
+              2.7290045230772013,
+              9.742140298724655
+            ],
+            "team4_lower_seeds": 10,
+            "capped_range": [
+              1403.564453125,
+              2093.109130859375
+            ],
+            "team4_range": [
+              1530.70068359375,
+              2343.3837890625
+            ]
+          },
+          "gradient_cpu_ms_per_1000_ticks": {
+            "capped_mean": 322.0180001783371,
+            "team4_mean": 352.4767650909424,
+            "change_percent": 9.45871500839608,
+            "paired_bootstrap_95_percent": [
+              4.732653435635627,
+              14.415257291431455
+            ],
+            "team4_lower_seeds": 8,
+            "capped_range": [
+              255.58599566650392,
+              424.2361301574707
+            ],
+            "team4_range": [
+              261.66657330322266,
+              477.78444918823243
+            ]
+          },
+          "max_batch": {
+            "capped_mean": 4.0,
+            "team4_mean": 24.03125,
+            "change_percent": 500.78125,
+            "paired_bootstrap_95_percent": [
+              470.3125,
+              533.59375
+            ],
+            "team4_lower_seeds": 0,
+            "capped_range": [
+              4.0,
+              4.0
+            ],
+            "team4_range": [
+              19.0,
+              33.0
+            ]
+          },
+          "max_pending": {
+            "capped_mean": 32.0,
+            "team4_mean": 106.0625,
+            "change_percent": 231.4453125,
+            "paired_bootstrap_95_percent": [
+              218.1640625,
+              245.01953125
+            ],
+            "team4_lower_seeds": 0,
+            "capped_range": [
+              32.0,
+              32.0
+            ],
+            "team4_range": [
+              79.0,
+              135.0
+            ]
+          },
+          "max_team_batch": {
+            "capped_mean": 4.0,
+            "team4_mean": 4.0,
+            "change_percent": 0.0,
+            "paired_bootstrap_95_percent": [
+              0.0,
+              0.0
+            ],
+            "team4_lower_seeds": 0,
+            "capped_range": [
+              4.0,
+              4.0
+            ],
+            "team4_range": [
+              4.0,
+              4.0
+            ]
+          },
+          "queue_extra_mean_ticks": {
+            "capped_mean": 2.6200230859164035,
+            "team4_mean": 0.8603883772181509,
+            "change_percent": -67.16103831897293,
+            "paired_bootstrap_95_percent": [
+              -70.15796493502219,
+              -63.68729135093467
+            ],
+            "team4_lower_seeds": 32,
+            "capped_range": [
+              1.5332411972194147,
+              4.2123726070538146
+            ],
+            "team4_range": [
+              0.47085210734080307,
+              1.4536419295500096
+            ]
+          },
+          "queue_extra_p95_ticks": {
+            "capped_mean": 10.28125,
+            "team4_mean": 5.1875,
+            "change_percent": -49.544072948328264,
+            "paired_bootstrap_95_percent": [
+              -54.054054054054056,
+              -44.479495268138805
+            ],
+            "team4_lower_seeds": 32,
+            "capped_range": [
+              7.0,
+              13.0
+            ],
+            "team4_range": [
+              3.0,
+              9.0
+            ]
+          },
+          "queue_extra_p99_ticks": {
+            "capped_mean": 13.375,
+            "team4_mean": 8.65625,
+            "change_percent": -35.280373831775705,
+            "paired_bootstrap_95_percent": [
+              -38.79907621247113,
+              -31.639722863741337
+            ],
+            "team4_lower_seeds": 32,
+            "capped_range": [
+              11.0,
+              15.0
+            ],
+            "team4_range": [
+              6.0,
+              13.0
+            ]
+          },
+          "queue_extra_max_ticks": {
+            "capped_mean": 15.0,
+            "team4_mean": 13.90625,
+            "change_percent": -7.2916666666666625,
+            "paired_bootstrap_95_percent": [
+              -10.833333333333329,
+              -4.1666666666666625
+            ],
+            "team4_lower_seeds": 16,
+            "capped_range": [
+              15.0,
+              15.0
+            ],
+            "team4_range": [
+              10.0,
+              15.0
+            ]
+          },
+          "queue_delayed_percent": {
+            "capped_mean": 55.90307271717735,
+            "team4_mean": 28.405809748093457,
+            "change_percent": -49.187391019089375,
+            "paired_bootstrap_95_percent": [
+              -51.431372702061445,
+              -46.900154761307924
+            ],
+            "team4_lower_seeds": 32,
+            "capped_range": [
+              44.427484065265375,
+              68.37447329668888
+            ],
+            "team4_range": [
+              20.26197216794928,
+              35.97827785591499
+            ]
+          },
+          "queue_samples": {
+            "capped_mean": 56623.5,
+            "team4_mean": 60135.0625,
+            "change_percent": 6.201599159359628,
+            "paired_bootstrap_95_percent": [
+              2.7290045230772013,
+              9.742140298724655
+            ],
+            "team4_lower_seeds": 10,
+            "capped_range": [
+              45992.0,
+              68587.0
+            ],
+            "team4_range": [
+              50158.0,
+              76788.0
+            ]
+          },
+          "synchronous_overflow": {
+            "capped_mean": 1016.46875,
+            "team4_mean": 198.71875,
+            "change_percent": -80.4500876195161,
+            "paired_bootstrap_95_percent": [
+              -87.99651022107524,
+              -68.89411066572399
+            ],
+            "team4_lower_seeds": 28,
+            "capped_range": [
+              71.0,
+              5293.0
+            ],
+            "team4_range": [
+              0.0,
+              1183.0
+            ]
+          },
+          "final_units": {
+            "capped_mean": 614.46875,
+            "team4_mean": 641.0625,
+            "change_percent": 4.327925545440681,
+            "paired_bootstrap_95_percent": [
+              -1.6275318663059077,
+              11.222596906764934
+            ],
+            "team4_lower_seeds": 16,
+            "capped_range": [
+              447.0,
+              819.0
+            ],
+            "team4_range": [
+              471.0,
+              860.0
+            ]
+          },
+          "final_buildings": {
+            "capped_mean": 249.21875,
+            "team4_mean": 251.9375,
+            "change_percent": 1.090909090909098,
+            "paired_bootstrap_95_percent": [
+              -3.87519275526913,
+              6.490950744044946
+            ],
+            "team4_lower_seeds": 13,
+            "capped_range": [
+              186.0,
+              325.0
+            ],
+            "team4_range": [
+              184.0,
+              325.0
+            ]
+          },
+          "window_8_p99_ms": {
+            "capped_mean": 23.0741677499999,
+            "team4_mean": 25.082973593750637,
+            "change_percent": 8.705864781410133,
+            "paired_bootstrap_95_percent": [
+              5.21981490419708,
+              12.408651253157885
+            ],
+            "team4_lower_seeds": 6,
+            "capped_range": [
+              18.953083999997034,
+              29.515498999997362
+            ],
+            "team4_range": [
+              20.76629099999991,
+              31.19954200000211
+            ]
+          },
+          "window_32_p99_ms": {
+            "capped_mean": 73.99846953124967,
+            "team4_mean": 81.12064846874864,
+            "change_percent": 9.624765191246642,
+            "paired_bootstrap_95_percent": [
+              5.813088158432559,
+              13.706978833159898
+            ],
+            "team4_lower_seeds": 6,
+            "capped_range": [
+              59.30591700000514,
+              98.64124699998501
+            ],
+            "team4_range": [
+              64.63912599998002,
+              102.60000099999888
+            ]
+          },
+          "over_1ms_per_million": {
+            "capped_mean": 445381.16455078125,
+            "team4_mean": 416073.7991333008,
+            "change_percent": -6.580288469774054,
+            "paired_bootstrap_95_percent": [
+              -9.415129437847678,
+              -3.6096635519294678
+            ],
+            "team4_lower_seeds": 25,
+            "capped_range": [
+              363342.28515625,
+              533935.546875
+            ],
+            "team4_range": [
+              352935.791015625,
+              485443.115234375
+            ]
+          },
+          "clusters_ge2_over_1ms_per_million": {
+            "capped_mean": 61096.19140625,
+            "team4_mean": 67612.6480102539,
+            "change_percent": 10.665896603396607,
+            "paired_bootstrap_95_percent": [
+              8.49974552275289,
+              12.88897847163746
+            ],
+            "team4_lower_seeds": 0,
+            "capped_range": [
+              51818.84765625,
+              66619.873046875
+            ],
+            "team4_range": [
+              63232.421875,
+              72570.80078125
+            ]
+          },
+          "over_5ms_per_million": {
+            "capped_mean": 8964.53857421875,
+            "team4_mean": 10815.620422363281,
+            "change_percent": 20.64893617021277,
+            "paired_bootstrap_95_percent": [
+              7.646968786706992,
+              35.30128214441109
+            ],
+            "team4_lower_seeds": 10,
+            "capped_range": [
+              3448.486328125,
+              18066.40625
+            ],
+            "team4_range": [
+              5096.435546875,
+              23773.193359375
+            ]
+          },
+          "clusters_ge2_over_5ms_per_million": {
+            "capped_mean": 640.869140625,
+            "team4_mean": 1003.265380859375,
+            "change_percent": 56.547619047619044,
+            "paired_bootstrap_95_percent": [
+              28.004987212276212,
+              92.59293489422878
+            ],
+            "team4_lower_seeds": 6,
+            "capped_range": [
+              122.0703125,
+              1556.396484375
+            ],
+            "team4_range": [
+              274.658203125,
+              2929.6875
+            ]
+          },
+          "over_33.3333ms_per_million": {
+            "capped_mean": 21.93450927734375,
+            "team4_mean": 10.49041748046875,
+            "change_percent": -52.17391304347826,
+            "paired_bootstrap_95_percent": [
+              -91.30434782608697,
+              142.85714285714283
+            ],
+            "team4_lower_seeds": 7,
+            "capped_range": [
+              0.0,
+              366.2109375
+            ],
+            "team4_range": [
+              0.0,
+              122.0703125
+            ]
+          },
+          "clusters_ge2_over_33.3333ms_per_million": {
+            "capped_mean": 2.86102294921875,
+            "team4_mean": 0.95367431640625,
+            "change_percent": -66.66666666666667,
+            "paired_bootstrap_95_percent": [
+              -100.0,
+              100.0
+            ],
+            "team4_lower_seeds": 2,
+            "capped_range": [
+              0.0,
+              61.03515625
+            ],
+            "team4_range": [
+              0.0,
+              30.517578125
+            ]
+          }
+        },
+        "ticks": {
+          "capped": 1048576,
+          "team4": 1048576
+        },
+        "complete_late_half_seeds": [
+          42,
+          43,
+          44,
+          45,
+          46,
+          47,
+          48,
+          49,
+          50,
+          51,
+          52,
+          53,
+          54,
+          55,
+          56,
+          57,
+          58,
+          59,
+          60,
+          61,
+          62,
+          63,
+          64,
+          65,
+          66,
+          67,
+          68,
+          69,
+          70,
+          71,
+          72,
+          73
+        ]
+      },
+      "4": {
+        "late_half_metrics_matched_complete_pairs": {
+          "late_mean_ms": {
+            "capped_mean": 0.5581065118846893,
+            "team4_mean": 0.5795919494876862,
+            "change_percent": 3.849702009468059,
+            "paired_bootstrap_95_percent": [
+              0.6407062950343267,
+              7.192163832222318
+            ]
+          },
+          "late_p99_ms": {
+            "capped_mean": 4.438967406250001,
+            "team4_mean": 4.51012365625,
+            "change_percent": 1.6029910447148632,
+            "paired_bootstrap_95_percent": [
+              -3.388658407687496,
+              7.070369499933
+            ]
+          },
+          "late_adjacent_change_p99_ms": {
+            "capped_mean": 4.906902562499999,
+            "team4_mean": 5.0254388125,
+            "change_percent": 2.4157041736652785,
+            "paired_bootstrap_95_percent": [
+              -3.9131805900847425,
+              9.063904320809721
+            ]
+          }
+        },
+        "metrics": {
+          "ticks": {
+            "capped_mean": 32768.0,
+            "team4_mean": 32768.0,
+            "change_percent": 0.0,
+            "paired_bootstrap_95_percent": [
+              0.0,
+              0.0
+            ],
+            "team4_lower_seeds": 0,
+            "capped_range": [
+              32768.0,
+              32768.0
+            ],
+            "team4_range": [
+              32768.0,
+              32768.0
+            ]
+          },
+          "mean_ms": {
+            "capped_mean": 0.41440282312393184,
+            "team4_mean": 0.4289919416589737,
+            "change_percent": 3.5205162033075332,
+            "paired_bootstrap_95_percent": [
+              0.9361324896250229,
+              6.142346653452838
+            ],
+            "team4_lower_seeds": 10,
+            "capped_range": [
+              0.3504541445922852,
+              0.48167133450317384
+            ],
+            "team4_range": [
+              0.37146047195434573,
+              0.4981638922424316
+            ]
+          },
+          "cpu_ms_per_1000_ticks": {
+            "capped_mean": 1301.1686639785767,
+            "team4_mean": 1362.0829782485962,
+            "change_percent": 4.681507936393281,
+            "paired_bootstrap_95_percent": [
+              2.2652549777049784,
+              7.1062544785280695
+            ],
+            "team4_lower_seeds": 10,
+            "capped_range": [
+              1127.0496826171875,
+              1489.8919067382812
+            ],
+            "team4_range": [
+              1186.8043518066406,
+              1601.0632629394531
+            ]
+          },
+          "peak_rss_mib": {
+            "capped_mean": 337.705078125,
+            "team4_mean": 349.82177734375,
+            "change_percent": 3.5879529221248596,
+            "paired_bootstrap_95_percent": [
+              1.3899744493306183,
+              5.887133494034181
+            ],
+            "team4_lower_seeds": 12,
+            "capped_range": [
+              287.953125,
+              389.515625
+            ],
+            "team4_range": [
+              317.890625,
+              398.171875
+            ]
+          },
+          "p99_ms": {
+            "capped_mean": 3.3832917499999997,
+            "team4_mean": 3.4871458125,
+            "change_percent": 3.069615929516001,
+            "paired_bootstrap_95_percent": [
+              -0.805045362040411,
+              7.014220378795543
+            ],
+            "team4_lower_seeds": 11,
+            "capped_range": [
+              2.64475,
+              4.196084
+            ],
+            "team4_range": [
+              2.864625,
+              4.287583
+            ]
+          },
+          "p999_ms": {
+            "capped_mean": 6.484884125000001,
+            "team4_mean": 6.381845,
+            "change_percent": -1.5889123539273742,
+            "paired_bootstrap_95_percent": [
+              -6.57963581550913,
+              3.729654543430148
+            ],
+            "team4_lower_seeds": 16,
+            "capped_range": [
+              4.693917,
+              8.545042
+            ],
+            "team4_range": [
+              5.021583,
+              7.683542
+            ]
+          },
+          "adjacent_change_p99_ms": {
+            "capped_mean": 3.9170715937500002,
+            "team4_mean": 4.029579375,
+            "change_percent": 2.8722421471569337,
+            "paired_bootstrap_95_percent": [
+              -3.0868886037337604,
+              9.081084970040644
+            ],
+            "team4_lower_seeds": 11,
+            "capped_range": [
+              3.037999,
+              5.488917
+            ],
+            "team4_range": [
+              3.187707,
+              5.868374
+            ]
+          },
+          "adjacent_change_mean_ms": {
+            "capped_mean": 0.3679438278880047,
+            "team4_mean": 0.3806319798444319,
+            "change_percent": 3.448393747832945,
+            "paired_bootstrap_95_percent": [
+              -0.06372099223838962,
+              6.971062639700478
+            ],
+            "team4_lower_seeds": 11,
+            "capped_range": [
+              0.29854927838984346,
+              0.4397305146031068
+            ],
+            "team4_range": [
+              0.3156110873134556,
+              0.4563412956938383
+            ]
+          },
+          "gradient_jobs_per_1000_ticks": {
+            "capped_mean": 1728.0120849609375,
+            "team4_mean": 1835.1764678955078,
+            "change_percent": 6.201599159359628,
+            "paired_bootstrap_95_percent": [
+              2.7290045230772013,
+              9.742140298724655
+            ],
+            "team4_lower_seeds": 10,
+            "capped_range": [
+              1403.564453125,
+              2093.109130859375
+            ],
+            "team4_range": [
+              1530.70068359375,
+              2343.3837890625
+            ]
+          },
+          "gradient_cpu_ms_per_1000_ticks": {
+            "capped_mean": 359.91367523765564,
+            "team4_mean": 400.1687237005234,
+            "change_percent": 11.184639882407033,
+            "paired_bootstrap_95_percent": [
+              6.340800113944753,
+              16.16023460090394
+            ],
+            "team4_lower_seeds": 7,
+            "capped_range": [
+              278.758407409668,
+              464.7947411804199
+            ],
+            "team4_range": [
+              296.5457194519043,
+              541.9094782104493
+            ]
+          },
+          "max_batch": {
+            "capped_mean": 4.0,
+            "team4_mean": 24.03125,
+            "change_percent": 500.78125,
+            "paired_bootstrap_95_percent": [
+              470.3125,
+              533.59375
+            ],
+            "team4_lower_seeds": 0,
+            "capped_range": [
+              4.0,
+              4.0
+            ],
+            "team4_range": [
+              19.0,
+              33.0
+            ]
+          },
+          "max_pending": {
+            "capped_mean": 32.0,
+            "team4_mean": 106.0625,
+            "change_percent": 231.4453125,
+            "paired_bootstrap_95_percent": [
+              218.1640625,
+              245.01953125
+            ],
+            "team4_lower_seeds": 0,
+            "capped_range": [
+              32.0,
+              32.0
+            ],
+            "team4_range": [
+              79.0,
+              135.0
+            ]
+          },
+          "max_team_batch": {
+            "capped_mean": 4.0,
+            "team4_mean": 4.0,
+            "change_percent": 0.0,
+            "paired_bootstrap_95_percent": [
+              0.0,
+              0.0
+            ],
+            "team4_lower_seeds": 0,
+            "capped_range": [
+              4.0,
+              4.0
+            ],
+            "team4_range": [
+              4.0,
+              4.0
+            ]
+          },
+          "queue_extra_mean_ticks": {
+            "capped_mean": 2.6200230859164035,
+            "team4_mean": 0.8603883772181509,
+            "change_percent": -67.16103831897293,
+            "paired_bootstrap_95_percent": [
+              -70.15796493502219,
+              -63.68729135093467
+            ],
+            "team4_lower_seeds": 32,
+            "capped_range": [
+              1.5332411972194147,
+              4.2123726070538146
+            ],
+            "team4_range": [
+              0.47085210734080307,
+              1.4536419295500096
+            ]
+          },
+          "queue_extra_p95_ticks": {
+            "capped_mean": 10.28125,
+            "team4_mean": 5.1875,
+            "change_percent": -49.544072948328264,
+            "paired_bootstrap_95_percent": [
+              -54.054054054054056,
+              -44.479495268138805
+            ],
+            "team4_lower_seeds": 32,
+            "capped_range": [
+              7.0,
+              13.0
+            ],
+            "team4_range": [
+              3.0,
+              9.0
+            ]
+          },
+          "queue_extra_p99_ticks": {
+            "capped_mean": 13.375,
+            "team4_mean": 8.65625,
+            "change_percent": -35.280373831775705,
+            "paired_bootstrap_95_percent": [
+              -38.79907621247113,
+              -31.639722863741337
+            ],
+            "team4_lower_seeds": 32,
+            "capped_range": [
+              11.0,
+              15.0
+            ],
+            "team4_range": [
+              6.0,
+              13.0
+            ]
+          },
+          "queue_extra_max_ticks": {
+            "capped_mean": 15.0,
+            "team4_mean": 13.90625,
+            "change_percent": -7.2916666666666625,
+            "paired_bootstrap_95_percent": [
+              -10.833333333333329,
+              -4.1666666666666625
+            ],
+            "team4_lower_seeds": 16,
+            "capped_range": [
+              15.0,
+              15.0
+            ],
+            "team4_range": [
+              10.0,
+              15.0
+            ]
+          },
+          "queue_delayed_percent": {
+            "capped_mean": 55.90307271717735,
+            "team4_mean": 28.405809748093457,
+            "change_percent": -49.187391019089375,
+            "paired_bootstrap_95_percent": [
+              -51.431372702061445,
+              -46.900154761307924
+            ],
+            "team4_lower_seeds": 32,
+            "capped_range": [
+              44.427484065265375,
+              68.37447329668888
+            ],
+            "team4_range": [
+              20.26197216794928,
+              35.97827785591499
+            ]
+          },
+          "queue_samples": {
+            "capped_mean": 56623.5,
+            "team4_mean": 60135.0625,
+            "change_percent": 6.201599159359628,
+            "paired_bootstrap_95_percent": [
+              2.7290045230772013,
+              9.742140298724655
+            ],
+            "team4_lower_seeds": 10,
+            "capped_range": [
+              45992.0,
+              68587.0
+            ],
+            "team4_range": [
+              50158.0,
+              76788.0
+            ]
+          },
+          "synchronous_overflow": {
+            "capped_mean": 1016.46875,
+            "team4_mean": 198.71875,
+            "change_percent": -80.4500876195161,
+            "paired_bootstrap_95_percent": [
+              -87.99651022107524,
+              -68.89411066572399
+            ],
+            "team4_lower_seeds": 28,
+            "capped_range": [
+              71.0,
+              5293.0
+            ],
+            "team4_range": [
+              0.0,
+              1183.0
+            ]
+          },
+          "final_units": {
+            "capped_mean": 614.46875,
+            "team4_mean": 641.0625,
+            "change_percent": 4.327925545440681,
+            "paired_bootstrap_95_percent": [
+              -1.6275318663059077,
+              11.222596906764934
+            ],
+            "team4_lower_seeds": 16,
+            "capped_range": [
+              447.0,
+              819.0
+            ],
+            "team4_range": [
+              471.0,
+              860.0
+            ]
+          },
+          "final_buildings": {
+            "capped_mean": 249.21875,
+            "team4_mean": 251.9375,
+            "change_percent": 1.090909090909098,
+            "paired_bootstrap_95_percent": [
+              -3.87519275526913,
+              6.490950744044946
+            ],
+            "team4_lower_seeds": 13,
+            "capped_range": [
+              186.0,
+              325.0
+            ],
+            "team4_range": [
+              184.0,
+              325.0
+            ]
+          },
+          "window_8_p99_ms": {
+            "capped_mean": 12.313244781249836,
+            "team4_mean": 11.985565187500413,
+            "change_percent": -2.6611961312456134,
+            "paired_bootstrap_95_percent": [
+              -6.5783237200294105,
+              1.5120009717082021
+            ],
+            "team4_lower_seeds": 17,
+            "capped_range": [
+              8.796457999999802,
+              17.136665999999423
+            ],
+            "team4_range": [
+              9.556250000001455,
+              15.046833999998853
+            ]
+          },
+          "window_32_p99_ms": {
+            "capped_mean": 33.36208837500075,
+            "team4_mean": 32.658081687500754,
+            "change_percent": -2.1101996960943614,
+            "paired_bootstrap_95_percent": [
+              -6.2735978974135875,
+              2.303760259229819
+            ],
+            "team4_lower_seeds": 17,
+            "capped_range": [
+              23.76033599999755,
+              49.873962999996365
+            ],
+            "team4_range": [
+              26.650460999999268,
+              40.726911999998265
+            ]
+          },
+          "over_1ms_per_million": {
+            "capped_mean": 72113.037109375,
+            "team4_mean": 76674.4613647461,
+            "change_percent": 6.325380871773167,
+            "paired_bootstrap_95_percent": [
+              3.07161902437872,
+              9.676776832218703
+            ],
+            "team4_lower_seeds": 10,
+            "capped_range": [
+              59844.970703125,
+              87982.177734375
+            ],
+            "team4_range": [
+              62103.271484375,
+              92590.33203125
+            ]
+          },
+          "clusters_ge2_over_1ms_per_million": {
+            "capped_mean": 8522.987365722656,
+            "team4_mean": 9316.444396972656,
+            "change_percent": 9.309611726530154,
+            "paired_bootstrap_95_percent": [
+              2.659838575670105,
+              16.648917258768837
+            ],
+            "team4_lower_seeds": 8,
+            "capped_range": [
+              5706.787109375,
+              11779.78515625
+            ],
+            "team4_range": [
+              6378.173828125,
+              13336.181640625
+            ]
+          },
+          "over_5ms_per_million": {
+            "capped_mean": 3496.1700439453125,
+            "team4_mean": 3705.9783935546875,
+            "change_percent": 6.001091107474088,
+            "paired_bootstrap_95_percent": [
+              -12.07428308620834,
+              28.439473813734004
+            ],
+            "team4_lower_seeds": 12,
+            "capped_range": [
+              732.421875,
+              7080.078125
+            ],
+            "team4_range": [
+              1037.59765625,
+              7598.876953125
+            ]
+          },
+          "clusters_ge2_over_5ms_per_million": {
+            "capped_mean": 55.3131103515625,
+            "team4_mean": 38.14697265625,
+            "change_percent": -31.034482758620683,
+            "paired_bootstrap_95_percent": [
+              -58.97540983606557,
+              2.8200082850040933
+            ],
+            "team4_lower_seeds": 16,
+            "capped_range": [
+              0.0,
+              213.623046875
+            ],
+            "team4_range": [
+              0.0,
+              244.140625
+            ]
+          },
+          "over_33.3333ms_per_million": {
+            "capped_mean": 0.0,
+            "team4_mean": 0.0,
+            "change_percent": null,
+            "paired_bootstrap_95_percent": null,
+            "team4_lower_seeds": 0,
+            "capped_range": [
+              0.0,
+              0.0
+            ],
+            "team4_range": [
+              0.0,
+              0.0
+            ]
+          },
+          "clusters_ge2_over_33.3333ms_per_million": {
+            "capped_mean": 0.0,
+            "team4_mean": 0.0,
+            "change_percent": null,
+            "paired_bootstrap_95_percent": null,
+            "team4_lower_seeds": 0,
+            "capped_range": [
+              0.0,
+              0.0
+            ],
+            "team4_range": [
+              0.0,
+              0.0
+            ]
+          }
+        },
+        "ticks": {
+          "capped": 1048576,
+          "team4": 1048576
+        },
+        "complete_late_half_seeds": [
+          42,
+          43,
+          44,
+          45,
+          46,
+          47,
+          48,
+          49,
+          50,
+          51,
+          52,
+          53,
+          54,
+          55,
+          56,
+          57,
+          58,
+          59,
+          60,
+          61,
+          62,
+          63,
+          64,
+          65,
+          66,
+          67,
+          68,
+          69,
+          70,
+          71,
+          72,
+          73
+        ]
+      }
+    }
+  }
+}

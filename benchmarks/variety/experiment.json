@@ -1,0 +1,122 @@
+{
+  "binary": "/Users/bradley/.codex/worktrees/gradient-staleness/glob2/build/darwin/client/release/client-full-direct-1111/src/glob2",
+  "binary_sha256": "15e6811698578a398a89a4c4c31a21437a8d1122ceb1794ca82d04b59d24afc5",
+  "base_revision": "43b153739838207983c922ab4cbeed7773459de9",
+  "snapshot_revision": "2e8c1e9ab7b39b0b143119aa5c07201f651eec60",
+  "platform": "macOS-26.6.2-arm64-arm-64bit-Mach-O",
+  "architecture": "arm64",
+  "policies": [
+    "capped",
+    "team4"
+  ],
+  "participants": [
+    1,
+    4
+  ],
+  "seeds": [
+    42,
+    43,
+    44,
+    45,
+    46,
+    47,
+    48,
+    49,
+    50,
+    51,
+    52,
+    53,
+    54,
+    55,
+    56,
+    57,
+    58,
+    59,
+    60,
+    61,
+    62,
+    63,
+    64,
+    65,
+    66,
+    67,
+    68,
+    69,
+    70,
+    71,
+    72,
+    73
+  ],
+  "workloads": [
+    {
+      "name": "small-duel",
+      "map": "SmallForTwo.map.gz",
+      "players": [
+        "nicowar",
+        "warrush"
+      ],
+      "ticks": 32768,
+      "map_path": "/Users/bradley/.codex/worktrees/gradient-staleness/glob2/maps/SmallForTwo.map.gz",
+      "map_sha256": "a551bc8ccf3ccd36596100b9d9dcf67dae84a465ee609f41703dfbdff67b6858",
+      "width": 64,
+      "height": 64,
+      "teams": 2,
+      "map_format": [
+        0,
+        64
+      ]
+    },
+    {
+      "name": "archipelago",
+      "map": "Archipelago.map.gz",
+      "players": [
+        "nicowar",
+        "econo",
+        "castor",
+        "warrush",
+        "nicowar"
+      ],
+      "ticks": 32768,
+      "map_path": "/Users/bradley/.codex/worktrees/gradient-staleness/glob2/maps/Archipelago.map.gz",
+      "map_sha256": "8770b2f94199309f2a6f7a9398bb0bfeb1624cd80e3a396e5db39eccf68ada76",
+      "width": 128,
+      "height": 128,
+      "teams": 5,
+      "map_format": [
+        0,
+        81
+      ]
+    },
+    {
+      "name": "large-eleven",
+      "map": "Oazis.map.gz",
+      "players": [
+        "nicowar",
+        "econo",
+        "castor",
+        "warrush",
+        "nicowar",
+        "econo",
+        "castor",
+        "warrush",
+        "nicowar",
+        "econo",
+        "castor"
+      ],
+      "ticks": 32768,
+      "map_path": "/Users/bradley/.codex/worktrees/gradient-staleness/glob2/maps/Oazis.map.gz",
+      "map_sha256": "b3283af95ee177f528d3b57438797c4a1970473c562a76f5ed4faad51f03a6d3",
+      "width": 256,
+      "height": 256,
+      "teams": 11,
+      "map_format": [
+        0,
+        70
+      ]
+    }
+  ],
+  "run_order": "Serial runs, seed outer loop. Rotate/reverse workload order by seed. Alternate participant and policy order by seed and workload. Full four-run seed/workload set replaced if compiler activity occurs during any run.",
+  "build_command": "PYTHONPATH=. CCACHE=1 scons -j8 release=1 client_profile=full server=0",
+  "tick_sample_format": "chronological native unsigned 64-bit nanoseconds; little",
+  "host_contention_guard": "Wait for no clang before run; poll once/second during run. Preserve/retry whole seed/workload set if clang appears. Other host activity not controlled."
+}

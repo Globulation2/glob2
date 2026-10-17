@@ -1,0 +1,202 @@
+diff --git a/src/app/cli/Headless.cpp b/src/app/cli/Headless.cpp
+index 1993b8923..bb718e764 100644
+--- a/src/app/cli/Headless.cpp
++++ b/src/app/cli/Headless.cpp
+@@ -7,6 +7,7 @@
+ #include "scripting/javascript/ScriptRuntime.h"
+ #include "scripting/javascript/ScriptValue.h"
+ #include "PerformanceTelemetry.h"
++#include "gradient/BuildingGradientCpuProbe.h"
+ #include <array>
+ #include <bit>
+ #include "Engine.h"
+@@ -543,6 +544,11 @@ struct HeadlessRunner
+ 		const auto buildingResult = game.map.buildingGradientPipelineStatus();
+ 		const auto gradient=gradient_kernel::configuration();
+         const auto accelerator=gradient_kernel::acceleratorStatus(gradient.backend);
++        if (const char* path=std::getenv("GLOB2_BENCH_TICKS")) {
++            std::ofstream samples(path,std::ios::binary);
++            samples.write(reinterpret_cast<const char*>(tickDurations.data()),tickDurations.size()*sizeof(Uint64));
++            if (!samples) throw std::runtime_error("Cannot write benchmark tick samples");
++        }
+         std::sort(tickDurations.begin(),tickDurations.end());
+         const auto percentile=[&](unsigned p)->Uint64 {return tickDurations.empty()?0:tickDurations[(tickDurations.size()-1)*p/100];};
+ 		engine.trackTeamEliminations();
+@@ -597,6 +603,20 @@ struct HeadlessRunner
+             << ",\"tick_p50_ns\":" << percentile(50)
+             << ",\"tick_p95_ns\":" << percentile(95)
+             << ",\"tick_p99_ns\":" << percentile(99)
++            << ",\"tick_max_ns\":" << (tickDurations.empty()?0:tickDurations.back())
++            << ",\"building_gradient_worker_cpu_ns\":" << BuildingGradientCpuProbe::cpuNs.load()
++            << ",\"building_gradient_worker_elapsed_ns\":" << BuildingGradientCpuProbe::elapsedNs.load()
++            << ",\"building_gradient_worker_jobs_measured\":" << BuildingGradientCpuProbe::jobs.load()
++            << ",\"building_gradient_worker_max_job_ns\":" << BuildingGradientCpuProbe::maximumJobNs.load()
++            << ",\"building_gradient_queue_delay_samples\":" << BuildingGradientCpuProbe::delaySamples
++            << ",\"building_gradient_queue_delay_total\":" << BuildingGradientCpuProbe::delayTotal
++            << ",\"building_gradient_queue_delay_max\":" << BuildingGradientCpuProbe::delayMaximum
++            << ",\"building_gradient_delayed_requests\":" << BuildingGradientCpuProbe::delayedRequests
++            << ",\"building_gradient_max_team_batch\":" << BuildingGradientCpuProbe::maxTeamBatch
++            << ",\"building_gradient_max_batch\":" << BuildingGradientCpuProbe::maxBatch
++            << ",\"building_gradient_max_pending_observed\":" << BuildingGradientCpuProbe::maxPending
++            << ",\"building_gradient_max_queued_after_boundary\":" << BuildingGradientCpuProbe::maxQueuedAfterBoundary
++            << ",\"building_gradient_deferred_boundaries\":" << BuildingGradientCpuProbe::deferredBoundaries
+ 			<< ",\"gradient_pipeline\":" << "true"
+ 			<< ",\"gradient_workers\":" << pipelineResult.workers
+ 			<< ",\"gradient_delay\":" << pipelineResult.delay
+@@ -617,10 +637,13 @@ struct HeadlessRunner
+ 		for (std::size_t reason = 0; reason < buildingResult.synchronousByReason.size(); ++reason)
+ 			result << (reason ? "," : "") << quote(Map::buildingSyncReasonName(Map::BuildingSyncReason(reason)))
+ 				<< ':' << buildingResult.synchronousByReason[reason];
+-		result << '}';
+-
++        result << '}';
++        result << ",\"building_gradient_queue_delay_histogram\":[";
++        for (std::size_t i=0;i<BuildingGradientCpuProbe::delayHistogram.size();++i)
++            result << (i ? "," : "") << BuildingGradientCpuProbe::delayHistogram[i];
++        result << ']';
+ 
+-		result << ",\"compute_telemetry\":";
++        result << ",\"compute_telemetry\":";
+         ComputeTelemetry::writeJson(result, computeSnapshot);
+         result << ",\"resource_plan\":";
+         writeApplicationResourcePlanJson(result, globals.resourcePlan);
+diff --git a/src/map/gradient/BuildingGradientPipeline.h b/src/map/gradient/BuildingGradientPipeline.h
+index 309dedd5b..46320f2a9 100644
+--- a/src/map/gradient/BuildingGradientPipeline.h
++++ b/src/map/gradient/BuildingGradientPipeline.h
+@@ -95,9 +95,9 @@ public:
+ 	unsigned delayTicks() const { return delay; }
+ 	std::size_t pendingCount() const { return pending.size(); }
+ 	// True while this advanced tick can admit another job.
+-	bool canReserve() const {
+-		return enabled() && tick != 0 && admitted < MaxJobsPerTick && pending.size() < delay*MaxJobsPerTick &&
+-			dueCount(tick+delay) < MaxJobsPerTick;
++	bool canReserve(bool admitAll=false) const {
++		return enabled() && tick != 0 && (admitAll || (admitted < MaxJobsPerTick && pending.size() < delay*MaxJobsPerTick &&
++			dueCount(tick+delay) < MaxJobsPerTick));
+ 	}
+ 	// Complete all private work without publishing; rethrows the oldest failure.
+ 	void finish(JoinContext context = {JoinReason::Verification, ComputeTelemetry::NoTick}) { for (auto& job : pending) { wait(*job, context); if (job->error) std::rethrow_exception(job->error); } }
+@@ -146,8 +146,8 @@ public:
+ 	}
+ 	// Admit one job due at tick + delay. The caller fills snapshotLease and payload,
+ 	// then hands every job staged this tick to one prepare() call.
+-	Job* reserve() {
+-		if (!canReserve()) throw std::logic_error("building gradient pipeline admission exceeded");
++	Job* reserve(bool admitAll=false) {
++		if (!canReserve(admitAll)) throw std::logic_error("building gradient pipeline admission exceeded");
+ 		std::unique_ptr<Job> job;
+ 		if (spare.empty()) job = std::make_unique<Job>();
+ 		else { job = std::move(spare.back()); spare.pop_back(); }
+diff --git a/src/map/gradient/MapGradientScheduling.cpp b/src/map/gradient/MapGradientScheduling.cpp
+index f8f35b022..bad891548 100644
+--- a/src/map/gradient/MapGradientScheduling.cpp
++++ b/src/map/gradient/MapGradientScheduling.cpp
+@@ -13,6 +13,7 @@
+ #include "gradient/GradientRuntime.h"
+ #include "BuildingGradientSearch.h"
+ #include "SharedBuildingGradient.h"
++#include "BuildingGradientCpuProbe.h"
+ #include "BuildingType.h"
+ #include "Game.h"
+ #include "MapInternal.h"
+@@ -21,6 +22,7 @@
+ 
+ #include <algorithm>
+ #include <cstdlib>
++#include <cstring>
+ #include <iostream>
+ #include <iterator>
+ #include <optional>
+@@ -37,11 +39,27 @@ using gradient_kernel::COST_LIMIT;
+ int slotSwim(int slot) { return slot % SWIM_CLASS_COUNT; }
+ BuildingRoute slotRoute(int slot) { return BuildingRoute(slot / SWIM_CLASS_COUNT); }
+ 
++struct AdmissionPolicy { unsigned global, perTeam; bool original; };
++const AdmissionPolicy& admissionPolicy() {
++    static const AdmissionPolicy policy=[] {
++        const char* mode=std::getenv("GLOB2_BUILDING_ADMISSION");
++        if (!mode || std::strcmp(mode,"capped")==0) return AdmissionPolicy{4,0,true};
++        if (std::strcmp(mode,"global8")==0) return AdmissionPolicy{8,0,false};
++        if (std::strcmp(mode,"global16")==0) return AdmissionPolicy{16,0,false};
++        if (std::strcmp(mode,"team2")==0) return AdmissionPolicy{0,2,false};
++        if (std::strcmp(mode,"team4")==0) return AdmissionPolicy{0,4,false};
++        if (std::strcmp(mode,"all")==0) return AdmissionPolicy{0,0,false};
++        throw std::invalid_argument("Unknown experimental building admission policy");
++    }();
++    return policy;
++}
++
+ 
+ void buildScheduled(PipelineJob& job)
+ {
+ 	auto& p = job.payload;
+ 	if (building_gradient::workHook) building_gradient::workHook(p);
++    const BuildingGradientCpuProbe::Work timing;
+ 	const auto result = gradient_preparation::buildBuilding(p.seed, *job.snapshotLease, p.inputs, p.data.get(), *p.search, p.depthTarget);
+ 	p.locked = result.locked;
+ 	p.resourceState = result.resourceState;
+@@ -187,11 +205,13 @@ bool Map::requestBuildingRefresh(Building* building, int slot)
+ 	building->refreshRequested.set(slot);
+ 	rt.buildingRequests.push_back({building->owner->teamNumber, Uint16(Building::GIDtoID(building->gid)),
+ 		building->scriptIdentity, building->refreshEpoch[slot], slot, false});
+-	if (rt.buildingRequests.size() > GradientRuntime::BuildingRequestLimit)
++    BuildingGradientCpuProbe::requested(rt.buildingRequests.back());
++	if ((admissionPolicy().global || admissionPolicy().perTeam) && rt.buildingRequests.size() > GradientRuntime::BuildingRequestLimit)
+ 	{
+ 		// Deterministic overflow: the oldest request is served synchronously now.
+ 		const auto oldest = rt.buildingRequests.front();
+ 		rt.buildingRequests.pop_front();
++        BuildingGradientCpuProbe::discardRequest(oldest);
+ 		Building* b = buildingGradientDestination(oldest.team, oldest.building, oldest.identity);
+ 		if (b && !oldest.stale && b->refreshEpoch[oldest.slot] == oldest.epoch && b->globalGradient[oldest.slot])
+ 		{
+@@ -221,13 +241,31 @@ void Map::stageBuildingGradientPreparation()
+ 	if (!buildingGradientPipelineActive()) return;
+ 	auto& rt = *gradientRuntime;
+ 	auto& pipeline = rt.buildings;
+-	while (!rt.buildingRequests.empty() && pipeline.canReserve())
++	const auto& policy=admissionPolicy();
++    ++BuildingGradientCpuProbe::boundary;
++    const auto initialCount=rt.buildingRequests.size();
++    std::size_t scanned=0;
++    unsigned admitted=0;
++    std::array<unsigned,32> teamAdmitted{};
++    // Scan this boundary's queue once. Requests over a team's quota remain in
++    // FIFO order for that team while other teams can use their own quotas.
++    while (!rt.buildingRequests.empty() && scanned<initialCount &&
++        (!policy.global || admitted<policy.global) && pipeline.canReserve(!policy.original))
+ 	{
+ 		const auto request = rt.buildingRequests.front();
+-		rt.buildingRequests.pop_front();
++        ++scanned;
++        rt.buildingRequests.pop_front();
+ 		Building* b = buildingGradientDestination(request.team, request.building, request.identity);
+-		if (!b || request.stale || b->refreshEpoch[request.slot] != request.epoch || !b->globalGradient[request.slot]) continue;
+-		auto* job = pipeline.reserve();
++		if (!b || request.stale || b->refreshEpoch[request.slot] != request.epoch || !b->globalGradient[request.slot]) {
++            BuildingGradientCpuProbe::discardRequest(request); continue;
++        }
++        if (request.team<0 || request.team>=int(teamAdmitted.size())) throw std::logic_error("Benchmark team range");
++        if (policy.perTeam && teamAdmitted[request.team]>=policy.perTeam) {
++            rt.buildingRequests.push_back(request); continue;
++        }
++        ++admitted; ++teamAdmitted[request.team];
++        BuildingGradientCpuProbe::admittedRequest(request);
++        auto* job = pipeline.reserve(!policy.original);
+ 		job->payload = {};
+ 		auto& p = job->payload;
+ 		p.team = request.team; p.buildingId = request.building; p.scriptIdentity = request.identity;
+@@ -241,6 +279,12 @@ void Map::stageBuildingGradientPreparation()
+ 		b->dirtyGradient[p.slot] = false;
+ 		rt.stagedBuildings.push_back(job);
+ 	}
++    using namespace BuildingGradientCpuProbe;
++    maxBatch=std::max<std::uint64_t>(maxBatch,rt.stagedBuildings.size());
++    for (auto n:teamAdmitted) maxTeamBatch=std::max<std::uint64_t>(maxTeamBatch,n);
++    maxPending=std::max<std::uint64_t>(maxPending,pipeline.pendingCount());
++    maxQueuedAfterBoundary=std::max<std::uint64_t>(maxQueuedAfterBoundary,rt.buildingRequests.size());
++    deferredBoundaries+=!rt.buildingRequests.empty();
+ }
+ 
+ void Map::prepareStagedBuildingGradients(const SimulationSnapshot::Handle& foundation)

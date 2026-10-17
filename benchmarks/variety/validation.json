@@ -1,0 +1,35 @@
+{
+  "completed_valid_runs": 384,
+  "maps": 3,
+  "seeds_per_map": 32,
+  "policies": [
+    "global-four",
+    "four-per-team"
+  ],
+  "compute_participants": [
+    1,
+    4
+  ],
+  "per_run_sample_counts_and_chronological_order": "all checked",
+  "quota_limits": "all checked",
+  "admission_delay_histogram_totals": "all checked",
+  "same_seed_initial_state_across_modes_and_participants": "all96 sets match",
+  "same_policy_final_checksum_between_participant_counts": "all192 pairs match",
+  "excluded_attempt_sets": 12,
+  "excluded_attempt_reasons": [
+    "excluded-host-contention/large-eleven/seed-43-recovered-1792194933116432000/reason.json",
+    "excluded-host-contention/large-eleven/seed-43-attempt-0/reason.json",
+    "excluded-host-contention/large-eleven/seed-42-attempt-1/reason.json",
+    "excluded-host-contention/large-eleven/seed-42-attempt-0/reason.json",
+    "excluded-host-contention/archipelago/seed-65-attempt-0-1792187162264046000/reason.json",
+    "excluded-host-contention/archipelago/seed-53-attempt-1-1792186768386979000/reason.json",
+    "excluded-host-contention/archipelago/seed-53-attempt-0-1792186751674662000/reason.json",
+    "excluded-host-contention/archipelago/seed-48-attempt-0-1792186606913883000/reason.json",
+    "excluded-host-contention/archipelago/seed-59-attempt-0-1792186997310227000/reason.json",
+    "excluded-host-contention/archipelago/seed-44-attempt-0-1792186508481001000/reason.json",
+    "excluded-host-contention/archipelago/seed-69-attempt-0-1792187296310983000/reason.json",
+    "excluded-host-contention/archipelago/seed-54-attempt-0-1792186843116680000/reason.json"
+  ],
+  "large_map_full_second_half_pairs": 32,
+  "supplemental_long_pilot": "Seed42, 65536ticks, both policies/participant counts; same-policy final checksums match; excluded from aggregate estimates."
+}

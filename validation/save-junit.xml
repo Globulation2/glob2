@@ -1,0 +1,86 @@
+<?xml version='1.0' encoding='utf-8'?>
+<testsuites tests="76" failures="1" errors="0" skipped="0"><testsuite name="BuildingAreaEffects"><testcase classname="BuildingAreaEffects" name="paid intervals and fractions preserve full save continuation [save-format][artifacts]" time="20.3309" status="run" />
+  <testcase classname="BuildingAreaEffects" name="saved funding and fractions reject values before compact storage narrowing [save-format]" time="4.09886" status="run" />
+  </testsuite><testsuite name="BuildingFootprint"><testcase classname="BuildingFootprint" name="generated fixtures round-trip through binary saves [save-format]" time="9.69527" status="run" />
+  <testcase classname="BuildingFootprint" name="the retained fixture loads [save-format]" time="1.74671" status="run" />
+  </testsuite><testsuite name="BuildingProductionCombat"><testcase classname="BuildingProductionCombat" name="building saves retain capacity boundaries and reject invalid lifecycle values [save-format]" time="1.54291" status="run" />
+  <testcase classname="BuildingProductionCombat" name="compact production preferences validate wide saved values before conversion [save-format]" time="0.945129" status="run" />
+  </testsuite><testsuite name="BuildingStock"><testcase classname="BuildingStock" name="all fifteen private stock slots clamp wide save values before narrowing [save-format]" time="1.06646" status="run" />
+  <testcase classname="BuildingStock" name="canceled entering explorers wait for a free exit before medical rebound [save-format]" time="4.40988" status="run" />
+  <testcase classname="BuildingStock" name="canceled entering services preserve ground and air occupancy across resave [save-format][artifacts]" time="23.2437" status="run" />
+  <testcase classname="BuildingStock" name="canceled inside services reset their timer and resume terrain and area effects [save-format][artifacts]" time="17.5389" status="run" />
+  <testcase classname="BuildingStock" name="clamped private stock cancels an unfunded committed production job [save-format]" time="2.52828" status="run" />
+  <testcase classname="BuildingStock" name="clamped stock keeps affordable service commitments and cancels unfunded visits without benefits [save-format]" time="2.35528" status="run" />
+  <testcase classname="BuildingStock" name="clamped stock trims construction funding while preserving wide budget and saved demand [save-format]" time="3.04386" status="run" />
+  <testcase classname="BuildingStock" name="clamping inactive private inventory preserves wide shared stock and service funding [save-format]" time="2.42542" status="run" />
+  </testsuite><testsuite name="EngineSession"><testcase classname="EngineSession" name="a retained version-152 stock replay is rejected [save-format]" time="2.2486" status="run" />
+  </testsuite><testsuite name="EnteringUnitSave"><testcase classname="EnteringUnitSave" name="authored catalogs reject unassigned indoor service membership [save-format]" time="2.91704" status="run" />
+  <testcase classname="EnteringUnitSave" name="generated fixtures round-trip through binary saves [save-format]" time="54.3694" status="run" />
+  <testcase classname="EnteringUnitSave" name="the retained fixture loads [save-format]" time="2.25774" status="run" />
+  </testsuite><testsuite name="EntityRandomLifecycle"><testcase classname="EntityRandomLifecycle" name="format 150 text area saves retain funded services through current saves [save-format][artifacts]" time="14.8431" status="run" />
+  </testsuite><testsuite name="FarmAreas"><testcase classname="FarmAreas" name="a farm area survives a save and load [save-format]" time="1.90694" status="run" />
+  </testsuite><testsuite name="GuardAreaBalance"><testcase classname="GuardAreaBalance" name="a saved game continues identically for 1000 ticks after loading [save-format]" time="11.306" status="run" />
+  </testsuite><testsuite name="HiringPipeline"><testcase classname="HiringPipeline" name="whole game save and resume preserves every publication phase [save-format][artifacts]" time="84.1064" status="run" />
+  </testsuite><testsuite name="LegacyRoundTripSave"><testcase classname="LegacyRoundTripSave" name="a format-143 save with live round-trip fields plays on greedily [golden][save-format]" time="19.6456" status="run" />
+  </testsuite><testsuite name="MapTiling"><testcase classname="MapTiling" name="a repeated starting map has portable per-tick checksums [save-format][golden]" time="1.97091" status="run" />
+  <testcase classname="MapTiling" name="copies colonies, painted areas and clearing settings [save-format]" time="1.08232" status="run" />
+  <testcase classname="MapTiling" name="refuses over-capacity bases before replacing the source [save-format]" time="0.58166" status="run" />
+  <testcase classname="MapTiling" name="rejects invalid requests without mutating the source [save-format]" time="0.986087" status="run" />
+  <testcase classname="MapTiling" name="wraps swimmers, buildings and team areas together across the source seam [save-format]" time="0.629369" status="run" />
+  <testcase classname="MapTiling" name="writes a compressed source as a reloadable ordinary map [save-format]" time="1.84529" status="run" />
+  </testsuite><testsuite name="src/unit/MarketFetchHarness.cpp"><testcase classname="src/unit/MarketFetchHarness.cpp" name="MarketFetch/market fields and pending publications survive binary and text saves [save-format]" time="11.782" status="run" />
+  <testcase classname="src/unit/MarketFetchHarness.cpp" name="MarketFetch/upgraded market IDs and stock survive binary and text saves [save-format]" time="19.0133" status="run" />
+  </testsuite><testsuite name="MarketsV2"><testcase classname="MarketsV2" name="disabled fruit deliveries have a stable per-tick trace and save continuation [golden][save-format][artifacts]" time="17.0328" status="run" />
+  <testcase classname="MarketsV2" name="enabled supply networks repeat deterministically with save continuation [golden][save-format][artifacts]" time="27.7511" status="run" />
+  <testcase classname="MarketsV2" name="legacy workers already travelling to markets continue after migration [golden][save-format]" time="1.57533" status="run" />
+  </testsuite><testsuite name="MatchSetup"><testcase classname="MatchSetup" name="current files bind embedded migration catalogs as explicit authority [save-format]" time="8.49676" status="run" />
+  <testcase classname="MatchSetup" name="legacy turn setup validates recovered body catalogs before accepting the session [save-format]" time="7.80556" status="run" />
+  </testsuite><testsuite name="Maxima.Economy"><testcase classname="Maxima.Economy" name="counted opponent records preserve slot fifteen and load the legacy twelve-record layout [save-format]" time="0.685765" status="run" />
+  <testcase classname="Maxima.Economy" name="retained Maxima save compiles each feeding admission row once [save-format]" time="2.22064" status="run" />
+  </testsuite><testsuite name="MenuColony"><testcase classname="MenuColony" name="shipped historical snapshot loads and advances without graphics [save-format]" time="2.5613" status="run" />
+  </testsuite><testsuite name="ResourceGrowth"><testcase classname="ResourceGrowth" name="both format 144 and 145 lineages and compact growth saves retain continuation [save-format]" time="47.1952" status="run" />
+  </testsuite><testsuite name="RuntimeContinuation"><testcase classname="RuntimeContinuation" name="gradient manager state survives binary and text round trips [save-format]" time="3.76441" status="run" />
+  </testsuite><testsuite name="SavegameSafety"><testcase classname="SavegameSafety" name="autosave defaults; atomic and background writes; truncated and malformed loads; imports and campaign progress [save-format][writes-preferences]" time="105.824" status="run" />
+  </testsuite><testsuite name="TeamLimit"><testcase classname="TeamLimit" name="retained format126 Maxima save preserves identities and subsequent AI decisions [save-format][artifacts]" time="44.9505" status="run" />
+  <testcase classname="TeamLimit" name="script generation slot counts reject missing capacity and truncated planes [save-format]" time="8.19154" status="run" />
+  <testcase classname="TeamLimit" name="sixteen controller slots survive binary and text headers [save-format]" time="0.848612" status="run" />
+  <testcase classname="TeamLimit" name="sixteen team saves continue identically and preserve entity generations [save-format][artifacts]" time="11.4972" status="run" />
+  </testsuite><testsuite name="TeamStatsSave"><testcase classname="TeamStatsSave" name="32 sampling phases; ring wrap; repeated loads; text streams and corruption controls [save-format]" time="91.9165" status="run">
+      <failure message="false" type="REQUIRE">
+src/team/stats/TeamStatsSaveHarness.cpp:46:
+REQUIRE( static_cast&lt;bool&gt;(ok) ) is NOT correct!
+  values: REQUIRE( false )
+  logged: integrated simulation uses current replay and network gates
+
+      </failure>
+    </testcase>
+  <testcase classname="TeamStatsSave" name="AI telemetry continues across a save [save-format]" time="70.5939" status="run" />
+  <testcase classname="TeamStatsSave" name="labour, combat and defence measurements survive a save [save-format]" time="3.46407" status="run" />
+  <testcase classname="TeamStatsSave" name="legacy version 84 fixture replays the golden trace [save-format][golden]" time="1.4603" status="run" />
+  <testcase classname="TeamStatsSave" name="legacy version 88 fixture replays the golden trace [save-format][golden]" time="1.04393" status="run" />
+  <testcase classname="TeamStatsSave" name="older saves load with labour coverage starting at the loaded tick [save-format]" time="0.942432" status="run" />
+  <testcase classname="TeamStatsSave" name="retained format152 magic levels count each explorer once through migration and current continuation [save-format]" time="11.8822" status="run" />
+  </testsuite><testsuite name="TurretTargeting"><testcase classname="TurretTargeting" name="historical saves start with a blank turret cache and retain current resave continuation [save-format]" time="1.6526" status="run" />
+  </testsuite><testsuite name="UnitCatalog"><testcase classname="UnitCatalog" name="legacy signed cached performance normalizes without narrowing race tables [save-format]" time="1.20376" status="run" />
+  <testcase classname="UnitCatalog" name="pre73 team race tables survive cached units training production and current resaves [save-format]" time="6.69077" status="run" />
+  <testcase classname="UnitCatalog" name="retained format64 FourSquares map keeps its historical warrior tables and current continuation [save-format]" time="3.82665" status="run" />
+  </testsuite><testsuite name="UntrustedFiles"><testcase classname="UntrustedFiles" name="complete saved game rejects poisoned unit state and retains a reproducible fixture [save-format][artifacts]" time="2.10105" status="run" />
+  <testcase classname="UntrustedFiles" name="entity loaders reject malicious indices before using them [save-format]" time="0.472111" status="run" />
+  <testcase classname="UntrustedFiles" name="legacy saved instruction pointers must identify statement boundaries [save-format]" time="0.422504" status="run" />
+  <testcase classname="UntrustedFiles" name="terrain loaders reject invalid resources occupants and sector dimensions [save-format]" time="0.863608" status="run" />
+  </testsuite><testsuite name="DeferredSnapshot"><testcase classname="DeferredSnapshot" name="deferred arrays own contents and relocate offsets [save-format]" time="0.001528" status="run" />
+  </testsuite><testsuite name="Maxima.Continuation"><testcase classname="Maxima.Continuation" name="compact arrays preserve nested state and signed limits [save-format]" time="0.004656" status="run" />
+    <testcase classname="Maxima.Continuation" name="binary bytes; SHA1; text fallback; nested records; signed limits; 64-bit order; strings; container boundaries and interleaved writes are identical [save-format]" time="6.28527" status="run" />
+    <testcase classname="Maxima.Continuation" name="compact fields retain legacy binary and text encodings [save-format]" time="0.00096" status="run" />
+  </testsuite><testsuite name="PackedArray"><testcase classname="PackedArray" name="all widths, wraparound, random values and block boundaries [save-format]&lt;unsigned char&gt;" time="0.027744" status="run" />
+    <testcase classname="PackedArray" name="all widths, wraparound, random values and block boundaries [save-format]&lt;unsigned short&gt;" time="0.057789" status="run" />
+    <testcase classname="PackedArray" name="all widths, wraparound, random values and block boundaries [save-format]&lt;unsigned int&gt;" time="0.073848" status="run" />
+    <testcase classname="PackedArray" name="all widths, wraparound, random values and block boundaries [save-format]&lt;unsigned long long&gt;" time="0.087456" status="run" />
+    <testcase classname="PackedArray" name="format 128 golden blocks [save-format][golden]" time="0" status="run" />
+    <testcase classname="PackedArray" name="deferred encoding matches immediate bytes for all patterns [save-format]&lt;unsigned char&gt;" time="0.079481" status="run" />
+    <testcase classname="PackedArray" name="deferred encoding matches immediate bytes for all patterns [save-format]&lt;unsigned short&gt;" time="0.086604" status="run" />
+    <testcase classname="PackedArray" name="deferred encoding matches immediate bytes for all patterns [save-format]&lt;unsigned int&gt;" time="0.083116" status="run" />
+    <testcase classname="PackedArray" name="deferred encoding matches immediate bytes for all patterns [save-format]&lt;unsigned long long&gt;" time="0.104751" status="run" />
+    <testcase classname="PackedArray" name="reject truncated, overflowing and invalid blocks before out of bounds writes [save-format]" time="0.002294" status="run" />
+  </testsuite><testsuite name="PackedRecords"><testcase classname="PackedRecords" name="large unit history rows retain bounded batches and exact continuation [save-format]" time="36.3539" status="run" />
+  </testsuite></testsuites>

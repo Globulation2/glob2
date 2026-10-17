@@ -1,0 +1,4 @@
+PASS TeamStatsSave/32 sampling phases; ring wrap; repeated loads; text streams and corruption controls [save-format] (66.3s)
+
+1 passed, 0 failed, 0 skipped (66.3s of test time)
+[run_tests] JUnit report: artifacts/team-quota-pr/save-gate-final-junit.xml (1 cases)

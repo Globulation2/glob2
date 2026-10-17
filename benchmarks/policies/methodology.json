@@ -1,0 +1,29 @@
+{
+  "platform": "macOS-26.6.2-arm64-arm-64bit-Mach-O",
+  "architecture": "arm64",
+  "base_revision": "43b153739838207983c922ab4cbeed7773459de9",
+  "build_command": "PYTHONPATH=. CCACHE=1 scons -j8 release=1 client_profile=full server=0",
+  "analysis_command": "uv run --offline --with matplotlib==3.10.7 python artifacts/gradient-admission-policies-20261016/analyze.py",
+  "matrix": "384 valid runs: 32 seeds (42-73) x 6 policies x 2 compute participant counts (1,4). Same Holiday Island 2 map, four AI teams (nicowar,econo,castor,warrush), up to 32768 ticks with natural ends allowed. Serial execution, rotated/reversed policy order and alternating participant order.",
+  "policy_definitions": {
+    "capped": "Unchanged original global-four admission and pending bounds.",
+    "global8": "FIFO global eight per boundary.",
+    "global16": "FIFO global sixteen per boundary.",
+    "team2": "Two per team per boundary. Scan queue once, retaining excess requests in FIFO order within each team; admit other teams past an exhausted quota.",
+    "team4": "Four per team per boundary, same queue discipline.",
+    "all": "All eligible requests at next boundary; legacy overflow fallback disabled, matching earlier experiment."
+  },
+  "shared_behavior": "Eight-tick publication delay, lazy build depth, cold synchronous initialization, and all other simulation rules unchanged. All finite policies retain legacy >64-request synchronous overflow fallback; result records actual overflow builds. No autosaves or output saves in measured run. New per-team and larger global caps use existing reservation code with original global-four admission guards bypassed and quotas enforced at staging.",
+  "metrics": "Tick samples are chronological native u64 ns. Adjacent-change is absolute difference between consecutive tick times. Per-game p99 uses floor((n-1)*0.99). Rolling window sums are consecutive measured tick wall times. Aggregate means weight all 32 seeds equally. CPU normalized per 1000 executed ticks. Queue delay counts boundaries beyond first eligible staging boundary; excludes normal request-to-next-boundary latency and fixed eight-tick publication delay. Delay statistics include successfully admitted requests, excluding stale/canceled and synchronous overflow requests. Histogram bins 0-4095, exact max tracked; largest observed delay31 so no saturation. P95 delay in summary is mean of per-game p95, not pooled quantile.",
+  "statistics": "10000 paired seed bootstrap samples using NumPy default_rng seed20261016. Percentile 95% intervals for relative changes in arithmetic means. Exploratory comparisons; intervals not corrected for multiple comparisons.",
+  "host_contention": "Unrelated eight-process clang build began during seed61. Excluded the entire seed61 set including early uncontended runs, stopped own runner between runs, waited for compiler completion, and reran the full seed set. Original affected results/reason/log preserved in excluded-host-contention. Guard checks for active clang before each subsequent new run. No unrelated processes stopped.",
+  "validation": {
+    "completed_runs": 384,
+    "policy_limits_and_histogram_totals": "checked all runs",
+    "chronological_sample_count_and_order": "checked all runs",
+    "same_policy_final_checksum_between_participant_counts": "all192 comparisons match",
+    "previous_experiment_control_checksum_comparisons": 128,
+    "short_smoke": "4096ticks seed42 each policy, matching per-tick world/entity checksums between 1 and4 participants."
+  },
+  "limits": "Single map with four teams on one AppleM3 Mac. One participant tests reduced parallelism, not weaker cores, different memory bandwidth/architecture, thermal limits, or rendering contention. Headless unrestricted execution is not paced gameplay. Different admission policies change simulation decisions/game outcomes, so CPU compares overall policy cost across seeds rather than identical later workloads. Frozen master refresh behavior; PR1197 cold-field pending requests are not included. Team cap total grows with team count; larger-team matches need separate testing. Source is a private benchmark prototype; save/load bounds, sim version, golden records and cross-platform compatibility not prepared for production."
+}

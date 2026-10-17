@@ -1,0 +1,4 @@
+PASS TurnEngineHarness/a client sending hostile orders of every type crashes no one and is refused identically everywhere [network-sim][fuzz][artifacts] (57.0s)
+
+1 passed, 0 failed, 0 skipped (57.0s of test time)
+[run_tests] JUnit report: artifacts/team-quota-pr/network-fuzz-final-junit.xml (1 cases)
