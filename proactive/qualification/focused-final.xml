@@ -1,0 +1,51 @@
+<?xml version='1.0' encoding='utf-8'?>
+<testsuites tests="49" failures="0" errors="0" skipped="0"><testsuite name="HiringGradientPreparation"><testcase classname="HiringGradientPreparation" name="a cold primary field survives binary and text saves without early publication [artifacts]" time="7.7984" status="run" />
+  <testcase classname="HiringGradientPreparation" name="a stale unreachable serving field keeps candidates for a live refresh" time="0.286793" status="run" />
+  <testcase classname="HiringGradientPreparation" name="cold shortlisted destinations are settled before suggestions publish" time="0.790292" status="run" />
+  <testcase classname="HiringGradientPreparation" name="formats 170 and 171 load without proactive initialization records" time="0.381518" status="run" />
+  <testcase classname="HiringGradientPreparation" name="prewarming reuses a dirty serving generation and its search" time="0.304331" status="run" />
+  <testcase classname="HiringGradientPreparation" name="primary-only prewarming leaves fallback cells lazy while retaining candidates" time="0.632542" status="run" />
+  </testsuite><testsuite name="HiringPipeline"><testcase classname="HiringPipeline" name="a returning attraction worker does not wait another recruitment-clock cycle" time="0.347539" status="run" />
+  <testcase classname="HiringPipeline" name="all attraction jobs admit through the production candidate consumer" time="0.502873" status="run" />
+  <testcase classname="HiringPipeline" name="an expired hybrid attraction request releases unused delivery seats" time="0.417438" status="run" />
+  <testcase classname="HiringPipeline" name="an owed attraction round retries for a bounded window" time="0.269565" status="run" />
+  <testcase classname="HiringPipeline" name="cold route generations publish only at the fixed deadline" time="0.547837" status="run" />
+  <testcase classname="HiringPipeline" name="configuration changes keep suggestions and admission rechecks live eligibility" time="0.268066" status="run" />
+  <testcase classname="HiringPipeline" name="imminent attraction peers receive alternatives without inactive peers claiming them" time="0.300461" status="run" />
+  <testcase classname="HiringPipeline" name="missing lists do not synchronously scan or assign a worker" time="0.26911" status="run" />
+  <testcase classname="HiringPipeline" name="paused and waiting replicas retain the same pre-order hiring observation" time="0.470139" status="run" />
+  <testcase classname="HiringPipeline" name="production traces and published candidates match across participant counts" time="1.24334" status="run" />
+  <testcase classname="HiringPipeline" name="saving every delay phase retains outputs and pending identity without early publication" time="0.86387" status="run" />
+  <testcase classname="HiringPipeline" name="transient unavailability and changed cargo are validated on every attempt" time="0.32225" status="run" />
+  <testcase classname="HiringPipeline" name="whole game save and resume preserves every publication phase [save-format][artifacts]" time="34.1964" status="run" />
+  <testcase classname="HiringPipeline" name="whole-game continuation retains an outstanding attraction request" time="1.11188" status="run" />
+  </testsuite><testsuite name="HiringPlanner"><testcase classname="HiringPlanner" name="bounded shortlists match sorted prefixes for every job" time="0.001029" status="run" />
+  <testcase classname="HiringPlanner" name="busy ground classes do not initialize unused hiring routes" time="0.315146" status="run" />
+  <testcase classname="HiringPlanner" name="cold route observation suggests candidates while live admission remains Pending" time="0.327121" status="run" />
+  <testcase classname="HiringPlanner" name="defense score uses frozen attack modifiers and saturated integer strength" time="0.432801" status="run" />
+  <testcase classname="HiringPlanner" name="distance bounds preserve exhaustive rankings for every job" time="0.626361" status="run" />
+  <testcase classname="HiringPlanner" name="diverse material offers cover peers without reserving live workers" time="0.39938" status="run" />
+  <testcase classname="HiringPlanner" name="fetch jobs reuse canonical resource estimates independently of live planes" time="0.36611" status="run" />
+  <testcase classname="HiringPlanner" name="food-unsafe high-skill workers cannot crowd a viable worker out" time="0.290325" status="run" />
+  <testcase classname="HiringPlanner" name="job quotas bound each list to vacancies plus two" time="0.325564" status="run" />
+  <testcase classname="HiringPlanner" name="missing building fields never trigger private construction" time="0.433168" status="run" />
+  <testcase classname="HiringPlanner" name="missing shared planes do not suppress suggestions after visibility-rule changes" time="0.353641" status="run" />
+  <testcase classname="HiringPlanner" name="missing supplier planes retain fetch suggestions for live admission" time="0.553388" status="run" />
+  <testcase classname="HiringPlanner" name="observed funding reproduces live material apportionment" time="0.318244" status="run" />
+  <testcase classname="HiringPlanner" name="planning skips zero-demand and staffed buildings and resumes on vacancies" time="0.393258" status="run" />
+  <testcase classname="HiringPlanner" name="published resource estimates are used and missing planes remain recruitable" time="0.32402" status="run" />
+  <testcase classname="HiringPlanner" name="ranking tie break follows unit identity" time="0" status="run" />
+  <testcase classname="HiringPlanner" name="resource estimates borrow the normal snapshot plane without private builds" time="0.344923" status="run" />
+  <testcase classname="HiringPlanner" name="shared field survives replacement and proposals preserve owner demand" time="0.404427" status="run" />
+  <testcase classname="HiringPlanner" name="shared resource planes retain ordered unreachable-neighbor admission estimates" time="0.35709" status="run" />
+  <testcase classname="HiringPlanner" name="snapshot planning skips busy workers without changing live units" time="0.318814" status="run" />
+  <testcase classname="HiringPlanner" name="supplier membership survives waiting-for-construction observations" time="0.533245" status="run" />
+  <testcase classname="HiringPlanner" name="unrelated live route enrollment cannot change hiring inputs" time="0.324236" status="run" />
+  <testcase classname="HiringPlanner" name="worker construction quotas match repair funding" time="0.346455" status="run" />
+  <testcase classname="HiringPlanner" name="worker demand uses immutable shared funding and staffing facts" time="0.344247" status="run" />
+  </testsuite><testsuite name="ProactiveBuildingGradients"><testcase classname="ProactiveBuildingGradients" name="creation and primary hiring seed one shared route" time="0.324799" status="run" />
+  <testcase classname="ProactiveBuildingGradients" name="creation prepares shallow routes for busy units outside the hiring cohort" time="0.425851" status="run" />
+  <testcase classname="ProactiveBuildingGradients" name="queued and off-cohort pending initialization survive binary and text saves [artifacts]" time="8.36179" status="run" />
+  <testcase classname="ProactiveBuildingGradients" name="saving a primary-only job does not turn it into a proactive claim" time="0.308459" status="run" />
+  <testcase classname="ProactiveBuildingGradients" name="upgrade and cancellation prepare the committed footprint" time="0.304808" status="run" />
+  </testsuite></testsuites>

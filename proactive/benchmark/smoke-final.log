@@ -1,0 +1,7 @@
+SET COMPLETE holiday seed=42
+{"workload": "large-eleven", "seed": 42, "mode": "proactive", "participants": 4, "ticks": 2048, "cpu_s": 5.822, "elapsed_s": 5.09, "p99_ms": 3.159, "host_contention_seen": false}
+{"workload": "large-eleven", "seed": 42, "mode": "baseline", "participants": 4, "ticks": 2048, "cpu_s": 5.73, "elapsed_s": 4.96, "p99_ms": 3.126, "host_contention_seen": false}
+{"workload": "large-eleven", "seed": 42, "mode": "proactive", "participants": 1, "ticks": 2048, "cpu_s": 5.705, "elapsed_s": 6.01, "p99_ms": 5.937, "host_contention_seen": false}
+{"workload": "large-eleven", "seed": 42, "mode": "baseline", "participants": 1, "ticks": 2048, "cpu_s": 5.572, "elapsed_s": 5.88, "p99_ms": 5.752, "host_contention_seen": false}
+SET COMPLETE large-eleven seed=42
+ALL REQUESTED SETS COMPLETE

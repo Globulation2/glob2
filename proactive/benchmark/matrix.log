@@ -1,0 +1,321 @@
+{"workload": "holiday", "seed": 42, "mode": "baseline", "participants": 1, "ticks": 27906, "cpu_s": 4.219, "elapsed_s": 4.56, "p99_ms": 0.614, "host_contention_seen": false}
+{"workload": "holiday", "seed": 42, "mode": "proactive", "participants": 1, "ticks": 28002, "cpu_s": 4.72, "elapsed_s": 4.98, "p99_ms": 0.688, "host_contention_seen": false}
+{"workload": "holiday", "seed": 42, "mode": "baseline", "participants": 4, "ticks": 27906, "cpu_s": 4.746, "elapsed_s": 1.8, "p99_ms": 0.313, "host_contention_seen": false}
+{"workload": "holiday", "seed": 42, "mode": "proactive", "participants": 4, "ticks": 28002, "cpu_s": 5.267, "elapsed_s": 1.96, "p99_ms": 0.363, "host_contention_seen": false}
+SET COMPLETE holiday seed=42
+{"workload": "large-eleven", "seed": 42, "mode": "proactive", "participants": 4, "ticks": 32768, "cpu_s": 48.593, "elapsed_s": 14.66, "p99_ms": 3.047, "host_contention_seen": false}
+{"workload": "large-eleven", "seed": 42, "mode": "baseline", "participants": 4, "ticks": 32768, "cpu_s": 51.208, "elapsed_s": 15.65, "p99_ms": 3.557, "host_contention_seen": false}
+{"workload": "large-eleven", "seed": 42, "mode": "proactive", "participants": 1, "ticks": 32768, "cpu_s": 43.797, "elapsed_s": 44.15, "p99_ms": 4.964, "host_contention_seen": false}
+{"workload": "large-eleven", "seed": 42, "mode": "baseline", "participants": 1, "ticks": 32768, "cpu_s": 44.947, "elapsed_s": 45.62, "p99_ms": 5.316, "host_contention_seen": false}
+SET COMPLETE large-eleven seed=42
+{"workload": "holiday", "seed": 43, "mode": "proactive", "participants": 4, "ticks": 32768, "cpu_s": 6.784, "elapsed_s": 2.42, "p99_ms": 0.3, "host_contention_seen": false}
+{"workload": "holiday", "seed": 43, "mode": "baseline", "participants": 4, "ticks": 32768, "cpu_s": 7.024, "elapsed_s": 2.5, "p99_ms": 0.339, "host_contention_seen": false}
+{"workload": "holiday", "seed": 43, "mode": "proactive", "participants": 1, "ticks": 32768, "cpu_s": 6.093, "elapsed_s": 6.37, "p99_ms": 0.682, "host_contention_seen": false}
+{"workload": "holiday", "seed": 43, "mode": "baseline", "participants": 1, "ticks": 32768, "cpu_s": 6.307, "elapsed_s": 6.57, "p99_ms": 0.685, "host_contention_seen": false}
+SET COMPLETE holiday seed=43
+{"workload": "large-eleven", "seed": 43, "mode": "baseline", "participants": 1, "ticks": 32768, "cpu_s": 41.464, "elapsed_s": 41.79, "p99_ms": 4.888, "host_contention_seen": false}
+{"workload": "large-eleven", "seed": 43, "mode": "proactive", "participants": 1, "ticks": 32768, "cpu_s": 44.474, "elapsed_s": 45.21, "p99_ms": 5.285, "host_contention_seen": false}
+{"workload": "large-eleven", "seed": 43, "mode": "baseline", "participants": 4, "ticks": 32768, "cpu_s": 46.616, "elapsed_s": 13.96, "p99_ms": 2.934, "host_contention_seen": false}
+{"workload": "large-eleven", "seed": 43, "mode": "proactive", "participants": 4, "ticks": 32768, "cpu_s": 51.337, "elapsed_s": 15.57, "p99_ms": 3.503, "host_contention_seen": false}
+SET COMPLETE large-eleven seed=43
+{"workload": "holiday", "seed": 44, "mode": "baseline", "participants": 1, "ticks": 32768, "cpu_s": 5.452, "elapsed_s": 5.71, "p99_ms": 0.643, "host_contention_seen": false}
+{"workload": "holiday", "seed": 44, "mode": "proactive", "participants": 1, "ticks": 32768, "cpu_s": 5.516, "elapsed_s": 5.83, "p99_ms": 0.635, "host_contention_seen": false}
+{"workload": "holiday", "seed": 44, "mode": "baseline", "participants": 4, "ticks": 32768, "cpu_s": 6.099, "elapsed_s": 2.2, "p99_ms": 0.296, "host_contention_seen": false}
+{"workload": "holiday", "seed": 44, "mode": "proactive", "participants": 4, "ticks": 32768, "cpu_s": 6.373, "elapsed_s": 2.32, "p99_ms": 0.305, "host_contention_seen": false}
+SET COMPLETE holiday seed=44
+{"workload": "large-eleven", "seed": 44, "mode": "proactive", "participants": 4, "ticks": 32768, "cpu_s": 53.743, "elapsed_s": 16.25, "p99_ms": 3.57, "host_contention_seen": false}
+{"workload": "large-eleven", "seed": 44, "mode": "baseline", "participants": 4, "ticks": 32768, "cpu_s": 53.86, "elapsed_s": 16.13, "p99_ms": 3.423, "host_contention_seen": false}
+{"workload": "large-eleven", "seed": 44, "mode": "proactive", "participants": 1, "ticks": 32768, "cpu_s": 46.587, "elapsed_s": 46.95, "p99_ms": 5.319, "host_contention_seen": false}
+{"workload": "large-eleven", "seed": 44, "mode": "baseline", "participants": 1, "ticks": 32768, "cpu_s": 45.732, "elapsed_s": 46.41, "p99_ms": 5.074, "host_contention_seen": false}
+SET COMPLETE large-eleven seed=44
+{"workload": "holiday", "seed": 45, "mode": "proactive", "participants": 4, "ticks": 32768, "cpu_s": 6.152, "elapsed_s": 2.26, "p99_ms": 0.331, "host_contention_seen": false}
+{"workload": "holiday", "seed": 45, "mode": "baseline", "participants": 4, "ticks": 32768, "cpu_s": 5.774, "elapsed_s": 2.11, "p99_ms": 0.283, "host_contention_seen": false}
+{"workload": "holiday", "seed": 45, "mode": "proactive", "participants": 1, "ticks": 32768, "cpu_s": 5.506, "elapsed_s": 5.77, "p99_ms": 0.655, "host_contention_seen": false}
+{"workload": "holiday", "seed": 45, "mode": "baseline", "participants": 1, "ticks": 32768, "cpu_s": 5.146, "elapsed_s": 5.43, "p99_ms": 0.604, "host_contention_seen": false}
+SET COMPLETE holiday seed=45
+{"workload": "large-eleven", "seed": 45, "mode": "baseline", "participants": 1, "ticks": 32768, "cpu_s": 45.022, "elapsed_s": 45.4, "p99_ms": 5.364, "host_contention_seen": false}
+{"workload": "large-eleven", "seed": 45, "mode": "proactive", "participants": 1, "ticks": 32768, "cpu_s": 45.126, "elapsed_s": 45.77, "p99_ms": 5.454, "host_contention_seen": false}
+{"workload": "large-eleven", "seed": 45, "mode": "baseline", "participants": 4, "ticks": 32768, "cpu_s": 50.558, "elapsed_s": 15.37, "p99_ms": 3.428, "host_contention_seen": false}
+{"workload": "large-eleven", "seed": 45, "mode": "proactive", "participants": 4, "ticks": 32768, "cpu_s": 52.093, "elapsed_s": 15.8, "p99_ms": 3.647, "host_contention_seen": false}
+SET COMPLETE large-eleven seed=45
+{"workload": "holiday", "seed": 46, "mode": "baseline", "participants": 1, "ticks": 32768, "cpu_s": 5.375, "elapsed_s": 5.67, "p99_ms": 0.622, "host_contention_seen": false}
+{"workload": "holiday", "seed": 46, "mode": "proactive", "participants": 1, "ticks": 32768, "cpu_s": 5.66, "elapsed_s": 5.94, "p99_ms": 0.672, "host_contention_seen": false}
+{"workload": "holiday", "seed": 46, "mode": "baseline", "participants": 4, "ticks": 32768, "cpu_s": 6.038, "elapsed_s": 2.26, "p99_ms": 0.288, "host_contention_seen": false}
+{"workload": "holiday", "seed": 46, "mode": "proactive", "participants": 4, "ticks": 32768, "cpu_s": 6.436, "elapsed_s": 2.32, "p99_ms": 0.284, "host_contention_seen": false}
+SET COMPLETE holiday seed=46
+{"workload": "large-eleven", "seed": 46, "mode": "proactive", "participants": 4, "ticks": 32768, "cpu_s": 50.422, "elapsed_s": 15.14, "p99_ms": 3.359, "host_contention_seen": false}
+{"workload": "large-eleven", "seed": 46, "mode": "baseline", "participants": 4, "ticks": 32768, "cpu_s": 43.957, "elapsed_s": 13.38, "p99_ms": 3.023, "host_contention_seen": false}
+{"workload": "large-eleven", "seed": 46, "mode": "proactive", "participants": 1, "ticks": 32768, "cpu_s": 43.606, "elapsed_s": 44.34, "p99_ms": 5.039, "host_contention_seen": false}
+{"workload": "large-eleven", "seed": 46, "mode": "baseline", "participants": 1, "ticks": 32768, "cpu_s": 37.39, "elapsed_s": 38.55, "p99_ms": 4.695, "host_contention_seen": false}
+SET COMPLETE large-eleven seed=46
+{"workload": "holiday", "seed": 47, "mode": "proactive", "participants": 4, "ticks": 32768, "cpu_s": 6.126, "elapsed_s": 2.26, "p99_ms": 0.296, "host_contention_seen": false}
+{"workload": "holiday", "seed": 47, "mode": "baseline", "participants": 4, "ticks": 32768, "cpu_s": 6.283, "elapsed_s": 2.32, "p99_ms": 0.305, "host_contention_seen": false}
+{"workload": "holiday", "seed": 47, "mode": "proactive", "participants": 1, "ticks": 32768, "cpu_s": 5.44, "elapsed_s": 5.74, "p99_ms": 0.617, "host_contention_seen": false}
+{"workload": "holiday", "seed": 47, "mode": "baseline", "participants": 1, "ticks": 32768, "cpu_s": 5.598, "elapsed_s": 5.89, "p99_ms": 0.647, "host_contention_seen": false}
+SET COMPLETE holiday seed=47
+{"workload": "large-eleven", "seed": 47, "mode": "baseline", "participants": 1, "ticks": 32768, "cpu_s": 38.895, "elapsed_s": 39.19, "p99_ms": 4.752, "host_contention_seen": false}
+{"workload": "large-eleven", "seed": 47, "mode": "proactive", "participants": 1, "ticks": 32768, "cpu_s": 40.87, "elapsed_s": 41.52, "p99_ms": 4.957, "host_contention_seen": false}
+{"workload": "large-eleven", "seed": 47, "mode": "baseline", "participants": 4, "ticks": 32768, "cpu_s": 43.196, "elapsed_s": 13.56, "p99_ms": 3.089, "host_contention_seen": false}
+{"workload": "large-eleven", "seed": 47, "mode": "proactive", "participants": 4, "ticks": 32768, "cpu_s": 47.151, "elapsed_s": 14.37, "p99_ms": 3.076, "host_contention_seen": false}
+SET COMPLETE large-eleven seed=47
+{"workload": "holiday", "seed": 48, "mode": "baseline", "participants": 1, "ticks": 32768, "cpu_s": 5.472, "elapsed_s": 5.76, "p99_ms": 0.637, "host_contention_seen": false}
+{"workload": "holiday", "seed": 48, "mode": "proactive", "participants": 1, "ticks": 32768, "cpu_s": 6.157, "elapsed_s": 6.46, "p99_ms": 0.724, "host_contention_seen": false}
+{"workload": "holiday", "seed": 48, "mode": "baseline", "participants": 4, "ticks": 32768, "cpu_s": 6.109, "elapsed_s": 2.26, "p99_ms": 0.301, "host_contention_seen": false}
+{"workload": "holiday", "seed": 48, "mode": "proactive", "participants": 4, "ticks": 32768, "cpu_s": 6.979, "elapsed_s": 2.48, "p99_ms": 0.337, "host_contention_seen": false}
+SET COMPLETE holiday seed=48
+{"workload": "large-eleven", "seed": 48, "mode": "proactive", "participants": 4, "ticks": 32768, "cpu_s": 45.975, "elapsed_s": 13.81, "p99_ms": 2.953, "host_contention_seen": false}
+{"workload": "large-eleven", "seed": 48, "mode": "baseline", "participants": 4, "ticks": 32768, "cpu_s": 49.257, "elapsed_s": 14.97, "p99_ms": 3.492, "host_contention_seen": false}
+{"workload": "large-eleven", "seed": 48, "mode": "proactive", "participants": 1, "ticks": 32768, "cpu_s": 39.768, "elapsed_s": 40.11, "p99_ms": 4.662, "host_contention_seen": false}
+{"workload": "large-eleven", "seed": 48, "mode": "baseline", "participants": 1, "ticks": 32768, "cpu_s": 41.933, "elapsed_s": 42.29, "p99_ms": 5.232, "host_contention_seen": false}
+SET COMPLETE large-eleven seed=48
+{"workload": "holiday", "seed": 49, "mode": "proactive", "participants": 4, "ticks": 32768, "cpu_s": 6.522, "elapsed_s": 2.31, "p99_ms": 0.373, "host_contention_seen": false}
+{"workload": "holiday", "seed": 49, "mode": "baseline", "participants": 4, "ticks": 31170, "cpu_s": 5.523, "elapsed_s": 2.01, "p99_ms": 0.318, "host_contention_seen": false}
+{"workload": "holiday", "seed": 49, "mode": "proactive", "participants": 1, "ticks": 32768, "cpu_s": 5.853, "elapsed_s": 6.13, "p99_ms": 0.701, "host_contention_seen": false}
+{"workload": "holiday", "seed": 49, "mode": "baseline", "participants": 1, "ticks": 31170, "cpu_s": 4.96, "elapsed_s": 5.22, "p99_ms": 0.658, "host_contention_seen": false}
+SET COMPLETE holiday seed=49
+{"workload": "large-eleven", "seed": 49, "mode": "baseline", "participants": 1, "ticks": 32768, "cpu_s": 43.98, "elapsed_s": 44.28, "p99_ms": 5.293, "host_contention_seen": false}
+{"workload": "large-eleven", "seed": 49, "mode": "proactive", "participants": 1, "ticks": 32768, "cpu_s": 43.443, "elapsed_s": 43.76, "p99_ms": 4.915, "host_contention_seen": false}
+{"workload": "large-eleven", "seed": 49, "mode": "baseline", "participants": 4, "ticks": 32768, "cpu_s": 48.965, "elapsed_s": 15.07, "p99_ms": 3.443, "host_contention_seen": false}
+{"workload": "large-eleven", "seed": 49, "mode": "proactive", "participants": 4, "ticks": 32768, "cpu_s": 50.183, "elapsed_s": 15.16, "p99_ms": 3.107, "host_contention_seen": false}
+SET COMPLETE large-eleven seed=49
+{"workload": "holiday", "seed": 50, "mode": "baseline", "participants": 1, "ticks": 32768, "cpu_s": 5.712, "elapsed_s": 6.0, "p99_ms": 0.649, "host_contention_seen": false}
+{"workload": "holiday", "seed": 50, "mode": "proactive", "participants": 1, "ticks": 32768, "cpu_s": 6.0, "elapsed_s": 6.28, "p99_ms": 0.68, "host_contention_seen": false}
+{"workload": "holiday", "seed": 50, "mode": "baseline", "participants": 4, "ticks": 32768, "cpu_s": 6.382, "elapsed_s": 2.32, "p99_ms": 0.343, "host_contention_seen": false}
+{"workload": "holiday", "seed": 50, "mode": "proactive", "participants": 4, "ticks": 32768, "cpu_s": 6.785, "elapsed_s": 2.42, "p99_ms": 0.386, "host_contention_seen": false}
+SET COMPLETE holiday seed=50
+{"workload": "large-eleven", "seed": 50, "mode": "proactive", "participants": 4, "ticks": 32768, "cpu_s": 49.423, "elapsed_s": 15.15, "p99_ms": 3.374, "host_contention_seen": false}
+{"workload": "large-eleven", "seed": 50, "mode": "baseline", "participants": 4, "ticks": 32768, "cpu_s": 52.368, "elapsed_s": 15.95, "p99_ms": 3.62, "host_contention_seen": false}
+{"workload": "large-eleven", "seed": 50, "mode": "proactive", "participants": 1, "ticks": 32768, "cpu_s": 42.915, "elapsed_s": 43.22, "p99_ms": 5.142, "host_contention_seen": false}
+{"workload": "large-eleven", "seed": 50, "mode": "baseline", "participants": 1, "ticks": 32768, "cpu_s": 44.862, "elapsed_s": 45.23, "p99_ms": 5.325, "host_contention_seen": false}
+SET COMPLETE large-eleven seed=50
+{"workload": "holiday", "seed": 51, "mode": "proactive", "participants": 4, "ticks": 32768, "cpu_s": 5.781, "elapsed_s": 2.09, "p99_ms": 0.307, "host_contention_seen": false}
+{"workload": "holiday", "seed": 51, "mode": "baseline", "participants": 4, "ticks": 32768, "cpu_s": 5.595, "elapsed_s": 2.08, "p99_ms": 0.368, "host_contention_seen": false}
+{"workload": "holiday", "seed": 51, "mode": "proactive", "participants": 1, "ticks": 32768, "cpu_s": 5.161, "elapsed_s": 5.43, "p99_ms": 0.637, "host_contention_seen": false}
+{"workload": "holiday", "seed": 51, "mode": "baseline", "participants": 1, "ticks": 32768, "cpu_s": 4.988, "elapsed_s": 5.25, "p99_ms": 0.633, "host_contention_seen": false}
+SET COMPLETE holiday seed=51
+{"workload": "large-eleven", "seed": 51, "mode": "baseline", "participants": 1, "ticks": 32768, "cpu_s": 38.872, "elapsed_s": 39.19, "p99_ms": 4.875, "host_contention_seen": false}
+{"workload": "large-eleven", "seed": 51, "mode": "proactive", "participants": 1, "ticks": 32768, "cpu_s": 41.439, "elapsed_s": 41.74, "p99_ms": 4.866, "host_contention_seen": false}
+{"workload": "large-eleven", "seed": 51, "mode": "baseline", "participants": 4, "ticks": 32768, "cpu_s": 43.268, "elapsed_s": 13.3, "p99_ms": 3.065, "host_contention_seen": false}
+{"workload": "large-eleven", "seed": 51, "mode": "proactive", "participants": 4, "ticks": 32768, "cpu_s": 47.606, "elapsed_s": 14.6, "p99_ms": 3.209, "host_contention_seen": false}
+SET COMPLETE large-eleven seed=51
+{"workload": "holiday", "seed": 52, "mode": "baseline", "participants": 1, "ticks": 30146, "cpu_s": 4.943, "elapsed_s": 5.22, "p99_ms": 0.66, "host_contention_seen": false}
+{"workload": "holiday", "seed": 52, "mode": "proactive", "participants": 1, "ticks": 30818, "cpu_s": 5.438, "elapsed_s": 5.72, "p99_ms": 0.685, "host_contention_seen": false}
+{"workload": "holiday", "seed": 52, "mode": "baseline", "participants": 4, "ticks": 30146, "cpu_s": 5.55, "elapsed_s": 2.01, "p99_ms": 0.352, "host_contention_seen": false}
+{"workload": "holiday", "seed": 52, "mode": "proactive", "participants": 4, "ticks": 30818, "cpu_s": 6.342, "elapsed_s": 2.65, "p99_ms": 0.403, "host_contention_seen": false}
+SET COMPLETE holiday seed=52
+{"workload": "large-eleven", "seed": 52, "mode": "proactive", "participants": 4, "ticks": 32768, "cpu_s": 49.364, "elapsed_s": 14.87, "p99_ms": 3.23, "host_contention_seen": false}
+{"workload": "large-eleven", "seed": 52, "mode": "baseline", "participants": 4, "ticks": 32768, "cpu_s": 51.372, "elapsed_s": 15.68, "p99_ms": 3.659, "host_contention_seen": false}
+{"workload": "large-eleven", "seed": 52, "mode": "proactive", "participants": 1, "ticks": 32768, "cpu_s": 42.838, "elapsed_s": 43.15, "p99_ms": 4.951, "host_contention_seen": false}
+{"workload": "large-eleven", "seed": 52, "mode": "baseline", "participants": 1, "ticks": 32768, "cpu_s": 43.986, "elapsed_s": 44.32, "p99_ms": 5.403, "host_contention_seen": false}
+SET COMPLETE large-eleven seed=52
+{"workload": "holiday", "seed": 53, "mode": "proactive", "participants": 4, "ticks": 32768, "cpu_s": 6.679, "elapsed_s": 2.37, "p99_ms": 0.345, "host_contention_seen": false}
+{"workload": "holiday", "seed": 53, "mode": "baseline", "participants": 4, "ticks": 32768, "cpu_s": 6.866, "elapsed_s": 2.37, "p99_ms": 0.295, "host_contention_seen": false}
+{"workload": "holiday", "seed": 53, "mode": "proactive", "participants": 1, "ticks": 32768, "cpu_s": 6.009, "elapsed_s": 6.27, "p99_ms": 0.7, "host_contention_seen": false}
+{"workload": "holiday", "seed": 53, "mode": "baseline", "participants": 1, "ticks": 32768, "cpu_s": 6.15, "elapsed_s": 6.46, "p99_ms": 0.688, "host_contention_seen": false}
+SET COMPLETE holiday seed=53
+{"workload": "large-eleven", "seed": 53, "mode": "baseline", "participants": 1, "ticks": 32768, "cpu_s": 41.282, "elapsed_s": 41.6, "p99_ms": 4.741, "host_contention_seen": false}
+{"workload": "large-eleven", "seed": 53, "mode": "proactive", "participants": 1, "ticks": 32768, "cpu_s": 40.55, "elapsed_s": 40.99, "p99_ms": 4.758, "host_contention_seen": false}
+{"workload": "large-eleven", "seed": 53, "mode": "baseline", "participants": 4, "ticks": 32768, "cpu_s": 47.086, "elapsed_s": 14.04, "p99_ms": 3.082, "host_contention_seen": false}
+{"workload": "large-eleven", "seed": 53, "mode": "proactive", "participants": 4, "ticks": 32768, "cpu_s": 46.825, "elapsed_s": 13.98, "p99_ms": 2.964, "host_contention_seen": false}
+SET COMPLETE large-eleven seed=53
+{"workload": "holiday", "seed": 54, "mode": "baseline", "participants": 1, "ticks": 32768, "cpu_s": 5.733, "elapsed_s": 6.01, "p99_ms": 0.689, "host_contention_seen": false}
+{"workload": "holiday", "seed": 54, "mode": "proactive", "participants": 1, "ticks": 32768, "cpu_s": 5.501, "elapsed_s": 5.8, "p99_ms": 0.692, "host_contention_seen": false}
+{"workload": "holiday", "seed": 54, "mode": "baseline", "participants": 4, "ticks": 32768, "cpu_s": 6.44, "elapsed_s": 2.25, "p99_ms": 0.349, "host_contention_seen": false}
+{"workload": "holiday", "seed": 54, "mode": "proactive", "participants": 4, "ticks": 32768, "cpu_s": 6.239, "elapsed_s": 2.25, "p99_ms": 0.332, "host_contention_seen": false}
+SET COMPLETE holiday seed=54
+{"workload": "large-eleven", "seed": 54, "mode": "proactive", "participants": 4, "ticks": 32768, "cpu_s": 50.232, "elapsed_s": 15.34, "p99_ms": 3.274, "host_contention_seen": false}
+{"workload": "large-eleven", "seed": 54, "mode": "baseline", "participants": 4, "ticks": 32768, "cpu_s": 46.516, "elapsed_s": 14.31, "p99_ms": 3.272, "host_contention_seen": false}
+{"workload": "large-eleven", "seed": 54, "mode": "proactive", "participants": 1, "ticks": 32768, "cpu_s": 43.743, "elapsed_s": 44.08, "p99_ms": 5.259, "host_contention_seen": false}
+{"workload": "large-eleven", "seed": 54, "mode": "baseline", "participants": 1, "ticks": 32768, "cpu_s": 39.767, "elapsed_s": 40.09, "p99_ms": 4.888, "host_contention_seen": false}
+SET COMPLETE large-eleven seed=54
+{"workload": "holiday", "seed": 55, "mode": "proactive", "participants": 4, "ticks": 32768, "cpu_s": 5.416, "elapsed_s": 2.01, "p99_ms": 0.252, "host_contention_seen": false}
+{"workload": "holiday", "seed": 55, "mode": "baseline", "participants": 4, "ticks": 32768, "cpu_s": 6.169, "elapsed_s": 2.3, "p99_ms": 0.317, "host_contention_seen": false}
+{"workload": "holiday", "seed": 55, "mode": "proactive", "participants": 1, "ticks": 32768, "cpu_s": 4.802, "elapsed_s": 5.07, "p99_ms": 0.567, "host_contention_seen": false}
+{"workload": "holiday", "seed": 55, "mode": "baseline", "participants": 1, "ticks": 32768, "cpu_s": 5.509, "elapsed_s": 5.82, "p99_ms": 0.67, "host_contention_seen": false}
+SET COMPLETE holiday seed=55
+{"workload": "large-eleven", "seed": 55, "mode": "baseline", "participants": 1, "ticks": 32768, "cpu_s": 41.558, "elapsed_s": 41.91, "p99_ms": 4.977, "host_contention_seen": false}
+{"workload": "large-eleven", "seed": 55, "mode": "proactive", "participants": 1, "ticks": 32768, "cpu_s": 43.892, "elapsed_s": 44.2, "p99_ms": 5.056, "host_contention_seen": false}
+{"workload": "large-eleven", "seed": 55, "mode": "baseline", "participants": 4, "ticks": 32768, "cpu_s": 46.485, "elapsed_s": 14.3, "p99_ms": 3.318, "host_contention_seen": false}
+{"workload": "large-eleven", "seed": 55, "mode": "proactive", "participants": 4, "ticks": 32768, "cpu_s": 51.082, "elapsed_s": 15.18, "p99_ms": 3.225, "host_contention_seen": false}
+SET COMPLETE large-eleven seed=55
+{"workload": "holiday", "seed": 56, "mode": "baseline", "participants": 1, "ticks": 32768, "cpu_s": 6.823, "elapsed_s": 7.12, "p99_ms": 0.769, "host_contention_seen": false}
+{"workload": "holiday", "seed": 56, "mode": "proactive", "participants": 1, "ticks": 32768, "cpu_s": 5.642, "elapsed_s": 5.93, "p99_ms": 0.662, "host_contention_seen": false}
+{"workload": "holiday", "seed": 56, "mode": "baseline", "participants": 4, "ticks": 32768, "cpu_s": 7.605, "elapsed_s": 2.66, "p99_ms": 0.35, "host_contention_seen": false}
+{"workload": "holiday", "seed": 56, "mode": "proactive", "participants": 4, "ticks": 32768, "cpu_s": 6.39, "elapsed_s": 2.31, "p99_ms": 0.348, "host_contention_seen": false}
+SET COMPLETE holiday seed=56
+{"workload": "large-eleven", "seed": 56, "mode": "proactive", "participants": 4, "ticks": 32768, "cpu_s": 44.003, "elapsed_s": 13.53, "p99_ms": 2.915, "host_contention_seen": false}
+{"workload": "large-eleven", "seed": 56, "mode": "baseline", "participants": 4, "ticks": 32768, "cpu_s": 49.015, "elapsed_s": 15.04, "p99_ms": 3.281, "host_contention_seen": false}
+{"workload": "large-eleven", "seed": 56, "mode": "proactive", "participants": 1, "ticks": 32768, "cpu_s": 38.078, "elapsed_s": 38.38, "p99_ms": 4.655, "host_contention_seen": false}
+{"workload": "large-eleven", "seed": 56, "mode": "baseline", "participants": 1, "ticks": 32768, "cpu_s": 41.995, "elapsed_s": 42.33, "p99_ms": 5.031, "host_contention_seen": false}
+SET COMPLETE large-eleven seed=56
+{"workload": "holiday", "seed": 57, "mode": "proactive", "participants": 4, "ticks": 32514, "cpu_s": 5.826, "elapsed_s": 2.09, "p99_ms": 0.329, "host_contention_seen": false}
+{"workload": "holiday", "seed": 57, "mode": "baseline", "participants": 4, "ticks": 27330, "cpu_s": 4.475, "elapsed_s": 1.72, "p99_ms": 0.322, "host_contention_seen": false}
+{"workload": "holiday", "seed": 57, "mode": "proactive", "participants": 1, "ticks": 32514, "cpu_s": 5.232, "elapsed_s": 5.54, "p99_ms": 0.628, "host_contention_seen": false}
+{"workload": "holiday", "seed": 57, "mode": "baseline", "participants": 1, "ticks": 27330, "cpu_s": 3.996, "elapsed_s": 4.27, "p99_ms": 0.605, "host_contention_seen": false}
+SET COMPLETE holiday seed=57
+{"workload": "large-eleven", "seed": 57, "mode": "baseline", "participants": 1, "ticks": 32768, "cpu_s": 42.626, "elapsed_s": 43.36, "p99_ms": 5.132, "host_contention_seen": false}
+{"workload": "large-eleven", "seed": 57, "mode": "proactive", "participants": 1, "ticks": 32768, "cpu_s": 40.065, "elapsed_s": 40.39, "p99_ms": 4.703, "host_contention_seen": false}
+{"workload": "large-eleven", "seed": 57, "mode": "baseline", "participants": 4, "ticks": 32768, "cpu_s": 47.515, "elapsed_s": 14.34, "p99_ms": 3.214, "host_contention_seen": false}
+{"workload": "large-eleven", "seed": 57, "mode": "proactive", "participants": 4, "ticks": 32768, "cpu_s": 46.373, "elapsed_s": 13.97, "p99_ms": 2.849, "host_contention_seen": false}
+SET COMPLETE large-eleven seed=57
+{"workload": "holiday", "seed": 58, "mode": "baseline", "participants": 1, "ticks": 32768, "cpu_s": 5.666, "elapsed_s": 5.97, "p99_ms": 0.668, "host_contention_seen": false}
+{"workload": "holiday", "seed": 58, "mode": "proactive", "participants": 1, "ticks": 32768, "cpu_s": 5.646, "elapsed_s": 5.95, "p99_ms": 0.627, "host_contention_seen": false}
+{"workload": "holiday", "seed": 58, "mode": "baseline", "participants": 4, "ticks": 32768, "cpu_s": 6.352, "elapsed_s": 2.32, "p99_ms": 0.286, "host_contention_seen": false}
+{"workload": "holiday", "seed": 58, "mode": "proactive", "participants": 4, "ticks": 32768, "cpu_s": 6.389, "elapsed_s": 2.3, "p99_ms": 0.343, "host_contention_seen": false}
+SET COMPLETE holiday seed=58
+{"workload": "large-eleven", "seed": 58, "mode": "proactive", "participants": 4, "ticks": 32768, "cpu_s": 55.472, "elapsed_s": 16.98, "p99_ms": 3.849, "host_contention_seen": false}
+{"workload": "large-eleven", "seed": 58, "mode": "baseline", "participants": 4, "ticks": 32768, "cpu_s": 49.899, "elapsed_s": 15.6, "p99_ms": 3.739, "host_contention_seen": false}
+{"workload": "large-eleven", "seed": 58, "mode": "proactive", "participants": 1, "ticks": 32768, "cpu_s": 48.377, "elapsed_s": 48.68, "p99_ms": 5.634, "host_contention_seen": false}
+{"workload": "large-eleven", "seed": 58, "mode": "baseline", "participants": 1, "ticks": 32768, "cpu_s": 42.713, "elapsed_s": 43.06, "p99_ms": 5.197, "host_contention_seen": false}
+SET COMPLETE large-eleven seed=58
+{"workload": "holiday", "seed": 59, "mode": "proactive", "participants": 4, "ticks": 32768, "cpu_s": 6.548, "elapsed_s": 2.37, "p99_ms": 0.318, "host_contention_seen": false}
+{"workload": "holiday", "seed": 59, "mode": "baseline", "participants": 4, "ticks": 32768, "cpu_s": 6.688, "elapsed_s": 2.38, "p99_ms": 0.344, "host_contention_seen": false}
+{"workload": "holiday", "seed": 59, "mode": "proactive", "participants": 1, "ticks": 32768, "cpu_s": 5.887, "elapsed_s": 6.15, "p99_ms": 0.674, "host_contention_seen": false}
+{"workload": "holiday", "seed": 59, "mode": "baseline", "participants": 1, "ticks": 32768, "cpu_s": 5.973, "elapsed_s": 6.24, "p99_ms": 0.69, "host_contention_seen": false}
+SET COMPLETE holiday seed=59
+{"workload": "large-eleven", "seed": 59, "mode": "baseline", "participants": 1, "ticks": 32768, "cpu_s": 42.307, "elapsed_s": 42.78, "p99_ms": 5.052, "host_contention_seen": false}
+{"workload": "large-eleven", "seed": 59, "mode": "proactive", "participants": 1, "ticks": 32768, "cpu_s": 42.581, "elapsed_s": 42.94, "p99_ms": 5.137, "host_contention_seen": false}
+{"workload": "large-eleven", "seed": 59, "mode": "baseline", "participants": 4, "ticks": 32768, "cpu_s": 46.975, "elapsed_s": 14.54, "p99_ms": 3.483, "host_contention_seen": false}
+{"workload": "large-eleven", "seed": 59, "mode": "proactive", "participants": 4, "ticks": 32768, "cpu_s": 49.037, "elapsed_s": 15.09, "p99_ms": 3.376, "host_contention_seen": false}
+SET COMPLETE large-eleven seed=59
+{"workload": "holiday", "seed": 60, "mode": "baseline", "participants": 1, "ticks": 32768, "cpu_s": 5.455, "elapsed_s": 5.75, "p99_ms": 0.624, "host_contention_seen": false}
+{"workload": "holiday", "seed": 60, "mode": "proactive", "participants": 1, "ticks": 32768, "cpu_s": 5.872, "elapsed_s": 6.15, "p99_ms": 0.697, "host_contention_seen": false}
+{"workload": "holiday", "seed": 60, "mode": "baseline", "participants": 4, "ticks": 32768, "cpu_s": 6.14, "elapsed_s": 2.2, "p99_ms": 0.312, "host_contention_seen": false}
+{"workload": "holiday", "seed": 60, "mode": "proactive", "participants": 4, "ticks": 32768, "cpu_s": 6.66, "elapsed_s": 2.37, "p99_ms": 0.339, "host_contention_seen": false}
+SET COMPLETE holiday seed=60
+{"workload": "large-eleven", "seed": 60, "mode": "proactive", "participants": 4, "ticks": 32768, "cpu_s": 44.967, "elapsed_s": 13.82, "p99_ms": 3.078, "host_contention_seen": false}
+{"workload": "large-eleven", "seed": 60, "mode": "baseline", "participants": 4, "ticks": 32768, "cpu_s": 44.629, "elapsed_s": 14.14, "p99_ms": 3.588, "host_contention_seen": false}
+{"workload": "large-eleven", "seed": 60, "mode": "proactive", "participants": 1, "ticks": 32768, "cpu_s": 39.068, "elapsed_s": 39.37, "p99_ms": 4.819, "host_contention_seen": false}
+{"workload": "large-eleven", "seed": 60, "mode": "baseline", "participants": 1, "ticks": 32768, "cpu_s": 38.37, "elapsed_s": 38.7, "p99_ms": 4.908, "host_contention_seen": false}
+SET COMPLETE large-eleven seed=60
+{"workload": "holiday", "seed": 61, "mode": "proactive", "participants": 4, "ticks": 32768, "cpu_s": 6.957, "elapsed_s": 2.43, "p99_ms": 0.298, "host_contention_seen": false}
+{"workload": "holiday", "seed": 61, "mode": "baseline", "participants": 4, "ticks": 32768, "cpu_s": 6.536, "elapsed_s": 2.38, "p99_ms": 0.351, "host_contention_seen": false}
+{"workload": "holiday", "seed": 61, "mode": "proactive", "participants": 1, "ticks": 32768, "cpu_s": 6.235, "elapsed_s": 6.55, "p99_ms": 0.737, "host_contention_seen": false}
+{"workload": "holiday", "seed": 61, "mode": "baseline", "participants": 1, "ticks": 32768, "cpu_s": 5.849, "elapsed_s": 6.15, "p99_ms": 0.679, "host_contention_seen": false}
+SET COMPLETE holiday seed=61
+{"workload": "large-eleven", "seed": 61, "mode": "baseline", "participants": 1, "ticks": 32768, "cpu_s": 45.57, "elapsed_s": 45.88, "p99_ms": 5.35, "host_contention_seen": false}
+{"workload": "large-eleven", "seed": 61, "mode": "proactive", "participants": 1, "ticks": 32768, "cpu_s": 39.83, "elapsed_s": 40.18, "p99_ms": 4.777, "host_contention_seen": false}
+{"workload": "large-eleven", "seed": 61, "mode": "baseline", "participants": 4, "ticks": 32768, "cpu_s": 50.919, "elapsed_s": 15.53, "p99_ms": 3.815, "host_contention_seen": false}
+{"workload": "large-eleven", "seed": 61, "mode": "proactive", "participants": 4, "ticks": 32768, "cpu_s": 46.09, "elapsed_s": 14.06, "p99_ms": 2.973, "host_contention_seen": false}
+SET COMPLETE large-eleven seed=61
+{"workload": "holiday", "seed": 62, "mode": "baseline", "participants": 1, "ticks": 31234, "cpu_s": 5.359, "elapsed_s": 5.67, "p99_ms": 0.693, "host_contention_seen": false}
+{"workload": "holiday", "seed": 62, "mode": "proactive", "participants": 1, "ticks": 32768, "cpu_s": 5.175, "elapsed_s": 5.45, "p99_ms": 0.657, "host_contention_seen": false}
+{"workload": "holiday", "seed": 62, "mode": "baseline", "participants": 4, "ticks": 31234, "cpu_s": 6.039, "elapsed_s": 2.17, "p99_ms": 0.36, "host_contention_seen": false}
+{"workload": "holiday", "seed": 62, "mode": "proactive", "participants": 4, "ticks": 32768, "cpu_s": 5.846, "elapsed_s": 2.21, "p99_ms": 0.401, "host_contention_seen": false}
+SET COMPLETE holiday seed=62
+{"workload": "large-eleven", "seed": 62, "mode": "proactive", "participants": 4, "ticks": 32768, "cpu_s": 47.594, "elapsed_s": 15.0, "p99_ms": 3.64, "host_contention_seen": false}
+{"workload": "large-eleven", "seed": 62, "mode": "baseline", "participants": 4, "ticks": 32768, "cpu_s": 45.911, "elapsed_s": 14.05, "p99_ms": 3.263, "host_contention_seen": false}
+{"workload": "large-eleven", "seed": 62, "mode": "proactive", "participants": 1, "ticks": 32768, "cpu_s": 41.155, "elapsed_s": 41.46, "p99_ms": 4.982, "host_contention_seen": false}
+{"workload": "large-eleven", "seed": 62, "mode": "baseline", "participants": 1, "ticks": 32768, "cpu_s": 39.21, "elapsed_s": 39.58, "p99_ms": 4.946, "host_contention_seen": false}
+SET COMPLETE large-eleven seed=62
+{"workload": "holiday", "seed": 63, "mode": "proactive", "participants": 4, "ticks": 32768, "cpu_s": 6.485, "elapsed_s": 2.37, "p99_ms": 0.364, "host_contention_seen": false}
+{"workload": "holiday", "seed": 63, "mode": "baseline", "participants": 4, "ticks": 32768, "cpu_s": 6.224, "elapsed_s": 2.32, "p99_ms": 0.273, "host_contention_seen": false}
+{"workload": "holiday", "seed": 63, "mode": "proactive", "participants": 1, "ticks": 32768, "cpu_s": 5.733, "elapsed_s": 6.01, "p99_ms": 0.666, "host_contention_seen": false}
+{"workload": "holiday", "seed": 63, "mode": "baseline", "participants": 1, "ticks": 32768, "cpu_s": 5.494, "elapsed_s": 5.79, "p99_ms": 0.628, "host_contention_seen": false}
+SET COMPLETE holiday seed=63
+{"workload": "large-eleven", "seed": 63, "mode": "baseline", "participants": 1, "ticks": 32768, "cpu_s": 45.223, "elapsed_s": 45.53, "p99_ms": 5.442, "host_contention_seen": false}
+{"workload": "large-eleven", "seed": 63, "mode": "proactive", "participants": 1, "ticks": 32768, "cpu_s": 38.191, "elapsed_s": 38.5, "p99_ms": 4.627, "host_contention_seen": false}
+{"workload": "large-eleven", "seed": 63, "mode": "baseline", "participants": 4, "ticks": 32768, "cpu_s": 50.37, "elapsed_s": 15.29, "p99_ms": 3.539, "host_contention_seen": false}
+{"workload": "large-eleven", "seed": 63, "mode": "proactive", "participants": 4, "ticks": 32768, "cpu_s": 44.282, "elapsed_s": 13.3, "p99_ms": 2.879, "host_contention_seen": false}
+SET COMPLETE large-eleven seed=63
+{"workload": "holiday", "seed": 64, "mode": "baseline", "participants": 1, "ticks": 32768, "cpu_s": 5.891, "elapsed_s": 6.17, "p99_ms": 0.689, "host_contention_seen": false}
+{"workload": "holiday", "seed": 64, "mode": "proactive", "participants": 1, "ticks": 32768, "cpu_s": 5.721, "elapsed_s": 6.0, "p99_ms": 0.657, "host_contention_seen": false}
+{"workload": "holiday", "seed": 64, "mode": "baseline", "participants": 4, "ticks": 32768, "cpu_s": 6.616, "elapsed_s": 2.38, "p99_ms": 0.35, "host_contention_seen": false}
+{"workload": "holiday", "seed": 64, "mode": "proactive", "participants": 4, "ticks": 32768, "cpu_s": 6.514, "elapsed_s": 2.33, "p99_ms": 0.311, "host_contention_seen": false}
+SET COMPLETE holiday seed=64
+{"workload": "large-eleven", "seed": 64, "mode": "proactive", "participants": 4, "ticks": 32768, "cpu_s": 43.171, "elapsed_s": 13.21, "p99_ms": 2.693, "host_contention_seen": false}
+{"workload": "large-eleven", "seed": 64, "mode": "baseline", "participants": 4, "ticks": 32768, "cpu_s": 44.129, "elapsed_s": 13.61, "p99_ms": 3.108, "host_contention_seen": false}
+{"workload": "large-eleven", "seed": 64, "mode": "proactive", "participants": 1, "ticks": 32768, "cpu_s": 37.444, "elapsed_s": 37.78, "p99_ms": 4.616, "host_contention_seen": false}
+{"workload": "large-eleven", "seed": 64, "mode": "baseline", "participants": 1, "ticks": 32768, "cpu_s": 37.521, "elapsed_s": 37.85, "p99_ms": 4.733, "host_contention_seen": false}
+SET COMPLETE large-eleven seed=64
+{"workload": "holiday", "seed": 65, "mode": "proactive", "participants": 4, "ticks": 32706, "cpu_s": 5.883, "elapsed_s": 2.12, "p99_ms": 0.342, "host_contention_seen": false}
+{"workload": "holiday", "seed": 65, "mode": "baseline", "participants": 4, "ticks": 32130, "cpu_s": 6.128, "elapsed_s": 2.2, "p99_ms": 0.364, "host_contention_seen": false}
+{"workload": "holiday", "seed": 65, "mode": "proactive", "participants": 1, "ticks": 32706, "cpu_s": 5.282, "elapsed_s": 5.55, "p99_ms": 0.623, "host_contention_seen": false}
+{"workload": "holiday", "seed": 65, "mode": "baseline", "participants": 1, "ticks": 32130, "cpu_s": 5.498, "elapsed_s": 5.81, "p99_ms": 0.684, "host_contention_seen": false}
+SET COMPLETE holiday seed=65
+{"workload": "large-eleven", "seed": 65, "mode": "baseline", "participants": 1, "ticks": 32768, "cpu_s": 43.117, "elapsed_s": 43.46, "p99_ms": 5.095, "host_contention_seen": false}
+{"workload": "large-eleven", "seed": 65, "mode": "proactive", "participants": 1, "ticks": 32768, "cpu_s": 43.754, "elapsed_s": 44.08, "p99_ms": 5.087, "host_contention_seen": false}
+{"workload": "large-eleven", "seed": 65, "mode": "baseline", "participants": 4, "ticks": 32768, "cpu_s": 48.353, "elapsed_s": 14.45, "p99_ms": 3.069, "host_contention_seen": false}
+{"workload": "large-eleven", "seed": 65, "mode": "proactive", "participants": 4, "ticks": 32768, "cpu_s": 50.588, "elapsed_s": 15.27, "p99_ms": 3.21, "host_contention_seen": false}
+SET COMPLETE large-eleven seed=65
+{"workload": "holiday", "seed": 66, "mode": "baseline", "participants": 1, "ticks": 26722, "cpu_s": 4.459, "elapsed_s": 4.74, "p99_ms": 0.648, "host_contention_seen": false}
+{"workload": "holiday", "seed": 66, "mode": "proactive", "participants": 1, "ticks": 32768, "cpu_s": 5.829, "elapsed_s": 6.14, "p99_ms": 0.713, "host_contention_seen": false}
+{"workload": "holiday", "seed": 66, "mode": "baseline", "participants": 4, "ticks": 26722, "cpu_s": 4.99, "elapsed_s": 1.86, "p99_ms": 0.356, "host_contention_seen": false}
+{"workload": "holiday", "seed": 66, "mode": "proactive", "participants": 4, "ticks": 32768, "cpu_s": 6.617, "elapsed_s": 2.38, "p99_ms": 0.371, "host_contention_seen": false}
+SET COMPLETE holiday seed=66
+{"workload": "large-eleven", "seed": 66, "mode": "proactive", "participants": 4, "ticks": 32768, "cpu_s": 49.365, "elapsed_s": 14.85, "p99_ms": 3.396, "host_contention_seen": false}
+{"workload": "large-eleven", "seed": 66, "mode": "baseline", "participants": 4, "ticks": 32768, "cpu_s": 47.95, "elapsed_s": 14.84, "p99_ms": 3.452, "host_contention_seen": false}
+{"workload": "large-eleven", "seed": 66, "mode": "proactive", "participants": 1, "ticks": 32768, "cpu_s": 42.773, "elapsed_s": 43.1, "p99_ms": 5.047, "host_contention_seen": false}
+{"workload": "large-eleven", "seed": 66, "mode": "baseline", "participants": 1, "ticks": 32768, "cpu_s": 41.079, "elapsed_s": 41.43, "p99_ms": 5.144, "host_contention_seen": false}
+SET COMPLETE large-eleven seed=66
+{"workload": "holiday", "seed": 67, "mode": "proactive", "participants": 4, "ticks": 32768, "cpu_s": 6.169, "elapsed_s": 2.2, "p99_ms": 0.336, "host_contention_seen": false}
+{"workload": "holiday", "seed": 67, "mode": "baseline", "participants": 4, "ticks": 32768, "cpu_s": 5.971, "elapsed_s": 2.59, "p99_ms": 0.367, "host_contention_seen": false}
+{"workload": "holiday", "seed": 67, "mode": "proactive", "participants": 1, "ticks": 32768, "cpu_s": 5.527, "elapsed_s": 5.79, "p99_ms": 0.667, "host_contention_seen": false}
+{"workload": "holiday", "seed": 67, "mode": "baseline", "participants": 1, "ticks": 32768, "cpu_s": 5.266, "elapsed_s": 5.55, "p99_ms": 0.67, "host_contention_seen": false}
+SET COMPLETE holiday seed=67
+{"workload": "large-eleven", "seed": 67, "mode": "baseline", "participants": 1, "ticks": 32768, "cpu_s": 39.607, "elapsed_s": 39.94, "p99_ms": 4.867, "host_contention_seen": false}
+{"workload": "large-eleven", "seed": 67, "mode": "proactive", "participants": 1, "ticks": 32768, "cpu_s": 43.592, "elapsed_s": 43.93, "p99_ms": 5.166, "host_contention_seen": false}
+{"workload": "large-eleven", "seed": 67, "mode": "baseline", "participants": 4, "ticks": 32768, "cpu_s": 43.953, "elapsed_s": 13.8, "p99_ms": 3.33, "host_contention_seen": false}
+{"workload": "large-eleven", "seed": 67, "mode": "proactive", "participants": 4, "ticks": 32768, "cpu_s": 50.254, "elapsed_s": 15.3, "p99_ms": 3.634, "host_contention_seen": false}
+SET COMPLETE large-eleven seed=67
+{"workload": "holiday", "seed": 68, "mode": "baseline", "participants": 1, "ticks": 32768, "cpu_s": 4.833, "elapsed_s": 5.12, "p99_ms": 0.652, "host_contention_seen": false}
+{"workload": "holiday", "seed": 68, "mode": "proactive", "participants": 1, "ticks": 32768, "cpu_s": 5.661, "elapsed_s": 5.94, "p99_ms": 0.671, "host_contention_seen": false}
+{"workload": "holiday", "seed": 68, "mode": "baseline", "participants": 4, "ticks": 32768, "cpu_s": 5.423, "elapsed_s": 2.02, "p99_ms": 0.314, "host_contention_seen": false}
+{"workload": "holiday", "seed": 68, "mode": "proactive", "participants": 4, "ticks": 32768, "cpu_s": 6.42, "elapsed_s": 2.31, "p99_ms": 0.323, "host_contention_seen": false}
+SET COMPLETE holiday seed=68
+{"workload": "large-eleven", "seed": 68, "mode": "proactive", "participants": 4, "ticks": 32768, "cpu_s": 53.876, "elapsed_s": 16.22, "p99_ms": 3.712, "host_contention_seen": false}
+{"workload": "large-eleven", "seed": 68, "mode": "baseline", "participants": 4, "ticks": 32768, "cpu_s": 49.917, "elapsed_s": 15.58, "p99_ms": 3.9, "host_contention_seen": false}
+{"workload": "large-eleven", "seed": 68, "mode": "proactive", "participants": 1, "ticks": 32768, "cpu_s": 46.768, "elapsed_s": 47.08, "p99_ms": 5.314, "host_contention_seen": false}
+{"workload": "large-eleven", "seed": 68, "mode": "baseline", "participants": 1, "ticks": 32768, "cpu_s": 42.849, "elapsed_s": 43.25, "p99_ms": 5.35, "host_contention_seen": false}
+SET COMPLETE large-eleven seed=68
+{"workload": "holiday", "seed": 69, "mode": "proactive", "participants": 4, "ticks": 29378, "cpu_s": 5.321, "elapsed_s": 1.95, "p99_ms": 0.344, "host_contention_seen": false}
+{"workload": "holiday", "seed": 69, "mode": "baseline", "participants": 4, "ticks": 30850, "cpu_s": 5.378, "elapsed_s": 2.02, "p99_ms": 0.353, "host_contention_seen": false}
+{"workload": "holiday", "seed": 69, "mode": "proactive", "participants": 1, "ticks": 29378, "cpu_s": 4.731, "elapsed_s": 5.02, "p99_ms": 0.654, "host_contention_seen": false}
+{"workload": "holiday", "seed": 69, "mode": "baseline", "participants": 1, "ticks": 30850, "cpu_s": 4.794, "elapsed_s": 5.07, "p99_ms": 0.64, "host_contention_seen": false}
+SET COMPLETE holiday seed=69
+{"workload": "large-eleven", "seed": 69, "mode": "baseline", "participants": 1, "ticks": 32768, "cpu_s": 40.846, "elapsed_s": 41.2, "p99_ms": 4.979, "host_contention_seen": false}
+{"workload": "large-eleven", "seed": 69, "mode": "proactive", "participants": 1, "ticks": 32768, "cpu_s": 41.367, "elapsed_s": 41.7, "p99_ms": 4.729, "host_contention_seen": false}
+{"workload": "large-eleven", "seed": 69, "mode": "baseline", "participants": 4, "ticks": 32768, "cpu_s": 45.375, "elapsed_s": 13.9, "p99_ms": 3.176, "host_contention_seen": false}
+{"workload": "large-eleven", "seed": 69, "mode": "proactive", "participants": 4, "ticks": 32768, "cpu_s": 47.848, "elapsed_s": 14.31, "p99_ms": 2.998, "host_contention_seen": false}
+SET COMPLETE large-eleven seed=69
+{"workload": "holiday", "seed": 70, "mode": "baseline", "participants": 1, "ticks": 32768, "cpu_s": 5.477, "elapsed_s": 5.77, "p99_ms": 0.628, "host_contention_seen": false}
+{"workload": "holiday", "seed": 70, "mode": "proactive", "participants": 1, "ticks": 32768, "cpu_s": 5.946, "elapsed_s": 6.25, "p99_ms": 0.681, "host_contention_seen": false}
+{"workload": "holiday", "seed": 70, "mode": "baseline", "participants": 4, "ticks": 32768, "cpu_s": 6.155, "elapsed_s": 2.25, "p99_ms": 0.307, "host_contention_seen": false}
+{"workload": "holiday", "seed": 70, "mode": "proactive", "participants": 4, "ticks": 32768, "cpu_s": 6.732, "elapsed_s": 2.43, "p99_ms": 0.333, "host_contention_seen": false}
+SET COMPLETE holiday seed=70
+{"workload": "large-eleven", "seed": 70, "mode": "proactive", "participants": 4, "ticks": 32768, "cpu_s": 52.955, "elapsed_s": 15.96, "p99_ms": 3.79, "host_contention_seen": false}
+{"workload": "large-eleven", "seed": 70, "mode": "baseline", "participants": 4, "ticks": 32768, "cpu_s": 48.207, "elapsed_s": 14.49, "p99_ms": 3.227, "host_contention_seen": false}
+{"workload": "large-eleven", "seed": 70, "mode": "proactive", "participants": 1, "ticks": 32768, "cpu_s": 45.89, "elapsed_s": 46.23, "p99_ms": 5.426, "host_contention_seen": false}
+{"workload": "large-eleven", "seed": 70, "mode": "baseline", "participants": 1, "ticks": 32768, "cpu_s": 40.879, "elapsed_s": 41.21, "p99_ms": 4.839, "host_contention_seen": false}
+SET COMPLETE large-eleven seed=70
+{"workload": "holiday", "seed": 71, "mode": "proactive", "participants": 4, "ticks": 32768, "cpu_s": 6.96, "elapsed_s": 2.45, "p99_ms": 0.313, "host_contention_seen": false}
+{"workload": "holiday", "seed": 71, "mode": "baseline", "participants": 4, "ticks": 32768, "cpu_s": 6.772, "elapsed_s": 2.38, "p99_ms": 0.313, "host_contention_seen": false}
+{"workload": "holiday", "seed": 71, "mode": "proactive", "participants": 1, "ticks": 32768, "cpu_s": 6.257, "elapsed_s": 6.54, "p99_ms": 0.711, "host_contention_seen": false}
+{"workload": "holiday", "seed": 71, "mode": "baseline", "participants": 1, "ticks": 32768, "cpu_s": 6.067, "elapsed_s": 6.32, "p99_ms": 0.7, "host_contention_seen": false}
+SET COMPLETE holiday seed=71
+{"workload": "large-eleven", "seed": 71, "mode": "baseline", "participants": 1, "ticks": 32768, "cpu_s": 39.558, "elapsed_s": 39.91, "p99_ms": 4.702, "host_contention_seen": false}
+{"workload": "large-eleven", "seed": 71, "mode": "proactive", "participants": 1, "ticks": 32768, "cpu_s": 44.578, "elapsed_s": 45.22, "p99_ms": 5.215, "host_contention_seen": false}
+{"workload": "large-eleven", "seed": 71, "mode": "baseline", "participants": 4, "ticks": 32768, "cpu_s": 44.304, "elapsed_s": 13.56, "p99_ms": 3.204, "host_contention_seen": false}
+{"workload": "large-eleven", "seed": 71, "mode": "proactive", "participants": 4, "ticks": 32768, "cpu_s": 51.359, "elapsed_s": 15.69, "p99_ms": 3.483, "host_contention_seen": false}
+SET COMPLETE large-eleven seed=71
+{"workload": "holiday", "seed": 72, "mode": "baseline", "participants": 1, "ticks": 32768, "cpu_s": 5.757, "elapsed_s": 6.02, "p99_ms": 0.681, "host_contention_seen": false}
+{"workload": "holiday", "seed": 72, "mode": "proactive", "participants": 1, "ticks": 32768, "cpu_s": 5.968, "elapsed_s": 6.25, "p99_ms": 0.725, "host_contention_seen": false}
+{"workload": "holiday", "seed": 72, "mode": "baseline", "participants": 4, "ticks": 32768, "cpu_s": 6.475, "elapsed_s": 2.25, "p99_ms": 0.344, "host_contention_seen": false}
+{"workload": "holiday", "seed": 72, "mode": "proactive", "participants": 4, "ticks": 32768, "cpu_s": 6.805, "elapsed_s": 2.42, "p99_ms": 0.383, "host_contention_seen": false}
+SET COMPLETE holiday seed=72
+{"workload": "large-eleven", "seed": 72, "mode": "proactive", "participants": 4, "ticks": 32768, "cpu_s": 51.468, "elapsed_s": 15.97, "p99_ms": 3.797, "host_contention_seen": false}
+{"workload": "large-eleven", "seed": 72, "mode": "baseline", "participants": 4, "ticks": 32768, "cpu_s": 45.902, "elapsed_s": 13.9, "p99_ms": 3.128, "host_contention_seen": false}
+{"workload": "large-eleven", "seed": 72, "mode": "proactive", "participants": 1, "ticks": 32768, "cpu_s": 44.851, "elapsed_s": 45.21, "p99_ms": 5.452, "host_contention_seen": false}
+{"workload": "large-eleven", "seed": 72, "mode": "baseline", "participants": 1, "ticks": 32768, "cpu_s": 38.995, "elapsed_s": 39.32, "p99_ms": 4.675, "host_contention_seen": false}
+SET COMPLETE large-eleven seed=72
+{"workload": "holiday", "seed": 73, "mode": "proactive", "participants": 4, "ticks": 31106, "cpu_s": 5.903, "elapsed_s": 2.14, "p99_ms": 0.363, "host_contention_seen": false}
+{"workload": "holiday", "seed": 73, "mode": "baseline", "participants": 4, "ticks": 30018, "cpu_s": 5.604, "elapsed_s": 2.08, "p99_ms": 0.356, "host_contention_seen": false}
+{"workload": "holiday", "seed": 73, "mode": "proactive", "participants": 1, "ticks": 31106, "cpu_s": 5.289, "elapsed_s": 5.56, "p99_ms": 0.677, "host_contention_seen": false}
+{"workload": "holiday", "seed": 73, "mode": "baseline", "participants": 1, "ticks": 30018, "cpu_s": 5.013, "elapsed_s": 5.28, "p99_ms": 0.675, "host_contention_seen": false}
+SET COMPLETE holiday seed=73
+{"workload": "large-eleven", "seed": 73, "mode": "baseline", "participants": 1, "ticks": 32768, "cpu_s": 40.189, "elapsed_s": 40.54, "p99_ms": 4.873, "host_contention_seen": false}
+{"workload": "large-eleven", "seed": 73, "mode": "proactive", "participants": 1, "ticks": 32768, "cpu_s": 47.45, "elapsed_s": 47.75, "p99_ms": 5.628, "host_contention_seen": false}
+{"workload": "large-eleven", "seed": 73, "mode": "baseline", "participants": 4, "ticks": 32768, "cpu_s": 44.902, "elapsed_s": 13.58, "p99_ms": 2.94, "host_contention_seen": false}
+{"workload": "large-eleven", "seed": 73, "mode": "proactive", "participants": 4, "ticks": 32768, "cpu_s": 54.335, "elapsed_s": 16.63, "p99_ms": 3.867, "host_contention_seen": false}
+SET COMPLETE large-eleven seed=73
+ALL REQUESTED SETS COMPLETE

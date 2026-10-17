@@ -1,0 +1,73 @@
+{
+  "command": [
+    "/Users/bradley/.codex/worktrees/hiring-gradient-bench/glob2/artifacts/proactive-gradient/binaries/baseline",
+    "game",
+    "run",
+    "--map-file",
+    "/Users/bradley/.codex/worktrees/hiring-gradient-bench/glob2/maps/Oazis.map.gz",
+    "--game-seed",
+    "72",
+    "--ticks",
+    "32768",
+    "--compute-threads",
+    "1",
+    "--compute-telemetry",
+    "waits",
+    "--gpu",
+    "off",
+    "--gradient-backend",
+    "cpu",
+    "--benchmark-warmup",
+    "0",
+    "--output-dir",
+    "/Users/bradley/.codex/worktrees/hiring-gradient-bench/glob2/artifacts/proactive-gradient/runs/large-eleven/seed-72-baseline-p1/game",
+    "--player",
+    "nicowar",
+    "--player",
+    "econo",
+    "--player",
+    "castor",
+    "--player",
+    "warrush",
+    "--player",
+    "nicowar",
+    "--player",
+    "econo",
+    "--player",
+    "castor",
+    "--player",
+    "warrush",
+    "--player",
+    "nicowar",
+    "--player",
+    "econo",
+    "--player",
+    "castor"
+  ],
+  "timing_wrapper": [
+    "/usr/bin/time",
+    "-l"
+  ],
+  "environment": {
+    "SDL_VIDEODRIVER": "dummy",
+    "SDL_AUDIODRIVER": "dummy",
+    "GLOB2_USER_DATA_DIR": "/Users/bradley/.codex/worktrees/hiring-gradient-bench/glob2/artifacts/proactive-gradient/runs/large-eleven/seed-72-baseline-p1/profile",
+    "GLOB2_TEST_SEED": "72",
+    "GLOB2_BENCH_TICKS": "/Users/bradley/.codex/worktrees/hiring-gradient-bench/glob2/artifacts/proactive-gradient/runs/large-eleven/seed-72-baseline-p1/tick-ns.u64"
+  },
+  "binary_sha256": "b9972eaae93d4d395eb16d7427857ff90df5743ac9b7352509411e459f89131d",
+  "load_average_before": [
+    3.3349609375,
+    3.28662109375,
+    3.11572265625
+  ],
+  "exit_code": 0,
+  "elapsed_seconds": 39.32255525002256,
+  "host_contention_seen": false,
+  "load_average_after": [
+    2.56396484375,
+    3.09228515625,
+    3.05126953125
+  ],
+  "peak_rss_bytes": 340131840
+}

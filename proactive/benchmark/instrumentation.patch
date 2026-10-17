@@ -1,0 +1,87 @@
+diff --git a/src/app/cli/Headless.cpp b/src/app/cli/Headless.cpp
+index 1993b8923..f6ac25edb 100644
+--- a/src/app/cli/Headless.cpp
++++ b/src/app/cli/Headless.cpp
+@@ -1,3 +1,5 @@
++#include <fstream>
++#include "ProactiveGradientProbe.h"
+ // SPDX-License-Identifier: GPL-3.0-or-later
+ #include <Environment.h>
+ #include "Headless.h"
+@@ -47,6 +49,7 @@
+ #endif
+ #include <filesystem>
+ #include <fstream>
++#include "ProactiveGradientProbe.h"
+ #include <iomanip>
+ #include <iostream>
+ #include <limits>
+@@ -501,6 +504,7 @@ struct HeadlessRunner
+ 		const auto runStart = std::chrono::steady_clock::now();
+ 		uint64_t setupCpu=0,runCpu=0,measureStart=0;
+ 		unsigned measuredTicks=0;
++        proactive_probe::counters = {};
+         std::array<Uint64,64> tickHistogram{};
+         std::vector<Uint64> tickDurations;
+ 		if(benchmark)
+@@ -532,6 +536,7 @@ struct HeadlessRunner
+ 		}
+ 		else { engine.run(); engine.gui.game.map.finishGradientPipeline(); engine.gui.game.map.finishResourceGrowth(); engine.gui.game.drainHiring(); }
+ 		if (engine.diagnostics) engine.diagnostics->finish();
++		const auto probe = proactive_probe::counters;
+ 		const auto runEnd = std::chrono::steady_clock::now();
+ 		const auto saveCpuStart=benchmark?processCpuNs():0;
+ 		if(final) engine.saveInitialGameStateOrExit((output/"final.game").string(),"final",engine.gui.game.mapHeader.getMapName());
+@@ -543,6 +548,10 @@ struct HeadlessRunner
+ 		const auto buildingResult = game.map.buildingGradientPipelineStatus();
+ 		const auto gradient=gradient_kernel::configuration();
+         const auto accelerator=gradient_kernel::acceleratorStatus(gradient.backend);
++        if (const char* path = std::getenv("GLOB2_BENCH_TICKS")) {
++            std::ofstream file(path, std::ios::binary);
++            file.write(reinterpret_cast<const char*>(tickDurations.data()), tickDurations.size()*sizeof(Uint64));
++        }
+         std::sort(tickDurations.begin(),tickDurations.end());
+         const auto percentile=[&](unsigned p)->Uint64 {return tickDurations.empty()?0:tickDurations[(tickDurations.size()-1)*p/100];};
+ 		engine.trackTeamEliminations();
+@@ -606,6 +615,9 @@ struct HeadlessRunner
+ 			<< ",\"gradient_max_pending\":" << pipelineResult.maxPending
+ 			<< ",\"gradient_wait_ns\":" << joinTotal(ComputeProducer::PeriodicGradient)
+ 			<< ",\"compute_active_elapsed_ns\":" << measured(game.map.computeExecutor().activeNs(), workerAvailable)
++            << ",\"route_queries\":" << probe.queries
++            << ",\"route_pending\":" << probe.pending
++            << ",\"route_pending_ticks\":" << probe.pendingTicks
+ 			<< ",\"building_gradient_jobs\":" << buildingResult.jobs
+ 			<< ",\"building_gradient_published\":" << buildingResult.published
+ 			<< ",\"building_gradient_discarded\":" << buildingResult.discarded
+diff --git a/src/map/pathfind/MapPathfindBuilding.cpp b/src/map/pathfind/MapPathfindBuilding.cpp
+index 23a35e7cf..8ed13974d 100644
+--- a/src/map/pathfind/MapPathfindBuilding.cpp
++++ b/src/map/pathfind/MapPathfindBuilding.cpp
+@@ -3,6 +3,7 @@
+ 
+ #include <PerformanceTelemetry.h>
+ #include "Map.h"
++#include "ProactiveGradientProbe.h"
+ #include "BuildingType.h"
+ #include "EngineTiming.h"
+ #include "Game.h"
+@@ -27,6 +28,7 @@ constexpr Uint32 STUCK_REBUILD_TICKS = 128;
+ FieldReadiness Map::requestBuildingField(Building* building,int swimClass,BuildingRoute route)
+ {
+     assert(building);
++    ++proactive_probe::counters.queries;
+     ensureBuildingGradientPipeline();
+     const int slot=building->routeSlot(swimClass,route);
+     auto guard=SharedBuildingGradient::lock(building->sharedGradient[slot]);
+@@ -43,6 +45,11 @@ FieldReadiness Map::requestBuildingField(Building* building,int swimClass,Buildi
+             updateGlobalGradient(building,swimClass,route);
+         }
+     }
++    if (!building->globalGradient[slot]) {
++        auto &p=proactive_probe::counters;
++        ++p.pending;
++        if (p.lastTick != now) { ++p.pendingTicks; p.lastTick=now; }
++    }
+     return building->globalGradient[slot] ? FieldReadiness::Ready : FieldReadiness::Pending;
+ }
+ bool Map::prepareBuildingGradient(Building* building,int swimClass,BuildingRoute route)

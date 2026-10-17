@@ -1,0 +1,100 @@
+{
+  "binaries": {
+    "baseline": {
+      "path": "/Users/bradley/.codex/worktrees/hiring-gradient-bench/glob2/artifacts/proactive-gradient/binaries/baseline",
+      "sha256": "b9972eaae93d4d395eb16d7427857ff90df5743ac9b7352509411e459f89131d"
+    },
+    "proactive": {
+      "path": "/Users/bradley/.codex/worktrees/hiring-gradient-bench/glob2/artifacts/proactive-gradient/binaries/proactive",
+      "sha256": "3ab2d38e0874cb3582f5eb2c20d4cc970de619e59063ff5468fcaf15d6754fde"
+    }
+  },
+  "tick_sample_format": "chronological native uint64 nanoseconds, little",
+  "platform": "macOS-26.6.2-arm64-arm-64bit-Mach-O",
+  "architecture": "arm64",
+  "policies": [
+    "baseline",
+    "proactive"
+  ],
+  "participants": [
+    1,
+    4
+  ],
+  "seeds": [
+    42,
+    43,
+    44,
+    45,
+    46,
+    47,
+    48,
+    49,
+    50,
+    51,
+    52,
+    53,
+    54,
+    55,
+    56,
+    57,
+    58,
+    59,
+    60,
+    61,
+    62,
+    63,
+    64,
+    65,
+    66,
+    67,
+    68,
+    69,
+    70,
+    71,
+    72,
+    73
+  ],
+  "workloads": [
+    {
+      "name": "holiday",
+      "map": "Holiday_Island_2.map.gz",
+      "players": [
+        "nicowar",
+        "econo",
+        "castor",
+        "warrush"
+      ],
+      "ticks": 32768,
+      "map_sha256": "7c8d9ff5d0bbff14945f1a31bb78ffdc60df2befe08e7b5b0f9c0bedb8f977e9"
+    },
+    {
+      "name": "large-eleven",
+      "map": "Oazis.map.gz",
+      "players": [
+        "nicowar",
+        "econo",
+        "castor",
+        "warrush",
+        "nicowar",
+        "econo",
+        "castor",
+        "warrush",
+        "nicowar",
+        "econo",
+        "castor"
+      ],
+      "ticks": 32768,
+      "map_sha256": "b3283af95ee177f528d3b57438797c4a1970473c562a76f5ed4faad51f03a6d3"
+    }
+  ],
+  "building_admission": "Global four scheduled map refreshes per tick in both policies. Proactive initialization shares the one-tick hiring preparation deadline.",
+  "comparison": "Baseline: PR1197 c7f1cd299 primary-only hiring prewarm. Proactive: request shallow initialization after creation and construction footprint transitions; reuse those fields for primary hiring.",
+  "build_command": "PYTHONPATH=. scons release=1 CXXFLAGS=-g0 client_profile=full server=0; baseline initially -j8 and final incremental -j4; proactive -j4",
+  "instrumentation": "Identical private chronological tick writer and owner-only route-read counters; no prototype policy switches. Release O3; debug information disabled in both builds.",
+  "limitations": [
+    "Policies can change game evolution, so total CPU is not isolated kernel cost.",
+    "No graphics/frame pacing, other devices or cross-platform coverage.",
+    "Contention guard observes native compilers/tests, Docker execution and busy VMs; other host load is not fully controlled."
+  ],
+  "run_order": "Serial paired policies per seed/map, alternate policy and participant order; discard whole paired set upon observed build or VM contention."
+}

@@ -1,0 +1,9 @@
+<?xml version='1.0' encoding='utf-8'?>
+<testsuites tests="7" failures="0" errors="0" skipped="0"><testsuite name="BuildingProductionCombat"><testcase classname="BuildingProductionCombat" name="overlay transition and cancellation discard cached footprint routes" time="0.288427" status="run" />
+  <testcase classname="BuildingProductionCombat" name="physical combat attraction invalidates on enemy changes and mixed relocation resets routes" time="0.389258" status="run" />
+  </testsuite><testsuite name="ProactiveBuildingGradients"><testcase classname="ProactiveBuildingGradients" name="creation and primary hiring seed one shared route" time="0.223517" status="run" />
+  <testcase classname="ProactiveBuildingGradients" name="creation prepares shallow routes for busy units outside the hiring cohort" time="0.296928" status="run" />
+  <testcase classname="ProactiveBuildingGradients" name="queued and off-cohort pending initialization survive binary and text saves [artifacts]" time="5.25659" status="run" />
+  <testcase classname="ProactiveBuildingGradients" name="saving a primary-only job does not turn it into a proactive claim" time="0.223104" status="run" />
+  <testcase classname="ProactiveBuildingGradients" name="upgrade and cancellation prepare the committed footprint" time="0.215294" status="run" />
+  </testsuite></testsuites>

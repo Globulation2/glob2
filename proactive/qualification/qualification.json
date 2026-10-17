@@ -1,0 +1,58 @@
+{
+  "commit": "69e6c86014c50053d36e840a8cfe5290226b7163",
+  "base": "486a2230a4ddb257ba9dee34d3aace05f2260d6f",
+  "baseline": "c7f1cd2996a13ac59d56926755c182008b67d736",
+  "native": "macOS arm64, Apple M3, Apple LLVM21; dev_fast O0/g1 for correctness only; release O3/g0 for timings",
+  "counts": {
+    "focused-final.xml": {
+      "tests": "49",
+      "failures": "0",
+      "errors": "0",
+      "skipped": "0"
+    },
+    "related-final.xml": {
+      "tests": "85",
+      "failures": "2",
+      "errors": "0",
+      "skipped": "0"
+    },
+    "fixtures-final.xml": {
+      "tests": "7",
+      "failures": "0",
+      "errors": "0",
+      "skipped": "0"
+    },
+    "compatibility.xml": {
+      "tests": "41",
+      "failures": "0",
+      "errors": "0",
+      "skipped": "0"
+    },
+    "turn-final.xml": {
+      "tests": "18",
+      "failures": "0",
+      "errors": "0",
+      "skipped": "0"
+    },
+    "golden.xml": {
+      "tests": "1",
+      "failures": "0",
+      "errors": "0",
+      "skipped": "0"
+    }
+  },
+  "resolved_failures": "related-final.xml retains two fixtures that assumed synchronous cold fields. Both were changed to await fixed publication and pass in fixtures-final.xml, along with all proactive cases. Other 83 related cases passed unchanged.",
+  "coverage": [
+    "49 hiring/preparation cases passed",
+    "85 related cases passed across original run and two corrected fixture retries",
+    "41 replay/protocol unit cases passed",
+    "18 turn-engine cases passed, including shared scripted/terrain matches, verifier repairs, restarts, pause/resume and committed golden",
+    "Version172 binary/text saves preserve queued and pending off-cohort initialization; formats170/171 parser boundaries tested; retained format126 access-state case passed",
+    "Per-tick world/entity checksums match between one/four participants on both benchmark maps, seed42,2048ticks, for baseline and proactive modes"
+  ],
+  "omissions": [
+    "No cross-platform checksum comparison: Docker remains unavailable following prior host disk exhaustion. Linux, Windows, browser/mobile hardware unverified.",
+    "No renderer/frame pacing or slower-device measurement; broad existing unit/display failures from prior qualification were not rerun.",
+    "No manual playthrough. PR remains draft."
+  ]
+}
