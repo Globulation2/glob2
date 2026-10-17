@@ -1,0 +1,65 @@
+[
+  {
+    "scene": "bearing",
+    "complete": true,
+    "dropped_frames": 0,
+    "duration_us": 8120000,
+    "bytes": 1079187
+  },
+  {
+    "scene": "traffic",
+    "complete": true,
+    "dropped_frames": 0,
+    "duration_us": 8120000,
+    "bytes": 1091866
+  },
+  {
+    "scene": "no-fly",
+    "complete": true,
+    "dropped_frames": 0,
+    "duration_us": 8080000,
+    "bytes": 1046293
+  },
+  {
+    "scene": "damage",
+    "complete": true,
+    "dropped_frames": 1,
+    "duration_us": 8120000,
+    "bytes": 1503314
+  },
+  {
+    "scene": "forbidden",
+    "complete": true,
+    "dropped_frames": 0,
+    "duration_us": 8040000,
+    "bytes": 1413905
+  },
+  {
+    "scene": "escape",
+    "complete": true,
+    "dropped_frames": 0,
+    "duration_us": 8040000,
+    "bytes": 1653215
+  },
+  {
+    "scene": "clearing",
+    "complete": true,
+    "dropped_frames": 0,
+    "duration_us": 8040000,
+    "bytes": 1079857
+  },
+  {
+    "scene": "feeding",
+    "complete": true,
+    "dropped_frames": 0,
+    "duration_us": 25080000,
+    "bytes": 2486523
+  },
+  {
+    "scene": "bearing-fields",
+    "complete": true,
+    "dropped_frames": 0,
+    "duration_us": 8120000,
+    "bytes": 1076097
+  }
+]

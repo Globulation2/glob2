@@ -1,0 +1,19 @@
+{
+  "source": "eddff43fbb57f772f570a9a23741ece5a6b4ecc5",
+  "base": "486a2230a4ddb257ba9dee34d3aace05f2260d6f",
+  "clean": true,
+  "reviewed_scenarios": [
+    "bearing",
+    "traffic",
+    "no-fly",
+    "damage",
+    "forbidden",
+    "escape",
+    "clearing",
+    "feeding"
+  ],
+  "platform": "Linux x86_64; software renderer on Xvfb",
+  "native_binary": "f5806bf539c177e63910584f602606819825b7e96529848e21873ddfcc0740f8",
+  "fixture_harness": "local debug-only exporter; 2 cases pass; never used as timed binary",
+  "interactive": "Normal application: load fixture, drag flag, pause/resume, quit to results/main menu; screenshots and receipts in interactive/. Quit app closed its MCP connection and process exited 0. No claim of a worker following the moved flag."
+}
