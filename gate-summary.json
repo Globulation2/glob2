@@ -1,0 +1,170 @@
+[
+  {
+    "case": "islands",
+    "scope": "entire 384-tick diagnostic run, including warmup",
+    "checksums_match_native": true,
+    "teams": [
+      {
+        "team": 0,
+        "field_calls": 30,
+        "direct_calls": 0,
+        "terrain_calls": 0
+      },
+      {
+        "team": 2,
+        "field_calls": 52,
+        "direct_calls": 0,
+        "terrain_calls": 0
+      },
+      {
+        "team": 3,
+        "field_calls": 26,
+        "direct_calls": 0,
+        "terrain_calls": 0
+      },
+      {
+        "team": 4,
+        "field_calls": 60,
+        "direct_calls": 0,
+        "terrain_calls": 0
+      },
+      {
+        "team": 5,
+        "field_calls": 69,
+        "direct_calls": 0,
+        "terrain_calls": 0
+      },
+      {
+        "team": 7,
+        "field_calls": 33,
+        "direct_calls": 0,
+        "terrain_calls": 0
+      }
+    ],
+    "field_calls": 270,
+    "direct_calls": 0,
+    "terrain_calls": 0,
+    "summary_rescans": 18
+  },
+  {
+    "case": "midgame24k",
+    "scope": "entire 384-tick diagnostic run, including warmup",
+    "checksums_match_native": true,
+    "teams": [
+      {
+        "team": 2,
+        "field_calls": 53,
+        "direct_calls": 0,
+        "terrain_calls": 0
+      },
+      {
+        "team": 3,
+        "field_calls": 79,
+        "direct_calls": 0,
+        "terrain_calls": 0
+      },
+      {
+        "team": 7,
+        "field_calls": 19,
+        "direct_calls": 0,
+        "terrain_calls": 0
+      }
+    ],
+    "field_calls": 151,
+    "direct_calls": 0,
+    "terrain_calls": 0,
+    "summary_rescans": 13
+  },
+  {
+    "case": "swamp",
+    "scope": "entire 384-tick diagnostic run, including warmup",
+    "checksums_match_native": true,
+    "teams": [
+      {
+        "team": 1,
+        "field_calls": 2,
+        "direct_calls": 0,
+        "terrain_calls": 0
+      },
+      {
+        "team": 2,
+        "field_calls": 18,
+        "direct_calls": 0,
+        "terrain_calls": 0
+      },
+      {
+        "team": 4,
+        "field_calls": 21,
+        "direct_calls": 0,
+        "terrain_calls": 0
+      },
+      {
+        "team": 5,
+        "field_calls": 14,
+        "direct_calls": 0,
+        "terrain_calls": 0
+      },
+      {
+        "team": 6,
+        "field_calls": 50,
+        "direct_calls": 0,
+        "terrain_calls": 0
+      }
+    ],
+    "field_calls": 105,
+    "direct_calls": 0,
+    "terrain_calls": 0,
+    "summary_rescans": 10
+  },
+  {
+    "case": "ordinary32",
+    "scope": "entire 384-tick diagnostic run, including warmup",
+    "checksums_match_native": true,
+    "teams": [
+      {
+        "team": 0,
+        "field_calls": 0,
+        "direct_calls": 2624,
+        "terrain_calls": 0
+      }
+    ],
+    "field_calls": 0,
+    "direct_calls": 2624,
+    "terrain_calls": 0,
+    "summary_rescans": 1
+  },
+  {
+    "case": "lava-shield",
+    "scope": "entire 384-tick diagnostic run, including warmup",
+    "checksums_match_native": true,
+    "teams": [
+      {
+        "team": 3,
+        "field_calls": 2,
+        "direct_calls": 0,
+        "terrain_calls": 2
+      }
+    ],
+    "field_calls": 2,
+    "direct_calls": 0,
+    "terrain_calls": 2,
+    "summary_rescans": 0
+  },
+  {
+    "case": "constrained64",
+    "scope": "entire 384-tick diagnostic run, including warmup",
+    "checksums_match_native": true,
+    "teams": [
+      {
+        "team": 0,
+        "field_calls": 1641,
+        "direct_calls": 0,
+        "terrain_calls": 1641
+      }
+    ],
+    "field_calls": 1641,
+    "direct_calls": 0,
+    "terrain_calls": 1641,
+    "summary_rescans": 0
+  }
+]

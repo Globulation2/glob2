@@ -1,0 +1,314 @@
+{
+  "source": "eddff43fbb57f772f570a9a23741ece5a6b4ecc5",
+  "base": "486a2230a4ddb257ba9dee34d3aace05f2260d6f",
+  "source_clean": true,
+  "compiler": "g++ (Ubuntu 13.3.0-6ubuntu2~24.04.1) 13.3.0\nCopyright (C) 2023 Free Software Foundation, Inc.\nThis is free software; see the source for copying conditions.  There is NO\nwarranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.\n\n",
+  "valgrind": "valgrind-3.22.0\n",
+  "uname": "Linux devlaptop 7.0.0-38-generic #38~24.04.4-Ubuntu SMP PREEMPT_DYNAMIC Mon Sep 14 16:37:11 UTC 2 x86_64 x86_64 x86_64 GNU/Linux\n",
+  "profiles": [
+    {
+      "case": "islands",
+      "master_instructions": 2836008848,
+      "hybrid_instructions": 3066668273,
+      "extra_instructions": 230659425,
+      "instruction_overhead_percent": 8.133240668930382,
+      "categories": {
+        "scheduled_building_fields": {
+          "master": 279140200,
+          "hybrid": 391861050,
+          "extra": 112720850,
+          "share_of_extra_percent": 48.86895473705442
+        },
+        "food_destination_selection": {
+          "master": 1610343,
+          "hybrid": 50548080,
+          "extra": 48937737,
+          "share_of_extra_percent": 21.21644801637739
+        },
+        "material_field_seeding": {
+          "master": 246207913,
+          "hybrid": 277532070,
+          "extra": 31324157,
+          "share_of_extra_percent": 13.580263195401619
+        },
+        "direct_flight_constraint_check": {
+          "master": 0,
+          "hybrid": 7311447,
+          "extra": 7311447,
+          "share_of_extra_percent": 3.1698019710228618
+        }
+      },
+      "building_counters": {
+        "master": {
+          "building_gradient_jobs": 206,
+          "building_gradient_synchronous": 8,
+          "building_gradient_synchronous_by_reason": {
+            "inactive": 0,
+            "cold_new": 3,
+            "cold_idle": 0,
+            "cold_own": 3,
+            "cold_team": 0,
+            "cold_area": 2,
+            "overflow": 0,
+            "other": 0
+          }
+        },
+        "hybrid": {
+          "building_gradient_jobs": 226,
+          "building_gradient_synchronous": 26,
+          "building_gradient_synchronous_by_reason": {
+            "inactive": 0,
+            "cold_new": 16,
+            "cold_idle": 0,
+            "cold_own": 4,
+            "cold_team": 0,
+            "cold_area": 6,
+            "overflow": 0,
+            "other": 0
+          }
+        }
+      },
+      "binary_hashes": {
+        "master": "c2583345f0687389c575362485e3f3183aadcb19ed7c6ff8f89f4d4248cbfd72",
+        "hybrid": "a206814abaa0bfd8f4ebfa68c41bb110006e03722ffa75cdd843afad6037b9a3"
+      }
+    },
+    {
+      "case": "midgame24k",
+      "master_instructions": 1621048547,
+      "hybrid_instructions": 1687257304,
+      "extra_instructions": 66208757,
+      "instruction_overhead_percent": 4.084316729596377,
+      "categories": {
+        "scheduled_building_fields": {
+          "master": 381680093,
+          "hybrid": 423384297,
+          "extra": 41704204,
+          "share_of_extra_percent": 62.9889547692309
+        },
+        "food_destination_selection": {
+          "master": 798514,
+          "hybrid": 3155295,
+          "extra": 2356781,
+          "share_of_extra_percent": 3.55962127487154
+        },
+        "material_field_seeding": {
+          "master": 103854952,
+          "hybrid": 114132458,
+          "extra": 10277506,
+          "share_of_extra_percent": 15.52288015314953
+        },
+        "direct_flight_constraint_check": {
+          "master": 0,
+          "hybrid": 2130886,
+          "extra": 2130886,
+          "share_of_extra_percent": 3.2184352894587644
+        }
+      },
+      "building_counters": {
+        "master": {
+          "building_gradient_jobs": 355,
+          "building_gradient_synchronous": 37,
+          "building_gradient_synchronous_by_reason": {
+            "inactive": 0,
+            "cold_new": 14,
+            "cold_idle": 1,
+            "cold_own": 12,
+            "cold_team": 1,
+            "cold_area": 9,
+            "overflow": 0,
+            "other": 0
+          }
+        },
+        "hybrid": {
+          "building_gradient_jobs": 374,
+          "building_gradient_synchronous": 51,
+          "building_gradient_synchronous_by_reason": {
+            "inactive": 0,
+            "cold_new": 24,
+            "cold_idle": 1,
+            "cold_own": 12,
+            "cold_team": 1,
+            "cold_area": 13,
+            "overflow": 0,
+            "other": 0
+          }
+        }
+      },
+      "binary_hashes": {
+        "master": "c2583345f0687389c575362485e3f3183aadcb19ed7c6ff8f89f4d4248cbfd72",
+        "hybrid": "a206814abaa0bfd8f4ebfa68c41bb110006e03722ffa75cdd843afad6037b9a3"
+      }
+    }
+  ],
+  "eligibility": [
+    {
+      "case": "islands",
+      "scope": "entire 384-tick diagnostic run, including warmup",
+      "checksums_match_native": true,
+      "teams": [
+        {
+          "team": 0,
+          "field_calls": 30,
+          "direct_calls": 0,
+          "terrain_calls": 0
+        },
+        {
+          "team": 2,
+          "field_calls": 52,
+          "direct_calls": 0,
+          "terrain_calls": 0
+        },
+        {
+          "team": 3,
+          "field_calls": 26,
+          "direct_calls": 0,
+          "terrain_calls": 0
+        },
+        {
+          "team": 4,
+          "field_calls": 60,
+          "direct_calls": 0,
+          "terrain_calls": 0
+        },
+        {
+          "team": 5,
+          "field_calls": 69,
+          "direct_calls": 0,
+          "terrain_calls": 0
+        },
+        {
+          "team": 7,
+          "field_calls": 33,
+          "direct_calls": 0,
+          "terrain_calls": 0
+        }
+      ],
+      "field_calls": 270,
+      "direct_calls": 0,
+      "terrain_calls": 0,
+      "summary_rescans": 18
+    },
+    {
+      "case": "midgame24k",
+      "scope": "entire 384-tick diagnostic run, including warmup",
+      "checksums_match_native": true,
+      "teams": [
+        {
+          "team": 2,
+          "field_calls": 53,
+          "direct_calls": 0,
+          "terrain_calls": 0
+        },
+        {
+          "team": 3,
+          "field_calls": 79,
+          "direct_calls": 0,
+          "terrain_calls": 0
+        },
+        {
+          "team": 7,
+          "field_calls": 19,
+          "direct_calls": 0,
+          "terrain_calls": 0
+        }
+      ],
+      "field_calls": 151,
+      "direct_calls": 0,
+      "terrain_calls": 0,
+      "summary_rescans": 13
+    },
+    {
+      "case": "swamp",
+      "scope": "entire 384-tick diagnostic run, including warmup",
+      "checksums_match_native": true,
+      "teams": [
+        {
+          "team": 1,
+          "field_calls": 2,
+          "direct_calls": 0,
+          "terrain_calls": 0
+        },
+        {
+          "team": 2,
+          "field_calls": 18,
+          "direct_calls": 0,
+          "terrain_calls": 0
+        },
+        {
+          "team": 4,
+          "field_calls": 21,
+          "direct_calls": 0,
+          "terrain_calls": 0
+        },
+        {
+          "team": 5,
+          "field_calls": 14,
+          "direct_calls": 0,
+          "terrain_calls": 0
+        },
+        {
+          "team": 6,
+          "field_calls": 50,
+          "direct_calls": 0,
+          "terrain_calls": 0
+        }
+      ],
+      "field_calls": 105,
+      "direct_calls": 0,
+      "terrain_calls": 0,
+      "summary_rescans": 10
+    },
+    {
+      "case": "ordinary32",
+      "scope": "entire 384-tick diagnostic run, including warmup",
+      "checksums_match_native": true,
+      "teams": [
+        {
+          "team": 0,
+          "field_calls": 0,
+          "direct_calls": 2624,
+          "terrain_calls": 0
+        }
+      ],
+      "field_calls": 0,
+      "direct_calls": 2624,
+      "terrain_calls": 0,
+      "summary_rescans": 1
+    },
+    {
+      "case": "lava-shield",
+      "scope": "entire 384-tick diagnostic run, including warmup",
+      "checksums_match_native": true,
+      "teams": [
+        {
+          "team": 3,
+          "field_calls": 2,
+          "direct_calls": 0,
+          "terrain_calls": 2
+        }
+      ],
+      "field_calls": 2,
+      "direct_calls": 0,
+      "terrain_calls": 2,
+      "summary_rescans": 0
+    },
+    {
+      "case": "constrained64",
+      "scope": "entire 384-tick diagnostic run, including warmup",
+      "checksums_match_native": true,
+      "teams": [
+        {
+          "team": 0,
+          "field_calls": 1641,
+          "direct_calls": 0,
+          "terrain_calls": 1641
+        }
+      ],
+      "field_calls": 1641,
+      "direct_calls": 0,
+      "terrain_calls": 1641,
+      "summary_rescans": 0
+    }
+  ]
+}
