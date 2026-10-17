@@ -1,0 +1,25 @@
+{
+  "head": "eddff43fbb57f772f570a9a23741ece5a6b4ecc5",
+  "base": "486a2230a4ddb257ba9dee34d3aace05f2260d6f",
+  "previous_pr_head": "522a89ff9b36a1c438114f4581a210f00bd5178a",
+  "source_status": "",
+  "environment": "Linux 7.0.0-38-generic x86_64 GNU/Linux",
+  "compiler": "g++ (Ubuntu 13.3.0-6ubuntu2~24.04.1) 13.3.0",
+  "build": "tools/dev_build.py dev_fast=1, -O0 -g1, -j12, no PCH/unity",
+  "sdl_prefix": "/home/bradley/glob2/build/sdl3/prefix",
+  "dependency_prefix": "/home/bradley/.local/share/glob2/development/dependencies/build-6b62ea86279899032d0eabbb/prefix",
+  "runtime_dependency_changes": false,
+  "binaries": {
+    "/dev/shm/glob2-direct-air/src/glob2": "9039c5a1bfda412578b9825dc503d49426da79ce5ad467ca4934313d96adc311",
+    "/dev/shm/glob2-direct-air/test/glob2-engine-tests": "369d2241f844f2f9c07b9e8375f07f36ec1279721826a9d9d47d293fcb051970",
+    "/dev/shm/glob2-direct-air/test/glob2-unit-tests": "0f4e2eb8586032fb1f98b581194c5893b4862e1009d8991e42dfe6cf904602f1"
+  },
+  "limits": [
+    "Linux x86_64 GCC 13 only",
+    "GPU disabled in checksum comparisons",
+    "No optimized performance measurement",
+    "No Windows, macOS, Android, iOS, browser or GPU/NEON execution",
+    "No visual or maintainer playtesting"
+  ],
+  "local_build_note": "SCons places absolute-output third-party objects under dev/shm/glob2-direct-air in the source checkout. That exact generated path is locally excluded; no build-system or tracked ignore policy changes."
+}

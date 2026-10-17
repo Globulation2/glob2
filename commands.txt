@@ -1,0 +1,23 @@
+Source: /home/bradley/.codex/worktrees/pr1196-direct-flight/glob2
+Base: 486a2230a4ddb257ba9dee34d3aace05f2260d6f
+Prior PR head: 522a89ff9b36a1c438114f4581a210f00bd5178a
+Environment for builds:
+CCACHE_DIR=/dev/shm/glob2-air-ccache
+GLOB2_SDL3_PREFIX=/home/bradley/glob2/build/sdl3/prefix
+TMPDIR=/dev/shm/glob2-air-tmp
+
+Build (development, -O0 -g1, no PCH/unity):
+python3 tools/dev_build.py --build=/dev/shm/glob2-direct-air -j12 engine-tests unit-tests /dev/shm/glob2-direct-air/src/glob2
+The initial -j6 build was deliberately interrupted to use -j12; its partial log is retained.
+
+Focused tests and golden refresh: exact runner commands and logs retained alongside this file.
+Determinism: python3 artifacts/direct-flight/verify_direct_flight.py
+This script records every invocation and input hash, compares all aggregate/team/entity checksum bytes across 1/2/4/8 participants for 128 ticks, and resumes both direct and constrained fixtures at all eight pipeline offsets.
+
+Static checks:
+python3 tools/shaders/gradient_preparation_rules.py
+python3 tools/check_docs.py
+python3 test/check_sim_revision.py --base origin/master
+git diff --check origin/master
+
+No release timing/performance comparison, hosted matrix, other platforms, GPU/NEON execution or visual/playtesting was performed for this revision.

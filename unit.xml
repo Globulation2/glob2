@@ -1,0 +1,52 @@
+<?xml version='1.0' encoding='utf-8'?>
+<testsuites tests="50" failures="0" errors="0" skipped="0"><testsuite name="src/map/gradient/PathGradientHarness.cpp"><testcase classname="src/map/gradient/PathGradientHarness.cpp" name="air movement costs share eager and immutable lazy fields against the heap oracle [pathfinding]" time="1.01777" status="run" />
+    <testcase classname="src/map/gradient/PathGradientHarness.cpp" name="air lazy fields support the maximum map without private query budgets [pathfinding]" time="0.491716" status="run" />
+    <testcase classname="src/map/gradient/PathGradientHarness.cpp" name="authored air speed and damage profiles agree across scalar SIMD and lazy routing [pathfinding]" time="0.005506" status="run" />
+  </testsuite><testsuite name="MapQuery"><testcase classname="MapQuery" name="FreeForGroundUnit_CleanGrassPasses" time="0.014533" status="run" />
+    <testcase classname="MapQuery" name="FreeForGroundUnit_ResourceFails" time="0.012793" status="run" />
+    <testcase classname="MapQuery" name="FreeForGroundUnit_BuildingFails" time="0.012713" status="run" />
+    <testcase classname="MapQuery" name="FreeForGroundUnit_UnitFails" time="0.01285" status="run" />
+    <testcase classname="MapQuery" name="FreeForGroundUnit_WaterFailsWhenNotSwim" time="0.012523" status="run" />
+    <testcase classname="MapQuery" name="FreeForGroundUnit_WaterPassesWhenSwim" time="0.012687" status="run" />
+    <testcase classname="MapQuery" name="FreeForGroundUnit_ForbiddenFailsWhenMaskMatches" time="0.012639" status="run" />
+    <testcase classname="MapQuery" name="FreeForGroundUnit_ForbiddenPassesWhenMaskDoesNotMatch" time="0.013816" status="run" />
+    <testcase classname="MapQuery" name="FreeForGroundUnitNoForbidden_IgnoresForbidden" time="0.014903" status="run" />
+    <testcase classname="MapQuery" name="FreeForGroundUnitNoForbidden_StillBlocksBuilding" time="0.014791" status="run" />
+    <testcase classname="MapQuery" name="FreeForBuilding_GrassPasses" time="0.015056" status="run" />
+    <testcase classname="MapQuery" name="FreeForBuilding_ResourceFails" time="0.014781" status="run" />
+    <testcase classname="MapQuery" name="FreeForBuilding_BuildingFails" time="0.014819" status="run" />
+    <testcase classname="MapQuery" name="FreeForBuilding_UnitFails" time="0.01497" status="run" />
+    <testcase classname="MapQuery" name="FreeForBuilding_WaterFails" time="0.0148" status="run" />
+    <testcase classname="MapQuery" name="FreeForBuilding_SandFails" time="0.015047" status="run" />
+    <testcase classname="MapQuery" name="FreeForBuilding_RectAllGrassPasses" time="0.014861" status="run" />
+    <testcase classname="MapQuery" name="FreeForBuilding_RectOneBadTileFails" time="0.015066" status="run" />
+    <testcase classname="MapQuery" name="FreeForBuilding_RectGidTolerantSameGidPasses" time="0.014912" status="run" />
+    <testcase classname="MapQuery" name="FreeForBuilding_RectGidTolerantDifferentGidFails" time="0.015141" status="run" />
+    <testcase classname="MapQuery" name="HardSpaceForGroundUnit_IgnoresUnit" time="0.01498" status="run" />
+    <testcase classname="MapQuery" name="HardSpaceForGroundUnit_ResourceStillFails" time="0.014921" status="run" />
+    <testcase classname="MapQuery" name="HardSpaceForGroundUnit_BuildingStillFails" time="0.01496" status="run" />
+    <testcase classname="MapQuery" name="HardSpaceForGroundUnit_WaterFailsWhenNotSwim" time="0.01514" status="run" />
+    <testcase classname="MapQuery" name="HardSpaceForGroundUnit_ForbiddenStillFails" time="0.014993" status="run" />
+    <testcase classname="MapQuery" name="HardSpaceForBuilding_IgnoresUnit" time="0.014792" status="run" />
+    <testcase classname="MapQuery" name="HardSpaceForBuilding_ResourceFails" time="0.015108" status="run" />
+    <testcase classname="MapQuery" name="HardSpaceForBuilding_BuildingFails" time="0.014805" status="run" />
+    <testcase classname="MapQuery" name="HardSpaceForBuilding_NonGrassFails" time="0.015033" status="run" />
+    <testcase classname="MapQuery" name="HardSpaceForBuilding_RectAllGrassPasses" time="0.01487" status="run" />
+    <testcase classname="MapQuery" name="HardSpaceForBuilding_RectGidTolerantSameGidPasses" time="0.014877" status="run" />
+    <testcase classname="MapQuery" name="HardSpaceForBuilding_RectGidTolerantDifferentGidFails" time="0.014953" status="run" />
+    <testcase classname="MapQuery" name="LocalTeam_DefaultsToSentinel" time="0.015168" status="run" />
+    <testcase classname="MapQuery" name="LocalTeam_SetAndGet" time="0.015139" status="run" />
+    <testcase classname="MapQuery" name="LocalTeam_SentinelValueIsMinusOne" time="0" status="run" />
+    <testcase classname="MapQuery" name="trail and ice placement use properties independent of sprite variants" time="0.01591" status="run" />
+    <testcase classname="MapQuery" name="point routes prefer trails and reject impassable destination terrain" time="0.015978" status="run" />
+    <testcase classname="MapQuery" name="shared air point routing respects forbidden paint and escaping uses the air layer" time="0.015417" status="run" />
+    <testcase classname="MapQuery" name="air routes detour around blocked cells and reset reusable search state" time="0.015358" status="run" />
+    <testcase classname="MapQuery" name="wrapped distance preserves negative coordinates and multiple periods" time="0.023937" status="run" />
+  </testsuite><testsuite name="PathGradient"><testcase classname="PathGradient" name="building depth history follows readers rather than preparation [pathfinding]" time="0.059143" status="run" />
+    <testcase classname="PathGradient" name="reader depth agrees for lazy and fully prepared weighted fields [pathfinding]" time="0.034346" status="run" />
+    <testcase classname="PathGradient" name="immutable water snapshots share storage and retain their captured terrain [pathfinding]" time="0.000595" status="run" />
+    <testcase classname="PathGradient" name="analytic oracle" time="0.000521" status="run" />
+    <testcase classname="PathGradient" name="parallel searches" time="0.588313" status="run" />
+    <testcase classname="PathGradient" name="lazy building fields" time="0.397537" status="run" />
+    <testcase classname="PathGradient" name="boundary; random and exhaustive seeds against the heap oracle" time="4.3603" status="run" />
+  </testsuite></testsuites>

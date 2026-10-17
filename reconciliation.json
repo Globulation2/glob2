@@ -1,0 +1,26 @@
+{
+  "initial_failures": [
+    {
+      "run": "smoke.xml",
+      "case": "flying carriers steer directly between shared destination queries",
+      "cause": "New test called subscriptionSuccess before initializing destinationPurpose; fixed fixture initialization order.",
+      "follow_up": "new-cases-repaired.xml: all eight cases pass."
+    },
+    {
+      "run": "new-cases.xml",
+      "case": "direct flying clearers retain shared goals and clearing claims",
+      "cause": "New test supplied one food step of budget for a longer route; fixed fixture hunger rate to give the intended clearing budget.",
+      "follow_up": "new-cases-repaired.xml: all eight cases pass."
+    },
+    {
+      "run": "focused-before-guard-repair.xml",
+      "case": "all locked capability ablations match fixed tick and RNG traces",
+      "result": "284 engine cases passed; one golden mismatch from tick 7.",
+      "cause": "The new direct guard destination lookup wrote current coordinates to targetX/Y even when no destination existed.",
+      "fix": "Resolve into local coordinates and copy only after a successful query; add an explicit regression.",
+      "follow_up": "guard-repair.xml: existing ablation golden and new empty-guard case pass. The committed ablation trace is unchanged. Final focused rerun covers the repaired revision."
+    }
+  ],
+  "initial_build": "The -j6 build was deliberately interrupted and resumed with -j12; no compiler errors.",
+  "final_build": "build-clean-final.log: clean eddff43fb source; development game and both test binaries build successfully."
+}
