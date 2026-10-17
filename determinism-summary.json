@@ -1,0 +1,59 @@
+{
+  "revision": "2c057dfd91816c08dc2234f7cb889f108381a4f9",
+  "binary_sha256": "32643c23b880bf2eed7ee4ecc30f852d769f4970ebd9df3154ee08f94068c183",
+  "results": [
+    {
+      "case": "direct",
+      "participants": [
+        1,
+        2,
+        4,
+        8
+      ],
+      "ticks_compared": 128,
+      "aggregate_and_all_team_entity_fields_match": true,
+      "save_phases": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7
+      ]
+    },
+    {
+      "case": "constrained",
+      "participants": [
+        1,
+        2,
+        4,
+        8
+      ],
+      "ticks_compared": 128,
+      "aggregate_and_all_team_entity_fields_match": true,
+      "save_phases": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7
+      ]
+    }
+  ],
+  "platforms": [
+    "Linux x86_64 GCC 13"
+  ],
+  "omitted_platforms": [
+    "Windows",
+    "macOS",
+    "Android",
+    "iOS",
+    "browser"
+  ],
+  "build": "dev_fast=1, -O0 -g1, no PCH/unity, GPU off"
+}
