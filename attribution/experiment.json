@@ -1,0 +1,104 @@
+{
+  "binaries": {
+    "baseline": {
+      "path": "/Users/bradley/.codex/worktrees/hiring-gradient-bench/glob2/artifacts/proactive-attribution/binaries/profile",
+      "sha256": "f53f04b9af68c67b0b3f16aec77ef268c3054ae8aae597ee0c5e27ffaed036a9"
+    },
+    "proactive": {
+      "path": "/Users/bradley/.codex/worktrees/hiring-gradient-bench/glob2/artifacts/proactive-attribution/binaries/profile",
+      "sha256": "f53f04b9af68c67b0b3f16aec77ef268c3054ae8aae597ee0c5e27ffaed036a9"
+    },
+    "heuristic": {
+      "path": "/Users/bradley/.codex/worktrees/hiring-gradient-bench/glob2/artifacts/proactive-attribution/binaries/profile",
+      "sha256": "f53f04b9af68c67b0b3f16aec77ef268c3054ae8aae597ee0c5e27ffaed036a9"
+    }
+  },
+  "tick_sample_format": "chronological native uint64 nanoseconds, little",
+  "platform": "macOS-26.6.2-arm64-arm-64bit-Mach-O",
+  "architecture": "arm64",
+  "policies": [
+    "baseline",
+    "proactive",
+    "heuristic"
+  ],
+  "participants": [
+    4
+  ],
+  "seeds": [
+    42,
+    43,
+    44,
+    45,
+    46,
+    47,
+    48,
+    49,
+    50,
+    51,
+    52,
+    53,
+    54,
+    55,
+    56,
+    57,
+    58,
+    59,
+    60,
+    61,
+    62,
+    63,
+    64,
+    65,
+    66,
+    67,
+    68,
+    69,
+    70,
+    71,
+    72,
+    73
+  ],
+  "workloads": [
+    {
+      "name": "holiday",
+      "map": "Holiday_Island_2.map.gz",
+      "players": [
+        "nicowar",
+        "econo",
+        "castor",
+        "warrush"
+      ],
+      "ticks": 32768,
+      "map_sha256": "7c8d9ff5d0bbff14945f1a31bb78ffdc60df2befe08e7b5b0f9c0bedb8f977e9"
+    },
+    {
+      "name": "large-eleven",
+      "map": "Oazis.map.gz",
+      "players": [
+        "nicowar",
+        "econo",
+        "castor",
+        "warrush",
+        "nicowar",
+        "econo",
+        "castor",
+        "warrush",
+        "nicowar",
+        "econo",
+        "castor"
+      ],
+      "ticks": 32768,
+      "map_sha256": "b3283af95ee177f528d3b57438797c4a1970473c562a76f5ed4faad51f03a6d3"
+    }
+  ],
+  "building_admission": "Global four scheduled map refreshes per tick in both policies. Proactive initialization shares the one-tick hiring preparation deadline.",
+  "comparison": "Instrumented baseline/proactive reproduce the previous simulations. Heuristic ablation prepares the same proactive routes but hides them from hiring ranking until a primary prewarm or owner read has used the field. This is a mechanism intervention, not a fixed-world cost counterfactual.",
+  "build_command": "PYTHONPATH=. scons release=1 CXXFLAGS=-g0 client_profile=full server=0; baseline initially -j8 and final incremental -j4; proactive -j4",
+  "instrumentation": "Single release binary, runtime policy selection, thread CPU scopes and bucket-entry counters by caller; private-field lifetime ledger. Diagnostic timings include instrumentation overhead and do not replace the prior performance estimates.",
+  "limitations": [
+    "Policies can change game evolution, so total CPU is not isolated kernel cost.",
+    "No graphics/frame pacing, other devices or cross-platform coverage.",
+    "Contention guard observes native compilers/tests, Docker execution and busy VMs; other host load is not fully controlled."
+  ],
+  "run_order": "Serial paired policies per seed/map, alternate policy and participant order; discard whole paired set upon observed build or VM contention."
+}

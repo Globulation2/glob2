@@ -1,0 +1,13 @@
+{
+  "base": "c7f1cd2996a13ac59d56926755c182008b67d736",
+  "production_behavior": "69e6c86014c50053d36e840a8cfe5290226b7163",
+  "binary_sha256": "f53f04b9af68c67b0b3f16aec77ef268c3054ae8aae597ee0c5e27ffaed036a9",
+  "compiler": "Apple clang version 21.0.0 (clang-2100.3.34.2)\nTarget: arm64-apple-darwin25.6.0\nThread model: posix\nInstalledDir: /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin\n",
+  "flags": "PYTHONPATH=. scons release=1 CXXFLAGS=-g0 client_profile=full server=0 -j6",
+  "platform": "Darwin Mac 25.6.0 Darwin Kernel Version 25.6.0: Fri Jul 31 19:18:29 PDT 2026; root:xnu-12377.161.14~5/RELEASE_ARM64_T8122 arm64\n",
+  "scope": "Private diagnostic overlay only. Baseline/proactive final checksum and tick count must equal the prior 256-run dataset for every map/seed/participant. Heuristic intervention only withholds proactive fields from ranking until primary or live demand. All code paths retain normal live lazy extension.",
+  "overhead": "CPU scopes use CLOCK_THREAD_CPUTIME_ID; counters run in both modes. This measures attribution, not a replacement estimate for the previous CPU regression.",
+  "stages": "Private seed CPU includes map-sized allocation, terrain cost inputs, seed initialization and initial frontier. Map worker CPU includes initial seeding, cost-input creation and prepared search depth. Search entries count processed queue entries including duplicates. Parent/child CPU scopes overlap; analyze.py supplies exclusive comparisons.",
+  "field_flags": "1=ranking, 2=primary prewarm, 4=live owner request. Retired used flags captured at retirement; active fields at cutoff are right-censored. Retired2=unpublished discard, 11=idle,12=own edit,13=team,14=area,1=other retirement.",
+  "sample_plan": "32 paired seeds42..73, both previous maps32768tick cap, four participants, baseline/proactive/heuristic modes; serial and counterbalanced; previous host-contention guard."
+}

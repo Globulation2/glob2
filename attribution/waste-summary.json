@@ -1,0 +1,156 @@
+[
+  {
+    "workload": "holiday",
+    "metrics": {
+      "unused_count": {
+        "baseline": 140.21875,
+        "proactive": 376.125,
+        "heuristic": 396.53125,
+        "delta_ci": [
+          191.46640625,
+          280.40703125
+        ]
+      },
+      "unused_seed_ns_tick": {
+        "baseline": 189.23127501460297,
+        "proactive": 544.9703276959342,
+        "heuristic": 584.0494124549066,
+        "delta_ci": [
+          291.4577943008565,
+          419.66129332855934
+        ]
+      },
+      "spec_unused_count": {
+        "baseline": 0.0,
+        "proactive": 271.03125,
+        "heuristic": 289.5,
+        "delta_ci": [
+          241.71796875,
+          302.68828125
+        ]
+      },
+      "spec_unused_seed_ns_tick": {
+        "baseline": 0.0,
+        "proactive": 406.56050851772375,
+        "heuristic": 442.3309484020793,
+        "delta_ci": [
+          361.0233897804643,
+          455.65783157427455
+        ]
+      },
+      "pro_unused_fraction": {
+        "baseline": 0.0,
+        "proactive": 0.29583466618758025,
+        "heuristic": 0.3134058139777911,
+        "delta_ci": [
+          0.27303714606445495,
+          0.31881449562114383
+        ]
+      },
+      "warm_per_million_buildingticks": {
+        "baseline": 6348.640747587257,
+        "proactive": 6843.956891900149,
+        "heuristic": 7220.338135105084,
+        "delta_ci": [
+          -16.249131283330094,
+          959.1352179287038
+        ]
+      },
+      "warm_per_million_unitsteps": {
+        "baseline": 3414.1127878521947,
+        "proactive": 3646.414310736022,
+        "heuristic": 3717.9232579554296,
+        "delta_ci": [
+          71.93694510606902,
+          391.6856155983639
+        ]
+      },
+      "all_seeds_per_million_unitsteps": {
+        "baseline": 3835.009428055181,
+        "proactive": 4154.55385843301,
+        "heuristic": 4226.018081857476,
+        "delta_ci": [
+          150.65090908013548,
+          491.5428484174426
+        ]
+      }
+    }
+  },
+  {
+    "workload": "large-eleven",
+    "metrics": {
+      "unused_count": {
+        "baseline": 620.84375,
+        "proactive": 1842.5,
+        "heuristic": 1900.375,
+        "delta_ci": [
+          1105.53046875,
+          1344.6890625
+        ]
+      },
+      "unused_seed_ns_tick": {
+        "baseline": 3583.8146896362305,
+        "proactive": 10816.464336395264,
+        "heuristic": 11159.280806541443,
+        "delta_ci": [
+          6537.925265240669,
+          7979.490044307709
+        ]
+      },
+      "spec_unused_count": {
+        "baseline": 0.0,
+        "proactive": 1401.25,
+        "heuristic": 1477.09375,
+        "delta_ci": [
+          1320.34375,
+          1486.75390625
+        ]
+      },
+      "spec_unused_seed_ns_tick": {
+        "baseline": 0.0,
+        "proactive": 8248.570197105408,
+        "heuristic": 8681.599927902222,
+        "delta_ci": [
+          7754.627350711822,
+          8769.856928753852
+        ]
+      },
+      "pro_unused_fraction": {
+        "baseline": 0.0,
+        "proactive": 0.35350425979962086,
+        "heuristic": 0.37545665143959867,
+        "delta_ci": [
+          0.34462641550999434,
+          0.36249710123339224
+        ]
+      },
+      "warm_per_million_buildingticks": {
+        "baseline": 8284.402746958578,
+        "proactive": 8665.951117661692,
+        "heuristic": 8852.614402192761,
+        "delta_ci": [
+          105.96698546328462,
+          654.5505229776422
+        ]
+      },
+      "warm_per_million_unitsteps": {
+        "baseline": 4405.133150325254,
+        "proactive": 4559.820632451583,
+        "heuristic": 4593.514661084063,
+        "delta_ci": [
+          72.29623940863098,
+          242.00463558341121
+        ]
+      },
+      "all_seeds_per_million_unitsteps": {
+        "baseline": 4923.68159821285,
+        "proactive": 5200.172469763481,
+        "heuristic": 5226.8451480139665,
+        "delta_ci": [
+          181.95151964854247,
+          374.96091414399865
+        ]
+      }
+    }
+  }
+]

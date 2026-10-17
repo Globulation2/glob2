@@ -1,0 +1,61 @@
+{
+  "command": [
+    "/Users/bradley/.codex/worktrees/hiring-gradient-bench/glob2/artifacts/proactive-attribution/binaries/profile",
+    "game",
+    "run",
+    "--map-file",
+    "/Users/bradley/.codex/worktrees/hiring-gradient-bench/glob2/maps/Holiday_Island_2.map.gz",
+    "--game-seed",
+    "69",
+    "--ticks",
+    "32768",
+    "--compute-threads",
+    "4",
+    "--compute-telemetry",
+    "waits",
+    "--gpu",
+    "off",
+    "--gradient-backend",
+    "cpu",
+    "--benchmark-warmup",
+    "0",
+    "--output-dir",
+    "/Users/bradley/.codex/worktrees/hiring-gradient-bench/glob2/artifacts/proactive-attribution/runs/holiday/seed-69-heuristic-p4/game",
+    "--player",
+    "nicowar",
+    "--player",
+    "econo",
+    "--player",
+    "castor",
+    "--player",
+    "warrush"
+  ],
+  "timing_wrapper": [
+    "/usr/bin/time",
+    "-l"
+  ],
+  "environment": {
+    "SDL_VIDEODRIVER": "dummy",
+    "SDL_AUDIODRIVER": "dummy",
+    "GLOB2_USER_DATA_DIR": "/Users/bradley/.codex/worktrees/hiring-gradient-bench/glob2/artifacts/proactive-attribution/runs/holiday/seed-69-heuristic-p4/profile",
+    "GLOB2_TEST_SEED": "69",
+    "GLOB2_BENCH_TICKS": "/Users/bradley/.codex/worktrees/hiring-gradient-bench/glob2/artifacts/proactive-attribution/runs/holiday/seed-69-heuristic-p4/tick-ns.u64",
+    "GLOB2_GRADIENT_ATTRIBUTION": "heuristic",
+    "GLOB2_ATTR_FIELDS": "/Users/bradley/.codex/worktrees/hiring-gradient-bench/glob2/artifacts/proactive-attribution/runs/holiday/seed-69-heuristic-p4/fields.csv"
+  },
+  "binary_sha256": "f53f04b9af68c67b0b3f16aec77ef268c3054ae8aae597ee0c5e27ffaed036a9",
+  "load_average_before": [
+    4.017578125,
+    4.15625,
+    4.04833984375
+  ],
+  "exit_code": 0,
+  "elapsed_seconds": 2.442832582979463,
+  "host_contention_seen": false,
+  "load_average_after": [
+    4.017578125,
+    4.15625,
+    4.04833984375
+  ],
+  "peak_rss_bytes": 105988096
+}

@@ -1,0 +1,22 @@
+[
+  {
+    "workload": "holiday",
+    "warm_per_million_buildingticks_baseline": 6348.640747587257,
+    "proactive": 6843.956891900149,
+    "change_pct": 7.801924285936845,
+    "delta_ci": [
+      -16.249131283330094,
+      959.1352179287038
+    ]
+  },
+  {
+    "workload": "large-eleven",
+    "warm_per_million_buildingticks_baseline": 8284.402746958578,
+    "proactive": 8665.951117661692,
+    "change_pct": 4.605623149395899,
+    "delta_ci": [
+      105.96698546328462,
+      654.5505229776422
+    ]
+  }
+]
