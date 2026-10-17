@@ -597,6 +597,7 @@ void Map::clear()
 	gradientRuntime->supplierLocationsDirty=true;
 	gradientRuntime->resourceSeeds.reset();
 	gradientRuntime->safety.reset();
+    gradientRuntime->directFlight = {};
 	clearGradientBufferPool();
 	clearBuildingGradientSearchPool();
 	{

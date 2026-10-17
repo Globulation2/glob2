@@ -103,7 +103,10 @@ void Unit::handleActionRandomFly()
 void Unit::handleActionGoingTarget()
 {
 	clearOccupiedMapSlot();
-	findDisplacement([&](int* pathDx, int* pathDy) { return owner->map->pathfindPointToPoint(posX, posY, targetX, targetY, pathDx, pathDy, movementClass(), owner->me, performance[FLY] ? Map::GRADIENT_COST_LIMIT/GRADIENT_STEP : GOING_TARGET_MAX_PATH_LENGTH); });
+    if (performance[FLY] && !owner->map->hasAirRoutingConstraints(owner->me))
+        flyToTarget();
+    else
+        findDisplacement([&](int* pathDx, int* pathDy) { return owner->map->pathfindPointToPoint(posX, posY, targetX, targetY, pathDx, pathDy, movementClass(), owner->me, performance[FLY] ? Map::GRADIENT_COST_LIMIT/GRADIENT_STEP : GOING_TARGET_MAX_PATH_LENGTH); });
 	directionFromDxDy();
 	wrapPosition();
 
@@ -119,7 +122,7 @@ void Unit::handleActionGoingTarget()
 
 void Unit::handleActionFlyingTarget()
 {
-    // Durable save action value; legacy actions now enter the common router.
+    // Durable save action value; choose direct steering or the shared router.
     handleActionGoingTarget();
 }
 

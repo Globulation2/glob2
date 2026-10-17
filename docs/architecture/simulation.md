@@ -336,15 +336,22 @@ checksum adapter retains its historical entity/RNG representation for fixtures.
   integer costs and scalar/SIMD/backend kernels. Flyable terrain and resource
   `blocksAir` determine access; buildings and ground occupancy do not obstruct air.
   Fields omit transient traffic, while stepping checks the air occupancy layer.
+  On maps without air terrain constraints, air-blocking resources or the team's
+  forbidden paint, flyers retain direct angular steering and local traffic
+  avoidance. Shared queries still choose service, resource and clearing goals;
+  ordinary building/resource travel does not follow a field at every step.
+  A derived summary invalidated alongside air safety selects the policy again
+  after edits or loading. Guard balancing retains its field-based steering.
   Forbidden paint blocks routes and idle wandering; a unit already inside it
   uses the common escape policy. Cold building queries initialize synchronously
   and expand lazily; warm refreshes use the existing fixed-deadline pipeline.
   Hiring borrows the same immutable building generations, and idle clearers use
-  the existing claims and clearing fields. Arbitrary targets use common A* with
-  the air profile and the field cost limit; blocked targets are approached from
-  an adjacent accessible cell. Historical flying action values remain readable
-  and delegate to that router. Format 171 appends air routing slots and remaps
-  historical seven/eight-class strides; unreleased draft formats 168–170 are
+  the existing claims and clearing fields. Constrained arbitrary targets use
+  common A* with the air profile and the field cost limit; blocked targets are
+  approached from an adjacent accessible cell. Historical flying action values
+  remain readable and select the same direct/constrained policy. Format 171
+  appends air routing slots and remaps historical seven/eight-class strides;
+  unreleased draft formats 168–170 are
   rejected. The released save floor remains 58. Replay acceptance begins at 171.
 - Registry compilation calculates movement and air costs once, deduplicates cost
   profiles and caches distinct edge steps. Runtime gradient setup scales with

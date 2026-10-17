@@ -305,6 +305,15 @@ void Unit::handleMovementAttackingAround()
 				return owner->map->isGuardArea(x, y, owner->me);
 			return owner->map->getGuardAreasGradient(owner->teamNumber, movementClass())[owner->map->coordToIndex(x, y)] == GRADIENT_AT_GOAL;
 		};
+		if (!attachedBuilding && performance[FLY] && !owner->map->hasAirRoutingConstraints(owner->me)
+            && !balancing && !insideGuardArea(posX,posY)) {
+            const auto* field=owner->map->getGuardAreasGradient(owner->teamNumber,AIR_MOVEMENT_CLASS);
+            Sint32 goalX=0,goalY=0;
+            setValidTarget(owner->map->getGlobalGradientDestination(field,posX,posY,&goalX,&goalY));
+            if (validTarget()) { targetX=goalX; targetY=goalY; }
+            movement=validTarget()?MOV_FLYING_TARGET:MOV_RANDOM_FLY;
+            return;
+        }
 		if (!attachedBuilding && findDisplacement([&](int* pathDx, int* pathDy) { return owner->map->pathfindArea(entityRandom, Map::AreaKind::Guard, owner->teamNumber, movementClass(), posX, posY, pathDx, pathDy); }))
 		{
 			directionFromDxDy();
@@ -436,6 +445,18 @@ void Unit::handleMovementClearingResources()
 		}
 
 	assert(attachedBuilding);
+    if (performance[FLY] && !map->hasAirRoutingConstraints(owner->me)) {
+        bool source=validTarget() && map->warpDistSquare(targetX,targetY,bx,by)<=usr2
+            && map->isClearableResourceForMaterials(targetX,targetY,attachedBuilding->clearingMaterialMask);
+        if (!source) {
+            const auto* field=map->buildingGradient(attachedBuilding,AIR_MOVEMENT_CLASS,BuildingRoute::Clearing);
+            source=field && map->getGlobalGradientDestination(field,posX,posY,&targetX,&targetY);
+        }
+        setValidTarget(source);
+        if (source) movement=MOV_FLYING_TARGET;
+        else { stopAttachedForBuilding(false); movement=MOV_RANDOM_FLY; }
+        return;
+    }
 	if (findDisplacement([&](int* pathDx, int* pathDy) { return map->pathfindBuilding(entityRandom, attachedBuilding, movementClass(), posX, posY, pathDx, pathDy, BuildingRoute::Clearing); }))
 	{
 		directionFromDxDy();
@@ -498,7 +519,9 @@ void Unit::handleMovementRandom()
 			{
 				dx=0;
 				dy=0;
-				findDisplacement([&](int* pathDx, int* pathDy) { return owner->map->pathfindArea(entityRandom, Map::AreaKind::Clear, owner->teamNumber, movementClass(), posX, posY, pathDx, pathDy); });
+                const bool direct=performance[FLY] && !map->hasAirRoutingConstraints(owner->me);
+                if (!direct)
+                    findDisplacement([&](int* pathDx, int* pathDy) { return owner->map->pathfindArea(entityRandom, Map::AreaKind::Clear, owner->teamNumber, movementClass(), posX, posY, pathDx, pathDy); });
 
 				targetX = tempTargetX;
 				targetY = tempTargetY;
@@ -523,6 +546,7 @@ void Unit::handleMovementRandom()
 				movement = MOV_GOING_DX_DY;
 				owner->map->setClearingAreaClaimed(targetX, targetY, owner->teamNumber, gid);
 				setValidTarget(true);
+                if (direct) movement=MOV_FLYING_TARGET;
 			}
 			else
 				movement=performance[FLY]?MOV_RANDOM_FLY:MOV_RANDOM_GROUND;
@@ -548,6 +572,10 @@ void Unit::handleMovementGoingToFlagOrBuilding()
 		movement=MOV_ATTACKING_TARGET;
 	}
 
+	else if (performance[FLY] && !map->hasAirRoutingConstraints(owner->me))
+    {
+        movement=MOV_FLYING_TARGET;
+    }
 	else if (findDisplacement([&](int* pathDx, int* pathDy) { return map->pathfindBuilding(entityRandom, targetBuilding, movementClass(), posX, posY, pathDx, pathDy,
 		activity == ACT_FLAG ? (jobPurpose == UnitJobPurpose::Clear ? BuildingRoute::Clearing : BuildingRoute::Combat) : BuildingRoute::Footprint); }))
 	{
@@ -599,6 +627,48 @@ void Unit::handleMovementGoingToResource()
 {
 	Map *map=owner->map;
 
+	if (performance[FLY] && !map->hasAirRoutingConstraints(owner->me)) {
+        // Reuse the shared destination query only when the old source expires;
+        // ordinary travel neither follows nor refreshes a movement field.
+        const auto sourceAvailable=[&] {
+            if (map->isMaterialTakeableSlot(targetX,targetY,destinationPurpose)) return true;
+            if (!attachedBuilding) return false;
+            const unsigned modes=map->materialSupplyModesSlot(attachedBuilding,destinationPurpose);
+            const auto eligible=[&](const Building* supplier) {
+                return map->stockSupplierEligibleSlot(supplier,attachedBuilding,destinationPurpose,modes);
+            };
+            const auto supplier=map->getBuilding(targetX,targetY);
+            if (supplier!=NOGBID && Building::GIDtoTeam(supplier)==owner->teamNumber
+                && eligible(owner->myBuildings[Building::GIDtoID(supplier)])) return true;
+            // Overlay providers have no building tile. Inspect their small
+            // instance lists, retaining the shared query's supplier policies.
+            const auto overlay=[&](const Building* b) {
+                return !b->type->semantics.occupiesGround
+                    && ((targetX-b->posX+map->getW()) & (map->getW()-1))<b->type->width
+                    && ((targetY-b->posY+map->getH()) & (map->getH()-1))<b->type->height
+                    && eligible(b);
+            };
+            if (modes&1) for (const Building* b:owner->stockSuppliers) if (overlay(b)) return true;
+            if (modes&2) for (const Building* b:owner->directStockSuppliers) if (overlay(b)) return true;
+            return false;
+        };
+        if ((!validTarget() || !sourceAvailable()) && !findMaterialDestination(destinationPurpose,&targetX,&targetY,nullptr,
+                attachedBuilding && attachedBuilding->fetchesFromMarkets(),attachedBuilding)) {
+            stopAttachedForBuilding(false);
+            movement=MOV_RANDOM_FLY;
+            return;
+        }
+        // A published field may still point to a depleted source. Wait for its
+        // scheduled refresh rather than repeatedly steering toward a dead goal.
+        if (!sourceAvailable()) {
+            setValidTarget(false);
+            movement=MOV_RANDOM_FLY;
+            return;
+        }
+        setValidTarget(true);
+        movement=MOV_FLYING_TARGET;
+        return;
+    }
 	int teamNumber=owner->teamNumber;
 	int swim=movementClass();
 	bool stopWork;

@@ -666,6 +666,8 @@ public:
     }
 	bool hasTerrainHealthEffects() const { return terrainHealthEffects; }
 	bool hasAirTerrainConstraints() const { return airTerrainConstraints; }
+    // Transient air traffic uses local avoidance, never disables direct flight.
+    bool hasAirRoutingConstraints(Uint32 teamMask) const;
 	bool hasProjectileBlockingTerrain() const { return projectileBlockingTerrain; }
 	bool projectilePathClear(Sint32 x0, Sint32 y0, Sint32 x1, Sint32 y1) const;
 	ExperimentSet requiredTerrainExperiments() const;

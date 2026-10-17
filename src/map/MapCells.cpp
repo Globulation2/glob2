@@ -5,6 +5,8 @@
 void Map::resourceSeedChanged(size_t index, unsigned flags)
 {
 	gradientRuntime->resourceSeeds.changed(index, flags);
+    if (flags & (ResourceSeedCache::Terrain | ResourceSeedCache::Forbidden))
+        gradientRuntime->directFlight.valid = false;
 	// Material availability is not a movement obstacle. Resource replacements
     // invalidate below only when their blocking properties actually change.
     gradientRuntime->safety.invalidate(
@@ -15,6 +17,7 @@ void Map::resourceSeedChanged(size_t index, unsigned flags)
 void Map::invalidateResourceSeeds()
 {
 	gradientRuntime->resourceSeeds.invalidate();
+    gradientRuntime->directFlight.valid = false;
 	gradientRuntime->safety.invalidate(true, true);
 }
 
@@ -28,6 +31,7 @@ void Map::replaceResource(size_t index, const Resource &resource, const std::arr
 	markResource(index);
 	initializeResourceStock(index, stocks);
 	materialStockChanged(index, before);
+    if (blockedAir != resourceBlocksAir(index)) gradientRuntime->directFlight.valid = false;
 	gradientRuntime->safety.invalidate(blockedGround != resourceBlocksGround(index),
 	                                   blockedAir != resourceBlocksAir(index));
 }
@@ -105,4 +109,22 @@ void Map::setBuilding(int x, int y, int width, int height, Uint16 building)
 		}
 	// Preserve the previous unconditional generation bump, including empty edits.
 	bumpTopologyGeneration();
+}
+
+// Recompute only after a navigation constraint changes, not per flyer or tick.
+// This cache is derived entirely from saved map state and is never serialized.
+bool Map::hasAirRoutingConstraints(Uint32 teamMask) const
+{
+    if (hasAirTerrainConstraints()) return true;
+    auto& cached = gradientRuntime->directFlight;
+    if (!cached.valid) {
+        cached.forbiddenTeams = 0;
+        cached.resourceBlockers = false;
+        for (size_t i = 0; i < size; ++i) {
+            cached.forbiddenTeams |= areaCells[i].forbidden;
+            cached.resourceBlockers |= resourceBlocksAir(i);
+        }
+        cached.valid = true;
+    }
+    return cached.resourceBlockers || (cached.forbiddenTeams & teamMask);
 }

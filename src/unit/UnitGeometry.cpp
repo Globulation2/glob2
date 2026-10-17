@@ -46,6 +46,28 @@ void Unit::setNewValidDirectionAir(void)
 	}
 }
 
+// Preserve the original angular bearing and deterministic avoidance order on
+// unconstrained maps. Destination selection remains in the shared query layer.
+void Unit::flyToTarget()
+{
+    assert(performance[FLY]);
+    findDisplacement([&](int* pathDx, int* pathDy) {
+        simplifyDirection(targetX-posX, targetY-posY, pathDx, pathDy);
+        return true;
+    });
+    directionFromDxDy();
+    if (dx==0 && dy==0) return;
+    const int bearing=direction;
+    for (int turn : {0, 1, 7, 2, 6, 3, 5, 4}) {
+        direction=(bearing+turn)&UNIT_DIRECTION_MASK;
+        dxDyFromDirection();
+        if (owner->map->isFreeForMovement(posX+dx,posY+dy,AIR_MOVEMENT_CLASS,owner->me))
+            return;
+    }
+    dx=dy=0;
+    direction=UNIT_DIRECTION_NONE;
+}
+
 void Unit::escapeGroundTarget()
 {
 	int ldx=posX-targetX;

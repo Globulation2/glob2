@@ -188,6 +188,7 @@ protected:
 	void setNewValidDirectionGround(void);
 	void setNewValidDirectionAir(void);
 	void gotoGroundTarget(); //This will set (dx,dy) given targetX/Y. ground asserted.
+	void flyToTarget(); // Direct bearing and local air-traffic avoidance.
 	void escapeGroundTarget(); //This will set (dx,dy) opposed to the given targetX/Y, without the care of forbidden flags ground asserted.
 	void simplifyDirection(int ldx, int ldy, int *cdx, int *cdy);
 

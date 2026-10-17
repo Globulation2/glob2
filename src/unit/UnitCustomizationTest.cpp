@@ -3359,3 +3359,266 @@ TEST_CASE("shared air routing stress exports a reproducible benchmark setup [art
     for(const auto* unit:game.teams[0]->liveUnits.entries())
         CHECK(unit->movementClass()==AIR_MOVEMENT_CLASS);
 }
+
+TEST_CASE("ordinary flyers retain angular steering and local avoidance without movement fields" * doctest::test_suite("UnitCustomization"))
+{
+    glob2test::HeadlessGlobals globals;
+    for (int blocked=0; blocked<=2; ++blocked) {
+        glob2test::HeadlessGame world({.discovered=true,.clearImmobile=true,.loadDefaultRace=true,.header=true});
+        auto& map=world.game.map;
+        auto* flyer=world.addUnit(EXPLORER,8,8); REQUIRE(flyer);
+        auto* inn=world.addBuilding("inn",20,12); REQUIRE(inn);
+        flyer->setTargetBuilding(inn);
+        flyer->targetX=20; flyer->targetY=12;
+        if (blocked>=1) REQUIRE(world.addUnit(EXPLORER,9,8));
+        if (blocked>=2) REQUIRE(world.addUnit(EXPLORER,9,9));
+        const auto random=flyer->entityRandom;
+        REQUIRE_FALSE(map.hasAirRoutingConstraints(flyer->owner->me));
+        const int slot=inn->routeSlot(AIR_MOVEMENT_CLASS,BuildingRoute::Footprint);
+        CHECK(inn->globalGradient[slot]==nullptr);
+        flyer->handleMovementGoingToFlagOrBuilding();
+        REQUIRE(flyer->movement==Unit::MOV_FLYING_TARGET);
+        flyer->handleAction();
+        CHECK(flyer->dx==1);
+        CHECK(flyer->dy==(blocked==0?0:blocked==1?1:-1));
+        CHECK(flyer->posX==9);
+        CHECK(flyer->posY==(blocked==0?8:blocked==1?9:7));
+        CHECK(map.getAirUnit(flyer->posX,flyer->posY)==flyer->gid);
+        CHECK(flyer->entityRandom==random);
+        CHECK(inn->globalGradient[slot]==nullptr);
+    }
+}
+
+TEST_CASE("direct flight handles wrapped bearings arrival and fully occupied airspace" * doctest::test_suite("UnitCustomization"))
+{
+    glob2test::HeadlessGlobals globals;
+    for (int scenario=0; scenario<3; ++scenario) {
+        glob2test::HeadlessGame world({.discovered=true,.clearImmobile=true,.loadDefaultRace=true,.header=true});
+        auto& map=world.game.map;
+        auto* flyer=world.addUnit(EXPLORER,1,8); REQUIRE(flyer);
+        flyer->movement=Unit::MOV_FLYING_TARGET;
+        flyer->targetX=scenario==1?1:map.getW()-3; flyer->targetY=8;
+        if (scenario==2)
+            for (int dx=-1;dx<=1;++dx) for (int dy=-1;dy<=1;++dy)
+                if (dx || dy) REQUIRE(world.addUnit(EXPLORER,1+dx,8+dy));
+        flyer->handleAction();
+        CHECK(flyer->dx==(scenario==0?-1:0)); CHECK(flyer->dy==0);
+        CHECK(flyer->posX==(scenario==0?0:1)); CHECK(flyer->posY==8);
+        CHECK(map.getAirUnit(flyer->posX,flyer->posY)==flyer->gid);
+    }
+}
+
+TEST_CASE("air navigation switches after team paint terrain resource catalog and load changes" * doctest::test_suite("UnitCustomization"))
+{
+    glob2test::HeadlessGlobals globals;
+    glob2test::HeadlessGame world({.teams=2,.discovered=true,.clearImmobile=true,.loadDefaultRace=true,.header=true});
+    auto& map=world.game.map;
+    CHECK_FALSE(map.hasAirRoutingConstraints(1));
+    map.addForbidden(12,12,1);
+    CHECK_FALSE(map.hasAirRoutingConstraints(1)); CHECK(map.hasAirRoutingConstraints(2));
+    map.addForbidden(12,12,1); // Duplicate paint must remain constrained.
+    map.removeForbidden(12,12,1);
+    CHECK_FALSE(map.hasAirRoutingConstraints(2));
+    map.paintCell(12,12,VOID_HOLE); CHECK(map.hasAirRoutingConstraints(1));
+    map.paintCell(12,12,GRASS); CHECK_FALSE(map.hasAirRoutingConstraints(1));
+    using Json=nlohmann::json;
+    auto blocker=Json::parse(map.resourceRegistry().serialize())["resources"][1];
+    blocker["key"]="test:direct-air-wall";
+    blocker["properties"]["blocksAir"]=true;
+    blocker["properties"]["blocksGround"]=false;
+    map.installResourceDefinitions(Json{{"schemaVersion",1},{"resources",Json::array({blocker})}}.dump());
+    CHECK_FALSE(map.hasAirRoutingConstraints(1));
+    const auto id=*map.resourceRegistry().find("test:direct-air-wall");
+    map.setResourceByIndex(12,12,resourceIndex(id),1);
+    CHECK(map.hasAirRoutingConstraints(1)); CHECK(map.hasAirRoutingConstraints(2));
+    auto* bytes=new GAGCore::MemoryStreamBackend;
+    GAGCore::BinaryOutputStream output(bytes);
+    world.gui.save(&output,"air policy cache is derived");
+    const std::string saved(bytes->getBuffer(),bytes->getPosition());
+    GameGUI loaded(false);
+    GAGCore::BinaryInputStream input(new GAGCore::MemoryStreamBackend(saved.data(),saved.size()));
+    input.seekFromStart(0); REQUIRE(loaded.game.load(&input));
+    CHECK(loaded.game.map.hasAirRoutingConstraints(1));
+    loaded.game.map.replaceResource(12,12,Resource{});
+    CHECK_FALSE(loaded.game.map.hasAirRoutingConstraints(1));
+    map.replaceResource(12,12,Resource{});
+    CHECK_FALSE(map.hasAirRoutingConstraints(1));
+    map.addForbidden(12,12,0);
+    CHECK(map.hasAirRoutingConstraints(1));
+    // Bulk tile edits must invalidate the same summary as paint orders.
+    auto tile=map.getTile(12,12); tile.forbidden=0; map.replaceTile(map.coordToIndex(12,12),tile);
+    CHECK_FALSE(map.hasAirRoutingConstraints(1));
+    map.setResourceByIndex(12,12,resourceIndex(id),1);
+    CHECK(map.hasAirRoutingConstraints(1));
+    blocker["properties"]["blocksAir"]=false;
+    map.installResourceDefinitions(Json{{"schemaVersion",1},{"resources",Json::array({blocker})}}.dump());
+    CHECK_FALSE(map.hasAirRoutingConstraints(1));
+}
+
+TEST_CASE("flying carriers steer directly between shared destination queries" * doctest::test_suite("UnitCustomization"))
+{
+    glob2test::HeadlessGlobals globals;
+    glob2test::HeadlessGame world({.discovered=true,.clearImmobile=true,.header=true});
+    configure(world);
+    auto& map=world.game.map;
+    auto* flyer=world.addUnit(*world.game.unitCatalog().find("ablation-5"),8,8); REQUIRE(flyer);
+    auto* inn=world.addBuilding("inn",20,12); REQUIRE(inn);
+    flyer->destinationPurpose=WHEAT;
+    flyer->subscriptionSuccess(inn,false,false,UnitJobPurpose::Transport);
+    inn->unitsWorking.push_back(flyer);
+    deposit(map,18,11,WHEAT,1);
+    flyer->setValidTarget(false);
+    flyer->handleMovementGoingToResource();
+    REQUIRE(flyer->movement==Unit::MOV_FLYING_TARGET);
+    CHECK(flyer->targetX==18); CHECK(flyer->targetY==11);
+    flyer->handleAction(); CHECK(flyer->dx==1); CHECK(flyer->dy==0);
+    map.replaceResource(18,11,Resource{}); deposit(map,18,9,WHEAT,1);
+    flyer->handleMovementGoingToResource();
+    CHECK(flyer->movement==Unit::MOV_RANDOM_FLY);
+    CHECK(flyer->attachedBuilding==inn); // Keep the job until shared guidance refreshes.
+    map.updateMaterialGradient(0,WHEAT,AIR_MOVEMENT_CLASS,false);
+    flyer->handleMovementGoingToResource();
+    REQUIRE(flyer->movement==Unit::MOV_FLYING_TARGET);
+    CHECK(flyer->targetX==18); CHECK(flyer->targetY==9);
+    map.addForbidden(15,15,0);
+    REQUIRE(map.hasAirRoutingConstraints(flyer->owner->me));
+    flyer->handleMovementGoingToResource();
+    CHECK(flyer->movement!=Unit::MOV_FLYING_TARGET);
+}
+
+TEST_CASE("direct flying clearers retain shared goals and clearing claims" * doctest::test_suite("UnitCustomization"))
+{
+    glob2test::HeadlessGlobals globals;
+    for (bool attached:{false,true}) {
+        CAPTURE(attached);
+        glob2test::HeadlessGame world({.discovered=true,.clearImmobile=true,.header=true});
+        configure(world);
+        auto& map=world.game.map;
+        auto* flyer=world.addUnit(*world.game.unitCatalog().find("ablation-6"),8,8); REQUIRE(flyer);
+        auto* flag=world.addBuilding("explorationflag",18,12); REQUIRE(flag);
+        flag->unitStayRange=12;
+        deposit(map,18,12,WOOD,1);
+        map.addClearArea(18,12,0);
+        flyer->medical=Unit::MED_FREE;
+        flyer->hungriness=1;
+        flyer->hungry=flyer->trigHungry+1000;
+        flyer->setValidTarget(false);
+        if (attached) {
+            flyer->subscriptionSuccess(flag,false,true,UnitJobPurpose::Clear);
+            flag->unitsWorking.push_back(flyer);
+            flyer->handleMovementClearingResources();
+        } else {
+            flyer->handleMovementRandom();
+            CHECK(map.isClearingAreaClaimed(18,12,0)==flyer->gid);
+        }
+        REQUIRE(flyer->movement==Unit::MOV_FLYING_TARGET);
+        CHECK(flyer->targetX==18); CHECK(flyer->targetY==12);
+        flyer->handleAction(); CHECK(flyer->dx==1); CHECK(flyer->dy==0);
+    }
+}
+
+TEST_CASE("legacy flying targets switch to the common router when forbidden paint appears" * doctest::test_suite("UnitCustomization"))
+{
+    glob2test::HeadlessGlobals globals;
+    glob2test::HeadlessGame world({.discovered=true,.clearImmobile=true,.loadDefaultRace=true,.header=true});
+    auto& map=world.game.map;
+    auto* flyer=world.addUnit(EXPLORER,8,8); REQUIRE(flyer);
+    flyer->movement=Unit::MOV_FLYING_TARGET;
+    flyer->targetX=20; flyer->targetY=12;
+    REQUIRE_FALSE(map.hasAirRoutingConstraints(flyer->owner->me));
+    for (int y=0;y<map.getH();++y) {
+        if (y!=20) map.addForbidden(9,y,0);
+        map.addForbidden(24,y,0);
+    }
+    REQUIRE(map.hasAirRoutingConstraints(flyer->owner->me));
+    flyer->handleAction();
+    CHECK(flyer->dx==0); CHECK(flyer->dy!=0);
+    CHECK_FALSE(map.isForbidden(flyer->posX,flyer->posY,flyer->owner->me));
+    CHECK(map.getAirUnit(flyer->posX,flyer->posY)==flyer->gid);
+}
+
+TEST_CASE("ordinary flying couriers export a deterministic direct flight setup [artifacts]" * doctest::test_suite("UnitCustomization"))
+{
+    glob2test::HeadlessGlobals globals;
+    glob2test::HeadlessGame world({.wDec=7,.hDec=7,.discovered=true,.clearImmobile=true,.header=true,.seed=1196});
+    configure(world);
+    auto& game=world.game;
+    game.gameHeader.getWinningConditions().clear();
+    game.gameHeader.setHungerDisabled(true);
+    game.gameHeader.setResourceGrowthDisabled(true);
+    for (int i=0;i<8;++i) {
+        auto* inn=world.addBuilding("inn",8,8+i*12); REQUIRE(inn);
+        inn->setMaterial(WHEAT,0);
+        for (int j=0;j<4;++j) {
+            auto* flyer=world.addUnit(*game.unitCatalog().find("ablation-5"),90+j*2,8+i*12); REQUIRE(flyer);
+            flyer->receiveCarriedMaterial(WHEAT,{});
+            flyer->destinationPurpose=WHEAT;
+            flyer->subscriptionSuccess(inn,false,false,UnitJobPurpose::Transport);
+            inn->unitsWorking.push_back(flyer);
+        }
+        inn->updateCallLists();
+    }
+    REQUIRE_FALSE(game.map.hasAirRoutingConstraints(1));
+    auto* bytes=new GAGCore::MemoryStreamBackend;
+    GAGCore::BinaryOutputStream output(bytes);
+    world.gui.save(&output,"ordinary direct flight couriers");
+    glob2test::writeFile(glob2test::artifactDir()/"direct-flight-couriers.game",
+        std::string(bytes->getBuffer(),bytes->getPosition()));
+    for (int tick=0;tick<128;++tick) game.step(0);
+    CHECK(game.teams[0]->liveUnits.size()==32);
+}
+
+TEST_CASE("direct flying carriers retain priced overlay and direct stock destinations" * doctest::test_suite("UnitCustomization"))
+{
+    glob2test::HeadlessGlobals globals;
+    for (bool directStock:{false,true}) {
+        glob2test::HeadlessGame world({.discovered=true,.clearImmobile=true,.header=true});
+        configure(world);
+        auto& game=world.game; auto& map=game.map;
+        auto definitions=nlohmann::json::parse(game.buildingsTypes.snapshotJson());
+        auto& source=definitions["variants"][3]; auto& sink=definitions["variants"][9];
+        source["semantics"]["occupiesGround"]=false;
+        auto& supply=source["semantics"]["market"]; auto& fetch=sink["semantics"]["market"];
+        supply["suppliesStock"]=!directStock; supply["suppliesStockExperiment"]="";
+        supply["suppliesStockMaterials"]={"wood"};
+        supply["suppliesDirectStock"]=directStock; supply["suppliesDirectStockMaterials"]={"wood"};
+        supply["pickupPenalty"]=7;
+        fetch["fetchesStock"]=!directStock; fetch["fetchesStockExperiment"]="";
+        fetch["fetchesStockMaterials"]={"wood"};
+        fetch["fetchesDirectStock"]=directStock; fetch["fetchesDirectStockMaterials"]={"wood"};
+        source["properties"]["maxMaterial"][WOOD]=10;
+        sink["properties"]["maxMaterial"][WOOD]=10;
+        sink["semantics"]["replenishMaterials"]={"wood"};
+        game.buildingsTypes.loadSnapshotJson(definitions.dump()); game.configureBuildingCatalog();
+        auto* supplier=world.addBuilding("inn",18,12); REQUIRE(supplier);
+        auto* consumer=world.addBuilding("hospital",26,26); REQUIRE(consumer);
+        supplier->setMaterial(WOOD,5);
+        auto* flyer=world.addUnit(*game.unitCatalog().find("ablation-5"),8,8); REQUIRE(flyer);
+        flyer->destinationPurpose=WOOD;
+        flyer->subscriptionSuccess(consumer,false,false,UnitJobPurpose::Transport);
+        consumer->unitsWorking.push_back(flyer);
+        flyer->setValidTarget(false);
+        REQUIRE_FALSE(map.hasAirRoutingConstraints(1));
+        REQUIRE(map.getBuilding(18,12)==NOGBID);
+        flyer->handleMovementGoingToResource();
+        REQUIRE(flyer->movement==Unit::MOV_FLYING_TARGET);
+        CHECK(flyer->targetX>=18); CHECK(flyer->targetX<18+supplier->type->width);
+        CHECK(flyer->targetY>=12); CHECK(flyer->targetY<12+supplier->type->height);
+        flyer->handleAction(); CHECK(flyer->dx==1); CHECK(flyer->dy==0);
+    }
+}
+
+TEST_CASE("empty direct flight guard queries preserve invalid target coordinates" * doctest::test_suite("UnitCustomization"))
+{
+    glob2test::HeadlessGlobals globals;
+    glob2test::HeadlessGame world({.discovered=true,.clearImmobile=true,.header=true});
+    configure(world);
+    auto* flyer=world.addUnit(*world.game.unitCatalog().find("ablation-5"),8,8); REQUIRE(flyer);
+    flyer->medical=Unit::MED_FREE;
+    flyer->targetX=3; flyer->targetY=5;
+    flyer->setValidTarget(false);
+    flyer->handleMovementAttackingAround();
+    CHECK(flyer->movement==Unit::MOV_RANDOM_FLY);
+    CHECK_FALSE(flyer->validTarget());
+    CHECK(flyer->targetX==3); CHECK(flyer->targetY==5);
+}
