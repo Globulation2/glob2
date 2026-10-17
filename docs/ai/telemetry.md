@@ -192,12 +192,13 @@ identity, generation, replay-availability and corruption regressions.
 ### Existing AI load behavior
 
 Diagnostic values and histories are restored exactly. Subsequent observations describe the
-AI that actually executes after loading. Some existing controllers do not save their full
-internal state: Numbi resets its decision timer and Castor reconstructs projects/caches.
-Their post-load decision-call counts can therefore differ from an uninterrupted run. This
-change deliberately does not repair those gameplay-affecting behaviors. Validation compares
-exact diagnostic restoration and repeatability of two continuations of the same save, while
-retaining the existing simulation continuation checks.
+AI that actually executes after loading. Modern Castor saves retain projects, cache history
+and pending assignments. Its controller format 7 gives worker and production-ratio records
+separate text sections; earlier binary formats, including format 6, remain readable.
+Historical timer-only Castor saves reconstruct unavailable state, and Numbi resets its
+decision timer. Those older continuations can differ from an uninterrupted run. Validation
+checks exact diagnostic restoration, repeated continuations and the modern controllers'
+simulation continuation contracts.
 
 Tournament workers retain these records in verified logs; their normal offline
 analysis exports typed JSONL and CSV. See [distributed telemetry](../tools/tournaments.md#gameplay-ai-and-performance-telemetry).

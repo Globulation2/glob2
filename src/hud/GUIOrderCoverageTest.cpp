@@ -7,6 +7,7 @@
 namespace {
 const SceneBuildingPanel& presentedBuilding(GameGUI& gui, const Building& building)
 {
+    gui.game.finishOrderPhase(false); // A paused owner edit precedes its next observation.
     gui.prepareLocalPresentation();
     gui.setSelection(GameGUI::BUILDING_SELECTION, unsigned(building.gid));
     gui.prepareLocalPresentation();

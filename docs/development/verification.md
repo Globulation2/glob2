@@ -41,6 +41,29 @@ Primary generator sweeps are complete; secondary platforms retain golden rows an
 telemetry equivalence under enabled tiers. Native inventory audits require every
 selected engine case to belong to exactly one shard.
 
+Linux display shards and native coverage set `vm.max_map_count=1048576` for software Vulkan.
+Lavapipe maps descriptor allocations individually, and large-map captures exceed
+the older 262144-map runner limit. Mesa 25.2.8 can crash when those allocations
+fail. This runner setting preserves the full capture inventory and matches the
+limit used by the validated local development host; it does not change shipped code.
+
+The Linux program archive includes the generated renderer shader bundle alongside
+the executables and runtime assets so consumers can run without rebuilding.
+Linux native builds and coverage compile the pinned build-only glslang tool to
+include Vulkan shader assets. The test runner selects that bundle for the native
+SDL GPU differential cases; the compiler is not part of the program archive.
+
+Browser CI and development archives include launcher-relative scripts, including
+`presentation-surface.js`, and the serial/threaded shader preload packages.
+Downstream browser and packaging jobs consume this complete runtime closure.
+
+Chromium renderer-switch checks run separately from the five general browser
+shards. Serial cases use three shards with one worker per shard; per-test
+sharding keeps a slow source file from occupying one whole job. Threaded cases
+retain their own single-worker job. Serial functional budgets allow slow software
+GL frames while retaining all screen, context, recording and live-game assertions.
+These budgets and shard boundaries do not reduce the selected browser inventory.
+
 ELF dependency collection records runtime package owners and rejects unresolved or
 unowned libraries. Generator, CLI and browser consumers install runtime libraries
 rather than compiler/header environments. Enable `CI_RUNTIME_PACKAGES_ENABLED=true`
@@ -166,6 +189,11 @@ actual verification from those cohorts.
 For explicitly requested affected PR verification, primary Linux keeps the
 complete applicable native suite. Simulation/save/AI changes add older-GCC and
 Windows compatibility cases plus native/browser per-tick and scripting comparisons.
+The per-tick comparison requires each selected browser's serial/1 and threaded/1,
+2, 4, 8 and automatic worker-count traces, each matching the native trace.
+Full Firefox and WebKit simulation jobs also run both runtimes' catalog registry
+and composition contracts, providing every resource/unit composition producer
+required by the comparison.
 Presentation changes retain software/WebGL and Firefox/WebKit coverage. Network
 changes retain transport/server/deployment checks. Android changes retain arm64
 builds and x86_64 emulator smoke. Shared headers, dependency/build configuration

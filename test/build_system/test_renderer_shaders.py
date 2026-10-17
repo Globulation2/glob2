@@ -4,6 +4,8 @@ import hashlib
 import importlib.util
 import json
 from pathlib import Path
+import subprocess
+import tarfile
 import tempfile
 import unittest
 from unittest.mock import patch
@@ -15,6 +17,28 @@ spec.loader.exec_module(shader)
 
 
 class RendererShaderTest(unittest.TestCase):
+    def test_linux_program_archive_retains_complete_shader_bundle(self):
+        workflow = (ROOT / '.github/workflows/ci-linux-build.yml').read_text()
+        # Execute the actual archive file-selection block against a small build.
+        start = workflow.index('          {\n', workflow.index('id: package_linux_test_programs'))
+        end = workflow.index('\n      - uses:', start)
+        command = '\n'.join(line[10:] for line in workflow[start:end].splitlines())
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            build = root / 'build/linux/client/release'
+            shader.generate(build / 'shaders')
+            (build / 'runtime-assets/data').mkdir(parents=True)
+            (build / 'runtime-assets/data/fixture').write_bytes(b'asset')
+            (build / 'runtime-assets.json').write_text('{}')
+            (root / 'build/sdl3-ci/prefix/lib').mkdir(parents=True)
+            (root / 'artifacts/ci-native').mkdir(parents=True)
+            subprocess.run(['bash', '-e', '-o', 'pipefail', '-c', command], cwd=root, check=True)
+            with tarfile.open(root / 'artifacts/ci-native/linux-test-programs.tar.gz') as archive:
+                names = set(archive.getnames())
+            for path in (build / 'shaders').rglob('*'):
+                if path.is_file():
+                    self.assertIn(path.relative_to(root).as_posix(), names)
+
     def test_std140_rig_layout(self):
         block = shader.metadata()['uniformBlocks']['skin-rig']
         self.assertEqual(block['size'], 2176)

@@ -683,6 +683,8 @@ TEST_CASE("order execution revisions are captured even without advancing the tic
     PresentationFrame before,after;
     extractor.prepare(*SceneExtractor::inputs((world.game).captureReadBoundary(SceneExtractor::captureOptions({})), {}),before);
     world.game.publishClientEvent(ClientEvent::OrderExecuted{std::make_shared<NullOrder>()});
+    // This fixture publishes directly, outside the owner's order phase.
+    world.game.snapshotStore().invalidateBoundary();
     extractor.prepare(*SceneExtractor::inputs((world.game).captureReadBoundary(SceneExtractor::captureOptions({})), {}),after);
     CHECK(before.tick==after.tick);
     CHECK(after.executedOrderRevision==before.executedOrderRevision+1);

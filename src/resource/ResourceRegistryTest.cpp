@@ -268,8 +268,17 @@ TEST_SUITE("ResourceRegistry")
         entry["yields"]=Json::object();
         for(const auto key:MaterialKeys)
             entry["yields"][std::string(key)]={{"capacity",1},{"initial",1},{"consumption","one"}};
+        const auto allYields=entry["yields"];
         for(unsigned index=0;index<ResourceRegistry::Capacity;++index)
         {
+            // ID capacity and canonical JSON bytes have independent bounds.
+            // Exercise all material bits at both ends without making every
+            // one of 16384 definitions carry the maximum payload as well.
+            if(index==0 || index==ResourceRegistry::Capacity-1) entry["yields"]=allYields;
+            else {
+                const auto key=std::string(MaterialKeys[index%MaterialCount]);
+                entry["yields"]=Json{{key,allYields.at(key)}};
+            }
             // Fixed-width keys keep the import's stable alphabetical IDs equal
             // to their independent fixture indexes, including the final 16383.
             entry["key"]="test:capacity-"+std::to_string(100000+index);
@@ -286,9 +295,11 @@ TEST_SUITE("ResourceRegistry")
         for(unsigned index=0;index<ResourceRegistry::Capacity;++index)
         {
             const auto id=static_cast<ResourceId>(index);
-            const std::uint32_t expected=AllMaterials | ((index&15u)<<16);
+            const auto materials=index==0 || index==ResourceRegistry::Capacity-1
+                ? AllMaterials : materialBit(static_cast<MaterialId>(index%MaterialCount));
+            const std::uint32_t expected=materials | ((index&15u)<<16);
             CHECK(registry->gradientPreparation()[index]==expected);
-            CHECK(registry->properties(id).materialMask==AllMaterials);
+            CHECK(registry->properties(id).materialMask==materials);
         }
         const auto last=static_cast<ResourceId>(ResourceRegistry::Capacity-1);
         CHECK(registry->find("test:capacity-116383")==last);

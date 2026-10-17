@@ -127,7 +127,7 @@ static void run(int width,int height,bool gl,bool expanded)
         for (const auto& row : screen.rows()) REQUIRE(row.id != "display.resolution");
         screen.selectCategory(SettingsScreen::Category::Gameplay);
         REQUIRE(screen.row("gameplay.gradientBackend").kind == SettingsScreen::Kind::Choice);
-        REQUIRE(screen.row("gameplay.gradientBackend").label == "Gradient backend");
+        REQUIRE(screen.row("gameplay.gradientBackend").label == Toolkit::getStringTable()->getString("[settings Gradient backend]"));
         REQUIRE_FALSE(s.gpuComputeEnabled());
         REQUIRE(screen.changeSetting("gameplay.gradientBackend", 1)); // Scalar is always the second entry.
         REQUIRE(s.gradientBackend == gradient_kernel::Backend::Scalar);

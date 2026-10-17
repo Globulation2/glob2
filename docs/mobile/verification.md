@@ -21,7 +21,9 @@ background recovery, document-picker or cross-platform simulation checks.
 on a booted simulator named `Glob2-Mobile` in the isolated device set. Pass its
 UUID with `--device`; diagnostics default to `build/mobile-smoke-ios`.
 `mobile/smoke.py` and `mobile/android_trust_test.py` provide Android diagnostics;
-their UI sequences may require updating as the shared interface evolves.
+the startup smoke selects a hand preference on fresh profiles before checking
+the main menu, settings input, lifecycle and persisted profile. Their UI sequences
+may require updating as the shared interface evolves.
 Keep screenshots and logs under ignored `build/` or `artifacts/` directories.
 Native document picker and certificate
 trust adapters are selected only for mobile builds. Simulation, replay and save

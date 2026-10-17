@@ -202,7 +202,11 @@ class OverlayAdmissionDevice final : public GAGCore::RenderDevice
     std::unique_ptr<GAGCore::RenderDevice> device;
 public:
     bool rejected=false;
-    bool overlayFailure=true;
+    bool overlayFailure=true, worldFailure=false, worldRejected=false;
+    bool completedWorld=false;
+    unsigned submissions=0, worldSubmissions=0;
+    unsigned admittedSubmissions=0, refusedSubmissions=0;
+    std::string lastDeferral;
     mutable bool phaseRejected=false;
     std::function<bool()> phaseFault;
     explicit OverlayAdmissionDevice(std::unique_ptr<GAGCore::RenderDevice> value) : device(std::move(value)) {}
@@ -215,12 +219,28 @@ public:
     }
     bool canBeginFrame() override {return device->canBeginFrame();}
     GAGCore::RenderSubmission submit(GAGCore::RenderFrame frame) override {
+        ++submissions;
+        const bool world=std::any_of(frame.packets.begin(),frame.packets.end(),[](const auto &packet){
+            return !packet.target && packet.kind==GAGCore::DrawPacket::Kind::MeshTriangles &&
+                packet.material==GAGCore::DrawPacket::Material::WorldLit;
+        });
         const bool overlay=overlayFailure && !rejected && std::any_of(frame.packets.begin(),frame.packets.end(),[](const auto &packet){
             return packet.target && packet.target->descriptor.budgetClass==GAGCore::TextureDescriptor::BudgetClass::TerrainPage &&
                 !packet.targetScissor && (packet.kind==GAGCore::DrawPacket::Kind::Fill || packet.kind==GAGCore::DrawPacket::Kind::Blit);
         });
-        const auto submitted=device->submit(std::move(frame));
+        GAGCore::RenderSubmission submitted;
+        try { submitted=device->submit(std::move(frame)); }
+        catch(const GAGCore::RenderAdmissionDeferred& error) { lastDeferral=error.what(); throw; }
+        if(submitted) ++admittedSubmissions;
+        else { ++refusedSubmissions; lastDeferral="device returned no submission"; }
         if(overlay && submitted){rejected=true;throw GAGCore::RenderAdmissionDeferred("Injected final torus overlay admission failure");}
+        if(world && submitted) {
+            completedWorld=true; ++worldSubmissions;
+            if(worldFailure && !worldRejected) {
+                worldRejected=true; completedWorld=false;
+                throw GAGCore::RenderAdmissionDeferred("Injected final torus world admission failure");
+            }
+        }
         return submitted;
     }
     GAGCore::RenderCompletion completion(GAGCore::RenderSubmission value) override {return device->completion(value);}
@@ -264,17 +284,22 @@ static void deviceOverlayRetry(GAGCore::RendererBackend backend)
     for(unsigned attempt=0;attempt<128 && !initialized;++attempt){
         int vx=17,vy=21;
         REQUIRE(gui.torusView.draw(gui.drawnScene(),&gui,0,Game::DRAW_WHOLE_MAP|Game::DRAW_AREA,vx,vy,960,720));
-        initialized=gfx->flushDeviceFrame();
+        initialized=gfx->flushDeviceFrame() && probe->completedWorld;
         gfx->nextFrame();SDL_Delay(1);
     }
     REQUIRE(initialized);
     int pickedX=0,pickedY=0;
     REQUIRE(gui.torusView.pick(gui.mouseX,gui.mouseY,pickedX,pickedY));
     probe->overlayFailure=true;
+    probe->worldFailure=true;
+    probe->completedWorld=false;
     gui.selectionMode=GameGUI::TOOL_SELECTION;gui.toolManager.activateBuildingTool("swarm");
     bool complete=false;unsigned holds=0;
     const auto checksum=gui.game.checkSum();
-    for(unsigned attempt=0;attempt<128 && !complete;++attempt){
+    // Admission is asynchronous: fast polling must not exhaust an iteration
+    // budget while the GPU queue drains its bounded capture regions.
+    const auto retryDeadline=SDL_GetTicks()+60000;
+    for(unsigned attempt=0;!complete && SDL_GetTicks()<retryDeadline;++attempt){
         // Pausing a running multi-turn capture freezes source animation clocks,
         // independently of the capture's immutable initial animation phase.
         gui.gamePaused=attempt==1 || attempt==2;
@@ -284,14 +309,20 @@ static void deviceOverlayRetry(GAGCore::RendererBackend backend)
         REQUIRE(gui.torusView.draw(gui.drawnScene(),&gui,0,Game::DRAW_WHOLE_MAP|Game::DRAW_AREA,vx,vy,960,720));
         REQUIRE(gui.view.render.animationTime==animationBefore+(gui.gamePaused?0:1));
         REQUIRE(gui.view.render.areaAnimationTick==areaBefore+(gui.gamePaused?0:1));
-        complete=gfx->flushDeviceFrame();
+        complete=gfx->flushDeviceFrame() && probe->completedWorld;
         if(!complete)++holds;
         gfx->nextFrame();SDL_Delay(1);
         REQUIRE(gfx->presentationDevice.get()==probe);
         REQUIRE(gfx->backendSwitchStatus().active==backend);
     }
-    REQUIRE(probe->rejected);REQUIRE(complete);REQUIRE(holds>1);
+    INFO("submissions=",probe->submissions," admitted=",probe->admittedSubmissions," refused=",probe->refusedSubmissions,
+        " worlds=",probe->worldSubmissions," holds=",holds," deferral=",probe->lastDeferral,
+        " logical bytes=",gfx->renderResources()->retainedBytes()," device bytes=",probe->telemetry().resourceBytes);
+    REQUIRE(probe->rejected);REQUIRE(probe->worldRejected);REQUIRE(complete);REQUIRE(holds>1);
+    std::cout << "Torus overlay recovery: holds=" << holds << " admitted=" << probe->admittedSubmissions
+        << " refused=" << probe->refusedSubmissions << " world submissions=" << probe->worldSubmissions << '\n';
     REQUIRE(gui.game.checkSum()==checksum);
+    INFO("actual highlight strength=",gui.toolManager.highlightStrength);
     REQUIRE(std::abs(gui.toolManager.highlightStrength-.1f)<.00001f);
 }
 
@@ -591,9 +622,8 @@ static void run(bool gpu, int width, int height)
             SDL_Event wheel{};
             wheel.type = SDL_EVENT_MOUSE_WHEEL;
             wheel.wheel.y = 1;
-#if SDL_VERSION_ATLEAST(2,0,18)
-            wheel.wheel.y = 1;
-#endif
+            wheel.wheel.mouse_x = x;
+            wheel.wheel.mouse_y = y;
             const double beforeZoom = gui.camera.zoom;
             gui.processEvent(&wheel);
             REQUIRE(gui.camera.zoom > beforeZoom);
@@ -1066,6 +1096,8 @@ static void run(bool gpu, int width, int height)
                 SDL_Event wheel{};
                 wheel.type = SDL_EVENT_MOUSE_WHEEL;
                 wheel.wheel.y = -1;
+                wheel.wheel.mouse_x = gui.mouseX;
+                wheel.wheel.mouse_y = gui.mouseY;
                 for (int notch = 0; notch < 60; notch++)
                     gui.processEvent(&wheel);
                 REQUIRE(gui.camera.zoom == gui.camera.minimumZoom());

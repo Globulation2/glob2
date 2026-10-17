@@ -345,6 +345,9 @@ def run_job(job, args, build_dir):
     before = (preferences.read_bytes(), preferences.stat().st_mtime_ns)
     junit = root / 'junit.xml'
     env = dict(os.environ)
+    shader_directory = build_dir / 'shaders'
+    if (shader_directory / 'vulkan/primitive.vert.spv').is_file():
+        env.setdefault('GLOB2_TEST_SHADER_DIRECTORY', str(shader_directory.resolve()))
     env.update(GLOB2_USER_DATA_DIR=str(profile), HOME=str(home), USERPROFILE=str(home),
                TMPDIR=str(root), TMP=str(root), TEMP=str(root), SDL_AUDIODRIVER='dummy')
     env.pop('GLOB2_MOBILE_UI', None)
