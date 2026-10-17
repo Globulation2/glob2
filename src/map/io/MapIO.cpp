@@ -1012,42 +1012,33 @@ void Map::saveRuntimeState(GAGCore::OutputStream *stream) const
 		stream->writeLeaveSection();
 	}
 	stream->writeLeaveSection();
-	saveMaterialRoutingCache(stream);
-    gradientRuntime->air.save(*const_cast<Map*>(this),stream);
 	stream->writeEnterSection("gradientPipeline");
 	stream->writeUint8(gradientRuntime->pipeline.enabled() ? gradientRuntime->pipeline.delayTicks() : 8, "delay");
 	stream->writeUint8(gradientRuntime->pipeline.pendingCount(), "count");
 	unsigned index=0;
 	gradientRuntime->pipeline.visitPendingSnapshots([&](const GradientPipeline::PendingSnapshot &snapshot) {
-		const unsigned destination=gradientDestination(snapshot.slot);
+		int destination=-1;
+		for (int t=0; t<game->teamsCount(); ++t)
+			for (int kind=0; kind<2*MaterialSlotCount+2; ++kind)
+				for (int sw=0; sw<SWIM_CLASS_COUNT; ++sw) {
+					auto *slot=kind<MaterialSlotCount ? &materialGradients[t][kind][sw]
+						: kind==MaterialSlotCount ? &guardAreasGradient[t][sw]
+						: kind==MaterialSlotCount+1 ? &clearAreasGradient[t][sw] : &marketMaterialGradients[t][kind-MaterialSlotCount-2][sw];
+					if (slot==snapshot.slot) destination=kind<MaterialSlotCount+2
+						? (t*(MaterialSlotCount+2)+kind)*SWIM_CLASS_COUNT+sw
+						: Team::MAX_COUNT*(MaterialSlotCount+2)*SWIM_CLASS_COUNT+(t*MaterialSlotCount+kind-MaterialSlotCount-2)*SWIM_CLASS_COUNT+sw;
+				}
+		if (destination<0) throw std::runtime_error("Unknown pending gradient destination");
 		stream->writeEnterSection(index++);
-		stream->writeUint32(destination, "destination");
+		stream->writeUint16(destination, "destination");
 		stream->writeUint8(snapshot.remaining, "remaining");
 		stream->writeUint8(snapshot.superseded, "superseded");
-        saveGradient(stream,snapshot.data,size);
-        if (gradientRuntime->air.idForSlot(snapshot.slot)) {
-            if (!snapshot.job->payload) throw std::runtime_error("Missing air payload");
-            gradientRuntime->air.savePayload(*this,stream,*std::static_pointer_cast<AirGradientRuntime::Payload>(snapshot.job->payload),size);
-        }
-        stream->writeLeaveSection();
+		saveGradient(stream, snapshot.data, size);
+		stream->writeLeaveSection();
 	});
-    stream->writeUint32(gradientRuntime->fieldRequests.size(),"requests");
-    // Pending jobs above also use numeric sections. Keep demand entries in a
-    // distinct namespace: text streams address fields by their complete path.
-    stream->writeEnterSection("queuedRequests");
-    unsigned queuedIndex=0;
-    for (const auto& queued:gradientRuntime->fieldRequests) {
-        stream->writeEnterSection(queuedIndex++);
-        stream->writeUint32(gradientDestination(queued.slot),"destination");
-        stream->writeUint8(unsigned(queued.request.kind),"kind");
-        stream->writeUint8(queued.request.team,"team"); stream->writeUint8(queued.request.material,"material");
-        stream->writeUint8(queued.request.swim,"swim"); stream->writeSint32(queued.request.consumer,"consumer");
-        stream->writeUint8(queued.request.modes,"modes"); stream->writeUint8(queued.request.excludesShared,"excludesShared"); stream->writeLeaveSection();
-    }
 	stream->writeLeaveSection();
-	stream->writeLeaveSection();
-	// New family inventories are written above; continuation fields follow.
-
+	saveMaterialRoutingCache(stream);
+	// Preserve the historical runtime prefix; newer continuation fields follow it.
 	saveBuildingGradientPipeline(stream);
     gradientRuntime->growth.save(stream,game->stepCounter);
     // Added in format 167, after all map-job state. Format 166 already carries
@@ -1066,10 +1057,8 @@ void Map::loadRuntimeState(GAGCore::InputStream *stream, Sint32 versionMinor)
 	invalidateResourceSeeds();
     const bool packed=versionMinor>=FILE_FORMAT_VERSION_COMPACT_STATE && GAGCore::PackedArray::binary(stream);
 	gradientRuntime->preparation={};
-    gradientRuntime->fieldRequests.clear();
-    gradientRuntime->pipeline.reset();
-    gradientRuntime->air.clear();
-    resetBuildingGradientPipeline();
+	gradientRuntime->pipeline.reset();
+	resetBuildingGradientPipeline();
 	for (int t=0; t<game->teamsCount(); ++t)
 		for (auto *building : game->teams[t]->liveBuildings.entries()) building->refreshRequested.reset();
 	stream->readEnterSection("mapRuntime");
@@ -1242,10 +1231,6 @@ void Map::loadRuntimeState(GAGCore::InputStream *stream, Sint32 versionMinor)
 		stream->readLeaveSection();
 	}
 	stream->readLeaveSection();
-	if (versionMinor>=FILE_FORMAT_VERSION_DELAYED_AIR) {
-        loadMaterialRoutingCache(stream,packed,versionMinor);
-        gradientRuntime->air.load(*this,stream,packed);
-    }
 	if (versionMinor>=FILE_FORMAT_VERSION_GRADIENT_PIPELINE) {
 		stream->readEnterSection("gradientPipeline");
 		const unsigned delay=stream->readUint8("delay"), count=stream->readUint8("count");
@@ -1253,73 +1238,29 @@ void Map::loadRuntimeState(GAGCore::InputStream *stream, Sint32 versionMinor)
 		configureGradientPipeline(2, delay);
 		for (unsigned index=0; index<count; ++index) {
 			stream->readEnterSection(index);
-			const unsigned destination=versionMinor>=FILE_FORMAT_VERSION_DELAYED_AIR ? stream->readUint32("destination") : stream->readUint16("destination");
-            Uint16** restoredSlot=versionMinor>=FILE_FORMAT_VERSION_DELAYED_AIR ? gradientDestination(destination) : nullptr;
+			const unsigned destination=stream->readUint16("destination");
 			const unsigned sw=destination%savedSwimClasses;
 			const unsigned marketBase=Team::MAX_COUNT*(MaterialSlotCount+2)*savedSwimClasses;
 			const bool market=destination>=marketBase;
-			if (versionMinor<FILE_FORMAT_VERSION_DELAYED_AIR && market && (versionMinor<FILE_FORMAT_VERSION_MARKET_GRADIENTS || !marketsV2Enabled())) throw std::runtime_error("Invalid saved gradient destination");
+			if (market && (versionMinor<FILE_FORMAT_VERSION_MARKET_GRADIENTS || !marketsV2Enabled())) throw std::runtime_error("Invalid saved gradient destination");
 			const unsigned encoded=market ? destination-marketBase : destination;
 			const unsigned kinds=market ? MaterialSlotCount : MaterialSlotCount+2;
 			const unsigned kind=(encoded/savedSwimClasses)%kinds;
 			const unsigned team=encoded/(savedSwimClasses*kinds);
-			if (versionMinor<FILE_FORMAT_VERSION_DELAYED_AIR && team>=static_cast<unsigned>(game->teamsCount())) throw std::runtime_error("Invalid saved gradient team");
-			auto *slot=restoredSlot ? restoredSlot : market ? &marketMaterialGradients[team][kind][sw] : kind<MaterialSlotCount ? &materialGradients[team][kind][sw]
+			if (team>=static_cast<unsigned>(game->teamsCount())) throw std::runtime_error("Invalid saved gradient team");
+			auto *slot=market ? &marketMaterialGradients[team][kind][sw] : kind<MaterialSlotCount ? &materialGradients[team][kind][sw]
 				: kind==MaterialSlotCount ? &guardAreasGradient[team][sw] : &clearAreasGradient[team][sw];
-			if (restoredSlot) slot=restoredSlot;
 			const unsigned remaining=stream->readUint8("remaining");
 			const bool superseded=loadFlag(stream,"superseded");
 			Uint16 *field=nullptr;
 			loadGradient(stream, field, size, packed);
-            GradientPipeline::RestoredSnapshot restored{slot,static_cast<int>(sw),remaining,superseded,std::unique_ptr<Uint16[]>(field)};
-            if (versionMinor>=FILE_FORMAT_VERSION_DELAYED_AIR && gradientRuntime->air.idForSlot(slot)) {
-                auto payload=gradientRuntime->air.loadPayload(*this,stream,size);
-                gradientRuntime->air.checkPayload(*payload,size,true,field);
-                if (!gradientRuntime->air.entries.at(gradientRuntime->air.idForSlot(slot)).charged) throw std::runtime_error("Uncharged saved air job");
-                if (!(payload->key==gradientRuntime->air.entries.at(gradientRuntime->air.idForSlot(slot)).key)) throw std::runtime_error("Air pending key mismatch");
-                GradientPipeline::Job adapter; adapter.slot=slot;
-                gradientRuntime->air.restoreJob(*this,adapter,payload);
-                restored.payload=std::move(adapter.payload); restored.customPublish=std::move(adapter.customPublish);
-            }
-            gradientRuntime->pipeline.restoreCompleted(std::move(restored));
+			gradientRuntime->pipeline.restoreCompleted({slot, static_cast<int>(sw), remaining,
+				superseded, std::unique_ptr<Uint16[]>(field)});
 			stream->readLeaveSection();
 		}
-        if (versionMinor>=FILE_FORMAT_VERSION_DELAYED_AIR) {
-            const auto count=stream->readUint32("requests");
-            if (count>Team::MAX_COUNT*(2*MaterialSlotCount+3)*SWIM_CLASS_COUNT+gradientRuntime->materialFields.size()+gradientRuntime->air.entries.size()) throw std::runtime_error("Invalid gradient request count");
-            stream->readEnterSection("queuedRequests");
-            for (unsigned i=0;i<count;++i) {
-                stream->readEnterSection(i);
-                auto* slot=gradientDestination(stream->readUint32("destination"));
-                gradient_preparation::Request request;
-                const auto kind=stream->readUint8("kind"); request.kind=static_cast<gradient_preparation::Kind>(kind);
-                request.team=stream->readUint8("team"); request.material=stream->readUint8("material"); request.swim=stream->readUint8("swim");
-                request.consumer=stream->readSint32("consumer"); request.modes=stream->readUint8("modes"); request.excludesShared=loadFlag(stream,"excludesShared");
-                if (kind>unsigned(gradient_preparation::Kind::Clear) || request.team>=game->teamsCount() || request.material>=MaterialCount || request.swim>=SWIM_CLASS_COUNT || request.modes>3)
-                    throw std::runtime_error("Invalid gradient request");
-                Uint16** expected=nullptr;
-                using Kind=gradient_preparation::Kind;
-                if (request.kind==Kind::Materials) expected=&materialGradients[request.team][request.material][request.swim];
-                else if (request.kind==Kind::Forbidden) expected=&forbiddenGradient[request.team][request.swim];
-                else if (request.kind==Kind::Guard) expected=&guardAreasGradient[request.team][request.swim];
-                else if (request.kind==Kind::Clear) expected=&clearAreasGradient[request.team][request.swim];
-                else {
-                    expected=&marketMaterialGradients[request.team][request.material][request.swim];
-                }
-                if (const auto airId=gradientRuntime->air.idForSlot(slot)) {
-                    const auto& key=gradientRuntime->air.entries.at(airId).key;
-                    if (request.kind==Kind::Materials && request.team==key.team && request.material==key.material && request.swim==0) expected=slot;
-                }
-                if (expected!=slot || (request.kind!=Kind::Markets && (request.consumer!=-1 || request.modes!=1 || request.excludesShared)))
-                    throw std::runtime_error("Saved gradient request does not match its destination");
-                for (const auto& existing:gradientRuntime->fieldRequests) if (existing.slot==slot) throw std::runtime_error("Duplicate gradient request");
-                gradientRuntime->fieldRequests.push_back({slot,request}); stream->readLeaveSection();
-            }
-            stream->readLeaveSection();
-        }
 		stream->readLeaveSection();
 	}
-	if (versionMinor<FILE_FORMAT_VERSION_DELAYED_AIR && versionMinor>=FILE_FORMAT_VERSION_BUILDING_CATALOG) loadMaterialRoutingCache(stream,packed,versionMinor);
+	if (versionMinor>=FILE_FORMAT_VERSION_BUILDING_CATALOG) loadMaterialRoutingCache(stream,packed,versionMinor);
 	// Older saves restore no scheduled building work.
 	if (versionMinor>=FILE_FORMAT_VERSION_BUILDING_GRADIENT_PIPELINE) loadBuildingGradientPipeline(stream,packed,versionMinor);
     if(versionMinor>=FILE_FORMAT_VERSION_INTEGRATED_RESOURCE_GROWTH || loadedHistoricalGrowthVersion || loadedLegacyGrowth144 || loadedLegacyGrowth145)

@@ -1,7 +1,6 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Exercise clearing arbitration and idle activity across a real game save/load.
 #include "EngineFixtures.h"
-#include "GradientFixture.h"
 #include <string>
 #include "GlobalContainer.h"
 #include "GameGUI.h"
@@ -149,67 +148,6 @@ static void checkContinuation(int checkpoint, bool hazards = false)
 
 TEST_SUITE("UnitContinuation")
 {
-    TEST_CASE("hungry and injured flyers defer cold service guidance and reserve only after publication")
-    {
-        glob2test::HeadlessGlobals globals;
-        for(unsigned participants : {1u,2u,4u,8u})
-            for(auto medical : {Unit::MED_HUNGRY,Unit::MED_DAMAGED})
-        {
-            CAPTURE(participants); CAPTURE(int(medical));
-            glob2test::HeadlessGame world({.clearImmobile=true,.header=true,.seed=4921});
-            auto& game=world.game;
-            auto& map=game.map;
-            glob2test::importTerrainBeforeMatch(game,R"({"schemaVersion":1,"terrains":[{"key":"fixture:air-service-barrier","name":"Barrier","base":"grass","properties":{"flyable":false},"appearance":"grass"}]})");
-            map.paintCell(24,24,*map.terrainRegistry().find("fixture:air-service-barrier"));
-            REQUIRE(map.hasAirTerrainConstraints());
-            map.configureCompute(participants);
-            map.configureGradientPipeline(participants-1,3);
-            auto* unit=world.addUnit(EXPLORER,16,16);
-            auto* service=world.addBuilding(medical==Unit::MED_HUNGRY?"inn":"hospital",4,4);
-            REQUIRE(unit); REQUIRE(service);
-            if(medical==Unit::MED_HUNGRY) service->setMaterial(WHEAT,20);
-            world.team->addToStaticAbilitiesLists(service);
-            service->update();
-            const auto choose=[&] { return medical==Unit::MED_HUNGRY
-                ? world.team->findNearestFood(unit) : world.team->findNearestHeal(unit); };
-            REQUIRE(choose()==nullptr);
-            unit->medical=medical;
-            unit->setNeedToRecheckMedical(true);
-            const auto random=unit->entityRandom;
-            UnitActivityAccess::run(*unit);
-            CHECK(unit->medical==medical);
-            CHECK(unit->needToRecheckMedical());
-            CHECK(unit->attachedBuilding==nullptr);
-            CHECK(service->unitsInside.empty());
-            CHECK(unit->entityRandom==random);
-            // Admission follows a completed publication boundary; an initial
-            // tick-zero reservation is deliberately not a valid pipeline phase.
-            map.advanceGradientPipeline();
-            ++game.stepCounter;
-            // Completing private work cannot make a candidate visible early.
-            map.stagePeriodicGradientPreparation();
-            map.preparePendingGradient(game.captureReadBoundary());
-            map.finishGradientPipeline();
-            CHECK(choose()==nullptr);
-            for(unsigned boundary=0;boundary<512 && !choose();++boundary) {
-                map.advanceGradientPipeline();
-                ++game.stepCounter;
-                map.stagePeriodicGradientPreparation();
-                map.preparePendingGradient(game.captureReadBoundary());
-            }
-            REQUIRE(choose()==service);
-            UnitActivityAccess::run(*unit);
-            CHECK(unit->attachedBuilding==service);
-            CHECK(unit->activity==Unit::ACT_UPGRADING);
-            CHECK(unit->destinationPurpose==(medical==Unit::MED_HUNGRY?FEED:HEAL));
-            CHECK(unit->entityRandom==random);
-            CHECK(std::count(service->unitsInside.begin(),service->unitsInside.end(),unit)==1);
-            UnitActivityAccess::run(*unit);
-            CHECK(std::count(service->unitsInside.begin(),service->unitsInside.end(),unit)==1);
-            map.finishGradientPipeline();
-        }
-    }
-
     TEST_CASE("medical abort clears every working purpose before idle or service continuation")
     {
         glob2test::HeadlessGlobals globals;

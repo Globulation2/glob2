@@ -4,7 +4,6 @@
 // whether a unit may be hired for a resource measures the walk to that resource,
 // not the whole fetch-and-carry trip, and the score estimates that whole trip.
 #include "EngineFixtures.h"
-#include "GradientFixture.h"
 #include "GlobalContainer.h"
 #include "FileManager.h"
 #include <SDL3/SDL.h>
@@ -30,8 +29,6 @@
 class FetchHiringScoreHarness
 {
 public:
-    static bool considerExplorer(Building* building, Unit* unit, int* distance)
-        { return building->considerUnitForExplorerFlag(unit,distance); }
     static std::vector<Unit*> candidates(Building* building)
     {
         building->resetFailureTallies();
@@ -40,6 +37,8 @@ public:
             int distance=0;
             if(unit->hasCapability(UnitRuntimeTraits::Transport) && unit->performance[HARVEST] && unit->performance[BUILD] && building->considerUnitForMaterial(unit,WHEAT,&distance))units.push_back(unit);
         }
+        // This helper checks membership; carrying() checks the planner's ranking.
+        std::sort(units.begin(),units.end(),[](const Unit* a,const Unit* b) { return a->gid<b->gid; });
         return units;
     }
     static int unavailable(Building* building)
@@ -192,44 +191,6 @@ static void theScoreEstimatesTheWholeTrip()
 
 TEST_SUITE("FetchHiringScore")
 {
-    TEST_CASE("flying flag recruitment defers cold guidance without recording an access failure")
-    {
-        glob2test::HeadlessGlobals globals;
-        glob2test::HeadlessGame world({.clearImmobile=true,.header=true,.seed=4921});
-        auto& game=world.game;
-        auto& map=game.map;
-        glob2test::importTerrainBeforeMatch(game,R"({"schemaVersion":1,"terrains":[{"key":"fixture:air-recruitment-barrier","name":"Barrier","base":"grass","properties":{"flyable":false},"appearance":"grass"}]})");
-        map.paintCell(24,24,*map.terrainRegistry().find("fixture:air-recruitment-barrier"));
-        map.configureCompute(2);
-        map.configureGradientPipeline(1,3);
-        auto* unit=world.addUnit(EXPLORER,12,12);
-        auto* flag=world.addBuilding("explorationflag",8,8);
-        REQUIRE(unit); REQUIRE(flag);
-        flag->explorersRequireBombing=false;
-        int distance=-1;
-        const auto random=unit->entityRandom;
-        std::array<Uint32,Building::UnitCantWorkReasonSize> failures{};
-        std::copy(std::begin(flag->unitsFailingRequirements),std::end(flag->unitsFailingRequirements),failures.begin());
-        for(unsigned repeat=0;repeat<16;++repeat) {
-            CHECK_FALSE(FetchHiringScoreHarness::considerExplorer(flag,unit,&distance));
-            CHECK(std::equal(failures.begin(),failures.end(),std::begin(flag->unitsFailingRequirements)));
-            CHECK(unit->entityRandom==random);
-        }
-        bool accepted=false;
-        for(unsigned boundary=0;boundary<512 && !accepted;++boundary) {
-            map.advanceGradientPipeline();
-            ++game.stepCounter;
-            map.stagePeriodicGradientPreparation();
-            glob2test::prepareGradientBoundary(game);
-            accepted=FetchHiringScoreHarness::considerExplorer(flag,unit,&distance);
-        }
-        REQUIRE(accepted);
-        CHECK(distance>0);
-        CHECK(unit->attachedBuilding==nullptr);
-        CHECK(flag->unitsWorking.empty());
-        map.finishGradientPipeline();
-    }
-
     TEST_CASE("recruitment retains exact hunger boundaries and widened cached extremes")
     {
         glob2test::HeadlessGlobals globals;
@@ -324,7 +285,7 @@ TEST_SUITE("FetchHiringScore")
         CHECK(team->myUnits[3]->destinationPurpose == -1);
         CHECK(team->myUnits[Unit::MAX_COUNT-1]->destinationPurpose == -1);
         REQUIRE(world.game.map.incResourceByIndex(16, 8, WHEAT, 0));
-        CHECK(FetchHiringScoreHarness::candidates(inn) == std::vector<Unit*>{team->myUnits[Unit::MAX_COUNT-1], team->myUnits[3]});
+        CHECK(FetchHiringScoreHarness::candidates(inn) == std::vector<Unit*>{team->myUnits[3], team->myUnits[Unit::MAX_COUNT-1]});
         team->myUnits[Unit::MAX_COUNT-1]->activity = Unit::ACT_FILLING;
         CHECK(FetchHiringScoreHarness::candidates(inn) == std::vector<Unit*>{team->myUnits[3]});
         CHECK(FetchHiringScoreHarness::unavailable(inn) == 1);

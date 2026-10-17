@@ -609,12 +609,17 @@ int GraphicContext::maximumTextureSize() const
         if (applied) {
             if (fullscreen) optionFlags |= FULLSCREEN; else optionFlags &= ~FULLSCREEN;
             if (!fullscreen) {
-                SDL_SetWindowResizable(window, (optionFlags & RESIZABLE) ? true : false);
-                SDL_SetWindowSize(window, requestedW, requestedH);
+                // Let the window manager restore decorations before resizing the
+                // client area; overlapping requests can subtract the frame height.
+                if (nativeDesktop) applied = SDL_SyncWindow(window);
+                if (applied) {
+                    SDL_SetWindowResizable(window, (optionFlags & RESIZABLE) ? true : false);
+                    SDL_SetWindowSize(window, requestedW, requestedH);
+                }
             }
             // Fullscreen and its restoration resize can outlive the flag change.
             // Read and persist dimensions only after both requests have settled.
-            if (nativeDesktop) applied = SDL_SyncWindow(window) && refreshNativeWindow();
+            if (nativeDesktop) applied = applied && SDL_SyncWindow(window) && refreshNativeWindow();
         }
         if (!applied) {
             if (previous) optionFlags |= FULLSCREEN; else optionFlags &= ~FULLSCREEN;

@@ -11,6 +11,10 @@ for (const compact of [false, true]) {
   test(`render FPS selection persists (${compact ? 'compact' : 'desktop'})`, async ({page}, info) => {
     if (compact) await page.setViewportSize({width:460, height:820});
     await page.goto(gameURL());
+    if (compact) {
+      await screen(page, 'HandPreferenceScreen');
+      await clickControl(page, 'hand.right');
+    }
     await screen(page, 'MainMenuScreen');
     await clickMainMenu(page, 'settings');
     await screen(page, 'SettingsScreen');

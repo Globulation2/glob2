@@ -586,9 +586,7 @@ void Map::clear()
 	identityValue = nextIdentity.fetch_add(1);
 	terrainSeedValue = 0;
 	gradientRuntime->preparation={};
-    gradientRuntime->fieldRequests.clear();
 	gradientRuntime->pipeline.reset();
-    gradientRuntime->air.clear();
 	// Retires into the buffer pool, so before the pool is cleared below.
 	resetBuildingGradientPipeline();
 	gradientRuntime->resetBackendSession();

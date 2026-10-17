@@ -38,9 +38,6 @@ class GradientPipeline
 		ComputeExecutor::Batch batch;
 		GradientPipeline *owner = nullptr;
 		std::function<void(Job &)> seed;
-        std::shared_ptr<void> payload;
-        std::function<void(Job&,GradientWorkspace&)> customWork;
-        std::function<void(Job&)> customPublish;
 		// Allocated only for GPU-configured submissions, never CPU jobs.
 		std::unique_ptr<DeviceJob> device;
 	};
@@ -49,24 +46,20 @@ class GradientPipeline
 		std::uint16_t **slot;
 		const std::uint16_t *data;
 		unsigned remaining;
-        bool superseded;
-        const Job* job=nullptr;
-    };
-    struct RestoredSnapshot
+		bool superseded;
+	};
+	struct RestoredSnapshot
 	{
 		std::uint16_t **slot;
 		int swim;
 		unsigned remaining;
 		bool superseded;
-        std::unique_ptr<std::uint16_t[]> data;
-        std::shared_ptr<void> payload;
-        std::function<void(Job&)> customPublish;
-    };
-    using Work = std::function<void(Job &, GradientWorkspace &)>;
+		std::unique_ptr<std::uint16_t[]> data;
+	};
+	using Work = std::function<void(Job &, GradientWorkspace &)>;
 	using AsyncWork = std::function<std::shared_ptr<gradient_kernel::OwnedGradientField>(
 		Job &, gradient_kernel::PlanDecision)>;
 	std::function<void(std::uint16_t **)> onPublished;
-    std::function<bool(std::uint16_t **)> validDestination;
 	std::function<std::uint64_t(unsigned)> deadline;
 	static constexpr unsigned MaxDelay = 16;
 	static_assert(MaxDelay <= ComputeExecutor::GradientHorizon);
@@ -114,8 +107,7 @@ class GradientPipeline
 		{
 			if (job.seed)
 				job.seed(job);
-            if (job.customWork) job.customWork(job,scratch.propagation);
-            else self.work(job, scratch.propagation);
+			self.work(job, scratch.propagation);
 		}
 		catch (...)
 		{
@@ -133,12 +125,6 @@ class GradientPipeline
 		job.crowding = &scratch.crowding;
 		try
 		{
-            if (job.customWork) {
-                if (job.seed) job.seed(job);
-                job.customWork(job,scratch.propagation);
-                releaseInputs(job);
-                return;
-            }
 			const auto decision = self.backendSession->choose(
 				gradient_preparation::backendFamily(job.request.kind), 1, self.selected);
 			if (job.seed)
@@ -296,11 +282,11 @@ class GradientPipeline
 		finish({JoinReason::Save, ComputeTelemetry::NoTick});
 		for (const auto &job : pending)
 			visitor(PendingSnapshot{job->slot, job->data.get(), unsigned(job->due - tick),
-                                    job->superseded,job.get()});
+									job->superseded});
 	}
 	void restoreCompleted(RestoredSnapshot value)
 	{
-		if (!enabled() || !value.slot || !value.data || !value.remaining ||
+		if (!enabled() || !value.slot || !*value.slot || !value.data || !value.remaining ||
 			value.remaining > delay || pending.size() >= delay ||
 			(!pending.empty() && pending.back()->due >= tick + value.remaining))
 			throw std::runtime_error("Invalid saved gradient deadline or destination");
@@ -310,10 +296,8 @@ class GradientPipeline
 		job->due = tick + value.remaining;
 		job->superseded = value.superseded;
 		job->done = true;
-        job->data = std::move(value.data);
-        job->payload=std::move(value.payload);
-        job->customPublish=std::move(value.customPublish);
-        pending.push_back(std::move(job));
+		job->data = std::move(value.data);
+		pending.push_back(std::move(job));
 	}
 	void advance()
 	{
@@ -324,28 +308,21 @@ class GradientPipeline
 			(this->*waitJob)(job, {JoinReason::TickDeadline, deadline ? deadline(0) / 2 : tick});
 			if (job.error)
 				std::rethrow_exception(job.error);
-			if (!job.superseded && (!validDestination || validDestination(job.slot)))
+			if (!job.superseded)
 			{
-                if (job.customPublish) job.customPublish(job);
-                else {
 				auto *old = *job.slot;
 				*job.slot = job.data.release();
 				job.data.reset(old);
-                if (onPublished) onPublished(job.slot);
-                }
-                ++metrics.published;
-            }
-            else
+				++metrics.published;
+				if (onPublished)
+					onPublished(job.slot);
+			}
+			else
 				++metrics.discarded;
-            job.customWork={}; job.customPublish={}; job.payload.reset();
-            spare.push_back(std::move(pending.front()));
+			spare.push_back(std::move(pending.front()));
 			pending.pop_front();
 		}
 	}
-    template<class Visitor> void visitLogical(Visitor visitor) const
-    { for (const auto& job:pending) visitor(job->slot, unsigned(job->due-tick), job->superseded); }
-    template<class Visitor> void forEachDestination(Visitor visitor) const
-    { for (const auto& job:pending) if (!job->superseded) visitor(job->slot); }
 	void invalidate(std::uint16_t **slot)
 	{
 		for (auto &job : pending)
@@ -360,17 +337,13 @@ class GradientPipeline
 		if (spare.empty())
 		{
 			job = std::make_unique<Job>();
-			// Seeding initializes every cell on the worker. Value initialization
-			// here would retain a map-sized clearing pass on the owner.
-			job->data.reset(new std::uint16_t[cells]);
+			job->data = std::make_unique<std::uint16_t[]>(cells);
 		}
 		else
 		{
 			job = std::move(spare.back());
 			spare.pop_back();
 		}
-        if (!job->data) job->data=std::make_unique_for_overwrite<std::uint16_t[]>(cells);
-        job->customWork={}; job->customPublish={}; job->payload.reset();
 		if (callback.invoke == runGPU)
 			job->device = std::make_unique<DeviceJob>();
 		job->slot = slot;

@@ -388,12 +388,3 @@ and CLI tests cover GUI/headless defaults, local persistence and binary override
 Run the affected unit and engine suites through `test/run_tests.py`, then compare
 real saved-game and replay checksums with GPU off/on. See
 [GPU verification](../gradient-benchmarks.md#gpu-correctness-and-performance).
-
-### Delayed air publication
-
-`AirGradient` checks the bounded field kernel against independent shortest-path
-oracles. `AirGradientPublication` covers FIFO/budget pressure, immutable output
-lifetimes, goal selection, stale inputs, identities and binary/text continuation
-with one, two, four and eight compute participants. Ground field initialization
-and lazy building propagation retain the master implementation. No performance
-or gameplay-feel conclusion follows from these correctness checks.

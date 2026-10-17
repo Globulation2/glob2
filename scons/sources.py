@@ -400,8 +400,6 @@ CLIENT_SOURCES = (
     'map/generator/shared/StartQuality.cpp',
     'map/generator/shared/Terrain.cpp',
     'map/gradient/BuildingGradientSearch.cpp',
-    'map/gradient/AirGradientRuntime.cpp',
-    'map/gradient/AirDestinationSelection.cpp',
     'map/gradient/MapGradientArea.cpp',
     'map/gradient/MapGradientBuilding.cpp',
     'map/gradient/MapGradientChamfer.cpp',

@@ -631,7 +631,10 @@ unit motion, team, options and sampling scale until all regions are complete.
 Each turn can submit up to four regions, yielding after a soft four-millisecond
 CPU budget or admission pressure. Region pixel and source limits remain bounded.
 Final overlays start with a fresh source budget after a turn that submits several
-regions; completed region cursors survive this yield.
+regions; completed region cursors survive this yield. A completed atlas remains
+owned by the pending presentation until its world submission is accepted.
+Deferred world work reuses that atlas without recomposing overlays or advancing
+preview opacity again.
 Region culling preserves the complete target coordinate system, and disjoint
 physical scissors prevent repeated blending at fractional zoom. Skin preview
 ownership is borrowed only within a draw call and restored before yielding.

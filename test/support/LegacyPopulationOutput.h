@@ -6,11 +6,9 @@
 #include "Unit.h"
 #include "Building.h"
 #include "FileFormatVersions.h"
-#include "gradient/GradientRuntime.h"
 #include <BinaryStream.h>
 #include <algorithm>
 #include <stdexcept>
-#include <memory>
 #include <string>
 #include <string_view>
 #include <vector>
@@ -19,18 +17,12 @@ namespace glob2test
 {
 // Test-only adapter for synthetic historical files. Header overrides alone do
 // not turn current counted population records into the pre-166 slot encoding.
-// It also emits the pre-169 empty gradient-job/cache layout for fresh synthetic
-// fixtures. Warm material/air caches or admitted jobs require genuine historical
-// fixtures instead; silently dropping their state would weaken continuation tests.
-// PreservePending explicitly supports representable 164–167 warm-field jobs,
-// retaining every private array and deadline while rejecting new cold/cache state.
 // Other historical field differences remain the fixture author's responsibility.
 class LegacyPopulationOutput : public GAGCore::BinaryOutputStream
 {
     Game* game;
     bool legacy;
     int formatVersion;
-    bool preservePending;
     bool injecting = false;
     std::vector<std::string> sections;
     std::size_t suppressedAt = 0;
@@ -39,37 +31,6 @@ class LegacyPopulationOutput : public GAGCore::BinaryOutputStream
     unsigned populationSection = 0;
 
     bool suppressed() const { return suppressedAt && !injecting; }
-    bool tracking() const { return legacy || formatVersion<FILE_FORMAT_VERSION_DELAYED_AIR; }
-    void requireGradientRuntime() const
-    {
-        if (!game) throw std::logic_error("Synthetic historical runtime requires its owning Game");
-        const auto& runtime=*game->map.gradientRuntime;
-        if (preservePending) {
-            // These formats share the current material/swim slot encoding.
-            // Cold demands and new cache families have no historical equivalent.
-            if (formatVersion<164
-                || !runtime.materialFields.empty() || !runtime.air.entries.empty()
-                || !runtime.fieldRequests.empty())
-                throw std::logic_error("Historical pending runtime contains unrepresentable demand or caches");
-            const auto legacyEnd=Team::MAX_COUNT*(2*MaterialSlotCount+2)*SWIM_CLASS_COUNT;
-            runtime.pipeline.visitLogical([&](auto* slot,unsigned,bool) {
-                if (!*slot || game->map.gradientDestination(slot)>=legacyEnd)
-                    throw std::logic_error("Historical pending runtime requires a published legacy field destination");
-            });
-            const auto publishedBuilding=[&](int team,int id,Uint32 identity,int slot) {
-                const auto* building=game->teams[team]->myBuildings[id];
-                return building && building->scriptIdentity==identity && building->globalGradient[slot];
-            };
-            for (const auto& request:runtime.buildingRequests)
-                if (!request.stale && !publishedBuilding(request.team,request.building,request.identity,request.slot))
-                    throw std::logic_error("Historical building request has no published generation");
-            return;
-        }
-        if (!runtime.materialFields.empty() || !runtime.air.entries.empty()
-            || runtime.pipeline.pendingCount() || runtime.buildings.pendingCount()
-            || !runtime.fieldRequests.empty())
-            throw std::logic_error("Synthetic historical fixture requires empty gradient jobs and material/air caches");
-    }
     bool observationField(std::string_view name) const
     {
         // Format 166 introduced counted populations, but not owner observation
@@ -108,46 +69,19 @@ class LegacyPopulationOutput : public GAGCore::BinaryOutputStream
         suppressedAt = sections.size();
     }
 public:
-    enum class GradientLayout { Empty, PreservePending };
-    LegacyPopulationOutput(GAGCore::MemoryStreamBackend* backend, Game* game, int version,
-        GradientLayout gradients=GradientLayout::Empty)
-        : BinaryOutputStream(backend), game(game), legacy(version<FILE_FORMAT_VERSION_INTRUSIVE_POPULATION),
-          formatVersion(version), preservePending(gradients==GradientLayout::PreservePending) {}
-    // Runtime-only historical migration fixtures still retain the owning Game.
-    LegacyPopulationOutput(GAGCore::MemoryStreamBackend* backend, Map& map, int version)
-        : LegacyPopulationOutput(backend,map.game,version,GradientLayout::PreservePending) {}
+    LegacyPopulationOutput(GAGCore::MemoryStreamBackend* backend, Game* game, int version)
+        : BinaryOutputStream(backend), game(game), legacy(version<FILE_FORMAT_VERSION_INTRUSIVE_POPULATION), formatVersion(version) {}
     void writeEnterSection(std::string_view name) override
     {
-        if (injecting || !tracking()) return;
+        if (injecting || !legacy) return;
         const bool teamChild = !sections.empty() && sections.back()=="Team";
         sections.emplace_back(name);
         if (suppressed()) return;
-        if (formatVersion<FILE_FORMAT_VERSION_DELAYED_AIR) {
-            if (name=="mapRuntime") requireGradientRuntime();
-            if (preservePending && name=="queuedRequests") {
-                suppressedAt=sections.size();
-                return;
-            }
-            if (name=="resourceRoutingCache" || name=="airFields"
-                || (!preservePending && (name=="gradientPipeline" || name=="buildingGradientPipeline"))) {
-                if (name=="gradientPipeline" && formatVersion>=FILE_FORMAT_VERSION_GRADIENT_PIPELINE) {
-                    BinaryOutputStream::writeUint8(game->map.gradientRuntime->pipeline.enabled()
-                        ? game->map.gradientRuntime->pipeline.delayTicks() : 8,"delay");
-                    BinaryOutputStream::writeUint8(0,"count");
-                } else if (name=="buildingGradientPipeline" && formatVersion>=FILE_FORMAT_VERSION_BUILDING_GRADIENT_PIPELINE) {
-                    BinaryOutputStream::writeUint8(game->map.gradientRuntime->buildings.delayTicks(),"delay");
-                    BinaryOutputStream::writeUint16(0,"count"); // Historical queue count width.
-                    BinaryOutputStream::writeUint8(0,"count"); // No admitted results.
-                }
-                suppressedAt=sections.size();
-                return;
-            }
-        }
         if (name=="HiringPipeline" && formatVersion<FILE_FORMAT_VERSION_CACHED_HIRING) {
             suppressedAt=sections.size();
             return;
         }
-        if (legacy && name=="Team") {
+        if (name=="Team") {
             if (!game || nextTeam>=game->teamsCount())
                 throw std::logic_error("Unexpected synthetic historical team");
             team=game->teams[nextTeam++];
@@ -158,27 +92,17 @@ public:
                 || !std::is_sorted(team->liveBuildings.begin(),team->liveBuildings.end(),byGid))
                 throw std::logic_error("Synthetic historical fixture requires legacy slot order");
             populationSection=0;
-        } else if (legacy && teamChild && (name=="myUnits" || name=="myBuildings")) population(name);
+        } else if (teamChild && (name=="myUnits" || name=="myBuildings")) population(name);
     }
     void writeEnterSection(unsigned) override
-    { if (!injecting && tracking()) sections.emplace_back(); }
+    { if (!injecting && legacy) sections.emplace_back(); }
     void writeLeaveSection(std::size_t count=1) override
     {
-        if (injecting || !tracking()) return;
+        if (injecting || !legacy) return;
         while (count--) {
             if (sections.empty()) throw std::logic_error("Unbalanced synthetic historical sections");
-            const bool writeOldCache=sections.back()=="gradientPipeline"
-                && formatVersion<FILE_FORMAT_VERSION_DELAYED_AIR
-                && formatVersion>=FILE_FORMAT_VERSION_BUILDING_CATALOG;
             if (suppressedAt==sections.size()) suppressedAt=0;
             sections.pop_back();
-            if (writeOldCache) {
-                // Before delayed fields, the material cache followed the pipeline.
-                // Empty entries have no changed per-entry encoding.
-                injecting=true;
-                game->map.saveMaterialRoutingCache(this);
-                injecting=false;
-            }
         }
     }
     void write(const void* data, std::size_t size, std::string_view name) override
@@ -188,21 +112,6 @@ public:
     void writeUint32(Uint32 value, std::string_view name) override
     {
         if (suppressed()) return;
-        if (preservePending && formatVersion<FILE_FORMAT_VERSION_DELAYED_AIR && !injecting) {
-            if (!sections.empty() && sections.back()=="gradientPipeline" && name=="requests") {
-                if (value) throw std::logic_error("Historical pending runtime cannot encode queued field demand");
-                return;
-            }
-            const bool periodicDestination=name=="destination"
-                && std::find(sections.begin(),sections.end(),"gradientPipeline")!=sections.end();
-            const bool buildingQueueCount=name=="count" && sections.size()>=2 && sections.back()=="queue"
-                && sections[sections.size()-2]=="buildingGradientPipeline";
-            if (periodicDestination || buildingQueueCount) {
-                if (value>0xffff) throw std::logic_error("Historical gradient field exceeds its 16-bit encoding");
-                BinaryOutputStream::writeUint16(Uint16(value),name);
-                return;
-            }
-        }
         BinaryOutputStream::writeUint32(value,name);
         if (formatVersion>=FILE_FORMAT_VERSION_TURRET_TARGETING
             && formatVersion<FILE_FORMAT_VERSION_LEAN_TURRET_TARGETING) {
@@ -227,14 +136,10 @@ public:
             }
         }
     }
-    void writeSint32(Sint32 value, std::string_view name) override
-    { if (!suppressed()) BinaryOutputStream::writeSint32(value,name); }
-    void writeUint8(Uint8 value, std::string_view name) override
-    { if (!suppressed()) BinaryOutputStream::writeUint8(value,name); }
     void writeUint16(Uint16 value, std::string_view name) override
     {
         if (legacy && !injecting && !sections.empty() && sections.back()=="Team" && name=="taskSwapNext") return;
-        if (!suppressed()) BinaryOutputStream::writeUint16(value,name);
+        BinaryOutputStream::writeUint16(value,name);
     }
     void writeUint16Sections(const Uint16* values, std::size_t count, std::string_view name) override
     { if (!suppressed()) BinaryOutputStream::writeUint16Sections(values,count,name); }

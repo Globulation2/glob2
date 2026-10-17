@@ -171,7 +171,7 @@ TEST_CASE("format166 pending jobs and append order survive an immediate upgrade 
         REQUIRE(pendingFields>0); REQUIRE(pendingGrowth==1);
         struct HistoricalOutput : glob2test::LegacyPopulationOutput {
             HistoricalOutput(GAGCore::MemoryStreamBackend* backend,Game& game)
-                : LegacyPopulationOutput(backend,&game,166,GradientLayout::PreservePending) {}
+                : LegacyPopulationOutput(backend,&game,166) {}
             void writeSint32(Sint32 value,std::string_view name) override {
                 BinaryOutputStream::writeSint32(name=="versionMinor" ? 166 : value,name);
             }

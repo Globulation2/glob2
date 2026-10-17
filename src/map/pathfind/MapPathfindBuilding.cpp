@@ -175,8 +175,3 @@ bool Map::pathfindBuilding(EntityRandom& random, Building *building, int swimCla
 		return true;
 	return buildingGradientDirection(random, building, swimClass, x, y, dx, dy, false, route);
 }
-
-RouteResult Map::queryBuildingDistance(Building* building,int swim,int x,int y,int* distance,BuildingRoute route)
-{
-    return buildingAvailable(building,swim,x,y,distance,route) ? RouteResult::Reachable : RouteResult::Unreachable;
-}

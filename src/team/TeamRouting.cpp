@@ -11,6 +11,8 @@
 #include "Map.h"
 #include "Team.h"
 #include "Unit.h"
+#include "field/AirPathfind.h"
+#include "field/TerrainMovementCosts.h"
 #include <climits>
 
 namespace
@@ -19,12 +21,20 @@ bool serviceMovementAllowed(const Map&,Unit& unit,const Building&)
 {
     return unit.performance[FLY] || unit.performance[WALK] || unit.performance[SWIM];
 }
-RouteResult airDistanceTiles(Map& map, const Unit& unit, Building& building, int* distance)
+auto airDistancesFor(const Map& map,const Unit& unit)
 {
-    int cost=0;
-    const auto result=map.queryAirBuildingDistance(&building,true,true,unit.posX,unit.posY,&cost);
-    if(result==RouteResult::Reachable) *distance=(cost+GRADIENT_STEP-1)/GRADIENT_STEP;
-    return result;
+    // Building choice ignores transient flyers; steering handles their occupied
+    // cells. Terrain barriers and traversal speeds remain exact.
+    return field::AirDistanceField(map.getW(),map.getH(),unit.posX,unit.posY,
+        [&map](int x,int y) { return map.terrainPropertiesAt(x,y).flyable; },
+        [&map](int x,int y) { return gradient_kernel::scaledTerrainStep(GRADIENT_STEP,map.terrainPropertiesAt(x,y).airSpeedQ8); },
+        unit.performance[FLY] && map.hasAirTerrainConstraints());
+}
+template<class Field>
+int airDistanceTiles(Field& field,Building& building)
+{
+    const unsigned cost=field.costTo(building.getMidX(),building.getMidY());
+    return cost==Field::unreachable ? INT_MAX : int((cost+GRADIENT_STEP-1)/GRADIENT_STEP);
 }
 }
 
@@ -46,15 +56,14 @@ Building *Team::findNearestHeal(Unit *unit)
 		Sint32 maxDist = starvationLimitedTravelDistance(unit);
 		Building *choosen = NULL;
 		Sint32 bestDist2 = maxDist * maxDist;
-        const bool constrained=map->hasAirTerrainConstraints();
+        auto airRoutes=airDistancesFor(*map,*unit);
 		for (std::list<Building *>::iterator bi=canHealUnit.begin(); bi!=canHealUnit.end(); ++bi)
 		{
 			Building *b=(*bi);
 			if (!b->canOfferService(unit, HEAL) || !serviceMovementAllowed(*map,*unit,*b)) continue;
-            int travel=0;
-            if(constrained && airDistanceTiles(*map,*unit,*b,&travel)!=RouteResult::Reachable) continue;
-            if(constrained && travel>=maxDist) continue;
-            Sint32 dist2 = constrained?travel*travel:map->warpDistSquare(x,y,b->posX,b->posY);
+            const int travel=airRoutes.enabled()?airDistanceTiles(airRoutes,*b):0;
+            if(airRoutes.enabled() && travel>=maxDist) continue;
+            Sint32 dist2 = airRoutes.enabled()?travel*travel:map->warpDistSquare(x,y,b->posX,b->posY);
 			if (dist2 < bestDist2)
 			{
 				choosen = b;
@@ -74,7 +83,7 @@ Building *Team::findNearestHeal(Unit *unit)
 		{
 			if (!(*bi)->canOfferService(unit, HEAL) || !serviceMovementAllowed(*map,*unit,**bi)) continue;
 			int buildingDist;//initialized in buildingAvailable next line
-			if ((map->queryBuildingDistance((*bi), unit->swimClass(), x, y, &buildingDist, BuildingRoute::Footprint) == RouteResult::Reachable) && (buildingDist < bestDist))
+			if (map->buildingAvailable((*bi), unit->swimClass(), x, y, &buildingDist, BuildingRoute::Footprint) && (buildingDist < bestDist))
 			{
 				choosen = (*bi);
 				bestDist = buildingDist;
@@ -90,7 +99,7 @@ Building *Team::findNearestHeal(Unit *unit)
 Building *Team::findNearestFood(Unit *unit)
 {
 	MapHeader& header=game->mapHeader;
-    const bool constrained=unit->performance[FLY] && map->hasAirTerrainConstraints();
+    auto airRoutes=airDistancesFor(*map,*unit);
 
 	bool concurency = false;//Becomes true if there is a team whose inn-view is on for us but who is not allied to us.
 	for (int ti= 0; ti < header.getNumberOfTeams(); ti++)
@@ -121,8 +130,8 @@ Building *Team::findNearestFood(Unit *unit)
 				for (std::list<Building *>::iterator bi = team->canFeedUnit.begin(); bi != team->canFeedUnit.end(); ++bi)
 				{
 			if (!(*bi)->canOfferService(unit, FEED) || !serviceMovementAllowed(*map,*unit,**bi)) continue;
-					Sint32 dist = 1 + (Sint32)sqrt(map->warpDistSquare(unit->posX,unit->posY,(*bi)->posX,(*bi)->posY));
-                    if(constrained && airDistanceTiles(*map,*unit,**bi,&dist)!=RouteResult::Reachable) continue;
+					Sint32 dist = airRoutes.enabled()?airDistanceTiles(airRoutes,**bi):
+                        1 + (Sint32)sqrt(map->warpDistSquare(unit->posX,unit->posY,(*bi)->posX,(*bi)->posY));
 					if (dist >= maxDist
 						|| !(*bi)->canConvertUnit()
 						)
@@ -164,7 +173,7 @@ Building *Team::findNearestFood(Unit *unit)
 					{
 						continue;
 					}
-					if ((map->queryBuildingDistance(*bi, unit->swimClass(), unit->posX, unit->posY, &dist, BuildingRoute::Footprint) != RouteResult::Reachable))
+					if (!map->buildingAvailable(*bi, unit->swimClass(), unit->posX, unit->posY, &dist, BuildingRoute::Footprint))
 						continue;
 					if (dist >= maxDist)
 						continue;
@@ -198,8 +207,8 @@ Building *Team::findNearestFood(Unit *unit)
 			if (!(*bi)->canOfferService(unit, FEED) || !serviceMovementAllowed(*map,*unit,**bi)) continue;
 			if ((*bi)->availableHappynessLevel() < bestEnemyHappyness)
 				continue;
-			Sint32 dist = 1 + (Sint32)sqrt(map->warpDistSquare(unit->posX,unit->posY,(*bi)->posX,(*bi)->posY));
-            if(constrained && airDistanceTiles(*map,*unit,**bi,&dist)!=RouteResult::Reachable) continue;
+			Sint32 dist = airRoutes.enabled()?airDistanceTiles(airRoutes,**bi):
+                        1 + (Sint32)sqrt(map->warpDistSquare(unit->posX,unit->posY,(*bi)->posX,(*bi)->posY));
 			if (dist >= bestDist)
 				continue;
 			bestDist = dist;
@@ -221,7 +230,7 @@ Building *Team::findNearestFood(Unit *unit)
 			if (dist >= bestDist && !map->hasTerrainMovementModifiers())
 				continue;
 
-			if ((map->queryBuildingDistance(*bi, unit->swimClass(), unit->posX, unit->posY, &dist, BuildingRoute::Footprint) != RouteResult::Reachable))
+			if (!map->buildingAvailable(*bi, unit->swimClass(), unit->posX, unit->posY, &dist, BuildingRoute::Footprint))
 				continue;
 			if (dist >= bestDist)
 				continue;
@@ -246,7 +255,7 @@ Building *Team::findBestUpgrade(Unit *unit)
 	Sint32 score=Team::UPGRADE_SCORE_NONE;
 	int x=unit->posX;
 	int y=unit->posY;
-    const bool constrained=unit->performance[FLY] && map->hasAirTerrainConstraints();
+    auto airRoutes=airDistancesFor(*map,*unit);
 	//TODO: This is bad code. If WALK ever ceases to be the first ability or ARMOR ever ceases
 	//to be the last, this code will fail.
 	for (int ability=(int)WALK; ability<NB_ABILITY; ability++)
@@ -264,16 +273,16 @@ Building *Team::findBestUpgrade(Unit *unit)
 			if (!b->canOfferService(unit, ability) || !serviceMovementAllowed(*map,*unit,*b))
 				continue;
             std::int64_t distanceSquared=map->warpDistSquare(b->posX,b->posY,x,y);
-            if(constrained)
+            if(airRoutes.enabled())
             {
-                int distance=0;
-                if(airDistanceTiles(*map,*unit,*b,&distance)!=RouteResult::Reachable) continue;
+                const int distance=airDistanceTiles(airRoutes,*b);
+                if(distance==INT_MAX) continue;
                 distanceSquared=std::int64_t(distance)*distance;
             }
             else if(!unit->performance[FLY] && (map->hasTerrainMovementModifiers() || !unit->performance[WALK]))
             {
                 int distance=0;
-                if((map->queryBuildingDistance(b,unit->swimClass(),x,y,&distance, BuildingRoute::Footprint) != RouteResult::Reachable)) continue;
+                if(!map->buildingAvailable(b,unit->swimClass(),x,y,&distance, BuildingRoute::Footprint)) continue;
                 distanceSquared=std::int64_t(distance)*distance;
             }
             const auto capacity=b->maxUnitInside-b->unitsInside.size();

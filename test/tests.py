@@ -26,7 +26,6 @@ ENGINE_SUPPORT = [
 
 # glob2-engine-tests: every client object except the entry point, plus these.
 ENGINE_TESTS = [
-    ('#src/map/gradient/AirGradientPublicationHarness.cpp', dict(cxxflags=['-fno-access-control'])),
     ('#src/map/gradient/GradientBackendSwitchTest.cpp', dict(cxxflags=['-fno-access-control'])),
     ('#src/mcp/MCPTest.cpp', dict(cxxflags=['-fno-access-control'])),
     '#src/unit/types/UnitCatalogTest.cpp',
@@ -57,7 +56,7 @@ ENGINE_TESTS = [
     ('#src/ai/AICustomCatalogTest.cpp', dict(cxxflags=['-fno-access-control'])),
     '#src/building/types/BuildingCatalogTest.cpp',
     '#src/building/BuildingProductionCombatTest.cpp',
-    ('#src/building/BuildingStockTest.cpp', dict(cxxflags=['-fno-access-control'])),
+    '#src/building/BuildingStockTest.cpp',
     ('#src/building/MaterialDemandTest.cpp', dict(cxxflags=['-fno-access-control'])),
     '#src/building/BuildingCatalogFixtureHarness.cpp',
     '#src/building/BuildingCatalogBenchmark.cpp',
@@ -105,7 +104,7 @@ ENGINE_TESTS = [
     ('#src/scripting/javascript/ScriptSessionTest.cpp', dict(cxxflags=['-fno-access-control'])),
     ('#src/scripting/javascript/ScriptSimulationTest.cpp', dict(cxxflags=['-fno-access-control'])),
     '#src/building/BuildingExpelHarness.cpp',
-    ('#src/map/gradient/BuildingGradientInvalidationHarness.cpp', dict(cxxflags=['-fno-access-control'])),
+    '#src/map/gradient/BuildingGradientInvalidationHarness.cpp',
     '#src/building/FetchApportionmentHarness.cpp',
     '#src/hud/GameGUISelectionHarness.cpp',
     '#src/render/scene/SceneExtractTest.cpp',
@@ -221,7 +220,6 @@ ENGINE_TESTS = [
 
 # glob2-unit-tests: libgag, libusl, the production sources below and stubs.
 UNIT_TESTS = [
-    '#src/field/AirGradientTest.cpp',
     '#src/building/HiringRankingTest.cpp',
     '#src/map/TerrainRegistryTest.cpp',
     '#libgag/src/TextStreamTest.cpp',

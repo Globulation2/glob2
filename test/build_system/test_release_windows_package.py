@@ -47,7 +47,8 @@ class WindowsPackageTests(unittest.TestCase):
                     if command[0] == "cygpath":
                         return str(runtime)
                     return "DLL Name: SDL3.dll\n" if Path(command[-1]).suffix == ".exe" else "DLL Name: KERNEL32.dll\n"
-                with patch.object(MODULE.subprocess, "check_output", side_effect=output):
+                with patch.object(MODULE.subprocess, "check_output", side_effect=output), \
+                        patch.dict(os.environ, {"GLOB2_SDL3_PREFIX": "", "GLOB2_RECORDING_PREFIX": ""}):
                     MODULE.stage(binary, stage)
                     MODULE.package(binary, archive)
             finally:

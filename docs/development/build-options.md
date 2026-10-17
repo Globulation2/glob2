@@ -10,6 +10,11 @@ Its output directory is separate from ordinary stripped release builds. Other
 release packages keep their existing stripping behavior; macOS already retains
 symbols for its matching dSYM.
 
+Windows builds use MinGW's existing pthread runtime for Boost.Asio in every
+translation unit (`BOOST_ASIO_HAS_PTHREADS=1`). Keep this build-wide: header-order
+detection can otherwise mix POSIX and Win32 Asio thread layouts, corrupting
+network teardown. The pthread runtime is already required by the Windows build.
+
 ## Fast development builds
 
 `python3 tools/dev_build.py` enables caching and `dev_fast=1` in a separate output

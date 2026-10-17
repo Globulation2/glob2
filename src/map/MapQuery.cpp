@@ -12,7 +12,6 @@
 #include "MapInternal.h"
 #include "gradient/GradientRuntime.h"
 #include "gradient/ResourceSeedCache.h"
-#include <limits>
 
 
 
@@ -330,19 +329,14 @@ std::optional<Offset> Map::doesUnitTouchEnemy(Unit *unit) const
 
 void Map::setClearingAreaClaimed(int x, int y, int teamNumber, int gid)
 {
-    auto& claim=clearingAreaClaims[teamNumber][coordToIndex(x,y)];
-    if (claim!=gid) {
-        auto& revision=gradientRuntime->air.claimRevision[teamNumber];
-        if (revision==std::numeric_limits<Uint64>::max()) throw std::runtime_error("Air clearing claim revision exhausted");
-        claim=gid; ++revision;
-    }
+	clearingAreaClaims[teamNumber][coordToIndex(x, y)] = gid;
 }
 
 
 
 void Map::setClearingAreaUnclaimed(int x, int y, int teamNumber)
 {
-    setClearingAreaClaimed(x,y,teamNumber,NOGUID);
+	clearingAreaClaims[teamNumber][coordToIndex(x, y)]=NOGUID;
 }
 
 

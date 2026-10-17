@@ -92,7 +92,6 @@ void Map::installCatalogs(std::shared_ptr<const TerrainRegistry> terrain,
                     marketGradientUpdated[team][material][swim] = false;
                     marketGradientDirty[team][material][swim] = true;
                 }
-    if (arraysBuilt) gradientRuntime->air.invalidate(*this);
     terrainEditChanged = terrainRoutesChanged = true;
     finishTerrainEdit();
 }

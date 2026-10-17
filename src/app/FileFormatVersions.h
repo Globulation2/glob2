@@ -15,9 +15,6 @@
 
 #pragma once
 
-// Delayed air inventories, request queues and complete private payloads.
-static constexpr int FILE_FORMAT_VERSION_DELAYED_AIR = 169;
-
 // === Save-format minor-version feature gates ===
 // Each constant is the FIRST versionMinor at which the named feature
 // appears in the save stream. Loaders write/read the new field if

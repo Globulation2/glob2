@@ -15,18 +15,8 @@
 #include "GlobalContainer.h"
 #include <climits>
 
-void Unit::waitForGradient()
-{
-	gradientDecisionPending=true;
-	dx=dy=0;
-	direction=UNIT_DIRECTION_NONE;
-	movement=MOV_GOING_DX_DY;
-}
-
 void Unit::handleMovement(void)
 {
-	gradientDecisionPending=false;
-	const auto priorClaim=previousClearingArea;
 	// Release any clearing-area claim from a prior tick before this unit decides
 	// what to do this tick. Note: distance is intentionally NOT reset here — it
 	// must survive the per-tick reset (see Unit.h declaration comment).
@@ -78,13 +68,6 @@ void Unit::handleMovement(void)
 		default:
 			assert(false);
 			break;
-	}
-	// A temporary absence of guidance must not release a clearing reservation.
-	// Local interactions and accepted new choices above still replace it normally.
-	if (gradientDecisionPending && priorClaim && !previousClearingArea
-		&& owner->map->isClearingAreaClaimed(priorClaim->x,priorClaim->y,owner->teamNumber)==NOGUID) {
-		previousClearingArea=priorClaim;
-		owner->map->setClearingAreaClaimed(priorClaim->x,priorClaim->y,owner->teamNumber,gid);
 	}
 }
 
@@ -313,9 +296,7 @@ void Unit::handleMovementAttackingAround()
 	if (movement == MOV_RANDOM_GROUND)
 	{
 		if (performance[FLY] && !attachedBuilding && !owner->map->isGuardArea(posX,posY,owner->me)) {
-			const auto result=queryAirGuardDestination(&targetX,&targetY);
-			if (result==RouteResult::Pending) { waitForGradient(); return; }
-			setValidTarget(result==RouteResult::Reachable);
+			setValidTarget(findAirGuardDestination(&targetX,&targetY));
 			movement=validTarget()?MOV_FLYING_TARGET:MOV_RANDOM_FLY;
 			return;
 		}
@@ -456,9 +437,7 @@ void Unit::handleMovementClearingResources()
 		}
 	if (performance[FLY]) {
 		int distance;
-		const auto result=queryAirClearingDestination(attachedBuilding,&targetX,&targetY,&distance);
-		if (result==RouteResult::Pending) { waitForGradient(); return; }
-		if (result==RouteResult::Reachable) {
+		if (findAirClearingDestination(attachedBuilding,&targetX,&targetY,&distance)) {
 			setValidTarget(true); movement=MOV_FLYING_TARGET;
 		} else { stopAttachedForBuilding(false); movement=MOV_RANDOM_FLY; }
 		return;
@@ -492,10 +471,8 @@ void Unit::handleMovementRandom()
 	}
 	else if (performance[FLY]) {
 		int distance;
-		const bool clearing=medical==MED_FREE && hasCapability(UnitRuntimeTraits::ClearIdle) && hasCapability(UnitRuntimeTraits::Clear) && performance[HARVEST];
-		const auto result=clearing ? queryAirClearingDestination(nullptr,&targetX,&targetY,&distance) : RouteResult::Unreachable;
-		if (result==RouteResult::Pending) { waitForGradient(); return; }
-		if (result==RouteResult::Reachable
+		if (medical==MED_FREE && hasCapability(UnitRuntimeTraits::ClearIdle) && hasCapability(UnitRuntimeTraits::Clear)
+			&& performance[HARVEST] && findAirClearingDestination(nullptr,&targetX,&targetY,&distance)
 			&& distance<foodStepsLeft(trigHungry)) {
 			const int claimant=map->isClearingAreaClaimed(targetX,targetY,owner->teamNumber);
 			if (claimant!=NOGUID && claimant!=gid) {
@@ -647,13 +624,10 @@ void Unit::handleMovementGoingToResource()
 	Map *map=owner->map;
 	if (performance[FLY]) {
 		int distance;
-		if (!validTarget() || (!map->isMaterialTakeableSlot(targetX,targetY,destinationPurpose) && map->getBuilding(targetX,targetY)==NOGBID)) {
-			const auto result=queryMaterialDestination(destinationPurpose,&targetX,&targetY,&distance,attachedBuilding && attachedBuilding->fetchesFromMarkets(),attachedBuilding);
-			if (result==RouteResult::Pending) { waitForGradient(); return; }
-			if (result!=RouteResult::Reachable) {
+		if (!validTarget() || (!map->isMaterialTakeableSlot(targetX,targetY,destinationPurpose) && map->getBuilding(targetX,targetY)==NOGBID))
+			if (!findMaterialDestination(destinationPurpose,&targetX,&targetY,&distance,attachedBuilding && attachedBuilding->fetchesFromMarkets(),attachedBuilding)) {
 				stopAttachedForBuilding(false); movement=MOV_RANDOM_FLY; return;
 			}
-		}
 		setValidTarget(true); movement=MOV_FLYING_TARGET; return;
 	}
 	int teamNumber=owner->teamNumber;

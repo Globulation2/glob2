@@ -4,7 +4,6 @@
 // Private Map-owned execution state. Keeping this behind a pointer in Map.h
 // prevents queue, thread and scratch-storage details from entering Map's API.
 #include "GradientPipeline.h"
-#include "AirGradientRuntime.h"
 #include "BuildingGradientJob.h"
 #include "ResourceGrowth.h"
 #include "BuildingGradientDepthPolicy.h"
@@ -14,7 +13,6 @@
 #include "field/GradientWorkspace.h"
 
 #include <vector>
-#include <deque>
 #include <array>
 #include <map>
 #include <list>
@@ -52,9 +50,6 @@ struct GradientRuntime
 	std::optional<Uint32> worldResultsPublishedTick;
 	std::optional<Uint32> worldWorkSubmittedTick;
 	GradientPipeline pipeline;
-    AirGradientRuntime air;
-    struct FieldRequest { Uint16** slot; gradient_preparation::Request request; };
-    std::deque<FieldRequest> fieldRequests;
 	// Scheduled building fields share the executor with the periodic pipeline.
 	// Drain it before teams and the gradient buffer pool are destroyed.
 	BuildingGradientJobPipeline buildings;

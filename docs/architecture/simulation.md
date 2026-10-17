@@ -731,29 +731,6 @@ jobs without publishing early. Saves predating cached hiring start with empty
 state. Lists are a pure function of the snapshot, so game checksums omit them.
 Saves containing the previous four-tick hiring policy are no longer accepted.
 
-
-### Delayed air destination guidance
-
-Air destination selection uses the existing gradient executor and fixed-tick
-publication boundary. Building distances share destination-rooted fields;
-material, guard and clearing-zone fields retain goal labels with row-major tie
-breaking. Painted clearing choices use private unit/source/task keys and capture
-competing claims. A cold query returns Pending until FIFO admission and the
-configured delay; callers retain assignments while waiting. Current visibility,
-stock, restrictions and claims are revalidated before accepting stale choices.
-
-This changes air destination costs to the common bounded 16-bit COST_LIMIT.
-Longer formerly representable routes become unavailable. Immediate air steering
-and hazardous-terrain escape remain unchanged. Ground initialization, building
-lazy propagation and hiring leases retain their existing behavior.
-
-Admission reserves a deterministic 64 MiB budget for published, admitted and
-boundary-retired air outputs. Worker scratch, snapshots, spare buffers and
-arbitrarily retained external leases are outside this output reservation.
-Format 169 saves air inventories, queued requests, complete private results and
-remaining deadlines. Older released saves through 167 retain their old layout.
-The save floor stays 58; replay acceptance and the simulation version advance.
-
 ## Turret targeting
 
 Turrets consume ordered three-entry lists refreshed per team every two ticks and

@@ -1,3 +1,9 @@
 # Debian's current package is maintained in Salsa. Do not put this historical
 # packaging directory into the upstream orig tarball.
 debian/ export-ignore
+
+# These receipts hash exact bytes; Windows checkouts must retain the source LF.
+src/field/GradientComputeShaders.h text eol=lf
+src/field/shaders/** text eol=lf
+tools/shaders/gradient_compute.py text eol=lf
+third_party/vulkan/** text eol=lf
