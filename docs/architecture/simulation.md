@@ -58,9 +58,12 @@ Local and AI-only games omit map-cell sweeps. Remote sessions sample the capture
 subset of the original map checksum at absolute simulation ticks divisible by
 32: terrain, resources and stock, building/ground/air occupancy and forbidden/farm
 masks. Live games and replay loading derive this policy from the same recorded
-player types; AI-only turn sessions omit map sweeps. Persistent
-map-only divergence can remain undetected for up to 31 ticks; transient changes
-may escape. Visibility, fertility and guard/clear masks are not added to routine
+player types; AI-only turn sessions omit map sweeps. Map sampling can lag a change
+by up to 31 simulation ticks, but network detection also depends on report cadence.
+With continuous advancement and the default 25-turn report interval, map samples
+are reported every 800 turns (the common multiple of 32 and 25); pauses change
+that alignment. Transient changes may escape. Visibility, fertility and guard/clear
+masks are not added to routine
 coverage. Scripts, world RNG, scheduling and uncaptured bookkeeping also remain
 outside it. Explicit `Game::checkSum(..., heavy=true)` retains the existing deep
 live-world diagnostic, including the statistics/RNG word mixer.

@@ -479,6 +479,13 @@ are excluded. No map hash tree, canonical packing buffer or configuration digest
 cache is maintained. Completed jobs release their snapshot leases immediately;
 this adds no snapshot capture payload.
 
+Sampling cadence is not a bound on remote detection latency. Network reports use
+only their source turn's checksum. At the default 25-turn report interval and
+with continuous simulation advancement, reports include a map sweep every 800
+turns, the common multiple of 25 and 32. Pauses change the relationship between
+source turns and simulation ticks. Delivery delay and network arbitration add
+latency after a sampled result; transient map differences can escape entirely.
+
 The routine tier deliberately omits live relationships beyond captured counts
 and attachment/target presence, extra entity fields not covered by the original
 selection, scripts, world RNG, projectiles, uncaptured team bookkeeping, authored
