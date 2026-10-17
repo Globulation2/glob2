@@ -53,7 +53,8 @@ struct GradientRuntime
 	// Scheduled building fields share the executor with the periodic pipeline.
 	// Drain it before teams and the gradient buffer pool are destroyed.
 	BuildingGradientJobPipeline buildings;
-	// A refresh asked for during team stepping, admitted FIFO after the tick.
+	// A refresh asked for during team stepping, admitted FIFO within each team
+	// at the next observation, up to four per team.
 	// stale requests were superseded while queued; they stay in place so queue
 	// length (and with it the overflow fallback) survives save and load.
 	struct BuildingRequest

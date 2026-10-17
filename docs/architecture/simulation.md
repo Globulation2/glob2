@@ -452,21 +452,27 @@ checksum adapter retains its historical entity/RNG representation for fixtures.
   errors survive executor batch retirement and surface at save/publication.
 - Stale building walking fields are refreshed by `BuildingGradientPipeline`
   (`src/map/gradient/`, `MapGradientScheduling.cpp`). Team stepping requests a
-  refresh and keeps serving the old field; at the next observation up to four requests are
-  staged from the shared handle with the periodic job, built on
-  workers and published `buildingGradientDelay` ticks later (the match rule, 1–8,
-  default 8), before team stepping. Publication swaps the field and its search on
-  the owner; it is discarded if a synchronous rebuild or a reset superseded it.
+  refresh and keeps serving the old field; at the next observation up to four
+  requests per team are staged from the shared handle with the periodic job,
+  built on workers and published `buildingGradientDelay` ticks later (the match rule, 1–8,
+  default 8), before team stepping. Teams cannot borrow unused quotas; a team
+  at its quota does not block other teams, and each team retains FIFO request
+  order. Queueing can add to the publication delay during bursts. Publication
+  swaps the field and its search on the owner; it is discarded if a synchronous rebuild or a reset superseded it.
   Access metadata (`locked`, and a clearing flag's `anyResourceToClear`) follows
-  the newest capture, so it, and the AI's view of it, may lag up to the delay. Team-wide resets and forbidden-area paints keep the old
-  walking fields serving until the refresh publishes, so units may follow a
-  pre-edit field for up to the delay. Fields a building has never had (or lost to
+  the newest capture and shares its publication delay. Team-wide resets and
+  forbidden-area paints keep old walking fields serving while requests wait for
+  admission and publication, so units can continue following pre-edit fields.
+  Fields a building has never had (or lost to
   idle eviction or its own move, type or range change), queue overflow (more than
   64 waiting requests) and maps without a game build synchronously.
   `Map::predictBuildingDepth` reads the production
   [depth model](../ai/architecture/building-gradient-depth-model.md) from the field's own past
-  reader demand (its serving search's required cost and `settledCostHint`). It only moves
-  search work between worker and owner. Experimental depth overrides are retired.
+  reader demand (its serving search's required cost and `settledCostHint`). It only
+  moves search work between worker and owner. Experimental depth overrides are
+  retired. Format 168 widens pending building-job counts to 16 bits; older save
+  counts remain readable, and save/load preserves pending deadlines and per-team
+  limits.
 - The executor ring holds 79 batches: each deferred producer holds at most its
   horizon plus one (AI decisions 8, periodic gradients 16, building gradients 8, resource growth 16,
   team statistics 8, turret shortlist jobs 4),
