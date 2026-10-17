@@ -106,7 +106,7 @@ bool Unit::tryClaimClearingAreaForHarvesting()
 				int y = (posY + tdy) & map->hMask;
 				const size_t index = (y << map->wDec) + x;
 				if (map->isClearingTarget(index, owner->me, farmAreas)
-					&& !(map->areaState()[index].forbidden & owner->me))
+					&& (performance[FLY] || !(map->areaState()[index].forbidden & owner->me)))
 				{
 					owner->map->setClearingAreaClaimed(posX+tdx, posY+tdy, owner->teamNumber, gid);
 					previousClearingArea = ClearingAreaClaim{
@@ -305,7 +305,7 @@ void Unit::handleMovementAttackingAround()
 				return owner->map->isGuardArea(x, y, owner->me);
 			return owner->map->getGuardAreasGradient(owner->teamNumber, movementClass())[owner->map->coordToIndex(x, y)] == GRADIENT_AT_GOAL;
 		};
-		if (!attachedBuilding && performance[FLY] && !owner->map->hasAirRoutingConstraints(owner->me)
+		if (!attachedBuilding && performance[FLY] && !owner->map->hasAirRoutingConstraints()
             && !balancing && !insideGuardArea(posX,posY)) {
             const auto* field=owner->map->getGuardAreasGradient(owner->teamNumber,AIR_MOVEMENT_CLASS);
             Sint32 goalX=0,goalY=0;
@@ -435,7 +435,7 @@ void Unit::handleMovementClearingResources()
 		{
 			int x=posX+tdx;
 			int y=posY+tdy;
-			if (map->warpDistSquare(x, y, bx, by)<=usr2 && map->isClearableResourceForMaterials(x, y, attachedBuilding->clearingMaterialMask) && !(owner->map->isForbidden(x, y, owner->me)))
+			if (map->warpDistSquare(x, y, bx, by)<=usr2 && map->isClearableResourceForMaterials(x, y, attachedBuilding->clearingMaterialMask) && (performance[FLY] || !map->isForbidden(x, y, owner->me)))
 			{
 				dx=tdx;
 				dy=tdy;
@@ -445,7 +445,7 @@ void Unit::handleMovementClearingResources()
 		}
 
 	assert(attachedBuilding);
-    if (performance[FLY] && !map->hasAirRoutingConstraints(owner->me)) {
+    if (performance[FLY] && !map->hasAirRoutingConstraints()) {
         bool source=validTarget() && map->warpDistSquare(targetX,targetY,bx,by)<=usr2
             && map->isClearableResourceForMaterials(targetX,targetY,attachedBuilding->clearingMaterialMask);
         if (!source) {
@@ -484,7 +484,7 @@ void Unit::handleMovementRandom()
 		movement=MOV_ATTACKING_TARGET;
 	}
 
-	else if (map->getForbidden(posX, posY)&owner->me)
+	else if (!performance[FLY] && (map->getForbidden(posX, posY)&owner->me))
 	{
 		if (findDisplacement([&](int* pathDx, int* pathDy) { return map->pathfindForbidden(NULL, owner->teamNumber, movementClass(), posX, posY, pathDx, pathDy); }))
 			directionFromDxDy();
@@ -519,7 +519,7 @@ void Unit::handleMovementRandom()
 			{
 				dx=0;
 				dy=0;
-                const bool direct=performance[FLY] && !map->hasAirRoutingConstraints(owner->me);
+                const bool direct=performance[FLY] && !map->hasAirRoutingConstraints();
                 if (!direct)
                     findDisplacement([&](int* pathDx, int* pathDy) { return owner->map->pathfindArea(entityRandom, Map::AreaKind::Clear, owner->teamNumber, movementClass(), posX, posY, pathDx, pathDy); });
 
@@ -572,7 +572,7 @@ void Unit::handleMovementGoingToFlagOrBuilding()
 		movement=MOV_ATTACKING_TARGET;
 	}
 
-	else if (performance[FLY] && !map->hasAirRoutingConstraints(owner->me))
+	else if (performance[FLY] && !map->hasAirRoutingConstraints())
     {
         movement=MOV_FLYING_TARGET;
     }
@@ -627,7 +627,7 @@ void Unit::handleMovementGoingToResource()
 {
 	Map *map=owner->map;
 
-	if (performance[FLY] && !map->hasAirRoutingConstraints(owner->me)) {
+	if (performance[FLY] && !map->hasAirRoutingConstraints()) {
         // Reuse the shared destination query only when the old source expires;
         // ordinary travel neither follows nor refreshes a movement field.
         const auto sourceAvailable=[&] {

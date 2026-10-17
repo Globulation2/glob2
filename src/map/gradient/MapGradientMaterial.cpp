@@ -112,7 +112,7 @@ void Map::seedMaterialGradientWithSuppliers(int teamNumber, Uint8 resourceType, 
 				for (int x=0; x<supplier->type->width; ++x)
 				{
 					const size_t i = coordToIndex(supplier->posX+x, supplier->posY+y);
-					if (!(areas[i].forbidden & teamMask) && occupancy[i].immobileUnit == IMMOBILE_UNIT_NONE)
+					if (swimClass==AIR_MOVEMENT_CLASS || (!(areas[i].forbidden & teamMask) && occupancy[i].immobileUnit == IMMOBILE_UNIT_NONE))
 						gradient[i] = std::max(gradient[i], seed);
 				}
 		});

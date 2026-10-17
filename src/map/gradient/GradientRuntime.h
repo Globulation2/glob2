@@ -34,7 +34,6 @@ struct GradientRuntime
     // Owner-only derived summary, invalidated alongside air safety on edits,
     // catalog replacement and loading. Never depends on query order.
     struct DirectFlight {
-        Uint32 forbiddenTeams = 0;
         bool resourceBlockers = false, valid = false;
     } directFlight;
 	struct MaterialField

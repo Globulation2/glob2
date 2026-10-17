@@ -3373,7 +3373,7 @@ TEST_CASE("ordinary flyers retain angular steering and local avoidance without m
         if (blocked>=1) REQUIRE(world.addUnit(EXPLORER,9,8));
         if (blocked>=2) REQUIRE(world.addUnit(EXPLORER,9,9));
         const auto random=flyer->entityRandom;
-        REQUIRE_FALSE(map.hasAirRoutingConstraints(flyer->owner->me));
+        REQUIRE_FALSE(map.hasAirRoutingConstraints());
         const int slot=inn->routeSlot(AIR_MOVEMENT_CLASS,BuildingRoute::Footprint);
         CHECK(inn->globalGradient[slot]==nullptr);
         flyer->handleMovementGoingToFlagOrBuilding();
@@ -3408,29 +3408,29 @@ TEST_CASE("direct flight handles wrapped bearings arrival and fully occupied air
     }
 }
 
-TEST_CASE("air navigation switches after team paint terrain resource catalog and load changes" * doctest::test_suite("UnitCustomization"))
+TEST_CASE("air navigation ignores team paint and switches after terrain resource catalog and load changes" * doctest::test_suite("UnitCustomization"))
 {
     glob2test::HeadlessGlobals globals;
     glob2test::HeadlessGame world({.teams=2,.discovered=true,.clearImmobile=true,.loadDefaultRace=true,.header=true});
     auto& map=world.game.map;
-    CHECK_FALSE(map.hasAirRoutingConstraints(1));
+    CHECK_FALSE(map.hasAirRoutingConstraints());
     map.addForbidden(12,12,1);
-    CHECK_FALSE(map.hasAirRoutingConstraints(1)); CHECK(map.hasAirRoutingConstraints(2));
-    map.addForbidden(12,12,1); // Duplicate paint must remain constrained.
+    CHECK_FALSE(map.hasAirRoutingConstraints());
+    map.addForbidden(12,12,1); // Neither team paint nor duplicate orders constrain air.
     map.removeForbidden(12,12,1);
-    CHECK_FALSE(map.hasAirRoutingConstraints(2));
-    map.paintCell(12,12,VOID_HOLE); CHECK(map.hasAirRoutingConstraints(1));
-    map.paintCell(12,12,GRASS); CHECK_FALSE(map.hasAirRoutingConstraints(1));
+    CHECK_FALSE(map.hasAirRoutingConstraints());
+    map.paintCell(12,12,VOID_HOLE); CHECK(map.hasAirRoutingConstraints());
+    map.paintCell(12,12,GRASS); CHECK_FALSE(map.hasAirRoutingConstraints());
     using Json=nlohmann::json;
     auto blocker=Json::parse(map.resourceRegistry().serialize())["resources"][1];
     blocker["key"]="test:direct-air-wall";
     blocker["properties"]["blocksAir"]=true;
     blocker["properties"]["blocksGround"]=false;
     map.installResourceDefinitions(Json{{"schemaVersion",1},{"resources",Json::array({blocker})}}.dump());
-    CHECK_FALSE(map.hasAirRoutingConstraints(1));
+    CHECK_FALSE(map.hasAirRoutingConstraints());
     const auto id=*map.resourceRegistry().find("test:direct-air-wall");
     map.setResourceByIndex(12,12,resourceIndex(id),1);
-    CHECK(map.hasAirRoutingConstraints(1)); CHECK(map.hasAirRoutingConstraints(2));
+    CHECK(map.hasAirRoutingConstraints());
     auto* bytes=new GAGCore::MemoryStreamBackend;
     GAGCore::BinaryOutputStream output(bytes);
     world.gui.save(&output,"air policy cache is derived");
@@ -3438,21 +3438,21 @@ TEST_CASE("air navigation switches after team paint terrain resource catalog and
     GameGUI loaded(false);
     GAGCore::BinaryInputStream input(new GAGCore::MemoryStreamBackend(saved.data(),saved.size()));
     input.seekFromStart(0); REQUIRE(loaded.game.load(&input));
-    CHECK(loaded.game.map.hasAirRoutingConstraints(1));
+    CHECK(loaded.game.map.hasAirRoutingConstraints());
     loaded.game.map.replaceResource(12,12,Resource{});
-    CHECK_FALSE(loaded.game.map.hasAirRoutingConstraints(1));
+    CHECK_FALSE(loaded.game.map.hasAirRoutingConstraints());
     map.replaceResource(12,12,Resource{});
-    CHECK_FALSE(map.hasAirRoutingConstraints(1));
+    CHECK_FALSE(map.hasAirRoutingConstraints());
     map.addForbidden(12,12,0);
-    CHECK(map.hasAirRoutingConstraints(1));
-    // Bulk tile edits must invalidate the same summary as paint orders.
+    CHECK_FALSE(map.hasAirRoutingConstraints());
+    // Bulk paint edits also leave air eligibility unchanged.
     auto tile=map.getTile(12,12); tile.forbidden=0; map.replaceTile(map.coordToIndex(12,12),tile);
-    CHECK_FALSE(map.hasAirRoutingConstraints(1));
+    CHECK_FALSE(map.hasAirRoutingConstraints());
     map.setResourceByIndex(12,12,resourceIndex(id),1);
-    CHECK(map.hasAirRoutingConstraints(1));
+    CHECK(map.hasAirRoutingConstraints());
     blocker["properties"]["blocksAir"]=false;
     map.installResourceDefinitions(Json{{"schemaVersion",1},{"resources",Json::array({blocker})}}.dump());
-    CHECK_FALSE(map.hasAirRoutingConstraints(1));
+    CHECK_FALSE(map.hasAirRoutingConstraints());
 }
 
 TEST_CASE("flying carriers steer directly between shared destination queries" * doctest::test_suite("UnitCustomization"))
@@ -3481,9 +3481,9 @@ TEST_CASE("flying carriers steer directly between shared destination queries" * 
     REQUIRE(flyer->movement==Unit::MOV_FLYING_TARGET);
     CHECK(flyer->targetX==18); CHECK(flyer->targetY==9);
     map.addForbidden(15,15,0);
-    REQUIRE(map.hasAirRoutingConstraints(flyer->owner->me));
+    REQUIRE_FALSE(map.hasAirRoutingConstraints());
     flyer->handleMovementGoingToResource();
-    CHECK(flyer->movement!=Unit::MOV_FLYING_TARGET);
+    CHECK(flyer->movement==Unit::MOV_FLYING_TARGET);
 }
 
 TEST_CASE("direct flying clearers retain shared goals and clearing claims" * doctest::test_suite("UnitCustomization"))
@@ -3517,7 +3517,7 @@ TEST_CASE("direct flying clearers retain shared goals and clearing claims" * doc
     }
 }
 
-TEST_CASE("legacy flying targets switch to the common router when forbidden paint appears" * doctest::test_suite("UnitCustomization"))
+TEST_CASE("legacy flying targets retain direct angular steering through forbidden paint" * doctest::test_suite("UnitCustomization"))
 {
     glob2test::HeadlessGlobals globals;
     glob2test::HeadlessGame world({.discovered=true,.clearImmobile=true,.loadDefaultRace=true,.header=true});
@@ -3525,15 +3525,15 @@ TEST_CASE("legacy flying targets switch to the common router when forbidden pain
     auto* flyer=world.addUnit(EXPLORER,8,8); REQUIRE(flyer);
     flyer->movement=Unit::MOV_FLYING_TARGET;
     flyer->targetX=20; flyer->targetY=12;
-    REQUIRE_FALSE(map.hasAirRoutingConstraints(flyer->owner->me));
+    REQUIRE_FALSE(map.hasAirRoutingConstraints());
     for (int y=0;y<map.getH();++y) {
         if (y!=20) map.addForbidden(9,y,0);
         map.addForbidden(24,y,0);
     }
-    REQUIRE(map.hasAirRoutingConstraints(flyer->owner->me));
+    REQUIRE_FALSE(map.hasAirRoutingConstraints());
     flyer->handleAction();
-    CHECK(flyer->dx==0); CHECK(flyer->dy!=0);
-    CHECK_FALSE(map.isForbidden(flyer->posX,flyer->posY,flyer->owner->me));
+    CHECK(flyer->dx==1); CHECK(flyer->dy==0);
+    CHECK(map.isForbidden(flyer->posX,flyer->posY,flyer->owner->me));
     CHECK(map.getAirUnit(flyer->posX,flyer->posY)==flyer->gid);
 }
 
@@ -3558,7 +3558,10 @@ TEST_CASE("ordinary flying couriers export a deterministic direct flight setup [
         }
         inn->updateCallLists();
     }
-    REQUIRE_FALSE(game.map.hasAirRoutingConstraints(1));
+    // Paint across the wrapped flight path: saves and all worker counts must
+    // preserve direct flight even with ordinary AI-style forbidden zones.
+    for(int y=0;y<game.map.getH();++y)game.map.addForbidden(0,y,0);
+    REQUIRE_FALSE(game.map.hasAirRoutingConstraints());
     auto* bytes=new GAGCore::MemoryStreamBackend;
     GAGCore::BinaryOutputStream output(bytes);
     world.gui.save(&output,"ordinary direct flight couriers");
@@ -3598,7 +3601,7 @@ TEST_CASE("direct flying carriers retain priced overlay and direct stock destina
         flyer->subscriptionSuccess(consumer,false,false,UnitJobPurpose::Transport);
         consumer->unitsWorking.push_back(flyer);
         flyer->setValidTarget(false);
-        REQUIRE_FALSE(map.hasAirRoutingConstraints(1));
+        REQUIRE_FALSE(map.hasAirRoutingConstraints());
         REQUIRE(map.getBuilding(18,12)==NOGBID);
         flyer->handleMovementGoingToResource();
         REQUIRE(flyer->movement==Unit::MOV_FLYING_TARGET);
@@ -3621,4 +3624,22 @@ TEST_CASE("empty direct flight guard queries preserve invalid target coordinates
     CHECK(flyer->movement==Unit::MOV_RANDOM_FLY);
     CHECK_FALSE(flyer->validTarget());
     CHECK(flyer->targetX==3); CHECK(flyer->targetY==5);
+}
+
+TEST_CASE("idle flyers wander inside forbidden paint instead of requesting ground escape" * doctest::test_suite("UnitCustomization"))
+{
+    glob2test::HeadlessGlobals globals;
+    glob2test::HeadlessGame world({.discovered=true,.clearImmobile=true,.loadDefaultRace=true,.header=true});
+    auto& map=world.game.map;
+    auto* flyer=world.addUnit(EXPLORER,8,8);REQUIRE(flyer);
+    for(int y=0;y<map.getH();++y) for(int x=0;x<map.getW();++x)map.addForbidden(x,y,0);
+    flyer->handleMovementRandom();
+    CHECK(flyer->movement==Unit::MOV_RANDOM_FLY);
+    CHECK(map.forbiddenGradient[0][AIR_MOVEMENT_CLASS]==nullptr);
+    const auto random=flyer->entityRandom;
+    flyer->handleActionRandomFly();
+    CHECK_FALSE(flyer->entityRandom==random);
+    CHECK(map.isForbidden(flyer->posX,flyer->posY,flyer->owner->me));
+    CHECK(map.getAirUnit(flyer->posX,flyer->posY)==flyer->gid);
+    CHECK(map.forbiddenGradient[0][AIR_MOVEMENT_CLASS]==nullptr);
 }

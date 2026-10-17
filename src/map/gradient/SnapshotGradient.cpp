@@ -155,7 +155,8 @@ bool MaterialSeedCache::trySeed(const SimulationSnapshot::Handle& snapshot, int 
         if (!view.resourceProperties(view.resources[i].resource.type).visibleToHarvest || (snapshot.visibility->visible[i]&mask))
             output[i]=GRADIENT_AT_GOAL;
     });
-    visitSeedBits(forbidden[team],[&](size_t i) { output[i]=GRADIENT_FORBIDDEN; });
+    if(swim!=AIR_MOVEMENT_CLASS)
+        visitSeedBits(forbidden[team],[&](size_t i) { output[i]=GRADIENT_FORBIDDEN; });
     return true;
 }
 
@@ -246,7 +247,7 @@ void seed(const Request& request, const SimulationSnapshot::Handle& snapshot, Ui
             for (int y=0; y<type.height; ++y) for (int x=0; x<type.width; ++x)
             {
                 const auto i = view.index(b.posX+x, b.posY+y);
-                if (!(view.areas[i].forbidden & mask) && view.occupancy[i].immobileUnit == IMMOBILE_UNIT_NONE)
+                if (request.swim==AIR_MOVEMENT_CLASS || (!(view.areas[i].forbidden & mask) && view.occupancy[i].immobileUnit == IMMOBILE_UNIT_NONE))
                     out[i] = std::max(out[i], value);
             }
         }

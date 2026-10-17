@@ -74,7 +74,7 @@ void Unit::handleActionRandomFly()
 {
 	assert(performance[FLY]);
 	clearOccupiedMapSlot();
-	if (owner->map->terrainPropertiesAt(posX,posY).airHealthQ8 < 0 || owner->map->isForbidden(posX,posY,owner->me))
+	if (owner->map->terrainPropertiesAt(posX,posY).airHealthQ8 < 0)
 		owner->map->pathfindTerrainSafety(this);
 	else
 	{
@@ -103,7 +103,7 @@ void Unit::handleActionRandomFly()
 void Unit::handleActionGoingTarget()
 {
 	clearOccupiedMapSlot();
-    if (performance[FLY] && !owner->map->hasAirRoutingConstraints(owner->me))
+    if (performance[FLY] && !owner->map->hasAirRoutingConstraints())
         flyToTarget();
     else
         findDisplacement([&](int* pathDx, int* pathDy) { return owner->map->pathfindPointToPoint(posX, posY, targetX, targetY, pathDx, pathDy, movementClass(), owner->me, performance[FLY] ? Map::GRADIENT_COST_LIMIT/GRADIENT_STEP : GOING_TARGET_MAX_PATH_LENGTH); });

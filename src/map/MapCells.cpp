@@ -5,13 +5,13 @@
 void Map::resourceSeedChanged(size_t index, unsigned flags)
 {
 	gradientRuntime->resourceSeeds.changed(index, flags);
-    if (flags & (ResourceSeedCache::Terrain | ResourceSeedCache::Forbidden))
+    if (flags & ResourceSeedCache::Terrain)
         gradientRuntime->directFlight.valid = false;
 	// Material availability is not a movement obstacle. Resource replacements
     // invalidate below only when their blocking properties actually change.
     gradientRuntime->safety.invalidate(
         flags & (ResourceSeedCache::Terrain | ResourceSeedCache::Building | ResourceSeedCache::Forbidden),
-        flags & (ResourceSeedCache::Terrain | ResourceSeedCache::Forbidden));
+        flags & ResourceSeedCache::Terrain);
 }
 
 void Map::invalidateResourceSeeds()
@@ -113,18 +113,16 @@ void Map::setBuilding(int x, int y, int width, int height, Uint16 building)
 
 // Recompute only after a navigation constraint changes, not per flyer or tick.
 // This cache is derived entirely from saved map state and is never serialized.
-bool Map::hasAirRoutingConstraints(Uint32 teamMask) const
+bool Map::hasAirRoutingConstraints() const
 {
     if (hasAirTerrainConstraints()) return true;
     auto& cached = gradientRuntime->directFlight;
     if (!cached.valid) {
-        cached.forbiddenTeams = 0;
         cached.resourceBlockers = false;
         for (size_t i = 0; i < size; ++i) {
-            cached.forbiddenTeams |= areaCells[i].forbidden;
             cached.resourceBlockers |= resourceBlocksAir(i);
         }
         cached.valid = true;
     }
-    return cached.resourceBlockers || (cached.forbiddenTeams & teamMask);
+    return cached.resourceBlockers;
 }

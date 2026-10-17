@@ -1607,7 +1607,7 @@ TEST_CASE("air shares preparation and lazy building fields while ignoring ground
     map.setResourceByIndex(10,10,WHEAT,1);
     map.setResourceByIndex(11,10,WOOD,1);
     map.markImmobileUnit(10,10,0);
-    map.addForbidden(12,10,0);
+    map.addForbidden(12,8,0); // Keep this paint probe clear of the void tile's blended edges.
     map.paintCell(13,10,VOID_HOLE);
     for(auto kind:{gradient_preparation::Kind::Materials,gradient_preparation::Kind::Clear,gradient_preparation::Kind::Guard}) {
         using namespace gradient_preparation;
@@ -1625,7 +1625,7 @@ TEST_CASE("air shares preparation and lazy building fields while ignoring ground
             CHECK(owner[map.coordToIndex(10,10)]==GRADIENT_AT_GOAL);
             CHECK(owner[map.coordToIndex(11,10)]==GRADIENT_UNREACHABLE);
             CHECK(owner[map.coordToIndex(8,8)]==GRADIENT_UNREACHABLE);
-            CHECK(owner[map.coordToIndex(12,10)]==GRADIENT_FORBIDDEN);
+            CHECK(owner[map.coordToIndex(12,8)]==GRADIENT_UNREACHABLE);
             CHECK(owner[map.coordToIndex(13,10)]==GRADIENT_FORBIDDEN);
             // Both template caches must preserve the air plane's independent
             // goal membership when an immobile ground unit occupies a deposit.
@@ -1676,7 +1676,7 @@ TEST_CASE("air material planes and cache keys occupy an independent namespace" *
     CHECK(std::all_of(seen.begin(),seen.end(),[](bool v){return v;}));
 }
 
-TEST_CASE("authored air blockers and forbidden paint constrain the common point router" * doctest::test_suite("GradientPreparation"))
+TEST_CASE("authored air blockers constrain the common point router while forbidden paint only blocks ground" * doctest::test_suite("GradientPreparation"))
 {
     glob2test::HeadlessGlobals globals;
     glob2test::HeadlessGame world({.discovered=true,.clearImmobile=true,.header=true});
@@ -1701,7 +1701,10 @@ TEST_CASE("authored air blockers and forbidden paint constrain the common point 
     REQUIRE(map.pathfindPointToPoint(7,4,8,4,&dx,&dy,AIR_MOVEMENT_CLASS,1,1000));
     CHECK(dx==0);CHECK(dy==0);
     map.addForbidden(8,20,0);
-    CHECK_FALSE(map.pathfindPointToPoint(4,4,12,4,&dx,&dy,AIR_MOVEMENT_CLASS,1,1000));
+    CHECK(map.pathfindPointToPoint(4,4,12,4,&dx,&dy,AIR_MOVEMENT_CLASS,1,1000));
+    CHECK(dy!=0);
+    for(int y=0;y<map.getH();++y) { map.addForbidden(6,y,0); map.addForbidden(24,y,0); }
+    CHECK_FALSE(map.pathfindPointToPoint(4,4,12,4,&dx,&dy,0,1,1000));
     CHECK(dx==0);CHECK(dy==0);
 }
 
@@ -1718,5 +1721,55 @@ TEST_CASE("unreleased routing draft formats are rejected before reading runtime 
         input.seekFromStart(0);
         MapHeader header;
         CHECK_FALSE(header.load(&input));
+    }
+}
+
+TEST_CASE("forbidden paint is ground-only for air material service guard and clearing queries" * doctest::test_suite("GradientPreparation"))
+{
+    glob2test::HeadlessGlobals globals;
+    for(bool constrained:{false,true}) {
+        CAPTURE(constrained);
+        glob2test::HeadlessGame world({.wDec=7,.hDec=7,.discovered=true,.clearImmobile=true,.header=true});
+        auto& game=world.game;auto& map=game.map;
+        auto* inn=world.addBuilding("inn",20,12);REQUIRE(inn);
+        auto* flag=world.addBuilding("explorationflag",20,20);REQUIRE(flag);
+        flag->unitStayRange=8;
+        map.setResourceByIndex(18,12,WHEAT,1);
+        map.setResourceByIndex(18,20,WOOD,1);map.addClearArea(18,20,0);
+        map.addGuardArea(18,16,0);
+        REQUIRE_FALSE(map.hasAirRoutingConstraints());
+        for(int y=0;y<map.getH();++y) for(int x=0;x<map.getW();++x) map.addForbidden(x,y,0);
+        CHECK_FALSE(map.hasAirRoutingConstraints());
+        if(constrained) map.paintCell(60,60,VOID_HOLE);
+        CHECK(map.hasAirRoutingConstraints()==constrained);
+        CHECK(map.isFreeForMovement(9,8,AIR_MOVEMENT_CLASS,1));
+        CHECK_FALSE(map.isFreeForMovement(9,8,0,1));
+        int distance=-1,dx=0,dy=0;
+        CHECK(map.buildingAvailable(inn,AIR_MOVEMENT_CLASS,8,8,&distance,BuildingRoute::Footprint));
+        CHECK(distance>0);
+        CHECK_FALSE(map.buildingAvailable(inn,0,8,8,&distance,BuildingRoute::Footprint));
+        CHECK(map.buildingAvailable(flag,AIR_MOVEMENT_CLASS,8,8,&distance,BuildingRoute::Clearing));
+        CHECK(map.materialAvailable(0,MaterialId::Food,AIR_MOVEMENT_CLASS,8,8));
+        CHECK_FALSE(map.materialAvailable(0,MaterialId::Food,0,8,8));
+        CHECK(map.getClearAreasGradient(0,AIR_MOVEMENT_CLASS)[map.coordToIndex(18,20)]==GRADIENT_AT_GOAL);
+        CHECK(map.getClearAreasGradient(0,0)[map.coordToIndex(18,20)]==GRADIENT_FORBIDDEN);
+        CHECK(map.getGuardAreasGradient(0,AIR_MOVEMENT_CLASS)[map.coordToIndex(18,16)]==GRADIENT_AT_GOAL);
+        CHECK(map.getGuardAreasGradient(0,0)[map.coordToIndex(18,16)]==GRADIENT_FORBIDDEN);
+        CHECK(map.pathfindPointToPoint(8,8,12,8,&dx,&dy,AIR_MOVEMENT_CLASS,1,100));
+        CHECK(dx==1);CHECK(dy==0);
+        CHECK_FALSE(map.pathfindPointToPoint(8,8,12,8,&dx,&dy,0,1,100));
+        // Warm both owner and immutable worker templates before repainting.
+        auto snapshot=SimulationSnapshot::capture(game,SimulationSnapshot::captureCatalog(game),SimulationSnapshot::Simulation);
+        gradient_preparation::MaterialSeedCache cache;
+        std::vector<Uint16> output(map.size);
+        REQUIRE(cache.trySeed(snapshot,0,WHEAT,AIR_MOVEMENT_CLASS,output.data(),nullptr));
+        CHECK(output[map.coordToIndex(18,12)]==GRADIENT_AT_GOAL);
+        map.removeForbidden(18,12,0);
+        snapshot=SimulationSnapshot::capture(game,SimulationSnapshot::captureCatalog(game),SimulationSnapshot::Simulation);
+        REQUIRE(cache.trySeed(snapshot,0,WHEAT,AIR_MOVEMENT_CLASS,output.data(),nullptr));
+        CHECK(output[map.coordToIndex(18,12)]==GRADIENT_AT_GOAL);
+        map.addForbidden(18,12,0);
+        map.updateMaterialGradient(0,WHEAT,AIR_MOVEMENT_CLASS,false);
+        CHECK(map.materialAvailable(0,MaterialId::Food,AIR_MOVEMENT_CLASS,8,8));
     }
 }

@@ -19,6 +19,7 @@ void materialCells(const MapState::View& view, const Uint32* fog, int team, int 
     int swim, Uint16* out, const Uint16* suppliers, Run run)
 {
     const Uint32 mask=Uint32(1)<<team;
+    const Uint32 forbiddenMask=swim==AIR_MOVEMENT_CLASS ? 0 : mask;
     const unsigned base=unsigned(team)*Building::MAX_COUNT;
     const MaterialMask requested=MaterialMask(1u<<material);
     withOpenTerrain(view,swim,[&](auto terrainAt) {
@@ -27,7 +28,7 @@ void materialCells(const MapState::View& view, const Uint32* fog, int team, int 
             for (size_t i=begin; i<end; ++i) {
                 const auto& cell=view.occupancy[i];
                 Uint16 value=GRADIENT_FORBIDDEN;
-                if (!(view.areas[i].forbidden&mask) && (swim==AIR_MOVEMENT_CLASS || cell.immobileUnit==IMMOBILE_UNIT_NONE)) {
+                if (!(view.areas[i].forbidden&forbiddenMask) && (swim==AIR_MOVEMENT_CLASS || cell.immobileUnit==IMMOBILE_UNIT_NONE)) {
                     const auto& deposit=view.resources[i].resource;
                     const auto* p=deposit.type==NO_RES_TYPE ? nullptr : &view.resourceProperties(deposit.type);
                     if constexpr (!std::remove_cvref_t<decltype(market)>::value) {
@@ -68,12 +69,13 @@ void clearCells(const MapState::View& view, bool farm, int team, int swim, Uint1
 {
     const auto& traits=view.resourceRegistry->gradientPreparation();
     const Uint32 mask=Uint32(1)<<team;
+    const Uint32 forbiddenMask=swim==AIR_MOVEMENT_CLASS ? 0 : mask;
     withOpenTerrain(view,swim,[&](auto terrainAt) {
     run([&](size_t begin, size_t end) {
         for (size_t i=begin; i<end; ++i) {
             Uint16 value=GRADIENT_FORBIDDEN;
             const auto& area=view.areas[i];
-            if (!(area.forbidden&mask)) {
+            if (!(area.forbidden&forbiddenMask)) {
                 const auto type=view.resources[i].resource.type;
                 const Uint32 flags=type==NO_RES_TYPE?0:traits[type];
                 const auto& cell=view.occupancy[i];
@@ -98,6 +100,7 @@ bool guardCells(const MapState::View& view, Uint32 allies, int team, int swim, U
     const auto& properties=view.resourceRegistry->propertyTable();
     for (size_t id=0; id<properties.size(); ++id) blocked[id]=(swim==AIR_MOVEMENT_CLASS ? properties[id].blocksAir : properties[id].blocksGround);
     const Uint32 mask=Uint32(1)<<team;
+    const Uint32 forbiddenMask=swim==AIR_MOVEMENT_CLASS ? 0 : mask;
     std::atomic<size_t> painted{0};
     withOpenTerrain(view,swim,[&](auto terrainAt) {
     run([&](size_t begin, size_t end) {
@@ -106,7 +109,7 @@ bool guardCells(const MapState::View& view, Uint32 allies, int team, int swim, U
             const auto& cell=view.occupancy[i];
             const auto resource=view.resources[i].resource.type;
             Uint16 value=GRADIENT_FORBIDDEN;
-            if (!(view.areas[i].forbidden&mask) && (swim==AIR_MOVEMENT_CLASS || cell.immobileUnit==IMMOBILE_UNIT_NONE)
+            if (!(view.areas[i].forbidden&forbiddenMask) && (swim==AIR_MOVEMENT_CLASS || cell.immobileUnit==IMMOBILE_UNIT_NONE)
                 && (resource==NO_RES_TYPE || !blocked[resource])
                 && ((swim==AIR_MOVEMENT_CLASS || cell.building==NOGBID) || !(allies&(Uint32(1)<<Building::GIDtoTeam(cell.building))))) {
                 if (terrainAt(i)!=GRADIENT_FORBIDDEN) value=(view.areas[i].guard&mask)?GRADIENT_AT_GOAL:GRADIENT_UNREACHABLE;
@@ -159,7 +162,7 @@ BuildingSeedResult buildingCellsForMovement(const MapState::View& view, const Bu
                 const auto& cell=view.occupancy[i];
                 if ((!air && cell.building!=NOGBID))
                     out[i]=cell.building==b.gid ? GRADIENT_AT_GOAL : GRADIENT_FORBIDDEN;
-                else if ((view.areas[i].forbidden&b.teamMask) || (air ? MapState::resourceBlocksAir(view,i) : MapState::resourceBlocksGround(view,i))
+                else if ((!air && (view.areas[i].forbidden&b.teamMask)) || (air ? MapState::resourceBlocksAir(view,i) : MapState::resourceBlocksGround(view,i))
                     || (!air && cell.immobileUnit!=IMMOBILE_UNIT_NONE) || closed(i))
                     out[i]=GRADIENT_FORBIDDEN;
                 else
@@ -216,7 +219,7 @@ BuildingSeedResult buildingCellsForMovement(const MapState::View& view, const Bu
             {
                 // Clearing goals stand on their resource, possibly in water.
                 const bool clearingGoal=clearing && out[i]==GRADIENT_AT_GOAL;
-                if ((view.areas[i].forbidden&b.teamMask)
+                if ((!air && (view.areas[i].forbidden&b.teamMask))
                     || ((air ? MapState::resourceBlocksAir(view,i) : MapState::resourceBlocksGround(view,i)) && !clearingGoal)
                     || (!air && cell.immobileUnit!=IMMOBILE_UNIT_NONE)
                     || (closed(i) && !clearingGoal))

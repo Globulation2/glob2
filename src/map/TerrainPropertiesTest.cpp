@@ -302,7 +302,8 @@ TEST_CASE("explorer flag eligibility applies route accessibility and hunger dist
     CHECK_EQ(distance,routeDistance*routeDistance);
     world.game.map.addForbidden(12,12,0);
     world.game.map.updateGlobalGradient(flag,AIR_MOVEMENT_CLASS,BuildingRoute::Combat);
-    CHECK_FALSE(flag->considerUnitForExplorerFlag(explorer,&distance,0));
+    CHECK(flag->considerUnitForExplorerFlag(explorer,&distance,0));
+    CHECK_EQ(distance,routeDistance*routeDistance);
 }
 
 TEST_CASE("projectile supercover tests intermediate cells corners and wrapped coordinates")
@@ -1281,7 +1282,7 @@ TEST_CASE("escape fields separate team permissions swimming and forbidden-area e
     REQUIRE(map.pathfindTerrainSafety(first));
     CHECK(first->dy!=0);
 }
-TEST_CASE("flyers share safety by team and obey forbidden paint while ignoring ground blockers")
+TEST_CASE("flyers share safety across teams and ignore forbidden paint and ground blockers")
 {
     glob2test::HeadlessGlobals globals;
     glob2test::HeadlessGame world({.teams=2,.loadDefaultRace=true,.header=true});
@@ -1296,17 +1297,17 @@ TEST_CASE("flyers share safety by team and obey forbidden paint while ignoring g
     REQUIRE(first); REQUIRE(other);
     REQUIRE(map.pathfindTerrainSafety(first));
     REQUIRE(map.pathfindTerrainSafety(other));
-    CHECK(map.gradientRuntime->safety.builds==2);
+    CHECK(map.gradientRuntime->safety.builds==1);
     map.setResourceByIndex(15,15,WOOD,1);
     map.setBuilding(15,16,1,1,0);
     REQUIRE(map.pathfindTerrainSafety(first));
-    CHECK(map.gradientRuntime->safety.builds==2);
+    CHECK(map.gradientRuntime->safety.builds==1);
     map.addForbidden(8,8,0);
     REQUIRE(map.pathfindTerrainSafety(first));
-    CHECK(map.gradientRuntime->safety.builds==3);
+    CHECK(map.gradientRuntime->safety.builds==1);
     map.paintCell(8,9,GRASS);
     REQUIRE(map.pathfindTerrainSafety(first));
-    CHECK(map.gradientRuntime->safety.builds==4);
+    CHECK(map.gradientRuntime->safety.builds==2);
     CHECK(first->dx==0); CHECK(first->dy==1);
 }
 }

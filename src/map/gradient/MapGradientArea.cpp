@@ -77,7 +77,7 @@ void Map::updateForbiddenGradient(int teamNumber, int swimClass)
 			gradient[i] = GRADIENT_FORBIDDEN;
 		else if(swimClass!=AIR_MOVEMENT_CLASS && occupancyCells[i].immobileUnit != IMMOBILE_UNIT_NONE)
 			gradient[i] = GRADIENT_FORBIDDEN;
-		else if (areaCells[i].forbidden&teamMask)
+		else if (swimClass!=AIR_MOVEMENT_CLASS && (areaCells[i].forbidden&teamMask))
 			gradient[i] = GRADIENT_UNREACHABLE;
 		else
 			gradient[i] = GRADIENT_AT_GOAL;

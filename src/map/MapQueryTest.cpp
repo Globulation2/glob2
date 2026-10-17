@@ -398,14 +398,14 @@ TEST_CASE("point routes prefer trails and reject impassable destination terrain"
     CHECK_FALSE(map.pathfindPointToPoint(1,3,5,3,&dx,&dy,3,1,1));
 }
 
-TEST_CASE("shared air point routing respects forbidden paint and escaping uses the air layer")
+TEST_CASE("shared air point routing ignores forbidden paint while respecting air occupancy")
 {
     GrassMap map;map.enableRouting();
     for(int y=0;y<8;++y) if(y!=5)map.setForbidden(2,y,1);
     int dx=0,dy=0;
     REQUIRE(map.pathfindPointToPoint(1,3,3,3,&dx,&dy,AIR_MOVEMENT_CLASS,1,100));
     CHECK(map.isFreeForMovement(1+dx,3+dy,AIR_MOVEMENT_CLASS,1));
-    CHECK_FALSE((dx==1 && dy==0));
+    CHECK(dx==1); CHECK(dy==0);
     map.setAirUnit(1+dx,3+dy,123);
     CHECK_FALSE(map.isFreeForMovement(1+dx,3+dy,AIR_MOVEMENT_CLASS,1));
 }

@@ -316,10 +316,11 @@ checksum adapter retains its historical entity/RNG representation for fixtures.
   Idle units on safe ground never wander onto damaging terrain. Idle units already
   exposed follow a lazily built shared reverse escape field, allowing hazardous
   intermediate steps. Ground fields are keyed by team, swim class and whether the
-  unit is escaping forbidden paint; the air movement class uses the same team and escape policy.
+  unit is escaping forbidden paint. Air safety fields ignore forbidden paint and
+  share across teams.
   Buildings, terrain and forbidden paint invalidate ground fields. Resource edits
   invalidate only the movement classes whose blocking properties changed; stock
-  changes alone do not. Air fields react to terrain, forbidden paint and air-blocking resources. Occupancy is checked at the next step and
+  changes alone do not. Air fields react to terrain and air-blocking resources. Occupancy is checked at the next step and
   does not invalidate either field. Unreachable results are cached too. The cache
   retains at most 64 MiB of 32-bit field cells (or one field on larger maps), evicting
   least-recently-used profiles; temporary propagation queues are additional memory.
@@ -336,14 +337,15 @@ checksum adapter retains its historical entity/RNG representation for fixtures.
   integer costs and scalar/SIMD/backend kernels. Flyable terrain and resource
   `blocksAir` determine access; buildings and ground occupancy do not obstruct air.
   Fields omit transient traffic, while stepping checks the air occupancy layer.
-  On maps without air terrain constraints, air-blocking resources or the team's
-  forbidden paint, flyers retain direct angular steering and local traffic
+  On maps without air terrain constraints or air-blocking resources, flyers
+  retain direct angular steering and local traffic
   avoidance. Shared queries still choose service, resource and clearing goals;
   ordinary building/resource travel does not follow a field at every step.
   A derived summary invalidated alongside air safety selects the policy again
   after edits or loading. Guard balancing retains its field-based steering.
-  Forbidden paint blocks routes and idle wandering; a unit already inside it
-  uses the common escape policy. Cold building queries initialize synchronously
+  Forbidden zones apply only to ground units: flyers ignore them in steering,
+  destination fields, clearing and hazard escape. Painting a forbidden zone does
+  not disable direct flight. Cold building queries initialize synchronously
   and expand lazily; warm refreshes use the existing fixed-deadline pipeline.
   Hiring borrows the same immutable building generations, and idle clearers use
   the existing claims and clearing fields. Constrained arbitrary targets use

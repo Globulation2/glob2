@@ -233,7 +233,7 @@ bool ResourceSeedCache::trySeed(const Map &map, int team, int resource, int swim
 	s.queue.clear();
 	std::memcpy(output, s.base[swim==AIR_MOVEMENT_CLASS?2:swim > 0].data(), cells * sizeof(*output));
 	const Uint32 mask = Team::teamNumberToMask(team);
-	// Goals override terrain/buildings, but not immobile units or forbidden paint.
+	// Ground goals still respect immobile units and forbidden paint.
 	// Fog, market stock and resource policy are live overlays, never cached.
 
 	if (supplierSeeds)
@@ -251,6 +251,7 @@ bool ResourceSeedCache::trySeed(const Map &map, int team, int resource, int swim
 		if (!map.resourceVisibleToHarvest(index) || (map.fogOfWar[index] & mask))
 			output[index] = GRADIENT_AT_GOAL;
 	});
-	visit(s.forbidden[team], [&](std::size_t index) { output[index] = GRADIENT_FORBIDDEN; });
+	if (swim!=AIR_MOVEMENT_CLASS)
+        visit(s.forbidden[team], [&](std::size_t index) { output[index] = GRADIENT_FORBIDDEN; });
 	return true;
 }
