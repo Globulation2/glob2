@@ -355,7 +355,8 @@ public:
 	Building *addBuilding(int x, int y, int typeNum, int teamNumber, Sint32 unitWorking = 1, Sint32 unitWorkingFuture = 1);
 	//! This remove anything at case(x, y), and return a rect which include every removed things.
 	bool removeUnitAndBuildingAndFlags(int x, int y, unsigned flags=DEL_UNIT|DEL_BUILDING|DEL_FLAG);
-	bool removeUnitAndBuildingAndFlags(int x, int y, int size, unsigned flags=DEL_UNIT|DEL_BUILDING|DEL_FLAG);
+	// Area calls must name their flags, so a three-argument enum cannot bind as a brush size.
+	bool removeUnitAndBuildingAndFlags(int x, int y, int size, unsigned flags);
 	//! Over the w*h tiles from (x, y), remove the buildings off grass and the ground units on water that cannot swim.
 	void removeUnallowedUnitsAndBuildings(int x, int y, int w, int h);
 	///A convenience function, returns a pointer to the unit with the guid, or NULL otherwise

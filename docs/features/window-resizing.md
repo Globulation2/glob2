@@ -111,8 +111,8 @@ The follow-up audit covers these drawing paths:
 
 Windowed/Fullscreen and F11 share a live desktop-fullscreen transition, retaining
 windowed dimensions and restoring state on failure. The transition waits for SDL to
-finish the fullscreen change and any restoration resize before reading dimensions
-and saving display preferences. Interface scale applies live
+finish the fullscreen change before requesting the restored client size, then
+waits for that resize before reading dimensions and saving display preferences. Interface scale applies live
 without recreating the window or graphics context. Renderer changes require restart.
 
 `GraphicContext` distinguishes window points, drawable pixels and logical layout.

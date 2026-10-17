@@ -157,6 +157,20 @@ class PolicyTest(unittest.TestCase):
         self.assertFalse(any('scripting' in r['name'] or 'WSS and simulation' in r['name'] for r in ui_rows))
         self.assertLess(len(ui_rows),len(json.loads((ROOT/'.github/scripts/ci_browser_matrix.json').read_text())))
 
+    def test_full_browser_jobs_select_all_required_catalog_producers(self):
+        import re
+        import shlex
+        rows = json.loads((ROOT / '.github/scripts/ci_browser_matrix.json').read_text())
+        for browser in ('firefox', 'webkit'):
+            row = next(row for row in rows if row['name'] == f'{browser} WSS and simulation')
+            pattern = next(arg.split('=', 1)[1] for arg in shlex.split(row['command'])
+                           if arg.startswith('--grep='))
+            for variant in ('serial', 'threaded'):
+                for selection in ('registry', 'composition', 'unit-registry', 'unit-composition'):
+                    title = f'WebAssembly preserves runtime catalog {selection} contracts ({variant})'
+                    with self.subTest(browser=browser, title=title):
+                        self.assertRegex(title, re.compile(pattern))
+
     def test_release_metadata_does_not_compile_engine(self):
         paths=['fdroid/metadata.yml','fastlane/metadata/title.txt','tools/package_steam_windows.py',
                '.github/workflows/steam-windows-package.yml','.github/workflows/mac-app-store.yml',
@@ -273,17 +287,39 @@ class ReuseTest(unittest.TestCase):
         self.assertEqual(metrics.compare([run]*10,[dict(run,inventory_fingerprint='b')]*10),[])
 
     def test_native_and_browser_evidence_must_include_every_selected_identity(self):
+        import ast
         import hashlib
+        import re
+        producer = (ROOT / 'browser/tests/determinism.spec.js').read_text()
+        variants = ast.literal_eval(re.search(
+            r'for \(const \[variant, threads\] of (\[.*?\])\) \{', producer).group(1))
+        self.assertEqual(tuple(map(tuple, variants)), evidence.BROWSER_TRACE_VARIANTS)
         with tempfile.TemporaryDirectory() as directory:
             root=Path(directory);trace=b'x'*1501
             for platform in ['ubuntu-24.04','windows']:
                 path=root/f'browser-determinism-{platform}'/'native.replay.checksums';path.parent.mkdir();path.write_bytes(trace)
-            for variant,threads in [('serial',1),('threaded',1),('threaded',2),('threaded',4)]:
+            for variant,threads in variants:
                 path=root/'browser-determinism-wasm-0'/'wasm'/f'{variant}-{threads}';path.mkdir(parents=True)
                 (path/'wasm.replay.checksums').write_bytes(trace)
                 (path/'manifest.json').write_text(json.dumps(dict(project='chromium',variant=variant,threads=threads,ticks=1500,seed=42,trace_sha256=hashlib.sha256(trace).hexdigest())))
-            self.assertEqual(evidence.validate_traces(root,['ubuntu-24.04','windows'],{'chromium'}),6)
+            self.assertEqual(evidence.validate_traces(root,['ubuntu-24.04','windows'],{'chromium'}),8)
             with self.assertRaises(ValueError):evidence.validate_traces(root,['ubuntu-24.04','windows'],{'chromium','firefox'})
+            for threads in (8, 'auto'):
+                path=root/'browser-determinism-wasm-0'/'wasm'/f'threaded-{threads}'
+                manifest=path/'manifest.json';saved=manifest.read_text();manifest.unlink()
+                with self.subTest(missing=threads), self.assertRaisesRegex(ValueError, 'Missing browser/thread traces'):
+                    evidence.validate_traces(root,['ubuntu-24.04','windows'],{'chromium'})
+                manifest.write_text(saved)
+                checksum=path/'wasm.replay.checksums';checksum.write_bytes(b'y'*1501)
+                with self.subTest(mismatch=threads), self.assertRaisesRegex(ValueError, 'Browser simulation differs'):
+                    evidence.validate_traces(root,['ubuntu-24.04','windows'],{'chromium'})
+                checksum.write_bytes(trace)
+            import shutil
+            duplicate=root/'browser-determinism-wasm-1'/'wasm'/'threaded-auto'
+            shutil.copytree(root/'browser-determinism-wasm-0'/'wasm'/'threaded-auto',duplicate)
+            with self.assertRaisesRegex(ValueError, 'Unexpected or repeated browser trace'):
+                evidence.validate_traces(root,['ubuntu-24.04','windows'],{'chromium'})
+            shutil.rmtree(duplicate.parents[1])
             (root/'browser-determinism-windows'/'native.replay.checksums').write_bytes(b'y'*1501)
             with self.assertRaises(ValueError):evidence.validate_traces(root,['ubuntu-24.04','windows'],{'chromium'})
 

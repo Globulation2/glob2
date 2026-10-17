@@ -10,7 +10,12 @@ async function resize(page,width,height,backingScale=1) {
   // Input and dimensions can work even when an offscreen surface is never presented.
   await expect.poll(() => require('./pixels').hasRenderedPixels(page)).toBe(true);
 }
-test.beforeEach(async ({page}) => { await page.goto(gameURL()); await screen(page,'MainMenuScreen'); });
+test.beforeEach(async ({page}) => {
+  await page.goto(gameURL());
+  await expect.poll(async () => (await snapshot(page)).screen).toMatch(/MainMenuScreen|HandPreferenceScreen/);
+  if ((await snapshot(page)).screen.includes('HandPreferenceScreen')) await clickControl(page,'hand.right');
+  await screen(page,'MainMenuScreen');
+});
 test('menus follow the viewport and keep their controls clickable', async ({page}) => {
   await resize(page,1280,720);
   await clickMainMenu(page,'settings'); await screen(page,'SettingsScreen');

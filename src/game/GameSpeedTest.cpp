@@ -33,11 +33,22 @@ struct TestSettingsScreen : SettingsScreen {
     int speedRow(int value) const { return value-Settings::GAME_SPEED_MINIMUM; }
 };
 
+struct PauseShortcut { SDL_Keycode key; SDL_WindowID window; };
+
+std::vector<SDL_Event> shortcutEvents(const PauseShortcut& shortcut) {
+    // Synthetic shortcuts include their focus precondition, independent of
+    // window-manager notifications queued during fixture initialization.
+    std::vector<SDL_Event> events(2);
+    events[0].type=SDL_EVENT_WINDOW_FOCUS_GAINED;
+    events[0].window.windowID=shortcut.window;
+    events[1].type=SDL_EVENT_KEY_DOWN;
+    events[1].key.windowID=shortcut.window;
+    events[1].key.key=shortcut.key;
+    return events;
+}
+
 static Uint32 SDLCALL resumeGame(void* data, SDL_TimerID, Uint32) {
-    SDL_Event event={};
-    event.type=SDL_EVENT_KEY_DOWN;
-    event.key.key=*static_cast<SDL_Keycode*>(data);
-    SDL_PushEvent(&event);
+    for(auto event:shortcutEvents(*static_cast<PauseShortcut*>(data))) SDL_PushEvent(&event);
     return 0;
 }
 
@@ -319,12 +330,36 @@ TEST_CASE("live engine speed; pause; hard pause and replay playback [display][wr
             settings.gameSpeed=10;
             Engine engine;
             REQUIRE(engine.initCampaign("maps/balanced.map")==Engine::EE_NO_ERROR);
-            resumeGame(&key,0,0);
-            const SDL_TimerID timer=SDL_AddTimer(240,resumeGame,&key);
-            REQUIRE(timer);
+            PauseShortcut shortcut{key,globalContainer->gfx->windowID()};
+            engine.prepareRun();
+            engine.beginSession(SDL_GetTicks());
+            // An uncapped producer can finish this 50-tick fixture before its
+            // first client frame. Apply the initial pause before starting it.
+            REQUIRE(engine.serialClientFrame(SDL_GetTicks(),shortcutEvents(shortcut),4));
+            REQUIRE(engine.presentationPaused());
+            const bool threaded=engine.startSimulationThread(SDL_GetTicks());
+            struct TimerScope {
+                SDL_TimerID id;
+                ~TimerScope() { if(id) SDL_RemoveTimer(id); }
+            };
+            // Include any scheduling delay after arming the resume callback.
             const Uint64 start=SDL_GetTicks();
-            engine.run();
-            SDL_RemoveTimer(timer);
+            TimerScope timer{SDL_AddTimer(240,resumeGame,&shortcut)};
+            REQUIRE(timer.id);
+            bool running=true;
+            while(running && SDL_GetTicks()-start<3000) {
+                std::vector<SDL_Event> events;
+                SDL_Event event;
+                while(SDL_PollEvent(&event)) events.push_back(event);
+                running=threaded ? engine.threadedClientFrame(SDL_GetTicks(),events)
+                    : engine.serialClientFrame(SDL_GetTicks(),events,4);
+                if(running && globalContainer->gfx->beginRenderFrame()) engine.drawSession();
+                SDL_Delay(1);
+            }
+            SDL_RemoveTimer(timer.id); timer.id=0;
+            REQUIRE_FALSE(running);
+            REQUIRE_FALSE(engine.finishSession());
+            engine.restoreCursor();
             const Uint64 elapsed=SDL_GetTicks()-start;
             std::cout<<"Pause key="<<key<<" elapsed="<<elapsed<<"ms"<<std::endl;
             REQUIRE_MESSAGE((elapsed>=200 && elapsed<3000),

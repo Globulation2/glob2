@@ -708,7 +708,7 @@ class MobileGalleryGameplay
 		globalContainer->replayWriter->init("", gui);
 		for (int tick = 0; tick < 4096; ++tick)
 		{
-			gui.game.syncStep(0);
+			gui.game.step(0);
 			globalContainer->replayWriter->advanceStep();
 		}
 		globalContainer->replayWriter->finish();

@@ -116,6 +116,8 @@ addToLibrary({
   glob2_surface_poll: () => Glob2SurfaceBridge.state,
   // Query the calling presentation realm, which may be the application worker.
   glob2_surface_webgpu_available: () => +Boolean(globalThis.navigator?.gpu),
+  // The startup choice belongs to the DOM realm, not the pthread's Module.
+  glob2_surface_startup_uses_gl__proxy: 'sync',
   glob2_surface_startup_uses_gl: () => +(Module.renderer === 'webgl2'),
   glob2_gl_override_texture_units__deps: ['$GL'],
   glob2_gl_override_texture_units: requested => {

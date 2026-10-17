@@ -35,9 +35,9 @@ module.exports.hasLightText = hasLightText;
 
 // Same idea for the redesigned Settings/CustomGame panels: dark text on a
 // pale paper background rather than light text on a dark overlay.
-async function hasDarkText(page, clip) {
+async function hasDarkText(page, clip, maximumChannel = 120) {
   const png = await page.screenshot({clip});
-  return page.evaluate(async base64 => {
+  return page.evaluate(async ({base64, maximumChannel}) => {
     const blob = await (await fetch('data:image/png;base64,' + base64)).blob();
     const bitmap = await createImageBitmap(blob);
     const canvas = document.createElement('canvas');
@@ -46,9 +46,9 @@ async function hasDarkText(page, clip) {
     const pixels = context.getImageData(0, 0, canvas.width, canvas.height).data;
     let dark = 0;
     for (let i = 0; i < pixels.length; i += 4)
-      if (pixels[i] < 120 && pixels[i+1] < 120 && pixels[i+2] < 120) ++dark;
+      if (pixels[i] < maximumChannel && pixels[i+1] < maximumChannel && pixels[i+2] < maximumChannel) ++dark;
     return dark > 50;
-  }, png.toString('base64'));
+  }, {base64: png.toString('base64'), maximumChannel});
 }
 module.exports.hasDarkText = hasDarkText;
 

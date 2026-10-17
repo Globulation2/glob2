@@ -2,22 +2,22 @@
   {
     "name": "chromium 1/5",
     "browsers": "chromium",
-    "command": "xvfb-run -a npx playwright test --project=chromium --shard=1/5 --grep-invert='torus\\.spec\\.js|rendering\\.spec\\.js|settings-storage\\.spec\\.js'"
+    "command": "xvfb-run -a npx playwright test --project=chromium --shard=1/5 --grep-invert='renderer-switching\\.spec\\.js|torus\\.spec\\.js|rendering\\.spec\\.js|settings-storage\\.spec\\.js'"
   },
   {
     "name": "chromium 2/5",
     "browsers": "chromium",
-    "command": "xvfb-run -a npx playwright test --project=chromium --shard=2/5 --grep-invert='torus\\.spec\\.js|rendering\\.spec\\.js|settings-storage\\.spec\\.js'"
+    "command": "xvfb-run -a npx playwright test --project=chromium --shard=2/5 --grep-invert='renderer-switching\\.spec\\.js|torus\\.spec\\.js|rendering\\.spec\\.js|settings-storage\\.spec\\.js'"
   },
   {
     "name": "chromium 3/5",
     "browsers": "chromium",
-    "command": "xvfb-run -a npx playwright test --project=chromium --shard=3/5 --grep-invert='torus\\.spec\\.js|rendering\\.spec\\.js|settings-storage\\.spec\\.js'"
+    "command": "xvfb-run -a npx playwright test --project=chromium --shard=3/5 --grep-invert='renderer-switching\\.spec\\.js|torus\\.spec\\.js|rendering\\.spec\\.js|settings-storage\\.spec\\.js'"
   },
   {
     "name": "chromium 4/5",
     "browsers": "chromium",
-    "command": "xvfb-run -a npx playwright test --project=chromium --shard=4/5 --grep-invert='torus\\.spec\\.js|rendering\\.spec\\.js|settings-storage\\.spec\\.js'"
+    "command": "xvfb-run -a npx playwright test --project=chromium --shard=4/5 --grep-invert='renderer-switching\\.spec\\.js|torus\\.spec\\.js|rendering\\.spec\\.js|settings-storage\\.spec\\.js'"
   },
   {
     "name": "chromium torus",
@@ -27,7 +27,7 @@
   {
     "name": "chromium 5/5",
     "browsers": "chromium",
-    "command": "xvfb-run -a npx playwright test --project=chromium --shard=5/5 --grep-invert='torus\\.spec\\.js|rendering\\.spec\\.js|settings-storage\\.spec\\.js'"
+    "command": "xvfb-run -a npx playwright test --project=chromium --shard=5/5 --grep-invert='renderer-switching\\.spec\\.js|torus\\.spec\\.js|rendering\\.spec\\.js|settings-storage\\.spec\\.js'"
   },
   {
     "name": "chromium webgl2 match reload",
@@ -92,12 +92,12 @@
   {
     "name": "firefox WSS and simulation",
     "browsers": "firefox",
-    "command": "GLOB2_FIREFOX_HEADED=1 xvfb-run -a npx playwright test determinism.spec.js --project=firefox --grep='WebAssembly produces|WebAssembly verifies|Markets V2|runtime resource'"
+    "command": "GLOB2_FIREFOX_HEADED=1 xvfb-run -a npx playwright test determinism.spec.js --project=firefox --grep='WebAssembly produces|WebAssembly verifies|Markets V2|runtime catalog'"
   },
   {
     "name": "webkit WSS and simulation",
     "browsers": "webkit",
-    "command": "xvfb-run -a npx playwright test determinism.spec.js --project=webkit --grep='WebAssembly produces|WebAssembly verifies|Markets V2|runtime resource'"
+    "command": "xvfb-run -a npx playwright test determinism.spec.js --project=webkit --grep='WebAssembly produces|WebAssembly verifies|Markets V2|runtime catalog'"
   },
   {
     "name": "firefox scripting",
@@ -125,5 +125,25 @@
     "name": "webkit replay import and reload",
     "browsers": "webkit",
     "command": "xvfb-run -a npx playwright test import.spec.js session-reload.spec.js --project=webkit --grep='imports a complete replay|an active replay'"
+  },
+  {
+    "name": "chromium serial renderer 1/3",
+    "browsers": "chromium",
+    "command": "xvfb-run -a npx playwright test renderer-switching.spec.js --project=chromium --grep='serial:' --fully-parallel --workers=1 --shard=1/3"
+  },
+  {
+    "name": "chromium serial renderer 2/3",
+    "browsers": "chromium",
+    "command": "xvfb-run -a npx playwright test renderer-switching.spec.js --project=chromium --grep='serial:' --fully-parallel --workers=1 --shard=2/3"
+  },
+  {
+    "name": "chromium serial renderer 3/3",
+    "browsers": "chromium",
+    "command": "xvfb-run -a npx playwright test renderer-switching.spec.js --project=chromium --grep='serial:' --fully-parallel --workers=1 --shard=3/3"
+  },
+  {
+    "name": "chromium threaded renderer",
+    "browsers": "chromium",
+    "command": "xvfb-run -a npx playwright test renderer-switching.spec.js --project=chromium --grep='threaded:' --workers=1"
   }
 ]

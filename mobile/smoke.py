@@ -23,6 +23,20 @@ def validate_target(serial, adb_port, avd):
         raise ValueError('Smoke checks require a task-owned Glob2 AVD')
 
 
+def wait_for_main_menu(run, logs, wait_for):
+    def ready_screen():
+        screens = re.findall(r'Glob2 screen ready: ([^\r\n]+)', logs())
+        return screens[-1] if screens else ''
+
+    wait_for(lambda: any(name in ready_screen() for name in ('HandPreferenceScreen', 'MainMenuScreen')),
+             'native startup and bundled assets')
+    if 'HandPreferenceScreen' in ready_screen():
+        # Select the first grip using the same focus/accept path as the menu.
+        run('shell', 'input', 'keyevent', 'KEYCODE_TAB')
+        run('shell', 'input', 'keyevent', 'KEYCODE_ENTER')
+    wait_for(lambda: 'MainMenuScreen' in ready_screen(), 'native main menu')
+
+
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--serial', required=True)
@@ -100,7 +114,7 @@ def main():
         run('shell', 'am', 'force-stop', package)
         run('logcat', '-c')
         start()
-        wait_for(lambda: 'Glob2 screen ready:' in logs() and 'MainMenuScreen' in logs(), 'native main menu and bundled assets')
+        wait_for_main_menu(run, logs, wait_for)
         wait_for(foreground, 'foreground activity')
         first_pid = pid()
         if not first_pid: raise RuntimeError('Native process is missing')
@@ -151,7 +165,7 @@ def main():
         run('shell', 'am', 'force-stop', package)
         run('logcat', '-c')
         start()
-        wait_for(lambda: 'Glob2 screen ready:' in logs() and 'MainMenuScreen' in logs(), 'fresh-process startup')
+        wait_for_main_menu(run, logs, wait_for)
         if not pid() or pid() == first_pid: raise RuntimeError('Force-stop did not produce a fresh process')
         screenshot('relaunched')
         summary['checks'].append('force-stop and fresh-process relaunch')

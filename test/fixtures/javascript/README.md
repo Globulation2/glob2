@@ -138,6 +138,13 @@ and the existing narrow MapHeader version/SHA1 adjustments remain unchanged.
 The header-prefix parser bounds every count and byte range through the player
 count. Format 153 adds unit definitions later in GameHeader; it adds no
 MapHeader metadata or player-count offset.
+The parser accepts headers through format 167 and includes the statistics-delay
+byte introduced in format 155. The current aggregate version adjustment includes
+both the unit-catalog and statistics checksum rotations; historical protocol
+checks retain their own rotation counts.
+The native frozen traces normalize the MapHeader format number to 125 after
+loading. Before exact comparison, the CLI checker adjusts only that version's
+aggregate contribution to the actual input header; entity bytes stay unchanged.
 
 Normal targeting uses the persisted L=3/R=2/K=1 pipeline from format 159,
 SIM_REVISION 49. Current runners select `profile1-initial159.game.gz` and

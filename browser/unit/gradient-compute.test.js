@@ -74,7 +74,7 @@ test('canceled execution destroys all buffers even when error-scope read rejects
   assert.equal(retired,1);assert.equal(destroyed,8);
 });
 
-test('late canceled completion retains timing storage until queue retirement',async()=>{
+test('canceled completion retains signal and buffers until queue retirement',async()=>{
   const f=fixture();let retire,destroyed=0;
   f.g.device={
     limits:{maxStorageBufferBindingSize:1024,maxComputeWorkgroupsPerDimension:1024},
@@ -84,10 +84,12 @@ test('late canceled completion retains timing storage until queue retirement',as
   };
   f.g.pipelines=[{getBindGroupLayout(){return{};}},{getBindGroupLayout(){return{};}}];
   f.heap[1]=1;
+  f.heap[4]=0x12345678; // Canary immediately after the four-word task signal.
   f.entries.glob2_gradient_execute(0,0,0,0,1,1,10,false);
   await Promise.resolve();
   assert.equal(f.heap[0],0);assert.equal(destroyed,0);
   retire();await new Promise(resolve=>setImmediate(resolve));
   assert.equal(f.heap[0],-2);assert.equal(destroyed,8);
-  assert.ok(f.heap[3]>0);assert.ok(f.heap[4]>0);
+  assert.equal(f.heap[2],0);assert.equal(f.heap[3],0); // Canceled before any dispatch.
+  assert.equal(f.heap[4],0x12345678);
 });

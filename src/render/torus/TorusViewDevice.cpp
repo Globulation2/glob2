@@ -37,7 +37,7 @@ struct TorusDeviceState
     int captureTeam = 0;
     unsigned captureOptions = 0;
     bool capturePaused = false;
-    bool advancePreviews = true;
+    bool advancePreviews = true, captureReady = false;
 };
 namespace
 {
@@ -325,7 +325,7 @@ bool TorusView::drawDevice(const PresentationFrame &frame, GameGUI *gui, int tea
         state.captureOptions = captureOptions;
         state.capturePaused = gui && gui->gamePaused;
         state.captureTile = 0; state.captureX = state.captureY = 0;
-        state.advancePreviews = true;
+        state.advancePreviews = true; state.captureReady = false;
         auto &captureRender = state.captureView.render;
         // prepareSceneMapFrame advances the frozen capture once. The source
         // phase already advanced for this host turn and keeps advancing on holds.
@@ -349,7 +349,7 @@ bool TorusView::drawDevice(const PresentationFrame &frame, GameGUI *gui, int tea
     // pixel/source limits; admission failure still yields without advancing them.
     constexpr unsigned regionsPerTurn = 4;
     const auto regionDeadline = SDL_GetTicksNS() + 4'000'000;
-    for (unsigned regionIndex=0;regionIndex<regionsPerTurn && state.captureTile<tiles.size();++regionIndex) {
+    for (unsigned regionIndex=0;!state.captureReady && regionIndex<regionsPerTurn && state.captureTile<tiles.size();++regionIndex) {
         const auto &tile = tiles[state.captureTile];
         const int captureW = tile.w + 64, captureH = tile.h + 64;
         // Bound each region to 1024 target pixels per axis. The whole-capture
@@ -404,7 +404,7 @@ bool TorusView::drawDevice(const PresentationFrame &frame, GameGUI *gui, int tea
     }
     // UI overlays are captured together after terrain/entity regions, so a
     // moving pointer or changed tool cannot leave different overlays in tiles.
-    if (gui) {
+    if (gui && !state.captureReady) {
         const auto *previousScene=gui->view.scene;
         std::swap(gui->view.render,state.captureView.render);
         gui->view.scene=state.captureFrame.get();
@@ -439,14 +439,16 @@ bool TorusView::drawDevice(const PresentationFrame &frame, GameGUI *gui, int tea
             return true;
         }
     }
-    if (!gfx->flushDeviceFrame()) {
-        // An overlay prefix may already have blended into the capture. Rebuild
-        // the same immutable frame from clean regions instead of painting it twice.
-        state.captureTile=0;state.captureX=state.captureY=0;
-        return true;
+    if (!state.captureReady) {
+        if (!gfx->flushDeviceFrame()) {
+            // An overlay prefix may already have blended into the capture.
+            // Rebuild clean regions without advancing its previews again.
+            state.captureTile=0;state.captureX=state.captureY=0;
+            return true;
+        }
+        Game::finishMapCapture(state.captureView,state.captureOptions,state.capturePaused);
+        state.captureReady=true;
     }
-    Game::finishMapCapture(state.captureView,state.captureOptions,state.capturePaused);
-    state.captureFrame.reset();state.captureView.scene=nullptr;
     gfx->setRenderTargetScale(0);gfx->setClipRect();
     const bool drawClouds = globalContainer->settings.clouds;
     if (drawClouds) {
@@ -578,6 +580,13 @@ bool TorusView::drawDevice(const PresentationFrame &frame, GameGUI *gui, int tea
         cloud.depth = DrawPacket::Depth::LessEqual; cloud.depthWrite = false; cloud.clip = clear.clip; cloud.world = material;
         cloud.world.uvTransform = {1,-1,anchorU+float(originX)/worldW+.5f/cloudW,anchorV+float(originY)/worldH+.5f/cloudH};
         gfx->submitDevicePacket(std::move(cloud));
+    }
+    // A finished atlas still belongs to the pending presentation. Retrying a
+    // deferred world submission must reuse it rather than advancing previews
+    // in another capture that the player has not yet seen.
+    if (gfx->flushDeviceFrame()) {
+        state.captureFrame.reset();state.captureView.scene=nullptr;
+        state.captureReady=false;
     }
     return true;
 }
