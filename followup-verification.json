@@ -1,0 +1,94 @@
+{
+  "tested_commit": "604749af40b789c840282edbc27685d9a8d6d104",
+  "base_revision": "486a2230a4ddb257ba9dee34d3aace05f2260d6f",
+  "reviewed_head": "9449c5a8213980b6c554b0dab080eae2c10171c4",
+  "source_tree": "75107b255ad5eb8d4df27b6b1ee81d5d6a18f9c4",
+  "platform": "Linux-7.0.0-31-generic-x86_64-with-glibc2.43",
+  "source_files": {
+    "docs/architecture/simulation.md": "e5053fa6c4dab6fceef11a4595f9336c074de8d4db912e5a7df9681104799b53",
+    "docs/development/headless-replays.md": "31daefbd5a818e829993513cf93e3184f98d930d15132774666c83f21e473779",
+    "src/engine/EngineInit.cpp": "4a2fdc0560449511b5042e46967e967d15e434b96f7b5757697232682ddf8113",
+    "src/engine/EngineRun.cpp": "54c7c06427f9fa2ee70673ea862714038ab66df8d498d3b1c7d4666187a06726",
+    "src/engine/EngineSessionHarness.cpp": "c11d5da9fcbb65bdc91a9a99265de130c0c3ac1ccc285e9aba5dc6451b4a52de",
+    "src/engine/sim/snapshot/SnapshotChecksum.cpp": "ab7db55f69e4d08a057656bbe4fc0735a55520adc2df458ae7a8c7b8ef054a45",
+    "src/engine/sim/snapshot/SnapshotChecksum.h": "23b00a55b7130bac019399c175264573c5d16c00954e4dd2af2abcb6a8a7dcf3",
+    "src/engine/sim/snapshot/SnapshotChecksumTest.cpp": "b7c5e789924549e03e6afb0170bc8b8c14c60fe9c571d2518f095d434dd19a4c",
+    "src/game/SimRevision.h": "90a1e27d07671a1efd9b21ed1d529fc08c685deb10cc9befd93a2920092bf7ac",
+    "src/net/turn/TurnEngineHarness.cpp": "2a49d9648ecccd4ca9706b09270609e45f16de622b2769c81537792aaf43006d",
+    "test/fixtures/multiplayer/FourSquares1.g2mr": "5e49914b8077494b5fa5da9bbcb3af1a5fcdf788f5e6a7bee16057c75222db62"
+  },
+  "release_binaries": {
+    "base": {
+      "path": "/tmp/glob2-pr1221-base/build/linux/client/release/dev-linker-auto/client-full-direct-1111/src/glob2",
+      "sha256": "3dd0c2a8b286fe23838f90e65540f1c438cad6e0b17e4fa13729524230382fd4"
+    },
+    "candidate": {
+      "path": "/home/bradley/.codex/worktrees/10767f6f-cc33-44ac-bfe3-1afdc8bca482/glob2/build/linux/client/release/dev-linker-auto/client-full-direct-1111/src/glob2",
+      "sha256": "8511970e773a9131ee9d45e2027c3b2a7579d5e9ca86e1c01bdb308ab3cc2e03"
+    }
+  },
+  "executable_source_commit": "84ca3efe39df81e0cde7c0901ebc2bb618045eab",
+  "binary_provenance_note": "Native binaries were built from resolved source containing the 84ca3efe3 changes before that commit was created. Final 604749af4 changes documentation only. Executable sources, compiler flags and dependency inputs are identical.",
+  "compiler": "g++ (Ubuntu 15.2.0-16ubuntu1) 15.2.0",
+  "cpu_model": "AMD Ryzen Threadripper 2950X 16-Core Processor",
+  "affinity": [
+    9,
+    10,
+    11,
+    12,
+    13,
+    14,
+    15,
+    25,
+    26,
+    27,
+    28,
+    29,
+    30,
+    31
+  ],
+  "governor": "schedutil",
+  "decision": {
+    "readiness": "keep draft",
+    "coverage_reduction": "not justified for production by these performance results",
+    "reason": "No consistent elapsed-time speedup; only isolated CPU/latency improvements. Routine detection omits substantial state and report cadence can further delay map-only divergence detection."
+  },
+  "validation": {
+    "engine_cases": 40,
+    "unit_cases": 49,
+    "python_cases": 21,
+    "external_replay_playback_cases": 1,
+    "release_deep_trace_workloads": 4,
+    "release_deep_ticks_per_workload": 256,
+    "exact_uninterrupted_candidate_worker_outputs": [
+      "replay",
+      "final save",
+      "routine trace"
+    ],
+    "continuation_workloads": 4,
+    "continuation_range": [
+      256,
+      384
+    ],
+    "continuation_limitation": "Three legacy workloads retain a pre-existing dormant enrollment generation change 1->3 across reload, reproduced on the base. The scripted continuation payload is identical except MapHeader SHA1. All deep continuation samples agree after the documented header-version delta.",
+    "stress_test_retry": "39/40 engine cases passed the first grouped run; hostile-order case timed out at 120s under compilation/test contention. It passed alone with a 300s limit in 115s. Both reports retained."
+  },
+  "not_verified": [
+    "Windows",
+    "macOS",
+    "mobile",
+    "actual browser runtimes",
+    "rendered gameplay/feel",
+    "release packaging",
+    "remote-session performance",
+    "longer-game and other-hardware performance"
+  ],
+  "input_sha256": {
+    "games/gd-small-2ai.game.gz": "03864090ce1950e7917acca7e7b18c99c20c78948f26d8e1e6dc3d55f10965bc",
+    "games/gd-large-4ai.game.gz": "e2b1ba36d6ab0a2f6c3c4aebd7178a6df5f39f39fb1100fb52bd18e8f9f73d11",
+    "games/gd-bigarena-long.game.gz": "542c151e914440c4d501ca7019888103a1c52dd98f522a0837412fc00ae9bedf",
+    "test/fixtures/javascript/realistic-profile1-initial159.game.gz": "cd7f9f83a2cc1c80bcd0d03afc43c58bf2c0fa16179940a20f3de0997ce11a53",
+    "browser/tests/fixtures/cross-replay.replay": "10db4e47605b7c224b980d0877a79a6ce066bb1f591173ed1b046a0c9fcc3a1b",
+    "test/fixtures/multiplayer/FourSquares1.g2mr": "5e49914b8077494b5fa5da9bbcb3af1a5fcdf788f5e6a7bee16057c75222db62"
+  }
+}

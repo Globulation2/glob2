@@ -1,0 +1,33 @@
+PR #1221 follow-up: consistent checksum coverage and final release measurements
+
+Final commit: 604749af40b789c840282edbc27685d9a8d6d104
+Executable inputs: 84ca3efe3; final follow-up changes documentation only.
+Base: 486a2230a4ddb257ba9dee34d3aace05f2260d6f
+
+Decision: keep the PR in draft. These measurements do not justify accepting its reduced routine checksum coverage for production. The replay/policy defect is fixed; the remaining design tradeoff is explicit.
+
+Release=1, dev_fast=0, client_profile=full, -O3, no PCH/unity, GCC 15.2, SDL3 3.4.16, Linux x86_64. CPU affinity 9-15,25-31. Ten sequential matched pairs per workload and participant count; order alternates. Timing runs contain no deep diagnostics, replay recording or compute telemetry. No concurrent task builds, tests or profilers. External machine activity/governor effects remain possible.
+
+Participants count the owner: 1 means zero workers, 4 means three workers. Negative percentages mean lower cost. CPU excludes warmup; elapsed includes warmup/teardown. Approximate paired log-ratio 95% t intervals use 10 pairs, without adjustment for multiple comparisons.
+
+Workload | participants | CPU change % [95% interval] | elapsed change % [95% interval] | p95 change % | p99 change %
+small | 1 | -0.01 [-3.04, +3.12] | -0.14 [-3.15, +2.96] | +0.57 | -3.19
+small | 4 | +0.21 [-7.54, +8.61] | -0.07 [-9.00, +9.74] | +8.78 | +6.28
+large | 1 | +2.46 [-0.73, +5.74] | +2.13 [-0.99, +5.35] | +4.84 | -0.78
+large | 4 | -1.42 [-7.42, +4.96] | -3.42 [-10.70, +4.44] | -2.09 | -4.20
+arena | 1 | -1.13 [-5.04, +2.95] | -1.43 [-4.98, +2.25] | +0.74 | -0.33
+arena | 4 | +1.68 [-0.81, +4.24] | +0.49 [-3.49, +4.63] | +1.68 | -0.54
+scripted | 1 | -3.03 [-6.16, +0.21] | -2.77 [-5.68, +0.23] | -1.02 | -3.75
+scripted | 4 | -3.61 [-5.91, -1.24] | -2.20 [-4.87, +0.55] | -8.77 | -2.66
+
+Interpretation: no elapsed-time interval excludes zero. Scripted/four-participant CPU is -3.61% [-5.91%, -1.24%]. Other CPU intervals include zero. Isolated latency changes include improved large/four-participant p99 and worse large/serial p95; there is no consistent latency win. Snapshot capacity remains similar. These results support no universal engine TPS/FPS claim.
+
+All 160 uninstrumented runs agree on players, teams, winners, unresolved status and final tick. Each checksum algorithm yields stable endpoints across repeats and worker counts; old and new checksum values are different algorithms and are not compared directly.
+
+Validation: 40 engine cases, 49 unit cases, 21 Python cases, one browser-reference replay played through its terminator. See retained timeout and isolated-pass reports. Four 256-tick deep traces match base/candidate and candidate 1/4 participants. Candidate uninterrupted saves, replays and routine traces are byte-identical across participant counts. Four saved continuations agree on deep gameplay traces; see explicit legacy enrollment-generation exceptions and base reproductions in continuations/verified.json.
+
+Coverage clarification: 32-tick map sampling is not a 31-tick remote detection bound. With normal advancement and default reports every 25 turns, map-bearing reports recur every 800 turns, before delivery/network latency. Pauses alter alignment. This alignment limitation predates the follow-up; the guide now describes it.
+
+Unverified: Windows/macOS/mobile, actual browser execution, rendered feel, packaging, remote-session performance and other hardware/longer workloads.
+
+Commands and raw results: benchmark.py, native/environment.json, native/*/command.json and result.json, validate-release.py, validate-continuations.py, verify-normal-outcomes.py, source-inventory.json, build logs and JUnit reports.
