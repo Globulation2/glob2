@@ -19,7 +19,6 @@
 #include <stdexcept>
 #include <limits>
 #include <numeric>
-#include "field/AirPathfind.h"
 #include "field/TerrainMovementCosts.h"
 
 Unit::Unit(GAGCore::InputStream *stream, Team *owner, Sint32 versionMinor)
@@ -771,78 +770,7 @@ bool Unit::continueExtendedCargoCollection()
 bool Unit::findMaterialDestination(int material,Sint32* x,Sint32* y,int* distance,bool withMarkets,const Building* consumer)
 {
 	Map& map=*owner->map;
-	if (!performance[FLY]) {
-		if (!x || !y) return distance ? map.materialAvailableSlot(owner->teamNumber,material,swimClass(),posX,posY,distance,withMarkets,consumer)
-			: map.materialAvailableSlot(owner->teamNumber,material,swimClass(),posX,posY,withMarkets,consumer);
-		return map.materialAvailableUpdateSlot(owner->teamNumber,material,swimClass(),posX,posY,x,y,distance,withMarkets,consumer);
-	}
-	field::AirDistanceField air(map.getW(),map.getH(),posX,posY,
-		[&](int px,int py) { return map.terrainPropertiesAt(px,py).flyable; },
-		[&](int px,int py) { const auto& terrain=map.terrainPropertiesAt(px,py); return gradient_kernel::scaledTerrainStep(GRADIENT_STEP,terrain.airSpeedQ8); }, map.hasAirTerrainConstraints());
-	unsigned best=UINT_MAX; int bestX=0,bestY=0;
-	const unsigned modes=consumer?map.materialSupplyModesSlot(consumer,material):1;
-	for (int py=0;py<map.getH();++py) for (int px=0;px<map.getW();++px) {
-		if (map.isForbidden(px,py,owner->me)) continue;
-		const Resource resource=map.getResource(px,py);
-		bool source=map.isMaterialTakeableSlot(px,py,material)
-			&& (!map.resourcePropertiesByIndex(resource.type).visibleToHarvest
-				|| map.isFOWDiscovered(px,py,owner->me));
-		if (!source && withMarkets) {
-			const Uint16 building=map.getBuilding(px,py);
-			if (building!=NOGBID && Building::GIDtoTeam(building)==owner->teamNumber)
-				source=map.stockSupplierEligibleSlot(owner->myBuildings[Building::GIDtoID(building)],consumer,material,modes);
-		}
-		if (!source) continue;
-		const unsigned cost=air.enabled()?air.costTo(px,py):unsigned(map.warpDistMax(posX,posY,px,py))*GRADIENT_STEP;
-		if (cost<best) { best=cost; bestX=px; bestY=py; }
-	}
-	if (best==UINT_MAX) return false;
-	if (x) *x=bestX; if (y) *y=bestY;
-	if (distance) *distance=(best+GRADIENT_STEP-1)/GRADIENT_STEP;
-	return true;
-}
-
-// Air clearing has no ground gradient. This cold capability combination scans
-// goals once per completed action and shares the constrained air-distance field.
-bool Unit::findAirClearingDestination(const Building* zone,Sint32* x,Sint32* y,int* distance)
-{
-	Map& map=*owner->map;
-	field::AirDistanceField air(map.getW(),map.getH(),posX,posY,
-		[&](int px,int py) { return map.terrainPropertiesAt(px,py).flyable; },
-		[&](int px,int py) { const auto& terrain=map.terrainPropertiesAt(px,py); return gradient_kernel::scaledTerrainStep(GRADIENT_STEP,terrain.airSpeedQ8); }, map.hasAirTerrainConstraints());
-	unsigned best=UINT_MAX; int bestX=0,bestY=0;
-	const bool farms=map.farmAreasEnabled();
-	for (int py=0;py<map.getH();++py) for (int px=0;px<map.getW();++px) {
-		if (map.isForbidden(px,py,owner->me)) continue;
-		if (zone) {
-			if (map.warpDistSquare(px,py,zone->posX,zone->posY)>zone->unitStayRange*zone->unitStayRange
-				|| !map.isClearableResourceForMaterials(px,py,zone->clearingMaterialMask)) continue;
-		} else if (!map.isClearingTarget(map.coordToIndex(px,py),owner->me,farms)) continue;
-		const unsigned cost=air.enabled()?air.costTo(px,py):unsigned(map.warpDistMax(posX,posY,px,py))*GRADIENT_STEP;
-		if (!zone) {
-			const int claimant=map.isClearingAreaClaimed(px,py,owner->teamNumber);
-			if (claimant!=NOGUID && claimant!=gid) {
-				const Unit* other=owner->myUnits[GIDtoID(claimant)];
-				if (other && Uint64(other->previousClearingAreaDistance)*GRADIENT_STEP<=cost) continue;
-			}
-		}
-		if (cost<best) { best=cost; bestX=px; bestY=py; }
-	}
-	if (best==UINT_MAX) return false;
-	*x=bestX; *y=bestY; *distance=(best+GRADIENT_STEP-1)/GRADIENT_STEP; return true;
-}
-
-bool Unit::findAirGuardDestination(Sint32* x,Sint32* y)
-{
-	Map& map=*owner->map;
-	field::AirDistanceField air(map.getW(),map.getH(),posX,posY,
-		[&](int px,int py) { return map.terrainPropertiesAt(px,py).flyable; },
-		[&](int px,int py) { return gradient_kernel::scaledTerrainStep(GRADIENT_STEP,map.terrainPropertiesAt(px,py).airSpeedQ8); },map.hasAirTerrainConstraints());
-	unsigned best=UINT_MAX;
-	for (int py=0;py<map.getH();++py) for (int px=0;px<map.getW();++px) {
-		if (!map.isGuardArea(px,py,owner->me) || map.isForbidden(px,py,owner->me) || !map.terrainPropertiesAt(px,py).flyable) continue;
-		const unsigned cost=air.enabled()?air.costTo(px,py):unsigned(map.warpDistMax(posX,posY,px,py))*GRADIENT_STEP;
-		if (cost<best) { best=cost; *x=px; *y=py; }
-	}
-	return best!=UINT_MAX;
+    if (!x || !y) return distance ? map.materialAvailableSlot(owner->teamNumber,material,movementClass(),posX,posY,distance,withMarkets,consumer)
+        : map.materialAvailableSlot(owner->teamNumber,material,movementClass(),posX,posY,withMarkets,consumer);
+    return map.materialAvailableUpdateSlot(owner->teamNumber,material,movementClass(),posX,posY,x,y,distance,withMarkets,consumer);
 }

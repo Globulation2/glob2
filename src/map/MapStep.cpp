@@ -244,7 +244,7 @@ gradient_preparation::Request gradientRequest(const GradientRuntime::Preparation
 {
     gradient_preparation::Request request;
     request.kind=p.kind; request.team=p.team; request.material=p.material; request.swim=p.swim;
-    request.terrainBuckets=map.terrainQueueBuckets();
+    request.terrainBuckets=map.movementQueueBuckets(request.swim);
     if (p.kind == gradient_preparation::Kind::Guard) {
         request.allies=map.game->teams[p.team]->allies;
         request.crowding=map.game->gameHeader.hasExperiment(ExperimentId::GuardAreaBalancing);
@@ -333,17 +333,11 @@ void Map::syncStep(Uint32 stepCounter)
 			updateExploredArea(team);
 	}
 	
-	// Bound escape-field staleness independently of forbidden orders.
-	// At most one allocated field per eight map ticks; no extra saved state.
-	// Normal cycle: 8 * teams * SWIM_CLASS_COUNT ticks; counter wrap can
-	// extend one interval to less than two cycles.
-	const int activeSwimClasses=game->hasWaterOnlyUnits()?SWIM_CLASS_COUNT:LEGACY_SWIM_CLASS_COUNT;
-	const int escapeSlots = game->mapHeader.getNumberOfTeams() * activeSwimClasses;
-	if (escapeSlots && (stepCounter & 7) == 0)
-	{
-		const int slot = (stepCounter >> 3) % escapeSlots;
-		const int escapeTeam = slot / activeSwimClasses;
-		const int escapeSwim = slot % activeSwimClasses;
+    // Retain the historical ground schedule. Additional movement classes use
+    // the same refresh operation in spare phases without shifting ground slots.
+    const int activeGroundClasses=game->hasWaterOnlyUnits()?SWIM_CLASS_COUNT:LEGACY_SWIM_CLASS_COUNT;
+    const int teams=game->mapHeader.getNumberOfTeams();
+    const auto refreshEscape=[&](int escapeTeam,int escapeSwim) {
 		const Uint16* field = forbiddenGradient[escapeTeam][escapeSwim];
 		if (field)
 		{
@@ -376,7 +370,14 @@ void Map::syncStep(Uint32 stepCounter)
 				updateForbiddenGradient(escapeTeam, escapeSwim);
 			}
 		}
-	}
+    };
+    if(teams && (stepCounter&7)==0) {
+        const unsigned phase=stepCounter>>3;
+        const unsigned groundSlot=phase%(teams*activeGroundClasses);
+        refreshEscape(groundSlot/activeGroundClasses,groundSlot%activeGroundClasses);
+        for(int movement=SWIM_CLASS_COUNT;movement<MOVEMENT_CLASS_COUNT;++movement)
+            refreshEscape(phase%teams,movement);
+    }
 
 }
 
@@ -400,7 +401,7 @@ void Map::stagePeriodicGradientPreparation()
 		int numberOfTeam=game->mapHeader.getNumberOfTeams();
 		for (int t=0; t<numberOfTeam; t++)
 			for (int r=0; r<MaterialCount; r++)
-				for (int s=0; s<SWIM_CLASS_COUNT; s++)
+				for (int s=0; s<MOVEMENT_CLASS_COUNT; s++)
 					if (hasMaterialSourceSlot(r) && materialGradients[t][r][s] && !gradientUpdated[t][r][s])
 					{
 						if (gradientRuntime->pipeline.enabled()) dispatch(&materialGradients[t][r][s], Kind::Materials, t, r, s);
@@ -412,7 +413,7 @@ void Map::stagePeriodicGradientPreparation()
 		// A stock transition also requests an early refresh.
 		for (int t=0; t<numberOfTeam; t++)
 			for (int r=0; r<MaterialCount; r++)
-				for (int s=0; s<SWIM_CLASS_COUNT; s++)
+				for (int s=0; s<MOVEMENT_CLASS_COUNT; s++)
 					if (marketsV2Enabled() && marketMaterialGradients[t][r][s] && (marketGradientDirty[t][r][s] || !marketGradientUpdated[t][r][s]))
 					{
 						// Stock transitions already invalidate stale snapshots. Regular refreshes
@@ -424,7 +425,7 @@ void Map::stagePeriodicGradientPreparation()
 						return;
 					}
 		for (int t=0; t<numberOfTeam; t++)
-			for(int s=0; s<SWIM_CLASS_COUNT; s++)
+			for(int s=0; s<MOVEMENT_CLASS_COUNT; s++)
 				if(guardAreasGradient[t][s] && !guardGradientUpdated[t][s])
 				{
 					if (gradientRuntime->pipeline.enabled()) dispatch(&guardAreasGradient[t][s], Kind::Guard, t, 0, s);
@@ -433,7 +434,7 @@ void Map::stagePeriodicGradientPreparation()
 					return;
 				}
 		for (int t=0; t<numberOfTeam; t++)
-			for(int s=0; s<SWIM_CLASS_COUNT; s++)
+			for(int s=0; s<MOVEMENT_CLASS_COUNT; s++)
 				if(clearAreasGradient[t][s] && !clearGradientUpdated[t][s])
 				{
 					if (gradientRuntime->pipeline.enabled()) dispatch(&clearAreasGradient[t][s], Kind::Clear, t, 0, s);
@@ -445,13 +446,13 @@ void Map::stagePeriodicGradientPreparation()
 
 		for (int t=0; t<numberOfTeam; t++)
 			for (int r=0; r<MaterialCount; r++)
-				for (int s=0; s<SWIM_CLASS_COUNT; s++)
+				for (int s=0; s<MOVEMENT_CLASS_COUNT; s++)
 				{
 					gradientUpdated[t][r][s]=false;
 					if (marketsV2Enabled()) marketGradientUpdated[t][r][s]=false;
 				}
 		for (int t=0; t<numberOfTeam; t++)
-			for(int s=0; s<SWIM_CLASS_COUNT; s++)
+			for(int s=0; s<MOVEMENT_CLASS_COUNT; s++)
 			{
 				guardGradientUpdated[t][s]=false;
 				clearGradientUpdated[t][s]=false;

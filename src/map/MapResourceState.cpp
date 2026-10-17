@@ -87,7 +87,7 @@ void Map::installCatalogs(std::shared_ptr<const TerrainRegistry> terrain,
     if (arraysBuilt && marketsV2Enabled())
         for (int team = 0; team < Team::MAX_COUNT; ++team)
             for (int material = 0; material < MaterialCount; ++material)
-                for (int swim = 0; swim < SWIM_CLASS_COUNT; ++swim) {
+                for (int swim = 0; swim < MOVEMENT_CLASS_COUNT; ++swim) {
                     gradientRuntime->pipeline.invalidate(&marketMaterialGradients[team][material][swim]);
                     marketGradientUpdated[team][material][swim] = false;
                     marketGradientDirty[team][material][swim] = true;

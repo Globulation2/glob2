@@ -316,7 +316,8 @@ checksum adapter retains its historical entity/RNG representation for fixtures.
   Idle units on safe ground never wander onto damaging terrain. Idle units already
   exposed follow a lazily built shared reverse escape field, allowing hazardous
   intermediate steps. Ground fields are keyed by team, swim class and whether the
-  unit is escaping forbidden paint; flyers share a separate air field across teams.
+  unit is escaping forbidden paint. Air safety fields ignore forbidden paint and
+  share across teams.
   Buildings, terrain and forbidden paint invalidate ground fields. Resource edits
   invalidate only the movement classes whose blocking properties changed; stock
   changes alone do not. Air fields react to terrain and air-blocking resources. Occupancy is checked at the next step and
@@ -329,6 +330,31 @@ checksum adapter retains its historical entity/RNG representation for fixtures.
   neighbors. A unit waits if traffic blocks every descending step. Flyers use their
   separate air damage rate. These rules are preferences for travel, not
   guarantees against lethal crossings or overrides of explicit local combat moves.
+- Flyers use movement class 8 in the same material, building, guard, clearing and
+  forbidden gradients as ground units. Ground ratio IDs 0–7 remain unchanged;
+  all flyers share one class regardless of speed or other capabilities. The air
+  profile combines `airSpeedQ8` and `airHealthQ8` with the same damage preference,
+  integer costs and scalar/SIMD/backend kernels. Flyable terrain and resource
+  `blocksAir` determine access; buildings and ground occupancy do not obstruct air.
+  Fields omit transient traffic, while stepping checks the air occupancy layer.
+  On maps without air terrain constraints or air-blocking resources, flyers
+  retain direct angular steering and local traffic
+  avoidance. Shared queries still choose service, resource and clearing goals;
+  ordinary building/resource travel does not follow a field at every step.
+  A derived summary invalidated alongside air safety selects the policy again
+  after edits or loading. Guard balancing retains its field-based steering.
+  Forbidden zones apply only to ground units: flyers ignore them in steering,
+  destination fields, clearing and hazard escape. Painting a forbidden zone does
+  not disable direct flight. Cold building queries initialize synchronously
+  and expand lazily; warm refreshes use the existing fixed-deadline pipeline.
+  Hiring borrows the same immutable building generations, and idle clearers use
+  the existing claims and clearing fields. Constrained arbitrary targets use
+  common A* with the air profile and the field cost limit; blocked targets are
+  approached from an adjacent accessible cell. Historical flying action values
+  remain readable and select the same direct/constrained policy. Format 171
+  appends air routing slots and remaps historical seven/eight-class strides;
+  unreleased draft formats 168–170 are
+  rejected. The released save floor remains 58. Replay acceptance begins at 171.
 - Registry compilation calculates movement and air costs once, deduplicates cost
   profiles and caches distinct edge steps. Runtime gradient setup scales with
   distinct profiles, not registered IDs. Uniform, binary swimming and general-cost
@@ -345,7 +371,7 @@ checksum adapter retains its historical entity/RNG representation for fixtures.
   fixed-layout property structs, keeping equivalent custom IDs out of the hot
   property working set. Canonical tile IDs and persistence remain unchanged.
   Maps lazily cache a one-byte cost-profile plane and only the distinct costs
-  present in that plane per queried swimming class,
+  present in that plane per queried movement class,
   removing the ID-to-profile lookup from general-cost cell loops. These planes
   share ownership with searches/jobs and invalidate together with terrain snapshots.
   Eager fields, resumed building searches, worker snapshots and strategic travel
@@ -477,9 +503,12 @@ checksum adapter retains its historical entity/RNG representation for fixtures.
 - Periodic snapshot seeding uses `SnapshotGradient` and shared `SeedCells`
   predicates. Each executor slot owns derived seed templates, maintained using
   exact immutable chunk versions, with direct-kernel fallbacks. Material caches
-  retain compact base fields and goal bitsets. No cached template retains snapshot
-  buffers or reads the live mutable material cache. Immediate building seeding
-  remains in its domain source files.
+  retain compact land, amphibious and air base fields with separate air goal
+  membership, since immobile ground units cannot mask air goals. Air templates
+  are allocated and maintained only after the first air request. The optional
+  owner cache retains at most 32 MiB and 24 bytes per cell, with a direct fallback.
+  No cached template retains snapshot buffers or reads the live mutable material
+  cache. Immediate building seeding uses the same predicates as worker snapshots.
   Material and clearing precedence comes from the restricted unsigned-integer
   source `src/field/shaders/preparation-rules.json`; regenerate its C++, OpenCL
   and GLSL predicates with `tools/shaders/gradient_preparation_rules.py --generate`.
@@ -719,8 +748,8 @@ publication intervals.
 
 Resource distances read the snapshot's published resource planes. AI query fields
 are local planning caches, whose presence depends on local polling, so they never
-enroll map fields. Missing planes, flying transport and consumer-specific supplier
-modes use an optimistic zero estimate. Building routes borrow existing valid
+enroll map fields. Missing planes and consumer-specific supplier modes use an
+optimistic zero estimate, including for flying transport. Building routes borrow existing valid
 generations through `SharedBuildingGradient` leases; workers settle only queried
 cells under the generation's lock, and retirement hands the buffer and search to
 the lease instead of copying them. Observation never initializes or refreshes a

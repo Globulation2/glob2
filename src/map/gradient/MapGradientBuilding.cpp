@@ -13,6 +13,8 @@
 #include <algorithm>
 #include <array>
 #include "Team.h"
+#include "SnapshotGradient.h"
+#include "SeedCells.h"
 
 
 
@@ -35,12 +37,6 @@ void Map::updateGlobalGradient(Building *building, int swimClass, BuildingRoute 
 	const int access = building->routeAccess(swimClass, route);
 	assert(building);
 	assert(building->type);
-	int posX=building->posX;
-	int posY=building->posY;
-	int posW=building->type->width;
-	Uint32 teamMask=building->owner->me;
-	Uint16 bgid=building->gid;
-	bool canSwim=swimClass>0;
 
 	Uint16 *gradient=building->globalGradient[slot];
 	assert(gradient);
@@ -61,120 +57,17 @@ void Map::updateGlobalGradient(Building *building, int swimClass, BuildingRoute 
 	building->lastGlobalGradientUpdateStepCounter[slot]=game->stepCounter;
 	building->gradientGeneration[slot]=topologyGeneration;
 
-	if (route == BuildingRoute::Footprint)
-	{
-		// Ordinary buildings have no prepainted flag goals: write each cell's
-		// final initial value directly, without clearing the whole field first.
-		initializeGradientCells([&](size_t begin, size_t end) {
-		for (size_t i=begin; i<end; ++i)
-		{
-			if (occupancyCells[i].building!=NOGBID)
-				gradient[i]=occupancyCells[i].building==bgid ? GRADIENT_AT_GOAL : GRADIENT_FORBIDDEN;
-			else if ((areaCells[i].forbidden&teamMask) || resourceBlocksGround(i) ||
-			         occupancyCells[i].immobileUnit!=IMMOBILE_UNIT_NONE || !gradient_kernel::terrainAllowsGround(terrainPropertiesAt(i),swimClass))
-				gradient[i]=GRADIENT_FORBIDDEN;
-			else
-				gradient[i]=GRADIENT_UNREACHABLE;
-		}
-		});
-		if (!building->type->semantics.occupiesGround)
-			for (int y=0; y<building->type->height; ++y)
-				for (int x=0; x<posW; ++x)
-					gradient[coordToIndex(posX+x,posY+y)]=GRADIENT_AT_GOAL;
-	}
-	else
-	{
-		const bool isClearingFlag=route == BuildingRoute::Clearing;
-		const bool isWarFlag=route == BuildingRoute::Combat;
-		std::fill(gradient, gradient+size, GRADIENT_UNREACHABLE);
-		if (!isClearingFlag)
-		{
-			int r=building->unitStayRange;
-			int r2=r*r;
-			for (int yi=-r; yi<=r; yi++)
-			{
-				int yi2=(yi*yi);
-				for (int xi=-r; xi<=r; xi++)
-					if (yi2+(xi*xi)<=r2)
-					{
-						size_t addr = coordToIndex(posX+w+xi, posY+h+yi);
-						if(gradient[addr] == GRADIENT_UNREACHABLE)
-							gradient[addr] = GRADIENT_AT_GOAL;
-					}
-			}
-		}
-		else
-		{
-			bool anyResourceToClear=false;
-			int r=building->unitStayRange;
-			int r2=r*r;
-			for (int yi=-r; yi<=r; yi++)
-			{
-				int yi2=(yi*yi);
-				for (int xi=-r; xi<=r; xi++)
-					if (yi2+(xi*xi)<=r2)
-					{
-						size_t addr = coordToIndex(posX+w+xi, posY+h+yi);
-						if(resourceCells[addr].resource.type != NO_RES_TYPE && resourcePropertiesByIndex(resourceCells[addr].resource.type).clearable &&
-						   isClearableResourceForMaterials(int(addr & wMask), int(addr >> wDec), building->clearingMaterialMask))
-						{
-							if(gradient[addr] == GRADIENT_UNREACHABLE)
-								gradient[addr] = GRADIENT_AT_GOAL;
-							anyResourceToClear=true;
-						}
-					}
-			}
-			building->anyResourceToClear[swimAccessVariant(swimClass)] = anyResourceToClear ? 1 : 2;
-		}
-
-		initializeGradientCells([&](size_t begin, size_t end) {
-			for (size_t wyx=begin; wyx<end; ++wyx)
-			{
-
-				if (occupancyCells[wyx].building==NOGBID)
-				{
-					if (areaCells[wyx].forbidden&teamMask)
-						gradient[wyx] = GRADIENT_FORBIDDEN;
-					else if (resourceBlocksGround(wyx) && !(isClearingFlag && gradient[wyx]==GRADIENT_AT_GOAL))
-						gradient[wyx] = GRADIENT_FORBIDDEN;
-					else if(occupancyCells[wyx].immobileUnit != IMMOBILE_UNIT_NONE)
-						gradient[wyx] = GRADIENT_FORBIDDEN;
-					//Clearing flags don't consider water an obstacle so long as that piece of
-					//water is under the flag, like algae
-					else if (!gradient_kernel::terrainAllowsGround(terrainPropertiesAt(wyx),swimClass) && (!isClearingFlag || gradient[wyx] != GRADIENT_AT_GOAL))
-						gradient[wyx] = GRADIENT_FORBIDDEN;
-				}
-				else
-				{
-					// Attraction never uses its own occupied footprint as a goal.
-					// Combat may route through enemy buildings, clearing may not.
-					if(!isWarFlag || (1<<Building::GIDtoTeam(occupancyCells[wyx].building)) & (building->owner->allies))
-						gradient[wyx] = GRADIENT_FORBIDDEN;
-					else if(gradient[wyx]!=GRADIENT_AT_GOAL)
-						gradient[wyx] = GRADIENT_UNREACHABLE;
-				}
-			}
-		});
-	}
+    const auto seed=gradient_preparation::captureBuildingSeed(*building,swimClass,route);
+    const auto seeded=gradient_preparation::buildingCells(stateView(),seed,gradient,
+        [&](auto fn) { initializeGradientCells(fn); });
+    if(seeded.resourceState) building->anyResourceToClear[swimAccessVariant(swimClass)]=seeded.resourceState;
 
 	const auto routeInputs = BuildingGradientSearch::Inputs::of(*this, swimClass);
 
 	if (route == BuildingRoute::Footprint)
 	{
-		// Spiral around the building footprint corner; start one cell NW of the building origin
-		// (toroidal wrap), stride posW+1 so we cover the perimeter.
-		bool reachable=false;
-		if (posW == building->type->height)
-			reachable = spiralFindNonZero(gradient, (posX-1)&wMask, (posY-1)&hMask, posW+1, wMask, hMask, wDec);
-		else
-		{
-			const int height=building->type->height;
-			for (int x=-1; x<=posW && !reachable; ++x)
-				reachable=gradient[coordToIndex(posX+x,posY-1)]>GRADIENT_FORBIDDEN || gradient[coordToIndex(posX+x,posY+height)]>GRADIENT_FORBIDDEN;
-			for (int y=0; y<height && !reachable; ++y)
-				reachable=gradient[coordToIndex(posX-1,posY+y)]>GRADIENT_FORBIDDEN || gradient[coordToIndex(posX+posW,posY+y)]>GRADIENT_FORBIDDEN;
-		}
-		building->setLocked(access,!reachable);
+        const bool reachable=!seeded.locked;
+        building->setLocked(access,!reachable);
 		if (!reachable)
 		{
 			recycleBuildingGradientSearch(std::move(building->globalGradientSearch[slot]));

@@ -51,7 +51,7 @@ def compare_payloads(whole, resumed):
 
 
 def save_header(path):
-    """Read bounded format-73..167 MapHeader framing and the player-count prefix.
+    """Read bounded format-73..171 MapHeader framing and the player-count prefix.
 
     Unit definitions in format 153 follow the GameHeader players and resource
     declarations; they do not add MapHeader fields or change this prefix.
@@ -91,7 +91,7 @@ def save_header(path):
 
     text(1024 * 1024, 'map name', allow_empty=True)
     major, minor, teams = word('major version'), word('minor version'), word('team count')
-    assert major == 0 and 73 <= minor <= 167, 'unsupported fixture header version'
+    assert major == 0 and 73 <= minor <= 171 and minor not in (168, 169, 170), 'unsupported fixture header version'
     assert 0 < teams <= 32, 'invalid team count'
     skip(4, 'map offset')
     assert byte('saved-game flag') <= 1, 'invalid saved-game flag'

@@ -112,7 +112,7 @@ void Map::seedMaterialGradientWithSuppliers(int teamNumber, Uint8 resourceType, 
 				for (int x=0; x<supplier->type->width; ++x)
 				{
 					const size_t i = coordToIndex(supplier->posX+x, supplier->posY+y);
-					if (!(areas[i].forbidden & teamMask) && occupancy[i].immobileUnit == IMMOBILE_UNIT_NONE)
+					if (swimClass==AIR_MOVEMENT_CLASS || (!(areas[i].forbidden & teamMask) && occupancy[i].immobileUnit == IMMOBILE_UNIT_NONE))
 						gradient[i] = std::max(gradient[i], seed);
 				}
 		});
@@ -129,7 +129,7 @@ void Map::dirtyMarketGradientsSlot(int teamNumber, int resourceType)
 {
 	if (resourceType<MaterialCount) ++gradientRuntime->stockRevision[teamNumber][resourceType];
 	if (!marketsV2Enabled()) return;
-	for (int s=0; s<SWIM_CLASS_COUNT; ++s)
+	for (int s=0; s<MOVEMENT_CLASS_COUNT; ++s)
 		{
 			marketGradientDirty[teamNumber][resourceType][s]=true;
 			gradientRuntime->pipeline.invalidate(&marketMaterialGradients[teamNumber][resourceType][s]);
@@ -226,11 +226,11 @@ unsigned Map::materialSupplyModesSlot(const Building* consumer, int resource) co
 
 std::optional<Uint16> Map::planeKeyForSlot(Uint16* const* slot) const
 {
-	constexpr auto perArray = std::size_t(Team::MAX_COUNT) * MaterialSlotCount * SWIM_CLASS_COUNT;
+	constexpr auto perArray = std::size_t(Team::MAX_COUNT) * MaterialSlotCount * MOVEMENT_CLASS_COUNT;
 	const auto decode = [&](Uint16* const* first, bool market) {
 		const auto offset = std::size_t(slot - first);
-		return MapState::planeKey(int(offset / (MaterialSlotCount * SWIM_CLASS_COUNT)),
-			int((offset / SWIM_CLASS_COUNT) % MaterialSlotCount), int(offset % SWIM_CLASS_COUNT), market);
+		return MapState::planeKey(int(offset / (MaterialSlotCount * MOVEMENT_CLASS_COUNT)),
+			int((offset / MOVEMENT_CLASS_COUNT) % MaterialSlotCount), int(offset % MOVEMENT_CLASS_COUNT), market);
 	};
 	if (const auto* first = &materialGradients[0][0][0]; slot >= first && slot < first + perArray) return decode(first, false);
 	if (const auto* first = &marketMaterialGradients[0][0][0]; slot >= first && slot < first + perArray) return decode(first, true);
@@ -257,7 +257,7 @@ void Map::rebuildPlaneRegistry()
 	publishedPlaneIndex.fill(0);
 	for (int team = 0; team < Team::MAX_COUNT; ++team)
 		for (int resource = 0; resource < MaterialSlotCount; ++resource)
-			for (int swim = 0; swim < SWIM_CLASS_COUNT; ++swim)
+			for (int swim = 0; swim < MOVEMENT_CLASS_COUNT; ++swim)
 			{
 				if (materialGradients[team][resource][swim]) publishPlane(&materialGradients[team][resource][swim]);
 				if (marketMaterialGradients[team][resource][swim]) publishPlane(&marketMaterialGradients[team][resource][swim]);

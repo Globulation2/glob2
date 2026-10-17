@@ -637,7 +637,7 @@ GAGCore::CooperativeTask Map::addTeamTask(void)
 	
 	int t=oldNumberOfTeam;
 	for (int r=0; r<MaterialCount; r++)
-		for (int s=0; s<SWIM_CLASS_COUNT; s++)
+		for (int s=0; s<MOVEMENT_CLASS_COUNT; s++)
 		{
 			assert(materialGradients[t][r][s]==NULL);
 			assert(marketMaterialGradients[t][r][s]==NULL);
@@ -666,7 +666,7 @@ void Map::removeTeam(void)
 		else ++it;
 	}
 	gradientRuntime->stockRevision[t]={};
-	for (int s=0; s<SWIM_CLASS_COUNT; s++)
+	for (int s=0; s<MOVEMENT_CLASS_COUNT; s++)
 	{
 		for (int r=0; r<MaterialCount; r++)
 		{
@@ -815,9 +815,10 @@ void Map::loadBuildingGradientPipeline(GAGCore::InputStream *stream, bool packed
 		request.building=stream->readUint16("building");
 		request.identity=stream->readUint32("identity");
 		request.slot=stream->readUint8("slot");
-		if (versionMinor<FILE_FORMAT_VERSION_UNIT_CATALOG) {
-			if (request.slot>=BUILDING_ROUTE_COUNT*LEGACY_SWIM_CLASS_COUNT) throw std::runtime_error("Invalid saved building gradient destination");
-			request.slot=(request.slot/LEGACY_SWIM_CLASS_COUNT)*SWIM_CLASS_COUNT+request.slot%LEGACY_SWIM_CLASS_COUNT;
+		if (versionMinor<FILE_FORMAT_VERSION_UNIFIED_MOVEMENT) {
+            const unsigned savedClasses=versionMinor>=FILE_FORMAT_VERSION_UNIT_CATALOG ? SWIM_CLASS_COUNT : LEGACY_SWIM_CLASS_COUNT;
+			if (request.slot>=BUILDING_ROUTE_COUNT*savedClasses) throw std::runtime_error("Invalid saved building gradient destination");
+			request.slot=(request.slot/savedClasses)*MOVEMENT_CLASS_COUNT+request.slot%savedClasses;
 		}
 		request.stale=loadFlag(stream, "stale");
 		stream->readLeaveSection();
@@ -845,13 +846,14 @@ void Map::loadBuildingGradientPipeline(GAGCore::InputStream *stream, bool packed
 		p.buildingId=stream->readUint16("building");
 		p.scriptIdentity=stream->readUint32("identity");
 		p.slot=stream->readUint8("slot");
-		if (versionMinor<FILE_FORMAT_VERSION_UNIT_CATALOG) {
-			if (p.slot>=BUILDING_ROUTE_COUNT*LEGACY_SWIM_CLASS_COUNT) throw std::runtime_error("Invalid saved building gradient destination");
-			p.slot=(p.slot/LEGACY_SWIM_CLASS_COUNT)*SWIM_CLASS_COUNT+p.slot%LEGACY_SWIM_CLASS_COUNT;
+		if (versionMinor<FILE_FORMAT_VERSION_UNIFIED_MOVEMENT) {
+            const unsigned savedClasses=versionMinor>=FILE_FORMAT_VERSION_UNIT_CATALOG ? SWIM_CLASS_COUNT : LEGACY_SWIM_CLASS_COUNT;
+			if (p.slot>=BUILDING_ROUTE_COUNT*savedClasses) throw std::runtime_error("Invalid saved building gradient destination");
+			p.slot=(p.slot/savedClasses)*MOVEMENT_CLASS_COUNT+p.slot%savedClasses;
 		}
 		validDestination(p.team, p.buildingId, p.slot);
-		p.swim=p.slot%SWIM_CLASS_COUNT;
-		p.route=BuildingRoute(p.slot/SWIM_CLASS_COUNT);
+		p.swim=p.slot%MOVEMENT_CLASS_COUNT;
+		p.route=BuildingRoute(p.slot/MOVEMENT_CLASS_COUNT);
 		p.captureTick=stream->readUint32("captured");
 		p.generation=stream->readUint32("generation");
 		const unsigned remaining=stream->readUint8("remaining");
@@ -917,7 +919,7 @@ void Map::saveRuntimeState(GAGCore::OutputStream *stream) const
 		}
 		stream->writeLeaveSection();
 		stream->writeEnterSection("swimClasses");
-		for (int sw=0; sw<SWIM_CLASS_COUNT; ++sw)
+		for (int sw=0; sw<MOVEMENT_CLASS_COUNT; ++sw)
 		{
 			stream->writeEnterSection(sw);
 			stream->writeEnterSection("resources");
@@ -956,7 +958,7 @@ void Map::saveRuntimeState(GAGCore::OutputStream *stream) const
 		for (auto *building : game->teams[t]->liveBuildings.entries())
 		{
 			stream->writeEnterSection(Building::GIDtoID(building->gid));
-			for (int sw=0; sw<SWIM_CLASS_COUNT; ++sw)
+			for (int sw=0; sw<MOVEMENT_CLASS_COUNT; ++sw)
 			{
 				stream->writeEnterSection(sw);
 				// Materialize the old full-field representation from its frozen inputs.
@@ -969,7 +971,7 @@ void Map::saveRuntimeState(GAGCore::OutputStream *stream) const
 				stream->writeLeaveSection();
 			}
 			stream->writeEnterSection("gradientUse");
-			for (int sw=0; sw<SWIM_CLASS_COUNT; ++sw)
+			for (int sw=0; sw<MOVEMENT_CLASS_COUNT; ++sw)
 			{
 				stream->writeEnterSection(sw);
 				stream->writeUint32(building->globalGradientUsedStep[sw], "usedStep");
@@ -989,10 +991,10 @@ void Map::saveRuntimeState(GAGCore::OutputStream *stream) const
 			for (int profile=1; profile<BUILDING_ROUTE_COUNT; ++profile)
 			{
 				stream->writeEnterSection(profile);
-				for (int sw=0; sw<SWIM_CLASS_COUNT; ++sw)
+				for (int sw=0; sw<MOVEMENT_CLASS_COUNT; ++sw)
 				{
 					stream->writeEnterSection(sw);
-					const int slot=profile*SWIM_CLASS_COUNT+sw;
+					const int slot=profile*MOVEMENT_CLASS_COUNT+sw;
 					finishBuildingGradient(building, sw, BuildingRoute(profile));
 					saveGradient(stream, building->globalGradient[slot], size);
 					stream->writeUint8(building->dirtyGradient[slot], "dirty");
@@ -1002,7 +1004,7 @@ void Map::saveRuntimeState(GAGCore::OutputStream *stream) const
 					stream->writeLeaveSection();
 				}
 				for (int sw=0; sw<SWIM_VARIANT_COUNT; ++sw)
-					stream->writeUint8(building->isLocked(profile*SWIM_VARIANT_COUNT+sw), sw==2?"waterOnlyLocked":sw ? "swimLocked" : "walkLocked");
+					stream->writeUint8(building->isLocked(profile*SWIM_VARIANT_COUNT+sw), sw==3?"airLocked":sw==2?"waterOnlyLocked":sw ? "swimLocked" : "walkLocked");
 				stream->writeLeaveSection();
 			}
 			stream->writeLeaveSection();
@@ -1020,13 +1022,13 @@ void Map::saveRuntimeState(GAGCore::OutputStream *stream) const
 		int destination=-1;
 		for (int t=0; t<game->teamsCount(); ++t)
 			for (int kind=0; kind<2*MaterialSlotCount+2; ++kind)
-				for (int sw=0; sw<SWIM_CLASS_COUNT; ++sw) {
+				for (int sw=0; sw<MOVEMENT_CLASS_COUNT; ++sw) {
 					auto *slot=kind<MaterialSlotCount ? &materialGradients[t][kind][sw]
 						: kind==MaterialSlotCount ? &guardAreasGradient[t][sw]
 						: kind==MaterialSlotCount+1 ? &clearAreasGradient[t][sw] : &marketMaterialGradients[t][kind-MaterialSlotCount-2][sw];
 					if (slot==snapshot.slot) destination=kind<MaterialSlotCount+2
-						? (t*(MaterialSlotCount+2)+kind)*SWIM_CLASS_COUNT+sw
-						: Team::MAX_COUNT*(MaterialSlotCount+2)*SWIM_CLASS_COUNT+(t*MaterialSlotCount+kind-MaterialSlotCount-2)*SWIM_CLASS_COUNT+sw;
+						? (t*(MaterialSlotCount+2)+kind)*MOVEMENT_CLASS_COUNT+sw
+						: Team::MAX_COUNT*(MaterialSlotCount+2)*MOVEMENT_CLASS_COUNT+(t*MaterialSlotCount+kind-MaterialSlotCount-2)*MOVEMENT_CLASS_COUNT+sw;
 				}
 		if (destination<0) throw std::runtime_error("Unknown pending gradient destination");
 		stream->writeEnterSection(index++);
@@ -1052,8 +1054,8 @@ void Map::saveRuntimeState(GAGCore::OutputStream *stream) const
 
 void Map::loadRuntimeState(GAGCore::InputStream *stream, Sint32 versionMinor)
 {
-	const unsigned savedSwimClasses=versionMinor>=FILE_FORMAT_VERSION_UNIT_CATALOG?SWIM_CLASS_COUNT:LEGACY_SWIM_CLASS_COUNT;
-	const unsigned savedAccessVariants=versionMinor>=FILE_FORMAT_VERSION_UNIT_CATALOG?SWIM_VARIANT_COUNT:2;
+	const unsigned savedSwimClasses=versionMinor>=FILE_FORMAT_VERSION_UNIFIED_MOVEMENT?MOVEMENT_CLASS_COUNT:versionMinor>=FILE_FORMAT_VERSION_UNIT_CATALOG?SWIM_CLASS_COUNT:LEGACY_SWIM_CLASS_COUNT;
+	const unsigned savedAccessVariants=versionMinor>=FILE_FORMAT_VERSION_UNIFIED_MOVEMENT?SWIM_VARIANT_COUNT:versionMinor>=FILE_FORMAT_VERSION_UNIT_CATALOG?3:2;
 	invalidateResourceSeeds();
     const bool packed=versionMinor>=FILE_FORMAT_VERSION_COMPACT_STATE && GAGCore::PackedArray::binary(stream);
 	gradientRuntime->preparation={};
@@ -1210,7 +1212,7 @@ void Map::loadRuntimeState(GAGCore::InputStream *stream, Sint32 versionMinor)
 					for (int sw=0; sw<savedSwimClasses; ++sw)
 					{
 						stream->readEnterSection(sw);
-						const int slot=profile*SWIM_CLASS_COUNT+sw;
+						const int slot=profile*MOVEMENT_CLASS_COUNT+sw;
 						building->globalGradientSearch[slot].reset();
 						loadGradient(stream, building->globalGradient[slot], size, packed);
 						building->dirtyGradient[slot]=loadFlag(stream,"dirty");
@@ -1220,7 +1222,7 @@ void Map::loadRuntimeState(GAGCore::InputStream *stream, Sint32 versionMinor)
 						stream->readLeaveSection();
 					}
 					for (int sw=0; sw<savedAccessVariants; ++sw)
-						building->setLocked(profile*SWIM_VARIANT_COUNT+sw,loadFlag(stream, sw==2?"waterOnlyLocked":sw ? "swimLocked" : "walkLocked"));
+						building->setLocked(profile*SWIM_VARIANT_COUNT+sw,loadFlag(stream, sw==3?"airLocked":sw==2?"waterOnlyLocked":sw ? "swimLocked" : "walkLocked"));
 					stream->readLeaveSection();
 				}
 				stream->readLeaveSection();
@@ -1392,7 +1394,7 @@ void Map::loadMaterialRoutingCache(GAGCore::InputStream* stream, bool packed, in
         entry.builtStep=stream->readUint32("builtStep"); entry.sourceRevision=read64("sourceRevision"); entry.recency=read64("recency");
         entry.team=stream->readUint8("team"); entry.resource=stream->readUint8("resource");
         entry.swim=stream->readUint8("swim"); entry.modes=stream->readUint8("modes");
-        if (entry.modes<1 || entry.modes>3 || entry.team>=game->teamsCount() || entry.resource>=MaterialCount || entry.swim>=SWIM_CLASS_COUNT
+        if (entry.modes<1 || entry.modes>3 || entry.team>=game->teamsCount() || entry.resource>=MaterialCount || entry.swim>=MOVEMENT_CLASS_COUNT
             || entry.consumer < -1 || entry.consumer>=Team::MAX_COUNT*Building::MAX_COUNT
             || (entry.consumer>=0 && Building::GIDtoTeam(entry.consumer)!=entry.team)
             || entry.type < -1 || entry.type>=int(game->buildingsTypes.size())

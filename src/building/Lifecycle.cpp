@@ -187,7 +187,7 @@ void Building::resetPathfindGradients(GradientDrop cause)
 	const Uint32 due = now >= GRADIENT_DIRTY_REBUILD_TICKS ? now - GRADIENT_DIRTY_REBUILD_TICKS : 0;
 	std::bitset<BUILDING_GRADIENT_COUNT> kept;
 	for (int i=0; i<BUILDING_GRADIENT_COUNT; i++)
-		kept[i] = keep && globalGradient[i] && !isLocked(routeAccess(i % SWIM_CLASS_COUNT, BuildingRoute(i / SWIM_CLASS_COUNT)));
+		kept[i] = keep && globalGradient[i] && !isLocked(routeAccess(i % MOVEMENT_CLASS_COUNT, BuildingRoute(i / MOVEMENT_CLASS_COUNT)));
 	dirtyGradients();
 	for (int i=0; i<BUILDING_GRADIENT_COUNT; i++)
 	{

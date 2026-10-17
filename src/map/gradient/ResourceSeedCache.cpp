@@ -34,19 +34,19 @@ template<class Function> void visit(const Bits &bits, Function function)
 
 struct ResourceSeedCache::Storage
 {
-	std::array<std::vector<Uint16>, 2> base;
-	std::array<Bits, MaterialCount> resources;
+	std::array<std::vector<Uint16>, 3> base;
+	std::array<Bits, MaterialCount> resources, airResources;
 	Bits buildings;
 	std::array<Bits, Team::MAX_COUNT> forbidden;
 	// Effective natural goal type: occupied resource cells have no goal bit.
-	std::vector<MaterialMask> materialMasks;
+	std::vector<MaterialMask> materialMasks, airMaterialMasks;
 	std::vector<Uint8> dirty;
 	std::vector<Uint32> forbiddenMasks, queue;
 
 	Storage(std::size_t cells, std::size_t dirtyLimit)
 		: materialMasks(cells), dirty(cells), forbiddenMasks(cells)
 	{
-		for (auto &field : base) field.resize(cells);
+		for (unsigned movement=0;movement<2;++movement) base[movement].resize(cells);
 		buildings.resize((cells + 63) / 64);
 		for (auto &bits : forbidden) bits.resize((cells + 63) / 64);
 		queue.reserve(dirtyLimit);
@@ -54,10 +54,11 @@ struct ResourceSeedCache::Storage
 
 	std::size_t bytes() const
 	{
-		std::size_t bytes = sizeof(*this) + materialMasks.capacity() * sizeof(MaterialMask) + dirty.capacity();
+		std::size_t bytes = sizeof(*this) + (materialMasks.capacity()+airMaterialMasks.capacity()) * sizeof(MaterialMask) + dirty.capacity();
 		bytes += (queue.capacity() + forbiddenMasks.capacity()) * sizeof(Uint32);
 		for (const auto &field : base) bytes += field.capacity() * sizeof(Uint16);
 		for (const auto &bits : resources) bytes += bits.capacity() * sizeof(Uint64);
+        for (const auto &bits : airResources) bytes += bits.capacity() * sizeof(Uint64);
 		for (const auto &bits : forbidden) bytes += bits.capacity() * sizeof(Uint64);
 		return bytes + buildings.capacity() * sizeof(Uint64);
 	}
@@ -136,6 +137,17 @@ void ResourceSeedCache::refresh(const Map &map, std::size_t index, unsigned flag
 			}
 			s.materialMasks[index] = next;
 		}
+        if(!s.airMaterialMasks.empty()) {
+        const MaterialMask airMask=map.materialMaskAt(index);
+        for(unsigned changed=s.airMaterialMasks[index]^airMask;changed;changed&=changed-1) {
+            const unsigned material=std::countr_zero(changed);
+            if(s.airResources[material].empty()) s.airResources[material].resize((cells+63)/64);
+            setBit(s.airResources[material],index,airMask&(1u<<material));
+        }
+        s.airMaterialMasks[index]=airMask;
+        s.base[2][index]=map.terrainPropertiesAt(index).flyable && !map.resourceBlocksAir(index)
+            ? GRADIENT_UNREACHABLE : GRADIENT_FORBIDDEN;
+        }
 		const auto &terrain = map.terrainPropertiesAt(index);
 		const bool open = !map.resourceBlocksGround(index) && map.occupancyCells[index].building == NOGBID && unoccupied;
 		s.base[0][index] = open && terrain.walkable ? GRADIENT_UNREACHABLE : GRADIENT_FORBIDDEN;
@@ -200,6 +212,13 @@ bool ResourceSeedCache::trySeed(const Map &map, int team, int resource, int swim
 			refresh(map, index, storage->dirty[index]);
 			storage->dirty[index] = 0;
 		}
+        // Ground-only requests retain the original two templates. Activate and
+        // maintain the air template only after a consumer actually asks for it.
+        if(swim==AIR_MOVEMENT_CLASS && storage->airMaterialMasks.empty()) {
+            storage->base[2].resize(cells);
+            storage->airMaterialMasks.resize(cells);
+            for(std::size_t i=0;i<cells;++i) refresh(map,i,All);
+        }
 		if (allocatedBytes() > MaximumBytes || allocatedBytes() > cells * MaximumBytesPerCell)
 			throw std::bad_alloc();
 	}
@@ -212,9 +231,9 @@ bool ResourceSeedCache::trySeed(const Map &map, int team, int resource, int swim
 	}
 	auto &s = *storage;
 	s.queue.clear();
-	std::memcpy(output, s.base[swim > 0].data(), cells * sizeof(*output));
+	std::memcpy(output, s.base[swim==AIR_MOVEMENT_CLASS?2:swim > 0].data(), cells * sizeof(*output));
 	const Uint32 mask = Team::teamNumberToMask(team);
-	// Goals override terrain/buildings, but not immobile units or forbidden paint.
+	// Ground goals still respect immobile units and forbidden paint.
 	// Fog, market stock and resource policy are live overlays, never cached.
 
 	if (supplierSeeds)
@@ -222,15 +241,17 @@ bool ResourceSeedCache::trySeed(const Map &map, int team, int resource, int swim
 		const unsigned teamBuildingBase=unsigned(team)*Building::MAX_COUNT;
 		visit(s.buildings, [&](std::size_t index) {
 			const unsigned localId=unsigned(map.occupancyCells[index].building)-teamBuildingBase;
-			if (!map.resourceBlocksGround(index) && map.occupancyCells[index].immobileUnit == IMMOBILE_UNIT_NONE &&
+			if ((swim==AIR_MOVEMENT_CLASS ? !map.resourceBlocksAir(index) : !map.resourceBlocksGround(index) && map.occupancyCells[index].immobileUnit == IMMOBILE_UNIT_NONE) &&
 				localId<Building::MAX_COUNT)
-				output[index] = supplierSeeds[localId];
+				if (swim!=AIR_MOVEMENT_CLASS || supplierSeeds[localId]!=GRADIENT_FORBIDDEN)
+                    output[index] = supplierSeeds[localId];
 		});
 	}
-	visit(s.resources[resource], [&](std::size_t index) {
+	visit(swim==AIR_MOVEMENT_CLASS?s.airResources[resource]:s.resources[resource], [&](std::size_t index) {
 		if (!map.resourceVisibleToHarvest(index) || (map.fogOfWar[index] & mask))
 			output[index] = GRADIENT_AT_GOAL;
 	});
-	visit(s.forbidden[team], [&](std::size_t index) { output[index] = GRADIENT_FORBIDDEN; });
+	if (swim!=AIR_MOVEMENT_CLASS)
+        visit(s.forbidden[team], [&](std::size_t index) { output[index] = GRADIENT_FORBIDDEN; });
 	return true;
 }

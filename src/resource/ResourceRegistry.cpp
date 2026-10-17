@@ -498,7 +498,7 @@ void ResourceRegistry::compile()
     {
         const auto& p = properties_[id];
         gradientPreparation_[id] = gradient_preparation::rules::resourceTraits(p.materialMask,p.blocksGround,
-            p.visibleToHarvest,p.clearable,p.farmable);
+            p.visibleToHarvest,p.clearable,p.farmable,p.blocksAir);
         const auto& yields = yields_[id];
         // Harvesting any destructive secondary yield also removes an infinite
         // primary source. Do not infer mutability from just the selected yield.

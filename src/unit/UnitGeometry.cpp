@@ -32,7 +32,7 @@ void Unit::setNewValidDirectionAir(void)
 {
 	assert(performance[FLY]);
 	int i=0;
-	while ( i<8 && !owner->map->isFreeForAirUnit(posX+dx, posY+dy))
+	while ( i<8 && !owner->map->isFreeForMovement(posX+dx,posY+dy,AIR_MOVEMENT_CLASS,owner->me))
 	{
 		direction=(direction+1)&UNIT_DIRECTION_MASK;
 		dxDyFromDirection();
@@ -46,59 +46,27 @@ void Unit::setNewValidDirectionAir(void)
 	}
 }
 
+// Preserve the original angular bearing and deterministic avoidance order on
+// unconstrained maps. Destination selection remains in the shared query layer.
 void Unit::flyToTarget()
 {
-	assert(performance[FLY]);
-    if (owner->map->hasAirTerrainConstraints())
-    {
-        dx = dy = 0;
-        findDisplacement([&](int* pathDx, int* pathDy) { return owner->map->pathfindAirPointToPoint(posX,posY,targetX,targetY,pathDx,pathDy); });
-        directionFromDxDy();
-        return;
+    assert(performance[FLY]);
+    findDisplacement([&](int* pathDx, int* pathDy) {
+        simplifyDirection(targetX-posX, targetY-posY, pathDx, pathDy);
+        return true;
+    });
+    directionFromDxDy();
+    if (dx==0 && dy==0) return;
+    const int bearing=direction;
+    for (int turn : {0, 1, 7, 2, 6, 3, 5, 4}) {
+        direction=(bearing+turn)&UNIT_DIRECTION_MASK;
+        dxDyFromDirection();
+        if (owner->map->isFreeForMovement(posX+dx,posY+dy,AIR_MOVEMENT_CLASS,owner->me))
+            return;
     }
-	int ldx=targetX-posX;
-	int ldy=targetY-posY;
-	findDisplacement([&](int* pathDx, int* pathDy) { simplifyDirection(ldx, ldy, pathDx, pathDy); return true; });
-	directionFromDxDy();
-	Map *map=owner->map;
-	if (map->isFreeForAirUnit(posX+dx, posY+dy))
-		return;
-	int cDirection=direction;
-	direction=(cDirection+1)&UNIT_DIRECTION_MASK;
-	dxDyFromDirection();
-	if (map->isFreeForAirUnit(posX+dx, posY+dy))
-		return;
-	direction=(cDirection+7)&UNIT_DIRECTION_MASK;
-	dxDyFromDirection();
-	if (map->isFreeForAirUnit(posX+dx, posY+dy))
-		return;
-	direction=(cDirection+2)&UNIT_DIRECTION_MASK;
-	dxDyFromDirection();
-	if (map->isFreeForAirUnit(posX+dx, posY+dy))
-		return;
-	direction=(cDirection+6)&UNIT_DIRECTION_MASK;
-	dxDyFromDirection();
-	if (map->isFreeForAirUnit(posX+dx, posY+dy))
-		return;
-	direction=(cDirection+3)&UNIT_DIRECTION_MASK;
-	dxDyFromDirection();
-	if (map->isFreeForAirUnit(posX+dx, posY+dy))
-		return;
-	direction=(cDirection+5)&UNIT_DIRECTION_MASK;
-	dxDyFromDirection();
-	if (map->isFreeForAirUnit(posX+dx, posY+dy))
-		return;
-	direction=(cDirection+4)&UNIT_DIRECTION_MASK;
-	dxDyFromDirection();
-	if (map->isFreeForAirUnit(posX+dx, posY+dy))
-		return;
-	dx=0;
-	dy=0;
-	direction=UNIT_DIRECTION_NONE;
-	if (verbose)
-		printf("guid=(%d) flyto failed pos=(%d, %d) \n", gid, posX, posY);
+    dx=dy=0;
+    direction=UNIT_DIRECTION_NONE;
 }
-
 
 void Unit::escapeGroundTarget()
 {
@@ -227,4 +195,9 @@ void Unit::simplifyDirection(int ldx, int ldy, int *cdx, int *cdy)
 		*cdx=SIGN(ldx);
 		*cdy=SIGN(ldy);
 	}
+}
+
+int Unit::movementClass() const
+{
+    return performance[FLY]>0 ? AIR_MOVEMENT_CLASS : swimClass();
 }

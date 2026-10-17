@@ -44,7 +44,7 @@ private:
 	bool valid = false, allocationFailed = false;
 	static constexpr std::size_t MinimumCells = 4096;
 	static constexpr std::size_t MaximumBytes = 32 * 1024 * 1024;
-	static constexpr std::size_t MaximumBytesPerCell = 16;
+	static constexpr std::size_t MaximumBytesPerCell = 24;
 	static constexpr std::size_t DirtyDivisor = 64;
 	static constexpr std::size_t RebuildQuietFields = 16;
 	void invalidateLocked();

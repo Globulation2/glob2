@@ -31,6 +31,11 @@ struct GradientRuntime
 		gradient_preparation::CrowdingScratch crowding;
 	};
     TerrainSafetyCache safety;
+    // Owner-only derived summary, invalidated alongside air safety on edits,
+    // catalog replacement and loading. Never depends on query order.
+    struct DirectFlight {
+        bool resourceBlockers = false, valid = false;
+    } directFlight;
 	struct MaterialField
 	{
 		std::unique_ptr<Uint16[]> cells;
