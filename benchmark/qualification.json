@@ -1,0 +1,60 @@
+[
+  {
+    "name": "baseline-focused",
+    "command": [
+      "python3",
+      "test/run_tests.py",
+      "--build-dir",
+      "build/darwin/client/release/client-full-direct-1111",
+      "--timeout",
+      "300",
+      "-j4",
+      "--junit",
+      "/Users/bradley/.codex/worktrees/hiring-gradient-bench/glob2/artifacts/hiring-prewarm-top-candidates/baseline-focused-junit.xml",
+      "--filter",
+      "HiringPipeline/*",
+      "--filter",
+      "HiringPlanner/*",
+      "--filter",
+      "GradientPipeline/*"
+    ],
+    "GLOB2_HIRING_PREWARM": "baseline",
+    "exit_code": 0
+  },
+  {
+    "name": "shortlist-handoff",
+    "command": [
+      "python3",
+      "test/run_tests.py",
+      "--build-dir",
+      "build/darwin/client/release/client-full-direct-1111",
+      "--timeout",
+      "300",
+      "-j4",
+      "--junit",
+      "/Users/bradley/.codex/worktrees/hiring-gradient-bench/glob2/artifacts/hiring-prewarm-top-candidates/shortlist-handoff-junit.xml",
+      "--filter",
+      "HiringGradientPrewarmProbe/*"
+    ],
+    "GLOB2_HIRING_PREWARM": "shortlist",
+    "exit_code": 0
+  },
+  {
+    "name": "top-handoff",
+    "command": [
+      "python3",
+      "test/run_tests.py",
+      "--build-dir",
+      "build/darwin/client/release/client-full-direct-1111",
+      "--timeout",
+      "300",
+      "-j4",
+      "--junit",
+      "/Users/bradley/.codex/worktrees/hiring-gradient-bench/glob2/artifacts/hiring-prewarm-top-candidates/top-handoff-junit.xml",
+      "--filter",
+      "HiringGradientPrewarmProbe/*"
+    ],
+    "GLOB2_HIRING_PREWARM": "top",
+    "exit_code": 0
+  }
+]

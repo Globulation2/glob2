@@ -1,0 +1,7 @@
+RUN baseline-focused
+PASS baseline-focused
+RUN shortlist-handoff
+PASS shortlist-handoff
+RUN top-handoff
+PASS top-handoff
+QUALIFICATION COMPLETE

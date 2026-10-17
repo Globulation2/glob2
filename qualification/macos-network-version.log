@@ -1,0 +1,5 @@
+PASS glob2-unit-tests PlatformClient (1 cases) (0.1s)
+PASS glob2-unit-tests PlatformProtocol (8 cases) (0.1s)
+
+2 passed, 0 failed, 0 skipped (0.2s of test time)
+[run_tests] JUnit report: artifacts/hiring-gradient-production/macos-network-version.xml (9 cases)

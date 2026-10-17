@@ -1,0 +1,121 @@
+{
+  "tested_commit": "c7f1cd2996a13ac59d56926755c182008b67d736",
+  "base_revision": "486a2230a4ddb257ba9dee34d3aace05f2260d6f",
+  "tree": "471fea01566e9156fd7eb3974eb4f8eb6469bea7",
+  "original_pr_head": "ba299a18eeed0fde46a6c74ccf116eb0d7535cc5",
+  "environment": {
+    "platform": "macOS-26.6.2-arm64-arm-64bit-Mach-O",
+    "architecture": "arm64",
+    "compiler": "Apple clang version 21.0.0 (clang-2100.3.34.2)\nTarget: arm64-apple-darwin25.6.0\nThread model: posix\nInstalledDir: /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin",
+    "build": "PYTHONPATH=. python3 tools/dev_build.py -j8 engine-tests build/darwin/client/debug/dev-dev_fast-true-linker-auto/src/glob2; PYTHONPATH=. python3 tools/dev_build.py -j8 unit-tests",
+    "flags": "dev_fast=1, -O0 -g1, linker=auto; correctness only; no production performance claim",
+    "dependency_manifest_sha256": "5c04cd735f6bff4219a13df18554310c18449bd27aee9828985cf336b515604f"
+  },
+  "reports": {
+    "focused": {
+      "report": "macos-final-focused.xml",
+      "tests": 91,
+      "failed_cases": 1,
+      "failed_names": [
+        "SavegameSafety/autosave defaults; atomic and background writes; truncated and malformed loads; imports and campaign progress [save-format][writes-preferences]"
+      ]
+    },
+    "save_retry": {
+      "report": "macos-save-retry.xml",
+      "tests": 1,
+      "failed_cases": 0,
+      "failed_names": []
+    },
+    "turn": {
+      "report": "macos-turn.xml",
+      "tests": 4,
+      "failed_cases": 0,
+      "failed_names": []
+    },
+    "replay": {
+      "report": "macos-replay.xml",
+      "tests": 7,
+      "failed_cases": 0,
+      "failed_names": []
+    },
+    "broader_unit": {
+      "report": "macos-unit.xml",
+      "tests": 1186,
+      "failed_cases": 22,
+      "failed_names": [
+        "GpuTexturePreparation/native alpha weighted mips match every CPU level and preserve GL state [display]",
+        "ProgrammableGLDevice/GL trims completed retired targets while capture leases remain [display]",
+        "ProgrammableGLDevice/GLES300 shaders draw retained partial submissions [display]",
+        "ProgrammableGLDevice/authoritative skin rig matches fixed geometry and cropped capture retains target [display]",
+        "ProgrammableGLDevice/explicit GL trim restores live immutable source pixels [display]",
+        "ProgrammableGLDevice/integer terrain composition preserves seam wrapping orientation reduction and PMA [display]",
+        "ProgrammableGLDevice/minification samples authored CPU mip levels without driver regeneration [display]",
+        "ProgrammableGLDevice/shared CPU pages batch different sprite frames and retain queued revisions [display]",
+        "ProgrammableGLDevice/terrain rejects unallocated target feedback before changing the retained frame [display]",
+        "ProgrammableGLDevice/world sampling preserves offscreen top-left orientation and fractional target size [display]",
+        "RendererAssetLifetime/deleted drawables retire device identities even during CPU exports [display]",
+        "RendererSelection/public device hold preserves graphics generation and offscreen captures [display]",
+        "SDLGPUDevice/Expanded rectangles do not consume recorded triangle capacity [display][isolated]",
+        "SDLGPUDevice/Shared terrain passes match separated cells across targets reduction and barriers [display][isolated]",
+        "SDLGPUDevice/Texture memory follows allocation lifetime across repeated leases and failed frames [display][isolated]",
+        "SDLGPUDevice/Vulkan batches the bounded primitive stream without crossing barriers [display][isolated]",
+        "SDLGPUDevice/Vulkan reused primitive passes match separated state and target changes [display][isolated]",
+        "SDLGPUDevice/physical scissors preserve fractional alpha seams [display][isolated]",
+        "SkinReadback/export readback matches live compositing for every pose and rotated swarm [display]",
+        "SurfaceCoverage/native frame completion trims cached sources after map transform restores immediate drawing [display]",
+        "ImageAssets/16-bit RGBA rounds normalized channels to the exporter reference",
+        "OpenCLGradient/full fields agree with heap oracle across costs caps seeds and wrapping"
+      ]
+    },
+    "network_version": {
+      "report": "macos-network-version.xml",
+      "tests": 9,
+      "failed_cases": 0,
+      "failed_names": []
+    }
+  },
+  "headless": [
+    {
+      "workload": "holiday",
+      "seed": 42,
+      "ticks": 2048,
+      "participants": [
+        1,
+        4
+      ],
+      "initial_checksum": 4031269181,
+      "final_checksum": 1572854972,
+      "files": {
+        "world.checksums": "c344d6fc66cd521f334ff91492ff80755ad530c7a8ff54e2c6c81fbdca3b123b",
+        "game.replay.checksums": "60c9cfc31efb7a9785784dd4c909a3b0750a8bcb0c2df52d667f6b5ac58f9f7c"
+      }
+    },
+    {
+      "workload": "large-eleven",
+      "seed": 42,
+      "ticks": 2048,
+      "participants": [
+        1,
+        4
+      ],
+      "initial_checksum": 2978572368,
+      "final_checksum": 592969637,
+      "files": {
+        "world.checksums": "2b2c64c397fe18afd0ec693b6b1c667d1e83d6ed3a0c501d43c20e2dc227ac37",
+        "game.replay.checksums": "8b7c86810aa52574b24639c4f1302b7ce784d395f25eba5c7d53fdf68adb206f"
+      }
+    }
+  ],
+  "binaries": {
+    "build/darwin/client/debug/dev-dev_fast-true-linker-auto/src/glob2": "f64c92e3aff5fd807c71e395e76c3f8777e77893d64133f0cae4dfbd99595680",
+    "build/darwin/client/debug/dev-dev_fast-true-linker-auto/test/glob2-engine-tests": "8664bdac139d93325e73c78ee872b8b1608118bf035bac6db7364b214b567f90",
+    "build/darwin/client/debug/dev-dev_fast-true-linker-auto/test/glob2-unit-tests": "70dc9846410703cf8532fa12c1bbfd5b980391835ad4871157bf584b1ab589d5"
+  },
+  "limitations": [
+    "22 broader unit cases failed: 20 display cases, one 16-bit RGBA decode case and one OpenCL convergence case. No diff under libgag/, src/render/ or src/field/ relative to master; baseline status not established. Full unit suite is not claimed green.",
+    "Linux qualification interrupted by host disk exhaustion; Docker Desktop subsequently reports unable to start. No cross-platform checksum equivalence established.",
+    "Windows, browsers, mobile, release build qualification of this production revision and maintainer play review remain unverified.",
+    "One focused save-safety case initially failed to write after disk exhaustion; the same case passed after removing only generated benchmark object/archive files. Initial failures are retained.",
+    "384-run benchmark is a prior optimized prototype with four scheduled refreshes per team in all modes. PR 1197 retains its existing scheduling cap; PR 1220 is separate. Do not present the prototype timings as measurements of this production binary."
+  ]
+}

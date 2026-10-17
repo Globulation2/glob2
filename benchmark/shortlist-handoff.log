@@ -1,0 +1,8 @@
+[run_tests] /Users/bradley/.codex/worktrees/hiring-gradient-bench/glob2/build/darwin/client/release/client-full-direct-1111/test/glob2-unit-tests is not built; skipping
+PASS HiringGradientPrewarmProbe/prewarming reuses a dirty serving generation and its search (0.1s)
+PASS HiringGradientPrewarmProbe/primary-only prewarming leaves fallback cells lazy while retaining candidates (0.1s)
+PASS HiringGradientPrewarmProbe/cold shortlisted destinations are settled before suggestions publish (0.1s)
+PASS HiringGradientPrewarmProbe/a stale unreachable serving field keeps candidates for a live refresh (0.1s)
+
+4 passed, 0 failed, 0 skipped (0.3s of test time)
+[run_tests] JUnit report: /Users/bradley/.codex/worktrees/hiring-gradient-bench/glob2/artifacts/hiring-prewarm-top-candidates/shortlist-handoff-junit.xml (4 cases)

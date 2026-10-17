@@ -1,0 +1,95 @@
+{
+  "binary": "/Users/bradley/.codex/worktrees/hiring-gradient-bench/glob2/build/darwin/client/release/client-full-direct-1111/src/glob2",
+  "binary_sha256": "9188b076937a81eb554a8825e57dedbd3832fb570c5abf9bf19cd48e9258ee97",
+  "source_manifest_sha256": "d276530d68ead64814ca6ea7c8a5b51067f61fd3c90328480a1781812b964e7e",
+  "tick_sample_format": "chronological native uint64 nanoseconds, little",
+  "base_revision": "ba299a18eeed0fde46a6c74ccf116eb0d7535cc5",
+  "platform": "macOS-26.6.2-arm64-arm-64bit-Mach-O",
+  "architecture": "arm64",
+  "policies": [
+    "baseline",
+    "shortlist",
+    "top"
+  ],
+  "participants": [
+    1,
+    4
+  ],
+  "seeds": [
+    42,
+    43,
+    44,
+    45,
+    46,
+    47,
+    48,
+    49,
+    50,
+    51,
+    52,
+    53,
+    54,
+    55,
+    56,
+    57,
+    58,
+    59,
+    60,
+    61,
+    62,
+    63,
+    64,
+    65,
+    66,
+    67,
+    68,
+    69,
+    70,
+    71,
+    72,
+    73
+  ],
+  "workloads": [
+    {
+      "name": "holiday",
+      "map": "Holiday_Island_2.map.gz",
+      "players": [
+        "nicowar",
+        "econo",
+        "castor",
+        "warrush"
+      ],
+      "ticks": 32768,
+      "map_sha256": "7c8d9ff5d0bbff14945f1a31bb78ffdc60df2befe08e7b5b0f9c0bedb8f977e9"
+    },
+    {
+      "name": "large-eleven",
+      "map": "Oazis.map.gz",
+      "players": [
+        "nicowar",
+        "econo",
+        "castor",
+        "warrush",
+        "nicowar",
+        "econo",
+        "castor",
+        "warrush",
+        "nicowar",
+        "econo",
+        "castor"
+      ],
+      "ticks": 32768,
+      "map_sha256": "b3283af95ee177f528d3b57438797c4a1970473c562a76f5ed4faad51f03a6d3"
+    }
+  ],
+  "building_admission": "Four per team in all modes. Eight-tick scheduled refresh publication; experimental cold hiring fields publish with shortlist at its existing one-tick deadline.",
+  "comparison": "Baseline: original missing/stale heuristic ranking, no prewarming. Full shortlist: original ranking, then prepare every final ground candidate including fallback entries. Top only: identical ranking, prepare only the primary prefix selected by team coordination; uncoordinated lists use up to actual vacancies. Both retain every fallback entry, reuse usable/stale serving fields and preserve scheduled refresh policy. The previous exact-ranking policy is excluded because it already computes candidate distances during ranking.",
+  "build_command": "PYTHONPATH=. CCACHE=1 scons -j8 release=1 client_profile=full server=0",
+  "instrumentation": "Same binary and counters in all modes. Thread CPU timers on hiring jobs, private seeds, proposal extensions and ordinary resolve misses. Owner misses include all ordinary building readers, not only hires. Capture counters before final checksum/save work. Total process CPU includes final draining of private jobs.",
+  "limitations": [
+    "Experimental prewarming path is not save/load qualified. No production PR is modified.",
+    "Policies change game evolution and membership/ranking; total CPU is not isolated kernel cost.",
+    "No graphics/frame pacing, other devices or cross-platform coverage."
+  ],
+  "run_order": "Serial, paired per seed/map, rotate/reverse mode order and alternate participant order; replace full six-run set on native build, docker exec/build, or VM CPU >=10% overlap. VM CPU comes from host ps. After activity clears, require 15 quiet seconds. Other host load is not fully controlled."
+}

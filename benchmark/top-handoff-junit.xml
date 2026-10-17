@@ -1,0 +1,6 @@
+<?xml version='1.0' encoding='utf-8'?>
+<testsuites tests="4" failures="0" errors="0" skipped="0"><testsuite name="HiringGradientPrewarmProbe"><testcase classname="HiringGradientPrewarmProbe" name="a stale unreachable serving field keeps candidates for a live refresh" time="0.027766" status="run" />
+  <testcase classname="HiringGradientPrewarmProbe" name="cold shortlisted destinations are settled before suggestions publish" time="0.049464" status="run" />
+  <testcase classname="HiringGradientPrewarmProbe" name="prewarming reuses a dirty serving generation and its search" time="0.027861" status="run" />
+  <testcase classname="HiringGradientPrewarmProbe" name="primary-only prewarming leaves fallback cells lazy while retaining candidates" time="0.050568" status="run" />
+  </testsuite></testsuites>

@@ -1,0 +1,742 @@
+diff --git a/src/app/cli/Headless.cpp b/src/app/cli/Headless.cpp
+index 1993b8923..ff09f99c4 100644
+--- a/src/app/cli/Headless.cpp
++++ b/src/app/cli/Headless.cpp
+@@ -1,5 +1,6 @@
+ // SPDX-License-Identifier: GPL-3.0-or-later
+ #include <Environment.h>
++#include "HiringGradientProbe.h"
+ #include "Headless.h"
+ #include "ResourceGrowth.h"
+ #include <utility>
+@@ -498,6 +499,7 @@ struct HeadlessRunner
+ 				static_cast<AIJavaScript *>(player->ai->aiImplementation)->enableValidationReporting();
+ 		}
+ 		const auto initialChecksum = engine.gui.game.checkSum(nullptr, nullptr, nullptr, true);
++        HiringGradientProbe::reset();
+ 		const auto runStart = std::chrono::steady_clock::now();
+ 		uint64_t setupCpu=0,runCpu=0,measureStart=0;
+ 		unsigned measuredTicks=0;
+@@ -533,6 +535,7 @@ struct HeadlessRunner
+ 		else { engine.run(); engine.gui.game.map.finishGradientPipeline(); engine.gui.game.map.finishResourceGrowth(); engine.gui.game.drainHiring(); }
+ 		if (engine.diagnostics) engine.diagnostics->finish();
+ 		const auto runEnd = std::chrono::steady_clock::now();
++        HiringGradientProbe::capture();
+ 		const auto saveCpuStart=benchmark?processCpuNs():0;
+ 		if(final) engine.saveInitialGameStateOrExit((output/"final.game").string(),"final",engine.gui.game.mapHeader.getMapName());
+ 		const auto saveCpu=benchmark?processCpuNs()-saveCpuStart:0;
+@@ -543,6 +546,10 @@ struct HeadlessRunner
+ 		const auto buildingResult = game.map.buildingGradientPipelineStatus();
+ 		const auto gradient=gradient_kernel::configuration();
+         const auto accelerator=gradient_kernel::acceleratorStatus(gradient.backend);
++        if(const char* tickFile=std::getenv("GLOB2_BENCH_TICKS")) {
++            std::ofstream file(tickFile,std::ios::binary);
++            file.write(reinterpret_cast<const char*>(tickDurations.data()),tickDurations.size()*sizeof(Uint64));
++        }
+         std::sort(tickDurations.begin(),tickDurations.end());
+         const auto percentile=[&](unsigned p)->Uint64 {return tickDurations.empty()?0:tickDurations[(tickDurations.size()-1)*p/100];};
+ 		engine.trackTeamEliminations();
+@@ -655,7 +662,9 @@ struct HeadlessRunner
+             const bool available = (name == "computation_ns" ? workerAvailable
+                 : (name == "deadline_misses" || name == "deadline_wait_ns") ? summaryAvailable : true);
+             result << measured(value, available);}
+-        result << "},\"benchmark_tick_histogram\":[";
++        result << "},\"hiring_gradient_probe\":";
++        HiringGradientProbe::write(result);
++        result << ",\"benchmark_tick_histogram\":[";
+         for(unsigned i=0;i<tickHistogram.size();++i) {
+             if(i) result<<',';
+             result<<"{\"upper_ns_exclusive\":";
+diff --git a/src/building/HiringPipeline.cpp b/src/building/HiringPipeline.cpp
+index 06174f327..0854709ac 100644
+--- a/src/building/HiringPipeline.cpp
++++ b/src/building/HiringPipeline.cpp
+@@ -5,6 +5,10 @@
+ #include "Building.h"
+ #include "Unit.h"
+ #include "SharedBuildingGradient.h"
++#include "HiringGradientProbe.h"
++#include "SnapshotGradient.h"
++#include "BuildingGradientDepthPolicy.h"
++#include "ai/observation/AIWorldView.h"
+ #include <bit>
+ #include <BinaryStream.h>
+ #include <ChecksumStream.h>
+@@ -189,12 +193,46 @@ HiringPipeline::~HiringPipeline()
+ }
+ void HiringPipeline::compute(void *context, std::size_t)
+ {
++    HiringGradientProbe::Timer timer(HiringGradientProbe::HiringCpu);
++    HiringGradientProbe::add(HiringGradientProbe::HiringJobs);
+ 	auto &w = *static_cast<Work *>(context);
+ 	w.output = std::make_shared<Output>(HiringPlanner::Planner{}.rank(*w.input, w.team, Capacity));
+-	w.input.reset();
++    const auto& o=*w.output;
++    HiringGradientProbe::add(HiringGradientProbe::CandidateVisits,o.candidateVisits);
++    HiringGradientProbe::add(HiringGradientProbe::HeuristicQueries,o.metrics.missingBuildingFields);
++    HiringGradientProbe::add(HiringGradientProbe::SharedQueries,o.metrics.sharedQueries);
++    {
++        const AIEngine::AIWorldView world(w.input->world);
++        for(const auto& building:o.buildings) for(const auto& list:building.jobs)
++            for(unsigned candidateIndex=0; candidateIndex<list.candidates.size(); ++candidateIndex) {
++                const auto& candidate=list.candidates[candidateIndex];
++                const auto* unit=world.unitAtSlot(candidate.unit.gid);
++                if(!unit || unit->identity!=candidate.unit || unit->performance[FLY]) continue;
++                const auto route=list.key.job==Hiring::Job::Delivery || list.key.job==Hiring::Job::Fetch ? BuildingRoute::Footprint : list.key.job==Hiring::Job::Clear ? BuildingRoute::Clearing : BuildingRoute::Combat;
++                const int slot=int(route)*SWIM_CLASS_COUNT+Map::swimClass(unit->performance[WALK],unit->performance[SWIM]);
++                HiringGradientProbe::add(HiringGradientProbe::ShortlistedGround);
++                bool found=false;
++                for(const auto& bound:*w.input->routes) if(bound.building==building.building && bound.slot==slot) {
++                    found=true;
++                    if(HiringGradientProbe::mode()!=HiringGradientProbe::Baseline &&
++                       (HiringGradientProbe::mode()!=HiringGradientProbe::TopOnly || candidateIndex<list.probePrimaryCount)) {
++                        HiringGradientProbe::add(candidateIndex<list.probePrimaryCount ? HiringGradientProbe::WarmedPrimary : HiringGradientProbe::WarmedExtra);
++                        if(bound.field->distance(unit->posX,unit->posY)==INT_MAX) HiringGradientProbe::add(HiringGradientProbe::ShortlistedUnreachable);
++                    } else {
++                        auto lock=SharedBuildingGradient::lock(bound.field);
++                        const auto cell=std::size_t(unit->posY&(world.height-1))*world.width+(unit->posX&(world.width-1));
++                        if(bound.field->search && !bound.field->search->resolved(cell))HiringGradientProbe::add(HiringGradientProbe::ShortlistedUnsettled);
++                    }
++                    break;
++                }
++                if(!found)HiringGradientProbe::add(HiringGradientProbe::ShortlistedMissing);
++            }
++    }
++    if(HiringGradientProbe::mode()==HiringGradientProbe::Baseline)w.input.reset();
+ }
+ void HiringPipeline::observe(Game &game, const SimulationSnapshot::Handle &snapshot)
+ {
++    probeGame=&game;
+ 	const auto tick = game.stepCounter;
+ 	if (lastObserved && *lastObserved == tick)
+ 		return;
+@@ -256,6 +294,54 @@ void HiringPipeline::publishDue(Uint32 tick)
+ 		{
+ 			if (!w.output)
+ 				throw std::logic_error("Missing hiring result");
++            if(w.input && probeGame && HiringGradientProbe::mode()!=HiringGradientProbe::Baseline)
++                for(const auto& route:*w.input->routes) {
++                    auto& field=*route.field;
++                    if(!field.probePrivate || Building::GIDtoTeam(route.building.gid)!=int(w.team) || !field.values) continue;
++                    auto* live=probeGame->resolveBuilding(route.building);
++                    const int slot=route.slot,swim=slot%SWIM_CLASS_COUNT;
++                    const auto kind=BuildingRoute(slot/SWIM_CLASS_COUNT);
++                    if(!live || live->refreshEpoch[slot]!=field.probeEpoch || probeGame->map.topologyGeneration!=field.probeGeneration ||
++                        (live->globalGradient[slot] && live->lastGlobalGradientUpdateStepCounter[slot]>=field.probeTick)) {
++                        HiringGradientProbe::add(HiringGradientProbe::Discarded);continue;
++                    }
++                    auto guard=SharedBuildingGradient::lock(live->sharedGradient[slot]);
++                    live->retireSharedGradient(slot);
++                    probeGame->map.recycleBuildingGradientBuffer(live->globalGradient[slot]);
++                    recycleBuildingGradientSearch(std::move(live->globalGradientSearch[slot]));
++                    live->supersedeGradient(slot);
++                    live->globalGradient[slot]=field.retiredValues.release();
++                    live->globalGradientSearch[slot]=std::move(field.retiredSearch);
++                    live->sharedGradient[slot]=route.field;
++                    live->dirtyGradient[slot]=false;
++                    live->gradientGeneration[slot]=field.probeGeneration;
++                    live->lastGlobalGradientUpdateStepCounter[slot]=field.probeTick;
++                    live->globalGradientUsedStep[slot]=std::max(live->globalGradientUsedStep[slot],field.probeTick);
++                    live->setLocked(live->routeAccess(swim,kind),field.probeLocked);
++                    if(kind==BuildingRoute::Clearing)live->anyResourceToClear[swimAccessVariant(swim)]=field.probeResource;
++                    field.probePrivate=false;
++                    HiringGradientProbe::add(HiringGradientProbe::Applied);
++                }
++            if(probeGame) for(const auto& lists:w.output->buildings) {
++                auto* live=probeGame->resolveBuilding(lists.building);
++                if(!live || live->typeNum!=lists.type)continue;
++                for(const auto& list:lists.jobs)for(unsigned candidateIndex=0;candidateIndex<list.candidates.size();++candidateIndex) {
++                    const auto& candidate=list.candidates[candidateIndex];
++                    const bool primary=candidateIndex<list.probePrimaryCount;
++                    auto* unit=probeGame->resolveUnit(candidate.unit);
++                    if(!unit || unit->performance[FLY])continue;
++                    HiringGradientProbe::add(HiringGradientProbe::PublishedGround);
++                    if(primary)HiringGradientProbe::add(HiringGradientProbe::PublishedPrimaryGround);
++                    const auto kind=list.key.job==Hiring::Job::Delivery || list.key.job==Hiring::Job::Fetch ? BuildingRoute::Footprint : list.key.job==Hiring::Job::Clear ? BuildingRoute::Clearing : BuildingRoute::Combat;
++                    const int slot=live->routeSlot(unit->swimClass(),kind);
++                    auto guard=SharedBuildingGradient::lock(live->sharedGradient[slot]);
++                    if(!live->globalGradient[slot]) {HiringGradientProbe::add(HiringGradientProbe::PublishedMissing);if(primary)HiringGradientProbe::add(HiringGradientProbe::PublishedPrimaryMissing);}
++                    else {
++                        if(live->dirtyGradient[slot] || live->gradientGeneration[slot]!=probeGame->map.topologyGeneration)HiringGradientProbe::add(HiringGradientProbe::PublishedStale);
++                        if(live->globalGradientSearch[slot] && !live->globalGradientSearch[slot]->resolved(probeGame->map.coordToIndex(unit->posX,unit->posY))) {HiringGradientProbe::add(HiringGradientProbe::PublishedUnsettled);if(primary)HiringGradientProbe::add(HiringGradientProbe::PublishedPrimaryUnsettled);}
++                    }
++                }
++            }
+ 			published[w.team] = w.output;
+ 			++metrics.published;
+ 		}
+@@ -450,8 +536,32 @@ HiringPlanner::Inputs HiringPipeline::bindRoutes(Game &game, const SimulationSna
+ 						(route == BuildingRoute::Clearing && !clearing) ||
+ 						(route == BuildingRoute::Combat && !combat))
+ 						continue;
+-					if (auto field = game.map.leaseBuildingRoute(live, c, route))
+-						routes->push_back({b.identity, live->routeSlot(c, route), std::move(field)});
++                    auto field=game.map.leaseBuildingRoute(live,c,route);
++                    const bool originalMissing=!field;
++                    if(!field && HiringGradientProbe::mode()!=HiringGradientProbe::Baseline && live->globalGradient[live->routeSlot(c,route)])
++                        field=live->leaseGradient(live->routeSlot(c,route));
++                    if(!field && HiringGradientProbe::mode()!=HiringGradientProbe::Baseline) {
++                        field=std::make_shared<SharedBuildingGradient>();
++                        const auto slot=live->routeSlot(c,route);
++                        field->probePrivate=true;field->probeEpoch=live->refreshEpoch[slot];
++                        field->probeGeneration=game.map.topologyGeneration;field->probeTick=game.stepCounter;
++                        const auto seed=gradient_preparation::captureBuildingSeed(*live,c,route);
++                        field->probeInitialize=[snapshot=world.buildingGradientView(),seed](SharedBuildingGradient& f) {
++                            HiringGradientProbe::Timer timer(HiringGradientProbe::PrivateBuildCpu);
++                            HiringGradientProbe::add(HiringGradientProbe::PrivateBuilds);
++                            f.width=snapshot.width;f.height=snapshot.height;
++                            f.retiredValues.reset(new Uint16[std::size_t(f.width)*f.height]);
++                            f.retiredSearch=acquireBuildingGradientSearch();
++                            const auto result=gradient_preparation::buildBuilding(seed,snapshot,BuildingGradientSearch::Inputs::ofSnapshot(snapshot,seed.swim),f.retiredValues.get(),*f.retiredSearch,BuildingGradientDepth::MIN_DEPTH);
++                            f.probeLocked=result.locked;f.probeResource=result.resourceState;
++                            if(result.locked)f.retiredSearch.reset();
++                            f.values=f.retiredValues.get();f.search=f.retiredSearch.get();
++                        };
++                    }
++                    if(field) {
++                        const bool estimate=originalMissing && (HiringGradientProbe::mode()==HiringGradientProbe::Shortlist || HiringGradientProbe::mode()==HiringGradientProbe::TopOnly || !field->probePrivate);
++                        routes->push_back({b.identity,live->routeSlot(c,route),std::move(field),estimate});
++                    }
+ 				}
+ 	}
+ 	inputs.routes = std::move(routes);
+diff --git a/src/building/HiringPipeline.h b/src/building/HiringPipeline.h
+index 4fe28d564..18870cbd7 100644
+--- a/src/building/HiringPipeline.h
++++ b/src/building/HiringPipeline.h
+@@ -20,6 +20,7 @@ class HiringPipeline
+ 	struct Work;
+ 	struct Batch;
+ 	ComputeExecutor &executor;
++    Game* probeGame=nullptr;
+ 	std::optional<Uint32> lastObserved;
+ 	std::array<std::shared_ptr<const HiringPlanner::Output>, 16> published;
+ 	std::deque<std::unique_ptr<Batch>> pending;
+diff --git a/src/building/HiringPipelineTest.cpp b/src/building/HiringPipelineTest.cpp
+index 684422f58..d93532ba2 100644
+--- a/src/building/HiringPipelineTest.cpp
++++ b/src/building/HiringPipelineTest.cpp
+@@ -1,3 +1,6 @@
++#include "map/gradient/SharedBuildingGradient.h"
++#include "HiringGradientProbe.h"
++#include "BuildingGradientSearch.h"
+ // SPDX-License-Identifier: GPL-3.0-or-later
+ #include "EngineFixtures.h"
+ #include "HiringPipeline.h"
+@@ -465,3 +468,109 @@ TEST_SUITE("HiringPlanner")
+ 		(void)b;
+ 	}
+ }
++
++TEST_SUITE("HiringGradientPrewarmProbe") {
++TEST_CASE("cold shortlisted destinations are settled before suggestions publish") {
++    REQUIRE(HiringGradientProbe::mode()!=HiringGradientProbe::Baseline);
++    glob2test::HeadlessGlobals globals;
++    for(unsigned participants:{1u,4u}) for(bool invalidate:{false,true}) {
++        CAPTURE(participants);CAPTURE(invalidate);
++        glob2test::HeadlessGame w({.wDec=6,.hDec=6,.discovered=true,.loadDefaultRace=true});
++        w.game.map.configureCompute(participants);
++        auto* b=w.addBuilding("inn",8,8);b->maxUnitWorking=1;b->setMaterial(WHEAT,0);b->updateCallLists();
++        auto* u=w.addUnit(WORKER,35,35);u->activity=Unit::ACT_RANDOM;u->medical=Unit::MED_FREE;
++        u->hungriness=0;u->carriedMaterial=WHEAT;
++        const auto slot=b->routeSlot(u->swimClass(),BuildingRoute::Footprint);
++        REQUIRE(!b->globalGradient[slot]);
++        HiringPipeline pipeline(w.game.map.computeExecutor());
++        pipeline.observe(w.game,observation(w));pipeline.drain();
++        REQUIRE(!b->globalGradient[slot]);
++        if(invalidate)w.game.map.bumpTopologyGeneration();
++        pipeline.publishDue(HiringPipeline::Delay);
++        const auto* lists=pipeline.suggestions(*b);REQUIRE(lists);
++        bool found=false;for(const auto& list:lists->jobs)for(const auto& candidate:list.candidates)if(candidate.unit==Game::refOf(u))found=true;
++        REQUIRE(found);
++        if(invalidate)CHECK(!b->globalGradient[slot]);
++        else {
++            REQUIRE(b->globalGradient[slot]);REQUIRE(b->globalGradientSearch[slot]);
++            CHECK(b->globalGradientSearch[slot]->resolved(w.game.map.coordToIndex(u->posX,u->posY)));
++            CHECK(b->gradientGeneration[slot]==w.game.map.topologyGeneration);
++        }
++    }
++}
++}
++
++TEST_SUITE("HiringGradientPrewarmProbe") {
++TEST_CASE("prewarming reuses a dirty serving generation and its search") {
++    REQUIRE(HiringGradientProbe::mode()!=HiringGradientProbe::Baseline);
++    glob2test::HeadlessGlobals globals;
++    glob2test::HeadlessGame w({.discovered=true,.loadDefaultRace=true});
++    auto* b=innWithWorker(w);auto* u=w.game.teams[0]->myUnits[0];
++    const int slot=b->routeSlot(u->swimClass(),BuildingRoute::Footprint);
++    b->globalGradient[slot]=w.game.map.acquireBuildingGradientBuffer();
++    w.game.map.updateGlobalGradient(b,u->swimClass(),BuildingRoute::Footprint);
++    auto* data=b->globalGradient[slot];auto* search=b->globalGradientSearch[slot].get();
++    b->dirtyGradient[slot]=true;
++    HiringPipeline pipeline(w.game.map.computeExecutor());
++    pipeline.observe(w.game,observation(w));pipeline.drain();pipeline.publishDue(HiringPipeline::Delay);
++    CHECK(b->globalGradient[slot]==data);
++    CHECK(b->globalGradientSearch[slot].get()==search);
++    CHECK(b->dirtyGradient[slot]);
++    REQUIRE(pipeline.suggestions(*b));
++}
++}
++
++TEST_SUITE("HiringGradientPrewarmProbe") {
++TEST_CASE("a stale unreachable serving field keeps candidates for a live refresh") {
++    REQUIRE(HiringGradientProbe::mode()!=HiringGradientProbe::Baseline);
++    glob2test::HeadlessGlobals globals;
++    glob2test::HeadlessGame w({.discovered=true,.loadDefaultRace=true});
++    auto* b=innWithWorker(w);auto* u=w.game.teams[0]->myUnits[0];
++    const int slot=b->routeSlot(u->swimClass(),BuildingRoute::Footprint);
++    b->globalGradient[slot]=w.game.map.acquireBuildingGradientBuffer();
++    std::fill_n(b->globalGradient[slot],std::size_t(w.game.map.getW())*w.game.map.getH(),GRADIENT_FORBIDDEN);
++    b->dirtyGradient[slot]=true;
++    HiringPipeline pipeline(w.game.map.computeExecutor());
++    pipeline.observe(w.game,observation(w));pipeline.drain();pipeline.publishDue(HiringPipeline::Delay);
++    const auto* lists=pipeline.suggestions(*b);REQUIRE(lists);
++    bool found=false;for(const auto& list:lists->jobs)for(const auto& candidate:list.candidates)if(candidate.unit==Game::refOf(u))found=true;
++    CHECK(found);
++}
++}
++
++TEST_SUITE("HiringGradientPrewarmProbe") {
++TEST_CASE("primary-only prewarming leaves fallback cells lazy while retaining candidates") {
++    REQUIRE(HiringGradientProbe::mode()!=HiringGradientProbe::Baseline);
++    glob2test::HeadlessGlobals globals;
++    for(unsigned participants:{1u,4u}) for(unsigned count:{1u,3u}) {
++        CAPTURE(participants); CAPTURE(count);
++        glob2test::HeadlessGame w({.wDec=7,.hDec=7,.discovered=true,.loadDefaultRace=true});
++        w.game.map.configureCompute(participants);
++        auto* b=w.addBuilding("inn",8,8);b->maxUnitWorking=1;b->setMaterial(WHEAT,0);b->updateCallLists();
++        std::vector<Unit*> units;
++        for(unsigned i=0;i<count;++i) {
++            auto* u=w.addUnit(WORKER,i ? 58+i : 35,8);
++            u->activity=Unit::ACT_RANDOM;u->medical=Unit::MED_FREE;u->hungriness=0;u->carriedMaterial=WHEAT;
++            units.push_back(u);
++        }
++        HiringPipeline pipeline(w.game.map.computeExecutor());
++        pipeline.observe(w.game,observation(w));pipeline.drain();pipeline.publishDue(HiringPipeline::Delay);
++        const auto* lists=pipeline.suggestions(*b);REQUIRE(lists);
++        const HiringPlanner::List* delivery=nullptr;
++        for(const auto& list:lists->jobs)if(list.key==Hiring::Key{Hiring::Job::Delivery,WHEAT})delivery=&list;
++        REQUIRE(delivery); REQUIRE(delivery->candidates.size()==count);
++        CHECK(delivery->probePrimaryCount==1);
++        CHECK(delivery->candidates.front().unit==Game::refOf(units.front()));
++        const auto slot=b->routeSlot(units.front()->swimClass(),BuildingRoute::Footprint);
++        REQUIRE(b->globalGradientSearch[slot]);
++        CHECK(b->globalGradientSearch[slot]->resolved(w.game.map.coordToIndex(units.front()->posX,8)));
++        if(count==3) {
++            const auto cell=w.game.map.coordToIndex(units.back()->posX,8);
++            CHECK(b->globalGradientSearch[slot]->resolved(cell)==(HiringGradientProbe::mode()!=HiringGradientProbe::TopOnly));
++            auto lease=b->leaseGradient(slot);REQUIRE(lease);
++            CHECK(lease->distance(units.back()->posX,8)!=INT_MAX);
++            CHECK(b->globalGradientSearch[slot]->resolved(cell));
++        }
++    }
++}
++}
+diff --git a/src/building/HiringPlanner.cpp b/src/building/HiringPlanner.cpp
+index e3c6d5e59..da80f19ad 100644
+--- a/src/building/HiringPlanner.cpp
++++ b/src/building/HiringPlanner.cpp
+@@ -5,6 +5,7 @@
+ #include "Unit.h"
+ #include "Building.h"
+ #include "SharedBuildingGradient.h"
++#include "HiringGradientProbe.h"
+ #include "ai/observation/AIWorldView.h"
+ #include "field/AirPathfind.h"
+ #include <algorithm>
+@@ -441,7 +442,8 @@ Output Planner::rank(const Inputs &input, unsigned team, unsigned capacity)
+ 			const auto resolvedRoute = route;
+ 			for (const auto &captured : *input.routes)
+ 				if (captured.building == b.identity &&
+-					captured.slot / SWIM_CLASS_COUNT == int(resolvedRoute))
++					captured.slot / SWIM_CLASS_COUNT == int(resolvedRoute) &&
++                    !captured.probeEstimateForRanking)
+ 					buildings[captured.slot % SWIM_CLASS_COUNT] = captured.field;
+ 			const unsigned vacancies =
+ 				key.material >= 0 ? supply->vacancies[key.material] : supply->seats;
+@@ -749,6 +751,8 @@ Output Planner::rank(const Inputs &input, unsigned team, unsigned capacity)
+ 				const auto n = std::min(
+ 					capacity,
+ 					(list.key.material >= 0 ? need.vacancies[list.key.material] : need.seats) + 2u);
++                list.probePrimaryCount = std::min<unsigned>(list.candidates.size(),
++                    list.key.material >= 0 ? need.vacancies[list.key.material] : need.seats);
+ 				if (list.candidates.size() > n)
+ 					std::vector<Candidate>(list.candidates.begin(), list.candidates.begin() + n)
+ 						.swap(list.candidates);
+@@ -857,6 +861,7 @@ Output Planner::rank(const Inputs &input, unsigned team, unsigned capacity)
+ 				for (const auto &c : primary[bi][j].entries)
+ 					if (published.size() < limit)
+ 						published.push_back(c);
++                list.probePrimaryCount = published.size();
+ 				for (const auto &c : list.candidates)
+ 					if (published.size() < limit && !chosen[Unit::GIDtoID(c.unit.gid)])
+ 						published.push_back(c);
+diff --git a/src/building/HiringPlanner.h b/src/building/HiringPlanner.h
+index 34a9c992a..e908a7dca 100644
+--- a/src/building/HiringPlanner.h
++++ b/src/building/HiringPlanner.h
+@@ -21,6 +21,7 @@ struct List
+ {
+ 	Key key;
+ 	std::vector<Candidate> candidates;
++    unsigned probePrimaryCount = 0;
+ };
+ struct BuildingLists
+ {
+@@ -51,6 +52,7 @@ struct Inputs
+ 		BuildingRef building;
+ 		int slot;
+ 		std::shared_ptr<SharedBuildingGradient> field;
++        bool probeEstimateForRanking=false;
+ 	};
+ 	// One immutable table per boundary, shared by every admitted team job.
+ 	std::shared_ptr<const std::vector<Route>> routes;
+diff --git a/src/map/gradient/BuildingGradientPipeline.h b/src/map/gradient/BuildingGradientPipeline.h
+index 374d55a8d..90bdf76bf 100644
+--- a/src/map/gradient/BuildingGradientPipeline.h
++++ b/src/map/gradient/BuildingGradientPipeline.h
+@@ -2,7 +2,9 @@
+ #pragma once
+ #include "sim/snapshot/WorldSnapshot.h"
+ #include "ComputeExecutor.h"
++#include "TeamCapacity.h"
+ #include <algorithm>
++#include <array>
+ #include <cstdint>
+ #include <deque>
+ #include <exception>
+@@ -15,8 +17,8 @@
+ #include <vector>
+ 
+ // Fixed-tick publication for scheduled building fields; the sibling of
+-// GradientPipeline. Differences: up to MaxJobsPerTick reservations per advanced
+-// tick, every job staged in one tick is submitted as one executor batch, and
++// GradientPipeline. Differences: up to MaxJobsPerTeamPerTick reservations per
++// team per advanced tick, all staged jobs share one executor batch, and
+ // publication goes through an owner callback that may still reject a result
+ // (the Map validates it against live buildings).
+ //
+@@ -29,14 +31,16 @@
+ // Payload is the producer-specific job description (building identity, owner
+ // scalars, inputs and outputs). If it provides `void releaseInputs() noexcept`,
+ // that is called once the job completes or fails, so borrowed immutable inputs
+-// end with the computation, as the snapshot lease does.
++// end with the computation, as the snapshot lease does. Payload also provides
++// an integer team identity matching its reservation.
+ template<class Payload> class BuildingGradientPipeline
+ {
+ public:
+-	static constexpr unsigned MaxJobsPerTick = 4;
++	static constexpr unsigned MaxJobsPerTeamPerTick = 4;
+ 	static constexpr unsigned MaxDelay = 8;
+ 	static_assert(MaxDelay <= ComputeExecutor::BuildingHorizon);
+ 	struct Job {
++		unsigned team = 0; // Owner-only admission identity, also retained when superseded.
+ 		std::optional<SimulationSnapshot::Handle> snapshotLease;
+ 		Payload payload{};
+ 		std::uint64_t due = 0;
+@@ -63,7 +67,8 @@ private:
+ 	std::vector<std::unique_ptr<Job>> spare;
+ 	ComputeExecutor* executor = nullptr;
+ 	std::vector<ComputeExecutor::Group> groups;
+-	unsigned delay = 0, admitted = 0;
++	unsigned delay = 0;
++	std::array<unsigned, TEAM_MAX_COUNT> admitted{}, pendingPerTeam{};
+ 	std::uint64_t tick = 0;
+ 	Work work;
+ 	static void releaseInputs(Job& job) noexcept {
+@@ -84,9 +89,10 @@ private:
+ 		if (executor) executor->join(job.batch, context); // Later jobs of the batch hold stale handles.
+ 		if (!job.done) throw std::logic_error("Unprepared building gradient reservation");
+ 	}
+-	unsigned dueCount(std::uint64_t due) const {
++	unsigned dueCount(unsigned team, std::uint64_t due) const {
+ 		unsigned count = 0;
+-		for (auto it = pending.rbegin(); it != pending.rend() && (*it)->due == due; ++it) ++count;
++		for (auto it = pending.rbegin(); it != pending.rend() && (*it)->due == due; ++it)
++			count += (*it)->team == team;
+ 		return count;
+ 	}
+ public:
+@@ -94,10 +100,11 @@ public:
+ 	bool enabled() const { return delay != 0; }
+ 	unsigned delayTicks() const { return delay; }
+ 	std::size_t pendingCount() const { return pending.size(); }
+-	// True while this advanced tick can admit another job.
+-	bool canReserve() const {
+-		return enabled() && tick != 0 && admitted < MaxJobsPerTick && pending.size() < delay*MaxJobsPerTick &&
+-			dueCount(tick+delay) < MaxJobsPerTick;
++	// Teams never borrow another team's unused quota.
++	bool canReserve(unsigned team = 0) const {
++		return enabled() && tick != 0 && team < admitted.size() &&
++			admitted[team] < MaxJobsPerTeamPerTick && pendingPerTeam[team] < delay*MaxJobsPerTeamPerTick &&
++			dueCount(team, tick+delay) < MaxJobsPerTeamPerTick;
+ 	}
+ 	// Complete all private work without publishing; rethrows the oldest failure.
+ 	void finish(JoinContext context = {JoinReason::Verification, ComputeTelemetry::NoTick}) { for (auto& job : pending) { wait(*job, context); if (job->error) std::rethrow_exception(job->error); } }
+@@ -108,7 +115,7 @@ public:
+ 			try { executor->join(job->batch, {JoinReason::Teardown, ComputeTelemetry::NoTick}); } catch (...) {}
+ 		}
+ 		pending.clear(); spare.clear(); groups.clear();
+-		delay = 0; admitted = 0; tick = 0;
++		delay = 0; admitted.fill(0); pendingPerTeam.fill(0); tick = 0;
+ 	}
+ 	// Teardown with pooled outputs: complete submitted work, retire every pending
+ 	// job unpublished, then reset. Worker failures are dropped with their results.
+@@ -127,13 +134,14 @@ public:
+ 	// Execution is local configuration, never part of saved simulation state.
+ 	// Publish before the teams step; preparation observes the completed previous tick.
+ 	void advance() {
+-		++tick; admitted = 0;
++		++tick; admitted.fill(0);
+ 		while (!pending.empty() && pending.front()->due <= tick) {
+ 			auto& job = *pending.front(); wait(job, {JoinReason::TickDeadline, deadline ? deadline(0)/2 : tick});
+ 			if (job.error) std::rethrow_exception(job.error);
+ 			if (!job.superseded && publish && publish(job)) ++metrics.published;
+ 			else ++metrics.discarded;
+ 			if (retire) retire(job);
++			--pendingPerTeam[job.team];
+ 			spare.push_back(std::move(pending.front())); pending.pop_front();
+ 		}
+ 	}
+@@ -146,15 +154,16 @@ public:
+ 	}
+ 	// Admit one job due at tick + delay. The caller fills snapshotLease and payload,
+ 	// then hands every job staged this tick to one prepare() call.
+-	Job* reserve() {
+-		if (!canReserve()) throw std::logic_error("building gradient pipeline admission exceeded");
++	Job* reserve(unsigned team = 0) {
++		if (!canReserve(team)) throw std::logic_error("building gradient pipeline admission exceeded");
+ 		std::unique_ptr<Job> job;
+ 		if (spare.empty()) job = std::make_unique<Job>();
+ 		else { job = std::move(spare.back()); spare.pop_back(); }
+ 		job->due = tick+delay; job->done = false; job->superseded = false; job->error = nullptr;
+ 		job->owner = this; job->batch = {}; job->snapshotLease.reset();
++		job->team = team;
+ 		auto* ptr = job.get(); pending.push_back(std::move(job));
+-		++admitted; ++metrics.jobs;
++		++admitted[team]; ++pendingPerTeam[team]; ++metrics.jobs;
+ 		metrics.maxPending = std::max<std::uint64_t>(metrics.maxPending, pending.size());
+ 		return ptr;
+ 	}
+@@ -163,6 +172,8 @@ public:
+ 	void prepare(std::span<Job* const> jobs) {
+ 		if (jobs.empty()) return;
+ 		try {
++			for (auto* job : jobs)
++				if (job->payload.team != int(job->team)) throw std::logic_error("Building gradient admission team mismatch");
+ 			// Owner-only execution computes now; publication keeps its deadline.
+ 			groups.clear();
+ 			for (auto* job : jobs) groups.push_back({1, {&run, job}, ComputeExecutor::NoLane});
+@@ -190,21 +201,25 @@ public:
+ 	template<class Visitor> void visitOwnerFields(Visitor&& visitor) {
+ 		for (auto& job : pending) visitor(job->payload);
+ 	}
+-	// Logical metadata is independent of physical completion and never joins.
+-	template<class Visitor> void visitLogical(Visitor&& visitor) const {
+-		for (const auto& job : pending)
+-			visitor(std::as_const(job->payload), static_cast<unsigned>(job->due-tick), job->superseded);
+-	}
++    // Retain PR 1197's completion-independent logical checksum visitor.
++    template<class Visitor> void visitLogical(Visitor&& visitor) const {
++        for(const auto& job:pending)
++            visitor(std::as_const(job->payload),static_cast<unsigned>(job->due-tick),job->superseded);
++    }
+ 	// Loading re-creates a completed job with its saved remaining ticks, validated
+ 	// against the same admission bounds a live reservation obeys.
+ 	Job& restoreCompleted(unsigned remaining, bool superseded, Payload payload) {
+ 		const auto due = tick+remaining;
+-		if (!enabled() || !remaining || remaining > delay || pending.size() >= delay*MaxJobsPerTick ||
+-			(!pending.empty() && pending.back()->due > due) || dueCount(due) >= MaxJobsPerTick)
++		const unsigned team = unsigned(payload.team);
++		if (!enabled() || !remaining || remaining > delay || team >= pendingPerTeam.size() ||
++			pendingPerTeam[team] >= delay*MaxJobsPerTeamPerTick ||
++			(!pending.empty() && pending.back()->due > due) || dueCount(team, due) >= MaxJobsPerTeamPerTick)
+ 			throw std::runtime_error("Invalid saved building gradient deadline");
+ 		auto job = std::make_unique<Job>();
+ 		job->payload = std::move(payload); job->due = due; job->superseded = superseded;
+ 		job->done = true; job->owner = this;
++		job->team = team;
++		++pendingPerTeam[team];
+ 		auto& result = *job; pending.push_back(std::move(job));
+ 		return result;
+ 	}
+diff --git a/src/map/gradient/BuildingGradientSearch.cpp b/src/map/gradient/BuildingGradientSearch.cpp
+index 443cf7ed7..d006c017f 100644
+--- a/src/map/gradient/BuildingGradientSearch.cpp
++++ b/src/map/gradient/BuildingGradientSearch.cpp
+@@ -3,6 +3,7 @@
+ 
+ #include <PerformanceTelemetry.h>
+ #include "BuildingGradientSearch.h"
++#include "HiringGradientProbe.h"
+ #include <mutex>
+ #include "Map.h"
+ #include "sim/snapshot/WorldSnapshot.h"
+@@ -150,6 +151,8 @@ void BuildingGradientSearch::resolve(std::size_t target)
+ 	assert(target <= cells);
+ 	if (!complete() && !(target < cells && resolved(target)))
+ 	{
++		HiringGradientProbe::add(HiringGradientProbe::OwnerMisses);
++        HiringGradientProbe::Timer timer(HiringGradientProbe::OwnerCpu);
+ 		PERF_SCOPE_TIME(BuildingGradientResume);
+ 		advance([&] { return target != cells && resolved(target); });
+ 	}
+@@ -169,7 +172,11 @@ void BuildingGradientSearch::resolve(std::size_t target)
+ void BuildingGradientSearch::resolveForProposal(std::size_t target)
+ {
+     assert(target < cells);
+-    if (!complete() && !resolved(target)) advance([&]{return resolved(target);});
++    if (!complete() && !resolved(target)) {
++        HiringGradientProbe::add(HiringGradientProbe::ProposalMisses);
++        HiringGradientProbe::Timer timer(HiringGradientProbe::ProposalCpu);
++        advance([&]{return resolved(target);});
++    }
+ }
+ 
+ void BuildingGradientSearch::resolveToCost(int cost)
+diff --git a/src/map/gradient/GradientPipelineHarness.cpp b/src/map/gradient/GradientPipelineHarness.cpp
+index 3cc19e742..f4851cb54 100644
+--- a/src/map/gradient/GradientPipelineHarness.cpp
++++ b/src/map/gradient/GradientPipelineHarness.cpp
+@@ -173,6 +173,7 @@ struct TestBuildingJob {
+     enum class Behaviour { Normal, Slow, Throw, Gate } behaviour = Behaviour::Normal;
+     std::shared_ptr<const unsigned> input;
+     std::shared_future<void>* gate = nullptr;
++    unsigned team=0;
+     void releaseInputs() noexcept { input.reset(); }
+ };
+ using TestBuildingPipelineBase = BuildingGradientPipeline<TestBuildingJob>;
+@@ -204,7 +205,7 @@ void runTestBuildingJob(TestBuildingPipelineBase::Job& job)
+ 
+ TEST_CASE("gradient, building and AI batches share the maximum deferred horizon" * doctest::test_suite("GradientPipeline"))
+ {
+-    constexpr unsigned PerTick=TestBuildingPipelineBase::MaxJobsPerTick, BuildingDelay=TestBuildingPipelineBase::MaxDelay;
++    constexpr unsigned PerTick=TestBuildingPipelineBase::MaxJobsPerTeamPerTick, BuildingDelay=TestBuildingPipelineBase::MaxDelay;
+     for (unsigned threads : {1,2,4,8}) {
+         ComputeExecutor executor; executor.configure(threads);
+         GradientPipeline pipeline;
+@@ -253,7 +254,7 @@ TEST_CASE("gradient, building and AI batches share the maximum deferred horizon"
+ TEST_CASE("building pipeline admits several jobs per tick, publishes in reservation order at fixed deadlines, supersedes, survives slow and failing workers" * doctest::test_suite("GradientPipeline"))
+ {
+     using Behaviour = TestBuildingJob::Behaviour;
+-    constexpr unsigned PerTick = TestBuildingPipeline::MaxJobsPerTick;
++    constexpr unsigned PerTick = TestBuildingPipeline::MaxJobsPerTeamPerTick;
+     const auto input=std::make_shared<const unsigned>(7);
+     for (unsigned workers : {0, 1, 2, 4}) for (unsigned delay : {1, 2, 4, 8}) {
+         CAPTURE(workers); CAPTURE(delay);
+@@ -374,7 +375,7 @@ TEST_CASE("building pipeline admits several jobs per tick, publishes in reservat
+ 
+ TEST_CASE("building pipeline pending results survive a save-style round trip" * doctest::test_suite("GradientPipeline"))
+ {
+-    constexpr unsigned Delay=4, PerTick=TestBuildingPipeline::MaxJobsPerTick;
++    constexpr unsigned Delay=4, PerTick=TestBuildingPipeline::MaxJobsPerTeamPerTick;
+     const auto input=std::make_shared<const unsigned>(5);
+     for (unsigned phase=0; phase<Delay; ++phase) for (unsigned workers : {0, 1, 2}) {
+         CAPTURE(phase); CAPTURE(workers);
+diff --git a/src/map/gradient/MapGradientScheduling.cpp b/src/map/gradient/MapGradientScheduling.cpp
+index 322b78dc5..335f39ee9 100644
+--- a/src/map/gradient/MapGradientScheduling.cpp
++++ b/src/map/gradient/MapGradientScheduling.cpp
+@@ -218,13 +218,15 @@ void Map::stageBuildingGradientPreparation()
+ 	if (!buildingGradientPipelineActive()) return;
+ 	auto& rt = *gradientRuntime;
+ 	auto& pipeline = rt.buildings;
+-	while (!rt.buildingRequests.empty() && pipeline.canReserve())
++	const auto count = rt.buildingRequests.size();
++	for (std::size_t i=0;i<count;++i)
+ 	{
+ 		const auto request = rt.buildingRequests.front();
+ 		rt.buildingRequests.pop_front();
+ 		Building* b = buildingGradientDestination(request.team, request.building, request.identity);
+ 		if (!b || request.stale || b->refreshEpoch[request.slot] != request.epoch) continue;
+-		auto* job = pipeline.reserve();
++		if (!pipeline.canReserve(request.team)) {rt.buildingRequests.push_back(request); continue;}
++		auto* job = pipeline.reserve(request.team);
+ 		job->payload = {};
+ 		auto& p = job->payload;
+ 		p.team = request.team; p.buildingId = request.building; p.scriptIdentity = request.identity;
+diff --git a/src/map/gradient/SharedBuildingGradient.h b/src/map/gradient/SharedBuildingGradient.h
+index ddec73c0b..8109e914d 100644
+--- a/src/map/gradient/SharedBuildingGradient.h
++++ b/src/map/gradient/SharedBuildingGradient.h
+@@ -5,12 +5,18 @@
+ #include <climits>
+ #include <memory>
+ #include <mutex>
++#include <functional>
+ 
+ // A lease borrows one live building route generation for hiring workers. The
+ // owner and workers serialize on its mutex. Retirement transfers ownership of
+ // the existing buffer/search to the lease; no array or search is copied.
+ struct SharedBuildingGradient
+ {
++    // Experimental worker-owned cold generations, transferred at hiring publication.
++    bool probePrivate=false, probeLocked=false;
++    int probeResource=0;
++    unsigned probeEpoch=0, probeGeneration=0, probeTick=0;
++    std::function<void(SharedBuildingGradient&)> probeInitialize;
+     std::recursive_mutex mutex;
+     std::uint16_t* values = nullptr;
+     BuildingGradientSearch* search = nullptr;
+@@ -29,6 +35,7 @@ struct SharedBuildingGradient
+     int distance(int x, int y)
+     {
+         std::lock_guard guard(mutex);
++        if (probeInitialize) {probeInitialize(*this); probeInitialize={};}
+         const auto read=[&](int a,int b){
+             const auto i=std::size_t(b&(height-1))*width+(a&(width-1));
+             if(search && !search->resolved(i)) search->resolveForProposal(i);
+diff --git a/src/map/pathfind/MapPathfindBuilding.cpp b/src/map/pathfind/MapPathfindBuilding.cpp
+index 23a35e7cf..811ad33cc 100644
+--- a/src/map/pathfind/MapPathfindBuilding.cpp
++++ b/src/map/pathfind/MapPathfindBuilding.cpp
+@@ -11,6 +11,7 @@
+ #include "MapInternal.h"
+ #include "BuildingGradientSearch.h"
+ #include "SharedBuildingGradient.h"
++#include "HiringGradientProbe.h"
+ 
+ 
+ 
+@@ -43,6 +44,7 @@ FieldReadiness Map::requestBuildingField(Building* building,int swimClass,Buildi
+             updateGlobalGradient(building,swimClass,route);
+         }
+     }
++    if(!building->globalGradient[slot])HiringGradientProbe::add(HiringGradientProbe::PendingReads);
+     return building->globalGradient[slot] ? FieldReadiness::Ready : FieldReadiness::Pending;
+ }
+ bool Map::prepareBuildingGradient(Building* building,int swimClass,BuildingRoute route)
+@@ -56,12 +58,12 @@ const Uint16* Map::lookupBuildingField(const Building* building,int swim,Buildin
+ }
+ RouteResult Map::queryBuildingDistance(Building* building,int swim,int x,int y,int* distance,BuildingRoute route)
+ {
+-    if (requestBuildingField(building,swim,route)==FieldReadiness::Pending) return RouteResult::Pending;
++    if (requestBuildingField(building,swim,route)==FieldReadiness::Pending) {HiringGradientProbe::add(HiringGradientProbe::PendingDistances);return RouteResult::Pending;}
+     return buildingAvailable(building,swim,x,y,distance,route) ? RouteResult::Reachable : RouteResult::Unreachable;
+ }
+ StepResult Map::queryBuildingStep(EntityRandom& random,Building* building,int swim,int x,int y,int* dx,int* dy,BuildingRoute route)
+ {
+-    if (requestBuildingField(building,swim,route)==FieldReadiness::Pending) return StepResult::Pending;
++    if (requestBuildingField(building,swim,route)==FieldReadiness::Pending) {HiringGradientProbe::add(HiringGradientProbe::PendingSteps);return StepResult::Pending;}
+     return pathfindBuilding(random,building,swim,x,y,dx,dy,route) ? StepResult::Step : StepResult::Blocked;
+ }
+ 
+diff --git a/src/unit/Unit.cpp b/src/unit/Unit.cpp
+index 8eafe0564..b0419dffe 100644
+--- a/src/unit/Unit.cpp
++++ b/src/unit/Unit.cpp
+@@ -1,3 +1,4 @@
++#include "HiringGradientProbe.h"
+ // SPDX-License-Identifier: GPL-3.0-or-later
+ // Copyright (C) 2001-2004 Stephane Magnenat & Luc-Olivier de Charrière
+ 
+@@ -272,6 +273,7 @@ void Unit::setTargetBuilding(Building * b)
+ 
+ void Unit::subscriptionSuccess(Building* building, bool inside, bool attraction, UnitJobPurpose purpose)
+ {
++    if(!inside)HiringGradientProbe::add(HiringGradientProbe::Hires);
+ 	Building* b=building;
+ 	if (attraction && !inside) {
+ 		jobPurpose=purpose;

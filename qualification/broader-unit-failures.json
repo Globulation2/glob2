@@ -1,0 +1,156 @@
+[
+  {
+    "suite": "GpuTexturePreparation",
+    "name": "native alpha weighted mips match every CPU level and preserve GL state [display]",
+    "display": true,
+    "message_count": 1,
+    "first_message": "\nlibgag/src/GpuTexturePreparationTest.cpp:241:\nREQUIRE( prepareNativeMipmaps(texture, source.get()) ) is NOT correct!\n  values: REQUIRE( false )\n\n      "
+  },
+  {
+    "suite": "ProgrammableGLDevice",
+    "name": "GL trims completed retired targets while capture leases remain [display]",
+    "display": true,
+    "message_count": 1,
+    "first_message": "\n        Could not initialize OpenGL / GLES library\n      "
+  },
+  {
+    "suite": "ProgrammableGLDevice",
+    "name": "GLES300 shaders draw retained partial submissions [display]",
+    "display": true,
+    "message_count": 1,
+    "first_message": "\n        Could not initialize OpenGL / GLES library\n      "
+  },
+  {
+    "suite": "ProgrammableGLDevice",
+    "name": "authoritative skin rig matches fixed geometry and cropped capture retains target [display]",
+    "display": true,
+    "message_count": 1,
+    "first_message": "\n        Could not initialize OpenGL / GLES library\n      "
+  },
+  {
+    "suite": "ProgrammableGLDevice",
+    "name": "explicit GL trim restores live immutable source pixels [display]",
+    "display": true,
+    "message_count": 1,
+    "first_message": "\n        Could not initialize OpenGL / GLES library\n      "
+  },
+  {
+    "suite": "ProgrammableGLDevice",
+    "name": "integer terrain composition preserves seam wrapping orientation reduction and PMA [display]",
+    "display": true,
+    "message_count": 1,
+    "first_message": "\n        Could not initialize OpenGL / GLES library\n      "
+  },
+  {
+    "suite": "ProgrammableGLDevice",
+    "name": "minification samples authored CPU mip levels without driver regeneration [display]",
+    "display": true,
+    "message_count": 1,
+    "first_message": "\n        Could not initialize OpenGL / GLES library\n      "
+  },
+  {
+    "suite": "ProgrammableGLDevice",
+    "name": "shared CPU pages batch different sprite frames and retain queued revisions [display]",
+    "display": true,
+    "message_count": 1,
+    "first_message": "\n        Could not initialize OpenGL / GLES library\n      "
+  },
+  {
+    "suite": "ProgrammableGLDevice",
+    "name": "terrain rejects unallocated target feedback before changing the retained frame [display]",
+    "display": true,
+    "message_count": 1,
+    "first_message": "\n        Could not initialize OpenGL / GLES library\n      "
+  },
+  {
+    "suite": "ProgrammableGLDevice",
+    "name": "world sampling preserves offscreen top-left orientation and fractional target size [display]",
+    "display": true,
+    "message_count": 1,
+    "first_message": "\n        Could not initialize OpenGL / GLES library\n      "
+  },
+  {
+    "suite": "RendererAssetLifetime",
+    "name": "deleted drawables retire device identities even during CPU exports [display]",
+    "display": true,
+    "message_count": 1,
+    "first_message": "\n        GL capture region outside target\n      "
+  },
+  {
+    "suite": "RendererSelection",
+    "name": "public device hold preserves graphics generation and offscreen captures [display]",
+    "display": true,
+    "message_count": 1,
+    "first_message": "\n        GL capture region outside target\n      "
+  },
+  {
+    "suite": "SDLGPUDevice",
+    "name": "Expanded rectangles do not consume recorded triangle capacity [display][isolated]",
+    "display": true,
+    "message_count": 1,
+    "first_message": "\nlibgag/src/SDLGPUDeviceTest.cpp:161:\nREQUIRE( shaders ) is NOT correct!\n  values: REQUIRE( nullptr )\n\n      "
+  },
+  {
+    "suite": "SDLGPUDevice",
+    "name": "Shared terrain passes match separated cells across targets reduction and barriers [display][isolated]",
+    "display": true,
+    "message_count": 1,
+    "first_message": "\nlibgag/src/SDLGPUDeviceTest.cpp:68:\nREQUIRE( shaders ) is NOT correct!\n  values: REQUIRE( nullptr )\n\n      "
+  },
+  {
+    "suite": "SDLGPUDevice",
+    "name": "Texture memory follows allocation lifetime across repeated leases and failed frames [display][isolated]",
+    "display": true,
+    "message_count": 1,
+    "first_message": "\nlibgag/src/SDLGPUDeviceTest.cpp:132:\nREQUIRE( shaders ) is NOT correct!\n  values: REQUIRE( nullptr )\n\n      "
+  },
+  {
+    "suite": "SDLGPUDevice",
+    "name": "Vulkan batches the bounded primitive stream without crossing barriers [display][isolated]",
+    "display": true,
+    "message_count": 1,
+    "first_message": "\nlibgag/src/SDLGPUDeviceTest.cpp:187:\nREQUIRE( shaders ) is NOT correct!\n  values: REQUIRE( nullptr )\n\n      "
+  },
+  {
+    "suite": "SDLGPUDevice",
+    "name": "Vulkan reused primitive passes match separated state and target changes [display][isolated]",
+    "display": true,
+    "message_count": 1,
+    "first_message": "\nlibgag/src/SDLGPUDeviceTest.cpp:216:\nREQUIRE( shaders ) is NOT correct!\n  values: REQUIRE( nullptr )\n\n      "
+  },
+  {
+    "suite": "SDLGPUDevice",
+    "name": "physical scissors preserve fractional alpha seams [display][isolated]",
+    "display": true,
+    "message_count": 1,
+    "first_message": "\nlibgag/src/SDLGPUDeviceTest.cpp:259:\nREQUIRE( shaders ) is NOT correct!\n  values: REQUIRE( nullptr )\n\n      "
+  },
+  {
+    "suite": "SkinReadback",
+    "name": "export readback matches live compositing for every pose and rotated swarm [display]",
+    "display": true,
+    "message_count": 1813,
+    "first_message": "\nlibgag/src/SkinMeshTest.cpp:442:\nCHECK( error<=1 ) is NOT correct!\n  values: CHECK( 235 <= 1 )\n  logged: clip 0 frame 0\n\n      "
+  },
+  {
+    "suite": "SurfaceCoverage",
+    "name": "native frame completion trims cached sources after map transform restores immediate drawing [display]",
+    "display": true,
+    "message_count": 1,
+    "first_message": "\nlibgag/src/SurfaceCoverageTest.cpp:583:\nCHECK( pixel(*context,50,2) == std::array<int,3>{35,77,191} ) is NOT correct!\n  values: CHECK( {?} == {?} )\n\n      "
+  },
+  {
+    "suite": "ImageAssets",
+    "name": "16-bit RGBA rounds normalized channels to the exporter reference",
+    "display": false,
+    "message_count": 2,
+    "first_message": "\nlibgag/src/ImageAssetTest.cpp:114:\nCHECK( std::memcmp(static_cast<char*>(rgba->pixels) + y * rgba->pitch, rgba16Fixture::rgba + y * 8, 8) == 0 ) is NOT correct!\n  values: CHECK( -1 == 0 )\n\n      "
+  },
+  {
+    "suite": "OpenCLGradient",
+    "name": "full fields agree with heap oracle across costs caps seeds and wrapping",
+    "display": false,
+    "message_count": 1,
+    "first_message": "\nsrc/field/OpenCLGradientTest.cpp:115:\nREQUIRE( final.available ) is NOT correct!\n  values: REQUIRE( false )\n  logged: OpenCL gradient failed to converge\n\n      "
+  }
+]

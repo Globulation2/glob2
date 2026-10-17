@@ -1,0 +1,4328 @@
+{
+  "validated_utc": "2026-10-17T16:42:21.029304+00:00",
+  "base": "ba299a18eeed0fde46a6c74ccf116eb0d7535cc5",
+  "binary_sha256": "9188b076937a81eb554a8825e57dedbd3832fb570c5abf9bf19cd48e9258ee97",
+  "source_manifest_sha256": "d276530d68ead64814ca6ea7c8a5b51067f61fd3c90328480a1781812b964e7e",
+  "platform": "macOS-26.6.2-arm64-arm-64bit-Mach-O",
+  "architecture": "arm64",
+  "compiler": "Apple clang version 21.0.0 (clang-2100.3.34.2)\nTarget: arm64-apple-darwin25.6.0\nThread model: posix\nInstalledDir: /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin\n",
+  "build_command": "PYTHONPATH=. CCACHE=1 scons -j8 release=1 client_profile=full server=0",
+  "flags": "release=1, -O3 -g, client_profile=full, server=0, no PCH/unity; all policies use the same executable",
+  "dependency_manifest_sha256": "5c04cd735f6bff4219a13df18554310c18449bd27aee9828985cf336b515604f",
+  "maps": [
+    {
+      "name": "holiday",
+      "file": "Holiday_Island_2.map.gz",
+      "width": 128,
+      "height": 128,
+      "teams": 4,
+      "sha256": "7c8d9ff5d0bbff14945f1a31bb78ffdc60df2befe08e7b5b0f9c0bedb8f977e9",
+      "players": [
+        "nicowar",
+        "econo",
+        "castor",
+        "warrush"
+      ],
+      "tick_limit": 32768
+    },
+    {
+      "name": "large-eleven",
+      "file": "Oazis.map.gz",
+      "width": 256,
+      "height": 256,
+      "teams": 11,
+      "sha256": "b3283af95ee177f528d3b57438797c4a1970473c562a76f5ed4faad51f03a6d3",
+      "players": [
+        "nicowar",
+        "econo",
+        "castor",
+        "warrush",
+        "nicowar",
+        "econo",
+        "castor",
+        "warrush",
+        "nicowar",
+        "econo",
+        "castor"
+      ],
+      "tick_limit": 32768
+    }
+  ],
+  "valid_timed_runs": 384,
+  "final_checksum_pairs": 192,
+  "total_executed_ticks": 12468944,
+  "cases": [
+    {
+      "case": "holiday/seed-42-baseline-p1",
+      "ticks": 32768,
+      "initial_checksum": 4031269181,
+      "final_checksum": 3456946569,
+      "result_sha256": "d8c13c200f9c240e1a494f5e4fc696063a099ebd98e4f128bcc83c93a26e5761",
+      "sample_sha256": "644d56778193ee14001bf5077dc8bb81eca7fe84175258f592de4047a7681b9a"
+    },
+    {
+      "case": "holiday/seed-42-baseline-p4",
+      "ticks": 32768,
+      "initial_checksum": 4031269181,
+      "final_checksum": 3456946569,
+      "result_sha256": "81de3d245e7e43576bc5da2bd51add9f414764e3619a400c6187c9d6b92f5aaa",
+      "sample_sha256": "9458b1cc7a389e1b06a4862b77ec2e4b7d80aeeb6b509cbb805a4e8b455bbed2"
+    },
+    {
+      "case": "holiday/seed-42-shortlist-p1",
+      "ticks": 29570,
+      "initial_checksum": 4031269181,
+      "final_checksum": 3007328984,
+      "result_sha256": "7acb4c2546513791f80e33fa4f096b29be10595dcc336ff70107ee103ac7817a",
+      "sample_sha256": "8b77b45e981daed9e3a0e5934efc2ef7ebde0f1fd854f57ce1d37404cdf9e512"
+    },
+    {
+      "case": "holiday/seed-42-shortlist-p4",
+      "ticks": 29570,
+      "initial_checksum": 4031269181,
+      "final_checksum": 3007328984,
+      "result_sha256": "791e4ecbdcdbc4507781f0e261611a73aba3daac25859bd1edd4d6bd190c5952",
+      "sample_sha256": "77631127404cff03eae58fb99d1600f816604415f227048873093c6f5cbff5ee"
+    },
+    {
+      "case": "holiday/seed-42-top-p1",
+      "ticks": 30082,
+      "initial_checksum": 4031269181,
+      "final_checksum": 3335015885,
+      "result_sha256": "79dd24786126f04a91be90d867bae0d901b4b358bc83b20fd22dd0928b99f66c",
+      "sample_sha256": "81f6f9adb8be24256b92aee0870ec89344d1825ced483e38aa75404f44a0cebd"
+    },
+    {
+      "case": "holiday/seed-42-top-p4",
+      "ticks": 30082,
+      "initial_checksum": 4031269181,
+      "final_checksum": 3335015885,
+      "result_sha256": "a76b8293e685e8e22b7c2008dc4fa83dcb2c97a0f71f6fe155615f13aa380b2b",
+      "sample_sha256": "461f53c774a7f43dcf8c325acb95e4c7fc074f85fb0aaab990e6fd8054f21c71"
+    },
+    {
+      "case": "holiday/seed-43-baseline-p1",
+      "ticks": 32768,
+      "initial_checksum": 3532799928,
+      "final_checksum": 695667866,
+      "result_sha256": "671450a867c9f3c5f2152f0ed8fbbc5409943f0800870a5d4896433498e2c949",
+      "sample_sha256": "a2c91d1c1296c5426cc00fa64395252cd1bd02afb8e80a6a85ba747969a69c89"
+    },
+    {
+      "case": "holiday/seed-43-baseline-p4",
+      "ticks": 32768,
+      "initial_checksum": 3532799928,
+      "final_checksum": 695667866,
+      "result_sha256": "2b606f224d10f25b594ca6dd7a8525807b3825e572bf0335e2b39c943019fd7b",
+      "sample_sha256": "7428563222cfda77d59061098f71e033f17135cd62b9dc62ebacb33cc8117198"
+    },
+    {
+      "case": "holiday/seed-43-shortlist-p1",
+      "ticks": 32768,
+      "initial_checksum": 3532799928,
+      "final_checksum": 2945989297,
+      "result_sha256": "5dd92cca47124affab25a3f0d41da3a968f18cc922236d20c4ad8ad866cecec5",
+      "sample_sha256": "9c5dcbbaf2c015c6887f81d41814b113cc3bbebc75487e34129ffe13ef1bf743"
+    },
+    {
+      "case": "holiday/seed-43-shortlist-p4",
+      "ticks": 32768,
+      "initial_checksum": 3532799928,
+      "final_checksum": 2945989297,
+      "result_sha256": "8d1a368c3374a8b161c65858587323366a94587aadeee0f9cda4e4fefc9f8ccd",
+      "sample_sha256": "d032dfbf3a0bd7c6d37836fd40db193f3bb2e36e488f53698922bfd428ef8c5a"
+    },
+    {
+      "case": "holiday/seed-43-top-p1",
+      "ticks": 32768,
+      "initial_checksum": 3532799928,
+      "final_checksum": 1896355613,
+      "result_sha256": "a609617315694c18936ce401a76d47a79d97c085edba5d605b693a24a8155166",
+      "sample_sha256": "fcca3f0705935115269f81ed3adb459114813b94f7f605da970e43d22927192c"
+    },
+    {
+      "case": "holiday/seed-43-top-p4",
+      "ticks": 32768,
+      "initial_checksum": 3532799928,
+      "final_checksum": 1896355613,
+      "result_sha256": "80cfb578a07a3895dfbffa07a14ebaa329af2ea763f273cae481636b79f94ab2",
+      "sample_sha256": "d81844a2b5084b4233e925623853dbb3b8535521f801d1fab9228d395f361306"
+    },
+    {
+      "case": "holiday/seed-44-baseline-p1",
+      "ticks": 32768,
+      "initial_checksum": 489259054,
+      "final_checksum": 861219810,
+      "result_sha256": "54d66496cb00e338357a25e69bc5cb64ee19fedd66287e8f246f04d74b025a9e",
+      "sample_sha256": "b031ead13b4a3c76dfb95c8515a3e72c4124a66b48670dea59da4f856439f636"
+    },
+    {
+      "case": "holiday/seed-44-baseline-p4",
+      "ticks": 32768,
+      "initial_checksum": 489259054,
+      "final_checksum": 861219810,
+      "result_sha256": "1e9429a07c7220f58d5feb38ddcf660bf6319b47112a3b2a88401be54ff34b11",
+      "sample_sha256": "2b06234a9ce5db4f9a5fd01c7ecea59090348bc4ff0b6b6cdf7a4adac80c9ea8"
+    },
+    {
+      "case": "holiday/seed-44-shortlist-p1",
+      "ticks": 32768,
+      "initial_checksum": 489259054,
+      "final_checksum": 662875169,
+      "result_sha256": "a1bc7fa5fc40ef564dadb2a5f8d5f5ddbd490075b9f384719ec67222a864e2e9",
+      "sample_sha256": "1cd495fbab12cd0eec1ec799955e639aa4411e59b028e3c0a04e88d9b5dca5b1"
+    },
+    {
+      "case": "holiday/seed-44-shortlist-p4",
+      "ticks": 32768,
+      "initial_checksum": 489259054,
+      "final_checksum": 662875169,
+      "result_sha256": "fb799648fe94376327f61b4ab19a1e63635634900b6478f8ad0f15cf429d13ff",
+      "sample_sha256": "a3d2c872560fcfd67eca865acf53f8f61001db5a3823360d2e738a5bc93efc12"
+    },
+    {
+      "case": "holiday/seed-44-top-p1",
+      "ticks": 32768,
+      "initial_checksum": 489259054,
+      "final_checksum": 2466133270,
+      "result_sha256": "0d68b1800dab96923821ea684ee09d1ad0b58c2ad95e260e4ad7e77fcedfc84e",
+      "sample_sha256": "bdec0a993304f216c87a07284a6e23031c1c67cb3efae53b02f8e8db8296fb94"
+    },
+    {
+      "case": "holiday/seed-44-top-p4",
+      "ticks": 32768,
+      "initial_checksum": 489259054,
+      "final_checksum": 2466133270,
+      "result_sha256": "3db5fef74c4ade708c97720c9d64c5737837783da362b0a2f1870fb12d4e0198",
+      "sample_sha256": "c371d73b77dd970ae05e7b144673223f50352d0ac34abba8615be6d1fa665f42"
+    },
+    {
+      "case": "holiday/seed-45-baseline-p1",
+      "ticks": 32768,
+      "initial_checksum": 878888063,
+      "final_checksum": 506416660,
+      "result_sha256": "b909147d8766191407d331239d72bcc71967ba7da1f65c42e61b74dc491a8dcb",
+      "sample_sha256": "856e4c4d7a89e7f86632249d9e0b01670c9563c0155dd8377ecffcd56596f6a9"
+    },
+    {
+      "case": "holiday/seed-45-baseline-p4",
+      "ticks": 32768,
+      "initial_checksum": 878888063,
+      "final_checksum": 506416660,
+      "result_sha256": "8f944540ba8190d9966402ac744dfbd8d6d641beb43b6438ad5e3e967730d681",
+      "sample_sha256": "81b94b94fcd25f7ef4a81a016683de873a9e7f7934feec40449dd26ac81df8fd"
+    },
+    {
+      "case": "holiday/seed-45-shortlist-p1",
+      "ticks": 32768,
+      "initial_checksum": 878888063,
+      "final_checksum": 3483810803,
+      "result_sha256": "d48d63edf20002bc109745e54746eb09c09b6859a6c25fe90e2102a564f2b279",
+      "sample_sha256": "d0e3d08d6f487a4c5d699144aeb25c2b43eae85176e90c072a1e02924e3e8e54"
+    },
+    {
+      "case": "holiday/seed-45-shortlist-p4",
+      "ticks": 32768,
+      "initial_checksum": 878888063,
+      "final_checksum": 3483810803,
+      "result_sha256": "be414b7dbd99b68f5754082b3d4ce7d3bd7729d6ed8739f38accd185c832d38f",
+      "sample_sha256": "4447a9df357f70818100efe0fbf5d37b39fb5b76a3b988a747eb70ccdfb17088"
+    },
+    {
+      "case": "holiday/seed-45-top-p1",
+      "ticks": 32768,
+      "initial_checksum": 878888063,
+      "final_checksum": 1252544427,
+      "result_sha256": "ed3f9eec13ce6105fa48413db9fbdafb1722adef00d5e2cf13369e022fb20652",
+      "sample_sha256": "000bb2a212ff9926022e1c95bb0ca968caf9be5bcc7b3dc9ae6ec87d373b4add"
+    },
+    {
+      "case": "holiday/seed-45-top-p4",
+      "ticks": 32768,
+      "initial_checksum": 878888063,
+      "final_checksum": 1252544427,
+      "result_sha256": "df1400b3e40f1b89b693fbbacb156da591f2a6c9a5c9bdfa758695f2f33af9bb",
+      "sample_sha256": "04616f24297a9417e41f8dfe1f54967ee15a9f9a80b9e3cec673c4306da3d12e"
+    },
+    {
+      "case": "holiday/seed-46-baseline-p1",
+      "ticks": 32768,
+      "initial_checksum": 3572721868,
+      "final_checksum": 1049062463,
+      "result_sha256": "388e024bcb938fb287c53d18a670daf74134086ff31539cf1128c5ec85e467fa",
+      "sample_sha256": "fc6f78560daa4c6a4837d1e710dab47cb9cabaa2d437db9c855d7b8706865c1b"
+    },
+    {
+      "case": "holiday/seed-46-baseline-p4",
+      "ticks": 32768,
+      "initial_checksum": 3572721868,
+      "final_checksum": 1049062463,
+      "result_sha256": "cf5863142ff9d62c3f2d471f8abe69e654eea0ad0d5c3d8e60d09d60adc00276",
+      "sample_sha256": "7fd52402c6a81f8bc842c0e1eb48e037cbb1de1eb29443e1bdf9a1b38664c0fe"
+    },
+    {
+      "case": "holiday/seed-46-shortlist-p1",
+      "ticks": 32768,
+      "initial_checksum": 3572721868,
+      "final_checksum": 3673017328,
+      "result_sha256": "a24ee7b3f0da94cd4bbc5265881d1645a1e3a62fcd1f2e8c1b247b09e8f63458",
+      "sample_sha256": "cfc258ddc6b3c02f8ee62e2718fd8485a154c0c0eaaf34803a272e8db1194ebe"
+    },
+    {
+      "case": "holiday/seed-46-shortlist-p4",
+      "ticks": 32768,
+      "initial_checksum": 3572721868,
+      "final_checksum": 3673017328,
+      "result_sha256": "deee0f7dcdb6e4cbd07d17240647a5c8b939d11da9d24b0a65c974a14d49b9fa",
+      "sample_sha256": "3bcdddb1281f6429771f256daf02670fc4cdf6238e5c6cf9ed56f3417cb82754"
+    },
+    {
+      "case": "holiday/seed-46-top-p1",
+      "ticks": 32768,
+      "initial_checksum": 3572721868,
+      "final_checksum": 1388017362,
+      "result_sha256": "afdf3515db0b129df3673da4cb73a6dceedd2398c401d38f01ca8f2ae442ac29",
+      "sample_sha256": "20d5e5ec5d3d7bad561e8a6385ea480b041b962c744cd56544e99a718956a3a9"
+    },
+    {
+      "case": "holiday/seed-46-top-p4",
+      "ticks": 32768,
+      "initial_checksum": 3572721868,
+      "final_checksum": 1388017362,
+      "result_sha256": "355feb81d082670b9979a4f5a35fda76236f49ce458a5840b08d7671c98c34dc",
+      "sample_sha256": "584f117f7fef07e96450fcf4d23266298607fb555d49f9a8494c08a44f553006"
+    },
+    {
+      "case": "holiday/seed-47-baseline-p1",
+      "ticks": 32768,
+      "initial_checksum": 2024085184,
+      "final_checksum": 1798074143,
+      "result_sha256": "e4b0350c744941aa23b4cd01d7a44ac1e5f03cf0bc9102382a3f5b26853e383c",
+      "sample_sha256": "212e69de81d155d3c826b25532e09a83edf60a92f75f0a15cfac481f935e9c6e"
+    },
+    {
+      "case": "holiday/seed-47-baseline-p4",
+      "ticks": 32768,
+      "initial_checksum": 2024085184,
+      "final_checksum": 1798074143,
+      "result_sha256": "285af5827315081bf268ac6b7eede3340c858cca161a904e7b41eaad8a28910b",
+      "sample_sha256": "4161d1292266bdd2b20ccd529828da55f73e40a028a1d83a197e2ad792e4fcab"
+    },
+    {
+      "case": "holiday/seed-47-shortlist-p1",
+      "ticks": 32768,
+      "initial_checksum": 2024085184,
+      "final_checksum": 3683669982,
+      "result_sha256": "bc158dd325810cf1ab3ee7aaee8e87c39705e17645e6d3a95d0bdf0dff397c30",
+      "sample_sha256": "88ca087cbfb7b5539edd92320509ec7ad23dea476051b0be415a267b5c7d88c0"
+    },
+    {
+      "case": "holiday/seed-47-shortlist-p4",
+      "ticks": 32768,
+      "initial_checksum": 2024085184,
+      "final_checksum": 3683669982,
+      "result_sha256": "95d83db66991464d1a4581a4462e099daa6536c07c2f0a936ed449a2f4f53440",
+      "sample_sha256": "f661a64282e2dbe76a12734613890852dd64bac2b236df483b7a8198deca9f91"
+    },
+    {
+      "case": "holiday/seed-47-top-p1",
+      "ticks": 32768,
+      "initial_checksum": 2024085184,
+      "final_checksum": 277179887,
+      "result_sha256": "dcb04196b0e2800e2401e8f4333816aaa26f9d0969a4f51d39e2b231af6b8928",
+      "sample_sha256": "fa86c29ec4379b513cd398ea37a47b88d3f4df971b09a83059de0aba7b4e2475"
+    },
+    {
+      "case": "holiday/seed-47-top-p4",
+      "ticks": 32768,
+      "initial_checksum": 2024085184,
+      "final_checksum": 277179887,
+      "result_sha256": "9eba5e524eec3940119695f6baebfcc53c76efd8ed34156b248c445d83109109",
+      "sample_sha256": "0eb6750871e3ddeaf77d42a3dc8297a838a4c5b60733869637b462c7f79ee5a8"
+    },
+    {
+      "case": "holiday/seed-48-baseline-p1",
+      "ticks": 32768,
+      "initial_checksum": 696331123,
+      "final_checksum": 3837771677,
+      "result_sha256": "c9265ff44b3e795605f4aee9cb894e57e45302625ba12ea0d550e60025257d72",
+      "sample_sha256": "66e66bd1c5a2420f733b95bc204800ccf0bcb268d7831828612d400bcec16c8a"
+    },
+    {
+      "case": "holiday/seed-48-baseline-p4",
+      "ticks": 32768,
+      "initial_checksum": 696331123,
+      "final_checksum": 3837771677,
+      "result_sha256": "bfffe7d6a82f1ff92c39b1e635947a5aba9e13d929faef08890acadee08a7005",
+      "sample_sha256": "bd95c59294de3fd031a658290b4b2ba1b29333c40cc6f4c82305f5ae2cdcbad2"
+    },
+    {
+      "case": "holiday/seed-48-shortlist-p1",
+      "ticks": 32768,
+      "initial_checksum": 696331123,
+      "final_checksum": 1609619196,
+      "result_sha256": "958353ea18e88b5715f92e7e688e0d6326fc3b9b4fd55d6f26b71dd99f320a7a",
+      "sample_sha256": "0b62ea126831ea63b7ac087c0285415a6dbfe72a131b373b4c5aefffde761bb4"
+    },
+    {
+      "case": "holiday/seed-48-shortlist-p4",
+      "ticks": 32768,
+      "initial_checksum": 696331123,
+      "final_checksum": 1609619196,
+      "result_sha256": "6f2843c6955c10779ef8fc46748052fabd73043fe5bcdd3a201646f807a800c7",
+      "sample_sha256": "f057ffd2f7340745ddf3c808eea2455f99e555f35584ed7ac07414c21d04d1f0"
+    },
+    {
+      "case": "holiday/seed-48-top-p1",
+      "ticks": 32768,
+      "initial_checksum": 696331123,
+      "final_checksum": 3435085030,
+      "result_sha256": "5873d13777362fde84ede1323c95881bdfda24c9134557a06b333a6907c8a385",
+      "sample_sha256": "aca4f0b68c85117cf608d265006b0bcf1fe54f1b291b58415b3125b128c906c9"
+    },
+    {
+      "case": "holiday/seed-48-top-p4",
+      "ticks": 32768,
+      "initial_checksum": 696331123,
+      "final_checksum": 3435085030,
+      "result_sha256": "f15ed0a63a38f5db0114d07efe06be0819753a54ef3f7f176575ce7b8cb3244b",
+      "sample_sha256": "271765e5ea8f7e56dfeebcdd888f260f75858af95fbb004025633d31b8cf33b5"
+    },
+    {
+      "case": "holiday/seed-49-baseline-p1",
+      "ticks": 29442,
+      "initial_checksum": 3758624847,
+      "final_checksum": 3592047369,
+      "result_sha256": "147155159e6845b3344a7fd4e5f8f2a727dc915a604fef3027f4a7c706eb0409",
+      "sample_sha256": "b178890047041cbf7d966fb7f3718374289f2b5bfbe95e619fa235ce51bfd04c"
+    },
+    {
+      "case": "holiday/seed-49-baseline-p4",
+      "ticks": 29442,
+      "initial_checksum": 3758624847,
+      "final_checksum": 3592047369,
+      "result_sha256": "149209c6eba048c48bfeed341f3ee4595969c1bdc1828ccc31b570031ebb10da",
+      "sample_sha256": "4d4e9f79ea085536e98cf745057504961f5bfdcdd835f646fe87762b2c7d2bb3"
+    },
+    {
+      "case": "holiday/seed-49-shortlist-p1",
+      "ticks": 30402,
+      "initial_checksum": 3758624847,
+      "final_checksum": 3872511633,
+      "result_sha256": "403ed57ff3cc46991ff34f925cad5fa3754d65854300154b90e086f430d08369",
+      "sample_sha256": "d3770630543e9eea6bb54924416413aa7a03e6604d476298eb59a228bd703405"
+    },
+    {
+      "case": "holiday/seed-49-shortlist-p4",
+      "ticks": 30402,
+      "initial_checksum": 3758624847,
+      "final_checksum": 3872511633,
+      "result_sha256": "645beeecdf208b4292408f611e8dd480b863988a9f7a49dc71227edde6f308bc",
+      "sample_sha256": "6fe1bd8803e3919f5ce6540e27eb8263bca1b3597886770c734d3e10288c81cc"
+    },
+    {
+      "case": "holiday/seed-49-top-p1",
+      "ticks": 27266,
+      "initial_checksum": 3758624847,
+      "final_checksum": 2072706756,
+      "result_sha256": "eae5de44e3ca581ca2198e4fe5fb2903f0d0a00128252fdc2fd7eec889f70fa9",
+      "sample_sha256": "d5e8dcc85765fe37414aef0a6afc4c36619d67c75fdd4e45301020ac3e4af2a1"
+    },
+    {
+      "case": "holiday/seed-49-top-p4",
+      "ticks": 27266,
+      "initial_checksum": 3758624847,
+      "final_checksum": 2072706756,
+      "result_sha256": "d41c0498a13709db17a6f701a171d138a4cfd386e7a5ba899d034e47919321ad",
+      "sample_sha256": "690b807439911371ab75b2f7b092f96028f8d728832fe0e1fd5742aafda7daad"
+    },
+    {
+      "case": "holiday/seed-50-baseline-p1",
+      "ticks": 32768,
+      "initial_checksum": 3720684520,
+      "final_checksum": 1493250470,
+      "result_sha256": "fb839289044a5088cd5d453cf3a5118520c51c7a16635fedc4a5c516359c3be4",
+      "sample_sha256": "16e6cb3b851e10957082bc1f0e7821faf42e233df56196e3250470881657083e"
+    },
+    {
+      "case": "holiday/seed-50-baseline-p4",
+      "ticks": 32768,
+      "initial_checksum": 3720684520,
+      "final_checksum": 1493250470,
+      "result_sha256": "f6b9d7fb8cce8929078f9f96f81716fad35a921a93997432d182bd39e0148d9f",
+      "sample_sha256": "b90262ce4c8aaeaf3691dcd3a6f0789fbc83da40fbf07a9ef63d0446ee945fe6"
+    },
+    {
+      "case": "holiday/seed-50-shortlist-p1",
+      "ticks": 32768,
+      "initial_checksum": 3720684520,
+      "final_checksum": 3082353664,
+      "result_sha256": "665b6ff680e2536dcdc23f7473b95c6915191d5c84e40793335670b136628a1a",
+      "sample_sha256": "12049fd860b5619d671aa56a4cb8007a06fa6c76081a6aff450da072f0a32fc3"
+    },
+    {
+      "case": "holiday/seed-50-shortlist-p4",
+      "ticks": 32768,
+      "initial_checksum": 3720684520,
+      "final_checksum": 3082353664,
+      "result_sha256": "fe60932d8de52979fcd921fee2828f6a8c27e5c31911eb2cbe736531b971d4f1",
+      "sample_sha256": "d617f8d97258e6d4ecbfd04d1185ad9e08ca2b62a898c666ba32c07e0d392e06"
+    },
+    {
+      "case": "holiday/seed-50-top-p1",
+      "ticks": 32768,
+      "initial_checksum": 3720684520,
+      "final_checksum": 3467229246,
+      "result_sha256": "2950003418913adae0e85937601a18805353609d18c00d6d45b6ed3085dd7a10",
+      "sample_sha256": "345dafadd3fa739bc8e0e3a9c040bf4b2218c2eadd4e1a6abddc60a4e94ce140"
+    },
+    {
+      "case": "holiday/seed-50-top-p4",
+      "ticks": 32768,
+      "initial_checksum": 3720684520,
+      "final_checksum": 3467229246,
+      "result_sha256": "a99151ae1263b67d892d5c980bb2c4f147fff34524d5b529810f51acdbe22eb0",
+      "sample_sha256": "b824a26220b4f6f33dd25a4786f766052b51f3186d63ab1cedfcacdad14bd0ae"
+    },
+    {
+      "case": "holiday/seed-51-baseline-p1",
+      "ticks": 32768,
+      "initial_checksum": 1221143871,
+      "final_checksum": 3168007164,
+      "result_sha256": "40355f8b791787bc3c857e674c0690355a509357426c6a2b318a2b71456069e2",
+      "sample_sha256": "802faaf660d614fa05db73d9d05447447247acf04b8a30c74f72d5f6f56e2193"
+    },
+    {
+      "case": "holiday/seed-51-baseline-p4",
+      "ticks": 32768,
+      "initial_checksum": 1221143871,
+      "final_checksum": 3168007164,
+      "result_sha256": "697ff7f278b73b6ad89ec5f5fb46b459a76d8f241c9d3da5f7e0f9397ef43ada",
+      "sample_sha256": "2edd4a82908a91d1523056d32e05c802a4a3d98b1a96b19e3c9a03547e19f6b9"
+    },
+    {
+      "case": "holiday/seed-51-shortlist-p1",
+      "ticks": 32768,
+      "initial_checksum": 1221143871,
+      "final_checksum": 2278598138,
+      "result_sha256": "712fa817aae39189c97245787c992729f3103b0122cbf28b526fe44f0978959f",
+      "sample_sha256": "5737711c700a7793df76f3a43da6a03a0fb7ccfd2613898a70999fde61eb9420"
+    },
+    {
+      "case": "holiday/seed-51-shortlist-p4",
+      "ticks": 32768,
+      "initial_checksum": 1221143871,
+      "final_checksum": 2278598138,
+      "result_sha256": "6479ecb975d7b261ffe85a3c49ca0b99d7929e776eeae29f76ded93be98616ce",
+      "sample_sha256": "3bbf593655ac76a1bbb6f140070e140fa568aca9cc7cd6e5b7416e046752fa28"
+    },
+    {
+      "case": "holiday/seed-51-top-p1",
+      "ticks": 32768,
+      "initial_checksum": 1221143871,
+      "final_checksum": 495093204,
+      "result_sha256": "c3afecdde46000b7863495e06bdb3d8eadb6df462068fa164adf8cdf83bdb4e7",
+      "sample_sha256": "3493ea9e27584bd086b38e3de213b290f5d08f2d3a98f93406b97614f242e945"
+    },
+    {
+      "case": "holiday/seed-51-top-p4",
+      "ticks": 32768,
+      "initial_checksum": 1221143871,
+      "final_checksum": 495093204,
+      "result_sha256": "2f55bb9a7c81a21137a7306f86719a23e7af75ab73880cae8fdf8690aa029838",
+      "sample_sha256": "ded9137047a3dfe27c03c7227b41c59911202ff3109f3cba6dc87bcd108ee1f9"
+    },
+    {
+      "case": "holiday/seed-52-baseline-p1",
+      "ticks": 32738,
+      "initial_checksum": 271623194,
+      "final_checksum": 3645841358,
+      "result_sha256": "b7ec1bb71cb27bbb373737758f9ae970569aed5726b7a1da223e0608eda572e4",
+      "sample_sha256": "0c4ea1068121729583b1d7d6f54a7b6d24341b7fa40a9e6c8cba9fbc3a4ac02d"
+    },
+    {
+      "case": "holiday/seed-52-baseline-p4",
+      "ticks": 32738,
+      "initial_checksum": 271623194,
+      "final_checksum": 3645841358,
+      "result_sha256": "b98c9db9b74415898aecfe61fd1c0c330011a71e6bbd07c787ef98b5991b952e",
+      "sample_sha256": "77f4c1c94782f13ab7b39311a417d9cf74c99f734493c951ab92543cbb5b1afb"
+    },
+    {
+      "case": "holiday/seed-52-shortlist-p1",
+      "ticks": 28386,
+      "initial_checksum": 271623194,
+      "final_checksum": 2342381097,
+      "result_sha256": "49680cc584a5dcb9d58d0f808d7f2afcef7c9eb2e336255991fa1b7720e0fe55",
+      "sample_sha256": "ba8c6e6cc327e9030325966224ba747f4b05d11bc59f136663117295be1f970c"
+    },
+    {
+      "case": "holiday/seed-52-shortlist-p4",
+      "ticks": 28386,
+      "initial_checksum": 271623194,
+      "final_checksum": 2342381097,
+      "result_sha256": "05618de40a427cc80e5567f9fb9618816a45000d1ac5bb615dc98225c750b947",
+      "sample_sha256": "b09268a9a45bc0c1e0aa60eb7aa620abbd6c25511742769879d5af71e70b6dad"
+    },
+    {
+      "case": "holiday/seed-52-top-p1",
+      "ticks": 30562,
+      "initial_checksum": 271623194,
+      "final_checksum": 3403532877,
+      "result_sha256": "19cefe475b7a6bae1a3da9961fbd3a78eafdfc6fdee270143003bf6431696486",
+      "sample_sha256": "9e9fc70bcb9f2bb4b2cea6186354b6bea1997a5a8b7fc0f029159babe617e734"
+    },
+    {
+      "case": "holiday/seed-52-top-p4",
+      "ticks": 30562,
+      "initial_checksum": 271623194,
+      "final_checksum": 3403532877,
+      "result_sha256": "42f43aa60193ad3996225eacd33e5e94ccacc8ee4997a40074ed6ed0f9ccc9b6",
+      "sample_sha256": "4cd45b544f7428d9be3c63399ae9c4acc8b01d19eeaa47d52c6a44fea0969d72"
+    },
+    {
+      "case": "holiday/seed-53-baseline-p1",
+      "ticks": 32768,
+      "initial_checksum": 1734544440,
+      "final_checksum": 3436186826,
+      "result_sha256": "b09bc84998993ac52d0bb52aa478f84d80454aa640ff6d2a4d41ee5760127404",
+      "sample_sha256": "d5dacf28bf9b1ebe9f72ad99381391b4bd67175cbeab3b89f9d0b954eac144ca"
+    },
+    {
+      "case": "holiday/seed-53-baseline-p4",
+      "ticks": 32768,
+      "initial_checksum": 1734544440,
+      "final_checksum": 3436186826,
+      "result_sha256": "502bd0c275860b4881ee3fac1782b46a412263c2fae6515897b23ae9f25df793",
+      "sample_sha256": "bf3f7fea72d7d786da91d64043617172cc107c7cfe6add5209f00ce1c0947e0c"
+    },
+    {
+      "case": "holiday/seed-53-shortlist-p1",
+      "ticks": 32768,
+      "initial_checksum": 1734544440,
+      "final_checksum": 1396055791,
+      "result_sha256": "0207abe43a9343bc6dfc08d7f0a06fbce8d490bd9762b25d4549ad44b22090fc",
+      "sample_sha256": "7cebb56a6e6cfeb81e37dce4f1bd1ad577e7db5a4af54c4905bcfde0b56c1553"
+    },
+    {
+      "case": "holiday/seed-53-shortlist-p4",
+      "ticks": 32768,
+      "initial_checksum": 1734544440,
+      "final_checksum": 1396055791,
+      "result_sha256": "8d444264d91e1545b9eae85f08e4bbaa3eff4d7f2ccc00a5861d83953da786a2",
+      "sample_sha256": "09abcbbd925271608f029f8b235aa4bdf209bcb34824e76c78f1238488c996dd"
+    },
+    {
+      "case": "holiday/seed-53-top-p1",
+      "ticks": 32768,
+      "initial_checksum": 1734544440,
+      "final_checksum": 1036204661,
+      "result_sha256": "cb59a91e81cba860aca6dde96ea680295e7d48fa07fec748d7629a9e9b62fb03",
+      "sample_sha256": "c19427e20a5903baac5d74ea73b0708044643cf47413fd9433f26a5884582565"
+    },
+    {
+      "case": "holiday/seed-53-top-p4",
+      "ticks": 32768,
+      "initial_checksum": 1734544440,
+      "final_checksum": 1036204661,
+      "result_sha256": "d5379f64db7fb4af9205c023d75f67bb6a26d6277d9d77df4a92a60ba05cbb29",
+      "sample_sha256": "bbe6cc6e9f267b9899e7cabd65d5e6cefd1407fa0b44656bb74219d781724f5d"
+    },
+    {
+      "case": "holiday/seed-54-baseline-p1",
+      "ticks": 28706,
+      "initial_checksum": 308190566,
+      "final_checksum": 2240452936,
+      "result_sha256": "86ccfc6b45701291b527626b7aacf5265c2ff97e170acfe8cd8e9f5b5647f220",
+      "sample_sha256": "922fcb5a235b7c02f38af7c4ea5112c50f3364dc1df90597f8efbe49ea440e47"
+    },
+    {
+      "case": "holiday/seed-54-baseline-p4",
+      "ticks": 28706,
+      "initial_checksum": 308190566,
+      "final_checksum": 2240452936,
+      "result_sha256": "df8bab33d1df6935eb161699474178c26704dc993ed1e8632b933c62175e7b12",
+      "sample_sha256": "938567477f568878a5c98b12fb82db91450a2ccce3f69ea9b8e45b17e980b262"
+    },
+    {
+      "case": "holiday/seed-54-shortlist-p1",
+      "ticks": 28962,
+      "initial_checksum": 308190566,
+      "final_checksum": 2087759779,
+      "result_sha256": "90cbdea2bf2a99687976dbab9482f07e0db77e8970a269da4f0d443f5a2176d6",
+      "sample_sha256": "03003e5e0b1193b1d999c8207eae7333f924d1f1b4f76aa12f9ee5ee245997be"
+    },
+    {
+      "case": "holiday/seed-54-shortlist-p4",
+      "ticks": 28962,
+      "initial_checksum": 308190566,
+      "final_checksum": 2087759779,
+      "result_sha256": "15432e7e7d4614f1cf017bb4f58ab8bf149116110140d0d6d6eb1d5d33925ad4",
+      "sample_sha256": "08489e2c5053b33e6fe69b261035a2a887be466a7e00c4392255332ae0d502a9"
+    },
+    {
+      "case": "holiday/seed-54-top-p1",
+      "ticks": 32768,
+      "initial_checksum": 308190566,
+      "final_checksum": 936738130,
+      "result_sha256": "335543bc765a921ddc911a732096d5d7e2b24352ddcb17742a310914b19e4004",
+      "sample_sha256": "f755fc363a19fc5bb33dfbc4cffb7f7f60c06d16ee0ed12c59ea3913a8cfc8de"
+    },
+    {
+      "case": "holiday/seed-54-top-p4",
+      "ticks": 32768,
+      "initial_checksum": 308190566,
+      "final_checksum": 936738130,
+      "result_sha256": "a6611cc105a8918bcac63d325d2d6f1f2a3df1542432e79d38d5bac35b52bc17",
+      "sample_sha256": "d0c9b5ff4db3beaf8f0327476a5999470cb5e69bb09bd7a157b8da4bd6048c8c"
+    },
+    {
+      "case": "holiday/seed-55-baseline-p1",
+      "ticks": 32768,
+      "initial_checksum": 1967436810,
+      "final_checksum": 3616154504,
+      "result_sha256": "545849c1584e9efa94bebde282419b6f827e8831aa22b1ae412ee5e937708b10",
+      "sample_sha256": "38e8406b23c5f00c5645f6fd2b9b66b0328a9337940c2c4027112fabe7e2062a"
+    },
+    {
+      "case": "holiday/seed-55-baseline-p4",
+      "ticks": 32768,
+      "initial_checksum": 1967436810,
+      "final_checksum": 3616154504,
+      "result_sha256": "8acb9cc1ecf4c822da10c2d66cadee89ac89259addd9deb9825de128a93504e1",
+      "sample_sha256": "614b125c6564d4892e9131c44f638d88ddb4a284fff6c3cbf450954bcb2eb0e9"
+    },
+    {
+      "case": "holiday/seed-55-shortlist-p1",
+      "ticks": 32768,
+      "initial_checksum": 1967436810,
+      "final_checksum": 695038595,
+      "result_sha256": "36086d7f07f5446ce22f91f282f2b1cab8ae0dbeb49d83b69f6fe8dcd329ac05",
+      "sample_sha256": "430c6a0fbf19032f87c635b9bf20a73be24be26fe644ee69fd4f43a0d6e605d7"
+    },
+    {
+      "case": "holiday/seed-55-shortlist-p4",
+      "ticks": 32768,
+      "initial_checksum": 1967436810,
+      "final_checksum": 695038595,
+      "result_sha256": "50756349e090d4b4b7e5119e4c8f17ab965264ca0d04097f6768731db9cc01eb",
+      "sample_sha256": "e56dff035dd1e4c9c2c7f12f4b1a62ff39482a308ea8aca970c3d5aec1dc891a"
+    },
+    {
+      "case": "holiday/seed-55-top-p1",
+      "ticks": 32768,
+      "initial_checksum": 1967436810,
+      "final_checksum": 3260361878,
+      "result_sha256": "2ffced0f7ceb551b96f11cac6fd95698b00e8c37c57217ac9f35f33e7ba62533",
+      "sample_sha256": "3e3c423c1ed7f0e680223d4b35909efbe5758adf96c5f31fa1060eb1edf5b28e"
+    },
+    {
+      "case": "holiday/seed-55-top-p4",
+      "ticks": 32768,
+      "initial_checksum": 1967436810,
+      "final_checksum": 3260361878,
+      "result_sha256": "592e80cf1920cfa834f10f86a4f075da524d4d229df122ff081ae63f42de9e01",
+      "sample_sha256": "389c86dd3664540706366a36d75abffc1e1265b3ea9d5971e4f0a1bc7ac716b0"
+    },
+    {
+      "case": "holiday/seed-56-baseline-p1",
+      "ticks": 32768,
+      "initial_checksum": 4058509385,
+      "final_checksum": 3303825482,
+      "result_sha256": "09d38b2e127d118999184b10db25c515909521ae335db5deb5f4a91bcd7927ea",
+      "sample_sha256": "090cdcdca9c3145bf69dbc46e6e88b41b07b1adb7be7dae7e0c83d81592750b7"
+    },
+    {
+      "case": "holiday/seed-56-baseline-p4",
+      "ticks": 32768,
+      "initial_checksum": 4058509385,
+      "final_checksum": 3303825482,
+      "result_sha256": "7a57a99231e45f5f3af9def96cb4093bee16fca52254568a9424ccef9d199ecf",
+      "sample_sha256": "8c8409c78dcdebb7fa194c5524ab42b2da948678cca68351851363852ae3aae4"
+    },
+    {
+      "case": "holiday/seed-56-shortlist-p1",
+      "ticks": 32768,
+      "initial_checksum": 4058509385,
+      "final_checksum": 3371271238,
+      "result_sha256": "29d1a8067b4bef1aaa4a69741b89512bdeb386405bdfcdb942991a9da84912f1",
+      "sample_sha256": "55f3f8e91a8bf733d1a730a2f99456e5533958649724fe839cc8d88be9054b7d"
+    },
+    {
+      "case": "holiday/seed-56-shortlist-p4",
+      "ticks": 32768,
+      "initial_checksum": 4058509385,
+      "final_checksum": 3371271238,
+      "result_sha256": "18939c6ca69bd2cbfeedd144ded72e85bd3cdb9ec34a840e6fd03a8e2685f57a",
+      "sample_sha256": "becc1c016d7fdfbc559509735252070aa256fea10309c3f86f3de4db70025571"
+    },
+    {
+      "case": "holiday/seed-56-top-p1",
+      "ticks": 32768,
+      "initial_checksum": 4058509385,
+      "final_checksum": 1157548086,
+      "result_sha256": "93cd18def6d2aa7ae87c5601e6ee155185b36309b40331fe2cc2674ddb4c3d6d",
+      "sample_sha256": "5c4992f46e2059a42e24dbe965a07c0c4699a8abaf6d80f5dba38ebe37c7b6c5"
+    },
+    {
+      "case": "holiday/seed-56-top-p4",
+      "ticks": 32768,
+      "initial_checksum": 4058509385,
+      "final_checksum": 1157548086,
+      "result_sha256": "dba33d89ee7b38858dd9f563d8183653eeec32d625a261ba9b5c59a033ccf855",
+      "sample_sha256": "3bb05f7f8232b0b0c69eeda2383db26d6bfb146f70cadfe02d571dcc5e0a833f"
+    },
+    {
+      "case": "holiday/seed-57-baseline-p1",
+      "ticks": 32768,
+      "initial_checksum": 3679263328,
+      "final_checksum": 2476100628,
+      "result_sha256": "d661888053f4406b186ee17ab5f24a711a09186f0f3192e0ad1c3e542799d901",
+      "sample_sha256": "89617e6df0acadadc78a825462a020a8f2b9020cc124bcef6a18f187ccf2d6e5"
+    },
+    {
+      "case": "holiday/seed-57-baseline-p4",
+      "ticks": 32768,
+      "initial_checksum": 3679263328,
+      "final_checksum": 2476100628,
+      "result_sha256": "7c812ecae841ffedb067ab3677d771ea32b9e958b1e0472425fe909a987d991b",
+      "sample_sha256": "5c236a58a920f3088883b17a00208259379545ebee3e4bacaf3e6423294db66a"
+    },
+    {
+      "case": "holiday/seed-57-shortlist-p1",
+      "ticks": 32768,
+      "initial_checksum": 3679263328,
+      "final_checksum": 2691119848,
+      "result_sha256": "dbee0d7e6c7d3df6434fabd72fa314c347fef3124f30c97963afd6e331137a61",
+      "sample_sha256": "5668e76eb1177b8e672d91c2878da0abfbd9baafa8642f63d52deffb90ca50ae"
+    },
+    {
+      "case": "holiday/seed-57-shortlist-p4",
+      "ticks": 32768,
+      "initial_checksum": 3679263328,
+      "final_checksum": 2691119848,
+      "result_sha256": "d0c7f8e075b6e9f83d1d1459a70fcae5215aa71cce4f6897b715d0ef662c02a4",
+      "sample_sha256": "576d3e63bd1efe0922a7b9201b5590c9746b70a5ebb57b3f6656f21f0acaab73"
+    },
+    {
+      "case": "holiday/seed-57-top-p1",
+      "ticks": 32768,
+      "initial_checksum": 3679263328,
+      "final_checksum": 1534369245,
+      "result_sha256": "43329ba54410ddfe0b5100ca314c5c13f63c2fb2c7378ff534cc6f459d0ea34f",
+      "sample_sha256": "b932ed9bc652634de0ac7bdb9e25354fa6ddbf56140e21a9c81ab3ab9eec4274"
+    },
+    {
+      "case": "holiday/seed-57-top-p4",
+      "ticks": 32768,
+      "initial_checksum": 3679263328,
+      "final_checksum": 1534369245,
+      "result_sha256": "0a1ace13dc66a44d43ff000a00dadf09f862272f27e3ae3e8d2292c8ace3c05a",
+      "sample_sha256": "7e0189e75629598900ae3318bf3ec5c2617a5da067c33454d698a3f00e5b9f7e"
+    },
+    {
+      "case": "holiday/seed-58-baseline-p1",
+      "ticks": 32768,
+      "initial_checksum": 3304568760,
+      "final_checksum": 82668811,
+      "result_sha256": "0b96273b34a616a3c977107f91251c9d3fddb70d839b8a5fa59dda81726ddd9a",
+      "sample_sha256": "a06899170ac69af11cdc144efb69fc61acc6ff28c57ad34fb1275a8c5f4bcc82"
+    },
+    {
+      "case": "holiday/seed-58-baseline-p4",
+      "ticks": 32768,
+      "initial_checksum": 3304568760,
+      "final_checksum": 82668811,
+      "result_sha256": "942658bdf4092ab63207a2b1375580e12bed85b19c9c8ebd685e1112ad26db13",
+      "sample_sha256": "36670bbb28e6fdb44fd97ddce403c296cb2cf293a2f0cb3acffb78cd3722dc71"
+    },
+    {
+      "case": "holiday/seed-58-shortlist-p1",
+      "ticks": 32768,
+      "initial_checksum": 3304568760,
+      "final_checksum": 649870230,
+      "result_sha256": "294827edb72cca2bd9d120858e6bb8678d8f3ab852c10b914ca49fd11a2ce954",
+      "sample_sha256": "20e21d4411c163f76729cd91c5224c49e90872d0986df5db866eaab5b20d16ed"
+    },
+    {
+      "case": "holiday/seed-58-shortlist-p4",
+      "ticks": 32768,
+      "initial_checksum": 3304568760,
+      "final_checksum": 649870230,
+      "result_sha256": "0c0a95164beb0fec25fe8fcb6808d32a1b2f13abe7e0edeb07914803f1f1e6f4",
+      "sample_sha256": "e97b3b9c14dc3404dab496e882660f79a45233dc67e2af193141a87b37d478f8"
+    },
+    {
+      "case": "holiday/seed-58-top-p1",
+      "ticks": 32768,
+      "initial_checksum": 3304568760,
+      "final_checksum": 1789369746,
+      "result_sha256": "0fc86b965a0f0f9e51f33d498fbbfda35f8d3dda9f1fb150d59a5bacd9c1dbdf",
+      "sample_sha256": "896dd7a6d4fa3a78da7fd3b464bdf64f40bdc34a7438cd038731c63b7929f458"
+    },
+    {
+      "case": "holiday/seed-58-top-p4",
+      "ticks": 32768,
+      "initial_checksum": 3304568760,
+      "final_checksum": 1789369746,
+      "result_sha256": "a1e645e5c0fd8eee6e97fb3ba9433049f868878494b57f3fd37b4b521db10f88",
+      "sample_sha256": "b6ffd2701ca91590a06028920ee6ad51f1ea0f3e31748381dd62518f0a3318ac"
+    },
+    {
+      "case": "holiday/seed-59-baseline-p1",
+      "ticks": 32768,
+      "initial_checksum": 4043001221,
+      "final_checksum": 607931006,
+      "result_sha256": "da51db67a153e6011ad953e647021383e2fd0c4b99bff006851f158b04eeb752",
+      "sample_sha256": "3b117de380edcc0f76548a829c844257ce81ef923759daaaa65558c273a87639"
+    },
+    {
+      "case": "holiday/seed-59-baseline-p4",
+      "ticks": 32768,
+      "initial_checksum": 4043001221,
+      "final_checksum": 607931006,
+      "result_sha256": "21bccb378c5fb5ae681eaefe6964b19b93f84fff5ff78869245ee9ce4b4fc1ca",
+      "sample_sha256": "e8381edcba6e0f6a3f671885e91f1a35ca5ab41b51135524367f90c0e38963af"
+    },
+    {
+      "case": "holiday/seed-59-shortlist-p1",
+      "ticks": 32768,
+      "initial_checksum": 4043001221,
+      "final_checksum": 4018455347,
+      "result_sha256": "1e08570679a250e2d661cfdb2382abec8a560da2a79836873eae51ce7d451fe7",
+      "sample_sha256": "ec46db6a394d45fb042098c752ddc48ea01319cfa8bdf13be1d8e3cdb480f9c5"
+    },
+    {
+      "case": "holiday/seed-59-shortlist-p4",
+      "ticks": 32768,
+      "initial_checksum": 4043001221,
+      "final_checksum": 4018455347,
+      "result_sha256": "37042d782094e435f163656f8f03df04341aeb300dd138b7f1beb02513713cca",
+      "sample_sha256": "0f7bd7413c463e693deba523496ba856ed3c02eb600d68e3e0b3b8bdcb063c53"
+    },
+    {
+      "case": "holiday/seed-59-top-p1",
+      "ticks": 32768,
+      "initial_checksum": 4043001221,
+      "final_checksum": 706139679,
+      "result_sha256": "b7d44b4c2c1d022e717f088744c08e904290e546ae015c30e5ba451caa3ddf2d",
+      "sample_sha256": "a461f12637c4ec6f7d1576542109ce4482342c48330bec70b28055131cfe9a38"
+    },
+    {
+      "case": "holiday/seed-59-top-p4",
+      "ticks": 32768,
+      "initial_checksum": 4043001221,
+      "final_checksum": 706139679,
+      "result_sha256": "ec7a03c25cce286bad226d4d2ce5938f567a3d92f2a30aff39bfeefffb8160f0",
+      "sample_sha256": "10dcacc7c6149ed8d385682946d7efd93e18bd94f8ed34f40dbca1584185e1e9"
+    },
+    {
+      "case": "holiday/seed-60-baseline-p1",
+      "ticks": 32768,
+      "initial_checksum": 871435549,
+      "final_checksum": 235349575,
+      "result_sha256": "aafced12fe299b090a3eddc9497edae9958fbaa6b509d434232c8a2818201b26",
+      "sample_sha256": "72ee27c988a36c3836195905c39769cc9b525ef2711d95f2f68afe0a4ab6221f"
+    },
+    {
+      "case": "holiday/seed-60-baseline-p4",
+      "ticks": 32768,
+      "initial_checksum": 871435549,
+      "final_checksum": 235349575,
+      "result_sha256": "5cb3c8903885f07158c0ae18765d465c4f3ede0f7041baabe99fbd74a47bc303",
+      "sample_sha256": "a3462091df6045525fd80c34faff001dc8cd8f531a5dd5787e1f6ab68a1a58b4"
+    },
+    {
+      "case": "holiday/seed-60-shortlist-p1",
+      "ticks": 32768,
+      "initial_checksum": 871435549,
+      "final_checksum": 1081912580,
+      "result_sha256": "56427f90f16318ef2f86a4ecbabf188fbd117a9c12f25f6e0b9d5c7fbf1e40ad",
+      "sample_sha256": "55211779420ef1ef2259dbf030bd953054f191567ad115f7f92d8af6153ef885"
+    },
+    {
+      "case": "holiday/seed-60-shortlist-p4",
+      "ticks": 32768,
+      "initial_checksum": 871435549,
+      "final_checksum": 1081912580,
+      "result_sha256": "961a69d141988862af46f3ca3e702d4b79a64396627980a042b6d5667af92dc5",
+      "sample_sha256": "565e220de902eab0c6960e3a198dae18b913de4e6ccac8050e7a68f8e72e7a56"
+    },
+    {
+      "case": "holiday/seed-60-top-p1",
+      "ticks": 32768,
+      "initial_checksum": 871435549,
+      "final_checksum": 4153840008,
+      "result_sha256": "3b4df51cde9e668a69e66c059739fa65c1e1138d8c15dcbbe9955ec1725d1ea7",
+      "sample_sha256": "f74c454cda15e05f7ac33563eb817d8e1f7782187497f36189b5fe7ee05a1d04"
+    },
+    {
+      "case": "holiday/seed-60-top-p4",
+      "ticks": 32768,
+      "initial_checksum": 871435549,
+      "final_checksum": 4153840008,
+      "result_sha256": "d930b31c219cf100e35a6ce795c5c1f679b98cc031d5394f60a1bce56cdf03e9",
+      "sample_sha256": "70c902fbfe46fad599a42224791508df531bdb32ba799d154229691844f142ad"
+    },
+    {
+      "case": "holiday/seed-61-baseline-p1",
+      "ticks": 32768,
+      "initial_checksum": 3962797027,
+      "final_checksum": 1680132467,
+      "result_sha256": "30065a5ceead19614ccad4e621343e8bdfb3a694cd1a6120ccfb0b7f7aac95fa",
+      "sample_sha256": "7954c1ce5aed14837c441c823d759dd91ffb010335abdc5d16b447becf684a40"
+    },
+    {
+      "case": "holiday/seed-61-baseline-p4",
+      "ticks": 32768,
+      "initial_checksum": 3962797027,
+      "final_checksum": 1680132467,
+      "result_sha256": "293d866fcbe1000da070f0555bb832880a92c8f74d7ec626d46a9cd6ae71c446",
+      "sample_sha256": "d5ed2f402418728d27d93f5d21b0710ebdc07d6be524898c80d08a685f51bef9"
+    },
+    {
+      "case": "holiday/seed-61-shortlist-p1",
+      "ticks": 32768,
+      "initial_checksum": 3962797027,
+      "final_checksum": 2302314843,
+      "result_sha256": "89ec6d65c64e4da60812e250ab0a5a6a5fcb5836fd2a1e841cc9242c237c065c",
+      "sample_sha256": "c61a29092faca590f3e72a552d197cb24f20346005f82a234a2b9f41011f6150"
+    },
+    {
+      "case": "holiday/seed-61-shortlist-p4",
+      "ticks": 32768,
+      "initial_checksum": 3962797027,
+      "final_checksum": 2302314843,
+      "result_sha256": "d4314514a6a185b7931c490195039f51cdb47f93a0e684f5f0096b1438efa7a9",
+      "sample_sha256": "40d37e79a752134be3ade8166120937f1d262ff6ff52b16e41657775d4c8af33"
+    },
+    {
+      "case": "holiday/seed-61-top-p1",
+      "ticks": 32768,
+      "initial_checksum": 3962797027,
+      "final_checksum": 328203234,
+      "result_sha256": "823c2086947b8f7261815f6fa2ae36180ccb7e19a327624d4882cf53210785c1",
+      "sample_sha256": "2bc7499467b3c89fa6a8daf928fbd0be9d4fd652b0c217f861892be4bdea49d4"
+    },
+    {
+      "case": "holiday/seed-61-top-p4",
+      "ticks": 32768,
+      "initial_checksum": 3962797027,
+      "final_checksum": 328203234,
+      "result_sha256": "6e475f67435a33ed556dd2c8093a2f23d458812582fe99d2df89e342b3a5d7a0",
+      "sample_sha256": "cd5465610002b929936ad96d86a1123a96903df944f7e82e1b4e19f8bcb4050b"
+    },
+    {
+      "case": "holiday/seed-62-baseline-p1",
+      "ticks": 32768,
+      "initial_checksum": 3271432465,
+      "final_checksum": 117181761,
+      "result_sha256": "7ec6cdc2bb6b14f6be739269e747f31477275dbd20b62e5276c353001ce852e3",
+      "sample_sha256": "51ebfe2386f4a5926efa706483127c8b12fe0757d2c8bd43ccbf278664a79ec8"
+    },
+    {
+      "case": "holiday/seed-62-baseline-p4",
+      "ticks": 32768,
+      "initial_checksum": 3271432465,
+      "final_checksum": 117181761,
+      "result_sha256": "bf9991594143f57b25aba155480f2e0f53b989f09e333a170f0081b710153f10",
+      "sample_sha256": "34fce66c17dc2113990527e4cf358efe845412ecd213f20dce01af6edd082a73"
+    },
+    {
+      "case": "holiday/seed-62-shortlist-p1",
+      "ticks": 27874,
+      "initial_checksum": 3271432465,
+      "final_checksum": 815170998,
+      "result_sha256": "34e75c4efda904822f9e75d609838613d1b686c8a2a9f73f25179c11708d46dc",
+      "sample_sha256": "7a4e8e17bb4e31c9431f97fff3ae4b5a98e466dfacf4bf0c6b49f9c7971f8cb1"
+    },
+    {
+      "case": "holiday/seed-62-shortlist-p4",
+      "ticks": 27874,
+      "initial_checksum": 3271432465,
+      "final_checksum": 815170998,
+      "result_sha256": "5cec41cef4d7b5b65e94a6e8eb3f0fc196aac2283bae849467ed24e8347613a2",
+      "sample_sha256": "12f5bc47bdf19166a79af84f6aea76e1a937ddbceef39ba610a61ae283946bcd"
+    },
+    {
+      "case": "holiday/seed-62-top-p1",
+      "ticks": 32768,
+      "initial_checksum": 3271432465,
+      "final_checksum": 3199565876,
+      "result_sha256": "38d5c72946c670a583282646ee0b6ace62c630825675c3b1f244879390de26e2",
+      "sample_sha256": "2a81938c6e3685204be329c64838ca98687dad16bfd5c44dfd14fd055a0749d2"
+    },
+    {
+      "case": "holiday/seed-62-top-p4",
+      "ticks": 32768,
+      "initial_checksum": 3271432465,
+      "final_checksum": 3199565876,
+      "result_sha256": "8109263f4f2e90bd1f880da82d4b9d3470c7f49770f8b408c6df41ac027cd78e",
+      "sample_sha256": "d6a338344ca11abca56bb72a9dce10a9184e6495ffd42c4a8c711661345769b8"
+    },
+    {
+      "case": "holiday/seed-63-baseline-p1",
+      "ticks": 32768,
+      "initial_checksum": 4041230753,
+      "final_checksum": 2345487585,
+      "result_sha256": "d520012f114a10b5c3a08f4c6cc4c02ef3015c86a0870e4f9dc1ea555a48f6a1",
+      "sample_sha256": "05bbcc49edbab2cdc82e444a4c12895465802ad0f7eb2d1fafa73fa1d766b9ff"
+    },
+    {
+      "case": "holiday/seed-63-baseline-p4",
+      "ticks": 32768,
+      "initial_checksum": 4041230753,
+      "final_checksum": 2345487585,
+      "result_sha256": "3d4a1811879d9e005dffe431924ce4b01d625ddd9588fc680a831d4b37cdea88",
+      "sample_sha256": "594b834ff427914d85dcc0f67d5d0e541c3fc16a94afd36ae6fc8f2f1c4fd1d0"
+    },
+    {
+      "case": "holiday/seed-63-shortlist-p1",
+      "ticks": 32768,
+      "initial_checksum": 4041230753,
+      "final_checksum": 4032288528,
+      "result_sha256": "ee19dce88abd5bafd7454b97ae5cd1f8ef212cc4803722cb27c8139c3e467ad0",
+      "sample_sha256": "5a552473762c138f9fb96392be9e5b8e9e45f18cb797631bcde1819edb0dfb6c"
+    },
+    {
+      "case": "holiday/seed-63-shortlist-p4",
+      "ticks": 32768,
+      "initial_checksum": 4041230753,
+      "final_checksum": 4032288528,
+      "result_sha256": "adc14d01afa496e71bd4c2070ceafb6e4af396eecb80ca2edd0f73ebadab338e",
+      "sample_sha256": "2a9dd9f5596138e458e41726e9ea0a58b560937e72298ecb3fbbbe758408ca7e"
+    },
+    {
+      "case": "holiday/seed-63-top-p1",
+      "ticks": 32768,
+      "initial_checksum": 4041230753,
+      "final_checksum": 44107887,
+      "result_sha256": "b09a6ac77ce059f3eacdfe58bf83f171c6f8147f7e62972b074f0f23d64bcc88",
+      "sample_sha256": "b12d047c17d3230012a165866b8398ed61906db2b9d9140002490180cab914b0"
+    },
+    {
+      "case": "holiday/seed-63-top-p4",
+      "ticks": 32768,
+      "initial_checksum": 4041230753,
+      "final_checksum": 44107887,
+      "result_sha256": "12ac4606471bae17ec2ec0e3c223f44607d8ad16e063a94585d498c30f9bdd20",
+      "sample_sha256": "52a5132cc342c91f78428267cb7ef0fd4e9e3a2870aa319783e86acd13db60ca"
+    },
+    {
+      "case": "holiday/seed-64-baseline-p1",
+      "ticks": 32768,
+      "initial_checksum": 3412545182,
+      "final_checksum": 1211133696,
+      "result_sha256": "8e66a7765b47e0be7fd8fbc60f1879f4d9f7b230e0669cbb1cc947cdfe6e0bf8",
+      "sample_sha256": "0bb96058cd1b28fc96b7bac4444fb97529d6a66cc5cf5eb1212f65d19ece4a71"
+    },
+    {
+      "case": "holiday/seed-64-baseline-p4",
+      "ticks": 32768,
+      "initial_checksum": 3412545182,
+      "final_checksum": 1211133696,
+      "result_sha256": "1ecd54572307c6257453dd9999a375f1e59d7dff74bbc43b9bccc41868e18a01",
+      "sample_sha256": "b61158df8aac21b5db841097d40252069904824124c05baa3e12ca6278b495df"
+    },
+    {
+      "case": "holiday/seed-64-shortlist-p1",
+      "ticks": 32768,
+      "initial_checksum": 3412545182,
+      "final_checksum": 148912173,
+      "result_sha256": "efa7c84735a56ddc3c2e2ec3d71e4f4839b051fc5bdedf9ae9feb4d7eb903541",
+      "sample_sha256": "0d033d29dcd5fafad282f6fb103c67e5682dd8b8d0d381d9902171f5318e2378"
+    },
+    {
+      "case": "holiday/seed-64-shortlist-p4",
+      "ticks": 32768,
+      "initial_checksum": 3412545182,
+      "final_checksum": 148912173,
+      "result_sha256": "18b1210433a499669916f86d608463f6a3ab26031a24eb0c5383cda7a80d5690",
+      "sample_sha256": "d17aa74e4be2941178f1f96d74b428f6e841d32e82797ee295e01124bbfc298f"
+    },
+    {
+      "case": "holiday/seed-64-top-p1",
+      "ticks": 32768,
+      "initial_checksum": 3412545182,
+      "final_checksum": 245341955,
+      "result_sha256": "2c6a01620242c11b02ffaf6d03dda59c6cf7a1227981930664d8db191ff8b3ec",
+      "sample_sha256": "cf16956f7407d79ad4455aaf98ee08d016a60a64bebca78c01a978552a8432c3"
+    },
+    {
+      "case": "holiday/seed-64-top-p4",
+      "ticks": 32768,
+      "initial_checksum": 3412545182,
+      "final_checksum": 245341955,
+      "result_sha256": "9869be50e55e53cec94802d651e2723aa4056fd1a598999e24bf1fb74857444c",
+      "sample_sha256": "2b3acabc1fba943e7f6f31e4d1d41e0475bb9914c38a968601348e773ca5d15b"
+    },
+    {
+      "case": "holiday/seed-65-baseline-p1",
+      "ticks": 32768,
+      "initial_checksum": 1810128999,
+      "final_checksum": 2692359847,
+      "result_sha256": "58e9162428f070a7d21583c458db7042209baa7122371fb115bb17933c4def7f",
+      "sample_sha256": "422d8774f7c8d7df04f29e7874343cdf41093ce7633b48aaa3b5e9e7df24f179"
+    },
+    {
+      "case": "holiday/seed-65-baseline-p4",
+      "ticks": 32768,
+      "initial_checksum": 1810128999,
+      "final_checksum": 2692359847,
+      "result_sha256": "39ede412b566978f1a45d0896d3d4d3309ec660bfe55c1cb9cad245c6d7ee18b",
+      "sample_sha256": "d3522af61f47226730315550f302bfdaae6946c4166a0d13dfbf0851b6b11342"
+    },
+    {
+      "case": "holiday/seed-65-shortlist-p1",
+      "ticks": 32768,
+      "initial_checksum": 1810128999,
+      "final_checksum": 1723025767,
+      "result_sha256": "73bd0079a965ba5a67eae1c4751c482bf6f7b2a60c5d0540676345a3c591dd1b",
+      "sample_sha256": "01e6b89553507046e40d4bca5343c25d2ae4e585c11cd3254a1bf289f526e2ba"
+    },
+    {
+      "case": "holiday/seed-65-shortlist-p4",
+      "ticks": 32768,
+      "initial_checksum": 1810128999,
+      "final_checksum": 1723025767,
+      "result_sha256": "65065d9d5e84be78b7ce09d9f2ab1ee737355bb63b587e88fb03defbfe50cb01",
+      "sample_sha256": "99bada3b707eb240ed6d9d1e1cfbc95790e74947f7610ab1f272799a975c828d"
+    },
+    {
+      "case": "holiday/seed-65-top-p1",
+      "ticks": 28354,
+      "initial_checksum": 1810128999,
+      "final_checksum": 1299060081,
+      "result_sha256": "697332594e9156e3a0bf1e8f598ad908eda0d59b3dcb46b9cee224b6604c7a45",
+      "sample_sha256": "0fbeaed968a812cb075231015e8933efad60fc25aed1186f416668fe31f22509"
+    },
+    {
+      "case": "holiday/seed-65-top-p4",
+      "ticks": 28354,
+      "initial_checksum": 1810128999,
+      "final_checksum": 1299060081,
+      "result_sha256": "f65ac6ff769acc0dcf10ba42413ea11ae2e00e7db8aab789c1853c069b3d048b",
+      "sample_sha256": "3b8856d0ed9e3f41cbddbffa45bf78576e949e2e3ac676669161c5d2d5ee1f16"
+    },
+    {
+      "case": "holiday/seed-66-baseline-p1",
+      "ticks": 32034,
+      "initial_checksum": 2600758267,
+      "final_checksum": 1616649865,
+      "result_sha256": "624d44d6a5c7c9614968eb1634197ad6dd699c2e09f668027afb3655b82b2911",
+      "sample_sha256": "efd4e1643bca58da73c93b69f483a6f31550d3e82f2973799735200cd106f69c"
+    },
+    {
+      "case": "holiday/seed-66-baseline-p4",
+      "ticks": 32034,
+      "initial_checksum": 2600758267,
+      "final_checksum": 1616649865,
+      "result_sha256": "79f4e61568c623f99ab1cbdc503a2cf28df3a5fe3c9d213a77a8f8e08ac60cfb",
+      "sample_sha256": "e86e3dd48f8b9770a6d2d78f390b82485260b5be923072c13b1436bd5addcc58"
+    },
+    {
+      "case": "holiday/seed-66-shortlist-p1",
+      "ticks": 31106,
+      "initial_checksum": 2600758267,
+      "final_checksum": 3906371860,
+      "result_sha256": "32108a9110b6a4a2aac593c8c69e82f2ff53e436b28de993d2fa4a966ba86382",
+      "sample_sha256": "27956e71a57ce02b6f688868ce18ad7277e868ed77335afd51c36fcb7bee2ce8"
+    },
+    {
+      "case": "holiday/seed-66-shortlist-p4",
+      "ticks": 31106,
+      "initial_checksum": 2600758267,
+      "final_checksum": 3906371860,
+      "result_sha256": "3b3f46e91048c1dcdb8034a3a1364de59dda4ac42dfbf700f9d518e290c35036",
+      "sample_sha256": "aee9e32ce8a8e4e2da8aa9b0540db28e413ede25afff820e8ee29282b98f9045"
+    },
+    {
+      "case": "holiday/seed-66-top-p1",
+      "ticks": 32322,
+      "initial_checksum": 2600758267,
+      "final_checksum": 2080386264,
+      "result_sha256": "e9b282f8b11fa9fa35f35960640e778248b22ac1114ad05398cb6d430a9cdc3f",
+      "sample_sha256": "830c43dfbb02d8e2555687235c4a5866fa5aa499049da3c97538c03015689719"
+    },
+    {
+      "case": "holiday/seed-66-top-p4",
+      "ticks": 32322,
+      "initial_checksum": 2600758267,
+      "final_checksum": 2080386264,
+      "result_sha256": "bee1d29c86b1420340b6c8fd9aace4afd1cd0b42e0a2af591984dd1f97678dd1",
+      "sample_sha256": "0ddc9e6dd1a7fd887dcdabafced5617bac3f9813891ff3bfa1c7e8aae515b525"
+    },
+    {
+      "case": "holiday/seed-67-baseline-p1",
+      "ticks": 32768,
+      "initial_checksum": 1385324923,
+      "final_checksum": 2287459217,
+      "result_sha256": "9c542e8ebb3bba301c2591d94427a2a4c9a659597fd4701404a03f84d53cc02b",
+      "sample_sha256": "fe34c64062e78d2b68430e52046eb91d7e16c81e1441e1ef999968d5798cd8a5"
+    },
+    {
+      "case": "holiday/seed-67-baseline-p4",
+      "ticks": 32768,
+      "initial_checksum": 1385324923,
+      "final_checksum": 2287459217,
+      "result_sha256": "06c3dd75fb94f10d1cbe6f91d53a6cd25c5825b43fb2962c9123138fd17e0f33",
+      "sample_sha256": "5ab8b360ee82f91df5a76c96dc8ee02f03ca3767f9bb974091b1a6d3097d60f7"
+    },
+    {
+      "case": "holiday/seed-67-shortlist-p1",
+      "ticks": 32768,
+      "initial_checksum": 1385324923,
+      "final_checksum": 220033472,
+      "result_sha256": "ceeca8d8da74d8c86e70c4726cc9bcb1b392ac3bf8b27ea5d070b02848b63a66",
+      "sample_sha256": "b0b60585d3dbc3c9a908237cd21decd9c67c629c56b9364e3dc6361fc2d96cab"
+    },
+    {
+      "case": "holiday/seed-67-shortlist-p4",
+      "ticks": 32768,
+      "initial_checksum": 1385324923,
+      "final_checksum": 220033472,
+      "result_sha256": "e70a549e9a9d8a5586321f0205fa5db7aa7485a2b707cb97fb126afa2165185a",
+      "sample_sha256": "5df81ef9cfac53954a578129cd09b8efcaa0b785a3708cdd01762d581c933bf3"
+    },
+    {
+      "case": "holiday/seed-67-top-p1",
+      "ticks": 29730,
+      "initial_checksum": 1385324923,
+      "final_checksum": 1587097635,
+      "result_sha256": "e376c1fc7d037078e04b2556f189bdc4f90705550eb895c7fc468892a5e0ab7a",
+      "sample_sha256": "2479bd80dc2a2207183805bb5bc35a198bc7f149d6614b56dd9da890b863bceb"
+    },
+    {
+      "case": "holiday/seed-67-top-p4",
+      "ticks": 29730,
+      "initial_checksum": 1385324923,
+      "final_checksum": 1587097635,
+      "result_sha256": "5666499d636717254c611c9fd93835a5f23c8f8141acb56849e021665ef18c3e",
+      "sample_sha256": "68223ea98bcfe21f4cc92e0c212c49acc13235f24ec4cf848568aa00d148be06"
+    },
+    {
+      "case": "holiday/seed-68-baseline-p1",
+      "ticks": 32768,
+      "initial_checksum": 1704040243,
+      "final_checksum": 3110205966,
+      "result_sha256": "827d362755fb8d266edf75bc1603bdfc56644bc36ee260e8102194c5e6e1d652",
+      "sample_sha256": "0312b687c6cbde5bc47b718699a179beb8d0824773e2a0634a718b516c83814e"
+    },
+    {
+      "case": "holiday/seed-68-baseline-p4",
+      "ticks": 32768,
+      "initial_checksum": 1704040243,
+      "final_checksum": 3110205966,
+      "result_sha256": "5af2d489566ca98bdcab9b5f10a7fb4b0c7dc6a6b0f0c76cd3b56467edf7973b",
+      "sample_sha256": "d5e83090a0268ff281e140d14c8d85dfa6d41f752ce66c28e09e157cf65747b8"
+    },
+    {
+      "case": "holiday/seed-68-shortlist-p1",
+      "ticks": 32768,
+      "initial_checksum": 1704040243,
+      "final_checksum": 2599857683,
+      "result_sha256": "b1f2351c0b2945e3571ece5992b7ff20f3ce6834350e2bd6c007191bd86e0691",
+      "sample_sha256": "d5997aa1e410f52a6662e7331380fefd7537dd17ff0510a54e108c31b685f7a7"
+    },
+    {
+      "case": "holiday/seed-68-shortlist-p4",
+      "ticks": 32768,
+      "initial_checksum": 1704040243,
+      "final_checksum": 2599857683,
+      "result_sha256": "5707ef8d73d6c143356ef2f738ba492eb175a1c35f27437c80873b51b0388b31",
+      "sample_sha256": "e48a9398d59fd4152690f15e5440e07d3a1642e0a03961d29be881b5f2c027e1"
+    },
+    {
+      "case": "holiday/seed-68-top-p1",
+      "ticks": 32768,
+      "initial_checksum": 1704040243,
+      "final_checksum": 797518829,
+      "result_sha256": "490a069c8c7be5adb205a26f1f496007086ad84a1ba7aaad4ab54a4b7b4a4f69",
+      "sample_sha256": "a7b050a645097a57e4d397a4d5d79cb6c62dbd0e41349a18793e70287bef54a9"
+    },
+    {
+      "case": "holiday/seed-68-top-p4",
+      "ticks": 32768,
+      "initial_checksum": 1704040243,
+      "final_checksum": 797518829,
+      "result_sha256": "cad3dac4d8122dff9725c04783506ce9c4d4617b27322be567e59d2b35b9303d",
+      "sample_sha256": "a7139163bd1b3aa9db193e7e056f28b1e744aac0775e3402ee02bfa771d469c7"
+    },
+    {
+      "case": "holiday/seed-69-baseline-p1",
+      "ticks": 31170,
+      "initial_checksum": 2352507262,
+      "final_checksum": 3243717790,
+      "result_sha256": "d02ac7a95c3ae035215d03189f998c2953b65187d6cca12a0b80ee8f0e921658",
+      "sample_sha256": "124a89ddac2489095abe65db3d6692da7fdb13ee16a529a5881b2ba63307c89d"
+    },
+    {
+      "case": "holiday/seed-69-baseline-p4",
+      "ticks": 31170,
+      "initial_checksum": 2352507262,
+      "final_checksum": 3243717790,
+      "result_sha256": "c57785969b073cbc26e58bd52dc140bce8d06d70ace6403b1cdac117b82e7517",
+      "sample_sha256": "1b8339ceb5a3dae1d44caa7c7aba76de76f4860a1033938ea0da32df919c0f78"
+    },
+    {
+      "case": "holiday/seed-69-shortlist-p1",
+      "ticks": 31522,
+      "initial_checksum": 2352507262,
+      "final_checksum": 2048131378,
+      "result_sha256": "b649316e0356c8e241011b32ae15d82071bf4a7f8742e55bb41e7b1104f060ba",
+      "sample_sha256": "37913f7e641221d84cb1d3893074672ced816d55061551e75015d89fc84f9e38"
+    },
+    {
+      "case": "holiday/seed-69-shortlist-p4",
+      "ticks": 31522,
+      "initial_checksum": 2352507262,
+      "final_checksum": 2048131378,
+      "result_sha256": "463913f66a25ac8adf985c4800f6ca49e81ec0f7a41155e856cff766b6201326",
+      "sample_sha256": "8b94c59b4959bc71b955f500a556458195fcee3a20b3e6a3fb40a470bd1cc4c7"
+    },
+    {
+      "case": "holiday/seed-69-top-p1",
+      "ticks": 32768,
+      "initial_checksum": 2352507262,
+      "final_checksum": 1171213482,
+      "result_sha256": "5d4c3933af43add29aa5d8dec93bea52bb08e5ee13721240801d3fcca6ab8ae2",
+      "sample_sha256": "69b85427705470a64b629c796d505ec3e44d8bba1b35a8d0009874c66efe55d1"
+    },
+    {
+      "case": "holiday/seed-69-top-p4",
+      "ticks": 32768,
+      "initial_checksum": 2352507262,
+      "final_checksum": 1171213482,
+      "result_sha256": "46099fa614bf85adc5ed1239f3d8323b8d80cf9c1f6f8ddec34ccc0ab5567f68",
+      "sample_sha256": "60fc6d0a4e6272692f87e5c150d0fe0cb57e93a58fc5a58e04b4388ac9ab6c95"
+    },
+    {
+      "case": "holiday/seed-70-baseline-p1",
+      "ticks": 32768,
+      "initial_checksum": 1653560746,
+      "final_checksum": 3315245914,
+      "result_sha256": "42f30bfceb741ee311d4a38881c85585313a2a4632f62685dba1bbb766fcecaa",
+      "sample_sha256": "b59562b2765fd39ff8edda3557405be6f22d064db9f3173ee6678cfc0c9afbe2"
+    },
+    {
+      "case": "holiday/seed-70-baseline-p4",
+      "ticks": 32768,
+      "initial_checksum": 1653560746,
+      "final_checksum": 3315245914,
+      "result_sha256": "218dfac8ff7890a0217350f3e0c805d0425d0f3e0a6369b60efecdde8cb42518",
+      "sample_sha256": "14a926e8627480a08a2938a4a02519ed790a0d30c8b664fcc1a40454483ceddf"
+    },
+    {
+      "case": "holiday/seed-70-shortlist-p1",
+      "ticks": 32768,
+      "initial_checksum": 1653560746,
+      "final_checksum": 1358518488,
+      "result_sha256": "7bc201e8ce3e10c6d41ebfbcd3a2cbac07826e7f4504437cab48d79135770043",
+      "sample_sha256": "6aaa1c10b4c0195835106945bf69c8d63e639eeaec56144e7a8f37f416bd5016"
+    },
+    {
+      "case": "holiday/seed-70-shortlist-p4",
+      "ticks": 32768,
+      "initial_checksum": 1653560746,
+      "final_checksum": 1358518488,
+      "result_sha256": "27117bfbc8cc4f17f210cf8a13538b41ee87aeaad034baf133d8c6c190247343",
+      "sample_sha256": "00639b0ebabcb7fab589e78ce4f6a59e9a8df4f2f2384016872e3f04921fc8b2"
+    },
+    {
+      "case": "holiday/seed-70-top-p1",
+      "ticks": 32768,
+      "initial_checksum": 1653560746,
+      "final_checksum": 3865160826,
+      "result_sha256": "8770bd03ee194627b63349e3df917dc8b84a6bd5cb1d236151a9a2162acfc397",
+      "sample_sha256": "76ae48017985e568a8b8f6d36a787ebb5c53b2568a722ab0fffacc600fd1646e"
+    },
+    {
+      "case": "holiday/seed-70-top-p4",
+      "ticks": 32768,
+      "initial_checksum": 1653560746,
+      "final_checksum": 3865160826,
+      "result_sha256": "9bf5b7cbe57af28767160924f2800ad9ea6a0f7b4c5e96ead742f966457e3cbc",
+      "sample_sha256": "458a571dd7c6b8903af67dfa0890c27785edb65501102e7b48d99487ed1d5d84"
+    },
+    {
+      "case": "holiday/seed-71-baseline-p1",
+      "ticks": 32768,
+      "initial_checksum": 2220441834,
+      "final_checksum": 356045882,
+      "result_sha256": "b7f1f90678bc2a10dcb5efa2355a5d6dd55074b9755d1f57861835faf359962e",
+      "sample_sha256": "e01c6530a3407d8464c660656af54a8e9a6f69cd823c74245d4a98133f73a5bd"
+    },
+    {
+      "case": "holiday/seed-71-baseline-p4",
+      "ticks": 32768,
+      "initial_checksum": 2220441834,
+      "final_checksum": 356045882,
+      "result_sha256": "f1a070cfc4e98193fa5e648192116abcae06b848f3d68214d559103b0a988ac0",
+      "sample_sha256": "46016963bac9f97aa4864bb591b0d4be9a0f8dedd76b971b6856f1524b09bbc9"
+    },
+    {
+      "case": "holiday/seed-71-shortlist-p1",
+      "ticks": 32768,
+      "initial_checksum": 2220441834,
+      "final_checksum": 3545420115,
+      "result_sha256": "eb5c03d95d6c13f7326afbf411053df5fe210dd941776096eb6770d5b82d2199",
+      "sample_sha256": "b37262a8400ed1dac88bfa6dc8f0dbd020b654b4ae3ea0282fa6f19999669bf8"
+    },
+    {
+      "case": "holiday/seed-71-shortlist-p4",
+      "ticks": 32768,
+      "initial_checksum": 2220441834,
+      "final_checksum": 3545420115,
+      "result_sha256": "c9c18f9c8a6955d632461fc32af1ab0379895e5df5e51e01040b841989e2b752",
+      "sample_sha256": "3d4145fbe985c965815013672568d63eca51c92f3cd27f3f86582227394747c5"
+    },
+    {
+      "case": "holiday/seed-71-top-p1",
+      "ticks": 32768,
+      "initial_checksum": 2220441834,
+      "final_checksum": 1378307817,
+      "result_sha256": "55a1779f1768b2a9279e87fc715af09427ac44dec8272069255773d46819e0d8",
+      "sample_sha256": "f47c4831aefbde31ea337aa67a220695f2c8547388a001f0baf88478f2355533"
+    },
+    {
+      "case": "holiday/seed-71-top-p4",
+      "ticks": 32768,
+      "initial_checksum": 2220441834,
+      "final_checksum": 1378307817,
+      "result_sha256": "7a1b9ae598b3851b5d56c285a49ee268593c55b4a2b9f96c0c22aa1f0e77321c",
+      "sample_sha256": "ac4c406489d12a07d168487e4338fae095987b11ecf6230f2e1debfc3b0f58c4"
+    },
+    {
+      "case": "holiday/seed-72-baseline-p1",
+      "ticks": 26914,
+      "initial_checksum": 3499900607,
+      "final_checksum": 2232578029,
+      "result_sha256": "74ebd19a1ea3c2632a8b4f52bd6f1ed32db8cd72267e7f00fa949396f331fa34",
+      "sample_sha256": "4f0471bf4716cd03f051767fce24e404b4b143ac02f96e19eb78a5b49ebd05c6"
+    },
+    {
+      "case": "holiday/seed-72-baseline-p4",
+      "ticks": 26914,
+      "initial_checksum": 3499900607,
+      "final_checksum": 2232578029,
+      "result_sha256": "59c23340caaa003a1304f319d1564a0cd3d95c264dd2e20a62620e492fa85dd1",
+      "sample_sha256": "cabfa48004f68d51fe11d9362ebb337324795d9d9f148d6aad45c1800676c3a4"
+    },
+    {
+      "case": "holiday/seed-72-shortlist-p1",
+      "ticks": 32768,
+      "initial_checksum": 3499900607,
+      "final_checksum": 1116643947,
+      "result_sha256": "3418e5171cea1201fb05d40c948310d6b8734c4e72b6707f47745c1fd8749807",
+      "sample_sha256": "6203ceed9da859278ca283a4b87250c2feedea34f891900c040054dc871f3b73"
+    },
+    {
+      "case": "holiday/seed-72-shortlist-p4",
+      "ticks": 32768,
+      "initial_checksum": 3499900607,
+      "final_checksum": 1116643947,
+      "result_sha256": "9262f46bb42a261a10d4733dda087cdf1eed61fea1a8a1647bb2ee8166ec850f",
+      "sample_sha256": "79cd1989d47c4af1b39396148f59d7f84a33fa98dcead3c035a213d84fb0561e"
+    },
+    {
+      "case": "holiday/seed-72-top-p1",
+      "ticks": 32768,
+      "initial_checksum": 3499900607,
+      "final_checksum": 2737011999,
+      "result_sha256": "08b374a32e011587062ffa5e4566086b4f797d8ef6e20dff88bcd0d435387c6b",
+      "sample_sha256": "b9c56412d3473871261e840a0e190894751cc60a9d1ae31acd84c1dc55666658"
+    },
+    {
+      "case": "holiday/seed-72-top-p4",
+      "ticks": 32768,
+      "initial_checksum": 3499900607,
+      "final_checksum": 2737011999,
+      "result_sha256": "73b11053d4a8af75bc84ca6a9a8cee28e17583e45a4845940d5b4efc4cff4713",
+      "sample_sha256": "496e167b971035b01a49fc8de835dd2d1805e64b852bc2e9d4d0143275e00426"
+    },
+    {
+      "case": "holiday/seed-73-baseline-p1",
+      "ticks": 32768,
+      "initial_checksum": 1641272800,
+      "final_checksum": 138162533,
+      "result_sha256": "4598dfcacc70e761e16eee064e5fab31da6868749940771f2eb1e30d5270b167",
+      "sample_sha256": "ee375ad1323f53d460e809f66df8d3758d404e245213ba14b10ceba7fdfd8da4"
+    },
+    {
+      "case": "holiday/seed-73-baseline-p4",
+      "ticks": 32768,
+      "initial_checksum": 1641272800,
+      "final_checksum": 138162533,
+      "result_sha256": "aedcad7f38f124f9224deb0ea0efad7e698ace7edca82a0ad14443f4079403e3",
+      "sample_sha256": "c379a3a8a1b10391efa5e98e0d39f9159ae46b70701e840aef01fd973e847790"
+    },
+    {
+      "case": "holiday/seed-73-shortlist-p1",
+      "ticks": 31234,
+      "initial_checksum": 1641272800,
+      "final_checksum": 2996359716,
+      "result_sha256": "60ee4fdfa0be28e09e294a29d5f7e4e5b19484070e974fab88dae5e90a7222f3",
+      "sample_sha256": "938101e867a63e0bc72e39a9c2f48119aee6bd400067cdd8c4c3ea1e7fbeec2c"
+    },
+    {
+      "case": "holiday/seed-73-shortlist-p4",
+      "ticks": 31234,
+      "initial_checksum": 1641272800,
+      "final_checksum": 2996359716,
+      "result_sha256": "59a2ec5bf51b7d29723c7352afe8a2b0a204dae9378160766387af34973ea1a0",
+      "sample_sha256": "9c8ca01a02fb69c3ed9b880cce7ab0044ff593633f858bebde493a93457d2b9f"
+    },
+    {
+      "case": "holiday/seed-73-top-p1",
+      "ticks": 32768,
+      "initial_checksum": 1641272800,
+      "final_checksum": 4116201260,
+      "result_sha256": "dfe0bf043c6c65910f7bb82c0ac05cfe69745bafe1d815a683aaf61093d15b7e",
+      "sample_sha256": "e9b5e020d374d74b4d755de18d4bc60d234128efe770592dab17fd2fb417965c"
+    },
+    {
+      "case": "holiday/seed-73-top-p4",
+      "ticks": 32768,
+      "initial_checksum": 1641272800,
+      "final_checksum": 4116201260,
+      "result_sha256": "c4a753e74b0f96da3dc3b37c7a7d5fbc5476c5e3a9904ec0d9c810e1ef669826",
+      "sample_sha256": "08550b05ce652664b3212c80da0c8caf6cd24e120e0042c5f42334ed8de632a1"
+    },
+    {
+      "case": "large-eleven/seed-42-baseline-p1",
+      "ticks": 32768,
+      "initial_checksum": 2978572368,
+      "final_checksum": 3700588458,
+      "result_sha256": "c5115919635733cc356122d280f1f39ef409f609e82c97c935fd60e396d04cb3",
+      "sample_sha256": "c777e012f91fb973567a228a2ee9dc66874bf2626bc760add7b7c0e48ff3d82f"
+    },
+    {
+      "case": "large-eleven/seed-42-baseline-p4",
+      "ticks": 32768,
+      "initial_checksum": 2978572368,
+      "final_checksum": 3700588458,
+      "result_sha256": "11e05d99c0b2ca7b097e4a9841bdee2b9acb39c49ed2661fae9c053842851993",
+      "sample_sha256": "c45fad98784d3ec0af4d1595a7460db949bc7ad1cf3c57b4e406fa0621511604"
+    },
+    {
+      "case": "large-eleven/seed-42-shortlist-p1",
+      "ticks": 32768,
+      "initial_checksum": 2978572368,
+      "final_checksum": 2830733403,
+      "result_sha256": "211915e64fb36d9592a7f6be6065b8a083e043a29f651adeffe59f01f570dabd",
+      "sample_sha256": "ed0695701e0c17d395848223b280b76224f24752ce7bb77cda54547b7dae860a"
+    },
+    {
+      "case": "large-eleven/seed-42-shortlist-p4",
+      "ticks": 32768,
+      "initial_checksum": 2978572368,
+      "final_checksum": 2830733403,
+      "result_sha256": "38e7cb0df252585d5ff6f94f2cad28d759dc34082c807807a40af882e45fddab",
+      "sample_sha256": "3c13b18ad2b80336b2b81d0d8a40e403e88d7f75e6c08605e36d05c3e758c0c3"
+    },
+    {
+      "case": "large-eleven/seed-42-top-p1",
+      "ticks": 32768,
+      "initial_checksum": 2978572368,
+      "final_checksum": 3913568080,
+      "result_sha256": "77839c391158c8d7fed005edd77d3f119147dfbb27c5b48c2eca274474179071",
+      "sample_sha256": "847304f3a0ef44c574ba69b5f6c1551307b0fb79bf0ed3391317339370633c33"
+    },
+    {
+      "case": "large-eleven/seed-42-top-p4",
+      "ticks": 32768,
+      "initial_checksum": 2978572368,
+      "final_checksum": 3913568080,
+      "result_sha256": "92d495d10343a4fa3b397a6be1afda32cd160f4679b96b45b269172a359e4c89",
+      "sample_sha256": "17c326f9e9cd59d86b9098c8feda2ff0ca9f0188814a7d81cb820a8f117b8fbc"
+    },
+    {
+      "case": "large-eleven/seed-43-baseline-p1",
+      "ticks": 32768,
+      "initial_checksum": 821070722,
+      "final_checksum": 4132571570,
+      "result_sha256": "c686fb88ea86263e7d3016acb4731a2a56811dfd5af1f11365d32c1a0d1453ff",
+      "sample_sha256": "8f600cd74a08f931ef73d62b6048dabcf80a662164bd11abdea7c6ba842cc228"
+    },
+    {
+      "case": "large-eleven/seed-43-baseline-p4",
+      "ticks": 32768,
+      "initial_checksum": 821070722,
+      "final_checksum": 4132571570,
+      "result_sha256": "0a5b5553f1ee7d136062d4acb8c3eb26ae94b7994023da9418e50309e98f44bf",
+      "sample_sha256": "9daba044c895a7b9f143e27114d89c153980f54bc73d4089a0cfa8e49f305ceb"
+    },
+    {
+      "case": "large-eleven/seed-43-shortlist-p1",
+      "ticks": 32768,
+      "initial_checksum": 821070722,
+      "final_checksum": 3279736694,
+      "result_sha256": "8f29726dd41fefd5625cd2dccd3d2ca3c2665d39ef488efacd608e2b531ea1b2",
+      "sample_sha256": "6a1e30664bf0eee2f83cd23b396ed9bfb70433985b1862e656cf18530ce529a9"
+    },
+    {
+      "case": "large-eleven/seed-43-shortlist-p4",
+      "ticks": 32768,
+      "initial_checksum": 821070722,
+      "final_checksum": 3279736694,
+      "result_sha256": "2bbdb660311ff30b8d0aefa38d736ba0686567c9e3e8300ec5cfb658c2034222",
+      "sample_sha256": "0e654eafdbc91abcb39a79cf0b2a1e4d33a72fa0bea9b035c53b8aa0ffb3c35b"
+    },
+    {
+      "case": "large-eleven/seed-43-top-p1",
+      "ticks": 32768,
+      "initial_checksum": 821070722,
+      "final_checksum": 4287565778,
+      "result_sha256": "2b3fa973864374b254bdde682d6978be2a7b2f4b578a045aa0a360582af6f4c8",
+      "sample_sha256": "1dc1411e01109d89ceeadda7618ac29c07e38fa219ae815fba4bd495bf2bba6c"
+    },
+    {
+      "case": "large-eleven/seed-43-top-p4",
+      "ticks": 32768,
+      "initial_checksum": 821070722,
+      "final_checksum": 4287565778,
+      "result_sha256": "146a53a11fcb03d8b8ca9536ada0b474bd376e58a539e7258b8174fadf1561d0",
+      "sample_sha256": "8e1363d4645fc6a95ecb53699cb10e1ebc17b47c4803c9d24ff5dd3f29152dd6"
+    },
+    {
+      "case": "large-eleven/seed-44-baseline-p1",
+      "ticks": 32768,
+      "initial_checksum": 3369577977,
+      "final_checksum": 1118891830,
+      "result_sha256": "0d03d4e4fef48feddc7510aaaad98fa7df5854d6360b9f5972fdd1c427e3d9d5",
+      "sample_sha256": "b689f6074fae659f61c935475c8731c61f955446ed8d779d2fbe054389b34917"
+    },
+    {
+      "case": "large-eleven/seed-44-baseline-p4",
+      "ticks": 32768,
+      "initial_checksum": 3369577977,
+      "final_checksum": 1118891830,
+      "result_sha256": "32632800b569609736c1ce5289b14831bc4481b67aff70c44604cd4c050c6ec5",
+      "sample_sha256": "2a718565ffd4c1b96307873f73f999621d895e86b6c265ca600aea74bb347af0"
+    },
+    {
+      "case": "large-eleven/seed-44-shortlist-p1",
+      "ticks": 32768,
+      "initial_checksum": 3369577977,
+      "final_checksum": 4100978216,
+      "result_sha256": "07073e51cafd71ad76742b8b4f0c04c6a318362b7456f59ccc57d0e556f8e29b",
+      "sample_sha256": "e81a87e48aa8714ebcd1907b45c510e4237c5d3b96c5104780dd289cd7f49027"
+    },
+    {
+      "case": "large-eleven/seed-44-shortlist-p4",
+      "ticks": 32768,
+      "initial_checksum": 3369577977,
+      "final_checksum": 4100978216,
+      "result_sha256": "6dc541dc3d86cf6f48d05f85b70c2c2260251232aa3a48a89359ded661f5d4a9",
+      "sample_sha256": "4427252cd21d6331fdc7a881382c1c278e06072e9367c7efec4aff384e6b10e6"
+    },
+    {
+      "case": "large-eleven/seed-44-top-p1",
+      "ticks": 32768,
+      "initial_checksum": 3369577977,
+      "final_checksum": 2081023578,
+      "result_sha256": "868cbd9a44bbf498b79306f0dbcbff190224a7855a9df01cd9d92e499913a486",
+      "sample_sha256": "9715679f9aecca81dd72b6c1a860dec3548e12f1bbe3574dfa65d23ace396d5f"
+    },
+    {
+      "case": "large-eleven/seed-44-top-p4",
+      "ticks": 32768,
+      "initial_checksum": 3369577977,
+      "final_checksum": 2081023578,
+      "result_sha256": "55f2949b6cdc7d19d700b4e524fbd7488ba4fd18615ad1a22b778d0db4019328",
+      "sample_sha256": "82cdc01b9526853075aed5b5f726d49f7d4b254f7529028a23295610ef525354"
+    },
+    {
+      "case": "large-eleven/seed-45-baseline-p1",
+      "ticks": 32768,
+      "initial_checksum": 1737977118,
+      "final_checksum": 1331771954,
+      "result_sha256": "c676fc4c7cad9a586627c2d407e68be1c9f9a11a0405456aa4125097e8f71a80",
+      "sample_sha256": "715c943a1f9ba556fa3bb435a675c319f7cf594bf04c9b1c041bdbdbdc019bbf"
+    },
+    {
+      "case": "large-eleven/seed-45-baseline-p4",
+      "ticks": 32768,
+      "initial_checksum": 1737977118,
+      "final_checksum": 1331771954,
+      "result_sha256": "f4788c2cf1b4c42c0fec018ee7d9c4a7b54493bb0e509e6ea13cce79ba185338",
+      "sample_sha256": "499b214e40f34ba75247a5c76cf41a1bed8283b005f5339b6651ed8ba243b5f2"
+    },
+    {
+      "case": "large-eleven/seed-45-shortlist-p1",
+      "ticks": 32768,
+      "initial_checksum": 1737977118,
+      "final_checksum": 1136290650,
+      "result_sha256": "44168a4ae7c1acdd3e7ef61373086e413dfc248498915ccf7241f357feecf98f",
+      "sample_sha256": "048fc6ef993086e57edeef4db8e914013d60c2c83d1c9a94dab24f18d1e08d9e"
+    },
+    {
+      "case": "large-eleven/seed-45-shortlist-p4",
+      "ticks": 32768,
+      "initial_checksum": 1737977118,
+      "final_checksum": 1136290650,
+      "result_sha256": "74465f46d4685a5c09eb39acfe46f89e5981de63643ed365ee4c17107ad6f226",
+      "sample_sha256": "a7ef7fd98218e4dc67df688aa771d53185e981e94ac5c1d26b7bb79e839e92d4"
+    },
+    {
+      "case": "large-eleven/seed-45-top-p1",
+      "ticks": 32768,
+      "initial_checksum": 1737977118,
+      "final_checksum": 3247457686,
+      "result_sha256": "5a650e1f31c837a57c21a4dcb9dbd81a6502e28b19481ed1d0b8fae8d74e834b",
+      "sample_sha256": "ee83b7e6d510ce9c5c04af1edaf320211762a292ca150c6ae012bc161bc526da"
+    },
+    {
+      "case": "large-eleven/seed-45-top-p4",
+      "ticks": 32768,
+      "initial_checksum": 1737977118,
+      "final_checksum": 3247457686,
+      "result_sha256": "e0f015e2099ce49d927da02aa6a59966fbf1db01a966ee2e5f909d5806b3356c",
+      "sample_sha256": "23e1aac703538021fbe4149bed489cd995dd9dd0da37196f6e811c6591050548"
+    },
+    {
+      "case": "large-eleven/seed-46-baseline-p1",
+      "ticks": 32768,
+      "initial_checksum": 3804919134,
+      "final_checksum": 3844251560,
+      "result_sha256": "0644b4361721d096f449b3ca7f62081d9dad28a63cb231a26e40a3dea58f9196",
+      "sample_sha256": "96c37a0853b981b4d338ff568e75e102ad24b3ec5d8049da2ad6460e0543f726"
+    },
+    {
+      "case": "large-eleven/seed-46-baseline-p4",
+      "ticks": 32768,
+      "initial_checksum": 3804919134,
+      "final_checksum": 3844251560,
+      "result_sha256": "adcaaad7ccc0867db6f9327c60e42facdce856d4033e255913e0c8bd7b73aeb8",
+      "sample_sha256": "9991c55d344523f71f94e632cd930c7c7fc15e7a259fbbd30a1daeb3854f28ff"
+    },
+    {
+      "case": "large-eleven/seed-46-shortlist-p1",
+      "ticks": 32768,
+      "initial_checksum": 3804919134,
+      "final_checksum": 2475469159,
+      "result_sha256": "2e99de56d4509fd1685432cc98ddfe3bcfbfb2ae22fe9c4c56d364c80c5ede33",
+      "sample_sha256": "a8945fdf678624895349fde2b7ce2f5b5dd9d67c49a6d4af0402b33265ddc7a3"
+    },
+    {
+      "case": "large-eleven/seed-46-shortlist-p4",
+      "ticks": 32768,
+      "initial_checksum": 3804919134,
+      "final_checksum": 2475469159,
+      "result_sha256": "f931f578068b27c95f35dee5bea8f5122319ff27e96b8ec92f6022c8a44241f1",
+      "sample_sha256": "3c6c2b82a84f50a115c17da81859f534c372ac9564dfebde6060f57d9e459b4f"
+    },
+    {
+      "case": "large-eleven/seed-46-top-p1",
+      "ticks": 32768,
+      "initial_checksum": 3804919134,
+      "final_checksum": 4144791930,
+      "result_sha256": "06ac8c6e81025e8f1330322c934e03584f69787bc539d9c7fbe3b3cafe8fd663",
+      "sample_sha256": "e1530262cb7fc117d173e764c58cbf93c9dd28ce5fa6d94fbe2d53aafd2bf04f"
+    },
+    {
+      "case": "large-eleven/seed-46-top-p4",
+      "ticks": 32768,
+      "initial_checksum": 3804919134,
+      "final_checksum": 4144791930,
+      "result_sha256": "73ccfe912847d4eb63cf17921ea755e4bff7ea03b9b5a967d40d56aff0a2a378",
+      "sample_sha256": "ef651e472e22762fcfd69688b928da4b8d477ac026d1c03d8b855b856c315193"
+    },
+    {
+      "case": "large-eleven/seed-47-baseline-p1",
+      "ticks": 32768,
+      "initial_checksum": 3909434973,
+      "final_checksum": 592902021,
+      "result_sha256": "8600d8d076cde4110365fa7dcd13cbaaec6706dc6e892d27062604f1a8360de9",
+      "sample_sha256": "1ba1991d2420a89f3c1f702d698d864cc1c2599426af668f8cf6e41f1095b16b"
+    },
+    {
+      "case": "large-eleven/seed-47-baseline-p4",
+      "ticks": 32768,
+      "initial_checksum": 3909434973,
+      "final_checksum": 592902021,
+      "result_sha256": "b9eda4c7194c90d66f0d7846535bf9d0295654b2ba9d1e27ab296081d1fbdd9d",
+      "sample_sha256": "e9a51b767fe480d581ad3ee24fde6850da5d5a89d899db88d29e6ae77c7500d8"
+    },
+    {
+      "case": "large-eleven/seed-47-shortlist-p1",
+      "ticks": 32768,
+      "initial_checksum": 3909434973,
+      "final_checksum": 29962717,
+      "result_sha256": "8febceb7d4e628b483c59c4d71127051dd65448b983273d23e1cb476ecddfa1d",
+      "sample_sha256": "8c467512f06cdfa5162593ae9380eb09d3724a663da418f51c0b3fcd13a132d6"
+    },
+    {
+      "case": "large-eleven/seed-47-shortlist-p4",
+      "ticks": 32768,
+      "initial_checksum": 3909434973,
+      "final_checksum": 29962717,
+      "result_sha256": "b3f629db301aa15337e32668828df1eee70b1ca420010ec560aa13e600687e53",
+      "sample_sha256": "2ab621ac244bfa1b809014f5d1aac6dd225a64108bd1bc419711102486b9382a"
+    },
+    {
+      "case": "large-eleven/seed-47-top-p1",
+      "ticks": 32768,
+      "initial_checksum": 3909434973,
+      "final_checksum": 1784678239,
+      "result_sha256": "36b75240ab96eb42472e27b7d54f40e119f7205f84b936ca774874d24b16adfc",
+      "sample_sha256": "0dffe8dbf5ec6bd3c3f00f5c373d730247f32eec89603c2000586a8303479002"
+    },
+    {
+      "case": "large-eleven/seed-47-top-p4",
+      "ticks": 32768,
+      "initial_checksum": 3909434973,
+      "final_checksum": 1784678239,
+      "result_sha256": "bf1840f760777fb4e2b9dda78680a2506d2a2b3acf0d840f7eb54ec0a55f943e",
+      "sample_sha256": "ef6c6dabaa536fe3c609978e5c023532e89761ee40e8d3863159920c4673804e"
+    },
+    {
+      "case": "large-eleven/seed-48-baseline-p1",
+      "ticks": 32768,
+      "initial_checksum": 1854211521,
+      "final_checksum": 1401289029,
+      "result_sha256": "c0fa0e2fffa2d562be012813ebd8a18b58439cca5ea333bf4ec33a3fe003b569",
+      "sample_sha256": "720faedbc32348d9ee1d5934bc7539f4b199aade8c9ec062d5e8610e2816fcae"
+    },
+    {
+      "case": "large-eleven/seed-48-baseline-p4",
+      "ticks": 32768,
+      "initial_checksum": 1854211521,
+      "final_checksum": 1401289029,
+      "result_sha256": "027c3040d753ce4b345140783f41d7a078bc235acfb77d7b75d12b84f52a10dc",
+      "sample_sha256": "33804d4a092fd778cb922e75bc02a0dfbc37a5dd68e650365dc3bae7f89a8fd0"
+    },
+    {
+      "case": "large-eleven/seed-48-shortlist-p1",
+      "ticks": 32768,
+      "initial_checksum": 1854211521,
+      "final_checksum": 2515842942,
+      "result_sha256": "395140f2452b47d0070ac0be10ff6c5ac3a1723daf212b0ba06aba65c5db4675",
+      "sample_sha256": "0b351bfc8c562acb1450a9747834cf91e4416785db05514fb26c46d0b31dec2b"
+    },
+    {
+      "case": "large-eleven/seed-48-shortlist-p4",
+      "ticks": 32768,
+      "initial_checksum": 1854211521,
+      "final_checksum": 2515842942,
+      "result_sha256": "cfd5739d7eb181820c4c69025aeff85f51bbba8c4a523d099f2661dcf9baa954",
+      "sample_sha256": "b765e0c37997c4ae3ca587a2b31c1c6dab5df230693dc1485e26fdd1d45db63f"
+    },
+    {
+      "case": "large-eleven/seed-48-top-p1",
+      "ticks": 32768,
+      "initial_checksum": 1854211521,
+      "final_checksum": 2822596839,
+      "result_sha256": "b3246f0ad3bd190afa902b274faed2f07acbba1eadb57b5b65fd4d114c4b1d5d",
+      "sample_sha256": "28c67bf455d6f9067ba1a2b249c7fb2cce26ad6fed9ffd450c52b7c391708ca3"
+    },
+    {
+      "case": "large-eleven/seed-48-top-p4",
+      "ticks": 32768,
+      "initial_checksum": 1854211521,
+      "final_checksum": 2822596839,
+      "result_sha256": "7e4918b46ca032d6fddecb4e58cc3f00febf07961bc38ab858f8ef832ce46fca",
+      "sample_sha256": "29ef7a00d86bf76595e313881c3d6570805d30372cc01497a8f64d6f430c6e4f"
+    },
+    {
+      "case": "large-eleven/seed-49-baseline-p1",
+      "ticks": 32768,
+      "initial_checksum": 2498688032,
+      "final_checksum": 602486136,
+      "result_sha256": "8f4d9a35a49ff3b899dbe073b3e6a72a0ddb484bb11c3575ab9097a8d14e7d0e",
+      "sample_sha256": "df9c84f39bece964e9d45c6082ae06a39e2bd8925fdf340ce8a90d3591f22bc0"
+    },
+    {
+      "case": "large-eleven/seed-49-baseline-p4",
+      "ticks": 32768,
+      "initial_checksum": 2498688032,
+      "final_checksum": 602486136,
+      "result_sha256": "9726d0ef5d627fe72863f02a5b8175d2b83d5491392748bd200d5eda64190c06",
+      "sample_sha256": "dbf979f7a0432871d9c7daa65ecaf8ff37dafe8a5cc7b568e1466a19dc6f8a23"
+    },
+    {
+      "case": "large-eleven/seed-49-shortlist-p1",
+      "ticks": 32768,
+      "initial_checksum": 2498688032,
+      "final_checksum": 3528743334,
+      "result_sha256": "be9d6c33670020c5e86cc0f073b8b784fe646afddb06462c1fe196283e9bea3e",
+      "sample_sha256": "eee70097f37eb00b57eb4aded86b6c174c6541cd1e42a253de458d41eae40a82"
+    },
+    {
+      "case": "large-eleven/seed-49-shortlist-p4",
+      "ticks": 32768,
+      "initial_checksum": 2498688032,
+      "final_checksum": 3528743334,
+      "result_sha256": "0e22c66a9e79223108a072ee184bd8ec37b637dfc8bf724f7f04e80e74955eb5",
+      "sample_sha256": "f51825edfb023d8b2a049e979f54c667a15503f8bfe26ad6f08cc31a9542f5bd"
+    },
+    {
+      "case": "large-eleven/seed-49-top-p1",
+      "ticks": 32768,
+      "initial_checksum": 2498688032,
+      "final_checksum": 3617030411,
+      "result_sha256": "a3759e8c48a84f13306478f86c9eeccf5d672280c090227b84b525d6eacc64c8",
+      "sample_sha256": "2691f793dcfa16b5f763d18226823113d1b3dfc9bfdee67d95faf4b1e1b945e4"
+    },
+    {
+      "case": "large-eleven/seed-49-top-p4",
+      "ticks": 32768,
+      "initial_checksum": 2498688032,
+      "final_checksum": 3617030411,
+      "result_sha256": "08afb4249e106f4789ca50aac2a42f24c722eec6fedb47c377897e8c1f6e1df8",
+      "sample_sha256": "d8a4172164e7ec56359a24ac72e510e581a43eaa60184c65705b99e5b74264f3"
+    },
+    {
+      "case": "large-eleven/seed-50-baseline-p1",
+      "ticks": 32768,
+      "initial_checksum": 3089715087,
+      "final_checksum": 205434385,
+      "result_sha256": "868fa55039b487c1f859e3b1df7505860929a7049252c1e588cb1ec1a3234847",
+      "sample_sha256": "070155073013a5eefbe8b5d488b017debd0b79d4b28cdd1ce364309562cc6071"
+    },
+    {
+      "case": "large-eleven/seed-50-baseline-p4",
+      "ticks": 32768,
+      "initial_checksum": 3089715087,
+      "final_checksum": 205434385,
+      "result_sha256": "2ef583d69c35014262e62b756c6ecab102d20059e722c1f377c7b5b51deeed98",
+      "sample_sha256": "c96f5dd498d6be0a93fcf8af0e409b2b32d3c0682c55b504f1eb19d91f436c8d"
+    },
+    {
+      "case": "large-eleven/seed-50-shortlist-p1",
+      "ticks": 32768,
+      "initial_checksum": 3089715087,
+      "final_checksum": 4069554467,
+      "result_sha256": "d7176490ffc38b73b846cb0bc3ccc3f67ea41248c182f34705a8da6d6fded4ff",
+      "sample_sha256": "f2a3a3bcfd5c7cb0e022afee3356753051a9035d924db86b2490adad6d349e33"
+    },
+    {
+      "case": "large-eleven/seed-50-shortlist-p4",
+      "ticks": 32768,
+      "initial_checksum": 3089715087,
+      "final_checksum": 4069554467,
+      "result_sha256": "cff057824bef251ba7b4ecb849e155b52749be97c696bb34ca6469fcd66599dd",
+      "sample_sha256": "19071e71cfc8b2e77509d9aad76e24257f651b46ed4acd8e2a0e0fc03c51f428"
+    },
+    {
+      "case": "large-eleven/seed-50-top-p1",
+      "ticks": 32768,
+      "initial_checksum": 3089715087,
+      "final_checksum": 3329806260,
+      "result_sha256": "3cfccacd240be4a780a35e2e4b97b46c585ab2a8d667d6f501ba7a43b8cdb696",
+      "sample_sha256": "770343b3ec8ffb75fb00579237c50d892646112f9591695bb8982c7e6b016017"
+    },
+    {
+      "case": "large-eleven/seed-50-top-p4",
+      "ticks": 32768,
+      "initial_checksum": 3089715087,
+      "final_checksum": 3329806260,
+      "result_sha256": "05c5fe12e7b93d07e4e61c1c7108d0197e65beb2320e8b50389cdde7c84f214d",
+      "sample_sha256": "e3da17c7032abf6f3b2b34725f62931af2c311775183e982ccc9f9b1bc28afb2"
+    },
+    {
+      "case": "large-eleven/seed-51-baseline-p1",
+      "ticks": 32768,
+      "initial_checksum": 3116245998,
+      "final_checksum": 2717444690,
+      "result_sha256": "b7263620a19780f0477a8080470565d732ad62cddfcddd421c590e9a22976a32",
+      "sample_sha256": "c6d6d4807841a3542f9a467c118b9d20a581c7df45341f88cd2dc71cd4f3a0f5"
+    },
+    {
+      "case": "large-eleven/seed-51-baseline-p4",
+      "ticks": 32768,
+      "initial_checksum": 3116245998,
+      "final_checksum": 2717444690,
+      "result_sha256": "80e417efb08d3a8f1b2e08e50db4d296df2edbe0e6f27a726d9cafb82ffc8f8d",
+      "sample_sha256": "a47592511b4c31d9a17056ac22b5c54eeed4eb8b76b880bd20f060f14cbed061"
+    },
+    {
+      "case": "large-eleven/seed-51-shortlist-p1",
+      "ticks": 32768,
+      "initial_checksum": 3116245998,
+      "final_checksum": 1159887381,
+      "result_sha256": "ffd8fb260d3154835e45a0681cefeb411f01d61b7b9eb110b2beb18383ea356e",
+      "sample_sha256": "1ed07679f4fd3d101b6d19495a76464d4f50b1f401d83cd60c28ea8b1894d4d9"
+    },
+    {
+      "case": "large-eleven/seed-51-shortlist-p4",
+      "ticks": 32768,
+      "initial_checksum": 3116245998,
+      "final_checksum": 1159887381,
+      "result_sha256": "93fb7ed49841745d4f6467ee506d644e37433086cc8c4d1e2b28e348db8bd95f",
+      "sample_sha256": "9fddc3ee9a2bd4953c825f152a96f4fc7fcf63bae4e9021ab5ce2bfa1bb3d040"
+    },
+    {
+      "case": "large-eleven/seed-51-top-p1",
+      "ticks": 32768,
+      "initial_checksum": 3116245998,
+      "final_checksum": 1600264802,
+      "result_sha256": "1fca489eb2c8e34a39af098b7dc37718d6a97751c162b93a5147e36c86d62fde",
+      "sample_sha256": "d9b3e5aeb13d50d2ef6c973c3b8beed4b1d7e2a0a6c8a662cd4288fa8e8570e4"
+    },
+    {
+      "case": "large-eleven/seed-51-top-p4",
+      "ticks": 32768,
+      "initial_checksum": 3116245998,
+      "final_checksum": 1600264802,
+      "result_sha256": "7259a951d7b5da9405e9b32fe734b6d4cd6785264b675c77a72ed4227a6e26c0",
+      "sample_sha256": "884bac0a7a0bd2157d304fbac6de5da70d4f64cc053c6e86b24d31a0bce93ae7"
+    },
+    {
+      "case": "large-eleven/seed-52-baseline-p1",
+      "ticks": 32768,
+      "initial_checksum": 4230651823,
+      "final_checksum": 946412964,
+      "result_sha256": "72741ca2300792bec6f124bde04e35f16275119629e5766e06b0d6a85e037933",
+      "sample_sha256": "9b772a43f17d726b5d04e3eaf6728a41c0bb94c4005dc57040ed883eb00e3454"
+    },
+    {
+      "case": "large-eleven/seed-52-baseline-p4",
+      "ticks": 32768,
+      "initial_checksum": 4230651823,
+      "final_checksum": 946412964,
+      "result_sha256": "1a170272c5ee8b40c2c8f6754510e331ddaf843125c23f8c9ba80a9ef52f7132",
+      "sample_sha256": "03f0e1679c319819eda86dd63cf6b8e1461d8548b331475c266d0998420ceba5"
+    },
+    {
+      "case": "large-eleven/seed-52-shortlist-p1",
+      "ticks": 32768,
+      "initial_checksum": 4230651823,
+      "final_checksum": 190456419,
+      "result_sha256": "3ccc5a848de9d38f79dcaab381ce1525f0b509033f7599af34654cc2b9fdbebc",
+      "sample_sha256": "64e794a0aa9fe42efd1869237231582e6c0b53f63cf980e3800ce4a890e8880c"
+    },
+    {
+      "case": "large-eleven/seed-52-shortlist-p4",
+      "ticks": 32768,
+      "initial_checksum": 4230651823,
+      "final_checksum": 190456419,
+      "result_sha256": "a6b024921b014c34e51567fe7ee161f190fbec7c3cbda6069cc91cff92d21fae",
+      "sample_sha256": "06792f63aaa9d54bd6139d78ed4802eeb4780704edc7cf3c70779c5f23aeaed0"
+    },
+    {
+      "case": "large-eleven/seed-52-top-p1",
+      "ticks": 32768,
+      "initial_checksum": 4230651823,
+      "final_checksum": 4037336814,
+      "result_sha256": "0c55b3174af1ffaf9ebb2546a7641e9ace57cb9ffaada6f46209145006c8d548",
+      "sample_sha256": "fcb73a4ca11838526f4af487dc635620b66370d10c6bfbc0c3820288f29a7a9d"
+    },
+    {
+      "case": "large-eleven/seed-52-top-p4",
+      "ticks": 32768,
+      "initial_checksum": 4230651823,
+      "final_checksum": 4037336814,
+      "result_sha256": "fe2332a517971978991336df699e57ff9a39d102fe428502c9e923d63ee5929a",
+      "sample_sha256": "c9112144e47c551f7b565bee303b73f37f0b1847c6a9c7be2a9ee80f06edb725"
+    },
+    {
+      "case": "large-eleven/seed-53-baseline-p1",
+      "ticks": 32768,
+      "initial_checksum": 2137366714,
+      "final_checksum": 2636369480,
+      "result_sha256": "645bf289e17a4c3a4545012238c6a157221db19dbb59d97c3d60362d772560b5",
+      "sample_sha256": "3708ac001089d3d1edd342df71dd424ab86acd1e52b29f292132082cdb3a04cb"
+    },
+    {
+      "case": "large-eleven/seed-53-baseline-p4",
+      "ticks": 32768,
+      "initial_checksum": 2137366714,
+      "final_checksum": 2636369480,
+      "result_sha256": "e01d1411158b7a4c1a60f1880a061a931e05c4b32eaf962b69c33071131ee37b",
+      "sample_sha256": "bd949f823693a2257cce404f6bf38aea88bc1f0e595ba415f36edaa23056c824"
+    },
+    {
+      "case": "large-eleven/seed-53-shortlist-p1",
+      "ticks": 32768,
+      "initial_checksum": 2137366714,
+      "final_checksum": 3248754734,
+      "result_sha256": "838e2a2ef125e2b695dba4010bcc3b6eef6b1c20e83fbd44d04d744ef4857ea4",
+      "sample_sha256": "11870a4f541dcea0a47c7945bead7b7edfd749b2f882452cbe94306b262315d3"
+    },
+    {
+      "case": "large-eleven/seed-53-shortlist-p4",
+      "ticks": 32768,
+      "initial_checksum": 2137366714,
+      "final_checksum": 3248754734,
+      "result_sha256": "482fb1dfe785cc17bbf698fab0f2d31764d217b718caaa06f9b7a0d95d1a531c",
+      "sample_sha256": "abfc201b879b8051b0f7529c8340c1fbc8a0ad05af7e69a4da8fcada767e4c9f"
+    },
+    {
+      "case": "large-eleven/seed-53-top-p1",
+      "ticks": 32768,
+      "initial_checksum": 2137366714,
+      "final_checksum": 978947251,
+      "result_sha256": "a26dc1e9840dce52d63de89f517dadb27f01fae3691daf13cb87afc6c5d285ac",
+      "sample_sha256": "cbb3b258d680fd3a417fe51daa163a33e26b2e736ac2d21d72da571977895970"
+    },
+    {
+      "case": "large-eleven/seed-53-top-p4",
+      "ticks": 32768,
+      "initial_checksum": 2137366714,
+      "final_checksum": 978947251,
+      "result_sha256": "b42ff3d132e7fdcb5476539938fe0afbb3bd617baa46b4c54805bf5a1cb7a7b7",
+      "sample_sha256": "0add6a86a8022e12150136c27680a4db7c47a7977fe51acc8b46eb1f7ac070c9"
+    },
+    {
+      "case": "large-eleven/seed-54-baseline-p1",
+      "ticks": 32768,
+      "initial_checksum": 2353153814,
+      "final_checksum": 1713350562,
+      "result_sha256": "6c0d78ac2161696ff92ebdb9a57a0e389cb3a215c6c23a16fc658fda65eead1a",
+      "sample_sha256": "16e5641cdeb92cf8c344dce74f5cf190e84fa11061ea5a931a13876f429f0a72"
+    },
+    {
+      "case": "large-eleven/seed-54-baseline-p4",
+      "ticks": 32768,
+      "initial_checksum": 2353153814,
+      "final_checksum": 1713350562,
+      "result_sha256": "71988d99af42907b36302768fc5accfb028b44f91686572068a5ba6be72ffe9e",
+      "sample_sha256": "6a879b632f988ad4e3a336728e57e192912255382e2ac60ffce8bef397394c79"
+    },
+    {
+      "case": "large-eleven/seed-54-shortlist-p1",
+      "ticks": 32768,
+      "initial_checksum": 2353153814,
+      "final_checksum": 61282290,
+      "result_sha256": "598dd2a030f48eb5a3401b0af9e923897bff6abb5131cb93446e602443df40cd",
+      "sample_sha256": "2ffefe2678ddae7e783d872266c8c3210edb885fc1a017b13f610efcca7dd573"
+    },
+    {
+      "case": "large-eleven/seed-54-shortlist-p4",
+      "ticks": 32768,
+      "initial_checksum": 2353153814,
+      "final_checksum": 61282290,
+      "result_sha256": "2ff2b31375d9b8232065295f64ab13f7c5e928ebe730252a36cdc769ce947412",
+      "sample_sha256": "7be5c8557738f52a74e6496f045f138539a8d8d37cba3578cc515d138f02a22f"
+    },
+    {
+      "case": "large-eleven/seed-54-top-p1",
+      "ticks": 32768,
+      "initial_checksum": 2353153814,
+      "final_checksum": 4261142035,
+      "result_sha256": "6cf2c482b3352dd9bbde926ae06ffbc9e8745c711961477ec3f24f69cae51c80",
+      "sample_sha256": "398d654fd400611e70a309b4c6e987358e2f63682500ac972039f412a4503567"
+    },
+    {
+      "case": "large-eleven/seed-54-top-p4",
+      "ticks": 32768,
+      "initial_checksum": 2353153814,
+      "final_checksum": 4261142035,
+      "result_sha256": "95eabf5ffb9fe1ef767d5ae806a66b95911a6bdcf9d391e12048d5ccf798a01c",
+      "sample_sha256": "af9574636b1e676759a80565180177bd62f43f04b15117e5f21bf5a201e4b41b"
+    },
+    {
+      "case": "large-eleven/seed-55-baseline-p1",
+      "ticks": 32768,
+      "initial_checksum": 1919035957,
+      "final_checksum": 3117157483,
+      "result_sha256": "ae17d4e889562d04cf97109d3e5a5d061a42af4f9085d99b0cf6eef66ef0c163",
+      "sample_sha256": "02c81a4ebd29d2ad458682ab1ac7f43cbbf3f7a691782fbaa6d3250017350b86"
+    },
+    {
+      "case": "large-eleven/seed-55-baseline-p4",
+      "ticks": 32768,
+      "initial_checksum": 1919035957,
+      "final_checksum": 3117157483,
+      "result_sha256": "8692a9c2a1aa6f64cc834cb733e027219312e107f388cfe87b46a767cd34625c",
+      "sample_sha256": "6ffc69709b2bce451a0b620d97afb96bca20ca27bd1409def256149e16d50e40"
+    },
+    {
+      "case": "large-eleven/seed-55-shortlist-p1",
+      "ticks": 32768,
+      "initial_checksum": 1919035957,
+      "final_checksum": 220644202,
+      "result_sha256": "7e8f1754652d46f5afdc7826617ef5b5c49f58dd760d632ecf41f2921cfc67ee",
+      "sample_sha256": "0afb3b2f8f2d9b0e145ca67df0f58f814d82e3a4d02eddafea52dc3658a2ed0e"
+    },
+    {
+      "case": "large-eleven/seed-55-shortlist-p4",
+      "ticks": 32768,
+      "initial_checksum": 1919035957,
+      "final_checksum": 220644202,
+      "result_sha256": "2672808626f75cbd0545863a1ec56b4e21a23736a101a417a42ac0edef32f018",
+      "sample_sha256": "534fd76f82098d1d012414e72060fc13cf9849fc98c1b7ddec7c3f7649fa7279"
+    },
+    {
+      "case": "large-eleven/seed-55-top-p1",
+      "ticks": 32768,
+      "initial_checksum": 1919035957,
+      "final_checksum": 1578880770,
+      "result_sha256": "32d38428ca01cff1741b8a74dd43574fccbdef5ba3cad6adc373c5a69bcd104f",
+      "sample_sha256": "2fb684f63f307d0f7022e02e810b0cffc48572a75bc238cd0c2b1c0e6579ddaa"
+    },
+    {
+      "case": "large-eleven/seed-55-top-p4",
+      "ticks": 32768,
+      "initial_checksum": 1919035957,
+      "final_checksum": 1578880770,
+      "result_sha256": "0de268b6e27510a19aed008418adfdf043fc782d9396bbcdeed6357ffb1a3824",
+      "sample_sha256": "fac17978beafb47f2fb255186e22a7adb247d9200d5862ce8c67a114c3977370"
+    },
+    {
+      "case": "large-eleven/seed-56-baseline-p1",
+      "ticks": 32768,
+      "initial_checksum": 1168000991,
+      "final_checksum": 1005771666,
+      "result_sha256": "fdb08d21b07e99c79872f7942ca4b154959d1b02ecd87c26cb487fbc58b6286c",
+      "sample_sha256": "125a8d9c832c841535375ab2db10b9598df0749e1d681eef120bb0a9e1f86dfb"
+    },
+    {
+      "case": "large-eleven/seed-56-baseline-p4",
+      "ticks": 32768,
+      "initial_checksum": 1168000991,
+      "final_checksum": 1005771666,
+      "result_sha256": "7bf37e213238607a6a3f25c50c84699ab1fcd3bed7a45822a0899f7b487ea883",
+      "sample_sha256": "fc556e521c6b198400bcf0217ccd1f2d9b2a4cc273231cfc9495d19fe7b91fa3"
+    },
+    {
+      "case": "large-eleven/seed-56-shortlist-p1",
+      "ticks": 32768,
+      "initial_checksum": 1168000991,
+      "final_checksum": 3422218479,
+      "result_sha256": "5e29abf04b757518481b2d41b913095b7631d7f365320a21d778703f50e0fa89",
+      "sample_sha256": "0c6dc3e914795ce579cf0b256cf746e9bf0e740c126b41155a08b7f5c22e31f0"
+    },
+    {
+      "case": "large-eleven/seed-56-shortlist-p4",
+      "ticks": 32768,
+      "initial_checksum": 1168000991,
+      "final_checksum": 3422218479,
+      "result_sha256": "fba49f79e349de6f7136d10e36976b8524310bfaed3d0bd3bc97c2209e009670",
+      "sample_sha256": "c9e39f43846fa437b16e86584d635c87b9c0070ec16e0681f1a8725569b14a74"
+    },
+    {
+      "case": "large-eleven/seed-56-top-p1",
+      "ticks": 32768,
+      "initial_checksum": 1168000991,
+      "final_checksum": 2705805138,
+      "result_sha256": "77f2423ef46d4ff6956e790dbfe270657e2d259466b4a8ac892e797665a67e49",
+      "sample_sha256": "4f0a5738a8b71b9f487e83d6a027d260318f3ed52bd928cf60f743f114a63aa9"
+    },
+    {
+      "case": "large-eleven/seed-56-top-p4",
+      "ticks": 32768,
+      "initial_checksum": 1168000991,
+      "final_checksum": 2705805138,
+      "result_sha256": "0cd9c0d5984d2b17e8bd04b15a1ea0de3958c02f6f225f7c5fd69c84d26c2c70",
+      "sample_sha256": "b1ff435dde3aa9f441270c8083ab9318e1e3130cf030c67c5f7b2a13b5ec998d"
+    },
+    {
+      "case": "large-eleven/seed-57-baseline-p1",
+      "ticks": 32768,
+      "initial_checksum": 382347904,
+      "final_checksum": 2505670509,
+      "result_sha256": "448e04749cd21ec86b641112582dbeb4b098f3f26415f47929a920a2c2de7238",
+      "sample_sha256": "537df45af94050b6cd2b8b2e150a21043137a486d841e15f62ac63c47ed3bc2c"
+    },
+    {
+      "case": "large-eleven/seed-57-baseline-p4",
+      "ticks": 32768,
+      "initial_checksum": 382347904,
+      "final_checksum": 2505670509,
+      "result_sha256": "2bea5f60098de84624b5658469a79448a55c18ee840cba3120dc878a704a54c8",
+      "sample_sha256": "5a679e7090ba685159add9607e17bf2751c5313f55f4ca63e32458875da655e2"
+    },
+    {
+      "case": "large-eleven/seed-57-shortlist-p1",
+      "ticks": 32768,
+      "initial_checksum": 382347904,
+      "final_checksum": 1167363241,
+      "result_sha256": "8cab4a47fa1d15ac95f0011803857ad27a76d6fc8366203e89623f95218cce84",
+      "sample_sha256": "6d7b55a88a561d658079ffe4430585a2fe85dece082c1c624369b88982bfcd65"
+    },
+    {
+      "case": "large-eleven/seed-57-shortlist-p4",
+      "ticks": 32768,
+      "initial_checksum": 382347904,
+      "final_checksum": 1167363241,
+      "result_sha256": "a235f4f7eb8a095abc9792afc37138f6278d6d192460458c9d239bfe8027e529",
+      "sample_sha256": "08f644aa42a2ee7767f35b327ca7bc3489f36e571c8a0cc095bfd0d032b60192"
+    },
+    {
+      "case": "large-eleven/seed-57-top-p1",
+      "ticks": 32768,
+      "initial_checksum": 382347904,
+      "final_checksum": 3827389138,
+      "result_sha256": "793ee9e0fdd25f5c1a8abde4afc633d6ffc8758e4d84eac353babb423cfc3eca",
+      "sample_sha256": "45564783a58a885f9ed3c9871e4116ecad3185da12ff2480b8a288fc033c8fcd"
+    },
+    {
+      "case": "large-eleven/seed-57-top-p4",
+      "ticks": 32768,
+      "initial_checksum": 382347904,
+      "final_checksum": 3827389138,
+      "result_sha256": "d340e64cfaa879dcd14e793f1c8af67a0761a73a122d0efcc3009cf34136af30",
+      "sample_sha256": "a651c407a77e684e7bce202e15bbead53774e3f4016a78e5647ce5642b0c457a"
+    },
+    {
+      "case": "large-eleven/seed-58-baseline-p1",
+      "ticks": 32768,
+      "initial_checksum": 2482968291,
+      "final_checksum": 1650962884,
+      "result_sha256": "c6b77fa07ba3830a7ab3b85ef0ada8dd4e7b75fa858a8f839291b624d20ef889",
+      "sample_sha256": "bf4b91ab9c000b11d781fa4ca285fe8cb3b8e341639c31d7baea25c3b886c157"
+    },
+    {
+      "case": "large-eleven/seed-58-baseline-p4",
+      "ticks": 32768,
+      "initial_checksum": 2482968291,
+      "final_checksum": 1650962884,
+      "result_sha256": "ca84a0df06a0bc4442943f4e63c5ab8736e658152ec6ccebce84c84fd1eccbcb",
+      "sample_sha256": "302b18103538f1204794d83c4a272a87706827f28047fae8c707efac8477b553"
+    },
+    {
+      "case": "large-eleven/seed-58-shortlist-p1",
+      "ticks": 32768,
+      "initial_checksum": 2482968291,
+      "final_checksum": 989290426,
+      "result_sha256": "9517843c43d10e9671bd2c9e8610c28889d7352d489babc04072ae69b0c3b648",
+      "sample_sha256": "5b2a14b5a5c5bae7d3308fff11a545478341a82628dd1256193ee1d8310e1789"
+    },
+    {
+      "case": "large-eleven/seed-58-shortlist-p4",
+      "ticks": 32768,
+      "initial_checksum": 2482968291,
+      "final_checksum": 989290426,
+      "result_sha256": "b2487d22bae106509b40bd4727ffae7fa6bf0a99d9a5c913bfe4d54665a891c4",
+      "sample_sha256": "1657903c5fa53e3512299182f880ba9799321867d680e04e274e099f01f3cbc7"
+    },
+    {
+      "case": "large-eleven/seed-58-top-p1",
+      "ticks": 32768,
+      "initial_checksum": 2482968291,
+      "final_checksum": 2490143721,
+      "result_sha256": "287a45802b77145752a5a1d4cb794c021e4b11a3b84b816e117a9d6a111d947f",
+      "sample_sha256": "470b44e694035282abafb0601fab77f7ea25c9c75e05a17ad4748653453726db"
+    },
+    {
+      "case": "large-eleven/seed-58-top-p4",
+      "ticks": 32768,
+      "initial_checksum": 2482968291,
+      "final_checksum": 2490143721,
+      "result_sha256": "7aab9e51e2e3b4d6b3ede39cab38df13ee853eeb3ccc5f2bbcaf0aba6e63ecd7",
+      "sample_sha256": "9a1b5171761a7d4f7116db4ac0b59ba36850083e78da7f9863f91c28395286ab"
+    },
+    {
+      "case": "large-eleven/seed-59-baseline-p1",
+      "ticks": 32768,
+      "initial_checksum": 923058027,
+      "final_checksum": 477791806,
+      "result_sha256": "d49bfefd0e3ebdd289845910a8fb57255bbeb9867dd51beb51547f78dc5ef06a",
+      "sample_sha256": "d8e706bf0ec439b21db2a30852fcb0fe05a6f2724683bcbda55678d20d76dec3"
+    },
+    {
+      "case": "large-eleven/seed-59-baseline-p4",
+      "ticks": 32768,
+      "initial_checksum": 923058027,
+      "final_checksum": 477791806,
+      "result_sha256": "b0d1bcfa25d88c7f417ca884db57ab8f5199fa224e83b4bfda2bb7fbf3ed1894",
+      "sample_sha256": "d802a9d4cdba6a7c76af18546888c8960a2e5c063e1826fc010a6ca16713265b"
+    },
+    {
+      "case": "large-eleven/seed-59-shortlist-p1",
+      "ticks": 32768,
+      "initial_checksum": 923058027,
+      "final_checksum": 325243501,
+      "result_sha256": "2dd96fe22c30c69a9393919bfb06c11cf61c752968fd763b23a5587b14f51173",
+      "sample_sha256": "33e478b562355f5b59a1f2a49c3c2c1676244e05a2f2382ffcca7405f73d1964"
+    },
+    {
+      "case": "large-eleven/seed-59-shortlist-p4",
+      "ticks": 32768,
+      "initial_checksum": 923058027,
+      "final_checksum": 325243501,
+      "result_sha256": "2e9a6b1fde8661acc8d1867cb3e9fb0afcb26f657f696bdb08e3e92903bdf2ab",
+      "sample_sha256": "78dfe896652c6d3042e1b913c2e5b261e2b041309984bf772933e08b6de33947"
+    },
+    {
+      "case": "large-eleven/seed-59-top-p1",
+      "ticks": 32768,
+      "initial_checksum": 923058027,
+      "final_checksum": 1949018453,
+      "result_sha256": "eedf8d69dfd43ebc85933c26695084a5cc93a167a8a321c995d25792610c70c3",
+      "sample_sha256": "fe4e6875458691987cac43bb783417562a40c44deee727dbde0d88d23092265c"
+    },
+    {
+      "case": "large-eleven/seed-59-top-p4",
+      "ticks": 32768,
+      "initial_checksum": 923058027,
+      "final_checksum": 1949018453,
+      "result_sha256": "3b18603ec229c096925ad030830e165af6578a97185e9cf2ab364d806a78bbfa",
+      "sample_sha256": "540cd062feb325604ee0f274472a58e8745bc7478ffb0d832a1ea63924e8d5c2"
+    },
+    {
+      "case": "large-eleven/seed-60-baseline-p1",
+      "ticks": 32768,
+      "initial_checksum": 3845929219,
+      "final_checksum": 3854746318,
+      "result_sha256": "93c73a0677c0b66902fb916d1953c4e05ceec63df2f537c446becfcf595b626b",
+      "sample_sha256": "29cd185a9912bad19b8e7dcc310adaca015d735eb192d3b1c85316b60bfcaf77"
+    },
+    {
+      "case": "large-eleven/seed-60-baseline-p4",
+      "ticks": 32768,
+      "initial_checksum": 3845929219,
+      "final_checksum": 3854746318,
+      "result_sha256": "381d8006481e460c506d2cf05a610935c3d7b8281bdd5ac74b37edc6845dee8c",
+      "sample_sha256": "3fac63471ec0868d826dedd8356255eaf485a46eaf45d29309fe39919a02b2eb"
+    },
+    {
+      "case": "large-eleven/seed-60-shortlist-p1",
+      "ticks": 32768,
+      "initial_checksum": 3845929219,
+      "final_checksum": 649600522,
+      "result_sha256": "0542945ccce759e0a2ae6d9e9ca8cf10536d77d1968702b2b286996d2b47dfa5",
+      "sample_sha256": "401ae84fb3a875f5ca20218c176724ecc744f104677b0dc28aa9ee10b87d5081"
+    },
+    {
+      "case": "large-eleven/seed-60-shortlist-p4",
+      "ticks": 32768,
+      "initial_checksum": 3845929219,
+      "final_checksum": 649600522,
+      "result_sha256": "be49a64a2f25e66bc4cbda8e436b4ceadb959772d40e47b043cc99516fd2d44f",
+      "sample_sha256": "531bcbe1419350f47a8604c4027786a6a095f89116e7725d7c237bdaf6154d4a"
+    },
+    {
+      "case": "large-eleven/seed-60-top-p1",
+      "ticks": 32768,
+      "initial_checksum": 3845929219,
+      "final_checksum": 2555951995,
+      "result_sha256": "d93d5010456f79bd5e07216638d53e9f97d3684429ac8f657c8903a9ec14c594",
+      "sample_sha256": "b0f19bd15af5cecd78d425c4e9d0d3aadb953d7300f09e5f10c60200a0a8a1ac"
+    },
+    {
+      "case": "large-eleven/seed-60-top-p4",
+      "ticks": 32768,
+      "initial_checksum": 3845929219,
+      "final_checksum": 2555951995,
+      "result_sha256": "208262d87c8b545fd1431b10d98983cd81945593ff9adac7d3aa61b545adf829",
+      "sample_sha256": "8b539e7a33b5d4e78ac688ea1824117e36628392a17d30583511cd694a824539"
+    },
+    {
+      "case": "large-eleven/seed-61-baseline-p1",
+      "ticks": 32768,
+      "initial_checksum": 2326515181,
+      "final_checksum": 3347719051,
+      "result_sha256": "35e04c1b3af3d209900a10e5802bc2850b4166bc926e6b9ab6dd5b3edd48ca84",
+      "sample_sha256": "f56b2a0b0b2a5b8e0f3295b49766552bd463490c686091a5be05935e9c19bde8"
+    },
+    {
+      "case": "large-eleven/seed-61-baseline-p4",
+      "ticks": 32768,
+      "initial_checksum": 2326515181,
+      "final_checksum": 3347719051,
+      "result_sha256": "ea8f96e0f67ff6ef3e7906f5ffdd667d50332325bf714bc198c33d1a67b72a27",
+      "sample_sha256": "c97cb5598b274f3adbfb9dcacadabd5ee919d1d780b25449b8db0abf88dd745b"
+    },
+    {
+      "case": "large-eleven/seed-61-shortlist-p1",
+      "ticks": 32768,
+      "initial_checksum": 2326515181,
+      "final_checksum": 920629743,
+      "result_sha256": "2645b4e000f87250421fcf24e5724286d53a75ab7230c1ece4e494e0d6e9f817",
+      "sample_sha256": "b143c022bd11a0e5c8184676e576ce937781247f7363fca016e2616389b7bddc"
+    },
+    {
+      "case": "large-eleven/seed-61-shortlist-p4",
+      "ticks": 32768,
+      "initial_checksum": 2326515181,
+      "final_checksum": 920629743,
+      "result_sha256": "bbe81a9ae1561a4d0c9fb21ad89c7f42ea7be54c43032c7d431bbf7d94337d2a",
+      "sample_sha256": "326966db5c549f064a3384340fbf5c3d6da367986df31a605858ebc941ccbc1b"
+    },
+    {
+      "case": "large-eleven/seed-61-top-p1",
+      "ticks": 32768,
+      "initial_checksum": 2326515181,
+      "final_checksum": 3132539408,
+      "result_sha256": "0cce7114c9f1ca44457cd0b625c31d4f437b5be31dfb5e89776ad44b22d44c5d",
+      "sample_sha256": "12901f5acf8965ea7de6703b83d5bde4a057f3f37b4ef9dc06f2fc2e7d2a5791"
+    },
+    {
+      "case": "large-eleven/seed-61-top-p4",
+      "ticks": 32768,
+      "initial_checksum": 2326515181,
+      "final_checksum": 3132539408,
+      "result_sha256": "089e5f7f351522b63c98733dd4c42d16521611aba4f0cca7f8bbb8e49912011e",
+      "sample_sha256": "9bec46572a06ee164c50adc28fe3724d94431ffabb32bef44885829a78b77844"
+    },
+    {
+      "case": "large-eleven/seed-62-baseline-p1",
+      "ticks": 32768,
+      "initial_checksum": 3769072269,
+      "final_checksum": 1496555430,
+      "result_sha256": "cd8ab9969b33e9f748626763efd06c93758295828b33e08d28cc4e4a464ae583",
+      "sample_sha256": "178656e253c4c0d4c6a53f16b81791b56eee2457f6faeb1856478eee34acccd0"
+    },
+    {
+      "case": "large-eleven/seed-62-baseline-p4",
+      "ticks": 32768,
+      "initial_checksum": 3769072269,
+      "final_checksum": 1496555430,
+      "result_sha256": "0b3a8505ccacd005947edf891adb708544ee338ec6c22b342fe3b91f654e7e63",
+      "sample_sha256": "59fc194d3c0fa6e49330978e1a32ec6b35488db34253ca6deba804d47947c195"
+    },
+    {
+      "case": "large-eleven/seed-62-shortlist-p1",
+      "ticks": 32768,
+      "initial_checksum": 3769072269,
+      "final_checksum": 2220556203,
+      "result_sha256": "a9ca035dba890f30b501a9797e3ceb4956596701356323879a43bfd672d2b37d",
+      "sample_sha256": "941bf35205cca7a6fc119816b0ad7a9d60617eee1edd590b09a8fba3c3c0acba"
+    },
+    {
+      "case": "large-eleven/seed-62-shortlist-p4",
+      "ticks": 32768,
+      "initial_checksum": 3769072269,
+      "final_checksum": 2220556203,
+      "result_sha256": "70e264ba5b59f04ec6fae956636d173490aae7396e2fd3ef9937f2051ac9c160",
+      "sample_sha256": "2a932bcf5a5d67aaf57fc2905f2bb5c58b10bd5af5ee2a34d39da8fcdbdba6c1"
+    },
+    {
+      "case": "large-eleven/seed-62-top-p1",
+      "ticks": 32768,
+      "initial_checksum": 3769072269,
+      "final_checksum": 3907032198,
+      "result_sha256": "5573e277c0f3dc1ff62c8fd76e3ed056c6330dac1f133221c64206895f95f9eb",
+      "sample_sha256": "7c45f752a6d18c5523f7b40f936013f22f718a4045f7d4d68b48d9e8060f34e3"
+    },
+    {
+      "case": "large-eleven/seed-62-top-p4",
+      "ticks": 32768,
+      "initial_checksum": 3769072269,
+      "final_checksum": 3907032198,
+      "result_sha256": "12e13d0a7421550aa501a6e45399d36e6b94cb33ec3afa73018807b5816d4345",
+      "sample_sha256": "5714b3e32b7de876b6c7b24ebacdb456a4c6672c7a0b82559f286ae13523e9ea"
+    },
+    {
+      "case": "large-eleven/seed-63-baseline-p1",
+      "ticks": 32768,
+      "initial_checksum": 527645655,
+      "final_checksum": 4236592732,
+      "result_sha256": "2010a386d2a307f183fc71715b2eb5266be8bb2f4a141c2e020d69d598ff31cb",
+      "sample_sha256": "259777c2448b4fe9e2935a4c96a9eccee7e04750ff5d0150b357ad5d298bb99b"
+    },
+    {
+      "case": "large-eleven/seed-63-baseline-p4",
+      "ticks": 32768,
+      "initial_checksum": 527645655,
+      "final_checksum": 4236592732,
+      "result_sha256": "a620fc7d0feccd36d6aba1f1e5fe8ba8b123b1aefe5e9ef22d6a7331eba5dbb5",
+      "sample_sha256": "86535004502182bf93e035ed5d3de64fcff95506449c6857c4e1ae3833757b76"
+    },
+    {
+      "case": "large-eleven/seed-63-shortlist-p1",
+      "ticks": 32768,
+      "initial_checksum": 527645655,
+      "final_checksum": 715285312,
+      "result_sha256": "dc9a6408c13fca63b8a5b8f16e47461b651972998f60f2876e845d4aec0624fb",
+      "sample_sha256": "0309dfa40513de07dbbade8f54aa6ad18e769cab0a42d3fe8530ec7a99fea861"
+    },
+    {
+      "case": "large-eleven/seed-63-shortlist-p4",
+      "ticks": 32768,
+      "initial_checksum": 527645655,
+      "final_checksum": 715285312,
+      "result_sha256": "6ac9d31453f53d3e2bce622b216101ddd71934786dc3ef5fdc70209f1c35ad58",
+      "sample_sha256": "116a4bacf13fefeaeba3773382000cc869c390ee1e05434cd6ace9067fcf1db4"
+    },
+    {
+      "case": "large-eleven/seed-63-top-p1",
+      "ticks": 32768,
+      "initial_checksum": 527645655,
+      "final_checksum": 1746383669,
+      "result_sha256": "55b5342c982236b45d78223a9f004da83380c261e04f4ffb5748936cc8721f81",
+      "sample_sha256": "6e061321f239b0a9aa8882a4c6a3c4cbac5830ecb0fa403540907f8e96310e3b"
+    },
+    {
+      "case": "large-eleven/seed-63-top-p4",
+      "ticks": 32768,
+      "initial_checksum": 527645655,
+      "final_checksum": 1746383669,
+      "result_sha256": "e17ea67ef28bd655150729cf687bd18f99fa6da3daf37ad8f44915a9e7210890",
+      "sample_sha256": "8a256737686888f84c055bfb0497dc234d96dee94657d1344909fcfff18a8b14"
+    },
+    {
+      "case": "large-eleven/seed-64-baseline-p1",
+      "ticks": 32768,
+      "initial_checksum": 3011493727,
+      "final_checksum": 2658506173,
+      "result_sha256": "9f09b45ac6f696ff66ee1296a14f697e78743ab8db78af0b9e50f8d34ab677ae",
+      "sample_sha256": "e2a522f712cdb6a9cc8d1f3d9884d90ae1510dd76c8d23cb1105f1e8159df482"
+    },
+    {
+      "case": "large-eleven/seed-64-baseline-p4",
+      "ticks": 32768,
+      "initial_checksum": 3011493727,
+      "final_checksum": 2658506173,
+      "result_sha256": "ec06d3ddf283532b64eee05df1da8cb93db7bfc9c9630ab62be3aa0c70e1142b",
+      "sample_sha256": "d33ce232e34c62e452bcb34a0d19d41b3ee017d441bfcda0f840292e30eee0fb"
+    },
+    {
+      "case": "large-eleven/seed-64-shortlist-p1",
+      "ticks": 32768,
+      "initial_checksum": 3011493727,
+      "final_checksum": 3880704721,
+      "result_sha256": "8e8b724b109d9cd2f2e2f375221a8642e86e4eebd37e13fc44aad40c30e81f53",
+      "sample_sha256": "58c539aab0319cc15f227600409ea44c3cf3c41c557bed0d02a165426543d6f5"
+    },
+    {
+      "case": "large-eleven/seed-64-shortlist-p4",
+      "ticks": 32768,
+      "initial_checksum": 3011493727,
+      "final_checksum": 3880704721,
+      "result_sha256": "854581b78b2405e39fd84a34f31eb0064168fd4d525f4e299a0997009e2250e4",
+      "sample_sha256": "347476644b009d44fb2387f02226e0b5ed2907a17023235ec7da151215e6daf0"
+    },
+    {
+      "case": "large-eleven/seed-64-top-p1",
+      "ticks": 32768,
+      "initial_checksum": 3011493727,
+      "final_checksum": 2047327680,
+      "result_sha256": "be7f98b21c9d48bace63204d01d6bfe5b50c0b85184e74feda4abca23a678067",
+      "sample_sha256": "ebedfc1901063d88b7dd421884f82a1bb85444cb583bc5dd616dacd80e30495f"
+    },
+    {
+      "case": "large-eleven/seed-64-top-p4",
+      "ticks": 32768,
+      "initial_checksum": 3011493727,
+      "final_checksum": 2047327680,
+      "result_sha256": "1797446b45aad73c2bab7dcaf5192f629c2a83592947311040ce6b2f63c51cb9",
+      "sample_sha256": "e7b767e4f6854a8ad1ca1a2f8972638ed47bb8ae87feb5d7af4349a0595ab7b9"
+    },
+    {
+      "case": "large-eleven/seed-65-baseline-p1",
+      "ticks": 32768,
+      "initial_checksum": 2559857765,
+      "final_checksum": 1179538122,
+      "result_sha256": "cbfc82cc18d3dcd64a55490315b2868212e4a178c448293245a8cc1a985ec3a7",
+      "sample_sha256": "608eb66a1e998a3970934ceab21fd36129a3275c21e06a5206b999fdda406e51"
+    },
+    {
+      "case": "large-eleven/seed-65-baseline-p4",
+      "ticks": 32768,
+      "initial_checksum": 2559857765,
+      "final_checksum": 1179538122,
+      "result_sha256": "f24f1509ed0512e103bb2a50192b1377c2fc0eafdd7dc52223525ce3cacc0f40",
+      "sample_sha256": "f2086fbf77ec5f63dbdc4d1c323aedaaa39843966bd3614d04a7abcb8b6cb115"
+    },
+    {
+      "case": "large-eleven/seed-65-shortlist-p1",
+      "ticks": 32768,
+      "initial_checksum": 2559857765,
+      "final_checksum": 1734072785,
+      "result_sha256": "f60f726e210964f887ad6e1530052fc8933a18760f913d966e93b558f6c93a9f",
+      "sample_sha256": "a3cfd8f4ae87c7ee673842b521c9908009bde906b4d2b0fc77a0084157068811"
+    },
+    {
+      "case": "large-eleven/seed-65-shortlist-p4",
+      "ticks": 32768,
+      "initial_checksum": 2559857765,
+      "final_checksum": 1734072785,
+      "result_sha256": "b9a634b8f6ae01e9ca206b51fbec1c57731695ff07986074ce983bec1ab191c7",
+      "sample_sha256": "1a9da7c2f8bed205d421d734456687ae3100435564eeec5181d99c06792fd717"
+    },
+    {
+      "case": "large-eleven/seed-65-top-p1",
+      "ticks": 32768,
+      "initial_checksum": 2559857765,
+      "final_checksum": 1180451931,
+      "result_sha256": "7c454428dd18a1bb93a23c39c6ba24cebe83408a25523fcbea6240d2d34b717d",
+      "sample_sha256": "78e2f44b5d841965ba1b09f8c9f81ab5efb91c9805528bbdb1be600a29c541e4"
+    },
+    {
+      "case": "large-eleven/seed-65-top-p4",
+      "ticks": 32768,
+      "initial_checksum": 2559857765,
+      "final_checksum": 1180451931,
+      "result_sha256": "9f15525b866f5daf22e78c2ecd22c8d9f96e0368adaa0147e91913effcde463e",
+      "sample_sha256": "786d1f5b0eae88486554255dd47b02d8b6bb9e81aa90e1d17cd5f1141dd14281"
+    },
+    {
+      "case": "large-eleven/seed-66-baseline-p1",
+      "ticks": 32768,
+      "initial_checksum": 4048919717,
+      "final_checksum": 1778131794,
+      "result_sha256": "bca0ed06bebc9b7be4d80ada13b242de35840051adb1df5b640fa7136f0c6965",
+      "sample_sha256": "276950f03014c59a07f53cd436fbed0ffc2fb4b0d260d07404867d5272516cbe"
+    },
+    {
+      "case": "large-eleven/seed-66-baseline-p4",
+      "ticks": 32768,
+      "initial_checksum": 4048919717,
+      "final_checksum": 1778131794,
+      "result_sha256": "7b59e6f25a2af11effcb4572864056ad94cbf9d0338d593da6022fdf0639faa5",
+      "sample_sha256": "edb063a7af7b62edfde8a9c7700262cb7ff5046c2a5cdd5e944aa8415a3f4c16"
+    },
+    {
+      "case": "large-eleven/seed-66-shortlist-p1",
+      "ticks": 32768,
+      "initial_checksum": 4048919717,
+      "final_checksum": 848350745,
+      "result_sha256": "596e4f5662705af89d2b58bfb4e055cd0ef72febce9ce8c7567379a5266aa336",
+      "sample_sha256": "e3facacae8a0420ff954288c63af9ffa0cb38cfff860da596efad38679509a10"
+    },
+    {
+      "case": "large-eleven/seed-66-shortlist-p4",
+      "ticks": 32768,
+      "initial_checksum": 4048919717,
+      "final_checksum": 848350745,
+      "result_sha256": "a60ec851704fd79f693550cf98c0febf2fda45d8e7556e10b3c3973f7b9a7f4a",
+      "sample_sha256": "794e6777919cfccd246a0ab02e7e16bbea09e0a8826f68f2b0ed4b54399765c8"
+    },
+    {
+      "case": "large-eleven/seed-66-top-p1",
+      "ticks": 32768,
+      "initial_checksum": 4048919717,
+      "final_checksum": 1799994972,
+      "result_sha256": "2141e4d743415fc3e1208c67469d36bac10773afe3a2804f8a204b9f67890d11",
+      "sample_sha256": "fa75d03b0c19dae7121f54ec818f53394e3a115b9d1385ee347617e21bedcc66"
+    },
+    {
+      "case": "large-eleven/seed-66-top-p4",
+      "ticks": 32768,
+      "initial_checksum": 4048919717,
+      "final_checksum": 1799994972,
+      "result_sha256": "c89a4102212e79d6e80ff67c710ebb847171556f91755a1711b68a0f56545cac",
+      "sample_sha256": "328b927a7f3e0d1f75845da657fdfe58684907658235aeefd6355b36b611510b"
+    },
+    {
+      "case": "large-eleven/seed-67-baseline-p1",
+      "ticks": 32768,
+      "initial_checksum": 3026727489,
+      "final_checksum": 704786255,
+      "result_sha256": "440cdcd1ea5a70a9300e89c727e91d806699615c07ebf0d26fb9575be6856a3c",
+      "sample_sha256": "4fd5cfb18e1425c355ce843fc4a4cf0edac49a85e134f2794d0e85eea3bace39"
+    },
+    {
+      "case": "large-eleven/seed-67-baseline-p4",
+      "ticks": 32768,
+      "initial_checksum": 3026727489,
+      "final_checksum": 704786255,
+      "result_sha256": "6eec333bfb821ad58b43ce3c62eaf1ec46dc0e1d00e6db13e5d285439d6dc1ae",
+      "sample_sha256": "39296394d7f923d459168ce5ce18965057918b70c0e21ab0afd999018cfd7f86"
+    },
+    {
+      "case": "large-eleven/seed-67-shortlist-p1",
+      "ticks": 32768,
+      "initial_checksum": 3026727489,
+      "final_checksum": 3389262304,
+      "result_sha256": "1d3b98b6a6cafbca15f185098bd444ace1011ce815e3fda896ebe77011392588",
+      "sample_sha256": "304b5469da25abd6208806ba8b251f6c2d78f108282d08ad58ccfc4b5cce94f3"
+    },
+    {
+      "case": "large-eleven/seed-67-shortlist-p4",
+      "ticks": 32768,
+      "initial_checksum": 3026727489,
+      "final_checksum": 3389262304,
+      "result_sha256": "8418a273123864f244f7e7637adf470db47cc175da18fd4bc656d73cf556ae2e",
+      "sample_sha256": "e77f46ef1b1a339564f5418dd457067ef1b3726f64de8fd368cc4b688bb5bee9"
+    },
+    {
+      "case": "large-eleven/seed-67-top-p1",
+      "ticks": 32768,
+      "initial_checksum": 3026727489,
+      "final_checksum": 508717666,
+      "result_sha256": "974ccf12b588a9935a090a2ee938c6d22037330d0ab1983809f00e192812962e",
+      "sample_sha256": "e91ca1a38f8c390b8384816787856596db4d308682346fdee5cbddc067529c91"
+    },
+    {
+      "case": "large-eleven/seed-67-top-p4",
+      "ticks": 32768,
+      "initial_checksum": 3026727489,
+      "final_checksum": 508717666,
+      "result_sha256": "21d91e9871bf0d013de5cfcaf5bd3d554b7b99ac36db784d2820e656dc3521cf",
+      "sample_sha256": "3b6020e462f313293538894cee7e49c9ba47fa2a8215a78327de888fb328bab8"
+    },
+    {
+      "case": "large-eleven/seed-68-baseline-p1",
+      "ticks": 32768,
+      "initial_checksum": 4133867379,
+      "final_checksum": 1922511529,
+      "result_sha256": "d9dac20318b4347abdb2f2678ccb609e2e56d9486790ba3e696f5847bdfdeb61",
+      "sample_sha256": "f0cc8f051f7f10ffb64162f4d1b4145280cd740b76c4a23a165953f93dbacdf6"
+    },
+    {
+      "case": "large-eleven/seed-68-baseline-p4",
+      "ticks": 32768,
+      "initial_checksum": 4133867379,
+      "final_checksum": 1922511529,
+      "result_sha256": "e89bf733c490e0ac771f32233bd41c1b7896db558d0efd8a98715ac01ab9659d",
+      "sample_sha256": "ec42da02495dd5c38792826b56f501e7d471a7b5aece9dad236dba6f79f28c36"
+    },
+    {
+      "case": "large-eleven/seed-68-shortlist-p1",
+      "ticks": 32768,
+      "initial_checksum": 4133867379,
+      "final_checksum": 4101987057,
+      "result_sha256": "fb4f650f5e9ba377bc48e303b3bf7c27a6a0fdce8ccd923c33bfef398948f969",
+      "sample_sha256": "01b3bd390ea3c3340896be6ad4ae27a39ba4525f0d2b988587aef21a3a030ce5"
+    },
+    {
+      "case": "large-eleven/seed-68-shortlist-p4",
+      "ticks": 32768,
+      "initial_checksum": 4133867379,
+      "final_checksum": 4101987057,
+      "result_sha256": "f2e6ffdb0fca61cde1606bba351f70e533ba40e69ea301b18f889833ed6e032d",
+      "sample_sha256": "dad09a6dcc113a32bcd657bcf663b0e9875838a95eaa56f3ae965a7c89e8894b"
+    },
+    {
+      "case": "large-eleven/seed-68-top-p1",
+      "ticks": 32768,
+      "initial_checksum": 4133867379,
+      "final_checksum": 3000820028,
+      "result_sha256": "f304e9269ddf4e0a61c9f8a8113716fac7eb5eda9447a9a75d09d61e2438c3f3",
+      "sample_sha256": "341f7f14cca008827a1f7bda624a5fd4dce927f316220af6262d5f4c9f41fda6"
+    },
+    {
+      "case": "large-eleven/seed-68-top-p4",
+      "ticks": 32768,
+      "initial_checksum": 4133867379,
+      "final_checksum": 3000820028,
+      "result_sha256": "bf92e490800dd2fb43fb8606655e784b8719fcf3b0333b07da2bfd8d8f1d4e81",
+      "sample_sha256": "2fcddc7c986caf790aeeae9012eeac3585cf6a173d328e55a0e8f038e837f41f"
+    },
+    {
+      "case": "large-eleven/seed-69-baseline-p1",
+      "ticks": 32768,
+      "initial_checksum": 3292946046,
+      "final_checksum": 846159902,
+      "result_sha256": "7619771708ae217cb577a8a9f047e28e2544c5eb1e9e543efd5c8d5b240c008c",
+      "sample_sha256": "13e903b312c994ca00f393ed1a0b2a77b80ac61ec9d5469e4a883b988f6e0521"
+    },
+    {
+      "case": "large-eleven/seed-69-baseline-p4",
+      "ticks": 32768,
+      "initial_checksum": 3292946046,
+      "final_checksum": 846159902,
+      "result_sha256": "e35d87289018d1b22264e2200dc94e9b0f746dcbbf981ea489654b18725f65f9",
+      "sample_sha256": "6b5605534bdab2e6ad44fe65e4accdb7651a7f4edd5d61e948b581ab67ebdf74"
+    },
+    {
+      "case": "large-eleven/seed-69-shortlist-p1",
+      "ticks": 32768,
+      "initial_checksum": 3292946046,
+      "final_checksum": 4242786291,
+      "result_sha256": "f7b3264f2eeec10448d7121e21bd3726445ec6f9c968f3adbc160b8366941b9b",
+      "sample_sha256": "f24f0afb5943cc3968f55764dc2146d9963c20f89751006add9ba93bd47923f4"
+    },
+    {
+      "case": "large-eleven/seed-69-shortlist-p4",
+      "ticks": 32768,
+      "initial_checksum": 3292946046,
+      "final_checksum": 4242786291,
+      "result_sha256": "8e62ca708f0bb925252ef328216bf87ebaf7291def826931e217ba384384e570",
+      "sample_sha256": "4d6fca1eb776421eb8452409a843b81c9a183e758213ed4f4872094716248632"
+    },
+    {
+      "case": "large-eleven/seed-69-top-p1",
+      "ticks": 32768,
+      "initial_checksum": 3292946046,
+      "final_checksum": 1605599077,
+      "result_sha256": "610cea0292ca1b8999076242640e7e7487ee37eb0d7dab3d5162b58dc54dbf40",
+      "sample_sha256": "0593e6854de2c4bd9d00219e8fe14959af2723807049730c32a92a2d578c0d41"
+    },
+    {
+      "case": "large-eleven/seed-69-top-p4",
+      "ticks": 32768,
+      "initial_checksum": 3292946046,
+      "final_checksum": 1605599077,
+      "result_sha256": "74bf3d68ac0f28da62ef8481e179bb4a2e87902a1b981b4bccd07754d50ecb26",
+      "sample_sha256": "e148ba77846101e5f9d307035fe12b7b1fce5bd2e52fb04b4e611fd3a7b0cb0d"
+    },
+    {
+      "case": "large-eleven/seed-70-baseline-p1",
+      "ticks": 32768,
+      "initial_checksum": 439669012,
+      "final_checksum": 634053530,
+      "result_sha256": "fc9554fdb415f5d59b84ad63f70616357f136c219e234a3deced3d3492f74e74",
+      "sample_sha256": "acafb7d81f2d50aede089f1c5dd02d7627e3430262a9f61c3fe5eb771e7b0bab"
+    },
+    {
+      "case": "large-eleven/seed-70-baseline-p4",
+      "ticks": 32768,
+      "initial_checksum": 439669012,
+      "final_checksum": 634053530,
+      "result_sha256": "f8bd9c78f250cfd70dc6162196781dbe38d39faa94396b077540688fca550cf5",
+      "sample_sha256": "660ea7e8bd12bd5a72d58e8218cd9930649dc7862886f9706e0010f73d716441"
+    },
+    {
+      "case": "large-eleven/seed-70-shortlist-p1",
+      "ticks": 32768,
+      "initial_checksum": 439669012,
+      "final_checksum": 1746190589,
+      "result_sha256": "8526e6354641d0cf01fa7deac04f12639f856ece224da52d14aa47f733a09c0c",
+      "sample_sha256": "6fe8356d47cc3e196e364fd573ff1bdf914f57af697cb5cc2d9177918b274afb"
+    },
+    {
+      "case": "large-eleven/seed-70-shortlist-p4",
+      "ticks": 32768,
+      "initial_checksum": 439669012,
+      "final_checksum": 1746190589,
+      "result_sha256": "cd8d92b292d265ed4690522a22b5b585130aae94504245cd5d04780ddaa1da6f",
+      "sample_sha256": "1b7c04c9f1b596208e065d5d895726ba06f8c8d0bd530ec9c917c809d2b33d02"
+    },
+    {
+      "case": "large-eleven/seed-70-top-p1",
+      "ticks": 32768,
+      "initial_checksum": 439669012,
+      "final_checksum": 400091558,
+      "result_sha256": "9b4388d49cc4f14ea710c5d7aff2d137a1668a80848d164e90304b7433756156",
+      "sample_sha256": "31973b6eb89ae46e624a81fef4c1e9d4f76df9583420edc6af71b05ca128950a"
+    },
+    {
+      "case": "large-eleven/seed-70-top-p4",
+      "ticks": 32768,
+      "initial_checksum": 439669012,
+      "final_checksum": 400091558,
+      "result_sha256": "1b5d82f58488808908ddf6fffd52702873a7a005bb9ed4b3b1ec4eced53d2d5b",
+      "sample_sha256": "d8dbea6c57d900e7e9bd1c38a8bad48bbb8cfb962bdcf7c1f102cdaaaac6f0c6"
+    },
+    {
+      "case": "large-eleven/seed-71-baseline-p1",
+      "ticks": 32768,
+      "initial_checksum": 4103120941,
+      "final_checksum": 1887255039,
+      "result_sha256": "c1852fc9decd2dd6e82aaa07cab0403990d69069dec50032713d093e0a264f77",
+      "sample_sha256": "038a6544b9c12bf0004b4cf7a5842653b6e751ada4aeba4f0a86465605ff4da0"
+    },
+    {
+      "case": "large-eleven/seed-71-baseline-p4",
+      "ticks": 32768,
+      "initial_checksum": 4103120941,
+      "final_checksum": 1887255039,
+      "result_sha256": "7c1325a98f4fb9a3a83f5fabbb62d30681f5b9d2865acad690487cb288ef779e",
+      "sample_sha256": "95e18b6827833ed0a232a6d77719823305e6ad49f8415a5050c2de7a729670b3"
+    },
+    {
+      "case": "large-eleven/seed-71-shortlist-p1",
+      "ticks": 32768,
+      "initial_checksum": 4103120941,
+      "final_checksum": 3086432376,
+      "result_sha256": "79d8d42918939b2e3baad16de960295ce8557f768a9a86f742a2b66455f6e36b",
+      "sample_sha256": "e720d1c3305cca94e750bb3e38c61159b0899db08640f5b4b9b179ac69ac87ff"
+    },
+    {
+      "case": "large-eleven/seed-71-shortlist-p4",
+      "ticks": 32768,
+      "initial_checksum": 4103120941,
+      "final_checksum": 3086432376,
+      "result_sha256": "94e389856a8fdec1acb429ae6e9c98ab3690e6770203dc6077bbceb2cd91c96c",
+      "sample_sha256": "d02e9280dc4c24d95caceb236f185d7d43abd898f898ea89762bd064bdffbe22"
+    },
+    {
+      "case": "large-eleven/seed-71-top-p1",
+      "ticks": 32768,
+      "initial_checksum": 4103120941,
+      "final_checksum": 4058912690,
+      "result_sha256": "7b9d5208d11c1cd97603a991d839e22e207f0784017058032cf8d14b5b9223e0",
+      "sample_sha256": "6b8d4ed5aaaa4f1eecf7945cf096152b0a37ac6e2d3c139e58cf69996fa3cb8b"
+    },
+    {
+      "case": "large-eleven/seed-71-top-p4",
+      "ticks": 32768,
+      "initial_checksum": 4103120941,
+      "final_checksum": 4058912690,
+      "result_sha256": "6660bc2f5a869efbbddcb2130b9169726c7ed9a4f16f7e17f86a0c8bd0b8456d",
+      "sample_sha256": "ba6f34b079ef5516e4ce20f6b30d6138db75b1644c22b9e85ebf36149d709fd8"
+    },
+    {
+      "case": "large-eleven/seed-72-baseline-p1",
+      "ticks": 32768,
+      "initial_checksum": 2660620956,
+      "final_checksum": 4077764454,
+      "result_sha256": "7a351b17366f43f815a00de75a90c0d70b0eb979c3da8e8ad9f2641ebdec0a81",
+      "sample_sha256": "99c2248d4d67a40613e092b784419dafe00d430b9a209a324615d3c648bc18c9"
+    },
+    {
+      "case": "large-eleven/seed-72-baseline-p4",
+      "ticks": 32768,
+      "initial_checksum": 2660620956,
+      "final_checksum": 4077764454,
+      "result_sha256": "4e40b0cf3b0d0236d0562ae95828ebc05049325306ea527a5597a902912e0206",
+      "sample_sha256": "06193b27afe5c0df4e95b55e194b1f2ba0612f06a4ab8d2a57b6f5357a17a7fa"
+    },
+    {
+      "case": "large-eleven/seed-72-shortlist-p1",
+      "ticks": 32768,
+      "initial_checksum": 2660620956,
+      "final_checksum": 54836371,
+      "result_sha256": "e0bf906dfc373190bffa9630fe48db8c9373f1e92bb358ba68a591817f55100d",
+      "sample_sha256": "35a3ceda7daed74109189051eb51cd8d9b570fad68daabf43d4a5f862eaa1a25"
+    },
+    {
+      "case": "large-eleven/seed-72-shortlist-p4",
+      "ticks": 32768,
+      "initial_checksum": 2660620956,
+      "final_checksum": 54836371,
+      "result_sha256": "ba8b234be22275d98cba13220da93f211a74c394b5d85fbe07201ce31428495d",
+      "sample_sha256": "c72d7f67b94b75c1fefa12307ffa20e5b5a863dba241ebc29cf1a18065d3c345"
+    },
+    {
+      "case": "large-eleven/seed-72-top-p1",
+      "ticks": 32768,
+      "initial_checksum": 2660620956,
+      "final_checksum": 221772026,
+      "result_sha256": "42301f2aed5c5d202cfaa402435e0ffa94ce981ffd358a0d14ed03bd80ab0954",
+      "sample_sha256": "10d24959401063147960d9aa5e9f24592a6c0cc91afdd50e34c87b87fd815afa"
+    },
+    {
+      "case": "large-eleven/seed-72-top-p4",
+      "ticks": 32768,
+      "initial_checksum": 2660620956,
+      "final_checksum": 221772026,
+      "result_sha256": "e4e89bb4ccefb1d77b83a557b3d51ee4ecf6564dcde4512b7972a3ccd335d982",
+      "sample_sha256": "ffce3fa10337ed13a28d524f03fd3cc9cfaa1d212265238af1e39ef7f4599834"
+    },
+    {
+      "case": "large-eleven/seed-73-baseline-p1",
+      "ticks": 32768,
+      "initial_checksum": 155387662,
+      "final_checksum": 3186363755,
+      "result_sha256": "e06adade6a13824a564aac4c96e4c66da9a51cdb6c82edc5e57d85c2e3f4f1cf",
+      "sample_sha256": "17b96b3586b29c55e1efa074b3f7adc73e3f66d1af209dc34fc28f3ec7cfec1f"
+    },
+    {
+      "case": "large-eleven/seed-73-baseline-p4",
+      "ticks": 32768,
+      "initial_checksum": 155387662,
+      "final_checksum": 3186363755,
+      "result_sha256": "6a20ce8e321e31a9a43146275300ee2cf913cc526096cf5c2bd137ada9cf0ab0",
+      "sample_sha256": "df75f6f5b83086d2b3222e0a97332c7c0953bc116661bd7ec4567e6c41d00197"
+    },
+    {
+      "case": "large-eleven/seed-73-shortlist-p1",
+      "ticks": 32768,
+      "initial_checksum": 155387662,
+      "final_checksum": 2268798859,
+      "result_sha256": "7b2eab1f24adaaacf7b2640e9bac895f81959468e9ea6692de59c4c16824a4f2",
+      "sample_sha256": "c6a374a6b9c4953fba3944b352bace53ed54d6845991002d2e6f23dc0c1b9c38"
+    },
+    {
+      "case": "large-eleven/seed-73-shortlist-p4",
+      "ticks": 32768,
+      "initial_checksum": 155387662,
+      "final_checksum": 2268798859,
+      "result_sha256": "b955003aa44e00e2a03f2858495de92a4e062bea9ffc9fdd253d1d3f5c7be82a",
+      "sample_sha256": "badce899911143053aabeaf47ef27e4579d508e845f898599df09d7558293556"
+    },
+    {
+      "case": "large-eleven/seed-73-top-p1",
+      "ticks": 32768,
+      "initial_checksum": 155387662,
+      "final_checksum": 609961166,
+      "result_sha256": "b52eadab026e9174bedd332e8dbb31111746e9dc99e5bb71c2830016896bb0d9",
+      "sample_sha256": "80e9abdab36a20d7462ba5d71401b9ba80722a90104fdeab9d0aac45a1b8b59f"
+    },
+    {
+      "case": "large-eleven/seed-73-top-p4",
+      "ticks": 32768,
+      "initial_checksum": 155387662,
+      "final_checksum": 609961166,
+      "result_sha256": "b0d7da7060ef9f124a93acd03a50595082936e9eb93e3d8f92e8b538f3fd69bd",
+      "sample_sha256": "f1dd86d0e01b314ecb1775029498b84553f207fae378d6db68d14bdaf4969ed6"
+    }
+  ],
+  "pairs": [
+    {
+      "workload": "holiday",
+      "seed": 42,
+      "mode": "baseline",
+      "final_checksum": 3456946569
+    },
+    {
+      "workload": "holiday",
+      "seed": 42,
+      "mode": "shortlist",
+      "final_checksum": 3007328984
+    },
+    {
+      "workload": "holiday",
+      "seed": 42,
+      "mode": "top",
+      "final_checksum": 3335015885
+    },
+    {
+      "workload": "holiday",
+      "seed": 43,
+      "mode": "baseline",
+      "final_checksum": 695667866
+    },
+    {
+      "workload": "holiday",
+      "seed": 43,
+      "mode": "shortlist",
+      "final_checksum": 2945989297
+    },
+    {
+      "workload": "holiday",
+      "seed": 43,
+      "mode": "top",
+      "final_checksum": 1896355613
+    },
+    {
+      "workload": "holiday",
+      "seed": 44,
+      "mode": "baseline",
+      "final_checksum": 861219810
+    },
+    {
+      "workload": "holiday",
+      "seed": 44,
+      "mode": "shortlist",
+      "final_checksum": 662875169
+    },
+    {
+      "workload": "holiday",
+      "seed": 44,
+      "mode": "top",
+      "final_checksum": 2466133270
+    },
+    {
+      "workload": "holiday",
+      "seed": 45,
+      "mode": "baseline",
+      "final_checksum": 506416660
+    },
+    {
+      "workload": "holiday",
+      "seed": 45,
+      "mode": "shortlist",
+      "final_checksum": 3483810803
+    },
+    {
+      "workload": "holiday",
+      "seed": 45,
+      "mode": "top",
+      "final_checksum": 1252544427
+    },
+    {
+      "workload": "holiday",
+      "seed": 46,
+      "mode": "baseline",
+      "final_checksum": 1049062463
+    },
+    {
+      "workload": "holiday",
+      "seed": 46,
+      "mode": "shortlist",
+      "final_checksum": 3673017328
+    },
+    {
+      "workload": "holiday",
+      "seed": 46,
+      "mode": "top",
+      "final_checksum": 1388017362
+    },
+    {
+      "workload": "holiday",
+      "seed": 47,
+      "mode": "baseline",
+      "final_checksum": 1798074143
+    },
+    {
+      "workload": "holiday",
+      "seed": 47,
+      "mode": "shortlist",
+      "final_checksum": 3683669982
+    },
+    {
+      "workload": "holiday",
+      "seed": 47,
+      "mode": "top",
+      "final_checksum": 277179887
+    },
+    {
+      "workload": "holiday",
+      "seed": 48,
+      "mode": "baseline",
+      "final_checksum": 3837771677
+    },
+    {
+      "workload": "holiday",
+      "seed": 48,
+      "mode": "shortlist",
+      "final_checksum": 1609619196
+    },
+    {
+      "workload": "holiday",
+      "seed": 48,
+      "mode": "top",
+      "final_checksum": 3435085030
+    },
+    {
+      "workload": "holiday",
+      "seed": 49,
+      "mode": "baseline",
+      "final_checksum": 3592047369
+    },
+    {
+      "workload": "holiday",
+      "seed": 49,
+      "mode": "shortlist",
+      "final_checksum": 3872511633
+    },
+    {
+      "workload": "holiday",
+      "seed": 49,
+      "mode": "top",
+      "final_checksum": 2072706756
+    },
+    {
+      "workload": "holiday",
+      "seed": 50,
+      "mode": "baseline",
+      "final_checksum": 1493250470
+    },
+    {
+      "workload": "holiday",
+      "seed": 50,
+      "mode": "shortlist",
+      "final_checksum": 3082353664
+    },
+    {
+      "workload": "holiday",
+      "seed": 50,
+      "mode": "top",
+      "final_checksum": 3467229246
+    },
+    {
+      "workload": "holiday",
+      "seed": 51,
+      "mode": "baseline",
+      "final_checksum": 3168007164
+    },
+    {
+      "workload": "holiday",
+      "seed": 51,
+      "mode": "shortlist",
+      "final_checksum": 2278598138
+    },
+    {
+      "workload": "holiday",
+      "seed": 51,
+      "mode": "top",
+      "final_checksum": 495093204
+    },
+    {
+      "workload": "holiday",
+      "seed": 52,
+      "mode": "baseline",
+      "final_checksum": 3645841358
+    },
+    {
+      "workload": "holiday",
+      "seed": 52,
+      "mode": "shortlist",
+      "final_checksum": 2342381097
+    },
+    {
+      "workload": "holiday",
+      "seed": 52,
+      "mode": "top",
+      "final_checksum": 3403532877
+    },
+    {
+      "workload": "holiday",
+      "seed": 53,
+      "mode": "baseline",
+      "final_checksum": 3436186826
+    },
+    {
+      "workload": "holiday",
+      "seed": 53,
+      "mode": "shortlist",
+      "final_checksum": 1396055791
+    },
+    {
+      "workload": "holiday",
+      "seed": 53,
+      "mode": "top",
+      "final_checksum": 1036204661
+    },
+    {
+      "workload": "holiday",
+      "seed": 54,
+      "mode": "baseline",
+      "final_checksum": 2240452936
+    },
+    {
+      "workload": "holiday",
+      "seed": 54,
+      "mode": "shortlist",
+      "final_checksum": 2087759779
+    },
+    {
+      "workload": "holiday",
+      "seed": 54,
+      "mode": "top",
+      "final_checksum": 936738130
+    },
+    {
+      "workload": "holiday",
+      "seed": 55,
+      "mode": "baseline",
+      "final_checksum": 3616154504
+    },
+    {
+      "workload": "holiday",
+      "seed": 55,
+      "mode": "shortlist",
+      "final_checksum": 695038595
+    },
+    {
+      "workload": "holiday",
+      "seed": 55,
+      "mode": "top",
+      "final_checksum": 3260361878
+    },
+    {
+      "workload": "holiday",
+      "seed": 56,
+      "mode": "baseline",
+      "final_checksum": 3303825482
+    },
+    {
+      "workload": "holiday",
+      "seed": 56,
+      "mode": "shortlist",
+      "final_checksum": 3371271238
+    },
+    {
+      "workload": "holiday",
+      "seed": 56,
+      "mode": "top",
+      "final_checksum": 1157548086
+    },
+    {
+      "workload": "holiday",
+      "seed": 57,
+      "mode": "baseline",
+      "final_checksum": 2476100628
+    },
+    {
+      "workload": "holiday",
+      "seed": 57,
+      "mode": "shortlist",
+      "final_checksum": 2691119848
+    },
+    {
+      "workload": "holiday",
+      "seed": 57,
+      "mode": "top",
+      "final_checksum": 1534369245
+    },
+    {
+      "workload": "holiday",
+      "seed": 58,
+      "mode": "baseline",
+      "final_checksum": 82668811
+    },
+    {
+      "workload": "holiday",
+      "seed": 58,
+      "mode": "shortlist",
+      "final_checksum": 649870230
+    },
+    {
+      "workload": "holiday",
+      "seed": 58,
+      "mode": "top",
+      "final_checksum": 1789369746
+    },
+    {
+      "workload": "holiday",
+      "seed": 59,
+      "mode": "baseline",
+      "final_checksum": 607931006
+    },
+    {
+      "workload": "holiday",
+      "seed": 59,
+      "mode": "shortlist",
+      "final_checksum": 4018455347
+    },
+    {
+      "workload": "holiday",
+      "seed": 59,
+      "mode": "top",
+      "final_checksum": 706139679
+    },
+    {
+      "workload": "holiday",
+      "seed": 60,
+      "mode": "baseline",
+      "final_checksum": 235349575
+    },
+    {
+      "workload": "holiday",
+      "seed": 60,
+      "mode": "shortlist",
+      "final_checksum": 1081912580
+    },
+    {
+      "workload": "holiday",
+      "seed": 60,
+      "mode": "top",
+      "final_checksum": 4153840008
+    },
+    {
+      "workload": "holiday",
+      "seed": 61,
+      "mode": "baseline",
+      "final_checksum": 1680132467
+    },
+    {
+      "workload": "holiday",
+      "seed": 61,
+      "mode": "shortlist",
+      "final_checksum": 2302314843
+    },
+    {
+      "workload": "holiday",
+      "seed": 61,
+      "mode": "top",
+      "final_checksum": 328203234
+    },
+    {
+      "workload": "holiday",
+      "seed": 62,
+      "mode": "baseline",
+      "final_checksum": 117181761
+    },
+    {
+      "workload": "holiday",
+      "seed": 62,
+      "mode": "shortlist",
+      "final_checksum": 815170998
+    },
+    {
+      "workload": "holiday",
+      "seed": 62,
+      "mode": "top",
+      "final_checksum": 3199565876
+    },
+    {
+      "workload": "holiday",
+      "seed": 63,
+      "mode": "baseline",
+      "final_checksum": 2345487585
+    },
+    {
+      "workload": "holiday",
+      "seed": 63,
+      "mode": "shortlist",
+      "final_checksum": 4032288528
+    },
+    {
+      "workload": "holiday",
+      "seed": 63,
+      "mode": "top",
+      "final_checksum": 44107887
+    },
+    {
+      "workload": "holiday",
+      "seed": 64,
+      "mode": "baseline",
+      "final_checksum": 1211133696
+    },
+    {
+      "workload": "holiday",
+      "seed": 64,
+      "mode": "shortlist",
+      "final_checksum": 148912173
+    },
+    {
+      "workload": "holiday",
+      "seed": 64,
+      "mode": "top",
+      "final_checksum": 245341955
+    },
+    {
+      "workload": "holiday",
+      "seed": 65,
+      "mode": "baseline",
+      "final_checksum": 2692359847
+    },
+    {
+      "workload": "holiday",
+      "seed": 65,
+      "mode": "shortlist",
+      "final_checksum": 1723025767
+    },
+    {
+      "workload": "holiday",
+      "seed": 65,
+      "mode": "top",
+      "final_checksum": 1299060081
+    },
+    {
+      "workload": "holiday",
+      "seed": 66,
+      "mode": "baseline",
+      "final_checksum": 1616649865
+    },
+    {
+      "workload": "holiday",
+      "seed": 66,
+      "mode": "shortlist",
+      "final_checksum": 3906371860
+    },
+    {
+      "workload": "holiday",
+      "seed": 66,
+      "mode": "top",
+      "final_checksum": 2080386264
+    },
+    {
+      "workload": "holiday",
+      "seed": 67,
+      "mode": "baseline",
+      "final_checksum": 2287459217
+    },
+    {
+      "workload": "holiday",
+      "seed": 67,
+      "mode": "shortlist",
+      "final_checksum": 220033472
+    },
+    {
+      "workload": "holiday",
+      "seed": 67,
+      "mode": "top",
+      "final_checksum": 1587097635
+    },
+    {
+      "workload": "holiday",
+      "seed": 68,
+      "mode": "baseline",
+      "final_checksum": 3110205966
+    },
+    {
+      "workload": "holiday",
+      "seed": 68,
+      "mode": "shortlist",
+      "final_checksum": 2599857683
+    },
+    {
+      "workload": "holiday",
+      "seed": 68,
+      "mode": "top",
+      "final_checksum": 797518829
+    },
+    {
+      "workload": "holiday",
+      "seed": 69,
+      "mode": "baseline",
+      "final_checksum": 3243717790
+    },
+    {
+      "workload": "holiday",
+      "seed": 69,
+      "mode": "shortlist",
+      "final_checksum": 2048131378
+    },
+    {
+      "workload": "holiday",
+      "seed": 69,
+      "mode": "top",
+      "final_checksum": 1171213482
+    },
+    {
+      "workload": "holiday",
+      "seed": 70,
+      "mode": "baseline",
+      "final_checksum": 3315245914
+    },
+    {
+      "workload": "holiday",
+      "seed": 70,
+      "mode": "shortlist",
+      "final_checksum": 1358518488
+    },
+    {
+      "workload": "holiday",
+      "seed": 70,
+      "mode": "top",
+      "final_checksum": 3865160826
+    },
+    {
+      "workload": "holiday",
+      "seed": 71,
+      "mode": "baseline",
+      "final_checksum": 356045882
+    },
+    {
+      "workload": "holiday",
+      "seed": 71,
+      "mode": "shortlist",
+      "final_checksum": 3545420115
+    },
+    {
+      "workload": "holiday",
+      "seed": 71,
+      "mode": "top",
+      "final_checksum": 1378307817
+    },
+    {
+      "workload": "holiday",
+      "seed": 72,
+      "mode": "baseline",
+      "final_checksum": 2232578029
+    },
+    {
+      "workload": "holiday",
+      "seed": 72,
+      "mode": "shortlist",
+      "final_checksum": 1116643947
+    },
+    {
+      "workload": "holiday",
+      "seed": 72,
+      "mode": "top",
+      "final_checksum": 2737011999
+    },
+    {
+      "workload": "holiday",
+      "seed": 73,
+      "mode": "baseline",
+      "final_checksum": 138162533
+    },
+    {
+      "workload": "holiday",
+      "seed": 73,
+      "mode": "shortlist",
+      "final_checksum": 2996359716
+    },
+    {
+      "workload": "holiday",
+      "seed": 73,
+      "mode": "top",
+      "final_checksum": 4116201260
+    },
+    {
+      "workload": "large-eleven",
+      "seed": 42,
+      "mode": "baseline",
+      "final_checksum": 3700588458
+    },
+    {
+      "workload": "large-eleven",
+      "seed": 42,
+      "mode": "shortlist",
+      "final_checksum": 2830733403
+    },
+    {
+      "workload": "large-eleven",
+      "seed": 42,
+      "mode": "top",
+      "final_checksum": 3913568080
+    },
+    {
+      "workload": "large-eleven",
+      "seed": 43,
+      "mode": "baseline",
+      "final_checksum": 4132571570
+    },
+    {
+      "workload": "large-eleven",
+      "seed": 43,
+      "mode": "shortlist",
+      "final_checksum": 3279736694
+    },
+    {
+      "workload": "large-eleven",
+      "seed": 43,
+      "mode": "top",
+      "final_checksum": 4287565778
+    },
+    {
+      "workload": "large-eleven",
+      "seed": 44,
+      "mode": "baseline",
+      "final_checksum": 1118891830
+    },
+    {
+      "workload": "large-eleven",
+      "seed": 44,
+      "mode": "shortlist",
+      "final_checksum": 4100978216
+    },
+    {
+      "workload": "large-eleven",
+      "seed": 44,
+      "mode": "top",
+      "final_checksum": 2081023578
+    },
+    {
+      "workload": "large-eleven",
+      "seed": 45,
+      "mode": "baseline",
+      "final_checksum": 1331771954
+    },
+    {
+      "workload": "large-eleven",
+      "seed": 45,
+      "mode": "shortlist",
+      "final_checksum": 1136290650
+    },
+    {
+      "workload": "large-eleven",
+      "seed": 45,
+      "mode": "top",
+      "final_checksum": 3247457686
+    },
+    {
+      "workload": "large-eleven",
+      "seed": 46,
+      "mode": "baseline",
+      "final_checksum": 3844251560
+    },
+    {
+      "workload": "large-eleven",
+      "seed": 46,
+      "mode": "shortlist",
+      "final_checksum": 2475469159
+    },
+    {
+      "workload": "large-eleven",
+      "seed": 46,
+      "mode": "top",
+      "final_checksum": 4144791930
+    },
+    {
+      "workload": "large-eleven",
+      "seed": 47,
+      "mode": "baseline",
+      "final_checksum": 592902021
+    },
+    {
+      "workload": "large-eleven",
+      "seed": 47,
+      "mode": "shortlist",
+      "final_checksum": 29962717
+    },
+    {
+      "workload": "large-eleven",
+      "seed": 47,
+      "mode": "top",
+      "final_checksum": 1784678239
+    },
+    {
+      "workload": "large-eleven",
+      "seed": 48,
+      "mode": "baseline",
+      "final_checksum": 1401289029
+    },
+    {
+      "workload": "large-eleven",
+      "seed": 48,
+      "mode": "shortlist",
+      "final_checksum": 2515842942
+    },
+    {
+      "workload": "large-eleven",
+      "seed": 48,
+      "mode": "top",
+      "final_checksum": 2822596839
+    },
+    {
+      "workload": "large-eleven",
+      "seed": 49,
+      "mode": "baseline",
+      "final_checksum": 602486136
+    },
+    {
+      "workload": "large-eleven",
+      "seed": 49,
+      "mode": "shortlist",
+      "final_checksum": 3528743334
+    },
+    {
+      "workload": "large-eleven",
+      "seed": 49,
+      "mode": "top",
+      "final_checksum": 3617030411
+    },
+    {
+      "workload": "large-eleven",
+      "seed": 50,
+      "mode": "baseline",
+      "final_checksum": 205434385
+    },
+    {
+      "workload": "large-eleven",
+      "seed": 50,
+      "mode": "shortlist",
+      "final_checksum": 4069554467
+    },
+    {
+      "workload": "large-eleven",
+      "seed": 50,
+      "mode": "top",
+      "final_checksum": 3329806260
+    },
+    {
+      "workload": "large-eleven",
+      "seed": 51,
+      "mode": "baseline",
+      "final_checksum": 2717444690
+    },
+    {
+      "workload": "large-eleven",
+      "seed": 51,
+      "mode": "shortlist",
+      "final_checksum": 1159887381
+    },
+    {
+      "workload": "large-eleven",
+      "seed": 51,
+      "mode": "top",
+      "final_checksum": 1600264802
+    },
+    {
+      "workload": "large-eleven",
+      "seed": 52,
+      "mode": "baseline",
+      "final_checksum": 946412964
+    },
+    {
+      "workload": "large-eleven",
+      "seed": 52,
+      "mode": "shortlist",
+      "final_checksum": 190456419
+    },
+    {
+      "workload": "large-eleven",
+      "seed": 52,
+      "mode": "top",
+      "final_checksum": 4037336814
+    },
+    {
+      "workload": "large-eleven",
+      "seed": 53,
+      "mode": "baseline",
+      "final_checksum": 2636369480
+    },
+    {
+      "workload": "large-eleven",
+      "seed": 53,
+      "mode": "shortlist",
+      "final_checksum": 3248754734
+    },
+    {
+      "workload": "large-eleven",
+      "seed": 53,
+      "mode": "top",
+      "final_checksum": 978947251
+    },
+    {
+      "workload": "large-eleven",
+      "seed": 54,
+      "mode": "baseline",
+      "final_checksum": 1713350562
+    },
+    {
+      "workload": "large-eleven",
+      "seed": 54,
+      "mode": "shortlist",
+      "final_checksum": 61282290
+    },
+    {
+      "workload": "large-eleven",
+      "seed": 54,
+      "mode": "top",
+      "final_checksum": 4261142035
+    },
+    {
+      "workload": "large-eleven",
+      "seed": 55,
+      "mode": "baseline",
+      "final_checksum": 3117157483
+    },
+    {
+      "workload": "large-eleven",
+      "seed": 55,
+      "mode": "shortlist",
+      "final_checksum": 220644202
+    },
+    {
+      "workload": "large-eleven",
+      "seed": 55,
+      "mode": "top",
+      "final_checksum": 1578880770
+    },
+    {
+      "workload": "large-eleven",
+      "seed": 56,
+      "mode": "baseline",
+      "final_checksum": 1005771666
+    },
+    {
+      "workload": "large-eleven",
+      "seed": 56,
+      "mode": "shortlist",
+      "final_checksum": 3422218479
+    },
+    {
+      "workload": "large-eleven",
+      "seed": 56,
+      "mode": "top",
+      "final_checksum": 2705805138
+    },
+    {
+      "workload": "large-eleven",
+      "seed": 57,
+      "mode": "baseline",
+      "final_checksum": 2505670509
+    },
+    {
+      "workload": "large-eleven",
+      "seed": 57,
+      "mode": "shortlist",
+      "final_checksum": 1167363241
+    },
+    {
+      "workload": "large-eleven",
+      "seed": 57,
+      "mode": "top",
+      "final_checksum": 3827389138
+    },
+    {
+      "workload": "large-eleven",
+      "seed": 58,
+      "mode": "baseline",
+      "final_checksum": 1650962884
+    },
+    {
+      "workload": "large-eleven",
+      "seed": 58,
+      "mode": "shortlist",
+      "final_checksum": 989290426
+    },
+    {
+      "workload": "large-eleven",
+      "seed": 58,
+      "mode": "top",
+      "final_checksum": 2490143721
+    },
+    {
+      "workload": "large-eleven",
+      "seed": 59,
+      "mode": "baseline",
+      "final_checksum": 477791806
+    },
+    {
+      "workload": "large-eleven",
+      "seed": 59,
+      "mode": "shortlist",
+      "final_checksum": 325243501
+    },
+    {
+      "workload": "large-eleven",
+      "seed": 59,
+      "mode": "top",
+      "final_checksum": 1949018453
+    },
+    {
+      "workload": "large-eleven",
+      "seed": 60,
+      "mode": "baseline",
+      "final_checksum": 3854746318
+    },
+    {
+      "workload": "large-eleven",
+      "seed": 60,
+      "mode": "shortlist",
+      "final_checksum": 649600522
+    },
+    {
+      "workload": "large-eleven",
+      "seed": 60,
+      "mode": "top",
+      "final_checksum": 2555951995
+    },
+    {
+      "workload": "large-eleven",
+      "seed": 61,
+      "mode": "baseline",
+      "final_checksum": 3347719051
+    },
+    {
+      "workload": "large-eleven",
+      "seed": 61,
+      "mode": "shortlist",
+      "final_checksum": 920629743
+    },
+    {
+      "workload": "large-eleven",
+      "seed": 61,
+      "mode": "top",
+      "final_checksum": 3132539408
+    },
+    {
+      "workload": "large-eleven",
+      "seed": 62,
+      "mode": "baseline",
+      "final_checksum": 1496555430
+    },
+    {
+      "workload": "large-eleven",
+      "seed": 62,
+      "mode": "shortlist",
+      "final_checksum": 2220556203
+    },
+    {
+      "workload": "large-eleven",
+      "seed": 62,
+      "mode": "top",
+      "final_checksum": 3907032198
+    },
+    {
+      "workload": "large-eleven",
+      "seed": 63,
+      "mode": "baseline",
+      "final_checksum": 4236592732
+    },
+    {
+      "workload": "large-eleven",
+      "seed": 63,
+      "mode": "shortlist",
+      "final_checksum": 715285312
+    },
+    {
+      "workload": "large-eleven",
+      "seed": 63,
+      "mode": "top",
+      "final_checksum": 1746383669
+    },
+    {
+      "workload": "large-eleven",
+      "seed": 64,
+      "mode": "baseline",
+      "final_checksum": 2658506173
+    },
+    {
+      "workload": "large-eleven",
+      "seed": 64,
+      "mode": "shortlist",
+      "final_checksum": 3880704721
+    },
+    {
+      "workload": "large-eleven",
+      "seed": 64,
+      "mode": "top",
+      "final_checksum": 2047327680
+    },
+    {
+      "workload": "large-eleven",
+      "seed": 65,
+      "mode": "baseline",
+      "final_checksum": 1179538122
+    },
+    {
+      "workload": "large-eleven",
+      "seed": 65,
+      "mode": "shortlist",
+      "final_checksum": 1734072785
+    },
+    {
+      "workload": "large-eleven",
+      "seed": 65,
+      "mode": "top",
+      "final_checksum": 1180451931
+    },
+    {
+      "workload": "large-eleven",
+      "seed": 66,
+      "mode": "baseline",
+      "final_checksum": 1778131794
+    },
+    {
+      "workload": "large-eleven",
+      "seed": 66,
+      "mode": "shortlist",
+      "final_checksum": 848350745
+    },
+    {
+      "workload": "large-eleven",
+      "seed": 66,
+      "mode": "top",
+      "final_checksum": 1799994972
+    },
+    {
+      "workload": "large-eleven",
+      "seed": 67,
+      "mode": "baseline",
+      "final_checksum": 704786255
+    },
+    {
+      "workload": "large-eleven",
+      "seed": 67,
+      "mode": "shortlist",
+      "final_checksum": 3389262304
+    },
+    {
+      "workload": "large-eleven",
+      "seed": 67,
+      "mode": "top",
+      "final_checksum": 508717666
+    },
+    {
+      "workload": "large-eleven",
+      "seed": 68,
+      "mode": "baseline",
+      "final_checksum": 1922511529
+    },
+    {
+      "workload": "large-eleven",
+      "seed": 68,
+      "mode": "shortlist",
+      "final_checksum": 4101987057
+    },
+    {
+      "workload": "large-eleven",
+      "seed": 68,
+      "mode": "top",
+      "final_checksum": 3000820028
+    },
+    {
+      "workload": "large-eleven",
+      "seed": 69,
+      "mode": "baseline",
+      "final_checksum": 846159902
+    },
+    {
+      "workload": "large-eleven",
+      "seed": 69,
+      "mode": "shortlist",
+      "final_checksum": 4242786291
+    },
+    {
+      "workload": "large-eleven",
+      "seed": 69,
+      "mode": "top",
+      "final_checksum": 1605599077
+    },
+    {
+      "workload": "large-eleven",
+      "seed": 70,
+      "mode": "baseline",
+      "final_checksum": 634053530
+    },
+    {
+      "workload": "large-eleven",
+      "seed": 70,
+      "mode": "shortlist",
+      "final_checksum": 1746190589
+    },
+    {
+      "workload": "large-eleven",
+      "seed": 70,
+      "mode": "top",
+      "final_checksum": 400091558
+    },
+    {
+      "workload": "large-eleven",
+      "seed": 71,
+      "mode": "baseline",
+      "final_checksum": 1887255039
+    },
+    {
+      "workload": "large-eleven",
+      "seed": 71,
+      "mode": "shortlist",
+      "final_checksum": 3086432376
+    },
+    {
+      "workload": "large-eleven",
+      "seed": 71,
+      "mode": "top",
+      "final_checksum": 4058912690
+    },
+    {
+      "workload": "large-eleven",
+      "seed": 72,
+      "mode": "baseline",
+      "final_checksum": 4077764454
+    },
+    {
+      "workload": "large-eleven",
+      "seed": 72,
+      "mode": "shortlist",
+      "final_checksum": 54836371
+    },
+    {
+      "workload": "large-eleven",
+      "seed": 72,
+      "mode": "top",
+      "final_checksum": 221772026
+    },
+    {
+      "workload": "large-eleven",
+      "seed": 73,
+      "mode": "baseline",
+      "final_checksum": 3186363755
+    },
+    {
+      "workload": "large-eleven",
+      "seed": 73,
+      "mode": "shortlist",
+      "final_checksum": 2268798859
+    },
+    {
+      "workload": "large-eleven",
+      "seed": 73,
+      "mode": "top",
+      "final_checksum": 609961166
+    }
+  ],
+  "smoke": [
+    {
+      "mode": "baseline",
+      "identical_trace_sha256": {
+        "world.checksums": "c87a16b39d784f0fdcf085cea482fca3ecbed83167dc6cec1cf96d5240995977",
+        "game.replay.checksums": "bd551efec8bc2b05f78145d4d37463ed0b6e6f33d0770e1e644249322046727a"
+      }
+    },
+    {
+      "mode": "shortlist",
+      "identical_trace_sha256": {
+        "world.checksums": "8ea1a30200b8c33ae76e27fa1d934c459484d20b9e09f8b1ee8a3be579c0bff8",
+        "game.replay.checksums": "57250a249045e5f261505107cfc40b7e7cdf4e0ea9501c918683bf17e9636d30"
+      }
+    },
+    {
+      "mode": "top",
+      "identical_trace_sha256": {
+        "world.checksums": "8ea1a30200b8c33ae76e27fa1d934c459484d20b9e09f8b1ee8a3be579c0bff8",
+        "game.replay.checksums": "57250a249045e5f261505107cfc40b7e7cdf4e0ea9501c918683bf17e9636d30"
+      }
+    }
+  ],
+  "focused_reports": [
+    {
+      "report": "baseline-focused-junit.xml",
+      "tests": "38",
+      "failures": "0",
+      "errors": "0",
+      "skipped": "0"
+    },
+    {
+      "report": "shortlist-handoff-junit.xml",
+      "tests": "4",
+      "failures": "0",
+      "errors": "0",
+      "skipped": "0"
+    },
+    {
+      "report": "top-handoff-junit.xml",
+      "tests": "4",
+      "failures": "0",
+      "errors": "0",
+      "skipped": "0"
+    }
+  ]
+}

@@ -1,0 +1,21 @@
+{
+  "aggregation": "Arithmetic means of per-game metrics. CPU normalized per actual executed tick. Percent changes are ratios of means.",
+  "uncertainty": "10,000 paired bootstrap resamples of 32 game seeds; 95% intervals, unadjusted exploratory comparisons. RNG seed 20261017.",
+  "comparisons": {
+    "shortlist": "Full shortlist vs baseline",
+    "top": "Primary-only vs baseline",
+    "top-vs-full": "Primary-only vs full shortlist; baseline_mean in this comparison denotes full-shortlist mean."
+  },
+  "primary_definition": "For coordinated transport lists, entries assigned during team-wide seat allocation before fallback entries are appended. For uncoordinated lists, the leading min(candidate count, material vacancies or role seats) entries. Full shortlist unchanged. Flying candidates still occupy their original ranks but need no building-gradient cells.",
+  "limitations": [
+    "Experimental prewarming path is not save/load qualified. No production PR is modified.",
+    "Policies change game evolution and membership/ranking; total CPU is not isolated kernel cost.",
+    "No graphics/frame pacing, other devices or cross-platform coverage.",
+    "Both warming policies retain original ranking fallback for missing/stale fields. This test does not compare exact-path candidate ranking.",
+    "Primary/fallback metrics count shortlist appearances, not unique people or successful hires. Shared gradients may already cover skipped fallback cells.",
+    "Primary-only may still resolve a fallback position while ranking on subsequent snapshots because usable fields are queried by the original planner.",
+    "PrimaryCount metadata is experimental; loading saved shortlists is not qualified.",
+    "Unpaced simulation tick durations measure execution variability, not rendered frame pacing."
+  ],
+  "runtime": "uv isolated Python 3.12.12, numpy 2.5.4, matplotlib 3.10.7; offline cached packages. No production dependencies added."
+}
