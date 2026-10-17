@@ -44,9 +44,9 @@ struct ResourceSeedCache::Storage
 	std::vector<Uint32> forbiddenMasks, queue;
 
 	Storage(std::size_t cells, std::size_t dirtyLimit)
-		: materialMasks(cells), airMaterialMasks(cells), dirty(cells), forbiddenMasks(cells)
+		: materialMasks(cells), dirty(cells), forbiddenMasks(cells)
 	{
-		for (auto &field : base) field.resize(cells);
+		for (unsigned movement=0;movement<2;++movement) base[movement].resize(cells);
 		buildings.resize((cells + 63) / 64);
 		for (auto &bits : forbidden) bits.resize((cells + 63) / 64);
 		queue.reserve(dirtyLimit);
@@ -137,6 +137,7 @@ void ResourceSeedCache::refresh(const Map &map, std::size_t index, unsigned flag
 			}
 			s.materialMasks[index] = next;
 		}
+        if(!s.airMaterialMasks.empty()) {
         const MaterialMask airMask=map.materialMaskAt(index);
         for(unsigned changed=s.airMaterialMasks[index]^airMask;changed;changed&=changed-1) {
             const unsigned material=std::countr_zero(changed);
@@ -146,6 +147,7 @@ void ResourceSeedCache::refresh(const Map &map, std::size_t index, unsigned flag
         s.airMaterialMasks[index]=airMask;
         s.base[2][index]=map.terrainPropertiesAt(index).flyable && !map.resourceBlocksAir(index)
             ? GRADIENT_UNREACHABLE : GRADIENT_FORBIDDEN;
+        }
 		const auto &terrain = map.terrainPropertiesAt(index);
 		const bool open = !map.resourceBlocksGround(index) && map.occupancyCells[index].building == NOGBID && unoccupied;
 		s.base[0][index] = open && terrain.walkable ? GRADIENT_UNREACHABLE : GRADIENT_FORBIDDEN;
@@ -210,6 +212,13 @@ bool ResourceSeedCache::trySeed(const Map &map, int team, int resource, int swim
 			refresh(map, index, storage->dirty[index]);
 			storage->dirty[index] = 0;
 		}
+        // Ground-only requests retain the original two templates. Activate and
+        // maintain the air template only after a consumer actually asks for it.
+        if(swim==AIR_MOVEMENT_CLASS && storage->airMaterialMasks.empty()) {
+            storage->base[2].resize(cells);
+            storage->airMaterialMasks.resize(cells);
+            for(std::size_t i=0;i<cells;++i) refresh(map,i,All);
+        }
 		if (allocatedBytes() > MaximumBytes || allocatedBytes() > cells * MaximumBytesPerCell)
 			throw std::bad_alloc();
 	}

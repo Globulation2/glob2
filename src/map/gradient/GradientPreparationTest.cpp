@@ -478,11 +478,11 @@ TEST_SUITE("GradientPreparation")
 			m.clearImmobileUnit(x, y);
 			compare(hiddenResource, GRADIENT_AT_GOAL);
             // The first appearances of wood and the hidden material each add
-            // independent ground and air goal bitsets. After observation,
+            // lazy ground goal bitsets; air storage remains dormant until queried.
             // occupancy churn, invalidation and rebuild must allocate nothing.
             const auto warmedBytes=cache.allocatedBytes();
             const auto goalBytes=((m.size+63)/64)*sizeof(Uint64);
-            CHECK(warmedBytes==bytes+(wDec==7 ? 4*goalBytes : 0));
+            CHECK(warmedBytes==bytes+(wDec==7 ? 2*goalBytes : 0));
 			if (wDec == 7)
 			{
 				// A burst exceeds the existing dirty bound; fallback and rebuild
@@ -1631,10 +1631,13 @@ TEST_CASE("air shares preparation and lazy building fields while ignoring ground
             // goal membership when an immobile ground unit occupies a deposit.
             MaterialSeedCache cache;
             std::vector<Uint16> cached(map.size);
+            REQUIRE(cache.trySeed(snapshot,0,WHEAT,0,cached.data(),nullptr));
+            CHECK(cache.airSignatures.empty());
             REQUIRE(cache.trySeed(snapshot,0,WHEAT,AIR_MOVEMENT_CLASS,cached.data(),nullptr));
+            CHECK_FALSE(cache.airSignatures.empty());
             CHECK(cached==owner);
             for(int repeat=0;repeat<20;++repeat)
-                map.gradientRuntime->resourceSeeds.trySeed(map,0,WHEAT,AIR_MOVEMENT_CLASS,cached.data(),nullptr);
+                map.gradientRuntime->resourceSeeds.trySeed(map,0,WHEAT,0,cached.data(),nullptr);
             REQUIRE(map.gradientRuntime->resourceSeeds.trySeed(map,0,WHEAT,AIR_MOVEMENT_CLASS,cached.data(),nullptr));
             CHECK(cached==owner);
         }
@@ -1712,6 +1715,7 @@ TEST_CASE("unreleased routing draft formats are rejected before reading runtime 
         output.writeSint32(version,"versionMinor");
         const std::string data(bytes->getBuffer(),bytes->getPosition());
         GAGCore::BinaryInputStream input(new GAGCore::MemoryStreamBackend(data.data(),data.size()));
+        input.seekFromStart(0);
         MapHeader header;
         CHECK_FALSE(header.load(&input));
     }

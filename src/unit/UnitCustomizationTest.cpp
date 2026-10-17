@@ -1,5 +1,6 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "EngineFixtures.h"
+#include "LegacyPopulationOutput.h"
 #include "UnitCatalog.h"
 #include "Version.h"
 #include "gradient/GradientRuntime.h"
@@ -3331,9 +3332,28 @@ TEST_CASE("shared air routing stress exports a reproducible benchmark setup [art
     // profiling. Cross-version comparisons use retained released-format inputs.
     auto* memory=new GAGCore::MemoryStreamBackend;
     GAGCore::BinaryOutputStream output(memory);
-    game.save(&output,false,"shared air routing stress");
+    world.gui.save(&output,"shared air routing stress");
     glob2test::writeFile(glob2test::artifactDir()/"air-routing-stress.game",
         std::string(memory->getBuffer(),memory->getPosition()));
+    // A fresh, unstepped setup has no air jobs to discard. The historical
+    // adapter writes the released eight-class layout for a master comparison.
+    struct HistoricalOutput : glob2test::LegacyPopulationOutput {
+        HistoricalOutput(GAGCore::MemoryStreamBackend* bytes,Game& game)
+            :LegacyPopulationOutput(bytes,&game,167) {}
+        void writeSint32(Sint32 value,std::string_view name) override {
+            BinaryOutputStream::writeSint32(name=="versionMinor"?167:value,name);
+        }
+    };
+    auto* historicalBytes=new GAGCore::MemoryStreamBackend;
+    HistoricalOutput historical(historicalBytes,game);
+    world.gui.save(&historical,"shared air routing stress released layout");
+    const std::string oldSave(historicalBytes->getBuffer(),historicalBytes->getPosition());
+    glob2test::writeFile(glob2test::artifactDir()/"air-routing-stress-v167.game",oldSave);
+    GameGUI loaded(false);
+    GAGCore::BinaryInputStream input(new GAGCore::MemoryStreamBackend(oldSave.data(),oldSave.size()));
+    input.seekFromStart(0);
+    REQUIRE(loaded.game.load(&input));
+    CHECK(loaded.game.teams[0]->liveUnits.size()==64);
     for(int tick=0;tick<256;++tick) game.step(0);
     CHECK(game.teams[0]->liveUnits.size()==64);
     for(const auto* unit:game.teams[0]->liveUnits.entries())

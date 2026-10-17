@@ -495,7 +495,8 @@ checksum adapter retains its historical entity/RNG representation for fixtures.
   predicates. Each executor slot owns derived seed templates, maintained using
   exact immutable chunk versions, with direct-kernel fallbacks. Material caches
   retain compact land, amphibious and air base fields with separate air goal
-  membership, since immobile ground units cannot mask air goals. The optional
+  membership, since immobile ground units cannot mask air goals. Air templates
+  are allocated and maintained only after the first air request. The optional
   owner cache retains at most 32 MiB and 24 bytes per cell, with a direct fallback.
   No cached template retains snapshot buffers or reads the live mutable material
   cache. Immediate building seeding uses the same predicates as worker snapshots.

@@ -53,16 +53,21 @@ bool MaterialSeedCache::trySeed(const SimulationSnapshot::Handle& snapshot, int 
                 resourceTraits[id]=p.materialMask | (p.blocksGround?0x10000:0)
                     | (std::has_single_bit(p.materialMask)?0:0x20000);
             }
-            for (auto& values:base) values.resize(cells);
-            signatures.assign(cells,0); airSignatures.assign(cells,0);
+            for(unsigned movement=0;movement<2;++movement)base[movement].resize(cells);
+            signatures.assign(cells,0);
             forbiddenMasks.assign(cells,0);
             for (auto& bits:goals) bits.assign(words,0);
-            for (auto& bits:airGoals) bits.assign(words,0);
             for (auto& bits:forbidden) bits.assign(words,0);
-            buildings.assign(words,0); airBuildings.assign(words,0);
+            buildings.assign(words,0);
             for (auto& values:stamps) values.clear();
             world=snapshot.worldIdentity; width=view.width; height=view.height;
             terrainRegistry=snapshot.terrain->registry; resourceRegistry=snapshot.catalogs->resources;
+        }
+        const bool initializeAir=swim==AIR_MOVEMENT_CLASS && airSignatures.empty();
+        if(initializeAir) {
+            base[2].resize(cells);airSignatures.assign(cells,0);
+            for(auto& bits:airGoals)bits.assign(words,0);
+            airBuildings.assign(words,0);
         }
         MapState::ChunkGeometry geometry;
         geometry.reset(view.width,view.height,view.wDec,view.wMask);
@@ -74,7 +79,7 @@ bool MaterialSeedCache::trySeed(const SimulationSnapshot::Handle& snapshot, int 
                     || current[component]->size()!=geometry.count()
                     || stamps[component][chunk]!=(*current[component])[chunk];
             };
-            const bool cellsChanged=changed(0)||changed(1)||changed(2), areasChanged=changed(3);
+            const bool cellsChanged=initializeAir||changed(0)||changed(1)||changed(2), areasChanged=changed(3);
             if (!cellsChanged && !areasChanged) continue;
             geometry.forEachRow(chunk,[&](size_t begin,size_t length) {
                 for (size_t i=begin; i<begin+length; ++i) {
@@ -92,6 +97,7 @@ bool MaterialSeedCache::trySeed(const SimulationSnapshot::Handle& snapshot, int 
                         // Only facts that affect seeds: moving units, animation and positive
                         // stock changes do not alter this template. All twelve materials fit.
                         static_assert(MaterialCount==12);
+                        if(!airSignatures.empty()) {
                         const MaterialMask airMask=MapState::materialMaskAt(view,i);
                         const bool airOpen=rules.flyable && !MapState::resourceBlocksAir(view,i);
                         const Uint16 airSignature=airMask | (airOpen?0x1000:0)
@@ -105,6 +111,7 @@ bool MaterialSeedCache::trySeed(const SimulationSnapshot::Handle& snapshot, int 
                             }
                             setSeedBit(airBuildings,i,airSignature&0x2000);
                             airSignatures[i]=airSignature;
+                        }
                         }
                         const Uint16 signature=mask | ((open && cell.building==NOGBID && (terrain&1))?0x1000:0)
                             | ((open && cell.building==NOGBID && (terrain&2))?0x2000:0)
