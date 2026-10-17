@@ -282,8 +282,8 @@ public:
     void configureGradientExecution();
 	// Scheduled building gradients (MapGradientScheduling.cpp). Team stepping
 	// requests refreshes of existing fields and keeps serving the old ones;
-	// after the tick up to MaxJobsPerTick requests are staged, captured at the
-	// observation boundary, built on workers and published
+	// at the next observation up to four requests per team are staged, captured
+	// from the shared observation, built on workers and published
 	// buildingGradientDelay ticks later. Cold fields stay synchronous; area and
 	// team-wide resets keep old walking fields serving instead of making them
 	// cold (Building::keepsStaleGradients).

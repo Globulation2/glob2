@@ -16,7 +16,8 @@
 namespace glob2test
 {
 // Test-only adapter for synthetic historical files. Header overrides alone do
-// not turn current counted population records into the pre-166 slot encoding.
+// not turn current counted population records into the pre-166 slot encoding
+// or narrow building-gradient pending counts to the pre-168 byte encoding.
 // Other historical field differences remain the fixture author's responsibility.
 class LegacyPopulationOutput : public GAGCore::BinaryOutputStream
 {
@@ -73,7 +74,7 @@ public:
         : BinaryOutputStream(backend), game(game), legacy(version<FILE_FORMAT_VERSION_INTRUSIVE_POPULATION), formatVersion(version) {}
     void writeEnterSection(std::string_view name) override
     {
-        if (injecting || !legacy) return;
+        if (injecting) return;
         const bool teamChild = !sections.empty() && sections.back()=="Team";
         sections.emplace_back(name);
         if (suppressed()) return;
@@ -81,7 +82,7 @@ public:
             suppressedAt=sections.size();
             return;
         }
-        if (name=="Team") {
+        if (legacy && name=="Team") {
             if (!game || nextTeam>=game->teamsCount())
                 throw std::logic_error("Unexpected synthetic historical team");
             team=game->teams[nextTeam++];
@@ -92,13 +93,13 @@ public:
                 || !std::is_sorted(team->liveBuildings.begin(),team->liveBuildings.end(),byGid))
                 throw std::logic_error("Synthetic historical fixture requires legacy slot order");
             populationSection=0;
-        } else if (teamChild && (name=="myUnits" || name=="myBuildings")) population(name);
+        } else if (legacy && teamChild && (name=="myUnits" || name=="myBuildings")) population(name);
     }
     void writeEnterSection(unsigned) override
-    { if (!injecting && legacy) sections.emplace_back(); }
+    { if (!injecting) sections.emplace_back(); }
     void writeLeaveSection(std::size_t count=1) override
     {
-        if (injecting || !legacy) return;
+        if (injecting) return;
         while (count--) {
             if (sections.empty()) throw std::logic_error("Unbalanced synthetic historical sections");
             if (suppressedAt==sections.size()) suppressedAt=0;
@@ -139,6 +140,13 @@ public:
     void writeUint16(Uint16 value, std::string_view name) override
     {
         if (legacy && !injecting && !sections.empty() && sections.back()=="Team" && name=="taskSwapNext") return;
+        if (formatVersion < FILE_FORMAT_VERSION_TEAM_BUILDING_GRADIENT_QUOTA
+            && sections.size() >= 2 && sections.back() == "pending"
+            && sections[sections.size()-2] == "buildingGradientPipeline" && name == "count") {
+            if (value > 255) throw std::logic_error("Historical building pending count exceeds byte encoding");
+            BinaryOutputStream::writeUint8(Uint8(value),name);
+            return;
+        }
         BinaryOutputStream::writeUint16(value,name);
     }
     void writeUint16Sections(const Uint16* values, std::size_t count, std::string_view name) override

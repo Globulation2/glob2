@@ -2,7 +2,9 @@
 #pragma once
 #include "sim/snapshot/WorldSnapshot.h"
 #include "ComputeExecutor.h"
+#include "TeamCapacity.h"
 #include <algorithm>
+#include <array>
 #include <cstdint>
 #include <deque>
 #include <exception>
@@ -15,8 +17,8 @@
 #include <vector>
 
 // Fixed-tick publication for scheduled building fields; the sibling of
-// GradientPipeline. Differences: up to MaxJobsPerTick reservations per advanced
-// tick, every job staged in one tick is submitted as one executor batch, and
+// GradientPipeline. Differences: up to MaxJobsPerTeamPerTick reservations per
+// team per advanced tick, all staged jobs share one executor batch, and
 // publication goes through an owner callback that may still reject a result
 // (the Map validates it against live buildings).
 //
@@ -29,14 +31,16 @@
 // Payload is the producer-specific job description (building identity, owner
 // scalars, inputs and outputs). If it provides `void releaseInputs() noexcept`,
 // that is called once the job completes or fails, so borrowed immutable inputs
-// end with the computation, as the snapshot lease does.
+// end with the computation, as the snapshot lease does. Payload also provides
+// an integer team identity matching its reservation.
 template<class Payload> class BuildingGradientPipeline
 {
 public:
-	static constexpr unsigned MaxJobsPerTick = 4;
+	static constexpr unsigned MaxJobsPerTeamPerTick = 4;
 	static constexpr unsigned MaxDelay = 8;
 	static_assert(MaxDelay <= ComputeExecutor::BuildingHorizon);
 	struct Job {
+		unsigned team = 0; // Owner-only admission identity, also retained when superseded.
 		std::optional<SimulationSnapshot::Handle> snapshotLease;
 		Payload payload{};
 		std::uint64_t due = 0;
@@ -63,7 +67,8 @@ private:
 	std::vector<std::unique_ptr<Job>> spare;
 	ComputeExecutor* executor = nullptr;
 	std::vector<ComputeExecutor::Group> groups;
-	unsigned delay = 0, admitted = 0;
+	unsigned delay = 0;
+	std::array<unsigned, TEAM_MAX_COUNT> admitted{}, pendingPerTeam{};
 	std::uint64_t tick = 0;
 	Work work;
 	static void releaseInputs(Job& job) noexcept {
@@ -84,9 +89,10 @@ private:
 		if (executor) executor->join(job.batch, context); // Later jobs of the batch hold stale handles.
 		if (!job.done) throw std::logic_error("Unprepared building gradient reservation");
 	}
-	unsigned dueCount(std::uint64_t due) const {
+	unsigned dueCount(unsigned team, std::uint64_t due) const {
 		unsigned count = 0;
-		for (auto it = pending.rbegin(); it != pending.rend() && (*it)->due == due; ++it) ++count;
+		for (auto it = pending.rbegin(); it != pending.rend() && (*it)->due == due; ++it)
+			count += (*it)->team == team;
 		return count;
 	}
 public:
@@ -94,10 +100,11 @@ public:
 	bool enabled() const { return delay != 0; }
 	unsigned delayTicks() const { return delay; }
 	std::size_t pendingCount() const { return pending.size(); }
-	// True while this advanced tick can admit another job.
-	bool canReserve() const {
-		return enabled() && tick != 0 && admitted < MaxJobsPerTick && pending.size() < delay*MaxJobsPerTick &&
-			dueCount(tick+delay) < MaxJobsPerTick;
+	// Teams never borrow another team's unused quota.
+	bool canReserve(unsigned team = 0) const {
+		return enabled() && tick != 0 && team < admitted.size() &&
+			admitted[team] < MaxJobsPerTeamPerTick && pendingPerTeam[team] < delay*MaxJobsPerTeamPerTick &&
+			dueCount(team, tick+delay) < MaxJobsPerTeamPerTick;
 	}
 	// Complete all private work without publishing; rethrows the oldest failure.
 	void finish(JoinContext context = {JoinReason::Verification, ComputeTelemetry::NoTick}) { for (auto& job : pending) { wait(*job, context); if (job->error) std::rethrow_exception(job->error); } }
@@ -108,7 +115,7 @@ public:
 			try { executor->join(job->batch, {JoinReason::Teardown, ComputeTelemetry::NoTick}); } catch (...) {}
 		}
 		pending.clear(); spare.clear(); groups.clear();
-		delay = 0; admitted = 0; tick = 0;
+		delay = 0; admitted.fill(0); pendingPerTeam.fill(0); tick = 0;
 	}
 	// Teardown with pooled outputs: complete submitted work, retire every pending
 	// job unpublished, then reset. Worker failures are dropped with their results.
@@ -127,13 +134,14 @@ public:
 	// Execution is local configuration, never part of saved simulation state.
 	// Publish before the teams step; preparation observes the completed previous tick.
 	void advance() {
-		++tick; admitted = 0;
+		++tick; admitted.fill(0);
 		while (!pending.empty() && pending.front()->due <= tick) {
 			auto& job = *pending.front(); wait(job, {JoinReason::TickDeadline, deadline ? deadline(0)/2 : tick});
 			if (job.error) std::rethrow_exception(job.error);
 			if (!job.superseded && publish && publish(job)) ++metrics.published;
 			else ++metrics.discarded;
 			if (retire) retire(job);
+			--pendingPerTeam[job.team];
 			spare.push_back(std::move(pending.front())); pending.pop_front();
 		}
 	}
@@ -146,15 +154,16 @@ public:
 	}
 	// Admit one job due at tick + delay. The caller fills snapshotLease and payload,
 	// then hands every job staged this tick to one prepare() call.
-	Job* reserve() {
-		if (!canReserve()) throw std::logic_error("building gradient pipeline admission exceeded");
+	Job* reserve(unsigned team = 0) {
+		if (!canReserve(team)) throw std::logic_error("building gradient pipeline admission exceeded");
 		std::unique_ptr<Job> job;
 		if (spare.empty()) job = std::make_unique<Job>();
 		else { job = std::move(spare.back()); spare.pop_back(); }
 		job->due = tick+delay; job->done = false; job->superseded = false; job->error = nullptr;
 		job->owner = this; job->batch = {}; job->snapshotLease.reset();
+		job->team = team;
 		auto* ptr = job.get(); pending.push_back(std::move(job));
-		++admitted; ++metrics.jobs;
+		++admitted[team]; ++pendingPerTeam[team]; ++metrics.jobs;
 		metrics.maxPending = std::max<std::uint64_t>(metrics.maxPending, pending.size());
 		return ptr;
 	}
@@ -163,6 +172,8 @@ public:
 	void prepare(std::span<Job* const> jobs) {
 		if (jobs.empty()) return;
 		try {
+			for (auto* job : jobs)
+				if (job->payload.team != int(job->team)) throw std::logic_error("Building gradient admission team mismatch");
 			// Owner-only execution computes now; publication keeps its deadline.
 			groups.clear();
 			for (auto* job : jobs) groups.push_back({1, {&run, job}, ComputeExecutor::NoLane});
@@ -194,12 +205,16 @@ public:
 	// against the same admission bounds a live reservation obeys.
 	Job& restoreCompleted(unsigned remaining, bool superseded, Payload payload) {
 		const auto due = tick+remaining;
-		if (!enabled() || !remaining || remaining > delay || pending.size() >= delay*MaxJobsPerTick ||
-			(!pending.empty() && pending.back()->due > due) || dueCount(due) >= MaxJobsPerTick)
+		const unsigned team = unsigned(payload.team);
+		if (!enabled() || !remaining || remaining > delay || team >= pendingPerTeam.size() ||
+			pendingPerTeam[team] >= delay*MaxJobsPerTeamPerTick ||
+			(!pending.empty() && pending.back()->due > due) || dueCount(team, due) >= MaxJobsPerTeamPerTick)
 			throw std::runtime_error("Invalid saved building gradient deadline");
 		auto job = std::make_unique<Job>();
 		job->payload = std::move(payload); job->due = due; job->superseded = superseded;
 		job->done = true; job->owner = this;
+		job->team = team;
+		++pendingPerTeam[team];
 		auto& result = *job; pending.push_back(std::move(job));
 		return result;
 	}

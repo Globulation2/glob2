@@ -743,6 +743,8 @@ void loadGradient(GAGCore::InputStream *stream, Uint16 *&field, size_t size, boo
 // slot epochs are owner-only. Saves before 148 carry none of this.
 void Map::saveBuildingGradientPipeline(GAGCore::OutputStream *stream) const
 {
+	static_assert(BuildingGradientJobPipeline::MaxDelay *
+		BuildingGradientJobPipeline::MaxJobsPerTeamPerTick * TEAM_MAX_COUNT <= 65535);
 	auto &rt=*gradientRuntime;
 	stream->writeEnterSection("buildingGradientPipeline");
 	stream->writeUint8(rt.buildings.delayTicks(), "delay");
@@ -763,7 +765,7 @@ void Map::saveBuildingGradientPipeline(GAGCore::OutputStream *stream) const
 	}
 	stream->writeLeaveSection();
 	stream->writeEnterSection("pending");
-	stream->writeUint8(rt.buildings.pendingCount(), "count");
+	stream->writeUint16(rt.buildings.pendingCount(), "count");
 	index=0;
 	rt.buildings.visitPending([&](BuildingGradientJobPipeline::Job &job, unsigned remaining) {
 		auto &p=job.payload;
@@ -834,7 +836,10 @@ void Map::loadBuildingGradientPipeline(GAGCore::InputStream *stream, bool packed
 	}
 	stream->readLeaveSection();
 	stream->readEnterSection("pending");
-	const unsigned count=stream->readUint8("count");
+	const unsigned count=versionMinor >= FILE_FORMAT_VERSION_TEAM_BUILDING_GRADIENT_QUOTA
+		? stream->readUint16("count") : stream->readUint8("count");
+	if (count > rt.buildings.delayTicks()*BuildingGradientJobPipeline::MaxJobsPerTeamPerTick*TEAM_MAX_COUNT)
+		throw std::runtime_error("Invalid saved building gradient pending count");
 	if (otherDelay && count)
 		throw std::runtime_error("Saved building gradient delay does not match the match rules");
 	for (unsigned i=0; i<count; ++i)

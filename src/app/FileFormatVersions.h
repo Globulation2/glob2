@@ -290,3 +290,6 @@ static constexpr int FILE_FORMAT_VERSION_INTRUSIVE_POPULATION = 166;
 
 // One immutable world observation per owner boundary; persisted admission phase.
 static constexpr int FILE_FORMAT_VERSION_SINGLE_OBSERVATION = 167;
+
+// Per-team building gradient admission; pending counts widen from 8 to 16 bits.
+static constexpr int FILE_FORMAT_VERSION_TEAM_BUILDING_GRADIENT_QUOTA = 168;
