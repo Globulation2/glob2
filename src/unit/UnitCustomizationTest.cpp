@@ -1,5 +1,6 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "EngineFixtures.h"
+#include "GradientFixture.h"
 #include "UnitCatalog.h"
 #include "Version.h"
 #include "gradient/GradientRuntime.h"
@@ -39,6 +40,18 @@ void configure(glob2test::HeadlessGame& world)
     world.game.gameHeader.setUnitCatalog(catalog);
     world.game.configureBuildingCatalog();
     for (int t=0;t<world.game.teamsCount();++t) world.game.teams[t]->race.setCatalog(catalog);
+}
+
+// Conversion fixtures wait for eligibility while keeping their service route live.
+// Advance the whole game so statistics and other scheduled owners meet deadlines.
+void advanceWithServiceRoute(Game& game,Building* building,unsigned type,int ticks)
+{
+    const auto& performance=game.unitCatalog().levels(type)[0].performance;
+    const int access=Map::swimClass(performance[WALK],performance[SWIM]);
+    for (int tick=0;tick<ticks;++tick) {
+        game.map.requestBuildingField(building,access,BuildingRoute::Footprint);
+        game.step(0);
+    }
 }
 
 // The steering fixtures combine existing guard/exploration policies with
@@ -1079,7 +1092,7 @@ TEST_SUITE("UnitCustomization")
             auto* inn=world.addBuilding("inn",8,8,0,1); REQUIRE(inn);
             inn->setMaterial(WHEAT, 10); inn->setMaterial(CHERRY, 10); inn->updateCallLists();
             world.addUnit(WORKER,24,20,0); world.addUnit(WORKER,24,22,1);
-            for (int tick=0;tick<160;++tick) world.game.step(0);
+            advanceWithServiceRoute(world.game,inn,WORKER,160);
             auto* unit=world.addUnit(WORKER,6,8); REQUIRE(unit); REQUIRE(inn->canConvertUnit());
             world.game.teams[1]->sharedVisionFood|=world.team->me;
             world.game.teams[1]->allies&=~world.team->me;
@@ -1375,7 +1388,7 @@ TEST_SUITE("UnitCustomization")
             REQUIRE(ownInn); REQUIRE(enemyInn);
             enemyInn->setMaterial(WHEAT, 10); enemyInn->setMaterial(CHERRY, 10);
             enemyInn->updateCallLists();
-            for (int tick=0;tick<160;++tick) world.game.step(0);
+            advanceWithServiceRoute(world.game,enemyInn,*world.game.unitCatalog().find("ablation-0"),160);
             auto* unit=world.addUnit(*world.game.unitCatalog().find("ablation-0"),6,8,sourceTeam);
             REQUIRE(unit); REQUIRE(enemyInn->canConvertUnit());
             destination->sharedVisionFood |= source->me;
@@ -2291,7 +2304,7 @@ TEST_SUITE("UnitCustomization")
             unit->subscriptionSuccess(inn,false,false,UnitJobPurpose::Transport);
             inn->unitsWorking.push_back(unit); inn->updateCallLists();
             REQUIRE(map.materialAvailable(0,MaterialId::Algae,WATER_ONLY_CLASS,5,y));
-            REQUIRE(map.buildingGradient(inn,WATER_ONLY_CLASS));
+            glob2test::awaitBuildingGradient(game,inn,WATER_ONLY_CLASS);
             const int slot=inn->routeSlot(WATER_ONLY_CLASS,BuildingRoute::Footprint);
             const auto probe=map.coordToIndex(13,y);
             REQUIRE(inn->globalGradient[slot][probe]!=GRADIENT_FORBIDDEN);
@@ -2448,7 +2461,7 @@ TEST_SUITE("UnitCustomization")
                 unit->subscriptionSuccess(inn,false,false,UnitJobPurpose::Transport);
                 inn->unitsWorking.push_back(unit); inn->updateCallLists();
                 REQUIRE(world.game.map.materialAvailable(world.team->teamNumber,static_cast<MaterialId>(material),unit->swimClass(),unit->posX,unit->posY));
-                REQUIRE(world.game.map.buildingGradient(inn,unit->swimClass()));
+                glob2test::awaitBuildingGradient(world.game,inn,unit->swimClass());
                 if(waterOnly) REQUIRE(unit->swimClass()==WATER_ONLY_CLASS);
                 for(int tick=0;tick<4096 && unit->displacement!=phase;++tick) world.game.step(0);
                 REQUIRE(unit->displacement==phase);
@@ -2543,7 +2556,7 @@ TEST_SUITE("UnitCustomization")
             world.addUnit(WORKER,24,20,0); world.addUnit(WORKER,24,22,1);
             REQUIRE(ownInn); REQUIRE(enemyInn);
             enemyInn->setMaterial(WHEAT, 10); enemyInn->setMaterial(CHERRY, 10); enemyInn->updateCallLists();
-            for(int tick=0;tick<160;++tick) world.game.step(0);
+            advanceWithServiceRoute(world.game,enemyInn,*world.game.unitCatalog().find("ablation-0"),160);
             auto* unit=world.addUnit(*world.game.unitCatalog().find("ablation-0"),6,8); REQUIRE(unit);
             world.game.teams[1]->sharedVisionFood|=world.team->me; world.game.teams[1]->allies&=~world.team->me;
             unit->receiveCarriedMaterial(WOOD,{}); unit->receiveCarriedMaterial(STONE,{1,2});
