@@ -166,6 +166,11 @@ void testVersionBounds()
 		ReplayReader population;
 		check(!population.loadReplay(writeReplayBody(166,1),false),
 		      "observation boundary: format166 replay uses older timing");
+        for(Uint16 version:{167,168,169,170}) {
+            ReplayReader oldRouting;
+            check(!oldRouting.loadReplay(writeReplayBody(version,1),false),
+                "air routing boundary: older simulation replay rejected");
+        }
 		ReplayReader current;
 		check(current.loadReplay(writeReplayBody(REPLAY_MINIMUM_VERSION_MINOR,1),false),
 		      "observation boundary: current replay timing accepted");

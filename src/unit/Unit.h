@@ -75,8 +75,6 @@ public:
 		return hasCapability(UnitRuntimeTraits::ExtendedCargo) && continueExtendedCargoCollection();
 	}
 	void receiveCargoPacket(int resource, WideMaterialPacket packet);
-	bool findAirGuardDestination(Sint32* x, Sint32* y);
-	bool findAirClearingDestination(const Building* zone, Sint32* x, Sint32* y, int* distance);
 	bool findMaterialDestination(int material, Sint32* x, Sint32* y, int* distance,
 		bool withMarkets=false, const Building* consumer=nullptr);
 	void syncStep(void);
@@ -189,7 +187,6 @@ protected:
 	
 	void setNewValidDirectionGround(void);
 	void setNewValidDirectionAir(void);
-	void flyToTarget(); //This will set (dx,dy) given targetX/Y. air asserted.
 	void gotoGroundTarget(); //This will set (dx,dy) given targetX/Y. ground asserted.
 	void escapeGroundTarget(); //This will set (dx,dy) opposed to the given targetX/Y, without the care of forbidden flags ground asserted.
 	void simplifyDirection(int ldx, int ldy, int *cdx, int *cdy);
@@ -208,6 +205,7 @@ public:
 
 	//! Pathfinding swim class from the unit's walk and swim speeds (see Map::swimClass).
 	int swimClass() const;
+	int movementClass() const;
 	//! Construction eligibility is independent of work/harvest speed.
 	Sint32 workerLevel() const { return constructionLevel; }
 	bool needsTraining(const BuildingTrainingSpec& training, int ability) const;

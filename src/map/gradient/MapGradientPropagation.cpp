@@ -26,7 +26,7 @@ void Map::propagateGradient(Uint16 *gradient, int swimClass, int maxCost, gradie
     scratch.family = family;
 	// Cells carry rules, not built-in types: unmodified costs only need to
 	// know which cells swim, and modified ones the map's compact profiles.
-	if (!hasTerrainMovementModifiers())
+	if (!hasMovementCostModifiers(swimClass))
 	{
 		const auto water = frozenWaterSnapshot();
 		gradient_kernel::propagateField(gradient, swimClass, maxCost, {getW(), getH()},
@@ -41,5 +41,5 @@ void Map::propagateGradient(Uint16 *gradient, int swimClass, int maxCost, gradie
 	gradient_kernel::propagateTerrainProfiles(
 		gradient, swimClass, maxCost, {getW(), getH()},
 		scratch, profiles->data(),
-		profiles->movement, terrainQueueBuckets(), {profiles, std::uint64_t(swimClass), 0, allCells});
+		profiles->movement, movementQueueBuckets(swimClass), {profiles, std::uint64_t(swimClass), 0, allCells});
 }

@@ -7,6 +7,8 @@
 #include "gradient/GradientRuntime.h"
 #include "engine/sim/snapshot/WorldSnapshot.h"
 #include <map>
+#include <BinaryStream.h>
+#include "Version.h"
 #include <type_traits>
 #include <nlohmann/json.hpp>
 
@@ -278,7 +280,7 @@ TEST_SUITE("GradientPreparation")
 		compare(0);
 		compare(1);
 		REQUIRE(cache.valid);
-		CHECK(cache.allocatedBytes() <= 16 * m.size);
+		CHECK(cache.allocatedBytes() <= 24 * m.size);
 		CHECK(cache.allocatedBytes() <= 32 * 1024 * 1024);
 		for (int phase = 0; phase < 160; ++phase)
 		{
@@ -476,11 +478,11 @@ TEST_SUITE("GradientPreparation")
 			m.clearImmobileUnit(x, y);
 			compare(hiddenResource, GRADIENT_AT_GOAL);
             // The first appearances of wood and the hidden material each add
-            // one lazy goal bitset. After these materials have been observed,
+            // independent ground and air goal bitsets. After observation,
             // occupancy churn, invalidation and rebuild must allocate nothing.
             const auto warmedBytes=cache.allocatedBytes();
             const auto goalBytes=((m.size+63)/64)*sizeof(Uint64);
-            CHECK(warmedBytes==bytes+(wDec==7 ? 2*goalBytes : 0));
+            CHECK(warmedBytes==bytes+(wDec==7 ? 4*goalBytes : 0));
 			if (wDec == 7)
 			{
 				// A burst exceeds the existing dirty bound; fallback and rebuild
@@ -1589,4 +1591,128 @@ TEST_CASE("CPU snapshot dispatch preserves trivial fields and validates before i
     request.terrainBuckets=64;request.swim=6;
     CHECK_THROWS_AS(gradient_preparation::propagateCPU(request,snapshot,output.data(),scratch),std::invalid_argument);
     CHECK(std::all_of(output.begin(),output.end(),[](auto cell){return cell==GRADIENT_AT_GOAL;}));
+}
+
+TEST_CASE("air shares preparation and lazy building fields while ignoring ground blockers" * doctest::test_suite("GradientPreparation"))
+{
+    glob2test::HeadlessGlobals globals;
+    glob2test::HeadlessGame world({.wDec=7,.hDec=7,.discovered=true,.clearImmobile=true,.loadDefaultRace=true,.header=true});
+    auto& game=world.game;auto& map=game.map;
+    auto* building=world.addBuilding("inn",8,8);REQUIRE(building);
+    auto* flyer=world.addUnit(EXPLORER,4,4);REQUIRE(flyer);
+    REQUIRE(flyer->movementClass()==AIR_MOVEMENT_CLASS);
+    CHECK(swimAccessVariant(AIR_MOVEMENT_CLASS)==3);
+    for(int ground=0;ground<SWIM_CLASS_COUNT;++ground)
+        CHECK(building->routeAccess(ground,BuildingRoute::Footprint)!=building->routeAccess(AIR_MOVEMENT_CLASS,BuildingRoute::Footprint));
+    map.setResourceByIndex(10,10,WHEAT,1);
+    map.setResourceByIndex(11,10,WOOD,1);
+    map.markImmobileUnit(10,10,0);
+    map.addForbidden(12,10,0);
+    map.paintCell(13,10,VOID_HOLE);
+    for(auto kind:{gradient_preparation::Kind::Materials,gradient_preparation::Kind::Clear,gradient_preparation::Kind::Guard}) {
+        using namespace gradient_preparation;
+        Request request{kind,0,WHEAT,AIR_MOVEMENT_CLASS,game.teams[0]->allies,false,map.movementQueueBuckets(AIR_MOVEMENT_CLASS)};
+        const auto snapshot=SimulationSnapshot::capture(game,SimulationSnapshot::captureCatalog(game),SimulationSnapshot::Simulation);
+        std::vector<Uint16> owner(map.size),worker(map.size);
+        auto run=[&](auto fn){fn(0,map.size);};
+        if(kind==Kind::Materials)materialCells(map.stateView(),map.fogOfWar,0,WHEAT,AIR_MOVEMENT_CLASS,owner.data(),nullptr,run);
+        else if(kind==Kind::Clear)clearCells(map.stateView(),false,0,AIR_MOVEMENT_CLASS,owner.data(),run);
+        else guardCells(map.stateView(),game.teams[0]->allies,0,AIR_MOVEMENT_CLASS,owner.data(),run);
+        CrowdingScratch scratch;
+        seed(request,snapshot,worker.data(),scratch);
+        REQUIRE(owner==worker);
+        if(kind==Kind::Materials) {
+            CHECK(owner[map.coordToIndex(10,10)]==GRADIENT_AT_GOAL);
+            CHECK(owner[map.coordToIndex(11,10)]==GRADIENT_UNREACHABLE);
+            CHECK(owner[map.coordToIndex(8,8)]==GRADIENT_UNREACHABLE);
+            CHECK(owner[map.coordToIndex(12,10)]==GRADIENT_FORBIDDEN);
+            CHECK(owner[map.coordToIndex(13,10)]==GRADIENT_FORBIDDEN);
+            // Both template caches must preserve the air plane's independent
+            // goal membership when an immobile ground unit occupies a deposit.
+            MaterialSeedCache cache;
+            std::vector<Uint16> cached(map.size);
+            REQUIRE(cache.trySeed(snapshot,0,WHEAT,AIR_MOVEMENT_CLASS,cached.data(),nullptr));
+            CHECK(cached==owner);
+            for(int repeat=0;repeat<20;++repeat)
+                map.gradientRuntime->resourceSeeds.trySeed(map,0,WHEAT,AIR_MOVEMENT_CLASS,cached.data(),nullptr);
+            REQUIRE(map.gradientRuntime->resourceSeeds.trySeed(map,0,WHEAT,AIR_MOVEMENT_CLASS,cached.data(),nullptr));
+            CHECK(cached==owner);
+        }
+        map.propagateGradient(owner.data(),AIR_MOVEMENT_CLASS);
+        GradientWorkspace workspace;
+        propagate(request,snapshot,worker.data(),workspace);
+        REQUIRE(owner==worker);
+    }
+    int distance=0;
+    REQUIRE(map.buildingAvailable(building,AIR_MOVEMENT_CLASS,4,4,&distance));
+    const auto slot=building->routeSlot(AIR_MOVEMENT_CLASS,BuildingRoute::Footprint);
+    const auto lease=map.leaseBuildingRoute(building,AIR_MOVEMENT_CLASS,BuildingRoute::Footprint);
+    REQUIRE(lease);
+    CHECK(building->globalGradientSearch[slot]);
+    flyer->performance[FLY]*=2;
+    CHECK(flyer->movementClass()==AIR_MOVEMENT_CLASS);
+    CHECK(map.leaseBuildingRoute(building,flyer->movementClass(),BuildingRoute::Footprint)==lease);
+}
+
+TEST_CASE("air material planes and cache keys occupy an independent namespace" * doctest::test_suite("GradientPreparation"))
+{
+    std::vector<bool> seen(MapState::PlaneCount,false);
+    for(int team=0;team<Team::MAX_COUNT;++team)
+        for(int material=0;material<int(MaterialSlotCount);++material)
+            for(int movement=0;movement<MOVEMENT_CLASS_COUNT;++movement)
+                for(bool market:{false,true}) {
+                    const auto key=MapState::planeKey(team,material,movement,market);
+                    REQUIRE(key<seen.size());CHECK_FALSE(seen[key]);seen[key]=true;
+                    const auto decoded=MapState::decodePlaneKey(key);
+                    CHECK(decoded.team==team);CHECK(decoded.resource==material);
+                    CHECK(decoded.swim==movement);CHECK(decoded.market==market);
+                    if(material<int(MaterialCount))for(int ground=0;ground<SWIM_CLASS_COUNT;++ground)
+                        CHECK(MapState::materialFieldKey(-1,team,material,AIR_MOVEMENT_CLASS,market)
+                            !=MapState::materialFieldKey(-1,team,material,ground,market));
+                }
+    CHECK(std::all_of(seen.begin(),seen.end(),[](bool v){return v;}));
+}
+
+TEST_CASE("authored air blockers and forbidden paint constrain the common point router" * doctest::test_suite("GradientPreparation"))
+{
+    glob2test::HeadlessGlobals globals;
+    glob2test::HeadlessGame world({.discovered=true,.clearImmobile=true,.header=true});
+    auto& map=world.game.map;
+    using Json=nlohmann::json;
+    auto blocker=Json::parse(map.resourceRegistry().serialize())["resources"][1];
+    blocker["key"]="test:air-wall";
+    blocker["properties"]["blocksAir"]=true;
+    blocker["properties"]["blocksGround"]=false;
+    map.installResourceDefinitions(Json{{"schemaVersion",1},{"resources",Json::array({blocker})}}.dump());
+    const auto resource=*map.resourceRegistry().find("test:air-wall");
+    for(int y=0;y<32;++y) {
+        if(y!=20)map.setResourceByIndex(8,y,resourceIndex(resource),1);
+        map.setResourceByIndex(24,y,resourceIndex(resource),1);
+    }
+    int dx=0,dy=0;
+    REQUIRE(map.pathfindPointToPoint(4,4,12,4,&dx,&dy,AIR_MOVEMENT_CLASS,1,1000));
+    CHECK(dy!=0);
+    REQUIRE(map.pathfindPointToPoint(4,4,12,4,&dx,&dy,0,1,1000));
+    CHECK(dx==1);CHECK(dy==0);
+    // A blocked task goal can be approached, while steering never enters it.
+    REQUIRE(map.pathfindPointToPoint(7,4,8,4,&dx,&dy,AIR_MOVEMENT_CLASS,1,1000));
+    CHECK(dx==0);CHECK(dy==0);
+    map.addForbidden(8,20,0);
+    CHECK_FALSE(map.pathfindPointToPoint(4,4,12,4,&dx,&dy,AIR_MOVEMENT_CLASS,1,1000));
+    CHECK(dx==0);CHECK(dy==0);
+}
+
+TEST_CASE("unreleased routing draft formats are rejected before reading runtime state" * doctest::test_suite("GradientPreparation"))
+{
+    for(Sint32 version:{168,169,170,VERSION_MINOR+1}) {
+        auto* bytes=new GAGCore::MemoryStreamBackend;
+        GAGCore::BinaryOutputStream output(bytes);
+        output.writeText("draft routing","mapName");
+        output.writeSint32(VERSION_MAJOR,"versionMajor");
+        output.writeSint32(version,"versionMinor");
+        const std::string data(bytes->getBuffer(),bytes->getPosition());
+        GAGCore::BinaryInputStream input(new GAGCore::MemoryStreamBackend(data.data(),data.size()));
+        MapHeader header;
+        CHECK_FALSE(header.load(&input));
+    }
 }

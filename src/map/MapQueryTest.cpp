@@ -5,7 +5,6 @@
 
 #include "Map.h"
 #include "TerrainType.h"
-#include "field/AirPathfind.h"
 #include "field/TerrainMovementCosts.h"
 #include <cstdlib>
 #include <cstdint>
@@ -88,20 +87,7 @@ namespace
             rebuildTerrainCounts();
 		}
 		void enableRouting() { aStarPoints = new AStarAlgorithmPoint[size]; }
-        bool airRouteWithProperties(int x,int y,int tx,int ty,
-            const std::array<TerrainProperties,TERRAIN_COUNT>& properties,int* dx,int* dy)
-        {
-            const auto combined=[&](int px,int py) {
-                const auto c=cellCorners(px,py);
-                return combineCornerRules(properties[c[0]],properties[c[1]],properties[c[2]],properties[c[3]]);
-            };
-            unsigned minimum=GRADIENT_STEP;
-            for (const auto& p : properties) if (p.flyable)
-                minimum=std::min(minimum,gradient_kernel::scaledTerrainStep(GRADIENT_STEP,p.airSpeedQ8));
-            return field::airRoute(w,h,x,y,tx,ty,minimum,aStarPoints,aStarExaminedPoints,
-                [&](int px,int py) { return combined(px,py).flyable && getAirUnit(px,py)==NOGUID; },
-                [&](int px,int py) { return gradient_kernel::scaledTerrainStep(GRADIENT_STEP,combined(px,py).airSpeedQ8); },dx,dy);
-        }
+
 		~GrassMap()
 		{
 			w = h = 0;
@@ -412,6 +398,18 @@ TEST_CASE("point routes prefer trails and reject impassable destination terrain"
     CHECK_FALSE(map.pathfindPointToPoint(1,3,5,3,&dx,&dy,3,1,1));
 }
 
+TEST_CASE("shared air point routing respects forbidden paint and escaping uses the air layer")
+{
+    GrassMap map;map.enableRouting();
+    for(int y=0;y<8;++y) if(y!=5)map.setForbidden(2,y,1);
+    int dx=0,dy=0;
+    REQUIRE(map.pathfindPointToPoint(1,3,3,3,&dx,&dy,AIR_MOVEMENT_CLASS,1,100));
+    CHECK(map.isFreeForMovement(1+dx,3+dy,AIR_MOVEMENT_CLASS,1));
+    CHECK_FALSE((dx==1 && dy==0));
+    map.setAirUnit(1+dx,3+dy,123);
+    CHECK_FALSE(map.isFreeForMovement(1+dx,3+dy,AIR_MOVEMENT_CLASS,1));
+}
+
 TEST_CASE("air routes detour around blocked cells and reset reusable search state")
 {
     GrassMap map;map.enableRouting();
@@ -430,96 +428,13 @@ TEST_CASE("air routes detour around blocked cells and reset reusable search stat
     CHECK_EQ(dx,0);CHECK_EQ(dy,0);
 }
 
-TEST_CASE("air property profiles honor no-fly barriers and weighted travel without registration")
-{
-    GrassMap map; map.enableRouting();
-    auto properties=TERRAIN_PROPERTIES;
-    properties[ICE].flyable=false;
-    // A no-fly vertex column at x=2 closes every cell touching it but those
-    // between the grass vertices (2,5) and (2,6). A closed column at x=6 keeps
-    // the route from wrapping around the small map instead.
-    for(int y=0;y<8;++y) if(y!=5 && y!=6) map.setVertexTerrain(2,y,ICE);
-    for(int y=0;y<8;++y) map.setVertexTerrain(6,y,ICE);
-    int dx=0,dy=0;
-    REQUIRE(map.airRouteWithProperties(0,3,3,3,properties,&dx,&dy));
-    CHECK_EQ(dx,0); CHECK_EQ(dy,1);
-    // A forbidden target is approached, never entered, and an enclosed unit
-    // cannot route through the forbidden cells to reach it.
-    REQUIRE(map.airRouteWithProperties(1,3,2,3,properties,&dx,&dy));
-    CHECK_EQ(dx,0); CHECK_EQ(dy,0);
-    for(int y=0;y<8;++y) for(int x=0;x<8;++x) map.paintCell(x,y,ICE);
-    map.paintCell(1,3,GRASS); map.paintCell(5,3,GRASS);
-    CHECK_FALSE(map.airRouteWithProperties(1,3,5,3,properties,&dx,&dy));
-    CHECK_EQ(dx,0); CHECK_EQ(dy,0);
-    for(int y=0;y<8;++y) for(int x=0;x<8;++x) map.paintCell(x,y,GRASS);
-    properties[ICE].flyable=true;
-    properties[ICE].airSpeedQ8=64;
-    properties[TRAIL].airSpeedQ8=1024;
-    for(int x=0;x<8;++x) map.paintCell(x,1,TRAIL);
-    for(int x=2;x<=4;++x) map.paintCell(x,3,ICE);
-    // A no-fly water column at x=7 again rules out wrapping around the map.
-    properties[WATER].flyable=false;
-    for(int y=0;y<8;++y) map.setVertexTerrain(7,y,WATER);
-    REQUIRE(map.airRouteWithProperties(1,3,5,3,properties,&dx,&dy));
-    CHECK_EQ(dy,-1); CHECK_EQ(std::abs(dx),1);
-}
 
-TEST_CASE("air building distance field resumes one source frontier for many candidates")
-{
-    // The callbacks model a corridor of fast terrain bounded by no-fly cells.
-    field::AirDistanceField routes(16,8,0,1,
-        [](int,int y){return y==1;},[](int,int){return 5u;});
-    CHECK_EQ(routes.costTo(3,1),15u);
-    CHECK_EQ(routes.costTo(6,1),30u);
-    CHECK_EQ(routes.costTo(1,1),5u);
-    CHECK_EQ(routes.costTo(15,1),5u);
-    CHECK_EQ(routes.costTo(4,2),15u); // cheapest adjacent accessible goal
-    CHECK_EQ(routes.costTo(8,5),decltype(routes)::unreachable);
-    CHECK_EQ(routes.costTo(8,1),40u);
-}
+
+
 
 TEST_SUITE("MapQuery")
 {
-TEST_CASE("reverse air field ranks many sources with forward entry costs")
-{
-    constexpr int width=8,height=4,cells=width*height;
-    unsigned state=9137;
-    const auto random=[&] { state=1664525u*state+1013904223u;return state; };
-    for(int trial=0;trial<80;++trial)
-    {
-        std::array<bool,cells> passable{};
-        std::array<unsigned,cells> costs{};
-        for(int i=0;i<cells;++i) { passable[i]=(random()%5)!=0;costs[i]=1+random()%32; }
-        const int tx=random()%width,ty=random()%height;
-        const auto access=[&](int x,int y){return passable[x*height+y];};
-        const auto entry=[&](int x,int y){return costs[x*height+y];};
-        field::AirDistanceField reverse(width,height,tx,ty,access,entry,true,field::AirDistanceDirection::ToDestination);
-        constexpr unsigned infinity=decltype(reverse)::unreachable;
-        // Independent Bellman-Ford relaxation of forward edges: the distance
-        // from u is min(entry(v)+distance(v)) over accessible neighbors v.
-        std::array<unsigned,cells> oracle;
-        oracle.fill(infinity);
-        if(access(tx,ty)) oracle[tx*height+ty]=0;
-        else for(int y=-1;y<=1;++y) for(int x=-1;x<=1;++x)
-        {
-            if(!x&&!y)continue;
-            const int nx=(tx+x+width)%width,ny=(ty+y+height)%height;
-            if(access(nx,ny))oracle[nx*height+ny]=0;
-        }
-        for(int iteration=0;iteration<cells;++iteration)
-            for(int x=0;x<width;++x) for(int y=0;y<height;++y)
-                if(access(x,y)) for(int dy=-1;dy<=1;++dy) for(int dx=-1;dx<=1;++dx)
-                {
-                    if(!dx&&!dy)continue;
-                    const int nx=(x+dx+width)%width,ny=(y+dy+height)%height;
-                    if(!access(nx,ny)||oracle[nx*height+ny]==infinity)continue;
-                    const unsigned cost=entry(nx,ny)*(dx&&dy?GRADIENT_DIAGONAL_STEP:GRADIENT_STEP)/GRADIENT_STEP;
-                    oracle[x*height+y]=std::min(oracle[x*height+y],cost+oracle[nx*height+ny]);
-                }
-        for(int x=0;x<width;++x) for(int y=0;y<height;++y)
-            CHECK_EQ(reverse.costTo(x,y),oracle[x*height+y]);
-    }
-}
+
 }
 
 }

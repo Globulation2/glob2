@@ -38,8 +38,8 @@ struct EscapeProfile
     {
         const auto index = map.coordToIndex(x, y);
         const auto& terrain = map.terrainPropertiesAt(index);
-        const bool forbidden = !air && (map.getForbidden(x, y) & team);
-        const bool passable = air ? terrain.flyable && !map.resourceBlocksAir(index)
+        const bool forbidden = (map.getForbidden(x, y) & team);
+        const bool passable = air ? terrain.flyable && !map.resourceBlocksAir(index) && (!forbidden || escapeForbidden)
             : gradient_kernel::terrainAllowsGround(terrain,swim) &&
               map.getBuilding(x, y) == NOGBID && !map.resourceBlocksGround(index) &&
               (!forbidden || escapeForbidden);
@@ -49,7 +49,7 @@ struct EscapeProfile
 
     bool freeNextStep(const Map& map, int x, int y) const
     {
-        if (air) return map.isFreeForAirUnit(x, y);
+        if (air) return map.isFreeForAirUnit(x,y) && (escapeForbidden || !(map.getForbidden(x,y)&team));
         if (!air && swim==WATER_ONLY_CLASS && !map.terrainPropertiesAt(x,y).swimmable) return false;
         return escapeForbidden ? map.isFreeForGroundUnitNoForbidden(x, y, swim > 0)
             : map.isFreeForGroundUnit(x, y, swim > 0, team);
@@ -149,8 +149,8 @@ bool Map::pathfindTerrainSafety(Unit* unit)
     unit->dx = unit->dy = 0;
     unit->direction = 8;
     const bool air = unit->performance[FLY] > 0;
-    const EscapeProfile profile{air, unit->swimClass(), unit->owner->me,
-        !air && bool(getForbidden(unit->posX, unit->posY) & unit->owner->me)};
+    const EscapeProfile profile{air, unit->movementClass(), unit->owner->me,
+        bool(getForbidden(unit->posX, unit->posY) & unit->owner->me)};
 
     // Avoid allocating a field on wholly hazardous maps. Counts are maintained
     // by map edits, so this scans terrain definitions rather than map cells.
@@ -163,9 +163,9 @@ bool Map::pathfindTerrainSafety(Unit* unit)
         }
     if (!hasSafeTerrain) return false;
 
-    // Ground units share by permissions, not unit type or HP. Flyers ignore team
-    // paint and share one field. Occupancy is deliberately checked only at descent.
-    const unsigned key = air ? 0 : 1 + (unit->owner->teamNumber * SWIM_CLASS_COUNT + profile.swim) * 2 + profile.escapeForbidden;
+    // Units share by movement permissions, team and escape policy, independent of
+    // type or HP. Occupancy is deliberately checked only at descent.
+    const unsigned key = 1 + (unit->owner->teamNumber * MOVEMENT_CLASS_COUNT + profile.swim) * 2 + profile.escapeForbidden;
     auto& cache = gradientRuntime->safety;
     auto& field = cache.acquire(key, size);
     const Uint64 generation = air ? cache.airGeneration : cache.groundGeneration;

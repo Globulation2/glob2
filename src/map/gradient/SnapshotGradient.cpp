@@ -35,8 +35,8 @@ bool MaterialSeedCache::trySeed(const SimulationSnapshot::Handle& snapshot, int 
     if (swim==WATER_ONLY_CLASS) return false;
     const auto view=snapshot.view();
     const size_t cells=size_t(view.width)*view.height, words=(cells+63)/64;
-    const size_t required=cells*(2*sizeof(Uint16)+sizeof(Uint16)+sizeof(Uint32))
-        + words*sizeof(Uint64)*(MaterialCount+Team::MAX_COUNT+1)
+    const size_t required=cells*(3*sizeof(Uint16)+2*sizeof(Uint16)+sizeof(Uint32))
+        + words*sizeof(Uint64)*(2*MaterialCount+Team::MAX_COUNT+2)
         + snapshot.resources->stamps.chunks.size()*4*sizeof(Uint64)
         + view.resourceRegistry->size()*sizeof(Uint32) + view.terrainRegistry->size();
     if (disabled || cells<=4096 || required>budget) return false;
@@ -54,11 +54,12 @@ bool MaterialSeedCache::trySeed(const SimulationSnapshot::Handle& snapshot, int 
                     | (std::has_single_bit(p.materialMask)?0:0x20000);
             }
             for (auto& values:base) values.resize(cells);
-            signatures.assign(cells,0);
+            signatures.assign(cells,0); airSignatures.assign(cells,0);
             forbiddenMasks.assign(cells,0);
             for (auto& bits:goals) bits.assign(words,0);
+            for (auto& bits:airGoals) bits.assign(words,0);
             for (auto& bits:forbidden) bits.assign(words,0);
-            buildings.assign(words,0);
+            buildings.assign(words,0); airBuildings.assign(words,0);
             for (auto& values:stamps) values.clear();
             world=snapshot.worldIdentity; width=view.width; height=view.height;
             terrainRegistry=snapshot.terrain->registry; resourceRegistry=snapshot.catalogs->resources;
@@ -91,6 +92,20 @@ bool MaterialSeedCache::trySeed(const SimulationSnapshot::Handle& snapshot, int 
                         // Only facts that affect seeds: moving units, animation and positive
                         // stock changes do not alter this template. All twelve materials fit.
                         static_assert(MaterialCount==12);
+                        const MaterialMask airMask=MapState::materialMaskAt(view,i);
+                        const bool airOpen=rules.flyable && !MapState::resourceBlocksAir(view,i);
+                        const Uint16 airSignature=airMask | (airOpen?0x1000:0)
+                            | ((!MapState::resourceBlocksAir(view,i) && cell.building!=NOGBID)?0x2000:0);
+                        const Uint16 oldAir=airSignatures[i];
+                        if(rebuild || oldAir!=airSignature) {
+                            base[2][i]=airOpen?GRADIENT_UNREACHABLE:GRADIENT_FORBIDDEN;
+                            for(unsigned changed=(oldAir^airSignature)&AllMaterials;changed;changed&=changed-1) {
+                                const unsigned bit=std::countr_zero(changed);
+                                setSeedBit(airGoals[bit],i,airMask&(1u<<bit));
+                            }
+                            setSeedBit(airBuildings,i,airSignature&0x2000);
+                            airSignatures[i]=airSignature;
+                        }
                         const Uint16 signature=mask | ((open && cell.building==NOGBID && (terrain&1))?0x1000:0)
                             | ((open && cell.building==NOGBID && (terrain&2))?0x2000:0)
                             | ((open && cell.building!=NOGBID)?0x4000:0);
@@ -123,13 +138,13 @@ bool MaterialSeedCache::trySeed(const SimulationSnapshot::Handle& snapshot, int 
         const size_t limit=budget; *this=MaterialSeedCache{}; budget=limit; disabled=true;
         return false;
     }
-    std::memcpy(output,base[swim>0].data(),cells*sizeof(*output));
-    if (suppliers) visitSeedBits(buildings,[&](size_t i) {
+    std::memcpy(output,base[swim==AIR_MOVEMENT_CLASS?2:swim>0].data(),cells*sizeof(*output));
+    if (suppliers) visitSeedBits(swim==AIR_MOVEMENT_CLASS?airBuildings:buildings,[&](size_t i) {
         const unsigned id=unsigned(view.occupancy[i].building)-unsigned(team)*Building::MAX_COUNT;
-        if (id<Building::MAX_COUNT) output[i]=suppliers[id];
+        if (id<Building::MAX_COUNT && (swim!=AIR_MOVEMENT_CLASS || suppliers[id]!=GRADIENT_FORBIDDEN)) output[i]=suppliers[id];
     });
     const Uint32 mask=Uint32(1)<<team;
-    visitSeedBits(goals[material],[&](size_t i) {
+    visitSeedBits(swim==AIR_MOVEMENT_CLASS?airGoals[material]:goals[material],[&](size_t i) {
         if (!view.resourceProperties(view.resources[i].resource.type).visibleToHarvest || (snapshot.visibility->visible[i]&mask))
             output[i]=GRADIENT_AT_GOAL;
     });
@@ -257,9 +272,9 @@ gradient_kernel::CostIdentity snapshotCostIdentity(const Request& request, const
     const auto& terrain = *snapshot.terrain;
     // Snapshot lookups cover every cell. Valid terrain costs do not depend on
     // this field's obstacle mask, even when movement modifiers are enabled.
-    bool allCells=!terrain.movementModifiers;
+    bool allCells=!(request.swim==AIR_MOVEMENT_CLASS ? terrain.airConstraints : terrain.movementModifiers);
     std::uint32_t uniform=0;
-    if(!terrain.movementModifiers) {
+    if(!(request.swim==AIR_MOVEMENT_CLASS ? terrain.airConstraints : terrain.movementModifiers)) {
         // Binary weighted swimming can vary across cells; proving it uniform
         // would need a map scan, so leave it unknown. The land-only class is
         // already uniform by construction.
@@ -292,7 +307,7 @@ void propagate(const Request& request, const SimulationSnapshot::Handle& snapsho
     gradient_kernel::propagateTerrainField(out, request.swim, gradient_kernel::COST_LIMIT,
         {snapshot.width, snapshot.height}, scratch,
         [rules=snapshot.terrain->cellRules.data()](size_t i) { return rules[i]; },
-        snapshot.terrain->movementModifiers, *snapshot.terrain->rules, request.terrainBuckets,
+        (request.swim==AIR_MOVEMENT_CLASS ? snapshot.terrain->airConstraints : snapshot.terrain->movementModifiers), *snapshot.terrain->rules, request.terrainBuckets,
         snapshotCostIdentity(request, snapshot));
 }
 
@@ -308,7 +323,7 @@ gradient_kernel::EntrySteps batchCosts(const PropagationField &field, std::size_
 {
     using namespace gradient_kernel;
     const auto &terrain = *field.snapshot->terrain;
-    if (!terrain.movementModifiers)
+    if (!(field.request.swim==AIR_MOVEMENT_CLASS ? terrain.airConstraints : terrain.movementModifiers))
         return weightedClass(field.request.swim) && terrain.rules->swimming(terrain.cellRules[cell])
                    ? entrySteps(WATER_STEP[field.request.swim])
                    : LAND_STEPS;
@@ -320,7 +335,7 @@ void validatePropagation(const PropagationField& field)
     using namespace gradient_kernel;
     runtime_terrain::validateQueueSize(field.request.terrainBuckets);
     const auto &terrain = *field.snapshot->terrain;
-    if (terrain.movementModifiers)
+    if ((field.request.swim==AIR_MOVEMENT_CLASS ? terrain.airConstraints : terrain.movementModifiers))
     {
         const auto &movement = terrain.rules->movement(field.request.swim);
         if (std::any_of(movement.profiles.begin(), movement.profiles.end(),
@@ -345,7 +360,7 @@ void validatePropagation(const PropagationField& field)
     const auto &terrain = *field.snapshot->terrain;
     const field::Grid grid(field.snapshot->width, field.snapshot->height);
     auto at = [&](std::size_t i) { return terrain.cellRules[i]; };
-    if (!terrain.movementModifiers)
+    if (!(field.request.swim==AIR_MOVEMENT_CLASS ? terrain.airConstraints : terrain.movementModifiers))
     {
         propagateFieldCPU(out, field.request.swim, COST_LIMIT, grid, *field.scratch,
                           [&](std::size_t i) { return terrain.rules->swimming(at(i)); });
@@ -440,29 +455,29 @@ std::shared_ptr<const MinimalCosts> minimalView(const Request& request,const Sim
     const auto decline=[](MinimalDecline reason)->std::shared_ptr<const MinimalCosts>{noteMinimalDecline(reason);return {};};
     try {
         if(!snapshot.terrain || !snapshot.terrain->rules || request.swim<0 ||
-            unsigned(request.swim)>=std::size(gradient_kernel::WATER_STEP))return decline(MinimalDecline::Representation);
+            unsigned(request.swim)>=MOVEMENT_CLASS_COUNT)return decline(MinimalDecline::Representation);
         const auto& terrain=*snapshot.terrain;
         const auto& movement=terrain.rules->movement(request.swim);
-        if(terrain.movementModifiers&&(movement.profiles.empty()||movement.profiles.size()>256||!movement.prepared))return decline(MinimalDecline::Representation);
+        if((request.swim==AIR_MOVEMENT_CLASS ? terrain.airConstraints : terrain.movementModifiers)&&(movement.profiles.empty()||movement.profiles.size()>256||!movement.prepared))return decline(MinimalDecline::Representation);
         auto reason=MinimalDecline::Budget;auto cache=minimalCache(reason);if(!cache)return decline(reason);
         const auto matches=[&](const MinimalCostCache::Entry& e){return sameSource(e.source,snapshot.terrain)
             &&e.width==snapshot.width&&e.height==snapshot.height&&e.swim==request.swim
-            &&e.revision==terrain.revision&&e.modified==terrain.movementModifiers;};
+            &&e.revision==terrain.revision&&e.modified==(request.swim==AIR_MOVEMENT_CLASS ? terrain.airConstraints : terrain.movementModifiers);};
         {
             std::lock_guard lock(cache->mutex);
             for(const auto& e:cache->entries)if(matches(e))if(auto view=e.view.lock()){++minimalReused;return view;}
         }
         const auto count=std::size_t(snapshot.width)*snapshot.height;
-        const bool plane=terrain.movementModifiers||gradient_kernel::weightedClass(request.swim);
+        const bool plane=(request.swim==AIR_MOVEMENT_CLASS ? terrain.airConstraints : terrain.movementModifiers)||gradient_kernel::weightedClass(request.swim);
         if(snapshot.width<=0||snapshot.height<=0||terrain.cellRules.size()!=count)return decline(MinimalDecline::Representation);
         const auto payload=plane?count:0;
         if(payload>gradient_kernel::OpenCLHostBudget-sizeof(MinimalCosts)-256)return decline(MinimalDecline::Budget);
         const auto bytes=sizeof(MinimalCosts)+256+payload;
         if(!gradient_kernel::reserveOpenCLHostBytes(bytes))return decline(MinimalDecline::Budget);
         std::shared_ptr<MinimalCosts> view;
-        try {view=std::make_shared<MinimalCosts>(bytes,request.swim,terrain.movementModifiers);}
+        try {view=std::make_shared<MinimalCosts>(bytes,request.swim,(request.swim==AIR_MOVEMENT_CLASS ? terrain.airConstraints : terrain.movementModifiers));}
         catch(...) {gradient_kernel::releaseOpenCLHostBytes(bytes);return decline(MinimalDecline::Allocation);}
-        if(terrain.movementModifiers) {
+        if((request.swim==AIR_MOVEMENT_CLASS ? terrain.airConstraints : terrain.movementModifiers)) {
             std::copy(movement.profiles.begin(),movement.profiles.end(),view->storage.begin());
             view->profiles={view->storage.data(),movement.profiles.size()};
             view->prepared=movement.prepared;
@@ -471,7 +486,7 @@ std::shared_ptr<const MinimalCosts> minimalView(const Request& request,const Sim
             view->cells=std::make_unique<std::uint8_t[]>(count);
             for(std::size_t i=0;i<count;++i) {
                 const auto rule=terrain.cellRules[i];
-                if(terrain.movementModifiers) {
+                if((request.swim==AIR_MOVEMENT_CLASS ? terrain.airConstraints : terrain.movementModifiers)) {
                     if(rule>=movement.profileIds.size()||movement.profileIds[rule]>=movement.profiles.size())return decline(MinimalDecline::Representation);
                     view->cells[i]=movement.profileIds[rule];
                 }else view->cells[i]=terrain.rules->swimming(rule);
@@ -485,7 +500,7 @@ std::shared_ptr<const MinimalCosts> minimalView(const Request& request,const Sim
             // that shared owner so backend cache identity does not fragment.
             for(const auto& e:cache->entries)if(matches(e))if(auto existing=e.view.lock()){++minimalReused;return existing;}
             auto& e=cache->entries[cache->next++%MinimalCostCache::Count];
-            e={snapshot.terrain,view,snapshot.width,snapshot.height,request.swim,terrain.revision,terrain.movementModifiers};
+            e={snapshot.terrain,view,snapshot.width,snapshot.height,request.swim,terrain.revision,(request.swim==AIR_MOVEMENT_CLASS ? terrain.airConstraints : terrain.movementModifiers)};
         }
         return view;
     }catch(const std::bad_alloc&){return decline(MinimalDecline::Allocation);}
@@ -520,7 +535,7 @@ std::shared_ptr<gradient_kernel::OwnedGradientField> ownPropagation(
     using namespace gradient_kernel;
     runtime_terrain::validateQueueSize(request.terrainBuckets);
     const auto& terrain=*snapshot.terrain;
-    if(terrain.movementModifiers) {
+    if((request.swim==AIR_MOVEMENT_CLASS ? terrain.airConstraints : terrain.movementModifiers)) {
         const auto& movement=terrain.rules->movement(request.swim);
         if(std::any_of(movement.profiles.begin(),movement.profiles.end(),[&](auto cost) {
             return !cost.cardinal || !cost.diagonal || cost.cardinal>=request.terrainBuckets || cost.diagonal>=request.terrainBuckets;

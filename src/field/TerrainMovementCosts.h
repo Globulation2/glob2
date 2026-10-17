@@ -45,6 +45,10 @@ constexpr bool terrainAllowsGround(const TerrainProperties& terrain, int swim)
 {
     return swim==WATER_ONLY_CLASS ? terrain.swimmable : terrain.walkable || (swim>0 && terrain.swimmable);
 }
+constexpr bool terrainAllowsMovement(const TerrainProperties& terrain, int movement)
+{
+    return movement==AIR_MOVEMENT_CLASS ? terrain.flyable : terrainAllowsGround(terrain,movement);
+}
 constexpr unsigned scaledTerrainStep(unsigned base, unsigned speedQ8)
 {
     return std::max(1u, (base * 256u + speedQ8 / 2u) / speedQ8);
@@ -52,6 +56,8 @@ constexpr unsigned scaledTerrainStep(unsigned base, unsigned speedQ8)
 // Damage-weighted cost of entering a cell with these rules, by swim class.
 constexpr EntrySteps terrainEntrySteps(const TerrainProperties &p, int swim)
 {
+    if (swim==AIR_MOVEMENT_CLASS)
+        return entrySteps(hazardRouteCost(scaledTerrainStep(GRADIENT_STEP,p.airSpeedQ8),p.airHealthQ8));
     const unsigned base = p.swimmable && swim > 0 ? WATER_STEP[swim] : GRADIENT_STEP;
     return entrySteps(hazardRouteCost(scaledTerrainStep(base, p.groundSpeedQ8), p.groundHealthQ8));
 }
@@ -64,22 +70,32 @@ constexpr TerrainEntryCosts terrainEntryCosts(int swim)
     return result;
 }
 inline constexpr auto TERRAIN_ENTRY_COSTS = [] {
-    std::array<TerrainEntryCosts, std::size(WATER_STEP)> result{};
+    std::array<TerrainEntryCosts, SWIM_CLASS_COUNT> result{};
     for (unsigned sw = 0; sw < result.size(); ++sw) result[sw] = terrainEntryCosts(sw);
     return result;
 }();
 // Keep the legacy admissible heuristic even when a built-in material is absent.
 inline constexpr auto MINIMUM_TERRAIN_ENTRY_COSTS = []
 {
-	std::array<unsigned, std::size(WATER_STEP)> result{};
+	std::array<unsigned, SWIM_CLASS_COUNT> result{};
 	for (unsigned sw = 0; sw < result.size(); ++sw)
 	{
 		result[sw] = GRADIENT_STEP;
 		for (unsigned t = 0; t < TERRAIN_COUNT; ++t)
-			if (terrainAllowsGround(TERRAIN_PROPERTIES[t], sw))
+			if (terrainAllowsMovement(TERRAIN_PROPERTIES[t], sw))
 				result[sw] = std::min(result[sw], TERRAIN_ENTRY_COSTS[sw][t].cardinal);
 	}
 	return result;
+}();
+// Map-owned profiles append air without changing the classic ground kernel's
+// constexpr ratio table or its 64-bucket fast path.
+inline constexpr auto MINIMUM_MOVEMENT_ENTRY_COSTS=[] {
+    std::array<unsigned,MOVEMENT_CLASS_COUNT> result{};
+    for(unsigned sw=0;sw<SWIM_CLASS_COUNT;++sw) result[sw]=MINIMUM_TERRAIN_ENTRY_COSTS[sw];
+    result[AIR_MOVEMENT_CLASS]=GRADIENT_STEP;
+    for(const auto& p:TERRAIN_PROPERTIES) if(p.flyable)
+        result[AIR_MOVEMENT_CLASS]=std::min(result[AIR_MOVEMENT_CLASS],terrainEntrySteps(p,AIR_MOVEMENT_CLASS).cardinal);
+    return result;
 }();
 static_assert([] {
     for (const auto &profile : TERRAIN_ENTRY_COSTS)

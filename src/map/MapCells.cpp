@@ -9,7 +9,7 @@ void Map::resourceSeedChanged(size_t index, unsigned flags)
     // invalidate below only when their blocking properties actually change.
     gradientRuntime->safety.invalidate(
         flags & (ResourceSeedCache::Terrain | ResourceSeedCache::Building | ResourceSeedCache::Forbidden),
-        flags & ResourceSeedCache::Terrain);
+        flags & (ResourceSeedCache::Terrain | ResourceSeedCache::Forbidden));
 }
 
 void Map::invalidateResourceSeeds()

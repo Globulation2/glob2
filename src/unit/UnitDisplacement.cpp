@@ -226,7 +226,7 @@ void Unit::handleDisplacement(void)
 								const int need=needs[r];
 								if (need<=0 || (hasCapability(UnitRuntimeTraits::ExtendedCargo) && !canCarryMaterial(r))) continue;
 								int distance;
-								const bool available=performance[FLY]?findMaterialDestination(r,nullptr,nullptr,&distance,false,attachedBuilding):map->materialAvailableSlot(teamNumber,r,swimClass(),posX,posY,&distance,false,attachedBuilding);
+								const bool available=performance[FLY]?findMaterialDestination(r,nullptr,nullptr,&distance,false,attachedBuilding):map->materialAvailableSlot(teamNumber,r,movementClass(),posX,posY,&distance,false,attachedBuilding);
 								if (!available || (distance<<1)>=timeLeft) continue;
 								const int value=distance/need;
 								if (value<minValue) { bestResource=r; minValue=value; }

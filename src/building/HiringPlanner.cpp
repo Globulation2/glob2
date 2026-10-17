@@ -6,7 +6,6 @@
 #include "Building.h"
 #include "SharedBuildingGradient.h"
 #include "ai/observation/AIWorldView.h"
-#include "field/AirPathfind.h"
 #include <algorithm>
 #include <climits>
 #include <map>
@@ -22,7 +21,7 @@ using B = SimulationSnapshot::BuildingView;
 using U = SimulationSnapshot::UnitView;
 int swimClass(const U &u)
 {
-	return Map::swimClass(u.performance[WALK], u.performance[SWIM]);
+	return u.performance[FLY] ? AIR_MOVEMENT_CLASS : Map::swimClass(u.performance[WALK], u.performance[SWIM]);
 }
 int food(const U &u)
 {
@@ -383,12 +382,6 @@ Output Planner::rank(const Inputs &input, unsigned team, unsigned capacity)
 				jobs.push_back({Job::Fetch, int(r)});
 			}
 		std::array<std::vector<int>, 3> distances;
-		const auto flyable = [&](int x, int y)
-		{ return world.terrainPropertiesAt(world.tileIndex(x, y)).flyable; };
-		const auto airCost = [&](int x, int y)
-		{ return (*world.cellRules)[world.cellRuleAt(world.tileIndex(x, y))].airCost; };
-		using AirField = field::AirDistanceField<decltype(flyable), decltype(airCost)>;
-		std::unique_ptr<AirField> airToBuilding;
 		for (unsigned role = 0; role < 3; ++role)
 			if (type.attractsRole(role))
 				jobs.push_back({Job(unsigned(Job::Clear) + role), -1});
@@ -429,7 +422,7 @@ Output Planner::rank(const Inputs &input, unsigned team, unsigned capacity)
 				result.jobs.push_back(std::move(list));
 				continue;
 			}
-			std::array<std::shared_ptr<SharedBuildingGradient>, SWIM_CLASS_COUNT> buildings{};
+			std::array<std::shared_ptr<SharedBuildingGradient>, MOVEMENT_CLASS_COUNT> buildings{};
 			// Read only shared published resource planes. Missing or consumer-specific
 			// planes use a zero resource-distance estimate; live admission performs
 			// the normal destination/reachability checks and initializes shared fields.
@@ -441,8 +434,8 @@ Output Planner::rank(const Inputs &input, unsigned team, unsigned capacity)
 			const auto resolvedRoute = route;
 			for (const auto &captured : *input.routes)
 				if (captured.building == b.identity &&
-					captured.slot / SWIM_CLASS_COUNT == int(resolvedRoute))
-					buildings[captured.slot % SWIM_CLASS_COUNT] = captured.field;
+					captured.slot / MOVEMENT_CLASS_COUNT == int(resolvedRoute))
+					buildings[captured.slot % MOVEMENT_CLASS_COUNT] = captured.field;
 			const unsigned vacancies =
 				key.material >= 0 ? supply->vacancies[key.material] : supply->seats;
 			const unsigned limit = std::min(capacity, (canCoordinate ? teamSeats : vacancies) + 2u);
@@ -514,7 +507,7 @@ Output Planner::rank(const Inputs &input, unsigned team, unsigned capacity)
 					// Reject and bound with the existing immutable resource plane before
 					// asking a shared building route to expand. Special supplier/air
 					// modes keep the optimistic estimate used by live admission.
-					const auto plane = !u.performance[FLY] && !(modes & 2) &&
+					const auto plane = !(modes & 2) &&
 						!supply->consumerSpecific[key.material]
 						? world.resourceGradient(team, key.material, swim, modes & 1)
 						: std::span<const Uint16>{};
@@ -546,58 +539,7 @@ Output Planner::rank(const Inputs &input, unsigned team, unsigned capacity)
 				{
 					distance = cached;
 				}
-				else if (u.performance[FLY])
-				{
-					if (!airToBuilding)
-						airToBuilding = std::make_unique<AirField>(
-							world.width, world.height, b.posX, b.posY, flyable, airCost,
-							world.airTerrainConstraints,
-							field::AirDistanceDirection::ToDestination);
-					const auto cost =
-						airToBuilding->enabled()
-							? airToBuilding->costTo(u.posX, u.posY)
-							: unsigned(warped(world, u.posX, u.posY, b.posX, b.posY)) *
-								  GRADIENT_STEP;
-					distance = cost == AirField::unreachable
-								   ? INT_MAX
-								   : int((cost + GRADIENT_STEP - 1) / GRADIENT_STEP);
-					if (key.job == Job::Clear)
-					{
-						field::AirDistanceField clearing(
-							world.width, world.height, u.posX, u.posY, [&](int x, int y)
-							{ return world.terrainPropertiesAt(world.tileIndex(x, y)).flyable; },
-							[&](int x, int y)
-							{
-								return (*world.cellRules)[world.cellRuleAt(world.tileIndex(x, y))]
-									.airCost;
-							},
-							world.airTerrainConstraints);
-						distance = INT_MAX;
-						const MaterialMask selected = b.clearingMaterialMask;
-						for (int y = 0; y < world.height; ++y)
-							for (int x = 0; x < world.width; ++x)
-							{
-								const auto i = world.tileIndex(x, y);
-								const auto resource = world.resourceAt(i).resource;
-								if (world.distanceSquared(x, y, b.posX, b.posY) >
-										b.unitStayRange * b.unitStayRange ||
-									(world.areasAt(i).forbidden & world.teams[team].mask) ||
-									resource.type == NO_RES_TYPE ||
-									!world.resourceRegistry
-										 ->properties(static_cast<ResourceId>(resource.type))
-										 .clearable ||
-									!(MapState::materialMaskAt(world.state(), i) & selected))
-									continue;
-								const auto c = clearing.enabled()
-												   ? clearing.costTo(x, y)
-												   : unsigned(warped(world, u.posX, u.posY, x, y)) *
-														 GRADIENT_STEP;
-								if (c != decltype(clearing)::unreachable)
-									distance = std::min(
-										distance, int((c + GRADIENT_STEP - 1) / GRADIENT_STEP));
-							}
-					}
-				}
+
 				else
 				{
 					if (!buildings[swim])
@@ -615,11 +557,7 @@ Output Planner::rank(const Inputs &input, unsigned team, unsigned capacity)
 				if (distance == INT_MAX)
 					continue;
 
-				const bool tooFar =
-					key.job == Job::Explore && u.performance[FLY] && !world.airTerrainConstraints
-						? budget < 0 || world.distanceSquared(u.posX, u.posY, b.posX, b.posY) >
-											std::int64_t(budget) * budget
-						: (key.job == Job::Explore ? distance > budget : distance >= budget);
+                const bool tooFar=key.job==Job::Explore ? distance>budget : distance>=budget;
 				if ((immobile && distance > (transport ? 1 : 0)) || tooFar)
 					continue;
 				if (transport)
@@ -643,10 +581,7 @@ Output Planner::rank(const Inputs &input, unsigned team, unsigned capacity)
 					const unsigned role = unsigned(key.job) - unsigned(Job::Clear);
 					if (role == 1)
 					{
-						distance = u.performance[FLY] && !world.airTerrainConstraints
-									   ? world.distanceSquared(u.posX, u.posY, b.posX, b.posY)
-									   : int(std::min<std::int64_t>(
-											 INT_MAX, std::int64_t(distance) * distance));
+                        distance=int(std::min<std::int64_t>(INT_MAX,std::int64_t(distance)*distance));
 					}
 					candidate.value += distance;
 				}

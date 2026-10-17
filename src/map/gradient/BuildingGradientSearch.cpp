@@ -20,9 +20,9 @@ using gradient_kernel::weightedClass;
 BuildingGradientSearch::Inputs BuildingGradientSearch::Inputs::of(const Map &map, int swim)
 {
 	Inputs inputs;
-	inputs.modifiedCosts = map.hasTerrainMovementModifiers();
+	inputs.modifiedCosts = map.hasMovementCostModifiers(swim);
 	inputs.registry = map.frozenTerrainRegistry();
-	inputs.buckets = map.terrainQueueBuckets();
+	inputs.buckets = map.movementQueueBuckets(swim);
 	// Modified costs follow the map's compact cell profiles; otherwise only
 	// weighted swimmers need to know which cells are water.
 	if (inputs.modifiedCosts)

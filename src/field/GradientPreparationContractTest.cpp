@@ -47,7 +47,7 @@ TEST_SUITE("GradientPreparationContract")
 				CHECK((classified == GRADIENT_UNREACHABLE ? terrain : classified) == clearing);
 			}
 		for (unsigned mask = 0; mask <= AllMaterials; ++mask)
-			CHECK(resourceTraits(mask, 1, 1, 1, 1) == (mask | 0xf0000u));
+			CHECK(resourceTraits(mask, 1, 1, 1, 1, 0) == (mask | 0xf0000u));
 	}
 	TEST_CASE("Shared residency model preserves exact versions and retirement")
 	{
@@ -247,7 +247,7 @@ TEST_SUITE("GradientPreparationContract")
 		CHECK(offsetof(MapState::OccupancyCell, immobileUnit) == 6);
 		CHECK(sizeof(MapState::AreaCell) == 16);
 		CHECK(offsetof(MapState::AreaCell, farm) == 12);
-		CHECK(sizeof(GradientPreparationRule) == 36);
+		CHECK(sizeof(GradientPreparationRule) == 40);
 		CHECK(ResourceRegistry::Capacity == 16384);
 		CHECK(supportsPreparationRecords());
 		auto changed = nativeRecordRepresentation;

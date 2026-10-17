@@ -74,7 +74,7 @@ void Unit::handleActionRandomFly()
 {
 	assert(performance[FLY]);
 	clearOccupiedMapSlot();
-	if (owner->map->terrainPropertiesAt(posX,posY).airHealthQ8 < 0)
+	if (owner->map->terrainPropertiesAt(posX,posY).airHealthQ8 < 0 || owner->map->isForbidden(posX,posY,owner->me))
 		owner->map->pathfindTerrainSafety(this);
 	else
 	{
@@ -102,16 +102,15 @@ void Unit::handleActionRandomFly()
 
 void Unit::handleActionGoingTarget()
 {
-	assert(!performance[FLY]);
 	clearOccupiedMapSlot();
-	findDisplacement([&](int* pathDx, int* pathDy) { return owner->map->pathfindPointToPoint(posX, posY, targetX, targetY, pathDx, pathDy, swimClass(), owner->me, GOING_TARGET_MAX_PATH_LENGTH); });
+	findDisplacement([&](int* pathDx, int* pathDy) { return owner->map->pathfindPointToPoint(posX, posY, targetX, targetY, pathDx, pathDy, movementClass(), owner->me, performance[FLY] ? Map::GRADIENT_COST_LIMIT/GRADIENT_STEP : GOING_TARGET_MAX_PATH_LENGTH); });
 	directionFromDxDy();
 	wrapPosition();
 
 	if(dx == 0 && dy == 0)
 		if (!performance[FLY]) owner->map->markImmobileUnit(posX, posY, owner->teamNumber);
 
-	selectPreferredGroundMovement();
+	selectPreferredMovement();
 	speed=unitTerrainMovementSpeed(performance[action], action == FLY
         ? owner->map->terrainPropertiesAt(posX,posY).airSpeedQ8
         : owner->map->terrainPropertiesAt(posX,posY).groundSpeedQ8, dx != 0 || dy != 0);
@@ -120,19 +119,8 @@ void Unit::handleActionGoingTarget()
 
 void Unit::handleActionFlyingTarget()
 {
-	// No assert(getAirUnit==NOGUID) on the final claim — two flyers can
-	// converge on the same target tile, so the destination slot may be
-	// non-empty. Direct setAirUnit calls preserve that, unlike claimOccupiedMapSlot().
-	owner->map->setAirUnit(posX, posY, NOGUID);
-
-	flyToTarget();
-
-	wrapPosition();
-
-	action=FLY;
-	speed=unitTerrainMovementSpeed(performance[FLY], owner->map->terrainPropertiesAt(posX,posY).airSpeedQ8, dx != 0 || dy != 0);
-
-	owner->map->setAirUnit(posX, posY, gid);
+    // Durable save action value; legacy actions now enter the common router.
+    handleActionGoingTarget();
 }
 
 void Unit::handleActionGoingDxDy()

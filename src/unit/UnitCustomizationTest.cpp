@@ -3295,3 +3295,47 @@ TEST_SUITE("UnitCustomization")
     }
 
 }
+
+TEST_CASE("shared air routing stress exports a reproducible benchmark setup [artifacts]" * doctest::test_suite("UnitCustomization"))
+{
+    glob2test::HeadlessGlobals globals;
+    glob2test::HeadlessGame world({.wDec=7,.hDec=7,.discovered=true,.clearImmobile=true,.header=true,.seed=1196});
+    configure(world);
+    auto& game=world.game;auto& map=game.map;
+    game.gameHeader.getWinningConditions().clear();
+    game.gameHeader.setHungerDisabled(true);
+    game.gameHeader.setResourceGrowthDisabled(true);
+    for(int y=16;y<112;++y) for(int x=48;x<80;++x)
+        map.paintCell(x,y,(x==63 && y%16>3)?VOID_HOLE:LAVA);
+    for(int y=32;y<96;++y) map.addForbidden(32,y,0);
+    for(int y=20;y<108;y+=8) for(int x=20;x<108;x+=8) {
+        if(!map.terrainPropertiesAt(x,y).walkable)continue;
+        deposit(map,x,y,WOOD,1);
+        map.addClearArea(x,y,0);
+    }
+    for(int i=0;i<8;++i) {
+        auto* inn=world.addBuilding("inn",8,8+i*12);REQUIRE(inn);
+        inn->setMaterial(WHEAT,0);
+        for(int j=0;j<4;++j) {
+            auto* courier=world.addUnit(*game.unitCatalog().find("ablation-5"),90+j*2,8+i*12);
+            REQUIRE(courier);
+            courier->receiveCarriedMaterial(WHEAT,{});
+            courier->destinationPurpose=WHEAT;
+            courier->subscriptionSuccess(inn,false,false,UnitJobPurpose::Transport);
+            inn->unitsWorking.push_back(courier);
+        }
+        inn->updateCallLists();
+    }
+    for(int i=0;i<32;++i) REQUIRE(world.addUnit(*game.unitCatalog().find("ablation-6"),2+i*3,120));
+    // Export the current setup for repeatable thread/backend checks and native
+    // profiling. Cross-version comparisons use retained released-format inputs.
+    auto* memory=new GAGCore::MemoryStreamBackend;
+    GAGCore::BinaryOutputStream output(memory);
+    game.save(&output,false,"shared air routing stress");
+    glob2test::writeFile(glob2test::artifactDir()/"air-routing-stress.game",
+        std::string(memory->getBuffer(),memory->getPosition()));
+    for(int tick=0;tick<256;++tick) game.step(0);
+    CHECK(game.teams[0]->liveUnits.size()==64);
+    for(const auto* unit:game.teams[0]->liveUnits.entries())
+        CHECK(unit->movementClass()==AIR_MOVEMENT_CLASS);
+}

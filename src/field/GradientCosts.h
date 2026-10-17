@@ -42,7 +42,7 @@ namespace gradient_kernel
 	// Classes 0 and EVEN pay the land rate everywhere; the others are weighted.
 	constexpr bool weightedClass(int swimClass)
 	{
-		return swimClass != 0 && WATER_STEP[swimClass] != GRADIENT_STEP;
+		return swimClass > 0 && swimClass < int(std::size(WATER_STEP)) && WATER_STEP[swimClass] != GRADIENT_STEP;
 	}
 
 	// A weighted layer appends to four buckets, one per entry step, so each keeps

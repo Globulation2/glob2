@@ -166,12 +166,12 @@ TEST_SUITE("HiringPlanner")
 		u->medical = Unit::MED_FREE;
 		u->activity = Unit::ACT_FILLING;
 		const auto busy = w.game.captureReadBoundary();
-		CHECK(busy.entities->availableGroundClasses[0] == 0);
+		CHECK(busy.entities->availableMovementClasses[0] == 0);
 		CHECK(HiringPipeline::bindRoutes(w.game, busy).routes->empty());
 		u->activity = Unit::ACT_RANDOM;
 		w.game.snapshotStore().invalidateBoundary();
 		const auto available = w.game.captureReadBoundary();
-		CHECK(available.entities->availableGroundClasses[0] != 0);
+		CHECK(available.entities->availableMovementClasses[0] != 0);
 		CHECK(HiringPipeline::bindRoutes(w.game, available).routes->empty());
 		// A normal simulation query establishes the shared generation.
 		w.game.map.buildingGradient(b, u->swimClass());

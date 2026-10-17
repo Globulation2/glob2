@@ -7,7 +7,9 @@
 // This is the version of map and savegame format, and all of the recorded data on the server
 #define VERSION_MAJOR 0
 #define MINIMUM_VERSION_MINOR 58
-#define VERSION_MINOR 167
+#define VERSION_MINOR 171
+// version 171 appends one shared air routing class and preserves released save layouts.
+// Draft formats 168-170 were never released and are not accepted.
 // version 167 uses one completed observation per owner boundary and saves boundary phase markers.
 // version 166 saves append-ordered entity populations and the live task cursor.
 // version 165 changes routine checksum coverage/mixing, not save encodings.

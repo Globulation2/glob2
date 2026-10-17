@@ -41,7 +41,11 @@ enum Abilities
 static constexpr int LEGACY_SWIM_CLASS_COUNT = 7;
 static constexpr int WATER_ONLY_CLASS = LEGACY_SWIM_CLASS_COUNT;
 static constexpr int SWIM_CLASS_COUNT = LEGACY_SWIM_CLASS_COUNT + 1;
-inline constexpr unsigned swimAccessVariant(int swim) { return swim==WATER_ONLY_CLASS?2u:unsigned(swim>0); }
+// Ground ratio IDs are durable; air has one independent movement class.
+static constexpr int AIR_MOVEMENT_CLASS = SWIM_CLASS_COUNT;
+static constexpr int MOVEMENT_CLASS_COUNT = SWIM_CLASS_COUNT + 1;
+inline constexpr unsigned swimAccessVariant(int movement)
+{ return movement==AIR_MOVEMENT_CLASS?3u:movement==WATER_ONLY_CLASS?2u:unsigned(movement>0); }
 const int NB_MOVE=9;
 const int NB_ABILITY=17;
 
@@ -171,5 +175,3 @@ static constexpr int UNIT_MAGIC_ATTACK_RANGE = 3;
 //! `delta` in [0, UNIT_DELTA_QUANTUM), this is the second half of the
 //! tick. See Unit.cpp:239.
 static constexpr int UNIT_ATTACK_HIT_DELTA = 128;
-
-
