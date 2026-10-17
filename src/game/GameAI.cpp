@@ -213,11 +213,6 @@ std::vector<std::pair<std::string,Uint64>> Game::teamStatsMetrics() const {
  return {{"stats_submitted",m.submitted},{"stats_published",m.published},{"stats_peak_pending",m.peakPending}};
 }
 
-void Game::requestBuildingGradientInitialization(Building& building)
-{
-    if (!hiringPipeline) hiringPipeline = std::make_unique<HiringPipeline>(map.computeExecutor());
-    hiringPipeline->requestInitialization(building);
-}
 bool Game::preparingBuildingGradient(const Building& building, int slot) const
 {
     return hiringPipeline && hiringPipeline->preparing(building, slot);

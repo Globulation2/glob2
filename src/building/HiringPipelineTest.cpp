@@ -772,7 +772,7 @@ TEST_SUITE("HiringGradientPreparation")
 	}
 }
 
-TEST_SUITE("ProactiveBuildingGradients")
+TEST_SUITE("BuildingGradientInitialization")
 {
 	TEST_CASE("saving a primary-only job does not turn it into a proactive claim")
 	{
@@ -793,7 +793,7 @@ TEST_SUITE("ProactiveBuildingGradients")
 		CHECK(!restored.preparing(*b, b->routeSlot(0, BuildingRoute::Footprint)));
 	}
 
-	TEST_CASE("creation prepares shallow routes for busy units outside the hiring cohort")
+	TEST_CASE("legacy proactive requests prepare busy units outside the hiring cohort")
 	{
 		glob2test::HeadlessGlobals globals;
 		for (unsigned participants : {1u, 4u})
@@ -809,7 +809,9 @@ TEST_SUITE("ProactiveBuildingGradients")
 			u->medical = Unit::MED_HUNGRY;
 			const int slot = b->routeSlot(u->swimClass(), BuildingRoute::Footprint);
 			GradientExecutionAudit audit;
+			w.game.hiringPipeline = std::make_unique<HiringPipeline>(w.game.map.computeExecutor());
 			auto &pipeline = *w.game.hiringPipeline;
+			pipeline.requestInitialization(*b);
 			pipeline.observe(w.game, observation(w));
 			CHECK(pipeline.preparing(*b, slot));
 			CHECK(w.game.map.requestBuildingField(b, u->swimClass(), BuildingRoute::Footprint) ==
@@ -829,43 +831,34 @@ TEST_SUITE("ProactiveBuildingGradients")
 			CHECK(!pipeline.suggestions(*b));
 		}
 	}
-	TEST_CASE("upgrade and cancellation prepare the committed footprint")
+	TEST_CASE("creation upgrade and cancellation leave routes lazy")
 	{
 		glob2test::HeadlessGlobals globals;
 		glob2test::HeadlessGame w({.discovered = true, .loadDefaultRace = true});
+		w.game.stepCounter = 1; // Team zero is outside the hiring cohort.
 		auto *b = innWithWorker(w, 1);
-		auto &pipeline = *w.game.hiringPipeline;
-		pipeline.observe(w.game, observation(w));
-		pipeline.publishDue(1);
-		const int slot = b->routeSlot(0, BuildingRoute::Footprint);
-		REQUIRE(b->globalGradient[slot]);
+		auto checkLazy = [&]
+		{
+			const int slot = b->routeSlot(0, BuildingRoute::Footprint);
+			w.game.observeCompletedWorld();
+			w.game.hiringPipeline->drain();
+			CHECK(!w.game.hiringPipeline->preparing(*b, slot));
+			CHECK(!b->globalGradient[slot]);
+			CHECK(w.game.map.buildingGradientPipelineStatus().queued == 0);
+		};
+		checkLazy();
 		REQUIRE(b->launchConstruction(1, 1));
 		REQUIRE(b->tryToBuildingSiteRoom());
-		CHECK(b->type->width == 3);
-		REQUIRE(!b->globalGradient[slot]);
-		w.game.stepCounter = 1;
-		pipeline.observe(w.game, observation(w));
-		CHECK(pipeline.preparing(*b, slot));
-		pipeline.publishDue(2);
-		REQUIRE(b->globalGradient[slot]);
-		for (int y = 0; y < b->type->height; ++y)
-			for (int x = 0; x < b->type->width; ++x)
-				CHECK(b->globalGradient[slot][w.game.map.coordToIndex(b->posX + x, b->posY + y)] ==
-					  GRADIENT_AT_GOAL);
-		b->cancelConstruction(0);
-		CHECK(b->type->width == 2);
-		REQUIRE(!b->globalGradient[slot]);
 		w.game.stepCounter = 2;
-		pipeline.observe(w.game, observation(w));
-		CHECK(pipeline.preparing(*b, slot));
-		pipeline.publishDue(3);
-		REQUIRE(b->globalGradient[slot]);
-		for (int y = 0; y < b->type->height; ++y)
-			for (int x = 0; x < b->type->width; ++x)
-				CHECK(b->globalGradient[slot][w.game.map.coordToIndex(b->posX + x, b->posY + y)] ==
-					  GRADIENT_AT_GOAL);
+		checkLazy();
+		b->cancelConstruction(0);
+		w.game.stepCounter = 3;
+		checkLazy();
+		CHECK(w.game.map.requestBuildingField(b, 0, BuildingRoute::Footprint) ==
+			  FieldReadiness::Pending);
+		CHECK(w.game.map.buildingGradientPipelineStatus().queued == 1);
 	}
-	TEST_CASE("creation and primary hiring seed one shared route")
+	TEST_CASE("legacy preparation and primary hiring seed one shared route")
 	{
 		glob2test::HeadlessGlobals globals;
 		glob2test::HeadlessGame w(
@@ -875,7 +868,9 @@ TEST_SUITE("ProactiveBuildingGradients")
 		CHECK(w.game.map.requestBuildingField(b, 0, BuildingRoute::Footprint) ==
 			  FieldReadiness::Pending);
 		GradientExecutionAudit audit;
+		w.game.hiringPipeline = std::make_unique<HiringPipeline>(w.game.map.computeExecutor());
 		auto &pipeline = *w.game.hiringPipeline;
+		pipeline.requestInitialization(*b);
 		const auto world = observation(w);
 		pipeline.observe(w.game, world);
 		pipeline.drain();
@@ -902,6 +897,9 @@ TEST_SUITE("ProactiveBuildingGradients")
 				b->updateCallLists();
 				auto *u = original.addUnit(WORKER, 6, 8);
 				u->medical = Unit::MED_HUNGRY;
+				original.game.hiringPipeline =
+					std::make_unique<HiringPipeline>(original.game.map.computeExecutor());
+				original.game.hiringPipeline->requestInitialization(*b);
 				const auto ref = Game::refOf(b);
 				const int slot = b->routeSlot(u->swimClass(), BuildingRoute::Footprint);
 				if (pending)

@@ -50,7 +50,8 @@ class HiringPipeline
 			   const std::map<Uint16, BuildingRef> *initializations = nullptr);
 	explicit HiringPipeline(ComputeExecutor &);
 	~HiringPipeline();
-	// Called after the new footprint is committed; capture happens at the next boundary.
+	// Legacy format-172 continuation support; new buildings initialize on demand.
+	// Tests enqueue these requests explicitly to exercise old-save continuation.
 	void requestInitialization(Building &);
 	bool preparing(const Building &, int slot) const;
 	void observe(Game &, const SimulationSnapshot::Handle &);

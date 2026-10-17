@@ -269,7 +269,6 @@ public:
 	void cancelAI(unsigned player);
 	void drainAI();
     void drainHiring();
-    void requestBuildingGradientInitialization(Building&);
     bool preparingBuildingGradient(const Building&, int slot) const;
     void saveHiring(GAGCore::OutputStream*);
     void loadHiring(GAGCore::InputStream*, int versionMinor);
