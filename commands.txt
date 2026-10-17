@@ -1,0 +1,30 @@
+Working directory: /home/bradley/.codex/worktrees/unified-air-routing/glob2
+CCACHE_DIR=/dev/shm/glob2-air-ccache
+GLOB2_SDL3_PREFIX=/home/bradley/glob2/build/sdl3/prefix
+TMPDIR=/dev/shm/glob2-air-tmp
+
+Build:
+python3 tools/dev_build.py --build=/dev/shm/glob2-unified-air -j4 engine-tests unit-tests
+python3 tools/dev_build.py dev_fast=0 release=1 retain_symbols=1 CXXFLAGS=-g1 --build=/dev/shm/glob2-unified-air-release -j4
+
+Broad implementation-era snapshot, supplemental (not final-head all-suite certification):
+python3 test/run_tests.py --build-dir /dev/shm/glob2-air-testbin --binary engine --no-display --exclude-tag benchmark -j4 --write-inventory /dev/shm/glob2-air-evidence/engine-inventory.json --write-timings /dev/shm/glob2-air-evidence/engine-timings.json --artifacts /dev/shm/glob2-air-evidence/engine --junit /dev/shm/glob2-air-evidence/engine.xml
+python3 test/run_tests.py --build-dir /dev/shm/glob2-air-testbin --binary unit --no-display --exclude-tag benchmark --junit /dev/shm/glob2-air-evidence/unit.xml --artifacts /dev/shm/glob2-air-evidence/unit
+
+Final production revision b2264eb56, clean development build after restoring Headless.cpp:
+python3 test/run_tests.py --build-dir /dev/shm/glob2-air-finaltestbin --binary engine --no-display --exclude-tag benchmark --timeout 600 -j3 --filter 'GradientPreparation/*' --filter 'UnitCustomization/*' --filter 'TerrainProperties/*' --filter 'TerrainHazardRouting/*' --filter 'RuntimeResources/*' --filter 'MapQuery/*' --filter 'MapGradient*/*' --filter 'GradientKernel/*' --filter 'BuildingRoute*/*' --filter 'Hiring*/*' --filter 'ReplayStepCounter/*' --artifacts /dev/shm/glob2-air-evidence/final-routing --write-inventory /dev/shm/glob2-air-evidence/final-routing-inventory.json --junit /dev/shm/glob2-air-evidence/final-routing.xml
+python3 test/run_tests.py --build-dir /dev/shm/glob2-air-finaltestbin --binary unit --no-display --filter 'MapQuery/*' --filter '*air movement*' --filter '*air lazy*' --filter '*authored air*' --junit /dev/shm/glob2-air-evidence/final-unit.xml --artifacts /dev/shm/glob2-air-evidence/final-unit
+
+Final test-only revision 522a89ff9:
+python3 test/run_tests.py --build-dir /dev/shm/glob2-air-acceptancebin --binary engine --no-display --timeout 600 -j1 --filter 'JavaScriptCompatibility/Current simulation rejects*' --filter 'TeamStatsSave/32 sampling phases*' --filter 'LanMatchHarness/an idle LAN host*' --junit /dev/shm/glob2-air-evidence/final-acceptance.xml --artifacts /dev/shm/glob2-air-evidence/final-acceptance
+
+Reruns:
+python3 test/run_tests.py --build-dir /dev/shm/glob2-air-latesttestbin --binary engine --no-display --timeout 600 -j2 --filter 'AIPipeline/save continuation retains*' --filter 'Maxima.Economy/sustained stock feeding*' --filter 'Maxima.Economy/observed hunger*' --filter 'AITargetTelemetrySave/target telemetry*' --filter 'TerrainResources/terrain strokes*' --artifacts /dev/shm/glob2-air-evidence/timeout-final --junit /dev/shm/glob2-air-evidence/timeout-final.xml
+Release-linked reruns: build_lan_release_check.py, lan-release-commands.json, generator-release-command.json, slow-release-command.json; same runner selection with timeout 600 and suite/case names in their JUnit files.
+Fertility optimized rerun: fertility-command.json, fertility-build.log, fertility-optimized.log.
+
+Determinism and profiling: exact per-case commands and input hashes in respective archives; use verify_routing_final.py, verify_uninstrumented.py, run_profiles.py and profile_stress.py.
+
+python3 tools/shaders/gradient_preparation_rules.py
+python3 test/check_sim_revision.py --base origin/master
+git diff --check origin/master

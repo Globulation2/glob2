@@ -1,0 +1,57 @@
+{
+  "base": "486a2230a4ddb257ba9dee34d3aace05f2260d6f",
+  "candidate": "b2264eb567c7b6a8ff33282f9ffaf59fd202ef4e",
+  "metric": "Callgrind Ir; not native CPU time. 128 warmup ticks, 4 participants, optimized release GCC13. Native/profiled final checksums match within each version. Behavior changes intentionally prevent checksum equality between versions.",
+  "results": [
+    {
+      "case": "islands",
+      "measured_ticks": 256,
+      "baseline_owner_Ir": 564695954,
+      "candidate_owner_Ir": 620381512,
+      "owner_change_percent": 9.861157602698167,
+      "baseline_all_threads_Ir": 2850355417,
+      "candidate_all_threads_Ir": 3042073031,
+      "all_threads_change_percent": 6.726095028590606
+    },
+    {
+      "case": "lava-shield",
+      "measured_ticks": 256,
+      "baseline_owner_Ir": 257475316,
+      "candidate_owner_Ir": 221202514,
+      "owner_change_percent": -14.087875515026072,
+      "baseline_all_threads_Ir": 2085051375,
+      "candidate_all_threads_Ir": 2072614049,
+      "all_threads_change_percent": -0.5964997385256243
+    },
+    {
+      "case": "midgame24k",
+      "measured_ticks": 256,
+      "baseline_owner_Ir": 487269484,
+      "candidate_owner_Ir": 497687740,
+      "owner_change_percent": 2.1380891564307447,
+      "baseline_all_threads_Ir": 1620377793,
+      "candidate_all_threads_Ir": 1684950999,
+      "all_threads_change_percent": 3.9850710296669645
+    },
+    {
+      "case": "swamp",
+      "measured_ticks": 256,
+      "baseline_owner_Ir": 558839619,
+      "candidate_owner_Ir": 569784412,
+      "owner_change_percent": 1.958485516754327,
+      "baseline_all_threads_Ir": 3005953818,
+      "candidate_all_threads_Ir": 3094711878,
+      "all_threads_change_percent": 2.952741970568762
+    },
+    {
+      "case": "authored-64-flyer-stress",
+      "measured_ticks": 32,
+      "baseline_owner_Ir": 1581373226,
+      "candidate_owner_Ir": 8482215,
+      "owner_change_percent": -99.46361713600936,
+      "baseline_all_threads_Ir": 1582371626,
+      "candidate_all_threads_Ir": 107460907,
+      "all_threads_change_percent": -93.2088704553149
+    }
+  ]
+}

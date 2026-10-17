@@ -1,0 +1,202 @@
+{
+  "reports": {
+    "engine": {
+      "passed": 1566,
+      "failed": 15,
+      "skipped": 206,
+      "failed_cases": [
+        "save continuation retains controller caches receipts and future commands at pipeline boundaries",
+        "Warrush growth and attack preparation survive save-load",
+        "target telemetry names only real enemies and leaves the simulation unchanged",
+        "unreleased routing draft formats are rejected before reading runtime state",
+        "Current simulation rejects earlier replays and enforces acceptance boundaries",
+        "an idle LAN host sleeps and wakes at once for guests and the host [network][artifacts]",
+        "catalog generation contracts [slow][map-generators]",
+        "observed hunger expands feeding for an opening colony mix beyond nominal forecasts",
+        "sustained stock feeding reports capability estimates and historical strategy targets",
+        "frozen seeded resource compositions preserve invariants and exact simulation continuation [golden]",
+        "seed cache allocates only live material bitsets and reuses them after depletion",
+        "32 sampling phases; ring wrap; repeated loads; text streams and corruption controls [save-format]",
+        "flyers share safety fields across teams and ignore ground invalidations",
+        "explorer flag eligibility applies route accessibility and hunger distance",
+        "terrain strokes clear incompatible resources; buildings and units"
+      ]
+    },
+    "unit": {
+      "passed": 1097,
+      "failed": 1,
+      "skipped": 89,
+      "failed_cases": [
+        "corridor protection and fertility caches"
+      ]
+    },
+    "final-routing": {
+      "passed": 202,
+      "failed": 0,
+      "skipped": 0,
+      "failed_cases": []
+    },
+    "final-unit": {
+      "passed": 43,
+      "failed": 0,
+      "skipped": 0,
+      "failed_cases": []
+    },
+    "final-acceptance": {
+      "passed": 2,
+      "failed": 1,
+      "skipped": 0,
+      "failed_cases": [
+        "an idle LAN host sleeps and wakes at once for guests and the host [network][artifacts]"
+      ]
+    },
+    "timeout-rerun": {
+      "passed": 1,
+      "failed": 0,
+      "skipped": 0,
+      "failed_cases": []
+    },
+    "timeout-final": {
+      "passed": 5,
+      "failed": 0,
+      "skipped": 0,
+      "failed_cases": []
+    },
+    "lan-timing": {
+      "passed": 0,
+      "failed": 1,
+      "skipped": 0,
+      "failed_cases": [
+        "an idle LAN host sleeps and wakes at once for guests and the host [network][artifacts]"
+      ]
+    },
+    "lan-release": {
+      "passed": 1,
+      "failed": 0,
+      "skipped": 0,
+      "failed_cases": []
+    },
+    "slow-release": {
+      "passed": 3,
+      "failed": 0,
+      "skipped": 0,
+      "failed_cases": []
+    },
+    "generator-release": {
+      "passed": 1,
+      "failed": 0,
+      "skipped": 0,
+      "failed_cases": []
+    },
+    "golden-match": {
+      "passed": 1,
+      "failed": 0,
+      "skipped": 0,
+      "failed_cases": []
+    },
+    "resource-golden": {
+      "passed": 1,
+      "failed": 0,
+      "skipped": 0,
+      "failed_cases": []
+    }
+  },
+  "initial_engine_failure_followups": [
+    {
+      "initial_failure": "save continuation retains controller caches receipts and future commands at pipeline boundaries",
+      "passing_followups": [
+        "timeout-final"
+      ]
+    },
+    {
+      "initial_failure": "Warrush growth and attack preparation survive save-load",
+      "passing_followups": [
+        "engine",
+        "timeout-rerun"
+      ]
+    },
+    {
+      "initial_failure": "target telemetry names only real enemies and leaves the simulation unchanged",
+      "passing_followups": [
+        "timeout-final",
+        "slow-release"
+      ]
+    },
+    {
+      "initial_failure": "unreleased routing draft formats are rejected before reading runtime state",
+      "passing_followups": [
+        "final-routing"
+      ]
+    },
+    {
+      "initial_failure": "Current simulation rejects earlier replays and enforces acceptance boundaries",
+      "passing_followups": [
+        "final-acceptance"
+      ]
+    },
+    {
+      "initial_failure": "an idle LAN host sleeps and wakes at once for guests and the host [network][artifacts]",
+      "passing_followups": [
+        "lan-release"
+      ]
+    },
+    {
+      "initial_failure": "catalog generation contracts [slow][map-generators]",
+      "passing_followups": [
+        "generator-release"
+      ]
+    },
+    {
+      "initial_failure": "observed hunger expands feeding for an opening colony mix beyond nominal forecasts",
+      "passing_followups": [
+        "timeout-final",
+        "slow-release"
+      ]
+    },
+    {
+      "initial_failure": "sustained stock feeding reports capability estimates and historical strategy targets",
+      "passing_followups": [
+        "timeout-final"
+      ]
+    },
+    {
+      "initial_failure": "frozen seeded resource compositions preserve invariants and exact simulation continuation [golden]",
+      "passing_followups": [
+        "final-routing",
+        "resource-golden"
+      ]
+    },
+    {
+      "initial_failure": "seed cache allocates only live material bitsets and reuses them after depletion",
+      "passing_followups": [
+        "final-routing"
+      ]
+    },
+    {
+      "initial_failure": "32 sampling phases; ring wrap; repeated loads; text streams and corruption controls [save-format]",
+      "passing_followups": [
+        "final-acceptance"
+      ]
+    },
+    {
+      "initial_failure": "flyers share safety fields across teams and ignore ground invalidations",
+      "passing_followups": [
+        "final-routing"
+      ]
+    },
+    {
+      "initial_failure": "explorer flag eligibility applies route accessibility and hunger distance",
+      "passing_followups": [
+        "final-routing"
+      ]
+    },
+    {
+      "initial_failure": "terrain strokes clear incompatible resources; buildings and units",
+      "passing_followups": [
+        "timeout-final",
+        "slow-release"
+      ]
+    }
+  ],
+  "unresolved_engine_cases": []
+}

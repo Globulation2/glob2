@@ -1,0 +1,22 @@
+{
+  "head": "522a89ff9b36a1c438114f4581a210f00bd5178a",
+  "base": "486a2230a4ddb257ba9dee34d3aace05f2260d6f",
+  "binaries": {
+    "/dev/shm/glob2-air-testbin/test/glob2-engine-tests": "c4700ee060a44456f68848e0a0348f8c273dc6d84194afcb2ca27282aaec6eb3",
+    "/dev/shm/glob2-air-testbin/test/glob2-unit-tests": "087e6c136c2ae7eea0a8d31a37ff023abc027ae05e4be07aefaf2438ea0d7527",
+    "/dev/shm/glob2-air-latesttestbin/test/glob2-engine-tests": "77fff324b503efd61c467fe3d24b0f7e8736c7482fb1bc9a318db0918b933620",
+    "/dev/shm/glob2-air-finaltestbin/test/glob2-engine-tests": "a8d4857467709d4148eebc09c9912cc79af8825158d0c5945e53adc4498f4531",
+    "/dev/shm/glob2-air-finaltestbin/test/glob2-unit-tests": "71dcd423b0d17149950cbdfdea36ce9d0c1442da457fe0d6bb882ff0469d399d",
+    "/dev/shm/glob2-air-acceptancebin/test/glob2-engine-tests": "7c254313d3ee72869e3226b171c6a184a23d186b3ebb5973609c9be5b59756a6",
+    "/dev/shm/glob2-unified-air-release/src/glob2": "7a011c7b802d5277b8a903c5d993d8c0ce244117583e1e8badd4fcb16c14f043"
+  },
+  "source_status": "",
+  "compiler": "g++ (Ubuntu 13.3.0-6ubuntu2~24.04.1) 13.3.0\nCopyright (C) 2023 Free Software Foundation, Inc.\nThis is free software; see the source for copying conditions.  There is NO\nwarranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.\n\n",
+  "sdl_prefix": "/home/bradley/glob2/build/sdl3/prefix",
+  "development_dependency_prefix": "/home/bradley/.local/share/glob2/development/dependencies/build-6b62ea86279899032d0eabbb/prefix",
+  "dev_flags": "dev_fast=1 -O0 -g1; no PCH/unity",
+  "release_flags": "dev_fast=0 release=1 retain_symbols=1 CXXFLAGS=-g1; -O3; no PCH/unity",
+  "initial_broad_revision": "implementation development snapshot; embedded TestBuildProvenance reports af35933bd5f15ae8aeda8c90603353631c868757 with dirty sourceTreeSha256 d23acf229234be81142321db91ca96485af358f5788052e329993700ebcebc9c; not the final PR revision",
+  "final_runtime_revision": "b2264eb567c7b6a8ff33282f9ffaf59fd202ef4e",
+  "head_delta_from_final_runtime": " src/scripting/javascript/ScriptCompatibilityTest.cpp | 9 ++++-----\n src/team/stats/TeamStatsSaveHarness.cpp              | 7 ++++---\n 2 files changed, 8 insertions(+), 8 deletions(-)\n"
+}
