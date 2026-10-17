@@ -437,7 +437,7 @@ private:
     std::optional<ChecksumSample> latestChecksum;
     void collectChecksums(bool flush = false);
     bool routineMapChecksums() const;
-    bool replayMapChecksums = false;
+    bool sessionMapChecksums = false;
 	//! Non-owning view of `net` when it is a turn-protocol session; null otherwise.
 	Turn::TurnLockstepSession* turn = nullptr;
 	//! What a turn game reloads after TurnSession::needsReload().

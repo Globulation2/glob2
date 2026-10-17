@@ -38,6 +38,7 @@
 #include "ConnectionOverlay.h"
 #include "EndGameScreen.h"
 #include "Engine.h"
+#include "sim/snapshot/SnapshotChecksum.h"
 #include "FileFormatVersions.h"
 #include "render/ColonySkinPreview.h"
 #include "Game.h"
@@ -894,6 +895,26 @@ DragResult dragAndHold(const Turn::TurnSessionConfig& config, const fs::path& ve
 
 TEST_SUITE("TurnEngineHarness")
 {
+    GLOB2_TEST_CASE("map checksum coverage survives the last human quitting", "[network-sim]")
+    {
+        glob2test::HeadlessGlobals globals(harnessGlobals());
+        const auto map = mapPath("FourSquares1");
+        const auto setup = makeSetup(map, 1, {"nicowar", "nicowar", "nicowar"}, 2026);
+        Turn::MatchRecord record;
+        record.humanSeatMask = setup.humanSeatMask();
+        Engine engine;
+        Engine::TurnMatchStart start;
+        start.setup = setup;
+        start.mapFile = map;
+        start.localSeat = -1;
+        start.transport = std::make_shared<Turn::RecordTransport>(record, 0);
+        REQUIRE(engine.initTurnMatch(start) == Engine::EE_NO_ERROR);
+        CHECK(engine.routineMapChecksums());
+        REQUIRE(engine.gui.game.executePlayerQuitGame(PlayerQuitsGameOrder(0)));
+        CHECK_FALSE(SimulationChecksum::mapChecksumsFor(engine.gui.game.gameHeader));
+        CHECK(engine.routineMapChecksums());
+    }
+
     GLOB2_TEST_CASE("AI-only turn recordings replay through their terminal checksum",
                     "[network-sim][artifacts]")
     {

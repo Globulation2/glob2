@@ -392,8 +392,7 @@ SimulationSnapshot::Handle Engine::establishObservation(bool present)
 
 bool Engine::routineMapChecksums() const
 {
-    return globalContainer->replaying ? replayMapChecksums
-        : SimulationChecksum::mapChecksumsFor(gui.game.gameHeader);
+    return sessionMapChecksums;
 }
 
 void Engine::collectChecksums(bool flush)

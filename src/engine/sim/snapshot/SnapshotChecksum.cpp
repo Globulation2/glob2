@@ -116,9 +116,7 @@ Uint32 hashState(const SimulationSnapshot::Handle& w)
 } // namespace
 bool mapChecksumsFor(const GameHeader& players)
 {
-    for (int player = 0; player < players.getNumberOfPlayers(); ++player)
-        if (players.getBasePlayer(player).type == BasePlayer::P_IP) return true;
-    return false;
+    return players.hasNetworkPlayer();
 }
 
 Uint32 snapshotChecksum(const SimulationSnapshot::Handle& input,bool mapChecksums)

@@ -520,6 +520,10 @@ GAGCore::CooperativeTask Engine::initGameFromStreamTask(MapHeader map, GameHeade
 
 void Engine::finishGameInit()
 {
+    // Quit orders rewrite player types. Freeze coverage before play starts;
+    // replay loading already preserved it before substituting AI controllers.
+    if (!globalContainer->replaying)
+        sessionMapChecksums = SimulationChecksum::mapChecksumsFor(gui.game.gameHeader);
     const bool offlineSetup = !globalContainer->replaying && !gui.game.gameHeader.hasNetworkPlayer();
     globalContainer->liveSpectating = offlineSetup;
     if(offlineSetup) {
@@ -728,7 +732,7 @@ GAGCore::CooperativeTask Engine::loadReplayTask(std::string fileName)
 	GameHeader gameHeader = loadGameHeader(fileName);
 
     // Preserve checksum coverage before replay replaces recorded player types.
-    replayMapChecksums = SimulationChecksum::mapChecksumsFor(gameHeader);
+    sessionMapChecksums = SimulationChecksum::mapChecksumsFor(gameHeader);
 
 	// A replay drives players from recorded orders, so no live AI runs.
 	for (int p=0; p<gameHeader.getNumberOfPlayers(); p++)
@@ -758,7 +762,7 @@ GAGCore::CooperativeTask Engine::loadReplayTask(std::string fileName)
 
 void Engine::clearReplayState()
 {
-    replayMapChecksums=false;
+    sessionMapChecksums=false;
 	globalContainer->replaying = false;
 	globalContainer->replayFileName.clear();
 	globalContainer->replayReader.reset();
