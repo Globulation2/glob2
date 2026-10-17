@@ -187,6 +187,7 @@ bool Map::requestBuildingRefresh(Building* building, int slot)
 {
 	auto& rt = *gradientRuntime;
 	if (!buildingGradientPipelineActive()) return false;
+	if (!building->globalGradient[slot] && game->preparingBuildingGradient(*building, slot)) return true;
 	if (building->refreshRequested.test(slot)) return true; // Already queued or in flight.
 	building->refreshRequested.set(slot);
 	rt.buildingRequests.push_back({building->owner->teamNumber, Uint16(Building::GIDtoID(building->gid)),

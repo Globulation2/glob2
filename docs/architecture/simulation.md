@@ -460,8 +460,10 @@ checksum adapter retains its historical entity/RNG representation for fixtures.
   Access metadata (`locked`, and a clearing flag's `anyResourceToClear`) follows
   the newest capture, so it, and the AI's view of it, may lag up to the delay. Team-wide resets and forbidden-area paints keep the old
   walking fields serving until the refresh publishes, so units may follow a
-  pre-edit field for up to the delay. First use after creation, idle eviction,
-  movement, or a type/range change queues initialization on the same pipeline.
+  pre-edit field for up to the delay. Creation and construction type transitions
+  also request shallow preparation through hiring at its one-tick deadline (below).
+  First use of a still-missing field after creation, idle eviction, movement, or a
+  type/range change queues initialization on the map pipeline.
   Until publication, route queries return Pending; assigned units wait without
   abandoning their assignment or consuming movement RNG. Initialization seeds and
   settles only the minimum depth (32 cost units), then transfers the unfinished
@@ -743,6 +745,17 @@ serving fields are reused, including stale generations, without changing their
 refresh schedule. A usable field can still extend during normal ranking, so a
 fallback position may already be covered. Live readers retain ordinary Pending
 and lazy-extension behavior when preparation was invalidated or insufficient.
+
+Creation and construction type transitions also request shallow route initialization
+once the footprint is committed. The next completed boundary captures the request,
+including movement classes of busy ground units. The hiring worker seeds those
+routes to the minimum depth and reuses them for primary-candidate extensions.
+Teams outside the normal hiring cohort prepare only the requested fields and keep
+their existing shortlist. Results publish one tick after capture. Owner-side claims
+prevent ordinary cold route requests from scheduling a duplicate build; warm
+refreshes retain the map's existing admission policy and publication delay.
+Queued initialization requests and pending prepared fields survive save/load
+(format 172), including requests captured outside the hiring cohort.
 
 Published lists and pending outputs with their deadlines are saved; saving drains
 jobs without publishing early. Prepared cold fields awaiting the same deadline

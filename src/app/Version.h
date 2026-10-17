@@ -7,7 +7,8 @@
 // This is the version of map and savegame format, and all of the recorded data on the server
 #define VERSION_MAJOR 0
 #define MINIMUM_VERSION_MINOR 58
-#define VERSION_MINOR 171
+#define VERSION_MINOR 172
+// version 172 persists proactive building initialization requests.
 // version 171 persists primary-candidate gradients pending hiring publication.
 // version 170 saves cold lazy building-gradient demand and fixed deadlines.
 // version 167 uses one completed observation per owner boundary and saves boundary phase markers.

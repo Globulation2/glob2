@@ -17,9 +17,9 @@ SimulationSnapshot::Handle observation(glob2test::HeadlessGame &w)
 	w.game.snapshotStore().invalidateBoundary();
 	return w.game.captureReadBoundary();
 }
-Building *innWithWorker(glob2test::HeadlessGame &w)
+Building *innWithWorker(glob2test::HeadlessGame &w, int level = 0)
 {
-	auto *b = w.addBuilding("inn", 8, 8);
+	auto *b = w.addBuilding("inn", 8, 8, level);
 	auto *u = w.addUnit(WORKER, 6, 8);
 	if (!b || !u)
 		throw std::runtime_error("Hiring fixture");
@@ -711,53 +711,237 @@ TEST_SUITE("HiringGradientPreparation")
 			}
 		}
 	}
-	TEST_CASE("format 170 pending shortlists load without a prepared-gradient record")
+	TEST_CASE("formats 170 and 171 load without proactive initialization records")
+	{
+		glob2test::HeadlessGlobals globals;
+		for (int version : {170, 171})
+		{
+			CAPTURE(version);
+			glob2test::HeadlessGame w({.discovered = true, .loadDefaultRace = true});
+			auto *bytes = new GAGCore::MemoryStreamBackend;
+			GAGCore::BinaryOutputStream out(bytes);
+			out.writeEnterSection("HiringPipeline");
+			out.writeUint8(1, "hasLast");
+			out.writeUint32(0, "last");
+			out.writeUint32(HiringPipeline::Delay, "delay");
+			out.writeUint32(HiringPipeline::Refresh, "refresh");
+			out.writeUint32(HiringPipeline::Extras, "extras");
+			out.writeUint32(HiringPipeline::Capacity, "capacity");
+			out.writeEnterSection("published");
+			for (unsigned t = 0; t < 16; ++t)
+			{
+				out.writeEnterSection(t);
+				out.writeUint8(0, "present");
+				out.writeLeaveSection();
+			}
+			out.writeLeaveSection();
+			out.writeUint32(1, "pending");
+			out.writeEnterSection("admissions");
+			out.writeEnterSection(0);
+			out.writeUint32(0, "tick");
+			out.writeUint32(HiringPipeline::Delay, "due");
+			out.writeUint32(1, "teams");
+			out.writeEnterSection("work");
+			out.writeEnterSection(0);
+			out.writeUint32(0, "tick");
+			out.writeUint32(0, "team");
+			out.writeUint32(0, "buildings");
+			out.writeEnterSection("buildingLists");
+			out.writeLeaveSection();
+			if (version >= 171)
+			{
+				out.writeUint32(0, "gradients");
+				out.writeEnterSection("preparedGradients");
+				out.writeLeaveSection();
+			}
+			out.writeLeaveSection();
+			out.writeLeaveSection();
+			out.writeLeaveSection();
+			out.writeLeaveSection();
+			out.writeLeaveSection();
+			out.writeUint32(0xabcdef01, "sentinel");
+			GAGCore::BinaryInputStream in(
+				new GAGCore::MemoryStreamBackend(bytes->getBuffer(), bytes->getPosition()));
+			in.seekFromStart(0);
+			HiringPipeline pipeline(w.game.map.computeExecutor());
+			pipeline.load(w.game, &in, version);
+			CHECK(in.readUint32("sentinel") == 0xabcdef01);
+			pipeline.publishDue(HiringPipeline::Delay);
+			CHECK(pipeline.metrics.published == 1);
+		}
+	}
+}
+
+TEST_SUITE("ProactiveBuildingGradients")
+{
+	TEST_CASE("saving a primary-only job does not turn it into a proactive claim")
 	{
 		glob2test::HeadlessGlobals globals;
 		glob2test::HeadlessGame w({.discovered = true, .loadDefaultRace = true});
+		auto *b = innWithWorker(w);
+		HiringPipeline original(w.game.map.computeExecutor());
+		original.observe(w.game, observation(w));
 		auto *bytes = new GAGCore::MemoryStreamBackend;
 		GAGCore::BinaryOutputStream out(bytes);
-		out.writeEnterSection("HiringPipeline");
-		out.writeUint8(1, "hasLast");
-		out.writeUint32(0, "last");
-		out.writeUint32(HiringPipeline::Delay, "delay");
-		out.writeUint32(HiringPipeline::Refresh, "refresh");
-		out.writeUint32(HiringPipeline::Extras, "extras");
-		out.writeUint32(HiringPipeline::Capacity, "capacity");
-		out.writeEnterSection("published");
-		for (unsigned t = 0; t < 16; ++t)
-		{
-			out.writeEnterSection(t);
-			out.writeUint8(0, "present");
-			out.writeLeaveSection();
-		}
-		out.writeLeaveSection();
-		out.writeUint32(1, "pending");
-		out.writeEnterSection("admissions");
-		out.writeEnterSection(0);
-		out.writeUint32(0, "tick");
-		out.writeUint32(HiringPipeline::Delay, "due");
-		out.writeUint32(1, "teams");
-		out.writeEnterSection("work");
-		out.writeEnterSection(0);
-		out.writeUint32(0, "tick");
-		out.writeUint32(0, "team");
-		out.writeUint32(0, "buildings");
-		out.writeEnterSection("buildingLists");
-		out.writeLeaveSection();
-		out.writeLeaveSection();
-		out.writeLeaveSection();
-		out.writeLeaveSection();
-		out.writeLeaveSection();
-		out.writeLeaveSection();
-		out.writeUint32(0xabcdef01, "sentinel");
+		original.save(&out);
 		GAGCore::BinaryInputStream in(
 			new GAGCore::MemoryStreamBackend(bytes->getBuffer(), bytes->getPosition()));
 		in.seekFromStart(0);
-		HiringPipeline pipeline(w.game.map.computeExecutor());
-		pipeline.load(w.game, &in, 170);
-		CHECK(in.readUint32("sentinel") == 0xabcdef01);
-		pipeline.publishDue(HiringPipeline::Delay);
-		CHECK(pipeline.metrics.published == 1);
+		HiringPipeline restored(w.game.map.computeExecutor());
+		restored.load(w.game, &in);
+		CHECK(!original.preparing(*b, b->routeSlot(0, BuildingRoute::Footprint)));
+		CHECK(!restored.preparing(*b, b->routeSlot(0, BuildingRoute::Footprint)));
+	}
+
+	TEST_CASE("creation prepares shallow routes for busy units outside the hiring cohort")
+	{
+		glob2test::HeadlessGlobals globals;
+		for (unsigned participants : {1u, 4u})
+		{
+			glob2test::HeadlessGame w(
+				{.wDec = 7, .hDec = 7, .discovered = true, .loadDefaultRace = true});
+			w.game.map.configureCompute(participants);
+			w.game.stepCounter = 1; // Team zero's next shortlist is three ticks away.
+			auto *b = w.addBuilding("inn", 8, 8);
+			b->maxUnitWorking = 0;
+			b->updateCallLists();
+			auto *u = w.addUnit(WORKER, 60, 8);
+			u->medical = Unit::MED_HUNGRY;
+			const int slot = b->routeSlot(u->swimClass(), BuildingRoute::Footprint);
+			GradientExecutionAudit audit;
+			auto &pipeline = *w.game.hiringPipeline;
+			pipeline.observe(w.game, observation(w));
+			CHECK(pipeline.preparing(*b, slot));
+			CHECK(w.game.map.requestBuildingField(b, u->swimClass(), BuildingRoute::Footprint) ==
+				  FieldReadiness::Pending);
+			CHECK(w.game.map.buildingGradientPipelineStatus().queued == 0);
+			pipeline.drain();
+			CHECK(!b->globalGradient[slot]);
+			CHECK(audit.counts(GradientExecutionAudit::Kind::Seed).owner +
+					  audit.counts(GradientExecutionAudit::Kind::Seed).other ==
+				  1);
+			if (participants == 4)
+				CHECK(audit.counts(GradientExecutionAudit::Kind::Seed).owner == 0);
+			pipeline.publishDue(2);
+			REQUIRE(b->globalGradientSearch[slot]);
+			CHECK(!b->globalGradientSearch[slot]->resolved(w.game.map.coordToIndex(60, 8)));
+			CHECK(!pipeline.preparing(*b, slot));
+			CHECK(!pipeline.suggestions(*b));
+		}
+	}
+	TEST_CASE("upgrade and cancellation prepare the committed footprint")
+	{
+		glob2test::HeadlessGlobals globals;
+		glob2test::HeadlessGame w({.discovered = true, .loadDefaultRace = true});
+		auto *b = innWithWorker(w, 1);
+		auto &pipeline = *w.game.hiringPipeline;
+		pipeline.observe(w.game, observation(w));
+		pipeline.publishDue(1);
+		const int slot = b->routeSlot(0, BuildingRoute::Footprint);
+		REQUIRE(b->globalGradient[slot]);
+		REQUIRE(b->launchConstruction(1, 1));
+		REQUIRE(b->tryToBuildingSiteRoom());
+		CHECK(b->type->width == 3);
+		REQUIRE(!b->globalGradient[slot]);
+		w.game.stepCounter = 1;
+		pipeline.observe(w.game, observation(w));
+		CHECK(pipeline.preparing(*b, slot));
+		pipeline.publishDue(2);
+		REQUIRE(b->globalGradient[slot]);
+		for (int y = 0; y < b->type->height; ++y)
+			for (int x = 0; x < b->type->width; ++x)
+				CHECK(b->globalGradient[slot][w.game.map.coordToIndex(b->posX + x, b->posY + y)] ==
+					  GRADIENT_AT_GOAL);
+		b->cancelConstruction(0);
+		CHECK(b->type->width == 2);
+		REQUIRE(!b->globalGradient[slot]);
+		w.game.stepCounter = 2;
+		pipeline.observe(w.game, observation(w));
+		CHECK(pipeline.preparing(*b, slot));
+		pipeline.publishDue(3);
+		REQUIRE(b->globalGradient[slot]);
+		for (int y = 0; y < b->type->height; ++y)
+			for (int x = 0; x < b->type->width; ++x)
+				CHECK(b->globalGradient[slot][w.game.map.coordToIndex(b->posX + x, b->posY + y)] ==
+					  GRADIENT_AT_GOAL);
+	}
+	TEST_CASE("creation and primary hiring seed one shared route")
+	{
+		glob2test::HeadlessGlobals globals;
+		glob2test::HeadlessGame w(
+			{.wDec = 7, .hDec = 7, .discovered = true, .loadDefaultRace = true});
+		w.game.stepCounter = 4;
+		auto *b = innWithWorker(w);
+		CHECK(w.game.map.requestBuildingField(b, 0, BuildingRoute::Footprint) ==
+			  FieldReadiness::Pending);
+		GradientExecutionAudit audit;
+		auto &pipeline = *w.game.hiringPipeline;
+		const auto world = observation(w);
+		pipeline.observe(w.game, world);
+		pipeline.drain();
+		CHECK(audit.counts(GradientExecutionAudit::Kind::Seed).owner +
+				  audit.counts(GradientExecutionAudit::Kind::Seed).other ==
+			  1);
+		w.game.map.submitWorldWork(world);
+		CHECK(w.game.map.buildingGradientPipelineStatus().jobs == 0);
+		pipeline.publishDue(5);
+		REQUIRE(pipeline.suggestions(*b));
+	}
+	TEST_CASE(
+		"queued and off-cohort pending initialization survive binary and text saves [artifacts]")
+	{
+		glob2test::HeadlessGlobals globals;
+		for (bool text : {false, true})
+			for (bool pending : {false, true})
+			{
+				glob2test::HeadlessGame original(
+					{.discovered = true, .loadDefaultRace = true, .header = true});
+				original.game.stepCounter = 1;
+				auto *b = original.addBuilding("inn", 8, 8);
+				b->maxUnitWorking = 0;
+				b->updateCallLists();
+				auto *u = original.addUnit(WORKER, 6, 8);
+				u->medical = Unit::MED_HUNGRY;
+				const auto ref = Game::refOf(b);
+				const int slot = b->routeSlot(u->swimClass(), BuildingRoute::Footprint);
+				if (pending)
+					original.game.observeCompletedWorld();
+				auto *storage = new GAGCore::MemoryStreamBackend;
+				std::unique_ptr<GAGCore::OutputStream> out;
+				if (text)
+					out = std::make_unique<GAGCore::TextOutputStream>(storage);
+				else
+					out = std::make_unique<GAGCore::BinaryOutputStream>(storage);
+				original.game.save(out.get(), false, "Proactive continuation");
+				out->flush();
+				glob2test::writeFile(glob2test::artifactDir() /
+										 (std::string(pending ? "pending" : "queued") +
+										  (text ? ".game.txt" : ".game")),
+									 std::string(storage->getBuffer(), storage->getPosition()));
+				glob2test::HeadlessGame restored(
+					{.discovered = true, .loadDefaultRace = true, .header = true});
+				auto *bytes =
+					new GAGCore::MemoryStreamBackend(storage->getBuffer(), storage->getPosition());
+				bytes->seekFromStart(0);
+				std::unique_ptr<GAGCore::InputStream> in;
+				if (text)
+					in = std::make_unique<GAGCore::TextInputStream>(bytes);
+				else
+					in = std::make_unique<GAGCore::BinaryInputStream>(bytes);
+				REQUIRE(restored.game.load(in.get()));
+				auto *copy = restored.game.resolveBuilding(ref);
+				REQUIRE(copy);
+				if (!pending)
+				{
+					original.game.observeCompletedWorld();
+					restored.game.observeCompletedWorld();
+				}
+				CHECK(restored.game.hiringPipeline->preparing(*copy, slot));
+				original.game.hiringPipeline->publishDue(2);
+				restored.game.hiringPipeline->publishDue(2);
+				REQUIRE(b->globalGradient[slot]);
+				REQUIRE(copy->globalGradient[slot]);
+				CHECK(original.game.checkSum() == restored.game.checkSum());
+			}
 	}
 }

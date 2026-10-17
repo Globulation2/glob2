@@ -81,6 +81,7 @@ void Building::updateBuildingSite(void)
 			owner->map->setBuilding(posX,posY,type->width,type->height,gid);
 		siteCompletionPending=false;
 		resetPathfindGradients();
+		owner->game->requestBuildingGradientInitialization(*this);
 		assert(constructionResultState!=NO_CONSTRUCTION);
 		constructionResultState=NO_CONSTRUCTION;
 		owner->prestige+=type->prestige;
@@ -386,6 +387,7 @@ bool Building::tryToBuildingSiteRoom(void)
 		posX=newPosX;
 		posY=newPosY;
 		resetPathfindGradients();
+		owner->game->requestBuildingGradientInitialization(*this);
 
 		// flag useful :
 		unitStayRange=type->defaultUnitStayRange;

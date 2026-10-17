@@ -5,6 +5,7 @@
 #include "Version.h"
 #include <deque>
 #include <optional>
+#include <map>
 class Game;
 class Building;
 namespace GAGCore
@@ -25,6 +26,14 @@ class HiringPipeline
 	std::optional<Uint32> lastObserved;
 	std::array<std::shared_ptr<const HiringPlanner::Output>, 16> published;
 	std::deque<std::unique_ptr<Batch>> pending;
+	std::map<Uint16, BuildingRef> initializationRequests;
+	struct Claim
+	{
+		BuildingRef building;
+		int slot;
+		Uint32 epoch, generation;
+	};
+	std::vector<Claim> initializing;
 	static void compute(void *, std::size_t);
 
   public:
@@ -36,10 +45,14 @@ class HiringPipeline
 	Metrics metrics;
 	static constexpr unsigned Delay = Hiring::PublicationDelay, Refresh = Hiring::RefreshInterval,
 							  Extras = Hiring::CandidateExtras, Capacity = 128;
-	static HiringPlanner::Inputs bindRoutes(Game &, const SimulationSnapshot::Handle &,
-											unsigned teamMask = ~0u);
+	static HiringPlanner::Inputs
+	bindRoutes(Game &, const SimulationSnapshot::Handle &, unsigned teamMask = ~0u,
+			   const std::map<Uint16, BuildingRef> *initializations = nullptr);
 	explicit HiringPipeline(ComputeExecutor &);
 	~HiringPipeline();
+	// Called after the new footprint is committed; capture happens at the next boundary.
+	void requestInitialization(Building &);
+	bool preparing(const Building &, int slot) const;
 	void observe(Game &, const SimulationSnapshot::Handle &);
 	void publishDue(Uint32 tick);
 	void drain(JoinReason = JoinReason::Teardown);

@@ -296,3 +296,5 @@ static constexpr int FILE_FORMAT_VERSION_SINGLE_OBSERVATION = 167;
 
 // Worker-prepared cold building fields publish with their hiring shortlist.
 static constexpr int FILE_FORMAT_VERSION_HIRING_GRADIENTS = 171;
+
+static constexpr int FILE_FORMAT_VERSION_PROACTIVE_BUILDINGS = 172;

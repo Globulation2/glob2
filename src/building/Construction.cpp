@@ -366,6 +366,7 @@ void Building::cancelConstruction(Sint32 unitWorking)
 
 
 	setMapDiscovered();
+	owner->game->requestBuildingGradientInitialization(*this);
 }
 
 void Building::launchDelete(void)

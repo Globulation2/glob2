@@ -277,6 +277,7 @@ Building *Game::addBuilding(int x, int y, int typeNum, int teamNumber, Sint32 un
 	team->attachBuilding(id,b);
 	areaEffects.changed(gid);
 	snapshots().invalidateBoundary();
+	requestBuildingGradientInitialization(*b);
 	return b;
 }
 

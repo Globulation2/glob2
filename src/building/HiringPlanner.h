@@ -56,6 +56,7 @@ struct Inputs
 		std::shared_ptr<SharedBuildingGradient> field;
 		bool estimateForRanking = false;
 		std::shared_ptr<PreparedRoute> preparation;
+		bool initialize = false;
 	};
 	// One immutable table per boundary, shared by every admitted team job.
 	std::shared_ptr<const std::vector<Route>> routes;
@@ -76,8 +77,12 @@ std::vector<Supply> prepare(const Inputs &, unsigned team);
 class Planner
 {
 	bool pruneCandidates = true;
+
   public:
-	struct Options { bool pruneCandidates = true; };
+	struct Options
+	{
+		bool pruneCandidates = true;
+	};
 	Planner() = default;
 	explicit Planner(Options options) : pruneCandidates(options.pruneCandidates) {}
 	Output rank(const Inputs &, unsigned team, unsigned capacity = 128);
