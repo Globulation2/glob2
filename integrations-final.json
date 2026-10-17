@@ -1,0 +1,231 @@
+[
+  {
+    "name": "map-report",
+    "command": [
+      "python3",
+      "test/test_map_report.py",
+      "/dev/shm/glob2-direct-air-release/src/glob2",
+      "/dev/shm/glob2-direct-air/test/MapReportHarness"
+    ],
+    "exit": 0,
+    "seconds": 9.456469535827637
+  },
+  {
+    "name": "map-cli",
+    "command": [
+      "python3",
+      "test/test_map_cli.py",
+      "/dev/shm/glob2-direct-air-release/src/glob2"
+    ],
+    "exit": 0,
+    "seconds": 260.41315245628357
+  },
+  {
+    "name": "map-image",
+    "command": [
+      "python3",
+      "test/test_map_image.py",
+      "/dev/shm/glob2-direct-air-release/src/glob2"
+    ],
+    "exit": 0,
+    "seconds": 20.586511850357056
+  },
+  {
+    "name": "cli-smoke",
+    "command": [
+      "python3",
+      "test/test_cli_smoke.py",
+      "--binary",
+      "/dev/shm/glob2-direct-air-release/src/glob2",
+      "--artifacts",
+      "artifacts/pr1196-full-suite/cli"
+    ],
+    "exit": 0,
+    "seconds": 33.30029344558716
+  },
+  {
+    "name": "cli-reference",
+    "command": [
+      "python3",
+      "tools/cli_reference.py",
+      "--binary",
+      "/dev/shm/glob2-direct-air-release/src/glob2",
+      "--check"
+    ],
+    "exit": 0,
+    "seconds": 0.2657895088195801
+  },
+  {
+    "name": "save-shared",
+    "command": [
+      "python3",
+      "test/check_shared_runtime_save_continuation.py",
+      "/dev/shm/glob2-direct-air-release/src/glob2"
+    ],
+    "exit": 0,
+    "seconds": 130.90043354034424
+  },
+  {
+    "name": "save-maxima",
+    "command": [
+      "python3",
+      "test/maxima/check_save_continuation_fixture.py",
+      "/dev/shm/glob2-direct-air-release/src/glob2"
+    ],
+    "exit": 0,
+    "seconds": 13.988464832305908,
+    "replaced_by": [
+      "maxima-final.log",
+      "maxima-final-parallel.log"
+    ],
+    "reason": "Intentional shared-air-service trajectory; independent midpoint reload passed before updating the baseline."
+  },
+  {
+    "name": "telemetry-simulation",
+    "command": [
+      "python3",
+      "test/check_telemetry_simulation.py",
+      "/dev/shm/glob2-direct-air-release/src/glob2"
+    ],
+    "exit": 0,
+    "seconds": 34.95365810394287
+  },
+  {
+    "name": "parallel-compute",
+    "command": [
+      "python3",
+      "test/check_parallel_compute.py",
+      "/dev/shm/glob2-direct-air-release/src/glob2"
+    ],
+    "exit": 0,
+    "seconds": 249.00851678848267
+  },
+  {
+    "name": "gradient-pipeline",
+    "command": [
+      "python3",
+      "test/check_gradient_pipeline.py",
+      "/dev/shm/glob2-direct-air-release/src/glob2"
+    ],
+    "exit": 0,
+    "seconds": 988.6643176078796
+  },
+  {
+    "name": "lan",
+    "command": [
+      "python3",
+      "test/run_lan_session_test.py",
+      "/dev/shm/glob2-direct-air/src/LANSessionHarness"
+    ],
+    "exit": 0,
+    "seconds": 55.52047395706177
+  },
+  {
+    "name": "lan-play",
+    "command": [
+      "python3",
+      "test/run_lan_session_test.py",
+      "/dev/shm/glob2-direct-air/src/LANSessionHarness",
+      "--play",
+      "30",
+      "--output",
+      "artifacts/pr1196-full-suite/lan-play"
+    ],
+    "exit": 0,
+    "seconds": 36.34357190132141
+  },
+  {
+    "name": "menu-colony",
+    "command": [
+      "/dev/shm/glob2-direct-air/test/MenuColonyHarness",
+      "check",
+      "data/menu/colony.bin"
+    ],
+    "exit": 0,
+    "seconds": 22.02984857559204
+  },
+  {
+    "name": "menu-navigation",
+    "command": [
+      "/dev/shm/glob2-direct-air/test/MenuColonyHarness",
+      "navigation",
+      "unused"
+    ],
+    "exit": 0,
+    "seconds": 5.529163599014282
+  },
+  {
+    "name": "tournament-cli",
+    "command": [
+      "python3",
+      "test/tournament_cli_integration.py",
+      "--binary",
+      "/dev/shm/glob2-direct-air-release/src/glob2",
+      "--output",
+      "artifacts/pr1196-full-suite/tournament-cli"
+    ],
+    "exit": 0,
+    "seconds": 31.37299156188965
+  },
+  {
+    "name": "native-browser-traces",
+    "command": [
+      "python3",
+      "test/run-browser-determinism.py",
+      "/dev/shm/glob2-direct-air-release/src/glob2",
+      "artifacts/pr1196-full-suite/native-browser",
+      "--engine-binary",
+      "/dev/shm/glob2-direct-air/test/glob2-engine-tests"
+    ],
+    "exit": 0,
+    "seconds": 6.77687668800354,
+    "final_revision_capture": "native-browser-final/manifest.json"
+  },
+  {
+    "name": "docs",
+    "command": [
+      "python3",
+      "tools/check_docs.py"
+    ],
+    "exit": 0,
+    "seconds": 2.368293523788452
+  },
+  {
+    "name": "sim-revision",
+    "command": [
+      "python3",
+      "test/check_sim_revision.py",
+      "--base",
+      "origin/master"
+    ],
+    "exit": 0,
+    "seconds": 0.21449923515319824
+  },
+  {
+    "name": "entity-random",
+    "command": [
+      "python3",
+      "test/check_entity_random.py"
+    ],
+    "exit": 0,
+    "seconds": 0.6151056289672852
+  },
+  {
+    "name": "javascript-vendor",
+    "command": [
+      "python3",
+      "tools/javascript/verify-vendor.py"
+    ],
+    "exit": 0,
+    "seconds": 1.666804552078247
+  },
+  {
+    "name": "gradient-rules",
+    "command": [
+      "python3",
+      "tools/shaders/gradient_preparation_rules.py"
+    ],
+    "exit": 0,
+    "seconds": 0.06447505950927734
+  }
+]

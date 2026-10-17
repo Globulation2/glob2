@@ -1,0 +1,97 @@
+{
+  "revision": "656921aa2cb275a294508ef07e9614ead56be0de",
+  "base": "486a2230a4ddb257ba9dee34d3aace05f2260d6f",
+  "runtime_source_unchanged_since": "2c057dfd91816c08dc2234f7cb889f108381a4f9",
+  "test_only_changes": [
+    "src/ai/maxima/MaximaFarmingStandaloneTest.cpp",
+    "test/README.md",
+    "test/maxima/fixtures/save-continuation/README.md",
+    "test/maxima/fixtures/save-continuation/expected-units-30000-30512.json"
+  ],
+  "native": {
+    "engine_release": {
+      "cases": 1798,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    "unit_release": {
+      "cases": 1187,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    "total": 2985,
+    "unit_development_additional": {
+      "cases": 1187,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    "optimized_fertility_budget": {
+      "cases": 1,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    }
+  },
+  "tooling": {
+    "python-final.log": 339,
+    "build-system-final.log": 568,
+    "deployment-final.log": 48,
+    "terrain-ecology-final.log": 8,
+    "gradient-benchmark-final.log": 11,
+    "maxima-policy-final.log": 75,
+    "browser-unit-final.log": 130
+  },
+  "tooling_total": 1179,
+  "golden_rows": 564,
+  "telemetry_generator_cases": 204,
+  "map_sweep_shards": 4,
+  "effective_integrations_passed": 21,
+  "sim_revision": 72,
+  "platform": "Linux-7.0.0-38-generic-x86_64-with-glibc2.39",
+  "compiler": "g++ (Ubuntu 13.3.0-6ubuntu2~24.04.1) 13.3.0",
+  "proofs": {
+    "glob2-direct-air": {
+      "compiler": "g++",
+      "dirty": false,
+      "flags": {
+        "CCFLAGS": "-O0 -g1 -fdebug-prefix-map=/home/bradley/.codex/worktrees/pr1196-direct-flight/glob2=.",
+        "CPPDEFINES": "GLOB2_OFFICIAL_INSTANCE_ORIGIN \\\"https://app.glob2online.com\\\" GLOB2_OFFICIAL_INSTANCE_FORMER_ORIGINS \\\"https://glob2online.com\\\" HAVE_CONFIG_H GLOB2_RENDER_SHADER_DIR \\\"/dev/shm/glob2-direct-air/shaders\\\" SDL_MAIN_HANDLED",
+        "CXXFLAGS": "-std=gnu++20 -Wall -fPIC",
+        "LINKFLAGS": "-Wl,-rpath,$ORIGIN/../lib/glob2 -Wall -Wl,-rpath,/home/bradley/glob2/build/sdl3/prefix/lib -Wl,--enable-new-dtags"
+      },
+      "revision": "656921aa2cb275a294508ef07e9614ead56be0de",
+      "sourceStatus": [],
+      "sourceTreeSha256": "73a6fc6720a8341fa70fe2e180111c1aaddab0a557ec35973345d27060127329"
+    },
+    "glob2-direct-air-release": {
+      "compiler": "g++",
+      "dirty": false,
+      "flags": {
+        "CCFLAGS": "",
+        "CPPDEFINES": "GLOB2_OFFICIAL_INSTANCE_ORIGIN \\\"https://app.glob2online.com\\\" GLOB2_OFFICIAL_INSTANCE_FORMER_ORIGINS \\\"https://glob2online.com\\\" HAVE_CONFIG_H GLOB2_RENDER_SHADER_DIR \\\"/dev/shm/glob2-direct-air-release/shaders\\\" SDL_MAIN_HANDLED",
+        "CXXFLAGS": "-g1 -std=gnu++20 -Wall -fPIC -O3",
+        "LINKFLAGS": "-g -Wl,-rpath,$ORIGIN/../lib/glob2 -Wall -O3 -fwhole-program -Wl,-rpath,/home/bradley/glob2/build/sdl3/prefix/lib -Wl,--enable-new-dtags"
+      },
+      "revision": "656921aa2cb275a294508ef07e9614ead56be0de",
+      "sourceStatus": [],
+      "sourceTreeSha256": "73a6fc6720a8341fa70fe2e180111c1aaddab0a557ec35973345d27060127329"
+    }
+  },
+  "sha256": {
+    "/dev/shm/glob2-direct-air-release/src/glob2": "8b47c98ee1721b1f0e44607f31a9a6dfb8f61760956b4b2814beba8692c41a73",
+    "/dev/shm/glob2-direct-air-release/test/glob2-engine-tests": "db3940cc3ff9895bd4b56d521a791574f732e28d2ab8117966d3ee0ffca38447",
+    "/dev/shm/glob2-direct-air-release/test/glob2-unit-tests": "75677f3f8f2451f7bb88558724ad0d20b10194ffe0f1e11987cc543307751eaa",
+    "/dev/shm/glob2-direct-air/test/glob2-unit-tests": "1b19ac59ee4ba1785c497fe36bb53edb72847659dd44fc159b688e4ff968e439",
+    "/dev/shm/glob2-direct-air-release/src/MapGeneratorGoldenTest": "ee5124cd482924a1fb2e6291950a2385134fc43e977f3f3ec7e15c3113243005",
+    "/dev/shm/glob2-air-glslang/StandAlone/glslang": "98be9ab7d32f4b22b0c289d1e459908c99fdc63520486e1e671423f39ebeeca5"
+  },
+  "limits": [
+    "Linux x86_64, GCC 13 only; default free client profile.",
+    "No other operating systems/architectures, physical GPU/NEON qualification, browser integration or sanitizer matrices.",
+    "Server/relay/Postgres service and store-release matrices were not part of the native client suite.",
+    "Runs overlapped on a shared host; their durations are correctness evidence, not representative performance measurements."
+  ]
+}
