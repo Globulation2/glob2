@@ -57,7 +57,8 @@ collision limitations.
 Local and AI-only games omit map-cell sweeps. Remote sessions sample the captured
 subset of the original map checksum at absolute simulation ticks divisible by
 32: terrain, resources and stock, building/ground/air occupancy and forbidden/farm
-masks. Replay loading preserves the recorded remote-session policy. Persistent
+masks. Live games and replay loading derive this policy from the same recorded
+player types; AI-only turn sessions omit map sweeps. Persistent
 map-only divergence can remain undetected for up to 31 ticks; transient changes
 may escape. Visibility, fertility and guard/clear masks are not added to routine
 coverage. Scripts, world RNG, scheduling and uncaptured bookkeeping also remain

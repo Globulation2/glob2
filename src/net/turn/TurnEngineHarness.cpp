@@ -894,6 +894,42 @@ DragResult dragAndHold(const Turn::TurnSessionConfig& config, const fs::path& ve
 
 TEST_SUITE("TurnEngineHarness")
 {
+    GLOB2_TEST_CASE("AI-only turn recordings replay through their terminal checksum",
+                    "[network-sim][artifacts]")
+    {
+        glob2test::HeadlessGlobals globals(harnessGlobals());
+        globals->automaticEndingGame = false;
+        const auto map = mapPath("FourSquares1");
+        const auto setup = makeSetup(map, 0, {"nicowar", "nicowar", "nicowar", "nicowar"}, 2026);
+        Turn::MatchRecord record;
+        record.matchId = "ai-only-checksum-policy";
+        record.simVersion = setup.simVersion.key();
+        record.setupJson = setup.toJson().dump();
+        record.humanSeatMask = setup.humanSeatMask();
+        record.endTick = 256;
+        const auto directory = glob2test::artifactDir();
+        REQUIRE(record.humanSeatMask == 0);
+        const auto verdict = MatchVerifier::verify(record, setup, map, directory);
+        // A report-free record is unverifiable, but its generated replay is valid.
+        REQUIRE(verdict.verdict == "unverifiable");
+
+        Engine playback;
+        REQUIRE(playback.loadReplayTask((directory / "match.replay").string()).run());
+        auto& reader = *globalContainer->replayReader;
+        REQUIRE(reader.getNumStepsTotal() == record.endTick);
+        playback.beginSession(0);
+        for (Uint32 tick = 0; tick <= record.endTick; ++tick)
+        {
+            // Include the terminator: it carries the final sampled map boundary.
+            playback.stepSession(Uint64(tick) * 40, {});
+            REQUIRE(reader.isValid());
+        }
+        REQUIRE(reader.isFinished());
+        CHECK_NOTHROW(reader.finishChecksumValidation());
+        playback.gui.isRunning = false;
+        playback.finishSession();
+    }
+
 	GLOB2_TEST_CASE("embedded terrain definitions travel with shared matches and verifier replays",
 					"[network-sim][artifacts]")
 	{

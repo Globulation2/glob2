@@ -16,6 +16,7 @@
 #include "ChecksumSidecar.h"
 #include "DatasetWriter.h"
 #include "Engine.h"
+#include "sim/snapshot/SnapshotChecksum.h"
 #include "EngineTiming.h"
 #include "Game.h"
 #include "UnitCatalog.h"
@@ -727,9 +728,7 @@ GAGCore::CooperativeTask Engine::loadReplayTask(std::string fileName)
 	GameHeader gameHeader = loadGameHeader(fileName);
 
     // Preserve checksum coverage before replay replaces recorded player types.
-    replayMapChecksums=false;
-    for (int player=0;player<gameHeader.getNumberOfPlayers();++player)
-        replayMapChecksums |= gameHeader.getBasePlayer(player).type==BasePlayer::P_IP;
+    replayMapChecksums = SimulationChecksum::mapChecksumsFor(gameHeader);
 
 	// A replay drives players from recorded orders, so no live AI runs.
 	for (int p=0; p<gameHeader.getNumberOfPlayers(); p++)

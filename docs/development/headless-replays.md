@@ -470,8 +470,10 @@ include the original captured map subset every 32 absolute simulation ticks:
 terrain vertices, resource values and may-grow flags, building/ground/air
 occupancy, forbidden/farm masks and referenced resource stock. Replay loading
 preserves that policy from the recorded player types before replacing them with
-replay-driven AI. The policy remains fixed for a remote session even when seats
-leave. It does not add fertility, immobile markers, guard/clear masks, visibility
+replay-driven AI. Live capture and replay loading use the same setup-based policy:
+an AI-only turn session skips map sweeps too. Choosing a turn transport does not
+change checksum coverage. The policy remains fixed for a remote session even when
+seats leave. It does not add fertility, immobile markers, guard/clear masks, visibility
 or source-count sweeps. Interned terrain-rule indices and stock allocation slots
 are excluded. No map hash tree, canonical packing buffer or configuration digest
 cache is maintained. Completed jobs release their snapshot leases immediately;
@@ -495,6 +497,12 @@ be compared directly.
 snapshot schema, identified by `checksum_algorithm: "snapshot-v3"`. They do not
 trigger deep verification. `match verify`'s `checksums.txt` always contains routine
 source-turn hashes, including the terminal samples.
+
+Matching routine hashes establishes agreement only on the selected observation
+fields. For simulation-equivalence evidence, compare deep per-tick traces and
+save/replay continuations separately: routine reports cannot establish agreement
+on the omitted state. Evaluate changes in coverage separately from worker
+offloading when measuring checksum optimizations.
 
 ## AI Types
 

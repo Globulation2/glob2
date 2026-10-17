@@ -392,11 +392,8 @@ SimulationSnapshot::Handle Engine::establishObservation(bool present)
 
 bool Engine::routineMapChecksums() const
 {
-    if (globalContainer->replaying) return replayMapChecksums;
-    if (turn) return true;
-    for (int player=0;player<gui.game.gameHeader.getNumberOfPlayers();++player)
-        if (gui.game.gameHeader.getBasePlayer(player).type==BasePlayer::P_IP) return true;
-    return false;
+    return globalContainer->replaying ? replayMapChecksums
+        : SimulationChecksum::mapChecksumsFor(gui.game.gameHeader);
 }
 
 void Engine::collectChecksums(bool flush)

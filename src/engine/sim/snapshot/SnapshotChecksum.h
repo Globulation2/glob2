@@ -8,6 +8,10 @@
 
 namespace SimulationChecksum
 {
+// Derive coverage from the recorded setup, never the transport or live seats.
+// AI-only turn sessions and their replays must use the same policy.
+bool mapChecksumsFor(const GameHeader& players);
+
 // Schema 3: original-style field mixing over existing captured simulation facts.
 Uint32 snapshotChecksum(const SimulationSnapshot::Handle& world, bool mapChecksums = false);
 class Pipeline

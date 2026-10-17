@@ -648,6 +648,11 @@ TEST_SUITE("EngineSession")
             REQUIRE(reader.isValid());
             CHECK(engine.gui.game.stepCounter==initialTick+tick+1);
         }
+        // The terminator is read on the next boundary and carries the final hash.
+        REQUIRE(engine.stepSession(Uint64(ticks)*40,{}));
+        REQUIRE(reader.isFinished());
+        REQUIRE(reader.isValid());
+        CHECK_NOTHROW(reader.finishChecksumValidation());
         engine.gui.isRunning=false;engine.finishSession();
     }
     TEST_CASE("render ceilings preserve per tick simulation checksums [display][artifacts]")

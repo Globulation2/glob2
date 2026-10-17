@@ -114,6 +114,13 @@ Uint32 hashState(const SimulationSnapshot::Handle& w)
     return h.state;
 }
 } // namespace
+bool mapChecksumsFor(const GameHeader& players)
+{
+    for (int player = 0; player < players.getNumberOfPlayers(); ++player)
+        if (players.getBasePlayer(player).type == BasePlayer::P_IP) return true;
+    return false;
+}
+
 Uint32 snapshotChecksum(const SimulationSnapshot::Handle& input,bool mapChecksums)
 {
     return hashState(input.checksumView(mapChecksums));

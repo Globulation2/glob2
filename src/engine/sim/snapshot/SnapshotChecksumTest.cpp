@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "EngineFixtures.h"
 #include "SnapshotChecksum.h"
+#include "AI.h"
 #include "Unit.h"
 #include "Building.h"
 #include <cstddef>
@@ -18,6 +19,18 @@ Uint32 referenceChecksum(const SimulationSnapshot::Handle& world) {
 }
 }
 TEST_SUITE("SnapshotChecksum") {
+    TEST_CASE("map coverage follows recorded players independently of transport") {
+        GameHeader players;
+        players.setNumberOfPlayers(2);
+        players.getBasePlayer(0) = BasePlayer(0, "Local", 0, BasePlayer::P_LOCAL);
+        players.getBasePlayer(1) = BasePlayer(1, "AI", 1, BasePlayer::P_AI);
+        CHECK_FALSE(SimulationChecksum::mapChecksumsFor(players));
+        players.getBasePlayer(0).makeItAI(AI::NICOWAR);
+        CHECK_FALSE(SimulationChecksum::mapChecksumsFor(players));
+        players.getBasePlayer(1).type = BasePlayer::P_IP;
+        CHECK(SimulationChecksum::mapChecksumsFor(players));
+    }
+
     TEST_CASE("saved world and paused reporting clocks share simulation scheduler priorities") {
         glob2test::HeadlessGlobals globals;
         glob2test::HeadlessGame fixture({.loadDefaultRace=true,.header=true});
