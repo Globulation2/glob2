@@ -1,0 +1,163 @@
+[
+  {
+    "name": "A_big_pond.map.gz",
+    "path": "/Users/bradley/.codex/worktrees/hiring-gradient-bench/glob2/maps/A_big_pond.map.gz",
+    "width": 128,
+    "height": 128,
+    "teams": 3
+  },
+  {
+    "name": "Archipelago.map.gz",
+    "path": "/Users/bradley/.codex/worktrees/hiring-gradient-bench/glob2/maps/Archipelago.map.gz",
+    "width": 128,
+    "height": 128,
+    "teams": 5
+  },
+  {
+    "name": "Centerfolds_2.map.gz",
+    "path": "/Users/bradley/.codex/worktrees/hiring-gradient-bench/glob2/maps/Centerfolds_2.map.gz",
+    "width": 128,
+    "height": 128,
+    "teams": 5
+  },
+  {
+    "name": "Dejans.map.gz",
+    "path": "/Users/bradley/.codex/worktrees/hiring-gradient-bench/glob2/maps/Dejans.map.gz",
+    "width": 64,
+    "height": 64,
+    "teams": 2
+  },
+  {
+    "name": "Easy_Three.map.gz",
+    "path": "/Users/bradley/.codex/worktrees/hiring-gradient-bench/glob2/maps/Easy_Three.map.gz",
+    "width": 128,
+    "height": 128,
+    "teams": 3
+  },
+  {
+    "name": "FourSquares1.map.gz",
+    "path": "/Users/bradley/.codex/worktrees/hiring-gradient-bench/glob2/maps/FourSquares1.map.gz",
+    "width": 128,
+    "height": 128,
+    "teams": 4
+  },
+  {
+    "name": "G2.map.gz",
+    "path": "/Users/bradley/.codex/worktrees/hiring-gradient-bench/glob2/maps/G2.map.gz",
+    "width": 128,
+    "height": 128,
+    "teams": 4
+  },
+  {
+    "name": "Garden_3.map.gz",
+    "path": "/Users/bradley/.codex/worktrees/hiring-gradient-bench/glob2/maps/Garden_3.map.gz",
+    "width": 128,
+    "height": 128,
+    "teams": 4
+  },
+  {
+    "name": "Holiday_Island_2.map.gz",
+    "path": "/Users/bradley/.codex/worktrees/hiring-gradient-bench/glob2/maps/Holiday_Island_2.map.gz",
+    "width": 128,
+    "height": 128,
+    "teams": 4
+  },
+  {
+    "name": "Island_of_the_Renfur.map.gz",
+    "path": "/Users/bradley/.codex/worktrees/hiring-gradient-bench/glob2/maps/Island_of_the_Renfur.map.gz",
+    "width": 128,
+    "height": 128,
+    "teams": 6
+  },
+  {
+    "name": "Isles.map.gz",
+    "path": "/Users/bradley/.codex/worktrees/hiring-gradient-bench/glob2/maps/Isles.map.gz",
+    "width": 128,
+    "height": 128,
+    "teams": 4
+  },
+  {
+    "name": "Mazury.map.gz",
+    "path": "/Users/bradley/.codex/worktrees/hiring-gradient-bench/glob2/maps/Mazury.map.gz",
+    "width": 128,
+    "height": 128,
+    "teams": 2
+  },
+  {
+    "name": "Migration.map.gz",
+    "path": "/Users/bradley/.codex/worktrees/hiring-gradient-bench/glob2/maps/Migration.map.gz",
+    "width": 128,
+    "height": 128,
+    "teams": 4
+  },
+  {
+    "name": "Muka.map.gz",
+    "path": "/Users/bradley/.codex/worktrees/hiring-gradient-bench/glob2/maps/Muka.map.gz",
+    "width": 64,
+    "height": 128,
+    "teams": 2
+  },
+  {
+    "name": "Oazis.map.gz",
+    "path": "/Users/bradley/.codex/worktrees/hiring-gradient-bench/glob2/maps/Oazis.map.gz",
+    "width": 256,
+    "height": 256,
+    "teams": 11
+  },
+  {
+    "name": "Playground.map.gz",
+    "path": "/Users/bradley/.codex/worktrees/hiring-gradient-bench/glob2/maps/Playground.map.gz",
+    "width": 128,
+    "height": 128,
+    "teams": 8
+  },
+  {
+    "name": "Sand_River.map.gz",
+    "path": "/Users/bradley/.codex/worktrees/hiring-gradient-bench/glob2/maps/Sand_River.map.gz",
+    "width": 128,
+    "height": 128,
+    "teams": 6
+  },
+  {
+    "name": "SmallForTwo.map.gz",
+    "path": "/Users/bradley/.codex/worktrees/hiring-gradient-bench/glob2/maps/SmallForTwo.map.gz",
+    "width": 64,
+    "height": 64,
+    "teams": 2
+  },
+  {
+    "name": "Triangle.map.gz",
+    "path": "/Users/bradley/.codex/worktrees/hiring-gradient-bench/glob2/maps/Triangle.map.gz",
+    "width": 128,
+    "height": 128,
+    "teams": 3
+  },
+  {
+    "name": "Wild_River.map.gz",
+    "path": "/Users/bradley/.codex/worktrees/hiring-gradient-bench/glob2/maps/Wild_River.map.gz",
+    "width": 256,
+    "height": 64,
+    "teams": 6
+  },
+  {
+    "name": "balanced.map.gz",
+    "path": "/Users/bradley/.codex/worktrees/hiring-gradient-bench/glob2/maps/balanced.map.gz",
+    "width": 128,
+    "height": 128,
+    "teams": 4
+  },
+  {
+    "name": "balanced_for_2.map.gz",
+    "path": "/Users/bradley/.codex/worktrees/hiring-gradient-bench/glob2/maps/balanced_for_2.map.gz",
+    "width": 64,
+    "height": 64,
+    "teams": 2
+  },
+  {
+    "name": "strange2.map.gz",
+    "path": "/Users/bradley/.codex/worktrees/hiring-gradient-bench/glob2/maps/strange2.map.gz",
+    "width": 128,
+    "height": 128,
+    "teams": 2
+  }
+]

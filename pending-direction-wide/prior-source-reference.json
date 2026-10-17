@@ -1,0 +1,7 @@
+{
+  "evidence_commit": "5a665f28014d1d138f99add28f5f27d3a0af3f68",
+  "url": "https://github.com/Globulation2/glob2/tree/5a665f28014d1d138f99add28f5f27d3a0af3f68/pending-direction",
+  "description": "Frozen probe source patch, private headers, build log, original analysis and pilot trace evidence",
+  "control_source_url": "https://github.com/Globulation2/glob2/tree/4ab5dda3fe6bd674104a2c8dac5ab64f66d517c7/attribution",
+  "control_source": "source.patch, GradientAttributionProbe.h and ProactiveGradientProbe.h"
+}

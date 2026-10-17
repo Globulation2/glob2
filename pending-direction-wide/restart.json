@@ -1,0 +1,16 @@
+{
+  "paused_driver_pid": 15648,
+  "children": [
+    {
+      "pid": 16028,
+      "status": "R",
+      "comm": "/Users/bradley/.codex/worktrees/hiring-gradient-bench/glob2/artifacts/pending-direction/glob2-probe"
+    },
+    {
+      "pid": 16029,
+      "status": "R",
+      "comm": "/Users/bradley/.codex/worktrees/hiring-gradient-bench/glob2/artifacts/proactive-attribution/binaries/profile"
+    }
+  ],
+  "reason": "Reschedule independent accuracy cases across four concurrent matches. Let child games finish first; no seed or simulated work changes."
+}

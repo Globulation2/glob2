@@ -1,0 +1,61 @@
+{"id": "gen-watershed", "ticks": 32768, "samples": 2641, "match": true}
+{"id": "gen-islands", "ticks": 32768, "samples": 298, "match": true}
+{"id": "gen-maze", "ticks": 32768, "samples": 1667, "match": true}
+{"id": "gen-stone-highlands", "ticks": 32768, "samples": 1116, "match": true}
+{"id": "gen-switchbacks", "ticks": 32768, "samples": 75, "match": true}
+{"id": "gen-concrete-islands", "ticks": 32768, "samples": 314, "match": true}
+{"id": "gen-city-states", "ticks": 32768, "samples": 386, "match": true}
+{"id": "gen-canals", "ticks": 32768, "samples": 1418, "match": true}
+{"id": "gen-sierpinski-gardens", "ticks": 32768, "samples": 1578, "match": true}
+{"id": "gen-lava-shield", "ticks": 32768, "samples": 2904, "match": true}
+{"id": "gen-honeycomb-isle", "ticks": 32768, "samples": 365, "match": true}
+{"id": "gen-karst-towers", "ticks": 32768, "samples": 718, "match": true}
+{"id": "gen-bajada", "ticks": 32768, "samples": 758, "match": true}
+{"id": "gen-hilbert-river", "ticks": 32768, "samples": 16865, "match": true}
+{"id": "gen-central-quarry", "ticks": 32768, "samples": 1439, "match": true}
+{"id": "gen-portage-lakes", "ticks": 32768, "samples": 1794, "match": true}
+{"id": "gen-hidden-oasis", "ticks": 32768, "samples": 1772, "match": true}
+{"id": "gen-drowned-forest", "ticks": 32768, "samples": 4053, "match": true}
+{"id": "gen-last-treeline", "ticks": 32768, "samples": 863, "match": true}
+{"id": "gen-gauntlet", "ticks": 32768, "samples": 955, "match": true}
+{"id": "gen-orchard-commons", "ticks": 32768, "samples": 1907, "match": true}
+FAILED gen-bastion-keys /Users/bradley/.codex/worktrees/hiring-gradient-bench/glob2/artifacts/pending-direction-wide/runs/gen-bastion-keys/generation-command: Settings::load("preferences.txt") : error, can't open file.
+bastion-keys revision 3 seed 713 [validation]: These island estates need more room; use a larger map or fewer colonies.
+ 
+{"id": "gen-faulted-city", "ticks": 32768, "samples": 476, "match": true}
+{"id": "gen-comb", "ticks": 32768, "samples": 1503, "match": true}
+{"id": "gen-even-ground", "ticks": 32768, "samples": 1209, "match": true}
+{"id": "gen-who-ate-the-map", "ticks": 32768, "samples": 133, "match": true}
+{"id": "gen-encircled-kingdom", "ticks": 32768, "samples": 1800, "match": true}
+{"id": "gen-hungry-marches", "ticks": 32768, "samples": 694, "match": true}
+{"id": "gen-rugged-archipelago", "ticks": 32768, "samples": 6427, "match": true}
+{"id": "gen-contested-commons", "ticks": 32768, "samples": 3398, "match": true}
+{"id": "gen-rain-shadow", "ticks": 32768, "samples": 752, "match": true}
+{"id": "gen-marchland", "ticks": 32768, "samples": 4782, "match": true}
+{"id": "gen-everglades", "ticks": 32768, "samples": 793, "match": true}
+{"id": "gen-old-growth", "ticks": 32768, "samples": 219, "match": true}
+{"id": "gen-anthill", "ticks": 32768, "samples": 96, "match": true}
+{"id": "gen-carousel", "ticks": 32768, "samples": 1106, "match": true}
+{"id": "gen-polder", "ticks": 32768, "samples": 2970, "match": true}
+FAILED gen-braided-delta /Users/bradley/.codex/worktrees/hiring-gradient-bench/glob2/artifacts/pending-direction-wide/runs/gen-braided-delta/generation-command: Settings::load("preferences.txt") : error, can't open file.
+braided-delta revision 4 seed 713 [validation]: There are fewer roomy islands than colonies; enlarge the map or increase rejoining frequency.
+ 
+{"id": "gen-coral", "ticks": 32768, "samples": 352, "match": true}
+{"id": "gen-emoji", "ticks": 32768, "samples": 469, "match": true}
+{"id": "gen-forts", "ticks": 32768, "samples": 376, "match": true}
+{"id": "gen-glacis", "ticks": 32768, "samples": 359, "match": true}
+{"id": "gen-breachable-highlands", "ticks": 32768, "samples": 1941, "match": true}
+{"id": "gen-hedgerow-country", "ticks": 32768, "samples": 2163, "match": true}
+{"id": "gen-caravanserai", "ticks": 32768, "samples": 1023, "match": true}
+{"id": "gen-allotments", "ticks": 32768, "samples": 1853, "match": true}
+FAILED gen-savannah /Users/bradley/.codex/worktrees/hiring-gradient-bench/glob2/artifacts/pending-direction-wide/runs/gen-savannah/generation-command: Settings::load("preferences.txt") : error, can't open file.
+savannah revision 3 seed 713 [validation]: Savannah needs sides of at least 128 tiles and an aspect ratio at most 2:1.
+ 
+{"id": "gen-braided-river", "ticks": 32768, "samples": 422, "match": true}
+{"id": "gen-rice-terraces", "ticks": 32768, "samples": 1234, "match": true}
+{"id": "gen-drumlin-field", "ticks": 32768, "samples": 3693, "match": true}
+{"id": "gen-hills", "ticks": 32768, "samples": 2093, "match": true}
+{"id": "gen-locust", "ticks": 32768, "samples": 1435, "match": true}
+{"id": "gen-continents", "ticks": 32768, "samples": 1050, "match": true}
+{"id": "gen-plantations", "ticks": 32768, "samples": 3049, "match": true}
+FINISHED

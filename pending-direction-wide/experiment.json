@@ -1,0 +1,16 @@
+{
+  "production_head": "d1c0d4d50109b6f7d30f843368d30406f515b84f",
+  "probe_sha256": "4d7efee94d2e3503e20c1e1550afb450486f854b97ca254494ba48c4a2a8b6ed",
+  "control_sha256": "f53f04b9af68c67b0b3f16aec77ef268c3054ae8aae597ee0c5e27ffaed036a9",
+  "platform": "macOS-26.6.2-arm64-arm-64bit-Mach-O",
+  "compiler": "Apple clang version 21.0.0 (clang-2100.3.34.2)\nTarget: arm64-apple-darwin25.6.0\nThread model: posix\nInstalledDir: /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin\n",
+  "mode": "GLOB2_GRADIENT_ATTRIBUTION=baseline; no speculative creation requests; primary-hire prewarming retained",
+  "game_seed": 42,
+  "map_seed": 713,
+  "tick_cap": 32768,
+  "compute_participants": 4,
+  "timing_comparison": false,
+  "verification": "Each setup paired with frozen uninstrumented binary; compare initial/final checksum and actual ticks",
+  "analysis": "python3 artifacts/pending-direction-wide/analyze.py",
+  "plot": "uv run --no-project --offline --python 3.13 --with matplotlib==3.11.2 --with numpy==2.4.6 python artifacts/pending-direction-wide/plot.py"
+}

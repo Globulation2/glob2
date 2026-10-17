@@ -1,0 +1,2673 @@
+[
+  {
+    "id": "gen-fingerprint",
+    "source": "generator",
+    "generator": "fingerprint",
+    "width": 128,
+    "height": 128,
+    "teams": 2,
+    "format": "duel",
+    "alliances": [
+      1,
+      2
+    ],
+    "players": [
+      "nicowar",
+      "econo"
+    ],
+    "map_seed": 713,
+    "game_seed": 42,
+    "ticks": 32768,
+    "controls": {
+      "width": 7,
+      "height": 7,
+      "teams": 2
+    }
+  },
+  {
+    "id": "gen-old-town",
+    "source": "generator",
+    "generator": "old-town",
+    "width": 256,
+    "height": 256,
+    "teams": 4,
+    "format": "ffa4",
+    "alliances": [
+      1,
+      2,
+      3,
+      4
+    ],
+    "players": [
+      "nicowar",
+      "nicowar",
+      "nicowar",
+      "nicowar"
+    ],
+    "map_seed": 713,
+    "game_seed": 42,
+    "ticks": 32768,
+    "controls": {
+      "width": 8,
+      "height": 8,
+      "teams": 4
+    }
+  },
+  {
+    "id": "gen-symmetric-arena",
+    "source": "generator",
+    "generator": "symmetric-arena",
+    "width": 256,
+    "height": 256,
+    "teams": 8,
+    "format": "4v4",
+    "alliances": [
+      1,
+      1,
+      1,
+      1,
+      2,
+      2,
+      2,
+      2
+    ],
+    "players": [
+      "castor",
+      "castor",
+      "castor",
+      "castor",
+      "castor",
+      "castor",
+      "castor",
+      "castor"
+    ],
+    "map_seed": 713,
+    "game_seed": 42,
+    "ticks": 32768,
+    "controls": {
+      "width": 8,
+      "height": 8,
+      "teams": 8
+    }
+  },
+  {
+    "id": "gen-swamp",
+    "source": "generator",
+    "generator": "swamp",
+    "width": 256,
+    "height": 128,
+    "teams": 3,
+    "format": "ffa3",
+    "alliances": [
+      1,
+      2,
+      3
+    ],
+    "players": [
+      "warrush",
+      "econo",
+      "warrush"
+    ],
+    "map_seed": 713,
+    "game_seed": 42,
+    "ticks": 32768,
+    "controls": {
+      "width": 8,
+      "height": 7,
+      "teams": 3
+    }
+  },
+  {
+    "id": "gen-tidal-flats",
+    "source": "generator",
+    "generator": "tidal-flats",
+    "width": 256,
+    "height": 256,
+    "teams": 6,
+    "format": "ffa6",
+    "alliances": [
+      1,
+      2,
+      3,
+      4,
+      5,
+      6
+    ],
+    "players": [
+      "cortex",
+      "nicowar",
+      "castor",
+      "econo",
+      "cortex",
+      "nicowar"
+    ],
+    "map_seed": 713,
+    "game_seed": 42,
+    "ticks": 32768,
+    "controls": {
+      "width": 8,
+      "height": 8,
+      "teams": 6
+    }
+  },
+  {
+    "id": "gen-river",
+    "source": "generator",
+    "generator": "river",
+    "width": 128,
+    "height": 256,
+    "teams": 6,
+    "format": "3v3",
+    "alliances": [
+      1,
+      1,
+      1,
+      2,
+      2,
+      2
+    ],
+    "players": [
+      "numbi",
+      "castor",
+      "econo",
+      "nicowar",
+      "numbi",
+      "castor"
+    ],
+    "map_seed": 713,
+    "game_seed": 42,
+    "ticks": 32768,
+    "controls": {
+      "width": 7,
+      "height": 8,
+      "teams": 6
+    }
+  },
+  {
+    "id": "gen-isles",
+    "source": "generator",
+    "generator": "isles",
+    "width": 256,
+    "height": 256,
+    "teams": 8,
+    "format": "ffa8",
+    "alliances": [
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8
+    ],
+    "players": [
+      "cabino",
+      "nicowar",
+      "warrush",
+      "castor",
+      "cabino",
+      "nicowar",
+      "warrush",
+      "castor"
+    ],
+    "map_seed": 713,
+    "game_seed": 42,
+    "ticks": 32768,
+    "controls": {
+      "width": 8,
+      "height": 8,
+      "teams": 8
+    }
+  },
+  {
+    "id": "gen-ring-world",
+    "source": "generator",
+    "generator": "ring-world",
+    "width": 512,
+    "height": 256,
+    "teams": 8,
+    "format": "4v4",
+    "alliances": [
+      1,
+      1,
+      1,
+      1,
+      2,
+      2,
+      2,
+      2
+    ],
+    "players": [
+      "nicowar",
+      "econo",
+      "castor",
+      "warrush",
+      "nicowar",
+      "econo",
+      "castor",
+      "warrush"
+    ],
+    "map_seed": 713,
+    "game_seed": 42,
+    "ticks": 32768,
+    "controls": {
+      "width": 9,
+      "height": 8,
+      "teams": 8
+    }
+  },
+  {
+    "id": "gen-amphitheatre",
+    "source": "generator",
+    "generator": "amphitheatre",
+    "width": 256,
+    "height": 256,
+    "teams": 2,
+    "format": "duel",
+    "alliances": [
+      1,
+      2
+    ],
+    "players": [
+      "nicowar",
+      "nicowar"
+    ],
+    "map_seed": 713,
+    "game_seed": 42,
+    "ticks": 32768,
+    "controls": {
+      "width": 8,
+      "height": 8,
+      "teams": 2
+    }
+  },
+  {
+    "id": "gen-shattered-coast",
+    "source": "generator",
+    "generator": "shattered-coast",
+    "width": 256,
+    "height": 256,
+    "teams": 4,
+    "format": "ffa4",
+    "alliances": [
+      1,
+      2,
+      3,
+      4
+    ],
+    "players": [
+      "castor",
+      "castor",
+      "castor",
+      "castor"
+    ],
+    "map_seed": 713,
+    "game_seed": 42,
+    "ticks": 32768,
+    "controls": {
+      "width": 8,
+      "height": 8,
+      "teams": 4
+    }
+  },
+  {
+    "id": "gen-crater-lakes",
+    "source": "generator",
+    "generator": "crater-lakes",
+    "width": 256,
+    "height": 256,
+    "teams": 4,
+    "format": "2v2",
+    "alliances": [
+      1,
+      1,
+      2,
+      2
+    ],
+    "players": [
+      "warrush",
+      "econo",
+      "warrush",
+      "econo"
+    ],
+    "map_seed": 713,
+    "game_seed": 42,
+    "ticks": 32768,
+    "controls": {
+      "width": 8,
+      "height": 8,
+      "teams": 4
+    }
+  },
+  {
+    "id": "gen-fjord-continent",
+    "source": "generator",
+    "generator": "fjord-continent",
+    "width": 256,
+    "height": 256,
+    "teams": 3,
+    "format": "ffa3",
+    "alliances": [
+      1,
+      2,
+      3
+    ],
+    "players": [
+      "cortex",
+      "nicowar",
+      "castor"
+    ],
+    "map_seed": 713,
+    "game_seed": 42,
+    "ticks": 32768,
+    "controls": {
+      "width": 8,
+      "height": 8,
+      "teams": 3
+    }
+  },
+  {
+    "id": "gen-spider-web",
+    "source": "generator",
+    "generator": "spider-web",
+    "width": 256,
+    "height": 256,
+    "teams": 6,
+    "format": "ffa6",
+    "alliances": [
+      1,
+      2,
+      3,
+      4,
+      5,
+      6
+    ],
+    "players": [
+      "numbi",
+      "castor",
+      "econo",
+      "nicowar",
+      "numbi",
+      "castor"
+    ],
+    "map_seed": 713,
+    "game_seed": 42,
+    "ticks": 32768,
+    "controls": {
+      "width": 8,
+      "height": 8,
+      "teams": 6
+    }
+  },
+  {
+    "id": "gen-concrete-islands",
+    "source": "generator",
+    "generator": "concrete-islands",
+    "width": 256,
+    "height": 256,
+    "teams": 4,
+    "format": "2v2",
+    "alliances": [
+      1,
+      1,
+      2,
+      2
+    ],
+    "players": [
+      "cabino",
+      "nicowar",
+      "warrush",
+      "castor"
+    ],
+    "map_seed": 713,
+    "game_seed": 42,
+    "ticks": 32768,
+    "controls": {
+      "width": 8,
+      "height": 8,
+      "teams": 4
+    }
+  },
+  {
+    "id": "gen-watershed",
+    "source": "generator",
+    "generator": "watershed",
+    "width": 256,
+    "height": 256,
+    "teams": 8,
+    "format": "ffa8",
+    "alliances": [
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8
+    ],
+    "players": [
+      "nicowar",
+      "econo",
+      "castor",
+      "warrush",
+      "nicowar",
+      "econo",
+      "castor",
+      "warrush"
+    ],
+    "map_seed": 713,
+    "game_seed": 42,
+    "ticks": 32768,
+    "controls": {
+      "width": 8,
+      "height": 8,
+      "teams": 8
+    }
+  },
+  {
+    "id": "gen-maze",
+    "source": "generator",
+    "generator": "maze",
+    "width": 256,
+    "height": 256,
+    "teams": 8,
+    "format": "4v4",
+    "alliances": [
+      1,
+      1,
+      1,
+      1,
+      2,
+      2,
+      2,
+      2
+    ],
+    "players": [
+      "nicowar",
+      "nicowar",
+      "nicowar",
+      "nicowar",
+      "nicowar",
+      "nicowar",
+      "nicowar",
+      "nicowar"
+    ],
+    "map_seed": 713,
+    "game_seed": 42,
+    "ticks": 32768,
+    "controls": {
+      "width": 8,
+      "height": 8,
+      "teams": 8
+    }
+  },
+  {
+    "id": "gen-islands",
+    "source": "generator",
+    "generator": "islands",
+    "width": 256,
+    "height": 128,
+    "teams": 2,
+    "format": "duel",
+    "alliances": [
+      1,
+      2
+    ],
+    "players": [
+      "castor",
+      "castor"
+    ],
+    "map_seed": 713,
+    "game_seed": 42,
+    "ticks": 32768,
+    "controls": {
+      "width": 8,
+      "height": 7,
+      "teams": 2
+    }
+  },
+  {
+    "id": "gen-stone-highlands",
+    "source": "generator",
+    "generator": "stone-highlands",
+    "width": 256,
+    "height": 256,
+    "teams": 4,
+    "format": "ffa4",
+    "alliances": [
+      1,
+      2,
+      3,
+      4
+    ],
+    "players": [
+      "warrush",
+      "econo",
+      "warrush",
+      "econo"
+    ],
+    "map_seed": 713,
+    "game_seed": 42,
+    "ticks": 32768,
+    "controls": {
+      "width": 8,
+      "height": 8,
+      "teams": 4
+    }
+  },
+  {
+    "id": "gen-switchbacks",
+    "source": "generator",
+    "generator": "switchbacks",
+    "width": 256,
+    "height": 256,
+    "teams": 4,
+    "format": "2v2",
+    "alliances": [
+      1,
+      1,
+      2,
+      2
+    ],
+    "players": [
+      "cortex",
+      "nicowar",
+      "castor",
+      "econo"
+    ],
+    "map_seed": 713,
+    "game_seed": 42,
+    "ticks": 32768,
+    "controls": {
+      "width": 8,
+      "height": 8,
+      "teams": 4
+    }
+  },
+  {
+    "id": "gen-city-states",
+    "source": "generator",
+    "generator": "city-states",
+    "width": 256,
+    "height": 256,
+    "teams": 3,
+    "format": "ffa3",
+    "alliances": [
+      1,
+      2,
+      3
+    ],
+    "players": [
+      "numbi",
+      "castor",
+      "econo"
+    ],
+    "map_seed": 713,
+    "game_seed": 42,
+    "ticks": 32768,
+    "controls": {
+      "width": 8,
+      "height": 8,
+      "teams": 3
+    }
+  },
+  {
+    "id": "gen-canals",
+    "source": "generator",
+    "generator": "canals",
+    "width": 256,
+    "height": 256,
+    "teams": 6,
+    "format": "ffa6",
+    "alliances": [
+      1,
+      2,
+      3,
+      4,
+      5,
+      6
+    ],
+    "players": [
+      "cabino",
+      "nicowar",
+      "warrush",
+      "castor",
+      "cabino",
+      "nicowar"
+    ],
+    "map_seed": 713,
+    "game_seed": 42,
+    "ticks": 32768,
+    "controls": {
+      "width": 8,
+      "height": 8,
+      "teams": 6
+    }
+  },
+  {
+    "id": "gen-sierpinski-gardens",
+    "source": "generator",
+    "generator": "sierpinski-gardens",
+    "width": 256,
+    "height": 256,
+    "teams": 6,
+    "format": "3v3",
+    "alliances": [
+      1,
+      1,
+      1,
+      2,
+      2,
+      2
+    ],
+    "players": [
+      "nicowar",
+      "econo",
+      "castor",
+      "warrush",
+      "nicowar",
+      "econo"
+    ],
+    "map_seed": 713,
+    "game_seed": 42,
+    "ticks": 32768,
+    "controls": {
+      "width": 8,
+      "height": 8,
+      "teams": 6
+    }
+  },
+  {
+    "id": "gen-hilbert-river",
+    "source": "generator",
+    "generator": "hilbert-river",
+    "width": 256,
+    "height": 256,
+    "teams": 8,
+    "format": "ffa8",
+    "alliances": [
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8
+    ],
+    "players": [
+      "nicowar",
+      "nicowar",
+      "nicowar",
+      "nicowar",
+      "nicowar",
+      "nicowar",
+      "nicowar",
+      "nicowar"
+    ],
+    "map_seed": 713,
+    "game_seed": 42,
+    "ticks": 32768,
+    "controls": {
+      "width": 8,
+      "height": 8,
+      "teams": 8
+    }
+  },
+  {
+    "id": "gen-lava-shield",
+    "source": "generator",
+    "generator": "lava-shield",
+    "width": 256,
+    "height": 256,
+    "teams": 8,
+    "format": "4v4",
+    "alliances": [
+      1,
+      1,
+      1,
+      1,
+      2,
+      2,
+      2,
+      2
+    ],
+    "players": [
+      "castor",
+      "castor",
+      "castor",
+      "castor",
+      "castor",
+      "castor",
+      "castor",
+      "castor"
+    ],
+    "map_seed": 713,
+    "game_seed": 42,
+    "ticks": 32768,
+    "controls": {
+      "width": 8,
+      "height": 8,
+      "teams": 8
+    }
+  },
+  {
+    "id": "gen-honeycomb-isle",
+    "source": "generator",
+    "generator": "honeycomb-isle",
+    "width": 256,
+    "height": 256,
+    "teams": 2,
+    "format": "duel",
+    "alliances": [
+      1,
+      2
+    ],
+    "players": [
+      "warrush",
+      "econo"
+    ],
+    "map_seed": 713,
+    "game_seed": 42,
+    "ticks": 32768,
+    "controls": {
+      "width": 8,
+      "height": 8,
+      "teams": 2
+    }
+  },
+  {
+    "id": "gen-karst-towers",
+    "source": "generator",
+    "generator": "karst-towers",
+    "width": 256,
+    "height": 256,
+    "teams": 4,
+    "format": "ffa4",
+    "alliances": [
+      1,
+      2,
+      3,
+      4
+    ],
+    "players": [
+      "cortex",
+      "nicowar",
+      "castor",
+      "econo"
+    ],
+    "map_seed": 713,
+    "game_seed": 42,
+    "ticks": 32768,
+    "controls": {
+      "width": 8,
+      "height": 8,
+      "teams": 4
+    }
+  },
+  {
+    "id": "gen-bajada",
+    "source": "generator",
+    "generator": "bajada",
+    "width": 256,
+    "height": 256,
+    "teams": 4,
+    "format": "2v2",
+    "alliances": [
+      1,
+      1,
+      2,
+      2
+    ],
+    "players": [
+      "numbi",
+      "castor",
+      "econo",
+      "nicowar"
+    ],
+    "map_seed": 713,
+    "game_seed": 42,
+    "ticks": 32768,
+    "controls": {
+      "width": 8,
+      "height": 8,
+      "teams": 4
+    }
+  },
+  {
+    "id": "gen-central-quarry",
+    "source": "generator",
+    "generator": "central-quarry",
+    "width": 128,
+    "height": 128,
+    "teams": 2,
+    "format": "duel",
+    "alliances": [
+      1,
+      2
+    ],
+    "players": [
+      "maxima",
+      "nicowar"
+    ],
+    "map_seed": 713,
+    "game_seed": 42,
+    "ticks": 32768,
+    "controls": {
+      "width": 7,
+      "height": 7,
+      "teams": 2
+    }
+  },
+  {
+    "id": "gen-hidden-oasis",
+    "source": "generator",
+    "generator": "hidden-oasis",
+    "width": 256,
+    "height": 256,
+    "teams": 6,
+    "format": "ffa6",
+    "alliances": [
+      1,
+      2,
+      3,
+      4,
+      5,
+      6
+    ],
+    "players": [
+      "nicowar",
+      "econo",
+      "castor",
+      "warrush",
+      "nicowar",
+      "econo"
+    ],
+    "map_seed": 713,
+    "game_seed": 42,
+    "ticks": 32768,
+    "controls": {
+      "width": 8,
+      "height": 8,
+      "teams": 6
+    }
+  },
+  {
+    "id": "gen-drowned-forest",
+    "source": "generator",
+    "generator": "drowned-forest",
+    "width": 256,
+    "height": 256,
+    "teams": 6,
+    "format": "3v3",
+    "alliances": [
+      1,
+      1,
+      1,
+      2,
+      2,
+      2
+    ],
+    "players": [
+      "nicowar",
+      "nicowar",
+      "nicowar",
+      "nicowar",
+      "nicowar",
+      "nicowar"
+    ],
+    "map_seed": 713,
+    "game_seed": 42,
+    "ticks": 32768,
+    "controls": {
+      "width": 8,
+      "height": 8,
+      "teams": 6
+    }
+  },
+  {
+    "id": "gen-portage-lakes",
+    "source": "generator",
+    "generator": "portage-lakes",
+    "width": 256,
+    "height": 256,
+    "teams": 8,
+    "format": "ffa8",
+    "alliances": [
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8
+    ],
+    "players": [
+      "castor",
+      "castor",
+      "castor",
+      "castor",
+      "castor",
+      "castor",
+      "castor",
+      "castor"
+    ],
+    "map_seed": 713,
+    "game_seed": 42,
+    "ticks": 32768,
+    "controls": {
+      "width": 8,
+      "height": 8,
+      "teams": 8
+    }
+  },
+  {
+    "id": "gen-orchard-commons",
+    "source": "generator",
+    "generator": "orchard-commons",
+    "width": 256,
+    "height": 256,
+    "teams": 8,
+    "format": "4v4",
+    "alliances": [
+      1,
+      1,
+      1,
+      1,
+      2,
+      2,
+      2,
+      2
+    ],
+    "players": [
+      "warrush",
+      "econo",
+      "warrush",
+      "econo",
+      "warrush",
+      "econo",
+      "warrush",
+      "econo"
+    ],
+    "map_seed": 713,
+    "game_seed": 42,
+    "ticks": 32768,
+    "controls": {
+      "width": 8,
+      "height": 8,
+      "teams": 8
+    }
+  },
+  {
+    "id": "gen-last-treeline",
+    "source": "generator",
+    "generator": "last-treeline",
+    "width": 256,
+    "height": 256,
+    "teams": 2,
+    "format": "duel",
+    "alliances": [
+      1,
+      2
+    ],
+    "players": [
+      "cortex",
+      "nicowar"
+    ],
+    "map_seed": 713,
+    "game_seed": 42,
+    "ticks": 32768,
+    "controls": {
+      "width": 8,
+      "height": 8,
+      "teams": 2
+    }
+  },
+  {
+    "id": "gen-gauntlet",
+    "source": "generator",
+    "generator": "gauntlet",
+    "width": 256,
+    "height": 256,
+    "teams": 4,
+    "format": "ffa4",
+    "alliances": [
+      1,
+      2,
+      3,
+      4
+    ],
+    "players": [
+      "numbi",
+      "castor",
+      "econo",
+      "nicowar"
+    ],
+    "map_seed": 713,
+    "game_seed": 42,
+    "ticks": 32768,
+    "controls": {
+      "width": 8,
+      "height": 8,
+      "teams": 4
+    }
+  },
+  {
+    "id": "gen-faulted-city",
+    "source": "generator",
+    "generator": "faulted-city",
+    "width": 256,
+    "height": 256,
+    "teams": 4,
+    "format": "2v2",
+    "alliances": [
+      1,
+      1,
+      2,
+      2
+    ],
+    "players": [
+      "cabino",
+      "nicowar",
+      "warrush",
+      "castor"
+    ],
+    "map_seed": 713,
+    "game_seed": 42,
+    "ticks": 32768,
+    "controls": {
+      "width": 8,
+      "height": 8,
+      "teams": 4
+    }
+  },
+  {
+    "id": "gen-comb",
+    "source": "generator",
+    "generator": "comb",
+    "width": 256,
+    "height": 256,
+    "teams": 3,
+    "format": "ffa3",
+    "alliances": [
+      1,
+      2,
+      3
+    ],
+    "players": [
+      "nicowar",
+      "econo",
+      "castor"
+    ],
+    "map_seed": 713,
+    "game_seed": 42,
+    "ticks": 32768,
+    "controls": {
+      "width": 8,
+      "height": 8,
+      "teams": 3
+    }
+  },
+  {
+    "id": "gen-encircled-kingdom",
+    "source": "generator",
+    "generator": "encircled-kingdom",
+    "width": 256,
+    "height": 256,
+    "teams": 6,
+    "format": "ffa6",
+    "alliances": [
+      1,
+      2,
+      3,
+      4,
+      5,
+      6
+    ],
+    "players": [
+      "nicowar",
+      "nicowar",
+      "nicowar",
+      "nicowar",
+      "nicowar",
+      "nicowar"
+    ],
+    "map_seed": 713,
+    "game_seed": 42,
+    "ticks": 32768,
+    "controls": {
+      "width": 8,
+      "height": 8,
+      "teams": 6
+    }
+  },
+  {
+    "id": "gen-bastion-keys",
+    "source": "generator",
+    "generator": "bastion-keys",
+    "width": 256,
+    "height": 256,
+    "teams": 2,
+    "format": "duel",
+    "alliances": [
+      1,
+      2
+    ],
+    "players": [
+      "castor",
+      "castor"
+    ],
+    "map_seed": 713,
+    "game_seed": 42,
+    "ticks": 32768,
+    "controls": {
+      "width": 8,
+      "height": 8,
+      "teams": 2
+    }
+  },
+  {
+    "id": "gen-even-ground",
+    "source": "generator",
+    "generator": "even-ground",
+    "width": 128,
+    "height": 128,
+    "teams": 2,
+    "format": "duel",
+    "alliances": [
+      1,
+      2
+    ],
+    "players": [
+      "maxima",
+      "nicowar"
+    ],
+    "map_seed": 713,
+    "game_seed": 42,
+    "ticks": 32768,
+    "controls": {
+      "width": 7,
+      "height": 7,
+      "teams": 2
+    }
+  },
+  {
+    "id": "gen-marchland",
+    "source": "generator",
+    "generator": "marchland",
+    "width": 256,
+    "height": 256,
+    "teams": 8,
+    "format": "4v4",
+    "alliances": [
+      1,
+      1,
+      1,
+      1,
+      2,
+      2,
+      2,
+      2
+    ],
+    "players": [
+      "cortex",
+      "nicowar",
+      "castor",
+      "econo",
+      "cortex",
+      "nicowar",
+      "castor",
+      "econo"
+    ],
+    "map_seed": 713,
+    "game_seed": 42,
+    "ticks": 32768,
+    "controls": {
+      "width": 8,
+      "height": 8,
+      "teams": 8
+    }
+  },
+  {
+    "id": "gen-who-ate-the-map",
+    "source": "generator",
+    "generator": "who-ate-the-map",
+    "width": 256,
+    "height": 256,
+    "teams": 2,
+    "format": "duel",
+    "alliances": [
+      1,
+      2
+    ],
+    "players": [
+      "numbi",
+      "castor"
+    ],
+    "map_seed": 713,
+    "game_seed": 42,
+    "ticks": 32768,
+    "controls": {
+      "width": 8,
+      "height": 8,
+      "teams": 2
+    }
+  },
+  {
+    "id": "gen-rugged-archipelago",
+    "source": "generator",
+    "generator": "rugged-archipelago",
+    "width": 256,
+    "height": 256,
+    "teams": 4,
+    "format": "ffa4",
+    "alliances": [
+      1,
+      2,
+      3,
+      4
+    ],
+    "players": [
+      "cabino",
+      "nicowar",
+      "warrush",
+      "castor"
+    ],
+    "map_seed": 713,
+    "game_seed": 42,
+    "ticks": 32768,
+    "controls": {
+      "width": 8,
+      "height": 8,
+      "teams": 4
+    }
+  },
+  {
+    "id": "gen-hungry-marches",
+    "source": "generator",
+    "generator": "hungry-marches",
+    "width": 256,
+    "height": 256,
+    "teams": 4,
+    "format": "2v2",
+    "alliances": [
+      1,
+      1,
+      2,
+      2
+    ],
+    "players": [
+      "nicowar",
+      "econo",
+      "castor",
+      "warrush"
+    ],
+    "map_seed": 713,
+    "game_seed": 42,
+    "ticks": 32768,
+    "controls": {
+      "width": 8,
+      "height": 8,
+      "teams": 4
+    }
+  },
+  {
+    "id": "gen-contested-commons",
+    "source": "generator",
+    "generator": "contested-commons",
+    "width": 256,
+    "height": 256,
+    "teams": 3,
+    "format": "ffa3",
+    "alliances": [
+      1,
+      2,
+      3
+    ],
+    "players": [
+      "nicowar",
+      "nicowar",
+      "nicowar"
+    ],
+    "map_seed": 713,
+    "game_seed": 42,
+    "ticks": 32768,
+    "controls": {
+      "width": 8,
+      "height": 8,
+      "teams": 3
+    }
+  },
+  {
+    "id": "gen-rain-shadow",
+    "source": "generator",
+    "generator": "rain-shadow",
+    "width": 256,
+    "height": 256,
+    "teams": 6,
+    "format": "ffa6",
+    "alliances": [
+      1,
+      2,
+      3,
+      4,
+      5,
+      6
+    ],
+    "players": [
+      "castor",
+      "castor",
+      "castor",
+      "castor",
+      "castor",
+      "castor"
+    ],
+    "map_seed": 713,
+    "game_seed": 42,
+    "ticks": 32768,
+    "controls": {
+      "width": 8,
+      "height": 8,
+      "teams": 6
+    }
+  },
+  {
+    "id": "gen-everglades",
+    "source": "generator",
+    "generator": "everglades",
+    "width": 256,
+    "height": 256,
+    "teams": 6,
+    "format": "3v3",
+    "alliances": [
+      1,
+      1,
+      1,
+      2,
+      2,
+      2
+    ],
+    "players": [
+      "warrush",
+      "econo",
+      "warrush",
+      "econo",
+      "warrush",
+      "econo"
+    ],
+    "map_seed": 713,
+    "game_seed": 42,
+    "ticks": 32768,
+    "controls": {
+      "width": 8,
+      "height": 8,
+      "teams": 6
+    }
+  },
+  {
+    "id": "gen-polder",
+    "source": "generator",
+    "generator": "polder",
+    "width": 256,
+    "height": 256,
+    "teams": 8,
+    "format": "ffa8",
+    "alliances": [
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8
+    ],
+    "players": [
+      "cortex",
+      "nicowar",
+      "castor",
+      "econo",
+      "cortex",
+      "nicowar",
+      "castor",
+      "econo"
+    ],
+    "map_seed": 713,
+    "game_seed": 42,
+    "ticks": 32768,
+    "controls": {
+      "width": 8,
+      "height": 8,
+      "teams": 8
+    }
+  },
+  {
+    "id": "gen-carousel",
+    "source": "generator",
+    "generator": "carousel",
+    "width": 256,
+    "height": 256,
+    "teams": 8,
+    "format": "4v4",
+    "alliances": [
+      1,
+      1,
+      1,
+      1,
+      2,
+      2,
+      2,
+      2
+    ],
+    "players": [
+      "numbi",
+      "castor",
+      "econo",
+      "nicowar",
+      "numbi",
+      "castor",
+      "econo",
+      "nicowar"
+    ],
+    "map_seed": 713,
+    "game_seed": 42,
+    "ticks": 32768,
+    "controls": {
+      "width": 8,
+      "height": 8,
+      "teams": 8
+    }
+  },
+  {
+    "id": "gen-old-growth",
+    "source": "generator",
+    "generator": "old-growth",
+    "width": 256,
+    "height": 256,
+    "teams": 2,
+    "format": "duel",
+    "alliances": [
+      1,
+      2
+    ],
+    "players": [
+      "cabino",
+      "nicowar"
+    ],
+    "map_seed": 713,
+    "game_seed": 42,
+    "ticks": 32768,
+    "controls": {
+      "width": 8,
+      "height": 8,
+      "teams": 2
+    }
+  },
+  {
+    "id": "gen-anthill",
+    "source": "generator",
+    "generator": "anthill",
+    "width": 256,
+    "height": 256,
+    "teams": 4,
+    "format": "ffa4",
+    "alliances": [
+      1,
+      2,
+      3,
+      4
+    ],
+    "players": [
+      "nicowar",
+      "econo",
+      "castor",
+      "warrush"
+    ],
+    "map_seed": 713,
+    "game_seed": 42,
+    "ticks": 32768,
+    "controls": {
+      "width": 8,
+      "height": 8,
+      "teams": 4
+    }
+  },
+  {
+    "id": "gen-coral",
+    "source": "generator",
+    "generator": "coral",
+    "width": 256,
+    "height": 256,
+    "teams": 4,
+    "format": "2v2",
+    "alliances": [
+      1,
+      1,
+      2,
+      2
+    ],
+    "players": [
+      "nicowar",
+      "nicowar",
+      "nicowar",
+      "nicowar"
+    ],
+    "map_seed": 713,
+    "game_seed": 42,
+    "ticks": 32768,
+    "controls": {
+      "width": 8,
+      "height": 8,
+      "teams": 4
+    }
+  },
+  {
+    "id": "gen-emoji",
+    "source": "generator",
+    "generator": "emoji",
+    "width": 256,
+    "height": 256,
+    "teams": 3,
+    "format": "ffa3",
+    "alliances": [
+      1,
+      2,
+      3
+    ],
+    "players": [
+      "castor",
+      "castor",
+      "castor"
+    ],
+    "map_seed": 713,
+    "game_seed": 42,
+    "ticks": 32768,
+    "controls": {
+      "width": 8,
+      "height": 8,
+      "teams": 3
+    }
+  },
+  {
+    "id": "gen-forts",
+    "source": "generator",
+    "generator": "forts",
+    "width": 256,
+    "height": 256,
+    "teams": 6,
+    "format": "ffa6",
+    "alliances": [
+      1,
+      2,
+      3,
+      4,
+      5,
+      6
+    ],
+    "players": [
+      "warrush",
+      "econo",
+      "warrush",
+      "econo",
+      "warrush",
+      "econo"
+    ],
+    "map_seed": 713,
+    "game_seed": 42,
+    "ticks": 32768,
+    "controls": {
+      "width": 8,
+      "height": 8,
+      "teams": 6
+    }
+  },
+  {
+    "id": "gen-braided-delta",
+    "source": "generator",
+    "generator": "braided-delta",
+    "width": 256,
+    "height": 256,
+    "teams": 6,
+    "format": "3v3",
+    "alliances": [
+      1,
+      1,
+      1,
+      2,
+      2,
+      2
+    ],
+    "players": [
+      "cortex",
+      "nicowar",
+      "castor",
+      "econo",
+      "cortex",
+      "nicowar"
+    ],
+    "map_seed": 713,
+    "game_seed": 42,
+    "ticks": 32768,
+    "controls": {
+      "width": 8,
+      "height": 8,
+      "teams": 6,
+      "rejoining-frequency": 3
+    }
+  },
+  {
+    "id": "gen-breachable-highlands",
+    "source": "generator",
+    "generator": "breachable-highlands",
+    "width": 256,
+    "height": 256,
+    "teams": 8,
+    "format": "ffa8",
+    "alliances": [
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8
+    ],
+    "players": [
+      "numbi",
+      "castor",
+      "econo",
+      "nicowar",
+      "numbi",
+      "castor",
+      "econo",
+      "nicowar"
+    ],
+    "map_seed": 713,
+    "game_seed": 42,
+    "ticks": 32768,
+    "controls": {
+      "width": 8,
+      "height": 8,
+      "teams": 8
+    }
+  },
+  {
+    "id": "gen-hedgerow-country",
+    "source": "generator",
+    "generator": "hedgerow-country",
+    "width": 256,
+    "height": 256,
+    "teams": 8,
+    "format": "4v4",
+    "alliances": [
+      1,
+      1,
+      1,
+      1,
+      2,
+      2,
+      2,
+      2
+    ],
+    "players": [
+      "cabino",
+      "nicowar",
+      "warrush",
+      "castor",
+      "cabino",
+      "nicowar",
+      "warrush",
+      "castor"
+    ],
+    "map_seed": 713,
+    "game_seed": 42,
+    "ticks": 32768,
+    "controls": {
+      "width": 8,
+      "height": 8,
+      "teams": 8
+    }
+  },
+  {
+    "id": "gen-glacis",
+    "source": "generator",
+    "generator": "glacis",
+    "width": 256,
+    "height": 256,
+    "teams": 2,
+    "format": "duel",
+    "alliances": [
+      1,
+      2
+    ],
+    "players": [
+      "nicowar",
+      "econo"
+    ],
+    "map_seed": 713,
+    "game_seed": 42,
+    "ticks": 32768,
+    "controls": {
+      "width": 8,
+      "height": 8,
+      "teams": 2
+    }
+  },
+  {
+    "id": "gen-allotments",
+    "source": "generator",
+    "generator": "allotments",
+    "width": 256,
+    "height": 256,
+    "teams": 4,
+    "format": "ffa4",
+    "alliances": [
+      1,
+      2,
+      3,
+      4
+    ],
+    "players": [
+      "nicowar",
+      "nicowar",
+      "nicowar",
+      "nicowar"
+    ],
+    "map_seed": 713,
+    "game_seed": 42,
+    "ticks": 32768,
+    "controls": {
+      "width": 8,
+      "height": 8,
+      "teams": 4
+    }
+  },
+  {
+    "id": "gen-caravanserai",
+    "source": "generator",
+    "generator": "caravanserai",
+    "width": 256,
+    "height": 256,
+    "teams": 4,
+    "format": "2v2",
+    "alliances": [
+      1,
+      1,
+      2,
+      2
+    ],
+    "players": [
+      "castor",
+      "castor",
+      "castor",
+      "castor"
+    ],
+    "map_seed": 713,
+    "game_seed": 42,
+    "ticks": 32768,
+    "controls": {
+      "width": 8,
+      "height": 8,
+      "teams": 4
+    }
+  },
+  {
+    "id": "gen-braided-river",
+    "source": "generator",
+    "generator": "braided-river",
+    "width": 256,
+    "height": 256,
+    "teams": 3,
+    "format": "ffa3",
+    "alliances": [
+      1,
+      2,
+      3
+    ],
+    "players": [
+      "warrush",
+      "econo",
+      "warrush"
+    ],
+    "map_seed": 713,
+    "game_seed": 42,
+    "ticks": 32768,
+    "controls": {
+      "width": 8,
+      "height": 8,
+      "teams": 3
+    }
+  },
+  {
+    "id": "gen-drumlin-field",
+    "source": "generator",
+    "generator": "drumlin-field",
+    "width": 256,
+    "height": 256,
+    "teams": 6,
+    "format": "ffa6",
+    "alliances": [
+      1,
+      2,
+      3,
+      4,
+      5,
+      6
+    ],
+    "players": [
+      "cortex",
+      "nicowar",
+      "castor",
+      "econo",
+      "cortex",
+      "nicowar"
+    ],
+    "map_seed": 713,
+    "game_seed": 42,
+    "ticks": 32768,
+    "controls": {
+      "width": 8,
+      "height": 8,
+      "teams": 6
+    }
+  },
+  {
+    "id": "gen-continents",
+    "source": "generator",
+    "generator": "continents",
+    "width": 512,
+    "height": 512,
+    "teams": 8,
+    "format": "4v4",
+    "alliances": [
+      1,
+      1,
+      1,
+      1,
+      2,
+      2,
+      2,
+      2
+    ],
+    "players": [
+      "numbi",
+      "castor",
+      "econo",
+      "nicowar",
+      "numbi",
+      "castor",
+      "econo",
+      "nicowar"
+    ],
+    "map_seed": 713,
+    "game_seed": 42,
+    "ticks": 32768,
+    "controls": {
+      "width": 9,
+      "height": 9,
+      "teams": 8
+    }
+  },
+  {
+    "id": "gen-savannah",
+    "source": "generator",
+    "generator": "savannah",
+    "width": 128,
+    "height": 128,
+    "teams": 2,
+    "format": "duel",
+    "alliances": [
+      1,
+      2
+    ],
+    "players": [
+      "cabino",
+      "nicowar"
+    ],
+    "map_seed": 713,
+    "game_seed": 42,
+    "ticks": 32768,
+    "controls": {
+      "width": 7,
+      "height": 7,
+      "teams": 2
+    }
+  },
+  {
+    "id": "gen-hills",
+    "source": "generator",
+    "generator": "hills",
+    "width": 256,
+    "height": 256,
+    "teams": 8,
+    "format": "4v4",
+    "alliances": [
+      1,
+      1,
+      1,
+      1,
+      2,
+      2,
+      2,
+      2
+    ],
+    "players": [
+      "nicowar",
+      "econo",
+      "castor",
+      "warrush",
+      "nicowar",
+      "econo",
+      "castor",
+      "warrush"
+    ],
+    "map_seed": 713,
+    "game_seed": 42,
+    "ticks": 32768,
+    "controls": {
+      "width": 8,
+      "height": 8,
+      "teams": 8
+    }
+  },
+  {
+    "id": "gen-rice-terraces",
+    "source": "generator",
+    "generator": "rice-terraces",
+    "width": 256,
+    "height": 256,
+    "teams": 2,
+    "format": "duel",
+    "alliances": [
+      1,
+      2
+    ],
+    "players": [
+      "nicowar",
+      "nicowar"
+    ],
+    "map_seed": 713,
+    "game_seed": 42,
+    "ticks": 32768,
+    "controls": {
+      "width": 8,
+      "height": 8,
+      "teams": 2
+    }
+  },
+  {
+    "id": "gen-locust",
+    "source": "generator",
+    "generator": "locust",
+    "width": 256,
+    "height": 256,
+    "teams": 4,
+    "format": "ffa4",
+    "alliances": [
+      1,
+      2,
+      3,
+      4
+    ],
+    "players": [
+      "castor",
+      "castor",
+      "castor",
+      "castor"
+    ],
+    "map_seed": 713,
+    "game_seed": 42,
+    "ticks": 32768,
+    "controls": {
+      "width": 8,
+      "height": 8,
+      "teams": 4
+    }
+  },
+  {
+    "id": "gen-plantations",
+    "source": "generator",
+    "generator": "plantations",
+    "width": 256,
+    "height": 256,
+    "teams": 4,
+    "format": "2v2",
+    "alliances": [
+      1,
+      1,
+      2,
+      2
+    ],
+    "players": [
+      "warrush",
+      "econo",
+      "warrush",
+      "econo"
+    ],
+    "map_seed": 713,
+    "game_seed": 42,
+    "ticks": 32768,
+    "controls": {
+      "width": 8,
+      "height": 8,
+      "teams": 4
+    }
+  },
+  {
+    "id": "map-A_big_pond",
+    "source": "bundled",
+    "map_file": "/Users/bradley/.codex/worktrees/hiring-gradient-bench/glob2/maps/A_big_pond.map.gz",
+    "map_sha256": "cf1041c7bdc36d55a84e8c7667d7ee4050d238be52399df986005d889f869250",
+    "width": 128,
+    "height": 128,
+    "teams": 3,
+    "format": "ffa3",
+    "alliances": [
+      1,
+      2,
+      3
+    ],
+    "players": [
+      "castor",
+      "castor",
+      "castor"
+    ],
+    "game_seed": 42,
+    "ticks": 32768
+  },
+  {
+    "id": "map-Archipelago",
+    "source": "bundled",
+    "map_file": "/Users/bradley/.codex/worktrees/hiring-gradient-bench/glob2/maps/Archipelago.map.gz",
+    "map_sha256": "8770b2f94199309f2a6f7a9398bb0bfeb1624cd80e3a396e5db39eccf68ada76",
+    "width": 128,
+    "height": 128,
+    "teams": 5,
+    "format": "2v3",
+    "alliances": [
+      1,
+      1,
+      2,
+      2,
+      2
+    ],
+    "players": [
+      "warrush",
+      "econo",
+      "warrush",
+      "econo",
+      "warrush"
+    ],
+    "game_seed": 42,
+    "ticks": 32768
+  },
+  {
+    "id": "map-Centerfolds_2",
+    "source": "bundled",
+    "map_file": "/Users/bradley/.codex/worktrees/hiring-gradient-bench/glob2/maps/Centerfolds_2.map.gz",
+    "map_sha256": "36dbe8f17cd0f875f0240cbd5fceed5045a323ecb87072d4df232acb394c24af",
+    "width": 128,
+    "height": 128,
+    "teams": 5,
+    "format": "ffa5",
+    "alliances": [
+      1,
+      2,
+      3,
+      4,
+      5
+    ],
+    "players": [
+      "cortex",
+      "nicowar",
+      "castor",
+      "econo",
+      "cortex"
+    ],
+    "game_seed": 42,
+    "ticks": 32768
+  },
+  {
+    "id": "map-Dejans",
+    "source": "bundled",
+    "map_file": "/Users/bradley/.codex/worktrees/hiring-gradient-bench/glob2/maps/Dejans.map.gz",
+    "map_sha256": "6c466751ba07c3be0d2bf755d7f5c7292fb02d1428e991a8f97ac640874fa172",
+    "width": 64,
+    "height": 64,
+    "teams": 2,
+    "format": "duel",
+    "alliances": [
+      1,
+      2
+    ],
+    "players": [
+      "numbi",
+      "castor"
+    ],
+    "game_seed": 42,
+    "ticks": 32768
+  },
+  {
+    "id": "map-Easy_Three",
+    "source": "bundled",
+    "map_file": "/Users/bradley/.codex/worktrees/hiring-gradient-bench/glob2/maps/Easy_Three.map.gz",
+    "map_sha256": "ca5f3d325b9079f1866ee238027e2d6efe8120c07c631d5816ad56ef932f9176",
+    "width": 128,
+    "height": 128,
+    "teams": 3,
+    "format": "ffa3",
+    "alliances": [
+      1,
+      2,
+      3
+    ],
+    "players": [
+      "cabino",
+      "nicowar",
+      "warrush"
+    ],
+    "game_seed": 42,
+    "ticks": 32768
+  },
+  {
+    "id": "map-FourSquares1",
+    "source": "bundled",
+    "map_file": "/Users/bradley/.codex/worktrees/hiring-gradient-bench/glob2/maps/FourSquares1.map.gz",
+    "map_sha256": "3f2ba4e3313fa31801449e057adaff679951abba7c599c271442a29578931869",
+    "width": 128,
+    "height": 128,
+    "teams": 4,
+    "format": "2v2",
+    "alliances": [
+      1,
+      1,
+      2,
+      2
+    ],
+    "players": [
+      "nicowar",
+      "econo",
+      "castor",
+      "warrush"
+    ],
+    "game_seed": 42,
+    "ticks": 32768
+  },
+  {
+    "id": "map-G2",
+    "source": "bundled",
+    "map_file": "/Users/bradley/.codex/worktrees/hiring-gradient-bench/glob2/maps/G2.map.gz",
+    "map_sha256": "682ca18f6ad2e85099f428e4a9dbdf2958edad954141aa7f9264ae8ca9882f3a",
+    "width": 128,
+    "height": 128,
+    "teams": 4,
+    "format": "ffa4",
+    "alliances": [
+      1,
+      2,
+      3,
+      4
+    ],
+    "players": [
+      "nicowar",
+      "nicowar",
+      "nicowar",
+      "nicowar"
+    ],
+    "game_seed": 42,
+    "ticks": 32768
+  },
+  {
+    "id": "map-Garden_3",
+    "source": "bundled",
+    "map_file": "/Users/bradley/.codex/worktrees/hiring-gradient-bench/glob2/maps/Garden_3.map.gz",
+    "map_sha256": "3d201de061d843207c84e85894a574d8e30a45de51560ae1c40018154a96f56a",
+    "width": 128,
+    "height": 128,
+    "teams": 4,
+    "format": "2v2",
+    "alliances": [
+      1,
+      1,
+      2,
+      2
+    ],
+    "players": [
+      "castor",
+      "castor",
+      "castor",
+      "castor"
+    ],
+    "game_seed": 42,
+    "ticks": 32768
+  },
+  {
+    "id": "map-Holiday_Island_2",
+    "source": "bundled",
+    "map_file": "/Users/bradley/.codex/worktrees/hiring-gradient-bench/glob2/maps/Holiday_Island_2.map.gz",
+    "map_sha256": "7c8d9ff5d0bbff14945f1a31bb78ffdc60df2befe08e7b5b0f9c0bedb8f977e9",
+    "width": 128,
+    "height": 128,
+    "teams": 4,
+    "format": "ffa4",
+    "alliances": [
+      1,
+      2,
+      3,
+      4
+    ],
+    "players": [
+      "warrush",
+      "econo",
+      "warrush",
+      "econo"
+    ],
+    "game_seed": 42,
+    "ticks": 32768
+  },
+  {
+    "id": "map-Island_of_the_Renfur",
+    "source": "bundled",
+    "map_file": "/Users/bradley/.codex/worktrees/hiring-gradient-bench/glob2/maps/Island_of_the_Renfur.map.gz",
+    "map_sha256": "22891bdc8d79302a509521d55f85a5b9952ce53029280a75396cedac12b06e7f",
+    "width": 128,
+    "height": 128,
+    "teams": 6,
+    "format": "3v3",
+    "alliances": [
+      1,
+      1,
+      1,
+      2,
+      2,
+      2
+    ],
+    "players": [
+      "cortex",
+      "nicowar",
+      "castor",
+      "econo",
+      "cortex",
+      "nicowar"
+    ],
+    "game_seed": 42,
+    "ticks": 32768
+  },
+  {
+    "id": "map-Isles",
+    "source": "bundled",
+    "map_file": "/Users/bradley/.codex/worktrees/hiring-gradient-bench/glob2/maps/Isles.map.gz",
+    "map_sha256": "2b8b18a2f192a28e4d1bceccf479ab505dda034dd4dbc5366f43802c5ced46d9",
+    "width": 128,
+    "height": 128,
+    "teams": 4,
+    "format": "ffa4",
+    "alliances": [
+      1,
+      2,
+      3,
+      4
+    ],
+    "players": [
+      "numbi",
+      "castor",
+      "econo",
+      "nicowar"
+    ],
+    "game_seed": 42,
+    "ticks": 32768
+  },
+  {
+    "id": "map-Mazury",
+    "source": "bundled",
+    "map_file": "/Users/bradley/.codex/worktrees/hiring-gradient-bench/glob2/maps/Mazury.map.gz",
+    "map_sha256": "e58c5838d8ba084f1e771c124a7374e23aef807eb36afe615e4e70f3ead9751e",
+    "width": 128,
+    "height": 128,
+    "teams": 2,
+    "format": "duel",
+    "alliances": [
+      1,
+      2
+    ],
+    "players": [
+      "cabino",
+      "nicowar"
+    ],
+    "game_seed": 42,
+    "ticks": 32768
+  },
+  {
+    "id": "map-Migration",
+    "source": "bundled",
+    "map_file": "/Users/bradley/.codex/worktrees/hiring-gradient-bench/glob2/maps/Migration.map.gz",
+    "map_sha256": "a37e79ed9ad3de9fcf4277c9369e4bcb24a1424a3121ba26e1a712eeb94f830d",
+    "width": 128,
+    "height": 128,
+    "teams": 4,
+    "format": "ffa4",
+    "alliances": [
+      1,
+      2,
+      3,
+      4
+    ],
+    "players": [
+      "nicowar",
+      "econo",
+      "castor",
+      "warrush"
+    ],
+    "game_seed": 42,
+    "ticks": 32768
+  },
+  {
+    "id": "map-Muka",
+    "source": "bundled",
+    "map_file": "/Users/bradley/.codex/worktrees/hiring-gradient-bench/glob2/maps/Muka.map.gz",
+    "map_sha256": "8413b5313f7b4e7055a72a0bd37be2822c92270dcd7259aaf50b07f79e008daa",
+    "width": 64,
+    "height": 128,
+    "teams": 2,
+    "format": "duel",
+    "alliances": [
+      1,
+      2
+    ],
+    "players": [
+      "nicowar",
+      "nicowar"
+    ],
+    "game_seed": 42,
+    "ticks": 32768
+  },
+  {
+    "id": "map-Oazis",
+    "source": "bundled",
+    "map_file": "/Users/bradley/.codex/worktrees/hiring-gradient-bench/glob2/maps/Oazis.map.gz",
+    "map_sha256": "b3283af95ee177f528d3b57438797c4a1970473c562a76f5ed4faad51f03a6d3",
+    "width": 256,
+    "height": 256,
+    "teams": 11,
+    "format": "ffa11",
+    "alliances": [
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9,
+      10,
+      11
+    ],
+    "players": [
+      "castor",
+      "castor",
+      "castor",
+      "castor",
+      "castor",
+      "castor",
+      "castor",
+      "castor",
+      "castor",
+      "castor",
+      "castor"
+    ],
+    "game_seed": 42,
+    "ticks": 32768
+  },
+  {
+    "id": "map-Playground",
+    "source": "bundled",
+    "map_file": "/Users/bradley/.codex/worktrees/hiring-gradient-bench/glob2/maps/Playground.map.gz",
+    "map_sha256": "56b3798fdb8d76b49eeab207e10842e0ef2e027624934c2c1186603f3bd937a4",
+    "width": 128,
+    "height": 128,
+    "teams": 8,
+    "format": "4v4",
+    "alliances": [
+      1,
+      1,
+      1,
+      1,
+      2,
+      2,
+      2,
+      2
+    ],
+    "players": [
+      "warrush",
+      "econo",
+      "warrush",
+      "econo",
+      "warrush",
+      "econo",
+      "warrush",
+      "econo"
+    ],
+    "game_seed": 42,
+    "ticks": 32768
+  },
+  {
+    "id": "map-Sand_River",
+    "source": "bundled",
+    "map_file": "/Users/bradley/.codex/worktrees/hiring-gradient-bench/glob2/maps/Sand_River.map.gz",
+    "map_sha256": "7a23d923006aeca7ec2ae45b3a35e8308e8419a8a46fb6292aad5cf0ba74427b",
+    "width": 128,
+    "height": 128,
+    "teams": 6,
+    "format": "2v2v2",
+    "alliances": [
+      1,
+      1,
+      2,
+      2,
+      3,
+      3
+    ],
+    "players": [
+      "cortex",
+      "nicowar",
+      "castor",
+      "econo",
+      "cortex",
+      "nicowar"
+    ],
+    "game_seed": 42,
+    "ticks": 32768
+  },
+  {
+    "id": "map-SmallForTwo",
+    "source": "bundled",
+    "map_file": "/Users/bradley/.codex/worktrees/hiring-gradient-bench/glob2/maps/SmallForTwo.map.gz",
+    "map_sha256": "a551bc8ccf3ccd36596100b9d9dcf67dae84a465ee609f41703dfbdff67b6858",
+    "width": 64,
+    "height": 64,
+    "teams": 2,
+    "format": "duel",
+    "alliances": [
+      1,
+      2
+    ],
+    "players": [
+      "numbi",
+      "castor"
+    ],
+    "game_seed": 42,
+    "ticks": 32768
+  },
+  {
+    "id": "map-Triangle",
+    "source": "bundled",
+    "map_file": "/Users/bradley/.codex/worktrees/hiring-gradient-bench/glob2/maps/Triangle.map.gz",
+    "map_sha256": "de71e2f900428d067a59db93075d6bcbbab87b2aee621f87503caf59771f6fa2",
+    "width": 128,
+    "height": 128,
+    "teams": 3,
+    "format": "ffa3",
+    "alliances": [
+      1,
+      2,
+      3
+    ],
+    "players": [
+      "cabino",
+      "nicowar",
+      "warrush"
+    ],
+    "game_seed": 42,
+    "ticks": 32768
+  },
+  {
+    "id": "map-Wild_River",
+    "source": "bundled",
+    "map_file": "/Users/bradley/.codex/worktrees/hiring-gradient-bench/glob2/maps/Wild_River.map.gz",
+    "map_sha256": "160e6092ce275f87815b564f57b13a9fa67aa09758c3a8510368f411aa110c64",
+    "width": 256,
+    "height": 64,
+    "teams": 6,
+    "format": "3v3",
+    "alliances": [
+      1,
+      1,
+      1,
+      2,
+      2,
+      2
+    ],
+    "players": [
+      "nicowar",
+      "econo",
+      "castor",
+      "warrush",
+      "nicowar",
+      "econo"
+    ],
+    "game_seed": 42,
+    "ticks": 32768
+  },
+  {
+    "id": "map-balanced",
+    "source": "bundled",
+    "map_file": "/Users/bradley/.codex/worktrees/hiring-gradient-bench/glob2/maps/balanced.map.gz",
+    "map_sha256": "d996f169dd07e6526f16d7a7e1aad1aeaf556d0135591efa9a4c3ea31cfaea63",
+    "width": 128,
+    "height": 128,
+    "teams": 4,
+    "format": "ffa4",
+    "alliances": [
+      1,
+      2,
+      3,
+      4
+    ],
+    "players": [
+      "nicowar",
+      "nicowar",
+      "nicowar",
+      "nicowar"
+    ],
+    "game_seed": 42,
+    "ticks": 32768
+  },
+  {
+    "id": "map-balanced_for_2",
+    "source": "bundled",
+    "map_file": "/Users/bradley/.codex/worktrees/hiring-gradient-bench/glob2/maps/balanced_for_2.map.gz",
+    "map_sha256": "adae148dbc9eaf630caab7525d17dcc8fb0392326503b4a0c750babe2238a770",
+    "width": 64,
+    "height": 64,
+    "teams": 2,
+    "format": "duel",
+    "alliances": [
+      1,
+      2
+    ],
+    "players": [
+      "castor",
+      "castor"
+    ],
+    "game_seed": 42,
+    "ticks": 32768
+  },
+  {
+    "id": "map-strange2",
+    "source": "bundled",
+    "map_file": "/Users/bradley/.codex/worktrees/hiring-gradient-bench/glob2/maps/strange2.map.gz",
+    "map_sha256": "5b40ac40f7420b391c2daa432a3b3c96f5167a0765e7f06914be6f626bf9fdba",
+    "width": 128,
+    "height": 128,
+    "teams": 2,
+    "format": "duel",
+    "alliances": [
+      1,
+      2
+    ],
+    "players": [
+      "warrush",
+      "econo"
+    ],
+    "game_seed": 42,
+    "ticks": 32768
+  },
+  {
+    "id": "gen-shattered-coast-8v8",
+    "source": "generator",
+    "generator": "shattered-coast",
+    "width": 512,
+    "height": 256,
+    "teams": 16,
+    "format": "8v8",
+    "alliances": [
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      2,
+      2,
+      2,
+      2,
+      2,
+      2,
+      2,
+      2
+    ],
+    "players": [
+      "nicowar",
+      "econo",
+      "castor",
+      "warrush",
+      "nicowar",
+      "econo",
+      "castor",
+      "warrush",
+      "nicowar",
+      "econo",
+      "castor",
+      "warrush",
+      "nicowar",
+      "econo",
+      "castor",
+      "warrush"
+    ],
+    "map_seed": 713,
+    "game_seed": 42,
+    "ticks": 32768,
+    "controls": {
+      "width": 9,
+      "height": 8,
+      "teams": 16
+    }
+  }
+]

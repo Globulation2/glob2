@@ -1,0 +1,18 @@
+{"id": "gen-fingerprint", "ticks": 32768, "samples": 192, "match": true}
+FAILED gen-symmetric-arena /Users/bradley/.codex/worktrees/hiring-gradient-bench/glob2/artifacts/pending-direction-wide/runs/gen-symmetric-arena/generation-command: Settings::load("preferences.txt") : error, can't open file.
+symmetric-arena revision 2 seed 713 [validation]: Symmetric arena needs 2, 4 or 8 colonies.
+ 
+{"id": "gen-swamp", "ticks": 32768, "samples": 1099, "match": true}
+{"id": "gen-old-town", "ticks": 32768, "samples": 647, "match": true}
+{"id": "gen-river", "ticks": 31266, "samples": 571, "match": true}
+{"id": "gen-tidal-flats", "ticks": 32768, "samples": 2587, "match": true}
+{"id": "gen-isles", "ticks": 32768, "samples": 30388, "match": true}
+{"id": "gen-ring-world", "ticks": 32768, "samples": 3255, "match": true}
+{"id": "gen-amphitheatre", "ticks": 32768, "samples": 1408, "match": true}
+{"id": "gen-shattered-coast", "ticks": 32768, "samples": 599, "match": true}
+{"id": "gen-crater-lakes", "ticks": 32768, "samples": 3623, "match": true}
+{"id": "gen-fjord-continent", "ticks": 32768, "samples": 3426, "match": true}
+FAILED gen-concrete-islands /Users/bradley/.codex/worktrees/hiring-gradient-bench/glob2/artifacts/pending-direction-wide/runs/gen-concrete-islands/generation-command: Settings::load("preferences.txt") : error, can't open file.
+concrete-islands revision 3 seed 713 [generator validation]: Colony 3 has only 9 reachable 4x4 building origins; 16 required within 24 steps.
+ 
+{"id": "gen-spider-web", "ticks": 32768, "samples": 707, "match": true}

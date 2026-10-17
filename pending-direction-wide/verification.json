@@ -1,0 +1,11 @@
+{
+  "cases": 91,
+  "pending_queries": 196814,
+  "probe_ticks": 2871634,
+  "all_case_inputs_match": true,
+  "all_control_initial_final_tick_counts_match": true,
+  "all_map_hashes_match": true,
+  "all_raw_sample_counts_match": true,
+  "all_category_partitions_match": true,
+  "paired_policy_denominators_match": true
+}

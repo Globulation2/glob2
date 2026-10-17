@@ -1,0 +1,225 @@
+FAILED gen-old-town /Users/bradley/.codex/worktrees/hiring-gradient-bench/glob2/artifacts/pending-direction-wide/runs/gen-old-town/generation-command: Settings::load("preferences.txt") : error, can't open file.
+old-town revision 8 seed 713 [validation]: Invalid width
+ 
+FAILED gen-fingerprint /Users/bradley/.codex/worktrees/hiring-gradient-bench/glob2/artifacts/pending-direction-wide/runs/gen-fingerprint/generation-command: Settings::load("preferences.txt") : error, can't open file.
+fingerprint revision 5 seed 713 [validation]: Invalid width
+ 
+FAILED gen-symmetric-arena /Users/bradley/.codex/worktrees/hiring-gradient-bench/glob2/artifacts/pending-direction-wide/runs/gen-symmetric-arena/generation-command: Settings::load("preferences.txt") : error, can't open file.
+symmetric-arena revision 2 seed 713 [validation]: Invalid width
+ 
+FAILED gen-swamp /Users/bradley/.codex/worktrees/hiring-gradient-bench/glob2/artifacts/pending-direction-wide/runs/gen-swamp/generation-command: Settings::load("preferences.txt") : error, can't open file.
+swamp revision 5 seed 713 [validation]: Invalid width
+ 
+FAILED gen-river /Users/bradley/.codex/worktrees/hiring-gradient-bench/glob2/artifacts/pending-direction-wide/runs/gen-river/generation-command: Settings::load("preferences.txt") : error, can't open file.
+river revision 5 seed 713 [validation]: Invalid width
+ 
+FAILED gen-tidal-flats /Users/bradley/.codex/worktrees/hiring-gradient-bench/glob2/artifacts/pending-direction-wide/runs/gen-tidal-flats/generation-command: Settings::load("preferences.txt") : error, can't open file.
+tidal-flats revision 7 seed 713 [validation]: Invalid width
+ 
+FAILED gen-ring-world /Users/bradley/.codex/worktrees/hiring-gradient-bench/glob2/artifacts/pending-direction-wide/runs/gen-ring-world/generation-command: Settings::load("preferences.txt") : error, can't open file.
+ring-world revision 2 seed 713 [validation]: Invalid width
+ 
+FAILED gen-isles /Users/bradley/.codex/worktrees/hiring-gradient-bench/glob2/artifacts/pending-direction-wide/runs/gen-isles/generation-command: Settings::load("preferences.txt") : error, can't open file.
+isles revision 4 seed 713 [validation]: Invalid width
+ 
+FAILED gen-shattered-coast /Users/bradley/.codex/worktrees/hiring-gradient-bench/glob2/artifacts/pending-direction-wide/runs/gen-shattered-coast/generation-command: Settings::load("preferences.txt") : error, can't open file.
+shattered-coast revision 6 seed 713 [validation]: Invalid width
+ 
+FAILED gen-amphitheatre /Users/bradley/.codex/worktrees/hiring-gradient-bench/glob2/artifacts/pending-direction-wide/runs/gen-amphitheatre/generation-command: Settings::load("preferences.txt") : error, can't open file.
+amphitheatre revision 4 seed 713 [validation]: Invalid width
+ 
+FAILED gen-fjord-continent /Users/bradley/.codex/worktrees/hiring-gradient-bench/glob2/artifacts/pending-direction-wide/runs/gen-fjord-continent/generation-command: Settings::load("preferences.txt") : error, can't open file.
+fjord-continent revision 14 seed 713 [validation]: Invalid width
+ 
+FAILED gen-crater-lakes /Users/bradley/.codex/worktrees/hiring-gradient-bench/glob2/artifacts/pending-direction-wide/runs/gen-crater-lakes/generation-command: Settings::load("preferences.txt") : error, can't open file.
+crater-lakes revision 5 seed 713 [validation]: Invalid width
+ 
+FAILED gen-spider-web /Users/bradley/.codex/worktrees/hiring-gradient-bench/glob2/artifacts/pending-direction-wide/runs/gen-spider-web/generation-command: Settings::load("preferences.txt") : error, can't open file.
+spider-web revision 3 seed 713 [validation]: Invalid width
+ 
+FAILED gen-concrete-islands /Users/bradley/.codex/worktrees/hiring-gradient-bench/glob2/artifacts/pending-direction-wide/runs/gen-concrete-islands/generation-command: Settings::load("preferences.txt") : error, can't open file.
+concrete-islands revision 3 seed 713 [validation]: Invalid width
+ 
+FAILED gen-watershed /Users/bradley/.codex/worktrees/hiring-gradient-bench/glob2/artifacts/pending-direction-wide/runs/gen-watershed/generation-command: Settings::load("preferences.txt") : error, can't open file.
+watershed revision 2 seed 713 [validation]: Invalid width
+ 
+FAILED gen-maze /Users/bradley/.codex/worktrees/hiring-gradient-bench/glob2/artifacts/pending-direction-wide/runs/gen-maze/generation-command: Settings::load("preferences.txt") : error, can't open file.
+maze revision 16 seed 713 [validation]: Invalid width
+ 
+FAILED gen-stone-highlands /Users/bradley/.codex/worktrees/hiring-gradient-bench/glob2/artifacts/pending-direction-wide/runs/gen-stone-highlands/generation-command: Settings::load("preferences.txt") : error, can't open file.
+stone-highlands revision 5 seed 713 [validation]: Invalid width
+ 
+FAILED gen-islands /Users/bradley/.codex/worktrees/hiring-gradient-bench/glob2/artifacts/pending-direction-wide/runs/gen-islands/generation-command: Settings::load("preferences.txt") : error, can't open file.
+islands revision 5 seed 713 [validation]: Invalid width
+ 
+FAILED gen-city-states /Users/bradley/.codex/worktrees/hiring-gradient-bench/glob2/artifacts/pending-direction-wide/runs/gen-city-states/generation-command: Settings::load("preferences.txt") : error, can't open file.
+city-states revision 11 seed 713 [validation]: Invalid width
+ 
+FAILED gen-switchbacks /Users/bradley/.codex/worktrees/hiring-gradient-bench/glob2/artifacts/pending-direction-wide/runs/gen-switchbacks/generation-command: Settings::load("preferences.txt") : error, can't open file.
+switchbacks revision 5 seed 713 [validation]: Invalid width
+ 
+FAILED gen-canals /Users/bradley/.codex/worktrees/hiring-gradient-bench/glob2/artifacts/pending-direction-wide/runs/gen-canals/generation-command: Settings::load("preferences.txt") : error, can't open file.
+canals revision 8 seed 713 [validation]: Invalid width
+ 
+FAILED gen-sierpinski-gardens /Users/bradley/.codex/worktrees/hiring-gradient-bench/glob2/artifacts/pending-direction-wide/runs/gen-sierpinski-gardens/generation-command: Settings::load("preferences.txt") : error, can't open file.
+sierpinski-gardens revision 9 seed 713 [validation]: Invalid width
+ 
+FAILED gen-lava-shield /Users/bradley/.codex/worktrees/hiring-gradient-bench/glob2/artifacts/pending-direction-wide/runs/gen-lava-shield/generation-command: Settings::load("preferences.txt") : error, can't open file.
+lava-shield revision 6 seed 713 [validation]: Invalid width
+ 
+FAILED gen-hilbert-river /Users/bradley/.codex/worktrees/hiring-gradient-bench/glob2/artifacts/pending-direction-wide/runs/gen-hilbert-river/generation-command: Settings::load("preferences.txt") : error, can't open file.
+hilbert-river revision 9 seed 713 [validation]: Invalid width
+ 
+FAILED gen-honeycomb-isle /Users/bradley/.codex/worktrees/hiring-gradient-bench/glob2/artifacts/pending-direction-wide/runs/gen-honeycomb-isle/generation-command: Settings::load("preferences.txt") : error, can't open file.
+honeycomb-isle revision 3 seed 713 [validation]: Invalid width
+ 
+FAILED gen-karst-towers /Users/bradley/.codex/worktrees/hiring-gradient-bench/glob2/artifacts/pending-direction-wide/runs/gen-karst-towers/generation-command: Settings::load("preferences.txt") : error, can't open file.
+karst-towers revision 3 seed 713 [validation]: Invalid width
+ 
+FAILED gen-central-quarry /Users/bradley/.codex/worktrees/hiring-gradient-bench/glob2/artifacts/pending-direction-wide/runs/gen-central-quarry/generation-command: Settings::load("preferences.txt") : error, can't open file.
+central-quarry revision 2 seed 713 [validation]: Invalid width
+ 
+FAILED gen-bajada /Users/bradley/.codex/worktrees/hiring-gradient-bench/glob2/artifacts/pending-direction-wide/runs/gen-bajada/generation-command: Settings::load("preferences.txt") : error, can't open file.
+bajada revision 2 seed 713 [validation]: Invalid width
+ 
+FAILED gen-drowned-forest /Users/bradley/.codex/worktrees/hiring-gradient-bench/glob2/artifacts/pending-direction-wide/runs/gen-drowned-forest/generation-command: Settings::load("preferences.txt") : error, can't open file.
+drowned-forest revision 2 seed 713 [validation]: Invalid width
+ 
+FAILED gen-hidden-oasis /Users/bradley/.codex/worktrees/hiring-gradient-bench/glob2/artifacts/pending-direction-wide/runs/gen-hidden-oasis/generation-command: Settings::load("preferences.txt") : error, can't open file.
+hidden-oasis revision 2 seed 713 [validation]: Invalid width
+ 
+FAILED gen-portage-lakes /Users/bradley/.codex/worktrees/hiring-gradient-bench/glob2/artifacts/pending-direction-wide/runs/gen-portage-lakes/generation-command: Settings::load("preferences.txt") : error, can't open file.
+portage-lakes revision 5 seed 713 [validation]: Invalid width
+ 
+FAILED gen-orchard-commons /Users/bradley/.codex/worktrees/hiring-gradient-bench/glob2/artifacts/pending-direction-wide/runs/gen-orchard-commons/generation-command: Settings::load("preferences.txt") : error, can't open file.
+orchard-commons revision 4 seed 713 [validation]: Invalid width
+ 
+FAILED gen-gauntlet /Users/bradley/.codex/worktrees/hiring-gradient-bench/glob2/artifacts/pending-direction-wide/runs/gen-gauntlet/generation-command: Settings::load("preferences.txt") : error, can't open file.
+gauntlet revision 3 seed 713 [validation]: Invalid width
+ 
+FAILED gen-last-treeline /Users/bradley/.codex/worktrees/hiring-gradient-bench/glob2/artifacts/pending-direction-wide/runs/gen-last-treeline/generation-command: Settings::load("preferences.txt") : error, can't open file.
+last-treeline revision 4 seed 713 [validation]: Invalid width
+ 
+FAILED gen-comb /Users/bradley/.codex/worktrees/hiring-gradient-bench/glob2/artifacts/pending-direction-wide/runs/gen-comb/generation-command: Settings::load("preferences.txt") : error, can't open file.
+comb revision 5 seed 713 [validation]: Invalid width
+ 
+FAILED gen-faulted-city /Users/bradley/.codex/worktrees/hiring-gradient-bench/glob2/artifacts/pending-direction-wide/runs/gen-faulted-city/generation-command: Settings::load("preferences.txt") : error, can't open file.
+faulted-city revision 4 seed 713 [validation]: Invalid width
+ 
+FAILED gen-bastion-keys /Users/bradley/.codex/worktrees/hiring-gradient-bench/glob2/artifacts/pending-direction-wide/runs/gen-bastion-keys/generation-command: Settings::load("preferences.txt") : error, can't open file.
+bastion-keys revision 3 seed 713 [validation]: Invalid width
+ 
+FAILED gen-encircled-kingdom /Users/bradley/.codex/worktrees/hiring-gradient-bench/glob2/artifacts/pending-direction-wide/runs/gen-encircled-kingdom/generation-command: Settings::load("preferences.txt") : error, can't open file.
+encircled-kingdom revision 3 seed 713 [validation]: Invalid width
+ 
+FAILED gen-even-ground /Users/bradley/.codex/worktrees/hiring-gradient-bench/glob2/artifacts/pending-direction-wide/runs/gen-even-ground/generation-command: Settings::load("preferences.txt") : error, can't open file.
+even-ground revision 3 seed 713 [validation]: Invalid width
+ 
+FAILED gen-marchland /Users/bradley/.codex/worktrees/hiring-gradient-bench/glob2/artifacts/pending-direction-wide/runs/gen-marchland/generation-command: Settings::load("preferences.txt") : error, can't open file.
+marchland revision 3 seed 713 [validation]: Invalid width
+ 
+FAILED gen-who-ate-the-map /Users/bradley/.codex/worktrees/hiring-gradient-bench/glob2/artifacts/pending-direction-wide/runs/gen-who-ate-the-map/generation-command: Settings::load("preferences.txt") : error, can't open file.
+who-ate-the-map revision 2 seed 713 [validation]: Invalid width
+ 
+FAILED gen-rugged-archipelago /Users/bradley/.codex/worktrees/hiring-gradient-bench/glob2/artifacts/pending-direction-wide/runs/gen-rugged-archipelago/generation-command: Settings::load("preferences.txt") : error, can't open file.
+rugged-archipelago revision 4 seed 713 [validation]: Invalid width
+ 
+FAILED gen-contested-commons /Users/bradley/.codex/worktrees/hiring-gradient-bench/glob2/artifacts/pending-direction-wide/runs/gen-contested-commons/generation-command: Settings::load("preferences.txt") : error, can't open file.
+contested-commons revision 4 seed 713 [validation]: Invalid width
+ 
+FAILED gen-hungry-marches /Users/bradley/.codex/worktrees/hiring-gradient-bench/glob2/artifacts/pending-direction-wide/runs/gen-hungry-marches/generation-command: Settings::load("preferences.txt") : error, can't open file.
+hungry-marches revision 3 seed 713 [validation]: Invalid width
+ 
+FAILED gen-everglades /Users/bradley/.codex/worktrees/hiring-gradient-bench/glob2/artifacts/pending-direction-wide/runs/gen-everglades/generation-command: Settings::load("preferences.txt") : error, can't open file.
+everglades revision 3 seed 713 [validation]: Invalid width
+ 
+FAILED gen-rain-shadow /Users/bradley/.codex/worktrees/hiring-gradient-bench/glob2/artifacts/pending-direction-wide/runs/gen-rain-shadow/generation-command: Settings::load("preferences.txt") : error, can't open file.
+rain-shadow revision 5 seed 713 [validation]: Invalid width
+ 
+FAILED gen-carousel /Users/bradley/.codex/worktrees/hiring-gradient-bench/glob2/artifacts/pending-direction-wide/runs/gen-carousel/generation-command: Settings::load("preferences.txt") : error, can't open file.
+carousel revision 3 seed 713 [validation]: Invalid width
+ 
+FAILED gen-polder /Users/bradley/.codex/worktrees/hiring-gradient-bench/glob2/artifacts/pending-direction-wide/runs/gen-polder/generation-command: Settings::load("preferences.txt") : error, can't open file.
+polder revision 7 seed 713 [validation]: Invalid width
+ 
+FAILED gen-anthill /Users/bradley/.codex/worktrees/hiring-gradient-bench/glob2/artifacts/pending-direction-wide/runs/gen-anthill/generation-command: Settings::load("preferences.txt") : error, can't open file.
+anthill revision 5 seed 713 [validation]: Invalid width
+ 
+FAILED gen-old-growth /Users/bradley/.codex/worktrees/hiring-gradient-bench/glob2/artifacts/pending-direction-wide/runs/gen-old-growth/generation-command: Settings::load("preferences.txt") : error, can't open file.
+old-growth revision 5 seed 713 [validation]: Invalid width
+ 
+FAILED gen-emoji /Users/bradley/.codex/worktrees/hiring-gradient-bench/glob2/artifacts/pending-direction-wide/runs/gen-emoji/generation-command: Settings::load("preferences.txt") : error, can't open file.
+emoji revision 12 seed 713 [validation]: Invalid width
+ 
+FAILED gen-coral /Users/bradley/.codex/worktrees/hiring-gradient-bench/glob2/artifacts/pending-direction-wide/runs/gen-coral/generation-command: Settings::load("preferences.txt") : error, can't open file.
+coral revision 2 seed 713 [validation]: Invalid width
+ 
+FAILED gen-braided-delta /Users/bradley/.codex/worktrees/hiring-gradient-bench/glob2/artifacts/pending-direction-wide/runs/gen-braided-delta/generation-command: Settings::load("preferences.txt") : error, can't open file.
+braided-delta revision 4 seed 713 [validation]: Invalid width
+ 
+FAILED gen-forts /Users/bradley/.codex/worktrees/hiring-gradient-bench/glob2/artifacts/pending-direction-wide/runs/gen-forts/generation-command: Settings::load("preferences.txt") : error, can't open file.
+forts revision 8 seed 713 [validation]: Invalid width
+ 
+FAILED gen-hedgerow-country /Users/bradley/.codex/worktrees/hiring-gradient-bench/glob2/artifacts/pending-direction-wide/runs/gen-hedgerow-country/generation-command: Settings::load("preferences.txt") : error, can't open file.
+hedgerow-country revision 8 seed 713 [validation]: Invalid width
+ 
+FAILED gen-breachable-highlands /Users/bradley/.codex/worktrees/hiring-gradient-bench/glob2/artifacts/pending-direction-wide/runs/gen-breachable-highlands/generation-command: Settings::load("preferences.txt") : error, can't open file.
+breachable-highlands revision 6 seed 713 [validation]: Invalid width
+ 
+FAILED gen-allotments /Users/bradley/.codex/worktrees/hiring-gradient-bench/glob2/artifacts/pending-direction-wide/runs/gen-allotments/generation-command: Settings::load("preferences.txt") : error, can't open file.
+allotments revision 3 seed 713 [validation]: Invalid width
+ 
+FAILED gen-glacis /Users/bradley/.codex/worktrees/hiring-gradient-bench/glob2/artifacts/pending-direction-wide/runs/gen-glacis/generation-command: Settings::load("preferences.txt") : error, can't open file.
+glacis revision 4 seed 713 [validation]: Invalid width
+ 
+FAILED gen-caravanserai /Users/bradley/.codex/worktrees/hiring-gradient-bench/glob2/artifacts/pending-direction-wide/runs/gen-caravanserai/generation-command: Settings::load("preferences.txt") : error, can't open file.
+caravanserai revision 4 seed 713 [validation]: Invalid width
+ 
+FAILED gen-braided-river /Users/bradley/.codex/worktrees/hiring-gradient-bench/glob2/artifacts/pending-direction-wide/runs/gen-braided-river/generation-command: Settings::load("preferences.txt") : error, can't open file.
+braided-river revision 3 seed 713 [validation]: Invalid width
+ 
+FAILED gen-drumlin-field /Users/bradley/.codex/worktrees/hiring-gradient-bench/glob2/artifacts/pending-direction-wide/runs/gen-drumlin-field/generation-command: Settings::load("preferences.txt") : error, can't open file.
+drumlin-field revision 2 seed 713 [validation]: Invalid width
+ 
+FAILED gen-continents /Users/bradley/.codex/worktrees/hiring-gradient-bench/glob2/artifacts/pending-direction-wide/runs/gen-continents/generation-command: Settings::load("preferences.txt") : error, can't open file.
+continents revision 4 seed 713 [validation]: Invalid width
+ 
+FAILED gen-savannah /Users/bradley/.codex/worktrees/hiring-gradient-bench/glob2/artifacts/pending-direction-wide/runs/gen-savannah/generation-command: Settings::load("preferences.txt") : error, can't open file.
+savannah revision 3 seed 713 [validation]: Invalid width
+ 
+FAILED gen-hills /Users/bradley/.codex/worktrees/hiring-gradient-bench/glob2/artifacts/pending-direction-wide/runs/gen-hills/generation-command: Settings::load("preferences.txt") : error, can't open file.
+hills revision 8 seed 713 [validation]: Invalid width
+ 
+FAILED gen-rice-terraces /Users/bradley/.codex/worktrees/hiring-gradient-bench/glob2/artifacts/pending-direction-wide/runs/gen-rice-terraces/generation-command: Settings::load("preferences.txt") : error, can't open file.
+rice-terraces revision 4 seed 713 [validation]: Invalid width
+ 
+FAILED gen-locust /Users/bradley/.codex/worktrees/hiring-gradient-bench/glob2/artifacts/pending-direction-wide/runs/gen-locust/generation-command: Settings::load("preferences.txt") : error, can't open file.
+locust revision 5 seed 713 [validation]: Invalid width
+ 
+FAILED gen-plantations /Users/bradley/.codex/worktrees/hiring-gradient-bench/glob2/artifacts/pending-direction-wide/runs/gen-plantations/generation-command: Settings::load("preferences.txt") : error, can't open file.
+plantations revision 4 seed 713 [validation]: Invalid width
+ 
+{"id": "map-A_big_pond", "ticks": 32768, "samples": 887, "match": true}
+{"id": "map-Archipelago", "ticks": 32768, "samples": 475, "match": true}
+{"id": "map-Dejans", "ticks": 9602, "samples": 34, "match": true}
+{"id": "map-Easy_Three", "ticks": 32768, "samples": 1269, "match": true}
+{"id": "map-Centerfolds_2", "ticks": 32768, "samples": 2971, "match": true}
+{"id": "map-FourSquares1", "ticks": 24674, "samples": 1293, "match": true}
+{"id": "map-G2", "ticks": 32768, "samples": 3756, "match": true}
+{"id": "map-Garden_3", "ticks": 32768, "samples": 560, "match": true}
+{"id": "map-Holiday_Island_2", "ticks": 32768, "samples": 479, "match": true}
+{"id": "map-Isles", "ticks": 32768, "samples": 496, "match": true}
+{"id": "map-Mazury", "ticks": 18498, "samples": 435, "match": true}
+{"id": "map-Island_of_the_Renfur", "ticks": 32768, "samples": 8005, "match": true}
+{"id": "map-Migration", "ticks": 29314, "samples": 115, "match": true}
+{"id": "map-Muka", "ticks": 23490, "samples": 455, "match": true}
+{"id": "map-Playground", "ticks": 28386, "samples": 1622, "match": true}
+{"id": "map-Oazis", "ticks": 32768, "samples": 1594, "match": true}
+{"id": "map-SmallForTwo", "ticks": 8482, "samples": 37, "match": true}
+{"id": "map-Triangle", "ticks": 32768, "samples": 3983, "match": true}
+{"id": "map-Sand_River", "ticks": 32768, "samples": 8298, "match": true}
+{"id": "map-Wild_River", "ticks": 32768, "samples": 3689, "match": true}
+{"id": "map-balanced", "ticks": 32768, "samples": 6034, "match": true}
+{"id": "map-balanced_for_2", "ticks": 32768, "samples": 228, "match": true}
+{"id": "map-strange2", "ticks": 10946, "samples": 85, "match": true}
+FINISHED
