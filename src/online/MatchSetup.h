@@ -13,8 +13,8 @@
 //   toGameHeader(map)        the GameHeader, checked against the map's team count
 //
 // Every human seat becomes BasePlayer::P_IP on every client and in the verifier, so
-// the heavy checksum the engine enables for network games (Game::checkSum) is the
-// same everywhere; the local seat is chosen with Engine's localPlayer, not the type.
+// remote-session checksum coverage is the same everywhere. The local seat is
+// chosen with Engine's localPlayer, not the type.
 //
 // Seats, players and teams. A human or AI seat is a player: seat s is BasePlayer s,
 // the number tickets, the relay's humanSeats mask, the turn session's local seat,

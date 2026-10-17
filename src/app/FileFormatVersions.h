@@ -290,3 +290,6 @@ static constexpr int FILE_FORMAT_VERSION_INTRUSIVE_POPULATION = 166;
 
 // One immutable world observation per owner boundary; persisted admission phase.
 static constexpr int FILE_FORMAT_VERSION_SINGLE_OBSERVATION = 167;
+
+// Tagged snapshot checksums in order/replay envelopes, including saved AI queues.
+static constexpr int FILE_FORMAT_VERSION_SNAPSHOT_CHECKSUM = 168;

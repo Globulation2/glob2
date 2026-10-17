@@ -50,6 +50,8 @@ void NetSendOrder::encodeData(GAGCore::OutputStream* stream) const
 	stream->write(order->getData(), order->getDataLength(), "data");
 	stream->writeUint8(order->sender, "sender");
 	stream->writeUint32(order->gameCheckSum, "checksum");
+    stream->writeUint8(order->hasGameCheckSum, "hasChecksum");
+    stream->writeUint32(order->gameCheckSumTick, "checksumTick");
 	stream->writeLeaveSection();
 }
 
@@ -88,6 +90,12 @@ void NetSendOrder::decodeData(GAGCore::InputStream* stream)
 
 	order->sender = stream->readUint8("sender");
 	order->gameCheckSum = stream->readUint32("checksum");
+    if (decodeVersionMinor>=FILE_FORMAT_VERSION_SNAPSHOT_CHECKSUM) {
+        const auto present=stream->readUint8("hasChecksum");
+        if (present>1) throw std::ios_base::failure("Invalid checksum presence");
+        order->hasGameCheckSum=present;
+        order->gameCheckSumTick=stream->readUint32("checksumTick");
+    }
 	stream->readLeaveSection();
 }
 

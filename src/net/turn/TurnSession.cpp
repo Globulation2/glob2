@@ -617,12 +617,16 @@ void TurnSession::pushOrder(std::shared_ptr<Order> order, int playerNumber, bool
 
 void TurnSession::advanceStep(Uint32 checksum)
 {
-	++step;
-	if (reloadPending || executed % checksumInterval != 0)
+    advanceStep();
+    publishChecksum({executed,checksum});
+}
+void TurnSession::publishChecksum(ChecksumSample sample)
+{
+    if (reloadPending || sample.sourceTick % checksumInterval != 0)
 		return;
 	ChecksumReport report;
-	report.tick = executed;
-	report.checksum = checksum;
+	report.tick = sample.sourceTick;
+	report.checksum = sample.value;
 	if (linkUp())
 		send(report);
 	else

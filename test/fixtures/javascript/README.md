@@ -12,7 +12,7 @@ subnormal Math results. These are compatibility fixtures, not benchmarks.
 Changing them requires explaining the intended profile or simulation change.
 
 Run `python3 test/check_javascript.py /absolute/path/to/glob2 --output artifacts/js-check`
-with a fresh output directory. It compares against the current unit-era trace, compares
+with a fresh output directory. It compares against the current deep live-world trace, compares
 replays and saves at one and four compute workers, and checks resumed state and
 ticks from several saved checkpoints, including scenario-callback boundaries. The saved payload comparison excludes only
 the existing MapHeader SHA1, which depends on save history; scripts, RNG state,
@@ -116,7 +116,7 @@ ecology can change subsequent simulation behavior. Both checkers still load the
 original version-125 saves, then compare complete current traces, one/four-worker
 execution and saved continuations; the native suite also checks replay playback.
 The native fixture runner's `--update-fixtures` option rewrites only the
-unit-era traces described below. Historical traces, initial saves and numeric/data goldens remain intact.
+deep live-world traces described below. Historical traces, initial saves and numeric/data goldens remain intact.
 MapHeader version normalization and the final-save SHA1 exclusion described above
 remain unchanged.
 
@@ -141,11 +141,23 @@ MapHeader metadata or player-count offset.
 
 Normal targeting uses the persisted L=3/R=2/K=1 pipeline from format 159,
 SIM_REVISION 49. Current runners select `profile1-initial159.game.gz` and
-`realistic-profile1-initial159.game.gz`, with the corresponding
-`*-256-cached159.checksums.gz` traces. The new initial states preserve the
-released setup, scripts and catalogs; old saved matches are deliberately rejected.
+`realistic-profile1-initial159.game.gz`. The corresponding
+`*-256-cached159.checksums.gz` traces are retained historical references. These
+initial states preserve the released setup, scripts and catalogs; old saved
+matches are deliberately rejected.
 
-The current cached159 traces also include format-160 private-stock and cached-unit-
+The historical cached159 traces also include format-160 private-stock and cached-unit-
 performance caps (SIM_REVISION 56). The filename identifies the format-159 input
-save; expected traces follow the current simulation and snapshot digest layout.
-One/four-worker execution, save continuation and replay playback remain required.
+save; those traces retain the checksum layout preceding format 168.
+
+Format 168 uses asynchronous routine snapshot checksums and opt-in deep live-world
+sidecars. Current runners compare `profile1-256-deep168.checksums.gz` and
+`realistic-profile1-256-deep168.checksums.gz`; the native `--update-fixtures` option
+rewrites only those current traces. Their aggregate retains existing full map,
+script, RNG and pending-work coverage, and header flag bit 0 identifies this deep
+mode. Replays separately validate the source-tagged snapshot schema. The native
+corpus normalizes only MapHeader's checksum minor to 125; the Python checker
+adjusts that version contribution with the current two-final-rotation formula,
+including for resumed format-168 saves. Historical traces and input saves remain
+unchanged. One/four-worker byte equivalence and save/replay continuation remain
+required.

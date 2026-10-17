@@ -12,7 +12,7 @@
 #include <vector>
 
 enum class ComputeTelemetryMode { Off, Waits, Trace };
-enum class ComputeProducer { AI, PeriodicGradient, BuildingGradient, ResourceGrowth, Hiring, Presentation, Other, Mixed, Count };
+enum class ComputeProducer { AI, PeriodicGradient, BuildingGradient, ResourceGrowth, Hiring, Presentation, Other, Mixed, Checksum, Count };
 enum class JoinReason { TickDeadline, ImmediateRequired, Save, Reconfigure, Teardown, Verification, Count };
 struct BatchDiagnostics {
     ComputeProducer producer = ComputeProducer::Other;
@@ -26,7 +26,7 @@ namespace ComputeTelemetry {
 inline constexpr std::uint64_t NoTick = std::numeric_limits<std::uint64_t>::max();
 inline constexpr std::size_t DefaultTraceBytes = 16 * 1024 * 1024;
 inline constexpr std::array<std::string_view, 3> ModeNames{"off", "waits", "trace"};
-inline constexpr std::array<std::string_view, 8> ProducerNames{"ai", "periodic_gradient", "building_gradient", "resource_growth", "hiring", "presentation", "other", "mixed"};
+inline constexpr std::array<std::string_view, 9> ProducerNames{"ai", "periodic_gradient", "building_gradient", "resource_growth", "hiring", "presentation", "other", "mixed", "checksum"};
 inline constexpr std::array<std::string_view, 6> ReasonNames{"tick_deadline", "immediate_required", "save", "reconfigure", "teardown", "verification"};
 inline ComputeTelemetryMode parseMode(std::string_view value) {
     for (unsigned i = 0; i < ModeNames.size(); ++i) if (value == ModeNames[i]) return ComputeTelemetryMode(i);

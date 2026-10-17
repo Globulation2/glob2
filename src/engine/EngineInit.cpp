@@ -726,6 +726,11 @@ GAGCore::CooperativeTask Engine::loadReplayTask(std::string fileName)
 	MapHeader mapHeader = loadMapHeader(fileName);
 	GameHeader gameHeader = loadGameHeader(fileName);
 
+    // Preserve checksum coverage before replay replaces recorded player types.
+    replayMapChecksums=false;
+    for (int player=0;player<gameHeader.getNumberOfPlayers();++player)
+        replayMapChecksums |= gameHeader.getBasePlayer(player).type==BasePlayer::P_IP;
+
 	// A replay drives players from recorded orders, so no live AI runs.
 	for (int p=0; p<gameHeader.getNumberOfPlayers(); p++)
 	{
@@ -754,6 +759,7 @@ GAGCore::CooperativeTask Engine::loadReplayTask(std::string fileName)
 
 void Engine::clearReplayState()
 {
+    replayMapChecksums=false;
 	globalContainer->replaying = false;
 	globalContainer->replayFileName.clear();
 	globalContainer->replayReader.reset();

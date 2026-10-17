@@ -353,11 +353,13 @@ public:
 		lockstep->onChecksum = [this](std::uint32_t tick, Uint32 checksum) {
 			if (tick == 0 && !lives.back().empty())
 			{
-				// Reload must establish its observation before the first checksum,
-				// order delivery and advancement of the replacement run.
+				// Delayed reports can retire just before the next capture. The
+				// established observation must belong to the replacement world,
+				// at most one completed boundary behind the live simulation.
 				const auto& game = engine->gui.game;
 				const auto& world = game.observation();
-				CHECK(world.tick == game.stepCounter);
+				CHECK(world.tick <= game.stepCounter);
+				CHECK(game.stepCounter-world.tick <= 1);
 				CHECK(world.worldIdentity == game.map.identity());
 				CHECK(world.observationRevision == game.snapshots().revision());
 				++observedReloads;
@@ -620,10 +622,10 @@ struct EngineMatch
 		for (auto& c : clients)
 			if (!c->stopped)
 				REQUIRE(c->session().executedTick() == end);
-		// A little longer: each client takes the checksum before tick `end` at its next
-		// step, as the verifier does.
-		run(200 * MS);
-		return end;
+        // Drain terminal checksum work without executing further orders.
+        for (auto& c:clients) if (!c->stopped) { RngScope scope(c->rng); c->engine->flushChecksums(); }
+        run(200 * MS); // Deliver final reports through the simulated links.
+        return end;
 	}
 
 	Turn::MatchRecord record(const std::string& id) const

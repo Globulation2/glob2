@@ -51,7 +51,7 @@ def compare_payloads(whole, resumed):
 
 
 def save_header(path):
-    """Read bounded format-73..153 MapHeader framing and the player-count prefix.
+    """Read bounded format-73..168 MapHeader framing and the player-count prefix.
 
     Unit definitions in format 153 follow the GameHeader players and resource
     declarations; they do not add MapHeader fields or change this prefix.
@@ -91,7 +91,7 @@ def save_header(path):
 
     text(1024 * 1024, 'map name', allow_empty=True)
     major, minor, teams = word('major version'), word('minor version'), word('team count')
-    assert major == 0 and 73 <= minor <= 153, 'unsupported fixture header version'
+    assert major == 0 and 73 <= minor <= 168, 'unsupported fixture header version'
     assert 0 < teams <= 32, 'invalid team count'
     skip(4, 'map offset')
     assert byte('saved-game flag') <= 1, 'invalid saved-game flag'
@@ -109,6 +109,8 @@ def save_header(path):
     skip(5, 'game latency/order rate')
     if minor >= 143:
         assert byte('AI delay') <= 8, 'invalid AI delay'
+    if minor >= 155:
+        assert byte('team statistics delay') <= 8, 'invalid team statistics delay'
     if minor >= 148:
         assert 1 <= byte('building gradient delay') <= 8, 'invalid building gradient delay'
     players = word('player count')
@@ -123,19 +125,20 @@ def header_checksum_delta(before, after, checksum_format=153):
     assert before[2:] == after[2:], 'saved team/player counts changed'
     # MapHeader::checkSum rotates major ^ minor ^ teams once. Game::checkSum
     # rotates that contribution once per team/player and four more times.
-    # The current unit-catalog checksum adds one final rotation. Both original
+    # The unit-catalog checksum adds one final rotation; current deep checks add
+    # another for the statistics pipeline. Both original
     # and resumed states run that protocol even when the input save is older.
-    assert checksum_format in (152, 153), 'unsupported checksum protocol'
+    assert checksum_format in (152, 153, 168), 'unsupported checksum protocol'
     delta = before[0] ^ before[1] ^ after[0] ^ after[1]
-    rotations = (before[2] + before[3] + 5 + (checksum_format >= 153)) % 32
+    rotations = (before[2] + before[3] + 5 + (checksum_format >= 153) + (checksum_format >= 168)) % 32
     if rotations:
         delta = ((delta >> rotations) | (delta << (32 - rotations))) & 0xffffffff
     return delta
 
 
-def continuation_matches(ticks, records, initial, checkpoint, boundary):
+def continuation_matches(ticks, records, initial, checkpoint, boundary, checksum_format=153):
     """Keep aggregate coverage while accounting only for serialized header version."""
-    delta = header_checksum_delta(save_header(initial), save_header(checkpoint))
+    delta = header_checksum_delta(save_header(initial), save_header(checkpoint), checksum_format)
     if set(records) != set(range(boundary, 256)):
         return False
     for tick, actual in records.items():
@@ -159,7 +162,7 @@ def main():
     manifest = {'revision': subprocess.check_output(['git', 'rev-parse', 'HEAD'], cwd=ROOT, text=True).strip(),
                 'binarySha256': hashlib.sha256(binary.read_bytes()).hexdigest(), 'fixtures': {},
                 'checks': [], 'excludedSaveMetadata': 'MapHeader SHA1 only (depends on save history)',
-                'continuationChecksumAdjustment': 'MapHeader format-version contribution only'}
+                'continuationChecksumAdjustment': 'MapHeader format-version contribution only, deep checksum format 168'}
     names = ('profile1', 'realistic-profile1') if args.fixture == 'all' else (args.fixture,)
     (output / 'manifest.json').write_text(json.dumps(manifest, indent=2) + '\n')
     for name in names:
@@ -171,16 +174,28 @@ def main():
                    for tick, record in released_ticks.items()), name + ': released entity records differ'
         # Preserve historical migration evidence independently of the current
         # simulation trace. Still load the original version-125 save below.
-        trace = FIXTURE / (name + '-256-cached159.checksums.gz')
+        trace = FIXTURE / (name + '-256-deep168.checksums.gz')
         expected = gzip.decompress(trace.read_bytes())
-        ticks = complete_ticks(expected)
-        assert set(ticks) == set(range(256)), name + ': incomplete unit-era trace'
         initial = FIXTURE / (name + '-initial159.game.gz')
+        header = save_header(initial)
+        # The native corpus normalizes MapHeader's checksum-only minor to 125
+        # after loading. Preserve all deep coverage while adapting that one word.
+        delta = header_checksum_delta((header[0], 125, *header[2:]), header, 168)
+        adjusted = bytearray(expected)
+        position = 20
+        for record in complete_ticks(expected).values():
+            checksum = struct.unpack_from('<I', adjusted, position + 4)[0]
+            struct.pack_into('<I', adjusted, position + 4, checksum ^ delta)
+            position += len(record)
+        expected = bytes(adjusted)
+        ticks = complete_ticks(expected)
+        assert set(ticks) == set(range(256)), name + ': incomplete deep trace'
         manifest['fixtures'][name] = {'initialSha256': hashlib.sha256(initial.read_bytes()).hexdigest(),
                                      'trace': str(trace.relative_to(ROOT)),
                                      'releasedTraceSha256': hashlib.sha256(released).hexdigest(),
                                      'teams16TraceSha256': hashlib.sha256(expanded).hexdigest(),
-                                     'traceSha256': hashlib.sha256(expected).hexdigest()}
+                                     'traceSha256': hashlib.sha256(expected).hexdigest(),
+                                     'frozenTraceMapHeaderVersion': 125}
         interval = 32 if name == 'realistic-profile1' else 128
         baseline = output / name / 'workers1'
         actual = run(binary, baseline, initial, 1, interval)
@@ -197,7 +212,7 @@ def main():
             resumed = run(binary, tail, baseline / f'checkpoint-{boundary}.game.gz', 4)
             records = complete_ticks(resumed)
             assert continuation_matches(ticks, records, initial,
-                                        baseline / f'checkpoint-{boundary}.game.gz', boundary), \
+                                        baseline / f'checkpoint-{boundary}.game.gz', boundary, checksum_format=168), \
                 f'{name}: continuation differs at boundary {boundary}'
             compare_payloads((baseline / 'final.game.gz').read_bytes(), (tail / 'final.game.gz').read_bytes())
         manifest['checks'].append({'fixture': name, 'ticks': 256, 'workers': [1, 4], 'resumeBoundaries': list(boundaries)})

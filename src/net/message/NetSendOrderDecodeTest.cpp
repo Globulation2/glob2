@@ -40,6 +40,7 @@ void check(bool cond, const char* tc, const char* what)
 
 // Build a BinaryInputStream containing one NetSendOrder envelope:
 //   Uint32 size | size bytes payload | Uint8 sender | Uint32 checksum
+//   | Uint8 hasChecksum | Uint32 checksumTick
 // Mirrors the testSerialize() copy-via-fresh-backend pattern in
 // NetTestSuite.cpp so we don't have to chase ownership of the writer's
 // backend after BinaryOutputStream's dtor runs. Caller owns the returned
@@ -60,6 +61,8 @@ BinaryInputStream* makeStream(Uint32 declaredSize,
 			out.write(payload, payloadSize, "data");
 		out.writeUint8(sender, "sender");
 		out.writeUint32(checksum, "checksum");
+        out.writeUint8(1,"hasChecksum");
+        out.writeUint32(17,"checksumTick");
 		out.writeLeaveSection();
 
 		const size_t totalLen = writeBackend->getPosition();
