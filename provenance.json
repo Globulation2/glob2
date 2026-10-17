@@ -1,0 +1,13 @@
+{
+  "source": "656921aa2cb275a294508ef07e9614ead56be0de",
+  "base": "486a2230a4ddb257ba9dee34d3aace05f2260d6f",
+  "application_source": "2c057dfd91816c08dc2234f7cb889f108381a4f9",
+  "compiler": "g++ (Ubuntu 13.3.0-6ubuntu2~24.04.1) 13.3.0\nCopyright (C) 2023 Free Software Foundation, Inc.\nThis is free software; see the source for copying conditions.  There is NO\nwarranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.\n\n",
+  "valgrind": "valgrind-3.22.0\n",
+  "host": "Linux devlaptop 7.0.0-38-generic #38~24.04.4-Ubuntu SMP PREEMPT_DYNAMIC Mon Sep 14 16:37:11 UTC 2 x86_64 x86_64 x86_64 GNU/Linux\n",
+  "note": "Optimized release objects; only a copy of Headless.cpp adds Callgrind start/stop at measured-window boundaries. No production edits. Profiles establish instruction work, not native timing.",
+  "binaries": {
+    "hybrid": "12dbc6c0c6c6365ca325d08180f28cc3517556b63ea9c431b9cd07f2904cf1c4",
+    "master": "cf91f6963adbd719931364a5def3fe3d0a9cf3670c2938e30c078480e4c0b9be"
+  }
+}

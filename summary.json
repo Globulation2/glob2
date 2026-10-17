@@ -1,0 +1,116 @@
+[
+  {
+    "case": "islands",
+    "master_instructions": 2846751060,
+    "current_instructions": 2956528982,
+    "extra": 109777922,
+    "percent": 3.856252959470225,
+    "categories": {
+      "food_selection": {
+        "master": 1610250,
+        "current": 43685252,
+        "extra": 42075002,
+        "share_percent": 38.32738061848174
+      },
+      "healing_selection": {
+        "master": 63370,
+        "current": 58780,
+        "extra": -4590,
+        "share_percent": -0.004181168595995104
+      },
+      "upgrade_selection": {
+        "master": 236670,
+        "current": 166116,
+        "extra": -70554,
+        "share_percent": -0.06426975362131558
+      },
+      "material_seed": {
+        "master": 254321422,
+        "current": 286060731,
+        "extra": 31739309,
+        "share_percent": 28.9122880281884
+      },
+      "direct_gate": {
+        "master": 0,
+        "current": 3216,
+        "extra": 3216,
+        "share_percent": 0.0029295508071285957
+      },
+      "clear_seed": {
+        "master": 45486730,
+        "current": 53765967,
+        "extra": 8279237,
+        "share_percent": 7.541805172810613
+      },
+      "scheduled_building": {
+        "master": 279137892,
+        "current": 284581683,
+        "extra": 5443791,
+        "share_percent": 4.958912412279037
+      },
+      "field_propagation": {
+        "master": 892972518,
+        "current": 898759191,
+        "extra": 5786673,
+        "share_percent": 5.271253904769668
+      }
+    }
+  },
+  {
+    "case": "midgame24k",
+    "master_instructions": 1619739570,
+    "current_instructions": 1648782223,
+    "extra": 29042653,
+    "percent": 1.7930446065474588,
+    "categories": {
+      "food_selection": {
+        "master": 798514,
+        "current": 2990169,
+        "extra": 2191655,
+        "share_percent": 7.546331941506859
+      },
+      "healing_selection": {
+        "master": 757016,
+        "current": 699149,
+        "extra": -57867,
+        "share_percent": -0.19924832624622826
+      },
+      "upgrade_selection": {
+        "master": 28424,
+        "current": 24104,
+        "extra": -4320,
+        "share_percent": -0.014874674155973286
+      },
+      "material_seed": {
+        "master": 102977773,
+        "current": 113833154,
+        "extra": 10855381,
+        "share_percent": 37.37737389211654
+      },
+      "direct_gate": {
+        "master": 0,
+        "current": 1656,
+        "extra": 1656,
+        "share_percent": 0.005701958426456426
+      },
+      "clear_seed": {
+        "master": 31306097,
+        "current": 35783631,
+        "extra": 4477534,
+        "share_percent": 15.417097053771224
+      },
+      "scheduled_building": {
+        "master": 381675162,
+        "current": 384438614,
+        "extra": 2763452,
+        "share_percent": 9.51515001057238
+      },
+      "field_propagation": {
+        "master": 301272280,
+        "current": 302541162,
+        "extra": 1268882,
+        "share_percent": 4.369029234347152
+      }
+    }
+  }
+]
