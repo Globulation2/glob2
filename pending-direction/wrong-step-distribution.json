@@ -1,0 +1,30 @@
+{
+  "holiday:open": {
+    "n": 420,
+    "median": 0.6,
+    "p95": 1.4,
+    "max": 3.0,
+    "gt_two_tiles": 1
+  },
+  "holiday:blocked": {
+    "n": 71,
+    "median": 1.0,
+    "p95": 4.4,
+    "max": 12.8,
+    "gt_two_tiles": 17
+  },
+  "large-eleven:open": {
+    "n": 2257,
+    "median": 0.6,
+    "p95": 1.4,
+    "max": 3.4,
+    "gt_two_tiles": 1
+  },
+  "large-eleven:blocked": {
+    "n": 1273,
+    "median": 0.6,
+    "p95": 3.6799999999999726,
+    "max": 24.6,
+    "gt_two_tiles": 241
+  }
+}

@@ -1,0 +1,26 @@
+{
+  "production_head": "d1c0d4d50109b6f7d30f843368d30406f515b84f",
+  "benchmark_checkout_head": "c7f1cd2996a13ac59d56926755c182008b67d736",
+  "runtime_mode": "baseline disables all proactive creation requests; retains primary hiring preparation",
+  "binary_sha256": "4d7efee94d2e3503e20c1e1550afb450486f854b97ca254494ba48c4a2a8b6ed",
+  "map_sha256": {
+    "Holiday_Island_2.map.gz": "7c8d9ff5d0bbff14945f1a31bb78ffdc60df2befe08e7b5b0f9c0bedb8f977e9",
+    "Oazis.map.gz": "b3283af95ee177f528d3b57438797c4a1970473c562a76f5ed4faad51f03a6d3"
+  },
+  "platform": "macOS-26.6.2-arm64-arm-64bit-Mach-O",
+  "build_command": "PYTHONPATH=. scons release=1 CXXFLAGS=-g0 client_profile=full server=0 -j4",
+  "analysis_command": "uv run --no-project --offline --python 3.13 --with numpy==2.4.6 python artifacts/pending-direction/analyze.py",
+  "matrix_command": "python3 artifacts/pending-direction/run_matrix.py",
+  "runs": "32 seeds 42..73 per map, 32768-tick cap, 4 participants, two concurrent matches; no timing comparison",
+  "oracle": "Private full gradient from current live map state at pending query; no writes to live fields or RNG. Cache invalidated by tracked map generations, identity and slot epoch; per-tick cache bounded. A cell whose origin is blocked is assessed via the best legal reachable neighbor, with its own counts reported.",
+  "comparisons": "Direct wrapped 8-way heading to building centre (flag position for flags), with ground collision checks; flyer-style ordered alternatives +1,-1,+2,-2,+3,-3,+4 when preferred step blocked. All tied best-scoring gradient steps count as correct.",
+  "limitations": [
+    "Accuracy counterfactual only; heuristic does not move units.",
+    "Fresh static-world route oracle is not a prediction of map changes before queued publication.",
+    "Ground occupancy at each query affects legality; other units may move later.",
+    "No frame-time, CPU, arrival-time, starvation, match-outcome or cross-device claim.",
+    "Service-selection rows assess directions to candidates, not which building a distance heuristic would select."
+  ],
+  "compiler": "Apple clang version 21.0.0 (clang-2100.3.34.2)\nTarget: arm64-apple-darwin25.6.0\nThread model: posix\nInstalledDir: /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin\n",
+  "dependencies": "Existing managed build-dd8d40b0b2e044b88374d32e prefix and Homebrew dependencies; compiler commands in build-final.log"
+}

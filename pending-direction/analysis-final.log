@@ -1,0 +1,8 @@
+WARN `--no-project` was provided, but no project was found
+| Map | Variant | Requests | Legal | Makes progress | Longer route | Best available step |
+|---|---|---:|---:|---:|---:|---:|
+| holiday | 0 | 13283 | 82.21% | 80.23% | 1.26% | 71.72% |
+| holiday | 1 | 13283 | 99.95% | 94.96% | 3.70% | 84.24% |
+| large-eleven | 0 | 121333 | 84.17% | 83.01% | 0.81% | 75.10% |
+| large-eleven | 1 | 121333 | 99.96% | 96.34% | 2.91% | 86.70% |
+runs 64 queries 304744
