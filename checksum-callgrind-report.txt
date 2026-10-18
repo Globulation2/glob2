@@ -1,0 +1,37 @@
+PR #1221: three-version checksum performance investigation
+
+Correction: the previous native CPU table did not establish that checksumming became more computationally expensive, or that the review fixes regressed it. Fresh Callgrind comparisons show the selected-field hash remains cheaper than master and its serial instruction count is identical before/after the fixes. The earlier +8.19% small/four-participant observation did not repeat in a fresh balanced three-version timing cohort. The earlier data are retained, not deleted or pooled with the new cohort.
+
+Sources: master 486a2230a4ddb257ba9dee34d3aace05f2260d6f; before review fixes 9449c5a8213980b6c554b0dab080eae2c10171c4; current f47d5eba32b7fa9b21ea8d29e4e6b4f21081e11e. Fresh origin/master fetch still resolves to 486a2230. No production code changed during this investigation.
+
+Strict interior serial controls: 128 measured advances, followed by 64 further uninstrumented ticks before shutdown. Small early starts at 512; small/large late start at 3072. Ir means executed instructions, not time or cycles. Master Game::checkSum inclusive cost is compared with snapshot hashState inclusive cost; projection, result delivery, callback cleanup and executor handoff are additional costs. Coverage differs deliberately.
+
+Window | Master hash Ir | Pre-fix hash Ir | Current hash Ir | Hash change | Whole-engine change vs master | Whole-engine change vs pre-fix
+small-early | 1,122,764 | 572,288 | 572,288 | -49.03% | -0.190% | -0.004%
+small-late | 2,496,604 | 1,735,936 | 1,735,936 | -30.47% | -0.402% | +0.028%
+large-late | 4,513,294 | 2,830,280 | 2,830,280 | -37.29% | -0.578% | +0.010%
+
+Hashing accounts for about 1.5-3.0% of the old serial whole-engine instructions in these windows. Saving 30-49% of that work produces a small total gain, after new bookkeeping/dispatch costs. The pre-fix and current hash bodies use exactly the same instructions for each measured window. The cached coverage getter uses 3 instructions per call versus 24 for the small pre-fix player scan (32 in the large setup). Whole-engine before/current interior differences range -0.004% to +0.028%; allocation and scheduling details can move other work even with equal outcomes. These are sampled windows, not proof of universal engine speedup.
+
+Where additional work comes from:
+1. The PR adds one deferred checksum batch per observation: shared snapshot leases, executor admission/completion, join/result collection and checksum delivery. These costs exist in 9449 before review fixes. Serial inclusive Pipeline::submit includes unrelated deferred jobs executed by join; its several-million-instruction inclusive total must not be labeled hash cost.
+2. Threaded profiles show additional coordination. In the small/early whole-window example, combined pthread_mutex_lock/unlock self instructions rise from 10,202,307 to 10,899,727 (+697,420). Snapshot Handle methods also execute more reference-management work. Worker Callgrind scheduling changes callback placement and boundary counts; these numbers are evidence of extra user-space work, not a quantified explanation of native kernel/wakeup time.
+3. Terminal flush calls observeCompletedWorld, which publishes/captures the terminal state AND admits new gradient, growth, statistics, turret and hiring work. Early whole-window profiles contain 135 vs 136 gradient seeds/growth jobs, and 85 vs 86 propagation calls. This predates the review fixes. The short whole-window current/master total is +0.552%; the matched strictly interior window is -0.190%. A simple loop/finishSession split is insufficient because the final step also flushes checksums; the later interior controls avoid that trap.
+
+Fresh native timing: 12 rotated/reversed matched triplets per participant configuration, small save, 4096 ticks with 512 warmup; 72 processes total. Owner+three workers means 4 participants. Ordinary release builds, telemetry off, no concurrent own build/profiling/test work. Approximate paired log-ratio t95 intervals, unadjusted; machine scheduling/frequency effects remain possible.
+
+Participants | Comparison | CPU change [95% interval] | Elapsed change [95% interval]
+1 | master -> before | -1.07% [-5.58, +3.65] | -1.12% [-5.59, +3.57]
+1 | master -> current | +0.89% [-2.88, +4.81] | +0.67% [-3.14, +4.63]
+1 | before -> current | +1.99% [-2.55, +6.74] | +1.80% [-2.79, +6.61]
+4 | master -> before | +12.37% [+4.39, +20.96] | +14.99% [+3.59, +27.65]
+4 | master -> current | -0.88% [-8.13, +6.95] | -0.75% [-10.45, +10.01]
+4 | before -> current | -11.79% [-18.06, -5.03] | -13.69% [-22.61, -3.74]
+
+The current four-participant result versus master is -0.88% CPU [-8.13%, +6.95%], rather than the previous cohort +8.19%. Current versus pre-fix is -11.79% CPU [-18.06%, -5.03%] in this cohort. This does not justify claiming that removing ~21 instructions from the getter alone yields an 11.8% speedup: binary layout and timing interactions are not isolated, and results vary between cohorts. It does rule against presenting these measurements as evidence that the review fixes made hashing more expensive. No universal throughput gain is established.
+
+All 72 native runs agree on outcome fields and setup other than the intentional master/PR format167/168 metadata difference. Before/current initial and terminal routine hashes are identical across all runs and both worker configurations. Master uses a different checksum algorithm and its scalar is not compared for equality. Existing deep equivalence/compatibility evidence remains applicable to unchanged f47d5eb.
+
+Build/control limits: before is reconstructed from source-identical release objects plus rebuilt changed runtime translation units against 9449 headers, not a distributable 9449 build. Reused provenance/shader metadata and the unexecuted generator-studio SIM_REVISION constant are documented in CONTEXT-NOTES.txt. Rebuilding without debug symbols produced identical executable .text/.rodata/.eh_frame/.data sections to the native pre-fix measurement binary. All flags, driver sources and link commands are retained. No fast/PCH/unity builds. GCC15.2, Valgrind3.26, Linux x86_64 Threadripper2950X, CPUs9-15,25-31, same SDL/dependencies as prior final evidence. Hardware counters unavailable (perf access denied). No other platform, remote/quit-session performance, rendered FPS or long-run profiling claim. The frozen remote coverage intentionally persists after quits; that behavior is outside these local timing workloads.
+
+Assessment: retain the replay/policy fixes. The hasher is cheaper; dispatch/reference/bookkeeping and terminal work consume part of the savings. Treat broader coverage acceptance as a separate design decision, and retain draft status while it remains unresolved. The prior claim attributing increased computational cost to the fixes is withdrawn. Raw earlier evidence remains available.
