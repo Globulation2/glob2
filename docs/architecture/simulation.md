@@ -723,7 +723,11 @@ before that building re-registers, so a bucket is not necessarily sorted between
 recruitment rounds. Priority changes still move between buckets. Delivery apportionment initializes
 all output slots but evaluates only replenishment slots for ordinary buildings;
 construction sites retain the complete live-budget scan. Assigned workers count
-as committed deliveries even when their material is no longer requested. Admission
+as committed deliveries even when their material is no longer requested. Failed
+material admission reuses apportionment's missing-delivery totals for the final
+call-list refresh; successful admission discards them. Attraction quotas are
+computed once per candidate scan and recomputed after each assignment. These
+results stay local to one operation. Admission
 rechecks ownership, activity, medical state, skills, cargo, quotas, reachability,
 food budget and destination for every suggestion, so flag edits need no list
 invalidation. Missing or exhausted lists wait for a refresh; there is no

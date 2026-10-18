@@ -338,6 +338,99 @@ TEST_CASE("sparse delivery accounting clears unused slots and still counts commi
     }
 }
 
+TEST_CASE("failed admission reuses only current operation demand across stock and budget changes")
+{
+    glob2test::HeadlessGlobals globals;
+    for (bool site : {false,true})
+    for (bool shared : {false,true})
+    for (bool repair : {false,true})
+    {
+        if (repair && !site) continue;
+        CAPTURE(site);
+        CAPTURE(shared);
+        CAPTURE(repair);
+        DemandFixture fixture(site);
+        auto& b=*fixture.building;
+        fixture.type.useTeamMaterials=shared;
+        b.updateMaterialsPointer();
+        fixture.runtime.replenishMaterialMask=1u<<WHEAT;
+        fixture.type.materialMultiplier[WHEAT]=3;
+        if (site)
+        {
+            b.constructionResultState=repair ? Building::REPAIR : Building::NEW_BUILDING;
+            fixture.type.semantics.constructionCost.fill(0);
+            b.constructionBudget.fill(0);
+            b.constructionBudget[WHEAT]=11;
+            b.constructionBudget[14]=5;
+        }
+        REQUIRE_FALSE(fixture.world.game.hiringCandidates(b));
+        for (int stock : {0,1,7,11,0})
+        {
+            b.setMaterial(WHEAT,stock);
+            if (site)
+            {
+                b.constructionBudget[14]=stock ? 9 : 5;
+                b.constructionReserved[14]=stock ? 2 : 0;
+            }
+            const auto expected=referenceDemand(b);
+            const auto rng=b.entityRandom.exportState();
+            // Exercise an admission attempt even when only reserved slots need
+            // stock; final staffing must still count only real materials.
+            if (site && !repair && stock==11)
+            {
+                CHECK(expected.total==0);
+                CHECK(expected.needs[14]>0);
+            }
+            b.desiredMaxUnitWorking=std::max(1,expected.workers);
+            const auto wishes=std::array<int,MaterialSlotCount>{};
+            std::copy(wishes.begin(),wishes.end(),b.wishedMaterials);
+            CHECK_FALSE(b.subscribeToBringMaterialsStep(true));
+            CHECK(b.unitsWorking.empty());
+            CHECK(b.desiredMaxUnitWorking==expected.workers);
+            CHECK(b.isMaterialFull()==(expected.missing==0));
+            CHECK(b.entityRandom.exportState()==rng);
+            CHECK(std::equal(wishes.begin(),wishes.end(),b.wishedMaterials));
+            checkDemand(b);
+        }
+    }
+}
+
+TEST_CASE("failed live admission preserves route queries and a later successful attempt")
+{
+    glob2test::HeadlessGlobals globals;
+    glob2test::HeadlessGame world({.discovered=true,.loadDefaultRace=true});
+    auto* b=world.addBuilding("inn",8,8);
+    b->maxUnitWorking=1;
+    b->setMaterial(WHEAT,0);
+    b->updateCallLists();
+    auto* unit=world.addUnit(WORKER,6,8);
+    unit->medical=Unit::MED_FREE;
+    unit->activity=Unit::ACT_RANDOM;
+    unit->hungriness=0;
+    unit->carriedMaterial=WHEAT;
+    glob2test::publishCurrentHiringSuggestions(world.game);
+    REQUIRE(world.game.hiringCandidates(*b));
+    const auto slot=b->routeSlot(unit->swimClass(),BuildingRoute::Footprint);
+    REQUIRE(b->globalGradient[slot]==nullptr);
+    // The published suggestion becomes too hungry to travel. Live admission
+    // must still resolve its route before rejecting it, without hiring.
+    unit->hungriness=1;
+    unit->hungry=unit->trigHungry;
+    const auto expected=referenceDemand(*b);
+    CHECK_FALSE(b->subscribeToBringMaterialsStep());
+    CHECK(b->globalGradient[slot]!=nullptr);
+    CHECK(b->unitsWorking.empty());
+    CHECK(b->desiredMaxUnitWorking==expected.workers);
+    checkDemand(*b);
+    // Reuse is local to the failed operation, not retained with suggestions.
+    unit->hungriness=0;
+    REQUIRE(b->subscribeToBringMaterialsStep());
+    REQUIRE(b->unitsWorking.size()==1);
+    CHECK(b->unitsWorking.front()==unit);
+    CHECK(unit->attachedBuilding==b);
+    CHECK(b->callListState==0);
+}
+
 TEST_CASE("update boundaries keep wishes staffing and recruitment bucket order observable")
 {
     glob2test::HeadlessGlobals globals;
