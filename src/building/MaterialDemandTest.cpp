@@ -314,6 +314,30 @@ TEST_CASE("reserved output slots are initialized and remain distinct from real m
     CHECK(wishes[14]==0);
 }
 
+TEST_CASE("sparse delivery accounting clears unused slots and still counts committed workers")
+{
+    glob2test::HeadlessGlobals globals;
+    DemandFixture fixture;
+    auto& b=*fixture.building;
+    fixture.runtime.replenishMaterialMask=1u<<WHEAT;
+    auto* unit=fixture.world.addUnit(WORKER,20,20);
+    REQUIRE(unit);
+    unit->destinationPurpose=WOOD;
+    unit->attachedBuilding=&b;
+    b.unitsWorking.push_back(unit);
+    checkDemand(b);
+    int targets[MaterialSlotCount], served[MaterialSlotCount];
+    std::fill_n(targets,MaterialSlotCount,-999);
+    std::fill_n(served,MaterialSlotCount,-999);
+    b.fetchApportionment(targets,served);
+    CHECK(targets[WOOD]==0);
+    CHECK(served[WOOD]==1);
+    for (int r=MaterialCount;r<MaterialSlotCount;++r) {
+        CHECK(targets[r]==0);
+        CHECK(served[r]==0);
+    }
+}
+
 TEST_CASE("update boundaries keep wishes staffing and recruitment bucket order observable")
 {
     glob2test::HeadlessGlobals globals;
@@ -351,6 +375,52 @@ TEST_CASE("update boundaries keep wishes staffing and recruitment bucket order o
     expected.insert(position,&b);
     b.updateCallLists();
     CHECK(fixture.world.team->buildingsNeedingUnits[4]==expected);
+}
+
+TEST_CASE("same priority reposition matches removal and insertion in unsorted buckets")
+{
+    glob2test::HeadlessGlobals globals;
+    glob2test::HeadlessGame world({.loadDefaultRace=true,.header=true});
+    std::array<Building*,4> buildings{};
+    for (int i=0;i<4;++i)
+    {
+        buildings[i]=world.addBuilding("inn",4+6*i,8);
+        REQUIRE(buildings[i]);
+        buildings[i]->maxUnitWorking=12;
+        buildings[i]->setMaterial(WHEAT,0);
+        buildings[i]->updateCallLists();
+    }
+    auto& bucket=world.team->buildingsNeedingUnits[buildings[0]->priority];
+    std::array<int,4> permutation{0,1,2,3};
+    do {
+        for (int target=0;target<4;++target)
+            for (int wish=0;wish<5;++wish)
+            {
+                // Peers' wishes can change before they update their own lists.
+                // Exercise every position, both movement directions, unchanged
+                // positions, and equal-wish ties resolved by building identity.
+                for (int i=0;i<4;++i) {
+                    std::fill_n(buildings[i]->wishedMaterials,MaterialSlotCount,0);
+                    buildings[i]->wishedMaterials[WHEAT]=i;
+                }
+                buildings[target]->wishedMaterials[WHEAT]=wish;
+                bucket.clear();
+                for (int i:permutation) bucket.push_back(buildings[i]);
+                auto expected=bucket;
+                auto* b=buildings[target];
+                expected.erase(std::find(expected.begin(),expected.end(),b));
+                const auto position=std::find_if(expected.begin(),expected.end(),
+                    [&](Building* peer){return Team::buildingHasHigherPriority(b,peer);});
+                expected.insert(position,b);
+                b->updateCallLists(12,false);
+                CHECK(bucket==expected);
+                CHECK(bucket.size()==4);
+            }
+    } while (std::next_permutation(permutation.begin(),permutation.end()));
+    bucket={buildings[0]};
+    buildings[0]->updateCallLists(12,false);
+    CHECK(bucket==std::vector<Building*>{buildings[0]});
+    bucket.assign(buildings.begin(),buildings.end());
 }
 
 TEST_CASE("repair upgrade delivery completion and destruction refresh demand at their existing boundaries")

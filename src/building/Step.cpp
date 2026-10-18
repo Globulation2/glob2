@@ -6,6 +6,7 @@
 #include <math.h>
 #include <stdlib.h>
 #include <algorithm>
+#include <bit>
 #include <climits>
 
 #include "Building.h"
@@ -171,9 +172,16 @@ bool Building::considerUnitForMaterial(Unit* unit, int wantedMaterial, int* dist
 
 void Building::fetchApportionment(int targets[MaterialSlotCount], int served[MaterialSlotCount]) const
 {
-	for(int r=0; r<MaterialSlotCount; ++r)
+	std::fill_n(targets, MaterialSlotCount, 0);
+	std::fill_n(served, MaterialSlotCount, 0);
+	// Ordinary buildings only replenish catalog-selected materials. Sites can
+	// have live construction budgets in any slot, including reserved slots.
+	unsigned candidates = type->isBuildingSite ? (1u<<MaterialSlotCount)-1 : runtime->replenishMaterialMask;
+	while (candidates)
 	{
-		int multiplier = type->materialMultiplier[r];
+		const unsigned r = std::countr_zero(candidates);
+		candidates &= candidates-1;
+		const int multiplier = type->materialMultiplier[r];
 		targets[r] = (materialDeliveryTarget(r)+multiplier-1)/multiplier;
 		const int missing=materialDeliveryNeed(r);
 		served[r] = targets[r]-(missing+multiplier-1)/multiplier;

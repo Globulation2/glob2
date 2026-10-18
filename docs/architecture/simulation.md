@@ -715,7 +715,15 @@ team's total vacancies fit one list, a greedy pass in priority order gives each
 building distinct candidates first; imminent attraction rounds likewise spread
 offers between peer flags. Lists are suggestions, not reservations.
 
-The owner keeps priority buckets, rounds, material quotas and task swaps. Admission
+The owner keeps priority buckets, rounds, material quotas and task swaps. A
+same-priority re-registration preserves the exact remove-and-reinsert order with
+one rotation, leaving the bucket untouched when its position is unchanged. The
+insertion search remains linear: another building's staffing or wishes can change
+before that building re-registers, so a bucket is not necessarily sorted between
+recruitment rounds. Priority changes still move between buckets. Delivery apportionment initializes
+all output slots but evaluates only replenishment slots for ordinary buildings;
+construction sites retain the complete live-budget scan. Assigned workers count
+as committed deliveries even when their material is no longer requested. Admission
 rechecks ownership, activity, medical state, skills, cargo, quotas, reachability,
 food budget and destination for every suggestion, so flag edits need no list
 invalidation. Missing or exhausted lists wait for a refresh; there is no
