@@ -309,6 +309,7 @@ bool Building::considerUnitForExplorerFlag(Unit* unit, int* dist, int terrainDis
 		return false;
 	}
 	int timeLeft = remainingFoodTime(*unit);
+    if (!unit->performance[FLY] || owner->map->hasAirRoutingConstraints())
     {
         int distance=0;
         if(!owner->map->buildingAvailable(this,unit->movementClass(),unit->posX,unit->posY,&distance,BuildingRoute::Combat)) {

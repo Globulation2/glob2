@@ -346,7 +346,8 @@ checksum adapter remains available for diagnostic fixtures.
   On maps without air terrain constraints or air-blocking resources, flyers
   retain direct angular steering and local traffic
   avoidance, and choose food, healing and upgrade buildings using the historical
-  geometric distances. These service choices do not allocate air fields. Shared
+  geometric distances. Explorer-flag recruitment also keeps its geometric
+  admission check. These queries do not allocate air fields. Shared
   queries still choose resource and clearing goals;
   ordinary building/resource travel does not follow a field at every step.
   A derived summary invalidated alongside air safety selects the policy again

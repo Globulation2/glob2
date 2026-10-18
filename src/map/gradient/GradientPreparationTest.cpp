@@ -1858,3 +1858,28 @@ TEST_CASE("ground refreshes preserve warm air material seeds across edits" * doc
     CHECK(limited.trySeed(next,0,WHEAT,0,cached.data(),nullptr));
 
 }
+
+TEST_CASE("ordinary air explorer recruitment does not create a combat field" * doctest::test_suite("GradientPreparation"))
+{
+    glob2test::HeadlessGlobals globals;
+    glob2test::HeadlessGame world({.wDec=7,.hDec=7,.discovered=true,.clearImmobile=true,.loadDefaultRace=true,.header=true});
+    auto& map=world.game.map;
+    auto* flyer=world.addUnit(EXPLORER,8,8);
+    auto* flag=world.addBuilding("explorationflag",20,8);
+    REQUIRE(flyer); REQUIRE(flag);
+    flag->unitStayRange=8;
+    const int slot=flag->routeSlot(AIR_MOVEMENT_CLASS,BuildingRoute::Combat);
+    for (bool painted : {false,true}) {
+        if (painted) for(int y=0;y<map.getH();++y) map.addForbidden(15,y,0);
+        REQUIRE_FALSE(map.hasAirRoutingConstraints());
+        int distance=-1;
+        REQUIRE(flag->considerUnitForExplorerFlag(flyer,&distance));
+        CHECK(distance==map.warpDistSquare(8,8,20,8));
+        CHECK(flag->globalGradient[slot]==nullptr);
+    }
+    map.paintCell(60,60,VOID_HOLE);
+    REQUIRE(map.hasAirRoutingConstraints());
+    int distance=-1;
+    REQUIRE(flag->considerUnitForExplorerFlag(flyer,&distance));
+    CHECK(flag->globalGradient[slot]!=nullptr);
+}
