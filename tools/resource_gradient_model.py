@@ -229,7 +229,10 @@ def run(args):
               sorted({s['generator'] for s in plan} | {c.get('generator',s['generator']) for s in plan for c in s.get('map_candidates', [])}))
     print(json.dumps(coverage(plan,eligible), indent=2), flush=True)
     binary_hash = sha(binary)
+    collector_files = ['resource_gradient_model.py', 'resource_gradient_tournament.py',
+                       'resource_gradient_dataset.py', 'resource_gradient_experiments.py']
     frozen = dict(schema=2,binary_sha256=binary_hash,model_sha256=sha(DEFAULT_MODEL),header_sha256=sha(HEADER),
+                  collector_sha256={name:sha(ROOT/'tools'/name) for name in collector_files},
                   source_revision=subprocess.check_output(['git','rev-parse','HEAD'],cwd=ROOT,text=True).strip(),
                   tick_cap=args.ticks,threads=args.threads,plan=plan,
                   sampling=document if isinstance(document, dict) else None, policy=policy)
@@ -242,6 +245,8 @@ def run(args):
     if frozen_path.exists() and json.loads(frozen_path.read_text()) != frozen:
         raise ValueError('Output has a different frozen plan/build; choose a fresh directory')
     save(frozen_path,frozen)
+    collector_snapshot=out/'collector-source';collector_snapshot.mkdir(exist_ok=True)
+    for name in collector_files: shutil.copyfile(ROOT/'tools'/name, collector_snapshot/name)
     manifest_path=out/'manifest.json'
     manifest=json.loads(manifest_path.read_text()) if manifest_path.exists() else []
     done={r['group'] for r in manifest}

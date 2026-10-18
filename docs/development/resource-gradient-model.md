@@ -223,7 +223,8 @@ interval counts. Use multiple exploration seeds across immutable cohorts.
 
 `gradient-decisions.csv` records due admission attempts, chosen interval, seed,
 reason and acceptance. Episode rows carry interval/seed metadata as well. Frozen
-run metadata includes the model/header/binary hashes, behavior policy, seed,
+run metadata includes the model/header/binary and collector-tool hashes, a copy
+of the collector sources, behavior policy, seed,
 label contract and cohort identity. A completed run seals `cohort.json`; changing
 its contents or reusing its identity for another declared policy is rejected.
 Keep the episode files it references. Never edit an old cohort to impersonate a
