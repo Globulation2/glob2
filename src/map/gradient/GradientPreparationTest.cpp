@@ -1883,3 +1883,37 @@ TEST_CASE("ordinary air explorer recruitment does not create a combat field" * d
     REQUIRE(flag->considerUnitForExplorerFlag(flyer,&distance));
     CHECK(flag->globalGradient[slot]!=nullptr);
 }
+
+TEST_CASE("ordinary flying building jobs and warrior recruitment avoid route fields" * doctest::test_suite("GradientPreparation"))
+{
+    glob2test::HeadlessGlobals globals;
+    for (bool warrior : {false,true}) {
+        CAPTURE(warrior);
+        glob2test::HeadlessGame world({.wDec=7,.hDec=7,.discovered=true,.clearImmobile=true,.loadDefaultRace=true,.header=true});
+        auto& map=world.game.map;
+        auto* unit=world.addUnit(warrior ? WARRIOR : WORKER,8,8);
+        auto* building=world.addBuilding(warrior ? "warflag" : "inn",20,8);
+        REQUIRE(unit); REQUIRE(building);
+        unit->performance[FLY]=32;
+        building->maxUnitWorking=building->desiredMaxUnitWorking=1;
+        const auto route=warrior ? BuildingRoute::Combat : BuildingRoute::Footprint;
+        const auto slot=building->routeSlot(AIR_MOVEMENT_CLASS,route);
+        const auto eligible=[&](int* distance) {
+            return warrior ? building->considerUnitForWarriorFlag(unit,distance)
+                           : building->considerUnitForBuilding(unit,distance);
+        };
+        for (bool painted : {false,true}) {
+            if (painted) for(int y=0;y<map.getH();++y) map.addForbidden(15,y,0);
+            REQUIRE_FALSE(map.hasAirRoutingConstraints());
+            int distance=-1;
+            REQUIRE(eligible(&distance));
+            CHECK(distance==map.warpDistMax(8,8,20,8));
+            CHECK(building->globalGradient[slot]==nullptr);
+        }
+        map.paintCell(60,60,VOID_HOLE);
+        REQUIRE(map.hasAirRoutingConstraints());
+        int distance=-1;
+        REQUIRE(eligible(&distance));
+        CHECK(building->globalGradient[slot]!=nullptr);
+    }
+}

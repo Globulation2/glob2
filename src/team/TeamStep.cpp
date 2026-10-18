@@ -209,6 +209,10 @@ namespace
 	bool innCost(Unit *u, Building *b, int *cost)
 	{
 		Map *map = b->owner->map;
+        if (u->performance[FLY] && !map->hasAirRoutingConstraints()) {
+            *cost=1+Sint32(std::sqrt(map->warpDistSquare(u->posX,u->posY,b->posX,b->posY)));
+            return true;
+        }
 		return map->buildingAvailable(b, u->movementClass(), u->posX, u->posY, cost, BuildingRoute::Footprint);
 	}
 

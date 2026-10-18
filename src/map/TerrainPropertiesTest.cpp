@@ -281,10 +281,12 @@ TEST_CASE("terrain health profiles choose independent air and ground rates")
     CHECK_EQ(explorer->hp,air+1);
 }
 
-TEST_CASE("explorer flag eligibility applies route accessibility and hunger distance")
+TEST_CASE("constrained explorer flag eligibility applies route accessibility and hunger distance")
 {
     glob2test::HeadlessGlobals globals;
     glob2test::HeadlessGame world({.loadDefaultRace=true,.header=true});
+    world.game.map.paintCell(24,24,VOID_HOLE);
+    REQUIRE(world.game.map.hasAirRoutingConstraints());
     Unit* explorer=world.addUnit(EXPLORER,8,8);
     Building* flag=world.addBuilding("explorationflag",12,12);
     REQUIRE(explorer); REQUIRE(flag);
