@@ -1,0 +1,190 @@
+| Map | Whole-process CPU µs/tick, master → PR | Change (paired 95% CI) | Simulation ticks/s, master → PR | Mean per-game p99 tick ms, master → PR |
+|---|---:|---:|---:|---:|
+| holiday | 164.0 → 164.1 | +0.05% (-2.27% to +1.55%) | 25968 → 26222 | 0.270 → 0.248 |
+| oazis | 677.6 → 679.9 | +0.34% (-1.03% to +1.69%) | 5133 → 5007 | 1.768 → 1.838 |
+{
+  "holiday": {
+    "pairs": 32,
+    "actual_ticks": {
+      "master": [
+        4096
+      ],
+      "branch": [
+        4096
+      ]
+    },
+    "metrics": {
+      "whole_cpu_us_tick": {
+        "master_mean": 164.031982421875,
+        "branch_mean": 164.1082763671875,
+        "change_percent": 0.0465116279069866,
+        "paired_bootstrap_95_percent": [
+          -2.26963231956423,
+          1.5544041450777257
+        ]
+      },
+      "simulation_cpu_us_tick": {
+        "master_mean": 113.3946533203125,
+        "branch_mean": 113.3933334350586,
+        "change_percent": -0.0011639748570657638,
+        "paired_bootstrap_95_percent": [
+          -2.9889463588294807,
+          1.9063127159718585
+        ]
+      },
+      "ticks_second": {
+        "master_mean": 25968.46473388214,
+        "branch_mean": 26222.330929205644,
+        "change_percent": 0.9775941624776685,
+        "paired_bootstrap_95_percent": [
+          -1.6605590473548704,
+          5.881797497509922
+        ]
+      },
+      "tick_p50_ms": {
+        "master_mean": 0.026969906249999998,
+        "branch_mean": 0.02735540625,
+        "change_percent": 1.4293709307944047,
+        "paired_bootstrap_95_percent": [
+          -2.0143731161995637,
+          3.446621899410718
+        ]
+      },
+      "tick_p95_ms": {
+        "master_mean": 0.096166625,
+        "branch_mean": 0.09245571875,
+        "change_percent": -3.858829661537988,
+        "paired_bootstrap_95_percent": [
+          -12.250503217926711,
+          1.254857701347345
+        ]
+      },
+      "tick_p99_ms": {
+        "master_mean": 0.26953,
+        "branch_mean": 0.2479155,
+        "change_percent": -8.019329944718578,
+        "paired_bootstrap_95_percent": [
+          -20.039110650616323,
+          0.6822450902294719
+        ]
+      },
+      "peak_rss_mib": {
+        "master_mean": 70.95947265625,
+        "branch_mean": 71.634765625,
+        "change_percent": 0.9516600722518476,
+        "paired_bootstrap_95_percent": [
+          0.7204314355111041,
+          1.178837422404122
+        ]
+      }
+    },
+    "counters": {
+      "master": {
+        "building_gradient_jobs": 430.90625,
+        "building_gradient_synchronous": 58.125,
+        "building_gradient_published": 428.75,
+        "building_gradient_discarded": 1.84375,
+        "building_gradient_max_pending": 15.96875
+      },
+      "branch": {
+        "building_gradient_jobs": 448.125,
+        "building_gradient_synchronous": 0,
+        "building_gradient_published": 445.75,
+        "building_gradient_discarded": 1.96875,
+        "building_gradient_max_pending": 16.09375
+      }
+    }
+  },
+  "oazis": {
+    "pairs": 32,
+    "actual_ticks": {
+      "master": [
+        4096
+      ],
+      "branch": [
+        4096
+      ]
+    },
+    "metrics": {
+      "whole_cpu_us_tick": {
+        "master_mean": 677.5665283203125,
+        "branch_mean": 679.8553466796875,
+        "change_percent": 0.3377997973201152,
+        "paired_bootstrap_95_percent": [
+          -1.034943245047848,
+          1.6918565305662048
+        ]
+      },
+      "simulation_cpu_us_tick": {
+        "master_mean": 622.1795272827148,
+        "branch_mean": 625.0504150390625,
+        "change_percent": 0.46142433661966464,
+        "paired_bootstrap_95_percent": [
+          -0.9505989612694887,
+          1.9351709587865251
+        ]
+      },
+      "ticks_second": {
+        "master_mean": 5133.362253675983,
+        "branch_mean": 5006.698297358019,
+        "change_percent": -2.46746576724175,
+        "paired_bootstrap_95_percent": [
+          -7.48330104393784,
+          1.1512221920900512
+        ]
+      },
+      "tick_p50_ms": {
+        "master_mean": 0.09911453125,
+        "branch_mean": 0.10198965625,
+        "change_percent": 2.900810772890594,
+        "paired_bootstrap_95_percent": [
+          0.5069303947710324,
+          5.906068243721485
+        ]
+      },
+      "tick_p95_ms": {
+        "master_mean": 0.5725298125,
+        "branch_mean": 0.578125,
+        "change_percent": 0.9772744366914443,
+        "paired_bootstrap_95_percent": [
+          -4.377197933215293,
+          9.456868404256436
+        ]
+      },
+      "tick_p99_ms": {
+        "master_mean": 1.76803775,
+        "branch_mean": 1.83751440625,
+        "change_percent": 3.9295912233774377,
+        "paired_bootstrap_95_percent": [
+          -5.174037431939837,
+          20.097874432142216
+        ]
+      },
+      "peak_rss_mib": {
+        "master_mean": 149.0947265625,
+        "branch_mean": 151.47021484375,
+        "change_percent": 1.5932745148127037,
+        "paired_bootstrap_95_percent": [
+          1.1907798774225986,
+          2.0051712483839745
+        ]
+      }
+    },
+    "counters": {
+      "master": {
+        "building_gradient_jobs": 986.53125,
+        "building_gradient_synchronous": 113.4375,
+        "building_gradient_published": 982.34375,
+        "building_gradient_discarded": 2.28125,
+        "building_gradient_max_pending": 19.4375
+      },
+      "branch": {
+        "building_gradient_jobs": 1007.25,
+        "building_gradient_synchronous": 0,
+        "building_gradient_published": 1001.09375,
+        "building_gradient_discarded": 4.8125,
+        "building_gradient_max_pending": 20.1875
+      }
+    }
+  }
+}

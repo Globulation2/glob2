@@ -1,0 +1,5 @@
+{"map": "holiday", "seed": 42, "policy": "master", "ticks": 4096, "cpu_s": 0.459572, "p99_us": 244.667, "contended": false}
+{"map": "holiday", "seed": 42, "policy": "branch", "ticks": 4096, "cpu_s": 0.470473, "p99_us": 241.75, "contended": false}
+{"map": "oazis", "seed": 42, "policy": "branch", "ticks": 4096, "cpu_s": 2.394743, "p99_us": 1523.125, "contended": false}
+{"map": "oazis", "seed": 42, "policy": "master", "ticks": 4096, "cpu_s": 2.390583, "p99_us": 1542.125, "contended": false}
+COMPLETE

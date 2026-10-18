@@ -1,0 +1,12 @@
+[
+  {
+    "kind": "real engine test",
+    "detected_external": true,
+    "excluded_own": true
+  },
+  {
+    "kind": "real compiler and descendants",
+    "detected_external": true,
+    "excluded_own": true
+  }
+]

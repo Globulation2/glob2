@@ -1,0 +1,278 @@
+[
+  {
+    "map": "Holiday_Island_2",
+    "map_sha256": "7c8d9ff5d0bbff14945f1a31bb78ffdc60df2befe08e7b5b0f9c0bedb8f977e9",
+    "seed": 42,
+    "commands": [
+      [
+        "/Users/bradley/.codex/worktrees/hiring-gradient-production/glob2/build/darwin/client/debug/dev-dev_fast-true-linker-auto/src/glob2",
+        "game",
+        "run",
+        "--map-file",
+        "/Users/bradley/.codex/worktrees/hiring-gradient-production/glob2/maps/Holiday_Island_2.map.gz",
+        "--game-seed",
+        "42",
+        "--ticks",
+        "2048",
+        "--compute-threads",
+        "1",
+        "--gpu",
+        "off",
+        "--gradient-backend",
+        "cpu",
+        "--telemetry",
+        "checksums",
+        "--output-dir",
+        "/Users/bradley/.codex/worktrees/hiring-gradient-production/glob2/artifacts/final-pr-review/matches/Holiday_Island_2-p1",
+        "--player",
+        "nicowar",
+        "--player",
+        "econo",
+        "--player",
+        "nicowar",
+        "--player",
+        "econo"
+      ],
+      [
+        "/Users/bradley/.codex/worktrees/hiring-gradient-production/glob2/build/darwin/client/debug/dev-dev_fast-true-linker-auto/src/glob2",
+        "game",
+        "run",
+        "--map-file",
+        "/Users/bradley/.codex/worktrees/hiring-gradient-production/glob2/maps/Holiday_Island_2.map.gz",
+        "--game-seed",
+        "42",
+        "--ticks",
+        "2048",
+        "--compute-threads",
+        "4",
+        "--gpu",
+        "off",
+        "--gradient-backend",
+        "cpu",
+        "--telemetry",
+        "checksums",
+        "--output-dir",
+        "/Users/bradley/.codex/worktrees/hiring-gradient-production/glob2/artifacts/final-pr-review/matches/Holiday_Island_2-p4",
+        "--player",
+        "nicowar",
+        "--player",
+        "econo",
+        "--player",
+        "nicowar",
+        "--player",
+        "econo"
+      ]
+    ],
+    "traces": {
+      "world.checksums": {
+        "sha256": "3cacf77f06c5c0bf2b4bce81a2f4dc6cd5ffe734e10a165cbec5a8c5cf8744d7",
+        "lines": 2048,
+        "matched": true
+      },
+      "game.replay.checksums": {
+        "sha256": "1b3bcc2fe102cf1ac969e2939d1045ce2ec876ff7e05c78ce0907172dd97ceb8",
+        "lines": 21376,
+        "matched": true
+      }
+    }
+  },
+  {
+    "map": "Oazis",
+    "map_sha256": "b3283af95ee177f528d3b57438797c4a1970473c562a76f5ed4faad51f03a6d3",
+    "seed": 42,
+    "commands": [
+      [
+        "/Users/bradley/.codex/worktrees/hiring-gradient-production/glob2/build/darwin/client/debug/dev-dev_fast-true-linker-auto/src/glob2",
+        "game",
+        "run",
+        "--map-file",
+        "/Users/bradley/.codex/worktrees/hiring-gradient-production/glob2/maps/Oazis.map.gz",
+        "--game-seed",
+        "42",
+        "--ticks",
+        "2048",
+        "--compute-threads",
+        "1",
+        "--gpu",
+        "off",
+        "--gradient-backend",
+        "cpu",
+        "--telemetry",
+        "checksums",
+        "--output-dir",
+        "/Users/bradley/.codex/worktrees/hiring-gradient-production/glob2/artifacts/final-pr-review/matches/Oazis-p1",
+        "--player",
+        "nicowar",
+        "--player",
+        "econo",
+        "--player",
+        "nicowar",
+        "--player",
+        "econo",
+        "--player",
+        "nicowar",
+        "--player",
+        "econo",
+        "--player",
+        "nicowar",
+        "--player",
+        "econo",
+        "--player",
+        "nicowar",
+        "--player",
+        "econo",
+        "--player",
+        "nicowar"
+      ],
+      [
+        "/Users/bradley/.codex/worktrees/hiring-gradient-production/glob2/build/darwin/client/debug/dev-dev_fast-true-linker-auto/src/glob2",
+        "game",
+        "run",
+        "--map-file",
+        "/Users/bradley/.codex/worktrees/hiring-gradient-production/glob2/maps/Oazis.map.gz",
+        "--game-seed",
+        "42",
+        "--ticks",
+        "2048",
+        "--compute-threads",
+        "4",
+        "--gpu",
+        "off",
+        "--gradient-backend",
+        "cpu",
+        "--telemetry",
+        "checksums",
+        "--output-dir",
+        "/Users/bradley/.codex/worktrees/hiring-gradient-production/glob2/artifacts/final-pr-review/matches/Oazis-p4",
+        "--player",
+        "nicowar",
+        "--player",
+        "econo",
+        "--player",
+        "nicowar",
+        "--player",
+        "econo",
+        "--player",
+        "nicowar",
+        "--player",
+        "econo",
+        "--player",
+        "nicowar",
+        "--player",
+        "econo",
+        "--player",
+        "nicowar",
+        "--player",
+        "econo",
+        "--player",
+        "nicowar"
+      ]
+    ],
+    "traces": {
+      "world.checksums": {
+        "sha256": "4813103e1addd84ad00cecc4a26038d609c23b63b8a7039b3858531f317d0c8f",
+        "lines": 2048,
+        "matched": true
+      },
+      "game.replay.checksums": {
+        "sha256": "d094649d34805bb46471d72dd79d0a6e5add945e92b2c58d46c4a672c81c6a6d",
+        "lines": 26017,
+        "matched": true
+      }
+    }
+  },
+  {
+    "save": "format172-pending.game",
+    "commands": [
+      [
+        "/Users/bradley/.codex/worktrees/hiring-gradient-production/glob2/build/darwin/client/debug/dev-dev_fast-true-linker-auto/src/glob2",
+        "game",
+        "run",
+        "--load-game",
+        "/Users/bradley/.codex/worktrees/hiring-gradient-production/glob2/artifacts/lazy-restore/format172-pending.game",
+        "--ticks",
+        "16",
+        "--compute-threads",
+        "1",
+        "--telemetry",
+        "checksums",
+        "--output-dir",
+        "/Users/bradley/.codex/worktrees/hiring-gradient-production/glob2/artifacts/final-pr-review/matches/format172-pending-p1"
+      ],
+      [
+        "/Users/bradley/.codex/worktrees/hiring-gradient-production/glob2/build/darwin/client/debug/dev-dev_fast-true-linker-auto/src/glob2",
+        "game",
+        "run",
+        "--load-game",
+        "/Users/bradley/.codex/worktrees/hiring-gradient-production/glob2/artifacts/lazy-restore/format172-pending.game",
+        "--ticks",
+        "16",
+        "--compute-threads",
+        "4",
+        "--telemetry",
+        "checksums",
+        "--output-dir",
+        "/Users/bradley/.codex/worktrees/hiring-gradient-production/glob2/artifacts/final-pr-review/matches/format172-pending-p4"
+      ]
+    ],
+    "traces": {
+      "world.checksums": {
+        "sha256": "2a2e1c05163628fe8e7c7479fce825bc52699336f77f804661dd30c2b093431c",
+        "lines": 15,
+        "matched": true
+      },
+      "game.replay.checksums": {
+        "sha256": "3cd4a74d2691ba78ec4948b1b0487fd26510083f55d23c4b7ec75afaae32303d",
+        "lines": 3,
+        "matched": true
+      }
+    }
+  },
+  {
+    "save": "format172-queued.game",
+    "commands": [
+      [
+        "/Users/bradley/.codex/worktrees/hiring-gradient-production/glob2/build/darwin/client/debug/dev-dev_fast-true-linker-auto/src/glob2",
+        "game",
+        "run",
+        "--load-game",
+        "/Users/bradley/.codex/worktrees/hiring-gradient-production/glob2/artifacts/lazy-restore/format172-queued.game",
+        "--ticks",
+        "16",
+        "--compute-threads",
+        "1",
+        "--telemetry",
+        "checksums",
+        "--output-dir",
+        "/Users/bradley/.codex/worktrees/hiring-gradient-production/glob2/artifacts/final-pr-review/matches/format172-queued-p1"
+      ],
+      [
+        "/Users/bradley/.codex/worktrees/hiring-gradient-production/glob2/build/darwin/client/debug/dev-dev_fast-true-linker-auto/src/glob2",
+        "game",
+        "run",
+        "--load-game",
+        "/Users/bradley/.codex/worktrees/hiring-gradient-production/glob2/artifacts/lazy-restore/format172-queued.game",
+        "--ticks",
+        "16",
+        "--compute-threads",
+        "4",
+        "--telemetry",
+        "checksums",
+        "--output-dir",
+        "/Users/bradley/.codex/worktrees/hiring-gradient-production/glob2/artifacts/final-pr-review/matches/format172-queued-p4"
+      ]
+    ],
+    "traces": {
+      "world.checksums": {
+        "sha256": "2a2e1c05163628fe8e7c7479fce825bc52699336f77f804661dd30c2b093431c",
+        "lines": 15,
+        "matched": true
+      },
+      "game.replay.checksums": {
+        "sha256": "3cd4a74d2691ba78ec4948b1b0487fd26510083f55d23c4b7ec75afaae32303d",
+        "lines": 3,
+        "matched": true
+      }
+    }
+  }
+]

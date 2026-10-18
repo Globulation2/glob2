@@ -1,0 +1,59 @@
+{
+  "tested_revision": "45710739e41679514bd3c4aa528c834bb518b1f4",
+  "base_revision": "486a2230a4ddb257ba9dee34d3aace05f2260d6f",
+  "platform": "macOS-26.6.2-arm64-arm-64bit-Mach-O",
+  "compiler": "Apple clang version 21.0.0 (clang-2100.3.34.2)\nTarget: arm64-apple-darwin25.6.0\nThread model: posix\nInstalledDir: /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin\n",
+  "python": "3.14.7",
+  "native_cases": {
+    "engine": {
+      "cases": 146,
+      "failed": 0,
+      "skipped": 0
+    },
+    "compatibility": {
+      "cases": 41,
+      "failed": 0,
+      "skipped": 0
+    },
+    "turn": {
+      "cases": 18,
+      "failed": 0,
+      "skipped": 0
+    },
+    "movement": {
+      "cases": 103,
+      "failed": 0,
+      "skipped": 0
+    }
+  },
+  "native_build_command": "PYTHONPATH=. python3 tools/dev_build.py -j4 engine-tests unit-tests build/darwin/client/debug/dev-dev_fast-true-linker-auto/src/glob2",
+  "native_flags": "dev_fast=1 -O0 -g1",
+  "native_provenance": {
+    "engine": {
+      "compiler": "g++",
+      "dirty": false,
+      "flags": {
+        "CCFLAGS": "-O0 -g1 -fdebug-prefix-map=/Users/bradley/.codex/worktrees/hiring-gradient-production/glob2=.",
+        "CPPDEFINES": "GLOB2_OFFICIAL_INSTANCE_ORIGIN \\\"https://app.glob2online.com\\\" GLOB2_OFFICIAL_INSTANCE_FORMER_ORIGINS \\\"https://glob2online.com\\\" HAVE_CONFIG_H GL_SILENCE_DEPRECATION GLOB2_RENDER_SHADER_DIR \\\"/Users/bradley/.codex/worktrees/hiring-gradient-production/glob2/build/darwin/client/debug/dev-dev_fast-true-linker-auto/shaders\\\" SDL_MAIN_HANDLED",
+        "CXXFLAGS": "-std=gnu++20 -Wall -fPIC",
+        "LINKFLAGS": "-Wall -Wl,-rpath,/opt/homebrew/lib"
+      },
+      "revision": "45710739e41679514bd3c4aa528c834bb518b1f4",
+      "sourceStatus": [],
+      "sourceTreeSha256": "f3501e65c772796123e1fb9d4076da6b9884b6d4c4823364de3ac12e4f221cd0"
+    },
+    "unit": {
+      "compiler": "g++",
+      "dirty": false,
+      "flags": {
+        "CCFLAGS": "-O0 -g1 -fdebug-prefix-map=/Users/bradley/.codex/worktrees/hiring-gradient-production/glob2=.",
+        "CPPDEFINES": "GLOB2_OFFICIAL_INSTANCE_ORIGIN \\\"https://app.glob2online.com\\\" GLOB2_OFFICIAL_INSTANCE_FORMER_ORIGINS \\\"https://glob2online.com\\\" HAVE_CONFIG_H GL_SILENCE_DEPRECATION GLOB2_RENDER_SHADER_DIR \\\"/Users/bradley/.codex/worktrees/hiring-gradient-production/glob2/build/darwin/client/debug/dev-dev_fast-true-linker-auto/shaders\\\" SDL_MAIN_HANDLED",
+        "CXXFLAGS": "-std=gnu++20 -Wall -fPIC",
+        "LINKFLAGS": "-Wall -Wl,-rpath,/opt/homebrew/lib"
+      },
+      "revision": "45710739e41679514bd3c4aa528c834bb518b1f4",
+      "sourceStatus": [],
+      "sourceTreeSha256": "f3501e65c772796123e1fb9d4076da6b9884b6d4c4823364de3ac12e4f221cd0"
+    }
+  }
+}
