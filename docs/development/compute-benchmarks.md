@@ -59,6 +59,12 @@ preserved, including values above observed CPU eligibility; there is no separate
 limit of 64. Discovery samples once at session setup, changes no affinity, and
 does not interpret CPU-time quotas. Both performance and efficiency cores count;
 no threads are pinned to cores. Auxiliary asset/preview pools are independent.
+When the selected CPU count is one, two or three, auto adds one participant
+for the owner so every available core can have a background worker. At four or
+more, the total participant count equals the selected CPU count, leaving one
+core for the owner. This rule also applies to logical-count fallbacks and browser
+auto; an unknown count still gives one participant. The OS schedules these
+threads without pinning them.
 The background pool has N−1 workers. AI, periodic/building gradients, resource
 growth and presentation share this pool. `--compute-threads 1` is the serial
 compute control. Thread creation failure and platforms without threads also leave

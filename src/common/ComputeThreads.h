@@ -11,17 +11,21 @@
 #include <cstdint>
 
 // Total executor participants, including the simulation owner. Hardware discovery
-// may return zero; one participant is the portable serial fallback. Work placement
+// may return zero; one participant is the portable serial fallback. Below four
+// available cores, give every core a background worker in addition to the owner.
+// At four or more, leave one CPU for the owner. Work placement
 // and match deadlines are independent of this local execution setting.
-// This overload applies the logical-count fallback; native auto uses topology below.
+// This overload applies the count policy; native auto selects a core count below.
 inline unsigned defaultComputeThreadCount(unsigned hardware)
 {
+    if (!hardware) return 1;
+    if (hardware < 4) return hardware + 1;
 #ifdef __EMSCRIPTEN__
     // Browser workers share a bounded Wasm heap with artwork and encoders;
     // logical CPU counts on large hosts are not a useful allocation budget.
-    return std::min(hardware ? hardware : 1, 8u);
+    return std::min(hardware, 8u);
 #else
-    return hardware ? hardware : 1;
+    return hardware;
 #endif
 }
 
@@ -85,7 +89,8 @@ inline unsigned defaultComputeThreadCount(const CpuAvailabilityObservation& cpu)
 #else
     if (cpu.physicalCoreCount && *cpu.physicalCoreCount) {
         const unsigned physical = *cpu.physicalCoreCount;
-        return cpu.eligibleLogicalCpuCount ? std::min(physical, *cpu.eligibleLogicalCpuCount) : physical;
+        const unsigned available = cpu.eligibleLogicalCpuCount ? std::min(physical, *cpu.eligibleLogicalCpuCount) : physical;
+        return defaultComputeThreadCount(available);
     }
     return defaultComputeThreadCount(cpu.eligibleLogicalCpuCount.value_or(cpu.hardwareHint));
 #endif

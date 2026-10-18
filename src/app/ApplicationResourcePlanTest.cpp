@@ -140,25 +140,58 @@ TEST_CASE("physical cores size native auto and preserve explicit overrides")
     system.physicalCoreCount = 8;
     system.physicalCoreSource = CpuAvailabilityObservation::PhysicalSource::Sysctl;
 #ifndef __EMSCRIPTEN__
-    CHECK(resolveComputeThreadCount(0, system) == 3);
+    CHECK(resolveComputeThreadCount(0, system) == 4);
     CHECK(std::string(automaticComputeThreadSourceName(system)) == "physical-core-bound");
 #endif
     system.physicalCoreCount = 0;
 #ifdef __EMSCRIPTEN__
     CHECK(resolveComputeThreadCount(0, system) == 8);
 #else
-    CHECK(resolveComputeThreadCount(0, system) == 3);
+    CHECK(resolveComputeThreadCount(0, system) == 4);
 #endif
     system.physicalCoreCount = 1;
 #ifndef __EMSCRIPTEN__
     const gradient_kernel::Configuration gpu{gradient_kernel::Backend::Vulkan, gradient_kernel::Algorithm::Jacobi};
-    CHECK_FALSE(resolveApplicationResourcePlan(0, system, true, gpu).computeGpuPermitted());
+    CHECK(resolveApplicationResourcePlan(0, system, true, gpu).computeGpuPermitted());
+    CHECK_FALSE(resolveApplicationResourcePlan(1, system, true, gpu).computeGpuPermitted());
     system.hardwareHint = 0;
     system.eligibleLogicalCpuCount.reset();
     system.physicalCoreCount = 4;
     CHECK(resolveComputeThreadCount(0, system) == 4);
     CHECK(std::string(automaticComputeThreadSourceName(system)) == "physical-cores");
 #endif
+}
+TEST_CASE("small CPU auto counts give every core a worker plus the owner")
+{
+    struct Sizing { unsigned cpus, participants; };
+    for (const auto [cpus, participants] : {Sizing{1, 2}, Sizing{2, 3}, Sizing{3, 4}, Sizing{4, 4}, Sizing{8, 8}})
+    {
+        auto physical = cpuAvailabilityObservation(cpus * 2, cpus * 2);
+        physical.physicalCoreCount = cpus;
+        physical.physicalCoresAreEligible = true;
+        const auto plan = resolveApplicationResourcePlan(0, physical, true, {});
+#ifdef __EMSCRIPTEN__
+        CHECK(plan.computeParticipants == defaultComputeThreadCount(cpus * 2));
+#else
+        CHECK(plan.computeParticipants == participants);
+        CHECK(std::string(computeParticipantSourceName(plan)) == "physical-cores");
+        CHECK_FALSE(plan.exceedsCpuAllocation);
+        // Without SMT, the additional owner intentionally exceeds CPU eligibility.
+        physical.eligibleLogicalCpuCount = cpus;
+        const auto noSmt = resolveApplicationResourcePlan(0, physical, true, {});
+        CHECK(noSmt.computeParticipants == participants);
+        CHECK(noSmt.exceedsCpuAllocation == (cpus < 4));
+        // Apply the policy after bounding a system-wide physical count by affinity.
+        physical.physicalCoreCount = 8;
+        physical.physicalCoresAreEligible = false;
+        CHECK(resolveApplicationResourcePlan(0, physical, true, {}).computeParticipants == participants);
+#endif
+        const auto logical = cpuAvailabilityObservation(cpus, cpus);
+        CHECK(resolveApplicationResourcePlan(0, logical, true, {}).computeParticipants == participants);
+        CHECK(resolveApplicationResourcePlan(0, physical, false, {}).computeParticipants == 1);
+        for (unsigned requested : {1u, 2u, 3u, 4u})
+            CHECK(resolveApplicationResourcePlan(requested, physical, true, {}).computeParticipants == requested);
+    }
 }
 TEST_CASE("CPU list parsing is bounded and rejects malformed topology")
 {
