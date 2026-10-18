@@ -293,10 +293,10 @@ public:
             value=(value/MOVEMENT_CLASS_COUNT)*classes+value%MOVEMENT_CLASS_COUNT;
         }
         BinaryOutputStream::writeUint16(value,name);
+    }
     void writeSint32(Sint32 value, std::string_view name) override
     { if (!suppressed()) BinaryOutputStream::writeSint32(value,name); }
 
-    }
     void writeUint16Sections(const Uint16* values, std::size_t count, std::string_view name) override
     { if (!suppressed()) BinaryOutputStream::writeUint16Sections(values,count,name); }
 };
