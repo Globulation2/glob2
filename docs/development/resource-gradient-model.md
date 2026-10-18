@@ -116,7 +116,11 @@ lists have no alternatives unless explicitly supplied in `map_candidates`.
 The output retains the frozen plan, binary/model hashes, exact commands, map
 hashes, losslessly compressed episode/query CSVs and an atomically updated manifest. Repeating the exact
 command resumes completed games; changing its plan or build requires a fresh
-output directory. Preserve raw data outside Git under `artifacts/`. Incomplete
+output directory. Generation has a ten-minute process timeout; matches default to
+`--timeout-seconds 7200`. Failures are retained in `failures.json`; other queued
+games still finish, compress and enter the manifest before the runner exits
+unsuccessfully. Repair failures and resume the frozen plan rather than omitting
+those states. Preserve raw data outside Git under `artifacts/`. Incomplete
 32-tick episodes remain in the CSV but never enter a fit.
 
 Before interpreting a new collector or policy implementation, run identical

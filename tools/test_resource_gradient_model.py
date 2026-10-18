@@ -142,6 +142,32 @@ int main(){std::array<ResourceGradientModel::I,7>x;while(std::cin>>x[0]){for(int
             with mock.patch.object(m.subprocess,'run',side_effect=AssertionError('must recover')),mock.patch.object(m.subprocess,'check_output',return_value='revision\n'),contextlib.redirect_stdout(io.StringIO()):m.run(args)
             self.assertEqual(json.loads(manifest.read_text()),before)
 
+    def test_runner_retains_successful_games_after_another_future_fails(self):
+        import argparse,contextlib,io
+        from unittest import mock
+        from types import SimpleNamespace
+        with tempfile.TemporaryDirectory() as d:
+            p=Path(d);binary=p/'glob2';binary.write_text('binary')
+            spec=dict(format='1v1',generator='river',size=64,players=2,alliances=[1,2],map_seed=1,game_seed=2)
+            m.save(p/'plan.json',[spec,dict(spec,map_seed=3,game_seed=4)])
+            args=argparse.Namespace(binary=str(binary),output=str(p/'results'),plan=str(p/'plan.json'),ticks=2048,threads=1,jobs=1)
+            def execute(command,**kwargs):
+                if command[1:3]==['map','generate']:
+                    Path(command[command.index('--output')+1]).write_text('map')
+                elif command[command.index('--game-seed')+1]=='2':
+                    raise subprocess.CalledProcessError(7,command)
+                else:
+                    out=Path(command[command.index('--output-dir')+1])
+                    m.save(out/'result.json',dict(status='completed',ticks=2048))
+                    (out/'gradient-episodes.csv').write_text('complete,queries,defer_extra,refresh_extra,'+','.join(m.FEATURES)+'\n')
+                return SimpleNamespace(returncode=0)
+            with mock.patch.object(m.subprocess,'run',side_effect=execute),mock.patch.object(m.subprocess,'check_output',return_value='revision'),contextlib.redirect_stdout(io.StringIO()),contextlib.redirect_stderr(io.StringIO()):
+                with self.assertRaisesRegex(RuntimeError,'1 collection games failed'):m.run(args)
+            manifest=json.loads((p/'results/manifest.json').read_text())
+            self.assertEqual(len(manifest),1);self.assertEqual(manifest[0]['spec']['game_seed'],4)
+            self.assertTrue((p/'results'/manifest[0]['episodes']).exists())
+            self.assertEqual(len(json.loads((p/'results/failures.json').read_text())),1)
+
     def test_map_candidates_record_rejections_and_do_not_retry_infrastructure_failures(self):
         from types import SimpleNamespace
         from unittest import mock

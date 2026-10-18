@@ -22,6 +22,7 @@ import shutil
 from pathlib import Path
 import subprocess
 import sys
+import traceback
 
 ROOT = Path(__file__).resolve().parents[1]
 if str(ROOT) not in sys.path: sys.path.insert(0, str(ROOT))
@@ -192,7 +193,7 @@ def generate_map(binary, spec, directory, env):
                  '--output',str(directory/'map.map.gz'),'--report-file',str(report)]
         for key,value in sorted(actual.get('generator_params', {}).items()):command+=['--set',f'{key}={value}']
         with (directory/f'generation-{index}.log').open('w') as log:
-            result=subprocess.run(command,cwd=ROOT,env=env,stdout=log,stderr=subprocess.STDOUT)
+            result=subprocess.run(command,cwd=ROOT,env=env,stdout=log,stderr=subprocess.STDOUT,timeout=600)
         attempts.append(dict(spec=actual,command=command,returncode=result.returncode))
         save(directory/'generation-attempts.json',attempts)
         if result.returncode==0:
@@ -257,7 +258,8 @@ def run(args):
             with (directory/'run.log').open('w') as log:
                 spec,attempts=generate_map(binary,spec,directory,env)
                 save(directory/'commands.json',dict(generation_attempts=attempts,run=command))
-                subprocess.run(command,cwd=ROOT,env=env,stdout=log,stderr=subprocess.STDOUT,check=True)
+                subprocess.run(command,cwd=ROOT,env=env,stdout=log,stderr=subprocess.STDOUT,check=True,
+                               timeout=getattr(args,'timeout_seconds',7200))
         if recovered:
             selected=directory/'selected-map.json'
             if selected.exists():spec=json.loads(selected.read_text())
@@ -280,13 +282,29 @@ def run(args):
         return dict(group=group,map_group=map_identity(spec),format=spec['format'],episodes=str(episode.relative_to(out)),episode_sha256=sha(episode),
                     binary_sha256=binary_hash,map_sha256=sha(map_path),result_sha256=sha(result),
                     ticks=result_data['ticks'],termination=result_data.get('termination'),spec=spec)
+    failure_path=out/'failures.json'
+    failures=json.loads(failure_path.read_text()) if failure_path.exists() else {}
+    for group in done:failures.pop(group,None)
+    save(failure_path,failures)
+    # A failed game must not abandon completed futures or leave their large raw
+    # CSVs uncompressed. Drain the whole cohort, retaining every failure for a
+    # deterministic retry with the original state/seed, then fail the command.
     with concurrent.futures.ThreadPoolExecutor(max_workers=args.jobs) as pool:
-        for future in concurrent.futures.as_completed([pool.submit(game,spec) for spec in plan]):
-            record=future.result()
+        futures={pool.submit(game,spec):spec for spec in plan}
+        for future in concurrent.futures.as_completed(futures):
+            spec=futures[future];group=digest(spec)[:16]
+            try:record=future.result()
+            except Exception as error:
+                failures[group]=dict(spec=spec,error=str(error),traceback=traceback.format_exc())
+                save(failure_path,failures)
+                print(f'FAILED {group}: {error}',file=sys.stderr,flush=True)
+                continue
+            failures.pop(group,None);save(failure_path,failures)
             if record:
                 manifest.append(record);save(manifest_path,manifest)
                 save(out/'coverage.json',coverage([r['spec'] for r in manifest],eligible))
                 print(f'{len(manifest)}/{len(plan)} games collected',flush=True)
+    if failures:raise RuntimeError(f'{len(failures)} collection games failed; inspect {failure_path} and resume after repair')
 
 
 def dataset(manifests):
@@ -451,10 +469,11 @@ def main():
         if command=='run':
             p.add_argument('--plan')
             p.add_argument('--ticks',type=int,default=90000);p.add_argument('--threads',type=int,default=4);p.add_argument('--jobs',type=int,default=1)
+            p.add_argument('--timeout-seconds',type=int,default=7200)
     p=sub.add_parser('fit');p.add_argument('--manifest',action='append',required=True);p.add_argument('--output',required=True);p.add_argument('--header');p.set_defaults(action=fit)
     p=sub.add_parser('emit');p.add_argument('--model',default=str(DEFAULT_MODEL));p.add_argument('--header',default=str(HEADER));p.set_defaults(action=lambda a:emit(json.loads(Path(a.model).read_text()),a.header))
     args=parser.parse_args()
-    if args.command=='run' and min(args.jobs,args.threads,args.ticks)<1:parser.error('jobs, threads and ticks must be positive')
+    if args.command=='run' and min(args.jobs,args.threads,args.ticks,args.timeout_seconds)<1:parser.error('jobs, threads and ticks must be positive')
     args.action(args)
 
 if __name__=='__main__':main()
