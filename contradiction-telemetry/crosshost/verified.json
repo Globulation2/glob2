@@ -1,0 +1,45 @@
+{
+  "passed": true,
+  "hosts": [
+    "devlaptop.local",
+    "pharaoh-dev-1.local",
+    "pharaoh-dev-2.local",
+    "therig.local"
+  ],
+  "ticks": [
+    2048,
+    2048,
+    2048,
+    2048
+  ],
+  "decoded_artifact_sha256": {
+    "world.checksums": "24322ae97f757d5b8d506fa5d565f87e8fd890acf47c263f9f0c23a3546857d9",
+    "snapshot.checksums": "1699fd5eb24ad6e61fd96df07bdb4bf5dae0b6d97bd80cd8a73e7552e53cf281",
+    "game.replay.checksums": "00419eb73f1972530b8a9d611dbce3b6e931c3ba84b53e8c18cde33e04456e06",
+    "final.game.gz": "9fa5d1f1fac5787be3eeb22fdfa791b624220f9bc9d2b4f37cf9924d5e061dbd",
+    "gradient-quality.csv": "fe0cac00c538385c242cbb43144c0e3491b954617d4824d769872004e763a62b",
+    "gradient-episodes.csv": "54c084126c534af62f91fb22f58aba2c5f7c0a5a9e565eadda054c7007cc18da",
+    "gradient-planning-quality.csv": "e310eebec05e1affbd6327b17b484da3f4af73182ffe0e3ae26ebda0f70edce3",
+    "gradient-contradictions.csv": "317bb5f551728cb0260582f50f7310d39eb3f640733de13d64d9b7fa26a63806"
+  },
+  "matches_original_world_snapshot_fullreplay_and_existing_query_labels": true,
+  "permanent_augmented_export": {
+    "expected": 4,
+    "completed": 4,
+    "missing": [],
+    "failed": [],
+    "failed_attempts": 0,
+    "manifests": [
+      "/Users/bradley/glob2/artifacts/gradient-contradictions-20261018/qualification-dataset/3d49f3d9530bb109e7d7dd06.cohort.json"
+    ],
+    "by_format": {
+      "qualification-3ffa": 4
+    },
+    "hosts": {
+      "devlaptop.local": 1,
+      "therig.local": 1,
+      "pharaoh-dev-1.local": 1,
+      "pharaoh-dev-2.local": 1
+    }
+  }
+}

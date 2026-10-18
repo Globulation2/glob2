@@ -1,0 +1,24 @@
+{
+  "schema": 1,
+  "created_utc": "2026-10-18T19:10:15.451392+00:00",
+  "full_archive": {
+    "sha256": "9cdaa0b599913ab2977546d901f100324421c07537c18f70e0a74b15aad0820d",
+    "bytes": 51514060
+  },
+  "files": [
+    {
+      "path": "native-evidence.tar.gz.part-000",
+      "bytes": 45000000,
+      "sha256": "021c22c8aa1b30ee635b0a93614ca9fa805839e83e84071a42fab877ad0526f0"
+    },
+    {
+      "path": "native-evidence.tar.gz.part-001",
+      "bytes": 6514060,
+      "sha256": "885fb4dcb7a7df8234028f33c30f4ec5f81b4f7d4bb9c0a5defc6950d8b0ad88"
+    }
+  ],
+  "evidence_files": 1393,
+  "original_bytes": 1707769933,
+  "unique_contents": 709,
+  "metadata_redactions": 140
+}

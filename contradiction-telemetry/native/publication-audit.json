@@ -1,0 +1,16 @@
+{
+  "files": 1393,
+  "unchanged_raw_simulation_artifacts": 566,
+  "redacted_metadata_fields": 140,
+  "environment_dicts_audited": 6,
+  "environment_keys_allowlist": [
+    "CCACHE",
+    "CCACHE_MAXSIZE",
+    "GLOB2_GRADIENT_CONTRADICTION_BENCHMARK",
+    "GLOB2_RECORDING_PREFIX",
+    "GLOB2_SDL3_PREFIX"
+  ],
+  "unrelated_process_lists_remaining": 0,
+  "archive_part_limit_bytes": 45000000,
+  "no_games_or_benchmarks_executed_for_packaging": true
+}

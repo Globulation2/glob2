@@ -1,0 +1,37 @@
+{
+  "schema": 1,
+  "result": "55 tests passed",
+  "elapsed_seconds": 3.035,
+  "host": "therig.local",
+  "remote_directory": "/home/bradley/glob2/artifacts/gradient-coverage-72d2f99/python-contradictions-validation-pools",
+  "command": "training-venv/bin/python -m unittest tools.test_resource_gradient_model tools.test_resource_gradient_dataset tools.test_resource_gradient_contradictions tools.test_resource_gradient_experiments tools.test_resource_gradient_distributed tools.test_resource_gradient_tournament -v",
+  "review": {
+    "approval": "Approved read-only; no source edits by reviewer.",
+    "changes": [
+      "Explicit positive integer wall timeout is frozen in each job and changes experiment identity without changing the simulation tick cap.",
+      "Optional accepted-map build pins must name a supplied compatible bundle; existing source/SIM/model/header checks remain.",
+      "Every supplied logical game remains in the experiment. Unpinned games retain format-stratified weighted allocation.",
+      "Exports group by cohort and executable hash, not alias bundle ID; identical ELF execution-pool aliases retain common cohort weighting and individual build receipts."
+    ],
+    "operational_requirements": [
+      "Freeze the static workload routing rule and every preselected slot before new outcomes.",
+      "Freeze explicit host build allowlists: an empty allowlist means all builds.",
+      "Use a new experiment revision/directory for changed timeouts, routing or metadata; old ledgers remain immutable."
+    ]
+  },
+  "new_regressions": [
+    "test_diagnostic_timeout_is_explicit_and_frozen_without_changing_tick_cap",
+    "test_predeclared_execution_pool_preserves_all_planned_games"
+  ],
+  "evidence": [
+    "validation.log",
+    "validation-source-sha256.txt",
+    "validated-source.tar.gz"
+  ],
+  "previous_evidence": "The earlier 53-test snapshot and evidence directory are preserved separately.",
+  "limits": [
+    "No engine/game changes were made or validated in this review.",
+    "Source review verifies helper behavior, not the actual production host allowlists or campaign deployment.",
+    "No training result or CPU/pathfinding improvement is claimed."
+  ]
+}
