@@ -13,6 +13,7 @@
 // Total executor participants, including the simulation owner. Hardware discovery
 // may return zero; one participant is the portable serial fallback. Work placement
 // and match deadlines are independent of this local execution setting.
+// This overload applies the logical-count fallback; native auto uses topology below.
 inline unsigned defaultComputeThreadCount(unsigned hardware)
 {
 #ifdef __EMSCRIPTEN__
@@ -41,9 +42,11 @@ inline unsigned parseComputeThreadCount(std::string_view value)
 struct CpuAvailabilityObservation {
     std::optional<unsigned> eligibleLogicalCpuCount;
     unsigned hardwareHint = 0;
+    // System-wide enabled cores unless filtered by observed affinity below.
     std::optional<unsigned> physicalCoreCount;
     enum class PhysicalSource { Unknown, Sysctl, LinuxTopology, WindowsTopology };
     PhysicalSource physicalCoreSource = PhysicalSource::Unknown;
+    // True only for an exact core/affinity intersection, not a throughput estimate.
     bool physicalCoresAreEligible = false;
 };
 // Pure status mapping. A hardware hint is never promoted to observed allocation.
@@ -57,8 +60,9 @@ inline const char* cpuAvailabilitySourceName(const CpuAvailabilityObservation& o
     if (observation.eligibleLogicalCpuCount) return "affinity-mask";
     return observation.hardwareHint ? "hardware-hint-only" : "unknown";
 }
-// One query of the creating thread's eligible logical mask when supported.
-// Neither the mask nor hardware hint measures CPU-time quota or reserved cores.
+// Observe topology and eligibility once at setup. Linux uses creating-thread
+// affinity; Windows uses process affinity. Counts do not measure CPU-time quota
+// or reserved throughput.
 CpuAvailabilityObservation discoverComputeCpuAvailability(unsigned hardware = std::thread::hardware_concurrency()) noexcept;
 
 // Topology parsing/counting is separate from OS access for synthetic tests.
