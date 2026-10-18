@@ -312,21 +312,31 @@ TEST_CASE("terrain health profiles choose independent air and ground rates")
     CHECK_EQ(explorer->hp,air+1);
 }
 
-TEST_CASE("explorer flag eligibility applies route accessibility and hunger distance")
+TEST_CASE("constrained explorer flag eligibility applies route accessibility and hunger distance")
 {
     glob2test::HeadlessGlobals globals;
     glob2test::HeadlessGame world({.loadDefaultRace=true,.header=true});
+    world.game.map.paintCell(24,24,VOID_HOLE);
+    REQUIRE(world.game.map.hasAirRoutingConstraints());
     Unit* explorer=world.addUnit(EXPLORER,8,8);
     Building* flag=world.addBuilding("explorationflag",12,12);
     REQUIRE(explorer); REQUIRE(flag);
     explorer->activity=Unit::ACT_RANDOM;
     explorer->medical=Unit::MED_FREE;
-    explorer->hungry=explorer->trigHungry+10*explorer->race->hungriness;
-    int distance=0;
-    CHECK_FALSE(flag->considerUnitForExplorerFlag(explorer,&distance,INT_MAX));
-    CHECK_FALSE(flag->considerUnitForExplorerFlag(explorer,&distance,11));
-    CHECK(flag->considerUnitForExplorerFlag(explorer,&distance,10));
-    CHECK_EQ(distance,100);
+    flag->unitStayRange=0;
+    int routeDistance=0,distance=0;
+    REQUIRE(world.game.map.buildingAvailable(flag,AIR_MOVEMENT_CLASS,8,8,&routeDistance,BuildingRoute::Combat));
+    REQUIRE(routeDistance>0);
+    explorer->hungriness=1;
+    explorer->hungry=explorer->trigHungry+routeDistance-1;
+    CHECK_FALSE(flag->considerUnitForExplorerFlag(explorer,&distance,0));
+    explorer->hungry=explorer->trigHungry+routeDistance;
+    CHECK(flag->considerUnitForExplorerFlag(explorer,&distance,INT_MAX));
+    CHECK_EQ(distance,routeDistance*routeDistance);
+    world.game.map.addForbidden(12,12,0);
+    world.game.map.updateGlobalGradient(flag,AIR_MOVEMENT_CLASS,BuildingRoute::Combat);
+    CHECK(flag->considerUnitForExplorerFlag(explorer,&distance,0));
+    CHECK_EQ(distance,routeDistance*routeDistance);
 }
 
 TEST_CASE("projectile supercover tests intermediate cells corners and wrapped coordinates")
@@ -1309,7 +1319,7 @@ TEST_CASE("escape fields separate team permissions swimming and forbidden-area e
     REQUIRE(map.pathfindTerrainSafety(first));
     CHECK(first->dy!=0);
 }
-TEST_CASE("flyers share safety fields across teams and ignore ground invalidations")
+TEST_CASE("flyers share safety across teams and ignore forbidden paint and ground blockers")
 {
     glob2test::HeadlessGlobals globals;
     glob2test::HeadlessGame world({.teams=2,.loadDefaultRace=true,.header=true});
@@ -1326,8 +1336,10 @@ TEST_CASE("flyers share safety fields across teams and ignore ground invalidatio
     REQUIRE(map.pathfindTerrainSafety(other));
     CHECK(map.gradientRuntime->safety.builds==1);
     map.setResourceByIndex(15,15,WOOD,1);
-    map.addForbidden(8,8,0);
     map.setBuilding(15,16,1,1,0);
+    REQUIRE(map.pathfindTerrainSafety(first));
+    CHECK(map.gradientRuntime->safety.builds==1);
+    map.addForbidden(8,8,0);
     REQUIRE(map.pathfindTerrainSafety(first));
     CHECK(map.gradientRuntime->safety.builds==1);
     map.paintCell(8,9,GRASS);

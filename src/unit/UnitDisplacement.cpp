@@ -231,6 +231,7 @@ void Unit::handleDisplacement(void)
 									: map->queryMaterialDistance(teamNumber,r,swimClass(),posX,posY,&distance,false,attachedBuilding);
 								if (route==RouteResult::Pending) { if (pendingResource<0) pendingResource=r; continue; }
 								if (route!=RouteResult::Reachable || (distance<<1)>=timeLeft) continue;
+
 								const int value=distance/need;
 								if (value<minValue) { bestResource=r; minValue=value; }
 							}

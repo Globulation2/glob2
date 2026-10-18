@@ -13,21 +13,23 @@ namespace MapState
 {
 constexpr int PlaneTeams = Team::MAX_COUNT;
 constexpr unsigned LegacyPlaneCount = unsigned(PlaneTeams) * MaterialSlotCount * LEGACY_SWIM_CLASS_COUNT * 2;
-constexpr unsigned PlaneCount = LegacyPlaneCount + unsigned(PlaneTeams) * MaterialSlotCount * 2;
+constexpr unsigned GroundPlaneCount = LegacyPlaneCount + unsigned(PlaneTeams) * MaterialSlotCount * 2;
+constexpr unsigned PlaneCount = GroundPlaneCount + unsigned(PlaneTeams) * MaterialSlotCount * 2;
 static_assert(PlaneCount < 65535, "plane keys and registry indices are 16-bit");
 struct PlaneId { int team = 0, resource = 0, swim = 0; bool market = false; };
 constexpr bool validPlane(int team, int resource, int swim)
-{ return team >= 0 && team < PlaneTeams && resource >= 0 && resource < int(MaterialSlotCount) && swim >= 0 && swim < SWIM_CLASS_COUNT; }
+{ return team >= 0 && team < PlaneTeams && resource >= 0 && resource < int(MaterialSlotCount) && swim >= 0 && swim < MOVEMENT_CLASS_COUNT; }
 constexpr Uint16 planeKey(int team, int resource, int swim, bool market)
 {
 	const unsigned source = unsigned(team) * MaterialSlotCount + unsigned(resource);
-	return Uint16((swim == WATER_ONLY_CLASS ? LegacyPlaneCount + source * 2 : source * LEGACY_SWIM_CLASS_COUNT * 2 + unsigned(swim) * 2) + (market ? 1 : 0));
+	return Uint16((swim == AIR_MOVEMENT_CLASS ? GroundPlaneCount + source * 2 : swim == WATER_ONLY_CLASS ? LegacyPlaneCount + source * 2 : source * LEGACY_SWIM_CLASS_COUNT * 2 + unsigned(swim) * 2) + (market ? 1 : 0));
 }
 constexpr PlaneId decodePlaneKey(Uint16 key)
 {
 	PlaneId id;
 	id.market = key & 1;
-	if (key >= LegacyPlaneCount) { key = (key - LegacyPlaneCount) >> 1; id.swim = WATER_ONLY_CLASS; }
+	if (key >= GroundPlaneCount) { key = (key - GroundPlaneCount) >> 1; id.swim = AIR_MOVEMENT_CLASS; }
+	else if (key >= LegacyPlaneCount) { key = (key - LegacyPlaneCount) >> 1; id.swim = WATER_ONLY_CLASS; }
 	else { key >>= 1; id.swim = key % LEGACY_SWIM_CLASS_COUNT; key /= LEGACY_SWIM_CLASS_COUNT; }
 	id.resource = key % MaterialSlotCount; id.team = key / MaterialSlotCount;
 	return id;
@@ -37,7 +39,8 @@ constexpr PlaneId decodePlaneKey(Uint16 key)
 constexpr Uint64 materialFieldKey(int excluded, int team, int resource, int swim, unsigned modes)
 {
 	const Uint64 source=(Uint64(excluded+1)*PlaneTeams+team)*MaterialCount+resource;
-	return swim == WATER_ONLY_CLASS ? (Uint64(1)<<63) | (source*4+modes)
+	return swim == AIR_MOVEMENT_CLASS ? (Uint64(1)<<62) | (source*4+modes)
+		: swim == WATER_ONLY_CLASS ? (Uint64(1)<<63) | (source*4+modes)
 		: (source*LEGACY_SWIM_CLASS_COUNT+swim)*4+modes;
 }
 // One live plane: its key, a generation that increases on every publication

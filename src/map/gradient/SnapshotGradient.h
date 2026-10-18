@@ -50,13 +50,13 @@ struct MaterialSeedCache
     int width = 0, height = 0;
     std::shared_ptr<const TerrainRegistry> terrainRegistry;
     std::shared_ptr<const ResourceRegistry> resourceRegistry;
-    std::array<std::vector<Uint16>, 2> base;
-    std::vector<Uint16> signatures;
+    std::array<std::vector<Uint16>, 3> base;
+    std::vector<Uint16> signatures, airSignatures;
     std::vector<Uint32> resourceTraits;
     std::vector<Uint32> forbiddenMasks;
-    std::array<Bits, MaterialCount> goals;
+    std::array<Bits, MaterialCount> goals, airGoals;
     std::array<Bits, Team::MAX_COUNT> forbidden;
-    Bits buildings;
+    Bits buildings, airBuildings;
     std::array<std::vector<Uint64>, 4> stamps;
     bool disabled = false;
     bool trySeed(const SimulationSnapshot::Handle&, int team, int material, int swim,

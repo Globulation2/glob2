@@ -104,6 +104,12 @@ static void theLaterBookerTradesWithTheOneItWouldCross(unsigned unitType = WORKE
 	require(World::booked(b, farWorker) && !World::booked(b, nearWorker), "inn B's guest list follows");
 	require(a->unitsInside.size() == 1 && b->unitsInside.size() == 1, "each inn keeps one booking");
 	require(world.game.integrity(), "integrity after the swap");
+    if (unitType==EXPLORER) {
+        REQUIRE_FALSE(world.game.map.hasAirRoutingConstraints());
+        for (auto* inn : {a,b})
+            CHECK(inn->globalGradient[inn->routeSlot(AIR_MOVEMENT_CLASS,BuildingRoute::Footprint)]==nullptr);
+    }
+
 
 	// Both walk to their inn (a tile takes a couple of dozen ticks) and eat.
 	bool nearAte = false, farAte = false;
@@ -153,6 +159,11 @@ TEST_SUITE("InnSwap")
 		glob2test::HeadlessGlobals globals;
         for(unsigned id:{35u,275u}) theLaterBookerTradesWithTheOneItWouldCross(id);
 	}
+	TEST_CASE("flying guests exchange reservations without allocating air fields")
+    {
+        glob2test::HeadlessGlobals globals;
+        theLaterBookerTradesWithTheOneItWouldCross(EXPLORER);
+    }
 	TEST_CASE("a good booking stays")
 	{
 		glob2test::HeadlessGlobals globals;

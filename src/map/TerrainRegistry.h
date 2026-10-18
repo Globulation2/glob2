@@ -99,7 +99,7 @@ class TerrainRegistry
 	std::vector<std::string> keys_, names_;
 	std::vector<std::optional<std::vector<std::string>>> resourceKeys_;
 	std::vector<TerrainType> appearances_;
-	std::array<Movement, std::size(gradient_kernel::WATER_STEP)> movement_;
+	std::array<Movement, MOVEMENT_CLASS_COUNT> movement_;
 	std::vector<unsigned> airCosts_, airRouteCosts_, groundTravelCosts_;
 	unsigned minimumAirCost_ = GRADIENT_STEP;
 	std::uint32_t checksum_ = 0;

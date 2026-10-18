@@ -209,8 +209,8 @@ class HiringPipelineHarness
 			if (!HiringPlanner::needsCandidates(record)) continue;
 			auto* building = game.resolveBuilding(record.identity);
 			if (!building) continue;
-			for (int swim=0; swim<SWIM_CLASS_COUNT; ++swim)
-				if (setup.entities->availableGroundClasses[record.team] & (1u<<swim))
+			for (int swim=0; swim<MOVEMENT_CLASS_COUNT; ++swim)
+				if (setup.entities->availableMovementClasses[record.team] & (1u<<swim))
 				{
 					for (int material=0; material<MaterialCount; ++material)
 						if (building->materialDeliveryNeed(material)>0)

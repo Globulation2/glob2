@@ -34,8 +34,8 @@ namespace
 using PipelineJob = BuildingGradientJobPipeline::Job;
 using gradient_kernel::COST_LIMIT;
 
-int slotSwim(int slot) { return slot % SWIM_CLASS_COUNT; }
-BuildingRoute slotRoute(int slot) { return BuildingRoute(slot / SWIM_CLASS_COUNT); }
+int slotSwim(int slot) { return slot % MOVEMENT_CLASS_COUNT; }
+BuildingRoute slotRoute(int slot) { return BuildingRoute(slot / MOVEMENT_CLASS_COUNT); }
 
 
 void buildScheduled(PipelineJob& job)
@@ -140,7 +140,7 @@ void Map::ensureBuildingGradientPipeline()
 			return false;
 		};
 		bool newest = true;
-		for (int s = 0; s < SWIM_CLASS_COUNT; ++s)
+		for (int s = 0; s < MOVEMENT_CLASS_COUNT; ++s)
 		{
 			if (s == swim || swimAccessVariant(s) != swimAccessVariant(swim)) continue;
 			const int other = b->routeSlot(s, p.route);

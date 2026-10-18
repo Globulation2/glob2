@@ -39,7 +39,7 @@ class LegacyPopulationOutput : public GAGCore::BinaryOutputStream
     unsigned populationSection = 0;
 
     bool suppressed() const { return suppressedAt && !injecting; }
-    bool tracking() const { return legacy || formatVersion<FILE_FORMAT_VERSION_DELAYED_GRADIENTS; }
+    bool tracking() const { return legacy || formatVersion<FILE_FORMAT_VERSION_UNIFIED_MOVEMENT || !hasDelayedGradientState(formatVersion); }
     void requireGradientRuntime() const
     {
         if (!game) throw std::logic_error("Synthetic historical runtime requires its owning Game");
@@ -51,7 +51,7 @@ class LegacyPopulationOutput : public GAGCore::BinaryOutputStream
                 || !runtime.materialFields.empty()
                 || !runtime.fieldRequests.empty())
                 throw std::logic_error("Historical pending runtime contains unrepresentable demand or caches");
-            const auto legacyEnd=Team::MAX_COUNT*(2*MaterialSlotCount+2)*SWIM_CLASS_COUNT;
+            const auto legacyEnd=Team::MAX_COUNT*(2*MaterialSlotCount+2)*MOVEMENT_CLASS_COUNT;
             runtime.pipeline.visitLogical([&](auto* slot,unsigned,bool) {
                 if (!*slot || game->map.gradientDestination(slot)>=legacyEnd)
                     throw std::logic_error("Historical pending runtime requires a published legacy field destination");
@@ -144,10 +144,11 @@ public:
     void writeEnterSection(std::string_view name) override
     {
         if (injecting || !tracking()) return;
+
         const bool teamChild = !sections.empty() && sections.back()=="Team";
         sections.emplace_back(name);
         if (suppressed()) return;
-        if (formatVersion<FILE_FORMAT_VERSION_DELAYED_GRADIENTS) {
+        if (!hasDelayedGradientState(formatVersion)) {
             if (name=="mapRuntime") requireGradientRuntime();
             if (preservePending && name=="queuedRequests") {
                 suppressedAt=sections.size();
@@ -185,15 +186,29 @@ public:
             populationSection=0;
         } else if (legacy && teamChild && (name=="myUnits" || name=="myBuildings")) population(name);
     }
-    void writeEnterSection(unsigned) override
-    { if (!injecting && tracking()) sections.emplace_back(); }
+    void writeEnterSection(unsigned index) override
+    {
+        if(injecting || !tracking()) return;
+        const std::string parent=sections.empty()?std::string{}:sections.back();
+        const bool mapRuntime=std::find(sections.begin(),sections.end(),"mapRuntime")!=sections.end();
+        const bool building=std::find(sections.begin(),sections.end(),"buildings")!=sections.end();
+        sections.emplace_back(std::to_string(index));
+        if(!suppressed() && mapRuntime && formatVersion<FILE_FORMAT_VERSION_UNIFIED_MOVEMENT) {
+            const unsigned classes=formatVersion>=FILE_FORMAT_VERSION_UNIT_CATALOG?SWIM_CLASS_COUNT:LEGACY_SWIM_CLASS_COUNT;
+            const unsigned variants=formatVersion>=FILE_FORMAT_VERSION_UNIT_CATALOG?3:2;
+            const bool numeric=!parent.empty() && std::all_of(parent.begin(),parent.end(),[](char c){return c>='0'&&c<='9';});
+            if(((parent=="swimClasses" || parent=="gradientUse" || (building && numeric)) && index>=classes)
+                || (parent=="access" && index>=variants)) suppressedAt=sections.size();
+        }
+    }
     void writeLeaveSection(std::size_t count=1) override
     {
         if (injecting || !tracking()) return;
+
         while (count--) {
             if (sections.empty()) throw std::logic_error("Unbalanced synthetic historical sections");
             const bool writeOldCache=sections.back()=="gradientPipeline"
-                && formatVersion<FILE_FORMAT_VERSION_DELAYED_GRADIENTS
+                && !hasDelayedGradientState(formatVersion)
                 && formatVersion>=FILE_FORMAT_VERSION_BUILDING_CATALOG;
             if (suppressedAt==sections.size()) suppressedAt=0;
             sections.pop_back();
@@ -207,13 +222,18 @@ public:
         }
     }
     void write(const void* data, std::size_t size, std::string_view name) override
-    { if (!suppressed() && !observationField(name)) BinaryOutputStream::write(data,size,name); }
+    { if (!suppressed() && !observationField(name) && !(name=="airLocked" && formatVersion<FILE_FORMAT_VERSION_UNIFIED_MOVEMENT)) BinaryOutputStream::write(data,size,name); }
     void writeEndianIndependent(const void* data, std::size_t size, std::string_view name) override
-    { if (!suppressed() && !observationField(name)) BinaryOutputStream::writeEndianIndependent(data,size,name); }
+    { if (!suppressed() && !observationField(name) && !(name=="airLocked" && formatVersion<FILE_FORMAT_VERSION_UNIFIED_MOVEMENT)) BinaryOutputStream::writeEndianIndependent(data,size,name); }
     void writeUint32(Uint32 value, std::string_view name) override
     {
         if (suppressed()) return;
-        if (preservePending && formatVersion<FILE_FORMAT_VERSION_DELAYED_GRADIENTS && !injecting) {
+        if (name=="destination" && formatVersion<FILE_FORMAT_VERSION_UNIFIED_MOVEMENT) {
+            const unsigned classes=formatVersion>=FILE_FORMAT_VERSION_UNIT_CATALOG?SWIM_CLASS_COUNT:LEGACY_SWIM_CLASS_COUNT;
+            if (value<5000) { if (value%MOVEMENT_CLASS_COUNT>=classes) throw std::logic_error("Historical air destination"); value=(value/MOVEMENT_CLASS_COUNT)*classes+value%MOVEMENT_CLASS_COUNT; }
+            else if (value<10000) { const unsigned key=value-5000; if (key%MOVEMENT_CLASS_COUNT>=classes) throw std::logic_error("Historical air escape destination"); value=5000+(key/MOVEMENT_CLASS_COUNT)*classes+key%MOVEMENT_CLASS_COUNT; }
+        }
+        if (preservePending && !hasDelayedGradientState(formatVersion) && !injecting) {
             if (!sections.empty() && sections.back()=="gradientPipeline" && name=="requests") {
                 if (value) throw std::logic_error("Historical pending runtime cannot encode queued field demand");
                 return;
@@ -252,15 +272,31 @@ public:
             }
         }
     }
-    void writeSint32(Sint32 value, std::string_view name) override
-    { if (!suppressed()) BinaryOutputStream::writeSint32(value,name); }
-    void writeUint8(Uint8 value, std::string_view name) override
-    { if (!suppressed()) BinaryOutputStream::writeUint8(value,name); }
+    void writeUint8(Uint8 value,std::string_view name) override
+    {
+        if(suppressed()) return;
+        if(name=="slot" && formatVersion<FILE_FORMAT_VERSION_UNIFIED_MOVEMENT
+            && std::find(sections.begin(),sections.end(),"buildingGradientPipeline")!=sections.end()) {
+            const unsigned classes=formatVersion>=FILE_FORMAT_VERSION_UNIT_CATALOG?SWIM_CLASS_COUNT:LEGACY_SWIM_CLASS_COUNT;
+            if(value%MOVEMENT_CLASS_COUNT>=classes) throw std::logic_error("Air job cannot be represented in a historical fixture");
+            value=(value/MOVEMENT_CLASS_COUNT)*classes+value%MOVEMENT_CLASS_COUNT;
+        }
+        BinaryOutputStream::writeUint8(value,name);
+    }
     void writeUint16(Uint16 value, std::string_view name) override
     {
         if (legacy && !injecting && !sections.empty() && sections.back()=="Team" && name=="taskSwapNext") return;
-        if (!suppressed()) BinaryOutputStream::writeUint16(value,name);
+        if(suppressed()) return;
+        if(name=="destination" && formatVersion<FILE_FORMAT_VERSION_UNIFIED_MOVEMENT) {
+            const unsigned classes=formatVersion>=FILE_FORMAT_VERSION_UNIT_CATALOG?SWIM_CLASS_COUNT:LEGACY_SWIM_CLASS_COUNT;
+            if(value%MOVEMENT_CLASS_COUNT>=classes) throw std::logic_error("Air job cannot be represented in a historical fixture");
+            value=(value/MOVEMENT_CLASS_COUNT)*classes+value%MOVEMENT_CLASS_COUNT;
+        }
+        BinaryOutputStream::writeUint16(value,name);
     }
+    void writeSint32(Sint32 value, std::string_view name) override
+    { if (!suppressed()) BinaryOutputStream::writeSint32(value,name); }
+
     void writeUint16Sections(const Uint16* values, std::size_t count, std::string_view name) override
     { if (!suppressed()) BinaryOutputStream::writeUint16Sections(values,count,name); }
 };

@@ -90,7 +90,7 @@ void NetSendOrder::decodeData(GAGCore::InputStream* stream)
 
 	order->sender = stream->readUint8("sender");
 	order->gameCheckSum = stream->readUint32("checksum");
-    if (decodeVersionMinor>=FILE_FORMAT_VERSION_SNAPSHOT_CHECKSUM) {
+    if (hasSnapshotChecksumMetadata(decodeVersionMinor)) {
         const auto present=stream->readUint8("hasChecksum");
         if (present>1) throw std::ios_base::failure("Invalid checksum presence");
         order->hasGameCheckSum=present;

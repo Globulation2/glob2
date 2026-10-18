@@ -22,7 +22,7 @@
 const Uint16 *Map::getForbiddenGradient(int teamNumber, int swimClass)
 {
     auto& field=forbiddenGradient[teamNumber][swimClass];
-    if (!field && !game) { field=new Uint16[size]; updateForbiddenGradient(teamNumber,swimClass); }
+    if (!field && !compute.insideJob() && (!game || swimClass==AIR_MOVEMENT_CLASS)) { field=new Uint16[size]; updateForbiddenGradient(teamNumber,swimClass); }
     if (!field && !compute.insideJob()) requestGradientField(&field, int(gradient_preparation::Kind::Forbidden), teamNumber, 0, swimClass);
     return field;
 }
@@ -30,7 +30,7 @@ const Uint16 *Map::getForbiddenGradient(int teamNumber, int swimClass)
 const Uint16 *Map::getGuardAreasGradient(int teamNumber, int swimClass)
 {
     auto& field=guardAreasGradient[teamNumber][swimClass];
-    if (!field && !game) { field=new Uint16[size]; updateGuardAreasGradient(teamNumber,swimClass); }
+    if (!field && !compute.insideJob() && (!game || swimClass==AIR_MOVEMENT_CLASS)) { field=new Uint16[size]; updateGuardAreasGradient(teamNumber,swimClass); }
     if (!field && !compute.insideJob()) requestGradientField(&field, int(gradient_preparation::Kind::Guard), teamNumber, 0, swimClass);
     return field;
 }
@@ -38,14 +38,14 @@ const Uint16 *Map::getGuardAreasGradient(int teamNumber, int swimClass)
 const Uint16 *Map::getClearAreasGradient(int teamNumber, int swimClass)
 {
     auto& field=clearAreasGradient[teamNumber][swimClass];
-    if (!field && !game) { field=new Uint16[size]; updateClearAreasGradient(teamNumber,swimClass); }
+    if (!field && !compute.insideJob() && (!game || swimClass==AIR_MOVEMENT_CLASS)) { field=new Uint16[size]; updateClearAreasGradient(teamNumber,swimClass); }
     if (!field && !compute.insideJob()) requestGradientField(&field, int(gradient_preparation::Kind::Clear), teamNumber, 0, swimClass);
     return field;
 }
 
 void Map::updateForbiddenGradient(int teamNumber, int swimClass)
 {
-    if (game) { requestGradientField(&forbiddenGradient[teamNumber][swimClass], int(gradient_preparation::Kind::Forbidden), teamNumber, 0, swimClass); return; }
+    if (game && swimClass!=AIR_MOVEMENT_CLASS) { requestGradientField(&forbiddenGradient[teamNumber][swimClass], int(gradient_preparation::Kind::Forbidden), teamNumber, 0, swimClass); return; }
 	PERF_SCOPE_TIME(AreaGradient);
 	Uint16 *gradient = forbiddenGradient[teamNumber][swimClass];
 	assert(gradient);
@@ -53,7 +53,7 @@ void Map::updateForbiddenGradient(int teamNumber, int swimClass)
 	bool canSwim = swimClass > 0;
 	std::array<Uint8, ResourceRegistry::Capacity> blocksGround;
 	const auto& properties=resourceRegistry().propertyTable();
-	for(size_t id=0;id<properties.size();++id) blocksGround[id]=properties[id].blocksGround;
+	for(size_t id=0;id<properties.size();++id) blocksGround[id]=(swimClass==AIR_MOVEMENT_CLASS ? properties[id].blocksAir : properties[id].blocksGround);
 
 	// Seed: free cells are goals, forbidden interiors are placeholders (promoted
 	// to GRADIENT_FORBIDDEN_BORDER in the second pass if they border a free cell),
@@ -63,13 +63,13 @@ void Map::updateForbiddenGradient(int teamNumber, int swimClass)
 	{
 		if (resourceCells[i].resource.type!=NO_RES_TYPE && blocksGround[resourceCells[i].resource.type])
 			gradient[i] = GRADIENT_FORBIDDEN;
-		else if (occupancyCells[i].building!=NOGBID)
+		else if (swimClass!=AIR_MOVEMENT_CLASS && occupancyCells[i].building!=NOGBID)
 			gradient[i] = GRADIENT_FORBIDDEN;
-		else if (!gradient_kernel::terrainAllowsGround(terrainPropertiesAt(i),swimClass))
+		else if (!gradient_kernel::terrainAllowsMovement(terrainPropertiesAt(i),swimClass))
 			gradient[i] = GRADIENT_FORBIDDEN;
-		else if(occupancyCells[i].immobileUnit != IMMOBILE_UNIT_NONE)
+		else if(swimClass!=AIR_MOVEMENT_CLASS && occupancyCells[i].immobileUnit != IMMOBILE_UNIT_NONE)
 			gradient[i] = GRADIENT_FORBIDDEN;
-		else if (areaCells[i].forbidden&teamMask)
+		else if (swimClass!=AIR_MOVEMENT_CLASS && (areaCells[i].forbidden&teamMask))
 			gradient[i] = GRADIENT_UNREACHABLE;
 		else
 			gradient[i] = GRADIENT_AT_GOAL;
@@ -104,7 +104,7 @@ void Map::updateForbiddenGradient(int teamNumber, int swimClass)
 void Map::updateForbiddenGradient(int teamNumber)
 {
 	PERF_SCOPE_TIME(AreaGradient);
-	for (int c=0; c<SWIM_CLASS_COUNT; c++)
+	for (int c=0; c<MOVEMENT_CLASS_COUNT; c++)
 		if (forbiddenGradient[teamNumber][c])
 			updateForbiddenGradient(teamNumber, c);
 }
@@ -198,7 +198,7 @@ void Map::seedGuardAreaCrowding(int teamNumber, Uint16 *gradient) const
 
 void Map::updateGuardAreasGradient(int teamNumber, int swimClass)
 {
-    if (game) { requestGradientField(&guardAreasGradient[teamNumber][swimClass], int(gradient_preparation::Kind::Guard), teamNumber, 0, swimClass); return; }
+    if (game && swimClass!=AIR_MOVEMENT_CLASS) { requestGradientField(&guardAreasGradient[teamNumber][swimClass], int(gradient_preparation::Kind::Guard), teamNumber, 0, swimClass); return; }
 	PERF_SCOPE_TIME(AreaGradient);
 	gradientRuntime->pipeline.invalidate(&guardAreasGradient[teamNumber][swimClass]);
 	Uint16 *gradient = guardAreasGradient[teamNumber][swimClass];
@@ -219,7 +219,7 @@ void Map::seedGuardAreasGradient(int teamNumber, int swimClass, Uint16 *gradient
 void Map::updateGuardAreasGradient(int teamNumber)
 {
 	PERF_SCOPE_TIME(AreaGradient);
-	for (int c=0; c<SWIM_CLASS_COUNT; c++)
+	for (int c=0; c<MOVEMENT_CLASS_COUNT; c++)
 		if (guardAreasGradient[teamNumber][c])
 			updateGuardAreasGradient(teamNumber, c);
 }
@@ -234,7 +234,7 @@ void Map::updateGuardAreasGradient()
 
 void Map::updateClearAreasGradient(int teamNumber, int swimClass)
 {
-    if (game) { requestGradientField(&clearAreasGradient[teamNumber][swimClass], int(gradient_preparation::Kind::Clear), teamNumber, 0, swimClass); return; }
+    if (game && swimClass!=AIR_MOVEMENT_CLASS) { requestGradientField(&clearAreasGradient[teamNumber][swimClass], int(gradient_preparation::Kind::Clear), teamNumber, 0, swimClass); return; }
 	PERF_SCOPE_TIME(AreaGradient);
 	gradientRuntime->pipeline.invalidate(&clearAreasGradient[teamNumber][swimClass]);
 	Uint16 *gradient = clearAreasGradient[teamNumber][swimClass];
@@ -254,7 +254,7 @@ void Map::seedClearAreasGradient(int teamNumber, int swimClass, Uint16 *gradient
 void Map::updateClearAreasGradient(int teamNumber)
 {
 	PERF_SCOPE_TIME(AreaGradient);
-	for (int c=0; c<SWIM_CLASS_COUNT; c++)
+	for (int c=0; c<MOVEMENT_CLASS_COUNT; c++)
 		if (clearAreasGradient[teamNumber][c])
 			updateClearAreasGradient(teamNumber, c);
 }

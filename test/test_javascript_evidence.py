@@ -258,7 +258,7 @@ class SaveHeaderTests(unittest.TestCase):
             return save_header(path)
 
     def test_legacy_and_resource_headers_have_correct_player_offsets(self):
-        for version in (125, 137, 138, 139, 140, 142, 143, 146, 147, 148, 152, 153, 154, 155, 159, 167, 168):
+        for version in (125, 137, 138, 139, 140, 142, 143, 146, 147, 148, 152, 153, 154, 155, 159, 167, 168, 169, 171, 172, 173):
             self.assertEqual(self.parse(self.fixture(version)), (0, version, 2, 3))
         declarations = [('custom-crops', 'Custom crops', 'Enable experimental multi-material crops.')]
         self.assertEqual(self.parse(self.fixture(140, declarations, ['custom-crops'])), (0, 140, 2, 3))
@@ -315,8 +315,9 @@ class SaveHeaderTests(unittest.TestCase):
                     self.parse(gzip.compress(malformed))
         with self.assertRaises(AssertionError):
             self.parse(self.fixture(168, statistics_delay=9))
-        with self.assertRaises(AssertionError):
-            self.parse(self.fixture(169))
+        for version in (170, 174):
+            with self.subTest(version=version), self.assertRaises(AssertionError):
+                self.parse(self.fixture(version))
 
 
 if __name__ == '__main__':

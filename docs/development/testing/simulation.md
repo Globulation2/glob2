@@ -42,7 +42,11 @@ Building propagation is always lazy. The `PathGradient` unit suite
 (`python3 test/run_tests.py --binary unit --filter 'PathGradient/*'`) has an independent heap oracle that
 covers all seven swim classes, paused water snapshots, equal-cost movement neighbors,
 repeated and reordered requests, interleaved maps, disconnected/capped distances,
-toroidal geometry and reused frontiers. The existing eager-kernel cases remain.
+toroidal geometry and reused frontiers. Air cases compare eager and frozen lazy
+fields against the heap oracle with air speed and damage costs. `GradientPreparation`
+also compares owner/worker air seeds and propagation, independent air material
+cache templates, ground blockers, air immunity to forbidden paint, and field
+sharing across flyer speeds. The existing ground eager-kernel cases remain.
 
 The building invalidation and immobile-unit harnesses exercise lazy callers without
 configuration switches. The invalidation suite also pauses a field, closes a rival

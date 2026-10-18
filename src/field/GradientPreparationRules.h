@@ -9,7 +9,7 @@ inline constexpr std::uint32_t materialSeed(std::uint32_t forbidden, std::uint32
 inline constexpr std::uint32_t clearSeed(std::uint32_t forbidden, std::uint32_t mobile, std::uint32_t blocked, std::uint32_t building, std::uint32_t open, std::uint32_t clearable, std::uint32_t farmable, std::uint32_t clear, std::uint32_t farm, std::uint32_t farmEnabled) {
     return (forbidden != 0u ? 0u : (((clearable != 0u && ((clear != 0u || ((farmEnabled != 0u && ((farm != 0u && (farmable == 0u ? 1u : 0u) != 0u) ? 1u : 0u) != 0u) ? 1u : 0u) != 0u) ? 1u : 0u) != 0u) ? 1u : 0u) != 0u ? 65535u : (((blocked != 0u || ((building != 0u || (mobile == 0u ? 1u : 0u) != 0u) ? 1u : 0u) != 0u) ? 1u : 0u) != 0u ? 0u : open)));
 }
-inline constexpr std::uint32_t resourceTraits(std::uint32_t materials, std::uint32_t blocked, std::uint32_t visible, std::uint32_t clearable, std::uint32_t farmable) {
-    return (materials | ((blocked << 16u) | ((visible << 17u) | ((clearable << 18u) | (farmable << 19u)))));
+inline constexpr std::uint32_t resourceTraits(std::uint32_t materials, std::uint32_t blocked, std::uint32_t visible, std::uint32_t clearable, std::uint32_t farmable, std::uint32_t blockedAir) {
+    return ((materials | ((blocked << 16u) | ((visible << 17u) | ((clearable << 18u) | (farmable << 19u))))) | (blockedAir << 20u));
 }
 }

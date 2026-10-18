@@ -244,7 +244,7 @@ gradient_preparation::Request gradientRequest(const GradientRuntime::Preparation
 {
     gradient_preparation::Request request;
     request.kind=p.kind; request.team=p.team; request.material=p.material; request.swim=p.swim;
-    request.terrainBuckets=map.terrainQueueBuckets();
+    request.terrainBuckets=map.movementQueueBuckets(request.swim);
     if (p.kind == gradient_preparation::Kind::Guard) {
         request.allies=map.game->teams[p.team]->allies;
         request.crowding=map.game->gameHeader.hasExperiment(ExperimentId::GuardAreaBalancing);
@@ -367,6 +367,7 @@ void Map::syncStep(Uint32 stepCounter)
         const int slot=(stepCounter>>3)%escapeSlots;
         const int team=slot/activeSwimClasses, swim=slot%activeSwimClasses;
         if (forbiddenGradient[team][swim]) updateForbiddenGradient(team,swim);
+
     }
 
 }
@@ -392,7 +393,7 @@ void Map::stagePeriodicGradientPreparation()
             int numberOfTeam=game->mapHeader.getNumberOfTeams();
             for (int t=0; t<numberOfTeam; t++)
                 for (int r=0; r<MaterialCount; r++)
-                    for (int s=0; s<SWIM_CLASS_COUNT; s++)
+                    for (int s=0; s<MOVEMENT_CLASS_COUNT; s++)
                         if (hasMaterialSourceSlot(r) && materialGradients[t][r][s] && !gradientUpdated[t][r][s])
                         {
                             const bool queued=dispatch(&materialGradients[t][r][s], Kind::Materials, t, r, s);
@@ -403,7 +404,7 @@ void Map::stagePeriodicGradientPreparation()
             // A stock transition also requests an early refresh.
             for (int t=0; t<numberOfTeam; t++)
                 for (int r=0; r<MaterialCount; r++)
-                    for (int s=0; s<SWIM_CLASS_COUNT; s++)
+                    for (int s=0; s<MOVEMENT_CLASS_COUNT; s++)
                         if (marketsV2Enabled() && marketMaterialGradients[t][r][s] && (marketGradientDirty[t][r][s] || !marketGradientUpdated[t][r][s]))
                         {
                             // A coalesced request has not captured the newer stock.
@@ -417,7 +418,7 @@ void Map::stagePeriodicGradientPreparation()
                             }
                         }
             for (int t=0; t<numberOfTeam; t++)
-                for(int s=0; s<SWIM_CLASS_COUNT; s++)
+                for(int s=0; s<MOVEMENT_CLASS_COUNT; s++)
                     if(guardAreasGradient[t][s] && !guardGradientUpdated[t][s])
                     {
                         const bool queued=dispatch(&guardAreasGradient[t][s], Kind::Guard, t, 0, s);
@@ -425,7 +426,7 @@ void Map::stagePeriodicGradientPreparation()
                         if (queued) return;
                     }
             for (int t=0; t<numberOfTeam; t++)
-                for(int s=0; s<SWIM_CLASS_COUNT; s++)
+                for(int s=0; s<MOVEMENT_CLASS_COUNT; s++)
                     if(clearAreasGradient[t][s] && !clearGradientUpdated[t][s])
                     {
                         const bool queued=dispatch(&clearAreasGradient[t][s], Kind::Clear, t, 0, s);
@@ -436,13 +437,13 @@ void Map::stagePeriodicGradientPreparation()
 
             for (int t=0; t<numberOfTeam; t++)
                 for (int r=0; r<MaterialCount; r++)
-                    for (int s=0; s<SWIM_CLASS_COUNT; s++)
+                    for (int s=0; s<MOVEMENT_CLASS_COUNT; s++)
                     {
                         gradientUpdated[t][r][s]=false;
                         if (marketsV2Enabled()) marketGradientUpdated[t][r][s]=false;
                     }
             for (int t=0; t<numberOfTeam; t++)
-                for(int s=0; s<SWIM_CLASS_COUNT; s++)
+                for(int s=0; s<MOVEMENT_CLASS_COUNT; s++)
                 {
                     guardGradientUpdated[t][s]=false;
                     clearGradientUpdated[t][s]=false;
@@ -457,6 +458,7 @@ void Map::stagePeriodicGradientPreparation()
         job->request=request.request;
         gradientRuntime->preparation={job,request.request.kind,request.request.team,request.request.material,request.request.swim};
     }
+
 
 }
 
@@ -642,39 +644,39 @@ bool Map::requestGradientField(Uint16** slot, int kind, int team, int material, 
 namespace {
 constexpr unsigned ForbiddenDestinationBase=5000;
 constexpr unsigned CachedDestinationBase=10000;
-static_assert(Team::MAX_COUNT*(2*MaterialSlotCount+2)*SWIM_CLASS_COUNT<=ForbiddenDestinationBase);
-static_assert(ForbiddenDestinationBase+Team::MAX_COUNT*SWIM_CLASS_COUNT<=CachedDestinationBase);
+static_assert(Team::MAX_COUNT*(2*MaterialSlotCount+2)*MOVEMENT_CLASS_COUNT<=ForbiddenDestinationBase);
+static_assert(ForbiddenDestinationBase+Team::MAX_COUNT*MOVEMENT_CLASS_COUNT<=CachedDestinationBase);
 }
 
 unsigned Map::gradientDestination(Uint16* const* slot) const
 {
-    for (int t=0;t<Team::MAX_COUNT;++t) for (int swim=0;swim<SWIM_CLASS_COUNT;++swim) {
-        if (slot==&forbiddenGradient[t][swim]) return ForbiddenDestinationBase+t*SWIM_CLASS_COUNT+swim;
-        if (slot==&guardAreasGradient[t][swim]) return (t*(MaterialSlotCount+2)+MaterialSlotCount)*SWIM_CLASS_COUNT+swim;
-        if (slot==&clearAreasGradient[t][swim]) return (t*(MaterialSlotCount+2)+MaterialSlotCount+1)*SWIM_CLASS_COUNT+swim;
+    for (int t=0;t<Team::MAX_COUNT;++t) for (int swim=0;swim<MOVEMENT_CLASS_COUNT;++swim) {
+        if (slot==&forbiddenGradient[t][swim]) return ForbiddenDestinationBase+t*MOVEMENT_CLASS_COUNT+swim;
+        if (slot==&guardAreasGradient[t][swim]) return (t*(MaterialSlotCount+2)+MaterialSlotCount)*MOVEMENT_CLASS_COUNT+swim;
+        if (slot==&clearAreasGradient[t][swim]) return (t*(MaterialSlotCount+2)+MaterialSlotCount+1)*MOVEMENT_CLASS_COUNT+swim;
         for (int m=0;m<MaterialSlotCount;++m) {
-            if (slot==&materialGradients[t][m][swim]) return (t*(MaterialSlotCount+2)+m)*SWIM_CLASS_COUNT+swim;
-            if (slot==&marketMaterialGradients[t][m][swim]) return Team::MAX_COUNT*(MaterialSlotCount+2)*SWIM_CLASS_COUNT+(t*MaterialSlotCount+m)*SWIM_CLASS_COUNT+swim;
+            if (slot==&materialGradients[t][m][swim]) return (t*(MaterialSlotCount+2)+m)*MOVEMENT_CLASS_COUNT+swim;
+            if (slot==&marketMaterialGradients[t][m][swim]) return Team::MAX_COUNT*(MaterialSlotCount+2)*MOVEMENT_CLASS_COUNT+(t*MaterialSlotCount+m)*MOVEMENT_CLASS_COUNT+swim;
         }
     }
     unsigned i=CachedDestinationBase;
     for (const auto& [key,entry]:gradientRuntime->materialFields) { if (slot==&entry.published) return i; ++i; }
     throw std::runtime_error("Unknown gradient destination");
 }
-Uint16** Map::gradientDestination(unsigned id)
+Uint16** Map::gradientDestination(unsigned id, unsigned savedClasses)
 {
     if (id>=CachedDestinationBase) {
         id-=CachedDestinationBase; if (id>=gradientRuntime->materialFields.size()) throw std::runtime_error("Invalid cached gradient destination");
         auto it=gradientRuntime->materialFields.begin(); std::advance(it,id); return &it->second.published;
     }
     if (id>=ForbiddenDestinationBase) {
-        id-=ForbiddenDestinationBase; if (id>=unsigned(game->teamsCount()*SWIM_CLASS_COUNT)) throw std::runtime_error("Invalid escape gradient destination");
-        return &forbiddenGradient[id/SWIM_CLASS_COUNT][id%SWIM_CLASS_COUNT];
+        id-=ForbiddenDestinationBase; if (id>=unsigned(game->teamsCount()*savedClasses)) throw std::runtime_error("Invalid escape gradient destination");
+        return &forbiddenGradient[id/savedClasses][id%savedClasses];
     }
-    const unsigned marketBase=Team::MAX_COUNT*(MaterialSlotCount+2)*SWIM_CLASS_COUNT;
+    const unsigned marketBase=Team::MAX_COUNT*(MaterialSlotCount+2)*savedClasses;
     const bool market=id>=marketBase; if (market) id-=marketBase;
     const unsigned kinds=market?MaterialSlotCount:MaterialSlotCount+2;
-    const unsigned team=id/(kinds*SWIM_CLASS_COUNT), kind=(id/SWIM_CLASS_COUNT)%kinds, swim=id%SWIM_CLASS_COUNT;
+    const unsigned team=id/(kinds*savedClasses), kind=(id/savedClasses)%kinds, swim=id%savedClasses;
     if (team>=unsigned(game->teamsCount())) throw std::runtime_error("Invalid gradient team");
     return market?&marketMaterialGradients[team][kind][swim]:kind<MaterialSlotCount?&materialGradients[team][kind][swim]:kind==MaterialSlotCount?&guardAreasGradient[team][swim]:&clearAreasGradient[team][swim];
 }

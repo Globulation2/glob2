@@ -90,12 +90,13 @@ void Map::installCatalogs(std::shared_ptr<const TerrainRegistry> terrain,
         // outputs built with the old configuration. Queued scalar requests have
         // not captured inputs yet and will capture the replacement catalogs.
         for (int team=0;team<Team::MAX_COUNT;++team)
-            for (int swim=0;swim<SWIM_CLASS_COUNT;++swim) {
+            for (int swim=0;swim<MOVEMENT_CLASS_COUNT;++swim) {
                 gradientRuntime->pipeline.invalidate(&forbiddenGradient[team][swim]);
                 gradientRuntime->pipeline.invalidate(&guardAreasGradient[team][swim]);
                 gradientRuntime->pipeline.invalidate(&clearAreasGradient[team][swim]);
                 for (int material=0;material<MaterialCount;++material) {
                     gradientRuntime->pipeline.invalidate(&materialGradients[team][material][swim]);
+
                     gradientRuntime->pipeline.invalidate(&marketMaterialGradients[team][material][swim]);
                 }
             }

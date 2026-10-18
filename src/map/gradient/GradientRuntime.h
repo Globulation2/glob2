@@ -31,10 +31,16 @@ struct GradientRuntime
 		gradient_preparation::CrowdingScratch crowding;
 	};
     TerrainSafetyCache safety;
+    // Owner-only derived summary, invalidated alongside air safety on edits,
+    // catalog replacement and loading. Never depends on query order.
+    struct DirectFlight {
+        bool resourceBlockers = false, valid = false;
+    } directFlight;
 	// A positive-speed action completes within 256 simulation ticks. Keep a
     // new result for that first read opportunity, then permit deterministic
     // reclamation when the original request has been abandoned.
     static constexpr Uint32 MaterialReadHoldTicks = 256;
+
 	struct MaterialField
 	{
 		std::unique_ptr<Uint16[]> cells;

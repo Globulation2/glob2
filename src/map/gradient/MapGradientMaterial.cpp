@@ -63,7 +63,7 @@ const Uint16 *Map::getMaterialGradientSlot(int teamNumber, int resourceType, int
         return empty.data();
     }
     Uint16 *&gradient = withMarkets ? marketMaterialGradients[teamNumber][resourceType][swimClass] : materialGradients[teamNumber][resourceType][swimClass];
-    if (!gradient && !game) { gradient=new Uint16[size]; updateMaterialGradient(teamNumber,resourceType,swimClass,withMarkets); }
+    if (!gradient && !compute.insideJob() && (!game || swimClass==AIR_MOVEMENT_CLASS)) { gradient=new Uint16[size]; updateMaterialGradient(teamNumber,resourceType,swimClass,withMarkets); }
     if (!gradient && !compute.insideJob())
         requestGradientField(&gradient, int(withMarkets ? gradient_preparation::Kind::Markets : gradient_preparation::Kind::Materials), teamNumber, resourceType, swimClass);
 	return gradient;
@@ -71,7 +71,7 @@ const Uint16 *Map::getMaterialGradientSlot(int teamNumber, int resourceType, int
 
 void Map::updateMaterialGradient(int teamNumber, Uint8 resourceType, int swimClass, bool withMarkets)
 {
-    if (game) {
+    if (game && swimClass!=AIR_MOVEMENT_CLASS) {
         auto& field=withMarkets ? marketMaterialGradients[teamNumber][resourceType][swimClass] : materialGradients[teamNumber][resourceType][swimClass];
         requestGradientField(&field, int(withMarkets ? gradient_preparation::Kind::Markets : gradient_preparation::Kind::Materials), teamNumber, resourceType, swimClass); return;
     }
@@ -136,7 +136,7 @@ void Map::seedMaterialGradientWithSuppliers(int teamNumber, Uint8 resourceType, 
 				for (int x=0; x<supplier->type->width; ++x)
 				{
 					const size_t i = coordToIndex(supplier->posX+x, supplier->posY+y);
-					if (!(areas[i].forbidden & teamMask) && occupancy[i].immobileUnit == IMMOBILE_UNIT_NONE)
+					if (swimClass==AIR_MOVEMENT_CLASS || (!(areas[i].forbidden & teamMask) && occupancy[i].immobileUnit == IMMOBILE_UNIT_NONE))
 						gradient[i] = std::max(gradient[i], seed);
 				}
 		});
@@ -153,8 +153,9 @@ void Map::dirtyMarketGradientsSlot(int teamNumber, int resourceType)
 {
 	if (resourceType<MaterialCount) ++gradientRuntime->stockRevision[teamNumber][resourceType];
 	if (!marketsV2Enabled()) return;
-	for (int s=0; s<SWIM_CLASS_COUNT; ++s)
+	for (int s=0; s<MOVEMENT_CLASS_COUNT; ++s)
 		marketGradientDirty[teamNumber][resourceType][s]=true;
+
 }
 
 
@@ -219,7 +220,12 @@ const Uint16* Map::cachedMaterialGradientSlot(const Building* consumer, int reso
         bool pending=false;
         for (const auto& queued:runtime.fieldRequests) if (queued.slot==&entry.published) pending=true;
         runtime.pipeline.forEachDestination([&](auto* slot) { if (slot==&entry.published) pending=true; });
-        if (!compute.insideJob()) requestGradientField(&entry.published, int(gradient_preparation::Kind::Markets),team,resource,swim,excluded,modes);
+        if (swim==AIR_MOVEMENT_CLASS) {
+            if (!entry.cells) entry.cells=std::make_unique<Uint16[]>(size);
+            seedMaterialGradient(team,resource,swim,entry.cells.get(),true,privateField ? consumer : nullptr,modes);
+            propagateGradient(entry.cells.get(),swim,GRADIENT_COST_LIMIT,gradient_kernel::Family::Markets);
+            entry.published=entry.cells.get();
+        } else if (!compute.insideJob()) requestGradientField(&entry.published, int(gradient_preparation::Kind::Markets),team,resource,swim,excluded,modes);
         // Keep the revision of the admitted request. Changes observed while its
         // ticket is pending must remain dirty after that result publishes.
         if (!pending) {
@@ -278,11 +284,11 @@ unsigned Map::materialSupplyModesSlot(const Building* consumer, int resource) co
 
 std::optional<Uint16> Map::planeKeyForSlot(Uint16* const* slot) const
 {
-	constexpr auto perArray = std::size_t(Team::MAX_COUNT) * MaterialSlotCount * SWIM_CLASS_COUNT;
+	constexpr auto perArray = std::size_t(Team::MAX_COUNT) * MaterialSlotCount * MOVEMENT_CLASS_COUNT;
 	const auto decode = [&](Uint16* const* first, bool market) {
 		const auto offset = std::size_t(slot - first);
-		return MapState::planeKey(int(offset / (MaterialSlotCount * SWIM_CLASS_COUNT)),
-			int((offset / SWIM_CLASS_COUNT) % MaterialSlotCount), int(offset % SWIM_CLASS_COUNT), market);
+		return MapState::planeKey(int(offset / (MaterialSlotCount * MOVEMENT_CLASS_COUNT)),
+			int((offset / MOVEMENT_CLASS_COUNT) % MaterialSlotCount), int(offset % MOVEMENT_CLASS_COUNT), market);
 	};
 	if (const auto* first = &materialGradients[0][0][0]; slot >= first && slot < first + perArray) return decode(first, false);
 	if (const auto* first = &marketMaterialGradients[0][0][0]; slot >= first && slot < first + perArray) return decode(first, true);
@@ -309,7 +315,7 @@ void Map::rebuildPlaneRegistry()
 	publishedPlaneIndex.fill(0);
 	for (int team = 0; team < Team::MAX_COUNT; ++team)
 		for (int resource = 0; resource < MaterialSlotCount; ++resource)
-			for (int swim = 0; swim < SWIM_CLASS_COUNT; ++swim)
+			for (int swim = 0; swim < MOVEMENT_CLASS_COUNT; ++swim)
 			{
 				if (materialGradients[team][resource][swim]) publishPlane(&materialGradients[team][resource][swim]);
 				if (marketMaterialGradients[team][resource][swim]) publishPlane(&marketMaterialGradients[team][resource][swim]);

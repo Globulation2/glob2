@@ -294,5 +294,18 @@ static constexpr int FILE_FORMAT_VERSION_SINGLE_OBSERVATION = 167;
 // Tagged snapshot checksums in order/replay envelopes, including saved AI queues.
 static constexpr int FILE_FORMAT_VERSION_SNAPSHOT_CHECKSUM = 168;
 
+// Shared air movement class; eight-class historical routing remains readable.
+static constexpr int FILE_FORMAT_VERSION_UNIFIED_MOVEMENT = 171;
+
+// Air-routing draft saves at 171 predate tagged order metadata. Master saves
+// at 168/169 already carry it; 172 combines the air and tagged layouts.
+inline constexpr bool hasSnapshotChecksumMetadata(unsigned version)
+{
+    return version == FILE_FORMAT_VERSION_SNAPSHOT_CHECKSUM || version == 169 || version >= 172;
+}
 // Cold gradient demand, stable cache destinations and unpublished complete fields.
 static constexpr int FILE_FORMAT_VERSION_DELAYED_GRADIENTS = 169;
+
+// Air-only drafts 171/172 predate the released delayed-ground state.
+inline constexpr bool hasDelayedGradientState(unsigned version)
+{ return version == FILE_FORMAT_VERSION_DELAYED_GRADIENTS || version >= 173; }
