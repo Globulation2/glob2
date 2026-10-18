@@ -246,15 +246,19 @@ TEST_CASE("contradiction counters follow capture epochs through delayed publicat
     GradientMovementEvidence evidence;evidence.unitProgressBlocked=true;
     REQUIRE(map.queryMaterialDistance(0,WHEAT,0,8,8)==RouteResult::Pending);
     probe.recordMovement(key,evidence);
+    auto& policyField=map.gradientRuntime->resources.fields[key];
+    policyField.recordMovement(evidence);
     advanceFields(game); // Capture at tick 1, publication due at tick 4.
     auto& history=probe.movementHistory[key];
     REQUIRE(history.pendingKnown);CHECK(history.pendingTick==game.stepCounter);
     CHECK(history.pending.values[5]==1);CHECK_FALSE(history.servingKnown);
+    CHECK_FALSE(policyField.serving.contradictionKnown);
     // Ticket coalescing is what makes the probe's one-pending-capture slot safe.
     CHECK_FALSE(map.requestGradientField(&map.materialGradients[0][WHEAT][0],
         int(gradient_preparation::Kind::Materials),0,WHEAT,0));
     CHECK(map.gradientPipelineStatus().pending==1);
     probe.recordMovement(key,evidence);
+    policyField.recordMovement(evidence);
     advanceFields(game);advanceFields(game);
     CHECK_FALSE(history.servingKnown);CHECK(history.total.values[5]==2);
     advanceFields(game);
@@ -262,6 +266,12 @@ TEST_CASE("contradiction counters follow capture epochs through delayed publicat
     CHECK(history.serving.values[5]==1);
     CHECK(history.total.since(history.serving).values[5]==1); // Includes the capture-to-publication query.
     CHECK(map.gradientRuntime->resources.fields.at(key).serving.tick==1);
+    CHECK(policyField.serving.contradictionKnown);
+    for (unsigned i=0;i<policyField.movementTotal.size();++i) {
+        const auto id=ResourceGradientModel::RequiredMovementCounters[i];
+        CHECK(policyField.serving.movementBaseline[i]==(id==2 || id==5 ? 1 : 0));
+        CHECK(policyField.contradictions()[i]==(id==2 || id==5 ? 1 : 0));
+    }
     // A restored capture has no measurement history. Mark it unknown rather
     // than inventing zeros or consuming a newer pending capture's metadata.
     probe.capturedMovement(key,10);probe.publishedMovement(key,9);
@@ -311,8 +321,44 @@ TEST_CASE("movement contradiction counters count goals stalls and unreachable qu
     CHECK_FALSE(map.pathfindMaterial(random,0,WHEAT,0,8,8,&dx,&dy,&stop,nullptr,false));
     cells[map.coordToIndex(8,8)]=GRADIENT_UNREACHABLE;
     CHECK_FALSE(map.pathfindMaterial(random,0,WHEAT,0,8,8,&dx,&dy,&stop,nullptr,false));
+    cells[map.coordToIndex(8,8)]=GRADIENT_FORBIDDEN;
+    map.pathfindMaterial(random,0,WHEAT,0,8,8,&dx,&dy,&stop,nullptr,false);
     CHECK(random==reference);
-    CHECK((probe.movementHistory[key].total.values==std::array<std::uint64_t,6>{1,0,0,0,1,3}));
+    CHECK((probe.movementHistory[key].total.values==std::array<std::uint64_t,6>{1,0,0,0,1,4}));
+    CHECK((map.gradientRuntime->resources.fields.at(key).movementTotal==ResourceGradientModel::MovementCounts{1,1,4}));
+}
+
+TEST_CASE("production movement evidence needs no probe and excludes cold absent and air fields")
+{
+    glob2test::HeadlessGlobals globals;
+    glob2test::HeadlessGame world({.discovered=true,.clearImmobile=true,.loadDefaultRace=true,.header=true});
+    auto& game=world.game;auto& map=game.map;
+    map.configureGradientPipeline(0,3);
+    map.setResourceByIndex(20,20,WHEAT,1);
+    const int key=WHEAT*SWIM_CLASS_COUNT;
+    EntityRandom random,reference;random.seed(123,456);reference=random;
+    int dx=0,dy=0;bool stop=false;
+    REQUIRE_FALSE(map.gradientRuntime->qualityProbe);
+    // Cold enrollment creates scheduling state, but it is not a movement
+    // observation until a published natural field can answer the query.
+    CHECK_FALSE(map.pathfindMaterial(random,0,WHEAT,0,8,8,&dx,&dy,&stop,nullptr,false));
+    for (const auto& [unused,field]:map.gradientRuntime->resources.fields)
+        CHECK(field.movementTotal==ResourceGradientModel::MovementCounts{});
+    for(unsigned tick=0;tick<4;++tick) advanceFields(game);
+    auto* cells=map.materialGradients[0][WHEAT][0];REQUIRE(cells);
+    cells[map.coordToIndex(8,8)]=GRADIENT_AT_GOAL; // Cached goal has no stock.
+    CHECK_FALSE(map.pathfindMaterial(random,0,WHEAT,0,8,8,&dx,&dy,&stop,nullptr,false));
+    cells[map.coordToIndex(8,8)]=GRADIENT_UNREACHABLE;
+    CHECK_FALSE(map.pathfindMaterial(random,0,WHEAT,0,8,8,&dx,&dy,&stop,nullptr,false));
+    CHECK(random==reference);
+    const auto before=map.gradientRuntime->resources.fields.at(key).movementTotal;
+    CHECK((before==ResourceGradientModel::MovementCounts{1,0,2}));
+    const auto fields=map.gradientRuntime->resources.fields.size();
+    REQUIRE_FALSE(map.hasMaterialSourceSlot(WOOD));
+    CHECK_FALSE(map.pathfindMaterial(random,0,WOOD,0,8,8,&dx,&dy,&stop,nullptr,false));
+    map.pathfindMaterial(random,0,WHEAT,AIR_MOVEMENT_CLASS,8,8,&dx,&dy,&stop,nullptr,false);
+    CHECK(map.gradientRuntime->resources.fields.size()==fields);
+    CHECK(map.gradientRuntime->resources.fields.at(key).movementTotal==before);
 }
 
 TEST_CASE("recruitment-only demand recovers a published unreachable natural field after terrain opens")
@@ -482,7 +528,16 @@ TEST_CASE("cold queued and privately completed fields continue through binary an
         map.getForbiddenGradient(0,0);
         map.getGuardAreasGradient(0,0);
         map.getClearAreasGradient(0,0);
-        for (unsigned i=0;i<checkpoint;++i) advanceFields(game);
+        map.gradientRuntime->initializeResourcePolicy(map);
+        const int movementKey=WHEAT*SWIM_CLASS_COUNT;
+        GradientMovementEvidence movement;movement.emptyGoal=true;movement.reachableNoMove=true;
+        for (unsigned i=0;i<checkpoint;++i) {
+            map.gradientRuntime->resources.fields[movementKey].recordMovement(movement);
+            advanceFields(game);
+        }
+        // Preserve both post-capture traffic and a potentially unknown serving
+        // baseline across the checkpoint, including privately completed work.
+        map.gradientRuntime->resources.fields[movementKey].recordMovement(movement);
         if (checkpoint==2) {
             // Two distinct destinations are admitted; two others still wait.
             // Their numeric save entries must not overwrite each other's
@@ -526,6 +581,8 @@ TEST_CASE("cold queued and privately completed fields continue through binary an
         record();
         for (int tick=0;tick<32;++tick) {
             CAPTURE(tick);
+            map.gradientRuntime->resources.fields[movementKey].recordMovement(movement);
+            resumed.game.map.gradientRuntime->resources.fields[movementKey].recordMovement(movement);
             advanceFields(game);
             advanceFields(resumed.game);
             record();

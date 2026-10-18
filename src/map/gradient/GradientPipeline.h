@@ -335,6 +335,10 @@ class GradientPipeline
 	}
     template<class Visitor> void visitLogical(Visitor visitor) const
     { for (const auto& job:pending) visitor(job->slot, unsigned(job->due-tick), job->superseded); }
+    // Metadata is owner-written before launch and immutable during worker work;
+    // checksum inspection must never join jobs or inspect incomplete output.
+    template<class Visitor> void visitCaptures(Visitor visitor) const
+    { for (const auto& job:pending) visitor(job->slot,job->superseded,job->capture); }
     template<class Visitor> void forEachDestination(Visitor visitor) const
     { for (const auto& job:pending) if (!job->superseded) visitor(job->slot); }
 	void invalidate(std::uint16_t **slot)

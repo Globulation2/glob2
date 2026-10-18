@@ -99,6 +99,12 @@ Uint32 Map::checkSum(bool heavy, bool includePending, bool legacy152)
             mix(p.captureTick); mix(p.generation); mix(remaining);
             mix(superseded || !b || b->refreshEpoch[p.slot]!=p.epoch);
         });
+        if (includePending) gradientRuntime->pipeline.visitCaptures([&](auto*,bool,const auto& capture) {
+            mix64(capture.tick);mix64(capture.sources.count);mix64(capture.sources.added);mix64(capture.sources.removed);
+            mix64(capture.contradictionKnown);
+            for (auto value:capture.movementBaseline) mix64(value);
+        });
+
     }
     // Suspended freshness changes the next explicit query, so it is simulation state.
     for (int t=0; !legacy152 && game && t<game->teamsCount(); ++t)

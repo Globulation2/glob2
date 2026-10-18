@@ -89,7 +89,7 @@ void Map::updateMaterialGradient(int teamNumber, Uint8 resourceType, int swimCla
 	if (!withMarkets && swimClass<SWIM_CLASS_COUNT) {
         gradientRuntime->initializeResourcePolicy(*this);
         auto& field=gradientRuntime->resources.fields[(teamNumber*MaterialCount+resourceType)*SWIM_CLASS_COUNT+swimClass];
-        field.serving={game ? game->stepCounter : 0,gradientRuntime->resources.sources[resourceType]};
+        field.serving=field.capture(game ? game->stepCounter : 0,gradientRuntime->resources.sources[resourceType]);
         field.submitted=field.serving.tick;
         if (auto& probe=gradientRuntime->qualityProbe) {
             const int key=(teamNumber*MaterialCount+resourceType)*SWIM_CLASS_COUNT+swimClass;

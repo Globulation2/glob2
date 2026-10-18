@@ -8,7 +8,7 @@
 #define VERSION_MAJOR 0
 #define MINIMUM_VERSION_MINOR 58
 #define VERSION_MINOR 176
-// version 176 combines adaptive movement evidence with lazy building routing.
+// version 176 combines capture-aligned adaptive movement evidence with lazy building routing.
 // version 175 integrates lazy initial building fields with ground/air routing.
 // version 173 integrates delayed ground guidance with the air routing layout.
 // version 172 combines air routing with tagged snapshot checksum metadata.

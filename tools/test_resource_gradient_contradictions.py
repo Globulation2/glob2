@@ -44,7 +44,8 @@ class ContradictionTests(unittest.TestCase):
             with self.assertRaises(ValueError):m.emit(model,target)
             self.assertFalse(target.exists())
         with self.assertRaisesRegex(ValueError,'length mismatch'):m.predict(model,[0]*7)
-        baseline=json.loads(m.DEFAULT_MODEL.read_text());baseline['transforms']=['identity_q12']*7
+        baseline=json.loads(m.DEFAULT_MODEL.read_text());baseline=baseline.get('legacy',baseline)
+        baseline['transforms']=['identity_q12']*7
         with self.assertRaisesRegex(ValueError,'log transforms'):m.validate_model(baseline)
 
     def test_contract_columns_and_unknown_old_capture_are_not_imputed(self):

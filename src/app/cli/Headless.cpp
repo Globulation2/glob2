@@ -282,12 +282,13 @@ struct HeadlessRunner
     {
         if (one(options,"--legacy-adaptive-174","false")!="true")
             throw std::invalid_argument("Migration requires explicit --legacy-adaptive-174");
-        const auto inputPath=fs::absolute(one(options,"--input"));
+        auto inputPath=fs::absolute(one(options,"--input"));
         if (one(options,"--input").empty()) throw std::invalid_argument("Migration requires --input");
         GlobalContainer globals(one(options,"--profile","glob2-save-migration").c_str(),one(options,"--building-catalog"));
         globalContainer=&globals;globals.runNoX=true;globals.structuredHeadless=true;
         for (const auto& directory:many(options,"--data-dir")) globals.fileManager->addDir(directory);
         globals.load();
+        inputPath=glob2PreferGzipReadPath(*globals.fileManager,inputPath.string());
         Online::Sha256 inputHash;
         {
             std::ifstream file(inputPath,std::ios::binary);if (!file) throw std::invalid_argument("Cannot read migration input");
@@ -301,7 +302,12 @@ struct HeadlessRunner
         GameGUI loaded(false);
         if (!loaded.load(input.get(),false,SaveLoadProfile::PrivateAdaptive174,MapLoadInitialization::PreserveEncoded))
             throw std::runtime_error("Cannot decode private adaptive174 input");
-        if (!input->isEndOfStream()) throw std::invalid_argument("Migration input has trailing binary data");
+        // FILE-backed EOF is set only after a failed read, whereas inflated
+        // memory streams report position==size immediately. Compare extents.
+        const auto consumed=input->getPosition();
+        if (consumed>std::size_t(std::numeric_limits<int>::max())) throw std::invalid_argument("Migration input is too large");
+        input->seekFromEnd(0);const auto end=input->getPosition();input->seekFromStart(int(consumed));
+        if (consumed!=end) throw std::invalid_argument("Migration input has trailing binary data");
         const bool saved=loaded.game.mapHeader.getIsSavedGame();
         const auto tick=loaded.game.stepCounter;
         const auto mapName=loaded.game.mapHeader.getMapName();

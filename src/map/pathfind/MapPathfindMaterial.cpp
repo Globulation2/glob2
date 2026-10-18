@@ -19,6 +19,10 @@ bool Map::pathfindMaterial(EntityRandom& random, int teamNumber, Uint8 resourceT
 	assert(resourceType<MaterialCount);
 	const Uint16 *gradient=getMaterialGradientSlot(teamNumber, resourceType, swimClass, withMarkets, target);
 	if (!gradient) { *stopWork=false; return false; }
+    // Published cells remain immutable throughout this movement query. Reuse
+    // the same value for demand, movement and outcome bookkeeping.
+    const size_t hereIndex=coordToIndex(x,y);
+    const Uint16 here=gradient[hereIndex];
     // Only owner queries of ground natural fields enter the adaptive model.
     // Cold reads may be null; air and consumer fields retain their own policies.
     const bool naturalGround=game && !compute.insideJob() && swimClass<SWIM_CLASS_COUNT
@@ -26,17 +30,17 @@ bool Map::pathfindMaterial(EntityRandom& random, int teamNumber, Uint8 resourceT
     std::optional<EntityRandom> before;
     if (naturalGround && gradientRuntime->qualityProbe) before.emplace(random);
     std::optional<GradientMovementEvidence> evidence;
-    if (before) evidence.emplace();
-    auto* collected=evidence ? &*evidence : nullptr;
+    if (naturalGround) evidence.emplace();
+    auto* movementEvidence=evidence ? &*evidence : nullptr;
+    ResourceGradientPolicy::Field* policyField=nullptr;
     if (naturalGround) {
         gradientRuntime->initializeResourcePolicy(*this);
         auto& field=gradientRuntime->resources.fields[(teamNumber*MaterialCount+resourceType)*SWIM_CLASS_COUNT+swimClass];
-        field.queried(game->stepCounter,gradient[coordToIndex(x,y)]!=GRADIENT_FORBIDDEN);
+        policyField=&field;
+        field.queried(game->stepCounter,here!=GRADIENT_FORBIDDEN);
     }
     const auto move=[&]() {
 
-	size_t hereIndex=coordToIndex(x, y);
-    Uint16 here=gradient[hereIndex];
     // Resolve the already-selected destination instead of repeating supplier
     // key rules. Stable cache entries remain pinned while their ticket exists.
     const auto refresh=[&] {
@@ -66,13 +70,19 @@ bool Map::pathfindMaterial(EntityRandom& random, int teamNumber, Uint8 resourceT
 	*stopWork=false;
     if (here==GRADIENT_AT_GOAL) {
         if (!materialAmountAtSlot(hereIndex,resourceType)) {
-            if (collected) collected->emptyGoal=true;
+            if (movementEvidence) movementEvidence->emptyGoal=true;
             refresh();
         }
         return false;
     }
     const auto select=[&](bool strict) {
-        if (collected) return directionByGradientObserved(random,teamMask,swimClass,x,y,gradient,dx,dy,strict,*collected);
+        // The selected production features need only the existing goal and
+        // final-move results. Neighbour rejection classification remains an
+        // opt-in diagnostic specialization, with the ordinary selector ABI
+        // unchanged for production movement and all other gradient types.
+        static_assert((ResourceGradientModel::RequiredMovementMask&~GradientMovementOutcomeMask)==0,
+            "The movement model requires additional selector instrumentation");
+        if (before) return directionByGradientObserved(random,teamMask,swimClass,x,y,gradient,dx,dy,strict,*movementEvidence);
         return directionByGradient(random,teamMask,swimClass,x,y,gradient,dx,dy,strict);
     };
     if (select(true)) return true;
@@ -81,13 +91,19 @@ bool Map::pathfindMaterial(EntityRandom& random, int teamNumber, Uint8 resourceT
     return false;
     };
     const bool moved=move();
-    if (collected) {
-        const auto here=gradient[coordToIndex(x,y)];
-        collected->reachableNoMove=!moved && here>GRADIENT_UNREACHABLE && here!=GRADIENT_AT_GOAL;
-        const int key=(teamNumber*MaterialCount+resourceType)*SWIM_CLASS_COUNT+swimClass;
-        gradientRuntime->qualityProbe->recordMovement(key,*collected);
+    if (movementEvidence) {
+        movementEvidence->reachableNoMove=!moved && here>GRADIENT_UNREACHABLE && here!=GRADIENT_AT_GOAL;
+        // Record after movement, exactly once even for goal/unreachable or
+        // forbidden reads. This matches the diagnostic query denominator.
+        // A refresh captured during this query keeps its earlier baseline;
+        // evidence from the query belongs after that capture in both streams.
+        policyField->recordMovement(*movementEvidence);
+        if (before) {
+            const int key=(teamNumber*MaterialCount+resourceType)*SWIM_CLASS_COUNT+swimClass;
+            gradientRuntime->qualityProbe->recordMovement(key,*movementEvidence);
+        }
     }
-    if (naturalGround && gradientRuntime->qualityProbe && gradient[coordToIndex(x,y)]!=GRADIENT_FORBIDDEN)
+    if (before && here!=GRADIENT_FORBIDDEN)
         gradientRuntime->qualityProbe->observe(*this,teamNumber,resourceType,swimClass,x,y,gradient,*before);
     return moved;
 }

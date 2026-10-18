@@ -7,6 +7,7 @@ import subprocess
 import tempfile
 import unittest
 from tools import resource_gradient_model as m
+from tools import resource_gradient_features as f
 
 class ResourceGradientModelTest(unittest.TestCase):
     def setUp(self):self.model=json.loads(m.DEFAULT_MODEL.read_text())
@@ -23,17 +24,30 @@ class ResourceGradientModelTest(unittest.TestCase):
     @unittest.skipUnless(shutil.which('c++'),'C++ compiler required for integer parity')
     def test_exported_cpp_matches_integer_python_with_undefined_behavior_checks(self):
         rng=random.Random(2432)
-        vectors=[[0]*7,[m.LIMIT]*7,[-1]*7,[m.LIMIT+1]*7]
-        vectors += [[rng.randrange(-1,m.LIMIT+2) for _ in range(7)] for _ in range(4096)]
+        vectors=[([v]*7,counts) for v in (0,-1,m.LIMIT,m.LIMIT+1)
+                 for counts in ([0,0,0],[1,1,1],[1,2,3],[m.LIMIT]*3,
+                                [f.UINT64_MAX]*3,[f.UINT64_MAX-1,f.UINT64_MAX//2,f.UINT64_MAX],
+                                [f.UINT64_MAX//4096,f.UINT64_MAX//4096+1,f.UINT64_MAX],
+                                [f.UINT64_MAX//2,f.UINT64_MAX//2+1,f.UINT64_MAX],
+                                [f.UINT64_MAX,f.UINT64_MAX,0])]
+        vectors += [([rng.randrange(-1,m.LIMIT+2) for _ in range(7)],
+                     [rng.randrange(f.UINT64_MAX+1) for _ in range(3)]) for _ in range(4096)]
         with tempfile.TemporaryDirectory() as d:
             p=Path(d);m.emit(self.model,p/'model.h')
             (p/'main.cpp').write_text('''#include "model.h"
 #include <iostream>
-int main(){std::array<ResourceGradientModel::I,7>x;while(std::cin>>x[0]){for(int i=1;i<7;++i)std::cin>>x[i];std::cout<<ResourceGradientModel::predict(x)<<'\\n';}}
+int main(){ResourceGradientModel::BaseFeatures x;ResourceGradientModel::MovementCounts c;
+while(std::cin>>x[0]){for(int i=1;i<7;++i)std::cin>>x[i];for(auto& v:c)std::cin>>v;
+std::cout<<ResourceGradientModel::predict(x,c)<<' '<<ResourceGradientModel::predictLegacy(x);
+for(auto v:ResourceGradientModel::prepare(x,c))std::cout<<' '<<v;std::cout<<'\\n';}}
 ''')
             subprocess.run(['c++','-std=c++20','-O2','-fsanitize=undefined','-fno-sanitize-recover=undefined',str(p/'main.cpp'),'-o',str(p/'run')],check=True)
-            got=subprocess.check_output([str(p/'run')],input=''.join(' '.join(map(str,x))+'\n' for x in vectors),text=True)
-            self.assertEqual([int(v) for v in got.splitlines()],[m.predict(self.model,x) for x in vectors])
+            got=subprocess.check_output([str(p/'run')],input=''.join(' '.join(map(str,[*x,*c]))+'\n' for x,c in vectors),text=True)
+            expected=[]
+            for x,c in vectors:
+                prepared=f.prepare(x,c)
+                expected.append([m.predict(self.model,prepared),m.predict(self.model['legacy'],x),*prepared])
+            self.assertEqual([[int(v) for v in line.split()] for line in got.splitlines()],expected)
 
     def test_manifest_integrity_complete_filter_and_deduplication(self):
         with tempfile.TemporaryDirectory() as d:
@@ -215,7 +229,7 @@ int main(){std::array<ResourceGradientModel::I,7>x;while(std::cin>>x[0]){for(int
                                              episodes=episode.name,episode_sha256=m.sha(episode)))
             m.save(p/'manifest.json',manifest)
             with contextlib.redirect_stdout(io.StringIO()):
-                m.fit(argparse.Namespace(manifest=[p/'manifest.json'],output=p/'model.json',header=p/'model.h'))
+                m.fit(argparse.Namespace(manifest=[p/'manifest.json'],output=p/'model.json',header=None))
             model=json.loads((p/'model.json').read_text());provenance=model['provenance']
             self.assertFalse(set(provenance['development_states']) & set(provenance['heldout_states']))
             self.assertEqual(provenance['holdout']['states'],2)

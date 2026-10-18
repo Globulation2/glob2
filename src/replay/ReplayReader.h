@@ -22,7 +22,8 @@ class Order;
 //! Malformed or truncated replay bodies are rejected, including partial recordings.
 
 //! Oldest replay format (the VERSION_MINOR the replay was written with) that
-//! the reader still accepts. Version 176 combines adaptive movement evidence and lazy building routing.
+//! the reader still accepts. Version 176 combines adaptive movement evidence
+//! with lazy building routing.
 //! Save compatibility has a separate floor in Version.h.
 static constexpr Uint16 REPLAY_MINIMUM_VERSION_MINOR = 176;
 
