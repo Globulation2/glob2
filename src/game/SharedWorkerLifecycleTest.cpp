@@ -1,5 +1,6 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "EngineFixtures.h"
+#include "GradientFixture.h"
 #include "Engine.h"
 #include "sim/presentation/SceneInputs.h"
 #include "field/GradientConstants.h"
@@ -80,10 +81,14 @@ TEST_CASE("resource catalog import drains admitted material work before replacin
     CHECK_FALSE(map.hasPendingGradientPreparation());
     CHECK(map.materialAmountAt(index, MaterialId::Gold) == 1);
     CHECK(map.materialAmountAt(index, MaterialId::Food) == 3);
-    // Finish respects publication deadlines; advancing safely publishes the
-    // prepared goal after the immutable definition snapshot was replaced.
+    // Catalog replacement hard-invalidates old outputs. Retire them at their
+    // original deadlines, then admit fresh demand against the new definition.
     for (int tick = 0; tick < 3; ++tick) map.advanceGradientPipeline();
-    CHECK(map.getMaterialGradient(0, MaterialId::Gold, 0)[index] == GRADIENT_AT_GOAL);
+    CHECK(map.getMaterialGradient(0, MaterialId::Gold, 0) == nullptr);
+    const auto* field = glob2test::awaitGradient(source.game, [&] {
+        return map.getMaterialGradient(0, MaterialId::Gold, 0);
+    });
+    CHECK(field[index] == GRADIENT_AT_GOAL);
 }
 TEST_CASE("pending gradient work survives a save and continues at the same deadlines") {
     glob2test::HeadlessGlobals globals;

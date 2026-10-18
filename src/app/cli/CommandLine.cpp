@@ -94,7 +94,7 @@ Option format()
 Option compute()
 {
 	auto o = value("--compute-threads", "compute",
-				   "Shared compute pool; auto uses reported logical CPUs", "auto");
+				   "Shared compute pool; auto prefers physical cores (logical CPU fallback)", "auto");
 	o.minimum = 1;
 	o.maximum = 4294967295LL;
 	return o;

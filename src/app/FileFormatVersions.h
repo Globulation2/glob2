@@ -293,3 +293,6 @@ static constexpr int FILE_FORMAT_VERSION_SINGLE_OBSERVATION = 167;
 
 // Tagged snapshot checksums in order/replay envelopes, including saved AI queues.
 static constexpr int FILE_FORMAT_VERSION_SNAPSHOT_CHECKSUM = 168;
+
+// Cold gradient demand, stable cache destinations and unpublished complete fields.
+static constexpr int FILE_FORMAT_VERSION_DELAYED_GRADIENTS = 169;

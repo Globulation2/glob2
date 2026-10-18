@@ -112,7 +112,9 @@ bool considerBuildingCandidate(Building& building, Unit* unit, int* distBuilding
             accessible=cost!=decltype(routes)::unreachable;
             *distBuilding=accessible?int((cost+GRADIENT_STEP-1)/GRADIENT_STEP):INT_MAX;
         } else *distBuilding=building.owner->map->warpDistMax(unit->posX,unit->posY,building.posX,building.posY);
-    } else accessible=building.owner->map->buildingAvailable(&building,unit->swimClass(),unit->posX,unit->posY,distBuilding,BuildingRoute::Footprint);
+    } else {
+        accessible=building.owner->map->buildingAvailable(&building,unit->swimClass(),unit->posX,unit->posY,distBuilding,BuildingRoute::Footprint);
+    }
     if(!accessible)
 	{
 		building.noteUnitFailing(unit, Building::UnitCantAccessBuilding);
@@ -145,7 +147,11 @@ bool Building::considerUnitForMaterial(Unit* unit, int wantedMaterial, int* dist
 
 	int distMaterial = 0;
 	Sint32 materialX=0,materialY=0;
-	if(!(unit->performance[FLY] ? unit->findMaterialDestination(wantedMaterial,&materialX,&materialY,&distMaterial,fetchesFromMarkets(),this) : owner->map->materialAvailableSlot(owner->teamNumber,wantedMaterial,unit->swimClass(),unit->posX,unit->posY,&distMaterial,fetchesFromMarkets(),this)))
+	const auto materialRoute = unit->performance[FLY]
+		? unit->queryMaterialDestination(wantedMaterial,&materialX,&materialY,&distMaterial,fetchesFromMarkets(),this)
+		: owner->map->queryMaterialDistance(owner->teamNumber,wantedMaterial,unit->swimClass(),unit->posX,unit->posY,&distMaterial,fetchesFromMarkets(),this);
+	if (materialRoute==RouteResult::Pending) return false;
+	if (materialRoute!=RouteResult::Reachable)
 	{
 		if(wantedMaterial<HAPPINESS_BASE || wantedMaterial>=HAPPINESS_BASE+HAPPINESS_COUNT)
 			noteUnitFailing(unit, UnitCantAccessResource);
@@ -328,8 +334,8 @@ bool Building::hireMaterialUnit(const int *targets, const int *served)
 							!considerUnitForMaterial(u, material, &distance, airDistance))
 							continue;
 						Sint32 x, y;
-						if (!u->findMaterialDestination(material, &x, &y, nullptr,
-														fetchesFromMarkets(), this))
+						if (u->queryMaterialDestination(material, &x, &y, nullptr,
+                                                        fetchesFromMarkets(), this)!=RouteResult::Reachable)
 							continue;
 					}
 					u->destinationPurpose = material;
@@ -370,7 +376,7 @@ bool Building::considerUnitForExplorerFlag(Unit* unit, int* dist, int terrainDis
 	int timeLeft = remainingFoodTime(*unit);
     if(!unit->performance[FLY]) {
         int distance=0;
-        if(!owner->map->buildingAvailable(this,unit->swimClass(),unit->posX,unit->posY,&distance,BuildingRoute::Combat)) {
+        if (!owner->map->buildingAvailable(this,unit->swimClass(),unit->posX,unit->posY,&distance,BuildingRoute::Combat)) {
             noteUnitFailing(unit,UnitCantAccessBuilding);return false;
         }
         terrainDistance=distance;
@@ -420,7 +426,8 @@ bool Building::considerUnitForWorkerFlag(Unit* unit, int* dist)
 	}
 	if(unit->performance[FLY]) {
         Sint32 x,y;int distance;
-        if(!unit->findAirClearingDestination(this,&x,&y,&distance)){noteUnitFailing(unit,UnitCantAccessResource);return false;}
+        const bool reachable=unit->findAirClearingDestination(this,&x,&y,&distance);
+        if(!reachable){noteUnitFailing(unit,UnitCantAccessResource);return false;}
         if(unit->hungriness>0 && distance>=remainingFoodTime(*unit)){noteUnitFailing(unit,UnitTooFarFromBuilding);return false;}
         *dist=distance;return true;
     }
@@ -472,11 +479,9 @@ bool Building::considerUnitForWarriorFlag(Unit* unit, int* dist, int terrainDist
 	// check in subscribeToBringMaterialsStep uses the same pairing.
 	int timeLeft = remainingFoodTime(*unit);
 	if (unit->performance[FLY]) distBuilding=terrainDistance>=0 ? terrainDistance : owner->map->warpDistMax(unit->posX,unit->posY,posX,posY);
-    else if (!owner->map->buildingAvailable(this, unit->swimClass(), unit->posX, unit->posY, &distBuilding, BuildingRoute::Combat))
-	{
-		noteUnitFailing(unit, UnitCantAccessBuilding);
-		return false;
-	}
+    else {
+        if (!owner->map->buildingAvailable(this,unit->swimClass(),unit->posX,unit->posY,&distBuilding,BuildingRoute::Combat)) { noteUnitFailing(unit,UnitCantAccessBuilding); return false; }
+    }
 	if ((!unit->performance[FLY] && !unit->performance[WALK] && !unit->performance[SWIM] && distBuilding>0) || distBuilding >= timeLeft)
 	{
 		noteUnitFailing(unit, UnitTooFarFromBuilding);

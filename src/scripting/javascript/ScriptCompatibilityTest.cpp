@@ -134,10 +134,10 @@ TEST_CASE("Current simulation rejects earlier replays and enforces acceptance bo
 	glob2test::GlobalsOptions options;
 	options.loadStrings = true;
 	glob2test::HeadlessGlobals globals(options);
-	// Format 168 changes snapshot checksum coverage and order metadata.
+	// Format 169 delays cold ground guidance after format 168 snapshot checksums.
 	// Script save-format milestones remain independent of these current gates.
-	CHECK(REPLAY_MINIMUM_VERSION_MINOR == 168);
-	CHECK(VERSION_MINOR == 168);
+	CHECK(REPLAY_MINIMUM_VERSION_MINOR == 169);
+	CHECK(VERSION_MINOR == 169);
 	CHECK(NET_PROTOCOL_VERSION == 72);
 	CHECK(FILE_FORMAT_VERSION_JAVASCRIPT == 125);
 	CHECK(FILE_FORMAT_VERSION_EXPERIMENTS == 124);

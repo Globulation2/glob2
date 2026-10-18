@@ -72,9 +72,13 @@ checkpoint from a run started with `--rule buildingGradientDelay=N`. Other
 overrides of a saved game, including `--experiment`, `--rule` and
 `--ai-order-delay`, are still rejected.
 
-Scheduled building fields use the production depth predictor. Experimental
-full/lazy and operating-point overrides are retired; readers still resolve
-unsettled cells on the owner before using them.
+Scheduled building fields retain the production depth predictor and lazy
+reader/hiring expansion. Their initialization, refresh and save behavior are
+unchanged. Material and area cold requests, recurring refreshes and zone-edit
+rebuilds use FIFO admission and fixed publication deadlines. Natural-material
+queries with authoritative zero source counts retain their immediate shared
+negative answer and skip periodic rebuilds. Format 169 saves that queued demand and completed
+unpublished outputs, preserving remaining deadlines and the save floor of 58.
 
 Format 143 saves the AI engine's completed pending orders, logical deadlines and
 execution feedback. Saving finishes outstanding decisions without executing
@@ -557,8 +561,8 @@ publishes due results, captures once, then admits work before applying orders an
 advancing. Newly admitted AI/statistics work configured with delay zero is due at
 the next boundary. Paused frames and stalled turns reuse their observation.
 Saved publication/admission phases and pending outputs preserve continuation;
-old pending results keep their original deadlines. Replay floor 167 and the sim
-revision gate distinguish the changed timing. Runtime world publication and
+old pending results keep their original deadlines. The current replay floor 169
+also requires delayed gradient publication; the sim revision gates these rules. Runtime world publication and
 AI-order delivery remain separate: world results publish before capture, while
 due AI orders enter the command schedule and undergo live order validation. See the
 [owner timing contract](../architecture/simulation.md#completed-world-observations).
@@ -581,13 +585,14 @@ the serial fallback publishes on the same ticks. `--compute-threads 1` is the
 owner-only control; all deferred producers submit to the same executor and the
 owner computes their jobs at joins when there are no workers.
 
-Periodic material, market, guard and clear gradients use the same executor as AI.
+Material, market, consumer-specific supplier, guard, clear and forbidden gradients use the same executor as AI.
 Their immutable inputs are captured at the completed-tick boundary; seeding and
 propagation both execute privately and retain the existing publication deadlines.
-`--compute-threads auto|N` controls the shared pool for all sessions; `auto` uses
-reported logical CPU threads, or one participant when the hardware count is
-unavailable. Browser automatic sizing remains capped at eight. Linux/Android CPU
-affinity is reported separately and does not resize the pool.
+`--compute-threads auto|N` controls the shared pool for all sessions; native `auto`
+prefers physical cores, filtered by affinity where topology discovery supports it.
+Fallbacks are eligible logical CPUs, the hardware thread hint, then one participant.
+Browser auto retains its logical-CPU hint capped at eight. See
+[compute sizing](compute-benchmarks.md) for platform detection and limitations.
 N is a positive unsigned participant count including the owner. Explicit counts
 remain unchanged unless the platform cannot run threads, when execution uses one
 participant while retaining the requested count in diagnostics. Saving drains
