@@ -1,0 +1,3 @@
+Linux x86_64; GCC 13.4.0; SDL3 prefix /home/bradley/.codex/worktrees/repair-tls-rejection-fixture/glob2/build/sdl3-ci-current/prefix
+SCons: release=1 server=0 client_profile=full optimized_assets=0 CXX=g++-13 CC=gcc-13 -j12
+No engine runtime dependency additions. Protocol npm ci uses committed lockfile.
