@@ -1,0 +1,31 @@
+{
+  "provisional": true,
+  "accepted_games": 124,
+  "target_games": 128,
+  "missing_games": [
+    "05fe5cff222d6b10",
+    "3ec5832e8eb38bd9",
+    "81c48e83ad74dc8d",
+    "d0274182dffdbafb"
+  ],
+  "manifest": "/home/bradley/glob2/artifacts/gradient-contradictions-20261018/postprocess-f65/DIAGNOSTIC-partial-20261018T220536Z/dataset/0d2f0a469b46df6a611fd8b7.cohort.json",
+  "manifest_sha256": "5cae22caf14ff71547a96aac13f859436b6615db46726c6dadfb994e0329f84a",
+  "registry": "/home/bradley/glob2/artifacts/gradient-contradictions-20261018/postprocess-f65/map-split-registry.json",
+  "registry_sha256": "15c6670f4e4e2e92faf3709f0834c6015e73de2b86f6ae69c1956f4334680508",
+  "command": [
+    "/home/bradley/glob2/artifacts/gradient-coverage-72d2f99/training-venv/bin/python",
+    "/home/bradley/glob2/artifacts/gradient-contradictions-20261018/postprocess-f65/source/tools/resource_gradient_model.py",
+    "compare-contradictions",
+    "--manifest",
+    "/home/bradley/glob2/artifacts/gradient-contradictions-20261018/postprocess-f65/DIAGNOSTIC-partial-20261018T220536Z/dataset/0d2f0a469b46df6a611fd8b7.cohort.json",
+    "--split-registry",
+    "/home/bradley/glob2/artifacts/gradient-contradictions-20261018/postprocess-f65/map-split-registry.json",
+    "--output",
+    "/home/bradley/glob2/artifacts/gradient-contradictions-20261018/postprocess-f65/PROVISIONAL-fit-124-20261018/comparison.json"
+  ],
+  "source": "f65c8d1698f6deefc4820209e69ad704f91d5776",
+  "started_utc": "2026-10-18T22:09:55.789036+00:00",
+  "user_authorized_provisional_fit": true,
+  "no_production_promotion": true,
+  "full128_refit_still_required": true
+}

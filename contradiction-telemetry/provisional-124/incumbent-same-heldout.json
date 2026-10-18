@@ -1,0 +1,28 @@
+{
+  "no_fit": true,
+  "model_sha256": "f954f80f1108a8c64adb6d95e8c018bbad62ad9fb3e3bdbbe0d8d17204578217",
+  "rows": 40416,
+  "states": 31,
+  "metrics": {
+    "episodes": 40416,
+    "states": 31,
+    "mae": 5.171738392818489,
+    "mse": 375.434405513207,
+    "selected_pct": 1.9765113366592615,
+    "selected_actual_benefit": 50.993132160238275,
+    "positive_benefit_captured_fraction": 0.33207888698492527,
+    "missed_positive_benefit": 2.1527668121274974,
+    "negative_benefit_selected": 0.062433586364256576,
+    "threshold": 32.0,
+    "decision_regret": 1.1913551286776387,
+    "decision_regret_p95": 0.0,
+    "decision_regret_p99": 32.0,
+    "false_refresh_pct": 1.251558947921959,
+    "missed_threshold_decision_pct": 1.9765576572455181,
+    "absolute_error_p95": 24.865,
+    "absolute_error_p99": 65.783
+  },
+  "identical_eligible_rows_sha256": "d6ff9d40a112cdec2efec9189941feef19e5b6840f3435fa2d2940eb33b1aabf",
+  "manifest_sha256": "5cae22caf14ff71547a96aac13f859436b6615db46726c6dadfb994e0329f84a",
+  "note": "Existing incumbent coefficients evaluated once on exactly the same eligible frozenheldout rows; no alternative fit or objective/split change."
+}
