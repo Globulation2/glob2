@@ -219,13 +219,20 @@ void Map::stageBuildingGradientPreparation()
 	if (!buildingGradientPipelineActive()) return;
 	auto& rt = *gradientRuntime;
 	auto& pipeline = rt.buildings;
-	while (!rt.buildingRequests.empty() && pipeline.canReserve())
+	while (!rt.buildingRequests.empty())
 	{
 		const auto request = rt.buildingRequests.front();
-		rt.buildingRequests.pop_front();
 		Building* b = buildingGradientDestination(request.team, request.building, request.identity);
-		if (!b || request.stale || b->refreshEpoch[request.slot] != request.epoch) continue;
-		auto* job = pipeline.reserve();
+		if (!b || request.stale || b->refreshEpoch[request.slot] != request.epoch) {
+			rt.buildingRequests.pop_front();
+			continue;
+		}
+		const bool initial = !b->globalGradient[request.slot];
+		const unsigned ticks = initial ? 1u : pipeline.delayTicks();
+		if (!pipeline.canReserve(ticks)) break;
+		rt.buildingRequests.pop_front();
+		auto* job = pipeline.reserve(ticks);
+
 		job->payload = {};
 		auto& p = job->payload;
 		p.team = request.team; p.buildingId = request.building; p.scriptIdentity = request.identity;

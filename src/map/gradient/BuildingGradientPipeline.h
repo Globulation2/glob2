@@ -16,14 +16,14 @@
 
 // Fixed-tick publication for scheduled building fields; the sibling of
 // GradientPipeline. Differences: up to MaxJobsPerTick reservations per advanced
-// tick, every job staged in one tick is submitted as one executor batch, and
+// tick, jobs sharing a publication deadline are submitted as one executor batch, and
 // publication goes through an owner callback that may still reject a result
 // (the Map validates it against live buildings).
 //
 // The simulation thread owns the pending queue, the spare list and every
 // destination. A worker owns its job's payload outputs and immutable inputs from
-// submission until the owner joins. Jobs publish in reservation order at
-// reservation tick + delay. Completion time never selects publication time:
+// submission until the owner joins. Jobs publish in deadline order, with reservation order breaking ties, at
+// reservation tick + their selected delay. Completion time never selects publication time:
 // advance() joins a job at its deadline, however early or late it finished.
 //
 // Payload is the producer-specific job description (building identity, owner
@@ -42,7 +42,7 @@ public:
 		std::uint64_t due = 0;
 		bool superseded = false, done = false;
 		std::exception_ptr error;
-		ComputeExecutor::Batch batch; // Shared by every job of its tick.
+		ComputeExecutor::Batch batch; // Shared by jobs staged together for the same deadline.
 		BuildingGradientPipeline* owner = nullptr;
 	};
 	using Work = std::function<void(Job&)>;
@@ -63,6 +63,7 @@ private:
 	std::vector<std::unique_ptr<Job>> spare;
 	ComputeExecutor* executor = nullptr;
 	std::vector<ComputeExecutor::Group> groups;
+	std::vector<Job*> ordered;
 	unsigned delay = 0, admitted = 0;
 	std::uint64_t tick = 0;
 	Work work;
@@ -86,7 +87,7 @@ private:
 	}
 	unsigned dueCount(std::uint64_t due) const {
 		unsigned count = 0;
-		for (auto it = pending.rbegin(); it != pending.rend() && (*it)->due == due; ++it) ++count;
+		for (const auto& job : pending) if (job->due == due) ++count;
 		return count;
 	}
 public:
@@ -95,9 +96,10 @@ public:
 	unsigned delayTicks() const { return delay; }
 	std::size_t pendingCount() const { return pending.size(); }
 	// True while this advanced tick can admit another job.
-	bool canReserve() const {
-		return enabled() && tick != 0 && admitted < MaxJobsPerTick && pending.size() < delay*MaxJobsPerTick &&
-			dueCount(tick+delay) < MaxJobsPerTick;
+	bool canReserve(unsigned ticks = 0) const {
+		if (!ticks) ticks = delay;
+		return ticks <= delay && enabled() && tick != 0 && admitted < MaxJobsPerTick && pending.size() < delay*MaxJobsPerTick &&
+			dueCount(tick+ticks) < MaxJobsPerTick;
 	}
 	// Complete all private work without publishing; rethrows the oldest failure.
 	void finish(JoinContext context = {JoinReason::Verification, ComputeTelemetry::NoTick}) { for (auto& job : pending) { wait(*job, context); if (job->error) std::rethrow_exception(job->error); } }
@@ -107,7 +109,7 @@ public:
 		for (auto& job : pending) if (!job->batch.empty()) {
 			try { executor->join(job->batch, {JoinReason::Teardown, ComputeTelemetry::NoTick}); } catch (...) {}
 		}
-		pending.clear(); spare.clear(); groups.clear();
+		pending.clear(); spare.clear(); groups.clear(); ordered.clear();
 		delay = 0; admitted = 0; tick = 0;
 	}
 	// Teardown with pooled outputs: complete submitted work, retire every pending
@@ -146,27 +148,41 @@ public:
 	}
 	// Admit one job due at tick + delay. The caller fills snapshotLease and payload,
 	// then hands every job staged this tick to one prepare() call.
-	Job* reserve() {
-		if (!canReserve()) throw std::logic_error("building gradient pipeline admission exceeded");
+	Job* reserve(unsigned ticks = 0) {
+		if (!ticks) ticks = delay;
+		if (!canReserve(ticks)) throw std::logic_error("building gradient pipeline admission exceeded");
 		std::unique_ptr<Job> job;
 		if (spare.empty()) job = std::make_unique<Job>();
 		else { job = std::move(spare.back()); spare.pop_back(); }
-		job->due = tick+delay; job->done = false; job->superseded = false; job->error = nullptr;
+		job->due = tick+ticks; job->done = false; job->superseded = false; job->error = nullptr;
 		job->owner = this; job->batch = {}; job->snapshotLease.reset();
-		auto* ptr = job.get(); pending.push_back(std::move(job));
+		auto* ptr = job.get();
+		const auto position = std::upper_bound(pending.begin(), pending.end(), job->due,
+			[](std::uint64_t due, const auto& queued) { return due < queued->due; });
+		pending.insert(position, std::move(job));
 		++admitted; ++metrics.jobs;
 		metrics.maxPending = std::max<std::uint64_t>(metrics.maxPending, pending.size());
 		return ptr;
 	}
-	// Submit staged jobs as one executor batch. Inputs must be immutable and owned
+	// Submit staged jobs as separate batches for each deadline. Inputs must be immutable and owned
 	// by the job: no live world reads after dispatch.
 	void prepare(std::span<Job* const> jobs) {
-		if (jobs.empty()) return;
+		ordered.assign(jobs.begin(), jobs.end());
+		std::stable_sort(ordered.begin(), ordered.end(), [](const auto* a, const auto* b) { return a->due < b->due; });
+		for (std::size_t first = 0; first < ordered.size();) {
+			std::size_t end = first + 1;
+			while (end < ordered.size() && ordered[end]->due == ordered[first]->due) ++end;
+			prepareBatch(std::span<Job* const>(ordered.data() + first, end - first));
+			first = end;
+		}
+	}
+private:
+	void prepareBatch(std::span<Job* const> jobs) {
 		try {
 			// Owner-only execution computes now; publication keeps its deadline.
 			groups.clear();
 			for (auto* job : jobs) groups.push_back({1, {&run, job}, ComputeExecutor::NoLane});
-			const auto due = jobs.front()->due; // every job staged this tick shares it
+			const auto due = jobs.front()->due; // every job in this batch shares it
 			const auto key = deadline ? deadline(unsigned(due - tick)) : ComputeExecutor::advanceDue(due);
 			const auto batch = executor->submit(groups, key, {ComputeProducer::BuildingGradient, deadline ? key/2 - (due-tick) : tick, key/2});
 			for (auto* job : jobs) job->batch = batch;
@@ -178,6 +194,7 @@ public:
 			throw;
 		}
 	}
+public:
 	// Saving completes private work without changing publication deadlines. The
 	// visitor receives each job in publication order with its remaining ticks and
 	// may finish the job's private state (for example a resumable search).
