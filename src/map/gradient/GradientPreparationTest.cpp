@@ -1826,6 +1826,7 @@ TEST_CASE("ground refreshes preserve warm air material seeds across edits" * doc
     auto& game=world.game;auto& map=game.map;
     gradient_preparation::MaterialSeedCache cache;
     std::vector<Uint16> cached(map.size),reference(map.size);
+    CHECK_FALSE(cache.trySeed({},0,WHEAT,WATER_ONLY_CLASS,cached.data(),nullptr));
     auto snapshot=SimulationSnapshot::capture(game,SimulationSnapshot::captureCatalog(game),SimulationSnapshot::Simulation);
     REQUIRE(cache.trySeed(snapshot,0,WHEAT,0,cached.data(),nullptr));
     CHECK(cache.airSignatures.empty());
@@ -1842,4 +1843,18 @@ TEST_CASE("ground refreshes preserve warm air material seeds across edits" * doc
     gradient_preparation::materialCells(map.stateView(),map.fogOfWar,0,WHEAT,AIR_MOVEMENT_CLASS,reference.data(),nullptr,run);
     CHECK(cached==reference);
     CHECK(cached[map.coordToIndex(18,12)]==GRADIENT_AT_GOAL);
+    // Reusing the cache for another world must discard the old air template.
+    glob2test::HeadlessGame other({.wDec=7,.hDec=7,.discovered=true,.clearImmobile=true,.header=true});
+    auto next=SimulationSnapshot::capture(other.game,SimulationSnapshot::captureCatalog(other.game),SimulationSnapshot::Simulation);
+    REQUIRE(cache.trySeed(next,0,WHEAT,0,cached.data(),nullptr));
+    CHECK(cache.airSignatures.empty());
+    CHECK(cached[other.game.map.coordToIndex(18,12)]==GRADIENT_UNREACHABLE);
+    // An unused air plane must not consume the ground-only cache budget.
+    gradient_preparation::MaterialSeedCache limited;
+    limited.budget=300*1024;
+    REQUIRE(limited.trySeed(next,0,WHEAT,0,cached.data(),nullptr));
+    CHECK_FALSE(limited.trySeed(next,0,WHEAT,AIR_MOVEMENT_CLASS,cached.data(),nullptr));
+    CHECK(limited.airSignatures.empty());
+    CHECK(limited.trySeed(next,0,WHEAT,0,cached.data(),nullptr));
+
 }

@@ -29,69 +29,65 @@ template<class Fn> void visitSeedBits(const MaterialSeedCache::Bits& bits, Fn fn
             fn(word*64+std::countr_zero(remaining));
 }
 }
-bool MaterialSeedCache::trySeed(const SimulationSnapshot::Handle& snapshot, int team, int material,
-    int swim, Uint16* output, const Uint16* suppliers)
+namespace {
+// Keep the ground kernel independent of air state, including optimizer aliasing.
+template<bool Air>
+bool seedCachedMaterials(MaterialSeedCache& cache, const SimulationSnapshot::Handle& snapshot, int team, int material,
+    int swim, Uint16* output, const Uint16* suppliers, bool rebuild)
 {
-    if (swim==WATER_ONLY_CLASS) return false;
     const auto view=snapshot.view();
     const size_t cells=size_t(view.width)*view.height, words=(cells+63)/64;
-    const size_t required=cells*(3*sizeof(Uint16)+2*sizeof(Uint16)+sizeof(Uint32))
-        + words*sizeof(Uint64)*(2*MaterialCount+Team::MAX_COUNT+2)
+    const size_t required=cells*((Air?3:2)*sizeof(Uint16)+(Air?2:1)*sizeof(Uint16)+sizeof(Uint32))
+        + words*sizeof(Uint64)*((Air?2:1)*MaterialCount+Team::MAX_COUNT+(Air?2:1))
         + snapshot.resources->stamps.chunks.size()*4*sizeof(Uint64)
         + view.resourceRegistry->size()*sizeof(Uint32) + view.terrainRegistry->size();
-    if (disabled || cells<=4096 || required>budget) return false;
-    const bool rebuild=world!=snapshot.worldIdentity || width!=view.width || height!=view.height
-        || terrainRegistry!=snapshot.terrain->registry || resourceRegistry!=snapshot.catalogs->resources;
+    if (cache.disabled || cells<=4096 || required>cache.budget) return false;
     try {
         if (rebuild) {
-            const auto limit=budget;
-            const auto refreshed=refreshedCells;
-            *this=MaterialSeedCache{}; budget=limit; refreshedCells=refreshed;
-            resourceTraits.resize(view.resourceRegistry->size());
-            for (size_t id=0; id<resourceTraits.size(); ++id) {
+            const auto limit=cache.budget;
+            const auto refreshed=cache.refreshedCells;
+            cache=MaterialSeedCache{}; cache.budget=limit; cache.refreshedCells=refreshed;
+            cache.resourceTraits.resize(view.resourceRegistry->size());
+            for (size_t id=0; id<cache.resourceTraits.size(); ++id) {
                 const auto& p=view.resourceProperties(id);
-                resourceTraits[id]=p.materialMask | (p.blocksGround?0x10000:0)
+                cache.resourceTraits[id]=p.materialMask | (p.blocksGround?0x10000:0)
                     | (std::has_single_bit(p.materialMask)?0:0x20000);
             }
-            for(unsigned movement=0;movement<2;++movement)base[movement].resize(cells);
-            signatures.assign(cells,0);
-            forbiddenMasks.assign(cells,0);
-            for (auto& bits:goals) bits.assign(words,0);
-            for (auto& bits:forbidden) bits.assign(words,0);
-            buildings.assign(words,0);
-            for (auto& values:stamps) values.clear();
-            world=snapshot.worldIdentity; width=view.width; height=view.height;
-            terrainRegistry=snapshot.terrain->registry; resourceRegistry=snapshot.catalogs->resources;
+            for(unsigned movement=0;movement<2;++movement)cache.base[movement].resize(cells);
+            cache.signatures.assign(cells,0);
+            cache.forbiddenMasks.assign(cells,0);
+            for (auto& bits:cache.goals) bits.assign(words,0);
+            for (auto& bits:cache.forbidden) bits.assign(words,0);
+            cache.buildings.assign(words,0);
+            for (auto& values:cache.stamps) values.clear();
+            cache.world=snapshot.worldIdentity; cache.width=view.width; cache.height=view.height;
+            cache.terrainRegistry=snapshot.terrain->registry; cache.resourceRegistry=snapshot.catalogs->resources;
         }
-        const bool initializeAir=swim==AIR_MOVEMENT_CLASS && airSignatures.empty();
+        const bool initializeAir=Air && cache.airSignatures.empty();
         if(initializeAir) {
-            base[2].resize(cells);airSignatures.assign(cells,0);
-            for(auto& bits:airGoals)bits.assign(words,0);
-            airBuildings.assign(words,0);
+            cache.base[2].resize(cells);cache.airSignatures.assign(cells,0);
+            for(auto& bits:cache.airGoals)bits.assign(words,0);
+            cache.airBuildings.assign(words,0);
         }
         MapState::ChunkGeometry geometry;
         geometry.reset(view.width,view.height,view.wDec,view.wMask);
         const std::array<const std::vector<Uint64>*,4> current={&snapshot.terrain->stamps.chunks,
             &snapshot.resources->stamps.chunks,&snapshot.occupancy->stamps.chunks,&snapshot.areas->stamps.chunks};
-        // Compile separate refresh loops: ground-only caches must not test air
-        // state for every cell. Once initialized, keep the air template current
-        // even when the next request is for a ground field.
-        const auto refresh=[&]<bool Air>() {
         for (size_t chunk=0; chunk<geometry.count(); ++chunk) {
             const auto changed=[&](size_t component) {
-                return rebuild || stamps[component].size()!=geometry.count()
+                return rebuild || cache.stamps[component].size()!=geometry.count()
                     || current[component]->size()!=geometry.count()
-                    || stamps[component][chunk]!=(*current[component])[chunk];
+                    || cache.stamps[component][chunk]!=(*current[component])[chunk];
             };
             const bool cellsChanged=initializeAir||changed(0)||changed(1)||changed(2), areasChanged=changed(3);
             if (!cellsChanged && !areasChanged) continue;
             geometry.forEachRow(chunk,[&](size_t begin,size_t length) {
                 for (size_t i=begin; i<begin+length; ++i) {
                     if (cellsChanged) {
-                        ++refreshedCells;
+                        ++cache.refreshedCells;
                         const auto& cell=view.occupancy[i];
                         const auto& deposit=view.resources[i].resource;
-                        const Uint32 traits=deposit.type==NO_RES_TYPE?0:resourceTraits[deposit.type];
+                        const Uint32 traits=deposit.type==NO_RES_TYPE?0:cache.resourceTraits[deposit.type];
                         const bool mobile=cell.immobileUnit==IMMOBILE_UNIT_NONE;
                         const bool open=mobile && !(traits&0x10000);
                         const MaterialMask mask=!mobile?0:(traits&0x20000)?MapState::materialMaskAt(view,i)
@@ -106,65 +102,76 @@ bool MaterialSeedCache::trySeed(const SimulationSnapshot::Handle& snapshot, int 
                         const bool airOpen=rules.flyable && !MapState::resourceBlocksAir(view,i);
                         const Uint16 airSignature=airMask | (airOpen?0x1000:0)
                             | ((!MapState::resourceBlocksAir(view,i) && cell.building!=NOGBID)?0x2000:0);
-                        const Uint16 oldAir=airSignatures[i];
+                        const Uint16 oldAir=cache.airSignatures[i];
                         if(rebuild || oldAir!=airSignature) {
-                            base[2][i]=airOpen?GRADIENT_UNREACHABLE:GRADIENT_FORBIDDEN;
+                            cache.base[2][i]=airOpen?GRADIENT_UNREACHABLE:GRADIENT_FORBIDDEN;
                             for(unsigned changed=(oldAir^airSignature)&AllMaterials;changed;changed&=changed-1) {
                                 const unsigned bit=std::countr_zero(changed);
-                                setSeedBit(airGoals[bit],i,airMask&(1u<<bit));
+                                setSeedBit(cache.airGoals[bit],i,airMask&(1u<<bit));
                             }
-                            setSeedBit(airBuildings,i,airSignature&0x2000);
-                            airSignatures[i]=airSignature;
+                            setSeedBit(cache.airBuildings,i,airSignature&0x2000);
+                            cache.airSignatures[i]=airSignature;
                         }
                         }
                         const Uint16 signature=mask | ((open && cell.building==NOGBID && (terrain&1))?0x1000:0)
                             | ((open && cell.building==NOGBID && (terrain&2))?0x2000:0)
                             | ((open && cell.building!=NOGBID)?0x4000:0);
-                        const Uint16 old=signatures[i];
+                        const Uint16 old=cache.signatures[i];
                         if (rebuild || old!=signature) {
-                            base[0][i]=(signature&0x1000)?GRADIENT_UNREACHABLE:GRADIENT_FORBIDDEN;
-                            base[1][i]=(signature&0x2000)?GRADIENT_UNREACHABLE:GRADIENT_FORBIDDEN;
+                            cache.base[0][i]=(signature&0x1000)?GRADIENT_UNREACHABLE:GRADIENT_FORBIDDEN;
+                            cache.base[1][i]=(signature&0x2000)?GRADIENT_UNREACHABLE:GRADIENT_FORBIDDEN;
                             for (unsigned changed=(old^signature)&AllMaterials; changed; changed&=changed-1) {
                                 const unsigned bit=std::countr_zero(changed);
-                                setSeedBit(goals[bit],i,mask&(1u<<bit));
+                                setSeedBit(cache.goals[bit],i,mask&(1u<<bit));
                             }
-                            setSeedBit(buildings,i,signature&0x4000);
-                            signatures[i]=signature;
+                            setSeedBit(cache.buildings,i,signature&0x4000);
+                            cache.signatures[i]=signature;
                         }
                     }
                     if (areasChanged) {
                         const Uint32 mask=view.areas[i].forbidden;
-                        for (Uint32 changed=forbiddenMasks[i]^mask; changed; changed&=changed-1) {
+                        for (Uint32 changed=cache.forbiddenMasks[i]^mask; changed; changed&=changed-1) {
                             const unsigned bit=std::countr_zero(changed);
-                            if (bit<Team::MAX_COUNT) setSeedBit(forbidden[bit],i,mask&(Uint32(1)<<bit));
+                            if (bit<Team::MAX_COUNT) setSeedBit(cache.forbidden[bit],i,mask&(Uint32(1)<<bit));
                         }
-                        forbiddenMasks[i]=mask;
+                        cache.forbiddenMasks[i]=mask;
                     }
                 }
             });
         }
-        };
-        if (airSignatures.empty()) refresh.template operator()<false>();
-        else refresh.template operator()<true>();
-        for (size_t component=0; component<4; ++component) stamps[component]=*current[component];
+        for (size_t component=0; component<4; ++component) cache.stamps[component]=*current[component];
     } catch (const std::bad_alloc&) {
         // Allocation failure only disables this optional optimization.
-        const size_t limit=budget; *this=MaterialSeedCache{}; budget=limit; disabled=true;
+        const size_t limit=cache.budget; cache=MaterialSeedCache{}; cache.budget=limit; cache.disabled=true;
         return false;
     }
-    std::memcpy(output,base[swim==AIR_MOVEMENT_CLASS?2:swim>0].data(),cells*sizeof(*output));
-    if (suppliers) visitSeedBits(swim==AIR_MOVEMENT_CLASS?airBuildings:buildings,[&](size_t i) {
+    std::memcpy(output,cache.base[(Air && swim==AIR_MOVEMENT_CLASS)?2:swim>0].data(),cells*sizeof(*output));
+    if (suppliers) visitSeedBits((Air && swim==AIR_MOVEMENT_CLASS)?cache.airBuildings:cache.buildings,[&](size_t i) {
         const unsigned id=unsigned(view.occupancy[i].building)-unsigned(team)*Building::MAX_COUNT;
-        if (id<Building::MAX_COUNT && (swim!=AIR_MOVEMENT_CLASS || suppliers[id]!=GRADIENT_FORBIDDEN)) output[i]=suppliers[id];
+        if (id<Building::MAX_COUNT && ((!Air || swim!=AIR_MOVEMENT_CLASS) || suppliers[id]!=GRADIENT_FORBIDDEN)) output[i]=suppliers[id];
     });
     const Uint32 mask=Uint32(1)<<team;
-    visitSeedBits(swim==AIR_MOVEMENT_CLASS?airGoals[material]:goals[material],[&](size_t i) {
+    visitSeedBits((Air && swim==AIR_MOVEMENT_CLASS)?cache.airGoals[material]:cache.goals[material],[&](size_t i) {
         if (!view.resourceProperties(view.resources[i].resource.type).visibleToHarvest || (snapshot.visibility->visible[i]&mask))
             output[i]=GRADIENT_AT_GOAL;
     });
-    if(swim!=AIR_MOVEMENT_CLASS)
-        visitSeedBits(forbidden[team],[&](size_t i) { output[i]=GRADIENT_FORBIDDEN; });
+    if (!Air || swim!=AIR_MOVEMENT_CLASS)
+        visitSeedBits(cache.forbidden[team],[&](size_t i) { output[i]=GRADIENT_FORBIDDEN; });
     return true;
+}
+} // namespace
+
+bool MaterialSeedCache::trySeed(const SimulationSnapshot::Handle& snapshot, int team, int material,
+    int swim, Uint16* output, const Uint16* suppliers)
+{
+    if (swim==WATER_ONLY_CLASS) return false;
+    const bool rebuild=world!=snapshot.worldIdentity || width!=snapshot.width || height!=snapshot.height
+        || terrainRegistry!=snapshot.terrain->registry || resourceRegistry!=snapshot.catalogs->resources;
+    // A warm air template remains coherent on ground requests. A new world
+    // starts ground-only again until its first actual air consumer.
+    if (swim==AIR_MOVEMENT_CLASS || (!rebuild && !airSignatures.empty()))
+        return seedCachedMaterials<true>(*this,snapshot,team,material,swim,output,suppliers,rebuild);
+    return seedCachedMaterials<false>(*this,snapshot,team,material,swim,output,suppliers,rebuild);
 }
 
 void boxSum(Uint16* grid, int w, int h, CrowdingScratch& scratch)
