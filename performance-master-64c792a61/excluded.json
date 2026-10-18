@@ -1,0 +1,98 @@
+[
+  {
+    "path": "pr1194-performance/verify-all/islands-5p/0/master-1/game.replay.checksums.gz",
+    "reason": "verbose component stream; raw SHA256 comparison retained in verify-all/measurements.jsonl"
+  },
+  {
+    "path": "pr1194-performance/verify-all/islands-5p/0/master-8/game.replay.checksums.gz",
+    "reason": "verbose component stream; raw SHA256 comparison retained in verify-all/measurements.jsonl"
+  },
+  {
+    "path": "pr1194-performance/verify-all/islands-5p/0/pr-1/game.replay.checksums.gz",
+    "reason": "verbose component stream; raw SHA256 comparison retained in verify-all/measurements.jsonl"
+  },
+  {
+    "path": "pr1194-performance/verify-all/islands-5p/0/pr-8/game.replay.checksums.gz",
+    "reason": "verbose component stream; raw SHA256 comparison retained in verify-all/measurements.jsonl"
+  },
+  {
+    "path": "pr1194-performance/verify-all/large-11p/0/master-1/game.replay.checksums.gz",
+    "reason": "verbose component stream; raw SHA256 comparison retained in verify-all/measurements.jsonl"
+  },
+  {
+    "path": "pr1194-performance/verify-all/large-11p/0/master-8/game.replay.checksums.gz",
+    "reason": "verbose component stream; raw SHA256 comparison retained in verify-all/measurements.jsonl"
+  },
+  {
+    "path": "pr1194-performance/verify-all/large-11p/0/pr-1/game.replay.checksums.gz",
+    "reason": "verbose component stream; raw SHA256 comparison retained in verify-all/measurements.jsonl"
+  },
+  {
+    "path": "pr1194-performance/verify-all/large-11p/0/pr-8/game.replay.checksums.gz",
+    "reason": "verbose component stream; raw SHA256 comparison retained in verify-all/measurements.jsonl"
+  },
+  {
+    "path": "pr1194-performance/verify-all/mixed-4p/0/master-1/game.replay.checksums.gz",
+    "reason": "verbose component stream; raw SHA256 comparison retained in verify-all/measurements.jsonl"
+  },
+  {
+    "path": "pr1194-performance/verify-all/mixed-4p/0/master-8/game.replay.checksums.gz",
+    "reason": "verbose component stream; raw SHA256 comparison retained in verify-all/measurements.jsonl"
+  },
+  {
+    "path": "pr1194-performance/verify-all/mixed-4p/0/pr-1/game.replay.checksums.gz",
+    "reason": "verbose component stream; raw SHA256 comparison retained in verify-all/measurements.jsonl"
+  },
+  {
+    "path": "pr1194-performance/verify-all/mixed-4p/0/pr-8/game.replay.checksums.gz",
+    "reason": "verbose component stream; raw SHA256 comparison retained in verify-all/measurements.jsonl"
+  },
+  {
+    "path": "pr1194-performance/verify-all/playground-12k/0/master-1/game.replay.checksums.gz",
+    "reason": "verbose component stream; raw SHA256 comparison retained in verify-all/measurements.jsonl"
+  },
+  {
+    "path": "pr1194-performance/verify-all/playground-12k/0/master-8/game.replay.checksums.gz",
+    "reason": "verbose component stream; raw SHA256 comparison retained in verify-all/measurements.jsonl"
+  },
+  {
+    "path": "pr1194-performance/verify-all/playground-12k/0/pr-1/game.replay.checksums.gz",
+    "reason": "verbose component stream; raw SHA256 comparison retained in verify-all/measurements.jsonl"
+  },
+  {
+    "path": "pr1194-performance/verify-all/playground-12k/0/pr-8/game.replay.checksums.gz",
+    "reason": "verbose component stream; raw SHA256 comparison retained in verify-all/measurements.jsonl"
+  },
+  {
+    "path": "pr1194-performance/verify-all/playground-24k/0/master-1/game.replay.checksums.gz",
+    "reason": "verbose component stream; raw SHA256 comparison retained in verify-all/measurements.jsonl"
+  },
+  {
+    "path": "pr1194-performance/verify-all/playground-24k/0/master-8/game.replay.checksums.gz",
+    "reason": "verbose component stream; raw SHA256 comparison retained in verify-all/measurements.jsonl"
+  },
+  {
+    "path": "pr1194-performance/verify-all/playground-24k/0/pr-1/game.replay.checksums.gz",
+    "reason": "verbose component stream; raw SHA256 comparison retained in verify-all/measurements.jsonl"
+  },
+  {
+    "path": "pr1194-performance/verify-all/playground-24k/0/pr-8/game.replay.checksums.gz",
+    "reason": "verbose component stream; raw SHA256 comparison retained in verify-all/measurements.jsonl"
+  },
+  {
+    "path": "pr1194-performance/verify-all/small-2p/0/master-1/game.replay.checksums.gz",
+    "reason": "verbose component stream; raw SHA256 comparison retained in verify-all/measurements.jsonl"
+  },
+  {
+    "path": "pr1194-performance/verify-all/small-2p/0/master-8/game.replay.checksums.gz",
+    "reason": "verbose component stream; raw SHA256 comparison retained in verify-all/measurements.jsonl"
+  },
+  {
+    "path": "pr1194-performance/verify-all/small-2p/0/pr-1/game.replay.checksums.gz",
+    "reason": "verbose component stream; raw SHA256 comparison retained in verify-all/measurements.jsonl"
+  },
+  {
+    "path": "pr1194-performance/verify-all/small-2p/0/pr-8/game.replay.checksums.gz",
+    "reason": "verbose component stream; raw SHA256 comparison retained in verify-all/measurements.jsonl"
+  }
+]
