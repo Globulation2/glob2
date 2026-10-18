@@ -459,7 +459,9 @@ checksum adapter remains available for diagnostic fixtures.
   errors survive executor batch retirement and surface at save/publication.
 - Material/market (including consumer-specific supply), guard/clear and forbidden
   fields publish complete immutable generations. A cold read enrolls one deterministic request and returns
-  `Pending`; absence never proves a destination inaccessible. The owner keeps
+  `Pending`; cache absence never proves a destination inaccessible.
+  An authoritative zero natural-source count returns a shared unreachable field
+  immediately and skips periodic natural-material work. The owner keeps
   serving an older field while a refresh waits. It validates proposed
   steps against current occupancy, forbidden paint and movement capabilities.
 - Building routing retains its existing lazy implementation: cold fields initialize
@@ -470,8 +472,17 @@ checksum adapter remains available for diagnostic fixtures.
   and save completion retain their previous behavior. The building refresh queue
   retains its 64-request limit; overflow serves the oldest request synchronously.
   Material and area demand fields share one FIFO admission per tick and the
-  configured delay; queue waiting precedes that delay. Soft dirtiness coalesces a later refresh without cancelling
-  an admitted result; destination identity rejects reconfigured consumers.
+  configured delay; queue waiting precedes that delay. This applies to edits of
+  already-used clearing, guard and forbidden areas as well as cold demand. Zone
+  membership changes immediately; replacement guidance publishes later. Requests
+  for a destination already queued or admitted coalesce into its existing ticket.
+  Edits before admission enter its captured snapshot; edits after capture require
+  a subsequent refresh and never restart its deadline. The configured delay is
+  therefore not a maximum response time from the latest edit. Soft dirtiness
+  preserves later refresh demand; destination identity rejects reconfigured consumers.
+  Consumer-specific material fields also refresh through this queue on stock or
+  topology changes and at their existing 128-tick age, serving the previous field
+  while replacement work waits.
 - Units retain targets, activities and reservations through Pending and wait with
   the existing zero-displacement movement state on their normal decision cadence.
   Hunger, health and local combat/adjacent interactions continue. This introduces

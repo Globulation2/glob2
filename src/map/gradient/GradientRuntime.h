@@ -101,6 +101,8 @@ struct GradientRuntime
 	bool supplierLocationsDirty = true;
 	std::unordered_map<std::size_t, std::vector<std::uint16_t>> overlaySupplierLocations;
 	ResourceSeedCache resourceSeeds;
+	// Shared immediate negative answer when global natural-source counts are zero.
+	std::vector<Uint16> absentMaterialField;
     std::shared_ptr<gradient_kernel::GradientDeviceService> deviceService;
     std::shared_ptr<gradient_kernel::BackendSession> backendSession;
     void shareBackendSession()

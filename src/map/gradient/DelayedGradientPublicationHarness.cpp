@@ -141,6 +141,7 @@ TEST_CASE("cold material and area fields publish identical generations with one 
         map.configureCompute(participants);
         map.configureGradientPipeline(participants-1,3);
         map.setResourceByIndex(20,20,WHEAT,1);
+        map.setResourceByIndex(21,21,WOOD,1);
         map.addGuardArea(22,22,0);
         map.addClearArea(20,20,0);
         map.addForbidden(24,24,0);
@@ -177,8 +178,8 @@ TEST_CASE("cold material and area fields publish identical generations with one 
         }
         const auto ready=fields();
         for (const auto* field : ready) REQUIRE(field!=nullptr);
-        // No source is a completed field, distinct from the initial nullptr.
-        CHECK(ready[1][map.coordToIndex(16,16)]==GRADIENT_UNREACHABLE);
+        // Both source-bearing materials must publish complete guidance.
+        CHECK(ready[1][map.coordToIndex(21,21)]==GRADIENT_AT_GOAL);
         // Drain outstanding private work before the audit's lifetime ends.
         map.finishGradientPipeline();
         const auto counts=audit.totals();

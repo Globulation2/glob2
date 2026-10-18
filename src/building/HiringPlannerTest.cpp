@@ -57,7 +57,7 @@ TEST_SUITE("HiringPlanner")
         building->updateCallLists();
         worker->carriedMaterial=WHEAT;
         worker->hungriness=0;
-        glob2test::awaitBuildingGradient(game,building,worker->swimClass(),BuildingRoute::Footprint);
+        game.map.prepareBuildingGradient(building,worker->swimClass(),BuildingRoute::Footprint);
         const auto slot=building->routeSlot(worker->swimClass(),BuildingRoute::Footprint);
         auto* search=building->globalGradientSearch[slot].get();
         REQUIRE(search);
@@ -82,7 +82,7 @@ TEST_SUITE("HiringPlanner")
         CHECK(map.checkSum(true)==before); // Derived worker progress is not world state.
         const int preparedDepth=search->settledCost();
         int distance=-1;
-        REQUIRE(map.queryBuildingDistance(building,worker->swimClass(),worker->posX,worker->posY,&distance,BuildingRoute::Footprint)==RouteResult::Reachable);
+        REQUIRE(map.buildingAvailable(building,worker->swimClass(),worker->posX,worker->posY,&distance,BuildingRoute::Footprint));
         CHECK(search->settledCost()==preparedDepth);
         CHECK(search->requiredCost()>initialDemand);
     }

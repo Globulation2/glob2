@@ -46,17 +46,17 @@ class GradientPipeline
 		std::uint16_t **slot;
 		const std::uint16_t *data;
 		unsigned remaining;
-        bool superseded;
-    };
-    struct RestoredSnapshot
+		bool superseded;
+	};
+	struct RestoredSnapshot
 	{
 		std::uint16_t **slot;
 		int swim;
 		unsigned remaining;
 		bool superseded;
-        std::unique_ptr<std::uint16_t[]> data;
-    };
-    using Work = std::function<void(Job &, GradientWorkspace &)>;
+		std::unique_ptr<std::uint16_t[]> data;
+	};
+	using Work = std::function<void(Job &, GradientWorkspace &)>;
 	using AsyncWork = std::function<std::shared_ptr<gradient_kernel::OwnedGradientField>(
 		Job &, gradient_kernel::PlanDecision)>;
 	std::function<void(std::uint16_t **)> onPublished;
@@ -108,7 +108,7 @@ class GradientPipeline
 		{
 			if (job.seed)
 				job.seed(job);
-            self.work(job, scratch.propagation);
+			self.work(job, scratch.propagation);
 		}
 		catch (...)
 		{
@@ -283,7 +283,7 @@ class GradientPipeline
 		finish({JoinReason::Save, ComputeTelemetry::NoTick});
 		for (const auto &job : pending)
 			visitor(PendingSnapshot{job->slot, job->data.get(), unsigned(job->due - tick),
-                                    job->superseded});
+									job->superseded});
 	}
 	void restoreCompleted(RestoredSnapshot value)
 	{
@@ -297,8 +297,8 @@ class GradientPipeline
 		job->due = tick + value.remaining;
 		job->superseded = value.superseded;
 		job->done = true;
-        job->data = std::move(value.data);
-        pending.push_back(std::move(job));
+		job->data = std::move(value.data);
+		pending.push_back(std::move(job));
 	}
 	void advance()
 	{
@@ -315,11 +315,11 @@ class GradientPipeline
 				*job.slot = job.data.release();
 				job.data.reset(old);
                 if (onPublished) onPublished(job.slot);
-                ++metrics.published;
-            }
-            else
+				++metrics.published;
+			}
+			else
 				++metrics.discarded;
-            spare.push_back(std::move(pending.front()));
+			spare.push_back(std::move(pending.front()));
 			pending.pop_front();
 		}
 	}

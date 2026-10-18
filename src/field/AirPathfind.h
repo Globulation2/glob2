@@ -3,7 +3,6 @@
 
 #include "PowerOfTwo.h"
 #include "GradientConstants.h"
-#include "map/gradient/GradientExecutionAudit.h"
 #include <algorithm>
 #include <array>
 #include <cstdlib>
@@ -37,7 +36,6 @@ public:
         : width(w),height(h),passable(access),entryCost(cost),direction(orientation)
     {
         if (!enabled) return;
-        GradientExecutionAudit::record(GradientExecutionAudit::Kind::AirSearch);
         distance.assign(w*h,unreachable); settled.assign(w*h,false);
         const auto seed = [&](int sx,int sy) {
             const int index=sx*h+sy;
@@ -69,7 +67,6 @@ public:
         unsigned best=unreachable;
         for(unsigned i=0;i<goalCount;++i) if(settled[goals[i]]) best=std::min(best,distance[goals[i]]);
         if(best!=unreachable || !goalCount) return best;
-        GradientExecutionAudit::record(GradientExecutionAudit::Kind::AirSearch);
         while(!frontier.empty())
         {
             const auto [cost,index]=frontier.top(); frontier.pop();
@@ -117,7 +114,6 @@ bool airRoute(int width, int height, int x, int y, int targetX, int targetY,
         return approach ? distance(px,py) == 1 : px == targetX && py == targetY;
     };
     if (goal(x,y)) return true;
-    GradientExecutionAudit::record(GradientExecutionAudit::Kind::ImmediateAirSearch);
     using Entry = std::tuple<unsigned,int,unsigned>;
     std::priority_queue<Entry,std::vector<Entry>,std::greater<Entry>> frontier;
     nodes[start] = Node(x,y,0,0,0,0,false);

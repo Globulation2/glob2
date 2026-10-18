@@ -1,7 +1,6 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 // Exercise clearing arbitration and idle activity across a real game save/load.
 #include "EngineFixtures.h"
-#include "GradientFixture.h"
 #include <string>
 #include "GlobalContainer.h"
 #include "GameGUI.h"
@@ -176,9 +175,9 @@ TEST_SUITE("UnitContinuation")
                 world.team->addToStaticAbilitiesLists(service);
                 service->update();
                 // This case tests aborting an existing task into an available
-                // service. Cold Pending/resume behavior is covered separately.
+                // service. Building routes initialize synchronously.
                 if (!unit->performance[FLY])
-                    glob2test::awaitBuildingGradient(world.game,service,unit->swimClass());
+                    world.game.map.prepareBuildingGradient(service,unit->swimClass());
                 REQUIRE((medical==Unit::MED_HUNGRY?world.team->findNearestFood(unit):world.team->findNearestHeal(unit))==service);
             }
             unit->medical=Unit::Medical(medical);

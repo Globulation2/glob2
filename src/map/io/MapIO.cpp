@@ -1246,20 +1246,32 @@ void Map::loadRuntimeState(GAGCore::InputStream *stream, Sint32 versionMinor)
 		configureGradientPipeline(2, delay);
 		for (unsigned index=0; index<count; ++index) {
 			stream->readEnterSection(index);
-			const unsigned destination=versionMinor>=FILE_FORMAT_VERSION_DELAYED_GRADIENTS ? stream->readUint32("destination") : stream->readUint16("destination");
-            Uint16** restoredSlot=versionMinor>=FILE_FORMAT_VERSION_DELAYED_GRADIENTS ? gradientDestination(destination) : nullptr;
-			const unsigned sw=destination%savedSwimClasses;
-			const unsigned marketBase=Team::MAX_COUNT*(MaterialSlotCount+2)*savedSwimClasses;
-			const bool market=destination>=marketBase;
-			if (versionMinor<FILE_FORMAT_VERSION_DELAYED_GRADIENTS && market && (versionMinor<FILE_FORMAT_VERSION_MARKET_GRADIENTS || !marketsV2Enabled())) throw std::runtime_error("Invalid saved gradient destination");
-			const unsigned encoded=market ? destination-marketBase : destination;
-			const unsigned kinds=market ? MaterialSlotCount : MaterialSlotCount+2;
-			const unsigned kind=(encoded/savedSwimClasses)%kinds;
-			const unsigned team=encoded/(savedSwimClasses*kinds);
-			if (versionMinor<FILE_FORMAT_VERSION_DELAYED_GRADIENTS && team>=static_cast<unsigned>(game->teamsCount())) throw std::runtime_error("Invalid saved gradient team");
-			auto *slot=restoredSlot ? restoredSlot : market ? &marketMaterialGradients[team][kind][sw] : kind<MaterialSlotCount ? &materialGradients[team][kind][sw]
-				: kind==MaterialSlotCount ? &guardAreasGradient[team][sw] : &clearAreasGradient[team][sw];
-			if (restoredSlot) slot=restoredSlot;
+            Uint16** slot=nullptr;
+            unsigned sw=0;
+            if (versionMinor>=FILE_FORMAT_VERSION_DELAYED_GRADIENTS) {
+                // New saves address fixed fields and stable cache entries in
+                // one namespace. Restored outputs are already complete: their
+                // swim class is not used to seed or propagate work again.
+                slot=gradientDestination(stream->readUint32("destination"));
+            } else {
+                // Keep the historical packed destination layout and validation
+                // separate; old saves precede forbidden and consumer tickets.
+                const unsigned destination=stream->readUint16("destination");
+                sw=destination%savedSwimClasses;
+                const unsigned marketBase=Team::MAX_COUNT*(MaterialSlotCount+2)*savedSwimClasses;
+                const bool market=destination>=marketBase;
+                if (market && (versionMinor<FILE_FORMAT_VERSION_MARKET_GRADIENTS || !marketsV2Enabled()))
+                    throw std::runtime_error("Invalid saved gradient destination");
+                const unsigned encoded=market ? destination-marketBase : destination;
+                const unsigned kinds=market ? MaterialSlotCount : MaterialSlotCount+2;
+                const unsigned kind=(encoded/savedSwimClasses)%kinds;
+                const unsigned team=encoded/(savedSwimClasses*kinds);
+                if (team>=static_cast<unsigned>(game->teamsCount()))
+                    throw std::runtime_error("Invalid saved gradient team");
+                slot=market ? &marketMaterialGradients[team][kind][sw]
+                    : kind<MaterialSlotCount ? &materialGradients[team][kind][sw]
+                    : kind==MaterialSlotCount ? &guardAreasGradient[team][sw] : &clearAreasGradient[team][sw];
+            }
 			const unsigned remaining=stream->readUint8("remaining");
 			const bool superseded=loadFlag(stream,"superseded");
 			Uint16 *field=nullptr;

@@ -43,18 +43,13 @@ void configure(glob2test::HeadlessGame& world)
     for (int t=0;t<world.game.teamsCount();++t) world.game.teams[t]->race.setCatalog(catalog);
 }
 
-// After normal ticks have admitted statistics and other deferred jobs, route
-// preparation must advance the complete world, not only the gradient counters.
-// Call this before adding the unit whose exact position/clocks a test controls.
-void awaitLiveBuildingGradient(Game& game,Building* building,int type,int team)
+// Initialize the synchronous building route before adding a unit whose exact
+// position and clocks the fixture controls.
+void prepareUnitBuildingGradient(Game& game,Building* building,int type,int team)
 {
     const auto* definition=game.teams[team]->race.getUnitType(type,0);
     const int swim=Map::swimClass(definition->performance[WALK],definition->performance[SWIM]);
-    for(unsigned tick=0;tick<64;++tick) {
-        if(game.map.requestBuildingField(building,swim,BuildingRoute::Footprint)==FieldReadiness::Ready) return;
-        game.step(0);
-    }
-    FAIL("expected complete service route within the fixture publication horizon");
+    game.map.prepareBuildingGradient(building,swim,BuildingRoute::Footprint);
 }
 
 // The steering fixtures combine existing guard/exploration policies with
@@ -1098,7 +1093,7 @@ TEST_SUITE("UnitCustomization")
             inn->setMaterial(WHEAT, 10); inn->setMaterial(CHERRY, 10); inn->updateCallLists();
             world.addUnit(WORKER,24,20,0); world.addUnit(WORKER,24,22,1);
             for (int tick=0;tick<160;++tick) world.game.step(0);
-            awaitLiveBuildingGradient(world.game,inn,WORKER,0);
+            prepareUnitBuildingGradient(world.game,inn,WORKER,0);
             auto* unit=world.addUnit(WORKER,6,8); REQUIRE(unit); REQUIRE(inn->canConvertUnit());
             world.game.teams[1]->sharedVisionFood|=world.team->me;
             world.game.teams[1]->allies&=~world.team->me;
@@ -1412,7 +1407,7 @@ TEST_SUITE("UnitCustomization")
             enemyInn->setMaterial(WHEAT, 10); enemyInn->setMaterial(CHERRY, 10);
             enemyInn->updateCallLists();
             for (int tick=0;tick<160;++tick) world.game.step(0);
-            awaitLiveBuildingGradient(world.game,enemyInn,*world.game.unitCatalog().find("ablation-0"),sourceTeam);
+            prepareUnitBuildingGradient(world.game,enemyInn,*world.game.unitCatalog().find("ablation-0"),sourceTeam);
             auto* unit=world.addUnit(*world.game.unitCatalog().find("ablation-0"),6,8,sourceTeam);
             REQUIRE(unit); REQUIRE(enemyInn->canConvertUnit());
             destination->sharedVisionFood |= source->me;
@@ -2333,7 +2328,7 @@ TEST_SUITE("UnitCustomization")
             unit->subscriptionSuccess(inn,false,false,UnitJobPurpose::Transport);
             inn->unitsWorking.push_back(unit); inn->updateCallLists();
             glob2test::awaitGradient(game,[&] { return map.getMaterialGradient(0,MaterialId::Algae,WATER_ONLY_CLASS); });
-            glob2test::awaitBuildingGradient(game,inn,WATER_ONLY_CLASS);
+            game.map.prepareBuildingGradient(inn,WATER_ONLY_CLASS);
             REQUIRE(map.materialAvailable(0,MaterialId::Algae,WATER_ONLY_CLASS,5,y));
             REQUIRE(map.buildingGradient(inn,WATER_ONLY_CLASS));
             const int slot=inn->routeSlot(WATER_ONLY_CLASS,BuildingRoute::Footprint);
@@ -2509,7 +2504,7 @@ TEST_SUITE("UnitCustomization")
                 unit->subscriptionSuccess(inn,false,false,UnitJobPurpose::Transport);
                 inn->unitsWorking.push_back(unit); inn->updateCallLists();
                 glob2test::awaitGradient(world.game,[&] { return world.game.map.getMaterialGradientSlot(world.team->teamNumber,material,unit->swimClass()); });
-                glob2test::awaitBuildingGradient(world.game,inn,unit->swimClass());
+                world.game.map.prepareBuildingGradient(inn,unit->swimClass());
                 REQUIRE(world.game.map.materialAvailable(world.team->teamNumber,static_cast<MaterialId>(material),unit->swimClass(),unit->posX,unit->posY));
                 REQUIRE(world.game.map.buildingGradient(inn,unit->swimClass()));
                 if(waterOnly) REQUIRE(unit->swimClass()==WATER_ONLY_CLASS);
@@ -2634,7 +2629,7 @@ TEST_SUITE("UnitCustomization")
             REQUIRE(ownInn); REQUIRE(enemyInn);
             enemyInn->setMaterial(WHEAT, 10); enemyInn->setMaterial(CHERRY, 10); enemyInn->updateCallLists();
             for(int tick=0;tick<160;++tick) world.game.step(0);
-            awaitLiveBuildingGradient(world.game,enemyInn,*world.game.unitCatalog().find("ablation-0"),0);
+            prepareUnitBuildingGradient(world.game,enemyInn,*world.game.unitCatalog().find("ablation-0"),0);
             auto* unit=world.addUnit(*world.game.unitCatalog().find("ablation-0"),6,8); REQUIRE(unit);
             world.game.teams[1]->sharedVisionFood|=world.team->me; world.game.teams[1]->allies&=~world.team->me;
             unit->receiveCarriedMaterial(WOOD,{}); unit->receiveCarriedMaterial(STONE,{1,2});

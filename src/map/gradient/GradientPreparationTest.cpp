@@ -955,7 +955,8 @@ TEST_CASE("unused catalog definitions allocate no material gradients and schedul
         for (unsigned material=0;material<MaterialCount;++material)
             for (int swim=0;swim<SWIM_CLASS_COUNT;++swim)
             {
-                REQUIRE(map->getMaterialGradientSlot(0,material,swim)==nullptr);
+                const auto* field=map->getMaterialGradientSlot(0,material,swim);
+                CHECK((field==nullptr)==map->hasMaterialSourceSlot(material));
                 CHECK(map->materialGradients[0][material][swim]==nullptr);
             }
     }
@@ -1635,6 +1636,7 @@ TEST_CASE("pending escape guidance preserves a material assignment without consu
     glob2test::HeadlessGlobals globals;
     glob2test::HeadlessGame world({.wDec=5,.hDec=5,.teams=1,.discovered=true,.clearImmobile=true,.header=true});
     auto& map=world.game.map;
+    map.setResourceByIndex(12,12,WHEAT,1);
     REQUIRE(map.materialGradients[0][WHEAT][0]==nullptr);
     map.materialGradients[0][WHEAT][0]=new Uint16[map.size];
     std::fill_n(map.materialGradients[0][WHEAT][0],map.size,GRADIENT_FORBIDDEN);
@@ -1696,7 +1698,7 @@ TEST_CASE("material LRU retains a published result until its waiting reader obse
     }
 }
 
-TEST_CASE("depleting the last natural source eventually publishes completed unreachable guidance" * doctest::test_suite("GradientPreparation"))
+TEST_CASE("absent natural sources return shared negative guidance without enrolling rebuilds" * doctest::test_suite("GradientPreparation"))
 {
     glob2test::HeadlessGlobals globals;
     for (unsigned participants:{1u,2u,4u}) {
@@ -1718,20 +1720,33 @@ TEST_CASE("depleting the last natural source eventually publishes completed unre
         REQUIRE(map.lookupMaterialGradientSlot(0,WHEAT,0)[map.coordToIndex(8,8)]==GRADIENT_AT_GOAL);
         map.replaceResource(8,8,Resource{});
         REQUIRE_FALSE(map.hasMaterialSourceSlot(WHEAT));
-        // A refresh is delayed even though its completed answer has no source.
-        // Ready stale data is distinct from a cold Pending miss.
-        for (unsigned i=1;i<3;++i) {
-            boundary();
-            CHECK(map.queryMaterialDistance(0,WHEAT,0,8,8)==RouteResult::Reachable);
-        }
-        for (unsigned i=0;i<32 && map.queryMaterialDistance(0,WHEAT,0,8,8)!=RouteResult::Unreachable;++i) boundary();
+        // Global source counts are an authoritative cheap negative answer, not
+        // a cold cache miss. Depletion retains master's immediate behavior.
         REQUIRE(map.queryMaterialDistance(0,WHEAT,0,8,8)==RouteResult::Unreachable);
-        const auto* field=map.lookupMaterialGradientSlot(0,WHEAT,0);
+        const auto* field=map.getMaterialGradientSlot(0,WHEAT,0);
         REQUIRE(field!=nullptr);
         CHECK(std::all_of(field,field+map.size,[](Uint16 value){return value==GRADIENT_UNREACHABLE;}));
+        // Neither repeated queries across movement classes nor periodic rounds
+        // may turn absent materials into an endless stream of full-map work.
+        for (unsigned i=0;i<32;++i) boundary();
+        const auto jobs=map.gradientPipelineStatus().jobs;
+        for (unsigned i=0;i<32;++i) {
+            for (int swim=0;swim<SWIM_CLASS_COUNT;++swim)
+                CHECK(map.getMaterialGradientSlot(0,WHEAT,swim)==field);
+            boundary();
+        }
+        CHECK(map.gradientPipelineStatus().jobs==jobs);
+        CHECK(map.gradientRuntime->fieldRequests.empty());
         EntityRandom random; int dx=0,dy=0; bool stopWork=false;
         CHECK(map.queryMaterialStep(random,0,WHEAT,0,8,8,&dx,&dy,&stopWork,nullptr)==StepResult::Blocked);
         CHECK(stopWork);
+        // Reintroducing a source resumes the ordinary delayed refresh schedule,
+        // including for a previously published generation retained at depletion.
+        map.setResourceByIndex(12,12,WHEAT,1);
+        REQUIRE(map.hasMaterialSourceSlot(WHEAT));
+        for (unsigned i=0;i<32 && map.getMaterialGradientSlot(0,WHEAT,0)[map.coordToIndex(12,12)]!=GRADIENT_AT_GOAL;++i)
+            boundary();
+        REQUIRE(map.getMaterialGradientSlot(0,WHEAT,0)[map.coordToIndex(12,12)]==GRADIENT_AT_GOAL);
     }
 }
 
@@ -1793,6 +1808,7 @@ TEST_CASE("blocked live guidance and removed material goals deduplicate delayed 
         CAPTURE(scenario);
         glob2test::HeadlessGame world({.wDec=5,.hDec=5,.teams=1,.discovered=true,.clearImmobile=true,.header=true});
         auto& map=world.game.map;
+        map.setResourceByIndex(20,20,WHEAT,1); // Keep a real source beyond the stale local goal.
         map.configureCompute(2); map.configureGradientPipeline(1,3);
         EntityRandom random; random.seed(42,54);
         int dx=0,dy=0; bool stopWork=false;
@@ -1903,6 +1919,7 @@ TEST_CASE("the version-152 checksum adapter excludes newly introduced publicatio
     glob2test::HeadlessGlobals globals;
     glob2test::HeadlessGame world({.wDec=5,.hDec=5,.teams=1,.discovered=true,.clearImmobile=true,.header=true});
     auto& map=world.game.map;
+    map.setResourceByIndex(12,12,WHEAT,1);
     const auto legacy=map.checkSum(true,false,true);
     const auto current=map.checkSum(true,false,false);
     REQUIRE(map.requestMaterialField(0,WHEAT,0)==FieldReadiness::Pending);

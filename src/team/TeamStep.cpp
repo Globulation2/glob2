@@ -187,10 +187,10 @@ namespace
 		if (b->globalGradient[swimClass] == NULL)
 			return false;
 		if (u->carriedMaterial >= 0)
-			return u->hasCarriedMaterial(resource) && (map->queryBuildingDistance(b, swimClass, u->posX, u->posY, cost, BuildingRoute::Footprint) == RouteResult::Reachable);
+			return u->hasCarriedMaterial(resource) && map->buildingAvailable(b, swimClass, u->posX, u->posY, cost, BuildingRoute::Footprint);
 		// Fetch and carry: the plain distances, as hiring uses them.
 		int toBuilding, toResource;
-		if ((map->queryBuildingDistance(b, swimClass, u->posX, u->posY, &toBuilding, BuildingRoute::Footprint) != RouteResult::Reachable)
+		if (!map->buildingAvailable(b, swimClass, u->posX, u->posY, &toBuilding, BuildingRoute::Footprint)
 			|| !map->materialAvailableSlot(b->owner->teamNumber, resource, swimClass, u->posX, u->posY, &toResource, b->fetchesFromMarkets(), b))
 			return false;
 		*cost = toBuilding + toResource;
@@ -214,7 +214,7 @@ namespace
 			*cost = 1 + (Sint32)sqrt(map->warpDistSquare(u->posX, u->posY, b->posX, b->posY));
 			return true;
 		}
-		return (map->queryBuildingDistance(b, u->swimClass(), u->posX, u->posY, cost, BuildingRoute::Footprint) == RouteResult::Reachable);
+		return map->buildingAvailable(b, u->swimClass(), u->posX, u->posY, cost, BuildingRoute::Footprint);
 	}
 
 	// Move `u`'s booking from one inn to the other; both keep their head count.

@@ -53,6 +53,15 @@ const Uint16 *Map::getMaterialGradientSlot(int teamNumber, int resourceType, int
 	// Workers may observe a published field but cannot enroll shared requests.
 	// The owner alone changes destinations and publishes at pipeline boundaries.
 	std::lock_guard<std::mutex> lock(materialGradientMutex);
+    // Source counts prove this answer without a route build. Preserve the
+    // shared negative field: missing natural materials must not enroll one
+    // full-map job per team/swim class on every refresh round. Supplier-backed
+    // and consumer-specific fields above still require their normal snapshots.
+    if (!withMarkets && !hasMaterialSourceSlot(resourceType)) {
+        auto& empty=gradientRuntime->absentMaterialField;
+        if (empty.size()!=size) empty.assign(size,GRADIENT_UNREACHABLE);
+        return empty.data();
+    }
     Uint16 *&gradient = withMarkets ? marketMaterialGradients[teamNumber][resourceType][swimClass] : materialGradients[teamNumber][resourceType][swimClass];
     if (!gradient && !game) { gradient=new Uint16[size]; updateMaterialGradient(teamNumber,resourceType,swimClass,withMarkets); }
     if (!gradient && !compute.insideJob())

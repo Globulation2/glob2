@@ -74,8 +74,10 @@ overrides of a saved game, including `--experiment`, `--rule` and
 
 Scheduled building fields retain the production depth predictor and lazy
 reader/hiring expansion. Their initialization, refresh and save behavior are
-unchanged. Material and area cold requests use FIFO admission and fixed
-publication deadlines. Format 169 saves that queued demand and completed
+unchanged. Material and area cold requests, recurring refreshes and zone-edit
+rebuilds use FIFO admission and fixed publication deadlines. Natural-material
+queries with authoritative zero source counts retain their immediate shared
+negative answer and skip periodic rebuilds. Format 169 saves that queued demand and completed
 unpublished outputs, preserving remaining deadlines and the save floor of 58.
 
 Format 143 saves the AI engine's completed pending orders, logical deadlines and

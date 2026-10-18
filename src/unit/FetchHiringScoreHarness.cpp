@@ -107,7 +107,7 @@ static void aUnitIsJudgedOnTheWalkToTheResource()
 	unit->attachedBuilding = NULL;
 	const int swimClass = unit->swimClass();
 
-	glob2test::awaitGradient(game, [&] { return game.map.buildingGradient(site,swimClass); });
+	game.map.buildingGradient(site,swimClass);
 	glob2test::awaitGradient(game, [&] { return game.map.getMaterialGradientSlot(0,WOOD,swimClass); });
 	int distBuilding = 0, distResource = 0;
 	require(game.map.buildingAvailable(site, swimClass, unit->posX, unit->posY, &distBuilding),
@@ -175,7 +175,7 @@ static void theScoreEstimatesTheWholeTrip()
 	unit->hungry = unit->trigHungry + 1000 * unit->race->hungriness;
 
 	const int swimClass = unit->swimClass();
-	glob2test::awaitGradient(game, [&] { return game.map.buildingGradient(site,swimClass); });
+	game.map.buildingGradient(site,swimClass);
 	glob2test::awaitGradient(game, [&] { return game.map.getMaterialGradientSlot(0,WOOD,swimClass); });
 	int distBuilding = 0, distResource = 0;
 	require(game.map.buildingAvailable(site, swimClass, unit->posX, unit->posY, &distBuilding),
@@ -211,7 +211,7 @@ TEST_SUITE("FetchHiringScore")
         auto* unit=world.addUnit(WORKER,6,8);
         REQUIRE(unit);
         unit->activity=Unit::ACT_RANDOM; unit->medical=Unit::MED_FREE;
-        glob2test::awaitGradient(world.game, [&] { return world.game.map.buildingGradient(inn,unit->swimClass()); });
+        world.game.map.buildingGradient(inn,unit->swimClass());
         glob2test::awaitGradient(world.game, [&] { return world.game.map.getMaterialGradientSlot(0,WHEAT,unit->swimClass()); });
         int buildingDistance=0,resourceDistance=0;
         REQUIRE(world.game.map.buildingAvailable(inn,unit->swimClass(),unit->posX,unit->posY,&buildingDistance));
@@ -298,7 +298,7 @@ TEST_SUITE("FetchHiringScore")
         glob2test::awaitGradient(world.game,[&] {
             return world.game.map.getMaterialGradientSlot(0,WHEAT,team->myUnits[3]->swimClass());
         });
-        glob2test::awaitBuildingGradient(world.game,inn,team->myUnits[3]->swimClass(),BuildingRoute::Footprint);
+        world.game.map.prepareBuildingGradient(inn,team->myUnits[3]->swimClass(),BuildingRoute::Footprint);
         // Eligibility scans retain population order; the ranked delivery
         // choice above independently proves that equal scores prefer low gid.
         CHECK(FetchHiringScoreHarness::candidates(inn) == std::vector<Unit*>{team->myUnits[Unit::MAX_COUNT-1], team->myUnits[3]});

@@ -78,8 +78,6 @@ public:
 	void receiveCargoPacket(int resource, WideMaterialPacket packet);
 	bool findAirGuardDestination(Sint32* x, Sint32* y);
 	bool findAirClearingDestination(const Building* zone, Sint32* x, Sint32* y, int* distance);
-	RouteResult queryAirGuardDestination(Sint32* x, Sint32* y);
-	RouteResult queryAirClearingDestination(const Building* zone, Sint32* x, Sint32* y, int* distance);
 	RouteResult queryMaterialDestination(int material, Sint32* x, Sint32* y, int* distance,
 		bool withMarkets=false, const Building* consumer=nullptr);
 	bool findMaterialDestination(int material, Sint32* x, Sint32* y, int* distance,

@@ -295,6 +295,9 @@ also be compiled directly with ThreadSanitizer without SDL.
 
 `BuildingGradientInvalidationHarness` exercises real resource, guard and clear
 fields, including cold publication and soft edits while an older snapshot is pending.
+Natural-material absence is covered separately: authoritative source counts return
+the shared negative field immediately, and absent/depleted materials must not
+enroll repeated full-map refresh jobs across movement classes.
 `DelayedGradientPublication` covers complete material/area fields, FIFO admission,
 and binary/text save continuation across
 one, two, four and eight compute participants. Their checkpoint with both

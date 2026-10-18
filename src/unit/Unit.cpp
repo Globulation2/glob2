@@ -848,10 +848,6 @@ bool Unit::findAirClearingDestination(const Building* zone,Sint32* x,Sint32* y,i
 	if (best==UINT_MAX) return false;
 	*x=bestX; *y=bestY; *distance=(best+GRADIENT_STEP-1)/GRADIENT_STEP; return true;
 }
-RouteResult Unit::queryAirClearingDestination(const Building* zone,Sint32* x,Sint32* y,int* distance)
-{
-    return findAirClearingDestination(zone,x,y,distance) ? RouteResult::Reachable : RouteResult::Unreachable;
-}
 
 bool Unit::findAirGuardDestination(Sint32* x,Sint32* y)
 {
@@ -866,8 +862,4 @@ bool Unit::findAirGuardDestination(Sint32* x,Sint32* y)
 		if (cost<best) { best=cost; *x=px; *y=py; }
 	}
 	return best!=UINT_MAX;
-}
-RouteResult Unit::queryAirGuardDestination(Sint32* x,Sint32* y)
-{
-    return findAirGuardDestination(x,y) ? RouteResult::Reachable : RouteResult::Unreachable;
 }

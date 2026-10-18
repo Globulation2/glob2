@@ -4,7 +4,6 @@
 #include "MapInternal.h"
 #include "Unit.h"
 #include "gradient/GradientRuntime.h"
-#include "gradient/GradientExecutionAudit.h"
 
 namespace
 {
@@ -59,7 +58,6 @@ struct EscapeProfile
 
 void buildEscapeField(const Map& map, const EscapeProfile& profile, SafetyField& field)
 {
-    GradientExecutionAudit::record(GradientExecutionAudit::Kind::TerrainSafety);
     const int width = map.getW(), height = map.getH();
     auto& costs = field.costs;
     costs.resize(size_t(width) * height);

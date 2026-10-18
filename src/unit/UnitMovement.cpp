@@ -313,9 +313,7 @@ void Unit::handleMovementAttackingAround()
 	if (movement == MOV_RANDOM_GROUND)
 	{
 		if (performance[FLY] && !attachedBuilding && !owner->map->isGuardArea(posX,posY,owner->me)) {
-			const auto result=queryAirGuardDestination(&targetX,&targetY);
-			if (result==RouteResult::Pending) { waitForGradient(); return; }
-			setValidTarget(result==RouteResult::Reachable);
+			setValidTarget(findAirGuardDestination(&targetX,&targetY));
 			movement=validTarget()?MOV_FLYING_TARGET:MOV_RANDOM_FLY;
 			return;
 		}
@@ -459,16 +457,17 @@ void Unit::handleMovementClearingResources()
 		}
 	if (performance[FLY]) {
 		int distance;
-		const auto result=queryAirClearingDestination(attachedBuilding,&targetX,&targetY,&distance);
-		if (result==RouteResult::Pending) { waitForGradient(); return; }
-		if (result==RouteResult::Reachable) {
+		if (findAirClearingDestination(attachedBuilding,&targetX,&targetY,&distance)) {
 			setValidTarget(true); movement=MOV_FLYING_TARGET;
 		} else { stopAttachedForBuilding(false); movement=MOV_RANDOM_FLY; }
 		return;
 	}
 	assert(attachedBuilding);
-	const auto route = findGradientDisplacement([&](int* pathDx, int* pathDy) { return map->queryBuildingStep(entityRandom, attachedBuilding, swimClass(), posX, posY, pathDx, pathDy, BuildingRoute::Clearing); });
-	if (route == StepResult::Pending || route == StepResult::AtGoal) { waitForGradient(); return; }
+	// Commit displacement only on success, including for synchronous routes.
+	const auto route = findGradientDisplacement([&](int* pathDx, int* pathDy) {
+		return map->pathfindBuilding(entityRandom, attachedBuilding, swimClass(), posX, posY,
+			pathDx, pathDy, BuildingRoute::Clearing) ? StepResult::Step : StepResult::Blocked;
+	});
 	if (route == StepResult::Step)
 	{
 		directionFromDxDy();
@@ -498,9 +497,7 @@ void Unit::handleMovementRandom()
 	else if (performance[FLY]) {
 		int distance;
 		const bool clearing=medical==MED_FREE && hasCapability(UnitRuntimeTraits::ClearIdle) && hasCapability(UnitRuntimeTraits::Clear) && performance[HARVEST];
-		const auto result=clearing ? queryAirClearingDestination(nullptr,&targetX,&targetY,&distance) : RouteResult::Unreachable;
-		if (result==RouteResult::Pending) { waitForGradient(); return; }
-		if (result==RouteResult::Reachable
+		if (clearing && findAirClearingDestination(nullptr,&targetX,&targetY,&distance)
 			&& distance<foodStepsLeft(trigHungry)) {
 			const int claimant=map->isClearingAreaClaimed(targetX,targetY,owner->teamNumber);
 			if (claimant!=NOGUID && claimant!=gid) {
@@ -606,11 +603,10 @@ void Unit::handleMovementGoingToFlagOrBuilding()
 	else
 	{
 		const auto result = findGradientDisplacement([&](int* pathDx, int* pathDy) {
-			return map->queryBuildingStep(entityRandom, targetBuilding, swimClass(), posX, posY, pathDx, pathDy,
-				activity == ACT_FLAG ? (jobPurpose == UnitJobPurpose::Clear ? BuildingRoute::Clearing : BuildingRoute::Combat) : BuildingRoute::Footprint);
+			return map->pathfindBuilding(entityRandom, targetBuilding, swimClass(), posX, posY, pathDx, pathDy,
+				activity == ACT_FLAG ? (jobPurpose == UnitJobPurpose::Clear ? BuildingRoute::Clearing : BuildingRoute::Combat) : BuildingRoute::Footprint) ? StepResult::Step : StepResult::Blocked;
 		});
-		if (result == StepResult::Pending || result == StepResult::AtGoal) waitForGradient();
-		else if (result == StepResult::Step) movement=MOV_GOING_DX_DY;
+		if (result == StepResult::Step) movement=MOV_GOING_DX_DY;
 		else { stopAttachedForBuilding(true); movement=MOV_RANDOM_GROUND; }
 	}
 }

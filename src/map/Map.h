@@ -895,8 +895,6 @@ public:
     bool takeHarvestMaterialSlot(int x,int y,int dx,int dy,int material,Uint32 teamMask) { return validMaterial(material) && takeHarvest(x,y,dx,dy,static_cast<MaterialId>(material),teamMask); }
 
 private:
-	//! Allocate/refresh and mark use, without exposing the possibly partial field.
-	bool prepareBuildingGradient(Building *building, int swimClass, BuildingRoute route = BuildingRoute::Automatic);
 	//! Read or move on a prepared field. Both settle their input cell first;
 	//! neither refreshes the field or changes its use timestamp.
 	Uint16 buildingGradientValue(Building *building, int swimClass, size_t cell, BuildingRoute route = BuildingRoute::Automatic) const;
@@ -1180,15 +1178,12 @@ public:
 	//! Idle escape toward non-damaging terrain using a lazily shared field.
 	//! Checks live occupancy at descent; returns false with zero direction if blocked.
 	bool pathfindTerrainSafety(Unit *unit);
-
-	// Result adapters preserve the existing immediate lazy building semantics.
-	FieldReadiness requestBuildingField(Building *building, int swimClass, BuildingRoute route = BuildingRoute::Automatic);
-	const Uint16 *lookupBuildingField(const Building *building, int swimClass, BuildingRoute route = BuildingRoute::Automatic) const;
-	RouteResult queryBuildingDistance(Building *building, int swimClass, int x, int y, int *dist, BuildingRoute route = BuildingRoute::Automatic);
-	StepResult queryBuildingStep(EntityRandom& random, Building *building, int swimClass, int x, int y, int *dx, int *dy, BuildingRoute route = BuildingRoute::Automatic);
+	//! Allocate/refresh and mark use without completing the lazy generation.
+	//! Warm fields retain their published guidance while a refresh is queued.
+	bool prepareBuildingGradient(Building *building, int swimClass, BuildingRoute route = BuildingRoute::Automatic);
 	//! Initialize a lazy field from the current map; point reads settle demand.
 	void updateGlobalGradient(Building *building, int swimClass, BuildingRoute route = BuildingRoute::Automatic);
-	//! Complete field adapter; finishes a lazy generation, NULL while Pending or locked.
+	//! Complete a lazy generation; return NULL when its route is locked.
 	const Uint16 *buildingGradient(Building *building, int swimClass, BuildingRoute route = BuildingRoute::Automatic);
 	// Owner-only: establish a safe generation without querying or finishing it.
 	std::shared_ptr<SharedBuildingGradient> leaseBuildingRoute(Building *building, int swimClass, BuildingRoute route);

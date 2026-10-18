@@ -52,12 +52,4 @@ template<class Read> auto awaitGradient(Game& game, Read read)
     return field;
 }
 
-inline const Uint16* awaitBuildingGradient(Game& game, Building* building, int swim,
-    BuildingRoute route=BuildingRoute::Automatic)
-{
-    return awaitGradient(game,[&] {
-        game.map.requestBuildingField(building,swim,route);
-        return game.map.lookupBuildingField(building,swim,route);
-    });
-}
 }

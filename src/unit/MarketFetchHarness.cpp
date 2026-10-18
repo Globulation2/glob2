@@ -83,7 +83,7 @@ struct Bed
 	}
 	void hire()
 	{
-		glob2test::awaitGradient(game, [&] { return game.map.buildingGradient(inn,unit->swimClass()); });
+		game.map.buildingGradient(inn,unit->swimClass());
 		for (int material=0; material<MaterialSlotCount; ++material)
 			if (inn->neededMaterial(material)>0)
 				glob2test::awaitGradient(game, [&] { return game.map.getMaterialGradientSlot(0,material,unit->swimClass(),true,inn); });
