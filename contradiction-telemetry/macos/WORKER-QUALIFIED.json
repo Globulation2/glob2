@@ -1,0 +1,130 @@
+{
+  "status": "passed",
+  "finished_utc": "2026-10-18T20:43:02.777227+00:00",
+  "bundle_id": "6f1d07cecde1d9dca7ea3bb42186f46670529ba7a767e5cbce498ffe720f82cd",
+  "binary_sha256": "29493368329536b6ad923ef38ba21a208926633e06217a8c09b0568d0f2ada7c",
+  "package_id": "ba1ad34a55e7c54637d5579a93a64d356340f464060a6452e9f026ec051fd603",
+  "accepted_attempt_id": "2f72993201be4c02af5e103683ed7c78",
+  "accepted_receipt_path": "/Users/bradley/glob2/artifacts/gradient-contradictions-20261018/macos-next-round/worker-qualification/experiment/results/b8a79199c684b5c3.json",
+  "accepted_receipt_sha256": "87152ba6d545bbcda3715943b7beaf775090aa96bf60a0599b5660e67f7dbe7e",
+  "worker_command": [
+    "/Users/bradley/glob2/artifacts/gradient-contradictions-20261018/macos-next-round/worker-qualification/worker-root/workers/ba1ad34a55e7c54637d5579a93a64d356340f464060a6452e9f026ec051fd603/bundles/6f1d07cecde1d9dca7ea3bb42186f46670529ba7a767e5cbce498ffe720f82cd/bin/glob2",
+    "game",
+    "run",
+    "--output-dir",
+    "/Users/bradley/glob2/artifacts/gradient-contradictions-20261018/macos-next-round/worker-qualification/worker-root/workers/ba1ad34a55e7c54637d5579a93a64d356340f464060a6452e9f026ec051fd603/attempts/2f72993201be4c02af5e103683ed7c78/output",
+    "--profile",
+    "glob2-tournament-2f72993201be4c02af5e103683ed7c78",
+    "--map-file",
+    "/Users/bradley/glob2/artifacts/gradient-contradictions-20261018/macos-next-round/worker-qualification/worker-root/workers/ba1ad34a55e7c54637d5579a93a64d356340f464060a6452e9f026ec051fd603/attempts/2f72993201be4c02af5e103683ed7c78/inputs/map.gz",
+    "--game-seed",
+    "859231393",
+    "--ticks",
+    "2048",
+    "--player",
+    "warrush",
+    "--player",
+    "warrush",
+    "--player",
+    "warrush",
+    "--save",
+    "final",
+    "--telemetry",
+    "checksums",
+    "--resource-gradient-probe",
+    "--gpu",
+    "off",
+    "--compute-telemetry",
+    "off",
+    "--compute-threads",
+    "1"
+  ],
+  "outputs": {
+    "world.checksums": {
+      "raw_sha256": "24322ae97f757d5b8d506fa5d565f87e8fd890acf47c263f9f0c23a3546857d9",
+      "bytes": 31108,
+      "linux_byte_identical": true
+    },
+    "snapshot.checksums": {
+      "raw_sha256": "1699fd5eb24ad6e61fd96df07bdb4bf5dae0b6d97bd80cd8a73e7552e53cf281",
+      "bytes": 40314,
+      "linux_byte_identical": true
+    },
+    "game.replay.checksums": {
+      "raw_sha256": "00419eb73f1972530b8a9d611dbce3b6e931c3ba84b53e8c18cde33e04456e06",
+      "bytes": 15233902,
+      "linux_byte_identical": true
+    },
+    "final.game.gz": {
+      "raw_sha256": "9fa5d1f1fac5787be3eeb22fdfa791b624220f9bc9d2b4f37cf9924d5e061dbd",
+      "bytes": 156732,
+      "linux_byte_identical": true
+    },
+    "gradient-episodes.csv": {
+      "raw_sha256": "54c084126c534af62f91fb22f58aba2c5f7c0a5a9e565eadda054c7007cc18da",
+      "bytes": 2036,
+      "linux_byte_identical": true
+    },
+    "gradient-quality.csv": {
+      "raw_sha256": "fe0cac00c538385c242cbb43144c0e3491b954617d4824d769872004e763a62b",
+      "bytes": 924,
+      "linux_byte_identical": true
+    },
+    "gradient-planning-quality.csv": {
+      "raw_sha256": "e310eebec05e1affbd6327b17b484da3f4af73182ffe0e3ae26ebda0f70edce3",
+      "bytes": 84640,
+      "linux_byte_identical": true
+    },
+    "gradient-contradictions.csv": {
+      "raw_sha256": "317bb5f551728cb0260582f50f7310d39eb3f640733de13d64d9b7fa26a63806",
+      "bytes": 240,
+      "linux_byte_identical": true
+    }
+  },
+  "export_status": {
+    "expected": 1,
+    "completed": 1,
+    "missing": [],
+    "failed": [],
+    "failed_attempts": 0,
+    "manifests": [
+      "/Users/bradley/glob2/artifacts/gradient-contradictions-20261018/macos-next-round/worker-qualification/export/8c057947e985c65a271b3d47.cohort.json"
+    ],
+    "by_format": {
+      "qualification-3ffa": 1
+    },
+    "hosts": {
+      "macbook-local": 1
+    }
+  },
+  "loaded_movement_rows": 22,
+  "parsed_integer_features_labels_match_linux": true,
+  "contract_canonical_sha256": "e4cdcf9770318ac2b929a86535b7a4e7a96ad689865a6609f476a1d1193e6866",
+  "external_dependencies_verified": 38,
+  "resource_usage": {
+    "peak_rss_bytes": 62521344,
+    "system_seconds": 0.116477,
+    "user_seconds": 1.474521
+  },
+  "affinity_enforced": false,
+  "participant_budget": "One explicit --compute-threads1 in frozen job; no macOS CPU-affinity APIs.",
+  "next_round_proposal": {
+    "slots": 6,
+    "participants_per_game": 1,
+    "mechanism": "per-job resource_gradient_collection.threads1; host cpu_ids/participants_per_game null",
+    "eligible_pools": [
+      "general",
+      "large-maps"
+    ],
+    "ram_rationale": "Linux live peak2.292GiB/game; six simultaneous peaks~13.8GiB versus Mac24GiB. Tiny qualificationRSS is not a worst-case estimate."
+  },
+  "limitations": [
+    "One2048tick3warrush worker fixture; not broad map/format or memory coverage.",
+    "Host-pinned existing Homebrew libraries; reverify dependency lock before future launches.",
+    "No CPU affinity guarantee onmacOS; every assigned game must retain explicit one-participant job budget.",
+    "No round002 or other tournament collection launched; currentround001 untouched."
+  ],
+  "fixture_worker_stopped_after_ack": true,
+  "fixture_worker_stop_sha256": "81a1afe7dcbc56a7b7cf851371bd2d2e6e81c1a4240a3d0566397c9c832a651c",
+  "proposed_host_config_sha256": "0bdf6c7177048df20e1645d37503c4723186324d60022f61877af71b2b627f09"
+}
