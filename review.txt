@@ -1,0 +1,12 @@
+Independent subagent review of PR #1223
+
+Reviewed commit: a2a324bf4ce3aae87016eb4a649df10f0a1fb090
+Base: 64c792a61c4b5a7cdbfc49f33e7c846127645056
+
+The reviewer examined native/browser sizing, fallback order, Linux topology validation, Windows affinity and record handling, Apple discovery, diagnostics, documentation, and tests. Explicit numeric overrides remain intact.
+
+The reviewer found no blocking issues. One optional comment refinement was requested, implemented in a2a324bf4, and checked again by the reviewer. Final verdict: no remaining findings or blockers.
+
+Independent checks passed: git diff --check; strict macOS ComputeThreads.cpp compilation with warnings treated as errors.
+
+Limitations: Windows raw-record runtime parsing, multi-group and WOW64 behavior remain unverified. These paths have conservative fallbacks and their limits are documented.

@@ -1,0 +1,74 @@
+{
+  "pr": "https://github.com/Globulation2/glob2/pull/1223",
+  "tested_commit": "a2a324bf4ce3aae87016eb4a649df10f0a1fb090",
+  "base_revision": "64c792a61c4b5a7cdbfc49f33e7c846127645056",
+  "integration": "PR head directly based on fetched master; clean tree",
+  "environment": {
+    "platform": "macOS-26.6.2-arm64-arm-64bit-Mach-O",
+    "machine": "arm64",
+    "compiler": "Apple clang version 21.0.0 (clang-2100.3.34.2)\nTarget: arm64-apple-darwin25.6.0\nThread model: posix\nInstalledDir: /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin",
+    "linux": "Linux 7.0.0-38-generic #38~24.04.4-Ubuntu SMP PREEMPT_DYNAMIC Mon Sep 14 16:37:11 UTC 2 x86_64 GNU/Linux\ng++ (Ubuntu 13.3.0-6ubuntu2~24.04.1) 13.3.0\nx86_64-w64-mingw32-g++ (GCC) 13-win32\n"
+  },
+  "configuration": "Routine all-feature native client via tools/dev_build.py; dev_fast=1, -O0 -g1, linker=auto, compiler cache; no new runtime dependencies. Full compiler/linker inputs are in build-final.log; focused suite compile argv in focused-command.json.",
+  "commands": [
+    "PYTHONPATH=\"$PWD\" python3 tools/dev_build.py build/darwin/client/debug/dev-dev_fast-true-linker-auto/src/glob2",
+    "clang++ [argv in focused-command.json] && artifacts/compute-physical/compute-tests",
+    "python3 tools/cli_reference.py --binary build/darwin/client/debug/dev-dev_fast-true-linker-auto/src/glob2 --check",
+    "python3 test/check_parallel_compute.py build/darwin/client/debug/dev-dev_fast-true-linker-auto/src/glob2 --output artifacts/compute-physical/equivalence",
+    "python3 test/check_sim_revision.py --base origin/master",
+    "glob2 match verify test/fixtures/multiplayer/FourSquares1.g2mr --map-file maps/FourSquares1.map.gz [--compute-threads 1] --output-dir artifacts/compute-physical/golden-{auto,serial}; cmp checksums.txt with the committed trace",
+    "python3 artifacts/compute-physical/linux-smoke.py",
+    "python3 artifacts/compute-physical/cross-compile.py",
+    "xcrun --sdk iphoneos clang++ -std=c++20 -Wall -Wextra -Werror -target arm64-apple-ios15.0 -isysroot \"$(xcrun --sdk iphoneos --show-sdk-path)\" -c src/common/ComputeThreads.cpp -o artifacts/compute-physical/ios-topology.o"
+  ],
+  "results": {
+    "build": 0,
+    "focused_tests": {
+      "exit": 0,
+      "cases": 60,
+      "assertions": 138322
+    },
+    "cli_reference": 0,
+    "thread_count_equivalence": {
+      "exit": 0,
+      "runs": 38,
+      "counts": [
+        1,
+        2,
+        4,
+        8,
+        "auto"
+      ],
+      "coverage": "per-tick checksums, exact replay bytes and saves, save continuation, v121 legacy save, shared-runtime/Castor/Numbi AIs"
+    },
+    "golden_match": "auto and serial verified; both exact traces match the committed golden",
+    "sim_version": 0,
+    "linux_detection": "16 eligible logical CPUs -> 8 physical participants; one CPU -> 1; SMT siblings -> 1; 4 distinct cores -> 4",
+    "cross_compile": "MinGW Windows; Android arm64/armv7/x86_64 NDK 28.2; iOS arm64; serial/threaded Emscripten policy ran under Node",
+    "review": "Independent subagent reviewed final commit; no remaining findings. One comment refinement addressed."
+  },
+  "coverage_rationale": "Only local executor sizing/discovery changes. Explicit counts and browser policy are preserved. Focused topology, fallback and executor tests plus real-engine cross-count/golden/save tests address CPU detection, participant accounting, determinism and continuity. No simulation formulas, serialized state, replay/network acceptance gates or dependencies change.",
+  "limitations": [
+    "Full game runtime verification is macOS only. Linux tested CPU discovery/affinity, not full game matches.",
+    "Windows/Android/iOS topology paths compile checked, not device/runtime checked. Windows raw topology-record parsing and WOW64/multi-group fallback lack runtime coverage.",
+    "WebAssembly policy executed under Node; no actual browser game runs or cross-platform per-tick comparison.",
+    "No release performance benchmarks or manual interactive gameplay; no speedup claim.",
+    "Hosted run 39093280530 passed cheap contracts; expensive hosted engine matrix intentionally not requested."
+  ],
+  "acceptance": "Author accepts this focused evidence for the tested revision under the maintainer\u2019s explicit instruction to review and merge, with the stated limits.",
+  "binary_sha256": "a0e14a670d6d470bf5ddd332f95121ce99a71ea1c67c726a2df4a46bb6f0d6ca",
+  "changed_files_sha256": {
+    "debian/glob2.6": "bbca85cef83588cd74cf0efae72893f801f242b38d63460142921be3239ec3b1",
+    "docs/development/compute-benchmarks.md": "7ca818c84d272c03bb2a35fa57a6fdf47743ef3c40e1f597833443dbf0531000",
+    "docs/development/headless-replays.md": "9fc96a731f8ce020c05aeb1342f5b2a7a1c567b8684ab8276015bcb94f9e81e3",
+    "docs/tools/cli.md": "f90796f7f7696fbe39cc8e2c3187a5f65f93e43be89c33e21700f57a9f5ead60",
+    "docs/tools/tournaments.md": "48a3c00fe4e9ec11acba280634cca294774eead5ad61cdf0cd8aa89a8c64c390",
+    "src/app/ApplicationResourcePlan.cpp": "a69a9122da3160c8d339e06072fd9076f15cb093f044f2640783d114a71d68ee",
+    "src/app/ApplicationResourcePlan.h": "60deb002496a18c710313033020dc1410c6a0fd2c22d031d0504e470baf157fb",
+    "src/app/ApplicationResourcePlanTest.cpp": "7f1afbdea7b0b0676d159ac21911144fc9a92bc3b37d87770e6ac759c39d84fb",
+    "src/app/GlobalContainer.h": "08c43e1327a4cd08abcdc6d5cd0c6fac65ed48b6124628b0ee94b8ef17595649",
+    "src/app/cli/CommandLine.cpp": "67dc04bd6fd17b3c7b09e42bb332108c2a51d474ce78b8df8c71f4cb85c464aa",
+    "src/common/ComputeThreads.cpp": "ea282ac056a94cce2d6e72ae5ae2e4e3c8b49a8b4eedc0648c677a736ea8dda7",
+    "src/common/ComputeThreads.h": "84beee6f530a1127af25edc068d9105a0ba636e917dac2b8d0f1e187a287bd94"
+  }
+}
