@@ -371,3 +371,51 @@ not only the aggregate median; predictions or averages never automatically appro
 a candidate. Rotate fresh test maps as the experiment evolves, retain the fixed
 stress cases, and document build flags/platform coverage. Passing observer parity
 here does not replace per-tick cross-platform determinism or save/replay gates.
+
+## Distributed collection
+
+`tools/resource_gradient_distributed.py` uses the shared tournament Coordinator
+for localhost and SSH execution, including leases, retries, host eligibility and
+verified artifact transfer. It adds no separate SSH scheduler. Supply immutable
+platform-specific bundles with matching source and simulation versions, and
+explicit `model_sha256` / `header_sha256` in each bundle's build options and the
+cohort declaration (`policy.model_sha256` and `header_sha256`).
+
+Generate maps centrally before dispatch. The accepted-map index is a JSON list
+of `{group, spec, path, sha256}` records: `group` is the first 16 hexadecimal
+characters of the canonical planned-game SHA256, `spec` is the actual accepted
+map specification, and `path` points to its exact compressed map file. Preserve
+all generation attempts and the original plan. This avoids relying on
+same-seed generation being identical across architectures. A subset/chunk must
+select planned slots before outcomes and include exactly those slots in its map
+index; never select only games that finish quickly.
+
+```sh
+python3 tools/resource_gradient_distributed.py prepare \
+  --plan artifacts/chunk-plan.json --maps artifacts/accepted-maps.json \
+  --bundle artifacts/bundles/MAC_ID --bundle artifacts/bundles/LINUX_ID \
+  --cohort artifacts/chunk-cohort.json --weights artifacts/build-weights.json \
+  --directory artifacts/distributed-chunk --ticks 90000
+python3 tools/resource_gradient_distributed.py collect \
+  artifacts/distributed-chunk --hosts artifacts/hosts.json
+python3 tools/resource_gradient_distributed.py export \
+  artifacts/distributed-chunk --output artifacts/chunk-dataset
+```
+
+Build weights map bundle IDs to positive capacity weights. Allocation is frozen
+within each format before results; compatible Linux hosts share the Linux pool.
+Configure host slots and Linux CPU allocations using the
+[distributed tournament guide](../tools/tournaments.md). Mac collection jobs use
+one compute participant because CPU affinity allocation is unavailable there;
+set slots to the desired concurrent-game budget. Collection explicitly disables
+GPU execution and compute telemetry. Probe cost makes its timings unsuitable as
+engine performance measurements.
+
+Export requires every planned slot to succeed, preserves accepted worker receipts
+and both transported/decoded artifact hashes, and seals cohorts for the permanent
+`audit` and `fit` commands. Architecture-specific exports share the logical
+cohort identity, so a smaller platform pool does not receive an artificially
+larger training weight. Audit and refit after each completed chunk; accumulate
+compatible cohorts using the same split registry. A partial export is diagnostic
+only and reports every missing slot. Qualify each supplied binary/data bundle
+and cross-platform execution before starting the full collection.
